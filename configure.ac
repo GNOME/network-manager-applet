@@ -170,6 +170,20 @@ fi
 AM_CONDITIONAL(WITH_NOTIFY, test x"$enable_notify" != xno) # can't do it from inside 'if'
 AM_CONDITIONAL([HAVE_GTK_2_10],[test "$have_gtk_2_10" = "yes"])
 
+AC_MSG_CHECKING([for wireless-tools >= 28pre9])
+AC_TRY_COMPILE([#include <iwlib.h>],
+               [#ifndef IWEVGENIE
+                #error "not found"
+                #endif],
+               [ac_have_iwevgenie=yes],
+               [ac_have_iwevgenie=no])
+AC_MSG_RESULT($ac_have_iwevgenie)
+if test "$ac_have_iwevgenie" = no; then
+	AC_MSG_ERROR(wireless-tools >= 28pre9 not installed or not functional)
+fi
+IWLIB=-liw
+AC_SUBST(IWLIB)
+
 AC_ARG_WITH(dbus-sys, AC_HELP_STRING([--with-dbus-sys=DIR], [where D-BUS system.d directory is]))
 
 if ! test -z "$with_dbus_sys" ; then
