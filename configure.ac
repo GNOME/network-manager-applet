@@ -1,6 +1,6 @@
 AC_PREREQ(2.52)
 
-AC_INIT(nm-applet, 0.6.5, dcbw@redhat.com, nm-applet)
+AC_INIT(nm-applet, 0.7.0, dcbw@redhat.com, nm-applet)
 AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE
 
@@ -49,8 +49,7 @@ dnl
 GETTEXT_PACKAGE=nm-applet
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
-ALL_LINGUAS="bg bs ca cs da de el en_CA en_GB es fi fr gu hr hu it ja ko lt pl mk nb ne nl pa pt_BR rw sk sq sr@Latn sr sv uk vi wa zh_CN zh_TW"
-AC_PROG_INTLTOOL([0.27.2])
+IT_PROG_INTLTOOL([0.35.0])
 AM_GLIB_GNU_GETTEXT
 
 dnl
@@ -139,7 +138,16 @@ AC_SUBST(GNOME_KEYRING_CFLAGS)
 AC_SUBST(GNOME_KEYRING_LIBS)
 
 LIBNOTIFY_REQUIRED=0.3.0
-AC_ARG_WITH(notify, AC_HELP_STRING([--with-notify], [Use libnotify]), enable_notify=$withval, enable_notify=auto)
+
+# Building with GTK+ >= 2.10 will use the GtkStatusIcon applet
+# implementation.  Earlier versions of GTK+ will use the EggTrayIcon
+# applet implementation.
+
+PKG_CHECK_EXISTS([gtk+-2.0 >= 2.10],[have_gtk_2_10=yes LIBNOTIFY_REQUIRED=0.4.3],[have_gtk_2_10=no])
+if test x"$have_gtk_2_10" != xno; then
+	AC_DEFINE_UNQUOTED([HAVE_STATUS_ICON], [1],
+		[Use GtkStatusIcon for the applet's icon rather than an EggTrayIcon])
+fi
 
 if test x"$enable_notify" != xno; then
 	PKG_CHECK_MODULES([NOTIFY], [libnotify >= $LIBNOTIFY_REQUIRED], [enable_notify=yes],
@@ -149,7 +157,6 @@ if test x"$enable_notify" != xno; then
 		[Enable notifications with libnotify])
 	fi
 fi
-AM_CONDITIONAL(WITH_NOTIFY, test x"$enable_notify" != xno) # can't do it from inside 'if'
 
 PKG_CHECK_MODULES(LIBGNOMEUI, libgnomeui-2.0)
 AC_SUBST(LIBGNOMEUI_CFLAGS)
@@ -159,6 +166,9 @@ PKG_CHECK_EXISTS([libgnome-2.0 >= 2.14.0],[have_libgnome_2_14=yes],[have_libgnom
 if test "$have_libgnome_2_14" = "yes"; then
 	AC_DEFINE([HAVE_LIBGNOME_2_14],[1],[Define if we have libgnome 2.14])
 fi
+
+AM_CONDITIONAL(WITH_NOTIFY, test x"$enable_notify" != xno) # can't do it from inside 'if'
+AM_CONDITIONAL([HAVE_GTK_2_10],[test "$have_gtk_2_10" = "yes"])
 
 AC_ARG_WITH(dbus-sys, AC_HELP_STRING([--with-dbus-sys=DIR], [where D-BUS system.d directory is]))
 

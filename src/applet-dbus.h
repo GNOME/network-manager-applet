@@ -27,14 +27,6 @@
 #include "NetworkManager.h"
 #include "applet.h"
 
-/* Return codes for functions that use dbus */
-enum
-{
-	RETURN_SUCCESS = 1,
-	RETURN_FAILURE = 0,
-	RETURN_NO_NM = -1
-};
-
 static inline gboolean message_is_error (DBusMessage *msg)
 {
 	g_return_val_if_fail (msg != NULL, FALSE);

@@ -395,7 +395,7 @@ nmi_dbus_get_network_properties (DBusConnection *connection,
 	char *			escaped_network = NULL;
 	char *			essid = NULL;
 	gint				timestamp = -1;
-	gboolean			trusted = FALSE;
+	gboolean			fallback = FALSE;
 	DBusMessageIter 	iter, array_iter;
 	GConfClient *		client;
 	NMGConfWSO *		gconf_wso;
@@ -435,9 +435,9 @@ nmi_dbus_get_network_properties (DBusConnection *connection,
 	if (!nm_gconf_get_int_helper (client, GCONF_PATH_WIRELESS_NETWORKS, "timestamp", escaped_network, &timestamp) || (timestamp < 0))
 		timestamp = 0;
 
-	/* Trusted status */
-	if (!nm_gconf_get_bool_helper (client, GCONF_PATH_WIRELESS_NETWORKS, "trusted", escaped_network, &trusted))
-		trusted = FALSE;
+	/* Fallback status */
+	if (!nm_gconf_get_bool_helper (client, GCONF_PATH_WIRELESS_NETWORKS, "fallback", escaped_network, &fallback))
+		fallback = FALSE;
 
 	/* Grab the list of stored access point BSSIDs */
 	gconf_key = g_strdup_printf ("%s/%s/bssids", GCONF_PATH_WIRELESS_NETWORKS, escaped_network);
@@ -468,8 +468,8 @@ nmi_dbus_get_network_properties (DBusConnection *connection,
 	/* Second arg: Timestamp (INT32) */
 	dbus_message_iter_append_basic (&iter, DBUS_TYPE_INT32, &timestamp);
 
-	/* Third arg: Trusted (BOOLEAN) */
-	dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &trusted);
+	/* Third arg: Fallback? (BOOLEAN) */
+	dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &fallback);
 
 	/* Fourth arg: List of AP BSSIDs (ARRAY, STRING) */
 	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &array_iter);
@@ -818,12 +818,14 @@ static void
 nmi_save_network_info (NMApplet *applet,
                        const char *essid,
                        gboolean automatic,
+                       gboolean fallback,
                        const char *bssid,
                        NMGConfWSO * gconf_wso)
 {
-	char *					key;
-	GConfEntry *				gconf_entry;
-	char *					escaped_network;
+	char *			key;
+	GConfEntry *		gconf_entry;
+	char *			escaped_network;
+	GConfValue *		value;
 
 	g_return_if_fail (applet != NULL);
 	g_return_if_fail (essid != NULL);
@@ -854,9 +856,18 @@ nmi_save_network_info (NMApplet *applet,
 		g_free (key);
 	}
 
+	/*
+	 * XXX: We don't want to move a network from fallback to non-fallback because the user
+	 * connected via other means.  We need a better way to do this.
+	 */
+	key = g_strdup_printf ("%s/%s/fallback", GCONF_PATH_WIRELESS_NETWORKS, escaped_network);
+	value = gconf_client_get (applet->gconf_client, key, NULL);
+	if (!value || value->type != GCONF_VALUE_BOOL || (!gconf_value_get_bool (value) && fallback))
+		gconf_client_set_bool (applet->gconf_client, key, fallback, NULL);
+	g_free (key);
+
 	if (bssid && (strlen (bssid) >= 11))
 	{
-		GConfValue *	value;
 		GSList *		new_bssid_list = NULL;
 		gboolean		found = FALSE;
 
@@ -954,6 +965,7 @@ nmi_dbus_update_network_info (DBusConnection *connection,
 	NMApplet *		applet = (NMApplet *) user_data;
 	char *			essid = NULL;
 	gboolean			automatic;
+	gboolean			fallback;
 	NMGConfWSO *		gconf_wso = NULL;
 	DBusMessageIter	iter;
 	char *			bssid;
@@ -984,7 +996,15 @@ nmi_dbus_update_network_info (DBusConnection *connection,
 	}
 	dbus_message_iter_get_basic (&iter, &automatic);
 
-	/* Third argument: Access point's BSSID */
+	/* Third argument: Fallback? (BOOLEAN) */
+	if (!dbus_message_iter_next (&iter) || (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN))
+	{
+		nm_warning ("%s:%d - message argument 'fallback' was invalid.", __FILE__, __LINE__);
+		goto out;
+	}
+	dbus_message_iter_get_basic (&iter, &fallback);
+
+	/* Fourth argument: Access point's BSSID */
 	if (!dbus_message_iter_next (&iter) || (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING))
 	{
 		nm_warning ("%s:%d - message argument 'bssid' was invalid.", __FILE__, __LINE__);
@@ -1002,7 +1022,7 @@ nmi_dbus_update_network_info (DBusConnection *connection,
 		goto out;
 	}
 
-	nmi_save_network_info (applet, essid, automatic, bssid, gconf_wso);
+	nmi_save_network_info (applet, essid, automatic, fallback, bssid, gconf_wso);
 	g_object_unref (G_OBJECT (gconf_wso));
 
 out:

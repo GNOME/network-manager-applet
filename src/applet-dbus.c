@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <math.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include "applet.h"
@@ -48,12 +49,11 @@
  */
 static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessage *message, void *user_data)
 {
-	NMApplet	*applet = (NMApplet *)user_data;
-	gboolean			 handled = TRUE;
-
-	const char *		object_path;
-	const char *		member;
-	const char *		interface;
+	NMApplet *	applet = (NMApplet *)user_data;
+	gboolean		handled = TRUE;
+	const char *	object_path;
+	const char *	member;
+	const char *	interface;
 
 	g_return_val_if_fail (applet != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 	g_return_val_if_fail (connection != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);

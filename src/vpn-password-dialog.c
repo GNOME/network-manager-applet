@@ -53,7 +53,7 @@ child_finished_cb (GPid pid, gint status, gpointer userdata)
 static gboolean 
 child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer userdata)
 {
-	char *str = NULL;
+	char *str;
 	IOUserData *io_user_data = (IOUserData *) userdata;
 	GSList **passwords = (GSList **) io_user_data->passwords;
 
@@ -77,13 +77,10 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer userd
 			/* remove terminating newline */
 			str[len - 1] = '\0';
 			*passwords = g_slist_append (*passwords, str);
-			str = NULL;
 		}
 	}
 
 out:
-	g_free (str);
-
 	return TRUE;
 }
 
