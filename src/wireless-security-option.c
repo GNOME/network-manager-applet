@@ -237,3 +237,44 @@ wso_wpa_create_key_type_model (int capabilities, gboolean wpa_eap, int *num_adde
 	*num_added = num;
 	return GTK_TREE_MODEL (model);
 }
+
+GtkTreeModel *
+wso_wpa_create_phase2_type_model (int capabilities, gboolean wpa_eap, int *num_added)
+{
+	GtkListStore *	model;
+	GtkTreeIter	iter;
+	const char *	name;
+
+	g_return_val_if_fail (num_added != NULL, NULL);
+
+	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_INT);
+
+	name = _("None (Default)");
+	gtk_list_store_append (model, &iter);
+	gtk_list_store_set (model, &iter, WPA_KEY_TYPE_NAME_COL, name,
+					WPA_KEY_TYPE_CIPHER_COL, NM_PHASE2_AUTH_NONE, -1);
+
+	name = _("PAP");
+	gtk_list_store_append (model, &iter);
+	gtk_list_store_set (model, &iter, WPA_KEY_TYPE_NAME_COL, name,
+					WPA_KEY_TYPE_CIPHER_COL, NM_PHASE2_AUTH_PAP, -1);
+
+	name = _("MSCHAP");
+	gtk_list_store_append (model, &iter);
+	gtk_list_store_set (model, &iter, WPA_KEY_TYPE_NAME_COL, name,
+					WPA_KEY_TYPE_CIPHER_COL, NM_PHASE2_AUTH_MSCHAP, -1);
+
+	name = _("MSCHAPV2");
+	gtk_list_store_append (model, &iter);
+	gtk_list_store_set (model, &iter, WPA_KEY_TYPE_NAME_COL, name,
+					WPA_KEY_TYPE_CIPHER_COL, NM_PHASE2_AUTH_MSCHAPV2, -1);
+
+	name = _("GTC");
+	gtk_list_store_append (model, &iter);
+	gtk_list_store_set (model, &iter, WPA_KEY_TYPE_NAME_COL, name,
+					WPA_KEY_TYPE_CIPHER_COL, NM_PHASE2_AUTH_GTC, -1);
+
+	*num_added = 4;
+	return GTK_TREE_MODEL (model);
+}
+

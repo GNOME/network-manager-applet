@@ -41,6 +41,7 @@ struct OptData
 {
 	int			eap_method;
 	int			key_type;
+	int			phase2_type;
 	const char *	identity;
 	const char *	passwd;
 	const char *	anon_identity;
@@ -176,6 +177,11 @@ append_dbus_params_func (WirelessSecurityOption *opt,
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (entry), &tree_iter);
 	gtk_tree_model_get (model, &tree_iter, WPA_KEY_TYPE_CIPHER_COL, &opt->data->key_type, -1);
 
+	entry = glade_xml_get_widget (opt->uixml, "wpa_eap_phase2_type_combo");
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (entry));
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (entry), &tree_iter);
+	gtk_tree_model_get (model, &tree_iter, WPA_KEY_TYPE_CIPHER_COL, &opt->data->phase2_type, -1);
+
 	entry = glade_xml_get_widget (opt->uixml, "wpa_eap_identity_entry");
 	opt->data->identity = gtk_entry_get_text (GTK_ENTRY (entry)) ? : "";
 
@@ -200,7 +206,7 @@ append_dbus_params_func (WirelessSecurityOption *opt,
 	dbus_message_iter_init_append (message, &dbus_iter);
 
 	nmu_security_serialize_wpa_eap_with_cipher (&dbus_iter,
-									    opt->data->eap_method,
+									    opt->data->eap_method | opt->data->phase2_type,
 									    opt->data->key_type,
 									    opt->data->identity,
 									    opt->data->passwd,
@@ -224,6 +230,7 @@ wso_wpa_eap_new (const char *glade_file,
 	OptData *				data = NULL;
 	GtkWidget *			eap_method_combo;
 	GtkWidget *			key_type_combo;
+	GtkWidget *			phase2_type_combo;
 	GtkListStore *			model;
 	GtkTreeModel *			tree_model;
 	GtkTreeIter			iter;
@@ -285,10 +292,18 @@ wso_wpa_eap_new (const char *glade_file,
 	if (num_added == 1)
 		gtk_widget_set_sensitive (key_type_combo, FALSE);
 
+	phase2_type_combo = glade_xml_get_widget (opt->uixml, "wpa_eap_phase2_type_combo");
+	tree_model = wso_wpa_create_phase2_type_model (capabilities, TRUE, &num_added);
+	gtk_combo_box_set_model (GTK_COMBO_BOX (phase2_type_combo), tree_model);
+	gtk_tree_model_get_iter_first (tree_model, &iter);
+	gtk_combo_box_set_active_iter (GTK_COMBO_BOX (phase2_type_combo), &iter);
+
 	/* FIXME: Why do we need this here but not in the same place in wso-wpa-psk.c ? */
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (key_type_combo), renderer, TRUE);
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (key_type_combo), renderer, "text", 0, NULL);
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (phase2_type_combo), renderer, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (phase2_type_combo), renderer, "text", 0, NULL);
 
 	/* Option-specific data */
 	opt->data = data = g_malloc0 (sizeof (OptData));
