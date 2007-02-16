@@ -2627,8 +2627,6 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	applet->tooltips = gtk_tooltips_new ();
 #endif
 
-	glade_gnome_init ();
-
 	applet->glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
 	if (!applet->glade_file || !g_file_test (applet->glade_file, G_FILE_TEST_IS_REGULAR))
 	{
