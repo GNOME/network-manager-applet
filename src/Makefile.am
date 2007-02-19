@@ -92,11 +92,11 @@ nm_applet_SOURCES =			\
 	nm-utils.h \
 	$(NULL)
 
-#if !HAVE_GTK_2_10
+if !HAVE_GTK_2_10
 nm_applet_SOURCES += \
 	eggtrayicon.c	\
 	eggtrayicon.h
-#endif
+endif
 
 if WITH_NOTIFY
 nm_applet_SOURCES += applet-notifications.c applet-notifications.h
