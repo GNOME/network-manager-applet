@@ -151,6 +151,7 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	WirelessNetwork *	net = NULL;
 	char *			temp = NULL;
 	char *			escaped_network;
+	int			we_cipher = -1;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 	g_return_val_if_fail (message != NULL, NULL);
@@ -171,12 +172,33 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	 * a new key no matter what NM says.
 	 */
 	escaped_network = gconf_escape_key (essid, strlen (essid));
+	nm_gconf_get_int_helper (applet->gconf_client,
+                              GCONF_PATH_WIRELESS_NETWORKS,
+                              "we_cipher", escaped_network, &we_cipher);
 	if (!nm_gconf_get_string_helper (applet->gconf_client,
                                       GCONF_PATH_WIRELESS_NETWORKS,
                                       "essid",
                                       escaped_network, &temp)
          || !temp)
 		new_key = TRUE;
+
+	/* Hack: 802.1x passwords are not stored in the keyring */
+	if (!new_key &&
+	    (we_cipher == NM_AUTH_TYPE_WPA_EAP || we_cipher == NM_AUTH_TYPE_LEAP))
+	{
+		NMGConfWSO *gconf_wso;
+		gconf_wso = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client,
+								escaped_network);
+		if (gconf_wso)
+		{
+			nmi_dbus_return_user_key(connection, message, gconf_wso);
+			g_object_unref (G_OBJECT (gconf_wso));
+			g_free (escaped_network);
+			return NULL;
+		}
+		else
+			new_key = TRUE;
+	}
 	g_free (escaped_network);
 
 	/* It's not a new key, so try to get the key from the keyring. */
@@ -215,7 +237,7 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 		/* We only ask the user for a new key when we know about the network from NM,
 		 * since throwing up a dialog with a random essid from somewhere is a security issue.
 		 */
-		if (new_key && (net = network_device_get_wireless_network_by_nm_path (dev, net_path)))
+		if ((net = network_device_get_wireless_network_by_nm_path (dev, net_path)))
 		{
 			nmi_passphrase_dialog_destroy (applet);
 			applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, dev, net, message);
