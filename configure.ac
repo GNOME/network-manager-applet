@@ -49,7 +49,7 @@ dnl
 GETTEXT_PACKAGE=nm-applet
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
-ALL_LINGUAS="ar bg bs ca cs da de el en_CA en_GB es fi fr gu hr hu it ja ko lt pl mk nb ne nl pa pt pt_BR rw sk sl sq sr@Latn sr sv uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="ar bg bs ca cs da de el en_CA en_GB es fi fr gl gu hr hu it ja ko lt pl mk nb ne nl pa pt pt_BR rw sk sl sq sr@Latn sr sv uk vi wa zh_CN zh_TW"
 AC_PROG_INTLTOOL([0.27.2])
 AM_GLIB_GNU_GETTEXT
 
