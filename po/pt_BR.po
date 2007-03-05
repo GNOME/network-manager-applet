@@ -3,19 +3,109 @@
 # This file is distributed under the same license as the NetworkManager package.
 # Raphael Higino <phhigino@gmail.com>, 2004-2007.
 # Leonardo Ferreira Fontenelle <leo.fontenelle@gmail.com>, 2007.
+# Luiz Fernando S. Armesto <luiz.armesto@gmail.com>, 2007.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet 0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-02 21:13-0300\n"
-"PO-Revision-Date: 2007-03-02 21:21-0300\n"
-"Last-Translator: Leonardo Ferreira Fontenelle <leo.fontenelle@gmail.com>\n"
+"POT-Creation-Date: 2007-03-05 16:43-0300\n"
+"PO-Revision-Date: 2007-03-05 16:52-0300\n"
+"Last-Translator: Luiz Fernando da Silva Armesto <luiz.armesto@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:937
+#, c-format
+msgid "Passphrase for wireless network %s"
+msgstr "Frase Secreta para rede sem fio %s"
+
+#: ../src/applet-dbus-devices.c:898
+#, c-format
+msgid "You are now connected to the Ad-Hoc wireless network '%s'."
+msgstr "Você agora está conectado à rede sem fio Ad-Hoc \"%s\"."
+
+#: ../src/applet-dbus-devices.c:903
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "Você agora está conectado á rede sem fio \"%s\"."
+
+#: ../src/applet-dbus-devices.c:910
+msgid "You are now connected to the wired network."
+msgstr "Você agora está conectado à rede com fios."
+
+#: ../src/applet-dbus-devices.c:916
+msgid "Connection Established"
+msgstr "Conexão Estabelecida"
+
+#: ../src/applet-dbus-devices.c:959
+msgid "Disconnected"
+msgstr "Desconectado"
+
+#: ../src/applet-dbus-devices.c:960
+msgid "The network connection has been disconnected."
+msgstr "A conexão de rede foi desconectada."
+
+#: ../src/applet-dbus.c:274
+#, c-format
+msgid "Connection to the wireless network '%s' failed."
+msgstr "Conexão à rede sem fio \"%s\" falhou."
+
+#: ../src/applet-dbus.c:279
+msgid "Connection to the wired network failed."
+msgstr "Conexão à rede com fios falhou."
+
+#: ../src/applet.c:186
+msgid "Error displaying connection information:"
+msgstr "Erro ao exibir informações de conexão:"
+
+#: ../src/applet.c:204
+msgid "Could not find some required resources (the glade file)!"
+msgstr ""
+"Não foi possível encontrar alguns recursos necessários (o arquivo glade)!"
+
+#: ../src/applet.c:215
+msgid "No active connections!"
+msgstr "Nenhuma conexão ativa!"
+
+#: ../src/applet.c:236
+#, c-format
+msgid "Wired Ethernet (%s)"
+msgstr "Rede Com Fios (%s)"
+
+#: ../src/applet.c:238
+#, c-format
+msgid "Wireless Ethernet (%s)"
+msgstr "Rede Sem Fio (%s)"
+
+#: ../src/applet.c:334 ../src/applet.c:360
+msgid "NetworkManager Applet"
+msgstr "Miniaplicativo Gerenciador de Rede"
+
+#: ../src/applet.c:336
+msgid ""
+"Copyright © 2004-2006 Red Hat, Inc.\n"
+"Copyright © 2005-2006 Novell, Inc."
+msgstr ""
+"Copyright © 2004-2006 Red Hat, Inc.\n"
+"Copyright © 2005-2006 Novell, Inc."
+
+#: ../src/applet.c:338 ../src/applet.c:364
+msgid ""
+"Notification area applet for managing your network devices and connections."
+msgstr ""
+"Área de notificação para gerenciamento dos seus dispositívos de rede e "
+"conexões."
+
+#: ../src/applet.c:341 ../src/applet.c:368
+msgid "translator-credits"
+msgstr ""
+"Raphael Higino <phhigino@gmail.com>\n"
+"Leonardo Ferreira Fontenelle <leo.fontenelle@gmail.com>\n"
+"Luiz Fernando S. Armesto <luiz.armesto@gmail.com>"
 
 #: ../src/applet.c:362
 msgid ""
@@ -33,7 +123,7 @@ msgstr "Falha ao se autenticar na VPN"
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a login failure."
 msgstr ""
-"Não foi possível iniciar a conexão VPN '%s' devido a uma falha de "
+"Não foi possível iniciar a conexão VPN \"%s\" devido a uma falha de "
 "autenticação."
 
 #: ../src/applet.c:429
@@ -46,8 +136,8 @@ msgid ""
 "Could not start the VPN connection '%s' due to a failure launching the VPN "
 "program."
 msgstr ""
-"Não foi possível iniciar a conexão VPN '%s' devido a uma falha ao executar o "
-"programa de VPN."
+"Não foi possível iniciar a conexão VPN \"%s\" devido a uma falha ao executar "
+"o programa de VPN."
 
 #: ../src/applet.c:434 ../src/applet.c:444
 msgid "VPN Connect Failure"
@@ -57,7 +147,7 @@ msgstr "Falha ao conectar-se à VPN"
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a connection error."
 msgstr ""
-"Não foi possível iniciar a conexão VPN '%s' devido a um erro de conexão."
+"Não foi possível iniciar a conexão VPN \"%s\" devido a um erro de conexão."
 
 #: ../src/applet.c:439
 msgid "VPN Configuration Error"
@@ -66,7 +156,7 @@ msgstr "Erro de configuração da VPN"
 #: ../src/applet.c:440
 #, c-format
 msgid "The VPN connection '%s' was not correctly configured."
-msgstr "A conexão VPN '%s' não foi configurada corretamente."
+msgstr "A conexão VPN \"%s\" não foi configurada corretamente."
 
 #: ../src/applet.c:445
 #, c-format
@@ -74,7 +164,7 @@ msgid ""
 "Could not start the VPN connection '%s' because the VPN server did not "
 "return an adequate network configuration."
 msgstr ""
-"Não foi possível iniciar a conexão VPN '%s' porque o servidor VPN não "
+"Não foi possível iniciar a conexão VPN \"%s\" porque o servidor VPN não "
 "retornou uma configuração de rede adequada."
 
 #: ../src/applet.c:515
@@ -88,7 +178,7 @@ msgid ""
 "file was not found)."
 msgstr ""
 "O miniaplicativo Gerenciador de Rede não pôde encontrar alguns recursos "
-"requeridos (o arquivo glade não foi encontrado)."
+"necessários (o arquivo glade não foi encontrado)."
 
 #: ../src/applet.c:751
 #, c-format
@@ -108,7 +198,7 @@ msgstr "Preparando o dispositivo %s para a rede com fios..."
 #: ../src/applet.c:908
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "Preparando o dispositivo %s para a rede com fios '%s'..."
+msgstr "Preparando o dispositivo %s para a rede com fios \"%s\"..."
 
 #: ../src/applet.c:916
 #, c-format
@@ -118,12 +208,12 @@ msgstr "Configurando dispositivo %s para a rede com fios..."
 #: ../src/applet.c:918
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
-msgstr "Tentando se juntar à rede sem fio '%s'..."
+msgstr "Tentando se juntar à rede sem fio \"%s\"..."
 
 #: ../src/applet.c:926
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "Esperando a chave da rede sem fio '%s'..."
+msgstr "Esperando a chave da rede sem fio \"%s\"..."
 
 #: ../src/applet.c:934 ../src/applet.c:944
 msgid "Requesting a network address from the wired network..."
@@ -132,7 +222,7 @@ msgstr "Requisitando um endereço de rede da rede com fios..."
 #: ../src/applet.c:936 ../src/applet.c:946
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Requisitando um endereço de rede da rede sem fios '%s'..."
+msgstr "Requisitando um endereço de rede da rede sem fios \"%s\"..."
 
 #: ../src/applet.c:954
 msgid "Finishing connection to the wired network..."
@@ -141,7 +231,7 @@ msgstr "Terminando a conexão à rede com fios..."
 #: ../src/applet.c:956
 #, c-format
 msgid "Finishing connection to the wireless network '%s'..."
-msgstr "Terminando a conexão à rede sem fio '%s'..."
+msgstr "Terminando a conexão à rede sem fio \"%s\"..."
 
 #: ../src/applet.c:1073
 msgid "NetworkManager is not running"
@@ -166,17 +256,17 @@ msgstr "Conectado a uma rede sem fio Ad-Hoc"
 #: ../src/applet.c:1097
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "Conexão de rede sem fio com '%s' (%d%%)"
+msgstr "Conexão de rede sem fio com \"%s\" (%d%%)"
 
 #: ../src/applet.c:1118
 #, c-format
 msgid "VPN connection to '%s'"
-msgstr "Conexão VPN com '%s'"
+msgstr "Conexão VPN com \"%s\""
 
 #: ../src/applet.c:1126
 #, c-format
 msgid "VPN connecting to '%s'"
-msgstr "Estabelecendo conexão VPN com '%s'"
+msgstr "Estabelecendo conexão VPN com \"%s\""
 
 #: ../src/applet.c:1539
 msgid "_Connect to Other Wireless Network..."
@@ -200,7 +290,7 @@ msgstr "_Desconectar VPN..."
 
 #: ../src/applet.c:1754
 msgid "_Dial Up Connections"
-msgstr "Conexões Discadas"
+msgstr "Conexões _Discadas"
 
 #. FIXME: We should save and then check the state of the devices and show Connect _or_ Disconnect for each item
 #: ../src/applet.c:1765
@@ -252,7 +342,7 @@ msgid ""
 "continue.\n"
 msgstr ""
 "O miniaplicativo Gerenciador de Rede não pôde encontrar alguns recursos "
-"requeridos. Não é possível continuar.\n"
+"necessários. Não é possível continuar.\n"
 
 #: ../src/applet.glade.h:1
 msgid " "
@@ -277,7 +367,7 @@ msgstr ""
 "Fio</span>\n"
 "\n"
 "Uma frase secreta ou uma chave de criptografia é requerida para acessar a "
-"rede sem fio '%s'."
+"rede sem fio \"%s\"."
 
 #: ../src/applet.glade.h:8
 #, no-c-format
@@ -289,7 +379,7 @@ msgstr ""
 "<span weight=\"bold\" size=\"larger\">Funcionalidade da Rede Reduzida</"
 "span>\n"
 "\n"
-"%s  Não será completamente funcional."
+"%s Não será completamente funcional."
 
 #: ../src/applet.glade.h:12
 #, no-c-format
@@ -304,7 +394,7 @@ msgstr ""
 "<span weight=\"bold\" size=\"larger\">Confirmação de Entrada em Rede Sem "
 "Fio</span>\n"
 "\n"
-"Você escolheu entrar na rede sem fio '%s'.  Se você tem certeza de que essa "
+"Você escolheu entrar na rede sem fio \"%s\". Se você tem certeza de que essa "
 "rede é segura, clique na caixa de verificação abaixo e o Gerenciador de Rede "
 "não vai mais pedir confirmação em conexões posteriores."
 
@@ -590,7 +680,7 @@ msgstr ""
 #: ../src/vpn-password-dialog.c:154 ../src/vpn-password-dialog.c:191
 #, c-format
 msgid "Cannot start VPN connection '%s'"
-msgstr "Não é possível iniciar a conexão VPN '%s'"
+msgstr "Não é possível iniciar a conexão VPN \"%s\""
 
 #: ../src/vpn-password-dialog.c:157
 #, c-format
@@ -599,7 +689,7 @@ msgid ""
 "Contact your system administrator."
 msgstr ""
 "Não foi possível encontrar o diálogo de autenticação para o tipo de conexão "
-"VPN '%s'. Entre em contato com o seu administrador de sistema."
+"VPN \"%s\". Entre em contato com o seu administrador de sistema."
 
 #: ../src/vpn-password-dialog.c:194
 #, c-format
@@ -608,7 +698,7 @@ msgid ""
 "type '%s'. Contact your system administrator."
 msgstr ""
 "Houve um problema ao executar o diálogo de autenticação para o tipo de "
-"conexão VPN '%s'. Entre em contato com o seu administrador de sistema."
+"conexão VPN \"%s\". Entre em contato com o seu administrador de sistema."
 
 #: ../src/wireless-security-option.c:157
 msgid "Open System"
@@ -715,19 +805,19 @@ msgstr "WPA Pessoal"
 #~ "Cannot find suitable software for VPN connection type '%s' to import the "
 #~ "file '%s'. Contact your system administrator."
 #~ msgstr ""
-#~ "Não é possível encontrar o software adequado para o tipo de conexão VPN '%"
-#~ "s' importar o arquivo '%s'. Entre em contato com o seu administrador de "
-#~ "sistema."
+#~ "Não é possível encontrar o software adequado para o tipo de conexão VPN "
+#~ "\"%s\" importar o arquivo \"%s\". Entre em contato com o seu "
+#~ "administrador de sistema."
 
 #~ msgid "Error retrieving VPN connection '%s'"
-#~ msgstr "Erro ao recuperar a conexão VPN '%s'"
+#~ msgstr "Erro ao recuperar a conexão VPN \"%s\""
 
 #~ msgid ""
 #~ "Could not find the UI files for VPN connection type '%s'. Contact your "
 #~ "system administrator."
 #~ msgstr ""
 #~ "Não foi possível encontrar os arquivos de interface para o tipo de "
-#~ "conexão VPN '%s'. Entre em contato com o seu administrador de sistema."
+#~ "conexão VPN \"%s\". Entre em contato com o seu administrador de sistema."
 
 #~ msgid "Delete VPN connection \"%s\"?"
 #~ msgstr "Excluir a conexão VPN \"%s\"?"
@@ -743,10 +833,6 @@ msgstr "WPA Pessoal"
 
 #~ msgid "Unable to load"
 #~ msgstr "Impossível carregar"
-
-#~ msgid "Cannot find some needed resources (the glade file)!"
-#~ msgstr ""
-#~ "Não foi possível encontrar alguns recursos necessários (o arquivo glade)!"
 
 #~ msgid "Edit VPN Connection"
 #~ msgstr "Editar conexões VPN"
@@ -908,6 +994,3 @@ msgstr "WPA Pessoal"
 
 #~ msgid "There are no network devices..."
 #~ msgstr "Não há nenhum dispositivo de rede..."
-
-#~ msgid "A wired network connection is currently active..."
-#~ msgstr "Atualmente uma conexão de rede com fios está ativa..."
