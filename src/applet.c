@@ -2559,15 +2559,15 @@ static GtkWidget * nma_get_instance (NMApplet *applet)
 	 */
 	nma_compat_convert_oldformat_entries (applet->gconf_client);
 
+	/* Load pixmaps and create applet widgets */
+	nma_setup_widgets (applet);
+
 	/* D-Bus init stuff */
 	dbus_g_thread_init ();
 	applet->nmi_methods = nmi_dbus_nmi_methods_setup ();
 	nma_dbus_init_helper (applet);
 	if (!applet->connection)
 		nma_start_dbus_connection_watch (applet);
-
-	/* Load pixmaps and create applet widgets */
-	nma_setup_widgets (applet);
 
 	g_signal_connect (applet, "destroy", G_CALLBACK (nma_destroy), NULL);
 	g_signal_connect (applet, "style-set", G_CALLBACK (nma_theme_change_cb), NULL);
