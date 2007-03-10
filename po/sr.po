@@ -1,14 +1,17 @@
-# Serbian Cyrillic and Latin translations for NetworkManager
-# Copyright (C) 2004-2005 GNOME Foundation
-# This file is distributed under the same licence as the NetworkManager package.
+# Serbian translation of network-manager-applet
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2004, 2005, 2007.
+#
+# This file is distributed under the same license as the totem package.
+#
+# Maintainer: Filip Miletic
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-29 18:33+0200\n"
-"PO-Revision-Date: 2005-05-14 18:47+02:00\n"
-"Last-Translator: Filip Miletic <f dot miletic at ewi dot tudelft dot nl>\n"
+"POT-Creation-Date: 2007-03-10 20:54+0100\n"
+"PO-Revision-Date: 2007-03-10 20:54+0100\n"
+"Last-Translator: Данило Шеган <danilo@gnome.org>\n"
 "Language-Team: Serbian <gnu@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,253 +19,287 @@ msgstr ""
 "Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:919
-#, fuzzy, c-format
+#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:937
+#, c-format
 msgid "Passphrase for wireless network %s"
-msgstr "Направи нову бежичну мрежу"
+msgstr "Лозинка за бежичну мрежу %s"
 
-#: ../src/applet-dbus.c:265
-#, fuzzy, c-format
+# FIXME Ад-хок
+#: ../src/applet-dbus-devices.c:898
+#, c-format
+msgid "You are now connected to the Ad-Hoc wireless network '%s'."
+msgstr "Повезани сте са ад-хок бежичном мрежом „%s“."
+
+#: ../src/applet-dbus-devices.c:903
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "Повезани сте са бежичном мрежом „%s“."
+
+#: ../src/applet-dbus-devices.c:910
+msgid "You are now connected to the wired network."
+msgstr "Повезани сте са жичаном мрежом."
+
+#: ../src/applet-dbus-devices.c:916
+msgid "Connection Established"
+msgstr "Веза успостављена"
+
+#: ../src/applet-dbus-devices.c:959
+msgid "Disconnected"
+msgstr "Прекинута веза"
+
+#: ../src/applet-dbus-devices.c:960
+msgid "The network connection has been disconnected."
+msgstr "Мрежна веза је прекинута."
+
+#: ../src/applet-dbus.c:274
+#, c-format
 msgid "Connection to the wireless network '%s' failed."
-msgstr "Неуспела веза са бежичном мрежом „%s“.\n"
+msgstr "Неуспела веза са бежичном мрежом „%s“."
 
-#: ../src/applet-dbus.c:270
-#, fuzzy
+#: ../src/applet-dbus.c:279
 msgid "Connection to the wired network failed."
-msgstr "Неуспела веза са жичаном мрежом.\n"
+msgstr "Неуспела веза са жичаном мрежом."
 
-#: ../src/applet.c:184
+#: ../src/applet.c:186
 msgid "Error displaying connection information:"
-msgstr ""
+msgstr "Грешка при приказивању података о вези:"
 
-#: ../src/applet.c:202
-#, fuzzy
+#: ../src/applet.c:204
 msgid "Could not find some required resources (the glade file)!"
-msgstr ""
-"Аплет Управник мреже није могао да пронађе неке од потребних ресурса (глејд "
-"датотека није пронађена)."
+msgstr "Не моу да нађем неке од неопходних ресурса (глејд датотека)!"
 
-#: ../src/applet.c:213
-#, fuzzy
+#: ../src/applet.c:215
 msgid "No active connections!"
-msgstr "Нема мрежних веза"
+msgstr "Нема мрежних веза!"
 
-#: ../src/applet.c:234
-#, fuzzy, c-format
+#: ../src/applet.c:236
+#, c-format
 msgid "Wired Ethernet (%s)"
 msgstr "Жичана мрежа (%s)"
 
-#: ../src/applet.c:236
-#, fuzzy, c-format
+#: ../src/applet.c:238
+#, c-format
 msgid "Wireless Ethernet (%s)"
 msgstr "Бежична мрежа (%s)"
 
-#: ../src/applet.c:337 ../src/applet.c:362
+#: ../src/applet.c:334 ../src/applet.c:360
 msgid "NetworkManager Applet"
-msgstr "Аплет Управник мреже"
+msgstr "Програмче Управник мреже"
 
-#: ../src/applet.c:339 ../src/applet.c:364
-#, fuzzy
-msgid "Copyright © 2004-2005 Red Hat, Inc."
-msgstr "Copyright (C) 2004-2005 Red Hat, Inc."
+#: ../src/applet.c:336
+msgid ""
+"Copyright © 2004-2006 Red Hat, Inc.\n"
+"Copyright © 2005-2006 Novell, Inc."
+msgstr ""
+"Сва права задржана © 2004–2006 Red Hat, Inc.\n"
+"Сва права задржана © 2005–2006 Novell, Inc."
 
-#: ../src/applet.c:340 ../src/applet.c:365
+#: ../src/applet.c:338 ../src/applet.c:364
 msgid ""
 "Notification area applet for managing your network devices and connections."
-msgstr "Аплет за обавештајну зону за управљање мрежним уређајима и везама."
+msgstr "Програмче за обавештајну зону за управљање мрежним уређајима и везама."
 
-#: ../src/applet.c:343 ../src/applet.c:370
+#: ../src/applet.c:341 ../src/applet.c:368
 msgid "translator-credits"
 msgstr ""
+"Филип Милетић\n"
+"Данило Шеган\n"
+"\n"
+"Превод.орг — превод на српски језик."
 
-#: ../src/applet.c:426
-msgid "VPN Login Failure"
+# bug: what's the difference between :323 message except in Red Hat 2005/2006 end year?
+#: ../src/applet.c:362
+msgid ""
+"Copyright © 2004-2005 Red Hat, Inc.\n"
+"Copyright © 2005-2006 Novell, Inc."
 msgstr ""
+"Сва права задржана © 2004–2006 Red Hat, Inc.\n"
+"Сва права задржана © 2005–2006 Novell, Inc."
 
-#: ../src/applet.c:427
+#: ../src/applet.c:424
+msgid "VPN Login Failure"
+msgstr "Грешка при VPN пријави"
+
+#: ../src/applet.c:425
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a login failure."
-msgstr ""
+msgstr "Не могу да успоставим VPN везу „%s“ због неуспеле пријаве."
 
-#: ../src/applet.c:431
+#: ../src/applet.c:429
 msgid "VPN Start Failure"
-msgstr ""
+msgstr "Грешка при покретању VPN-а"
 
-#: ../src/applet.c:432
+#: ../src/applet.c:430
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' due to a failure launching the VPN "
 "program."
 msgstr ""
+"Не могу да успоставим VPN везу „%s“ због грешке при покретању VPN програма."
 
-#: ../src/applet.c:436 ../src/applet.c:446
-#, fuzzy
+#: ../src/applet.c:434 ../src/applet.c:444
 msgid "VPN Connect Failure"
-msgstr "VPN везе"
+msgstr "Грешка при повезивању VPN-а"
 
-#: ../src/applet.c:437
+#: ../src/applet.c:435
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a connection error."
-msgstr ""
+msgstr "Не могу да успоставим VPN везу „%s“ због грешке при повезивању."
 
-#: ../src/applet.c:441
+#: ../src/applet.c:439
 msgid "VPN Configuration Error"
-msgstr ""
+msgstr "Грешка у подешавању VPN-а"
 
-#: ../src/applet.c:442
+#: ../src/applet.c:440
 #, c-format
 msgid "The VPN connection '%s' was not correctly configured."
-msgstr ""
+msgstr "VPN веза „%s“ није исправно подешена."
 
-#: ../src/applet.c:447
+#: ../src/applet.c:445
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' because the VPN server did not "
 "return an adequate network configuration."
 msgstr ""
+"Не могу да успоставим VPN везу „%s“ зато што VPN сервер није вратио "
+"одговарајућа мрежна подешавања."
 
-#: ../src/applet.c:517
+#: ../src/applet.c:515
 msgid "VPN Login Message"
-msgstr ""
+msgstr "Порука за VPN пријаву"
 
-#: ../src/applet.c:741 ../src/applet.c:2508
-#: ../src/other-network-dialog.c:453
-#: ../src/passphrase-dialog.c:228
+#: ../src/applet.c:739 ../src/applet.c:2536 ../src/other-network-dialog.c:453
+#: ../src/passphrase-dialog.c:232
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
 msgstr ""
-"Аплет Управник мреже није могао да пронађе неке од потребних ресурса (глејд "
-"датотека није пронађена)."
+"Програмче Управник мреже није могао да пронађе неке од потребних ресурса "
+"(глејд датотека није пронађена)."
 
-#: ../src/applet.c:753
+#: ../src/applet.c:751
 #, c-format
 msgid "The network device \"%s (%s)\" does not support wireless scanning."
 msgstr "Мрежни уређај „%s (%s)“ не подржава потрагу за бежичним мрежама."
 
-#: ../src/applet.c:761
+#: ../src/applet.c:759
 #, c-format
 msgid "The network device \"%s (%s)\" does not support link detection."
 msgstr "Мрежни уређај „%s (%s)“ не подржава откривање везе."
 
-#: ../src/applet.c:908
+#: ../src/applet.c:906
 #, c-format
 msgid "Preparing device %s for the wired network..."
 msgstr "Припрема уређаја %s за жичану мрежу..."
 
-#: ../src/applet.c:910
+#: ../src/applet.c:908
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
 msgstr "Припрема уређаја %s за бежичну мрежу „%s“..."
 
-#: ../src/applet.c:918
+#: ../src/applet.c:916
 #, c-format
 msgid "Configuring device %s for the wired network..."
 msgstr "Подешавање уређаја %s за бежичну мрежу..."
 
-#: ../src/applet.c:920
+#: ../src/applet.c:918
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
 msgstr "Покушај приступа бежичној мрежи „%s“..."
 
-#: ../src/applet.c:928
+#: ../src/applet.c:926
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
 msgstr "Чекање на мрежни кључ за бежичну мрежу „%s“..."
 
-#: ../src/applet.c:936 ../src/applet.c:946
+#: ../src/applet.c:934 ../src/applet.c:944
 msgid "Requesting a network address from the wired network..."
 msgstr "Потраживање мрежне адресе за жичану мрежу..."
 
-#: ../src/applet.c:938 ../src/applet.c:948
+#: ../src/applet.c:936 ../src/applet.c:946
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
 msgstr "Потраживање мрежне адресе за бежичну мрежу „%s“..."
 
-#: ../src/applet.c:956
+#: ../src/applet.c:954
 msgid "Finishing connection to the wired network..."
 msgstr "Обустављање везе са жичаном мрежом..."
 
-#: ../src/applet.c:958
+#: ../src/applet.c:956
 #, c-format
 msgid "Finishing connection to the wireless network '%s'..."
 msgstr "Обустављање везе са бежичном мрежом „%s“..."
 
-#: ../src/applet.c:1075
+#: ../src/applet.c:1073
 msgid "NetworkManager is not running"
 msgstr "Управљач мреже није покренут"
 
-#: ../src/applet.c:1083 ../src/applet.c:1828
+#: ../src/applet.c:1081 ../src/applet.c:1828
 msgid "Networking disabled"
-msgstr ""
+msgstr "Умрежавање искључено"
 
-#: ../src/applet.c:1088
+#: ../src/applet.c:1086
 msgid "No network connection"
 msgstr "Нема мрежних веза"
 
-#: ../src/applet.c:1093
+#: ../src/applet.c:1091
 msgid "Wired network connection"
 msgstr "Бежична мрежна веза"
 
 # FIXME Ад-хок
-#: ../src/applet.c:1097
+#: ../src/applet.c:1095
 msgid "Connected to an Ad-Hoc wireless network"
 msgstr "Повезан са ад-хок бежичном мрежом"
 
-#: ../src/applet.c:1099
+#: ../src/applet.c:1097
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
 msgstr "Бежична мрежна веза са „%s“ (%d%%)"
 
-#: ../src/applet.c:1120
-#, fuzzy, c-format
+#: ../src/applet.c:1118
+#, c-format
 msgid "VPN connection to '%s'"
-msgstr "VPN везе"
+msgstr "VPN веза са „%s“"
 
-#: ../src/applet.c:1128
-#, fuzzy, c-format
+#: ../src/applet.c:1126
+#, c-format
 msgid "VPN connecting to '%s'"
-msgstr "VPN везе"
+msgstr "VPN повезује са „%s“"
 
-#: ../src/applet.c:1541
-#, fuzzy
+#: ../src/applet.c:1539
 msgid "_Connect to Other Wireless Network..."
-msgstr "Остале бежичне мреже..."
+msgstr "По_вежи се на остале бежичне мреже..."
 
-#: ../src/applet.c:1562
-#, fuzzy
+#: ../src/applet.c:1560
 msgid "Create _New Wireless Network..."
-msgstr "Направи нову бежичну мрежу..."
+msgstr "Направи _нову бежичну мрежу..."
 
-#: ../src/applet.c:1685
-#, fuzzy
+#: ../src/applet.c:1683
 msgid "_VPN Connections"
-msgstr "VPN везе"
+msgstr "V_PN везе"
 
-#: ../src/applet.c:1730
+#: ../src/applet.c:1728
 msgid "_Configure VPN..."
-msgstr ""
+msgstr "По_деси VPN..."
 
-#: ../src/applet.c:1734
-#, fuzzy
+#: ../src/applet.c:1732
 msgid "_Disconnect VPN..."
-msgstr "Искључи VPN..."
+msgstr "Ис_кључи VPN..."
 
-#: ../src/applet.c:1756
-#, fuzzy
+#: ../src/applet.c:1754
 msgid "_Dial Up Connections"
-msgstr "VPN везе"
+msgstr "_Модемске везе"
 
 #. FIXME: We should save and then check the state of the devices and show Connect _or_ Disconnect for each item
-#: ../src/applet.c:1767
-#, fuzzy, c-format
+#: ../src/applet.c:1765
+#, c-format
 msgid "Connect to %s..."
-msgstr "Искључи VPN..."
+msgstr "Повежи се на %s..."
 
-#: ../src/applet.c:1773
-#, fuzzy, c-format
+#: ../src/applet.c:1772
+#, c-format
 msgid "Disconnect from %s..."
-msgstr "Искључи VPN..."
+msgstr "Искључи се са %s..."
 
 #: ../src/applet.c:1822
 msgid "No network devices have been found"
@@ -273,33 +310,31 @@ msgid "NetworkManager is not running..."
 msgstr "Управљач мрежом није покренут..."
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2170
+#: ../src/applet.c:2193
 msgid "Enable _Networking"
-msgstr ""
+msgstr "Укључи _мрежне услуге"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2176
+#: ../src/applet.c:2199
 msgid "Enable _Wireless"
-msgstr ""
+msgstr "Укључи _бежично мрежење"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2182
+#: ../src/applet.c:2205
 msgid "Connection _Information"
-msgstr ""
+msgstr "Пода_ци о вези"
 
 #. Help item
-#: ../src/applet.c:2193
-#, fuzzy
+#: ../src/applet.c:2216
 msgid "_Help"
-msgstr "Помоћ"
+msgstr "_Помоћ"
 
 #. About item
-#: ../src/applet.c:2202
-#, fuzzy
+#: ../src/applet.c:2225
 msgid "_About"
-msgstr "О програму"
+msgstr "_О програму"
 
-#: ../src/applet.c:2667
+#: ../src/applet.c:2697
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -307,200 +342,15 @@ msgstr ""
 "Управљач мрежом није успео да пронађе неопходне ресурсе и не може да настави "
 "рад.\n"
 
-#: ../src/wireless-security-option.c:157
-msgid "Open System"
-msgstr ""
-
-#: ../src/wireless-security-option.c:160
-msgid "Shared Key"
-msgstr ""
-
-#: ../src/wireless-security-option.c:208
-msgid "Automatic (Default)"
-msgstr ""
-
-#: ../src/wireless-security-option.c:215
-msgid "AES-CCMP"
-msgstr ""
-
-#: ../src/wireless-security-option.c:223
-msgid "TKIP"
-msgstr ""
-
-#: ../src/wireless-security-option.c:231
-msgid "Dynamic WEP"
-msgstr ""
-
-#: ../src/wso-none.c:53
-msgid "None"
-msgstr ""
-
-#: ../src/wso-wep-ascii.c:138
-msgid "WEP 64/128-bit ASCII"
-msgstr ""
-
-#: ../src/wso-wep-hex.c:135
-msgid "WEP 64/128-bit Hex"
-msgstr ""
-
-#: ../src/wso-wep-passphrase.c:135
-#, fuzzy
-msgid "WEP 128-bit Passphrase"
-msgstr "Лозинка:"
-
-#: ../src/wso-wpa-eap.c:237
-msgid "PEAP"
-msgstr ""
-
-#: ../src/wso-wpa-eap.c:238
-msgid "TLS"
-msgstr ""
-
-#: ../src/wso-wpa-eap.c:239
-msgid "TTLS"
-msgstr ""
-
-#: ../src/wso-wpa-eap.c:247 ../src/nm-ap-security-wpa-eap.c:92
-#: ../src/nm-ap-security-wpa-eap.c:116
-msgid "WPA2 Enterprise"
-msgstr ""
-
-#: ../src/wso-wpa-eap.c:249 ../src/nm-ap-security-wpa-eap.c:94
-#: ../src/nm-ap-security-wpa-eap.c:121
-msgid "WPA Enterprise"
-msgstr ""
-
-#: ../src/wso-wpa-psk.c:178
-msgid "WPA2 Personal"
-msgstr ""
-
-#: ../src/wso-wpa-psk.c:180
-msgid "WPA Personal"
-msgstr ""
-
-#: ../src/eggtrayicon.c:134
-msgid "Orientation"
-msgstr "Усмерење"
-
-# Потребан је бољи превод за ово
-#: ../src/eggtrayicon.c:135
-msgid "The orientation of the tray."
-msgstr "Усмерење обавештајне зоне."
-
-#: ../src/menu-items.c:88
-#, c-format
-msgid "Wired Network (%s)"
-msgstr "Жичана мрежа (%s)"
-
-#: ../src/menu-items.c:91
-#, fuzzy
-msgid "_Wired Network"
-msgstr "Жичана мрежа"
-
-#: ../src/menu-items.c:162
-#, c-format
-msgid "Wireless Network (%s)"
-msgid_plural "Wireless Networks (%s)"
-msgstr[0] "Бежична мрежа (%s)"
-msgstr[1] "Бежичне мреже (%s)"
-msgstr[2] "Бежичних мрежа (%s)"
-
-#: ../src/menu-items.c:164
-msgid "Wireless Network"
-msgid_plural "Wireless Networks"
-msgstr[0] "Бежична мрежа"
-msgstr[1] "Бежичне мреже"
-msgstr[2] "Бежичне мреже"
-
-#: ../src/menu-items.c:343
-msgid " (invalid Unicode)"
-msgstr " (неисправан Уникод)"
-
-#: ../src/other-network-dialog.c:352
-#, c-format
-msgid ""
-"By default, the wireless network's name is set to your computer's name, %s, "
-"with no encryption enabled"
-msgstr ""
-
-#: ../src/other-network-dialog.c:358
-msgid "Create new wireless network"
-msgstr "Направи нову бежичну мрежу"
-
-#: ../src/other-network-dialog.c:359
-#, fuzzy
-msgid ""
-"Enter the name and security settings of the wireless network you wish to "
-"create."
-msgstr ""
-"Унесите ESSID и безбедносне поставке бежичне мреже коју желите да начините."
-
-#: ../src/other-network-dialog.c:363
-#, fuzzy
-msgid "Create New Wireless Network"
-msgstr "Направи нову бежичну мрежу..."
-
-#: ../src/other-network-dialog.c:368
-#, fuzzy
-msgid "Existing wireless network"
-msgstr "Корисничка бежична мрежа"
-
-#: ../src/other-network-dialog.c:369
-#, fuzzy
-msgid "Enter the name of the wireless network to which you wish to connect."
-msgstr "Унесите ESSID бежичне мреже са којом желите да се повежете."
-
-#: ../src/other-network-dialog.c:371
-#, fuzzy
-msgid "Connect to Other Wireless Network"
-msgstr "Остале бежичне мреже..."
-
-# FIXME Ад-хок
-#: ../src/passphrase-dialog.c:215
-#, fuzzy
-msgid "Error connecting to wireless network"
-msgstr "Повезан са ад-хок бежичном мрежом"
-
-#: ../src/passphrase-dialog.c:216
-msgid ""
-"The requested wireless network requires security capabilities unsupported by "
-"your hardware."
-msgstr ""
-
-#: ../src/vpn-password-dialog.c:151
-#: ../src/vpn-password-dialog.c:188
-#, c-format
-msgid "Cannot start VPN connection '%s'"
-msgstr ""
-
-#: ../src/vpn-password-dialog.c:154
-#, c-format
-msgid ""
-"Could not find the authentication dialog for VPN connection type '%s'. "
-"Contact your system administrator."
-msgstr ""
-
-#: ../src/vpn-password-dialog.c:191
-#, c-format
-msgid ""
-"There was a problem launching the authentication dialog for VPN connection "
-"type '%s'. Contact your system administrator."
-msgstr ""
-
+# bug: translatable, really?
 #: ../src/applet.glade.h:1
 msgid " "
 msgstr " "
 
 #: ../src/applet.glade.h:2
-#, fuzzy
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Active Connection Information</span>"
-msgstr ""
-"<span weight=\"bold\" size=\"larger\">Порука при пријави на VPN</span>\n"
-"\n"
-"Порука VPN везе „%s“ је:\n"
-"\n"
-"„%s“"
+msgstr "<span weight=\"bold\" size=\"larger\">Подаци о активној вези</span>"
 
 #: ../src/applet.glade.h:4
 #, no-c-format
@@ -528,7 +378,7 @@ msgstr ""
 "%s неће бити сасвим употребљива."
 
 #: ../src/applet.glade.h:12
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Wireless Network Login Confirmation</"
 "span>\n"
@@ -537,28 +387,28 @@ msgid ""
 "that this wireless network is secure, click the checkbox below and "
 "NetworkManager will not require confirmation on subsequent log ins."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">Потврда пријаве на мрежу</span>\n"
+"<span weight=\"bold\" size=\"larger\">Потврда пријаве на бежичну мрежу</"
+"span>\n"
 "\n"
-"Желите да се пријавите на мрежу „%s“. Ако сте сигурни да је ова бежична "
-"мрежа безбедна, обележите кућицу испод и Управник мреже вам више неће "
-"постављати сувишна питања при пријави на ову мрежу."
+"Желите да се пријавите на бежичну мрежу „%s“. Ако сте сигурни да је ова "
+"бежична мрежа безбедна, обележите кућицу испод и Управник мреже више неће "
+"тражити потврду при пријави на ову мрежу."
 
 #: ../src/applet.glade.h:15
 msgid "Anonymous Identity:"
-msgstr ""
+msgstr "Анонимни идентитет:"
 
 #: ../src/applet.glade.h:16
-#, fuzzy
 msgid "Authentication:"
-msgstr "Усмерење"
+msgstr "Аутентификација:"
 
 #: ../src/applet.glade.h:17
 msgid "Broadcast Address:"
-msgstr ""
+msgstr "Адреса за емитовање:"
 
 #: ../src/applet.glade.h:18
 msgid "CA Certificate File:"
-msgstr ""
+msgstr "Датотека са CA сертификатом:"
 
 #: ../src/applet.glade.h:19
 msgid "C_onnect"
@@ -566,410 +416,405 @@ msgstr "П_овежи се"
 
 #: ../src/applet.glade.h:20
 msgid "Client Certificate File:"
-msgstr ""
+msgstr "Датотека са сертификатом клијента:"
 
 #: ../src/applet.glade.h:21
 msgid "Connection Information"
-msgstr ""
+msgstr "Подаци о вези"
 
 #: ../src/applet.glade.h:22
 msgid "Default Route:"
-msgstr ""
+msgstr "Подразумевана рута:"
 
 #: ../src/applet.glade.h:23
 msgid "Destination Address:"
-msgstr ""
+msgstr "Одредишна адреса:"
 
 #: ../src/applet.glade.h:24
 msgid "Driver:"
-msgstr ""
+msgstr "Драјвер"
 
 #: ../src/applet.glade.h:25
 msgid "EAP Method:"
-msgstr ""
+msgstr "EAP метода:"
 
 #: ../src/applet.glade.h:26
 msgid "Hardware Address:"
-msgstr ""
+msgstr "Хардверска адреса:"
 
 #: ../src/applet.glade.h:27
 msgid "IP Address:"
-msgstr ""
+msgstr "ИП адреса:"
 
 #: ../src/applet.glade.h:28
 msgid "Identity:"
-msgstr ""
+msgstr "Идентитет:"
 
 #: ../src/applet.glade.h:29
 msgid "Interface:"
-msgstr ""
+msgstr "Спрега:"
 
 #: ../src/applet.glade.h:30
 msgid "Key Type:"
 msgstr "Врста кључа:"
 
 #: ../src/applet.glade.h:31
-#, fuzzy
-msgid "Key:"
-msgstr "Хекса кључ:"
+msgid "Key management:"
+msgstr "Управљање кључевима:"
 
 #: ../src/applet.glade.h:32
+msgid "Key:"
+msgstr "Кључ:"
+
+#: ../src/applet.glade.h:33
 msgid ""
 "None\n"
 "WEP 128-bit Passphrase\n"
 "WEP 64/128-bit Hex\n"
 "WEP 64/128-bit ASCII\n"
 msgstr ""
+"без кључа\n"
+"WEP 128-битна лозинка\n"
+"WEP 64/128-битни хексадекадни\n"
+"WEP 64/128-битни ASCII унос\n"
 
-#: ../src/applet.glade.h:37
+#: ../src/applet.glade.h:38
 msgid ""
 "Open System\n"
 "Shared Key"
 msgstr ""
+"Отворени систем\n"
+"Дељени кључ"
 
-#: ../src/applet.glade.h:39
-#, fuzzy
+#: ../src/applet.glade.h:40
 msgid "Other Wireless Network..."
 msgstr "Остале бежичне мреже..."
 
-#: ../src/applet.glade.h:40
+#: ../src/applet.glade.h:41
 msgid "Passphrase:"
 msgstr "Лозинка:"
 
-#: ../src/applet.glade.h:41
-msgid "Password:"
-msgstr ""
-
 #: ../src/applet.glade.h:42
-msgid "Primary DNS:"
-msgstr ""
-
-#: ../src/applet.glade.h:43
-msgid "Private Key File:"
-msgstr ""
-
-#: ../src/applet.glade.h:44
-msgid "Private Key Password:"
-msgstr ""
-
-#: ../src/applet.glade.h:45
-msgid "Secondary DNS:"
-msgstr ""
-
-#: ../src/applet.glade.h:46
-msgid "Select the CA Certificate File"
-msgstr ""
-
-#: ../src/applet.glade.h:47
-msgid "Select the Client Certificate File"
-msgstr ""
-
-#: ../src/applet.glade.h:48
-msgid "Select the Private Key File"
-msgstr ""
-
-#: ../src/applet.glade.h:49
-msgid "Show key"
-msgstr ""
-
-#: ../src/applet.glade.h:50
-#, fuzzy
-msgid "Show passphrase"
+msgid "Password:"
 msgstr "Лозинка:"
 
+#: ../src/applet.glade.h:43
+msgid "Phase2 Type:"
+msgstr "Фаза2 тип:"
+
+#: ../src/applet.glade.h:44
+msgid "Primary DNS:"
+msgstr "Примарни DNS:"
+
+#: ../src/applet.glade.h:45
+msgid "Private Key File:"
+msgstr "Датотека приватног кључа:"
+
+#: ../src/applet.glade.h:46
+msgid "Private Key Password:"
+msgstr "Лозинка приватног кључа:"
+
+#: ../src/applet.glade.h:47
+msgid "Secondary DNS:"
+msgstr "Секундарни DNS:"
+
+#: ../src/applet.glade.h:48
+msgid "Select the CA Certificate File"
+msgstr "Изаберите датотеку сертификата за издаваоца"
+
+#: ../src/applet.glade.h:49
+msgid "Select the Client Certificate File"
+msgstr "Изаберите датотеку сертификата за клијента"
+
+#: ../src/applet.glade.h:50
+msgid "Select the Private Key File"
+msgstr "Изаберите датотеку приватног кључа"
+
 #: ../src/applet.glade.h:51
-msgid "Show password"
-msgstr ""
+msgid "Show key"
+msgstr "Прикажи кључ"
 
 #: ../src/applet.glade.h:52
-msgid "Show passwords"
-msgstr ""
+msgid "Show passphrase"
+msgstr "Прикажи лозинку"
 
 #: ../src/applet.glade.h:53
-msgid "Speed:"
-msgstr ""
+msgid "Show password"
+msgstr "Прикажи лозинку"
 
 #: ../src/applet.glade.h:54
-msgid "Subnet Mask:"
-msgstr ""
+msgid "Show passwords"
+msgstr "Прикажи лозинке"
 
 #: ../src/applet.glade.h:55
-#, fuzzy
-msgid "Type:"
-msgstr "Врста кључа:"
+msgid "Speed:"
+msgstr "Брзина:"
 
 #: ../src/applet.glade.h:56
-msgid "User Name:"
-msgstr ""
+msgid "Subnet Mask:"
+msgstr "Мрежна маска:"
 
 #: ../src/applet.glade.h:57
+msgid "Type:"
+msgstr "Врста:"
+
+#: ../src/applet.glade.h:58
+msgid "User Name:"
+msgstr "Корисничко име:"
+
+#: ../src/applet.glade.h:59
 msgid "Wireless Network Key Required"
 msgstr "Потребан је кључ за бежичну мрежу"
 
-#: ../src/applet.glade.h:58
+#: ../src/applet.glade.h:60
 msgid "Wireless _adapter:"
 msgstr "Бежични _уређај:"
 
-#: ../src/applet.glade.h:59
-#, fuzzy
-msgid "_Always Trust this Wireless Network"
-msgstr "Увек поклони поверење бежичној мрежи"
-
-#: ../src/applet.glade.h:60
-#, fuzzy
-msgid "_Don't remind me again"
-msgstr "Не подсећај ме више"
-
 #: ../src/applet.glade.h:61
-msgid "_Login to Network"
-msgstr "_Умрежи се"
+msgid "_Always Trust this Wireless Network"
+msgstr "_Увек поклони поверење овој бежичној мрежи"
 
 #: ../src/applet.glade.h:62
-msgid "_Network Name:"
-msgstr ""
+msgid "_Don't remind me again"
+msgstr "_Не подсећај ме више"
 
 #: ../src/applet.glade.h:63
-#, fuzzy
+msgid "_Login to Network"
+msgstr "У_мрежи се"
+
+#: ../src/applet.glade.h:64
+msgid "_Network Name:"
+msgstr "_Име мреже:"
+
+#: ../src/applet.glade.h:65
 msgid "_Wireless Security:"
-msgstr "Бежични _уређај:"
+msgstr "_Бежична безбедност:"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:383
-#, fuzzy
-msgid "Cannot add VPN connection"
-msgstr "VPN везе"
+#: ../src/eggtrayicon.c:134
+msgid "Orientation"
+msgstr "Усмерење"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:385
-msgid ""
-"No suitable VPN software was found on your system. Contact your system "
-"administrator."
-msgstr ""
+# Потребан је бољи превод за ово
+#: ../src/eggtrayicon.c:135
+msgid "The orientation of the tray."
+msgstr "Усмерење обавештајне зоне."
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:437
-#, fuzzy
-msgid "Cannot import VPN connection"
-msgstr "Нема мрежних веза"
+#: ../src/menu-items.c:88
+#, c-format
+msgid "Wired Network (%s)"
+msgstr "Жичана мрежа (%s)"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:439
+#: ../src/menu-items.c:91
+msgid "_Wired Network"
+msgstr "_Жичана мрежа"
+
+# bug: no plural forms
+#: ../src/menu-items.c:163
+#, c-format
+msgid "Wireless Network (%s)"
+msgid_plural "Wireless Networks (%s)"
+msgstr[0] "Бежичне мреже (%s)"
+msgstr[1] "Бежичне мреже (%s)"
+msgstr[2] "Бежичне мреже (%s)"
+
+# bug: no plural forms
+#: ../src/menu-items.c:165
+msgid "Wireless Network"
+msgid_plural "Wireless Networks"
+msgstr[0] "Бежичне мреже"
+msgstr[1] "Бежичне мреже"
+msgstr[2] "Бежичне мреже"
+
+#: ../src/menu-items.c:344
+msgid " (invalid Unicode)"
+msgstr " (неисправан Уникод)"
+
+#: ../src/other-network-dialog.c:352
 #, c-format
 msgid ""
-"Cannot find suitable software for VPN connection type '%s' to import the "
-"file '%s'. Contact your system administrator."
+"By default, the wireless network's name is set to your computer's name, %s, "
+"with no encryption enabled"
 msgstr ""
+"Подразумевано, име бежичне мреже је постављено на име вашег рачунара „%s“, "
+"без икаквог шифровања"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:579
-#, c-format
-msgid "Error retrieving VPN connection '%s'"
-msgstr ""
+#: ../src/other-network-dialog.c:358
+msgid "Create new wireless network"
+msgstr "Направи нову бежичну мрежу"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:582
-#, c-format
+#: ../src/other-network-dialog.c:359
 msgid ""
-"Could not find the UI files for VPN connection type '%s'. Contact your "
-"system administrator."
+"Enter the name and security settings of the wireless network you wish to "
+"create."
 msgstr ""
+"Унесите име и безбедносна подешавања бежичне мреже коју желите да начините."
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:739
-#, fuzzy, c-format
-msgid "Delete VPN connection \"%s\"?"
-msgstr "VPN везе"
+#: ../src/other-network-dialog.c:363
+msgid "Create New Wireless Network"
+msgstr "Направи нову бежичну мрежу"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:742
+#: ../src/other-network-dialog.c:368
+msgid "Existing wireless network"
+msgstr "Постојећа бежична мрежа"
+
+#: ../src/other-network-dialog.c:369
+msgid "Enter the name of the wireless network to which you wish to connect."
+msgstr "Унесите назив бежичне мреже са којом желите да се повежете."
+
+#: ../src/other-network-dialog.c:371
+msgid "Connect to Other Wireless Network"
+msgstr "Повежи се са осталим бежичним мрежама"
+
+#: ../src/passphrase-dialog.c:219
+msgid "Error connecting to wireless network"
+msgstr "Грешка при повезивања на бежичну мрежу"
+
+#: ../src/passphrase-dialog.c:220
+msgid ""
+"The requested wireless network requires security capabilities unsupported by "
+"your hardware."
+msgstr ""
+"Тражена бежична мрежа захтева безбедносне могућности које не подржава ваш "
+"хардвер."
+
+#: ../src/vpn-password-dialog.c:154 ../src/vpn-password-dialog.c:191
 #, c-format
-msgid ""
-"All information about the VPN connection \"%s\" will be lost and you may "
-"need your system administrator to provide information to create a new "
-"connection."
-msgstr ""
+msgid "Cannot start VPN connection '%s'"
+msgstr "Не могу да успоставим VPN везу „%s“"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:959
-msgid "Unable to load"
-msgstr ""
-
-#: ../gnome/vpn-properties/nm-vpn-properties.c:961
-#, fuzzy
-msgid "Cannot find some needed resources (the glade file)!"
-msgstr ""
-"Аплет Управник мреже није могао да пронађе неке од потребних ресурса (глејд "
-"датотека није пронађена)."
-
-#. Edit dialog
-#: ../gnome/vpn-properties/nm-vpn-properties.c:1071
-#, fuzzy
-msgid "Edit VPN Connection"
-msgstr "VPN везе"
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:1
-#, fuzzy
-msgid "Add a new VPN connection"
-msgstr "Нема мрежних веза"
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:2
-msgid "Choose which type of VPN connection you wish to create."
-msgstr ""
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:3
-#, fuzzy
-msgid "Connect to:"
-msgstr "П_овежи се"
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:4
-#, fuzzy
-msgid "Create VPN Connection"
-msgstr "VPN везе"
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:5
-#, fuzzy
-msgid "Create VPN Connection - 1 of 2"
-msgstr "VPN везе"
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:6
-#, fuzzy
-msgid "Create VPN Connection - 2 of 2"
-msgstr "VPN везе"
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:7
-msgid "Delete the selected VPN connection"
-msgstr ""
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:8
-msgid "E_xport"
-msgstr ""
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:9
-msgid "Edit the selected VPN connection"
-msgstr ""
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:10
-msgid "Export the VPN settings to a file"
-msgstr ""
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:11
-msgid "Export the selected VPN connection to a file"
-msgstr ""
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:12
-#, fuzzy
-msgid "Finish Creating VPN Connection"
-msgstr "VPN везе"
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:13
-#, fuzzy
-msgid "Manage Virtual Private Network Connections"
-msgstr "Бежична мрежна веза"
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:14
-msgid ""
-"This assistant will guide you through the creation of a connection to a "
-"Virtual Private Network (VPN).\n"
-"\n"
-"It will require some information, such as IP addresses and secrets.  Please "
-"see your system administrator to obtain this information."
-msgstr ""
-
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:17
-msgid "VPN Connections"
-msgstr "VPN везе"
-
-#: ../src/nm-ap-security-wep.c:52
-msgid "40-bit WEP"
-msgstr ""
-
-#: ../src/nm-ap-security-wep.c:54
-msgid "104-bit WEP"
-msgstr ""
-
-#: ../src/nm-ap-security-wpa-psk.c:50
-msgid "WPA TKIP"
-msgstr ""
-
-#: ../src/nm-ap-security-wpa-psk.c:52
-msgid "WPA CCMP"
-msgstr ""
-
-#: ../src/nm-ap-security-wpa-psk.c:54
-msgid "WPA Automatic"
-msgstr ""
-
-#: ../src/nm-ap-security-wpa-psk.c:59
-msgid "WPA2 TKIP"
-msgstr ""
-
-#: ../src/nm-ap-security-wpa-psk.c:61
-msgid "WPA2 CCMP"
-msgstr ""
-
-#: ../src/nm-ap-security-wpa-psk.c:63
-msgid "WPA2 Automatic"
-msgstr ""
-
-#: ../src/nm-ap-security.c:320
-msgid "none"
-msgstr ""
-
-#: ../src/nm-netlink-monitor.c:154
+#: ../src/vpn-password-dialog.c:157
 #, c-format
 msgid ""
-"unable to create netlink socket for monitoring wired ethernet devices - %s"
+"Could not find the authentication dialog for VPN connection type '%s'. "
+"Contact your system administrator."
 msgstr ""
-"Није могуће направити утичницу за посматрање жичаног мрежног уређаја - %s"
+"Не могу да нађем прозорче за аутентификацију за VPN везе типа „%s“. Јавите "
+"се администратору вашег система."
 
-#: ../src/nm-netlink-monitor.c:172
+#: ../src/vpn-password-dialog.c:194
 #, c-format
 msgid ""
-"unable to bind to netlink socket for monitoring wired ethernet devices - %s"
+"There was a problem launching the authentication dialog for VPN connection "
+"type '%s'. Contact your system administrator."
 msgstr ""
-"Није могуће повезати се на утичницу за посматрање жичаног мрежног уређаја - %"
-"s"
+"Дошло је до неприлике при покретању прозорчета за аутентификацију за VPN "
+"везе типа „%s“. Јавите се администратору вашег система."
 
-#: ../src/nm-netlink-monitor.c:405
-msgid "operation took too long"
-msgstr "Потрага је предуго трајала"
+#: ../src/wireless-security-option.c:157
+msgid "Open System"
+msgstr "Отворени систем"
 
-#: ../src/nm-netlink-monitor.c:502
-msgid "received data from wrong type of sender"
-msgstr "Примљени су подаци погрешног типа од пошиљаоца"
+#: ../src/wireless-security-option.c:160
+msgid "Shared Key"
+msgstr "Дељени кључ"
 
-#: ../src/nm-netlink-monitor.c:515
-msgid "received data from unexpected sender"
-msgstr "Примљени су подаци од неочекиваног пошиљаоца"
+#: ../src/wireless-security-option.c:207
+msgid "Automatic (Default)"
+msgstr "Самопрепознато (подразумевано)"
 
-#: ../src/nm-netlink-monitor.c:646
-msgid "too much data was sent over socket and some of it was lost"
-msgstr "Сувише података је послато кроз утичницу и нешто од њих је изгубљено"
+#: ../src/wireless-security-option.c:214
+msgid "AES-CCMP"
+msgstr "AES-CCMP"
 
-#: ../src/nm-netlink-monitor.c:735
-msgid "error occurred while waiting for data on socket"
-msgstr ""
+#: ../src/wireless-security-option.c:222
+msgid "TKIP"
+msgstr "TKIP"
 
-# FIXME Ад-хок
-#: ../src/applet-dbus-devices.c:898
-#, fuzzy, c-format
-msgid "You are now connected to the Ad-Hoc wireless network '%s'."
-msgstr "Повезан са ад-хок бежичном мрежом"
+#: ../src/wireless-security-option.c:230
+msgid "Dynamic WEP"
+msgstr "Динамички WEP"
 
-#: ../src/applet-dbus-devices.c:903
-#, fuzzy, c-format
-msgid "You are now connected to the wireless network '%s'."
-msgstr "Обустављање везе са бежичном мрежом „%s“..."
+#: ../src/wireless-security-option.c:252
+msgid "None (Default)"
+msgstr "Ништа (подразумевано)"
 
-#: ../src/applet-dbus-devices.c:910
-#, fuzzy
-msgid "You are now connected to the wired network."
-msgstr "Обустављање везе са жичаном мрежом..."
+#: ../src/wireless-security-option.c:257
+msgid "PAP"
+msgstr "PAP"
 
-#: ../src/applet-dbus-devices.c:916
-#, fuzzy
-msgid "Connection Established"
-msgstr "Повежи се и укључи шифровање"
+#: ../src/wireless-security-option.c:262
+msgid "MSCHAP"
+msgstr "MSCHAP"
 
-#: ../src/applet-dbus-devices.c:959
-#, fuzzy
-msgid "Disconnected"
-msgstr "Искључи VPN..."
+#: ../src/wireless-security-option.c:267
+msgid "MSCHAPV2"
+msgstr "MSCHAPV2"
 
-#: ../src/applet-dbus-devices.c:960
-msgid "The network connection has been disconnected."
-msgstr ""
+#: ../src/wireless-security-option.c:272
+msgid "GTC"
+msgstr "GTC"
+
+#: ../src/wso-none.c:53
+msgid "None"
+msgstr "Ништа"
+
+#: ../src/wso-wep-ascii.c:138
+msgid "WEP 64/128-bit ASCII"
+msgstr "WEP 64/128-bit ASCII"
+
+#: ../src/wso-wep-hex.c:135
+msgid "WEP 64/128-bit Hex"
+msgstr "WEP 64/128-bit хексадекадно"
+
+#: ../src/wso-wep-passphrase.c:135
+msgid "WEP 128-bit Passphrase"
+msgstr "WEP 128-bit лозинка"
+
+#: ../src/wso-wpa-eap.c:244
+msgid "PEAP"
+msgstr "PEAP"
+
+#: ../src/wso-wpa-eap.c:245
+msgid "TLS"
+msgstr "TLS"
+
+#: ../src/wso-wpa-eap.c:246
+msgid "TTLS"
+msgstr "TTLS"
+
+#: ../src/wso-wpa-eap.c:254
+msgid "WPA2 Enterprise"
+msgstr "WPA2 Enterprise"
+
+#: ../src/wso-wpa-eap.c:256
+msgid "WPA Enterprise"
+msgstr "WPA Enterprise"
+
+#: ../src/wso-wpa-psk.c:178
+msgid "WPA2 Personal"
+msgstr "WPA2 Personal"
+
+#: ../src/wso-wpa-psk.c:180
+msgid "WPA Personal"
+msgstr "WPA Personal"
+
+#~ msgid "VPN Connections"
+#~ msgstr "VPN везе"
+
+#~ msgid ""
+#~ "unable to create netlink socket for monitoring wired ethernet devices - %s"
+#~ msgstr ""
+#~ "Није могуће направити утичницу за посматрање жичаног мрежног уређаја - %s"
+
+#~ msgid ""
+#~ "unable to bind to netlink socket for monitoring wired ethernet devices - %"
+#~ "s"
+#~ msgstr ""
+#~ "Није могуће повезати се на утичницу за посматрање жичаног мрежног уређаја "
+#~ "- %s"
+
+#~ msgid "operation took too long"
+#~ msgstr "Потрага је предуго трајала"
+
+#~ msgid "received data from wrong type of sender"
+#~ msgstr "Примљени су подаци погрешног типа од пошиљаоца"
+
+#~ msgid "received data from unexpected sender"
+#~ msgstr "Примљени су подаци од неочекиваног пошиљаоца"
+
+#~ msgid "too much data was sent over socket and some of it was lost"
+#~ msgstr ""
+#~ "Сувише података је послато кроз утичницу и нешто од њих је изгубљено"
 
 #~ msgid ""
 #~ "The requested wireless network '%s' does not appear to be in range.  A "
