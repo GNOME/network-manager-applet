@@ -3,16 +3,7 @@ NULL=
 bin_PROGRAMS = nm-applet
 
 nm_applet_CPPFLAGS =									\
-	$(DBUS_CFLAGS)										\
-	$(GTHREAD_CFLAGS)									\
-	$(HAL_CFLAGS)										\
-	$(DBUS_GLIB_CFLAGS)									\
-	$(GLADE_CFLAGS)									\
-	$(GTK_CFLAGS)										\
-	$(GCONF_CFLAGS)									\
-	$(LIBGNOMEUI_CFLAGS)								\
-	$(GNOME_KEYRING_CFLAGS)								\
-	$(NM_CFLAGS)									\
+	$(NMA_CFLAGS)										\
 	-DICONDIR=\""$(datadir)/icons"\"						\
 	-DGLADEDIR=\""$(gladedir)"\"							\
 	-DBINDIR=\""$(bindir)"\"								\
@@ -102,18 +93,7 @@ if WITH_NOTIFY
 nm_applet_SOURCES += applet-notifications.c applet-notifications.h
 endif
 
-nm_applet_LDADD =						\
-	$(DBUS_LIBS)						\
-	$(HAL_LIBS)						\
-	$(GTHREAD_LIBS)					\
-	$(GLADE_LIBS)						\
-	$(DBUS_GLIB_LIBS)					\
-	$(GTK_LIBS)						\
-	$(GCONF_LIBS)						\
-	$(LIBGNOMEUI_LIBS)					\
-	$(GNOME_KEYRING_LIBS)				\
-	$(NM_LIBS) \
-	$(NULL)
+nm_applet_LDADD = $(NMA_LIBS)
 
 if WITH_NOTIFY
 nm_applet_LDADD += $(NOTIFY_LIBS)

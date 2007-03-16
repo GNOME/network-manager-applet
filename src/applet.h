@@ -41,9 +41,12 @@
 #include "eggtrayicon.h"
 #endif
 
-#include "nm-device.h"
-#include "wireless-network.h"
-#include "dbus-method-dispatcher.h"
+#include <nm-client.h>
+#include <nm-access-point.h>
+
+#include <nm-device.h>
+#include <wireless-network.h>
+#include <dbus-method-dispatcher.h>
 
 #ifdef ENABLE_NOTIFY
 #include <libnotify/notify.h>
@@ -81,6 +84,14 @@ typedef struct
 {
 	GObject                 parent_instance;
 
+	/* New items */
+
+	NMClient *nm_client;
+	NMAccessPoint *current_ap;
+	gulong wireless_strength_monitor;
+
+	/* End of new items */
+
 	DBusConnection *	connection;
 	DBusMethodDispatcher *	nmi_methods;
 	GConfClient *		gconf_client;
@@ -92,11 +103,9 @@ typedef struct
 
 	/* Data model elements */
 	gboolean			is_adhoc;
-	gboolean			wireless_enabled;
 	gboolean			nm_running;
 	gboolean			icons_loaded;
 
-	NMState			nm_state;
 	GSList *			device_list;
 	GSList *			dialup_list;
 	GSList *			vpn_connections;
@@ -156,6 +165,8 @@ typedef struct
 	GladeXML *		xml;
 } DriverNotifyCBData;
 
+GType nma_get_type (void);
+
 NetworkDevice *	nma_get_device_for_nm_path			(GSList *dev_list, const char *nm_dev);
 NMApplet *	nma_new							(void);
 void				nma_schedule_warning_dialog			(NMApplet *applet, const char *msg);
@@ -166,11 +177,7 @@ void				nma_show_vpn_login_banner			(NMApplet *applet, const char *vpn_name, con
 NetworkDevice *	nma_get_first_active_device			(GSList *dev_list);
 VPNConnection *	nma_get_first_active_vpn_connection	(NMApplet *applet);
 
-void				nma_enable_wireless_set_active		(NMApplet *applet);
-
-void				nma_set_state						(NMApplet *applet, NMState state);
 void				nma_set_running						(NMApplet *applet, gboolean running);
-void				nma_update_state					(NMApplet *applet);
 
 int				nm_null_safe_strcmp					(const char *s1, const char *s2);
 

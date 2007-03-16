@@ -25,23 +25,23 @@
 #include <gtk/gtk.h>
 #include "applet.h"
 
+#include <nm-device-802-3-ethernet.h>
+#include <nm-device-802-11-wireless.h>
 
-typedef struct NMWiredMenuItem NMWiredMenuItem;
-typedef struct NMWirelessMenuItem NMWirelessMenuItem;
 typedef struct NMNetworkMenuItem NMNetworkMenuItem;
 
+GtkMenuItem *wired_menu_item_new (NMDevice8023Ethernet *device,
+								  gint n_devices);
 
-NMWiredMenuItem	*wired_menu_item_new (void);
-GtkCheckMenuItem	*wired_menu_item_get_check_item (NMWiredMenuItem *item);
-void				 wired_menu_item_update (NMWiredMenuItem *item, NetworkDevice *dev, const gint n_devices);
-
-NMWirelessMenuItem	*wireless_menu_item_new (void);
-GtkMenuItem		*wireless_menu_item_get_item (NMWirelessMenuItem *item);
-void				 wireless_menu_item_update (NMWirelessMenuItem *item, NetworkDevice *dev, const gint n_devices);
+GtkMenuItem *wireless_menu_item_new (NMDevice80211Wireless *device,
+									 gint n_devices);
 
 NMNetworkMenuItem	*network_menu_item_new (GtkSizeGroup *encryption_size_group);
 GtkCheckMenuItem	*network_menu_item_get_check_item (NMNetworkMenuItem *item);
-void				 network_menu_item_update (NMApplet *applet, NMNetworkMenuItem *item, WirelessNetwork *network, const gboolean is_encrypted);
+void				 network_menu_item_update (NMApplet *applet,
+											   NMNetworkMenuItem *item,
+											   NMAccessPoint *ap,
+											   gboolean is_encrypted);
 
 /* Helper function; escapes an essid for human readable display. */
 char      		*nm_menu_network_escape_essid_for_display (const char *essid);

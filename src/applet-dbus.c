@@ -97,29 +97,19 @@ static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessag
 				{
 					/* NetworkManager started up */
 					nma_set_running (applet, TRUE);
-					nma_set_state (applet, NM_STATE_DISCONNECTED);
-
-					nma_dbus_update_nm_state (applet);
 					nma_dbus_update_devices (applet);
 					nma_dbus_update_dialup (applet);
 					nma_dbus_vpn_update_vpn_connections (applet);
-
-					/* Immediate redraw */
-					nma_update_state (applet);
 				}
 				else if (old_owner_good && !new_owner_good)
 				{
-					nma_set_state (applet, NM_STATE_DISCONNECTED);
 					nma_set_running (applet, FALSE);
 					nmi_passphrase_dialog_destroy (applet);
-
-					/* One last redraw to capture new state before sleeping */
-					nma_update_state (applet);
 				}
 			}
 		}
 	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, NM_DBUS_SIGNAL_STATE_CHANGE))
+	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "StateChange"))
 	{
 		NMState	state = NM_STATE_UNKNOWN;
 
@@ -134,7 +124,6 @@ static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessag
 			{
 				nma_dbus_device_update_one_device (applet, network_device_get_nm_path (act_dev));
 			}
-			nma_set_state (applet, state);
 		}
 	}
 	else if (    dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceAdded")
@@ -299,27 +288,6 @@ static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessag
 
 
 /*
- * nma_dbus_nm_is_running
- *
- * Ask dbus whether or not NetworkManager is running
- *
- */
-static gboolean nma_dbus_nm_is_running (DBusConnection *connection)
-{
-	DBusError		error;
-	gboolean		exists;
-
-	g_return_val_if_fail (connection != NULL, FALSE);
-
-	dbus_error_init (&error);
-	exists = dbus_bus_name_has_owner (connection, NM_DBUS_SERVICE, &error);
-	if (dbus_error_is_set (&error))
-		dbus_error_free (&error);
-	return (exists);
-}
-
-
-/*
  * nma_dbus_init
  *
  * Initialize a connection to NetworkManager if we can get one
@@ -475,15 +443,11 @@ nma_dbus_init_helper (NMApplet *applet)
 			applet->connection_timeout_id = 0;
 		}
 
-		if (nma_dbus_nm_is_running (applet->connection)) {
+		if (nm_client_manager_is_running (applet->nm_client)) {
 			nma_set_running (applet, TRUE);
-			nma_dbus_update_nm_state (applet);
 			nma_dbus_update_devices (applet);
 			nma_dbus_update_dialup (applet);
 			nma_dbus_vpn_update_vpn_connections (applet);
-
-			/* Immediate redraw */
-			nma_update_state (applet);
 		}
 	}
 }

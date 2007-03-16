@@ -59,7 +59,16 @@ AC_C_BIGENDIAN
 
 AC_CHECK_LIB(nm-util, ieee_802_11_cipher_validate)
 
-PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= 0.60)
+PKG_CHECK_MODULES(NMA,
+		[dbus-glib-1 >= 0.72
+		 glib-2.0 >= 2.10
+		 NetworkManager >= 0.7.0
+		 libnm-glib
+		 gtk+-2.0
+		 libglade-2.0
+		 gconf-2.0
+		 gnome-keyring-1
+		 libgnomeui-2.0])
 
 ##### Find out the version of DBUS we're using
 dbus_version=`pkg-config --modversion dbus-1`
@@ -92,50 +101,8 @@ else
 	DBUS_CFLAGS="$DBUS_CFLAGS -DDBUS_VERSION_MINOR=$DBUS_VERSION_MINOR"
 	DBUS_CFLAGS="$DBUS_CFLAGS -DDBUS_VERSION_MICRO=$DBUS_VERSION_MICRO"
 fi
-AC_SUBST(DBUS_CFLAGS)
-AC_SUBST(DBUS_LIBS)
-
-PKG_CHECK_MODULES(GTHREAD, gthread-2.0)
-AC_SUBST(GTHREAD_CFLAGS)
-AC_SUBST(GTHREAD_LIBS)
-
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.10)
-AC_SUBST(GLIB_CFLAGS)
-AC_SUBST(GLIB_LIBS)
-
-PKG_CHECK_MODULES(GMODULE, gmodule-2.0)
-AC_SUBST(GMODULE_CFLAGS)
-AC_SUBST(GMODULE_LIBS)
-
-PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
-AC_SUBST(GOBJECT_CFLAGS)
-AC_SUBST(GOBJECT_LIBS)
-
-PKG_CHECK_MODULES(NM, NetworkManager)
-AC_SUBST(NM_CFLAGS)
-AC_SUBST(NM_LIBS)
 
 AC_ARG_WITH(notify, AC_HELP_STRING([--with-notify], [Use libnotify]), enable_notify=$withval, enable_notify=auto)
-
-PKG_CHECK_MODULES(GTK, gtk+-2.0)
-AC_SUBST(GTK_CFLAGS)
-AC_SUBST(GTK_LIBS)
-
-PKG_CHECK_MODULES(GDK_PIXBUF, gdk-pixbuf-2.0)
-AC_SUBST(GDK_PIXBUF_CFLAGS)
-AC_SUBST(GDK_PIXBUF_LIBS)
-
-PKG_CHECK_MODULES(GLADE, libglade-2.0)
-AC_SUBST(GLADE_CFLAGS)
-AC_SUBST(GLADE_LIBS)
-
-PKG_CHECK_MODULES(GCONF, gconf-2.0)
-AC_SUBST(GCONF_CFLAGS)
-AC_SUBST(GCONF_LIBS)
-
-PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1)
-AC_SUBST(GNOME_KEYRING_CFLAGS)
-AC_SUBST(GNOME_KEYRING_LIBS)
 
 LIBNOTIFY_REQUIRED=0.3.0
 
@@ -157,10 +124,6 @@ if test x"$enable_notify" != xno; then
 		[Enable notifications with libnotify])
 	fi
 fi
-
-PKG_CHECK_MODULES(LIBGNOMEUI, libgnomeui-2.0)
-AC_SUBST(LIBGNOMEUI_CFLAGS)
-AC_SUBST(LIBGNOMEUI_LIBS)
 
 PKG_CHECK_EXISTS([libgnome-2.0 >= 2.14.0],[have_libgnome_2_14=yes],[have_libgnome_2_14=no])
 if test "$have_libgnome_2_14" = "yes"; then

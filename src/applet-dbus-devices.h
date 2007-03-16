@@ -35,8 +35,6 @@ void			nma_dbus_update_one_vpn_connection		(DBusConnection *connection, const ch
 void			nma_dbus_update_vpn_connections			(NMApplet *applet);
 gboolean		nma_dbus_update_device_strength			(NMApplet *applet);
 
-void			nma_dbus_update_nm_state				(NMApplet *applet);
-
 void			nma_dbus_update_devices					(NMApplet *applet);
 void			nma_dbus_update_dialup					(NMApplet *applet);
 void			nma_dbus_dialup_activate_connection		(NMApplet *applet, const char *name);

@@ -1,3 +1,20 @@
+2007-03-16  Tambet Ingo  <tambet@ximian.com>
+
+	First stab at converting the applet over to libnm-glib instead of using
+	the low-level DBUS API (which is removed from NM by now). Since libnm-glib
+	emits signals for all "interesting" state changes in NM, we don't have to
+	poll for any changes in the applet and can sleep and do nothing if there
+	are no events (either from X or libnm-glib).
+
+	The current status should be that the status icon should show the correct
+	icon which reflects the NM state, right-click menu should work 100%, and
+	the left click menu (devices) should show the correct information. Device
+	activation should work only for wired devices. VPN doesn't work at all.
+	And there's a bunch of warnings on the console.
+
+	* configure.ac: Put all PKG-CONFIG checks in one check so that it can
+	remove duplicate CFLAGS, LDFLAGS and libraries to link.
+
 2007-02-19  Dan Williams  <dcbw@redhat.com>
 
 	Patch from Andreas Hanke <andreas.hanke@gmx-topmail.de>

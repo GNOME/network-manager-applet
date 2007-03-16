@@ -21,14 +21,29 @@
  */
 
 
-#ifndef NM_DEVICE_H
-#define NM_DEVICE_H
+#ifndef NM_DEVICE_DEPRECATED_H
+#define NM_DEVICE_DEPRECATED_H
 
 #include "NetworkManager.h"
 #include "wireless-network.h"
 
 typedef struct NetworkDevice NetworkDevice;
 typedef void (*WirelessNetworkForeach) (NetworkDevice *dev, WirelessNetwork *net, gpointer user_data);
+
+/* FIXME: Remove */
+typedef enum NMActStage
+{
+	NM_ACT_STAGE_UNKNOWN = 0,
+	NM_ACT_STAGE_DEVICE_PREPARE,
+	NM_ACT_STAGE_DEVICE_CONFIG,
+	NM_ACT_STAGE_NEED_USER_KEY,
+	NM_ACT_STAGE_IP_CONFIG_START,
+	NM_ACT_STAGE_IP_CONFIG_GET,
+	NM_ACT_STAGE_IP_CONFIG_COMMIT,
+	NM_ACT_STAGE_ACTIVATED,
+	NM_ACT_STAGE_FAILED,
+	NM_ACT_STAGE_CANCELLED
+} NMActStage;
 
 
 NetworkDevice *		network_device_new						(const char *iface, NMDeviceType type, const char *nm_path);

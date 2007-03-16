@@ -40,68 +40,14 @@
 #include "vpn-connection.h"
 #include "nm-utils.h"
 
+/* FIXME: Remove */
+#define NM_DBUS_NO_DEVICES_ERROR		"org.freedesktop.NetworkManager.NoDevices"
+#define NM_DBUS_NO_DIALUP_ERROR		"org.freedesktop.NetworkManager.NoDialup"
+#define NM_DBUS_NO_NETWORKS_ERROR		"org.freedesktop.NetworkManager.NoNetworks"
+#define NM_DBUS_NO_ACTIVE_DEVICE_ERROR	"org.freedesktop.NetworkManager.NoActiveDevice"
+#define NM_DBUS_NO_ACTIVE_NET_ERROR	"org.freedesktop.NetworkManager.NoActiveNetwork"
 
-/*
- * nma_dbus_nm_state_cb
- *
- * Callback from nma_dbus_update_nm_state
- *
- */
-static void nma_dbus_nm_state_cb (DBusPendingCall *pcall, void *user_data)
-{
-	DBusMessage *		reply;
-	NMApplet *	applet = (NMApplet *) user_data;
-	NMState			nm_state;
-
-	g_return_if_fail (pcall != NULL);
-	g_return_if_fail (applet != NULL);
-
-	nm_dbus_send_with_callback_replied (pcall, __func__);
-
-	if (!(reply = dbus_pending_call_steal_reply (pcall)))
-		goto out;
-
-	if (message_is_error (reply))
-	{
-		DBusError err;
-
-		dbus_error_init (&err);
-		dbus_set_error_from_message (&err, reply);
-		nm_warning ("dbus returned an error.\n  (%s) %s\n", err.name, err.message);
-		dbus_error_free (&err);
-		dbus_message_unref (reply);
-		goto out;
-	}
-
-	if (dbus_message_get_args (reply, NULL, DBUS_TYPE_UINT32, &nm_state, DBUS_TYPE_INVALID))
-		nma_set_state (applet, nm_state);
-
-	dbus_message_unref (reply);
-
-out:
-	dbus_pending_call_unref (pcall);
-}
-
-
-/*
- * nma_dbus_update_nm_state
- *
- * Update internal applet state from NetworkManager state
- *
- */
-void nma_dbus_update_nm_state (NMApplet *applet)
-{
-	DBusMessage *		message;
-
-	g_return_if_fail (applet != NULL);
-
-	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, NM_DBUS_PATH, NM_DBUS_INTERFACE, "state")))
-	{
-		nm_dbus_send_with_callback (applet->connection, message,
-				nma_dbus_nm_state_cb, applet, NULL, __func__);
-		dbus_message_unref (message);
-	}
-}
+#define NMI_DBUS_USER_KEY_CANCELED_ERROR	"org.freedesktop.NetworkManagerInfo.CanceledError"
 
 
 typedef struct DriverCBData
@@ -178,7 +124,7 @@ static void nma_dbus_device_get_driver (NetworkDevice *dev, NMApplet *applet)
 	g_return_if_fail (dev != NULL);
 
 	op = network_device_get_nm_path (dev);
-	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, op, NM_DBUS_INTERFACE_DEVICES, "getDriver")))
+	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, op, NM_DBUS_INTERFACE_DEVICE, "getDriver")))
 	{
 		DriverCBData *	data = g_malloc0 (sizeof (DriverCBData));
 
@@ -192,72 +138,6 @@ static void nma_dbus_device_get_driver (NetworkDevice *dev, NMApplet *applet)
 			network_device_unref (dev);
 			g_free (data);
 		}
-		dbus_message_unref (message);
-	}
-}
-
-
-/*
- * nma_dbus_update_wireless_enabled_cb
- *
- * Callback from nma_dbus_update_wireless_enabled
- *
- */
-static void nma_dbus_update_wireless_enabled_cb (DBusPendingCall *pcall, void *user_data)
-{
-	DBusMessage *		reply;
-	NMApplet *	applet = (NMApplet *) user_data;
-	gboolean			wireless_enabled;
-
-	g_return_if_fail (pcall != NULL);
-	g_return_if_fail (applet != NULL);
-
-	nm_dbus_send_with_callback_replied (pcall, __func__);
-
-	if (!(reply = dbus_pending_call_steal_reply (pcall)))
-		goto out;
-
-	if (message_is_error (reply))
-	{
-		DBusError err;
-
-		dbus_error_init (&err);
-		dbus_set_error_from_message (&err, reply);
-		nm_warning ("dbus returned an error.\n  (%s) %s\n", err.name, err.message);
-		dbus_error_free (&err);
-		dbus_message_unref (reply);
-		goto out;
-	}
-
-	if (dbus_message_get_args (reply, NULL, DBUS_TYPE_BOOLEAN, &wireless_enabled, DBUS_TYPE_INVALID))
-	{
-		applet->wireless_enabled = wireless_enabled;
-		nma_enable_wireless_set_active (applet);
-	}
-
-	dbus_message_unref (reply);
-
-out:
-	dbus_pending_call_unref (pcall);
-}
-
-
-/*
- * nma_dbus_update_wireless_enabled
- *
- * Get the wireless_enabled value from NetworkManager
- *
- */
-static void nma_dbus_update_wireless_enabled (NMApplet *applet)
-{
-	DBusMessage *		message;
-
-	g_return_if_fail (applet != NULL);
-
-	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, NM_DBUS_PATH, NM_DBUS_INTERFACE, "getWirelessEnabled")))
-	{
-		nm_dbus_send_with_callback (applet->connection, message,
-				nma_dbus_update_wireless_enabled_cb, applet, NULL, __func__);
 		dbus_message_unref (message);
 	}
 }
@@ -641,7 +521,7 @@ void nma_dbus_device_update_one_network (NMApplet *applet, const char *dev_path,
 	g_return_if_fail (dev_path != NULL);
 	g_return_if_fail (net_path != NULL);
 
-	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, net_path, NM_DBUS_INTERFACE_DEVICES, "getProperties")))
+	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, net_path, NM_DBUS_INTERFACE_DEVICE, "getProperties")))
 	{
 		NetPropCBData * cb_data = g_malloc0 (sizeof (NetPropCBData));
 
@@ -871,7 +751,7 @@ void nma_dbus_device_update_one_device (NMApplet *applet, const char *dev_path)
 	g_return_if_fail (applet != NULL);
 	g_return_if_fail (dev_path != NULL);
 
-	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, dev_path, NM_DBUS_INTERFACE_DEVICES, "getProperties")))
+	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, dev_path, NM_DBUS_INTERFACE_DEVICE, "getProperties")))
 	{
 		nm_dbus_send_with_callback (applet->connection, message,
 				nma_dbus_device_properties_cb, applet, NULL, __func__);
@@ -967,7 +847,7 @@ void nma_dbus_device_activated (NMApplet *applet, const char *dev_path, const ch
 	if (essid)
 		cb_data->essid = g_strdup (essid);
 
-	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, dev_path, NM_DBUS_INTERFACE_DEVICES, "getProperties")))
+	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, dev_path, NM_DBUS_INTERFACE_DEVICE, "getProperties")))
 	{
 		nm_dbus_send_with_callback (applet->connection, message,
 				nma_dbus_device_activated_cb, cb_data, NULL, __func__);
@@ -1007,7 +887,7 @@ void nma_dbus_device_deactivated (NMApplet *applet, const char *dev_path)
 	g_return_if_fail (applet != NULL);
 	g_return_if_fail (dev_path != NULL);
 
-	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, dev_path, NM_DBUS_INTERFACE_DEVICES, "getProperties")))
+	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, dev_path, NM_DBUS_INTERFACE_DEVICE, "getProperties")))
 	{
 		nm_dbus_send_with_callback (applet->connection, message,
 				nma_dbus_device_deactivated_cb, applet, NULL, __func__);
@@ -1090,7 +970,6 @@ void nma_dbus_update_devices (NMApplet *applet)
 				nma_dbus_update_devices_cb, applet, NULL, __func__);
 		dbus_message_unref (message);
 	}
-	nma_dbus_update_wireless_enabled (applet);
 }
 
 
@@ -1364,55 +1243,6 @@ void nma_dbus_create_network (DBusConnection *connection, NetworkDevice *dev, co
 	}
 	else
 		nm_warning ("Couldn't allocate the dbus message\n");
-}
-
-
-/*
- * nma_dbus_enable_wireless
- *
- * Tell NetworkManager to enabled or disable all wireless devices.
- *
- */
-void nma_dbus_enable_wireless (NMApplet *applet, gboolean enabled)
-{
-	DBusMessage	*message;
-
-	g_return_if_fail (applet != NULL);
-	g_return_if_fail (applet->connection != NULL);
-
-	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, NM_DBUS_PATH, NM_DBUS_INTERFACE, "setWirelessEnabled")))
-	{
-		dbus_message_append_args (message, DBUS_TYPE_BOOLEAN, &enabled, DBUS_TYPE_INVALID);
-		dbus_connection_send (applet->connection, message, NULL);
-		nma_dbus_update_wireless_enabled (applet);
-		dbus_message_unref (message);
-	}
-}
-
-/*
- * nma_dbus_enable_networking
- *
- * Tell NetworkManager to enabled or disable all wireless devices.
- *
- */
-void nma_dbus_enable_networking (NMApplet *applet, gboolean enabled)
-{
-	DBusMessage	*message;
-	const char	*method;
-
-	g_return_if_fail (applet != NULL);
-	g_return_if_fail (applet->connection != NULL);
-
-	if (enabled)
-		method = "wake";
-	else
-		method = "sleep";
-
-	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, NM_DBUS_PATH, NM_DBUS_INTERFACE, method)))
-	{
-		dbus_connection_send (applet->connection, message, NULL);
-		dbus_message_unref (message);
-	}
 }
 
 
