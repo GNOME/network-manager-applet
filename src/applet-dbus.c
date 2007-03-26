@@ -33,15 +33,30 @@
 #include <dbus/dbus-glib-lowlevel.h>
 #include "applet.h"
 #include "applet-dbus.h"
-#include "applet-dbus-devices.h"
-#include "applet-dbus-vpn.h"
 #include "applet-dbus-info.h"
-#include "vpn-connection.h"
 #include "passphrase-dialog.h"
 #include "nm-utils.h"
 
 #define	DBUS_NO_SERVICE_ERROR			"org.freedesktop.DBus.Error.ServiceDoesNotExist"
 
+void
+nma_dbus_vpn_set_last_attempt_status (NMApplet *applet, const char *vpn_name, gboolean last_attempt_success)
+{
+	char *gconf_key;
+	char *escaped_name;
+	NMVPNConnection *vpn;
+
+	vpn = nm_client_get_vpn_connection_by_name (applet->nm_client, vpn_name);
+	if (vpn) {
+		escaped_name = gconf_escape_key (vpn_name, strlen (vpn_name));
+
+		gconf_key = g_strdup_printf ("%s/%s/last_attempt_success", GCONF_PATH_VPN_CONNECTIONS, escaped_name);
+		gconf_client_set_bool (applet->gconf_client, gconf_key, last_attempt_success, NULL);
+
+		g_free (gconf_key);
+		g_free (escaped_name);
+	}
+}
 
 /*
  * nma_dbus_filter
@@ -97,9 +112,6 @@ static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessag
 				{
 					/* NetworkManager started up */
 					nma_set_running (applet, TRUE);
-					nma_dbus_update_devices (applet);
-					nma_dbus_update_dialup (applet);
-					nma_dbus_vpn_update_vpn_connections (applet);
 				}
 				else if (old_owner_good && !new_owner_good)
 				{
@@ -108,116 +120,6 @@ static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessag
 				}
 			}
 		}
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "StateChange"))
-	{
-		NMState	state = NM_STATE_UNKNOWN;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_UINT32, &state, DBUS_TYPE_INVALID))
-		{
-			NetworkDevice *act_dev = nma_get_first_active_device (applet->device_list);
-
-			/* If we've switched to connecting, update the active device to ensure that we have
-			 * valid wireless network information for it.
-			 */
-			if (state == NM_STATE_CONNECTING && act_dev && network_device_is_wireless (act_dev))
-			{
-				nma_dbus_device_update_one_device (applet, network_device_get_nm_path (act_dev));
-			}
-		}
-	}
-	else if (    dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceAdded")
-			|| dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceActivating")
-			|| dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceCarrierOn")
-			|| dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceCarrierOff"))
-	{
-		char *path = NULL;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
-			nma_dbus_device_update_one_device (applet, path);
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceNowActive"))
-	{
-		char *path = NULL;
-		char *essid = NULL;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_STRING, &essid, DBUS_TYPE_INVALID))
-			nma_dbus_device_activated (applet, path, essid);
-		else if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
-			nma_dbus_device_activated (applet, path, NULL);
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceNoLongerActive"))
-	{
-		char *path = NULL;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
-			nma_dbus_device_deactivated (applet, path);
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceRemoved"))
-	{
-		char *path = NULL;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &path, DBUS_TYPE_INVALID))
-			nma_dbus_device_remove_one_device (applet, path);
-	}
-	else if (    dbus_message_is_signal (message, NM_DBUS_INTERFACE_VPN, "VPNConnectionAdded")
-			|| dbus_message_is_signal (message, NM_DBUS_INTERFACE_VPN, "VPNConnectionUpdate"))	/* VPN connection properties changed */
-	{
-		char *name = NULL;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID))
-			nma_dbus_vpn_update_one_vpn_connection (applet, name);
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE_VPN, "VPNConnectionStateChange"))	/* Active VPN connection changed */
-	{
-		char *		name = NULL;
-		NMVPNActStage	vpn_stage;
-		dbus_uint32_t	vpn_stage_int;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &name, DBUS_TYPE_UINT32, &vpn_stage_int, DBUS_TYPE_INVALID))
-		{
-			vpn_stage = (NMVPNActStage) vpn_stage_int;
-			nma_dbus_vpn_update_vpn_connection_stage (applet, name, vpn_stage);
-		}
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE_VPN, "VPNConnectionRemoved"))
-	{
-		char *name = NULL;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &name, DBUS_TYPE_INVALID))
-			nma_dbus_vpn_remove_one_vpn_connection (applet, name);
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "WirelessNetworkAppeared"))
-	{
-		char *dev_path = NULL;
-		char *net_path = NULL;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_OBJECT_PATH, &net_path, DBUS_TYPE_INVALID))
-			nma_dbus_device_update_one_network (applet, dev_path, net_path, NULL);
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "WirelessNetworkDisappeared"))
-	{
-		char *dev_path = NULL;
-		char *net_path = NULL;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_OBJECT_PATH, &net_path, DBUS_TYPE_INVALID))
-			nma_dbus_device_remove_one_network (applet, dev_path, net_path);
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "WirelessNetworkStrengthChanged"))
-	{
-		char *	dev_path = NULL;
-		char *	net_path = NULL;
-		int		strength = -1;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_OBJECT_PATH, &net_path, DBUS_TYPE_INT32, &strength, DBUS_TYPE_INVALID))
-			nma_dbus_update_strength (applet, dev_path, net_path, strength);
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceStrengthChanged"))
-	{
-		char *dev_path = NULL;
-		int strength = -1;
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_INT32, &strength, DBUS_TYPE_INVALID))
-			nma_dbus_update_strength (applet, dev_path, NULL, strength);
 	}
 	else if (    dbus_message_is_signal (message, NM_DBUS_INTERFACE_VPN, NM_DBUS_VPN_SIGNAL_LOGIN_FAILED)
 			|| dbus_message_is_signal (message, NM_DBUS_INTERFACE_VPN, NM_DBUS_VPN_SIGNAL_LAUNCH_FAILED)
@@ -248,36 +150,6 @@ static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessag
 
 			/* set the 'last_attempt_success' key in gconf so we DON'T prompt for password next time */
 			nma_dbus_vpn_set_last_attempt_status (applet, vpn_name, TRUE);
-		}
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceActivationFailed"))
-	{
-		char		*dev = NULL;
-		char		*net = NULL;
-
-		if (!dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &dev, DBUS_TYPE_STRING, &net, DBUS_TYPE_INVALID))
-			dbus_message_get_args (message, NULL, DBUS_TYPE_STRING, &dev, DBUS_TYPE_INVALID);
-
-		if (dev && net)
-		{
-			char *string = g_strdup_printf (_("Connection to the wireless network '%s' failed."), net);
-			nma_schedule_warning_dialog (applet, string);
-			g_free (string);
-		}
-		else if (dev)
-			nma_schedule_warning_dialog (applet, _("Connection to the wired network failed."));
-	}
-	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "DeviceActivationStage"))
-	{
-		char *		dev_path = NULL;
-		NMActStage	stage;
-
-		if (dbus_message_get_args (message, NULL, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_UINT32, &stage, DBUS_TYPE_INVALID))
-		{
-			NetworkDevice *dev;
-
-			if ((dev = nma_get_device_for_nm_path (applet->device_list, dev_path)))
-				network_device_set_act_stage (dev, stage);
 		}
 	}
 	else
@@ -445,9 +317,6 @@ nma_dbus_init_helper (NMApplet *applet)
 
 		if (nm_client_manager_is_running (applet->nm_client)) {
 			nma_set_running (applet, TRUE);
-			nma_dbus_update_devices (applet);
-			nma_dbus_update_dialup (applet);
-			nma_dbus_vpn_update_vpn_connections (applet);
 		}
 	}
 }

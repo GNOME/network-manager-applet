@@ -73,7 +73,7 @@ typedef struct NMGetNetworkKeyCBData
 {
 	NMApplet *applet;
 	DBusMessage *message;
-	NetworkDevice *dev;
+	NMDevice80211Wireless *dev;
 	char *net_path;
 	char *essid;
 } NMGetNetworkKeyCBData;
@@ -83,7 +83,7 @@ static void free_network_key_cb_data (NMGetNetworkKeyCBData *cb_data)
 	if (cb_data)
 	{
 		dbus_message_unref (cb_data->message);
-		network_device_unref (cb_data->dev);
+		g_object_unref (cb_data->dev);
 		g_free (cb_data->net_path);
 		g_free (cb_data->essid);
 		memset (cb_data, 0, sizeof (NMGetNetworkKeyCBData));
@@ -99,7 +99,7 @@ static void nmi_dbus_get_network_key_callback (GnomeKeyringResult result,
 	NMGetNetworkKeyCBData *	cb_data = (NMGetNetworkKeyCBData*) data;
 	NMApplet *			applet = cb_data->applet;
 	DBusMessage *			message = cb_data->message;
-	NetworkDevice *		dev = cb_data->dev;
+	NMDevice80211Wireless *	dev = cb_data->dev;
 	char *				net_path = cb_data->net_path;
 	char *				essid = cb_data->essid;
 
@@ -119,11 +119,12 @@ static void nmi_dbus_get_network_key_callback (GnomeKeyringResult result,
 	}
 	else
 	{
-		WirelessNetwork *net;
+		NMAccessPoint *ap;
 
 		nmi_passphrase_dialog_destroy (applet);
-		if ((net = network_device_get_wireless_network_by_nm_path (dev, net_path)))
-			applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, dev, net, message);
+		ap = nm_device_802_11_wireless_get_network_by_path (dev, net_path);
+		if (ap)
+			applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, dev, ap, message);
 	}
 
 	free_network_key_cb_data (cb_data);
@@ -147,8 +148,9 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	char *			essid = NULL;
 	int				attempt = 0;
 	gboolean			new_key = FALSE;
-	NetworkDevice *	dev = NULL;
-	WirelessNetwork *	net = NULL;
+	NMDevice *device;
+	NMDevice80211Wireless *wireless_device;
+	NMAccessPoint *ap;
 	char *			temp = NULL;
 	char *			escaped_network;
 
@@ -164,8 +166,11 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	                           DBUS_TYPE_INVALID))
 		return NULL;
 
-	if (!(dev = nma_get_device_for_nm_path (applet->device_list, dev_path)))
+	device = nm_client_get_device_by_path (applet->nm_client, dev_path);
+	if (!device || NM_IS_DEVICE_802_11_WIRELESS (device))
 		return NULL;
+
+	wireless_device = NM_DEVICE_802_11_WIRELESS (device);
 
 	/* If we don't have a record of the network yet in GConf, ask for
 	 * a new key no matter what NM says.
@@ -189,8 +194,7 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 		cb_data->essid = g_strdup (essid);
 		cb_data->message = message;
 		dbus_message_ref (message);
-		cb_data->dev = dev;
-		network_device_ref (dev);
+		cb_data->dev = g_object_ref (wireless_device);
 		cb_data->net_path = g_strdup (net_path);
 
 		/* If the menu happens to be showing when we pop up the
@@ -215,10 +219,9 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 		/* We only ask the user for a new key when we know about the network from NM,
 		 * since throwing up a dialog with a random essid from somewhere is a security issue.
 		 */
-		if (new_key && (net = network_device_get_wireless_network_by_nm_path (dev, net_path)))
-		{
+		if (new_key && (ap = nm_device_802_11_wireless_get_network_by_path (wireless_device, net_path))) {
 			nmi_passphrase_dialog_destroy (applet);
-			applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, dev, net, message);
+			applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, wireless_device, ap, message);
 		}
 	}
 

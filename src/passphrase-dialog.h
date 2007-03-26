@@ -23,14 +23,13 @@
 #define PASSPHRASE_DIALOG_H
 
 #include "applet.h"
-#include "nm-device.h"
-#include "wireless-network.h"
+#include <nm-device-802-11-wireless.h>
 
 GtkWidget *	nmi_passphrase_dialog_new (NMApplet *applet,
-                                          guint32 uid,
-                                          NetworkDevice *dev,
-                                          WirelessNetwork *net,
-                                          DBusMessage *message);
+									   guint32 uid,
+									   NMDevice80211Wireless *dev,
+									   NMAccessPoint *ap,
+									   DBusMessage *message);
 
 void			nmi_passphrase_dialog_destroy	(NMApplet *applet);
 

@@ -47,12 +47,12 @@ static GladeXML *get_dialog_xml (GtkWidget *dialog)
 static void update_button_cb (GtkWidget *unused, GtkDialog *dialog)
 {
 	gboolean		enable = FALSE;
-	const char *	ssid = NULL;
+	char *ssid;
 	GtkWidget *	button;
 	GladeXML *	xml;
 	WirelessSecurityManager * wsm;
 	GtkComboBox *	security_combo;
-	WirelessNetwork *net;
+	NMAccessPoint *ap;
 
 	g_return_if_fail (dialog != NULL);
 	xml = get_dialog_xml (GTK_WIDGET (dialog));
@@ -60,12 +60,13 @@ static void update_button_cb (GtkWidget *unused, GtkDialog *dialog)
 	wsm = (WirelessSecurityManager *) g_object_get_data (G_OBJECT (dialog), "wireless-security-manager");
 	g_return_if_fail (wsm != NULL);
 
-	if ((net = g_object_get_data (G_OBJECT (dialog), "network")) &&
-	    (ssid = wireless_network_get_essid (net)))
+	if ((ap = g_object_get_data (G_OBJECT (dialog), "access-point")) &&
+	    (ssid = nm_access_point_get_essid (ap)))
 	{
 		/* Validate the wireless security choices */
 		security_combo = GTK_COMBO_BOX (glade_xml_get_widget (xml, "security_combo"));
 		enable = wsm_validate_active (wsm, security_combo, ssid);
+		g_free (ssid);
 	}
 
 	button = glade_xml_get_widget (xml, "login_button");
@@ -134,8 +135,9 @@ nmi_passphrase_dialog_response_received (GtkWidget *dialog,
 	DBusMessage *		message;
 	WirelessSecurityManager *wsm;
 	WirelessSecurityOption *	opt;
-	WirelessNetwork *	net;
+	NMAccessPoint *ap;
 	NMGConfWSO *		gconf_wso;
+	char *essid;
 
 	message = (DBusMessage *) g_object_get_data (G_OBJECT (dialog), "dbus-message");
 	g_assert (message);
@@ -161,9 +163,12 @@ nmi_passphrase_dialog_response_received (GtkWidget *dialog,
 	security_combo = GTK_COMBO_BOX (glade_xml_get_widget (xml, "security_combo"));
 	opt = wsm_get_option_for_active (wsm, security_combo);
 
-	net = (WirelessNetwork *) g_object_get_data (G_OBJECT (dialog), "network");
-	g_assert (net);
-	gconf_wso = nm_gconf_wso_new_from_wso (opt, wireless_network_get_essid (net));
+	ap = NM_ACCESS_POINT (g_object_get_data (G_OBJECT (dialog), "access-point"));
+	g_assert (ap);
+
+	essid = nm_access_point_get_essid (ap);
+	gconf_wso = nm_gconf_wso_new_from_wso (opt, essid);
+	g_free (essid);
 
 	/* Return new security information to NM */
 	nmi_dbus_return_user_key (applet->connection, message, gconf_wso);
@@ -183,8 +188,8 @@ out:
 GtkWidget *
 nmi_passphrase_dialog_new (NMApplet *applet,
                            guint32 uid,
-                           NetworkDevice *dev,
-                           WirelessNetwork *net,
+                           NMDevice80211Wireless *dev,
+                           NMAccessPoint *ap,
                            DBusMessage *message)
 {
 	GtkWidget *				dialog;
@@ -195,17 +200,18 @@ nmi_passphrase_dialog_new (NMApplet *applet,
 	GtkComboBox *				security_combo;
 	const char *				orig_label_text;
 	char *					new_label_text;
+	char *essid;
 	guint32					caps;
 
-	g_return_val_if_fail (applet != NULL, NULL);
-	g_return_val_if_fail (dev != NULL, NULL);
-	g_return_val_if_fail (net != NULL, NULL);
+	g_return_val_if_fail (NM_IS_APPLET (applet), NULL);
+	g_return_val_if_fail (NM_IS_DEVICE_802_11_WIRELESS (dev), NULL);
+	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), NULL);
 	g_return_val_if_fail (message != NULL, NULL);
 
 	wsm = wsm_new (applet->glade_file);
 
-	caps = network_device_get_type_capabilities (dev);
-	caps &= wireless_network_get_capabilities (net);
+	caps = nm_device_802_11_wireless_get_capabilities (dev);
+	caps &= nm_access_point_get_capabilities (ap);
 	if (!wsm_set_capabilities (wsm, caps))
 	{
 		GtkWidget *error_dialog;
@@ -233,8 +239,8 @@ nmi_passphrase_dialog_new (NMApplet *applet,
 	dialog = glade_xml_get_widget (xml, "passphrase_dialog");
 	gtk_widget_hide (dialog);
 
-	g_object_set_data (G_OBJECT (dialog), "wireless-security-manager", (gpointer) wsm);
-	g_object_set_data (G_OBJECT (dialog), "glade-xml", xml);
+	g_object_set_data_full (G_OBJECT (dialog), "wireless-security-manager", (gpointer) wsm, (GDestroyNotify) wsm_free);
+	g_object_set_data_full (G_OBJECT (dialog), "glade-xml", xml, (GDestroyNotify) g_object_unref);
 	g_object_set_data (G_OBJECT (dialog), "applet", applet);
 	g_object_set_data (G_OBJECT (dialog), "uid", GINT_TO_POINTER (uid));
 
@@ -244,16 +250,18 @@ nmi_passphrase_dialog_new (NMApplet *applet,
 	/* Insert the Network name into the dialog text */
 	label = glade_xml_get_widget (xml, "label1");
 	orig_label_text = gtk_label_get_label (GTK_LABEL (label));
-	new_label_text = g_strdup_printf (orig_label_text, wireless_network_get_essid (net));
+	essid = nm_access_point_get_essid (ap);
+	new_label_text = g_strdup_printf (orig_label_text, essid);
+	g_free (essid);
 	gtk_label_set_label (GTK_LABEL (label), new_label_text);
 	g_free (new_label_text);
 
-	network_device_ref (dev);
-	g_object_set_data (G_OBJECT (dialog), "device", dev);
-	wireless_network_ref (net);
-	g_object_set_data (G_OBJECT (dialog), "network", net);
+	g_object_set_data_full (G_OBJECT (dialog), "access-point",
+							g_object_ref (ap),
+							(GDestroyNotify) g_object_unref);
 	dbus_message_ref (message);
-	g_object_set_data (G_OBJECT (dialog), "dbus-message", message);
+	g_object_set_data_full (G_OBJECT (dialog), "dbus-message", message,
+							(GDestroyNotify) dbus_message_unref);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (ok_button), FALSE);
 
@@ -283,47 +291,14 @@ nmi_passphrase_dialog_new (NMApplet *applet,
  */
 void nmi_passphrase_dialog_destroy (NMApplet *applet)
 {
-	char *		data;
-	GtkWidget *	dialog;
+	/* FIXME: Get rid of this funciton, gtk_widget_destroy (dialog) is enough */
 
 	g_return_if_fail (applet != NULL);
 
 	if (!applet->passphrase_dialog)
 		return;
 
-	dialog = applet->passphrase_dialog;
-	gtk_widget_hide (dialog);
-
-	if ((data = g_object_get_data (G_OBJECT (dialog), "device")))
-	{
-		network_device_unref ((NetworkDevice *) data);
-		g_object_set_data (G_OBJECT (dialog), "device", NULL);
-	}
-
-	if ((data = g_object_get_data (G_OBJECT (dialog), "network")))
-	{
-		wireless_network_unref ((WirelessNetwork *) data);
-		g_object_set_data (G_OBJECT (dialog), "network", NULL);
-	}
-
-	if ((data = g_object_get_data (G_OBJECT (dialog), "dbus-message")))
-	{
-		dbus_message_unref ((DBusMessage *) data);
-		g_object_set_data (G_OBJECT (dialog), "dbus-message", NULL);
-	}
-
-	if ((data = g_object_get_data (G_OBJECT (dialog), "wireless-security-manager")))
-	{
-		wsm_free ((WirelessSecurityManager *) data);
-		g_object_set_data (G_OBJECT (dialog), "wireless-security-manager", NULL);
-	}
-
-	if ((data = g_object_get_data (G_OBJECT (dialog), "glade-xml")))
-	{
-		g_object_unref (G_OBJECT (data));
-		g_object_set_data (G_OBJECT (dialog), "glade-xml", NULL);
-	}
-
-	gtk_widget_destroy (dialog);
+	gtk_widget_hide (applet->passphrase_dialog);
+	gtk_widget_destroy (applet->passphrase_dialog);
 	applet->passphrase_dialog = NULL;
 }

@@ -45,7 +45,6 @@
 #include <nm-access-point.h>
 
 #include <nm-device.h>
-#include <wireless-network.h>
 #include <dbus-method-dispatcher.h>
 
 #ifdef ENABLE_NOTIFY
@@ -98,17 +97,12 @@ typedef struct
 	guint		 	gconf_prefs_notify_id;
 	guint		 	gconf_vpn_notify_id;
 	char	*			glade_file;
-	guint			redraw_timeout_id;
 	guint			connection_timeout_id;
 
 	/* Data model elements */
 	gboolean			is_adhoc;
 	gboolean			nm_running;
 	gboolean			icons_loaded;
-
-	GSList *			device_list;
-	GSList *			dialup_list;
-	GSList *			vpn_connections;
 
 	GtkIconTheme *          icon_theme;
 	GdkPixbuf *		no_connection_icon;
@@ -125,6 +119,9 @@ typedef struct
 #define NUM_VPN_CONNECTING_FRAMES 14
 	GdkPixbuf *		vpn_connecting_icons[NUM_VPN_CONNECTING_FRAMES];
 	GdkPixbuf *		vpn_lock_icon;
+
+	/* Active status icon pixbufs */
+	GSList *active_pixbufs;
 
 	/* Animation stuff */
 	int				animation_step;
@@ -143,7 +140,6 @@ typedef struct
 
 	GtkWidget *		top_menu_item;
 	GtkWidget *		dropdown_menu;
-	GtkWidget *		vpn_menu;
 	GtkSizeGroup *		encryption_size_group;
 
 	GtkWidget *		context_menu;
@@ -158,24 +154,12 @@ typedef struct
 #endif
 } NMApplet;
 
-typedef struct
-{
-	NMApplet *	applet;
-	NetworkDevice *	dev;
-	GladeXML *		xml;
-} DriverNotifyCBData;
-
 GType nma_get_type (void);
 
-NetworkDevice *	nma_get_device_for_nm_path			(GSList *dev_list, const char *nm_dev);
 NMApplet *	nma_new							(void);
 void				nma_schedule_warning_dialog			(NMApplet *applet, const char *msg);
-gboolean			nma_driver_notify					(gpointer user_data);
 void				nma_show_vpn_failure_alert			(NMApplet *applet, const char *member, const char *vpn_name, const char *error_msg);
 void				nma_show_vpn_login_banner			(NMApplet *applet, const char *vpn_name, const char *banner);
-
-NetworkDevice *	nma_get_first_active_device			(GSList *dev_list);
-VPNConnection *	nma_get_first_active_vpn_connection	(NMApplet *applet);
 
 void				nma_set_running						(NMApplet *applet, gboolean running);
 

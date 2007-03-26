@@ -34,10 +34,10 @@
 #include <unistd.h>
 #endif
 
+#include <nm-device-802-11-wireless.h>
 #include "NetworkManager.h"
 #include "applet.h"
 #include "applet-dbus.h"
-#include "applet-dbus-devices.h"
 #include "other-network-dialog.h"
 #include "wireless-security-manager.h"
 #include "wireless-security-option.h"
@@ -98,7 +98,7 @@ static void nma_ond_device_combo_changed (GtkWidget *dev_combo, gpointer user_da
 	GtkWidget *	vbox;
 	GtkWidget *	security_combo;
 	GList *		elt;
-	NetworkDevice *dev;
+	NMDevice80211Wireless *dev;
 	char *		str;
 	GtkTreeModel *	model;
 	GtkTreeIter	iter;
@@ -127,7 +127,7 @@ static void nma_ond_device_combo_changed (GtkWidget *dev_combo, gpointer user_da
 	gtk_tree_model_get (model, &iter, NAME_COLUMN, &str, DEV_COLUMN, &dev, -1);
 	g_assert (dev);
 
-	wsm_set_capabilities (wsm, network_device_get_type_capabilities (dev));
+	wsm_set_capabilities (wsm, nm_device_802_11_wireless_get_capabilities (dev));
 	security_combo = glade_xml_get_widget (xml, "security_combo");
 	wsm_update_combo (wsm, GTK_COMBO_BOX (security_combo));
 
@@ -182,38 +182,33 @@ static void nma_ond_security_combo_changed (GtkWidget *combo, gpointer user_data
 	update_button_cb (NULL, dialog);
 }
 
-static GtkTreeModel * create_wireless_adapter_model (NMApplet *applet)
+static GtkTreeModel *
+create_wireless_adapter_model (NMApplet *applet)
 {
-	GtkListStore *	model;
-	GSList *		elt;
+	GSList *devices;
+	GSList *iter;
+	GtkListStore *model;
 
 	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_POINTER);
+	devices = nm_client_get_devices (applet->nm_client);
 
-	for (elt = applet->device_list; elt; elt = g_slist_next (elt))
-	{
-		NetworkDevice *dev = (NetworkDevice *)(elt->data);
+	for (iter = devices; iter; iter = iter->next) {
+		NMDevice *device = NM_DEVICE (iter->data);
+		GtkTreeIter iter;
+		char *name;
 
-		g_assert (dev);
-
-		/* Ignore unsupported devices */
-		if (!(network_device_get_capabilities (dev) & NM_DEVICE_CAP_NM_SUPPORTED))
+		/* Add only supported wireless devices */
+		if (!(nm_device_get_capabilities (device) & NM_DEVICE_CAP_NM_SUPPORTED) ||
+			!NM_IS_DEVICE_802_11_WIRELESS (device))
 			continue;
 
-		if (network_device_is_wireless (dev))
-		{
-			GtkTreeIter iter;
-			const char *name;
+		if (!(name = nm_device_get_description (device)))
+			name = nm_device_get_iface (device);
 
-			network_device_ref (dev);
-			if (!(name = network_device_get_desc (dev)))
-				name = network_device_get_iface (dev);
-
-			gtk_list_store_append (model, &iter);
-			gtk_list_store_set (model, &iter, NAME_COLUMN, name, DEV_COLUMN, dev, -1);
-		}
+		gtk_list_store_append (model, &iter);
+		gtk_list_store_set (model, &iter, NAME_COLUMN, name, DEV_COLUMN, g_object_ref (device), -1);
 	}
 
-	g_object_ref (G_OBJECT (model));
 	return GTK_TREE_MODEL (model);
 }
 
@@ -228,11 +223,10 @@ static void destroy_wireless_adapter_model (GtkTreeModel *model)
 	while (valid)
 	{
 		char *str;
-		NetworkDevice *dev;
+		NMDevice *dev;
 
 		gtk_tree_model_get (model, &iter, NAME_COLUMN, &str, DEV_COLUMN, &dev, -1);
-		if (dev)
-			network_device_unref (dev);
+		g_object_unref (dev);
 		valid = gtk_tree_model_iter_next (model, &iter);
 	}
 
@@ -269,7 +263,7 @@ static GtkDialog *nma_ond_init (GladeXML *xml, NMApplet *applet, gboolean create
 	gboolean					valid;
 	GtkWidget *				combo;
 	GtkTreeIter				iter;
-	NetworkDevice *			dev;
+	NMDevice80211Wireless *dev;
 	char *					str;
 	int						dev_caps;
 
@@ -313,6 +307,7 @@ static GtkDialog *nma_ond_init (GladeXML *xml, NMApplet *applet, gboolean create
 
 	combo = glade_xml_get_widget (xml, "wireless_adapter_combo");
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), model);
+	g_object_unref (model);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	g_signal_connect (G_OBJECT (combo), "changed", GTK_SIGNAL_FUNC (nma_ond_device_combo_changed), dialog);
 
@@ -328,7 +323,7 @@ static GtkDialog *nma_ond_init (GladeXML *xml, NMApplet *applet, gboolean create
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
 	gtk_tree_model_get (model, &iter, NAME_COLUMN, &str, DEV_COLUMN, &dev, -1);
 	g_assert (dev);
-	dev_caps = network_device_get_type_capabilities (dev);
+	dev_caps = nm_device_802_11_wireless_get_capabilities (dev);
 	/* Can't do WPA2/CCMP or WPA-EAP Ad-Hoc networks because wpa_supplicant
 	 * doesn't support the former and the latter does not make sense.
 	 */
@@ -412,7 +407,7 @@ static void nma_ond_response_cb (GtkDialog *dialog, gint response, gpointer data
 			GtkTreeIter			iter;
 			GtkWidget *			fallback_button;
 			char *				str;
-			NetworkDevice *		dev;
+			NMDevice80211Wireless *dev;
 			gboolean				fallback;
 
 			gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
@@ -425,9 +420,10 @@ static void nma_ond_response_cb (GtkDialog *dialog, gint response, gpointer data
 			opt = wsm_get_option_for_active (wsm, security_combo);
 
 			if (create_network)
-				nma_dbus_create_network (applet->connection, dev, essid, opt);
+				g_warning ("FIXME: Creating wireless networks is not implemented.");
 			else
-				nma_dbus_set_device (applet->connection, dev, essid, fallback, opt);
+				g_warning ("FIXME: Activation of wireless device is not implemented.");
+			/*nm_device_802_11_wireless_activate (dev, ap, TRUE); */
 		}
 	}
 

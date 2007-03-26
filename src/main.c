@@ -31,12 +31,13 @@
 #include <glib/gi18n-lib.h>
 
 #include "applet.h"
-#include "applet-dbus-vpn.h"
 
 static void session_die (GnomeClient *client, gpointer client_data)
 {
 	NMApplet *applet = client_data;
-	nma_dbus_vpn_deactivate_connection (applet->connection);
+
+	/* FIXME: */
+	/* nma_dbus_vpn_deactivate_connection (applet->connection); */
 	gtk_main_quit ();
 }
 

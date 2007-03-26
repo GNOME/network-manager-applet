@@ -24,7 +24,6 @@
 
 #include <gtk/gtk.h>
 #include "wireless-security-option.h"
-#include "wireless-network.h"
 
 typedef struct WirelessSecurityManager WirelessSecurityManager;
 

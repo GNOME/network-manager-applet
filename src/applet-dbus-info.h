@@ -24,8 +24,7 @@
 #define APPLET_DBUS_INFO_H
 
 #include <dbus/dbus.h>
-#include "nm-device.h"
-#include "wireless-network.h"
+#include <nm-device.h>
 #include "NetworkManager.h"
 #include "nm-gconf-wso.h"
 

@@ -1,3 +1,22 @@
+2007-03-26  Tambet Ingo  <tambet@ximian.com>
+
+	Fix VPN.
+	Clean up a lot of old non-working dbus calls and data structures and replace
+	them with what libnm-glib provides.
+
+	* src/applet-dbus-devices.c
+	* src/applet-dbus-devices.h
+	* src/applet-dbus-vpn.c
+	* src/applet-dbus-vpn.h
+	* src/wireless-network.c
+	* src/wireless-network.h
+	* src/nm-device.c
+	* src/nm-device.h
+	* src/vpn-connection.c
+	* src/vpn-connection.h
+
+	Remove. All of these are provided by libnm-glib now.
+
 2007-03-16  Tambet Ingo  <tambet@ximian.com>
 
 	First stab at converting the applet over to libnm-glib instead of using

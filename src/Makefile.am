@@ -27,16 +27,8 @@ nm_applet_SOURCES =			\
 	applet-compat.h		\
 	applet-dbus.c			\
 	applet-dbus.h			\
-	applet-dbus-devices.c	\
-	applet-dbus-devices.h	\
-	applet-dbus-vpn.c		\
-	applet-dbus-vpn.h		\
 	applet-dbus-info.c		\
 	applet-dbus-info.h		\
-	wireless-network.c		\
-	wireless-network.h		\
-	nm-device.c			\
-	nm-device.h			\
 	other-network-dialog.c	\
 	other-network-dialog.h	\
 	passphrase-dialog.c		\
@@ -45,8 +37,6 @@ nm_applet_SOURCES =			\
 	menu-items.h			\
 	vpn-password-dialog.c	\
 	vpn-password-dialog.h	\
-	vpn-connection.c		\
-	vpn-connection.h		\
 	wireless-security-manager.c	\
 	wireless-security-manager.h	\
 	wireless-security-option.c	\
