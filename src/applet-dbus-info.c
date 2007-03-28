@@ -167,7 +167,7 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 		return NULL;
 
 	device = nm_client_get_device_by_path (applet->nm_client, dev_path);
-	if (!device || NM_IS_DEVICE_802_11_WIRELESS (device))
+	if (!device || !NM_IS_DEVICE_802_11_WIRELESS (device))
 		return NULL;
 
 	wireless_device = NM_DEVICE_802_11_WIRELESS (device);
