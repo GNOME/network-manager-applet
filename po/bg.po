@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-07 09:36+0200\n"
+"POT-Creation-Date: 2007-04-10 08:14+0300\n"
 "PO-Revision-Date: 2007-03-07 09:34+0200\n"
 "Last-Translator: Alexander Shopov <ash@contact.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -16,22 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../src/applet.c:182
+#: ../src/applet.c:179
 msgid "Error displaying connection information:"
 msgstr "Грешка при показване на информацията за връзката:"
 
-#: ../src/applet.c:200
-msgid "Could not find some required resources (the glade file)!"
-msgstr "Някои ресурси не бяха открити (файлът на glade)!"
-
-#: ../src/applet.c:210
+#: ../src/applet.c:216
 msgid "No active connections!"
 msgstr "Няма действащи връзки!"
-
-#: ../src/applet.c:227
-#, c-format
-msgid "%d Mb/s"
-msgstr "%d Mb/s"
 
 #: ../src/applet.c:230
 #, c-format
@@ -43,15 +34,20 @@ msgstr "Кабелен Етернет (%s)"
 msgid "Wireless Ethernet (%s)"
 msgstr "Безжичен Етернет (%s)"
 
-#: ../src/applet.c:238
+#: ../src/applet.c:244
+#, c-format
+msgid "%d Mb/s"
+msgstr "%d Mb/s"
+
+#: ../src/applet.c:248
 msgid "Unknown"
 msgstr "Неопределена"
 
-#: ../src/applet.c:330 ../src/applet.c:357
+#: ../src/applet.c:363 ../src/applet.c:390
 msgid "NetworkManager Applet"
 msgstr "Аплетът NetworkManager"
 
-#: ../src/applet.c:332 ../src/applet.c:359
+#: ../src/applet.c:365 ../src/applet.c:392
 msgid ""
 "Copyright © 2004-2007 Red Hat, Inc.\n"
 "Copyright © 2005-2007 Novell, Inc."
@@ -59,14 +55,14 @@ msgstr ""
 "Авторски права © 2004-2007 Red Hat, Inc.\n"
 "Авторски права © 2005-2007 Novell, Inc."
 
-#: ../src/applet.c:334 ../src/applet.c:361
+#: ../src/applet.c:367 ../src/applet.c:394
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Аплет за областта за уведомяване за управление на мрежовите устройства и "
 "връзки."
 
-#: ../src/applet.c:337 ../src/applet.c:365
+#: ../src/applet.c:370 ../src/applet.c:398
 msgid "translator-credits"
 msgstr ""
 "Александър Шопов <ash@contact.bg>\n"
@@ -75,22 +71,22 @@ msgstr ""
 "Научете повече за нас на http://gnome.cult.bg\n"
 "Докладвайте за грешки на http://gnome.cult.bg/bugs<"
 
-#: ../src/applet.c:421
+#: ../src/applet.c:454
 msgid "VPN Login Failure"
 msgstr "Грешка при идентификация пред ВЧМ"
 
-#: ../src/applet.c:422
+#: ../src/applet.c:455
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a login failure."
 msgstr ""
 "Неуспех при осъществяването на връзката към ВЧМ „%s“ поради грешка в "
 "идентификацията."
 
-#: ../src/applet.c:426
+#: ../src/applet.c:459
 msgid "VPN Start Failure"
 msgstr "Грешка при стартиране на ВЧМ"
 
-#: ../src/applet.c:427
+#: ../src/applet.c:460
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' due to a failure launching the VPN "
@@ -99,25 +95,25 @@ msgstr ""
 "Връзката към ВЧМ „%s“ се провали поради грешка при стартиране на програмата "
 "за ВЧМ."
 
-#: ../src/applet.c:431 ../src/applet.c:441
+#: ../src/applet.c:464 ../src/applet.c:474
 msgid "VPN Connect Failure"
 msgstr "Грешка при свързване към ВЧМ"
 
-#: ../src/applet.c:432
+#: ../src/applet.c:465
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a connection error."
 msgstr "Връзката към ВЧМ „%s“ се провали поради грешка при свързването."
 
-#: ../src/applet.c:436
+#: ../src/applet.c:469
 msgid "VPN Configuration Error"
 msgstr "Грешка в настройките на ВЧМ"
 
-#: ../src/applet.c:437
+#: ../src/applet.c:470
 #, c-format
 msgid "The VPN connection '%s' was not correctly configured."
 msgstr "Връзката към ВЧМ „%s“ е с неправилни настройки."
 
-#: ../src/applet.c:442
+#: ../src/applet.c:475
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' because the VPN server did not "
@@ -126,12 +122,137 @@ msgstr ""
 "Връзката към ВЧМ „%s“ се провали, защото настройките на мрежата върнати от "
 "сървъра за ВЧМ бяха неправилни."
 
-#: ../src/applet.c:512
+#: ../src/applet.c:545
 msgid "VPN Login Message"
 msgstr "Съобщение при идентификация пред ВЧМ"
 
-#: ../src/applet.c:737 ../src/applet.c:2633 ../src/other-network-dialog.c:458
-#: ../src/passphrase-dialog.c:228
+#: ../src/applet.c:849
+msgid "_Connect to Other Wireless Network..."
+msgstr "_Свързване към други безжични мрежи..."
+
+#: ../src/applet.c:871
+msgid "Create _New Wireless Network..."
+msgstr "Създаване на _нова безжична мрежа..."
+
+#: ../src/applet.c:1000
+msgid "_VPN Connections"
+msgstr "_Връзки по ВЧМ"
+
+#: ../src/applet.c:1046
+msgid "_Configure VPN..."
+msgstr "_Настройване на ВЧМ..."
+
+#: ../src/applet.c:1050
+msgid "_Disconnect VPN..."
+msgstr "_Прекъсване на ВЧМ..."
+
+#: ../src/applet.c:1092 ../src/applet.c:2088
+msgid "Networking disabled"
+msgstr "Мрежата е изключена"
+
+#: ../src/applet.c:1112
+msgid "No network devices have been found"
+msgstr "Не са открити мрежови устройства"
+
+#: ../src/applet.c:1244
+msgid "NetworkManager is not running..."
+msgstr "NetworkManager не е включен..."
+
+#. 'Enable Networking' item
+#: ../src/applet.c:1374
+msgid "Enable _Networking"
+msgstr "_Включване на мрежата"
+
+#. 'Enable Wireless' item
+#: ../src/applet.c:1382
+msgid "Enable _Wireless"
+msgstr "Включване на _безжичната мрежа"
+
+#. 'Connection Information' item
+#: ../src/applet.c:1390
+msgid "Connection _Information"
+msgstr "_Информация за връзката"
+
+#. Help item
+#: ../src/applet.c:1404
+msgid "_Help"
+msgstr "_Помощ"
+
+#. About item
+#: ../src/applet.c:1413
+msgid "_About"
+msgstr "_Относно"
+
+#: ../src/applet.c:1910
+#, c-format
+msgid "Wireless network connection to '%s' (%d%%)"
+msgstr "Безжична връзка към „%s“ (%d%%)"
+
+#: ../src/applet.c:1940
+#, c-format
+msgid "Preparing device %s for the wireless network '%s'..."
+msgstr "Подготвяне на устройството „%s“ за безжичната мрежа „%s“..."
+
+#: ../src/applet.c:1943
+#, c-format
+msgid "Attempting to join the wireless network '%s'..."
+msgstr "Опит за свързване към безжичната мрежа „%s“..."
+
+#: ../src/applet.c:1946
+#, c-format
+msgid "Requesting a network address from the wireless network '%s'..."
+msgstr "Запитване на безжичната мрежа „%s“ за адрес..."
+
+#: ../src/applet.c:1949
+#, c-format
+msgid "Waiting for Network Key for the wireless network '%s'..."
+msgstr "Изчакване за мрежовия ключ за безжичната мрежа „%s“..."
+
+#: ../src/applet.c:1959
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "Свързани сте към безжичната мрежа „%s“."
+
+#: ../src/applet.c:1960 ../src/applet.c:2016
+msgid "Connection Established"
+msgstr "Връзката е осъществена"
+
+#: ../src/applet.c:2002
+#, c-format
+msgid "Preparing device %s for the wired network..."
+msgstr "Подготвяне на устройството „%s“ за кабелната мрежа..."
+
+#: ../src/applet.c:2005
+#, c-format
+msgid "Configuring device %s for the wired network..."
+msgstr "Настройване на устройството „%s“ за кабелната мрежа..."
+
+#: ../src/applet.c:2008
+msgid "Requesting a network address from the wired network..."
+msgstr "Запитване на кабелната мрежа за адрес..."
+
+#: ../src/applet.c:2012
+msgid "Wired network connection"
+msgstr "Връзка към кабелна мрежа"
+
+#: ../src/applet.c:2017
+msgid "You are now connected to the wired network."
+msgstr "Свързани сте към кабелната мрежа."
+
+#: ../src/applet.c:2092
+msgid "No network connection"
+msgstr "Няма връзка към мрежа"
+
+#: ../src/applet.c:2095
+msgid "Disconnected"
+msgstr "Без връзка"
+
+#: ../src/applet.c:2096
+msgid "The network connection has been disconnected."
+msgstr "Връзката към мрежата е прекъсната."
+
+#: ../src/applet.c:2310 ../src/other-network-dialog.c:454
+#: ../src/passphrase-dialog.c:234
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -139,168 +260,7 @@ msgstr ""
 "Аплетът NetworkManager не можа да открие някои задължителни ресурси (файлът "
 "на glade)."
 
-#: ../src/applet.c:749
-#, c-format
-msgid "The network device \"%s (%s)\" does not support wireless scanning."
-msgstr "Мрежовото устройство „%s (%s)“ не поддържа безжично претърсване."
-
-#: ../src/applet.c:757
-#, c-format
-msgid "The network device \"%s (%s)\" does not support link detection."
-msgstr "Мрежовото устройство „%s (%s)“ не поддържа засичане на връзка."
-
-#. Note to translators: this is used if no essid is known
-#: ../src/applet.c:905 ../src/applet.c:1103
-msgid "(unknown)"
-msgstr "(няма)"
-
-#: ../src/applet.c:911
-#, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "Подготвяне на устройството „%s“ за кабелната мрежа..."
-
-#: ../src/applet.c:913
-#, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "Подготвяне на устройството „%s“ за безжичната мрежа „%s“..."
-
-#: ../src/applet.c:921
-#, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "Настройване на устройството „%s“ за кабелната мрежа..."
-
-#: ../src/applet.c:923
-#, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "Опит за свързване към безжичната мрежа „%s“..."
-
-#: ../src/applet.c:931
-#, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "Изчакване за мрежовия ключ за безжичната мрежа „%s“..."
-
-#: ../src/applet.c:939 ../src/applet.c:949
-msgid "Requesting a network address from the wired network..."
-msgstr "Запитване на кабелната мрежа за адрес..."
-
-#: ../src/applet.c:941 ../src/applet.c:951
-#, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Запитване на безжичната мрежа „%s“ за адрес..."
-
-#: ../src/applet.c:959
-msgid "Finishing connection to the wired network..."
-msgstr "Завършване на връзката към кабелната мрежа..."
-
-#: ../src/applet.c:961
-#, c-format
-msgid "Finishing connection to the wireless network '%s'..."
-msgstr "Завършване на връзката към безжичната мрежа „%s“..."
-
-#: ../src/applet.c:1078
-msgid "NetworkManager is not running"
-msgstr "NetworkManager не е включен"
-
-#: ../src/applet.c:1086 ../src/applet.c:1843
-msgid "Networking disabled"
-msgstr "Мрежата е изключена"
-
-#: ../src/applet.c:1091
-msgid "No network connection"
-msgstr "Няма връзка към мрежа"
-
-#: ../src/applet.c:1096
-msgid "Wired network connection"
-msgstr "Връзка към кабелна мрежа"
-
-#: ../src/applet.c:1100
-msgid "Connected to an Ad-Hoc wireless network"
-msgstr "Връзка към инцидентна, безжична мрежа"
-
-#: ../src/applet.c:1102
-#, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "Безжична връзка към „%s“ (%d%%)"
-
-#: ../src/applet.c:1123
-#, c-format
-msgid "VPN connection to '%s'"
-msgstr "Връзка по ВЧМ към „%s“"
-
-#: ../src/applet.c:1131
-#, c-format
-msgid "VPN connecting to '%s'"
-msgstr "Свързване по ВЧМ към „%s“"
-
-#: ../src/applet.c:1556
-msgid "_Connect to Other Wireless Network..."
-msgstr "_Свързване към други безжични мрежи..."
-
-#: ../src/applet.c:1577
-msgid "Create _New Wireless Network..."
-msgstr "Създаване на _нова безжична мрежа..."
-
-#: ../src/applet.c:1700
-msgid "_VPN Connections"
-msgstr "_Връзки по ВЧМ"
-
-#: ../src/applet.c:1745
-msgid "_Configure VPN..."
-msgstr "_Настройване на ВЧМ..."
-
-#: ../src/applet.c:1749
-msgid "_Disconnect VPN..."
-msgstr "_Прекъсване на ВЧМ..."
-
-#: ../src/applet.c:1771
-msgid "_Dial Up Connections"
-msgstr "_Връзки по телефонна линия"
-
-#. FIXME: We should save and then check the state of the devices and show Connect _or_ Disconnect for each item
-#: ../src/applet.c:1782
-#, c-format
-msgid "Connect to %s..."
-msgstr "Свързване към %s..."
-
-#: ../src/applet.c:1788
-#, c-format
-msgid "Disconnect from %s..."
-msgstr "Прекъсване на връзката към %s..."
-
-#: ../src/applet.c:1837
-msgid "No network devices have been found"
-msgstr "Не са открити мрежови устройства"
-
-#: ../src/applet.c:2029
-msgid "NetworkManager is not running..."
-msgstr "NetworkManager не е включен..."
-
-#. 'Enable Networking' item
-#: ../src/applet.c:2210
-msgid "Enable _Networking"
-msgstr "_Включване на мрежата"
-
-#. 'Enable Wireless' item
-#: ../src/applet.c:2216
-msgid "Enable _Wireless"
-msgstr "Включване на _безжичната мрежа"
-
-#. 'Connection Information' item
-#: ../src/applet.c:2222
-msgid "Connection _Information"
-msgstr "_Информация за връзката"
-
-#. Help item
-#: ../src/applet.c:2233
-msgid "_Help"
-msgstr "_Помощ"
-
-#. About item
-#: ../src/applet.c:2242
-msgid "_About"
-msgstr "_Относно"
-
-#: ../src/applet.c:2822
+#: ../src/applet.c:2500
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -308,45 +268,10 @@ msgstr ""
 "Аплетът NetworkManager не може да открие необходим ресурс. Програмата не "
 "може да продължи работа.\n"
 
-#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:926
+#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:929
 #, c-format
 msgid "Passphrase for wireless network %s"
 msgstr "Парола за безжичната мрежа %s"
-
-#: ../src/applet-dbus.c:274
-#, c-format
-msgid "Connection to the wireless network '%s' failed."
-msgstr "Неуспешно свързване към безжичната мрежа „%s“."
-
-#: ../src/applet-dbus.c:279
-msgid "Connection to the wired network failed."
-msgstr "Неуспешно свързване към кабелната мрежа."
-
-#: ../src/applet-dbus-devices.c:930
-#, c-format
-msgid "You are now connected to the Ad-Hoc wireless network '%s'."
-msgstr "Свързали сте се към инцидентната, безжична мрежа „%s“."
-
-#: ../src/applet-dbus-devices.c:935
-#, c-format
-msgid "You are now connected to the wireless network '%s'."
-msgstr "Свързани сте към безжичната мрежа „%s“."
-
-#: ../src/applet-dbus-devices.c:942
-msgid "You are now connected to the wired network."
-msgstr "Свързани сте към кабелната мрежа."
-
-#: ../src/applet-dbus-devices.c:948
-msgid "Connection Established"
-msgstr "Връзката е осъществена"
-
-#: ../src/applet-dbus-devices.c:997
-msgid "Disconnected"
-msgstr "Без връзка"
-
-#: ../src/applet-dbus-devices.c:998
-msgid "The network connection has been disconnected."
-msgstr "Връзката към мрежата е прекъсната."
 
 #: ../src/applet.glade.h:1
 msgid " "
@@ -606,33 +531,33 @@ msgstr "Ориентация"
 msgid "The orientation of the tray."
 msgstr "Ориентацията на тавата"
 
-#: ../src/menu-items.c:88
+#: ../src/menu-items.c:61
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "Кабелна мрежа (%s)"
 
-#: ../src/menu-items.c:91
+#: ../src/menu-items.c:64
 msgid "_Wired Network"
 msgstr "_Кабелна мрежа"
 
-#: ../src/menu-items.c:162
+#: ../src/menu-items.c:113
 #, c-format
 msgid "Wireless Network (%s)"
 msgid_plural "Wireless Networks (%s)"
 msgstr[0] "Безжична мрежа (%s)"
 msgstr[1] "Безжични мрежи (%s)"
 
-#: ../src/menu-items.c:164
+#: ../src/menu-items.c:117
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Безжична мрежа"
 msgstr[1] "Безжични мрежи"
 
-#: ../src/menu-items.c:343
+#: ../src/menu-items.c:310
 msgid " (invalid Unicode)"
 msgstr " (невалиден Уникод)"
 
-#: ../src/other-network-dialog.c:352
+#: ../src/other-network-dialog.c:347
 #, c-format
 msgid ""
 "By default, the wireless network's name is set to your computer's name, %s, "
@@ -641,11 +566,11 @@ msgstr ""
 "По подразбиране името на безжичната мрежа е името на компютъра ви, „%s“, без "
 "шифриране"
 
-#: ../src/other-network-dialog.c:358
+#: ../src/other-network-dialog.c:353
 msgid "Create new wireless network"
 msgstr "Създаване на нова безжична мрежа"
 
-#: ../src/other-network-dialog.c:359
+#: ../src/other-network-dialog.c:354
 msgid ""
 "Enter the name and security settings of the wireless network you wish to "
 "create."
@@ -653,27 +578,27 @@ msgstr ""
 "Въведете името и настройките на сигурността на безжичната мрежа, която "
 "искате да създадете."
 
-#: ../src/other-network-dialog.c:363
+#: ../src/other-network-dialog.c:358
 msgid "Create New Wireless Network"
 msgstr "Създаване на нова безжична мрежа"
 
-#: ../src/other-network-dialog.c:368
+#: ../src/other-network-dialog.c:363
 msgid "Existing wireless network"
 msgstr "Съществуваща безжична мрежа"
 
-#: ../src/other-network-dialog.c:369
+#: ../src/other-network-dialog.c:364
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Въведете името на безжичната мрежа, към която искате да се свържете."
 
-#: ../src/other-network-dialog.c:371
+#: ../src/other-network-dialog.c:366
 msgid "Connect to Other Wireless Network"
 msgstr "Свързване към друга безжична мрежа"
 
-#: ../src/passphrase-dialog.c:215
+#: ../src/passphrase-dialog.c:221
 msgid "Error connecting to wireless network"
 msgstr "Грешка при свързване към друга безжична мрежа"
 
-#: ../src/passphrase-dialog.c:216
+#: ../src/passphrase-dialog.c:222
 msgid ""
 "The requested wireless network requires security capabilities unsupported by "
 "your hardware."
@@ -769,3 +694,51 @@ msgstr "WPA2 Personal"
 #: ../src/wso-wpa-psk.c:180
 msgid "WPA Personal"
 msgstr "WPA Personal"
+
+#~ msgid "Could not find some required resources (the glade file)!"
+#~ msgstr "Някои ресурси не бяха открити (файлът на glade)!"
+
+#~ msgid "The network device \"%s (%s)\" does not support wireless scanning."
+#~ msgstr "Мрежовото устройство „%s (%s)“ не поддържа безжично претърсване."
+
+#~ msgid "The network device \"%s (%s)\" does not support link detection."
+#~ msgstr "Мрежовото устройство „%s (%s)“ не поддържа засичане на връзка."
+
+#~ msgid "(unknown)"
+#~ msgstr "(няма)"
+
+#~ msgid "Finishing connection to the wired network..."
+#~ msgstr "Завършване на връзката към кабелната мрежа..."
+
+#~ msgid "Finishing connection to the wireless network '%s'..."
+#~ msgstr "Завършване на връзката към безжичната мрежа „%s“..."
+
+#~ msgid "NetworkManager is not running"
+#~ msgstr "NetworkManager не е включен"
+
+#~ msgid "Connected to an Ad-Hoc wireless network"
+#~ msgstr "Връзка към инцидентна, безжична мрежа"
+
+#~ msgid "VPN connection to '%s'"
+#~ msgstr "Връзка по ВЧМ към „%s“"
+
+#~ msgid "VPN connecting to '%s'"
+#~ msgstr "Свързване по ВЧМ към „%s“"
+
+#~ msgid "_Dial Up Connections"
+#~ msgstr "_Връзки по телефонна линия"
+
+#~ msgid "Connect to %s..."
+#~ msgstr "Свързване към %s..."
+
+#~ msgid "Disconnect from %s..."
+#~ msgstr "Прекъсване на връзката към %s..."
+
+#~ msgid "Connection to the wireless network '%s' failed."
+#~ msgstr "Неуспешно свързване към безжичната мрежа „%s“."
+
+#~ msgid "Connection to the wired network failed."
+#~ msgstr "Неуспешно свързване към кабелната мрежа."
+
+#~ msgid "You are now connected to the Ad-Hoc wireless network '%s'."
+#~ msgstr "Свързали сте се към инцидентната, безжична мрежа „%s“."
