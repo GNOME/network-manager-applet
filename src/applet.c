@@ -66,6 +66,8 @@
 #include "nm-utils.h"
 #include "dbus-method-dispatcher.h"
 
+#include "nm-connection.h"
+
 /* Compat for GTK 2.4 and lower... */
 #if (GTK_MAJOR_VERSION <= 2 && GTK_MINOR_VERSION < 6)
 	#define GTK_STOCK_MEDIA_PAUSE		GTK_STOCK_STOP
@@ -646,13 +648,34 @@ static void
 nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 {
 	DeviceMenuItemInfo *info = (DeviceMenuItemInfo *) user_data;
+	NMSetting *setting = NULL;
 
 	if (NM_IS_DEVICE_802_3_ETHERNET (info->device)) {
-		nm_device_802_3_ethernet_activate (NM_DEVICE_802_3_ETHERNET (info->device), TRUE);
+		setting = nm_setting_wired_new ();
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
-		nm_device_802_11_wireless_activate (NM_DEVICE_802_11_WIRELESS (info->device),
-									 info->ap,
-									 TRUE);
+		NMSettingWireless *wireless;
+
+		setting = nm_setting_wireless_new ();
+		wireless = (NMSettingWireless *) setting;
+		wireless->ssid = nm_access_point_get_essid (info->ap);
+		wireless->mode = 1; /* FIXME: Define something for wireless modes */
+	} else
+		g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
+
+	if (setting) {
+		NMConnection *connection;
+		NMSettingInfo *s_info;
+
+		connection = nm_connection_new ();
+		nm_connection_add_setting (connection, setting);
+
+		s_info = (NMSettingInfo *) nm_setting_info_new ();
+		s_info->name = g_strdup ("Auto");
+		s_info->devtype = g_strdup (setting->name);
+		nm_connection_add_setting (connection, (NMSetting *) s_info);
+
+		nm_device_activate (info->device, connection);
+		nm_connection_destroy (connection);
 	}
 
 	nmi_dbus_signal_user_interface_activated (info->applet->connection);
