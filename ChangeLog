@@ -1,3 +1,12 @@
+2007-06-07  Dan Williams  <dcbw@redhat.com>
+
+	Patch from Jon Escombe <lists@dresco.co.uk>
+
+	* src/applet-dbus-info.c:
+		- (nmi_dbus_get_key_for_network): don't ask for a new key if we
+		have a WPA-EAP private key file, but try to get it from the
+		keyring first.
+
 2007-03-21  Pema Geyleg <pema.geyleg@gmail.com>
 
 	* configure.ac: Added 'dz' to ALL_LINGUAS

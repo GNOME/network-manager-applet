@@ -152,6 +152,8 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	char *			temp = NULL;
 	char *			escaped_network;
 	int			we_cipher = -1;
+	char * 			private_key_file = NULL;
+	gboolean		have_priv_key_file = FALSE;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 	g_return_val_if_fail (message != NULL, NULL);
@@ -182,9 +184,18 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
          || !temp)
 		new_key = TRUE;
 
+	nm_gconf_get_string_helper (applet->gconf_client,
+                              GCONF_PATH_WIRELESS_NETWORKS,
+                              "wpa_eap_private_key_file", escaped_network, &private_key_file);
+	if (private_key_file) {
+		have_priv_key_file = TRUE;
+		g_free (private_key_file);
+	}
+
 	/* Hack: 802.1x passwords are not stored in the keyring */
 	if (!new_key &&
-	    (we_cipher == NM_AUTH_TYPE_WPA_EAP || we_cipher == NM_AUTH_TYPE_LEAP))
+		((we_cipher == NM_AUTH_TYPE_WPA_EAP && !have_priv_key_file) ||
+		we_cipher == NM_AUTH_TYPE_LEAP))
 	{
 		NMGConfWSO *gconf_wso;
 		gconf_wso = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client,
