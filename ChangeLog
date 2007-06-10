@@ -1,3 +1,13 @@
+2007-06-10  Dan Williams  <dcbw@redhat.com>
+
+	* src/wso-private.h
+		- Add prototype for wso_wpa_create_phase2_type_model().  Lack of it
+		was causing the returned pointer to be cast to int, leading to segfaults
+		on 64-bit platforms.
+
+	* src/wireless-security-option.c
+		- (wso_wpa_create_phase2_type_model): num_items should be 5
+
 2007-06-07  Dan Williams  <dcbw@redhat.com>
 
 	Patch from Jon Escombe <lists@dresco.co.uk>

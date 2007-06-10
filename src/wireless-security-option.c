@@ -274,7 +274,7 @@ wso_wpa_create_phase2_type_model (int capabilities, gboolean wpa_eap, int *num_a
 	gtk_list_store_set (model, &iter, WPA_KEY_TYPE_NAME_COL, name,
 					WPA_KEY_TYPE_CIPHER_COL, NM_PHASE2_AUTH_GTC, -1);
 
-	*num_added = 4;
+	*num_added = 5;
 	return GTK_TREE_MODEL (model);
 }
 
