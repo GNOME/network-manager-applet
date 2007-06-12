@@ -3,7 +3,7 @@
 	* src/wso-private.h
 		- Add prototype for wso_wpa_create_phase2_type_model().  Lack of it
 		was causing the returned pointer to be cast to int, leading to segfaults
-		on 64-bit platforms.
+		on 64-bit platforms.  (gnome.org #435036)
 
 	* src/wireless-security-option.c
 		- (wso_wpa_create_phase2_type_model): num_items should be 5
