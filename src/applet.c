@@ -654,11 +654,17 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		setting = nm_setting_wired_new ();
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
 		NMSettingWireless *wireless;
+		char *ssid, *s;
 
 		setting = nm_setting_wireless_new ();
 		wireless = (NMSettingWireless *) setting;
-		wireless->ssid = nm_access_point_get_essid (info->ap);
-		wireless->mode = 1; /* FIXME: Define something for wireless modes */
+		wireless->mode = g_strdup ("infrastructure");
+
+		/* FIXME: ssid should be a GByteArray everywhere */
+		ssid = nm_access_point_get_essid (info->ap);
+		wireless->ssid = g_byte_array_sized_new (strlen (ssid) + 1);
+		g_byte_array_append (wireless->ssid, (guint8 *) ssid, strlen (ssid));
+		g_free (ssid);
 	} else
 		g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
 
