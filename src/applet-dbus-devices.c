@@ -114,7 +114,7 @@ typedef struct DriverCBData
 /*
  * nma_dbus_device_get_driver_cb
  *
- * Callback from nma_dbus_update_wireless_enabled
+ * Callback from nma_dbus_device_get_driver
  *
  */
 static void nma_dbus_device_get_driver_cb (DBusPendingCall *pcall, void *user_data)
@@ -204,7 +204,9 @@ static void nma_dbus_update_wireless_enabled_cb (DBusPendingCall *pcall, void *u
 {
 	DBusMessage *		reply;
 	NMApplet *	applet = (NMApplet *) user_data;
-	gboolean			wireless_enabled;
+	gboolean wireless_enabled = FALSE;
+	gboolean hw_rf_enabled = TRUE; /* default to true to maintain backward compat */
+	gboolean success = TRUE;
 
 	g_return_if_fail (pcall != NULL);
 	g_return_if_fail (applet != NULL);
@@ -224,9 +226,20 @@ static void nma_dbus_update_wireless_enabled_cb (DBusPendingCall *pcall, void *u
 		goto out;
 	}
 
-	if (dbus_message_get_args (reply, NULL, DBUS_TYPE_BOOLEAN, &wireless_enabled, DBUS_TYPE_INVALID))
+	if (!dbus_message_get_args (reply, NULL,
+	                            DBUS_TYPE_BOOLEAN, &wireless_enabled,
+	                            DBUS_TYPE_BOOLEAN, &hw_rf_enabled,
+	                            DBUS_TYPE_INVALID))
 	{
+		if (!dbus_message_get_args (reply, NULL,
+		                            DBUS_TYPE_BOOLEAN, &wireless_enabled,
+		                            DBUS_TYPE_INVALID))
+			success = FALSE;
+	}
+
+	if (success) {
 		applet->wireless_enabled = wireless_enabled;
+		applet->hw_rf_enabled = hw_rf_enabled;
 		nma_enable_wireless_set_active (applet);
 	}
 

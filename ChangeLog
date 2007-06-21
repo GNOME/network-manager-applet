@@ -1,3 +1,17 @@
+2007-06-21  Dan Williams  <dcbw@redhat.com>
+
+	* applet-dbus.c
+		- (nma_dbus_filter): handle new WirelessEnabled signal
+
+	* src/applet.c
+		- s/stop_wireless_item/wireless_enabled_item/
+		- (nma_enable_wireless_set_active): disable the Enable Wireless menu
+			item when a hardware switch has disabled rf already
+
+	* src/applet-dbus-devices.c
+		- (nma_dbus_update_wireless_enabled_cb): handle hardware rf enabled
+			status in method call return
+
 2207-06-14  Christopher Aillon  <caillon@redhat.com>
 
 	* src/applet.glade: (passphrase_required)

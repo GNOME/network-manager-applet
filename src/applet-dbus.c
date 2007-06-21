@@ -291,6 +291,21 @@ static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessag
 				network_device_set_act_stage (dev, stage);
 		}
 	}
+	else if (dbus_message_is_signal (message, NM_DBUS_INTERFACE, "WirelessEnabled"))
+	{
+		gboolean wireless_enabled = FALSE;
+		gboolean hw_rf_enabled = FALSE;
+
+		if (dbus_message_get_args (message, NULL,
+		                            DBUS_TYPE_BOOLEAN, &wireless_enabled,
+		                            DBUS_TYPE_BOOLEAN, &hw_rf_enabled,
+		                            DBUS_TYPE_INVALID))
+		{
+			applet->wireless_enabled = wireless_enabled;
+			applet->hw_rf_enabled = hw_rf_enabled;
+			nma_enable_wireless_set_active (applet);
+		}
+	}
 	else
 		handled = FALSE;
 

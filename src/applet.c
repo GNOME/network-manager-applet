@@ -2076,7 +2076,7 @@ static void nma_context_menu_update (NMApplet *applet)
 	const char *iface = NULL;
 
 	g_return_if_fail (applet != NULL);
-	g_return_if_fail (applet->stop_wireless_item != NULL);
+	g_return_if_fail (applet->wireless_enabled_item != NULL);
 	g_return_if_fail (applet->info_menu_item != NULL);
 
 	if ((dev = nma_get_first_active_device (applet->device_list)))
@@ -2101,9 +2101,9 @@ static void nma_context_menu_update (NMApplet *applet)
 	}
 
 	if (have_wireless && applet->nm_state != NM_STATE_ASLEEP)
-		gtk_widget_show_all (applet->stop_wireless_item);
+		gtk_widget_show_all (applet->wireless_enabled_item);
 	else
-		gtk_widget_hide (applet->stop_wireless_item);
+		gtk_widget_hide (applet->wireless_enabled_item);
 }
 
 
@@ -2117,7 +2117,10 @@ static void nma_context_menu_update (NMApplet *applet)
  */
 void nma_enable_wireless_set_active (NMApplet *applet)
 {
-	   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->stop_wireless_item), applet->wireless_enabled);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->wireless_enabled_item), applet->wireless_enabled);
+
+	/* If hardware rf is disabled, user can't enable/disable wireless */
+	gtk_widget_set_sensitive (applet->wireless_enabled_item, applet->hw_rf_enabled);
 }
 
 
@@ -2131,7 +2134,7 @@ void nma_enable_wireless_set_active (NMApplet *applet)
  */
 static inline void nma_enable_networking_set_active (NMApplet *applet)
 {
-	   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->enable_networking_item), applet->nm_state != NM_STATE_ASLEEP);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->enable_networking_item), applet->nm_state != NM_STATE_ASLEEP);
 }
 
 
@@ -2196,10 +2199,10 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), applet->enable_networking_item);
 
 	/* 'Enable Wireless' item */
-	applet->stop_wireless_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Wireless"));
+	applet->wireless_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Wireless"));
 	nma_enable_wireless_set_active (applet);
-	g_signal_connect (G_OBJECT (applet->stop_wireless_item), "toggled", G_CALLBACK (nma_set_wireless_enabled_cb), applet);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), applet->stop_wireless_item);
+	g_signal_connect (G_OBJECT (applet->wireless_enabled_item), "toggled", G_CALLBACK (nma_set_wireless_enabled_cb), applet);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), applet->wireless_enabled_item);
 
 	/* 'Connection Information' item */
 	applet->info_menu_item = gtk_image_menu_item_new_with_mnemonic (_("Connection _Information"));
@@ -2526,6 +2529,8 @@ static GtkWidget * nma_get_instance (NMApplet *applet)
 	applet->passphrase_dialog = NULL;
 	applet->connection_timeout_id = 0;
 	applet->redraw_timeout_id = 0;
+	applet->wireless_enabled = FALSE;
+	applet->hw_rf_enabled = TRUE;
 #ifdef ENABLE_NOTIFY
 	applet->notification = NULL;
 #endif

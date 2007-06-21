@@ -86,6 +86,7 @@ typedef struct
 	/* Data model elements */
 	gboolean			is_adhoc;
 	gboolean			wireless_enabled;
+	gboolean			hw_rf_enabled;
 	gboolean			nm_running;
 
 	NMState			nm_state;
@@ -123,7 +124,7 @@ typedef struct
 
 	GtkWidget *		context_menu;
 	GtkWidget *		enable_networking_item;
-	GtkWidget *		stop_wireless_item;
+	GtkWidget *		wireless_enabled_item;
 	GtkWidget *		info_menu_item;
 
 	GtkWidget *		passphrase_dialog;
