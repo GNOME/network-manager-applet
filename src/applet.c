@@ -931,7 +931,7 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 	gtk_item = network_menu_item_get_check_item (item);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), GTK_WIDGET (gtk_item));
-	network_menu_item_update (info->applet, item, ap, cb_data->has_encrypted);
+	network_menu_item_update (cb_data->applet, item, ap, cb_data->has_encrypted);
 	if (nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED && cb_data->active_essid) {
 		char *essid;
 
