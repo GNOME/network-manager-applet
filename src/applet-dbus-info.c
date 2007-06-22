@@ -78,8 +78,10 @@ typedef struct NMGetNetworkKeyCBData
 	char *essid;
 } NMGetNetworkKeyCBData;
 
-static void free_network_key_cb_data (NMGetNetworkKeyCBData *cb_data)
+static void free_network_key_cb_data (gpointer data)
 {
+	NMGetNetworkKeyCBData *cb_data = (NMGetNetworkKeyCBData *) data;
+
 	if (cb_data)
 	{
 		dbus_message_unref (cb_data->message);
@@ -87,7 +89,7 @@ static void free_network_key_cb_data (NMGetNetworkKeyCBData *cb_data)
 		g_free (cb_data->net_path);
 		g_free (cb_data->essid);
 		memset (cb_data, 0, sizeof (NMGetNetworkKeyCBData));
-		g_free (cb_data);
+		g_slice_free (NMGetNetworkKeyCBData, cb_data);
 	}
 }
 
@@ -126,8 +128,26 @@ static void nmi_dbus_get_network_key_callback (GnomeKeyringResult result,
 		if (ap)
 			applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, dev, ap, message);
 	}
+}
 
-	free_network_key_cb_data (cb_data);
+
+static gboolean
+ask_passphrase (gpointer data)
+{
+	NMGetNetworkKeyCBData *cb_data = (NMGetNetworkKeyCBData*) data;
+	NMApplet *applet = cb_data->applet;
+	NMAccessPoint *ap;
+
+	/* We only ask the user for a new key when we know about the network from NM,
+	 * since throwing up a dialog with a random essid from somewhere is a security issue.
+	 */
+	ap = nm_device_802_11_wireless_get_network_by_path (cb_data->dev, cb_data->net_path);
+	if (ap) {
+		nmi_passphrase_dialog_destroy (applet);
+		applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, cb_data->dev, ap, cb_data->message);
+	}
+
+	return FALSE;
 }
 
 
@@ -150,9 +170,9 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	gboolean			new_key = FALSE;
 	NMDevice *device;
 	NMDevice80211Wireless *wireless_device;
-	NMAccessPoint *ap;
 	char *			temp = NULL;
 	char *			escaped_network;
+	NMGetNetworkKeyCBData *cb_data;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 	g_return_val_if_fail (message != NULL, NULL);
@@ -184,19 +204,15 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 		new_key = TRUE;
 	g_free (escaped_network);
 
+	cb_data = g_slice_new0 (NMGetNetworkKeyCBData);
+	cb_data->applet = applet;
+	cb_data->essid = g_strdup (essid);
+	cb_data->message = dbus_message_ref (message);
+	cb_data->dev = g_object_ref (wireless_device);
+	cb_data->net_path = g_strdup (net_path);
+
 	/* It's not a new key, so try to get the key from the keyring. */
-	if (!new_key)
-	{
-		NMGetNetworkKeyCBData *cb_data;
-
-		cb_data = g_malloc0 (sizeof (NMGetNetworkKeyCBData));
-		cb_data->applet = applet;
-		cb_data->essid = g_strdup (essid);
-		cb_data->message = message;
-		dbus_message_ref (message);
-		cb_data->dev = g_object_ref (wireless_device);
-		cb_data->net_path = g_strdup (net_path);
-
+	if (!new_key) {
 		/* If the menu happens to be showing when we pop up the
 		 * keyring dialog, we get an X server deadlock.  So deactivate
 		 * the menu here.
@@ -208,21 +224,13 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 		gnome_keyring_find_itemsv (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 		                           (GnomeKeyringOperationGetListCallback) nmi_dbus_get_network_key_callback,
 		                           cb_data,
-		                           NULL,
+		                           free_network_key_cb_data,
 		                           "essid",
 		                           GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 		                           essid,
 		                           NULL);
-	}
-	else
-	{
-		/* We only ask the user for a new key when we know about the network from NM,
-		 * since throwing up a dialog with a random essid from somewhere is a security issue.
-		 */
-		if (new_key && (ap = nm_device_802_11_wireless_get_network_by_path (wireless_device, net_path))) {
-			nmi_passphrase_dialog_destroy (applet);
-			applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, wireless_device, ap, message);
-		}
+	} else {
+		g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, ask_passphrase, cb_data, free_network_key_cb_data);
 	}
 
 	return NULL;

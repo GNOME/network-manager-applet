@@ -1,3 +1,10 @@
+2007-06-21  Tambet Ingo  <tambet@ximian.com>
+
+	* src/applet-dbus-info.c (nmi_dbus_get_key_for_network): Move the passphrase
+	dialog creation to another function that is called from the main loop so that
+	the "getKeyForNetwork" dbus call can return before the dialog asks a bunch of
+	information over dbus.
+
 2207-06-14  Christopher Aillon  <caillon@redhat.com>
 
 	* src/applet.glade: (passphrase_required)
