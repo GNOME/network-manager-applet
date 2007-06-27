@@ -35,6 +35,8 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/libgnomeui.h>
+#include <iwlib.h>
+#include <wireless.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -90,23 +92,48 @@ static void			nma_finalize (GObject *object);
 
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
 
-/*
- * nm_null_safe_strcmp
- *
- * Doesn't freaking segfault if s1/s2 are NULL
- *
- */
-int nm_null_safe_strcmp (const char *s1, const char *s2)
+/* Shamelessly ripped from the Linux kernel ieee80211 stack */
+gboolean
+nma_is_empty_ssid (const char * ssid, int len)
 {
-	if (!s1 && !s2)
-		return 0;
-	if (!s1 && s2)
-		return -1;
-	if (s1 && !s2)
-		return 1;
-		
-	return (strcmp (s1, s2));
+        /* Single white space is for Linksys APs */
+        if (len == 1 && ssid[0] == ' ')
+                return TRUE;
+
+        /* Otherwise, if the entire ssid is 0, we assume it is hidden */
+        while (len--) {
+                if (ssid[len] != '\0')
+                        return FALSE;
+        }
+        return TRUE;
 }
+
+const char *
+nma_escape_ssid (const char * ssid, guint32 len)
+{
+	static char escaped[IW_ESSID_MAX_SIZE * 2 + 1];
+	const char *s = ssid;
+	char *d = escaped;
+
+	if (nma_is_empty_ssid (ssid, len)) {
+		memcpy (escaped, "<hidden>", sizeof ("<hidden>"));
+		return escaped;
+	}
+
+	len = MIN (len, (guint32) IW_ESSID_MAX_SIZE);
+	while (len--) {
+		if (*s == '\0') {
+			*d++ = '\\';
+			*d++ = '0';
+			s++;
+		} else {
+			*d++ = *s++;
+		}
+	}
+	*d = '\0';
+	return escaped;
+}
+
 
 static NMDevice *
 get_first_active_device (NMApplet *applet)
@@ -654,17 +681,16 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		setting = nm_setting_wired_new ();
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
 		NMSettingWireless *wireless;
-		char *ssid, *s;
+		GByteArray * ssid;
 
 		setting = nm_setting_wireless_new ();
 		wireless = (NMSettingWireless *) setting;
 		wireless->mode = g_strdup ("infrastructure");
 
-		/* FIXME: ssid should be a GByteArray everywhere */
-		ssid = nm_access_point_get_essid (info->ap);
-		wireless->ssid = g_byte_array_sized_new (strlen (ssid) + 1);
-		g_byte_array_append (wireless->ssid, (guint8 *) ssid, strlen (ssid));
-		g_free (ssid);
+		ssid = nm_access_point_get_ssid (info->ap);
+		wireless->ssid = g_byte_array_sized_new (ssid->len);
+		g_byte_array_append (wireless->ssid, ssid->data, ssid->len);
+		g_byte_array_free (ssid, TRUE);
 	} else
 		g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
 
@@ -909,7 +935,7 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 typedef struct {
 	NMApplet *	applet;
 	NMDevice *device;
-	char *active_essid;
+	GByteArray *active_ssid;
 	gboolean			has_encrypted;
 	GtkWidget *		menu;
 } AddNetworksCB;
@@ -932,13 +958,13 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), GTK_WIDGET (gtk_item));
 	network_menu_item_update (cb_data->applet, item, ap, cb_data->has_encrypted);
-	if (nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED && cb_data->active_essid) {
-		char *essid;
+	if (nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED && cb_data->active_ssid) {
+		GByteArray * ssid;
 
-		essid = nm_access_point_get_essid (ap);
-		if (essid && !strcmp (cb_data->active_essid, essid))
+		ssid = nm_access_point_get_ssid (ap);
+		if (ssid && nma_same_ssid (ssid, cb_data->active_ssid))
 			gtk_check_menu_item_set_active (gtk_item, TRUE);
-		g_free (essid);
+		g_byte_array_free (ssid, TRUE);
 	}
 
 	info = g_slice_new (DeviceMenuItemInfo);
@@ -995,7 +1021,7 @@ nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *apple
 
 	add_networks_cb.applet = applet;
 	add_networks_cb.device = device;
-	add_networks_cb.active_essid = NULL;
+	add_networks_cb.active_ssid = NULL;
 	add_networks_cb.has_encrypted = has_encrypted;
 	add_networks_cb.menu = menu;
 
@@ -1004,14 +1030,14 @@ nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *apple
 
 		ap = nm_device_802_11_wireless_get_active_network (NM_DEVICE_802_11_WIRELESS (device));
 		if (ap)
-			add_networks_cb.active_essid = nm_access_point_get_essid (ap);
+			add_networks_cb.active_ssid = nm_access_point_get_ssid (ap);
 	}
 
 	/* Add all networks in our network list to the menu */
 	g_slist_foreach (networks, nma_add_networks_helper, &add_networks_cb);
-
-	g_free (add_networks_cb.active_essid);
 	g_slist_free (networks);
+
+	g_byte_array_free (add_networks_cb.active_ssid, TRUE);
 }
 
 static void nma_menu_add_vpn_menu (GtkWidget *menu, NMApplet *applet)
@@ -1913,11 +1939,11 @@ foo_common_state_change (NMDevice *device, NMDeviceState state, NMApplet *applet
 /* Wireless device */
 
 static void
-foo_bssid_strength_changed (NMAccessPoint *bssid, guint strength, gpointer user_data)
+foo_bssid_strength_changed (NMAccessPoint *ap, guint strength, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	GdkPixbuf *pixbuf;
-	char *essid;
+	GByteArray * ssid;
 	char *tip;
 
 	strength = CLAMP (strength, 0, 100);
@@ -1935,9 +1961,11 @@ foo_bssid_strength_changed (NMAccessPoint *bssid, guint strength, gpointer user_
 
 	foo_set_icon (applet, pixbuf, ICON_LAYER_LINK);
 
-	essid = nm_access_point_get_essid (bssid);
-	tip = g_strdup_printf (_("Wireless network connection to '%s' (%d%%)"), essid, strength);
-	g_free (essid);
+	ssid = nm_access_point_get_ssid (ap);
+	tip = g_strdup_printf (_("Wireless network connection to '%s' (%d%%)"),
+	                       ssid ? nma_escape_ssid (ssid->data, ssid->len) : "(none)",
+	                       strength);
+	g_byte_array_free (ssid, TRUE);
 
 	gtk_status_icon_set_tooltip (applet->status_icon, tip);
 	g_free (tip);
@@ -1948,9 +1976,10 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 {
 	char *iface;
 	NMAccessPoint *ap;
-	char *essid = NULL;
+	GByteArray * ssid = NULL;
 	char *tip = NULL;
 	gboolean handled = FALSE;
+	char * esc_ssid = "(none)";
 
 	iface = nm_device_get_iface (NM_DEVICE (device));
 
@@ -1961,21 +1990,25 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 	    state == NM_DEVICE_STATE_ACTIVATED) {
 
 		ap = nm_device_802_11_wireless_get_active_network (NM_DEVICE_802_11_WIRELESS (device));
-		essid = nm_access_point_get_essid (ap);
+		ssid = nm_access_point_get_ssid (ap);
+		if (ssid) {
+			esc_ssid = (char *) nma_escape_ssid (ssid->data, ssid->len);
+			g_byte_array_free (ssid, TRUE);
+		}
 	}
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		tip = g_strdup_printf (_("Preparing device %s for the wireless network '%s'..."), iface, essid);
+		tip = g_strdup_printf (_("Preparing device %s for the wireless network '%s'..."), iface, esc_ssid);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		tip = g_strdup_printf (_("Attempting to join the wireless network '%s'..."), essid);
+		tip = g_strdup_printf (_("Attempting to join the wireless network '%s'..."), esc_ssid);
 		break;
 	case NM_DEVICE_STATE_IP_CONFIG:
-		tip = g_strdup_printf (_("Requesting a network address from the wireless network '%s'..."), essid);
+		tip = g_strdup_printf (_("Requesting a network address from the wireless network '%s'..."), esc_ssid);
 		break;
 	case NM_DEVICE_STATE_NEED_AUTH:
-		tip = g_strdup_printf (_("Waiting for Network Key for the wireless network '%s'..."), essid);
+		tip = g_strdup_printf (_("Waiting for Network Key for the wireless network '%s'..."), esc_ssid);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		applet->current_ap = ap;
@@ -1985,7 +2018,7 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		foo_bssid_strength_changed (ap, nm_access_point_get_strength (ap), applet);
 
 #ifdef ENABLE_NOTIFY
-		tip = g_strdup_printf (_("You are now connected to the wireless network '%s'."), essid);
+		tip = g_strdup_printf (_("You are now connected to the wireless network '%s'."), esc_ssid);
 		nma_send_event_notification (applet, NOTIFY_URGENCY_LOW, _("Connection Established"),
 							    tip, "nm-device-wireless");
 		g_free (tip);
@@ -2005,7 +2038,6 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 	}
 
 	g_free (iface);
-	g_free (essid);
 
 	if (tip) {
 		gtk_status_icon_set_tooltip (applet->status_icon, tip);

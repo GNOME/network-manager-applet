@@ -205,8 +205,9 @@ network_menu_item_update (NMApplet *applet,
 						  NMAccessPoint *ap,
 						  gboolean is_encrypted)
 {
-	char *tmp;
-	char *	display_essid;
+	GByteArray * ssid;
+	char *	display_ssid;
+	char buf[IW_ESSID_MAX_SIZE + 1];
 	gdouble	percent;
 	gboolean	encrypted = FALSE;
 	gboolean	adhoc = FALSE;
@@ -214,11 +215,13 @@ network_menu_item_update (NMApplet *applet,
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (ap != NULL);
 
-	tmp = nm_access_point_get_essid (ap);
-	display_essid = nm_menu_network_escape_essid_for_display (tmp);
-	g_free (tmp);
-	gtk_label_set_text (GTK_LABEL (item->label), display_essid);
-	g_free (display_essid);
+	ssid = nm_access_point_get_ssid (ap);
+	memset (buf, 0, sizeof (buf));
+	memcpy (buf, ssid->data, MIN (ssid->len, sizeof (buf) - 1));
+	display_ssid = nm_menu_network_escape_essid_for_display (buf);
+	g_byte_array_free (ssid, TRUE);
+	gtk_label_set_text (GTK_LABEL (item->label), display_ssid);
+	g_free (display_ssid);
 
 	percent = (double) CLAMP (nm_access_point_get_strength (ap), 0, 100) / 100.0;
 	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (item->progress), percent);

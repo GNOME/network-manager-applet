@@ -29,6 +29,8 @@
 #include <glib/gi18n.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
+#include <iwlib.h>
+#include <wireless.h>
 
 #include "applet.h"
 #include "applet-dbus-info.h"
@@ -46,8 +48,8 @@ static GladeXML *get_dialog_xml (GtkWidget *dialog)
 
 static void update_button_cb (GtkWidget *unused, GtkDialog *dialog)
 {
-	gboolean		enable = FALSE;
-	char *ssid;
+	gboolean enable = FALSE;
+	GByteArray * ssid;
 	GtkWidget *	button;
 	GladeXML *	xml;
 	WirelessSecurityManager * wsm;
@@ -61,12 +63,17 @@ static void update_button_cb (GtkWidget *unused, GtkDialog *dialog)
 	g_return_if_fail (wsm != NULL);
 
 	if ((ap = g_object_get_data (G_OBJECT (dialog), "access-point")) &&
-	    (ssid = nm_access_point_get_essid (ap)))
+	    (ssid = nm_access_point_get_ssid (ap)))
 	{
+		char buf[IW_ESSID_MAX_SIZE + 1];
+
+		memset (buf, 0, sizeof (buf));
+		memcpy (buf, ssid->data, MIN (ssid->len, sizeof (buf) - 1));
+
 		/* Validate the wireless security choices */
 		security_combo = GTK_COMBO_BOX (glade_xml_get_widget (xml, "security_combo"));
-		enable = wsm_validate_active (wsm, security_combo, ssid);
-		g_free (ssid);
+		enable = wsm_validate_active (wsm, security_combo, buf);
+		g_byte_array_free (ssid, TRUE);
 	}
 
 	button = glade_xml_get_widget (xml, "login_button");
@@ -137,7 +144,8 @@ nmi_passphrase_dialog_response_received (GtkWidget *dialog,
 	WirelessSecurityOption *	opt;
 	NMAccessPoint *ap;
 	NMGConfWSO *		gconf_wso;
-	char *essid;
+	GByteArray * ssid;
+	char buf[IW_ESSID_MAX_SIZE + 1];
 
 	message = (DBusMessage *) g_object_get_data (G_OBJECT (dialog), "dbus-message");
 	g_assert (message);
@@ -166,9 +174,13 @@ nmi_passphrase_dialog_response_received (GtkWidget *dialog,
 	ap = NM_ACCESS_POINT (g_object_get_data (G_OBJECT (dialog), "access-point"));
 	g_assert (ap);
 
-	essid = nm_access_point_get_essid (ap);
-	gconf_wso = nm_gconf_wso_new_from_wso (opt, essid);
-	g_free (essid);
+	ssid = nm_access_point_get_ssid (ap);
+	memset (buf, 0, sizeof (buf));
+	if (ssid)
+		memcpy (buf, ssid->data, MIN (ssid->len, sizeof (buf) - 1));
+	gconf_wso = nm_gconf_wso_new_from_wso (opt, buf);
+	if (ssid)
+		g_byte_array_free (ssid, TRUE);
 
 	/* Return new security information to NM */
 	nmi_dbus_return_user_key (applet->connection, message, gconf_wso);
@@ -200,7 +212,7 @@ nmi_passphrase_dialog_new (NMApplet *applet,
 	GtkComboBox *				security_combo;
 	const char *				orig_label_text;
 	char *					new_label_text;
-	char *essid;
+	GByteArray *			ssid;
 	guint32					caps;
 
 	g_return_val_if_fail (NM_IS_APPLET (applet), NULL);
@@ -250,9 +262,11 @@ nmi_passphrase_dialog_new (NMApplet *applet,
 	/* Insert the Network name into the dialog text */
 	label = glade_xml_get_widget (xml, "label1");
 	orig_label_text = gtk_label_get_label (GTK_LABEL (label));
-	essid = nm_access_point_get_essid (ap);
-	new_label_text = g_strdup_printf (orig_label_text, essid);
-	g_free (essid);
+
+	ssid = nm_access_point_get_ssid (ap);
+	new_label_text = g_strdup_printf (orig_label_text,
+	                                  nma_escape_ssid (ssid->data, ssid->len));
+	g_byte_array_free (ssid, TRUE);
 	gtk_label_set_label (GTK_LABEL (label), new_label_text);
 	g_free (new_label_text);
 

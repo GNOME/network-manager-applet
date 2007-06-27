@@ -163,6 +163,19 @@ void				nma_show_vpn_login_banner			(NMApplet *applet, const char *vpn_name, con
 
 void				nma_set_running						(NMApplet *applet, gboolean running);
 
-int				nm_null_safe_strcmp					(const char *s1, const char *s2);
+const char * nma_escape_ssid (const char * ssid, guint32 len);
+
+static inline gboolean
+nma_same_ssid (const GByteArray * ssid1, const GByteArray * ssid2)
+{
+	if (ssid1 == ssid2)
+		return TRUE;
+	if ((ssid1 && !ssid2) || (!ssid1 && ssid2))
+		return FALSE;
+	if (ssid1->len != ssid2->len)
+		return FALSE;
+
+	return memcmp (ssid1->data, ssid2->data, ssid1->len) == 0 ? TRUE : FALSE;
+}
 
 #endif
