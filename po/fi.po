@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-10 22:38+0300\n"
+"POT-Creation-Date: 2007-07-03 16:54+0300\n"
 "PO-Revision-Date: 2007-03-10 22:38+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -17,42 +17,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/applet.c:182
+#: ../src/applet.c:208
 msgid "Error displaying connection information:"
 msgstr "Virhe näytettäessä yhteyden tietoja:"
 
-#: ../src/applet.c:200
-msgid "Could not find some required resources (the glade file)!"
-msgstr "Joitain vaadittuja osia ei löytynyt (glade-tiedostoa)!"
-
-#: ../src/applet.c:210
+#: ../src/applet.c:245
 msgid "No active connections!"
 msgstr "Ei aktiivisia yhteyksiä!"
 
-#: ../src/applet.c:227
-#, c-format
-msgid "%d Mb/s"
-msgstr "%d Mt/s"
-
-#: ../src/applet.c:230
+#: ../src/applet.c:259
 #, c-format
 msgid "Wired Ethernet (%s)"
 msgstr "Kiinteä Ethernet-yhteys (%s)"
 
-#: ../src/applet.c:232
+#: ../src/applet.c:261
 #, c-format
 msgid "Wireless Ethernet (%s)"
 msgstr "Langaton Ethernet (%s)"
 
-#: ../src/applet.c:238
+#: ../src/applet.c:273
+#, c-format
+msgid "%d Mb/s"
+msgstr "%d Mt/s"
+
+#: ../src/applet.c:277
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../src/applet.c:330 ../src/applet.c:357
+#: ../src/applet.c:392 ../src/applet.c:419
 msgid "NetworkManager Applet"
 msgstr "NetworkManager-sovelma"
 
-#: ../src/applet.c:332 ../src/applet.c:359
+#: ../src/applet.c:394 ../src/applet.c:421
 msgid ""
 "Copyright © 2004-2007 Red Hat, Inc.\n"
 "Copyright © 2005-2007 Novell, Inc."
@@ -60,32 +56,32 @@ msgstr ""
 "Copyright © 2004-2005 Red Hat, Inc.\n"
 "Copyright © 2005-2007 Novell, Inc."
 
-#: ../src/applet.c:334 ../src/applet.c:361
+#: ../src/applet.c:396 ../src/applet.c:423
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Ilmoitusalueen sovelma verkkolaitteiden ja yhteyksien hallintaan."
 
-#: ../src/applet.c:337 ../src/applet.c:365
+#: ../src/applet.c:399 ../src/applet.c:427
 msgid "translator-credits"
 msgstr ""
 "Ilkka Tuohela, 2005-2007.\n"
 "\n"
 "http://www.gnome.fi/"
 
-#: ../src/applet.c:421
+#: ../src/applet.c:483
 msgid "VPN Login Failure"
 msgstr "Virhe kirjauduttaessa VPN:ään"
 
-#: ../src/applet.c:422
+#: ../src/applet.c:484
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a login failure."
 msgstr "VPN-yhteyttä \"%s\" ei voitu käynnistää kirjautumisvirheen takia."
 
-#: ../src/applet.c:426
+#: ../src/applet.c:488
 msgid "VPN Start Failure"
 msgstr "VPN-yhteyden käynnistysvirhe"
 
-#: ../src/applet.c:427
+#: ../src/applet.c:489
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' due to a failure launching the VPN "
@@ -94,25 +90,25 @@ msgstr ""
 "VPN-yhteyttä \"%s\" ei voitu käynnistää, koska VPN-ohjelman suorittaminen "
 "epäonnistui."
 
-#: ../src/applet.c:431 ../src/applet.c:441
+#: ../src/applet.c:493 ../src/applet.c:503
 msgid "VPN Connect Failure"
 msgstr "VPN-yhteyden yhteydenottovirhe"
 
-#: ../src/applet.c:432
+#: ../src/applet.c:494
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a connection error."
 msgstr "VPN-yhteyttä \"%s\" ei voitu käynnistää, koska tapahtui yhteysvirhe."
 
-#: ../src/applet.c:436
+#: ../src/applet.c:498
 msgid "VPN Configuration Error"
 msgstr "VPN-yhteyden asetusvirhe"
 
-#: ../src/applet.c:437
+#: ../src/applet.c:499
 #, c-format
 msgid "The VPN connection '%s' was not correctly configured."
 msgstr "VPN-yhteyden \"%s\" asetukset ovat virheelliset."
 
-#: ../src/applet.c:442
+#: ../src/applet.c:504
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' because the VPN server did not "
@@ -121,12 +117,137 @@ msgstr ""
 "VPN-yhteyttä \"%s\" ei voitu käynnistää, koska VPN-palvelin ei palauttanut "
 "kelvollista verkkomäärittelyä."
 
-#: ../src/applet.c:512
+#: ../src/applet.c:574
 msgid "VPN Login Message"
 msgstr "VPN-yhteyden kirjautumisviesti"
 
-#: ../src/applet.c:737 ../src/applet.c:2633 ../src/other-network-dialog.c:458
-#: ../src/passphrase-dialog.c:228
+#: ../src/applet.c:904
+msgid "_Connect to Other Wireless Network..."
+msgstr "_Yhdistä muihin langattomiin verkkoihin..."
+
+#: ../src/applet.c:926
+msgid "Create _New Wireless Network..."
+msgstr "Luo _uusi langaton verkko..."
+
+#: ../src/applet.c:1055
+msgid "_VPN Connections"
+msgstr "_VPN-yhteydet"
+
+#: ../src/applet.c:1101
+msgid "_Configure VPN..."
+msgstr "_Määrittele VPN-yhteys..."
+
+#: ../src/applet.c:1105
+msgid "_Disconnect VPN..."
+msgstr "_Katkaise VPN-yhteys..."
+
+#: ../src/applet.c:1147 ../src/applet.c:2149
+msgid "Networking disabled"
+msgstr "Verkko ei ole käytössä"
+
+#: ../src/applet.c:1167
+msgid "No network devices have been found"
+msgstr "Verkkolaitteita ei löytynyt"
+
+#: ../src/applet.c:1299
+msgid "NetworkManager is not running..."
+msgstr "NetworkManager ei ole käytössä..."
+
+#. 'Enable Networking' item
+#: ../src/applet.c:1429
+msgid "Enable _Networking"
+msgstr "Ota _verkko käyttöön"
+
+#. 'Enable Wireless' item
+#: ../src/applet.c:1437
+msgid "Enable _Wireless"
+msgstr "Ota _langaton käyttöön"
+
+#. 'Connection Information' item
+#: ../src/applet.c:1445
+msgid "Connection _Information"
+msgstr "Tietoja _yhteydestä"
+
+#. Help item
+#: ../src/applet.c:1459
+msgid "_Help"
+msgstr "O_hje"
+
+#. About item
+#: ../src/applet.c:1468
+msgid "_About"
+msgstr "_Tietoja"
+
+#: ../src/applet.c:1965
+#, c-format
+msgid "Wireless network connection to '%s' (%d%%)"
+msgstr "Langaton verkkoyhteys \"%s\" (%d%%)"
+
+#: ../src/applet.c:2002
+#, c-format
+msgid "Preparing device %s for the wireless network '%s'..."
+msgstr "Valmistellaan laitetta %s langattomalle verkolle \"%s\"..."
+
+#: ../src/applet.c:2005
+#, c-format
+msgid "Attempting to join the wireless network '%s'..."
+msgstr "Yritetään liittyä langattomaan verkkoon \"%s\"..."
+
+#: ../src/applet.c:2008
+#, c-format
+msgid "Requesting a network address from the wireless network '%s'..."
+msgstr "Pyydetään verkko-osoitettta langattomasta verkosta \"%s\"..."
+
+#: ../src/applet.c:2011
+#, c-format
+msgid "Waiting for Network Key for the wireless network '%s'..."
+msgstr "Odotetaan verkon avainta langattomalle verkolle \"%s\""
+
+#: ../src/applet.c:2021
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "Yhteys langattomaan verkkoon \"%s\" on nyt muodostettu."
+
+#: ../src/applet.c:2022 ../src/applet.c:2077
+msgid "Connection Established"
+msgstr "Yhteys muodostettu"
+
+#: ../src/applet.c:2063
+#, c-format
+msgid "Preparing device %s for the wired network..."
+msgstr "Valmistellaan laitetta %s kiinteälle verkkoyhteydelle..."
+
+#: ../src/applet.c:2066
+#, c-format
+msgid "Configuring device %s for the wired network..."
+msgstr "Määritellään laitetta %s kiinteälle verkkoyhteydelle..."
+
+#: ../src/applet.c:2069
+msgid "Requesting a network address from the wired network..."
+msgstr "Pyydetään verkko-osoitetta kiinteästä verkosta..."
+
+#: ../src/applet.c:2073
+msgid "Wired network connection"
+msgstr "Kiinteä verkkoyhteys"
+
+#: ../src/applet.c:2078
+msgid "You are now connected to the wired network."
+msgstr "Yhteys kiinteään verkkoon on nyt muodostettu."
+
+#: ../src/applet.c:2153
+msgid "No network connection"
+msgstr "Ei verkkoyhteyttä"
+
+#: ../src/applet.c:2156
+msgid "Disconnected"
+msgstr "Yhteys katkaistu"
+
+#: ../src/applet.c:2157
+msgid "The network connection has been disconnected."
+msgstr "Yhteys verkkoon on katkaistu."
+
+#: ../src/applet.c:2371 ../src/other-network-dialog.c:454
+#: ../src/passphrase-dialog.c:246
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -134,168 +255,7 @@ msgstr ""
 "NetworkManager-sovelma ei voinut ladata jotain vaadituista resursseista "
 "(glade-tiedostoa ei löytynyt)."
 
-#: ../src/applet.c:749
-#, c-format
-msgid "The network device \"%s (%s)\" does not support wireless scanning."
-msgstr "Verkkolaite \"%s (%s)\" ei tue langattomien verkkojen etsimistä."
-
-#: ../src/applet.c:757
-#, c-format
-msgid "The network device \"%s (%s)\" does not support link detection."
-msgstr "Verkkolaite \"%s (%s)\" ei tue verkkoyhteyden havaitsemista."
-
-#. Note to translators: this is used if no essid is known
-#: ../src/applet.c:905 ../src/applet.c:1103
-msgid "(unknown)"
-msgstr "(tuntematon)"
-
-#: ../src/applet.c:911
-#, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "Valmistellaan laitetta %s kiinteälle verkkoyhteydelle..."
-
-#: ../src/applet.c:913
-#, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "Valmistellaan laitetta %s langattomalle verkolle \"%s\"..."
-
-#: ../src/applet.c:921
-#, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "Määritellään laitetta %s kiinteälle verkkoyhteydelle..."
-
-#: ../src/applet.c:923
-#, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "Yritetään liittyä langattomaan verkkoon \"%s\"..."
-
-#: ../src/applet.c:931
-#, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "Odotetaan verkon avainta langattomalle verkolle \"%s\""
-
-#: ../src/applet.c:939 ../src/applet.c:949
-msgid "Requesting a network address from the wired network..."
-msgstr "Pyydetään verkko-osoitetta kiinteästä verkosta..."
-
-#: ../src/applet.c:941 ../src/applet.c:951
-#, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Pyydetään verkko-osoitettta langattomasta verkosta \"%s\"..."
-
-#: ../src/applet.c:959
-msgid "Finishing connection to the wired network..."
-msgstr "Viimeistellään yhteyttä kiinteään verkkoon..."
-
-#: ../src/applet.c:961
-#, c-format
-msgid "Finishing connection to the wireless network '%s'..."
-msgstr "Viimeistellään yhteyttä langattomaan verkkoon \"%s\"..."
-
-#: ../src/applet.c:1078
-msgid "NetworkManager is not running"
-msgstr "NetworkManager ei ole käytössä"
-
-#: ../src/applet.c:1086 ../src/applet.c:1843
-msgid "Networking disabled"
-msgstr "Verkko ei ole käytössä"
-
-#: ../src/applet.c:1091
-msgid "No network connection"
-msgstr "Ei verkkoyhteyttä"
-
-#: ../src/applet.c:1096
-msgid "Wired network connection"
-msgstr "Kiinteä verkkoyhteys"
-
-#: ../src/applet.c:1100
-msgid "Connected to an Ad-Hoc wireless network"
-msgstr "Yhteys langattomaan Ad-Hoc-verkkoon"
-
-#: ../src/applet.c:1102
-#, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "Langaton verkkoyhteys \"%s\" (%d%%)"
-
-#: ../src/applet.c:1123
-#, c-format
-msgid "VPN connection to '%s'"
-msgstr "VPN-yhteys \"%s\""
-
-#: ../src/applet.c:1131
-#, c-format
-msgid "VPN connecting to '%s'"
-msgstr "VPN-yhteyttä \"%s\" avataan"
-
-#: ../src/applet.c:1556
-msgid "_Connect to Other Wireless Network..."
-msgstr "_Yhdistä muihin langattomiin verkkoihin..."
-
-#: ../src/applet.c:1577
-msgid "Create _New Wireless Network..."
-msgstr "Luo _uusi langaton verkko..."
-
-#: ../src/applet.c:1700
-msgid "_VPN Connections"
-msgstr "_VPN-yhteydet"
-
-#: ../src/applet.c:1745
-msgid "_Configure VPN..."
-msgstr "_Määrittele VPN-yhteys..."
-
-#: ../src/applet.c:1749
-msgid "_Disconnect VPN..."
-msgstr "_Katkaise VPN-yhteys..."
-
-#: ../src/applet.c:1771
-msgid "_Dial Up Connections"
-msgstr "_Modeemiyhteydet"
-
-#. FIXME: We should save and then check the state of the devices and show Connect _or_ Disconnect for each item
-#: ../src/applet.c:1782
-#, c-format
-msgid "Connect to %s..."
-msgstr "Ota yhteyttä kohteeseen %s..."
-
-#: ../src/applet.c:1788
-#, c-format
-msgid "Disconnect from %s..."
-msgstr "Katkaise yhteys kohteeseen %s..."
-
-#: ../src/applet.c:1837
-msgid "No network devices have been found"
-msgstr "Verkkolaitteita ei löytynyt"
-
-#: ../src/applet.c:2029
-msgid "NetworkManager is not running..."
-msgstr "NetworkManager ei ole käytössä..."
-
-#. 'Enable Networking' item
-#: ../src/applet.c:2210
-msgid "Enable _Networking"
-msgstr "Ota _verkko käyttöön"
-
-#. 'Enable Wireless' item
-#: ../src/applet.c:2216
-msgid "Enable _Wireless"
-msgstr "Ota _langaton käyttöön"
-
-#. 'Connection Information' item
-#: ../src/applet.c:2222
-msgid "Connection _Information"
-msgstr "Tietoja _yhteydestä"
-
-#. Help item
-#: ../src/applet.c:2233
-msgid "_Help"
-msgstr "O_hje"
-
-#. About item
-#: ../src/applet.c:2242
-msgid "_About"
-msgstr "_Tietoja"
-
-#: ../src/applet.c:2822
+#: ../src/applet.c:2561
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -303,45 +263,10 @@ msgstr ""
 "NetworkManager-sovelma ei löytänyt joitain vaadituista resursseista eikä "
 "pysty jatkamaan.\n"
 
-#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:926
+#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:937
 #, c-format
 msgid "Passphrase for wireless network %s"
 msgstr "Langattoman verkon %s tunnuslause"
-
-#: ../src/applet-dbus.c:274
-#, c-format
-msgid "Connection to the wireless network '%s' failed."
-msgstr "Yhteys langattomaan verkkoon \"%s\" epäonnistui."
-
-#: ../src/applet-dbus.c:279
-msgid "Connection to the wired network failed."
-msgstr "Yhteys kiinteään verkkoon epäonnistui."
-
-#: ../src/applet-dbus-devices.c:930
-#, c-format
-msgid "You are now connected to the Ad-Hoc wireless network '%s'."
-msgstr "Yhteys langattomaan Ad-Hoc-verkkoon \"%s\" on nyt muodostettu."
-
-#: ../src/applet-dbus-devices.c:935
-#, c-format
-msgid "You are now connected to the wireless network '%s'."
-msgstr "Yhteys langattomaan verkkoon \"%s\" on nyt muodostettu."
-
-#: ../src/applet-dbus-devices.c:942
-msgid "You are now connected to the wired network."
-msgstr "Yhteys kiinteään verkkoon on nyt muodostettu."
-
-#: ../src/applet-dbus-devices.c:948
-msgid "Connection Established"
-msgstr "Yhteys muodostettu"
-
-#: ../src/applet-dbus-devices.c:997
-msgid "Disconnected"
-msgstr "Yhteys katkaistu"
-
-#: ../src/applet-dbus-devices.c:998
-msgid "The network connection has been disconnected."
-msgstr "Yhteys verkkoon on katkaistu."
 
 #: ../src/applet.glade.h:1
 msgid " "
@@ -600,33 +525,33 @@ msgstr "Suunta"
 msgid "The orientation of the tray."
 msgstr "Ilmoitusalueen suunta."
 
-#: ../src/menu-items.c:88
+#: ../src/menu-items.c:61
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "Kiinteä verkkoyhteys (%s)"
 
-#: ../src/menu-items.c:91
+#: ../src/menu-items.c:64
 msgid "_Wired Network"
 msgstr "_Kiinteä verkkoyhteys"
 
-#: ../src/menu-items.c:162
+#: ../src/menu-items.c:113
 #, c-format
 msgid "Wireless Network (%s)"
 msgid_plural "Wireless Networks (%s)"
 msgstr[0] "Langaton verkko (%s)"
 msgstr[1] "Langattomat verkot (%s)"
 
-#: ../src/menu-items.c:164
+#: ../src/menu-items.c:117
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Langaton verkko"
 msgstr[1] "Langattomat verkot"
 
-#: ../src/menu-items.c:343
+#: ../src/menu-items.c:313
 msgid " (invalid Unicode)"
 msgstr " (virheellistä Unicodea)"
 
-#: ../src/other-network-dialog.c:352
+#: ../src/other-network-dialog.c:347
 #, c-format
 msgid ""
 "By default, the wireless network's name is set to your computer's name, %s, "
@@ -635,37 +560,37 @@ msgstr ""
 "Oletuksena langattoman verkon nimi asetetaan samaksi kuin tietokoneesi nimi "
 "\"%s\" ja salaus on poissa käytöstä"
 
-#: ../src/other-network-dialog.c:358
+#: ../src/other-network-dialog.c:353
 msgid "Create new wireless network"
 msgstr "Luo uusi langaton verkko"
 
-#: ../src/other-network-dialog.c:359
+#: ../src/other-network-dialog.c:354
 msgid ""
 "Enter the name and security settings of the wireless network you wish to "
 "create."
 msgstr "Syötä luotavan langattoman verkon nimi ja turva-asetukset."
 
-#: ../src/other-network-dialog.c:363
+#: ../src/other-network-dialog.c:358
 msgid "Create New Wireless Network"
 msgstr "Luo uusi langaton verkko"
 
-#: ../src/other-network-dialog.c:368
+#: ../src/other-network-dialog.c:363
 msgid "Existing wireless network"
 msgstr "Olemassaoleva langaton verkko"
 
-#: ../src/other-network-dialog.c:369
+#: ../src/other-network-dialog.c:364
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Syötä sen langattoman verkon nimi, johon haluat ottaa yhteyttä."
 
-#: ../src/other-network-dialog.c:371
+#: ../src/other-network-dialog.c:366
 msgid "Connect to Other Wireless Network"
 msgstr "Ota yhteyttä muuhun langattomaan verkkoon"
 
-#: ../src/passphrase-dialog.c:215
+#: ../src/passphrase-dialog.c:233
 msgid "Error connecting to wireless network"
 msgstr "Virhe yhdistettäessä langattomaan verkkoon"
 
-#: ../src/passphrase-dialog.c:216
+#: ../src/passphrase-dialog.c:234
 msgid ""
 "The requested wireless network requires security capabilities unsupported by "
 "your hardware."
@@ -762,6 +687,54 @@ msgstr "WPA2 (henkilökohtainen)"
 #: ../src/wso-wpa-psk.c:180
 msgid "WPA Personal"
 msgstr "WPA (henkilökohtainen)"
+
+#~ msgid "Could not find some required resources (the glade file)!"
+#~ msgstr "Joitain vaadittuja osia ei löytynyt (glade-tiedostoa)!"
+
+#~ msgid "The network device \"%s (%s)\" does not support wireless scanning."
+#~ msgstr "Verkkolaite \"%s (%s)\" ei tue langattomien verkkojen etsimistä."
+
+#~ msgid "The network device \"%s (%s)\" does not support link detection."
+#~ msgstr "Verkkolaite \"%s (%s)\" ei tue verkkoyhteyden havaitsemista."
+
+#~ msgid "(unknown)"
+#~ msgstr "(tuntematon)"
+
+#~ msgid "Finishing connection to the wired network..."
+#~ msgstr "Viimeistellään yhteyttä kiinteään verkkoon..."
+
+#~ msgid "Finishing connection to the wireless network '%s'..."
+#~ msgstr "Viimeistellään yhteyttä langattomaan verkkoon \"%s\"..."
+
+#~ msgid "NetworkManager is not running"
+#~ msgstr "NetworkManager ei ole käytössä"
+
+#~ msgid "Connected to an Ad-Hoc wireless network"
+#~ msgstr "Yhteys langattomaan Ad-Hoc-verkkoon"
+
+#~ msgid "VPN connection to '%s'"
+#~ msgstr "VPN-yhteys \"%s\""
+
+#~ msgid "VPN connecting to '%s'"
+#~ msgstr "VPN-yhteyttä \"%s\" avataan"
+
+#~ msgid "_Dial Up Connections"
+#~ msgstr "_Modeemiyhteydet"
+
+#~ msgid "Connect to %s..."
+#~ msgstr "Ota yhteyttä kohteeseen %s..."
+
+#~ msgid "Disconnect from %s..."
+#~ msgstr "Katkaise yhteys kohteeseen %s..."
+
+#~ msgid "Connection to the wireless network '%s' failed."
+#~ msgstr "Yhteys langattomaan verkkoon \"%s\" epäonnistui."
+
+#~ msgid "Connection to the wired network failed."
+#~ msgstr "Yhteys kiinteään verkkoon epäonnistui."
+
+#~ msgid "You are now connected to the Ad-Hoc wireless network '%s'."
+#~ msgstr "Yhteys langattomaan Ad-Hoc-verkkoon \"%s\" on nyt muodostettu."
 
 #~ msgid ""
 #~ "Copyright © 2004-2005 Red Hat, Inc.\n"
