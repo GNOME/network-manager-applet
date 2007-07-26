@@ -193,9 +193,7 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	}
 
 	/* Hack: 802.1x passwords are not stored in the keyring */
-	if (!new_key &&
-		((we_cipher == NM_AUTH_TYPE_WPA_EAP && !have_priv_key_file) ||
-		we_cipher == NM_AUTH_TYPE_LEAP))
+	if (!new_key && (we_cipher == NM_AUTH_TYPE_WPA_EAP && !have_priv_key_file))
 	{
 		NMGConfWSO *gconf_wso;
 		gconf_wso = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client,
