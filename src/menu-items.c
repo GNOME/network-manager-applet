@@ -246,27 +246,10 @@ network_menu_item_update (NMApplet *applet,
 		gtk_image_set_from_pixbuf (GTK_IMAGE (item->security_image), applet->adhoc_icon);
 	else if (encrypted)
 	{
-		/*
-		 * We want to use "network-wireless-encrypted," which was recently added to the icon spec,
-		 * but not all themes carry it as of yet.  Thus, we fall back to "gnome-lockscreen."
-		 *
-		 * XXX: Would be nice to require gtk-2.6.  For now, we have an ugly and a simple version.
-		 */
-#if GTK_CHECK_VERSION(2,6,0)
 		if (gtk_icon_theme_has_icon (gtk_icon_theme_get_default (), "network-wireless-encrypted"))
 			gtk_image_set_from_icon_name (GTK_IMAGE (item->security_image), "network-wireless-encrypted", GTK_ICON_SIZE_MENU);
 		else
 			gtk_image_set_from_icon_name (GTK_IMAGE (item->security_image), "gnome-lockscreen", GTK_ICON_SIZE_MENU);
-# else
-		GdkPixbuf *pixbuf;
-		GtkIconTheme *icon_theme;
-
-		icon_theme = gtk_icon_theme_get_default ();
-		pixbuf = gtk_icon_theme_load_icon (icon_theme, "network-wireless-encrypted", GTK_ICON_SIZE_MENU, 0, NULL);
-		if (!pixbuf)
-			pixbuf = gtk_icon_theme_load_icon (icon_theme, "gnome-lockscreen", GTK_ICON_SIZE_MENU, 0, NULL);
-		gtk_image_set_from_pixbuf (GTK_IMAGE (item->security_image), pixbuf);
-#endif
 	}
 	else	/* neither encrypted nor Ad-Hoc */
 		gtk_image_set_from_stock (GTK_IMAGE (item->security_image), NULL, GTK_ICON_SIZE_MENU);

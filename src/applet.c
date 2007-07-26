@@ -45,10 +45,6 @@
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
 
-#if !GTK_CHECK_VERSION(2,6,0)
-#include <gnome.h>
-#endif
-
 #include <glade/glade.h>
 #include <gconf/gconf-client.h>
 
@@ -342,14 +338,12 @@ nma_show_info_cb (GtkMenuItem *mi, NMApplet *applet)
 	}
 }
 
-#if GTK_CHECK_VERSION (2, 6, 0)
 static void about_dialog_activate_link_cb (GtkAboutDialog *about,
                                            const gchar *url,
                                            gpointer data)
 {
 	gnome_url_show (url, NULL);
 }
-#endif
 
 static void nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
 {
@@ -379,32 +373,6 @@ static void nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
 		NULL
 	};
 
-#if !GTK_CHECK_VERSION(2,6,0)
-	GdkPixbuf	*pixbuf;
-	char		*file;
-	GtkWidget	*about_dialog;
-
-	/* GTK 2.4 and earlier, have to use libgnome for about dialog */
-	file = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, "gnome-networktool.png", FALSE, NULL);
-	pixbuf = gdk_pixbuf_new_from_file (file, NULL);
-	g_free (file);
-
-	about_dialog = gnome_about_new (_("NetworkManager Applet"),
-	                                VERSION,
-	                                _("Copyright \xc2\xa9 2004-2007 Red Hat, Inc.\n"
-							    "Copyright \xc2\xa9 2005-2007 Novell, Inc."),
-	                                _("Notification area applet for managing your network devices and connections."),
-	                                authors,
-	                                NULL,
-	                                _("translator-credits"),
-	                                pixbuf);
-	g_object_unref (pixbuf);
-
-	gtk_window_set_screen (GTK_WINDOW (about_dialog), gtk_widget_get_screen (GTK_WIDGET (applet->tray_icon)));
-	g_signal_connect (about_dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &about_dialog);
-	gtk_widget_show (about_dialog);
-
-#else
 
 	/* FIXME: unnecessary with libgnomeui >= 2.16.0 */
 	static gboolean been_here = FALSE;
@@ -427,7 +395,6 @@ static void nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
 	                       "translator-credits", _("translator-credits"),
 	                       "logo-icon-name", GTK_STOCK_NETWORK,
 	                       NULL);
-#endif
 }
 
 

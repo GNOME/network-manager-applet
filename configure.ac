@@ -64,7 +64,7 @@ PKG_CHECK_MODULES(NMA,
 		 glib-2.0 >= 2.10
 		 NetworkManager >= 0.7.0
 		 libnm-glib
-		 gtk+-2.0
+		 gtk+-2.0 >= 2.6
 		 libglade-2.0
 		 gconf-2.0
 		 gnome-keyring-1
