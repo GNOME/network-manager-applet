@@ -32,36 +32,21 @@
 
 #include "applet.h"
 
-static void session_die (GnomeClient *client, gpointer client_data)
-{
-	NMApplet *applet = client_data;
-
-	/* FIXME: */
-	/* nma_dbus_vpn_deactivate_connection (applet->connection); */
-	gtk_main_quit ();
-}
 
 int main (int argc, char *argv[])
 {
 	NMApplet *	nma;
-	GnomeClient *	client;
 	GnomeProgram *	program;
 
 	program = gnome_program_init ("nm-applet", VERSION, LIBGNOMEUI_MODULE,
 				      argc, argv, 
 				      GNOME_PARAM_NONE, GNOME_PARAM_NONE);
 
-    	client = gnome_master_client ();
-    	gnome_client_set_restart_style (client, GNOME_RESTART_ANYWAY);
-
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
 	nma = nma_new ();
-
-	g_signal_connect (client, "save_yourself", G_CALLBACK (gtk_true), NULL);
-	g_signal_connect (client, "die", G_CALLBACK (session_die), nma);	
 
 	gtk_main ();
 
