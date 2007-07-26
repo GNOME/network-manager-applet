@@ -103,7 +103,7 @@ static void nmi_dbus_get_network_key_callback (GnomeKeyringResult result,
 	char *				net_path = cb_data->net_path;
 	char *				essid = cb_data->essid;
 
-	if (result == GNOME_KEYRING_RESULT_OK)
+	if (result == GNOME_KEYRING_RESULT_OK && found_list)
 	{
 		gchar *			escaped_network;
 		GnomeKeyringFound *	found;
