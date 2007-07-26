@@ -212,28 +212,6 @@ create_wireless_adapter_model (NMApplet *applet)
 	return GTK_TREE_MODEL (model);
 }
 
-static void destroy_wireless_adapter_model (GtkTreeModel *model)
-{
-	GtkTreeIter	iter;
-	gboolean		valid;
-
-	g_return_if_fail (model != NULL);
-
-	valid = gtk_tree_model_get_iter_first (model, &iter);
-	while (valid)
-	{
-		char *str;
-		NMDevice *dev;
-
-		gtk_tree_model_get (model, &iter, NAME_COLUMN, &str, DEV_COLUMN, &dev, -1);
-		g_object_unref (dev);
-		valid = gtk_tree_model_iter_next (model, &iter);
-	}
-
-	g_object_unref (G_OBJECT (model));
-}
-
-
 static const char * get_host_name (void)
 {
 #if GLIB_CHECK_VERSION(2,8,0)
@@ -435,7 +413,6 @@ static void nma_ond_response_cb (GtkDialog *dialog, gint response, gpointer data
 	wsm_free (wsm);
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
-	destroy_wireless_adapter_model (model);
 }
 
 
