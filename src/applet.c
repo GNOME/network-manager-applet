@@ -1991,6 +1991,8 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		g_free (tip);
 #endif
 
+		tip = g_strdup_printf (_("Wireless network connection to '%s'"), esc_ssid);
+
 		handled = TRUE;
 		break;
 	case NM_DEVICE_STATE_DISCONNECTED:
