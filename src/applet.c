@@ -919,16 +919,20 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 	NMNetworkMenuItem *	item;
 	GtkCheckMenuItem *	gtk_item;
 	DeviceMenuItemInfo *info;
+	GByteArray * ssid;
+
+	/* Don't add BSSs that hide their SSID */
+	ssid = nm_access_point_get_ssid (ap);
+	if (nma_is_empty_ssid (ssid->data, ssid->len))
+		return;
 
 	item = network_menu_item_new (cb_data->applet->encryption_size_group);
 	gtk_item = network_menu_item_get_check_item (item);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), GTK_WIDGET (gtk_item));
 	network_menu_item_update (cb_data->applet, item, ap, cb_data->has_encrypted);
-	if (nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED && cb_data->active_ssid) {
-		GByteArray * ssid;
-
-		ssid = nm_access_point_get_ssid (ap);
+	if ((nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED)
+	    && cb_data->active_ssid) {
 		if (ssid && nma_same_ssid (ssid, cb_data->active_ssid))
 			gtk_check_menu_item_set_active (gtk_item, TRUE);
 		g_byte_array_free (ssid, TRUE);
