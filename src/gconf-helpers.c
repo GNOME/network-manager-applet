@@ -186,7 +186,7 @@ nm_gconf_get_bytearray_helper (GConfClient *client,
 			{
 				int i = gconf_value_get_int ((GConfValue *) elt->data);
 
-				g_byte_array_append (*value, (const guint 8 *) &i, sizeof (i));
+				g_byte_array_append (*value, (const guint *) &i, sizeof (i));
 			}
 
 			success = TRUE;

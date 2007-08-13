@@ -21,6 +21,7 @@
  */
 
 #include <string.h>
+#include <gnome-keyring.h>
 #include <nm-connection.h>
 #include "applet.h"
 #include "applet-dbus-settings.h"
@@ -227,10 +228,10 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 						   applet_connection->conf_dir,
 						   "type", "connection",
 						   &info_setting->devtype);
-	nm_gconf_get_boolean_helper (applet_connection->conf_client,
-						    applet_connection->conf_dir,
-						    "autoconnect", "connection",
-						    &info_setting->autoconnect);
+	nm_gconf_get_bool_helper (applet_connection->conf_client,
+						 applet_connection->conf_dir,
+						 "autoconnect", "connection",
+						 &info_setting->autoconnect);
 
 	nm_connection_add_setting (settings, (NMSetting *) info_setting);
 
@@ -281,11 +282,11 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 
 		/* wireless security settings */
 		key = g_strdup_printf ("%s/802-11-wireless-security", applet_connection->conf_dir);
-		if (gconf_client_dir_exists (applet_connection->conf_client, key)) {
-			NMSettingWirelessSecurity *security_settings;
+		if (gconf_client_dir_exists (applet_connection->conf_client, key, NULL)) {
+			NMSettingWirelessSecurity *security_setting;
 
 			wireless_setting->security = g_strdup ("802-11-wireless-security");
-			security_setting = nm_setting_wireless_security_new ();
+			security_setting = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 			nm_gconf_get_string_helper (applet_connection->conf_client,
 								   applet_connection->conf_dir,
 								   "key-mgmt", "802-11-wireless-security",
@@ -325,7 +326,7 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 			nm_gconf_get_bytearray_helper (applet_connection->conf_client,
 									 applet_connection->conf_dir,
 									 "ca-cert", "802-11-wireless-security",
-									 &wireless_setting->ca_cert);
+									 &security_setting->ca_cert);
 			nm_gconf_get_string_helper (applet_connection->conf_client,
 								   applet_connection->conf_dir,
 								   "ca-path", "802-11-wireless-security",
@@ -333,11 +334,11 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 			nm_gconf_get_bytearray_helper (applet_connection->conf_client,
 									 applet_connection->conf_dir,
 									 "client-cert", "802-11-wireless-security",
-									 &wireless_setting->client_cert);
+									 &security_setting->client_cert);
 			nm_gconf_get_bytearray_helper (applet_connection->conf_client,
 									 applet_connection->conf_dir,
 									 "private-key", "802-11-wireless-security",
-									 &wireless_setting->private_key);
+									 &security_setting->private_key);
 			nm_gconf_get_string_helper (applet_connection->conf_client,
 								   applet_connection->conf_dir,
 								   "phase1-peapver", "802-11-wireless-security",
@@ -357,11 +358,11 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 			nm_gconf_get_string_helper (applet_connection->conf_client,
 								   applet_connection->conf_dir,
 								   "phase2-autheap", "802-11-wireless-security",
-								   &security_setting->phase2_auth_eap);
+								   &security_setting->phase2_autheap);
 			nm_gconf_get_bytearray_helper (applet_connection->conf_client,
 									 applet_connection->conf_dir,
 									 "phase2-ca-cert", "802-11-wireless-security",
-									 &wireless_setting->phase2_ca_cert);
+									 &security_setting->phase2_ca_cert);
 			nm_gconf_get_string_helper (applet_connection->conf_client,
 								   applet_connection->conf_dir,
 								   "phase2-ca-path", "802-11-wireless-security",
@@ -369,11 +370,11 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 			nm_gconf_get_bytearray_helper (applet_connection->conf_client,
 									 applet_connection->conf_dir,
 									 "phase2-client-cert", "802-11-wireless-security",
-									 &wireless_setting->phase2_client_cert);
+									 &security_setting->phase2_client_cert);
 			nm_gconf_get_bytearray_helper (applet_connection->conf_client,
 									 applet_connection->conf_dir,
 									 "phase2-private-key", "802-11-wireless-security",
-									 &wireless_setting->phase2_private_key);
+									 &security_setting->phase2_private_key);
 			nm_gconf_get_string_helper (applet_connection->conf_client,
 								   applet_connection->conf_dir,
 								   "nai", "802-11-wireless-security",
@@ -381,9 +382,9 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 
 			nm_connection_add_setting (settings, (NMSetting *) security_setting);
 		}
-	}
 
-	g_free (key);
+		g_free (key);
+	}
 
 	/* remove old settings and use new ones */
 	if (applet_connection->settings)
