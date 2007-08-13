@@ -1103,6 +1103,38 @@ static gboolean is_vpn_available (void)
 	return result;
 }
 
+gint
+sort_devices (gconstpointer a, gconstpointer b)
+{
+	NMDevice *aa = NM_DEVICE (a);
+	NMDevice *bb = NM_DEVICE (b);
+	GType aa_type;
+	GType bb_type;
+
+	aa_type = G_OBJECT_TYPE (G_OBJECT (aa));
+	bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
+
+	if (aa_type == bb_type) {
+		char *aa_desc = nm_device_get_description (aa);
+		char *bb_desc = nm_device_get_description (bb);
+		gint ret;
+
+		ret = strcmp (aa_desc, bb_desc);
+
+		g_free (aa_desc);
+		g_free (bb_desc);
+
+		return ret;
+	}
+
+	if (aa_type == NM_TYPE_DEVICE_802_3_ETHERNET && bb_type == NM_TYPE_DEVICE_802_11_WIRELESS)
+		return -1;
+	if (aa_type == NM_TYPE_DEVICE_802_11_WIRELESS && bb_type == NM_TYPE_DEVICE_802_3_ETHERNET)
+		return 1;
+
+	return 0;
+}
+
 static void
 nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 {
@@ -1117,6 +1149,10 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	}
 
 	devices = nm_client_get_devices (applet->nm_client);
+
+	if (devices)
+		devices = g_slist_sort (devices, sort_devices);
+
 	for (iter = devices; iter; iter = iter->next) {
 		NMDevice *device = NM_DEVICE (iter->data);
 
