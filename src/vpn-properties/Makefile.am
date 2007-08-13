@@ -23,16 +23,13 @@ nm_vpn_properties_CFLAGS =                              \
         -DG_DISABLE_DEPRECATED                          \
         -DGDK_DISABLE_DEPRECATED                        \
         -DGNOMELOCALEDIR=\"$(datadir)/locale\"          \
-        -DVERSION=\"$(VERSION)\" \
-        $(NULL)
+        -DVERSION=\"$(VERSION)\"
 
 nm_vpn_properties_LDADD = $(NMA_LIBS)
 
 CLEANFILES = $(server_DATA) *.bak *.gladep *~
 
-EXTRA_DIST =                            \
-        $(glade_DATA)                   \
-        $(NULL)
+EXTRA_DIST = $(glade_DATA)
 
 
 
