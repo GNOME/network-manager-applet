@@ -1,3 +1,5 @@
+SUBDIRS = vpn-properties
+
 NULL=
 
 bin_PROGRAMS = nm-applet

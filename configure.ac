@@ -63,7 +63,7 @@ PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.72
 		 glib-2.0 >= 2.10
 		 NetworkManager >= 0.7.0
-		 libnm-glib
+		 libnm_glib
 		 gtk+-2.0 >= 2.6
 		 libglade-2.0
 		 gconf-2.0
@@ -194,6 +194,7 @@ fi
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/vpn-properties/Makefile
 icons/Makefile
 po/Makefile.in
 ])
