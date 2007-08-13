@@ -31,6 +31,8 @@ nm_applet_SOURCES =			\
 	applet-dbus.h			\
 	applet-dbus-info.c		\
 	applet-dbus-info.h		\
+	applet-dbus-settings.c		\
+	applet-dbus-settings.h		\
 	other-network-dialog.c	\
 	other-network-dialog.h	\
 	passphrase-dialog.c		\

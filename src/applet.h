@@ -54,6 +54,7 @@
 /*
  * Preference locations
  */
+#define GCONF_PATH_CONNECTIONS          "/system/networking/connections/"
 #define GCONF_PATH_WIRELESS_NETWORKS	"/system/networking/wireless/networks"
 #define GCONF_PATH_WIRELESS			"/system/networking/wireless"
 #define GCONF_PATH_VPN_CONNECTIONS		"/system/networking/vpn_connections"

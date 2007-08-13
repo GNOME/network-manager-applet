@@ -118,3 +118,82 @@ nm_gconf_get_bool_helper (GConfClient *client,
 
 	return success;
 }
+
+gboolean
+nm_gconf_get_stringlist_helper (GConfClient *client,
+				const char *path,
+				const char *key,
+				const char *network,
+				GSList **value)
+{
+	char *gc_key;
+	GConfValue *gc_value;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if ((gc_value = gconf_client_get (client, gc_key, NULL)))
+	{
+		if (gc_value->type == GCONF_VALUE_LIST
+		    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_STRING)
+		{
+			GSList *elt;
+
+			for (elt = gconf_value_get_list (gc_value); elt != NULL; elt = g_slist_next (elt))
+			{
+				const char *string = gconf_value_get_string ((GConfValue *) elt->data);
+
+				*value = g_slist_append (*value, g_strdup (string));
+			}
+
+			success = TRUE;
+		}
+
+		g_free (gc_key);
+	}
+
+	return success;
+}
+
+gboolean
+nm_gconf_get_bytearray_helper (GConfClient *client,
+			       const char *path,
+			       const char *key,
+			       const char *network,
+			       GByteArray **value)
+{
+	char *gc_key;
+	GConfValue *gc_value;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if ((gc_value = gconf_client_get (client, gc_key, NULL)))
+	{
+		if (gc_value->type == GCONF_VALUE_LIST
+		    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_INT)
+		{
+			GSList *elt;
+
+			*value = g_byte_array_new ();
+			for (elt = gconf_value_get_list (gc_value); elt != NULL; elt = g_slist_next (elt))
+			{
+				int i = gconf_value_get_int ((GConfValue *) elt->data);
+
+				g_byte_array_append (*value, (const guint 8 *) &i, sizeof (i));
+			}
+
+			success = TRUE;
+		}
+
+		g_free (gc_key);
+	}
+
+	return success;
+}
