@@ -2224,7 +2224,7 @@ foo_client_vpn_state_change (NMClient *client, NMVPNActStage state, gpointer use
 		}
 		foo_set_icon (applet, applet->vpn_lock_icon, ICON_LAYER_VPN);
 		break;
-	case	NM_VPN_ACT_STAGE_PREPARE:
+	case NM_VPN_ACT_STAGE_PREPARE:
 	case NM_VPN_ACT_STAGE_CONNECT:
 	case NM_VPN_ACT_STAGE_IP_CONFIG_GET:
 		if (applet->animation_id == 0) {
