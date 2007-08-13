@@ -2217,7 +2217,7 @@ foo_client_vpn_state_change (NMClient *client, NMVPNActStage state, gpointer use
 	char *tip = NULL;
 
 	switch (state) {
-	case	NM_VPN_ACT_STAGE_ACTIVATED:
+	case NM_VPN_ACT_STAGE_ACTIVATED:
 		if (applet->animation_id) {
 			g_source_remove (applet->animation_id);
 			applet->animation_id = 0;
