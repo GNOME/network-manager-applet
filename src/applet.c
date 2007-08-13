@@ -1004,7 +1004,8 @@ nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *apple
 	g_slist_foreach (networks, nma_add_networks_helper, &add_networks_cb);
 	g_slist_free (networks);
 
-	g_byte_array_free (add_networks_cb.active_ssid, TRUE);
+	if (add_networks_cb.active_ssid)
+		g_byte_array_free (add_networks_cb.active_ssid, TRUE);
 }
 
 static void nma_menu_add_vpn_menu (GtkWidget *menu, NMApplet *applet)
