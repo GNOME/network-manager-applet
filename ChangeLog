@@ -1,6 +1,16 @@
 2007-08-13  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
+		- (nma_get_first_active_vpn_connection,
+		   nma_menu_disconnect_vpn_item_activate,
+		   nma_menu_add_vpn_menu): list returned from
+			nm_client_get_vpn_connections() needs to be freed now
+		- (foo_manager_running): set applet & vpn state to UNKNOWN when NM
+			goes away
+
+2007-08-13  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
 		- (nma_add_networks_helper): don't show non-SSID-broadcasting APs
 			in the menu
 

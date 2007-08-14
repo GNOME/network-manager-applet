@@ -564,16 +564,19 @@ nma_get_first_active_vpn_connection (NMApplet *applet)
 {
 	GSList *connections;
 	GSList *iter;
+	NMVPNConnection * connection = NULL;
 
 	connections = nm_client_get_vpn_connections (applet->nm_client);
 	for (iter = connections; iter; iter = iter->next) {
 		NMVPNConnection *connection = NM_VPN_CONNECTION (iter->data);
 
 		if (nm_vpn_connection_get_state (connection) == NM_VPN_ACT_STAGE_ACTIVATED)
-			return connection;
+			goto out;
 	}
 
-	return NULL;
+out:
+	g_slist_free (connections);
+	return connection;
 }
 
 
@@ -763,18 +766,21 @@ nma_menu_disconnect_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	GSList *iter;
+	GSList *connections;
 
 	/* The current design (both NM and applet) disallows multiple active VPN connections.
 	   Which one of the connections should we deactivate here? Currently, all (which always means one).
 	*/
 
-	for (iter = nm_client_get_vpn_connections (applet->nm_client); iter; iter = iter->next) {
+	connections = nm_client_get_vpn_connections (applet->nm_client);
+	for (iter = connections; iter; iter = iter->next) {
 		NMVPNConnection *connection = NM_VPN_CONNECTION (iter->data);
 
 		if (nm_vpn_connection_get_state (connection) == NM_VPN_ACT_STAGE_ACTIVATED ||
 		    nm_vpn_connection_is_activating (connection))
 			nm_vpn_connection_deactivate (connection);
 	}
+	g_slist_free (connections);
 
 	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
@@ -1084,6 +1090,8 @@ static void nma_menu_add_vpn_menu (GtkWidget *menu, NMApplet *applet)
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
 	gtk_widget_show_all (GTK_WIDGET (item));
+
+	g_slist_free (vpn_connections);
 }
 
 
@@ -2265,8 +2273,12 @@ foo_manager_running (NMClient *client,
 		/* Force the icon update */
 		foo_client_state_change (client, nm_client_get_state (client), applet);
 		foo_client_vpn_state_change (client, nm_client_get_vpn_state (client), applet);
-	} else
+	} else {
 		g_message ("NM disappeared");
+
+		foo_client_state_change (client, NM_STATE_UNKNOWN, applet);
+		foo_client_vpn_state_change (client, NM_VPN_STATE_UNKNOWN, applet);
+	}
 }
 
 static gboolean
