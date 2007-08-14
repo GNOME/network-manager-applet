@@ -569,8 +569,9 @@ nma_get_first_active_vpn_connection (NMApplet *applet)
 	connections = nm_client_get_vpn_connections (applet->nm_client);
 	for (iter = connections; iter; iter = iter->next) {
 		NMVPNConnection *connection = NM_VPN_CONNECTION (iter->data);
+		NMVPNConnectionState state = nm_vpn_connection_get_state (connection);
 
-		if (nm_vpn_connection_get_state (connection) == NM_VPN_ACT_STAGE_ACTIVATED)
+		if (state == NM_VPN_CONNECTION_STATE_ACTIVATED)
 			goto out;
 	}
 
@@ -775,9 +776,10 @@ nma_menu_disconnect_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 	connections = nm_client_get_vpn_connections (applet->nm_client);
 	for (iter = connections; iter; iter = iter->next) {
 		NMVPNConnection *connection = NM_VPN_CONNECTION (iter->data);
+		NMVPNConnectionState state = nm_vpn_connection_get_state (connection);
 
-		if (nm_vpn_connection_get_state (connection) == NM_VPN_ACT_STAGE_ACTIVATED ||
-		    nm_vpn_connection_is_activating (connection))
+		if (   (state == NM_VPN_CONNECTION_STATE_ACTIVATED)
+		    || nm_vpn_connection_is_activating (connection))
 			nm_vpn_connection_deactivate (connection);
 	}
 	g_slist_free (connections);
@@ -2235,22 +2237,24 @@ foo_vpn_animation_timeout (gpointer data)
 }
 
 static void
-foo_client_vpn_state_change (NMClient *client, NMVPNActStage state, gpointer user_data)
+foo_client_vpn_state_change (NMClient *client,
+                             NMVPNConnectionState state,
+                             gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	char *tip = NULL;
 
 	switch (state) {
-	case NM_VPN_ACT_STAGE_ACTIVATED:
+	case NM_VPN_CONNECTION_STATE_ACTIVATED:
 		if (applet->animation_id) {
 			g_source_remove (applet->animation_id);
 			applet->animation_id = 0;
 		}
 		foo_set_icon (applet, applet->vpn_lock_icon, ICON_LAYER_VPN);
 		break;
-	case NM_VPN_ACT_STAGE_PREPARE:
-	case NM_VPN_ACT_STAGE_CONNECT:
-	case NM_VPN_ACT_STAGE_IP_CONFIG_GET:
+	case NM_VPN_CONNECTION_STATE_PREPARE:
+	case NM_VPN_CONNECTION_STATE_CONNECT:
+	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
 		if (applet->animation_id == 0) {
 			applet->animation_step = 0;
 			applet->animation_id = g_timeout_add (100, foo_vpn_animation_timeout, applet);
@@ -2286,14 +2290,19 @@ foo_manager_running (NMClient *client,
 
 	if (running) {
 		g_message ("NM appeared");
+
 		/* Force the icon update */
 		foo_client_state_change (client, nm_client_get_state (client), applet);
+
+		/* FIXME: don't call nm_client_get_vpn_state() until we've tried
+		 * to get VPN connections.  Otherwise this call just errors out.
+		 */
 		foo_client_vpn_state_change (client, nm_client_get_vpn_state (client), applet);
 	} else {
 		g_message ("NM disappeared");
 
 		foo_client_state_change (client, NM_STATE_UNKNOWN, applet);
-		foo_client_vpn_state_change (client, NM_VPN_STATE_UNKNOWN, applet);
+		foo_client_vpn_state_change (client, NM_VPN_CONNECTION_STATE_UNKNOWN, applet);
 	}
 }
 
