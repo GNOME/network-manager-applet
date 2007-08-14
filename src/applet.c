@@ -1018,6 +1018,21 @@ nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *apple
 		g_byte_array_free (add_networks_cb.active_ssid, TRUE);
 }
 
+static gint
+sort_vpn_connections (gconstpointer tmpa,
+                      gconstpointer tmpb)
+{
+	NMVPNConnection * a = NM_VPN_CONNECTION (tmpa);
+	NMVPNConnection * b = NM_VPN_CONNECTION (tmpb);
+
+	if (a && !b)
+		return 1;
+	if (b && !a)
+		return -1;
+	return strcmp (nm_vpn_connection_get_name (a),
+	               nm_vpn_connection_get_name (b));
+}
+
 static void nma_menu_add_vpn_menu (GtkWidget *menu, NMApplet *applet)
 {
 	GtkMenuItem	*item;
@@ -1034,6 +1049,7 @@ static void nma_menu_add_vpn_menu (GtkWidget *menu, NMApplet *applet)
 
 	vpn_menu = GTK_MENU (gtk_menu_new ());
 	vpn_connections = nm_client_get_vpn_connections (applet->nm_client);
+	vpn_connections = g_slist_sort (vpn_connections, sort_vpn_connections);
 	active_vpn = nma_get_first_active_vpn_connection (applet);
 
 	for (elt = vpn_connections; elt; elt = g_slist_next (elt))
