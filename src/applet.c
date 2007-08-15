@@ -86,6 +86,10 @@ static void				nma_icons_zero (NMApplet *applet);
 static gboolean			nma_icons_load_from_disk (NMApplet *applet);
 static void			nma_finalize (GObject *object);
 
+static void foo_client_vpn_state_change (NMClient *client,
+                             NMVPNConnectionState state,
+                             gpointer user_data);
+
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
 
 /* Shamelessly ripped from the Linux kernel ieee80211 stack */
@@ -1872,6 +1876,11 @@ foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, int layer)
 	GSList *link;
 	int len;
 
+	/* FIXME: this code is buggy WRT layering; it requires that
+	 * the lowest layers get set first.  Ideally, we'd just have slots
+	 * for each layer rather than a linked list.
+	 */
+
 	len = g_slist_length (applet->active_pixbufs);
 
 	if (pixbuf) {
@@ -2206,6 +2215,12 @@ foo_client_state_change (NMClient *client, NMState state, gpointer user_data)
 		gtk_status_icon_set_tooltip (applet->status_icon, tip);
 		g_free (tip);
 	}
+
+	/* Update VPN icon too to ensure that the VPN icon doesn't
+	 * race with the main icon for layer 1.  The icon layer code is buggy
+	 * WRT to this; if the VPN icon gets set first.
+	 */
+	foo_client_vpn_state_change (client, nm_client_get_vpn_state (client), applet);
 }
 
 static void
@@ -2293,10 +2308,6 @@ foo_manager_running (NMClient *client,
 
 		/* Force the icon update */
 		foo_client_state_change (client, nm_client_get_state (client), applet);
-
-		/* FIXME: don't call nm_client_get_vpn_state() until we've tried
-		 * to get VPN connections.  Otherwise this call just errors out.
-		 */
 		foo_client_vpn_state_change (client, nm_client_get_vpn_state (client), applet);
 	} else {
 		g_message ("NM disappeared");

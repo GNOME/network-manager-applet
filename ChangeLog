@@ -1,3 +1,12 @@
+2007-08-15  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (foo_set_icon): add note that this is broken when VPN connection
+			icon is set before main icon.  Layering here is buggy.
+		- (foo_client_state_change): force an icon update of the VPN layer
+			when updating the main icon
+		- (foo_manager_running): remove incorrect comment
+
 2007-08-14  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
