@@ -1,3 +1,12 @@
+2007-08-17  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+	  src/applet.h
+		- (foo_update_icon, foo_set_icon, nma_finalize, nma_icons_free,
+		   nma_icons_load_from_disk): use an array with slots instead of a
+			list for the icon layers.  fixes races between link and VPN icon
+			layers depending on which one gets set first
+
 2007-08-15  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

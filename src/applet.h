@@ -76,6 +76,11 @@ typedef struct
 	GObjectClass	parent_class;
 } NMAppletClass; 
 
+
+#define ICON_LAYER_LINK 0
+#define ICON_LAYER_VPN 1
+#define ICON_LAYER_MAX ICON_LAYER_VPN
+
 /*
  * Applet instance data
  *
@@ -122,7 +127,7 @@ typedef struct
 	GdkPixbuf *		vpn_lock_icon;
 
 	/* Active status icon pixbufs */
-	GSList *active_pixbufs;
+	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
 
 	/* Animation stuff */
 	int				animation_step;

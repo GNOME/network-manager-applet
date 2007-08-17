@@ -1834,21 +1834,19 @@ foo_update_icon (NMApplet *applet)
 {
 	GdkPixbuf	*pixbuf;
 	GtkRequisition requisition;
-	int len;
+	int i;
 
-	len = g_slist_length (applet->active_pixbufs);
-
-	if (len == 0)
+	if (!applet->icon_layers[0]) {
 		pixbuf = g_object_ref (applet->no_connection_icon);
-	else if (len == 1)
-		pixbuf = g_object_ref (applet->active_pixbufs->data);
-	else {
-		GSList *iter;
-		GdkPixbuf *top;
+	} else {
+		pixbuf = gdk_pixbuf_copy (applet->icon_layers[0]);
 
-		pixbuf = gdk_pixbuf_copy (GDK_PIXBUF (applet->active_pixbufs->data));
-		for (iter = applet->active_pixbufs->next; iter; iter = iter->next) {
-			top = GDK_PIXBUF (iter->data);
+		for (i = ICON_LAYER_LINK + 1; i <= ICON_LAYER_MAX; i++) {
+			GdkPixbuf *top = applet->icon_layers[i];
+
+			if (!top)
+				continue;
+
 			gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
 							  gdk_pixbuf_get_height (top),
 							  0, 0, 1.0, 1.0,
@@ -1867,43 +1865,21 @@ foo_update_icon (NMApplet *applet)
 /* 	gtk_widget_set_size_request (GTK_WIDGET (applet), requisition.width + 6, requisition.height + 2); */
 }
 
-#define ICON_LAYER_LINK 1
-#define ICON_LAYER_VPN 2
-
 static void
-foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, int layer)
+foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
 {
-	GSList *link;
-	int len;
-
-	/* FIXME: this code is buggy WRT layering; it requires that
-	 * the lowest layers get set first.  Ideally, we'd just have slots
-	 * for each layer rather than a linked list.
-	 */
-
-	len = g_slist_length (applet->active_pixbufs);
-
-	if (pixbuf) {
-		if (len < layer) {
-			/* Adding new layer */
-			applet->active_pixbufs = g_slist_append (applet->active_pixbufs, pixbuf);
-		} else {
-			/* Updating existing layer */
-			link = g_slist_nth (applet->active_pixbufs, layer - 1);
-			link->data = pixbuf;
-		}
-	} else {
-		/* Remove the layer */
-		if (len >= layer)
-			link = g_slist_nth (applet->active_pixbufs, layer - 1);
-		else if (len > 0)
-			link = g_slist_nth (applet->active_pixbufs, len - 1);
-		else
-			link = NULL;
-
-		if (link)
-			applet->active_pixbufs = g_slist_delete_link (applet->active_pixbufs, link);
+	if (layer > ICON_LAYER_MAX) {
+		g_warning ("Tried to icon to invalid layer %d", layer);
+		return;
 	}
+
+	if (applet->icon_layers[layer]) {
+		g_object_unref (applet->icon_layers[layer]);
+		applet->icon_layers[layer] = NULL;
+	}
+
+	if (pixbuf)
+		applet->icon_layers[layer] = g_object_ref (pixbuf);
 
 	foo_update_icon (applet);
 }
@@ -2217,8 +2193,7 @@ foo_client_state_change (NMClient *client, NMState state, gpointer user_data)
 	}
 
 	/* Update VPN icon too to ensure that the VPN icon doesn't
-	 * race with the main icon for layer 1.  The icon layer code is buggy
-	 * WRT to this; if the VPN icon gets set first.
+	 * race with the main icon for layer 1
 	 */
 	foo_client_vpn_state_change (client, nm_client_get_vpn_state (client), applet);
 }
@@ -2403,8 +2378,6 @@ static void nma_finalize (GObject *object)
 	g_object_unref (applet->tray_icon);
 #endif /* HAVE_STATUS_ICON */
 
-	g_slist_free (applet->active_pixbufs);
-
 	g_object_unref (applet->nm_client);
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
@@ -2479,6 +2452,11 @@ static void nma_icons_free (NMApplet *applet)
 	if (!applet->icons_loaded)
 		return;
 
+	for (i = 0; i <= ICON_LAYER_MAX; i++) {
+		if (applet->icon_layers[i])
+			g_object_unref (applet->icon_layers[i]);
+	}
+
 	if (applet->no_connection_icon)
 		g_object_unref (applet->no_connection_icon);
 	if (applet->wired_icon)
@@ -2499,8 +2477,7 @@ static void nma_icons_free (NMApplet *applet)
 	if (applet->wireless_100_icon)
 		g_object_unref (applet->wireless_100_icon);
 
-	for (i = 0; i < NUM_CONNECTING_STAGES; i++)
-	{
+	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
 		int j;
 
 		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
@@ -2576,6 +2553,9 @@ nma_icons_load_from_disk (NMApplet *applet)
 #else
 	size = 22; /* hard-coded */
 #endif /* HAVE_STATUS_ICON */
+
+	for (i = 0; i <= ICON_LAYER_MAX; i++)
+		applet->icon_layers[i] = NULL;
 
 	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
 	ICON_LOAD(applet->wired_icon, "nm-device-wired");
