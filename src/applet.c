@@ -2039,6 +2039,7 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 
 		handled = TRUE;
 		break;
+	case NM_DEVICE_STATE_DOWN:
 	case NM_DEVICE_STATE_DISCONNECTED:
 		if (applet->current_ap && applet->wireless_strength_monitor)
 			g_signal_handler_disconnect (applet->current_ap, applet->wireless_strength_monitor);
