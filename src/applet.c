@@ -983,7 +983,7 @@ sort_wireless_networks (gconstpointer tmpa,
 	NMAccessPoint * b = NM_ACCESS_POINT (tmpb);
 	GByteArray * a_ssid;
 	GByteArray * b_ssid;
-	int a_mode, b_mode, cmp;
+	int a_mode, b_mode, i;
 
 	if (a && !b)
 		return 1;
@@ -998,9 +998,15 @@ sort_wireless_networks (gconstpointer tmpa,
 	if (b_ssid && !a_ssid)
 		return -1;
 
-	cmp = strncasecmp (a_ssid->data, b_ssid->data, MIN(a_ssid->len, b_ssid->len));
-	if (cmp)
-		return cmp;
+	/* Can't use string compares because SSIDs are byte arrays and
+	 * may legally contain embedded NULLs.
+	 */
+	for (i = 0; i < MIN(a_ssid->len, b_ssid->len); i++) {
+		if (tolower(a_ssid->data[i]) > tolower(b_ssid->data[i]))
+			return 1;
+		else if (tolower(b_ssid->data[i]) > tolower(a_ssid->data[i]))
+			return -1;
+	}
 
 	if (a_ssid->len > b_ssid->len)
 		return 1;
@@ -1014,6 +1020,8 @@ sort_wireless_networks (gconstpointer tmpa,
 			return 1;
 		return -1;
 	}
+
+	return 0;
 }
 
 /*

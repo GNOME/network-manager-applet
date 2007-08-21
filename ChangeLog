@@ -1,3 +1,10 @@
+2007-08-21  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (sort_wireless_networks): fix various errors; ensure 0 is returned on
+			when the two APs are equal, and don't use string comparisons because
+			SSIDs can have embedded nulls as they are byte arrays, not strings
+
 2007-08-20  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
