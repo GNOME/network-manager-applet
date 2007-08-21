@@ -66,14 +66,6 @@
 
 #include "nm-connection.h"
 
-/* Compat for GTK 2.4 and lower... */
-#if (GTK_MAJOR_VERSION <= 2 && GTK_MINOR_VERSION < 6)
-	#define GTK_STOCK_MEDIA_PAUSE		GTK_STOCK_STOP
-	#define GTK_STOCK_MEDIA_PLAY		GTK_STOCK_REFRESH
-	#define GTK_STOCK_ABOUT			GTK_STOCK_DIALOG_INFO
-	#define GTK_STOCK_INFO			GTK_STOCK_DIALOG_INFO
-#endif
-
 /* Compat for GTK 2.6 */
 #if (GTK_MAJOR_VERSION <= 2 && GTK_MINOR_VERSION == 6)
 	#define GTK_STOCK_INFO			GTK_STOCK_DIALOG_INFO
