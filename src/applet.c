@@ -983,8 +983,7 @@ sort_wireless_networks (gconstpointer tmpa,
 	NMAccessPoint * b = NM_ACCESS_POINT (tmpb);
 	GByteArray * a_ssid;
 	GByteArray * b_ssid;
-	int cmp;
-	int a_mode, b_mode;
+	int a_mode, b_mode, cmp;
 
 	if (a && !b)
 		return 1;
@@ -999,14 +998,14 @@ sort_wireless_networks (gconstpointer tmpa,
 	if (b_ssid && !a_ssid)
 		return -1;
 
+	cmp = strncasecmp (a_ssid->data, b_ssid->data, MIN(a_ssid->len, b_ssid->len));
+	if (cmp)
+		return cmp;
+
 	if (a_ssid->len > b_ssid->len)
 		return 1;
 	if (b_ssid->len > a_ssid->len)
 		return -1;
-
-	cmp = memcmp (a_ssid->data, b_ssid->data, a_ssid->len);
-	if (cmp)
-		return;
 
 	a_mode = nm_access_point_get_mode (a);
 	b_mode = nm_access_point_get_mode (b);
