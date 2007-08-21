@@ -975,6 +975,48 @@ nma_has_encrypted_networks_helper (gpointer data, gpointer user_data)
 }
 
 
+static gint
+sort_wireless_networks (gconstpointer tmpa,
+                        gconstpointer tmpb)
+{
+	NMAccessPoint * a = NM_ACCESS_POINT (tmpa);
+	NMAccessPoint * b = NM_ACCESS_POINT (tmpb);
+	GByteArray * a_ssid;
+	GByteArray * b_ssid;
+	int cmp;
+	int a_mode, b_mode;
+
+	if (a && !b)
+		return 1;
+	if (b && !a)
+		return -1;
+
+	a_ssid = nm_access_point_get_ssid (a);
+	b_ssid = nm_access_point_get_ssid (b);
+
+	if (a_ssid && !b_ssid)
+		return 1;
+	if (b_ssid && !a_ssid)
+		return -1;
+
+	if (a_ssid->len > b_ssid->len)
+		return 1;
+	if (b_ssid->len > a_ssid->len)
+		return -1;
+
+	cmp = memcmp (a_ssid->data, b_ssid->data, a_ssid->len);
+	if (cmp)
+		return;
+
+	a_mode = nm_access_point_get_mode (a);
+	b_mode = nm_access_point_get_mode (b);
+	if (a_mode != b_mode) {
+		if (a_mode == IW_MODE_INFRA)
+			return 1;
+		return -1;
+	}
+}
+
 /*
  * nma_menu_device_add_networks
  *
@@ -1009,6 +1051,7 @@ nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *apple
 	}
 
 	/* Add all networks in our network list to the menu */
+	networks = g_slist_sort (networks, sort_wireless_networks);
 	g_slist_foreach (networks, nma_add_networks_helper, &add_networks_cb);
 	g_slist_free (networks);
 
