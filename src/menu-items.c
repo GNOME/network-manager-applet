@@ -37,6 +37,7 @@
 
 #include "menu-items.h"
 #include "applet-dbus.h"
+#include "nm-access-point.h"
 
 
 /****************************************************************
@@ -131,44 +132,33 @@ wireless_menu_item_new (NMDevice80211Wireless *device,
  *   Wireless Network menu item
  ****************************************************************/
 
-struct NMNetworkMenuItem
+G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_CHECK_MENU_ITEM);
+
+static void
+nm_network_menu_item_init (NMNetworkMenuItem * item)
 {
-	GtkCheckMenuItem	*check_item;
-	GtkLabel			*label;
-	GtkWidget			*progress;
-	GtkWidget			*security_image;
-};
+	GtkWidget * hbox;
+	PangoFontDescription * fontdesc;
+	PangoFontMetrics * metrics;
+	PangoContext * context;
+	PangoLanguage * lang;
+	int ascent;
 
-
-NMNetworkMenuItem *
-network_menu_item_new (GtkSizeGroup *encryption_size_group)
-{
-	GtkWidget			*hbox;
-	NMNetworkMenuItem	*item = g_malloc0 (sizeof (NMNetworkMenuItem));
-	PangoFontDescription *fontdesc;
-	PangoFontMetrics *metrics;
-	PangoContext *context;
-	PangoLanguage *lang;
-	int ascent;	
-
-	item->check_item = GTK_CHECK_MENU_ITEM (gtk_check_menu_item_new ());
-	gtk_check_menu_item_set_draw_as_radio (item->check_item, TRUE);
-
+	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 	hbox = gtk_hbox_new (FALSE, 6);
-	item->label = GTK_LABEL (gtk_label_new (NULL));
-	gtk_misc_set_alignment (GTK_MISC (item->label), 0.0, 0.5);
+	item->ssid = gtk_label_new (NULL);
+	gtk_misc_set_alignment (GTK_MISC (item->ssid), 0.0, 0.5);
 
-	item->security_image = gtk_image_new ();
-	gtk_size_group_add_widget (encryption_size_group, item->security_image);
+	item->detail = gtk_image_new ();
 
-	gtk_container_add (GTK_CONTAINER (item->check_item), hbox);
-	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (item->label), TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox), item->security_image, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (item), hbox);
+	gtk_box_pack_start (GTK_BOX (hbox), item->ssid, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), item->detail, FALSE, FALSE, 0);
 
-	item->progress = gtk_progress_bar_new ();
+	item->strength = gtk_progress_bar_new ();
 	
 	/* get the font ascent for the current font and language */
-	context = gtk_widget_get_pango_context (item->progress);
+	context = gtk_widget_get_pango_context (item->strength);
 	fontdesc = pango_context_get_font_description (context);
 	lang = pango_context_get_language (context);
 	metrics = pango_context_get_metrics (context, fontdesc, lang);
@@ -176,58 +166,102 @@ network_menu_item_new (GtkSizeGroup *encryption_size_group)
 	pango_font_metrics_unref (metrics);
 
 	/* size our progress bar to be five ascents long */
-	gtk_widget_set_size_request (item->progress, ascent * 5, -1);
+	gtk_widget_set_size_request (item->strength, ascent * 5, -1);
 
-	gtk_box_pack_end (GTK_BOX (hbox), item->progress, FALSE, TRUE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), item->strength, FALSE, TRUE, 0);
 
-	gtk_widget_show (GTK_WIDGET (item->label));
-	gtk_widget_show (item->progress);
+	gtk_widget_show (item->ssid);
+	gtk_widget_show (item->strength);
+	gtk_widget_show (item->detail);
 	gtk_widget_show (hbox);
-
-	return item;
 }
 
-GtkCheckMenuItem *
-network_menu_item_get_check_item (NMNetworkMenuItem *item)
+GtkWidget*
+nm_network_menu_item_new (GtkSizeGroup * size_group,
+                          guchar * hash,
+                          guint32 hash_len)
 {
-	g_return_val_if_fail (item != NULL, NULL);
+	NMNetworkMenuItem * item;
 
-	return item->check_item;
+	item = g_object_new (NM_TYPE_NETWORK_MENU_ITEM, NULL);
+	if (item == NULL)
+		return NULL;
+
+	item->destroyed = FALSE;
+	item->int_strength = 0;
+	if (hash && hash_len) {
+		item->hash = g_malloc0 (hash_len);
+		memcpy (item->hash, hash, hash_len);
+		item->hash_len = hash_len;
+	}
+	if (size_group)
+		gtk_size_group_add_widget (size_group, item->detail);
+
+	return GTK_WIDGET (item);
 }
 
+static void
+nm_network_menu_item_class_init (NMNetworkMenuItemClass * klass)
+{
+}
 
-/* is_encrypted means that the wireless network has an encrypted
- * area, and thus we need to allow for spacing.
- */
 void
-network_menu_item_update (NMApplet *applet,
-						  NMNetworkMenuItem *item,
-						  NMAccessPoint *ap,
-						  gboolean is_encrypted)
+nm_network_menu_item_set_ssid (NMNetworkMenuItem * item, GByteArray * ssid)
 {
-	GByteArray * ssid;
-	char *	display_ssid;
+	char * display_ssid = NULL;
 	char buf[IW_ESSID_MAX_SIZE + 1];
-	gdouble	percent;
-	gboolean	encrypted = FALSE;
-	gboolean	adhoc = FALSE;
 
 	g_return_if_fail (item != NULL);
-	g_return_if_fail (ap != NULL);
+	g_return_if_fail (ssid != NULL);
 
-	ssid = nm_access_point_get_ssid (ap);
 	memset (buf, 0, sizeof (buf));
 	memcpy (buf, ssid->data, MIN (ssid->len, sizeof (buf) - 1));
 	display_ssid = nm_menu_network_escape_essid_for_display (buf);
-	g_byte_array_free (ssid, TRUE);
-	gtk_label_set_text (GTK_LABEL (item->label), display_ssid);
-	g_free (display_ssid);
+	if (display_ssid) {
+		gtk_label_set_text (GTK_LABEL (item->ssid), display_ssid);
+		g_free (display_ssid);
+	} else {
+		gtk_label_set_text (GTK_LABEL (item->ssid), "");
+	}
+}
 
-	percent = (double) CLAMP (nm_access_point_get_strength (ap), 0, 100) / 100.0;
-	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (item->progress), percent);
+guint32
+nm_network_menu_item_get_strength (NMNetworkMenuItem * item)
+{
+	g_return_if_fail (item != NULL);
 
-	/* Deal with the encrypted icon */
-	g_object_set (item->security_image, "visible", is_encrypted, NULL);
+	return item->int_strength;
+}
+
+void
+nm_network_menu_item_set_strength (NMNetworkMenuItem * item, guint32 strength)
+{
+	double percent;
+
+	g_return_if_fail (item != NULL);
+
+	item->int_strength = CLAMP (strength, 0, 100);
+	percent = (double) item->int_strength / 100.0;
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (item->strength), percent);
+}
+
+const guchar *
+nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
+                               guint32 * length)
+{
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (length != NULL);
+
+	*length = item->hash_len;
+	return item->hash;
+}
+
+void
+nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
+                                 NMAccessPoint * ap,
+                                 GdkPixbuf * adhoc_icon)
+{
+	gboolean encrypted = FALSE, adhoc = FALSE;
 
 	if (nm_access_point_get_capabilities (ap) & (NM_802_11_CAP_PROTO_WEP | NM_802_11_CAP_PROTO_WPA | NM_802_11_CAP_PROTO_WPA2))
 		encrypted = TRUE;
@@ -235,24 +269,16 @@ network_menu_item_update (NMApplet *applet,
 	if (nm_access_point_get_mode (ap) == IW_MODE_ADHOC)
 		adhoc = TRUE;
 
-	/*
-	 * Set a special icon for special circumstances: encrypted or ad-hoc.
-	 *
-	 * FIXME: We do not currently differentiate between encrypted and non-encrypted Ad-Hoc
-	 *        networks; they all receive the same icon.  Ideally, we should have a third icon
-	 *        type for encrypted Ad-Hoc networks.
-	 */
-	if (adhoc)
-		gtk_image_set_from_pixbuf (GTK_IMAGE (item->security_image), applet->adhoc_icon);
-	else if (encrypted)
-	{
+	if (adhoc) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (item->detail), adhoc_icon);
+	} else if (encrypted) {
 		if (gtk_icon_theme_has_icon (gtk_icon_theme_get_default (), "network-wireless-encrypted"))
-			gtk_image_set_from_icon_name (GTK_IMAGE (item->security_image), "network-wireless-encrypted", GTK_ICON_SIZE_MENU);
+			gtk_image_set_from_icon_name (GTK_IMAGE (item->detail), "network-wireless-encrypted", GTK_ICON_SIZE_MENU);
 		else
-			gtk_image_set_from_icon_name (GTK_IMAGE (item->security_image), "gnome-lockscreen", GTK_ICON_SIZE_MENU);
+			gtk_image_set_from_icon_name (GTK_IMAGE (item->detail), "gnome-lockscreen", GTK_ICON_SIZE_MENU);
+	} else {
+		gtk_image_set_from_stock (GTK_IMAGE (item->detail), NULL, GTK_ICON_SIZE_MENU);
 	}
-	else	/* neither encrypted nor Ad-Hoc */
-		gtk_image_set_from_stock (GTK_IMAGE (item->security_image), NULL, GTK_ICON_SIZE_MENU);
 }
 
 

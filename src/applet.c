@@ -63,6 +63,7 @@
 #include "vpn-password-dialog.h"
 #include "nm-utils.h"
 #include "dbus-method-dispatcher.h"
+#include "gnome-keyring-md5.h"
 
 #include "nm-connection.h"
 
@@ -905,11 +906,97 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 
 typedef struct {
 	NMApplet *	applet;
-	NMDevice *device;
-	GByteArray *active_ssid;
-	gboolean			has_encrypted;
-	GtkWidget *		menu;
+	NMDevice * device;
+	GByteArray * active_ssid;
+	GtkWidget * menu;
 } AddNetworksCB;
+
+#define AP_HASH_LEN 16
+
+static char *
+ap_hash (NMAccessPoint * ap)
+{
+	struct GnomeKeyringMD5Context ctx;
+	unsigned char * digest = NULL;
+	unsigned char md5_data[66];
+	unsigned char input[33];
+	GByteArray * ssid;
+	int mode;
+	guint32 caps;
+
+	g_return_if_fail (ap);
+
+	mode = nm_access_point_get_mode (ap);
+	caps = nm_access_point_get_capabilities (ap);
+
+	memset (&input[0], 0, sizeof (input));
+
+	ssid = nm_access_point_get_ssid (ap);
+	if (ssid) {
+		memcpy (&input[0], ssid->data, ssid->len);
+		g_byte_array_free (ssid, TRUE);
+	}
+
+	if (mode == IW_MODE_INFRA)
+		input[32] |= (1 << 0);
+	else if (mode == IW_MODE_ADHOC)
+		input[32] |= (1 << 1);
+	else
+		input[32] |= (1 << 2);
+
+	/* Separate out no encryption, WEP-only, and WPA-capable */
+	caps &= 0xF;
+	if (caps == NM_802_11_CAP_PROTO_NONE)
+		input[32] |= (1 << 3);
+	else if (caps == NM_802_11_CAP_PROTO_WEP)
+		input[32] |= (1 << 4);
+	else if (   (caps & NM_802_11_CAP_PROTO_WPA)
+	         || (caps & NM_802_11_CAP_PROTO_WPA2))
+		input[32] |= (1 << 5);
+	else
+		input[32] |= (1 << 6);
+
+	digest = g_malloc (sizeof (unsigned char) * AP_HASH_LEN);
+	if (digest == NULL)
+		goto out;
+
+	gnome_keyring_md5_init (&ctx);
+	memcpy (&md5_data[0], &input[0], sizeof (input));
+	memcpy (&md5_data[33], &input[0], sizeof (input));
+	gnome_keyring_md5_update (&ctx, &md5_data[0], sizeof (md5_data));
+	gnome_keyring_md5_final (digest, &ctx);
+
+out:
+	return digest;
+}
+
+struct dup_data {
+	GtkWidget * found;
+	guchar * hash;
+};
+
+static void
+find_duplicate (GtkWidget * widget,
+                gpointer user_data)
+{
+	struct dup_data * data = (struct dup_data *) user_data;
+	const guchar * hash;
+	guint32 hash_len = 0;
+
+	g_return_if_fail (data);
+	g_return_if_fail (data->hash);
+
+	if (data->found || !NM_IS_NETWORK_MENU_ITEM (widget))
+		return;
+
+	hash = nm_network_menu_item_get_hash (NM_NETWORK_MENU_ITEM (widget),
+	                                      &hash_len);
+	if (hash == NULL || hash_len != AP_HASH_LEN)
+		return;
+
+	if (memcmp (hash, data->hash, AP_HASH_LEN) == 0)
+		data->found = widget;
+}
 
 /*
  * nma_add_networks_helper
@@ -920,39 +1007,62 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 {
 	NMAccessPoint *ap = NM_ACCESS_POINT (data);
 	AddNetworksCB *cb_data = (AddNetworksCB *) user_data;
-	NMNetworkMenuItem *	item;
-	GtkCheckMenuItem *	gtk_item;
-	DeviceMenuItemInfo *info;
 	GByteArray * ssid;
+	gint8 strength;
+	struct dup_data dup_data;
 
 	/* Don't add BSSs that hide their SSID */
 	ssid = nm_access_point_get_ssid (ap);
 	if (nma_is_empty_ssid (ssid->data, ssid->len))
-		return;
+		goto out;
 
-	item = network_menu_item_new (cb_data->applet->encryption_size_group);
-	gtk_item = network_menu_item_get_check_item (item);
+	strength = nm_access_point_get_strength (ap);
 
-	gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), GTK_WIDGET (gtk_item));
-	network_menu_item_update (cb_data->applet, item, ap, cb_data->has_encrypted);
-	if ((nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED)
-	    && cb_data->active_ssid) {
-		if (ssid && nma_same_ssid (ssid, cb_data->active_ssid))
-			gtk_check_menu_item_set_active (gtk_item, TRUE);
-		g_byte_array_free (ssid, TRUE);
+	dup_data.found = NULL;
+	dup_data.hash = ap_hash (ap);
+	gtk_container_foreach (GTK_CONTAINER (cb_data->menu),
+	                       find_duplicate,
+	                       &dup_data);
+
+	if (dup_data.found) {
+		/* Just update strength if greater than what's there */
+		if (nm_network_menu_item_get_strength (NM_NETWORK_MENU_ITEM (dup_data.found)) > strength)
+			nm_network_menu_item_set_strength (NM_NETWORK_MENU_ITEM (dup_data.found), strength);
+	} else {
+		GtkWidget * item;
+		DeviceMenuItemInfo *info;
+
+		item = nm_network_menu_item_new (cb_data->applet->encryption_size_group,
+		                                 dup_data.hash, AP_HASH_LEN);
+		nm_network_menu_item_set_ssid (NM_NETWORK_MENU_ITEM (item), ssid);
+		nm_network_menu_item_set_strength (NM_NETWORK_MENU_ITEM (item), strength);
+		nm_network_menu_item_set_detail (NM_NETWORK_MENU_ITEM (item),
+		                                 ap, cb_data->applet->adhoc_icon);
+
+		gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), item);
+
+		if ((nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED)
+		    && cb_data->active_ssid) {
+			if (ssid && nma_same_ssid (ssid, cb_data->active_ssid))
+				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+		}
+
+		info = g_slice_new (DeviceMenuItemInfo);
+		info->applet = cb_data->applet;
+		info->device = cb_data->device;
+		info->ap = ap;
+
+		g_signal_connect_data (item, "activate",
+						   G_CALLBACK (nma_menu_item_activate),
+						   info,
+						   (GClosureNotify) device_menu_item_info_destroy, 0);
+
+		gtk_widget_show_all (item);
 	}
 
-	info = g_slice_new (DeviceMenuItemInfo);
-	info->applet = cb_data->applet;
-	info->device = cb_data->device;
-	info->ap = ap;
-
-	g_signal_connect_data (gtk_item, "activate",
-					   G_CALLBACK (nma_menu_item_activate),
-					   info,
-					   (GClosureNotify) device_menu_item_info_destroy, 0);
-
-	gtk_widget_show (GTK_WIDGET (gtk_item));
+out:
+	g_free (dup_data.hash);
+	g_byte_array_free (ssid, TRUE);
 }
 
 
@@ -998,20 +1108,22 @@ sort_wireless_networks (gconstpointer tmpa,
 	if (b_ssid && !a_ssid)
 		return -1;
 
-	/* Can't use string compares because SSIDs are byte arrays and
-	 * may legally contain embedded NULLs.
-	 */
-	for (i = 0; i < MIN(a_ssid->len, b_ssid->len); i++) {
-		if (tolower(a_ssid->data[i]) > tolower(b_ssid->data[i]))
+	if (a_ssid && b_ssid) {
+		/* Can't use string compares because SSIDs are byte arrays and
+		 * may legally contain embedded NULLs.
+		 */
+		for (i = 0; i < MIN(a_ssid->len, b_ssid->len); i++) {
+			if (tolower(a_ssid->data[i]) > tolower(b_ssid->data[i]))
+				return 1;
+			else if (tolower(b_ssid->data[i]) > tolower(a_ssid->data[i]))
+				return -1;
+		}
+
+		if (a_ssid->len > b_ssid->len)
 			return 1;
-		else if (tolower(b_ssid->data[i]) > tolower(a_ssid->data[i]))
+		if (b_ssid->len > a_ssid->len)
 			return -1;
 	}
-
-	if (a_ssid->len > b_ssid->len)
-		return 1;
-	if (b_ssid->len > a_ssid->len)
-		return -1;
 
 	a_mode = nm_access_point_get_mode (a);
 	b_mode = nm_access_point_get_mode (b);
@@ -1032,7 +1144,6 @@ static void
 nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *applet)
 {
 	GSList *networks;
-	gboolean has_encrypted = FALSE;
 	AddNetworksCB add_networks_cb;
 
 	if (!NM_IS_DEVICE_802_11_WIRELESS (device) || !nm_client_wireless_get_enabled (applet->nm_client))
@@ -1040,13 +1151,9 @@ nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *apple
 
 	networks = nm_device_802_11_wireless_get_networks (NM_DEVICE_802_11_WIRELESS (device));
 
-	/* Check for any security */
-	g_slist_foreach (networks, nma_has_encrypted_networks_helper, &has_encrypted);
-
 	add_networks_cb.applet = applet;
 	add_networks_cb.device = device;
 	add_networks_cb.active_ssid = NULL;
-	add_networks_cb.has_encrypted = has_encrypted;
 	add_networks_cb.menu = menu;
 
 	if (nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED) {
@@ -1307,43 +1414,10 @@ nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	nm_client_sleep (applet->nm_client, !state);
 }
 
-
-/*
- * nma_menu_item_data_free
- *
- * Frees the "network" data tag on a menu item we've created
- *
- */
-static void nma_menu_item_data_free (GtkWidget *menu_item, gpointer data)
+void
+remove_menu_item (gpointer data, gpointer user_data)
 {
-	char	*tag;
-	GtkMenu	*menu;
-
-	g_return_if_fail (menu_item != NULL);
-	g_return_if_fail (data != NULL);
-
-	if ((tag = g_object_get_data (G_OBJECT (menu_item), "network")))
-	{
-		g_object_set_data (G_OBJECT (menu_item), "network", NULL);
-		g_free (tag);
-	}
-
-	if ((tag = g_object_get_data (G_OBJECT (menu_item), "device")))
-	{
-		g_object_set_data (G_OBJECT (menu_item), "device", NULL);
-		g_free (tag);
-	}
-
-	if ((tag = g_object_get_data (G_OBJECT (menu_item), "disconnect")))
-	{
-		g_object_set_data (G_OBJECT (menu_item), "disconnect", NULL);
-		g_free (tag);
-	}
-
-	if ((menu = GTK_MENU (gtk_menu_item_get_submenu (GTK_MENU_ITEM (menu_item)))))
-		gtk_container_foreach (GTK_CONTAINER (menu), nma_menu_item_data_free, menu);
-
-	gtk_widget_destroy (menu_item);
+	gtk_container_remove (GTK_CONTAINER (user_data), GTK_WIDGET (data));
 }
 
 
@@ -1355,12 +1429,13 @@ static void nma_menu_item_data_free (GtkWidget *menu_item, gpointer data)
  */
 static void nma_dropdown_menu_clear (GtkWidget *menu)
 {
+	GList * children;
+
 	g_return_if_fail (menu != NULL);
 
-	/* Free the "network" data on each menu item, and destroy the item */
-	gtk_container_foreach (GTK_CONTAINER (menu),
-					   (GtkCallback) gtk_object_destroy,
-					   NULL);
+	children = gtk_container_get_children (GTK_CONTAINER (menu));
+	g_list_foreach (children, remove_menu_item, GTK_CONTAINER (menu));
+	g_list_free (children);
 }
 
 

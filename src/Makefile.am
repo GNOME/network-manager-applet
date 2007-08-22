@@ -75,6 +75,8 @@ nm_applet_SOURCES =			\
 	gconf-helpers.h		\
 	nm-utils.c \
 	nm-utils.h \
+	gnome-keyring-md5.h \
+	gnome-keyring-md5.c \
 	$(NULL)
 
 if !HAVE_GTK_2_10

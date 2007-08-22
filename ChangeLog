@@ -1,3 +1,24 @@
+2007-08-22  Dan Williams  <dcbw@redhat.com>
+
+	* src/menu-items.c
+	  src/menu-items.h
+		- Make NMNetworkMenuItem a GtkCheckMenuItem subclass, not a random structure
+			that contains all the widgets
+		- Make the NMNetworkMenuItem accessors sane (split them out for SSID,
+			strength, and detail instead a gigantic update() procedure)
+
+	* src/applet.c
+		- Use new NMNetworkMenuItem object
+		- (nma_dropdown_menu_clear): remove children from the menu rather than
+			destroying them directly
+		- (sort_wireless_networks): ensure both SSIDs are valid before trying
+			to access their contents
+		- (nma_add_networks_helper): check for an existing menu item that
+			represents this AP, based on a hash of certain AP properties.  If
+			found, use that item instead of adding a new item.
+		- (ap_hash): hash certain AP properties to combine BSSIDs into one menu
+			item when needed
+
 2007-08-21  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

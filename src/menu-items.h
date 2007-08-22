@@ -23,12 +23,12 @@
 #define MENU_ITEMS_H
 
 #include <gtk/gtk.h>
+#include <gtk/gtkcheckmenuitem.h>
 #include "applet.h"
+#include "nm-access-point.h"
 
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
-
-typedef struct NMNetworkMenuItem NMNetworkMenuItem;
 
 GtkMenuItem *wired_menu_item_new (NMDevice8023Ethernet *device,
 								  gint n_devices);
@@ -36,15 +36,55 @@ GtkMenuItem *wired_menu_item_new (NMDevice8023Ethernet *device,
 GtkMenuItem *wireless_menu_item_new (NMDevice80211Wireless *device,
 									 gint n_devices);
 
-NMNetworkMenuItem	*network_menu_item_new (GtkSizeGroup *encryption_size_group);
-GtkCheckMenuItem	*network_menu_item_get_check_item (NMNetworkMenuItem *item);
-void				 network_menu_item_update (NMApplet *applet,
-											   NMNetworkMenuItem *item,
-											   NMAccessPoint *ap,
-											   gboolean is_encrypted);
+
+#define NM_TYPE_NETWORK_MENU_ITEM            (nm_network_menu_item_get_type ())
+#define NM_NETWORK_MENU_ITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_NETWORK_MENU_ITEM, NMNetworkMenuItem))
+#define NM_NETWORK_MENU_ITEM_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NM_TYPE_NETWORK_MENU_ITEM, NMNetworkMenuItemClass))
+#define NM_IS_NETWORK_MENU_ITEM(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_NETWORK_MENU_ITEM))
+#define NM_IS_NETWORK_MENU_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NM_TYPE_NETWORK_MENU_ITEM))
+#define NM_NETWORK_MENU_ITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), NM_TYPE_NETWORK_MENU_ITEM, NMNetworkMenuItemClass))
+
+
+typedef struct _NMNetworkMenuItem	    NMNetworkMenuItem;
+typedef struct _NMNetworkMenuItemClass  NMNetworkMenuItemClass;
+
+struct _NMNetworkMenuItem
+{
+	GtkCheckMenuItem check_item;
+
+	/*< private >*/
+	GtkWidget * ssid;
+	GtkWidget * strength;
+	guint32     int_strength;
+	GtkWidget * detail;
+	guchar *    hash;
+	guint32     hash_len;
+	gboolean    destroyed;
+};
+
+struct _NMNetworkMenuItemClass
+{
+	GtkCheckMenuItemClass parent_class;
+};
+
+
+GType	   nm_network_menu_item_get_type (void) G_GNUC_CONST;
+GtkWidget* nm_network_menu_item_new (GtkSizeGroup * size_group,
+                                     guchar * hash,
+                                     guint32 hash_len);
+void       nm_network_menu_item_set_ssid (NMNetworkMenuItem * item,
+                                          GByteArray * ssid);
+guint32    nm_network_menu_item_get_strength (NMNetworkMenuItem * item);
+void       nm_network_menu_item_set_strength (NMNetworkMenuItem * item,
+                                              guint32 strength);
+const guchar * nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
+                                              guint32 * length);
+void       nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
+                                            NMAccessPoint * ap,
+                                            GdkPixbuf * adhoc_icon);
 
 /* Helper function; escapes an essid for human readable display. */
-char      		*nm_menu_network_escape_essid_for_display (const char *essid);
+char *     nm_menu_network_escape_essid_for_display (const char *essid);
 
 
 #endif /* MENU_INFO_H */
