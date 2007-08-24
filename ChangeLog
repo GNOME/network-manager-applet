@@ -1,5 +1,14 @@
 2007-08-22  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+		- (ap_hash): fix missing return value, cleanups
+		- (nma_add_networks_helper): don't try to free uninitialized memory
+			if the ssid was NULL, don't try to free a NULL ssid
+		- (foo_bssid_strength_changed): don't try to free a NULL ssid
+		- (foo_wireless_state_change): handle NULLs better
+
+2007-08-22  Dan Williams  <dcbw@redhat.com>
+
 	* src/menu-items.c
 	  src/menu-items.h
 		- Make NMNetworkMenuItem a GtkCheckMenuItem subclass, not a random structure

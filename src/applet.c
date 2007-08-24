@@ -924,7 +924,7 @@ ap_hash (NMAccessPoint * ap)
 	int mode;
 	guint32 caps;
 
-	g_return_if_fail (ap);
+	g_return_val_if_fail (ap, NULL);
 
 	mode = nm_access_point_get_mode (ap);
 	caps = nm_access_point_get_capabilities (ap);
@@ -933,7 +933,7 @@ ap_hash (NMAccessPoint * ap)
 
 	ssid = nm_access_point_get_ssid (ap);
 	if (ssid) {
-		memcpy (&input[0], ssid->data, ssid->len);
+		memcpy (input, ssid->data, ssid->len);
 		g_byte_array_free (ssid, TRUE);
 	}
 
@@ -961,9 +961,9 @@ ap_hash (NMAccessPoint * ap)
 		goto out;
 
 	gnome_keyring_md5_init (&ctx);
-	memcpy (&md5_data[0], &input[0], sizeof (input));
-	memcpy (&md5_data[33], &input[0], sizeof (input));
-	gnome_keyring_md5_update (&ctx, &md5_data[0], sizeof (md5_data));
+	memcpy (md5_data, input, sizeof (input));
+	memcpy (&md5_data[33], input, sizeof (input));
+	gnome_keyring_md5_update (&ctx, md5_data, sizeof (md5_data));
 	gnome_keyring_md5_final (digest, &ctx);
 
 out:
@@ -1009,17 +1009,19 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 	AddNetworksCB *cb_data = (AddNetworksCB *) user_data;
 	GByteArray * ssid;
 	gint8 strength;
-	struct dup_data dup_data;
+	struct dup_data dup_data = { NULL, NULL };
 
 	/* Don't add BSSs that hide their SSID */
 	ssid = nm_access_point_get_ssid (ap);
-	if (nma_is_empty_ssid (ssid->data, ssid->len))
+	if (!ssid || nma_is_empty_ssid (ssid->data, ssid->len))
 		goto out;
 
 	strength = nm_access_point_get_strength (ap);
 
 	dup_data.found = NULL;
 	dup_data.hash = ap_hash (ap);
+	if (!dup_data.hash)
+		goto out;
 	gtk_container_foreach (GTK_CONTAINER (cb_data->menu),
 	                       find_duplicate,
 	                       &dup_data);
@@ -1062,7 +1064,8 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 
 out:
 	g_free (dup_data.hash);
-	g_byte_array_free (ssid, TRUE);
+	if (ssid)
+		g_byte_array_free (ssid, TRUE);
 }
 
 
@@ -2101,7 +2104,8 @@ foo_bssid_strength_changed (NMAccessPoint *ap, guint strength, gpointer user_dat
 	tip = g_strdup_printf (_("Wireless network connection to '%s' (%d%%)"),
 	                       ssid ? nma_escape_ssid (ssid->data, ssid->len) : "(none)",
 	                       strength);
-	g_byte_array_free (ssid, TRUE);
+	if (ssid)
+		g_byte_array_free (ssid, TRUE);
 
 	gtk_status_icon_set_tooltip (applet->status_icon, tip);
 	g_free (tip);
@@ -2111,7 +2115,7 @@ static gboolean
 foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, NMApplet *applet)
 {
 	char *iface;
-	NMAccessPoint *ap;
+	NMAccessPoint *ap = NULL;
 	GByteArray * ssid = NULL;
 	char *tip = NULL;
 	gboolean handled = FALSE;
@@ -2126,10 +2130,12 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 	    state == NM_DEVICE_STATE_ACTIVATED) {
 
 		ap = nm_device_802_11_wireless_get_active_network (NM_DEVICE_802_11_WIRELESS (device));
-		ssid = nm_access_point_get_ssid (ap);
-		if (ssid) {
-			esc_ssid = (char *) nma_escape_ssid (ssid->data, ssid->len);
-			g_byte_array_free (ssid, TRUE);
+		if (ap) {
+			ssid = nm_access_point_get_ssid (ap);
+			if (ssid) {
+				esc_ssid = (char *) nma_escape_ssid (ssid->data, ssid->len);
+				g_byte_array_free (ssid, TRUE);
+			}
 		}
 	}
 
@@ -2148,10 +2154,15 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		applet->current_ap = ap;
-		applet->wireless_strength_monitor = g_signal_connect (ap, "strength-changed",
-												    G_CALLBACK (foo_bssid_strength_changed),
-												    applet);
-		foo_bssid_strength_changed (ap, nm_access_point_get_strength (ap), applet);
+		if (ap) {
+			applet->wireless_strength_monitor = g_signal_connect (ap,
+			                                                      "strength-changed",
+			                                                      G_CALLBACK (foo_bssid_strength_changed),
+			                                                      applet);
+			foo_bssid_strength_changed (ap,
+			                            nm_access_point_get_strength (ap),
+			                            applet);
+		}
 
 #ifdef ENABLE_NOTIFY
 		tip = g_strdup_printf (_("You are now connected to the wireless network '%s'."), esc_ssid);
