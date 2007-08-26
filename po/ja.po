@@ -1,14 +1,14 @@
-# Japanese translation for NetworkManager
+# Japanese translation for NetworkManager (network-manager-applet)
 # Copyright (C) 2005 Dan Williams <dcbw@redhat.com>
 # This file is distributed under the same license as the NetworkManager package.
-# Satoru SATOH <ss@gnome.gr.jp>, 2005, 2006.
+# Satoru SATOH <ss@gnome.gr.jp>, 2005 - 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: NetworkManager HEAD\n"
+"Project-Id-Version: network-manager-applet trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-01 03:37+0900\n"
-"PO-Revision-Date: 2006-11-01 21:57+0900\n"
+"POT-Creation-Date: 2007-08-26 22:57+0900\n"
+"PO-Revision-Date: 2007-08-26 22:57+0900\n"
 "Last-Translator: Satoru SATOH <ss@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -16,496 +16,271 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../gnome/applet/applet-compat.c:171 ../gnome/applet/applet-dbus-info.c:926
-#, c-format
-msgid "Passphrase for wireless network %s"
-msgstr "無線ネットワーク %s のパスフレーズ"
-
-#: ../gnome/applet/applet-dbus.c:274
-#, c-format
-msgid "Connection to the wireless network '%s' failed."
-msgstr "無線ネットワーク '%s' への接続に失敗"
-
-#: ../gnome/applet/applet-dbus.c:279
-msgid "Connection to the wired network failed."
-msgstr "有線ネットワークへの接続に失敗"
-
-#: ../gnome/applet/applet.c:186
+#: ../src/applet.c:201
 msgid "Error displaying connection information:"
-msgstr "接続情報を表示中にエラー:"
+msgstr "接続情報の表示中にエラーが起きました:"
 
-#: ../gnome/applet/applet.c:204
-msgid "Could not find some required resources (the glade file)!"
-msgstr "いくつか必要なリソース(glade ファイル) をみつけられませんでした!"
-
-#: ../gnome/applet/applet.c:215
+#: ../src/applet.c:238
 msgid "No active connections!"
 msgstr "アクティブな接続がありません!"
 
-#: ../gnome/applet/applet.c:233
-#, c-format
-msgid "%d Mb/s"
-msgstr "%d Mb/s"
-
-#: ../gnome/applet/applet.c:236
+#: ../src/applet.c:252
 #, c-format
 msgid "Wired Ethernet (%s)"
 msgstr "有線 Ethernet (%s)"
 
-#: ../gnome/applet/applet.c:238
+#: ../src/applet.c:254
 #, c-format
 msgid "Wireless Ethernet (%s)"
 msgstr "無線 Ethernet (%s)"
 
-#: ../gnome/applet/applet.c:244
+#: ../src/applet.c:266
+#, c-format
+msgid "%d Mb/s"
+msgstr "%d Mb/s"
+
+#: ../src/applet.c:270
 msgid "Unknown"
 msgstr "不明"
 
-#: ../gnome/applet/applet.c:334 ../gnome/applet/applet.c:360
+#: ../src/applet.c:384
 msgid "NetworkManager Applet"
 msgstr "NetworkManager アプレット"
 
-#: ../gnome/applet/applet.c:336
+#: ../src/applet.c:386
 msgid ""
-"Copyright © 2004-2006 Red Hat, Inc.\n"
-"Copyright © 2005-2006 Novell, Inc."
+"Copyright © 2004-2007 Red Hat, Inc.\n"
+"Copyright © 2005-2007 Novell, Inc."
 msgstr ""
-"Copyright © 2004-2006 Red Hat, Inc.\n"
-"Copyright © 2005-2006 Novell, Inc."
+"Copyright © 2004-2007 Red Hat, Inc.\n"
+"Copyright © 2005-2007 Novell, Inc."
 
-#: ../gnome/applet/applet.c:338 ../gnome/applet/applet.c:364
+#: ../src/applet.c:388
 msgid ""
 "Notification area applet for managing your network devices and connections."
-msgstr "ネットワークデバイスと接続を管理するための通知エリアアプレット"
+msgstr "ネットワークデバイスと接続を管理するための通知エリア アプレット"
 
-#: ../gnome/applet/applet.c:341 ../gnome/applet/applet.c:368
+#: ../src/applet.c:392
 msgid "translator-credits"
-msgstr "Satoru SATOH <ss@gnome.gr.jp>"
-
-#: ../gnome/applet/applet.c:362
-msgid ""
-"Copyright © 2004-2005 Red Hat, Inc.\n"
-"Copyright © 2005-2006 Novell, Inc."
 msgstr ""
-"Copyright © 2004-2005 Red Hat, Inc.\n"
-"Copyright © 2005-2006 Novell, Inc."
+"Satoru SATOH <ss@gnome.gr.jp>\n"
+"日本 GNOME ユーザー会 http://www.gnome.gr.jp"
 
-#: ../gnome/applet/applet.c:424
+#: ../src/applet.c:447
 msgid "VPN Login Failure"
 msgstr "VPN ログイン失敗"
 
-#: ../gnome/applet/applet.c:425
+#: ../src/applet.c:448
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a login failure."
 msgstr "ログインに失敗したため VPN 接続 '%s' を開始できませんでした"
 
-#: ../gnome/applet/applet.c:429
+#: ../src/applet.c:452
 msgid "VPN Start Failure"
-msgstr "VPN 開始に失敗"
+msgstr "VPN 起動失敗"
 
-#: ../gnome/applet/applet.c:430
+#: ../src/applet.c:453
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' due to a failure launching the VPN "
 "program."
 msgstr ""
-"VPN プログラムを起動できなかったため VPN 接続 '%s' を開始できませんでした"
+"VPN プログラムの起動に失敗したため VPN 接続 '%s' を開始できませんでした"
 
-#: ../gnome/applet/applet.c:434 ../gnome/applet/applet.c:444
+#: ../src/applet.c:457 ../src/applet.c:467
 msgid "VPN Connect Failure"
-msgstr "VPN 接続に失敗"
+msgstr "VPN 接続失敗"
 
-#: ../gnome/applet/applet.c:435
+#: ../src/applet.c:458
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a connection error."
 msgstr "接続エラーのため VPN 接続 '%s' を開始できませんでした"
 
-#: ../gnome/applet/applet.c:439
+#: ../src/applet.c:462
 msgid "VPN Configuration Error"
-msgstr "VPN 接続エラー"
+msgstr "VPN 設定エラー"
 
-#: ../gnome/applet/applet.c:440
+#: ../src/applet.c:463
 #, c-format
 msgid "The VPN connection '%s' was not correctly configured."
-msgstr "VPN 接続 '%s' は適切に設定されました。"
+msgstr "VPN 接続 '%s' は適切に設定されていません。"
 
-#: ../gnome/applet/applet.c:445
+#: ../src/applet.c:468
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' because the VPN server did not "
 "return an adequate network configuration."
 msgstr ""
-"VPN サーバが返事を返さず、適切なネットワーク設定がなされないため VPN 接続 '%"
-"s' を開始できませんでした。"
+"VPN サーバが返事を返さず、ネットワークが適切に設定されなかったため、VPN 接続 "
+"'%s' を開始できませんでした。"
 
-#: ../gnome/applet/applet.c:515
+#: ../src/applet.c:538
 msgid "VPN Login Message"
 msgstr "VPN ログインメッセージ"
 
-#: ../gnome/applet/applet.c:739 ../gnome/applet/applet.c:2534
-#: ../gnome/applet/other-network-dialog.c:458
-#: ../gnome/applet/passphrase-dialog.c:228
-msgid ""
-"The NetworkManager Applet could not find some required resources (the glade "
-"file was not found)."
-msgstr ""
-"NetworkManager アプレットに必要ないくつかのリソース (glade ファイル) をみつけ"
-"られませんでした。"
-
-#: ../gnome/applet/applet.c:751
-#, c-format
-msgid "The network device \"%s (%s)\" does not support wireless scanning."
-msgstr ""
-"ネットワークデバイス \"%s (%s)\" は無線スキャンをサポートしていません。"
-
-#: ../gnome/applet/applet.c:759
-#, c-format
-msgid "The network device \"%s (%s)\" does not support link detection."
-msgstr "ネットワークデバイス \"%s (%s)\" はリンク検出をサポートしていません。"
-
-#. Note to translators: this is used if no essid is known
-#: ../gnome/applet/applet.c:901 ../gnome/applet/applet.c:1099
-msgid "(unknown)"
-msgstr "(不明)"
-
-#: ../gnome/applet/applet.c:907
-#, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "有線ネットワーク用のデバイス %s を準備しています..."
-
-#: ../gnome/applet/applet.c:909
-#, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "無線ネットワーク '%s' 用のデバイス %s を準備しています..."
-
-#: ../gnome/applet/applet.c:917
-#, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "有線ネットワーク用のデバイス %s を設定しています..."
-
-#: ../gnome/applet/applet.c:919
-#, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "無線ネットワーク '%s' に参加しようとしています..."
-
-#: ../gnome/applet/applet.c:927
-#, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "無線ネットワーク '%s' のネットワーク鍵を待っています..."
-
-#: ../gnome/applet/applet.c:935 ../gnome/applet/applet.c:945
-msgid "Requesting a network address from the wired network..."
-msgstr "有線ネットワークのネットワークアドレスを要求しています..."
-
-#: ../gnome/applet/applet.c:937 ../gnome/applet/applet.c:947
-#, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "無線ネットワーク '%s' のネットワークアドレスを要求しています..."
-
-#: ../gnome/applet/applet.c:955
-msgid "Finishing connection to the wired network..."
-msgstr "有線ネットワークへの接続処理を終了しています..."
-
-#: ../gnome/applet/applet.c:957
-#, c-format
-msgid "Finishing connection to the wireless network '%s'..."
-msgstr "無線ネットワーク '%s' への接続処理を終了しています..."
-
-#: ../gnome/applet/applet.c:1074
-msgid "NetworkManager is not running"
-msgstr "NetworkManager は実行されていません"
-
-#: ../gnome/applet/applet.c:1082 ../gnome/applet/applet.c:1827
-msgid "Networking disabled"
-msgstr "ネットワークは有効にされていません"
-
-#: ../gnome/applet/applet.c:1087
-msgid "No network connection"
-msgstr "ネットワーク接続がありません"
-
-#: ../gnome/applet/applet.c:1092
-msgid "Wired network connection"
-msgstr "有線ネットワーク接続"
-
-#: ../gnome/applet/applet.c:1096
-msgid "Connected to an Ad-Hoc wireless network"
-msgstr "Ad-Hoc 無線ネットワークに接続しました"
-
-#: ../gnome/applet/applet.c:1098
-#, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "'%s' (%d%%) に無線ネットワーク接続"
-
-#: ../gnome/applet/applet.c:1119
-#, c-format
-msgid "VPN connection to '%s'"
-msgstr "'%s' への VPN 接続"
-
-#: ../gnome/applet/applet.c:1127
-#, c-format
-msgid "VPN connecting to '%s'"
-msgstr "'%s' に VPN 接続しています"
-
-#: ../gnome/applet/applet.c:1540
+#: ../src/applet.c:876
 msgid "_Connect to Other Wireless Network..."
 msgstr "他の無線ネットワークに接続(_C)..."
 
-#: ../gnome/applet/applet.c:1561
+#: ../src/applet.c:898
 msgid "Create _New Wireless Network..."
 msgstr "新しい無線ネットワークを作成(_N)..."
 
-#: ../gnome/applet/applet.c:1684
+#: ../src/applet.c:1206
 msgid "_VPN Connections"
 msgstr "VPN 接続(_V)"
 
-#: ../gnome/applet/applet.c:1729
+#: ../src/applet.c:1253
 msgid "_Configure VPN..."
 msgstr "VPN を設定(_C)..."
 
-#: ../gnome/applet/applet.c:1733
+#: ../src/applet.c:1257
 msgid "_Disconnect VPN..."
 msgstr "VPN を切断(_D)..."
 
-#: ../gnome/applet/applet.c:1755
-msgid "_Dial Up Connections"
-msgstr "ダイアルアップ接続(_D)"
+#: ../src/applet.c:1333 ../src/applet.c:2299
+msgid "Networking disabled"
+msgstr "ネットワークは無効になっています"
 
-#. FIXME: We should save and then check the state of the devices and show Connect _or_ Disconnect for each item
-#: ../gnome/applet/applet.c:1766
-#, c-format
-msgid "Connect to %s..."
-msgstr "%s に接続..."
-
-#: ../gnome/applet/applet.c:1772
-#, c-format
-msgid "Disconnect from %s..."
-msgstr "%s への接続を切断..."
-
-#: ../gnome/applet/applet.c:1821
+#: ../src/applet.c:1357
 msgid "No network devices have been found"
 msgstr "ネットワークデバイスがみつかりませんでした"
 
-#: ../gnome/applet/applet.c:2013
+#: ../src/applet.c:1457
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager は実行されていません..."
 
 #. 'Enable Networking' item
-#: ../gnome/applet/applet.c:2192
+#: ../src/applet.c:1587
 msgid "Enable _Networking"
 msgstr "ネットワークを有効にする(_N)"
 
 #. 'Enable Wireless' item
-#: ../gnome/applet/applet.c:2198
+#: ../src/applet.c:1595
 msgid "Enable _Wireless"
 msgstr "無線を有効にする(_W)"
 
 #. 'Connection Information' item
-#: ../gnome/applet/applet.c:2204
+#: ../src/applet.c:1603
 msgid "Connection _Information"
 msgstr "接続情報(_I)"
 
 #. Help item
-#: ../gnome/applet/applet.c:2215
+#: ../src/applet.c:1617
 msgid "_Help"
 msgstr "ヘルプ(_H)"
 
 #. About item
-#: ../gnome/applet/applet.c:2224
+#: ../src/applet.c:1626
 msgid "_About"
 msgstr "情報(_A)"
 
-#: ../gnome/applet/applet.c:2695
+#: ../src/applet.c:2104
+#, c-format
+msgid "Wireless network connection to '%s' (%d%%)"
+msgstr "'%s' (%d%%) に無線ネットワーク接続"
+
+#: ../src/applet.c:2144
+#, c-format
+msgid "Preparing device %s for the wireless network '%s'..."
+msgstr "デバイス %s (無線ネットワーク '%s' 用) を準備しています..."
+
+#: ../src/applet.c:2147
+#, c-format
+msgid "Attempting to join the wireless network '%s'..."
+msgstr "無線ネットワーク '%s' に参加しようとしています..."
+
+#: ../src/applet.c:2150
+#, c-format
+msgid "Requesting a network address from the wireless network '%s'..."
+msgstr "無線ネットワーク '%s' のネットワークアドレスを要求しています..."
+
+#: ../src/applet.c:2153
+#, c-format
+msgid "Waiting for Network Key for the wireless network '%s'..."
+msgstr "無線ネットワーク '%s' のネットワーク鍵を待っています..."
+
+#: ../src/applet.c:2168
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "無線ネットワーク '%s' に接続しました。"
+
+#: ../src/applet.c:2169 ../src/applet.c:2227
+msgid "Connection Established"
+msgstr "接続を確立しました"
+
+#: ../src/applet.c:2174
+#, c-format
+msgid "Wireless network connection to '%s'"
+msgstr "'%s' に無線ネットワーク接続"
+
+#: ../src/applet.c:2213
+#, c-format
+msgid "Preparing device %s for the wired network..."
+msgstr "有線ネットワーク用のデバイス %s を準備しています..."
+
+#: ../src/applet.c:2216
+#, c-format
+msgid "Configuring device %s for the wired network..."
+msgstr "有線ネットワーク用のデバイス %s を設定しています..."
+
+#: ../src/applet.c:2219
+#, c-format
+msgid "Requesting a network address from the wired network..."
+msgstr "有線ネットワークのネットワークアドレスを要求しています..."
+
+#: ../src/applet.c:2223
+msgid "Wired network connection"
+msgstr "有線ネットワーク接続"
+
+#: ../src/applet.c:2228
+msgid "You are now connected to the wired network."
+msgstr "有線ネットワークに接続しました。"
+
+#: ../src/applet.c:2303
+msgid "No network connection"
+msgstr "ネットワーク接続がありません"
+
+#: ../src/applet.c:2306
+msgid "Disconnected"
+msgstr "切断されました"
+
+#: ../src/applet.c:2307
+msgid "The network connection has been disconnected."
+msgstr "ネットワーク接続が切断されました。"
+
+#: ../src/applet.c:2531 ../src/other-network-dialog.c:429
+#: ../src/passphrase-dialog.c:246
+msgid ""
+"The NetworkManager Applet could not find some required resources (the glade "
+"file was not found)."
+msgstr ""
+"NetworkManager アプレットは必要ないくつかのリソースをみつけられませんでした。"
+"(glade ファイルがみつかりません。)"
+
+#: ../src/applet.c:2728
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
 msgstr ""
-"NetworkManager アプレットに必要ないくつかのリソースをみつけることができません"
-"でした。続行できません。\n"
+"NetworkManager アプレットは必要ないくつかのリソースをみつけられませんでした。"
+"続行できません。\n"
 
-#: ../gnome/applet/wireless-security-option.c:157
-msgid "Open System"
-msgstr "システムを開く"
-
-#: ../gnome/applet/wireless-security-option.c:160
-msgid "Shared Key"
-msgstr "共有鍵"
-
-#: ../gnome/applet/wireless-security-option.c:208
-msgid "Automatic (Default)"
-msgstr "自動(デフォルト)"
-
-#: ../gnome/applet/wireless-security-option.c:215
-msgid "AES-CCMP"
-msgstr "AES-CCMP"
-
-#: ../gnome/applet/wireless-security-option.c:223
-msgid "TKIP"
-msgstr "TKIP"
-
-#: ../gnome/applet/wireless-security-option.c:231
-msgid "Dynamic WEP"
-msgstr "動的 WEP"
-
-#: ../gnome/applet/wso-none.c:53
-msgid "None"
-msgstr "なし"
-
-#: ../gnome/applet/wso-wep-ascii.c:138
-msgid "WEP 64/128-bit ASCII"
-msgstr "WEP 64/128-bit ASCII"
-
-#: ../gnome/applet/wso-wep-hex.c:135
-msgid "WEP 64/128-bit Hex"
-msgstr "WEP 64/128-bit 十六進数"
-
-#: ../gnome/applet/wso-wep-passphrase.c:135
-msgid "WEP 128-bit Passphrase"
-msgstr "WEP 128-bit パスフレーズ"
-
-#: ../gnome/applet/wso-wpa-eap.c:237
-msgid "PEAP"
-msgstr "PEAP"
-
-#: ../gnome/applet/wso-wpa-eap.c:238
-msgid "TLS"
-msgstr "TLS"
-
-#: ../gnome/applet/wso-wpa-eap.c:239
-msgid "TTLS"
-msgstr "TTLS"
-
-# そういう仕様の名前なので訳すべきでない。
-#: ../gnome/applet/wso-wpa-eap.c:247 ../src/nm-ap-security-wpa-eap.c:93
-#: ../src/nm-ap-security-wpa-eap.c:117
-msgid "WPA2 Enterprise"
-msgstr "WPA2-Enterprise"
-
-#: ../gnome/applet/wso-wpa-eap.c:249 ../src/nm-ap-security-wpa-eap.c:95
-#: ../src/nm-ap-security-wpa-eap.c:122
-msgid "WPA Enterprise"
-msgstr "WPA-Enterprise"
-
-#: ../gnome/applet/wso-wpa-psk.c:178
-msgid "WPA2 Personal"
-msgstr "WPA2-Personal"
-
-#: ../gnome/applet/wso-wpa-psk.c:180
-msgid "WPA Personal"
-msgstr "WPA-Personal"
-
-#: ../gnome/applet/eggtrayicon.c:134
-msgid "Orientation"
-msgstr "向き"
-
-#: ../gnome/applet/eggtrayicon.c:135
-msgid "The orientation of the tray."
-msgstr "トレイの向き"
-
-#: ../gnome/applet/menu-items.c:88
+#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:937
 #, c-format
-msgid "Wired Network (%s)"
-msgstr "有線ネットワーク (%s)"
+msgid "Passphrase for wireless network %s"
+msgstr "無線ネットワーク %s のパスフレーズ"
 
-#: ../gnome/applet/menu-items.c:91
-msgid "_Wired Network"
-msgstr "有線ネットワーク(_W)"
-
-#: ../gnome/applet/menu-items.c:162
-#, c-format
-msgid "Wireless Network (%s)"
-msgid_plural "Wireless Networks (%s)"
-msgstr[0] "無線ネットワーク (%s)"
-
-#: ../gnome/applet/menu-items.c:164
-msgid "Wireless Network"
-msgid_plural "Wireless Networks"
-msgstr[0] "無線ネットワーク"
-
-#: ../gnome/applet/menu-items.c:343
-msgid " (invalid Unicode)"
-msgstr " (不正な Unicode)"
-
-#: ../gnome/applet/other-network-dialog.c:352
-#, c-format
-msgid ""
-"By default, the wireless network's name is set to your computer's name, %s, "
-"with no encryption enabled"
-msgstr ""
-"デフォルトでは無線ネットワークの名前はあなたのコンピュータ名 (%s) に設定さ"
-"れ、暗号がないものとされます。"
-
-#: ../gnome/applet/other-network-dialog.c:358
-msgid "Create new wireless network"
-msgstr "新しい無線ネットワークを作成"
-
-#: ../gnome/applet/other-network-dialog.c:359
-msgid ""
-"Enter the name and security settings of the wireless network you wish to "
-"create."
-msgstr "作成したい無線ネットワークの名前とセキュリティ設定を入力して下さい。"
-
-#: ../gnome/applet/other-network-dialog.c:363
-msgid "Create New Wireless Network"
-msgstr "新しい無線ネットワークを作成"
-
-#: ../gnome/applet/other-network-dialog.c:368
-msgid "Existing wireless network"
-msgstr "既存の無線ネットワーク"
-
-#: ../gnome/applet/other-network-dialog.c:369
-msgid "Enter the name of the wireless network to which you wish to connect."
-msgstr "接続したい無線ネットワークの名前を入力して下さい。"
-
-#: ../gnome/applet/other-network-dialog.c:371
-msgid "Connect to Other Wireless Network"
-msgstr "他の無線ネットワークに接続"
-
-#: ../gnome/applet/passphrase-dialog.c:215
-msgid "Error connecting to wireless network"
-msgstr "無線ネットワークに接続中にエラー"
-
-#: ../gnome/applet/passphrase-dialog.c:216
-msgid ""
-"The requested wireless network requires security capabilities unsupported by "
-"your hardware."
-msgstr ""
-"要求された無線ネットワークにはあなたのハードウェアがサポートしていないセキュ"
-"リティ機能が必要です。"
-
-#: ../gnome/applet/vpn-password-dialog.c:151
-#: ../gnome/applet/vpn-password-dialog.c:188
-#, c-format
-msgid "Cannot start VPN connection '%s'"
-msgstr "VPN 接続 '%s' を開始できません"
-
-#: ../gnome/applet/vpn-password-dialog.c:154
-#, c-format
-msgid ""
-"Could not find the authentication dialog for VPN connection type '%s'. "
-"Contact your system administrator."
-msgstr ""
-"VPN 接続タイプ '%s' の認証ダイアログをみつけられませんでした。システム管理者"
-"に連絡して下さい。"
-
-#: ../gnome/applet/vpn-password-dialog.c:191
-#, c-format
-msgid ""
-"There was a problem launching the authentication dialog for VPN connection "
-"type '%s'. Contact your system administrator."
-msgstr ""
-"VPN 接続タイプ '%s' の認証ダイアログを起動中に問題が生じました。システム管理"
-"者に連絡して下さい。"
-
-#: ../gnome/applet/applet.glade.h:1
+#: ../src/applet.glade.h:1
 msgid " "
 msgstr " "
 
-#: ../gnome/applet/applet.glade.h:2
+#: ../src/applet.glade.h:2
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Active Connection Information</span>"
 msgstr "<span weight=\"bold\" size=\"larger\">アクティブな接続の情報</span>"
 
-#: ../gnome/applet/applet.glade.h:4
+#: ../src/applet.glade.h:4
 #, no-c-format
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Passphrase Required by Wireless "
@@ -517,20 +292,20 @@ msgstr ""
 "<span weight=\"bold\" size=\"larger\">無線ネットワークにはパスフレーズが必要"
 "です</span>\n"
 "\n"
-"無線ネットワーク '%s' にアクセスするにはパスフレーズか暗号化鍵が必要です。"
+"無線ネットワーク '%s' にアクセスするにはパスフレーズか暗号鍵が必要です。"
 
-#: ../gnome/applet/applet.glade.h:8
+#: ../src/applet.glade.h:8
 #, no-c-format
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Reduced Network Functionality</span>\n"
 "\n"
 "%s  It will not be completely functional."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">限定されたネットワーク機能</span>\n"
+"<span weight=\"bold\" size=\"larger\">制限されたネットワーク機能</span>\n"
 "\n"
 "%s  完全には機能しません。"
 
-#: ../gnome/applet/applet.glade.h:12
+#: ../src/applet.glade.h:12
 #, no-c-format
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Wireless Network Login Confirmation</"
@@ -540,88 +315,87 @@ msgid ""
 "that this wireless network is secure, click the checkbox below and "
 "NetworkManager will not require confirmation on subsequent log ins."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">無線ネットワークログイン確認</span>\n"
+"<span weight=\"bold\" size=\"larger\">無線ネットワークのログイン確認</span>\n"
 "\n"
-"無線ネットワーク '%s' にログインするように選択しました。もしこの無線ネット"
-"ワークがセキュアであることを確信できるのであれば下のチェックボタンをクリック"
-"して NetworkManager がログインの後で確認を必要としないようにすることができま"
-"す。"
+"無線ネットワーク '%s' へのログインを選択しました。もしこの無線ネットワークが"
+"セキュアであることを確信できるのであれば、下のチェックボタンをクリックして "
+"NetworkManager がログインの後で確認を必要としないようにすることができます。"
 
-#: ../gnome/applet/applet.glade.h:15
+#: ../src/applet.glade.h:15
 msgid "Anonymous Identity:"
 msgstr "匿名:"
 
-#: ../gnome/applet/applet.glade.h:16
+#: ../src/applet.glade.h:16
 msgid "Authentication:"
 msgstr "認証:"
 
-#: ../gnome/applet/applet.glade.h:17
+#: ../src/applet.glade.h:17
 msgid "Broadcast Address:"
 msgstr "ブロードキャストアドレス:"
 
-#: ../gnome/applet/applet.glade.h:18
+#: ../src/applet.glade.h:18
 msgid "CA Certificate File:"
-msgstr "CA 証明ファイル:"
+msgstr "CA 証明書ファイル:"
 
-#: ../gnome/applet/applet.glade.h:19
+#: ../src/applet.glade.h:19
 msgid "C_onnect"
 msgstr "接続(_O)"
 
-#: ../gnome/applet/applet.glade.h:20
+#: ../src/applet.glade.h:20
 msgid "Client Certificate File:"
-msgstr "クライアント証明ファイル:"
+msgstr "クライアント証明書ファイル:"
 
-#: ../gnome/applet/applet.glade.h:21
+#: ../src/applet.glade.h:21
 msgid "Connection Information"
 msgstr "接続情報"
 
-#: ../gnome/applet/applet.glade.h:22
+#: ../src/applet.glade.h:22
 msgid "Default Route:"
 msgstr "デフォルトルート:"
 
-#: ../gnome/applet/applet.glade.h:23
+#: ../src/applet.glade.h:23
 msgid "Destination Address:"
 msgstr "宛先アドレス:"
 
-#: ../gnome/applet/applet.glade.h:24
+#: ../src/applet.glade.h:24
 msgid "Driver:"
 msgstr "ドライバ:"
 
-#: ../gnome/applet/applet.glade.h:25
+#: ../src/applet.glade.h:25
 msgid "EAP Method:"
 msgstr "EAP 方式:"
 
-#: ../gnome/applet/applet.glade.h:26
+#: ../src/applet.glade.h:26
 msgid "Hardware Address:"
 msgstr "ハードウェアアドレス:"
 
-#: ../gnome/applet/applet.glade.h:27
+#: ../src/applet.glade.h:27
 msgid "IP Address:"
 msgstr "IP アドレス:"
 
 # とりあえずこのように訳しておくが "Identity" のままの方が適切かもしれない。
 # (WPA-EAP Identity 認証方式: ユーザ ID とパスワードの組で認証)
-#: ../gnome/applet/applet.glade.h:28
+#: ../src/applet.glade.h:28
 msgid "Identity:"
-msgstr "ユーザ ID:"
+msgstr "ID:"
 
-#: ../gnome/applet/applet.glade.h:29
+#: ../src/applet.glade.h:29
 msgid "Interface:"
 msgstr "インターフェース:"
 
-#: ../gnome/applet/applet.glade.h:30
+#: ../src/applet.glade.h:30
 msgid "Key Type:"
 msgstr "鍵タイプ:"
 
-#: ../gnome/applet/applet.glade.h:31
+#: ../src/applet.glade.h:31
 msgid "Key management:"
-msgstr "鍵管理:"
+msgstr "鍵の管理:"
 
-#: ../gnome/applet/applet.glade.h:32
+#: ../src/applet.glade.h:32
 msgid "Key:"
 msgstr "鍵:"
 
-#: ../gnome/applet/applet.glade.h:33
+#: ../src/applet.glade.h:33
 msgid ""
 "None\n"
 "WEP 128-bit Passphrase\n"
@@ -633,7 +407,7 @@ msgstr ""
 "WEP 64/128-bit 十六進数\n"
 "WEP 64/128-bit ASCII\n"
 
-#: ../gnome/applet/applet.glade.h:38
+#: ../src/applet.glade.h:38
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -641,115 +415,194 @@ msgstr ""
 "オープンシステム\n"
 "共有鍵"
 
-#: ../gnome/applet/applet.glade.h:40
+#: ../src/applet.glade.h:40
 msgid "Other Wireless Network..."
 msgstr "他の無線ネットワーク..."
 
-#: ../gnome/applet/applet.glade.h:41
+#: ../src/applet.glade.h:41
 msgid "Passphrase:"
 msgstr "パスフレーズ:"
 
-#: ../gnome/applet/applet.glade.h:42
+#: ../src/applet.glade.h:42
 msgid "Password:"
 msgstr "パスワード:"
 
-#: ../gnome/applet/applet.glade.h:43
+#: ../src/applet.glade.h:43
 msgid "Primary DNS:"
 msgstr "第一 DNS:"
 
-#: ../gnome/applet/applet.glade.h:44
+#: ../src/applet.glade.h:44
 msgid "Private Key File:"
 msgstr "秘密鍵ファイル:"
 
-#: ../gnome/applet/applet.glade.h:45
+#: ../src/applet.glade.h:45
 msgid "Private Key Password:"
 msgstr "秘密鍵パスワード:"
 
-#: ../gnome/applet/applet.glade.h:46
+#: ../src/applet.glade.h:46
 msgid "Secondary DNS:"
 msgstr "第二 DNS:"
 
-#: ../gnome/applet/applet.glade.h:47
+#: ../src/applet.glade.h:47
 msgid "Select the CA Certificate File"
-msgstr "CA 証明ファイルを選択"
+msgstr "CA 証明書ファイルを選択"
 
-#: ../gnome/applet/applet.glade.h:48
+#: ../src/applet.glade.h:48
 msgid "Select the Client Certificate File"
-msgstr "クライアント証明ファイルを選択"
+msgstr "クライアント証明書ファイルを選択"
 
-#: ../gnome/applet/applet.glade.h:49
+#: ../src/applet.glade.h:49
 msgid "Select the Private Key File"
 msgstr "秘密鍵ファイルを選択"
 
-#: ../gnome/applet/applet.glade.h:50
+#: ../src/applet.glade.h:50
 msgid "Show key"
 msgstr "鍵を表示"
 
-#: ../gnome/applet/applet.glade.h:51
+#: ../src/applet.glade.h:51
 msgid "Show passphrase"
 msgstr "パスフレーズを表示"
 
-#: ../gnome/applet/applet.glade.h:52
+#: ../src/applet.glade.h:52
 msgid "Show password"
 msgstr "パスワードを表示"
 
-#: ../gnome/applet/applet.glade.h:53
+#: ../src/applet.glade.h:53
 msgid "Show passwords"
 msgstr "パスワードを表示"
 
-#: ../gnome/applet/applet.glade.h:54
+#: ../src/applet.glade.h:54
 msgid "Speed:"
 msgstr "速度:"
 
-#: ../gnome/applet/applet.glade.h:55
+#: ../src/applet.glade.h:55
 msgid "Subnet Mask:"
 msgstr "サブネットマスク:"
 
-#: ../gnome/applet/applet.glade.h:56
+#: ../src/applet.glade.h:56
 msgid "Type:"
 msgstr "タイプ:"
 
-#: ../gnome/applet/applet.glade.h:57
+#: ../src/applet.glade.h:57
 msgid "User Name:"
-msgstr "ユーザ名:"
+msgstr "ユーザー名:"
 
-#: ../gnome/applet/applet.glade.h:58
+#: ../src/applet.glade.h:58
 msgid "Wireless Network Key Required"
 msgstr "無線ネットワーク鍵が必要です"
 
-#: ../gnome/applet/applet.glade.h:59
+#: ../src/applet.glade.h:59
 msgid "Wireless _adapter:"
 msgstr "無線アダプタ(_A):"
 
-#: ../gnome/applet/applet.glade.h:60
+#: ../src/applet.glade.h:60
 msgid "_Always Trust this Wireless Network"
 msgstr "この無線ネットワークを常に信頼する(_A)"
 
-#: ../gnome/applet/applet.glade.h:61
+#: ../src/applet.glade.h:61
 msgid "_Don't remind me again"
 msgstr "二度と催促しない(_D)"
 
-#: ../gnome/applet/applet.glade.h:62
+#: ../src/applet.glade.h:62
 msgid "_Fallback on this Network"
 msgstr "このネットワークにフォールバック(_F)"
 
-#: ../gnome/applet/applet.glade.h:63
+#: ../src/applet.glade.h:63
 msgid "_Login to Network"
 msgstr "ネットワークにログイン(_L)"
 
-#: ../gnome/applet/applet.glade.h:64
+#: ../src/applet.glade.h:64
 msgid "_Network Name:"
 msgstr "ネットワーク名(_N):"
 
-#: ../gnome/applet/applet.glade.h:65
+#: ../src/applet.glade.h:65
 msgid "_Wireless Security:"
 msgstr "無線セキュリティ(_W):"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:419
+#: ../src/eggtrayicon.c:134
+msgid "Orientation"
+msgstr "向き"
+
+#: ../src/eggtrayicon.c:135
+msgid "The orientation of the tray."
+msgstr "トレイの向き"
+
+#: ../src/menu-items.c:62
+#, c-format
+msgid "Wired Network (%s)"
+msgstr "有線ネットワーク (%s)"
+
+#: ../src/menu-items.c:65
+msgid "_Wired Network"
+msgstr "有線ネットワーク(_W)"
+
+#: ../src/menu-items.c:114
+#, c-format
+msgid "Wireless Network (%s)"
+msgid_plural "Wireless Networks (%s)"
+msgstr[0] "無線ネットワーク (%s)"
+
+#: ../src/menu-items.c:118
+msgid "Wireless Network"
+msgid_plural "Wireless Networks"
+msgstr[0] "無線ネットワーク"
+
+#: ../src/menu-items.c:322
+msgid " (invalid Unicode)"
+msgstr " (不正な Unicode)"
+
+#: ../src/other-network-dialog.c:323
+#, c-format
+msgid ""
+"By default, the wireless network's name is set to your computer's name, %s, "
+"with no encryption enabled"
+msgstr ""
+"デフォルトでは無線ネットワークの名前はあなたのコンピュータ名 (%s) に設定さ"
+"れ、暗号がないものとされます。"
+
+#: ../src/other-network-dialog.c:329
+msgid "Create new wireless network"
+msgstr "新しい無線ネットワークを作成"
+
+#: ../src/other-network-dialog.c:330
+msgid ""
+"Enter the name and security settings of the wireless network you wish to "
+"create."
+msgstr "作成したい無線ネットワークの名前とセキュリティ設定を入力して下さい。"
+
+#: ../src/other-network-dialog.c:334
+msgid "Create New Wireless Network"
+msgstr "新しい無線ネットワークを作成"
+
+#: ../src/other-network-dialog.c:339
+msgid "Existing wireless network"
+msgstr "既存の無線ネットワーク"
+
+#: ../src/other-network-dialog.c:340
+msgid "Enter the name of the wireless network to which you wish to connect."
+msgstr "接続したい無線ネットワークの名前を入力して下さい。"
+
+#: ../src/other-network-dialog.c:342
+msgid "Connect to Other Wireless Network"
+msgstr "他の無線ネットワークに接続"
+
+#: ../src/passphrase-dialog.c:233
+msgid "Error connecting to wireless network"
+msgstr "無線ネットワークに接続中にエラーが起きました"
+
+#: ../src/passphrase-dialog.c:234
+msgid ""
+"The requested wireless network requires security capabilities unsupported by "
+"your hardware."
+msgstr ""
+"要求された無線ネットワークにはあなたのハードウェアがサポートしていないセキュ"
+"リティ機能が必要です。"
+
+#: ../src/vpn-properties/nm-vpn-properties.c:417
 msgid "Cannot add VPN connection"
 msgstr "VPN 接続を追加できません"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:421
+#: ../src/vpn-properties/nm-vpn-properties.c:419
 msgid ""
 "No suitable VPN software was found on your system. Contact your system "
 "administrator."
@@ -757,25 +610,25 @@ msgstr ""
 "適切な VPN ソフトウェアがシステム上にみつかりませんでした。システム管理者に連"
 "絡してください。"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:463
+#: ../src/vpn-properties/nm-vpn-properties.c:461
 msgid "Cannot import VPN connection"
 msgstr "VPN 接続をインポートできません"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:465
+#: ../src/vpn-properties/nm-vpn-properties.c:463
 #, c-format
 msgid ""
 "Cannot find suitable software for VPN connection type '%s' to import the "
 "file '%s'. Contact your system administrator."
 msgstr ""
-"ファイル '%s' をインポートするための VPN 接続タイプ '%s' 用の適切なソフトウェ"
-"アがシステム上にみつかりませんでした。システム管理者に連絡してください。"
+"VPN 接続タイプ '%s' (ファイル '%s' をインポート) のための適切なソフトウェアが"
+"みつかりませんでした。システム管理者に連絡してください。"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:585
+#: ../src/vpn-properties/nm-vpn-properties.c:580
 #, c-format
 msgid "Error retrieving VPN connection '%s'"
 msgstr "VPN 接続 '%s' 読み出し中にエラー"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:588
+#: ../src/vpn-properties/nm-vpn-properties.c:583
 #, c-format
 msgid ""
 "Could not find the UI files for VPN connection type '%s'. Contact your "
@@ -784,29 +637,48 @@ msgstr ""
 "VPN 接続タイプ '%s' の UI ファイルをみつけられませんでした。システム管理者に"
 "連絡してください。"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:732
+#: ../src/vpn-properties/nm-vpn-properties.c:727
 #, c-format
 msgid "Delete VPN connection \"%s\"?"
 msgstr "VPN 接続 \"%s\" を削除しますか?"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:735
+#: ../src/vpn-properties/nm-vpn-properties.c:730
 #, c-format
 msgid ""
 "All information about the VPN connection \"%s\" will be lost and you may "
 "need your system administrator to provide information to create a new "
 "connection."
 msgstr ""
-"VPN 接続 \"%s\" についてすべての情報が失われ、新しい接続を作成するにはシステ"
-"ム管理者に情報を提供してもらう必要があります。"
+"VPN 接続 \"%s\" のすべての情報が失われ、新しい接続を作成するにはシステム管理"
+"者に情報を提供してもらう必要があります。"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:908
+#: ../src/vpn-properties/nm-vpn-properties.c:924
 msgid "Unable to load"
 msgstr "読み込めません"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.c:910
+#: ../src/vpn-properties/nm-vpn-properties.c:926
 msgid "Cannot find some needed resources (the glade file)!"
 msgstr "必要ないくつかのリソース (glade ファイル) をみつけられません!"
 
+#. Druid Page 1 - Create VPN Connection
+#: ../src/vpn-properties/nm-vpn-properties.c:1025
+msgid ""
+"This assistant will guide you through the creation of a connection to a "
+"Virtual Private Network (VPN)."
+msgstr ""
+"このアシスタントは仮想プライベートネットワーク (VPN) の接続の作成を手助けしま"
+"す。"
+
+#: ../src/vpn-properties/nm-vpn-properties.c:1026
+msgid ""
+"It will require some information, such as IP addresses and secrets.  Please "
+"see your system administrator to obtain this information."
+msgstr ""
+"作成時には IP アドレスといったような情報が必要となります。システム管理者に確"
+"認してこれらの情報を得ておいてください。"
+
+#. Druid Page 2 - Select Connection Type
+#. Translators: this will be "Create VPN Connection - [1|2] of 2"
 #. druid_window = GTK_DIALOG (gtk_dialog_new_with_buttons (_("Create VPN Connection"),
 #. NULL,
 #. GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -815,9 +687,30 @@ msgstr "必要ないくつかのリソース (glade ファイル) をみつけ�
 #. GTK_STOCK_APPLY,
 #. GTK_RESPONSE_ACCEPT,
 #. NULL));
-#: ../gnome/vpn-properties/nm-vpn-properties.c:1055
+#: ../src/vpn-properties/nm-vpn-properties.c:1031
+#: ../src/vpn-properties/nm-vpn-properties.c:1046
+#: ../src/vpn-properties/nm-vpn-properties.c:1104
 msgid "Create VPN Connection"
 msgstr "VPN 接続を作成"
+
+#. Translators: this will be "Create VPN Connection - 1 of 2"
+#: ../src/vpn-properties/nm-vpn-properties.c:1048
+msgid "1 of 2"
+msgstr "1 / 2"
+
+#: ../src/vpn-properties/nm-vpn-properties.c:1056
+msgid "Choose which type of VPN connection you wish to create:"
+msgstr "作成したい VPN 接続のタイプを選択します:"
+
+#. Druid Page 3 - Connection Details
+#. Translators: this will be "Create VPN Connection - [1|2] of 2"
+#: ../src/vpn-properties/nm-vpn-properties.c:1064
+msgid "2 of 2"
+msgstr "2 / 2"
+
+#: ../src/vpn-properties/nm-vpn-properties.c:1081
+msgid "Finished Create VPN Connection"
+msgstr "VPN 接続の作成を終了"
 
 #. gtk_container_add (GTK_CONTAINER (druid_window->vbox), GTK_WIDGET(gtk_label_new("Some label")));
 #. gtk_box_pack_start (GTK_BOX (druid_window->vbox), GTK_WIDGET(druid), TRUE,TRUE,0);
@@ -828,186 +721,143 @@ msgstr "VPN 接続を作成"
 #. gtk_window_set_modal (druid_window, TRUE);
 #. gtk_window_set_transient_for (GTK_WINDOW(druid_window), GTK_WINDOW (dialog));
 #. Edit dialog
-#: ../gnome/vpn-properties/nm-vpn-properties.c:1073
+#: ../src/vpn-properties/nm-vpn-properties.c:1122
 msgid "Edit VPN Connection"
 msgstr "VPN 接続を編集"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:1
+#: ../src/vpn-properties/nm-vpn-properties.c:1147
+msgid "VPN Service for importing"
+msgstr "インポートする VPN サービス"
+
+#: ../src/vpn-properties/nm-vpn-properties.c:1148
+msgid "File to import"
+msgstr "インポートするファイル"
+
+#. Translators: this is the description seen when running nm-vpn-properties --help
+#: ../src/vpn-properties/nm-vpn-properties.c:1157
+msgid "- NetworkManager VPN properties"
+msgstr "- NetworkManager VPN プロパティ"
+
+#: ../src/vpn-properties/nm-vpn-properties.glade.h:1
 msgid "Add a new VPN connection"
 msgstr "新しい VPN 接続を追加"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:2
+#: ../src/vpn-properties/nm-vpn-properties.glade.h:2
 msgid "Delete the selected VPN connection"
 msgstr "選択した VPN 接続を削除"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:3
+#: ../src/vpn-properties/nm-vpn-properties.glade.h:3
 msgid "E_xport"
 msgstr "エクスポート(_X)"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:4
+#: ../src/vpn-properties/nm-vpn-properties.glade.h:4
 msgid "Edit the selected VPN connection"
 msgstr "選択した VPN 接続を編集"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:5
+#: ../src/vpn-properties/nm-vpn-properties.glade.h:5
 msgid "Export the VPN settings to a file"
 msgstr "VPN 設定をファイルにエクスポート"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:6
+#: ../src/vpn-properties/nm-vpn-properties.glade.h:6
 msgid "Export the selected VPN connection to a file"
 msgstr "選択した VPN 接続をファイルにエクスポート"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:7
+#: ../src/vpn-properties/nm-vpn-properties.glade.h:7
 msgid "Manage Virtual Private Network Connections"
 msgstr "仮想プライベートネットワーク (VPN) 接続を管理"
 
-#: ../gnome/vpn-properties/nm-vpn-properties.glade.h:8
+#: ../src/vpn-properties/nm-vpn-properties.glade.h:8
 msgid "VPN Connections"
 msgstr "VPN 接続"
 
-#: ../src/nm-ap-security-wep.c:52
-msgid "40-bit WEP"
-msgstr "40-bit WEP"
+#: ../src/vpn-password-dialog.c:151 ../src/vpn-password-dialog.c:188
+#, c-format
+msgid "Cannot start VPN connection '%s'"
+msgstr "VPN 接続 '%s' を開始できません"
 
-#: ../src/nm-ap-security-wep.c:54
-msgid "104-bit WEP"
-msgstr "104-bit WEP"
+#: ../src/vpn-password-dialog.c:154
+#, c-format
+msgid ""
+"Could not find the authentication dialog for VPN connection type '%s'. "
+"Contact your system administrator."
+msgstr ""
+"VPN 接続タイプ '%s' の認証ダイアログをみつけられませんでした。システム管理者"
+"に連絡して下さい。"
 
-#: ../src/nm-ap-security-wpa-psk.c:50
-msgid "WPA TKIP"
-msgstr "WPA TKIP"
+#: ../src/vpn-password-dialog.c:191
+#, c-format
+msgid ""
+"There was a problem launching the authentication dialog for VPN connection "
+"type '%s'. Contact your system administrator."
+msgstr ""
+"VPN 接続タイプ '%s' の認証ダイアログを起動中に問題が生じました。システム管理"
+"者に連絡して下さい。"
 
-#: ../src/nm-ap-security-wpa-psk.c:52
-msgid "WPA CCMP"
-msgstr "WPA CCMP"
+#: ../src/wireless-security-option.c:157
+msgid "Open System"
+msgstr "システムを開く"
 
-#: ../src/nm-ap-security-wpa-psk.c:54
-msgid "WPA Automatic"
-msgstr "WPA 自動"
+#: ../src/wireless-security-option.c:160
+msgid "Shared Key"
+msgstr "共有鍵"
 
-#: ../src/nm-ap-security-wpa-psk.c:59
-msgid "WPA2 TKIP"
-msgstr "WPA2 TKIP"
+#: ../src/wireless-security-option.c:208
+msgid "Automatic (Default)"
+msgstr "自動(デフォルト)"
 
-#: ../src/nm-ap-security-wpa-psk.c:61
-msgid "WPA2 CCMP"
-msgstr "WPA2 CCMP"
+#: ../src/wireless-security-option.c:215
+msgid "AES-CCMP"
+msgstr "AES-CCMP"
 
-#: ../src/nm-ap-security-wpa-psk.c:63
-msgid "WPA2 Automatic"
-msgstr "WPA2 自動"
+#: ../src/wireless-security-option.c:223
+msgid "TKIP"
+msgstr "TKIP"
 
-#: ../src/nm-ap-security.c:338
-msgid "none"
+#: ../src/wireless-security-option.c:231
+msgid "Dynamic WEP"
+msgstr "動的 WEP"
+
+#: ../src/wso-none.c:53
+msgid "None"
 msgstr "なし"
 
-#: ../src/nm-netlink-monitor.c:174
-#, c-format
-msgid ""
-"unable to create netlink socket for monitoring wired ethernet devices - %s"
-msgstr ""
-"有線 Ethernet デバイスを監視するためのネットリンクソケットを作成できません - "
-"%s"
+#: ../src/wso-wep-ascii.c:138
+msgid "WEP 64/128-bit ASCII"
+msgstr "WEP 64/128-bit ASCII"
 
-#: ../src/nm-netlink-monitor.c:192
-#, c-format
-msgid ""
-"unable to bind to netlink socket for monitoring wired ethernet devices - %s"
-msgstr ""
-"有線 Ethernet デバイスを監視するためのネットリンクソケットをバインドできませ"
-"ん - %s"
+#: ../src/wso-wep-hex.c:135
+msgid "WEP 64/128-bit Hex"
+msgstr "WEP 64/128-bit 十六進数"
 
-#: ../src/nm-netlink-monitor.c:427
-msgid "operation took too long"
-msgstr "処理に時間がかかりすぎています"
+#: ../src/wso-wep-passphrase.c:135
+msgid "WEP 128-bit Passphrase"
+msgstr "WEP 128-bit パスフレーズ"
 
-#: ../src/nm-netlink-monitor.c:524
-msgid "received data from wrong type of sender"
-msgstr "間違ったタイプの送り先からデータを受信しました"
+#: ../src/wso-wpa-eap.c:237
+msgid "PEAP"
+msgstr "PEAP"
 
-#: ../src/nm-netlink-monitor.c:537
-msgid "received data from unexpected sender"
-msgstr "予期しない送り先からデータを受信しました"
+#: ../src/wso-wpa-eap.c:238
+msgid "TLS"
+msgstr "TLS"
 
-#: ../src/nm-netlink-monitor.c:666
-msgid "too much data was sent over socket and some of it was lost"
-msgstr "ソケットを介して送信されたデータが多すぎたためいくらか失われました"
+#: ../src/wso-wpa-eap.c:239
+msgid "TTLS"
+msgstr "TTLS"
 
-#: ../src/nm-netlink-monitor.c:776
-msgid "error occurred while waiting for data on socket"
-msgstr "ソケット上でデータを待っている際にエラーが発生しました"
+# そういう仕様の名前なので訳すべきでない。
+#: ../src/wso-wpa-eap.c:247
+msgid "WPA2 Enterprise"
+msgstr "WPA2-Enterprise"
 
-#: ../gnome/applet/applet-dbus-devices.c:922
-#, c-format
-msgid "You are now connected to the Ad-Hoc wireless network '%s'."
-msgstr "Ad-Hoc 無線ネットワーク '%s' に接続しました。"
+#: ../src/wso-wpa-eap.c:249
+msgid "WPA Enterprise"
+msgstr "WPA-Enterprise"
 
-#: ../gnome/applet/applet-dbus-devices.c:927
-#, c-format
-msgid "You are now connected to the wireless network '%s'."
-msgstr "無線ネットワーク '%s' に接続しました。"
+#: ../src/wso-wpa-psk.c:178
+msgid "WPA2 Personal"
+msgstr "WPA2-Personal"
 
-#: ../gnome/applet/applet-dbus-devices.c:934
-msgid "You are now connected to the wired network."
-msgstr "有線ネットワークに接続しました。"
-
-#: ../gnome/applet/applet-dbus-devices.c:940
-msgid "Connection Established"
-msgstr "接続を確立"
-
-#: ../gnome/applet/applet-dbus-devices.c:983
-msgid "Disconnected"
-msgstr "接続を切断"
-
-#: ../gnome/applet/applet-dbus-devices.c:984
-msgid "The network connection has been disconnected."
-msgstr "ネットワーク接続が切断されました。"
-
-#~ msgid "Choose which type of VPN connection you wish to create."
-#~ msgstr "作成したい VPN 接続のタイプを選択してください"
-
-#~ msgid "Connect to:"
-#~ msgstr "接続先:"
-
-#~ msgid "Create VPN Connection - 1 of 2"
-#~ msgstr "VPN 接続を作成 - 1 of 2"
-
-#~ msgid "Create VPN Connection - 2 of 2"
-#~ msgstr "VPN 接続を作成 - 2 of 2"
-
-#~ msgid "Finish Creating VPN Connection"
-#~ msgstr "VPN 接続の作成を終了"
-
-#~ msgid ""
-#~ "This assistant will guide you through the creation of a connection to a "
-#~ "Virtual Private Network (VPN).\n"
-#~ "\n"
-#~ "It will require some information, such as IP addresses and secrets.  "
-#~ "Please see your system administrator to obtain this information."
-#~ msgstr ""
-#~ "このアシスタントは仮想プライベートネットワーク (VPN) の接続の作成を手助け"
-#~ "します。\n"
-#~ "\n"
-#~ "作成時には IP アドレスといったような情報が必要となります。システム管理者に"
-#~ "確認してこれらの情報を得ておいてください。"
-
-#~ msgid "Modify Wireless Networks"
-#~ msgstr "無線ネットワークを変更"
-
-#~ msgid "*"
-#~ msgstr "*"
-
-#~ msgid ""
-#~ "128-bit Passphrase (WEP)\n"
-#~ "Ascii Key (WEP)\n"
-#~ "Hex Key (WEP)"
-#~ msgstr ""
-#~ "128-bit パスフレーズ (WEP)\n"
-#~ "ASCII 鍵 (WEP)\n"
-#~ "16 進鍵 (WEP)"
-
-#~ msgid "Ascii Key:"
-#~ msgstr "ASCII 鍵:"
-
-#~ msgid "You must log in to access the private network %s"
-#~ msgstr ""
-#~ "プライベートネットワーク %s にアクセスするにはログインしなければいけません"
+#: ../src/wso-wpa-psk.c:180
+msgid "WPA Personal"
+msgstr "WPA-Personal"
