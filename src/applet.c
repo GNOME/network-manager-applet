@@ -922,12 +922,14 @@ ap_hash (NMAccessPoint * ap)
 	unsigned char input[33];
 	GByteArray * ssid;
 	int mode;
-	guint32 caps;
+	guint32 flags, wpa_flags, rsn_flags;
 
 	g_return_val_if_fail (ap, NULL);
 
 	mode = nm_access_point_get_mode (ap);
-	caps = nm_access_point_get_capabilities (ap);
+	flags = nm_access_point_get_flags (ap);
+	wpa_flags = nm_access_point_get_wpa_flags (ap);
+	rsn_flags = nm_access_point_get_rsn_flags (ap);
 
 	memset (&input[0], 0, sizeof (input));
 
@@ -945,13 +947,17 @@ ap_hash (NMAccessPoint * ap)
 		input[32] |= (1 << 2);
 
 	/* Separate out no encryption, WEP-only, and WPA-capable */
-	caps &= 0xF;
-	if (caps == NM_802_11_CAP_PROTO_NONE)
+	if (  !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	    && (rsn_flags == NM_802_11_AP_SEC_NONE))
 		input[32] |= (1 << 3);
-	else if (caps == NM_802_11_CAP_PROTO_WEP)
+	else if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
+	         && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	         && (rsn_flags == NM_802_11_AP_SEC_NONE))
 		input[32] |= (1 << 4);
-	else if (   (caps & NM_802_11_CAP_PROTO_WPA)
-	         || (caps & NM_802_11_CAP_PROTO_WPA2))
+	else if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+	         &&  (wpa_flags != NM_802_11_AP_SEC_NONE)
+	         &&  (rsn_flags != NM_802_11_AP_SEC_NONE))
 		input[32] |= (1 << 5);
 	else
 		input[32] |= (1 << 6);
@@ -1078,12 +1084,15 @@ nma_has_encrypted_networks_helper (gpointer data, gpointer user_data)
 {
 	NMAccessPoint *ap = NM_ACCESS_POINT (data);
 	gboolean *has_encrypted = user_data;
-	guint32 capabilities;
+	guint32 flags, wpa_flags, rsn_flags;
 
-	capabilities = nm_access_point_get_capabilities (ap);
-	if ((capabilities & NM_802_11_CAP_PROTO_WEP)
-	    || (capabilities & NM_802_11_CAP_PROTO_WPA)
-	    || (capabilities & NM_802_11_CAP_PROTO_WPA2))
+	flags = nm_access_point_get_flags (ap);
+	wpa_flags = nm_access_point_get_wpa_flags (ap);
+	rsn_flags = nm_access_point_get_rsn_flags (ap);
+
+	if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
+	    || (wpa_flags != NM_802_11_AP_SEC_NONE)
+	    || (rsn_flags != NM_802_11_AP_SEC_NONE))
 		*has_encrypted = TRUE;
 }
 

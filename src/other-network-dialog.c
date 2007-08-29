@@ -299,13 +299,7 @@ static GtkDialog *nma_ond_init (GladeXML *xml, NMApplet *applet, gboolean create
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
 	gtk_tree_model_get (model, &iter, NAME_COLUMN, &str, DEV_COLUMN, &dev, -1);
 	g_assert (dev);
-	dev_caps = nm_device_802_11_wireless_get_capabilities (dev);
-	/* Can't do WPA2/CCMP or WPA-EAP Ad-Hoc networks because wpa_supplicant
-	 * doesn't support the former and the latter does not make sense.
-	 */
-	if (create_network)
-		dev_caps &= ~(NM_802_11_CAP_PROTO_WPA2 | NM_802_11_CAP_KEY_MGMT_802_1X);
-	wsm_set_capabilities (wsm, dev_caps);
+	wsm_set_capabilities (wsm, nm_device_802_11_wireless_get_capabilities (dev));
 
 	security_combo = GTK_COMBO_BOX (glade_xml_get_widget (xml, "security_combo"));
 	wsm_update_combo (wsm, security_combo);

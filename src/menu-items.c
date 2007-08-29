@@ -262,8 +262,15 @@ nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
                                  GdkPixbuf * adhoc_icon)
 {
 	gboolean encrypted = FALSE, adhoc = FALSE;
+	guint32 flags, wpa_flags, rsn_flags;
 
-	if (nm_access_point_get_capabilities (ap) & (NM_802_11_CAP_PROTO_WEP | NM_802_11_CAP_PROTO_WPA | NM_802_11_CAP_PROTO_WPA2))
+	flags = nm_access_point_get_flags (ap);
+	wpa_flags = nm_access_point_get_wpa_flags (ap);
+	rsn_flags = nm_access_point_get_rsn_flags (ap);
+
+	if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
+	    || (wpa_flags != NM_802_11_AP_SEC_NONE)
+	    || (rsn_flags != NM_802_11_AP_SEC_NONE))
 		encrypted = TRUE;
 
 	if (nm_access_point_get_mode (ap) == IW_MODE_ADHOC)
