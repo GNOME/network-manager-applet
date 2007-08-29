@@ -34,7 +34,6 @@
 #include "applet.h"
 #include "applet-dbus.h"
 #include "applet-dbus-info.h"
-#include "passphrase-dialog.h"
 #include "nm-utils.h"
 
 #define	DBUS_NO_SERVICE_ERROR			"org.freedesktop.DBus.Error.ServiceDoesNotExist"
@@ -116,7 +115,6 @@ static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessag
 				else if (old_owner_good && !new_owner_good)
 				{
 					nma_set_running (applet, FALSE);
-					nmi_passphrase_dialog_destroy (applet);
 				}
 			}
 		}

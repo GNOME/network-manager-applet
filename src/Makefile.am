@@ -33,44 +33,10 @@ nm_applet_SOURCES =			\
 	applet-dbus-info.h		\
 	applet-dbus-settings.c		\
 	applet-dbus-settings.h		\
-	other-network-dialog.c	\
-	other-network-dialog.h	\
-	passphrase-dialog.c		\
-	passphrase-dialog.h		\
 	menu-items.c			\
 	menu-items.h			\
 	vpn-password-dialog.c	\
 	vpn-password-dialog.h	\
-	wireless-security-manager.c	\
-	wireless-security-manager.h	\
-	wireless-security-option.c	\
-	wireless-security-option.h	\
-	wso-none.c			\
-	wso-none.h			\
-	wso-private.h			\
-	wso-wep-ascii.c		\
-	wso-wep-ascii.h		\
-	wso-wep-hex.c			\
-	wso-wep-hex.h			\
-	wso-wep-passphrase.c	\
-	wso-wep-passphrase.h	\
-	wso-wpa-eap.c			\
-	wso-wpa-eap.h			\
-	wso-wpa-psk.c			\
-	wso-wpa-psk.h			\
-	wso-leap.c			\
-	wso-leap.h			\
-	nm-gconf-wso.c			\
-	nm-gconf-wso.h			\
-	nm-gconf-wso-private.h	\
-	nm-gconf-wso-wep.c		\
-	nm-gconf-wso-wep.h		\
-	nm-gconf-wso-wpa-eap.c	\
-	nm-gconf-wso-wpa-eap.h	\
-	nm-gconf-wso-wpa-psk.c	\
-	nm-gconf-wso-wpa-psk.h	\
-	nm-gconf-wso-leap.c	\
-	nm-gconf-wso-leap.h	\
 	gconf-helpers.c		\
 	gconf-helpers.h		\
 	nm-utils.c \

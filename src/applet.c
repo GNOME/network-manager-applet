@@ -57,8 +57,6 @@
 #include "applet-dbus.h"
 #include "applet-dbus-info.h"
 #include "applet-notifications.h"
-#include "other-network-dialog.h"
-#include "passphrase-dialog.h"
 #include "menu-items.h"
 #include "vpn-password-dialog.h"
 #include "nm-utils.h"
@@ -863,7 +861,6 @@ nma_menu_add_device_item (GtkWidget *menu,
 
 static void custom_essid_item_selected (GtkWidget *menu_item, NMApplet *applet)
 {
-	nma_other_network_dialog_run (applet, FALSE);
 }
 
 
@@ -884,7 +881,6 @@ static void nma_menu_add_custom_essid_item (GtkWidget *menu, NMApplet *applet)
 
 static void new_network_item_selected (GtkWidget *menu_item, NMApplet *applet)
 {
-	nma_other_network_dialog_run (applet, TRUE);
 }
 
 
@@ -1886,7 +1882,7 @@ static void nma_gconf_info_notify_callback (GConfClient *client, guint connectio
 			if ((slash_pos = strchr (unescaped_network, '/')))
 				*slash_pos = '\0';
 
-			nmi_dbus_signal_update_network (applet->connection, unescaped_network, NETWORK_TYPE_ALLOWED);
+//			nmi_dbus_signal_update_network (applet->connection, unescaped_network, NETWORK_TYPE_ALLOWED);
 			g_free (unescaped_network);
 			g_free (network);
 		}
@@ -2486,7 +2482,7 @@ static void nma_finalize (GObject *object)
 
 	nma_icons_free (applet);
 
-	nmi_passphrase_dialog_destroy (applet);
+//	nmi_passphrase_dialog_destroy (applet);
 #ifdef ENABLE_NOTIFY
 	if (applet->notification)
 	{

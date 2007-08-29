@@ -26,18 +26,13 @@
 #include <dbus/dbus.h>
 #include <nm-device.h>
 #include "NetworkManager.h"
-#include "nm-gconf-wso.h"
 
-DBusHandlerResult	nmi_dbus_info_message_handler			(DBusConnection *connection, DBusMessage *message, void *user_data);
+void nmi_dbus_signal_update_vpn_connection (DBusConnection *connection, const char *name);
 
-void				nmi_dbus_return_user_key				(DBusConnection *connection, DBusMessage *message, NMGConfWSO *security);
+void nmi_dbus_signal_user_interface_activated (DBusConnection *connection);
 
-void				nmi_dbus_signal_update_network		(DBusConnection *connection, const char *network, NMNetworkType type);
+DBusHandlerResult nmi_dbus_info_message_handler (DBusConnection *connection, DBusMessage *message, void *user_data);
 
-void				nmi_dbus_signal_update_vpn_connection	(DBusConnection *connection, const char *name);
-
-void				nmi_dbus_signal_user_interface_activated	(DBusConnection *connection);
-
-DBusMethodDispatcher *	nmi_dbus_nmi_methods_setup		(void);
+DBusMethodDispatcher *	nmi_dbus_nmi_methods_setup (void);
 
 #endif
