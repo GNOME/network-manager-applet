@@ -34,7 +34,6 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libgnomeui/libgnomeui.h>
 #include <iwlib.h>
 #include <wireless.h>
 
@@ -334,7 +333,34 @@ static void about_dialog_activate_link_cb (GtkAboutDialog *about,
                                            const gchar *url,
                                            gpointer data)
 {
-	gnome_url_show (url, NULL);
+	GError *error = NULL;
+	gboolean ret;
+	char *cmdline;
+	GdkScreen *gscreen;
+	GtkWidget *error_dialog;
+
+	gscreen = gdk_screen_get_default();
+
+	cmdline = g_strconcat ("gnome-open ", url, NULL);
+	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
+	g_free (cmdline);
+
+	if (ret == TRUE)
+		return;
+
+	g_error_free (error);
+	error = NULL;
+
+	cmdline = g_strconcat ("xdg-open ", url, NULL);
+	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
+	g_free (cmdline);
+	
+	if (ret == FALSE) {
+		error_dialog = gtk_message_dialog_new ( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "Failed to show url %s", error->message); 
+		gtk_dialog_run (GTK_DIALOG (error_dialog));
+		g_error_free (error);
+	}
+
 }
 
 static void nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
