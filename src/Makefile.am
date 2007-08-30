@@ -14,6 +14,7 @@ nm_applet_CPPFLAGS =									\
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\"	\
 	-DDBUS_API_SUBJECT_TO_CHANGE							\
 	-DGNOMELOCALEDIR=\"$(datadir)/locale\"					\
+	$(DBUS_CFLAGS)										\
 	$(DISABLE_DEPRECATED)	\
 	$(NULL)
 
@@ -27,10 +28,9 @@ nm_applet_SOURCES =			\
 	applet.h				\
 	applet-compat.c		\
 	applet-compat.h		\
-	applet-dbus.c			\
-	applet-dbus.h			\
-	applet-dbus-info.c		\
-	applet-dbus-info.h		\
+	applet-marshal-main.c	\
+	applet-dbus-manager.c	\
+	applet-dbus-manager.h	\
 	applet-dbus-settings.c		\
 	applet-dbus-settings.h		\
 	menu-items.c			\
@@ -61,6 +61,19 @@ if WITH_NOTIFY
 nm_applet_LDADD += $(NOTIFY_LIBS)
 endif
 
+applet-marshal.h: Makefile.am applet-marshal.list
+	$(GLIB_GENMARSHAL) --prefix=applet_marshal $(srcdir)/applet-marshal.list --header > \
+		xgen-gmh \
+	&& (cmp -s xgen-gmh applet-marshal.h || cp xgen-gmh applet-marshal.h) \
+	&& rm -f xgen-gmh xgen-gmh~
+
+applet-marshal.c: Makefile.am applet-marshal.list
+	$(GLIB_GENMARSHAL) --prefix=applet_marshal $(srcdir)/applet-marshal.list --body > \
+		xgen-gmc \
+	&& cp xgen-gmc applet-marshal.c \
+	&& rm -f xgen-gmc xgen-gmc~
+
+applet-marshal-main.c: applet-marshal.c applet-marshal.h
 
 gladedir = $(datadir)/nm-applet
 glade_DATA = applet.glade keyring.png

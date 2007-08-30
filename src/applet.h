@@ -51,10 +51,21 @@
 #include <libnotify/notify.h>
 #endif
 
+#include "applet-dbus-manager.h"
+#include "applet-dbus-settings.h"
+
+/*
+ * D-Bus service stuff
+ */
+#define APPLET_DBUS_SERVICE_USER_SETTINGS "org.freedesktop.NetworkManagerUserSettings"
+#define APPLET_DBUS_PATH_USER_SETTINGS "/org/freedesktop/NetworkManagerUserSettings"
+#define APPLET_DBUS_IFACE_USER_SETTINGS "org.freedesktop.NetworkManagerUserSettings"
+
+
 /*
  * Preference locations
  */
-#define GCONF_PATH_CONNECTIONS          "/system/networking/connections/"
+#define GCONF_PATH_CONNECTIONS          "/system/networking/connections"
 #define GCONF_PATH_WIRELESS_NETWORKS	"/system/networking/wireless/networks"
 #define GCONF_PATH_WIRELESS			"/system/networking/wireless"
 #define GCONF_PATH_VPN_CONNECTIONS		"/system/networking/vpn_connections"
@@ -89,25 +100,19 @@ typedef struct
 {
 	GObject                 parent_instance;
 
-	/* New items */
-
 	NMClient *nm_client;
 	NMAccessPoint *current_ap;
 	gulong wireless_strength_monitor;
 
-	/* End of new items */
+	NMSettings * settings;
 
-	DBusConnection *	connection;
-	DBusMethodDispatcher *	nmi_methods;
 	GConfClient *		gconf_client;
 	guint		 	gconf_prefs_notify_id;
 	guint		 	gconf_vpn_notify_id;
 	char	*			glade_file;
-	guint			connection_timeout_id;
 
 	/* Data model elements */
 	gboolean			is_adhoc;
-	gboolean			nm_running;
 	gboolean			icons_loaded;
 
 	GtkIconTheme *          icon_theme;
@@ -162,12 +167,11 @@ typedef struct
 
 GType nma_get_type (void);
 
-NMApplet *	nma_new							(void);
+NMApplet * nm_applet_new (void);
+
 void				nma_schedule_warning_dialog			(NMApplet *applet, const char *msg);
 void				nma_show_vpn_failure_alert			(NMApplet *applet, const char *member, const char *vpn_name, const char *error_msg);
 void				nma_show_vpn_login_banner			(NMApplet *applet, const char *vpn_name, const char *banner);
-
-void				nma_set_running						(NMApplet *applet, gboolean running);
 
 const char * nma_escape_ssid (const char * ssid, guint32 len);
 

@@ -25,6 +25,7 @@
 #include <nm-connection.h>
 #include "applet.h"
 #include "applet-dbus-settings.h"
+#include "applet-dbus-manager.h"
 #include "gconf-helpers.h"
 
 /*
@@ -62,10 +63,10 @@ applet_dbus_settings_finalize (GObject *object)
 }
 
 static void
-applet_dbus_settings_class_init (AppletDbusSettingsClass *applet_settings_class)
+applet_dbus_settings_class_init (AppletDbusSettingsClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (applet_settings_class);
-	NMSettingsClass *settings_class = NM_SETTINGS_CLASS (applet_settings_class);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	NMSettingsClass *settings_class = NM_SETTINGS_CLASS (klass);
 
 	/* virtual methods */
 	object_class->finalize = applet_dbus_settings_finalize;
@@ -77,8 +78,15 @@ NMSettings *
 applet_dbus_settings_new (void)
 {
 	NMSettings *settings;
+	AppletDBusManager * manager;
 
 	settings = g_object_new (applet_dbus_settings_get_type (), NULL);
+
+	manager = applet_dbus_manager_get ();
+	dbus_g_connection_register_g_object (applet_dbus_manager_get_connection (manager),
+										 APPLET_DBUS_PATH_USER_SETTINGS,
+										 G_OBJECT (settings));
+	g_object_unref (manager);
 
 	return settings;
 }
@@ -123,17 +131,21 @@ applet_dbus_settings_list_connections (NMSettings *settings)
 		applet_settings->connections = get_connections (applet_settings);
 		if (!applet_settings->connections) {
 			g_warning ("No networks found in the configuration database");
-			return NULL;
+			connections = g_ptr_array_sized_new (0);
+			goto out;
 		}
 	}
 
 	connections = g_ptr_array_sized_new (g_slist_length (applet_settings->connections));
-
 	for (iter = applet_settings->connections; iter != NULL; iter = iter->next) {
-		g_ptr_array_add (connections,
-				 (gpointer) nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (iter->data)));
+		char * path = g_strdup (nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (iter->data)));
+
+		if (path == NULL)
+			continue;
+		g_ptr_array_add (connections, (gpointer)path);
 	}
 
+out:
 	return connections;
 }
 
@@ -210,7 +222,7 @@ static void
 read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 {
 	NMConnection *settings;
-	NMSettingInfo *info_setting;
+	NMSettingConnection *con_setting;
 	NMSettingWireless *wireless_setting;
 
 	/* retrieve ID */
@@ -222,20 +234,20 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 	/* info settings */
 	settings = nm_connection_new ();
 
-	info_setting = (NMSettingInfo *) nm_setting_info_new ();
-	info_setting->name = g_strdup (applet_connection->id);
+	con_setting = (NMSettingConnection *) nm_setting_connection_new ();
+	con_setting->name = g_strdup (applet_connection->id);
 	nm_gconf_get_string_helper (applet_connection->conf_client,
 						   applet_connection->conf_dir,
 						   "type", "connection",
-						   &info_setting->devtype);
+						   &con_setting->devtype);
 	nm_gconf_get_bool_helper (applet_connection->conf_client,
 						 applet_connection->conf_dir,
 						 "autoconnect", "connection",
-						 &info_setting->autoconnect);
+						 &con_setting->autoconnect);
 
-	nm_connection_add_setting (settings, (NMSetting *) info_setting);
+	nm_connection_add_setting (settings, (NMSetting *) con_setting);
 
-	if (!strcmp (info_setting->devtype, "802-11-wireless")) {
+	if (!strcmp (con_setting->devtype, "802-11-wireless")) {
 		gchar *key;
 
 		/* wireless settings */
@@ -410,6 +422,7 @@ NMConnectionSettings *
 applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf_dir)
 {
 	AppletDbusConnectionSettings *applet_connection;
+	AppletDBusManager * manager;
 
 	g_return_val_if_fail (conf_client != NULL, NULL);
 	g_return_val_if_fail (conf_dir != NULL, NULL);
@@ -428,6 +441,11 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 					 (GConfClientNotifyFunc) connection_settings_changed_cb,
 					 applet_connection,
 					 NULL, NULL);
+
+	manager = applet_dbus_manager_get ();
+	nm_connection_settings_register_object ((NMConnectionSettings *) applet_connection,
+	                                        applet_dbus_manager_get_connection (manager));
+	g_object_unref (manager);
 
 	return (NMConnectionSettings *) applet_connection;
 }

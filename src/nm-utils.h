@@ -126,20 +126,6 @@ G_STMT_START								\
 	G_BREAKPOINT ();						\
 } G_STMT_END
 
-gchar *nm_dbus_escape_object_path (const gchar *utf8_string);
-gchar *nm_dbus_unescape_object_path (const gchar *object_path);
-
 char *nm_utils_essid_to_utf8 (const char *orig_essid);
-
-/* #define DBUS_PENDING_CALL_DEBUG */
-
-DBusPendingCall * nm_dbus_send_with_callback (DBusConnection *connection,
-                                              DBusMessage *msg, 
-                                              DBusPendingCallNotifyFunction func,
-                                              gpointer data,
-                                              DBusFreeFunction free_func,
-                                              const char *caller);
-void nm_dbus_send_with_callback_replied (DBusPendingCall *pcall,
-                                         const char *caller);
 
 #endif /* NM_UTILS_H */

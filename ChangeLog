@@ -1,5 +1,38 @@
 2007-08-29  Dan Williams  <dcbw@redhat.com>
 
+	* nm-applet.conf
+		- New D-Bus service name
+
+	* src/applet-marshal.list
+	  src/applet-marshal-main.c
+	  src/applet-dbus-manager.c
+	  src/applet-dbus-manager.h
+	  src/applet.h
+	  src/applet.c
+	  src/Makefile.am
+	  configure.ac
+		- Move most D-Bus housekeeping over to the D-Bus manager rather
+		than a lot of hardcoded junk in applet-dbus.c and applet-dbus-info.c
+
+	* src/nm-utils.c
+	  src/nm-utils.h
+		- Remove functions that are no longer used
+
+	* src/applet-dbus-info.c
+	  src/applet-dbus-info.h
+	  src/applet-dbus.c
+	  src/applet-dbus.h
+		- Remove, no longer used; some bits need to be replaced by Tambet's new
+		VPN interface stuff
+
+	* src/applet-dbus-settings.c
+		- Hook up the new NMConnection/NMSettings stuff to D-Bus
+
+	* src/menu-items.c
+		- Remove no longer relevant bits
+
+2007-08-29  Dan Williams  <dcbw@redhat.com>
+
 	* src/gconf-helpers.c
 		- (nm_gconf_get_bytearray_helper): make it really a byte array.  Code
 			was previously appending ints, leading to 3 zero elements for each

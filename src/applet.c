@@ -54,14 +54,13 @@
 
 #include "applet.h"
 #include "applet-compat.h"
-#include "applet-dbus.h"
-#include "applet-dbus-info.h"
 #include "applet-notifications.h"
 #include "menu-items.h"
 #include "vpn-password-dialog.h"
 #include "nm-utils.h"
 #include "dbus-method-dispatcher.h"
 #include "gnome-keyring-md5.h"
+#include "applet-dbus-manager.h"
 
 #include "nm-connection.h"
 
@@ -152,9 +151,7 @@ static void nma_init (NMApplet *applet)
 {
 	applet->animation_id = 0;
 	applet->animation_step = 0;
-	applet->nm_running = FALSE;
 	applet->passphrase_dialog = NULL;
-	applet->connection_timeout_id = 0;
 	applet->icon_theme = NULL;
 #ifdef ENABLE_NOTIFY
 	applet->notification = NULL;
@@ -662,21 +659,21 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 
 	if (setting) {
 		NMConnection *connection;
-		NMSettingInfo *s_info;
+		NMSettingConnection *s_con;
 
 		connection = nm_connection_new ();
 		nm_connection_add_setting (connection, setting);
 
-		s_info = (NMSettingInfo *) nm_setting_info_new ();
-		s_info->name = g_strdup ("Auto");
-		s_info->devtype = g_strdup (setting->name);
-		nm_connection_add_setting (connection, (NMSetting *) s_info);
+		s_con = (NMSettingConnection *) nm_setting_connection_new ();
+		s_con->name = g_strdup ("Auto");
+		s_con->devtype = g_strdup (setting->name);
+		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 		nm_device_activate (info->device, connection);
 		nm_connection_destroy (connection);
 	}
 
-	nmi_dbus_signal_user_interface_activated (info->applet->connection);
+//	nmi_dbus_signal_user_interface_activated (info->applet->connection);
 }
 
 
@@ -728,7 +725,7 @@ nma_menu_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 		}
 	}
 
-	nmi_dbus_signal_user_interface_activated (applet->connection);
+//	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
 
@@ -748,7 +745,7 @@ static void nma_menu_configure_vpn_item_activate (GtkMenuItem *item, gpointer us
 
 	g_spawn_async (NULL, (gchar **) argv, NULL, 0, NULL, NULL, NULL, NULL);
 
-	nmi_dbus_signal_user_interface_activated (applet->connection);
+//	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
 /*
@@ -779,7 +776,7 @@ nma_menu_disconnect_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 	}
 	g_slist_free (connections);
 
-	nmi_dbus_signal_user_interface_activated (applet->connection);
+//	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
 
@@ -1458,10 +1455,10 @@ static void nma_dropdown_menu_populate (GtkWidget *menu, NMApplet *applet)
 	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
 
-	if (!applet->nm_running)
-		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
-	else
+	if (nm_client_manager_is_running (applet->nm_client))
 		nma_menu_add_devices (menu, applet);
+	else
+		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
 }
 
 
@@ -1489,7 +1486,7 @@ static void nma_dropdown_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 		gtk_widget_show_all (applet->dropdown_menu);
 	}
 
-	nmi_dbus_signal_user_interface_activated (applet->connection);
+//	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
 /*
@@ -1555,22 +1552,6 @@ nma_context_menu_update (NMApplet *applet)
 	else
 		gtk_widget_hide (applet->stop_wireless_item);
 }
-
-
-/*
- * nma_set_running
- *
- * Set whether NM is running to TRUE or FALSE.
- *
- */
-void nma_set_running (NMApplet *applet, gboolean running)
-{
-	if (running == applet->nm_running)
-		return;
-
-	applet->nm_running = running;
-}
-
 
 /*
  * nma_context_menu_create
@@ -1943,7 +1924,7 @@ static void nma_gconf_vpn_connections_notify_callback (GConfClient *client, guin
 			}
 			g_free (name_path);
 
-			nmi_dbus_signal_update_vpn_connection (applet->connection, unescaped_name);
+//			nmi_dbus_signal_update_vpn_connection (applet->connection, unescaped_name);
 
 			g_free (unescaped_name);
 			g_free (name);
@@ -2491,19 +2472,11 @@ static void nma_finalize (GObject *object)
 	}
 #endif
 
-	nma_set_running (applet, FALSE);
-	if (applet->connection_timeout_id) {
-		g_source_remove (applet->connection_timeout_id);
-		applet->connection_timeout_id = 0;
-	}
-
 	g_free (applet->glade_file);
 
 	gconf_client_notify_remove (applet->gconf_client, applet->gconf_prefs_notify_id);
 	gconf_client_notify_remove (applet->gconf_client, applet->gconf_vpn_notify_id);
 	g_object_unref (applet->gconf_client);
-
-	dbus_method_dispatcher_unref (applet->nmi_methods);
 
 #ifdef HAVE_STATUS_ICON
 	g_object_unref (applet->status_icon);
@@ -2517,11 +2490,11 @@ static void nma_finalize (GObject *object)
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
 
-
 static GObject *nma_constructor (GType type, guint n_props, GObjectConstructParam *construct_props)
 {
 	GObject *obj;
 	NMApplet *applet;
+	AppletDBusManager * dbus_mgr;
 
 	obj = G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props);
 	applet =  NM_APPLET (obj);
@@ -2561,13 +2534,22 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	nma_setup_widgets (applet);
 	nma_icons_init (applet);
 	
-	foo_client_setup (applet);
+	dbus_mgr = applet_dbus_manager_get ();
+	if (dbus_mgr == NULL) {
+		nm_warning ("Couldn't initialize the D-Bus manager.");
+		g_object_unref (obj);
+		return NULL;
+	}
 
-	/* D-Bus init stuff */
-	applet->nmi_methods = nmi_dbus_nmi_methods_setup ();
-	nma_dbus_init_helper (applet);
-	if (!applet->connection)
-		nma_start_dbus_connection_watch (applet);
+	applet->settings = applet_dbus_settings_new ();
+
+    /* Start our DBus service */
+    if (!applet_dbus_manager_start_service (dbus_mgr)) {
+		g_object_unref (obj);
+		return NULL;
+    }
+
+	foo_client_setup (applet);
 
 #ifndef HAVE_STATUS_ICON
 	g_signal_connect (applet->tray_icon, "style-set", G_CALLBACK (nma_theme_change_cb), NULL);
@@ -2798,7 +2780,9 @@ static void nma_icons_init (NMApplet *applet)
 	gtk_rc_parse_string (style);
 }
 
-NMApplet *nma_new ()
+NMApplet *
+nm_applet_new ()
 {
 	return g_object_new (NM_TYPE_APPLET, NULL);
 }
+

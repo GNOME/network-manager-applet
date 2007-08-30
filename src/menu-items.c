@@ -36,7 +36,6 @@
 #include <iwlib.h>
 
 #include "menu-items.h"
-#include "applet-dbus.h"
 #include "nm-access-point.h"
 
 
