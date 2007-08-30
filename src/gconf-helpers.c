@@ -135,26 +135,26 @@ nm_gconf_get_stringlist_helper (GConfClient *client,
 	g_return_val_if_fail (value != NULL, FALSE);
 
 	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
-	if ((gc_value = gconf_client_get (client, gc_key, NULL)))
+	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
+		goto out;
+
+	if (gc_value->type == GCONF_VALUE_LIST
+	    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_STRING)
 	{
-		if (gc_value->type == GCONF_VALUE_LIST
-		    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_STRING)
+		GSList *elt;
+
+		for (elt = gconf_value_get_list (gc_value); elt != NULL; elt = g_slist_next (elt))
 		{
-			GSList *elt;
+			const char *string = gconf_value_get_string ((GConfValue *) elt->data);
 
-			for (elt = gconf_value_get_list (gc_value); elt != NULL; elt = g_slist_next (elt))
-			{
-				const char *string = gconf_value_get_string ((GConfValue *) elt->data);
-
-				*value = g_slist_append (*value, g_strdup (string));
-			}
-
-			success = TRUE;
+			*value = g_slist_append (*value, g_strdup (string));
 		}
 
-		g_free (gc_key);
+		success = TRUE;
 	}
 
+out:
+	g_free (gc_key);
 	return success;
 }
 
