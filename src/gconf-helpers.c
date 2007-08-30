@@ -167,6 +167,7 @@ nm_gconf_get_bytearray_helper (GConfClient *client,
 {
 	char *gc_key;
 	GConfValue *gc_value;
+	GByteArray *array;
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -174,26 +175,35 @@ nm_gconf_get_bytearray_helper (GConfClient *client,
 	g_return_val_if_fail (value != NULL, FALSE);
 
 	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
-	if ((gc_value = gconf_client_get (client, gc_key, NULL)))
+	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
+		goto out;
+
+	if (gc_value->type == GCONF_VALUE_LIST
+	    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_INT)
 	{
-		if (gc_value->type == GCONF_VALUE_LIST
-		    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_INT)
+		GSList *elt;
+
+		array = g_byte_array_new ();
+		for (elt = gconf_value_get_list (gc_value); elt != NULL; elt = g_slist_next (elt))
 		{
-			GSList *elt;
+			int i = gconf_value_get_int ((GConfValue *) elt->data);
+			unsigned char val = (unsigned char) (i & 0xFF);
 
-			*value = g_byte_array_new ();
-			for (elt = gconf_value_get_list (gc_value); elt != NULL; elt = g_slist_next (elt))
-			{
-				int i = gconf_value_get_int ((GConfValue *) elt->data);
-
-				g_byte_array_append (*value, (const guint *) &i, sizeof (i));
+			if (i < 0 || i > 255) {
+				g_log (G_LOG_DOMAIN, G_LOG_LEVEL_WARNING,
+				       "value %d out-of-range for a byte value", i);
+				g_byte_array_free (array, TRUE);
+				goto out;
 			}
 
-			success = TRUE;
+			g_byte_array_append (array, (const unsigned char *) &val, sizeof (val));
 		}
 
-		g_free (gc_key);
+		*value = array;
+		success = TRUE;
 	}
 
+out:
+	g_free (gc_key);
 	return success;
 }

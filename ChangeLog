@@ -1,5 +1,12 @@
 2007-08-29  Dan Williams  <dcbw@redhat.com>
 
+	* src/gconf-helpers.c
+		- (nm_gconf_get_bytearray_helper): make it really a byte array.  Code
+			was previously appending ints, leading to 3 zero elements for each
+			actual data element
+
+2007-08-29  Dan Williams  <dcbw@redhat.com>
+
 	Remove anything related to wireless-security-options, to be replaced
 	by NMSettings/NMConnectionSettings.
 
