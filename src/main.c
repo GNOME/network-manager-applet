@@ -35,8 +35,8 @@
 
 int main (int argc, char *argv[])
 {
-	NMApplet *	nma;
-	GnomeProgram *	program;
+	NMApplet * applet;
+	GnomeProgram * program;
 
 	program = gnome_program_init ("nm-applet", VERSION, LIBGNOMEUI_MODULE,
 				      argc, argv, 
@@ -46,12 +46,14 @@ int main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	nma = nma_new ();
+	applet = nm_applet_new ();
+	if (applet == NULL)
+		exit (1);
 
 	gtk_main ();
 
-	g_object_unref (nma);
+	g_object_unref (applet);
 	g_object_unref (program);
 
-	exit (EXIT_SUCCESS);
+	exit (0);
 }
