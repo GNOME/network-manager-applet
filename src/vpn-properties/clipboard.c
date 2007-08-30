@@ -10,9 +10,9 @@
 
 #include "config.h"
 
-#include <gnome.h>
 #include <gconf/gconf-client.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtk.h>
 
 #include "clipboard.h"
 
