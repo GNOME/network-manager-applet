@@ -227,7 +227,7 @@ nm_network_menu_item_set_ssid (NMNetworkMenuItem * item, GByteArray * ssid)
 guint32
 nm_network_menu_item_get_strength (NMNetworkMenuItem * item)
 {
-	g_return_if_fail (item != NULL);
+	g_return_val_if_fail (item != NULL, 0);
 
 	return item->int_strength;
 }
@@ -248,8 +248,8 @@ const guchar *
 nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
                                guint32 * length)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (length != NULL);
+	g_return_val_if_fail (item != NULL, NULL);
+	g_return_val_if_fail (length != NULL, NULL);
 
 	*length = item->hash_len;
 	return item->hash;
