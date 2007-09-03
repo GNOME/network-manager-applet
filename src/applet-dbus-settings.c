@@ -84,7 +84,7 @@ applet_dbus_settings_new (void)
 
 	manager = applet_dbus_manager_get ();
 	dbus_g_connection_register_g_object (applet_dbus_manager_get_connection (manager),
-										 APPLET_DBUS_PATH_USER_SETTINGS,
+										 NM_DBUS_PATH_USER_SETTINGS,
 										 G_OBJECT (settings));
 	g_object_unref (manager);
 
@@ -167,7 +167,7 @@ applet_dbus_connection_settings_init (AppletDbusConnectionSettings *applet_conne
 	applet_connection->conf_dir = NULL;
 	applet_connection->conf_notify_id = 0;
 	applet_connection->id = NULL;
-	applet_connection->settings = nm_connection_new ();
+	applet_connection->connection = nm_connection_new ();
 }
 
 static void
@@ -196,9 +196,9 @@ applet_dbus_connection_settings_finalize (GObject *object)
 		applet_connection->id = NULL;
 	}
 
-	if (applet_connection->settings) {
-		nm_connection_destroy (applet_connection->settings);
-		applet_connection->settings = NULL;
+	if (applet_connection->connection) {
+		g_object_unref (applet_connection->connection);
+		applet_connection->connection = NULL;
 	}
 
 	G_OBJECT_CLASS (applet_dbus_connection_settings_parent_class)->finalize (object);
@@ -221,18 +221,20 @@ applet_dbus_connection_settings_class_init (AppletDbusConnectionSettingsClass *a
 static void
 read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 {
-	NMConnection *settings;
+	NMConnection *connection;
 	NMSettingConnection *con_setting;
 	NMSettingWireless *wireless_setting;
 
 	/* retrieve ID */
+	g_free (applet_connection->id);
+	applet_connection->id = NULL;
 	nm_gconf_get_string_helper (applet_connection->conf_client,
 						   applet_connection->conf_dir,
 						   "name", "connection",
 						   &applet_connection->id);
 
 	/* info settings */
-	settings = nm_connection_new ();
+	connection = nm_connection_new ();
 
 	con_setting = (NMSettingConnection *) nm_setting_connection_new ();
 	con_setting->name = g_strdup (applet_connection->id);
@@ -245,7 +247,7 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 						 "autoconnect", "connection",
 						 &con_setting->autoconnect);
 
-	nm_connection_add_setting (settings, (NMSetting *) con_setting);
+	nm_connection_add_setting (connection, (NMSetting *) con_setting);
 
 	if (!strcmp (con_setting->devtype, "802-11-wireless")) {
 		gchar *key;
@@ -290,7 +292,7 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 							&wireless_setting->mtu);
 		//wireless_setting->seen_bssids = /* FIXME */
 
-		nm_connection_add_setting (settings, (NMSetting *) wireless_setting);
+		nm_connection_add_setting (connection, (NMSetting *) wireless_setting);
 
 		/* wireless security settings */
 		key = g_strdup_printf ("%s/802-11-wireless-security", applet_connection->conf_dir);
@@ -392,16 +394,16 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 								   "nai", "802-11-wireless-security",
 								   &security_setting->nai);
 
-			nm_connection_add_setting (settings, (NMSetting *) security_setting);
+			nm_connection_add_setting (connection, (NMSetting *) security_setting);
 		}
 
 		g_free (key);
 	}
 
 	/* remove old settings and use new ones */
-	if (applet_connection->settings)
-		nm_connection_destroy (applet_connection->settings);
-	applet_connection->settings = settings;
+	if (applet_connection->connection)
+		g_object_unref (applet_connection->connection);
+	applet_connection->connection = connection;
 }
 
 static void
@@ -413,7 +415,7 @@ connection_settings_changed_cb (GConfClient *conf_client, guint cnxn_id, GConfEn
 	/* FIXME: just update the modified field, no need to re-read all */
 	read_connection_from_gconf (applet_connection);
 
-	settings = nm_connection_to_hash (applet_connection->settings);
+	settings = nm_connection_to_hash (applet_connection->connection);
 	nm_connection_settings_signal_updated (NM_CONNECTION_SETTINGS (applet_connection), settings);
 	g_hash_table_destroy (settings);
 }
@@ -468,7 +470,7 @@ GHashTable *applet_dbus_connection_settings_get_settings (NMConnectionSettings *
 
 	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
 
-	settings = nm_connection_to_hash (applet_connection->settings);
+	settings = nm_connection_to_hash (applet_connection->connection);
 
 	return settings;
 }

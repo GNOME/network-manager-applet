@@ -55,14 +55,6 @@
 #include "applet-dbus-settings.h"
 
 /*
- * D-Bus service stuff
- */
-#define APPLET_DBUS_SERVICE_USER_SETTINGS "org.freedesktop.NetworkManagerUserSettings"
-#define APPLET_DBUS_PATH_USER_SETTINGS "/org/freedesktop/NetworkManagerUserSettings"
-#define APPLET_DBUS_IFACE_USER_SETTINGS "org.freedesktop.NetworkManagerUserSettings"
-
-
-/*
  * Preference locations
  */
 #define GCONF_PATH_CONNECTIONS          "/system/networking/connections"

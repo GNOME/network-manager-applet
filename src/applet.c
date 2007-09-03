@@ -696,7 +696,7 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 		nm_device_activate (info->device, connection);
-		nm_connection_destroy (connection);
+		g_object_unref (connection);
 	}
 
 //	nmi_dbus_signal_user_interface_activated (info->applet->connection);

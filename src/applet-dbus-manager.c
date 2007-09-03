@@ -325,7 +325,7 @@ applet_dbus_manager_start_service (AppletDBusManager *self)
 #endif
 
 	if (!dbus_g_proxy_call (priv->proxy, "RequestName", &err,
-							G_TYPE_STRING, APPLET_DBUS_SERVICE_USER_SETTINGS,
+							G_TYPE_STRING, NM_DBUS_SERVICE_USER_SETTINGS,
 							G_TYPE_UINT, flags,
 							G_TYPE_INVALID,
 							G_TYPE_UINT, &request_name_result,

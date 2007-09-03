@@ -56,7 +56,7 @@ typedef struct {
 	gchar *conf_dir;
 	guint conf_notify_id;
 	gchar *id;
-	NMConnection *settings;
+	NMConnection *connection;
 } AppletDbusConnectionSettings;
 
 typedef struct {
