@@ -136,7 +136,6 @@ G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_CHECK_MENU_ITEM
 static void
 nm_network_menu_item_init (NMNetworkMenuItem * item)
 {
-	GtkWidget * hbox;
 	PangoFontDescription * fontdesc;
 	PangoFontMetrics * metrics;
 	PangoContext * context;
@@ -144,15 +143,15 @@ nm_network_menu_item_init (NMNetworkMenuItem * item)
 	int ascent;
 
 	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
-	hbox = gtk_hbox_new (FALSE, 6);
+	item->hbox = gtk_hbox_new (FALSE, 6);
 	item->ssid = gtk_label_new (NULL);
 	gtk_misc_set_alignment (GTK_MISC (item->ssid), 0.0, 0.5);
 
 	item->detail = gtk_image_new ();
 
-	gtk_container_add (GTK_CONTAINER (item), hbox);
-	gtk_box_pack_start (GTK_BOX (hbox), item->ssid, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox), item->detail, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (item), item->hbox);
+	gtk_box_pack_start (GTK_BOX (item->hbox), item->ssid, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (item->hbox), item->detail, FALSE, FALSE, 0);
 
 	item->strength = gtk_progress_bar_new ();
 	
@@ -167,12 +166,12 @@ nm_network_menu_item_init (NMNetworkMenuItem * item)
 	/* size our progress bar to be five ascents long */
 	gtk_widget_set_size_request (item->strength, ascent * 5, -1);
 
-	gtk_box_pack_end (GTK_BOX (hbox), item->strength, FALSE, TRUE, 0);
+	gtk_box_pack_end (GTK_BOX (item->hbox), item->strength, FALSE, TRUE, 0);
 
 	gtk_widget_show (item->ssid);
 	gtk_widget_show (item->strength);
 	gtk_widget_show (item->detail);
-	gtk_widget_show (hbox);
+	gtk_widget_show (item->hbox);
 }
 
 GtkWidget*
@@ -200,8 +199,31 @@ nm_network_menu_item_new (GtkSizeGroup * size_group,
 }
 
 static void
+nm_network_menu_item_class_dispose (GObject *object)
+{
+	NMNetworkMenuItem * item = NM_NETWORK_MENU_ITEM (object);
+
+	if (item->destroyed)
+		return;
+
+	gtk_widget_destroy (item->ssid);
+	gtk_widget_destroy (item->strength);
+	gtk_widget_destroy (item->detail);
+	gtk_widget_destroy (item->hbox);
+
+	item->destroyed = TRUE;
+	g_free (item->hash);
+
+	G_OBJECT_CLASS (nm_network_menu_item_parent_class)->dispose (object);
+}
+
+static void
 nm_network_menu_item_class_init (NMNetworkMenuItemClass * klass)
 {
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+	/* virtual methods */
+	object_class->dispose = nm_network_menu_item_class_dispose;
 }
 
 void

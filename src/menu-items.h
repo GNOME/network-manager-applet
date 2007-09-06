@@ -57,6 +57,7 @@ struct _NMNetworkMenuItem
 	GtkWidget * strength;
 	guint32     int_strength;
 	GtkWidget * detail;
+	GtkWidget * hbox;
 	guchar *    hash;
 	guint32     hash_len;
 	gboolean    destroyed;

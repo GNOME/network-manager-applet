@@ -1,3 +1,12 @@
+2007-09-06  Dan Williams  <dcbw@redhat.com>
+
+	* src/menu-items.c
+	  src/menu-items.h
+		- (nm_network_menu_item_init): keep track of the hbox so it can be
+			destroyed when necessary
+		- (nm_network_menu_item_class_dispose, nm_network_menu_item_class_init):
+			dispose of subwidgets as necessary; dispose of hash if needed
+
 2007-09-02  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-dbus-settings.c
