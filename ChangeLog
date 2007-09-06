@@ -1,5 +1,13 @@
 2007-09-06  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+	  src/applet.h
+		- Random cleanups; dropdown_menu -> menu, clean up usage of
+			nma_menu_clear(), kill nma_dropdown_menu_populate(), fix
+			menu destruction to ensure we don't leak widgets
+
+2007-09-06  Dan Williams  <dcbw@redhat.com>
+
 	* src/menu-items.c
 	  src/menu-items.h
 		- (nm_network_menu_item_init): keep track of the hbox so it can be

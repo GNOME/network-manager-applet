@@ -75,6 +75,9 @@ static void				nma_icons_zero (NMApplet *applet);
 static gboolean			nma_icons_load_from_disk (NMApplet *applet);
 static void			nma_finalize (GObject *object);
 
+static GtkWidget *
+nma_menu_create (GtkMenuItem *parent, NMApplet *applet);
+
 static void foo_client_vpn_state_change (NMClient *client,
                              NMVPNConnectionState state,
                              gpointer user_data);
@@ -856,9 +859,9 @@ nma_menu_add_device_item (GtkWidget *menu,
 {
 	GtkMenuItem *menu_item = NULL;
 
-	if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+	if (NM_IS_DEVICE_802_11_WIRELESS (device))
 		menu_item = wireless_menu_item_new (NM_DEVICE_802_11_WIRELESS (device), n_devices);
-	} else if (NM_IS_DEVICE_802_3_ETHERNET (device))
+	else if (NM_IS_DEVICE_802_3_ETHERNET (device))
 		menu_item = wired_menu_item_new (NM_DEVICE_802_3_ETHERNET (device), n_devices);
 	else
 		g_warning ("Unhandled device type %s", G_OBJECT_CLASS_NAME (device));
@@ -1032,7 +1035,7 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 {
 	NMAccessPoint *ap = NM_ACCESS_POINT (data);
 	AddNetworksCB *cb_data = (AddNetworksCB *) user_data;
-	GByteArray * ssid;
+	GByteArray * ssid = NULL;
 	gint8 strength;
 	struct dup_data dup_data = { NULL, NULL };
 
@@ -1224,7 +1227,7 @@ static void nma_menu_add_vpn_menu (GtkWidget *menu, NMApplet *applet)
 	GtkMenuItem	*item;
 	GtkMenu		*vpn_menu;
 	GtkMenuItem	*other_item;
-	GSList		*vpn_connections;
+	GSList		*vpn_connections = NULL;
 	GSList		*elt;
 	NMVPNConnection *active_vpn;
 
@@ -1352,7 +1355,7 @@ sort_devices (gconstpointer a, gconstpointer b)
 static void
 nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 {
-	GSList *devices;
+	GSList *devices = NULL;
 	GSList *iter;
 	gint n_wireless_interfaces = 0;
 	gint n_wired_interfaces = 0;
@@ -1445,59 +1448,40 @@ nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	nm_client_sleep (applet->nm_client, !state);
 }
 
-void
-remove_menu_item (gpointer data, gpointer user_data)
-{
-	gtk_container_remove (GTK_CONTAINER (user_data), GTK_WIDGET (data));
-}
-
-
 /*
- * nma_dispose_menu_items
+ * nma_menu_clear
  *
  * Destroy the menu and each of its items data tags
  *
  */
-static void nma_dropdown_menu_clear (GtkWidget *menu)
+static void nma_menu_clear (NMApplet *applet)
 {
 	GList * children;
 
-	g_return_if_fail (menu != NULL);
-
-	children = gtk_container_get_children (GTK_CONTAINER (menu));
-	g_list_foreach (children, remove_menu_item, GTK_CONTAINER (menu));
-	g_list_free (children);
-}
-
-
-/*
- * nma_dropdown_menu_populate
- *
- * Set up our networks menu from scratch
- *
- */
-static void nma_dropdown_menu_populate (GtkWidget *menu, NMApplet *applet)
-{
-	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
 
-	if (nm_client_manager_is_running (applet->nm_client))
-		nma_menu_add_devices (menu, applet);
-	else
-		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
+	if (applet->menu)
+		gtk_widget_destroy (applet->menu);
+
+	gtk_menu_item_remove_submenu (GTK_MENU_ITEM (applet->top_menu_item));
+	applet->menu = nma_menu_create (GTK_MENU_ITEM (applet->top_menu_item), applet);
+#ifndef HAVE_STATUS_ICON
+	g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
+#endif /* !HAVE_STATUS_ICON */
 }
 
 
 /*
- * nma_dropdown_menu_show_cb
+ * nma_menu_show_cb
  *
  * Pop up the wireless networks menu
  *
  */
-static void nma_dropdown_menu_show_cb (GtkWidget *menu, NMApplet *applet)
+static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 {
 	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
+	g_return_if_fail (applet->menu != NULL);
 
 #ifdef HAVE_STATUS_ICON
 	gtk_status_icon_set_tooltip (applet->status_icon, NULL);
@@ -1505,24 +1489,24 @@ static void nma_dropdown_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 	gtk_tooltips_set_tip (applet->tooltips, applet->event_box, NULL, NULL);
 #endif /* HAVE_STATUS_ICON */
 
-	if (applet->dropdown_menu && (menu == applet->dropdown_menu))
-	{
-		nma_dropdown_menu_clear (applet->dropdown_menu);
-		nma_dropdown_menu_populate (applet->dropdown_menu, applet);
-		gtk_widget_show_all (applet->dropdown_menu);
-	}
+	if (nm_client_manager_is_running (applet->nm_client))
+		nma_menu_add_devices (menu, applet);
+	else
+		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
+
+	gtk_widget_show_all (applet->menu);
 
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
 /*
- * nma_dropdown_menu_create
+ * nma_menu_create
  *
  * Create the applet's dropdown menu
  *
  */
 static GtkWidget *
-nma_dropdown_menu_create (GtkMenuItem *parent, NMApplet *applet)
+nma_menu_create (GtkMenuItem *parent, NMApplet *applet)
 {
 	GtkWidget	*menu;
 
@@ -1532,7 +1516,7 @@ nma_dropdown_menu_create (GtkMenuItem *parent, NMApplet *applet)
 	menu = gtk_menu_new ();
 	gtk_container_set_border_width (GTK_CONTAINER (menu), 0);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (parent), menu);
-	g_signal_connect (menu, "show", G_CALLBACK (nma_dropdown_menu_show_cb), applet);
+	g_signal_connect (menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
 
 	return menu;
 }
@@ -1684,7 +1668,8 @@ static gboolean nma_status_icon_size_changed_cb (GtkStatusIcon *icon, gint size,
  */
 static void nma_status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
 {
-	gtk_menu_popup (GTK_MENU (applet->dropdown_menu), NULL, NULL,
+	nma_menu_clear (applet);
+	gtk_menu_popup (GTK_MENU (applet->menu), NULL, NULL,
 			gtk_status_icon_position_menu, icon,
 			1, gtk_get_current_event_time ());
 }
@@ -1751,8 +1736,9 @@ static gboolean nma_toplevel_menu_button_press_cb (GtkWidget *widget, GdkEventBu
 	switch (event->button)
 	{
 		case 1:
+			nma_menu_clear (applet);
 			gtk_widget_set_state (applet->event_box, GTK_STATE_SELECTED);
-			gtk_menu_popup (GTK_MENU (applet->dropdown_menu), NULL, NULL, nma_menu_position_func, applet, event->button, event->time);
+			gtk_menu_popup (GTK_MENU (applet->menu), NULL, NULL, nma_menu_position_func, applet, event->button, event->time);
 			return TRUE;
 		case 3:
 			nma_context_menu_update (applet);
@@ -1773,7 +1759,7 @@ static gboolean nma_toplevel_menu_button_press_cb (GtkWidget *widget, GdkEventBu
  * Handle left-unclick on the dropdown menu.
  *
  */
-static void nma_dropdown_menu_deactivate_cb (GtkWidget *menu, NMApplet *applet)
+static void nma_menu_deactivate_cb (GtkWidget *menu, NMApplet *applet)
 {
 
 	g_return_if_fail (applet != NULL);
@@ -1791,14 +1777,11 @@ static void nma_theme_change_cb (NMApplet *applet)
 {
 	g_return_if_fail (applet != NULL);
 
-	if (applet->dropdown_menu)
-		nma_dropdown_menu_clear (applet->dropdown_menu);
-
-	if (applet->top_menu_item)
-	{
+	nma_menu_clear (applet);
+	if (applet->top_menu_item) {
 		gtk_menu_item_remove_submenu (GTK_MENU_ITEM (applet->top_menu_item));
-		applet->dropdown_menu = nma_dropdown_menu_create (GTK_MENU_ITEM (applet->top_menu_item), applet);
-		g_signal_connect (applet->dropdown_menu, "deactivate", G_CALLBACK (nma_dropdown_menu_deactivate_cb), applet);
+		applet->menu = nma_menu_create (GTK_MENU_ITEM (applet->top_menu_item), applet);
+		g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
 	}
 }
 #endif /* HAVE_STATUS_ICON */
@@ -1838,18 +1821,15 @@ static void nma_setup_widgets (NMApplet *applet)
 	gtk_container_add (GTK_CONTAINER (applet->event_box), applet->pixmap);
 	gtk_container_add (GTK_CONTAINER (applet->tray_icon), applet->event_box);
  	gtk_widget_show_all (GTK_WIDGET (applet->tray_icon));
-
-	gtk_widget_show_all (GTK_WIDGET (applet->tray_icon));
-
 #endif /* HAVE_STATUS_ICON */
 
 	applet->top_menu_item = gtk_menu_item_new ();
 	gtk_widget_set_name (applet->top_menu_item, "ToplevelMenu");
 	gtk_container_set_border_width (GTK_CONTAINER (applet->top_menu_item), 0);
 
-	applet->dropdown_menu = nma_dropdown_menu_create (GTK_MENU_ITEM (applet->top_menu_item), applet);
+	applet->menu = nma_menu_create (GTK_MENU_ITEM (applet->top_menu_item), applet);
 #ifndef HAVE_STATUS_ICON
-	g_signal_connect (applet->dropdown_menu, "deactivate", G_CALLBACK (nma_dropdown_menu_deactivate_cb), applet);
+	g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
 #endif /* !HAVE_STATUS_ICON */
 
 	applet->context_menu = nma_context_menu_create (applet);
@@ -2482,8 +2462,7 @@ static void nma_finalize (GObject *object)
 {
 	NMApplet *applet = NM_APPLET (object);
 
-	if (applet->dropdown_menu)
-		nma_dropdown_menu_clear (applet->dropdown_menu);
+	nma_menu_clear (applet);
 	if (applet->top_menu_item)
 		gtk_menu_item_remove_submenu (GTK_MENU_ITEM (applet->top_menu_item));
 

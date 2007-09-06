@@ -142,7 +142,7 @@ typedef struct
 #endif /* HAVE_STATUS_ICON */
 
 	GtkWidget *		top_menu_item;
-	GtkWidget *		dropdown_menu;
+	GtkWidget *		menu;
 	GtkSizeGroup *		encryption_size_group;
 
 	GtkWidget *		context_menu;
