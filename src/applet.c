@@ -1793,10 +1793,15 @@ static void nma_theme_change_cb (NMApplet *applet)
  * menu of networks.
  *
  */
-static void nma_setup_widgets (NMApplet *applet)
+static gboolean
+nma_setup_widgets (NMApplet *applet)
 {
+	g_return_val_if_fail (NM_IS_APPLET (applet), FALSE);
+
 #ifdef HAVE_STATUS_ICON
 	applet->status_icon = gtk_status_icon_new ();
+	if (!applet->status_icon)
+		return FALSE;
 
 	g_signal_connect (applet->status_icon, "notify::screen",
 			  G_CALLBACK (nma_status_icon_screen_changed_cb), applet);
@@ -1809,31 +1814,48 @@ static void nma_setup_widgets (NMApplet *applet)
 
 #else
 	applet->tray_icon = egg_tray_icon_new ("NetworkManager");
+	if (!applet->tray_icon)
+		return FALSE;
+
 	g_object_ref (applet->tray_icon);
 	gtk_object_sink (GTK_OBJECT (applet->tray_icon));
 
 	/* Event box is the main applet widget */
 	applet->event_box = gtk_event_box_new ();
+	if (!applet->event_box)
+		return FALSE;
 	gtk_container_set_border_width (GTK_CONTAINER (applet->event_box), 0);
 	g_signal_connect (applet->event_box, "button_press_event", G_CALLBACK (nma_toplevel_menu_button_press_cb), applet);
 
 	applet->pixmap = gtk_image_new ();
+	if (!applet->pixmap)
+		return FALSE;
 	gtk_container_add (GTK_CONTAINER (applet->event_box), applet->pixmap);
 	gtk_container_add (GTK_CONTAINER (applet->tray_icon), applet->event_box);
  	gtk_widget_show_all (GTK_WIDGET (applet->tray_icon));
 #endif /* HAVE_STATUS_ICON */
 
 	applet->top_menu_item = gtk_menu_item_new ();
+	if (!applet->top_menu_item)
+		return FALSE;
 	gtk_widget_set_name (applet->top_menu_item, "ToplevelMenu");
 	gtk_container_set_border_width (GTK_CONTAINER (applet->top_menu_item), 0);
 
 	applet->menu = nma_menu_create (GTK_MENU_ITEM (applet->top_menu_item), applet);
+	if (!applet->menu)
+		return FALSE;
 #ifndef HAVE_STATUS_ICON
 	g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
 #endif /* !HAVE_STATUS_ICON */
 
 	applet->context_menu = nma_context_menu_create (applet);
+	if (!applet->context_menu)
+		return FALSE;
 	applet->encryption_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	if (!applet->encryption_size_group)
+		return FALSE;
+
+	return TRUE;
 }
 
 
@@ -2470,56 +2492,67 @@ static void nma_finalize (GObject *object)
 
 //	nmi_passphrase_dialog_destroy (applet);
 #ifdef ENABLE_NOTIFY
-	if (applet->notification)
-	{
+	if (applet->notification) {
 		notify_notification_close (applet->notification, NULL);
 		g_object_unref (applet->notification);
 	}
 #endif
 
 	g_free (applet->glade_file);
+	if (applet->info_dialog_xml)
+		g_object_unref (applet->info_dialog_xml);
+#ifndef HAVE_STATUS_ICON
+	if (applet->tooltips)
+		g_object_unref (applet->tooltips);
+#endif
 
 	gconf_client_notify_remove (applet->gconf_client, applet->gconf_prefs_notify_id);
 	gconf_client_notify_remove (applet->gconf_client, applet->gconf_vpn_notify_id);
 	g_object_unref (applet->gconf_client);
 
 #ifdef HAVE_STATUS_ICON
-	g_object_unref (applet->status_icon);
+	if (applet->status_icon)
+		g_object_unref (applet->status_icon);
 #else
-	gtk_widget_destroy (GTK_WIDGET (applet->tray_icon));
-	g_object_unref (applet->tray_icon);
+	if (applet->tray_icon) {
+		gtk_widget_destroy (GTK_WIDGET (applet->tray_icon));
+		g_object_unref (applet->tray_icon);
+	}
 #endif /* HAVE_STATUS_ICON */
 
-	g_object_unref (applet->nm_client);
+	if (applet->nm_client)
+		g_object_unref (applet->nm_client);
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
 
 static GObject *nma_constructor (GType type, guint n_props, GObjectConstructParam *construct_props)
 {
-	GObject *obj;
 	NMApplet *applet;
 	AppletDBusManager * dbus_mgr;
 
-	obj = G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props);
-	applet =  NM_APPLET (obj);
+	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
 
 #ifndef HAVE_STATUS_ICON
 	applet->tooltips = gtk_tooltips_new ();
+	if (!applet->tooltips)
+		goto error;
 #endif
 
 	applet->glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
-	if (!applet->glade_file || !g_file_test (applet->glade_file, G_FILE_TEST_IS_REGULAR))
-	{
-		nma_schedule_warning_dialog (applet, _("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
-		g_free (applet->glade_file);
-		applet->glade_file = NULL;
-		return NULL; // FIXMEchpe
+	if (!applet->glade_file || !g_file_test (applet->glade_file, G_FILE_TEST_IS_REGULAR)) {
+		nma_schedule_warning_dialog (applet,
+		                             _("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
+		goto error;
 	}
 
 	applet->info_dialog_xml = glade_xml_new (applet->glade_file, "info_dialog", NULL);
+	if (!applet->info_dialog_xml)
+        goto error;
 
 	applet->gconf_client = gconf_client_get_default ();
+	if (!applet->gconf_client)
+	    goto error;
 
 	gconf_client_add_dir (applet->gconf_client, GCONF_PATH_WIRELESS, GCONF_CLIENT_PRELOAD_NONE, NULL);
 	applet->gconf_prefs_notify_id = gconf_client_notify_add (applet->gconf_client, GCONF_PATH_WIRELESS,
@@ -2536,13 +2569,14 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	nma_compat_convert_oldformat_entries (applet->gconf_client);
 
 	/* Load pixmaps and create applet widgets */
-	nma_setup_widgets (applet);
+	if (!nma_setup_widgets (applet))
+	    goto error;
 	nma_icons_init (applet);
 	
 	dbus_mgr = applet_dbus_manager_get ();
 	if (dbus_mgr == NULL) {
 		nm_warning ("Couldn't initialize the D-Bus manager.");
-		g_object_unref (obj);
+		g_object_unref (applet);
 		return NULL;
 	}
 
@@ -2550,7 +2584,7 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 
     /* Start our DBus service */
     if (!applet_dbus_manager_start_service (dbus_mgr)) {
-		g_object_unref (obj);
+		g_object_unref (applet);
 		return NULL;
     }
 
@@ -2562,7 +2596,11 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	nma_icons_load_from_disk (applet);
 #endif /* !HAVE_STATUS_ICON */
 
-	return obj;
+	return G_OBJECT (applet);
+
+error:
+	g_object_unref (applet);
+	return NULL;
 }
 
 

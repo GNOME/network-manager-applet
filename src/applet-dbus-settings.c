@@ -84,7 +84,7 @@ applet_dbus_settings_new (void)
 
 	manager = applet_dbus_manager_get ();
 	dbus_g_connection_register_g_object (applet_dbus_manager_get_connection (manager),
-										 NM_DBUS_PATH_USER_SETTINGS,
+										 NM_DBUS_PATH_SETTINGS,
 										 G_OBJECT (settings));
 	g_object_unref (manager);
 
