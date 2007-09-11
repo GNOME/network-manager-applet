@@ -668,21 +668,19 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 {
 	DeviceMenuItemInfo *info = (DeviceMenuItemInfo *) user_data;
 	NMSetting *setting = NULL;
+	char *specific_object = NULL;
 
 	if (NM_IS_DEVICE_802_3_ETHERNET (info->device)) {
 		setting = nm_setting_wired_new ();
+		specific_object = NULL;
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
 		NMSettingWireless *wireless;
-		GByteArray * ssid;
 
 		setting = nm_setting_wireless_new ();
 		wireless = (NMSettingWireless *) setting;
 		wireless->mode = g_strdup ("infrastructure");
 
-		ssid = nm_access_point_get_ssid (info->ap);
-		wireless->ssid = g_byte_array_sized_new (ssid->len);
-		g_byte_array_append (wireless->ssid, ssid->data, ssid->len);
-		g_byte_array_free (ssid, TRUE);
+		specific_object = (char *) nm_object_get_path (NM_OBJECT (info->ap));
 	} else
 		g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
 
@@ -698,7 +696,10 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		s_con->devtype = g_strdup (setting->name);
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
-		nm_device_activate (info->device, connection);
+		nm_device_activate (info->device,
+		                    NM_DBUS_SERVICE_USER_SETTINGS,
+		                    connection,
+		                    (const char *) specific_object);
 		g_object_unref (connection);
 	}
 
