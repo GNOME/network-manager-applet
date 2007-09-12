@@ -35,6 +35,8 @@ nm_applet_SOURCES =			\
 	applet-dbus-settings.h		\
 	menu-items.c			\
 	menu-items.h			\
+	vpn-connection-info.c		\
+	vpn-connection-info.h		\
 	vpn-password-dialog.c	\
 	vpn-password-dialog.h	\
 	gconf-helpers.c		\

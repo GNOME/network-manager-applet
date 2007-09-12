@@ -62,6 +62,7 @@
 #include "applet-dbus-manager.h"
 
 #include "nm-connection.h"
+#include "vpn-connection-info.h"
 
 /* Compat for GTK 2.6 */
 #if (GTK_MAJOR_VERSION <= 2 && GTK_MINOR_VERSION == 6)
@@ -74,13 +75,10 @@ static void				nma_icons_free (NMApplet *applet);
 static void				nma_icons_zero (NMApplet *applet);
 static gboolean			nma_icons_load_from_disk (NMApplet *applet);
 static void			nma_finalize (GObject *object);
+static void              foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer);
 
 static GtkWidget *
 nma_menu_create (GtkMenuItem *parent, NMApplet *applet);
-
-static void foo_client_vpn_state_change (NMClient *client,
-                             NMVPNConnectionState state,
-                             gpointer user_data);
 
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
 
@@ -419,189 +417,6 @@ static void nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
 }
 
 
-#ifndef ENABLE_NOTIFY
-/*
- * nma_show_vpn_failure_dialog
- *
- * Present the VPN failure dialog.
- *
- */
-static void
-nma_show_vpn_failure_dialog (const char *title,
-                              const char *msg)
-{
-	GtkWidget	*dialog;
-
-	g_return_if_fail (title != NULL);
-	g_return_if_fail (msg != NULL);
-
-	dialog = gtk_message_dialog_new_with_markup (NULL, 0, GTK_MESSAGE_ERROR,
-				GTK_BUTTONS_OK, msg, NULL);
-	gtk_window_set_title (GTK_WINDOW (dialog), title);
-	g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
-	g_signal_connect (dialog, "close", G_CALLBACK (gtk_widget_destroy), NULL);
-
-	/* Bash focus-stealing prevention in the face */
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
-	gtk_widget_show_all (dialog);
-}
-#endif
-
-
-/*
- * nma_schedule_vpn_failure_alert
- *
- * Schedule display of a VPN failure message.
- *
- */
-void nma_show_vpn_failure_alert (NMApplet *applet, const char *member, const char *vpn_name, const char *error_msg)
-{
-	char *title = NULL;
-	char *desc = NULL;
-
-	g_return_if_fail (applet != NULL);
-	g_return_if_fail (member != NULL);
-	g_return_if_fail (vpn_name != NULL);
-	g_return_if_fail (error_msg != NULL);
-
-	if (!strcmp (member, NM_DBUS_VPN_SIGNAL_LOGIN_FAILED))
-	{
-		title = g_strdup (_("VPN Login Failure"));
-		desc = g_strdup_printf (_("Could not start the VPN connection '%s' due to a login failure."), vpn_name);
-	}
-	else if (!strcmp (member, NM_DBUS_VPN_SIGNAL_LAUNCH_FAILED))
-	{
-		title = g_strdup (_("VPN Start Failure"));
-		desc = g_strdup_printf (_("Could not start the VPN connection '%s' due to a failure launching the VPN program."), vpn_name);
-	}
-	else if (!strcmp (member, NM_DBUS_VPN_SIGNAL_CONNECT_FAILED))
-	{
-		title = g_strdup (_("VPN Connect Failure"));
-		desc = g_strdup_printf (_("Could not start the VPN connection '%s' due to a connection error."), vpn_name);
-	}
-	else if (!strcmp (member, NM_DBUS_VPN_SIGNAL_VPN_CONFIG_BAD))
-	{
-		title = g_strdup (_("VPN Configuration Error"));
-		desc = g_strdup_printf (_("The VPN connection '%s' was not correctly configured."), vpn_name);
-	}
-	else if (!strcmp (member, NM_DBUS_VPN_SIGNAL_IP_CONFIG_BAD))
-	{
-		title = g_strdup (_("VPN Connect Failure"));
-		desc = g_strdup_printf (_("Could not start the VPN connection '%s' because the VPN server did not return an adequate network configuration."), vpn_name);
-	}
-
-	if (title && desc)
-	{
-		char * msg;
-
-#ifdef ENABLE_NOTIFY
-		msg = g_strdup_printf ("\n%s\n%s", desc, error_msg);
-		nma_send_event_notification (applet, NOTIFY_URGENCY_CRITICAL,
-			title, msg, "gnome-lockscreen");
-#else
-		msg = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n"
-			"%s\n\n%s", title, desc, error_msg);
-		nma_show_vpn_failure_dialog (title, msg);
-#endif
-		g_free (msg);
-	}
-
-	g_free (title);
-	g_free (desc);
-}
-
-
-#ifndef ENABLE_NOTIFY
-/*
- * nma_show_vpn_login_banner_dialog
- *
- * Present the VPN login banner dialog.
- *
- */
-static void
-nma_show_vpn_login_banner_dialog (const char *title,
-                                   const char *msg)
-{
-	GtkWidget	*dialog;
-
-	g_return_if_fail (title != NULL);
-	g_return_if_fail (msg != NULL);
-
-	dialog = gtk_message_dialog_new_with_markup (NULL, 0, GTK_MESSAGE_INFO,
-					GTK_BUTTONS_OK, msg, NULL);
-	gtk_window_set_title (GTK_WINDOW (dialog), title);
-	g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
-	g_signal_connect (dialog, "close", G_CALLBACK (gtk_widget_destroy), NULL);
-
-	/* Bash focus-stealing prevention in the face */
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
-	gtk_widget_show_all (dialog);
-}
-#endif
-
-
-/*
- * nma_schedule_vpn_login_banner
- *
- * Schedule a display of the VPN banner
- *
- */
-void nma_show_vpn_login_banner (NMApplet *applet, const char *vpn_name, const char *banner)
-{
-	const char *	title;
-	char *		msg;
-
-	g_return_if_fail (applet != NULL);
-	g_return_if_fail (vpn_name != NULL);
-	g_return_if_fail (banner != NULL);
-
-	title = _("VPN Login Message");
-#ifdef ENABLE_NOTIFY
-	msg = g_strdup_printf ("\n%s", banner);
-	/* gnome-lockscreen is a padlock; exactly what we want for a VPN */
-	nma_send_event_notification (applet, NOTIFY_URGENCY_LOW,
-		title, msg, "gnome-lockscreen");
-#else
-	msg = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
-	                       title, banner);
-	nma_show_vpn_login_banner_dialog (title, msg);
-#endif
-	g_free (msg);
-}
-
-
-/*
- * nma_get_first_active_vpn_connection
- *
- * Return the first active VPN connection, if any.
- *
- */
-static NMVPNConnection *
-nma_get_first_active_vpn_connection (NMApplet *applet)
-{
-	GSList *connections;
-	GSList *iter;
-	NMVPNConnection * connection = NULL;
-
-	connections = nm_client_get_vpn_connections (applet->nm_client);
-	for (iter = connections; iter; iter = iter->next) {
-		NMVPNConnection *connection = NM_VPN_CONNECTION (iter->data);
-		NMVPNConnectionState state = nm_vpn_connection_get_state (connection);
-
-		if (state == NM_VPN_CONNECTION_STATE_ACTIVATED)
-			goto out;
-	}
-
-out:
-	g_slist_free (connections);
-	return connection;
-}
-
-
 /*
  * show_warning_dialog
  *
@@ -706,55 +521,117 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 //	nmi_dbus_signal_user_interface_activated (info->applet->connection);
 }
 
+static gboolean
+vpn_animation_timeout (gpointer data)
+{
+	NMApplet *applet = NM_APPLET (data);
 
-/*
- * nma_menu_vpn_item_activate
- *
- * Signal function called when user clicks on a VPN menu item
- *
- */
+	foo_set_icon (applet, applet->vpn_connecting_icons[applet->animation_step], ICON_LAYER_VPN);
+
+	applet->animation_step++;
+	if (applet->animation_step >= NUM_VPN_CONNECTING_FRAMES)
+		applet->animation_step = 0;
+
+	return TRUE;
+}
+
 static void
-nma_menu_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
+vpn_connection_state_changed (NMVPNConnection *connection, NMVPNConnectionState state, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	NMVPNConnection *vpn;
-	NMVPNConnection *active_vpn;
-	const char *name;
-	GSList *passwords;
+	VPNConnectionInfo *info;
 
-	vpn = NM_VPN_CONNECTION (g_object_get_data (G_OBJECT (item), "vpn"));
-	g_assert (vpn);
+	info = (VPNConnectionInfo *) g_object_get_data (G_OBJECT (connection), "vpn-info");
 
-	name = nm_vpn_connection_get_name (vpn);
-	active_vpn = nma_get_first_active_vpn_connection (applet);
+	switch (state) {
+	case NM_VPN_CONNECTION_STATE_ACTIVATED:
+		if (applet->animation_id) {
+			g_source_remove (applet->animation_id);
+			applet->animation_id = 0;
+		}
+		foo_set_icon (applet, applet->vpn_lock_icon, ICON_LAYER_VPN);
+		vpn_connection_info_set_last_attempt_success (info, TRUE);
+		break;
+	case NM_VPN_CONNECTION_STATE_PREPARE:
+	case NM_VPN_CONNECTION_STATE_CONNECT:
+	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
+		if (applet->animation_id == 0) {
+			applet->animation_step = 0;
+			applet->animation_id = g_timeout_add (100, vpn_animation_timeout, applet);
+		}
+		break;
+	case NM_VPN_CONNECTION_STATE_FAILED:
+		vpn_connection_info_set_last_attempt_success (info, FALSE);
+		/* Fall through */
+	case NM_VPN_CONNECTION_STATE_DISCONNECTED:
+		g_hash_table_remove (applet->vpn_connections, nm_vpn_connection_get_name (connection));
+		/* Fall through */
+	default:
+		if (applet->animation_id) {
+			g_source_remove (applet->animation_id);
+			applet->animation_id = 0;
+		}
+		foo_set_icon (applet, NULL, ICON_LAYER_VPN);
+		break;
+	}
+}
 
-	if (vpn != active_vpn) {
-		char *gconf_key;
-		char *escaped_name;
-		gboolean last_attempt_success;
-		gboolean reprompt;
 
-		escaped_name = gconf_escape_key (name, strlen (name));
-		gconf_key = g_strdup_printf ("%s/%s/last_attempt_success", GCONF_PATH_VPN_CONNECTIONS, escaped_name);
-		g_free (escaped_name);
-		last_attempt_success = gconf_client_get_bool (applet->gconf_client, gconf_key, NULL);
-		g_free (gconf_key);
+static void
+nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+	VPNConnectionInfo *info;
+	NMVPNConnection *connection;
 
-		reprompt = ! last_attempt_success; /* it's obvious, but.. */
+	info = (VPNConnectionInfo *) g_object_get_data (G_OBJECT (item), "vpn");
+	g_assert (info);
 
-		if ((passwords = nma_vpn_request_password (applet, 
-										   name, 
-										   nm_vpn_connection_get_service (vpn), 
-										   reprompt)) != NULL) {
-			if (!nm_vpn_connection_activate (vpn, passwords)) {
-				/* FIXME: show a dialog or something */
-			}
+	connection = g_hash_table_lookup (applet->vpn_connections, vpn_connection_info_get_name (info));
 
-			g_slist_foreach (passwords, (GFunc) g_free, NULL);
-			g_slist_free (passwords);
+	if (connection) {
+		/* Connection is active, disconnect */
+		nm_vpn_connection_disconnect (connection);
+	} else {
+		/* Connection inactive, activate */
+		GHashTable *properties;
+
+		properties = vpn_connection_info_get_properties (info);
+
+		/* Get passwords */
+		if (nma_vpn_request_password (vpn_connection_info_get_name (info),
+								vpn_connection_info_get_service (info),
+								vpn_connection_info_get_last_attempt_success (info) == FALSE,
+								properties)) {
+			NMDevice *device;
+
+			device = get_first_active_device (applet);
+
+			connection = nm_vpn_manager_connect (applet->vpn_manager,
+										  vpn_connection_info_get_service (info),
+										  vpn_connection_info_get_name (info),
+										  properties,
+										  device,
+										  vpn_connection_info_get_routes (info));
+		}
+
+		if (connection) {
+			g_object_set_data_full (G_OBJECT (connection), "vpn-info", vpn_connection_info_copy (info),
+							    (GDestroyNotify) vpn_connection_info_destroy);
+
+			g_signal_connect (connection, "state-changed",
+						   G_CALLBACK (vpn_connection_state_changed),
+						   applet);
+
+			g_hash_table_insert (applet->vpn_connections,
+							 g_strdup (vpn_connection_info_get_name (info)),
+							 connection);
+		} else {
+			/* FIXME: show a dialog or something */
+			g_warning ("Can't connect");
 		}
 	}
-
+		
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
@@ -765,46 +642,13 @@ nma_menu_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
  * Signal function called when user clicks "Configure VPN..."
  *
  */
-static void nma_menu_configure_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
+static void
+nma_menu_configure_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 {
 	NMApplet	*applet = (NMApplet *)user_data;
 	const char *argv[] = { BINDIR "/nm-vpn-properties", NULL};
 
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (applet != NULL);
-
 	g_spawn_async (NULL, (gchar **) argv, NULL, 0, NULL, NULL, NULL, NULL);
-
-//	nmi_dbus_signal_user_interface_activated (applet->connection);
-}
-
-/*
- * nma_menu_disconnect_vpn_item_activate
- *
- * Signal function called when user clicks "Disconnect VPN..."
- *
- */
-static void
-nma_menu_disconnect_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-	GSList *iter;
-	GSList *connections;
-
-	/* The current design (both NM and applet) disallows multiple active VPN connections.
-	   Which one of the connections should we deactivate here? Currently, all (which always means one).
-	*/
-
-	connections = nm_client_get_vpn_connections (applet->nm_client);
-	for (iter = connections; iter; iter = iter->next) {
-		NMVPNConnection *connection = NM_VPN_CONNECTION (iter->data);
-		NMVPNConnectionState state = nm_vpn_connection_get_state (connection);
-
-		if (   (state == NM_VPN_CONNECTION_STATE_ACTIVATED)
-		    || nm_vpn_connection_is_activating (connection))
-			nm_vpn_connection_deactivate (connection);
-	}
-	g_slist_free (connections);
 
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
@@ -1209,119 +1053,6 @@ nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *apple
 }
 
 static gint
-sort_vpn_connections (gconstpointer tmpa,
-                      gconstpointer tmpb)
-{
-	NMVPNConnection * a = NM_VPN_CONNECTION (tmpa);
-	NMVPNConnection * b = NM_VPN_CONNECTION (tmpb);
-
-	if (a && !b)
-		return 1;
-	if (b && !a)
-		return -1;
-	return strcmp (nm_vpn_connection_get_name (a),
-	               nm_vpn_connection_get_name (b));
-}
-
-static void nma_menu_add_vpn_menu (GtkWidget *menu, NMApplet *applet)
-{
-	GtkMenuItem	*item;
-	GtkMenu		*vpn_menu;
-	GtkMenuItem	*other_item;
-	GSList		*vpn_connections = NULL;
-	GSList		*elt;
-	NMVPNConnection *active_vpn;
-
-	g_return_if_fail (menu != NULL);
-	g_return_if_fail (applet != NULL);
-
-	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_VPN Connections")));
-
-	vpn_menu = GTK_MENU (gtk_menu_new ());
-	vpn_connections = nm_client_get_vpn_connections (applet->nm_client);
-	vpn_connections = g_slist_sort (vpn_connections, sort_vpn_connections);
-	active_vpn = nma_get_first_active_vpn_connection (applet);
-
-	for (elt = vpn_connections; elt; elt = g_slist_next (elt))
-	{
-		GtkCheckMenuItem	*vpn_item;
-		NMVPNConnection	*vpn = NM_VPN_CONNECTION (elt->data);
-		const char		*vpn_name = nm_vpn_connection_get_name (vpn);
-
-		vpn_item = GTK_CHECK_MENU_ITEM (gtk_check_menu_item_new_with_label (vpn_name));
-		/* temporarily do this until we support multiple VPN connections */
-		gtk_check_menu_item_set_draw_as_radio (vpn_item, TRUE);
-
-		g_object_set_data_full (G_OBJECT (vpn_item), "vpn",
-						    g_object_ref (vpn),
-						    (GDestroyNotify) g_object_unref);
-
-		/* FIXME: all VPN items except the active one are disabled,
-		 * due to a bug in the VPN handling code in NM.  See commit to
-		 * src/vpn-manager/nm-vpn-service.c on 2006-02-28 by dcbw for
-		 * more details.
-		 */
-		if (active_vpn)
-		{
-			if (active_vpn == vpn)
-				gtk_check_menu_item_set_active (vpn_item, TRUE);
-			else
-				gtk_widget_set_sensitive (GTK_WIDGET (vpn_item), FALSE);
-		}
-
-		if (nm_client_get_state (applet->nm_client) != NM_STATE_CONNECTED)
-			gtk_widget_set_sensitive (GTK_WIDGET (vpn_item), FALSE);
-
-		g_signal_connect (G_OBJECT (vpn_item), "activate", G_CALLBACK (nma_menu_vpn_item_activate), applet);
-		gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (vpn_item));
-	}
-
-	/* Draw a seperator, but only if we have VPN connections above it */
-	if (vpn_connections) {
-		other_item = GTK_MENU_ITEM (gtk_separator_menu_item_new ());
-		gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (other_item));
-	}
-
-	other_item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Configure VPN...")));
-	g_signal_connect (G_OBJECT (other_item), "activate", G_CALLBACK (nma_menu_configure_vpn_item_activate), applet);
-	gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (other_item));
-
-	other_item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Disconnect VPN...")));
-	g_signal_connect (G_OBJECT (other_item), "activate", G_CALLBACK (nma_menu_disconnect_vpn_item_activate), applet);
-	if (!active_vpn)
-		gtk_widget_set_sensitive (GTK_WIDGET (other_item), FALSE);
-	gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (other_item));
-
-	gtk_menu_item_set_submenu (item, GTK_WIDGET (vpn_menu));
-
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
-	gtk_widget_show_all (GTK_WIDGET (item));
-
-	g_slist_free (vpn_connections);
-}
-
-
-/** Returns TRUE if, and only if, we have VPN support installed
- *
- *  Algorithm: just check whether any files exist in the directory
- *  /etc/NetworkManager/VPN
- */
-static gboolean is_vpn_available (void)
-{
-	GDir *dir;
-	gboolean result;
-
-	result = FALSE;
-	if ((dir = g_dir_open (VPN_NAME_FILES_DIR, 0, NULL)) != NULL) {
-		if (g_dir_read_name (dir) != NULL)
-			result = TRUE;
-		g_dir_close (dir);
-	}
-
-	return result;
-}
-
-gint
 sort_devices (gconstpointer a, gconstpointer b)
 {
 	NMDevice *aa = NM_DEVICE (a);
@@ -1360,11 +1091,6 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	GSList *iter;
 	gint n_wireless_interfaces = 0;
 	gint n_wired_interfaces = 0;
-
-	if (nm_client_get_state (applet->nm_client) == NM_STATE_ASLEEP) {
-		nma_menu_add_text_item (menu, _("Networking disabled"));
-		return;
-	}
 
 	devices = nm_client_get_devices (applet->nm_client);
 
@@ -1408,12 +1134,6 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		nma_menu_device_add_networks (menu, device, applet);
 	}
 
-	/* Add the VPN and Dial Up menus and their associated seperator */
-	if (is_vpn_available ()) {
-		nma_menu_add_separator_item (GTK_MENU_SHELL (menu));
-		nma_menu_add_vpn_menu (menu, applet);
-	}
-
 	if (n_wireless_interfaces > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
 		/* Add the "Other wireless network..." entry */
 		nma_menu_add_separator_item (GTK_MENU_SHELL (menu));
@@ -1423,6 +1143,60 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 
  out:
 	g_slist_free (devices);
+}
+
+static int
+sort_vpn_connections (gconstpointer a, gconstpointer b)
+{
+	VPNConnectionInfo *aa = (VPNConnectionInfo *) a;
+	VPNConnectionInfo *bb = (VPNConnectionInfo *) b;
+
+	return strcmp (vpn_connection_info_get_name (aa), vpn_connection_info_get_name (bb));
+}
+
+static void
+nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
+{
+	GtkMenu *vpn_menu;
+	GtkMenuItem *item;
+	GSList *list;
+	GSList *iter;
+
+	nma_menu_add_separator_item (GTK_MENU_SHELL (menu));
+
+	vpn_menu = GTK_MENU (gtk_menu_new ());
+
+	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_VPN Connections")));
+	gtk_menu_item_set_submenu (item, GTK_WIDGET (vpn_menu));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
+
+	list = vpn_connection_info_list ();
+	list = g_slist_sort (list, sort_vpn_connections);
+
+	for (iter = list; iter; iter = iter->next) {
+		VPNConnectionInfo *info = (VPNConnectionInfo *) iter->data;
+
+		item = GTK_CHECK_MENU_ITEM (gtk_check_menu_item_new_with_label (vpn_connection_info_get_name (info)));
+		if (g_hash_table_lookup (applet->vpn_connections, vpn_connection_info_get_name (info)))
+			gtk_check_menu_item_set_active (item, TRUE);
+
+		g_object_set_data_full (G_OBJECT (item), "vpn", info, 
+						    (GDestroyNotify) vpn_connection_info_destroy);
+
+		if (nm_client_get_state (applet->nm_client) != NM_STATE_CONNECTED)
+			gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
+
+		g_signal_connect (item, "activate", G_CALLBACK (nma_menu_vpn_item_clicked), applet);
+		gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
+	}
+
+	/* Draw a seperator, but only if we have VPN connections above it */
+	if (list)
+		nma_menu_add_separator_item (GTK_MENU_SHELL (vpn_menu));
+
+	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Configure VPN...")));
+	g_signal_connect (item, "activate", G_CALLBACK (nma_menu_configure_vpn_item_activate), applet);
+	gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
 }
 
 
@@ -1490,10 +1264,18 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 	gtk_tooltips_set_tip (applet->tooltips, applet->event_box, NULL, NULL);
 #endif /* HAVE_STATUS_ICON */
 
-	if (nm_client_manager_is_running (applet->nm_client))
-		nma_menu_add_devices (menu, applet);
-	else
+	if (!nm_client_manager_is_running (applet->nm_client)) {
 		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
+		return;
+	}
+
+	if (nm_client_get_state (applet->nm_client) == NM_STATE_ASLEEP) {
+		nma_menu_add_text_item (menu, _("Networking disabled"));
+		return;
+	}
+
+	nma_menu_add_devices (menu, applet);
+	nma_menu_add_vpn_submenu (menu, applet);
 
 	gtk_widget_show_all (applet->menu);
 
@@ -1900,68 +1682,6 @@ static void nma_gconf_info_notify_callback (GConfClient *client, guint connectio
 }
 
 
-/*
- * nma_gconf_vpn_connections_notify_callback
- *
- * Callback from gconf when VPN connection values have changed.
- *
- */
-static void nma_gconf_vpn_connections_notify_callback (GConfClient *client, guint connection_id, GConfEntry *entry, gpointer user_data)
-{
-	NMApplet *	applet = (NMApplet *)user_data;
-	const char *		key = NULL;
-
-	/*g_debug ("Entering nma_gconf_vpn_connections_notify_callback, key='%s'", gconf_entry_get_key (entry));*/
-
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (entry != NULL);
-	g_return_if_fail (applet != NULL);
-
-	if ((key = gconf_entry_get_key (entry)))
-	{
-		int	path_len = strlen (GCONF_PATH_VPN_CONNECTIONS) + 1;
-
-		if (strncmp (GCONF_PATH_VPN_CONNECTIONS"/", key, path_len) == 0)
-		{
-			char 	 *name = g_strdup ((key + path_len));
-			char		 *slash_pos;
-			char	 	 *unescaped_name;
-			char       *name_path;
-			GConfValue *value;
-
-			/* If its a key under the the VPN name, zero out the slash so we
-			 * are left with only the VPN name.
-			 */
-			if ((slash_pos = strchr (name, '/')))
-				*slash_pos = '\0';
-			unescaped_name = gconf_unescape_key (name, strlen (name));
-
-			/* Check here if the name entry is gone so we can remove the conn from the UI */
-			name_path = g_strdup_printf ("%s/%s/name", GCONF_PATH_VPN_CONNECTIONS, name);
-			gconf_client_clear_cache (client);
-			value = gconf_client_get (client, name_path, NULL);
-			if (value == NULL) {
-				NMVPNConnection *connection;
-
-				/*g_debug ("removing '%s' from UI", name_path);*/
-
-				connection = nm_client_get_vpn_connection_by_name (applet->nm_client, unescaped_name);
-				if (connection)
-					nm_client_remove_vpn_connection (applet->nm_client, connection);
-			} else {
-				gconf_value_free (value);
-			}
-			g_free (name_path);
-
-//			nmi_dbus_signal_update_vpn_connection (applet->connection, unescaped_name);
-
-			g_free (unescaped_name);
-			g_free (name);
-		}
-
-	}
-}
-
 /*****************************************************************************/
 
 static void
@@ -2335,11 +2055,6 @@ foo_client_state_change (NMClient *client, NMState state, gpointer user_data)
 		gtk_status_icon_set_tooltip (applet->status_icon, tip);
 		g_free (tip);
 	}
-
-	/* Update VPN icon too to ensure that the VPN icon doesn't
-	 * race with the main icon for layer 1
-	 */
-	foo_client_vpn_state_change (client, nm_client_get_vpn_state (client), applet);
 }
 
 static void
@@ -2351,64 +2066,6 @@ foo_setup_client_state_handlers (NMClient *client, NMApplet *applet)
 
 	g_signal_connect (client, "device-added",
 				   G_CALLBACK (foo_device_added_cb),
-				   applet);
-}
-
-/* VPN */
-
-static gboolean
-foo_vpn_animation_timeout (gpointer data)
-{
-	NMApplet *applet = NM_APPLET (data);
-
-	foo_set_icon (applet, applet->vpn_connecting_icons[applet->animation_step], ICON_LAYER_VPN);
-
-	applet->animation_step++;
-	if (applet->animation_step >= NUM_VPN_CONNECTING_FRAMES)
-		applet->animation_step = 0;
-
-	return TRUE;
-}
-
-static void
-foo_client_vpn_state_change (NMClient *client,
-                             NMVPNConnectionState state,
-                             gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-	char *tip = NULL;
-
-	switch (state) {
-	case NM_VPN_CONNECTION_STATE_ACTIVATED:
-		if (applet->animation_id) {
-			g_source_remove (applet->animation_id);
-			applet->animation_id = 0;
-		}
-		foo_set_icon (applet, applet->vpn_lock_icon, ICON_LAYER_VPN);
-		break;
-	case NM_VPN_CONNECTION_STATE_PREPARE:
-	case NM_VPN_CONNECTION_STATE_CONNECT:
-	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-		if (applet->animation_id == 0) {
-			applet->animation_step = 0;
-			applet->animation_id = g_timeout_add (100, foo_vpn_animation_timeout, applet);
-		}
-		break;
-	default:
-		if (applet->animation_id) {
-			g_source_remove (applet->animation_id);
-			applet->animation_id = 0;
-		}
-		foo_set_icon (applet, NULL, ICON_LAYER_VPN);
-		break;
-	}
-}
-
-static void
-foo_setup_client_vpn_state_handlers (NMClient *client, NMApplet *applet)
-{
-	g_signal_connect (client, "vpn-state-change",
-				   G_CALLBACK (foo_client_vpn_state_change),
 				   applet);
 }
 
@@ -2427,12 +2084,10 @@ foo_manager_running (NMClient *client,
 
 		/* Force the icon update */
 		foo_client_state_change (client, nm_client_get_state (client), applet);
-		foo_client_vpn_state_change (client, nm_client_get_vpn_state (client), applet);
 	} else {
 		g_message ("NM disappeared");
 
 		foo_client_state_change (client, NM_STATE_UNKNOWN, applet);
-		foo_client_vpn_state_change (client, NM_VPN_CONNECTION_STATE_UNKNOWN, applet);
 	}
 }
 
@@ -2465,7 +2120,6 @@ foo_client_setup (NMApplet *applet)
 	applet->nm_client = client;
 
 	foo_setup_client_state_handlers (client, applet);
-	foo_setup_client_vpn_state_handlers (client, applet);
 	g_signal_connect (client, "manager-running",
 				   G_CALLBACK (foo_manager_running), applet);
 
@@ -2508,7 +2162,6 @@ static void nma_finalize (GObject *object)
 #endif
 
 	gconf_client_notify_remove (applet->gconf_client, applet->gconf_prefs_notify_id);
-	gconf_client_notify_remove (applet->gconf_client, applet->gconf_vpn_notify_id);
 	g_object_unref (applet->gconf_client);
 
 #ifdef HAVE_STATUS_ICON
@@ -2520,6 +2173,10 @@ static void nma_finalize (GObject *object)
 		g_object_unref (applet->tray_icon);
 	}
 #endif /* HAVE_STATUS_ICON */
+
+	g_hash_table_destroy (applet->vpn_connections);
+	g_object_unref (applet->vpn_manager);
+	g_object_unref (applet->nm_client);
 
 	if (applet->nm_client)
 		g_object_unref (applet->nm_client);
@@ -2559,10 +2216,6 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	applet->gconf_prefs_notify_id = gconf_client_notify_add (applet->gconf_client, GCONF_PATH_WIRELESS,
 						nma_gconf_info_notify_callback, applet, NULL, NULL);
 
-	gconf_client_add_dir (applet->gconf_client, GCONF_PATH_VPN_CONNECTIONS, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	applet->gconf_vpn_notify_id = gconf_client_notify_add (applet->gconf_client, GCONF_PATH_VPN_CONNECTIONS,
-						nma_gconf_vpn_connections_notify_callback, applet, NULL, NULL);
-
 	/* Convert old-format stored network entries to the new format.
 	 * Must be RUN BEFORE DBUS INITIALIZATION since we have to do
 	 * synchronous calls against gnome-keyring.
@@ -2590,6 +2243,10 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
     }
 
 	foo_client_setup (applet);
+	applet->vpn_manager = nm_vpn_manager_new ();
+	applet->vpn_connections = g_hash_table_new_full (g_str_hash, g_str_equal,
+										    (GDestroyNotify) g_free,
+										    (GDestroyNotify) g_object_unref);
 
 #ifndef HAVE_STATUS_ICON
 	g_signal_connect (applet->tray_icon, "style-set", G_CALLBACK (nma_theme_change_cb), NULL);

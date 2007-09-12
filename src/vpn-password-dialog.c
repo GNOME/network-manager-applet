@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -31,13 +32,12 @@
 #include <glib/gi18n.h>
 #include <unistd.h>
 
-#include "applet.h"
 #include "vpn-password-dialog.h"
 #include "nm-utils.h"
 
 
 typedef struct {
-	GSList **passwords;
+	GSList *lines;
 	int child_stdin;
 	int num_newlines;
 } IOUserData;
@@ -55,7 +55,6 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer userd
 {
 	char *str;
 	IOUserData *io_user_data = (IOUserData *) userdata;
-	GSList **passwords = (GSList **) io_user_data->passwords;
 
 	if (! (condition & G_IO_IN))
 		goto out;
@@ -76,7 +75,7 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer userd
 		} else if (len > 0) {
 			/* remove terminating newline */
 			str[len - 1] = '\0';
-			*passwords = g_slist_append (*passwords, str);
+			io_user_data->lines = g_slist_append (io_user_data->lines, str);
 		}
 	}
 
@@ -84,15 +83,14 @@ out:
 	return TRUE;
 }
 
-GSList *
-nma_vpn_request_password (NMApplet *applet, const char *name, const char *service, gboolean retry)
+gboolean
+nma_vpn_request_password (const char *name, const char *service, gboolean retry, GHashTable *properties)
 {
 	const char       *argv[] = {NULL /*"/usr/libexec/nm-vpnc-auth-dialog"*/, 
 			      "-n", NULL /*"davidznet42"*/, 
 			      "-s", NULL /*"org.freedesktop.vpnc"*/, 
 			      "-r",
 			      NULL};
-	GSList     *passwords = NULL;
 	int         child_stdin;
 	int         child_stdout;
 	GPid        child_pid;
@@ -102,6 +100,7 @@ nma_vpn_request_password (NMApplet *applet, const char *name, const char *servic
 	GDir       *dir;
 	char       *auth_dialog_binary;
 	IOUserData io_user_data;
+	gboolean success = FALSE;
 
 	auth_dialog_binary = NULL;
 
@@ -198,7 +197,7 @@ nma_vpn_request_password (NMApplet *applet, const char *name, const char *servic
 	/* catch when child is reaped */
 	g_child_watch_add (child_pid, child_finished_cb, (gpointer) &child_status);
 
-	io_user_data.passwords = &passwords;
+	io_user_data.lines = NULL;
 	io_user_data.child_stdin = child_stdin;
 	io_user_data.num_newlines = 0;
 
@@ -217,16 +216,31 @@ nma_vpn_request_password (NMApplet *applet, const char *name, const char *servic
 	g_source_remove (child_stdout_channel_eventid);
 	g_io_channel_unref (child_stdout_channel);
 
-	if (child_status != 0) {
-		if (passwords != NULL) {
-			g_slist_foreach (passwords, (GFunc)g_free, NULL);
-			g_slist_free (passwords);
-			passwords = NULL;
-		}
-	}		
+	if (child_status == 0) {
+		GSList *iter;
 
-out:
+		for (iter = io_user_data.lines; iter; iter = iter->next) {
+			GValue *val;
+
+			if (!iter->next)
+				break;
+
+			val = g_slice_new0 (GValue);
+			g_value_init (val, G_TYPE_STRING);
+			g_value_set_string (val, iter->next->data);
+
+			g_hash_table_insert (properties, g_strdup (iter->data), val);
+			iter = iter->next;
+		}
+
+		success = TRUE;
+	}
+
+	g_slist_foreach (io_user_data.lines, (GFunc) g_free, NULL);
+	g_slist_free (io_user_data.lines);
+
+ out:
 	g_free (auth_dialog_binary);
 
-	return passwords;
+	return success;
 }

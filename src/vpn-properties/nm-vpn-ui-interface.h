@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
 /***************************************************************************
  * CVSID: $Id: nm-vpn-ui-interface.h 846 2005-08-15 19:34:20Z caillon $
  *
@@ -51,7 +52,7 @@ struct _NetworkManagerVpnUI {
 
 	const char *(*get_service_name) (NetworkManagerVpnUI *self);
 
-	GtkWidget *(*get_widget) (NetworkManagerVpnUI *self, GSList *properties, GSList *routes, const char *connection_name);
+	GtkWidget *(*get_widget) (NetworkManagerVpnUI *self, GHashTable *properties, GSList *routes, const char *connection_name);
 
 	void (*set_validity_changed_callback) (NetworkManagerVpnUI *self, 
 					       NetworkManagerVpnUIDialogValidityCallback cb,
@@ -67,7 +68,7 @@ struct _NetworkManagerVpnUI {
 
 	char *(*get_connection_name) (NetworkManagerVpnUI *self);
 
-	GSList *(*get_properties) (NetworkManagerVpnUI *self);
+	gboolean (*get_properties) (NetworkManagerVpnUI *self, GHashTable *properties);
 
 	GSList *(*get_routes) (NetworkManagerVpnUI *self);
 
@@ -75,7 +76,7 @@ struct _NetworkManagerVpnUI {
 
 	gboolean (*import_file) (NetworkManagerVpnUI *self, const char *path);
 
-	gboolean (*export) (NetworkManagerVpnUI *self, GSList *properties, GSList *routes, const char *connection_name);
+	gboolean (*export) (NetworkManagerVpnUI *self, GHashTable *properties, GSList *routes, const char *connection_name);
 
 	gpointer data;
 };

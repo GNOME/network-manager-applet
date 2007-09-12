@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
 /***************************************************************************
  * CVSID: $Id: nm-vpn-properties.c 2650 2007-07-26 15:02:54Z dcbw $
  *
@@ -137,8 +138,175 @@ update_edit_del_sensitivity (void)
 	gtk_widget_set_sensitive (vpn_export, is_editable && is_exportable);
 }
 
+static void
+property_value_destroy (gpointer data)
+{
+	GValue *value = (GValue *) data;
+
+	g_value_unset (value);
+	g_slice_free (GValue, data);
+}
+
+static GHashTable *
+create_empty_properties (void)
+{
+	return g_hash_table_new_full (g_str_hash, g_str_equal,
+							(GDestroyNotify) g_free,
+							property_value_destroy);
+}
+
+static void
+add_property (GHashTable *properties, const char *key, GConfValue *gconf_value)
+{
+	GValue *value = NULL;
+
+	if (!gconf_value)
+		return;
+
+	switch (gconf_value->type) {
+	case GCONF_VALUE_STRING:
+		value = g_slice_new0 (GValue);
+		g_value_init (value, G_TYPE_STRING);
+		g_value_set_string (value, gconf_value_get_string (gconf_value));
+		break;
+	case GCONF_VALUE_INT:
+		value = g_slice_new0 (GValue);
+		g_value_init (value, G_TYPE_INT);
+		g_value_set_int (value, gconf_value_get_int (gconf_value));
+		break;
+	case GCONF_VALUE_BOOL:
+		value = g_slice_new0 (GValue);
+		g_value_init (value, G_TYPE_BOOLEAN);
+		g_value_set_boolean (value, gconf_value_get_bool (gconf_value));
+		break;
+	default:
+		break;
+	}
+
+	if (value)
+		g_hash_table_insert (properties, gconf_unescape_key (key, -1), value);
+}
+
+static GHashTable *
+read_properties (const char *path)
+{
+	GHashTable *properties;
+	GSList *gconf_entries;
+	GSList *iter;
+	int prefix_len;
+	GError *err = NULL;
+
+	gconf_entries = gconf_client_all_entries (gconf_client, path, &err);
+
+	if (err) {
+		g_warning ("Could not read properties: %s", err->message);
+		g_error_free (err);
+		return NULL;
+	}
+
+	properties = create_empty_properties ();
+	prefix_len = strlen (path);
+
+	for (iter = gconf_entries; iter; iter = iter->next) {
+		GConfEntry *entry = (GConfEntry *) iter->data;
+		const char *key;
+
+		key = gconf_entry_get_key (entry);
+		key += prefix_len + 1; /* get rid of the full path */
+
+		if (!strcmp (key, "name") ||
+		    !strcmp (key, "service_name") ||
+		    !strcmp (key, "routes") ||
+		    !strcmp (key, "last_attempt_success")) {
+			gconf_entry_free (entry);
+			continue;
+		}
+
+		add_property (properties, key, gconf_entry_get_value (entry));
+		gconf_entry_free (entry);
+	}
+
+	g_slist_free (gconf_entries);
+
+	return properties;
+}
+
+
+static void
+write_properties (gpointer key, gpointer val, gpointer user_data)
+{
+	GValue *value = (GValue *) val;
+	char *path = (char *) user_data;
+	char *esc_key;
+	char *full_key;
+
+	esc_key = gconf_escape_key ((char *) key, -1);
+	full_key = g_strconcat (path, "/", esc_key, NULL);
+	g_free (esc_key);
+
+	if (G_VALUE_HOLDS_STRING (value))
+		gconf_client_set_string (gconf_client, full_key, g_value_get_string (value), NULL);
+	else if (G_VALUE_HOLDS_INT (value))
+		gconf_client_set_int (gconf_client, full_key, g_value_get_int (value), NULL);
+	else if (G_VALUE_HOLDS_BOOLEAN (value))
+		gconf_client_set_bool (gconf_client, full_key, g_value_get_boolean (value), NULL);
+	else
+		g_warning ("Don't know how to write '%s' to gconf", G_VALUE_TYPE_NAME (value));
+
+	g_free (full_key);
+}
+
+static void
+update_properties (GHashTable *properties, const char *path)
+{
+	GSList *gconf_entries;
+	GSList *iter;
+	int prefix_len;
+	GError *err = NULL;
+
+	/* First, remove the gconf entries that are not in current properties */
+
+	gconf_entries = gconf_client_all_entries (gconf_client, path, &err);
+	if (err) {
+		g_warning ("Could not read properties: %s", err->message);
+		g_error_free (err);
+		return;
+	}
+
+	prefix_len = strlen (path);
+
+	for (iter = gconf_entries; iter; iter = iter->next) {
+		GConfEntry *entry = (GConfEntry *) iter->data;
+		const char *key;
+		char *esc_key;
+
+		key = gconf_entry_get_key (entry);
+		key += prefix_len + 1; /* get rid of the full path */
+
+		if (!strcmp (key, "name") ||
+		    !strcmp (key, "service_name") ||
+		    !strcmp (key, "routes") ||
+		    !strcmp (key, "last_attempt_success")) {
+			gconf_entry_free (entry);
+			continue;
+		}
+
+		esc_key = gconf_unescape_key (key, -1);
+		if (!g_hash_table_lookup (properties, esc_key))
+			gconf_client_unset (gconf_client, gconf_entry_get_key (entry), NULL);
+
+		g_free (esc_key);
+		gconf_entry_free (entry);
+	}
+
+	g_slist_free (gconf_entries);
+
+	/* Now add/update all new/existing values */
+	g_hash_table_foreach (properties, write_properties, (gpointer) path);
+}
+
 static gboolean
-add_vpn_connection (const char *conn_name, const char *service_name, GSList *conn_data, GSList *routes)
+add_vpn_connection (const char *conn_name, const char *service_name, GHashTable *properties, GSList *routes)
 {
 	char *gconf_key;
 	GtkTreeSelection *selection;
@@ -172,10 +340,7 @@ add_vpn_connection (const char *conn_name, const char *service_name, GSList *con
 	gconf_client_set_string (gconf_client, gconf_key, service_name, NULL);
 
 	/* vpn-daemon specific data */
-	gconf_key = g_strdup_printf ("%s/vpn_data", conn_gconf_path);
-	{
-		gconf_client_set_list (gconf_client, gconf_key, GCONF_VALUE_STRING, conn_data, NULL);
-	}
+	g_hash_table_foreach (properties, write_properties, conn_gconf_path);
 
 	/* routes */
 	gconf_key = g_strdup_printf ("%s/routes", conn_gconf_path);
@@ -216,23 +381,12 @@ out:
 static void
 remove_vpn_connection (const char *gconf_path, GtkTreeIter *iter)
 {
-	char key[PATH_MAX];
+	GError *err = NULL;
 
-	g_snprintf (key, sizeof (key), "%s/name", gconf_path);
-	gconf_client_unset (gconf_client, key, NULL);
-	g_snprintf (key, sizeof (key), "%s/service_name", gconf_path);
-	gconf_client_unset (gconf_client, key, NULL);
-	g_snprintf (key, sizeof (key), "%s/vpn_data", gconf_path);
-	gconf_client_unset (gconf_client, key, NULL);
-	g_snprintf (key, sizeof (key), "%s/routes", gconf_path);
-	gconf_client_unset (gconf_client, key, NULL);
-	g_snprintf (key, sizeof (key), "%s/user_name", gconf_path);
-	gconf_client_unset (gconf_client, key, NULL);
+	if (!gconf_client_recursive_unset (gconf_client, gconf_path, 
+								GCONF_UNSET_INCLUDING_SCHEMA_NAMES, &err))
+		g_warning ("Remove VPN connection failed: %s", err->message);
 
-	g_snprintf (key, sizeof (key), "%s/last_attempt_success", gconf_path);
-	gconf_client_unset (gconf_client, key, NULL);
-
-	gconf_client_unset (gconf_client, gconf_path, NULL);
 	gconf_client_suggest_sync (gconf_client, NULL);
 
 	if (gtk_list_store_remove (vpn_conn_list, iter)) {
@@ -300,11 +454,12 @@ static void vpn_details_widget_reparent(GtkWidget *new_parent)
   gtk_widget_reparent(vpn_details_widget,new_parent);
 }
 
-static void vpn_details_widget_get_current(GSList *properties, GSList *routes, const char *connection_name)
+static void
+vpn_details_widget_get_current (GHashTable *properties, GSList *routes, const char *connection_name)
 {
-    if (vpn_details_widget!=NULL) {
-        vpn_details_widget_reparent(NULL);
-        vpn_details_widget=NULL;
+    if (vpn_details_widget) {
+        vpn_details_widget_reparent (NULL);
+        vpn_details_widget = NULL;
     }
 
 	if (current_vpn_ui != NULL) {
@@ -406,24 +561,24 @@ static gboolean vpn_druid_vpn_confirm_page_finish (void *druidpage,
 						   GtkWidget *widget,
 						   gpointer user_data)
 {
-	GSList *conn_data;
+	GHashTable *properties;
 	GSList *conn_routes;
 	char *conn_name;
 	NetworkManagerVpnUI *vpn_ui;
 
 	vpn_ui = (NetworkManagerVpnUI *) g_slist_nth_data (vpn_types, gtk_combo_box_get_active (vpn_type_combo_box));
-	conn_name   = vpn_ui->get_connection_name (vpn_ui);
-	conn_data   = vpn_ui->get_properties (vpn_ui);
+	conn_name = vpn_ui->get_connection_name (vpn_ui);
+	properties = create_empty_properties ();
+	vpn_ui->get_properties (vpn_ui, properties);
 	conn_routes = vpn_ui->get_routes (vpn_ui);
 
-	add_vpn_connection (conn_name, vpn_ui->get_service_name (vpn_ui), conn_data, conn_routes);
+	add_vpn_connection (conn_name, vpn_ui->get_service_name (vpn_ui), properties, conn_routes);
 
-    vpn_details_widget_reparent(NULL);
-//	gtk_widget_hide (GTK_WIDGET (druid_window));
+	vpn_details_widget_reparent (NULL);
 #if GTK_CHECK_VERSION(2, 10, 0)
-    gtk_widget_hide(assistant);
+    gtk_widget_hide (assistant);
 #else
-    gtk_dialog_response(GTK_DIALOG(druid_window),GTK_RESPONSE_APPLY);
+    gtk_dialog_response (GTK_DIALOG (druid_window), GTK_RESPONSE_APPLY);
 #endif
 	return FALSE;
 }
@@ -584,14 +739,13 @@ vpn_edit_vpn_validity_changed (NetworkManagerVpnUI *vpn_ui,
 
 static gboolean
 retrieve_data_from_selected_connection (NetworkManagerVpnUI **vpn_ui,
-					GSList **conn_vpn_data,
-					GSList **conn_routes,
-					const char **conn_name,
-					char **conn_gconf_path)
+								GHashTable **conn_properties,
+								GSList **conn_routes,
+								const char **conn_name,
+								char **conn_gconf_path)
 {
 	gboolean result;
 	const char *conn_service_name;
-	GSList *conn_vpn_data_gconfvalue;
 	GSList *conn_routes_gconfvalue;
 	GSList *i;
 	char key[PATH_MAX];
@@ -608,15 +762,15 @@ retrieve_data_from_selected_connection (NetworkManagerVpnUI **vpn_ui,
 		goto out;
 
 	gtk_tree_model_get (GTK_TREE_MODEL (vpn_conn_list), 
-			    &iter, 
-			    VPNCONN_GCONF_COLUMN, 
-			    conn_gconf_path, 
-			    -1);
-
-	g_snprintf (key, sizeof (key), "%s/name", *conn_gconf_path);
-	if ((value = gconf_client_get (gconf_client, key, NULL)) == NULL ||
-	    (*conn_name = gconf_value_get_string (value)) == NULL)
-		goto out;
+					&iter, 
+					VPNCONN_GCONF_COLUMN, 
+					conn_gconf_path, 
+					-1);
+	gtk_tree_model_get (GTK_TREE_MODEL (vpn_conn_list), 
+					&iter, 
+					VPNCONN_NAME_COLUMN,
+					conn_name, 
+					-1);
 
 	g_snprintf (key, sizeof (key), "%s/service_name", *conn_gconf_path);
 	if ((value = gconf_client_get (gconf_client, key, NULL)) == NULL ||
@@ -641,32 +795,25 @@ retrieve_data_from_selected_connection (NetworkManagerVpnUI **vpn_ui,
 		goto out;
 	}
 
-	g_snprintf (key, sizeof (key), "%s/vpn_data", *conn_gconf_path);
-	if ((value = gconf_client_get (gconf_client, key, NULL)) == NULL ||
-	    gconf_value_get_list_type (value) != GCONF_VALUE_STRING ||
-	    (conn_vpn_data_gconfvalue = gconf_value_get_list (value)) == NULL)
-		goto out;
-
-	*conn_vpn_data = NULL;
-	for (i = conn_vpn_data_gconfvalue; i != NULL; i = g_slist_next (i)) {
-		const char *val;
-		val = gconf_value_get_string ((GConfValue *) i->data);
-		*conn_vpn_data = g_slist_append (*conn_vpn_data, (gpointer) val);
-	}
-
+	*conn_properties = read_properties (*conn_gconf_path);
 
 	/* routes may be an empty list */
-	g_snprintf (key, sizeof (key), "%s/routes", *conn_gconf_path);
-	if ((value = gconf_client_get (gconf_client, key, NULL)) == NULL ||
-	    gconf_value_get_list_type (value) != GCONF_VALUE_STRING)
-		goto out;
-
-	conn_routes_gconfvalue = gconf_value_get_list (value);
 	*conn_routes = NULL;
-	for (i = conn_routes_gconfvalue; i != NULL; i = g_slist_next (i)) {
-		const char *val;
-		val = gconf_value_get_string ((GConfValue *) i->data);
-		*conn_routes = g_slist_append (*conn_routes, (gpointer) val);
+	g_snprintf (key, sizeof (key), "%s/routes", *conn_gconf_path);
+
+	value = gconf_client_get (gconf_client, key, NULL);
+	if (value) {
+		if (gconf_value_get_list_type (value) == GCONF_VALUE_STRING) {
+			conn_routes_gconfvalue = gconf_value_get_list (value);
+
+			for (i = conn_routes_gconfvalue; i != NULL; i = g_slist_next (i)) {
+				const char *val;
+				val = gconf_value_get_string ((GConfValue *) i->data);
+				*conn_routes = g_slist_append (*conn_routes, (gpointer) val);
+			}
+		}
+
+		gconf_value_free (value);
 	}
 
 	result = TRUE;
@@ -679,7 +826,7 @@ static void
 edit_cb (GtkButton *button, gpointer user_data)
 {
 	gint result;
-	GSList *conn_vpn_data;
+	GHashTable *conn_properties;
 	GSList *conn_routes;
 	const char *conn_name;
 	char key[PATH_MAX];
@@ -687,7 +834,7 @@ edit_cb (GtkButton *button, gpointer user_data)
 	GtkTreeIter iter;
 	GtkTreeSelection *selection;
 
-	if (!retrieve_data_from_selected_connection (&current_vpn_ui, &conn_vpn_data, &conn_routes, &conn_name, &conn_gconf_path))
+	if (!retrieve_data_from_selected_connection (&current_vpn_ui, &conn_properties, &conn_routes, &conn_name, &conn_gconf_path))
 		goto out;
 
 	if ((selection = gtk_tree_view_get_selection (vpn_conn_view)) == NULL)
@@ -696,8 +843,8 @@ edit_cb (GtkButton *button, gpointer user_data)
 	if (!gtk_tree_selection_get_selected (selection, NULL, &iter))
 		goto out;
 
-    vpn_details_widget_get_current(conn_vpn_data, conn_routes, conn_name);
-	g_slist_free (conn_vpn_data);
+	vpn_details_widget_get_current (conn_properties, conn_routes, conn_name);
+	g_hash_table_destroy (conn_properties);
 	g_slist_free (conn_routes);
 
 	current_vpn_ui->set_validity_changed_callback (current_vpn_ui, vpn_edit_vpn_validity_changed, (gpointer) conn_name);
@@ -717,17 +864,19 @@ edit_cb (GtkButton *button, gpointer user_data)
 
 	if (result == GTK_RESPONSE_ACCEPT) {
 		char *new_conn_name;
-		GSList *new_conn_data;
+		GHashTable *new_properties;
 		GSList *new_conn_routes;
 
-		new_conn_name   = current_vpn_ui->get_connection_name (current_vpn_ui);
-		new_conn_data   = current_vpn_ui->get_properties (current_vpn_ui);
+		new_conn_name = current_vpn_ui->get_connection_name (current_vpn_ui);
+		new_properties = create_empty_properties ();
+		current_vpn_ui->get_properties (current_vpn_ui, new_properties);
 		new_conn_routes = current_vpn_ui->get_routes (current_vpn_ui);
 
 		if (strcmp (new_conn_name, conn_name) == 0) {
 			/* same name, just update properties and routes */
-			g_snprintf (key, sizeof (key), "%s/vpn_data", conn_gconf_path);
-			gconf_client_set_list (gconf_client, key, GCONF_VALUE_STRING, new_conn_data, NULL);
+
+			update_properties (new_properties, conn_gconf_path);
+
 			g_snprintf (key, sizeof (key), "%s/routes", conn_gconf_path);
 			gconf_client_set_list (gconf_client, key, GCONF_VALUE_STRING, new_conn_routes, NULL);
 
@@ -737,13 +886,12 @@ edit_cb (GtkButton *button, gpointer user_data)
 			gtk_tree_selection_get_selected (selection, NULL, &iter);
 			remove_vpn_connection (conn_gconf_path, &iter);
 			add_vpn_connection (new_conn_name, current_vpn_ui->get_service_name (current_vpn_ui), 
-					    new_conn_data, new_conn_routes);
+							new_properties, new_conn_routes);
 		}
 
-		if (new_conn_data != NULL) {
-			g_slist_foreach (new_conn_data, (GFunc)g_free, NULL);
-			g_slist_free (new_conn_data);
-		}
+		if (new_properties)
+			g_hash_table_destroy (new_properties);
+
 		if (new_conn_routes != NULL) {
 			g_slist_foreach (new_conn_routes, (GFunc)g_free, NULL);
 			g_slist_free (new_conn_routes);
@@ -818,18 +966,14 @@ static void
 export_cb (GtkButton *button, gpointer user_data)
 {
 	NetworkManagerVpnUI *vpn_ui;
-	GSList *conn_vpn_data;
+	GHashTable *conn_properties;
 	GSList *conn_routes;
 	const char *conn_name;
 	char *conn_gconf_path;
 
-	if (!retrieve_data_from_selected_connection (&vpn_ui, &conn_vpn_data, &conn_routes, &conn_name, &conn_gconf_path))
-		goto out;
-
-	vpn_ui->export (vpn_ui, conn_vpn_data, conn_routes, conn_name);
-
-out:
-	;
+	if (retrieve_data_from_selected_connection (&vpn_ui, &conn_properties,
+									    &conn_routes, &conn_name, &conn_gconf_path))
+		vpn_ui->export (vpn_ui, conn_properties, conn_routes, conn_name);
 }
 
 static void get_all_vpn_connections (void)
@@ -845,26 +989,14 @@ static void get_all_vpn_connections (void)
 		const char *conn_gconf_path;
 		const char *conn_name;
 		const char *conn_service_name;
-		GSList *conn_vpn_data;
 		gboolean conn_user_can_edit = TRUE;
 
 		conn_gconf_path = (const char *) (vpn_conn->data);
-
-		g_snprintf (key, sizeof (key), "%s/name", conn_gconf_path);
-		conn_user_can_edit = gconf_client_key_is_writable (gconf_client, key, NULL);
-		if ((value = gconf_client_get (gconf_client, key, NULL)) == NULL ||
-		    (conn_name = gconf_value_get_string (value)) == NULL)
-			goto error;
+		conn_name = g_strdup (conn_gconf_path + strlen (NM_GCONF_VPN_CONNECTIONS_PATH) + 1);
 
 		g_snprintf (key, sizeof (key), "%s/service_name", conn_gconf_path);
 		if ((value = gconf_client_get (gconf_client, key, NULL)) == NULL ||
 		    (conn_service_name = gconf_value_get_string (value)) == NULL)
-			goto error;
-
-		g_snprintf (key, sizeof (key), "%s/vpn_data", conn_gconf_path);
-		if ((value = gconf_client_get (gconf_client, key, NULL)) == NULL ||
-		    gconf_value_get_list_type (value) != GCONF_VALUE_STRING ||
-		    (conn_vpn_data = gconf_value_get_list (value)) == NULL)
 			goto error;
 
 		gtk_list_store_append (vpn_conn_list, &iter);

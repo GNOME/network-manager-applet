@@ -1,3 +1,19 @@
+2007-09-12  Tambet Ingo  <tambet@gmail.com>
+
+	* src/applet.c: Rewrite the VPN connection handling now that everything
+	underneath has changed.
+
+	* src/vpn-properties/nm-vpn-ui-interface.h: Convert properties to hash tables
+	eveyrwhere.
+
+	* src/vpn-properties/nm-vpn-properties.c: Create properties hash tables instead
+	of GSLists.
+
+	* src/vpn-password-dialog.c: Passwords are now dictionary items. Use odd strings
+	from the helper output as keys, even keys for values.
+
+	* src/vpn-connection-info.[ch]: Implement.
+
 2007-09-11  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-dbus-settings.c

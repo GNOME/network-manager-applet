@@ -22,11 +22,11 @@
 #ifndef VPN_PASSWORD_DIALOG_H
 #define VPN_PASSWORD_DIALOG_H
 
-#include "applet.h"
+#include <glib.h>
 
-GSList *nma_vpn_request_password (NMApplet *applet, 
-				   const char *name, 
+gboolean nma_vpn_request_password (const char *name, 
 				   const char *service, 
-				   gboolean retry);
+				   gboolean retry,
+				   GHashTable *properties);
 
 #endif
