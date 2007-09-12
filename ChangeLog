@@ -1,5 +1,13 @@
 2007-09-11  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet-dbus-settings.c
+		- (applet_dbus_connection_settings_get_secrets): fix it; need to
+			specify the keyring items in a lot more detail now, using the
+			connection name, the setting name, and the setting key for each
+			secret
+
+2007-09-11  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (nma_menu_item_activate): Fix up device activation for changes
 			in argument types for Activate

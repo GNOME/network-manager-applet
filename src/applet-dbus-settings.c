@@ -27,6 +27,7 @@
 #include "applet-dbus-settings.h"
 #include "applet-dbus-manager.h"
 #include "gconf-helpers.h"
+#include "nm-utils.h"
 
 /*
  * AppletDbusSettings class implementation
@@ -475,39 +476,112 @@ GHashTable *applet_dbus_connection_settings_get_settings (NMConnectionSettings *
 	return settings;
 }
 
+static GValue *
+string_to_gvalue (const char *str)
+{
+	GValue *val;
+
+	val = g_slice_new0 (GValue);
+	g_value_init (val, G_TYPE_STRING);
+	g_value_set_string (val, str);
+
+	return val;
+}
+
+static void
+destroy_gvalue (gpointer data)
+{
+	GValue *value = (GValue *) data;
+
+	g_value_unset (value);
+	g_slice_free (GValue, value);
+}
+
 static
 GHashTable *applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
-											  const gchar *setting_name)
+                                                         const gchar *setting_name)
 {
-	GHashTable *secrets = NULL;
-	GList *found_list;
-	GnomeKeyringResult ret;
-	gchar *setting = NULL;
-
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) connection;
+	GHashTable *secrets = NULL;
+	GList *found_list = NULL;
+	GnomeKeyringResult ret;
+	NMSettingConnection *s_con;
+	NMSetting *setting;
+	GList *elt;
 
 	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
+	g_return_val_if_fail (setting_name != NULL, NULL);
+
+	setting = nm_connection_get_setting (applet_connection->connection, setting_name);
+	if (!setting) {
+		nm_warning ("Connection didn't have requested setting '%s'.", setting_name);
+		return NULL;
+	}
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
+	                                                           "connection");
+	if (!s_con || !s_con->name || !strlen (s_con->name)) {
+		nm_warning ("Connection didn't have the required 'connection' setting,",
+		           " or the connection name was invalid.");
+		return NULL;
+	}
 
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-								   &found_list,
-								   setting_name,
-								   GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-								   setting,
-								   NULL);
-	if (ret == GNOME_KEYRING_RESULT_OK) {
-		GList *elt;
+	                                      &found_list,
+	                                      "connection-name",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      s_con->name,
+	                                      "setting-name",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      setting_name,
+	                                      NULL);
+	if (ret != GNOME_KEYRING_RESULT_OK) {
+		nm_info ("No keyring secrets found for %s/%s; ask the user",
+		         s_con->name, setting_name);
+		// FIXME: actually ask the user
+		return NULL;
+	}
 
-		for (elt = found_list; elt != NULL; elt = elt->next) {
-			GnomeKeyringFound *found = (GnomeKeyringFound *) elt->data;
+	if (g_list_length (found_list) == 0) {
+		nm_info ("No keyring secrets found for %s/%s; ask the user",
+		         s_con->name, setting_name);
+		// FIXME: actually ask the user
+		goto free_found_list;
+	}
 
-			if (!secrets)
-				secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	for (elt = found_list; elt != NULL; elt = elt->next) {
+		GnomeKeyringFound *found = (GnomeKeyringFound *) elt->data;
+		int i;
+		const char * key_name = NULL;
 
-			g_hash_table_insert (secrets, g_strdup (setting_name), g_strdup (found->secret));
+		if (!secrets)
+			secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
+
+		for (i = 0; i < found->attributes->len; i++) {
+			GnomeKeyringAttribute *attr;
+
+			attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
+			if (   (strcmp (attr->name, "setting-key") == 0)
+			    && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
+				key_name = attr->value.string;
+				break;
+			}
 		}
 
-		gnome_keyring_found_list_free (found_list);
+		if (key_name != NULL) {
+			fprintf (stderr, "Adding %s:: %s\n", key_name, found->secret);
+			g_hash_table_insert (secrets,
+			                     g_strdup (key_name),
+			                     string_to_gvalue (found->secret));
+		} else {
+			nm_warning ("Keyring item '%s/%s' didn't have a 'setting-key' attribute.",
+			            s_con->name, setting_name);
+		}
 	}
+
+free_found_list:
+	gnome_keyring_found_list_free (found_list);
 
 	return secrets;
 }
+
