@@ -1,5 +1,28 @@
 2007-09-13  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+	  src/applet.h
+		- (nma_menu_item_activate): fix for changes to nm_device_activate() in
+			libnm-glib to pass connection object path rather than NMConnection
+			object
+		- (nma_finalize, nma_constructor): stop monitoring old GConf path for
+			changes
+
+	* src/applet-dbus-settings.c
+	  src/applet-dbus-settings.h
+		- (applet_dbus_settings_get_by_dbus_path): new function
+		- (applet_dbus_settings_add_connection): new function; add an
+			NMConnection to GConf and wrap and export it over D-Bus
+		- (read_connection_from_gconf): fix gconf setting name
+		- (add_keyring_item): new function; add a secret to the keyring
+		- (copy_connection_to_gconf): new function; copy an NMConnection object
+			to GConf and the keyring
+		- (applet_dbus_connection_settings_new_from_connection): new function;
+			create a new NMConnection D-Bus export wrapper from an NMConnection
+			object
+
+2007-09-13  Dan Williams  <dcbw@redhat.com>
+
 	* src/gconf-helpers.c
 	  src/gconf-helpers.h
 		- (nm_gconf_set_int_helper, nm_gconf_set_string_helper, 

@@ -483,7 +483,10 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 {
 	DeviceMenuItemInfo *info = (DeviceMenuItemInfo *) user_data;
 	NMSetting *setting = NULL;
-	char *specific_object = NULL;
+	char *specific_object = "/";
+
+	// FIXME: find & use an existing connection that may apply
+	// to the device/ap being activated here
 
 	if (NM_IS_DEVICE_802_3_ETHERNET (info->device)) {
 		setting = nm_setting_wired_new ();
@@ -500,6 +503,7 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
 
 	if (setting) {
+		AppletDbusConnectionSettings *exported_con;
 		NMConnection *connection;
 		NMSettingConnection *s_con;
 
@@ -509,12 +513,20 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		s_con = (NMSettingConnection *) nm_setting_connection_new ();
 		s_con->name = g_strdup ("Auto");
 		s_con->devtype = g_strdup (setting->name);
+		s_con->autoconnect = FALSE;
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
-		nm_device_activate (info->device,
-		                    NM_DBUS_SERVICE_USER_SETTINGS,
-		                    connection,
-		                    (const char *) specific_object);
+		exported_con = applet_dbus_settings_add_connection (APPLET_DBUS_SETTINGS (info->applet->settings),
+		                                                    connection);
+		if (exported_con) {
+			nm_device_activate (info->device,
+			                    NM_DBUS_SERVICE_USER_SETTINGS,
+			                    nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con)),
+			                    (const char *) specific_object);
+		} else {
+			nm_warning ("Couldn't create default connection.");
+		}
+
 		g_object_unref (connection);
 	}
 
@@ -2161,7 +2173,6 @@ static void nma_finalize (GObject *object)
 		g_object_unref (applet->tooltips);
 #endif
 
-	gconf_client_notify_remove (applet->gconf_client, applet->gconf_prefs_notify_id);
 	g_object_unref (applet->gconf_client);
 
 #ifdef HAVE_STATUS_ICON
@@ -2211,10 +2222,6 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	applet->gconf_client = gconf_client_get_default ();
 	if (!applet->gconf_client)
 	    goto error;
-
-	gconf_client_add_dir (applet->gconf_client, GCONF_PATH_WIRELESS, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	applet->gconf_prefs_notify_id = gconf_client_notify_add (applet->gconf_client, GCONF_PATH_WIRELESS,
-						nma_gconf_info_notify_callback, applet, NULL, NULL);
 
 	/* Convert old-format stored network entries to the new format.
 	 * Must be RUN BEFORE DBUS INITIALIZATION since we have to do

@@ -27,26 +27,9 @@
 #include <nm-connection.h>
 #include <nm-settings.h>
 
-#define APPLET_TYPE_DBUS_SETTINGS    (applet_dbus_settings_get_type ())
-#define APPLET_IS_DBUS_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_DBUS_SETTINGS))
-
-typedef struct {
-	NMSettings parent;
-
-	/* private data */
-	GConfClient *conf_client;
-	GSList *connections;
-} AppletDbusSettings;
-
-typedef struct {
-	NMSettingsClass parent_class;
-} AppletDbusSettingsClass;
-
-GType       applet_dbus_settings_get_type (void);
-NMSettings *applet_dbus_settings_new (void);
-
 #define APPLET_TYPE_DBUS_CONNECTION_SETTINGS    (applet_dbus_connection_settings_get_type ())
 #define APPLET_IS_DBUS_CONNECTION_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_DBUS_CONNECTION_SETTINGS))
+#define APPLET_DBUS_CONNECTION_SETTINGS(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), APPLET_TYPE_DBUS_CONNECTION_SETTINGS, AppletDbusConnectionSettings))
 
 typedef struct {
 	NMConnectionSettings parent;
@@ -65,5 +48,30 @@ typedef struct {
 
 GType                 applet_dbus_connection_settings_get_type (void);
 NMConnectionSettings *applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf_dir);
+
+#define APPLET_TYPE_DBUS_SETTINGS    (applet_dbus_settings_get_type ())
+#define APPLET_IS_DBUS_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_DBUS_SETTINGS))
+#define APPLET_DBUS_SETTINGS(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), APPLET_TYPE_DBUS_SETTINGS, AppletDbusSettings))
+
+typedef struct {
+	NMSettings parent;
+
+	/* private data */
+	GConfClient *conf_client;
+	GSList *connections;
+} AppletDbusSettings;
+
+typedef struct {
+	NMSettingsClass parent_class;
+} AppletDbusSettingsClass;
+
+GType       applet_dbus_settings_get_type (void);
+NMSettings *applet_dbus_settings_new (void);
+
+AppletDbusConnectionSettings * applet_dbus_settings_add_connection (AppletDbusSettings *settings,
+                                                                    NMConnection *connection);
+
+AppletDbusConnectionSettings * applet_dbus_settings_get_by_dbus_path (AppletDbusSettings *settings,
+                                                                      const char *paht);
 
 #endif

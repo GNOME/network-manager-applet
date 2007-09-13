@@ -98,7 +98,6 @@ typedef struct
 	NMSettings * settings;
 
 	GConfClient *		gconf_client;
-	guint		 	gconf_prefs_notify_id;
 	char	*			glade_file;
 
 	/* Data model elements */

@@ -29,6 +29,10 @@
 #include "gconf-helpers.h"
 #include "nm-utils.h"
 
+static NMConnectionSettings * applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
+                                                                                   const gchar *conf_dir,
+                                                                                   NMConnection *connection);
+
 /*
  * AppletDbusSettings class implementation
  */
@@ -38,10 +42,10 @@ static GPtrArray *applet_dbus_settings_list_connections (NMSettings *settings);
 G_DEFINE_TYPE (AppletDbusSettings, applet_dbus_settings, NM_TYPE_SETTINGS)
 
 static void
-applet_dbus_settings_init (AppletDbusSettings *applet_connection)
+applet_dbus_settings_init (AppletDbusSettings *applet_settings)
 {
-	applet_connection->conf_client = gconf_client_get_default ();
-	applet_connection->connections = NULL;
+	applet_settings->conf_client = gconf_client_get_default ();
+	applet_settings->connections = NULL;
 }
 
 static void
@@ -90,6 +94,24 @@ applet_dbus_settings_new (void)
 	g_object_unref (manager);
 
 	return settings;
+}
+
+AppletDbusConnectionSettings *
+applet_dbus_settings_get_by_dbus_path (AppletDbusSettings *applet_settings,
+                                       const char *path)
+{
+	GSList *elt;
+
+	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings), NULL);
+	g_return_val_if_fail (path != NULL, NULL);
+
+	for (elt = applet_settings->connections; elt; elt = g_slist_next (elt)) {
+		const char * sc_path = nm_connection_settings_get_dbus_object_path (elt->data);
+		if (!strcmp (sc_path, path))
+			return APPLET_DBUS_CONNECTION_SETTINGS (elt->data);
+	}
+
+	return NULL;
 }
 
 static GSList *
@@ -149,6 +171,44 @@ applet_dbus_settings_list_connections (NMSettings *settings)
 out:
 	return connections;
 }
+
+AppletDbusConnectionSettings *
+applet_dbus_settings_add_connection (AppletDbusSettings *applet_settings,
+                                     NMConnection *connection)
+{
+	NMConnectionSettings *exported;
+	guint32 i = 0;
+	char * path = NULL;
+
+	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
+
+	/* Find free GConf directory */
+	while (i++ < G_MAXUINT32) {
+		char buf[255];
+
+		snprintf (&buf[0], 255, GCONF_PATH_CONNECTIONS"/%d", i);
+		if (!gconf_client_dir_exists (applet_settings->conf_client, buf, NULL)) {
+			path = g_strdup_printf (buf);
+			break;
+		}
+	};
+
+	if (path == NULL) {
+		nm_warning ("Couldn't find free GConf directory for new connection.");
+		return NULL;
+	}
+
+	exported = applet_dbus_connection_settings_new_from_connection (applet_settings->conf_client,
+	                                                                path,
+	                                                                connection);
+	if (exported)
+		applet_settings->connections = g_slist_append (applet_settings->connections, exported);
+
+	g_free (path);
+	return APPLET_DBUS_CONNECTION_SETTINGS (exported);
+}
+
 
 /*
  * AppletDbusConnectionSettings class implementation
@@ -281,7 +341,7 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 							&wireless_setting->rate);
 		nm_gconf_get_int_helper (applet_connection->conf_client,
 							applet_connection->conf_dir,
-							"tx_power", "802-11-wireless",
+							"tx-power", "802-11-wireless",
 							&wireless_setting->tx_power);
 		nm_gconf_get_bytearray_helper (applet_connection->conf_client,
 								 applet_connection->conf_dir,
@@ -408,7 +468,388 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 }
 
 static void
-connection_settings_changed_cb (GConfClient *conf_client, guint cnxn_id, GConfEntry *entry, gpointer user_data)
+add_keyring_item (const char *connection_name,
+                  const char *setting_name,
+                  const char *setting_key,
+                  const char *secret)
+{
+	GnomeKeyringResult ret;
+	char *display_name = NULL;
+	GnomeKeyringAttributeList *attrs = NULL;
+	guint32 id = 0;
+
+	g_return_if_fail (connection_name != NULL);
+	g_return_if_fail (setting_name != NULL);
+	g_return_if_fail (setting_key != NULL);
+	g_return_if_fail (secret != NULL);
+
+	display_name = g_strdup_printf ("Network secret for %s/%s/%s",
+	                                connection_name,
+	                                setting_name,
+	                                setting_key);
+
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            "connection-name",
+	                                            connection_name);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            "setting-name",
+	                                            setting_name);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            "setting-key",
+	                                            setting_key);
+
+	ret = gnome_keyring_item_create_sync (NULL,
+	                                      GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      display_name,
+	                                      attrs,
+	                                      secret,
+	                                      TRUE,
+	                                      &id);
+
+out:
+	gnome_keyring_attribute_list_free (attrs);
+	g_free (display_name);
+}
+
+static void
+copy_connection_to_gconf (AppletDbusConnectionSettings *applet_connection,
+                          NMConnection *connection)
+{
+	NMSettingConnection *s_connection;
+	NMSettingWired *s_wired;
+	NMSettingWireless *s_wireless;
+	NMSettingWirelessSecurity *s_wireless_sec;
+
+	g_return_if_fail (applet_connection != NULL);
+	g_return_if_fail (connection != NULL);
+
+	s_connection = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
+
+	nm_gconf_set_string_helper (applet_connection->conf_client,
+	                            applet_connection->conf_dir,
+	                            "name", "connection",
+	                            s_connection->name);
+	nm_gconf_set_string_helper (applet_connection->conf_client,
+	                            applet_connection->conf_dir,
+	                            "type", "connection",
+	                            s_connection->devtype);
+	nm_gconf_set_bool_helper (applet_connection->conf_client,
+	                          applet_connection->conf_dir,
+	                          "autoconnect", "connection",
+	                          s_connection->autoconnect);
+
+	s_wired = (NMSettingWired *) nm_connection_get_setting (connection, "802-3-ethernet");
+	if (!strcmp (s_connection->devtype, "802-3-ethernet") && s_wired) {
+		if (s_wired->port) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "port", "802-3-ethernet",
+			                            s_wired->port);
+		}
+		if (s_wired->speed) {
+			nm_gconf_set_int_helper (applet_connection->conf_client,
+			                         applet_connection->conf_dir,
+			                         "speed", "802-3-ethernet",
+			                         s_wired->speed);
+		}
+		if (s_wired->duplex) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "duplex", "802-3-ethernet",
+			                            s_wired->duplex);
+		}
+
+		nm_gconf_set_bool_helper (applet_connection->conf_client,
+		                          applet_connection->conf_dir,
+		                          "auto-negotiate", "802-3-ethernet",
+		                          s_wired->auto_negotiate);
+
+		if (s_wired->mac_address) {
+			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+			                               applet_connection->conf_dir,
+			                               "mac-address", "802-3-ethernet",
+			                               s_wired->mac_address);
+		}
+		if (s_wired->mtu) {
+			nm_gconf_set_int_helper (applet_connection->conf_client,
+			                         applet_connection->conf_dir,
+			                         "mtu", "802-3-ethernet",
+			                         s_wired->mtu);
+		}
+	}
+
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, "802-11-wireless");
+	if (!strcmp (s_connection->devtype, "802-11-wireless") && s_wireless) {
+		nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+		                               applet_connection->conf_dir,
+		                               "ssid", "802-11-wireless",
+		                               s_wireless->ssid);
+
+		if (s_wireless->mode) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "mode", "802-11-wireless",
+			                            s_wireless->mode);
+		}
+		if (s_wireless->band) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "band", "802-11-wireless",
+			                            s_wireless->band);
+		}
+		if (s_wireless->channel) {
+			nm_gconf_set_int_helper (applet_connection->conf_client,
+			                         applet_connection->conf_dir,
+			                         "channel", "802-11-wireless",
+			                         s_wireless->channel);
+		}
+		if (s_wireless->bssid) {
+			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+			                               applet_connection->conf_dir,
+			                               "bssid", "802-11-wireless",
+			                               s_wireless->bssid);
+		}
+		if (s_wireless->rate) {
+			nm_gconf_set_int_helper (applet_connection->conf_client,
+			                         applet_connection->conf_dir,
+			                         "rate", "802-11-wireless",
+			                         s_wireless->rate);
+		}
+		if (s_wireless->tx_power) {
+			nm_gconf_set_int_helper (applet_connection->conf_client,
+			                         applet_connection->conf_dir,
+			                         "tx-power", "802-11-wireless",
+			                         s_wireless->tx_power);
+		}
+		if (s_wireless->mac_address) {
+			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+			                               applet_connection->conf_dir,
+			                               "mac_address", "802-11-wireless",
+			                               s_wireless->mac_address);
+		}
+		if (s_wireless->mtu) {
+			nm_gconf_set_int_helper (applet_connection->conf_client,
+			                         applet_connection->conf_dir,
+			                         "mtu", "802-11-wireless",
+			                         s_wireless->mtu);
+		}
+		if (s_wireless->security) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "security", "802-11-wireless",
+			                            s_wireless->security);
+		}
+	}
+
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, "802-11-wireless-security");
+	if (   s_wireless
+	    && !strcmp (s_wireless->security, "802-11-wireless-security")
+	    && s_wireless_sec) {
+		nm_gconf_set_string_helper (applet_connection->conf_client,
+		                            applet_connection->conf_dir,
+		                            "key-mgmt", "802-11-wireless-security",
+		                            s_wireless_sec->key_mgmt);
+		if (s_wireless_sec->wep_tx_keyidx < 4) {
+			nm_gconf_set_int_helper (applet_connection->conf_client,
+			                         applet_connection->conf_dir,
+			                         "wep-tx-keyidx", "802-11-wireless-security",
+			                         s_wireless->channel);
+		}
+		if (s_wireless_sec->auth_alg) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "auth-alg", "802-11-wireless-security",
+			                            s_wireless_sec->auth_alg);
+		}
+		if (s_wireless_sec->proto) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "proto", "802-11-wireless-security",
+			                            s_wireless_sec->proto);
+		}
+		if (s_wireless_sec->pairwise) {
+			nm_gconf_set_stringlist_helper (applet_connection->conf_client,
+			                                applet_connection->conf_dir,
+			                                "pairwise", "802-11-wireless-security",
+			                                s_wireless_sec->pairwise);
+		}
+		if (s_wireless_sec->group) {
+			nm_gconf_set_stringlist_helper (applet_connection->conf_client,
+			                                applet_connection->conf_dir,
+			                                "group", "802-11-wireless-security",
+			                                s_wireless_sec->group);
+		}
+		if (s_wireless_sec->eap) {
+			nm_gconf_set_stringlist_helper (applet_connection->conf_client,
+			                                applet_connection->conf_dir,
+			                                "eap", "802-11-wireless-security",
+			                                s_wireless_sec->eap);
+		}
+		if (s_wireless_sec->identity) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "identity", "802-11-wireless-security",
+			                            s_wireless_sec->identity);
+		}
+		if (s_wireless_sec->anonymous_identity) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "anonymous-identity", "802-11-wireless-security",
+			                            s_wireless_sec->anonymous_identity);
+		}
+		if (s_wireless_sec->ca_cert) {
+			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+			                               applet_connection->conf_dir,
+			                               "ca-cert", "802-11-wireless-security",
+			                               s_wireless_sec->ca_cert);
+		}
+		if (s_wireless_sec->ca_path) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "ca-path", "802-11-wireless-security",
+			                            s_wireless_sec->ca_path);
+		}
+		if (s_wireless_sec->client_cert) {
+			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+			                               applet_connection->conf_dir,
+			                               "client-cert", "802-11-wireless-security",
+			                               s_wireless_sec->client_cert);
+		}
+		if (s_wireless_sec->private_key) {
+			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+			                               applet_connection->conf_dir,
+			                               "private-key", "802-11-wireless-security",
+			                               s_wireless_sec->private_key);
+		}
+		if (s_wireless_sec->phase1_peapver) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "phase1-peapver", "802-11-wireless-security",
+			                            s_wireless_sec->phase1_peapver);
+		}
+		if (s_wireless_sec->phase1_peaplabel) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "phase1-peaplabel", "802-11-wireless-security",
+			                            s_wireless_sec->phase1_peaplabel);
+		}
+		if (s_wireless_sec->phase1_fast_provisioning) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "phase1-fast-provisioning", "802-11-wireless-security",
+			                            s_wireless_sec->phase1_fast_provisioning);
+		}
+		if (s_wireless_sec->phase2_auth) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "phase2-auth", "802-11-wireless-security",
+			                            s_wireless_sec->phase2_auth);
+		}
+		if (s_wireless_sec->phase2_autheap) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "phase2-autheap", "802-11-wireless-security",
+			                            s_wireless_sec->phase2_autheap);
+		}
+		if (s_wireless_sec->phase2_ca_cert) {
+			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+			                               applet_connection->conf_dir,
+			                               "phase2-ca-cert", "802-11-wireless-security",
+			                               s_wireless_sec->phase2_ca_cert);
+		}
+		if (s_wireless_sec->phase2_ca_path) {
+			nm_gconf_set_string_helper (applet_connection->conf_client,
+			                            applet_connection->conf_dir,
+			                            "phase2-ca-path", "802-11-wireless-security",
+			                            s_wireless_sec->phase2_ca_path);
+		}
+		if (s_wireless_sec->phase2_client_cert) {
+			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+			                               applet_connection->conf_dir,
+			                               "phase2-client-cert", "802-11-wireless-security",
+			                               s_wireless_sec->phase2_client_cert);
+		}
+		if (s_wireless_sec->phase2_private_key) {
+			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
+			                               applet_connection->conf_dir,
+			                               "phase2-private-key", "802-11-wireless-security",
+			                               s_wireless_sec->phase2_private_key);
+		}
+		if (s_wireless_sec->nai) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "nai",
+			                  s_wireless_sec->nai);
+		}
+		if (s_wireless_sec->wep_key0) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "wep_key0",
+			                  s_wireless_sec->wep_key0);
+		}
+		if (s_wireless_sec->wep_key1) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "wep_key1",
+			                  s_wireless_sec->wep_key1);
+		}
+		if (s_wireless_sec->wep_key2) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "wep_key2",
+			                  s_wireless_sec->wep_key2);
+		}
+		if (s_wireless_sec->wep_key3) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "wep_key3",
+			                  s_wireless_sec->wep_key3);
+		}
+		if (s_wireless_sec->psk) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "psk",
+			                  s_wireless_sec->psk);
+		}
+		if (s_wireless_sec->password) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "password",
+			                  s_wireless_sec->password);
+		}
+		if (s_wireless_sec->pin) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "pin",
+			                  s_wireless_sec->pin);
+		}
+		if (s_wireless_sec->eappsk) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "eappsk",
+			                  s_wireless_sec->eappsk);
+		}
+		if (s_wireless_sec->private_key_passwd) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "private-key-passwd",
+			                  s_wireless_sec->private_key_passwd);
+		}
+		if (s_wireless_sec->phase2_private_key_passwd) {
+			add_keyring_item (s_connection->name,
+			                  "802-11-wireless-security",
+			                  "phase2-private-key-passwd",
+			                  s_wireless_sec->phase2_private_key_passwd);
+		}
+	}
+}
+
+static void
+connection_settings_changed_cb (GConfClient *conf_client,
+                                guint cnxn_id,
+                                GConfEntry *entry,
+                                gpointer user_data)
 {
 	GHashTable *settings;
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) user_data;
@@ -436,6 +877,42 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 
 	/* retrieve GConf data */
 	read_connection_from_gconf (applet_connection);
+
+	/* set GConf notifications */
+	gconf_client_add_dir (conf_client, conf_dir, GCONF_CLIENT_PRELOAD_NONE, NULL);
+	applet_connection->conf_notify_id =
+		gconf_client_notify_add (conf_client, conf_dir,
+					 (GConfClientNotifyFunc) connection_settings_changed_cb,
+					 applet_connection,
+					 NULL, NULL);
+
+	manager = applet_dbus_manager_get ();
+	nm_connection_settings_register_object ((NMConnectionSettings *) applet_connection,
+	                                        applet_dbus_manager_get_connection (manager));
+	g_object_unref (manager);
+
+	return (NMConnectionSettings *) applet_connection;
+}
+
+static NMConnectionSettings *
+applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
+                                                     const gchar *conf_dir,
+                                                     NMConnection *connection)
+{
+	AppletDbusConnectionSettings *applet_connection;
+	AppletDBusManager * manager;
+
+	g_return_val_if_fail (conf_client != NULL, NULL);
+	g_return_val_if_fail (conf_dir != NULL, NULL);
+	g_return_val_if_fail (connection != NULL, NULL);
+
+	applet_connection = g_object_new (APPLET_TYPE_DBUS_CONNECTION_SETTINGS, NULL);
+	applet_connection->conf_client = g_object_ref (conf_client);
+	applet_connection->conf_dir = g_strdup (conf_dir);
+	applet_connection->connection = connection;
+
+	/* retrieve GConf data */
+	copy_connection_to_gconf (applet_connection, connection);
 
 	/* set GConf notifications */
 	gconf_client_add_dir (conf_client, conf_dir, GCONF_CLIENT_PRELOAD_NONE, NULL);
