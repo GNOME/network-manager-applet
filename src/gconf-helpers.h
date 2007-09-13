@@ -60,6 +60,43 @@ nm_gconf_get_bytearray_helper (GConfClient *client,
 			       const char *network,
 			       GByteArray **value);
 
+/* Setters */
+
+gboolean
+nm_gconf_set_int_helper (GConfClient *client,
+                         const char *path,
+                         const char *key,
+                         const char *network,
+                         int value);
+
+gboolean
+nm_gconf_set_string_helper (GConfClient *client,
+                            const char *path,
+                            const char *key,
+                            const char *network,
+                            const char *value);
+
+gboolean
+nm_gconf_set_bool_helper (GConfClient *client,
+                          const char *path,
+                          const char *key,
+                          const char *network,
+                          gboolean value);
+
+gboolean
+nm_gconf_set_stringlist_helper (GConfClient *client,
+                                const char *path,
+                                const char *key,
+                                const char *network,
+                                GSList *value);
+
+gboolean
+nm_gconf_set_bytearray_helper (GConfClient *client,
+                               const char *path,
+                               const char *key,
+                               const char *network,
+                               GByteArray *value);
+
 
 #endif	/* GCONF_HELPERS_H */
 

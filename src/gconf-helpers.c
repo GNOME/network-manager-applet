@@ -207,3 +207,126 @@ out:
 	g_free (gc_key);
 	return success;
 }
+
+gboolean
+nm_gconf_set_int_helper (GConfClient *client,
+                         const char *path,
+                         const char *key,
+                         const char *network,
+                         int value)
+{
+	char * gc_key;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+	gconf_client_set_int (client, gc_key, value, NULL);
+	g_free (gc_key);
+	return TRUE;
+}
+
+gboolean
+nm_gconf_set_string_helper (GConfClient *client,
+                            const char *path,
+                            const char *key,
+                            const char *network,
+                            const char *value)
+{
+	char * gc_key;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+	gconf_client_set_string (client, gc_key, value, NULL);
+	g_free (gc_key);
+	return TRUE;
+}
+
+gboolean
+nm_gconf_set_bool_helper (GConfClient *client,
+                          const char *path,
+                          const char *key,
+                          const char *network,
+                          gboolean value)
+{
+	char * gc_key;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+	gconf_client_set_bool (client, gc_key, value, NULL);
+	g_free (gc_key);
+	return TRUE;
+}
+
+gboolean
+nm_gconf_set_stringlist_helper (GConfClient *client,
+                                const char *path,
+                                const char *key,
+                                const char *network,
+                                GSList *value)
+{
+	char *gc_key;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	gconf_client_set_list (client, gc_key, GCONF_VALUE_STRING, value, NULL);
+	g_free (gc_key);
+	return TRUE;
+}
+
+gboolean
+nm_gconf_set_bytearray_helper (GConfClient *client,
+                               const char *path,
+                               const char *key,
+                               const char *network,
+                               GByteArray *value)
+{
+	char *gc_key;
+	int i;
+	GSList *list = NULL;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	for (i = 0; i < value->len; i++)
+		list = g_slist_append(list, GINT_TO_POINTER ((int) value->data[i]));
+
+	gconf_client_set_list (client, gc_key, GCONF_VALUE_INT, list, NULL);
+
+	g_slist_free (list);
+	g_free (gc_key);
+	return TRUE;
+}
+
