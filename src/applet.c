@@ -493,9 +493,19 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		specific_object = NULL;
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
 		NMSettingWireless *wireless;
+		GByteArray *ap_ssid;
 
 		setting = nm_setting_wireless_new ();
 		wireless = (NMSettingWireless *) setting;
+
+		// FIXME: have some sort of NMSettingWireless and
+		// NMSettingWirelessSecurity constructors that take an NMAccessPoint
+		// as input and spit out compatible Settings
+
+		ap_ssid = nm_access_point_get_ssid (info->ap);
+		wireless->ssid = g_byte_array_sized_new (ap_ssid->len);
+		g_byte_array_append (wireless->ssid, ap_ssid->data, ap_ssid->len);
+
 		wireless->mode = g_strdup ("infrastructure");
 
 		specific_object = (char *) nm_object_get_path (NM_OBJECT (info->ap));
@@ -526,8 +536,6 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		} else {
 			nm_warning ("Couldn't create default connection.");
 		}
-
-		g_object_unref (connection);
 	}
 
 //	nmi_dbus_signal_user_interface_activated (info->applet->connection);

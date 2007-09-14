@@ -1,3 +1,10 @@
+2007-09-14  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (nma_menu_item_activate): set the SSID of the new connection so that
+			it's actually valid; don't unref the new connection since the
+			AppletDBusConnectionSettings object takes ownership of it
+
 2007-09-13  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
