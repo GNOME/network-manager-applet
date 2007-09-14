@@ -1196,9 +1196,9 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 	for (iter = list; iter; iter = iter->next) {
 		VPNConnectionInfo *info = (VPNConnectionInfo *) iter->data;
 
-		item = GTK_CHECK_MENU_ITEM (gtk_check_menu_item_new_with_label (vpn_connection_info_get_name (info)));
+		item = GTK_MENU_ITEM (gtk_check_menu_item_new_with_label (vpn_connection_info_get_name (info)));
 		if (g_hash_table_lookup (applet->vpn_connections, vpn_connection_info_get_name (info)))
-			gtk_check_menu_item_set_active (item, TRUE);
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
 
 		g_object_set_data_full (G_OBJECT (item), "vpn", info, 
 						    (GDestroyNotify) vpn_connection_info_destroy);
