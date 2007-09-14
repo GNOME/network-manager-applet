@@ -304,7 +304,7 @@ read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
 	con_setting->name = g_strdup (applet_connection->id);
 	nm_gconf_get_string_helper (applet_connection->conf_client,
 						   applet_connection->conf_dir,
-						   "type", "connection",
+						   "devtype", "connection",
 						   &con_setting->devtype);
 	nm_gconf_get_bool_helper (applet_connection->conf_client,
 						 applet_connection->conf_dir,
@@ -535,7 +535,7 @@ copy_connection_to_gconf (AppletDbusConnectionSettings *applet_connection,
 	                            s_connection->name);
 	nm_gconf_set_string_helper (applet_connection->conf_client,
 	                            applet_connection->conf_dir,
-	                            "type", "connection",
+	                            "devtype", "connection",
 	                            s_connection->devtype);
 	nm_gconf_set_bool_helper (applet_connection->conf_client,
 	                          applet_connection->conf_dir,
