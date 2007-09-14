@@ -202,8 +202,11 @@ applet_dbus_settings_add_connection (AppletDbusSettings *applet_settings,
 	exported = applet_dbus_connection_settings_new_from_connection (applet_settings->conf_client,
 	                                                                path,
 	                                                                connection);
-	if (exported)
+	if (exported) {
 		applet_settings->connections = g_slist_append (applet_settings->connections, exported);
+		nm_settings_signal_new_connection (NM_SETTINGS (applet_settings),
+		                                   NM_CONNECTION_SETTINGS (exported));
+	}
 
 	g_free (path);
 	return APPLET_DBUS_CONNECTION_SETTINGS (exported);
