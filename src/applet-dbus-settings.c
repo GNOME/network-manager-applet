@@ -647,6 +647,7 @@ copy_connection_to_gconf (AppletDbusConnectionSettings *applet_connection,
 
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, "802-11-wireless-security");
 	if (   s_wireless
+	    && s_wireless->security
 	    && !strcmp (s_wireless->security, "802-11-wireless-security")
 	    && s_wireless_sec) {
 		nm_gconf_set_string_helper (applet_connection->conf_client,
