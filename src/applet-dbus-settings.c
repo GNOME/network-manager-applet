@@ -231,7 +231,7 @@ applet_dbus_connection_settings_init (AppletDbusConnectionSettings *applet_conne
 	applet_connection->conf_dir = NULL;
 	applet_connection->conf_notify_id = 0;
 	applet_connection->id = NULL;
-	applet_connection->connection = nm_connection_new ();
+	applet_connection->connection = NULL;
 }
 
 static void
