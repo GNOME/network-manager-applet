@@ -1,6 +1,15 @@
 2007-09-14  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-dbus-settings.c
+		- (applet_dbus_connection_settings_new_from_connection,
+		   applet_dbus_connection_settings_get_id,
+		   applet_dbus_connection_settings_get_settings,
+		   applet_dbus_connection_settings_get_secrets): a bit of extra
+			validation of NMConnection objects
+
+2007-09-14  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-dbus-settings.c
 		- (copy_connection_to_gconf): handle lack of an 802-11-wireless-security
 			setting; open networks don't need one
 

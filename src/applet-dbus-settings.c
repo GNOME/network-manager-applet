@@ -908,7 +908,7 @@ applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
 
 	g_return_val_if_fail (conf_client != NULL, NULL);
 	g_return_val_if_fail (conf_dir != NULL, NULL);
-	g_return_val_if_fail (connection != NULL, NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	applet_connection = g_object_new (APPLET_TYPE_DBUS_CONNECTION_SETTINGS, NULL);
 	applet_connection->conf_client = g_object_ref (conf_client);
@@ -940,6 +940,7 @@ applet_dbus_connection_settings_get_id (NMConnectionSettings *connection)
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) connection;
 
 	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
 
 	return g_strdup (applet_connection->id);
 }
@@ -951,6 +952,7 @@ GHashTable *applet_dbus_connection_settings_get_settings (NMConnectionSettings *
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) connection;
 
 	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
 
 	settings = nm_connection_to_hash (applet_connection->connection);
 
@@ -991,6 +993,7 @@ GHashTable *applet_dbus_connection_settings_get_secrets (NMConnectionSettings *c
 	GList *elt;
 
 	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
 	g_return_val_if_fail (setting_name != NULL, NULL);
 
 	setting = nm_connection_get_setting (applet_connection->connection, setting_name);
