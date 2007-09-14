@@ -1748,6 +1748,10 @@ foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
 		return;
 	}
 
+	/* Ignore setting of the same icon as is already displayed */
+	if (applet->icon_layers[layer] == pixbuf)
+		return;
+
 	if (applet->icon_layers[layer]) {
 		g_object_unref (applet->icon_layers[layer]);
 		applet->icon_layers[layer] = NULL;
