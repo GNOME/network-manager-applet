@@ -52,7 +52,6 @@
 #endif
 
 #include "applet.h"
-#include "applet-compat.h"
 #include "applet-notifications.h"
 #include "menu-items.h"
 #include "vpn-password-dialog.h"
