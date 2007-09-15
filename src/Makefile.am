@@ -26,8 +26,6 @@ nm_applet_SOURCES =			\
 	main.c				\
 	applet.c				\
 	applet.h				\
-	applet-compat.c		\
-	applet-compat.h		\
 	applet-marshal-main.c	\
 	applet-dbus-manager.c	\
 	applet-dbus-manager.h	\

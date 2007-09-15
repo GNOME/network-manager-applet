@@ -57,8 +57,6 @@ dnl Make sha1.c happy on big endian systems
 dnl
 AC_C_BIGENDIAN
 
-AC_CHECK_LIB(nm-util, ieee_802_11_cipher_validate)
-
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.72
 		 glib-2.0 >= 2.10

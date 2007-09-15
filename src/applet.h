@@ -46,7 +46,6 @@
 #include <nm-vpn-manager.h>
 
 #include <nm-device.h>
-#include <dbus-method-dispatcher.h>
 
 #ifdef ENABLE_NOTIFY
 #include <libnotify/notify.h>

@@ -57,7 +57,6 @@
 #include "menu-items.h"
 #include "vpn-password-dialog.h"
 #include "nm-utils.h"
-#include "dbus-method-dispatcher.h"
 #include "gnome-keyring-md5.h"
 #include "applet-dbus-manager.h"
 
@@ -2234,12 +2233,6 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	applet->gconf_client = gconf_client_get_default ();
 	if (!applet->gconf_client)
 	    goto error;
-
-	/* Convert old-format stored network entries to the new format.
-	 * Must be RUN BEFORE DBUS INITIALIZATION since we have to do
-	 * synchronous calls against gnome-keyring.
-	 */
-	nma_compat_convert_oldformat_entries (applet->gconf_client);
 
 	/* Load pixmaps and create applet widgets */
 	if (!nma_setup_widgets (applet))
