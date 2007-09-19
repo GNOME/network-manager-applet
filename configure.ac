@@ -196,6 +196,7 @@ fi
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/connection-editor/Makefile
 src/vpn-properties/Makefile
 icons/Makefile
 po/Makefile.in
