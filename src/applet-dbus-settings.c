@@ -122,7 +122,7 @@ get_connections (AppletDbusSettings *applet_settings)
 	/* get connections from GConf */
 	conf_list = gconf_client_all_dirs (applet_settings->conf_client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!conf_list) {
-		g_warning ("No wireless networks defined");
+		g_warning ("No connections defined");
 		return NULL;
 	}
 

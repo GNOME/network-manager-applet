@@ -301,7 +301,7 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 }
 
 NMConnectionEditor *
-nm_connection_editor_new (NMConnection *connection)
+nm_connection_editor_new (NMConnection *connection, NMConnectionEditorPage pages)
 {
 	NMConnectionEditor *editor;
 
@@ -433,11 +433,11 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 
 	/* clean previous connection */
 	if (editor->connection) {
-		nm_connection_destroy (editor->connection);
+		g_object_unref (G_OBJECT (editor->connection));
 		editor->connection = NULL;
 	}
 
-	editor->connection = connection;
+	editor->connection = (NMConnection *) g_object_ref (connection);
 
 	/* set the UI */
 	fill_connection_values (editor);

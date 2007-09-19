@@ -1,3 +1,16 @@
+2007-09-20  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* src/connection-editor/nm-connection-editor.h: added flags for pages.
+	
+	* src/connection-editor/nm-connection-editor.c
+	(nm_connection_editor_set_connection): use g_object_unref for
+	destroying the NMConnection.
+	(nm_connection_editor_new): added flags argument.
+
+	* src/connection-editor/nm-connection-list.[ch]:
+	* src/connection-editor/nm-connection-editor.glade: added connection
+	list dialog.
+	
 2007-09-19  Rodrigo Moya <rodrigo@gnome-db.org>
 
 	* src/connection-editor.c: fixed compilation warnings.

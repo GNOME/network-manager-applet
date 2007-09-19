@@ -18,6 +18,8 @@ nm_connection_editor_SOURCES =	\
 	byte-array-editor.h	\
 	nm-connection-editor.c	\
 	nm-connection-editor.h	\
+	nm-connection-list.c	\
+	nm-connection-list.h	\
 	main.c
 
 nm_connection_editor_LDADD = $(NMA_LIBS)

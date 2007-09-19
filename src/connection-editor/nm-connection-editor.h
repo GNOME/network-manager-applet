@@ -31,11 +31,19 @@
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))
 #define NM_CONNECTION_EDITOR(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_EDITOR, NMConnectionEditor))
 
+typedef enum {
+	NM_CONNECTION_EDITOR_PAGE_DEFAULT = 0,
+	NM_CONNECTION_EDITOR_PAGE_ETHERNET = 1 << 0,
+	NM_CONNECTION_EDITOR_PAGE_WIRELESS = 1 << 1,
+	NM_CONNECTION_EDITOR_PAGE_WIRELESS_SECURITY = 1 << 2
+} NMConnectionEditorPage;
+
 typedef struct {
 	GObject parent;
 
 	/* private data */
 	NMConnection *connection;
+	NMConnectionEditorPage pages;
 
 	GladeXML *gui;
 	GtkWidget *connection_name;
@@ -58,7 +66,7 @@ typedef struct {
 } NMConnectionEditorClass;
 
 GType               nm_connection_editor_get_type (void);
-NMConnectionEditor *nm_connection_editor_new (NMConnection *connection);
+NMConnectionEditor *nm_connection_editor_new (NMConnection *connection, NMConnectionEditorPage pages);
 
 NMConnection       *nm_connection_editor_get_connection (NMConnectionEditor *editor);
 void                nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection);
