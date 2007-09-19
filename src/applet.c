@@ -491,7 +491,7 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		specific_object = NULL;
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
 		NMSettingWireless *wireless;
-		GByteArray *ap_ssid;
+		const GByteArray *ap_ssid;
 
 		setting = nm_setting_wireless_new ();
 		wireless = (NMSettingWireless *) setting;
@@ -792,7 +792,7 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 typedef struct {
 	NMApplet *	applet;
 	NMDevice * device;
-	GByteArray * active_ssid;
+	const GByteArray * active_ssid;
 	GtkWidget * menu;
 } AddNetworksCB;
 
@@ -805,7 +805,7 @@ ap_hash (NMAccessPoint * ap)
 	unsigned char * digest = NULL;
 	unsigned char md5_data[66];
 	unsigned char input[33];
-	GByteArray * ssid;
+	const GByteArray * ssid;
 	int mode;
 	guint32 flags, wpa_flags, rsn_flags;
 
@@ -819,10 +819,8 @@ ap_hash (NMAccessPoint * ap)
 	memset (&input[0], 0, sizeof (input));
 
 	ssid = nm_access_point_get_ssid (ap);
-	if (ssid) {
+	if (ssid)
 		memcpy (input, ssid->data, ssid->len);
-		g_byte_array_free (ssid, TRUE);
-	}
 
 	if (mode == IW_MODE_INFRA)
 		input[32] |= (1 << 0);
@@ -898,7 +896,7 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 {
 	NMAccessPoint *ap = NM_ACCESS_POINT (data);
 	AddNetworksCB *cb_data = (AddNetworksCB *) user_data;
-	GByteArray * ssid = NULL;
+	const GByteArray * ssid;
 	gint8 strength;
 	struct dup_data dup_data = { NULL, NULL };
 
@@ -955,8 +953,6 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 
 out:
 	g_free (dup_data.hash);
-	if (ssid)
-		g_byte_array_free (ssid, TRUE);
 }
 
 
@@ -988,8 +984,8 @@ sort_wireless_networks (gconstpointer tmpa,
 {
 	NMAccessPoint * a = NM_ACCESS_POINT (tmpa);
 	NMAccessPoint * b = NM_ACCESS_POINT (tmpb);
-	GByteArray * a_ssid;
-	GByteArray * b_ssid;
+	const GByteArray * a_ssid;
+	const GByteArray * b_ssid;
 	int a_mode, b_mode, i;
 
 	if (a && !b)
@@ -1065,9 +1061,6 @@ nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *apple
 	networks = g_slist_sort (networks, sort_wireless_networks);
 	g_slist_foreach (networks, nma_add_networks_helper, &add_networks_cb);
 	g_slist_free (networks);
-
-	if (add_networks_cb.active_ssid)
-		g_byte_array_free (add_networks_cb.active_ssid, TRUE);
 }
 
 static gint
@@ -1839,7 +1832,7 @@ foo_bssid_strength_changed (NMAccessPoint *ap, guint strength, gpointer user_dat
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	GdkPixbuf *pixbuf;
-	GByteArray * ssid;
+	const GByteArray * ssid;
 	char *tip;
 
 	strength = CLAMP (strength, 0, 100);
@@ -1861,8 +1854,6 @@ foo_bssid_strength_changed (NMAccessPoint *ap, guint strength, gpointer user_dat
 	tip = g_strdup_printf (_("Wireless network connection to '%s' (%d%%)"),
 	                       ssid ? nma_escape_ssid (ssid->data, ssid->len) : "(none)",
 	                       strength);
-	if (ssid)
-		g_byte_array_free (ssid, TRUE);
 
 	gtk_status_icon_set_tooltip (applet->status_icon, tip);
 	g_free (tip);
@@ -1873,7 +1864,7 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 {
 	char *iface;
 	NMAccessPoint *ap = NULL;
-	GByteArray * ssid = NULL;
+	const GByteArray * ssid;
 	char *tip = NULL;
 	gboolean handled = FALSE;
 	char * esc_ssid = "(none)";
@@ -1889,10 +1880,8 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		ap = nm_device_802_11_wireless_get_active_network (NM_DEVICE_802_11_WIRELESS (device));
 		if (ap) {
 			ssid = nm_access_point_get_ssid (ap);
-			if (ssid) {
+			if (ssid)
 				esc_ssid = (char *) nma_escape_ssid (ssid->data, ssid->len);
-				g_byte_array_free (ssid, TRUE);
-			}
 		}
 	}
 
