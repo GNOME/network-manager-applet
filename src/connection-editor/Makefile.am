@@ -24,7 +24,7 @@ nm_connection_editor_SOURCES =	\
 
 nm_connection_editor_LDADD = $(NMA_LIBS)
 
-gladedir = $(datadir)/nm-connection-editor
+gladedir = $(datadir)/nm-applet
 glade_DATA = nm-connection-editor.glade
 
 CLEANFILES = *.bak *.gladep
