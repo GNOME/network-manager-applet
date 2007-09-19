@@ -37,6 +37,7 @@ typedef struct {
 	GHashTable *connections;
 
 	GladeXML *gui;
+	GtkWidget *dialog;
 	GtkWidget *connection_list;
 	GtkWidget *add_button;
 	GtkWidget *edit_button;
@@ -49,5 +50,8 @@ typedef struct {
 
 GType             nm_connection_list_get_type (void);
 NMConnectionList *nm_connection_list_new (void);
+
+void              nm_connection_list_show (NMConnectionList *list);
+gint              nm_connection_list_run_and_close (NMConnectionList *list);
 
 #endif

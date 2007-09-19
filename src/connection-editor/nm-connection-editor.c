@@ -32,7 +32,7 @@ G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 static void
 dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
 {
-	gtk_main_quit ();
+	gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
 static void
@@ -214,8 +214,6 @@ wireless_mtu_changed (GtkSpinButton *button, gpointer user_data)
 static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
-	GtkWidget *dialog;
-
 	/* load GUI */
 	editor->gui = glade_xml_new (GLADEDIR "/nm-connection-editor.glade", "NMConnectionEditor", NULL);
 	if (!editor->gui) {
@@ -223,8 +221,8 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 		return;
 	}
 
-	dialog = glade_xml_get_widget (editor->gui, "NMConnectionEditor");
-	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (dialog_response_cb), editor);
+	editor->dialog = glade_xml_get_widget (editor->gui, "NMConnectionEditor");
+	g_signal_connect (G_OBJECT (editor->dialog), "response", G_CALLBACK (dialog_response_cb), editor);
 
 	editor->connection_name = glade_xml_get_widget (editor->gui, "connection_name");
 	g_signal_connect (G_OBJECT (editor->connection_name), "changed",
@@ -277,8 +275,6 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	editor->wireless_mtu = glade_xml_get_widget (editor->gui, "wireless_mtu");
 	g_signal_connect (G_OBJECT (editor->wireless_mtu), "value-changed",
 				   G_CALLBACK (wireless_mtu_changed), editor);
-
-	gtk_widget_show (dialog);
 }
 
 static void
@@ -286,6 +282,7 @@ nm_connection_editor_finalize (GObject *object)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (object);
 
+	gtk_widget_destroy (editor->dialog);
 	g_object_unref (editor->gui);
 
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->finalize (object);
@@ -444,4 +441,25 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 	fill_ethernet_values (editor);
 	fill_wireless_values (editor);
 	fill_ip4_values (editor);
+}
+
+void
+nm_connection_editor_show (NMConnectionEditor *editor)
+{
+	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
+
+	gtk_widget_show (editor->dialog);
+}
+
+gint
+nm_connection_editor_run_and_close (NMConnectionEditor *editor)
+{
+	gint result;
+
+	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), GTK_RESPONSE_CANCEL);
+
+	result = gtk_dialog_run (GTK_DIALOG (editor->dialog));
+	gtk_widget_hide (editor->dialog);
+
+	return result;
 }

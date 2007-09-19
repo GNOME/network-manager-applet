@@ -23,7 +23,9 @@
 #include <nm-connection.h>
 #include <nm-setting.h>
 #include <gtk/gtkbutton.h>
+#include <gtk/gtkdialog.h>
 #include <gtk/gtkliststore.h>
+#include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
@@ -37,8 +39,9 @@ add_connection_cb (GtkButton *button, gpointer user_data)
 	NMConnection *connection = nm_connection_new ();
 
 	editor = nm_connection_editor_new (connection, NM_CONNECTION_EDITOR_PAGE_DEFAULT);
+	nm_connection_editor_run_and_close (editor);
 
-	/* FIXME: run the dialog and wait for it to finish */
+	g_object_unref (editor);
 	g_object_unref (connection);
 }
 
@@ -49,7 +52,7 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 	NMConnection *connection;
 	GtkTreeSelection *selection;
 	GList *selected_rows;
-	GtkTreeModel *model;
+	GtkTreeModel *model = NULL;
 	NMConnectionList *list = NM_CONNECTION_LIST (user_data);
 
 	/* get selected row from the tree view */
@@ -57,8 +60,7 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 	if (gtk_tree_selection_count_selected_rows (selection) != 1)
 		return;
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (list->connection_list));
-	selected_rows = gtk_tree_selection_get_selected_rows (selection, model);
+	selected_rows = gtk_tree_selection_get_selected_rows (selection, &model);
 	if (selected_rows != NULL) {
 		GtkTreeIter iter;
 
@@ -69,14 +71,16 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 			connection = g_hash_table_lookup (list->connections, name);
 			if (connection) {
 				editor = nm_connection_editor_new (connection, NM_CONNECTION_EDITOR_PAGE_DEFAULT);
-				/* FIXME : run the dialog and wait for it to finish */
+				nm_connection_editor_run_and_close (editor);
+
+				g_object_unref (editor);
 			}
 
 			g_free (name);
 		}
 
 		/* free memory */
-		g_list_foreach (selected_rows, gtk_tree_path_free, NULL);
+		g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
 		g_list_free (selected_rows);
 	}
 }
@@ -103,6 +107,12 @@ hash_add_connection_to_list (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
+dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
+{
+	gtk_widget_hide (dialog);
+}
+
+static void
 nm_connection_list_init (NMConnectionList *list)
 {
 	GtkListStore *model;
@@ -116,6 +126,9 @@ nm_connection_list_init (NMConnectionList *list)
 		g_warning ("Could not load Glade file for connection list");
 		return;
 	}
+
+	list->dialog = glade_xml_get_widget (list->gui, "NMConnectionList");
+	g_signal_connect (G_OBJECT (list->dialog), "response", G_CALLBACK (dialog_response_cb), list);
 
 	list->connection_list = glade_xml_get_widget (list->gui, "connection_list");
 
@@ -140,6 +153,10 @@ nm_connection_list_finalize (GObject *object)
 {
 	NMConnectionList *list = NM_CONNECTION_LIST (object);
 
+	gtk_widget_destroy (list->dialog);
+	g_object_unref (list->gui);
+	g_hash_table_destroy (list->connections);
+
 	G_OBJECT_CLASS (nm_connection_list_parent_class)->finalize (object);
 }
 
@@ -160,4 +177,25 @@ nm_connection_list_new (void)
 	list = g_object_new (NM_TYPE_CONNECTION_LIST, NULL);
 
 	return list;
+}
+
+void
+nm_connection_list_show (NMConnectionList *list)
+{
+	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
+
+	gtk_widget_show (list);
+}
+
+gint
+nm_connection_list_run_and_close (NMConnectionList *list)
+{
+	gint result;
+
+	g_return_val_if_fail (NM_IS_CONNECTION_LIST (list), GTK_RESPONSE_CANCEL);
+
+	result = gtk_dialog_run (GTK_DIALOG (list->dialog));
+	gtk_widget_hide (list->dialog);
+
+	return result;
 }

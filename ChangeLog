@@ -1,3 +1,31 @@
+2007-09-20  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* src/applet.c (nma_context_menu_create): added 'Edit Connections...'
+	item to the context menu.
+	(nma_edit_connections_cb): added callback for the menu item.
+
+	* src/Makefile.am: added really connection-editor to the build and
+	added connection editor "widgets" to the applet's SOURCES.
+
+	* src/connection-editor/nm-connection-editor.glade: fixed typo.
+
+	* src/connection-editor/nm-connection-editor.[ch]:
+	(nm_connection_editor_show, nm_connection_editor_run_and_close): new
+	functions to make it easier to manage the underlying dialog (maybe this
+	should be a GtkDialog-based class?)
+	(nm_connection_editor_init): keep a reference to the dialog also.
+	(nm_connection_editor_finalize): destroy the dialog.
+	(dialog_response_cb): don't exit the main loop, just hide the dialog.
+
+	* src/connection-editor/nm-connection-list.[ch]:
+	(edit_connection_cb): fixed call to gtk_tree_view_get_selected_rows().
+	(nm_connection_list_show, nm_connection_list_run_and_close,
+	nm_connection_list_init, nm_connection_list_finalize, dialog_response_cb):
+	same as in nm-connection-editor.[ch].
+
+	* src/connection-editor/main.c (main): added missing argument to
+	nm_connection_editor_new().
+
 2007-09-19  Dan Williams <dcbw@redhat.com>
 
 	* src/applet.c

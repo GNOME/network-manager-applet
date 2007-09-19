@@ -46,6 +46,7 @@ typedef struct {
 	NMConnectionEditorPage pages;
 
 	GladeXML *gui;
+	GtkWidget *dialog;
 	GtkWidget *connection_name;
 	GtkWidget *connection_autoconnect;
 	GtkWidget *ethernet_port;
@@ -68,6 +69,8 @@ typedef struct {
 GType               nm_connection_editor_get_type (void);
 NMConnectionEditor *nm_connection_editor_new (NMConnection *connection, NMConnectionEditorPage pages);
 
+void                nm_connection_editor_show (NMConnectionEditor *editor);
+gint                nm_connection_editor_run_and_close (NMConnectionEditor *editor);
 NMConnection       *nm_connection_editor_get_connection (NMConnectionEditor *editor);
 void                nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection);
 

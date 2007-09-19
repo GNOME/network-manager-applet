@@ -1,4 +1,4 @@
-SUBDIRS = vpn-properties
+SUBDIRS = connection-editor vpn-properties
 
 NULL=
 
@@ -43,6 +43,10 @@ nm_applet_SOURCES =			\
 	nm-utils.h \
 	gnome-keyring-md5.h \
 	gnome-keyring-md5.c \
+	connection-editor/nm-connection-editor.c	\
+	connection-editor/nm-connection-editor.h	\
+	connection-editor/nm-connection-list.c		\
+	connection-editor/nm-connection-list.h		\
 	$(NULL)
 
 if !HAVE_GTK_2_10

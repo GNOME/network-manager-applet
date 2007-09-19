@@ -33,7 +33,8 @@ main (int argc, char *argv[])
 	/* parse arguments: an idea is to use gconf://$setting_name / system://$setting_name to
 	   allow this program to work with both GConf and system-wide settings */
 
-	editor = nm_connection_editor_new (connection);
+	editor = nm_connection_editor_new (connection, NM_CONNECTION_EDITOR_PAGE_DEFAULT);
+	nm_connection_editor_show (editor);
 
 	gtk_main ();
 

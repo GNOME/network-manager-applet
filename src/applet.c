@@ -61,6 +61,7 @@
 
 #include "nm-connection.h"
 #include "vpn-connection-info.h"
+#include "connection-editor/nm-connection-list.h"
 
 /* Compat for GTK 2.6 */
 #if (GTK_MAJOR_VERSION <= 2 && GTK_MINOR_VERSION == 6)
@@ -326,6 +327,17 @@ nma_show_info_cb (GtkMenuItem *mi, NMApplet *applet)
 		gtk_window_present (GTK_WINDOW (info_dialog));
 		g_signal_connect_swapped (info_dialog, "response", G_CALLBACK (gtk_widget_hide), info_dialog);
 	}
+}
+
+static void
+nma_edit_connections_cb (GtkMenuItem *mi, NMApplet *applet)
+{
+	NMConnectionList *connection_list;
+
+	connection_list = nm_connection_list_new ();
+	nm_connection_list_run_and_close (connection_list);
+
+	g_object_unref (connection_list);
 }
 
 static void about_dialog_activate_link_cb (GtkAboutDialog *about,
@@ -1398,6 +1410,14 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	image = gtk_image_new_from_stock (GTK_STOCK_INFO, GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (applet->info_menu_item), image);
 	gtk_menu_shell_append (menu, applet->info_menu_item);
+
+	/* 'Edit Connections...' item */
+	applet->connections_menu_item = gtk_menu_item_new_with_mnemonic (_("Edit Connections..."));
+	g_signal_connect (applet->connections_menu_item,
+				   "activate",
+				   G_CALLBACK (nma_edit_connections_cb),
+				   applet);
+	gtk_menu_shell_append (menu, applet->connections_menu_item);
 
 	/* Separator */
 	nma_menu_add_separator_item (menu);

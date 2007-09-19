@@ -145,6 +145,7 @@ typedef struct
 	GtkWidget *		enable_networking_item;
 	GtkWidget *		stop_wireless_item;
 	GtkWidget *		info_menu_item;
+	GtkWidget *             connections_menu_item;
 
 	GtkWidget *		passphrase_dialog;
 	GladeXML *		info_dialog_xml;
