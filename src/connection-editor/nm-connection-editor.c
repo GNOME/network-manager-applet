@@ -41,7 +41,7 @@ connection_name_changed (GtkEditable *editable, gpointer user_data)
 	NMSettingConnection *s_connection;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_connection = nm_connection_get_setting (editor->connection, "connection");
+	s_connection = (NMSettingConnection *) nm_connection_get_setting (editor->connection, "connection");
 	if (s_connection) {
 		if (s_connection->name)
 			g_free (s_connection->name);
@@ -55,7 +55,7 @@ connection_autoconnect_changed (GtkToggleButton *button, gpointer user_data)
 	NMSettingConnection *s_connection;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_connection = nm_connection_get_setting (editor->connection, "connection");
+	s_connection = (NMSettingConnection *) nm_connection_get_setting (editor->connection, "connection");
 	if (s_connection)
 		s_connection->autoconnect = gtk_toggle_button_get_active (button);
 }
@@ -66,7 +66,7 @@ ethernet_port_changed (GtkComboBox *combo, gpointer user_data)
 	NMSettingWired *s_wired;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wired = nm_connection_get_setting (editor->connection, "802-3-ethernet");
+	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, "802-3-ethernet");
 	if (s_wired) {
 		if (s_wired->port)
 			g_free (s_wired->port);
@@ -86,7 +86,7 @@ ethernet_speed_changed (GtkSpinButton *button, gpointer user_data)
 	NMSettingWired *s_wired;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wired = nm_connection_get_setting (editor->connection, "802-3-ethernet");
+	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, "802-3-ethernet");
 	if (s_wired)
 		s_wired->speed = gtk_spin_button_get_value_as_int (button);
 }
@@ -97,7 +97,7 @@ ethernet_duplex_changed (GtkToggleButton *button, gpointer user_data)
 	NMSettingWired *s_wired;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wired = nm_connection_get_setting (editor->connection, "802-3-ethernet");
+	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, "802-3-ethernet");
 	if (s_wired) {
 		if (s_wired->duplex)
 			g_free (s_wired->duplex);
@@ -115,9 +115,100 @@ ethernet_autonegotiate_changed (GtkToggleButton *button, gpointer user_data)
 	NMSettingWired *s_wired;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wired = nm_connection_get_setting (editor->connection, "802-3-ethernet");
+	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, "802-3-ethernet");
 	if (s_wired)
 		s_wired->auto_negotiate = gtk_toggle_button_get_active (button);
+}
+
+static void
+ethernet_mtu_changed (GtkSpinButton *button, gpointer user_data)
+{
+	NMSettingWired *s_wired;
+	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
+
+	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, "802-3-ethernet");
+	if (s_wired)
+		s_wired->mtu = gtk_spin_button_get_value_as_int (button);
+}
+
+static void
+wireless_mode_changed (GtkComboBox *combo, gpointer user_data)
+{
+	NMSettingWireless *s_wireless;
+	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
+
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, "802-11-wireless");
+	if (s_wireless) {
+		if (s_wireless->mode)
+			g_free (s_wireless->mode);
+
+		switch (gtk_combo_box_get_active (combo)) {
+		case 0 : s_wireless->mode = g_strdup ("infrastructure"); break;
+		case 1 : s_wireless->mode = g_strdup ("adhoc"); break;
+		}
+	}
+}
+
+static void
+wireless_band_changed (GtkComboBox *combo, gpointer user_data)
+{
+	NMSettingWireless *s_wireless;
+	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
+
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, "802-11-wireless");
+	if (s_wireless) {
+		if (s_wireless->band)
+			g_free (s_wireless->band);
+
+		switch (gtk_combo_box_get_active (combo)) {
+		case 0 : s_wireless->band = g_strdup ("a"); break;
+		case 1 : s_wireless->band = g_strdup ("bg"); break;
+		}
+	}
+}
+
+static void
+wireless_channel_changed (GtkSpinButton *button, gpointer user_data)
+{
+	NMSettingWireless *s_wireless;
+	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
+
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, "802-11-wireless");
+	if (s_wireless)
+		s_wireless->channel = gtk_spin_button_get_value_as_int (button);
+}
+
+static void
+wireless_rate_changed (GtkSpinButton *button, gpointer user_data)
+{
+	NMSettingWireless *s_wireless;
+	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
+
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, "802-11-wireless");
+	if (s_wireless)
+		s_wireless->rate = gtk_spin_button_get_value_as_int (button);
+}
+
+static void
+wireless_tx_power_changed (GtkSpinButton *button, gpointer user_data)
+{
+	NMSettingWireless *s_wireless;
+	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
+
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, "802-11-wireless");
+	if (s_wireless)
+		s_wireless->tx_power = gtk_spin_button_get_value_as_int (button);
+}
+
+static void
+wireless_mtu_changed (GtkSpinButton *button, gpointer user_data)
+{
+	NMSettingWireless *s_wireless;
+	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
+
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, "802-11-wireless");
+	if (s_wireless)
+		s_wireless->mtu = gtk_spin_button_get_value_as_int (button);
 }
 
 static void
@@ -160,12 +251,32 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 				   G_CALLBACK (ethernet_autonegotiate_changed), editor);
 
 	editor->ethernet_mtu = glade_xml_get_widget (editor->gui, "ethernet_mtu");
+	g_signal_connect (G_OBJECT (editor->ethernet_mtu), "value-changed",
+				   G_CALLBACK (ethernet_mtu_changed), editor);
+
 	editor->wireless_mode = glade_xml_get_widget (editor->gui, "wireless_mode");
+	g_signal_connect (G_OBJECT (editor->wireless_mode), "changed",
+				   G_CALLBACK (wireless_mode_changed), editor);
+
 	editor->wireless_band = glade_xml_get_widget (editor->gui, "wireless_band");
+	g_signal_connect (G_OBJECT (editor->wireless_band), "changed",
+				   G_CALLBACK (wireless_band_changed), editor);
+
 	editor->wireless_channel = glade_xml_get_widget (editor->gui, "wireless_channel");
+	g_signal_connect (G_OBJECT (editor->wireless_channel), "value-changed",
+				   G_CALLBACK (wireless_channel_changed), editor);
+
 	editor->wireless_rate = glade_xml_get_widget (editor->gui, "wireless_rate");
+	g_signal_connect (G_OBJECT (editor->wireless_rate), "value-changed",
+				   G_CALLBACK (wireless_rate_changed), editor);
+
 	editor->wireless_tx_power = glade_xml_get_widget (editor->gui, "wireless_tx_power");
+	g_signal_connect (G_OBJECT (editor->wireless_tx_power), "value-changed",
+				   G_CALLBACK (wireless_tx_power_changed), editor);
+
 	editor->wireless_mtu = glade_xml_get_widget (editor->gui, "wireless_mtu");
+	g_signal_connect (G_OBJECT (editor->wireless_mtu), "value-changed",
+				   G_CALLBACK (wireless_mtu_changed), editor);
 
 	gtk_widget_show (dialog);
 }
