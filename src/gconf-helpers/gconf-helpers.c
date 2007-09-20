@@ -20,6 +20,7 @@
  * (C) Copyright 2005 Red Hat, Inc.
  */
 
+#include <string.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <glib.h>
@@ -207,6 +208,48 @@ nm_gconf_get_bytearray_helper (GConfClient *client,
 out:
 	g_free (gc_key);
 	return success;
+}
+
+static void
+property_value_destroy (gpointer data)
+{
+	GValue *value = (GValue *) data;
+
+	g_value_unset (value);
+	g_slice_free (GValue, data);
+}
+
+
+static void
+add_property (GHashTable *properties, const char *key, GConfValue *gconf_value)
+{
+	GValue *value = NULL;
+
+	if (!gconf_value)
+		return;
+
+	switch (gconf_value->type) {
+	case GCONF_VALUE_STRING:
+		value = g_slice_new0 (GValue);
+		g_value_init (value, G_TYPE_STRING);
+		g_value_set_string (value, gconf_value_get_string (gconf_value));
+		break;
+	case GCONF_VALUE_INT:
+		value = g_slice_new0 (GValue);
+		g_value_init (value, G_TYPE_INT);
+		g_value_set_int (value, gconf_value_get_int (gconf_value));
+		break;
+	case GCONF_VALUE_BOOL:
+		value = g_slice_new0 (GValue);
+		g_value_init (value, G_TYPE_BOOLEAN);
+		g_value_set_boolean (value, gconf_value_get_bool (gconf_value));
+		break;
+	default:
+		break;
+	}
+
+	if (value)
+		g_hash_table_insert (properties, gconf_unescape_key (key, -1), value);
 }
 
 gboolean
@@ -480,10 +523,8 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 
 		case NM_S_TYPE_GVALUE_HASH: {
 			GHashTable **vh_val = (GHashTable **) value;
-			nm_gconf_get_valuehash_helper (applet_connection->conf_client,
-									 applet_connection->conf_dir,
-									 setting->name,
-									 vh_val);
+			nm_gconf_get_valuehash_helper (info->client, info->dir,
+									 setting->name, vh_val);
 
 			break;
 		}
@@ -494,14 +535,13 @@ NMConnection *
 nm_gconf_read_connection (GConfClient *client,
                           const char *dir)
 {
-	ReadFromGConfInfo *info;
+	ReadFromGConfInfo info;
 	NMConnection *connection;
 	NMSetting *setting;
 	char *key;
 
-	info = g_slice_new0 (ReadFromGConfInfo);
-	info->client = client;
-	info->dir = dir;
+	info.client = client;
+	info.dir = dir;
 
 	/* connection settings */
 	connection = nm_connection_new ();
@@ -509,7 +549,7 @@ nm_gconf_read_connection (GConfClient *client,
 	setting = nm_setting_connection_new ();
 	nm_setting_enumerate_values (setting,
 	                             read_one_setting_value_from_gconf,
-	                             info);
+	                             &info);
 	nm_connection_add_setting (connection, setting);
 
 	/* wireless settings */
@@ -518,7 +558,7 @@ nm_gconf_read_connection (GConfClient *client,
 		setting = nm_setting_wireless_new ();
 		nm_setting_enumerate_values (setting,
 		                             read_one_setting_value_from_gconf,
-		                             info);
+		                             &info);
 		nm_connection_add_setting (connection, setting);
 	}
 	g_free (key);
@@ -529,7 +569,7 @@ nm_gconf_read_connection (GConfClient *client,
 		setting = nm_setting_wireless_security_new ();
 		nm_setting_enumerate_values (setting,
 		                             read_one_setting_value_from_gconf,
-		                             info);
+		                             &info);
 		nm_connection_add_setting (connection, setting);
 	}
 	g_free (key);
@@ -540,33 +580,32 @@ nm_gconf_read_connection (GConfClient *client,
 		setting = nm_setting_wired_new ();
 		nm_setting_enumerate_values (setting,
 		                             read_one_setting_value_from_gconf,
-		                             info);
+		                             &info);
 		nm_connection_add_setting (connection, setting);
 	}
 	g_free (key);
 
 	/* VPN settings */
-	key = g_strdup_printf ("%s/vpn", applet_connection->conf_dir);
-	if (gconf_client_dir_exists (applet_connection->conf_client, key, NULL)) {
+	key = g_strdup_printf ("%s/vpn", dir);
+	if (gconf_client_dir_exists (client, key, NULL)) {
 		setting = nm_setting_vpn_new ();
 		nm_setting_enumerate_values (setting,
 		                             read_one_setting_value_from_gconf,
-		                             applet_connection);
+		                             &info);
 		nm_connection_add_setting (connection, setting);
 	}
 	g_free (key);
 
 	/* VPN properties settings */
-	key = g_strdup_printf ("%s/vpn-properties", applet_connection->conf_dir);
-	if (gconf_client_dir_exists (applet_connection->conf_client, key, NULL)) {
+	key = g_strdup_printf ("%s/vpn-properties", dir);
+	if (gconf_client_dir_exists (client, key, NULL)) {
 		setting = nm_setting_vpn_properties_new ();
 		nm_setting_enumerate_values (setting,
 		                             read_one_setting_value_from_gconf,
-		                             applet_connection);
+		                             &info);
 		nm_connection_add_setting (connection, setting);
 	}
 	g_free (key);
 
-	g_slice_free (ReadFromGConfInfo, info);
 	return connection;
 }
