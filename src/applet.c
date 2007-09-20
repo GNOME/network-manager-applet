@@ -682,6 +682,95 @@ nm_ap_check_compatible (NMAccessPoint *ap,
 	return security_compatible (ap, connection, s_wireless);
 }
 
+static GSList *
+add_ciphers_from_flags (guint32 flags, gboolean pairwise)
+{
+	GSList *ciphers = NULL;
+
+	if (pairwise) {
+		if (flags & NM_802_11_AP_SEC_PAIR_TKIP)
+			ciphers = g_slist_append (ciphers, g_strdup ("tkip"));
+		if (flags & NM_802_11_AP_SEC_PAIR_CCMP)
+			ciphers = g_slist_append (ciphers, g_strdup ("ccmp"));
+	} else {
+		if (flags & NM_802_11_AP_SEC_GROUP_WEP40)
+			ciphers = g_slist_append (ciphers, g_strdup ("wep40"));
+		if (flags & NM_802_11_AP_SEC_GROUP_WEP104)
+			ciphers = g_slist_append (ciphers, g_strdup ("wep104"));
+		if (flags & NM_802_11_AP_SEC_GROUP_TKIP)
+			ciphers = g_slist_append (ciphers, g_strdup ("tkip"));
+		if (flags & NM_802_11_AP_SEC_GROUP_CCMP)
+			ciphers = g_slist_append (ciphers, g_strdup ("ccmp"));
+	}
+
+	return ciphers;
+}
+
+static NMSettingWirelessSecurity *
+get_security_for_ap (NMAccessPoint *ap, gboolean *supported)
+{
+	NMSettingWirelessSecurity *sec;
+	int mode;
+	guint32 flags;
+	guint32 wpa_flags;
+	guint32 rsn_flags;
+
+	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), NULL);
+	g_return_val_if_fail (supported != NULL, NULL);
+	g_return_val_if_fail (*supported == TRUE, NULL);
+
+	sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
+
+	mode = nm_access_point_get_mode (ap);
+	flags = nm_access_point_get_flags (ap);
+	wpa_flags = nm_access_point_get_wpa_flags (ap);
+	rsn_flags = nm_access_point_get_rsn_flags (ap);
+
+	/* No security */
+	if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	    && (rsn_flags == NM_802_11_AP_SEC_NONE))
+		goto none;
+
+	if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
+	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	    && (rsn_flags == NM_802_11_AP_SEC_NONE)) {
+		sec->key_mgmt = g_strdup ("none");
+		sec->wep_tx_keyidx = 0;
+		return sec;
+	}
+
+	/* Stuff after this point requires infrastructure */
+	if (mode != IW_MODE_INFRA) {
+		*supported = FALSE;
+		goto none;
+	}
+
+	/* WPA2 PSK first */
+	if (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK) {
+		sec->key_mgmt = g_strdup ("wpa-psk");
+		sec->proto = g_strdup ("rsn");
+		sec->pairwise = add_ciphers_from_flags (rsn_flags, FALSE);
+		sec->group = add_ciphers_from_flags (rsn_flags, TRUE);
+		return sec;
+	}
+
+	/* WPA PSK */
+	if (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK) {
+		sec->key_mgmt = g_strdup ("wpa-psk");
+		sec->proto = g_strdup ("wpa");
+		sec->pairwise = add_ciphers_from_flags (wpa_flags, FALSE);
+		sec->group = add_ciphers_from_flags (wpa_flags, TRUE);
+		return sec;
+	}
+
+	*supported = FALSE;
+
+none:
+	nm_setting_destroy ((NMSetting *) sec);
+	return NULL;
+}
+
 static gboolean
 find_connection (NMConnectionSettings *applet_connection,
                  NMDevice *device,
@@ -735,7 +824,9 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 	char *con_path = NULL;
 	NMSetting *setting = NULL;
 	char *specific_object = "/";
+	char *connection_name = NULL;
 	GSList *elt, *connections;
+	NMSettingWirelessSecurity *s_wireless_sec = NULL;
 
 	connections = applet_dbus_settings_list_connections (APPLET_DBUS_SETTINGS (info->applet->settings));
 	for (elt = connections; elt; elt = g_slist_next (elt)) {
@@ -756,27 +847,37 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		if (NM_IS_DEVICE_802_3_ETHERNET (info->device)) {
 			setting = nm_setting_wired_new ();
 			specific_object = NULL;
+			connection_name = g_strdup ("Auto Ethernet");
 		} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
 			NMSettingWireless *wireless;
 			const GByteArray *ap_ssid;
+			char buf[33];
 			int mode;
+			gboolean supported = TRUE;
 
 			setting = nm_setting_wireless_new ();
 			wireless = (NMSettingWireless *) setting;
 
-			// FIXME: have some sort of NMSettingWireless and
-			// NMSettingWirelessSecurity constructors that take an NMAccessPoint
-			// as input and spit out compatible Settings
-
 			ap_ssid = nm_access_point_get_ssid (info->ap);
 			wireless->ssid = g_byte_array_sized_new (ap_ssid->len);
 			g_byte_array_append (wireless->ssid, ap_ssid->data, ap_ssid->len);
+
+			memset (buf, 0, sizeof (buf));
+			memcpy (buf, ap_ssid->data, MIN(ap_ssid->len, sizeof (buf)));
+			connection_name = g_strdup_printf ("Auto %s", nm_utils_essid_to_utf8 (buf));
 
 			mode = nm_access_point_get_mode (info->ap);
 			if (mode == IW_MODE_ADHOC)
 				wireless->mode = g_strdup ("adhoc");
 			else if (mode == IW_MODE_INFRA)
 				wireless->mode = g_strdup ("infrastructure");
+
+			s_wireless_sec = get_security_for_ap (info->ap, &supported);
+			if (!supported) {
+				// FIXME: support WPA/WPA2 Enterprise and Dynamic WEP
+				nm_setting_destroy (setting);
+				setting = NULL;
+			}
 		} else
 			g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
 
@@ -786,6 +887,8 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 
 			connection = nm_connection_new ();
 			nm_connection_add_setting (connection, setting);
+			if (s_wireless_sec)
+				nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
 
 			s_con = (NMSettingConnection *) nm_setting_connection_new ();
 			s_con->name = g_strdup ("Auto");
