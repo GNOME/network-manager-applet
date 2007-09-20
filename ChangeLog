@@ -1,3 +1,18 @@
+2007-09-20  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-dbus-settings.c
+	  src/applet-dbus-settings.h
+		- (connection_settings_changed_cb, applet_dbus_connection_settings_new):
+			ensure 'id' is updated
+		- (applet_dbus_connection_settings_get_connection): new function
+
+	* src/applet.c
+		- (nm_utils_same_ssid, match_cipher, security_compatible,
+		   nm_ap_check_compatible): gross C&P from NM to find compatible connection
+		- (nma_menu_item_activate): find an existing connection to activate
+			if we can
+		- (nma_add_networks_helper, get_vpn_connections): warning fixes
+
 2007-09-20  Tambet Ingo  <tambet@gmail.com>
 
 	* src/connection-editor/nm-connection-editor.c: Use defined setting names.

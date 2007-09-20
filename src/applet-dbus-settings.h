@@ -49,6 +49,8 @@ typedef struct {
 GType                 applet_dbus_connection_settings_get_type (void);
 NMConnectionSettings *applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf_dir);
 
+NMConnection * applet_dbus_connection_settings_get_connection (NMConnectionSettings *connection);
+
 #define APPLET_TYPE_DBUS_SETTINGS    (applet_dbus_settings_get_type ())
 #define APPLET_IS_DBUS_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_DBUS_SETTINGS))
 #define APPLET_DBUS_SETTINGS(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), APPLET_TYPE_DBUS_SETTINGS, AppletDbusSettings))

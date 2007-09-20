@@ -297,6 +297,7 @@ connection_settings_changed_cb (GConfClient *conf_client,
 	GHashTable *settings;
 	NMConnection *connection;
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) user_data;
+	NMSettingConnection *s_con;
 
 	/* FIXME: just update the modified field, no need to re-read all */
 	connection = nm_gconf_read_connection (applet_connection->conf_client,
@@ -305,6 +306,13 @@ connection_settings_changed_cb (GConfClient *conf_client,
 		g_warning ("Invalid connection read from GConf at %s.", applet_connection->conf_dir);
 		return;
 	}
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
+	                                                            "connection");
+	if (applet_connection->id)
+		g_free (applet_connection->id);
+	applet_connection->id = g_strdup (s_con->name);
+
 	if (applet_connection->connection)
 		g_object_unref (applet_connection->connection);
 	applet_connection->connection = connection;
@@ -319,6 +327,7 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 {
 	AppletDbusConnectionSettings *applet_connection;
 	AppletDBusManager * manager;
+	NMSettingConnection *s_con;
 
 	g_return_val_if_fail (conf_client != NULL, NULL);
 	g_return_val_if_fail (conf_dir != NULL, NULL);
@@ -334,6 +343,10 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 		g_object_unref (applet_connection);
 		return NULL;
 	}
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
+	                                                            "connection");
+	applet_connection->id = g_strdup (s_con->name);
 
 	/* set GConf notifications */
 	gconf_client_add_dir (conf_client, conf_dir, GCONF_CLIENT_PRELOAD_NONE, NULL);
@@ -557,6 +570,17 @@ applet_dbus_connection_settings_get_id (NMConnectionSettings *connection)
 	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
 
 	return g_strdup (applet_connection->id);
+}
+
+NMConnection *
+applet_dbus_connection_settings_get_connection (NMConnectionSettings *connection)
+{
+	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) connection;
+
+	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
+
+	return applet_connection->connection;
 }
 
 static

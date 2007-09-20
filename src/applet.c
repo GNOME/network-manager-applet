@@ -482,6 +482,248 @@ device_menu_item_info_destroy (gpointer data)
 	g_slice_free (DeviceMenuItemInfo, data);
 }
 
+static gboolean
+nm_utils_same_ssid (const GByteArray * ssid1,
+                    const GByteArray * ssid2,
+                    gboolean ignore_trailing_null)
+{
+	guint32 ssid1_len, ssid2_len;
+
+	if (ssid1 == ssid2)
+		return TRUE;
+	if ((ssid1 && !ssid2) || (!ssid1 && ssid2))
+		return FALSE;
+
+	ssid1_len = ssid1->len;
+	ssid2_len = ssid2->len;
+	if (ssid1_len && ssid2_len && ignore_trailing_null) {
+		if (ssid1->data[ssid1_len - 1] == '\0')
+			ssid1_len--;
+		if (ssid2->data[ssid2_len - 1] == '\0')
+			ssid2_len--;
+	}
+
+	if (ssid1_len != ssid2_len)
+		return FALSE;
+
+	return memcmp (ssid1->data, ssid2->data, ssid1_len) == 0 ? TRUE : FALSE;
+}
+
+static gboolean
+match_cipher (const char * cipher,
+              const char * expected,
+              guint32 wpa_flags,
+              guint32 rsn_flags,
+              guint32 flag)
+{
+	if (strcmp (cipher, expected) != 0)
+		return FALSE;
+
+	if (!(wpa_flags & flag) && !(rsn_flags & flag))
+		return FALSE;
+
+	return TRUE;
+}
+
+static gboolean
+security_compatible (NMAccessPoint *ap,
+                     NMConnection *connection,
+                     NMSettingWireless *s_wireless)
+{
+	NMSettingWirelessSecurity *s_wireless_sec;
+	int mode;
+	guint32 flags = nm_access_point_get_flags (ap);
+	guint32 wpa_flags = nm_access_point_get_wpa_flags (ap);
+	guint32 rsn_flags = nm_access_point_get_rsn_flags (ap);
+	
+	if (!s_wireless->security) {
+		if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
+		    || (wpa_flags != NM_802_11_AP_SEC_NONE)
+		    || (rsn_flags != NM_802_11_AP_SEC_NONE))
+			return FALSE;
+		return TRUE;
+	}
+
+	if (strcmp (s_wireless->security, "802-11-wireless-security") != 0)
+		return FALSE;
+
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, "802-11-wireless-security");
+	if (s_wireless_sec == NULL || !s_wireless_sec->key_mgmt)
+		return FALSE;
+
+	/* Static WEP */
+	if (!strcmp (s_wireless_sec->key_mgmt, "none")) {
+		if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+		    || (wpa_flags != NM_802_11_AP_SEC_NONE)
+		    || (rsn_flags != NM_802_11_AP_SEC_NONE))
+			return FALSE;
+		return TRUE;
+	}
+
+	/* Adhoc WPA */
+	mode = nm_access_point_get_mode (ap);
+	if (!strcmp (s_wireless_sec->key_mgmt, "wpa-none")) {
+		if (mode != IW_MODE_ADHOC)
+			return FALSE;
+		// FIXME: validate ciphers if the BSSID actually puts WPA/RSN IE in
+		// it's beacon
+		return TRUE;
+	}
+
+	/* Stuff after this point requires infrastructure */
+	if (mode != IW_MODE_INFRA)
+		return FALSE;
+
+	/* Dynamic WEP or LEAP/Network EAP */
+	if (!strcmp (s_wireless_sec->key_mgmt, "ieee8021x")) {
+		// FIXME: should we allow APs that advertise WPA/RSN support here?
+		if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+		    || (wpa_flags != NM_802_11_AP_SEC_NONE)
+		    || (rsn_flags != NM_802_11_AP_SEC_NONE))
+			return FALSE;
+		return TRUE;
+	}
+
+	/* WPA[2]-PSK */
+	if (!strcmp (s_wireless_sec->key_mgmt, "wpa-psk")) {
+		GSList * elt;
+		gboolean found = FALSE;
+
+		if (!s_wireless_sec->pairwise || !s_wireless_sec->group)
+			return FALSE;
+
+		if (   !(wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
+		    && !(rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK))
+			return FALSE;
+
+		// FIXME: should handle WPA and RSN separately here to ensure that
+		// if the Connection only uses WPA we don't match a cipher against
+		// the AP's RSN IE instead
+
+		/* Match at least one pairwise cipher with AP's capability */
+		for (elt = s_wireless_sec->pairwise; elt; elt = g_slist_next (elt)) {
+			if ((found = match_cipher (elt->data, "tkip", wpa_flags, rsn_flags, NM_802_11_AP_SEC_PAIR_TKIP)))
+				break;
+			if ((found = match_cipher (elt->data, "ccmp", wpa_flags, rsn_flags, NM_802_11_AP_SEC_PAIR_CCMP)))
+				break;
+		}
+		if (!found)
+			return FALSE;
+
+		/* Match at least one group cipher with AP's capability */
+		for (elt = s_wireless_sec->group; elt; elt = g_slist_next (elt)) {
+			if ((found = match_cipher (elt->data, "wep40", wpa_flags, rsn_flags, NM_802_11_AP_SEC_GROUP_WEP40)))
+				break;
+			if ((found = match_cipher (elt->data, "wep104", wpa_flags, rsn_flags, NM_802_11_AP_SEC_GROUP_WEP104)))
+				break;
+			if ((found = match_cipher (elt->data, "tkip", wpa_flags, rsn_flags, NM_802_11_AP_SEC_GROUP_TKIP)))
+				break;
+			if ((found = match_cipher (elt->data, "ccmp", wpa_flags, rsn_flags, NM_802_11_AP_SEC_GROUP_CCMP)))
+				break;
+		}
+		if (!found)
+			return FALSE;
+
+		return TRUE;
+	}
+
+	if (!strcmp (s_wireless_sec->key_mgmt, "wpa-eap")) {
+		// FIXME: implement
+	}
+
+	return FALSE;
+}
+
+static gboolean
+nm_ap_check_compatible (NMAccessPoint *ap,
+                        NMConnection *connection)
+{
+	NMSettingWireless *s_wireless;
+	const GByteArray *ssid;
+	int mode;
+	guint32 freq;
+
+	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, "802-11-wireless");
+	if (s_wireless == NULL)
+		return FALSE;
+	
+	ssid = nm_access_point_get_ssid (ap);
+	if (!nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
+		return FALSE;
+
+	// FIXME: BSSID check
+
+	mode = nm_access_point_get_mode (ap);
+	if (s_wireless->mode) {
+		if (   !strcmp (s_wireless->mode, "infrastructure")
+		    && (mode != IW_MODE_INFRA))
+			return FALSE;
+		if (   !strcmp (s_wireless->mode, "adhoc")
+		    && (mode != IW_MODE_ADHOC))
+			return FALSE;
+	}
+
+	freq = nm_access_point_get_frequency (ap);
+	if (s_wireless->band) {
+		if (!strcmp (s_wireless->band, "a")) {
+			if (freq < 5170 || freq > 5825)
+				return FALSE;
+		} else if (!strcmp (s_wireless->band, "bg")) {
+			if (freq < 2412 || freq > 2472)
+				return FALSE;
+		}
+	}
+
+	// FIXME: channel check
+
+	return security_compatible (ap, connection, s_wireless);
+}
+
+static gboolean
+find_connection (NMConnectionSettings *applet_connection,
+                 NMDevice *device,
+                 NMAccessPoint *ap)
+{
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+
+	connection = applet_dbus_connection_settings_get_connection (applet_connection);
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
+	if (!s_con)
+		return FALSE;
+
+	if (NM_IS_DEVICE_802_3_ETHERNET (device)) {
+		if (strcmp (s_con->type, "802-3-ethernet"))
+			return FALSE;
+	} else if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+		NMSettingWireless *s_wireless;
+		NMSettingWirelessSecurity *s_wireless_sec;
+		const GByteArray *ap_ssid;
+		guint32 flags, wpa_flags, rsn_flags;
+
+		if (strcmp (s_con->type, "802-11-wireless"))
+			return FALSE;
+
+		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, "802-11-wireless");
+		if (!s_wireless)
+			return FALSE;
+
+		ap_ssid = nm_access_point_get_ssid (ap);
+		if (!nm_utils_same_ssid (s_wireless->ssid, ap_ssid, TRUE))
+			return FALSE;
+
+		if (!nm_ap_check_compatible (ap, connection))
+			return FALSE;
+	}
+
+out:
+	return TRUE;
+}
+
 /*
  * nma_menu_item_activate
  *
@@ -492,60 +734,86 @@ static void
 nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 {
 	DeviceMenuItemInfo *info = (DeviceMenuItemInfo *) user_data;
+	NMConnection *connection = NULL;
+	char *con_path = NULL;
 	NMSetting *setting = NULL;
 	char *specific_object = "/";
+	GSList *elt, *connections;
 
-	// FIXME: find & use an existing connection that may apply
-	// to the device/ap being activated here
+	connections = applet_dbus_settings_list_connections (APPLET_DBUS_SETTINGS (info->applet->settings));
+	for (elt = connections; elt; elt = g_slist_next (elt)) {
+		NMConnectionSettings *applet_connection = NM_CONNECTION_SETTINGS (elt->data);
 
-	if (NM_IS_DEVICE_802_3_ETHERNET (info->device)) {
-		setting = nm_setting_wired_new ();
-		specific_object = NULL;
-	} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
-		NMSettingWireless *wireless;
-		const GByteArray *ap_ssid;
-
-		setting = nm_setting_wireless_new ();
-		wireless = (NMSettingWireless *) setting;
-
-		// FIXME: have some sort of NMSettingWireless and
-		// NMSettingWirelessSecurity constructors that take an NMAccessPoint
-		// as input and spit out compatible Settings
-
-		ap_ssid = nm_access_point_get_ssid (info->ap);
-		wireless->ssid = g_byte_array_sized_new (ap_ssid->len);
-		g_byte_array_append (wireless->ssid, ap_ssid->data, ap_ssid->len);
-
-		wireless->mode = g_strdup ("infrastructure");
-
-		specific_object = (char *) nm_object_get_path (NM_OBJECT (info->ap));
-	} else
-		g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
-
-	if (setting) {
-		AppletDbusConnectionSettings *exported_con;
-		NMConnection *connection;
-		NMSettingConnection *s_con;
-
-		connection = nm_connection_new ();
-		nm_connection_add_setting (connection, setting);
-
-		s_con = (NMSettingConnection *) nm_setting_connection_new ();
-		s_con->name = g_strdup ("Auto");
-		s_con->type = g_strdup (setting->name);
-		s_con->autoconnect = FALSE;
-		nm_connection_add_setting (connection, (NMSetting *) s_con);
-
-		exported_con = applet_dbus_settings_add_connection (APPLET_DBUS_SETTINGS (info->applet->settings),
-		                                                    connection);
-		if (exported_con) {
-			nm_device_activate (info->device,
-			                    NM_DBUS_SERVICE_USER_SETTINGS,
-			                    nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con)),
-			                    (const char *) specific_object);
-		} else {
-			nm_warning ("Couldn't create default connection.");
+		if (find_connection (applet_connection, info->device, info->ap)) {
+			connection = applet_dbus_connection_settings_get_connection (applet_connection);
+			con_path = (char *) nm_connection_settings_get_dbus_object_path (applet_connection);
+			break;
 		}
+	}
+
+	if (connection) {
+		NMSettingConnection *s_con;
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
+		g_warning ("Found connection %s to activate at %s.", s_con->name, con_path);
+	} else {
+		if (NM_IS_DEVICE_802_3_ETHERNET (info->device)) {
+			setting = nm_setting_wired_new ();
+			specific_object = NULL;
+		} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
+			NMSettingWireless *wireless;
+			const GByteArray *ap_ssid;
+			int mode;
+
+			setting = nm_setting_wireless_new ();
+			wireless = (NMSettingWireless *) setting;
+
+			// FIXME: have some sort of NMSettingWireless and
+			// NMSettingWirelessSecurity constructors that take an NMAccessPoint
+			// as input and spit out compatible Settings
+
+			ap_ssid = nm_access_point_get_ssid (info->ap);
+			wireless->ssid = g_byte_array_sized_new (ap_ssid->len);
+			g_byte_array_append (wireless->ssid, ap_ssid->data, ap_ssid->len);
+
+			mode = nm_access_point_get_mode (info->ap);
+			if (mode == IW_MODE_ADHOC)
+				wireless->mode = g_strdup ("adhoc");
+			else if (mode == IW_MODE_INFRA)
+				wireless->mode = g_strdup ("infrastructure");
+		} else
+			g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
+
+		if (setting) {
+			AppletDbusConnectionSettings *exported_con;
+			NMSettingConnection *s_con;
+
+			connection = nm_connection_new ();
+			nm_connection_add_setting (connection, setting);
+
+			s_con = (NMSettingConnection *) nm_setting_connection_new ();
+			s_con->name = g_strdup ("Auto");
+			s_con->type = g_strdup (setting->name);
+			s_con->autoconnect = FALSE;
+			nm_connection_add_setting (connection, (NMSetting *) s_con);
+
+			exported_con = applet_dbus_settings_add_connection (APPLET_DBUS_SETTINGS (info->applet->settings),
+			                                                    connection);
+			if (exported_con) {
+				con_path = (char *) nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
+			} else {
+				nm_warning ("Couldn't create default connection.");
+			}
+		}
+	}
+
+	if (connection) {
+		if (NM_IS_DEVICE_802_11_WIRELESS (info->device))
+			specific_object = (char *) nm_object_get_path (NM_OBJECT (info->ap));
+
+		nm_device_activate (info->device,
+		                    NM_DBUS_SERVICE_USER_SETTINGS,
+		                    con_path,
+		                    (const char *) specific_object);
 	}
 
 //	nmi_dbus_signal_user_interface_activated (info->applet->connection);
@@ -939,7 +1207,7 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 
 		item = nm_network_menu_item_new (cb_data->applet->encryption_size_group,
 		                                 dup_data.hash, AP_HASH_LEN);
-		nm_network_menu_item_set_ssid (NM_NETWORK_MENU_ITEM (item), ssid);
+		nm_network_menu_item_set_ssid (NM_NETWORK_MENU_ITEM (item), (GByteArray *) ssid);
 		nm_network_menu_item_set_strength (NM_NETWORK_MENU_ITEM (item), strength);
 		nm_network_menu_item_set_detail (NM_NETWORK_MENU_ITEM (item),
 		                                 ap, cb_data->applet->adhoc_icon);
@@ -1184,7 +1452,7 @@ get_vpn_connections (NMApplet *applet)
 	GSList *iter;
 	GSList *list = NULL;
 
-	all_connections = applet_dbus_settings_list_connections (applet->settings);
+	all_connections = applet_dbus_settings_list_connections (APPLET_DBUS_SETTINGS (applet->settings));
 
 	for (iter = all_connections; iter; iter = iter->next) {
 		AppletDbusConnectionSettings *applet_settings = (AppletDbusConnectionSettings *) iter->data;
