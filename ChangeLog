@@ -1,5 +1,16 @@
 2007-09-20  Dan Williams <dcbw@redhat.com>
 
+	* src/connection-editor/nm-connection-list.c
+		- (edit_connection_cb): correctly pull the NMConnection out of the
+			tree view selection
+		- (load_connections): keep track of the GConf path of the connection
+			so that it's easier to update it later if it gets changed underneath
+			the connection editor
+		- (list_selection_changed_cb, nm_connection_list_init): button
+			sensitivity should track selection
+
+2007-09-20  Dan Williams <dcbw@redhat.com>
+
 	* src/gconf-helpers/gconf-helpers.h
 	  src/gconf-helpers/gconf-helpers.c
 	  src/gconf-helpers/Makefile.am

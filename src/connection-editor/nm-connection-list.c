@@ -57,6 +57,7 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 	GList *selected_rows;
 	GtkTreeModel *model = NULL;
 	NMConnectionList *list = NM_CONNECTION_LIST (user_data);
+	GtkTreeIter iter;
 
 	/* get selected row from the tree view */
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list->connection_list));
@@ -64,28 +65,21 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 		return;
 
 	selected_rows = gtk_tree_selection_get_selected_rows (selection, &model);
-	if (selected_rows != NULL) {
-		GtkTreeIter iter;
+	if (!selected_rows)
+		return;
+	
+	if (!gtk_tree_model_get_iter (model, &iter, (GtkTreePath *) selected_rows->data))
+		goto out;
 
-		if (gtk_tree_model_get_iter (model, &iter, (GtkTreePath *) selected_rows->data)) {
-			gchar *name;
+	gtk_tree_model_get (model, &iter, 1, &connection, -1);
+	editor = nm_connection_editor_new (connection, NM_CONNECTION_EDITOR_PAGE_DEFAULT);
+	nm_connection_editor_run_and_close (editor);
+	g_object_unref (editor);
 
-			gtk_tree_model_get (model, &iter, 0, &name);
-			connection = g_hash_table_lookup (list->connections, name);
-			if (connection) {
-				editor = nm_connection_editor_new (connection, NM_CONNECTION_EDITOR_PAGE_DEFAULT);
-				nm_connection_editor_run_and_close (editor);
-
-				g_object_unref (editor);
-			}
-
-			g_free (name);
-		}
-
-		/* free memory */
-		g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
-		g_list_free (selected_rows);
-	}
+out:
+	/* free memory */
+	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
+	g_list_free (selected_rows);
 }
 
 static void
@@ -112,7 +106,23 @@ hash_add_connection_to_list (gpointer key, gpointer value, gpointer user_data)
 		return;
 
 	gtk_list_store_append (model, &iter);
-	gtk_list_store_set (model, &iter, 0, s_connection->name, -1);
+	gtk_list_store_set (model, &iter,
+	                    0, s_connection->name,
+	                    1, connection,
+	                    -1);
+}
+
+static void
+destroy_connection_data (gpointer data, GObject *object)
+{
+	char *path;
+
+	g_return_if_fail (NM_IS_CONNECTION (object));
+
+	path = g_object_get_data (object, "gconf-path");
+	if (path)
+		g_free (path);
+	g_object_set_data (object, "gconf-path", NULL);
 }
 
 static void
@@ -136,9 +146,12 @@ load_connections (NMConnectionList *list)
 		if (connection) {
 			NMSettingConnection *s_con;
 
+			g_object_set_data (G_OBJECT (connection), "gconf-path", g_strdup (dir));
+			g_object_weak_ref (G_OBJECT (connection), destroy_connection_data, NULL);
+
 			s_con = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
 			g_hash_table_insert (list->connections,
-			                     g_strdup (s_con->name),
+			                     g_strdup (dir),
 			                     connection);
 		}
 
@@ -149,10 +162,27 @@ load_connections (NMConnectionList *list)
 }
 
 static void
+list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
+{
+	NMConnectionList *list = NM_CONNECTION_LIST (user_data);
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+
+	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+		gtk_widget_set_sensitive (GTK_WIDGET (list->edit_button), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (list->delete_button), TRUE);
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (list->edit_button), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (list->delete_button), FALSE);
+	}
+}
+
+static void
 nm_connection_list_init (NMConnectionList *list)
 {
 	GtkListStore *model;
 	GtkCellRenderer *renderer = NULL;
+	GtkTreeSelection *select;
 
 	list->client = gconf_client_get_default ();
 
@@ -172,14 +202,21 @@ nm_connection_list_init (NMConnectionList *list)
 
 	list->connection_list = glade_xml_get_widget (list->gui, "connection_list");
 
-	model = gtk_list_store_new (1, G_TYPE_STRING);
+	model = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_OBJECT, G_TYPE_STRING);
 	g_hash_table_foreach (list->connections,
-					  (GHFunc) hash_add_connection_to_list, model);
+	                      (GHFunc) hash_add_connection_to_list,
+	                      model);
 	gtk_tree_view_set_model (GTK_TREE_VIEW (list->connection_list), GTK_TREE_MODEL (model));
 	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (list->connection_list),
-												-1, "Name", gtk_cell_renderer_text_new (),
-												"text", 0,
-												NULL);
+	                                             -1, "Name", gtk_cell_renderer_text_new (),
+	                                             "text", 0,
+	                                             NULL);
+	select = gtk_tree_view_get_selection (GTK_TREE_VIEW (list->connection_list));
+	gtk_tree_selection_set_mode (select, GTK_SELECTION_SINGLE);
+	g_signal_connect (G_OBJECT (select),
+	                  "changed",
+	                  G_CALLBACK (list_selection_changed_cb),
+	                  list);
 
 	/* buttons */
 	list->add_button = glade_xml_get_widget (list->gui, "add_connection_button");
