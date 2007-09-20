@@ -19,6 +19,7 @@
  * (C) Copyright 2007 Red Hat, Inc.
  */
 
+#include <ctype.h>
 #include <config.h>
 #include <nm-connection.h>
 #include <dbus/dbus-glib.h>
@@ -27,7 +28,7 @@
 #include <string.h>
 
 #include "password-dialog.h"
-
+#include "nm-utils.h"
 
 static void
 update_button_cb (GtkWidget *unused, gpointer user_data)
@@ -99,29 +100,6 @@ entry_changed_cb (GtkWidget *entry,
 	update_button_cb (NULL, dialog);
 }
 
-static GError *
-new_error (const gchar *format, ...)
-{
-	GError *err;
-	va_list args;
-	gchar *msg;
-	static GQuark domain_quark = 0;
-
-	va_start (args, format);
-	msg = g_strdup_vprintf (format, args);
-	va_end (args);
-
-	if (domain_quark == 0) {
-		domain_quark = g_quark_from_static_string ("nm-settings-error-quark");
-	}
-
-	err = g_error_new_literal (domain_quark, -1, (const gchar *) msg);
-
-	g_free (msg);
-
-	return err;
-}
-
 static void
 destroy_gvalue (gpointer data)
 {
@@ -137,12 +115,11 @@ response_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	GladeXML *xml;
 	GtkWidget *entry;
 	const char *key;
-	NMConnection *connection;
+	NMConnection *connection = NULL;
 	NMSettingConnection *s_con;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	const char *setting_name;
 	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringAttribute attr;
 	char *name = NULL, *key_name = NULL;
 	guint32 id;
 	GHashTable *secrets;
@@ -214,9 +191,12 @@ response_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	g_hash_table_destroy (secrets);
 
 out:
-	g_object_set_data (G_OBJECT (connection), "dialog", NULL);
-	gtk_widget_hide (dialog);
-	gtk_widget_destroy (dialog);
+	if (connection)
+		g_object_set_data (G_OBJECT (connection), "dialog", NULL);
+	if (dialog) {
+		gtk_widget_hide (dialog);
+		gtk_widget_destroy (dialog);
+	}
 }
 
 static void
@@ -242,7 +222,6 @@ nma_password_dialog_new (NMConnection *connection,
 	GtkWidget *entry;
 	const char *orig_label_text;
 	char *new_label_text;
-	const GByteArray *ssid;
 	char buf[33];
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);

@@ -451,7 +451,6 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 						 GHashTable *value)
 {
 	char *gc_key;
-	int i;
 	WritePropertiesInfo info;
 
 	g_return_val_if_fail (network != NULL, FALSE);

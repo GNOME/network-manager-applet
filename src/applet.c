@@ -701,9 +701,7 @@ find_connection (NMConnectionSettings *applet_connection,
 			return FALSE;
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
 		NMSettingWireless *s_wireless;
-		NMSettingWirelessSecurity *s_wireless_sec;
 		const GByteArray *ap_ssid;
-		guint32 flags, wpa_flags, rsn_flags;
 
 		if (strcmp (s_con->type, "802-11-wireless"))
 			return FALSE;
@@ -720,7 +718,6 @@ find_connection (NMConnectionSettings *applet_connection,
 			return FALSE;
 	}
 
-out:
 	return TRUE;
 }
 
@@ -945,7 +942,6 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 static void
 nma_menu_configure_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 {
-	NMApplet	*applet = (NMApplet *)user_data;
 	const char *argv[] = { BINDIR "/nm-vpn-properties", NULL};
 
 	g_spawn_async (NULL, (gchar **) argv, NULL, 0, NULL, NULL, NULL, NULL);
@@ -1238,28 +1234,6 @@ out:
 }
 
 
-/*
- * nma_has_encrypted_networks_helper
- *
- */
-static void
-nma_has_encrypted_networks_helper (gpointer data, gpointer user_data)
-{
-	NMAccessPoint *ap = NM_ACCESS_POINT (data);
-	gboolean *has_encrypted = user_data;
-	guint32 flags, wpa_flags, rsn_flags;
-
-	flags = nm_access_point_get_flags (ap);
-	wpa_flags = nm_access_point_get_wpa_flags (ap);
-	rsn_flags = nm_access_point_get_rsn_flags (ap);
-
-	if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
-	    || (wpa_flags != NM_802_11_AP_SEC_NONE)
-	    || (rsn_flags != NM_802_11_AP_SEC_NONE))
-		*has_encrypted = TRUE;
-}
-
-
 static gint
 sort_wireless_networks (gconstpointer tmpa,
                         gconstpointer tmpb)
@@ -1546,8 +1520,6 @@ nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
  */
 static void nma_menu_clear (NMApplet *applet)
 {
-	GList * children;
-
 	g_return_if_fail (applet != NULL);
 
 	if (applet->menu)
@@ -1965,53 +1937,12 @@ nma_setup_widgets (NMApplet *applet)
 }
 
 
-/*
- * nma_gconf_info_notify_callback
- *
- * Callback from gconf when wireless key/values have changed.
- *
- */
-static void nma_gconf_info_notify_callback (GConfClient *client, guint connection_id, GConfEntry *entry, gpointer user_data)
-{
-	NMApplet *	applet = (NMApplet *)user_data;
-	const char *		key = NULL;
-
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (entry != NULL);
-	g_return_if_fail (applet != NULL);
-
-	if ((key = gconf_entry_get_key (entry)))
-	{
-		int	net_path_len = strlen (GCONF_PATH_WIRELESS_NETWORKS) + 1;
-
-		if (strncmp (GCONF_PATH_WIRELESS_NETWORKS"/", key, net_path_len) == 0)
-		{
-			char 	*network = g_strdup ((key + net_path_len));
-			char		*slash_pos;
-			char		*unescaped_network;
-
-			/* If its a key under the network name, zero out the slash so we
-			 * are left with only the network name.
-			 */
-			unescaped_network = gconf_unescape_key (network, strlen (network));
-			if ((slash_pos = strchr (unescaped_network, '/')))
-				*slash_pos = '\0';
-
-//			nmi_dbus_signal_update_network (applet->connection, unescaped_network, NETWORK_TYPE_ALLOWED);
-			g_free (unescaped_network);
-			g_free (network);
-		}
-	}
-}
-
-
 /*****************************************************************************/
 
 static void
 foo_update_icon (NMApplet *applet)
 {
 	GdkPixbuf	*pixbuf;
-	GtkRequisition requisition;
 	int i;
 
 	if (!applet->icon_layers[0]) {

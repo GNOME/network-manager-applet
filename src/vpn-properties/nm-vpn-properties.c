@@ -604,7 +604,9 @@ static gboolean vpn_druid_cancel (void *ignored, gpointer user_data)
 static void
 add_cb (GtkButton *button, gpointer user_data)
 {
+#if !GTK_CHECK_VERSION(2, 10, 0)
     gint result;
+#endif
 
 	/* Bail out if we don't have any VPN implementations on our system */
 	if (vpn_types == NULL || g_slist_length (vpn_types) == 0) {

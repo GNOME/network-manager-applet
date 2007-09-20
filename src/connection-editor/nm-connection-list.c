@@ -170,7 +170,6 @@ static void
 nm_connection_list_init (NMConnectionList *list)
 {
 	GtkListStore *model;
-	GtkCellRenderer *renderer = NULL;
 	GtkTreeSelection *select;
 
 	list->client = gconf_client_get_default ();

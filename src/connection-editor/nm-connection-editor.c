@@ -20,6 +20,7 @@
  * (C) Copyright 2004-2005 Red Hat, Inc.
  */
 
+#include <string.h>
 #include <gtk/gtkcombobox.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkentry.h>

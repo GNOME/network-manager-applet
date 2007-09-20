@@ -405,7 +405,6 @@ add_keyring_item (const char *connection_name,
 	                                      TRUE,
 	                                      &id);
 
-out:
 	gnome_keyring_attribute_list_free (attrs);
 	g_free (display_name);
 }
@@ -671,7 +670,6 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	NMSettingConnection *s_con;
 	NMSetting *setting;
 	GList *elt;
-	GtkDialog *dialog;
 
 	g_return_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection));
 	g_return_if_fail (NM_IS_CONNECTION (applet_connection->connection));
@@ -689,8 +687,8 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
 	                                                           "connection");
 	if (!s_con || !s_con->name || !strlen (s_con->name)) {
-		nm_warning ("Connection didn't have the required 'connection' setting,",
-		           " or the connection name was invalid.");
+		nm_warning ("Connection didn't have the required 'connection' setting, "
+		            "or the connection name was invalid.");
 		error = new_error ("%s.%d - Connection didn't have required 'connection'"
 		                   " setting, or the connection name was invalid.",
 		                   __FILE__, __LINE__);

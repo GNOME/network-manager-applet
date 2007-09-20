@@ -83,7 +83,6 @@ static void
 applet_dbus_manager_finalize (GObject *object)
 {
 	AppletDBusManager *	self = APPLET_DBUS_MANAGER (object);
-	AppletDBusManagerPrivate *priv = APPLET_DBUS_MANAGER_GET_PRIVATE (object);
 
 	applet_dbus_manager_cleanup (self);
 
@@ -249,8 +248,6 @@ applet_dbus_manager_init_bus (AppletDBusManager *self)
 {
 	AppletDBusManagerPrivate *priv = APPLET_DBUS_MANAGER_GET_PRIVATE (self);
 	GError *err = NULL;
-	DBusError	error;
-	gboolean	success = FALSE;
 
 	if (priv->connection) {
 		nm_warning ("DBus Manager already has a valid connection.");
@@ -306,7 +303,6 @@ applet_dbus_manager_start_service (AppletDBusManager *self)
 	AppletDBusManagerPrivate *priv;
 	int flags;
 	int request_name_result;
-	GSList *elt;
 	GError *err = NULL;
 
 	g_return_val_if_fail (APPLET_IS_DBUS_MANAGER (self), FALSE);

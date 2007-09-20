@@ -20,6 +20,8 @@
  * (C) Copyright 2004-2005 Red Hat, Inc.
  */
 
+#include <gtk/gtk.h>
+
 #include "nm-connection-editor.h"
 
 int
