@@ -28,6 +28,7 @@
 #include "applet-dbus-manager.h"
 #include "gconf-helpers.h"
 #include "nm-utils.h"
+#include "password-dialog.h"
 
 static NMConnectionSettings * applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
                                                                                    const gchar *conf_dir,
@@ -642,6 +643,22 @@ new_error (const gchar *format, ...)
 }
 
 static void
+get_user_key (NMConnection *connection,
+              const char *setting_name,
+              DBusGMethodInvocation *context)
+{
+	GtkWidget *dialog;
+
+	dialog = g_object_get_data (G_OBJECT (connection), "dialog");
+	if (!dialog)
+		dialog = nma_password_dialog_new (connection, setting_name, context);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+}
+
+static void
 applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
                                              const gchar *setting_name,
                                              DBusGMethodInvocation *context)
@@ -654,6 +671,7 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	NMSettingConnection *s_con;
 	NMSetting *setting;
 	GList *elt;
+	GtkDialog *dialog;
 
 	g_return_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection));
 	g_return_if_fail (NM_IS_CONNECTION (applet_connection->connection));
@@ -693,14 +711,14 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	if (ret != GNOME_KEYRING_RESULT_OK) {
 		nm_info ("No keyring secrets found for %s/%s; ask the user",
 		         s_con->name, setting_name);
-		// FIXME: actually ask the user
+		get_user_key (applet_connection->connection, setting_name, context);
 		return;
 	}
 
 	if (g_list_length (found_list) == 0) {
 		nm_info ("No keyring secrets found for %s/%s; ask the user",
 		         s_con->name, setting_name);
-		// FIXME: actually ask the user
+		get_user_key (applet_connection->connection, setting_name, context);
 		goto free_found_list;
 	}
 
@@ -724,11 +742,10 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 		}
 
 		if (key_name != NULL) {
-			fprintf (stderr, "Adding %s:: %s\n", key_name, found->secret);
 			g_hash_table_insert (secrets,
 			                     g_strdup (key_name),
 			                     string_to_gvalue (found->secret));
-		  dbus_g_method_return (context, secrets);
+			dbus_g_method_return (context, secrets);
 		} else {
 			nm_warning ("Keyring item '%s/%s' didn't have a 'setting-key' attribute.",
 			            s_con->name, setting_name);
@@ -737,6 +754,9 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 			dbus_g_method_return_error (context, error);
 			g_error_free (error);
 		}
+
+		if (secrets)
+			g_hash_table_destroy (secrets);
 	}
 
 free_found_list:
