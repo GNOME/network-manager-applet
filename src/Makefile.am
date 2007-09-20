@@ -62,7 +62,7 @@ endif
 
 nm_applet_LDADD = \
 	$(NMA_LIBS) \
-	${top_srcdir}/src/gconf-helpers/libgconf-helpers.la
+	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
 
 if WITH_NOTIFY
 nm_applet_LDADD += $(NOTIFY_LIBS)
@@ -89,4 +89,5 @@ CLEANFILES = *.bak *.gladep
 
 EXTRA_DIST = 				\
 	$(glade_DATA)			\
+	applet-marshal.list		\
 	$(NULL)

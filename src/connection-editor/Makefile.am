@@ -25,7 +25,7 @@ nm_connection_editor_SOURCES =	\
 
 nm_connection_editor_LDADD = \
 	$(NMA_LIBS) \
-	${top_srcdir}/src/gconf-helpers/libgconf-helpers.la
+	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
 
 gladedir = $(datadir)/nm-applet
 glade_DATA = nm-connection-editor.glade
