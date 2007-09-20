@@ -24,6 +24,9 @@
 
 #include <gconf/gconf-client.h>
 #include <glib.h>
+#include <nm-connection.h>
+
+#define GCONF_PATH_CONNECTIONS "/system/networking/connections"
 
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,
@@ -97,6 +100,9 @@ nm_gconf_set_bytearray_helper (GConfClient *client,
                                const char *network,
                                GByteArray *value);
 
+NMConnection *
+nm_gconf_read_connection (GConfClient *client,
+                          const char *dir);
 
 #endif	/* GCONF_HELPERS_H */
 

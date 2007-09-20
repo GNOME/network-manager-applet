@@ -283,140 +283,25 @@ applet_dbus_connection_settings_class_init (AppletDbusConnectionSettingsClass *a
 }
 
 static void
-read_one_setting_value_from_gconf (NMSetting *setting,
-                                   const char *key,
-                                   guint32 type,
-                                   void *value,
-                                   gboolean secret,
-                                   gpointer user_data)
-{
-	AppletDbusConnectionSettings * applet_connection = APPLET_DBUS_CONNECTION_SETTINGS (user_data);
-
-	switch (type) {
-		case NM_S_TYPE_STRING: {
-			char **str_val = (char **) value;
-			nm_gconf_get_string_helper (applet_connection->conf_client,
-			                            applet_connection->conf_dir,
-			                            key,
-			                            setting->name,
-			                            str_val);
-			break;
-		}
-		case NM_S_TYPE_UINT32: {
-			guint32 *uint_val = (guint32 *) value;
-			nm_gconf_get_int_helper (applet_connection->conf_client,
-			                         applet_connection->conf_dir,
-			                         key,
-			                         setting->name,
-			                         uint_val);
-			break;
-		}
-		case NM_S_TYPE_BOOL: {
-			gboolean *bool_val = (gboolean *) value;
-			nm_gconf_get_bool_helper (applet_connection->conf_client,
-			                          applet_connection->conf_dir,
-			                          key,
-			                          setting->name,
-			                          bool_val);
-			break;
-		}
-
-		case NM_S_TYPE_BYTE_ARRAY: {
-			GByteArray **ba_val = (GByteArray **) value;
-			nm_gconf_get_bytearray_helper (applet_connection->conf_client,
-			                               applet_connection->conf_dir,
-			                               key,
-			                               setting->name,
-			                               ba_val);
-			break;
-		}
-
-		case NM_S_TYPE_STRING_ARRAY: {
-			GSList **sa_val = (GSList **) value;
-			nm_gconf_get_stringlist_helper (applet_connection->conf_client,
-			                                applet_connection->conf_dir,
-			                                key,
-			                                setting->name,
-			                                sa_val);
-			break;
-		}
-	}
-}
-
-static void
-read_connection_from_gconf (AppletDbusConnectionSettings *applet_connection)
-{
-	NMConnection *connection;
-	NMSetting *setting;
-	char *key;
-
-	/* retrieve ID */
-	g_free (applet_connection->id);
-	applet_connection->id = NULL;
-	nm_gconf_get_string_helper (applet_connection->conf_client,
-						   applet_connection->conf_dir,
-						   "name", "connection",
-						   &applet_connection->id);
-
-	/* connection settings */
-	connection = nm_connection_new ();
-
-	setting = nm_setting_connection_new ();
-	nm_setting_enumerate_values (setting,
-	                             read_one_setting_value_from_gconf,
-	                             applet_connection);
-	nm_connection_add_setting (connection, setting);
-
-	/* wireless settings */
-	key = g_strdup_printf ("%s/802-11-wireless", applet_connection->conf_dir);
-	if (gconf_client_dir_exists (applet_connection->conf_client, key, NULL)) {
-		setting = nm_setting_wireless_new ();
-		nm_setting_enumerate_values (setting,
-		                             read_one_setting_value_from_gconf,
-		                             applet_connection);
-		nm_connection_add_setting (connection, setting);
-	}
-	g_free (key);
-
-	/* wireless security settings */
-	key = g_strdup_printf ("%s/802-11-wireless-security", applet_connection->conf_dir);
-	if (gconf_client_dir_exists (applet_connection->conf_client, key, NULL)) {
-		setting = nm_setting_wireless_security_new ();
-		nm_setting_enumerate_values (setting,
-		                             read_one_setting_value_from_gconf,
-		                             applet_connection);
-		nm_connection_add_setting (connection, setting);
-	}
-	g_free (key);
-
-	/* wired settings */
-	key = g_strdup_printf ("%s/802-3-ethernet", applet_connection->conf_dir);
-	if (gconf_client_dir_exists (applet_connection->conf_client, key, NULL)) {
-		setting = nm_setting_wired_new ();
-		nm_setting_enumerate_values (setting,
-		                             read_one_setting_value_from_gconf,
-		                             applet_connection);
-		nm_connection_add_setting (connection, setting);
-	}
-	g_free (key);
-
-	/* remove old settings and use new ones */
-	if (applet_connection->connection)
-		g_object_unref (applet_connection->connection);
-	applet_connection->connection = connection;
-}
-
-static void
 connection_settings_changed_cb (GConfClient *conf_client,
                                 guint cnxn_id,
                                 GConfEntry *entry,
                                 gpointer user_data)
 {
 	GHashTable *settings;
+	NMConnection *connection;
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) user_data;
 
 	/* FIXME: just update the modified field, no need to re-read all */
-	read_connection_from_gconf (applet_connection);
+	connection = nm_gconf_read_connection (applet_connection->conf_client,
+	                                       applet_connection->conf_dir);
+	if (!connection) {
+		g_warning ("Invalid connection read from GConf at %s.", applet_connection->conf_dir);
+		return;
+	}
+	if (applet_connection->connection)
+		g_object_unref (applet_connection->connection);
+	applet_connection->connection = connection;
 
 	settings = nm_connection_to_hash (applet_connection->connection);
 	nm_connection_settings_signal_updated (NM_CONNECTION_SETTINGS (applet_connection), settings);
@@ -437,7 +322,12 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 	applet_connection->conf_dir = g_strdup (conf_dir);
 
 	/* retrieve GConf data */
-	read_connection_from_gconf (applet_connection);
+	applet_connection->connection = nm_gconf_read_connection (conf_client, conf_dir);
+	if (!applet_connection->connection) {
+		g_warning ("Invalid connection read from GConf at %s.", conf_dir);
+		g_object_unref (applet_connection);
+		return NULL;
+	}
 
 	/* set GConf notifications */
 	gconf_client_add_dir (conf_client, conf_dir, GCONF_CLIENT_PRELOAD_NONE, NULL);

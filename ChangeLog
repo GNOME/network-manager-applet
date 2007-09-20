@@ -1,3 +1,30 @@
+2007-09-20  Dan Williams <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.h
+	  src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/Makefile.am
+	  src/connection-editor/Makefile.am
+	  src/Makefile.am
+	  configure.ac
+		- Move gconf helpers into their own directory and make them a libtool
+			library so that both the applet and the connection tool can use them
+		- (nm_gconf_read_connection): new function, move bits from
+			applet-dbus-settings.c that parse NMConnections from GConf
+
+	* src/connection-editor/nm-connection-list.c
+	  src/connection-editor/nm-connection-list.h
+		- (hash_add_connection_to_list): ensure list is terminated when adding
+			connection to list store
+		- (load_connections): new function; read connection from GConf
+		- (nm_connection_list_init): call load_connections(), add a cell renderer
+			to the tree view widget so that connections are displayed in the list
+
+	* src/applet-dbus-settings.c
+		- (read_one_setting_value_from_gconf, read_connection_from_gconf): move
+			to gconf-helpers/gconf-helpers.c
+		- (connection_settings_changed_cb, applet_dbus_connection_settings_new):
+			use gconf-helpers implementations for reading connection from GConf
+
 2007-09-20  Rodrigo Moya <rodrigo@gnome-db.org>
 
 	* src/connection-editor/Makefile.am: install Glade file in the same

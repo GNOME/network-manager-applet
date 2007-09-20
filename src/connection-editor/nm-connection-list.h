@@ -36,6 +36,8 @@ typedef struct {
 	/* private data */
 	GHashTable *connections;
 
+	GConfClient *client;
+
 	GladeXML *gui;
 	GtkWidget *dialog;
 	GtkWidget *connection_list;

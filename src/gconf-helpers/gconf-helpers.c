@@ -330,3 +330,113 @@ nm_gconf_set_bytearray_helper (GConfClient *client,
 	return TRUE;
 }
 
+typedef struct ReadFromGConfInfo {
+	GConfClient *client;
+	const char *dir;
+} ReadFromGConfInfo;
+
+static void
+read_one_setting_value_from_gconf (NMSetting *setting,
+                                   const char *key,
+                                   guint32 type,
+                                   void *value,
+                                   gboolean secret,
+                                   gpointer user_data)
+{
+	ReadFromGConfInfo *info = (ReadFromGConfInfo *) user_data;
+
+	switch (type) {
+		case NM_S_TYPE_STRING: {
+			char **str_val = (char **) value;
+			nm_gconf_get_string_helper (info->client, info->dir, key,
+			                            setting->name, str_val);
+			break;
+		}
+		case NM_S_TYPE_UINT32: {
+			guint32 *uint_val = (guint32 *) value;
+			nm_gconf_get_int_helper (info->client, info->dir, key,
+			                         setting->name, uint_val);
+			break;
+		}
+		case NM_S_TYPE_BOOL: {
+			gboolean *bool_val = (gboolean *) value;
+			nm_gconf_get_bool_helper (info->client, info->dir, key,
+			                          setting->name, bool_val);
+			break;
+		}
+
+		case NM_S_TYPE_BYTE_ARRAY: {
+			GByteArray **ba_val = (GByteArray **) value;
+			nm_gconf_get_bytearray_helper (info->client, info->dir, key,
+			                               setting->name, ba_val);
+			break;
+		}
+
+		case NM_S_TYPE_STRING_ARRAY: {
+			GSList **sa_val = (GSList **) value;
+			nm_gconf_get_stringlist_helper (info->client, info->dir, key,
+			                                setting->name, sa_val);
+			break;
+		}
+	}
+}
+
+NMConnection *
+nm_gconf_read_connection (GConfClient *client,
+                          const char *dir)
+{
+	ReadFromGConfInfo *info;
+	NMConnection *connection;
+	NMSetting *setting;
+	char *key;
+
+	info = g_slice_new0 (ReadFromGConfInfo);
+	info->client = client;
+	info->dir = dir;
+
+	/* connection settings */
+	connection = nm_connection_new ();
+
+	setting = nm_setting_connection_new ();
+	nm_setting_enumerate_values (setting,
+	                             read_one_setting_value_from_gconf,
+	                             info);
+	nm_connection_add_setting (connection, setting);
+
+	/* wireless settings */
+	key = g_strdup_printf ("%s/802-11-wireless", dir);
+	if (gconf_client_dir_exists (client, key, NULL)) {
+		setting = nm_setting_wireless_new ();
+		nm_setting_enumerate_values (setting,
+		                             read_one_setting_value_from_gconf,
+		                             info);
+		nm_connection_add_setting (connection, setting);
+	}
+	g_free (key);
+
+	/* wireless security settings */
+	key = g_strdup_printf ("%s/802-11-wireless-security", dir);
+	if (gconf_client_dir_exists (client, key, NULL)) {
+		setting = nm_setting_wireless_security_new ();
+		nm_setting_enumerate_values (setting,
+		                             read_one_setting_value_from_gconf,
+		                             info);
+		nm_connection_add_setting (connection, setting);
+	}
+	g_free (key);
+
+	/* wired settings */
+	key = g_strdup_printf ("%s/802-3-ethernet", dir);
+	if (gconf_client_dir_exists (client, key, NULL)) {
+		setting = nm_setting_wired_new ();
+		nm_setting_enumerate_values (setting,
+		                             read_one_setting_value_from_gconf,
+		                             info);
+		nm_connection_add_setting (connection, setting);
+	}
+	g_free (key);
+
+	g_slice_free (ReadFromGConfInfo, info);
+	return connection;
+}
+

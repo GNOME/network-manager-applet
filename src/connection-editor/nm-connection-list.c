@@ -27,8 +27,11 @@
 #include <gtk/gtkliststore.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
+#include <gtk/gtkcellrenderertext.h>
+#include <gconf/gconf-client.h>
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
+#include "gconf-helpers.h"
 
 G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
 
@@ -91,6 +94,12 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 }
 
 static void
+dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
+{
+	gtk_widget_hide (GTK_WIDGET (dialog));
+}
+
+static void
 hash_add_connection_to_list (gpointer key, gpointer value, gpointer user_data)
 {
 	NMSettingConnection *s_connection;
@@ -103,22 +112,53 @@ hash_add_connection_to_list (gpointer key, gpointer value, gpointer user_data)
 		return;
 
 	gtk_list_store_append (model, &iter);
-	gtk_list_store_set (model, &iter, s_connection->name);
+	gtk_list_store_set (model, &iter, 0, s_connection->name, -1);
 }
 
 static void
-dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
+load_connections (NMConnectionList *list)
 {
-	gtk_widget_hide (dialog);
+	GSList *conf_list;
+
+	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
+
+	conf_list = gconf_client_all_dirs (list->client, GCONF_PATH_CONNECTIONS, NULL);
+	if (!conf_list) {
+		g_warning ("No connections defined");
+		return;
+	}
+
+	while (conf_list != NULL) {
+		NMConnection *connection;
+		gchar *dir = (gchar *) conf_list->data;
+
+		connection = nm_gconf_read_connection (list->client, dir);
+		if (connection) {
+			NMSettingConnection *s_con;
+
+			s_con = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
+			g_hash_table_insert (list->connections,
+			                     g_strdup (s_con->name),
+			                     connection);
+		}
+
+		conf_list = g_slist_remove (conf_list, dir);
+		g_free (dir);
+	}
+	g_slist_free (conf_list);
 }
 
 static void
 nm_connection_list_init (NMConnectionList *list)
 {
 	GtkListStore *model;
+	GtkCellRenderer *renderer = NULL;
+
+	list->client = gconf_client_get_default ();
 
 	/* read connections */
 	list->connections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+	load_connections (list);
 
 	/* load GUI */
 	list->gui = glade_xml_new (GLADEDIR "/nm-connection-editor.glade", "NMConnectionList", NULL);
@@ -136,6 +176,10 @@ nm_connection_list_init (NMConnectionList *list)
 	g_hash_table_foreach (list->connections,
 					  (GHFunc) hash_add_connection_to_list, model);
 	gtk_tree_view_set_model (GTK_TREE_VIEW (list->connection_list), GTK_TREE_MODEL (model));
+	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (list->connection_list),
+												-1, "Name", gtk_cell_renderer_text_new (),
+												"text", 0,
+												NULL);
 
 	/* buttons */
 	list->add_button = glade_xml_get_widget (list->gui, "add_connection_button");
@@ -184,7 +228,7 @@ nm_connection_list_show (NMConnectionList *list)
 {
 	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
 
-	gtk_widget_show (list);
+	gtk_widget_show (GTK_WIDGET (list));
 }
 
 gint

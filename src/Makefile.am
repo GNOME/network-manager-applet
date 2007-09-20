@@ -1,4 +1,4 @@
-SUBDIRS = connection-editor vpn-properties
+SUBDIRS = gconf-helpers connection-editor vpn-properties
 
 NULL=
 
@@ -16,6 +16,7 @@ nm_applet_CPPFLAGS =									\
 	-DGNOMELOCALEDIR=\"$(datadir)/locale\"					\
 	$(DBUS_CFLAGS)										\
 	$(DISABLE_DEPRECATED)	\
+	-I${top_srcdir}/src/gconf-helpers  \
 	$(NULL)
 
 if WITH_NOTIFY
@@ -37,8 +38,6 @@ nm_applet_SOURCES =			\
 	vpn-connection-info.h		\
 	vpn-password-dialog.c	\
 	vpn-password-dialog.h	\
-	gconf-helpers.c		\
-	gconf-helpers.h		\
 	nm-utils.c \
 	nm-utils.h \
 	gnome-keyring-md5.h \
@@ -59,7 +58,9 @@ if WITH_NOTIFY
 nm_applet_SOURCES += applet-notifications.c applet-notifications.h
 endif
 
-nm_applet_LDADD = $(NMA_LIBS)
+nm_applet_LDADD = \
+	$(NMA_LIBS) \
+	${top_srcdir}/src/gconf-helpers/libgconf-helpers.la
 
 if WITH_NOTIFY
 nm_applet_LDADD += $(NOTIFY_LIBS)

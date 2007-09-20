@@ -11,6 +11,7 @@ nm_connection_editor_CPPFLAGS =			\
 	-DGNOMELOCALEDIR=\"$(datadir)/locale\"	\
 	$(DBUS_CFLAGS)				\
 	$(DISABLE_DEPRECATED)			\
+	-I${top_srcdir}/src/gconf-helpers  \
 	$(NULL)
 
 nm_connection_editor_SOURCES =	\
@@ -22,7 +23,9 @@ nm_connection_editor_SOURCES =	\
 	nm-connection-list.h	\
 	main.c
 
-nm_connection_editor_LDADD = $(NMA_LIBS)
+nm_connection_editor_LDADD = \
+	$(NMA_LIBS) \
+	${top_srcdir}/src/gconf-helpers/libgconf-helpers.la
 
 gladedir = $(datadir)/nm-applet
 glade_DATA = nm-connection-editor.glade
