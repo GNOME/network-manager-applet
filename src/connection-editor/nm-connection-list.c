@@ -113,19 +113,6 @@ hash_add_connection_to_list (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-destroy_connection_data (gpointer data, GObject *object)
-{
-	char *path;
-
-	g_return_if_fail (NM_IS_CONNECTION (object));
-
-	path = g_object_get_data (object, "gconf-path");
-	if (path)
-		g_free (path);
-	g_object_set_data (object, "gconf-path", NULL);
-}
-
-static void
 load_connections (NMConnectionList *list)
 {
 	GSList *conf_list;
@@ -146,10 +133,12 @@ load_connections (NMConnectionList *list)
 		if (connection) {
 			NMSettingConnection *s_con;
 
-			g_object_set_data (G_OBJECT (connection), "gconf-path", g_strdup (dir));
-			g_object_weak_ref (G_OBJECT (connection), destroy_connection_data, NULL);
+			g_object_set_data_full (G_OBJECT (connection),
+							    "gconf-path", 
+							    g_strdup (dir),
+							    (GDestroyNotify) g_free);
 
-			s_con = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
+			s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
 			g_hash_table_insert (list->connections,
 			                     g_strdup (dir),
 			                     connection);
@@ -237,6 +226,7 @@ nm_connection_list_finalize (GObject *object)
 	gtk_widget_destroy (list->dialog);
 	g_object_unref (list->gui);
 	g_hash_table_destroy (list->connections);
+	g_object_unref (list->client);
 
 	G_OBJECT_CLASS (nm_connection_list_parent_class)->finalize (object);
 }

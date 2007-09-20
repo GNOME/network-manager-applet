@@ -1,5 +1,10 @@
 2007-09-20  Tambet Ingo  <tambet@gmail.com>
 
+	* src/connection-editor/nm-connection-list.c (nm_connection_list_finalize):
+	Don't leak GConfClient.
+	(load_connections): No need to use weak references, just use 
+	(g_object_set_data_full).
+
 	* src/gconf-helpers/gconf-helpers.c (property_value_destroy): Implement.
 	(add_property): Implement.
 	(read_one_setting_value_from_gconf): Use variable names that actually exist.
