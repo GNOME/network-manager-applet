@@ -63,6 +63,12 @@ nm_gconf_get_bytearray_helper (GConfClient *client,
 			       const char *network,
 			       GByteArray **value);
 
+gboolean
+nm_gconf_get_valuehash_helper (GConfClient *client,
+			       const char *path,
+			       const char *network,
+			       GHashTable **value);
+
 /* Setters */
 
 gboolean
@@ -99,6 +105,12 @@ nm_gconf_set_bytearray_helper (GConfClient *client,
                                const char *key,
                                const char *network,
                                GByteArray *value);
+
+gboolean
+nm_gconf_set_valuehash_helper (GConfClient *client,
+			       const char *path,
+			       const char *network,
+			       GHashTable *value);
 
 NMConnection *
 nm_gconf_read_connection (GConfClient *client,

@@ -1,3 +1,19 @@
+2007-09-20  Tambet Ingo  <tambet@gmail.com>
+
+	* src/applet.c (nma_menu_item_activate): s/devtype/type/.
+	(nma_menu_vpn_item_clicked): Use the new VPN activation API.
+	(get_vpn_connections): Implement it. AppletDbusConnectionSettings is _SO_
+	painful to work with.
+	(nma_menu_add_vpn_submenu): Don't use deprecated vpn-connection-info anymore.
+
+	* src/applet-dbus-settings.c (applet_dbus_settings_list_connections): Implement.
+	(copy_one_setting_value_to_gconf): Fix some typos. Handle NM_S_TYPE_GVALUE_HASH.
+
+	* src/gconf-helpers/gconf-helpers.c (nm_gconf_get_valuehash_helper): Implement.
+	(nm_gconf_set_valuehash_helper): Implement.
+	(read_one_setting_value_from_gconf): Handle NM_S_TYPE_GVALUE_HASH.
+	(nm_gconf_read_connection): Read VPN data.
+
 2007-09-20  Dan Williams <dcbw@redhat.com>
 
 	* src/connection-editor/nm-connection-editor.glade

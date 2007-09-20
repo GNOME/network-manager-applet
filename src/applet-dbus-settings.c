@@ -37,7 +37,7 @@ static NMConnectionSettings * applet_dbus_connection_settings_new_from_connectio
  * AppletDbusSettings class implementation
  */
 
-static GPtrArray *applet_dbus_settings_list_connections (NMSettings *settings);
+static GPtrArray *list_connections (NMSettings *settings);
 
 G_DEFINE_TYPE (AppletDbusSettings, applet_dbus_settings, NM_TYPE_SETTINGS)
 
@@ -76,7 +76,7 @@ applet_dbus_settings_class_init (AppletDbusSettingsClass *klass)
 	/* virtual methods */
 	object_class->finalize = applet_dbus_settings_finalize;
 
-	settings_class->list_connections = applet_dbus_settings_list_connections;
+	settings_class->list_connections = list_connections;
 }
 
 NMSettings *
@@ -141,34 +141,40 @@ get_connections (AppletDbusSettings *applet_settings)
 	return cnc_list;
 }
 
-static GPtrArray *
-applet_dbus_settings_list_connections (NMSettings *settings)
+GSList *
+applet_dbus_settings_list_connections (AppletDbusSettings *applet_settings)
 {
-	GPtrArray *connections;
+	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings), NULL);
+
+	if (!applet_settings->connections) {
+		applet_settings->connections = get_connections (applet_settings);
+		if (!applet_settings->connections)
+			g_warning ("No networks found in the configuration database");
+	}
+
+	return applet_settings->connections;
+}
+
+static GPtrArray *
+list_connections (NMSettings *settings)
+{
+	GSList *list;
 	GSList *iter;
+	GPtrArray *connections;
 	AppletDbusSettings *applet_settings = (AppletDbusSettings *) settings;
 
 	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (settings), NULL);
 
-	if (!applet_settings->connections) {
-		applet_settings->connections = get_connections (applet_settings);
-		if (!applet_settings->connections) {
-			g_warning ("No networks found in the configuration database");
-			connections = g_ptr_array_sized_new (0);
-			goto out;
-		}
-	}
+	list = applet_dbus_settings_list_connections (applet_settings);
+	connections = g_ptr_array_sized_new (g_slist_length (list));
 
-	connections = g_ptr_array_sized_new (g_slist_length (applet_settings->connections));
-	for (iter = applet_settings->connections; iter != NULL; iter = iter->next) {
+	for (iter = list; iter != NULL; iter = iter->next) {
 		char * path = g_strdup (nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (iter->data)));
 
-		if (path == NULL)
-			continue;
-		g_ptr_array_add (connections, (gpointer)path);
+		if (path)
+			g_ptr_array_add (connections, (gpointer) path);
 	}
 
-out:
 	return connections;
 }
 
@@ -450,7 +456,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 
 		case NM_S_TYPE_BYTE_ARRAY: {
 			GByteArray **ba_val = (GByteArray **) value;
-			if (*ba_val)
+			if (!*ba_val)
 				break;
 			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
 			                               applet_connection->conf_dir,
@@ -462,13 +468,24 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 
 		case NM_S_TYPE_STRING_ARRAY: {
 			GSList **sa_val = (GSList **) value;
-			if (*sa_val)
+			if (!*sa_val)
 				break;
 			nm_gconf_set_stringlist_helper (applet_connection->conf_client,
 			                                applet_connection->conf_dir,
 			                                key,
 			                                setting->name,
 			                                *sa_val);
+			break;
+		}
+
+		case NM_S_TYPE_GVALUE_HASH: {
+			GHashTable **vh_val = (GHashTable **) value;
+			if (!*vh_val)
+				break;
+			nm_gconf_set_valuehash_helper (applet_connection->conf_client,
+									 applet_connection->conf_dir,
+									 setting->name,
+									 *vh_val);
 			break;
 		}
 	}
@@ -484,15 +501,15 @@ copy_connection_to_gconf (AppletDbusConnectionSettings *applet_connection,
 	g_return_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection));
 	g_return_if_fail (NM_IS_CONNECTION (connection));
 
-	s_connection = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
+	s_connection = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
 	if (!s_connection)
 		return;
-	
+
 	info.applet_connection = applet_connection;
 	info.connection_name = s_connection->name;
 	nm_connection_for_each_setting_value (connection,
-	                                       copy_one_setting_value_to_gconf,
-	                                       &info);
+								   copy_one_setting_value_to_gconf,
+								   &info);
 }
 
 static NMConnectionSettings *
@@ -665,4 +682,3 @@ free_found_list:
 
 	return secrets;
 }
-

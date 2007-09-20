@@ -72,6 +72,8 @@ AppletDbusConnectionSettings * applet_dbus_settings_add_connection (AppletDbusSe
                                                                     NMConnection *connection);
 
 AppletDbusConnectionSettings * applet_dbus_settings_get_by_dbus_path (AppletDbusSettings *settings,
-                                                                      const char *paht);
+                                                                      const char *path);
+
+GSList * applet_dbus_settings_list_connections (AppletDbusSettings *settings);
 
 #endif

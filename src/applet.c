@@ -532,7 +532,7 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 
 		s_con = (NMSettingConnection *) nm_setting_connection_new ();
 		s_con->name = g_strdup ("Auto");
-		s_con->devtype = g_strdup (setting->name);
+		s_con->type = g_strdup (setting->name);
 		s_con->autoconnect = FALSE;
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
@@ -606,55 +606,57 @@ vpn_connection_state_changed (NMVPNConnection *connection, NMVPNConnectionState 
 	}
 }
 
+static const char *
+get_connection_name (AppletDbusConnectionSettings *settings)
+{
+	NMSettingConnection *conn;
+
+	conn = (NMSettingConnection *) nm_connection_get_setting (settings->connection, NM_SETTING_CONNECTION);
+
+	return conn->name;
+}
 
 static void
 nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	VPNConnectionInfo *info;
+	NMConnectionSettings *connection_settings;
 	NMVPNConnection *connection;
+	const char *connection_name;
 
-	info = (VPNConnectionInfo *) g_object_get_data (G_OBJECT (item), "vpn");
-	g_assert (info);
+	connection_settings = NM_CONNECTION_SETTINGS (g_object_get_data (G_OBJECT (item), "connection"));
+	g_assert (connection_settings);
 
-	connection = g_hash_table_lookup (applet->vpn_connections, vpn_connection_info_get_name (info));
+	connection_name = get_connection_name ((AppletDbusConnectionSettings *) connection_settings);
+
+	connection = (NMVPNConnection *) g_hash_table_lookup (applet->vpn_connections, connection_name);
 
 	if (connection) {
 		/* Connection is active, disconnect */
 		nm_vpn_connection_disconnect (connection);
 	} else {
 		/* Connection inactive, activate */
-		GHashTable *properties;
+		NMDevice *device;
 
-		properties = vpn_connection_info_get_properties (info);
+		device = get_first_active_device (applet);
 
-		/* Get passwords */
-		if (nma_vpn_request_password (vpn_connection_info_get_name (info),
-								vpn_connection_info_get_service (info),
-								vpn_connection_info_get_last_attempt_success (info) == FALSE,
-								properties)) {
-			NMDevice *device;
-
-			device = get_first_active_device (applet);
-
-			connection = nm_vpn_manager_connect (applet->vpn_manager,
-										  vpn_connection_info_get_service (info),
-										  vpn_connection_info_get_name (info),
-										  properties,
-										  device,
-										  vpn_connection_info_get_routes (info));
-		}
+		/* FIXME: Passwords aren't handled at all right now */
+		connection = nm_vpn_manager_connect (applet->vpn_manager,
+									  NM_DBUS_SERVICE_USER_SETTINGS,
+									  nm_connection_settings_get_dbus_object_path (connection_settings),
+									  device);
 
 		if (connection) {
-			g_object_set_data_full (G_OBJECT (connection), "vpn-info", vpn_connection_info_copy (info),
-							    (GDestroyNotify) vpn_connection_info_destroy);
+			/* FIXME */
+/* 			g_object_set_data_full (G_OBJECT (connection), "vpn-info", vpn_connection_info_copy (info), */
+/* 							    (GDestroyNotify) vpn_connection_info_destroy); */
 
 			g_signal_connect (connection, "state-changed",
 						   G_CALLBACK (vpn_connection_state_changed),
 						   applet);
 
 			g_hash_table_insert (applet->vpn_connections,
-							 g_strdup (vpn_connection_info_get_name (info)),
+							 g_strdup (connection_name),
 							 connection);
 		} else {
 			/* FIXME: show a dialog or something */
@@ -1171,10 +1173,30 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 static int
 sort_vpn_connections (gconstpointer a, gconstpointer b)
 {
-	VPNConnectionInfo *aa = (VPNConnectionInfo *) a;
-	VPNConnectionInfo *bb = (VPNConnectionInfo *) b;
+	return strcmp (get_connection_name ((AppletDbusConnectionSettings *) a),
+				get_connection_name ((AppletDbusConnectionSettings *) b));
+}
 
-	return strcmp (vpn_connection_info_get_name (aa), vpn_connection_info_get_name (bb));
+static GSList *
+get_vpn_connections (NMApplet *applet)
+{
+	GSList *all_connections;
+	GSList *iter;
+	GSList *list = NULL;
+
+	all_connections = applet_dbus_settings_list_connections (applet->settings);
+
+	for (iter = all_connections; iter; iter = iter->next) {
+		AppletDbusConnectionSettings *applet_settings = (AppletDbusConnectionSettings *) iter->data;
+		NMSettingConnection *setting;
+
+		setting = (NMSettingConnection *) nm_connection_get_setting (applet_settings->connection,
+														 NM_SETTING_CONNECTION);
+		if (!strcmp (setting->type, NM_SETTING_VPN))
+			list = g_slist_prepend (list, applet_settings);
+	}
+
+	return g_slist_sort (list, sort_vpn_connections);
 }
 
 static void
@@ -1193,18 +1215,20 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 	gtk_menu_item_set_submenu (item, GTK_WIDGET (vpn_menu));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
 
-	list = vpn_connection_info_list ();
-	list = g_slist_sort (list, sort_vpn_connections);
+	list = get_vpn_connections (applet);
 
 	for (iter = list; iter; iter = iter->next) {
-		VPNConnectionInfo *info = (VPNConnectionInfo *) iter->data;
+		AppletDbusConnectionSettings *applet_settings = (AppletDbusConnectionSettings *) iter->data;
+		const char *connection_name = get_connection_name (applet_settings);
 
-		item = GTK_MENU_ITEM (gtk_check_menu_item_new_with_label (vpn_connection_info_get_name (info)));
-		if (g_hash_table_lookup (applet->vpn_connections, vpn_connection_info_get_name (info)))
+		item = GTK_MENU_ITEM (gtk_check_menu_item_new_with_label (connection_name));
+
+		if (g_hash_table_lookup (applet->vpn_connections, connection_name))
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
 
-		g_object_set_data_full (G_OBJECT (item), "vpn", info, 
-						    (GDestroyNotify) vpn_connection_info_destroy);
+		g_object_set_data_full (G_OBJECT (item), "connection", 
+						    g_object_ref (applet_settings),
+						    (GDestroyNotify) g_object_unref);
 
 		if (nm_client_get_state (applet->nm_client) != NM_STATE_CONNECTED)
 			gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
