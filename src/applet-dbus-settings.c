@@ -225,8 +225,8 @@ applet_dbus_settings_add_connection (AppletDbusSettings *applet_settings,
 
 static gchar *applet_dbus_connection_settings_get_id (NMConnectionSettings *connection);
 static GHashTable *applet_dbus_connection_settings_get_settings (NMConnectionSettings *connection);
-static GHashTable *applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
-								const gchar *setting_name);
+static void applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
+								const gchar *setting_name, DBusGMethodInvocation *context);
 
 G_DEFINE_TYPE (AppletDbusConnectionSettings, applet_dbus_connection_settings, NM_TYPE_CONNECTION_SETTINGS)
 
@@ -618,11 +618,36 @@ destroy_gvalue (gpointer data)
 	g_slice_free (GValue, value);
 }
 
-static
-GHashTable *applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
-                                                         const gchar *setting_name)
+static GError *
+new_error (const gchar *format, ...)
+{
+	GError *err;
+	va_list args;
+	gchar *msg;
+	static GQuark domain_quark = 0;
+
+	va_start (args, format);
+	msg = g_strdup_vprintf (format, args);
+	va_end (args);
+
+	if (domain_quark == 0) {
+		domain_quark = g_quark_from_static_string ("nm-settings-error-quark");
+	}
+
+	err = g_error_new_literal (domain_quark, -1, (const gchar *) msg);
+
+	g_free (msg);
+
+	return err;
+}
+
+static void
+applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
+                                             const gchar *setting_name,
+                                             DBusGMethodInvocation *context)
 {
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) connection;
+	GError *error;
 	GHashTable *secrets = NULL;
 	GList *found_list = NULL;
 	GnomeKeyringResult ret;
@@ -630,14 +655,17 @@ GHashTable *applet_dbus_connection_settings_get_secrets (NMConnectionSettings *c
 	NMSetting *setting;
 	GList *elt;
 
-	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
-	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
-	g_return_val_if_fail (setting_name != NULL, NULL);
+	g_return_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection));
+	g_return_if_fail (NM_IS_CONNECTION (applet_connection->connection));
+	g_return_if_fail (setting_name != NULL);
 
 	setting = nm_connection_get_setting (applet_connection->connection, setting_name);
 	if (!setting) {
 		nm_warning ("Connection didn't have requested setting '%s'.", setting_name);
-		return NULL;
+		error = new_error ("%s.%d - Connection didn't have requested setting '%s'.", __FILE__, __LINE__, setting_name);
+		dbus_g_method_return_error (context, error);
+		g_error_free (error);
+		return;
 	}
 
 	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
@@ -645,7 +673,12 @@ GHashTable *applet_dbus_connection_settings_get_secrets (NMConnectionSettings *c
 	if (!s_con || !s_con->name || !strlen (s_con->name)) {
 		nm_warning ("Connection didn't have the required 'connection' setting,",
 		           " or the connection name was invalid.");
-		return NULL;
+		error = new_error ("%s.%d - Connection didn't have required 'connection'"
+		                   " setting, or the connection name was invalid.",
+		                   __FILE__, __LINE__);
+		dbus_g_method_return_error (context, error);
+		g_error_free (error);
+		return;
 	}
 
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
@@ -661,7 +694,7 @@ GHashTable *applet_dbus_connection_settings_get_secrets (NMConnectionSettings *c
 		nm_info ("No keyring secrets found for %s/%s; ask the user",
 		         s_con->name, setting_name);
 		// FIXME: actually ask the user
-		return NULL;
+		return;
 	}
 
 	if (g_list_length (found_list) == 0) {
@@ -695,14 +728,17 @@ GHashTable *applet_dbus_connection_settings_get_secrets (NMConnectionSettings *c
 			g_hash_table_insert (secrets,
 			                     g_strdup (key_name),
 			                     string_to_gvalue (found->secret));
+		  dbus_g_method_return (context, secrets);
 		} else {
 			nm_warning ("Keyring item '%s/%s' didn't have a 'setting-key' attribute.",
 			            s_con->name, setting_name);
+			error = new_error ("%s.%d - Internal error, couldn't find secret.",
+			                   __FILE__, __LINE__);
+			dbus_g_method_return_error (context, error);
+			g_error_free (error);
 		}
 	}
 
 free_found_list:
 	gnome_keyring_found_list_free (found_list);
-
-	return secrets;
 }
