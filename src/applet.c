@@ -2176,13 +2176,17 @@ foo_common_state_change (NMDevice *device, NMDeviceState state, NMApplet *applet
 /* Wireless device */
 
 static void
-foo_bssid_strength_changed (NMAccessPoint *ap, guint strength, gpointer user_data)
+foo_bssid_strength_changed (NMAccessPoint *ap,
+                            GParamSpec *pspec,
+                            gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	GdkPixbuf *pixbuf;
 	const GByteArray * ssid;
 	char *tip;
+	guint32 strength = 0;
 
+	g_object_get (ap, "strength", &strength, NULL);
 	strength = CLAMP (strength, 0, 100);
 
 	if (strength > 80)
@@ -2249,13 +2253,11 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 	case NM_DEVICE_STATE_ACTIVATED:
 		applet->current_ap = ap;
 		if (ap) {
-			applet->wireless_strength_monitor = g_signal_connect (ap,
-			                                                      "strength-changed",
-			                                                      G_CALLBACK (foo_bssid_strength_changed),
-			                                                      applet);
-			foo_bssid_strength_changed (ap,
-			                            nm_access_point_get_strength (ap),
-			                            applet);
+			applet->strength_id = g_signal_connect (ap,
+			                                        "notify::strength",
+			                                        G_CALLBACK (foo_bssid_strength_changed),
+			                                        applet);
+			foo_bssid_strength_changed (ap, NULL, applet);
 		}
 
 #ifdef ENABLE_NOTIFY
@@ -2271,11 +2273,10 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		break;
 	case NM_DEVICE_STATE_DOWN:
 	case NM_DEVICE_STATE_DISCONNECTED:
-		if (applet->current_ap && applet->wireless_strength_monitor)
-			g_signal_handler_disconnect (applet->current_ap, applet->wireless_strength_monitor);
-
+		if (applet->current_ap && applet->strength_id)
+			g_signal_handler_disconnect (applet->current_ap, applet->strength_id);
+		applet->strength_id = 0;
 		applet->current_ap = NULL;
-		applet->wireless_strength_monitor = 0;
 		break;
 	default:
 		break;

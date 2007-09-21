@@ -1,6 +1,13 @@
 2007-09-20  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
+	  src/applet.h
+		- (foo_bssid_strength_changed, foo_wireless_state_change): use GObject
+			property notification to get strength updates
+
+2007-09-20  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
 		- (nma_menu_item_activate): ensure wireless security is found; use the
 			type-specific connection name rather than just "Auto"
 
