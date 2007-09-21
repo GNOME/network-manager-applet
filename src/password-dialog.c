@@ -63,7 +63,7 @@ update_button_cb (GtkWidget *unused, gpointer user_data)
 
 	/* Static WEP */
 	if (!strcmp (s_wireless_sec->key_mgmt, "none")) {
-		if ((key_len != 26) && (key_len != 13))
+		if ((key_len != 26) && (key_len != 10))
 			goto out;
 
 		for (i = 0; i < key_len; i++) {
