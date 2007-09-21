@@ -1,6 +1,12 @@
 2007-09-20  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
+		- (nma_menu_item_activate): ensure wireless security is found; use the
+			type-specific connection name rather than just "Auto"
+
+2007-09-20  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
 		- (add_ciphers_from_flags, get_security_for_ap, nma_menu_item_activate):
 			autogenerate acceptable security parameters from AP information when
 			a wireless network is clicked and no compatible connection has been

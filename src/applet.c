@@ -877,6 +877,8 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 				// FIXME: support WPA/WPA2 Enterprise and Dynamic WEP
 				nm_setting_destroy (setting);
 				setting = NULL;
+			} else if (s_wireless_sec) {
+				wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY);
 			}
 		} else
 			g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
@@ -891,7 +893,7 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 				nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
 
 			s_con = (NMSettingConnection *) nm_setting_connection_new ();
-			s_con->name = g_strdup ("Auto");
+			s_con->name = connection_name;
 			s_con->type = g_strdup (setting->name);
 			s_con->autoconnect = FALSE;
 			nm_connection_add_setting (connection, (NMSetting *) s_con);
