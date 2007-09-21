@@ -706,18 +706,11 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      setting_name,
 	                                      NULL);
-	if (ret != GNOME_KEYRING_RESULT_OK) {
+	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0)) {
 		nm_info ("No keyring secrets found for %s/%s; ask the user",
 		         s_con->name, setting_name);
 		get_user_key (applet_connection->connection, setting_name, context);
 		return;
-	}
-
-	if (g_list_length (found_list) == 0) {
-		nm_info ("No keyring secrets found for %s/%s; ask the user",
-		         s_con->name, setting_name);
-		get_user_key (applet_connection->connection, setting_name, context);
-		goto free_found_list;
 	}
 
 	for (elt = found_list; elt != NULL; elt = elt->next) {
