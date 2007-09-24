@@ -38,6 +38,7 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <nm-connection.h>
 
 struct _NetworkManagerVpnUI;
 typedef struct _NetworkManagerVpnUI NetworkManagerVpnUI;
@@ -52,7 +53,9 @@ struct _NetworkManagerVpnUI {
 
 	const char *(*get_service_name) (NetworkManagerVpnUI *self);
 
-	GtkWidget *(*get_widget) (NetworkManagerVpnUI *self, GHashTable *properties, GSList *routes, const char *connection_name);
+	void (*fill_connection) (NetworkManagerVpnUI *self, NMConnection *connection);
+
+	GtkWidget *(*get_widget) (NetworkManagerVpnUI *self, NMConnection *connection);
 
 	void (*set_validity_changed_callback) (NetworkManagerVpnUI *self, 
 					       NetworkManagerVpnUIDialogValidityCallback cb,
@@ -66,17 +69,13 @@ struct _NetworkManagerVpnUI {
 	 */
 	void (*get_confirmation_details)(NetworkManagerVpnUI *self, gchar **retval);
 
-	char *(*get_connection_name) (NetworkManagerVpnUI *self);
-
-	gboolean (*get_properties) (NetworkManagerVpnUI *self, GHashTable *properties);
-
-	GSList *(*get_routes) (NetworkManagerVpnUI *self);
-
 	gboolean (*can_export) (NetworkManagerVpnUI *self);
 
-	gboolean (*import_file) (NetworkManagerVpnUI *self, const char *path);
+	gboolean (*import_file) (NetworkManagerVpnUI *self,
+	                         const char *path,
+	                         NMConnection *connection);
 
-	gboolean (*export) (NetworkManagerVpnUI *self, GHashTable *properties, GSList *routes, const char *connection_name);
+	gboolean (*export) (NetworkManagerVpnUI *self, NMConnection *connection);
 
 	gpointer data;
 };

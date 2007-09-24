@@ -15,17 +15,20 @@ nm_vpn_properties_SOURCES = 					\
 gladedir = $(datadir)/gnome-vpn-properties
 glade_DATA = nm-vpn-properties.glade
 
-nm_vpn_properties_CFLAGS =                              \
-	$(NMA_CFLAGS)                                   \
-        -DICONDIR=\""$(datadir)/icons"\"                \
-        -DGLADEDIR=\""$(gladedir)"\"                    \
-        -DSYSCONFDIR=\"$(sysconfdir)\"                  \
-        -DG_DISABLE_DEPRECATED                          \
-        -DGDK_DISABLE_DEPRECATED                        \
-        -DGNOMELOCALEDIR=\"$(datadir)/locale\"          \
-        -DVERSION=\"$(VERSION)\"
+nm_vpn_properties_CFLAGS = \
+	$(NMA_CFLAGS) \
+	-DICONDIR=\""$(datadir)/icons"\" \
+	-DGLADEDIR=\""$(gladedir)"\" \
+	-DSYSCONFDIR=\"$(sysconfdir)\" \
+	-DG_DISABLE_DEPRECATED \
+	-DGDK_DISABLE_DEPRECATED \
+	-DGNOMELOCALEDIR=\"$(datadir)/locale\" \
+	-I${top_srcdir}/src/gconf-helpers  \
+	-DVERSION=\"$(VERSION)\"
 
-nm_vpn_properties_LDADD = $(NMA_LIBS)
+nm_vpn_properties_LDADD = \
+	$(NMA_LIBS) \
+	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
 
 CLEANFILES = $(server_DATA) *.bak *.gladep *~
 
