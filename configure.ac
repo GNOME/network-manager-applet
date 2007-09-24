@@ -124,11 +124,6 @@ if test x"$enable_notify" != xno; then
 	fi
 fi
 
-PKG_CHECK_EXISTS([libgnome-2.0 >= 2.14.0],[have_libgnome_2_14=yes],[have_libgnome_2_14=no])
-if test "$have_libgnome_2_14" = "yes"; then
-	AC_DEFINE([HAVE_LIBGNOME_2_14],[1],[Define if we have libgnome 2.14])
-fi
-
 AM_CONDITIONAL(WITH_NOTIFY, test x"$enable_notify" != xno) # can't do it from inside 'if'
 AM_CONDITIONAL([HAVE_GTK_2_10],[test "$have_gtk_2_10" = "yes"])
 
