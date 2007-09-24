@@ -365,166 +365,6 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 	return (NMConnectionSettings *) applet_connection;
 }
 
-static void
-add_keyring_item (const char *connection_name,
-                  const char *setting_name,
-                  const char *setting_key,
-                  const char *secret)
-{
-	GnomeKeyringResult ret;
-	char *display_name = NULL;
-	GnomeKeyringAttributeList *attrs = NULL;
-	guint32 id = 0;
-
-	g_return_if_fail (connection_name != NULL);
-	g_return_if_fail (setting_name != NULL);
-	g_return_if_fail (setting_key != NULL);
-	g_return_if_fail (secret != NULL);
-
-	display_name = g_strdup_printf ("Network secret for %s/%s/%s",
-	                                connection_name,
-	                                setting_name,
-	                                setting_key);
-
-	attrs = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attrs,
-	                                            "connection-name",
-	                                            connection_name);
-	gnome_keyring_attribute_list_append_string (attrs,
-	                                            "setting-name",
-	                                            setting_name);
-	gnome_keyring_attribute_list_append_string (attrs,
-	                                            "setting-key",
-	                                            setting_key);
-
-	ret = gnome_keyring_item_create_sync (NULL,
-	                                      GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                                      display_name,
-	                                      attrs,
-	                                      secret,
-	                                      TRUE,
-	                                      &id);
-
-	gnome_keyring_attribute_list_free (attrs);
-	g_free (display_name);
-}
-
-typedef struct CopyOneSettingValueInfo {
-	AppletDbusConnectionSettings * applet_connection;
-	const char *connection_name;
-} CopyOneSettingValueInfo;
-
-static void
-copy_one_setting_value_to_gconf (NMSetting *setting,
-                                 const char *key,
-                                 guint32 type,
-                                 void *value,
-                                 gboolean secret,
-                                 gpointer user_data)
-{
-	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
-	AppletDbusConnectionSettings * applet_connection = info->applet_connection;
-
-	switch (type) {
-		case NM_S_TYPE_STRING: {
-			const char **str_val = (const char **) value;
-			if (!*str_val)
-				break;
-			if (secret) {
-				if (strlen (*str_val)) {
-					add_keyring_item (info->connection_name,
-					                  setting->name,
-					                  key,
-					                  *str_val);
-				}
-			} else {
-				nm_gconf_set_string_helper (applet_connection->conf_client,
-				                            applet_connection->conf_dir,
-				                            key,
-				                            setting->name,
-				                            *str_val);
-			}
-			break;
-		}
-		case NM_S_TYPE_UINT32: {
-			guint32 *uint_val = (guint32 *) value;
-			if (!*uint_val)
-				break;
-			nm_gconf_set_int_helper (applet_connection->conf_client,
-			                         applet_connection->conf_dir,
-			                         key,
-			                         setting->name,
-			                         *uint_val);
-			break;
-		}
-		case NM_S_TYPE_BOOL: {
-			gboolean *bool_val = (gboolean *) value;
-			nm_gconf_set_bool_helper (applet_connection->conf_client,
-			                          applet_connection->conf_dir,
-			                          key,
-			                          setting->name,
-			                          *bool_val);
-			break;
-		}
-
-		case NM_S_TYPE_BYTE_ARRAY: {
-			GByteArray **ba_val = (GByteArray **) value;
-			if (!*ba_val)
-				break;
-			nm_gconf_set_bytearray_helper (applet_connection->conf_client,
-			                               applet_connection->conf_dir,
-			                               key,
-			                               setting->name,
-			                               *ba_val);
-			break;
-		}
-
-		case NM_S_TYPE_STRING_ARRAY: {
-			GSList **sa_val = (GSList **) value;
-			if (!*sa_val)
-				break;
-			nm_gconf_set_stringlist_helper (applet_connection->conf_client,
-			                                applet_connection->conf_dir,
-			                                key,
-			                                setting->name,
-			                                *sa_val);
-			break;
-		}
-
-		case NM_S_TYPE_GVALUE_HASH: {
-			GHashTable **vh_val = (GHashTable **) value;
-			if (!*vh_val)
-				break;
-			nm_gconf_set_valuehash_helper (applet_connection->conf_client,
-									 applet_connection->conf_dir,
-									 setting->name,
-									 *vh_val);
-			break;
-		}
-	}
-}
-
-static void
-copy_connection_to_gconf (AppletDbusConnectionSettings *applet_connection,
-                          NMConnection *connection)
-{
-	NMSettingConnection *s_connection;
-	CopyOneSettingValueInfo info;
-
-	g_return_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection));
-	g_return_if_fail (NM_IS_CONNECTION (connection));
-
-	s_connection = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
-	if (!s_connection)
-		return;
-
-	info.applet_connection = applet_connection;
-	info.connection_name = s_connection->name;
-	nm_connection_for_each_setting_value (connection,
-								   copy_one_setting_value_to_gconf,
-								   &info);
-}
-
 static NMConnectionSettings *
 applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
                                                      const gchar *conf_dir,
@@ -542,8 +382,10 @@ applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
 	applet_connection->conf_dir = g_strdup (conf_dir);
 	applet_connection->connection = connection;
 
-	/* retrieve GConf data */
-	copy_connection_to_gconf (applet_connection, connection);
+	nm_gconf_write_connection (connection,
+	                           applet_connection->conf_client,
+	                           applet_connection->conf_dir);
+	gconf_client_suggest_sync (applet_connection->conf_client, NULL);
 
 	/* set GConf notifications */
 	gconf_client_add_dir (conf_client, conf_dir, GCONF_CLIENT_PRELOAD_NONE, NULL);

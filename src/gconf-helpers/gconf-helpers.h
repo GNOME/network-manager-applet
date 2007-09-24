@@ -116,5 +116,10 @@ NMConnection *
 nm_gconf_read_connection (GConfClient *client,
                           const char *dir);
 
+void
+nm_gconf_write_connection (NMConnection *connection,
+                           GConfClient *client,
+                           const char *dir);
+
 #endif	/* GCONF_HELPERS_H */
 

@@ -24,6 +24,7 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <glib.h>
+#include <gnome-keyring.h>
 
 #include "gconf-helpers.h"
 
@@ -552,7 +553,7 @@ nm_gconf_read_connection (GConfClient *client,
 	nm_connection_add_setting (connection, setting);
 
 	/* wireless settings */
-	key = g_strdup_printf ("%s/802-11-wireless", dir);
+	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_WIRELESS);
 	if (gconf_client_dir_exists (client, key, NULL)) {
 		setting = nm_setting_wireless_new ();
 		nm_setting_enumerate_values (setting,
@@ -563,7 +564,7 @@ nm_gconf_read_connection (GConfClient *client,
 	g_free (key);
 
 	/* wireless security settings */
-	key = g_strdup_printf ("%s/802-11-wireless-security", dir);
+	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_WIRELESS_SECURITY);
 	if (gconf_client_dir_exists (client, key, NULL)) {
 		setting = nm_setting_wireless_security_new ();
 		nm_setting_enumerate_values (setting,
@@ -574,7 +575,7 @@ nm_gconf_read_connection (GConfClient *client,
 	g_free (key);
 
 	/* wired settings */
-	key = g_strdup_printf ("%s/802-3-ethernet", dir);
+	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_WIRED);
 	if (gconf_client_dir_exists (client, key, NULL)) {
 		setting = nm_setting_wired_new ();
 		nm_setting_enumerate_values (setting,
@@ -585,7 +586,7 @@ nm_gconf_read_connection (GConfClient *client,
 	g_free (key);
 
 	/* VPN settings */
-	key = g_strdup_printf ("%s/vpn", dir);
+	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_VPN);
 	if (gconf_client_dir_exists (client, key, NULL)) {
 		setting = nm_setting_vpn_new ();
 		nm_setting_enumerate_values (setting,
@@ -596,7 +597,7 @@ nm_gconf_read_connection (GConfClient *client,
 	g_free (key);
 
 	/* VPN properties settings */
-	key = g_strdup_printf ("%s/vpn-properties", dir);
+	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_VPN_PROPERTIES);
 	if (gconf_client_dir_exists (client, key, NULL)) {
 		setting = nm_setting_vpn_properties_new ();
 		nm_setting_enumerate_values (setting,
@@ -608,3 +609,150 @@ nm_gconf_read_connection (GConfClient *client,
 
 	return connection;
 }
+
+
+static void
+add_keyring_item (const char *connection_name,
+                  const char *setting_name,
+                  const char *setting_key,
+                  const char *secret)
+{
+	GnomeKeyringResult ret;
+	char *display_name = NULL;
+	GnomeKeyringAttributeList *attrs = NULL;
+	guint32 id = 0;
+
+	g_return_if_fail (connection_name != NULL);
+	g_return_if_fail (setting_name != NULL);
+	g_return_if_fail (setting_key != NULL);
+	g_return_if_fail (secret != NULL);
+
+	display_name = g_strdup_printf ("Network secret for %s/%s/%s",
+	                                connection_name,
+	                                setting_name,
+	                                setting_key);
+
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            "connection-name",
+	                                            connection_name);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            "setting-name",
+	                                            setting_name);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            "setting-key",
+	                                            setting_key);
+
+	ret = gnome_keyring_item_create_sync (NULL,
+	                                      GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      display_name,
+	                                      attrs,
+	                                      secret,
+	                                      TRUE,
+	                                      &id);
+
+	gnome_keyring_attribute_list_free (attrs);
+	g_free (display_name);
+}
+
+typedef struct CopyOneSettingValueInfo {
+	GConfClient *client;
+	const char *dir;
+	const char *connection_name;
+} CopyOneSettingValueInfo;
+
+static void
+copy_one_setting_value_to_gconf (NMSetting *setting,
+                                 const char *key,
+                                 guint32 type,
+                                 void *value,
+                                 gboolean secret,
+                                 gpointer user_data)
+{
+	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
+
+	switch (type) {
+		case NM_S_TYPE_STRING: {
+			const char **str_val = (const char **) value;
+			if (!*str_val)
+				break;
+			if (secret) {
+				if (strlen (*str_val)) {
+					add_keyring_item (info->connection_name, setting->name,
+					                  key, *str_val);
+				}
+			} else {
+				nm_gconf_set_string_helper (info->client, info->dir,
+				                            key, setting->name, *str_val);
+			}
+			break;
+		}
+		case NM_S_TYPE_UINT32: {
+			guint32 *uint_val = (guint32 *) value;
+			if (!*uint_val)
+				break;
+			nm_gconf_set_int_helper (info->client, info->dir,
+			                         key, setting->name, *uint_val);
+			break;
+		}
+		case NM_S_TYPE_BOOL: {
+			gboolean *bool_val = (gboolean *) value;
+			nm_gconf_set_bool_helper (info->client, info->dir,
+			                          key, setting->name, *bool_val);
+			break;
+		}
+
+		case NM_S_TYPE_BYTE_ARRAY: {
+			GByteArray **ba_val = (GByteArray **) value;
+			if (!*ba_val)
+				break;
+			nm_gconf_set_bytearray_helper (info->client, info->dir,
+			                               key, setting->name, *ba_val);
+			break;
+		}
+
+		case NM_S_TYPE_STRING_ARRAY: {
+			GSList **sa_val = (GSList **) value;
+			if (!*sa_val)
+				break;
+			nm_gconf_set_stringlist_helper (info->client, info->dir,
+			                                key, setting->name, *sa_val);
+			break;
+		}
+
+		case NM_S_TYPE_GVALUE_HASH: {
+			GHashTable **vh_val = (GHashTable **) value;
+			if (!*vh_val)
+				break;
+			nm_gconf_set_valuehash_helper (info->client, info->dir,
+			                               setting->name, *vh_val);
+			break;
+		}
+	}
+}
+
+void
+nm_gconf_write_connection (NMConnection *connection,
+                           GConfClient *client,
+                           const char *dir)
+{
+	NMSettingConnection *s_connection;
+	CopyOneSettingValueInfo info;
+
+	g_return_if_fail (NM_IS_CONNECTION (connection));
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (dir != NULL);
+
+	s_connection = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+	if (!s_connection)
+		return;
+
+	info.client = client;
+	info.dir = dir;
+	info.connection_name = s_connection->name;
+	nm_connection_for_each_setting_value (connection,
+	                                      copy_one_setting_value_to_gconf,
+	                                      &info);
+
+}
+
