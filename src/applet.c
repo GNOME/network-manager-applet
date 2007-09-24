@@ -75,6 +75,7 @@ static void				nma_icons_zero (NMApplet *applet);
 static gboolean			nma_icons_load_from_disk (NMApplet *applet);
 static void			nma_finalize (GObject *object);
 static void              foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer);
+static void		 foo_update_icon (NMApplet *applet);
 
 static GtkWidget *
 nma_menu_create (GtkMenuItem *parent, NMApplet *applet);
@@ -1839,6 +1840,8 @@ static gboolean nma_status_icon_size_changed_cb (GtkStatusIcon *icon, gint size,
 
 	applet->size = size;
 	nma_icons_load_from_disk (applet);
+
+	foo_update_icon (applet);
 
 	return TRUE;
 }
