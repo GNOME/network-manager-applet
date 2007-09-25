@@ -27,6 +27,8 @@
 #include <gnome-keyring.h>
 #include <string.h>
 
+#include <nm-settings.h>
+
 #include "password-dialog.h"
 #include "nm-utils.h"
 

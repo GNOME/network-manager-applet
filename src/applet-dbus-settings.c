@@ -584,6 +584,5 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 			g_hash_table_destroy (secrets);
 	}
 
-free_found_list:
 	gnome_keyring_found_list_free (found_list);
 }
