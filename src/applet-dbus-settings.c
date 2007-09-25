@@ -227,7 +227,9 @@ applet_dbus_settings_add_connection (AppletDbusSettings *applet_settings,
 static gchar *applet_dbus_connection_settings_get_id (NMConnectionSettings *connection);
 static GHashTable *applet_dbus_connection_settings_get_settings (NMConnectionSettings *connection);
 static void applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
-								const gchar *setting_name, DBusGMethodInvocation *context);
+                                                         const gchar *setting_name,
+                                                         gboolean request_new,
+                                                         DBusGMethodInvocation *context);
 
 G_DEFINE_TYPE (AppletDbusConnectionSettings, applet_dbus_connection_settings, NM_TYPE_CONNECTION_SETTINGS)
 
@@ -502,6 +504,7 @@ get_user_key (NMConnection *connection,
 static void
 applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
                                              const gchar *setting_name,
+                                             gboolean request_new,
                                              DBusGMethodInvocation *context)
 {
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) connection;
@@ -536,6 +539,14 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 		                   __FILE__, __LINE__);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
+		return;
+	}
+
+	if (request_new) {
+		nm_info ("New secrets for %s/%s requested; ask the user",
+		         s_con->name, setting_name);
+		nm_connection_clear_secrets (applet_connection->connection);
+		get_user_key (applet_connection->connection, setting_name, context);
 		return;
 	}
 
