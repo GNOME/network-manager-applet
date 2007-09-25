@@ -44,20 +44,21 @@
  ****************************************************************/
 
 GtkMenuItem *
-wired_menu_item_new (NMDevice8023Ethernet *device,
+wired_menu_item_new (NMDevice8023Ethernet *self,
 					 gint n_devices)
 {
+	NMDevice *dev = NM_DEVICE (self);
 	char *text;
 	GtkCheckMenuItem *item;
 
-	g_return_val_if_fail (NM_IS_DEVICE_802_3_ETHERNET (device), NULL);
+	g_return_val_if_fail (NM_IS_DEVICE_802_3_ETHERNET (self), NULL);
 
 	if (n_devices > 1) {
 		char *dev_name;
 
-		dev_name = nm_device_get_description (NM_DEVICE (device));
+		dev_name = nm_device_get_description (dev);
 		if (!dev_name)
-			dev_name = nm_device_get_iface (NM_DEVICE (device));
+			dev_name = nm_device_get_iface (dev);
 		text = g_strdup_printf (_("Wired Network (%s)"), dev_name);
 		g_free (dev_name);
 	} else
@@ -67,14 +68,13 @@ wired_menu_item_new (NMDevice8023Ethernet *device,
 	g_free (text);
 
 	gtk_check_menu_item_set_draw_as_radio (item, TRUE);
-	gtk_check_menu_item_set_active (item, nm_device_get_state (NM_DEVICE (device)) == NM_DEVICE_STATE_ACTIVATED);
+	gtk_check_menu_item_set_active (item, nm_device_get_state (dev) == NM_DEVICE_STATE_ACTIVATED);
 
 	/* Only dim the item if the device supports carrier detection AND
 	 * we know it doesn't have a link.
 	 */
-	/* FIXME */
-/* 	if (nm_device_get_capabilities (device) & NM_DEVICE_CAP_CARRIER_DETECT) */
-/* 		gtk_widget_set_sensitive (GTK_WIDGET (item), nm_device_get_link (device)); */
+ 	if (nm_device_get_capabilities (dev) & NM_DEVICE_CAP_CARRIER_DETECT)
+ 		gtk_widget_set_sensitive (GTK_WIDGET (item), nm_device_get_carrier (dev));
 
 	return GTK_MENU_ITEM (item);
 }
