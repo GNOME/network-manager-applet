@@ -144,6 +144,33 @@ update_edit_del_sensitivity (void)
 	gtk_widget_set_sensitive (vpn_export, is_editable && is_exportable);
 }
 
+static void
+clear_vpn_connection (NMConnection *connection)
+{
+	GSList *dirs = NULL, *elt;
+	char *gconf_path;
+
+	gconf_path = g_object_get_data (G_OBJECT (connection), "gconf-path");
+
+	/* Delete all subdirs of gconf_path but not the root dir of the
+	 * connection itself.
+	 */
+	dirs = gconf_client_all_dirs (gconf_client, gconf_path, NULL);
+	if (!dirs)
+		return;
+
+	for (elt = dirs; elt; elt = g_slist_next (elt)) {
+		gconf_client_recursive_unset (gconf_client,
+		                              elt->data,
+		                              GCONF_UNSET_INCLUDING_SCHEMA_NAMES,
+		                              NULL);
+		g_free (elt->data);
+	}
+	g_slist_free (dirs);
+
+	gconf_client_suggest_sync (gconf_client, NULL);
+}
+
 static gboolean
 write_vpn_connection_to_gconf (NMConnection *connection)
 {
@@ -154,11 +181,14 @@ write_vpn_connection_to_gconf (NMConnection *connection)
 	g_warning ("Will write connection to GConf:");
 	nm_connection_dump (connection);
 
+	clear_vpn_connection (connection);
+
 	path = g_object_get_data (G_OBJECT (connection), "gconf-path");
 	g_assert (path);
 	nm_gconf_write_connection (connection, gconf_client, path);
 
 	gconf_client_suggest_sync (gconf_client, NULL);
+	return TRUE;
 }
 
 static gboolean
@@ -216,34 +246,6 @@ error:
 }
 
 static void
-clear_vpn_connection (NMConnection *connection)
-{
-	GSList *dirs = NULL, *elt;
-	GError *err = NULL;
-	char *gconf_path;
-
-	gconf_path = g_object_get_data (G_OBJECT (connection), "gconf-path");
-
-	/* Delete all subdirs of gconf_path but not the root dir of the
-	 * connection itself.
-	 */
-	dirs = gconf_client_all_dirs (gconf_client, gconf_path, NULL);
-	if (!dirs)
-		return;
-
-	for (elt = dirs; elt; elt = g_slist_next (elt)) {
-		gconf_client_recursive_unset (gconf_client,
-		                              elt->data,
-		                              GCONF_UNSET_INCLUDING_SCHEMA_NAMES,
-		                              NULL);
-		g_free (elt->data);
-	}
-	g_slist_free (dirs);
-
-	gconf_client_suggest_sync (gconf_client, NULL);
-}
-
-static void
 remove_vpn_connection (NMConnection *connection, GtkTreeIter *iter)
 {
 	GError *err = NULL;
@@ -293,8 +295,6 @@ vpn_druid_vpn_type_page_next (void *druidpage,
                               GtkWidget *widget,
                               gpointer user_data)
 {
-	NMConnection *connection;
-
 	/* show appropriate child */
 	clear_vpn_details_widget ();
 	current_vpn_ui = (NetworkManagerVpnUI *) g_slist_nth_data (vpn_types, gtk_combo_box_get_active (vpn_type_combo_box));
@@ -416,7 +416,6 @@ fixup_nm_connection_vpn (NMConnection *connection,
 {                         
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
-	NMSettingVPNProperties *s_vpn_props;
 	const char *svc_name;
 
 	g_return_val_if_fail (connection != NULL, FALSE);
@@ -470,7 +469,6 @@ vpn_druid_vpn_confirm_page_finish (void *druidpage,
 
 	clear_vpn_details_widget ();
 
-out:
 #if GTK_CHECK_VERSION(2, 10, 0)
 	gtk_widget_hide (assistant);
 #else
@@ -602,6 +600,13 @@ edit_cb (GtkButton *button, gpointer user_data)
 	if (!connection || !cur_name)
 		return;
 
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+	if (!s_con) {
+		g_warning ("Invalid connection received from VPN widget (no %s "
+		           "setting).", NM_SETTING_CONNECTION);
+		goto error;
+	}
+
 	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
 	if (!s_vpn) {
 		g_warning ("Invalid connection received from VPN widget (no %s "
@@ -611,7 +616,8 @@ edit_cb (GtkButton *button, gpointer user_data)
 
 	vpn_ui = find_vpn_ui_by_service_name (s_vpn->service_type);
 	if (!vpn_ui) {
-		g_warning ("Could not find VPN service of type '%s'.");
+		g_warning ("Could not find VPN service of type '%s'.",
+		           s_vpn->service_type ? s_vpn->service_type : "(null)");
 		goto error;
 	}
 
@@ -631,7 +637,6 @@ edit_cb (GtkButton *button, gpointer user_data)
 
 	if (result == GTK_RESPONSE_ACCEPT) {
 		GtkTreeIter iter;
-		const char *svc_name;
 
 		vpn_ui->fill_connection (vpn_ui, connection);
 
@@ -725,6 +730,7 @@ export_cb (GtkButton *button, gpointer user_data)
 {
 	NetworkManagerVpnUI *vpn_ui;
 	NMConnection *connection;
+	NMSettingVPN *s_vpn;
 	GtkTreeIter iter;
 	GtkTreeSelection *selection;
 
@@ -739,6 +745,19 @@ export_cb (GtkButton *button, gpointer user_data)
 	                    -1);
 	if (!connection)
 		return;
+
+	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
+	if (!s_vpn) {
+		g_warning ("Connection had no %s setting.", NM_SETTING_VPN);
+		return;
+	}
+
+	vpn_ui = find_vpn_ui_by_service_name (s_vpn->service_type);
+	if (!vpn_ui) {
+		g_warning ("Could not find the VPN service '%s' for this connection.",
+		           s_vpn->service_type ? s_vpn->service_type : "(null)");
+		return;
+	}
 
 	vpn_ui->export (vpn_ui, connection);
 }
