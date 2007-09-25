@@ -1,5 +1,15 @@
 2007-09-25  Dan Williams  <dcbw@redhat.com>
 
+	* src/password-dialog.c
+		- (response_cb): use nm_settings_new_error() to create error messages
+
+	* src/applet-dbus-settings.c
+		- (new_error): remove
+		- (applet_dbus_connection_settings_get_secrets): use
+			nm_settings_new_error() to create error messages
+
+2007-09-25  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-dbus-settings.c
 		- (applet_dbus_connection_settings_get_secrets): handle new 'request_new'
 			parameter by asking the user for new secrets explicitly rather than

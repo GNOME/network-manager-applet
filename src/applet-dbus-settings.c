@@ -462,29 +462,6 @@ destroy_gvalue (gpointer data)
 	g_slice_free (GValue, value);
 }
 
-static GError *
-new_error (const gchar *format, ...)
-{
-	GError *err;
-	va_list args;
-	gchar *msg;
-	static GQuark domain_quark = 0;
-
-	va_start (args, format);
-	msg = g_strdup_vprintf (format, args);
-	va_end (args);
-
-	if (domain_quark == 0) {
-		domain_quark = g_quark_from_static_string ("nm-settings-error-quark");
-	}
-
-	err = g_error_new_literal (domain_quark, -1, (const gchar *) msg);
-
-	g_free (msg);
-
-	return err;
-}
-
 static void
 get_user_key (NMConnection *connection,
               const char *setting_name,
@@ -523,7 +500,9 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	setting = nm_connection_get_setting (applet_connection->connection, setting_name);
 	if (!setting) {
 		nm_warning ("Connection didn't have requested setting '%s'.", setting_name);
-		error = new_error ("%s.%d - Connection didn't have requested setting '%s'.", __FILE__, __LINE__, setting_name);
+		error = nm_settings_new_error ("%s.%d - Connection didn't have "
+		                               "requested setting '%s'.",
+		                               __FILE__, __LINE__, setting_name);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 		return;
@@ -534,9 +513,10 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	if (!s_con || !s_con->name || !strlen (s_con->name)) {
 		nm_warning ("Connection didn't have the required 'connection' setting, "
 		            "or the connection name was invalid.");
-		error = new_error ("%s.%d - Connection didn't have required 'connection'"
-		                   " setting, or the connection name was invalid.",
-		                   __FILE__, __LINE__);
+		error = nm_settings_new_error ("%s.%d - Connection didn't have required"
+		                               " 'connection' setting, or the connection"
+		                               " name was invalid.",
+		                               __FILE__, __LINE__);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 		return;
@@ -593,8 +573,9 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 		} else {
 			nm_warning ("Keyring item '%s/%s' didn't have a 'setting-key' attribute.",
 			            s_con->name, setting_name);
-			error = new_error ("%s.%d - Internal error, couldn't find secret.",
-			                   __FILE__, __LINE__);
+			error = nm_settings_new_error ("%s.%d - Internal error, couldn't "
+			                               " find secret.",
+			                               __FILE__, __LINE__);
 			dbus_g_method_return_error (context, error);
 			g_error_free (error);
 		}

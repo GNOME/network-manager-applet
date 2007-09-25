@@ -130,15 +130,7 @@ response_cb (GtkWidget *dialog, gint response, gpointer user_data)
 
 	if (response != GTK_RESPONSE_OK) {
 		GError *error;
-		char *msg;
-		static GQuark domain_quark = 0;
-
-		msg = g_strdup_printf ("%s.%d: canceled", __FILE__, __LINE__);
-		if (domain_quark == 0)
-			domain_quark = g_quark_from_static_string ("nm_settings_error_quark");
-		error = g_error_new_literal (domain_quark, -1, (const gchar *) msg);
-		g_free (msg);
-
+		error = nm_settings_new_error ("%s.%d: canceled", __FILE__, __LINE__);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 		goto out;
