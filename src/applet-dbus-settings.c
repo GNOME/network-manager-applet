@@ -463,11 +463,17 @@ destroy_gvalue (gpointer data)
 }
 
 static void
-get_user_key (NMConnection *connection,
-              const char *setting_name,
-              DBusGMethodInvocation *context)
+get_secrets (NMConnection *connection,
+             const char *setting_name,
+             DBusGMethodInvocation *context)
 {
 	GtkWidget *dialog;
+	NMSettingConnection *s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+
+	if (s_con->type && !strcmp (s_con->type, "vpn")) {
+		nma_vpn_request_password (connection, setting_name, FALSE, context);
+		return;
+	}
 
 	dialog = g_object_get_data (G_OBJECT (connection), "dialog");
 	if (!dialog)
@@ -526,7 +532,7 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 		nm_info ("New secrets for %s/%s requested; ask the user",
 		         s_con->name, setting_name);
 		nm_connection_clear_secrets (applet_connection->connection);
-		get_user_key (applet_connection->connection, setting_name, context);
+		get_secrets (applet_connection->connection, setting_name, context);
 		return;
 	}
 
@@ -542,7 +548,7 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0)) {
 		nm_info ("No keyring secrets found for %s/%s; ask the user",
 		         s_con->name, setting_name);
-		get_user_key (applet_connection->connection, setting_name, context);
+		get_secrets (applet_connection->connection, setting_name, context);
 		return;
 	}
 
