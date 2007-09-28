@@ -48,6 +48,8 @@ nm_applet_SOURCES =			\
 	connection-editor/nm-connection-editor.h	\
 	connection-editor/nm-connection-list.c		\
 	connection-editor/nm-connection-list.h		\
+	sha1.c \
+	sha1.h \
 	$(NULL)
 
 if !HAVE_GTK_2_10
