@@ -195,6 +195,7 @@ response_cb (GtkWidget *dialog, gint response, gpointer user_data)
 
 	context = (DBusGMethodInvocation *) g_object_get_data (G_OBJECT (dialog), "context");
 
+	connection = NM_CONNECTION (g_object_get_data (G_OBJECT (dialog), "connection"));
 	if (response != GTK_RESPONSE_OK) {
 		GError *error;
 		error = nm_settings_new_error ("%s.%d: canceled", __FILE__, __LINE__);
@@ -207,7 +208,6 @@ response_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	g_return_if_fail (xml != NULL);
 
 	setting_name = g_object_get_data (G_OBJECT (dialog), "setting-name");
-	connection = NM_CONNECTION (g_object_get_data (G_OBJECT (dialog), "connection"));
 
 	entry = glade_xml_get_widget (xml, "password_entry");
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
