@@ -2530,6 +2530,7 @@ foo_client_setup (NMApplet *applet)
 	foo_setup_client_state_handlers (client, applet);
 	g_signal_connect (client, "manager-running",
 				   G_CALLBACK (foo_manager_running), applet);
+	foo_manager_running(client, nm_client_manager_is_running (client), applet);
 
 	if (nm_client_manager_is_running (client))
 		g_idle_add (foo_set_initial_state, applet);
