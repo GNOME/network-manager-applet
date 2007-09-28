@@ -468,12 +468,6 @@ get_secrets (NMConnection *connection,
              DBusGMethodInvocation *context)
 {
 	GtkWidget *dialog;
-	NMSettingConnection *s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
-
-	if (s_con->type && !strcmp (s_con->type, "vpn")) {
-		nma_vpn_request_password (connection, setting_name, FALSE, context);
-		return;
-	}
 
 	dialog = g_object_get_data (G_OBJECT (connection), "dialog");
 	if (!dialog)
@@ -516,15 +510,21 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 
 	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
 	                                                           "connection");
-	if (!s_con || !s_con->name || !strlen (s_con->name)) {
-		nm_warning ("Connection didn't have the required 'connection' setting, "
-		            "or the connection name was invalid.");
+	if (!s_con || !s_con->name || !strlen (s_con->name) || !s_con->type) {
+		nm_warning ("Connection didn't have a valid required '%s' setting, "
+		            "or the connection name was invalid.", NM_SETTING_CONNECTION);
 		error = nm_settings_new_error ("%s.%d - Connection didn't have required"
 		                               " 'connection' setting, or the connection"
 		                               " name was invalid.",
 		                               __FILE__, __LINE__);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
+		return;
+	}
+
+	/* VPN passwords are handled by the VPN plugin's auth dialog */
+	if (!strcmp (s_con->type, "vpn")) {
+		nma_vpn_request_password (applet_connection->connection, setting_name, request_new, context);
 		return;
 	}
 
