@@ -940,9 +940,6 @@ static void
 vpn_connection_state_changed (NMVPNConnection *connection, NMVPNConnectionState state, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	VPNConnectionInfo *info;
-
-	info = (VPNConnectionInfo *) g_object_get_data (G_OBJECT (connection), "vpn-info");
 
 	switch (state) {
 	case NM_VPN_CONNECTION_STATE_ACTIVATED:
@@ -951,9 +948,10 @@ vpn_connection_state_changed (NMVPNConnection *connection, NMVPNConnectionState 
 			applet->animation_id = 0;
 		}
 		foo_set_icon (applet, applet->vpn_lock_icon, ICON_LAYER_VPN);
-		vpn_connection_info_set_last_attempt_success (info, TRUE);
+//		vpn_connection_info_set_last_attempt_success (info, TRUE);
 		break;
 	case NM_VPN_CONNECTION_STATE_PREPARE:
+	case NM_VPN_CONNECTION_STATE_NEED_AUTH:
 	case NM_VPN_CONNECTION_STATE_CONNECT:
 	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
 		if (applet->animation_id == 0) {
@@ -962,7 +960,7 @@ vpn_connection_state_changed (NMVPNConnection *connection, NMVPNConnectionState 
 		}
 		break;
 	case NM_VPN_CONNECTION_STATE_FAILED:
-		vpn_connection_info_set_last_attempt_success (info, FALSE);
+//		vpn_connection_info_set_last_attempt_success (info, FALSE);
 		/* Fall through */
 	case NM_VPN_CONNECTION_STATE_DISCONNECTED:
 		g_hash_table_remove (applet->vpn_connections, nm_vpn_connection_get_name (connection));
@@ -985,6 +983,18 @@ get_connection_name (AppletDbusConnectionSettings *settings)
 	conn = (NMSettingConnection *) nm_connection_get_setting (settings->connection, NM_SETTING_CONNECTION);
 
 	return conn->name;
+}
+
+static void
+add_one_vpn_connection (NMApplet *applet, NMVPNConnection *connection)
+{
+	g_signal_connect (connection, "state-changed",
+	                  G_CALLBACK (vpn_connection_state_changed),
+	                  applet);
+
+	g_hash_table_insert (applet->vpn_connections,
+	                     g_strdup (nm_vpn_connection_get_name (connection)),
+	                     connection);
 }
 
 static void
@@ -1012,17 +1022,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 								  nm_connection_settings_get_dbus_object_path (connection_settings),
 								  device);
 	if (connection) {
-		/* FIXME */
-/* 			g_object_set_data_full (G_OBJECT (connection), "vpn-info", vpn_connection_info_copy (info), */
-/* 							    (GDestroyNotify) vpn_connection_info_destroy); */
-
-		g_signal_connect (connection, "state-changed",
-					   G_CALLBACK (vpn_connection_state_changed),
-					   applet);
-
-		g_hash_table_insert (applet->vpn_connections,
-						 g_strdup (connection_name),
-						 connection);
+		add_one_vpn_connection (applet, connection);
 	} else {
 		/* FIXME: show a dialog or something */
 		g_warning ("Can't connect");
@@ -2436,6 +2436,8 @@ foo_client_state_change (NMClient *client, NMState state, gpointer user_data)
 
 	switch (state) {
 	case NM_STATE_UNKNOWN:
+		/* Clear any VPN connections */
+		g_hash_table_remove_all (applet->vpn_connections);
 		break;
 	case NM_STATE_ASLEEP:
 		pixbuf = applet->no_connection_icon;
@@ -2499,6 +2501,34 @@ foo_manager_running (NMClient *client,
 	}
 }
 
+typedef struct AddVPNInfo {
+	NMApplet *applet;
+	NMVPNConnection *active;
+} AddVPNInfo;
+
+static void
+foo_add_initial_vpn_connections (gpointer data, gpointer user_data)
+{
+	AddVPNInfo *info = (AddVPNInfo *) user_data;
+	NMVPNConnection *connection = NM_VPN_CONNECTION (data);
+
+	add_one_vpn_connection (info->applet, connection);
+	if (info->active)
+		return;
+
+	switch (nm_vpn_connection_get_state (connection)) {
+		case NM_VPN_CONNECTION_STATE_PREPARE:
+		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
+		case NM_VPN_CONNECTION_STATE_CONNECT:
+		case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
+		case NM_VPN_CONNECTION_STATE_ACTIVATED:
+			info->active = connection;
+			break;
+		default:
+			break;
+	}
+}
+
 static gboolean
 foo_set_initial_state (gpointer data)
 {
@@ -2513,6 +2543,20 @@ foo_set_initial_state (gpointer data)
 		g_slist_free (list);
 	}
 
+	list = nm_vpn_manager_get_connections (applet->vpn_manager);
+	if (list) {
+		AddVPNInfo info = { applet, NULL };
+
+		g_slist_foreach (list, foo_add_initial_vpn_connections, &info);
+		g_slist_free (list);
+
+		// FIXME: don't just use the first active VPN connection
+		if (info.active) {
+			vpn_connection_state_changed (info.active,
+			                              nm_vpn_connection_get_state (info.active),
+			                              applet);
+		}
+	}
 	return FALSE;
 }
 
@@ -2530,7 +2574,7 @@ foo_client_setup (NMApplet *applet)
 	foo_setup_client_state_handlers (client, applet);
 	g_signal_connect (client, "manager-running",
 				   G_CALLBACK (foo_manager_running), applet);
-	foo_manager_running(client, nm_client_manager_is_running (client), applet);
+	foo_manager_running (client, nm_client_manager_is_running (client), applet);
 
 	if (nm_client_manager_is_running (client))
 		g_idle_add (foo_set_initial_state, applet);

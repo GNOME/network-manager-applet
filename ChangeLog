@@ -1,3 +1,13 @@
+2007-09-28  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (vpn_connection_state_changed): clean up, get rid of unused code
+		- (nma_menu_vpn_item_clicked): consolidate new VPN connection code
+		- (foo_client_state_change): blow away list of active VPN connections
+			when NM goes away
+		- (foo_add_initial_vpn_connections, foo_set_initial_state): get initial
+			state of VPN connections on start too
+
 2007-09-28  Jeremy Katz  <katzj@redhat.com>
 
 	* src/password-dialog.c (response_cb): Fix where cancel'ing the
