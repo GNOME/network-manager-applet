@@ -52,7 +52,6 @@
 #endif
 
 #include "applet.h"
-#include "applet-notifications.h"
 #include "menu-items.h"
 #include "vpn-password-dialog.h"
 #include "nm-utils.h"
@@ -933,6 +932,94 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 //	nmi_dbus_signal_user_interface_activated (info->applet->connection);
 }
 
+#if ENABLE_NOTIFY
+static void
+nma_send_event_notification (NMApplet *applet, 
+                              NotifyUrgency urgency,
+                              const char *summary,
+                              const char *message,
+                              const char *icon)
+{
+	const char *notify_icon;
+
+	g_return_if_fail (applet != NULL);
+	g_return_if_fail (summary != NULL);
+	g_return_if_fail (message != NULL);
+
+	if (!notify_is_initted ())
+		notify_init ("NetworkManager");
+
+	if (applet->notification != NULL) {
+		notify_notification_close (applet->notification, NULL);
+		g_object_unref (applet->notification);
+	}
+
+	notify_icon = icon ? icon : GTK_STOCK_NETWORK;
+
+#ifdef HAVE_STATUS_ICON
+	applet->notification = notify_notification_new_with_status_icon (summary, message, notify_icon, applet->status_icon);
+#else
+	applet->notification = notify_notification_new (summary, message, notify_icon, GTK_WIDGET (applet->tray_icon));
+#endif /* HAVE_STATUS_ICON */
+
+	notify_notification_set_urgency (applet->notification, urgency);
+	notify_notification_show (applet->notification, NULL);
+}
+#else
+static void
+nma_show_notification_dialog (const char *title,
+                              const char *msg)
+{
+	GtkWidget	*dialog;
+
+	g_return_if_fail (title != NULL);
+	g_return_if_fail (msg != NULL);
+
+	dialog = gtk_message_dialog_new_with_markup (NULL, 0, GTK_MESSAGE_ERROR,
+				GTK_BUTTONS_OK, msg, NULL);
+	gtk_window_set_title (GTK_WINDOW (dialog), title);
+	g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
+	g_signal_connect (dialog, "close", G_CALLBACK (gtk_widget_destroy), NULL);
+
+	/* Bash focus-stealing prevention in the face */
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (dialog);
+	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
+	gtk_widget_show_all (dialog);
+}
+#endif
+
+static void
+show_vpn_state (NMApplet *applet,
+                NMVPNConnection *connection,
+                NMVPNConnectionState state,
+                NMVPNConnectionStateReason reason)
+{
+	const char *banner;
+	char *title, *msg;
+
+	switch (state) {
+	case NM_VPN_CONNECTION_STATE_ACTIVATED:
+		banner = nm_vpn_connection_get_banner (connection);
+		title = _("VPN Login Message");
+#ifdef ENABLE_NOTIFY
+		msg = g_strdup_printf ("\n%s", banner);
+		nma_send_event_notification (applet, NOTIFY_URGENCY_LOW,
+			title, msg, "gnome-lockscreen");
+#else
+		msg = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+		                       title, banner);
+		nma_show_notification_dialog (title, msg);
+#endif
+		g_free (msg);
+		break;
+	case NM_VPN_CONNECTION_STATE_FAILED:
+		break;
+	case NM_VPN_CONNECTION_STATE_DISCONNECTED:
+		break;
+	}
+}
+
 static gboolean
 vpn_animation_timeout (gpointer data)
 {
@@ -948,7 +1035,10 @@ vpn_animation_timeout (gpointer data)
 }
 
 static void
-vpn_connection_state_changed (NMVPNConnection *connection, NMVPNConnectionState state, gpointer user_data)
+vpn_connection_state_changed (NMVPNConnection *connection,
+                              NMVPNConnectionState state,
+                              NMVPNConnectionStateReason reason,
+                              gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
@@ -984,6 +1074,8 @@ vpn_connection_state_changed (NMVPNConnection *connection, NMVPNConnectionState 
 		foo_set_icon (applet, NULL, ICON_LAYER_VPN);
 		break;
 	}
+
+	show_vpn_state (applet, connection, state, reason);
 }
 
 static const char *
@@ -2449,6 +2541,7 @@ foo_client_state_change (NMClient *client, NMState state, gpointer user_data)
 	case NM_STATE_UNKNOWN:
 		/* Clear any VPN connections */
 		g_hash_table_remove_all (applet->vpn_connections);
+		foo_set_icon (applet, NULL, ICON_LAYER_VPN);
 		break;
 	case NM_STATE_ASLEEP:
 		pixbuf = applet->no_connection_icon;
@@ -2565,6 +2658,7 @@ foo_set_initial_state (gpointer data)
 		if (info.active) {
 			vpn_connection_state_changed (info.active,
 			                              nm_vpn_connection_get_state (info.active),
+			                              NM_VPN_CONNECTION_STATE_REASON_NONE,
 			                              applet);
 		}
 	}

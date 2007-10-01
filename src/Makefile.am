@@ -58,10 +58,6 @@ nm_applet_SOURCES += \
 	eggtrayicon.h
 endif
 
-if WITH_NOTIFY
-nm_applet_SOURCES += applet-notifications.c applet-notifications.h
-endif
-
 nm_applet_LDADD = \
 	$(NMA_LIBS) \
 	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
