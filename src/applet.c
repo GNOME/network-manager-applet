@@ -67,14 +67,19 @@
 	#define GTK_STOCK_INFO			GTK_STOCK_DIALOG_INFO
 #endif
 
-static GObject *			nma_constructor (GType type, guint n_props, GObjectConstructParam *construct_props);
-static void			nma_icons_init (NMApplet *applet);
-static void				nma_icons_free (NMApplet *applet);
-static void				nma_icons_zero (NMApplet *applet);
-static gboolean			nma_icons_load_from_disk (NMApplet *applet);
-static void			nma_finalize (GObject *object);
-static void              foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer);
+static GObject * nma_constructor (GType type, guint n_props, GObjectConstructParam *construct_props);
+static void      nma_icons_init (NMApplet *applet);
+static void      nma_icons_free (NMApplet *applet);
+static void      nma_icons_zero (NMApplet *applet);
+static gboolean  nma_icons_load_from_disk (NMApplet *applet);
+static void      nma_finalize (GObject *object);
+static void      foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer);
 static void		 foo_update_icon (NMApplet *applet);
+static void      foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_data, gboolean synthetic);
+static void      foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer user_data);
+static void      foo_manager_running (NMClient *client, gboolean running, gpointer user_data, gboolean synthetic);
+static void      foo_manager_running_cb (NMClient *client, gboolean running, gpointer user_data);
+static void      foo_client_state_change (NMClient *client, NMState state, gpointer user_data, gboolean synthetic);
 
 static GtkWidget *
 nma_menu_create (GtkMenuItem *parent, NMApplet *applet);
@@ -1984,11 +1989,42 @@ static void nma_status_icon_screen_changed_cb (GtkStatusIcon *icon, GParamSpec *
  */
 static gboolean nma_status_icon_size_changed_cb (GtkStatusIcon *icon, gint size, NMApplet *applet)
 {
+	GSList *list;
+	gboolean running = FALSE;
+
 	nma_icons_free (applet);
 
 	applet->size = size;
 	nma_icons_load_from_disk (applet);
 
+	list = nm_client_get_devices (applet->nm_client);
+	if (list) {
+		GSList *elt;
+		gboolean done = FALSE;
+
+		for (elt = list; elt && !done; elt = g_slist_next (elt)) {
+			NMDevice *dev = NM_DEVICE (elt->data);
+
+			switch (nm_device_get_state (dev)) {
+				case NM_DEVICE_STATE_PREPARE:
+				case NM_DEVICE_STATE_CONFIG:
+				case NM_DEVICE_STATE_NEED_AUTH:
+				case NM_DEVICE_STATE_IP_CONFIG:
+				case NM_DEVICE_STATE_ACTIVATED:
+					foo_device_state_changed (dev,
+					                          nm_device_get_state (dev),
+					                          applet, TRUE);
+					done = TRUE;
+					break;
+				default:
+					break;
+			}
+		}
+		g_slist_free (list);
+	}
+
+	running = nm_client_manager_is_running (applet->nm_client);
+	foo_manager_running (applet->nm_client, running, applet, TRUE);
 	foo_update_icon (applet);
 
 	return TRUE;
@@ -2363,7 +2399,7 @@ foo_bssid_strength_changed (NMAccessPoint *ap,
 }
 
 static gboolean
-foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, NMApplet *applet)
+foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, NMApplet *applet, gboolean synthetic)
 {
 	char *iface;
 	NMAccessPoint *ap = NULL;
@@ -2412,10 +2448,12 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		}
 
 #ifdef ENABLE_NOTIFY
-		tip = g_strdup_printf (_("You are now connected to the wireless network '%s'."), esc_ssid);
-		nma_send_event_notification (applet, NOTIFY_URGENCY_LOW, _("Connection Established"),
+		if (!synthetic) {
+			tip = g_strdup_printf (_("You are now connected to the wireless network '%s'."), esc_ssid);
+			nma_send_event_notification (applet, NOTIFY_URGENCY_LOW, _("Connection Established"),
 							    tip, "nm-device-wireless");
-		g_free (tip);
+			g_free (tip);
+		}
 #endif
 
 		tip = g_strdup_printf (_("Wireless network connection to '%s'"), esc_ssid);
@@ -2446,7 +2484,7 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 /* Wired device */
 
 static gboolean
-foo_wired_state_change (NMDevice8023Ethernet *device, NMDeviceState state, NMApplet *applet)
+foo_wired_state_change (NMDevice8023Ethernet *device, NMDeviceState state, NMApplet *applet, gboolean synthetic)
 {
 	char *iface;
 	char *tip = NULL;
@@ -2469,7 +2507,8 @@ foo_wired_state_change (NMDevice8023Ethernet *device, NMDeviceState state, NMApp
 		tip = g_strdup (_("Wired network connection"));
 
 #ifdef ENABLE_NOTIFY		
-		nma_send_event_notification (applet, NOTIFY_URGENCY_LOW,
+		if (!synthetic)
+			nma_send_event_notification (applet, NOTIFY_URGENCY_LOW,
 							    _("Connection Established"),
 							    _("You are now connected to the wired network."),
 							    "nm-device-wired");
@@ -2492,7 +2531,13 @@ foo_wired_state_change (NMDevice8023Ethernet *device, NMDeviceState state, NMApp
 }
 
 static void
-foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_data)
+foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer user_data)
+{
+	foo_device_state_changed (device, state, user_data, FALSE);
+}
+
+static void
+foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_data, gboolean synthetic)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	gboolean handled = FALSE;
@@ -2504,9 +2549,9 @@ foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_d
 	}
 
 	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		handled = foo_wired_state_change (NM_DEVICE_802_3_ETHERNET (device), state, applet);
+		handled = foo_wired_state_change (NM_DEVICE_802_3_ETHERNET (device), state, applet, synthetic);
 	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		handled = foo_wireless_state_change (NM_DEVICE_802_11_WIRELESS (device), state, applet);
+		handled = foo_wireless_state_change (NM_DEVICE_802_11_WIRELESS (device), state, applet, synthetic);
 
 	if (!handled)
 		foo_common_state_change (device, state, applet);
@@ -2516,10 +2561,10 @@ static void
 foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 {
 	g_signal_connect (device, "state-changed",
-				   G_CALLBACK (foo_device_state_changed),
+				   G_CALLBACK (foo_device_state_changed_cb),
 				   user_data);
 
-	foo_device_state_changed (device, nm_device_get_state (device), user_data);
+	foo_device_state_changed_cb (device, nm_device_get_state (device), user_data);
 }
 
 static void
@@ -2531,7 +2576,13 @@ foo_add_initial_devices (gpointer data, gpointer user_data)
 }
 
 static void
-foo_client_state_change (NMClient *client, NMState state, gpointer user_data)
+foo_client_state_change_cb (NMClient *client, NMState state, gpointer user_data)
+{
+	foo_client_state_change (client, state, user_data, FALSE);
+}
+
+static void
+foo_client_state_change (NMClient *client, NMState state, gpointer user_data, gboolean synthetic)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	GdkPixbuf *pixbuf = NULL;
@@ -2552,7 +2603,8 @@ foo_client_state_change (NMClient *client, NMState state, gpointer user_data)
 		tip = g_strdup (_("No network connection"));
 
 #ifdef ENABLE_NOTIFY
-		nma_send_event_notification (applet, NOTIFY_URGENCY_NORMAL, _("Disconnected"),
+		if (!synthetic)
+			nma_send_event_notification (applet, NOTIFY_URGENCY_NORMAL, _("Disconnected"),
 							    _("The network connection has been disconnected."),
 							    "nm-no-connection");
 #endif
@@ -2575,7 +2627,7 @@ static void
 foo_setup_client_state_handlers (NMClient *client, NMApplet *applet)
 {
 	g_signal_connect (client, "state-change",
-				   G_CALLBACK (foo_client_state_change),
+				   G_CALLBACK (foo_client_state_change_cb),
 				   applet);
 
 	g_signal_connect (client, "device-added",
@@ -2583,11 +2635,20 @@ foo_setup_client_state_handlers (NMClient *client, NMApplet *applet)
 				   applet);
 }
 
+static void
+foo_manager_running_cb (NMClient *client,
+				 gboolean running,
+				 gpointer user_data)
+{
+	foo_manager_running (client, running, user_data, FALSE);
+}
+
 
 static void
 foo_manager_running (NMClient *client,
 				 gboolean running,
-				 gpointer user_data)
+				 gpointer user_data,
+                                 gboolean synthetic)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
@@ -2597,11 +2658,11 @@ foo_manager_running (NMClient *client,
 		g_message ("NM appeared");
 
 		/* Force the icon update */
-		foo_client_state_change (client, nm_client_get_state (client), applet);
+		foo_client_state_change (client, nm_client_get_state (client), applet, synthetic);
 	} else {
 		g_message ("NM disappeared");
 
-		foo_client_state_change (client, NM_STATE_UNKNOWN, applet);
+		foo_client_state_change (client, NM_STATE_UNKNOWN, applet, synthetic);
 	}
 }
 
@@ -2639,7 +2700,7 @@ foo_set_initial_state (gpointer data)
 	NMApplet *applet = NM_APPLET (data);
 	GSList *list;
 
-	foo_manager_running (applet->nm_client, TRUE, applet);
+	foo_manager_running (applet->nm_client, TRUE, applet, FALSE);
 
 	list = nm_client_get_devices (applet->nm_client);
 	if (list) {
@@ -2678,8 +2739,8 @@ foo_client_setup (NMApplet *applet)
 
 	foo_setup_client_state_handlers (client, applet);
 	g_signal_connect (client, "manager-running",
-				   G_CALLBACK (foo_manager_running), applet);
-	foo_manager_running (client, nm_client_manager_is_running (client), applet);
+				   G_CALLBACK (foo_manager_running_cb), applet);
+	foo_manager_running (client, nm_client_manager_is_running (client), applet, TRUE);
 
 	if (nm_client_manager_is_running (client))
 		g_idle_add (foo_set_initial_state, applet);
