@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -168,6 +169,17 @@ entry_changed_cb (GtkWidget *entry,
 }
 
 static void
+showpasscb_toggled_cb (GtkWidget *cb,
+				   gpointer user_data)
+{
+	GtkEntry *      entry = GTK_ENTRY (user_data);
+
+	g_return_if_fail (entry != NULL);
+
+	gtk_entry_set_visibility (entry, gtk_toggle_button_get_active ( GTK_TOGGLE_BUTTON(cb)));
+}
+
+static void
 destroy_gvalue (gpointer data)
 {
 	GValue *value = (GValue *) data;
@@ -290,6 +302,7 @@ nma_password_dialog_new (NMConnection *connection,
 	GtkWidget *button;
 	GtkWidget *label;
 	GtkWidget *entry;
+	GtkWidget *cb;
 	const char *orig_label_text;
 	char *new_label_text;
 	char buf[33];
@@ -331,6 +344,9 @@ nma_password_dialog_new (NMConnection *connection,
 
 	entry = glade_xml_get_widget (xml, "password_entry");
 	g_signal_connect (entry, "changed", GTK_SIGNAL_FUNC (entry_changed_cb), dialog);
+
+	cb = glade_xml_get_widget (xml, "showpass_checkbutton");
+	g_signal_connect (cb, "toggled", GTK_SIGNAL_FUNC (showpasscb_toggled_cb), entry);
 
 	/* Insert the network name into the dialog text */
 	label = glade_xml_get_widget (xml, "label1");
