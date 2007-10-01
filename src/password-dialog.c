@@ -26,6 +26,7 @@
 #include <glade/glade.h>
 #include <gnome-keyring.h>
 #include <string.h>
+#include <iwlib.h>
 
 #include <nm-settings.h>
 
@@ -70,29 +71,28 @@ cipher_bin2hexstr (const char *bytes,
 
 #define WPA_PMK_LEN 32
 char * 
-nma_wpa_passphrase_to_hex(const char * key, NMSettingConnection * connection)
+nma_wpa_passphrase_to_hex (const char * key, NMConnection * connection)
 {
-        char *buf = NULL;
-        char *output = NULL;
+	char *buf = NULL;
+	char *output = NULL;
 	NMSettingWireless *s_wireless;
-        char ssid[33];
-        int ssid_len;
+	int ssid_len;
 
-        g_return_val_if_fail (connection != NULL, key);
+	g_return_val_if_fail (connection != NULL, NULL);
 
 	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, "802-11-wireless");
-	memset (ssid, 0, sizeof (ssid));
-	memcpy (ssid, s_wireless->ssid->data, MIN (s_wireless->ssid->len, sizeof (ssid) - 1));
-        ssid_len = strlen(ssid);
+	g_return_val_if_fail (s_wireless, NULL);
+	g_return_val_if_fail (s_wireless->ssid > 0, NULL);
+	g_return_val_if_fail (s_wireless->ssid->len > 0, NULL);
 
-        g_return_val_if_fail (ssid_len > 0, key);
+	ssid_len = MIN (s_wireless->ssid->len, IW_ESSID_MAX_SIZE);
 
-        buf = g_malloc0 (WPA_PMK_LEN * 2);
-        pbkdf2_sha1 (key, (char *) ssid, ssid_len, 4096, (unsigned char *) buf, WPA_PMK_LEN);
-        output = cipher_bin2hexstr (buf, WPA_PMK_LEN, WPA_PMK_LEN * 2);
-        g_free (buf);
+	buf = g_malloc0 (WPA_PMK_LEN * 2);
+	pbkdf2_sha1 (key, s_wireless->ssid->data, ssid_len, 4096, (unsigned char *) buf, WPA_PMK_LEN);
+	output = cipher_bin2hexstr (buf, WPA_PMK_LEN, WPA_PMK_LEN * 2);
+	g_free (buf);
 
-        return output;
+	return output;
 }
 
 static void
@@ -138,15 +138,15 @@ update_button_cb (GtkWidget *unused, gpointer user_data)
 
 		enable = TRUE;
 	} else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-none") || !strcmp (s_wireless_sec->key_mgmt, "wpa-psk")) {
-                if ((key_len < 8) || (key_len > 64))
+		if ((key_len < 8) || (key_len > 64))
 			goto out;
 
-                if (key_len == 64) {
-                        for (i = 0; i < key_len; i++) {
-                                if (!isxdigit (key[i]))
-                                        goto out;
-                        }
-                }
+		if (key_len == 64) {
+			for (i = 0; i < key_len; i++) {
+				if (!isxdigit (key[i]))
+					goto out;
+			}
+		}
 
 		enable = TRUE;
 	}
@@ -220,18 +220,27 @@ response_cb (GtkWidget *dialog, gint response, gpointer user_data)
 		goto out;
 
 	/* Put the secret into the keyring */
+	if (!strcmp (s_wireless_sec->key_mgmt, "none")) {
+		key_name = "wep-key0";
+	} else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-none") || !strcmp (s_wireless_sec->key_mgmt, "wpa-psk")) {
+		key_name = "psk";
+		if (strlen (key) != 64) { /* convert passphrase */
+			key = nma_wpa_passphrase_to_hex (key, connection);
+			if (!key) {
+				GError *error;
+				error = nm_settings_new_error ("%s.%d: error hashing passphrase", __FILE__, __LINE__);
+				dbus_g_method_return_error (context, error);
+				g_error_free (error);
+				goto out;
+			}
+		}
+	}
+
 	attributes = gnome_keyring_attribute_list_new ();
 	gnome_keyring_attribute_list_append_string (attributes, "connection-name", s_con->name);
 	gnome_keyring_attribute_list_append_string (attributes, "setting-name", "802-11-wireless-security");
-	if (!strcmp (s_wireless_sec->key_mgmt, "none")) {
-		key_name = "wep-key0";
+	if (key_name)
 		gnome_keyring_attribute_list_append_string (attributes, "setting-key", key_name);
-	} else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-none") || !strcmp (s_wireless_sec->key_mgmt, "wpa-psk")) {
-		key_name = "psk";
-		gnome_keyring_attribute_list_append_string (attributes, "setting-key", key_name);
-                if (strlen(key) != 64) /* convert passphrase */
-                        key = nma_wpa_passphrase_to_hex(key, connection);
-	}
 
 	g_assert (key_name);
 	name = g_strdup_printf ("Network secret for %s/%s/%s", s_con->name, setting_name, key_name);
