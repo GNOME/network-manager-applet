@@ -15,5 +15,5 @@ EXTRA_DIST +=				\
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 
-autostartdir = $(datadir)/gnome/autostart
+autostartdir = $(sysconfdir)/xdg/autostart
 autostart_DATA = nm-applet.desktop

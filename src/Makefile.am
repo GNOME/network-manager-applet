@@ -10,7 +10,7 @@ nm_applet_CPPFLAGS =									\
 	-DGLADEDIR=\""$(gladedir)"\"							\
 	-DBINDIR=\""$(bindir)"\"								\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"						\
-	-DAUTOSTARTDIR=\""$(datadir)/gnome/autostart"\"			\
+	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\"			\
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\"	\
 	-DDBUS_API_SUBJECT_TO_CHANGE							\
 	-DGNOMELOCALEDIR=\"$(datadir)/locale\"					\
