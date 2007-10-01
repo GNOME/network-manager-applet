@@ -811,6 +811,14 @@ find_connection (NMConnectionSettings *applet_connection,
 	return TRUE;
 }
 
+static void
+activate_device_cb (gpointer user_data, GError *err)
+{
+	if (err) {
+		nm_warning ("Device Activation failed: %s", err->message);
+	}
+}
+
 /*
  * nma_menu_item_activate
  *
@@ -913,10 +921,13 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		if (NM_IS_DEVICE_802_11_WIRELESS (info->device))
 			specific_object = (char *) nm_object_get_path (NM_OBJECT (info->ap));
 
-		nm_device_activate (info->device,
-		                    NM_DBUS_SERVICE_USER_SETTINGS,
-		                    con_path,
-		                    (const char *) specific_object);
+		nm_client_activate_device (info->applet->nm_client,
+							  info->device,
+							  NM_DBUS_SERVICE_USER_SETTINGS,
+							  con_path,
+							  (const char *) specific_object,
+							  activate_device_cb,
+							  info);
 	}
 
 //	nmi_dbus_signal_user_interface_activated (info->applet->connection);
