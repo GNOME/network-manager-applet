@@ -2640,6 +2640,7 @@ foo_manager_running_cb (NMClient *client,
 				 gboolean running,
 				 gpointer user_data)
 {
+	running ? g_message ("NM appeared") : g_message ("NM disappeared");
 	foo_manager_running (client, running, user_data, FALSE);
 }
 
@@ -2655,13 +2656,9 @@ foo_manager_running (NMClient *client,
 	gtk_status_icon_set_visible (applet->status_icon, running);
 
 	if (running) {
-		g_message ("NM appeared");
-
 		/* Force the icon update */
 		foo_client_state_change (client, nm_client_get_state (client), applet, synthetic);
 	} else {
-		g_message ("NM disappeared");
-
 		foo_client_state_change (client, NM_STATE_UNKNOWN, applet, synthetic);
 	}
 }
