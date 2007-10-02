@@ -36,6 +36,13 @@ nm_gconf_get_int_helper (GConfClient *client,
 					int *value);
 
 gboolean
+nm_gconf_get_float_helper (GConfClient *client,
+					const char *path,
+					const char *key,
+					const char *network,
+					gfloat *value);
+
+gboolean
 nm_gconf_get_string_helper (GConfClient *client,
 					const char *path,
 					const char *key,
@@ -77,6 +84,13 @@ nm_gconf_set_int_helper (GConfClient *client,
                          const char *key,
                          const char *network,
                          int value);
+
+gboolean
+nm_gconf_set_float_helper (GConfClient *client,
+                           const char *path,
+                           const char *key,
+                           const char *network,
+                           gfloat value);
 
 gboolean
 nm_gconf_set_string_helper (GConfClient *client,

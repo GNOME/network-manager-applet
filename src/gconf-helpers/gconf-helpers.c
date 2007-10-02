@@ -61,6 +61,37 @@ nm_gconf_get_int_helper (GConfClient *client,
 
 
 gboolean
+nm_gconf_get_float_helper (GConfClient *client,
+					const char *path,
+					const char *key,
+					const char *network,
+					gfloat *value)
+{
+	char *		gc_key;
+	GConfValue *	gc_value;
+	gboolean		success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if ((gc_value = gconf_client_get (client, gc_key, NULL)))
+	{
+		if (gc_value->type == GCONF_VALUE_FLOAT)
+		{
+			*value = gconf_value_get_float (gc_value);
+			success = TRUE;
+		}
+		gconf_value_free (gc_value);
+	}
+	g_free (gc_key);
+
+	return success;
+}
+
+
+gboolean
 nm_gconf_get_string_helper (GConfClient *client,
 					const char *path,
 					const char *key,
@@ -317,6 +348,28 @@ nm_gconf_set_int_helper (GConfClient *client,
 }
 
 gboolean
+nm_gconf_set_float_helper (GConfClient *client,
+                           const char *path,
+                           const char *key,
+                           const char *network,
+                           gfloat value)
+{
+	char * gc_key;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+	gconf_client_set_float (client, gc_key, value, NULL);
+	g_free (gc_key);
+	return TRUE;
+}
+
+gboolean
 nm_gconf_set_string_helper (GConfClient *client,
                             const char *path,
                             const char *key,
@@ -498,6 +551,15 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			guint32 *uint_val = (guint32 *) value;
 			nm_gconf_get_int_helper (info->client, info->dir, key,
 			                         setting->name, uint_val);
+			break;
+		}
+		case NM_S_TYPE_UINT64: {
+			guint64 *uint_val = (guint64 *) value;
+			gfloat tmp_val = 0;
+			/* GConf doesn't do 64-bit values, so use floats instead */
+			nm_gconf_get_float_helper (info->client, info->dir, key,
+			                           setting->name, &tmp_val);
+			*uint_val = (guint64) tmp_val;
 			break;
 		}
 		case NM_S_TYPE_BOOL: {
@@ -693,6 +755,15 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 				break;
 			nm_gconf_set_int_helper (info->client, info->dir,
 			                         key, setting->name, *uint_val);
+			break;
+		}
+		case NM_S_TYPE_UINT64: {
+			guint64 *uint_val = (guint64 *) value;
+			if (!*uint_val)
+				break;
+			/* GConf doesn't do 64-bit values, so use floats instead */
+			nm_gconf_set_float_helper (info->client, info->dir,
+			                           key, setting->name, (gfloat) *uint_val);
 			break;
 		}
 		case NM_S_TYPE_BOOL: {

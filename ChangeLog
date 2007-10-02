@@ -1,5 +1,13 @@
 2007-10-01  Dan Williams  <dcbw@redhat.com>
 
+	* src/gconf-helpers/gconf-helpers.c
+		- (read_one_setting_value_from_gconf, copy_one_setting_value_to_gconf):
+			handle new UINT64 type, but since GConf can't do uint64, use
+			floats instead
+		- (nm_gconf_get_float_helper, nm_gconf_set_float_helper): new functions
+
+2007-10-01  Dan Williams  <dcbw@redhat.com>
+
 	Patch from Matthias Clasen <mclasen@redhat.com>  (rh #307921)
 
 	* src/applet.c
