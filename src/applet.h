@@ -96,6 +96,7 @@ typedef struct
 	GHashTable *vpn_connections;
 
 	NMSettings * settings;
+	GSList * active_connections;
 
 	GConfClient *		gconf_client;
 	char	*			glade_file;

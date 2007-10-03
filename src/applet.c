@@ -128,27 +128,23 @@ nma_escape_ssid (const char * ssid, guint32 len)
 	return escaped;
 }
 
-
 static NMDevice *
 get_first_active_device (NMApplet *applet)
 {
-	GSList *list;
 	GSList *iter;
-	NMDevice *active_device = NULL;
+	NMDevice *dev = NULL;
 
-	list = nm_client_get_devices (applet->nm_client);
-	for (iter = list; iter; iter = iter->next) {
-		NMDevice *device = NM_DEVICE (iter->data);
+	if (!applet->active_connections)
+		return NULL;
 
-		if (nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED) {
-			active_device = device;
-			break;
-		}
+	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
+		NMClientActiveConnection * act_con = (NMClientActiveConnection *) iter->data;
+
+		if (act_con->devices)
+			return g_slist_nth_data (act_con->devices, 0);
 	}
 
-	g_slist_free (list);
-
-	return active_device;
+	return dev;
 }
 
 static void nma_init (NMApplet *applet)
@@ -1309,10 +1305,9 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 
 
 typedef struct {
-	NMApplet *	applet;
-	NMDevice * device;
-	const GByteArray * active_ssid;
-	GtkWidget * menu;
+	NMApplet *applet;
+	NMDevice *device;
+	GtkWidget *menu;
 } AddNetworksCB;
 
 #define AP_HASH_LEN 16
@@ -1415,6 +1410,7 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 {
 	NMAccessPoint *ap = NM_ACCESS_POINT (data);
 	AddNetworksCB *cb_data = (AddNetworksCB *) user_data;
+	NMApplet *applet = cb_data->applet;
 	const GByteArray * ssid;
 	gint8 strength;
 	struct dup_data dup_data = { NULL, NULL };
@@ -1442,23 +1438,29 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 		GtkWidget * item;
 		DeviceMenuItemInfo *info;
 
-		item = nm_network_menu_item_new (cb_data->applet->encryption_size_group,
+		item = nm_network_menu_item_new (applet->encryption_size_group,
 		                                 dup_data.hash, AP_HASH_LEN);
 		nm_network_menu_item_set_ssid (NM_NETWORK_MENU_ITEM (item), (GByteArray *) ssid);
 		nm_network_menu_item_set_strength (NM_NETWORK_MENU_ITEM (item), strength);
 		nm_network_menu_item_set_detail (NM_NETWORK_MENU_ITEM (item),
-		                                 ap, cb_data->applet->adhoc_icon);
+		                                 ap, applet->adhoc_icon);
 
 		gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), item);
 
-		if ((nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED)
-		    && cb_data->active_ssid) {
-			if (ssid && nma_same_ssid (ssid, cb_data->active_ssid))
-				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+		/* Check the active device */
+		if (nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED) {
+			GSList *iter;
+
+			for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
+				NMClientActiveConnection * act_con = (NMClientActiveConnection *) iter->data;
+
+				if (g_slist_find (act_con->devices, cb_data->device))
+					gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+			}
 		}
 
 		info = g_slice_new (DeviceMenuItemInfo);
-		info->applet = cb_data->applet;
+		info->applet = applet;
 		info->device = cb_data->device;
 		info->ap = ap;
 
@@ -1543,16 +1545,7 @@ nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *apple
 
 	add_networks_cb.applet = applet;
 	add_networks_cb.device = device;
-	add_networks_cb.active_ssid = NULL;
 	add_networks_cb.menu = menu;
-
-	if (nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED) {
-		NMAccessPoint *ap;
-
-		ap = nm_device_802_11_wireless_get_active_network (NM_DEVICE_802_11_WIRELESS (device));
-		if (ap)
-			add_networks_cb.active_ssid = nm_access_point_get_ssid (ap);
-	}
 
 	/* Add all networks in our network list to the menu */
 	networks = g_slist_sort (networks, sort_wireless_networks);
@@ -2534,6 +2527,32 @@ static void
 foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer user_data)
 {
 	foo_device_state_changed (device, state, user_data, FALSE);
+
+	/* If the device activation was successful, update the corresponding
+	 * connection object with a current timestamp.
+	 */
+	
+}
+
+static void
+print_con_elt (gpointer value, gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+	NMClientActiveConnection *item = (NMClientActiveConnection *) value;
+	AppletDbusConnectionSettings *connection_settings;
+
+	connection_settings = applet_dbus_settings_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), item->connection_path);
+nm_connection_dump (connection_settings->connection);
+}
+
+static void
+clear_active_connections (NMApplet *applet)
+{
+	g_slist_foreach (applet->active_connections,
+	                 (GFunc) nm_client_free_active_connection_element,
+	                 NULL);
+	g_slist_free (applet->active_connections);
+	applet->active_connections = NULL;
 }
 
 static void
@@ -2552,6 +2571,10 @@ foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_d
 		handled = foo_wired_state_change (NM_DEVICE_802_3_ETHERNET (device), state, applet, synthetic);
 	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
 		handled = foo_wireless_state_change (NM_DEVICE_802_11_WIRELESS (device), state, applet, synthetic);
+
+	clear_active_connections (applet);
+	applet->active_connections = nm_client_get_active_connections (applet->nm_client);
+	g_slist_foreach (applet->active_connections, print_con_elt, applet);
 
 	if (!handled)
 		foo_common_state_change (device, state, applet);
@@ -2592,6 +2615,7 @@ foo_client_state_change (NMClient *client, NMState state, gpointer user_data, gb
 	case NM_STATE_UNKNOWN:
 		/* Clear any VPN connections */
 		g_hash_table_remove_all (applet->vpn_connections);
+		clear_active_connections (applet);
 		foo_set_icon (applet, NULL, ICON_LAYER_VPN);
 		break;
 	case NM_STATE_ASLEEP:
@@ -2793,6 +2817,8 @@ static void nma_finalize (GObject *object)
 	g_object_unref (applet->vpn_manager);
 	g_object_unref (applet->nm_client);
 
+	clear_active_connections (applet);
+
 	if (applet->nm_client)
 		g_object_unref (applet->nm_client);
 
@@ -2831,6 +2857,8 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	if (!nma_setup_widgets (applet))
 	    goto error;
 	nma_icons_init (applet);
+
+	applet->active_connections = NULL;
 	
 	dbus_mgr = applet_dbus_manager_get ();
 	if (dbus_mgr == NULL) {

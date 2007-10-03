@@ -1,3 +1,16 @@
+2007-10-03  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+	  src/applet.h
+		- (get_first_active_device): use active connection list now
+		- (nma_menu_device_add_networks, nma_add_networks_helper): don't depend
+			on only the active SSID, use the active connection to find out what
+			AP should be marked in the menu
+		- (clear_active_connections, foo_device_state_changed): update active
+			connections when a device's state changes
+		- (foo_client_state_change): clear active connections when NM goes away
+		- (void nma_finalize): clear active connections on quit
+
 2007-10-01  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/gconf-helpers.c
