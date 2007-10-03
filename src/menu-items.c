@@ -98,11 +98,11 @@ wireless_menu_item_new (NMDevice80211Wireless *device,
 {
 	char *text;
 	GtkMenuItem *item;
-	GSList *networks;
+	GSList *aps;
 
 	g_return_val_if_fail (NM_IS_DEVICE_802_11_WIRELESS (device), NULL);
 
-	networks = nm_device_802_11_wireless_get_networks (device);
+	aps = nm_device_802_11_wireless_get_access_points (device);
 
 	if (n_devices > 1) {
 		char *dev_name;
@@ -111,12 +111,12 @@ wireless_menu_item_new (NMDevice80211Wireless *device,
 		if (!dev_name)
 			dev_name = nm_device_get_iface (NM_DEVICE (device));
 		text = g_strdup_printf (ngettext ("Wireless Network (%s)", "Wireless Networks (%s)",
-										  g_slist_length (networks)), dev_name);
+										  g_slist_length (aps)), dev_name);
 		g_free (dev_name);
 	} else
-		text = g_strdup (ngettext ("Wireless Network", "Wireless Networks", g_slist_length (networks)));
+		text = g_strdup (ngettext ("Wireless Network", "Wireless Networks", g_slist_length (aps)));
 
-	g_slist_free (networks);
+	g_slist_free (aps);
 
 	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (text));
 	g_free (text);

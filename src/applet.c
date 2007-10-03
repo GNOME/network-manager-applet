@@ -1533,24 +1533,26 @@ sort_wireless_networks (gconstpointer tmpa,
  *
  */
 static void
-nma_menu_device_add_networks (GtkWidget *menu, NMDevice *device, NMApplet *applet)
+nma_menu_device_add_access_points (GtkWidget *menu,
+                                   NMDevice *device,
+                                   NMApplet *applet)
 {
-	GSList *networks;
+	GSList *aps;
 	AddNetworksCB add_networks_cb;
 
 	if (!NM_IS_DEVICE_802_11_WIRELESS (device) || !nm_client_wireless_get_enabled (applet->nm_client))
 		return;
 
-	networks = nm_device_802_11_wireless_get_networks (NM_DEVICE_802_11_WIRELESS (device));
+	aps = nm_device_802_11_wireless_get_access_points (NM_DEVICE_802_11_WIRELESS (device));
 
 	add_networks_cb.applet = applet;
 	add_networks_cb.device = device;
 	add_networks_cb.menu = menu;
 
 	/* Add all networks in our network list to the menu */
-	networks = g_slist_sort (networks, sort_wireless_networks);
-	g_slist_foreach (networks, nma_add_networks_helper, &add_networks_cb);
-	g_slist_free (networks);
+	aps = g_slist_sort (aps, sort_wireless_networks);
+	g_slist_foreach (aps, nma_add_networks_helper, &add_networks_cb);
+	g_slist_free (aps);
 }
 
 static gint
@@ -1632,7 +1634,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			n_devices = n_wired_interfaces++;
 
 		nma_menu_add_device_item (menu, device, n_devices, applet);
-		nma_menu_device_add_networks (menu, device, applet);
+		nma_menu_device_add_access_points (menu, device, applet);
 	}
 
 	if (n_wireless_interfaces > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
@@ -2409,7 +2411,7 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 	    state == NM_DEVICE_STATE_NEED_AUTH ||
 	    state == NM_DEVICE_STATE_ACTIVATED) {
 
-		ap = nm_device_802_11_wireless_get_active_network (NM_DEVICE_802_11_WIRELESS (device));
+		ap = nm_device_802_11_wireless_get_active_access_point (NM_DEVICE_802_11_WIRELESS (device));
 		if (ap) {
 			ssid = nm_access_point_get_ssid (ap);
 			if (ssid)
