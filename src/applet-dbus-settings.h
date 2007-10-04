@@ -37,7 +37,6 @@ typedef struct {
 	/* private data */
 	GConfClient *conf_client;
 	gchar *conf_dir;
-	guint conf_notify_id;
 	gchar *id;
 	NMConnection *connection;
 } AppletDbusConnectionSettings;
@@ -51,6 +50,9 @@ NMConnectionSettings *applet_dbus_connection_settings_new (GConfClient *conf_cli
 
 NMConnection * applet_dbus_connection_settings_get_connection (NMConnectionSettings *connection);
 
+void applet_dbus_connection_settings_save (NMConnectionSettings *connection);
+
+
 #define APPLET_TYPE_DBUS_SETTINGS    (applet_dbus_settings_get_type ())
 #define APPLET_IS_DBUS_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_DBUS_SETTINGS))
 #define APPLET_DBUS_SETTINGS(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), APPLET_TYPE_DBUS_SETTINGS, AppletDbusSettings))
@@ -60,6 +62,7 @@ typedef struct {
 
 	/* private data */
 	GConfClient *conf_client;
+	guint conf_notify_id;
 	GSList *connections;
 } AppletDbusSettings;
 

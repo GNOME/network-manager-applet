@@ -34,6 +34,19 @@ static NMConnectionSettings * applet_dbus_connection_settings_new_from_connectio
                                                                                    const gchar *conf_dir,
                                                                                    NMConnection *connection);
 
+static void connections_changed_cb (GConfClient *conf_client,
+                                    guint cnxn_id,
+                                    GConfEntry *entry,
+                                    gpointer user_data);
+
+static const char *applet_dbus_connection_settings_get_gconf_path (NMConnectionSettings *connection);
+
+static AppletDbusConnectionSettings *applet_dbus_settings_get_by_gconf_path (AppletDbusSettings *applet_settings,
+                                                                             const char *path);
+
+static gboolean applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *connection,
+                                                         GConfEntry *entry);
+
 /*
  * AppletDbusSettings class implementation
  */
@@ -47,6 +60,18 @@ applet_dbus_settings_init (AppletDbusSettings *applet_settings)
 {
 	applet_settings->conf_client = gconf_client_get_default ();
 	applet_settings->connections = NULL;
+
+	gconf_client_add_dir (applet_settings->conf_client,
+	                      GCONF_PATH_CONNECTIONS,
+	                      GCONF_CLIENT_PRELOAD_NONE,
+	                      NULL);
+
+	applet_settings->conf_notify_id =
+		gconf_client_notify_add (applet_settings->conf_client,
+		                         GCONF_PATH_CONNECTIONS,
+		                         (GConfClientNotifyFunc) connections_changed_cb,
+		                         applet_settings,
+		                         NULL, NULL);
 }
 
 static void
@@ -54,15 +79,21 @@ applet_dbus_settings_finalize (GObject *object)
 {
 	AppletDbusSettings *applet_settings = (AppletDbusSettings *) object;
 
-	if (applet_settings->conf_client) {
-		g_object_unref (applet_settings->conf_client);
-		applet_settings->conf_client = NULL;
+	if (applet_settings->conf_notify_id != 0) {
+		gconf_client_notify_remove (applet_settings->conf_client, applet_settings->conf_notify_id);
+		gconf_client_remove_dir (applet_settings->conf_client, GCONF_PATH_CONNECTIONS, NULL);
+		applet_settings->conf_notify_id = 0;
 	}
 
 	if (applet_settings->connections) {
 		g_slist_foreach (applet_settings->connections, (GFunc) g_object_unref, NULL);
 		g_slist_free (applet_settings->connections);
 		applet_settings->connections = NULL;
+	}
+
+	if (applet_settings->conf_client) {
+		g_object_unref (applet_settings->conf_client);
+		applet_settings->conf_client = NULL;
 	}
 
 	G_OBJECT_CLASS (applet_dbus_settings_parent_class)->finalize (object);
@@ -97,6 +128,55 @@ applet_dbus_settings_new (void)
 	return settings;
 }
 
+static void
+connections_changed_cb (GConfClient *conf_client,
+                        guint cnxn_id,
+                        GConfEntry *entry,
+                        gpointer user_data)
+{
+	AppletDbusSettings *settings = APPLET_DBUS_SETTINGS (user_data);
+	char **dirs = NULL;
+	guint len;
+	char *path = NULL;
+	AppletDbusConnectionSettings *connection;
+	gboolean valid = FALSE;
+
+	dirs = g_strsplit (gconf_entry_get_key (entry), "/", -1);
+	len = g_strv_length (dirs);
+	if (len < 5)
+		goto out;
+
+	if (   strcmp (dirs[0], "")
+	    || strcmp (dirs[1], "system")
+	    || strcmp (dirs[2], "networking")
+	    || strcmp (dirs[3], "connections"))
+		goto out;
+
+	path = g_strconcat ("/", dirs[1], "/", dirs[2], "/", dirs[3], "/", dirs[4], NULL);
+	connection = applet_dbus_settings_get_by_gconf_path (settings, path);
+
+	if (connection == NULL) {
+		NMConnectionSettings *exported;
+
+		/* Maybe a new connection */
+		exported = applet_dbus_connection_settings_new (settings->conf_client, path);
+		if (exported) {
+			settings->connections = g_slist_append (settings->connections, exported);
+			nm_settings_signal_new_connection (NM_SETTINGS (settings),
+			                                   NM_CONNECTION_SETTINGS (exported));
+		}
+	} else {
+		/* Updated or removed connection */
+		valid = applet_dbus_connection_settings_changed (connection, entry);
+		if (!valid)
+			settings->connections = g_slist_remove (settings->connections, connection);
+	}
+
+out:
+	g_free (path);
+	g_strfreev (dirs);
+}
+
 AppletDbusConnectionSettings *
 applet_dbus_settings_get_by_dbus_path (AppletDbusSettings *applet_settings,
                                        const char *path)
@@ -108,6 +188,24 @@ applet_dbus_settings_get_by_dbus_path (AppletDbusSettings *applet_settings,
 
 	for (elt = applet_settings->connections; elt; elt = g_slist_next (elt)) {
 		const char * sc_path = nm_connection_settings_get_dbus_object_path (elt->data);
+		if (!strcmp (sc_path, path))
+			return APPLET_DBUS_CONNECTION_SETTINGS (elt->data);
+	}
+
+	return NULL;
+}
+
+static AppletDbusConnectionSettings *
+applet_dbus_settings_get_by_gconf_path (AppletDbusSettings *applet_settings,
+                                        const char *path)
+{
+	GSList *elt;
+
+	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings), NULL);
+	g_return_val_if_fail (path != NULL, NULL);
+
+	for (elt = applet_settings->connections; elt; elt = g_slist_next (elt)) {
+		const char * sc_path = applet_dbus_connection_settings_get_gconf_path (elt->data);
 		if (!strcmp (sc_path, path))
 			return APPLET_DBUS_CONNECTION_SETTINGS (elt->data);
 	}
@@ -238,7 +336,6 @@ applet_dbus_connection_settings_init (AppletDbusConnectionSettings *applet_conne
 {
 	applet_connection->conf_client = NULL;
 	applet_connection->conf_dir = NULL;
-	applet_connection->conf_notify_id = 0;
 	applet_connection->id = NULL;
 	applet_connection->connection = NULL;
 }
@@ -247,12 +344,6 @@ static void
 applet_dbus_connection_settings_finalize (GObject *object)
 {
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) object;
-
-	if (applet_connection->conf_notify_id != 0) {
-		gconf_client_notify_remove (applet_connection->conf_client, applet_connection->conf_notify_id);
-		gconf_client_remove_dir (applet_connection->conf_client, applet_connection->conf_dir, NULL);
-		applet_connection->conf_notify_id = 0;
-	}
 
 	if (applet_connection->conf_client) {
 		g_object_unref (applet_connection->conf_client);
@@ -291,38 +382,44 @@ applet_dbus_connection_settings_class_init (AppletDbusConnectionSettingsClass *a
 	connection_class->get_secrets = applet_dbus_connection_settings_get_secrets;
 }
 
-static void
-connection_settings_changed_cb (GConfClient *conf_client,
-                                guint cnxn_id,
-                                GConfEntry *entry,
-                                gpointer user_data)
+static gboolean
+applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_connection,
+                                         GConfEntry *entry)
 {
 	GHashTable *settings;
 	NMConnection *connection;
-	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) user_data;
 	NMSettingConnection *s_con;
 
 	/* FIXME: just update the modified field, no need to re-read all */
 	connection = nm_gconf_read_connection (applet_connection->conf_client,
 	                                       applet_connection->conf_dir);
 	if (!connection) {
-		g_warning ("Invalid connection read from GConf at %s.", applet_connection->conf_dir);
-		return;
+		g_warning ("No connection read from GConf at %s.", applet_connection->conf_dir);
+		goto invalid;
 	}
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
-	                                                            "connection");
-	if (applet_connection->id)
-		g_free (applet_connection->id);
-	applet_connection->id = g_strdup (s_con->name);
+	if (!nm_connection_verify (connection)) {
+		g_warning ("Invalid connection read from GConf at %s.", applet_connection->conf_dir);
+		goto invalid;
+	}
 
 	if (applet_connection->connection)
 		g_object_unref (applet_connection->connection);
 	applet_connection->connection = connection;
 
+	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
+	                                                           NM_SETTING_CONNECTION);
+	g_free (applet_connection->id);
+	applet_connection->id = g_strdup (s_con->name);
+
 	settings = nm_connection_to_hash (applet_connection->connection);
 	nm_connection_settings_signal_updated (NM_CONNECTION_SETTINGS (applet_connection), settings);
 	g_hash_table_destroy (settings);
+	return TRUE;
+
+invalid:
+	nm_connection_settings_signal_removed (NM_CONNECTION_SETTINGS (applet_connection));
+	return FALSE;
 }
 
 NMConnectionSettings *
@@ -342,22 +439,20 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 	/* retrieve GConf data */
 	applet_connection->connection = nm_gconf_read_connection (conf_client, conf_dir);
 	if (!applet_connection->connection) {
+		g_warning ("No connection read from GConf at %s.", conf_dir);
+		g_object_unref (applet_connection);
+		return NULL;
+	}
+
+	if (!nm_connection_verify (applet_connection->connection)) {
 		g_warning ("Invalid connection read from GConf at %s.", conf_dir);
 		g_object_unref (applet_connection);
 		return NULL;
 	}
 
 	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
-	                                                            "connection");
+	                                                           NM_SETTING_CONNECTION);
 	applet_connection->id = g_strdup (s_con->name);
-
-	/* set GConf notifications */
-	gconf_client_add_dir (conf_client, conf_dir, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	applet_connection->conf_notify_id =
-		gconf_client_notify_add (conf_client, conf_dir,
-					 (GConfClientNotifyFunc) connection_settings_changed_cb,
-					 applet_connection,
-					 NULL, NULL);
 
 	manager = applet_dbus_manager_get ();
 	nm_connection_settings_register_object ((NMConnectionSettings *) applet_connection,
@@ -365,6 +460,19 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 	g_object_unref (manager);
 
 	return (NMConnectionSettings *) applet_connection;
+}
+
+void
+applet_dbus_connection_settings_save (NMConnectionSettings *connection)
+{
+	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) connection;
+
+	g_return_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection));
+
+	nm_gconf_write_connection (applet_connection->connection,
+	                           applet_connection->conf_client,
+	                           applet_connection->conf_dir);
+	gconf_client_suggest_sync (applet_connection->conf_client, NULL);
 }
 
 static NMConnectionSettings *
@@ -379,23 +487,17 @@ applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
 	g_return_val_if_fail (conf_dir != NULL, NULL);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
+	if (!nm_connection_verify (connection)) {
+		g_warning ("Invalid connection given.", conf_dir);
+		return NULL;
+	}
+
 	applet_connection = g_object_new (APPLET_TYPE_DBUS_CONNECTION_SETTINGS, NULL);
 	applet_connection->conf_client = g_object_ref (conf_client);
 	applet_connection->conf_dir = g_strdup (conf_dir);
 	applet_connection->connection = connection;
 
-	nm_gconf_write_connection (connection,
-	                           applet_connection->conf_client,
-	                           applet_connection->conf_dir);
-	gconf_client_suggest_sync (applet_connection->conf_client, NULL);
-
-	/* set GConf notifications */
-	gconf_client_add_dir (conf_client, conf_dir, GCONF_CLIENT_PRELOAD_NONE, NULL);
-	applet_connection->conf_notify_id =
-		gconf_client_notify_add (conf_client, conf_dir,
-					 (GConfClientNotifyFunc) connection_settings_changed_cb,
-					 applet_connection,
-					 NULL, NULL);
+	applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (applet_connection));
 
 	manager = applet_dbus_manager_get ();
 	nm_connection_settings_register_object ((NMConnectionSettings *) applet_connection,
@@ -414,6 +516,17 @@ applet_dbus_connection_settings_get_id (NMConnectionSettings *connection)
 	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
 
 	return g_strdup (applet_connection->id);
+}
+
+static const char *
+applet_dbus_connection_settings_get_gconf_path (NMConnectionSettings *connection)
+{
+	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) connection;
+
+	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
+
+	return applet_connection->conf_dir;
 }
 
 NMConnection *
