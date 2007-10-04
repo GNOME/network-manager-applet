@@ -31,6 +31,7 @@
 #include <config.h>
 #endif
 
+#include <time.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -2528,23 +2529,42 @@ foo_wired_state_change (NMDevice8023Ethernet *device, NMDeviceState state, NMApp
 static void
 foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer user_data)
 {
-	foo_device_state_changed (device, state, user_data, FALSE);
+	NMApplet *applet = NM_APPLET (user_data);
+	GSList *iter;
+	time_t timestamp;
+
+	foo_device_state_changed (device, state, (gpointer) applet, FALSE);
+
+	if (state != NM_DEVICE_STATE_ACTIVATED)
+		return;
 
 	/* If the device activation was successful, update the corresponding
 	 * connection object with a current timestamp.
 	 */
-	
-}
+	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
+		NMClientActiveConnection * act_con = (NMClientActiveConnection *) iter->data;
+		AppletDbusConnectionSettings *connection_settings;
+		NMSettingConnection *s_con;
 
-static void
-print_con_elt (gpointer value, gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-	NMClientActiveConnection *item = (NMClientActiveConnection *) value;
-	AppletDbusConnectionSettings *connection_settings;
+		if (strcmp (act_con->service_name, NM_DBUS_SERVICE_USER_SETTINGS) != 0)
+			continue;
 
-	connection_settings = applet_dbus_settings_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), item->connection_path);
-nm_connection_dump (connection_settings->connection);
+		if (!g_slist_find (act_con->devices, device))
+			continue;
+
+		connection_settings = applet_dbus_settings_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings),
+		                                                             act_con->connection_path);
+		if (!connection_settings || !connection_settings->connection)
+			continue;
+
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection_settings->connection,
+		                                                           NM_SETTING_CONNECTION);
+		if (!s_con || (s_con->autoconnect == FALSE))
+			continue;
+
+		s_con->timestamp = (guint64) time (NULL);
+		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));
+	}
 }
 
 static void
@@ -2576,7 +2596,6 @@ foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_d
 
 	clear_active_connections (applet);
 	applet->active_connections = nm_client_get_active_connections (applet->nm_client);
-	g_slist_foreach (applet->active_connections, print_con_elt, applet);
 
 	if (!handled)
 		foo_common_state_change (device, state, applet);
@@ -2616,7 +2635,8 @@ foo_client_state_change (NMClient *client, NMState state, gpointer user_data, gb
 	switch (state) {
 	case NM_STATE_UNKNOWN:
 		/* Clear any VPN connections */
-		g_hash_table_remove_all (applet->vpn_connections);
+		if (applet->vpn_connections)
+			g_hash_table_remove_all (applet->vpn_connections);
 		clear_active_connections (applet);
 		foo_set_icon (applet, NULL, ICON_LAYER_VPN);
 		break;

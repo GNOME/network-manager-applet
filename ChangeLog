@@ -1,5 +1,14 @@
 2007-10-04  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+		- (foo_device_state_changed_cb): if device is in state ACTIVATED,
+			find the connection that is activated for this device and update
+			it's timestamp
+		- (foo_device_state_changed): don't print connection out any more
+		- (foo_client_state_change): don't try to destroy an invalid hash table
+
+2007-10-04  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-dbus-settings.h
 	  src/applet-dbus-settings.c
 		- (applet_dbus_connection_settings_save): new function; write a
