@@ -1403,17 +1403,6 @@ typedef struct {
 	NMAccessPoint *active_ap;
 } AddNetworksCB;
 
-
-static void
-set_active_helper (NMNetworkMenuItem *item, NMAccessPoint *active_ap)
-{
-	if (!active_ap)
-		return;
-
-	if (nm_network_menu_item_find_dupe (item, active_ap))
-		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
-}
-
 static void
 nma_add_networks_helper (gpointer data, gpointer user_data)
 {
@@ -1423,7 +1412,7 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 	const GByteArray *ssid;
 	gint8 strength;
 	struct dup_data dup_data = { NULL, NULL };
-	GtkWidget *item = NULL;
+	NMNetworkMenuItem *item = NULL;
 
 	/* Don't add BSSs that hide their SSID */
 	ssid = nm_access_point_get_ssid (ap);
@@ -1441,39 +1430,51 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 	                       &dup_data);
 
 	if (dup_data.found) {
-		item = dup_data.found;
+		item = NM_NETWORK_MENU_ITEM (dup_data.found);
 
 		/* Just update strength if greater than what's there */
-		if (nm_network_menu_item_get_strength (NM_NETWORK_MENU_ITEM (item)) > strength)
-			nm_network_menu_item_set_strength (NM_NETWORK_MENU_ITEM (item), strength);
+		if (nm_network_menu_item_get_strength (item) > strength)
+			nm_network_menu_item_set_strength (item, strength);
 
-		nm_network_menu_item_add_dupe (NM_NETWORK_MENU_ITEM (item), ap);
-		set_active_helper (NM_NETWORK_MENU_ITEM (item), cb_data->active_ap);
+		nm_network_menu_item_add_dupe (item, ap);
 	} else {
 		DeviceMenuItemInfo *info;
+		GtkWidget *foo;
 
-		item = nm_network_menu_item_new (applet->encryption_size_group,
-		                                 dup_data.hash, AP_HASH_LEN);
-		nm_network_menu_item_set_ssid (NM_NETWORK_MENU_ITEM (item), (GByteArray *) ssid);
-		nm_network_menu_item_set_strength (NM_NETWORK_MENU_ITEM (item), strength);
-		nm_network_menu_item_set_detail (NM_NETWORK_MENU_ITEM (item),
-		                                 ap, applet->adhoc_icon);
-		nm_network_menu_item_add_dupe (NM_NETWORK_MENU_ITEM (item), ap);
-		set_active_helper (NM_NETWORK_MENU_ITEM (item), cb_data->active_ap);
+		foo = nm_network_menu_item_new (applet->encryption_size_group,
+		                                dup_data.hash, AP_HASH_LEN);
+		item = NM_NETWORK_MENU_ITEM (foo);
+		nm_network_menu_item_set_ssid (item, (GByteArray *) ssid);
+		nm_network_menu_item_set_strength (item, strength);
+		nm_network_menu_item_set_detail (item, ap, applet->adhoc_icon);
+		nm_network_menu_item_add_dupe (item, ap);
 
-		gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), item);
+		gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), GTK_WIDGET (item));
 
 		info = g_slice_new (DeviceMenuItemInfo);
 		info->applet = applet;
 		info->device = cb_data->device;
 		info->ap = ap;
 
-		g_signal_connect_data (item, "activate",
-						   G_CALLBACK (nma_menu_item_activate),
-						   info,
-						   (GClosureNotify) device_menu_item_info_destroy, 0);
+		g_signal_connect_data (GTK_WIDGET (item),
+		                       "activate",
+		                       G_CALLBACK (nma_menu_item_activate),
+		                       info,
+		                       (GClosureNotify) device_menu_item_info_destroy,
+		                       0);
 
-		gtk_widget_show_all (item);
+		gtk_widget_show_all (GTK_WIDGET (item));
+	}
+
+	if (cb_data->active_ap) {
+		g_signal_handlers_block_matched (item, G_SIGNAL_MATCH_FUNC,
+		                                 0, 0, NULL, G_CALLBACK (nma_menu_item_activate), NULL);
+
+		if (nm_network_menu_item_find_dupe (item, cb_data->active_ap))
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+
+		g_signal_handlers_unblock_matched (item, G_SIGNAL_MATCH_FUNC,
+		                                   0, 0, NULL, G_CALLBACK (nma_menu_item_activate), NULL);
 	}
 
 out:

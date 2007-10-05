@@ -1,5 +1,13 @@
 2007-10-05  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+		- (nma_add_networks_helper): better solution to matching active AP
+			with the correct menu item; also block emission of 'activate'
+			signal when marking the currently active AP in the menu so that
+			unintended activations don't occur
+
+2007-10-05  Dan Williams  <dcbw@redhat.com>
+
 	* src/menu-items.c
 	  src/menu-items.h
 		- (nm_network_menu_item_find_dupe, nm_network_menu_item_add_dupe): new
