@@ -90,7 +90,6 @@ typedef struct
 	NMClient *nm_client;
 	NMVPNManager *vpn_manager;
 	NMAccessPoint *current_ap;
-	gulong strength_id;
 	GHashTable *vpn_connections;
 
 	NMSettings * settings;

@@ -1,6 +1,15 @@
 2007-10-05  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
+	  src/applet.h
+		- (foo_bssid_strength_changed): don't access the property directly,
+			use the wrapper so that strength will get updated from D-Bus
+			if needed
+		- (foo_wireless_state_change): clean up periodic strength update code
+
+2007-10-05  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
 		- (nma_add_networks_helper): better solution to matching active AP
 			with the correct menu item; also block emission of 'activate'
 			signal when marking the currently active AP in the menu so that

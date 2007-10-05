@@ -2378,7 +2378,7 @@ foo_bssid_strength_changed (NMAccessPoint *ap,
 	char *tip;
 	guint32 strength = 0;
 
-	g_object_get (ap, "strength", &strength, NULL);
+	strength = nm_access_point_get_strength (ap);
 	strength = CLAMP (strength, 0, 100);
 
 	if (strength > 80)
@@ -2443,12 +2443,12 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		tip = g_strdup_printf (_("Waiting for Network Key for the wireless network '%s'..."), esc_ssid);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		applet->current_ap = ap;
+		applet->current_ap = g_object_ref (ap);
 		if (ap) {
-			applet->strength_id = g_signal_connect (ap,
-			                                        "notify::strength",
-			                                        G_CALLBACK (foo_bssid_strength_changed),
-			                                        applet);
+			g_signal_connect (ap,
+			                  "notify::strength",
+			                  G_CALLBACK (foo_bssid_strength_changed),
+			                  applet);
 			foo_bssid_strength_changed (ap, NULL, applet);
 		}
 
@@ -2465,14 +2465,14 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 
 		handled = TRUE;
 		break;
-	case NM_DEVICE_STATE_DOWN:
-	case NM_DEVICE_STATE_DISCONNECTED:
-		if (applet->current_ap && applet->strength_id)
-			g_signal_handler_disconnect (applet->current_ap, applet->strength_id);
-		applet->strength_id = 0;
-		applet->current_ap = NULL;
-		break;
 	default:
+		if (applet->current_ap) {
+			g_signal_handlers_disconnect_by_func (applet->current_ap,
+			                                      G_CALLBACK (foo_bssid_strength_changed),
+			                                      applet);
+			g_object_unref (applet->current_ap);
+			applet->current_ap = NULL;
+		}
 		break;
 	}
 
