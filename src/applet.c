@@ -1305,12 +1305,6 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 }
 
 
-typedef struct {
-	NMApplet *applet;
-	NMDevice *device;
-	GtkWidget *menu;
-} AddNetworksCB;
-
 #define AP_HASH_LEN 16
 
 static char *
@@ -1402,19 +1396,34 @@ find_duplicate (GtkWidget * widget,
 		data->found = widget;
 }
 
-/*
- * nma_add_networks_helper
- *
- */
+typedef struct {
+	NMApplet *applet;
+	NMDevice *device;
+	GtkWidget *menu;
+	NMAccessPoint *active_ap;
+} AddNetworksCB;
+
+
+static void
+set_active_helper (NMNetworkMenuItem *item, NMAccessPoint *active_ap)
+{
+	if (!active_ap)
+		return;
+
+	if (nm_network_menu_item_find_dupe (item, active_ap))
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+}
+
 static void
 nma_add_networks_helper (gpointer data, gpointer user_data)
 {
 	NMAccessPoint *ap = NM_ACCESS_POINT (data);
 	AddNetworksCB *cb_data = (AddNetworksCB *) user_data;
 	NMApplet *applet = cb_data->applet;
-	const GByteArray * ssid;
+	const GByteArray *ssid;
 	gint8 strength;
 	struct dup_data dup_data = { NULL, NULL };
+	GtkWidget *item = NULL;
 
 	/* Don't add BSSs that hide their SSID */
 	ssid = nm_access_point_get_ssid (ap);
@@ -1432,11 +1441,15 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 	                       &dup_data);
 
 	if (dup_data.found) {
+		item = dup_data.found;
+
 		/* Just update strength if greater than what's there */
-		if (nm_network_menu_item_get_strength (NM_NETWORK_MENU_ITEM (dup_data.found)) > strength)
-			nm_network_menu_item_set_strength (NM_NETWORK_MENU_ITEM (dup_data.found), strength);
+		if (nm_network_menu_item_get_strength (NM_NETWORK_MENU_ITEM (item)) > strength)
+			nm_network_menu_item_set_strength (NM_NETWORK_MENU_ITEM (item), strength);
+
+		nm_network_menu_item_add_dupe (NM_NETWORK_MENU_ITEM (item), ap);
+		set_active_helper (NM_NETWORK_MENU_ITEM (item), cb_data->active_ap);
 	} else {
-		GtkWidget * item;
 		DeviceMenuItemInfo *info;
 
 		item = nm_network_menu_item_new (applet->encryption_size_group,
@@ -1445,20 +1458,10 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 		nm_network_menu_item_set_strength (NM_NETWORK_MENU_ITEM (item), strength);
 		nm_network_menu_item_set_detail (NM_NETWORK_MENU_ITEM (item),
 		                                 ap, applet->adhoc_icon);
+		nm_network_menu_item_add_dupe (NM_NETWORK_MENU_ITEM (item), ap);
+		set_active_helper (NM_NETWORK_MENU_ITEM (item), cb_data->active_ap);
 
 		gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), item);
-
-		/* Check the active device */
-		if (nm_device_get_state (cb_data->device) == NM_DEVICE_STATE_ACTIVATED) {
-			GSList *iter;
-
-			for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
-				NMClientActiveConnection * act_con = (NMClientActiveConnection *) iter->data;
-
-				if (g_slist_find (act_con->devices, cb_data->device))
-					gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
-			}
-		}
 
 		info = g_slice_new (DeviceMenuItemInfo);
 		info->applet = applet;
@@ -1538,21 +1541,26 @@ nma_menu_device_add_access_points (GtkWidget *menu,
                                    NMDevice *device,
                                    NMApplet *applet)
 {
+	NMDevice80211Wireless *wdev;
 	GSList *aps;
-	AddNetworksCB add_networks_cb;
+	NMAccessPoint *active_ap = NULL;
+	AddNetworksCB info;
 
 	if (!NM_IS_DEVICE_802_11_WIRELESS (device) || !nm_client_wireless_get_enabled (applet->nm_client))
 		return;
 
-	aps = nm_device_802_11_wireless_get_access_points (NM_DEVICE_802_11_WIRELESS (device));
+	wdev = NM_DEVICE_802_11_WIRELESS (device);
+	aps = nm_device_802_11_wireless_get_access_points (wdev);
 
-	add_networks_cb.applet = applet;
-	add_networks_cb.device = device;
-	add_networks_cb.menu = menu;
+	memset (&info, 0, sizeof (info));
+	info.applet = applet;
+	info.device = device;
+	info.menu = menu;
+	info.active_ap = nm_device_802_11_wireless_get_active_access_point (wdev);
 
 	/* Add all networks in our network list to the menu */
 	aps = g_slist_sort (aps, sort_wireless_networks);
-	g_slist_foreach (aps, nma_add_networks_helper, &add_networks_cb);
+	g_slist_foreach (aps, nma_add_networks_helper, &info);
 	g_slist_free (aps);
 }
 

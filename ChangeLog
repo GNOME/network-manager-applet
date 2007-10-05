@@ -1,3 +1,17 @@
+2007-10-05  Dan Williams  <dcbw@redhat.com>
+
+	* src/menu-items.c
+	  src/menu-items.h
+		- (nm_network_menu_item_find_dupe, nm_network_menu_item_add_dupe): new
+			functions; need to keep track of duplicates when collapsing
+			APs for display in the menu so that the right menu item can be
+			checked for the active AP
+
+	* src/applet.c
+		- (nma_add_networks_helper, nma_menu_device_add_access_points): store
+			the active access point and check only the menu item that
+			corresponds to it
+
 2007-10-04  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

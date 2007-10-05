@@ -202,6 +202,7 @@ static void
 nm_network_menu_item_class_dispose (GObject *object)
 {
 	NMNetworkMenuItem * item = NM_NETWORK_MENU_ITEM (object);
+	GSList *iter;
 
 	if (item->destroyed)
 		return;
@@ -213,6 +214,9 @@ nm_network_menu_item_class_dispose (GObject *object)
 
 	item->destroyed = TRUE;
 	g_free (item->hash);
+
+	g_slist_foreach (item->dupes, (GFunc) g_free, NULL);
+	g_slist_free (item->dupes);
 
 	G_OBJECT_CLASS (nm_network_menu_item_parent_class)->dispose (object);
 }
@@ -309,6 +313,34 @@ nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
 	}
 }
 
+gboolean
+nm_network_menu_item_find_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
+{
+	const char *path;
+	GSList *iter;
+
+	g_return_val_if_fail (NM_IS_NETWORK_MENU_ITEM (item), FALSE);
+	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
+
+	path = nm_object_get_path (NM_OBJECT (ap));
+	for (iter = item->dupes; iter; iter = g_slist_next (iter)) {
+		if (!strcmp (path, iter->data))
+			return TRUE;
+	}
+	return FALSE;
+}
+
+void
+nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
+{
+	const char *path;
+
+	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
+	g_return_if_fail (NM_IS_ACCESS_POINT (ap));
+
+	path = nm_object_get_path (NM_OBJECT (ap));
+	item->dupes = g_slist_prepend (item->dupes, g_strdup (path));
+}
 
 /****************************************************************
  *   Utility stuff

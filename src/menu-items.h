@@ -61,6 +61,7 @@ struct _NMNetworkMenuItem
 	guchar *    hash;
 	guint32     hash_len;
 	gboolean    destroyed;
+	GSList *    dupes;
 };
 
 struct _NMNetworkMenuItemClass
@@ -83,6 +84,12 @@ const guchar * nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
 void       nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
                                             NMAccessPoint * ap,
                                             GdkPixbuf * adhoc_icon);
+
+gboolean   nm_network_menu_item_find_dupe (NMNetworkMenuItem *item,
+                                           NMAccessPoint *ap);
+
+void       nm_network_menu_item_add_dupe (NMNetworkMenuItem *item,
+                                          NMAccessPoint *ap);
 
 /* Helper function; escapes an essid for human readable display. */
 char *     nm_menu_network_escape_essid_for_display (const char *essid);
