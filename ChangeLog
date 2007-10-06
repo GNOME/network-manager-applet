@@ -1,6 +1,20 @@
 2007-10-05  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
+		- (foo_wireless_state_change): add the BSSID of the AP NM just connected
+			to to the seen-bssids list
+		- (foo_device_state_changed_cb): refactor active connection search code
+			into get_connection_settings_for_device()
+		- (foo_device_state_changed): update active connections before
+			device specific handlers
+		- (add_seen_bssid): new function; add BSSID of the given AP to the
+			given connection's seen-bssids list if its not in the list yet
+		- (notify_active_ap_changed_cb, foo_device_added_cb): handle active
+			network changes and add new AP's BSSID to the seen-bssids list
+
+2007-10-05  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
 	  src/applet.h
 		- (foo_bssid_strength_changed): don't access the property directly,
 			use the wrapper so that strength will get updated from D-Bus

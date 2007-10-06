@@ -81,6 +81,7 @@ static void      foo_device_state_changed_cb (NMDevice *device, NMDeviceState st
 static void      foo_manager_running (NMClient *client, gboolean running, gpointer user_data, gboolean synthetic);
 static void      foo_manager_running_cb (NMClient *client, gboolean running, gpointer user_data);
 static void      foo_client_state_change (NMClient *client, NMState state, gpointer user_data, gboolean synthetic);
+static gboolean  add_seen_bssid (AppletDbusConnectionSettings *connection, NMAccessPoint *ap);
 
 static GtkWidget *
 nma_menu_create (GtkMenuItem *parent, NMApplet *applet);
@@ -2403,9 +2404,36 @@ foo_bssid_strength_changed (NMAccessPoint *ap,
 	g_free (tip);
 }
 
+static AppletDbusConnectionSettings *
+get_connection_settings_for_device (NMDevice *device, NMApplet *applet)
+{
+	GSList *iter;
+
+	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
+		NMClientActiveConnection * act_con = (NMClientActiveConnection *) iter->data;
+		AppletDbusConnectionSettings *connection_settings;
+		NMSettingConnection *s_con;
+
+		if (strcmp (act_con->service_name, NM_DBUS_SERVICE_USER_SETTINGS) != 0)
+			continue;
+
+		if (!g_slist_find (act_con->devices, device))
+			continue;
+
+		connection_settings = applet_dbus_settings_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings),
+		                                                             act_con->connection_path);
+		if (!connection_settings || !connection_settings->connection)
+			continue;
+
+		return connection_settings;
+	}
+	return NULL;
+}
+
 static gboolean
 foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, NMApplet *applet, gboolean synthetic)
 {
+	AppletDbusConnectionSettings *connection_settings;
 	char *iface;
 	NMAccessPoint *ap = NULL;
 	const GByteArray * ssid;
@@ -2443,13 +2471,19 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		tip = g_strdup_printf (_("Waiting for Network Key for the wireless network '%s'..."), esc_ssid);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		applet->current_ap = g_object_ref (ap);
+		applet->current_ap = ap;
 		if (ap) {
+			g_object_ref (applet->current_ap);
 			g_signal_connect (ap,
 			                  "notify::strength",
 			                  G_CALLBACK (foo_bssid_strength_changed),
 			                  applet);
 			foo_bssid_strength_changed (ap, NULL, applet);
+
+			/* Save this BSSID to seen-bssids list */
+			connection_settings = get_connection_settings_for_device (NM_DEVICE (device), applet);
+			if (connection_settings && add_seen_bssid (connection_settings, ap))
+				applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));
 		}
 
 #ifdef ENABLE_NOTIFY
@@ -2462,7 +2496,6 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 #endif
 
 		tip = g_strdup_printf (_("Wireless network connection to '%s'"), esc_ssid);
-
 		handled = TRUE;
 		break;
 	default:
@@ -2539,8 +2572,11 @@ static void
 foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
+	AppletDbusConnectionSettings *connection_settings;
+	NMSettingConnection *s_con;
 	GSList *iter;
 	time_t timestamp;
+	gboolean save = FALSE;
 
 	foo_device_state_changed (device, state, (gpointer) applet, FALSE);
 
@@ -2550,27 +2586,13 @@ foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer use
 	/* If the device activation was successful, update the corresponding
 	 * connection object with a current timestamp.
 	 */
-	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
-		NMClientActiveConnection * act_con = (NMClientActiveConnection *) iter->data;
-		AppletDbusConnectionSettings *connection_settings;
-		NMSettingConnection *s_con;
+	connection_settings = get_connection_settings_for_device (device, applet);
+	if (!connection_settings)
+		return;
 
-		if (strcmp (act_con->service_name, NM_DBUS_SERVICE_USER_SETTINGS) != 0)
-			continue;
-
-		if (!g_slist_find (act_con->devices, device))
-			continue;
-
-		connection_settings = applet_dbus_settings_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings),
-		                                                             act_con->connection_path);
-		if (!connection_settings || !connection_settings->connection)
-			continue;
-
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection_settings->connection,
-		                                                           NM_SETTING_CONNECTION);
-		if (!s_con || (s_con->autoconnect == FALSE))
-			continue;
-
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection_settings->connection,
+	                                                           NM_SETTING_CONNECTION);
+	if (s_con && s_con->autoconnect) {
 		s_con->timestamp = (guint64) time (NULL);
 		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));
 	}
@@ -2598,24 +2620,105 @@ foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_d
 		applet->animation_id = 0;
 	}
 
+	clear_active_connections (applet);
+	applet->active_connections = nm_client_get_active_connections (applet->nm_client);
+
 	if (NM_IS_DEVICE_802_3_ETHERNET (device))
 		handled = foo_wired_state_change (NM_DEVICE_802_3_ETHERNET (device), state, applet, synthetic);
 	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
 		handled = foo_wireless_state_change (NM_DEVICE_802_11_WIRELESS (device), state, applet, synthetic);
 
-	clear_active_connections (applet);
-	applet->active_connections = nm_client_get_active_connections (applet->nm_client);
-
 	if (!handled)
 		foo_common_state_change (device, state, applet);
+}
+
+static gboolean
+add_seen_bssid (AppletDbusConnectionSettings *connection,
+                NMAccessPoint *ap)
+{
+	NMSettingWireless *s_wireless;
+	gboolean found = FALSE;
+	gboolean added = FALSE;
+	char *lower_bssid;
+	GSList *iter;
+	
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection->connection,
+	                                                              NM_SETTING_WIRELESS);
+	if (!s_wireless)
+		return FALSE;
+
+	lower_bssid = g_ascii_strdown (nm_access_point_get_hw_address (ap), -1);
+	for (iter = s_wireless->seen_bssids; iter; iter = g_slist_next (iter)) {
+		char *lower_seen_bssid = g_ascii_strdown (iter->data, -1);
+
+		if (!strcmp (lower_seen_bssid, lower_bssid)) {
+			found = TRUE;
+			g_free (lower_seen_bssid);
+			break;
+		}
+		g_free (lower_seen_bssid);
+	}
+
+	/* Add this AP's BSSID to the seen-BSSIDs list */
+	if (!found) {
+		s_wireless->seen_bssids = g_slist_prepend (s_wireless->seen_bssids,
+		                                           g_strdup (lower_bssid));
+		added = TRUE;
+	}
+	g_free (lower_bssid);
+	return added;
+}
+
+static void
+notify_active_ap_changed_cb (NMDevice80211Wireless *device,
+                             GParamSpec *pspec,
+                             NMApplet *applet)
+{
+	AppletDbusConnectionSettings *connection_settings = NULL;
+	NMSettingWireless *s_wireless;
+	GSList *iter;
+	NMAccessPoint *ap;
+	const GByteArray *ssid;
+
+	if (nm_device_get_state (NM_DEVICE (device)) != NM_DEVICE_STATE_ACTIVATED)
+		return;
+
+	ap = nm_device_802_11_wireless_get_active_access_point (device);
+	if (!ap)
+		return;
+
+	connection_settings = get_connection_settings_for_device (NM_DEVICE (device), applet);
+	if (!connection_settings)
+		return;
+
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection_settings->connection,
+	                                                              NM_SETTING_WIRELESS);
+	if (!s_wireless)
+		return;
+
+	ssid = nm_access_point_get_ssid (ap);
+	if (!ssid || !nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
+		return;
+
+	if (add_seen_bssid (connection_settings, ap))
+		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));		
 }
 
 static void
 foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 {
+	NMApplet *applet = NM_APPLET (user_data);
+
 	g_signal_connect (device, "state-changed",
 				   G_CALLBACK (foo_device_state_changed_cb),
 				   user_data);
+
+	if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+		g_signal_connect (NM_DEVICE_802_11_WIRELESS (device),
+		                  "notify::active-access-point",
+		                  G_CALLBACK (notify_active_ap_changed_cb),
+		                  applet);
+	}
 
 	foo_device_state_changed_cb (device, nm_device_get_state (device), user_data);
 }
