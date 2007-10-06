@@ -472,6 +472,7 @@ applet_dbus_connection_settings_save (NMConnectionSettings *connection)
 	nm_gconf_write_connection (applet_connection->connection,
 	                           applet_connection->conf_client,
 	                           applet_connection->conf_dir);
+	gconf_client_notify (applet_connection->conf_client, applet_connection->conf_dir);
 	gconf_client_suggest_sync (applet_connection->conf_client, NULL);
 }
 

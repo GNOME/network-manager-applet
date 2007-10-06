@@ -1,3 +1,10 @@
+2007-10-06  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-dbus-settings.c
+		- (applet_dbus_connection_settings_save): explicitly send a GConf
+			notification since sometimes it seems to get lost in the GConfClient
+			cache
+
 2007-10-05  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
