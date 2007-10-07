@@ -1,3 +1,11 @@
+2007-10-07  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.c
+		- (read_one_setting_value_from_gconf, copy_one_setting_value_to_gconf):
+			save UINT64s as strings, because single-precision floats are not
+			precise enough at the large values of time(2) to be used, and GConf
+			doesn't do either UINT64 or double
+
 2007-10-06  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-dbus-settings.c

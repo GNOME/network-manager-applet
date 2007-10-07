@@ -21,6 +21,7 @@
  */
 
 #include <string.h>
+#include <errno.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <glib.h>
@@ -555,11 +556,15 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 		}
 		case NM_S_TYPE_UINT64: {
 			guint64 *uint_val = (guint64 *) value;
-			gfloat tmp_val = 0;
-			/* GConf doesn't do 64-bit values, so use floats instead */
-			nm_gconf_get_float_helper (info->client, info->dir, key,
-			                           setting->name, &tmp_val);
-			*uint_val = (guint64) tmp_val;
+			char *tmp_str = NULL;
+			/* GConf doesn't do 64-bit values, so use strings instead */
+			nm_gconf_get_string_helper (info->client, info->dir, key,
+			                           setting->name, &tmp_str);
+			if (!tmp_str)
+				break;
+			*uint_val = g_ascii_strtoull (tmp_str, NULL, 10);
+			if ((*uint_val == G_MAXUINT64) && (errno == ERANGE))
+				*uint_val = 0;
 			break;
 		}
 		case NM_S_TYPE_BOOL: {
@@ -759,11 +764,16 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		}
 		case NM_S_TYPE_UINT64: {
 			guint64 *uint_val = (guint64 *) value;
+			char *numstr;
 			if (!*uint_val)
 				break;
-			/* GConf doesn't do 64-bit values, so use floats instead */
-			nm_gconf_set_float_helper (info->client, info->dir,
-			                           key, setting->name, (gfloat) *uint_val);
+			/* GConf doesn't do 64-bit values, so use strings instead */
+			numstr = g_strdup_printf ("%ull", *uint_val);
+			if (!numstr)
+				break;
+			nm_gconf_set_string_helper (info->client, info->dir,
+			                            key, setting->name, numstr);
+			g_free (numstr);
 			break;
 		}
 		case NM_S_TYPE_BOOL: {
