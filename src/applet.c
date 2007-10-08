@@ -821,6 +821,84 @@ activate_device_cb (gpointer user_data, GError *err)
 	}
 }
 
+
+/* This is a controlled list.  Want to add to it?  Stop.  Ask first. */
+static const char * default_ssid_list[] =
+{
+	"linksys",
+	"linksys-a",
+	"linksys-g",
+	"default",
+	"belkin54g",
+	"NETGEAR",
+	NULL
+};
+
+static gboolean
+is_manufacturer_default_ssid (const GByteArray *ssid)
+{
+	const char **default_ssid = default_ssid_list;
+
+	while (*default_ssid) {
+		if (ssid->len == strlen (*default_ssid)) {
+			if (!memcmp (*default_ssid, ssid->data, ssid->len))
+				return TRUE;
+		}
+		default_ssid++;
+	}
+	return FALSE;
+}
+
+static NMSetting *
+new_auto_wireless_setting (NMConnection *connection,
+                           char **connection_name,
+                           gboolean *autoconnect,
+                           NMDevice80211Wireless *device,
+                           NMAccessPoint *ap)
+{
+	NMSettingWireless *s_wireless = NULL;
+	NMSettingWirelessSecurity *s_wireless_sec = NULL;
+	const GByteArray *ap_ssid;
+	char buf[33];
+	int mode;
+	gboolean supported = TRUE;
+
+	s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
+
+	ap_ssid = nm_access_point_get_ssid (ap);
+	s_wireless->ssid = g_byte_array_sized_new (ap_ssid->len);
+	g_byte_array_append (s_wireless->ssid, ap_ssid->data, ap_ssid->len);
+
+	/* Only default to autoconnect for APs that don't use the manufacturer
+	 * default SSID.
+	 */
+	*autoconnect = !is_manufacturer_default_ssid (ap_ssid);
+
+	memset (buf, 0, sizeof (buf));
+	memcpy (buf, ap_ssid->data, MIN(ap_ssid->len, sizeof (buf)));
+	*connection_name = g_strdup_printf ("Auto %s", nm_utils_essid_to_utf8 (buf));
+
+	mode = nm_access_point_get_mode (ap);
+	if (mode == IW_MODE_ADHOC)
+		s_wireless->mode = g_strdup ("adhoc");
+	else if (mode == IW_MODE_INFRA)
+		s_wireless->mode = g_strdup ("infrastructure");
+	else
+		g_assert_not_reached ();
+
+	s_wireless_sec = get_security_for_ap (ap, &supported);
+	if (!supported) {
+		// FIXME: support WPA/WPA2 Enterprise and Dynamic WEP
+		nm_setting_destroy ((NMSetting *) s_wireless);
+		s_wireless = NULL;
+	} else if (s_wireless_sec) {
+		s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY);
+		nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
+	}
+
+	return (NMSetting *) s_wireless;
+}
+
 /*
  * nma_menu_item_activate
  *
@@ -837,7 +915,7 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 	char *specific_object = "/";
 	char *connection_name = NULL;
 	GSList *elt, *connections;
-	NMSettingWirelessSecurity *s_wireless_sec = NULL;
+	gboolean autoconnect = TRUE;
 
 	connections = applet_dbus_settings_list_connections (APPLET_DBUS_SETTINGS (info->applet->settings));
 	for (elt = connections; elt; elt = g_slist_next (elt)) {
@@ -855,42 +933,18 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
 		g_warning ("Found connection %s to activate at %s.", s_con->name, con_path);
 	} else {
+		connection = nm_connection_new ();
+
 		if (NM_IS_DEVICE_802_3_ETHERNET (info->device)) {
 			setting = nm_setting_wired_new ();
 			specific_object = NULL;
 			connection_name = g_strdup ("Auto Ethernet");
 		} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
-			NMSettingWireless *wireless;
-			const GByteArray *ap_ssid;
-			char buf[33];
-			int mode;
-			gboolean supported = TRUE;
-
-			setting = nm_setting_wireless_new ();
-			wireless = (NMSettingWireless *) setting;
-
-			ap_ssid = nm_access_point_get_ssid (info->ap);
-			wireless->ssid = g_byte_array_sized_new (ap_ssid->len);
-			g_byte_array_append (wireless->ssid, ap_ssid->data, ap_ssid->len);
-
-			memset (buf, 0, sizeof (buf));
-			memcpy (buf, ap_ssid->data, MIN(ap_ssid->len, sizeof (buf)));
-			connection_name = g_strdup_printf ("Auto %s", nm_utils_essid_to_utf8 (buf));
-
-			mode = nm_access_point_get_mode (info->ap);
-			if (mode == IW_MODE_ADHOC)
-				wireless->mode = g_strdup ("adhoc");
-			else if (mode == IW_MODE_INFRA)
-				wireless->mode = g_strdup ("infrastructure");
-
-			s_wireless_sec = get_security_for_ap (info->ap, &supported);
-			if (!supported) {
-				// FIXME: support WPA/WPA2 Enterprise and Dynamic WEP
-				nm_setting_destroy (setting);
-				setting = NULL;
-			} else if (s_wireless_sec) {
-				wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY);
-			}
+			setting = new_auto_wireless_setting (connection,
+			                                     &connection_name,
+			                                     &autoconnect,
+			                                     NM_DEVICE_802_11_WIRELESS (info->device),
+			                                     info->ap);
 		} else
 			g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
 
@@ -898,16 +952,13 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 			AppletDbusConnectionSettings *exported_con;
 			NMSettingConnection *s_con;
 
-			connection = nm_connection_new ();
-			nm_connection_add_setting (connection, setting);
-			if (s_wireless_sec)
-				nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
-
 			s_con = (NMSettingConnection *) nm_setting_connection_new ();
 			s_con->name = connection_name;
 			s_con->type = g_strdup (setting->name);
-			s_con->autoconnect = FALSE;
+			s_con->autoconnect = autoconnect;
 			nm_connection_add_setting (connection, (NMSetting *) s_con);
+
+			nm_connection_add_setting (connection, setting);
 
 			exported_con = applet_dbus_settings_add_connection (APPLET_DBUS_SETTINGS (info->applet->settings),
 			                                                    connection);
@@ -916,6 +967,9 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 			} else {
 				nm_warning ("Couldn't create default connection.");
 			}
+		} else {
+			g_object_unref (connection);
+			connection = NULL;
 		}
 	}
 
