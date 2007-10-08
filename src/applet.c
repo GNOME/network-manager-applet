@@ -2281,7 +2281,7 @@ nma_setup_widgets (NMApplet *applet)
 	applet->context_menu = nma_context_menu_create (applet);
 	if (!applet->context_menu)
 		return FALSE;
-	applet->encryption_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	applet->encryption_size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 	if (!applet->encryption_size_group)
 		return FALSE;
 
