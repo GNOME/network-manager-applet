@@ -549,15 +549,14 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			break;
 		}
 		case NM_S_TYPE_UINT32: {
-			int int_val;
+			int int_val = 0;
 			guint32 *uint_val = (guint32 *) value;
-			nm_gconf_get_int_helper (info->client, info->dir, key,
-			                         setting->name, &int_val);
-			if (int_val < 0)
-				g_warning ("Casting negative value (%i) to uint", int_val);
-
+			if (nm_gconf_get_int_helper (info->client, info->dir, key,
+			                             setting->name, &int_val)) {
+				if (int_val < 0)
+					g_warning ("Casting negative value (%i) to uint", int_val);
+			}
 			*uint_val = (guint32) int_val;
-
 			break;
 		}
 		case NM_S_TYPE_UINT64: {
