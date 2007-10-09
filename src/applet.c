@@ -1424,6 +1424,7 @@ out:
 }
 
 struct dup_data {
+	NMDevice * device;
 	GtkWidget * found;
 	guchar * hash;
 };
@@ -1433,6 +1434,7 @@ find_duplicate (GtkWidget * widget,
                 gpointer user_data)
 {
 	struct dup_data * data = (struct dup_data *) user_data;
+	NMDevice *device;
 	const guchar * hash;
 	guint32 hash_len = 0;
 
@@ -1440,6 +1442,10 @@ find_duplicate (GtkWidget * widget,
 	g_return_if_fail (data->hash);
 
 	if (data->found || !NM_IS_NETWORK_MENU_ITEM (widget))
+		return;
+
+	device = g_object_get_data (G_OBJECT (widget), "device");
+	if (device != data->device)
 		return;
 
 	hash = nm_network_menu_item_get_hash (NM_NETWORK_MENU_ITEM (widget),
@@ -1478,6 +1484,7 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 
 	dup_data.found = NULL;
 	dup_data.hash = ap_hash (ap);
+	dup_data.device = cb_data->device;
 	if (!dup_data.hash)
 		goto out;
 	gtk_container_foreach (GTK_CONTAINER (cb_data->menu),
@@ -1503,6 +1510,8 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 		nm_network_menu_item_set_strength (item, strength);
 		nm_network_menu_item_set_detail (item, ap, applet->adhoc_icon);
 		nm_network_menu_item_add_dupe (item, ap);
+
+		g_object_set_data (G_OBJECT (item), "device", cb_data->device);
 
 		gtk_menu_shell_append (GTK_MENU_SHELL (cb_data->menu), GTK_WIDGET (item));
 

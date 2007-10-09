@@ -1,6 +1,14 @@
 2007-10-08  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
+		- (find_duplicate, nma_add_networks_helper): when multiple wireless
+			cards are in use, use the device to differentiate between duplicate
+			APs in the menu.  Each card should have it's own list of APs and
+			duplicates.
+
+2007-10-08  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
 		- (nma_setup_widgets): make the size group control both horizontal and
 			vertical size so that AP items in the menu are always a consistent
 			vertical size as well
