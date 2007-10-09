@@ -44,6 +44,7 @@
 
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
+#include <nm-utils.h>
 
 #include <glade/glade.h>
 #include <gconf/gconf-client.h>
@@ -87,48 +88,6 @@ static GtkWidget *
 nma_menu_create (GtkMenuItem *parent, NMApplet *applet);
 
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
-
-/* Shamelessly ripped from the Linux kernel ieee80211 stack */
-gboolean
-nma_is_empty_ssid (const char * ssid, int len)
-{
-        /* Single white space is for Linksys APs */
-        if (len == 1 && ssid[0] == ' ')
-                return TRUE;
-
-        /* Otherwise, if the entire ssid is 0, we assume it is hidden */
-        while (len--) {
-                if (ssid[len] != '\0')
-                        return FALSE;
-        }
-        return TRUE;
-}
-
-const char *
-nma_escape_ssid (const char * ssid, guint32 len)
-{
-	static char escaped[IW_ESSID_MAX_SIZE * 2 + 1];
-	const char *s = ssid;
-	char *d = escaped;
-
-	if (nma_is_empty_ssid (ssid, len)) {
-		memcpy (escaped, "<hidden>", sizeof ("<hidden>"));
-		return escaped;
-	}
-
-	len = MIN (len, (guint32) IW_ESSID_MAX_SIZE);
-	while (len--) {
-		if (*s == '\0') {
-			*d++ = '\\';
-			*d++ = '0';
-			s++;
-		} else {
-			*d++ = *s++;
-		}
-	}
-	*d = '\0';
-	return escaped;
-}
 
 static NMDevice *
 get_first_active_device (NMApplet *applet)
@@ -486,33 +445,6 @@ device_menu_item_info_destroy (gpointer data)
 }
 
 static gboolean
-nm_utils_same_ssid (const GByteArray * ssid1,
-                    const GByteArray * ssid2,
-                    gboolean ignore_trailing_null)
-{
-	guint32 ssid1_len, ssid2_len;
-
-	if (ssid1 == ssid2)
-		return TRUE;
-	if ((ssid1 && !ssid2) || (!ssid1 && ssid2))
-		return FALSE;
-
-	ssid1_len = ssid1->len;
-	ssid2_len = ssid2->len;
-	if (ssid1_len && ssid2_len && ignore_trailing_null) {
-		if (ssid1->data[ssid1_len - 1] == '\0')
-			ssid1_len--;
-		if (ssid2->data[ssid2_len - 1] == '\0')
-			ssid2_len--;
-	}
-
-	if (ssid1_len != ssid2_len)
-		return FALSE;
-
-	return memcmp (ssid1->data, ssid2->data, ssid1_len) == 0 ? TRUE : FALSE;
-}
-
-static gboolean
 match_cipher (const char * cipher,
               const char * expected,
               guint32 wpa_flags,
@@ -860,6 +792,7 @@ new_auto_wireless_setting (NMConnection *connection,
 	NMSettingWirelessSecurity *s_wireless_sec = NULL;
 	const GByteArray *ap_ssid;
 	char buf[33];
+	int buf_len;
 	int mode;
 	gboolean supported = TRUE;
 
@@ -875,8 +808,9 @@ new_auto_wireless_setting (NMConnection *connection,
 	*autoconnect = !is_manufacturer_default_ssid (ap_ssid);
 
 	memset (buf, 0, sizeof (buf));
-	memcpy (buf, ap_ssid->data, MIN(ap_ssid->len, sizeof (buf)));
-	*connection_name = g_strdup_printf ("Auto %s", nm_utils_essid_to_utf8 (buf));
+	buf_len = MIN(ap_ssid->len, sizeof (buf));
+	memcpy (buf, ap_ssid->data, buf_len);
+	*connection_name = g_strdup_printf ("Auto %s", nm_utils_ssid_to_utf8 (buf, buf_len));
 
 	mode = nm_access_point_get_mode (ap);
 	if (mode == IW_MODE_ADHOC)
@@ -1058,21 +992,21 @@ show_vpn_state (NMApplet *applet,
 	switch (state) {
 	case NM_VPN_CONNECTION_STATE_ACTIVATED:
 		banner = nm_vpn_connection_get_banner (connection);
-		title = _("VPN Login Message");
+		if (banner && strlen (banner)) {
+			title = _("VPN Login Message");
 #ifdef ENABLE_NOTIFY
-		msg = g_strdup_printf ("\n%s", banner);
-		nma_send_event_notification (applet, NOTIFY_URGENCY_LOW,
-			title, msg, "gnome-lockscreen");
+			msg = g_strdup_printf ("\n%s", banner);
+			nma_send_event_notification (applet, NOTIFY_URGENCY_LOW,
+								    title, msg, "gnome-lockscreen");
 #else
-		msg = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
-		                       title, banner);
-		nma_show_notification_dialog (title, msg);
+			msg = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+							   title, banner);
+			nma_show_notification_dialog (title, msg);
 #endif
-		g_free (msg);
+			g_free (msg);
+		}
 		break;
-	case NM_VPN_CONNECTION_STATE_FAILED:
-		break;
-	case NM_VPN_CONNECTION_STATE_DISCONNECTED:
+	default:
 		break;
 	}
 }
@@ -1230,9 +1164,7 @@ static void
 nma_menu_disconnect_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	NMConnectionSettings *connection_settings;
 	NMVPNConnection *connection = NULL;
-	const char *connection_name;
 
 	g_hash_table_foreach (applet->vpn_connections, find_first_vpn_connection, &connection);
 	if (!connection)
@@ -1362,7 +1294,7 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 
 #define AP_HASH_LEN 16
 
-static char *
+static guchar *
 ap_hash (NMAccessPoint * ap)
 {
 	struct GnomeKeyringMD5Context ctx;
@@ -1477,7 +1409,7 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 
 	/* Don't add BSSs that hide their SSID */
 	ssid = nm_access_point_get_ssid (ap);
-	if (!ssid || nma_is_empty_ssid (ssid->data, ssid->len))
+	if (!ssid || nm_utils_is_empty_ssid (ssid->data, ssid->len))
 		goto out;
 
 	strength = nm_access_point_get_strength (ap);
@@ -1608,7 +1540,6 @@ nma_menu_device_add_access_points (GtkWidget *menu,
 {
 	NMDevice80211Wireless *wdev;
 	GSList *aps;
-	NMAccessPoint *active_ap = NULL;
 	AddNetworksCB info;
 
 	if (!NM_IS_DEVICE_802_11_WIRELESS (device) || !nm_client_wireless_get_enabled (applet->nm_client))
@@ -1853,7 +1784,12 @@ static void nma_menu_clear (NMApplet *applet)
 	if (applet->menu)
 		gtk_widget_destroy (applet->menu);
 
+#if GTK_CHECK_VERSION(2, 12, 0)
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (applet->top_menu_item), NULL);
+#else
 	gtk_menu_item_remove_submenu (GTK_MENU_ITEM (applet->top_menu_item));
+#endif /* gtk 2.12.0 */
+
 	applet->menu = nma_menu_create (GTK_MENU_ITEM (applet->top_menu_item), applet);
 #ifndef HAVE_STATUS_ICON
 	g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
@@ -2218,7 +2154,12 @@ static void nma_theme_change_cb (NMApplet *applet)
 
 	nma_menu_clear (applet);
 	if (applet->top_menu_item) {
+#if GTK_CHECK_VERSION(2, 12, 0)
+		gtk_menu_item_set_submenu (GTK_MENU_ITEM (applet->top_menu_item), NULL);
+#else
 		gtk_menu_item_remove_submenu (GTK_MENU_ITEM (applet->top_menu_item));
+#endif /* gtk 2.12.0 */
+
 		applet->menu = nma_menu_create (GTK_MENU_ITEM (applet->top_menu_item), applet);
 		g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
 	}
@@ -2460,7 +2401,7 @@ foo_bssid_strength_changed (NMAccessPoint *ap,
 
 	ssid = nm_access_point_get_ssid (ap);
 	tip = g_strdup_printf (_("Wireless network connection to '%s' (%d%%)"),
-	                       ssid ? nma_escape_ssid (ssid->data, ssid->len) : "(none)",
+	                       ssid ? nm_utils_escape_ssid (ssid->data, ssid->len) : "(none)",
 	                       strength);
 
 	gtk_status_icon_set_tooltip (applet->status_icon, tip);
@@ -2475,7 +2416,6 @@ get_connection_settings_for_device (NMDevice *device, NMApplet *applet)
 	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
 		NMClientActiveConnection * act_con = (NMClientActiveConnection *) iter->data;
 		AppletDbusConnectionSettings *connection_settings;
-		NMSettingConnection *s_con;
 
 		if (strcmp (act_con->service_name, NM_DBUS_SERVICE_USER_SETTINGS) != 0)
 			continue;
@@ -2516,7 +2456,7 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		if (ap) {
 			ssid = nm_access_point_get_ssid (ap);
 			if (ssid)
-				esc_ssid = (char *) nma_escape_ssid (ssid->data, ssid->len);
+				esc_ssid = (char *) nm_utils_escape_ssid (ssid->data, ssid->len);
 		}
 	}
 
@@ -2637,9 +2577,6 @@ foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer use
 	NMApplet *applet = NM_APPLET (user_data);
 	AppletDbusConnectionSettings *connection_settings;
 	NMSettingConnection *s_con;
-	GSList *iter;
-	time_t timestamp;
-	gboolean save = FALSE;
 
 	foo_device_state_changed (device, state, (gpointer) applet, FALSE);
 
@@ -2739,7 +2676,6 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
 {
 	AppletDbusConnectionSettings *connection_settings = NULL;
 	NMSettingWireless *s_wireless;
-	GSList *iter;
 	NMAccessPoint *ap;
 	const GByteArray *ssid;
 
@@ -2978,7 +2914,11 @@ static void nma_finalize (GObject *object)
 
 	nma_menu_clear (applet);
 	if (applet->top_menu_item)
+#if GTK_CHECK_VERSION(2, 12, 0)
+		gtk_menu_item_set_submenu (GTK_MENU_ITEM (applet->top_menu_item), NULL);
+#else
 		gtk_menu_item_remove_submenu (GTK_MENU_ITEM (applet->top_menu_item));
+#endif /* gtk 2.12.0 */
 
 	nma_icons_free (applet);
 

@@ -331,6 +331,8 @@ vpn_druid_vpn_details_page_prepare (void *druidpage,
 #endif	
 }
 
+#if GTK_CHECK_VERSION(2, 10, 0)
+#else
 static gboolean
 vpn_druid_vpn_details_page_next (void *druidpage,
                                  GtkWidget *widget,
@@ -348,6 +350,7 @@ vpn_druid_vpn_details_page_next (void *druidpage,
 
 	return !is_valid;
 }
+#endif
 
 static void
 vpn_druid_vpn_confirm_page_prepare (void *druidpage,

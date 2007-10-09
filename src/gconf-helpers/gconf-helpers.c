@@ -549,9 +549,15 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			break;
 		}
 		case NM_S_TYPE_UINT32: {
+			int int_val;
 			guint32 *uint_val = (guint32 *) value;
 			nm_gconf_get_int_helper (info->client, info->dir, key,
-			                         setting->name, uint_val);
+			                         setting->name, &int_val);
+			if (int_val < 0)
+				g_warning ("Casting negative value (%i) to uint", int_val);
+
+			*uint_val = (guint32) int_val;
+
 			break;
 		}
 		case NM_S_TYPE_UINT64: {
@@ -768,7 +774,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 			if (!*uint_val)
 				break;
 			/* GConf doesn't do 64-bit values, so use strings instead */
-			numstr = g_strdup_printf ("%ull", *uint_val);
+			numstr = g_strdup_printf ("%llu", *uint_val);
 			if (!numstr)
 				break;
 			nm_gconf_set_string_helper (info->client, info->dir,

@@ -1,3 +1,44 @@
+2007-10-09  Tambet Ingo  <tambet@gmail.com>
+
+	Now with 100% less compiler warnings!
+
+	* src/gconf-helpers/gconf-helpers.c (read_one_setting_value_from_gconf): Remove
+	a compiler warning for trying to store int value to uint variable. Add a runtime
+	warning if a negative value is casted to unsigned integer.
+
+	* src/password-dialog.c (nma_wpa_passphrase_to_hex): Cast the bssid data to char.
+
+	* src/nm-utils.[ch]: Remove, it's part of libnm-utils.
+
+	* src/vpn-connection-info.c: Use gconf_entry_unref() instead of deprecated
+	gconf_entry_free().
+
+	* src/menu-items.c (nm_network_menu_item_class_dispose): Remove an unused variable.
+
+	* src/applet-dbus-settings.c: Include "vpn-password-dialog.h".
+	(applet_dbus_connection_settings_new_from_connection): Remove a typo.
+
+	* src/applet.c: Use (gtk_menu_item_remove_submenu) only for gtk+ versions lower
+	than 2.12.0 and (gtk_menu_item_set_submenu) for higher versions as it is deprecated
+	now.
+	(show_vpn_state): Use a "default" label in switch to avoid compiler warnings.
+	(nma_menu_disconnect_vpn_item_activate): Remove unused variables.
+	(foo_device_state_changed_cb): Ditto.
+	(ap_hash): Return unsigned char string.
+	(nma_menu_device_add_access_points): Remove an unused variable.
+	(get_connection_settings_for_device): Ditto.
+	(notify_active_ap_changed_cb): Ditto.
+
+	* src/vpn-properties/nm-vpn-properties.c (vpn_druid_vpn_details_page_next): Hide if
+	the gtk version is at least 2.10.0.
+
+	* src/gconf-helpers/gconf-helpers.c (copy_one_setting_value_to_gconf):
+	Fix a typo: the printf string for guint64 is "%llu", not "%ull".
+
+	* src/applet.c (nma_is_empty_ssid): Remove, use it from libnm-utils.
+	(nma_escape_ssid): Ditto.
+	(nm_utils_same_ssid): Ditto.
+
 2007-10-08  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

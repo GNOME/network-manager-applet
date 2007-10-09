@@ -30,6 +30,7 @@
 #include <iwlib.h>
 
 #include <nm-settings.h>
+#include <nm-utils.h>
 
 #include "password-dialog.h"
 #include "nm-utils.h"
@@ -89,7 +90,7 @@ nma_wpa_passphrase_to_hex (const char * key, NMConnection * connection)
 	ssid_len = MIN (s_wireless->ssid->len, IW_ESSID_MAX_SIZE);
 
 	buf = g_malloc0 (WPA_PMK_LEN * 2);
-	pbkdf2_sha1 (key, s_wireless->ssid->data, ssid_len, 4096, (unsigned char *) buf, WPA_PMK_LEN);
+	pbkdf2_sha1 (key, (char *) s_wireless->ssid->data, ssid_len, 4096, (unsigned char *) buf, WPA_PMK_LEN);
 	output = cipher_bin2hexstr (buf, WPA_PMK_LEN, WPA_PMK_LEN * 2);
 	g_free (buf);
 
@@ -306,6 +307,7 @@ nma_password_dialog_new (NMConnection *connection,
 	const char *orig_label_text;
 	char *new_label_text;
 	char buf[33];
+	int buf_len;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 	g_return_val_if_fail (setting_name != NULL, NULL);
@@ -354,9 +356,9 @@ nma_password_dialog_new (NMConnection *connection,
 
 	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, "802-11-wireless");
 	memset (buf, 0, sizeof (buf));
-	memcpy (buf, s_wireless->ssid->data, MIN (s_wireless->ssid->len, sizeof (buf) - 1));
-	new_label_text = g_strdup_printf (orig_label_text,
-	                                  nm_utils_essid_to_utf8 (buf));
+	buf_len = MIN (s_wireless->ssid->len, sizeof (buf) - 1);
+	memcpy (buf, s_wireless->ssid->data, buf_len);
+	new_label_text = g_strdup_printf (orig_label_text, nm_utils_ssid_to_utf8 (buf, buf_len));
 	gtk_label_set_label (GTK_LABEL (label), new_label_text);
 	g_free (new_label_text);
 

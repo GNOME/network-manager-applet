@@ -184,12 +184,12 @@ vpn_connection_info_get_properties (VPNConnectionInfo *info)
 		    !strcmp (key, "service_name") ||
 		    !strcmp (key, "routes") ||
 		    !strcmp (key, "last_attempt_success")) {
-			gconf_entry_free (entry);
+			gconf_entry_unref (entry);
 			continue;
 		}
 
 		add_property (properties, key, gconf_entry_get_value (entry));
-		gconf_entry_free (entry);
+		gconf_entry_unref (entry);
 	}
 
 	g_slist_free (gconf_entries);

@@ -29,6 +29,7 @@
 #include "gconf-helpers.h"
 #include "nm-utils.h"
 #include "password-dialog.h"
+#include "vpn-password-dialog.h"
 
 static NMConnectionSettings * applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
                                                                                    const gchar *conf_dir,
@@ -489,7 +490,7 @@ applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	if (!nm_connection_verify (connection)) {
-		g_warning ("Invalid connection given.", conf_dir);
+		g_warning ("Invalid connection given.");
 		return NULL;
 	}
 

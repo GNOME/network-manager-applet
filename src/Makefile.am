@@ -40,8 +40,6 @@ nm_applet_SOURCES =			\
 	vpn-connection-info.h		\
 	vpn-password-dialog.c	\
 	vpn-password-dialog.h	\
-	nm-utils.c \
-	nm-utils.h \
 	gnome-keyring-md5.h \
 	gnome-keyring-md5.c \
 	connection-editor/nm-connection-editor.c	\
