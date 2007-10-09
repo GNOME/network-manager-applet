@@ -774,7 +774,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 			if (!*uint_val)
 				break;
 			/* GConf doesn't do 64-bit values, so use strings instead */
-			numstr = g_strdup_printf ("%llu", *uint_val);
+			numstr = g_strdup_printf ("%" G_GUINT64_FORMAT, *uint_val);
 			if (!numstr)
 				break;
 			nm_gconf_set_string_helper (info->client, info->dir,
