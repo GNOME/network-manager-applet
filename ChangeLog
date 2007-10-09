@@ -1,5 +1,13 @@
 2007-10-09  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+		- (nma_add_networks_helper): don't calculate AP hashes in hot paths
+		- (foo_device_added_cb, access_point_added_cb,
+		   notify_ap_prop_changed_cb): calculate the AP hashes when NM notifies
+			us of the AP, which isn't in a path that impacts UI speed
+
+2007-10-09  Dan Williams  <dcbw@redhat.com>
+
 	* src/gconf-helpers/gconf-helpers.c
 		- (read_one_setting_value_from_gconf): don't warn on failed reads from
 			GConf (ie, where key doesn't exist)

@@ -1294,67 +1294,6 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 
 #define AP_HASH_LEN 16
 
-static guchar *
-ap_hash (NMAccessPoint * ap)
-{
-	struct GnomeKeyringMD5Context ctx;
-	unsigned char * digest = NULL;
-	unsigned char md5_data[66];
-	unsigned char input[33];
-	const GByteArray * ssid;
-	int mode;
-	guint32 flags, wpa_flags, rsn_flags;
-
-	g_return_val_if_fail (ap, NULL);
-
-	mode = nm_access_point_get_mode (ap);
-	flags = nm_access_point_get_flags (ap);
-	wpa_flags = nm_access_point_get_wpa_flags (ap);
-	rsn_flags = nm_access_point_get_rsn_flags (ap);
-
-	memset (&input[0], 0, sizeof (input));
-
-	ssid = nm_access_point_get_ssid (ap);
-	if (ssid)
-		memcpy (input, ssid->data, ssid->len);
-
-	if (mode == IW_MODE_INFRA)
-		input[32] |= (1 << 0);
-	else if (mode == IW_MODE_ADHOC)
-		input[32] |= (1 << 1);
-	else
-		input[32] |= (1 << 2);
-
-	/* Separate out no encryption, WEP-only, and WPA-capable */
-	if (  !(flags & NM_802_11_AP_FLAGS_PRIVACY)
-	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
-	    && (rsn_flags == NM_802_11_AP_SEC_NONE))
-		input[32] |= (1 << 3);
-	else if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
-	         && (wpa_flags == NM_802_11_AP_SEC_NONE)
-	         && (rsn_flags == NM_802_11_AP_SEC_NONE))
-		input[32] |= (1 << 4);
-	else if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
-	         &&  (wpa_flags != NM_802_11_AP_SEC_NONE)
-	         &&  (rsn_flags != NM_802_11_AP_SEC_NONE))
-		input[32] |= (1 << 5);
-	else
-		input[32] |= (1 << 6);
-
-	digest = g_malloc (sizeof (unsigned char) * AP_HASH_LEN);
-	if (digest == NULL)
-		goto out;
-
-	gnome_keyring_md5_init (&ctx);
-	memcpy (md5_data, input, sizeof (input));
-	memcpy (&md5_data[33], input, sizeof (input));
-	gnome_keyring_md5_update (&ctx, md5_data, sizeof (md5_data));
-	gnome_keyring_md5_final (digest, &ctx);
-
-out:
-	return digest;
-}
-
 struct dup_data {
 	NMDevice * device;
 	GtkWidget * found;
@@ -1410,15 +1349,15 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 	/* Don't add BSSs that hide their SSID */
 	ssid = nm_access_point_get_ssid (ap);
 	if (!ssid || nm_utils_is_empty_ssid (ssid->data, ssid->len))
-		goto out;
+		return;
 
 	strength = nm_access_point_get_strength (ap);
 
 	dup_data.found = NULL;
-	dup_data.hash = ap_hash (ap);
-	dup_data.device = cb_data->device;
+	dup_data.hash = g_object_get_data (G_OBJECT (ap), "hash");
 	if (!dup_data.hash)
-		goto out;
+		return;
+	dup_data.device = cb_data->device;
 	gtk_container_foreach (GTK_CONTAINER (cb_data->menu),
 	                       find_duplicate,
 	                       &dup_data);
@@ -1472,9 +1411,6 @@ nma_add_networks_helper (gpointer data, gpointer user_data)
 		g_signal_handlers_unblock_matched (item, G_SIGNAL_MATCH_FUNC,
 		                                   0, 0, NULL, G_CALLBACK (nma_menu_item_activate), NULL);
 	}
-
-out:
-	g_free (dup_data.hash);
 }
 
 
@@ -2703,6 +2639,105 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
 		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));		
 }
 
+static guchar *
+ap_hash (NMAccessPoint * ap)
+{
+	struct GnomeKeyringMD5Context ctx;
+	unsigned char * digest = NULL;
+	unsigned char md5_data[66];
+	unsigned char input[33];
+	const GByteArray * ssid;
+	int mode;
+	guint32 flags, wpa_flags, rsn_flags;
+
+	g_return_val_if_fail (ap, NULL);
+
+	mode = nm_access_point_get_mode (ap);
+	flags = nm_access_point_get_flags (ap);
+	wpa_flags = nm_access_point_get_wpa_flags (ap);
+	rsn_flags = nm_access_point_get_rsn_flags (ap);
+
+	memset (&input[0], 0, sizeof (input));
+
+	ssid = nm_access_point_get_ssid (ap);
+	if (ssid)
+		memcpy (input, ssid->data, ssid->len);
+
+	if (mode == IW_MODE_INFRA)
+		input[32] |= (1 << 0);
+	else if (mode == IW_MODE_ADHOC)
+		input[32] |= (1 << 1);
+	else
+		input[32] |= (1 << 2);
+
+	/* Separate out no encryption, WEP-only, and WPA-capable */
+	if (  !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	    && (rsn_flags == NM_802_11_AP_SEC_NONE))
+		input[32] |= (1 << 3);
+	else if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
+	         && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	         && (rsn_flags == NM_802_11_AP_SEC_NONE))
+		input[32] |= (1 << 4);
+	else if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+	         &&  (wpa_flags != NM_802_11_AP_SEC_NONE)
+	         &&  (rsn_flags != NM_802_11_AP_SEC_NONE))
+		input[32] |= (1 << 5);
+	else
+		input[32] |= (1 << 6);
+
+	digest = g_malloc (sizeof (unsigned char) * AP_HASH_LEN);
+	if (digest == NULL)
+		goto out;
+
+	gnome_keyring_md5_init (&ctx);
+	memcpy (md5_data, input, sizeof (input));
+	memcpy (&md5_data[33], input, sizeof (input));
+	gnome_keyring_md5_update (&ctx, md5_data, sizeof (md5_data));
+	gnome_keyring_md5_final (digest, &ctx);
+
+out:
+	return digest;
+}
+
+static void
+add_hash_to_ap (NMAccessPoint *ap)
+{
+	char *hash = ap_hash (ap);
+	g_object_set_data_full (G_OBJECT (ap), "hash", hash, (GDestroyNotify) g_free);
+}
+
+static void
+notify_ap_prop_changed_cb (NMAccessPoint *ap,
+                           GParamSpec *pspec,
+                           NMApplet *applet)
+{
+	const char *prop = g_param_spec_get_name (pspec);
+
+	if (   strcmp (prop, "flags")
+	    || !strcmp (prop, "wpa-flags")
+	    || !strcmp (prop, "rsn-flags")
+	    || !strcmp (prop, "ssid")
+	    || !strcmp (prop, "frequency")
+	    || !strcmp (prop, "mode")) {
+		add_hash_to_ap (ap);
+	}
+}
+
+static void
+access_point_added_cb (NMDevice80211Wireless *device,
+                       NMAccessPoint *ap,
+                       gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET  (user_data);
+
+	add_hash_to_ap (ap);
+	g_signal_connect (G_OBJECT (ap),
+	                  "notify",
+	                  G_CALLBACK (notify_ap_prop_changed_cb),
+	                  applet);
+}
+
 static void
 foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 {
@@ -2713,10 +2748,26 @@ foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 				   user_data);
 
 	if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
-		g_signal_connect (NM_DEVICE_802_11_WIRELESS (device),
+		NMDevice80211Wireless *wdev = NM_DEVICE_802_11_WIRELESS (device);
+		GSList *aps, *iter;
+
+		g_signal_connect (wdev,
 		                  "notify::active-access-point",
 		                  G_CALLBACK (notify_active_ap_changed_cb),
 		                  applet);
+
+		g_signal_connect (wdev,
+		                  "access-point-added",
+		                  G_CALLBACK (access_point_added_cb),
+		                  applet);
+
+		/* Hash all APs this device knows about */
+		aps = nm_device_802_11_wireless_get_access_points (wdev);
+		for (iter = aps; iter; iter = g_slist_next (iter)) {
+			NMAccessPoint *ap = NM_ACCESS_POINT (iter->data);
+			add_hash_to_ap (ap);
+		}
+		g_slist_free (aps);
 	}
 
 	foo_device_state_changed_cb (device, nm_device_get_state (device), user_data);
