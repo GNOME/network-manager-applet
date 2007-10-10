@@ -731,6 +731,7 @@ typedef struct CopyOneSettingValueInfo {
 	GConfClient *client;
 	const char *dir;
 	const char *connection_name;
+	KeyFilterFunc key_filter_func;
 } CopyOneSettingValueInfo;
 
 static void
@@ -742,6 +743,10 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
                                  gpointer user_data)
 {
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
+
+	if (info->key_filter_func)
+		if ((*info->key_filter_func)(setting->name, key) == FALSE)
+			return;
 
 	switch (type) {
 		case NM_S_TYPE_STRING: {
@@ -820,7 +825,8 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir)
+                           const char *dir,
+                           KeyFilterFunc func)
 {
 	NMSettingConnection *s_connection;
 	CopyOneSettingValueInfo info;
@@ -836,6 +842,7 @@ nm_gconf_write_connection (NMConnection *connection,
 	info.client = client;
 	info.dir = dir;
 	info.connection_name = s_connection->name;
+	info.key_filter_func = func;
 	nm_connection_for_each_setting_value (connection,
 	                                      copy_one_setting_value_to_gconf,
 	                                      &info);

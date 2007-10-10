@@ -185,7 +185,7 @@ write_vpn_connection_to_gconf (NMConnection *connection)
 
 	path = g_object_get_data (G_OBJECT (connection), "gconf-path");
 	g_assert (path);
-	nm_gconf_write_connection (connection, gconf_client, path);
+	nm_gconf_write_connection (connection, gconf_client, path, NULL);
 
 	gconf_client_suggest_sync (gconf_client, NULL);
 	return TRUE;

@@ -130,10 +130,16 @@ NMConnection *
 nm_gconf_read_connection (GConfClient *client,
                           const char *dir);
 
+/* Filter function should return TRUE to process the key,
+ * FALSE to ignore the key.
+ */
+typedef gboolean (*KeyFilterFunc)(const char *setting, const char *key);
+
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir);
+                           const char *dir,
+                           KeyFilterFunc func);
 
 #endif	/* GCONF_HELPERS_H */
 

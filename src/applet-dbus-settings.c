@@ -383,6 +383,22 @@ applet_dbus_connection_settings_class_init (AppletDbusConnectionSettingsClass *a
 	connection_class->get_secrets = applet_dbus_connection_settings_get_secrets;
 }
 
+static void
+fill_vpn_user_name (NMConnection *connection)
+{
+	const char *user_name;
+	NMSettingVPN *s_vpn;
+
+	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
+	if (!s_vpn)
+		return;
+
+	g_free (s_vpn->user_name);
+	user_name = g_get_user_name ();
+	g_assert (g_utf8_validate (user_name, -1, NULL));
+	s_vpn->user_name = g_strdup (user_name);
+}
+
 static gboolean
 applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_connection,
                                          GConfEntry *entry)
@@ -412,6 +428,8 @@ applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_co
 	                                                           NM_SETTING_CONNECTION);
 	g_free (applet_connection->id);
 	applet_connection->id = g_strdup (s_con->name);
+
+	fill_vpn_user_name (applet_connection->connection);
 
 	settings = nm_connection_to_hash (applet_connection->connection);
 	nm_connection_settings_signal_updated (NM_CONNECTION_SETTINGS (applet_connection), settings);
@@ -455,12 +473,31 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 	                                                           NM_SETTING_CONNECTION);
 	applet_connection->id = g_strdup (s_con->name);
 
+	fill_vpn_user_name (applet_connection->connection);
+
 	manager = applet_dbus_manager_get ();
 	nm_connection_settings_register_object ((NMConnectionSettings *) applet_connection,
 	                                        applet_dbus_manager_get_connection (manager));
 	g_object_unref (manager);
 
 	return (NMConnectionSettings *) applet_connection;
+}
+
+static gboolean
+vpn_user_name_filter_cb (const char *setting_name, const char *key)
+{
+	/* Don't want to save the VPN setting's 'user_name' key in GConf,
+	 * because it's supposed to be pulled from the logged in user when
+	 * the connection gets activated.
+	 */
+
+	if (strcmp (setting_name, NM_SETTING_VPN))
+		return TRUE;
+
+	if (strcmp (key, "user_name"))
+		return TRUE;
+
+	return FALSE;
 }
 
 void
@@ -472,7 +509,8 @@ applet_dbus_connection_settings_save (NMConnectionSettings *connection)
 
 	nm_gconf_write_connection (applet_connection->connection,
 	                           applet_connection->conf_client,
-	                           applet_connection->conf_dir);
+	                           applet_connection->conf_dir,
+	                           vpn_user_name_filter_cb);
 	gconf_client_notify (applet_connection->conf_client, applet_connection->conf_dir);
 	gconf_client_suggest_sync (applet_connection->conf_client, NULL);
 }
@@ -500,6 +538,8 @@ applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
 	applet_connection->connection = connection;
 
 	applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (applet_connection));
+
+	fill_vpn_user_name (applet_connection->connection);
 
 	manager = applet_dbus_manager_get ();
 	nm_connection_settings_register_object ((NMConnectionSettings *) applet_connection,

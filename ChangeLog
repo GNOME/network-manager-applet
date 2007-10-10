@@ -1,3 +1,23 @@
+2007-10-10  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.h
+	  src/gconf-helpers/gconf-helpers.c
+		- (nm_gconf_write_connection): add optional filter function so callers
+			can choose not to write some keys
+
+	* src/vpn-properties/nm-vpn-properties.c
+		- (write_vpn_connection_to_gconf): update for changes to
+			nm_gconf_write_connection()
+
+	* src/applet-dbus-settings.c
+		- (applet_dbus_connection_settings_changed,
+		   applet_dbus_connection_settings_new,
+		   applet_dbus_connection_settings_new_from_connection): fill in VPN
+			setting default username
+		- (applet_dbus_connection_settings_save, vpn_user_name_filter_cb): don't
+			write the VPN setting's 'user_name' key to GConf since it's supposed
+			to be transient
+
 2007-10-09  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
