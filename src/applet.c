@@ -2414,7 +2414,7 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 		if (ap) {
 			g_object_ref (applet->current_ap);
 			g_signal_connect (ap,
-			                  "notify::strength",
+			                  "notify::" NM_ACCESS_POINT_STRENGTH,
 			                  G_CALLBACK (foo_bssid_strength_changed),
 			                  applet);
 			foo_bssid_strength_changed (ap, NULL, applet);
@@ -2714,12 +2714,12 @@ notify_ap_prop_changed_cb (NMAccessPoint *ap,
 {
 	const char *prop = g_param_spec_get_name (pspec);
 
-	if (   strcmp (prop, "flags")
-	    || !strcmp (prop, "wpa-flags")
-	    || !strcmp (prop, "rsn-flags")
-	    || !strcmp (prop, "ssid")
-	    || !strcmp (prop, "frequency")
-	    || !strcmp (prop, "mode")) {
+	if (   !strcmp (prop, NM_ACCESS_POINT_FLAGS)
+	    || !strcmp (prop, NM_ACCESS_POINT_WPA_FLAGS)
+	    || !strcmp (prop, NM_ACCESS_POINT_RSN_FLAGS)
+	    || !strcmp (prop, NM_ACCESS_POINT_SSID)
+	    || !strcmp (prop, NM_ACCESS_POINT_FREQUENCY)
+	    || !strcmp (prop, NM_ACCESS_POINT_MODE)) {
 		add_hash_to_ap (ap);
 	}
 }
@@ -2752,7 +2752,7 @@ foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 		GSList *aps, *iter;
 
 		g_signal_connect (wdev,
-		                  "notify::active-access-point",
+		                  "notify::" NM_DEVICE_802_11_WIRELESS_ACTIVE_ACCESS_POINT,
 		                  G_CALLBACK (notify_active_ap_changed_cb),
 		                  applet);
 
