@@ -395,11 +395,14 @@ static void nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
  * pop up a warning or error dialog with certain text
  *
  */
-static gboolean show_warning_dialog (char *mesg)
+static gboolean
+show_warning_dialog (gpointer user_data)
 {
-	GtkWidget	*	dialog;
+	char *msg = (char *) user_data;
+	GtkWidget *dialog;
 
-	dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, mesg, NULL);
+	dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, msg, NULL);
+	g_free (msg);
 
 	/* Bash focus-stealing prevention in the face */
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
@@ -407,28 +410,19 @@ static gboolean show_warning_dialog (char *mesg)
 	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
 	gtk_window_present (GTK_WINDOW (dialog));
 
-	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
-	g_free (mesg);
-
+	g_signal_connect_swapped (dialog, "response",
+	                          G_CALLBACK (gtk_widget_destroy),
+	                          dialog);
 	return FALSE;
 }
 
 
-/*
- * nma_schedule_warning_dialog
- *
- * Run a warning dialog in the main event loop.
- *
- */
-void nma_schedule_warning_dialog (NMApplet *applet, const char *msg)
+void
+nma_schedule_warning_dialog (const char *msg)
 {
-	char *lcl_msg;
-
-	g_return_if_fail (applet != NULL);
 	g_return_if_fail (msg != NULL);
 
-	lcl_msg = g_strdup (msg);
-	g_idle_add ((GSourceFunc) show_warning_dialog, lcl_msg);
+	g_idle_add ((GSourceFunc) show_warning_dialog, g_strdup (msg));
 }
 
 
@@ -3028,8 +3022,7 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 
 	applet->glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
 	if (!applet->glade_file || !g_file_test (applet->glade_file, G_FILE_TEST_IS_REGULAR)) {
-		nma_schedule_warning_dialog (applet,
-		                             _("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
+		nma_schedule_warning_dialog (_("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
 		goto error;
 	}
 

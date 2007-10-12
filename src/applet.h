@@ -157,7 +157,7 @@ GType nma_get_type (void);
 
 NMApplet * nm_applet_new (void);
 
-void				nma_schedule_warning_dialog			(NMApplet *applet, const char *msg);
+void nma_schedule_warning_dialog (const char *msg);
 
 static inline gboolean
 nma_same_ssid (const GByteArray * ssid1, const GByteArray * ssid2)
