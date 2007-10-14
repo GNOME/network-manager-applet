@@ -191,6 +191,7 @@ fi
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/utils/Makefile
 src/gconf-helpers/Makefile
 src/wireless-security/Makefile
 src/connection-editor/Makefile

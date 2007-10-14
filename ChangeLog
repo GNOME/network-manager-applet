@@ -1,5 +1,22 @@
 2007-10-13  Dan Williams  <dcbw@redhat.com>
 
+	* src/utils/Makefile.am
+	  src/Makefile.am
+	  configure.ac
+	  src/utils/utils.c
+	  src/utils/utils.h
+	  src/gnome-keyring-md5.c -> src/utils/gnome-keyring-md5.c
+	  src/gnome-keyring-md5.h -> src/utils/gnome-keyring-md5.h
+		- Move gnome-keyring-md5 stuff to a library that both the applet and
+			the wireless security stuff can easily use
+		- Put utils_bin2hexstr() in utils.c
+
+	* src/wireless-security/ws-wep-key.c
+	  src/wireless-security/Makefile.am
+		- (fill_connection): Use utils_bin2hexstr() from src/utils/
+	  
+2007-10-13  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-security/wireless-security.c
 	  src/wireless-security/wireless-security.h
 	  src/wireless-security/ws-wep-key.c

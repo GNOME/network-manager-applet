@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "wireless-security.h"
+#include "utils.h"
 
 
 static void
@@ -94,39 +95,6 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 	gtk_size_group_add_widget (group, widget);
 }
 
-/*
- * cipher_bin2hexstr
- *
- * Convert a byte-array into a hexadecimal string.
- *
- * Code originally by Alex Larsson <alexl@redhat.com> and
- *  copyright Red Hat, Inc. under terms of the LGPL.
- *
- */
-static char *
-bin2hexstr (const char *bytes, int len, int final_len)
-{
-	static char	hex_digits[] = "0123456789abcdef";
-	char *		result;
-	int			i;
-
-	g_return_val_if_fail (bytes != NULL, NULL);
-	g_return_val_if_fail (len > 0, NULL);
-	g_return_val_if_fail (len < 256, NULL);	/* Arbitrary limit */
-
-	result = g_malloc0 (len * 2 + 1);
-	for (i = 0; i < len; i++)
-	{
-		result[2*i] = hex_digits[(bytes[i] >> 4) & 0xf];
-		result[2*i+1] = hex_digits[bytes[i] & 0xf];
-	}
-	/* Cut converted key off at the correct length for this cipher type */
-	if (final_len > -1)
-		result[final_len] = '\0';
-
-	return result;
-}
-
 static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
@@ -146,7 +114,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	} else {
 		char *hashed;
 
-		hashed = bin2hexstr (key, strlen (key), strlen (key) * 2);
+		hashed = utils_bin2hexstr (key, strlen (key), strlen (key) * 2);
 		ws_wep_fill_connection (connection, hashed, auth_alg);
 		g_free (hashed);
 	}

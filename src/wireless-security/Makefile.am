@@ -6,7 +6,11 @@ libwireless_security_la_SOURCES = \
 	ws-wep-key.h \
 	ws-wep-key.c
 
-libwireless_security_la_CPPFLAGS = $(NMA_CFLAGS)
+libwireless_security_la_CPPFLAGS = \
+	$(NMA_CFLAGS) \
+	-I${top_srcdir}/src/utils
 
-libwireless_security_la_LIBADD = $(NMA_LIBS)
+libwireless_security_la_LIBADD = \
+	$(NMA_LIBS) \
+	${top_builddir}/src/utils/libutils.la
 
