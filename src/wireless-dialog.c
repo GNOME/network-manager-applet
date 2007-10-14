@@ -300,6 +300,7 @@ security_combo_init (const char *glade_file,
 	GtkTreeIter iter;
 	WirelessSecurityWEPKey *ws_wep_hex;
 	WirelessSecurityWEPKey *ws_wep_ascii;
+	WirelessSecurityWEPPassphrase *ws_wep_passphrase;
 
 	g_return_val_if_fail (combo != NULL, FALSE);
 	g_return_val_if_fail (glade_file != NULL, FALSE);
@@ -312,6 +313,12 @@ security_combo_init (const char *glade_file,
 	                    S_NAME_COLUMN, _("None"),
 	                    S_SEC_COLUMN, NULL,
 	                    -1);
+
+	ws_wep_passphrase = ws_wep_passphrase_new (glade_file);
+	if (ws_wep_passphrase) {
+		add_security_item (dialog, WIRELESS_SECURITY (ws_wep_passphrase), sec_model,
+		                   &iter, _("WEP 128-bit Passphrase"));
+	}
 
 	ws_wep_hex = ws_wep_key_new (glade_file, WEP_KEY_TYPE_HEX);
 	if (ws_wep_hex) {

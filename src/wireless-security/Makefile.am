@@ -4,7 +4,9 @@ libwireless_security_la_SOURCES = \
 	wireless-security.h \
 	wireless-security.c \
 	ws-wep-key.h \
-	ws-wep-key.c
+	ws-wep-key.c \
+	ws-wep-passphrase.h \
+	ws-wep-passphrase.c
 
 libwireless_security_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \
