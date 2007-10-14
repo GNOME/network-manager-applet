@@ -111,14 +111,9 @@ ws_wep_fill_connection (NMConnection *connection,
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
 
-	if (s_wireless_sec->key_mgmt)
-		g_free (s_wireless_sec);
+	s_wireless_sec->wep_key0 = g_strdup (key);
 	s_wireless_sec->key_mgmt = g_strdup ("none");
-
 	s_wireless_sec->wep_tx_keyidx = 0;
-
-	if (s_wireless_sec->auth_alg)
-		g_free (s_wireless_sec->auth_alg);
 
 	switch (auth_alg) {
 		case 0:
@@ -131,7 +126,5 @@ ws_wep_fill_connection (NMConnection *connection,
 			g_assert_not_reached ();
 			break;
 	}
-
-	s_wireless_sec->wep_key0 = g_strdup (key);
 }
 

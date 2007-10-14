@@ -73,6 +73,7 @@ void wireless_security_destroy (WirelessSecurity *sec);
 
 #include "ws-wep-key.h"
 #include "ws-wep-passphrase.h"
+#include "ws-wpa-psk.h"
 
 void wireless_security_changed_cb (GtkWidget *entry, gpointer user_data);
 

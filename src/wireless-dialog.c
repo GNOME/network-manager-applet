@@ -301,6 +301,7 @@ security_combo_init (const char *glade_file,
 	WirelessSecurityWEPKey *ws_wep_hex;
 	WirelessSecurityWEPKey *ws_wep_ascii;
 	WirelessSecurityWEPPassphrase *ws_wep_passphrase;
+	WirelessSecurityWPAPSK *ws_wpa_psk;
 
 	g_return_val_if_fail (combo != NULL, FALSE);
 	g_return_val_if_fail (glade_file != NULL, FALSE);
@@ -330,6 +331,12 @@ security_combo_init (const char *glade_file,
 	if (ws_wep_ascii) {
 		add_security_item (dialog, WIRELESS_SECURITY (ws_wep_ascii), sec_model,
 		                   &iter, _("WEP 40/128-bit ASCII"));
+	}
+
+	ws_wpa_psk = ws_wpa_psk_new (glade_file);
+	if (ws_wpa_psk) {
+		add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
+		                   &iter, _("WPA Pre-Shared Key"));
 	}
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (sec_model));
