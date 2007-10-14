@@ -1,4 +1,4 @@
-SUBDIRS = gconf-helpers connection-editor vpn-properties
+SUBDIRS = gconf-helpers wireless-security connection-editor vpn-properties
 
 NULL=
 
@@ -17,6 +17,7 @@ nm_applet_CPPFLAGS =									\
 	$(DBUS_CFLAGS)										\
 	$(DISABLE_DEPRECATED)	\
 	-I${top_srcdir}/src/gconf-helpers  \
+	-I${top_srcdir}/src/wireless-security  \
 	$(NULL)
 
 if WITH_NOTIFY
@@ -40,6 +41,8 @@ nm_applet_SOURCES =			\
 	vpn-connection-info.h		\
 	vpn-password-dialog.c	\
 	vpn-password-dialog.h	\
+	wireless-dialog.h \
+	wireless-dialog.c \
 	gnome-keyring-md5.h \
 	gnome-keyring-md5.c \
 	connection-editor/nm-connection-editor.c	\
@@ -58,7 +61,8 @@ endif
 
 nm_applet_LDADD = \
 	$(NMA_LIBS) \
-	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
+	${top_builddir}/src/gconf-helpers/libgconf-helpers.la \
+	${top_builddir}/src/wireless-security/libwireless-security.la
 
 if WITH_NOTIFY
 nm_applet_LDADD += $(NOTIFY_LIBS)

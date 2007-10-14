@@ -192,6 +192,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/gconf-helpers/Makefile
+src/wireless-security/Makefile
 src/connection-editor/Makefile
 src/vpn-properties/Makefile
 icons/Makefile

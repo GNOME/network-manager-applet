@@ -1,3 +1,24 @@
+2007-10-13  Dan Williams  <dcbw@redhat.com>
+
+	* src/wireless-security/wireless-security.c
+	  src/wireless-security/wireless-security.h
+	  src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wep-key.h
+	  src/wireless-security/Makefile.am
+	  src/Makefile.am
+	  configure.ac
+		- wireless security UI bits; to be statically linked into both the
+			applet and the connection editor
+
+	* src/wireless-dialog.c
+	  src/wireless-dialog.h
+	  src/applet.glade
+		- Implement wireless dialog using security UI bits
+
+	* src/applet.c
+		- (other_wireless_activate_cb, other_wireless_response_cb): hook
+			wireless dialog up to Connect to Other Network...
+
 2007-10-12  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

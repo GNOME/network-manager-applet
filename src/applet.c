@@ -59,6 +59,7 @@
 #include "nm-utils.h"
 #include "gnome-keyring-md5.h"
 #include "applet-dbus-manager.h"
+#include "wireless-dialog.h"
 
 #include "nm-connection.h"
 #include "vpn-connection-info.h"
@@ -1244,13 +1245,67 @@ nma_menu_add_device_item (GtkWidget *menu,
 	}
 }
 
-
-static void custom_essid_item_selected (GtkWidget *menu_item, NMApplet *applet)
+static void
+other_wireless_response_cb (GtkDialog *dialog,
+                            gint response,
+                            gpointer user_data)
 {
+	NMApplet *applet = NM_APPLET (user_data);
+	NMConnection *connection;
+	NMDevice *device = NULL;
+	NMSettingConnection *s_con;
+
+	if (response != GTK_RESPONSE_OK)
+		goto done;
+
+	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device);
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+	if (!s_con->name) {
+		NMSettingWireless *s_wireless;
+		char *ssid;
+
+		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
+		ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
+		s_con->name = g_strdup_printf ("Auto %s", ssid);
+		g_free (ssid);
+
+		s_con->autoconnect = TRUE;
+	}
+
+	// Do something
+	nm_connection_dump (connection);
+	if (!nm_connection_verify (connection))
+		g_message ("INVALID");
+
+done:
+	gtk_widget_hide (GTK_WIDGET (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+static void
+other_wireless_activate_cb (GtkWidget *menu_item,
+                            NMApplet *applet)
+{
+	GtkWidget *dialog;
+
+	dialog = nma_wireless_dialog_new (applet->glade_file,
+	                                  NULL,
+	                                  applet->nm_client);
+	if (!dialog)
+		return;
+
+	g_signal_connect (dialog, "response",
+	                  G_CALLBACK (other_wireless_response_cb),
+	                  applet);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (dialog);
+	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
+	gtk_window_present (GTK_WINDOW (dialog));
 }
 
 
-static void nma_menu_add_custom_essid_item (GtkWidget *menu, NMApplet *applet)
+static void nma_menu_add_other_network_item (GtkWidget *menu, NMApplet *applet)
 {
 	GtkWidget *menu_item;
 	GtkWidget *label;
@@ -1261,7 +1316,7 @@ static void nma_menu_add_custom_essid_item (GtkWidget *menu, NMApplet *applet)
 	gtk_container_add (GTK_CONTAINER (menu_item), label);
 	gtk_widget_show_all (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	g_signal_connect (menu_item, "activate", G_CALLBACK (custom_essid_item_selected), applet);
+	g_signal_connect (menu_item, "activate", G_CALLBACK (other_wireless_activate_cb), applet);
 }
 
 
@@ -1575,7 +1630,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	if (n_wireless_interfaces > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
 		/* Add the "Other wireless network..." entry */
 		nma_menu_add_separator_item (GTK_MENU_SHELL (menu));
-		nma_menu_add_custom_essid_item (menu, applet);
+		nma_menu_add_other_network_item (menu, applet);
 		nma_menu_add_create_network_item (menu, applet);
 	}
 
