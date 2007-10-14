@@ -301,6 +301,7 @@ security_combo_init (const char *glade_file,
 	WirelessSecurityWEPKey *ws_wep_hex;
 	WirelessSecurityWEPKey *ws_wep_ascii;
 	WirelessSecurityWEPPassphrase *ws_wep_passphrase;
+	WirelessSecurityLEAP *ws_leap;
 	WirelessSecurityWPAPSK *ws_wpa_psk;
 
 	g_return_val_if_fail (combo != NULL, FALSE);
@@ -331,6 +332,12 @@ security_combo_init (const char *glade_file,
 	if (ws_wep_ascii) {
 		add_security_item (dialog, WIRELESS_SECURITY (ws_wep_ascii), sec_model,
 		                   &iter, _("WEP 40/128-bit ASCII"));
+	}
+
+	ws_leap = ws_leap_new (glade_file);
+	if (ws_leap) {
+		add_security_item (dialog, WIRELESS_SECURITY (ws_leap), sec_model,
+		                   &iter, _("LEAP"));
 	}
 
 	ws_wpa_psk = ws_wpa_psk_new (glade_file);

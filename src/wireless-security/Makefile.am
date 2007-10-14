@@ -10,7 +10,9 @@ libwireless_security_la_SOURCES = \
 	ws-wpa-psk.h \
 	ws-wpa-psk.c \
 	sha1.c \
-	sha1.h
+	sha1.h \
+	ws-leap.h \
+	ws-leap.c
 
 libwireless_security_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \
