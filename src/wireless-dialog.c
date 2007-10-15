@@ -279,6 +279,26 @@ destroy_device_model (GtkTreeModel *model)
 }
 
 static void
+destroy_security_model (GtkTreeModel *model)
+{
+	GtkTreeIter	iter;
+
+	g_return_if_fail (model != NULL);
+
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		do {
+			WirelessSecurity *sec;
+
+			gtk_tree_model_get (model, &iter,
+			                    D_DEV_COLUMN, &sec,
+			                    -1);
+			wireless_security_destroy (sec);
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+	g_object_unref (model);
+}
+
+static void
 add_security_item (GtkWidget *dialog,
                    WirelessSecurity *sec,
                    GtkListStore *model,
@@ -303,6 +323,7 @@ security_combo_init (const char *glade_file,
 	WirelessSecurityWEPPassphrase *ws_wep_passphrase;
 	WirelessSecurityLEAP *ws_leap;
 	WirelessSecurityWPAPSK *ws_wpa_psk;
+	WirelessSecurityWPAEAP *ws_wpa_eap;
 
 	g_return_val_if_fail (combo != NULL, FALSE);
 	g_return_val_if_fail (glade_file != NULL, FALSE);
@@ -315,6 +336,10 @@ security_combo_init (const char *glade_file,
 	                    S_NAME_COLUMN, _("None"),
 	                    S_SEC_COLUMN, NULL,
 	                    -1);
+
+	g_object_set_data_full (G_OBJECT (dialog),
+	                        "security-model", sec_model,
+	                        (GDestroyNotify) destroy_security_model);
 
 	ws_wep_passphrase = ws_wep_passphrase_new (glade_file);
 	if (ws_wep_passphrase) {
@@ -344,6 +369,12 @@ security_combo_init (const char *glade_file,
 	if (ws_wpa_psk) {
 		add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 		                   &iter, _("WPA Pre-Shared Key"));
+	}
+
+	ws_wpa_eap = ws_wpa_eap_new (glade_file);
+	if (ws_wpa_eap) {
+		add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
+		                   &iter, _("WPA & WPA2 Enterprise"));
 	}
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (sec_model));

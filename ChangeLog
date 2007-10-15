@@ -1,3 +1,37 @@
+2007-10-15  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.glade
+		- Remove border widths on subwidgets so they align better with the
+			wireless-dialog
+		- Make all labels left-aligned
+		- Implement WPA-EAP widget
+		- Implement EAP-TLS method widget
+
+	* src/wireless-security/wireless-security.c
+	  src/wireless-security/wireless-security.h
+		- (ws_wpa_fill_default_ciphers): generic function for filling in default
+			WPA ciphers
+
+	* src/wireless-security/ws-wpa-psk.c
+		- (src/wireless-security/ws-wpa-psk.c): use ws_wpa_fill_default_ciphers()
+
+	* src/wireless-security/ws-wpa-eap.c
+	  src/wireless-security/ws-wpa-eap.h
+		- Implement shell WPA-EAP widget
+
+	* src/wireless-security/Makefile.am
+	  src/wireless-security/eap-method.c
+	  src/wireless-security/eap-method.h
+		- Implement EAP method superclass
+
+	* src/wireless-security/eap-method-tls.c
+	  src/wireless-security/eap-method-tls.h
+		- Implement EAP-TLS UI bits
+
+	* src/wireless-dialog.c
+		- (security_combo_init): add WPA-EAP options; don't leak wireless
+			security widgets on dialog destruction
+
 2007-10-14  Dan Williams  <dcbw@redhat.com>
 
 	* src/wireless-security/wireless-security.h

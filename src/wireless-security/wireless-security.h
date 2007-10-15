@@ -75,12 +75,15 @@ void wireless_security_destroy (WirelessSecurity *sec);
 #include "ws-wep-passphrase.h"
 #include "ws-wpa-psk.h"
 #include "ws-leap.h"
+#include "ws-wpa-eap.h"
 
 void wireless_security_changed_cb (GtkWidget *entry, gpointer user_data);
 
 void ws_wep_fill_connection (NMConnection *connection,
                              const char *key,
                              gint auth_alg);
+
+void ws_wpa_fill_default_ciphers (NMConnection *connection);
 
 #endif /* WIRELESS_SECURITY_H */
 

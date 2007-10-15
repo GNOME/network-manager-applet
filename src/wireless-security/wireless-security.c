@@ -128,3 +128,28 @@ ws_wep_fill_connection (NMConnection *connection,
 	}
 }
 
+void
+ws_wpa_fill_default_ciphers (NMConnection *connection)
+{
+	NMSettingWirelessSecurity *s_wireless_sec;
+
+	g_return_if_fail (connection != NULL);
+
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
+	g_assert (s_wireless_sec);
+
+	// FIXME: allow protocol selection and filter on device capabilities
+	s_wireless_sec->proto = g_slist_append (s_wireless_sec->proto, g_strdup ("wpa"));
+	s_wireless_sec->proto = g_slist_append (s_wireless_sec->proto, g_strdup ("rsn"));
+
+	// FIXME: allow pairwise cipher selection and filter on device capabilities
+	s_wireless_sec->pairwise = g_slist_append (s_wireless_sec->pairwise, g_strdup ("tkip"));
+	s_wireless_sec->pairwise = g_slist_append (s_wireless_sec->pairwise, g_strdup ("ccmp"));
+
+	// FIXME: allow group cipher selection and filter on device capabilities
+	s_wireless_sec->group = g_slist_append (s_wireless_sec->group, g_strdup ("wep40"));
+	s_wireless_sec->group = g_slist_append (s_wireless_sec->group, g_strdup ("wep104"));
+	s_wireless_sec->group = g_slist_append (s_wireless_sec->group, g_strdup ("tkip"));
+	s_wireless_sec->group = g_slist_append (s_wireless_sec->group, g_strdup ("ccmp"));
+}
+

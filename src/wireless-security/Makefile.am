@@ -12,7 +12,13 @@ libwireless_security_la_SOURCES = \
 	sha1.c \
 	sha1.h \
 	ws-leap.h \
-	ws-leap.c
+	ws-leap.c \
+	ws-wpa-eap.h \
+	ws-wpa-eap.c \
+	eap-method.h \
+	eap-method.c \
+	eap-method-tls.h \
+	eap-method-tls.c
 
 libwireless_security_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \

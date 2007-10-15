@@ -126,7 +126,7 @@
 	      <child>
 		<widget class="GtkTable" id="table1">
 		  <property name="visible">True</property>
-		  <property name="n_rows">5</property>
+		  <property name="n_rows">4</property>
 		  <property name="n_columns">2</property>
 		  <property name="homogeneous">False</property>
 		  <property name="row_spacing">6</property>
@@ -158,23 +158,6 @@
 		      <property name="bottom_attach">1</property>
 		      <property name="x_options">fill</property>
 		      <property name="y_options"></property>
-		    </packing>
-		  </child>
-
-		  <child>
-		    <widget class="GtkComboBox" id="device_combo">
-		      <property name="visible">True</property>
-		      <property name="items" translatable="yes"></property>
-		      <property name="add_tearoffs">False</property>
-		      <property name="focus_on_click">True</property>
-		    </widget>
-		    <packing>
-		      <property name="left_attach">1</property>
-		      <property name="right_attach">2</property>
-		      <property name="top_attach">0</property>
-		      <property name="bottom_attach">1</property>
-		      <property name="x_options">fill</property>
-		      <property name="y_options">fill</property>
 		    </packing>
 		  </child>
 
@@ -228,6 +211,22 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkComboBox" id="device_combo">
+		      <property name="visible">True</property>
+		      <property name="items" translatable="yes"></property>
+		      <property name="add_tearoffs">False</property>
+		      <property name="focus_on_click">True</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">0</property>
+		      <property name="bottom_attach">1</property>
+		      <property name="y_options">fill</property>
+		    </packing>
+		  </child>
+
+		  <child>
 		    <widget class="GtkLabel" id="security_combo_label">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">_Wireless Security:</property>
@@ -248,8 +247,8 @@
 		    <packing>
 		      <property name="left_attach">0</property>
 		      <property name="right_attach">1</property>
-		      <property name="top_attach">3</property>
-		      <property name="bottom_attach">4</property>
+		      <property name="top_attach">2</property>
+		      <property name="bottom_attach">3</property>
 		      <property name="x_options">fill</property>
 		      <property name="y_options"></property>
 		    </packing>
@@ -258,19 +257,15 @@
 		  <child>
 		    <widget class="GtkComboBox" id="security_combo">
 		      <property name="visible">True</property>
-		      <property name="items" translatable="yes">None
-WEP 128-bit Passphrase
-WEP 64/128-bit Hex
-WEP 64/128-bit ASCII
-</property>
+		      <property name="items" translatable="yes"></property>
 		      <property name="add_tearoffs">False</property>
 		      <property name="focus_on_click">True</property>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">1</property>
 		      <property name="right_attach">2</property>
-		      <property name="top_attach">3</property>
-		      <property name="bottom_attach">4</property>
+		      <property name="top_attach">2</property>
+		      <property name="bottom_attach">3</property>
 		      <property name="x_options">fill</property>
 		      <property name="y_options">fill</property>
 		    </packing>
@@ -289,8 +284,8 @@ WEP 64/128-bit ASCII
 		    <packing>
 		      <property name="left_attach">0</property>
 		      <property name="right_attach">2</property>
-		      <property name="top_attach">4</property>
-		      <property name="bottom_attach">5</property>
+		      <property name="top_attach">3</property>
+		      <property name="bottom_attach">4</property>
 		      <property name="x_options">fill</property>
 		    </packing>
 		  </child>
@@ -1453,7 +1448,6 @@ A passphrase or encryption key is required to access the wireless network '%s'.<
 
       <child>
 	<widget class="GtkTable" id="table6">
-	  <property name="border_width">8</property>
 	  <property name="visible">True</property>
 	  <property name="n_rows">3</property>
 	  <property name="n_columns">2</property>
@@ -1470,7 +1464,7 @@ A passphrase or encryption key is required to access the wireless network '%s'.<
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">1</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
@@ -1518,7 +1512,7 @@ A passphrase or encryption key is required to access the wireless network '%s'.<
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">1</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
@@ -1534,24 +1528,6 @@ A passphrase or encryption key is required to access the wireless network '%s'.<
 	      <property name="bottom_attach">3</property>
 	      <property name="x_options">fill</property>
 	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkComboBox" id="auth_method_combo">
-	      <property name="visible">True</property>
-	      <property name="items" translatable="yes">Open System
-Shared Key</property>
-	      <property name="add_tearoffs">False</property>
-	      <property name="focus_on_click">True</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">2</property>
-	      <property name="bottom_attach">3</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options">fill</property>
 	    </packing>
 	  </child>
 
@@ -1604,6 +1580,23 @@ Shared Key</property>
 	      <property name="y_options"></property>
 	    </packing>
 	  </child>
+
+	  <child>
+	    <widget class="GtkComboBox" id="auth_method_combo">
+	      <property name="visible">True</property>
+	      <property name="items" translatable="yes">Open System
+Shared Key</property>
+	      <property name="add_tearoffs">False</property>
+	      <property name="focus_on_click">True</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">2</property>
+	      <property name="bottom_attach">3</property>
+	      <property name="y_options">fill</property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="tab_expand">False</property>
@@ -1613,33 +1606,6 @@ Shared Key</property>
 
       <child>
 	<widget class="GtkLabel" id="label23">
-	  <property name="visible">True</property>
-	  <property name="label" translatable="yes"></property>
-	  <property name="use_underline">False</property>
-	  <property name="use_markup">False</property>
-	  <property name="justify">GTK_JUSTIFY_LEFT</property>
-	  <property name="wrap">False</property>
-	  <property name="selectable">False</property>
-	  <property name="xalign">0.5</property>
-	  <property name="yalign">0.5</property>
-	  <property name="xpad">0</property>
-	  <property name="ypad">0</property>
-	  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	  <property name="width_chars">-1</property>
-	  <property name="single_line_mode">False</property>
-	  <property name="angle">0</property>
-	</widget>
-	<packing>
-	  <property name="type">tab</property>
-	</packing>
-      </child>
-
-      <child>
-	<placeholder/>
-      </child>
-
-      <child>
-	<widget class="GtkLabel" id="label24">
 	  <property name="visible">True</property>
 	  <property name="label" translatable="yes"></property>
 	  <property name="use_underline">False</property>
@@ -1691,7 +1657,6 @@ Shared Key</property>
 
       <child>
 	<widget class="GtkTable" id="table5">
-	  <property name="border_width">6</property>
 	  <property name="visible">True</property>
 	  <property name="n_rows">3</property>
 	  <property name="n_columns">2</property>
@@ -1708,7 +1673,7 @@ Shared Key</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">1</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
@@ -1736,7 +1701,7 @@ Shared Key</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">1</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
@@ -1752,25 +1717,6 @@ Shared Key</property>
 	      <property name="bottom_attach">2</property>
 	      <property name="x_options">fill</property>
 	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkEntry" id="leap_username_entry">
-	      <property name="visible">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="editable">True</property>
-	      <property name="visibility">True</property>
-	      <property name="max_length">0</property>
-	      <property name="text" translatable="yes"></property>
-	      <property name="has_frame">True</property>
-	      <property name="activates_default">False</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">0</property>
-	      <property name="bottom_attach">1</property>
 	    </packing>
 	  </child>
 
@@ -1815,38 +1761,31 @@ Shared Key</property>
 	      <property name="y_options"></property>
 	    </packing>
 	  </child>
+
+	  <child>
+	    <widget class="GtkEntry" id="leap_username_entry">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="editable">True</property>
+	      <property name="visibility">True</property>
+	      <property name="max_length">0</property>
+	      <property name="text" translatable="yes"></property>
+	      <property name="has_frame">True</property>
+	      <property name="activates_default">False</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">0</property>
+	      <property name="bottom_attach">1</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="tab_expand">False</property>
 	  <property name="tab_fill">True</property>
 	</packing>
-      </child>
-
-      <child>
-	<widget class="GtkLabel" id="GtkLabel">
-	  <property name="visible">True</property>
-	  <property name="label" translatable="yes"></property>
-	  <property name="use_underline">False</property>
-	  <property name="use_markup">False</property>
-	  <property name="justify">GTK_JUSTIFY_LEFT</property>
-	  <property name="wrap">False</property>
-	  <property name="selectable">False</property>
-	  <property name="xalign">0.5</property>
-	  <property name="yalign">0.5</property>
-	  <property name="xpad">0</property>
-	  <property name="ypad">0</property>
-	  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	  <property name="width_chars">-1</property>
-	  <property name="single_line_mode">False</property>
-	  <property name="angle">0</property>
-	</widget>
-	<packing>
-	  <property name="type">tab</property>
-	</packing>
-      </child>
-
-      <child>
-	<placeholder/>
       </child>
 
       <child>
@@ -1902,7 +1841,6 @@ Shared Key</property>
 
       <child>
 	<widget class="GtkTable" id="wpa_psk_table">
-	  <property name="border_width">8</property>
 	  <property name="visible">True</property>
 	  <property name="n_rows">3</property>
 	  <property name="n_columns">2</property>
@@ -1919,7 +1857,7 @@ Shared Key</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">0.5</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
@@ -1967,7 +1905,7 @@ Shared Key</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">1</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
@@ -1983,23 +1921,6 @@ Shared Key</property>
 	      <property name="bottom_attach">3</property>
 	      <property name="x_options">fill</property>
 	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkComboBox" id="wpa_psk_type_combo">
-	      <property name="visible">True</property>
-	      <property name="items" translatable="yes"></property>
-	      <property name="add_tearoffs">False</property>
-	      <property name="focus_on_click">True</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">2</property>
-	      <property name="bottom_attach">3</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options">fill</property>
 	    </packing>
 	  </child>
 
@@ -2052,38 +1973,27 @@ Shared Key</property>
 	      <property name="y_options"></property>
 	    </packing>
 	  </child>
+
+	  <child>
+	    <widget class="GtkComboBox" id="wpa_psk_type_combo">
+	      <property name="visible">True</property>
+	      <property name="items" translatable="yes"></property>
+	      <property name="add_tearoffs">False</property>
+	      <property name="focus_on_click">True</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">2</property>
+	      <property name="bottom_attach">3</property>
+	      <property name="y_options">fill</property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="tab_expand">False</property>
 	  <property name="tab_fill">True</property>
 	</packing>
-      </child>
-
-      <child>
-	<widget class="GtkLabel" id="GtkLabel">
-	  <property name="visible">True</property>
-	  <property name="label" translatable="yes"></property>
-	  <property name="use_underline">False</property>
-	  <property name="use_markup">False</property>
-	  <property name="justify">GTK_JUSTIFY_LEFT</property>
-	  <property name="wrap">False</property>
-	  <property name="selectable">False</property>
-	  <property name="xalign">0.5</property>
-	  <property name="yalign">0.5</property>
-	  <property name="xpad">0</property>
-	  <property name="ypad">0</property>
-	  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	  <property name="width_chars">-1</property>
-	  <property name="single_line_mode">False</property>
-	  <property name="angle">0</property>
-	</widget>
-	<packing>
-	  <property name="type">tab</property>
-	</packing>
-      </child>
-
-      <child>
-	<placeholder/>
       </child>
 
       <child>
@@ -2139,354 +2049,17 @@ Shared Key</property>
 
       <child>
 	<widget class="GtkTable" id="wpa_eap_table">
-	  <property name="border_width">8</property>
 	  <property name="visible">True</property>
-	  <property name="n_rows">10</property>
+	  <property name="n_rows">2</property>
 	  <property name="n_columns">2</property>
 	  <property name="homogeneous">False</property>
 	  <property name="row_spacing">6</property>
-	  <property name="column_spacing">12</property>
+	  <property name="column_spacing">6</property>
 
 	  <child>
-	    <widget class="GtkLabel" id="wpa-eap-ca-cert-file-label">
+	    <widget class="GtkLabel" id="wpa_eap_auth_label">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">CA Certificate File:</property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">6</property>
-	      <property name="bottom_attach">7</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkLabel" id="wpa-eap-private-key-file-label">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Private Key File:</property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">7</property>
-	      <property name="bottom_attach">8</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkFileChooserButton" id="wpa_eap_ca_cert_file_chooser_button">
-	      <property name="visible">True</property>
-	      <property name="title" translatable="yes">Select the CA Certificate File</property>
-	      <property name="action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
-	      <property name="local_only">True</property>
-	      <property name="show_hidden">False</property>
-	      <property name="do_overwrite_confirmation">False</property>
-	      <property name="width_chars">-1</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">6</property>
-	      <property name="bottom_attach">7</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options">fill</property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkFileChooserButton" id="wpa_eap_private_key_file_chooser_button">
-	      <property name="visible">True</property>
-	      <property name="title" translatable="yes">Select the Private Key File</property>
-	      <property name="action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
-	      <property name="local_only">True</property>
-	      <property name="show_hidden">False</property>
-	      <property name="do_overwrite_confirmation">False</property>
-	      <property name="width_chars">-1</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">7</property>
-	      <property name="bottom_attach">8</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options">fill</property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkLabel" id="wpa-eap-private-key-passwd-label">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Private Key Password:</property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">8</property>
-	      <property name="bottom_attach">9</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkEntry" id="wpa_eap_private_key_passwd_entry">
-	      <property name="visible">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="editable">True</property>
-	      <property name="visibility">False</property>
-	      <property name="max_length">0</property>
-	      <property name="text" translatable="yes"></property>
-	      <property name="has_frame">True</property>
-	      <property name="activates_default">False</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">8</property>
-	      <property name="bottom_attach">9</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkLabel" id="wpa-eap-client-cert-file-label">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Client Certificate File:</property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">5</property>
-	      <property name="bottom_attach">6</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkFileChooserButton" id="wpa_eap_client_cert_file_chooser_button">
-	      <property name="visible">True</property>
-	      <property name="title" translatable="yes">Select the Client Certificate File</property>
-	      <property name="action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
-	      <property name="local_only">True</property>
-	      <property name="show_hidden">False</property>
-	      <property name="do_overwrite_confirmation">False</property>
-	      <property name="width_chars">-1</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">5</property>
-	      <property name="bottom_attach">6</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options">fill</property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkLabel" id="wpa-eap-identity-label">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Identity:</property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">2</property>
-	      <property name="bottom_attach">3</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkLabel" id="wpa-eap-password-label">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Password:</property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">3</property>
-	      <property name="bottom_attach">4</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkLabel" id="wpa-eap-anon-identity-label">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Anonymous Identity:</property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">4</property>
-	      <property name="bottom_attach">5</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkEntry" id="wpa_eap_identity_entry">
-	      <property name="visible">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="editable">True</property>
-	      <property name="visibility">True</property>
-	      <property name="max_length">0</property>
-	      <property name="text" translatable="yes"></property>
-	      <property name="has_frame">True</property>
-	      <property name="activates_default">False</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">2</property>
-	      <property name="bottom_attach">3</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkEntry" id="wpa_eap_passwd_entry">
-	      <property name="visible">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="editable">True</property>
-	      <property name="visibility">False</property>
-	      <property name="max_length">0</property>
-	      <property name="text" translatable="yes"></property>
-	      <property name="has_frame">True</property>
-	      <property name="activates_default">False</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">3</property>
-	      <property name="bottom_attach">4</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkEntry" id="wpa_eap_anon_identity_entry">
-	      <property name="visible">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="editable">True</property>
-	      <property name="visibility">True</property>
-	      <property name="max_length">0</property>
-	      <property name="text" translatable="yes"></property>
-	      <property name="has_frame">True</property>
-	      <property name="activates_default">False</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">4</property>
-	      <property name="bottom_attach">5</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkLabel" id="wpa-eap-method-label">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">EAP Method:</property>
+	      <property name="label" translatable="yes">Authentication:</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2512,112 +2085,37 @@ Shared Key</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkComboBox" id="wpa_eap_eap_method_combo">
+	    <widget class="GtkComboBox" id="wpa_eap_auth_combo">
 	      <property name="visible">True</property>
 	      <property name="add_tearoffs">False</property>
 	      <property name="focus_on_click">True</property>
+		  <property name="items" translatable="yes"></property>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">1</property>
 	      <property name="right_attach">2</property>
 	      <property name="top_attach">0</property>
 	      <property name="bottom_attach">1</property>
-	      <property name="x_options">fill</property>
 	      <property name="y_options">fill</property>
 	    </packing>
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label33">
+	    <widget class="GtkVBox" id="wpa_eap_method_vbox">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes"></property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">0</property>
+
+	      <child>
+		<placeholder/>
+	      </child>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">9</property>
-	      <property name="bottom_attach">10</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkCheckButton" id="show_checkbutton">
-	      <property name="visible">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Show passwords</property>
-	      <property name="use_underline">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <property name="active">False</property>
-	      <property name="inconsistent">False</property>
-	      <property name="draw_indicator">True</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">9</property>
-	      <property name="bottom_attach">10</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkLabel" id="wpa-key-type-label">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Key Type:</property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	      <property name="width_chars">-1</property>
-	      <property name="single_line_mode">False</property>
-	      <property name="angle">0</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">1</property>
-	      <property name="bottom_attach">2</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkComboBox" id="wpa_eap_key_type_combo">
-	      <property name="visible">True</property>
-	      <property name="add_tearoffs">False</property>
-	      <property name="focus_on_click">True</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
 	      <property name="right_attach">2</property>
 	      <property name="top_attach">1</property>
 	      <property name="bottom_attach">2</property>
 	      <property name="x_options">fill</property>
-	      <property name="y_options">fill</property>
 	    </packing>
 	  </child>
 	</widget>
@@ -2625,33 +2123,6 @@ Shared Key</property>
 	  <property name="tab_expand">False</property>
 	  <property name="tab_fill">True</property>
 	</packing>
-      </child>
-
-      <child>
-	<widget class="GtkLabel" id="GtkLabel">
-	  <property name="visible">True</property>
-	  <property name="label" translatable="yes"></property>
-	  <property name="use_underline">False</property>
-	  <property name="use_markup">False</property>
-	  <property name="justify">GTK_JUSTIFY_LEFT</property>
-	  <property name="wrap">False</property>
-	  <property name="selectable">False</property>
-	  <property name="xalign">0.5</property>
-	  <property name="yalign">0.5</property>
-	  <property name="xpad">0</property>
-	  <property name="ypad">0</property>
-	  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	  <property name="width_chars">-1</property>
-	  <property name="single_line_mode">False</property>
-	  <property name="angle">0</property>
-	</widget>
-	<packing>
-	  <property name="type">tab</property>
-	</packing>
-      </child>
-
-      <child>
-	<placeholder/>
       </child>
 
       <child>
@@ -2707,7 +2178,6 @@ Shared Key</property>
 
       <child>
 	<widget class="GtkTable" id="table7">
-	  <property name="border_width">8</property>
 	  <property name="visible">True</property>
 	  <property name="n_rows">3</property>
 	  <property name="n_columns">2</property>
@@ -2724,7 +2194,7 @@ Shared Key</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">1</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
@@ -2772,7 +2242,7 @@ Shared Key</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
-	      <property name="xalign">1</property>
+	      <property name="xalign">0</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
 	      <property name="ypad">0</property>
@@ -2788,24 +2258,6 @@ Shared Key</property>
 	      <property name="bottom_attach">3</property>
 	      <property name="x_options">fill</property>
 	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkComboBox" id="auth_method_combo">
-	      <property name="visible">True</property>
-	      <property name="items" translatable="yes">Open System
-Shared Key</property>
-	      <property name="add_tearoffs">False</property>
-	      <property name="focus_on_click">True</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">1</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">2</property>
-	      <property name="bottom_attach">3</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options">fill</property>
 	    </packing>
 	  </child>
 
@@ -2858,6 +2310,23 @@ Shared Key</property>
 	      <property name="y_options"></property>
 	    </packing>
 	  </child>
+
+	  <child>
+	    <widget class="GtkComboBox" id="auth_method_combo">
+	      <property name="visible">True</property>
+	      <property name="items" translatable="yes">Open System
+Shared Key</property>
+	      <property name="add_tearoffs">False</property>
+	      <property name="focus_on_click">True</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">2</property>
+	      <property name="bottom_attach">3</property>
+	      <property name="y_options">fill</property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="tab_expand">False</property>
@@ -2887,13 +2356,313 @@ Shared Key</property>
 	  <property name="type">tab</property>
 	</packing>
       </child>
+    </widget>
+  </child>
+</widget>
+
+<widget class="GtkWindow" id="eap_tls_widget">
+  <property name="visible">True</property>
+  <property name="title">eap_tls_widget</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
+
+  <child>
+    <widget class="GtkNotebook" id="eap_tls_notebook">
+      <property name="visible">True</property>
+      <property name="show_tabs">False</property>
+      <property name="show_border">False</property>
+      <property name="tab_pos">GTK_POS_TOP</property>
+      <property name="scrollable">False</property>
+      <property name="enable_popup">False</property>
 
       <child>
-	<placeholder/>
+	<widget class="GtkTable" id="table8">
+	  <property name="visible">True</property>
+	  <property name="n_rows">6</property>
+	  <property name="n_columns">2</property>
+	  <property name="homogeneous">False</property>
+	  <property name="row_spacing">6</property>
+	  <property name="column_spacing">6</property>
+
+	  <child>
+	    <widget class="GtkLabel" id="eap_tls_identity_label">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Identity:</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">0</property>
+	      <property name="right_attach">1</property>
+	      <property name="top_attach">0</property>
+	      <property name="bottom_attach">1</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkEntry" id="eap_tls_identity_entry">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="editable">True</property>
+	      <property name="visibility">True</property>
+	      <property name="max_length">0</property>
+	      <property name="text" translatable="yes"></property>
+	      <property name="has_frame">True</property>
+	      <property name="activates_default">False</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">0</property>
+	      <property name="bottom_attach">1</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkFileChooserButton" id="eap_tls_user_cert_button">
+	      <property name="visible">True</property>
+	      <property name="title" translatable="yes">Select A File</property>
+	      <property name="action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
+	      <property name="local_only">True</property>
+	      <property name="show_hidden">False</property>
+	      <property name="do_overwrite_confirmation">False</property>
+	      <property name="width_chars">-1</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">1</property>
+	      <property name="bottom_attach">2</property>
+	      <property name="x_options">fill</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkLabel" id="eap_tls_user_cert_label">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">User Certificate:</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">0</property>
+	      <property name="right_attach">1</property>
+	      <property name="top_attach">1</property>
+	      <property name="bottom_attach">2</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkLabel" id="eap_tls_ca_cert_label">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">CA Certificate:</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">0</property>
+	      <property name="right_attach">1</property>
+	      <property name="top_attach">2</property>
+	      <property name="bottom_attach">3</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkFileChooserButton" id="eap_tls_ca_cert_button">
+	      <property name="visible">True</property>
+	      <property name="title" translatable="yes">Select A File</property>
+	      <property name="action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
+	      <property name="local_only">True</property>
+	      <property name="show_hidden">False</property>
+	      <property name="do_overwrite_confirmation">False</property>
+	      <property name="width_chars">-1</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">2</property>
+	      <property name="bottom_attach">3</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options">fill</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkLabel" id="eap_tls_private_key_label">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Private Key:</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">0</property>
+	      <property name="right_attach">1</property>
+	      <property name="top_attach">3</property>
+	      <property name="bottom_attach">4</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkFileChooserButton" id="eap_tls_private_key_button">
+	      <property name="visible">True</property>
+	      <property name="title" translatable="yes">Select A File</property>
+	      <property name="action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
+	      <property name="local_only">True</property>
+	      <property name="show_hidden">False</property>
+	      <property name="do_overwrite_confirmation">False</property>
+	      <property name="width_chars">-1</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">3</property>
+	      <property name="bottom_attach">4</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options">fill</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkLabel" id="eap_tls_private_key_password_label">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Private Key Password:</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">0</property>
+	      <property name="right_attach">1</property>
+	      <property name="top_attach">4</property>
+	      <property name="bottom_attach">5</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkEntry" id="eap_tls_private_key_password_entry">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="editable">True</property>
+	      <property name="visibility">True</property>
+	      <property name="max_length">0</property>
+	      <property name="text" translatable="yes"></property>
+	      <property name="has_frame">True</property>
+	      <property name="activates_default">False</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">4</property>
+	      <property name="bottom_attach">5</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkCheckButton" id="show_checkbutton">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label" translatable="yes">Show password</property>
+	      <property name="use_underline">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="active">False</property>
+	      <property name="inconsistent">False</property>
+	      <property name="draw_indicator">True</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">1</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">5</property>
+	      <property name="bottom_attach">6</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="tab_expand">False</property>
+	  <property name="tab_fill">True</property>
+	</packing>
       </child>
 
       <child>
-	<widget class="GtkLabel" id="label27">
+	<widget class="GtkLabel" id="label34">
 	  <property name="visible">True</property>
 	  <property name="label" translatable="yes"></property>
 	  <property name="use_underline">False</property>
