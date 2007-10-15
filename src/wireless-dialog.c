@@ -287,12 +287,13 @@ destroy_security_model (GtkTreeModel *model)
 
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
 		do {
-			WirelessSecurity *sec;
+			WirelessSecurity *sec = NULL;
 
 			gtk_tree_model_get (model, &iter,
-			                    D_DEV_COLUMN, &sec,
+			                    S_SEC_COLUMN, &sec,
 			                    -1);
-			wireless_security_destroy (sec);
+			if (sec)
+				wireless_security_destroy (sec);
 		} while (gtk_tree_model_iter_next (model, &iter));
 	}
 	g_object_unref (model);
