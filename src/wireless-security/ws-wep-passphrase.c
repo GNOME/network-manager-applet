@@ -128,7 +128,7 @@ ws_wep_passphrase_new (const char *glade_file)
 	GtkWidget *widget;
 	GladeXML *xml;
 
-	g_return_val_if_fail (xml != NULL, NULL);
+	g_return_val_if_fail (glade_file != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "wep_passphrase_notebook", NULL);
 	if (xml == NULL) {
