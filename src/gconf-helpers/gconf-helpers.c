@@ -527,8 +527,10 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 }
 
 typedef struct ReadFromGConfInfo {
+	NMConnection *connection;
 	GConfClient *client;
 	const char *dir;
+	guint32 dir_len;
 } ReadFromGConfInfo;
 
 static void
@@ -603,83 +605,56 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	}
 }
 
+static void
+read_one_setting (gpointer data, gpointer user_data)
+{
+	char *name;
+	ReadFromGConfInfo *info = (ReadFromGConfInfo *) user_data;
+	NMSetting *setting;
+
+	/* Setting name is the gconf directory name. Since "data" here contains
+	   full gconf path plus separator ('/'), omit that. */
+	name =  (char *) data + info->dir_len + 1;
+	setting = nm_connection_create_setting (name);
+	if (setting) {
+		nm_setting_enumerate_values (setting,
+							    read_one_setting_value_from_gconf,
+							    info);
+		nm_connection_add_setting (info->connection, setting);
+	}
+
+	g_free (data);
+}
+
 NMConnection *
 nm_gconf_read_connection (GConfClient *client,
                           const char *dir)
 {
 	ReadFromGConfInfo info;
-	NMConnection *connection;
-	NMSetting *setting;
-	char *key;
+	GSList *list;
+	GError *err = NULL;
 
+	list = gconf_client_all_dirs (client, dir, &err);
+	if (err) {
+		g_warning ("Error while reading connection: %s", err->message);
+		g_error_free (err);
+		return NULL;
+	}
+
+	if (!list) {
+		g_warning ("Invalid connection (empty)");
+		return NULL;
+	}
+
+	info.connection = nm_connection_new ();
 	info.client = client;
 	info.dir = dir;
+	info.dir_len = strlen (dir);
 
-	/* connection settings */
-	connection = nm_connection_new ();
+	g_slist_foreach (list, read_one_setting, &info);
+	g_slist_free (list);
 
-	setting = nm_setting_connection_new ();
-	nm_setting_enumerate_values (setting,
-	                             read_one_setting_value_from_gconf,
-	                             &info);
-	nm_connection_add_setting (connection, setting);
-
-	/* wireless settings */
-	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_WIRELESS);
-	if (gconf_client_dir_exists (client, key, NULL)) {
-		setting = nm_setting_wireless_new ();
-		nm_setting_enumerate_values (setting,
-		                             read_one_setting_value_from_gconf,
-		                             &info);
-		nm_connection_add_setting (connection, setting);
-	}
-	g_free (key);
-
-	/* wireless security settings */
-	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_WIRELESS_SECURITY);
-	if (gconf_client_dir_exists (client, key, NULL)) {
-		setting = nm_setting_wireless_security_new ();
-		nm_setting_enumerate_values (setting,
-		                             read_one_setting_value_from_gconf,
-		                             &info);
-		nm_connection_add_setting (connection, setting);
-	}
-	g_free (key);
-
-	/* wired settings */
-	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_WIRED);
-	if (gconf_client_dir_exists (client, key, NULL)) {
-		setting = nm_setting_wired_new ();
-		nm_setting_enumerate_values (setting,
-		                             read_one_setting_value_from_gconf,
-		                             &info);
-		nm_connection_add_setting (connection, setting);
-	}
-	g_free (key);
-
-	/* VPN settings */
-	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_VPN);
-	if (gconf_client_dir_exists (client, key, NULL)) {
-		setting = nm_setting_vpn_new ();
-		nm_setting_enumerate_values (setting,
-		                             read_one_setting_value_from_gconf,
-		                             &info);
-		nm_connection_add_setting (connection, setting);
-	}
-	g_free (key);
-
-	/* VPN properties settings */
-	key = g_strdup_printf ("%s/%s", dir, NM_SETTING_VPN_PROPERTIES);
-	if (gconf_client_dir_exists (client, key, NULL)) {
-		setting = nm_setting_vpn_properties_new ();
-		nm_setting_enumerate_values (setting,
-		                             read_one_setting_value_from_gconf,
-		                             &info);
-		nm_connection_add_setting (connection, setting);
-	}
-	g_free (key);
-
-	return connection;
+	return info.connection;
 }
 
 
