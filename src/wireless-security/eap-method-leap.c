@@ -27,6 +27,19 @@
 #include "wireless-security.h"
 
 static void
+show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
+{
+	GtkWidget *widget;
+	gboolean visible;
+
+	widget = glade_xml_get_widget (method->xml, "eap_leap_password_entry");
+	g_assert (widget);
+
+	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
+}
+
+static void
 destroy (EAPMethod *parent)
 {
 	EAPMethodLEAP *method = (EAPMethodLEAP *) parent;
@@ -144,6 +157,12 @@ eap_method_leap_new (const char *glade_file, WirelessSecurity *parent)
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
+
+	widget = glade_xml_get_widget (xml, "show_checkbutton");
+	g_assert (widget);
+	g_signal_connect (G_OBJECT (widget), "toggled",
+	                  (GCallback) show_toggled_cb,
+	                  method);
 
 	return method;
 }
