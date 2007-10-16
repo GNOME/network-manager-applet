@@ -679,7 +679,7 @@ get_security_for_ap (NMAccessPoint *ap, gboolean *supported)
 	/* WPA2 PSK first */
 	if (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK) {
 		sec->key_mgmt = g_strdup ("wpa-psk");
-		sec->proto = g_slist_append (NULL, g_strdup ("rsn"));
+		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
 		sec->pairwise = add_ciphers_from_flags (rsn_flags, FALSE);
 		sec->group = add_ciphers_from_flags (rsn_flags, TRUE);
 		return sec;
@@ -688,7 +688,7 @@ get_security_for_ap (NMAccessPoint *ap, gboolean *supported)
 	/* WPA PSK */
 	if (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK) {
 		sec->key_mgmt = g_strdup ("wpa-psk");
-		sec->proto = g_slist_append (NULL, g_strdup ("wpa"));
+		sec->proto = g_slist_append (sec->proto, g_strdup ("wpa"));
 		sec->pairwise = add_ciphers_from_flags (wpa_flags, FALSE);
 		sec->group = add_ciphers_from_flags (wpa_flags, TRUE);
 		return sec;
