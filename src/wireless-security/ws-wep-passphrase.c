@@ -25,6 +25,7 @@
 
 #include "wireless-security.h"
 #include "utils.h"
+#include "gnome-keyring-md5.h"
 
 
 static void
@@ -52,10 +53,8 @@ destroy (WirelessSecurity *parent)
 static gboolean
 validate (WirelessSecurity *parent, const GByteArray *ssid)
 {
-	WirelessSecurityWEPPassphrase *sec = (WirelessSecurityWEPPassphrase *) parent;
 	GtkWidget *entry;
 	const char *key;
-	int i;
 
 	entry = glade_xml_get_widget (parent->xml, "wep_passphrase_entry");
 	g_assert (entry);
@@ -67,7 +66,6 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 static void
 add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 {
-	WirelessSecurityWEPPassphrase *sec = (WirelessSecurityWEPPassphrase *) parent;
 	GtkWidget *widget;
 
 	widget = glade_xml_get_widget (parent->xml, "auth_method_label");
@@ -104,7 +102,6 @@ wep128_passphrase_hash (const char *input)
 static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
-	WirelessSecurityWEPPassphrase *sec = (WirelessSecurityWEPPassphrase *) parent;
 	GtkWidget *widget;
 	gint auth_alg;
 	const char *key;

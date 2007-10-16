@@ -51,7 +51,6 @@ destroy (WirelessSecurity *parent)
 static gboolean
 validate (WirelessSecurity *parent, const GByteArray *ssid)
 {
-	WirelessSecurityLEAP *sec = (WirelessSecurityLEAP *) parent;
 	GtkWidget *entry;
 	const char *text;
 
@@ -66,12 +65,13 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 	if (!text || !strlen (text))
 		return FALSE;
+
+	return TRUE;
 }
 
 static void
 add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 {
-	WirelessSecurityLEAP *sec = (WirelessSecurityLEAP *) parent;
 	GtkWidget *widget;
 
 	widget = glade_xml_get_widget (parent->xml, "leap_username_label");
@@ -84,7 +84,6 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
-	WirelessSecurityLEAP *sec = (WirelessSecurityLEAP *) parent;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GtkWidget *widget;

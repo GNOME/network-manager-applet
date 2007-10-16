@@ -100,8 +100,8 @@ eap_method_init (EAPMethod *method,
 EAPMethod *
 eap_method_ref (EAPMethod *method)
 {
-	g_return_if_fail (method != NULL);
-	g_return_if_fail (method->refcount > 0);
+	g_return_val_if_fail (method != NULL, NULL);
+	g_return_val_if_fail (method->refcount > 0, NULL);
 
 	method->refcount++;
 	return method;

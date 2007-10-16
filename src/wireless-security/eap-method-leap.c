@@ -51,7 +51,6 @@ destroy (EAPMethod *parent)
 static gboolean
 validate (EAPMethod *parent)
 {
-	EAPMethodLEAP *method = (EAPMethodLEAP *) parent;
 	GtkWidget *widget;
 	const char *text;
 
@@ -73,7 +72,6 @@ validate (EAPMethod *parent)
 static void
 add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 {
-	EAPMethodLEAP *method = (EAPMethodLEAP *) parent;
 	GtkWidget *widget;
 
 	widget = glade_xml_get_widget (parent->xml, "eap_leap_username_label");
@@ -88,12 +86,8 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
-	EAPMethodLEAP *method = (EAPMethodLEAP *) parent;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GtkWidget *widget;
-	const char *text;
-	char *filename;
-	char *data;
 
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
 	g_assert (s_wireless_sec);
@@ -121,7 +115,7 @@ eap_method_leap_new (const char *glade_file, WirelessSecurity *parent)
 	GtkWidget *widget;
 	GladeXML *xml;
 
-	g_return_val_if_fail (xml != NULL, NULL);
+	g_return_val_if_fail (glade_file != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "eap_leap_notebook", NULL);
 	if (xml == NULL) {

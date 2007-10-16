@@ -54,7 +54,6 @@ destroy (WirelessSecurity *parent)
 static gboolean
 validate (WirelessSecurity *parent, const GByteArray *ssid)
 {
-	WirelessSecurityWPAPSK *sec = (WirelessSecurityWPAPSK *) parent;
 	GtkWidget *entry;
 	const char *key;
 	guint32 len;
@@ -84,7 +83,6 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 static void
 add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 {
-	WirelessSecurityWPAPSK *sec = (WirelessSecurityWPAPSK *) parent;
 	GtkWidget *widget;
 
 	widget = glade_xml_get_widget (parent->xml, "wpa_psk_type_label");
@@ -97,14 +95,12 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
-	WirelessSecurityWPAPSK *sec = (WirelessSecurityWPAPSK *) parent;
 	GtkWidget *widget;
 	const char *key;
 	char *hashed = NULL;
 	guint32 len;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
-	char *proto;
 
 	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
 	g_assert (s_wireless);

@@ -34,6 +34,7 @@
 #include <nm-utils.h>
 #include <nm-device-802-11-wireless.h>
 
+#include "applet.h"
 #include "wireless-dialog.h"
 #include "wireless-security.h"
 
@@ -152,7 +153,7 @@ validate_dialog_ssid (GtkWidget *dialog)
 
 	ssid_len = strlen (ssid);
 	ssid_ba = g_byte_array_sized_new (ssid_len);
-	g_byte_array_append (ssid_ba, ssid, ssid_len);
+	g_byte_array_append (ssid_ba, (unsigned char *) ssid, ssid_len);
 	return ssid_ba;
 }
 
@@ -526,13 +527,13 @@ nma_wireless_dialog_new (const char *glade_file,
 	xml = glade_xml_new (glade_file, "wireless_dialog", NULL);
 	if (xml == NULL) {
 		nma_schedule_warning_dialog (_("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
-		return;
+		return NULL;
 	}
 
 	dialog = dialog_init (xml, nm_client, glade_file);
 	if (!dialog) {
 		nm_warning ("Couldn't create wireless security dialog.");
-		return;
+		return NULL;
 	}
 
 	return dialog;

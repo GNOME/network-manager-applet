@@ -85,7 +85,6 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 static void
 add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 {
-	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
 	GtkWidget *widget;
 
 	widget = glade_xml_get_widget (parent->xml, "auth_method_label");

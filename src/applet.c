@@ -1250,7 +1250,6 @@ other_wireless_response_cb (GtkDialog *dialog,
                             gint response,
                             gpointer user_data)
 {
-	NMApplet *applet = NM_APPLET (user_data);
 	NMConnection *connection;
 	NMDevice *device = NULL;
 	NMSettingConnection *s_con;

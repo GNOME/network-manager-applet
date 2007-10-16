@@ -44,7 +44,6 @@ destroy (WirelessSecurity *parent)
 static gboolean
 validate (WirelessSecurity *parent, const GByteArray *ssid)
 {
-	WirelessSecurityWPAEAP *sec = (WirelessSecurityWPAEAP *) parent;
 	GtkWidget *widget;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -94,7 +93,6 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
-	WirelessSecurityWPAEAP *sec = (WirelessSecurityWPAEAP *) parent;
 	GtkWidget *widget;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;

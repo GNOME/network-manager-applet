@@ -55,7 +55,6 @@ validate_filepicker (GladeXML *xml, const char *name)
 static gboolean
 validate (EAPMethod *parent)
 {
-	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 	GtkWidget *widget;
 	const char *text;
 
@@ -87,7 +86,6 @@ validate (EAPMethod *parent)
 static void
 add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 {
-	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 	GtkWidget *widget;
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_identity_label");
@@ -125,7 +123,7 @@ file_to_g_byte_array (const char *filename)
 	if (!array)
 		return NULL;
 
-	g_byte_array_append (array, contents, length);
+	g_byte_array_append (array, (unsigned char *) contents, length);
 	if (array->len != length) {
 		g_byte_array_free (array, TRUE);
 		array = NULL;
@@ -137,12 +135,9 @@ file_to_g_byte_array (const char *filename)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
-	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GtkWidget *widget;
-	const char *text;
 	char *filename;
-	char *data;
 
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
 	g_assert (s_wireless_sec);
@@ -198,7 +193,7 @@ eap_method_tls_new (const char *glade_file, WirelessSecurity *parent)
 	GtkWidget *widget;
 	GladeXML *xml;
 
-	g_return_val_if_fail (xml != NULL, NULL);
+	g_return_val_if_fail (glade_file != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "eap_tls_notebook", NULL);
 	if (xml == NULL) {

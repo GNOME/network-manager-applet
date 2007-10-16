@@ -100,8 +100,8 @@ wireless_security_fill_connection (WirelessSecurity *sec,
 WirelessSecurity *
 wireless_security_ref (WirelessSecurity *sec)
 {
-	g_return_if_fail (sec != NULL);
-	g_return_if_fail (sec->refcount > 0);
+	g_return_val_if_fail (sec != NULL, NULL);
+	g_return_val_if_fail (sec->refcount > 0, NULL);
 
 	sec->refcount++;
 	return sec;
