@@ -37,6 +37,7 @@ typedef void     (*EMDestroyFunc)        (EAPMethod *method);
 typedef gboolean (*EMValidateFunc)       (EAPMethod *method);
 
 struct _EAPMethod {
+	guint32 refcount;
 	GladeXML *xml;
 	GtkWidget *ui_widget;
 
@@ -57,11 +58,24 @@ void eap_method_add_to_size_group (EAPMethod *method, GtkSizeGroup *group);
 
 void eap_method_fill_connection (EAPMethod *method, NMConnection *connection);
 
-void eap_method_destroy (EAPMethod *method);
+EAPMethod *eap_method_ref (EAPMethod *method);
+
+void eap_method_unref (EAPMethod *method);
+
+GType eap_method_get_g_type (void);
 
 /* Below for internal use only */
 
 #include "eap-method-tls.h"
+#include "eap-method-leap.h"
+
+void eap_method_init (EAPMethod *method,
+                      EMValidateFunc validate,
+                      EMAddToSizeGroupFunc add_to_size_group,
+                      EMFillConnectionFunc fill_connection,
+                      EMDestroyFunc destroy,
+                      GladeXML *xml,
+                      GtkWidget *ui_widget);
 
 #endif /* EAP_METHOD_H */
 

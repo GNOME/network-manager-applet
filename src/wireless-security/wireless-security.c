@@ -25,6 +25,20 @@
 
 #include "wireless-security.h"
 
+GType
+wireless_security_get_g_type (void)
+{
+	static GType type_id = 0;
+
+	if (!type_id) {
+		type_id = g_boxed_type_register_static ("WirelessSecurity",
+		                                        (GBoxedCopyFunc) wireless_security_ref,
+		                                        (GBoxedFreeFunc) wireless_security_unref);
+	}
+
+	return type_id;
+}
+
 GtkWidget *
 wireless_security_get_widget (WirelessSecurity *sec)
 {
@@ -83,13 +97,27 @@ wireless_security_fill_connection (WirelessSecurity *sec,
 	return (*(sec->fill_connection)) (sec, connection);
 }
 
-void
-wireless_security_destroy (WirelessSecurity *sec)
+WirelessSecurity *
+wireless_security_ref (WirelessSecurity *sec)
 {
 	g_return_if_fail (sec != NULL);
+	g_return_if_fail (sec->refcount > 0);
+
+	sec->refcount++;
+	return sec;
+}
+
+void
+wireless_security_unref (WirelessSecurity *sec)
+{
+	g_return_if_fail (sec != NULL);
+	g_return_if_fail (sec->refcount > 0);
 
 	g_assert (sec->destroy);
-	(*(sec->destroy)) (sec);
+
+	sec->refcount--;
+	if (sec->refcount == 0)
+		(*(sec->destroy)) (sec);
 }
 
 void
@@ -126,6 +154,26 @@ ws_wep_fill_connection (NMConnection *connection,
 			g_assert_not_reached ();
 			break;
 	}
+}
+
+void
+wireless_security_init (WirelessSecurity *sec,
+                        WSValidateFunc validate,
+                        WSAddToSizeGroupFunc add_to_size_group,
+                        WSFillConnectionFunc fill_connection,
+                        WSDestroyFunc destroy,
+                        GladeXML *xml,
+                        GtkWidget *ui_widget)
+{
+	sec->refcount = 1;
+
+	sec->validate = validate;
+	sec->add_to_size_group = add_to_size_group;
+	sec->fill_connection = fill_connection;
+	sec->destroy = destroy;
+
+	sec->xml = xml;
+	sec->ui_widget = ui_widget;
 }
 
 void

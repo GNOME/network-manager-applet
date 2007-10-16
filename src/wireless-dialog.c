@@ -116,9 +116,8 @@ security_combo_changed (GtkWidget *combo,
 		gtk_container_remove (GTK_CONTAINER (vbox), GTK_WIDGET (elt->data));
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter))
-		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
-
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
 	if (sec) {
 		GtkWidget *sec_widget;
 
@@ -128,8 +127,8 @@ security_combo_changed (GtkWidget *combo,
 		size_group_add_permanent (group, xml);
 		wireless_security_add_to_size_group (sec, group);
 
-		gtk_container_add (GTK_CONTAINER (vbox),
-		                   sec_widget);
+		gtk_container_add (GTK_CONTAINER (vbox), sec_widget);
+		wireless_security_unref (sec);
 	}
 }
 
@@ -192,6 +191,7 @@ ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 	GtkWidget *widget;
 
 	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
+	g_assert (xml);
 
 	ssid = validate_dialog_ssid (dialog);
 	if (!ssid)
@@ -202,10 +202,12 @@ ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter))
 		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
 
-	if (sec)
+	if (sec) {
 		valid = wireless_security_validate (sec, ssid);
-	else
+		wireless_security_unref (sec);
+	} else {
 		valid = TRUE;
+	}
 
 out:
 	widget = glade_xml_get_widget (xml, "ok_button");
@@ -222,7 +224,7 @@ create_device_model (NMClient *client, guint32 *num)
 	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (num != NULL, NULL);
 
-	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_POINTER);
+	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_OBJECT);
 	*num = 0;
 
 	devices = nm_client_get_devices (client);
@@ -245,13 +247,12 @@ create_device_model (NMClient *client, guint32 *num)
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
 		                    D_NAME_COLUMN, name,
-		                    D_DEV_COLUMN, g_object_ref (dev),
+		                    D_DEV_COLUMN, dev,
 		                    -1);
 		*num += 1;
 	}
 	g_slist_free (devices);
 
-	g_object_ref (G_OBJECT (model));
 	return GTK_TREE_MODEL (model);
 }
 
@@ -265,35 +266,9 @@ destroy_device_model (GtkTreeModel *model)
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
 		do {
 			char *str;
-			NMDevice *dev;
 
-			gtk_tree_model_get (model, &iter,
-			                    D_NAME_COLUMN, &str,
-			                    D_DEV_COLUMN, &dev,
-			                    -1);
+			gtk_tree_model_get (model, &iter, D_NAME_COLUMN, &str, -1);
 			g_free (str);
-			g_object_unref (dev);
-		} while (gtk_tree_model_iter_next (model, &iter));
-	}
-	g_object_unref (model);
-}
-
-static void
-destroy_security_model (GtkTreeModel *model)
-{
-	GtkTreeIter	iter;
-
-	g_return_if_fail (model != NULL);
-
-	if (gtk_tree_model_get_iter_first (model, &iter)) {
-		do {
-			WirelessSecurity *sec = NULL;
-
-			gtk_tree_model_get (model, &iter,
-			                    S_SEC_COLUMN, &sec,
-			                    -1);
-			if (sec)
-				wireless_security_destroy (sec);
 		} while (gtk_tree_model_iter_next (model, &iter));
 	}
 	g_object_unref (model);
@@ -309,6 +284,7 @@ add_security_item (GtkWidget *dialog,
 	wireless_security_set_changed_notify (sec, stuff_changed_cb, dialog);
 	gtk_list_store_append (model, iter);
 	gtk_list_store_set (model, iter, S_NAME_COLUMN, text, S_SEC_COLUMN, sec, -1);
+	wireless_security_unref (sec);
 }
 
 static gboolean
@@ -330,17 +306,12 @@ security_combo_init (const char *glade_file,
 	g_return_val_if_fail (glade_file != NULL, FALSE);
 	g_return_val_if_fail (device != NULL, FALSE);
 
-	sec_model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_POINTER);
+	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
 
 	gtk_list_store_append (sec_model, &iter);
 	gtk_list_store_set (sec_model, &iter,
 	                    S_NAME_COLUMN, _("None"),
-	                    S_SEC_COLUMN, NULL,
 	                    -1);
-
-	g_object_set_data_full (G_OBJECT (dialog),
-	                        "security-model", sec_model,
-	                        (GDestroyNotify) destroy_security_model);
 
 	ws_wep_passphrase = ws_wep_passphrase_new (glade_file);
 	if (ws_wep_passphrase) {
@@ -380,11 +351,8 @@ security_combo_init (const char *glade_file,
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (sec_model));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+	g_object_unref (G_OBJECT (sec_model));
 	return TRUE;
-
-error:
-	g_object_unref (sec_model);
-	return FALSE;
 }
 
 static GtkWidget *
@@ -472,7 +440,8 @@ dialog_init (GladeXML *xml,
 	if (!security_combo_init (glade_file, widget, dev, dialog)) {
 		g_message ("Couldn't set up wireless security combo box.");
 		gtk_widget_destroy (dialog);
-		return NULL;
+		dialog = NULL;
+		goto out;
 	}
 
 	security_combo_changed (widget, dialog);
@@ -481,6 +450,8 @@ dialog_init (GladeXML *xml,
 	widget = glade_xml_get_widget (xml, "network_name_entry");
 	g_signal_connect (G_OBJECT (widget), "changed", (GCallback) ssid_entry_changed, dialog);
 
+out:
+	g_object_unref (dev);
 	return dialog;
 }
 
@@ -525,17 +496,19 @@ nma_wireless_dialog_get_connection (GtkWidget *dialog, NMDevice **device)
 
 	/* Fill security */
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter))
-		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
-
-	if (sec)
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+	if (sec) {
 		wireless_security_fill_connection (sec, connection);
+		wireless_security_unref (sec);
+	}
 
 	/* Fill device */
 	combo = glade_xml_get_widget (xml, "device_combo");
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter))
-		gtk_tree_model_get (model, &iter, D_DEV_COLUMN, device, -1);
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	gtk_tree_model_get (model, &iter, D_DEV_COLUMN, device, -1);
+	g_object_unref (device);
 
 	return connection;
 }

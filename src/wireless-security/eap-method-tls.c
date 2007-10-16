@@ -215,13 +215,13 @@ eap_method_tls_new (const char *glade_file, WirelessSecurity *parent)
 		return NULL;
 	}
 
-	EAP_METHOD (method)->validate = validate;
-	EAP_METHOD (method)->add_to_size_group = add_to_size_group;
-	EAP_METHOD (method)->fill_connection = fill_connection;
-	EAP_METHOD (method)->destroy = destroy;
-
-	EAP_METHOD (method)->xml = xml;
-	EAP_METHOD (method)->ui_widget = g_object_ref (widget);
+	eap_method_init (EAP_METHOD (method),
+	                 validate,
+	                 add_to_size_group,
+	                 fill_connection,
+	                 destroy,
+	                 xml,
+	                 g_object_ref (widget));
 
 	widget = glade_xml_get_widget (xml, "eap_tls_identity_entry");
 	g_assert (widget);

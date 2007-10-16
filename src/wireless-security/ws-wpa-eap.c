@@ -34,24 +34,6 @@ static void
 destroy (WirelessSecurity *parent)
 {
 	WirelessSecurityWPAEAP *sec = (WirelessSecurityWPAEAP *) parent;
-	GtkWidget *widget;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-
-	widget = glade_xml_get_widget (parent->xml, "wpa_eap_auth_combo");
-	g_assert (widget);
-
-	/* destroy eap methods */
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
-	if (gtk_tree_model_get_iter_first (model, &iter)) {
-		do {
-			EAPMethod *eap;
-
-			gtk_tree_model_get (model, &iter, A_METHOD_COLUMN, &eap, -1);
-			eap_method_destroy (eap);
-		} while (gtk_tree_model_iter_next (model, &iter));
-	}
-	g_object_unref (model);
 
 	g_object_unref (parent->xml);
 	if (sec->size_group)
@@ -67,15 +49,18 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	EAPMethod *eap = NULL;
+	gboolean valid = FALSE;
 
 	widget = glade_xml_get_widget (parent->xml, "wpa_eap_auth_combo");
 	g_assert (widget);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
-	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter))
-		gtk_tree_model_get (model, &iter, A_METHOD_COLUMN, &eap, -1);
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
+	gtk_tree_model_get (model, &iter, A_METHOD_COLUMN, &eap, -1);
 	g_assert (eap);
-	return eap_method_validate (eap);
+	valid = eap_method_validate (eap);
+	eap_method_unref (eap);
+	return valid;
 }
 
 static void
@@ -89,7 +74,7 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 
 	if (sec->size_group)
 		g_object_unref (sec->size_group);
-	sec->size_group = group;
+	sec->size_group = g_object_ref (group);
 
 	widget = glade_xml_get_widget (parent->xml, "wpa_eap_auth_label");
 	g_assert (widget);
@@ -99,10 +84,11 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 	g_assert (widget);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
-	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter))
-		gtk_tree_model_get (model, &iter, A_METHOD_COLUMN, &eap, -1);
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
+	gtk_tree_model_get (model, &iter, A_METHOD_COLUMN, &eap, -1);
 	g_assert (eap);
 	eap_method_add_to_size_group (eap, group);
+	eap_method_unref (eap);
 }
 
 static void
@@ -131,11 +117,12 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	widget = glade_xml_get_widget (parent->xml, "wpa_eap_auth_combo");
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
-	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter))
-		gtk_tree_model_get (model, &iter, A_METHOD_COLUMN, &eap, -1);
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
+	gtk_tree_model_get (model, &iter, A_METHOD_COLUMN, &eap, -1);
 	g_assert (eap);
 
 	eap_method_fill_connection (eap, connection);
+	eap_method_unref (eap);
 }
 
 static void
@@ -159,8 +146,8 @@ auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 		gtk_container_remove (GTK_CONTAINER (vbox), GTK_WIDGET (elt->data));
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter))
-		gtk_tree_model_get (model, &iter, A_METHOD_COLUMN, &eap, -1);
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	gtk_tree_model_get (model, &iter, A_METHOD_COLUMN, &eap, -1);
 	g_assert (eap);
 
 	eap_widget = eap_method_get_widget (eap);
@@ -169,6 +156,8 @@ auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 	if (sec->size_group)
 		eap_method_add_to_size_group (eap, sec->size_group);
 	gtk_container_add (GTK_CONTAINER (vbox), eap_widget);
+
+	eap_method_unref (eap);
 
 	wireless_security_changed_cb (combo, WIRELESS_SECURITY (sec));
 }
@@ -181,8 +170,9 @@ auth_combo_init (WirelessSecurityWPAEAP *sec, const char *glade_file)
 	GtkListStore *auth_model;
 	GtkTreeIter iter;
 	EAPMethodTLS *em_tls;
+	EAPMethodLEAP *em_leap;
 
-	auth_model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_POINTER);
+	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
 	em_tls = eap_method_tls_new (glade_file, WIRELESS_SECURITY (sec));
 	gtk_list_store_append (auth_model, &iter);
@@ -190,11 +180,21 @@ auth_combo_init (WirelessSecurityWPAEAP *sec, const char *glade_file)
 	                    A_NAME_COLUMN, _("TLS"),
 	                    A_METHOD_COLUMN, em_tls,
 	                    -1);
+	eap_method_unref (EAP_METHOD (em_tls));
+
+	em_leap = eap_method_leap_new (glade_file, WIRELESS_SECURITY (sec));
+	gtk_list_store_append (auth_model, &iter);
+	gtk_list_store_set (auth_model, &iter,
+	                    A_NAME_COLUMN, _("LEAP"),
+	                    A_METHOD_COLUMN, em_leap,
+	                    -1);
+	eap_method_unref (EAP_METHOD (em_leap));
 
 	combo = glade_xml_get_widget (xml, "wpa_eap_auth_combo");
 	g_assert (combo);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (auth_model));
+	g_object_unref (G_OBJECT (auth_model));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 
 	g_signal_connect (G_OBJECT (combo), "changed",
@@ -227,13 +227,13 @@ ws_wpa_eap_new (const char *glade_file)
 		return NULL;
 	}
 
-	WIRELESS_SECURITY (sec)->validate = validate;
-	WIRELESS_SECURITY (sec)->add_to_size_group = add_to_size_group;
-	WIRELESS_SECURITY (sec)->fill_connection = fill_connection;
-	WIRELESS_SECURITY (sec)->destroy = destroy;
-
-	WIRELESS_SECURITY (sec)->xml = xml;
-	WIRELESS_SECURITY (sec)->ui_widget = g_object_ref (widget);
+	wireless_security_init (WIRELESS_SECURITY (sec),
+	                        validate,
+	                        add_to_size_group,
+	                        fill_connection,
+	                        destroy,
+	                        xml,
+	                        g_object_ref (widget));
 
 	widget = auth_combo_init (sec, glade_file);
 	auth_combo_changed_cb (widget, (gpointer) sec);

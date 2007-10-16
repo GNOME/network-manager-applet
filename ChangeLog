@@ -1,5 +1,76 @@
 2007-10-16  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.glade
+		- Add EAP-LEAP widget
+
+	* src/wireless-security/wireless-security.h
+	  src/wireless-security/wireless-security.c
+		- (wireless_security_get_g_type): new function; return GType for
+			WirelessSecurity objects
+		- (wireless_security_ref, wireless_security_unref): add refcounting
+			capability to WirelessSecurity objects
+		- (wireless_security_destroy): remove; use refcounting instead
+		- (wireless_security_init): centralize common WirelessSecurity init code
+
+	* src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-leap.c
+	  src/wireless-security/ws-wpa-psk.c
+	  src/wireless-security/ws-wep-passphrase.c
+		- Use common WirelessSecurity init code
+		- Fix xml->glade_file typo in init method of some WirelessSecurity objects
+
+	* src/wireless-security/eap-method.h
+	  src/wireless-security/eap-method.c
+		- (eap_method_get_g_type): new function; return GType for EAPMethod
+			objects
+		- (eap_method_ref, eap_method_unref): add refcounting capability to
+			EAPMethod objects
+		- (eap_method_destroy): remove; use refcounting instead
+		- (eap_method_init): centralize common EAPMethod init code
+
+	* src/wireless-security/ws-wpa-eap.c
+		- Use common WirelessSecurity init code
+		- (destroy): let the Authentication combo hold references to EAPMethods
+			and destroy them when the combo's model gets destroyed
+		- (validate, fill_connection, auth_combo_changed_cb): need to unref the
+			EAPMethod after getting it from the list store
+		- (add_to_size_group): be sure to ref the size group because it gets
+			kept around; need to unref the EAPMethod after getting it from the
+			list store
+		- (auth_combo_init): add EAP-LEAP to the available authentication
+			methods; unref the EAPMethod after the list store takes it; unref
+			the Authentication list store after the combo box takes it
+		- (ws_wpa_eap_new): Use common WirelessSecurity init code
+
+	* src/wireless-security/eap-method-tls.c
+		- (eap_method_tls_new): Use common EAPMethod init code
+
+	* src/wireless-security/Makefile.am
+	  src/wireless-security/eap-method-leap.h
+	  src/wireless-security/eap-method-leap.c
+		- Add EAP-LEAP method
+
+	* src/wireless-dialog.c
+		- (security_combo_changed, ssid_entry_changed): need to unref the
+			WirelessSecurity object after getting it from the list store
+		- (create_device_model): change device column in list store to a
+			G_TYPE_OBJECT so that the list store will refcount the devices
+		- (destroy_device_model): don't need to free devices because the list
+			refcounts them
+		- (destroy_security_model): remove; WirelessSecurity objects are
+			refcounted now
+		- (add_security_item): drop the initial reference on the security
+			object because the list store is now handling references
+		- (security_combo_init): change the WirelessSecurity column object
+			to be a boxed type so that refcounting can work; don't need to
+			have a destroy handler for the list store anymore; unref the
+			security list store because it's handled by dialog destruction
+		- (dialog_init): unref the device after getting it from the list store
+		- (nma_wireless_dialog_get_connection): unref the WirelessSecurity
+			object after getting it from the list store
+
+2007-10-16  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (get_security_for_ap): ->proto is now a GSList
 

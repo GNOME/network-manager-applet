@@ -18,7 +18,9 @@ libwireless_security_la_SOURCES = \
 	eap-method.h \
 	eap-method.c \
 	eap-method-tls.h \
-	eap-method-tls.c
+	eap-method-tls.c \
+	eap-method-leap.h \
+	eap-method-leap.c
 
 libwireless_security_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \

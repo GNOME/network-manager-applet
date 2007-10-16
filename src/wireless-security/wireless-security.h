@@ -39,6 +39,7 @@ typedef void (*WSDestroyFunc) (WirelessSecurity *sec);
 typedef gboolean (*WSValidateFunc) (WirelessSecurity *sec, const GByteArray *ssid);
 
 struct _WirelessSecurity {
+	guint32 refcount;
 	GladeXML *xml;
 	GtkWidget *ui_widget;
 	WSChangedFunc changed_notify;
@@ -67,7 +68,11 @@ void wireless_security_add_to_size_group (WirelessSecurity *sec,
 void wireless_security_fill_connection (WirelessSecurity *sec,
                                         NMConnection *connection);
 
-void wireless_security_destroy (WirelessSecurity *sec);
+WirelessSecurity *wireless_security_ref (WirelessSecurity *sec);
+
+void wireless_security_unref (WirelessSecurity *sec);
+
+GType wireless_security_get_g_type (void);
 
 /* Below for internal use only */
 
@@ -76,6 +81,14 @@ void wireless_security_destroy (WirelessSecurity *sec);
 #include "ws-wpa-psk.h"
 #include "ws-leap.h"
 #include "ws-wpa-eap.h"
+
+void wireless_security_init (WirelessSecurity *sec,
+                             WSValidateFunc validate,
+                             WSAddToSizeGroupFunc add_to_size_group,
+                             WSFillConnectionFunc fill_connection,
+                             WSDestroyFunc destroy,
+                             GladeXML *xml,
+                             GtkWidget *ui_widget);
 
 void wireless_security_changed_cb (GtkWidget *entry, gpointer user_data);
 

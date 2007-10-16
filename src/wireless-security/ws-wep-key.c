@@ -128,7 +128,7 @@ ws_wep_key_new (const char *glade_file,
 	GtkWidget *widget;
 	GladeXML *xml;
 
-	g_return_val_if_fail (xml != NULL, NULL);
+	g_return_val_if_fail (glade_file != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "wep_key_notebook", NULL);
 	if (xml == NULL) {
@@ -145,15 +145,14 @@ ws_wep_key_new (const char *glade_file,
 		return NULL;
 	}
 
+	wireless_security_init (WIRELESS_SECURITY (sec),
+	                        validate,
+	                        add_to_size_group,
+	                        fill_connection,
+	                        destroy,
+	                        xml,
+	                        g_object_ref (widget));
 	sec->type = type;
-
-	WIRELESS_SECURITY (sec)->validate = validate;
-	WIRELESS_SECURITY (sec)->add_to_size_group = add_to_size_group;
-	WIRELESS_SECURITY (sec)->fill_connection = fill_connection;
-	WIRELESS_SECURITY (sec)->destroy = destroy;
-
-	WIRELESS_SECURITY (sec)->xml = xml;
-	WIRELESS_SECURITY (sec)->ui_widget = g_object_ref (widget);
 
 	widget = glade_xml_get_widget (xml, "wep_key_entry");
 	g_assert (widget);

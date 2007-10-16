@@ -145,13 +145,13 @@ ws_wep_passphrase_new (const char *glade_file)
 		return NULL;
 	}
 
-	WIRELESS_SECURITY (sec)->validate = validate;
-	WIRELESS_SECURITY (sec)->add_to_size_group = add_to_size_group;
-	WIRELESS_SECURITY (sec)->fill_connection = fill_connection;
-	WIRELESS_SECURITY (sec)->destroy = destroy;
-
-	WIRELESS_SECURITY (sec)->xml = xml;
-	WIRELESS_SECURITY (sec)->ui_widget = g_object_ref (widget);
+	wireless_security_init (WIRELESS_SECURITY (sec),
+	                        validate,
+	                        add_to_size_group,
+	                        fill_connection,
+	                        destroy,
+	                        xml,
+	                        g_object_ref (widget));
 
 	widget = glade_xml_get_widget (xml, "wep_passphrase_entry");
 	g_assert (widget);

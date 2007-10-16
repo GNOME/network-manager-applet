@@ -25,6 +25,20 @@
 
 #include "eap-method.h"
 
+GType
+eap_method_get_g_type (void)
+{
+	static GType type_id = 0;
+
+	if (!type_id) {
+		type_id = g_boxed_type_register_static ("EAPMethod",
+		                                        (GBoxedCopyFunc) eap_method_ref,
+		                                        (GBoxedFreeFunc) eap_method_unref);
+	}
+
+	return type_id;
+}
+
 GtkWidget *
 eap_method_get_widget (EAPMethod *method)
 {
@@ -63,11 +77,46 @@ eap_method_fill_connection (EAPMethod *method, NMConnection *connection)
 }
 
 void
-eap_method_destroy (EAPMethod *method)
+eap_method_init (EAPMethod *method,
+                 EMValidateFunc validate,
+                 EMAddToSizeGroupFunc add_to_size_group,
+                 EMFillConnectionFunc fill_connection,
+                 EMDestroyFunc destroy,
+                 GladeXML *xml,
+                 GtkWidget *ui_widget)
+{                 
+	method->refcount = 1;
+
+	method->validate = validate;
+	method->add_to_size_group = add_to_size_group;
+	method->fill_connection = fill_connection;
+	method->destroy = destroy;
+
+	method->xml = xml;
+	method->ui_widget = ui_widget;
+}
+
+
+EAPMethod *
+eap_method_ref (EAPMethod *method)
 {
 	g_return_if_fail (method != NULL);
+	g_return_if_fail (method->refcount > 0);
+
+	method->refcount++;
+	return method;
+}
+
+void
+eap_method_unref (EAPMethod *method)
+{
+	g_return_if_fail (method != NULL);
+	g_return_if_fail (method->refcount > 0);
 
 	g_assert (method->destroy);
-	(*(method->destroy)) (method);
+
+	method->refcount--;
+	if (method->refcount == 0)
+		(*(method->destroy)) (method);
 }
 
