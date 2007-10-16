@@ -1850,14 +1850,18 @@ nma_context_menu_update (NMApplet *applet)
 {
 	NMState state;
 	gboolean have_wireless = FALSE;
+	gboolean wireless_hw_enabled;
 
 	state = nm_client_get_state (applet->nm_client);
+	wireless_hw_enabled = nm_client_wireless_hardware_get_enabled (applet->nm_client);
 
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->enable_networking_item),
 							  state != NM_STATE_ASLEEP);
 
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->stop_wireless_item),
 							  nm_client_wireless_get_enabled (applet->nm_client));
+	gtk_widget_set_sensitive (GTK_WIDGET (applet->stop_wireless_item),
+	                          wireless_hw_enabled);
 
 	gtk_widget_set_sensitive (applet->info_menu_item,
 						 state == NM_STATE_CONNECTED);
