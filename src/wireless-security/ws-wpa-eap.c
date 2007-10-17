@@ -169,6 +169,7 @@ auth_combo_init (WirelessSecurityWPAEAP *sec, const char *glade_file)
 	GtkTreeIter iter;
 	EAPMethodTLS *em_tls;
 	EAPMethodLEAP *em_leap;
+	EAPMethodTTLS *em_ttls;
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
@@ -187,6 +188,14 @@ auth_combo_init (WirelessSecurityWPAEAP *sec, const char *glade_file)
 	                    A_METHOD_COLUMN, em_leap,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_leap));
+
+	em_ttls = eap_method_ttls_new (glade_file, WIRELESS_SECURITY (sec));
+	gtk_list_store_append (auth_model, &iter);
+	gtk_list_store_set (auth_model, &iter,
+	                    A_NAME_COLUMN, _("Tunneled TLS"),
+	                    A_METHOD_COLUMN, em_ttls,
+	                    -1);
+	eap_method_unref (EAP_METHOD (em_ttls));
 
 	combo = glade_xml_get_widget (xml, "wpa_eap_auth_combo");
 	g_assert (combo);
