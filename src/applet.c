@@ -1288,8 +1288,10 @@ other_wireless_activate_cb (GtkWidget *menu_item,
 	GtkWidget *dialog;
 
 	dialog = nma_wireless_dialog_new (applet->glade_file,
+	                                  applet->nm_client,
 	                                  NULL,
-	                                  applet->nm_client);
+	                                  NULL,
+	                                  NULL);
 	if (!dialog)
 		return;
 

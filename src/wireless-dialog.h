@@ -25,9 +25,19 @@
 #include <gtk/gtk.h>
 #include <nm-connection.h>
 
+/* The wireless dialog is used in a few situations:
+ * 1) Connecting to an unseen network, in which case 'cur_device' and 'cur_ap'
+ *      can be NULL because the user gets to choose
+ * 2) As the password/passphrase/key dialog, in which case 'cur_device' and
+ *      'cur_ap' are given and shouldn't change (and the dialog should filter
+ *      options based on the capability of the device and the AP
+ * 3) Creating an adhoc network, which is much like (1)
+ */
 GtkWidget *	nma_wireless_dialog_new (const char *glade_file,
+                                     NMClient *nm_client,
                                      NMConnection *connection,
-                                     NMClient *nm_client);
+                                     NMDevice *cur_device,
+                                     NMAccessPoint *cur_ap);
 
 NMConnection * nma_wireless_dialog_get_connection (GtkWidget *dialog,
                                                    NMDevice **device);

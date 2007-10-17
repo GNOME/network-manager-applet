@@ -44,16 +44,42 @@
 #define S_NAME_COLUMN		0
 #define S_SEC_COLUMN		1
 
-static void
-update_button_cb (GtkWidget *button,
-                  gpointer user_data)
-{
-}
+static void security_combo_changed (GtkWidget *combo, gpointer user_data);
+static gboolean security_combo_init (const char *glade_file,
+                                     GtkWidget *combo,
+                                     NMDevice *device,
+                                     GtkWidget *dialog);
 
 static void
 device_combo_changed (GtkWidget *combo,
                       gpointer user_data)
 {
+	GtkWidget *dialog = GTK_WIDGET (user_data);
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	NMDevice *device = NULL;
+	const char *glade_file;
+	GtkWidget *security_combo;
+	GladeXML *xml;
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	gtk_tree_model_get (model, &iter, D_DEV_COLUMN, &device, -1);
+
+	glade_file = g_object_get_data (G_OBJECT (dialog), "glade-file");
+	g_assert (glade_file);
+
+	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
+	g_assert (xml);
+
+	security_combo = glade_xml_get_widget (xml, "security_combo");
+	g_assert (security_combo);
+	if (!security_combo_init (glade_file, security_combo, device, dialog)) {
+		g_message ("Couldn't change wireless security combo box.");
+		return;
+	}
+
+	security_combo_changed (security_combo, dialog);
 }
 
 static void
@@ -163,17 +189,31 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	GtkWidget *dialog = GTK_WIDGET (user_data);
 	GladeXML *xml;
 	GtkWidget *widget;
-	GByteArray *ssid;
+	GByteArray *ssid = NULL;
+	gboolean free_ssid = TRUE;
 	gboolean valid = FALSE;
+	NMConnection *connection;
 	
 	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
 	g_assert (xml);
 
-	ssid = validate_dialog_ssid (dialog);
+	connection = g_object_get_data (G_OBJECT (dialog), "connection");
+	if (connection) {
+		NMSettingWireless *s_wireless;
+		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
+		g_assert (s_wireless);
+		ssid = s_wireless->ssid;
+		free_ssid = FALSE;
+	} else {
+		ssid = validate_dialog_ssid (dialog);
+	}
+
 	if (ssid) {
 		valid = wireless_security_validate (sec, ssid);
-		g_byte_array_free (ssid, TRUE);
+		if (free_ssid)
+			g_byte_array_free (ssid, TRUE);
 	}
+
 	widget = glade_xml_get_widget (xml, "ok_button");
 	gtk_widget_set_sensitive (widget, valid);
 }
@@ -215,12 +255,28 @@ out:
 	gtk_widget_set_sensitive (widget, valid);
 }
 
+static void
+add_device_to_model (GtkListStore *model,
+                     GtkTreeIter *iter,
+                     NMDevice *device)
+{
+	const char *name;
+
+	name = nm_device_get_description (device);
+	if (!name)
+		name = nm_device_get_iface (device);
+
+	gtk_list_store_append (model, iter);
+	gtk_list_store_set (model, iter, D_NAME_COLUMN, name, D_DEV_COLUMN, device, -1);
+}
+
 static GtkTreeModel *
-create_device_model (NMClient *client, guint32 *num)
+create_device_model (NMClient *client, NMDevice *use_this_device, guint32 *num)
 {
 	GtkListStore *model;
 	GSList *devices;
 	GSList *iter;
+	GtkTreeIter tree_iter;
 
 	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (num != NULL, NULL);
@@ -228,31 +284,26 @@ create_device_model (NMClient *client, guint32 *num)
 	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_OBJECT);
 	*num = 0;
 
-	devices = nm_client_get_devices (client);
-	for (iter = devices; iter; iter = g_slist_next (iter)) {
-		NMDevice *dev = (NMDevice *) iter->data;
-		GtkTreeIter iter;
-		char *name;
+	if (use_this_device) {
+		add_device_to_model (model, &tree_iter, use_this_device);
+	} else {
+		devices = nm_client_get_devices (client);
+		for (iter = devices; iter; iter = g_slist_next (iter)) {
+			NMDevice *dev = (NMDevice *) iter->data;
+			char *name;
 
-		/* Ignore unsupported devices */
-		if (!(nm_device_get_capabilities (dev) & NM_DEVICE_CAP_NM_SUPPORTED))
-			continue;
+			/* Ignore unsupported devices */
+			if (!(nm_device_get_capabilities (dev) & NM_DEVICE_CAP_NM_SUPPORTED))
+				continue;
 
-		if (!NM_IS_DEVICE_802_11_WIRELESS (dev))
-			continue;
+			if (!NM_IS_DEVICE_802_11_WIRELESS (dev))
+				continue;
 
-		name = nm_device_get_description (dev);
-		if (!name)
-			name = nm_device_get_iface (dev);
-
-		gtk_list_store_append (model, &iter);
-		gtk_list_store_set (model, &iter,
-		                    D_NAME_COLUMN, name,
-		                    D_DEV_COLUMN, dev,
-		                    -1);
-		*num += 1;
+			add_device_to_model (model, &tree_iter, dev);
+			*num += 1;
+		}
+		g_slist_free (devices);
 	}
-	g_slist_free (devices);
 
 	return GTK_TREE_MODEL (model);
 }
@@ -296,16 +347,29 @@ security_combo_init (const char *glade_file,
 {
 	GtkListStore *sec_model;
 	GtkTreeIter iter;
-	WirelessSecurityWEPKey *ws_wep_hex;
-	WirelessSecurityWEPKey *ws_wep_ascii;
-	WirelessSecurityWEPPassphrase *ws_wep_passphrase;
-	WirelessSecurityLEAP *ws_leap;
-	WirelessSecurityWPAPSK *ws_wpa_psk;
-	WirelessSecurityWPAEAP *ws_wpa_eap;
+	NMAccessPoint *cur_ap;
+	guint32 ap_flags = 0;
+	guint32 ap_wpa = 0;
+	guint32 ap_rsn = 0;
+	guint32 dev_caps;
 
 	g_return_val_if_fail (combo != NULL, FALSE);
 	g_return_val_if_fail (glade_file != NULL, FALSE);
 	g_return_val_if_fail (device != NULL, FALSE);
+	g_return_val_if_fail (dialog != NULL, FALSE);
+
+	/* The security options displayed are filtered based on device
+	 * capabilities, and if provided, additionally by access point capabilities.
+	 * If a connection is given, that connection's options should be selected
+	 * by default.
+	 */
+	dev_caps = nm_device_802_11_wireless_get_capabilities (NM_DEVICE_802_11_WIRELESS (device));
+	cur_ap = g_object_get_data (G_OBJECT (dialog), "ap");
+	if (cur_ap != NULL) {
+		ap_flags = nm_access_point_get_flags (cur_ap);
+		ap_wpa = nm_access_point_get_wpa_flags (cur_ap);
+		ap_rsn = nm_access_point_get_rsn_flags (cur_ap);
+	}
 
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
 
@@ -314,40 +378,63 @@ security_combo_init (const char *glade_file,
 	                    S_NAME_COLUMN, _("None"),
 	                    -1);
 
-	ws_wep_passphrase = ws_wep_passphrase_new (glade_file);
-	if (ws_wep_passphrase) {
-		add_security_item (dialog, WIRELESS_SECURITY (ws_wep_passphrase), sec_model,
-		                   &iter, _("WEP 128-bit Passphrase"));
+	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+		WirelessSecurityWEPPassphrase *ws_wep_passphrase;
+
+		ws_wep_passphrase = ws_wep_passphrase_new (glade_file);
+		if (ws_wep_passphrase) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_passphrase), sec_model,
+			                   &iter, _("WEP 128-bit Passphrase"));
+		}
 	}
 
-	ws_wep_hex = ws_wep_key_new (glade_file, WEP_KEY_TYPE_HEX);
-	if (ws_wep_hex) {
-		add_security_item (dialog, WIRELESS_SECURITY (ws_wep_hex), sec_model,
-		                   &iter, _("WEP 40/128-bit Hexadecimal"));
+	if (nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+		WirelessSecurityWEPKey *ws_wep_hex;
+		WirelessSecurityWEPKey *ws_wep_ascii;
+
+		ws_wep_hex = ws_wep_key_new (glade_file, WEP_KEY_TYPE_HEX);
+		if (ws_wep_hex) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_hex), sec_model,
+			                   &iter, _("WEP 40/128-bit Hexadecimal"));
+		}
+
+		ws_wep_ascii = ws_wep_key_new (glade_file, WEP_KEY_TYPE_ASCII);
+		if (ws_wep_ascii) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_ascii), sec_model,
+			                   &iter, _("WEP 40/128-bit ASCII"));
+		}
 	}
 
-	ws_wep_ascii = ws_wep_key_new (glade_file, WEP_KEY_TYPE_ASCII);
-	if (ws_wep_ascii) {
-		add_security_item (dialog, WIRELESS_SECURITY (ws_wep_ascii), sec_model,
-		                   &iter, _("WEP 40/128-bit ASCII"));
+	if (nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+		WirelessSecurityLEAP *ws_leap;
+
+		ws_leap = ws_leap_new (glade_file);
+		if (ws_leap) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_leap), sec_model,
+			                   &iter, _("LEAP"));
+		}
 	}
 
-	ws_leap = ws_leap_new (glade_file);
-	if (ws_leap) {
-		add_security_item (dialog, WIRELESS_SECURITY (ws_leap), sec_model,
-		                   &iter, _("LEAP"));
+	if (   nm_utils_security_valid (NMU_SEC_WPA_PSK, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)
+	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+		WirelessSecurityWPAPSK *ws_wpa_psk;
+
+		ws_wpa_psk = ws_wpa_psk_new (glade_file);
+		if (ws_wpa_psk) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
+			                   &iter, _("WPA Pre-Shared Key"));
+		}
 	}
 
-	ws_wpa_psk = ws_wpa_psk_new (glade_file);
-	if (ws_wpa_psk) {
-		add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
-		                   &iter, _("WPA Pre-Shared Key"));
-	}
+	if (   nm_utils_security_valid (NMU_SEC_WPA_ENTERPRISE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)
+	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-	ws_wpa_eap = ws_wpa_eap_new (glade_file);
-	if (ws_wpa_eap) {
-		add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
-		                   &iter, _("WPA & WPA2 Enterprise"));
+		ws_wpa_eap = ws_wpa_eap_new (glade_file);
+		if (ws_wpa_eap) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
+			                   &iter, _("WPA & WPA2 Enterprise"));
+		}
 	}
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (sec_model));
@@ -356,12 +443,12 @@ security_combo_init (const char *glade_file,
 	return TRUE;
 }
 
-static GtkWidget *
-dialog_init (GladeXML *xml,
+static gboolean
+dialog_init (GtkWidget *dialog,
+             GladeXML *xml,
              NMClient *nm_client,
              const char *glade_file)
 {
-	GtkWidget *dialog;
 	GtkWidget *widget;
 	GtkSizeGroup *group;
 	GtkTreeModel *model;
@@ -369,20 +456,18 @@ dialog_init (GladeXML *xml,
 	guint32 num_devs = 0;
 	char *label;
 	NMDevice *dev;
+	gboolean success = FALSE;
 
-	dialog = glade_xml_get_widget (xml, "wireless_dialog");
-	if (!dialog) {
-		nm_warning ("Couldn't find glade wireless_dialog widget.");
-		return NULL;
+	/* If given a valid connection, hide the SSID bits */
+	if (g_object_get_data (G_OBJECT (dialog), "connection")) {
+		widget = glade_xml_get_widget (xml, "network_name_label");
+		g_assert (widget);
+		gtk_widget_hide (widget);
+
+		widget = glade_xml_get_widget (xml, "network_name_entry");
+		g_assert (widget);
+		gtk_widget_hide (widget);
 	}
-
-	g_object_set_data_full (G_OBJECT (dialog),
-	                        "glade-xml", xml,
-	                        (GDestroyNotify) g_object_unref);
-
-	g_object_set_data_full (G_OBJECT (dialog),
-	                        "nm-client", g_object_ref (nm_client),
-	                        (GDestroyNotify) g_object_unref);
 
 	widget = glade_xml_get_widget (xml, "ok_button");
 	gtk_widget_grab_default (widget);
@@ -395,14 +480,24 @@ dialog_init (GladeXML *xml,
 #endif
 
 	widget = glade_xml_get_widget (xml, "network_name_entry");
-	g_signal_connect (widget, "changed", G_CALLBACK (update_button_cb), dialog);
+	g_signal_connect (G_OBJECT (widget), "changed", (GCallback) ssid_entry_changed, dialog);
 	gtk_widget_grab_focus (widget);
 
-	model = create_device_model (nm_client, &num_devs);
+	group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	gtk_size_group_set_ignore_hidden (group, TRUE);
+	g_object_set_data_full (G_OBJECT (dialog),
+	                        "size-group", group,
+	                        (GDestroyNotify) g_object_unref);
+
+	/* If passed a device, don't show all devices, let create_device_model
+	 * create a model with just the one we want.
+	 */
+	dev = g_object_get_data (G_OBJECT (dialog), "device");
+	model = create_device_model (nm_client, dev, &num_devs);
 	if (!model || (num_devs < 1)) {
 		g_warning ("No wireless devices available.");
 		destroy_device_model (model);
-		return NULL;
+		return FALSE;
 	}
 	g_object_set_data_full (G_OBJECT (dialog),
 	                        "device-model", model,
@@ -417,6 +512,18 @@ dialog_init (GladeXML *xml,
 		gtk_widget_hide (glade_xml_get_widget (xml, "device_label"));
 		gtk_widget_hide (widget);
 	}
+	gtk_tree_model_get_iter_first (model, &iter);
+	gtk_tree_model_get (model, &iter, D_DEV_COLUMN, &dev, -1);
+
+	widget = glade_xml_get_widget (xml, "security_combo");
+	g_assert (widget);
+	if (!security_combo_init (glade_file, widget, dev, dialog)) {
+		g_message ("Couldn't set up wireless security combo box.");
+		goto out;
+	}
+
+	security_combo_changed (widget, dialog);
+	g_signal_connect (G_OBJECT (widget), "changed", GTK_SIGNAL_FUNC (security_combo_changed), dialog);
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Other Wireless Network"));
 	label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
@@ -427,33 +534,11 @@ dialog_init (GladeXML *xml,
 	gtk_label_set_markup (GTK_LABEL (widget), label);
 	g_free (label);
 
-	group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-	gtk_size_group_set_ignore_hidden (group, TRUE);
-	g_object_set_data_full (G_OBJECT (dialog),
-	                        "size-group", group,
-	                        (GDestroyNotify) g_object_unref);
-
-	widget = glade_xml_get_widget (xml, "security_combo");
-	g_assert (widget);
-	gtk_tree_model_get_iter_first (model, &iter);
-	gtk_tree_model_get (model, &iter, D_DEV_COLUMN, &dev, -1);
-
-	if (!security_combo_init (glade_file, widget, dev, dialog)) {
-		g_message ("Couldn't set up wireless security combo box.");
-		gtk_widget_destroy (dialog);
-		dialog = NULL;
-		goto out;
-	}
-
-	security_combo_changed (widget, dialog);
-	g_signal_connect (G_OBJECT (widget), "changed", GTK_SIGNAL_FUNC (security_combo_changed), dialog);
-
-	widget = glade_xml_get_widget (xml, "network_name_entry");
-	g_signal_connect (G_OBJECT (widget), "changed", (GCallback) ssid_entry_changed, dialog);
+	success = TRUE;
 
 out:
 	g_object_unref (dev);
-	return dialog;
+	return success;
 }
 
 NMConnection *
@@ -482,12 +567,11 @@ nma_wireless_dialog_get_connection (GtkWidget *dialog, NMDevice **device)
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 		s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
+		s_wireless->ssid = validate_dialog_ssid (dialog);
+		g_assert (s_wireless->ssid);
+
 		nm_connection_add_setting (connection, (NMSetting *) s_wireless);
 	}
-
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
-	s_wireless->ssid = validate_dialog_ssid (dialog);
-	g_assert (s_wireless->ssid);
 
 	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
 	g_assert (xml);
@@ -516,13 +600,24 @@ nma_wireless_dialog_get_connection (GtkWidget *dialog, NMDevice **device)
 
 GtkWidget *
 nma_wireless_dialog_new (const char *glade_file,
+                         NMClient *nm_client,
                          NMConnection *connection,
-                         NMClient *nm_client)
+                         NMDevice *cur_device,
+                         NMAccessPoint *cur_ap)
 {
 	GtkWidget *	dialog;
 	GladeXML *	xml;
+	gboolean success;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
+
+	/* Ensure device validity */
+	if (cur_device) {
+		guint32 dev_caps = nm_device_get_capabilities (cur_device);
+
+		g_return_val_if_fail (dev_caps & NM_DEVICE_CAP_NM_SUPPORTED, NULL);
+		g_return_val_if_fail (NM_IS_DEVICE_802_11_WIRELESS (cur_device), NULL);
+	}
 
 	xml = glade_xml_new (glade_file, "wireless_dialog", NULL);
 	if (xml == NULL) {
@@ -530,9 +625,47 @@ nma_wireless_dialog_new (const char *glade_file,
 		return NULL;
 	}
 
-	dialog = dialog_init (xml, nm_client, glade_file);
+	dialog = glade_xml_get_widget (xml, "wireless_dialog");
 	if (!dialog) {
+		nm_warning ("Couldn't find glade wireless_dialog widget.");
+		g_object_unref (xml);
+		return NULL;
+	}
+
+	g_object_set_data_full (G_OBJECT (dialog),
+	                        "glade-file", g_strdup (glade_file),
+	                        (GDestroyNotify) g_free);
+
+	g_object_set_data_full (G_OBJECT (dialog),
+	                        "glade-xml", xml,
+	                        (GDestroyNotify) g_object_unref);
+
+	g_object_set_data_full (G_OBJECT (dialog),
+	                        "nm-client", g_object_ref (nm_client),
+	                        (GDestroyNotify) g_object_unref);
+
+	if (connection) {
+		g_object_set_data_full (G_OBJECT (dialog),
+		                        "connection", g_object_ref (connection),
+		                        (GDestroyNotify) g_object_unref);
+	}
+
+	if (cur_device) {
+		g_object_set_data_full (G_OBJECT (dialog),
+		                        "device", g_object_ref (cur_device),
+		                        (GDestroyNotify) g_object_unref);
+	}
+
+	if (cur_ap) {
+		g_object_set_data_full (G_OBJECT (dialog),
+		                        "ap", g_object_ref (cur_ap),
+		                        (GDestroyNotify) g_object_unref);
+	}
+
+	success = dialog_init (dialog, xml, nm_client, glade_file);
+	if (!success) {
 		nm_warning ("Couldn't create wireless security dialog.");
+		gtk_widget_destroy (dialog);
 		return NULL;
 	}
 
