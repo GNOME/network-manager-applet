@@ -509,7 +509,7 @@ nma_wireless_dialog_get_connection (GtkWidget *dialog, NMDevice **device)
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
 	gtk_tree_model_get (model, &iter, D_DEV_COLUMN, device, -1);
-	g_object_unref (device);
+	g_object_unref (*device);
 
 	return connection;
 }
