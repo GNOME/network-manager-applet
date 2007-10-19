@@ -286,6 +286,7 @@ create_device_model (NMClient *client, NMDevice *use_this_device, guint32 *num)
 
 	if (use_this_device) {
 		add_device_to_model (model, &tree_iter, use_this_device);
+		*num = 1;
 	} else {
 		devices = nm_client_get_devices (client);
 		for (iter = devices; iter; iter = g_slist_next (iter)) {
@@ -373,12 +374,16 @@ security_combo_init (const char *glade_file,
 
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
 
-	gtk_list_store_append (sec_model, &iter);
-	gtk_list_store_set (sec_model, &iter,
-	                    S_NAME_COLUMN, _("None"),
-	                    -1);
-
 	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+		gtk_list_store_append (sec_model, &iter);
+		gtk_list_store_set (sec_model, &iter,
+		                    S_NAME_COLUMN, _("None"),
+		                    -1);
+	}
+
+	if (nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+		WirelessSecurityWEPKey *ws_wep_hex;
+		WirelessSecurityWEPKey *ws_wep_ascii;
 		WirelessSecurityWEPPassphrase *ws_wep_passphrase;
 
 		ws_wep_passphrase = ws_wep_passphrase_new (glade_file);
@@ -386,11 +391,6 @@ security_combo_init (const char *glade_file,
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_passphrase), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
 		}
-	}
-
-	if (nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
-		WirelessSecurityWEPKey *ws_wep_hex;
-		WirelessSecurityWEPKey *ws_wep_ascii;
 
 		ws_wep_hex = ws_wep_key_new (glade_file, WEP_KEY_TYPE_HEX);
 		if (ws_wep_hex) {
@@ -457,6 +457,7 @@ dialog_init (GtkWidget *dialog,
 	char *label;
 	NMDevice *dev;
 	gboolean success = FALSE;
+	gboolean security_combo_focus = FALSE;
 
 	/* If given a valid connection, hide the SSID bits */
 	if (g_object_get_data (G_OBJECT (dialog), "connection")) {
@@ -467,6 +468,12 @@ dialog_init (GtkWidget *dialog,
 		widget = glade_xml_get_widget (xml, "network_name_entry");
 		g_assert (widget);
 		gtk_widget_hide (widget);
+
+		security_combo_focus = TRUE;
+	} else {
+		widget = glade_xml_get_widget (xml, "network_name_entry");
+		g_signal_connect (G_OBJECT (widget), "changed", (GCallback) ssid_entry_changed, dialog);
+		gtk_widget_grab_focus (widget);
 	}
 
 	widget = glade_xml_get_widget (xml, "ok_button");
@@ -479,12 +486,7 @@ dialog_init (GtkWidget *dialog,
 	}
 #endif
 
-	widget = glade_xml_get_widget (xml, "network_name_entry");
-	g_signal_connect (G_OBJECT (widget), "changed", (GCallback) ssid_entry_changed, dialog);
-	gtk_widget_grab_focus (widget);
-
 	group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-	gtk_size_group_set_ignore_hidden (group, TRUE);
 	g_object_set_data_full (G_OBJECT (dialog),
 	                        "size-group", group,
 	                        (GDestroyNotify) g_object_unref);
@@ -521,6 +523,8 @@ dialog_init (GtkWidget *dialog,
 		g_message ("Couldn't set up wireless security combo box.");
 		goto out;
 	}
+	if (security_combo_focus)
+		gtk_widget_grab_focus (widget);
 
 	security_combo_changed (widget, dialog);
 	g_signal_connect (G_OBJECT (widget), "changed", GTK_SIGNAL_FUNC (security_combo_changed), dialog);

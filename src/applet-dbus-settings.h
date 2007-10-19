@@ -43,6 +43,13 @@ typedef struct {
 
 typedef struct {
 	NMConnectionSettingsClass parent_class;
+
+	/* Signals */
+	void (*new_secrets_requested)  (AppletDbusConnectionSettings *connection,
+	                                const char *setting_name,
+	                                const char **hints,
+	                                gboolean ask_user,
+	                                DBusGMethodInvocation *context);
 } AppletDbusConnectionSettingsClass;
 
 GType                 applet_dbus_connection_settings_get_type (void);
@@ -68,6 +75,14 @@ typedef struct {
 
 typedef struct {
 	NMSettingsClass parent_class;
+
+	/* Signals */
+	void (*new_secrets_requested)  (AppletDbusSettings *settings,
+	                                AppletDbusConnectionSettings *connection,
+	                                const char *setting_name,
+	                                const char **hints,
+	                                gboolean ask_user,
+	                                DBusGMethodInvocation *context);
 } AppletDbusSettingsClass;
 
 GType       applet_dbus_settings_get_type (void);

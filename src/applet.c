@@ -48,6 +48,7 @@
 
 #include <glade/glade.h>
 #include <gconf/gconf-client.h>
+#include <gnome-keyring.h>
 
 #ifdef ENABLE_NOTIFY
 #include <libnotify/notify.h>
@@ -3005,6 +3006,213 @@ foo_client_setup (NMApplet *applet)
 		g_idle_add (foo_set_initial_state, applet);
 }
 
+typedef struct {
+	NMApplet *applet;
+	NMConnection *connection;
+} SaveSecretsInfo;
+
+static void
+save_secrets_to_keyring (NMSetting *setting,
+                         const char *key,
+                         guint32 type,
+                         void *value,
+                         gboolean is_secret,
+                         gpointer user_data)
+{
+	SaveSecretsInfo *info = (SaveSecretsInfo *) user_data;
+	NMSettingConnection *s_con;
+	GnomeKeyringAttributeList *attributes;
+	char *name = NULL;
+	guint32 id = 0;
+	const char *secret;
+	int ret;
+
+	if (!is_secret || (type != NM_S_TYPE_STRING))
+		return;
+
+	secret = *((const char **) value);
+	if (!secret || !strlen (secret))
+		return;
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (info->connection, NM_SETTING_CONNECTION);
+	g_assert (s_con);
+
+	attributes = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attributes, "connection-name", s_con->name);
+	gnome_keyring_attribute_list_append_string (attributes, "setting-name", setting->name);
+	gnome_keyring_attribute_list_append_string (attributes, "setting-key", key);
+
+	name = g_strdup_printf ("Network secret for %s/%s/%s", s_con->name, setting->name, key);
+	ret = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                name, attributes, secret, TRUE, &id);
+	g_free (name);
+	gnome_keyring_attribute_list_free (attributes);
+}
+
+static void
+get_secrets_dialog_response_cb (GtkDialog *dialog,
+                                gint response,
+                                gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+	DBusGMethodInvocation *context;
+	NMConnection *connection = NULL;
+	NMDevice *device = NULL;
+	GHashTable *setting_hash;
+	const char *setting_name;
+	NMSetting *setting;
+	SaveSecretsInfo info;
+
+	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
+	setting_name = g_object_get_data (G_OBJECT (dialog), "setting-name");
+	if (!context || !setting_name) {
+		g_warning ("%s.%d (%s): couldn't get dialog data.", __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	if (response != GTK_RESPONSE_OK) {
+		GError *error;
+		error = nm_settings_new_error ("%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
+		dbus_g_method_return_error (context, error);
+		g_error_free (error);
+		goto done;
+	}
+
+	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device);
+	if (!connection) {
+		g_warning ("%s.%d (%s): couldn't get connection from the wireless "
+		           "dialog.", __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	setting = nm_connection_get_setting (connection, setting_name);
+	if (!setting) {
+		g_warning ("%s.%d (%s): requested setting '%s' didn't exist in the "
+		           "connection.", __FILE__, __LINE__, __func__, setting_name);
+		goto done;
+	}
+
+	memset (&info, 0, sizeof (info));
+	info.applet = applet;
+	info.connection = connection;
+	nm_setting_enumerate_values (setting, save_secrets_to_keyring, &info);
+
+	setting_hash = nm_setting_to_hash (setting);
+	if (!setting_hash) {
+		g_warning ("%s.%d (%s): failed to hash setting '%s'.",
+		           __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	dbus_g_method_return (context, setting_hash);
+	g_hash_table_destroy (setting_hash);
+
+done:
+	if (connection)
+		nm_connection_clear_secrets (connection);
+	gtk_widget_hide (GTK_WIDGET (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+
+static NMDevice *
+get_connection_details (AppletDbusConnectionSettings *applet_connection,
+                        NMApplet *applet,
+                        NMAccessPoint **ap)
+{
+	GSList *iter;
+	NMClientActiveConnection *act_con = NULL;
+	NMDevice *device;
+
+	g_return_val_if_fail (applet_connection != NULL, NULL);
+	g_return_val_if_fail (applet != NULL, NULL);
+
+	/* Ensure the active connection list is up-to-date */
+	if (g_slist_length (applet->active_connections) == 0)
+		applet->active_connections = nm_client_get_active_connections (applet->nm_client);
+
+	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
+		NMClientActiveConnection * tmp_con = (NMClientActiveConnection *) iter->data;
+		const char *con_path;
+
+		if (!strcmp (tmp_con->service_name, NM_DBUS_SERVICE_USER_SETTINGS)) {
+			con_path = nm_connection_settings_get_dbus_object_path ((NMConnectionSettings *) applet_connection);
+			if (!strcmp (con_path, tmp_con->connection_path)) {
+				act_con = tmp_con;
+				break;
+			}
+		}
+	}
+
+	if (!act_con)
+		return;
+
+	device = NM_DEVICE (act_con->devices->data);
+	if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+		*ap = nm_device_802_11_wireless_get_access_point_by_path (NM_DEVICE_802_11_WIRELESS (device),
+		                                                          act_con->specific_object);
+	}
+
+	return device;
+}
+
+static void
+applet_settings_new_secrets_requested_cb (AppletDbusSettings *settings,
+                                          AppletDbusConnectionSettings *applet_connection,
+                                          const char *setting_name,
+                                          const char **hints,
+                                          gboolean ask_user,
+                                          DBusGMethodInvocation *context,
+                                          gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+	GtkWidget *dialog;
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+	NMAccessPoint *ap = NULL;
+	NMDevice *device;
+
+	connection = applet_dbus_connection_settings_get_connection ((NMConnectionSettings *) applet_connection);
+	g_return_if_fail (connection != NULL);
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
+	                                                           NM_SETTING_CONNECTION);
+	g_return_if_fail (s_con != NULL);
+	g_return_if_fail (s_con->type != NULL);
+
+	if (!strcmp (s_con->type, NM_SETTING_VPN)) {
+		nma_vpn_request_password (connection, setting_name, ask_user, context);
+		return;
+	}
+
+	device = get_connection_details (applet_connection, applet, &ap);
+	if (!device || (NM_IS_DEVICE_802_11_WIRELESS (device) && !ap)) {
+		GError *error;
+		error = nm_settings_new_error ("%s.%d (%s): couldn't find details for connection", __FILE__, __LINE__, __func__);
+		dbus_g_method_return_error (context, error);
+		g_error_free (error);
+	}
+
+	dialog = nma_wireless_dialog_new (applet->glade_file,
+	                                  applet->nm_client,
+	                                  connection,
+	                                  device,
+	                                  ap);
+	g_return_if_fail (dialog != NULL);
+	g_object_set_data (G_OBJECT (dialog), "dbus-context", context);
+	g_object_set_data_full (G_OBJECT (dialog),
+	                        "setting-name", g_strdup (setting_name),
+	                        (GDestroyNotify) g_free);
+
+	g_signal_connect (dialog, "response",
+	                  G_CALLBACK (get_secrets_dialog_response_cb),
+	                  applet);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+}
+
 /*****************************************************************************/
 
 /*
@@ -3109,6 +3317,9 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	}
 
 	applet->settings = applet_dbus_settings_new ();
+	g_signal_connect (G_OBJECT (applet->settings), "new-secrets-requested",
+	                  (GCallback) applet_settings_new_secrets_requested_cb,
+	                  applet);
 
     /* Start our DBus service */
     if (!applet_dbus_manager_start_service (dbus_mgr)) {

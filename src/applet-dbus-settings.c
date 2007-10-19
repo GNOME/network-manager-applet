@@ -30,6 +30,7 @@
 #include "nm-utils.h"
 #include "password-dialog.h"
 #include "vpn-password-dialog.h"
+#include "applet-marshal.h"
 
 static NMConnectionSettings * applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
                                                                                    const gchar *conf_dir,
@@ -47,6 +48,14 @@ static AppletDbusConnectionSettings *applet_dbus_settings_get_by_gconf_path (App
 
 static gboolean applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *connection,
                                                          GConfEntry *entry);
+
+enum {
+	SETTINGS_NEW_SECRETS_REQUESTED,
+	SETTINGS_LAST_SIGNAL
+};
+
+static guint settings_signals[SETTINGS_LAST_SIGNAL] = { 0 };
+
 
 /*
  * AppletDbusSettings class implementation
@@ -110,6 +119,17 @@ applet_dbus_settings_class_init (AppletDbusSettingsClass *klass)
 	object_class->finalize = applet_dbus_settings_finalize;
 
 	settings_class->list_connections = list_connections;
+
+	/* Signals */
+	settings_signals[SETTINGS_NEW_SECRETS_REQUESTED] =
+		g_signal_new ("new-secrets-requested",
+					  G_OBJECT_CLASS_TYPE (object_class),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (AppletDbusSettingsClass, new_secrets_requested),
+					  NULL, NULL,
+					  applet_marshal_VOID__OBJECT_STRING_POINTER_BOOLEAN_POINTER,
+					  G_TYPE_NONE, 5,
+					  G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_BOOLEAN, G_TYPE_POINTER);
 }
 
 NMSettings *
@@ -127,6 +147,29 @@ applet_dbus_settings_new (void)
 	g_object_unref (manager);
 
 	return settings;
+}
+
+static void
+connection_new_secrets_requested_cb (AppletDbusConnectionSettings *applet_connection,
+                                     const char *setting_name,
+                                     const char **hints,
+                                     gboolean ask_user,
+                                     DBusGMethodInvocation *context,
+                                     gpointer user_data)
+{
+	AppletDbusSettings *settings = APPLET_DBUS_SETTINGS (user_data);
+
+	/* Re-emit the signal to listeners so they don't have to know about
+	 * every single connection
+	 */
+	g_signal_emit (settings,
+	               settings_signals[SETTINGS_NEW_SECRETS_REQUESTED],
+	               0,
+	               applet_connection,
+	               setting_name,
+	               hints,
+	               ask_user,
+	               context);
 }
 
 static void
@@ -162,6 +205,9 @@ connections_changed_cb (GConfClient *conf_client,
 		/* Maybe a new connection */
 		exported = applet_dbus_connection_settings_new (settings->conf_client, path);
 		if (exported) {
+			g_signal_connect (G_OBJECT (exported), "new-secrets-requested",
+		                      (GCallback) connection_new_secrets_requested_cb,
+		                      settings);
 			settings->connections = g_slist_append (settings->connections, exported);
 			nm_settings_signal_new_connection (NM_SETTINGS (settings),
 			                                   NM_CONNECTION_SETTINGS (exported));
@@ -231,8 +277,12 @@ get_connections (AppletDbusSettings *applet_settings)
 		gchar *dir = (gchar *) conf_list->data;
 
 		connection = applet_dbus_connection_settings_new (applet_settings->conf_client, dir);
-		if (connection)
+		if (connection) {
 			cnc_list = g_slist_append (cnc_list, connection);
+			g_signal_connect (G_OBJECT (connection), "new-secrets-requested",
+		                      (GCallback) connection_new_secrets_requested_cb,
+		                      applet_settings);
+		}
 
 		conf_list = g_slist_remove (conf_list, dir);
 		g_free (dir);
@@ -309,6 +359,9 @@ applet_dbus_settings_add_connection (AppletDbusSettings *applet_settings,
 	                                                                path,
 	                                                                connection);
 	if (exported) {
+		g_signal_connect (G_OBJECT (exported), "new-secrets-requested",
+	                      (GCallback) connection_new_secrets_requested_cb,
+	                      applet_settings);
 		applet_settings->connections = g_slist_append (applet_settings->connections, exported);
 		nm_settings_signal_new_connection (NM_SETTINGS (applet_settings),
 		                                   NM_CONNECTION_SETTINGS (exported));
@@ -327,10 +380,18 @@ static gchar *applet_dbus_connection_settings_get_id (NMConnectionSettings *conn
 static GHashTable *applet_dbus_connection_settings_get_settings (NMConnectionSettings *connection);
 static void applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
                                                          const gchar *setting_name,
+                                                         const gchar **hints,
                                                          gboolean request_new,
                                                          DBusGMethodInvocation *context);
 
 G_DEFINE_TYPE (AppletDbusConnectionSettings, applet_dbus_connection_settings, NM_TYPE_CONNECTION_SETTINGS)
+
+enum {
+	CONNECTION_NEW_SECRETS_REQUESTED,
+	CONNECTION_LAST_SIGNAL
+};
+
+static guint connection_signals[CONNECTION_LAST_SIGNAL] = { 0 };
 
 static void
 applet_dbus_connection_settings_init (AppletDbusConnectionSettings *applet_connection)
@@ -381,6 +442,17 @@ applet_dbus_connection_settings_class_init (AppletDbusConnectionSettingsClass *a
 	connection_class->get_id = applet_dbus_connection_settings_get_id;
 	connection_class->get_settings = applet_dbus_connection_settings_get_settings;
 	connection_class->get_secrets = applet_dbus_connection_settings_get_secrets;
+
+	/* Signals */
+	connection_signals[CONNECTION_NEW_SECRETS_REQUESTED] =
+		g_signal_new ("new-secrets-requested",
+					  G_OBJECT_CLASS_TYPE (object_class),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (AppletDbusConnectionSettingsClass, new_secrets_requested),
+					  NULL, NULL,
+					  applet_marshal_VOID__STRING_POINTER_BOOLEAN_POINTER,
+					  G_TYPE_NONE, 4,
+					  G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_BOOLEAN, G_TYPE_POINTER);
 }
 
 static void
@@ -618,24 +690,9 @@ destroy_gvalue (gpointer data)
 }
 
 static void
-get_secrets (NMConnection *connection,
-             const char *setting_name,
-             DBusGMethodInvocation *context)
-{
-	GtkWidget *dialog;
-
-	dialog = g_object_get_data (G_OBJECT (connection), "dialog");
-	if (!dialog)
-		dialog = nma_password_dialog_new (connection, setting_name, context);
-
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (dialog);
-	gtk_window_present (GTK_WINDOW (dialog));
-}
-
-static void
 applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
                                              const gchar *setting_name,
+                                             const gchar **hints,
                                              gboolean request_new,
                                              DBusGMethodInvocation *context)
 {
@@ -664,7 +721,7 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	}
 
 	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
-	                                                           "connection");
+	                                                           NM_SETTING_CONNECTION);
 	if (!s_con || !s_con->name || !strlen (s_con->name) || !s_con->type) {
 		nm_warning ("Connection didn't have a valid required '%s' setting, "
 		            "or the connection name was invalid.", NM_SETTING_CONNECTION);
@@ -678,17 +735,14 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	}
 
 	/* VPN passwords are handled by the VPN plugin's auth dialog */
-	if (!strcmp (s_con->type, "vpn")) {
-		nma_vpn_request_password (applet_connection->connection, setting_name, request_new, context);
-		return;
-	}
+	if (!strcmp (s_con->type, NM_SETTING_VPN))
+		goto get_secrets;
 
 	if (request_new) {
 		nm_info ("New secrets for %s/%s requested; ask the user",
 		         s_con->name, setting_name);
 		nm_connection_clear_secrets (applet_connection->connection);
-		get_secrets (applet_connection->connection, setting_name, context);
-		return;
+		goto get_secrets;
 	}
 
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
@@ -703,8 +757,7 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0)) {
 		nm_info ("No keyring secrets found for %s/%s; ask the user",
 		         s_con->name, setting_name);
-		get_secrets (applet_connection->connection, setting_name, context);
-		return;
+		goto get_secrets;
 	}
 
 	for (elt = found_list; elt != NULL; elt = elt->next) {
@@ -746,4 +799,15 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	}
 
 	gnome_keyring_found_list_free (found_list);
+	return;
+
+get_secrets:
+	g_signal_emit (applet_connection,
+	               connection_signals[CONNECTION_NEW_SECRETS_REQUESTED],
+	               0,
+	               setting_name,
+	               hints,
+	               request_new,
+	               context);
 }
+

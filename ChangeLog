@@ -1,3 +1,40 @@
+2007-10-19  Dan Williams  <dcbw@redhat.com>
+
+	* nm-applet.conf
+		- Define and lock down the Connection.Secrets interface
+
+	* src/applet-marshal.list
+	  src/applet-dbus-settings.c
+	  src/applet-dbus-settings.h
+		- Don't handle secrets UI here; instead emit signals and let the
+			applet code handle the UI bits
+		- (applet_dbus_settings_class_init): add new-secrets-requested signal
+		- (connection_new_secrets_requested_cb): proxy signals from connection
+			objects
+		- (connections_changed_cb, get_connections,
+		   applet_dbus_settings_add_connection): connect to the
+			new-secrets-requested signal of connection objects
+		- (applet_dbus_connection_settings_class_init): add new-secrets-requested
+			signal
+		- (get_secrets): remove
+		- (applet_dbus_connection_settings_get_secrets): when new secrets are
+			requested, emit a signal and let the listener handle the request
+
+	* src/applet.c
+		- (save_secrets_to_keyring): write secrets from a connection to the
+			keyring
+		- (get_secrets_dialog_response_cb): new function
+		- (get_connection_details): track down a specific connection in the
+			active connection list
+		- (applet_settings_new_secrets_requested_cb): display UI for getting
+			wireless secrets
+
+	* src/wireless-dialog.c
+		- (create_device_model): be sure to update number of devices before
+			returning
+		- (security_combo_init): fix placement of WEP passphrase option
+		- (dialog_init): don't leave focus on the ssid entry if it gets hidden
+
 2007-10-17  Dan Williams  <dcbw@redhat.com>
 
 	* src/wireless-dialog.h
