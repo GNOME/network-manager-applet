@@ -543,6 +543,33 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 {
 	ReadFromGConfInfo *info = (ReadFromGConfInfo *) user_data;
 
+	/* Binary certificate and key data doesn't get stored in GConf.  Instead,
+	 * the path to the certificate gets stored in a special key and the
+	 * certificate is read and stuffed into the setting right before
+	 * the connection is sent to NM
+	 */
+	if (!strcmp (setting->name, NM_SETTING_WIRELESS_SECURITY)) {
+		if (   !strcmp (key, "ca-cert")
+		    || !strcmp (key, "client-cert")
+		    || !strcmp (key, "private-key")
+		    || !strcmp (key, "phase2-ca-cert")
+		    || !strcmp (key, "phase2-client-cert")
+		    || !strcmp (key, "phase2-private-key")) {
+			char *path_key;
+			char *path_value = NULL;
+
+			path_key = g_strdup_printf ("nma-path-%s", key);
+			if (nm_gconf_get_string_helper (info->client, info->dir, path_key,
+			                                setting->name, &path_value)) {
+				g_object_set_data_full (G_OBJECT (info->connection),
+				                        path_key, path_value,
+				                        (GDestroyNotify) g_free);
+			}
+			g_free (path_key);
+			return;
+		}
+	}
+
 	switch (type) {
 		case NM_S_TYPE_STRING: {
 			char **str_val = (char **) value;
@@ -703,6 +730,7 @@ add_keyring_item (const char *connection_name,
 }
 
 typedef struct CopyOneSettingValueInfo {
+	NMConnection *connection;
 	GConfClient *client;
 	const char *dir;
 	const char *connection_name;
@@ -722,6 +750,31 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	if (info->key_filter_func)
 		if ((*info->key_filter_func)(setting->name, key) == FALSE)
 			return;
+
+	/* Binary certificate and key data doesn't get stored in GConf.  Instead,
+	 * the path to the certificate gets stored in a special key and the
+	 * certificate is read and stuffed into the setting right before
+	 * the connection is sent to NM
+	 */
+	if (!strcmp (setting->name, NM_SETTING_WIRELESS_SECURITY)) {
+		if (   !strcmp (key, "ca-cert")
+		    || !strcmp (key, "client-cert")
+		    || !strcmp (key, "private-key")
+		    || !strcmp (key, "phase2-ca-cert")
+		    || !strcmp (key, "phase2-client-cert")
+		    || !strcmp (key, "phase2-private-key")) {
+			char *path_key;
+			char *path_value = NULL;
+
+			path_key = g_strdup_printf ("nma-path-%s", key);
+			path_value = g_object_get_data (G_OBJECT (info->connection), path_key);
+			if (path_value != NULL) {
+				nm_gconf_set_string_helper (info->client, info->dir, path_key,
+				                                setting->name, path_value);
+			}
+			g_free (path_key);
+		}
+	}
 
 	switch (type) {
 		case NM_S_TYPE_STRING: {
@@ -814,6 +867,7 @@ nm_gconf_write_connection (NMConnection *connection,
 	if (!s_connection)
 		return;
 
+	info.connection = connection;
 	info.client = client;
 	info.dir = dir;
 	info.connection_name = s_connection->name;

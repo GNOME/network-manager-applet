@@ -49,6 +49,121 @@ static AppletDbusConnectionSettings *applet_dbus_settings_get_by_gconf_path (App
 static gboolean applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *connection,
                                                          GConfEntry *entry);
 
+
+static GByteArray *
+file_to_g_byte_array (const char *filename)
+{
+	char *contents;
+	GByteArray *array;
+	gsize length = 0;
+
+	if (!g_file_get_contents (filename, &contents, &length, NULL)) {
+		g_warning ("Unable to read contents of %s", filename);
+		return NULL;
+	}
+
+	array = g_byte_array_sized_new (length);
+	if (!array)
+		return NULL;
+
+	g_byte_array_append (array, (unsigned char *) contents, length);
+	if (array->len != length) {
+		g_byte_array_free (array, TRUE);
+		array = NULL;
+	}
+
+	return array;
+}
+
+static void
+clear_one_byte_array_field (GByteArray **field)
+{
+	g_return_if_fail (field != NULL);
+
+	if (!*field)
+		return;
+	g_byte_array_free (*field, TRUE);
+	*field = NULL;
+}
+
+static void
+fill_one_cert (NMConnection *connection,
+               NMSettingWirelessSecurity *s_wireless_sec,
+               const char *key_name,
+               GByteArray **field)
+{
+	const char *filename;
+
+	g_return_if_fail (s_wireless_sec != NULL);
+	g_return_if_fail (key_name != NULL);
+	g_return_if_fail (field != NULL);
+
+	clear_one_byte_array_field (field);
+
+	filename = g_object_get_data (G_OBJECT (connection), key_name);
+	if (!filename)
+		return;
+
+	*field = file_to_g_byte_array (filename);
+}
+
+void
+applet_dbus_settings_connection_fill_certs (NMConnection *connection)
+{
+	NMSettingWirelessSecurity *s_wireless_sec;
+
+	g_return_if_fail (connection != NULL);
+
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
+	if (!s_wireless_sec)
+		return;
+
+	fill_one_cert (connection,
+	               s_wireless_sec,
+	               "nma-path-ca-cert",
+	               &s_wireless_sec->ca_cert);
+	fill_one_cert (connection,
+	               s_wireless_sec,
+	               "nma-path-client-cert",
+	               &s_wireless_sec->client_cert);
+	fill_one_cert (connection,
+	               s_wireless_sec,
+	               "nma-path-private-key",
+	               &s_wireless_sec->private_key);
+	fill_one_cert (connection,
+	               s_wireless_sec,
+	               "nma-path-phase2-ca-cert",
+	               &s_wireless_sec->phase2_ca_cert);
+	fill_one_cert (connection,
+	               s_wireless_sec,
+	               "nma-path-phase2-client-cert",
+	               &s_wireless_sec->phase2_client_cert);
+	fill_one_cert (connection,
+	               s_wireless_sec,
+	               "nma-path-phase2-private-key",
+	               &s_wireless_sec->phase2_private_key);
+}
+
+void
+applet_dbus_settings_connection_clear_filled_certs (NMConnection *connection)
+{
+	NMSettingWirelessSecurity *s_wireless_sec;
+
+	g_return_if_fail (connection != NULL);
+
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
+	if (!s_wireless_sec)
+		return;
+
+	clear_one_byte_array_field (&s_wireless_sec->ca_cert);
+	clear_one_byte_array_field (&s_wireless_sec->client_cert);
+	clear_one_byte_array_field (&s_wireless_sec->private_key);
+	clear_one_byte_array_field (&s_wireless_sec->phase2_ca_cert);
+	clear_one_byte_array_field (&s_wireless_sec->phase2_client_cert);
+	clear_one_byte_array_field (&s_wireless_sec->phase2_private_key);
+}
+
+
 enum {
 	SETTINGS_NEW_SECRETS_REQUESTED,
 	SETTINGS_LAST_SIGNAL
@@ -503,7 +618,10 @@ applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_co
 
 	fill_vpn_user_name (applet_connection->connection);
 
+	applet_dbus_settings_connection_fill_certs (applet_connection->connection);
 	settings = nm_connection_to_hash (applet_connection->connection);
+	applet_dbus_settings_connection_clear_filled_certs (applet_connection->connection);
+
 	nm_connection_settings_signal_updated (NM_CONNECTION_SETTINGS (applet_connection), settings);
 	g_hash_table_destroy (settings);
 	return TRUE;
@@ -663,7 +781,9 @@ GHashTable *applet_dbus_connection_settings_get_settings (NMConnectionSettings *
 	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
 	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
 
+	applet_dbus_settings_connection_fill_certs (applet_connection->connection);
 	settings = nm_connection_to_hash (applet_connection->connection);
+	applet_dbus_settings_connection_clear_filled_certs (applet_connection->connection);
 
 	return settings;
 }

@@ -27,6 +27,11 @@
 #include <nm-connection.h>
 #include <nm-settings.h>
 
+/* helpers */
+void applet_dbus_settings_connection_fill_certs (NMConnection *connection);
+void applet_dbus_settings_connection_clear_filled_certs (NMConnection *connection);
+
+
 #define APPLET_TYPE_DBUS_CONNECTION_SETTINGS    (applet_dbus_connection_settings_get_type ())
 #define APPLET_IS_DBUS_CONNECTION_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_DBUS_CONNECTION_SETTINGS))
 #define APPLET_DBUS_CONNECTION_SETTINGS(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), APPLET_TYPE_DBUS_CONNECTION_SETTINGS, AppletDbusConnectionSettings))

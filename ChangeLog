@@ -1,5 +1,36 @@
 2007-10-19  Dan Williams  <dcbw@redhat.com>
 
+	The applet needs to save only _paths_ to certificates, not the actual
+	contents itself.  NetworkManager needs the contents though, so keep track
+	of the paths in GConf and then put the contents of a certificate into the
+	connection right before sending it back to NetworkManager.
+
+	* src/gconf-helpers/gconf-helpers.c
+		- (read_one_setting_value_from_gconf): intercept and read certificate
+			paths
+		- (copy_one_setting_value_to_gconf): intercept and write certificate
+			paths
+
+	* src/applet-dbus-settings.c
+	  src/applet-dbus-settings.h
+		- (applet_dbus_settings_connection_fill_certs): read certificate files
+			and stuff their contents into the connection object
+		- (applet_dbus_settings_connection_clear_filled_certs): clear out
+			certificate contents from the connection object
+		- (applet_dbus_connection_settings_changed,
+		   applet_dbus_connection_settings_get_settings): convert paths to
+			certificate contents when needed
+
+	* src/wireless-security/eap-method-ttls.c
+	  src/wireless-security/eap-method-tls.c
+		- (fill_connection): save paths, not certificate contents
+
+	* src/applet.c
+		- (other_wireless_response_cb, get_secrets_dialog_response_cb): convert
+			paths to certificate contents when needed
+
+2007-10-19  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.glade
 	  src/wireless-security/eap-method-tls.c
 		- Allow hiding of the private key password

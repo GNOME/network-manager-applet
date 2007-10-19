@@ -119,29 +119,6 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 	eap_method_unref (eap);
 }
 
-static GByteArray *
-file_to_g_byte_array (const char *filename)
-{
-	char *contents;
-	GByteArray *array;
-	gsize length = 0;
-
-	if (!g_file_get_contents (filename, &contents, &length, NULL))
-		return NULL;
-
-	array = g_byte_array_sized_new (length);
-	if (!array)
-		return NULL;
-
-	g_byte_array_append (array, contents, length);
-	if (array->len != length) {
-		g_byte_array_free (array, TRUE);
-		array = NULL;
-	}
-
-	return array;
-}
-
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
@@ -173,7 +150,9 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	widget = glade_xml_get_widget (parent->xml, "eap_ttls_ca_cert_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	s_wireless_sec->ca_cert = file_to_g_byte_array (filename);
+	g_object_set_data_full (G_OBJECT (connection),
+	                        "nma-path-ca-cert", g_strdup (filename),
+	                        (GDestroyNotify) g_free);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_ttls_inner_auth_combo");
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));

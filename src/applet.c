@@ -1251,6 +1251,7 @@ other_wireless_response_cb (GtkDialog *dialog,
                             gint response,
                             gpointer user_data)
 {
+	NMApplet *applet = NM_APPLET (user_data);
 	NMConnection *connection;
 	NMDevice *device = NULL;
 	NMSettingConnection *s_con;
@@ -1273,9 +1274,11 @@ other_wireless_response_cb (GtkDialog *dialog,
 	}
 
 	// Do something
+	applet_dbus_settings_connection_fill_certs (connection);
 	nm_connection_dump (connection);
 	if (!nm_connection_verify (connection))
 		g_message ("INVALID");
+	applet_dbus_settings_connection_clear_filled_certs (connection);
 
 done:
 	gtk_widget_hide (GTK_WIDGET (dialog));
@@ -3097,7 +3100,10 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	info.connection = connection;
 	nm_setting_enumerate_values (setting, save_secrets_to_keyring, &info);
 
+	applet_dbus_settings_connection_fill_certs (connection);
 	setting_hash = nm_setting_to_hash (setting);
+	applet_dbus_settings_connection_clear_filled_certs (connection);
+
 	if (!setting_hash) {
 		g_warning ("%s.%d (%s): failed to hash setting '%s'.",
 		           __FILE__, __LINE__, __func__);
