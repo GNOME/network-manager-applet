@@ -27,6 +27,19 @@
 #include "wireless-security.h"
 
 static void
+show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
+{
+	GtkWidget *widget;
+	gboolean visible;
+
+	widget = glade_xml_get_widget (method->xml, "eap_tls_private_key_password_entry");
+	g_assert (widget);
+
+	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
+}
+
+static void
 destroy (EAPMethod *parent)
 {
 	EAPMethodTLS *method = (EAPMethodTLS *) parent;
@@ -109,29 +122,6 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 	gtk_size_group_add_widget (group, widget);
 }
 
-static GByteArray *
-file_to_g_byte_array (const char *filename)
-{
-	char *contents;
-	GByteArray *array;
-	gsize length = 0;
-
-	if (!g_file_get_contents (filename, &contents, &length, NULL))
-		return NULL;
-
-	array = g_byte_array_sized_new (length);
-	if (!array)
-		return NULL;
-
-	g_byte_array_append (array, (unsigned char *) contents, length);
-	if (array->len != length) {
-		g_byte_array_free (array, TRUE);
-		array = NULL;
-	}
-
-	return array;
-}
-
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
@@ -156,17 +146,23 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_user_cert_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	s_wireless_sec->client_cert = file_to_g_byte_array (filename);
+	g_object_set_data_full (G_OBJECT (connection),
+	                        "nma-path-client-cert", g_strdup (filename),
+	                        (GDestroyNotify) g_free);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_ca_cert_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	s_wireless_sec->ca_cert = file_to_g_byte_array (filename);
+	g_object_set_data_full (G_OBJECT (connection),
+	                        "nma-path-ca-cert", g_strdup (filename),
+	                        (GDestroyNotify) g_free);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	s_wireless_sec->private_key = file_to_g_byte_array (filename);
+	g_object_set_data_full (G_OBJECT (connection),
+	                        "nma-path-private-key", g_strdup (filename),
+	                        (GDestroyNotify) g_free);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_password_entry");
 	g_assert (widget);
@@ -233,6 +229,12 @@ eap_method_tls_new (const char *glade_file, WirelessSecurity *parent)
 	setup_filepicker (xml, "eap_tls_user_cert_button", parent);
 	setup_filepicker (xml, "eap_tls_ca_cert_button", parent);
 	setup_filepicker (xml, "eap_tls_private_key_button", parent);
+
+	widget = glade_xml_get_widget (xml, "show_checkbutton");
+	g_assert (widget);
+	g_signal_connect (G_OBJECT (widget), "toggled",
+	                  (GCallback) show_toggled_cb,
+	                  method);
 
 	return method;
 }
