@@ -60,7 +60,7 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 	g_assert (entry);
 
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
-	return ((strlen (key) > 0) && (strlen (key) < 65));
+	return (key && ((strlen (key) > 0) && (strlen (key) < 65)));
 }
 
 static void
@@ -69,9 +69,11 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 	GtkWidget *widget;
 
 	widget = glade_xml_get_widget (parent->xml, "auth_method_label");
+	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 
 	widget = glade_xml_get_widget (parent->xml, "wep_passphrase_label");
+	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 }
 
@@ -108,9 +110,11 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	char *hashed;
 
 	widget = glade_xml_get_widget (parent->xml, "auth_method_combo");
+	g_assert (widget);
 	auth_alg = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
 	widget = glade_xml_get_widget (parent->xml, "wep_passphrase_entry");
+	g_assert (widget);
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 
 	hashed = wep128_passphrase_hash (key);
@@ -129,7 +133,7 @@ ws_wep_passphrase_new (const char *glade_file)
 
 	xml = glade_xml_new (glade_file, "wep_passphrase_notebook", NULL);
 	if (xml == NULL) {
-		g_warning ("Couldn't get wep_key_widget from glade xml");
+		g_warning ("Couldn't get wep_passphrase_widget from glade xml");
 		return NULL;
 	}
 
