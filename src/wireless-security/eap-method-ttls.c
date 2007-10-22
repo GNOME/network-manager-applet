@@ -61,7 +61,6 @@ validate_filepicker (GladeXML *xml, const char *name)
 static gboolean
 validate (EAPMethod *parent)
 {
-	EAPMethodTTLS *method = (EAPMethodTTLS *) parent;
 	GtkWidget *widget;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -122,7 +121,6 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
-	EAPMethodTTLS *method = (EAPMethodTTLS *) parent;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GtkWidget *widget;
 	const char *text;

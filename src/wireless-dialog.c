@@ -291,7 +291,6 @@ create_device_model (NMClient *client, NMDevice *use_this_device, guint32 *num)
 		devices = nm_client_get_devices (client);
 		for (iter = devices; iter; iter = g_slist_next (iter)) {
 			NMDevice *dev = (NMDevice *) iter->data;
-			char *name;
 
 			/* Ignore unsupported devices */
 			if (!(nm_device_get_capabilities (dev) & NM_DEVICE_CAP_NM_SUPPORTED))

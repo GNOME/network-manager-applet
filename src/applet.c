@@ -2783,8 +2783,10 @@ out:
 static void
 add_hash_to_ap (NMAccessPoint *ap)
 {
-	char *hash = ap_hash (ap);
-	g_object_set_data_full (G_OBJECT (ap), "hash", hash, (GDestroyNotify) g_free);
+	guchar *hash = ap_hash (ap);
+	g_object_set_data_full (G_OBJECT (ap),
+	                        "hash", hash,
+	                        (GDestroyNotify) g_free);
 }
 
 static void
@@ -3128,7 +3130,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 
 	if (!setting_hash) {
 		g_warning ("%s.%d (%s): failed to hash setting '%s'.",
-		           __FILE__, __LINE__, __func__);
+		           __FILE__, __LINE__, __func__, setting_name);
 		goto done;
 	}
 
@@ -3173,7 +3175,7 @@ get_connection_details (AppletDbusConnectionSettings *applet_connection,
 	}
 
 	if (!act_con)
-		return;
+		return NULL;
 
 	device = NM_DEVICE (act_con->devices->data);
 	if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
