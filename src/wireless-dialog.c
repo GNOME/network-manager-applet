@@ -414,6 +414,16 @@ security_combo_init (const char *glade_file,
 		}
 	}
 
+	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+		WirelessSecurityDynamicWEP *ws_dynamic_wep;
+
+		ws_dynamic_wep = ws_dynamic_wep_new (glade_file);
+		if (ws_dynamic_wep) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
+			                   &iter, _("Dynamic WEP (802.1x)"));
+		}
+	}
+
 	if (   nm_utils_security_valid (NMU_SEC_WPA_PSK, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;

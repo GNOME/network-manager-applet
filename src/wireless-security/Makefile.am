@@ -15,6 +15,8 @@ libwireless_security_la_SOURCES = \
 	ws-leap.c \
 	ws-wpa-eap.h \
 	ws-wpa-eap.c \
+	ws-dynamic-wep.h \
+	ws-dynamic-wep.c \
 	eap-method.h \
 	eap-method.c \
 	eap-method-tls.h \
