@@ -81,6 +81,7 @@ GType wireless_security_get_g_type (void);
 #include "ws-wpa-psk.h"
 #include "ws-leap.h"
 #include "ws-wpa-eap.h"
+#include "ws-dynamic-wep.h"
 
 void wireless_security_init (WirelessSecurity *sec,
                              WSValidateFunc validate,
@@ -97,6 +98,30 @@ void ws_wep_fill_connection (NMConnection *connection,
                              gint auth_alg);
 
 void ws_wpa_fill_default_ciphers (NMConnection *connection);
+
+#define AUTH_NAME_COLUMN   0
+#define AUTH_METHOD_COLUMN 1
+
+GtkWidget *ws_802_1x_auth_combo_init (WirelessSecurity *sec,
+                                      const char *glade_file,
+                                      const char *combo_name,
+                                      GCallback auth_combo_changed_cb);
+
+void ws_802_1x_auth_combo_changed (GtkWidget *combo,
+                                   WirelessSecurity *sec,
+                                   const char *vbox_name,
+                                   GtkSizeGroup *size_group);
+
+gboolean ws_802_1x_validate (WirelessSecurity *sec, const char *combo_name);
+
+void ws_802_1x_add_to_size_group (WirelessSecurity *sec,
+                                  GtkSizeGroup *size_group,
+                                  const char *label_name,
+                                  const char *combo_name);
+
+void ws_802_1x_fill_connection (WirelessSecurity *sec,
+                                const char *combo_name,
+                                NMConnection *connection);
 
 #endif /* WIRELESS_SECURITY_H */
 
