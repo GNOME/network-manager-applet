@@ -1255,11 +1255,16 @@ other_wireless_response_cb (GtkDialog *dialog,
 	NMConnection *connection;
 	NMDevice *device = NULL;
 	NMSettingConnection *s_con;
+	AppletDbusConnectionSettings *exported_con = NULL;
+	const char *con_path;
 
 	if (response != GTK_RESPONSE_OK)
 		goto done;
 
 	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device);
+	// FIXME: find a compatible connection in the current connection list before adding
+	// a new connection
+
 	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
 	if (!s_con->name) {
 		NMSettingWireless *s_wireless;
@@ -1270,15 +1275,32 @@ other_wireless_response_cb (GtkDialog *dialog,
 		s_con->name = g_strdup_printf ("Auto %s", ssid);
 		g_free (ssid);
 
+		// FIXME: don't autoconnect until the connection is successful at least once
 		s_con->autoconnect = TRUE;
 	}
 
-	// Do something
-	applet_dbus_settings_connection_fill_certs (connection);
-	nm_connection_dump (connection);
-	if (!nm_connection_verify (connection))
+	if (!exported_con) {
+		exported_con = applet_dbus_settings_add_connection (APPLET_DBUS_SETTINGS (applet->settings),
+		                                                    connection);
+		if (!exported_con) {
+			nm_warning ("Couldn't create other network connection.");
+			goto done;
+		}
+	}
+
+	if (!nm_connection_verify (connection)) {
 		g_message ("INVALID");
-	applet_dbus_settings_connection_clear_filled_certs (connection);
+		goto done;
+	}
+
+	con_path = nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
+	nm_client_activate_device (applet->nm_client,
+	                           device,
+	                           NM_DBUS_SERVICE_USER_SETTINGS,
+	                           con_path,
+	                           NULL,
+	                           activate_device_cb,
+	                           applet);
 
 done:
 	gtk_widget_hide (GTK_WIDGET (dialog));
