@@ -1,5 +1,17 @@
 2007-10-23  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+		- (match_cipher, security_compatible): remove, use
+			nm_utils_ap_security_compatible() from libnm-util
+		- (nm_ap_check_compatible): check BSSID too
+		- (save_secrets_to_keyring): remove
+		- (get_secrets_dialog_response_cb): save entire connection to GConf
+			rather than just saving secrets, allows the user to change security
+			settings for APs for which NM can't determine the security
+			(LEAP and Dynamic WEP) and also switch EAP methods correctly
+
+2007-10-23  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-dbus-settings.c
 	  src/applet-dbus-settings.h
 		- (applet_dbus_settings_get_by_connection): new function; return the

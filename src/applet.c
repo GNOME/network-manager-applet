@@ -441,131 +441,6 @@ device_menu_item_info_destroy (gpointer data)
 }
 
 static gboolean
-match_cipher (const char * cipher,
-              const char * expected,
-              guint32 wpa_flags,
-              guint32 rsn_flags,
-              guint32 flag)
-{
-	if (strcmp (cipher, expected) != 0)
-		return FALSE;
-
-	if (!(wpa_flags & flag) && !(rsn_flags & flag))
-		return FALSE;
-
-	return TRUE;
-}
-
-static gboolean
-security_compatible (NMAccessPoint *ap,
-                     NMConnection *connection,
-                     NMSettingWireless *s_wireless)
-{
-	NMSettingWirelessSecurity *s_wireless_sec;
-	int mode;
-	guint32 flags = nm_access_point_get_flags (ap);
-	guint32 wpa_flags = nm_access_point_get_wpa_flags (ap);
-	guint32 rsn_flags = nm_access_point_get_rsn_flags (ap);
-	
-	if (!s_wireless->security) {
-		if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
-		    || (wpa_flags != NM_802_11_AP_SEC_NONE)
-		    || (rsn_flags != NM_802_11_AP_SEC_NONE))
-			return FALSE;
-		return TRUE;
-	}
-
-	if (strcmp (s_wireless->security, "802-11-wireless-security") != 0)
-		return FALSE;
-
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, "802-11-wireless-security");
-	if (s_wireless_sec == NULL || !s_wireless_sec->key_mgmt)
-		return FALSE;
-
-	/* Static WEP */
-	if (!strcmp (s_wireless_sec->key_mgmt, "none")) {
-		if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
-		    || (wpa_flags != NM_802_11_AP_SEC_NONE)
-		    || (rsn_flags != NM_802_11_AP_SEC_NONE))
-			return FALSE;
-		return TRUE;
-	}
-
-	/* Adhoc WPA */
-	mode = nm_access_point_get_mode (ap);
-	if (!strcmp (s_wireless_sec->key_mgmt, "wpa-none")) {
-		if (mode != IW_MODE_ADHOC)
-			return FALSE;
-		// FIXME: validate ciphers if the BSSID actually puts WPA/RSN IE in
-		// it's beacon
-		return TRUE;
-	}
-
-	/* Stuff after this point requires infrastructure */
-	if (mode != IW_MODE_INFRA)
-		return FALSE;
-
-	/* Dynamic WEP or LEAP/Network EAP */
-	if (!strcmp (s_wireless_sec->key_mgmt, "ieee8021x")) {
-		// FIXME: should we allow APs that advertise WPA/RSN support here?
-		if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
-		    || (wpa_flags != NM_802_11_AP_SEC_NONE)
-		    || (rsn_flags != NM_802_11_AP_SEC_NONE))
-			return FALSE;
-		return TRUE;
-	}
-
-	/* WPA[2]-PSK */
-	if (!strcmp (s_wireless_sec->key_mgmt, "wpa-psk")) {
-		GSList * elt;
-		gboolean found = FALSE;
-
-		if (!s_wireless_sec->pairwise || !s_wireless_sec->group)
-			return FALSE;
-
-		if (   !(wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
-		    && !(rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK))
-			return FALSE;
-
-		// FIXME: should handle WPA and RSN separately here to ensure that
-		// if the Connection only uses WPA we don't match a cipher against
-		// the AP's RSN IE instead
-
-		/* Match at least one pairwise cipher with AP's capability */
-		for (elt = s_wireless_sec->pairwise; elt; elt = g_slist_next (elt)) {
-			if ((found = match_cipher (elt->data, "tkip", wpa_flags, rsn_flags, NM_802_11_AP_SEC_PAIR_TKIP)))
-				break;
-			if ((found = match_cipher (elt->data, "ccmp", wpa_flags, rsn_flags, NM_802_11_AP_SEC_PAIR_CCMP)))
-				break;
-		}
-		if (!found)
-			return FALSE;
-
-		/* Match at least one group cipher with AP's capability */
-		for (elt = s_wireless_sec->group; elt; elt = g_slist_next (elt)) {
-			if ((found = match_cipher (elt->data, "wep40", wpa_flags, rsn_flags, NM_802_11_AP_SEC_GROUP_WEP40)))
-				break;
-			if ((found = match_cipher (elt->data, "wep104", wpa_flags, rsn_flags, NM_802_11_AP_SEC_GROUP_WEP104)))
-				break;
-			if ((found = match_cipher (elt->data, "tkip", wpa_flags, rsn_flags, NM_802_11_AP_SEC_GROUP_TKIP)))
-				break;
-			if ((found = match_cipher (elt->data, "ccmp", wpa_flags, rsn_flags, NM_802_11_AP_SEC_GROUP_CCMP)))
-				break;
-		}
-		if (!found)
-			return FALSE;
-
-		return TRUE;
-	}
-
-	if (!strcmp (s_wireless_sec->key_mgmt, "wpa-eap")) {
-		// FIXME: implement
-	}
-
-	return FALSE;
-}
-
-static gboolean
 nm_ap_check_compatible (NMAccessPoint *ap,
                         NMConnection *connection)
 {
@@ -585,7 +460,14 @@ nm_ap_check_compatible (NMAccessPoint *ap,
 	if (!nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
 		return FALSE;
 
-	// FIXME: BSSID check
+	if (s_wireless->bssid) {
+		const struct ether_addr ap_addr;
+
+		if (ether_aton_r (nm_access_point_get_hw_address (ap), &ap_addr)) {
+			if (memcmp (s_wireless->bssid->data, &ap_addr, ETH_ALEN))
+				return FALSE;
+		}
+	}
 
 	mode = nm_access_point_get_mode (ap);
 	if (s_wireless->mode) {
@@ -610,7 +492,11 @@ nm_ap_check_compatible (NMAccessPoint *ap,
 
 	// FIXME: channel check
 
-	return security_compatible (ap, connection, s_wireless);
+	return nm_utils_ap_security_compatible (connection,
+	                                        nm_access_point_get_flags (ap),
+	                                        nm_access_point_get_wpa_flags (ap),
+	                                        nm_access_point_get_rsn_flags (ap),
+	                                        nm_access_point_get_mode (ap));
 }
 
 static GSList *
@@ -3033,49 +2919,6 @@ foo_client_setup (NMApplet *applet)
 		g_idle_add (foo_set_initial_state, applet);
 }
 
-typedef struct {
-	NMApplet *applet;
-	NMConnection *connection;
-} SaveSecretsInfo;
-
-static void
-save_secrets_to_keyring (NMSetting *setting,
-                         const char *key,
-                         guint32 type,
-                         void *value,
-                         gboolean is_secret,
-                         gpointer user_data)
-{
-	SaveSecretsInfo *info = (SaveSecretsInfo *) user_data;
-	NMSettingConnection *s_con;
-	GnomeKeyringAttributeList *attributes;
-	char *name = NULL;
-	guint32 id = 0;
-	const char *secret;
-	int ret;
-
-	if (!is_secret || (type != NM_S_TYPE_STRING))
-		return;
-
-	secret = *((const char **) value);
-	if (!secret || !strlen (secret))
-		return;
-
-	s_con = (NMSettingConnection *) nm_connection_get_setting (info->connection, NM_SETTING_CONNECTION);
-	g_assert (s_con);
-
-	attributes = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attributes, "connection-name", s_con->name);
-	gnome_keyring_attribute_list_append_string (attributes, "setting-name", setting->name);
-	gnome_keyring_attribute_list_append_string (attributes, "setting-key", key);
-
-	name = g_strdup_printf ("Network secret for %s/%s/%s", s_con->name, setting->name, key);
-	ret = gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                                name, attributes, secret, TRUE, &id);
-	g_free (name);
-	gnome_keyring_attribute_list_free (attributes);
-}
-
 static void
 get_secrets_dialog_response_cb (GtkDialog *dialog,
                                 gint response,
@@ -3083,12 +2926,12 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	DBusGMethodInvocation *context;
+	AppletDbusConnectionSettings *applet_connection;
 	NMConnection *connection = NULL;
 	NMDevice *device = NULL;
 	GHashTable *setting_hash;
 	const char *setting_name;
 	NMSetting *setting;
-	SaveSecretsInfo info;
 
 	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
 	setting_name = g_object_get_data (G_OBJECT (dialog), "setting-name");
@@ -3119,10 +2962,9 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		goto done;
 	}
 
-	memset (&info, 0, sizeof (info));
-	info.applet = applet;
-	info.connection = connection;
-	nm_setting_enumerate_values (setting, save_secrets_to_keyring, &info);
+	applet_connection = applet_dbus_settings_get_by_connection (APPLET_DBUS_SETTINGS (applet->settings), connection);
+	if (applet_connection)
+		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (applet_connection));
 
 	applet_dbus_settings_connection_fill_certs (connection);
 	setting_hash = nm_setting_to_hash (setting);
