@@ -357,6 +357,26 @@ applet_dbus_settings_get_by_dbus_path (AppletDbusSettings *applet_settings,
 	return NULL;
 }
 
+AppletDbusConnectionSettings *
+applet_dbus_settings_get_by_connection (AppletDbusSettings *applet_settings,
+                                        NMConnection *connection)
+{
+	GSList *elt;
+
+	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
+
+	for (elt = applet_settings->connections; elt; elt = g_slist_next (elt)) {
+		NMConnection *list_con;
+
+		list_con = applet_dbus_connection_settings_get_connection (elt->data);
+		if (connection == list_con)
+			return APPLET_DBUS_CONNECTION_SETTINGS (elt->data);
+	}
+
+	return NULL;
+}
+
 static AppletDbusConnectionSettings *
 applet_dbus_settings_get_by_gconf_path (AppletDbusSettings *applet_settings,
                                         const char *path)
