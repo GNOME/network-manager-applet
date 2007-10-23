@@ -41,6 +41,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netinet/ether.h>
 
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
@@ -461,7 +462,7 @@ nm_ap_check_compatible (NMAccessPoint *ap,
 		return FALSE;
 
 	if (s_wireless->bssid) {
-		const struct ether_addr ap_addr;
+		struct ether_addr ap_addr;
 
 		if (ether_aton_r (nm_access_point_get_hw_address (ap), &ap_addr)) {
 			if (memcmp (s_wireless->bssid->data, &ap_addr, ETH_ALEN))
