@@ -1,5 +1,12 @@
 2007-10-23  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet-dbus-settings.c
+		- (applet_dbus_connection_settings_changed): don't update a connection
+			and send out the updated signal unless the connection is really
+			updated
+
+2007-10-23  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (match_cipher, security_compatible): remove, use
 			nm_utils_ap_security_compatible() from libnm-util

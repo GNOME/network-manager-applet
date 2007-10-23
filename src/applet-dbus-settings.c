@@ -627,6 +627,10 @@ applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_co
 		goto invalid;
 	}
 
+	/* Ignore the GConf update if nothing changed */
+	if (nm_connection_compare (applet_connection->connection, connection) == FALSE)
+		return;
+
 	if (applet_connection->connection)
 		g_object_unref (applet_connection->connection);
 	applet_connection->connection = connection;
