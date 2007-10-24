@@ -35,6 +35,7 @@
 #include <string.h>
 #include <iwlib.h>
 
+#include <nm-utils.h>
 #include "menu-items.h"
 #include "nm-access-point.h"
 
@@ -232,20 +233,18 @@ nm_network_menu_item_class_init (NMNetworkMenuItemClass * klass)
 void
 nm_network_menu_item_set_ssid (NMNetworkMenuItem * item, GByteArray * ssid)
 {
-	char * display_ssid = NULL;
-	char buf[IW_ESSID_MAX_SIZE + 1];
+	char *display_ssid = NULL;
 
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (ssid != NULL);
 
-	memset (buf, 0, sizeof (buf));
-	memcpy (buf, ssid->data, MIN (ssid->len, sizeof (buf) - 1));
-	display_ssid = nm_menu_network_escape_essid_for_display (buf);
-	if (display_ssid) {
+	display_ssid = nm_utils_ssid_to_utf8 (ssid->data, ssid->len);
+	if (!display_ssid) {
+		// FIXME: shouldn't happen; always coerce the SSID to _something_
+		gtk_label_set_text (GTK_LABEL (item->ssid), "<unknown>");
+	} else {
 		gtk_label_set_text (GTK_LABEL (item->ssid), display_ssid);
 		g_free (display_ssid);
-	} else {
-		gtk_label_set_text (GTK_LABEL (item->ssid), "");
 	}
 }
 
@@ -341,53 +340,3 @@ nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 	item->dupes = g_slist_prepend (item->dupes, g_strdup (path));
 }
 
-/****************************************************************
- *   Utility stuff
- ****************************************************************/
-
-/* This is copied from eel.
- */
-static char *eel_make_valid_utf8 (const char *name)
-{
-	GString *string;
-	const char *rem, *invalid;
-	int remaining_bytes, valid_bytes;
-
-	string = NULL;
-	rem = name;
-	remaining_bytes = strlen (name);
-
-	while (remaining_bytes != 0) {
-		if (g_utf8_validate (rem, remaining_bytes, &invalid)) {
-			break;
-		}
-		valid_bytes = invalid - rem;
-
-		if (string == NULL) {
-			string = g_string_sized_new (remaining_bytes);
-		}
-		g_string_append_len (string, rem, valid_bytes);
-		g_string_append_c (string, '?');
-
-		remaining_bytes -= valid_bytes + 1;
-		rem = invalid + 1;
-	}
-
-	if (string == NULL) {
-		return g_strdup (name);
-	}
-
-	g_string_append (string, rem);
-	g_string_append (string, _(" (invalid Unicode)"));
-	g_assert (g_utf8_validate (string->str, -1, NULL));
-
-	return g_string_free (string, FALSE);
-}
-
-char *nm_menu_network_escape_essid_for_display (const char *essid)
-{
-	if (g_utf8_validate (essid, -1, NULL))
-		return g_strdup (essid);
-	else
-		return eel_make_valid_utf8 (essid);
-}
