@@ -2572,13 +2572,21 @@ add_seen_bssid (AppletDbusConnectionSettings *connection,
 	gboolean added = FALSE;
 	char *lower_bssid;
 	GSList *iter;
+	const char *bssid;
 	
 	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection->connection,
 	                                                              NM_SETTING_WIRELESS);
 	if (!s_wireless)
 		return FALSE;
 
-	lower_bssid = g_ascii_strdown (nm_access_point_get_hw_address (ap), -1);
+	bssid = nm_access_point_get_hw_address (ap);
+	if (!bssid)
+		return FALSE;
+
+	lower_bssid = g_ascii_strdown (bssid, -1);
+	if (!lower_bssid)
+		return FALSE;
+
 	for (iter = s_wireless->seen_bssids; iter; iter = g_slist_next (iter)) {
 		char *lower_seen_bssid = g_ascii_strdown (iter->data, -1);
 
