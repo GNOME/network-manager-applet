@@ -525,7 +525,7 @@ add_ciphers_from_flags (guint32 flags, gboolean pairwise)
 }
 
 static NMSettingWirelessSecurity *
-get_security_for_ap (NMAccessPoint *ap, gboolean *supported)
+get_security_for_ap (NMAccessPoint *ap, guint32 dev_caps, gboolean *supported)
 {
 	NMSettingWirelessSecurity *sec;
 	int mode;
@@ -550,6 +550,7 @@ get_security_for_ap (NMAccessPoint *ap, gboolean *supported)
 	    && (rsn_flags == NM_802_11_AP_SEC_NONE))
 		goto none;
 
+	/* Static WEP, Dynamic WEP, or LEAP */
 	if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
 	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
 	    && (rsn_flags == NM_802_11_AP_SEC_NONE)) {
@@ -565,20 +566,46 @@ get_security_for_ap (NMAccessPoint *ap, gboolean *supported)
 	}
 
 	/* WPA2 PSK first */
-	if (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK) {
+	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
+	    && (dev_caps & NM_802_11_DEVICE_CAP_RSN)) {
 		sec->key_mgmt = g_strdup ("wpa-psk");
 		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
-		sec->pairwise = add_ciphers_from_flags (rsn_flags, FALSE);
-		sec->group = add_ciphers_from_flags (rsn_flags, TRUE);
+		sec->pairwise = add_ciphers_from_flags (rsn_flags, TRUE);
+		sec->group = add_ciphers_from_flags (rsn_flags, FALSE);
 		return sec;
 	}
 
 	/* WPA PSK */
-	if (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK) {
+	if (   (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
+	    && (dev_caps & NM_802_11_DEVICE_CAP_WPA)) {
 		sec->key_mgmt = g_strdup ("wpa-psk");
 		sec->proto = g_slist_append (sec->proto, g_strdup ("wpa"));
-		sec->pairwise = add_ciphers_from_flags (wpa_flags, FALSE);
-		sec->group = add_ciphers_from_flags (wpa_flags, TRUE);
+		sec->pairwise = add_ciphers_from_flags (wpa_flags, TRUE);
+		sec->group = add_ciphers_from_flags (wpa_flags, FALSE);
+		return sec;
+	}
+
+	/* WPA2 Enterprise */
+	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
+	    && (dev_caps & NM_802_11_DEVICE_CAP_RSN)) {
+		sec->key_mgmt = g_strdup ("wpa-eap");
+		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
+		sec->pairwise = add_ciphers_from_flags (rsn_flags, TRUE);
+		sec->group = add_ciphers_from_flags (rsn_flags, FALSE);
+		sec->eap = g_slist_append (sec->eap, g_strdup ("ttls"));
+		sec->phase2_auth = g_strdup ("mschapv2");
+		return sec;
+	}
+
+	/* WPA Enterprise */
+	if (   (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
+	    && (dev_caps & NM_802_11_DEVICE_CAP_WPA)) {
+		sec->key_mgmt = g_strdup ("wpa-eap");
+		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
+		sec->pairwise = add_ciphers_from_flags (wpa_flags, TRUE);
+		sec->group = add_ciphers_from_flags (wpa_flags, FALSE);
+		sec->eap = g_slist_append (sec->eap, g_strdup ("ttls"));
+		sec->phase2_auth = g_strdup ("mschapv2");
 		return sec;
 	}
 
@@ -677,6 +704,7 @@ new_auto_wireless_setting (NMConnection *connection,
 	char buf[33];
 	int buf_len;
 	int mode;
+	guint32 dev_caps;
 	gboolean supported = TRUE;
 
 	s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
@@ -703,9 +731,9 @@ new_auto_wireless_setting (NMConnection *connection,
 	else
 		g_assert_not_reached ();
 
-	s_wireless_sec = get_security_for_ap (ap, &supported);
+	dev_caps = nm_device_802_11_wireless_get_capabilities (device);
+	s_wireless_sec = get_security_for_ap (ap, dev_caps, &supported);
 	if (!supported) {
-		// FIXME: support WPA/WPA2 Enterprise and Dynamic WEP
 		nm_setting_destroy ((NMSetting *) s_wireless);
 		s_wireless = NULL;
 	} else if (s_wireless_sec) {

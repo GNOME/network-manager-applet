@@ -1,3 +1,12 @@
+2007-10-24  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (get_security_for_ap): don't allow options the device can't do; fix
+			the 'pairwise' argument in calls to add_ciphers_from_flags(); 
+			implement the WPA[2] Enterprise bits
+		- (new_auto_wireless_setting): pass the device capabilities to
+			get_security_for_ap()
+
 2007-10-23  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-dbus-settings.c
