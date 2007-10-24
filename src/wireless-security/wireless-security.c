@@ -19,6 +19,7 @@
  * (C) Copyright 2007 Red Hat, Inc.
  */
 
+#include <string.h>
 
 #include <glib.h>
 #include <gtk/gtk.h>
