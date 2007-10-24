@@ -1,5 +1,29 @@
 2007-10-24  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-security/wireless-security.c
+	  src/wireless-security/wireless-security.h
+		- (ws_802_1x_auth_combo_init): add a 'default_method' argument used to
+			pick the default EAP method when shown to the user
+
+	* src/wireless-security/ws-dynamic-wep.c
+	  src/wireless-security/ws-dynamic-wep.h
+	  src/wireless-security/ws-wpa-eap.c
+	  src/wireless-security/ws-wpa-eap.h
+		- Handle 'default_method' argument
+
+	* src/wireless-dialog.c
+		- (device_combo_changed): pass NMConnection to security_combo_init() if
+			available
+		- (get_default_type_for_security): determine the default overall
+			security type for a specific connection to better show defaults
+			in the UI
+		- (security_combo_init): pick the right default security based on 
+			the given NMConnection, if any; if the AP is capable of WPA or WPA2
+			then don't show the static WEP or LEAP options; pass the connection
+			along to the WPA-EAP and Dynamic WEP security items
+
+2007-10-24  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (get_security_for_ap): don't allow options the device can't do; fix
 			the 'pairwise' argument in calls to add_ciphers_from_flags(); 

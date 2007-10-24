@@ -86,7 +86,7 @@ auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 }
 
 WirelessSecurityWPAEAP *
-ws_wpa_eap_new (const char *glade_file)
+ws_wpa_eap_new (const char *glade_file, const char *default_method)
 {
 	WirelessSecurityWPAEAP *sec;
 	GtkWidget *widget;
@@ -120,7 +120,8 @@ ws_wpa_eap_new (const char *glade_file)
 	widget = ws_802_1x_auth_combo_init (WIRELESS_SECURITY (sec),
 	                                    glade_file,
 	                                    "wpa_eap_auth_combo",
-	                                    (GCallback) auth_combo_changed_cb);
+	                                    (GCallback) auth_combo_changed_cb,
+	                                    default_method);
 	auth_combo_changed_cb (widget, (gpointer) sec);
 
 	return sec;

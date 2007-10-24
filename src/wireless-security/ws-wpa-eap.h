@@ -28,7 +28,8 @@ typedef struct {
 	GtkSizeGroup *size_group;
 } WirelessSecurityWPAEAP;
 
-WirelessSecurityWPAEAP * ws_wpa_eap_new (const char *glade_file);
+WirelessSecurityWPAEAP * ws_wpa_eap_new (const char *glade_file,
+                                         const char *default_method);
 
 #endif /* WS_WPA_EAP_H */
 

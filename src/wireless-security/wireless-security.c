@@ -292,7 +292,8 @@ GtkWidget *
 ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                            const char *glade_file,
                            const char *combo_name,
-                           GCallback auth_combo_changed_cb)
+                           GCallback auth_combo_changed_cb,
+                           const char *default_method)
 {
 	GtkWidget *combo;
 	GtkListStore *auth_model;
@@ -300,6 +301,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	EAPMethodTLS *em_tls;
 	EAPMethodLEAP *em_leap;
 	EAPMethodTTLS *em_ttls;
+	int active = -1;
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
@@ -310,6 +312,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	                    AUTH_METHOD_COLUMN, em_tls,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_tls));
+	if (default_method && (active < 0) && !strcmp (default_method, "tls"))
+		active = 0;
 
 	em_leap = eap_method_leap_new (glade_file, sec);
 	gtk_list_store_append (auth_model, &iter);
@@ -318,6 +322,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	                    AUTH_METHOD_COLUMN, em_leap,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_leap));
+	if (default_method && (active < 0) && !strcmp (default_method, "leap"))
+		active = 1;
 
 	em_ttls = eap_method_ttls_new (glade_file, sec);
 	gtk_list_store_append (auth_model, &iter);
@@ -326,13 +332,15 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	                    AUTH_METHOD_COLUMN, em_ttls,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_ttls));
+	if (default_method && (active < 0) && !strcmp (default_method, "ttls"))
+		active = 2;
 
 	combo = glade_xml_get_widget (sec->xml, combo_name);
 	g_assert (combo);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (auth_model));
 	g_object_unref (G_OBJECT (auth_model));
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), active < 0 ? 0 : (guint32) active);
 
 	g_signal_connect (G_OBJECT (combo), "changed", auth_combo_changed_cb, sec);
 

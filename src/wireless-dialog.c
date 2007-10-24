@@ -48,7 +48,8 @@ static void security_combo_changed (GtkWidget *combo, gpointer user_data);
 static gboolean security_combo_init (const char *glade_file,
                                      GtkWidget *combo,
                                      NMDevice *device,
-                                     GtkWidget *dialog);
+                                     GtkWidget *dialog,
+                                     NMConnection *connection);
 
 static void
 device_combo_changed (GtkWidget *combo,
@@ -61,6 +62,7 @@ device_combo_changed (GtkWidget *combo,
 	const char *glade_file;
 	GtkWidget *security_combo;
 	GladeXML *xml;
+	NMConnection *connection;
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
@@ -72,9 +74,11 @@ device_combo_changed (GtkWidget *combo,
 	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
 	g_assert (xml);
 
+	connection = g_object_get_data (G_OBJECT (dialog), "connection");
+
 	security_combo = glade_xml_get_widget (xml, "security_combo");
 	g_assert (security_combo);
-	if (!security_combo_init (glade_file, security_combo, device, dialog)) {
+	if (!security_combo_init (glade_file, security_combo, device, dialog, connection)) {
 		g_message ("Couldn't change wireless security combo box.");
 		return;
 	}
@@ -326,6 +330,57 @@ destroy_device_model (GtkTreeModel *model)
 	g_object_unref (model);
 }
 
+static NMUtilsSecurityType
+get_default_type_for_security (NMSettingWirelessSecurity *sec,
+                               guint32 ap_flags,
+                               guint32 dev_caps)
+{
+	g_return_val_if_fail (sec != NULL, NMU_SEC_NONE);
+
+	/* No IEEE 802.1x */
+	if (!strcmp (sec->key_mgmt, "none")) {
+		/* None */
+		if (   strcmp (sec->auth_alg, "shared")
+		    && !sec->wep_tx_keyidx
+		    && !sec->wep_key0
+		    && !sec->wep_key1
+		    && !sec->wep_key2
+		    && !sec->wep_key3
+		    && !(ap_flags & NM_802_11_AP_FLAGS_PRIVACY))
+			return NMU_SEC_NONE;
+
+		/* Static WEP */
+		return NMU_SEC_STATIC_WEP;
+	}
+
+	if (   !strcmp (sec->key_mgmt, "ieee8021x")
+	    && (ap_flags & NM_802_11_AP_FLAGS_PRIVACY)) {
+		if (!strcmp (sec->auth_alg, "leap"))
+			return NMU_SEC_LEAP;
+		return NMU_SEC_DYNAMIC_WEP;
+	}
+
+	if (   !strcmp (sec->key_mgmt, "wpa-none")
+	    || !strcmp (sec->key_mgmt, "wpa-psk")) {
+		if (ap_flags & NM_802_11_AP_FLAGS_PRIVACY) {
+			if (!strcmp (sec->proto->data, "rsn"))
+				return NMU_SEC_WPA2_PSK;
+			else if (!strcmp (sec->proto->data, "wpa"))
+				return NMU_SEC_WPA_PSK;
+		}
+	}
+
+	if (   !strcmp (sec->key_mgmt, "wpa-eap")
+	    && (ap_flags & NM_802_11_AP_FLAGS_PRIVACY)) {
+			if (!strcmp (sec->proto->data, "rsn"))
+				return NMU_SEC_WPA2_ENTERPRISE;
+			else if (!strcmp (sec->proto->data, "wpa"))
+				return NMU_SEC_WPA_ENTERPRISE;
+	}
+
+	return NMU_SEC_INVALID;
+}
+
 static void
 add_security_item (GtkWidget *dialog,
                    WirelessSecurity *sec,
@@ -343,7 +398,8 @@ static gboolean
 security_combo_init (const char *glade_file,
                      GtkWidget *combo,
                      NMDevice *device,
-                     GtkWidget *dialog)
+                     GtkWidget *dialog,
+                     NMConnection *connection)
 {
 	GtkListStore *sec_model;
 	GtkTreeIter iter;
@@ -352,6 +408,10 @@ security_combo_init (const char *glade_file,
 	guint32 ap_wpa = 0;
 	guint32 ap_rsn = 0;
 	guint32 dev_caps;
+	NMSettingWirelessSecurity *wsec = NULL;
+	NMUtilsSecurityType default_type = NMU_SEC_NONE;
+	int active = -1;
+	int item = 0;
 
 	g_return_val_if_fail (combo != NULL, FALSE);
 	g_return_val_if_fail (glade_file != NULL, FALSE);
@@ -371,6 +431,11 @@ security_combo_init (const char *glade_file,
 		ap_rsn = nm_access_point_get_rsn_flags (cur_ap);
 	}
 
+	if (connection) {
+		wsec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
+		default_type = get_default_type_for_security (wsec, ap_flags, dev_caps);
+	}
+
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
 
 	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
@@ -378,9 +443,15 @@ security_combo_init (const char *glade_file,
 		gtk_list_store_set (sec_model, &iter,
 		                    S_NAME_COLUMN, _("None"),
 		                    -1);
+		if (default_type == NMU_SEC_NONE)
+			active = item;
 	}
 
-	if (nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+	/* Don't show Static WEP if both the AP and the device are capable of WPA,
+	 * even though technically it's possible to have this configuration.
+	 */
+	if (   nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)
+	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_802_11_DEVICE_CAP_WPA | NM_802_11_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep_hex;
 		WirelessSecurityWEPKey *ws_wep_ascii;
 		WirelessSecurityWEPPassphrase *ws_wep_passphrase;
@@ -389,38 +460,52 @@ security_combo_init (const char *glade_file,
 		if (ws_wep_passphrase) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_passphrase), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
+				active = item++;
 		}
 
 		ws_wep_hex = ws_wep_key_new (glade_file, WEP_KEY_TYPE_HEX);
 		if (ws_wep_hex) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_hex), sec_model,
 			                   &iter, _("WEP 40/128-bit Hexadecimal"));
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
+				active = item++;
 		}
 
 		ws_wep_ascii = ws_wep_key_new (glade_file, WEP_KEY_TYPE_ASCII);
 		if (ws_wep_ascii) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_ascii), sec_model,
 			                   &iter, _("WEP 40/128-bit ASCII"));
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
+				active = item++;
 		}
 	}
 
-	if (nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+	/* Don't show LEAP if both the AP and the device are capable of WPA,
+	 * even though technically it's possible to have this configuration.
+	 */
+	if (   nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)
+	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_802_11_DEVICE_CAP_WPA | NM_802_11_DEVICE_CAP_RSN)))) {
 		WirelessSecurityLEAP *ws_leap;
 
 		ws_leap = ws_leap_new (glade_file);
 		if (ws_leap) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
+			if ((active < 0) && (default_type == NMU_SEC_LEAP))
+				active = item++;
 		}
 	}
 
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (glade_file);
+		ws_dynamic_wep = ws_dynamic_wep_new (glade_file, wsec ? wsec->eap->data : NULL);
 		if (ws_dynamic_wep) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
+			if ((active < 0) && (default_type == NMU_SEC_DYNAMIC_WEP))
+				active = item++;
 		}
 	}
 
@@ -432,6 +517,8 @@ security_combo_init (const char *glade_file,
 		if (ws_wpa_psk) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA Pre-Shared Key"));
+			if ((active < 0) && ((default_type == NMU_SEC_WPA_PSK) || (default_type == NMU_SEC_WPA2_PSK)))
+				active = item++;
 		}
 	}
 
@@ -439,15 +526,17 @@ security_combo_init (const char *glade_file,
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (glade_file);
+		ws_wpa_eap = ws_wpa_eap_new (glade_file, wsec ? wsec->eap->data : NULL);
 		if (ws_wpa_eap) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
+			if ((active < 0) && ((default_type == NMU_SEC_WPA_ENTERPRISE) || (default_type == NMU_SEC_WPA2_ENTERPRISE)))
+				active = item++;
 		}
 	}
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (sec_model));
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), active < 0 ? 0 : (guint32) active);
 	g_object_unref (G_OBJECT (sec_model));
 	return TRUE;
 }
@@ -456,7 +545,8 @@ static gboolean
 dialog_init (GtkWidget *dialog,
              GladeXML *xml,
              NMClient *nm_client,
-             const char *glade_file)
+             const char *glade_file,
+             NMConnection *connection)
 {
 	GtkWidget *widget;
 	GtkSizeGroup *group;
@@ -469,7 +559,7 @@ dialog_init (GtkWidget *dialog,
 	gboolean security_combo_focus = FALSE;
 
 	/* If given a valid connection, hide the SSID bits */
-	if (g_object_get_data (G_OBJECT (dialog), "connection")) {
+	if (connection) {
 		widget = glade_xml_get_widget (xml, "network_name_label");
 		g_assert (widget);
 		gtk_widget_hide (widget);
@@ -528,7 +618,7 @@ dialog_init (GtkWidget *dialog,
 
 	widget = glade_xml_get_widget (xml, "security_combo");
 	g_assert (widget);
-	if (!security_combo_init (glade_file, widget, dev, dialog)) {
+	if (!security_combo_init (glade_file, widget, dev, dialog, connection)) {
 		g_message ("Couldn't set up wireless security combo box.");
 		goto out;
 	}
@@ -675,7 +765,7 @@ nma_wireless_dialog_new (const char *glade_file,
 		                        (GDestroyNotify) g_object_unref);
 	}
 
-	success = dialog_init (dialog, xml, nm_client, glade_file);
+	success = dialog_init (dialog, xml, nm_client, glade_file, connection);
 	if (!success) {
 		nm_warning ("Couldn't create wireless security dialog.");
 		gtk_widget_destroy (dialog);
