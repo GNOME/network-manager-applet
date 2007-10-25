@@ -50,28 +50,74 @@ static gboolean applet_dbus_connection_settings_changed (AppletDbusConnectionSet
                                                          GConfEntry *entry);
 
 
+static const char *pem_cert_begin = "-----BEGIN CERTIFICATE-----";
+static const char *pem_cert_end = "-----END CERTIFICATE-----";
+
+static const char *
+find_tag (const char *tag, const char *buf, gsize len)
+{
+	gsize i, taglen;
+
+	taglen = strlen (tag);
+	if (len < taglen)
+		return NULL;
+
+	for (i = 0; i < len - taglen; i++) {
+		if (memcmp (buf + i, tag, taglen) == 0)
+			return buf + i;
+	}
+	return NULL;
+}
+
 static GByteArray *
 file_to_g_byte_array (const char *filename)
 {
-	char *contents;
+	char *contents, *der = NULL;
 	GByteArray *array;
 	gsize length = 0;
+	const char *pos;
 
 	if (!g_file_get_contents (filename, &contents, &length, NULL)) {
 		g_warning ("Unable to read contents of %s", filename);
 		return NULL;
 	}
 
-	array = g_byte_array_sized_new (length);
-	if (!array)
-		return NULL;
+	pos = find_tag (pem_cert_begin, contents, length);
+	if (pos) {
+		const char *end;
 
-	g_byte_array_append (array, (unsigned char *) contents, length);
+		pos += strlen (pem_cert_begin);
+		end = find_tag (pem_cert_end, pos, contents + length - pos);
+		if (end == NULL) {
+			g_warning ("PEM certificate '%s' had no end tag '%s'.",
+			           filename, pem_cert_end);
+			goto done;
+		}
+
+		contents[end - contents - 1] = '\0';
+		der = g_base64_decode (pos, &length);
+		if (der == NULL || !length) {
+			g_warning ("Could not decode certificate to binary data.");
+			goto done;
+		}
+	}
+
+	array = g_byte_array_sized_new (length);
+	if (!array) {
+		g_warning ("Not enough memory to store certificate binary data.");
+		goto done;
+	}
+
+	g_byte_array_append (array, der ? (unsigned char *) der : (unsigned char *) contents, length);
 	if (array->len != length) {
+		g_warning ("Couldn't append binary certificate data to array.");
 		g_byte_array_free (array, TRUE);
 		array = NULL;
 	}
 
+done:
+	g_free (der);
+	g_free (contents);
 	return array;
 }
 
@@ -105,6 +151,8 @@ fill_one_cert (NMConnection *connection,
 		return;
 
 	*field = file_to_g_byte_array (filename);
+	if (!*field)
+		g_warning ("Couldn't read certificate '%s'.");
 }
 
 void
