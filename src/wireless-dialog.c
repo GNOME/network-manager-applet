@@ -500,7 +500,7 @@ security_combo_init (const char *glade_file,
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (glade_file, wsec ? wsec->eap->data : NULL);
+		ws_dynamic_wep = ws_dynamic_wep_new (glade_file, (wsec && wsec->eap) ? wsec->eap->data : NULL);
 		if (ws_dynamic_wep) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
@@ -526,7 +526,7 @@ security_combo_init (const char *glade_file,
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (glade_file, wsec ? wsec->eap->data : NULL);
+		ws_wpa_eap = ws_wpa_eap_new (glade_file, (wsec && wsec->eap) ? wsec->eap->data : NULL);
 		if (ws_wpa_eap) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
