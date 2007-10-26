@@ -952,13 +952,12 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 		goto get_secrets;
 	}
 
+	secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
+
 	for (elt = found_list; elt != NULL; elt = elt->next) {
 		GnomeKeyringFound *found = (GnomeKeyringFound *) elt->data;
 		int i;
 		const char * key_name = NULL;
-
-		if (!secrets)
-			secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
 
 		for (i = 0; i < found->attributes->len; i++) {
 			GnomeKeyringAttribute *attr;
@@ -975,7 +974,6 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 			g_hash_table_insert (secrets,
 			                     g_strdup (key_name),
 			                     string_to_gvalue (found->secret));
-			dbus_g_method_return (context, secrets);
 		} else {
 			nm_warning ("Keyring item '%s/%s' didn't have a 'setting-key' attribute.",
 			            s_con->name, setting_name);
@@ -986,9 +984,20 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 			g_error_free (error);
 		}
 
-		if (secrets)
-			g_hash_table_destroy (secrets);
 	}
+
+	/* Send the secrets back to NM */
+	if (g_hash_table_size (secrets) > 0) {
+		dbus_g_method_return (context, secrets);
+	} else {
+		nm_warning ("Keyring items were found for setting '%s' but none were "
+		            "valid.", setting_name);
+		error = nm_settings_new_error ("%s.%d - Secrets were found but none"
+		                               " were valid." __FILE__, __LINE__);
+		dbus_g_method_return_error (context, error);
+		g_error_free (error);
+	}
+	g_hash_table_destroy (secrets);
 
 	gnome_keyring_found_list_free (found_list);
 	return;
