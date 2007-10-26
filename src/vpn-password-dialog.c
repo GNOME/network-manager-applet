@@ -35,6 +35,7 @@
 #include "vpn-password-dialog.h"
 #include "nm-utils.h"
 #include <nm-connection.h>
+#include <nm-settings.h>
 
 
 typedef struct {
@@ -175,6 +176,7 @@ nma_vpn_request_password (NMConnection *connection,
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
 	gboolean success = FALSE;
+	GError *error = NULL;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
@@ -190,8 +192,12 @@ nma_vpn_request_password (NMConnection *connection,
 
 	/* find the auth-dialog binary */
 	auth_dialog_binary = find_auth_dialog_binary (s_vpn->service_type, s_con->name);
-	if (!auth_dialog_binary)
+	if (!auth_dialog_binary) {
+		error = nm_settings_new_error ("%s.%d (%s): couldn't find VPN auth "
+		                               "dialog  helper program.",
+		                               __FILE__, __LINE__, __func__);
 		goto out;
+	}
 
 	/* Fix up parameters with what we got */
 	argv[0] = auth_dialog_binary;
@@ -227,6 +233,8 @@ nma_vpn_request_password (NMConnection *connection,
 							  s_vpn->service_type);
 		gtk_window_present (GTK_WINDOW (dialog));
 		g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+		error = nm_settings_new_error ("%s.%d (%s): couldn't run VPN auth dialog",
+		                               __FILE__, __LINE__, __func__);
 		goto out;
 	}
 
@@ -274,8 +282,10 @@ nma_vpn_request_password (NMConnection *connection,
 		}
 		dbus_g_method_return (context, secrets);
 		g_hash_table_destroy (secrets);
-
 		success = TRUE;
+	} else {
+		error = nm_settings_new_error ("%s.%d (%s): canceled", __FILE__,
+		                               __LINE__, __func__);
 	}
 
 	g_slist_foreach (io_user_data.lines, (GFunc) g_free, NULL);
@@ -283,6 +293,11 @@ nma_vpn_request_password (NMConnection *connection,
 
  out:
 	g_free (auth_dialog_binary);
+
+	if (error) {
+		dbus_g_method_return_error (context, error);
+		g_error_free (error);
+	}
 
 	return success;
 }

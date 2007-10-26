@@ -2969,19 +2969,18 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	GHashTable *setting_hash;
 	const char *setting_name;
 	NMSetting *setting;
+	GError *error = NULL;
 
 	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
 	setting_name = g_object_get_data (G_OBJECT (dialog), "setting-name");
 	if (!context || !setting_name) {
 		g_warning ("%s.%d (%s): couldn't get dialog data.", __FILE__, __LINE__, __func__);
+		error = nm_settings_new_error ("%s.%d (%s): couldn't get dialog data", __FILE__, __LINE__, __func__);
 		goto done;
 	}
 
 	if (response != GTK_RESPONSE_OK) {
-		GError *error;
 		error = nm_settings_new_error ("%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
-		dbus_g_method_return_error (context, error);
-		g_error_free (error);
 		goto done;
 	}
 
@@ -2989,6 +2988,9 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	if (!connection) {
 		g_warning ("%s.%d (%s): couldn't get connection from the wireless "
 		           "dialog.", __FILE__, __LINE__, __func__);
+		error = nm_settings_new_error ("%s.%d (%s): couldn't get connection "
+		                               "from wireless dialog.",
+		                               __FILE__, __LINE__, __func__);
 		goto done;
 	}
 
@@ -2996,6 +2998,9 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	if (!setting) {
 		g_warning ("%s.%d (%s): requested setting '%s' didn't exist in the "
 		           "connection.", __FILE__, __LINE__, __func__, setting_name);
+		error = nm_settings_new_error ("%s.%d (%s): requested setting '%s' "
+		                               "didn't exist in the connection.",
+		                               __FILE__, __LINE__, __func__);
 		goto done;
 	}
 
@@ -3010,6 +3015,8 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	if (!setting_hash) {
 		g_warning ("%s.%d (%s): failed to hash setting '%s'.",
 		           __FILE__, __LINE__, __func__, setting_name);
+		error = nm_settings_new_error ("%s.%d (%s): failed to has setting '%s'.",
+		                               __FILE__, __LINE__, __func__);
 		goto done;
 	}
 
@@ -3017,6 +3024,11 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	g_hash_table_destroy (setting_hash);
 
 done:
+	if (error) {
+		dbus_g_method_return_error (context, error);
+		g_error_free (error);
+	}
+
 	if (connection)
 		nm_connection_clear_secrets (connection);
 	gtk_widget_hide (GTK_WIDGET (dialog));
