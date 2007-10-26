@@ -183,6 +183,14 @@ ws_wpa_psk_new (const char *glade_file)
 	                  (GCallback) show_toggled_cb,
 	                  sec);
 
+	widget = glade_xml_get_widget (xml, "wpa_psk_type_combo");
+	g_assert (widget);
+	gtk_widget_hide (widget);
+
+	widget = glade_xml_get_widget (xml, "wpa_psk_type_label");
+	g_assert (widget);
+	gtk_widget_hide (widget);
+
 	return sec;
 }
 
