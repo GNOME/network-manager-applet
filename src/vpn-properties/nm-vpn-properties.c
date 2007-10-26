@@ -284,8 +284,11 @@ vpn_druid_vpn_validity_changed (NetworkManagerVpnUI *vpn_ui,
 static inline void
 clear_vpn_details_widget (void)
 {
-    if (vpn_details_widget) {
-		gtk_widget_unparent (vpn_details_widget);
+	if (vpn_details_widget) {
+		GtkWidget *parent = gtk_widget_get_parent (vpn_details_widget);
+
+		if (parent)
+			gtk_container_remove (GTK_CONTAINER (parent), vpn_details_widget);
 		vpn_details_widget = NULL;
 	}
 }
@@ -299,7 +302,7 @@ vpn_druid_vpn_type_page_next (void *druidpage,
 	clear_vpn_details_widget ();
 	current_vpn_ui = (NetworkManagerVpnUI *) g_slist_nth_data (vpn_types, gtk_combo_box_get_active (vpn_type_combo_box));
 	vpn_details_widget = current_vpn_ui->get_widget (current_vpn_ui, NULL);
-	gtk_widget_reparent (vpn_details_widget, GTK_WIDGET (vpn_type_details));
+	gtk_container_add (GTK_CONTAINER (vpn_type_details), vpn_details_widget);
 
 	current_vpn_ui->set_validity_changed_callback (current_vpn_ui, vpn_druid_vpn_validity_changed, NULL);
 
@@ -630,7 +633,7 @@ edit_cb (GtkButton *button, gpointer user_data)
 	vpn_ui->set_validity_changed_callback (vpn_ui,
 	                                       vpn_edit_vpn_validity_changed,
 	                                       NULL);
-	gtk_widget_reparent (vpn_details_widget, GTK_WIDGET (edit_dialog->vbox));
+	gtk_container_add (GTK_CONTAINER (edit_dialog->vbox), vpn_details_widget);
 	gtk_widget_show (vpn_details_widget);
 
 	gtk_window_set_policy (GTK_WINDOW (edit_dialog), FALSE, FALSE, TRUE);
