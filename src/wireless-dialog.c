@@ -339,23 +339,23 @@ get_default_type_for_security (NMSettingWirelessSecurity *sec,
 
 	/* No IEEE 802.1x */
 	if (!strcmp (sec->key_mgmt, "none")) {
-		/* None */
-		if (   strcmp (sec->auth_alg, "shared")
-		    && !sec->wep_tx_keyidx
-		    && !sec->wep_key0
-		    && !sec->wep_key1
-		    && !sec->wep_key2
-		    && !sec->wep_key3
-		    && !(ap_flags & NM_802_11_AP_FLAGS_PRIVACY))
-			return NMU_SEC_NONE;
-
 		/* Static WEP */
-		return NMU_SEC_STATIC_WEP;
+		if (   sec->wep_tx_keyidx
+		    || sec->wep_key0
+		    || sec->wep_key1
+		    || sec->wep_key2
+		    || sec->wep_key3
+		    || (ap_flags & NM_802_11_AP_FLAGS_PRIVACY)
+		    || (sec->auth_alg && !strcmp (sec->auth_alg, "shared")))
+			return NMU_SEC_STATIC_WEP;
+
+		/* Unencrypted */
+		return NMU_SEC_NONE;
 	}
 
 	if (   !strcmp (sec->key_mgmt, "ieee8021x")
 	    && (ap_flags & NM_802_11_AP_FLAGS_PRIVACY)) {
-		if (!strcmp (sec->auth_alg, "leap"))
+		if (sec->auth_alg && !strcmp (sec->auth_alg, "leap"))
 			return NMU_SEC_LEAP;
 		return NMU_SEC_DYNAMIC_WEP;
 	}
