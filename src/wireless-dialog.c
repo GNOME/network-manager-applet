@@ -363,18 +363,22 @@ get_default_type_for_security (NMSettingWirelessSecurity *sec,
 	if (   !strcmp (sec->key_mgmt, "wpa-none")
 	    || !strcmp (sec->key_mgmt, "wpa-psk")) {
 		if (ap_flags & NM_802_11_AP_FLAGS_PRIVACY) {
-			if (!strcmp (sec->proto->data, "rsn"))
+			if (sec->proto && !strcmp (sec->proto->data, "rsn"))
 				return NMU_SEC_WPA2_PSK;
-			else if (!strcmp (sec->proto->data, "wpa"))
+			else if (sec->proto && !strcmp (sec->proto->data, "wpa"))
+				return NMU_SEC_WPA_PSK;
+			else
 				return NMU_SEC_WPA_PSK;
 		}
 	}
 
 	if (   !strcmp (sec->key_mgmt, "wpa-eap")
 	    && (ap_flags & NM_802_11_AP_FLAGS_PRIVACY)) {
-			if (!strcmp (sec->proto->data, "rsn"))
+			if (sec->proto && !strcmp (sec->proto->data, "rsn"))
 				return NMU_SEC_WPA2_ENTERPRISE;
-			else if (!strcmp (sec->proto->data, "wpa"))
+			else if (sec->proto && !strcmp (sec->proto->data, "wpa"))
+				return NMU_SEC_WPA_ENTERPRISE;
+			else
 				return NMU_SEC_WPA_ENTERPRISE;
 	}
 
