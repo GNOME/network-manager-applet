@@ -3134,6 +3134,35 @@ applet_settings_new_secrets_requested_cb (AppletDbusSettings *settings,
 	gtk_window_present (GTK_WINDOW (dialog));
 }
 
+
+static void
+applet_add_default_ethernet_connection (AppletDbusSettings *settings)
+{
+	GSList *connections;
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+	NMSettingWired *s_wired;
+	AppletDbusConnectionSettings *applet_connection;
+
+	connections = applet_dbus_settings_list_connections (settings);
+	if (g_slist_length (connections) > 0)
+		return;
+
+	connection = nm_connection_new ();
+
+	s_con = (NMSettingConnection *) nm_setting_connection_new ();
+	s_con->name = g_strdup ("Auto Ethernet");
+	s_con->type = g_strdup ("802-3-ethernet");
+	s_con->autoconnect = TRUE;
+
+	s_wired = (NMSettingWired *) nm_setting_wired_new ();
+
+	nm_connection_add_setting (connection, (NMSetting *) s_wired);
+	nm_connection_add_setting (connection, (NMSetting *) s_con);
+
+	applet_dbus_settings_add_connection (settings, connection);
+}
+
 /*****************************************************************************/
 
 /*
@@ -3196,7 +3225,10 @@ static void nma_finalize (GObject *object)
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
 
-static GObject *nma_constructor (GType type, guint n_props, GObjectConstructParam *construct_props)
+static GObject *
+nma_constructor (GType type,
+                 guint n_props,
+                 GObjectConstructParam *construct_props)
 {
 	NMApplet *applet;
 	AppletDBusManager * dbus_mgr;
@@ -3241,6 +3273,8 @@ static GObject *nma_constructor (GType type, guint n_props, GObjectConstructPara
 	g_signal_connect (G_OBJECT (applet->settings), "new-secrets-requested",
 	                  (GCallback) applet_settings_new_secrets_requested_cb,
 	                  applet);
+
+	applet_add_default_ethernet_connection ((AppletDbusSettings *) applet->settings);
 
     /* Start our DBus service */
     if (!applet_dbus_manager_start_service (dbus_mgr)) {

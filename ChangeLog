@@ -1,6 +1,13 @@
 2007-10-26  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
+		- (nma_constructor, applet_add_default_ethernet_connection): add a
+			default ethernet connection if no connections were found.  Helps
+			out livecds.
+
+2007-10-26  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
 	  vpn-password-dialog.c
 		- Ensure errors are returned to NM when something goes wrong with
 			the GetSecrets request, or when the VPN auth dialog is
