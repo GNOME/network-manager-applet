@@ -852,6 +852,13 @@ nma_send_event_notification (NMApplet *applet,
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (message != NULL);
 
+#ifdef HAVE_STATUS_ICON
+#if (GTK_MAJOR_VERSION >= 2 && GTK_MINOR_VERSION >= 11)
+	if (!gtk_status_icon_is_embedded (applet->status_icon))
+		return;
+#endif
+#endif
+
 	if (!notify_is_initted ())
 		notify_init ("NetworkManager");
 
