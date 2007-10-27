@@ -73,7 +73,7 @@ static GByteArray *
 file_to_g_byte_array (const char *filename)
 {
 	char *contents, *der = NULL;
-	GByteArray *array;
+	GByteArray *array = NULL;
 	gsize length = 0;
 	const char *pos;
 
@@ -95,7 +95,7 @@ file_to_g_byte_array (const char *filename)
 		}
 
 		contents[end - contents - 1] = '\0';
-		der = g_base64_decode (pos, &length);
+		der = (char *) g_base64_decode (pos, &length);
 		if (der == NULL || !length) {
 			g_warning ("Could not decode certificate to binary data.");
 			goto done;
@@ -152,7 +152,7 @@ fill_one_cert (NMConnection *connection,
 
 	*field = file_to_g_byte_array (filename);
 	if (!*field)
-		g_warning ("Couldn't read certificate '%s'.");
+		g_warning ("Couldn't read certificate '%s'.", filename);
 }
 
 void
