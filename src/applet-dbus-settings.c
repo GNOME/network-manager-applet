@@ -28,7 +28,6 @@
 #include "applet-dbus-manager.h"
 #include "gconf-helpers.h"
 #include "nm-utils.h"
-#include "password-dialog.h"
 #include "vpn-password-dialog.h"
 #include "applet-marshal.h"
 
