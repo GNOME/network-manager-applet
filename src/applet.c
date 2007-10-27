@@ -181,7 +181,7 @@ nma_update_info (NMApplet *applet)
 	GtkWidget *label;
 	NMDevice *device;
 	NMIP4Config *cfg;
-	int speed;
+	guint32 speed;
 	char *str;
 	char *iface_and_type;
 	GArray *dns;
@@ -201,10 +201,14 @@ nma_update_info (NMApplet *applet)
 	cfg = nm_device_get_ip4_config (device);
 
 	speed = 0;
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+	if (NM_IS_DEVICE_802_3_ETHERNET (device)) {
+		/* Wireless speed in Mb/s */
 		speed = nm_device_802_3_ethernet_get_speed (NM_DEVICE_802_3_ETHERNET (device));
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
+	} else if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+		/* Wireless speed in b/s */
 		speed = nm_device_802_11_wireless_get_bitrate (NM_DEVICE_802_11_WIRELESS (device));
+		speed /= 1000000;
+	}
 
 	str = nm_device_get_iface (device);
 	if (NM_IS_DEVICE_802_3_ETHERNET (device))
@@ -222,7 +226,7 @@ nma_update_info (NMApplet *applet)
 
 	label = get_label (info_dialog, applet->info_dialog_xml, "label-speed");
 	if (speed) {
-		str = g_strdup_printf (_("%d Mb/s"), speed);
+		str = g_strdup_printf (_("%u Mb/s"), speed);
 		gtk_label_set_text (GTK_LABEL (label), str);
 		g_free (str);
 	} else
