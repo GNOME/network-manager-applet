@@ -628,10 +628,28 @@ dialog_init (GtkWidget *dialog,
 	security_combo_changed (widget, dialog);
 	g_signal_connect (G_OBJECT (widget), "changed", GTK_SIGNAL_FUNC (security_combo_changed), dialog);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Other Wireless Network"));
-	label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
-	                         _("Existing wireless network"),
-	                         _("Enter the name of the wireless network to which you wish to connect."));
+	if (connection) {
+		char *tmp;
+		char *esc_ssid = NULL;
+		NMSettingWireless *s_wireless;
+
+		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
+		if (s_wireless && s_wireless->ssid)
+			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
+
+		tmp = g_strdup_printf (_("Passwords or encryption keys are required to access the wireless network '%s'."),
+		                       esc_ssid ? esc_ssid : "<unknown>");
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Wireless Network Secrets Required"));
+		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
+		                         _("Secrets required by wireless network"),
+		                         tmp);
+		g_free (esc_ssid);
+	} else {
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Other Wireless Network"));
+		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
+		                         _("Existing wireless network"),
+		                         _("Enter the name of the wireless network to which you wish to connect."));
+	}
 
 	widget = glade_xml_get_widget (xml, "caption_label");
 	gtk_label_set_markup (GTK_LABEL (widget), label);
