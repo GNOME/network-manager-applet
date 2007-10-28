@@ -119,7 +119,7 @@ load_connections (NMConnectionList *list)
 
 	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
 
-	conf_list = gconf_client_all_dirs (list->client, GCONF_PATH_CONNECTIONS, NULL);
+	conf_list = nm_gconf_get_all_connections (list->client);
 	if (!conf_list) {
 		g_warning ("No connections defined");
 		return;

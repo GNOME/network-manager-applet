@@ -448,7 +448,7 @@ get_connections (AppletDbusSettings *applet_settings)
 	GSList *cnc_list = NULL, *conf_list;
 
 	/* get connections from GConf */
-	conf_list = gconf_client_all_dirs (applet_settings->conf_client, GCONF_PATH_CONNECTIONS, NULL);
+	conf_list = nm_gconf_get_all_connections (applet_settings->conf_client);
 	if (!conf_list) {
 		g_warning ("No connections defined");
 		return NULL;

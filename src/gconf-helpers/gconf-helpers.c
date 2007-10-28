@@ -28,6 +28,7 @@
 #include <gnome-keyring.h>
 
 #include "gconf-helpers.h"
+#include "gconf-upgrade.h"
 
 
 gboolean
@@ -147,6 +148,13 @@ nm_gconf_get_bool_helper (GConfClient *client,
 			*value = gconf_value_get_bool (gc_value);
 			success = TRUE;
 		}
+		else if (gc_value->type == GCONF_VALUE_STRING && !*gconf_value_get_string (gc_value))
+		{
+			/* This is a kludge to deal with VPN connections migrated from NM 0.6 */
+			*value = TRUE;
+			success = TRUE;
+		}
+
 		gconf_value_free (gc_value);
 	}
 	g_free (gc_key);
@@ -524,6 +532,20 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 
 	g_free (gc_key);
 	return TRUE;
+}
+
+GSList *
+nm_gconf_get_all_connections (GConfClient *client)
+{
+	GSList *connections;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	if (!connections) {
+		nm_gconf_migrate_0_6_connections (client);
+		connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	}
+
+	return connections;
 }
 
 typedef struct ReadFromGConfInfo {

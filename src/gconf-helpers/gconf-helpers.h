@@ -126,6 +126,9 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 			       const char *network,
 			       GHashTable *value);
 
+GSList *
+nm_gconf_get_all_connections (GConfClient *client);
+
 NMConnection *
 nm_gconf_read_connection (GConfClient *client,
                           const char *dir);

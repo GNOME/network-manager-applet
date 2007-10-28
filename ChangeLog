@@ -1,5 +1,24 @@
 2007-10-27  Dan Williams  <dcbw@redhat.com>
 
+	Patch from Dan Winship <dwinship@redhat.com>
+
+	* gconf-helpers/gconf-helpers.c
+	  gconf-helpers/gconf-helpers.h
+		- (nm_gconf_get_all_connections): convert entries if needed
+
+	* gconf-helpers/Makefile.am
+	  gconf-helpers/gconf-upgrade.c
+	  gconf-helpers/gconf-upgrade.h
+		- Convert GConf entries from old format to new format
+
+	* gconf-helpers/Makefile.am
+	  vpn-properties/nm-vpn-properties.c
+	  connection-editor/nm-connection-list.c
+		- Use nm_gconf_get_all_connections() to convert old format entries to
+			new format if needed
+
+2007-10-27  Dan Williams  <dcbw@redhat.com>
+
 	* src/Makefile.am
 	  src/password-dialog.c
 	  src/password-dialog.h

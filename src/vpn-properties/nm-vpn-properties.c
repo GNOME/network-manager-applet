@@ -773,7 +773,7 @@ static void get_all_vpn_connections (void)
 	GSList *conf_list;
 	GtkTreeIter iter;
 
-	conf_list = gconf_client_all_dirs (gconf_client, GCONF_PATH_CONNECTIONS, NULL);
+	conf_list = nm_gconf_get_all_connections (gconf_client);
 	if (!conf_list) {
 		g_warning ("No connections defined");
 		return;
