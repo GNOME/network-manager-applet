@@ -22,7 +22,11 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <nm-device.h>
+
 char * utils_bin2hexstr (const char *bytes, int len, int final_len);
+
+const char * utils_get_device_description (NMDevice *device);
 
 #endif /* UTILS_H */
 

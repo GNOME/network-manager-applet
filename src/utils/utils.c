@@ -57,4 +57,93 @@ utils_bin2hexstr (const char *bytes, int len, int final_len)
 	return result;
 }
 
+static char * vnd_ignore[] = {
+	"Semiconductor",
+	"Components",
+	"Corporation",
+	"Corp.",
+	"Corp",
+	"Inc.",
+	"Inc",
+	NULL
+};
+
+#define DESC_TAG "description"
+
+const char *
+utils_get_device_description (NMDevice *device)
+{
+	char *description = NULL;
+	char *product = NULL;
+	char *vendor = NULL;
+	char *p;
+	char **words;
+	char **item;
+	GString *str;
+	gboolean need_space = FALSE;
+
+	g_return_val_if_fail (device != NULL, NULL);
+
+	description = g_object_get_data (G_OBJECT (device), DESC_TAG);
+	if (description)
+		goto out;
+
+	product = nm_device_get_product (device);
+	vendor = nm_device_get_vendor (device);
+	if (!product || !vendor)
+		goto out;
+
+	/* Replace stupid '_' with ' ' */
+	p = product;
+	while (*p)
+		*p++ = (*p == '_') ? ' ' : *p;
+
+	p = vendor;
+	while (*p) {
+		if (*p == '_' || *p == ',')
+			*p = ' ';
+		p++;
+	}
+
+	str = g_string_new_len (NULL, strlen (vendor) + strlen (product));
+
+	/* In a futile attempt to shorten the vendor ID, ignore certain words */
+	words = g_strsplit (vendor, " ", 0);
+
+	for (item = words; *item; item++) {
+		int i = 0;
+		gboolean ignore = FALSE;
+
+		if (g_ascii_isspace (**item) || (**item == '\0'))
+			continue;
+
+		while (vnd_ignore[i] && !ignore) {
+			if (!strcmp (*item, vnd_ignore[i]))
+				ignore = TRUE;
+			i++;
+		}
+
+		if (!ignore) {
+			g_string_append (str, *item);
+			if (need_space)
+				g_string_append_c (str, ' ');
+			need_space = TRUE;
+		}
+	}
+	g_strfreev (words);
+
+	g_string_append_c (str, ' ');
+	g_string_append (str, product);
+	description = str->str;
+	g_string_free (str, FALSE);
+
+	g_object_set_data_full (G_OBJECT (device),
+	                        "description", description,
+	                        (GDestroyNotify) g_free);
+
+out:
+	g_free (product);
+	g_free (vendor);
+	return description;
+}
 

@@ -1,3 +1,21 @@
+2007-10-31  Dan Williams  <dcbw@redhat.com>
+
+	* src/utils/utils.c
+	  src/utils/utils.h
+		- (utils_get_device_description): new function; be more clever about
+			constructing the device description from the product and vendor
+			strings
+
+	* src/wireless-dialog.c
+		- (add_device_to_model): use add_device_to_model()
+
+	* src/applet.c
+		- (sort_devices): use add_device_to_model(), don't segfault if a
+			description can't be created (rh #337191)
+
+	* src/menu-items.c
+		- (add_device_to_model): use add_device_to_model()
+
 2007-10-27  Dan Williams  <dcbw@redhat.com>
 
 	Patch from Dan Winship <dwinship@redhat.com>

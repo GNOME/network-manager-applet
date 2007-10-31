@@ -46,6 +46,7 @@
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
 #include <nm-utils.h>
+#include <nm-connection.h>
 
 #include <glade/glade.h>
 #include <gconf/gconf-client.h>
@@ -62,8 +63,8 @@
 #include "gnome-keyring-md5.h"
 #include "applet-dbus-manager.h"
 #include "wireless-dialog.h"
+#include "utils.h"
 
-#include "nm-connection.h"
 #include "vpn-connection-info.h"
 #include "connection-editor/nm-connection-list.h"
 
@@ -1510,10 +1511,35 @@ sort_devices (gconstpointer a, gconstpointer b)
 	bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
 
 	if (aa_type == bb_type) {
-		char *aa_desc = nm_device_get_description (aa);
-		char *bb_desc = nm_device_get_description (bb);
+		const char *foo;
+		char *aa_desc = NULL;
+		char *bb_desc = NULL;
 		gint ret;
 
+		foo = utils_get_device_description (aa);
+		if (foo)
+			aa_desc = g_strdup (foo);
+		if (!aa_desc)
+			aa_desc = nm_device_get_iface (aa);
+
+		foo = utils_get_device_description (bb);
+		if (foo)
+			bb_desc = g_strdup (foo);
+		if (!bb_desc)
+			bb_desc = nm_device_get_iface (bb);
+
+		if (!aa_desc && bb_desc) {
+			g_free (bb_desc);
+			return -1;
+		} else if (aa_desc && !bb_desc) {
+			g_free (aa_desc);
+			return 1;
+		} else if (!aa_desc && !bb_desc) {
+			return 0;
+		}
+
+		g_assert (aa_desc);
+		g_assert (bb_desc);
 		ret = strcmp (aa_desc, bb_desc);
 
 		g_free (aa_desc);

@@ -37,6 +37,7 @@
 #include "applet.h"
 #include "wireless-dialog.h"
 #include "wireless-security.h"
+#include "utils.h"
 
 #define D_NAME_COLUMN		0
 #define D_DEV_COLUMN		1
@@ -264,9 +265,12 @@ add_device_to_model (GtkListStore *model,
                      GtkTreeIter *iter,
                      NMDevice *device)
 {
-	const char *name;
+	const char *desc;
+	char *name = NULL;
 
-	name = nm_device_get_description (device);
+	desc = utils_get_device_description (device);
+	if (desc)
+		name = g_strdup (desc);
 	if (!name)
 		name = nm_device_get_iface (device);
 

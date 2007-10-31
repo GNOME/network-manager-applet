@@ -38,6 +38,7 @@
 #include <nm-utils.h>
 #include "menu-items.h"
 #include "nm-access-point.h"
+#include "utils.h"
 
 
 /****************************************************************
@@ -55,9 +56,12 @@ wired_menu_item_new (NMDevice8023Ethernet *self,
 	g_return_val_if_fail (NM_IS_DEVICE_802_3_ETHERNET (self), NULL);
 
 	if (n_devices > 1) {
+		const char *desc;
 		char *dev_name;
 
-		dev_name = nm_device_get_description (dev);
+		desc = utils_get_device_description (dev);
+		if (desc)
+			dev_name = g_strdup (desc);
 		if (!dev_name)
 			dev_name = nm_device_get_iface (dev);
 		text = g_strdup_printf (_("Wired Network (%s)"), dev_name);
@@ -106,9 +110,12 @@ wireless_menu_item_new (NMDevice80211Wireless *device,
 	aps = nm_device_802_11_wireless_get_access_points (device);
 
 	if (n_devices > 1) {
-		char *dev_name;
+		const char *desc;
+		char *dev_name = NULL;
 
-		dev_name = nm_device_get_description (NM_DEVICE (device));
+		desc = utils_get_device_description (NM_DEVICE (device));
+		if (desc)
+			dev_name = g_strdup (desc);
 		if (!dev_name)
 			dev_name = nm_device_get_iface (NM_DEVICE (device));
 		text = g_strdup_printf (ngettext ("Wireless Network (%s)", "Wireless Networks (%s)",
