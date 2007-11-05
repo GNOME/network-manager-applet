@@ -159,17 +159,4 @@ NMApplet * nm_applet_new (void);
 
 void nma_schedule_warning_dialog (const char *msg);
 
-static inline gboolean
-nma_same_ssid (const GByteArray * ssid1, const GByteArray * ssid2)
-{
-	if (ssid1 == ssid2)
-		return TRUE;
-	if ((ssid1 && !ssid2) || (!ssid1 && ssid2))
-		return FALSE;
-	if (ssid1->len != ssid2->len)
-		return FALSE;
-
-	return memcmp (ssid1->data, ssid2->data, ssid1->len) == 0 ? TRUE : FALSE;
-}
-
 #endif
