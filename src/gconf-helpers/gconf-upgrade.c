@@ -399,11 +399,11 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	 * the connection object doesn't exist at that point. Hrmph.
 	 */
 	if (nm_gconf_get_string_helper (client, path, "wpa_eap_private_key_file", network, &private_key_path))
-		g_object_set_data_full (G_OBJECT (connection), "nma-path-private-key", private_key_path, g_free);
+		g_object_set_data_full (G_OBJECT (connection), NMA_PATH_PRIVATE_KEY_TAG, private_key_path, g_free);
 	if (nm_gconf_get_string_helper (client, path, "wpa_eap_client_cert_file", network, &client_cert_path))
-		g_object_set_data_full (G_OBJECT (connection), "nma-path-client-cert", client_cert_path, g_free);
+		g_object_set_data_full (G_OBJECT (connection), NMA_PATH_CLIENT_CERT_TAG, client_cert_path, g_free);
 	if (nm_gconf_get_string_helper (client, path, "wpa_eap_ca_cert_file", network, &ca_cert_path))
-		g_object_set_data_full (G_OBJECT (connection), "nma-path-ca-cert", ca_cert_path, g_free);
+		g_object_set_data_full (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG, ca_cert_path, g_free);
 
 	g_free (path);
 	g_free (network);

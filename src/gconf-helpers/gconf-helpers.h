@@ -28,6 +28,18 @@
 
 #define GCONF_PATH_CONNECTIONS "/system/networking/connections"
 
+#define NMA_CA_CERT_IGNORE_TAG  "nma-ca-cert-ignore"
+#define NMA_PHASE2_CA_CERT_IGNORE_TAG  "nma-phase2-ca-cert-ignore"
+
+#define NMA_PATH_CLIENT_CERT_TAG "nma-path-client-cert"
+#define NMA_PATH_PHASE2_CLIENT_CERT_TAG "nma-path-phase2-client-cert"
+
+#define NMA_PATH_CA_CERT_TAG "nma-path-ca-cert"
+#define NMA_PATH_PHASE2_CA_CERT_TAG "nma-path-phase2-ca-cert"
+
+#define NMA_PATH_PRIVATE_KEY_TAG "nma-path-private-key"
+#define NMA_PATH_PHASE2_PRIVATE_KEY_TAG "nma-path-phase2-private-key"
+
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,
 					const char *path,
