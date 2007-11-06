@@ -4,9 +4,24 @@ libutils_la_SOURCES = \
 	gnome-keyring-md5.h \
 	gnome-keyring-md5.c \
 	utils.c \
-	utils.h
+	utils.h \
+	crypto.c \
+	crypto.h
 
 libutils_la_CPPFLAGS = $(NMA_CFLAGS)
 
 libutils_la_LIBADD = $(NMA_LIBS)
+
+if WITH_GNUTLS
+libutils_la_SOURCES += crypto_gnutls.c
+libutils_la_CPPFLAGS += $(LIBGCRYPT_CFLAGS) $(GNUTLS_CFLAGS)
+libutils_la_LIBADD += $(LIBGCRYPT_LIBS) $(GNUTLS_LIBS)
+endif
+
+if WITH_NSS
+libutils_la_SOURCES += crypto_nss.c
+libutils_la_CPPFLAGS += $(NSS_CFLAGS)
+libutils_la_LIBADD += $(NSS_LIBS)
+endif
+
 

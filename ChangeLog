@@ -1,3 +1,16 @@
+2007-11-06  Dan Williams  <dcbw@redhat.com>
+
+	* src/utils/crypto.c
+	  src/utils/crypto.h
+	  src/utils/crypto_nss.c
+	  src/utils/crypto_gnutls.c
+	  src/utils/Makefile.am
+	  configure.ac
+		- Add bits to handle decoding certificates and keys, and for decrypting
+		private keys to send to the supplicant.  Implementations for NSS and
+		gnutls are provided with NSS as the default unless selected differently
+		at configure time with --with-nss=[yes|no] and --with-gnutls=[yes|no]
+
 2007-10-31  Dan Williams  <dcbw@redhat.com>
 
 	* src/utils/utils.c
