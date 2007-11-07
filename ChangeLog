@@ -1,5 +1,13 @@
 2007-11-07  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet-dbus-settings.c
+		- (find_tag, file_to_g_byte_array): remove
+		- (fill_one_object): use crypto bits to read certificates and read
+			and decrypt private keys
+		- (applet_dbus_settings_connection_fill_certs): use fill_one_object()
+
+2007-11-07  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-security/eap-method.h
 	  src/wireless-security/eap-method.c
 		- (eap_method_validate_filepicker): move validate_filepicker()

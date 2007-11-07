@@ -33,6 +33,7 @@
 #include "nm-utils.h"
 #include "vpn-password-dialog.h"
 #include "applet-marshal.h"
+#include "crypto.h"
 
 static NMConnectionSettings * applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
                                                                                    const gchar *conf_dir,
@@ -51,78 +52,6 @@ static AppletDbusConnectionSettings *applet_dbus_settings_get_by_gconf_path (App
 static gboolean applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *connection,
                                                          GConfEntry *entry);
 
-
-static const char *pem_cert_begin = "-----BEGIN CERTIFICATE-----";
-static const char *pem_cert_end = "-----END CERTIFICATE-----";
-
-static const char *
-find_tag (const char *tag, const char *buf, gsize len)
-{
-	gsize i, taglen;
-
-	taglen = strlen (tag);
-	if (len < taglen)
-		return NULL;
-
-	for (i = 0; i < len - taglen; i++) {
-		if (memcmp (buf + i, tag, taglen) == 0)
-			return buf + i;
-	}
-	return NULL;
-}
-
-static GByteArray *
-file_to_g_byte_array (const char *filename)
-{
-	char *contents, *der = NULL;
-	GByteArray *array = NULL;
-	gsize length = 0;
-	const char *pos;
-
-	if (!g_file_get_contents (filename, &contents, &length, NULL)) {
-		g_warning ("Unable to read contents of %s", filename);
-		return NULL;
-	}
-
-	pos = find_tag (pem_cert_begin, contents, length);
-	if (pos) {
-		const char *end;
-
-		pos += strlen (pem_cert_begin);
-		end = find_tag (pem_cert_end, pos, contents + length - pos);
-		if (end == NULL) {
-			g_warning ("PEM certificate '%s' had no end tag '%s'.",
-			           filename, pem_cert_end);
-			goto done;
-		}
-
-		contents[end - contents - 1] = '\0';
-		der = (char *) g_base64_decode (pos, &length);
-		if (der == NULL || !length) {
-			g_warning ("Could not decode certificate to binary data.");
-			goto done;
-		}
-	}
-
-	array = g_byte_array_sized_new (length);
-	if (!array) {
-		g_warning ("Not enough memory to store certificate binary data.");
-		goto done;
-	}
-
-	g_byte_array_append (array, der ? (unsigned char *) der : (unsigned char *) contents, length);
-	if (array->len != length) {
-		g_warning ("Couldn't append binary certificate data to array.");
-		g_byte_array_free (array, TRUE);
-		array = NULL;
-	}
-
-done:
-	g_free (der);
-	g_free (contents);
-	return array;
-}
-
 static void
 clear_one_byte_array_field (GByteArray **field)
 {
@@ -135,12 +64,17 @@ clear_one_byte_array_field (GByteArray **field)
 }
 
 static void
-fill_one_cert (NMConnection *connection,
-               NMSettingWirelessSecurity *s_wireless_sec,
-               const char *key_name,
-               GByteArray **field)
+fill_one_object (NMConnection *connection,
+                 NMSettingWirelessSecurity *s_wireless_sec,
+                 const char *key_name,
+                 gboolean is_private_key,
+                 const char *password,
+                 GByteArray **field)
 {
 	const char *filename;
+	GError *error = NULL;
+	NMSettingConnection *s_con;
+	guint32 ignore;
 
 	g_return_if_fail (s_wireless_sec != NULL);
 	g_return_if_fail (key_name != NULL);
@@ -148,13 +82,33 @@ fill_one_cert (NMConnection *connection,
 
 	clear_one_byte_array_field (field);
 
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_return_if_fail (s_con != NULL);
+
 	filename = g_object_get_data (G_OBJECT (connection), key_name);
 	if (!filename)
 		return;
 
-	*field = file_to_g_byte_array (filename);
-	if (!*field)
-		g_warning ("Couldn't read certificate '%s'.", filename);
+	if (is_private_key)
+		g_return_if_fail (password != NULL);
+
+	if (is_private_key) {
+		*field = crypto_get_private_key (filename, password, &ignore, &error);
+		if (error) {
+			g_warning ("Error: could not read private key '%s': %d %s.",
+			           filename, error->code, error->message);
+			clear_one_byte_array_field (field);
+			g_clear_error (&error);
+		}
+	} else {
+		*field = crypto_load_and_verify_certificate (filename, &error);
+		if (error) {
+			g_warning ("Error: could not read certificate '%s': %d %s.",
+			           filename, error->code, error->message);
+			clear_one_byte_array_field (field);
+			g_clear_error (&error);
+		}
+	}
 }
 
 void
@@ -169,30 +123,42 @@ applet_dbus_settings_connection_fill_certs (NMConnection *connection)
 	if (!s_wireless_sec)
 		return;
 
-	fill_one_cert (connection,
-	               s_wireless_sec,
-	               "nma-path-ca-cert",
-	               &s_wireless_sec->ca_cert);
-	fill_one_cert (connection,
-	               s_wireless_sec,
-	               "nma-path-client-cert",
-	               &s_wireless_sec->client_cert);
-	fill_one_cert (connection,
-	               s_wireless_sec,
-	               "nma-path-private-key",
-	               &s_wireless_sec->private_key);
-	fill_one_cert (connection,
-	               s_wireless_sec,
-	               "nma-path-phase2-ca-cert",
-	               &s_wireless_sec->phase2_ca_cert);
-	fill_one_cert (connection,
-	               s_wireless_sec,
-	               "nma-path-phase2-client-cert",
-	               &s_wireless_sec->phase2_client_cert);
-	fill_one_cert (connection,
-	               s_wireless_sec,
-	               "nma-path-phase2-private-key",
-	               &s_wireless_sec->phase2_private_key);
+	fill_one_object (connection,
+	                 s_wireless_sec,
+	                 "nma-path-ca-cert",
+	                 FALSE,
+	                 NULL,
+	                 &s_wireless_sec->ca_cert);
+	fill_one_object (connection,
+	                 s_wireless_sec,
+	                 "nma-path-client-cert",
+	                 FALSE,
+	                 NULL,
+	                 &s_wireless_sec->client_cert);
+	fill_one_object (connection,
+	                 s_wireless_sec,
+	                 "nma-path-private-key",
+	                 TRUE,
+	                 s_wireless_sec->private_key_passwd,
+	                 &s_wireless_sec->private_key);
+	fill_one_object (connection,
+	                 s_wireless_sec,
+	                 "nma-path-phase2-ca-cert",
+	                 FALSE,
+	                 NULL,
+	                 &s_wireless_sec->phase2_ca_cert);
+	fill_one_object (connection,
+	                 s_wireless_sec,
+	                 "nma-path-phase2-client-cert",
+	                 FALSE,
+	                 NULL,
+	                 &s_wireless_sec->phase2_client_cert);
+	fill_one_object (connection,
+	                 s_wireless_sec,
+	                 "nma-path-phase2-private-key",
+	                 TRUE,
+	                 s_wireless_sec->phase2_private_key_passwd,
+	                 &s_wireless_sec->phase2_private_key);
 }
 
 void
