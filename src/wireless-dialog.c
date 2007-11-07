@@ -33,6 +33,8 @@
 #include <nm-client.h>
 #include <nm-utils.h>
 #include <nm-device-802-11-wireless.h>
+#include <nm-setting-connection.h>
+#include <nm-setting-wireless.h>
 
 #include "applet.h"
 #include "wireless-dialog.h"
@@ -205,7 +207,7 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	connection = g_object_get_data (G_OBJECT (dialog), "connection");
 	if (connection) {
 		NMSettingWireless *s_wireless;
-		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 		g_assert (s_wireless);
 		ssid = s_wireless->ssid;
 		free_ssid = FALSE;
@@ -440,7 +442,8 @@ security_combo_init (const char *glade_file,
 	}
 
 	if (connection) {
-		wsec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
+		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+										NM_TYPE_SETTING_WIRELESS_SECURITY));
 		default_type = get_default_type_for_security (wsec, ap_flags, dev_caps);
 	}
 
@@ -641,7 +644,7 @@ dialog_init (GtkWidget *dialog,
 		char *esc_ssid = NULL;
 		NMSettingWireless *s_wireless;
 
-		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 		if (s_wireless && s_wireless->ssid)
 			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
 
@@ -692,7 +695,7 @@ nma_wireless_dialog_get_connection (GtkWidget *dialog, NMDevice **device)
 		connection = nm_connection_new ();
 
 		s_con = (NMSettingConnection *) nm_setting_connection_new ();
-		s_con->type = g_strdup (NM_SETTING_WIRELESS);
+		s_con->type = g_strdup (NM_SETTING_WIRELESS_SETTING_NAME);
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 		s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();

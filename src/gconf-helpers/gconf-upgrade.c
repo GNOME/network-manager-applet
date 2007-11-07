@@ -28,6 +28,10 @@
 #include <iwlib.h>
 #include <wireless.h>
 
+#include <nm-setting-connection.h>
+#include <nm-setting-wireless.h>
+#include <nm-setting-vpn.h>
+#include <nm-setting-vpn-properties.h>
 #include "gconf-upgrade.h"
 #include "gconf-helpers.h"
 
@@ -380,8 +384,8 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 		}
 
 		if (!s_wireless_sec) {
-			nm_setting_destroy ((NMSetting *)s_con);
-			nm_setting_destroy ((NMSetting *)s_wireless);
+			g_object_unref (s_con);
+			g_object_unref (s_wireless);
 			g_free (path);
 			g_free (network);
 			return NULL;

@@ -35,7 +35,8 @@
 #include "vpn-password-dialog.h"
 #include "nm-utils.h"
 #include <nm-connection.h>
-#include <nm-settings.h>
+#include <nm-setting-connection.h>
+#include <nm-setting-vpn.h>
 
 
 typedef struct {
@@ -180,13 +181,13 @@ nma_vpn_request_password (NMConnection *connection,
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_return_val_if_fail (s_con != NULL, FALSE);
 	g_return_val_if_fail (s_con->name != NULL, FALSE);
 	g_return_val_if_fail (s_con->type != NULL, FALSE);
 	g_return_val_if_fail (strcmp (s_con->type, "vpn") == 0, FALSE);
 
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	g_return_val_if_fail (s_vpn != NULL, FALSE);
 	g_return_val_if_fail (s_vpn->service_type != NULL, FALSE);
 

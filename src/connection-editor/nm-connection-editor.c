@@ -26,6 +26,10 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtktogglebutton.h>
+#include <nm-setting-connection.h>
+#include <nm-setting-ip4-config.h>
+#include <nm-setting-wired.h>
+#include <nm-setting-wireless.h>
 #include "nm-connection-editor.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
@@ -42,7 +46,7 @@ connection_name_changed (GtkEditable *editable, gpointer user_data)
 	NMSettingConnection *s_connection;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_connection = (NMSettingConnection *) nm_connection_get_setting (editor->connection, NM_SETTING_CONNECTION);
+	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	if (s_connection) {
 		if (s_connection->name)
 			g_free (s_connection->name);
@@ -56,7 +60,7 @@ connection_autoconnect_changed (GtkToggleButton *button, gpointer user_data)
 	NMSettingConnection *s_connection;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_connection = (NMSettingConnection *) nm_connection_get_setting (editor->connection, NM_SETTING_CONNECTION);
+	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	if (s_connection)
 		s_connection->autoconnect = gtk_toggle_button_get_active (button);
 }
@@ -67,7 +71,7 @@ ethernet_port_changed (GtkComboBox *combo, gpointer user_data)
 	NMSettingWired *s_wired;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRED);
+	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRED));
 	if (s_wired) {
 		if (s_wired->port)
 			g_free (s_wired->port);
@@ -87,7 +91,7 @@ ethernet_speed_changed (GtkSpinButton *button, gpointer user_data)
 	NMSettingWired *s_wired;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRED);
+	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRED));
 	if (s_wired)
 		s_wired->speed = gtk_spin_button_get_value_as_int (button);
 }
@@ -98,7 +102,7 @@ ethernet_duplex_changed (GtkToggleButton *button, gpointer user_data)
 	NMSettingWired *s_wired;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRED);
+	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRED));
 	if (s_wired) {
 		if (s_wired->duplex)
 			g_free (s_wired->duplex);
@@ -116,7 +120,7 @@ ethernet_autonegotiate_changed (GtkToggleButton *button, gpointer user_data)
 	NMSettingWired *s_wired;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRED);
+	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRED));
 	if (s_wired)
 		s_wired->auto_negotiate = gtk_toggle_button_get_active (button);
 }
@@ -127,7 +131,7 @@ ethernet_mtu_changed (GtkSpinButton *button, gpointer user_data)
 	NMSettingWired *s_wired;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRED);
+	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRED));
 	if (s_wired)
 		s_wired->mtu = gtk_spin_button_get_value_as_int (button);
 }
@@ -138,7 +142,7 @@ wireless_mode_changed (GtkComboBox *combo, gpointer user_data)
 	NMSettingWireless *s_wireless;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
 	if (s_wireless) {
 		if (s_wireless->mode)
 			g_free (s_wireless->mode);
@@ -156,7 +160,7 @@ wireless_band_changed (GtkComboBox *combo, gpointer user_data)
 	NMSettingWireless *s_wireless;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
 	if (s_wireless) {
 		if (s_wireless->band)
 			g_free (s_wireless->band);
@@ -174,7 +178,7 @@ wireless_channel_changed (GtkSpinButton *button, gpointer user_data)
 	NMSettingWireless *s_wireless;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
 	if (s_wireless)
 		s_wireless->channel = gtk_spin_button_get_value_as_int (button);
 }
@@ -185,7 +189,7 @@ wireless_rate_changed (GtkSpinButton *button, gpointer user_data)
 	NMSettingWireless *s_wireless;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
 	if (s_wireless)
 		s_wireless->rate = gtk_spin_button_get_value_as_int (button);
 }
@@ -196,7 +200,7 @@ wireless_tx_power_changed (GtkSpinButton *button, gpointer user_data)
 	NMSettingWireless *s_wireless;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
 	if (s_wireless)
 		s_wireless->tx_power = gtk_spin_button_get_value_as_int (button);
 }
@@ -207,7 +211,7 @@ wireless_mtu_changed (GtkSpinButton *button, gpointer user_data)
 	NMSettingWireless *s_wireless;
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
 	if (s_wireless)
 		s_wireless->mtu = gtk_spin_button_get_value_as_int (button);
 }
@@ -323,7 +327,7 @@ fill_connection_values (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_connection;
 
-	s_connection = (NMSettingConnection *) nm_connection_get_setting (editor->connection, NM_SETTING_CONNECTION);
+	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	if (s_connection) {
 		gtk_entry_set_text (GTK_ENTRY (editor->connection_name), s_connection->name);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->connection_autoconnect), s_connection->autoconnect);
@@ -338,7 +342,7 @@ fill_ethernet_values (NMConnectionEditor *editor)
 {
 	NMSettingWired *s_wired;
 
-	s_wired = (NMSettingWired *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRED);
+	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRED));
 	if (s_wired) {
 		if (!strcmp (s_wired->port, "tp"))
 			gtk_combo_box_set_active (GTK_COMBO_BOX (editor->ethernet_port), 0);
@@ -376,7 +380,7 @@ fill_wireless_values (NMConnectionEditor *editor)
 {
 	NMSettingWireless *s_wireless;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (editor->connection, NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
 	if (s_wireless) {
 		/* FIXME: SSID */
 
@@ -418,7 +422,7 @@ fill_ip4_values (NMConnectionEditor *editor)
 {
 	NMSettingIP4Config *s_ip4;
 
-	s_ip4 = (NMSettingIP4Config *) nm_connection_get_setting (editor->connection, NM_SETTING_IP4_CONFIG);
+	s_ip4 = NM_SETTING_IP4_CONFIG (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_IP4_CONFIG));
 	if (s_ip4) {
 	} else {
 	}

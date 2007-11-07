@@ -47,6 +47,10 @@
 #include <nm-device-802-11-wireless.h>
 #include <nm-utils.h>
 #include <nm-connection.h>
+#include <nm-setting-connection.h>
+#include <nm-setting-wired.h>
+#include <nm-setting-wireless.h>
+#include <nm-setting-vpn.h>
 
 #include <glade/glade.h>
 #include <gconf/gconf-client.h>
@@ -451,6 +455,7 @@ nm_ap_check_compatible (NMAccessPoint *ap,
                         NMConnection *connection)
 {
 	NMSettingWireless *s_wireless;
+	NMSettingWirelessSecurity *s_wireless_sec;
 	const GByteArray *ssid;
 	int mode;
 	guint32 freq;
@@ -458,7 +463,7 @@ nm_ap_check_compatible (NMAccessPoint *ap,
 	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, "802-11-wireless");
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	if (s_wireless == NULL)
 		return FALSE;
 	
@@ -498,11 +503,15 @@ nm_ap_check_compatible (NMAccessPoint *ap,
 
 	// FIXME: channel check
 
-	return nm_utils_ap_security_compatible (connection,
-	                                        nm_access_point_get_flags (ap),
-	                                        nm_access_point_get_wpa_flags (ap),
-	                                        nm_access_point_get_rsn_flags (ap),
-	                                        nm_access_point_get_mode (ap));
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection,
+															    NM_TYPE_SETTING_WIRELESS_SECURITY);
+
+	return nm_setting_wireless_ap_security_compatible (s_wireless,
+											 s_wireless_sec,
+											 nm_access_point_get_flags (ap),
+											 nm_access_point_get_wpa_flags (ap),
+											 nm_access_point_get_rsn_flags (ap),
+											 nm_access_point_get_mode (ap));
 }
 
 static GSList *
@@ -617,7 +626,7 @@ get_security_for_ap (NMAccessPoint *ap, guint32 dev_caps, gboolean *supported)
 	*supported = FALSE;
 
 none:
-	nm_setting_destroy ((NMSetting *) sec);
+	g_object_unref (sec);
 	return NULL;
 }
 
@@ -631,21 +640,21 @@ find_connection (NMConnectionSettings *applet_connection,
 
 	connection = applet_dbus_connection_settings_get_connection (applet_connection);
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_con)
 		return FALSE;
 
 	if (NM_IS_DEVICE_802_3_ETHERNET (device)) {
-		if (strcmp (s_con->type, "802-3-ethernet"))
+		if (strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
 			return FALSE;
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
 		NMSettingWireless *s_wireless;
 		const GByteArray *ap_ssid;
 
-		if (strcmp (s_con->type, "802-11-wireless"))
+		if (strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME))
 			return FALSE;
 
-		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, "802-11-wireless");
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 		if (!s_wireless)
 			return FALSE;
 
@@ -739,11 +748,11 @@ new_auto_wireless_setting (NMConnection *connection,
 	dev_caps = nm_device_802_11_wireless_get_capabilities (device);
 	s_wireless_sec = get_security_for_ap (ap, dev_caps, &supported);
 	if (!supported) {
-		nm_setting_destroy ((NMSetting *) s_wireless);
+		g_object_unref (s_wireless);
 		s_wireless = NULL;
 	} else if (s_wireless_sec) {
-		s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY);
-		nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
+		s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
+		nm_connection_add_setting (connection, NM_SETTING (s_wireless_sec));
 	}
 
 	return (NMSetting *) s_wireless;
@@ -780,7 +789,7 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 
 	if (connection) {
 		NMSettingConnection *s_con;
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 		g_warning ("Found connection %s to activate at %s.", s_con->name, con_path);
 	} else {
 		connection = nm_connection_new ();
@@ -997,7 +1006,7 @@ get_connection_name (AppletDbusConnectionSettings *settings)
 {
 	NMSettingConnection *conn;
 
-	conn = (NMSettingConnection *) nm_connection_get_setting (settings->connection, NM_SETTING_CONNECTION);
+	conn = NM_SETTING_CONNECTION (nm_connection_get_setting (settings->connection, NM_TYPE_SETTING_CONNECTION));
 
 	return conn->name;
 }
@@ -1192,12 +1201,12 @@ other_wireless_response_cb (GtkDialog *dialog,
 	// FIXME: find a compatible connection in the current connection list before adding
 	// a new connection
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_con->name) {
 		NMSettingWireless *s_wireless;
 		char *ssid;
 
-		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 		ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
 		s_con->name = g_strdup_printf ("Auto %s", ssid);
 		g_free (ssid);
@@ -1637,9 +1646,9 @@ get_vpn_connections (NMApplet *applet)
 		AppletDbusConnectionSettings *applet_settings = (AppletDbusConnectionSettings *) iter->data;
 		NMSettingConnection *setting;
 
-		setting = (NMSettingConnection *) nm_connection_get_setting (applet_settings->connection,
-														 NM_SETTING_CONNECTION);
-		if (!strcmp (setting->type, NM_SETTING_VPN))
+		setting = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_settings->connection,
+														NM_TYPE_SETTING_CONNECTION));
+		if (!strcmp (setting->type, NM_SETTING_VPN_SETTING_NAME))
 			list = g_slist_prepend (list, applet_settings);
 	}
 
@@ -2558,8 +2567,8 @@ foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer use
 	if (!connection_settings)
 		return;
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection_settings->connection,
-	                                                           NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection_settings->connection,
+												   NM_TYPE_SETTING_CONNECTION));
 	if (s_con && s_con->autoconnect) {
 		s_con->timestamp = (guint64) time (NULL);
 		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));
@@ -2611,8 +2620,8 @@ add_seen_bssid (AppletDbusConnectionSettings *connection,
 	GSList *iter;
 	const char *bssid;
 	
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection->connection,
-	                                                              NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection->connection,
+													 NM_TYPE_SETTING_WIRELESS));
 	if (!s_wireless)
 		return FALSE;
 
@@ -2666,8 +2675,8 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
 	if (!connection_settings)
 		return;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection_settings->connection,
-	                                                              NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection_settings->connection,
+													 NM_TYPE_SETTING_WIRELESS));
 	if (!s_wireless)
 		return;
 
@@ -3031,7 +3040,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		goto done;
 	}
 
-	setting = nm_connection_get_setting (connection, setting_name);
+	setting = nm_connection_get_setting_by_name (connection, setting_name);
 	if (!setting) {
 		g_warning ("%s.%d (%s): requested setting '%s' didn't exist in the "
 		           "connection.", __FILE__, __LINE__, __func__, setting_name);
@@ -3133,12 +3142,12 @@ applet_settings_new_secrets_requested_cb (AppletDbusSettings *settings,
 	connection = applet_dbus_connection_settings_get_connection ((NMConnectionSettings *) applet_connection);
 	g_return_if_fail (connection != NULL);
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
-	                                                           NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
+												   NM_TYPE_SETTING_CONNECTION));
 	g_return_if_fail (s_con != NULL);
 	g_return_if_fail (s_con->type != NULL);
 
-	if (!strcmp (s_con->type, NM_SETTING_VPN)) {
+	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
 		nma_vpn_request_password (connection, setting_name, ask_user, context);
 		return;
 	}
@@ -3179,7 +3188,6 @@ applet_add_default_ethernet_connection (AppletDbusSettings *settings)
 	NMConnection *connection;
 	NMSettingConnection *s_con;
 	NMSettingWired *s_wired;
-	AppletDbusConnectionSettings *applet_connection;
 
 	connections = applet_dbus_settings_list_connections (settings);
 	if (g_slist_length (connections) > 0)

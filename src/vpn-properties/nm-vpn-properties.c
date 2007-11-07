@@ -50,7 +50,9 @@
 #define NM_VPN_API_SUBJECT_TO_CHANGE
 #include "nm-vpn-ui-interface.h"
 #include "clipboard.h"
-#include <nm-setting.h>
+#include <nm-setting-connection.h>
+#include <nm-setting-vpn.h>
+#include <nm-setting-vpn-properties.h>
 #include "gconf-helpers.h"
 
 static GladeXML *xml;
@@ -131,7 +133,7 @@ update_edit_del_sensitivity (void)
 		                    VPNCONN_CONNECTION_COLUMN, &connection,
 		                    VPNCONN_USER_CAN_EDIT_COLUMN, &is_editable, -1);
 
-		s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
+		s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 		if (s_vpn) {
 			vpn_ui = find_vpn_ui_by_service_name (s_vpn->service_type);
 			if (vpn_ui)
@@ -221,7 +223,7 @@ add_vpn_connection (NMConnection *connection)
 	if ((selection = gtk_tree_view_get_selection (vpn_conn_view)) == NULL)
 		goto error;
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_con || !s_con->name)
 		goto error;
 
@@ -404,7 +406,7 @@ new_nm_connection_vpn (void)
 	connection = nm_connection_new ();
 
 	s_con = (NMSettingConnection *) nm_setting_connection_new ();
-	s_con->type = g_strdup (NM_SETTING_VPN);
+	s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
 	nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 	s_vpn = (NMSettingVPN *) nm_setting_vpn_new ();
@@ -427,24 +429,24 @@ fixup_nm_connection_vpn (NMConnection *connection,
 	g_return_val_if_fail (connection != NULL, FALSE);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_con) {
 		g_warning ("Invalid connection received from VPN widget (no %s "
-		           "setting).", NM_SETTING_CONNECTION);
+		           "setting).", NM_SETTING_CONNECTION_SETTING_NAME);
 		return FALSE;
 	}
 
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	if (!s_vpn) {
 		g_warning ("Invalid connection received from VPN widget (no %s "
-		           "setting).", NM_SETTING_VPN);
+		           "setting).", NM_SETTING_VPN_SETTING_NAME);
 		return FALSE;
 	}
 
 	/* Fill in standard stuff */
 	if (s_con->type)
 		g_free (s_con->type);
-	s_con->type = g_strdup (NM_SETTING_VPN);
+	s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
 
 	svc_name = vpn_ui->get_service_name (vpn_ui);
 	if (s_vpn->service_type)
@@ -606,17 +608,17 @@ edit_cb (GtkButton *button, gpointer user_data)
 	if (!connection || !cur_name)
 		return;
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_con) {
 		g_warning ("Invalid connection received from VPN widget (no %s "
-		           "setting).", NM_SETTING_CONNECTION);
+		           "setting).", NM_SETTING_CONNECTION_SETTING_NAME);
 		goto error;
 	}
 
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	if (!s_vpn) {
 		g_warning ("Invalid connection received from VPN widget (no %s "
-		           "setting).", NM_SETTING_VPN);
+		           "setting).", NM_SETTING_VPN_SETTING_NAME);
 		goto error;
 	}
 
@@ -752,9 +754,9 @@ export_cb (GtkButton *button, gpointer user_data)
 	if (!connection)
 		return;
 
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	if (!s_vpn) {
-		g_warning ("Connection had no %s setting.", NM_SETTING_VPN);
+		g_warning ("Connection had no %s setting.", NM_SETTING_VPN_SETTING_NAME);
 		return;
 	}
 
@@ -793,13 +795,13 @@ static void get_all_vpn_connections (void)
 						    "gconf-path", g_strdup (dir),
 						    (GDestroyNotify) g_free);
 
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
-		if (strcmp (s_con->type, NM_SETTING_VPN)) {
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		if (!s_con || strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
 			g_object_unref (connection);
 			goto next;
 		}
 
-		s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
+		s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 		if (!s_vpn || !s_vpn->service_type) {
 			g_object_unref (connection);
 			goto next;

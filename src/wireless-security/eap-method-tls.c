@@ -22,6 +22,7 @@
 #include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
+#include <nm-setting-wireless.h>
 
 #include "eap-method.h"
 #include "wireless-security.h"
@@ -129,7 +130,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	GtkWidget *widget;
 	char *filename;
 
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+										  NM_TYPE_SETTING_WIRELESS_SECURITY));
 	g_assert (s_wireless_sec);
 
 	s_wireless_sec->eap = g_slist_append (s_wireless_sec->eap, g_strdup ("tls"));

@@ -1,3 +1,12 @@
+2007-11-07  Tambet Ingo  <tambet@gmail.com>
+
+	* src/*: The NMSetting API changed significantly, adapt the changes.
+
+	* src/gconf-helpers/gconf-helpers.c 
+	(copy_one_setting_value_to_gconf):
+	(read_one_setting_value_from_gconf): Now that the NM_S_TYPE_* types are gone,
+	convert between GType / GConf types.
+
 2007-11-06  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/gconf-helpers.h

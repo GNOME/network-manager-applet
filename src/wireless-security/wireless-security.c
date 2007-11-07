@@ -25,6 +25,8 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
+#include <nm-setting-wireless.h>
+
 #include "wireless-security.h"
 #include "eap-method.h"
 
@@ -131,12 +133,12 @@ ws_wep_fill_connection (NMConnection *connection,
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	g_assert (s_wireless);
 
 	if (s_wireless->security)
 		g_free (s_wireless->security);
-	s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY);
+	s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
 
 	/* Blow away the old security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
@@ -186,7 +188,8 @@ ws_wpa_fill_default_ciphers (NMConnection *connection)
 
 	g_return_if_fail (connection != NULL);
 
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection,
+										  NM_TYPE_SETTING_WIRELESS_SECURITY));
 	g_assert (s_wireless_sec);
 
 	// FIXME: allow protocol selection and filter on device capabilities
@@ -360,12 +363,12 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	g_assert (s_wireless);
 
 	if (s_wireless->security)
 		g_free (s_wireless->security);
-	s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY);
+	s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
 
 	/* Blow away the old security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();

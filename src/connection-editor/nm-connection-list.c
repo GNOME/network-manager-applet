@@ -29,6 +29,7 @@
 #include <gtk/gtktreeview.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gconf/gconf-client.h>
+#include <nm-setting-connection.h>
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
 #include "gconf-helpers.h"
@@ -101,7 +102,7 @@ hash_add_connection_to_list (gpointer key, gpointer value, gpointer user_data)
 	NMConnection *connection = (NMConnection *) value;
 	GtkListStore *model = GTK_LIST_STORE (user_data);
 
-	s_connection = (NMSettingConnection *) nm_connection_get_setting (connection, "connection");
+	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_connection)
 		return;
 
@@ -138,7 +139,7 @@ load_connections (NMConnectionList *list)
 							    g_strdup (dir),
 							    (GDestroyNotify) g_free);
 
-			s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 			g_hash_table_insert (list->connections,
 			                     g_strdup (dir),
 			                     connection);

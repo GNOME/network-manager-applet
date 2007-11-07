@@ -26,6 +26,9 @@
 #include <gconf/gconf-client.h>
 #include <glib.h>
 #include <gnome-keyring.h>
+#include <dbus/dbus-glib.h>
+#include <nm-setting-connection.h>
+#include <nm-setting-wireless-security.h>
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
@@ -434,7 +437,9 @@ nm_gconf_set_stringlist_helper (GConfClient *client,
 
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (network != NULL, FALSE);
-	g_return_val_if_fail (value != NULL, FALSE);
+
+	if (!value)
+		return TRUE;
 
 	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
 	if (!gc_key) {
@@ -460,7 +465,9 @@ nm_gconf_set_bytearray_helper (GConfClient *client,
 
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (network != NULL, FALSE);
-	g_return_val_if_fail (value != NULL, FALSE);
+
+	if (!value)
+		return TRUE;
 
 	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
 	if (!gc_key) {
@@ -558,19 +565,19 @@ typedef struct ReadFromGConfInfo {
 static void
 read_one_setting_value_from_gconf (NMSetting *setting,
                                    const char *key,
-                                   guint32 type,
-                                   void *value,
+                                   const GValue *value,
                                    gboolean secret,
                                    gpointer user_data)
 {
 	ReadFromGConfInfo *info = (ReadFromGConfInfo *) user_data;
+	GType type = G_VALUE_TYPE (value);
 
 	/* Binary certificate and key data doesn't get stored in GConf.  Instead,
 	 * the path to the certificate gets stored in a special key and the
 	 * certificate is read and stuffed into the setting right before
 	 * the connection is sent to NM
 	 */
-	if (!strcmp (setting->name, NM_SETTING_WIRELESS_SECURITY)) {
+	if (NM_IS_SETTING_WIRELESS_SECURITY (setting)) {
 		if (   !strcmp (key, "ca-cert")
 		    || !strcmp (key, "client-cert")
 		    || !strcmp (key, "private-key")
@@ -592,66 +599,52 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 		}
 	}
 
-	switch (type) {
-		case NM_S_TYPE_STRING: {
-			char **str_val = (char **) value;
-			nm_gconf_get_string_helper (info->client, info->dir, key,
-			                            setting->name, str_val);
-			break;
-		}
-		case NM_S_TYPE_UINT32: {
-			int int_val = 0;
-			guint32 *uint_val = (guint32 *) value;
-			if (nm_gconf_get_int_helper (info->client, info->dir, key,
-			                             setting->name, &int_val)) {
-				if (int_val < 0)
-					g_warning ("Casting negative value (%i) to uint", int_val);
-			}
-			*uint_val = (guint32) int_val;
-			break;
-		}
-		case NM_S_TYPE_UINT64: {
-			guint64 *uint_val = (guint64 *) value;
-			char *tmp_str = NULL;
-			/* GConf doesn't do 64-bit values, so use strings instead */
-			nm_gconf_get_string_helper (info->client, info->dir, key,
-			                           setting->name, &tmp_str);
-			if (!tmp_str)
-				break;
-			*uint_val = g_ascii_strtoull (tmp_str, NULL, 10);
-			if ((*uint_val == G_MAXUINT64) && (errno == ERANGE))
-				*uint_val = 0;
-			break;
-		}
-		case NM_S_TYPE_BOOL: {
-			gboolean *bool_val = (gboolean *) value;
-			nm_gconf_get_bool_helper (info->client, info->dir, key,
-			                          setting->name, bool_val);
-			break;
-		}
+	if (type == G_TYPE_STRING) {
+		char *str_val = NULL;
 
-		case NM_S_TYPE_BYTE_ARRAY: {
-			GByteArray **ba_val = (GByteArray **) value;
-			nm_gconf_get_bytearray_helper (info->client, info->dir, key,
-			                               setting->name, ba_val);
-			break;
-		}
+		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting->name, &str_val))
+			g_object_set (setting, key, str_val, NULL);
+	} else if (type == G_TYPE_UINT) {
+		int int_val = 0;
 
-		case NM_S_TYPE_STRING_ARRAY: {
-			GSList **sa_val = (GSList **) value;
-			nm_gconf_get_stringlist_helper (info->client, info->dir, key,
-			                                setting->name, sa_val);
-			break;
-		}
+		if (nm_gconf_get_int_helper (info->client, info->dir, key, setting->name, &int_val)) {
+			if (int_val < 0)
+				g_warning ("Casting negative value (%i) to uint", int_val);
 
-		case NM_S_TYPE_GVALUE_HASH: {
-			GHashTable **vh_val = (GHashTable **) value;
-			nm_gconf_get_valuehash_helper (info->client, info->dir,
-									 setting->name, vh_val);
-
-			break;
+			g_object_set (setting, key, int_val, NULL);
 		}
-	}
+	} else if (type == G_TYPE_UINT64) {
+		char *tmp_str = NULL;
+
+		/* GConf doesn't do 64-bit values, so use strings instead */
+		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting->name, &tmp_str) && tmp_str) {
+			guint64 uint_val = g_ascii_strtoull (tmp_str, NULL, 10);
+			
+			if (!(uint_val == G_MAXUINT64 && errno == ERANGE))
+				g_object_set (setting, key, uint_val, NULL);
+		}
+	} else if (type == G_TYPE_BOOLEAN) {
+		gboolean bool_val;
+
+		if (nm_gconf_get_bool_helper (info->client, info->dir, key, setting->name, &bool_val))
+			g_object_set (setting, key, bool_val, NULL);
+	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
+		GByteArray *ba_val = NULL;
+
+		if (nm_gconf_get_bytearray_helper (info->client, info->dir, key, setting->name, &ba_val))
+			g_object_set (setting, key, ba_val, NULL);
+	} else if (type == dbus_g_type_get_collection ("GSList", G_TYPE_STRING)) {
+		GSList *sa_val = NULL;
+
+		if (nm_gconf_get_stringlist_helper (info->client, info->dir, key, setting->name, &sa_val))
+			g_object_set (setting, key, sa_val, NULL);
+	} else if (type == dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE)) {
+		GHashTable *vh_val = NULL;
+
+		if (nm_gconf_get_valuehash_helper (info->client, info->dir, setting->name, &vh_val))
+			g_object_set (setting, key, vh_val, NULL);
+	} else
+		g_warning ("Unhandled setting property type: '%s'", G_VALUE_TYPE_NAME (value));
 }
 
 static void
@@ -762,12 +755,12 @@ typedef struct CopyOneSettingValueInfo {
 static void
 copy_one_setting_value_to_gconf (NMSetting *setting,
                                  const char *key,
-                                 guint32 type,
-                                 void *value,
+						   const GValue *value,
                                  gboolean secret,
                                  gpointer user_data)
 {
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
+	GType type = G_VALUE_TYPE (value);
 
 	if (info->key_filter_func)
 		if ((*info->key_filter_func)(setting->name, key) == FALSE)
@@ -778,7 +771,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	 * certificate is read and stuffed into the setting right before
 	 * the connection is sent to NM
 	 */
-	if (!strcmp (setting->name, NM_SETTING_WIRELESS_SECURITY)) {
+	if (NM_IS_SETTING_WIRELESS_SECURITY (setting)) {
 		if (   !strcmp (key, "ca-cert")
 		    || !strcmp (key, "client-cert")
 		    || !strcmp (key, "private-key")
@@ -792,84 +785,51 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 			path_value = g_object_get_data (G_OBJECT (info->connection), path_key);
 			if (path_value != NULL) {
 				nm_gconf_set_string_helper (info->client, info->dir, path_key,
-				                                setting->name, path_value);
+									   setting->name, path_value);
 			}
 			g_free (path_key);
 		}
 	}
 
-	switch (type) {
-		case NM_S_TYPE_STRING: {
-			const char **str_val = (const char **) value;
-			if (!*str_val)
-				break;
+	if (type == G_TYPE_STRING) {
+		const char *str_val = g_value_get_string (value);
+		if (str_val) {
 			if (secret) {
-				if (strlen (*str_val)) {
-					add_keyring_item (info->connection_name, setting->name,
-					                  key, *str_val);
-				}
-			} else {
-				nm_gconf_set_string_helper (info->client, info->dir,
-				                            key, setting->name, *str_val);
-			}
-			break;
+				if (strlen (str_val))
+					add_keyring_item (info->connection_name, setting->name, key, str_val);
+			} else
+				nm_gconf_set_string_helper (info->client, info->dir, key, setting->name, str_val);
 		}
-		case NM_S_TYPE_UINT32: {
-			guint32 *uint_val = (guint32 *) value;
-			if (!*uint_val)
-				break;
-			nm_gconf_set_int_helper (info->client, info->dir,
-			                         key, setting->name, *uint_val);
-			break;
-		}
-		case NM_S_TYPE_UINT64: {
-			guint64 *uint_val = (guint64 *) value;
-			char *numstr;
-			if (!*uint_val)
-				break;
-			/* GConf doesn't do 64-bit values, so use strings instead */
-			numstr = g_strdup_printf ("%" G_GUINT64_FORMAT, *uint_val);
-			if (!numstr)
-				break;
-			nm_gconf_set_string_helper (info->client, info->dir,
-			                            key, setting->name, numstr);
-			g_free (numstr);
-			break;
-		}
-		case NM_S_TYPE_BOOL: {
-			gboolean *bool_val = (gboolean *) value;
-			nm_gconf_set_bool_helper (info->client, info->dir,
-			                          key, setting->name, *bool_val);
-			break;
-		}
+	} else if (type == G_TYPE_UINT) {
+		nm_gconf_set_int_helper (info->client, info->dir,
+							key, setting->name,
+							g_value_get_uint (value));
+	} else if (type == G_TYPE_UINT64) {
+		char *numstr;
 
-		case NM_S_TYPE_BYTE_ARRAY: {
-			GByteArray **ba_val = (GByteArray **) value;
-			if (!*ba_val)
-				break;
-			nm_gconf_set_bytearray_helper (info->client, info->dir,
-			                               key, setting->name, *ba_val);
-			break;
-		}
-
-		case NM_S_TYPE_STRING_ARRAY: {
-			GSList **sa_val = (GSList **) value;
-			if (!*sa_val)
-				break;
-			nm_gconf_set_stringlist_helper (info->client, info->dir,
-			                                key, setting->name, *sa_val);
-			break;
-		}
-
-		case NM_S_TYPE_GVALUE_HASH: {
-			GHashTable **vh_val = (GHashTable **) value;
-			if (!*vh_val)
-				break;
-			nm_gconf_set_valuehash_helper (info->client, info->dir,
-			                               setting->name, *vh_val);
-			break;
-		}
-	}
+		/* GConf doesn't do 64-bit values, so use strings instead */
+		numstr = g_strdup_printf ("%" G_GUINT64_FORMAT, g_value_get_uint64 (value));
+		nm_gconf_set_string_helper (info->client, info->dir,
+							   key, setting->name, numstr);
+		g_free (numstr);
+	} else if (type == G_TYPE_BOOLEAN) {
+		nm_gconf_set_bool_helper (info->client, info->dir,
+							 key, setting->name,
+							 g_value_get_boolean (value));
+	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
+		nm_gconf_set_bytearray_helper (info->client, info->dir,
+								 key, setting->name,
+								 (GByteArray *) g_value_get_boxed (value));
+	} else if (type == dbus_g_type_get_collection ("GSList", G_TYPE_STRING)) {
+		nm_gconf_set_stringlist_helper (info->client, info->dir,
+								  key, setting->name,
+								  (GSList *) g_value_get_boxed (value));
+	} else if (type == dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE)) {
+		nm_gconf_set_valuehash_helper (info->client, info->dir,
+								 setting->name,
+								 (GHashTable *) g_value_get_boxed (value));
+	} else
+		g_warning ("Unhandled type '%s'", g_type_name (type));
 }
 
 void
@@ -885,7 +845,7 @@ nm_gconf_write_connection (NMConnection *connection,
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (dir != NULL);
 
-	s_connection = (NMSettingConnection *) nm_connection_get_setting (connection, NM_SETTING_CONNECTION);
+	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_connection)
 		return;
 

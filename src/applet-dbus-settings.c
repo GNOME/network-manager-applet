@@ -23,6 +23,9 @@
 #include <string.h>
 #include <gnome-keyring.h>
 #include <nm-connection.h>
+#include <nm-setting-connection.h>
+#include <nm-setting-vpn.h>
+#include <nm-setting-wireless.h>
 #include "applet.h"
 #include "applet-dbus-settings.h"
 #include "applet-dbus-manager.h"
@@ -161,7 +164,8 @@ applet_dbus_settings_connection_fill_certs (NMConnection *connection)
 
 	g_return_if_fail (connection != NULL);
 
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+															    NM_TYPE_SETTING_WIRELESS_SECURITY));
 	if (!s_wireless_sec)
 		return;
 
@@ -198,7 +202,8 @@ applet_dbus_settings_connection_clear_filled_certs (NMConnection *connection)
 
 	g_return_if_fail (connection != NULL);
 
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_SETTING_WIRELESS_SECURITY);
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+															    NM_TYPE_SETTING_WIRELESS_SECURITY));
 	if (!s_wireless_sec)
 		return;
 
@@ -643,7 +648,7 @@ fill_vpn_user_name (NMConnection *connection)
 	const char *user_name;
 	NMSettingVPN *s_vpn;
 
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_SETTING_VPN);
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	if (!s_vpn)
 		return;
 
@@ -682,8 +687,8 @@ applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_co
 		g_object_unref (applet_connection->connection);
 	applet_connection->connection = connection;
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
-	                                                           NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
+												   NM_TYPE_SETTING_CONNECTION));
 	g_free (applet_connection->id);
 	applet_connection->id = g_strdup (s_con->name);
 
@@ -730,8 +735,8 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 		return NULL;
 	}
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
-	                                                           NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
+												   NM_TYPE_SETTING_CONNECTION));
 	applet_connection->id = g_strdup (s_con->name);
 
 	fill_vpn_user_name (applet_connection->connection);
@@ -752,7 +757,7 @@ vpn_user_name_filter_cb (const char *setting_name, const char *key)
 	 * the connection gets activated.
 	 */
 
-	if (strcmp (setting_name, NM_SETTING_VPN))
+	if (strcmp (setting_name, NM_SETTING_VPN_SETTING_NAME))
 		return TRUE;
 
 	if (strcmp (key, "user_name"))
@@ -900,7 +905,7 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	g_return_if_fail (NM_IS_CONNECTION (applet_connection->connection));
 	g_return_if_fail (setting_name != NULL);
 
-	setting = nm_connection_get_setting (applet_connection->connection, setting_name);
+	setting = nm_connection_get_setting_by_name (applet_connection->connection, setting_name);
 	if (!setting) {
 		nm_warning ("Connection didn't have requested setting '%s'.", setting_name);
 		error = nm_settings_new_error ("%s.%d - Connection didn't have "
@@ -911,11 +916,11 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 		return;
 	}
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (applet_connection->connection,
-	                                                           NM_SETTING_CONNECTION);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
+												   NM_TYPE_SETTING_CONNECTION));
 	if (!s_con || !s_con->name || !strlen (s_con->name) || !s_con->type) {
 		nm_warning ("Connection didn't have a valid required '%s' setting, "
-		            "or the connection name was invalid.", NM_SETTING_CONNECTION);
+		            "or the connection name was invalid.", NM_SETTING_CONNECTION_SETTING_NAME);
 		error = nm_settings_new_error ("%s.%d - Connection didn't have required"
 		                               " 'connection' setting, or the connection"
 		                               " name was invalid.",
@@ -926,7 +931,7 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	}
 
 	/* VPN passwords are handled by the VPN plugin's auth dialog */
-	if (!strcmp (s_con->type, NM_SETTING_VPN))
+	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME))
 		goto get_secrets;
 
 	if (request_new) {
