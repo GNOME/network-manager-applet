@@ -597,3 +597,30 @@ nm_gconf_migrate_0_6_connections (GConfClient *client)
 
 	gconf_client_suggest_sync (client, NULL);
 }
+
+/* Converting NMSetting objects to GObject resulted in a change of the
+ * service_type key to service-type.  Fix that up.
+ */
+void
+nm_gconf_migrate_0_7_vpn_connections (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *value = NULL;
+
+		if (nm_gconf_get_string_helper (client, iter->data, "service_type", "vpn", &value)) {
+			char *old_key;
+
+			nm_gconf_set_string_helper (client, iter->data, "service-type", "vpn", value);
+			old_key = g_strdup_printf ("%s/vpn/service_type", iter->data);
+			gconf_client_unset (client, old_key, NULL);
+			g_free (old_key);
+		}
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+

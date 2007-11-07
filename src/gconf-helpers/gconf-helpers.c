@@ -546,6 +546,8 @@ nm_gconf_get_all_connections (GConfClient *client)
 {
 	GSList *connections;
 
+	nm_gconf_migrate_0_7_vpn_connections (client);
+
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!connections) {
 		nm_gconf_migrate_0_6_connections (client);
