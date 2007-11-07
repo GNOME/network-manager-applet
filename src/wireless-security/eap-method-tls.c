@@ -53,24 +53,6 @@ destroy (EAPMethod *parent)
 }
 
 static gboolean
-validate_filepicker (GladeXML *xml, const char *name, gboolean ignore_blank)
-{
-	GtkWidget *widget;
-	char *filename;
-	gboolean success = TRUE;
-
-	widget = glade_xml_get_widget (xml, name);
-	g_assert (widget);
-	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	if (!filename)
-		return ignore_blank ? TRUE : FALSE;
-
-	success = g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR);
-	g_free (filename);
-	return success;
-}
-
-static gboolean
 validate (EAPMethod *parent)
 {
 	GtkWidget *widget;
@@ -82,18 +64,22 @@ validate (EAPMethod *parent)
 	if (!text || !strlen (text))
 		return FALSE;
 
-	if (!validate_filepicker (parent->xml, "eap_tls_user_cert_button", FALSE))
+	if (!eap_method_validate_filepicker (parent->xml, "eap_tls_user_cert_button", FALSE, FALSE, NULL))
 		return FALSE;
 
-	if (!validate_filepicker (parent->xml, "eap_tls_ca_cert_button", TRUE))
+	if (!eap_method_validate_filepicker (parent->xml, "eap_tls_ca_cert_button", TRUE, FALSE, NULL))
 		return FALSE;
 
-	if (!validate_filepicker (parent->xml, "eap_tls_private_key_button", FALSE))
+	if (!eap_method_validate_filepicker (parent->xml,
+	                                     "eap_tls_private_key_button",
+	                                     FALSE,
+	                                     TRUE,
+	                                     "eap_tls_private_key_password_entry"))
 		return FALSE;
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_password_entry");
 	g_assert (widget);
-	// FIXME: what if private key is unencrypted...
+	// FIXME: require encrypted private keys for now
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (!text || !strlen (text))
 		return FALSE;

@@ -1,5 +1,16 @@
 2007-11-07  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-security/eap-method.h
+	  src/wireless-security/eap-method.c
+		- (eap_method_validate_filepicker): move validate_filepicker()
+			implementations here and actually do some validation
+
+	* src/wireless-security/eap-method-ttls.c
+	  src/wireless-security/eap-method-tls.c
+		- (validate): use common eap_method_validate_filepicker()
+
+2007-11-07  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (nma_finalize): deinit crypto bits
 		- (nma_constructor): init crypto bits

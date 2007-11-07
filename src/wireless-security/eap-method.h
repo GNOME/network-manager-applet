@@ -84,5 +84,11 @@ void eap_method_init (EAPMethod *method,
                       GladeXML *xml,
                       GtkWidget *ui_widget);
 
+gboolean eap_method_validate_filepicker (GladeXML *xml,
+                                         const char *name,
+                                         gboolean ignore_blank,
+                                         gboolean is_private_key,
+                                         const char *pw_entry_name);
+
 #endif /* EAP_METHOD_H */
 

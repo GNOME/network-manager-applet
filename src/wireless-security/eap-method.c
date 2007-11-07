@@ -22,8 +22,10 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <string.h>
 
 #include "eap-method.h"
+#include "crypto.h"
 
 GType
 eap_method_get_g_type (void)
@@ -128,5 +130,74 @@ eap_method_unref (EAPMethod *method)
 	method->refcount--;
 	if (method->refcount == 0)
 		(*(method->destroy)) (method);
+}
+
+gboolean
+eap_method_validate_filepicker (GladeXML *xml,
+                                const char *name,
+                                gboolean ignore_blank,
+                                gboolean is_private_key,
+                                const char *pw_entry_name)
+{
+	GtkWidget *widget;
+	char *filename;
+	gboolean success = FALSE;
+	GError *error = NULL;
+
+	if (is_private_key)
+		g_return_val_if_fail (pw_entry_name != NULL, FALSE);
+
+	widget = glade_xml_get_widget (xml, name);
+	g_assert (widget);
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+	if (!filename)
+		return ignore_blank ? TRUE : FALSE;
+
+	if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
+		goto out;
+
+	if (is_private_key) {
+		GByteArray *key;
+		const char *pw;
+		guint32 key_type = NM_CRYPTO_KEY_TYPE_UNKNOWN;
+
+		if (!pw_entry_name)
+			goto out;
+
+		/* Need the private key password to decrypt the private key */
+		widget = glade_xml_get_widget (xml, pw_entry_name);
+		g_assert (widget);
+		pw = gtk_entry_get_text (GTK_ENTRY (widget));
+		if (!pw || !strlen (pw))
+			goto out;
+
+		key = crypto_get_private_key (filename, pw, &key_type, &error);
+		if (error != NULL)
+			g_clear_error (&error);
+
+		if (key) {
+			memset (key->data, 0, key->len);
+			g_byte_array_free (key, TRUE);
+			success = TRUE;
+		}
+	} else {
+		GByteArray *cert;
+
+		cert = crypto_load_and_verify_certificate (filename, &error);
+		if (error != NULL) {
+			g_warning ("Error: couldn't verify certificate: %d %s",
+			           error->code, error->message);
+			g_clear_error (&error);
+		}
+
+		if (cert) {
+			g_byte_array_free (cert, TRUE);
+			success = TRUE;
+		}
+	}
+
+out:
+	g_free (filename);
+	return success;
 }
 
