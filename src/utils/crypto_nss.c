@@ -94,6 +94,7 @@ crypto_md5_hash (const char *salt,
 		}
 	}
 
+	memset (digest, 0, sizeof (digest));
 	PK11_DestroyContext (ctx, PR_TRUE);
 	return TRUE;
 }
@@ -218,8 +219,12 @@ out:
 		PK11_FreeSlot (slot);
 
 	if (!success) {
-		g_free (output);
-		output = NULL;
+		if (output) {
+			/* Don't expose key material */
+			memset (output, 0, data_len);
+			g_free (output);
+			output = NULL;
+		}
 	}
 	return output;
 }

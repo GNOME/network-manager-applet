@@ -91,6 +91,7 @@ crypto_md5_hash (const char *salt,
 		}
 	}
 
+	memset (digest, 0, sizeof (digest));
 	gcry_md_close (ctx);
 	return TRUE;
 }
@@ -160,16 +161,13 @@ crypto_decrypt (const char *cipher,
 		goto out;
 	}
 
-	/* For whatever reason, NSS gives us errors on bad passphrase, but
-	 * gnutls doesn't.  So this will decrypt the key even if the 
-	 * supplied passphrase is wrong...
-	 */
 	err = gcry_cipher_decrypt (ctx, output, data_len, data, data_len);
 	if (err) {
 		g_set_error (error, NM_CRYPTO_ERROR,
 		             NM_CRYPTO_ERR_CIPHER_DECRYPT_FAILED,
 		             _("Failed to decrypt the private key: %s / %s."),
 		             gcry_strsource (err), gcry_strerror (err));
+		goto out;
 	}
 	*out_len = data_len - output[data_len - 1];
 	output[*out_len] = '\0';
@@ -177,8 +175,12 @@ crypto_decrypt (const char *cipher,
 
 out:
 	if (!success) {
-		g_free (output);
-		output = NULL;
+		if (output) {
+			/* Don't expose key material */
+			memset (output, 0, data_len);
+			g_free (output);
+			output = NULL;
+		}
 	}
 	gcry_cipher_close (ctx);
 	return output;

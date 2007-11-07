@@ -399,7 +399,11 @@ make_des_key (const char *cipher,
 	return key;
 
 error:
-	g_free (key);
+	if (key) {
+		/* Don't leak stale key material */
+		memset (key, 0, digest_len);
+		g_free (key);
+	}
 	return NULL;
 }
 
@@ -438,7 +442,11 @@ decrypt_key (const char *cipher,
 		g_warning ("Couldn't decrypt the private key.");
 
 out:
-	g_free (key);
+	if (key) {
+		/* Don't leak stale key material */
+		memset (key, 0, key_len);
+		g_free (key);
+	}
 	g_free (bin_iv);
 	return output;
 }
@@ -495,7 +503,11 @@ crypto_get_private_key (const char *file,
 	*out_key_type = key_type;
 
 out:
-	g_free (decrypted);
+	if (decrypted) {
+		/* Don't expose key material */
+		memset (decrypted, 0, decrypted_len);
+		g_free (decrypted);
+	}
 	g_free (data);
 	g_free (cipher);
 	g_free (iv);
