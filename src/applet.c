@@ -68,6 +68,7 @@
 #include "applet-dbus-manager.h"
 #include "wireless-dialog.h"
 #include "utils.h"
+#include "crypto.h"
 
 #include "vpn-connection-info.h"
 #include "connection-editor/nm-connection-list.h"
@@ -3300,6 +3301,8 @@ static void nma_finalize (GObject *object)
 	if (applet->nm_client)
 		g_object_unref (applet->nm_client);
 
+	crypto_deinit ();
+
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
 
@@ -3310,6 +3313,14 @@ nma_constructor (GType type,
 {
 	NMApplet *applet;
 	AppletDBusManager * dbus_mgr;
+	GError *error = NULL;
+
+	if (!crypto_init (&error)) {
+		g_warning ("Couldn't initilize crypto system: %d %s",
+		           error->code, error->message);
+		g_error_free (error);
+		return NULL;
+	}
 
 	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
 
