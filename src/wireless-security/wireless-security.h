@@ -26,6 +26,7 @@
 #include <gtk/gtk.h>
 #include <gtk/gtksizegroup.h>
 #include <glade/glade.h>
+#include <gtk/gtkwidget.h>
 
 #include <nm-connection.h>
 
@@ -35,8 +36,9 @@ typedef void (*WSChangedFunc) (WirelessSecurity *sec, gpointer user_data);
 
 typedef void (*WSAddToSizeGroupFunc) (WirelessSecurity *sec, GtkSizeGroup *group);
 typedef void (*WSFillConnectionFunc) (WirelessSecurity *sec, NMConnection *connection);
-typedef void (*WSDestroyFunc) (WirelessSecurity *sec);
-typedef gboolean (*WSValidateFunc) (WirelessSecurity *sec, const GByteArray *ssid);
+typedef void (*WSDestroyFunc)        (WirelessSecurity *sec);
+typedef gboolean (*WSValidateFunc)   (WirelessSecurity *sec, const GByteArray *ssid);
+typedef GtkWidget * (*WSNagUserFunc) (WirelessSecurity *sec);
 
 struct _WirelessSecurity {
 	guint32 refcount;
@@ -48,6 +50,7 @@ struct _WirelessSecurity {
 	WSAddToSizeGroupFunc add_to_size_group;
 	WSFillConnectionFunc fill_connection;
 	WSValidateFunc validate;
+	WSNagUserFunc nag_user;
 	WSDestroyFunc destroy;
 };
 
@@ -67,6 +70,8 @@ void wireless_security_add_to_size_group (WirelessSecurity *sec,
 
 void wireless_security_fill_connection (WirelessSecurity *sec,
                                         NMConnection *connection);
+
+GtkWidget * wireless_security_nag_user (WirelessSecurity *sec);
 
 WirelessSecurity *wireless_security_ref (WirelessSecurity *sec);
 
@@ -106,7 +111,7 @@ GtkWidget *ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                                       const char *glade_file,
                                       const char *combo_name,
                                       GCallback auth_combo_changed_cb,
-                                      const char *default_method);
+                                      NMConnection *connection);
 
 void ws_802_1x_auth_combo_changed (GtkWidget *combo,
                                    WirelessSecurity *sec,
@@ -123,6 +128,9 @@ void ws_802_1x_add_to_size_group (WirelessSecurity *sec,
 void ws_802_1x_fill_connection (WirelessSecurity *sec,
                                 const char *combo_name,
                                 NMConnection *connection);
+
+GtkWidget * ws_802_1x_nag_user (WirelessSecurity *sec,
+                                const char *combo_name);
 
 #endif /* WIRELESS_SECURITY_H */
 

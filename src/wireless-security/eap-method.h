@@ -26,15 +26,17 @@
 #include <gtk/gtk.h>
 #include <gtk/gtksizegroup.h>
 #include <glade/glade.h>
+#include <gtk/gtkwidget.h>
 
 #include <nm-connection.h>
 
 typedef struct _EAPMethod EAPMethod;
 
-typedef void     (*EMAddToSizeGroupFunc) (EAPMethod *method, GtkSizeGroup *group);
-typedef void     (*EMFillConnectionFunc) (EAPMethod *method, NMConnection *connection);
-typedef void     (*EMDestroyFunc)        (EAPMethod *method);
-typedef gboolean (*EMValidateFunc)       (EAPMethod *method);
+typedef void        (*EMAddToSizeGroupFunc) (EAPMethod *method, GtkSizeGroup *group);
+typedef void        (*EMFillConnectionFunc) (EAPMethod *method, NMConnection *connection);
+typedef GtkWidget * (*EMNagUserFunc)        (EAPMethod *method);
+typedef void        (*EMDestroyFunc)        (EAPMethod *method);
+typedef gboolean    (*EMValidateFunc)       (EAPMethod *method);
 
 struct _EAPMethod {
 	guint32 refcount;
@@ -43,6 +45,7 @@ struct _EAPMethod {
 
 	EMAddToSizeGroupFunc add_to_size_group;
 	EMFillConnectionFunc fill_connection;
+	EMNagUserFunc nag_user;
 	EMValidateFunc validate;
 	EMDestroyFunc destroy;
 };
@@ -57,6 +60,8 @@ gboolean eap_method_validate (EAPMethod *method);
 void eap_method_add_to_size_group (EAPMethod *method, GtkSizeGroup *group);
 
 void eap_method_fill_connection (EAPMethod *method, NMConnection *connection);
+
+GtkWidget * eap_method_nag_user (EAPMethod *method);
 
 EAPMethod *eap_method_ref (EAPMethod *method);
 

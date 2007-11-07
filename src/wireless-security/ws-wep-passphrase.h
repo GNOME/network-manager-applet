@@ -28,7 +28,8 @@ typedef struct {
 	WEPKeyType type;
 } WirelessSecurityWEPPassphrase;
 
-WirelessSecurityWEPPassphrase * ws_wep_passphrase_new (const char *glade_file);
+WirelessSecurityWEPPassphrase * ws_wep_passphrase_new (const char *glade_file,
+                                                       NMConnection *connection);
 
 #endif /* WS_WEP_PASSPHRASE_H */
 

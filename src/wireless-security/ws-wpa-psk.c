@@ -141,7 +141,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityWPAPSK *
-ws_wpa_psk_new (const char *glade_file)
+ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 {
 	WirelessSecurityWPAPSK *sec;
 	GtkWidget *widget;

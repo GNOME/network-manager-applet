@@ -128,6 +128,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 EAPMethodSimple *
 eap_method_simple_new (const char *glade_file,
                        WirelessSecurity *parent,
+                       NMConnection *connection,
                        EAPMethodSimpleType type)
 {
 	EAPMethodSimple *method;
@@ -166,6 +167,13 @@ eap_method_simple_new (const char *glade_file,
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
+	if (connection) {
+		NMSettingWirelessSecurity *s_wireless_sec;
+
+		s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+		if (s_wireless_sec && s_wireless_sec->identity)
+			gtk_entry_set_text (GTK_ENTRY (widget), s_wireless_sec->identity);
+	}
 
 	widget = glade_xml_get_widget (xml, "eap_simple_password_entry");
 	g_assert (widget);

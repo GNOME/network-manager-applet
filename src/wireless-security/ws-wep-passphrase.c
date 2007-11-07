@@ -123,7 +123,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityWEPPassphrase *
-ws_wep_passphrase_new (const char *glade_file)
+ws_wep_passphrase_new (const char *glade_file, NMConnection *connection)
 {
 	WirelessSecurityWEPPassphrase *sec;
 	GtkWidget *widget;

@@ -181,6 +181,16 @@ wireless_security_init (WirelessSecurity *sec,
 	sec->ui_widget = ui_widget;
 }
 
+GtkWidget *
+wireless_security_nag_user (WirelessSecurity *sec)
+{
+	g_return_val_if_fail (sec != NULL, NULL);
+
+	if (sec->nag_user)
+		return (*(sec->nag_user)) (sec);
+	return NULL;
+}
+
 void
 ws_wpa_fill_default_ciphers (NMConnection *connection)
 {
@@ -297,7 +307,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                            const char *glade_file,
                            const char *combo_name,
                            GCallback auth_combo_changed_cb,
-                           const char *default_method)
+                           NMConnection *connection)
 {
 	GtkWidget *combo;
 	GtkListStore *auth_model;
@@ -305,11 +315,26 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	EAPMethodTLS *em_tls;
 	EAPMethodLEAP *em_leap;
 	EAPMethodTTLS *em_ttls;
+	const char *default_method = NULL;
 	int active = -1;
+
+	/* Grab the default EAP method out of the security object */
+	if (connection) {
+		NMSettingWireless *s_wireless;
+
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+		if (s_wireless && s_wireless->security && !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)) {
+			NMSettingWirelessSecurity *s_wireless_sec;
+
+			s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+			if (s_wireless_sec->eap)
+				default_method = g_slist_nth_data (s_wireless_sec->eap, 0);
+		}
+	}
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
-	em_tls = eap_method_tls_new (glade_file, sec);
+	em_tls = eap_method_tls_new (glade_file, sec, connection, FALSE);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("TLS"),
@@ -319,7 +344,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	if (default_method && (active < 0) && !strcmp (default_method, "tls"))
 		active = 0;
 
-	em_leap = eap_method_leap_new (glade_file, sec);
+	em_leap = eap_method_leap_new (glade_file, sec, connection);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("LEAP"),
@@ -329,7 +354,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	if (default_method && (active < 0) && !strcmp (default_method, "leap"))
 		active = 1;
 
-	em_ttls = eap_method_ttls_new (glade_file, sec);
+	em_ttls = eap_method_ttls_new (glade_file, sec, connection);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Tunneled TLS"),
@@ -382,5 +407,23 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
 
 	eap_method_fill_connection (eap, connection);
 	eap_method_unref (eap);
+}
+
+GtkWidget *
+ws_802_1x_nag_user (WirelessSecurity *sec,
+                    const char *combo_name)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	EAPMethod *eap = NULL;
+	GtkWidget *widget;	
+
+	widget = glade_xml_get_widget (sec->xml, combo_name);
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
+	gtk_tree_model_get (model, &iter, AUTH_METHOD_COLUMN, &eap, -1);
+	g_return_val_if_fail (eap != NULL, NULL);
+
+	return eap_method_nag_user (eap);
 }
 

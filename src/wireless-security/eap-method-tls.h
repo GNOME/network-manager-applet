@@ -27,10 +27,15 @@
 typedef struct {
 	struct _EAPMethod parent;
 
+	GladeXML *nag_dialog_xml;
+	gboolean ignore_ca_cert;
+	gboolean phase2;
 } EAPMethodTLS;
 
 EAPMethodTLS * eap_method_tls_new (const char *glade_file,
-                                   WirelessSecurity *parent);
+                                   WirelessSecurity *parent,
+                                   NMConnection *connection,
+                                   gboolean phase2);
 
 #endif /* EAP_METHOD_TLS_H */
 

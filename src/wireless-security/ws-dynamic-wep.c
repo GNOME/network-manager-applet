@@ -91,8 +91,14 @@ auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 	                              sec->size_group);
 }
 
+static GtkWidget *
+nag_user (WirelessSecurity *parent)
+{
+	return ws_802_1x_nag_user (parent, "dynamic_wep_auth_combo");
+}
+
 WirelessSecurityDynamicWEP *
-ws_dynamic_wep_new (const char *glade_file, const char *default_method)
+ws_dynamic_wep_new (const char *glade_file, NMConnection *connection)
 {
 	WirelessSecurityDynamicWEP *sec;
 	GtkWidget *widget;
@@ -123,11 +129,13 @@ ws_dynamic_wep_new (const char *glade_file, const char *default_method)
 	                        xml,
 	                        g_object_ref (widget));
 
+	WIRELESS_SECURITY (sec)->nag_user = nag_user;
+
 	widget = ws_802_1x_auth_combo_init (WIRELESS_SECURITY (sec),
 	                                    glade_file,
 	                                    "dynamic_wep_auth_combo",
 	                                    (GCallback) auth_combo_changed_cb,
-	                                    default_method);
+	                                    connection);
 	auth_combo_changed_cb (widget, (gpointer) sec);
 
 	return sec;

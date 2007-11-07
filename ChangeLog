@@ -1,5 +1,96 @@
 2007-11-07  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.glade
+		- Add a generic alert dialog
+
+	* src/wireless-dialog.h
+	  src/wireless-dialog.c
+	  	- (security_combo_init): pass the connection along to the security
+	  		methods so they can do things like set defaults
+	  	- (nma_wireless_dialog_nag_user): if the user didn't enter something
+	  		they should really have (like a CA certificate) but we still want
+	  		to allow the connection to proceed, add a mechanism for querying the
+	  		WirelessSecurity and EAPMethods whether the user should be gently
+	  		alerted to that fact
+
+	* src/wireless-security/ws-wep-passphrase.h
+	  src/wireless-security/ws-wep-passphrase.c
+	  src/wireless-security/ws-leap.h
+	  src/wireless-security/ws-leap.c
+	  src/wireless-security/ws-wep-key.h
+	  src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wpa-psk.h
+	  src/wireless-security/ws-wpa-psk.c
+	  src/wireless-security/ws-dynamic-wep.h
+	  src/wireless-security/ws-dynamic-wep.c
+		- (ws_wep_passphrase_new, ws_leap_new, ws_wep_key_new, ws_wpa_psk_new):
+			accept 'connection' argument
+
+	* src/wireless-security/eap-method-leap.h
+	  src/wireless-security/eap-method-leap.c
+	  src/wireless-security/eap-method-simple.h
+	  src/wireless-security/eap-method-simple.c
+		- (eap_method_leap_new, eap_method_simple_new): accept 'connection'
+			argument, fill in default identity if provided
+
+	* src/wireless-security/wireless-security.h
+	  src/wireless-security/wireless-security.c
+		- (wireless_security_nag_user): call subclass nag_user method
+		- (ws_802_1x_auth_combo_init): grab the default EAP method out of the
+			wireless security object, if given; pass connection along to the
+			EAP method objects
+		- (ws_802_1x_nag_user): pass the nag request down to the active EAP
+			method object
+
+	* src/wireless-security/ws-dynamic-wep.h
+	  src/wireless-security/ws-dynamic-wep.c
+	  src/wireless-security/ws-wpa-eap.h
+	  src/wireless-security/ws-wpa-eap.c
+		- (nag_user): pass nag request off to ws_802_1x_nag_user()
+		- (ws_dynamic_wep_new, ws_wpa_eap_new): accept 'connection' argument,
+			pass it along to the generic 802.1x setup function
+
+	* src/wireless-security/eap-method-ttls.h
+	  src/wireless-security/eap-method-ttls.c
+		- (validate_filepicker): allow blank file
+		- (validate): don't return invalid if the CA certificate wasn't chosen
+		- (fill_connection): clear the CA cert path if a CA cert wasn't chosen
+		- (nag_dialog_destroy, nag_dialog_response_cb, nag_user): bring up the
+			alert dialog if the user didn't choose a CA cert and ask them if
+			they really wanted to choose one but just forgot
+		- (inner_auth_combo_init): pass the connection on to the EAP methods
+		- (eap_method_ttls_new): accept 'connection' argument, set up the nag
+			dialog
+
+	* src/wireless-security/eap-method-tls.h
+	  src/wireless-security/eap-method-tls.c
+		- (validate_filepicker): allow blank file
+		- (validate): don't return invalid if the CA certificate wasn't chosen
+		- (fill_connection): clear the CA cert path if a CA cert wasn't chosen,
+			fix for EAP-TLS as a phase2 auth method
+		- (nag_dialog_destroy, nag_dialog_response_cb, nag_user): bring up the
+			alert dialog if the user didn't choose a CA cert and ask them if
+			they really wanted to choose one but just forgot
+		- (eap_method_tls_new): accept 'connection' argument, set up the nag
+			dialog
+
+	* src/wireless-security/eap-method.h
+	  src/wireless-security/eap-method.c
+		- Add a class method for nagging the user about stuff
+		- (eap_method_nag_user): new function; pass request off to subclass
+
+	* src/wireless-security/Makefile.am
+		- Add gconf-helpers to the includes path to pick up standardized applet
+			private tags
+
+	* src/applet.c
+		- (ow_dialog_close, nag_dialog_response_cb, other_wireless_response_cb):
+			handle alerting the user to stuff, like not selecting a CA
+			certificate and allowing the connection to proceed if the user
+			decides to ignore that alert
+
+2007-11-07  Dan Williams  <dcbw@redhat.com>
+
 	* src/gconf-helpers/gconf-helpers.c
 		- (read_applet_private_values_from_gconf, write_ignore_ca_cert_helper, 
 		   write_applet_private_values_to_gconf, nm_gconf_write_connection,

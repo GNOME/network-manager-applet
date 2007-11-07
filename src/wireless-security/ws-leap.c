@@ -112,7 +112,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityLEAP *
-ws_leap_new (const char *glade_file)
+ws_leap_new (const char *glade_file, NMConnection *connection)
 {
 	WirelessSecurityLEAP *sec;
 	GtkWidget *widget;

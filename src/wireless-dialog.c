@@ -467,7 +467,7 @@ security_combo_init (const char *glade_file,
 		WirelessSecurityWEPKey *ws_wep_ascii;
 		WirelessSecurityWEPPassphrase *ws_wep_passphrase;
 
-		ws_wep_passphrase = ws_wep_passphrase_new (glade_file);
+		ws_wep_passphrase = ws_wep_passphrase_new (glade_file, connection);
 		if (ws_wep_passphrase) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_passphrase), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -475,7 +475,7 @@ security_combo_init (const char *glade_file,
 				active = item++;
 		}
 
-		ws_wep_hex = ws_wep_key_new (glade_file, WEP_KEY_TYPE_HEX);
+		ws_wep_hex = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_HEX);
 		if (ws_wep_hex) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_hex), sec_model,
 			                   &iter, _("WEP 40/128-bit Hexadecimal"));
@@ -483,7 +483,7 @@ security_combo_init (const char *glade_file,
 				active = item++;
 		}
 
-		ws_wep_ascii = ws_wep_key_new (glade_file, WEP_KEY_TYPE_ASCII);
+		ws_wep_ascii = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_ASCII);
 		if (ws_wep_ascii) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_ascii), sec_model,
 			                   &iter, _("WEP 40/128-bit ASCII"));
@@ -499,7 +499,7 @@ security_combo_init (const char *glade_file,
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_802_11_DEVICE_CAP_WPA | NM_802_11_DEVICE_CAP_RSN)))) {
 		WirelessSecurityLEAP *ws_leap;
 
-		ws_leap = ws_leap_new (glade_file);
+		ws_leap = ws_leap_new (glade_file, connection);
 		if (ws_leap) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
@@ -511,7 +511,7 @@ security_combo_init (const char *glade_file,
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (glade_file, (wsec && wsec->eap) ? wsec->eap->data : NULL);
+		ws_dynamic_wep = ws_dynamic_wep_new (glade_file, connection);
 		if (ws_dynamic_wep) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
@@ -524,7 +524,7 @@ security_combo_init (const char *glade_file,
 	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;
 
-		ws_wpa_psk = ws_wpa_psk_new (glade_file);
+		ws_wpa_psk = ws_wpa_psk_new (glade_file, connection);
 		if (ws_wpa_psk) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA Pre-Shared Key"));
@@ -537,7 +537,7 @@ security_combo_init (const char *glade_file,
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (glade_file, (wsec && wsec->eap) ? wsec->eap->data : NULL);
+		ws_wpa_eap = ws_wpa_eap_new (glade_file, connection);
 		if (ws_wpa_eap) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
@@ -802,5 +802,33 @@ nma_wireless_dialog_new (const char *glade_file,
 	}
 
 	return dialog;
+}
+
+GtkWidget *
+nma_wireless_dialog_nag_user (GtkWidget *dialog)
+{
+	GladeXML *xml;
+	GtkWidget *combo;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	WirelessSecurity *sec = NULL;
+	gboolean nag = FALSE;
+
+	g_return_val_if_fail (dialog != NULL, NULL);
+
+	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
+	g_return_val_if_fail (xml != NULL, NULL);
+
+	combo = glade_xml_get_widget (xml, "security_combo");
+	g_return_val_if_fail (combo != NULL, NULL);
+
+	/* Ask the security method if it wants to nag the user. */
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+	if (!sec)
+		return NULL;
+
+	return wireless_security_nag_user (sec);
 }
 

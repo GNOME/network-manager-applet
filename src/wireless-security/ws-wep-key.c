@@ -121,6 +121,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 WirelessSecurityWEPKey *
 ws_wep_key_new (const char *glade_file,
+                NMConnection *connection,
                 WEPKeyType type)
 {
 	WirelessSecurityWEPKey *sec;

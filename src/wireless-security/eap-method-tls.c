@@ -20,10 +20,12 @@
  */
 
 #include <glade/glade.h>
+#include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
 #include <nm-setting-wireless.h>
 
+#include "gconf-helpers.h"
 #include "eap-method.h"
 #include "wireless-security.h"
 
@@ -45,12 +47,13 @@ destroy (EAPMethod *parent)
 {
 	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 
+	g_object_unref (method->nag_dialog_xml);
 	g_object_unref (parent->xml);
 	g_slice_free (EAPMethodTLS, method);
 }
 
 static gboolean
-validate_filepicker (GladeXML *xml, const char *name)
+validate_filepicker (GladeXML *xml, const char *name, gboolean ignore_blank)
 {
 	GtkWidget *widget;
 	char *filename;
@@ -60,7 +63,8 @@ validate_filepicker (GladeXML *xml, const char *name)
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	if (!filename)
-		return FALSE;
+		return ignore_blank ? TRUE : FALSE;
+
 	success = g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR);
 	g_free (filename);
 	return success;
@@ -78,13 +82,13 @@ validate (EAPMethod *parent)
 	if (!text || !strlen (text))
 		return FALSE;
 
-	if (!validate_filepicker (parent->xml, "eap_tls_user_cert_button"))
+	if (!validate_filepicker (parent->xml, "eap_tls_user_cert_button", FALSE))
 		return FALSE;
 
-	if (!validate_filepicker (parent->xml, "eap_tls_ca_cert_button"))
+	if (!validate_filepicker (parent->xml, "eap_tls_ca_cert_button", TRUE))
 		return FALSE;
 
-	if (!validate_filepicker (parent->xml, "eap_tls_private_key_button"))
+	if (!validate_filepicker (parent->xml, "eap_tls_private_key_button", FALSE))
 		return FALSE;
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_password_entry");
@@ -126,6 +130,7 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
+	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GtkWidget *widget;
 	char *filename;
@@ -134,7 +139,10 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 										  NM_TYPE_SETTING_WIRELESS_SECURITY));
 	g_assert (s_wireless_sec);
 
-	s_wireless_sec->eap = g_slist_append (s_wireless_sec->eap, g_strdup ("tls"));
+	if (method->phase2)
+		s_wireless_sec->phase2_auth = g_strdup ("tls");
+	else
+		s_wireless_sec->eap = g_slist_append (s_wireless_sec->eap, g_strdup ("tls"));
 
 	// FIXME: allow protocol selection and filter on device capabilities
 	// FIXME: allow pairwise cipher selection and filter on device capabilities
@@ -149,26 +157,126 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	g_object_set_data_full (G_OBJECT (connection),
-	                        "nma-path-client-cert", g_strdup (filename),
+	                        method->phase2 ? NMA_PATH_PHASE2_CLIENT_CERT_TAG : NMA_PATH_CLIENT_CERT_TAG,
+	                        g_strdup (filename),
 	                        (GDestroyNotify) g_free);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_ca_cert_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	g_object_set_data_full (G_OBJECT (connection),
-	                        "nma-path-ca-cert", g_strdup (filename),
-	                        (GDestroyNotify) g_free);
+	if (filename) {
+		g_object_set_data_full (G_OBJECT (connection),
+		                        method->phase2 ? NMA_PATH_PHASE2_CA_CERT_TAG : NMA_PATH_CA_CERT_TAG,
+		                        g_strdup (filename),
+		                        (GDestroyNotify) g_free);
+	} else {
+		g_object_set_data (G_OBJECT (connection),
+		                   method->phase2 ? NMA_PATH_PHASE2_CA_CERT_TAG : NMA_PATH_CA_CERT_TAG,
+		                   NULL);
+	}
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	g_object_set_data_full (G_OBJECT (connection),
-	                        "nma-path-private-key", g_strdup (filename),
+	                        method->phase2 ? NMA_PATH_PHASE2_PRIVATE_KEY_TAG : NMA_PATH_PRIVATE_KEY_TAG,
+	                        g_strdup (filename),
 	                        (GDestroyNotify) g_free);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_password_entry");
 	g_assert (widget);
-	s_wireless_sec->private_key_passwd = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	if (method->phase2)
+		s_wireless_sec->phase2_private_key_passwd = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	else
+		s_wireless_sec->private_key_passwd = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+
+	if (method->ignore_ca_cert) {
+		g_object_set_data (G_OBJECT (connection),
+		                   method->phase2 ? NMA_PHASE2_CA_CERT_IGNORE_TAG : NMA_CA_CERT_IGNORE_TAG,
+		                   GUINT_TO_POINTER (TRUE));
+	} else {
+		g_object_set_data (G_OBJECT (connection),
+		                   method->phase2 ? NMA_PHASE2_CA_CERT_IGNORE_TAG : NMA_CA_CERT_IGNORE_TAG,
+		                   NULL);
+	}
+}
+
+static gboolean
+nag_dialog_destroy (gpointer user_data)
+{
+	GtkWidget *nag_dialog = GTK_WIDGET (user_data);
+
+	gtk_widget_destroy (nag_dialog);
+	return FALSE;
+}
+
+static void
+nag_dialog_response_cb (GtkDialog *nag_dialog,
+                        gint response,
+                        gpointer user_data)
+{
+	EAPMethodTLS *method = (EAPMethodTLS *) user_data;
+	GtkWidget *widget;
+
+	if (response != GTK_RESPONSE_NO)
+		goto out;
+
+	/* Grab the value of the "don't bother me" checkbox */
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_checkbox");
+	g_assert (widget);
+
+	method->ignore_ca_cert = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+out:
+	gtk_widget_hide (GTK_WIDGET (nag_dialog));
+	g_idle_add (nag_dialog_destroy, nag_dialog);
+}
+
+static GtkWidget *
+nag_user (EAPMethod *parent)
+{
+	GtkWidget *dialog;
+	GtkWidget *widget;
+	EAPMethodTLS *method = (EAPMethodTLS *) parent;
+	char *filename = NULL;
+	char *text;
+
+	if (method->ignore_ca_cert)
+		return NULL;
+
+	/* Nag the user if the CA Cert is blank, since it's a security risk. */
+	widget = glade_xml_get_widget (parent->xml, "eap_tls_ca_cert_button");
+	g_assert (widget);
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+	if (filename != NULL) {
+		g_free (filename);
+		return NULL;
+	}
+
+	dialog = glade_xml_get_widget (method->nag_dialog_xml, "nag_user_dialog");
+	g_assert (dialog);
+	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), method);
+	
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "content_label");
+	g_assert (widget);
+
+	text = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+	                        _("No Certificate Authority certificate chosen"),
+	                        _("Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue wireless networks.  Would you like to choose a Certificate Authority certificate?"));
+	gtk_label_set_markup (GTK_LABEL (widget), text);
+	g_free (text);
+
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_button");
+	gtk_button_set_label (GTK_BUTTON (widget), _("Ignore"));
+	g_assert (widget);
+
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "change_button");
+	gtk_button_set_label (GTK_BUTTON (widget), _("Choose CA Certificate"));
+	g_assert (widget);
+
+	gtk_widget_realize (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+	return dialog;
 }
 
 static void
@@ -185,11 +293,15 @@ setup_filepicker (GladeXML *xml, const char *name, WirelessSecurity *parent)
 }
 
 EAPMethodTLS *
-eap_method_tls_new (const char *glade_file, WirelessSecurity *parent)
+eap_method_tls_new (const char *glade_file,
+                    WirelessSecurity *parent,
+                    NMConnection *connection,
+                    gboolean phase2)
 {
 	EAPMethodTLS *method;
 	GtkWidget *widget;
 	GladeXML *xml;
+	GladeXML *nag_dialog_xml;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -199,12 +311,20 @@ eap_method_tls_new (const char *glade_file, WirelessSecurity *parent)
 		return NULL;
 	}
 
+	nag_dialog_xml = glade_xml_new (glade_file, "nag_user_dialog", NULL);
+	if (nag_dialog_xml == NULL) {
+		g_warning ("Couldn't get nag_user_dialog from glade xml");
+		g_object_unref (xml);
+		return NULL;
+	}
+
 	widget = glade_xml_get_widget (xml, "eap_tls_notebook");
 	g_assert (widget);
 
 	method = g_slice_new0 (EAPMethodTLS);
 	if (!method) {
 		g_object_unref (xml);
+		g_object_unref (nag_dialog_xml);
 		return NULL;
 	}
 
@@ -215,6 +335,14 @@ eap_method_tls_new (const char *glade_file, WirelessSecurity *parent)
 	                 destroy,
 	                 xml,
 	                 g_object_ref (widget));
+
+	EAP_METHOD (method)->nag_user = nag_user;
+	method->nag_dialog_xml = nag_dialog_xml;
+
+	method->phase2 = phase2;
+
+	if (connection)
+		method->ignore_ca_cert = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG));
 
 	widget = glade_xml_get_widget (xml, "eap_tls_identity_entry");
 	g_assert (widget);

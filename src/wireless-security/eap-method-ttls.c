@@ -27,6 +27,7 @@
 
 #include "eap-method.h"
 #include "wireless-security.h"
+#include "gconf-helpers.h"
 
 #define I_NAME_COLUMN   0
 #define I_METHOD_COLUMN 1
@@ -37,13 +38,14 @@ destroy (EAPMethod *parent)
 	EAPMethodTTLS *method = (EAPMethodTTLS *) parent;
 
 	g_object_unref (parent->xml);
+	g_object_unref (method->nag_dialog_xml);
 	if (method->size_group)
 		g_object_unref (method->size_group);
 	g_slice_free (EAPMethodTTLS, method);
 }
 
 static gboolean
-validate_filepicker (GladeXML *xml, const char *name)
+validate_filepicker (GladeXML *xml, const char *name, gboolean ignore_blank)
 {
 	GtkWidget *widget;
 	char *filename;
@@ -53,7 +55,8 @@ validate_filepicker (GladeXML *xml, const char *name)
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	if (!filename)
-		return FALSE;
+		return ignore_blank ? TRUE : FALSE;
+
 	success = g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR);
 	g_free (filename);
 	return success;
@@ -68,7 +71,7 @@ validate (EAPMethod *parent)
 	EAPMethod *eap = NULL;
 	gboolean valid = FALSE;
 
-	if (!validate_filepicker (parent->xml, "eap_ttls_ca_cert_button"))
+	if (!validate_filepicker (parent->xml, "eap_ttls_ca_cert_button", TRUE))
 		return FALSE;
 
 	widget = glade_xml_get_widget (parent->xml, "eap_ttls_inner_auth_combo");
@@ -150,9 +153,13 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	widget = glade_xml_get_widget (parent->xml, "eap_ttls_ca_cert_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	g_object_set_data_full (G_OBJECT (connection),
-	                        "nma-path-ca-cert", g_strdup (filename),
-	                        (GDestroyNotify) g_free);
+	if (filename) {
+		g_object_set_data_full (G_OBJECT (connection),
+		                        NMA_PATH_CA_CERT_TAG, g_strdup (filename),
+		                        (GDestroyNotify) g_free);
+	} else {
+		g_object_set_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG, NULL);
+	}
 
 	widget = glade_xml_get_widget (parent->xml, "eap_ttls_inner_auth_combo");
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
@@ -162,6 +169,84 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	eap_method_fill_connection (eap, connection);
 	eap_method_unref (eap);
+}
+
+static gboolean
+nag_dialog_destroy (gpointer user_data)
+{
+	GtkWidget *nag_dialog = GTK_WIDGET (user_data);
+
+	gtk_widget_destroy (nag_dialog);
+	return FALSE;
+}
+
+static void
+nag_dialog_response_cb (GtkDialog *nag_dialog,
+                        gint response,
+                        gpointer user_data)
+{
+	EAPMethodTLS *method = (EAPMethodTLS *) user_data;
+	GtkWidget *widget;
+
+	if (response != GTK_RESPONSE_NO)
+		goto out;
+
+	/* Grab the value of the "don't bother me" checkbox */
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_checkbox");
+	g_assert (widget);
+
+	method->ignore_ca_cert = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+out:
+	gtk_widget_hide (GTK_WIDGET (nag_dialog));
+	g_idle_add (nag_dialog_destroy, nag_dialog);
+}
+
+static GtkWidget *
+nag_user (EAPMethod *parent)
+{
+	GtkWidget *dialog;
+	GtkWidget *widget;
+	EAPMethodTTLS *method = (EAPMethodTTLS *) parent;
+	char *filename = NULL;
+	char *text;
+
+	if (method->ignore_ca_cert)
+		return NULL;
+
+	/* Nag the user if the CA Cert is blank, since it's a security risk. */
+	widget = glade_xml_get_widget (parent->xml, "eap_ttls_ca_cert_button");
+	g_assert (widget);
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+	if (filename != NULL) {
+		g_free (filename);
+		return NULL;
+	}
+
+	dialog = glade_xml_get_widget (method->nag_dialog_xml, "nag_user_dialog");
+	g_assert (dialog);
+	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), method);
+	
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "content_label");
+	g_assert (widget);
+
+	text = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+	                        _("No Certificate Authority certificate chosen"),
+	                        _("Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue wireless networks.  Would you like to choose a Certificate Authority certificate?"));
+	gtk_label_set_markup (GTK_LABEL (widget), text);
+	g_free (text);
+
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_button");
+	gtk_button_set_label (GTK_BUTTON (widget), _("Ignore"));
+	g_assert (widget);
+
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "change_button");
+	gtk_button_set_label (GTK_BUTTON (widget), _("Choose CA Certificate"));
+	g_assert (widget);
+
+	gtk_widget_realize (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+	return dialog;
 }
 
 static void
@@ -202,7 +287,9 @@ inner_auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 }
 
 static GtkWidget *
-inner_auth_combo_init (EAPMethodTTLS *method, const char *glade_file)
+inner_auth_combo_init (EAPMethodTTLS *method,
+                       const char *glade_file,
+                       NMConnection *connection)
 {
 	GladeXML *xml = EAP_METHOD (method)->xml;
 	GtkWidget *combo;
@@ -215,7 +302,10 @@ inner_auth_combo_init (EAPMethodTTLS *method, const char *glade_file)
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
-	em_pap = eap_method_simple_new (glade_file, method->sec_parent, EAP_METHOD_SIMPLE_TYPE_PAP);
+	em_pap = eap_method_simple_new (glade_file,
+	                                method->sec_parent,
+	                                connection,
+	                                EAP_METHOD_SIMPLE_TYPE_PAP);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("PAP"),
@@ -223,7 +313,10 @@ inner_auth_combo_init (EAPMethodTTLS *method, const char *glade_file)
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_pap));
 
-	em_mschap = eap_method_simple_new (glade_file, method->sec_parent, EAP_METHOD_SIMPLE_TYPE_MSCHAP);
+	em_mschap = eap_method_simple_new (glade_file,
+	                                   method->sec_parent,
+	                                   connection,
+	                                   EAP_METHOD_SIMPLE_TYPE_MSCHAP);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAP"),
@@ -231,7 +324,10 @@ inner_auth_combo_init (EAPMethodTTLS *method, const char *glade_file)
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_mschap));
 
-	em_mschap_v2 = eap_method_simple_new (glade_file, method->sec_parent, EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2);
+	em_mschap_v2 = eap_method_simple_new (glade_file,
+	                                      method->sec_parent,
+	                                      connection,
+	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAPv2"),
@@ -239,7 +335,10 @@ inner_auth_combo_init (EAPMethodTTLS *method, const char *glade_file)
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_mschap_v2));
 
-	em_chap = eap_method_simple_new (glade_file, method->sec_parent, EAP_METHOD_SIMPLE_TYPE_CHAP);
+	em_chap = eap_method_simple_new (glade_file,
+	                                 method->sec_parent,
+	                                 connection,
+	                                 EAP_METHOD_SIMPLE_TYPE_CHAP);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("CHAP"),
@@ -261,11 +360,14 @@ inner_auth_combo_init (EAPMethodTTLS *method, const char *glade_file)
 }
 
 EAPMethodTTLS *
-eap_method_ttls_new (const char *glade_file, WirelessSecurity *parent)
+eap_method_ttls_new (const char *glade_file,
+                     WirelessSecurity *parent,
+                     NMConnection *connection)
 {
 	EAPMethodTTLS *method;
 	GtkWidget *widget;
 	GladeXML *xml;
+	GladeXML *nag_dialog_xml;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -275,11 +377,19 @@ eap_method_ttls_new (const char *glade_file, WirelessSecurity *parent)
 		return NULL;
 	}
 
+	nag_dialog_xml = glade_xml_new (glade_file, "nag_user_dialog", NULL);
+	if (nag_dialog_xml == NULL) {
+		g_warning ("Couldn't get nag_user_dialog from glade xml");
+		g_object_unref (xml);
+		return NULL;
+	}
+
 	widget = glade_xml_get_widget (xml, "eap_ttls_notebook");
 	g_assert (widget);
 
 	method = g_slice_new0 (EAPMethodTTLS);
 	if (!method) {
+		g_object_unref (nag_dialog_xml);
 		g_object_unref (xml);
 		return NULL;
 	}
@@ -292,7 +402,12 @@ eap_method_ttls_new (const char *glade_file, WirelessSecurity *parent)
 	                 xml,
 	                 g_object_ref (widget));
 
+	EAP_METHOD (method)->nag_user = nag_user;
+	method->nag_dialog_xml = nag_dialog_xml;
 	method->sec_parent = parent;
+
+	if (connection)
+		method->ignore_ca_cert = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG));
 
 	widget = glade_xml_get_widget (xml, "eap_ttls_ca_cert_button");
 	g_assert (widget);
@@ -301,7 +416,7 @@ eap_method_ttls_new (const char *glade_file, WirelessSecurity *parent)
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 
-	widget = inner_auth_combo_init (method, glade_file);
+	widget = inner_auth_combo_init (method, glade_file, connection);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);
 
 	return method;

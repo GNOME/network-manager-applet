@@ -1182,6 +1182,26 @@ nma_menu_add_device_item (GtkWidget *menu,
 	}
 }
 
+static gboolean
+ow_dialog_close (gpointer user_data)
+{
+	GtkWidget *ow_dialog = GTK_WIDGET (user_data);
+
+	gtk_dialog_response (GTK_DIALOG (ow_dialog), GTK_RESPONSE_OK);
+	return FALSE;
+}
+
+static void
+nag_dialog_response_cb (GtkDialog *nag_dialog,
+                        gint response,
+                        gpointer user_data)
+{
+	GtkWidget *ow_dialog = GTK_WIDGET (user_data);
+
+	if (response == GTK_RESPONSE_NO)  /* user opted not to correct the warning */
+		g_idle_add (ow_dialog_close, ow_dialog);
+}
+
 static void
 other_wireless_response_cb (GtkDialog *dialog,
                             gint response,
@@ -1193,9 +1213,22 @@ other_wireless_response_cb (GtkDialog *dialog,
 	NMSettingConnection *s_con;
 	AppletDbusConnectionSettings *exported_con = NULL;
 	const char *con_path;
+	GtkWidget *nag_dialog;
 
 	if (response != GTK_RESPONSE_OK)
 		goto done;
+
+	/* Nag the user about certificates or whatever.  Only destroy the dialog
+	 * if no nagging was done.
+	 */
+	nag_dialog = nma_wireless_dialog_nag_user (GTK_WIDGET (dialog));
+	if (nag_dialog) {
+		gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
+		g_signal_connect (nag_dialog, "response",
+		                  G_CALLBACK (nag_dialog_response_cb),
+		                  dialog);
+		return;
+	}
 
 	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device);
 	// FIXME: find a compatible connection in the current connection list before adding

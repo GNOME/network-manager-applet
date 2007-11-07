@@ -30,7 +30,8 @@ libwireless_security_la_SOURCES = \
 
 libwireless_security_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \
-	-I${top_srcdir}/src/utils
+	-I${top_srcdir}/src/utils \
+	-I${top_srcdir}/src/gconf-helpers
 
 libwireless_security_la_LIBADD = \
 	$(NMA_LIBS) \

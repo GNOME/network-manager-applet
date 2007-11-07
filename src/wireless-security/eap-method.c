@@ -76,6 +76,16 @@ eap_method_fill_connection (EAPMethod *method, NMConnection *connection)
 	return (*(method->fill_connection)) (method, connection);
 }
 
+GtkWidget *
+eap_method_nag_user (EAPMethod *method)
+{
+	g_return_val_if_fail (method != NULL, NULL);
+
+	if (method->nag_user)
+		return (*(method->nag_user)) (method);
+	return NULL;
+}
+
 void
 eap_method_init (EAPMethod *method,
                  EMValidateFunc validate,
