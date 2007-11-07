@@ -37,6 +37,7 @@
 #include <nm-connection.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
+#include <nm-settings.h>
 
 
 typedef struct {
