@@ -25,14 +25,6 @@
 #define CIPHER_DES_EDE3_CBC "DES-EDE3-CBC"
 #define CIPHER_DES_CBC "DES-CBC"
 
-#define NM_CRYPTO_ERROR nm_crypto_error_quark ()
-
-GQuark
-nm_crypto_error_quark (void)
-{
-  return g_quark_from_static_string ("nm-crypto-error-quark");
-}
-
 enum {
 	NM_CRYPTO_ERR_NONE = 0,
 	NM_CRYPTO_ERR_CANT_READ_FILE,
@@ -50,7 +42,15 @@ enum {
 	NM_CRYPTO_ERR_CIPHER_DECRYPT_FAILED,
 };
 
+enum {
+	NM_CRYPTO_KEY_TYPE_UNKNOWN = 0,
+	NM_CRYPTO_KEY_TYPE_RSA,
+	NM_CRYPTO_KEY_TYPE_DSA,
+};
 
+
+#define NM_CRYPTO_ERROR nm_crypto_error_quark ()
+GQuark nm_crypto_error_quark (void);
 
 gboolean crypto_init (GError **error);
 

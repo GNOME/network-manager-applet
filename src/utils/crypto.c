@@ -27,8 +27,16 @@
 
 #include "crypto.h"
 
-#define KEY_TYPE_RSA 1
-#define KEY_TYPE_DSA 2
+GQuark
+nm_crypto_error_quark (void)
+{
+	static GQuark quark;
+
+	if (G_UNLIKELY (!quark))
+		quark = g_quark_from_static_string ("nm-crypto-error-quark");
+	return quark;
+}
+
 
 static const char *pem_rsa_key_begin = "-----BEGIN RSA PRIVATE KEY-----";
 static const char *pem_rsa_key_end = "-----END RSA PRIVATE KEY-----";
@@ -82,11 +90,11 @@ parse_key_file (const char *filename,
 	const char *end_tag;
 
 	switch (key_type) {
-	case KEY_TYPE_RSA:
+	case NM_CRYPTO_KEY_TYPE_RSA:
 		start_tag = pem_rsa_key_begin;
 		end_tag = pem_rsa_key_end;
 		break;
-	case KEY_TYPE_DSA:
+	case NM_CRYPTO_KEY_TYPE_DSA:
 		start_tag = pem_dsa_key_begin;
 		end_tag = pem_dsa_key_end;
 		break;
@@ -438,9 +446,15 @@ decrypt_key (const char *cipher,
 	                         key, key_len,
 	                         out_len,
 	                         error);
-	if (!output || !*out_len)
-		g_warning ("Couldn't decrypt the private key.");
+	if (!output)
+		goto out;
 
+	if (*out_len == 0) {
+		g_free (output);
+		output = NULL;
+		goto out;
+	}
+ 
 out:
 	if (key) {
 		/* Don't leak stale key material */
@@ -459,7 +473,7 @@ crypto_get_private_key (const char *file,
                         GError **error)
 {
 	GByteArray *array = NULL;
-	guint32 key_type = KEY_TYPE_RSA;
+	guint32 key_type = NM_CRYPTO_KEY_TYPE_RSA;
 	char *data = NULL;
 	gsize data_len = 0;
 	char *iv = NULL;
@@ -470,11 +484,10 @@ crypto_get_private_key (const char *file,
 	/* Try RSA first */
 	data = parse_key_file (file, key_type, &data_len, &cipher, &iv, error);
 	if (!data) {
-		if (*error)
-			g_error_clear (error);
+		g_clear_error (error);
 
 		/* DSA next */
-		key_type = KEY_TYPE_DSA;
+		key_type = NM_CRYPTO_KEY_TYPE_DSA;
 		data = parse_key_file (file, key_type, &data_len, &cipher, &iv, error);
 		if (!data)
 			goto out;
@@ -544,11 +557,11 @@ dump_key_to_pem (const char *key, gsize key_len, int key_type)
 	char *p;
 
 	switch (key_type) {
-	case KEY_TYPE_RSA:
+	case NM_CRYPTO_KEY_TYPE_RSA:
 		start_tag = pem_rsa_key_begin;
 		end_tag = pem_rsa_key_end;
 		break;
-	case KEY_TYPE_DSA:
+	case NM_CRYPTO_KEY_TYPE_DSA:
 		start_tag = pem_dsa_key_begin;
 		end_tag = pem_dsa_key_end;
 		break;

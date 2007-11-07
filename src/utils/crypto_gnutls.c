@@ -113,6 +113,7 @@ crypto_decrypt (const char *cipher,
 	int cipher_mech;
 	char *output = NULL;
 	gboolean success = FALSE;
+	gsize len;
 
 	if (!strcmp (cipher, CIPHER_DES_EDE3_CBC))
 		cipher_mech = GCRY_CIPHER_3DES;
@@ -169,7 +170,11 @@ crypto_decrypt (const char *cipher,
 		             gcry_strsource (err), gcry_strerror (err));
 		goto out;
 	}
-	*out_len = data_len - output[data_len - 1];
+	len = data_len - output[data_len - 1];
+	if (len > data_len)
+		goto out;
+
+	*out_len = len;
 	output[*out_len] = '\0';
 	success = TRUE;
 

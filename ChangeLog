@@ -1,5 +1,18 @@
 2007-11-07  Dan Williams  <dcbw@redhat.com>
 
+	* src/utils/crypto.h
+	  src/utils/crypto.c
+		- Fix linkage of nm_crypto_error_quark() by moving implementation to
+			the .c file
+		- Provide an enum for NM_CRYPTO_KEY_TYPE_*
+		- (decrypt_key): avoid possible memory leak
+
+	* src/utils/crypto_nss.c
+	  src/utils/crypto_gnutls.c
+		- (crypto_decrypt): don't overrun the buffer on error
+
+2007-11-07  Dan Williams  <dcbw@redhat.com>
+
 	* src/utils/crypto.c
 	  src/utils/crypto_gnutls.c
 	  src/utils/crypto_nss.c

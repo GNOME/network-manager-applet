@@ -122,6 +122,7 @@ crypto_decrypt (const char *cipher,
 	PK11Context *ctx = NULL;
 	SECStatus s;
 	gboolean success = FALSE;
+	gsize len;
 
 	if (!strcmp (cipher, CIPHER_DES_EDE3_CBC))
 		cipher_mech = CKM_DES3_CBC_PAD;
@@ -204,7 +205,11 @@ crypto_decrypt (const char *cipher,
 		             PORT_GetError ());
 		goto out;
 	}
-	*out_len = tmp1_len + tmp2_len;
+	len = tmp1_len + tmp2_len;
+	if (len > data_len)
+		goto out;
+
+	*out_len = len;
 	output[*out_len] = '\0';
 	success = TRUE;
 
