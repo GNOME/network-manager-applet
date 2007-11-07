@@ -648,6 +648,31 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 }
 
 static void
+read_applet_private_values_from_gconf (NMSetting *setting,
+                                       ReadFromGConfInfo *info)
+{
+	if (NM_IS_SETTING_WIRELESS_SECURITY (setting)) {
+		gboolean value;
+
+		if (nm_gconf_get_bool_helper (info->client, info->dir,
+		                              NMA_CA_CERT_IGNORE_TAG,
+		                              setting->name, &value)) {
+			g_object_set_data (G_OBJECT (info->connection),
+			                   NMA_CA_CERT_IGNORE_TAG,
+			                   GUINT_TO_POINTER (value));
+		}
+
+		if (nm_gconf_get_bool_helper (info->client, info->dir,
+		                              NMA_PHASE2_CA_CERT_IGNORE_TAG,
+		                              setting->name, &value)) {
+			g_object_set_data (G_OBJECT (info->connection),
+			                   NMA_PHASE2_CA_CERT_IGNORE_TAG,
+			                   GUINT_TO_POINTER (value));
+		}
+	}
+}
+
+static void
 read_one_setting (gpointer data, gpointer user_data)
 {
 	char *name;
@@ -662,6 +687,7 @@ read_one_setting (gpointer data, gpointer user_data)
 		nm_setting_enumerate_values (setting,
 							    read_one_setting_value_from_gconf,
 							    info);
+		read_applet_private_values_from_gconf (setting, info);
 		nm_connection_add_setting (info->connection, setting);
 	}
 
@@ -832,6 +858,52 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		g_warning ("Unhandled type '%s'", g_type_name (type));
 }
 
+static void
+write_ignore_ca_cert_helper (const char *dir,
+                             GConfClient *client,
+                             NMConnection *connection,
+                             const char *tag,
+                             const GByteArray *cert)
+{
+	g_return_if_fail (dir != NULL);
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (tag != NULL);
+
+	if (cert) {
+		char *key;
+
+		key = g_strdup_printf ("%s/%s/%s", dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, tag);
+		gconf_client_unset (client, key, NULL);
+		g_free (key);
+	} else {
+		if (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), tag)))
+			nm_gconf_set_bool_helper (client, dir, tag, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, TRUE);
+	}
+}
+
+static void
+write_applet_private_values_to_gconf (CopyOneSettingValueInfo *info)
+{
+	char *key;
+	NMSettingWirelessSecurity *s_wireless_sec;
+
+	g_return_if_fail (info != NULL);
+
+	/* Handle values private to the applet that are not supposed to
+	 * be sent to NetworkManager.
+	 */
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+	if (s_wireless_sec) {
+		write_ignore_ca_cert_helper (info->dir, info->client, info->connection,
+		                             NMA_CA_CERT_IGNORE_TAG,
+		                             s_wireless_sec->ca_cert);
+
+		write_ignore_ca_cert_helper (info->dir, info->client, info->connection,
+		                             NMA_PHASE2_CA_CERT_IGNORE_TAG,
+		                             s_wireless_sec->phase2_ca_cert);
+	}
+}
+
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
@@ -857,6 +929,6 @@ nm_gconf_write_connection (NMConnection *connection,
 	nm_connection_for_each_setting_value (connection,
 	                                      copy_one_setting_value_to_gconf,
 	                                      &info);
-
+	write_applet_private_values_to_gconf (&info);
 }
 
