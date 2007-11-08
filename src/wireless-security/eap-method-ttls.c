@@ -395,6 +395,8 @@ eap_method_ttls_new (const char *glade_file,
 	widget = glade_xml_get_widget (xml, "eap_ttls_ca_cert_button");
 	g_assert (widget);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (widget), TRUE);
+	gtk_file_chooser_button_set_title (GTK_FILE_CHOOSER_BUTTON (widget),
+	                                   _("Choose a Certificate Authority certificate..."));
 	g_signal_connect (G_OBJECT (widget), "selection-changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);

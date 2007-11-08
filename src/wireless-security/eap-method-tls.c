@@ -266,7 +266,10 @@ nag_user (EAPMethod *parent)
 }
 
 static void
-setup_filepicker (GladeXML *xml, const char *name, WirelessSecurity *parent)
+setup_filepicker (GladeXML *xml,
+                  const char *name,
+                  const char *title,
+                  WirelessSecurity *parent)
 {
 	GtkWidget *widget;
 	GtkFileFilter *filter;
@@ -274,6 +277,7 @@ setup_filepicker (GladeXML *xml, const char *name, WirelessSecurity *parent)
 	widget = glade_xml_get_widget (xml, name);
 	g_assert (widget);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (widget), TRUE);
+	gtk_file_chooser_button_set_title (GTK_FILE_CHOOSER_BUTTON (widget), title);
 	g_signal_connect (G_OBJECT (widget), "selection-changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
@@ -346,9 +350,18 @@ eap_method_tls_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 
-	setup_filepicker (xml, "eap_tls_user_cert_button", parent);
-	setup_filepicker (xml, "eap_tls_ca_cert_button", parent);
-	setup_filepicker (xml, "eap_tls_private_key_button", parent);
+	setup_filepicker (xml,
+	                  "eap_tls_user_cert_button",
+	                  _("Choose your personal certificate..."),
+	                  parent);
+	setup_filepicker (xml,
+	                  "eap_tls_ca_cert_button",
+	                  _("Choose a Certificate Authority certificate..."),
+	                  parent);
+	setup_filepicker (xml,
+	                  "eap_tls_private_key_button",
+	                  _("Choose your private key..."),
+	                  parent);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);
