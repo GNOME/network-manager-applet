@@ -350,6 +350,7 @@ eap_method_ttls_new (const char *glade_file,
 	GtkWidget *widget;
 	GladeXML *xml;
 	GladeXML *nag_dialog_xml;
+	GtkFileFilter *filter;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -397,6 +398,8 @@ eap_method_ttls_new (const char *glade_file,
 	g_signal_connect (G_OBJECT (widget), "selection-changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
+	filter = eap_method_default_file_chooser_filter_new ();
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (widget), filter);
 
 	widget = inner_auth_combo_init (method, glade_file, connection);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);

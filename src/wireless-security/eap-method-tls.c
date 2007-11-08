@@ -269,6 +269,7 @@ static void
 setup_filepicker (GladeXML *xml, const char *name, WirelessSecurity *parent)
 {
 	GtkWidget *widget;
+	GtkFileFilter *filter;
 
 	widget = glade_xml_get_widget (xml, name);
 	g_assert (widget);
@@ -276,6 +277,9 @@ setup_filepicker (GladeXML *xml, const char *name, WirelessSecurity *parent)
 	g_signal_connect (G_OBJECT (widget), "selection-changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
+
+	filter = eap_method_default_file_chooser_filter_new ();
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (widget), filter);
 }
 
 EAPMethodTLS *

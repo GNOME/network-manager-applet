@@ -23,6 +23,9 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "eap-method.h"
 #include "crypto.h"
@@ -199,5 +202,88 @@ eap_method_validate_filepicker (GladeXML *xml,
 out:
 	g_free (filename);
 	return success;
+}
+
+static const char *
+find_tag (const char *tag, const char *buf, gsize len)
+{
+	gsize i, taglen;
+
+	taglen = strlen (tag);
+	if (len < taglen)
+		return NULL;
+
+	for (i = 0; i < len - taglen; i++) {
+		if (memcmp (buf + i, tag, taglen) == 0)
+			return buf + i;
+	}
+	return NULL;
+}
+
+static const char *pem_rsa_key_begin = "-----BEGIN RSA PRIVATE KEY-----";
+static const char *pem_dsa_key_begin = "-----BEGIN DSA PRIVATE KEY-----";
+static const char *pem_cert_begin = "-----BEGIN CERTIFICATE-----";
+
+static gboolean
+default_filter (const GtkFileFilterInfo *filter_info, gpointer data)
+{
+	int fd;
+	unsigned char buffer[1024];
+	ssize_t bytes_read;
+	gboolean show = FALSE;
+	guint16 der_tag = 0x8230;
+	char *p;
+
+	if (!filter_info->filename)
+		return FALSE;
+
+	p = strchr (filter_info->filename, ".");
+	if (p && !strcmp (p, ".p12"))
+		return FALSE;
+
+	fd = open (filter_info->filename, O_RDONLY);
+	if (fd < 0)
+		return FALSE;
+
+	bytes_read = read (fd, buffer, sizeof (buffer) - 1);
+	if (bytes_read < 400)  /* needs to be lower? */
+		goto out;
+	buffer[bytes_read] = '\0';
+
+	/* Check for DER signature */
+	if (!memcmp (buffer, &der_tag, 2)) {
+		show = TRUE;
+		goto out;
+	}
+
+	/* Check for PEM signatures */
+	if (find_tag (pem_rsa_key_begin, (const char *) buffer, bytes_read)) {
+		show = TRUE;
+		goto out;
+	}
+
+	if (find_tag (pem_dsa_key_begin, (const char *) buffer, bytes_read)) {
+		show = TRUE;
+		goto out;
+	}
+
+	if (find_tag (pem_cert_begin, (const char *) buffer, bytes_read)) {
+		show = TRUE;
+		goto out;
+	}
+
+out:
+	close (fd);
+	return show;
+}
+
+GtkFileFilter *
+eap_method_default_file_chooser_filter_new (void)
+{
+	GtkFileFilter *filter;
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_add_custom (filter, GTK_FILE_FILTER_FILENAME, default_filter, NULL, NULL);
+	return filter;
 }
 

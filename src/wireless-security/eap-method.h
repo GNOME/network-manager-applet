@@ -84,6 +84,8 @@ void eap_method_init (EAPMethod *method,
                       GladeXML *xml,
                       GtkWidget *ui_widget);
 
+GtkFileFilter * eap_method_default_file_chooser_filter_new (void);
+
 gboolean eap_method_validate_filepicker (GladeXML *xml,
                                          const char *name,
                                          gboolean ignore_blank,
