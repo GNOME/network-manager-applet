@@ -237,7 +237,7 @@ default_filter (const GtkFileFilterInfo *filter_info, gpointer data)
 	if (!filter_info->filename)
 		return FALSE;
 
-	p = strchr (filter_info->filename, ".");
+	p = strchr (filter_info->filename, '.');
 	if (p && !strcmp (p, ".p12"))
 		return FALSE;
 
