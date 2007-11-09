@@ -24,4 +24,8 @@ libutils_la_CPPFLAGS += $(NSS_CFLAGS)
 libutils_la_LIBADD += $(NSS_LIBS)
 endif
 
+noinst_PROGRAMS = test-crypto
 
+test_crypto_SOURCES = test-crypto.c
+test_crypto_CPPFLAGS = $(NMA_CFLAGS)
+test_crypto_LDADD = $(NMA_LIBS) ${top_builddir}/src/utils/libutils.la
