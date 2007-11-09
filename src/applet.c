@@ -3054,33 +3054,33 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
 	setting_name = g_object_get_data (G_OBJECT (dialog), "setting-name");
 	if (!context || !setting_name) {
-		g_warning ("%s.%d (%s): couldn't get dialog data.", __FILE__, __LINE__, __func__);
-		error = nm_settings_new_error ("%s.%d (%s): couldn't get dialog data", __FILE__, __LINE__, __func__);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): couldn't get dialog data",
+		             __FILE__, __LINE__, __func__);
 		goto done;
 	}
 
 	if (response != GTK_RESPONSE_OK) {
-		error = nm_settings_new_error ("%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): canceled",
+		             __FILE__, __LINE__, __func__);
 		goto done;
 	}
 
 	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device);
 	if (!connection) {
-		g_warning ("%s.%d (%s): couldn't get connection from the wireless "
-		           "dialog.", __FILE__, __LINE__, __func__);
-		error = nm_settings_new_error ("%s.%d (%s): couldn't get connection "
-		                               "from wireless dialog.",
-		                               __FILE__, __LINE__, __func__);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): couldn't get connection from wireless dialog.",
+		             __FILE__, __LINE__, __func__);
 		goto done;
 	}
 
 	setting = nm_connection_get_setting_by_name (connection, setting_name);
 	if (!setting) {
-		g_warning ("%s.%d (%s): requested setting '%s' didn't exist in the "
-		           "connection.", __FILE__, __LINE__, __func__, setting_name);
-		error = nm_settings_new_error ("%s.%d (%s): requested setting '%s' "
-		                               "didn't exist in the connection.",
-		                               __FILE__, __LINE__, __func__);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): requested setting '%s' didn't exist in the "
+		             " connection.",
+		             __FILE__, __LINE__, __func__, setting_name);
 		goto done;
 	}
 
@@ -3088,15 +3088,14 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	if (applet_connection)
 		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (applet_connection));
 
-	applet_dbus_settings_connection_fill_certs (connection);
+	applet_dbus_settings_connection_fill_certs (applet_connection);
 	setting_hash = nm_setting_to_hash (setting);
-	applet_dbus_settings_connection_clear_filled_certs (connection);
+	applet_dbus_settings_connection_clear_filled_certs (applet_connection);
 
 	if (!setting_hash) {
-		g_warning ("%s.%d (%s): failed to hash setting '%s'.",
-		           __FILE__, __LINE__, __func__, setting_name);
-		error = nm_settings_new_error ("%s.%d (%s): failed to has setting '%s'.",
-		                               __FILE__, __LINE__, __func__);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): failed to has setting '%s'.",
+		             __FILE__, __LINE__, __func__, setting_name);
 		goto done;
 	}
 
@@ -3105,6 +3104,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 
 done:
 	if (error) {
+		g_warning (error->message);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 	}
@@ -3188,8 +3188,10 @@ applet_settings_new_secrets_requested_cb (AppletDbusSettings *settings,
 
 	device = get_connection_details (applet_connection, applet, &ap);
 	if (!device || (NM_IS_DEVICE_802_11_WIRELESS (device) && !ap)) {
-		GError *error;
-		error = nm_settings_new_error ("%s.%d (%s): couldn't find details for connection", __FILE__, __LINE__, __func__);
+		GError *error = NULL;
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): couldn't find details for connection",
+		             __FILE__, __LINE__, __func__);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 	}

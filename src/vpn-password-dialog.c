@@ -195,9 +195,9 @@ nma_vpn_request_password (NMConnection *connection,
 	/* find the auth-dialog binary */
 	auth_dialog_binary = find_auth_dialog_binary (s_vpn->service_type, s_con->name);
 	if (!auth_dialog_binary) {
-		error = nm_settings_new_error ("%s.%d (%s): couldn't find VPN auth "
-		                               "dialog  helper program.",
-		                               __FILE__, __LINE__, __func__);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): couldn't find VPN auth dialog  helper program '%s'.",
+		             __FILE__, __LINE__, __func__, s_vpn->service_type);
 		goto out;
 	}
 
@@ -235,8 +235,9 @@ nma_vpn_request_password (NMConnection *connection,
 							  s_vpn->service_type);
 		gtk_window_present (GTK_WINDOW (dialog));
 		g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
-		error = nm_settings_new_error ("%s.%d (%s): couldn't run VPN auth dialog",
-		                               __FILE__, __LINE__, __func__);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): couldn't run VPN auth dialog.",
+		             __FILE__, __LINE__, __func__);
 		goto out;
 	}
 
@@ -286,8 +287,8 @@ nma_vpn_request_password (NMConnection *connection,
 		g_hash_table_destroy (secrets);
 		success = TRUE;
 	} else {
-		error = nm_settings_new_error ("%s.%d (%s): canceled", __FILE__,
-		                               __LINE__, __func__);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
 	}
 
 	g_slist_foreach (io_user_data.lines, (GFunc) g_free, NULL);
