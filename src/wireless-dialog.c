@@ -527,7 +527,7 @@ security_combo_init (const char *glade_file,
 		ws_wpa_psk = ws_wpa_psk_new (glade_file, connection);
 		if (ws_wpa_psk) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
-			                   &iter, _("WPA Pre-Shared Key"));
+			                   &iter, _("WPA & WPA2 Personal"));
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_PSK) || (default_type == NMU_SEC_WPA2_PSK)))
 				active = item++;
 		}
