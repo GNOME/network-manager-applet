@@ -1,5 +1,12 @@
 2007-11-13  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-security/eap-method-ttls.c
+	  src/wireless-security/eap-method-tls.c
+		- (fill_connection): fix leakage of return value from
+			gtk_file_chooser_get_filename() which returns an allocated value
+
+2007-11-13  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-dialog.c
 		- (security_combo_init): change "WPA Pre-shared Key" to
 			"WPA & WPA2 Personal" to harmonize with more standard terms

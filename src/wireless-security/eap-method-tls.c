@@ -152,10 +152,12 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_user_cert_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+	g_assert (filename);
 	g_object_set_data_full (G_OBJECT (connection),
 	                        method->phase2 ? NMA_PATH_PHASE2_CLIENT_CERT_TAG : NMA_PATH_CLIENT_CERT_TAG,
 	                        g_strdup (filename),
 	                        (GDestroyNotify) g_free);
+	g_free (filename);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_ca_cert_button");
 	g_assert (widget);
@@ -165,6 +167,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		                        method->phase2 ? NMA_PATH_PHASE2_CA_CERT_TAG : NMA_PATH_CA_CERT_TAG,
 		                        g_strdup (filename),
 		                        (GDestroyNotify) g_free);
+		g_free (filename);
 	} else {
 		g_object_set_data (G_OBJECT (connection),
 		                   method->phase2 ? NMA_PATH_PHASE2_CA_CERT_TAG : NMA_PATH_CA_CERT_TAG,
@@ -174,10 +177,12 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+	g_assert (filename);
 	g_object_set_data_full (G_OBJECT (connection),
 	                        method->phase2 ? NMA_PATH_PHASE2_PRIVATE_KEY_TAG : NMA_PATH_PRIVATE_KEY_TAG,
 	                        g_strdup (filename),
 	                        (GDestroyNotify) g_free);
+	g_free (filename);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_password_entry");
 	g_assert (widget);

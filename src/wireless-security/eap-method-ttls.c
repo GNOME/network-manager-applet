@@ -139,6 +139,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		g_object_set_data_full (G_OBJECT (connection),
 		                        NMA_PATH_CA_CERT_TAG, g_strdup (filename),
 		                        (GDestroyNotify) g_free);
+		g_free (filename);
 	} else {
 		g_object_set_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG, NULL);
 	}
