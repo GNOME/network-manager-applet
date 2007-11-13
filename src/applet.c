@@ -180,28 +180,24 @@ ip4_address_as_string (guint32 ip)
 	return ip_string;
 }
 
-static gboolean
-nma_update_info (NMApplet *applet)
+static GtkWidget *
+nma_info_dialog_update (GladeXML *xml, NMDevice *device)
 {
-	GtkWidget *info_dialog;
+	GtkWidget *dialog;
 	GtkWidget *label;
-	NMDevice *device;
 	NMIP4Config *cfg;
 	guint32 speed;
 	char *str;
 	char *iface_and_type;
 	GArray *dns;
 
-	info_dialog = glade_xml_get_widget (applet->info_dialog_xml, "info_dialog");
-	if (!info_dialog) {
-		nma_show_socket_err (info_dialog, "Could not find some required resources (the glade file)!");
-		return FALSE;
-	}
+	g_return_val_if_fail (xml != NULL, NULL);
+	g_return_val_if_fail (device != NULL, NULL);
 
-	device = get_first_active_device (applet);
-	if (!device) {
-		nma_show_socket_err (info_dialog, _("No active connections!"));
-		return FALSE;
+	dialog = glade_xml_get_widget (xml, "info_dialog");
+	if (!dialog) {
+		nma_show_socket_err (dialog, "Could not find some required resources (the glade file)!");
+		return NULL;
 	}
 
 	cfg = nm_device_get_ip4_config (device);
@@ -226,11 +222,11 @@ nma_update_info (NMApplet *applet)
 
 	g_free (str);
 
-	label = get_label (info_dialog, applet->info_dialog_xml, "label-interface");
+	label = get_label (dialog, xml, "label-interface");
 	gtk_label_set_text (GTK_LABEL (label), iface_and_type);
 	g_free (iface_and_type);
 
-	label = get_label (info_dialog, applet->info_dialog_xml, "label-speed");
+	label = get_label (dialog, xml, "label-speed");
 	if (speed) {
 		str = g_strdup_printf (_("%u Mb/s"), speed);
 		gtk_label_set_text (GTK_LABEL (label), str);
@@ -239,38 +235,42 @@ nma_update_info (NMApplet *applet)
 		gtk_label_set_text (GTK_LABEL (label), _("Unknown"));
 
 	str = nm_device_get_driver (device);
-	label = get_label (info_dialog, applet->info_dialog_xml, "label-driver");
+	label = get_label (dialog, xml, "label-driver");
 	gtk_label_set_text (GTK_LABEL (label), str);
 	g_free (str);
 
-	label = get_label (info_dialog, applet->info_dialog_xml, "label-ip-address");
+	label = get_label (dialog, xml, "label-ip-address");
 	gtk_label_set_text (GTK_LABEL (label),
 					ip4_address_as_string (nm_ip4_config_get_address (cfg)));
 
-	label = get_label (info_dialog, applet->info_dialog_xml, "label-broadcast-address");
+	label = get_label (dialog, xml, "label-broadcast-address");
 	gtk_label_set_text (GTK_LABEL (label),
 					ip4_address_as_string (nm_ip4_config_get_broadcast (cfg)));
 
-	label = get_label (info_dialog, applet->info_dialog_xml, "label-subnet-mask");
+	label = get_label (dialog, xml, "label-subnet-mask");
 	gtk_label_set_text (GTK_LABEL (label),
 					ip4_address_as_string (nm_ip4_config_get_netmask (cfg)));
 
-	label = get_label (info_dialog, applet->info_dialog_xml, "label-default-route");
+	label = get_label (dialog, xml, "label-default-route");
 	gtk_label_set_text (GTK_LABEL (label),
 					ip4_address_as_string (nm_ip4_config_get_gateway (cfg)));
 
 	dns = nm_ip4_config_get_nameservers (cfg);
 	if (dns) {
+		label = get_label (dialog, xml, "label-primary-dns");
 		if (dns->len > 0) {
-			label = get_label (info_dialog, applet->info_dialog_xml, "label-primary-dns");
 			gtk_label_set_text (GTK_LABEL (label),
 							ip4_address_as_string (g_array_index (dns, guint32, 0)));
+		} else {
+			gtk_label_set_text (GTK_LABEL (label), "");
 		}
 
+		label = get_label (dialog, xml, "label-secondary-dns");
 		if (dns->len > 1) {
-			label = get_label (info_dialog, applet->info_dialog_xml, "label-secondary-dns");
 			gtk_label_set_text (GTK_LABEL (label),
 							ip4_address_as_string (g_array_index (dns, guint32, 0)));
+		} else {
+			gtk_label_set_text (GTK_LABEL (label), "");
 		}
 
 		g_array_free (dns, TRUE);
@@ -280,28 +280,34 @@ nma_update_info (NMApplet *applet)
 	if (NM_IS_DEVICE_802_3_ETHERNET (device))
 		str = nm_device_802_3_ethernet_get_hw_address (NM_DEVICE_802_3_ETHERNET (device));
 	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		str = nm_device_802_11_wireless_get_hw_address (NM_DEVICE_802_11_WIRELESS (device));
+		str = g_strdup (nm_device_802_11_wireless_get_hw_address (NM_DEVICE_802_11_WIRELESS (device)));
 
-	if (str) {
-		label = get_label (info_dialog, applet->info_dialog_xml, "label-hardware-address");
-		gtk_label_set_text (GTK_LABEL (label), str);
-		g_free (str);
-	}
+	label = get_label (dialog, xml, "label-hardware-address");
+	gtk_label_set_text (GTK_LABEL (label), str ? str : "");
+	g_free (str);
 
-	return TRUE;
+	return dialog;
 }
 
 static void
 nma_show_info_cb (GtkMenuItem *mi, NMApplet *applet)
 {
-	GtkWidget *info_dialog;
+	GtkWidget *dialog;
+	NMDevice *device;
 
-	info_dialog = glade_xml_get_widget (applet->info_dialog_xml, "info_dialog");
-
-	if (nma_update_info (applet)) {
-		gtk_window_present (GTK_WINDOW (info_dialog));
-		g_signal_connect_swapped (info_dialog, "response", G_CALLBACK (gtk_widget_hide), info_dialog);
+	device = get_first_active_device (applet);
+	if (!device) {
+		nma_show_socket_err (dialog, _("No active connections!"));
+		return;
 	}
+
+	dialog = nma_info_dialog_update (applet->info_dialog_xml, device);
+	if (!dialog)
+		return;
+
+	g_signal_connect (dialog, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), dialog);
+	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_hide), dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void
