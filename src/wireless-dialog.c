@@ -812,7 +812,6 @@ nma_wireless_dialog_nag_user (GtkWidget *dialog)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	WirelessSecurity *sec = NULL;
-	gboolean nag = FALSE;
 
 	g_return_val_if_fail (dialog != NULL, NULL);
 

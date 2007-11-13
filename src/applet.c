@@ -158,14 +158,14 @@ static GtkWidget * get_label (GtkWidget *info_dialog, GladeXML *xml, const char 
 	return label;
 }
 
-static void nma_show_socket_err (GtkWidget *info_dialog, const char *err)
+static void nma_show_info_dialog_err (const char *err)
 {
-	GtkWidget *error_dialog;
+	GtkWidget *dialog;
 
-	error_dialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (info_dialog), 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+	dialog = gtk_message_dialog_new_with_markup (NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
 			"<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s", _("Error displaying connection information:"), err);
-	gtk_window_present (GTK_WINDOW (error_dialog));
-	g_signal_connect_swapped (error_dialog, "response", G_CALLBACK (gtk_widget_destroy), error_dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
 }
 
 static const gchar *
@@ -196,7 +196,7 @@ nma_info_dialog_update (GladeXML *xml, NMDevice *device)
 
 	dialog = glade_xml_get_widget (xml, "info_dialog");
 	if (!dialog) {
-		nma_show_socket_err (dialog, "Could not find some required resources (the glade file)!");
+		nma_show_info_dialog_err (_("Could not find some required resources (the glade file)!"));
 		return NULL;
 	}
 
@@ -297,7 +297,7 @@ nma_show_info_cb (GtkMenuItem *mi, NMApplet *applet)
 
 	device = get_first_active_device (applet);
 	if (!device) {
-		nma_show_socket_err (dialog, _("No active connections!"));
+		nma_show_info_dialog_err (_("No active connections!"));
 		return;
 	}
 

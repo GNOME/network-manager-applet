@@ -27,5 +27,8 @@
 void
 nm_gconf_migrate_0_6_connections (GConfClient *client);
 
+void
+nm_gconf_migrate_0_7_vpn_connections (GConfClient *client);
+
 #endif	/* GCONF_UPGRADE_H */
 

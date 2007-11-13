@@ -614,7 +614,7 @@ nm_gconf_migrate_0_7_vpn_connections (GConfClient *client)
 			char *old_key;
 
 			nm_gconf_set_string_helper (client, iter->data, "service-type", "vpn", value);
-			old_key = g_strdup_printf ("%s/vpn/service_type", iter->data);
+			old_key = g_strdup_printf ("%s/vpn/service_type", (const char *) iter->data);
 			gconf_client_unset (client, old_key, NULL);
 			g_free (old_key);
 		}

@@ -20,11 +20,13 @@
  */
 
 #include <glib.h>
-#include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <glib/gi18n.h>
 #include <stdio.h>
+
+#define _GNU_SOURCE
+#include <string.h>
 
 #include "crypto.h"
 
@@ -101,7 +103,7 @@ usage (const char *prgname)
 
 int main (int argc, char **argv)
 {
-	int key_type;
+	guint32 key_type = 0;
 	int mode = 0;
 	const char *file;
 	GError *error = NULL;
@@ -157,7 +159,7 @@ int main (int argc, char **argv)
 			goto out;
 		}
 
-		dump_key_to_pem (array->data, array->len, key_type);
+		dump_key_to_pem ((const char *) array->data, array->len, key_type);
 		g_byte_array_free (array, TRUE);
 	} else {
 		g_assert_not_reached ();

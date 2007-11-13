@@ -95,8 +95,11 @@ utils_get_device_description (NMDevice *device)
 
 	/* Replace stupid '_' with ' ' */
 	p = product;
-	while (*p)
-		*p++ = (*p == '_') ? ' ' : *p;
+	while (*p) {
+		if (*p == '_')
+			*p = ' ';
+		p++;
+	}
 
 	p = vendor;
 	while (*p) {

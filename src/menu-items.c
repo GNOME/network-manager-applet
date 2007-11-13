@@ -57,13 +57,14 @@ wired_menu_item_new (NMDevice8023Ethernet *self,
 
 	if (n_devices > 1) {
 		const char *desc;
-		char *dev_name;
+		char *dev_name = NULL;
 
 		desc = utils_get_device_description (dev);
 		if (desc)
 			dev_name = g_strdup (desc);
 		if (!dev_name)
 			dev_name = nm_device_get_iface (dev);
+		g_assert (dev_name);
 		text = g_strdup_printf (_("Wired Network (%s)"), dev_name);
 		g_free (dev_name);
 	} else

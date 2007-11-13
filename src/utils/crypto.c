@@ -267,7 +267,7 @@ file_to_g_byte_array (const char *filename,
 			g_set_error (error, NM_CRYPTO_ERROR,
 			             NM_CRYPTO_ERR_PEM_FORMAT_INVALID,
 			             _("PEM certificate '%s' had no end tag '%s'."),
-			             pem_cert_end);
+			             filename, pem_cert_end);
 			goto done;
 		}
 
@@ -512,7 +512,7 @@ crypto_get_private_key (const char *file,
 		goto out;
 	}
 
-	g_byte_array_append (array, decrypted, decrypted_len);
+	g_byte_array_append (array, (const guint8 *) decrypted, decrypted_len);
 	*out_key_type = key_type;
 
 out:

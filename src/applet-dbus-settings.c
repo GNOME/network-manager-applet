@@ -836,7 +836,6 @@ get_one_private_key (NMConnection *connection,
                      const char *password,
                      GHashTable *secrets)
 {
-	const char *privkey_path;
 	GByteArray *array = NULL;
 	const char *privkey_tag;
 	const char *secret_name;
@@ -939,7 +938,7 @@ extract_secrets (NMConnection *connection,
 	if (g_hash_table_size (secrets) == 0) {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d - Secrets were found for setting '%s' but none"
-		             " were valid." __FILE__, __LINE__, setting_name);
+		             " were valid.", __FILE__, __LINE__, setting_name);
 		g_hash_table_destroy (secrets);
 		secrets = NULL;
 	}

@@ -30,6 +30,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-vpn.h>
+#include <nm-utils.h>
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
@@ -932,7 +933,6 @@ write_one_password (CopyOneSettingValueInfo *info, const char *tag)
 static void
 write_applet_private_values_to_gconf (CopyOneSettingValueInfo *info)
 {
-	char *key;
 	NMSettingWirelessSecurity *s_wireless_sec;
 
 	g_return_if_fail (info != NULL);
