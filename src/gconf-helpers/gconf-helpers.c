@@ -29,10 +29,25 @@
 #include <dbus/dbus-glib.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless-security.h>
+#include <nm-setting-vpn.h>
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
 
+const char *wireless_security_ignore_keys[] = {
+	"ca-cert",
+	"client-cert",
+	"private-key",
+	"phase2-ca-cert",
+	"phase2-client-cert",
+	"phase2-private-key",
+	NULL
+};
+
+const char *vpn_ignore_keys[] = {
+	"user-name",
+	NULL
+};
 
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,
@@ -574,31 +589,15 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	ReadFromGConfInfo *info = (ReadFromGConfInfo *) user_data;
 	GType type = G_VALUE_TYPE (value);
 
-	/* Binary certificate and key data doesn't get stored in GConf.  Instead,
-	 * the path to the certificate gets stored in a special key and the
-	 * certificate is read and stuffed into the setting right before
-	 * the connection is sent to NM
+	/* Some keys (like certs) aren't written directly to GConf but are handled
+	 * separately.
 	 */
 	if (NM_IS_SETTING_WIRELESS_SECURITY (setting)) {
-		if (   !strcmp (key, "ca-cert")
-		    || !strcmp (key, "client-cert")
-		    || !strcmp (key, "private-key")
-		    || !strcmp (key, "phase2-ca-cert")
-		    || !strcmp (key, "phase2-client-cert")
-		    || !strcmp (key, "phase2-private-key")) {
-			char *path_key;
-			char *path_value = NULL;
-
-			path_key = g_strdup_printf ("nma-path-%s", key);
-			if (nm_gconf_get_string_helper (info->client, info->dir, path_key,
-			                                setting->name, &path_value)) {
-				g_object_set_data_full (G_OBJECT (info->connection),
-				                        path_key, path_value,
-				                        (GDestroyNotify) g_free);
-			}
-			g_free (path_key);
+		if (nm_utils_string_in_list (key, wireless_security_ignore_keys))
 			return;
-		}
+	} else if (NM_IS_SETTING_VPN (setting)) {
+		if (nm_utils_string_in_list (key, vpn_ignore_keys))
+			return;
 	}
 
 	if (type == G_TYPE_STRING) {
@@ -650,6 +649,21 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 }
 
 static void
+read_one_cert (ReadFromGConfInfo *info,
+               const char *setting_name,
+               const char *key)
+{
+	char *value = NULL;
+
+	if (!nm_gconf_get_string_helper (info->client, info->dir, key, setting_name, &value))
+		return;
+
+	g_object_set_data_full (G_OBJECT (info->connection),
+	                        key, value,
+	                        (GDestroyNotify) g_free);
+}
+
+static void
 read_applet_private_values_from_gconf (NMSetting *setting,
                                        ReadFromGConfInfo *info)
 {
@@ -671,6 +685,18 @@ read_applet_private_values_from_gconf (NMSetting *setting,
 			                   NMA_PHASE2_CA_CERT_IGNORE_TAG,
 			                   GUINT_TO_POINTER (value));
 		}
+
+		/* Binary certificate and key data doesn't get stored in GConf.  Instead,
+		 * the path to the certificate gets stored in a special key and the
+		 * certificate is read and stuffed into the setting right before
+		 * the connection is sent to NM
+		 */
+		read_one_cert (info, setting->name, NMA_PATH_CA_CERT_TAG);
+		read_one_cert (info, setting->name, NMA_PATH_CLIENT_CERT_TAG);
+		read_one_cert (info, setting->name, NMA_PATH_PRIVATE_KEY_TAG);
+		read_one_cert (info, setting->name, NMA_PATH_PHASE2_CA_CERT_TAG);
+		read_one_cert (info, setting->name, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
+		read_one_cert (info, setting->name, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
 	}
 }
 
@@ -777,46 +803,27 @@ typedef struct CopyOneSettingValueInfo {
 	GConfClient *client;
 	const char *dir;
 	const char *connection_name;
-	KeyFilterFunc key_filter_func;
 } CopyOneSettingValueInfo;
 
 static void
 copy_one_setting_value_to_gconf (NMSetting *setting,
                                  const char *key,
-						   const GValue *value,
+                                 const GValue *value,
                                  gboolean secret,
                                  gpointer user_data)
 {
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
 	GType type = G_VALUE_TYPE (value);
 
-	if (info->key_filter_func)
-		if ((*info->key_filter_func)(setting->name, key) == FALSE)
-			return;
-
-	/* Binary certificate and key data doesn't get stored in GConf.  Instead,
-	 * the path to the certificate gets stored in a special key and the
-	 * certificate is read and stuffed into the setting right before
-	 * the connection is sent to NM
+	/* Some keys (like certs) aren't written directly to GConf but are handled
+	 * separately.
 	 */
 	if (NM_IS_SETTING_WIRELESS_SECURITY (setting)) {
-		if (   !strcmp (key, "ca-cert")
-		    || !strcmp (key, "client-cert")
-		    || !strcmp (key, "private-key")
-		    || !strcmp (key, "phase2-ca-cert")
-		    || !strcmp (key, "phase2-client-cert")
-		    || !strcmp (key, "phase2-private-key")) {
-			char *path_key;
-			char *path_value = NULL;
-
-			path_key = g_strdup_printf ("nma-path-%s", key);
-			path_value = g_object_get_data (G_OBJECT (info->connection), path_key);
-			if (path_value != NULL) {
-				nm_gconf_set_string_helper (info->client, info->dir, path_key,
-									   setting->name, path_value);
-			}
-			g_free (path_key);
-		}
+		if (nm_utils_string_in_list (key, wireless_security_ignore_keys))
+			return;
+	} else if (NM_IS_SETTING_VPN (setting)) {
+		if (nm_utils_string_in_list (key, vpn_ignore_keys))
+			return;
 	}
 
 	if (type == G_TYPE_STRING) {
@@ -861,25 +868,64 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 }
 
 static void
-write_ignore_ca_cert_helper (const char *dir,
-                             GConfClient *client,
-                             NMConnection *connection,
+write_ignore_ca_cert_helper (CopyOneSettingValueInfo *info,
                              const char *tag,
                              const GByteArray *cert)
 {
-	g_return_if_fail (dir != NULL);
-	g_return_if_fail (client != NULL);
+	g_return_if_fail (info != NULL);
 	g_return_if_fail (tag != NULL);
 
 	if (cert) {
 		char *key;
 
-		key = g_strdup_printf ("%s/%s/%s", dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, tag);
-		gconf_client_unset (client, key, NULL);
+		key = g_strdup_printf ("%s/%s/%s", info->dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, tag);
+		gconf_client_unset (info->client, key, NULL);
 		g_free (key);
 	} else {
-		if (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), tag)))
-			nm_gconf_set_bool_helper (client, dir, tag, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, TRUE);
+		if (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (info->connection), tag)))
+			nm_gconf_set_bool_helper (info->client, info->dir, tag, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, TRUE);
+	}
+}
+
+static void
+write_one_private_string_value (CopyOneSettingValueInfo *info, const char *tag)
+{
+	const char *value;
+
+	g_return_if_fail (info != NULL);
+	g_return_if_fail (tag != NULL);
+
+	value = g_object_get_data (G_OBJECT (info->connection), tag);
+	if (value) {
+		nm_gconf_set_string_helper (info->client, info->dir, tag,
+		                            NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                            value);
+	} else {
+		char *key;
+
+		key = g_strdup_printf ("%s/%s/%s", info->dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, tag);
+		gconf_client_unset (info->client, key, NULL);
+		g_free (key);
+	}
+}
+
+static void
+write_one_password (CopyOneSettingValueInfo *info, const char *tag)
+{
+	const char *value;
+
+	g_return_if_fail (info != NULL);
+	g_return_if_fail (tag != NULL);
+
+	value = g_object_get_data (G_OBJECT (info->connection), tag);
+	if (value) {
+		add_keyring_item (info->connection_name,
+		                  NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                  tag,
+		                  value);
+
+		/* Try not to leave the password lying around in memory */
+		g_object_set_data (G_OBJECT (info->connection), tag, NULL);
 	}
 }
 
@@ -896,21 +942,30 @@ write_applet_private_values_to_gconf (CopyOneSettingValueInfo *info)
 	 */
 	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
 	if (s_wireless_sec) {
-		write_ignore_ca_cert_helper (info->dir, info->client, info->connection,
-		                             NMA_CA_CERT_IGNORE_TAG,
-		                             s_wireless_sec->ca_cert);
+		write_ignore_ca_cert_helper (info, NMA_CA_CERT_IGNORE_TAG, s_wireless_sec->ca_cert);
+		write_ignore_ca_cert_helper (info, NMA_PHASE2_CA_CERT_IGNORE_TAG, s_wireless_sec->phase2_ca_cert);
 
-		write_ignore_ca_cert_helper (info->dir, info->client, info->connection,
-		                             NMA_PHASE2_CA_CERT_IGNORE_TAG,
-		                             s_wireless_sec->phase2_ca_cert);
+		/* Binary certificate and key data doesn't get stored in GConf.  Instead,
+		 * the path to the certificate gets stored in a special key and the
+		 * certificate is read and stuffed into the setting right before
+		 * the connection is sent to NM
+		 */
+		write_one_private_string_value (info, NMA_PATH_CA_CERT_TAG);
+		write_one_private_string_value (info, NMA_PATH_CLIENT_CERT_TAG);
+		write_one_private_string_value (info, NMA_PATH_PRIVATE_KEY_TAG);
+		write_one_private_string_value (info, NMA_PATH_PHASE2_CA_CERT_TAG);
+		write_one_private_string_value (info, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
+		write_one_private_string_value (info, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
+
+		write_one_password (info, NMA_PRIVATE_KEY_PASSWORD_TAG);
+		write_one_password (info, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
 	}
 }
 
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir,
-                           KeyFilterFunc func)
+                           const char *dir)
 {
 	NMSettingConnection *s_connection;
 	CopyOneSettingValueInfo info;
@@ -927,7 +982,6 @@ nm_gconf_write_connection (NMConnection *connection,
 	info.client = client;
 	info.dir = dir;
 	info.connection_name = s_connection->name;
-	info.key_filter_func = func;
 	nm_connection_for_each_setting_value (connection,
 	                                      copy_one_setting_value_to_gconf,
 	                                      &info);

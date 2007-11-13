@@ -26,6 +26,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
 #include <nm-setting-wireless.h>
+
 #include "applet.h"
 #include "applet-dbus-settings.h"
 #include "applet-dbus-manager.h"
@@ -65,7 +66,6 @@ clear_one_byte_array_field (GByteArray **field)
 
 static void
 fill_one_object (NMConnection *connection,
-                 NMSettingWirelessSecurity *s_wireless_sec,
                  const char *key_name,
                  gboolean is_private_key,
                  const char *password,
@@ -76,7 +76,6 @@ fill_one_object (NMConnection *connection,
 	NMSettingConnection *s_con;
 	guint32 ignore;
 
-	g_return_if_fail (s_wireless_sec != NULL);
 	g_return_if_fail (key_name != NULL);
 	g_return_if_fail (field != NULL);
 
@@ -112,63 +111,49 @@ fill_one_object (NMConnection *connection,
 }
 
 void
-applet_dbus_settings_connection_fill_certs (NMConnection *connection)
+applet_dbus_settings_connection_fill_certs (AppletDbusConnectionSettings *applet_connection)
 {
 	NMSettingWirelessSecurity *s_wireless_sec;
 
-	g_return_if_fail (connection != NULL);
+	g_return_if_fail (applet_connection != NULL);
+	g_return_if_fail (applet_connection->connection != NULL);
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (applet_connection->connection, 
 															    NM_TYPE_SETTING_WIRELESS_SECURITY));
 	if (!s_wireless_sec)
 		return;
 
-	fill_one_object (connection,
-	                 s_wireless_sec,
-	                 "nma-path-ca-cert",
+	fill_one_object (applet_connection->connection,
+	                 NMA_PATH_CA_CERT_TAG,
 	                 FALSE,
 	                 NULL,
 	                 &s_wireless_sec->ca_cert);
-	fill_one_object (connection,
-	                 s_wireless_sec,
-	                 "nma-path-client-cert",
+	fill_one_object (applet_connection->connection,
+	                 NMA_PATH_CLIENT_CERT_TAG,
 	                 FALSE,
 	                 NULL,
 	                 &s_wireless_sec->client_cert);
-	fill_one_object (connection,
-	                 s_wireless_sec,
-	                 "nma-path-private-key",
-	                 TRUE,
-	                 s_wireless_sec->private_key_passwd,
-	                 &s_wireless_sec->private_key);
-	fill_one_object (connection,
-	                 s_wireless_sec,
-	                 "nma-path-phase2-ca-cert",
+	fill_one_object (applet_connection->connection,
+	                 NMA_PATH_PHASE2_CA_CERT_TAG,
 	                 FALSE,
 	                 NULL,
 	                 &s_wireless_sec->phase2_ca_cert);
-	fill_one_object (connection,
-	                 s_wireless_sec,
-	                 "nma-path-phase2-client-cert",
+	fill_one_object (applet_connection->connection,
+	                 NMA_PATH_PHASE2_CLIENT_CERT_TAG,
 	                 FALSE,
 	                 NULL,
 	                 &s_wireless_sec->phase2_client_cert);
-	fill_one_object (connection,
-	                 s_wireless_sec,
-	                 "nma-path-phase2-private-key",
-	                 TRUE,
-	                 s_wireless_sec->phase2_private_key_passwd,
-	                 &s_wireless_sec->phase2_private_key);
 }
 
 void
-applet_dbus_settings_connection_clear_filled_certs (NMConnection *connection)
+applet_dbus_settings_connection_clear_filled_certs (AppletDbusConnectionSettings *applet_connection)
 {
 	NMSettingWirelessSecurity *s_wireless_sec;
 
-	g_return_if_fail (connection != NULL);
+	g_return_if_fail (applet_connection != NULL);
+	g_return_if_fail (applet_connection->connection != NULL);
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (applet_connection->connection, 
 															    NM_TYPE_SETTING_WIRELESS_SECURITY));
 	if (!s_wireless_sec)
 		return;
@@ -660,9 +645,9 @@ applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_co
 
 	fill_vpn_user_name (applet_connection->connection);
 
-	applet_dbus_settings_connection_fill_certs (applet_connection->connection);
+	applet_dbus_settings_connection_fill_certs (applet_connection);
 	settings = nm_connection_to_hash (applet_connection->connection);
-	applet_dbus_settings_connection_clear_filled_certs (applet_connection->connection);
+	applet_dbus_settings_connection_clear_filled_certs (applet_connection);
 
 	nm_connection_settings_signal_updated (NM_CONNECTION_SETTINGS (applet_connection), settings);
 	g_hash_table_destroy (settings);
@@ -715,23 +700,6 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 	return (NMConnectionSettings *) applet_connection;
 }
 
-static gboolean
-vpn_user_name_filter_cb (const char *setting_name, const char *key)
-{
-	/* Don't want to save the VPN setting's 'user_name' key in GConf,
-	 * because it's supposed to be pulled from the logged in user when
-	 * the connection gets activated.
-	 */
-
-	if (strcmp (setting_name, NM_SETTING_VPN_SETTING_NAME))
-		return TRUE;
-
-	if (strcmp (key, "user_name"))
-		return TRUE;
-
-	return FALSE;
-}
-
 void
 applet_dbus_connection_settings_save (NMConnectionSettings *connection)
 {
@@ -741,8 +709,7 @@ applet_dbus_connection_settings_save (NMConnectionSettings *connection)
 
 	nm_gconf_write_connection (applet_connection->connection,
 	                           applet_connection->conf_client,
-	                           applet_connection->conf_dir,
-	                           vpn_user_name_filter_cb);
+	                           applet_connection->conf_dir);
 	gconf_client_notify (applet_connection->conf_client, applet_connection->conf_dir);
 	gconf_client_suggest_sync (applet_connection->conf_client, NULL);
 }
@@ -823,9 +790,9 @@ GHashTable *applet_dbus_connection_settings_get_settings (NMConnectionSettings *
 	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
 	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
 
-	applet_dbus_settings_connection_fill_certs (applet_connection->connection);
+	applet_dbus_settings_connection_fill_certs (applet_connection);
 	settings = nm_connection_to_hash (applet_connection->connection);
-	applet_dbus_settings_connection_clear_filled_certs (applet_connection->connection);
+	applet_dbus_settings_connection_clear_filled_certs (applet_connection);
 
 	return settings;
 }
@@ -842,6 +809,18 @@ string_to_gvalue (const char *str)
 	return val;
 }
 
+static GValue *
+byte_array_to_gvalue (const GByteArray *array)
+{
+	GValue *val;
+
+	val = g_slice_new0 (GValue);
+	g_value_init (val, DBUS_TYPE_G_UCHAR_ARRAY);
+	g_value_set_boxed (val, array);
+
+	return val;
+}
+
 static void
 destroy_gvalue (gpointer data)
 {
@@ -849,6 +828,123 @@ destroy_gvalue (gpointer data)
 
 	g_value_unset (value);
 	g_slice_free (GValue, value);
+}
+
+static gboolean
+get_one_private_key (NMConnection *connection,
+                     const char *tag,
+                     const char *password,
+                     GHashTable *secrets)
+{
+	const char *privkey_path;
+	GByteArray *array = NULL;
+	const char *privkey_tag;
+	const char *secret_name;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (connection != NULL, FALSE);
+	g_return_val_if_fail (tag != NULL, FALSE);
+	g_return_val_if_fail (password != NULL, FALSE);
+
+	if (!strcmp (tag, NMA_PRIVATE_KEY_PASSWORD_TAG)) {
+		privkey_tag = NMA_PATH_PRIVATE_KEY_TAG;
+		secret_name = NM_SETTING_WIRELESS_SECURITY_PRIVATE_KEY;
+	} else if (!strcmp (tag, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG)) {
+		privkey_tag = NMA_PATH_PHASE2_PRIVATE_KEY_TAG;
+		secret_name = NM_SETTING_WIRELESS_SECURITY_PHASE2_PRIVATE_KEY;
+	} else {
+		g_warning ("Unknown private key password type '%s'", tag);
+		return FALSE;
+	}
+
+	fill_one_object (connection, privkey_tag, TRUE, password, &array);
+	if (!array || !array->len)
+		goto out;
+
+	g_hash_table_insert (secrets,
+	                     g_strdup (secret_name),
+	                     byte_array_to_gvalue (array));
+	success = TRUE;
+
+out:
+	if (array) {
+		/* Try not to leave the decrypted private key around in memory */
+		memset (array->data, 0, array->len);
+		g_byte_array_free (array, TRUE);
+	}
+	return success;
+}
+
+static GHashTable *
+extract_secrets (NMConnection *connection,
+                 GList *found_list,
+                 const char *connection_name,
+                 const char *setting_name,
+                 GError **error)
+{
+	GHashTable *secrets;
+	GList *iter;
+
+	g_return_val_if_fail (setting_name != NULL, NULL);
+	g_return_val_if_fail (error != NULL, NULL);
+	g_return_val_if_fail (*error == NULL, NULL);
+
+	secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
+
+	for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
+		GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
+		int i;
+		const char * key_name = NULL;
+
+		for (i = 0; i < found->attributes->len; i++) {
+			GnomeKeyringAttribute *attr;
+
+			attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
+			if (   (strcmp (attr->name, "setting-key") == 0)
+			    && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
+				key_name = attr->value.string;
+				break;
+			}
+		}
+
+		if (key_name == NULL) {
+			g_set_error (error, NM_SETTINGS_ERROR, 1,
+			             "%s.%d - Internal error; keyring item '%s/%s' didn't "
+			             "have a 'setting-key' attribute.",
+			             __FILE__, __LINE__, connection_name, setting_name);
+			break;
+		}
+
+		if (   !strcmp (setting_name, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)
+		    && (   !strcmp (key_name, NMA_PRIVATE_KEY_PASSWORD_TAG)
+		        || !strcmp (key_name, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG))) {
+			/* Private key passwords aren't passed to NM, they are used
+			 * to decrypt the private key and send _that_ to NM.
+			 */
+			if (!get_one_private_key (connection, key_name, found->secret, secrets))
+				g_warning ("Couldn't retrieve and decrypt private key.");
+		} else {
+			/* Ignore older obsolete keyring keys that we don't want to leak
+			 * through to NM.
+			 */
+			if (   strcmp (key_name, "private-key-passwd")
+			    && strcmp (key_name, "phase2-private-key-passwd")) {
+				g_hash_table_insert (secrets,
+				                     g_strdup (key_name),
+				                     string_to_gvalue (found->secret));
+			}
+		}
+	}
+
+	if (g_hash_table_size (secrets) == 0) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d - Secrets were found for setting '%s' but none"
+		             " were valid." __FILE__, __LINE__, setting_name);
+		g_hash_table_destroy (secrets);
+		secrets = NULL;
+	}
+
+	return secrets;
 }
 
 static void
@@ -859,13 +955,12 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
                                              DBusGMethodInvocation *context)
 {
 	AppletDbusConnectionSettings *applet_connection = (AppletDbusConnectionSettings *) connection;
-	GError *error;
+	GError *error = NULL;
 	GHashTable *secrets = NULL;
 	GList *found_list = NULL;
 	GnomeKeyringResult ret;
 	NMSettingConnection *s_con;
 	NMSetting *setting;
-	GList *elt;
 
 	g_return_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection));
 	g_return_if_fail (NM_IS_CONNECTION (applet_connection->connection));
@@ -873,10 +968,10 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 
 	setting = nm_connection_get_setting_by_name (applet_connection->connection, setting_name);
 	if (!setting) {
-		nm_warning ("Connection didn't have requested setting '%s'.", setting_name);
-		error = nm_settings_new_error ("%s.%d - Connection didn't have "
-		                               "requested setting '%s'.",
-		                               __FILE__, __LINE__, setting_name);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d - Connection didn't have requested setting '%s'.",
+		             __FILE__, __LINE__, setting_name);
+		g_warning (error->message);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 		return;
@@ -885,12 +980,12 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
 												   NM_TYPE_SETTING_CONNECTION));
 	if (!s_con || !s_con->name || !strlen (s_con->name) || !s_con->type) {
-		nm_warning ("Connection didn't have a valid required '%s' setting, "
-		            "or the connection name was invalid.", NM_SETTING_CONNECTION_SETTING_NAME);
-		error = nm_settings_new_error ("%s.%d - Connection didn't have required"
-		                               " 'connection' setting, or the connection"
-		                               " name was invalid.",
-		                               __FILE__, __LINE__);
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d - Connection didn't have required '"
+		             NM_SETTING_CONNECTION_SETTING_NAME
+		             "' setting , or the connection name was invalid.",
+		             __FILE__, __LINE__);
+		g_warning (error->message);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 		return;
@@ -922,52 +1017,16 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 		goto get_secrets;
 	}
 
-	secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
-
-	for (elt = found_list; elt != NULL; elt = elt->next) {
-		GnomeKeyringFound *found = (GnomeKeyringFound *) elt->data;
-		int i;
-		const char * key_name = NULL;
-
-		for (i = 0; i < found->attributes->len; i++) {
-			GnomeKeyringAttribute *attr;
-
-			attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
-			if (   (strcmp (attr->name, "setting-key") == 0)
-			    && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
-				key_name = attr->value.string;
-				break;
-			}
-		}
-
-		if (key_name != NULL) {
-			g_hash_table_insert (secrets,
-			                     g_strdup (key_name),
-			                     string_to_gvalue (found->secret));
-		} else {
-			nm_warning ("Keyring item '%s/%s' didn't have a 'setting-key' attribute.",
-			            s_con->name, setting_name);
-			error = nm_settings_new_error ("%s.%d - Internal error, couldn't "
-			                               " find secret.",
-			                               __FILE__, __LINE__);
-			dbus_g_method_return_error (context, error);
-			g_error_free (error);
-		}
-
-	}
-
-	/* Send the secrets back to NM */
-	if (g_hash_table_size (secrets) > 0) {
-		dbus_g_method_return (context, secrets);
-	} else {
-		nm_warning ("Keyring items were found for setting '%s' but none were "
-		            "valid.", setting_name);
-		error = nm_settings_new_error ("%s.%d - Secrets were found but none"
-		                               " were valid." __FILE__, __LINE__);
+	secrets = extract_secrets (applet_connection->connection,
+	                           found_list, s_con->name, setting_name, &error);
+	if (error) {
+		g_warning (error->message);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
+	} else {
+		dbus_g_method_return (context, secrets);
+		g_hash_table_destroy (secrets);
 	}
-	g_hash_table_destroy (secrets);
 
 	gnome_keyring_found_list_free (found_list);
 	return;

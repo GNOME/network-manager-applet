@@ -38,7 +38,10 @@
 #define NMA_PATH_PHASE2_CA_CERT_TAG "nma-path-phase2-ca-cert"
 
 #define NMA_PATH_PRIVATE_KEY_TAG "nma-path-private-key"
+#define NMA_PRIVATE_KEY_PASSWORD_TAG "nma-private-key-password"
+
 #define NMA_PATH_PHASE2_PRIVATE_KEY_TAG "nma-path-phase2-private-key"
+#define NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG "nma-phase2-private-key-password"
 
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,
@@ -145,16 +148,10 @@ NMConnection *
 nm_gconf_read_connection (GConfClient *client,
                           const char *dir);
 
-/* Filter function should return TRUE to process the key,
- * FALSE to ignore the key.
- */
-typedef gboolean (*KeyFilterFunc)(const char *setting, const char *key);
-
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir,
-                           KeyFilterFunc func);
+                           const char *dir);
 
 #endif	/* GCONF_HELPERS_H */
 

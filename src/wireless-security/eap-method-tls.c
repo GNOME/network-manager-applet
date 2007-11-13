@@ -114,6 +114,16 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 }
 
 static void
+free_password (gpointer data)
+{
+	g_return_if_fail (data != NULL);
+
+	/* Try not to leave passwords around in memory */
+	memset (data, 0, strlen (data));
+	g_free (data);
+}
+
+static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	EAPMethodTLS *method = (EAPMethodTLS *) parent;
@@ -171,10 +181,17 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_password_entry");
 	g_assert (widget);
-	if (method->phase2)
-		s_wireless_sec->phase2_private_key_passwd = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
-	else
-		s_wireless_sec->private_key_passwd = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	if (method->phase2) {
+		g_object_set_data_full (G_OBJECT (connection),
+		                        NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG,
+		                        g_strdup (gtk_entry_get_text (GTK_ENTRY (widget))),
+		                        (GDestroyNotify) free_password);
+	} else {
+		g_object_set_data_full (G_OBJECT (connection),
+		                        NMA_PRIVATE_KEY_PASSWORD_TAG,
+		                        g_strdup (gtk_entry_get_text (GTK_ENTRY (widget))),
+		                        (GDestroyNotify) free_password);
+	}
 
 	if (method->ignore_ca_cert) {
 		g_object_set_data (G_OBJECT (connection),

@@ -1,3 +1,42 @@
+2007-11-12  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.h
+	  src/gconf-helpers/gconf-helpers.c
+		- (nm_gconf_write_connection): don't need a key filter helper func any
+			more
+		- Add tags for private key passwords
+		- (read_one_setting_value_from_gconf, copy_one_setting_value_to_gconf):
+			handle certs differently, and create a generic mechanism for filtering
+			keys that don't get written to GConf
+		- (read_applet_private_values_from_gconf): handle certs & private key
+			paths here
+		- (write_applet_private_values_to_gconf, write_one_private_string_value,
+		   write_one_password): rework how storing applet private bits are done
+			and store private key passwords in the keyring
+
+	* src/vpn-properties/nm-vpn-properties.c
+	  src/gconf-helpers/gconf-upgrade.c
+		- Fix for removal of key filter func from nm_gconf_write_connection
+
+	* src/applet-dbus-settings.h
+	  src/applet-dbus-settings.c
+		- (fill_one_object): remove useless argument
+		- (applet_dbus_settings_connection_fill_certs,
+		   applet_dbus_settings_connection_clear_filled_certs): take a
+			AppletDbusConnectionSettings instead of an NMConnection for
+			consistency
+		- (vpn_user_name_filter_cb): remove, un-needed
+		- (get_one_private_key): new function; grab a private key path from
+			a connection, and populate the correct field with a given private
+			key password
+		- (extract_secrets): new function; move core secrets code out for clarity
+		- (applet_dbus_connection_settings_get_secrets): clean up error reporting,
+			move secrets code out to extract_secrets()
+
+	* src/wireless-security/eap-method-tls.c
+		- (fill_connection): private key passwords aren't set in the connection
+			any more, they are set as tags on the connection GObject
+
 2007-11-09  Dan Williams  <dcbw@redhat.com>
 
 	* src/utils/Makefile.am
