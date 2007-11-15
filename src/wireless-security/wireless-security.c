@@ -315,6 +315,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	EAPMethodTLS *em_tls;
 	EAPMethodLEAP *em_leap;
 	EAPMethodTTLS *em_ttls;
+	EAPMethodPEAP *em_peap;
 	const char *default_method = NULL;
 	int active = -1;
 
@@ -363,6 +364,16 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	eap_method_unref (EAP_METHOD (em_ttls));
 	if (default_method && (active < 0) && !strcmp (default_method, "ttls"))
 		active = 2;
+
+	em_peap = eap_method_peap_new (glade_file, sec, connection);
+	gtk_list_store_append (auth_model, &iter);
+	gtk_list_store_set (auth_model, &iter,
+	                    AUTH_NAME_COLUMN, _("Protected EAP (PEAP)"),
+	                    AUTH_METHOD_COLUMN, em_peap,
+	                    -1);
+	eap_method_unref (EAP_METHOD (em_peap));
+	if (default_method && (active < 0) && !strcmp (default_method, "peap"))
+		active = 3;
 
 	combo = glade_xml_get_widget (sec->xml, combo_name);
 	g_assert (combo);

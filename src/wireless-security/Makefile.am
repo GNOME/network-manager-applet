@@ -25,6 +25,8 @@ libwireless_security_la_SOURCES = \
 	eap-method-leap.c \
 	eap-method-ttls.h \
 	eap-method-ttls.c \
+	eap-method-peap.h \
+	eap-method-peap.c \
 	eap-method-simple.h \
 	eap-method-simple.c
 

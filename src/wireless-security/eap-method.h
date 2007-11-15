@@ -74,6 +74,7 @@ GType eap_method_get_g_type (void);
 #include "eap-method-tls.h"
 #include "eap-method-leap.h"
 #include "eap-method-ttls.h"
+#include "eap-method-peap.h"
 #include "eap-method-simple.h"
 
 void eap_method_init (EAPMethod *method,
