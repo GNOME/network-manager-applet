@@ -3055,6 +3055,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	const char *setting_name;
 	NMSetting *setting;
 	GError *error = NULL;
+	GtkWidget *nag_dialog;
 
 	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
 	setting_name = g_object_get_data (G_OBJECT (dialog), "setting-name");
@@ -3070,6 +3071,15 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
 		goto done;
+	}
+
+	nag_dialog = nma_wireless_dialog_nag_user (GTK_WIDGET (dialog));
+	if (nag_dialog) {
+		gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
+		g_signal_connect (nag_dialog, "response",
+		                  G_CALLBACK (nag_dialog_response_cb),
+		                  dialog);
+		return;
 	}
 
 	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device);
