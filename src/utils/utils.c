@@ -77,6 +77,8 @@ const char *
 utils_get_device_description (NMDevice *device)
 {
 	char *description = NULL;
+	const char *dev_product;
+	const char *dev_vendor;
 	char *product = NULL;
 	char *vendor = NULL;
 	char *p;
@@ -89,22 +91,22 @@ utils_get_device_description (NMDevice *device)
 
 	description = g_object_get_data (G_OBJECT (device), DESC_TAG);
 	if (description)
-		goto out;
+		return NULL;
 
-	product = nm_device_get_product (device);
-	vendor = nm_device_get_vendor (device);
-	if (!product || !vendor)
-		goto out;
+	dev_product = nm_device_get_product (device);
+	dev_vendor = nm_device_get_vendor (device);
+	if (!dev_product || !dev_vendor)
+		return NULL;
 
 	/* Replace stupid '_' with ' ' */
-	p = product;
+	p = product = g_strdup (dev_product);
 	while (*p) {
 		if (*p == '_')
 			*p = ' ';
 		p++;
 	}
 
-	p = vendor;
+	p = vendor = g_strdup (dev_vendor);
 	while (*p) {
 		if (*p == '_' || *p == ',')
 			*p = ' ';
@@ -147,7 +149,6 @@ utils_get_device_description (NMDevice *device)
 	                        "description", description,
 	                        (GDestroyNotify) g_free);
 
-out:
 	g_free (product);
 	g_free (vendor);
 	return description;

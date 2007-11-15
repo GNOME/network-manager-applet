@@ -1,5 +1,11 @@
 2007-11-15  Dan Williams  <dcbw@redhat.com>
 
+	* src/utils/utils.c
+		- (utils_get_device_description): don't try to free device and vendor
+			values that are actually const
+
+2007-11-15  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (get_secrets_dialog_response_cb): pop up the CA cert nag dialog on
 			GetSecrets calls too
