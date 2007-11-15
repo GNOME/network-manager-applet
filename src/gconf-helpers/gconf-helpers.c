@@ -562,6 +562,7 @@ nm_gconf_get_all_connections (GConfClient *client)
 {
 	GSList *connections;
 
+	nm_gconf_migrate_0_7_connection_names (client);
 	nm_gconf_migrate_0_7_vpn_connections (client);
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
@@ -590,7 +591,13 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	ReadFromGConfInfo *info = (ReadFromGConfInfo *) user_data;
 	GType type = G_VALUE_TYPE (value);
 
-	/* Some keys (like certs) aren't written directly to GConf but are handled
+	/* The 'name' key isn't pulled from GConf because it's pulled from the
+	 * gconf directory name instead.
+	 */
+	if (!strcmp (key, NM_SETTING_NAME))
+		return;
+
+	/* Some keys (like certs) aren't read directly from GConf but are handled
 	 * separately.
 	 */
 	if (NM_IS_SETTING_WIRELESS_SECURITY (setting)) {
@@ -756,7 +763,7 @@ nm_gconf_read_connection (GConfClient *client,
 
 
 static void
-add_keyring_item (const char *connection_name,
+add_keyring_item (const char *connection_id,
                   const char *setting_name,
                   const char *setting_key,
                   const char *secret)
@@ -766,20 +773,20 @@ add_keyring_item (const char *connection_name,
 	GnomeKeyringAttributeList *attrs = NULL;
 	guint32 id = 0;
 
-	g_return_if_fail (connection_name != NULL);
+	g_return_if_fail (connection_id != NULL);
 	g_return_if_fail (setting_name != NULL);
 	g_return_if_fail (setting_key != NULL);
 	g_return_if_fail (secret != NULL);
 
 	display_name = g_strdup_printf ("Network secret for %s/%s/%s",
-	                                connection_name,
+	                                connection_id,
 	                                setting_name,
 	                                setting_key);
 
 	attrs = gnome_keyring_attribute_list_new ();
 	gnome_keyring_attribute_list_append_string (attrs,
 	                                            "connection-name",
-	                                            connection_name);
+	                                            connection_id);
 	gnome_keyring_attribute_list_append_string (attrs,
 	                                            "setting-name",
 	                                            setting_name);
@@ -803,7 +810,7 @@ typedef struct CopyOneSettingValueInfo {
 	NMConnection *connection;
 	GConfClient *client;
 	const char *dir;
-	const char *connection_name;
+	const char *connection_id;
 } CopyOneSettingValueInfo;
 
 static void
@@ -815,6 +822,12 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 {
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
 	GType type = G_VALUE_TYPE (value);
+
+	/* The 'name' key isn't written to GConf because it's pulled from the
+	 * gconf directory name instead.
+	 */
+	if (!strcmp (key, NM_SETTING_NAME))
+		return;
 
 	/* Some keys (like certs) aren't written directly to GConf but are handled
 	 * separately.
@@ -832,7 +845,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		if (str_val) {
 			if (secret) {
 				if (strlen (str_val))
-					add_keyring_item (info->connection_name, setting->name, key, str_val);
+					add_keyring_item (info->connection_id, setting->name, key, str_val);
 			} else
 				nm_gconf_set_string_helper (info->client, info->dir, key, setting->name, str_val);
 		}
@@ -920,7 +933,7 @@ write_one_password (CopyOneSettingValueInfo *info, const char *tag)
 
 	value = g_object_get_data (G_OBJECT (info->connection), tag);
 	if (value) {
-		add_keyring_item (info->connection_name,
+		add_keyring_item (info->connection_id,
 		                  NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 		                  tag,
 		                  value);
@@ -981,7 +994,7 @@ nm_gconf_write_connection (NMConnection *connection,
 	info.connection = connection;
 	info.client = client;
 	info.dir = dir;
-	info.connection_name = s_connection->name;
+	info.connection_id = s_connection->id;
 	nm_connection_for_each_setting_value (connection,
 	                                      copy_one_setting_value_to_gconf,
 	                                      &info);

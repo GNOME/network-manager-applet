@@ -224,7 +224,7 @@ add_vpn_connection (NMConnection *connection)
 		goto error;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_con || !s_con->name)
+	if (!s_con || !s_con->id)
 		goto error;
 
 	g_object_set_data_full (G_OBJECT (connection),
@@ -235,7 +235,7 @@ add_vpn_connection (NMConnection *connection)
 
 	gtk_list_store_append (vpn_conn_list, &iter);
 	gtk_list_store_set (vpn_conn_list, &iter,
-			    VPNCONN_NAME_COLUMN, s_con->name,
+			    VPNCONN_NAME_COLUMN, s_con->id,
 			    VPNCONN_CONNECTION_COLUMN, connection,
 			    VPNCONN_USER_CAN_EDIT_COLUMN, TRUE,
 			    -1);
@@ -592,7 +592,7 @@ edit_cb (GtkButton *button, gpointer user_data)
 	gint result;
 	GtkTreeIter iter;
 	GtkTreeSelection *selection;
-	char *cur_name = NULL;
+	char *cur_id = NULL;
 
 	if ((selection = gtk_tree_view_get_selection (vpn_conn_view)) == NULL)
 		return;
@@ -602,10 +602,10 @@ edit_cb (GtkButton *button, gpointer user_data)
 
 	gtk_tree_model_get (GTK_TREE_MODEL (vpn_conn_list), 
 	                    &iter, 
-	                    VPNCONN_NAME_COLUMN, &cur_name,
+	                    VPNCONN_NAME_COLUMN, &cur_id,
 	                    VPNCONN_CONNECTION_COLUMN, &connection,
 	                    -1);
-	if (!connection || !cur_name)
+	if (!connection || !cur_id)
 		return;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
@@ -656,10 +656,10 @@ edit_cb (GtkButton *button, gpointer user_data)
 			goto error;
 
 		write_vpn_connection_to_gconf (connection);
-		if (strcmp (s_con->name, cur_name) != 0) {
+		if (strcmp (s_con->id, cur_id) != 0) {
 			/* Update the name in the list */
 			gtk_list_store_set (vpn_conn_list, &iter, 
-			                    VPNCONN_NAME_COLUMN, &s_con->name
+			                    VPNCONN_NAME_COLUMN, &s_con->id
 			                    -1);
 		}
 	}
@@ -809,7 +809,7 @@ static void get_all_vpn_connections (void)
 
 		gtk_list_store_append (vpn_conn_list, &iter);
 		gtk_list_store_set (vpn_conn_list, &iter,
-				    VPNCONN_NAME_COLUMN, s_con->name,
+				    VPNCONN_NAME_COLUMN, s_con->id,
 				    VPNCONN_CONNECTION_COLUMN, connection,
 				    VPNCONN_USER_CAN_EDIT_COLUMN, TRUE,
 				    -1);

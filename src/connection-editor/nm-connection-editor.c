@@ -47,11 +47,8 @@ connection_name_changed (GtkEditable *editable, gpointer user_data)
 	NMConnectionEditor *editor = (NMConnectionEditor *) user_data;
 
 	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
-	if (s_connection) {
-		if (s_connection->name)
-			g_free (s_connection->name);
-		s_connection->name = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
-	}
+	if (s_connection)
+		g_object_set (G_OBJECT (s_connection), NM_SETTING_CONNECTION_ID, gtk_entry_get_text (GTK_ENTRY (editable)));
 }
 
 static void
@@ -329,7 +326,7 @@ fill_connection_values (NMConnectionEditor *editor)
 
 	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	if (s_connection) {
-		gtk_entry_set_text (GTK_ENTRY (editor->connection_name), s_connection->name);
+		gtk_entry_set_text (GTK_ENTRY (editor->connection_name), s_connection->id);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->connection_autoconnect), s_connection->autoconnect);
 	} else {
 		gtk_entry_set_text (GTK_ENTRY (editor->connection_name), NULL);

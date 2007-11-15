@@ -184,7 +184,7 @@ nma_vpn_request_password (NMConnection *connection,
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_return_val_if_fail (s_con != NULL, FALSE);
-	g_return_val_if_fail (s_con->name != NULL, FALSE);
+	g_return_val_if_fail (s_con->id != NULL, FALSE);
 	g_return_val_if_fail (s_con->type != NULL, FALSE);
 	g_return_val_if_fail (strcmp (s_con->type, "vpn") == 0, FALSE);
 
@@ -193,7 +193,7 @@ nma_vpn_request_password (NMConnection *connection,
 	g_return_val_if_fail (s_vpn->service_type != NULL, FALSE);
 
 	/* find the auth-dialog binary */
-	auth_dialog_binary = find_auth_dialog_binary (s_vpn->service_type, s_con->name);
+	auth_dialog_binary = find_auth_dialog_binary (s_vpn->service_type, s_con->id);
 	if (!auth_dialog_binary) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): couldn't find VPN auth dialog  helper program '%s'.",
@@ -203,7 +203,7 @@ nma_vpn_request_password (NMConnection *connection,
 
 	/* Fix up parameters with what we got */
 	argv[0] = auth_dialog_binary;
-	argv[2] = s_con->name;
+	argv[2] = s_con->id;
 	argv[4] = s_vpn->service_type;
 	if (!retry)
 		argv[5] = NULL;
@@ -229,7 +229,7 @@ nma_vpn_request_password (NMConnection *connection,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,
 						 _("Cannot start VPN connection '%s'"),
-						 s_con->name);
+						 s_con->id);
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
   _("There was a problem launching the authentication dialog for VPN connection type '%s'. Contact your system administrator."),
 							  s_vpn->service_type);

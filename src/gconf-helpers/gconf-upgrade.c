@@ -346,7 +346,7 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 		we_cipher = NM_AUTH_TYPE_NONE;
 
 	s_con = (NMSettingConnection *)nm_setting_connection_new ();
-	s_con->name = g_strdup_printf ("Auto %s", essid);
+	s_con->id = g_strdup_printf ("Auto %s", essid);
 	s_con->type = g_strdup ("802-11-wireless");
 	s_con->autoconnect = (timestamp != 0);
 	s_con->timestamp = timestamp;
@@ -500,19 +500,19 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
 	NMSettingVPNProperties *s_vpn_props;
-	char *path, *network, *name = NULL, *service_name = NULL;
+	char *path, *network, *id = NULL, *service_name = NULL;
 	GSList *routes = NULL, *vpn_data = NULL;
 
 	path = g_path_get_dirname (dir);
 	network = g_path_get_basename (dir);
 
-	if (!get_mandatory_string_helper (client, path, "name", network, &name)) {
+	if (!get_mandatory_string_helper (client, path, "name", network, &id)) {
 		g_free (path);
 		g_free (network);
 		return NULL;
 	}
 	if (!get_mandatory_string_helper (client, path, "service_name", network, &service_name)) {
-		g_free (name);
+		g_free (id);
 		g_free (path);
 		g_free (network);
 		return NULL;
@@ -524,7 +524,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 		routes = NULL;
 
 	s_con = (NMSettingConnection *)nm_setting_connection_new ();
-	s_con->name = name;
+	s_con->id = id;
 	s_con->type = g_strdup ("vpn");
 
 	s_vpn = (NMSettingVPN *)nm_setting_vpn_new ();
@@ -617,6 +617,40 @@ nm_gconf_migrate_0_7_vpn_connections (GConfClient *client)
 			old_key = g_strdup_printf ("%s/vpn/service_type", (const char *) iter->data);
 			gconf_client_unset (client, old_key, NULL);
 			g_free (old_key);
+		}
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+
+/* Changing the connection settings' 'name' property -> 'id' requires a rename
+ * of the GConf key too.
+ */
+void
+nm_gconf_migrate_0_7_connection_names (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *id = NULL;
+
+		if (nm_gconf_get_string_helper (client, iter->data, "id", NM_SETTING_CONNECTION_SETTING_NAME, &id))
+			g_free (id);
+		else {
+			char *value = NULL;
+
+			if (nm_gconf_get_string_helper (client, iter->data, "name", NM_SETTING_CONNECTION_SETTING_NAME, &value)) {
+				char *old_key;
+
+				nm_gconf_set_string_helper (client, iter->data, "id", NM_SETTING_CONNECTION_SETTING_NAME, value);
+				g_free (value);
+
+				old_key = g_strdup_printf ("%s/" NM_SETTING_CONNECTION_SETTING_NAME "/name", (const char *) iter->data);
+				gconf_client_unset (client, old_key, NULL);
+				g_free (old_key);
+			}
 		}
 	}
 	free_slist (connections);

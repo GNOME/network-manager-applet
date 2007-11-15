@@ -779,7 +779,7 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 	char *con_path = NULL;
 	NMSetting *setting = NULL;
 	char *specific_object = "/";
-	char *connection_name = NULL;
+	char *connection_id = NULL;
 	GSList *elt, *connections;
 	gboolean autoconnect = TRUE;
 
@@ -797,17 +797,17 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 	if (connection) {
 		NMSettingConnection *s_con;
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		g_warning ("Found connection %s to activate at %s.", s_con->name, con_path);
+		g_warning ("Found connection %s to activate at %s.", s_con->id, con_path);
 	} else {
 		connection = nm_connection_new ();
 
 		if (NM_IS_DEVICE_802_3_ETHERNET (info->device)) {
 			setting = nm_setting_wired_new ();
 			specific_object = NULL;
-			connection_name = g_strdup ("Auto Ethernet");
+			connection_id = g_strdup ("Auto Ethernet");
 		} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
 			setting = new_auto_wireless_setting (connection,
-			                                     &connection_name,
+			                                     &connection_id,
 			                                     &autoconnect,
 			                                     NM_DEVICE_802_11_WIRELESS (info->device),
 			                                     info->ap);
@@ -819,7 +819,7 @@ nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 			NMSettingConnection *s_con;
 
 			s_con = (NMSettingConnection *) nm_setting_connection_new ();
-			s_con->name = connection_name;
+			s_con->id = connection_id;
 			s_con->type = g_strdup (setting->name);
 			s_con->autoconnect = autoconnect;
 			nm_connection_add_setting (connection, (NMSetting *) s_con);
@@ -1009,13 +1009,12 @@ vpn_connection_state_changed (NMVPNConnection *connection,
 }
 
 static const char *
-get_connection_name (AppletDbusConnectionSettings *settings)
+get_connection_id (AppletDbusConnectionSettings *settings)
 {
 	NMSettingConnection *conn;
 
 	conn = NM_SETTING_CONNECTION (nm_connection_get_setting (settings->connection, NM_TYPE_SETTING_CONNECTION));
-
-	return conn->name;
+	return conn->id;
 }
 
 static void
@@ -1042,7 +1041,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	connection_settings = NM_CONNECTION_SETTINGS (g_object_get_data (G_OBJECT (item), "connection"));
 	g_assert (connection_settings);
 
-	connection_name = get_connection_name ((AppletDbusConnectionSettings *) connection_settings);
+	connection_name = get_connection_id ((AppletDbusConnectionSettings *) connection_settings);
 
 	connection = (NMVPNConnection *) g_hash_table_lookup (applet->vpn_connections, connection_name);
 	if (connection)
@@ -1242,13 +1241,13 @@ other_wireless_response_cb (GtkDialog *dialog,
 	// a new connection
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_con->name) {
+	if (!s_con->id) {
 		NMSettingWireless *s_wireless;
 		char *ssid;
 
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 		ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
-		s_con->name = g_strdup_printf ("Auto %s", ssid);
+		s_con->id = g_strdup_printf ("Auto %s", ssid);
 		g_free (ssid);
 
 		// FIXME: don't autoconnect until the connection is successful at least once
@@ -1669,8 +1668,8 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 static int
 sort_vpn_connections (gconstpointer a, gconstpointer b)
 {
-	return strcmp (get_connection_name ((AppletDbusConnectionSettings *) a),
-				get_connection_name ((AppletDbusConnectionSettings *) b));
+	return strcmp (get_connection_id ((AppletDbusConnectionSettings *) a),
+				get_connection_id ((AppletDbusConnectionSettings *) b));
 }
 
 static GSList *
@@ -1717,7 +1716,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 
 	for (iter = list; iter; iter = iter->next) {
 		AppletDbusConnectionSettings *applet_settings = (AppletDbusConnectionSettings *) iter->data;
-		const char *connection_name = get_connection_name (applet_settings);
+		const char *connection_name = get_connection_id (applet_settings);
 
 		item = GTK_MENU_ITEM (gtk_check_menu_item_new_with_label (connection_name));
 		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
@@ -3238,7 +3237,7 @@ applet_add_default_ethernet_connection (AppletDbusSettings *settings)
 	connection = nm_connection_new ();
 
 	s_con = (NMSettingConnection *) nm_setting_connection_new ();
-	s_con->name = g_strdup ("Auto Ethernet");
+	s_con->id = g_strdup ("Auto Ethernet");
 	s_con->type = g_strdup ("802-3-ethernet");
 	s_con->autoconnect = TRUE;
 

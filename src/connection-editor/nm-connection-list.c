@@ -108,7 +108,7 @@ hash_add_connection_to_list (gpointer key, gpointer value, gpointer user_data)
 
 	gtk_list_store_append (model, &iter);
 	gtk_list_store_set (model, &iter,
-	                    0, s_connection->name,
+	                    0, s_connection->id,
 	                    1, connection,
 	                    -1);
 }

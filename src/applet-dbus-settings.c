@@ -641,7 +641,7 @@ applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_co
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
 												   NM_TYPE_SETTING_CONNECTION));
 	g_free (applet_connection->id);
-	applet_connection->id = g_strdup (s_con->name);
+	applet_connection->id = g_strdup (s_con->id);
 
 	fill_vpn_user_name (applet_connection->connection);
 
@@ -688,7 +688,7 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
 												   NM_TYPE_SETTING_CONNECTION));
-	applet_connection->id = g_strdup (s_con->name);
+	applet_connection->id = g_strdup (s_con->id);
 
 	fill_vpn_user_name (applet_connection->connection);
 
@@ -840,6 +840,7 @@ get_one_private_key (NMConnection *connection,
 	const char *privkey_tag;
 	const char *secret_name;
 	gboolean success = FALSE;
+	GError *error = NULL;
 
 	g_return_val_if_fail (connection != NULL, FALSE);
 	g_return_val_if_fail (tag != NULL, FALSE);
@@ -978,7 +979,7 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
 												   NM_TYPE_SETTING_CONNECTION));
-	if (!s_con || !s_con->name || !strlen (s_con->name) || !s_con->type) {
+	if (!s_con || !s_con->id || !strlen (s_con->id) || !s_con->type) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d - Connection didn't have required '"
 		             NM_SETTING_CONNECTION_SETTING_NAME
@@ -996,7 +997,7 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 
 	if (request_new) {
 		nm_info ("New secrets for %s/%s requested; ask the user",
-		         s_con->name, setting_name);
+		         s_con->id, setting_name);
 		nm_connection_clear_secrets (applet_connection->connection);
 		goto get_secrets;
 	}
@@ -1005,24 +1006,30 @@ applet_dbus_connection_settings_get_secrets (NMConnectionSettings *connection,
 	                                      &found_list,
 	                                      "connection-name",
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      s_con->name,
+	                                      s_con->id,
 	                                      "setting-name",
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      setting_name,
 	                                      NULL);
 	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0)) {
 		nm_info ("No keyring secrets found for %s/%s; ask the user",
-		         s_con->name, setting_name);
+		         s_con->id, setting_name);
 		goto get_secrets;
 	}
 
 	secrets = extract_secrets (applet_connection->connection,
-	                           found_list, s_con->name, setting_name, &error);
+	                           found_list, s_con->id, setting_name, &error);
 	if (error) {
 		g_warning (error->message);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 	} else {
+		if (g_hash_table_size (secrets) == 0) {
+			g_hash_table_destroy (secrets);
+			g_warning ("%s.%d - Secrets were found for setting '%s' but none"
+		               " were valid.", __FILE__, __LINE__, setting_name);
+			goto get_secrets;
+		}
 		dbus_g_method_return (context, secrets);
 		g_hash_table_destroy (secrets);
 	}
