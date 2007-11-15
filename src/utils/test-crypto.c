@@ -24,8 +24,6 @@
 #include <stdlib.h>
 #include <glib/gi18n.h>
 #include <stdio.h>
-
-#define _GNU_SOURCE
 #include <string.h>
 
 #include "crypto.h"

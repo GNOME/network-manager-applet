@@ -48,7 +48,7 @@ connection_name_changed (GtkEditable *editable, gpointer user_data)
 
 	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	if (s_connection)
-		g_object_set (G_OBJECT (s_connection), NM_SETTING_CONNECTION_ID, gtk_entry_get_text (GTK_ENTRY (editable)));
+		g_object_set (G_OBJECT (s_connection), NM_SETTING_CONNECTION_ID, gtk_entry_get_text (GTK_ENTRY (editable)), NULL);
 }
 
 static void

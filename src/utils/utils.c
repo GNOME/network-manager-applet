@@ -177,20 +177,20 @@ utils_fill_one_crypto_object (NMConnection *connection,
 	NMSettingConnection *s_con;
 	guint32 ignore;
 
-	g_return_if_fail (key_name != NULL);
-	g_return_if_fail (field != NULL);
+	g_return_val_if_fail (key_name != NULL, FALSE);
+	g_return_val_if_fail (field != NULL, FALSE);
 
 	clear_one_byte_array_field (field);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_return_if_fail (s_con != NULL);
+	g_return_val_if_fail (s_con != NULL, FALSE);
 
 	filename = g_object_get_data (G_OBJECT (connection), key_name);
 	if (!filename)
-		return;
+		return TRUE;
 
 	if (is_private_key)
-		g_return_if_fail (password != NULL);
+		g_return_val_if_fail (password != NULL, FALSE);
 
 	if (is_private_key) {
 		*field = crypto_get_private_key (filename, password, &ignore, error);

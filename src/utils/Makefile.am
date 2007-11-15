@@ -27,5 +27,5 @@ endif
 noinst_PROGRAMS = test-crypto
 
 test_crypto_SOURCES = test-crypto.c
-test_crypto_CPPFLAGS = $(NMA_CFLAGS)
+test_crypto_CPPFLAGS = $(NMA_CFLAGS) -D_GNU_SOURCE
 test_crypto_LDADD = $(NMA_LIBS) ${top_builddir}/src/utils/libutils.la
