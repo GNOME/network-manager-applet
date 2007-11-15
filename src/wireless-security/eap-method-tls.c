@@ -28,6 +28,7 @@
 #include "gconf-helpers.h"
 #include "eap-method.h"
 #include "wireless-security.h"
+#include "utils.h"
 
 static void
 show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
@@ -130,6 +131,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GtkWidget *widget;
 	char *filename;
+	char *password = NULL;
+	GError *error = NULL;
 
 	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
 										  NM_TYPE_SETTING_WIRELESS_SECURITY));
@@ -174,6 +177,21 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		                   NULL);
 	}
 
+	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_password_entry");
+	g_assert (widget);
+	password = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	if (method->phase2) {
+		g_object_set_data_full (G_OBJECT (connection),
+		                        NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG,
+		                        password,
+		                        (GDestroyNotify) free_password);
+	} else {
+		g_object_set_data_full (G_OBJECT (connection),
+		                        NMA_PRIVATE_KEY_PASSWORD_TAG,
+		                        password,
+		                        (GDestroyNotify) free_password);
+	}
+
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
@@ -184,18 +202,20 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	                        (GDestroyNotify) g_free);
 	g_free (filename);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_password_entry");
-	g_assert (widget);
 	if (method->phase2) {
-		g_object_set_data_full (G_OBJECT (connection),
-		                        NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG,
-		                        g_strdup (gtk_entry_get_text (GTK_ENTRY (widget))),
-		                        (GDestroyNotify) free_password);
+		utils_fill_one_crypto_object (connection, NMA_PATH_PHASE2_PRIVATE_KEY_TAG,
+		                              TRUE, password, &s_wireless_sec->phase2_private_key, &error);
+		if (error) {
+			g_warning ("Couldn't read phase2 private key: %s", error->message);
+			g_clear_error (&error);
+		}
 	} else {
-		g_object_set_data_full (G_OBJECT (connection),
-		                        NMA_PRIVATE_KEY_PASSWORD_TAG,
-		                        g_strdup (gtk_entry_get_text (GTK_ENTRY (widget))),
-		                        (GDestroyNotify) free_password);
+		utils_fill_one_crypto_object (connection, NMA_PATH_PRIVATE_KEY_TAG,
+		                              TRUE, password, &s_wireless_sec->private_key, &error);
+		if (error) {
+			g_warning ("Couldn't read private key: %s", error->message);
+			g_clear_error (&error);
+		}
 	}
 
 	if (method->ignore_ca_cert) {

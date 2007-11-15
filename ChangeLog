@@ -1,5 +1,22 @@
 2007-11-15  Dan Williams  <dcbw@redhat.com>
 
+	* src/utils/utils.h
+	  src/utils/utils.c
+		- (utils_fill_one_crypto_object): new function; move fill_one_object()
+			here and generalize a bit.  EAP-TLS bits need to use it too.
+
+	* src/applet-dbus-settings.c
+		- (fill_one_object): move to utils.c
+		- (applet_dbus_settings_connection_fill_certs,get_one_private_key): use
+			utils version of fill_one_object()
+		- (extract_secrets): remove unnecessary check for empty secrets table
+
+	* src/wireless-security/eap-method-tls.c
+		- (fill_connection): make EAP-TLS actually work by sending the private
+			key
+
+2007-11-15  Dan Williams  <dcbw@redhat.com>
+
 	* applet-dbus-settings.c
 	  applet.c
 	  connection-editor/nm-connection-editor.c

@@ -22,6 +22,9 @@
 #include <string.h>
 #include <glib.h>
 
+#include <nm-setting-connection.h>
+
+#include "crypto.h"
 #include "utils.h"
 
 /*
@@ -148,5 +151,58 @@ out:
 	g_free (product);
 	g_free (vendor);
 	return description;
+}
+
+static void
+clear_one_byte_array_field (GByteArray **field)
+{
+	g_return_if_fail (field != NULL);
+
+	if (!*field)
+		return;
+	g_byte_array_free (*field, TRUE);
+	*field = NULL;
+}
+
+gboolean
+utils_fill_one_crypto_object (NMConnection *connection,
+                              const char *key_name,
+                              gboolean is_private_key,
+                              const char *password,
+                              GByteArray **field,
+                              GError **error)
+{
+	const char *filename;
+	NMSettingConnection *s_con;
+	guint32 ignore;
+
+	g_return_if_fail (key_name != NULL);
+	g_return_if_fail (field != NULL);
+
+	clear_one_byte_array_field (field);
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_return_if_fail (s_con != NULL);
+
+	filename = g_object_get_data (G_OBJECT (connection), key_name);
+	if (!filename)
+		return;
+
+	if (is_private_key)
+		g_return_if_fail (password != NULL);
+
+	if (is_private_key) {
+		*field = crypto_get_private_key (filename, password, &ignore, error);
+		if (error && *error)
+			clear_one_byte_array_field (field);
+	} else {
+		*field = crypto_load_and_verify_certificate (filename, error);
+		if (error && *error)
+			clear_one_byte_array_field (field);
+	}
+
+	if (error && *error)
+		return FALSE;
+	return TRUE;
 }
 

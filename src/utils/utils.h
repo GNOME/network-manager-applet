@@ -22,11 +22,20 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <glib.h>
+#include <nm-connection.h>
 #include <nm-device.h>
 
 char * utils_bin2hexstr (const char *bytes, int len, int final_len);
 
 const char * utils_get_device_description (NMDevice *device);
+
+gboolean utils_fill_one_crypto_object (NMConnection *connection,
+                                       const char *key_name,
+                                       gboolean is_private_key,
+                                       const char *password,
+                                       GByteArray **field,
+                                       GError **error);
 
 #endif /* UTILS_H */
 

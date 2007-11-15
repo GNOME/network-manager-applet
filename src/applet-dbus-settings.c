@@ -64,52 +64,6 @@ clear_one_byte_array_field (GByteArray **field)
 	*field = NULL;
 }
 
-static void
-fill_one_object (NMConnection *connection,
-                 const char *key_name,
-                 gboolean is_private_key,
-                 const char *password,
-                 GByteArray **field)
-{
-	const char *filename;
-	GError *error = NULL;
-	NMSettingConnection *s_con;
-	guint32 ignore;
-
-	g_return_if_fail (key_name != NULL);
-	g_return_if_fail (field != NULL);
-
-	clear_one_byte_array_field (field);
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_return_if_fail (s_con != NULL);
-
-	filename = g_object_get_data (G_OBJECT (connection), key_name);
-	if (!filename)
-		return;
-
-	if (is_private_key)
-		g_return_if_fail (password != NULL);
-
-	if (is_private_key) {
-		*field = crypto_get_private_key (filename, password, &ignore, &error);
-		if (error) {
-			g_warning ("Error: could not read private key '%s': %d %s.",
-			           filename, error->code, error->message);
-			clear_one_byte_array_field (field);
-			g_clear_error (&error);
-		}
-	} else {
-		*field = crypto_load_and_verify_certificate (filename, &error);
-		if (error) {
-			g_warning ("Error: could not read certificate '%s': %d %s.",
-			           filename, error->code, error->message);
-			clear_one_byte_array_field (field);
-			g_clear_error (&error);
-		}
-	}
-}
-
 void
 applet_dbus_settings_connection_fill_certs (AppletDbusConnectionSettings *applet_connection)
 {
@@ -123,26 +77,27 @@ applet_dbus_settings_connection_fill_certs (AppletDbusConnectionSettings *applet
 	if (!s_wireless_sec)
 		return;
 
-	fill_one_object (applet_connection->connection,
-	                 NMA_PATH_CA_CERT_TAG,
-	                 FALSE,
-	                 NULL,
-	                 &s_wireless_sec->ca_cert);
-	fill_one_object (applet_connection->connection,
-	                 NMA_PATH_CLIENT_CERT_TAG,
-	                 FALSE,
-	                 NULL,
-	                 &s_wireless_sec->client_cert);
-	fill_one_object (applet_connection->connection,
-	                 NMA_PATH_PHASE2_CA_CERT_TAG,
-	                 FALSE,
-	                 NULL,
-	                 &s_wireless_sec->phase2_ca_cert);
-	fill_one_object (applet_connection->connection,
-	                 NMA_PATH_PHASE2_CLIENT_CERT_TAG,
-	                 FALSE,
-	                 NULL,
-	                 &s_wireless_sec->phase2_client_cert);
+	utils_fill_one_crypto_object (applet_connection->connection,
+	                              NMA_PATH_CA_CERT_TAG,
+	                              FALSE,
+	                              NULL,
+	                              &s_wireless_sec->ca_cert,
+	                              NULL);
+	utils_fill_one_crypto_object (applet_connection->connection,
+	                              NMA_PATH_CLIENT_CERT_TAG,
+	                              FALSE,
+	                              NULL,
+	                              &s_wireless_sec->client_cert);
+	utils_fill_one_crypto_object (applet_connection->connection,
+	                              NMA_PATH_PHASE2_CA_CERT_TAG,
+	                              FALSE,
+	                              NULL,
+	                              &s_wireless_sec->phase2_ca_cert);
+	utils_fill_one_crypto_object (applet_connection->connection,
+	                              NMA_PATH_PHASE2_CLIENT_CERT_TAG,
+	                              FALSE,
+	                              NULL,
+	                              &s_wireless_sec->phase2_client_cert);
 }
 
 void
@@ -857,9 +812,14 @@ get_one_private_key (NMConnection *connection,
 		return FALSE;
 	}
 
-	fill_one_object (connection, privkey_tag, TRUE, password, &array);
-	if (!array || !array->len)
+	utils_fill_one_crypto_object (connection, privkey_tag, TRUE, password, &array, &error);
+	if (error) {
+		g_warning ("Couldn't read private key: %s", error->message);
+		g_clear_error (&error);
+	} else if (!array || !array->len) {
+		g_warning ("Couldn't read private key; unknown reason.");
 		goto out;
+	}
 
 	g_hash_table_insert (secrets,
 	                     g_strdup (secret_name),
@@ -934,14 +894,6 @@ extract_secrets (NMConnection *connection,
 				                     string_to_gvalue (found->secret));
 			}
 		}
-	}
-
-	if (g_hash_table_size (secrets) == 0) {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
-		             "%s.%d - Secrets were found for setting '%s' but none"
-		             " were valid.", __FILE__, __LINE__, setting_name);
-		g_hash_table_destroy (secrets);
-		secrets = NULL;
 	}
 
 	return secrets;
