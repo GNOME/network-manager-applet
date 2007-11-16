@@ -35,6 +35,7 @@
 #include "vpn-password-dialog.h"
 #include "applet-marshal.h"
 #include "crypto.h"
+#include "utils.h"
 
 static NMConnectionSettings * applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
                                                                                    const gchar *conf_dir,
