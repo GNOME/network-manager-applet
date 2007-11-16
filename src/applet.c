@@ -268,7 +268,7 @@ nma_info_dialog_update (GladeXML *xml, NMDevice *device)
 		label = get_label (dialog, xml, "label-secondary-dns");
 		if (dns->len > 1) {
 			gtk_label_set_text (GTK_LABEL (label),
-							ip4_address_as_string (g_array_index (dns, guint32, 0)));
+							ip4_address_as_string (g_array_index (dns, guint32, 1)));
 		} else {
 			gtk_label_set_text (GTK_LABEL (label), "");
 		}
