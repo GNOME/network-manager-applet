@@ -37,5 +37,9 @@ gboolean utils_fill_one_crypto_object (NMConnection *connection,
                                        GByteArray **field,
                                        GError **error);
 
+void utils_fill_connection_certs (NMConnection *connection);
+
+void utils_clear_filled_connection_certs (NMConnection *connection);
+
 #endif /* UTILS_H */
 

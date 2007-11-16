@@ -59,10 +59,6 @@ NMConnection * applet_dbus_connection_settings_get_connection (NMConnectionSetti
 
 void applet_dbus_connection_settings_save (NMConnectionSettings *connection);
 
-void applet_dbus_settings_connection_fill_certs (AppletDbusConnectionSettings *applet_connection);
-
-void applet_dbus_settings_connection_clear_filled_certs (AppletDbusConnectionSettings *applet_connection);
-
 
 #define APPLET_TYPE_DBUS_SETTINGS    (applet_dbus_settings_get_type ())
 #define APPLET_IS_DBUS_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_DBUS_SETTINGS))

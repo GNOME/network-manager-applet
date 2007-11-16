@@ -1,3 +1,23 @@
+2007-11-16  Dan Williams  <dcbw@redhat.com>
+
+	* src/utils/utils.h
+	  src/utils/utils.c
+	  src/utils/Makefile.am
+	  src/Makefile.am
+		- (utils_fill_connection_certs, utils_clear_filled_connection_certs):
+			move these functions to a more general place
+
+	* src/applet.c
+		- (get_secrets_dialog_response_cb): use utils versions of fill and clear
+
+	* src/applet-dbus-settings.h
+	  src/applet-dbus-settings.c
+		- (applet_dbus_settings_connection_fill_certs,
+		   applet_dbus_settings_connection_clear_filled_certs): move to utils
+		- (applet_dbus_connection_settings_changed,
+		   applet_dbus_connection_settings_get_settings): use utils versions
+			of fill and clear
+
 2007-11-15  Dan Williams  <dcbw@redhat.com>
 
 	* src/utils/utils.c

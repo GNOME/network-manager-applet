@@ -8,7 +8,9 @@ libutils_la_SOURCES = \
 	crypto.c \
 	crypto.h
 
-libutils_la_CPPFLAGS = $(NMA_CFLAGS)
+libutils_la_CPPFLAGS = \
+	$(NMA_CFLAGS) \
+	-I${top_srcdir}/src/gconf-helpers
 
 libutils_la_LIBADD = $(NMA_LIBS)
 

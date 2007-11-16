@@ -54,74 +54,6 @@ static AppletDbusConnectionSettings *applet_dbus_settings_get_by_gconf_path (App
 static gboolean applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *connection,
                                                          GConfEntry *entry);
 
-static void
-clear_one_byte_array_field (GByteArray **field)
-{
-	g_return_if_fail (field != NULL);
-
-	if (!*field)
-		return;
-	g_byte_array_free (*field, TRUE);
-	*field = NULL;
-}
-
-void
-applet_dbus_settings_connection_fill_certs (AppletDbusConnectionSettings *applet_connection)
-{
-	NMSettingWirelessSecurity *s_wireless_sec;
-
-	g_return_if_fail (applet_connection != NULL);
-	g_return_if_fail (applet_connection->connection != NULL);
-
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (applet_connection->connection, 
-															    NM_TYPE_SETTING_WIRELESS_SECURITY));
-	if (!s_wireless_sec)
-		return;
-
-	utils_fill_one_crypto_object (applet_connection->connection,
-	                              NMA_PATH_CA_CERT_TAG,
-	                              FALSE,
-	                              NULL,
-	                              &s_wireless_sec->ca_cert,
-	                              NULL);
-	utils_fill_one_crypto_object (applet_connection->connection,
-	                              NMA_PATH_CLIENT_CERT_TAG,
-	                              FALSE,
-	                              NULL,
-	                              &s_wireless_sec->client_cert);
-	utils_fill_one_crypto_object (applet_connection->connection,
-	                              NMA_PATH_PHASE2_CA_CERT_TAG,
-	                              FALSE,
-	                              NULL,
-	                              &s_wireless_sec->phase2_ca_cert);
-	utils_fill_one_crypto_object (applet_connection->connection,
-	                              NMA_PATH_PHASE2_CLIENT_CERT_TAG,
-	                              FALSE,
-	                              NULL,
-	                              &s_wireless_sec->phase2_client_cert);
-}
-
-void
-applet_dbus_settings_connection_clear_filled_certs (AppletDbusConnectionSettings *applet_connection)
-{
-	NMSettingWirelessSecurity *s_wireless_sec;
-
-	g_return_if_fail (applet_connection != NULL);
-	g_return_if_fail (applet_connection->connection != NULL);
-
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (applet_connection->connection, 
-															    NM_TYPE_SETTING_WIRELESS_SECURITY));
-	if (!s_wireless_sec)
-		return;
-
-	clear_one_byte_array_field (&s_wireless_sec->ca_cert);
-	clear_one_byte_array_field (&s_wireless_sec->client_cert);
-	clear_one_byte_array_field (&s_wireless_sec->private_key);
-	clear_one_byte_array_field (&s_wireless_sec->phase2_ca_cert);
-	clear_one_byte_array_field (&s_wireless_sec->phase2_client_cert);
-	clear_one_byte_array_field (&s_wireless_sec->phase2_private_key);
-}
-
 
 enum {
 	SETTINGS_NEW_SECRETS_REQUESTED,
@@ -601,9 +533,9 @@ applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_co
 
 	fill_vpn_user_name (applet_connection->connection);
 
-	applet_dbus_settings_connection_fill_certs (applet_connection);
+	utils_fill_connection_certs (applet_connection->connection);
 	settings = nm_connection_to_hash (applet_connection->connection);
-	applet_dbus_settings_connection_clear_filled_certs (applet_connection);
+	utils_clear_filled_connection_certs (applet_connection->connection);
 
 	nm_connection_settings_signal_updated (NM_CONNECTION_SETTINGS (applet_connection), settings);
 	g_hash_table_destroy (settings);
@@ -746,9 +678,9 @@ GHashTable *applet_dbus_connection_settings_get_settings (NMConnectionSettings *
 	g_return_val_if_fail (APPLET_IS_DBUS_CONNECTION_SETTINGS (applet_connection), NULL);
 	g_return_val_if_fail (NM_IS_CONNECTION (applet_connection->connection), NULL);
 
-	applet_dbus_settings_connection_fill_certs (applet_connection);
+	utils_fill_connection_certs (applet_connection->connection);
 	settings = nm_connection_to_hash (applet_connection->connection);
-	applet_dbus_settings_connection_clear_filled_certs (applet_connection);
+	utils_clear_filled_connection_certs (applet_connection->connection);
 
 	return settings;
 }

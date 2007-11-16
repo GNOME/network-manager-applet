@@ -23,9 +23,11 @@
 #include <glib.h>
 
 #include <nm-setting-connection.h>
+#include <nm-setting-wireless-security.h>
 
 #include "crypto.h"
 #include "utils.h"
+#include "gconf-helpers.h"
 
 /*
  * utils_bin2hexstr
@@ -206,4 +208,63 @@ utils_fill_one_crypto_object (NMConnection *connection,
 		return FALSE;
 	return TRUE;
 }
+
+void
+utils_fill_connection_certs (NMConnection *connection)
+{
+	NMSettingWirelessSecurity *s_wireless_sec;
+
+	g_return_if_fail (connection != NULL);
+
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+															    NM_TYPE_SETTING_WIRELESS_SECURITY));
+	if (!s_wireless_sec)
+		return;
+
+	utils_fill_one_crypto_object (connection,
+	                              NMA_PATH_CA_CERT_TAG,
+	                              FALSE,
+	                              NULL,
+	                              &s_wireless_sec->ca_cert,
+	                              NULL);
+	utils_fill_one_crypto_object (connection,
+	                              NMA_PATH_CLIENT_CERT_TAG,
+	                              FALSE,
+	                              NULL,
+	                              &s_wireless_sec->client_cert,
+	                              NULL);
+	utils_fill_one_crypto_object (connection,
+	                              NMA_PATH_PHASE2_CA_CERT_TAG,
+	                              FALSE,
+	                              NULL,
+	                              &s_wireless_sec->phase2_ca_cert,
+	                              NULL);
+	utils_fill_one_crypto_object (connection,
+	                              NMA_PATH_PHASE2_CLIENT_CERT_TAG,
+	                              FALSE,
+	                              NULL,
+	                              &s_wireless_sec->phase2_client_cert,
+	                              NULL);
+}
+
+void
+utils_clear_filled_connection_certs (NMConnection *connection)
+{
+	NMSettingWirelessSecurity *s_wireless_sec;
+
+	g_return_if_fail (connection != NULL);
+
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+															    NM_TYPE_SETTING_WIRELESS_SECURITY));
+	if (!s_wireless_sec)
+		return;
+
+	clear_one_byte_array_field (&s_wireless_sec->ca_cert);
+	clear_one_byte_array_field (&s_wireless_sec->client_cert);
+	clear_one_byte_array_field (&s_wireless_sec->private_key);
+	clear_one_byte_array_field (&s_wireless_sec->phase2_ca_cert);
+	clear_one_byte_array_field (&s_wireless_sec->phase2_client_cert);
+	clear_one_byte_array_field (&s_wireless_sec->phase2_private_key);
+}
+
 

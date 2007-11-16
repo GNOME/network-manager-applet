@@ -3103,9 +3103,9 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	if (applet_connection)
 		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (applet_connection));
 
-	applet_dbus_settings_connection_fill_certs (applet_connection);
+	utils_fill_connection_certs (connection);
 	setting_hash = nm_setting_to_hash (setting);
-	applet_dbus_settings_connection_clear_filled_certs (applet_connection);
+	utils_clear_filled_connection_certs (connection);
 
 	if (!setting_hash) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
