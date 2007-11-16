@@ -622,7 +622,7 @@ get_security_for_ap (NMAccessPoint *ap, guint32 dev_caps, gboolean *supported)
 	if (   (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
 	    && (dev_caps & NM_802_11_DEVICE_CAP_WPA)) {
 		sec->key_mgmt = g_strdup ("wpa-eap");
-		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
+		sec->proto = g_slist_append (sec->proto, g_strdup ("wpa"));
 		sec->pairwise = add_ciphers_from_flags (wpa_flags, TRUE);
 		sec->group = add_ciphers_from_flags (wpa_flags, FALSE);
 		sec->eap = g_slist_append (sec->eap, g_strdup ("ttls"));
