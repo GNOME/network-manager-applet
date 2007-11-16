@@ -3207,6 +3207,7 @@ applet_settings_new_secrets_requested_cb (AppletDbusSettings *settings,
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): couldn't find details for connection",
 		             __FILE__, __LINE__, __func__);
+		g_warning (error->message);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 	}
