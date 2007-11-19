@@ -1,3 +1,16 @@
+2007-11-19  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-dbus-settings.c
+		- (applet_dbus_settings_add_connection): save the connection to GConf
+			after adding it to the connection list to avoid the GConf key
+			change notification firing before the connection was added to
+			the connection list
+		- (applet_dbus_connection_settings_changed,
+		   applet_dbus_connection_settings_new,
+		   applet_dbus_connection_settings_new_from_connection): fill certs
+			before verifying the connection, because some EAP types (TLS for
+			example) require a private key to be valid
+
 2007-11-16  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

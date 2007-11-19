@@ -391,6 +391,11 @@ applet_dbus_settings_add_connection (AppletDbusSettings *applet_settings,
 		applet_settings->connections = g_slist_append (applet_settings->connections, exported);
 		nm_settings_signal_new_connection (NM_SETTINGS (applet_settings),
 		                                   NM_CONNECTION_SETTINGS (exported));
+
+		/* Must save connection to GConf _after_ adding it to the connections
+		 * list to avoid races with GConf notifications.
+		 */
+		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (exported));
 	}
 
 	g_free (path);
@@ -513,10 +518,13 @@ applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_co
 		goto invalid;
 	}
 
+	utils_fill_connection_certs (connection);
 	if (!nm_connection_verify (connection)) {
+		utils_clear_filled_connection_certs (connection);
 		g_warning ("Invalid connection read from GConf at %s.", applet_connection->conf_dir);
 		goto invalid;
 	}
+	utils_clear_filled_connection_certs (connection);
 
 	/* Ignore the GConf update if nothing changed */
 	if (nm_connection_compare (applet_connection->connection, connection) == FALSE)
@@ -568,11 +576,14 @@ applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf
 		return NULL;
 	}
 
+	utils_fill_connection_certs (applet_connection->connection);
 	if (!nm_connection_verify (applet_connection->connection)) {
+		utils_clear_filled_connection_certs (applet_connection->connection);
 		g_warning ("Invalid connection read from GConf at %s.", conf_dir);
 		g_object_unref (applet_connection);
 		return NULL;
 	}
+	utils_clear_filled_connection_certs (applet_connection->connection);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
 												   NM_TYPE_SETTING_CONNECTION));
@@ -614,17 +625,18 @@ applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
 	g_return_val_if_fail (conf_dir != NULL, NULL);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
+	utils_fill_connection_certs (connection);
 	if (!nm_connection_verify (connection)) {
+		utils_clear_filled_connection_certs (connection);
 		g_warning ("Invalid connection given.");
 		return NULL;
 	}
+	utils_clear_filled_connection_certs (connection);
 
 	applet_connection = g_object_new (APPLET_TYPE_DBUS_CONNECTION_SETTINGS, NULL);
 	applet_connection->conf_client = g_object_ref (conf_client);
 	applet_connection->conf_dir = g_strdup (conf_dir);
 	applet_connection->connection = connection;
-
-	applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (applet_connection));
 
 	fill_vpn_user_name (applet_connection->connection);
 
