@@ -1245,6 +1245,8 @@ ow_dialog_close (gpointer user_data)
 	return FALSE;
 }
 
+#define NAG_IGNORED_TAG "nag-ignored"
+
 static void
 nag_dialog_response_cb (GtkDialog *nag_dialog,
                         gint response,
@@ -1252,8 +1254,12 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 {
 	GtkWidget *ow_dialog = GTK_WIDGET (user_data);
 
-	if (response == GTK_RESPONSE_NO)  /* user opted not to correct the warning */
+	if (response == GTK_RESPONSE_NO) {  /* user opted not to correct the warning */
+		g_object_set_data (G_OBJECT (ow_dialog),
+		                   NAG_IGNORED_TAG,
+		                   GUINT_TO_POINTER (TRUE));
 		g_idle_add (ow_dialog_close, ow_dialog);
+	}
 }
 
 static void
@@ -1268,21 +1274,26 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 	NMSettingConnection *s_con;
 	AppletDbusConnectionSettings *exported_con = NULL;
 	const char *con_path;
-	GtkWidget *nag_dialog;
+	gboolean ignored = FALSE;
 
 	if (response != GTK_RESPONSE_OK)
 		goto done;
 
-	/* Nag the user about certificates or whatever.  Only destroy the dialog
-	 * if no nagging was done.
-	 */
-	nag_dialog = nma_wireless_dialog_nag_user (GTK_WIDGET (dialog));
-	if (nag_dialog) {
-		gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
-		g_signal_connect (nag_dialog, "response",
-		                  G_CALLBACK (nag_dialog_response_cb),
-		                  dialog);
-		return;
+	ignored = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (dialog), NAG_IGNORED_TAG));
+	if (!ignored) {
+		GtkWidget *nag_dialog;
+
+		/* Nag the user about certificates or whatever.  Only destroy the dialog
+		 * if no nagging was done.
+		 */
+		nag_dialog = nma_wireless_dialog_nag_user (GTK_WIDGET (dialog));
+		if (nag_dialog) {
+			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
+			g_signal_connect (nag_dialog, "response",
+			                  G_CALLBACK (nag_dialog_response_cb),
+			                  dialog);
+			return;
+		}
 	}
 
 	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device, &ap);
