@@ -1,5 +1,20 @@
 2007-11-19  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-dialog.h
+	  src/wireless-dialog.c
+		- (nma_wireless_dialog_get_connection): return the AP this dialog was
+			for, if any
+
+	* src/applet.c
+		- (nma_menu_item_activate): simplify; if the connection was invalid as
+			created (ie, like EAP-TTLS requires either identity or anonymous
+			identity), then show the wireless security dialog to get that info
+			before attempting to connect
+		- (other_wireless_response_cb): grab the specific object path of the AP
+			the security was for when trying to connect
+
+2007-11-19  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-dbus-settings.c
 		- (applet_dbus_settings_add_connection): save the connection to GConf
 			after adding it to the connection list to avoid the GConf key

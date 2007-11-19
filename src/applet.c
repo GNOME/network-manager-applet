@@ -70,6 +70,8 @@
 #include "utils.h"
 #include "crypto.h"
 
+#include "gconf-helpers.h"
+
 #include "vpn-connection-info.h"
 #include "connection-editor/nm-connection-list.h"
 
@@ -92,9 +94,9 @@ static void      foo_manager_running (NMClient *client, gboolean running, gpoint
 static void      foo_manager_running_cb (NMClient *client, gboolean running, gpointer user_data);
 static void      foo_client_state_change (NMClient *client, NMState state, gpointer user_data, gboolean synthetic);
 static gboolean  add_seen_bssid (AppletDbusConnectionSettings *connection, NMAccessPoint *ap);
+static GtkWidget *nma_menu_create (GtkMenuItem *parent, NMApplet *applet);
+static void      wireless_dialog_response_cb (GtkDialog *dialog, gint response, gpointer user_data);
 
-static GtkWidget *
-nma_menu_create (GtkMenuItem *parent, NMApplet *applet);
 
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
 
@@ -765,6 +767,72 @@ new_auto_wireless_setting (NMConnection *connection,
 	return (NMSetting *) s_wireless;
 }
 
+static NMConnection *
+new_auto_connection (NMDevice *device, NMAccessPoint *ap)
+{
+	NMConnection *connection;
+	NMSetting *setting = NULL;
+	NMSettingConnection *s_con;
+	char *connection_id = NULL;
+	gboolean autoconnect = TRUE;
+
+	g_return_val_if_fail (device != NULL, NULL);
+	g_return_val_if_fail (ap != NULL, NULL);
+
+	connection = nm_connection_new ();
+
+	if (NM_IS_DEVICE_802_3_ETHERNET (device)) {
+		setting = nm_setting_wired_new ();
+		connection_id = g_strdup ("Auto Ethernet");
+	} else if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+		setting = new_auto_wireless_setting (connection,
+		                                     &connection_id,
+		                                     &autoconnect,
+		                                     NM_DEVICE_802_11_WIRELESS (device),
+		                                     ap);
+	} else {
+		g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (device));
+		g_object_unref (connection);
+		return NULL;
+	}
+
+	g_assert (setting);
+
+	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
+	s_con->id = connection_id;
+	s_con->type = g_strdup (setting->name);
+	s_con->autoconnect = autoconnect;
+	nm_connection_add_setting (connection, (NMSetting *) s_con);
+
+	nm_connection_add_setting (connection, setting);
+
+	return connection;
+}
+
+static void
+get_more_info (NMApplet *applet,
+               NMDevice *device,
+               NMAccessPoint *ap,
+               NMConnection *connection)
+{
+	GtkWidget *dialog;
+
+	dialog = nma_wireless_dialog_new (applet->glade_file,
+	                                  applet->nm_client,
+	                                  connection,
+	                                  device,
+	                                  ap);
+	g_return_if_fail (dialog != NULL);
+
+	g_signal_connect (dialog, "response",
+	                  G_CALLBACK (wireless_dialog_response_cb),
+	                  applet);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+}
+
 /*
  * nma_menu_item_activate
  *
@@ -775,82 +843,62 @@ static void
 nma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 {
 	DeviceMenuItemInfo *info = (DeviceMenuItemInfo *) user_data;
+	AppletDbusSettings *applet_settings = APPLET_DBUS_SETTINGS (info->applet->settings);
 	NMConnection *connection = NULL;
 	char *con_path = NULL;
-	NMSetting *setting = NULL;
-	char *specific_object = "/";
-	char *connection_id = NULL;
+	const char *specific_object;
 	GSList *elt, *connections;
-	gboolean autoconnect = TRUE;
 
-	connections = applet_dbus_settings_list_connections (APPLET_DBUS_SETTINGS (info->applet->settings));
+	connections = applet_dbus_settings_list_connections (applet_settings);
 	for (elt = connections; elt; elt = g_slist_next (elt)) {
 		NMConnectionSettings *applet_connection = NM_CONNECTION_SETTINGS (elt->data);
 
 		if (find_connection (applet_connection, info->device, info->ap)) {
+			NMSettingConnection *s_con;
+
 			connection = applet_dbus_connection_settings_get_connection (applet_connection);
 			con_path = (char *) nm_connection_settings_get_dbus_object_path (applet_connection);
+
+			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+			g_message ("Found connection '%s' to activate at %s.", s_con->id, con_path);
 			break;
 		}
 	}
 
-	if (connection) {
-		NMSettingConnection *s_con;
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		g_warning ("Found connection %s to activate at %s.", s_con->id, con_path);
-	} else {
-		connection = nm_connection_new ();
+	if (!connection) {
+		AppletDbusConnectionSettings *exported_con;
 
-		if (NM_IS_DEVICE_802_3_ETHERNET (info->device)) {
-			setting = nm_setting_wired_new ();
-			specific_object = NULL;
-			connection_id = g_strdup ("Auto Ethernet");
-		} else if (NM_IS_DEVICE_802_11_WIRELESS (info->device)) {
-			setting = new_auto_wireless_setting (connection,
-			                                     &connection_id,
-			                                     &autoconnect,
-			                                     NM_DEVICE_802_11_WIRELESS (info->device),
-			                                     info->ap);
-		} else
-			g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (info->device));
+		connection = new_auto_connection (info->device, info->ap);
+		if (!connection) {
+			nm_warning ("Couldn't create default connection.");
+			return;
+		}
 
-		if (setting) {
-			AppletDbusConnectionSettings *exported_con;
-			NMSettingConnection *s_con;
-
-			s_con = (NMSettingConnection *) nm_setting_connection_new ();
-			s_con->id = connection_id;
-			s_con->type = g_strdup (setting->name);
-			s_con->autoconnect = autoconnect;
-			nm_connection_add_setting (connection, (NMSetting *) s_con);
-
-			nm_connection_add_setting (connection, setting);
-
-			exported_con = applet_dbus_settings_add_connection (APPLET_DBUS_SETTINGS (info->applet->settings),
-			                                                    connection);
-			if (exported_con) {
-				con_path = (char *) nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
-			} else {
-				nm_warning ("Couldn't create default connection.");
-			}
-		} else {
-			g_object_unref (connection);
-			connection = NULL;
+		exported_con = applet_dbus_settings_add_connection (applet_settings, connection);
+		if (exported_con)
+			con_path = (char *) nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
+		else {
+			/* If the setting isn't valid, because it needs more authentication
+			 * or something, ask the user for it.
+			 */
+			nm_warning ("Invalid connection; asking for more information.");
+			get_more_info (info->applet, info->device, info->ap, connection);
+			return;
 		}
 	}
 
-	if (connection) {
-		if (NM_IS_DEVICE_802_11_WIRELESS (info->device))
-			specific_object = (char *) nm_object_get_path (NM_OBJECT (info->ap));
+	if (NM_IS_DEVICE_802_11_WIRELESS (info->device))
+		specific_object = nm_object_get_path (NM_OBJECT (info->ap));
+	else
+		specific_object = "/";
 
-		nm_client_activate_device (info->applet->nm_client,
-							  info->device,
-							  NM_DBUS_SERVICE_USER_SETTINGS,
-							  con_path,
-							  (const char *) specific_object,
-							  activate_device_cb,
-							  info);
-	}
+	nm_client_activate_device (info->applet->nm_client,
+	                           info->device,
+	                           NM_DBUS_SERVICE_USER_SETTINGS,
+	                           con_path,
+	                           specific_object,
+	                           activate_device_cb,
+	                           info);
 
 //	nmi_dbus_signal_user_interface_activated (info->applet->connection);
 }
@@ -1209,13 +1257,14 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 }
 
 static void
-other_wireless_response_cb (GtkDialog *dialog,
-                            gint response,
-                            gpointer user_data)
+wireless_dialog_response_cb (GtkDialog *dialog,
+                             gint response,
+                             gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	NMConnection *connection;
+	NMConnection *connection = NULL;
 	NMDevice *device = NULL;
+	NMAccessPoint *ap = NULL;
 	NMSettingConnection *s_con;
 	AppletDbusConnectionSettings *exported_con = NULL;
 	const char *con_path;
@@ -1236,7 +1285,9 @@ other_wireless_response_cb (GtkDialog *dialog,
 		return;
 	}
 
-	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device);
+	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device, &ap);
+	g_assert (connection);
+	g_assert (device);
 	// FIXME: find a compatible connection in the current connection list before adding
 	// a new connection
 
@@ -1254,6 +1305,8 @@ other_wireless_response_cb (GtkDialog *dialog,
 		s_con->autoconnect = TRUE;
 	}
 
+	exported_con = applet_dbus_settings_get_by_connection (APPLET_DBUS_SETTINGS (applet->settings),
+	                                                       connection);
 	if (!exported_con) {
 		exported_con = applet_dbus_settings_add_connection (APPLET_DBUS_SETTINGS (applet->settings),
 		                                                    connection);
@@ -1263,17 +1316,12 @@ other_wireless_response_cb (GtkDialog *dialog,
 		}
 	}
 
-	if (!nm_connection_verify (connection)) {
-		g_message ("INVALID");
-		goto done;
-	}
-
 	con_path = nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
 	nm_client_activate_device (applet->nm_client,
 	                           device,
 	                           NM_DBUS_SERVICE_USER_SETTINGS,
 	                           con_path,
-	                           NULL,
+	                           ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
 	                           activate_device_cb,
 	                           applet);
 
@@ -1297,7 +1345,7 @@ other_wireless_activate_cb (GtkWidget *menu_item,
 		return;
 
 	g_signal_connect (dialog, "response",
-	                  G_CALLBACK (other_wireless_response_cb),
+	                  G_CALLBACK (wireless_dialog_response_cb),
 	                  applet);
 
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
@@ -3082,7 +3130,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		return;
 	}
 
-	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device);
+	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device, NULL);
 	if (!connection) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): couldn't get connection from wireless dialog.",

@@ -40,7 +40,8 @@ GtkWidget *	nma_wireless_dialog_new (const char *glade_file,
                                      NMAccessPoint *cur_ap);
 
 NMConnection * nma_wireless_dialog_get_connection (GtkWidget *dialog,
-                                                   NMDevice **device);
+                                                   NMDevice **device,
+                                                   NMAccessPoint **ap);
 
 GtkWidget * nma_wireless_dialog_nag_user (GtkWidget *dialog);
 

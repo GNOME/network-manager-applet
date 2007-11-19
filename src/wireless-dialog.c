@@ -674,7 +674,9 @@ out:
 }
 
 NMConnection *
-nma_wireless_dialog_get_connection (GtkWidget *dialog, NMDevice **device)
+nma_wireless_dialog_get_connection (GtkWidget *dialog,
+                                    NMDevice **device,
+                                    NMAccessPoint **ap)
 {
 	GladeXML *xml;
 	GtkWidget *combo;
@@ -683,6 +685,7 @@ nma_wireless_dialog_get_connection (GtkWidget *dialog, NMDevice **device)
 	GtkTreeIter iter;
 	NMConnection *connection;
 	NMSettingWireless *s_wireless;
+	NMAccessPoint *tmp_ap;
 
 	g_return_val_if_fail (dialog != NULL, NULL);
 	g_return_val_if_fail (device != NULL, NULL);
@@ -726,6 +729,10 @@ nma_wireless_dialog_get_connection (GtkWidget *dialog, NMDevice **device)
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
 	gtk_tree_model_get (model, &iter, D_DEV_COLUMN, device, -1);
 	g_object_unref (*device);
+
+	tmp_ap = g_object_get_data (G_OBJECT (dialog), "ap");
+	if (tmp_ap && ap)
+		*ap = tmp_ap;
 
 	return connection;
 }
