@@ -168,7 +168,7 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
                         gint response,
                         gpointer user_data)
 {
-	EAPMethodTLS *method = (EAPMethodTLS *) user_data;
+	EAPMethodTTLS *method = (EAPMethodTTLS *) user_data;
 	GtkWidget *widget;
 
 	if (response != GTK_RESPONSE_NO)
