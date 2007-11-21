@@ -234,13 +234,23 @@ default_filter (const GtkFileFilterInfo *filter_info, gpointer data)
 	gboolean show = FALSE;
 	guint16 der_tag = 0x8230;
 	char *p;
+	char *ext;
 
 	if (!filter_info->filename)
 		return FALSE;
 
-	p = strchr (filter_info->filename, '.');
-	if (p && !strcmp (p, ".p12"))
+	p = strrchr (filter_info->filename, '.');
+	if (!p)
 		return FALSE;
+
+	ext = g_ascii_strdown (p, -1);
+	if (!ext)
+		return FALSE;
+	if (strcmp (ext, ".der") && strcmp (ext, ".pem")) {
+		g_free (ext);
+		return FALSE;
+	}
+	g_free (ext);
 
 	fd = open (filter_info->filename, O_RDONLY);
 	if (fd < 0)
