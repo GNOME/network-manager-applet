@@ -93,7 +93,7 @@ utils_get_device_description (NMDevice *device)
 
 	description = g_object_get_data (G_OBJECT (device), DESC_TAG);
 	if (description)
-		return NULL;
+		return description;
 
 	dev_product = nm_device_get_product (device);
 	dev_vendor = nm_device_get_vendor (device);
