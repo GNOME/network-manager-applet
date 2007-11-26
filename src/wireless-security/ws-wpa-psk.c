@@ -127,7 +127,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 		unsigned char *buf = g_malloc0 (WPA_PMK_LEN * 2);
 		pbkdf2_sha1 (key, (char *) s_wireless->ssid->data, s_wireless->ssid->len,
 		             4096, buf, WPA_PMK_LEN);
-		hashed = utils_bin2hexstr (buf, WPA_PMK_LEN, WPA_PMK_LEN * 2);
+		hashed = utils_bin2hexstr ((const char *) buf, WPA_PMK_LEN, WPA_PMK_LEN * 2);
 		g_free (buf);
 	}
 

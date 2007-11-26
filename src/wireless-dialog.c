@@ -166,7 +166,7 @@ security_combo_changed (GtkWidget *combo,
 	}
 }
 
-GByteArray *
+static GByteArray *
 validate_dialog_ssid (GtkWidget *dialog)
 {
 	GladeXML *xml;

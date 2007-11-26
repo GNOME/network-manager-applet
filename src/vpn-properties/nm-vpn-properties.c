@@ -382,7 +382,7 @@ vpn_druid_vpn_confirm_page_prepare (void *druidpage,
 
 #if GTK_CHECK_VERSION(2, 10, 0)
 static void
-assistant_page_prepare (GtkAssistant *assistant,
+assistant_page_prepare (GtkAssistant *widget,
                         GtkWidget *page,
                         gpointer user_data)
 {
@@ -644,8 +644,6 @@ edit_cb (GtkButton *button, gpointer user_data)
 	result = gtk_dialog_run (GTK_DIALOG (edit_dialog));
 
 	if (result == GTK_RESPONSE_ACCEPT) {
-		GtkTreeIter iter;
-
 		vpn_ui->fill_connection (vpn_ui, connection);
 
 		/* A bit of validation; make sure the VPN plugin hasn't screwed around
@@ -937,6 +935,10 @@ init_app (void)
 	GtkCellRenderer *renderer;
 	GSList *i;
     GdkColor druid_color;
+    gchar *msg1, *msg2, *msg;
+    gchar *firstpage, *head, *secondpage;
+    GdkPixbuf *pixbuf;
+    GtkWidget * conn_type_label;
 
 	if (!vpn_get_clipboard ())
 		return FALSE;
@@ -1045,9 +1047,9 @@ init_app (void)
     gdk_color_parse ("#7590AE", &druid_color);
 
     /* Druid Page 1 - Create VPN Connection */
-    gchar *msg1 = g_strdup (_("This assistant will guide you through the creation of a connection to a Virtual Private Network (VPN)."));
-    gchar *msg2 = g_strdup (_("It will require some information, such as IP addresses and secrets.  Please see your system administrator to obtain this information.")); 
-    gchar *msg = g_strdup_printf ("%s\n\n%s", msg1, msg2); 
+    msg1 = g_strdup (_("This assistant will guide you through the creation of a connection to a Virtual Private Network (VPN)."));
+    msg2 = g_strdup (_("It will require some information, such as IP addresses and secrets.  Please see your system administrator to obtain this information.")); 
+    msg = g_strdup_printf ("%s\n\n%s", msg1, msg2); 
 
 #if GTK_CHECK_VERSION(2, 10, 0)
     assistant = gtk_assistant_new ();
@@ -1063,7 +1065,7 @@ init_app (void)
     gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), assistant_start_page, _("Create VPN connection"));
     gtk_assistant_set_page_complete (GTK_ASSISTANT (assistant), assistant_start_page, TRUE);
  
-    GdkPixbuf *pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 100, 10);
+    pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 100, 10);
     gtk_assistant_set_page_side_image (GTK_ASSISTANT (assistant), assistant_start_page, pixbuf);
     gdk_pixbuf_unref (pixbuf);
 
@@ -1084,11 +1086,11 @@ init_app (void)
     /*Translators: this will be "Create VPN Connection - [1|2] of 2"*/
     msg = g_strdup(_("Create VPN Connection"));  
     /*Translators: this will be "Create VPN Connection - 1 of 2"*/
-    gchar *firstpage = g_strdup(_("1 of 2")); 
-    gchar *head = g_strdup_printf("%s%s", msg, firstpage);
+    firstpage = g_strdup(_("1 of 2")); 
+    head = g_strdup_printf("%s%s", msg, firstpage);
     
 #if GTK_CHECK_VERSION(2, 10, 0)
-    GtkWidget * conn_type_label = gtk_label_new( _("Choose which type of VPN connection you wish to create:"));
+    conn_type_label = gtk_label_new( _("Choose which type of VPN connection you wish to create:"));
 
     assistant_conn_type_page = gtk_vbox_new (12, FALSE);
 
@@ -1114,7 +1116,7 @@ init_app (void)
 
     /* Druid Page 3 - Connection Details */
     /*Translators: this will be "Create VPN Connection - [1|2] of 2"*/
-    gchar *secondpage = g_strdup(_("2 of 2")); 
+    secondpage = g_strdup(_("2 of 2")); 
     head = g_strdup_printf("%s%s", msg, secondpage);
 
 #if GTK_CHECK_VERSION(2, 10, 0)
@@ -1200,6 +1202,7 @@ main (int argc, char *argv[])
 	gboolean do_import;
 	gchar *import_svc = NULL;
 	gchar *import_file = NULL;
+	GError *error = NULL;
 	GOptionEntry entries[] =  {
 		{ "import-service", 's', 0, G_OPTION_ARG_STRING, &import_svc, N_("VPN Service for importing"), NULL},
 		{ "import-file", 'f', 0, G_OPTION_ARG_FILENAME, &import_file, N_("File to import"), NULL},
@@ -1215,7 +1218,6 @@ main (int argc, char *argv[])
 	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
 	g_option_context_set_translation_domain(context, GETTEXT_PACKAGE);
 
-	GError *error = NULL;
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
 	g_option_context_parse (context, &argc, &argv, &error);
 	g_option_context_free (context);

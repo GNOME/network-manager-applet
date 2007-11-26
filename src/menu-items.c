@@ -246,7 +246,7 @@ nm_network_menu_item_set_ssid (NMNetworkMenuItem * item, GByteArray * ssid)
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (ssid != NULL);
 
-	display_ssid = nm_utils_ssid_to_utf8 (ssid->data, ssid->len);
+	display_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 	if (!display_ssid) {
 		// FIXME: shouldn't happen; always coerce the SSID to _something_
 		gtk_label_set_text (GTK_LABEL (item->ssid), "<unknown>");
