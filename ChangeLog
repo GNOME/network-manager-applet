@@ -1,3 +1,20 @@
+2007-11-29  Tambet Ingo  <tambet@gmail.com>
+
+	* src/applet.c (find_connection): Handle UMTS setting.
+	(new_auto_umts_setting): Implement.
+	(new_auto_connection): Handle UMTS device.
+	(nma_menu_add_device_item): Ditto.
+	(foo_device_state_changed): Ditto.
+	(foo_umts_state_change): Implement.
+	(nma_icons_free): Free UMTS device icon.
+	(nma_icons_load_from_disk): Load UMTS device icon. For now, use the adhoc icon.
+
+	* src/menu-items.c (umts_menu_item_new): Implement.
+
+	* src/gconf-helpers/gconf-helpers.c (read_one_setting_value_from_gconf): Handle
+	int and char types as well.
+	(copy_one_setting_value_to_gconf): Ditto.
+
 2007-11-26  Dan Williams  <dcbw@redhat.com>
 
 	* Fix warnings so everything compiles with --enable-more-warnings

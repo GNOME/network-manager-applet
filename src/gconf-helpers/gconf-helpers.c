@@ -622,6 +622,11 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 
 			g_object_set (setting, key, int_val, NULL);
 		}
+	} else if (type == G_TYPE_INT) {
+		int int_val;
+
+		if (nm_gconf_get_int_helper (info->client, info->dir, key, setting->name, &int_val))
+			g_object_set (setting, key, int_val, NULL);
 	} else if (type == G_TYPE_UINT64) {
 		char *tmp_str = NULL;
 
@@ -637,6 +642,15 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 
 		if (nm_gconf_get_bool_helper (info->client, info->dir, key, setting->name, &bool_val))
 			g_object_set (setting, key, bool_val, NULL);
+	} else if (type == G_TYPE_CHAR) {
+		int int_val = 0;
+
+		if (nm_gconf_get_int_helper (info->client, info->dir, key, setting->name, &int_val)) {
+			if (int_val < G_MININT8 || int_val > G_MAXINT8)
+				g_warning ("Casting value (%i) to char", int_val);
+
+			g_object_set (setting, key, int_val, NULL);
+		}
 	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
 		GByteArray *ba_val = NULL;
 
@@ -853,6 +867,10 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		nm_gconf_set_int_helper (info->client, info->dir,
 							key, setting->name,
 							g_value_get_uint (value));
+	} else if (type == G_TYPE_INT) {
+		nm_gconf_set_int_helper (info->client, info->dir,
+							key, setting->name,
+							g_value_get_int (value));
 	} else if (type == G_TYPE_UINT64) {
 		char *numstr;
 
@@ -865,6 +883,10 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		nm_gconf_set_bool_helper (info->client, info->dir,
 							 key, setting->name,
 							 g_value_get_boolean (value));
+	} else if (type == G_TYPE_CHAR) {
+		nm_gconf_set_int_helper (info->client, info->dir,
+							key, setting->name,
+							g_value_get_char (value));
 	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
 		nm_gconf_set_bytearray_helper (info->client, info->dir,
 								 key, setting->name,

@@ -106,6 +106,7 @@ typedef struct
 	GdkPixbuf *		no_connection_icon;
 	GdkPixbuf *		wired_icon;
 	GdkPixbuf *		adhoc_icon;
+	GdkPixbuf *		umts_icon;
 	GdkPixbuf *		wireless_00_icon;
 	GdkPixbuf *		wireless_25_icon;
 	GdkPixbuf *		wireless_50_icon;

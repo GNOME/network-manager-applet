@@ -50,6 +50,9 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-wired.h>
 #include <nm-setting-wireless.h>
+#include <nm-setting-serial.h>
+#include <nm-setting-umts.h>
+#include <nm-setting-ppp.h>
 #include <nm-setting-vpn.h>
 
 #include <glade/glade.h>
@@ -673,6 +676,9 @@ find_connection (NMConnectionSettings *applet_connection,
 
 		if (!nm_ap_check_compatible (ap, connection))
 			return FALSE;
+	} else if (NM_IS_UMTS_DEVICE (device)) {
+		if (strcmp (s_con->type, NM_SETTING_UMTS_SETTING_NAME))
+			return FALSE;
 	}
 
 	return TRUE;
@@ -767,6 +773,33 @@ new_auto_wireless_setting (NMConnection *connection,
 	return (NMSetting *) s_wireless;
 }
 
+static NMSetting *
+new_auto_umts_setting (NMConnection *connection, char **connection_name)
+{
+	NMSettingUmts *s_umts;
+	NMSettingSerial *s_serial;
+	NMSettingPPP *s_ppp;
+
+	s_umts = (NMSettingUmts *) nm_setting_umts_new ();
+	s_umts->number = g_strdup ("*99#"); /* This should be a sensible default as it's seems to be quite standard */
+
+	*connection_name = g_strdup ("Auto GSM dialup connection");
+
+	/* Serial setting */
+	s_serial = (NMSettingSerial *) nm_setting_serial_new ();
+	s_serial->baud = 115200;
+	s_serial->bits = 8;
+	s_serial->parity = 'n';
+	s_serial->stopbits = 1;
+	nm_connection_add_setting (connection, NM_SETTING (s_serial));
+
+	s_ppp = (NMSettingPPP *) nm_setting_ppp_new ();
+	s_ppp->usepeerdns = TRUE; /* This is probably a good default as well */
+	nm_connection_add_setting (connection, NM_SETTING (s_ppp));
+
+	return (NMSetting *) s_umts;
+}
+
 static NMConnection *
 new_auto_connection (NMDevice *device, NMAccessPoint *ap)
 {
@@ -777,7 +810,6 @@ new_auto_connection (NMDevice *device, NMAccessPoint *ap)
 	gboolean autoconnect = TRUE;
 
 	g_return_val_if_fail (device != NULL, NULL);
-	g_return_val_if_fail (ap != NULL, NULL);
 
 	connection = nm_connection_new ();
 
@@ -785,11 +817,20 @@ new_auto_connection (NMDevice *device, NMAccessPoint *ap)
 		setting = nm_setting_wired_new ();
 		connection_id = g_strdup ("Auto Ethernet");
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+		if (!ap) {
+			g_warning ("AP not set");
+			g_object_unref (connection);
+			return NULL;
+		}
+
 		setting = new_auto_wireless_setting (connection,
 		                                     &connection_id,
 		                                     &autoconnect,
 		                                     NM_DEVICE_802_11_WIRELESS (device),
 		                                     ap);
+	} else if (NM_IS_UMTS_DEVICE (device)) {
+		setting = new_auto_umts_setting (connection, &connection_id);
+		autoconnect = FALSE; /* Never automatically activate GSM modems, we could get sued for that */
 	} else {
 		g_warning ("Unhandled device type '%s'", G_OBJECT_CLASS_NAME (device));
 		g_object_unref (connection);
@@ -1215,6 +1256,8 @@ nma_menu_add_device_item (GtkWidget *menu,
 		menu_item = wireless_menu_item_new (NM_DEVICE_802_11_WIRELESS (device), n_devices);
 	else if (NM_IS_DEVICE_802_3_ETHERNET (device))
 		menu_item = wired_menu_item_new (NM_DEVICE_802_3_ETHERNET (device), n_devices);
+	else if (NM_IS_UMTS_DEVICE (device))
+		menu_item = umts_menu_item_new (NM_UMTS_DEVICE (device), n_devices);
 	else
 		g_warning ("Unhandled device type %s", G_OBJECT_CLASS_NAME (device));
 
@@ -2646,6 +2689,52 @@ foo_wired_state_change (NMDevice8023Ethernet *device, NMDeviceState state, NMApp
 	return handled;
 }
 
+/* UMTS device */
+
+static gboolean
+foo_umts_state_change (NMUmtsDevice *device, NMDeviceState state, NMApplet *applet, gboolean synthetic)
+{
+	char *iface;
+	char *tip = NULL;
+	gboolean handled = FALSE;
+
+	iface = nm_device_get_iface (NM_DEVICE (device));
+
+	switch (state) {
+	case NM_DEVICE_STATE_PREPARE:
+		tip = g_strdup_printf (_("Dialing UMTS device %s..."), iface);
+		break;
+	case NM_DEVICE_STATE_CONFIG:
+		tip = g_strdup_printf (_("Running PPP on device %s..."), iface);
+		break;
+	case NM_DEVICE_STATE_ACTIVATED:
+		foo_set_icon (applet, applet->umts_icon, ICON_LAYER_LINK);
+		tip = g_strdup (_("UMTS connection"));
+
+#ifdef ENABLE_NOTIFY		
+		if (!synthetic)
+			nma_send_event_notification (applet, NOTIFY_URGENCY_LOW,
+							    _("Connection Established"),
+							    _("You are now connected to the UMTS network."),
+							    "nm-adhock");
+#endif
+
+		handled = TRUE;
+		break;
+	default:
+		break;
+	}
+
+	g_free (iface);
+
+	if (tip) {
+		gtk_status_icon_set_tooltip (applet->status_icon, tip);
+		g_free (tip);
+	}
+
+	return handled;
+}
+
 static void
 foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer user_data)
 {
@@ -2702,6 +2791,8 @@ foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_d
 		handled = foo_wired_state_change (NM_DEVICE_802_3_ETHERNET (device), state, applet, synthetic);
 	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
 		handled = foo_wireless_state_change (NM_DEVICE_802_11_WIRELESS (device), state, applet, synthetic);
+	else if (NM_IS_UMTS_DEVICE (device))
+		handled = foo_umts_state_change (NM_UMTS_DEVICE (device), state, applet, synthetic);
 
 	if (!handled)
 		foo_common_state_change (device, state, applet);
@@ -3486,6 +3577,8 @@ static void nma_icons_free (NMApplet *applet)
 		g_object_unref (applet->wired_icon);
 	if (applet->adhoc_icon)
 		g_object_unref (applet->adhoc_icon);
+	if (applet->umts_icon)
+		g_object_unref (applet->umts_icon);
 	if (applet->vpn_lock_icon)
 		g_object_unref (applet->vpn_lock_icon);
 
@@ -3522,6 +3615,7 @@ static void nma_icons_zero (NMApplet *applet)
 	applet->no_connection_icon = NULL;
 	applet->wired_icon = NULL;
 	applet->adhoc_icon = NULL;
+	applet->umts_icon = NULL;
 	applet->vpn_lock_icon = NULL;
 
 	applet->wireless_00_icon = NULL;
@@ -3583,6 +3677,7 @@ nma_icons_load_from_disk (NMApplet *applet)
 	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
 	ICON_LOAD(applet->wired_icon, "nm-device-wired");
 	ICON_LOAD(applet->adhoc_icon, "nm-adhoc");
+	ICON_LOAD(applet->umts_icon, "nm-adhoc"); /* FIXME: Until there's no UMTS device icon */
 	ICON_LOAD(applet->vpn_lock_icon, "nm-vpn-lock");
 
 	ICON_LOAD(applet->wireless_00_icon, "nm-signal-00");

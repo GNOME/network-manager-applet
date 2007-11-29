@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+
 /* menu-info.c - Class to represent the 
  *
  * Jonathan Blandford <jrb@redhat.com>
@@ -348,3 +350,40 @@ nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 	item->dupes = g_slist_prepend (item->dupes, g_strdup (path));
 }
 
+/****************************************************************
+ *   UMTS menu item
+ ****************************************************************/
+
+GtkMenuItem *
+umts_menu_item_new (NMUmtsDevice *self,
+				gint n_devices)
+{
+	NMDevice *dev = NM_DEVICE (self);
+	char *text;
+	GtkCheckMenuItem *item;
+
+	g_return_val_if_fail (NM_IS_UMTS_DEVICE (self), NULL);
+
+	if (n_devices > 1) {
+		const char *desc;
+		char *dev_name = NULL;
+
+		desc = utils_get_device_description (dev);
+		if (desc)
+			dev_name = g_strdup (desc);
+		if (!dev_name)
+			dev_name = nm_device_get_iface (dev);
+		g_assert (dev_name);
+		text = g_strdup_printf (_("GSM Modem (%s)"), dev_name);
+		g_free (dev_name);
+	} else
+		text = g_strdup (_("_GSM Modem"));
+
+	item = GTK_CHECK_MENU_ITEM (gtk_check_menu_item_new_with_mnemonic (text));
+	g_free (text);
+
+	gtk_check_menu_item_set_draw_as_radio (item, TRUE);
+	gtk_check_menu_item_set_active (item, nm_device_get_state (dev) == NM_DEVICE_STATE_ACTIVATED);
+
+	return GTK_MENU_ITEM (item);
+}
