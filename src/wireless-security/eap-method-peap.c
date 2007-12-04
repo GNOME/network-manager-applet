@@ -111,6 +111,7 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
+	EAPMethodPEAP *method = (EAPMethodPEAP *) parent;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GtkWidget *widget;
 	const char *text;
@@ -149,6 +150,11 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	} else {
 		g_object_set_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG, NULL);
 	}
+
+	if (method->ignore_ca_cert)
+		g_object_set_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG, GUINT_TO_POINTER (TRUE));
+	else
+		g_object_set_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG, NULL);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_version_combo");
 	int_version = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
