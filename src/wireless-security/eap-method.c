@@ -21,6 +21,7 @@
 
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include <sys/types.h>
@@ -295,6 +296,7 @@ eap_method_default_file_chooser_filter_new (void)
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_add_custom (filter, GTK_FILE_FILTER_FILENAME, default_filter, NULL, NULL);
+	gtk_file_filter_set_name (filter, _("DER or PEM certificates (*.der, *.pem)"));
 	return filter;
 }
 
