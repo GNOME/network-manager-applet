@@ -57,7 +57,7 @@ crypto_md5_hash (const char *salt,
 {
 	PK11Context *ctx;
 	int nkey = buflen;
-	gsize digest_len;
+	unsigned int digest_len;
 	int count = 0;
 	char digest[MD5_HASH_LEN];
 	char *p = buffer;
@@ -113,7 +113,7 @@ crypto_decrypt (const char *cipher,
 {
 	char *output = NULL;
 	int tmp1_len = 0;
-	gsize tmp2_len = 0;
+	unsigned int tmp2_len = 0;
 	CK_MECHANISM_TYPE cipher_mech;
 	PK11SlotInfo *slot = NULL;
 	SECItem key_item;
