@@ -1368,6 +1368,9 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 			nm_warning ("Couldn't create other network connection.");
 			goto done;
 		}
+	} else {
+		/* Save the updated settings to GConf */
+		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (exported_con));
 	}
 
 	con_path = nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
@@ -3205,7 +3208,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	const char *setting_name;
 	NMSetting *setting;
 	GError *error = NULL;
-	GtkWidget *nag_dialog;
+	gboolean ignored;
 
 	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
 	setting_name = g_object_get_data (G_OBJECT (dialog), "setting-name");
@@ -3223,13 +3226,21 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		goto done;
 	}
 
-	nag_dialog = nma_wireless_dialog_nag_user (GTK_WIDGET (dialog));
-	if (nag_dialog) {
-		gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
-		g_signal_connect (nag_dialog, "response",
-		                  G_CALLBACK (nag_dialog_response_cb),
-		                  dialog);
-		return;
+	ignored = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (dialog), NAG_IGNORED_TAG));
+	if (!ignored) {
+		GtkWidget *widget;
+
+		/* Nag the user about certificates or whatever.  Only destroy the dialog
+		 * if no nagging was done.
+		 */
+		widget = nma_wireless_dialog_nag_user (GTK_WIDGET (dialog));
+		if (widget) {
+			gtk_window_set_transient_for (GTK_WINDOW (widget), GTK_WINDOW (dialog));
+			g_signal_connect (widget, "response",
+			                  G_CALLBACK (nag_dialog_response_cb),
+			                  dialog);
+			return;
+		}
 	}
 
 	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device, NULL);
