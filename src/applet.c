@@ -54,6 +54,7 @@
 #include <nm-setting-umts.h>
 #include <nm-setting-ppp.h>
 #include <nm-setting-vpn.h>
+#include <nm-setting-vpn-properties.h>
 
 #include <glade/glade.h>
 #include <gconf/gconf-client.h>
@@ -1799,12 +1800,21 @@ get_vpn_connections (NMApplet *applet)
 
 	for (iter = all_connections; iter; iter = iter->next) {
 		AppletDbusConnectionSettings *applet_settings = (AppletDbusConnectionSettings *) iter->data;
-		NMSettingConnection *setting;
+		NMSettingConnection *s_con;
 
-		setting = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_settings->connection,
-														NM_TYPE_SETTING_CONNECTION));
-		if (!strcmp (setting->type, NM_SETTING_VPN_SETTING_NAME))
-			list = g_slist_prepend (list, applet_settings);
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_settings->connection,
+		                                                          NM_TYPE_SETTING_CONNECTION));
+		if (strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME))
+			/* Not a VPN connection */
+			continue;
+
+		if (!nm_connection_get_setting (applet_settings->connection, NM_TYPE_SETTING_VPN_PROPERTIES)) {
+			const char *name = NM_SETTING (s_con)->name;
+			g_warning ("%s: VPN connection '%s' didn't have requires vpn-properties setting.", __func__, name);
+			continue;
+		}
+
+		list = g_slist_prepend (list, applet_settings);
 	}
 
 	return g_slist_sort (list, sort_vpn_connections);
