@@ -453,6 +453,11 @@ fixup_nm_connection_vpn (NMConnection *connection,
 		g_free (s_vpn->service_type);
 	s_vpn->service_type = g_strdup (svc_name);
 
+	if (!nm_connection_verify (connection)) {
+		g_warning ("%s: connection returned from plugin was invalid!", __func__);
+		return FALSE;
+	}
+
 	return TRUE;
 }
 
