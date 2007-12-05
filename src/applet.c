@@ -279,11 +279,12 @@ static void nma_show_info_cb (GtkMenuItem *mi, NMApplet *applet)
 
 	info_dialog = glade_xml_get_widget (applet->info_dialog_xml, "info_dialog");
 
-	if (nma_update_info (applet))
-	{
-		gtk_window_present (GTK_WINDOW (info_dialog));
-		g_signal_connect_swapped (info_dialog, "response", G_CALLBACK (gtk_widget_hide), info_dialog);
-	}
+	if (!nma_update_info (applet))
+		return;
+
+	g_signal_connect(info_dialog, "delete-event", gtk_widget_hide_on_delete, info_dialog);
+	g_signal_connect_swapped (info_dialog, "response", G_CALLBACK (gtk_widget_hide), info_dialog);
+	gtk_window_present (GTK_WINDOW (info_dialog));
 }
 
 static void about_dialog_activate_link_cb (GtkAboutDialog *about,
