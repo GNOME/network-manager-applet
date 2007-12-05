@@ -469,8 +469,16 @@ vpn_druid_vpn_confirm_page_finish (void *druidpage,
 	NetworkManagerVpnUI *vpn_ui;
 	NMConnection *connection;
 	gboolean error = TRUE;
+	NMSetting *s_vpn_props;
 
 	connection = new_nm_connection_vpn ();
+
+	/* Ensure that the connection has a vpn-properties item */
+	s_vpn_props = nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN_PROPERTIES);
+	if (!s_vpn_props) {
+		s_vpn_props = nm_setting_vpn_properties_new ();
+		nm_connection_add_setting (connection, s_vpn_props);
+	}
 
 	vpn_ui = (NetworkManagerVpnUI *) g_slist_nth_data (vpn_types, gtk_combo_box_get_active (vpn_type_combo_box));
 	vpn_ui->fill_connection (vpn_ui, connection);
@@ -598,6 +606,7 @@ edit_cb (GtkButton *button, gpointer user_data)
 	GtkTreeIter iter;
 	GtkTreeSelection *selection;
 	char *cur_id = NULL;
+	NMSetting *s_vpn_props;
 
 	if ((selection = gtk_tree_view_get_selection (vpn_conn_view)) == NULL)
 		return;
@@ -636,6 +645,14 @@ edit_cb (GtkButton *button, gpointer user_data)
 
 	/* show appropriate child */
 	clear_vpn_details_widget ();
+
+	/* Ensure that the connection has a vpn-properties item */
+	s_vpn_props = nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN_PROPERTIES);
+	if (!s_vpn_props) {
+		s_vpn_props = nm_setting_vpn_properties_new ();
+		nm_connection_add_setting (connection, s_vpn_props);
+	}
+
 	vpn_details_widget = vpn_ui->get_widget (vpn_ui, connection);
 	vpn_ui->set_validity_changed_callback (vpn_ui,
 	                                       vpn_edit_vpn_validity_changed,
