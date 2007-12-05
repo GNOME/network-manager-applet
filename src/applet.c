@@ -1109,12 +1109,22 @@ get_connection_id (AppletDbusConnectionSettings *settings)
 static void
 add_one_vpn_connection (NMApplet *applet, NMVPNConnection *connection)
 {
+	const char *name;
+
+	/* If the connection didn't have a name, it failed or something.
+	 * Should probably have better behavior here; the applet shouldn't depend
+	 * on the name itself to match the internal VPN Connection from GConf to
+	 * the VPN connection exported by NM.
+	 */
+	name = nm_vpn_connection_get_name (connection);
+	g_return_if_fail (name != NULL);
+
 	g_signal_connect (connection, "state-changed",
 	                  G_CALLBACK (vpn_connection_state_changed),
 	                  applet);
 
 	g_hash_table_insert (applet->vpn_connections,
-	                     g_strdup (nm_vpn_connection_get_name (connection)),
+	                     g_strdup (name),
 	                     connection);
 }
 
@@ -1134,6 +1144,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 
 	connection = (NMVPNConnection *) g_hash_table_lookup (applet->vpn_connections, connection_name);
 	if (connection)
+		/* Connection already active; do nothing */
 		return;
 
 	/* Connection inactive, activate */

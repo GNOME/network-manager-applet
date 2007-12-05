@@ -1,5 +1,14 @@
 2007-12-05  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+		- (add_one_vpn_connection): don't crash on connections that are actually
+			invalid but that the applet shows anyway.  Still need a better way
+			to fix this.
+		- (nma_menu_vpn_item_clicked): clarify action when the selected VPN
+			connection is already active
+
+2007-12-05  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-dbus-settings.c
 		- (applet_dbus_connection_settings_changed): fix logic decision on
 			connection comparison; replace settings rather than replacing the
