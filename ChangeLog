@@ -1,5 +1,12 @@
 2007-12-05  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet-dbus-settings.c
+		- (applet_dbus_connection_settings_changed): fix logic decision on
+			connection comparison; replace settings rather than replacing the
+			whole connection itself
+
+2007-12-05  Dan Williams  <dcbw@redhat.com>
+
 	* src/vpn-properties/nm-vpn-properties.c
 		- (fixup_nm_connection_vpn): ensure the resulting NMConnection is valid
 			before trying to use it

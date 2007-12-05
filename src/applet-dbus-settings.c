@@ -527,15 +527,22 @@ applet_dbus_connection_settings_changed (AppletDbusConnectionSettings *applet_co
 	utils_clear_filled_connection_certs (connection);
 
 	/* Ignore the GConf update if nothing changed */
-	if (nm_connection_compare (applet_connection->connection, connection) == FALSE)
+	if (nm_connection_compare (applet_connection->connection, connection))
 		return TRUE;
 
-	if (applet_connection->connection)
-		g_object_unref (applet_connection->connection);
-	applet_connection->connection = connection;
+	if (applet_connection->connection) {
+		GHashTable *new_settings;
+
+		new_settings = nm_connection_to_hash (connection);
+		nm_connection_replace_settings (applet_connection->connection, new_settings);
+		g_object_unref (connection);
+	} else
+		applet_connection->connection = connection;
+
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (applet_connection->connection,
 												   NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
 	g_free (applet_connection->id);
 	applet_connection->id = g_strdup (s_con->id);
 
