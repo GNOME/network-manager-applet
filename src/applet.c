@@ -3291,7 +3291,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 
 	if (!setting_hash) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
-		             "%s.%d (%s): failed to has setting '%s'.",
+		             "%s.%d (%s): failed to hash setting '%s'.",
 		             __FILE__, __LINE__, __func__, setting_name);
 		goto done;
 	}
