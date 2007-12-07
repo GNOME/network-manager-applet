@@ -68,6 +68,7 @@ static GtkWidget *vpn_delete;
 #if GTK_CHECK_VERSION(2, 10, 0)
 static GtkWidget *assistant;
 static GtkWidget *assistant_start_page, *assistant_confirm_page;
+static GtkWidget *assistant_confirm_label;
 static GtkWidget *assistant_conn_type_page, *assistant_details_page;
 #else
 static GtkDialog *druid_window;
@@ -371,7 +372,7 @@ vpn_druid_vpn_confirm_page_prepare (void *druidpage,
 		vpn_ui->get_confirmation_details (vpn_ui, &confirm_text);
 		
 #if GTK_CHECK_VERSION(2, 10, 0)
-		gtk_label_set_text ( GTK_LABEL (assistant_confirm_page), confirm_text);
+		gtk_label_set_text ( GTK_LABEL (assistant_confirm_label), confirm_text);
 #else
 		gnome_druid_page_edge_set_text (druid_confirm_page,
 						confirm_text);
@@ -951,7 +952,7 @@ load_vpn_types (void)
 static gboolean
 init_app (void)
 {
-	GtkWidget *w;
+	GtkWidget *w, *label, *conn_type_label;
 	gchar *glade_file;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
@@ -960,7 +961,6 @@ init_app (void)
     gchar *msg1, *msg2, *msg;
     gchar *firstpage, *head, *secondpage;
     GdkPixbuf *pixbuf;
-    GtkWidget * conn_type_label;
 
 	if (!vpn_get_clipboard ())
 		return FALSE;
@@ -1080,8 +1080,14 @@ init_app (void)
     gtk_signal_connect_after (GTK_OBJECT (assistant), "close", GTK_SIGNAL_FUNC (vpn_druid_vpn_confirm_page_finish), NULL);
     gtk_signal_connect_after (GTK_OBJECT (assistant), "prepare", GTK_SIGNAL_FUNC (assistant_page_prepare), NULL);
 
-    assistant_start_page = gtk_label_new (msg);
-    gtk_label_set_line_wrap (GTK_LABEL (assistant_start_page), TRUE);
+    assistant_start_page = gtk_vbox_new (FALSE, 6);
+    gtk_container_set_border_width (GTK_CONTAINER (assistant_start_page), 12);
+    label = gtk_label_new (msg);
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+    gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+    gtk_box_pack_start (GTK_BOX (assistant_start_page), label, FALSE, FALSE, 0);
+    gtk_widget_show (label);
+
     gtk_assistant_append_page (GTK_ASSISTANT (assistant), assistant_start_page);
     gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), assistant_start_page, GTK_ASSISTANT_PAGE_INTRO);
     gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), assistant_start_page, _("Create VPN connection"));
@@ -1112,12 +1118,17 @@ init_app (void)
     head = g_strdup_printf("%s%s", msg, firstpage);
     
 #if GTK_CHECK_VERSION(2, 10, 0)
-    conn_type_label = gtk_label_new( _("Choose which type of VPN connection you wish to create:"));
+    assistant_conn_type_page = gtk_vbox_new (FALSE, 6);
+    gtk_container_set_border_width (GTK_CONTAINER (assistant_conn_type_page), 12);
 
-    assistant_conn_type_page = gtk_vbox_new (12, FALSE);
+    conn_type_label = gtk_label_new_with_mnemonic (_("Choose which type of _VPN connection you wish to create:"));
+    gtk_misc_set_alignment (GTK_MISC (conn_type_label), 0.0, 0.5);
+    gtk_box_pack_start (GTK_BOX (assistant_conn_type_page), conn_type_label, FALSE, FALSE, 0);
+    gtk_widget_show (conn_type_label);
 
-    gtk_box_pack_start (GTK_BOX (assistant_conn_type_page), conn_type_label, TRUE, FALSE, 0);
-    gtk_box_pack_end (GTK_BOX (assistant_conn_type_page), GTK_WIDGET (vpn_type_combo_box), FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (assistant_conn_type_page), GTK_WIDGET (vpn_type_combo_box), FALSE, FALSE, 0);
+    gtk_widget_show (GTK_WIDGET (vpn_type_combo_box));
+    gtk_label_set_mnemonic_widget (GTK_LABEL (conn_type_label), GTK_WIDGET (vpn_type_combo_box));
 
     gtk_assistant_append_page (GTK_ASSISTANT (assistant), assistant_conn_type_page);
     gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), assistant_conn_type_page, head);
@@ -1143,6 +1154,7 @@ init_app (void)
 
 #if GTK_CHECK_VERSION(2, 10, 0)
     assistant_details_page = gtk_vbox_new (12, FALSE);
+    gtk_container_set_border_width (GTK_CONTAINER (assistant_details_page), 12);
 
     gtk_assistant_append_page (GTK_ASSISTANT (assistant), assistant_details_page);
     gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), assistant_details_page, head);
@@ -1163,7 +1175,15 @@ init_app (void)
     g_free (msg);
 
 #if GTK_CHECK_VERSION(2, 10, 0)
-    assistant_confirm_page = gtk_label_new (NULL);
+    assistant_confirm_page = gtk_vbox_new (FALSE, 6);
+    gtk_container_set_border_width (GTK_CONTAINER (assistant_confirm_page), 12);
+
+    assistant_confirm_label = gtk_label_new (NULL);
+    gtk_misc_set_alignment (GTK_MISC (assistant_confirm_label), 0.0, 0.0);
+    gtk_label_set_line_wrap (GTK_LABEL (assistant_confirm_label), TRUE);
+    gtk_box_pack_start (GTK_BOX (assistant_confirm_page), assistant_confirm_label, FALSE, FALSE, 0);
+    gtk_widget_show (assistant_confirm_label);
+
     gtk_assistant_append_page (GTK_ASSISTANT (assistant), assistant_confirm_page);
 
     gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), assistant_confirm_page, GTK_ASSISTANT_PAGE_CONFIRM);
