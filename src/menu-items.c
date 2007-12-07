@@ -214,8 +214,10 @@ nm_network_menu_item_class_dispose (GObject *object)
 {
 	NMNetworkMenuItem * item = NM_NETWORK_MENU_ITEM (object);
 
-	if (item->destroyed)
+	if (item->destroyed) {
+		G_OBJECT_CLASS (nm_network_menu_item_parent_class)->dispose (object);
 		return;
+	}
 
 	gtk_widget_destroy (item->ssid);
 	gtk_widget_destroy (item->strength);
