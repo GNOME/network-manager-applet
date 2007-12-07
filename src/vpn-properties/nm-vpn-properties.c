@@ -1225,6 +1225,7 @@ main (int argc, char *argv[])
 	gchar *import_svc = NULL;
 	gchar *import_file = NULL;
 	GError *error = NULL;
+	gboolean retval;
 	GOptionEntry entries[] =  {
 		{ "import-service", 's', 0, G_OPTION_ARG_STRING, &import_svc, N_("VPN Service for importing"), NULL},
 		{ "import-file", 'f', 0, G_OPTION_ARG_FILENAME, &import_file, N_("File to import"), NULL},
@@ -1241,10 +1242,14 @@ main (int argc, char *argv[])
 	g_option_context_set_translation_domain(context, GETTEXT_PACKAGE);
 
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
-	g_option_context_parse (context, &argc, &argv, &error);
+	retval = g_option_context_parse (context, &argc, &argv, &error);
 	g_option_context_free (context);
-
-	gtk_init(&argc, &argv);
+	if (!retval) {
+		g_print ("%s\n", error->message);
+		g_error_free (error);
+		ret = EXIT_FAILURE;
+		goto out;
+	}
 
 	/* Hack to init the dbus-glib type system */
 	ignore = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
