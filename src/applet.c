@@ -130,7 +130,7 @@ static void nma_init (NMApplet *applet)
 {
 	applet->animation_id = 0;
 	applet->animation_step = 0;
-	glade_gnome_init ();
+	glade_init ();
 
 	if (!nma_icons_init (applet))
 		return;
