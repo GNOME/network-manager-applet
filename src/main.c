@@ -26,8 +26,8 @@
 #endif
 
 #include <string.h>
+#include <stdlib.h>
 #include <gtk/gtk.h>
-#include <libgnomeui/libgnomeui.h>
 #include <glib/gi18n-lib.h>
 
 #include "applet.h"
@@ -36,14 +36,10 @@
 int main (int argc, char *argv[])
 {
 	NMApplet * applet;
-	GnomeProgram * program;
-
-	program = gnome_program_init ("nm-applet", VERSION, LIBGNOMEUI_MODULE,
-				      argc, argv, 
-				      GNOME_PARAM_NONE, GNOME_PARAM_NONE);
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	gtk_init (&argc, &argv);
 	textdomain (GETTEXT_PACKAGE);
 
 	applet = nm_applet_new ();
@@ -53,7 +49,6 @@ int main (int argc, char *argv[])
 	gtk_main ();
 
 	g_object_unref (applet);
-	g_object_unref (program);
 
 	exit (0);
 }

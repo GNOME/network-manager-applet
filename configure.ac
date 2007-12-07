@@ -66,8 +66,7 @@ PKG_CHECK_MODULES(NMA,
 		 gtk+-2.0 >= 2.6
 		 libglade-2.0
 		 gconf-2.0
-		 gnome-keyring-1
-		 libgnomeui-2.0])
+		 gnome-keyring-1])
 
 ##### Find out the version of DBUS we're using
 dbus_version=`pkg-config --modversion dbus-1`
@@ -114,6 +113,8 @@ PKG_CHECK_EXISTS([gtk+-2.0 >= 2.10],[have_gtk_2_10=yes LIBNOTIFY_REQUIRED=0.4.3]
 if test x"$have_gtk_2_10" != xno; then
 	AC_DEFINE_UNQUOTED([HAVE_STATUS_ICON], [1],
 		[Use GtkStatusIcon for the applet's icon rather than an EggTrayIcon])
+else
+	PKG_CHECK_MODULES([LIBGNOMEUI], [libgnomeui-2.0])
 fi
 
 if test x"$enable_notify" != xno; then

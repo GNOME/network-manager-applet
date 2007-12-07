@@ -30,6 +30,11 @@ nm_vpn_properties_LDADD = \
 	$(NMA_LIBS) \
 	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
 
+if !HAVE_GTK_2_10
+nm_vpn_properties_LDADD += $(LIBGNOMEUI_LIBS)
+nm_vpn_properties_CFLAGS += $(LIBGNOMEUI_CFLAGS)
+endif
+
 CLEANFILES = $(server_DATA) *.bak *.gladep *~
 
 EXTRA_DIST = $(glade_DATA)
