@@ -24,24 +24,32 @@
 #include <gtk/gtkhbox.h>
 #include "byte-array-editor.h"
 
+static gboolean
+mnemonic_activate_cb (GtkWidget *hbox,
+                      gboolean cycling,
+                      GtkWidget *first_entry)
+{
+  gtk_widget_grab_focus (first_entry);
+  return TRUE;
+}
+
 GtkWidget *
 create_byte_array_editor (void)
 {
-     GtkWidget *box;
+     GtkWidget *box, *entry, *entries[6];
      guint i;
 
-     box = gtk_hbox_new (TRUE, 0);
+     box = gtk_hbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (box), 0);
      for (i = 0; i < 6; i++) {
-		GtkWidget *entry;
-
-		entry = gtk_entry_new ();
+		entries[i] = entry = gtk_entry_new ();
 		gtk_entry_set_max_length (GTK_ENTRY (entry), 2);
 		gtk_entry_set_width_chars (GTK_ENTRY (entry), 2);
-		gtk_box_pack_start (GTK_BOX (box), entry, FALSE, FALSE, 1);
+		gtk_box_pack_start (GTK_BOX (box), entry, FALSE, FALSE, 0);
      }
 
 	gtk_widget_show_all (box);
+        g_signal_connect (box, "mnemonic-activate", G_CALLBACK (mnemonic_activate_cb), entries[0]);
 
      return box;
 }
