@@ -31,7 +31,7 @@
 
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
-#include <nm-umts-device.h>
+#include <nm-gsm-device.h>
 
 GtkMenuItem *wired_menu_item_new (NMDevice8023Ethernet *device,
 								  gint n_devices);
@@ -94,7 +94,7 @@ gboolean   nm_network_menu_item_find_dupe (NMNetworkMenuItem *item,
 void       nm_network_menu_item_add_dupe (NMNetworkMenuItem *item,
                                           NMAccessPoint *ap);
 
-GtkMenuItem *umts_menu_item_new (NMUmtsDevice *self,
-						   gint n_devices);
+GtkMenuItem *gsm_menu_item_new (NMGsmDevice *self,
+						  gint n_devices);
 
 #endif /* MENU_INFO_H */

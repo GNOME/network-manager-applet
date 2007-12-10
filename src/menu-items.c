@@ -353,18 +353,18 @@ nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 }
 
 /****************************************************************
- *   UMTS menu item
+ *   GSM menu item
  ****************************************************************/
 
 GtkMenuItem *
-umts_menu_item_new (NMUmtsDevice *self,
-				gint n_devices)
+gsm_menu_item_new (NMGsmDevice *self,
+			    gint n_devices)
 {
 	NMDevice *dev = NM_DEVICE (self);
 	char *text;
 	GtkCheckMenuItem *item;
 
-	g_return_val_if_fail (NM_IS_UMTS_DEVICE (self), NULL);
+	g_return_val_if_fail (NM_IS_GSM_DEVICE (self), NULL);
 
 	if (n_devices > 1) {
 		const char *desc;
