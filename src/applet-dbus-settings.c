@@ -37,6 +37,10 @@
 #include "crypto.h"
 #include "utils.h"
 
+#define DBUS_TYPE_G_ARRAY_OF_OBJECT_PATH (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH))
+#define DBUS_TYPE_G_STRING_VARIANT_HASHTABLE (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
+#define DBUS_TYPE_G_DICT_OF_DICTS (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, DBUS_TYPE_G_STRING_VARIANT_HASHTABLE))
+
 static NMConnectionSettings * applet_dbus_connection_settings_new_from_connection (GConfClient *conf_client,
                                                                                    const gchar *conf_dir,
                                                                                    NMConnection *connection);
@@ -71,11 +75,284 @@ static GPtrArray *list_connections (NMSettings *settings);
 
 G_DEFINE_TYPE (AppletDbusSettings, applet_dbus_settings, NM_TYPE_SETTINGS)
 
+#define APPLET_CONNECTION_PROXY_TAG "dbus-proxy"
+
+typedef struct GetSettingsInfo {
+	AppletDbusSettings *applet_settings;
+	NMConnection *connection;
+	DBusGProxy *proxy;
+	DBusGProxyCall *call;
+} GetSettingsInfo;
+
+static void
+free_get_settings_info (gpointer data)
+{
+	GetSettingsInfo *info = (GetSettingsInfo *) data;
+
+	if (info->applet_settings) {
+		g_object_unref (info->applet_settings);
+		info->applet_settings = NULL;
+	}
+	if (info->connection) {
+		g_object_unref (info->connection);
+		info->connection = NULL;
+	}
+	g_slice_free (GetSettingsInfo, data);	
+}
+
+static void
+connection_get_settings_cb  (DBusGProxy *proxy,
+                             DBusGProxyCall *call_id,
+                             gpointer user_data)
+{
+	GetSettingsInfo *info = (GetSettingsInfo *) user_data;
+	GError *err = NULL;
+	GHashTable *settings = NULL;
+	NMConnection *connection;
+	AppletDbusSettings *applet_settings;
+
+	g_return_if_fail (info != NULL);
+
+	if (!dbus_g_proxy_end_call (proxy, call_id, &err,
+	                            DBUS_TYPE_G_DICT_OF_DICTS, &settings,
+	                            G_TYPE_INVALID)) {
+		nm_warning ("Couldn't retrieve connection settings: %s.", err->message);
+		g_error_free (err);
+		goto out;
+	}
+
+	applet_settings = info->applet_settings;
+	connection = info->connection;
+ 	if (connection == NULL) {
+		const char *path = dbus_g_proxy_get_path (proxy);
+
+		connection = nm_connection_new_from_hash (settings);
+		if (connection == NULL)
+			goto out;
+
+		g_object_set_data_full (G_OBJECT (connection),
+		                        APPLET_CONNECTION_PROXY_TAG,
+		                        proxy,
+		                        (GDestroyNotify) g_object_unref);
+		g_hash_table_insert (applet_settings->system_connections,
+		                     g_strdup (path),
+		                     connection);
+	} else {
+		// FIXME: merge settings? or just replace?
+		nm_warning ("%s (#%d): implement merge settings", __func__, __LINE__);
+	}
+
+out:
+	if (settings)
+		g_hash_table_destroy (settings);
+
+	return;
+}
+
+static void
+connection_removed_cb (DBusGProxy *proxy, gpointer user_data)
+{
+	AppletDbusSettings *applet_settings = APPLET_DBUS_SETTINGS (user_data);
+
+	g_hash_table_remove (applet_settings->system_connections,
+	                     dbus_g_proxy_get_path (proxy));
+}
+
+static void
+connection_updated_cb (DBusGProxy *proxy, GHashTable *settings, gpointer user_data)
+{
+	AppletDbusSettings *applet_settings = APPLET_DBUS_SETTINGS (user_data);
+	NMConnection *new_connection;
+	NMConnection *old_connection;
+	const char *path = dbus_g_proxy_get_path (proxy);
+	gboolean valid = FALSE;
+
+	old_connection = g_hash_table_lookup (applet_settings->system_connections, path);
+	if (!old_connection)
+		return;
+
+	new_connection = nm_connection_new_from_hash (settings);
+	if (!new_connection) {
+		/* New connection invalid, remove existing connection */
+		g_hash_table_remove (applet_settings->system_connections, path);
+		return;
+	}
+	g_object_unref (new_connection);
+
+	valid = nm_connection_replace_settings (old_connection, settings);
+	if (!valid)
+		g_hash_table_remove (applet_settings->system_connections, path);
+}
+
+static void
+new_connection_cb (DBusGProxy *proxy,
+                   const char *path,
+                   AppletDbusSettings *applet_settings)
+{
+	struct GetSettingsInfo *info;
+	DBusGProxy *con_proxy;
+	AppletDBusManager *dbus_mgr;
+	DBusGConnection *g_connection;
+	DBusGProxyCall *call;
+
+	dbus_mgr = applet_dbus_manager_get ();
+	g_connection = applet_dbus_manager_get_connection (dbus_mgr);
+	con_proxy = dbus_g_proxy_new_for_name (g_connection,
+	                                       dbus_g_proxy_get_bus_name (proxy),
+	                                       path,
+	                                       NM_DBUS_IFACE_SETTINGS_CONNECTION);
+	if (!con_proxy) {
+		nm_warning ("Error: could not init user connection proxy");
+		g_object_unref (dbus_mgr);
+		return;
+	}
+
+	dbus_g_proxy_add_signal (con_proxy, "Updated",
+	                         DBUS_TYPE_G_DICT_OF_DICTS,
+	                         G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (con_proxy, "Updated",
+	                             G_CALLBACK (connection_updated_cb),
+	                             applet_settings,
+	                             NULL);
+
+	dbus_g_proxy_add_signal (con_proxy, "Removed", G_TYPE_INVALID, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (con_proxy, "Removed",
+	                             G_CALLBACK (connection_removed_cb),
+	                             applet_settings,
+	                             NULL);
+
+	info = g_slice_new0 (GetSettingsInfo);
+	info->applet_settings = g_object_ref (applet_settings);
+	call = dbus_g_proxy_begin_call (con_proxy, "GetSettings",
+	                                connection_get_settings_cb,
+	                                info,
+	                                free_get_settings_info,
+	                                G_TYPE_INVALID);
+	info->call = call;
+	info->proxy = con_proxy;
+}
+
+static void
+list_connections_cb  (DBusGProxy *proxy,
+                      DBusGProxyCall *call_id,
+                      gpointer user_data)
+{
+	AppletDbusSettings *applet_settings = APPLET_DBUS_SETTINGS (user_data);
+	GError *err = NULL;
+	GPtrArray *ops;
+	int i;
+
+	if (!dbus_g_proxy_end_call (proxy, call_id, &err,
+	                            DBUS_TYPE_G_ARRAY_OF_OBJECT_PATH, &ops,
+	                            G_TYPE_INVALID)) {
+		nm_warning ("Couldn't retrieve system connections: %s.", err->message);
+		g_error_free (err);
+		return;
+	}
+
+	for (i = 0; i < ops->len; i++)
+		new_connection_cb (proxy, g_ptr_array_index (ops, i), applet_settings);
+}
+
+static void
+query_system_connections (AppletDbusSettings *applet_settings)
+{
+	DBusGProxyCall *call;
+
+	g_return_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings));
+
+	if (!applet_settings->system_proxy) {
+		AppletDBusManager *dbus_mgr;
+		DBusGConnection *g_connection;
+		DBusGProxy *proxy;
+
+		dbus_mgr = applet_dbus_manager_get ();
+		g_connection = applet_dbus_manager_get_connection (dbus_mgr);
+		proxy = dbus_g_proxy_new_for_name (g_connection,
+		                                   NM_DBUS_SERVICE_SYSTEM_SETTINGS,
+		                                   NM_DBUS_PATH_SETTINGS,
+		                                   NM_DBUS_IFACE_SETTINGS);
+		g_object_unref (dbus_mgr);
+		if (!proxy) {
+			nm_warning ("Error: could not init system settings proxy");
+			return;
+		}
+
+		dbus_g_proxy_add_signal (proxy,
+		                         "NewConnection",
+		                         DBUS_TYPE_G_OBJECT_PATH,
+		                         G_TYPE_INVALID);
+
+		dbus_g_proxy_connect_signal (proxy, "NewConnection",
+		                             G_CALLBACK (new_connection_cb),
+		                             applet_settings,
+		                             NULL);
+		applet_settings->system_proxy = proxy;
+	}
+
+	/* grab connections */
+	call = dbus_g_proxy_begin_call (applet_settings->system_proxy, "ListConnections",
+	                                list_connections_cb,
+	                                applet_settings,
+	                                NULL,
+	                                G_TYPE_INVALID);
+}
+
+static void
+destroy_system_connections (AppletDbusSettings *applet_settings)
+{
+	g_return_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings));
+
+	g_hash_table_remove_all (applet_settings->system_connections);
+}
+
+static void
+applet_dbus_settings_name_owner_changed (AppletDBusManager *mgr,
+                                         const char *name,
+                                         const char *old,
+                                         const char *new,
+                                         gpointer user_data)
+{
+	AppletDbusSettings *applet_settings = APPLET_DBUS_SETTINGS (user_data);
+	gboolean old_owner_good = (old && (strlen (old) > 0));
+	gboolean new_owner_good = (new && (strlen (new) > 0));
+
+	if (strcmp (name, NM_DBUS_SERVICE_SYSTEM_SETTINGS) == 0) {
+		if (!old_owner_good && new_owner_good) {
+			/* System Settings service appeared, update stuff */
+			query_system_connections (applet_settings);
+		} else {
+			/* System Settings service disappeared, throw them away (?) */
+			destroy_system_connections (applet_settings);
+		}
+	}
+}
+
+static gboolean
+initial_get_connections (gpointer user_data)
+{
+	AppletDbusSettings *applet_settings = APPLET_DBUS_SETTINGS (user_data);
+	AppletDBusManager *dbus_mgr;
+
+	dbus_mgr = applet_dbus_manager_get ();
+	if (applet_dbus_manager_name_has_owner (dbus_mgr, NM_DBUS_SERVICE_SYSTEM_SETTINGS))
+		query_system_connections (applet_settings);
+	g_object_unref (dbus_mgr);
+
+	return FALSE;
+}
+
 static void
 applet_dbus_settings_init (AppletDbusSettings *applet_settings)
 {
+	AppletDBusManager *dbus_mgr;
+
 	applet_settings->conf_client = gconf_client_get_default ();
 	applet_settings->connections = NULL;
+	applet_settings->system_connections = g_hash_table_new_full (g_str_hash,
+	                                                             g_str_equal,
+	                                                             g_free,
+	                                                             g_object_unref);
 
 	gconf_client_add_dir (applet_settings->conf_client,
 	                      GCONF_PATH_CONNECTIONS,
@@ -88,6 +365,15 @@ applet_dbus_settings_init (AppletDbusSettings *applet_settings)
 		                         (GConfClientNotifyFunc) connections_changed_cb,
 		                         applet_settings,
 		                         NULL, NULL);
+
+	dbus_mgr = applet_dbus_manager_get ();
+	g_signal_connect (dbus_mgr,
+	                  "name-owner-changed",
+	                  G_CALLBACK (applet_dbus_settings_name_owner_changed),
+	                  APPLET_DBUS_SETTINGS (applet_settings));
+	g_object_unref (dbus_mgr);
+
+	g_idle_add ((GSourceFunc) initial_get_connections, applet_settings);
 }
 
 static void
@@ -110,6 +396,12 @@ applet_dbus_settings_finalize (GObject *object)
 	if (applet_settings->conf_client) {
 		g_object_unref (applet_settings->conf_client);
 		applet_settings->conf_client = NULL;
+	}
+
+	destroy_system_connections (applet_settings);
+	if (applet_settings->system_proxy) {
+		g_object_unref (applet_settings->system_proxy);
+		applet_settings->system_proxy = NULL;
 	}
 
 	G_OBJECT_CLASS (applet_dbus_settings_parent_class)->finalize (object);

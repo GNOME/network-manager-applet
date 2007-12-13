@@ -71,6 +71,10 @@ typedef struct {
 	GConfClient *conf_client;
 	guint conf_notify_id;
 	GSList *connections;
+
+	/* List of NMConnection objects */
+	GHashTable *system_connections;
+	DBusGProxy *system_proxy;
 } AppletDbusSettings;
 
 typedef struct {
