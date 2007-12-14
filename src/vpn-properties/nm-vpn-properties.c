@@ -849,6 +849,15 @@ vpn_list_cursor_changed_cb (GtkTreeView *treeview,
 	update_edit_del_sensitivity ();
 }
 
+static void
+vpn_list_row_activated_cb (GtkTreeView *treeview,
+                           GtkTreePath *path,
+                           GtkTreeViewColumn *column,
+                           gpointer user_data)
+{
+	edit_cb (NULL, NULL);
+}
+
 static NetworkManagerVpnUI *
 load_properties_module (const char *path)
 {
@@ -961,6 +970,7 @@ init_app (void)
     gchar *msg1, *msg2, *msg;
     gchar *firstpage, *head, *secondpage;
     GdkPixbuf *pixbuf;
+    GtkTreeIter tree_iter;
 
 	if (!vpn_get_clipboard ())
 		return FALSE;
@@ -1013,16 +1023,16 @@ init_app (void)
 			  G_CALLBACK (delete_event_cb), NULL);
 
 	w = glade_xml_get_widget (xml, "add");
-	gtk_signal_connect (GTK_OBJECT (w), "clicked", GTK_SIGNAL_FUNC (add_cb), NULL);
+	g_signal_connect (G_OBJECT (w), "clicked", GTK_SIGNAL_FUNC (add_cb), NULL);
 
 	vpn_edit = glade_xml_get_widget (xml, "edit");
-	gtk_signal_connect (GTK_OBJECT (vpn_edit), "clicked", GTK_SIGNAL_FUNC (edit_cb), NULL);
+	g_signal_connect (G_OBJECT (vpn_edit), "clicked", GTK_SIGNAL_FUNC (edit_cb), NULL);
 
 	vpn_export = glade_xml_get_widget (xml, "export");
-	gtk_signal_connect (GTK_OBJECT (vpn_export), "clicked", GTK_SIGNAL_FUNC (export_cb), NULL);
+	g_signal_connect (G_OBJECT (vpn_export), "clicked", GTK_SIGNAL_FUNC (export_cb), NULL);
 
 	vpn_delete = glade_xml_get_widget (xml, "delete");
-	gtk_signal_connect (GTK_OBJECT (vpn_delete), "clicked", GTK_SIGNAL_FUNC (delete_cb), NULL);
+	g_signal_connect (G_OBJECT (vpn_delete), "clicked", GTK_SIGNAL_FUNC (delete_cb), NULL);
 
 	vpn_conn_view = GTK_TREE_VIEW (glade_xml_get_widget (xml, "vpnlist"));
 	vpn_conn_list = gtk_list_store_new (VPNCONN_N_COLUMNS,
@@ -1039,8 +1049,11 @@ init_app (void)
 	                                      VPNCONN_NAME_COLUMN,
 	                                      GTK_SORT_ASCENDING);
 
-	gtk_signal_connect_after (GTK_OBJECT (vpn_conn_view), "cursor-changed",
+	g_signal_connect_after (G_OBJECT (vpn_conn_view), "cursor-changed",
 				  GTK_SIGNAL_FUNC (vpn_list_cursor_changed_cb), NULL);
+
+	g_signal_connect (G_OBJECT (vpn_conn_view), "row-activated",
+				  GTK_SIGNAL_FUNC (vpn_list_row_activated_cb), NULL);
 
 	get_all_vpn_connections ();
 
@@ -1054,6 +1067,12 @@ init_app (void)
 
 	gtk_tree_view_set_model (vpn_conn_view, GTK_TREE_MODEL (vpn_conn_list));
 	gtk_tree_view_expand_all (vpn_conn_view);
+
+	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (vpn_conn_list), &tree_iter)) {
+		GtkTreeSelection *selection = gtk_tree_view_get_selection (vpn_conn_view);
+
+		gtk_tree_selection_select_iter (selection, &tree_iter);
+	}
 
 	gtk_widget_show (dialog);
 
