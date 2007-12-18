@@ -327,9 +327,8 @@ nma_edit_connections_cb (GtkMenuItem *mi, NMApplet *applet)
 	g_object_unref (connection_list);
 }
 
-static void about_dialog_activate_link_cb (GtkAboutDialog *about,
-                                           const gchar *url,
-                                           gpointer data)
+static void 
+about_dialog_handle_url_cb (GtkAboutDialog *about, const gchar *url, gpointer data)
 {
 	GError *error = NULL;
 	gboolean ret;
@@ -361,7 +360,41 @@ static void about_dialog_activate_link_cb (GtkAboutDialog *about,
 
 }
 
-static void nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
+/* Make email in about dialog clickable */
+static void 
+about_dialog_handle_email_cb (GtkAboutDialog *about, const char *email_address, gpointer data)
+{
+	GError *error = NULL;
+	gboolean ret;
+	char *cmdline;
+	GdkScreen *gscreen;
+	GtkWidget *error_dialog;
+
+	gscreen = gdk_screen_get_default();
+
+	cmdline = g_strconcat ("gnome-open mailto:", email_address, NULL);
+	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
+	g_free (cmdline);
+
+	if (ret == TRUE)
+		return;
+
+	g_error_free (error);
+	error = NULL;
+
+	cmdline = g_strconcat ("xdg-open mailto:", email_address, NULL);
+	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
+	g_free (cmdline);
+	
+	if (ret == FALSE) {
+		error_dialog = gtk_message_dialog_new ( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "Failed to show url %s", error->message); 
+		gtk_dialog_run (GTK_DIALOG (error_dialog));
+		g_error_free (error);
+	}
+}
+
+static void 
+nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
 {
 	static const gchar *authors[] =
 	{
@@ -392,20 +425,19 @@ static void nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
 
 	/* FIXME: unnecessary with libgnomeui >= 2.16.0 */
 	static gboolean been_here = FALSE;
-	if (!been_here)
-	{
+	if (!been_here) {
 		been_here = TRUE;
-		gtk_about_dialog_set_url_hook (about_dialog_activate_link_cb, NULL, NULL);
+		gtk_about_dialog_set_url_hook (about_dialog_handle_url_cb, NULL, NULL);
+		gtk_about_dialog_set_email_hook (about_dialog_handle_email_cb, NULL, NULL);
 	}
 
-	/* GTK 2.6 and later code */
 	gtk_show_about_dialog (NULL,
-	                       "name", _("NetworkManager Applet"),
 	                       "version", VERSION,
 	                       "copyright", _("Copyright \xc2\xa9 2004-2007 Red Hat, Inc.\n"
 					                  "Copyright \xc2\xa9 2005-2007 Novell, Inc."),
 	                       "comments", _("Notification area applet for managing your network devices and connections."),
 	                       "website", "http://www.gnome.org/projects/NetworkManager/",
+	                       "website-label", _("NetworkManager Website"),
 	                       "authors", authors,
 	                       "artists", artists,
 	                       "translator-credits", _("translator-credits"),
@@ -3531,6 +3563,8 @@ nma_constructor (GType type,
 	if (!applet->tooltips)
 		goto error;
 #endif
+	g_set_application_name (_("NetworkManager Applet"));
+	gtk_window_set_default_icon_name (GTK_STOCK_NETWORK);
 
 	applet->glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
 	if (!applet->glade_file || !g_file_test (applet->glade_file, G_FILE_TEST_IS_REGULAR)) {
