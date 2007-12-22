@@ -336,7 +336,7 @@ about_dialog_handle_url_cb (GtkAboutDialog *about, const gchar *url, gpointer da
 	GdkScreen *gscreen;
 	GtkWidget *error_dialog;
 
-	gscreen = gdk_screen_get_default();
+	gscreen = gtk_window_get_screen (GTK_WINDOW (about));
 
 	cmdline = g_strconcat ("gnome-open ", url, NULL);
 	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
@@ -370,7 +370,7 @@ about_dialog_handle_email_cb (GtkAboutDialog *about, const char *email_address, 
 	GdkScreen *gscreen;
 	GtkWidget *error_dialog;
 
-	gscreen = gdk_screen_get_default();
+	gscreen = gtk_window_get_screen (GTK_WINDOW (about));
 
 	cmdline = g_strconcat ("gnome-open mailto:", email_address, NULL);
 	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
