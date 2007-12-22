@@ -46,6 +46,38 @@ dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
 	gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
+static int
+get_property_default (NMSetting *setting, const char *property_name)
+{
+	GParamSpec *spec;
+	GValue value = { 0, };
+
+	spec = g_object_class_find_property (G_OBJECT_GET_CLASS (setting), property_name);
+	g_return_val_if_fail (spec != NULL, -1);
+
+	g_value_init (&value, spec->value_type);
+	g_param_value_set_default (spec, &value);
+
+	if (G_VALUE_HOLDS_CHAR (&value))
+		return (int) g_value_get_char (&value);
+	else if (G_VALUE_HOLDS_INT (&value))
+		return g_value_get_int (&value);
+	else if (G_VALUE_HOLDS_INT64 (&value))
+		return (int) g_value_get_int64 (&value);
+	else if (G_VALUE_HOLDS_LONG (&value))
+		return (int) g_value_get_long (&value);
+	else if (G_VALUE_HOLDS_UINT (&value))
+		return (int) g_value_get_uint (&value);
+	else if (G_VALUE_HOLDS_UINT64 (&value))
+		return (int) g_value_get_uint64 (&value);
+	else if (G_VALUE_HOLDS_ULONG (&value))
+		return (int) g_value_get_ulong (&value);
+	else if (G_VALUE_HOLDS_UCHAR (&value))
+		return (int) g_value_get_uchar (&value);
+	g_return_val_if_fail (FALSE, 0);
+	return 0;
+}
+
 static inline GtkWidget *
 get_widget (NMConnectionEditor *editor, const char *name)
 {
@@ -418,12 +450,20 @@ static void
 add_wireless_page (NMConnectionEditor *editor)
 {
 	NMSettingWireless *s_wireless;
+	int band_idx = 0;
 	GtkWidget *mode;
 	GtkWidget *band;
 	GtkWidget *channel;
+	int channel_def;
 	GtkWidget *rate;
+	int rate_def;
 	GtkWidget *tx_power;
+	int tx_power_def;
 	GtkWidget *mtu;
+	int mtu_def;
+
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
+	g_return_if_fail (s_wireless != NULL);
 
 	add_page (editor, "WirelessPage", _("Wireless"));
 
@@ -431,70 +471,60 @@ add_wireless_page (NMConnectionEditor *editor)
 	band = get_widget (editor, "wireless_band");
 
 	channel = get_widget (editor, "wireless_channel");
+	channel_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_CHANNEL);
 	g_signal_connect (G_OBJECT (channel), "changed",
 	                  (GCallback) spin_value_changed_cb,
-	                  GINT_TO_POINTER (0));
+	                  GINT_TO_POINTER (channel_def));
 
 	rate = get_widget (editor, "wireless_rate");
+	rate_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_RATE);
 	g_signal_connect (G_OBJECT (rate), "changed",
 	                  (GCallback) spin_value_changed_cb,
-	                  GINT_TO_POINTER (0));
+	                  GINT_TO_POINTER (rate_def));
 
 	tx_power = get_widget (editor, "wireless_tx_power");
+	tx_power_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_TX_POWER);
 	g_signal_connect (G_OBJECT (tx_power), "changed",
 	                  (GCallback) spin_value_changed_cb,
-	                  GINT_TO_POINTER (0));
+	                  GINT_TO_POINTER (tx_power_def));
 
 	mtu = get_widget (editor, "wireless_mtu");
+	mtu_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_MTU);
 	g_signal_connect (G_OBJECT (mtu), "changed",
 	                  (GCallback) spin_value_changed_cb,
-	                  GINT_TO_POINTER (0));
+	                  GINT_TO_POINTER (mtu_def));
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
-	if (s_wireless) {
-		int band_idx = 0;
-		/* FIXME: SSID */
+	/* FIXME: SSID */
 
-		if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "infrastructure"))
-			gtk_combo_box_set_active (GTK_COMBO_BOX (mode), 0);
-		else if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "adhoc"))
-			gtk_combo_box_set_active (GTK_COMBO_BOX (mode), 1);
-		else
-			gtk_combo_box_set_active (GTK_COMBO_BOX (mode), -1);
-
-		if (s_wireless->band) {
-			if (!strcmp (s_wireless->band ? s_wireless->band : "", "a"))
-				band_idx = 1;
-			else if (!strcmp (s_wireless->band ? s_wireless->band : "", "bg"))
-				band_idx = 2;
-		}
-		gtk_combo_box_set_active (GTK_COMBO_BOX (band), band_idx);
-
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (channel), (gdouble) s_wireless->channel);
-		spin_value_changed_cb (GTK_SPIN_BUTTON (channel), GINT_TO_POINTER (0));
-
-		/* FIXME: BSSID */
-		/* FIXME: MAC address */
-
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (rate), (gdouble) s_wireless->rate);
-		spin_value_changed_cb (GTK_SPIN_BUTTON (rate), GINT_TO_POINTER (0));
-
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (tx_power), (gdouble) s_wireless->tx_power);
-		spin_value_changed_cb (GTK_SPIN_BUTTON (tx_power), GINT_TO_POINTER (0));
-
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wireless->mtu);
-		spin_value_changed_cb (GTK_SPIN_BUTTON (mtu), GINT_TO_POINTER (0));
-	} else {
-		/* FIXME: SSID */
+	if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "infrastructure"))
+		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), 0);
+	else if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "adhoc"))
+		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), 1);
+	else
 		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), -1);
-		gtk_combo_box_set_active (GTK_COMBO_BOX (band), -1);
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (channel), (gdouble) 0);
-		/* FIXME: BSSID */
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (rate), (gdouble) 0);
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (tx_power), (gdouble) 0);
-		/* FIXME: MAC address */
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) 0);
+
+	if (s_wireless->band) {
+		if (!strcmp (s_wireless->band ? s_wireless->band : "", "a"))
+			band_idx = 1;
+		else if (!strcmp (s_wireless->band ? s_wireless->band : "", "bg"))
+			band_idx = 2;
 	}
+	gtk_combo_box_set_active (GTK_COMBO_BOX (band), band_idx);
+
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (channel), (gdouble) s_wireless->channel);
+	spin_value_changed_cb (GTK_SPIN_BUTTON (channel), GINT_TO_POINTER (channel_def));
+
+	/* FIXME: BSSID */
+	/* FIXME: MAC address */
+
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (rate), (gdouble) s_wireless->rate);
+	spin_value_changed_cb (GTK_SPIN_BUTTON (rate), GINT_TO_POINTER (rate_def));
+
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (tx_power), (gdouble) s_wireless->tx_power);
+	spin_value_changed_cb (GTK_SPIN_BUTTON (tx_power), GINT_TO_POINTER (tx_power_def));
+
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wireless->mtu);
+	spin_value_changed_cb (GTK_SPIN_BUTTON (mtu), GINT_TO_POINTER (mtu_def));
 }
 
 static void
