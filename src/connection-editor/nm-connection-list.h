@@ -25,6 +25,7 @@
 
 #include <glib-object.h>
 #include <glade/glade-xml.h>
+#include <gconf/gconf-client.h>
 
 #define NM_TYPE_CONNECTION_LIST    (nm_connection_list_get_type ())
 #define NM_IS_CONNECTION_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_LIST))

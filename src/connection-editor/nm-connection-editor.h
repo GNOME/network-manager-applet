@@ -31,35 +31,13 @@
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))
 #define NM_CONNECTION_EDITOR(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_EDITOR, NMConnectionEditor))
 
-typedef enum {
-	NM_CONNECTION_EDITOR_PAGE_DEFAULT = 0,
-	NM_CONNECTION_EDITOR_PAGE_ETHERNET = 1 << 0,
-	NM_CONNECTION_EDITOR_PAGE_WIRELESS = 1 << 1,
-	NM_CONNECTION_EDITOR_PAGE_WIRELESS_SECURITY = 1 << 2
-} NMConnectionEditorPage;
-
 typedef struct {
 	GObject parent;
 
 	/* private data */
 	NMConnection *connection;
-	NMConnectionEditorPage pages;
-
 	GladeXML *gui;
 	GtkWidget *dialog;
-	GtkWidget *connection_name;
-	GtkWidget *connection_autoconnect;
-	GtkWidget *ethernet_port;
-	GtkWidget *ethernet_speed;
-	GtkWidget *ethernet_duplex;
-	GtkWidget *ethernet_autonegotiate;
-	GtkWidget *ethernet_mtu;
-	GtkWidget *wireless_mode;
-	GtkWidget *wireless_band;
-	GtkWidget *wireless_channel;
-	GtkWidget *wireless_rate;
-	GtkWidget *wireless_tx_power;
-	GtkWidget *wireless_mtu;
 } NMConnectionEditor;
 
 typedef struct {
@@ -67,7 +45,7 @@ typedef struct {
 } NMConnectionEditorClass;
 
 GType               nm_connection_editor_get_type (void);
-NMConnectionEditor *nm_connection_editor_new (NMConnection *connection, NMConnectionEditorPage pages);
+NMConnectionEditor *nm_connection_editor_new (NMConnection *connection);
 
 void                nm_connection_editor_show (NMConnectionEditor *editor);
 gint                nm_connection_editor_run_and_close (NMConnectionEditor *editor);

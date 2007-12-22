@@ -42,7 +42,7 @@ add_connection_cb (GtkButton *button, gpointer user_data)
 	NMConnectionEditor *editor;
 	NMConnection *connection = nm_connection_new ();
 
-	editor = nm_connection_editor_new (connection, NM_CONNECTION_EDITOR_PAGE_DEFAULT);
+	editor = nm_connection_editor_new (connection);
 	nm_connection_editor_run_and_close (editor);
 
 	g_object_unref (editor);
@@ -73,7 +73,7 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 		goto out;
 
 	gtk_tree_model_get (model, &iter, 1, &connection, -1);
-	editor = nm_connection_editor_new (connection, NM_CONNECTION_EDITOR_PAGE_DEFAULT);
+	editor = nm_connection_editor_new (connection);
 	nm_connection_editor_run_and_close (editor);
 	g_object_unref (editor);
 
@@ -255,7 +255,7 @@ nm_connection_list_show (NMConnectionList *list)
 {
 	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
 
-	gtk_widget_show (GTK_WIDGET (list));
+	gtk_widget_show (GTK_WIDGET (list->dialog));
 }
 
 gint
@@ -266,7 +266,7 @@ nm_connection_list_run_and_close (NMConnectionList *list)
 	g_return_val_if_fail (NM_IS_CONNECTION_LIST (list), GTK_RESPONSE_CANCEL);
 
 	result = gtk_dialog_run (GTK_DIALOG (list->dialog));
-	gtk_widget_hide (list->dialog);
+	gtk_widget_hide (GTK_WIDGET (list->dialog));
 
 	return result;
 }

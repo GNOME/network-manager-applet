@@ -21,26 +21,28 @@
  */
 
 #include <gtk/gtk.h>
+#include <dbus/dbus-glib.h>
 
-#include "nm-connection-editor.h"
+#include "nm-connection-list.h"
 
 int
 main (int argc, char *argv[])
 {
-	NMConnectionEditor *editor;
-	NMConnection *connection = NULL;
+	NMConnectionList *list;
+	DBusGConnection *ignore;
 
 	gtk_init (&argc, &argv);
 
 	/* parse arguments: an idea is to use gconf://$setting_name / system://$setting_name to
 	   allow this program to work with both GConf and system-wide settings */
 
-	editor = nm_connection_editor_new (connection, NM_CONNECTION_EDITOR_PAGE_DEFAULT);
-	nm_connection_editor_show (editor);
+	/* Hack to init the dbus-glib type system */
+	ignore = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
+	dbus_g_connection_unref (ignore);
 
-	gtk_main ();
-
-	/* save connection to GConf/system */
+	list = nm_connection_list_new ();
+	nm_connection_list_run_and_close (list);
+	g_object_unref (list);
 
 	return 0;
 }
