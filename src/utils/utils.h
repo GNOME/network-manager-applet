@@ -41,5 +41,9 @@ void utils_fill_connection_certs (NMConnection *connection);
 
 void utils_clear_filled_connection_certs (NMConnection *connection);
 
+guint32 utils_freq_to_channel (guint32 freq);
+guint32 utils_channel_to_freq (guint32 channel, char *band);
+guint32 utils_find_next_channel (guint32 channel, int direction, char *band);
+
 #endif /* UTILS_H */
 

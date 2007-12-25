@@ -1,3 +1,27 @@
+2007-12-24  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/Makefile.am
+		- Include utils for channel<->frequency conversion functions
+
+	* src/utils/utils.c
+	  src/utils/utils.h
+		- (utils_freq_to_channel, utils_channel_to_freq, utils_find_next_channel):
+			add channel<->frequency conversion and helper functions
+
+	* src/connection-editor/nm-connection-editor.glade
+		- Fix connection editor pages so they are editable in Glade
+
+	* src/connection-editor/nm-connection-editor.c
+	  src/connection-editor/nm-connection-editor.h
+		- Fix up page handling; the connection editor object, when calling
+			glade_xml_new(), must not allow Glade to parse and construct the
+			connection _list_ dialog box; otherwise when the connection editor
+			object gets destroyed it'll destroy the cached copy of the connection
+			list object too, resulting in badness.
+		- Make spinbuttons show 'default' when the value is the default value
+		- Make the Channel spinbutton snap to the correct next channel when
+			it's changed, and disable it when the Band option is 'default'
+
 2007-12-22  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/nm-connection-editor.c

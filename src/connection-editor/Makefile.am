@@ -12,6 +12,7 @@ nm_connection_editor_CPPFLAGS =			\
 	$(DBUS_CFLAGS)				\
 	$(DISABLE_DEPRECATED)			\
 	-I${top_srcdir}/src/gconf-helpers  \
+	-I${top_srcdir}/src/utils \
 	$(NULL)
 
 nm_connection_editor_SOURCES =	\
@@ -25,6 +26,7 @@ nm_connection_editor_SOURCES =	\
 
 nm_connection_editor_LDADD = \
 	$(top_builddir)/src/gconf-helpers/libgconf-helpers.la \
+	${top_builddir}/src/utils/libutils.la \
 	$(NMA_LIBS)
 
 gladedir = $(datadir)/nm-applet

@@ -37,6 +37,7 @@
 #include <nm-setting-vpn.h>
 
 #include "nm-connection-editor.h"
+#include "utils.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -78,14 +79,60 @@ get_property_default (NMSetting *setting, const char *property_name)
 	return 0;
 }
 
+#define WIRED_PAGE "WiredPage"
+#define WIRED_PREFIX "wired_"
+
+#define WIRELESS_PAGE "WirelessPage"
+#define WIRELESS_PREFIX "wireless_"
+
+#define IP4_PAGE "IP4Page"
+#define IP4_PREFIX "ip4_"
+
+#define IP4_ADDRESS_PAGE "IP4AddressPage"
+#define IP4_ADDRESS_PREFIX "ip4_address_"
+
+static inline gboolean
+match_domain (const char *prefix, const char *page, const char *name)
+{
+	if (!strncmp (name, prefix, strlen (prefix)))
+		return TRUE;
+	if (!strcmp (name, page))
+		return TRUE;
+	return FALSE;
+}
+
 static inline GtkWidget *
 get_widget (NMConnectionEditor *editor, const char *name)
 {
 	GtkWidget *widget;
+	GladeXML *xml;
+	char *domain = "NMConnectionEditor";
 
 	g_return_val_if_fail (editor != NULL, NULL);
 
-	widget = glade_xml_get_widget (editor->gui, name);
+	/* This is all to ensure that the glade_xml_new() never uses the
+	 * NULL domain, and therefore loads & caches the NMConnectionList
+	 * widget, because if that happens when the GladeXML is destroyed
+	 * the cached NMConnectionList widget is destroyed prematurely.
+	 */
+
+	if (match_domain (WIRED_PREFIX, WIRED_PAGE, name))
+		domain = WIRED_PAGE;
+	else if (match_domain (WIRELESS_PREFIX, WIRELESS_PAGE, name))
+		domain = WIRELESS_PAGE;
+	else if (match_domain (IP4_PREFIX, IP4_PAGE, name))
+		domain = IP4_PAGE;
+	else if (match_domain (IP4_ADDRESS_PREFIX, IP4_ADDRESS_PAGE, name))
+		domain = IP4_ADDRESS_PAGE;
+
+	xml = g_hash_table_lookup (editor->pages, domain);
+	if (!xml) {
+		xml = glade_xml_new (GLADEDIR "/nm-connection-editor.glade", domain, NULL);
+		g_assert (xml);
+		g_hash_table_insert (editor->pages, g_strdup (domain), xml);
+	}
+
+	widget = glade_xml_get_widget (xml, name);
 	g_return_val_if_fail (widget != NULL, NULL);
 	return widget;
 }
@@ -101,8 +148,11 @@ add_page (NMConnectionEditor *editor,
 
 	notebook = get_widget (editor, "notebook");
 	page = get_widget (editor, page_name);
+	g_object_ref (G_OBJECT (page));
+	gtk_widget_unparent (page);
 	label = gtk_label_new (label_text);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
+	g_object_unref (G_OBJECT (page));
 }
 
 static void
@@ -304,19 +354,14 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *widget;
 
-	/* load GUI */
-	editor->gui = glade_xml_new (GLADEDIR "/nm-connection-editor.glade", NULL, NULL);
-	if (!editor->gui) {
-		g_warning ("Could not load Glade file for connection editor");
-		return;
-	}
+	editor->pages = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
-	editor->dialog = glade_xml_get_widget (editor->gui, "NMConnectionEditor");
+	editor->dialog = get_widget (editor, "NMConnectionEditor");
 	g_signal_connect (G_OBJECT (editor->dialog), "response", G_CALLBACK (dialog_response_cb), editor);
 
-	widget = glade_xml_get_widget (editor->gui, "connection_name");
+	widget = get_widget (editor, "connection_name");
 	g_signal_connect (G_OBJECT (widget), "changed",
-				   G_CALLBACK (connection_name_changed), editor);
+	                  G_CALLBACK (connection_name_changed), editor);
 }
 
 static void
@@ -328,7 +373,7 @@ nm_connection_editor_finalize (GObject *object)
 		g_object_unref (G_OBJECT (editor->connection));
 
 	gtk_widget_destroy (editor->dialog);
-	g_object_unref (editor->gui);
+	g_hash_table_destroy (editor->pages);
 
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->finalize (object);
 }
@@ -384,66 +429,168 @@ fill_connection_values (NMConnectionEditor *editor)
 }
 
 static void
-add_wired_page (NMConnectionEditor *editor)
-{
-	NMSettingWired *s_wired;
-	GtkWidget *port;
-	GtkWidget *speed;
-	GtkWidget *duplex;
-	GtkWidget *autoneg;
-	GtkWidget *mtu;
-
-	add_page (editor, "WiredPage", _("Wired"));
-
-	port = get_widget (editor, "ethernet_port");
-	speed = get_widget (editor, "ethernet_speed");
-	duplex = get_widget (editor, "ethernet_duplex");
-	autoneg = get_widget (editor, "ethernet_autonegotiate");
-	mtu = get_widget (editor, "ethernet_mtu");
-
-	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRED));
-	if (s_wired) {
-		int port_idx = 0;
-
-		if (s_wired->port) {
-			if (!strcmp (s_wired->port, "tp"))
-				port_idx = 1;
-			else if (!strcmp (s_wired->port, "aui"))
-				port_idx = 2;
-			else if (!strcmp (s_wired->port, "bnc"))
-				port_idx = 3;
-			else if (!strcmp (s_wired->port, "mii"))
-				port_idx = 4;
-		}
-		gtk_combo_box_set_active (GTK_COMBO_BOX (port), port_idx);
-
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (speed), (gdouble) s_wired->speed);
-
-		if (!strcmp (s_wired->duplex ? s_wired->duplex : "", "full"))
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (duplex), TRUE);
-		else
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (duplex), FALSE);
-
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoneg), s_wired->auto_negotiate);
-		/* FIXME: MAC address */
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wired->mtu);
-	} else {
-		gtk_combo_box_set_active (GTK_COMBO_BOX (port), -1);
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (speed), (gdouble) 0);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (duplex), FALSE);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoneg), FALSE);
-		/* FIXME: MAC address */
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) 0);
-	}
-}
-
-static void
 spin_value_changed_cb (GtkSpinButton *button, gpointer user_data)
 {
 	int defvalue = GPOINTER_TO_INT (user_data);
 
 	if (gtk_spin_button_get_value_as_int (button) == defvalue)
 		gtk_entry_set_text (GTK_ENTRY (button), _("default"));
+}
+
+static void
+add_wired_page (NMConnectionEditor *editor)
+{
+	NMSettingWired *s_wired;
+	GtkWidget *port;
+	int port_idx = 0;
+	GtkWidget *speed;
+	int speed_idx = 0;
+	GtkWidget *duplex;
+	GtkWidget *autoneg;
+	GtkWidget *mtu;
+	int mtu_def;
+
+	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRED));
+	g_return_if_fail (s_wired != NULL);
+
+	add_page (editor, "WiredPage", _("Wired"));
+
+	port = get_widget (editor, "wired_port");
+	speed = get_widget (editor, "wired_speed");
+	duplex = get_widget (editor, "wired_duplex");
+	autoneg = get_widget (editor, "wired_autonegotiate");
+
+	mtu = get_widget (editor, "wired_mtu");
+	mtu_def = get_property_default (NM_SETTING (s_wired), NM_SETTING_WIRED_MTU);
+	g_signal_connect (G_OBJECT (mtu), "changed",
+	                  (GCallback) spin_value_changed_cb,
+	                  GINT_TO_POINTER (mtu_def));
+
+	if (s_wired->port) {
+		if (!strcmp (s_wired->port, "tp"))
+			port_idx = 1;
+		else if (!strcmp (s_wired->port, "aui"))
+			port_idx = 2;
+		else if (!strcmp (s_wired->port, "bnc"))
+			port_idx = 3;
+		else if (!strcmp (s_wired->port, "mii"))
+			port_idx = 4;
+	}
+	gtk_combo_box_set_active (GTK_COMBO_BOX (port), port_idx);
+
+	switch (s_wired->speed) {
+	case 10:
+		speed_idx = 1;
+		break;
+	case 100:
+		speed_idx = 2;
+		break;
+	case 1000:
+		speed_idx = 3;
+		break;
+	case 10000:
+		speed_idx = 4;
+		break;
+	default:
+		break;
+	}
+	gtk_combo_box_set_active (GTK_COMBO_BOX (speed), speed_idx);
+
+	if (!strcmp (s_wired->duplex ? s_wired->duplex : "", "half"))
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (duplex), FALSE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (duplex), TRUE);
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoneg), s_wired->auto_negotiate);
+
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wired->mtu);
+	spin_value_changed_cb (GTK_SPIN_BUTTON (mtu), GINT_TO_POINTER (mtu_def));
+
+	/* FIXME: MAC address */
+}
+
+static void
+channel_value_changed_cb (GtkSpinButton *button, gpointer user_data);
+
+static gboolean
+reset_channel (gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	GtkWidget *widget;
+	int value;
+
+	widget = get_widget (editor, "wireless_channel");
+	value = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (widget));
+	if (value != editor->last_channel)
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON (widget), editor->last_channel);
+	else
+		channel_value_changed_cb (GTK_SPIN_BUTTON (widget), user_data);
+	return FALSE;
+}
+
+static void
+channel_value_changed_cb (GtkSpinButton *button, gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	GtkWidget *widget;
+	gboolean aband = TRUE;
+	gboolean gband = TRUE;
+	int value;
+	int direction = 0;
+
+	widget = get_widget (editor, "wireless_band");
+	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (widget))) {
+	case 1: /* A */
+		gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
+		gband = FALSE;
+		break;
+	case 2: /* B/G */
+		gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
+		aband = FALSE;
+		break;
+	default:
+		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+		break;
+	}
+
+	value = gtk_spin_button_get_value_as_int (button);
+	if ((value == 0) || (aband && gband)) {
+		editor->last_channel = 0;
+		if (value != 0)
+			g_idle_add (reset_channel, editor);
+		gtk_entry_set_text (GTK_ENTRY (button), _("default"));
+		return;
+	}
+
+	if (editor->last_channel < value)
+		direction = 1;
+	else if (editor->last_channel > value)
+		direction = -1;
+	else {
+		char *text;
+		guint32 freq;
+
+		freq = utils_channel_to_freq (value, aband ? "a" : "bg");
+		text = g_strdup_printf ("%u (%u MHz)", value, freq);
+		gtk_entry_set_text (GTK_ENTRY (button), text);
+		g_free (text);
+		return;
+	}
+
+	value = utils_find_next_channel (value, direction, aband ? "a" : "bg");
+	editor->last_channel = value;
+	g_idle_add (reset_channel, editor);
+}
+
+static void
+band_value_changed_cb (GtkComboBox *button, gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	GtkWidget *widget;
+
+	widget = get_widget (editor, "wireless_channel");
+	editor->last_channel = 0;
+	channel_value_changed_cb (GTK_SPIN_BUTTON (widget), user_data);	
 }
 
 static void
@@ -454,7 +601,6 @@ add_wireless_page (NMConnectionEditor *editor)
 	GtkWidget *mode;
 	GtkWidget *band;
 	GtkWidget *channel;
-	int channel_def;
 	GtkWidget *rate;
 	int rate_def;
 	GtkWidget *tx_power;
@@ -471,10 +617,9 @@ add_wireless_page (NMConnectionEditor *editor)
 	band = get_widget (editor, "wireless_band");
 
 	channel = get_widget (editor, "wireless_channel");
-	channel_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_CHANNEL);
 	g_signal_connect (G_OBJECT (channel), "changed",
-	                  (GCallback) spin_value_changed_cb,
-	                  GINT_TO_POINTER (channel_def));
+	                  (GCallback) channel_value_changed_cb,
+	                  editor);
 
 	rate = get_widget (editor, "wireless_rate");
 	rate_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_RATE);
@@ -510,9 +655,13 @@ add_wireless_page (NMConnectionEditor *editor)
 			band_idx = 2;
 	}
 	gtk_combo_box_set_active (GTK_COMBO_BOX (band), band_idx);
+	g_signal_connect (G_OBJECT (band), "changed",
+	                  (GCallback) band_value_changed_cb,
+	                  editor);
 
+	editor->last_channel = s_wireless->channel;
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (channel), (gdouble) s_wireless->channel);
-	spin_value_changed_cb (GTK_SPIN_BUTTON (channel), GINT_TO_POINTER (channel_def));
+	channel_value_changed_cb (GTK_SPIN_BUTTON (channel), editor);
 
 	/* FIXME: BSSID */
 	/* FIXME: MAC address */

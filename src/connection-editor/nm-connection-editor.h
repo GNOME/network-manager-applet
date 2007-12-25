@@ -36,8 +36,10 @@ typedef struct {
 
 	/* private data */
 	NMConnection *connection;
-	GladeXML *gui;
+	GHashTable *pages;
 	GtkWidget *dialog;
+
+	guint32 last_channel;
 } NMConnectionEditor;
 
 typedef struct {

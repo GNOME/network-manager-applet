@@ -268,3 +268,148 @@ utils_clear_filled_connection_certs (NMConnection *connection)
 }
 
 
+struct cf_pair {
+	guint32 chan;
+	guint32 freq;
+};
+
+static struct cf_pair a_table[] = {
+	/* A band */
+	{  7, 5035 },
+	{  8, 5040 },
+	{  9, 5045 },
+	{ 11, 5055 },
+	{ 12, 5060 },
+	{ 16, 5080 },
+	{ 34, 5170 },
+	{ 36, 5180 },
+	{ 38, 5190 },
+	{ 40, 5200 },
+	{ 42, 5210 },
+	{ 44, 5220 },
+	{ 46, 5230 },
+	{ 48, 5240 },
+	{ 50, 5250 },
+	{ 52, 5260 },
+	{ 56, 5280 },
+	{ 58, 5290 },
+	{ 60, 5300 },
+	{ 64, 5320 },
+	{ 100, 5500 },
+	{ 104, 5520 },
+	{ 108, 5540 },
+	{ 112, 5560 },
+	{ 116, 5580 },
+	{ 120, 5600 },
+	{ 124, 5620 },
+	{ 128, 5640 },
+	{ 132, 5660 },
+	{ 136, 5680 },
+	{ 140, 5700 },
+	{ 149, 5745 },
+	{ 152, 5760 },
+	{ 153, 5765 },
+	{ 157, 5785 },
+	{ 160, 5800 },
+	{ 161, 5805 },
+	{ 165, 5825 },
+	{ 183, 4915 },
+	{ 184, 4920 },
+	{ 185, 4925 },
+	{ 187, 4935 },
+	{ 188, 4945 },
+	{ 192, 4960 },
+	{ 196, 4980 },
+	{ 0, -1 }
+};
+
+static struct cf_pair bg_table[] = {
+	/* B/G band */
+	{ 1, 2412 },
+	{ 2, 2417 },
+	{ 3, 2422 },
+	{ 4, 2427 },
+	{ 5, 2432 },
+	{ 6, 2437 },
+	{ 7, 2442 },
+	{ 8, 2447 },
+	{ 9, 2452 },
+	{ 10, 2457 },
+	{ 11, 2462 },
+	{ 12, 2467 },
+	{ 13, 2472 },
+	{ 14, 2484 },
+	{ 0, -1 }
+};
+
+guint32
+utils_freq_to_channel (guint32 freq)
+{
+	int i = 0;
+
+	while (a_table[i].chan && (a_table[i].freq != freq))
+		i++;
+	if (a_table[i].chan)
+		return a_table[i].chan;
+
+	i = 0;
+	while (bg_table[i].chan && (bg_table[i].freq != freq))
+		i++;
+	return bg_table[i].chan;
+}
+
+guint32
+utils_channel_to_freq (guint32 channel, char *band)
+{
+	int i = 0;
+
+	if (!strcmp (band, "a")) {
+		while (a_table[i].chan && (a_table[i].chan != channel))
+			i++;
+		return a_table[i].freq;
+	} else if (!strcmp (band, "bg")) {
+		while (bg_table[i].chan && (bg_table[i].chan != channel))
+			i++;
+		return bg_table[i].freq;
+	}
+
+	return 0;
+}
+
+guint32
+utils_find_next_channel (guint32 channel, int direction, char *band)
+{
+	size_t a_size = sizeof (a_table) / sizeof (struct cf_pair);
+	size_t bg_size = sizeof (bg_table) / sizeof (struct cf_pair);
+	struct cf_pair *pair;
+
+	if (!strcmp (band, "a")) {
+		if (channel < a_table[0].chan)
+			return a_table[0].chan;
+		if (channel > a_table[a_size - 2].chan)
+			return a_table[a_size - 2].chan;
+		pair = &a_table[0];
+	} else if (!strcmp (band, "bg")) {
+		if (channel < bg_table[0].chan)
+			return bg_table[0].chan;
+		if (channel > bg_table[bg_size - 2].chan)
+			return bg_table[bg_size - 2].chan;
+		pair = &bg_table[0];
+	} else {
+		g_assert_not_reached ();
+	}
+
+	while (pair->chan) {
+		if (channel == pair->chan)
+			return channel;
+		if ((channel < (pair+1)->chan) && (channel > pair->chan)) {
+			if (direction > 0)	
+				return (pair+1)->chan;
+			else
+				return pair->chan;
+		}
+		pair++;
+	}
+	return 0;
+}
+
