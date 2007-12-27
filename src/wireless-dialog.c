@@ -41,6 +41,8 @@
 #include "wireless-security.h"
 #include "utils.h"
 
+#define NEW_ADHOC_TAG "user-created-adhoc"
+
 #define D_NAME_COLUMN		0
 #define D_DEV_COLUMN		1
 
@@ -52,7 +54,8 @@ static gboolean security_combo_init (const char *glade_file,
                                      GtkWidget *combo,
                                      NMDevice *device,
                                      GtkWidget *dialog,
-                                     NMConnection *connection);
+                                     NMConnection *connection,
+                                     gboolean user_created_adhoc);
 
 static void
 device_combo_changed (GtkWidget *combo,
@@ -66,6 +69,7 @@ device_combo_changed (GtkWidget *combo,
 	GtkWidget *security_combo;
 	GladeXML *xml;
 	NMConnection *connection;
+	gboolean user_created_adhoc = FALSE;
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
@@ -79,9 +83,11 @@ device_combo_changed (GtkWidget *combo,
 
 	connection = g_object_get_data (G_OBJECT (dialog), "connection");
 
+	user_created_adhoc = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (dialog), NEW_ADHOC_TAG));
+
 	security_combo = glade_xml_get_widget (xml, "security_combo");
 	g_assert (security_combo);
-	if (!security_combo_init (glade_file, security_combo, device, dialog, connection)) {
+	if (!security_combo_init (glade_file, security_combo, device, dialog, connection, user_created_adhoc)) {
 		g_message ("Couldn't change wireless security combo box.");
 		return;
 	}
@@ -409,7 +415,8 @@ security_combo_init (const char *glade_file,
                      GtkWidget *combo,
                      NMDevice *device,
                      GtkWidget *dialog,
-                     NMConnection *connection)
+                     NMConnection *connection,
+                     gboolean user_created_adhoc)
 {
 	GtkListStore *sec_model;
 	GtkTreeIter iter;
@@ -422,6 +429,8 @@ security_combo_init (const char *glade_file,
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
 	int active = -1;
 	int item = 0;
+	NMSettingWireless *s_wireless = NULL;
+	gboolean is_adhoc = user_created_adhoc;
 
 	g_return_val_if_fail (combo != NULL, FALSE);
 	g_return_val_if_fail (glade_file != NULL, FALSE);
@@ -442,6 +451,10 @@ security_combo_init (const char *glade_file,
 	}
 
 	if (connection) {
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+		if (s_wireless && s_wireless->mode && !strcmp (s_wireless->mode, "adhoc"))
+			is_adhoc = TRUE;
+
 		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
 										NM_TYPE_SETTING_WIRELESS_SECURITY));
 		default_type = get_default_type_for_security (wsec, ap_flags, dev_caps);
@@ -449,7 +462,7 @@ security_combo_init (const char *glade_file,
 
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
 
-	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, !!cur_ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		gtk_list_store_append (sec_model, &iter);
 		gtk_list_store_set (sec_model, &iter,
 		                    S_NAME_COLUMN, _("None"),
@@ -461,7 +474,7 @@ security_combo_init (const char *glade_file,
 	/* Don't show Static WEP if both the AP and the device are capable of WPA,
 	 * even though technically it's possible to have this configuration.
 	 */
-	if (   nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)
+	if (   nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!cur_ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_802_11_DEVICE_CAP_WPA | NM_802_11_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep_hex;
 		WirelessSecurityWEPKey *ws_wep_ascii;
@@ -495,7 +508,7 @@ security_combo_init (const char *glade_file,
 	/* Don't show LEAP if both the AP and the device are capable of WPA,
 	 * even though technically it's possible to have this configuration.
 	 */
-	if (   nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)
+	if (   nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, !!cur_ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_802_11_DEVICE_CAP_WPA | NM_802_11_DEVICE_CAP_RSN)))) {
 		WirelessSecurityLEAP *ws_leap;
 
@@ -508,7 +521,7 @@ security_combo_init (const char *glade_file,
 		}
 	}
 
-	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!cur_ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
 		ws_dynamic_wep = ws_dynamic_wep_new (glade_file, connection);
@@ -520,8 +533,8 @@ security_combo_init (const char *glade_file,
 		}
 	}
 
-	if (   nm_utils_security_valid (NMU_SEC_WPA_PSK, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)
-	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+	if (   nm_utils_security_valid (NMU_SEC_WPA_PSK, dev_caps, !!cur_ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)
+	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, !!cur_ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;
 
 		ws_wpa_psk = ws_wpa_psk_new (glade_file, connection);
@@ -533,8 +546,8 @@ security_combo_init (const char *glade_file,
 		}
 	}
 
-	if (   nm_utils_security_valid (NMU_SEC_WPA_ENTERPRISE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)
-	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!cur_ap, ap_flags, ap_wpa, ap_rsn)) {
+	if (   nm_utils_security_valid (NMU_SEC_WPA_ENTERPRISE, dev_caps, !!cur_ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)
+	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!cur_ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
 		ws_wpa_eap = ws_wpa_eap_new (glade_file, connection);
@@ -557,7 +570,8 @@ dialog_init (GtkWidget *dialog,
              GladeXML *xml,
              NMClient *nm_client,
              const char *glade_file,
-             NMConnection *connection)
+             NMConnection *connection,
+             gboolean user_created_adhoc)
 {
 	GtkWidget *widget;
 	GtkSizeGroup *group;
@@ -629,7 +643,7 @@ dialog_init (GtkWidget *dialog,
 
 	widget = glade_xml_get_widget (xml, "security_combo");
 	g_assert (widget);
-	if (!security_combo_init (glade_file, widget, dev, dialog, connection)) {
+	if (!security_combo_init (glade_file, widget, dev, dialog, connection, user_created_adhoc)) {
 		g_message ("Couldn't set up wireless security combo box.");
 		goto out;
 	}
@@ -655,6 +669,11 @@ dialog_init (GtkWidget *dialog,
 		                         _("Secrets required by wireless network"),
 		                         tmp);
 		g_free (esc_ssid);
+	} else if (user_created_adhoc) {
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Create New Wireless Network"));
+		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
+		                         _("New wireless network"),
+		                         _("Enter a name for the wireless network you wish to create."));
 	} else {
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Other Wireless Network"));
 		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
@@ -705,6 +724,9 @@ nma_wireless_dialog_get_connection (GtkWidget *dialog,
 		s_wireless->ssid = validate_dialog_ssid (dialog);
 		g_assert (s_wireless->ssid);
 
+		if (g_object_get_data (G_OBJECT (dialog), NEW_ADHOC_TAG))
+			s_wireless->mode = g_strdup ("adhoc");
+
 		nm_connection_add_setting (connection, (NMSetting *) s_wireless);
 	}
 
@@ -742,7 +764,8 @@ nma_wireless_dialog_new (const char *glade_file,
                          NMClient *nm_client,
                          NMConnection *connection,
                          NMDevice *cur_device,
-                         NMAccessPoint *cur_ap)
+                         NMAccessPoint *cur_ap,
+                         gboolean user_created_adhoc)
 {
 	GtkWidget *	dialog;
 	GladeXML *	xml;
@@ -801,7 +824,10 @@ nma_wireless_dialog_new (const char *glade_file,
 		                        (GDestroyNotify) g_object_unref);
 	}
 
-	success = dialog_init (dialog, xml, nm_client, glade_file, connection);
+	g_object_set_data (G_OBJECT (dialog),
+	                   NEW_ADHOC_TAG, GUINT_TO_POINTER (user_created_adhoc));
+
+	success = dialog_init (dialog, xml, nm_client, glade_file, connection, user_created_adhoc);
 	if (!success) {
 		nm_warning ("Couldn't create wireless security dialog.");
 		gtk_widget_destroy (dialog);

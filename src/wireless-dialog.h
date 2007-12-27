@@ -37,7 +37,8 @@ GtkWidget *	nma_wireless_dialog_new (const char *glade_file,
                                      NMClient *nm_client,
                                      NMConnection *connection,
                                      NMDevice *cur_device,
-                                     NMAccessPoint *cur_ap);
+                                     NMAccessPoint *cur_ap,
+                                     gboolean user_created_adhoc);
 
 NMConnection * nma_wireless_dialog_get_connection (GtkWidget *dialog,
                                                    NMDevice **device,

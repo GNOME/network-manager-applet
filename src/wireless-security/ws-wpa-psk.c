@@ -102,10 +102,14 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	guint32 len;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
+	gboolean is_adhoc = FALSE;
 
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	g_assert (s_wireless);
 	g_assert (s_wireless->ssid);
+
+	if (s_wireless && s_wireless->mode && !strcmp (s_wireless->mode, "adhoc"))
+		is_adhoc = TRUE;
 
 	if (s_wireless->security)
 		g_free (s_wireless->security);
@@ -132,7 +136,10 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	}
 
 	s_wireless_sec->psk = hashed;
-	s_wireless_sec->key_mgmt = g_strdup ("wpa-psk");
+	if (is_adhoc)
+		s_wireless_sec->key_mgmt = g_strdup ("wpa-none");
+	else
+		s_wireless_sec->key_mgmt = g_strdup ("wpa-psk");
 
 	// FIXME: allow protocol selection and filter on device capabilities
 	// FIXME: allow pairwise cipher selection and filter on device capabilities

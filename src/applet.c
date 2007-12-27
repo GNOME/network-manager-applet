@@ -895,7 +895,8 @@ get_more_info (NMApplet *applet,
 	                                  applet->nm_client,
 	                                  connection,
 	                                  device,
-	                                  ap);
+	                                  ap,
+	                                  FALSE);
 	g_return_if_fail (dialog != NULL);
 
 	g_signal_connect (dialog, "response",
@@ -1400,7 +1401,9 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 		g_free (ssid);
 
 		// FIXME: don't autoconnect until the connection is successful at least once
-		s_con->autoconnect = TRUE;
+		/* Don't autoconnect adhoc networks by default for now */
+		if (!s_wireless->mode || !strcmp (s_wireless->mode, "infrastructure"))
+			s_con->autoconnect = TRUE;
 	}
 
 	exported_con = applet_dbus_settings_get_by_connection (APPLET_DBUS_SETTINGS (applet->settings),
@@ -1441,7 +1444,8 @@ other_wireless_activate_cb (GtkWidget *menu_item,
 	                                  applet->nm_client,
 	                                  NULL,
 	                                  NULL,
-	                                  NULL);
+	                                  NULL,
+	                                  FALSE);
 	if (!dialog)
 		return;
 
@@ -1473,6 +1477,25 @@ static void nma_menu_add_other_network_item (GtkWidget *menu, NMApplet *applet)
 
 static void new_network_item_selected (GtkWidget *menu_item, NMApplet *applet)
 {
+	GtkWidget *dialog;
+
+	dialog = nma_wireless_dialog_new (applet->glade_file,
+	                                  applet->nm_client,
+	                                  NULL,
+	                                  NULL,
+	                                  NULL,
+	                                  TRUE);
+	if (!dialog)
+		return;
+
+	g_signal_connect (dialog, "response",
+	                  G_CALLBACK (wireless_dialog_response_cb),
+	                  applet);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (dialog);
+	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
+	gtk_window_present (GTK_WINDOW (dialog));
 }
 
 
@@ -3432,7 +3455,8 @@ applet_settings_new_secrets_requested_cb (AppletDbusSettings *settings,
 	                                  applet->nm_client,
 	                                  connection,
 	                                  device,
-	                                  ap);
+	                                  ap,
+	                                  FALSE);
 	g_return_if_fail (dialog != NULL);
 	g_object_set_data (G_OBJECT (dialog), "dbus-context", context);
 	g_object_set_data_full (G_OBJECT (dialog),

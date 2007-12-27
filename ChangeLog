@@ -1,3 +1,25 @@
+2007-12-27  Dan Williams  <dcbw@redhat.com>
+
+	* src/wireless-security/ws-wpa-psk.c
+		- (fill_connection): Ad-Hoc connections use a key-mgmt value of
+			'wpa-none', not 'wpa-psk'
+
+	* src/wireless-dialog.c
+	  src/wireless-dialog.h
+		- (nma_wireless_dialog_new): new argument to indicate user-created
+			Ad-Hoc networks
+		- (dialog_init): handle user-created Ad-Hoc networks
+		- (security_combo_init): determine whether or not the network being
+			modified is Ad-Hoc and pass that status to nm_utils_security_valid()
+
+	* src/applet.c
+		- (applet_settings_new_secrets_requested_cb, get_more_info,
+		   other_wireless_activate_cb): handle new adhoc argument for
+			nma_wireless_dialog_new()
+		- (new_network_item_selected): implement
+		- (wireless_dialog_response_cb): don't autoconnect to Ad-Hoc networks
+			by default
+
 2007-12-24  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/Makefile.am
