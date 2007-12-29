@@ -3336,10 +3336,6 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		goto done;
 	}
 
-	applet_connection = applet_dbus_settings_get_by_connection (APPLET_DBUS_SETTINGS (applet->settings), connection);
-	if (applet_connection)
-		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (applet_connection));
-
 	utils_fill_connection_certs (connection);
 	setting_hash = nm_setting_to_hash (setting);
 	utils_clear_filled_connection_certs (connection);
@@ -3353,6 +3349,14 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 
 	dbus_g_method_return (context, setting_hash);
 	g_hash_table_destroy (setting_hash);
+
+	/* Save the connection back to GConf _after_ hashing it, because
+	 * saving to GConf might trigger the GConf change notifiers, resulting
+	 * in the connection being read back in from GConf which clears secrets.
+	 */
+	applet_connection = applet_dbus_settings_get_by_connection (APPLET_DBUS_SETTINGS (applet->settings), connection);
+	if (applet_connection)
+		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (applet_connection));
 
 done:
 	if (error) {
