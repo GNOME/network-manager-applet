@@ -381,7 +381,7 @@ utils_find_next_channel (guint32 channel, int direction, char *band)
 {
 	size_t a_size = sizeof (a_table) / sizeof (struct cf_pair);
 	size_t bg_size = sizeof (bg_table) / sizeof (struct cf_pair);
-	struct cf_pair *pair;
+	struct cf_pair *pair = NULL;
 
 	if (!strcmp (band, "a")) {
 		if (channel < a_table[0].chan)
@@ -397,6 +397,7 @@ utils_find_next_channel (guint32 channel, int direction, char *band)
 		pair = &bg_table[0];
 	} else {
 		g_assert_not_reached ();
+		return 0;
 	}
 
 	while (pair->chan) {
