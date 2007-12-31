@@ -42,10 +42,6 @@ nm_applet_SOURCES =			\
 	vpn-password-dialog.h	\
 	wireless-dialog.h \
 	wireless-dialog.c \
-	connection-editor/nm-connection-editor.c	\
-	connection-editor/nm-connection-editor.h	\
-	connection-editor/nm-connection-list.c		\
-	connection-editor/nm-connection-list.h		\
 	$(NULL)
 
 if !HAVE_GTK_2_10
