@@ -365,6 +365,20 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *widget;
 
+	if (!g_file_test (GLADEDIR "/applet.glade", G_FILE_TEST_EXISTS)) {
+		GtkWidget *dialog;
+
+		dialog = gtk_message_dialog_new (NULL, 0,
+		                                 GTK_MESSAGE_ERROR,
+		                                 GTK_BUTTONS_OK,
+		                                 "%s",
+		                                 _("The connection editor could not find some required resources (the NetworkManager applet glade file was not found)."));
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		gtk_main_quit ();
+		return;
+	}
+
 	editor->pages = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
 	editor->dialog = get_widget (editor, "NMConnectionEditor");
@@ -373,6 +387,8 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	widget = get_widget (editor, "connection_name");
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  G_CALLBACK (connection_name_changed), editor);
+
+	editor->wsec_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 }
 
 static void
@@ -384,6 +400,7 @@ nm_connection_editor_finalize (GObject *object)
 		g_object_unref (G_OBJECT (editor->connection));
 
 	gtk_widget_destroy (editor->dialog);
+	g_object_unref (G_OBJECT (editor->wsec_group));
 	g_hash_table_destroy (editor->pages);
 
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->finalize (object);
@@ -704,7 +721,8 @@ add_ip4_pages (NMConnectionEditor *editor)
 static NMUtilsSecurityType
 get_default_type_for_security (NMSettingWirelessSecurity *sec)
 {
-	g_return_val_if_fail (sec != NULL, NMU_SEC_NONE);
+	if (!sec)
+		return NMU_SEC_NONE;
 
 	/* No IEEE 802.1x */
 	if (!strcmp (sec->key_mgmt, "none")) {
@@ -750,6 +768,88 @@ get_default_type_for_security (NMSettingWirelessSecurity *sec)
 }
 
 static void
+stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	GtkWidget *widget;
+	gboolean valid = FALSE;
+	NMSettingWireless *s_wireless;
+
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_WIRELESS));
+	g_assert (s_wireless);
+
+	valid = wireless_security_validate (sec, s_wireless->ssid);
+	widget = get_widget (editor, "ok_button");
+	gtk_widget_set_sensitive (widget, valid);
+}
+
+static void
+wsec_size_group_clear (GtkSizeGroup *group)
+{
+	GSList *children;
+	GSList *iter;
+
+	g_return_if_fail (group != NULL);
+
+	children = gtk_size_group_get_widgets (group);
+	for (iter = children; iter; iter = g_slist_next (iter))
+		gtk_size_group_remove_widget (group, GTK_WIDGET (iter->data));
+}
+
+static void
+wireless_security_combo_changed (GtkWidget *combo,
+                                 gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	GtkWidget *vbox;
+	GList *elt, *children;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	WirelessSecurity *sec = NULL;
+
+	vbox = get_widget (editor, "wireless_security_vbox");
+	g_assert (vbox);
+
+	wsec_size_group_clear (editor->wsec_group);
+
+	/* Remove any previous wireless security widgets */
+	children = gtk_container_get_children (GTK_CONTAINER (vbox));
+	for (elt = children; elt; elt = g_list_next (elt))
+		gtk_container_remove (GTK_CONTAINER (vbox), GTK_WIDGET (elt->data));
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+	if (sec) {
+		GtkWidget *sec_widget;
+		GtkWidget *widget;
+
+		sec_widget = wireless_security_get_widget (sec);
+		g_assert (sec_widget);
+
+		widget = get_widget (editor, "wireless_security_combo_label");
+		gtk_size_group_add_widget (editor->wsec_group, widget);
+		wireless_security_add_to_size_group (sec, editor->wsec_group);
+
+		gtk_container_add (GTK_CONTAINER (vbox), sec_widget);
+		wireless_security_unref (sec);
+	}
+}
+
+static void
+add_security_item (NMConnectionEditor *editor,
+                   WirelessSecurity *sec,
+                   GtkListStore *model,
+                   GtkTreeIter *iter,
+                   const char *text)
+{
+	wireless_security_set_changed_notify (sec, stuff_changed_cb, editor);
+	gtk_list_store_append (model, iter);
+	gtk_list_store_set (model, iter, S_NAME_COLUMN, text, S_SEC_COLUMN, sec, -1);
+	wireless_security_unref (sec);
+}
+
+static void
 add_wireless_security_page (NMConnectionEditor *editor, NMConnection *connection)
 {
 	NMSettingWireless *s_wireless;
@@ -761,6 +861,12 @@ add_wireless_security_page (NMConnectionEditor *editor, NMConnection *connection
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
 	int active = -1;
 	int item = 0;
+	const char *glade_file = GLADEDIR "/applet.glade";
+	GtkWidget *combo;
+
+	add_page (editor, "WirelessSecurityPage", _("Wireless Security"));
+
+	combo = get_widget (editor, "wireless_security_combo");
 
 	dev_caps =   NM_802_11_DEVICE_CAP_CIPHER_WEP40
 	           | NM_802_11_DEVICE_CAP_CIPHER_WEP104
@@ -779,10 +885,8 @@ add_wireless_security_page (NMConnectionEditor *editor, NMConnection *connection
 	                                               NM_TYPE_SETTING_WIRELESS_SECURITY));
 	default_type = get_default_type_for_security (s_wireless_sec);
 
-	add_page (editor, "WirelessSecurityPage", _("Wireless Security"));
-
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
-	
+
 	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		gtk_list_store_append (sec_model, &iter);
 		gtk_list_store_set (sec_model, &iter,
@@ -792,6 +896,95 @@ add_wireless_security_page (NMConnectionEditor *editor, NMConnection *connection
 			active = item;
 	}
 
+	if (nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
+		WirelessSecurityWEPKey *ws_wep_hex;
+		WirelessSecurityWEPKey *ws_wep_ascii;
+		WirelessSecurityWEPPassphrase *ws_wep_passphrase;
+
+		ws_wep_passphrase = ws_wep_passphrase_new (glade_file, connection);
+		if (ws_wep_passphrase) {
+			add_security_item (editor, WIRELESS_SECURITY (ws_wep_passphrase), sec_model,
+			                   &iter, _("WEP 128-bit Passphrase"));
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
+				active = item++;
+		}
+
+		ws_wep_hex = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_HEX);
+		if (ws_wep_hex) {
+			add_security_item (editor, WIRELESS_SECURITY (ws_wep_hex), sec_model,
+			                   &iter, _("WEP 40/128-bit Hexadecimal"));
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
+				active = item++;
+		}
+
+		ws_wep_ascii = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_ASCII);
+		if (ws_wep_ascii) {
+			add_security_item (editor, WIRELESS_SECURITY (ws_wep_ascii), sec_model,
+			                   &iter, _("WEP 40/128-bit ASCII"));
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
+				active = item++;
+		}
+	}
+
+	if (nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
+		WirelessSecurityLEAP *ws_leap;
+
+		ws_leap = ws_leap_new (glade_file, connection);
+		if (ws_leap) {
+			add_security_item (editor, WIRELESS_SECURITY (ws_leap), sec_model,
+			                   &iter, _("LEAP"));
+			if ((active < 0) && (default_type == NMU_SEC_LEAP))
+				active = item++;
+		}
+	}
+
+	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
+		WirelessSecurityDynamicWEP *ws_dynamic_wep;
+
+		ws_dynamic_wep = ws_dynamic_wep_new (glade_file, connection);
+		if (ws_dynamic_wep) {
+			add_security_item (editor, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
+			                   &iter, _("Dynamic WEP (802.1x)"));
+			if ((active < 0) && (default_type == NMU_SEC_DYNAMIC_WEP))
+				active = item++;
+		}
+	}
+
+	if (   nm_utils_security_valid (NMU_SEC_WPA_PSK, dev_caps, FALSE, is_adhoc, 0, 0, 0)
+	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
+		WirelessSecurityWPAPSK *ws_wpa_psk;
+
+		ws_wpa_psk = ws_wpa_psk_new (glade_file, connection);
+		if (ws_wpa_psk) {
+			add_security_item (editor, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
+			                   &iter, _("WPA & WPA2 Personal"));
+			if ((active < 0) && ((default_type == NMU_SEC_WPA_PSK) || (default_type == NMU_SEC_WPA2_PSK)))
+				active = item++;
+		}
+	}
+
+	if (   nm_utils_security_valid (NMU_SEC_WPA_ENTERPRISE, dev_caps, FALSE, is_adhoc, 0, 0, 0)
+	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
+		WirelessSecurityWPAEAP *ws_wpa_eap;
+
+		ws_wpa_eap = ws_wpa_eap_new (glade_file, connection);
+		if (ws_wpa_eap) {
+			add_security_item (editor, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
+			                   &iter, _("WPA & WPA2 Enterprise"));
+			if ((active < 0) && ((default_type == NMU_SEC_WPA_ENTERPRISE) || (default_type == NMU_SEC_WPA2_ENTERPRISE)))
+				active = item++;
+		}
+	}
+
+	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (sec_model));
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), active < 0 ? 0 : (guint32) active);
+	g_object_unref (G_OBJECT (sec_model));
+
+	wireless_security_combo_changed (combo, editor);
+	g_signal_connect (G_OBJECT (combo),
+	                  "changed",
+	                  GTK_SIGNAL_FUNC (wireless_security_combo_changed),
+	                  editor);
 }
 
 void
