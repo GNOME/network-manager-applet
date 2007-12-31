@@ -319,12 +319,6 @@ nma_show_info_cb (GtkMenuItem *mi, NMApplet *applet)
 static void
 nma_edit_connections_cb (GtkMenuItem *mi, NMApplet *applet)
 {
-	NMConnectionList *connection_list;
-
-	connection_list = nm_connection_list_new ();
-	nm_connection_list_run_and_close (connection_list);
-
-	g_object_unref (connection_list);
 }
 
 static void 
