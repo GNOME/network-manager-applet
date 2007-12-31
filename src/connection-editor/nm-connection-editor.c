@@ -34,10 +34,16 @@
 #include <nm-setting-ip4-config.h>
 #include <nm-setting-wired.h>
 #include <nm-setting-wireless.h>
+#include <nm-setting-wireless-security.h>
 #include <nm-setting-vpn.h>
+#include <nm-utils.h>
 
 #include "nm-connection-editor.h"
 #include "utils.h"
+#include "wireless-security.h"
+
+#define S_NAME_COLUMN		0
+#define S_SEC_COLUMN		1
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -85,6 +91,9 @@ get_property_default (NMSetting *setting, const char *property_name)
 #define WIRELESS_PAGE "WirelessPage"
 #define WIRELESS_PREFIX "wireless_"
 
+#define WIRELESS_SECURITY_PAGE "WirelessSecurityPage"
+#define WIRELESS_SECURITY_PREFIX "wireless_security_"
+
 #define IP4_PAGE "IP4Page"
 #define IP4_PREFIX "ip4_"
 
@@ -118,6 +127,8 @@ get_widget (NMConnectionEditor *editor, const char *name)
 
 	if (match_domain (WIRED_PREFIX, WIRED_PAGE, name))
 		domain = WIRED_PAGE;
+	else if (match_domain (WIRELESS_SECURITY_PREFIX, WIRELESS_SECURITY_PAGE, name))
+		domain = WIRELESS_SECURITY_PAGE;
 	else if (match_domain (WIRELESS_PREFIX, WIRELESS_PAGE, name))
 		domain = WIRELESS_PAGE;
 	else if (match_domain (IP4_PREFIX, IP4_PAGE, name))
@@ -690,6 +701,99 @@ add_ip4_pages (NMConnectionEditor *editor)
 	}
 }
 
+static NMUtilsSecurityType
+get_default_type_for_security (NMSettingWirelessSecurity *sec)
+{
+	g_return_val_if_fail (sec != NULL, NMU_SEC_NONE);
+
+	/* No IEEE 802.1x */
+	if (!strcmp (sec->key_mgmt, "none")) {
+		/* Static WEP */
+		if (   sec->wep_tx_keyidx
+		    || sec->wep_key0
+		    || sec->wep_key1
+		    || sec->wep_key2
+		    || sec->wep_key3
+		    || (sec->auth_alg && !strcmp (sec->auth_alg, "shared")))
+			return NMU_SEC_STATIC_WEP;
+
+		/* Unencrypted */
+		return NMU_SEC_NONE;
+	}
+
+	if (!strcmp (sec->key_mgmt, "ieee8021x")) {
+		if (sec->auth_alg && !strcmp (sec->auth_alg, "leap"))
+			return NMU_SEC_LEAP;
+		return NMU_SEC_DYNAMIC_WEP;
+	}
+
+	if (   !strcmp (sec->key_mgmt, "wpa-none")
+	    || !strcmp (sec->key_mgmt, "wpa-psk")) {
+		if (sec->proto && !strcmp (sec->proto->data, "rsn"))
+			return NMU_SEC_WPA2_PSK;
+		else if (sec->proto && !strcmp (sec->proto->data, "wpa"))
+			return NMU_SEC_WPA_PSK;
+		else
+			return NMU_SEC_WPA_PSK;
+	}
+
+	if (!strcmp (sec->key_mgmt, "wpa-eap")) {
+		if (sec->proto && !strcmp (sec->proto->data, "rsn"))
+			return NMU_SEC_WPA2_ENTERPRISE;
+		else if (sec->proto && !strcmp (sec->proto->data, "wpa"))
+			return NMU_SEC_WPA_ENTERPRISE;
+		else
+			return NMU_SEC_WPA_ENTERPRISE;
+	}
+
+	return NMU_SEC_INVALID;
+}
+
+static void
+add_wireless_security_page (NMConnectionEditor *editor, NMConnection *connection)
+{
+	NMSettingWireless *s_wireless;
+	NMSettingWirelessSecurity *s_wireless_sec;
+	gboolean is_adhoc = FALSE;
+	GtkListStore *sec_model;
+	GtkTreeIter iter;
+	guint32 dev_caps = 0;
+	NMUtilsSecurityType default_type = NMU_SEC_NONE;
+	int active = -1;
+	int item = 0;
+
+	dev_caps =   NM_802_11_DEVICE_CAP_CIPHER_WEP40
+	           | NM_802_11_DEVICE_CAP_CIPHER_WEP104
+	           | NM_802_11_DEVICE_CAP_CIPHER_TKIP
+	           | NM_802_11_DEVICE_CAP_CIPHER_CCMP
+	           | NM_802_11_DEVICE_CAP_WPA
+	           | NM_802_11_DEVICE_CAP_RSN;
+
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	g_assert (s_wireless);
+
+	if (s_wireless->mode && !strcmp (s_wireless->mode, "adhoc"))
+		is_adhoc = TRUE;
+
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+	                                               NM_TYPE_SETTING_WIRELESS_SECURITY));
+	default_type = get_default_type_for_security (s_wireless_sec);
+
+	add_page (editor, "WirelessSecurityPage", _("Wireless Security"));
+
+	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
+	
+	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
+		gtk_list_store_append (sec_model, &iter);
+		gtk_list_store_set (sec_model, &iter,
+		                    S_NAME_COLUMN, _("None"),
+		                    -1);
+		if (default_type == NMU_SEC_NONE)
+			active = item;
+	}
+
+}
+
 void
 nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection)
 {
@@ -716,6 +820,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 		add_ip4_pages (editor);
 	} else if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME)) {
 		add_wireless_page (editor);
+		add_wireless_security_page (editor, connection);
 		add_ip4_pages (editor);
 	} else if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
 		add_ip4_pages (editor);
