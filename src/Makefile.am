@@ -77,7 +77,7 @@ applet-marshal-main.c: applet-marshal.c applet-marshal.h
 gladedir = $(datadir)/nm-applet
 glade_DATA = applet.glade keyring.png
 
-CLEANFILES = *.bak *.gladep
+CLEANFILES = *.bak *.gladep applet-marshal.c applet-marshal.h
 
 EXTRA_DIST = 				\
 	$(glade_DATA)			\
