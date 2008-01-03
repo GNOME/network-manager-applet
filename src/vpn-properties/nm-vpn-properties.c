@@ -1323,5 +1323,8 @@ main (int argc, char *argv[])
 	ret = EXIT_SUCCESS;
 
 out:
+	if (xml)
+		g_object_unref (xml);
+
 	return ret;
 }
