@@ -422,6 +422,20 @@ copy_one_wpa_private_key_password (GConfClient *client,
 	if (!temp)
 		goto out;
 
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      "private-key-passwd",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      ssid,
+	                                      NULL);
+	/* Nothing to do if the passwords were already converted */
+	if (ret != GNOME_KEYRING_RESULT_OK)
+		goto out;
+	if (!g_list_length (found_list))
+		goto out;
+	gnome_keyring_found_list_free (found_list);
+	found_list = NULL;
+
 	/* Read private_key_passwd from keyring */
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,
