@@ -2564,6 +2564,7 @@ static GtkWidget * nma_get_instance (NMApplet *applet)
 	 * synchronous calls against gnome-keyring.
 	 */
 	nma_compat_convert_oldformat_entries (applet->gconf_client);
+	nma_compat_move_wpa_eap_passwords (applet->gconf_client);
 
 	/* Load pixmaps and create applet widgets */
 	nma_setup_widgets (applet);

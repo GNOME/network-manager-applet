@@ -24,6 +24,7 @@
 #include <glib/gi18n.h>
 #include <dbus/dbus.h>
 #include <iwlib.h>
+#include <gnome-keyring.h>
 
 #include "applet.h"
 #include "nm-gconf-wso.h"
@@ -31,6 +32,7 @@
 #include "nm-gconf-wso-private.h"
 #include "dbus-helpers.h"
 #include "gconf-helpers.h"
+#include "nm-utils.h"
 
 #define WPA_EAP_PREFIX "wpa_eap_"
 
@@ -38,17 +40,17 @@
 
 struct _NMGConfWSOWPA_EAPPrivate
 {
-	int			eap_method;
-	int			key_type;
-	int			phase2_type;
-	int			wpa_version;
-	int			key_mgmt;
-	const char *	identity;
-	const char *	passwd;
-	const char *	anon_identity;
-	const char *	private_key_file;
-	const char *	client_cert_file;
-	const char *	ca_cert_file;
+	int		eap_method;
+	int		key_type;
+	int		phase2_type;
+	int		wpa_version;
+	int		key_mgmt;
+	char *	identity;
+	char *	anon_identity;
+	char *	private_key_file;
+	char *	private_key_passwd;
+	char *	client_cert_file;
+	char *	ca_cert_file;
 };
 
 
@@ -78,15 +80,15 @@ nm_gconf_wso_wpa_eap_new_deserialize_dbus (DBusMessageIter *iter, int we_cipher)
 	/* Success, build up our security object */
 	security = g_object_new (NM_TYPE_GCONF_WSO_WPA_EAP, NULL);
 	nm_gconf_wso_set_we_cipher (NM_GCONF_WSO (security), we_cipher);
-	if (private_key_passwd && strlen (private_key_passwd) > 0)
-		nm_gconf_wso_set_key (NM_GCONF_WSO (security), private_key_passwd, strlen (private_key_passwd));
+	nm_gconf_wso_set_key (NM_GCONF_WSO (security), passwd, strlen (passwd));
 	security->priv->wpa_version = wpa_version;
 	security->priv->key_type = key_type;
 	security->priv->eap_method = NM_EAP_TO_EAP_METHOD (eap_method);
 	security->priv->phase2_type = NM_EAP_TO_PHASE2_METHOD (eap_method);
 	security->priv->key_mgmt = IW_AUTH_KEY_MGMT_802_1X;
 	security->priv->identity = g_strdup (identity);
-	security->priv->passwd = g_strdup (passwd);
+	if (private_key_passwd && strlen (private_key_passwd) > 0)
+		security->priv->private_key_passwd = g_strdup (private_key_passwd);
 	security->priv->anon_identity = g_strdup (anon_identity);
 	security->priv->private_key_file = g_strdup (private_key_file);
 	security->priv->client_cert_file = g_strdup (client_cert_file);
@@ -102,7 +104,6 @@ nm_gconf_wso_wpa_eap_new_deserialize_gconf (GConfClient *client, const char *net
 {
 	NMGConfWSOWPA_EAP *	security = NULL;
 	char *			identity = NULL;
-	char *			passwd = NULL;
 	char *			anon_identity = NULL;
 	char *			private_key_file = NULL;
 	char *			client_cert_file = NULL;
@@ -155,12 +156,6 @@ nm_gconf_wso_wpa_eap_new_deserialize_gconf (GConfClient *client, const char *net
 
 	nm_gconf_get_string_helper (client,
 						   GCONF_PATH_WIRELESS_NETWORKS,
-						   WPA_EAP_PREFIX"passwd",
-						   network,
-						   &passwd);
-
-	nm_gconf_get_string_helper (client,
-						   GCONF_PATH_WIRELESS_NETWORKS,
 						   WPA_EAP_PREFIX"anon_identity",
 						   network,
 						   &anon_identity);
@@ -192,14 +187,12 @@ nm_gconf_wso_wpa_eap_new_deserialize_gconf (GConfClient *client, const char *net
 	security->priv->phase2_type = phase2_type;
 	security->priv->key_mgmt = IW_AUTH_KEY_MGMT_802_1X;
 	security->priv->identity = g_strdup (identity);
-	security->priv->passwd = g_strdup (passwd);
 	security->priv->anon_identity = g_strdup (anon_identity);
 	security->priv->private_key_file = g_strdup (private_key_file);
 	security->priv->client_cert_file = g_strdup (client_cert_file);
 	security->priv->ca_cert_file = g_strdup (ca_cert_file);
 
 	g_free (identity);
-	g_free (passwd);
 	g_free (anon_identity);
 	g_free (private_key_file);
 	g_free (client_cert_file);
@@ -218,9 +211,9 @@ real_serialize_dbus (NMGConfWSO *instance, DBusMessageIter *iter)
 			self->priv->eap_method | self->priv->phase2_type,
 			self->priv->key_type,
 			self->priv->identity ? : "",
-			self->priv->passwd ? : "",
-			self->priv->anon_identity ? : "",
 			nm_gconf_wso_get_key (instance) ? : "",
+			self->priv->anon_identity ? : "",
+			self->priv->private_key_passwd ? : "",
 			self->priv->private_key_file ? : "",
 			self->priv->client_cert_file ? : "",
 			self->priv->ca_cert_file ? : "",
@@ -262,13 +255,6 @@ real_serialize_gconf (NMGConfWSO *instance, GConfClient *client, const char *net
 		g_free (key);
 	}
 
-	if (self->priv->passwd && strlen (self->priv->passwd) > 0)
-	{
-		key = g_strdup_printf ("%s/%s/%spasswd", GCONF_PATH_WIRELESS_NETWORKS, network, WPA_EAP_PREFIX);
-		gconf_client_set_string (client, key, self->priv->passwd, NULL);
-		g_free (key);
-	}
-
 	if (self->priv->anon_identity && strlen (self->priv->anon_identity) > 0)
 	{
 		key = g_strdup_printf ("%s/%s/%sanon_identity", GCONF_PATH_WIRELESS_NETWORKS, network, WPA_EAP_PREFIX);
@@ -300,6 +286,72 @@ real_serialize_gconf (NMGConfWSO *instance, GConfClient *client, const char *net
 	return TRUE;
 }
 
+static gboolean
+real_read_secrets (NMGConfWSO *instance,
+                   const char *ssid)
+{
+	NMGConfWSOWPA_EAP *self = NM_GCONF_WSO_WPA_EAP (instance);
+	GList *found_list = NULL;
+	GnomeKeyringResult ret;
+	GnomeKeyringFound *found;
+
+	NM_GCONF_WSO_CLASS (g_type_class_peek (NM_TYPE_GCONF_WSO))->read_secrets_func (instance, ssid);
+
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      "private-key-passwd",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      ssid,
+	                                      NULL);
+	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0)) {
+		nm_info ("No keyring secrets found for network %s", ssid);
+		return FALSE;
+	}
+
+	found = (GnomeKeyringFound *) found_list->data;
+	self->priv->private_key_passwd = g_strdup (found->secret);
+	gnome_keyring_found_list_free (found_list);
+
+	return TRUE;
+}
+
+static void
+real_write_secrets (NMGConfWSO *instance,
+                    const char *ssid)
+{
+	NMGConfWSOWPA_EAP *self = NM_GCONF_WSO_WPA_EAP (instance);
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attr;		
+	char *display_name;
+	GnomeKeyringResult ret;
+	guint32 item_id;
+
+	NM_GCONF_WSO_CLASS (g_type_class_peek (NM_TYPE_GCONF_WSO))->write_secrets_func (instance, ssid);
+
+	if (!self->priv->private_key_passwd)
+		return;
+
+	display_name = g_strdup_printf (_("Private key password for wireless network %s"), ssid);
+
+	attributes = gnome_keyring_attribute_list_new ();
+	attr.name = g_strdup ("private-key-passwd");
+	attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attr.value.string = g_strdup (ssid);
+	g_array_append_val (attributes, attr);
+
+	ret = gnome_keyring_item_create_sync (NULL,
+								   GNOME_KEYRING_ITEM_GENERIC_SECRET,
+								   display_name,
+								   attributes,
+								   self->priv->private_key_passwd,
+								   TRUE,
+								   &item_id);
+	if (ret != GNOME_KEYRING_RESULT_OK)
+		nm_warning ("Error saving secret for wireless network '%s' in keyring: %d", ssid, ret);
+
+	g_free (display_name);
+	gnome_keyring_attribute_list_free (attributes);
+}
 
 static void
 nm_gconf_wso_wpa_eap_init (NMGConfWSOWPA_EAP *self)
@@ -318,6 +370,8 @@ nm_gconf_wso_wpa_eap_class_init (NMGConfWSOWPA_EAPClass *klass)
 
 	par_class->serialize_dbus_func = real_serialize_dbus;
 	par_class->serialize_gconf_func = real_serialize_gconf;
+	par_class->read_secrets_func = real_read_secrets;
+	par_class->write_secrets_func = real_write_secrets;
 
 	g_type_class_add_private (object_class, sizeof (NMGConfWSOWPA_EAPPrivate));
 }

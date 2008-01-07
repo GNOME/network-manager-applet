@@ -397,3 +397,180 @@ nma_compat_convert_oldformat_entries (GConfClient *client)
 	g_slist_free (dir_list);
 
 }
+
+#define WPA_EAP_PREFIX "wpa_eap_"
+
+static void
+copy_one_wpa_private_key_password (GConfClient *client,
+                                   const char *ssid,
+                                   const char *escaped_network)
+{
+	char *private_key_passwd = NULL;
+	GnomeKeyringResult ret;
+	GnomeKeyringAttributeList *attrs;
+	char *display_name = NULL;
+	GList *found_list = NULL;
+	char *temp = NULL;
+	guint32 item_id = 0;
+
+	nm_gconf_get_string_helper (client,
+	                            GCONF_PATH_WIRELESS_NETWORKS,
+	                            WPA_EAP_PREFIX"private_key_file",
+	                            escaped_network,
+	                            &temp);
+	/* Nothing to do if a private key file wasn't specified */
+	if (!temp)
+		goto out;
+
+	/* Read private_key_passwd from keyring */
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      "essid",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      ssid,
+	                                      NULL);
+	if ((ret == GNOME_KEYRING_RESULT_OK) && g_list_length (found_list)) {
+		GnomeKeyringFound *found = (GnomeKeyringFound *) found_list->data;
+
+		private_key_passwd = g_strdup (found->secret);
+		/* Delete old private_key_password keyring item */
+		gnome_keyring_item_delete_sync (NULL, found->item_id);
+	}
+	gnome_keyring_found_list_free (found_list);
+
+	if (!private_key_passwd)
+		goto out;
+
+	/* Save private_key_passwd to keyring */
+	display_name = g_strdup_printf (_("Private key password for wireless network %s"), ssid);
+
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs, "private-key-passwd", ssid);
+	ret = gnome_keyring_item_create_sync (NULL,
+	                                      GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      display_name,
+	                                      attrs,
+	                                      private_key_passwd,
+	                                      TRUE,
+	                                      &item_id);
+	if (ret != GNOME_KEYRING_RESULT_OK)
+		nm_warning ("Error saving secret for wireless network '%s' in keyring: %d", ssid, ret);
+
+	g_free (display_name);
+	gnome_keyring_attribute_list_free (attrs);
+
+out:
+	g_free (private_key_passwd);
+	g_free (temp);
+}
+
+static void
+copy_one_wpa_password (GConfClient *client,
+                       const char *ssid,
+                       const char *dir,
+                       const char *escaped_network)
+{
+	char *gconf_key = NULL;
+	char *passwd = NULL;
+	char *display_name = NULL;
+	GnomeKeyringResult ret;
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attr;
+	guint32 item_id = 0;
+
+	nm_gconf_get_string_helper (client,
+	                            GCONF_PATH_WIRELESS_NETWORKS,
+	                            WPA_EAP_PREFIX"passwd",
+	                            escaped_network,
+	                            &passwd);
+	/* Nothing to do if a passwd wasn't specified */
+	if (!passwd)
+		return;
+	
+	display_name = g_strdup_printf (_("Passphrase for wireless network %s"), ssid);
+
+	attributes = gnome_keyring_attribute_list_new ();
+	attr.name = g_strdup ("essid");
+	attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attr.value.string = g_strdup (ssid);
+	g_array_append_val (attributes, attr);
+
+	ret = gnome_keyring_item_create_sync (NULL,
+								   GNOME_KEYRING_ITEM_GENERIC_SECRET,
+								   display_name,
+								   attributes,
+								   passwd,
+								   TRUE,
+								   &item_id);
+	if (ret != GNOME_KEYRING_RESULT_OK)
+		nm_warning ("Error saving secret for wireless network '%s' in keyring: %d", ssid, ret);
+
+	g_free (display_name);
+	gnome_keyring_attribute_list_free (attributes);
+
+	/* Remove passwd value from GConf */
+	gconf_key = g_strdup_printf ("%s/%spasswd", dir, WPA_EAP_PREFIX);
+	if (gconf_key) {
+		gconf_client_unset (client, gconf_key, NULL);
+		g_free (gconf_key);
+	}
+
+	g_free (passwd);
+}
+
+void
+nma_compat_move_wpa_eap_passwords (GConfClient *client)
+{
+	GSList *dir_list = NULL;
+	GSList *elt;
+
+	g_return_if_fail (client != NULL);
+
+	if (!(dir_list = gconf_client_all_dirs (client, GCONF_PATH_WIRELESS_NETWORKS, NULL)))
+		return;
+
+	for (elt = dir_list; elt; elt = g_slist_next (elt)) {
+		char key[100];
+		GConfValue *value;
+		char *dir = (char *) (elt->data);
+
+		g_snprintf (&key[0], 99, "%s/essid", dir);
+		if ((value = gconf_client_get (client, key, NULL))) {
+			const char *ssid;
+			char *escaped_network = NULL;
+			int we_cipher = -1;
+
+			if (value->type != GCONF_VALUE_STRING)
+				goto next;
+
+			ssid = gconf_value_get_string (value);
+			escaped_network = gconf_escape_key (ssid, strlen (ssid));
+			if (!escaped_network || strlen (escaped_network) == 0) {
+				nm_warning ("%s:%d (%s): couldn't unescape network name '%s'.",
+						__FILE__, __LINE__, __func__, ssid);
+				goto next;
+			}
+
+			/* Ignore any entry that looks like it doesn't need conversion */
+			if (!nm_gconf_get_int_helper (client,
+			                              GCONF_PATH_WIRELESS_NETWORKS,
+		                                  "we_cipher",
+		                                  escaped_network,
+		                                  &we_cipher))
+				goto next;
+
+			if (we_cipher != NM_AUTH_TYPE_WPA_EAP)
+				goto next;
+
+			copy_one_wpa_private_key_password (client, ssid, escaped_network);
+			copy_one_wpa_password (client, ssid, dir, escaped_network);
+
+next:
+			g_free (escaped_network);
+			gconf_value_free (value);
+		}
+		g_free (dir);
+	}
+	g_slist_free (dir_list);
+}
+

@@ -29,7 +29,6 @@
 #include <dbus/dbus.h>
 #include <gtk/gtk.h>
 #include <glade/glade.h>
-#include <gnome-keyring.h>
 #include <iwlib.h>
 
 #include "NetworkManager.h"
@@ -69,67 +68,6 @@ static inline gboolean nmi_network_type_valid (NMNetworkType type)
 }
 
 
-typedef struct NMGetNetworkKeyCBData
-{
-	NMApplet *applet;
-	DBusMessage *message;
-	NetworkDevice *dev;
-	char *net_path;
-	char *essid;
-} NMGetNetworkKeyCBData;
-
-static void free_network_key_cb_data (NMGetNetworkKeyCBData *cb_data)
-{
-	if (cb_data)
-	{
-		dbus_message_unref (cb_data->message);
-		network_device_unref (cb_data->dev);
-		g_free (cb_data->net_path);
-		g_free (cb_data->essid);
-		memset (cb_data, 0, sizeof (NMGetNetworkKeyCBData));
-		g_free (cb_data);
-	}
-}
-
-
-static void nmi_dbus_get_network_key_callback (GnomeKeyringResult result,
-                                               GList             *found_list,
-                                               gpointer           data)
-{
-	NMGetNetworkKeyCBData *	cb_data = (NMGetNetworkKeyCBData*) data;
-	NMApplet *			applet = cb_data->applet;
-	DBusMessage *			message = cb_data->message;
-	NetworkDevice *		dev = cb_data->dev;
-	char *				net_path = cb_data->net_path;
-	char *				essid = cb_data->essid;
-
-	if (result == GNOME_KEYRING_RESULT_OK && found_list)
-	{
-		gchar *			escaped_network;
-		GnomeKeyringFound *	found;
-		NMGConfWSO *		gconf_wso;
-
-		escaped_network = gconf_escape_key (essid, strlen (essid));
-		gconf_wso = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client, escaped_network);
-		g_free (escaped_network);
-
-		found = found_list->data;
-		nm_gconf_wso_set_key (gconf_wso, found->secret, strlen (found->secret));
-		nmi_dbus_return_user_key (applet->connection, message, gconf_wso);
-	}
-	else
-	{
-		WirelessNetwork *net;
-
-		nmi_passphrase_dialog_destroy (applet);
-		if ((net = network_device_get_wireless_network_by_nm_path (dev, net_path)))
-			applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, dev, net, message);
-	}
-
-	free_network_key_cb_data (cb_data);
-}
-
-
 /*
  * nmi_dbus_get_key_for_network
  *
@@ -152,8 +90,6 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	char *			temp = NULL;
 	char *			escaped_network;
 	int			we_cipher = -1;
-	char * 			private_key_file = NULL;
-	gboolean		have_priv_key_file = FALSE;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 	g_return_val_if_fail (message != NULL, NULL);
@@ -184,45 +120,10 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
          || !temp)
 		new_key = TRUE;
 
-	nm_gconf_get_string_helper (applet->gconf_client,
-                              GCONF_PATH_WIRELESS_NETWORKS,
-                              "wpa_eap_private_key_file", escaped_network, &private_key_file);
-	if (private_key_file) {
-		have_priv_key_file = TRUE;
-		g_free (private_key_file);
-	}
-
-	/* Hack: 802.1x passwords are not stored in the keyring */
-	if (!new_key && (we_cipher == NM_AUTH_TYPE_WPA_EAP && !have_priv_key_file))
-	{
-		NMGConfWSO *gconf_wso;
-		gconf_wso = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client,
-								escaped_network);
-		if (gconf_wso)
-		{
-			nmi_dbus_return_user_key(connection, message, gconf_wso);
-			g_object_unref (G_OBJECT (gconf_wso));
-			g_free (escaped_network);
-			return NULL;
-		}
-		else
-			new_key = TRUE;
-	}
-	g_free (escaped_network);
-
 	/* It's not a new key, so try to get the key from the keyring. */
 	if (!new_key)
 	{
-		NMGetNetworkKeyCBData *cb_data;
-
-		cb_data = g_malloc0 (sizeof (NMGetNetworkKeyCBData));
-		cb_data->applet = applet;
-		cb_data->essid = g_strdup (essid);
-		cb_data->message = message;
-		dbus_message_ref (message);
-		cb_data->dev = dev;
-		network_device_ref (dev);
-		cb_data->net_path = g_strdup (net_path);
+		NMGConfWSO *gconf_wso;
 
 		/* If the menu happens to be showing when we pop up the
 		 * keyring dialog, we get an X server deadlock.  So deactivate
@@ -231,18 +132,23 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 		if (applet->dropdown_menu && GTK_WIDGET_VISIBLE (GTK_WIDGET (applet->dropdown_menu)))
 			gtk_menu_shell_deactivate (GTK_MENU_SHELL (applet->dropdown_menu));
 
-		/* Get the essid key, if any, from the keyring */
-		gnome_keyring_find_itemsv (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-		                           (GnomeKeyringOperationGetListCallback) nmi_dbus_get_network_key_callback,
-		                           cb_data,
-		                           NULL,
-		                           "essid",
-		                           GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-		                           essid,
-		                           NULL);
+		gconf_wso = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client, escaped_network);
+		if (!gconf_wso) {
+			new_key = TRUE;
+			goto new_key;
+		}
+
+		/* Grab secrets from the keyring, if any */
+		if (!nm_gconf_wso_read_secrets (gconf_wso, essid)) {
+			new_key = TRUE;
+			goto new_key;
+		}
+
+		nmi_dbus_return_user_key (applet->connection, message, gconf_wso);
 	}
-	else
-	{
+
+new_key:
+	if (new_key) {
 		/* We only ask the user for a new key when we know about the network from NM,
 		 * since throwing up a dialog with a random essid from somewhere is a security issue.
 		 */
@@ -253,6 +159,7 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 		}
 	}
 
+	g_free (escaped_network);
 	return NULL;
 }
 
@@ -935,35 +842,7 @@ nmi_save_network_info (NMApplet *applet,
 	}
 
 	/* Stuff the encryption key into the keyring */
-	if (nm_gconf_wso_get_we_cipher (gconf_wso) != IW_AUTH_CIPHER_NONE)
-	{
-		GnomeKeyringAttributeList *	attributes;
-		GnomeKeyringAttribute 		attr;		
-		char *					display_name;
-		GnomeKeyringResult			ret;
-		guint32					item_id;
-
-		display_name = g_strdup_printf (_("Passphrase for wireless network %s"), essid);
-
-		attributes = gnome_keyring_attribute_list_new ();
-		attr.name = g_strdup ("essid");
-		attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-		attr.value.string = g_strdup (essid);
-		g_array_append_val (attributes, attr);
-
-		ret = gnome_keyring_item_create_sync (NULL,
-									   GNOME_KEYRING_ITEM_GENERIC_SECRET,
-									   display_name,
-									   attributes,
-									   nm_gconf_wso_get_key (gconf_wso),
-									   TRUE,
-									   &item_id);
-		if (ret != GNOME_KEYRING_RESULT_OK)
-			nm_warning ("Error saving secret for wireless network '%s' in keyring: %d", essid, ret);
-
-		g_free (display_name);
-		gnome_keyring_attribute_list_free (attributes);
-	}
+	nm_gconf_wso_write_secrets (gconf_wso, essid);
 
 out:
 	g_free (escaped_network);

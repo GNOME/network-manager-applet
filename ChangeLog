@@ -1,3 +1,50 @@
+2008-01-07  Dan Williams  <dcbw@redhat.com>
+
+	Fix gnome.org #359541, rh #220913, rh #220915
+
+	* src/applet.c
+		- (nma_get_instance): call compat functions to fix up WPA-EAP password
+			entries
+
+	* src/applet-compat.c
+		- (copy_one_wpa_private_key_password): new function; copy the WPA
+			private key password to the new keyring item
+		- (copy_one_wpa_password): new function; copy the WPA user password
+			from GConf to the keyring and delete the GConf entry
+		- (nma_compat_move_wpa_eap_passwords): new function; move the WPA
+			password from GConf (where it's unobfuscated) to the Gnome Keyring
+
+	* src/nm-gconf-wso.h
+	  src/nm-gconf-wso.c
+		- (nm_gconf_wso_read_secrets, real_read_secrets): new function; let
+			subclasses handle reading their own secrets, but provide a default
+			implementation that gets the default key
+		- (nm_gconf_wso_write_secrets, real_write_secrets): new function; let
+			subclasses handle writing their own secrets to the keyring, but
+			provide a default implementation that writes the default key
+
+	* src/nm-gconf-wso-wpa-eap.c
+		- (nm_gconf_wso_wpa_eap_new_deserialize_dbus, real_serialize_dbus): the
+			default secret should be the WPA password, not the private key
+			password
+		- (nm_gconf_wso_wpa_eap_new_deserialize_gconf): don't read the WPA
+			password out of GConf
+		- (real_serialize_gconf): don't write the WPA password to GConf
+		- (real_read_secrets): read both the WPA password and the private key
+			password from the keyring
+		- (real_write_secrets): write both the WPA password and the private key
+			password to the keyring
+		- (nm_gconf_wso_wpa_eap_class_init): override the superclass' secret
+			read/write functions
+
+	* src/applet-dbus-info.c
+		- (free_network_key_cb_data, nmi_dbus_get_network_key_callback):
+			removed
+		- (nmi_dbus_get_key_for_network): let the NMGConfWSO object handle
+			reading its own secrets
+		- (nmi_save_network_info): let the NMGConfWSO object handle writing
+			its own secrets
+
 2007-12-05  Dan Williams  <dcbw@redhat.com>
 
 	* COPYING.LIB

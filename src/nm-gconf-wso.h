@@ -57,6 +57,10 @@ struct _NMGConfWSOClass
 	gboolean	(*serialize_dbus_func)	(NMGConfWSO *self, DBusMessageIter *iter);
 
 	gboolean	(*serialize_gconf_func)	(NMGConfWSO *self, GConfClient *client, const char *network);
+
+	gboolean	(*read_secrets_func)	(NMGConfWSO *self, const char *ssid);
+
+	void		(*write_secrets_func)	(NMGConfWSO *self, const char *ssid);
 };
 
 
@@ -77,5 +81,9 @@ void nm_gconf_wso_set_key (NMGConfWSO *self, const char *key, int key_len);
 gboolean nm_gconf_wso_serialize_dbus (NMGConfWSO *self, DBusMessageIter *iter);
 
 gboolean nm_gconf_wso_serialize_gconf (NMGConfWSO *self, GConfClient *client, const char *network);
+
+gboolean nm_gconf_wso_read_secrets (NMGConfWSO *self, const char *ssid);
+
+void nm_gconf_wso_write_secrets (NMGConfWSO *self, const char *ssid);
 
 #endif	/* NM_GCONF_WSO_H */

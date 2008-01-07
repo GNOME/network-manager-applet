@@ -23,6 +23,7 @@
 #include <glib/gi18n.h>
 #include <dbus/dbus.h>
 #include <gconf/gconf-client.h>
+#include <gnome-keyring.h>
 #include <iwlib.h>
 
 #include "applet.h"
@@ -34,6 +35,7 @@
 #include "nm-gconf-wso-leap.h"
 #include "gconf-helpers.h"
 #include "wireless-security-option.h"
+#include "nm-utils.h"
 
 
 #define NM_GCONF_WSO_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NM_TYPE_GCONF_WSO, NMGConfWSOPrivate))
@@ -296,6 +298,81 @@ nm_gconf_wso_serialize_gconf (NMGConfWSO *self,
 	return NM_GCONF_WSO_GET_CLASS (self)->serialize_gconf_func (self, client, network);
 }
 
+gboolean
+nm_gconf_wso_read_secrets (NMGConfWSO *self,
+                           const char *ssid)
+{
+	return NM_GCONF_WSO_GET_CLASS (self)->read_secrets_func (self, ssid);
+}
+
+static gboolean
+real_read_secrets (NMGConfWSO *self,
+                   const char *ssid)
+{
+	GList *found_list = NULL;
+	GnomeKeyringResult ret;
+	GnomeKeyringFound *found;
+
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      "essid",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      ssid,
+	                                      NULL);
+	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0)) {
+		nm_info ("No keyring secrets found for network %s", ssid);
+		return FALSE;
+	}
+
+	found = (GnomeKeyringFound *) found_list->data;
+	nm_gconf_wso_set_key (self, found->secret, strlen (found->secret));
+	gnome_keyring_found_list_free (found_list);
+
+	return TRUE;
+}
+
+void
+nm_gconf_wso_write_secrets (NMGConfWSO *self,
+                            const char *ssid)
+{
+	NM_GCONF_WSO_GET_CLASS (self)->write_secrets_func (self, ssid);
+}
+
+static void
+real_write_secrets (NMGConfWSO *self,
+                    const char *ssid)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attr;		
+	char *display_name;
+	GnomeKeyringResult ret;
+	guint32 item_id;
+
+	if (nm_gconf_wso_get_we_cipher (self) == IW_AUTH_CIPHER_NONE)
+		return;
+
+	display_name = g_strdup_printf (_("Passphrase for wireless network %s"), ssid);
+
+	attributes = gnome_keyring_attribute_list_new ();
+	attr.name = g_strdup ("essid");
+	attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attr.value.string = g_strdup (ssid);
+	g_array_append_val (attributes, attr);
+
+	ret = gnome_keyring_item_create_sync (NULL,
+								   GNOME_KEYRING_ITEM_GENERIC_SECRET,
+								   display_name,
+								   attributes,
+								   nm_gconf_wso_get_key (self),
+								   TRUE,
+								   &item_id);
+	if (ret != GNOME_KEYRING_RESULT_OK)
+		nm_warning ("Error saving secret for wireless network '%s' in keyring: %d", ssid, ret);
+
+	g_free (display_name);
+	gnome_keyring_attribute_list_free (attributes);
+}
+
 static void
 nm_gconf_wso_init (NMGConfWSO * self)
 {
@@ -359,6 +436,8 @@ nm_gconf_wso_class_init (NMGConfWSOClass *klass)
 
 	klass->serialize_dbus_func = real_serialize_dbus;
 	klass->serialize_gconf_func = real_serialize_gconf;
+	klass->read_secrets_func = real_read_secrets;
+	klass->write_secrets_func = real_write_secrets;
 
 	g_type_class_add_private (object_class, sizeof (NMGConfWSOPrivate));
 }
