@@ -431,7 +431,7 @@ copy_one_wpa_private_key_password (GConfClient *client,
 	/* Nothing to do if the passwords were already converted */
 	if (ret != GNOME_KEYRING_RESULT_OK)
 		goto out;
-	if (!g_list_length (found_list))
+	if (g_list_length (found_list))
 		goto out;
 	gnome_keyring_found_list_free (found_list);
 	found_list = NULL;
