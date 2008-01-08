@@ -27,4 +27,6 @@
 
 void nma_compat_convert_oldformat_entries (GConfClient *client);
 
+void nma_compat_move_wpa_eap_passwords (GConfClient *client);
+
 #endif	/* APPLET_COMPAT_H */
