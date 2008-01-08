@@ -1,5 +1,17 @@
 2008-01-08  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+	  src/other-network-dialog.c
+	  src/passphrase-dialog.c
+		- (nma_show_vpn_failure_dialog, nma_show_vpn_login_banner_dialog,
+		   nma_driver_notify, show_warning_dialog, nma_other_network_dialog_run,
+		   nmi_passphrase_dialog_new): get the right behavior when faced with
+			metacticy's focus stealing prevention; we really do want the key
+			dialog to come up on top.  The issue is somewhat mitigated by the
+			fact that any input won't really leak.
+
+2008-01-08  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-compat.c
 		- (copy_one_wpa_private_key_password): really don't convert entries that
 			were already converted

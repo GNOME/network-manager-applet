@@ -397,8 +397,7 @@ nma_show_vpn_failure_dialog (const char *title,
 
 	/* Bash focus-stealing prevention in the face */
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
+	gdk_x11_window_set_user_time (dialog->window, gdk_x11_get_server_time (dialog->window));
 	gtk_widget_show_all (dialog);
 }
 #endif
@@ -491,8 +490,7 @@ nma_show_vpn_login_banner_dialog (const char *title,
 
 	/* Bash focus-stealing prevention in the face */
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
+	gdk_x11_window_set_user_time (dialog->window, gdk_x11_get_server_time (dialog->window));
 	gtk_widget_show_all (dialog);
 }
 #endif
@@ -771,8 +769,7 @@ gboolean nma_driver_notify (gpointer user_data)
 
 	/* Bash focus-stealing prevention in the face */
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
+	gdk_x11_window_set_user_time (dialog->window, gdk_x11_get_server_time (dialog->window));
 	gtk_widget_show_all (dialog);
 
 out:
@@ -1198,8 +1195,7 @@ static gboolean show_warning_dialog (char *mesg)
 
 	/* Bash focus-stealing prevention in the face */
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
+	gdk_x11_window_set_user_time (dialog->window, gdk_x11_get_server_time (dialog->window));
 	gtk_window_present (GTK_WINDOW (dialog));
 
 	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
