@@ -4,8 +4,7 @@ EXTRA_DIST =				\
 	CONTRIBUTING			\
 	intltool-extract.in		\
 	intltool-merge.in		\
-	intltool-update.in		\
-	COPYING.LIB
+	intltool-update.in
 	
 dbusservicedir = $(DBUS_SYS_DIR)
 dbusservice_DATA = nm-applet.conf
