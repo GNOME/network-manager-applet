@@ -25,6 +25,7 @@
 #include <glib.h>
 #include <nm-connection.h>
 #include <nm-device.h>
+#include <net/ethernet.h>
 
 char * utils_bin2hexstr (const char *bytes, int len, int final_len);
 
@@ -44,6 +45,8 @@ void utils_clear_filled_connection_certs (NMConnection *connection);
 guint32 utils_freq_to_channel (guint32 freq);
 guint32 utils_channel_to_freq (guint32 channel, char *band);
 guint32 utils_find_next_channel (guint32 channel, int direction, char *band);
+
+gboolean utils_ether_addr_valid (const struct ether_addr *test_addr);
 
 #endif /* UTILS_H */
 

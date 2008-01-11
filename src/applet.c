@@ -2888,7 +2888,7 @@ add_seen_bssid (AppletDbusConnectionSettings *connection,
 		return FALSE;
 
 	bssid = nm_access_point_get_hw_address (ap);
-	if (!bssid)
+	if (!bssid || !utils_ether_addr_valid (ether_aton (bssid)))
 		return FALSE;
 
 	lower_bssid = g_ascii_strdown (bssid, -1);
