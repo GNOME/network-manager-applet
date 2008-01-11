@@ -4,8 +4,9 @@ NULL=
 
 bin_PROGRAMS = nm-applet
 
-nm_applet_CPPFLAGS =									\
-	$(NMA_CFLAGS)										\
+nm_applet_CPPFLAGS = \
+	$(NMA_CFLAGS) \
+	$(NOTIFY_CFLAGS) \
 	-DICONDIR=\""$(datadir)/icons"\"						\
 	-DGLADEDIR=\""$(gladedir)"\"							\
 	-DBINDIR=\""$(bindir)"\"								\
@@ -20,10 +21,6 @@ nm_applet_CPPFLAGS =									\
 	-I${top_srcdir}/src/gconf-helpers  \
 	-I${top_srcdir}/src/wireless-security  \
 	$(NULL)
-
-if WITH_NOTIFY
-nm_applet_CPPFLAGS += $(NOTIFY_CFLAGS)
-endif
 
 nm_applet_SOURCES =			\
 	main.c				\
@@ -44,21 +41,12 @@ nm_applet_SOURCES =			\
 	wireless-dialog.c \
 	$(NULL)
 
-if !HAVE_GTK_2_10
-nm_applet_SOURCES += \
-	eggtrayicon.c	\
-	eggtrayicon.h
-endif
-
 nm_applet_LDADD = \
 	$(NMA_LIBS) \
+	$(NOTIFY_LIBS) \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/gconf-helpers/libgconf-helpers.la \
 	${top_builddir}/src/wireless-security/libwireless-security.la
-
-if WITH_NOTIFY
-nm_applet_LDADD += $(NOTIFY_LIBS)
-endif
 
 applet-marshal.h: Makefile.am applet-marshal.list
 	$(GLIB_GENMARSHAL) --prefix=applet_marshal $(srcdir)/applet-marshal.list --header > \

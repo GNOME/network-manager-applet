@@ -1,5 +1,30 @@
 2008-01-11  Dan Williams  <dcbw@redhat.com>
 
+	Require GTK+ 2.10 or higher and libnotify 0.4.3 or higher.
+
+	* src/vpn-properties/Makefile.am
+	  src/Makefile.am
+		- Remove pre-GTK+ 2.10 bits
+
+	* configure.ac
+		- Require GTK+ 2.10 or higher
+		- Require libnotify 0.4.3 or higher
+
+	* src/applet.h
+	  src/applet.c
+		- Unconditionalize libnotify support
+		- Delete pre-GTK+ 2.10 code
+		- Remove some unused variables like 'is_adhoc' and 'top_menu_item'
+		- Rename nma_send_event_notification() -> applet_do_notify()
+
+	* src/eggtrayicon.c
+	  src/eggtrayicon.h
+	  COPYING.LIB
+	  po/POTFILES.in
+		- Remove eggtrayicon; no longer used
+
+2008-01-11  Dan Williams  <dcbw@redhat.com>
+
 	* src/utils/utils.c
 	  src/utils/utils.h
 		- (utils_ether_addr_valid): new function

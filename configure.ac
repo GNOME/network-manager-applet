@@ -63,11 +63,12 @@ PKG_CHECK_MODULES(NMA,
 		 NetworkManager >= 0.7.0
 		 libnm_glib
 		 libnm-util
-		 gtk+-2.0 >= 2.6
+		 gtk+-2.0 >= 2.10
 		 libglade-2.0
 		 gmodule-export-2.0
 		 gconf-2.0
-		 gnome-keyring-1])
+		 gnome-keyring-1
+		 libnotify >= 0.4.3])
 
 ##### Find out the version of DBUS we're using
 dbus_version=`pkg-config --modversion dbus-1`
@@ -101,34 +102,6 @@ else
 	DBUS_CFLAGS="$DBUS_CFLAGS -DDBUS_VERSION_MICRO=$DBUS_VERSION_MICRO"
 fi
 AC_SUBST(DBUS_CFLAGS)
-
-AC_ARG_WITH(notify, AC_HELP_STRING([--with-notify], [Use libnotify]), enable_notify=$withval, enable_notify=auto)
-
-LIBNOTIFY_REQUIRED=0.3.0
-
-# Building with GTK+ >= 2.10 will use the GtkStatusIcon applet
-# implementation.  Earlier versions of GTK+ will use the EggTrayIcon
-# applet implementation.
-
-PKG_CHECK_EXISTS([gtk+-2.0 >= 2.10],[have_gtk_2_10=yes LIBNOTIFY_REQUIRED=0.4.3],[have_gtk_2_10=no])
-if test x"$have_gtk_2_10" != xno; then
-	AC_DEFINE_UNQUOTED([HAVE_STATUS_ICON], [1],
-		[Use GtkStatusIcon for the applet's icon rather than an EggTrayIcon])
-else
-	PKG_CHECK_MODULES([LIBGNOMEUI], [libgnomeui-2.0])
-fi
-
-if test x"$enable_notify" != xno; then
-	PKG_CHECK_MODULES([NOTIFY], [libnotify >= $LIBNOTIFY_REQUIRED], [enable_notify=yes],
-				[enable_notify=no])
-	if test "x$enable_notify" != "xno"; then
-		AC_DEFINE_UNQUOTED([ENABLE_NOTIFY], [1],
-		[Enable notifications with libnotify])
-	fi
-fi
-
-AM_CONDITIONAL(WITH_NOTIFY, test x"$enable_notify" != xno) # can't do it from inside 'if'
-AM_CONDITIONAL([HAVE_GTK_2_10],[test "$have_gtk_2_10" = "yes"])
 
 AC_MSG_CHECKING([for wireless-tools >= 28pre9])
 AC_TRY_COMPILE([#include <iwlib.h>],

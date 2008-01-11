@@ -29,29 +29,20 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
+#include <gdk/gdkx.h>
+
 #include <gconf/gconf-client.h>
 #include <glade/glade.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <net/ethernet.h>
 
-#ifdef GDK_WINDOWING_X11
-#include <gdk/gdkx.h>
-#endif
-
-#ifndef HAVE_STATUS_ICON
-#include "eggtrayicon.h"
-#endif
+#include <libnotify/notify.h>
 
 #include <nm-client.h>
 #include <nm-access-point.h>
 #include <nm-vpn-manager.h>
-
 #include <nm-device.h>
-
-#ifdef ENABLE_NOTIFY
-#include <libnotify/notify.h>
-#endif
 
 #include "applet-dbus-manager.h"
 #include "applet-dbus-settings.h"
@@ -85,7 +76,7 @@ typedef struct
  */
 typedef struct
 {
-	GObject                 parent_instance;
+	GObject parent_instance;
 
 	NMClient *nm_client;
 	NMVPNManager *vpn_manager;
@@ -95,14 +86,13 @@ typedef struct
 	NMSettings * settings;
 	GSList * active_connections;
 
-	GConfClient *		gconf_client;
-	char	*			glade_file;
+	GConfClient *	gconf_client;
+	char	*		glade_file;
 
 	/* Data model elements */
-	gboolean			is_adhoc;
-	gboolean			icons_loaded;
+	gboolean		icons_loaded;
 
-	GtkIconTheme *          icon_theme;
+	GtkIconTheme *	icon_theme;
 	GdkPixbuf *		no_connection_icon;
 	GdkPixbuf *		wired_icon;
 	GdkPixbuf *		adhoc_icon;
@@ -127,31 +117,20 @@ typedef struct
 	guint			animation_id;
 
 	/* Direct UI elements */
-#ifdef HAVE_STATUS_ICON
-	GtkStatusIcon *		status_icon;
-	int			size;
-#else
-	EggTrayIcon *		tray_icon;
-	GtkWidget *		pixmap;
-	GtkWidget *		event_box;
-	GtkTooltips *		tooltips;
-#endif /* HAVE_STATUS_ICON */
+	GtkStatusIcon *	status_icon;
+	int				size;
 
-	GtkWidget *		top_menu_item;
 	GtkWidget *		menu;
-	GtkSizeGroup *		encryption_size_group;
+	GtkSizeGroup *	encryption_size_group;
 
 	GtkWidget *		context_menu;
 	GtkWidget *		enable_networking_item;
 	GtkWidget *		stop_wireless_item;
 	GtkWidget *		info_menu_item;
-	GtkWidget *             connections_menu_item;
+	GtkWidget *		connections_menu_item;
 
-	GtkWidget *		passphrase_dialog;
 	GladeXML *		info_dialog_xml;
-#ifdef ENABLE_NOTIFY
 	NotifyNotification*	notification;
-#endif
 } NMApplet;
 
 GType nma_get_type (void);
