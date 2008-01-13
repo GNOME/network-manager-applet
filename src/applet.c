@@ -77,12 +77,7 @@
 #include "vpn-connection-info.h"
 #include "connection-editor/nm-connection-list.h"
 
-static void nma_icons_init (NMApplet *applet);
-static void nma_icons_free (NMApplet *applet);
-static gboolean nma_icons_load (NMApplet *applet);
-
 static void      foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer);
-static void		 foo_update_icon (NMApplet *applet);
 static void      foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_data, gboolean synthetic);
 static void      foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer user_data);
 static void      foo_manager_running (NMClient *client, gboolean running, gpointer user_data, gboolean synthetic);
@@ -1751,135 +1746,6 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 }
 
 
-/*
- * nma_status_icon_screen_changed_cb:
- *
- * Handle screen change events for the status icon
- *
- */
-static void nma_status_icon_screen_changed_cb (GtkStatusIcon *icon, GParamSpec *pspec, NMApplet *applet)
-{
-	nma_icons_init (applet);
-}
-
-/*
- * nma_status_icon_size_changed_cb:
- *
- * Handle size change events for the status icon
- *
- */
-static gboolean nma_status_icon_size_changed_cb (GtkStatusIcon *icon, gint size, NMApplet *applet)
-{
-	GSList *list;
-	gboolean running = FALSE;
-
-	nma_icons_free (applet);
-
-	applet->size = size;
-	nma_icons_load (applet);
-
-	list = nm_client_get_devices (applet->nm_client);
-	if (list) {
-		GSList *elt;
-		gboolean done = FALSE;
-
-		for (elt = list; elt && !done; elt = g_slist_next (elt)) {
-			NMDevice *dev = NM_DEVICE (elt->data);
-
-			switch (nm_device_get_state (dev)) {
-				case NM_DEVICE_STATE_PREPARE:
-				case NM_DEVICE_STATE_CONFIG:
-				case NM_DEVICE_STATE_NEED_AUTH:
-				case NM_DEVICE_STATE_IP_CONFIG:
-				case NM_DEVICE_STATE_ACTIVATED:
-					foo_device_state_changed (dev,
-					                          nm_device_get_state (dev),
-					                          applet, TRUE);
-					done = TRUE;
-					break;
-				default:
-					break;
-			}
-		}
-		g_slist_free (list);
-	}
-
-	running = nm_client_manager_is_running (applet->nm_client);
-	foo_manager_running (applet->nm_client, running, applet, TRUE);
-	foo_update_icon (applet);
-
-	return TRUE;
-}
-
-/*
- * nma_status_icon_activate_cb:
- *
- * Handle left clicks for the status icon
- *
- */
-static void nma_status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
-{
-	nma_menu_clear (applet);
-	gtk_menu_popup (GTK_MENU (applet->menu), NULL, NULL,
-			gtk_status_icon_position_menu, icon,
-			1, gtk_get_current_event_time ());
-}
-
-static void nma_status_icon_popup_menu_cb (GtkStatusIcon *icon, guint button, guint32 activate_time, NMApplet *applet)
-{
-	nma_context_menu_update (applet);
-	gtk_menu_popup (GTK_MENU (applet->context_menu), NULL, NULL,
-			gtk_status_icon_position_menu, icon,
-			button, activate_time);
-}
-
-/*
- * nma_status_icon_popup_menu_cb:
- *
- * Handle right clicks for the status icon
- *
- */
-
-/*
- * nma_setup_widgets
- *
- * Intialize the applet's widgets and packing, create the initial
- * menu of networks.
- *
- */
-static gboolean
-nma_setup_widgets (NMApplet *applet)
-{
-	g_return_val_if_fail (NM_IS_APPLET (applet), FALSE);
-
-	applet->status_icon = gtk_status_icon_new ();
-	if (!applet->status_icon)
-		return FALSE;
-
-	g_signal_connect (applet->status_icon, "notify::screen",
-			  G_CALLBACK (nma_status_icon_screen_changed_cb), applet);
-	g_signal_connect (applet->status_icon, "size-changed",
-			  G_CALLBACK (nma_status_icon_size_changed_cb), applet);
-	g_signal_connect (applet->status_icon, "activate",
-			  G_CALLBACK (nma_status_icon_activate_cb), applet);
-	g_signal_connect (applet->status_icon, "popup-menu",
-			  G_CALLBACK (nma_status_icon_popup_menu_cb), applet);
-
-	applet->menu = nma_menu_create (applet);
-	if (!applet->menu)
-		return FALSE;
-
-	applet->context_menu = nma_context_menu_create (applet);
-	if (!applet->context_menu)
-		return FALSE;
-	applet->encryption_size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
-	if (!applet->encryption_size_group)
-		return FALSE;
-
-	return TRUE;
-}
-
-
 /*****************************************************************************/
 
 static void
@@ -1908,13 +1774,6 @@ foo_update_icon (NMApplet *applet)
 
 	gtk_status_icon_set_from_pixbuf (applet->status_icon, pixbuf);
 	g_object_unref (pixbuf);
-
-	/* Add some padding to the applet to ensure the
-	 * highlight has some space.
-	 */
-/* 	gtk_widget_set_size_request (GTK_WIDGET (applet), -1, -1); */
-/* 	gtk_widget_size_request (GTK_WIDGET (applet), &requisition); */
-/* 	gtk_widget_set_size_request (GTK_WIDGET (applet), requisition.width + 6, requisition.height + 2); */
 }
 
 static void
@@ -3031,7 +2890,7 @@ static void nma_icons_free (NMApplet *applet)
 static gboolean
 nma_icons_load (NMApplet *applet)
 {
-	int 		size, i;
+	int 		size, i, j;
 	gboolean	success;
 
 	/*
@@ -3060,12 +2919,8 @@ nma_icons_load (NMApplet *applet)
 	ICON_LOAD(applet->wireless_75_icon, "nm-signal-75");
 	ICON_LOAD(applet->wireless_100_icon, "nm-signal-100");
 
-	for (i = 0; i < NUM_CONNECTING_STAGES; i++)
-	{
-		int j;
-
-		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
-		{
+	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
+		for (j = 0; j < NUM_CONNECTING_FRAMES; j++) {
 			char *name;
 
 			name = g_strdup_printf ("nm-stage%02d-connecting%02d", i+1, j+1);
@@ -3074,8 +2929,7 @@ nma_icons_load (NMApplet *applet)
 		}
 	}
 
-	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
-	{
+	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++) {
 		char *name;
 
 		name = g_strdup_printf ("nm-vpn-connecting%02d", i+1);
@@ -3109,6 +2963,7 @@ static void nma_icons_init (NMApplet *applet)
 		g_signal_handlers_disconnect_by_func (applet->icon_theme,
 						      G_CALLBACK (nma_icon_theme_changed),
 						      applet);
+		g_object_unref (G_OBJECT (applet->icon_theme));
 	}
 
 #if GTK_CHECK_VERSION(2, 11, 0)
@@ -3122,8 +2977,7 @@ static void nma_icons_init (NMApplet *applet)
 	/* If not done yet, append our search path */
 	path_appended = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (applet->icon_theme),
 					 		    "NMAIconPathAppended"));
-	if (path_appended == FALSE)
-	{
+	if (path_appended == FALSE) {
 		gtk_icon_theme_append_search_path (applet->icon_theme, ICONDIR);
 		g_object_set_data (G_OBJECT (applet->icon_theme),
 				   "NMAIconPathAppended",
@@ -3131,6 +2985,114 @@ static void nma_icons_init (NMApplet *applet)
 	}
 
 	g_signal_connect (applet->icon_theme, "changed", G_CALLBACK (nma_icon_theme_changed), applet);
+}
+
+static void
+status_icon_screen_changed_cb (GtkStatusIcon *icon,
+                               GParamSpec *pspec,
+                               NMApplet *applet)
+{
+	nma_icons_init (applet);
+	nma_icon_theme_changed (NULL, applet);
+}
+
+static gboolean
+status_icon_size_changed_cb (GtkStatusIcon *icon,
+                             gint size,
+                             NMApplet *applet)
+{
+	GSList *list;
+	gboolean running = FALSE;
+
+	nma_icons_free (applet);
+
+	applet->size = size;
+	nma_icons_load (applet);
+
+	list = nm_client_get_devices (applet->nm_client);
+	if (list) {
+		GSList *elt;
+		gboolean done = FALSE;
+
+		for (elt = list; elt && !done; elt = g_slist_next (elt)) {
+			NMDevice *dev = NM_DEVICE (elt->data);
+
+			switch (nm_device_get_state (dev)) {
+				case NM_DEVICE_STATE_PREPARE:
+				case NM_DEVICE_STATE_CONFIG:
+				case NM_DEVICE_STATE_NEED_AUTH:
+				case NM_DEVICE_STATE_IP_CONFIG:
+				case NM_DEVICE_STATE_ACTIVATED:
+					foo_device_state_changed (dev,
+					                          nm_device_get_state (dev),
+					                          applet, TRUE);
+					done = TRUE;
+					break;
+				default:
+					break;
+			}
+		}
+		g_slist_free (list);
+	}
+
+	running = nm_client_manager_is_running (applet->nm_client);
+	foo_manager_running (applet->nm_client, running, applet, TRUE);
+	foo_update_icon (applet);
+
+	return TRUE;
+}
+
+static void
+status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
+{
+	nma_menu_clear (applet);
+	gtk_menu_popup (GTK_MENU (applet->menu), NULL, NULL,
+			gtk_status_icon_position_menu, icon,
+			1, gtk_get_current_event_time ());
+}
+
+static void
+status_icon_popup_menu_cb (GtkStatusIcon *icon,
+                           guint button,
+                           guint32 activate_time,
+                           NMApplet *applet)
+{
+	nma_context_menu_update (applet);
+	gtk_menu_popup (GTK_MENU (applet->context_menu), NULL, NULL,
+			gtk_status_icon_position_menu, icon,
+			button, activate_time);
+}
+
+static gboolean
+setup_widgets (NMApplet *applet)
+{
+	g_return_val_if_fail (NM_IS_APPLET (applet), FALSE);
+
+	applet->status_icon = gtk_status_icon_new ();
+	if (!applet->status_icon)
+		return FALSE;
+
+	g_signal_connect (applet->status_icon, "notify::screen",
+			  G_CALLBACK (status_icon_screen_changed_cb), applet);
+	g_signal_connect (applet->status_icon, "size-changed",
+			  G_CALLBACK (status_icon_size_changed_cb), applet);
+	g_signal_connect (applet->status_icon, "activate",
+			  G_CALLBACK (status_icon_activate_cb), applet);
+	g_signal_connect (applet->status_icon, "popup-menu",
+			  G_CALLBACK (status_icon_popup_menu_cb), applet);
+
+	applet->menu = nma_menu_create (applet);
+	if (!applet->menu)
+		return FALSE;
+
+	applet->context_menu = nma_context_menu_create (applet);
+	if (!applet->context_menu)
+		return FALSE;
+	applet->encryption_size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
+	if (!applet->encryption_size_group)
+		return FALSE;
+
+	return TRUE;
 }
 
 static GObject *
@@ -3169,7 +3131,7 @@ constructor (GType type,
 	    goto error;
 
 	/* Load pixmaps and create applet widgets */
-	if (!nma_setup_widgets (applet))
+	if (!setup_widgets (applet))
 	    goto error;
 	nma_icons_init (applet);
 
