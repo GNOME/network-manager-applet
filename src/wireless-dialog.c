@@ -37,6 +37,7 @@
 #include <nm-setting-wireless.h>
 
 #include "applet.h"
+#include "applet-dialogs.h"
 #include "wireless-dialog.h"
 #include "wireless-security.h"
 #include "utils.h"
@@ -783,7 +784,7 @@ nma_wireless_dialog_new (const char *glade_file,
 
 	xml = glade_xml_new (glade_file, "wireless_dialog", NULL);
 	if (xml == NULL) {
-		nma_schedule_warning_dialog (_("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
+		applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
 		return NULL;
 	}
 

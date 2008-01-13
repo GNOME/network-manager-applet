@@ -39,6 +39,8 @@ nm_applet_SOURCES =			\
 	vpn-password-dialog.h	\
 	wireless-dialog.h \
 	wireless-dialog.c \
+	applet-dialogs.h \
+	applet-dialogs.c \
 	$(NULL)
 
 nm_applet_LDADD = \

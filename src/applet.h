@@ -135,8 +135,8 @@ typedef struct
 
 GType nma_get_type (void);
 
-NMApplet * nm_applet_new (void);
+NMApplet *nm_applet_new (void);
 
-void nma_schedule_warning_dialog (const char *msg);
+NMDevice *applet_get_first_active_device (NMApplet *applet);
 
 #endif

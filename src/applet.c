@@ -63,6 +63,7 @@
 
 #include "applet.h"
 #include "menu-items.h"
+#include "applet-dialogs.h"
 #include "vpn-password-dialog.h"
 #include "nm-utils.h"
 #include "gnome-keyring-md5.h"
@@ -96,8 +97,8 @@ static void      wireless_dialog_response_cb (GtkDialog *dialog, gint response, 
 
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
 
-static NMDevice *
-get_first_active_device (NMApplet *applet)
+NMDevice *
+applet_get_first_active_device (NMApplet *applet)
 {
 	GSList *iter;
 	NMDevice *dev = NULL;
@@ -134,331 +135,6 @@ static void nma_class_init (NMAppletClass *klass)
 
 	gobject_class->constructor = nma_constructor;
 	gobject_class->finalize = nma_finalize;
-}
-
-static GtkWidget * get_label (GtkWidget *info_dialog, GladeXML *xml, const char *name)
-{
-	GtkWidget *label;
-
-	if (xml != NULL)
-	{
-		label = glade_xml_get_widget (xml, name);
-		g_object_set_data (G_OBJECT (info_dialog), name, label);
-	}
-	else
-		label = g_object_get_data (G_OBJECT (info_dialog), name);
-
-	return label;
-}
-
-static void nma_show_info_dialog_err (const char *err)
-{
-	GtkWidget *dialog;
-
-	dialog = gtk_message_dialog_new_with_markup (NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-			"<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s", _("Error displaying connection information:"), err);
-	gtk_window_present (GTK_WINDOW (dialog));
-	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
-}
-
-static const gchar *
-ip4_address_as_string (guint32 ip)
-{
-	struct in_addr tmp_addr;
-	gchar *ip_string;
-
-	tmp_addr.s_addr = ip;
-	ip_string = inet_ntoa (tmp_addr);
-
-	return ip_string;
-}
-
-static GtkWidget *
-nma_info_dialog_update (GladeXML *xml, NMDevice *device)
-{
-	GtkWidget *dialog;
-	GtkWidget *label;
-	NMIP4Config *cfg;
-	guint32 speed;
-	char *str;
-	char *iface_and_type;
-	GArray *dns;
-
-	g_return_val_if_fail (xml != NULL, NULL);
-	g_return_val_if_fail (device != NULL, NULL);
-
-	dialog = glade_xml_get_widget (xml, "info_dialog");
-	if (!dialog) {
-		nma_show_info_dialog_err (_("Could not find some required resources (the glade file)!"));
-		return NULL;
-	}
-
-	cfg = nm_device_get_ip4_config (device);
-
-	speed = 0;
-	if (NM_IS_DEVICE_802_3_ETHERNET (device)) {
-		/* Wireless speed in Mb/s */
-		speed = nm_device_802_3_ethernet_get_speed (NM_DEVICE_802_3_ETHERNET (device));
-	} else if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
-		/* Wireless speed in b/s */
-		speed = nm_device_802_11_wireless_get_bitrate (NM_DEVICE_802_11_WIRELESS (device));
-		speed /= 1000000;
-	}
-
-	str = nm_device_get_iface (device);
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		iface_and_type = g_strdup_printf (_("Wired Ethernet (%s)"), str);
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		iface_and_type = g_strdup_printf (_("Wireless Ethernet (%s)"), str);
-	else
-		iface_and_type = g_strdup (str);
-
-	g_free (str);
-
-	label = get_label (dialog, xml, "label-interface");
-	gtk_label_set_text (GTK_LABEL (label), iface_and_type);
-	g_free (iface_and_type);
-
-	label = get_label (dialog, xml, "label-speed");
-	if (speed) {
-		str = g_strdup_printf (_("%u Mb/s"), speed);
-		gtk_label_set_text (GTK_LABEL (label), str);
-		g_free (str);
-	} else
-		gtk_label_set_text (GTK_LABEL (label), _("Unknown"));
-
-	str = nm_device_get_driver (device);
-	label = get_label (dialog, xml, "label-driver");
-	gtk_label_set_text (GTK_LABEL (label), str);
-	g_free (str);
-
-	label = get_label (dialog, xml, "label-ip-address");
-	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (nm_ip4_config_get_address (cfg)));
-
-	label = get_label (dialog, xml, "label-broadcast-address");
-	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (nm_ip4_config_get_broadcast (cfg)));
-
-	label = get_label (dialog, xml, "label-subnet-mask");
-	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (nm_ip4_config_get_netmask (cfg)));
-
-	label = get_label (dialog, xml, "label-default-route");
-	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (nm_ip4_config_get_gateway (cfg)));
-
-	dns = nm_ip4_config_get_nameservers (cfg);
-	if (dns) {
-		label = get_label (dialog, xml, "label-primary-dns");
-		if (dns->len > 0) {
-			gtk_label_set_text (GTK_LABEL (label),
-							ip4_address_as_string (g_array_index (dns, guint32, 0)));
-		} else {
-			gtk_label_set_text (GTK_LABEL (label), "");
-		}
-
-		label = get_label (dialog, xml, "label-secondary-dns");
-		if (dns->len > 1) {
-			gtk_label_set_text (GTK_LABEL (label),
-							ip4_address_as_string (g_array_index (dns, guint32, 1)));
-		} else {
-			gtk_label_set_text (GTK_LABEL (label), "");
-		}
-
-		g_array_free (dns, TRUE);
-	}
-
-	str = NULL;
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		str = nm_device_802_3_ethernet_get_hw_address (NM_DEVICE_802_3_ETHERNET (device));
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		str = g_strdup (nm_device_802_11_wireless_get_hw_address (NM_DEVICE_802_11_WIRELESS (device)));
-
-	label = get_label (dialog, xml, "label-hardware-address");
-	gtk_label_set_text (GTK_LABEL (label), str ? str : "");
-	g_free (str);
-
-	return dialog;
-}
-
-static void
-nma_show_info_cb (GtkMenuItem *mi, NMApplet *applet)
-{
-	GtkWidget *dialog;
-	NMDevice *device;
-
-	device = get_first_active_device (applet);
-	if (!device) {
-		nma_show_info_dialog_err (_("No active connections!"));
-		return;
-	}
-
-	dialog = nma_info_dialog_update (applet->info_dialog_xml, device);
-	if (!dialog)
-		return;
-
-	g_signal_connect (dialog, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), dialog);
-	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_hide), dialog);
-	gtk_window_present (GTK_WINDOW (dialog));
-}
-
-static void
-nma_edit_connections_cb (GtkMenuItem *mi, NMApplet *applet)
-{
-}
-
-static void 
-about_dialog_handle_url_cb (GtkAboutDialog *about, const gchar *url, gpointer data)
-{
-	GError *error = NULL;
-	gboolean ret;
-	char *cmdline;
-	GdkScreen *gscreen;
-	GtkWidget *error_dialog;
-
-	gscreen = gtk_window_get_screen (GTK_WINDOW (about));
-
-	cmdline = g_strconcat ("gnome-open ", url, NULL);
-	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
-	g_free (cmdline);
-
-	if (ret == TRUE)
-		return;
-
-	g_error_free (error);
-	error = NULL;
-
-	cmdline = g_strconcat ("xdg-open ", url, NULL);
-	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
-	g_free (cmdline);
-	
-	if (ret == FALSE) {
-		error_dialog = gtk_message_dialog_new ( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "Failed to show url %s", error->message); 
-		gtk_dialog_run (GTK_DIALOG (error_dialog));
-		g_error_free (error);
-	}
-
-}
-
-/* Make email in about dialog clickable */
-static void 
-about_dialog_handle_email_cb (GtkAboutDialog *about, const char *email_address, gpointer data)
-{
-	GError *error = NULL;
-	gboolean ret;
-	char *cmdline;
-	GdkScreen *gscreen;
-	GtkWidget *error_dialog;
-
-	gscreen = gtk_window_get_screen (GTK_WINDOW (about));
-
-	cmdline = g_strconcat ("gnome-open mailto:", email_address, NULL);
-	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
-	g_free (cmdline);
-
-	if (ret == TRUE)
-		return;
-
-	g_error_free (error);
-	error = NULL;
-
-	cmdline = g_strconcat ("xdg-open mailto:", email_address, NULL);
-	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
-	g_free (cmdline);
-	
-	if (ret == FALSE) {
-		error_dialog = gtk_message_dialog_new ( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "Failed to show url %s", error->message); 
-		gtk_dialog_run (GTK_DIALOG (error_dialog));
-		g_error_free (error);
-	}
-}
-
-static void 
-nma_about_cb (GtkMenuItem *mi, NMApplet *applet)
-{
-	static const gchar *authors[] = {
-		"The Red Hat Desktop Team, including:\n",
-		"Christopher Aillon <caillon@redhat.com>",
-		"Jonathan Blandford <jrb@redhat.com>",
-		"John Palmieri <johnp@redhat.com>",
-		"Ray Strode <rstrode@redhat.com>",
-		"Colin Walters <walters@redhat.com>",
-		"Dan Williams <dcbw@redhat.com>",
-		"David Zeuthen <davidz@redhat.com>",
-		"\nAnd others, including:\n",
-		"Bill Moss <bmoss@clemson.edu>",
-		"Tom Parker",
-		"j@bootlab.org",
-		"Peter Jones <pjones@redhat.com>",
-		"Robert Love <rml@novell.com>",
-		"Tim Niemueller <tim@niemueller.de>",
-		NULL
-	};
-
-	static const gchar *artists[] = {
-		"Diana Fong <dfong@redhat.com>",
-		NULL
-	};
-
-
-	/* FIXME: unnecessary with libgnomeui >= 2.16.0 */
-	static gboolean been_here = FALSE;
-	if (!been_here) {
-		been_here = TRUE;
-		gtk_about_dialog_set_url_hook (about_dialog_handle_url_cb, NULL, NULL);
-		gtk_about_dialog_set_email_hook (about_dialog_handle_email_cb, NULL, NULL);
-	}
-
-	gtk_show_about_dialog (NULL,
-	                       "version", VERSION,
-	                       "copyright", _("Copyright \xc2\xa9 2004-2007 Red Hat, Inc.\n"
-					                  "Copyright \xc2\xa9 2005-2007 Novell, Inc."),
-	                       "comments", _("Notification area applet for managing your network devices and connections."),
-	                       "website", "http://www.gnome.org/projects/NetworkManager/",
-	                       "website-label", _("NetworkManager Website"),
-	                       "authors", authors,
-	                       "artists", artists,
-	                       "translator-credits", _("translator-credits"),
-	                       "logo-icon-name", GTK_STOCK_NETWORK,
-	                       NULL);
-}
-
-
-/*
- * show_warning_dialog
- *
- * pop up a warning or error dialog with certain text
- *
- */
-static gboolean
-show_warning_dialog (gpointer user_data)
-{
-	char *msg = (char *) user_data;
-	GtkWidget *dialog;
-
-	dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, msg, NULL);
-	g_free (msg);
-
-	/* Bash focus-stealing prevention in the face */
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gtk_get_current_event_time ());
-	gtk_window_present (GTK_WINDOW (dialog));
-
-	g_signal_connect_swapped (dialog, "response",
-	                          G_CALLBACK (gtk_widget_destroy),
-	                          dialog);
-	return FALSE;
-}
-
-
-void
-nma_schedule_warning_dialog (const char *msg)
-{
-	g_return_if_fail (msg != NULL);
-
-	g_idle_add ((GSourceFunc) show_warning_dialog, g_strdup (msg));
 }
 
 
@@ -1124,7 +800,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 		return;
 
 	/* Connection inactive, activate */
-	device = get_first_active_device (applet);
+	device = applet_get_first_active_device (applet);
 	connection = nm_vpn_manager_connect (applet->vpn_manager,
 								  NM_DBUS_SERVICE_USER_SETTINGS,
 								  nm_connection_settings_get_dbus_object_path (connection_settings),
@@ -2018,6 +1694,11 @@ nma_context_menu_update (NMApplet *applet)
 		gtk_widget_hide (applet->stop_wireless_item);
 }
 
+static void
+nma_edit_connections_cb (GtkMenuItem *mi, NMApplet *applet)
+{
+}
+
 /*
  * nma_context_menu_create
  *
@@ -2052,10 +1733,10 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 
 	/* 'Connection Information' item */
 	applet->info_menu_item = gtk_image_menu_item_new_with_mnemonic (_("Connection _Information"));
-	g_signal_connect (applet->info_menu_item,
-				   "activate",
-				   G_CALLBACK (nma_show_info_cb),
-				   applet);
+	g_signal_connect_swapped (applet->info_menu_item,
+	                          "activate",
+	                          G_CALLBACK (applet_info_dialog_show),
+	                          applet);
 	image = gtk_image_new_from_stock (GTK_STOCK_INFO, GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (applet->info_menu_item), image);
 	gtk_menu_shell_append (menu, applet->info_menu_item);
@@ -2083,7 +1764,7 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 
 	/* About item */
 	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_About"));
-	g_signal_connect (menu_item, "activate", G_CALLBACK (nma_about_cb), applet);
+	g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (applet_about_dialog_show), applet);
 	image = gtk_image_new_from_stock (GTK_STOCK_ABOUT, GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), image);
 	gtk_menu_shell_append (menu, menu_item);
@@ -3349,7 +3030,7 @@ nma_constructor (GType type,
 
 	applet->glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
 	if (!applet->glade_file || !g_file_test (applet->glade_file, G_FILE_TEST_IS_REGULAR)) {
-		nma_schedule_warning_dialog (_("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
+		applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
 		goto error;
 	}
 
@@ -3551,10 +3232,8 @@ nma_icons_load_from_disk (NMApplet *applet)
 	success = TRUE;
 
 out:
-	if (!success)
-	{
-		char *msg = g_strdup(_("The NetworkManager applet could not find some required resources.  It cannot continue.\n"));
-		show_warning_dialog (msg);
+	if (!success) {
+		applet_warning_dialog_show (_("The NetworkManager applet could not find some required resources.  It cannot continue.\n"));
 		nma_icons_free (applet);
 	}
 
