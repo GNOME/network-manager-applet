@@ -77,12 +77,10 @@
 #include "vpn-connection-info.h"
 #include "connection-editor/nm-connection-list.h"
 
-static GObject * nma_constructor (GType type, guint n_props, GObjectConstructParam *construct_props);
-static void      nma_icons_init (NMApplet *applet);
-static void      nma_icons_free (NMApplet *applet);
-static void      nma_icons_zero (NMApplet *applet);
-static gboolean  nma_icons_load_from_disk (NMApplet *applet);
-static void      nma_finalize (GObject *object);
+static void nma_icons_init (NMApplet *applet);
+static void nma_icons_free (NMApplet *applet);
+static gboolean nma_icons_load (NMApplet *applet);
+
 static void      foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer);
 static void		 foo_update_icon (NMApplet *applet);
 static void      foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_data, gboolean synthetic);
@@ -115,28 +113,6 @@ applet_get_first_active_device (NMApplet *applet)
 
 	return dev;
 }
-
-static void nma_init (NMApplet *applet)
-{
-	applet->animation_id = 0;
-	applet->animation_step = 0;
-	applet->icon_theme = NULL;
-	applet->notification = NULL;
-	applet->size = -1;
-
-	nma_icons_zero (applet);
-
-/*	gtk_window_set_default_icon_from_file (ICONDIR"/NMApplet/wireless-applet.png", NULL); */
-}
-
-static void nma_class_init (NMAppletClass *klass)
-{
-	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	gobject_class->constructor = nma_constructor;
-	gobject_class->finalize = nma_finalize;
-}
-
 
 typedef struct {
 	NMApplet *applet;
@@ -1800,7 +1776,7 @@ static gboolean nma_status_icon_size_changed_cb (GtkStatusIcon *icon, gint size,
 	nma_icons_free (applet);
 
 	applet->size = size;
-	nma_icons_load_from_disk (applet);
+	nma_icons_load (applet);
 
 	list = nm_client_get_devices (applet->nm_client);
 	if (list) {
@@ -2966,51 +2942,201 @@ applet_add_default_ethernet_connection (AppletDbusSettings *settings)
 
 /*****************************************************************************/
 
-/*
- * nma_finalize
- *
- * Destroy the applet and clean up its data
- *
- */
-static void nma_finalize (GObject *object)
+static void nma_icons_zero (NMApplet *applet)
 {
-	NMApplet *applet = NM_APPLET (object);
+	int i, j;
 
-	nma_menu_clear (applet);
-	nma_icons_free (applet);
+	applet->no_connection_icon = NULL;
+	applet->wired_icon = NULL;
+	applet->adhoc_icon = NULL;
+	applet->gsm_icon = NULL;
+	applet->vpn_lock_icon = NULL;
 
-	if (applet->notification) {
-		notify_notification_close (applet->notification, NULL);
-		g_object_unref (applet->notification);
+	applet->wireless_00_icon = NULL;
+	applet->wireless_25_icon = NULL;
+	applet->wireless_50_icon = NULL;
+	applet->wireless_75_icon = NULL;
+	applet->wireless_100_icon = NULL;
+
+	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
+		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
+			applet->network_connecting_icons[i][j] = NULL;
 	}
 
-	g_free (applet->glade_file);
-	if (applet->info_dialog_xml)
-		g_object_unref (applet->info_dialog_xml);
+	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
+		applet->vpn_connecting_icons[i] = NULL;
 
-	g_object_unref (applet->gconf_client);
+	applet->icons_loaded = FALSE;
+}
 
-	if (applet->status_icon)
-		g_object_unref (applet->status_icon);
+static void nma_icons_free (NMApplet *applet)
+{
+	int i, j;
 
-	g_hash_table_destroy (applet->vpn_connections);
-	g_object_unref (applet->vpn_manager);
-	g_object_unref (applet->nm_client);
+	if (!applet->icons_loaded)
+		return;
 
-	clear_active_connections (applet);
+	for (i = 0; i <= ICON_LAYER_MAX; i++) {
+		if (applet->icon_layers[i])
+			g_object_unref (applet->icon_layers[i]);
+	}
 
-	if (applet->nm_client)
-		g_object_unref (applet->nm_client);
+	if (applet->no_connection_icon)
+		g_object_unref (applet->no_connection_icon);
+	if (applet->wired_icon)
+		g_object_unref (applet->wired_icon);
+	if (applet->adhoc_icon)
+		g_object_unref (applet->adhoc_icon);
+	if (applet->gsm_icon)
+		g_object_unref (applet->gsm_icon);
+	if (applet->vpn_lock_icon)
+		g_object_unref (applet->vpn_lock_icon);
 
-	crypto_deinit ();
+	if (applet->wireless_00_icon)
+		g_object_unref (applet->wireless_00_icon);
+	if (applet->wireless_25_icon)
+		g_object_unref (applet->wireless_25_icon);
+	if (applet->wireless_50_icon)
+		g_object_unref (applet->wireless_50_icon);
+	if (applet->wireless_75_icon)
+		g_object_unref (applet->wireless_75_icon);
+	if (applet->wireless_100_icon)
+		g_object_unref (applet->wireless_100_icon);
 
-	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
+	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
+		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
+			if (applet->network_connecting_icons[i][j])
+				g_object_unref (applet->network_connecting_icons[i][j]);
+	}
+
+	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
+		if (applet->vpn_connecting_icons[i])
+			g_object_unref (applet->vpn_connecting_icons[i]);
+
+	nma_icons_zero (applet);
+}
+
+#define ICON_LOAD(x, y)	\
+	{		\
+		GError *err = NULL; \
+		x = gtk_icon_theme_load_icon (applet->icon_theme, y, size, 0, &err); \
+		if (x == NULL) { \
+			success = FALSE; \
+			g_warning ("Icon %s missing: %s", y, err->message); \
+			g_error_free (err); \
+			goto out; \
+		} \
+	}
+
+static gboolean
+nma_icons_load (NMApplet *applet)
+{
+	int 		size, i;
+	gboolean	success;
+
+	/*
+	 * NULL out the icons, so if we error and call nma_icons_free(), we don't hit stale
+	 * data on the not-yet-reached icons.  This can happen off nma_icon_theme_changed().
+	 */
+
+	g_return_val_if_fail (!applet->icons_loaded, FALSE);
+
+	size = applet->size;
+	if (size < 0)
+		return FALSE;
+
+	for (i = 0; i <= ICON_LAYER_MAX; i++)
+		applet->icon_layers[i] = NULL;
+
+	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
+	ICON_LOAD(applet->wired_icon, "nm-device-wired");
+	ICON_LOAD(applet->adhoc_icon, "nm-adhoc");
+	ICON_LOAD(applet->gsm_icon, "nm-adhoc"); /* FIXME: Until there's no GSM device icon */
+	ICON_LOAD(applet->vpn_lock_icon, "nm-vpn-lock");
+
+	ICON_LOAD(applet->wireless_00_icon, "nm-signal-00");
+	ICON_LOAD(applet->wireless_25_icon, "nm-signal-25");
+	ICON_LOAD(applet->wireless_50_icon, "nm-signal-50");
+	ICON_LOAD(applet->wireless_75_icon, "nm-signal-75");
+	ICON_LOAD(applet->wireless_100_icon, "nm-signal-100");
+
+	for (i = 0; i < NUM_CONNECTING_STAGES; i++)
+	{
+		int j;
+
+		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
+		{
+			char *name;
+
+			name = g_strdup_printf ("nm-stage%02d-connecting%02d", i+1, j+1);
+			ICON_LOAD(applet->network_connecting_icons[i][j], name);
+			g_free (name);
+		}
+	}
+
+	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
+	{
+		char *name;
+
+		name = g_strdup_printf ("nm-vpn-connecting%02d", i+1);
+		ICON_LOAD(applet->vpn_connecting_icons[i], name);
+		g_free (name);
+	}
+
+	success = TRUE;
+
+out:
+	if (!success) {
+		applet_warning_dialog_show (_("The NetworkManager applet could not find some required resources.  It cannot continue.\n"));
+		nma_icons_free (applet);
+	}
+
+	return success;
+}
+
+static void nma_icon_theme_changed (GtkIconTheme *icon_theme, NMApplet *applet)
+{
+	nma_icons_free (applet);
+	nma_icons_load (applet);
+}
+
+static void nma_icons_init (NMApplet *applet)
+{
+	GdkScreen *screen;
+	gboolean path_appended;
+
+	if (applet->icon_theme) {
+		g_signal_handlers_disconnect_by_func (applet->icon_theme,
+						      G_CALLBACK (nma_icon_theme_changed),
+						      applet);
+	}
+
+#if GTK_CHECK_VERSION(2, 11, 0)
+	screen = gtk_status_icon_get_screen (applet->status_icon);
+#else
+	screen = gdk_screen_get_default ();
+#endif /* gtk 2.11.0 */
+	
+	applet->icon_theme = gtk_icon_theme_get_for_screen (screen);
+
+	/* If not done yet, append our search path */
+	path_appended = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (applet->icon_theme),
+					 		    "NMAIconPathAppended"));
+	if (path_appended == FALSE)
+	{
+		gtk_icon_theme_append_search_path (applet->icon_theme, ICONDIR);
+		g_object_set_data (G_OBJECT (applet->icon_theme),
+				   "NMAIconPathAppended",
+				   GINT_TO_POINTER (TRUE));
+	}
+
+	g_signal_connect (applet->icon_theme, "changed", G_CALLBACK (nma_icon_theme_changed), applet);
 }
 
 static GObject *
-nma_constructor (GType type,
-                 guint n_props,
-                 GObjectConstructParam *construct_props)
+constructor (GType type,
+             guint n_props,
+             GObjectConstructParam *construct_props)
 {
 	NMApplet *applet;
 	AppletDBusManager * dbus_mgr;
@@ -3082,201 +3208,58 @@ error:
 	return NULL;
 }
 
-
-static void nma_icons_free (NMApplet *applet)
+static void finalize (GObject *object)
 {
-	int i;
+	NMApplet *applet = NM_APPLET (object);
 
-	if (!applet->icons_loaded)
-		return;
+	nma_menu_clear (applet);
+	nma_icons_free (applet);
 
-	for (i = 0; i <= ICON_LAYER_MAX; i++) {
-		if (applet->icon_layers[i])
-			g_object_unref (applet->icon_layers[i]);
+	if (applet->notification) {
+		notify_notification_close (applet->notification, NULL);
+		g_object_unref (applet->notification);
 	}
 
-	if (applet->no_connection_icon)
-		g_object_unref (applet->no_connection_icon);
-	if (applet->wired_icon)
-		g_object_unref (applet->wired_icon);
-	if (applet->adhoc_icon)
-		g_object_unref (applet->adhoc_icon);
-	if (applet->gsm_icon)
-		g_object_unref (applet->gsm_icon);
-	if (applet->vpn_lock_icon)
-		g_object_unref (applet->vpn_lock_icon);
+	g_free (applet->glade_file);
+	if (applet->info_dialog_xml)
+		g_object_unref (applet->info_dialog_xml);
 
-	if (applet->wireless_00_icon)
-		g_object_unref (applet->wireless_00_icon);
-	if (applet->wireless_25_icon)
-		g_object_unref (applet->wireless_25_icon);
-	if (applet->wireless_50_icon)
-		g_object_unref (applet->wireless_50_icon);
-	if (applet->wireless_75_icon)
-		g_object_unref (applet->wireless_75_icon);
-	if (applet->wireless_100_icon)
-		g_object_unref (applet->wireless_100_icon);
+	g_object_unref (applet->gconf_client);
 
-	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
-		int j;
+	if (applet->status_icon)
+		g_object_unref (applet->status_icon);
 
-		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
-			if (applet->network_connecting_icons[i][j])
-				g_object_unref (applet->network_connecting_icons[i][j]);
-	}
+	g_hash_table_destroy (applet->vpn_connections);
+	g_object_unref (applet->vpn_manager);
+	g_object_unref (applet->nm_client);
 
-	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
-		if (applet->vpn_connecting_icons[i])
-			g_object_unref (applet->vpn_connecting_icons[i]);
+	clear_active_connections (applet);
+
+	if (applet->nm_client)
+		g_object_unref (applet->nm_client);
+
+	crypto_deinit ();
+
+	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
+}
+
+static void nma_init (NMApplet *applet)
+{
+	applet->animation_id = 0;
+	applet->animation_step = 0;
+	applet->icon_theme = NULL;
+	applet->notification = NULL;
+	applet->size = -1;
 
 	nma_icons_zero (applet);
 }
 
-static void nma_icons_zero (NMApplet *applet)
+static void nma_class_init (NMAppletClass *klass)
 {
-	int i;
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-	applet->no_connection_icon = NULL;
-	applet->wired_icon = NULL;
-	applet->adhoc_icon = NULL;
-	applet->gsm_icon = NULL;
-	applet->vpn_lock_icon = NULL;
-
-	applet->wireless_00_icon = NULL;
-	applet->wireless_25_icon = NULL;
-	applet->wireless_50_icon = NULL;
-	applet->wireless_75_icon = NULL;
-	applet->wireless_100_icon = NULL;
-
-	for (i = 0; i < NUM_CONNECTING_STAGES; i++)
-	{
-		int j;
-
-		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
-			applet->network_connecting_icons[i][j] = NULL;
-	}
-
-	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
-		applet->vpn_connecting_icons[i] = NULL;
-
-	applet->icons_loaded = FALSE;
-}
-
-#define ICON_LOAD(x, y)	\
-	{		\
-		GError *err = NULL; \
-		x = gtk_icon_theme_load_icon (applet->icon_theme, y, size, 0, &err); \
-		if (x == NULL) { \
-			success = FALSE; \
-			g_warning ("Icon %s missing: %s", y, err->message); \
-			g_error_free (err); \
-			goto out; \
-		} \
-	}
-
-static gboolean
-nma_icons_load_from_disk (NMApplet *applet)
-{
-	int 		size, i;
-	gboolean	success;
-
-	/*
-	 * NULL out the icons, so if we error and call nma_icons_free(), we don't hit stale
-	 * data on the not-yet-reached icons.  This can happen off nma_icon_theme_changed().
-	 */
-
-	g_return_val_if_fail (!applet->icons_loaded, FALSE);
-
-	size = applet->size;
-	if (size < 0)
-		return FALSE;
-
-	for (i = 0; i <= ICON_LAYER_MAX; i++)
-		applet->icon_layers[i] = NULL;
-
-	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
-	ICON_LOAD(applet->wired_icon, "nm-device-wired");
-	ICON_LOAD(applet->adhoc_icon, "nm-adhoc");
-	ICON_LOAD(applet->gsm_icon, "nm-adhoc"); /* FIXME: Until there's no GSM device icon */
-	ICON_LOAD(applet->vpn_lock_icon, "nm-vpn-lock");
-
-	ICON_LOAD(applet->wireless_00_icon, "nm-signal-00");
-	ICON_LOAD(applet->wireless_25_icon, "nm-signal-25");
-	ICON_LOAD(applet->wireless_50_icon, "nm-signal-50");
-	ICON_LOAD(applet->wireless_75_icon, "nm-signal-75");
-	ICON_LOAD(applet->wireless_100_icon, "nm-signal-100");
-
-	for (i = 0; i < NUM_CONNECTING_STAGES; i++)
-	{
-		int j;
-
-		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
-		{
-			char *name;
-
-			name = g_strdup_printf ("nm-stage%02d-connecting%02d", i+1, j+1);
-			ICON_LOAD(applet->network_connecting_icons[i][j], name);
-			g_free (name);
-		}
-	}
-
-	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
-	{
-		char *name;
-
-		name = g_strdup_printf ("nm-vpn-connecting%02d", i+1);
-		ICON_LOAD(applet->vpn_connecting_icons[i], name);
-		g_free (name);
-	}
-
-	success = TRUE;
-
-out:
-	if (!success) {
-		applet_warning_dialog_show (_("The NetworkManager applet could not find some required resources.  It cannot continue.\n"));
-		nma_icons_free (applet);
-	}
-
-	return success;
-}
-
-static void nma_icon_theme_changed (GtkIconTheme *icon_theme, NMApplet *applet)
-{
-	nma_icons_free (applet);
-	nma_icons_load_from_disk (applet);
-}
-
-static void nma_icons_init (NMApplet *applet)
-{
-	GdkScreen *screen;
-	gboolean path_appended;
-
-	if (applet->icon_theme) {
-		g_signal_handlers_disconnect_by_func (applet->icon_theme,
-						      G_CALLBACK (nma_icon_theme_changed),
-						      applet);
-	}
-
-#if GTK_CHECK_VERSION(2, 11, 0)
-	screen = gtk_status_icon_get_screen (applet->status_icon);
-#else
-	screen = gdk_screen_get_default ();
-#endif /* gtk 2.11.0 */
-	
-	applet->icon_theme = gtk_icon_theme_get_for_screen (screen);
-
-	/* If not done yet, append our search path */
-	path_appended = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (applet->icon_theme),
-					 		    "NMAIconPathAppended"));
-	if (path_appended == FALSE)
-	{
-		gtk_icon_theme_append_search_path (applet->icon_theme, ICONDIR);
-		g_object_set_data (G_OBJECT (applet->icon_theme),
-				   "NMAIconPathAppended",
-				   GINT_TO_POINTER (TRUE));
-	}
-
-	g_signal_connect (applet->icon_theme, "changed", G_CALLBACK (nma_icon_theme_changed), applet);
+	gobject_class->constructor = constructor;
+	gobject_class->finalize = finalize;
 }
 
 NMApplet *
