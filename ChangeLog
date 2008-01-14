@@ -1,3 +1,10 @@
+2008-01-14  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.c
+		- (read_one_setting_value_from_gconf): fix memory leaks; need to free
+			the value read from GConf after calling g_object_set() becuase the
+			g_object_set() call should copy the value, not take ownership
+
 2008-01-13  Dan Williams  <dcbw@redhat.com>
 
 	* src/wireless-dialog.c

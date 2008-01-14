@@ -611,8 +611,10 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	if (type == G_TYPE_STRING) {
 		char *str_val = NULL;
 
-		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting->name, &str_val))
+		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting->name, &str_val)) {
 			g_object_set (setting, key, str_val, NULL);
+			g_free (str_val);
+		}
 	} else if (type == G_TYPE_UINT) {
 		int int_val = 0;
 
@@ -636,6 +638,7 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			
 			if (!(uint_val == G_MAXUINT64 && errno == ERANGE))
 				g_object_set (setting, key, uint_val, NULL);
+			g_free (tmp_str);
 		}
 	} else if (type == G_TYPE_BOOLEAN) {
 		gboolean bool_val;
@@ -654,18 +657,24 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
 		GByteArray *ba_val = NULL;
 
-		if (nm_gconf_get_bytearray_helper (info->client, info->dir, key, setting->name, &ba_val))
+		if (nm_gconf_get_bytearray_helper (info->client, info->dir, key, setting->name, &ba_val)) {
 			g_object_set (setting, key, ba_val, NULL);
+			g_byte_array_free (ba_val, TRUE);
+		}
 	} else if (type == dbus_g_type_get_collection ("GSList", G_TYPE_STRING)) {
 		GSList *sa_val = NULL;
 
-		if (nm_gconf_get_stringlist_helper (info->client, info->dir, key, setting->name, &sa_val))
+		if (nm_gconf_get_stringlist_helper (info->client, info->dir, key, setting->name, &sa_val)) {
 			g_object_set (setting, key, sa_val, NULL);
+			// FIXME: how to free sa_val?
+		}
 	} else if (type == dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE)) {
 		GHashTable *vh_val = NULL;
 
-		if (nm_gconf_get_valuehash_helper (info->client, info->dir, setting->name, &vh_val))
+		if (nm_gconf_get_valuehash_helper (info->client, info->dir, setting->name, &vh_val)) {
 			g_object_set (setting, key, vh_val, NULL);
+			g_hash_table_destroy (vh_val);
+		}
 	} else
 		g_warning ("Unhandled setting property type: '%s'", G_VALUE_TYPE_NAME (value));
 }
