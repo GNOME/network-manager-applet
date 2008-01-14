@@ -670,6 +670,7 @@ dialog_init (GtkWidget *dialog,
 		                         _("Secrets required by wireless network"),
 		                         tmp);
 		g_free (esc_ssid);
+		g_free (tmp);
 	} else if (user_created_adhoc) {
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Create New Wireless Network"));
 		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
