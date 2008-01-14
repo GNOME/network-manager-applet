@@ -90,6 +90,8 @@ typedef struct
 	char	*		glade_file;
 
 	/* Data model elements */
+	guint			update_icon_id;
+	gboolean		nm_running;
 	gboolean		icons_loaded;
 
 	GtkIconTheme *	icon_theme;

@@ -43,10 +43,12 @@
 #include <arpa/inet.h>
 #include <netinet/ether.h>
 
+#include <NetworkManagerVPN.h>
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
 #include <nm-utils.h>
 #include <nm-connection.h>
+#include <nm-vpn-connection.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-wired.h>
 #include <nm-setting-wireless.h>
@@ -77,12 +79,7 @@
 #include "vpn-connection-info.h"
 #include "connection-editor/nm-connection-list.h"
 
-static void      foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer);
-static void      foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_data, gboolean synthetic);
-static void      foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer user_data);
-static void      foo_manager_running (NMClient *client, gboolean running, gpointer user_data, gboolean synthetic);
-static void      foo_manager_running_cb (NMClient *client, gboolean running, gpointer user_data);
-static void      foo_client_state_change (NMClient *client, NMState state, gpointer user_data, gboolean synthetic);
+static void applet_schedule_update_icon (NMApplet *applet);
 static gboolean  add_seen_bssid (AppletDbusConnectionSettings *connection, NMAccessPoint *ap);
 static GtkWidget *nma_menu_create (NMApplet *applet);
 static void      wireless_dialog_response_cb (GtkDialog *dialog, gint response, gpointer user_data);
@@ -638,42 +635,30 @@ applet_do_notify (NMApplet *applet,
 	notify_notification_show (applet->notification, NULL);
 }
 
-static void
-show_vpn_state (NMApplet *applet,
-                NMVPNConnection *connection,
-                NMVPNConnectionState state,
-                NMVPNConnectionStateReason reason)
+static gboolean
+animation_timeout (gpointer data)
 {
-	const char *banner;
-	char *title, *msg;
+	applet_schedule_update_icon (NM_APPLET (data));
+	return TRUE;
+}
 
-	switch (state) {
-	case NM_VPN_CONNECTION_STATE_ACTIVATED:
-		banner = nm_vpn_connection_get_banner (connection);
-		if (banner && strlen (banner)) {
-			title = _("VPN Login Message");
-			msg = g_strdup_printf ("\n%s", banner);
-			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
-			g_free (msg);
-		}
-		break;
-	default:
-		break;
+static void
+start_animation_timeout (NMApplet *applet)
+{
+	if (applet->animation_id == 0) {
+		applet->animation_step = 0;
+		applet->animation_id = g_timeout_add (100, animation_timeout, applet);
 	}
 }
 
-static gboolean
-vpn_animation_timeout (gpointer data)
+static void
+clear_animation_timeout (NMApplet *applet)
 {
-	NMApplet *applet = NM_APPLET (data);
-
-	foo_set_icon (applet, applet->vpn_connecting_icons[applet->animation_step], ICON_LAYER_VPN);
-
-	applet->animation_step++;
-	if (applet->animation_step >= NUM_VPN_CONNECTING_FRAMES)
+	if (applet->animation_id) {
+		g_source_remove (applet->animation_id);
+		applet->animation_id = 0;
 		applet->animation_step = 0;
-
-	return TRUE;
+	}
 }
 
 static void
@@ -683,41 +668,35 @@ vpn_connection_state_changed (NMVPNConnection *connection,
                               gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
+	const char *banner;
+	char *title, *msg;
 
 	switch (state) {
-	case NM_VPN_CONNECTION_STATE_ACTIVATED:
-		if (applet->animation_id) {
-			g_source_remove (applet->animation_id);
-			applet->animation_id = 0;
-		}
-		foo_set_icon (applet, applet->vpn_lock_icon, ICON_LAYER_VPN);
-//		vpn_connection_info_set_last_attempt_success (info, TRUE);
-		break;
 	case NM_VPN_CONNECTION_STATE_PREPARE:
 	case NM_VPN_CONNECTION_STATE_NEED_AUTH:
 	case NM_VPN_CONNECTION_STATE_CONNECT:
 	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-		if (applet->animation_id == 0) {
-			applet->animation_step = 0;
-			applet->animation_id = g_timeout_add (100, vpn_animation_timeout, applet);
+		start_animation_timeout (applet);
+		break;
+	case NM_VPN_CONNECTION_STATE_ACTIVATED:
+		banner = nm_vpn_connection_get_banner (connection);
+		if (banner && strlen (banner)) {
+			title = _("VPN Login Message");
+			msg = g_strdup_printf ("\n%s", banner);
+			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
+			g_free (msg);
 		}
+		clear_animation_timeout (applet);
 		break;
 	case NM_VPN_CONNECTION_STATE_FAILED:
-//		vpn_connection_info_set_last_attempt_success (info, FALSE);
-		/* Fall through */
 	case NM_VPN_CONNECTION_STATE_DISCONNECTED:
-		g_hash_table_remove (applet->vpn_connections, nm_vpn_connection_get_name (connection));
-		/* Fall through */
 	default:
-		if (applet->animation_id) {
-			g_source_remove (applet->animation_id);
-			applet->animation_id = 0;
-		}
-		foo_set_icon (applet, NULL, ICON_LAYER_VPN);
+		g_hash_table_remove (applet->vpn_connections, nm_vpn_connection_get_name (connection));
+		clear_animation_timeout (applet);
 		break;
 	}
 
-	show_vpn_state (applet, connection, state, reason);
+	applet_schedule_update_icon (applet);
 }
 
 static const char *
@@ -730,7 +709,7 @@ get_connection_id (AppletDbusConnectionSettings *settings)
 }
 
 static void
-add_one_vpn_connection (NMApplet *applet, NMVPNConnection *connection)
+add_one_vpn_connection (NMVPNConnection *connection, NMApplet *applet)
 {
 	const char *name;
 
@@ -777,12 +756,13 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 								  nm_connection_settings_get_dbus_object_path (connection_settings),
 								  device);
 	if (connection) {
-		add_one_vpn_connection (applet, connection);
+		add_one_vpn_connection (connection, applet);
 	} else {
 		/* FIXME: show a dialog or something */
 		g_warning ("Can't connect");
 	}
 		
+	applet_schedule_update_icon (applet);
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
@@ -1749,10 +1729,26 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 /*****************************************************************************/
 
 static void
-foo_update_icon (NMApplet *applet)
+foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
 {
-	GdkPixbuf	*pixbuf;
 	int i;
+
+	if (layer > ICON_LAYER_MAX) {
+		g_warning ("Tried to icon to invalid layer %d", layer);
+		return;
+	}
+
+	/* Ignore setting of the same icon as is already displayed */
+	if (applet->icon_layers[layer] == pixbuf)
+		return;
+
+	if (applet->icon_layers[layer]) {
+		g_object_unref (applet->icon_layers[layer]);
+		applet->icon_layers[layer] = NULL;
+	}
+
+	if (pixbuf)
+		applet->icon_layers[layer] = g_object_ref (pixbuf);
 
 	if (!applet->icon_layers[0]) {
 		pixbuf = g_object_ref (applet->no_connection_icon);
@@ -1777,135 +1773,9 @@ foo_update_icon (NMApplet *applet)
 }
 
 static void
-foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
+foo_bssid_strength_changed (NMAccessPoint *ap, GParamSpec *pspec, gpointer user_data)
 {
-	if (layer > ICON_LAYER_MAX) {
-		g_warning ("Tried to icon to invalid layer %d", layer);
-		return;
-	}
-
-	/* Ignore setting of the same icon as is already displayed */
-	if (applet->icon_layers[layer] == pixbuf)
-		return;
-
-	if (applet->icon_layers[layer]) {
-		g_object_unref (applet->icon_layers[layer]);
-		applet->icon_layers[layer] = NULL;
-	}
-
-	if (pixbuf)
-		applet->icon_layers[layer] = g_object_ref (pixbuf);
-
-	foo_update_icon (applet);
-}
-
-/* Device independent code to set the status icon and tooltip */
-
-typedef struct {
-	NMApplet *applet;
-	NMDeviceState state;
-} FooAnimationTimeoutInfo;
-
-static void
-foo_animation_timeout_info_destroy (gpointer data)
-{
-	g_slice_free (FooAnimationTimeoutInfo, data);
-}
-
-static gboolean
-foo_animation_timeout (gpointer data)
-{
-	FooAnimationTimeoutInfo *info = (FooAnimationTimeoutInfo *) data;
-	NMApplet *applet = info->applet;
-	int stage = -1;
-
-	switch (info->state) {
-	case NM_DEVICE_STATE_PREPARE:
-		stage = 0;
-		break;
-	case NM_DEVICE_STATE_CONFIG:
-		stage = 1;
-		break;
-	case NM_DEVICE_STATE_IP_CONFIG:
-		stage = 2;
-		break;
-	default:
-		break;
-	}
-
-	if (stage >= 0)
-		foo_set_icon (applet,
-				    applet->network_connecting_icons[stage][applet->animation_step],
-				    ICON_LAYER_LINK);
-
-	applet->animation_step++;
-	if (applet->animation_step >= NUM_CONNECTING_FRAMES)
-		applet->animation_step = 0;
-
-	return TRUE;
-}
-
-static void
-foo_common_state_change (NMDevice *device, NMDeviceState state, NMApplet *applet)
-{
-	FooAnimationTimeoutInfo *info;
-
-	switch (state) {
-	case NM_DEVICE_STATE_PREPARE:
-	case NM_DEVICE_STATE_CONFIG:
-	case NM_DEVICE_STATE_IP_CONFIG:
-		info = g_slice_new (FooAnimationTimeoutInfo);
-		info->applet = applet;
-		info->state = state;
-		applet->animation_step = 0;
-		applet->animation_id = g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
-										   100, foo_animation_timeout,
-										   info,
-										   foo_animation_timeout_info_destroy);
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-		break;
-	default:
-		break;
-	}
-}
-
-/* Wireless device */
-
-static void
-foo_bssid_strength_changed (NMAccessPoint *ap,
-                            GParamSpec *pspec,
-                            gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-	GdkPixbuf *pixbuf;
-	const GByteArray * ssid;
-	char *tip;
-	guint32 strength = 0;
-
-	strength = nm_access_point_get_strength (ap);
-	strength = CLAMP (strength, 0, 100);
-
-	if (strength > 80)
-		pixbuf = applet->wireless_100_icon;
-	else if (strength > 55)
-		pixbuf = applet->wireless_75_icon;
-	else if (strength > 30)
-		pixbuf = applet->wireless_50_icon;
-	else if (strength > 5)
-		pixbuf = applet->wireless_25_icon;
-	else
-		pixbuf = applet->wireless_00_icon;
-
-	foo_set_icon (applet, pixbuf, ICON_LAYER_LINK);
-
-	ssid = nm_access_point_get_ssid (ap);
-	tip = g_strdup_printf (_("Wireless network connection to '%s' (%d%%)"),
-	                       ssid ? nm_utils_escape_ssid (ssid->data, ssid->len) : "(none)",
-	                       strength);
-
-	gtk_status_icon_set_tooltip (applet->status_icon, tip);
-	g_free (tip);
+	applet_schedule_update_icon (NM_APPLET (user_data));
 }
 
 static AppletDbusConnectionSettings *
@@ -1933,73 +1803,21 @@ get_connection_settings_for_device (NMDevice *device, NMApplet *applet)
 	return NULL;
 }
 
-static gboolean
-foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, NMApplet *applet, gboolean synthetic)
+static void
+foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, NMApplet *applet)
 {
 	AppletDbusConnectionSettings *connection_settings;
-	char *iface;
 	NMAccessPoint *ap = NULL;
-	const GByteArray * ssid;
-	char *tip = NULL;
-	gboolean handled = FALSE;
-	char * esc_ssid = "(none)";
-
-	iface = nm_device_get_iface (NM_DEVICE (device));
 
 	if (state == NM_DEVICE_STATE_PREPARE ||
 	    state == NM_DEVICE_STATE_CONFIG ||
 	    state == NM_DEVICE_STATE_IP_CONFIG ||
 	    state == NM_DEVICE_STATE_NEED_AUTH ||
 	    state == NM_DEVICE_STATE_ACTIVATED) {
-
 		ap = nm_device_802_11_wireless_get_active_access_point (NM_DEVICE_802_11_WIRELESS (device));
-		if (ap) {
-			ssid = nm_access_point_get_ssid (ap);
-			if (ssid)
-				esc_ssid = (char *) nm_utils_escape_ssid (ssid->data, ssid->len);
-		}
 	}
 
-	switch (state) {
-	case NM_DEVICE_STATE_PREPARE:
-		tip = g_strdup_printf (_("Preparing device %s for the wireless network '%s'..."), iface, esc_ssid);
-		break;
-	case NM_DEVICE_STATE_CONFIG:
-		tip = g_strdup_printf (_("Attempting to join the wireless network '%s'..."), esc_ssid);
-		break;
-	case NM_DEVICE_STATE_IP_CONFIG:
-		tip = g_strdup_printf (_("Requesting a network address from the wireless network '%s'..."), esc_ssid);
-		break;
-	case NM_DEVICE_STATE_NEED_AUTH:
-		tip = g_strdup_printf (_("Waiting for Network Key for the wireless network '%s'..."), esc_ssid);
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-		applet->current_ap = ap;
-		if (ap) {
-			g_object_ref (applet->current_ap);
-			g_signal_connect (ap,
-			                  "notify::" NM_ACCESS_POINT_STRENGTH,
-			                  G_CALLBACK (foo_bssid_strength_changed),
-			                  applet);
-			foo_bssid_strength_changed (ap, NULL, applet);
-
-			/* Save this BSSID to seen-bssids list */
-			connection_settings = get_connection_settings_for_device (NM_DEVICE (device), applet);
-			if (connection_settings && add_seen_bssid (connection_settings, ap))
-				applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));
-		}
-
-		if (!synthetic) {
-			tip = g_strdup_printf (_("You are now connected to the wireless network '%s'."), esc_ssid);
-			applet_do_notify (applet, NOTIFY_URGENCY_LOW, _("Connection Established"),
-							  tip, "nm-device-wireless");
-			g_free (tip);
-		}
-
-		tip = g_strdup_printf (_("Wireless network connection to '%s'"), esc_ssid);
-		handled = TRUE;
-		break;
-	default:
+	if (!ap || (ap != applet->current_ap)) {
 		if (applet->current_ap) {
 			g_signal_handlers_disconnect_by_func (applet->current_ap,
 			                                      G_CALLBACK (foo_bssid_strength_changed),
@@ -2007,109 +1825,87 @@ foo_wireless_state_change (NMDevice80211Wireless *device, NMDeviceState state, N
 			g_object_unref (applet->current_ap);
 			applet->current_ap = NULL;
 		}
-		break;
+
+		if (ap)
+			applet->current_ap = g_object_ref (ap);
 	}
 
-	g_free (iface);
+	if (state == NM_DEVICE_STATE_ACTIVATED) {
+		char *msg;
+		char *esc_ssid = NULL;
 
-	if (tip) {
-		gtk_status_icon_set_tooltip (applet->status_icon, tip);
-		g_free (tip);
+		if (applet->current_ap) {
+			const GByteArray *ssid = nm_access_point_get_ssid (applet->current_ap);
+
+			if (ssid)
+				esc_ssid = (char *) nm_utils_escape_ssid (ssid->data, ssid->len);
+
+			g_object_ref (applet->current_ap);
+			g_signal_connect (applet->current_ap,
+			                  "notify::" NM_ACCESS_POINT_STRENGTH,
+			                  G_CALLBACK (foo_bssid_strength_changed),
+			                  applet);
+
+			/* Save this BSSID to seen-bssids list */
+			connection_settings = get_connection_settings_for_device (NM_DEVICE (device), applet);
+			if (connection_settings && add_seen_bssid (connection_settings, applet->current_ap))
+				applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));
+		}
+
+		msg = g_strdup_printf (_("You are now connected to the wireless network '%s'."),
+		                       esc_ssid ? esc_ssid : _("(none)"));
+		applet_do_notify (applet, NOTIFY_URGENCY_LOW, _("Connection Established"),
+						  msg, "nm-device-wireless");
+		g_free (msg);
 	}
-
-	return handled;
 }
 
-/* Wired device */
-
-static gboolean
-foo_wired_state_change (NMDevice8023Ethernet *device, NMDeviceState state, NMApplet *applet, gboolean synthetic)
+static void
+foo_wired_state_change (NMDevice8023Ethernet *device, NMDeviceState state, NMApplet *applet)
 {
-	char *iface;
-	char *tip = NULL;
-	gboolean handled = FALSE;
+	if (state == NM_DEVICE_STATE_ACTIVATED) {
+		applet_do_notify (applet, NOTIFY_URGENCY_LOW,
+						  _("Connection Established"),
+						  _("You are now connected to the wired network."),
+						  "nm-device-wired");
+	}
+}
 
-	iface = nm_device_get_iface (NM_DEVICE (device));
+static void
+foo_gsm_state_change (NMGsmDevice *device, NMDeviceState state, NMApplet *applet)
+{
+	if (state == NM_DEVICE_STATE_ACTIVATED) {
+		applet_do_notify (applet, NOTIFY_URGENCY_LOW,
+					      _("Connection Established"),
+						  _("You are now connected to the GSM network."),
+						  "nm-adhoc");
+	}
+}
 
+static void
+foo_common_state_change (NMDevice *device, NMDeviceState state, NMApplet *applet)
+{
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		tip = g_strdup_printf (_("Preparing device %s for the wired network..."), iface);
-		break;
 	case NM_DEVICE_STATE_CONFIG:
-		tip = g_strdup_printf (_("Configuring device %s for the wired network..."), iface);
-		break;
+	case NM_DEVICE_STATE_NEED_AUTH:
 	case NM_DEVICE_STATE_IP_CONFIG:
-		tip = g_strdup_printf (_("Requesting a network address from the wired network..."));
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-		foo_set_icon (applet, applet->wired_icon, ICON_LAYER_LINK);
-		tip = g_strdup (_("Wired network connection"));
-
-		if (!synthetic) {
-			applet_do_notify (applet, NOTIFY_URGENCY_LOW,
-							  _("Connection Established"),
-							  _("You are now connected to the wired network."),
-							  "nm-device-wired");
-		}
-
-		handled = TRUE;
+		start_animation_timeout (applet);
 		break;
 	default:
+		clear_animation_timeout (applet);
 		break;
 	}
-
-	g_free (iface);
-
-	if (tip) {
-		gtk_status_icon_set_tooltip (applet->status_icon, tip);
-		g_free (tip);
-	}
-
-	return handled;
 }
 
-/* GSM device */
-
-static gboolean
-foo_gsm_state_change (NMGsmDevice *device, NMDeviceState state, NMApplet *applet, gboolean synthetic)
+static void
+clear_active_connections (NMApplet *applet)
 {
-	char *iface;
-	char *tip = NULL;
-	gboolean handled = FALSE;
-
-	iface = nm_device_get_iface (NM_DEVICE (device));
-
-	switch (state) {
-	case NM_DEVICE_STATE_PREPARE:
-		tip = g_strdup_printf (_("Dialing GSM device %s..."), iface);
-		break;
-	case NM_DEVICE_STATE_CONFIG:
-		tip = g_strdup_printf (_("Running PPP on device %s..."), iface);
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-		foo_set_icon (applet, applet->gsm_icon, ICON_LAYER_LINK);
-		tip = g_strdup (_("GSM connection"));
-		if (!synthetic) {
-			applet_do_notify (applet, NOTIFY_URGENCY_LOW,
-						      _("Connection Established"),
-							  _("You are now connected to the GSM network."),
-							  "nm-adhoc");
-		}
-
-		handled = TRUE;
-		break;
-	default:
-		break;
-	}
-
-	g_free (iface);
-
-	if (tip) {
-		gtk_status_icon_set_tooltip (applet->status_icon, tip);
-		g_free (tip);
-	}
-
-	return handled;
+	g_slist_foreach (applet->active_connections,
+	                 (GFunc) nm_client_free_active_connection_element,
+	                 NULL);
+	g_slist_free (applet->active_connections);
+	applet->active_connections = NULL;
 }
 
 static void
@@ -2119,7 +1915,19 @@ foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer use
 	AppletDbusConnectionSettings *connection_settings;
 	NMSettingConnection *s_con;
 
-	foo_device_state_changed (device, state, (gpointer) applet, FALSE);
+	clear_active_connections (applet);
+	applet->active_connections = nm_client_get_active_connections (applet->nm_client);
+
+	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+		foo_wired_state_change (NM_DEVICE_802_3_ETHERNET (device), state, applet);
+	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
+		foo_wireless_state_change (NM_DEVICE_802_11_WIRELESS (device), state, applet);
+	else if (NM_IS_GSM_DEVICE (device))
+		foo_gsm_state_change (NM_GSM_DEVICE (device), state, applet);
+
+	foo_common_state_change (device, state, applet);
+
+	applet_schedule_update_icon (applet);
 
 	if (state != NM_DEVICE_STATE_ACTIVATED)
 		return;
@@ -2137,42 +1945,6 @@ foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer use
 		s_con->timestamp = (guint64) time (NULL);
 		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));
 	}
-}
-
-static void
-clear_active_connections (NMApplet *applet)
-{
-	g_slist_foreach (applet->active_connections,
-	                 (GFunc) nm_client_free_active_connection_element,
-	                 NULL);
-	g_slist_free (applet->active_connections);
-	applet->active_connections = NULL;
-}
-
-static void
-foo_device_state_changed (NMDevice *device, NMDeviceState state, gpointer user_data, gboolean synthetic)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-	gboolean handled = FALSE;
-
-	applet->animation_step = 0;
-	if (applet->animation_id) {
-		g_source_remove (applet->animation_id);
-		applet->animation_id = 0;
-	}
-
-	clear_active_connections (applet);
-	applet->active_connections = nm_client_get_active_connections (applet->nm_client);
-
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		handled = foo_wired_state_change (NM_DEVICE_802_3_ETHERNET (device), state, applet, synthetic);
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		handled = foo_wireless_state_change (NM_DEVICE_802_11_WIRELESS (device), state, applet, synthetic);
-	else if (NM_IS_GSM_DEVICE (device))
-		handled = foo_gsm_state_change (NM_GSM_DEVICE (device), state, applet, synthetic);
-
-	if (!handled)
-		foo_common_state_change (device, state, applet);
 }
 
 static gboolean
@@ -2252,6 +2024,8 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
 
 	if (add_seen_bssid (connection_settings, ap))
 		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));		
+
+	applet_schedule_update_icon (applet);
 }
 
 static guchar *
@@ -2360,10 +2134,6 @@ foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
-	g_signal_connect (device, "state-changed",
-				   G_CALLBACK (foo_device_state_changed_cb),
-				   user_data);
-
 	if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
 		NMDevice80211Wireless *wdev = NM_DEVICE_802_11_WIRELESS (device);
 		GSList *aps, *iter;
@@ -2387,38 +2157,344 @@ foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 		g_slist_free (aps);
 	}
 
-	foo_device_state_changed_cb (device, nm_device_get_state (device), user_data);
-}
+	g_signal_connect (device, "state-changed",
+				   G_CALLBACK (foo_device_state_changed_cb),
+				   user_data);
 
-static void
-foo_add_initial_devices (gpointer data, gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-
-	foo_device_added_cb (applet->nm_client, NM_DEVICE (data), applet);
+	foo_device_state_changed_cb	(device, nm_device_get_state (device), applet);
 }
 
 static void
 foo_client_state_change_cb (NMClient *client, NMState state, gpointer user_data)
 {
-	foo_client_state_change (client, state, user_data, FALSE);
-}
-
-static void
-foo_client_state_change (NMClient *client, NMState state, gpointer user_data, gboolean synthetic)
-{
 	NMApplet *applet = NM_APPLET (user_data);
-	GdkPixbuf *pixbuf = NULL;
-	char *tip = NULL;
 
 	switch (state) {
+	case NM_STATE_DISCONNECTED:
+		applet_do_notify (applet, NOTIFY_URGENCY_NORMAL, _("Disconnected"),
+						  _("The network connection has been disconnected."),
+						  "nm-no-connection");
+		/* Fall through */
 	case NM_STATE_UNKNOWN:
 		/* Clear any VPN connections */
 		if (applet->vpn_connections)
 			g_hash_table_remove_all (applet->vpn_connections);
 		clear_active_connections (applet);
-		foo_set_icon (applet, NULL, ICON_LAYER_VPN);
 		break;
+	default:
+		break;
+	}
+
+	applet_schedule_update_icon (applet);
+}
+
+static void
+foo_manager_running_cb (NMClient *client,
+                        gboolean running,
+                        gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+
+	running ? g_message ("NM appeared") : g_message ("NM disappeared");
+
+	applet->nm_running = running;
+	applet_schedule_update_icon (applet);
+}
+
+static gboolean
+foo_set_initial_state (gpointer data)
+{
+	NMApplet *applet = NM_APPLET (data);
+	GSList *list, *iter;
+
+	list = nm_client_get_devices (applet->nm_client);
+	for (iter = list; iter; iter = g_slist_next (iter))
+		foo_device_added_cb (applet->nm_client, NM_DEVICE (iter->data), applet);
+	g_slist_free (list);
+
+	list = nm_vpn_manager_get_connections (applet->vpn_manager);
+	if (list) {
+		g_slist_foreach (list, (GFunc) add_one_vpn_connection, applet);
+		g_slist_free (list);
+	}
+
+	applet_schedule_update_icon (applet);
+
+	return FALSE;
+}
+
+static void
+foo_client_setup (NMApplet *applet)
+{
+	applet->nm_client = nm_client_new ();
+	if (!applet->nm_client)
+		return;
+
+	g_signal_connect (applet->nm_client, "state-change",
+	                  G_CALLBACK (foo_client_state_change_cb),
+	                  applet);
+	g_signal_connect (applet->nm_client, "device-added",
+	                  G_CALLBACK (foo_device_added_cb),
+	                  applet);
+	g_signal_connect (applet->nm_client, "manager-running",
+	                  G_CALLBACK (foo_manager_running_cb),
+	                  applet);
+
+	applet->nm_running = nm_client_manager_is_running (applet->nm_client);
+	if (applet->nm_running)
+		g_idle_add (foo_set_initial_state, applet);
+}
+
+
+static GdkPixbuf *
+applet_get_wired_icon (NMDevice8023Ethernet *device,
+                       NMDeviceState state,
+                       NMApplet *applet,
+                       char **tip)
+{
+	GdkPixbuf *pixbuf = NULL;
+	char *iface;
+
+	iface = nm_device_get_iface (NM_DEVICE (device));
+
+	switch (state) {
+	case NM_DEVICE_STATE_PREPARE:
+		*tip = g_strdup_printf (_("Preparing device %s for the wired network..."), iface);
+		break;
+	case NM_DEVICE_STATE_CONFIG:
+		*tip = g_strdup_printf (_("Configuring device %s for the wired network..."), iface);
+		break;
+	case NM_DEVICE_STATE_IP_CONFIG:
+		*tip = g_strdup_printf (_("Requesting a network address from the wired network..."));
+		break;
+	case NM_DEVICE_STATE_ACTIVATED:
+		pixbuf = applet->wired_icon;
+		*tip = g_strdup (_("Wired network connection"));
+		break;
+	default:
+		break;
+	}
+
+	g_free (iface);
+	return pixbuf;
+}
+
+static GdkPixbuf *
+applet_get_wireless_icon (NMDevice80211Wireless *device,
+                          NMDeviceState state,
+                          NMApplet *applet,
+                          char **tip)
+{
+	GdkPixbuf *pixbuf = NULL;
+	char *iface;
+	char *esc_ssid = _("(none)");
+
+	iface = nm_device_get_iface (NM_DEVICE (device));
+
+	if (applet->current_ap) {
+		const GByteArray *ssid;
+
+		ssid = nm_access_point_get_ssid (applet->current_ap);
+		if (ssid)
+			esc_ssid = (char *) nm_utils_escape_ssid (ssid->data, ssid->len);
+	}
+
+	switch (state) {
+	case NM_DEVICE_STATE_PREPARE:
+		*tip = g_strdup_printf (_("Preparing device %s for the wireless network '%s'..."), iface, esc_ssid);
+		break;
+	case NM_DEVICE_STATE_CONFIG:
+		*tip = g_strdup_printf (_("Attempting to join the wireless network '%s'..."), esc_ssid);
+		break;
+	case NM_DEVICE_STATE_IP_CONFIG:
+		*tip = g_strdup_printf (_("Requesting a network address from the wireless network '%s'..."), esc_ssid);
+		break;
+	case NM_DEVICE_STATE_NEED_AUTH:
+		*tip = g_strdup_printf (_("Waiting for Network Key for the wireless network '%s'..."), esc_ssid);
+		break;
+	case NM_DEVICE_STATE_ACTIVATED:
+		if (applet->current_ap) {
+			guint32 strength;
+
+			strength = nm_access_point_get_strength (applet->current_ap);
+			strength = CLAMP (strength, 0, 100);
+
+			if (strength > 80)
+				pixbuf = applet->wireless_100_icon;
+			else if (strength > 55)
+				pixbuf = applet->wireless_75_icon;
+			else if (strength > 30)
+				pixbuf = applet->wireless_50_icon;
+			else if (strength > 5)
+				pixbuf = applet->wireless_25_icon;
+			else
+				pixbuf = applet->wireless_00_icon;
+
+			*tip = g_strdup_printf (_("Wireless network connection to '%s' (%d%%)"),
+			                        esc_ssid, strength);
+		} else {
+			pixbuf = applet->wireless_00_icon;
+			*tip = g_strdup_printf (_("Wireless network connection to '%s'"), esc_ssid);
+		}
+		break;
+	default:
+		break;
+	}
+
+	g_free (iface);
+	return pixbuf;
+}
+
+static GdkPixbuf *
+applet_get_gsm_icon (NMGsmDevice *device,
+                     NMDeviceState state,
+                     NMApplet *applet,
+                     char **tip)
+{
+	GdkPixbuf *pixbuf = NULL;
+	char *iface;
+
+	iface = nm_device_get_iface (NM_DEVICE (device));
+
+	switch (state) {
+	case NM_DEVICE_STATE_PREPARE:
+		*tip = g_strdup_printf (_("Dialing GSM device %s..."), iface);
+		break;
+	case NM_DEVICE_STATE_CONFIG:
+		*tip = g_strdup_printf (_("Running PPP on device %s..."), iface);
+		break;
+	case NM_DEVICE_STATE_ACTIVATED:
+		*tip = g_strdup (_("GSM connection"));
+		// FIXME: get a real icon
+		pixbuf = applet->adhoc_icon;
+		break;
+	default:
+		break;
+	}
+
+	g_free (iface);
+	return pixbuf;
+}
+
+static GdkPixbuf *
+applet_get_device_icon (NMDevice *device,
+                        NMDeviceState state,
+                        NMApplet *applet,
+                        char **tip)
+{
+	GdkPixbuf *pixbuf = NULL;
+	int stage = -1;
+
+	switch (state) {
+	case NM_DEVICE_STATE_PREPARE:
+		stage = 0;
+		break;
+	case NM_DEVICE_STATE_CONFIG:
+		stage = 1;
+		break;
+	case NM_DEVICE_STATE_IP_CONFIG:
+		stage = 2;
+		break;
+	default:
+		break;
+	}
+
+	if (stage >= 0) {
+		pixbuf = applet->network_connecting_icons[stage][applet->animation_step];
+		applet->animation_step++;
+		if (applet->animation_step >= NUM_CONNECTING_FRAMES)
+			applet->animation_step = 0;
+	}
+
+	return pixbuf;
+}
+
+static GdkPixbuf *
+applet_get_device_icon_for_state (NMApplet *applet, char **tip)
+{
+	NMDevice *device;
+	GdkPixbuf *pixbuf = NULL;
+	NMDeviceState state = NM_DEVICE_STATE_UNKNOWN;
+
+	// FIXME: handle multiple device states here
+
+	device = applet_get_first_active_device (applet);
+	if (!device)
+		goto out;
+
+	state = nm_device_get_state (device);
+
+	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+		pixbuf = applet_get_wired_icon (NM_DEVICE_802_3_ETHERNET (device), state, applet, tip);
+	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
+		pixbuf = applet_get_wireless_icon (NM_DEVICE_802_11_WIRELESS (device), state, applet, tip);
+	else if (NM_IS_GSM_DEVICE (device))
+		pixbuf = applet_get_gsm_icon (NM_GSM_DEVICE (device), state, applet, tip);
+
+out:
+	if (!pixbuf)
+		pixbuf = applet_get_device_icon (device, state, applet, tip);
+	return pixbuf;
+}
+
+static void
+free_vpn_connections (gpointer data, gpointer user_data)
+{
+	if (data != user_data)
+		g_object_unref (G_OBJECT (data));
+}
+
+static NMVPNConnection *
+applet_get_first_active_vpn_connection (NMApplet *applet,
+                                        NMVPNConnectionState *out_state)
+{
+	NMVPNConnection *vpn_connection = NULL;
+	GSList *list, *iter;
+
+	list = nm_vpn_manager_get_connections (applet->vpn_manager);
+	for (iter = list; iter; iter = g_slist_next (iter)) {
+		NMVPNConnection *connection = NM_VPN_CONNECTION (iter->data);
+		NMVPNConnectionState state;
+
+		state = nm_vpn_connection_get_state (connection);
+		if (   state == NM_VPN_CONNECTION_STATE_PREPARE
+		    || state == NM_VPN_CONNECTION_STATE_NEED_AUTH
+		    || state == NM_VPN_CONNECTION_STATE_CONNECT
+		    || state == NM_VPN_CONNECTION_STATE_IP_CONFIG_GET
+		    || state == NM_VPN_CONNECTION_STATE_ACTIVATED) {
+			*out_state = state;
+			vpn_connection = connection;
+			break;
+		}
+	}
+
+	g_slist_foreach (list, free_vpn_connections, vpn_connection);
+	g_slist_free (list);
+	return vpn_connection;
+}
+
+static gboolean
+applet_update_icon (gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+	GdkPixbuf *pixbuf = NULL;
+	NMState state;
+	char *tip = NULL;
+	NMVPNConnection *vpn_connection;
+	NMVPNConnectionState vpn_state = NM_VPN_SERVICE_STATE_UNKNOWN;
+
+	applet->update_icon_id = 0;
+
+	gtk_status_icon_set_visible (applet->status_icon, applet->nm_running);
+	
+	/* Handle device state first */
+
+	state = nm_client_get_state (applet->nm_client);
+	if (!applet->nm_running)
+		state = NM_STATE_UNKNOWN;
+
+	switch (state) {
+	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
 		pixbuf = applet->no_connection_icon;
 		tip = g_strdup (_("Networking disabled"));
@@ -2426,143 +2502,48 @@ foo_client_state_change (NMClient *client, NMState state, gpointer user_data, gb
 	case NM_STATE_DISCONNECTED:
 		pixbuf = applet->no_connection_icon;
 		tip = g_strdup (_("No network connection"));
-		if (!synthetic) {
-			applet_do_notify (applet, NOTIFY_URGENCY_NORMAL, _("Disconnected"),
-							  _("The network connection has been disconnected."),
-							  "nm-no-connection");
-		}
+		break;
+	default:
+		pixbuf = applet_get_device_icon_for_state (applet, &tip);
+		break;
+	}
+
+	foo_set_icon (applet, pixbuf, ICON_LAYER_LINK);
+	if (tip) {
+		gtk_status_icon_set_tooltip (applet->status_icon, tip);
+		g_free (tip);
+	}
+
+	/* VPN state next */
+	pixbuf = NULL;
+	vpn_connection = applet_get_first_active_vpn_connection (applet, &vpn_state);
+
+	switch (vpn_state) {
+	case NM_VPN_CONNECTION_STATE_ACTIVATED:
+		pixbuf = applet->vpn_lock_icon;
+		break;
+	case NM_VPN_CONNECTION_STATE_PREPARE:
+	case NM_VPN_CONNECTION_STATE_NEED_AUTH:
+	case NM_VPN_CONNECTION_STATE_CONNECT:
+	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
+		pixbuf = applet->vpn_connecting_icons[applet->animation_step];
+		applet->animation_step++;
+		if (applet->animation_step >= NUM_VPN_CONNECTING_FRAMES)
+			applet->animation_step = 0;
 		break;
 	default:
 		break;
 	}
 
-	if (pixbuf)
-		foo_set_icon (applet, pixbuf, ICON_LAYER_LINK);
-
-	if (tip) {
-		gtk_status_icon_set_tooltip (applet->status_icon, tip);
-		g_free (tip);
-	}
-}
-
-static void
-foo_setup_client_state_handlers (NMClient *client, NMApplet *applet)
-{
-	g_signal_connect (client, "state-change",
-				   G_CALLBACK (foo_client_state_change_cb),
-				   applet);
-
-	g_signal_connect (client, "device-added",
-				   G_CALLBACK (foo_device_added_cb),
-				   applet);
-}
-
-static void
-foo_manager_running_cb (NMClient *client,
-				 gboolean running,
-				 gpointer user_data)
-{
-	running ? g_message ("NM appeared") : g_message ("NM disappeared");
-	foo_manager_running (client, running, user_data, FALSE);
-}
-
-
-static void
-foo_manager_running (NMClient *client,
-                     gboolean running,
-                     gpointer user_data,
-                     gboolean synthetic)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-
-	gtk_status_icon_set_visible (applet->status_icon, running);
-
-	if (running) {
-		/* Force the icon update */
-		foo_client_state_change (client, nm_client_get_state (client), applet, synthetic);
-	} else {
-		foo_client_state_change (client, NM_STATE_UNKNOWN, applet, synthetic);
-	}
-}
-
-typedef struct AddVPNInfo {
-	NMApplet *applet;
-	NMVPNConnection *active;
-} AddVPNInfo;
-
-static void
-foo_add_initial_vpn_connections (gpointer data, gpointer user_data)
-{
-	AddVPNInfo *info = (AddVPNInfo *) user_data;
-	NMVPNConnection *connection = NM_VPN_CONNECTION (data);
-
-	add_one_vpn_connection (info->applet, connection);
-	if (info->active)
-		return;
-
-	switch (nm_vpn_connection_get_state (connection)) {
-		case NM_VPN_CONNECTION_STATE_PREPARE:
-		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
-		case NM_VPN_CONNECTION_STATE_CONNECT:
-		case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-		case NM_VPN_CONNECTION_STATE_ACTIVATED:
-			info->active = connection;
-			break;
-		default:
-			break;
-	}
-}
-
-static gboolean
-foo_set_initial_state (gpointer data)
-{
-	NMApplet *applet = NM_APPLET (data);
-	GSList *list;
-
-	foo_manager_running (applet->nm_client, TRUE, applet, FALSE);
-
-	list = nm_client_get_devices (applet->nm_client);
-	if (list) {
-		g_slist_foreach (list, foo_add_initial_devices, applet);
-		g_slist_free (list);
-	}
-
-	list = nm_vpn_manager_get_connections (applet->vpn_manager);
-	if (list) {
-		AddVPNInfo info = { applet, NULL };
-
-		g_slist_foreach (list, foo_add_initial_vpn_connections, &info);
-		g_slist_free (list);
-
-		// FIXME: don't just use the first active VPN connection
-		if (info.active) {
-			vpn_connection_state_changed (info.active,
-			                              nm_vpn_connection_get_state (info.active),
-			                              NM_VPN_CONNECTION_STATE_REASON_NONE,
-			                              applet);
-		}
-	}
+	foo_set_icon (applet, pixbuf, ICON_LAYER_VPN);
 	return FALSE;
 }
 
 static void
-foo_client_setup (NMApplet *applet)
+applet_schedule_update_icon (NMApplet *applet)
 {
-	NMClient *client;
-
-	client = nm_client_new ();
-	if (!client)
-		return;
-
-	applet->nm_client = client;
-
-	foo_setup_client_state_handlers (client, applet);
-	g_signal_connect (client, "manager-running",
-				   G_CALLBACK (foo_manager_running_cb), applet);
-	foo_manager_running (client, nm_client_manager_is_running (client), applet, TRUE);
-
-	if (nm_client_manager_is_running (client))
-		g_idle_add (foo_set_initial_state, applet);
+	if (!applet->update_icon_id)
+		applet->update_icon_id = g_idle_add (applet_update_icon, applet);
 }
 
 static void
@@ -2801,32 +2782,11 @@ applet_add_default_ethernet_connection (AppletDbusSettings *settings)
 
 /*****************************************************************************/
 
-static void nma_icons_zero (NMApplet *applet)
-{
-	int i, j;
-
-	applet->no_connection_icon = NULL;
-	applet->wired_icon = NULL;
-	applet->adhoc_icon = NULL;
-	applet->gsm_icon = NULL;
-	applet->vpn_lock_icon = NULL;
-
-	applet->wireless_00_icon = NULL;
-	applet->wireless_25_icon = NULL;
-	applet->wireless_50_icon = NULL;
-	applet->wireless_75_icon = NULL;
-	applet->wireless_100_icon = NULL;
-
-	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
-		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
-			applet->network_connecting_icons[i][j] = NULL;
+#define CLEAR_ICON(x) \
+	if (x) { \
+		g_object_unref (x); \
+		x = NULL; \
 	}
-
-	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
-		applet->vpn_connecting_icons[i] = NULL;
-
-	applet->icons_loaded = FALSE;
-}
 
 static void nma_icons_free (NMApplet *applet)
 {
@@ -2835,52 +2795,38 @@ static void nma_icons_free (NMApplet *applet)
 	if (!applet->icons_loaded)
 		return;
 
-	for (i = 0; i <= ICON_LAYER_MAX; i++) {
-		if (applet->icon_layers[i])
-			g_object_unref (applet->icon_layers[i]);
-	}
+	for (i = 0; i <= ICON_LAYER_MAX; i++)
+		CLEAR_ICON(applet->icon_layers[i]);
 
-	if (applet->no_connection_icon)
-		g_object_unref (applet->no_connection_icon);
-	if (applet->wired_icon)
-		g_object_unref (applet->wired_icon);
-	if (applet->adhoc_icon)
-		g_object_unref (applet->adhoc_icon);
-	if (applet->gsm_icon)
-		g_object_unref (applet->gsm_icon);
-	if (applet->vpn_lock_icon)
-		g_object_unref (applet->vpn_lock_icon);
-
-	if (applet->wireless_00_icon)
-		g_object_unref (applet->wireless_00_icon);
-	if (applet->wireless_25_icon)
-		g_object_unref (applet->wireless_25_icon);
-	if (applet->wireless_50_icon)
-		g_object_unref (applet->wireless_50_icon);
-	if (applet->wireless_75_icon)
-		g_object_unref (applet->wireless_75_icon);
-	if (applet->wireless_100_icon)
-		g_object_unref (applet->wireless_100_icon);
+	CLEAR_ICON(applet->no_connection_icon);
+	CLEAR_ICON(applet->wired_icon);
+	CLEAR_ICON(applet->adhoc_icon);
+	CLEAR_ICON(applet->gsm_icon);
+	CLEAR_ICON(applet->vpn_lock_icon);
+	CLEAR_ICON(applet->wireless_00_icon);
+	CLEAR_ICON(applet->wireless_25_icon);
+	CLEAR_ICON(applet->wireless_50_icon);
+	CLEAR_ICON(applet->wireless_75_icon);
+	CLEAR_ICON(applet->wireless_100_icon);
 
 	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
 		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
-			if (applet->network_connecting_icons[i][j])
-				g_object_unref (applet->network_connecting_icons[i][j]);
+			CLEAR_ICON(applet->network_connecting_icons[i][j]);
 	}
 
 	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
-		if (applet->vpn_connecting_icons[i])
-			g_object_unref (applet->vpn_connecting_icons[i]);
+		CLEAR_ICON(applet->vpn_connecting_icons[i]);
 
-	nma_icons_zero (applet);
+	for (i = 0; i <= ICON_LAYER_MAX; i++)
+		CLEAR_ICON(applet->icon_layers[i]);
+
+	applet->icons_loaded = FALSE;
 }
 
 #define ICON_LOAD(x, y)	\
-	{		\
-		GError *err = NULL; \
-		x = gtk_icon_theme_load_icon (applet->icon_theme, y, size, 0, &err); \
+	{ \
+		x = gtk_icon_theme_load_icon (applet->icon_theme, y, applet->size, 0, &err); \
 		if (x == NULL) { \
-			success = FALSE; \
 			g_warning ("Icon %s missing: %s", y, err->message); \
 			g_error_free (err); \
 			goto out; \
@@ -2890,22 +2836,13 @@ static void nma_icons_free (NMApplet *applet)
 static gboolean
 nma_icons_load (NMApplet *applet)
 {
-	int 		size, i, j;
-	gboolean	success;
-
-	/*
-	 * NULL out the icons, so if we error and call nma_icons_free(), we don't hit stale
-	 * data on the not-yet-reached icons.  This can happen off nma_icon_theme_changed().
-	 */
+	int i, j;
+	GError *err = NULL;
 
 	g_return_val_if_fail (!applet->icons_loaded, FALSE);
 
-	size = applet->size;
-	if (size < 0)
+	if (applet->size < 0)
 		return FALSE;
-
-	for (i = 0; i <= ICON_LAYER_MAX; i++)
-		applet->icon_layers[i] = NULL;
 
 	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
 	ICON_LOAD(applet->wired_icon, "nm-device-wired");
@@ -2937,15 +2874,15 @@ nma_icons_load (NMApplet *applet)
 		g_free (name);
 	}
 
-	success = TRUE;
+	applet->icons_loaded = TRUE;
 
 out:
-	if (!success) {
+	if (!applet->icons_loaded) {
 		applet_warning_dialog_show (_("The NetworkManager applet could not find some required resources.  It cannot continue.\n"));
 		nma_icons_free (applet);
 	}
 
-	return success;
+	return applet->icons_loaded;
 }
 
 static void nma_icon_theme_changed (GtkIconTheme *icon_theme, NMApplet *applet)
@@ -3001,43 +2938,12 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
                              gint size,
                              NMApplet *applet)
 {
-	GSList *list;
-	gboolean running = FALSE;
+	applet->size = size;
 
 	nma_icons_free (applet);
-
-	applet->size = size;
 	nma_icons_load (applet);
 
-	list = nm_client_get_devices (applet->nm_client);
-	if (list) {
-		GSList *elt;
-		gboolean done = FALSE;
-
-		for (elt = list; elt && !done; elt = g_slist_next (elt)) {
-			NMDevice *dev = NM_DEVICE (elt->data);
-
-			switch (nm_device_get_state (dev)) {
-				case NM_DEVICE_STATE_PREPARE:
-				case NM_DEVICE_STATE_CONFIG:
-				case NM_DEVICE_STATE_NEED_AUTH:
-				case NM_DEVICE_STATE_IP_CONFIG:
-				case NM_DEVICE_STATE_ACTIVATED:
-					foo_device_state_changed (dev,
-					                          nm_device_get_state (dev),
-					                          applet, TRUE);
-					done = TRUE;
-					break;
-				default:
-					break;
-			}
-		}
-		g_slist_free (list);
-	}
-
-	running = nm_client_manager_is_running (applet->nm_client);
-	foo_manager_running (applet->nm_client, running, applet, TRUE);
-	foo_update_icon (applet);
+	applet_schedule_update_icon (applet);
 
 	return TRUE;
 }
@@ -3174,6 +3080,9 @@ static void finalize (GObject *object)
 {
 	NMApplet *applet = NM_APPLET (object);
 
+	if (applet->update_icon_id)
+		g_source_remove (applet->update_icon_id);
+
 	nma_menu_clear (applet);
 	nma_icons_free (applet);
 
@@ -3212,8 +3121,6 @@ static void nma_init (NMApplet *applet)
 	applet->icon_theme = NULL;
 	applet->notification = NULL;
 	applet->size = -1;
-
-	nma_icons_zero (applet);
 }
 
 static void nma_class_init (NMAppletClass *klass)
