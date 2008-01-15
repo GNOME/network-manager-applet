@@ -31,8 +31,6 @@ nm_applet_SOURCES =			\
 	applet-dbus-manager.h	\
 	applet-dbus-settings.c		\
 	applet-dbus-settings.h		\
-	menu-items.c			\
-	menu-items.h			\
 	vpn-connection-info.c		\
 	vpn-connection-info.h		\
 	vpn-password-dialog.c	\
@@ -41,6 +39,14 @@ nm_applet_SOURCES =			\
 	wireless-dialog.c \
 	applet-dialogs.h \
 	applet-dialogs.c \
+	applet-device-wired.h \
+	applet-device-wired.c \
+	applet-device-wireless.h \
+	applet-device-wireless.c \
+	ap-menu-item.h \
+	ap-menu-item.c \
+	applet-device-gsm.h \
+	applet-device-gsm.c \
 	$(NULL)
 
 nm_applet_LDADD = \

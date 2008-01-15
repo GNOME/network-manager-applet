@@ -30,6 +30,7 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtkmenu.h>
 
 #include <gconf/gconf-client.h>
 #include <glade/glade.h>
@@ -39,10 +40,12 @@
 
 #include <libnotify/notify.h>
 
+#include <nm-connection.h>
 #include <nm-client.h>
 #include <nm-access-point.h>
 #include <nm-vpn-manager.h>
 #include <nm-device.h>
+#include <NetworkManager.h>
 
 #include "applet-dbus-manager.h"
 #include "applet-dbus-settings.h"
@@ -51,6 +54,7 @@
  * Preference locations
  */
 #define GCONF_PATH_PREFS				"/apps/NetworkManagerApplet"
+
 
 
 #define NM_TYPE_APPLET			(nma_get_type())
@@ -70,6 +74,8 @@ typedef struct
 #define ICON_LAYER_VPN 1
 #define ICON_LAYER_MAX ICON_LAYER_VPN
 
+typedef struct NMADeviceClass NMADeviceClass;
+
 /*
  * Applet instance data
  *
@@ -88,6 +94,11 @@ typedef struct
 
 	GConfClient *	gconf_client;
 	char	*		glade_file;
+
+	/* Device classes */
+	NMADeviceClass *wired_class;
+	NMADeviceClass *wireless_class;
+	NMADeviceClass *gsm_class;
 
 	/* Data model elements */
 	guint			update_icon_id;
@@ -135,10 +146,43 @@ typedef struct
 	NotifyNotification*	notification;
 } NMApplet;
 
+
+struct NMADeviceClass {
+	NMConnection * (*new_auto_connection) (NMDevice *device, NMApplet *applet, gpointer user_data);
+	gboolean       (*connection_filter) (NMConnection *connection, NMDevice *device, NMApplet *applet, gpointer user_data);
+	void           (*add_menu_item) (NMDevice *device, guint32 num_devices, GtkWidget *menu, NMApplet *applet);
+	void           (*device_added) (NMDevice *device, NMApplet *applet);
+	void           (*device_state_changed) (NMDevice *device, NMDeviceState state, NMApplet *applet);
+	GdkPixbuf *    (*get_icon) (NMDevice *device, NMDeviceState state, char **tip, NMApplet *applet);
+	void           (*get_more_info) (NMDevice *device, NMConnection *connection, NMApplet *applet, gpointer user_data);
+	gboolean       (*get_secrets) (NMDevice *device,
+	                               NMConnection *connection,
+	                               const char *specific_object,
+	                               const char *setting_name,
+	                               DBusGMethodInvocation *context,
+	                               NMApplet *applet,
+	                               GError **error);
+};
+
 GType nma_get_type (void);
 
 NMApplet *nm_applet_new (void);
 
 NMDevice *applet_get_first_active_device (NMApplet *applet);
+
+void applet_schedule_update_icon (NMApplet *applet);
+
+void applet_menu_item_activate_helper (NMDevice *device,
+                                       NMApplet *applet,
+                                       const char *specific_object,
+                                       gpointer user_data);
+
+AppletDbusConnectionSettings *applet_get_connection_settings_for_device (NMDevice *device, NMApplet *applet);
+
+void applet_do_notify (NMApplet *applet, 
+                       NotifyUrgency urgency,
+                       const char *summary,
+                       const char *message,
+                       const char *icon);
 
 #endif

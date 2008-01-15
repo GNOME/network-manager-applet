@@ -1,3 +1,28 @@
+2008-01-15  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+	  src/applet.h
+		- Refactor device handling into lightweight "classes", one for each
+			device, to focus applet.c more on state handling and general UI
+			issues rather than a pile of device-specific code
+
+	* src/menu-items.c
+	  src/menu-items.h
+		- Removed; though NMNetworkMenuItem was moved to ap-menu-item.c
+
+	* src/ap-menu-item.c
+	  src/ap-menu-item.h
+		- New files; NMNetworkMenuItem moved here from menu-items.c
+
+	* src/applet-device-gsm.c
+	  src/applet-device-gsm.h
+	  src/applet-device-wireless.c
+	  src/applet-device-wireless.h
+	  src/applet-device-wired.c
+	  src/applet-device-wired.h
+		- Implement the lightweight "classes" for each device type and move over
+			the corresponding code from applet.c and menu-items.c
+
 2008-01-14  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

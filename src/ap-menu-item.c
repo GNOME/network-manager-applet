@@ -1,8 +1,9 @@
-/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 
-/* menu-info.c - Class to represent the 
+/* ap-menu-item.c - Class to represent a Wifi access point 
  *
  * Jonathan Blandford <jrb@redhat.com>
+ * Dan Williams <dcbw@redhat.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- * This also uses code from eel-vfs-extentions available under the LGPL:
- *     Authors: Darin Adler <darin@eazel.com>
- * 	    Pavel Cisler <pavel@eazel.com>
- * 	    Mike Fleming  <mfleming@eazel.com>
- *       John Sullivan <sullivan@eazel.com>
- *
- * (C) Copyright 2004 Red Hat, Inc.
- * (C) Copyright 1999, 2000 Eazel, Inc.
+ * (C) Copyright 2008 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -38,109 +32,10 @@
 #include <iwlib.h>
 
 #include <nm-utils.h>
-#include "menu-items.h"
+#include "ap-menu-item.h"
 #include "nm-access-point.h"
 #include "utils.h"
 
-
-/****************************************************************
- *   Wired menu item
- ****************************************************************/
-
-GtkMenuItem *
-wired_menu_item_new (NMDevice8023Ethernet *self,
-					 gint n_devices)
-{
-	NMDevice *dev = NM_DEVICE (self);
-	char *text;
-	GtkCheckMenuItem *item;
-
-	g_return_val_if_fail (NM_IS_DEVICE_802_3_ETHERNET (self), NULL);
-
-	if (n_devices > 1) {
-		const char *desc;
-		char *dev_name = NULL;
-
-		desc = utils_get_device_description (dev);
-		if (desc)
-			dev_name = g_strdup (desc);
-		if (!dev_name)
-			dev_name = nm_device_get_iface (dev);
-		g_assert (dev_name);
-		text = g_strdup_printf (_("Wired Network (%s)"), dev_name);
-		g_free (dev_name);
-	} else
-		text = g_strdup (_("_Wired Network"));
-
-	item = GTK_CHECK_MENU_ITEM (gtk_check_menu_item_new_with_mnemonic (text));
-	g_free (text);
-
-	gtk_check_menu_item_set_draw_as_radio (item, TRUE);
-	gtk_check_menu_item_set_active (item, nm_device_get_state (dev) == NM_DEVICE_STATE_ACTIVATED);
-
-	/* Only dim the item if the device supports carrier detection AND
-	 * we know it doesn't have a link.
-	 */
- 	if (nm_device_get_capabilities (dev) & NM_DEVICE_CAP_CARRIER_DETECT)
- 		gtk_widget_set_sensitive (GTK_WIDGET (item), nm_device_get_carrier (dev));
-
-	return GTK_MENU_ITEM (item);
-}
-
-/****************************************************************
- *   Wireless menu item
- ****************************************************************/
-
-static gboolean
-label_expose (GtkWidget *widget)
-{
-	/* Bad hack to make the label draw normally, instead of insensitive. */
-	widget->state = GTK_STATE_NORMAL;
-  
-	return FALSE;
-}
-
-GtkMenuItem *
-wireless_menu_item_new (NMDevice80211Wireless *device,
-						gint n_devices)
-{
-	char *text;
-	GtkMenuItem *item;
-	GSList *aps;
-
-	g_return_val_if_fail (NM_IS_DEVICE_802_11_WIRELESS (device), NULL);
-
-	aps = nm_device_802_11_wireless_get_access_points (device);
-
-	if (n_devices > 1) {
-		const char *desc;
-		char *dev_name = NULL;
-
-		desc = utils_get_device_description (NM_DEVICE (device));
-		if (desc)
-			dev_name = g_strdup (desc);
-		if (!dev_name)
-			dev_name = nm_device_get_iface (NM_DEVICE (device));
-		text = g_strdup_printf (ngettext ("Wireless Network (%s)", "Wireless Networks (%s)",
-										  g_slist_length (aps)), dev_name);
-		g_free (dev_name);
-	} else
-		text = g_strdup (ngettext ("Wireless Network", "Wireless Networks", g_slist_length (aps)));
-
-	g_slist_free (aps);
-
-	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (text));
-	g_free (text);
-
-	g_signal_connect (item, "expose-event", G_CALLBACK (label_expose), NULL);
-	gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
-
-	return item;
-}
-
-/****************************************************************
- *   Wireless Network menu item
- ****************************************************************/
 
 G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_CHECK_MENU_ITEM);
 
@@ -352,40 +247,3 @@ nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 	item->dupes = g_slist_prepend (item->dupes, g_strdup (path));
 }
 
-/****************************************************************
- *   GSM menu item
- ****************************************************************/
-
-GtkMenuItem *
-gsm_menu_item_new (NMGsmDevice *self,
-			    gint n_devices)
-{
-	NMDevice *dev = NM_DEVICE (self);
-	char *text;
-	GtkCheckMenuItem *item;
-
-	g_return_val_if_fail (NM_IS_GSM_DEVICE (self), NULL);
-
-	if (n_devices > 1) {
-		const char *desc;
-		char *dev_name = NULL;
-
-		desc = utils_get_device_description (dev);
-		if (desc)
-			dev_name = g_strdup (desc);
-		if (!dev_name)
-			dev_name = nm_device_get_iface (dev);
-		g_assert (dev_name);
-		text = g_strdup_printf (_("GSM Modem (%s)"), dev_name);
-		g_free (dev_name);
-	} else
-		text = g_strdup (_("_GSM Modem"));
-
-	item = GTK_CHECK_MENU_ITEM (gtk_check_menu_item_new_with_mnemonic (text));
-	g_free (text);
-
-	gtk_check_menu_item_set_draw_as_radio (item, TRUE);
-	gtk_check_menu_item_set_active (item, nm_device_get_state (dev) == NM_DEVICE_STATE_ACTIVATED);
-
-	return GTK_MENU_ITEM (item);
-}

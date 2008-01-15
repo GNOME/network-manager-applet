@@ -1,8 +1,9 @@
-/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 
-/* menu-info.h: Simple menu items for the Applet to use
+/* ap-menu-item.h - Class to represent a Wifi access point 
  *
  * Jonathan Blandford <jrb@redhat.com>
+ * Dan Williams <dcbw@redhat.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,27 +19,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- * (C) Copyright 2004 Red Hat, Inc.
+ * (C) Copyright 2008 Red Hat, Inc.
  */
 
-#ifndef MENU_ITEMS_H
-#define MENU_ITEMS_H
+#ifndef __AP_MENU_ITEM_H__
+#define __AP_MENU_ITEM_H__
 
 #include <gtk/gtk.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include "applet.h"
 #include "nm-access-point.h"
 
-#include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
-#include <nm-gsm-device.h>
-
-GtkMenuItem *wired_menu_item_new (NMDevice8023Ethernet *device,
-								  gint n_devices);
-
-GtkMenuItem *wireless_menu_item_new (NMDevice80211Wireless *device,
-									 gint n_devices);
-
 
 #define NM_TYPE_NETWORK_MENU_ITEM            (nm_network_menu_item_get_type ())
 #define NM_NETWORK_MENU_ITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_NETWORK_MENU_ITEM, NMNetworkMenuItem))
@@ -94,7 +86,4 @@ gboolean   nm_network_menu_item_find_dupe (NMNetworkMenuItem *item,
 void       nm_network_menu_item_add_dupe (NMNetworkMenuItem *item,
                                           NMAccessPoint *ap);
 
-GtkMenuItem *gsm_menu_item_new (NMGsmDevice *self,
-						  gint n_devices);
-
-#endif /* MENU_INFO_H */
+#endif /* __AP_MENU_ITEM_H__ */
