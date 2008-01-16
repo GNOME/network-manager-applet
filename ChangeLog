@@ -1,3 +1,20 @@
+2008-01-16  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+	  src/applet.h
+		- (nma_get_connected_icon): use a different icon to indicate an autoip
+			connection
+		- (nma_icons_free, nma_icons_zero, nma_icons_load_from_disk):
+			housekeeping on the wired autoip icon
+
+	* icons/nm-device-wired-autoip.png
+	  icons/Makefile.am
+		- new icon for wired-but-self-assigned-ip
+
+	* src/applet-dbus-devices.c
+		- (nma_dbus_device_activated_cb): change tooltip and notification icon
+			when connected using an autoip address
+
 2008-01-08  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

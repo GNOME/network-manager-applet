@@ -42,6 +42,8 @@
 #include <libnotify/notify.h>
 #endif
 
+#include <arpa/inet.h>
+
 /*
  * Preference locations
  */
@@ -50,6 +52,7 @@
 #define GCONF_PATH_VPN_CONNECTIONS		"/system/networking/vpn_connections"
 #define GCONF_PATH_PREFS				"/apps/NetworkManagerApplet"
 
+#define LL_ADDR_PREFIX "169.254."
 
 typedef struct VPNConnection VPNConnection;
 
@@ -96,6 +99,7 @@ typedef struct
 
 	GdkPixbuf *		no_connection_icon;
 	GdkPixbuf *		wired_icon;
+	GdkPixbuf *		wired_autoip_icon;
 	GdkPixbuf *		adhoc_icon;
 	GdkPixbuf *		wireless_00_icon;
 	GdkPixbuf *		wireless_25_icon;

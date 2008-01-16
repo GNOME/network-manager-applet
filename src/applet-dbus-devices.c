@@ -33,6 +33,9 @@
 #include <string.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib-lowlevel.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 #include "applet-notifications.h"
 #include "applet-dbus-devices.h"
 #include "applet-dbus.h"
@@ -904,24 +907,27 @@ static void nma_dbus_device_activated_cb (DBusPendingCall *pcall, void *user_dat
 
 #ifdef ENABLE_NOTIFY
 	active_device = nma_get_first_active_device (applet->device_list);
-	if (active_device && network_device_is_wireless (active_device))
-	{
-		if (applet->is_adhoc)
-		{
+	if (!active_device)
+		goto out;
+
+	if (network_device_is_wireless (active_device)) {
+		if (applet->is_adhoc) {
 			message = g_strdup_printf (_("You are now connected to the Ad-Hoc wireless network '%s'."), essid);
 			icon = "nm-adhoc";
-		}
-		else
-		{
+		} else {
 			message = g_strdup_printf (_("You are now connected to the wireless network '%s'."), essid);
 			icon = "nm-device-wireless";
 		}
+	} else {
+		const char *str_addr = network_device_get_ip4_address (active_device);
 		
-	}
-	else
-	{
-		message = g_strdup (_("You are now connected to the wired network."));
-		icon = "nm-device-wired";
+		if (str_addr && !strncmp (str_addr, LL_ADDR_PREFIX, strlen (LL_ADDR_PREFIX))) {
+			message = g_strdup (_("You are now connected to the wired network with a self-assigned address."));
+			icon = "nm-device-wired-autoip";
+		} else {
+			message = g_strdup (_("You are now connected to the wired network."));
+			icon = "nm-device-wired";
+		}
 	}
 
 	nm_info ("%s", message);

@@ -32,6 +32,9 @@
 #endif
 
 #include <string.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <libgnomeui/libgnomeui.h>
@@ -878,9 +881,14 @@ static GdkPixbuf *nma_get_connected_icon (NMApplet *applet, NetworkDevice *dev)
 			else
 				pixbuf = applet->wireless_00_icon;
 		}
+	} else {
+		const char *str_addr = network_device_get_ip4_address (dev);
+
+		if (str_addr && !strncmp (str_addr, LL_ADDR_PREFIX, strlen (LL_ADDR_PREFIX)))
+			pixbuf = applet->wired_autoip_icon;
+		else
+			pixbuf = applet->wired_icon;
 	}
-	else
-		pixbuf = applet->wired_icon;
 
 	return pixbuf;
 }
@@ -2589,6 +2597,7 @@ static void nma_icons_free (NMApplet *applet)
 
 	g_object_unref (applet->no_connection_icon);
 	g_object_unref (applet->wired_icon);
+	g_object_unref (applet->wired_autoip_icon);
 	g_object_unref (applet->adhoc_icon);
 	g_object_unref (applet->vpn_lock_icon);
 
@@ -2616,6 +2625,7 @@ static void nma_icons_zero (NMApplet *applet)
 
 	applet->no_connection_icon = NULL;
 	applet->wired_icon = NULL;
+	applet->wired_autoip_icon = NULL;
 	applet->adhoc_icon = NULL;
 	applet->vpn_lock_icon = NULL;
 
@@ -2664,6 +2674,7 @@ nma_icons_load_from_disk (NMApplet *applet, GtkIconTheme *icon_theme)
 
 	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
 	ICON_LOAD(applet->wired_icon, "nm-device-wired");
+	ICON_LOAD(applet->wired_autoip_icon, "nm-device-wired-autoip");
 	ICON_LOAD(applet->adhoc_icon, "nm-adhoc");
 	ICON_LOAD(applet->vpn_lock_icon, "nm-vpn-lock");
 
