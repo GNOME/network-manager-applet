@@ -141,7 +141,7 @@ applet_menu_item_activate_helper (NMDevice *device,
 			NMSettingConnection *s_con;
 
 			con_path = (char *) nm_connection_settings_get_dbus_object_path (applet_connection);
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
 			g_message ("Found connection '%s' to activate at %s.", s_con->id, con_path);
 			connection = candidate;
 			break;
