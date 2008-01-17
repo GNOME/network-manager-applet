@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-11 23:20+0000\n"
-"PO-Revision-Date: 2008-01-12 21:50+0100\n"
+"POT-Creation-Date: 2008-01-15 19:36+0000\n"
+"PO-Revision-Date: 2008-01-17 15:25+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <<gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,38 +22,169 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../src/applet.c:159
+#: ../src/applet-device-gsm.c:83
+msgid "Auto GSM dialup connection"
+msgstr "Conexión módem GSM automática"
+
+#: ../src/applet-device-gsm.c:140
+#, c-format
+msgid "GSM Modem (%s)"
+msgstr "Módem GSM (%s)"
+
+#: ../src/applet-device-gsm.c:143
+msgid "_GSM Modem"
+msgstr "Módem _GSM"
+
+#: ../src/applet-device-gsm.c:171 ../src/applet-device-wired.c:161
+#: ../src/applet-device-wireless.c:968
+msgid "Connection Established"
+msgstr "Se ha establecido la conexión"
+
+#: ../src/applet-device-gsm.c:172
+msgid "You are now connected to the GSM network."
+msgstr "Ahora está conectado a la red GSM."
+
+#: ../src/applet-device-gsm.c:190
+#, c-format
+msgid "Dialing GSM device %s..."
+msgstr "Llamando al servicio GSM %s…"
+
+#: ../src/applet-device-gsm.c:193
+#, c-format
+msgid "Running PPP on device %s..."
+msgstr "Ejecutando PPP sobre el dispositivo %s…"
+
+#: ../src/applet-device-gsm.c:196
+msgid "GSM connection"
+msgstr "Conexiones GSM"
+
+#: ../src/applet-device-wired.c:67
+msgid "Auto Ethernet"
+msgstr "Ethernet automática"
+
+#: ../src/applet-device-wired.c:124
+#, c-format
+msgid "Wired Network (%s)"
+msgstr "Red cableada (%s)"
+
+#: ../src/applet-device-wired.c:127
+msgid "_Wired Network"
+msgstr "Red _cableada"
+
+#: ../src/applet-device-wired.c:162
+msgid "You are now connected to the wired network."
+msgstr "Ahora está conectado a la red cableada."
+
+#: ../src/applet-device-wired.c:180
+#, c-format
+msgid "Preparing device %s for the wired network..."
+msgstr "Preparando el dispositivo %s para la red cableada…"
+
+#: ../src/applet-device-wired.c:183
+#, c-format
+msgid "Configuring device %s for the wired network..."
+msgstr "Configurando el dispositivo %s para la red cableada…"
+
+#: ../src/applet-device-wired.c:186
+msgid "Requesting a network address from the wired network..."
+msgstr "Solicitando una dirección de red a la red cableada…"
+
+#: ../src/applet-device-wired.c:190
+msgid "Wired network connection"
+msgstr "Conexión de red cableada"
+
+#: ../src/applet-device-wireless.c:85
+msgid "_Connect to Other Wireless Network..."
+msgstr "_Conectar a otra red inalámbrica…"
+
+#: ../src/applet-device-wireless.c:124
+msgid "Create _New Wireless Network..."
+msgstr "Crear una red inalámbrica _nueva…"
+
+#: ../src/applet-device-wireless.c:663
+#, c-format
+msgid "Wireless Network (%s)"
+msgid_plural "Wireless Networks (%s)"
+msgstr[0] "Red inalámbrica (%s)"
+msgstr[1] "Redes inalámbricas (%s)"
+
+#: ../src/applet-device-wireless.c:667
+msgid "Wireless Network"
+msgid_plural "Wireless Networks"
+msgstr[0] "Red inalámbrica"
+msgstr[1] "Redes inalámbricas"
+
+#: ../src/applet-device-wireless.c:966
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "Ahora está conectado a la red inalámbrica «%s»."
+
+#: ../src/applet-device-wireless.c:967 ../src/applet-device-wireless.c:981
+msgid "(none)"
+msgstr "(ninguna)"
+
+#: ../src/applet-device-wireless.c:995
+#, c-format
+msgid "Preparing device %s for the wireless network '%s'..."
+msgstr "Preparando el dispositivo %s para la red inalámbrica «%s»…"
+
+#: ../src/applet-device-wireless.c:998
+#, c-format
+msgid "Attempting to join the wireless network '%s'..."
+msgstr "Intentando conectar con la red inalámbrica «%s»…"
+
+#: ../src/applet-device-wireless.c:1001
+#, c-format
+msgid "Requesting a network address from the wireless network '%s'..."
+msgstr "Solicitando una dirección de red a la red inalámbrica «%s»…"
+
+#: ../src/applet-device-wireless.c:1004
+#, c-format
+msgid "Waiting for Network Key for the wireless network '%s'..."
+msgstr "Esperando la contraseña de red para la red inalámbrica «%s»…"
+
+#: ../src/applet-device-wireless.c:1024
+#, c-format
+msgid "Wireless network connection to '%s' (%d%%)"
+msgstr "Conexión de red inalámbrica a «%s» (%d%%)"
+
+#: ../src/applet-device-wireless.c:1028
+#, c-format
+msgid "Wireless network connection to '%s'"
+msgstr "Conexión de red inalámbrica a «%s»"
+
+#: ../src/applet-dialogs.c:60
 msgid "Error displaying connection information:"
 msgstr "Ha ocurrido un error al mostrar información de conexión:"
 
-#: ../src/applet.c:192
+#: ../src/applet-dialogs.c:93
 msgid "Could not find some required resources (the glade file)!"
 msgstr "No se pueden encontrar algunas fuentes necesarias (el archivo glade)."
 
-#: ../src/applet.c:210
+#: ../src/applet-dialogs.c:111
 #, c-format
 msgid "Wired Ethernet (%s)"
 msgstr "Red Ethernet cableada (%s)"
 
-#: ../src/applet.c:212
+#: ../src/applet-dialogs.c:113
 #, c-format
 msgid "Wireless Ethernet (%s)"
 msgstr "Red Ethernet inalámbrica (%s)"
 
-#: ../src/applet.c:224
+#: ../src/applet-dialogs.c:125
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet.c:228
+#: ../src/applet-dialogs.c:129
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: ../src/applet.c:293
+#: ../src/applet-dialogs.c:194
 msgid "No active connections!"
 msgstr "No hay conexiones activas."
 
-#: ../src/applet.c:415
+#: ../src/applet-dialogs.c:311
 msgid ""
 "Copyright © 2004-2007 Red Hat, Inc.\n"
 "Copyright © 2005-2007 Novell, Inc."
@@ -61,198 +192,111 @@ msgstr ""
 "Copyright © 2004-2007 Red Hat, Inc.\n"
 "Copyright © 2005-2007 Novell, Inc."
 
-#: ../src/applet.c:417
+#: ../src/applet-dialogs.c:313
 msgid "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Miniaplicación del área de notificación para gestionar sus dispositivos de "
 "red y conexiones."
 
-#: ../src/applet.c:419
+#: ../src/applet-dialogs.c:315
 msgid "NetworkManager Website"
 msgstr "Página web de NetworkManager"
 
-#: ../src/applet.c:422
+#: ../src/applet-dialogs.c:318
 msgid "translator-credits"
 msgstr ""
 "Jorge González <jorgegonz@svn.gnome.org>, 2007-2008\n"
 "Lucas Vieites <lucas@asixinformatica.com>, 2005-2006"
 
-#: ../src/applet.c:1007
+#: ../src/applet.c:269
 msgid "VPN Login Message"
 msgstr "Mensaje de acceso VPN"
 
-#: ../src/applet.c:1411
-msgid "_Connect to Other Wireless Network..."
-msgstr "_Conectar a otra red inalámbrica…"
-
-#: ../src/applet.c:1451
-msgid "Create _New Wireless Network..."
-msgstr "Crear una red inalámbrica _nueva…"
-
-#: ../src/applet.c:1749
+#: ../src/applet.c:524
 msgid "No network devices have been found"
 msgstr "No se ha encontrado ningún dispositivo de red"
 
-#: ../src/applet.c:1833
+#: ../src/applet.c:610
 msgid "_VPN Connections"
 msgstr "Conexiones _VPN"
 
-#: ../src/applet.c:1874
+#: ../src/applet.c:651
 msgid "_Configure VPN..."
 msgstr "_Configurar VPN…"
 
-#: ../src/applet.c:1878
+#: ../src/applet.c:655
 msgid "_Disconnect VPN..."
 msgstr "_Desconectar VPN…"
 
-#: ../src/applet.c:1939
+#: ../src/applet.c:700
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager no se está ejecutando…"
 
-#: ../src/applet.c:1944 ../src/applet.c:2908
+#: ../src/applet.c:705 ../src/applet.c:1229
 msgid "Networking disabled"
 msgstr "Red desactivada"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2038
+#: ../src/applet.c:819
 msgid "Enable _Networking"
 msgstr "Activar _red"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2046
+#: ../src/applet.c:827
 msgid "Enable _Wireless"
 msgstr "Activar _inalámbrico"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2054
+#: ../src/applet.c:835
 msgid "Connection _Information"
 msgstr "_Información de la conexión"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2064
+#: ../src/applet.c:845
 msgid "Edit Connections..."
 msgstr "Editar las conexiones…"
 
 #. Help item
-#: ../src/applet.c:2076
+#: ../src/applet.c:857
 msgid "_Help"
 msgstr "Ay_uda"
 
 #. About item
-#: ../src/applet.c:2085
+#: ../src/applet.c:866
 msgid "_About"
 msgstr "A_cerca de"
 
-#: ../src/applet.c:2387
-#, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "Conexión de red inalámbrica a «%s» (%d%%)"
-
-#: ../src/applet.c:2449
-#, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "Preparando el dispositivo %s para la red inalámbrica «%s»…"
-
-#: ../src/applet.c:2452
-#, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "Intentando conectar con la red inalámbrica «%s»…"
-
-#: ../src/applet.c:2455
-#, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Solicitando una dirección de red a la red inalámbrica «%s»…"
-
-#: ../src/applet.c:2458
-#, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "Esperando la contraseña de red para la red inalámbrica «%s»…"
-
-#: ../src/applet.c:2477
-#, c-format
-msgid "You are now connected to the wireless network '%s'."
-msgstr "Ahora está conectado a la red inalámbrica «%s»."
-
-#: ../src/applet.c:2478 ../src/applet.c:2534 ../src/applet.c:2578
-msgid "Connection Established"
-msgstr "Se ha establecido la conexión"
-
-#: ../src/applet.c:2483
-#, c-format
-msgid "Wireless network connection to '%s'"
-msgstr "Conexión de red inalámbrica a «%s»"
-
-#: ../src/applet.c:2520
-#, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "Preparando el dispositivo %s para la red cableada…"
-
-#: ../src/applet.c:2523
-#, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "Configurando el dispositivo %s para la red cableada…"
-
-#: ../src/applet.c:2526
-msgid "Requesting a network address from the wired network..."
-msgstr "Solicitando una dirección de red a la red cableada…"
-
-#: ../src/applet.c:2530
-msgid "Wired network connection"
-msgstr "Conexión de red cableada"
-
-#: ../src/applet.c:2535
-msgid "You are now connected to the wired network."
-msgstr "Ahora está conectado a la red cableada."
-
-#: ../src/applet.c:2568
-#, c-format
-msgid "Dialing GSM device %s..."
-msgstr "Llamando al servicio GSM %s…"
-
-#: ../src/applet.c:2571
-#, c-format
-msgid "Running PPP on device %s..."
-msgstr "Ejecutando PPP sobre el dispositivo %s…"
-
-#: ../src/applet.c:2575
-msgid "GSM connection"
-msgstr "Conexiones GSM"
-
-#: ../src/applet.c:2579
-msgid "You are now connected to the GSM network."
-msgstr "Ahora está conectado a la red GSM."
-
-#: ../src/applet.c:2912
-msgid "No network connection"
-msgstr "Sin conexión de red"
-
-#: ../src/applet.c:2914
+#: ../src/applet.c:1039
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../src/applet.c:2915
+#: ../src/applet.c:1040
 msgid "The network connection has been disconnected."
 msgstr "La conexión de red ha sido desconectada."
 
-#: ../src/applet.c:3347
-msgid "NetworkManager Applet"
-msgstr "Miniaplicación NetworkManager"
+#: ../src/applet.c:1233
+msgid "No network connection"
+msgstr "Sin conexión de red"
 
-#: ../src/applet.c:3352 ../src/wireless-dialog.c:786
-msgid ""
-"The NetworkManager Applet could not find some required resources (the glade "
-"file was not found)."
-msgstr ""
-"La miniaplicación NetworkManager no pudo encontrar algunos archivos de "
-"recursos (No se encontró el archivo de glade)."
-
-#: ../src/applet.c:3556
+#: ../src/applet.c:1473
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
 msgstr ""
 "La miniaplicación NetworkManager no pudo encontrar algunos recursos "
 "necesarios. No se puede continuar.\n"
+
+#: ../src/applet.c:1614
+msgid "NetworkManager Applet"
+msgstr "Miniaplicación NetworkManager"
+
+#: ../src/applet.c:1619 ../src/wireless-dialog.c:788
+msgid ""
+"The NetworkManager Applet could not find some required resources (the glade "
+"file was not found)."
+msgstr ""
+"La miniaplicación NetworkManager no pudo encontrar algunos archivos de "
+"recursos (No se encontró el archivo de glade)."
 
 #: ../src/applet.glade.h:1
 msgid " "
@@ -450,8 +494,8 @@ msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
 msgstr ""
-"El editor de la conexión no pudo encontrar algunos archivos de recursos "
-"(no se encontró el archivo de glade de la miniaplicación NetworkManager)."
+"El editor de la conexión no pudo encontrar algunos archivos de recursos (no "
+"se encontró el archivo de glade de la miniaplicación NetworkManager)."
 
 #: ../src/connection-editor/nm-connection-editor.c:465
 #: ../src/connection-editor/nm-connection-editor.c:589
@@ -479,43 +523,43 @@ msgid "Wireless Security"
 msgstr "Seguridad inalámbrica"
 
 #: ../src/connection-editor/nm-connection-editor.c:893
-#: ../src/wireless-dialog.c:468
+#: ../src/wireless-dialog.c:469
 msgid "None"
 msgstr "Ninguna"
 
 #: ../src/connection-editor/nm-connection-editor.c:907
-#: ../src/wireless-dialog.c:486
+#: ../src/wireless-dialog.c:487
 msgid "WEP 128-bit Passphrase"
 msgstr "Frase de paso WEP de 128 bits"
 
 #: ../src/connection-editor/nm-connection-editor.c:915
-#: ../src/wireless-dialog.c:494
+#: ../src/wireless-dialog.c:495
 msgid "WEP 40/128-bit Hexadecimal"
 msgstr "Hexadecimal WEP de 64/128 bits"
 
 #: ../src/connection-editor/nm-connection-editor.c:923
-#: ../src/wireless-dialog.c:502
+#: ../src/wireless-dialog.c:503
 msgid "WEP 40/128-bit ASCII"
 msgstr "ASCII WEP de 40/128 bits"
 
 #: ../src/connection-editor/nm-connection-editor.c:935
-#: ../src/wireless-dialog.c:518
+#: ../src/wireless-dialog.c:519
 #: ../src/wireless-security/wireless-security.c:351
 msgid "LEAP"
 msgstr "LEAP"
 
 #: ../src/connection-editor/nm-connection-editor.c:947
-#: ../src/wireless-dialog.c:530
+#: ../src/wireless-dialog.c:531
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinámica (802.1x)"
 
 #: ../src/connection-editor/nm-connection-editor.c:960
-#: ../src/wireless-dialog.c:543
+#: ../src/wireless-dialog.c:544
 msgid "WPA & WPA2 Personal"
 msgstr "WPA y WPA2 personal"
 
 #: ../src/connection-editor/nm-connection-editor.c:973
-#: ../src/wireless-dialog.c:556
+#: ../src/wireless-dialog.c:557
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA y WPA2 Enterprise"
 
@@ -640,7 +684,6 @@ msgstr ""
 "B/G (2.4 GHz)"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:33
-#, fuzzy
 msgid ""
 "default\n"
 "Twisted Pair (TP)\n"
@@ -653,37 +696,6 @@ msgstr ""
 "Unidad de interfaz adjunto (AUI)\n"
 "BNC\n"
 "Interfaz de medios independiente (MII)"
-
-#: ../src/menu-items.c:70
-#, c-format
-msgid "Wired Network (%s)"
-msgstr "Red cableada (%s)"
-
-#: ../src/menu-items.c:73
-msgid "_Wired Network"
-msgstr "Red _cableada"
-
-#: ../src/menu-items.c:124
-#, c-format
-msgid "Wireless Network (%s)"
-msgid_plural "Wireless Networks (%s)"
-msgstr[0] "Red inalámbrica (%s)"
-msgstr[1] "Redes inalámbricas (%s)"
-
-#: ../src/menu-items.c:128
-msgid "Wireless Network"
-msgid_plural "Wireless Networks"
-msgstr[0] "Red inalámbrica"
-msgstr[1] "Redes inalámbricas"
-
-#: ../src/menu-items.c:379
-#, c-format
-msgid "GSM Modem (%s)"
-msgstr "Módem GSM (%s)"
-
-#: ../src/menu-items.c:382
-msgid "_GSM Modem"
-msgstr "Módem _GSM"
 
 #: ../src/utils/crypto.c:123
 #, c-format
@@ -1018,7 +1030,7 @@ msgstr ""
 "Ha habido un problema al iniciar el diálogo de autenticación para el tipo de "
 "conexión VPN «%s». Póngase en contacto con su administrador de sistemas."
 
-#: ../src/wireless-dialog.c:665
+#: ../src/wireless-dialog.c:666
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -1027,35 +1039,35 @@ msgstr ""
 "Se requieren contraseñas o claves de cifrado para acceder a la red "
 "inalámbrica «%s»."
 
-#: ../src/wireless-dialog.c:667
+#: ../src/wireless-dialog.c:668
 msgid "Wireless Network Secrets Required"
 msgstr "Clave requerida para la red inalámbrica"
 
-#: ../src/wireless-dialog.c:669
+#: ../src/wireless-dialog.c:670
 msgid "Secrets required by wireless network"
 msgstr "Se requiere contraseña para la red inalámbrica"
 
-#: ../src/wireless-dialog.c:673
+#: ../src/wireless-dialog.c:675
 msgid "Create New Wireless Network"
 msgstr "Crear una red inalámbrica nueva"
 
-#: ../src/wireless-dialog.c:675
+#: ../src/wireless-dialog.c:677
 msgid "New wireless network"
 msgstr "Red inalámbrica nueva"
 
-#: ../src/wireless-dialog.c:676
+#: ../src/wireless-dialog.c:678
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Introduzca un nombre para la red inalámbrica que desea crear."
 
-#: ../src/wireless-dialog.c:678
+#: ../src/wireless-dialog.c:680
 msgid "Connect to Other Wireless Network"
 msgstr "Conectar a otra red inalámbrica"
 
-#: ../src/wireless-dialog.c:680
+#: ../src/wireless-dialog.c:682
 msgid "Existing wireless network"
 msgstr "Red inalámbrica existente"
 
-#: ../src/wireless-dialog.c:681
+#: ../src/wireless-dialog.c:683
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Introduzca el nombre de la red inalámbrica a la que desea conectarse."
 
