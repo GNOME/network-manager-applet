@@ -20,10 +20,21 @@
  */
 
 #include <string.h>
+#include <netinet/ether.h>
 #include <glib.h>
+#include <iwlib.h>
+
+#include <nm-device-802-3-ethernet.h>
+#include <nm-device-802-11-wireless.h>
+#include <nm-gsm-device.h>
+#include <nm-access-point.h>
 
 #include <nm-setting-connection.h>
+#include <nm-setting-wired.h>
+#include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
+#include <nm-setting-gsm.h>
+#include <nm-utils.h>
 
 #include "crypto.h"
 #include "utils.h"
@@ -447,5 +458,250 @@ utils_ether_addr_valid (const struct ether_addr *test_addr)
 		return FALSE;
 	
 	return TRUE;
+}
+
+gboolean
+utils_check_ap_compatible (NMAccessPoint *ap,
+                           NMConnection *connection)
+{
+	NMSettingWireless *s_wireless;
+	NMSettingWirelessSecurity *s_wireless_sec;
+	const GByteArray *ssid;
+	int mode;
+	guint32 freq;
+
+	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	if (s_wireless == NULL)
+		return FALSE;
+	
+	ssid = nm_access_point_get_ssid (ap);
+	if (!nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
+		return FALSE;
+
+	if (s_wireless->bssid) {
+		struct ether_addr ap_addr;
+
+		if (ether_aton_r (nm_access_point_get_hw_address (ap), &ap_addr)) {
+			if (memcmp (s_wireless->bssid->data, &ap_addr, ETH_ALEN))
+				return FALSE;
+		}
+	}
+
+	mode = nm_access_point_get_mode (ap);
+	if (s_wireless->mode) {
+		if (   !strcmp (s_wireless->mode, "infrastructure")
+		    && (mode != IW_MODE_INFRA))
+			return FALSE;
+		if (   !strcmp (s_wireless->mode, "adhoc")
+		    && (mode != IW_MODE_ADHOC))
+			return FALSE;
+	}
+
+	freq = nm_access_point_get_frequency (ap);
+	if (s_wireless->band) {
+		if (!strcmp (s_wireless->band, "a")) {
+			if (freq < 5170 || freq > 5825)
+				return FALSE;
+		} else if (!strcmp (s_wireless->band, "bg")) {
+			if (freq < 2412 || freq > 2472)
+				return FALSE;
+		}
+	}
+
+	// FIXME: channel check
+
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection,
+															    NM_TYPE_SETTING_WIRELESS_SECURITY);
+
+	return nm_setting_wireless_ap_security_compatible (s_wireless,
+											 s_wireless_sec,
+											 nm_access_point_get_flags (ap),
+											 nm_access_point_get_wpa_flags (ap),
+											 nm_access_point_get_rsn_flags (ap),
+											 nm_access_point_get_mode (ap));
+}
+
+static gboolean
+connection_valid_for_wired (NMConnection *connection,
+                            NMSettingConnection *s_con,
+                            NMDevice *device,
+                            gpointer specific_object)
+{
+	NMDevice8023Ethernet *ethdev = NM_DEVICE_802_3_ETHERNET (device);
+	NMSettingWired *s_wired;
+	const char *str_mac;
+	struct ether_addr *bin_mac;
+	
+	if (strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
+		return FALSE;
+
+	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED));
+	g_return_val_if_fail (s_wired != NULL, FALSE);
+
+	/* Match MAC address */
+	if (!s_wired->mac_address)
+		return TRUE;
+
+	str_mac = nm_device_802_3_ethernet_get_hw_address (ethdev);
+	g_return_val_if_fail (str_mac != NULL, FALSE);
+
+	bin_mac = ether_aton (str_mac);
+	g_return_val_if_fail (bin_mac != NULL, FALSE);
+
+	if (memcmp (bin_mac->ether_addr_octet, s_wired->mac_address->data, ETH_ALEN))
+		return FALSE;
+
+	return TRUE;
+}
+
+static gboolean
+connection_valid_for_wireless (NMConnection *connection,
+                               NMSettingConnection *s_con,
+                               NMDevice *device,
+                               gpointer specific_object)
+{
+	NMDevice80211Wireless *wdev = NM_DEVICE_802_11_WIRELESS (device);
+	NMSettingWireless *s_wireless;
+	NMSettingWirelessSecurity *s_wireless_sec;
+	const char *str_mac;
+	struct ether_addr *bin_mac;
+	guint32 wcaps;
+	NMAccessPoint *ap;
+
+	if (strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME))
+		return FALSE;
+
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	g_return_val_if_fail (s_wireless != NULL, FALSE);
+
+	/* Match MAC address */
+	if (!s_wireless->mac_address)
+		return TRUE;
+
+	str_mac = nm_device_802_11_wireless_get_hw_address (wdev);
+	g_return_val_if_fail (str_mac != NULL, FALSE);
+
+	bin_mac = ether_aton (str_mac);
+	g_return_val_if_fail (bin_mac != NULL, FALSE);
+
+	if (memcmp (bin_mac->ether_addr_octet, s_wireless->mac_address->data, ETH_ALEN))
+		return FALSE;
+
+	if (!s_wireless->security || strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+		return TRUE; /* all devices can do unencrypted networks */
+
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+	if (!s_wireless_sec)
+		return TRUE; /* all devices can do unencrypted networks */
+
+	/* All devices should support static WEP */
+	if (!strcmp (s_wireless_sec->key_mgmt, "none"))
+		return TRUE;
+
+	/* All devices should support legacy LEAP and Dynamic WEP */
+	if (!strcmp (s_wireless_sec->key_mgmt, "ieee8021x"))
+		return TRUE;
+
+	/* Match security with device capabilities */
+	wcaps = nm_device_802_11_wireless_get_capabilities (wdev);
+
+	/* At this point, the device better have basic WPA support. */
+	if (   !(wcaps & NM_802_11_DEVICE_CAP_WPA)
+	    || !(wcaps & NM_802_11_DEVICE_CAP_CIPHER_TKIP))
+		return FALSE;
+
+	/* Check for only RSN */
+	if (   (g_slist_length (s_wireless_sec->proto) == 1)
+	    && !strcmp (s_wireless_sec->proto->data, "rsn")
+	    && !(wcaps & NM_802_11_DEVICE_CAP_RSN))
+		return FALSE;
+
+	/* Check for only pairwise CCMP */
+	if (   (g_slist_length (s_wireless_sec->pairwise) == 1)
+	    && !strcmp (s_wireless_sec->pairwise->data, "ccmp")
+	    && !(wcaps & NM_802_11_DEVICE_CAP_CIPHER_CCMP))
+		return FALSE;
+
+	/* Check for only group CCMP */
+	if (   (g_slist_length (s_wireless_sec->group) == 1)
+	    && !strcmp (s_wireless_sec->group->data, "ccmp")
+	    && !(wcaps & NM_802_11_DEVICE_CAP_CIPHER_CCMP))
+		return FALSE;
+
+	/* Match the AP */
+
+	if (!specific_object)
+		return TRUE;
+
+	ap = NM_ACCESS_POINT (specific_object);
+	if (!ap)
+		return TRUE;
+
+	if (!utils_check_ap_compatible (ap, connection))
+		return FALSE;
+
+	return TRUE;
+}
+
+static gboolean
+connection_valid_for_gsm (NMConnection *connection,
+                          NMSettingConnection *s_con,
+                          NMDevice *device,
+                          gpointer specific_object)
+{
+	NMSettingGsm *s_gsm;
+	
+	if (strcmp (s_con->type, NM_SETTING_GSM_SETTING_NAME))
+		return FALSE;
+
+	s_gsm = NM_SETTING_GSM (nm_connection_get_setting (connection, NM_TYPE_SETTING_GSM));
+	g_return_val_if_fail (s_gsm != NULL, FALSE);
+
+	return TRUE;
+}
+
+gboolean
+utils_connection_valid_for_device (NMConnection *connection,
+                                   NMDevice *device,
+                                   gpointer specific_object)
+{
+	NMSettingConnection *s_con;
+
+	g_return_val_if_fail (connection != NULL, FALSE);
+	g_return_val_if_fail (device != NULL, FALSE);
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_return_val_if_fail (s_con != NULL, FALSE);
+	g_return_val_if_fail (s_con->type != NULL, FALSE);
+
+	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+		return connection_valid_for_wired (connection, s_con, device, specific_object);
+	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
+		return connection_valid_for_wireless (connection, s_con, device, specific_object);
+	else if (NM_IS_GSM_DEVICE (device))
+		return connection_valid_for_gsm (connection, s_con, device, specific_object);
+	else
+		g_assert_not_reached ();
+
+	return FALSE;
+}
+
+GSList *
+utils_filter_connections_for_device (NMDevice *device, GSList *connections)
+{
+	GSList *iter;
+	GSList *filtered = NULL;
+
+	for (iter = connections; iter; iter = g_slist_next (iter)) {
+		NMConnection *connection = NM_CONNECTION (iter->data);
+
+		if (utils_connection_valid_for_device (connection, device, NULL))
+			filtered = g_slist_append (filtered, connection);
+	}
+
+	return filtered;
 }
 

@@ -352,70 +352,6 @@ out:
 }
 
 static gboolean
-nm_ap_check_compatible (NMAccessPoint *ap,
-                        NMConnection *connection)
-{
-	NMSettingWireless *s_wireless;
-	NMSettingWirelessSecurity *s_wireless_sec;
-	const GByteArray *ssid;
-	int mode;
-	guint32 freq;
-
-	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
-
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-	if (s_wireless == NULL)
-		return FALSE;
-	
-	ssid = nm_access_point_get_ssid (ap);
-	if (!nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
-		return FALSE;
-
-	if (s_wireless->bssid) {
-		struct ether_addr ap_addr;
-
-		if (ether_aton_r (nm_access_point_get_hw_address (ap), &ap_addr)) {
-			if (memcmp (s_wireless->bssid->data, &ap_addr, ETH_ALEN))
-				return FALSE;
-		}
-	}
-
-	mode = nm_access_point_get_mode (ap);
-	if (s_wireless->mode) {
-		if (   !strcmp (s_wireless->mode, "infrastructure")
-		    && (mode != IW_MODE_INFRA))
-			return FALSE;
-		if (   !strcmp (s_wireless->mode, "adhoc")
-		    && (mode != IW_MODE_ADHOC))
-			return FALSE;
-	}
-
-	freq = nm_access_point_get_frequency (ap);
-	if (s_wireless->band) {
-		if (!strcmp (s_wireless->band, "a")) {
-			if (freq < 5170 || freq > 5825)
-				return FALSE;
-		} else if (!strcmp (s_wireless->band, "bg")) {
-			if (freq < 2412 || freq > 2472)
-				return FALSE;
-		}
-	}
-
-	// FIXME: channel check
-
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection,
-															    NM_TYPE_SETTING_WIRELESS_SECURITY);
-
-	return nm_setting_wireless_ap_security_compatible (s_wireless,
-											 s_wireless_sec,
-											 nm_access_point_get_flags (ap),
-											 nm_access_point_get_wpa_flags (ap),
-											 nm_access_point_get_rsn_flags (ap),
-											 nm_access_point_get_mode (ap));
-}
-
-static gboolean
 wireless_connection_filter (NMConnection *connection,
                             NMDevice *device,
                             NMApplet *applet,
@@ -440,7 +376,7 @@ wireless_connection_filter (NMConnection *connection,
 	if (!nm_utils_same_ssid (s_wireless->ssid, ap_ssid, TRUE))
 		return FALSE;
 
-	if (!nm_ap_check_compatible (info->ap, connection))
+	if (!utils_check_ap_compatible (info->ap, connection))
 		return FALSE;
 
 	return TRUE;

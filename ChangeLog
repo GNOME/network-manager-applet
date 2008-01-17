@@ -1,5 +1,26 @@
 2008-01-17  Dan Williams  <dcbw@redhat.com>
 
+	* src/utils/utils.h
+	  src/utils/utils.c
+		- (utils_filter_connections_for_device): new function; given a list of
+			connections, return the subset of that list which could potentially
+			be activated for a given device
+		- (utils_connection_valid_for_device): new function; given a single
+			connection, check whether the connection could potentially be
+			activated for a specific device and specific_object (ie, an AP)
+		- (connection_valid_for_gsm, connection_valid_for_wireless,
+		   connection_valid_for_wired): new functions; implement device-specific
+			connection validity checks
+		- (utils_check_ap_compatible): move here and rename from
+			src/applet-device-wireless.c::nm_ap_check_compatible() since
+			connection_valid_for_wireless() needs to use it too
+
+	* src/applet-device-wireless.c
+		- (wireless_connection_filter): use utils_check_ap_compatible()
+		- (nm_ap_check_compatible): move to utils.c as utils_check_ap_compatible()
+
+2008-01-17  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/nm-connection-list.c
 		- (get_connection_for_selection): factor out common code to get a
 			connection from the selected list item
