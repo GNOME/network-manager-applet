@@ -101,6 +101,10 @@ AppletDbusConnectionSettings * applet_dbus_settings_get_by_dbus_path (AppletDbus
 AppletDbusConnectionSettings * applet_dbus_settings_get_by_connection (AppletDbusSettings *settings,
                                                                        NMConnection *connection);
 
+/* Returns a list of NMConnectionSettings objects */
 GSList * applet_dbus_settings_list_connections (AppletDbusSettings *settings);
+
+/* Returns a list of both user and system NMConnection objects */
+GSList * applet_dbus_settings_get_all_connections (AppletDbusSettings *settings);
 
 #endif

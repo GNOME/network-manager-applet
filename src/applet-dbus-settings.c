@@ -609,18 +609,57 @@ get_connections (AppletDbusSettings *applet_settings)
 	return cnc_list;
 }
 
+static void
+update_user_connections (AppletDbusSettings *applet_settings)
+{
+	g_return_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings));
+
+	if (applet_settings->connections)
+		return;
+
+	applet_settings->connections = get_connections (applet_settings);
+	if (!applet_settings->connections)
+		g_warning ("No networks found in the configuration database");
+}
+
 GSList *
 applet_dbus_settings_list_connections (AppletDbusSettings *applet_settings)
 {
 	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings), NULL);
 
-	if (!applet_settings->connections) {
-		applet_settings->connections = get_connections (applet_settings);
-		if (!applet_settings->connections)
-			g_warning ("No networks found in the configuration database");
-	}
+	update_user_connections (applet_settings);
 
 	return applet_settings->connections;
+}
+
+static void
+add_system_connection (gpointer key, gpointer value, gpointer user_data)
+{
+	GSList **list = (GSList **) user_data;
+
+	*list = g_slist_append (*list, NM_CONNECTION (value));
+}
+
+GSList *
+applet_dbus_settings_get_all_connections (AppletDbusSettings *applet_settings)
+{
+	GSList *connections = NULL, *iter;
+
+	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings), NULL);
+
+	g_hash_table_foreach (applet_settings->system_connections,
+	                      add_system_connection,
+	                      &connections);
+
+	update_user_connections (applet_settings);
+	for (iter = applet_settings->connections; iter; iter = g_slist_next (iter)) {
+		NMConnectionSettings *cs = NM_CONNECTION_SETTINGS (iter->data);
+		NMConnection *con = applet_dbus_connection_settings_get_connection (cs);
+
+		connections = g_slist_append (connections, con);
+	}
+
+	return connections;
 }
 
 static GPtrArray *
