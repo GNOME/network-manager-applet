@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManagerApplet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-07 22:06+0100\n"
-"PO-Revision-Date: 2008-01-07 22:08+0100\n"
+"POT-Creation-Date: 2008-01-17 21:01+0100\n"
+"PO-Revision-Date: 2008-01-17 21:02+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -16,38 +16,172 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/applet.c:172
+#: ../src/applet-device-gsm.c:83
+msgid "Auto GSM dialup connection"
+msgstr "Automatiskt uppringd GSM-anslutning"
+
+#: ../src/applet-device-gsm.c:140
+#, c-format
+msgid "GSM Modem (%s)"
+msgstr "GSM-modem (%s)"
+
+#: ../src/applet-device-gsm.c:143
+msgid "_GSM Modem"
+msgstr "_GSM-modem"
+
+#: ../src/applet-device-gsm.c:171
+#: ../src/applet-device-wired.c:161
+#: ../src/applet-device-wireless.c:968
+msgid "Connection Established"
+msgstr "Anslutning etablerad"
+
+#: ../src/applet-device-gsm.c:172
+msgid "You are now connected to the GSM network."
+msgstr "Du är nu ansluten till GSM-nätverket."
+
+#: ../src/applet-device-gsm.c:190
+#, c-format
+msgid "Dialing GSM device %s..."
+msgstr "Ringer upp med GSM-enheten %s..."
+
+#: ../src/applet-device-gsm.c:193
+#, c-format
+msgid "Running PPP on device %s..."
+msgstr "Kör PPP på enheten %s..."
+
+#: ../src/applet-device-gsm.c:196
+msgid "GSM connection"
+msgstr "GSM-anslutning"
+
+#: ../src/applet-device-wired.c:67
+msgid "Auto Ethernet"
+msgstr "Automatiskt Ethernet"
+
+#: ../src/applet-device-wired.c:124
+#, c-format
+msgid "Wired Network (%s)"
+msgstr "Trådbundet nätverk (%s)"
+
+#: ../src/applet-device-wired.c:127
+msgid "_Wired Network"
+msgstr "_Trådbundet nätverk"
+
+#: ../src/applet-device-wired.c:162
+msgid "You are now connected to the wired network."
+msgstr "Du är nu ansluten till det trådbundna nätverket."
+
+#: ../src/applet-device-wired.c:180
+#, c-format
+msgid "Preparing device %s for the wired network..."
+msgstr "Förbereder enheten %s för det trådbundna nätverket..."
+
+#: ../src/applet-device-wired.c:183
+#, c-format
+msgid "Configuring device %s for the wired network..."
+msgstr "Konfigurerar enheten %s för det trådbundna nätverket..."
+
+#: ../src/applet-device-wired.c:186
+#, c-format
+msgid "Requesting a network address from the wired network..."
+msgstr "Begär en nätverksadress från det trådbundna nätverket..."
+
+#: ../src/applet-device-wired.c:190
+msgid "Wired network connection"
+msgstr "Trådbunden nätverksanslutning"
+
+#: ../src/applet-device-wireless.c:85
+msgid "_Connect to Other Wireless Network..."
+msgstr "_Anslut till annat trådlöst nätverk..."
+
+#: ../src/applet-device-wireless.c:124
+msgid "Create _New Wireless Network..."
+msgstr "Skapa _nytt trådlöst nätverk..."
+
+#: ../src/applet-device-wireless.c:663
+#, c-format
+msgid "Wireless Network (%s)"
+msgid_plural "Wireless Networks (%s)"
+msgstr[0] "Trådlöst nätverk (%s)"
+msgstr[1] "Trådlösa nätverk (%s)"
+
+#: ../src/applet-device-wireless.c:667
+msgid "Wireless Network"
+msgid_plural "Wireless Networks"
+msgstr[0] "Trådlöst nätverk"
+msgstr[1] "Trådlösa nätverk"
+
+#: ../src/applet-device-wireless.c:966
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "Du är nu ansluten till det trådlösa nätverket \"%s\"."
+
+#: ../src/applet-device-wireless.c:967
+#: ../src/applet-device-wireless.c:981
+msgid "(none)"
+msgstr "(ingen)"
+
+#: ../src/applet-device-wireless.c:995
+#, c-format
+msgid "Preparing device %s for the wireless network '%s'..."
+msgstr "Förbereder enheten %s för det trådlösa nätverket \"%s\"..."
+
+#: ../src/applet-device-wireless.c:998
+#, c-format
+msgid "Attempting to join the wireless network '%s'..."
+msgstr "Försöker ansluta till det trådlösa nätverket \"%s\"..."
+
+#: ../src/applet-device-wireless.c:1001
+#, c-format
+msgid "Requesting a network address from the wireless network '%s'..."
+msgstr "Begär en nätverksadress från det trådlösa nätverket \"%s\"..."
+
+#: ../src/applet-device-wireless.c:1004
+#, c-format
+msgid "Waiting for Network Key for the wireless network '%s'..."
+msgstr "Väntar på nätverksnyckel för det trådlösa nätverket \"%s\"..."
+
+#: ../src/applet-device-wireless.c:1024
+#, c-format
+msgid "Wireless network connection to '%s' (%d%%)"
+msgstr "Trådlös nätverksanslutning till \"%s\" (%d%%)"
+
+#: ../src/applet-device-wireless.c:1028
+#, c-format
+msgid "Wireless network connection to '%s'"
+msgstr "Trådlös nätverksanslutning till \"%s\""
+
+#: ../src/applet-dialogs.c:60
 msgid "Error displaying connection information:"
 msgstr "Fel vid visning av anslutningsinformation:"
 
-#: ../src/applet.c:205
+#: ../src/applet-dialogs.c:93
 msgid "Could not find some required resources (the glade file)!"
 msgstr "Kunde inte hitta en del nödvändiga resurser (glade-filen)!"
 
-#: ../src/applet.c:223
+#: ../src/applet-dialogs.c:111
 #, c-format
 msgid "Wired Ethernet (%s)"
 msgstr "Trådbundet Ethernet (%s)"
 
-#: ../src/applet.c:225
+#: ../src/applet-dialogs.c:113
 #, c-format
 msgid "Wireless Ethernet (%s)"
 msgstr "Trådlöst Ethernet (%s)"
 
-#: ../src/applet.c:237
+#: ../src/applet-dialogs.c:125
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet.c:241
+#: ../src/applet-dialogs.c:129
 msgid "Unknown"
 msgstr "Okänt"
 
-#: ../src/applet.c:306
+#: ../src/applet-dialogs.c:194
 msgid "No active connections!"
 msgstr "Inga aktiva anslutningar!"
 
-#: ../src/applet.c:430
+#: ../src/applet-dialogs.c:311
 msgid ""
 "Copyright © 2004-2007 Red Hat, Inc.\n"
 "Copyright © 2005-2007 Novell, Inc."
@@ -55,15 +189,15 @@ msgstr ""
 "Copyright © 2004-2007 Red Hat, Inc.\n"
 "Copyright © 2005-2007 Novell, Inc."
 
-#: ../src/applet.c:432
+#: ../src/applet-dialogs.c:313
 msgid "Notification area applet for managing your network devices and connections."
 msgstr "Panelprogram i notifieringsytan för hantering av dina nätverksenheter och nätverksanslutningar."
 
-#: ../src/applet.c:434
+#: ../src/applet-dialogs.c:315
 msgid "NetworkManager Website"
 msgstr "Webbplats för Nätverkshanterare"
 
-#: ../src/applet.c:437
+#: ../src/applet-dialogs.c:318
 msgid "translator-credits"
 msgstr ""
 "Daniel Nylander\n"
@@ -72,179 +206,89 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "tp-sv@listor.tp-sv.se"
 
-#: ../src/applet.c:1052
+#: ../src/applet.c:269
 msgid "VPN Login Message"
 msgstr "VPN-inloggningsmeddelande"
 
-#: ../src/applet.c:1463
-msgid "_Connect to Other Wireless Network..."
-msgstr "_Anslut till annat trådlöst nätverk..."
-
-#: ../src/applet.c:1503
-msgid "Create _New Wireless Network..."
-msgstr "Skapa _nytt trådlöst nätverk..."
-
-#: ../src/applet.c:1801
+#: ../src/applet.c:524
 msgid "No network devices have been found"
 msgstr "Inga nätverksenheter har hittats"
 
-#: ../src/applet.c:1885
+#: ../src/applet.c:610
 msgid "_VPN Connections"
 msgstr "_VPN-anslutningar"
 
-#: ../src/applet.c:1926
+#: ../src/applet.c:651
 msgid "_Configure VPN..."
 msgstr "_Konfigurera VPN..."
 
-#: ../src/applet.c:1930
+#: ../src/applet.c:655
 msgid "_Disconnect VPN..."
 msgstr "Koppla _från VPN..."
 
-#: ../src/applet.c:2006
+#: ../src/applet.c:700
 msgid "NetworkManager is not running..."
 msgstr "Nätverkshanteraren är inte igång..."
 
-#: ../src/applet.c:2011
-#: ../src/applet.c:3120
+#: ../src/applet.c:705
+#: ../src/applet.c:1229
 msgid "Networking disabled"
 msgstr "Nätverk inaktiverat"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2108
+#: ../src/applet.c:819
 msgid "Enable _Networking"
 msgstr "Aktivera _nätverk"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2116
+#: ../src/applet.c:827
 msgid "Enable _Wireless"
 msgstr "Aktivera _trådlöst"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2124
+#: ../src/applet.c:835
 msgid "Connection _Information"
 msgstr "Anslutnings_information"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2134
+#: ../src/applet.c:845
 msgid "Edit Connections..."
 msgstr "Redigera anslutningar..."
 
 #. Help item
-#: ../src/applet.c:2146
+#: ../src/applet.c:857
 msgid "_Help"
 msgstr "_Hjälp"
 
 #. About item
-#: ../src/applet.c:2155
+#: ../src/applet.c:866
 msgid "_About"
 msgstr "_Om"
 
-#: ../src/applet.c:2594
-#, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "Trådlös nätverksanslutning till \"%s\" (%d%%)"
-
-#: ../src/applet.c:2656
-#, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "Förbereder enheten %s för det trådlösa nätverket \"%s\"..."
-
-#: ../src/applet.c:2659
-#, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "Försöker ansluta till det trådlösa nätverket \"%s\"..."
-
-#: ../src/applet.c:2662
-#, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Begär en nätverksadress från det trådlösa nätverket \"%s\"..."
-
-#: ../src/applet.c:2665
-#, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "Väntar på nätverksnyckel för det trådlösa nätverket \"%s\"..."
-
-#: ../src/applet.c:2685
-#, c-format
-msgid "You are now connected to the wireless network '%s'."
-msgstr "Du är nu ansluten till det trådlösa nätverket \"%s\"."
-
-#: ../src/applet.c:2686
-#: ../src/applet.c:2744
-#: ../src/applet.c:2790
-msgid "Connection Established"
-msgstr "Anslutning etablerad"
-
-#: ../src/applet.c:2692
-#, c-format
-msgid "Wireless network connection to '%s'"
-msgstr "Trådlös nätverksanslutning till \"%s\""
-
-#: ../src/applet.c:2729
-#, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "Förbereder enheten %s för det trådbundna nätverket..."
-
-#: ../src/applet.c:2732
-#, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "Konfigurerar enheten %s för det trådbundna nätverket..."
-
-#: ../src/applet.c:2735
-#, c-format
-msgid "Requesting a network address from the wired network..."
-msgstr "Begär en nätverksadress från det trådbundna nätverket..."
-
-#: ../src/applet.c:2739
-msgid "Wired network connection"
-msgstr "Trådbunden nätverksanslutning"
-
-#: ../src/applet.c:2745
-msgid "You are now connected to the wired network."
-msgstr "Du är nu ansluten till det trådbundna nätverket."
-
-#: ../src/applet.c:2778
-#, c-format
-msgid "Dialing GSM device %s..."
-msgstr "Ringer upp med GSM-enheten %s..."
-
-#: ../src/applet.c:2781
-#, c-format
-msgid "Running PPP on device %s..."
-msgstr "Kör PPP på enheten %s..."
-
-#: ../src/applet.c:2785
-msgid "GSM connection"
-msgstr "GSM-anslutning"
-
-#: ../src/applet.c:2791
-msgid "You are now connected to the GSM network."
-msgstr "Du är nu ansluten till GSM-nätverket."
-
-#: ../src/applet.c:3124
-msgid "No network connection"
-msgstr "Ingen nätverksanslutning"
-
-#: ../src/applet.c:3128
+#: ../src/applet.c:1039
 msgid "Disconnected"
 msgstr "Frånkopplad"
 
-#: ../src/applet.c:3129
+#: ../src/applet.c:1040
 msgid "The network connection has been disconnected."
 msgstr "Nätverksanslutningen har kopplats från."
 
-#: ../src/applet.c:3588
+#: ../src/applet.c:1233
+msgid "No network connection"
+msgstr "Ingen nätverksanslutning"
+
+#: ../src/applet.c:1473
+msgid "The NetworkManager applet could not find some required resources.  It cannot continue.\n"
+msgstr "Panelprogrammet för nätverkshantering kunde inte hitta en del nödvändiga resurser. Det kan inte fortsätta.\n"
+
+#: ../src/applet.c:1614
 msgid "NetworkManager Applet"
 msgstr "Panelprogram för nätverkshantering"
 
-#: ../src/applet.c:3593
-#: ../src/wireless-dialog.c:786
+#: ../src/applet.c:1619
+#: ../src/wireless-dialog.c:788
 msgid "The NetworkManager Applet could not find some required resources (the glade file was not found)."
 msgstr "Panelprogrammet för nätverkshantering kunde inte hitta en del nödvändiga resurser (glade-filen hittades inte)."
-
-#: ../src/applet.c:3807
-msgid "The NetworkManager applet could not find some required resources.  It cannot continue.\n"
-msgstr "Panelprogrammet för nätverkshantering kunde inte hitta en del nödvändiga resurser. Det kan inte fortsätta.\n"
 
 #: ../src/applet.glade.h:1
 msgid " "
@@ -465,43 +509,43 @@ msgid "Wireless Security"
 msgstr "Trådlös säkerhet"
 
 #: ../src/connection-editor/nm-connection-editor.c:893
-#: ../src/wireless-dialog.c:468
+#: ../src/wireless-dialog.c:469
 msgid "None"
 msgstr "Ingen"
 
 #: ../src/connection-editor/nm-connection-editor.c:907
-#: ../src/wireless-dialog.c:486
+#: ../src/wireless-dialog.c:487
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bitars lösenfras"
 
 #: ../src/connection-editor/nm-connection-editor.c:915
-#: ../src/wireless-dialog.c:494
+#: ../src/wireless-dialog.c:495
 msgid "WEP 40/128-bit Hexadecimal"
 msgstr "WEP 40/128-bitars hexadecimal"
 
 #: ../src/connection-editor/nm-connection-editor.c:923
-#: ../src/wireless-dialog.c:502
+#: ../src/wireless-dialog.c:503
 msgid "WEP 40/128-bit ASCII"
 msgstr "WEP 40/128-bitars ASCII"
 
 #: ../src/connection-editor/nm-connection-editor.c:935
-#: ../src/wireless-dialog.c:518
+#: ../src/wireless-dialog.c:519
 #: ../src/wireless-security/wireless-security.c:351
 msgid "LEAP"
 msgstr "LEAP"
 
 #: ../src/connection-editor/nm-connection-editor.c:947
-#: ../src/wireless-dialog.c:530
+#: ../src/wireless-dialog.c:531
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamisk WEP (802.1x)"
 
 #: ../src/connection-editor/nm-connection-editor.c:960
-#: ../src/wireless-dialog.c:543
+#: ../src/wireless-dialog.c:544
 msgid "WPA & WPA2 Personal"
 msgstr "WPA och WPA2 Personal"
 
 #: ../src/connection-editor/nm-connection-editor.c:973
-#: ../src/wireless-dialog.c:556
+#: ../src/wireless-dialog.c:557
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA och WPA2 Enterprise"
 
@@ -638,45 +682,6 @@ msgstr ""
 "Attachment Unit Interface (AUI)\n"
 "BNC\n"
 "Media Independent Interface (MII)"
-
-#: ../src/eggtrayicon.c:134
-msgid "Orientation"
-msgstr "Orientering"
-
-#: ../src/eggtrayicon.c:135
-msgid "The orientation of the tray."
-msgstr "Orienteringen på lådan."
-
-#: ../src/menu-items.c:70
-#, c-format
-msgid "Wired Network (%s)"
-msgstr "Trådbundet nätverk (%s)"
-
-#: ../src/menu-items.c:73
-msgid "_Wired Network"
-msgstr "_Trådbundet nätverk"
-
-#: ../src/menu-items.c:124
-#, c-format
-msgid "Wireless Network (%s)"
-msgid_plural "Wireless Networks (%s)"
-msgstr[0] "Trådlöst nätverk (%s)"
-msgstr[1] "Trådlösa nätverk (%s)"
-
-#: ../src/menu-items.c:128
-msgid "Wireless Network"
-msgid_plural "Wireless Networks"
-msgstr[0] "Trådlöst nätverk"
-msgstr[1] "Trådlösa nätverk"
-
-#: ../src/menu-items.c:379
-#, c-format
-msgid "GSM Modem (%s)"
-msgstr "GSM-modem (%s)"
-
-#: ../src/menu-items.c:382
-msgid "_GSM Modem"
-msgstr "_GSM-modem"
 
 #: ../src/utils/crypto.c:123
 #, c-format
@@ -1005,40 +1010,40 @@ msgstr "Kunde inte hitta autentiseringsdialogen för VPN-anslutningstypen \"%s\"
 msgid "There was a problem launching the authentication dialog for VPN connection type '%s'. Contact your system administrator."
 msgstr "Ett problem inträffade vid start av autentiseringsdialogen för VPN-anslutningstypen \"%s\". Kontakta din systemadministratör."
 
-#: ../src/wireless-dialog.c:665
+#: ../src/wireless-dialog.c:666
 #, c-format
 msgid "Passwords or encryption keys are required to access the wireless network '%s'."
 msgstr "Lösenord eller krypteringsnycklar krävs för att komma åt det trådlösa nätverket \"%s\"."
 
-#: ../src/wireless-dialog.c:667
+#: ../src/wireless-dialog.c:668
 msgid "Wireless Network Secrets Required"
 msgstr "Hemligheter för det trådlösa nätverket krävs"
 
-#: ../src/wireless-dialog.c:669
+#: ../src/wireless-dialog.c:670
 msgid "Secrets required by wireless network"
 msgstr "Hemligheter som krävs för det trådlösa nätverket"
 
-#: ../src/wireless-dialog.c:673
+#: ../src/wireless-dialog.c:675
 msgid "Create New Wireless Network"
 msgstr "Skapa nytt trådlöst nätverk"
 
-#: ../src/wireless-dialog.c:675
+#: ../src/wireless-dialog.c:677
 msgid "New wireless network"
 msgstr "Nytt trådlöst nätverk"
 
-#: ../src/wireless-dialog.c:676
+#: ../src/wireless-dialog.c:678
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Ange ett namn för det trådlösa nätverket som du vill skapa."
 
-#: ../src/wireless-dialog.c:678
+#: ../src/wireless-dialog.c:680
 msgid "Connect to Other Wireless Network"
 msgstr "Anslut till annat trådlöst nätverk"
 
-#: ../src/wireless-dialog.c:680
+#: ../src/wireless-dialog.c:682
 msgid "Existing wireless network"
 msgstr "Befintligt trådlöst nätverk"
 
-#: ../src/wireless-dialog.c:681
+#: ../src/wireless-dialog.c:683
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Ange namnet på det trådlösa nätverk som du vill ansluta till."
 
@@ -1117,14 +1122,16 @@ msgstr "Tunnlad TLS"
 msgid "Protected EAP (PEAP)"
 msgstr "Protected EAP (PEAP)"
 
+#~ msgid "Orientation"
+#~ msgstr "Orientering"
+#~ msgid "The orientation of the tray."
+#~ msgstr "Orienteringen på lådan."
 #~ msgid ""
 #~ "A\n"
 #~ "BG"
 #~ msgstr ""
 #~ "A\n"
 #~ "BG"
-#~ msgid "Ethernet"
-#~ msgstr "Ethernet"
 #~ msgid "IP"
 #~ msgstr "IP"
 #~ msgid ""
