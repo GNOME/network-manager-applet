@@ -20,21 +20,62 @@
  * (C) Copyright 2004-2005 Red Hat, Inc.
  */
 
-#include <nm-connection.h>
-#include <nm-setting.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkliststore.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
 #include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtkstock.h>
 #include <gconf/gconf-client.h>
+
+#include <glib/gi18n.h>
+
 #include <nm-setting-connection.h>
+#include <nm-connection.h>
+#include <nm-setting.h>
+
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
 #include "gconf-helpers.h"
 
 G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
+
+#define CE_GCONF_PATH_TAG "ce-gconf-path"
+
+static NMConnection *
+get_connection_for_selection (NMConnectionList *list,
+                              GtkTreeModel **model,
+                              GtkTreeIter *iter)
+{
+	GtkTreeSelection *selection;
+	GList *selected_rows;
+	NMConnection *connection = NULL;
+
+	g_return_val_if_fail (list != NULL, NULL);
+	g_return_val_if_fail (model != NULL, NULL);
+	g_return_val_if_fail (*model == NULL, NULL);
+	g_return_val_if_fail (iter != NULL, NULL);
+
+	/* get selected row from the tree view */
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list->connection_list));
+	if (gtk_tree_selection_count_selected_rows (selection) != 1)
+		return NULL;
+
+	selected_rows = gtk_tree_selection_get_selected_rows (selection, model);
+	if (!selected_rows)
+		return NULL;
+	
+	if (gtk_tree_model_get_iter (*model, iter, (GtkTreePath *) selected_rows->data))
+		gtk_tree_model_get (*model, iter, 1, &connection, -1);
+
+	/* free memory */
+	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
+	g_list_free (selected_rows);
+
+	return connection;
+}
 
 static void
 add_connection_cb (GtkButton *button, gpointer user_data)
@@ -54,38 +95,70 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 {
 	NMConnectionEditor *editor;
 	NMConnection *connection;
-	GtkTreeSelection *selection;
-	GList *selected_rows;
-	GtkTreeModel *model = NULL;
-	NMConnectionList *list = NM_CONNECTION_LIST (user_data);
-	GtkTreeIter iter;
+	GtkTreeModel *ignore1 = NULL;
+	GtkTreeIter ignore2;
 
-	/* get selected row from the tree view */
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list->connection_list));
-	if (gtk_tree_selection_count_selected_rows (selection) != 1)
-		return;
+	connection = get_connection_for_selection (NM_CONNECTION_LIST (user_data),
+	                                           &ignore1,
+	                                           &ignore2);
+	g_return_if_fail (connection != NULL);
 
-	selected_rows = gtk_tree_selection_get_selected_rows (selection, &model);
-	if (!selected_rows)
-		return;
-	
-	if (!gtk_tree_model_get_iter (model, &iter, (GtkTreePath *) selected_rows->data))
-		goto out;
-
-	gtk_tree_model_get (model, &iter, 1, &connection, -1);
 	editor = nm_connection_editor_new (connection);
 	nm_connection_editor_run_and_close (editor);
 	g_object_unref (editor);
-
-out:
-	/* free memory */
-	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
-	g_list_free (selected_rows);
 }
 
 static void
 delete_connection_cb (GtkButton *button, gpointer user_data)
 {
+	NMConnectionList *list = NM_CONNECTION_LIST (user_data);
+	NMSettingConnection *s_con;
+	NMConnection *connection;
+	GtkWidget *dialog;
+	gint result;
+	const char *dir;
+	GError *error = NULL;
+	GtkTreeModel *model = NULL;
+	GtkTreeIter iter;
+
+	connection = get_connection_for_selection (NM_CONNECTION_LIST (user_data),
+	                                           &model, &iter);
+	g_return_if_fail (connection != NULL);
+	g_return_if_fail (model != NULL);
+
+	dir = g_object_get_data (G_OBJECT (connection), CE_GCONF_PATH_TAG);
+	g_return_if_fail (dir != NULL);
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	if (!s_con || !s_con->id)
+		return;
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (list->dialog),
+	                                 GTK_DIALOG_DESTROY_WITH_PARENT,
+	                                 GTK_MESSAGE_QUESTION,
+	                                 GTK_BUTTONS_NONE,
+	                                 _("Are you sure you wish to delete the connection %s?"),
+	                                 s_con->id);
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                        GTK_STOCK_DELETE, GTK_RESPONSE_YES,
+	                        NULL);
+
+	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+	if (result != GTK_RESPONSE_YES)
+		return;
+
+	if (!gconf_client_recursive_unset (list->client, dir, 0, &error)) {
+		g_warning ("%s: Failed to completely remove connection '%s': (%d) %s",
+		           __func__, s_con->id, error->code, error->message);
+		g_error_free (error);
+	}
+
+	gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+
+	if (!g_hash_table_remove (list->connections, dir))
+		g_warning ("%s: couldn't remove connection from hash table.", __func__);
 }
 
 static void
@@ -132,14 +205,11 @@ load_connections (NMConnectionList *list)
 
 		connection = nm_gconf_read_connection (list->client, dir);
 		if (connection) {
-			NMSettingConnection *s_con;
-
 			g_object_set_data_full (G_OBJECT (connection),
-							    "gconf-path", 
+							    CE_GCONF_PATH_TAG, 
 							    g_strdup (dir),
 							    (GDestroyNotify) g_free);
 
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 			g_hash_table_insert (list->connections,
 			                     g_strdup (dir),
 			                     connection);
