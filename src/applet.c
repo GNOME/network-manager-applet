@@ -1096,10 +1096,14 @@ void nma_update_state (NMApplet *applet)
 			break;
 
 		case NM_STATE_CONNECTED:
-			if (network_device_is_wired (act_dev))
-				tip = g_strdup (_("Wired network connection"));
-			else if (network_device_is_wireless (act_dev))
-			{
+			if (network_device_is_wired (act_dev)) {
+				const char *str_addr = network_device_get_ip4_address (act_dev);
+
+				if (str_addr && !strncmp (str_addr, LL_ADDR_PREFIX, strlen (LL_ADDR_PREFIX)))
+					tip = g_strdup (_("Wired network connection with a self-assigned address"));
+				else
+					tip = g_strdup (_("Wired network connection"));
+			} else if (network_device_is_wireless (act_dev)) {
 				if (applet->is_adhoc)
 					tip = g_strdup (_("Connected to an Ad-Hoc wireless network"));
 				else
