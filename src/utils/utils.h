@@ -49,8 +49,6 @@ guint32 utils_find_next_channel (guint32 channel, int direction, char *band);
 
 gboolean utils_ether_addr_valid (const struct ether_addr *test_addr);
 
-gboolean utils_check_ap_compatible (NMAccessPoint *ap, NMConnection *connection);
-
 gboolean utils_connection_valid_for_device (NMConnection *connection,
                                             NMDevice *device,
                                             gpointer specific_object);

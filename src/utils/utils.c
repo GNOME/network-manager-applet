@@ -460,7 +460,7 @@ utils_ether_addr_valid (const struct ether_addr *test_addr)
 	return TRUE;
 }
 
-gboolean
+static gboolean
 utils_check_ap_compatible (NMAccessPoint *ap,
                            NMConnection *connection)
 {
@@ -566,8 +566,6 @@ connection_valid_for_wireless (NMConnection *connection,
 	NMDevice80211Wireless *wdev = NM_DEVICE_802_11_WIRELESS (device);
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
-	const char *str_mac;
-	struct ether_addr *bin_mac;
 	guint32 wcaps;
 	NMAccessPoint *ap;
 
@@ -578,17 +576,28 @@ connection_valid_for_wireless (NMConnection *connection,
 	g_return_val_if_fail (s_wireless != NULL, FALSE);
 
 	/* Match MAC address */
-	if (!s_wireless->mac_address)
-		return TRUE;
+	if (s_wireless->mac_address) {
+		const char *str_mac;
+		struct ether_addr *bin_mac;
 
-	str_mac = nm_device_802_11_wireless_get_hw_address (wdev);
-	g_return_val_if_fail (str_mac != NULL, FALSE);
+		str_mac = nm_device_802_11_wireless_get_hw_address (wdev);
+		g_return_val_if_fail (str_mac != NULL, FALSE);
 
-	bin_mac = ether_aton (str_mac);
-	g_return_val_if_fail (bin_mac != NULL, FALSE);
+		bin_mac = ether_aton (str_mac);
+		g_return_val_if_fail (bin_mac != NULL, FALSE);
 
-	if (memcmp (bin_mac->ether_addr_octet, s_wireless->mac_address->data, ETH_ALEN))
-		return FALSE;
+		if (memcmp (bin_mac->ether_addr_octet, s_wireless->mac_address->data, ETH_ALEN))
+			return FALSE;
+	}
+
+	/* If an AP was given make sure that's compatible with the connection first */
+	if (specific_object) {
+		ap = NM_ACCESS_POINT (specific_object);
+		g_assert (ap);
+
+		if (!utils_check_ap_compatible (ap, connection))
+			return FALSE;
+	}
 
 	if (!s_wireless->security || strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
 		return TRUE; /* all devices can do unencrypted networks */
@@ -629,18 +638,6 @@ connection_valid_for_wireless (NMConnection *connection,
 	if (   (g_slist_length (s_wireless_sec->group) == 1)
 	    && !strcmp (s_wireless_sec->group->data, "ccmp")
 	    && !(wcaps & NM_802_11_DEVICE_CAP_CIPHER_CCMP))
-		return FALSE;
-
-	/* Match the AP */
-
-	if (!specific_object)
-		return TRUE;
-
-	ap = NM_ACCESS_POINT (specific_object);
-	if (!ap)
-		return TRUE;
-
-	if (!utils_check_ap_compatible (ap, connection))
 		return FALSE;
 
 	return TRUE;

@@ -149,7 +149,6 @@ typedef struct
 
 struct NMADeviceClass {
 	NMConnection * (*new_auto_connection) (NMDevice *device, NMApplet *applet, gpointer user_data);
-	gboolean       (*connection_filter) (NMConnection *connection, NMDevice *device, NMApplet *applet, gpointer user_data);
 	void           (*add_menu_item) (NMDevice *device, guint32 num_devices, GtkWidget *menu, NMApplet *applet);
 	void           (*device_added) (NMDevice *device, NMApplet *applet);
 	void           (*device_state_changed) (NMDevice *device, NMDeviceState state, NMApplet *applet);
@@ -173,8 +172,9 @@ NMDevice *applet_get_first_active_device (NMApplet *applet);
 void applet_schedule_update_icon (NMApplet *applet);
 
 void applet_menu_item_activate_helper (NMDevice *device,
-                                       NMApplet *applet,
+                                       NMConnection *connection,
                                        const char *specific_object,
+                                       NMApplet *applet,
                                        gpointer user_data);
 
 AppletDbusConnectionSettings *applet_get_connection_settings_for_device (NMDevice *device, NMApplet *applet);

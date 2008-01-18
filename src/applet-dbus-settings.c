@@ -523,8 +523,8 @@ out:
 }
 
 AppletDbusConnectionSettings *
-applet_dbus_settings_get_by_dbus_path (AppletDbusSettings *applet_settings,
-                                       const char *path)
+applet_dbus_settings_user_get_by_dbus_path (AppletDbusSettings *applet_settings,
+                                            const char *path)
 {
 	GSList *elt;
 
@@ -540,9 +540,40 @@ applet_dbus_settings_get_by_dbus_path (AppletDbusSettings *applet_settings,
 	return NULL;
 }
 
+struct FindSystemInfo {
+	NMConnection *connection;
+	const char *path;
+};
+
+static void
+find_system_by_path (gpointer key, gpointer data, gpointer user_data)
+{
+	struct FindSystemInfo *info = (struct FindSystemInfo *) user_data;
+	NMConnection *connection = NM_CONNECTION (data);
+
+	if (!info->path && (info->connection == connection))
+		info->path = (const char *) key;
+}
+
+const char *
+applet_dbus_settings_system_get_dbus_path (AppletDbusSettings *settings,
+                                           NMConnection *connection)
+{
+	struct FindSystemInfo info;
+
+	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (settings), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
+
+	info.connection = connection;
+	info.path = NULL;
+
+	g_hash_table_foreach (settings->system_connections, find_system_by_path, &info);
+	return info.path;
+}
+
 AppletDbusConnectionSettings *
-applet_dbus_settings_get_by_connection (AppletDbusSettings *applet_settings,
-                                        NMConnection *connection)
+applet_dbus_settings_user_get_by_connection (AppletDbusSettings *applet_settings,
+                                             NMConnection *connection)
 {
 	GSList *elt;
 
@@ -686,8 +717,8 @@ list_connections (NMSettings *settings)
 }
 
 AppletDbusConnectionSettings *
-applet_dbus_settings_add_connection (AppletDbusSettings *applet_settings,
-                                     NMConnection *connection)
+applet_dbus_settings_user_add_connection (AppletDbusSettings *applet_settings,
+                                          NMConnection *connection)
 {
 	NMConnectionSettings *exported;
 	guint32 i = 0;

@@ -1,3 +1,63 @@
+2008-01-18  Dan Williams  <dcbw@redhat.com>
+
+	* src/utils/utils.c
+	  src/utils/utils.h
+		- (utils_check_ap_compatible): make static; only used from utils.c now
+		- (connection_valid_for_wireless): if an AP is provided, check
+			compability of that first before doing device capability comparisons
+
+	* src/applet-dbus-settings.c
+	  src/applet-dbus-settings.h
+		- Rename applet_dbus_settings_get_by_dbus_path() -> 
+			applet_dbus_settings_user_get_by_dbus_path()
+		- (applet_dbus_settings_system_get_dbus_path): new function; return
+			a system NMConnection object from it's D-Bus path
+		- Rename applet_dbus_settings_get_by_connection() ->
+			applet_dbus_settings_user_get_by_connection()
+		- Rename applet_dbus_settings_add_connection() ->
+			applet_dbus_settings_user_add_connection()
+
+	* src/applet.c
+	  src/applet.h
+		- Remove the connection_filter() virtual function from NMADeviceClass,
+			it's no longer needed
+		- (applet_menu_item_activate_helper): take an NMConnection argument
+			for the connection to activate.  If this argument is NULL, then
+			create a new default connection for the object.  Handle system
+			connections too when calling nm_client_activate_device()
+
+	* src/applet-device-wired.c
+		- (wired_connection_filter): remove
+		- (wired_menu_item_activate): pass connection to
+			applet_menu_item_activate_helper()
+		- (wired_add_menu_item): get all connections valid for the device,
+			and construct the connection sub-menu if there are more than one.
+			Each menu item now keeps its applicable connection object around
+			to pass to applet_menu_item_activate_helper().
+
+	* src/applet-device-gsm.c
+		- (gsm_connection_filter): remove
+		- (gsm_menu_item_activate): pass connection to
+			applet_menu_item_activate_helper()
+		- (gsm_add_menu_item): get all connections valid for the device,
+			and construct the connection sub-menu if there are more than one.
+			Each menu item now keeps its applicable connection object around
+			to pass to applet_menu_item_activate_helper().
+
+	* src/applet-device-wireless.c
+		- (wireless_connection_filter): remove
+		- (wireless_menu_item_activate): pass connection to
+			applet_menu_item_activate_helper()
+		- (wireless_add_menu_item): filter all connections for the ones that
+			apply to this device and pass that on to the real menu construction
+			functions
+		- (add_one_ap_menu_item): do new menu item construction elsewhere
+		- (add_new_ap_item): get all connections valid for the device and the
+			access point tied to this menu item, and construct the connection
+			sub-menu if there are more than one. Each menu item now keeps its
+			applicable connection object around to pass to
+			applet_menu_item_activate_helper()
+
 2008-01-17  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

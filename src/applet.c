@@ -116,54 +116,46 @@ activate_device_cb (gpointer user_data, GError *err)
 
 void
 applet_menu_item_activate_helper (NMDevice *device,
-                                  NMApplet *applet,
+                                  NMConnection *connection,
                                   const char *specific_object,
+                                  NMApplet *applet,
                                   gpointer user_data)
 {
 	AppletDbusSettings *applet_settings = APPLET_DBUS_SETTINGS (applet->settings);
-	NMConnection *connection = NULL;
+	AppletDbusConnectionSettings *exported_con = NULL;
 	char *con_path = NULL;
-	GSList *elt, *connections;
-	NMADeviceClass *dclass;
+	gboolean is_system = FALSE;
 
-	dclass = get_device_class (device, applet);
-	g_assert (dclass);
+	g_return_if_fail (NM_IS_DEVICE (device));
+	g_return_if_fail (connection != NULL);
+	g_return_if_fail (NM_IS_CONNECTION (connection));
 
-	/* Find a connection that applies to this device */
-	// FIXME: handle multiple applicable connections per device
-	connections = applet_dbus_settings_list_connections (applet_settings);
-	for (elt = connections; elt; elt = g_slist_next (elt)) {
-		NMConnectionSettings *applet_connection = NM_CONNECTION_SETTINGS (elt->data);
-		NMConnection *candidate;
-
-		candidate = applet_dbus_connection_settings_get_connection (applet_connection);
-		if (dclass->connection_filter (candidate, device, applet, user_data)) {
-			NMSettingConnection *s_con;
-
-			con_path = (char *) nm_connection_settings_get_dbus_object_path (applet_connection);
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
-			g_message ("Found connection '%s' to activate at %s.", s_con->id, con_path);
-			connection = candidate;
-			break;
+	if (connection) {
+		exported_con = applet_dbus_settings_user_get_by_connection (applet_settings, connection);
+		if (exported_con) {
+			con_path = (char *) nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
+		} else {
+			con_path = (char *) applet_dbus_settings_system_get_dbus_path (applet_settings, connection);
+			if (con_path)
+				is_system = TRUE;
+			else
+				return;
 		}
-	}
+	} else {
+		NMADeviceClass *dclass = get_device_class (device, applet);
 
-	/* If no existing connection was found, create a new default connection
-	 * for this device type.
-	 */
-	if (!connection) {
-		AppletDbusConnectionSettings *exported_con;
-
+		/* If no connection was given, create a new default connection for this
+		 * device type.
+		 */
+		g_assert (dclass);
 		connection = dclass->new_auto_connection (device, applet, user_data);
 		if (!connection) {
 			nm_warning ("Couldn't create default connection.");
 			return;
 		}
 
-		exported_con = applet_dbus_settings_add_connection (applet_settings, connection);
-		if (exported_con)
-			con_path = (char *) nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
-		else {
+		exported_con = applet_dbus_settings_user_add_connection (applet_settings, connection);
+		if (!exported_con) {
 			/* If the setting isn't valid, because it needs more authentication
 			 * or something, ask the user for it.
 			 */
@@ -174,12 +166,16 @@ applet_menu_item_activate_helper (NMDevice *device,
 			}
 			return;
 		}
+
+		con_path = (char *) nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
 	}
+
+	g_assert (con_path);
 
 	/* Finally, tell NM to activate the connection */
 	nm_client_activate_device (applet->nm_client,
 	                           device,
-	                           NM_DBUS_SERVICE_USER_SETTINGS,
+	                           is_system ? NM_DBUS_SERVICE_SYSTEM_SETTINGS : NM_DBUS_SERVICE_USER_SETTINGS,
 	                           con_path,
 	                           specific_object,
 	                           activate_device_cb,
@@ -937,8 +933,8 @@ applet_get_connection_settings_for_device (NMDevice *device, NMApplet *applet)
 		if (!g_slist_find (act_con->devices, device))
 			continue;
 
-		connection_settings = applet_dbus_settings_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings),
-		                                                             act_con->connection_path);
+		connection_settings = applet_dbus_settings_user_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings),
+		                                                                  act_con->connection_path);
 		if (!connection_settings || !connection_settings->connection)
 			continue;
 

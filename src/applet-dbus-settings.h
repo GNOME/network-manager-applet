@@ -92,14 +92,17 @@ typedef struct {
 GType       applet_dbus_settings_get_type (void);
 NMSettings *applet_dbus_settings_new (void);
 
-AppletDbusConnectionSettings * applet_dbus_settings_add_connection (AppletDbusSettings *settings,
-                                                                    NMConnection *connection);
+AppletDbusConnectionSettings * applet_dbus_settings_user_add_connection (AppletDbusSettings *settings,
+                                                                         NMConnection *connection);
 
-AppletDbusConnectionSettings * applet_dbus_settings_get_by_dbus_path (AppletDbusSettings *settings,
-                                                                      const char *path);
+AppletDbusConnectionSettings * applet_dbus_settings_user_get_by_dbus_path (AppletDbusSettings *settings,
+                                                                           const char *path);
 
-AppletDbusConnectionSettings * applet_dbus_settings_get_by_connection (AppletDbusSettings *settings,
-                                                                       NMConnection *connection);
+AppletDbusConnectionSettings * applet_dbus_settings_user_get_by_connection (AppletDbusSettings *settings,
+                                                                            NMConnection *connection);
+
+const char * applet_dbus_settings_system_get_dbus_path (AppletDbusSettings *settings,
+                                                        NMConnection *connection);
 
 /* Returns a list of NMConnectionSettings objects */
 GSList * applet_dbus_settings_list_connections (AppletDbusSettings *settings);
