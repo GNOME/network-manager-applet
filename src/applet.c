@@ -1060,7 +1060,12 @@ foo_manager_running_cb (NMClient *client,
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
-	running ? g_message ("NM appeared") : g_message ("NM disappeared");
+	if (running) {
+		g_message ("NM appeared");
+	} else {
+		g_message ("NM disappeared");
+		clear_animation_timeout (applet);
+	}
 
 	applet->nm_running = running;
 	applet_schedule_update_icon (applet);
