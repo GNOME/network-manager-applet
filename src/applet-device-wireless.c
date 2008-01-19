@@ -414,6 +414,7 @@ add_new_ap_item (NMDevice80211Wireless *device,
                  NMAccessPoint *ap,
                  struct dup_data *dup_data,
                  NMAccessPoint *active_ap,
+                 NMConnection *active,
                  GSList *connections,
                  GtkWidget *menu,
                  NMApplet *applet)
@@ -488,7 +489,7 @@ add_new_ap_item (NMDevice80211Wireless *device,
 		info->ap = g_object_ref (G_OBJECT (ap));
 
 		if (g_slist_length (ap_connections) == 1) {
-			connection = NM_CONNECTION (g_slist_nth_data (connections, 0));
+			connection = NM_CONNECTION (g_slist_nth_data (ap_connections, 0));
 			info->connection = g_object_ref (G_OBJECT (connection));
 		}
 
@@ -511,6 +512,7 @@ add_one_ap_menu_item (NMDevice80211Wireless *device,
                       NMAccessPoint *ap,
                       GSList *connections,
                       NMAccessPoint *active_ap,
+                      NMConnection *active,
                       GtkWidget *menu,
                       NMApplet *applet)
 {
@@ -544,7 +546,7 @@ add_one_ap_menu_item (NMDevice80211Wireless *device,
 
 		nm_network_menu_item_add_dupe (item, ap);
 	} else {
-		item = add_new_ap_item (device, ap, &dup_data, active_ap, connections, menu, applet);
+		item = add_new_ap_item (device, ap, &dup_data, active_ap, active, connections, menu, applet);
 	}
 
 	if (!active_ap)
@@ -611,31 +613,29 @@ sort_wireless_networks (gconstpointer tmpa,
 	return 0;
 }
 
-static gboolean
-label_expose (GtkWidget *widget)
-{
-	/* Bad hack to make the label draw normally, instead of insensitive. */
-	widget->state = GTK_STATE_NORMAL;
-  
-	return FALSE;
-}
-
 static void
 wireless_add_menu_item (NMDevice *device,
                         guint32 n_devices,
+                        NMConnection *active,
                         GtkWidget *menu,
                         NMApplet *applet)
 {
 	NMDevice80211Wireless *wdev;
 	char *text;
-	GtkMenuItem *item;
+	GtkWidget *item;
 	GSList *aps;
 	GSList *iter;
 	NMAccessPoint *active_ap = NULL;
 	GSList *connections = NULL, *all;
+	GtkWidget *label;
+	char *bold_text;
 
 	wdev = NM_DEVICE_802_11_WIRELESS (device);
 	aps = nm_device_802_11_wireless_get_access_points (wdev);
+
+	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
+	connections = utils_filter_connections_for_device (device, all);
+	g_slist_free (all);
 
 	if (n_devices > 1) {
 		const char *desc;
@@ -646,27 +646,32 @@ wireless_add_menu_item (NMDevice *device,
 			dev_name = g_strdup (desc);
 		if (!dev_name)
 			dev_name = nm_device_get_iface (device);
-		text = g_strdup_printf (ngettext ("Wireless Network (%s)", "Wireless Networks (%s)",
-										  g_slist_length (aps)), dev_name);
+		g_assert (dev_name);
+
+		if (g_slist_length (aps) > 1)
+			text = g_strdup_printf (_("Wireless Networks (%s)"), dev_name);
+		else
+			text = g_strdup_printf (_("Wireless Network (%s)"), dev_name);
 		g_free (dev_name);
 	} else
 		text = g_strdup (ngettext ("Wireless Network", "Wireless Networks", g_slist_length (aps)));
 
-	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (text));
+	item = gtk_menu_item_new_with_mnemonic (text);
 	g_free (text);
 
-	g_signal_connect (item, "expose-event", G_CALLBACK (label_expose), NULL);
-	gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
-	gtk_widget_show (GTK_WIDGET (item));
+	label = gtk_bin_get_child (GTK_BIN (item));
+	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
+	                                     gtk_label_get_text (GTK_LABEL (label)));
+	gtk_label_set_markup (GTK_LABEL (label), bold_text);
+	g_free (bold_text);
+
+	gtk_widget_set_sensitive (item, FALSE);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	gtk_widget_show (item);
 
 	/* Don't display APs when wireless is disabled */
 	if (!nm_client_wireless_get_enabled (applet->nm_client))
 		goto out;
-
-	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
-	connections = utils_filter_connections_for_device (device, all);
-	g_slist_free (all);
 
 	aps = nm_device_802_11_wireless_get_access_points (wdev);
 	active_ap = nm_device_802_11_wireless_get_active_access_point (wdev);
@@ -674,7 +679,7 @@ wireless_add_menu_item (NMDevice *device,
 	/* Add all networks in our network list to the menu */
 	aps = g_slist_sort (aps, sort_wireless_networks);
 	for (iter = aps; iter; iter = g_slist_next (iter))
-		add_one_ap_menu_item (wdev, NM_ACCESS_POINT (iter->data), connections, active_ap, menu, applet);
+		add_one_ap_menu_item (wdev, NM_ACCESS_POINT (iter->data), connections, active_ap, active, menu, applet);
 
 out:
 	g_slist_free (connections);

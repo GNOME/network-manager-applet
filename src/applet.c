@@ -489,6 +489,37 @@ sort_devices (gconstpointer a, gconstpointer b)
 	return 0;
 }
 
+static NMConnection *
+find_active_connection_for_device (NMDevice *device, NMApplet *applet)
+{
+	NMConnection *connection = NULL;
+	GSList *iter;
+
+	g_return_val_if_fail (NM_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (NM_IS_APPLET (applet), NULL);
+
+	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
+		NMClientActiveConnection *con = (NMClientActiveConnection *) iter->data;
+
+		if (!g_slist_find (con->devices, device))
+			continue;
+
+		if (!strcmp (con->service_name, NM_DBUS_SERVICE_SYSTEM_SETTINGS)) {
+			connection = applet_dbus_settings_system_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), con->connection_path);
+		} else if (!strcmp (con->service_name, NM_DBUS_SERVICE_USER_SETTINGS)) {
+			AppletDbusConnectionSettings *tmp;
+
+			tmp = applet_dbus_settings_user_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), con->connection_path);
+			if (tmp) {
+				connection = applet_dbus_connection_settings_get_connection (NM_CONNECTION_SETTINGS (tmp));
+				break;
+			}
+		}
+	}
+
+	return connection;
+}
+
 static void
 nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 {
@@ -526,6 +557,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		NMDevice *device = NM_DEVICE (iter->data);
 		gint n_devices = 0;
 		NMADeviceClass *dclass;
+		NMConnection *active;
 
 		/* Ignore unsupported devices */
 		if (!(nm_device_get_capabilities (device) & NM_DEVICE_CAP_NM_SUPPORTED))
@@ -536,9 +568,11 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		else if (NM_IS_DEVICE_802_3_ETHERNET (device))
 			n_devices = n_wired_interfaces++;
 
+		active = find_active_connection_for_device (device, applet);
+
 		dclass = get_device_class (device, applet);
 		g_assert (dclass);
-		dclass->add_menu_item (device, n_devices, menu, applet);
+		dclass->add_menu_item (device, n_devices, active, menu, applet);
 	}
 
 	if (n_wireless_interfaces > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {

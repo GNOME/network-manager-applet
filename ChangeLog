@@ -1,5 +1,37 @@
 2008-01-19  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet-device-gsm.c
+		- (add_connection_items): new function; add each applicable connection
+			as a menu item
+		- (gsm_add_menu_item): when more than one connection applies, add each
+			one as a menu item; when <= 1 apply, add the device as an active
+			menu item; when multiple subitems are present, make the parent menu
+			item text gray
+
+	* src/applet-device-wireless.c
+		- (add_new_ap_item): fix crash assigning a conneciton to the menu item
+		- (add_one_ap_menu_item): pass active connection down too
+		- (label_expose): remove
+		- (wireless_add_menu_item): when multiple subitems are present, make the
+			parent menu item text gray
+
+	* src/applet-device-wired.c
+		- (add_connection_items): new function; add each applicable connection
+			as a menu item
+		- (gsm_add_menu_item): when more than one connection applies, add each
+			one as a menu item; when <= 1 apply, add the device as an active
+			menu item; when multiple subitems are present, make the parent menu
+			item text gray
+
+	* src/applet.c
+	  src/applet.h
+		- (find_active_connection_for_device): new function; given a device,
+			if the device is active or activating, find it's NMConnection
+		- (nma_menu_add_devices): find the active connection for the device,
+			and pass that to the device class' add_menu_item() handler
+
+2008-01-19  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-dbus-settings.c
 	  src/applet-dbus-settings.h
 		- (applet_dbus_settings_system_get_by_dbus_path): new function

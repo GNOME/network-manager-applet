@@ -149,7 +149,7 @@ typedef struct
 
 struct NMADeviceClass {
 	NMConnection * (*new_auto_connection) (NMDevice *device, NMApplet *applet, gpointer user_data);
-	void           (*add_menu_item) (NMDevice *device, guint32 num_devices, GtkWidget *menu, NMApplet *applet);
+	void           (*add_menu_item) (NMDevice *device, guint32 num_devices, NMConnection *active, GtkWidget *menu, NMApplet *applet);
 	void           (*device_added) (NMDevice *device, NMApplet *applet);
 	void           (*device_state_changed) (NMDevice *device, NMDeviceState state, NMApplet *applet);
 	GdkPixbuf *    (*get_icon) (NMDevice *device, NMDeviceState state, char **tip, NMApplet *applet);

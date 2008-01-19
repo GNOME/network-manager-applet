@@ -92,15 +92,58 @@ wired_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 }
 
 static void
+add_connection_items (NMDevice *device,
+                      GSList *connections,
+                      gboolean disabled,
+                      NMConnection *active,
+                      GtkWidget *menu,
+                      NMApplet *applet)
+{
+	GSList *iter;
+	WiredMenuItemInfo *info;
+
+	for (iter = connections; iter; iter = g_slist_next (iter)) {
+		NMConnection *connection = NM_CONNECTION (iter->data);
+		NMSettingConnection *s_con;
+		GtkWidget *item;
+
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		item = gtk_check_menu_item_new_with_label (s_con->id);
+ 		gtk_widget_set_sensitive (GTK_WIDGET (item), !disabled);
+		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
+
+		if (connection == active)
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+
+		info = g_slice_new0 (WiredMenuItemInfo);
+		info->applet = applet;
+		info->device = g_object_ref (G_OBJECT (device));
+		info->connection = g_object_ref (connection);
+
+		g_signal_connect_data (item, "activate",
+		                       G_CALLBACK (wired_menu_item_activate),
+		                       info,
+		                       (GClosureNotify) wired_menu_item_info_destroy, 0);
+
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	}
+}
+
+static void
 wired_add_menu_item (NMDevice *device,
                      guint32 n_devices,
+                     NMConnection *active,
                      GtkWidget *menu,
                      NMApplet *applet)
 {
 	char *text;
-	GtkCheckMenuItem *item;
-	GSList *connections, *all, *iter;
-	WiredMenuItemInfo *info;
+	GtkWidget *item;
+	GSList *connections, *all;
+	gboolean disabled = FALSE;
+
+	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
+	connections = utils_filter_connections_for_device (device, all);
+	g_slist_free (all);
 
 	if (n_devices > 1) {
 		const char *desc;
@@ -112,48 +155,53 @@ wired_add_menu_item (NMDevice *device,
 		if (!dev_name)
 			dev_name = nm_device_get_iface (device);
 		g_assert (dev_name);
-		text = g_strdup_printf (_("Wired Network (%s)"), dev_name);
-		g_free (dev_name);
-	} else
-		text = g_strdup (_("_Wired Network"));
 
-	item = GTK_CHECK_MENU_ITEM (gtk_check_menu_item_new_with_mnemonic (text));
+		if (g_slist_length (connections) > 1)
+			text = g_strdup_printf (_("Wired Networks (%s)"), dev_name);
+		else
+			text = g_strdup_printf (_("Wired Network (%s)"), dev_name);
+		g_free (dev_name);
+	} else {
+		if (g_slist_length (connections) > 1)
+			text = g_strdup (_("Wired Networks"));
+		else
+			text = g_strdup (_("_Wired Network"));
+	}
+
+	if (g_slist_length (connections) > 1) {
+		item = gtk_menu_item_new_with_label (text);
+	} else {
+		item = gtk_check_menu_item_new_with_mnemonic (text);
+		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
+	}
 	g_free (text);
 
-	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
-	connections = utils_filter_connections_for_device (device, all);
-	g_slist_free (all);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
-	/* If there's only one connection, don't show the submenu */
+	/* Only dim the item if the device supports carrier detection AND
+	 * we know it doesn't have a link.
+	 */
+ 	if (nm_device_get_capabilities (device) & NM_DEVICE_CAP_CARRIER_DETECT) {
+		disabled = nm_device_get_carrier (device) ? FALSE : TRUE;
+ 		gtk_widget_set_sensitive (GTK_WIDGET (item), disabled);
+	}
+
 	if (g_slist_length (connections) > 1) {
-		GtkWidget *submenu;
+		GtkWidget *label;
+		char *bold_text;
 
-		submenu = gtk_menu_new ();
+		label = gtk_bin_get_child (GTK_BIN (item));
+		bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
+		                                     gtk_label_get_text (GTK_LABEL (label)));
+		gtk_label_set_markup (GTK_LABEL (label), bold_text);
+		g_free (bold_text);
 
-		for (iter = connections; iter; iter = g_slist_next (iter)) {
-			NMConnection *connection = NM_CONNECTION (iter->data);
-			NMSettingConnection *s_con;
-			GtkWidget *subitem;
+		gtk_widget_set_sensitive (item, FALSE);
 
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-			subitem = gtk_menu_item_new_with_label (s_con->id);
-
-			info = g_slice_new0 (WiredMenuItemInfo);
-			info->applet = applet;
-			info->device = g_object_ref (G_OBJECT (device));
-			info->connection = g_object_ref (connection);
-
-			g_signal_connect_data (subitem, "activate",
-			                       G_CALLBACK (wired_menu_item_activate),
-			                       info,
-			                       (GClosureNotify) wired_menu_item_info_destroy, 0);
-
-			gtk_menu_shell_append (GTK_MENU_SHELL (submenu), GTK_WIDGET (subitem));
-		}
-
-		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), submenu);
+		add_connection_items (device, connections, disabled, active, menu, applet);
 	} else {
 		NMConnection *connection;
+		WiredMenuItemInfo *info;
 
 		info = g_slice_new0 (WiredMenuItemInfo);
 		info->applet = applet;
@@ -164,31 +212,18 @@ wired_add_menu_item (NMDevice *device,
 			info->connection = g_object_ref (G_OBJECT (connection));
 		}
 
+		if (   (nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED)
+		    || (info->connection && info->connection == active))
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+
 		g_signal_connect_data (item, "activate",
 		                       G_CALLBACK (wired_menu_item_activate),
 		                       info,
 		                       (GClosureNotify) wired_menu_item_info_destroy, 0);
 	}
+
+	gtk_widget_show (item);
 	g_slist_free (connections);
-
-	gtk_check_menu_item_set_draw_as_radio (item, TRUE);
-
-	g_signal_handlers_block_matched (item, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
-	                                 G_CALLBACK (wired_menu_item_activate), NULL);
-
-	gtk_check_menu_item_set_active (item, nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED);
-
-	g_signal_handlers_unblock_matched (item, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
-	                                   G_CALLBACK (wired_menu_item_activate), NULL);
-
-	/* Only dim the item if the device supports carrier detection AND
-	 * we know it doesn't have a link.
-	 */
- 	if (nm_device_get_capabilities (device) & NM_DEVICE_CAP_CARRIER_DETECT)
- 		gtk_widget_set_sensitive (GTK_WIDGET (item), nm_device_get_carrier (device));
-
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
-	gtk_widget_show (GTK_WIDGET (item));
 }
 
 static void
