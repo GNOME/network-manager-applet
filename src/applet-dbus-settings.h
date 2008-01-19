@@ -104,6 +104,9 @@ AppletDbusConnectionSettings * applet_dbus_settings_user_get_by_connection (Appl
 const char * applet_dbus_settings_system_get_dbus_path (AppletDbusSettings *settings,
                                                         NMConnection *connection);
 
+NMConnection * applet_dbus_settings_system_get_by_dbus_path (AppletDbusSettings *settings,
+                                                             const char *path);
+
 /* Returns a list of NMConnectionSettings objects */
 GSList * applet_dbus_settings_list_connections (AppletDbusSettings *settings);
 

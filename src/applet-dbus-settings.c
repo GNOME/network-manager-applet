@@ -571,6 +571,16 @@ applet_dbus_settings_system_get_dbus_path (AppletDbusSettings *settings,
 	return info.path;
 }
 
+NMConnection *
+applet_dbus_settings_system_get_by_dbus_path (AppletDbusSettings *settings,
+                                              const char *path)
+{
+	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (settings), NULL);
+	g_return_val_if_fail (path != NULL, NULL);
+
+	return g_hash_table_lookup (settings->system_connections, path);
+}
+
 AppletDbusConnectionSettings *
 applet_dbus_settings_user_get_by_connection (AppletDbusSettings *applet_settings,
                                              NMConnection *connection)
