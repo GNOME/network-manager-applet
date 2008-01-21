@@ -571,8 +571,8 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		active = find_active_connection_for_device (device, applet);
 
 		dclass = get_device_class (device, applet);
-		g_assert (dclass);
-		dclass->add_menu_item (device, n_devices, active, menu, applet);
+		if (dclass)
+			dclass->add_menu_item (device, n_devices, active, menu, applet);
 	}
 
 	if (n_wireless_interfaces > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
@@ -1047,7 +1047,7 @@ foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 	NMADeviceClass *dclass;
 
 	dclass = get_device_class (device, applet);
-	g_assert (dclass);
+	g_return_if_fail (dclass != NULL);
 
 	if (dclass->device_added)
 		dclass->device_added (device, applet);
@@ -1192,8 +1192,8 @@ applet_get_device_icon_for_state (NMApplet *applet, char **tip)
 	state = nm_device_get_state (device);
 
 	dclass = get_device_class (device, applet);
-	g_assert (dclass);
-	pixbuf = dclass->get_icon (device, state, tip, applet);
+	if (dclass)
+		pixbuf = dclass->get_icon (device, state, tip, applet);
 
 out:
 	if (!pixbuf)
@@ -1385,7 +1385,12 @@ applet_settings_new_secrets_requested_cb (AppletDbusSettings *settings,
 	}
 
 	dclass = get_device_class (device, applet);
-	g_assert (dclass);
+	if (!dclass) {
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): device type unknown",
+		             __FILE__, __LINE__, __func__);
+		goto error;
+	}
 
 	if (!dclass->get_secrets) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
