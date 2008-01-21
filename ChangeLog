@@ -1,3 +1,28 @@
+2008-01-21  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-device-gsm.c
+		- (gsm_new_auto_connection): actually add the GSM setting to the
+			connection object so it's valid
+		- (gsm_get_icon): use wwan_icon member
+
+	* src/applet.c
+	  src/applet.h
+		- (get_device_class): handle CDMA mobile broadband cards
+		- (applet_menu_item_activate_helper): remove wrong check for connection
+			!= NULL; if the connectoin is NULL then a default one should be
+			created instead
+		- (sort_devices): ethernet first, GSM second, CDMA third, wireless fourth
+		- (nma_icons_free, nma_icons_load, constructor): gsm_icon -> wwan_icon
+
+	* src/utils/utils.c
+		- (connection_valid_for_cdma): new function
+		- (utils_connection_valid_for_device): handle CDMA mobile broadband cards
+
+	* src/applet-device-cdma.c
+	  src/applet-device-cdma.h
+	  src/Makefile.am
+		- Add CDMA mobile broadband card support
+
 2008-01-20  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c

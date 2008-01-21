@@ -27,6 +27,7 @@
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
 #include <nm-gsm-device.h>
+#include <nm-cdma-device.h>
 #include <nm-access-point.h>
 
 #include <nm-setting-connection.h>
@@ -34,6 +35,7 @@
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-gsm.h>
+#include <nm-setting-cdma.h>
 #include <nm-utils.h>
 
 #include "crypto.h"
@@ -660,6 +662,23 @@ connection_valid_for_gsm (NMConnection *connection,
 	return TRUE;
 }
 
+static gboolean
+connection_valid_for_cdma (NMConnection *connection,
+                           NMSettingConnection *s_con,
+                           NMDevice *device,
+                           gpointer specific_object)
+{
+	NMSettingCdma *s_cdma;
+	
+	if (strcmp (s_con->type, NM_SETTING_CDMA_SETTING_NAME))
+		return FALSE;
+
+	s_cdma = NM_SETTING_CDMA (nm_connection_get_setting (connection, NM_TYPE_SETTING_CDMA));
+	g_return_val_if_fail (s_cdma != NULL, FALSE);
+
+	return TRUE;
+}
+
 gboolean
 utils_connection_valid_for_device (NMConnection *connection,
                                    NMDevice *device,
@@ -680,8 +699,10 @@ utils_connection_valid_for_device (NMConnection *connection,
 		return connection_valid_for_wireless (connection, s_con, device, specific_object);
 	else if (NM_IS_GSM_DEVICE (device))
 		return connection_valid_for_gsm (connection, s_con, device, specific_object);
+	else if (NM_IS_CDMA_DEVICE (device))
+		return connection_valid_for_cdma (connection, s_con, device, specific_object);
 	else
-		g_assert_not_reached ();
+		g_warning ("Unknown device type '%s'", g_type_name (G_OBJECT_TYPE(device)));
 
 	return FALSE;
 }

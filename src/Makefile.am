@@ -47,6 +47,8 @@ nm_applet_SOURCES =			\
 	ap-menu-item.c \
 	applet-device-gsm.h \
 	applet-device-gsm.c \
+	applet-device-cdma.h \
+	applet-device-cdma.c \
 	$(NULL)
 
 nm_applet_LDADD = \

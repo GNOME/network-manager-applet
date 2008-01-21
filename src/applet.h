@@ -99,6 +99,7 @@ typedef struct
 	NMADeviceClass *wired_class;
 	NMADeviceClass *wireless_class;
 	NMADeviceClass *gsm_class;
+	NMADeviceClass *cdma_class;
 
 	/* Data model elements */
 	guint			update_icon_id;
@@ -109,7 +110,7 @@ typedef struct
 	GdkPixbuf *		no_connection_icon;
 	GdkPixbuf *		wired_icon;
 	GdkPixbuf *		adhoc_icon;
-	GdkPixbuf *		gsm_icon;
+	GdkPixbuf *		wwan_icon;
 	GdkPixbuf *		wireless_00_icon;
 	GdkPixbuf *		wireless_25_icon;
 	GdkPixbuf *		wireless_50_icon;

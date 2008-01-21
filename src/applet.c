@@ -44,6 +44,7 @@
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
 #include <nm-gsm-device.h>
+#include <nm-cdma-device.h>
 #include <nm-utils.h>
 #include <nm-connection.h>
 #include <nm-vpn-connection.h>
@@ -60,6 +61,7 @@
 #include "applet-device-wired.h"
 #include "applet-device-wireless.h"
 #include "applet-device-gsm.h"
+#include "applet-device-cdma.h"
 #include "applet-dialogs.h"
 #include "vpn-password-dialog.h"
 #include "applet-dbus-manager.h"
@@ -102,6 +104,8 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->wireless_class;
 	else if (NM_IS_GSM_DEVICE (device))
 		return applet->gsm_class;
+	else if (NM_IS_CDMA_DEVICE (device))
+		return applet->cdma_class;
 	else
 		g_message ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
 	return NULL;
@@ -127,8 +131,6 @@ applet_menu_item_activate_helper (NMDevice *device,
 	gboolean is_system = FALSE;
 
 	g_return_if_fail (NM_IS_DEVICE (device));
-	g_return_if_fail (connection != NULL);
-	g_return_if_fail (NM_IS_CONNECTION (connection));
 
 	if (connection) {
 		exported_con = applet_dbus_settings_user_get_by_connection (applet_settings, connection);
@@ -483,10 +485,20 @@ sort_devices (gconstpointer a, gconstpointer b)
 
 	if (aa_type == NM_TYPE_DEVICE_802_3_ETHERNET && bb_type == NM_TYPE_DEVICE_802_11_WIRELESS)
 		return -1;
-	if (aa_type == NM_TYPE_DEVICE_802_11_WIRELESS && bb_type == NM_TYPE_DEVICE_802_3_ETHERNET)
-		return 1;
+	if (aa_type == NM_TYPE_DEVICE_802_3_ETHERNET && bb_type == NM_TYPE_GSM_DEVICE)
+		return -1;
+	if (aa_type == NM_TYPE_DEVICE_802_3_ETHERNET && bb_type == NM_TYPE_CDMA_DEVICE)
+		return -1;
 
-	return 0;
+	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_CDMA_DEVICE)
+		return -1;
+	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_802_11_WIRELESS)
+		return -1;
+
+	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_802_11_WIRELESS)
+		return -1;
+
+	return 1;
 }
 
 static NMConnection *
@@ -1433,7 +1445,7 @@ static void nma_icons_free (NMApplet *applet)
 	CLEAR_ICON(applet->no_connection_icon);
 	CLEAR_ICON(applet->wired_icon);
 	CLEAR_ICON(applet->adhoc_icon);
-	CLEAR_ICON(applet->gsm_icon);
+	CLEAR_ICON(applet->wwan_icon);
 	CLEAR_ICON(applet->vpn_lock_icon);
 	CLEAR_ICON(applet->wireless_00_icon);
 	CLEAR_ICON(applet->wireless_25_icon);
@@ -1479,7 +1491,7 @@ nma_icons_load (NMApplet *applet)
 	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
 	ICON_LOAD(applet->wired_icon, "nm-device-wired");
 	ICON_LOAD(applet->adhoc_icon, "nm-adhoc");
-	ICON_LOAD(applet->gsm_icon, "nm-adhoc"); /* FIXME: Until there's no GSM device icon */
+	ICON_LOAD(applet->wwan_icon, "nm-adhoc"); /* FIXME: Until there's no WWAN device icon */
 	ICON_LOAD(applet->vpn_lock_icon, "nm-vpn-lock");
 
 	ICON_LOAD(applet->wireless_00_icon, "nm-signal-00");
@@ -1702,6 +1714,9 @@ constructor (GType type,
 
 	applet->gsm_class = applet_device_gsm_get_class (applet);
 	g_assert (applet->gsm_class);
+
+	applet->cdma_class = applet_device_cdma_get_class (applet);
+	g_assert (applet->cdma_class);
 
 	foo_client_setup (applet);
 	applet->vpn_manager = nm_vpn_manager_new ();
