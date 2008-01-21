@@ -94,7 +94,7 @@ wired_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 static void
 add_connection_items (NMDevice *device,
                       GSList *connections,
-                      gboolean disabled,
+                      gboolean carrier,
                       NMConnection *active,
                       GtkWidget *menu,
                       NMApplet *applet)
@@ -109,7 +109,7 @@ add_connection_items (NMDevice *device,
 
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 		item = gtk_check_menu_item_new_with_label (s_con->id);
- 		gtk_widget_set_sensitive (GTK_WIDGET (item), !disabled);
+ 		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
 		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 
 		if (connection == active)
@@ -139,7 +139,7 @@ wired_add_menu_item (NMDevice *device,
 	char *text;
 	GtkWidget *item;
 	GSList *connections, *all;
-	gboolean disabled = FALSE;
+	gboolean carrier = TRUE;
 
 	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
 	connections = utils_filter_connections_for_device (device, all);
@@ -182,8 +182,8 @@ wired_add_menu_item (NMDevice *device,
 	 * we know it doesn't have a link.
 	 */
  	if (nm_device_get_capabilities (device) & NM_DEVICE_CAP_CARRIER_DETECT) {
-		disabled = nm_device_get_carrier (device) ? FALSE : TRUE;
- 		gtk_widget_set_sensitive (GTK_WIDGET (item), disabled);
+		carrier = nm_device_get_carrier (device);
+ 		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
 	}
 
 	if (g_slist_length (connections) > 1) {
@@ -198,7 +198,7 @@ wired_add_menu_item (NMDevice *device,
 
 		gtk_widget_set_sensitive (item, FALSE);
 
-		add_connection_items (device, connections, disabled, active, menu, applet);
+		add_connection_items (device, connections, carrier, active, menu, applet);
 	} else {
 		NMConnection *connection;
 		WiredMenuItemInfo *info;
