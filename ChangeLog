@@ -1,3 +1,13 @@
+2008-01-23  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-dialogs.c
+	  src/applet-device-wireless.c
+		- (applet_warning_dialog_show, other_wireless_activate_cb,
+		   new_network_activate_cb): get the right behavior when faced with
+			metacticy's focus stealing prevention; we really do want the key
+			dialog to come up on top.  The issue is somewhat mitigated by the
+			fact that any input won't really leak.
+
 2008-01-21  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-device-wired.c
