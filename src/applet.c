@@ -501,8 +501,8 @@ sort_devices (gconstpointer a, gconstpointer b)
 	return 1;
 }
 
-static NMConnection *
-find_active_connection_for_device (NMDevice *device, NMApplet *applet)
+NMConnection *
+applet_find_active_connection_for_device (NMDevice *device, NMApplet *applet)
 {
 	NMConnection *connection = NULL;
 	GSList *iter;
@@ -580,7 +580,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		else if (NM_IS_DEVICE_802_3_ETHERNET (device))
 			n_devices = n_wired_interfaces++;
 
-		active = find_active_connection_for_device (device, applet);
+		active = applet_find_active_connection_for_device (device, applet);
 
 		dclass = get_device_class (device, applet);
 		if (dclass)

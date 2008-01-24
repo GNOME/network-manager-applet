@@ -1,3 +1,22 @@
+2008-01-24  Dan Williams  <dcbw@redhat.com>
+
+	Fix gnome.org #505899
+
+	* src/applet.c
+	  src/applet.h
+		- (applet_find_active_connection_for_device): make public
+
+	* src/applet-dialogs.c
+		- (info_dialog_get_label): remove; use glade_xml_get_widget() instead
+		- (set_eap_info_label): handle label creation for 802.1x and WPA
+			Enterprise connections
+		- (info_dialog_update): add a "Security" label that shows the security
+			in use (wireless only for now); also hide the "Secondary DNS" label
+			if there's only one DNS server.  Use glade_xml_get_widget() instead
+			of info_dialog_get_label().
+		- (applet_info_dialog_show): get the active connection for the active
+			device and pass that on
+
 2008-01-23  Dan Williams  <dcbw@redhat.com>
 
 	* src/wireless-security/ws-wep-key.c

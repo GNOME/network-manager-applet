@@ -186,4 +186,6 @@ void applet_do_notify (NMApplet *applet,
                        const char *message,
                        const char *icon);
 
+NMConnection * applet_find_active_connection_for_device (NMDevice *device, NMApplet *applet);
+
 #endif

@@ -26,6 +26,11 @@
 
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
+#include <nm-gsm-device.h>
+#include <nm-cdma-device.h>
+
+#include <nm-setting-wireless.h>
+#include <nm-setting-wireless-security.h>
 
 #include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
@@ -34,22 +39,6 @@
 
 #include "applet-dialogs.h"
 
-
-static GtkWidget *
-info_dialog_get_label (GtkWidget *info_dialog,
-                       GladeXML *xml,
-                       const char *name)
-{
-	GtkWidget *label;
-
-	if (xml != NULL) {
-		label = glade_xml_get_widget (xml, name);
-		g_object_set_data (G_OBJECT (info_dialog), name, label);
-	} else
-		label = g_object_get_data (G_OBJECT (info_dialog), name);
-
-	return label;
-}
 
 static void
 info_dialog_show_error (const char *err)
@@ -74,11 +63,52 @@ ip4_address_as_string (guint32 ip)
 	return ip_string;
 }
 
+static void
+set_eap_info_label (GtkWidget *label, NMSettingWirelessSecurity *sec)
+{
+	GString *str = NULL;
+	char *phase2_str = NULL;
+
+	if (!strcmp (sec->key_mgmt, "ieee8021x"))
+		str = g_string_new (_("Dynamic WEP"));
+	else if (!strcmp (sec->key_mgmt, "wpa-eap"))
+		str = g_string_new (_("WPA/WPA2"));
+	else {
+		str = g_string_new (_("Unknown"));
+		goto out;
+	}
+
+	if (sec->eap && sec->eap->data) {
+		char *eap_str = g_ascii_strup (sec->eap->data, -1);
+		g_string_append (str, ", EAP-");
+		g_string_append (str, eap_str);
+		g_free (eap_str);
+	}
+
+	if (sec->phase2_auth)
+		phase2_str = g_ascii_strup (sec->phase2_auth, -1);
+	else if (sec->phase2_autheap)
+		phase2_str = g_ascii_strup (sec->phase2_autheap, -1);
+
+	if (phase2_str) {
+		g_string_append (str, ", ");
+		g_string_append (str, phase2_str);
+		g_free (phase2_str);
+	}
+	
+out:
+	gtk_label_set_text (GTK_LABEL (label), str->str);
+
+	g_free (phase2_str);
+	g_string_free (str, TRUE);
+}
+
 static GtkWidget *
-info_dialog_update (GladeXML *xml, NMDevice *device)
+info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 {
 	GtkWidget *dialog;
 	GtkWidget *label;
+	GtkWidget *label2;
 	NMIP4Config *cfg;
 	guint32 speed;
 	char *str;
@@ -108,19 +138,67 @@ info_dialog_update (GladeXML *xml, NMDevice *device)
 
 	str = nm_device_get_iface (device);
 	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		iface_and_type = g_strdup_printf (_("Wired Ethernet (%s)"), str);
+		iface_and_type = g_strdup_printf (_("Ethernet (%s)"), str);
 	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		iface_and_type = g_strdup_printf (_("Wireless Ethernet (%s)"), str);
+		iface_and_type = g_strdup_printf (_("802.11 WiFi (%s)"), str);
+	else if (NM_IS_GSM_DEVICE (device))
+		iface_and_type = g_strdup_printf (_("GSM (%s)"), str);
+	else if (NM_IS_CDMA_DEVICE (device))
+		iface_and_type = g_strdup_printf (_("CDMA (%s)"), str);
 	else
 		iface_and_type = g_strdup (str);
 
 	g_free (str);
 
-	label = info_dialog_get_label (dialog, xml, "label-interface");
+	label = glade_xml_get_widget (xml, "label-interface");
 	gtk_label_set_text (GTK_LABEL (label), iface_and_type);
 	g_free (iface_and_type);
 
-	label = info_dialog_get_label (dialog, xml, "label-speed");
+	str = NULL;
+	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+		str = nm_device_802_3_ethernet_get_hw_address (NM_DEVICE_802_3_ETHERNET (device));
+	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
+		str = g_strdup (nm_device_802_11_wireless_get_hw_address (NM_DEVICE_802_11_WIRELESS (device)));
+
+	label = glade_xml_get_widget (xml, "label-hardware-address");
+	gtk_label_set_text (GTK_LABEL (label), str ? str : "");
+	g_free (str);
+
+	label = glade_xml_get_widget (xml, "label-security");
+	label2 = glade_xml_get_widget (xml, "label-security-label");
+	// FIXME: handle 802.1x wired auth too
+	if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+		NMSettingWireless *s_wireless;
+		NMSettingWirelessSecurity *s_wireless_sec;
+
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+		s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+		if (   s_wireless
+		    && s_wireless->security
+		    && !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)
+		    && s_wireless_sec) {
+
+			if (!strcmp (s_wireless_sec->key_mgmt, "none")) {
+				gtk_label_set_text (GTK_LABEL (label), _("WEP"));
+			} else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-none")) {
+				gtk_label_set_text (GTK_LABEL (label), _("WPA/WPA2"));
+			} else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-psk")) {
+				gtk_label_set_text (GTK_LABEL (label), _("WPA/WPA2"));
+			} else {
+				set_eap_info_label (label, s_wireless_sec);
+			}
+		} else {
+			gtk_label_set_text (GTK_LABEL (label), _("None"));
+		}
+
+		gtk_widget_show (label);
+		gtk_widget_show (label2);
+	} else {
+		gtk_widget_hide (label);
+		gtk_widget_hide (label2);
+	}
+
+	label = glade_xml_get_widget (xml, "label-speed");
 	if (speed) {
 		str = g_strdup_printf (_("%u Mb/s"), speed);
 		gtk_label_set_text (GTK_LABEL (label), str);
@@ -129,29 +207,29 @@ info_dialog_update (GladeXML *xml, NMDevice *device)
 		gtk_label_set_text (GTK_LABEL (label), _("Unknown"));
 
 	str = nm_device_get_driver (device);
-	label = info_dialog_get_label (dialog, xml, "label-driver");
+	label = glade_xml_get_widget (xml, "label-driver");
 	gtk_label_set_text (GTK_LABEL (label), str);
 	g_free (str);
 
-	label = info_dialog_get_label (dialog, xml, "label-ip-address");
+	label = glade_xml_get_widget (xml, "label-ip-address");
 	gtk_label_set_text (GTK_LABEL (label),
 					ip4_address_as_string (nm_ip4_config_get_address (cfg)));
 
-	label = info_dialog_get_label (dialog, xml, "label-broadcast-address");
+	label = glade_xml_get_widget (xml, "label-broadcast-address");
 	gtk_label_set_text (GTK_LABEL (label),
 					ip4_address_as_string (nm_ip4_config_get_broadcast (cfg)));
 
-	label = info_dialog_get_label (dialog, xml, "label-subnet-mask");
+	label = glade_xml_get_widget (xml, "label-subnet-mask");
 	gtk_label_set_text (GTK_LABEL (label),
 					ip4_address_as_string (nm_ip4_config_get_netmask (cfg)));
 
-	label = info_dialog_get_label (dialog, xml, "label-default-route");
+	label = glade_xml_get_widget (xml, "label-default-route");
 	gtk_label_set_text (GTK_LABEL (label),
 					ip4_address_as_string (nm_ip4_config_get_gateway (cfg)));
 
 	dns = nm_ip4_config_get_nameservers (cfg);
 	if (dns) {
-		label = info_dialog_get_label (dialog, xml, "label-primary-dns");
+		label = glade_xml_get_widget (xml, "label-primary-dns");
 		if (dns->len > 0) {
 			gtk_label_set_text (GTK_LABEL (label),
 							ip4_address_as_string (g_array_index (dns, guint32, 0)));
@@ -159,26 +237,19 @@ info_dialog_update (GladeXML *xml, NMDevice *device)
 			gtk_label_set_text (GTK_LABEL (label), "");
 		}
 
-		label = info_dialog_get_label (dialog, xml, "label-secondary-dns");
+		label = glade_xml_get_widget (xml, "label-secondary-dns");
+		label2 = glade_xml_get_widget (xml, "label-secondary-dns-label");
 		if (dns->len > 1) {
 			gtk_label_set_text (GTK_LABEL (label),
 							ip4_address_as_string (g_array_index (dns, guint32, 1)));
+			gtk_widget_show (label);
+			gtk_widget_show (label2);
 		} else {
-			gtk_label_set_text (GTK_LABEL (label), "");
+			gtk_widget_hide (label);
+			gtk_widget_hide (label2);
 		}
-
 		g_array_free (dns, TRUE);
 	}
-
-	str = NULL;
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		str = nm_device_802_3_ethernet_get_hw_address (NM_DEVICE_802_3_ETHERNET (device));
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		str = g_strdup (nm_device_802_11_wireless_get_hw_address (NM_DEVICE_802_11_WIRELESS (device)));
-
-	label = info_dialog_get_label (dialog, xml, "label-hardware-address");
-	gtk_label_set_text (GTK_LABEL (label), str ? str : "");
-	g_free (str);
 
 	return dialog;
 }
@@ -188,14 +259,18 @@ applet_info_dialog_show (NMApplet *applet)
 {
 	GtkWidget *dialog;
 	NMDevice *device;
+	NMConnection *connection;
 
 	device = applet_get_first_active_device (applet);
-	if (!device) {
+	if (device)
+		connection = applet_find_active_connection_for_device (device, applet);
+
+	if (!connection || !device) {
 		info_dialog_show_error (_("No active connections!"));
 		return;
 	}
 
-	dialog = info_dialog_update (applet->info_dialog_xml, device);
+	dialog = info_dialog_update (applet->info_dialog_xml, device, connection);
 	if (!dialog)
 		return;
 
