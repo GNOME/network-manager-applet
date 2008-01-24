@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <dbus/dbus.h>
+#include <ctype.h>
 
 #include "wireless-security-option.h"
 #include "wso-wep-ascii.h"
@@ -59,6 +60,37 @@ static void show_key_cb (GtkToggleButton *button, GtkEntry *entry)
 	gtk_entry_set_visibility (entry, gtk_toggle_button_get_active (button));
 }
 
+static void
+entry_filter_cb (GtkEntry *   entry,
+                 const gchar *text,
+                 gint         length,
+                 gint *       position,
+                 gpointer     data)
+{
+	GtkEditable *editable = GTK_EDITABLE (entry);
+	int i, count = 0;
+	gchar *result = g_new (gchar, length);
+
+	for (i = 0; i < length; i++) {
+		if (isascii (text[i]))
+			result[count++] = text[i];
+	}
+
+	if (count == 0)
+		goto out;
+
+	g_signal_handlers_block_by_func (G_OBJECT (editable),
+	                                 G_CALLBACK (entry_filter_cb),
+	                                 data);
+	gtk_editable_insert_text (editable, result, count, position);
+	g_signal_handlers_unblock_by_func (G_OBJECT (editable),
+	                                   G_CALLBACK (entry_filter_cb),
+	                                   data);
+
+out:
+	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
+	g_free (result);
+}
 
 static GtkWidget * widget_create_func (WirelessSecurityOption *opt, GtkSignalFunc validate_cb, gpointer user_data)
 {
@@ -75,7 +107,9 @@ static GtkWidget * widget_create_func (WirelessSecurityOption *opt, GtkSignalFun
 
 	widget = wso_widget_helper (opt);
 	entry = glade_xml_get_widget (opt->uixml, opt->data->entry_name);
+	gtk_entry_set_max_length (GTK_ENTRY (entry), 13);
 	g_signal_connect (G_OBJECT (entry), "changed", validate_cb, user_data);
+	g_signal_connect (G_OBJECT (entry), "insert-text", entry_filter_cb, user_data);
 
 	checkbutton = glade_xml_get_widget (opt->uixml, opt->data->show_checkbutton_name);
 	g_signal_connect (G_OBJECT (checkbutton), "toggled", GTK_SIGNAL_FUNC (show_key_cb), GTK_ENTRY (entry));
