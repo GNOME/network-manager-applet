@@ -119,6 +119,46 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	}
 }
 
+static void
+wep_entry_filter_cb (GtkEntry *   entry,
+                     const gchar *text,
+                     gint         length,
+                     gint *       position,
+                     gpointer     data)
+{
+	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) data;
+	GtkEditable *editable = GTK_EDITABLE (entry);
+	int i, count = 0;
+	gchar *result = g_new (gchar, length);
+
+	if (sec->type == WEP_KEY_TYPE_HEX) {
+		for (i = 0; i < length; i++) {
+			if (isxdigit(text[i]))
+				result[count++] = text[i];
+		}
+	} else if (sec->type == WEP_KEY_TYPE_ASCII) {
+		for (i = 0; i < length; i++) {
+			if (isascii(text[i]))
+				result[count++] = text[i];
+		}
+	}
+
+	if (count == 0)
+		goto out;
+
+	g_signal_handlers_block_by_func (G_OBJECT (editable),
+	                                 G_CALLBACK (wep_entry_filter_cb),
+	                                 data);
+	gtk_editable_insert_text (editable, result, count, position);
+	g_signal_handlers_unblock_by_func (G_OBJECT (editable),
+	                                   G_CALLBACK (wep_entry_filter_cb),
+	                                   data);
+
+out:
+	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
+	g_free (result);
+}
+
 WirelessSecurityWEPKey *
 ws_wep_key_new (const char *glade_file,
                 NMConnection *connection,
@@ -158,6 +198,9 @@ ws_wep_key_new (const char *glade_file,
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
+	                  sec);
+	g_signal_connect (G_OBJECT (widget), "insert-text",
+	                  (GCallback) wep_entry_filter_cb,
 	                  sec);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");

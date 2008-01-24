@@ -1,5 +1,12 @@
 2008-01-23  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-security/ws-wep-key.c
+		- (wep_entry_filter_cb, ws_wep_key_new): filter key entry input and
+			allow only those characters that the key algorithm allows.  Fixes
+			gnome.org #332951
+
+2008-01-23  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-dialogs.c
 	  src/applet-device-wireless.c
 		- (applet_warning_dialog_show, other_wireless_activate_cb,
