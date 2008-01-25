@@ -1765,9 +1765,6 @@ static void finalize (GObject *object)
 
 	clear_active_connections (applet);
 
-	if (applet->nm_client)
-		g_object_unref (applet->nm_client);
-
 	crypto_deinit ();
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
