@@ -285,6 +285,7 @@ add_device_to_model (GtkListStore *model,
 
 	gtk_list_store_append (model, iter);
 	gtk_list_store_set (model, iter, D_NAME_COLUMN, name, D_DEV_COLUMN, device, -1);
+	g_free (name);
 }
 
 static GtkTreeModel *
@@ -583,6 +584,7 @@ dialog_init (GtkWidget *dialog,
 	NMDevice *dev;
 	gboolean success = FALSE;
 	gboolean security_combo_focus = FALSE;
+	GtkWidget *image;
 
 	/* If given a valid connection, hide the SSID bits */
 	if (connection) {
@@ -604,12 +606,8 @@ dialog_init (GtkWidget *dialog,
 	widget = glade_xml_get_widget (xml, "ok_button");
 	gtk_widget_grab_default (widget);
 	gtk_widget_set_sensitive (widget, FALSE);
-#if GTK_CHECK_VERSION(2,6,0)
-	{
-		GtkWidget *image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_BUTTON);
-		gtk_button_set_image (GTK_BUTTON (widget), image);
-	}
-#endif
+	image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_image (GTK_BUTTON (widget), image);
 
 	group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	g_object_set_data_full (G_OBJECT (dialog),

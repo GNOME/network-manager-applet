@@ -1,5 +1,11 @@
 2008-01-25  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-dialog.c
+		- (add_device_to_model): fix leak of device name
+		- (dialog_init): unconditionalize some code for GTK+ >= 2.6
+
+2008-01-25  Dan Williams  <dcbw@redhat.com>
+
 	* src/main.c
 		- (main, setup_signals, signal_handler): trap SIGTERM and SIGINT and
 			exit cleanly
