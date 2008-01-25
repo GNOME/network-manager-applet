@@ -27,11 +27,37 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <signal.h>
+
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
 
 #include "applet.h"
 
+static GMainLoop *loop = NULL;
+
+static void
+signal_handler (int signo)
+{
+	if (signo == SIGINT || signo == SIGTERM) {
+		g_message ("Caught signal %d, shutting down...", signo);
+		g_main_loop_quit (loop);
+	}
+}
+
+static void
+setup_signals (void)
+{
+	struct sigaction action;
+	sigset_t mask;
+
+	sigemptyset (&mask);
+	action.sa_handler = signal_handler;
+	action.sa_mask = mask;
+	action.sa_flags = 0;
+	sigaction (SIGTERM,  &action, NULL);
+	sigaction (SIGINT,  &action, NULL);
+}
 
 int main (int argc, char *argv[])
 {
@@ -46,9 +72,12 @@ int main (int argc, char *argv[])
 	if (applet == NULL)
 		exit (1);
 
-	gtk_main ();
+	loop = g_main_loop_new (NULL, FALSE);
+	setup_signals ();
+	g_main_loop_run (loop);
 
-	g_object_unref (applet);
+	g_object_unref (G_OBJECT (applet));
 
 	exit (0);
 }
+
