@@ -45,7 +45,6 @@ destroy (WirelessSecurity *parent)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
 
-	g_object_unref (parent->xml);
 	g_slice_free (WirelessSecurityWEPKey, sec);
 }
 
@@ -178,10 +177,12 @@ ws_wep_key_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "wep_key_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	sec = g_slice_new0 (WirelessSecurityWEPKey);
 	if (!sec) {
 		g_object_unref (xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -191,7 +192,7 @@ ws_wep_key_new (const char *glade_file,
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        g_object_ref (widget));
+	                        widget);
 	sec->type = type;
 
 	widget = glade_xml_get_widget (xml, "wep_key_entry");

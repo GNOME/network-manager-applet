@@ -1,5 +1,25 @@
 2008-01-25  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-security/eap-method-leap.c
+	  src/wireless-security/eap-method-peap.c
+	  src/wireless-security/eap-method-simple.c
+	  src/wireless-security/eap-method-tls.c
+	  src/wireless-security/eap-method-ttls.c
+	  src/wireless-security/eap-method.c
+	  src/wireless-security/wireless-security.c
+	  src/wireless-security/ws-dynamic-wep.c
+	  src/wireless-security/ws-leap.c
+	  src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wep-passphrase.c
+	  src/wireless-security/ws-wpa-eap.c
+	  src/wireless-security/ws-wpa-psk.c
+		- Fix leaks; be sure to sink the notebook widgets obtained from Glade,
+			then don't ref them again when passing them to the generic class
+			init functions.  Make the generic class's unref handler clean up
+			the generic class's data instead of the children having to do it.
+
+2008-01-25  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-dialog.c
 		- (add_device_to_model): fix leak of device name
 		- (dialog_init): unconditionalize some code for GTK+ >= 2.6

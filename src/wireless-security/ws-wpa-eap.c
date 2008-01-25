@@ -33,7 +33,6 @@ destroy (WirelessSecurity *parent)
 {
 	WirelessSecurityWPAEAP *sec = (WirelessSecurityWPAEAP *) parent;
 
-	g_object_unref (parent->xml);
 	if (sec->size_group)
 		g_object_unref (sec->size_group);
 	g_slice_free (WirelessSecurityWPAEAP, sec);
@@ -111,10 +110,12 @@ ws_wpa_eap_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "wpa_eap_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	sec = g_slice_new0 (WirelessSecurityWPAEAP);
 	if (!sec) {
 		g_object_unref (xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -124,7 +125,7 @@ ws_wpa_eap_new (const char *glade_file,
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        g_object_ref (widget));
+	                        widget);
 
 	WIRELESS_SECURITY (sec)->nag_user = nag_user;
 

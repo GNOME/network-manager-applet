@@ -49,7 +49,6 @@ destroy (EAPMethod *parent)
 	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 
 	g_object_unref (method->nag_dialog_xml);
-	g_object_unref (parent->xml);
 	g_slice_free (EAPMethodTLS, method);
 }
 
@@ -356,11 +355,13 @@ eap_method_tls_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "eap_tls_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	method = g_slice_new0 (EAPMethodTLS);
 	if (!method) {
 		g_object_unref (xml);
 		g_object_unref (nag_dialog_xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -370,7 +371,7 @@ eap_method_tls_new (const char *glade_file,
 	                 fill_connection,
 	                 destroy,
 	                 xml,
-	                 g_object_ref (widget));
+	                 widget);
 
 	EAP_METHOD (method)->nag_user = nag_user;
 	method->nag_dialog_xml = nag_dialog_xml;

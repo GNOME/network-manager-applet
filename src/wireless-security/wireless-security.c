@@ -121,8 +121,11 @@ wireless_security_unref (WirelessSecurity *sec)
 	g_assert (sec->destroy);
 
 	sec->refcount--;
-	if (sec->refcount == 0)
+	if (sec->refcount == 0) {
+		g_object_unref (sec->xml);
+		g_object_unref (sec->ui_widget);
 		(*(sec->destroy)) (sec);
+	}
 }
 
 void

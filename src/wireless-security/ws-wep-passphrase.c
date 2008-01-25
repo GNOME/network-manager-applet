@@ -46,7 +46,6 @@ destroy (WirelessSecurity *parent)
 {
 	WirelessSecurityWEPPassphrase *sec = (WirelessSecurityWEPPassphrase *) parent;
 
-	g_object_unref (parent->xml);
 	g_slice_free (WirelessSecurityWEPPassphrase, sec);
 }
 
@@ -139,10 +138,12 @@ ws_wep_passphrase_new (const char *glade_file, NMConnection *connection)
 
 	widget = glade_xml_get_widget (xml, "wep_passphrase_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	sec = g_slice_new0 (WirelessSecurityWEPPassphrase);
 	if (!sec) {
 		g_object_unref (xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -152,7 +153,7 @@ ws_wep_passphrase_new (const char *glade_file, NMConnection *connection)
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        g_object_ref (widget));
+	                        widget);
 
 	widget = glade_xml_get_widget (xml, "wep_passphrase_entry");
 	g_assert (widget);

@@ -45,7 +45,6 @@ destroy (EAPMethod *parent)
 {
 	EAPMethodSimple *method = (EAPMethodSimple *) parent;
 
-	g_object_unref (parent->xml);
 	g_slice_free (EAPMethodSimple, method);
 }
 
@@ -145,10 +144,12 @@ eap_method_simple_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "eap_simple_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	method = g_slice_new0 (EAPMethodSimple);
 	if (!method) {
 		g_object_unref (xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -158,7 +159,7 @@ eap_method_simple_new (const char *glade_file,
 	                 fill_connection,
 	                 destroy,
 	                 xml,
-	                 g_object_ref (widget));
+	                 widget);
 
 	method->type = type;
 

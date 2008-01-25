@@ -45,7 +45,6 @@ destroy (WirelessSecurity *parent)
 {
 	WirelessSecurityLEAP *sec = (WirelessSecurityLEAP *) parent;
 
-	g_object_unref (parent->xml);
 	g_slice_free (WirelessSecurityLEAP, sec);
 }
 
@@ -128,10 +127,12 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 
 	widget = glade_xml_get_widget (xml, "leap_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	sec = g_slice_new0 (WirelessSecurityLEAP);
 	if (!sec) {
 		g_object_unref (xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -141,7 +142,7 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        g_object_ref (widget));
+	                        widget);
 
 	widget = glade_xml_get_widget (xml, "leap_password_entry");
 	g_assert (widget);

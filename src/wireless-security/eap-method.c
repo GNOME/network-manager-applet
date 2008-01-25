@@ -133,8 +133,11 @@ eap_method_unref (EAPMethod *method)
 	g_assert (method->destroy);
 
 	method->refcount--;
-	if (method->refcount == 0)
+	if (method->refcount == 0) {
+		g_object_unref (method->xml);
+		g_object_unref (method->ui_widget);
 		(*(method->destroy)) (method);
+	}
 }
 
 gboolean

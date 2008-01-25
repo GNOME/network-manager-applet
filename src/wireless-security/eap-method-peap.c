@@ -37,7 +37,6 @@ destroy (EAPMethod *parent)
 {
 	EAPMethodPEAP *method = (EAPMethodPEAP *) parent;
 
-	g_object_unref (parent->xml);
 	g_object_unref (method->nag_dialog_xml);
 	if (method->size_group)
 		g_object_unref (method->size_group);
@@ -365,11 +364,13 @@ eap_method_peap_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "eap_peap_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	method = g_slice_new0 (EAPMethodPEAP);
 	if (!method) {
 		g_object_unref (nag_dialog_xml);
 		g_object_unref (xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -379,7 +380,7 @@ eap_method_peap_new (const char *glade_file,
 	                 fill_connection,
 	                 destroy,
 	                 xml,
-	                 g_object_ref (widget));
+	                 widget);
 
 	EAP_METHOD (method)->nag_user = nag_user;
 	method->nag_dialog_xml = nag_dialog_xml;

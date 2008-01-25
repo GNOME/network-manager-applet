@@ -45,7 +45,6 @@ destroy (EAPMethod *parent)
 {
 	EAPMethodLEAP *method = (EAPMethodLEAP *) parent;
 
-	g_object_unref (parent->xml);
 	g_slice_free (EAPMethodLEAP, method);
 }
 
@@ -129,10 +128,12 @@ eap_method_leap_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "eap_leap_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	method = g_slice_new0 (EAPMethodLEAP);
 	if (!method) {
 		g_object_unref (xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -142,7 +143,7 @@ eap_method_leap_new (const char *glade_file,
 	                 fill_connection,
 	                 destroy,
 	                 xml,
-	                 g_object_ref (widget));
+	                 widget);
 
 	widget = glade_xml_get_widget (xml, "eap_leap_username_entry");
 	g_assert (widget);

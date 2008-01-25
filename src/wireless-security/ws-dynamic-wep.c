@@ -33,7 +33,6 @@ destroy (WirelessSecurity *parent)
 {
 	WirelessSecurityDynamicWEP *sec = (WirelessSecurityDynamicWEP *) parent;
 
-	g_object_unref (parent->xml);
 	if (sec->size_group)
 		g_object_unref (sec->size_group);
 	g_slice_free (WirelessSecurityDynamicWEP, sec);
@@ -114,10 +113,12 @@ ws_dynamic_wep_new (const char *glade_file, NMConnection *connection)
 
 	widget = glade_xml_get_widget (xml, "dynamic_wep_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	sec = g_slice_new0 (WirelessSecurityDynamicWEP);
 	if (!sec) {
 		g_object_unref (xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -127,7 +128,7 @@ ws_dynamic_wep_new (const char *glade_file, NMConnection *connection)
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        g_object_ref (widget));
+	                        widget);
 
 	WIRELESS_SECURITY (sec)->nag_user = nag_user;
 

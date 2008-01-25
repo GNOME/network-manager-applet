@@ -48,7 +48,6 @@ destroy (WirelessSecurity *parent)
 {
 	WirelessSecurityWPAPSK *sec = (WirelessSecurityWPAPSK *) parent;
 
-	g_object_unref (parent->xml);
 	g_slice_free (WirelessSecurityWPAPSK, sec);
 }
 
@@ -164,10 +163,12 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 
 	widget = glade_xml_get_widget (xml, "wpa_psk_notebook");
 	g_assert (widget);
+	g_object_ref_sink (widget);
 
 	sec = g_slice_new0 (WirelessSecurityWPAPSK);
 	if (!sec) {
 		g_object_unref (xml);
+		g_object_unref (widget);
 		return NULL;
 	}
 
@@ -177,7 +178,7 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        g_object_ref (widget));
+	                        widget);
 
 	widget = glade_xml_get_widget (xml, "wpa_psk_entry");
 	g_assert (widget);
