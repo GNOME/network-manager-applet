@@ -1,3 +1,13 @@
+2008-01-26  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/nm-connection-editor.c
+		- (adj_get_value_as_int): remove, use gtk_spin_button_get_value_as_int()
+		- (spin_output_with_default): use gtk_spin_button_get_value_as_int()
+		- (reset_channel, channel_value_changed_cb): remove
+		- (channel_spin_input_cb, channel_spin_output_cb, band_value_changed_cb,
+		   add_wireless_page): do the spinbutton munging the right way, with
+			'output' and 'input' signals
+
 2008-01-25  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/nm-connection-editor.glade

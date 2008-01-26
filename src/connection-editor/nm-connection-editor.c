@@ -459,28 +459,13 @@ fill_connection_values (NMConnectionEditor *editor)
 }
 
 static gint
-adj_get_value_as_int (GtkAdjustment *adj)
-{
-  gdouble val;
-
-  g_return_val_if_fail (GTK_IS_ADJUSTMENT (adj), 0);
-
-  val = gtk_adjustment_get_value (adj);
-  if (val - floor (val) < ceil (val) - val)
-    return floor (val);
-  else
-    return ceil (val);
-}
-
-
-static gboolean
 spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
 {
 	int defvalue = GPOINTER_TO_INT (user_data);
 	int val;
 	gchar *buf = NULL;
 
-	val = adj_get_value_as_int (gtk_spin_button_get_adjustment (spin));
+	val = gtk_spin_button_get_value_as_int (spin);
 	if (val == defvalue)
 		buf = g_strdup (_("default"));
 	else
@@ -564,88 +549,112 @@ add_wired_page (NMConnectionEditor *editor)
 	/* FIXME: MAC address */
 }
 
-static void
-channel_value_changed_cb (GtkSpinButton *button, gpointer user_data);
-
 static gboolean
-reset_channel (gpointer user_data)
+band_helper (NMConnectionEditor *editor, gboolean *aband, gboolean *gband)
 {
-	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
-	GtkWidget *widget;
-	int value;
-
-	widget = get_widget (editor, "wireless_channel");
-	value = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (widget));
-	if (value != editor->last_channel)
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (widget), editor->last_channel);
-	else
-		channel_value_changed_cb (GTK_SPIN_BUTTON (widget), user_data);
-	return FALSE;
+	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (get_widget (editor, "wireless_band")))) {
+	case 1: /* A */
+		*gband = FALSE;
+		return TRUE;
+	case 2: /* B/G */
+		*aband = FALSE;
+		return TRUE;
+	default:
+		return FALSE;
+	}
 }
 
-static void
-channel_value_changed_cb (GtkSpinButton *button, gpointer user_data)
+static gint
+channel_spin_input_cb (GtkSpinButton *spin, gdouble *new_val, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
-	GtkWidget *widget;
+	gdouble channel;
+	guint32 int_channel = 0;
 	gboolean aband = TRUE;
 	gboolean gband = TRUE;
-	int value;
-	int direction = 0;
 
-	widget = get_widget (editor, "wireless_band");
-	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (widget))) {
-	case 1: /* A */
-		gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
-		gband = FALSE;
-		break;
-	case 2: /* B/G */
-		gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
-		aband = FALSE;
-		break;
-	default:
-		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
-		break;
-	}
+	if (!band_helper (editor, &aband, &gband))
+		return GTK_INPUT_ERROR;
 
-	value = gtk_spin_button_get_value_as_int (button);
-	if ((value == 0) || (aband && gband)) {
-		editor->last_channel = 0;
-		if (value != 0)
-			g_idle_add (reset_channel, editor);
-		gtk_entry_set_text (GTK_ENTRY (button), _("default"));
-		return;
-	}
+	channel = g_strtod (gtk_entry_get_text (GTK_ENTRY (spin)), NULL);
+	if (channel - floor (channel) < ceil (channel) - channel)
+		int_channel = floor (channel);
+	else
+		int_channel = ceil (channel);
 
-	if (editor->last_channel < value)
-		direction = 1;
-	else if (editor->last_channel > value)
-		direction = -1;
+	if (utils_channel_to_freq (int_channel, aband ? "a" : "bg") == -1)
+		return GTK_INPUT_ERROR;
+
+	*new_val = channel;
+	return TRUE;
+}
+
+static gint
+channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	int channel;
+	gchar *buf = NULL;
+	guint32 freq;
+	gboolean aband = TRUE;
+	gboolean gband = TRUE;
+
+	if (!band_helper (editor, &aband, &gband))
+		buf = g_strdup (_("default"));
 	else {
-		char *text;
-		guint32 freq;
+		channel = gtk_spin_button_get_value_as_int (spin);
+		if (channel == 0)
+			buf = g_strdup (_("default"));
+		else {
+			freq = utils_channel_to_freq (channel, aband ? "a" : "bg");
+			if (freq == -1) {
+				int direction = 0;
 
-		freq = utils_channel_to_freq (value, aband ? "a" : "bg");
-		text = g_strdup_printf ("%u (%u MHz)", value, freq);
-		gtk_entry_set_text (GTK_ENTRY (button), text);
-		g_free (text);
-		return;
+				if (editor->last_channel < channel)
+					direction = 1;
+				else if (editor->last_channel > channel)
+					direction = -1;
+				channel = utils_find_next_channel (channel, direction, aband ? "a" : "bg");
+				freq = utils_channel_to_freq (channel, aband ? "a" : "bg");
+				if (freq == -1) {
+					g_warning ("%s: invalid channel %d!", __func__, channel);
+					gtk_spin_button_set_value (spin, 0);
+					goto out;
+				}
+			}
+			buf = g_strdup_printf (_("%u (%u MHz)"), channel, freq);
+		}
+		editor->last_channel = channel;
 	}
 
-	value = utils_find_next_channel (value, direction, aband ? "a" : "bg");
-	editor->last_channel = value;
-	g_idle_add (reset_channel, editor);
+	if (strcmp (buf, gtk_entry_get_text (GTK_ENTRY (spin))))
+		gtk_entry_set_text (GTK_ENTRY (spin), buf);
+
+out:
+	g_free (buf);
+	return TRUE;
 }
 
 static void
-band_value_changed_cb (GtkComboBox *button, gpointer user_data)
+band_value_changed_cb (GtkComboBox *box, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
 	GtkWidget *widget;
 
-	widget = get_widget (editor, "wireless_channel");
 	editor->last_channel = 0;
-	channel_value_changed_cb (GTK_SPIN_BUTTON (widget), user_data);	
+
+	widget = get_widget (editor, "wireless_channel");
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (widget), 0);
+
+	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (box))) {
+	case 1: /* A */
+	case 2: /* B/G */
+		gtk_widget_set_sensitive (widget, TRUE);
+		break;
+	default:
+		gtk_widget_set_sensitive (widget, FALSE);
+		break;
+	}
 }
 
 static void
@@ -668,14 +677,6 @@ add_wireless_page (NMConnectionEditor *editor)
 
 	add_page (editor, "WirelessPage", _("Wireless"));
 
-	mode = get_widget (editor, "wireless_mode");
-	band = get_widget (editor, "wireless_band");
-
-	channel = get_widget (editor, "wireless_channel");
-	g_signal_connect (G_OBJECT (channel), "changed",
-	                  (GCallback) channel_value_changed_cb,
-	                  editor);
-
 	rate = get_widget (editor, "wireless_rate");
 	rate_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_RATE);
 	g_signal_connect (G_OBJECT (rate), "output",
@@ -696,6 +697,7 @@ add_wireless_page (NMConnectionEditor *editor)
 
 	/* FIXME: SSID */
 
+	mode = get_widget (editor, "wireless_mode");
 	if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "infrastructure"))
 		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), 0);
 	else if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "adhoc"))
@@ -703,20 +705,34 @@ add_wireless_page (NMConnectionEditor *editor)
 	else
 		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), -1);
 
+	channel = get_widget (editor, "wireless_channel");
+	g_signal_connect (G_OBJECT (channel), "output",
+	                  (GCallback) channel_spin_output_cb,
+	                  editor);
+	g_signal_connect (G_OBJECT (channel), "input",
+	                  (GCallback) channel_spin_input_cb,
+	                  editor);
+
+	gtk_widget_set_sensitive (channel, FALSE);
 	if (s_wireless->band) {
-		if (!strcmp (s_wireless->band ? s_wireless->band : "", "a"))
+		if (!strcmp (s_wireless->band ? s_wireless->band : "", "a")) {
 			band_idx = 1;
-		else if (!strcmp (s_wireless->band ? s_wireless->band : "", "bg"))
+			gtk_widget_set_sensitive (channel, TRUE);
+		} else if (!strcmp (s_wireless->band ? s_wireless->band : "", "bg")) {
 			band_idx = 2;
+			gtk_widget_set_sensitive (channel, TRUE);
+		}
 	}
+	band = get_widget (editor, "wireless_band");
 	gtk_combo_box_set_active (GTK_COMBO_BOX (band), band_idx);
 	g_signal_connect (G_OBJECT (band), "changed",
 	                  (GCallback) band_value_changed_cb,
 	                  editor);
 
+	/* Update the channel _after_ the band has been set so that it gets
+	 * the right values */
 	editor->last_channel = s_wireless->channel;
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (channel), (gdouble) s_wireless->channel);
-	channel_value_changed_cb (GTK_SPIN_BUTTON (channel), editor);
 
 	/* FIXME: BSSID */
 	/* FIXME: MAC address */
