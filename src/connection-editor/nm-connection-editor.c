@@ -21,6 +21,8 @@
  */
 
 #include <string.h>
+#include <math.h>
+
 #include <gtk/gtkcombobox.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkentry.h>
@@ -456,13 +458,39 @@ fill_connection_values (NMConnectionEditor *editor)
 	}
 }
 
-static void
-spin_value_changed_cb (GtkSpinButton *button, gpointer user_data)
+static gint
+adj_get_value_as_int (GtkAdjustment *adj)
+{
+  gdouble val;
+
+  g_return_val_if_fail (GTK_IS_ADJUSTMENT (adj), 0);
+
+  val = gtk_adjustment_get_value (adj);
+  if (val - floor (val) < ceil (val) - val)
+    return floor (val);
+  else
+    return ceil (val);
+}
+
+
+static gboolean
+spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
 {
 	int defvalue = GPOINTER_TO_INT (user_data);
+	int val;
+	gchar *buf = NULL;
 
-	if (gtk_spin_button_get_value_as_int (button) == defvalue)
-		gtk_entry_set_text (GTK_ENTRY (button), _("default"));
+	val = adj_get_value_as_int (gtk_spin_button_get_adjustment (spin));
+	if (val == defvalue)
+		buf = g_strdup (_("default"));
+	else
+		buf = g_strdup_printf ("%d", val);
+
+	if (strcmp (buf, gtk_entry_get_text (GTK_ENTRY (spin))))
+		gtk_entry_set_text (GTK_ENTRY (spin), buf);
+
+	g_free (buf);
+	return TRUE;
 }
 
 static void
@@ -490,8 +518,8 @@ add_wired_page (NMConnectionEditor *editor)
 
 	mtu = get_widget (editor, "wired_mtu");
 	mtu_def = get_property_default (NM_SETTING (s_wired), NM_SETTING_WIRED_MTU);
-	g_signal_connect (G_OBJECT (mtu), "changed",
-	                  (GCallback) spin_value_changed_cb,
+	g_signal_connect (G_OBJECT (mtu), "output",
+	                  (GCallback) spin_output_with_default,
 	                  GINT_TO_POINTER (mtu_def));
 
 	if (s_wired->port) {
@@ -532,7 +560,6 @@ add_wired_page (NMConnectionEditor *editor)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoneg), s_wired->auto_negotiate);
 
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wired->mtu);
-	spin_value_changed_cb (GTK_SPIN_BUTTON (mtu), GINT_TO_POINTER (mtu_def));
 
 	/* FIXME: MAC address */
 }
@@ -651,20 +678,20 @@ add_wireless_page (NMConnectionEditor *editor)
 
 	rate = get_widget (editor, "wireless_rate");
 	rate_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_RATE);
-	g_signal_connect (G_OBJECT (rate), "changed",
-	                  (GCallback) spin_value_changed_cb,
+	g_signal_connect (G_OBJECT (rate), "output",
+	                  (GCallback) spin_output_with_default,
 	                  GINT_TO_POINTER (rate_def));
 
 	tx_power = get_widget (editor, "wireless_tx_power");
 	tx_power_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_TX_POWER);
-	g_signal_connect (G_OBJECT (tx_power), "changed",
-	                  (GCallback) spin_value_changed_cb,
+	g_signal_connect (G_OBJECT (tx_power), "output",
+	                  (GCallback) spin_output_with_default,
 	                  GINT_TO_POINTER (tx_power_def));
 
 	mtu = get_widget (editor, "wireless_mtu");
 	mtu_def = get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_MTU);
-	g_signal_connect (G_OBJECT (mtu), "changed",
-	                  (GCallback) spin_value_changed_cb,
+	g_signal_connect (G_OBJECT (mtu), "output",
+	                  (GCallback) spin_output_with_default,
 	                  GINT_TO_POINTER (mtu_def));
 
 	/* FIXME: SSID */
@@ -695,13 +722,8 @@ add_wireless_page (NMConnectionEditor *editor)
 	/* FIXME: MAC address */
 
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (rate), (gdouble) s_wireless->rate);
-	spin_value_changed_cb (GTK_SPIN_BUTTON (rate), GINT_TO_POINTER (rate_def));
-
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (tx_power), (gdouble) s_wireless->tx_power);
-	spin_value_changed_cb (GTK_SPIN_BUTTON (tx_power), GINT_TO_POINTER (tx_power_def));
-
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wireless->mtu);
-	spin_value_changed_cb (GTK_SPIN_BUTTON (mtu), GINT_TO_POINTER (mtu_def));
 }
 
 static void

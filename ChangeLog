@@ -1,5 +1,15 @@
 2008-01-25  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/nm-connection-editor.glade
+		- Fix some adjustments so the default value is valid
+
+	* src/connection-editor/nm-connection-editor.c
+		- (add_wired_page, add_wireless_page): handle showing the default value
+			the correct way, using the 'output' signal rather than the asstastic
+			hack that was there before
+
+2008-01-25  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-security/eap-method-leap.c
 	  src/wireless-security/eap-method-peap.c
 	  src/wireless-security/eap-method-simple.c
