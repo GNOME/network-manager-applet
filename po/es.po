@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-21 19:21+0000\n"
-"PO-Revision-Date: 2008-01-22 12:30+0100\n"
+"POT-Creation-Date: 2008-01-26 05:09+0000\n"
+"PO-Revision-Date: 2008-01-27 13:44+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -209,38 +209,67 @@ msgstr "Conexión de red inalámbrica a «%s» (%d%%)"
 msgid "Wireless network connection to '%s'"
 msgstr "Conexión de red inalámbrica a «%s»"
 
-#: ../src/applet-dialogs.c:60
+#: ../src/applet-dialogs.c:49
 msgid "Error displaying connection information:"
 msgstr "Ha ocurrido un error al mostrar información de conexión:"
 
-#: ../src/applet-dialogs.c:93
+#: ../src/applet-dialogs.c:73
+msgid "Dynamic WEP"
+msgstr "WEP dinámica "
+
+#: ../src/applet-dialogs.c:75 ../src/applet-dialogs.c:184
+#: ../src/applet-dialogs.c:186
+msgid "WPA/WPA2"
+msgstr "WPA/WPA2"
+
+#: ../src/applet-dialogs.c:77 ../src/applet-dialogs.c:207
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: ../src/applet-dialogs.c:123
 msgid "Could not find some required resources (the glade file)!"
 msgstr "No se pueden encontrar algunas fuentes necesarias (el archivo glade)."
 
-#: ../src/applet-dialogs.c:111
+#: ../src/applet-dialogs.c:141
 #, c-format
-msgid "Wired Ethernet (%s)"
-msgstr "Red Ethernet cableada (%s)"
+msgid "Ethernet (%s)"
+msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:113
+#: ../src/applet-dialogs.c:143
 #, c-format
-msgid "Wireless Ethernet (%s)"
-msgstr "Red Ethernet inalámbrica (%s)"
+msgid "802.11 WiFi (%s)"
+msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:125
+#: ../src/applet-dialogs.c:145
+#, c-format
+msgid "GSM (%s)"
+msgstr "GSM (%s)"
+
+#: ../src/applet-dialogs.c:147
+#, c-format
+msgid "CDMA (%s)"
+msgstr "CDMA (%s)"
+
+#: ../src/applet-dialogs.c:182
+msgid "WEP"
+msgstr "WEP"
+
+#: ../src/applet-dialogs.c:191
+#: ../src/connection-editor/nm-connection-editor.c:931
+#: ../src/wireless-dialog.c:470
+msgid "None"
+msgstr "Ninguna"
+
+#: ../src/applet-dialogs.c:203
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:129
-msgid "Unknown"
-msgstr "Desconocido"
-
-#: ../src/applet-dialogs.c:194
+#: ../src/applet-dialogs.c:269
 msgid "No active connections!"
 msgstr "No hay conexiones activas."
 
-#: ../src/applet-dialogs.c:311
+#: ../src/applet-dialogs.c:386
 msgid ""
 "Copyright © 2004-2007 Red Hat, Inc.\n"
 "Copyright © 2005-2007 Novell, Inc."
@@ -248,17 +277,17 @@ msgstr ""
 "Copyright © 2004-2007 Red Hat, Inc.\n"
 "Copyright © 2005-2007 Novell, Inc."
 
-#: ../src/applet-dialogs.c:313
+#: ../src/applet-dialogs.c:388
 msgid "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Miniaplicación del área de notificación para gestionar sus dispositivos de "
 "red y conexiones."
 
-#: ../src/applet-dialogs.c:315
+#: ../src/applet-dialogs.c:390
 msgid "NetworkManager Website"
 msgstr "Página web de NetworkManager"
 
-#: ../src/applet-dialogs.c:318
+#: ../src/applet-dialogs.c:393
 msgid "translator-credits"
 msgstr ""
 "Jorge González <jorgegonz@svn.gnome.org>, 2007-2008\n"
@@ -346,7 +375,7 @@ msgstr ""
 msgid "NetworkManager Applet"
 msgstr "Miniaplicación NetworkManager"
 
-#: ../src/applet.c:1671 ../src/wireless-dialog.c:788
+#: ../src/applet.c:1671 ../src/wireless-dialog.c:786
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -393,46 +422,42 @@ msgid "Default Route:"
 msgstr "Ruta predeterminada:"
 
 #: ../src/applet.glade.h:10
-msgid "Destination Address:"
-msgstr "Dirección de destino:"
-
-#: ../src/applet.glade.h:11
 msgid "Don't warn me again"
 msgstr "No avisarme de nuevo"
 
-#: ../src/applet.glade.h:12
+#: ../src/applet.glade.h:11
 msgid "Driver:"
 msgstr "Controlador:"
 
-#: ../src/applet.glade.h:13
+#: ../src/applet.glade.h:12
 msgid "Hardware Address:"
 msgstr "Dirección hardware:"
 
-#: ../src/applet.glade.h:14
+#: ../src/applet.glade.h:13
 msgid "IP Address:"
 msgstr "Dirección IP:"
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:14
 msgid "Identity:"
 msgstr "Identidad:"
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:15
 msgid "Inner Authentication:"
 msgstr "Autenticación interna:"
 
-#: ../src/applet.glade.h:17
+#: ../src/applet.glade.h:16
 msgid "Interface:"
 msgstr "Interfaz:"
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:17
 msgid "Key:"
 msgstr "Clave:"
 
-#: ../src/applet.glade.h:19
+#: ../src/applet.glade.h:18
 msgid "No"
 msgstr "No"
 
-#: ../src/applet.glade.h:20
+#: ../src/applet.glade.h:19
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -440,37 +465,42 @@ msgstr ""
 "Sistema abierto\n"
 "Clave compartida"
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:21
 msgid "Other Wireless Network..."
 msgstr "Otras redes inalámbricas…"
 
-#: ../src/applet.glade.h:23
+#: ../src/applet.glade.h:22
 msgid "PEAP Version:"
 msgstr "Versión PEAP:"
 
-#: ../src/applet.glade.h:24
+#: ../src/applet.glade.h:23
 msgid "Passphrase:"
 msgstr "Frase de paso:"
 
-#: ../src/applet.glade.h:25
+#: ../src/applet.glade.h:24
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: ../src/applet.glade.h:26
+#: ../src/applet.glade.h:25
 msgid "Primary DNS:"
 msgstr "DNS primario:"
 
-#: ../src/applet.glade.h:27
+#: ../src/applet.glade.h:26
 msgid "Private Key Password:"
 msgstr "Contraseña de clave privada:"
 
-#: ../src/applet.glade.h:28
+#: ../src/applet.glade.h:27
 msgid "Private Key:"
 msgstr "Clave privada:"
 
-#: ../src/applet.glade.h:29
+#: ../src/applet.glade.h:28
 msgid "Secondary DNS:"
 msgstr "DNS secundario:"
+
+#: ../src/applet.glade.h:29
+#: ../src/connection-editor/nm-connection-editor.glade.h:15
+msgid "Security:"
+msgstr "Seguridad:"
 
 #: ../src/applet.glade.h:30
 msgid "Select A File"
@@ -536,16 +566,16 @@ msgstr "_Seguridad inalámbrica:"
 msgid "alert text"
 msgstr "texto de alerta"
 
-#: ../src/connection-editor/nm-connection-editor.c:180
+#: ../src/connection-editor/nm-connection-editor.c:182
 #, c-format
 msgid "Editing %s"
 msgstr "Editando %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:184
+#: ../src/connection-editor/nm-connection-editor.c:186
 msgid "Editing unamed connection"
 msgstr "Editando la conexión sin nombre"
 
-#: ../src/connection-editor/nm-connection-editor.c:375
+#: ../src/connection-editor/nm-connection-editor.c:377
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
@@ -553,69 +583,70 @@ msgstr ""
 "El editor de la conexión no pudo encontrar algunos archivos de recursos (no "
 "se encontró el archivo de glade de la miniaplicación NetworkManager)."
 
-#: ../src/connection-editor/nm-connection-editor.c:465
-#: ../src/connection-editor/nm-connection-editor.c:589
+#: ../src/connection-editor/nm-connection-editor.c:470
+#: ../src/connection-editor/nm-connection-editor.c:603
+#: ../src/connection-editor/nm-connection-editor.c:607
 msgid "default"
 msgstr "predeterminado"
 
-#: ../src/connection-editor/nm-connection-editor.c:484
+#: ../src/connection-editor/nm-connection-editor.c:497
 msgid "Wired"
 msgstr "Cableado"
 
-#: ../src/connection-editor/nm-connection-editor.c:642
+#: ../src/connection-editor/nm-connection-editor.c:625
+#, c-format
+msgid "%u (%u MHz)"
+msgstr "%u (%u MHz)"
+
+#: ../src/connection-editor/nm-connection-editor.c:678
 msgid "Wireless"
 msgstr "Inalámbrico"
 
-#: ../src/connection-editor/nm-connection-editor.c:712
+#: ../src/connection-editor/nm-connection-editor.c:750
 msgid "IPv4 Settings"
 msgstr "Ajustes de IPv4"
 
-#: ../src/connection-editor/nm-connection-editor.c:713
+#: ../src/connection-editor/nm-connection-editor.c:751
 msgid "IPv4 Addresses"
 msgstr "Dirección IPv4"
 
-#: ../src/connection-editor/nm-connection-editor.c:867
+#: ../src/connection-editor/nm-connection-editor.c:905
 msgid "Wireless Security"
 msgstr "Seguridad inalámbrica"
 
-#: ../src/connection-editor/nm-connection-editor.c:893
-#: ../src/wireless-dialog.c:469
-msgid "None"
-msgstr "Ninguna"
-
-#: ../src/connection-editor/nm-connection-editor.c:907
-#: ../src/wireless-dialog.c:487
+#: ../src/connection-editor/nm-connection-editor.c:945
+#: ../src/wireless-dialog.c:488
 msgid "WEP 128-bit Passphrase"
 msgstr "Frase de paso WEP de 128 bits"
 
-#: ../src/connection-editor/nm-connection-editor.c:915
-#: ../src/wireless-dialog.c:495
+#: ../src/connection-editor/nm-connection-editor.c:953
+#: ../src/wireless-dialog.c:496
 msgid "WEP 40/128-bit Hexadecimal"
 msgstr "Hexadecimal WEP de 64/128 bits"
 
-#: ../src/connection-editor/nm-connection-editor.c:923
-#: ../src/wireless-dialog.c:503
+#: ../src/connection-editor/nm-connection-editor.c:961
+#: ../src/wireless-dialog.c:504
 msgid "WEP 40/128-bit ASCII"
 msgstr "ASCII WEP de 40/128 bits"
 
-#: ../src/connection-editor/nm-connection-editor.c:935
-#: ../src/wireless-dialog.c:519
-#: ../src/wireless-security/wireless-security.c:351
+#: ../src/connection-editor/nm-connection-editor.c:973
+#: ../src/wireless-dialog.c:520
+#: ../src/wireless-security/wireless-security.c:354
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/connection-editor/nm-connection-editor.c:947
-#: ../src/wireless-dialog.c:531
+#: ../src/connection-editor/nm-connection-editor.c:985
+#: ../src/wireless-dialog.c:532
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinámica (802.1x)"
 
-#: ../src/connection-editor/nm-connection-editor.c:960
-#: ../src/wireless-dialog.c:544
+#: ../src/connection-editor/nm-connection-editor.c:998
+#: ../src/wireless-dialog.c:545
 msgid "WPA & WPA2 Personal"
 msgstr "WPA y WPA2 personal"
 
-#: ../src/connection-editor/nm-connection-editor.c:973
-#: ../src/wireless-dialog.c:557
+#: ../src/connection-editor/nm-connection-editor.c:1011
+#: ../src/wireless-dialog.c:558
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA y WPA2 Enterprise"
 
@@ -652,14 +683,10 @@ msgid "Connection _name:"
 msgstr "_Nombre de la conexión:"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-msgid "Foo"
-msgstr "Foo"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:10
 msgid "Full duple_x"
 msgstr "Full duple_x"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:11
+#: ../src/connection-editor/nm-connection-editor.glade.h:10
 msgid ""
 "Infrastructure\n"
 "Adhoc"
@@ -667,55 +694,51 @@ msgstr ""
 "Infraestructura\n"
 "Adhoc"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:13
+#: ../src/connection-editor/nm-connection-editor.glade.h:12
 msgid "MT_U:"
 msgstr "MT_U:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:14
+#: ../src/connection-editor/nm-connection-editor.glade.h:13
 msgid "M_ode:"
 msgstr "M_odo:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:15
+#: ../src/connection-editor/nm-connection-editor.glade.h:14
 msgid "Network Connections"
 msgstr "Conexiones de red"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:16
-msgid "Security:"
-msgstr "Seguridad:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:17
 msgid "Transmission po_wer:"
 msgstr "_Potencia de la transmisión:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:18
+#: ../src/connection-editor/nm-connection-editor.glade.h:17
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:19
+#: ../src/connection-editor/nm-connection-editor.glade.h:18
 msgid "_MAC address:"
 msgstr "Dirección _MAC:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:20
+#: ../src/connection-editor/nm-connection-editor.glade.h:19
 msgid "_Manual configuration"
 msgstr "Configuración _manual"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:21
+#: ../src/connection-editor/nm-connection-editor.glade.h:20
 msgid "_Port:"
 msgstr "_Puerto:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:22
+#: ../src/connection-editor/nm-connection-editor.glade.h:21
 msgid "_Rate:"
 msgstr "_Tasa:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:23
+#: ../src/connection-editor/nm-connection-editor.glade.h:22
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:24
+#: ../src/connection-editor/nm-connection-editor.glade.h:23
 msgid "_Speed:"
 msgstr "_Velocidad:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:25
+#: ../src/connection-editor/nm-connection-editor.glade.h:24
 msgid ""
 "default\n"
 "10 Mb/s\n"
@@ -729,7 +752,7 @@ msgstr ""
 "1 Gb/s\n"
 "10 Gb/s"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:30
+#: ../src/connection-editor/nm-connection-editor.glade.h:29
 msgid ""
 "default\n"
 "A (5 GHz)\n"
@@ -739,7 +762,7 @@ msgstr ""
 "A (5 GHz)\n"
 "B/G (2.4 GHz)"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:33
+#: ../src/connection-editor/nm-connection-editor.glade.h:32
 msgid ""
 "default\n"
 "Twisted Pair (TP)\n"
@@ -1091,7 +1114,7 @@ msgstr ""
 "Ha habido un problema al iniciar el diálogo de autenticación para el tipo de "
 "conexión VPN «%s». Póngase en contacto con su administrador de sistemas."
 
-#: ../src/wireless-dialog.c:666
+#: ../src/wireless-dialog.c:664
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -1100,51 +1123,51 @@ msgstr ""
 "Se requieren contraseñas o claves de cifrado para acceder a la red "
 "inalámbrica «%s»."
 
-#: ../src/wireless-dialog.c:668
+#: ../src/wireless-dialog.c:666
 msgid "Wireless Network Secrets Required"
 msgstr "Clave requerida para la red inalámbrica"
 
-#: ../src/wireless-dialog.c:670
+#: ../src/wireless-dialog.c:668
 msgid "Secrets required by wireless network"
 msgstr "Se requiere contraseña para la red inalámbrica"
 
-#: ../src/wireless-dialog.c:675
+#: ../src/wireless-dialog.c:673
 msgid "Create New Wireless Network"
 msgstr "Crear una red inalámbrica nueva"
 
-#: ../src/wireless-dialog.c:677
+#: ../src/wireless-dialog.c:675
 msgid "New wireless network"
 msgstr "Red inalámbrica nueva"
 
-#: ../src/wireless-dialog.c:678
+#: ../src/wireless-dialog.c:676
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Introduzca un nombre para la red inalámbrica que desea crear."
 
-#: ../src/wireless-dialog.c:680
+#: ../src/wireless-dialog.c:678
 msgid "Connect to Other Wireless Network"
 msgstr "Conectar a otra red inalámbrica"
 
-#: ../src/wireless-dialog.c:682
+#: ../src/wireless-dialog.c:680
 msgid "Existing wireless network"
 msgstr "Red inalámbrica existente"
 
-#: ../src/wireless-dialog.c:683
+#: ../src/wireless-dialog.c:681
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Introduzca el nombre de la red inalámbrica a la que desea conectarse."
 
-#: ../src/wireless-security/eap-method.c:299
+#: ../src/wireless-security/eap-method.c:302
 msgid "DER or PEM certificates (*.der, *.pem)"
 msgstr "Certificados DER o PEM (*.der, *.pem)"
+
+#: ../src/wireless-security/eap-method-peap.c:235
+#: ../src/wireless-security/eap-method-tls.c:291
+#: ../src/wireless-security/eap-method-ttls.c:222
+msgid "No Certificate Authority certificate chosen"
+msgstr "No se ha elegido ningún certificado CA"
 
 #: ../src/wireless-security/eap-method-peap.c:236
 #: ../src/wireless-security/eap-method-tls.c:292
 #: ../src/wireless-security/eap-method-ttls.c:223
-msgid "No Certificate Authority certificate chosen"
-msgstr "No se ha elegido ningún certificado CA"
-
-#: ../src/wireless-security/eap-method-peap.c:237
-#: ../src/wireless-security/eap-method-tls.c:293
-#: ../src/wireless-security/eap-method-ttls.c:224
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -1154,62 +1177,62 @@ msgstr ""
 "conexiones inseguras, redes inalámbricas promiscuas. ¿Quiere elegir un "
 "certificado Certificate Authority?"
 
-#: ../src/wireless-security/eap-method-peap.c:242
-#: ../src/wireless-security/eap-method-tls.c:298
-#: ../src/wireless-security/eap-method-ttls.c:229
+#: ../src/wireless-security/eap-method-peap.c:241
+#: ../src/wireless-security/eap-method-tls.c:297
+#: ../src/wireless-security/eap-method-ttls.c:228
 msgid "Ignore"
 msgstr "Ignorar"
 
-#: ../src/wireless-security/eap-method-peap.c:246
-#: ../src/wireless-security/eap-method-tls.c:302
-#: ../src/wireless-security/eap-method-ttls.c:233
+#: ../src/wireless-security/eap-method-peap.c:245
+#: ../src/wireless-security/eap-method-tls.c:301
+#: ../src/wireless-security/eap-method-ttls.c:232
 msgid "Choose CA Certificate"
 msgstr "Elija un certificado CA:"
 
-#: ../src/wireless-security/eap-method-peap.c:311
-#: ../src/wireless-security/eap-method-ttls.c:322
+#: ../src/wireless-security/eap-method-peap.c:310
+#: ../src/wireless-security/eap-method-ttls.c:321
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
-#: ../src/wireless-security/eap-method-peap.c:322
+#: ../src/wireless-security/eap-method-peap.c:321
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:395
-#: ../src/wireless-security/eap-method-tls.c:401
-#: ../src/wireless-security/eap-method-ttls.c:406
+#: ../src/wireless-security/eap-method-peap.c:396
+#: ../src/wireless-security/eap-method-tls.c:402
+#: ../src/wireless-security/eap-method-ttls.c:407
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Elija un certificado CA…"
 
-#: ../src/wireless-security/eap-method-tls.c:397
+#: ../src/wireless-security/eap-method-tls.c:398
 msgid "Choose your personal certificate..."
 msgstr "Elija su certificado personal…"
 
-#: ../src/wireless-security/eap-method-tls.c:405
+#: ../src/wireless-security/eap-method-tls.c:406
 msgid "Choose your private key..."
 msgstr "Elija su clave privada…"
 
-#: ../src/wireless-security/eap-method-ttls.c:300
+#: ../src/wireless-security/eap-method-ttls.c:299
 msgid "PAP"
 msgstr "PAP"
 
-#: ../src/wireless-security/eap-method-ttls.c:311
+#: ../src/wireless-security/eap-method-ttls.c:310
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
-#: ../src/wireless-security/eap-method-ttls.c:333
+#: ../src/wireless-security/eap-method-ttls.c:332
 msgid "CHAP"
 msgstr "CHAP"
 
-#: ../src/wireless-security/wireless-security.c:341
+#: ../src/wireless-security/wireless-security.c:344
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:361
+#: ../src/wireless-security/wireless-security.c:364
 msgid "Tunneled TLS"
 msgstr "TLS a través de túnel"
 
-#: ../src/wireless-security/wireless-security.c:371
+#: ../src/wireless-security/wireless-security.c:374
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protegido (PEAP)"
 
