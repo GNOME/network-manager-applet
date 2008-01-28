@@ -1,3 +1,40 @@
+2008-01-28  Dan Williams  <dcbw@redhat.com>
+
+	* po/POTFILES.in
+		- Add new translatables
+
+	* src/connection-editor/Makefile.am
+		- Add new pae sources and glade files
+
+	* src/connection-editor/page-wired.c
+	  src/connection-editor/page-wired.h
+	  src/connection-editor/ce-page-wired.glade
+		- Split wired bits out
+
+	* src/connection-editor/page-wireless.c
+	  src/connection-editor/page-wireless.h
+	  src/connection-editor/ce-page-wireless.glade
+		- Split wireless bits out
+
+	* src/connection-editor/page-wireless-security.c
+	  src/connection-editor/page-wireless-security.h
+		- Split wireless security bits out
+
+	* src/connection-editor/page-ip4-address.c
+	  src/connection-editor/page-ip4-address.h
+	  src/connection-editor/ce-page-ip4-address.glade
+		- Split IPv4 address bits out
+
+	* src/connection-editor/page-ip4.c
+	  src/connection-editor/page-ip4.h
+	  src/connection-editor/ce-page-ip4.glade
+		- Split IPv4 DNS & search domain bits out
+
+	* src/connection-editor/nm-connection-editor.c
+	  src/connection-editor/nm-connection-editor.h
+	  src/connection-editor/nm-connection-editor.glade
+		- Move all the settings pages to their own sources and glade files
+
 2008-01-26  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/nm-connection-editor.c

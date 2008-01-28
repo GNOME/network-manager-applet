@@ -16,14 +16,24 @@ nm_connection_editor_CPPFLAGS =			\
 	-I${top_srcdir}/src/wireless-security \
 	$(NULL)
 
-nm_connection_editor_SOURCES =	\
-	byte-array-editor.c	\
-	byte-array-editor.h	\
-	nm-connection-editor.c	\
-	nm-connection-editor.h	\
-	nm-connection-list.c	\
-	nm-connection-list.h	\
-	main.c
+nm_connection_editor_SOURCES = \
+	byte-array-editor.c \
+	byte-array-editor.h \
+	nm-connection-editor.c \
+	nm-connection-editor.h \
+	nm-connection-list.c \
+	nm-connection-list.h \
+	main.c \
+	page-wired.h \
+	page-wired.c \
+	page-wireless.h \
+	page-wireless.c \
+	page-wireless-security.h \
+	page-wireless-security.c \
+	page-ip4.h \
+	page-ip4.c \
+	page-ip4-address.h \
+	page-ip4-address.c
 
 nm_connection_editor_LDADD = \
 	$(top_builddir)/src/gconf-helpers/libgconf-helpers.la \
@@ -32,7 +42,13 @@ nm_connection_editor_LDADD = \
 	$(NMA_LIBS)
 
 gladedir = $(datadir)/nm-applet
-glade_DATA = nm-connection-editor.glade
+glade_DATA = \
+	nm-connection-editor.glade \
+	ce-page-wired.glade \
+	ce-page-wireless.glade \
+	ce-page-wireless-security.glade \
+	ce-page-ip4.glade \
+	ce-page-ip4-address.glade
 
 CLEANFILES = *.bak *.gladep
 
