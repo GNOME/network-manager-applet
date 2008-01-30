@@ -31,6 +31,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "applet.h"
+#include "applet-dbus.h"
 #include "applet-dbus-vpn.h"
 
 static void session_die (GnomeClient *client, gpointer client_data)

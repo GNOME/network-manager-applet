@@ -109,7 +109,7 @@ static GtkWidget * widget_create_func (WirelessSecurityOption *opt, GtkSignalFun
 	entry = glade_xml_get_widget (opt->uixml, opt->data->entry_name);
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 13);
 	g_signal_connect (G_OBJECT (entry), "changed", validate_cb, user_data);
-	g_signal_connect (G_OBJECT (entry), "insert-text", entry_filter_cb, user_data);
+	g_signal_connect (G_OBJECT (entry), "insert-text", G_CALLBACK (entry_filter_cb), user_data);
 
 	checkbutton = glade_xml_get_widget (opt->uixml, opt->data->show_checkbutton_name);
 	g_signal_connect (G_OBJECT (checkbutton), "toggled", GTK_SIGNAL_FUNC (show_key_cb), GTK_ENTRY (entry));

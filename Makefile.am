@@ -1,4 +1,4 @@
-SUBDIRS = src icons po
+SUBDIRS = src editor icons po
 
 EXTRA_DIST =				\
 	CONTRIBUTING			\

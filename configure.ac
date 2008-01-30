@@ -253,6 +253,7 @@ fi
 AC_OUTPUT([
 Makefile
 src/Makefile
+editor/Makefile
 icons/Makefile
 po/Makefile.in
 ])
