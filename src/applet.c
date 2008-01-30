@@ -285,7 +285,7 @@ static void nma_show_info_cb (GtkMenuItem *mi, NMApplet *applet)
 	if (!nma_update_info (applet))
 		return;
 
-	g_signal_connect(info_dialog, "delete-event", gtk_widget_hide_on_delete, info_dialog);
+	g_signal_connect (info_dialog, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), info_dialog);
 	g_signal_connect_swapped (info_dialog, "response", G_CALLBACK (gtk_widget_hide), info_dialog);
 	gtk_window_present (GTK_WINDOW (info_dialog));
 }
@@ -1181,6 +1181,48 @@ done:
 }
 
 
+gboolean nma_get_disconnect_wireless_on_exit (NMApplet *applet)
+{
+	GConfValue *value;
+	gboolean ret = FALSE;
+
+	g_return_val_if_fail (applet != NULL, FALSE);
+	g_return_val_if_fail (applet->gconf_client != NULL, FALSE);
+
+	value = gconf_client_get (applet->gconf_client,
+						 GCONF_PATH_PREFS "/disconnect_wireless_on_exit",
+						 NULL);
+
+	if (value)
+	{
+		if (value->type == GCONF_VALUE_BOOL)
+			ret = gconf_value_get_bool (value);
+
+		gconf_value_free (value);
+	}
+
+	return ret;
+}
+
+
+void nma_set_disconnect_wireless_on_exit (NMApplet *applet, gboolean disconnect)
+{
+	gboolean current;
+
+	g_return_if_fail (applet != NULL);
+	g_return_if_fail (applet->gconf_client != NULL);
+
+	current = nma_get_disconnect_wireless_on_exit (applet);
+	if (current != disconnect)
+	{
+		gconf_client_set_bool (applet->gconf_client,
+						   GCONF_PATH_PREFS "/disconnect_wireless_on_exit",
+						   disconnect,
+						   NULL);
+	}
+}
+
+
 /*
  * nma_redraw_timeout
  *
@@ -1930,7 +1972,13 @@ static void nma_set_wireless_enabled_cb (GtkWidget *widget, NMApplet *applet)
 
 	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
 	if (applet->wireless_enabled != state)
+	{
+		gconf_client_set_bool (applet->gconf_client,
+						   GCONF_PATH_PREFS "/wireless_enabled",
+						   state,
+						   NULL);
 		nma_dbus_enable_wireless (applet, state);
+	}
 }
 
 
@@ -1942,7 +1990,13 @@ static void nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 
 	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
 	if ((applet->nm_state == NM_STATE_ASLEEP && state) || (applet->nm_state != NM_STATE_ASLEEP && !state))
+	{
+		gconf_client_set_bool (applet->gconf_client,
+						   GCONF_PATH_PREFS "/networking_enabled",
+						   state,
+						   NULL);
 		nma_dbus_enable_networking (applet, state);
+	}
 }
 
 
@@ -2523,6 +2577,36 @@ static void G_GNUC_NORETURN nma_destroy (NMApplet *applet)
 }
 
 
+static gboolean
+update_network_state (gpointer data)
+{
+	NMApplet *applet = data;
+	GConfValue *value;
+
+	value = gconf_client_get (applet->gconf_client,
+						 GCONF_PATH_PREFS "/networking_enabled",
+						 NULL);
+	if (value)
+	{
+		if (value->type == GCONF_VALUE_BOOL)
+			nma_dbus_enable_networking (applet, gconf_value_get_bool (value));
+		gconf_value_free (value);
+	}
+
+	value = gconf_client_get (applet->gconf_client,
+						 GCONF_PATH_PREFS "/wireless_enabled",
+						 NULL);
+	if (value)
+	{
+		if (value->type == GCONF_VALUE_BOOL)
+			nma_dbus_enable_wireless	(applet, gconf_value_get_bool (value));
+		gconf_value_free (value);
+	}
+
+	return FALSE;
+}
+
+
 /*
  * nma_get_instance
  *
@@ -2590,6 +2674,11 @@ static GtkWidget * nma_get_instance (NMApplet *applet)
 
 	g_signal_connect (applet, "destroy", G_CALLBACK (nma_destroy), NULL);
 	g_signal_connect (applet, "style-set", G_CALLBACK (nma_theme_change_cb), NULL);
+
+	g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+				  update_network_state,
+				  g_object_ref (applet),
+				  (GDestroyNotify) g_object_unref);
 
 	return GTK_WIDGET (applet);
 }

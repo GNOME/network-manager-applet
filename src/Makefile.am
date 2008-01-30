@@ -21,7 +21,6 @@ nm_applet_CPPFLAGS =									\
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\"	\
 	-DDBUS_API_SUBJECT_TO_CHANGE							\
 	-DGNOMELOCALEDIR=\"$(datadir)/locale\"					\
-	$(DISABLE_DEPRECATED)	\
 	$(NULL)
 
 if WITH_NOTIFY

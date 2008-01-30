@@ -161,6 +161,9 @@ void				nma_set_state						(NMApplet *applet, NMState state);
 void				nma_set_running						(NMApplet *applet, gboolean running);
 void				nma_update_state					(NMApplet *applet);
 
+gboolean nma_get_disconnect_wireless_on_exit (NMApplet *applet);
+void nma_set_disconnect_wireless_on_exit (NMApplet *applet, gboolean disconnect);
+
 int				nm_null_safe_strcmp					(const char *s1, const char *s2);
 
 #endif

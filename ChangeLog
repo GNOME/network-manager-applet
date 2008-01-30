@@ -1,3 +1,36 @@
+2008-01-29  Tambet Ingo  <tambet@gmail.com>
+
+	* src/nm-gconf-wso.c (real_write_secrets): Don't use a blocking gnome-keyring
+	call when writing the secrets, it grabs the X pointer if the menu happens to
+	be expanded at the time keyring asks for the master password, deadlocking the
+	whole session.
+
+	* src/nm-gconf-wso-wpa-eap.c (real_write_secrets): Ditto.
+
+	* src/Makefile.am: Remove the 'DISABLE_DEPRECATED' define, otherwise it does
+	not compile on GTK 2.12 anymore (GtkTooltips is deprecated there).
+
+2008-01-29  Tambet Ingo  <tambet@gmail.com>
+
+	* src/applet.c (nma_show_info_cb): Remove a warning.
+	(nma_set_wireless_enabled_cb): Save the wireless state in gconf.
+	(nma_set_networking_enabled_cb): Save the network enabled/disabled state in
+	gconf.
+	(update_network_state): Update the state of wireless and network to what's
+	saved in gconf.
+	(nma_get_instance): On startup, restore the wireless and network state to
+	what was used the last time.
+
+2008-01-29  Tambet Ingo  <tambet@gmail.com>
+
+	* nm-disconnect-wireless-on-exit.sh: Stand alone utility to control whether
+	the wireless connections are closed on exit.
+
+	* src/applet.c (nma_get_disconnect_wireless_on_exit)
+	(nma_set_disconnect_wireless_on_exit): Implement.
+
+	* src/main.c (session_die): Deactivate the wireless connection if needed.
+
 2008-01-23  Dan Williams  <dcbw@redhat.com>
 
 	Fix gnome.org #332951

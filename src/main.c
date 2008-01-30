@@ -36,7 +36,14 @@
 static void session_die (GnomeClient *client, gpointer client_data)
 {
 	NMApplet *applet = client_data;
+
+	/* Deactivate VPN */
 	nma_dbus_vpn_deactivate_connection (applet->connection);
+
+	/* Deactivate wireless devices if required */
+	if (nma_get_disconnect_wireless_on_exit (applet))
+		nma_dbus_enable_wireless (applet, FALSE);
+
 	gtk_main_quit ();
 }
 

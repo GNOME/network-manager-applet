@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+
 /* NetworkManager -- Network link manager
  *
  * Dan Williams <dcbw@redhat.com>
@@ -339,14 +341,21 @@ nm_gconf_wso_write_secrets (NMGConfWSO *self,
 }
 
 static void
+real_write_secrets_cb (GnomeKeyringResult result,
+				   guint32 val,
+				   gpointer user_data)
+{
+	if (result != GNOME_KEYRING_RESULT_OK)
+		nm_warning ("Error saving secret for wireless network '%s' in keyring: %d", (char *) user_data, result);
+}
+
+static void
 real_write_secrets (NMGConfWSO *self,
                     const char *ssid)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringAttribute attr;		
 	char *display_name;
-	GnomeKeyringResult ret;
-	guint32 item_id;
 
 	if (nm_gconf_wso_get_we_cipher (self) == IW_AUTH_CIPHER_NONE)
 		return;
@@ -359,15 +368,15 @@ real_write_secrets (NMGConfWSO *self,
 	attr.value.string = g_strdup (ssid);
 	g_array_append_val (attributes, attr);
 
-	ret = gnome_keyring_item_create_sync (NULL,
-								   GNOME_KEYRING_ITEM_GENERIC_SECRET,
-								   display_name,
-								   attributes,
-								   nm_gconf_wso_get_key (self),
-								   TRUE,
-								   &item_id);
-	if (ret != GNOME_KEYRING_RESULT_OK)
-		nm_warning ("Error saving secret for wireless network '%s' in keyring: %d", ssid, ret);
+	gnome_keyring_item_create (NULL,
+						  GNOME_KEYRING_ITEM_GENERIC_SECRET,
+						  display_name,
+						  attributes,
+						  nm_gconf_wso_get_key (self),
+						  TRUE,
+						  real_write_secrets_cb,
+						  g_strdup (ssid),
+						  g_free);
 
 	g_free (display_name);
 	gnome_keyring_attribute_list_free (attributes);
