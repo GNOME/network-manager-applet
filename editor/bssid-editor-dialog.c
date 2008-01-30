@@ -211,7 +211,7 @@ gboolean run_bssid_editor(GtkWidget *parent, gchar *gconf_dir)
 	}
 
 	gtk_widget_destroy(bed_data->dialog);
-	g_free(bed_data->glade_xml);
+	g_object_unref (bed_data->glade_xml);
 
 	free(bed_data);
 
