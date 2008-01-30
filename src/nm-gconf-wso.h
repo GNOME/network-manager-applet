@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+
 /* NetworkManager -- Network link manager
  *
  * Dan Williams <dcbw@redhat.com>
@@ -26,6 +28,7 @@
 #include <gconf/gconf-client.h>
 #include <dbus/dbus.h>
 
+#include <NetworkManager.h>
 #include "wireless-security-option.h"
 
 #define NM_TYPE_GCONF_WSO			(nm_gconf_wso_get_type ())
@@ -56,7 +59,10 @@ struct _NMGConfWSOClass
 	/* class members */
 	gboolean	(*serialize_dbus_func)	(NMGConfWSO *self, DBusMessageIter *iter);
 
-	gboolean	(*serialize_gconf_func)	(NMGConfWSO *self, GConfClient *client, const char *network);
+	gboolean	(*serialize_gconf_func)	(NMGConfWSO *self,
+								 GConfClient *client,
+								 NMNetworkType type,
+								 const char *network);
 
 	gboolean	(*read_secrets_func)	(NMGConfWSO *self, const char *ssid);
 
@@ -68,7 +74,9 @@ GType nm_gconf_wso_get_type (void);
 
 NMGConfWSO * nm_gconf_wso_new_deserialize_dbus (DBusMessageIter *iter);
 
-NMGConfWSO * nm_gconf_wso_new_deserialize_gconf (GConfClient *client, const char *network);
+NMGConfWSO * nm_gconf_wso_new_deserialize_gconf (GConfClient *client,
+									    NMNetworkType type,
+									    const char *network);
 
 NMGConfWSO * nm_gconf_wso_new_from_wso (WirelessSecurityOption *opt, const char *ssid);
 
@@ -80,7 +88,10 @@ void nm_gconf_wso_set_key (NMGConfWSO *self, const char *key, int key_len);
 
 gboolean nm_gconf_wso_serialize_dbus (NMGConfWSO *self, DBusMessageIter *iter);
 
-gboolean nm_gconf_wso_serialize_gconf (NMGConfWSO *self, GConfClient *client, const char *network);
+gboolean nm_gconf_wso_serialize_gconf (NMGConfWSO *self,
+							    GConfClient *client,
+							    NMNetworkType type,
+							    const char *network);
 
 gboolean nm_gconf_wso_read_secrets (NMGConfWSO *self, const char *ssid);
 

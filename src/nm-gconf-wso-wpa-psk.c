@@ -68,13 +68,14 @@ out:
 }
 
 NMGConfWSOWPA_PSK *
-nm_gconf_wso_wpa_psk_new_deserialize_gconf (GConfClient *client, const char *network, int we_cipher)
+nm_gconf_wso_wpa_psk_new_deserialize_gconf (GConfClient *client, NMNetworkType type, const char *network, int we_cipher)
 {
 	NMGConfWSOWPA_PSK *	security = NULL;
 	int				wpa_version;
 	int				key_mgt;
 
 	g_return_val_if_fail (client != NULL, NULL);
+	g_return_val_if_fail (type == NETWORK_TYPE_ALLOWED, NULL);
 	g_return_val_if_fail (network != NULL, NULL);
 	g_return_val_if_fail ((we_cipher == NM_AUTH_TYPE_WPA_PSK_AUTO || we_cipher == IW_AUTH_CIPHER_TKIP) || (we_cipher == IW_AUTH_CIPHER_CCMP), NULL);
 
@@ -116,10 +117,12 @@ real_serialize_dbus (NMGConfWSO *instance, DBusMessageIter *iter)
 }
 
 static gboolean 
-real_serialize_gconf (NMGConfWSO *instance, GConfClient *client, const char *network)
+real_serialize_gconf (NMGConfWSO *instance, GConfClient *client, NMNetworkType type, const char *network)
 {
 	NMGConfWSOWPA_PSK *	self = NM_GCONF_WSO_WPA_PSK (instance);
 	char *			key;
+
+	g_return_val_if_fail (type == NETWORK_TYPE_ALLOWED, FALSE);
 
 	key = g_strdup_printf ("%s/%s/%swpa_version", GCONF_PATH_WIRELESS_NETWORKS, network, WPA_PSK_PREFIX);
 	gconf_client_set_int (client, key, self->priv->wpa_version, NULL);

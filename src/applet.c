@@ -60,6 +60,7 @@
 #include "other-network-dialog.h"
 #include "passphrase-dialog.h"
 #include "menu-items.h"
+#include "nm-wired-dialog.h"
 #include "vpn-password-dialog.h"
 #include "vpn-connection.h"
 #include "nm-utils.h"
@@ -1538,7 +1539,7 @@ static void nma_menu_add_device_item (GtkWidget *menu, NetworkDevice *device, gi
 			GtkCheckMenuItem *gtk_item = wired_menu_item_get_check_item (item);
 
 			wired_menu_item_update (item, device, n_devices);
-			if (network_device_get_active (device))
+			if (network_device_get_active (device) && network_device_get_active_wired_network (device) == NULL)
 				gtk_check_menu_item_set_active (gtk_item, TRUE);
 			gtk_check_menu_item_set_draw_as_radio (gtk_item, TRUE);
 
@@ -1620,6 +1621,26 @@ static void nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 	g_signal_connect (menu_item, "activate", G_CALLBACK (new_network_item_selected), applet);
 }
 
+static void wired_network_item_selected (GtkWidget *menu_item, NMApplet *applet)
+{
+	nma_wired_dialog_create (applet);
+}
+
+
+static void nma_menu_add_wired_network_item (GtkWidget *menu, NMApplet *applet)
+{
+	GtkWidget *menu_item;
+	GtkWidget *label;
+
+	menu_item = gtk_menu_item_new ();
+	label = gtk_label_new_with_mnemonic (_("Connect to 802.1X _Protected Wired Network..."));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_container_add (GTK_CONTAINER (menu_item), label);
+	gtk_widget_show_all (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	g_signal_connect (menu_item, "activate", G_CALLBACK (wired_network_item_selected), applet);
+}
+
 
 typedef struct AddNetworksCB
 {
@@ -1668,6 +1689,25 @@ static void nma_add_networks_helper (NetworkDevice *dev, WirelessNetwork *net, g
 }
 
 
+static void nma_add_wired_networks (NMApplet *applet, NetworkDevice *device, GtkWidget *menu)
+{
+	GSList *networks;
+	GSList *iter;
+
+	networks = nma_wired_read_networks (applet->gconf_client);
+	for (iter = networks; iter; iter = iter->next) {
+		char *network_id = (char *) iter->data;
+		NMGConfWSO *opt;
+		GtkWidget *w;
+
+		opt = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client, NETWORK_TYPE_WIRED, network_id);
+		w = nma_wired_menu_item_new (applet, device, network_id, opt);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+	}
+
+	g_slist_free (networks);
+}
+
 /*
  * nma_has_encrypted_networks_helper
  *
@@ -1696,27 +1736,28 @@ static void nma_has_encrypted_networks_helper (NetworkDevice *dev, WirelessNetwo
 static void nma_menu_device_add_networks (GtkWidget *menu, NetworkDevice *dev, NMApplet *applet)
 {
 	gboolean			has_encrypted = FALSE;
-	AddNetworksCB *	add_networks_cb = NULL;
+	AddNetworksCB add_networks_cb;
 
 	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
 	g_return_if_fail (dev != NULL);
 
-	if (!network_device_is_wireless (dev) || !applet->wireless_enabled)
+	if (network_device_is_wired (dev)) {
+		if ((network_device_get_capabilities (dev) & NM_DEVICE_CAP_CARRIER_DETECT) && network_device_get_link (dev))
+			nma_add_wired_networks (applet, dev, menu);
+		return;
+	} else if (!network_device_is_wireless (dev) || !applet->wireless_enabled)
 		return;
 
 	/* Check for any security */
 	network_device_foreach_wireless_network (dev, nma_has_encrypted_networks_helper, &has_encrypted);
 
-	add_networks_cb = g_malloc0 (sizeof (AddNetworksCB));
-	add_networks_cb->applet = applet;
-	add_networks_cb->has_encrypted = has_encrypted;
-	add_networks_cb->menu = menu;
+	add_networks_cb.applet = applet;
+	add_networks_cb.has_encrypted = has_encrypted;
+	add_networks_cb.menu = menu;
 
 	/* Add all networks in our network list to the menu */
-	network_device_foreach_wireless_network (dev, nma_add_networks_helper, add_networks_cb);
-
-	g_free (add_networks_cb);
+	network_device_foreach_wireless_network (dev, nma_add_networks_helper, &add_networks_cb);
 }
 
 
@@ -1867,6 +1908,7 @@ static void nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	GSList	*element;
 	gint n_wireless_interfaces = 0;
 	gint n_wired_interfaces = 0;
+	gint n_wired_interfaces_with_link = 0;
 	gboolean vpn_available, dialup_available;
 
 	g_return_if_fail (menu != NULL);
@@ -1901,6 +1943,9 @@ static void nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 				break;
 			case DEVICE_TYPE_802_3_ETHERNET:
 				n_wired_interfaces++;
+				if ((network_device_get_capabilities (dev) & NM_DEVICE_CAP_CARRIER_DETECT) &&
+				    network_device_get_link (dev))
+					n_wired_interfaces_with_link++;
 				break;
 			default:
 				break;
@@ -1960,6 +2005,12 @@ static void nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		nma_menu_add_separator_item (menu);
 		nma_menu_add_custom_essid_item (menu, applet);
 		nma_menu_add_create_network_item (menu, applet);
+	}
+
+
+	if (n_wired_interfaces_with_link > 0) {
+		nma_menu_add_separator_item (menu);
+		nma_menu_add_wired_network_item (menu, applet);
 	}
 }
 
@@ -2545,7 +2596,9 @@ static void G_GNUC_NORETURN nma_destroy (NMApplet *applet)
 
 	nma_icons_free (applet);
 
-	nmi_passphrase_dialog_destroy (applet);
+	if (applet->passphrase_dialog)
+		gtk_widget_destroy (applet->passphrase_dialog);
+
 #ifdef ENABLE_NOTIFY
 	if (applet->notification)
 	{

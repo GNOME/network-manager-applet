@@ -111,7 +111,9 @@ static DBusHandlerResult nma_dbus_filter (DBusConnection *connection, DBusMessag
 				{
 					nma_set_state (applet, NM_STATE_DISCONNECTED);
 					nma_set_running (applet, FALSE);
-					nmi_passphrase_dialog_destroy (applet);
+
+					if (applet->passphrase_dialog)
+						gtk_widget_destroy (applet->passphrase_dialog);
 
 					/* One last redraw to capture new state before sleeping */
 					nma_update_state (applet);

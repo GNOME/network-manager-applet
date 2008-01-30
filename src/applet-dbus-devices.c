@@ -833,7 +833,11 @@ static void nma_dbus_device_properties_cb (DBusPendingCall *pcall, void *user_da
 				for (item = networks; *item; item++)
 					nma_dbus_device_update_one_network (applet, op, *item, active_network_path);
 			}
+		} else if (type == DEVICE_TYPE_802_3_ETHERNET) {
+			if (active && strlen (active_network_path) > 0)
+				network_device_set_active_wired_network (dev, active_network_path);
 		}
+
 		dbus_free_string_array (networks);
 
 		applet->device_list = g_slist_append (applet->device_list, dev);
@@ -925,7 +929,11 @@ static void nma_dbus_device_activated_cb (DBusPendingCall *pcall, void *user_dat
 			message = g_strdup (_("You are now connected to the wired network with a self-assigned address."));
 			icon = "nm-device-wired-autoip";
 		} else {
-			message = g_strdup (_("You are now connected to the wired network."));
+			if (essid)
+				message = g_strdup_printf (_("You are now connected to the wired network '%s'."), essid);
+			else
+				message = g_strdup (_("You are now connected to the wired network."));
+
 			icon = "nm-device-wired";
 		}
 	}
@@ -1286,22 +1294,56 @@ void nma_dbus_set_device (DBusConnection *connection, NetworkDevice *dev, const 
 	{
 		const char *dev_path = network_device_get_nm_path (dev);
 
-		if (network_device_is_wireless (dev))
-		{
-			/* Build up the required args */
-			dbus_message_append_args (message, DBUS_TYPE_OBJECT_PATH, &dev_path,
-										DBUS_TYPE_STRING, &essid,
-										DBUS_TYPE_INVALID);
+		nm_info ("Forcing device '%s'\n", dev_path);
 
-			/* If we have specific wireless security options, add them */
-			if (opt)
-				success = wso_append_dbus_params (opt, essid, message);
+		dbus_message_append_args (message, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_INVALID);
+
+		if (essid)
+			dbus_message_append_args (message, DBUS_TYPE_STRING, &essid, DBUS_TYPE_INVALID);
+
+		if (opt)
+			success = wso_append_dbus_params (opt, essid, message);
+
+		if (success)
+			dbus_connection_send (connection, message, NULL);
+		dbus_message_unref (message);
+	}
+	else
+		nm_warning ("Couldn't allocate the dbus message\n");
+}
+
+
+void nma_dbus_set_device_with_gconf_wso (DBusConnection *connection,
+								 NetworkDevice *dev,
+								 const char *essid,
+								 NMGConfWSO *opt)
+{
+	DBusMessage *	message;
+	gboolean		success = TRUE;
+
+	g_return_if_fail (connection != NULL);
+	g_return_if_fail (dev != NULL);
+	if (network_device_is_wireless (dev))
+		g_return_if_fail (essid != NULL);
+
+	if ((message = dbus_message_new_method_call (NM_DBUS_SERVICE, NM_DBUS_PATH, NM_DBUS_INTERFACE, "setActiveDevice")))
+	{
+		const char *dev_path = network_device_get_nm_path (dev);
+
+		nm_info ("Forcing device '%s'\n", dev_path);
+
+		dbus_message_append_args (message, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_INVALID);
+
+		if (essid)
+			dbus_message_append_args (message, DBUS_TYPE_STRING, &essid, DBUS_TYPE_INVALID);
+
+		if (opt) {
+			DBusMessageIter iter;
+
+			dbus_message_iter_init_append (message, &iter);
+			success = nm_gconf_wso_serialize_dbus (opt, &iter);
 		}
-		else
-		{
-			nm_info ("Forcing device '%s'\n", network_device_get_nm_path (dev));
-			dbus_message_append_args (message, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_INVALID);
-		}
+
 		if (success)
 			dbus_connection_send (connection, message, NULL);
 		dbus_message_unref (message);

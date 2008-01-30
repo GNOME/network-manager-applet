@@ -30,6 +30,7 @@
 #include "nm-device.h"
 #include "wireless-network.h"
 #include "wireless-security-option.h"
+#include "nm-gconf-wso.h"
 
 void			nma_dbus_update_one_vpn_connection		(DBusConnection *connection, const char *name, NMApplet *applet, gboolean is_active);
 void			nma_dbus_update_vpn_connections			(NMApplet *applet);
@@ -50,6 +51,12 @@ void			nma_dbus_device_update_one_network		(NMApplet *applet, const char *dev_pa
 void			nma_dbus_device_remove_one_network		(NMApplet *applet, const char *dev_path, const char *net_path);
 void			nma_dbus_update_strength				(NMApplet *applet, const char *dev_path, const char *net_path, int strength);
 void			nma_dbus_set_device					(DBusConnection *connection, NetworkDevice *dev, const char *essid, WirelessSecurityOption *opt);
+
+void			nma_dbus_set_device_with_gconf_wso		(DBusConnection *connection,
+											 NetworkDevice *dev,
+											 const char *essid,
+											 NMGConfWSO *opt);
+
 void			nma_dbus_create_network					(DBusConnection *connection, NetworkDevice *dev, const char *essid, WirelessSecurityOption *opt);
 
 void			nma_free_data_model					(NMApplet *applet);

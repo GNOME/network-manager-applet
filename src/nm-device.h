@@ -34,7 +34,7 @@ typedef void (*WirelessNetworkForeach) (NetworkDevice *dev, WirelessNetwork *net
 NetworkDevice *		network_device_new						(const char *iface, NMDeviceType type, const char *nm_path);
 NetworkDevice *		network_device_copy						(NetworkDevice *src);
 
-void					network_device_ref						(NetworkDevice *dev);
+NetworkDevice *		network_device_ref						(NetworkDevice *dev);
 void					network_device_unref					(NetworkDevice *dev);
 
 gboolean				network_device_is_wired					(NetworkDevice *dev);
@@ -56,6 +56,10 @@ void					network_device_clear_wireless_networks		(NetworkDevice *dev);
 void					network_device_sort_wireless_networks		(NetworkDevice *dev);
 
 guint				network_device_get_num_wireless_networks	(NetworkDevice *dev);
+
+void					network_device_set_active_wired_network		(NetworkDevice *dev, const char *network_id);
+const char *			network_device_get_active_wired_network		(NetworkDevice *dev);
+
 
 const char *			network_device_get_address				(NetworkDevice *dev);
 void					network_device_set_address				(NetworkDevice *dev, const char *addr);

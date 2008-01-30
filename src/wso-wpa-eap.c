@@ -313,3 +313,33 @@ wso_wpa_eap_new (const char *glade_file,
 	return opt;
 }
 
+void
+wso_wpa_eap_set_wired (WirelessSecurityOption *opt)
+{
+	GtkTreeModel *model;
+	GtkComboBox *combo;
+	GtkTreeIter iter;
+	gboolean valid;
+
+	g_return_if_fail (opt != NULL);
+
+	/* Select the 802.1X key type */
+	combo = GTK_COMBO_BOX (glade_xml_get_widget (opt->uixml, "wpa_eap_key_type_combo"));
+	model = gtk_combo_box_get_model (combo);
+	valid = gtk_tree_model_get_iter_first (model, &iter);
+	while (valid) {
+		int cipher;
+
+		gtk_tree_model_get (model, &iter, WPA_KEY_TYPE_CIPHER_COL, &cipher, -1);
+		if (cipher == IW_AUTH_CIPHER_WEP104) {
+			gtk_combo_box_set_active_iter (combo, &iter);
+			break;
+		}
+
+		valid = gtk_tree_model_iter_next (model, &iter);
+	}
+
+	/* And hide it */
+	gtk_widget_hide (GTK_WIDGET (combo));
+	gtk_widget_hide (glade_xml_get_widget (opt->uixml, "wpa-key-type-label"));
+}

@@ -36,6 +36,7 @@
 #include "applet-dbus.h"
 #include "applet-dbus-info.h"
 #include "passphrase-dialog.h"
+#include "nm-wired-dialog.h"
 #include "nm-utils.h"
 #include "nm-gconf-wso.h"
 #include "gconf-helpers.h"
@@ -89,7 +90,8 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	WirelessNetwork *	net = NULL;
 	char *			temp = NULL;
 	char *			escaped_network;
-	int			we_cipher = -1;
+	NMNetworkType type = NETWORK_TYPE_ALLOWED;
+	const char *gconf_prefix = GCONF_PATH_WIRELESS_NETWORKS;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 	g_return_val_if_fail (message != NULL, NULL);
@@ -106,19 +108,23 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 	if (!(dev = nma_get_device_for_nm_path (applet->device_list, dev_path)))
 		return NULL;
 
+	if (network_device_is_wired (dev)) {
+		type = NETWORK_TYPE_WIRED;
+		gconf_prefix = GCONF_PATH_WIRED_NETWORKS;
+	}
+
 	/* If we don't have a record of the network yet in GConf, ask for
 	 * a new key no matter what NM says.
 	 */
 	escaped_network = gconf_escape_key (essid, strlen (essid));
-	nm_gconf_get_int_helper (applet->gconf_client,
-                              GCONF_PATH_WIRELESS_NETWORKS,
-                              "we_cipher", escaped_network, &we_cipher);
 	if (!nm_gconf_get_string_helper (applet->gconf_client,
-                                      GCONF_PATH_WIRELESS_NETWORKS,
+                                      gconf_prefix,
                                       "essid",
                                       escaped_network, &temp)
          || !temp)
 		new_key = TRUE;
+
+	g_free (temp);
 
 	/* It's not a new key, so try to get the key from the keyring. */
 	if (!new_key)
@@ -132,7 +138,7 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 		if (applet->dropdown_menu && GTK_WIDGET_VISIBLE (GTK_WIDGET (applet->dropdown_menu)))
 			gtk_menu_shell_deactivate (GTK_MENU_SHELL (applet->dropdown_menu));
 
-		gconf_wso = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client, escaped_network);
+		gconf_wso = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client, type, escaped_network);
 		if (!gconf_wso) {
 			new_key = TRUE;
 			goto new_key;
@@ -149,13 +155,17 @@ nmi_dbus_get_key_for_network (DBusConnection *connection,
 
 new_key:
 	if (new_key) {
-		/* We only ask the user for a new key when we know about the network from NM,
-		 * since throwing up a dialog with a random essid from somewhere is a security issue.
-		 */
-		if ((net = network_device_get_wireless_network_by_nm_path (dev, net_path)))
-		{
-			nmi_passphrase_dialog_destroy (applet);
-			applet->passphrase_dialog = nmi_passphrase_dialog_new (applet, 0, dev, net, message);
+		if (network_device_is_wireless (dev)) {
+			/* We only ask the user for a new key when we know about the network from NM,
+			 * since throwing up a dialog with a random essid from somewhere is a security issue.
+			 */
+			if ((net = network_device_get_wireless_network_by_nm_path (dev, net_path)))
+				nmi_passphrase_dialog_new (applet, dev, net, message);
+
+		} else if (network_device_is_wired (dev)) {
+			nma_wired_dialog_ask_password (applet, escaped_network, message);
+		} else {
+			nm_warning ("Unhandled device type ('%s')", G_OBJECT_TYPE_NAME (dev));
 		}
 	}
 
@@ -201,7 +211,8 @@ nmi_dbus_cancel_get_key_for_network (DBusConnection *connection,
 
 	g_return_val_if_fail (applet != NULL, NULL);
 
-	nmi_passphrase_dialog_destroy (applet);
+	if (applet->passphrase_dialog)
+		gtk_widget_destroy (applet->passphrase_dialog);
 
 	return NULL;
 }
@@ -389,7 +400,7 @@ nmi_dbus_get_network_properties (DBusConnection *connection,
 	}
 
 	/* Get the network's security information from GConf */
-	if (!(gconf_wso = nm_gconf_wso_new_deserialize_gconf (client, escaped_network)))
+	if (!(gconf_wso = nm_gconf_wso_new_deserialize_gconf (client, type, escaped_network)))
 	{
 		nm_warning ("%s:%d - couldn't retrieve security information from "
 				"GConf for '%s'.", __FILE__, __LINE__, essid);
@@ -762,13 +773,21 @@ nmi_save_network_info (NMApplet *applet,
 	char *					key;
 	GConfEntry *				gconf_entry;
 	char *					escaped_network;
+	const char *gconf_prefix = GCONF_PATH_WIRELESS_NETWORKS;
+	NMNetworkType type = NETWORK_TYPE_ALLOWED;
 
 	g_return_if_fail (applet != NULL);
 	g_return_if_fail (essid != NULL);
 	g_return_if_fail (gconf_wso != NULL);
 
+	/* Crappy hack */
+	if (!strncmp (bssid, "WIRED", 5)) {
+		type = NETWORK_TYPE_WIRED;
+		gconf_prefix = GCONF_PATH_WIRED_NETWORKS;
+	}
+
 	escaped_network = gconf_escape_key (essid, strlen (essid));
-	key = g_strdup_printf ("%s/%s", GCONF_PATH_WIRELESS_NETWORKS, escaped_network);
+	key = g_strdup_printf ("%s/%s", gconf_prefix, escaped_network);
 	gconf_entry = gconf_client_get_entry (applet->gconf_client, key, NULL, TRUE, NULL);
 	g_free (key);
 	if (!gconf_entry)
@@ -778,7 +797,7 @@ nmi_save_network_info (NMApplet *applet,
 	}
 	gconf_entry_unref (gconf_entry);
 
-	key = g_strdup_printf ("%s/%s/essid", GCONF_PATH_WIRELESS_NETWORKS, escaped_network);
+	key = g_strdup_printf ("%s/%s/essid", gconf_prefix, escaped_network);
 	gconf_client_set_string (applet->gconf_client, key, essid, NULL);
 	g_free (key);
 
@@ -787,7 +806,7 @@ nmi_save_network_info (NMApplet *applet,
 	 */
 	if (!automatic)
 	{
-		key = g_strdup_printf ("%s/%s/timestamp", GCONF_PATH_WIRELESS_NETWORKS, escaped_network);
+		key = g_strdup_printf ("%s/%s/timestamp", gconf_prefix, escaped_network);
 		gconf_client_set_int (applet->gconf_client, key, time (NULL), NULL);
 		g_free (key);
 	}
@@ -799,7 +818,7 @@ nmi_save_network_info (NMApplet *applet,
 		gboolean		found = FALSE;
 
 		/* Get current list of access point BSSIDs for this AP from GConf */
-		key = g_strdup_printf ("%s/%s/bssids", GCONF_PATH_WIRELESS_NETWORKS, escaped_network);
+		key = g_strdup_printf ("%s/%s/bssids", gconf_prefix, escaped_network);
 		if ((value = gconf_client_get (applet->gconf_client, key, NULL)))
 		{
 			if ((value->type == GCONF_VALUE_LIST) && (gconf_value_get_list_type (value) == GCONF_VALUE_STRING))
@@ -835,7 +854,7 @@ nmi_save_network_info (NMApplet *applet,
 	}
 
 	/* Stuff the security information into GConf */
-	if (!nm_gconf_wso_serialize_gconf (gconf_wso, applet->gconf_client, escaped_network))
+	if (!nm_gconf_wso_serialize_gconf (gconf_wso, applet->gconf_client, type, escaped_network))
 	{
 		nm_warning ("%s:%d - Couldn't serialize security info for '%s'.",
 				__FILE__, __LINE__, essid);

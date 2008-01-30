@@ -27,12 +27,9 @@
 #include "wireless-network.h"
 
 GtkWidget *	nmi_passphrase_dialog_new (NMApplet *applet,
-                                          guint32 uid,
                                           NetworkDevice *dev,
                                           WirelessNetwork *net,
                                           DBusMessage *message);
-
-void			nmi_passphrase_dialog_destroy	(NMApplet *applet);
 
 #endif	/* PASSPHRASE_DIALOG_H */
 

@@ -85,6 +85,8 @@ nm_applet_SOURCES =			\
 	nm-gconf-wso-wpa-psk.h	\
 	nm-gconf-wso-leap.c	\
 	nm-gconf-wso-leap.h	\
+	nm-wired-dialog.c	\
+	nm-wired-dialog.h	\
 	gconf-helpers.c		\
 	gconf-helpers.h		\
 	nm-utils.c \

@@ -93,11 +93,13 @@ WirelessNetwork *wireless_network_copy (WirelessNetwork *src)
  * Increment the reference count of the wireless network
  *
  */
-void wireless_network_ref (WirelessNetwork *net)
+WirelessNetwork *wireless_network_ref (WirelessNetwork *net)
 {
 	g_return_if_fail (net != NULL);
 
 	net->refcount++;
+
+	return net;
 }
 
 

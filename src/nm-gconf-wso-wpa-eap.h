@@ -57,6 +57,6 @@ GType nm_gconf_wso_wpa_eap_get_type (void);
 
 NMGConfWSOWPA_EAP * nm_gconf_wso_wpa_eap_new_deserialize_dbus (DBusMessageIter *iter, int we_cipher);
 
-NMGConfWSOWPA_EAP * nm_gconf_wso_wpa_eap_new_deserialize_gconf (GConfClient *client, const char *network, int we_cipher);
+NMGConfWSOWPA_EAP * nm_gconf_wso_wpa_eap_new_deserialize_gconf (GConfClient *client, NMNetworkType type, const char *network, int we_cipher);
 
 #endif	/* NM_GCONF_WSO_WPA_EAP_H */

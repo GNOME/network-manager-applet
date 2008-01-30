@@ -72,13 +72,14 @@ out:
 
 
 NMGConfWSOLEAP *
-nm_gconf_wso_leap_new_deserialize_gconf (GConfClient *client, const char *network, int we_cipher)
+nm_gconf_wso_leap_new_deserialize_gconf (GConfClient *client, NMNetworkType type, const char *network, int we_cipher)
 {
 	NMGConfWSOLEAP *	security = NULL;
 	char *			username = NULL;
 	char *			key_mgmt = NULL;
 
 	g_return_val_if_fail (client != NULL, NULL);
+	g_return_val_if_fail (type == NETWORK_TYPE_ALLOWED, NULL);
 	g_return_val_if_fail (network != NULL, NULL);
 	g_return_val_if_fail ((we_cipher == NM_AUTH_TYPE_LEAP), NULL);
 
@@ -116,10 +117,12 @@ real_serialize_dbus (NMGConfWSO *instance, DBusMessageIter *iter)
 }
 
 static gboolean 
-real_serialize_gconf (NMGConfWSO *instance, GConfClient *client, const char *network)
+real_serialize_gconf (NMGConfWSO *instance, NMNetworkType type, GConfClient *client, const char *network)
 {
 	NMGConfWSOLEAP *	self = NM_GCONF_WSO_LEAP (instance);
 	char *			key;
+
+	g_return_val_if_fail (type == NETWORK_TYPE_ALLOWED, FALSE);
 
 	key = g_strdup_printf ("%s/%s/%susername", GCONF_PATH_WIRELESS_NETWORKS, network, LEAP_PREFIX);
 	gconf_client_set_string (client, key, self->priv->username, NULL);

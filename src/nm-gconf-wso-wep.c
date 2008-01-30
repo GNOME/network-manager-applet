@@ -67,12 +67,13 @@ out:
 }
 
 NMGConfWSOWEP *
-nm_gconf_wso_wep_new_deserialize_gconf (GConfClient *client, const char *network, int we_cipher)
+nm_gconf_wso_wep_new_deserialize_gconf (GConfClient *client, NMNetworkType type, const char *network, int we_cipher)
 {
 	NMGConfWSOWEP *	security = NULL;
 	int				auth_algorithm;
 
 	g_return_val_if_fail (client != NULL, NULL);
+	g_return_val_if_fail (type == NETWORK_TYPE_ALLOWED, NULL);
 	g_return_val_if_fail (network != NULL, NULL);
 	g_return_val_if_fail ((we_cipher == IW_AUTH_CIPHER_WEP40) || (we_cipher == IW_AUTH_CIPHER_WEP104), NULL);
 
@@ -105,10 +106,12 @@ real_serialize_dbus (NMGConfWSO *instance, DBusMessageIter *iter)
 }
 
 static gboolean 
-real_serialize_gconf (NMGConfWSO *instance, GConfClient *client, const char *network)
+real_serialize_gconf (NMGConfWSO *instance, GConfClient *client, NMNetworkType type, const char *network)
 {
 	NMGConfWSOWEP *self = NM_GCONF_WSO_WEP (instance);
 	char *		key;
+
+	g_return_val_if_fail (type == NETWORK_TYPE_ALLOWED, FALSE);
 
 	key = g_strdup_printf ("%s/%s/%sauth_algorithm", GCONF_PATH_WIRELESS_NETWORKS, network, WEP_PREFIX);
 	gconf_client_set_int (client, key, self->priv->auth_algorithm, NULL);

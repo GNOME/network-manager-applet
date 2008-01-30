@@ -58,6 +58,7 @@ NMGConfWSOWEP * nm_gconf_wso_wep_new_deserialize_dbus (DBusMessageIter *iter,
                                                         int we_cipher);
 
 NMGConfWSOWEP * nm_gconf_wso_wep_new_deserialize_gconf (GConfClient *client,
+														NMNetworkType type,
                                                         const char *network,
                                                         int we_cipher);
 

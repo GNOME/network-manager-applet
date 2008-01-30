@@ -115,15 +115,27 @@ out:
 
 NMGConfWSO *
 nm_gconf_wso_new_deserialize_gconf (GConfClient *client,
+							 NMNetworkType type,
                                     const char *network)
 {
 	NMGConfWSO * security = NULL;
 	int we_cipher;
+	const char *gconf_prefix;
 
 	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (network != NULL, NULL);
+
+	if (type == NETWORK_TYPE_ALLOWED)
+		gconf_prefix = GCONF_PATH_WIRELESS_NETWORKS;
+	else if (type == NETWORK_TYPE_WIRED)
+		gconf_prefix = GCONF_PATH_WIRED_NETWORKS;
+	else {
+		nm_warning ("Invalid network type");
+		return FALSE;
+	}
+
 	if (!nm_gconf_get_int_helper (client,
-							GCONF_PATH_WIRELESS_NETWORKS,
+							gconf_prefix,
 							"we_cipher",
 							network,
 							&we_cipher))
@@ -137,21 +149,21 @@ nm_gconf_wso_new_deserialize_gconf (GConfClient *client,
 		{
 			case IW_AUTH_CIPHER_WEP40:
 			case IW_AUTH_CIPHER_WEP104:
-				security = NM_GCONF_WSO (nm_gconf_wso_wep_new_deserialize_gconf (client, network, we_cipher));
+				security = NM_GCONF_WSO (nm_gconf_wso_wep_new_deserialize_gconf (client, type, network, we_cipher));
 				break;
 
 			case NM_AUTH_TYPE_WPA_PSK_AUTO:
 			case IW_AUTH_CIPHER_TKIP:
 			case IW_AUTH_CIPHER_CCMP:
-				security = NM_GCONF_WSO (nm_gconf_wso_wpa_psk_new_deserialize_gconf (client, network, we_cipher));
+				security = NM_GCONF_WSO (nm_gconf_wso_wpa_psk_new_deserialize_gconf (client, type, network, we_cipher));
 				break;
 
 			case NM_AUTH_TYPE_WPA_EAP:
-				security = NM_GCONF_WSO (nm_gconf_wso_wpa_eap_new_deserialize_gconf (client, network, we_cipher));
+				security = NM_GCONF_WSO (nm_gconf_wso_wpa_eap_new_deserialize_gconf (client, type, network, we_cipher));
 				break;
 
 			case NM_AUTH_TYPE_LEAP:
-				security = NM_GCONF_WSO (nm_gconf_wso_leap_new_deserialize_gconf (client, network, we_cipher));
+				security = NM_GCONF_WSO (nm_gconf_wso_leap_new_deserialize_gconf (client, type, network, we_cipher));
 				break;
 
 			default:
@@ -236,6 +248,7 @@ real_serialize_dbus (NMGConfWSO *self,
 static int 
 real_serialize_gconf (NMGConfWSO *self,
                       GConfClient *client,
+				  NMNetworkType type,
                       const char *network)
 {
 	/* Nothing to do */
@@ -280,9 +293,11 @@ nm_gconf_wso_serialize_dbus (NMGConfWSO *self,
 gboolean
 nm_gconf_wso_serialize_gconf (NMGConfWSO *self,
                               GConfClient *client,
+						NMNetworkType type,
                               const char *network)
 {
 	char *		key;
+	const char *gconf_prefix;
 
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (client != NULL, FALSE);
@@ -291,13 +306,22 @@ nm_gconf_wso_serialize_gconf (NMGConfWSO *self,
 	if (self->priv->dispose_has_run)
 		return FALSE;
 
-	key = g_strdup_printf ("%s/%s/we_cipher", GCONF_PATH_WIRELESS_NETWORKS, network);
+	if (type == NETWORK_TYPE_ALLOWED)
+		gconf_prefix = GCONF_PATH_WIRELESS_NETWORKS;
+	else if (type == NETWORK_TYPE_WIRED)
+		gconf_prefix = GCONF_PATH_WIRED_NETWORKS;
+	else {
+		nm_warning ("Invalid network type");
+		return FALSE;
+	}
+
+	key = g_strdup_printf ("%s/%s/we_cipher", gconf_prefix, network);
 	gconf_client_set_int (client, key, self->priv->we_cipher, NULL);
 	g_free (key);
 
 	/* Encryption key doesn't get serialized since its stored in the keyring */
 
-	return NM_GCONF_WSO_GET_CLASS (self)->serialize_gconf_func (self, client, network);
+	return NM_GCONF_WSO_GET_CLASS (self)->serialize_gconf_func (self, client, type, network);
 }
 
 gboolean

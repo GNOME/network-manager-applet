@@ -28,7 +28,7 @@ typedef struct WirelessNetwork WirelessNetwork;
 WirelessNetwork *	wireless_network_new			(const char *essid, const char *nm_path);
 WirelessNetwork *	wireless_network_copy			(WirelessNetwork *src);
 
-void				wireless_network_ref			(WirelessNetwork *net);
+WirelessNetwork *	wireless_network_ref			(WirelessNetwork *net);
 void				wireless_network_unref			(WirelessNetwork *net);
 
 gboolean			wireless_network_get_active		(WirelessNetwork *net);

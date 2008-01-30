@@ -25,4 +25,6 @@
 
 WirelessSecurityOption * wso_wpa_eap_new (const char *glade_file, int capabilities, gboolean wpa2);
 
+void wso_wpa_eap_set_wired (WirelessSecurityOption *opt);
+
 #endif	/* WSO_WPA_EAP_H */

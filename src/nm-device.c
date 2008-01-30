@@ -53,6 +53,7 @@ struct NetworkDevice
 	gint			strength;
 	gint			speed;
 	GSList *		networks;
+	char *		active_wired_network;
 	NMActStage	act_stage;
 };
 
@@ -110,6 +111,7 @@ NetworkDevice *network_device_copy (NetworkDevice *src)
 	dev->active = src->active;
 	dev->act_stage = src->act_stage;
 	dev->strength = src->strength;
+	dev->active_wired_network = src->active_wired_network ? g_strdup (src->active_wired_network) : NULL;
 
 	for (elt = src->networks; elt; elt = g_slist_next (elt))
 	{
@@ -131,11 +133,13 @@ NetworkDevice *network_device_copy (NetworkDevice *src)
  * Increment the reference count of the network device
  *
  */
-void network_device_ref (NetworkDevice *dev)
+NetworkDevice *network_device_ref (NetworkDevice *dev)
 {
 	g_return_if_fail (dev != NULL);
 
 	dev->refcount++;
+
+	return dev;
 }
 
 
@@ -166,6 +170,7 @@ void network_device_unref (NetworkDevice *dev)
 		g_free (dev->ip4addr);
 		g_free (dev->primary_dns);
 		g_free (dev->secondary_dns);
+		g_free (dev->active_wired_network);
 		memset (dev, 0, sizeof (NetworkDevice));
 		g_free (dev);
 	}
@@ -403,6 +408,25 @@ guint network_device_get_num_wireless_networks (NetworkDevice *dev)
 	g_return_val_if_fail (dev->type == DEVICE_TYPE_802_11_WIRELESS, 0);
 	
 	return g_slist_length (dev->networks);
+}
+
+
+void network_device_set_active_wired_network	(NetworkDevice *dev, const char *network_id)
+{
+	g_return_if_fail (dev != NULL);
+	g_return_if_fail (dev->type == DEVICE_TYPE_802_3_ETHERNET);
+
+	g_free (dev->active_wired_network);
+	dev->active_wired_network = network_id ? g_strdup (network_id) : NULL;
+}
+
+
+const char *network_device_get_active_wired_network (NetworkDevice *dev)
+{
+	g_return_val_if_fail (dev != NULL, NULL);
+	g_return_val_if_fail (dev->type == DEVICE_TYPE_802_3_ETHERNET, NULL);
+
+	return dev->active_wired_network;
 }
 
 
@@ -713,6 +737,9 @@ void network_device_set_active (NetworkDevice *dev, gboolean active)
 	g_return_if_fail (dev != NULL);
 
 	dev->active = active;
+
+	if (!active && network_device_is_wired (dev))
+		network_device_set_active_wired_network (dev, NULL);
 }
 
 /*
