@@ -299,13 +299,31 @@ void about_editor_cb(GtkMenuItem *menuitem, gpointer user_data)
 #endif
 }
 
-
 gboolean setup_dialog_idle(WE_DATA *we_data)
 {
 	setup_dialog(we_data);
 	return FALSE;
 }
 
+static gint
+sort_networks (GtkTreeModel *model,
+			   GtkTreeIter *a,
+			   GtkTreeIter *b,
+			   gpointer user_data)
+{
+	char *aa;
+	char *bb;
+	gint result;
+
+	gtk_tree_model_get (model, a, WNTV_DISPLAY_COLUMN, &aa, -1);
+	gtk_tree_model_get (model, b, WNTV_DISPLAY_COLUMN, &bb, -1);
+	result = strcmp (aa, bb);
+
+	g_free (aa);
+	g_free (bb);
+
+	return result;
+}
 
 void setup_dialog(WE_DATA *we_data)
 {
@@ -319,6 +337,12 @@ void setup_dialog(WE_DATA *we_data)
 			G_TYPE_STRING,
 			GDK_TYPE_PIXBUF,
 			G_TYPE_POINTER);
+
+	gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (store),
+									 WNTV_DISPLAY_COLUMN,
+									 sort_networks,
+									 NULL,
+									 NULL);
 
 	populate_model (we_data, store);
 
@@ -436,6 +460,10 @@ void populate_model(WE_DATA *we_data, GtkListStore *store)
 
 		gconf_dirs = g_slist_delete_link (gconf_dirs, gconf_dirs);
 	}
+
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (store),
+										  WNTV_DISPLAY_COLUMN,
+										  GTK_SORT_ASCENDING);
 }
 
 
