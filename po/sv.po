@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManagerApplet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-30 22:23+0100\n"
-"PO-Revision-Date: 2008-01-30 22:32+0100\n"
+"POT-Creation-Date: 2008-01-30 23:18+0100\n"
+"PO-Revision-Date: 2008-01-30 23:25+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,7 @@ msgstr ""
 #: ../src/applet-compat.c:171
 #: ../src/applet-compat.c:504
 #: ../src/nm-gconf-wso.c:387
+#: ../editor/editor-keyring-helper.c:121
 #, c-format
 msgid "Passphrase for wireless network %s"
 msgstr "Lösenfras för det trådlösa nätverket %s"
@@ -26,6 +27,7 @@ msgstr "Lösenfras för det trådlösa nätverket %s"
 #. Save private_key_passwd to keyring
 #: ../src/applet-compat.c:459
 #: ../src/nm-gconf-wso-wpa-eap.c:363
+#: ../editor/editor-keyring-helper.c:133
 #, c-format
 msgid "Private key password for wireless network %s"
 msgstr "Lösenordet för den privata nyckeln för det trådlösa nätverket %s"
@@ -116,6 +118,8 @@ msgstr "Panelprogram i notifieringsytan för hantering av dina nätverksenheter 
 
 #: ../src/applet.c:346
 #: ../src/applet.c:373
+#: ../editor/editor-app.c:267
+#: ../editor/editor-app.c:296
 msgid "translator-credits"
 msgstr ""
 "Daniel Nylander\n"
@@ -179,7 +183,7 @@ msgid "VPN Login Message"
 msgstr "VPN-inloggningsmeddelande"
 
 #: ../src/applet.c:744
-#: ../src/applet.c:2691
+#: ../src/applet.c:2714
 #: ../src/other-network-dialog.c:455
 #: ../src/passphrase-dialog.c:218
 msgid "The NetworkManager Applet could not find some required resources (the glade file was not found)."
@@ -247,7 +251,7 @@ msgid "NetworkManager is not running"
 msgstr "Nätverkshanteraren är inte igång"
 
 #: ../src/applet.c:1091
-#: ../src/applet.c:1925
+#: ../src/applet.c:1947
 msgid "Networking disabled"
 msgstr "Nätverk inaktiverat"
 
@@ -287,74 +291,78 @@ msgid "_Connect to Other Wireless Network..."
 msgstr "_Anslut till annat trådlöst nätverk..."
 
 #: ../src/applet.c:1616
+msgid "_Edit Wireless Networks..."
+msgstr "R_edigera trådlösa nätverk..."
+
+#: ../src/applet.c:1638
 msgid "Create _New Wireless Network..."
 msgstr "Skapa _nytt trådlöst nätverk..."
 
-#: ../src/applet.c:1636
+#: ../src/applet.c:1658
 msgid "Connect to 802.1X _Protected Wired Network..."
 msgstr "Anslut till 802.1_X-skyddat trådbundet nätverk..."
 
-#: ../src/applet.c:1779
+#: ../src/applet.c:1801
 msgid "_VPN Connections"
 msgstr "_VPN-anslutningar"
 
-#: ../src/applet.c:1824
+#: ../src/applet.c:1846
 msgid "_Configure VPN..."
 msgstr "_Konfigurera VPN..."
 
-#: ../src/applet.c:1828
+#: ../src/applet.c:1850
 msgid "_Disconnect VPN..."
 msgstr "Koppla _från VPN..."
 
-#: ../src/applet.c:1850
+#: ../src/applet.c:1872
 msgid "_Dial Up Connections"
 msgstr "_Uppringda anslutningar"
 
 #. FIXME: We should save and then check the state of the devices and show Connect _or_ Disconnect for each item
-#: ../src/applet.c:1861
+#: ../src/applet.c:1883
 #, c-format
 msgid "Connect to %s..."
 msgstr "Anslut till %s..."
 
-#: ../src/applet.c:1868
+#: ../src/applet.c:1890
 #, c-format
 msgid "Disconnect from %s..."
 msgstr "Koppla från %s..."
 
-#: ../src/applet.c:1919
+#: ../src/applet.c:1941
 msgid "No network devices have been found"
 msgstr "Inga nätverksenheter har hittats"
 
-#: ../src/applet.c:2132
+#: ../src/applet.c:2155
 msgid "NetworkManager is not running..."
 msgstr "Nätverkshanteraren är inte igång..."
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2314
+#: ../src/applet.c:2337
 msgid "Enable _Networking"
 msgstr "Aktivera _nätverk"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2320
+#: ../src/applet.c:2343
 msgid "Enable _Wireless"
 msgstr "Aktivera _trådlöst"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2326
+#: ../src/applet.c:2349
 msgid "Connection _Information"
 msgstr "Anslutnings_information"
 
 #. Help item
-#: ../src/applet.c:2337
+#: ../src/applet.c:2360
 msgid "_Help"
 msgstr "_Hjälp"
 
 #. About item
-#: ../src/applet.c:2346
+#: ../src/applet.c:2369
 msgid "_About"
 msgstr "_Om"
 
-#: ../src/applet.c:2861
+#: ../src/applet.c:2884
 msgid "The NetworkManager applet could not find some required resources.  It cannot continue.\n"
 msgstr "Panelprogrammet för nätverkshantering kunde inte hitta en del nödvändiga resurser. Det kan inte fortsätta.\n"
 
@@ -400,10 +408,12 @@ msgstr ""
 "Du har valt att logga in på det trådlösa nätverket \"%s\". Om du är säker på att detta trådlösa nätverk är säkert klickar du i kryssrutan nedan, så kommer nätverkshanteraren inte längre att kräva bekräftelse vid framtida inloggningar."
 
 #: ../src/applet.glade.h:15
+#: ../editor/editor.glade.h:3
 msgid "Anonymous Identity:"
 msgstr "Anonym identitet:"
 
 #: ../src/applet.glade.h:16
+#: ../editor/editor.glade.h:4
 msgid "Authentication:"
 msgstr "Autentisering:"
 
@@ -412,6 +422,7 @@ msgid "Broadcast Address:"
 msgstr "Broadcast-adress:"
 
 #: ../src/applet.glade.h:18
+#: ../editor/editor.glade.h:12
 msgid "CA Certificate File:"
 msgstr "CA-certifikatfil:"
 
@@ -420,6 +431,7 @@ msgid "C_onnect"
 msgstr "_Anslut"
 
 #: ../src/applet.glade.h:20
+#: ../editor/editor.glade.h:13
 msgid "Client Certificate File:"
 msgstr "Klientcertifikatfil:"
 
@@ -440,6 +452,7 @@ msgid "Driver:"
 msgstr "Drivrutin:"
 
 #: ../src/applet.glade.h:25
+#: ../editor/editor.glade.h:14
 msgid "EAP Method:"
 msgstr "EAP-metod:"
 
@@ -452,6 +465,7 @@ msgid "IP Address:"
 msgstr "IP-adress:"
 
 #: ../src/applet.glade.h:28
+#: ../editor/editor.glade.h:20
 msgid "Identity:"
 msgstr "Identitet:"
 
@@ -460,6 +474,7 @@ msgid "Interface:"
 msgstr "Gränssnitt:"
 
 #: ../src/applet.glade.h:30
+#: ../editor/editor.glade.h:21
 msgid "Key Type:"
 msgstr "Nyckeltyp:"
 
@@ -468,6 +483,7 @@ msgid "Key management:"
 msgstr "Nyckelhantering:"
 
 #: ../src/applet.glade.h:32
+#: ../editor/editor.glade.h:22
 msgid "Key:"
 msgstr "Nyckel:"
 
@@ -484,6 +500,7 @@ msgstr ""
 "WEP 64/128-bitars ASCII\n"
 
 #: ../src/applet.glade.h:38
+#: ../editor/editor.glade.h:37
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -500,6 +517,7 @@ msgid "Passphrase:"
 msgstr "Lösenfras:"
 
 #: ../src/applet.glade.h:42
+#: ../editor/editor.glade.h:39
 msgid "Password:"
 msgstr "Lösenord:"
 
@@ -512,10 +530,12 @@ msgid "Primary DNS:"
 msgstr "Primär DNS:"
 
 #: ../src/applet.glade.h:45
+#: ../editor/editor.glade.h:40
 msgid "Private Key File:"
 msgstr "Fil med privat nyckel:"
 
 #: ../src/applet.glade.h:46
+#: ../editor/editor.glade.h:41
 msgid "Private Key Password:"
 msgstr "Lösenord för privat nyckel:"
 
@@ -524,14 +544,17 @@ msgid "Secondary DNS:"
 msgstr "Sekundär DNS:"
 
 #: ../src/applet.glade.h:48
+#: ../editor/editor.glade.h:44
 msgid "Select the CA Certificate File"
 msgstr "Välj en CA-certifikatfil"
 
 #: ../src/applet.glade.h:49
+#: ../editor/editor.glade.h:45
 msgid "Select the Client Certificate File"
 msgstr "Välj en klientcertifikatfil"
 
 #: ../src/applet.glade.h:50
+#: ../editor/editor.glade.h:46
 msgid "Select the Private Key File"
 msgstr "Välj fil med privat nyckel"
 
@@ -548,6 +571,7 @@ msgid "Show password"
 msgstr "Visa lösenord"
 
 #: ../src/applet.glade.h:54
+#: ../editor/editor.glade.h:52
 msgid "Show passwords"
 msgstr "Visa lösenord"
 
@@ -560,6 +584,7 @@ msgid "Subnet Mask:"
 msgstr "Subnätsmask:"
 
 #: ../src/applet.glade.h:57
+#: ../editor/editor.glade.h:53
 msgid "Type:"
 msgstr "Typ:"
 
@@ -727,6 +752,7 @@ msgid "GTC"
 msgstr "GTC"
 
 #: ../src/wso-none.c:53
+#: ../editor/editor-app.c:350
 msgid "None"
 msgstr "Ingen"
 
@@ -760,6 +786,7 @@ msgstr "TTLS"
 # /Christian
 #
 #: ../src/wso-wpa-eap.c:254
+#: ../editor/editor-app.c:380
 msgid "WPA2 Enterprise"
 msgstr "WPA2 Enterprise"
 
@@ -769,6 +796,7 @@ msgstr "WPA2 Enterprise"
 # /Christian
 #
 #: ../src/wso-wpa-eap.c:256
+#: ../editor/editor-app.c:375
 msgid "WPA Enterprise"
 msgstr "WPA Enterprise"
 
@@ -778,6 +806,7 @@ msgstr "WPA Enterprise"
 # /Christian
 #
 #: ../src/wso-wpa-psk.c:178
+#: ../editor/editor-app.c:370
 msgid "WPA2 Personal"
 msgstr "WPA2 Personal"
 
@@ -787,8 +816,233 @@ msgstr "WPA2 Personal"
 # /Christian
 #
 #: ../src/wso-wpa-psk.c:180
+#: ../editor/editor-app.c:365
 msgid "WPA Personal"
 msgstr "WPA Personal"
+
+#: ../editor/editor-app.c:261
+#: ../editor/editor-app.c:288
+msgid "NetworkManager Editor"
+msgstr "Redigerare för Nätverkshanterare"
+
+#: ../editor/editor-app.c:263
+#: ../editor/editor-app.c:290
+msgid "Copyright © 2007 Novell, Inc."
+msgstr "Copyright © 2007 Novell, Inc."
+
+#: ../editor/editor-app.c:264
+msgid "Editor for managing your wireless networks"
+msgstr "Redigerare för hantering av dina trådlösa nätverk"
+
+#: ../editor/editor-app.c:291
+msgid "Editor for managing your wireless networks."
+msgstr "Redigerare för hantering av dina trådlösa nätverk."
+
+#: ../editor/editor-app.c:355
+msgid "WEP 64-bit"
+msgstr "WEP 64-bitars"
+
+#: ../editor/editor-app.c:360
+msgid "WEP 128-bit"
+msgstr "WEP 128-bitars"
+
+#: ../editor/widget-wso-wep.c:77
+msgid "Key"
+msgstr "Nyckel"
+
+#: ../editor/widget-wso-wep.c:80
+#: ../editor/editor.glade.h:58
+msgid "_Show Key"
+msgstr "_Visa nyckel"
+
+#: ../editor/widget-wso-wep.c:138
+#: ../editor/widget-wso-wpa-personal.c:138
+msgid "Unable to read key"
+msgstr "Kunde inte läsa nyckel"
+
+#: ../editor/widget-wso-wep.c:181
+msgid "Hex"
+msgstr "Hexadecimal"
+
+#: ../editor/widget-wso-wep.c:186
+msgid "ASCII"
+msgstr "ASCII"
+
+#: ../editor/widget-wso-wep.c:194
+msgid "Passphrase"
+msgstr "Lösenfras"
+
+#: ../editor/widget-wso-wep.c:224
+msgid "Unable to set key"
+msgstr "Kunde inte ange nyckel"
+
+#: ../editor/widget-wso-wep.c:227
+#, c-format
+msgid "There was a problem setting the wireless key to the gnome keyring. Error 0x%02X."
+msgstr "Det uppstod ett problem när den trådlösa nyckeln skickades till Gnomes nyckelring. Fel 0x%02X."
+
+#: ../editor/widget-wso-wpa-enterprise.c:447
+#: ../editor/widget-wso-wpa-enterprise.c:491
+#: ../editor/widget-wso-wpa-personal.c:191
+msgid "Unable to set password"
+msgstr "Kunde inte ange lösenord"
+
+#: ../editor/widget-wso-wpa-enterprise.c:450
+#: ../editor/widget-wso-wpa-enterprise.c:494
+#, c-format
+msgid "There was a problem storing the private password in the gnome keyring. Error 0x%02X."
+msgstr "Det uppstod ett problem när det privata lösenordet skulle lagras i Gnomes nyckelring. Fel 0x%02X."
+
+#: ../editor/widget-wso-wpa-personal.c:194
+#, c-format
+msgid "There was a problem storing the password in the gnome keyring. Error 0x%02X."
+msgstr "Det uppstod ett problem när lösenordet skulle lagras i Gnomes nyckelring. Fel 0x%02X."
+
+#: ../editor/editor.glade.h:1
+msgid "Access Point:"
+msgstr "Accesspunkt:"
+
+#: ../editor/editor.glade.h:2
+msgid "Access points"
+msgstr "Accesspunkter"
+
+#: ../editor/editor.glade.h:5
+msgid ""
+"Automatic (Default)\n"
+"AES-CCMP\n"
+"TKIP"
+msgstr ""
+"Automatiskt (standard)\n"
+"AES-CCMP\n"
+"TKIP"
+
+#: ../editor/editor.glade.h:8
+msgid ""
+"Automatic (Default)\n"
+"AES-CCMP\n"
+"TKIP\n"
+"Dynamic WEP"
+msgstr ""
+"Automatiskt (standard)\n"
+"AES-CCMP\n"
+"TKIP\n"
+"Dynamisk WEP"
+
+#: ../editor/editor.glade.h:15
+msgid "Edit Access Point"
+msgstr "Redigera accesspunkt"
+
+#: ../editor/editor.glade.h:16
+msgid "Format:"
+msgstr "Format:"
+
+#: ../editor/editor.glade.h:17
+msgid ""
+"Hex\n"
+"ASCII\n"
+"Passphrase"
+msgstr ""
+"Hexadecimal\n"
+"ASCII\n"
+"Lösenfras"
+
+#: ../editor/editor.glade.h:23
+msgid "Last Used:"
+msgstr "Senast använt:"
+
+#: ../editor/editor.glade.h:24
+msgid ""
+"MD5\n"
+"MSCHAPv2\n"
+"OTP\n"
+"GTC\n"
+"PEAP\n"
+"TLS\n"
+"TTLS"
+msgstr ""
+"MD5\n"
+"MSCHAPv2\n"
+"OTP\n"
+"GTC\n"
+"PEAP\n"
+"TLS\n"
+"TTLS"
+
+#: ../editor/editor.glade.h:31
+msgid "Name:"
+msgstr "Namn:"
+
+#: ../editor/editor.glade.h:32
+msgid ""
+"None\n"
+"WEP 128-bit Passphrase\n"
+"WEB 64/128 bit Hex\n"
+"WEP 64/128-bit ASCII\n"
+msgstr ""
+"Ingen\n"
+"WEP 128-bitars lösenfras\n"
+"WEP 64/128-bitars hexadecimal\n"
+"WEP 64/128-bitars ASCII\n"
+
+#: ../editor/editor.glade.h:42
+msgid "Properties"
+msgstr "Egenskaper"
+
+#: ../editor/editor.glade.h:43
+msgid "Security:"
+msgstr "Säkerhet:"
+
+#: ../editor/editor.glade.h:47
+msgid "Set Password"
+msgstr "Ange lösenord"
+
+#: ../editor/editor.glade.h:48
+msgid "Set WEP Key"
+msgstr "Ange WEP-nyckel"
+
+#: ../editor/editor.glade.h:49
+msgid "Set _Key"
+msgstr "Ange _nyckel"
+
+#: ../editor/editor.glade.h:50
+msgid "Set _Password"
+msgstr "Ange _lösenord"
+
+#: ../editor/editor.glade.h:51
+msgid "Show Password"
+msgstr "Visa lösenord"
+
+#: ../editor/editor.glade.h:54
+msgid "Wireless Networks"
+msgstr "Trådlösa nätverk"
+
+#: ../editor/editor.glade.h:55
+msgid "_Add"
+msgstr "_Lägg till"
+
+#: ../editor/editor.glade.h:56
+msgid "_Edit"
+msgstr "R_edigera"
+
+#: ../editor/editor.glade.h:57
+msgid "_Remove"
+msgstr "_Ta bort"
+
+#: ../editor/editor.glade.h:59
+msgid "bssid editor"
+msgstr ""
+
+#: ../editor/editor.glade.h:60
+msgid "bssids:"
+msgstr ""
+
+#: ../editor/editor.glade.h:61
+msgid "wpa_eap_subwindow"
+msgstr ""
+
+#: ../editor/editor.glade.h:62
+msgid "wpa_psk_subwindow"
+msgstr ""
 
 #~ msgid "Cannot add VPN connection"
 #~ msgstr "Kan inte lägga till VPN-anslutning"
@@ -824,8 +1078,6 @@ msgstr "WPA Personal"
 #~ "All information om VPN-anslutningen \"%s\" kommer att gå förlorad och du "
 #~ "kan komma att behöva kontakta din systemadministratör för att få "
 #~ "information för att kunna skapa en ny anslutning."
-#~ msgid "Unable to load"
-#~ msgstr "Kan inte läsa in"
 #~ msgid "Cannot find some needed resources (the glade file)!"
 #~ msgstr "Kunde inte hitta en del nödvändiga resurser (glade-filen)!"
 #~ msgid "Edit VPN Connection"
@@ -949,8 +1201,6 @@ msgstr "WPA Personal"
 #~ msgid ""
 #~ "Enter the ESSID of the wireless network to which you wish to connect."
 #~ msgstr "Ange ESSID för det trådlösa nätverk som du vill ansluta till."
-#~ msgid "ASCII Key:"
-#~ msgstr "ASCII-nyckel:"
 #~ msgid "Hex Key:"
 #~ msgstr "Hexadecimal nyckel:"
 #~ msgid ""
@@ -993,8 +1243,6 @@ msgstr "WPA Personal"
 #~ msgstr "Trådlöst aktiverat"
 #~ msgid "Connection information"
 #~ msgstr "Anslutningsinformation"
-#~ msgid "Passphrase"
-#~ msgstr "Lösenfras"
 #~ msgid "Hexadecimal Key:"
 #~ msgstr "Hexadecimal nyckel:"
 #~ msgid ""
@@ -1134,8 +1382,6 @@ msgstr "WPA Personal"
 #~ msgstr "%s  Det kommer inte att vara helt fungerande."
 #~ msgid "It will not be completely functional."
 #~ msgstr "Det kommer inte att vara helt fungerande."
-#~ msgid "Other Wireless Networks..."
-#~ msgstr "Andra trådlösa nätverk..."
 #~ msgid "Export"
 #~ msgstr "Exportera"
 #~ msgid "Username:"
@@ -1160,8 +1406,6 @@ msgstr "WPA Personal"
 #~ msgstr "Domän:  %s"
 #~ msgid "Domain: %s"
 #~ msgstr "Domän: %s"
-#~ msgid "Scanning for wireless networks..."
-#~ msgstr "Söker efter trådlösa nätverk..."
 #~ msgid "Pause Wireless Scanning"
 #~ msgstr "Gör paus i sökning efter trådlösa nätverk"
 #~ msgid "Resume Wireless Scanning"
@@ -1175,8 +1419,6 @@ msgstr "WPA Personal"
 #~ msgid "Copyright (C) 2004-2006 Red Hat, Inc."
 #~ msgstr "Copyright © 2004-2006 Red Hat, Inc."
 #~ msgid "Copyright (C) 2004-2007 Red Hat, Inc."
-#~ msgstr "Copyright © 2004-2007 Red Hat, Inc."
-#~ msgid "Copyright © 2004-2007 Red Hat, Inc."
 #~ msgstr "Copyright © 2004-2007 Red Hat, Inc."
 #~ msgid "Copyright (C) 2004-2008 Red Hat, Inc."
 #~ msgstr "Copyright © 2004-2008 Red Hat, Inc."
@@ -1235,8 +1477,6 @@ msgstr "WPA Personal"
 #~ "Panelprogrammet för nätverk kommer nu att avslutas, men det kommer "
 #~ "automatiskt att startas nästa gång du loggar in. Vill du stoppa "
 #~ "automatisk körning av panelprogrammet för nätverk vid inloggning?"
-#~ msgid "_Remove"
-#~ msgstr "_Ta bort"
 #~ msgid "Disconnect..."
 #~ msgstr "Koppla från..."
 #~ msgid "Disconnect"
@@ -1253,8 +1493,6 @@ msgstr "WPA Personal"
 #~ "namn, %s, och utan någon kryptering aktiverad."
 #~ msgid "Authentication"
 #~ msgstr "Autentisering"
-#~ msgid "Key"
-#~ msgstr "Nyckel"
 #~ msgid "Network Name:"
 #~ msgstr "Nätverksnamn:"
 
