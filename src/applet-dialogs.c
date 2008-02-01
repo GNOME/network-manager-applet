@@ -276,7 +276,8 @@ applet_info_dialog_show (NMApplet *applet)
 
 	g_signal_connect (dialog, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), dialog);
 	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_hide), dialog);
-	gtk_window_present (GTK_WINDOW (dialog));
+	gtk_widget_realize (dialog);
+	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
 }
 
 static void 
