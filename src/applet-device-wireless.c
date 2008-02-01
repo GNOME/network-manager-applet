@@ -71,8 +71,7 @@ other_wireless_activate_cb (GtkWidget *menu_item,
 
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gdk_x11_get_server_time (dialog->window));
-	gtk_window_present (GTK_WINDOW (dialog));
+	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
 }
 
 void
@@ -110,8 +109,7 @@ new_network_activate_cb (GtkWidget *menu_item, NMApplet *applet)
 
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gdk_x11_get_server_time (dialog->window));
-	gtk_window_present (GTK_WINDOW (dialog));
+	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
 }
 
 void
