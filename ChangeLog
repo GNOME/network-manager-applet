@@ -1,3 +1,17 @@
+2008-02-01  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (nma_menu_add_separator_item): take a GtkWidget instead of a
+			GtkMenuShell
+		- (nma_menu_add_devices): don't add extra wireless menu items here, but
+			return # of wireless devices
+		- (nma_menu_add_vpn_submenu, nma_menu_add_vpn_submenu): pass a GtkWidget
+			to nma_menu_add_separator_item()
+		- (nma_menu_show_cb): add extra wireless items after the VPN menu
+		- (nma_context_menu_create): pass a GtkWidget to
+			nma_menu_add_separator_item(); put a separator between the
+			"Enable Wireless" item and the "Connection Information" item
+
 2008-01-28  Dan Williams  <dcbw@redhat.com>
 
 	* po/POTFILES.in

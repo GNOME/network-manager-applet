@@ -404,12 +404,12 @@ nma_menu_disconnect_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
  *
  */
 static void
-nma_menu_add_separator_item (GtkMenuShell *menu)
+nma_menu_add_separator_item (GtkWidget *menu)
 {
 	GtkWidget *menu_item;
 
 	menu_item = gtk_separator_menu_item_new ();
-	gtk_menu_shell_append (menu, menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	gtk_widget_show (menu_item);
 }
 
@@ -532,7 +532,7 @@ applet_find_active_connection_for_device (NMDevice *device, NMApplet *applet)
 	return connection;
 }
 
-static void
+static guint32
 nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 {
 	GSList *devices = NULL;
@@ -587,15 +587,9 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			dclass->add_menu_item (device, n_devices, active, menu, applet);
 	}
 
-	if (n_wireless_interfaces > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
-		/* Add the "Other wireless network..." entry */
-		nma_menu_add_separator_item (GTK_MENU_SHELL (menu));
-		nma_menu_add_other_network_item (menu, applet);
-		nma_menu_add_create_network_item (menu, applet);
-	}
-
  out:
 	g_slist_free (devices);
+	return n_wireless_interfaces;
 }
 
 static int
@@ -645,7 +639,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 	GSList *iter;
 	int num_vpn_active = 0;
 
-	nma_menu_add_separator_item (GTK_MENU_SHELL (menu));
+	nma_menu_add_separator_item (menu);
 
 	vpn_menu = GTK_MENU (gtk_menu_new ());
 
@@ -688,7 +682,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 
 	/* Draw a seperator, but only if we have VPN connections above it */
 	if (list)
-		nma_menu_add_separator_item (GTK_MENU_SHELL (vpn_menu));
+		nma_menu_add_separator_item (GTK_WIDGET (vpn_menu));
 
 	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Configure VPN...")));
 	g_signal_connect (item, "activate", G_CALLBACK (nma_menu_configure_vpn_item_activate), applet);
@@ -733,6 +727,8 @@ nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
  */
 static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 {
+	guint32 n_wireless;
+
 	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
 
@@ -748,8 +744,16 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 		return;
 	}
 
-	nma_menu_add_devices (menu, applet);
+	n_wireless = nma_menu_add_devices (menu, applet);
+
 	nma_menu_add_vpn_submenu (menu, applet);
+
+	if (n_wireless > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
+		/* Add the "Other wireless network..." entry */
+		nma_menu_add_separator_item (menu);
+		nma_menu_add_other_network_item (menu, applet);
+		nma_menu_add_create_network_item (menu, applet);
+	}
 
 	gtk_widget_show_all (menu);
 
@@ -873,6 +877,8 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 				   applet);
 	gtk_menu_shell_append (menu, applet->stop_wireless_item);
 
+	nma_menu_add_separator_item (GTK_WIDGET (menu));
+
 	/* 'Connection Information' item */
 	applet->info_menu_item = gtk_image_menu_item_new_with_mnemonic (_("Connection _Information"));
 	g_signal_connect_swapped (applet->info_menu_item,
@@ -892,7 +898,7 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	gtk_menu_shell_append (menu, applet->connections_menu_item);
 
 	/* Separator */
-	nma_menu_add_separator_item (menu);
+	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
 #if 0	/* FIXME: Implement the help callback, nma_help_cb()! */
 	/* Help item */
