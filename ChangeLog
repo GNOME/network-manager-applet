@@ -1,5 +1,23 @@
 2008-02-01  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet-device-gsm.c
+		- (add_disconnect_item, gsm_menu_item_deactivate): add Disconnect...
+			menu item, deactivate the device when it's selected
+		- (gsm_add_menu_item): always display the device titles; never collapse
+			a single connection into the device title
+
+	* src/applet-device-cdma.c
+		- (add_disconnect_item, cdma_menu_item_deactivate): add Disconnect...
+			menu item, deactivate the device when it's selected
+		- (cdma_add_menu_item): always display the device titles; never collapse
+			a single connection into the device title
+
+	* src/applet-device-wired.c
+		- (wired_add_menu_item): always display the device titles; never collapse
+			a single connection into the device title
+
+2008-02-01  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-device-wireless.c
 		- (other_wireless_activate_cb, new_network_activate_cb): use
 			gtk_window_present_with_time()

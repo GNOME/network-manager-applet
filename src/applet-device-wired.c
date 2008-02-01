@@ -140,6 +140,8 @@ wired_add_menu_item (NMDevice *device,
 	GtkWidget *item;
 	GSList *connections, *all;
 	gboolean carrier = TRUE;
+	GtkWidget *label;
+	char *bold_text;
 
 	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
 	connections = utils_filter_connections_for_device (device, all);
@@ -165,15 +167,10 @@ wired_add_menu_item (NMDevice *device,
 		if (g_slist_length (connections) > 1)
 			text = g_strdup (_("Wired Networks"));
 		else
-			text = g_strdup (_("_Wired Network"));
+			text = g_strdup (_("Wired Network"));
 	}
 
-	if (g_slist_length (connections) > 1) {
-		item = gtk_menu_item_new_with_label (text);
-	} else {
-		item = gtk_check_menu_item_new_with_mnemonic (text);
-		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
-	}
+	item = gtk_menu_item_new_with_label (text);
 	g_free (text);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -186,42 +183,15 @@ wired_add_menu_item (NMDevice *device,
  		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
 	}
 
-	if (g_slist_length (connections) > 1) {
-		GtkWidget *label;
-		char *bold_text;
+	label = gtk_bin_get_child (GTK_BIN (item));
+	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
+	                                     gtk_label_get_text (GTK_LABEL (label)));
+	gtk_label_set_markup (GTK_LABEL (label), bold_text);
+	g_free (bold_text);
 
-		label = gtk_bin_get_child (GTK_BIN (item));
-		bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
-		                                     gtk_label_get_text (GTK_LABEL (label)));
-		gtk_label_set_markup (GTK_LABEL (label), bold_text);
-		g_free (bold_text);
+	add_connection_items (device, connections, carrier, active, menu, applet);
 
-		gtk_widget_set_sensitive (item, FALSE);
-
-		add_connection_items (device, connections, carrier, active, menu, applet);
-	} else {
-		NMConnection *connection;
-		WiredMenuItemInfo *info;
-
-		info = g_slice_new0 (WiredMenuItemInfo);
-		info->applet = applet;
-		info->device = g_object_ref (G_OBJECT (device));
-
-		if (g_slist_length (connections) == 1) {
-			connection = NM_CONNECTION (g_slist_nth_data (connections, 0));
-			info->connection = g_object_ref (G_OBJECT (connection));
-		}
-
-		if (   (nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED)
-		    || (info->connection && info->connection == active))
-			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
-
-		g_signal_connect_data (item, "activate",
-		                       G_CALLBACK (wired_menu_item_activate),
-		                       info,
-		                       (GClosureNotify) wired_menu_item_info_destroy, 0);
-	}
-
+	gtk_widget_set_sensitive (item, FALSE);
 	gtk_widget_show (item);
 	g_slist_free (connections);
 }

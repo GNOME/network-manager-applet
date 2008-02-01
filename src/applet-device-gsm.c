@@ -139,6 +139,44 @@ add_connection_items (NMDevice *device,
 }
 
 static void
+gsm_menu_item_deactivate (GtkMenuItem *item, gpointer user_data)
+{
+	GSMMenuItemInfo *info = (GSMMenuItemInfo *) user_data;
+
+	nm_device_deactivate (info->device);
+}
+
+static void
+add_disconnect_item (NMDevice *device,
+                     GtkWidget *menu,
+                     NMApplet *applet)
+{
+	NMDeviceState state;
+	GtkWidget *item;
+	GSMMenuItemInfo *info;
+
+	state = nm_device_get_state (device);
+	if (   state == NM_DEVICE_STATE_DOWN
+	    || state == NM_DEVICE_STATE_DISCONNECTED
+	    || state == NM_DEVICE_STATE_FAILED
+	    || state == NM_DEVICE_STATE_CANCELLED)
+		return;
+
+	item = gtk_menu_item_new_with_label (_("Disconnect..."));
+
+	info = g_slice_new0 (GSMMenuItemInfo);
+	info->applet = applet;
+	info->device = g_object_ref (G_OBJECT (device));
+
+	g_signal_connect_data (item, "activate",
+	                       G_CALLBACK (gsm_menu_item_deactivate),
+	                       info,
+	                       (GClosureNotify) gsm_menu_item_info_destroy, 0);
+
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+}
+
+static void
 gsm_add_menu_item (NMDevice *device,
                    guint32 n_devices,
                    NMConnection *active,
@@ -148,6 +186,8 @@ gsm_add_menu_item (NMDevice *device,
 	char *text;
 	GtkWidget *item;
 	GSList *connections, *all;
+	GtkWidget *label;
+	char *bold_text;
 
 	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
 	connections = utils_filter_connections_for_device (device, all);
@@ -167,60 +207,30 @@ gsm_add_menu_item (NMDevice *device,
 		if (g_slist_length (connections) > 1)
 			text = g_strdup_printf (_("GSM Connections (%s)"), dev_name);
 		else
-			text = g_strdup_printf (_("GSM Modem (%s)"), dev_name);
+			text = g_strdup_printf (_("GSM Network (%s)"), dev_name);
 		g_free (dev_name);
 	} else {
 		if (g_slist_length (connections) > 1)
 			text = g_strdup (_("GSM Connections"));
 		else
-			text = g_strdup (_("_GSM Modem"));
+			text = g_strdup (_("GSM Network"));
 	}
 
-	if (g_slist_length (connections) > 1) {
-		item = gtk_menu_item_new_with_label (text);
-	} else {
-		item = gtk_check_menu_item_new_with_mnemonic (text);
-		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
-	}
+	item = gtk_menu_item_new_with_label (text);
 	g_free (text);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
-	if (g_slist_length (connections) > 1) {
-		GtkWidget *label;
-		char *bold_text;
+	label = gtk_bin_get_child (GTK_BIN (item));
+	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
+	                                     gtk_label_get_text (GTK_LABEL (label)));
+	gtk_label_set_markup (GTK_LABEL (label), bold_text);
+	g_free (bold_text);
 
-		label = gtk_bin_get_child (GTK_BIN (item));
-		bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
-		                                     gtk_label_get_text (GTK_LABEL (label)));
-		gtk_label_set_markup (GTK_LABEL (label), bold_text);
-		g_free (bold_text);
+	gtk_widget_set_sensitive (item, FALSE);
 
-		gtk_widget_set_sensitive (item, FALSE);
-
-		add_connection_items (device, connections, active, menu, applet);
-	} else {
-		GSMMenuItemInfo *info;
-		NMConnection *connection;
-
-		info = g_slice_new0 (GSMMenuItemInfo);
-		info->applet = applet;
-		info->device = g_object_ref (G_OBJECT (device));
-
-		if (g_slist_length (connections) == 1) {
-			connection = NM_CONNECTION (g_slist_nth_data (connections, 0));
-			info->connection = g_object_ref (G_OBJECT (connection));
-		}
-
-		if (   (nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED)
-		    || (info->connection && info->connection == active))
-			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
-
-		g_signal_connect_data (item, "activate",
-		                       G_CALLBACK (gsm_menu_item_activate),
-		                       info,
-		                       (GClosureNotify) gsm_menu_item_info_destroy, 0);
-	}
+	add_connection_items (device, connections, active, menu, applet);
+	add_disconnect_item (device, menu, applet);
 
 	gtk_widget_show (item);
 	g_slist_free (connections);
