@@ -383,8 +383,8 @@ applet_about_dialog_show (NMApplet *applet)
 
 	gtk_show_about_dialog (NULL,
 	                       "version", VERSION,
-	                       "copyright", _("Copyright \xc2\xa9 2004-2007 Red Hat, Inc.\n"
-					                  "Copyright \xc2\xa9 2005-2007 Novell, Inc."),
+	                       "copyright", _("Copyright \xc2\xa9 2004-2008 Red Hat, Inc.\n"
+					                  "Copyright \xc2\xa9 2005-2008 Novell, Inc."),
 	                       "comments", _("Notification area applet for managing your network devices and connections."),
 	                       "website", "http://www.gnome.org/projects/NetworkManager/",
 	                       "website-label", _("NetworkManager Website"),
