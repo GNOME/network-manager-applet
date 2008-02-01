@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-19 23:51+0200\n"
-"PO-Revision-Date: 2007-12-19 23:52+0200\n"
+"POT-Creation-Date: 2008-02-01 12:57+0200\n"
+"PO-Revision-Date: 2008-02-01 13:03+0200\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian Latin <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,236 +17,365 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: ../src/applet.c:172
+#: ../src/applet-device-cdma.c:85
+msgid "Auto CDMA dialup connection"
+msgstr "Spałučeńnie Auto CDMA"
+
+#: ../src/applet-device-cdma.c:168
+#, c-format
+msgid "CDMA Connections (%s)"
+msgstr "Spałučeńni CDMA (%s)"
+
+#: ../src/applet-device-cdma.c:170
+#, c-format
+msgid "CDMA Card (%s)"
+msgstr "Kartka CDMA (%s)"
+
+#: ../src/applet-device-cdma.c:174
+msgid "CDMA Connections"
+msgstr "Spałučeńni CDMA"
+
+#: ../src/applet-device-cdma.c:176
+msgid "_CDMA Card"
+msgstr "Kartka _CDMA"
+
+#: ../src/applet-device-cdma.c:236 ../src/applet-device-gsm.c:236
+#: ../src/applet-device-wired.c:236 ../src/applet-device-wireless.c:955
+msgid "Connection Established"
+msgstr "Spałučeńnie ŭstalavanaje"
+
+#: ../src/applet-device-cdma.c:237
+msgid "You are now connected to the CDMA network."
+msgstr "Ciapier ty spałučyŭsia ź sietkaj CDMA."
+
+#: ../src/applet-device-cdma.c:255
+#, c-format
+msgid "Dialing CDMA device %s..."
+msgstr "Nabor praz pryładu CDMA %s..."
+
+#: ../src/applet-device-cdma.c:258 ../src/applet-device-gsm.c:258
+#, c-format
+msgid "Running PPP on device %s..."
+msgstr "Uklučeńnie PPP na pryładzie %s..."
+
+#: ../src/applet-device-cdma.c:261
+msgid "CDMA connection"
+msgstr "Spałučeńnie CDMA"
+
+#: ../src/applet-device-gsm.c:85
+msgid "Auto GSM dialup connection"
+msgstr "Aŭtamatyčnaje spałučeńnie GSM"
+
+#: ../src/applet-device-gsm.c:168
+#, c-format
+msgid "GSM Connections (%s)"
+msgstr "Spałučeńni GSM (%s)"
+
+#: ../src/applet-device-gsm.c:170
+#, c-format
+msgid "GSM Modem (%s)"
+msgstr "Madem GSM (%s)"
+
+#: ../src/applet-device-gsm.c:174
+msgid "GSM Connections"
+msgstr "Spałučeńni GSM"
+
+#: ../src/applet-device-gsm.c:176
+msgid "_GSM Modem"
+msgstr "Madem _GSM"
+
+#: ../src/applet-device-gsm.c:237
+msgid "You are now connected to the GSM network."
+msgstr "Ciapier ty spałučyŭsia ź sietkaj GSM."
+
+#: ../src/applet-device-gsm.c:255
+#, c-format
+msgid "Dialing GSM device %s..."
+msgstr "Nabor praz pryładu GSM %s..."
+
+#: ../src/applet-device-gsm.c:261
+msgid "GSM connection"
+msgstr "Spałučeńnie GSM"
+
+#: ../src/applet-device-wired.c:74
+msgid "Auto Ethernet"
+msgstr "Auto Ethernet"
+
+#: ../src/applet-device-wired.c:160
+#, c-format
+msgid "Wired Networks (%s)"
+msgstr "Dracianyja sietki (%s)"
+
+#: ../src/applet-device-wired.c:162
+#, c-format
+msgid "Wired Network (%s)"
+msgstr "Dracianaja sietka (%s)"
+
+#: ../src/applet-device-wired.c:166
+msgid "Wired Networks"
+msgstr "Dracianyja sietki"
+
+#: ../src/applet-device-wired.c:168
+msgid "_Wired Network"
+msgstr "_Dracianaja sietka"
+
+#: ../src/applet-device-wired.c:237
+msgid "You are now connected to the wired network."
+msgstr "Ciapier ty spałučany z dracianoj sietkaj."
+
+#: ../src/applet-device-wired.c:255
+#, c-format
+msgid "Preparing device %s for the wired network..."
+msgstr "Padrychtoŭka pryłady %s dla dracianoj sietki..."
+
+#: ../src/applet-device-wired.c:258
+#, c-format
+msgid "Configuring device %s for the wired network..."
+msgstr "Kanfihuravańnie pryłady %s dla dracianoj sietki..."
+
+#: ../src/applet-device-wired.c:261
+msgid "Requesting a network address from the wired network..."
+msgstr "Zapyt sietkavaha adrasu dla dracianoj sietki..."
+
+#: ../src/applet-device-wired.c:265
+msgid "Wired network connection"
+msgstr "Dracianoje sietkavaje spałučeńnie"
+
+#: ../src/applet-device-wireless.c:85
+msgid "_Connect to Other Wireless Network..."
+msgstr "_Spałučy ź inšaj biazdrotavaj sietkaj..."
+
+#: ../src/applet-device-wireless.c:124
+msgid "Create _New Wireless Network..."
+msgstr "Stvary _novuju biazdrotavuju sietku..."
+
+#: ../src/applet-device-wireless.c:652
+#, c-format
+msgid "Wireless Networks (%s)"
+msgstr "Biazdrotavyja sietki (%s)"
+
+#: ../src/applet-device-wireless.c:654
+#, c-format
+msgid "Wireless Network (%s)"
+msgstr "Biazdrotavaja sietka (%s)"
+
+#: ../src/applet-device-wireless.c:657
+msgid "Wireless Network"
+msgid_plural "Wireless Networks"
+msgstr[0] "Biazdrotavaja sietka"
+msgstr[1] "Biazdrotavyja sietki"
+msgstr[2] "Biazdrotavyja sietki"
+
+#: ../src/applet-device-wireless.c:953
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "Ciapier ty spałučany ź biazdrotavaj sietkaj \"%s\"."
+
+#: ../src/applet-device-wireless.c:954 ../src/applet-device-wireless.c:968
+msgid "(none)"
+msgstr "(niama)"
+
+#: ../src/applet-device-wireless.c:982
+#, c-format
+msgid "Preparing device %s for the wireless network '%s'..."
+msgstr "Padrychtoŭka pryłady %s dla biazdrotavaj sietki \"%s\"..."
+
+#: ../src/applet-device-wireless.c:985
+#, c-format
+msgid "Attempting to join the wireless network '%s'..."
+msgstr "Sproba dałučycca da biazdrotavaj sietki \"%s\"..."
+
+#: ../src/applet-device-wireless.c:988
+#, c-format
+msgid "Requesting a network address from the wireless network '%s'..."
+msgstr "Zapyt sietkavaha adrasu dla biazdrotavaj sietki \"%s\"..."
+
+#: ../src/applet-device-wireless.c:991
+#, c-format
+msgid "Waiting for Network Key for the wireless network '%s'..."
+msgstr "Čakańnie sietkavaha kluča dla biazdrotavaj sietki \"%s\"..."
+
+#: ../src/applet-device-wireless.c:1011
+#, c-format
+msgid "Wireless network connection to '%s' (%d%%)"
+msgstr "Biazdrotavaje sietkavaje spałučeńnie z \"%s\" (%d%%)"
+
+#: ../src/applet-device-wireless.c:1015
+#, c-format
+msgid "Wireless network connection to '%s'"
+msgstr "Biazdrotavaje sietkavaje spałučeńnie z \"%s\""
+
+#: ../src/applet-dialogs.c:49
 msgid "Error displaying connection information:"
 msgstr "Pamyłka pakazu źviestak ab spałučeńni:"
 
-#: ../src/applet.c:205
+#: ../src/applet-dialogs.c:73
+msgid "Dynamic WEP"
+msgstr "Dynamičny WEP"
+
+#: ../src/applet-dialogs.c:75 ../src/applet-dialogs.c:184
+#: ../src/applet-dialogs.c:186
+msgid "WPA/WPA2"
+msgstr "WPA/WPA2"
+
+#: ../src/applet-dialogs.c:77 ../src/applet-dialogs.c:207
+msgid "Unknown"
+msgstr "Nieviadoma"
+
+#: ../src/applet-dialogs.c:123
 msgid "Could not find some required resources (the glade file)!"
 msgstr "Niemahčyma znajści niekatorych vymahanych resursaŭ (fajł glade)!"
 
-#: ../src/applet.c:223
+#: ../src/applet-dialogs.c:141
 #, c-format
-msgid "Wired Ethernet (%s)"
-msgstr "Draciany Ethernet (%s)"
+msgid "Ethernet (%s)"
+msgstr "Ethernet (%s)"
 
-#: ../src/applet.c:225
+#: ../src/applet-dialogs.c:143
 #, c-format
-msgid "Wireless Ethernet (%s)"
-msgstr "Biazdrotavy Ethernet (%s)"
+msgid "802.11 WiFi (%s)"
+msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet.c:237
+#: ../src/applet-dialogs.c:145
+#, c-format
+msgid "GSM (%s)"
+msgstr "GSM (%s)"
+
+#: ../src/applet-dialogs.c:147
+#, c-format
+msgid "CDMA (%s)"
+msgstr "CDMA (%s)"
+
+#: ../src/applet-dialogs.c:182
+msgid "WEP"
+msgstr "WEP"
+
+#: ../src/applet-dialogs.c:191
+#: ../src/connection-editor/page-wireless-security.c:251
+#: ../src/wireless-dialog.c:470
+msgid "None"
+msgstr "Niama"
+
+#: ../src/applet-dialogs.c:203
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet.c:241
-msgid "Unknown"
-msgstr "Nieviadoma"
-
-#: ../src/applet.c:306
+#: ../src/applet-dialogs.c:269
 msgid "No active connections!"
 msgstr "Niama aktyŭnych spałučeńniaŭ!"
 
-#: ../src/applet.c:436
+#: ../src/applet-dialogs.c:386
 msgid ""
-"Copyright © 2004-2007 Red Hat, Inc.\n"
-"Copyright © 2005-2007 Novell, Inc."
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 msgstr ""
-"Aŭtarskija pravy © 2004-2007 Red Hat, Inc.\n"
-"Aŭtarskija pravy © 2005-2007 Novell, Inc."
+"Aŭtarskija pravy © 2004-2008 Red Hat, Inc.\n"
+"Aŭtarskija pravy © 2005-2008 Novell, Inc."
 
-#: ../src/applet.c:438
+#: ../src/applet-dialogs.c:388
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Aplet abšaru nahadvańniaŭ dla kiravańnia setkavymi pryładami j spałučeńniami."
 
-#: ../src/applet.c:440
+#: ../src/applet-dialogs.c:390
 msgid "NetworkManager Website"
 msgstr "Sajt NetworkManagera"
 
-#: ../src/applet.c:443
+#: ../src/applet-dialogs.c:393
 msgid "translator-credits"
 msgstr "Ihar Hračyška <ihar.hrachyshka@gmail.com>"
 
-#: ../src/applet.c:1057
+#: ../src/applet.c:267
 msgid "VPN Login Message"
 msgstr "Paviedamleńnie aŭtaryzacyi VPN"
 
-#: ../src/applet.c:1465
-msgid "_Connect to Other Wireless Network..."
-msgstr "_Spałučy ź inšaj biazdrotavaj sietkaj..."
-
-#: ../src/applet.c:1486
-msgid "Create _New Wireless Network..."
-msgstr "Stvary _novuju biazdrotavuju sietku..."
-
-#: ../src/applet.c:1784
+#: ../src/applet.c:563
 msgid "No network devices have been found"
 msgstr "Sietkavyja pryłady nia znojdzienyja"
 
-#: ../src/applet.c:1868
+#: ../src/applet.c:652
 msgid "_VPN Connections"
 msgstr "Spałučeńni _VPN"
 
-#: ../src/applet.c:1909
+#: ../src/applet.c:693
 msgid "_Configure VPN..."
 msgstr "_Kanfihuruj VPN..."
 
-#: ../src/applet.c:1913
+#: ../src/applet.c:697
 msgid "_Disconnect VPN..."
 msgstr "_Adłučy VPN..."
 
-#: ../src/applet.c:1989
+#: ../src/applet.c:742
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager nie ŭruchomleny..."
 
-#: ../src/applet.c:1994 ../src/applet.c:3103
+#: ../src/applet.c:747 ../src/applet.c:1276
 msgid "Networking disabled"
 msgstr "Sietkavyja pasłuhi vyklučanyja"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2091
+#: ../src/applet.c:861
 msgid "Enable _Networking"
 msgstr "Uklučy _sietkavyja pasłuhi"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2099
+#: ../src/applet.c:869
 msgid "Enable _Wireless"
 msgstr "Uklučy _biazdrotavuju sietku"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2107
+#: ../src/applet.c:877
 msgid "Connection _Information"
 msgstr "_Źviestki ab spałučeńni"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2117
+#: ../src/applet.c:887
 msgid "Edit Connections..."
 msgstr "Redahuj spałučeńni..."
 
 #. Help item
-#: ../src/applet.c:2129
+#: ../src/applet.c:899
 msgid "_Help"
 msgstr "_Dapamoha"
 
 #. About item
-#: ../src/applet.c:2138
+#: ../src/applet.c:908
 msgid "_About"
 msgstr "_Ab"
 
-#: ../src/applet.c:2577
-#, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "Biazdrotavaje sietkavaje spałučeńnie z \"%s\" (%d%%)"
-
-#: ../src/applet.c:2639
-#, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "Padrychtoŭka pryłady %s dla biazdrotavaj sietki \"%s\"..."
-
-#: ../src/applet.c:2642
-#, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "Sproba dałučycca da biazdrotavaj sietki \"%s\"..."
-
-#: ../src/applet.c:2645
-#, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Zapyt sietkavaha adrasu dla biazdrotavaj sietki \"%s\"..."
-
-#: ../src/applet.c:2648
-#, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "Čakańnie sietkavaha kluča dla biazdrotavaj sietki \"%s\"..."
-
-#: ../src/applet.c:2668
-#, c-format
-msgid "You are now connected to the wireless network '%s'."
-msgstr "Ciapier ty spałučany ź biazdrotavaj sietkaj \"%s\"."
-
-#: ../src/applet.c:2669 ../src/applet.c:2727 ../src/applet.c:2773
-msgid "Connection Established"
-msgstr "Spałučeńnie ŭstalavanaje"
-
-#: ../src/applet.c:2675
-#, c-format
-msgid "Wireless network connection to '%s'"
-msgstr "Biazdrotavaje sietkavaje spałučeńnie z \"%s\""
-
-#: ../src/applet.c:2712
-#, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "Padrychtoŭka pryłady %s dla dracianoj sietki..."
-
-#: ../src/applet.c:2715
-#, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "Kanfihuravańnie pryłady %s dla dracianoj sietki..."
-
-#: ../src/applet.c:2718
-#, c-format
-msgid "Requesting a network address from the wired network..."
-msgstr "Zapyt sietkavaha adrasu dla dracianoj sietki..."
-
-#: ../src/applet.c:2722
-msgid "Wired network connection"
-msgstr "Dracianoje sietkavaje spałučeńnie"
-
-#: ../src/applet.c:2728
-msgid "You are now connected to the wired network."
-msgstr "Ciapier ty spałučany z dracianoj sietkaj."
-
-#: ../src/applet.c:2761
-#, c-format
-msgid "Dialing GSM device %s..."
-msgstr "Nabor praz pryładu GSM %s..."
-
-#: ../src/applet.c:2764
-#, c-format
-msgid "Running PPP on device %s..."
-msgstr "Uklučeńnie PPP na pryładzie %s..."
-
-#: ../src/applet.c:2768
-msgid "GSM connection"
-msgstr "Spałučeńnie GSM"
-
-#: ../src/applet.c:2774
-msgid "You are now connected to the GSM network."
-msgstr "Ciapier ty spałučyŭsia ź sietkaj GSM."
-
-#: ../src/applet.c:3107
-msgid "No network connection"
-msgstr "Niama sietkavaha spałučeńnia"
-
-#: ../src/applet.c:3111
+#: ../src/applet.c:1081
 msgid "Disconnected"
 msgstr "Adłučany"
 
-#: ../src/applet.c:3112
+#: ../src/applet.c:1082
 msgid "The network connection has been disconnected."
 msgstr "Sietkavaje spałučeńnie adłučanaje."
 
-#: ../src/applet.c:3566
-msgid "NetworkManager Applet"
-msgstr "Aplet NetworkManager"
+#: ../src/applet.c:1280
+msgid "No network connection"
+msgstr "Niama sietkavaha spałučeńnia"
 
-#: ../src/applet.c:3571 ../src/wireless-dialog.c:763
-msgid ""
-"The NetworkManager Applet could not find some required resources (the glade "
-"file was not found)."
-msgstr ""
-"Aplet NetworkManager nia zmoh znajści niekatorych vymahanych resursaŭ (fajł "
-"glade nia znojdzieny)."
-
-#: ../src/applet.c:3785
+#: ../src/applet.c:1525
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
 msgstr ""
 "Aplet NetworkManager nia zmoh znajści niekatorych vymahanych resursaŭ. "
 "Niemahčyma praciahvać.\n"
+
+#: ../src/applet.c:1666
+msgid "NetworkManager Applet"
+msgstr "Aplet NetworkManager"
+
+#: ../src/applet.c:1671 ../src/wireless-dialog.c:786
+msgid ""
+"The NetworkManager Applet could not find some required resources (the glade "
+"file was not found)."
+msgstr ""
+"Aplet NetworkManager nia zmoh znajści niekatorych vymahanych resursaŭ (fajł "
+"glade nia znojdzieny)."
 
 #: ../src/applet.glade.h:1
 msgid " "
@@ -287,46 +416,42 @@ msgid "Default Route:"
 msgstr "Zmoŭčany šlach:"
 
 #: ../src/applet.glade.h:10
-msgid "Destination Address:"
-msgstr "Metavy adras:"
-
-#: ../src/applet.glade.h:11
 msgid "Don't warn me again"
 msgstr "Bolš nie nahadvaj"
 
-#: ../src/applet.glade.h:12
+#: ../src/applet.glade.h:11
 msgid "Driver:"
 msgstr "Drajver:"
 
-#: ../src/applet.glade.h:13
+#: ../src/applet.glade.h:12
 msgid "Hardware Address:"
 msgstr "Aparatny adras:"
 
-#: ../src/applet.glade.h:14
+#: ../src/applet.glade.h:13
 msgid "IP Address:"
 msgstr "Adras IP:"
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:14
 msgid "Identity:"
 msgstr "Tojesnaść:"
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:15
 msgid "Inner Authentication:"
 msgstr "Unutranaja aŭtaryzacyja:"
 
-#: ../src/applet.glade.h:17
+#: ../src/applet.glade.h:16
 msgid "Interface:"
 msgstr "Interfejs:"
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:17
 msgid "Key:"
 msgstr "Kluč:"
 
-#: ../src/applet.glade.h:19
+#: ../src/applet.glade.h:18
 msgid "No"
 msgstr "Nie"
 
-#: ../src/applet.glade.h:20
+#: ../src/applet.glade.h:19
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -334,37 +459,42 @@ msgstr ""
 "Adkrytaja systema\n"
 "Supolny kluč"
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:21
 msgid "Other Wireless Network..."
 msgstr "Inšaja biazdrotavaja sietka..."
 
-#: ../src/applet.glade.h:23
+#: ../src/applet.glade.h:22
 msgid "PEAP Version:"
 msgstr "Versija PEAP:"
 
-#: ../src/applet.glade.h:24
+#: ../src/applet.glade.h:23
 msgid "Passphrase:"
 msgstr "Parolnaja fraza:"
 
-#: ../src/applet.glade.h:25
+#: ../src/applet.glade.h:24
 msgid "Password:"
 msgstr "Parol:"
 
-#: ../src/applet.glade.h:26
+#: ../src/applet.glade.h:25
 msgid "Primary DNS:"
 msgstr "Pieršy DNS:"
 
-#: ../src/applet.glade.h:27
+#: ../src/applet.glade.h:26
 msgid "Private Key Password:"
 msgstr "Parol pryvatnaha kluča:"
 
-#: ../src/applet.glade.h:28
+#: ../src/applet.glade.h:27
 msgid "Private Key:"
 msgstr "Pryvatny kluč:"
 
-#: ../src/applet.glade.h:29
+#: ../src/applet.glade.h:28
 msgid "Secondary DNS:"
 msgstr "Druhi DNS:"
+
+#: ../src/applet.glade.h:29
+#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
+msgid "Security:"
+msgstr "Biaśpieka:"
 
 #: ../src/applet.glade.h:30
 msgid "Select A File"
@@ -430,63 +560,76 @@ msgstr "_Biazdrotavaja biaśpieka:"
 msgid "alert text"
 msgstr "tekst tryvohi"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:1
+#: ../src/connection-editor/ce-page-ip4.glade.h:1
 msgid "<b>DNS Servers</b>"
 msgstr "<b>Servery DNS</b>"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:2
+#: ../src/connection-editor/ce-page-ip4.glade.h:2
 msgid "<b>Search Domains</b>"
 msgstr "<b>Dameny pošuku</b>"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:3
-msgid ""
-"A\n"
-"BG"
-msgstr ""
-"A\n"
-"BG"
+#: ../src/connection-editor/ce-page-ip4.glade.h:3
+msgid "_Manual configuration"
+msgstr "_Ručnaja kanfihuracyja"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:5
+#: ../src/connection-editor/ce-page-wired.glade.h:1
 msgid "Aut_onegotiate"
 msgstr "Aŭtamatyčna _damaŭlajsia"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-msgid "Ban_d:"
-msgstr "_Pałasa:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:7
-msgid "C_hannel:"
-msgstr "_Kanał:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:8
-msgid "Connect _automatically"
-msgstr "_Spałučajsia aŭtamatyčna"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:9
-msgid "Connection Editor"
-msgstr "Redaktar spałučeńniaŭ"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:10
-msgid "Connection _name:"
-msgstr "_Nazva spałučeńnia:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:11
-msgid "Ethernet"
-msgstr "Ethernet"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:12
+#: ../src/connection-editor/ce-page-wired.glade.h:2
 msgid "Full duple_x"
 msgstr "Poŭny _dupleks"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:13
-msgid "IP"
-msgstr "IP"
+#: ../src/connection-editor/ce-page-wired.glade.h:3
+#: ../src/connection-editor/ce-page-wireless.glade.h:5
+msgid "MT_U:"
+msgstr "MT_U:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:14
-msgid "IP Addresses"
-msgstr "Adrasy IP"
+#: ../src/connection-editor/ce-page-wired.glade.h:4
+#: ../src/connection-editor/ce-page-wireless.glade.h:9
+msgid "_MAC address:"
+msgstr "Adras _MAC:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:15
+#: ../src/connection-editor/ce-page-wired.glade.h:5
+msgid "_Port:"
+msgstr "_Port:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:6
+msgid "_Speed:"
+msgstr "_Chutkaść:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:7
+msgid ""
+"default\n"
+"10 Mb/s\n"
+"100 Mb/s\n"
+"1 Gb/s\n"
+"10 Gb/s"
+msgstr ""
+"zmoŭčana\n"
+"10 Mb/s\n"
+"100 Mb/s\n"
+"1 Gb/s\n"
+"10 Gb/s"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:12
+msgid ""
+"default\n"
+"Twisted Pair (TP)\n"
+"Attachment Unit Interface (AUI)\n"
+"BNC\n"
+"Media Independent Interface (MII)"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:1
+msgid "Ban_d:"
+msgstr "_Pałasa:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:2
+msgid "C_hannel:"
+msgstr "_Kanał:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:3
 msgid ""
 "Infrastructure\n"
 "Adhoc"
@@ -494,110 +637,148 @@ msgstr ""
 "Infrastruktura\n"
 "Adhoc"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:17
-msgid "MT_U:"
-msgstr "MT_U:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:18
+#: ../src/connection-editor/ce-page-wireless.glade.h:6
 msgid "M_ode:"
 msgstr "_Režym:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:19
-msgid "Network Connections"
-msgstr "Sietkavyja spałučeńni"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:20
+#: ../src/connection-editor/ce-page-wireless.glade.h:7
 msgid "Transmission po_wer:"
 msgstr "_Siła pieradačy:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:21
-msgid "Wireless"
-msgstr "_Biazdrotavaje"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:22
-msgid "Wireless Security"
-msgstr "Biazdrotavaja biaśpieka"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:23
+#: ../src/connection-editor/ce-page-wireless.glade.h:8
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:24
-msgid "_MAC address:"
-msgstr "Adras _MAC:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:25
-msgid "_Manual configuration"
-msgstr "_Ručnaja kanfihuracyja"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:26
-msgid "_Port:"
-msgstr "_Port:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:27
+#: ../src/connection-editor/ce-page-wireless.glade.h:10
 msgid "_Rate:"
 msgstr "_Častata:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:28
+#: ../src/connection-editor/ce-page-wireless.glade.h:11
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:29
-msgid "_Speed:"
-msgstr "_Chutkaść:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:30
+#: ../src/connection-editor/ce-page-wireless.glade.h:12
 msgid ""
-"tp\n"
-"aui\n"
-"bnc\n"
-"mii"
+"default\n"
+"A (5 GHz)\n"
+"B/G (2.4 GHz)"
 msgstr ""
-"tp\n"
-"aui\n"
-"bnc\n"
-"mii"
+"zmoŭčana\n"
+"A (5 GHz)\n"
+"B/G (2.4 GHz)"
 
-#: ../src/eggtrayicon.c:134
-msgid "Orientation"
-msgstr "Aryjentacyja"
+#: ../src/connection-editor/page-ip4-address.c:42
+msgid "IPv4 Addresses"
+msgstr "Adrasy IPv4"
 
-#: ../src/eggtrayicon.c:135
-msgid "The orientation of the tray."
-msgstr "Aryjentacyja abšaru nahadvańniaŭ."
+#: ../src/connection-editor/page-ip4.c:42
+msgid "IPv4 Settings"
+msgstr "Nałady IPv4"
 
-#: ../src/menu-items.c:70
+#: ../src/connection-editor/page-wired.c:53
+msgid "Wired"
+msgstr "Dracianoje"
+
+#: ../src/connection-editor/page-wireless.c:95
+#: ../src/connection-editor/page-wireless.c:99
+#: ../src/connection-editor/nm-connection-editor.c:228
+msgid "default"
+msgstr "zmoŭčana"
+
+#: ../src/connection-editor/page-wireless.c:117
 #, c-format
-msgid "Wired Network (%s)"
-msgstr "Dracianaja sietka (%s)"
+msgid "%u (%u MHz)"
+msgstr "%u (%u MHz)"
 
-#: ../src/menu-items.c:73
-msgid "_Wired Network"
-msgstr "_Dracianaja sietka"
+#: ../src/connection-editor/page-wireless.c:176
+msgid "Wireless"
+msgstr "_Biazdrotavaje"
 
-#: ../src/menu-items.c:124
+#: ../src/connection-editor/page-wireless-security.c:214
+msgid "Wireless Security"
+msgstr "Biazdrotavaja biaśpieka"
+
+#: ../src/connection-editor/page-wireless-security.c:265
+#: ../src/wireless-dialog.c:488
+msgid "WEP 128-bit Passphrase"
+msgstr "WEP 128-bit Parolnaja fraza"
+
+#: ../src/connection-editor/page-wireless-security.c:273
+#: ../src/wireless-dialog.c:496
+msgid "WEP 40/128-bit Hexadecimal"
+msgstr "WEP 40/128-bit Šasnaccatkovy"
+
+#: ../src/connection-editor/page-wireless-security.c:281
+#: ../src/wireless-dialog.c:504
+msgid "WEP 40/128-bit ASCII"
+msgstr "WEP 40/128-bit ASCII"
+
+#: ../src/connection-editor/page-wireless-security.c:293
+#: ../src/wireless-dialog.c:520
+#: ../src/wireless-security/wireless-security.c:354
+msgid "LEAP"
+msgstr "LEAP"
+
+#: ../src/connection-editor/page-wireless-security.c:305
+#: ../src/wireless-dialog.c:532
+msgid "Dynamic WEP (802.1x)"
+msgstr "Dynamičny WEP (802.1x)"
+
+#: ../src/connection-editor/page-wireless-security.c:318
+#: ../src/wireless-dialog.c:545
+msgid "WPA & WPA2 Personal"
+msgstr "WPA & WPA2 Personal"
+
+#: ../src/connection-editor/page-wireless-security.c:331
+#: ../src/wireless-dialog.c:558
+msgid "WPA & WPA2 Enterprise"
+msgstr "WPA i WPA2 Enterprise"
+
+#: ../src/connection-editor/nm-connection-editor.c:117
 #, c-format
-msgid "Wireless Network (%s)"
-msgid_plural "Wireless Networks (%s)"
-msgstr[0] "Biazdrotavaja sietka (%s)"
-msgstr[1] "Biazdrotavyja sietki (%s)"
-msgstr[2] "Biazdrotavyja sietki (%s)"
+msgid "Editing %s"
+msgstr "Redahavańnie %s"
 
-#: ../src/menu-items.c:128
-msgid "Wireless Network"
-msgid_plural "Wireless Networks"
-msgstr[0] "Biazdrotavaja sietka"
-msgstr[1] "Biazdrotavyja sietki"
-msgstr[2] "Biazdrotavyja sietki"
+#: ../src/connection-editor/nm-connection-editor.c:121
+msgid "Editing unamed connection"
+msgstr "Redahavańnie spałučeńnia biaz nazvy"
 
-#: ../src/menu-items.c:379
+#: ../src/connection-editor/nm-connection-editor.c:147
+msgid ""
+"The connection editor could not find some required resources (the "
+"NetworkManager applet glade file was not found)."
+msgstr ""
+"Redaktar spałučeńnia nia zmoh znajści niekatorych vymahanych resursaŭ (fajł "
+"glade apletu NetworkManager nia znojdzieny)."
+
+#: ../src/connection-editor/nm-connection-editor.c:160
+msgid ""
+"The connection editor could not find some required resources (the glade file "
+"was not found)."
+msgstr ""
+"Redaktar spałučeńnia nia zmoh znajści niekatorych vymahanych resursaŭ (fajł "
+"glade nia znojdzieny)."
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:1
+msgid "Connect _automatically"
+msgstr "_Spałučajsia aŭtamatyčna"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:2
+msgid "Connection Editor"
+msgstr "Redaktar spałučeńniaŭ"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:3
+msgid "Connection _name:"
+msgstr "_Nazva spałučeńnia:"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:4
+msgid "Network Connections"
+msgstr "Sietkavyja spałučeńni"
+
+#: ../src/connection-editor/nm-connection-list.c:140
 #, c-format
-msgid "GSM Modem (%s)"
-msgstr "Madem GSM (%s)"
-
-#: ../src/menu-items.c:382
-msgid "_GSM Modem"
-msgstr "Madem _GSM"
+msgid "Are you sure you wish to delete the connection %s?"
+msgstr "Ty sapraŭdy chočaš vydalić spałučeńnie %s?"
 
 #: ../src/utils/crypto.c:123
 #, c-format
@@ -605,17 +786,14 @@ msgid "PEM key file had no end tag '%s'."
 msgstr "Fajł kluča PEM nia maje kancavoha taga \"%s\"."
 
 #: ../src/utils/crypto.c:133
-#, c-format
 msgid "Doesn't look like a PEM private key file."
 msgstr "Heta nia fajł pryvatnaha kluča PEM."
 
 #: ../src/utils/crypto.c:141
-#, c-format
 msgid "Not enough memory to store PEM file data."
 msgstr "Nie staje pamiaci, kab zachoŭvać źviestki z fajłu PEM."
 
 #: ../src/utils/crypto.c:157
-#, c-format
 msgid "Malformed PEM file: Proc-Type was not first tag."
 msgstr ""
 
@@ -625,17 +803,14 @@ msgid "Malformed PEM file: unknown Proc-Type tag '%s'."
 msgstr ""
 
 #: ../src/utils/crypto.c:175
-#, c-format
 msgid "Malformed PEM file: DEK-Info was not the second tag."
 msgstr ""
 
 #: ../src/utils/crypto.c:186
-#, c-format
 msgid "Malformed PEM file: no IV found in DEK-Info tag."
 msgstr ""
 
 #: ../src/utils/crypto.c:193
-#, c-format
 msgid "Malformed PEM file: invalid format of IV in DEK-Info tag."
 msgstr ""
 
@@ -645,7 +820,6 @@ msgid "Malformed PEM file: unknown private key cipher '%s'."
 msgstr ""
 
 #: ../src/utils/crypto.c:225
-#, c-format
 msgid "Could not decode private key."
 msgstr "Niemahčyma dekadavać pryvatny kluč."
 
@@ -655,27 +829,22 @@ msgid "PEM certificate '%s' had no end tag '%s'."
 msgstr "Sertyfikat PEM \"%s\" nia maje kancavoha taga \"%s\"."
 
 #: ../src/utils/crypto.c:279
-#, c-format
 msgid "Failed to decode certificate."
 msgstr "Niaŭdałaje dekadavańnie sertyfikatu."
 
 #: ../src/utils/crypto.c:288 ../src/utils/crypto.c:296
-#, c-format
 msgid "Not enough memory to store certificate data."
 msgstr "Nie staje pamiaci, kab zachoŭvać źviestki sertyfikatu."
 
 #: ../src/utils/crypto.c:326
-#, c-format
 msgid "IV must be an even number of bytes in length."
 msgstr "IV musić być cotnym likam daŭžyni, ŭ bajtach."
 
 #: ../src/utils/crypto.c:335
-#, c-format
 msgid "Not enough memory to store the IV."
 msgstr "Nie staje pamiaci, kab zachoŭvać IV."
 
 #: ../src/utils/crypto.c:346
-#, c-format
 msgid "IV contains non-hexadecimal digits."
 msgstr "IV ŭtrymlivaje niešasnaccatkovyja ličby."
 
@@ -686,12 +855,10 @@ msgid "Private key cipher '%s' was unknown."
 msgstr "Šyfar pryvatnaha kluča \"%s\" byŭ nieviadomym."
 
 #: ../src/utils/crypto.c:393
-#, c-format
 msgid "Not enough memory to create private key decryption key."
 msgstr "Nie staje pamiaci, kab stvaryć kluč dla rasšyfroŭki pryvatnaha kluča."
 
 #: ../src/utils/crypto.c:511
-#, c-format
 msgid "Not enough memory to store decrypted private key."
 msgstr "Nie staje pamiaci, kab zachoŭvać rasšyfravany pryvatny kluč."
 
@@ -701,7 +868,6 @@ msgid "Failed to initialize the MD5 engine: %s / %s."
 msgstr "Niaŭdałaja inicyjalizacyja ruchavika MD5: %s / %s."
 
 #: ../src/utils/crypto_gnutls.c:134 ../src/utils/crypto_nss.c:143
-#, c-format
 msgid "Not enough memory for decrypted key buffer."
 msgstr "Nie staje pamiaci dla bufera rasšyfravanaha kluča."
 
@@ -741,22 +907,18 @@ msgid "Failed to initialize the MD5 context: %d."
 msgstr "Niaŭdałaja inicyjalizacyja kantekstu MD5: %d."
 
 #: ../src/utils/crypto_nss.c:151
-#, c-format
 msgid "Failed to initialize the decryption cipher slot."
 msgstr "Niaŭdałaja inicyjalizacyja hniazda dla šyfra rasšyfroŭki."
 
 #: ../src/utils/crypto_nss.c:161
-#, c-format
 msgid "Failed to set symmetric key for decryption."
 msgstr "Niaŭdałaje akreśleńnie symetryčnaha kluča dla rasšyfroŭki."
 
 #: ../src/utils/crypto_nss.c:171
-#, c-format
 msgid "Failed to set IV for decryption."
 msgstr "Niaŭdałaje akreśleńnie IV dla rasšyfroŭki."
 
 #: ../src/utils/crypto_nss.c:179
-#, c-format
 msgid "Failed to initialize the decryption context."
 msgstr "Niaŭdałaja inicyjalizacyja kantekstu rasšyfroŭki."
 
@@ -951,40 +1113,7 @@ msgstr ""
 "Pry ŭruchamleńni dyjalohu aŭtaryzacyi dla spałučeńnia VPN typu \"%s\" "
 "uźnikła prablema. Skantaktujsia z systemnym administrataram."
 
-#: ../src/wireless-dialog.c:455
-msgid "None"
-msgstr "Niama"
-
-#: ../src/wireless-dialog.c:473
-msgid "WEP 128-bit Passphrase"
-msgstr "WEP 128-bit Parolnaja fraza"
-
-#: ../src/wireless-dialog.c:481
-msgid "WEP 40/128-bit Hexadecimal"
-msgstr "WEP 40/128-bit Šasnaccatkovy"
-
-#: ../src/wireless-dialog.c:489
-msgid "WEP 40/128-bit ASCII"
-msgstr "WEP 40/128-bit ASCII"
-
-#: ../src/wireless-dialog.c:505
-#: ../src/wireless-security/wireless-security.c:351
-msgid "LEAP"
-msgstr "LEAP"
-
-#: ../src/wireless-dialog.c:517
-msgid "Dynamic WEP (802.1x)"
-msgstr "Dynamičny WEP (802.1x)"
-
-#: ../src/wireless-dialog.c:530
-msgid "WPA & WPA2 Personal"
-msgstr "WPA & WPA2 Personal"
-
-#: ../src/wireless-dialog.c:543
-msgid "WPA & WPA2 Enterprise"
-msgstr "WPA i WPA2 Enterprise"
-
-#: ../src/wireless-dialog.c:651
+#: ../src/wireless-dialog.c:664
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -993,103 +1122,148 @@ msgstr ""
 "Kab atrymać dostup da biazdrotavaj sietki \"%s\", vymahajucca paroli ci "
 "klučy šyfravańnia."
 
-#: ../src/wireless-dialog.c:653
+#: ../src/wireless-dialog.c:666
 msgid "Wireless Network Secrets Required"
 msgstr "Vymahajucca sakretnyja paroli dla biazdrotavaj sietki"
 
-#: ../src/wireless-dialog.c:655
+#: ../src/wireless-dialog.c:668
 msgid "Secrets required by wireless network"
 msgstr "Sakretnyja paroli vymahajucca dla biazdrotavaj sietki"
 
-#: ../src/wireless-dialog.c:659
+#: ../src/wireless-dialog.c:673
+msgid "Create New Wireless Network"
+msgstr "Stvary novuju biazdrotavuju sietku"
+
+#: ../src/wireless-dialog.c:675
+msgid "New wireless network"
+msgstr "Novaja biazdrotavaja sietka"
+
+#: ../src/wireless-dialog.c:676
+msgid "Enter a name for the wireless network you wish to create."
+msgstr "Akreśl nazvu biazdrotavaj sietki, jakuju chočaš stvaryć."
+
+#: ../src/wireless-dialog.c:678
 msgid "Connect to Other Wireless Network"
 msgstr "Spałučy ź inšaj biazdrotavaj sietkaj"
 
-#: ../src/wireless-dialog.c:661
+#: ../src/wireless-dialog.c:680
 msgid "Existing wireless network"
 msgstr "Najaŭnaja biazdrotavaja sietka"
 
-#: ../src/wireless-dialog.c:662
+#: ../src/wireless-dialog.c:681
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Akreśl nazvu biazdrotavaj sietki, ź jakoj chočaš spałučycca."
 
-#: ../src/wireless-security/eap-method.c:299
+#: ../src/wireless-security/eap-method.c:302
 msgid "DER or PEM certificates (*.der, *.pem)"
-msgstr ""
+msgstr "Sertyfikaty DER ci PEM (*.der, *.pem)"
+
+#: ../src/wireless-security/eap-method-peap.c:235
+#: ../src/wireless-security/eap-method-tls.c:291
+#: ../src/wireless-security/eap-method-ttls.c:222
+msgid "No Certificate Authority certificate chosen"
+msgstr "Sertyfikat daviernaha orhanu nie abrany"
 
 #: ../src/wireless-security/eap-method-peap.c:236
 #: ../src/wireless-security/eap-method-tls.c:292
 #: ../src/wireless-security/eap-method-ttls.c:223
-msgid "No Certificate Authority certificate chosen"
-msgstr "Sertyfikat daviernaha orhanu nie abrany"
-
-#: ../src/wireless-security/eap-method-peap.c:237
-#: ../src/wireless-security/eap-method-tls.c:293
-#: ../src/wireless-security/eap-method-ttls.c:224
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
 "Certificate Authority certificate?"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-peap.c:242
-#: ../src/wireless-security/eap-method-tls.c:298
-#: ../src/wireless-security/eap-method-ttls.c:229
+#: ../src/wireless-security/eap-method-peap.c:241
+#: ../src/wireless-security/eap-method-tls.c:297
+#: ../src/wireless-security/eap-method-ttls.c:228
 msgid "Ignore"
 msgstr "Ihnaruj"
 
-#: ../src/wireless-security/eap-method-peap.c:246
-#: ../src/wireless-security/eap-method-tls.c:302
-#: ../src/wireless-security/eap-method-ttls.c:233
+#: ../src/wireless-security/eap-method-peap.c:245
+#: ../src/wireless-security/eap-method-tls.c:301
+#: ../src/wireless-security/eap-method-ttls.c:232
 msgid "Choose CA Certificate"
 msgstr "Abiary sertyfikat CA"
 
-#: ../src/wireless-security/eap-method-peap.c:311
-#: ../src/wireless-security/eap-method-ttls.c:322
+#: ../src/wireless-security/eap-method-peap.c:310
+#: ../src/wireless-security/eap-method-ttls.c:321
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
-#: ../src/wireless-security/eap-method-peap.c:322
+#: ../src/wireless-security/eap-method-peap.c:321
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:395
-#: ../src/wireless-security/eap-method-tls.c:401
-#: ../src/wireless-security/eap-method-ttls.c:406
+#: ../src/wireless-security/eap-method-peap.c:396
+#: ../src/wireless-security/eap-method-tls.c:402
+#: ../src/wireless-security/eap-method-ttls.c:407
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Abiary sertyfikat ad daviernych orhanaŭ..."
 
-#: ../src/wireless-security/eap-method-tls.c:397
+#: ../src/wireless-security/eap-method-tls.c:398
 msgid "Choose your personal certificate..."
 msgstr "Abiary svoj persanalny sertyfikat..."
 
-#: ../src/wireless-security/eap-method-tls.c:405
+#: ../src/wireless-security/eap-method-tls.c:406
 msgid "Choose your private key..."
 msgstr "Abiary svoj pryvatny kluč..."
 
-#: ../src/wireless-security/eap-method-ttls.c:300
+#: ../src/wireless-security/eap-method-ttls.c:299
 msgid "PAP"
 msgstr "PAP"
 
-#: ../src/wireless-security/eap-method-ttls.c:311
+#: ../src/wireless-security/eap-method-ttls.c:310
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
-#: ../src/wireless-security/eap-method-ttls.c:333
+#: ../src/wireless-security/eap-method-ttls.c:332
 msgid "CHAP"
 msgstr "CHAP"
 
-#: ../src/wireless-security/wireless-security.c:341
+#: ../src/wireless-security/wireless-security.c:344
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:361
+#: ../src/wireless-security/wireless-security.c:364
 msgid "Tunneled TLS"
 msgstr "Tunelavany TLS"
 
-#: ../src/wireless-security/wireless-security.c:371
+#: ../src/wireless-security/wireless-security.c:374
 msgid "Protected EAP (PEAP)"
 msgstr "Abaronieny EAP (PEAP)"
+
+#~ msgid "Wireless Ethernet (%s)"
+#~ msgstr "Biazdrotavy Ethernet (%s)"
+
+#~ msgid "Destination Address:"
+#~ msgstr "Metavy adras:"
+
+#~ msgid ""
+#~ "A\n"
+#~ "BG"
+#~ msgstr ""
+#~ "A\n"
+#~ "BG"
+
+#~ msgid "IP"
+#~ msgstr "IP"
+
+#~ msgid ""
+#~ "tp\n"
+#~ "aui\n"
+#~ "bnc\n"
+#~ "mii"
+#~ msgstr ""
+#~ "tp\n"
+#~ "aui\n"
+#~ "bnc\n"
+#~ "mii"
+
+#~ msgid "Orientation"
+#~ msgstr "Aryjentacyja"
+
+#~ msgid "The orientation of the tray."
+#~ msgstr "Aryjentacyja abšaru nahadvańniaŭ."
 
 #~ msgid "<b>Connection</b>"
 #~ msgstr "<b>Spałučeńnie</b>"
@@ -1257,9 +1431,6 @@ msgstr "Abaronieny EAP (PEAP)"
 #~ msgstr ""
 #~ "Akreśl nazvu j nałady biaśpieki dla biazdrotavaj sietki, jakuju chočaš "
 #~ "stvaryć."
-
-#~ msgid "Create New Wireless Network"
-#~ msgstr "Stvary novuju biazdrotavuju sietku"
 
 #~ msgid "Error connecting to wireless network"
 #~ msgstr "Pamyłka spałučeńnia ź biazdrotavaj sietkaj"
