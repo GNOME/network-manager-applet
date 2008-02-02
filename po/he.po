@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-26 05:09+0000\n"
-"PO-Revision-Date: 2008-01-25 17:15+0200\n"
+"POT-Creation-Date: 2008-02-01 04:12+0000\n"
+"PO-Revision-Date: 2008-02-01 09:50+0200\n"
 "Last-Translator: Mark Krapivner <mark125@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -53,12 +53,12 @@ msgstr "מחובר כעת לרשת החוטית"
 #: ../src/applet-device-cdma.c:255
 #, c-format
 msgid "Dialing CDMA device %s..."
-msgstr ""
+msgstr "מחייג בהתקן CDMA %s..."
 
 #: ../src/applet-device-cdma.c:258 ../src/applet-device-gsm.c:258
 #, c-format
 msgid "Running PPP on device %s..."
-msgstr ""
+msgstr "מריץ PPP על התקן %s..."
 
 #: ../src/applet-device-cdma.c:261
 msgid "CDMA connection"
@@ -77,7 +77,7 @@ msgstr "חיבורי GSM (%s)"
 #: ../src/applet-device-gsm.c:170
 #, c-format
 msgid "GSM Modem (%s)"
-msgstr ""
+msgstr "מודם GSM (%s)"
 
 #: ../src/applet-device-gsm.c:174
 msgid "GSM Connections"
@@ -85,11 +85,11 @@ msgstr "חיבורי GSM"
 
 #: ../src/applet-device-gsm.c:176
 msgid "_GSM Modem"
-msgstr ""
+msgstr "מודם _GSM"
 
 #: ../src/applet-device-gsm.c:237
 msgid "You are now connected to the GSM network."
-msgstr ""
+msgstr "אתה כרגע מחובר לרשת ה-GSM."
 
 #: ../src/applet-device-gsm.c:255
 #, c-format
@@ -102,7 +102,7 @@ msgstr "חיבור GSM"
 
 #: ../src/applet-device-wired.c:74
 msgid "Auto Ethernet"
-msgstr ""
+msgstr "‏Ethernet אוטומטי"
 
 #: ../src/applet-device-wired.c:160
 #, c-format
@@ -253,7 +253,7 @@ msgid "WEP"
 msgstr "WEP"
 
 #: ../src/applet-dialogs.c:191
-#: ../src/connection-editor/nm-connection-editor.c:931
+#: ../src/connection-editor/page-wireless-security.c:251
 #: ../src/wireless-dialog.c:470
 msgid "None"
 msgstr "ללא"
@@ -269,11 +269,11 @@ msgstr "אין חיבורים פעילים!"
 
 #: ../src/applet-dialogs.c:386
 msgid ""
-"Copyright © 2004-2007 Red Hat, Inc.\n"
-"Copyright © 2005-2007 Novell, Inc."
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 msgstr ""
-"Copyright © 2004-2007 Red Hat, Inc.\n"
-"Copyright © 2005-2007 Novell, Inc."
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 
 #: ../src/applet-dialogs.c:388
 msgid ""
@@ -466,7 +466,7 @@ msgstr "רשתות אלחוטיות אחרות..."
 
 #: ../src/applet.glade.h:22
 msgid "PEAP Version:"
-msgstr ""
+msgstr "גרסת PEAP:"
 
 #: ../src/applet.glade.h:23
 msgid "Passphrase:"
@@ -493,7 +493,7 @@ msgid "Secondary DNS:"
 msgstr "כתובת DNS משנית:"
 
 #: ../src/applet.glade.h:29
-#: ../src/connection-editor/nm-connection-editor.glade.h:15
+#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
 msgid "Security:"
 msgstr "אבטחה:"
 
@@ -538,6 +538,8 @@ msgid ""
 "Version 0\n"
 "Version 1"
 msgstr ""
+"גירסה 0\n"
+"גירסה 1"
 
 #: ../src/applet.glade.h:41
 msgid "Wireless _adapter:"
@@ -559,175 +561,45 @@ msgstr "_סוג האבטחה:"
 msgid "alert text"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.c:182
-#, c-format
-msgid "Editing %s"
-msgstr "עורך %s"
-
-#: ../src/connection-editor/nm-connection-editor.c:186
-msgid "Editing unamed connection"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.c:377
-msgid ""
-"The connection editor could not find some required resources (the "
-"NetworkManager applet glade file was not found)."
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.c:470
-#: ../src/connection-editor/nm-connection-editor.c:603
-#: ../src/connection-editor/nm-connection-editor.c:607
-msgid "default"
-msgstr "ברירת מחדל"
-
-#: ../src/connection-editor/nm-connection-editor.c:497
-msgid "Wired"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.c:625
-#, c-format
-msgid "%u (%u MHz)"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.c:678
-msgid "Wireless"
-msgstr "רשת אלחוטית"
-
-#: ../src/connection-editor/nm-connection-editor.c:750
-msgid "IPv4 Settings"
-msgstr "הגדרות IPv4"
-
-#: ../src/connection-editor/nm-connection-editor.c:751
-msgid "IPv4 Addresses"
-msgstr "כתובת IPv4"
-
-#: ../src/connection-editor/nm-connection-editor.c:905
-msgid "Wireless Security"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.c:945
-#: ../src/wireless-dialog.c:488
-msgid "WEP 128-bit Passphrase"
-msgstr "סיסמת WEP 128-bit"
-
-#: ../src/connection-editor/nm-connection-editor.c:953
-#: ../src/wireless-dialog.c:496
-msgid "WEP 40/128-bit Hexadecimal"
-msgstr "סיסמת WEP 40/128-bit Hex"
-
-#: ../src/connection-editor/nm-connection-editor.c:961
-#: ../src/wireless-dialog.c:504
-msgid "WEP 40/128-bit ASCII"
-msgstr "סיסמת WEP 40/128-bit ASCII"
-
-#: ../src/connection-editor/nm-connection-editor.c:973
-#: ../src/wireless-dialog.c:520
-#: ../src/wireless-security/wireless-security.c:354
-msgid "LEAP"
-msgstr "LEAP"
-
-#: ../src/connection-editor/nm-connection-editor.c:985
-#: ../src/wireless-dialog.c:532
-msgid "Dynamic WEP (802.1x)"
-msgstr "‏WEP דינאמי (802.1x)"
-
-#: ../src/connection-editor/nm-connection-editor.c:998
-#: ../src/wireless-dialog.c:545
-msgid "WPA & WPA2 Personal"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.c:1011
-#: ../src/wireless-dialog.c:558
-msgid "WPA & WPA2 Enterprise"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:1
+#: ../src/connection-editor/ce-page-ip4.glade.h:1
 msgid "<b>DNS Servers</b>"
-msgstr ""
+msgstr "<b>שרתי DNS</b>"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:2
+#: ../src/connection-editor/ce-page-ip4.glade.h:2
 msgid "<b>Search Domains</b>"
-msgstr ""
+msgstr "<b>מתחמי חיפוש</b>"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:3
+#: ../src/connection-editor/ce-page-ip4.glade.h:3
+msgid "_Manual configuration"
+msgstr "_הגדרה ידנית"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:1
 msgid "Aut_onegotiate"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:4
-msgid "Ban_d:"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:5
-msgid "C_hannel:"
-msgstr "_ערוץ:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-msgid "Connect _automatically"
-msgstr "התחבר אוטו_מטית"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:7
-msgid "Connection Editor"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:8
-msgid "Connection _name:"
-msgstr "_שם החיבור:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:9
+#: ../src/connection-editor/ce-page-wired.glade.h:2
 msgid "Full duple_x"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:10
-msgid ""
-"Infrastructure\n"
-"Adhoc"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:12
+#: ../src/connection-editor/ce-page-wired.glade.h:3
+#: ../src/connection-editor/ce-page-wireless.glade.h:5
 msgid "MT_U:"
 msgstr "MT_U:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:13
-msgid "M_ode:"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:14
-msgid "Network Connections"
-msgstr "חיבורי רשת"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:16
-msgid "Transmission po_wer:"
-msgstr "עוצ_מת השידור:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:17
-msgid "_BSSID:"
-msgstr "_BSSID:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:18
+#: ../src/connection-editor/ce-page-wired.glade.h:4
+#: ../src/connection-editor/ce-page-wireless.glade.h:9
 msgid "_MAC address:"
 msgstr "כתובת _MAC:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:19
-msgid "_Manual configuration"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:20
+#: ../src/connection-editor/ce-page-wired.glade.h:5
 msgid "_Port:"
 msgstr "_פורט:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:21
-msgid "_Rate:"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:22
-msgid "_SSID:"
-msgstr "_SSID:"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:23
+#: ../src/connection-editor/ce-page-wired.glade.h:6
 msgid "_Speed:"
 msgstr "מהירות_:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:24
+#: ../src/connection-editor/ce-page-wired.glade.h:7
 msgid ""
 "default\n"
 "10 Mb/s\n"
@@ -741,7 +613,50 @@ msgstr ""
 "1 Gb/s\n"
 "10 Gb/s"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:29
+#: ../src/connection-editor/ce-page-wired.glade.h:12
+msgid ""
+"default\n"
+"Twisted Pair (TP)\n"
+"Attachment Unit Interface (AUI)\n"
+"BNC\n"
+"Media Independent Interface (MII)"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:1
+msgid "Ban_d:"
+msgstr "_ערוץ:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:2
+msgid "C_hannel:"
+msgstr "_ערוץ:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:3
+msgid ""
+"Infrastructure\n"
+"Adhoc"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:6
+msgid "M_ode:"
+msgstr "מ_צב:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:7
+msgid "Transmission po_wer:"
+msgstr "עוצ_מת השידור:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:8
+msgid "_BSSID:"
+msgstr "_BSSID:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:10
+msgid "_Rate:"
+msgstr "_קצב:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:11
+msgid "_SSID:"
+msgstr "_SSID:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:12
 msgid ""
 "default\n"
 "A (5 GHz)\n"
@@ -751,14 +666,110 @@ msgstr ""
 "A (5 GHz)\n"
 "B/G (2.4 GHz)"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:32
-msgid ""
-"default\n"
-"Twisted Pair (TP)\n"
-"Attachment Unit Interface (AUI)\n"
-"BNC\n"
-"Media Independent Interface (MII)"
+#: ../src/connection-editor/page-ip4-address.c:42
+msgid "IPv4 Addresses"
+msgstr "כתובת IPv4"
+
+#: ../src/connection-editor/page-ip4.c:42
+msgid "IPv4 Settings"
+msgstr "הגדרות IPv4"
+
+#: ../src/connection-editor/page-wired.c:53
+msgid "Wired"
+msgstr "חוטי"
+
+#: ../src/connection-editor/page-wireless.c:95
+#: ../src/connection-editor/page-wireless.c:99
+#: ../src/connection-editor/nm-connection-editor.c:228
+msgid "default"
+msgstr "ברירת מחדל"
+
+#: ../src/connection-editor/page-wireless.c:117
+#, c-format
+msgid "%u (%u MHz)"
+msgstr "%u (%u MHz)"
+
+#: ../src/connection-editor/page-wireless.c:176
+msgid "Wireless"
+msgstr "רשת אלחוטית"
+
+#: ../src/connection-editor/page-wireless-security.c:214
+msgid "Wireless Security"
+msgstr "אבטחה אלחוטית"
+
+#: ../src/connection-editor/page-wireless-security.c:265
+#: ../src/wireless-dialog.c:488
+msgid "WEP 128-bit Passphrase"
+msgstr "סיסמת WEP 128-bit"
+
+#: ../src/connection-editor/page-wireless-security.c:273
+#: ../src/wireless-dialog.c:496
+msgid "WEP 40/128-bit Hexadecimal"
+msgstr "סיסמת WEP 40/128-bit Hex"
+
+#: ../src/connection-editor/page-wireless-security.c:281
+#: ../src/wireless-dialog.c:504
+msgid "WEP 40/128-bit ASCII"
+msgstr "סיסמת WEP 40/128-bit ASCII"
+
+#: ../src/connection-editor/page-wireless-security.c:293
+#: ../src/wireless-dialog.c:520
+#: ../src/wireless-security/wireless-security.c:354
+msgid "LEAP"
+msgstr "LEAP"
+
+#: ../src/connection-editor/page-wireless-security.c:305
+#: ../src/wireless-dialog.c:532
+msgid "Dynamic WEP (802.1x)"
+msgstr "‏WEP דינאמי (802.1x)"
+
+#: ../src/connection-editor/page-wireless-security.c:318
+#: ../src/wireless-dialog.c:545
+msgid "WPA & WPA2 Personal"
+msgstr "WPA & WPA2 אישי"
+
+#: ../src/connection-editor/page-wireless-security.c:331
+#: ../src/wireless-dialog.c:558
+msgid "WPA & WPA2 Enterprise"
+msgstr "WPA & WPA2 עסקי"
+
+#: ../src/connection-editor/nm-connection-editor.c:117
+#, c-format
+msgid "Editing %s"
+msgstr "עורך %s"
+
+#: ../src/connection-editor/nm-connection-editor.c:121
+msgid "Editing unamed connection"
 msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.c:147
+msgid ""
+"The connection editor could not find some required resources (the "
+"NetworkManager applet glade file was not found)."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.c:160
+#, fuzzy
+msgid ""
+"The connection editor could not find some required resources (the glade file "
+"was not found)."
+msgstr "יישומון מנהל-הרשת לא מצא חלק מהמשאבים הדרושים (קובץ ה-glade לא נמצא)"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:1
+msgid "Connect _automatically"
+msgstr "התחבר אוטו_מטית"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:2
+msgid "Connection Editor"
+msgstr "עורך החיבורים"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:3
+msgid "Connection _name:"
+msgstr "_שם החיבור:"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:4
+msgid "Network Connections"
+msgstr "חיבורי רשת"
 
 #: ../src/connection-editor/nm-connection-list.c:140
 #, c-format
@@ -1030,11 +1041,11 @@ msgstr "קובץ לייבוא"
 #. Translators: this is the description seen when running nm-vpn-properties --help
 #: ../src/vpn-properties/nm-vpn-properties.c:1279
 msgid "- NetworkManager VPN properties"
-msgstr ""
+msgstr "- NetworkManager VPN properties"
 
 #: ../src/vpn-properties/nm-vpn-properties.glade.h:1
 msgid "Add a new VPN connection"
-msgstr ""
+msgstr "הוסף חיבור VPN חדש"
 
 #: ../src/vpn-properties/nm-vpn-properties.glade.h:2
 msgid "Delete the selected VPN connection"
@@ -1151,7 +1162,7 @@ msgstr "התעלם"
 #: ../src/wireless-security/eap-method-tls.c:301
 #: ../src/wireless-security/eap-method-ttls.c:232
 msgid "Choose CA Certificate"
-msgstr ""
+msgstr "בחר תעודת CA"
 
 #: ../src/wireless-security/eap-method-peap.c:310
 #: ../src/wireless-security/eap-method-ttls.c:321
@@ -1194,11 +1205,11 @@ msgstr "TLS"
 
 #: ../src/wireless-security/wireless-security.c:364
 msgid "Tunneled TLS"
-msgstr ""
+msgstr "‏TLS ממונהר"
 
 #: ../src/wireless-security/wireless-security.c:374
 msgid "Protected EAP (PEAP)"
-msgstr ""
+msgstr "‏EAP מוגן (PEAP)"
 
 #~ msgid "Wireless Ethernet (%s)"
 #~ msgstr "רשת אתרנט אלחוטית (%s)"
