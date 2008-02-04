@@ -52,6 +52,8 @@ gsm_menu_item_info_destroy (gpointer data)
 	g_slice_free (GSMMenuItemInfo, data);
 }
 
+#define DEFAULT_GSM_NAME _("Auto GSM network connection")
+
 static NMConnection *
 gsm_new_auto_connection (NMDevice *device,
                          NMApplet *applet,
@@ -82,7 +84,7 @@ gsm_new_auto_connection (NMDevice *device,
 	nm_connection_add_setting (connection, NM_SETTING (s_ppp));
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	s_con->id = g_strdup (_("Auto GSM dialup connection"));
+	s_con->id = g_strdup (DEFAULT_GSM_NAME);
 	s_con->type = g_strdup (NM_SETTING (s_gsm)->name);
 	s_con->autoconnect = FALSE;
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
@@ -136,6 +138,29 @@ add_connection_items (NMDevice *device,
 
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
+}
+
+static void
+add_default_connection_item (NMDevice *device,
+                             GtkWidget *menu,
+                             NMApplet *applet)
+{
+	GSMMenuItemInfo *info;
+	GtkWidget *item;
+	
+	item = gtk_check_menu_item_new_with_label (DEFAULT_GSM_NAME);
+	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
+
+	info = g_slice_new0 (GSMMenuItemInfo);
+	info->applet = applet;
+	info->device = g_object_ref (G_OBJECT (device));
+
+	g_signal_connect_data (item, "activate",
+	                       G_CALLBACK (gsm_menu_item_activate),
+	                       info,
+	                       (GClosureNotify) gsm_menu_item_info_destroy, 0);
+
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
 
 static void
@@ -229,7 +254,10 @@ gsm_add_menu_item (NMDevice *device,
 
 	gtk_widget_set_sensitive (item, FALSE);
 
-	add_connection_items (device, connections, active, menu, applet);
+	if (g_slist_length (connections))
+		add_connection_items (device, connections, active, menu, applet);
+	else
+		add_default_connection_item (device, menu, applet);
 	add_disconnect_item (device, menu, applet);
 
 	gtk_widget_show (item);
