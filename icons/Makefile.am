@@ -9,6 +9,7 @@ smallicondir=${datadir}/icons/hicolor/22x22/apps
 smallicon_DATA=		\
 	nm-no-connection.png\
 	nm-device-wired.png	\
+	nm-device-wwan.png \
 	nm-adhoc.png		\
 	nm-stage01-connecting01.png	\
 	nm-stage01-connecting02.png	\

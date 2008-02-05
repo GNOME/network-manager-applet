@@ -1497,7 +1497,7 @@ nma_icons_load (NMApplet *applet)
 	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
 	ICON_LOAD(applet->wired_icon, "nm-device-wired");
 	ICON_LOAD(applet->adhoc_icon, "nm-adhoc");
-	ICON_LOAD(applet->wwan_icon, "nm-adhoc"); /* FIXME: Until there's no WWAN device icon */
+	ICON_LOAD(applet->wwan_icon, "nm-device-wwan"); /* FIXME: Until there's no WWAN device icon */
 	ICON_LOAD(applet->vpn_lock_icon, "nm-vpn-lock");
 
 	ICON_LOAD(applet->wireless_00_icon, "nm-signal-00");
