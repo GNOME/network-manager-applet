@@ -841,8 +841,28 @@ nma_context_menu_update (NMApplet *applet)
 }
 
 static void
+ce_child_setup (gpointer user_data G_GNUC_UNUSED)
+{
+	/* We are in the child process at this point */
+	pid_t pid = getpid ();
+	setpgid (pid, pid);
+}
+
+static void
 nma_edit_connections_cb (GtkMenuItem *mi, NMApplet *applet)
 {
+	char *argv[2];
+	GError *error = NULL;
+	gboolean success;
+
+	argv[0] = BINDIR "/nm-connection-editor";
+	argv[1] = NULL;
+
+	success = g_spawn_async ("/", argv, NULL, 0, &ce_child_setup, NULL, NULL, &error);
+	if (!success) {
+		g_warning ("Error launching connection editor: %s", error->message);
+		g_error_free (error);
+	}
 }
 
 /*
