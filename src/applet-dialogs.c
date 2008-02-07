@@ -259,7 +259,7 @@ applet_info_dialog_show (NMApplet *applet)
 {
 	GtkWidget *dialog;
 	NMDevice *device;
-	NMConnection *connection;
+	NMConnection *connection = NULL;
 
 	device = applet_get_first_active_device (applet);
 	if (device)
