@@ -297,7 +297,6 @@ cdma_get_icon (NMDevice *device,
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		*tip = g_strdup (_("CDMA connection"));
-		// FIXME: get a real icon
 		pixbuf = applet->wwan_icon;
 		break;
 	default:
