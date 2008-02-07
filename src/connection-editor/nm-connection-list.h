@@ -26,6 +26,9 @@
 #include <glib-object.h>
 #include <glade/glade-xml.h>
 #include <gconf/gconf-client.h>
+#include <gdk/gdkpixbuf.h>
+#include <gtk/gtk.h>
+#include <gtk/gtkicontheme.h>
 
 #define NM_TYPE_CONNECTION_LIST    (nm_connection_list_get_type ())
 #define NM_IS_CONNECTION_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_LIST))
@@ -40,11 +43,20 @@ typedef struct {
 	GConfClient *client;
 
 	GladeXML *gui;
+	GtkListStore *model;
+
 	GtkWidget *dialog;
 	GtkWidget *connection_list;
 	GtkWidget *add_button;
 	GtkWidget *edit_button;
 	GtkWidget *delete_button;
+
+	GdkPixbuf *wired_icon;
+	GdkPixbuf *wireless_icon;
+	GdkPixbuf *wwan_icon;
+	GdkPixbuf *vpn_icon;
+	GdkPixbuf *unknown_icon;
+	GtkIconTheme *icon_theme;
 } NMConnectionList;
 
 typedef struct {

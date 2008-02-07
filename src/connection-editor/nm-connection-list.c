@@ -20,6 +20,8 @@
  * (C) Copyright 2004-2005 Red Hat, Inc.
  */
 
+#include <string.h>
+
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkliststore.h>
@@ -28,6 +30,7 @@
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtkcellrendererpixbuf.h>
 #include <gconf/gconf-client.h>
 
 #include <glib/gi18n.h>
@@ -35,6 +38,11 @@
 #include <nm-setting-connection.h>
 #include <nm-connection.h>
 #include <nm-setting.h>
+#include <nm-setting-wired.h>
+#include <nm-setting-wireless.h>
+#include <nm-setting-vpn.h>
+#include <nm-setting-gsm.h>
+#include <nm-setting-cdma.h>
 
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
@@ -43,6 +51,10 @@
 G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
 
 #define CE_GCONF_PATH_TAG "ce-gconf-path"
+
+#define COL_ID 			0
+#define COL_ICON		1
+#define COL_CONNECTION	2
 
 static NMConnection *
 get_connection_for_selection (NMConnectionList *list,
@@ -68,7 +80,7 @@ get_connection_for_selection (NMConnectionList *list,
 		return NULL;
 	
 	if (gtk_tree_model_get_iter (*model, iter, (GtkTreePath *) selected_rows->data))
-		gtk_tree_model_get (*model, iter, 1, &connection, -1);
+		gtk_tree_model_get (*model, iter, COL_CONNECTION, &connection, -1);
 
 	/* free memory */
 	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
@@ -170,19 +182,32 @@ dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
 static void
 hash_add_connection_to_list (gpointer key, gpointer value, gpointer user_data)
 {
-	NMSettingConnection *s_connection;
-	GtkTreeIter iter;
+	NMConnectionList *list = NM_CONNECTION_LIST (user_data);
 	NMConnection *connection = (NMConnection *) value;
-	GtkListStore *model = GTK_LIST_STORE (user_data);
+	NMSettingConnection *s_con;
+	GtkTreeIter iter;
+	GdkPixbuf *pixbuf = list->unknown_icon;
 
-	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_connection)
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	if (!s_con)
 		return;
 
-	gtk_list_store_append (model, &iter);
-	gtk_list_store_set (model, &iter,
-	                    0, s_connection->id,
-	                    1, connection,
+	if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
+		pixbuf = list->wired_icon;
+	else if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME))
+		pixbuf = list->wireless_icon;
+	else if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME))
+		pixbuf = list->vpn_icon;
+	else if (!strcmp (s_con->type, NM_SETTING_GSM_SETTING_NAME))
+		pixbuf = list->wwan_icon;
+	else if (!strcmp (s_con->type, NM_SETTING_CDMA_SETTING_NAME))
+		pixbuf = list->wwan_icon;
+
+	gtk_list_store_append (list->model, &iter);
+	gtk_list_store_set (list->model, &iter,
+	                    COL_ID, s_con->id,
+	                    COL_ICON, pixbuf,
+	                    COL_CONNECTION, connection,
 	                    -1);
 }
 
@@ -237,17 +262,21 @@ list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 	}
 }
 
+#define ICON_LOAD(x, y)	\
+	{ \
+		x = gtk_icon_theme_load_icon (list->icon_theme, y, 16, 0, &error); \
+		if (x == NULL) { \
+			g_warning ("Icon %s missing: %s", y, error->message); \
+			g_error_free (error); \
+			return; \
+		} \
+	}
+
 static void
 nm_connection_list_init (NMConnectionList *list)
 {
-	GtkListStore *model;
 	GtkTreeSelection *select;
-
-	list->client = gconf_client_get_default ();
-
-	/* read connections */
-	list->connections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
-	load_connections (list);
+	GError *error = NULL;
 
 	/* load GUI */
 	list->gui = glade_xml_new (GLADEDIR "/nm-connection-editor.glade", "NMConnectionList", NULL);
@@ -256,20 +285,42 @@ nm_connection_list_init (NMConnectionList *list)
 		return;
 	}
 
+	list->icon_theme = gtk_icon_theme_get_for_screen (gdk_screen_get_default ());
+
+	/* Load icons */
+	ICON_LOAD(list->wired_icon, "nm-device-wired");
+	ICON_LOAD(list->wireless_icon, "nm-device-wireless");
+	ICON_LOAD(list->wwan_icon, "nm-device-wwan");
+	ICON_LOAD(list->vpn_icon, "lock");
+	ICON_LOAD(list->unknown_icon, "nm-no-connection");
+
+	list->client = gconf_client_get_default ();
+
+	/* read connections */
+	list->connections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+	load_connections (list);
+
 	list->dialog = glade_xml_get_widget (list->gui, "NMConnectionList");
 	g_signal_connect (G_OBJECT (list->dialog), "response", G_CALLBACK (dialog_response_cb), list);
 
 	list->connection_list = glade_xml_get_widget (list->gui, "connection_list");
 
-	model = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_OBJECT, G_TYPE_STRING);
+	list->model = gtk_list_store_new (3, G_TYPE_STRING, GDK_TYPE_PIXBUF, G_TYPE_OBJECT);
 	g_hash_table_foreach (list->connections,
 	                      (GHFunc) hash_add_connection_to_list,
-	                      model);
-	gtk_tree_view_set_model (GTK_TREE_VIEW (list->connection_list), GTK_TREE_MODEL (model));
+	                      list);
+	gtk_tree_view_set_model (GTK_TREE_VIEW (list->connection_list), GTK_TREE_MODEL (list->model));
+
 	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (list->connection_list),
 	                                             -1, "Name", gtk_cell_renderer_text_new (),
-	                                             "text", 0,
+	                                             "text", COL_ID,
 	                                             NULL);
+
+	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (list->connection_list),
+	                                             -1, "Type", gtk_cell_renderer_pixbuf_new (),
+	                                             "pixbuf", COL_ICON,
+	                                             NULL);
+
 	select = gtk_tree_view_get_selection (GTK_TREE_VIEW (list->connection_list));
 	gtk_tree_selection_set_mode (select, GTK_SELECTION_SINGLE);
 	g_signal_connect (G_OBJECT (select),
@@ -292,6 +343,12 @@ static void
 nm_connection_list_finalize (GObject *object)
 {
 	NMConnectionList *list = NM_CONNECTION_LIST (object);
+
+	g_object_unref (list->wired_icon);
+	g_object_unref (list->wireless_icon);
+	g_object_unref (list->wwan_icon);
+	g_object_unref (list->vpn_icon);
+	g_object_unref (list->unknown_icon);
 
 	gtk_widget_destroy (list->dialog);
 	g_object_unref (list->gui);
