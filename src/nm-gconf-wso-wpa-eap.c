@@ -53,6 +53,8 @@ struct _NMGConfWSOWPA_EAPPrivate
 	char *	private_key_passwd;
 	char *	client_cert_file;
 	char *	ca_cert_file;
+	gboolean have_passwd;
+	gboolean have_private_key_passwd;
 };
 
 
@@ -82,19 +84,26 @@ nm_gconf_wso_wpa_eap_new_deserialize_dbus (DBusMessageIter *iter, int we_cipher)
 	/* Success, build up our security object */
 	security = g_object_new (NM_TYPE_GCONF_WSO_WPA_EAP, NULL);
 	nm_gconf_wso_set_we_cipher (NM_GCONF_WSO (security), we_cipher);
-	nm_gconf_wso_set_key (NM_GCONF_WSO (security), passwd, strlen (passwd));
 	security->priv->wpa_version = wpa_version;
 	security->priv->key_type = key_type;
 	security->priv->eap_method = NM_EAP_TO_EAP_METHOD (eap_method);
 	security->priv->phase2_type = NM_EAP_TO_PHASE2_METHOD (eap_method);
 	security->priv->key_mgmt = IW_AUTH_KEY_MGMT_802_1X;
 	security->priv->identity = g_strdup (identity);
-	if (private_key_passwd && strlen (private_key_passwd) > 0)
-		security->priv->private_key_passwd = g_strdup (private_key_passwd);
 	security->priv->anon_identity = g_strdup (anon_identity);
 	security->priv->private_key_file = g_strdup (private_key_file);
 	security->priv->client_cert_file = g_strdup (client_cert_file);
 	security->priv->ca_cert_file = g_strdup (ca_cert_file);
+
+	if (passwd && strlen (passwd) > 0) {
+		security->priv->have_passwd = TRUE;
+		nm_gconf_wso_set_key (NM_GCONF_WSO (security), passwd, strlen (passwd));
+	}
+
+	if (private_key_passwd && strlen (private_key_passwd) > 0) {
+		security->priv->have_private_key_passwd = TRUE;
+		security->priv->private_key_passwd = g_strdup (private_key_passwd);
+	}
 
 out:
 	return security;
@@ -116,6 +125,8 @@ nm_gconf_wso_wpa_eap_new_deserialize_gconf (GConfClient *client, NMNetworkType t
 	int				key_type = 0;
 	int				phase2_type = 0;
 	int				key_mgmt = 0;
+	gboolean have_passwd = FALSE;
+	gboolean have_private_key_passwd = FALSE;
 
 	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (network != NULL, NULL);
@@ -190,6 +201,18 @@ nm_gconf_wso_wpa_eap_new_deserialize_gconf (GConfClient *client, NMNetworkType t
 						   network,
 						   &ca_cert_file);
 
+	nm_gconf_get_bool_helper (client,
+						 gconf_prefix,
+						 WPA_EAP_PREFIX"have_passwd",
+						 network,
+						 &have_passwd);
+
+	nm_gconf_get_bool_helper (client,
+						 gconf_prefix,
+						 WPA_EAP_PREFIX"have_private_key_passwd",
+						 network,
+						 &have_private_key_passwd);
+
 	/* Success, build up our security object */
 	security = g_object_new (NM_TYPE_GCONF_WSO_WPA_EAP, NULL);
 	nm_gconf_wso_set_we_cipher (NM_GCONF_WSO (security), we_cipher);
@@ -203,7 +226,9 @@ nm_gconf_wso_wpa_eap_new_deserialize_gconf (GConfClient *client, NMNetworkType t
 	security->priv->private_key_file = g_strdup (private_key_file);
 	security->priv->client_cert_file = g_strdup (client_cert_file);
 	security->priv->ca_cert_file = g_strdup (ca_cert_file);
-
+	security->priv->have_passwd = have_passwd;
+	security->priv->have_private_key_passwd = have_private_key_passwd;
+ 
 	g_free (identity);
 	g_free (anon_identity);
 	g_free (private_key_file);
@@ -305,6 +330,18 @@ real_serialize_gconf (NMGConfWSO *instance, GConfClient *client, NMNetworkType t
 		g_free (key);
 	}
 
+	/* If we think we don't need any passwords at all, we just don't know it any better.
+	   So don't reset these stored values. */
+	if (self->priv->private_key_passwd || nm_gconf_wso_get_key (instance)) {
+		key = g_strdup_printf ("%s/%s/%shave_passwd", gconf_prefix, network, WPA_EAP_PREFIX);
+		gconf_client_set_bool (client, key, self->priv->have_passwd, NULL);
+		g_free (key);
+
+		key = g_strdup_printf ("%s/%s/%shave_private_key_passwd", gconf_prefix, network, WPA_EAP_PREFIX);
+		gconf_client_set_bool (client, key, self->priv->have_private_key_passwd, NULL);
+		g_free (key);
+	}
+
 	return TRUE;
 }
 
@@ -316,23 +353,40 @@ real_read_secrets (NMGConfWSO *instance,
 	GList *found_list = NULL;
 	GnomeKeyringResult ret;
 	GnomeKeyringFound *found;
+	gboolean read_passwd = FALSE;
+	gboolean read_private_key_passwd = FALSE;
 
-	NM_GCONF_WSO_CLASS (g_type_class_peek (NM_TYPE_GCONF_WSO))->read_secrets_func (instance, ssid);
+	if (self->priv->have_passwd)
+		read_passwd = TRUE;
+	if (self->priv->have_private_key_passwd)
+		read_private_key_passwd = TRUE;
 
-	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                                      &found_list,
-	                                      "private-key-passwd",
-	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      ssid,
-	                                      NULL);
-	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0)) {
-		nm_info ("No keyring secrets found for network %s", ssid);
-		return FALSE;
+	if (!read_passwd && !read_private_key_passwd) {
+		/* If we think we don't need to read any passwords at all, we just don't know it any better.
+		   So try to read both. */
+		read_passwd = TRUE;
+		read_private_key_passwd = TRUE;
 	}
 
-	found = (GnomeKeyringFound *) found_list->data;
-	self->priv->private_key_passwd = g_strdup (found->secret);
-	gnome_keyring_found_list_free (found_list);
+	if (read_passwd && !NM_GCONF_WSO_CLASS (g_type_class_peek (NM_TYPE_GCONF_WSO))->read_secrets_func (instance, ssid))
+		return FALSE;
+
+	if (read_private_key_passwd) {
+		ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+									   &found_list,
+									   "private-key-passwd",
+									   GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+									   ssid,
+									   NULL);
+		if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0)) {
+			nm_info ("No keyring secrets found for network %s", ssid);
+			return FALSE;
+		}
+
+		found = (GnomeKeyringFound *) found_list->data;
+		self->priv->private_key_passwd = g_strdup (found->secret);
+		gnome_keyring_found_list_free (found_list);
+	}
 
 	return TRUE;
 }
