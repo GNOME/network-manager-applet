@@ -910,11 +910,13 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	gtk_menu_shell_append (menu, applet->info_menu_item);
 
 	/* 'Edit Connections...' item */
-	applet->connections_menu_item = gtk_menu_item_new_with_mnemonic (_("Edit Connections..."));
+	applet->connections_menu_item = gtk_image_menu_item_new_with_mnemonic (_("Edit Connections..."));
 	g_signal_connect (applet->connections_menu_item,
 				   "activate",
 				   G_CALLBACK (nma_edit_connections_cb),
 				   applet);
+	image = gtk_image_new_from_stock (GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (applet->connections_menu_item), image);
 	gtk_menu_shell_append (menu, applet->connections_menu_item);
 
 	/* Separator */
