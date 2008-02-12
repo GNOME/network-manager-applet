@@ -1607,22 +1607,6 @@ static void edit_essid_items_selected (GtkWidget *menu_item, NMApplet *applet)
 }
 
 
-static void nma_menu_add_edit_essid_item (GtkWidget *menu, NMApplet *applet)
-{
-    GtkWidget *menu_item;
-    GtkWidget *label;
-
-    menu_item = gtk_menu_item_new ();
-    label = gtk_label_new_with_mnemonic (_("_Edit Wireless Networks..."));
-    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-    gtk_container_add (GTK_CONTAINER (menu_item), label);
-    gtk_widget_show_all (menu_item);
-    gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-    g_signal_connect (menu_item, "activate", G_CALLBACK (edit_essid_items_selected), applet);
-}
-
-
-
 static void new_network_item_selected (GtkWidget *menu_item, NMApplet *applet)
 {
 	nma_other_network_dialog_run (applet, TRUE);
@@ -2027,7 +2011,6 @@ static void nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		nma_menu_add_separator_item (menu);
 		nma_menu_add_custom_essid_item (menu, applet);
 		nma_menu_add_create_network_item (menu, applet);
-		nma_menu_add_edit_essid_item (menu, applet);
 	}
 
 
@@ -2345,12 +2328,22 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	g_signal_connect (G_OBJECT (applet->wireless_enabled_item), "toggled", G_CALLBACK (nma_set_wireless_enabled_cb), applet);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), applet->wireless_enabled_item);
 
+	/* Separator */
+	nma_menu_add_separator_item (menu);
+
 	/* 'Connection Information' item */
 	applet->info_menu_item = gtk_image_menu_item_new_with_mnemonic (_("Connection _Information"));
 	g_signal_connect (G_OBJECT (applet->info_menu_item), "activate", G_CALLBACK (nma_show_info_cb), applet);
 	image = gtk_image_new_from_stock (GTK_STOCK_INFO, GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (applet->info_menu_item), image);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), applet->info_menu_item);
+
+	/* Edit networks item */
+	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_Edit Wireless Networks..."));
+    g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (edit_essid_items_selected), applet);
+	image = gtk_image_new_from_stock (GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), image);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
 	/* Separator */
 	nma_menu_add_separator_item (menu);
