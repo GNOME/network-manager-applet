@@ -446,15 +446,16 @@ void populate_model(WE_DATA *we_data, GtkListStore *store)
 
 		gconf_entry_dir = g_strdup(gconf_dirs->data);
 		name_key = g_strdup_printf("%s/essid", gconf_entry_dir);
-		name = gconf_client_get_string(we_data->gconf_client, name_key, &err);
+		name = gconf_client_get_string (we_data->gconf_client, name_key, &err);
+		if (name && strlen (name)) {
+			gtk_list_store_append (store, &iter);
 
-		gtk_list_store_append (store, &iter);
-
-		gtk_list_store_set (store, &iter,
-				WNTV_DISPLAY_COLUMN, name,
-				WNTV_PIXBUF_COLUMN, pixbuf,
-				WNTV_DATA_COLUMN, gconf_entry_dir,
-				-1);
+			gtk_list_store_set (store, &iter,
+					WNTV_DISPLAY_COLUMN, name,
+					WNTV_PIXBUF_COLUMN, pixbuf,
+					WNTV_DATA_COLUMN, gconf_entry_dir,
+					-1);
+		}
 
 		g_free(name_key);
 
