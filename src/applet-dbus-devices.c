@@ -1294,7 +1294,7 @@ void nma_dbus_set_device (DBusConnection *connection, NetworkDevice *dev, const 
 	{
 		const char *dev_path = network_device_get_nm_path (dev);
 
-		nm_info ("Forcing device '%s'\n", dev_path);
+		nm_info ("Forcing device '%s'", dev_path);
 
 		dbus_message_append_args (message, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_INVALID);
 
@@ -1309,7 +1309,7 @@ void nma_dbus_set_device (DBusConnection *connection, NetworkDevice *dev, const 
 		dbus_message_unref (message);
 	}
 	else
-		nm_warning ("Couldn't allocate the dbus message\n");
+		nm_warning ("Couldn't allocate the dbus message");
 }
 
 
@@ -1330,7 +1330,7 @@ void nma_dbus_set_device_with_gconf_wso (DBusConnection *connection,
 	{
 		const char *dev_path = network_device_get_nm_path (dev);
 
-		nm_info ("Forcing device '%s'\n", dev_path);
+		nm_info ("Forcing device '%s'", dev_path);
 
 		dbus_message_append_args (message, DBUS_TYPE_OBJECT_PATH, &dev_path, DBUS_TYPE_INVALID);
 
@@ -1349,7 +1349,7 @@ void nma_dbus_set_device_with_gconf_wso (DBusConnection *connection,
 		dbus_message_unref (message);
 	}
 	else
-		nm_warning ("Couldn't allocate the dbus message\n");
+		nm_warning ("Couldn't allocate the dbus message");
 }
 
 
@@ -1376,18 +1376,18 @@ void nma_dbus_create_network (DBusConnection *connection, NetworkDevice *dev, co
 
 		if ((dev_path = network_device_get_nm_path (dev)))
 		{
-			nm_info ("Creating network '%s' on device '%s'.\n", essid, dev_path);
+			nm_info ("Creating network '%s' on device '%s'.", essid, dev_path);
 			dbus_message_append_args (message, DBUS_TYPE_OBJECT_PATH, &dev_path,
 										DBUS_TYPE_STRING, &essid,
 										DBUS_TYPE_INVALID);
 			wso_append_dbus_params (opt, essid, message);
 			dbus_connection_send (connection, message, NULL);
 		} else
-			nm_warning ("Could not get the device path!\n");
+			nm_warning ("Could not get the device path!");
 		dbus_message_unref (message);
 	}
 	else
-		nm_warning ("Couldn't allocate the dbus message\n");
+		nm_warning ("Couldn't allocate the dbus message");
 }
 
 
