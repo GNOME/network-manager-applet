@@ -1,6 +1,6 @@
 AC_PREREQ(2.52)
 
-AC_INIT(nm-applet, 0.6.5, dcbw@redhat.com, nm-applet)
+AC_INIT(nm-applet, 0.6.5.98, dcbw@redhat.com, nm-applet)
 AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE
 
