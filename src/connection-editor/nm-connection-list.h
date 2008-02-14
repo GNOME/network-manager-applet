@@ -43,13 +43,7 @@ typedef struct {
 	GConfClient *client;
 
 	GladeXML *gui;
-	GtkListStore *model;
-
 	GtkWidget *dialog;
-	GtkWidget *connection_list;
-	GtkWidget *add_button;
-	GtkWidget *edit_button;
-	GtkWidget *delete_button;
 
 	GdkPixbuf *wired_icon;
 	GdkPixbuf *wireless_icon;
