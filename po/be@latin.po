@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-14 14:38+0300\n"
-"PO-Revision-Date: 2007-10-14 14:45+0300\n"
+"POT-Creation-Date: 2008-02-18 01:18+0200\n"
+"PO-Revision-Date: 2008-02-18 01:27+0200\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian Latin <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,92 +17,110 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:946
+#: ../src/applet-compat.c:171 ../src/applet-compat.c:504
+#: ../src/nm-gconf-wso.c:387 ../editor/editor-keyring-helper.c:121
 #, c-format
 msgid "Passphrase for wireless network %s"
 msgstr "Parolnaja fraza dla biazdrotavaha spałučeńnia %s"
 
-#: ../src/applet-dbus-devices.c:911
+#. Save private_key_passwd to keyring
+#: ../src/applet-compat.c:459 ../src/nm-gconf-wso-wpa-eap.c:417
+#: ../editor/editor-keyring-helper.c:133
+#, c-format
+msgid "Private key password for wireless network %s"
+msgstr "Parol pryvatnaha kluča dla biazdrotavaha spałučeńnia %s"
+
+#: ../src/applet-dbus-devices.c:919
 #, c-format
 msgid "You are now connected to the Ad-Hoc wireless network '%s'."
 msgstr "Ciapier ty spałučany ź biazdrotavaj Ad-Hoc sietkaj \"%s\"."
 
-#: ../src/applet-dbus-devices.c:916
+#: ../src/applet-dbus-devices.c:922
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Ciapier ty spałučany ź biazdrotavaj sietkaj \"%s\"."
 
-#: ../src/applet-dbus-devices.c:923
+#: ../src/applet-dbus-devices.c:929
+msgid ""
+"You are now connected to the wired network with a self-assigned address."
+msgstr "Ciapier ty spałučany z dracianoj sietkaj praz samastojna ŭziaty adras."
+
+#: ../src/applet-dbus-devices.c:933
+#, c-format
+msgid "You are now connected to the wired network '%s'."
+msgstr "Ciapier ty spałučany z dracianoj sietkaj \"%s\"."
+
+#: ../src/applet-dbus-devices.c:935
 msgid "You are now connected to the wired network."
 msgstr "Ciapier ty spałučany z dracianoj sietkaj."
 
-#: ../src/applet-dbus-devices.c:929
+#: ../src/applet-dbus-devices.c:943
 msgid "Connection Established"
 msgstr "Spałučeńnie ŭstalavanaje"
 
-#: ../src/applet-dbus-devices.c:972
+#: ../src/applet-dbus-devices.c:986
 msgid "Disconnected"
 msgstr "Adłučany"
 
-#: ../src/applet-dbus-devices.c:973
+#: ../src/applet-dbus-devices.c:987
 msgid "The network connection has been disconnected."
 msgstr "Sietkavaje spałučeńnie adłučanaje."
 
-#: ../src/applet-dbus.c:274
+#: ../src/applet-dbus.c:276
 #, c-format
 msgid "Connection to the wireless network '%s' failed."
 msgstr "Pamyłka spałučeńnia ź biazdrotavaj sietkaj \"%s\"."
 
-#: ../src/applet-dbus.c:279
+#: ../src/applet-dbus.c:281
 msgid "Connection to the wired network failed."
 msgstr "Pamyłka spałučeńnia z dracianoj sietkaj."
 
-#: ../src/applet.c:186
+#: ../src/applet.c:190
 msgid "Error displaying connection information:"
 msgstr "Pamyłka pakazu źviestak ab spałučeńni:"
 
-#: ../src/applet.c:204
+#: ../src/applet.c:208
 msgid "Could not find some required resources (the glade file)!"
-msgstr ""
-"Niemahčyma znajści niekatorych vymahanych resursaŭ (fajł glade)!"
+msgstr "Niemahčyma znajści niekatorych vymahanych resursaŭ (fajł glade)!"
 
-#: ../src/applet.c:215
+#: ../src/applet.c:219
 msgid "No active connections!"
 msgstr "Niama aktyŭnych spałučeńniaŭ!"
 
-#: ../src/applet.c:236
+#: ../src/applet.c:240
 #, c-format
 msgid "Wired Ethernet (%s)"
 msgstr "Draciany Ethernet (%s)"
 
-#: ../src/applet.c:238
+#: ../src/applet.c:242
 #, c-format
 msgid "Wireless Ethernet (%s)"
 msgstr "Biazdrotavy Ethernet (%s)"
 
-#: ../src/applet.c:334 ../src/applet.c:360
+#: ../src/applet.c:339 ../src/applet.c:365
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
-#: ../src/applet.c:336
+#: ../src/applet.c:341
 msgid ""
-"Copyright © 2004-2006 Red Hat, Inc.\n"
-"Copyright © 2005-2006 Novell, Inc."
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 msgstr ""
-"Aŭtarskija pravy © 2004-2006 Red Hat, Inc.\n"
-"Aŭtarskija pravy © 2005-2006 Novell, Inc."
+"Aŭtarskija pravy © 2004-2008 Red Hat, Inc.\n"
+"Aŭtarskija pravy © 2005-2008 Novell, Inc."
 
-#: ../src/applet.c:338 ../src/applet.c:364
+#: ../src/applet.c:343 ../src/applet.c:369
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Aplet abšaru nahadvańniaŭ dla kiravańnia setkavymi pryładami j spałučeńniami."
 
-#: ../src/applet.c:341 ../src/applet.c:368
+#: ../src/applet.c:346 ../src/applet.c:373 ../editor/editor-app.c:267
+#: ../editor/editor-app.c:296
 msgid "translator-credits"
 msgstr "Ihar Hračyška <ihar.hrachyshka@gmail.com>"
 
-#: ../src/applet.c:362
+#: ../src/applet.c:367
 msgid ""
 "Copyright © 2004-2005 Red Hat, Inc.\n"
 "Copyright © 2005-2006 Novell, Inc."
@@ -110,20 +128,20 @@ msgstr ""
 "Aŭtarskija pravy © 2004-2005 Red Hat, Inc.\n"
 "Aŭtarskija pravy © 2005-2006 Novell, Inc."
 
-#: ../src/applet.c:424
+#: ../src/applet.c:429
 msgid "VPN Login Failure"
 msgstr "Pamyłka aŭtaryzacyi VPN"
 
-#: ../src/applet.c:425
+#: ../src/applet.c:430
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a login failure."
 msgstr "Niemahčyma ŭruchomić spałučeńnia VPN \"%s\" praz pamyłku aŭtaryzacyi."
 
-#: ../src/applet.c:429
+#: ../src/applet.c:434
 msgid "VPN Start Failure"
 msgstr "Pamyłka ŭruchamleńnia VPN"
 
-#: ../src/applet.c:430
+#: ../src/applet.c:435
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' due to a failure launching the VPN "
@@ -132,25 +150,25 @@ msgstr ""
 "Niemahčyma ŭruchomić spałučeńnia VPN \"%s\" praz pamyłku ŭruchamleńnia "
 "prahramy VPN."
 
-#: ../src/applet.c:434 ../src/applet.c:444
+#: ../src/applet.c:439 ../src/applet.c:449
 msgid "VPN Connect Failure"
 msgstr "Pamyłka spałučeńnia VPN"
 
-#: ../src/applet.c:435
+#: ../src/applet.c:440
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a connection error."
 msgstr "Niemahčyma ŭruchomić spałučeńnia VPN \"%s\" praz pamyłku spałučeńnia."
 
-#: ../src/applet.c:439
+#: ../src/applet.c:444
 msgid "VPN Configuration Error"
 msgstr "Pamyłka kanfihuracyi VPN"
 
-#: ../src/applet.c:440
+#: ../src/applet.c:445
 #, c-format
 msgid "The VPN connection '%s' was not correctly configured."
 msgstr "Spałučeńnie VPN \"%s\" nie było pravilna skanfihuravanaje."
 
-#: ../src/applet.c:445
+#: ../src/applet.c:450
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' because the VPN server did not "
@@ -159,12 +177,12 @@ msgstr ""
 "Niemahčyma ŭruchomić spałučeńnia VPN \"%s\", bo server VPN nie viarnuŭ "
 "prydatnaj kanfihuracyi sietki."
 
-#: ../src/applet.c:515
+#: ../src/applet.c:520
 msgid "VPN Login Message"
 msgstr "Paviedamleńnie aŭtaryzacyi VPN"
 
-#: ../src/applet.c:739 ../src/applet.c:2541 ../src/other-network-dialog.c:453
-#: ../src/passphrase-dialog.c:232
+#: ../src/applet.c:744 ../src/applet.c:2707 ../src/other-network-dialog.c:455
+#: ../src/passphrase-dialog.c:218
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -172,163 +190,180 @@ msgstr ""
 "Aplet NetworkManager nia zmoh znajści niekatorych vymahanych resursaŭ (fajł "
 "glade nia znojdzieny)."
 
-#: ../src/applet.c:751
+#: ../src/applet.c:756
 #, c-format
 msgid "The network device \"%s (%s)\" does not support wireless scanning."
-msgstr "Sietkavaja pryłada \"%s (%s)\" nie padtrymvaje skanavańnie biazdrotavych sietak."
+msgstr ""
+"Sietkavaja pryłada \"%s (%s)\" nie padtrymvaje skanavańnie biazdrotavych "
+"sietak."
 
-#: ../src/applet.c:759
+#: ../src/applet.c:764
 #, c-format
 msgid "The network device \"%s (%s)\" does not support link detection."
-msgstr "Sietkavaja pryłada \"%s (%s)\" nie padtrymvaje vyznačeńnia najaŭnaści syhnału."
+msgstr ""
+"Sietkavaja pryłada \"%s (%s)\" nie padtrymvaje vyznačeńnia najaŭnaści "
+"syhnału."
 
-#: ../src/applet.c:906
+#: ../src/applet.c:916
 #, c-format
 msgid "Preparing device %s for the wired network..."
 msgstr "Padrychtoŭka pryłady %s dla dracianoj sietki..."
 
-#: ../src/applet.c:908
+#: ../src/applet.c:918
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
 msgstr "Padrychtoŭka pryłady %s dla biazdrotavaj sietki \"%s\"..."
 
-#: ../src/applet.c:916
+#: ../src/applet.c:926
 #, c-format
 msgid "Configuring device %s for the wired network..."
 msgstr "Kanfihuravańnie pryłady %s dla dracianoj sietki..."
 
-#: ../src/applet.c:918
+#: ../src/applet.c:928
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
 msgstr "Sproba dałučycca da biazdrotavaj sietki \"%s\"..."
 
-#: ../src/applet.c:926
+#: ../src/applet.c:936
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
 msgstr "Čakańnie sietkavaha kluča dla biazdrotavaj sietki \"%s\"..."
 
-#: ../src/applet.c:934 ../src/applet.c:944
+#: ../src/applet.c:944 ../src/applet.c:954
 msgid "Requesting a network address from the wired network..."
 msgstr "Zapyt sietkavaha adrasu dla dracianoj sietki..."
 
-#: ../src/applet.c:936 ../src/applet.c:946
+#: ../src/applet.c:946 ../src/applet.c:956
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
 msgstr "Zapyt sietkavaha adrasu dla biazdrotavaj sietki \"%s\"..."
 
-#: ../src/applet.c:954
+#: ../src/applet.c:964
 msgid "Finishing connection to the wired network..."
 msgstr "Zakančeńnie spałučeńnia z dracianoj sietkaj..."
 
-#: ../src/applet.c:956
+#: ../src/applet.c:966
 #, c-format
 msgid "Finishing connection to the wireless network '%s'..."
 msgstr "Zakančeńnie spałučeńnia ź biazdrotavaj sietkaj \"%s\"..."
 
-#: ../src/applet.c:1073
+#: ../src/applet.c:1083
 msgid "NetworkManager is not running"
 msgstr "NetworkManager nie ŭruchomleny"
 
-#: ../src/applet.c:1081 ../src/applet.c:1828
+#: ../src/applet.c:1091 ../src/applet.c:1931
 msgid "Networking disabled"
 msgstr "Sietkavyja pasłuhi vyklučanyja"
 
-#: ../src/applet.c:1086
+#: ../src/applet.c:1096
 msgid "No network connection"
 msgstr "Niama sietkavaha spałučeńnia"
 
-#: ../src/applet.c:1091
+#: ../src/applet.c:1104
+msgid "Wired network connection with a self-assigned address"
+msgstr "Dracianoje sietkavaje spałučeńnie praz samastojna ŭziaty adras"
+
+#: ../src/applet.c:1106
 msgid "Wired network connection"
 msgstr "Dracianoje sietkavaje spałučeńnie"
 
-#: ../src/applet.c:1095
+#: ../src/applet.c:1109
 msgid "Connected to an Ad-Hoc wireless network"
 msgstr "Spałučana ź biazdrotavaj Ad-Hoc sietkaj"
 
-#: ../src/applet.c:1097
+#: ../src/applet.c:1111
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
 msgstr "Biazdrotavaje sietkavaje spałučeńnie z \"%s\" (%d%%)"
 
-#: ../src/applet.c:1118
+#: ../src/applet.c:1132
 #, c-format
 msgid "VPN connection to '%s'"
 msgstr "Spałučeńnie VPN z \"%s\""
 
-#: ../src/applet.c:1126
+#: ../src/applet.c:1140
 #, c-format
 msgid "VPN connecting to '%s'"
 msgstr "Uruchamleńnie spałučeńnia _VPN z \"%s\""
 
-#: ../src/applet.c:1539
+#: ../src/applet.c:1595
 msgid "_Connect to Other Wireless Network..."
 msgstr "_Spałučy ź inšaj biazdrotavaj sietkaj..."
 
-#: ../src/applet.c:1560
+#: ../src/applet.c:1622
 msgid "Create _New Wireless Network..."
 msgstr "Stvary _novuju biazdrotavuju sietku..."
 
-#: ../src/applet.c:1683
+#: ../src/applet.c:1642
+msgid "Connect to 802.1X _Protected Wired Network..."
+msgstr "Spałučy z _abaronienaj dracianoj 802.1X sietkaj..."
+
+#: ../src/applet.c:1785
 msgid "_VPN Connections"
 msgstr "Spałučeńni _VPN"
 
-#: ../src/applet.c:1728
+#: ../src/applet.c:1830
 msgid "_Configure VPN..."
 msgstr "_Kanfihuruj VPN..."
 
-#: ../src/applet.c:1732
+#: ../src/applet.c:1834
 msgid "_Disconnect VPN..."
 msgstr "_Adłučy VPN..."
 
-#: ../src/applet.c:1754
+#: ../src/applet.c:1856
 msgid "_Dial Up Connections"
 msgstr "_Telefonnyja spałučeńni"
 
 #. FIXME: We should save and then check the state of the devices and show Connect _or_ Disconnect for each item
-#: ../src/applet.c:1765
+#: ../src/applet.c:1867
 #, c-format
 msgid "Connect to %s..."
 msgstr "Spałučy z %s..."
 
-#: ../src/applet.c:1772
+#: ../src/applet.c:1874
 #, c-format
 msgid "Disconnect from %s..."
 msgstr "Adłučy ad %s..."
 
-#: ../src/applet.c:1822
+#: ../src/applet.c:1925
 msgid "No network devices have been found"
 msgstr "Sietkavyja pryłady nia znojdzienyja"
 
-#: ../src/applet.c:2014
+#: ../src/applet.c:2138
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager nie ŭruchomleny..."
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2196
+#: ../src/applet.c:2320
 msgid "Enable _Networking"
 msgstr "Uklučy _sietkavyja pasłuhi"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2202
+#: ../src/applet.c:2326
 msgid "Enable _Wireless"
 msgstr "Uklučy _biazdrotavuju sietku"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2208
+#: ../src/applet.c:2335
 msgid "Connection _Information"
 msgstr "_Źviestki ab spałučeńni"
 
+#. Edit networks item
+#: ../src/applet.c:2342
+msgid "_Edit Wireless Networks..."
+msgstr "_Źmianiaj biazdrotavyja sietki..."
+
 #. Help item
-#: ../src/applet.c:2219
+#: ../src/applet.c:2353
 msgid "_Help"
 msgstr "_Dapamoha"
 
 #. About item
-#: ../src/applet.c:2228
+#: ../src/applet.c:2362
 msgid "_About"
 msgstr "_Ab"
 
-#: ../src/applet.c:2702
+#: ../src/applet.c:2877
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -390,11 +425,11 @@ msgstr ""
 "hetaja biazdrotavaja sietka biaśpiečnaja, zaznač nižejšuju opcyju, i "
 "NetworkManager nia budzie patrabavać paćvierdžańniaŭ dla ŭvachodu."
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:15 ../editor/editor.glade.h:3
 msgid "Anonymous Identity:"
 msgstr "Ananimnaja tojesnaść:"
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:16 ../editor/editor.glade.h:4
 msgid "Authentication:"
 msgstr "Aŭtaryzacyja:"
 
@@ -402,7 +437,7 @@ msgstr "Aŭtaryzacyja:"
 msgid "Broadcast Address:"
 msgstr "Tranślacyjny adras:"
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:18 ../editor/editor.glade.h:12
 msgid "CA Certificate File:"
 msgstr "Fajł sertyfikatu CA:"
 
@@ -410,7 +445,7 @@ msgstr "Fajł sertyfikatu CA:"
 msgid "C_onnect"
 msgstr "_Spałučy"
 
-#: ../src/applet.glade.h:20
+#: ../src/applet.glade.h:20 ../editor/editor.glade.h:13
 msgid "Client Certificate File:"
 msgstr "Fajł sertyfikatu klijenta:"
 
@@ -430,7 +465,7 @@ msgstr "Metavy adras:"
 msgid "Driver:"
 msgstr "Drajver:"
 
-#: ../src/applet.glade.h:25
+#: ../src/applet.glade.h:25 ../editor/editor.glade.h:14
 msgid "EAP Method:"
 msgstr "Metad EAP:"
 
@@ -442,7 +477,7 @@ msgstr "Aparatny adras:"
 msgid "IP Address:"
 msgstr "Adras IP:"
 
-#: ../src/applet.glade.h:28
+#: ../src/applet.glade.h:28 ../editor/editor.glade.h:20
 msgid "Identity:"
 msgstr "Tojesnaść:"
 
@@ -450,7 +485,7 @@ msgstr "Tojesnaść:"
 msgid "Interface:"
 msgstr "Interfejs:"
 
-#: ../src/applet.glade.h:30
+#: ../src/applet.glade.h:30 ../editor/editor.glade.h:21
 msgid "Key Type:"
 msgstr "Typ kluča:"
 
@@ -458,7 +493,7 @@ msgstr "Typ kluča:"
 msgid "Key management:"
 msgstr "Kiravańnie klučami:"
 
-#: ../src/applet.glade.h:32
+#: ../src/applet.glade.h:32 ../editor/editor.glade.h:22
 msgid "Key:"
 msgstr "Kluč:"
 
@@ -474,7 +509,7 @@ msgstr ""
 "WEP 64/128-bit Hex\n"
 "WEP 64/128-bit ASCII\n"
 
-#: ../src/applet.glade.h:38
+#: ../src/applet.glade.h:38 ../editor/editor.glade.h:37
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -490,7 +525,7 @@ msgstr "Inšaja biazdrotavaja sietka..."
 msgid "Passphrase:"
 msgstr "Parolnaja fraza:"
 
-#: ../src/applet.glade.h:42
+#: ../src/applet.glade.h:42 ../editor/editor.glade.h:39
 msgid "Password:"
 msgstr "Parol:"
 
@@ -502,11 +537,11 @@ msgstr "Typ Phase2:"
 msgid "Primary DNS:"
 msgstr "Pieršy DNS:"
 
-#: ../src/applet.glade.h:45
+#: ../src/applet.glade.h:45 ../editor/editor.glade.h:40
 msgid "Private Key File:"
 msgstr "Fajł pryvatnaha kluča:"
 
-#: ../src/applet.glade.h:46
+#: ../src/applet.glade.h:46 ../editor/editor.glade.h:41
 msgid "Private Key Password:"
 msgstr "Parol pryvatnaha kluča:"
 
@@ -514,15 +549,15 @@ msgstr "Parol pryvatnaha kluča:"
 msgid "Secondary DNS:"
 msgstr "Druhi DNS:"
 
-#: ../src/applet.glade.h:48
+#: ../src/applet.glade.h:48 ../editor/editor.glade.h:44
 msgid "Select the CA Certificate File"
 msgstr "Abiary fajł sertyfikatu CA"
 
-#: ../src/applet.glade.h:49
+#: ../src/applet.glade.h:49 ../editor/editor.glade.h:45
 msgid "Select the Client Certificate File"
 msgstr "Abiary fajł sertyfikatu klijenta"
 
-#: ../src/applet.glade.h:50
+#: ../src/applet.glade.h:50 ../editor/editor.glade.h:46
 msgid "Select the Private Key File"
 msgstr "Abiary fajł pryvatnaha kluča"
 
@@ -538,7 +573,7 @@ msgstr "Pakažy parolnuju frazu"
 msgid "Show password"
 msgstr "Pakažy parol"
 
-#: ../src/applet.glade.h:54
+#: ../src/applet.glade.h:54 ../editor/editor.glade.h:52
 msgid "Show passwords"
 msgstr "Pakažy paroli"
 
@@ -550,7 +585,7 @@ msgstr "Chutkaść:"
 msgid "Subnet Mask:"
 msgstr "Maska padsietki:"
 
-#: ../src/applet.glade.h:57
+#: ../src/applet.glade.h:57 ../editor/editor.glade.h:53
 msgid "Type:"
 msgstr "Typ:"
 
@@ -622,7 +657,7 @@ msgstr[2] "Biazdrotavyja sietki"
 msgid " (invalid Unicode)"
 msgstr " (niapravilny Unikod)"
 
-#: ../src/other-network-dialog.c:352
+#: ../src/other-network-dialog.c:354
 #, c-format
 msgid ""
 "By default, the wireless network's name is set to your computer's name, %s, "
@@ -631,11 +666,11 @@ msgstr ""
 "Zmoŭčana nazva biazdrotavaj sietki akreślajecca jak nazva kamputara, %s, z "
 "vyklučanym šyfravańniem"
 
-#: ../src/other-network-dialog.c:358
+#: ../src/other-network-dialog.c:360
 msgid "Create new wireless network"
 msgstr "Stvary novuju biazdrotavuju sietku"
 
-#: ../src/other-network-dialog.c:359
+#: ../src/other-network-dialog.c:361
 msgid ""
 "Enter the name and security settings of the wireless network you wish to "
 "create."
@@ -643,27 +678,27 @@ msgstr ""
 "Akreśl nazvu j nałady biaśpieki dla biazdrotavaj sietki, jakuju chočaš "
 "stvaryć."
 
-#: ../src/other-network-dialog.c:363
+#: ../src/other-network-dialog.c:365
 msgid "Create New Wireless Network"
 msgstr "Stvary novuju biazdrotavuju sietku"
 
-#: ../src/other-network-dialog.c:368
+#: ../src/other-network-dialog.c:370
 msgid "Existing wireless network"
 msgstr "Najaŭnaja biazdrotavaja sietka"
 
-#: ../src/other-network-dialog.c:369
+#: ../src/other-network-dialog.c:371
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Akreśl nazvu biazdrotavaj sietki, ź jakoj chočaš spałučycca."
 
-#: ../src/other-network-dialog.c:371
+#: ../src/other-network-dialog.c:373
 msgid "Connect to Other Wireless Network"
 msgstr "Spałučy ź inšaj biazdrotavaj sietkaj"
 
-#: ../src/passphrase-dialog.c:219
+#: ../src/passphrase-dialog.c:205
 msgid "Error connecting to wireless network"
 msgstr "Pamyłka spałučeńnia ź biazdrotavaj sietkaj"
 
-#: ../src/passphrase-dialog.c:220
+#: ../src/passphrase-dialog.c:206
 msgid ""
 "The requested wireless network requires security capabilities unsupported by "
 "your hardware."
@@ -704,7 +739,7 @@ msgstr "Supolny kluč"
 
 #: ../src/wireless-security-option.c:207
 msgid "Automatic (Default)"
-msgstr "Aŭtamatyčny (zmoŭvana)"
+msgstr "Aŭtamatyčny (zmoŭčana)"
 
 #: ../src/wireless-security-option.c:214
 msgid "AES-CCMP"
@@ -720,7 +755,7 @@ msgstr "Dynamičny WEP"
 
 #: ../src/wireless-security-option.c:252
 msgid "None (Default)"
-msgstr "Niama (zmoŭvana)"
+msgstr "Niama (zmoŭčana)"
 
 #: ../src/wireless-security-option.c:257
 msgid "PAP"
@@ -738,15 +773,15 @@ msgstr "MSCHAPV2"
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wso-none.c:53
+#: ../src/wso-none.c:53 ../editor/editor-app.c:374
 msgid "None"
 msgstr "Niama"
 
-#: ../src/wso-wep-ascii.c:138
+#: ../src/wso-wep-ascii.c:172
 msgid "WEP 64/128-bit ASCII"
 msgstr "WEP 64/128-bit ASCII"
 
-#: ../src/wso-wep-hex.c:135
+#: ../src/wso-wep-hex.c:169
 msgid "WEP 64/128-bit Hex"
 msgstr "WEP 64/128-bit Hex"
 
@@ -766,21 +801,252 @@ msgstr "TLS"
 msgid "TTLS"
 msgstr "TTLS"
 
-#: ../src/wso-wpa-eap.c:254
+#: ../src/wso-wpa-eap.c:254 ../editor/editor-app.c:404
 msgid "WPA2 Enterprise"
 msgstr "WPA2 Enterprise"
 
-#: ../src/wso-wpa-eap.c:256
+#: ../src/wso-wpa-eap.c:256 ../editor/editor-app.c:399
 msgid "WPA Enterprise"
 msgstr "WPA Enterprise"
 
-#: ../src/wso-wpa-psk.c:178
+#: ../src/wso-wpa-psk.c:178 ../editor/editor-app.c:394
 msgid "WPA2 Personal"
 msgstr "WPA2 Personal"
 
-#: ../src/wso-wpa-psk.c:180
+#: ../src/wso-wpa-psk.c:180 ../editor/editor-app.c:389
 msgid "WPA Personal"
 msgstr "WPA Personal"
+
+#: ../editor/editor-app.c:261 ../editor/editor-app.c:288
+msgid "NetworkManager Editor"
+msgstr "Redaktar NetworkManager"
+
+#: ../editor/editor-app.c:263 ../editor/editor-app.c:290
+msgid "Copyright © 2007 Novell, Inc."
+msgstr "Aŭtarskija pravy © 2007 Novell, Inc."
+
+#: ../editor/editor-app.c:264
+msgid "Editor for managing your wireless networks"
+msgstr "Redaktar, jaki dapamahaje kiravać spałučeńniami ź biazdrotavymi sietkami"
+
+#: ../editor/editor-app.c:291
+msgid "Editor for managing your wireless networks."
+msgstr "Redaktar dla kiravańnia spałučeńniami ź biazdrotavymi sietkami."
+
+#: ../editor/editor-app.c:379
+msgid "WEP 64-bit"
+msgstr "WEP 64-bit"
+
+#: ../editor/editor-app.c:384
+msgid "WEP 128-bit"
+msgstr "WEP 128-bit"
+
+#: ../editor/widget-wso-wep.c:77
+msgid "Key"
+msgstr "Kluč"
+
+#: ../editor/widget-wso-wep.c:80 ../editor/editor.glade.h:58
+msgid "_Show Key"
+msgstr "_Pakažy kluč"
+
+#: ../editor/widget-wso-wep.c:138 ../editor/widget-wso-wpa-personal.c:138
+msgid "Unable to read key"
+msgstr "Niemahčyma pračytać kluč"
+
+#: ../editor/widget-wso-wep.c:181
+msgid "Hex"
+msgstr "Hex"
+
+#: ../editor/widget-wso-wep.c:186
+msgid "ASCII"
+msgstr "ASCII"
+
+#: ../editor/widget-wso-wep.c:194
+msgid "Passphrase"
+msgstr "Parolnaja fraza"
+
+#: ../editor/widget-wso-wep.c:224
+msgid "Unable to set key"
+msgstr "Niemahčyma akreślić kluč"
+
+#: ../editor/widget-wso-wep.c:227
+#, c-format
+msgid ""
+"There was a problem setting the wireless key to the gnome keyring. Error 0x%"
+"02X."
+msgstr ""
+"Uźnikła prablema padčas akreśleńnia kluča biazdrotavaha spałučeńnia dla klučnika gnome-keyring. Pamyłka 0x%"
+"02X."
+
+#: ../editor/widget-wso-wpa-enterprise.c:447
+#: ../editor/widget-wso-wpa-enterprise.c:491
+#: ../editor/widget-wso-wpa-personal.c:191
+msgid "Unable to set password"
+msgstr "Niemahčyma akreślić parol"
+
+#: ../editor/widget-wso-wpa-enterprise.c:450
+#: ../editor/widget-wso-wpa-enterprise.c:494
+#, c-format
+msgid ""
+"There was a problem storing the private password in the gnome keyring. Error "
+"0x%02X."
+msgstr ""
+"Uźnikła prablema padčas zachavańnia pryvatnaha parolu ŭ klučnika gnome-keyring. Pamyłka "
+"0x%02X."
+
+#: ../editor/widget-wso-wpa-personal.c:194
+#, c-format
+msgid ""
+"There was a problem storing the password in the gnome keyring. Error 0x%02X."
+msgstr ""
+"Uźnikła prablema padčas zachavańnia parolu ŭ klučnika gnome-keyring. Pamyłka "
+"0x%02X."
+
+#: ../editor/editor.glade.h:1
+msgid "Access Point:"
+msgstr "Punkt dostupu:"
+
+#: ../editor/editor.glade.h:2
+msgid "Access points"
+msgstr "Punkty dostupu"
+
+#: ../editor/editor.glade.h:5
+msgid ""
+"Automatic (Default)\n"
+"AES-CCMP\n"
+"TKIP"
+msgstr ""
+"Aŭtamatyčny (zmoŭčana)\n"
+"AES-CCMP\n"
+"TKIP"
+
+#: ../editor/editor.glade.h:8
+msgid ""
+"Automatic (Default)\n"
+"AES-CCMP\n"
+"TKIP\n"
+"Dynamic WEP"
+msgstr ""
+"Aŭtamatyčna (zmoŭčana)\n"
+"AES-CCMP\n"
+"TKIP\n"
+"Dynamičny WEP"
+
+#: ../editor/editor.glade.h:15
+msgid "Edit Access Point"
+msgstr "Źmiani punkt dostupu"
+
+#: ../editor/editor.glade.h:16
+msgid "Format:"
+msgstr "Farmat:"
+
+#: ../editor/editor.glade.h:17
+msgid ""
+"Hex\n"
+"ASCII\n"
+"Passphrase"
+msgstr ""
+"Hex\n"
+"ASCII\n"
+"Parolnaja fraza"
+
+#: ../editor/editor.glade.h:23
+msgid "Last Used:"
+msgstr "Apošniaje vykarystańnie:"
+
+#: ../editor/editor.glade.h:24
+msgid ""
+"MD5\n"
+"MSCHAPv2\n"
+"OTP\n"
+"GTC\n"
+"PEAP\n"
+"TLS\n"
+"TTLS"
+msgstr ""
+"MD5\n"
+"MSCHAPv2\n"
+"OTP\n"
+"GTC\n"
+"PEAP\n"
+"TLS\n"
+"TTLS"
+
+#: ../editor/editor.glade.h:31
+msgid "Name:"
+msgstr "Nazva:"
+
+#: ../editor/editor.glade.h:32
+msgid ""
+"None\n"
+"WEP 128-bit Passphrase\n"
+"WEB 64/128 bit Hex\n"
+"WEP 64/128-bit ASCII\n"
+msgstr ""
+"Niama\n"
+"WEP 128-bit Parolnaja fraza\n"
+"WEP 64/128-bit Hex\n"
+"WEP 64/128-bit ASCII\n"
+
+#: ../editor/editor.glade.h:42
+msgid "Properties"
+msgstr "Ułaścivaści"
+
+#: ../editor/editor.glade.h:43
+msgid "Security:"
+msgstr "Biaśpieka:"
+
+#: ../editor/editor.glade.h:47
+msgid "Set Password"
+msgstr "Akreśl parol"
+
+#: ../editor/editor.glade.h:48
+msgid "Set WEP Key"
+msgstr "Akreśl kluč WEP"
+
+#: ../editor/editor.glade.h:49
+msgid "Set _Key"
+msgstr "Akreśl _kluč"
+
+#: ../editor/editor.glade.h:50
+msgid "Set _Password"
+msgstr "Akreśl _parol"
+
+#: ../editor/editor.glade.h:51
+msgid "Show Password"
+msgstr "Pakažy parol"
+
+#: ../editor/editor.glade.h:54
+msgid "Wireless Networks"
+msgstr "Biazdrotavyja sietki"
+
+#: ../editor/editor.glade.h:55
+msgid "_Add"
+msgstr "_Dadaj"
+
+#: ../editor/editor.glade.h:56
+msgid "_Edit"
+msgstr "_Źmiani"
+
+#: ../editor/editor.glade.h:57
+msgid "_Remove"
+msgstr "_Vydal"
+
+#: ../editor/editor.glade.h:59
+msgid "bssid editor"
+msgstr "redaktar bssid"
+
+#: ../editor/editor.glade.h:60
+msgid "bssids:"
+msgstr "bssidy:"
+
+#: ../editor/editor.glade.h:61
+msgid "wpa_eap_subwindow"
+msgstr "wpa_eap_subwindow"
+
+#: ../editor/editor.glade.h:62
+msgid "wpa_psk_subwindow"
+msgstr "wpa_psk_subwindow"
 
 #~ msgid "%d Mb/s"
 #~ msgstr "%d Mb/s"
