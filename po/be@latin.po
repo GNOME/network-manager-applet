@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-05 01:16+0200\n"
-"PO-Revision-Date: 2008-02-05 01:17+0200\n"
+"POT-Creation-Date: 2008-02-18 01:14+0200\n"
+"PO-Revision-Date: 2008-02-18 01:17+0200\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian Latin <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
@@ -315,53 +315,53 @@ msgstr "_Adłučy VPN..."
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager nie ŭruchomleny..."
 
-#: ../src/applet.c:743 ../src/applet.c:1282
+#: ../src/applet.c:743 ../src/applet.c:1304
 msgid "Networking disabled"
 msgstr "Sietkavyja pasłuhi vyklučanyja"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:865
+#: ../src/applet.c:885
 msgid "Enable _Networking"
 msgstr "Uklučy _sietkavyja pasłuhi"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:873
+#: ../src/applet.c:893
 msgid "Enable _Wireless"
 msgstr "Uklučy _biazdrotavuju sietku"
 
 #. 'Connection Information' item
-#: ../src/applet.c:883
+#: ../src/applet.c:903
 msgid "Connection _Information"
 msgstr "_Źviestki ab spałučeńni"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:893
+#: ../src/applet.c:913
 msgid "Edit Connections..."
 msgstr "Redahuj spałučeńni..."
 
 #. Help item
-#: ../src/applet.c:905
+#: ../src/applet.c:927
 msgid "_Help"
 msgstr "_Dapamoha"
 
 #. About item
-#: ../src/applet.c:914
+#: ../src/applet.c:936
 msgid "_About"
 msgstr "_Ab"
 
-#: ../src/applet.c:1087
+#: ../src/applet.c:1109
 msgid "Disconnected"
 msgstr "Adłučany"
 
-#: ../src/applet.c:1088
+#: ../src/applet.c:1110
 msgid "The network connection has been disconnected."
 msgstr "Sietkavaje spałučeńnie adłučanaje."
 
-#: ../src/applet.c:1286
+#: ../src/applet.c:1308
 msgid "No network connection"
 msgstr "Niama sietkavaha spałučeńnia"
 
-#: ../src/applet.c:1531
+#: ../src/applet.c:1553
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -369,11 +369,11 @@ msgstr ""
 "Aplet NetworkManager nia zmoh znajści niekatorych vymahanych resursaŭ. "
 "Niemahčyma praciahvać.\n"
 
-#: ../src/applet.c:1672
+#: ../src/applet.c:1694
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
-#: ../src/applet.c:1677 ../src/wireless-dialog.c:786
+#: ../src/applet.c:1699 ../src/wireless-dialog.c:786
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -680,6 +680,8 @@ msgid "IPv4 Settings"
 msgstr "Nałady IPv4"
 
 #: ../src/connection-editor/page-wired.c:53
+#: ../src/connection-editor/nm-connection-editor.glade.h:7
+#: ../src/connection-editor/nm-connection-list.c:472
 msgid "Wired"
 msgstr "Dracianoje"
 
@@ -695,6 +697,8 @@ msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
 #: ../src/connection-editor/page-wireless.c:176
+#: ../src/connection-editor/nm-connection-editor.glade.h:8
+#: ../src/connection-editor/nm-connection-list.c:476
 msgid "Wireless"
 msgstr "_Biazdrotavaje"
 
@@ -776,13 +780,73 @@ msgid "Connection _name:"
 msgstr "_Nazva spałučeńnia:"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
+#: ../src/connection-editor/nm-connection-list.c:481
+msgid "Mobile Broadband"
+msgstr "Mabilny Broadband"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:5
 msgid "Network Connections"
 msgstr "Sietkavyja spałučeńni"
 
-#: ../src/connection-editor/nm-connection-list.c:140
+#: ../src/connection-editor/nm-connection-editor.glade.h:6
+#: ../src/connection-editor/nm-connection-list.c:485
+msgid "VPN"
+msgstr "VPN"
+
+#: ../src/connection-editor/nm-connection-list.c:155
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Ty sapraŭdy chočaš vydalić spałučeńnie %s?"
+
+#: ../src/connection-editor/nm-connection-list.c:260
+msgid "never"
+msgstr "nikoli"
+
+#: ../src/connection-editor/nm-connection-list.c:271
+#: ../src/connection-editor/nm-connection-list.c:282
+msgid "now"
+msgstr "ciapier"
+
+#. less than an hour ago
+#: ../src/connection-editor/nm-connection-list.c:289
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d chvilina tamu"
+msgstr[1] "%d chviliny tamu"
+msgstr[2] "%d chvilinaŭ tamu"
+
+#: ../src/connection-editor/nm-connection-list.c:293
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d hadzina tamu"
+msgstr[1] "%d hadziny tamu"
+msgstr[2] "%d hadzinaŭ tamu"
+
+#: ../src/connection-editor/nm-connection-list.c:305
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dzień tamu"
+msgstr[1] "%d dni tamu"
+msgstr[2] "%d dzion tamu"
+
+#: ../src/connection-editor/nm-connection-list.c:311
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d miesiac tamu"
+msgstr[1] "%d miesiacy tamu"
+msgstr[2] "%d miesiacaŭ tamu"
+
+#: ../src/connection-editor/nm-connection-list.c:315
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d hod tamu"
+msgstr[1] "%d hady tamu"
+msgstr[2] "%d hadoŭ tamu"
 
 #: ../src/utils/crypto.c:123
 #, c-format
