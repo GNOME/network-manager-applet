@@ -11,14 +11,14 @@ dbusservicedir = $(DBUS_SYS_DIR)
 dbusservice_DATA = nm-applet.conf
 
 toolsdir = $(datadir)/nm-applet
-tools_DATA = nm-disconnect-wireless-on-exit.sh
+tools_SCRIPTS = nm-disconnect-wireless-on-exit.sh
 
 EXTRA_DIST +=				\
 	$(dbusservice_DATA)		\
-	nm-applet.desktop		\
-	$(tools_DATA)
+	$(autostart_DATA)		\
+	$(tools_SCRIPTS)
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 
-autostartdir = $(datadir)/gnome/autostart
+autostartdir = $(sysconfdir)/xdg/autostart
 autostart_DATA = nm-applet.desktop
