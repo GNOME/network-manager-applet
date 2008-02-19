@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+
 /* Wireless Security Option WEP Widget
  *
  * Calvin Gaisford <cgaisford@novell.com>
@@ -39,193 +41,111 @@
 
 #include "widget-wso.h"
 
-void wep_auth_method_changed(GtkWidget *combo, gpointer data);
-void wep_show_toggled(GtkToggleButton *button, gpointer data);
-void set_key_button_clicked_cb(GtkButton *button, gpointer user_data);
-
-GtkWidget *get_wep_widget(WE_DATA *we_data)
+static void
+wep_auth_method_changed (GtkComboBox *combo, gpointer data)
 {
-	GtkWidget			*main_widget = NULL;
-	GtkWidget			*widget = NULL;
-	gint				intValue;
-
-	we_data->sub_xml = glade_xml_new(we_data->glade_file, 
-									"wep_notebook", NULL);
-	if(we_data->sub_xml == NULL)
-		return NULL;
-
-	main_widget = glade_xml_get_widget(we_data->sub_xml, "wep_notebook");
-	if(main_widget != NULL)
-		g_object_ref(G_OBJECT(main_widget));
-
-
-	widget = glade_xml_get_widget(we_data->sub_xml, "wep_show_checkbutton");
-	g_signal_connect (G_OBJECT (widget), "toggled",
-	                  G_CALLBACK (wep_show_toggled), we_data);
-
-	widget = glade_xml_get_widget(we_data->sub_xml, "auth_method_combo");
-	intValue = eh_gconf_client_get_int(we_data, "wep_auth_algorithm");
-	if(intValue == IW_AUTH_ALG_SHARED_KEY)
-		gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 1);
-	else
-		gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
-		
-	g_signal_connect( G_OBJECT(widget), "changed", 
-			GTK_SIGNAL_FUNC (wep_auth_method_changed), we_data);
-
-	widget = glade_xml_get_widget(we_data->sub_xml, "wep_key_label");
-	gtk_label_set_text(GTK_LABEL(widget), _("Key"));
-
-	widget = glade_xml_get_widget(we_data->sub_xml, "wep_show_checkbutton");
-	gtk_button_set_label(GTK_BUTTON(widget), _("_Show Key"));
-
-	widget = glade_xml_get_widget(we_data->sub_xml, "wep_set_key_button");
-	g_signal_connect (G_OBJECT (widget), "clicked",
-	                  G_CALLBACK (set_key_button_clicked_cb), we_data);
-
-	return main_widget;
-}
-
-
-void wep_auth_method_changed(GtkWidget *combo, gpointer data)
-{
-	WE_DATA *we_data;
+	WE_DATA *we_data = (WE_DATA *) data;
 	gint	intValue;
 
-	we_data = data;
-
-	intValue = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
-	if(intValue == 0)
-		eh_gconf_client_set_int(we_data, "wep_auth_algorithm",
-									IW_AUTH_ALG_OPEN_SYSTEM);
+	intValue = gtk_combo_box_get_active (combo);
+	if (intValue == 0)
+		eh_gconf_client_set_int (we_data, "wep_auth_algorithm", IW_AUTH_ALG_OPEN_SYSTEM);
 	else
-		eh_gconf_client_set_int(we_data, "wep_auth_algorithm", 
-									IW_AUTH_ALG_SHARED_KEY);
+		eh_gconf_client_set_int(we_data, "wep_auth_algorithm", IW_AUTH_ALG_SHARED_KEY);
 }
 
-
-
-void wep_show_toggled(GtkToggleButton *button, gpointer data)
+static void
+wep_show_toggled (GtkToggleButton *button, gpointer data)
 {
-	GtkWidget *widget;
-	WE_DATA *we_data;
+	WE_DATA *we_data = (WE_DATA *) data;
+	GtkEntry *entry;
 
-	we_data = data;
+	entry = GTK_ENTRY (glade_xml_get_widget (we_data->sub_xml, "wep_key_entry"));
 
-	widget = glade_xml_get_widget(we_data->sub_xml, "wep_key_entry");
-
-	if(gtk_toggle_button_get_active(button))
-	{
+	if (gtk_toggle_button_get_active (button)) {
 		gchar *key;
 		GnomeKeyringResult kresult;
 
-		kresult = get_key_from_keyring(we_data->essid_value, &key);
-		if(kresult == GNOME_KEYRING_RESULT_OK ||
-				kresult == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING)
-		{
-			gtk_widget_set_sensitive(widget, TRUE);
+		kresult = get_key_from_keyring (we_data->essid_value, &key);
+		if (kresult == GNOME_KEYRING_RESULT_OK || kresult == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
+			gtk_widget_set_sensitive (GTK_WIDGET (entry), TRUE);
 
-			if(key != NULL)
-			{
-				gtk_entry_set_text(GTK_ENTRY(widget), key);
-				g_free(key);
+			if (key) {
+				gtk_entry_set_text (entry, key);
+				g_free (key);
 			}
-		}
-		else
-			gtk_toggle_button_set_active(button, FALSE);
-		if(kresult == GNOME_KEYRING_RESULT_DENIED)
-		{
-			gtk_entry_set_text(GTK_ENTRY(widget), _("Unable to read key"));
-		}
-	}
-	else
-	{
-		gtk_widget_set_sensitive(widget, FALSE);
-		gtk_entry_set_text(GTK_ENTRY(widget), "");
+		} else
+			gtk_toggle_button_set_active (button, FALSE);
+
+		if (kresult == GNOME_KEYRING_RESULT_DENIED)
+			gtk_entry_set_text (entry, _("Unable to read key"));
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
+		gtk_entry_set_text (entry, "");
 	}
 }
 
-
-void set_key_button_clicked_cb(GtkButton *button, gpointer user_data)
+static void
+set_key_button_clicked_cb (GtkButton *button, gpointer user_data)
 {
-	GladeXML			*glade_xml;
-	GtkWidget			*dialog;
-	GtkWidget			*keyEntry;
-	GtkWidget			*formatCombo;
-	WE_DATA				*we_data;
-	GtkListStore      *store;
-	GtkTreeIter			iter;
-	GtkWindow			*parentWindow;
+	WE_DATA *we_data = (WE_DATA *) user_data;
+	GladeXML *glade_xml;
+	GtkListStore *store;
+	GtkTreeIter iter;
+	GtkWindow *parent;
+	GtkWidget *widget;
+	gint we_cipher;
+	gint result;
 
-	we_data = user_data;
-
-	glade_xml = glade_xml_new(we_data->glade_file, 
-									"wep_key_editor", NULL);
-
-
-	dialog = glade_xml_get_widget (glade_xml, "wep_key_editor");
-
-	keyEntry = glade_xml_get_widget (glade_xml, "wep_key_editor_entry");
-
-	formatCombo = glade_xml_get_widget (glade_xml, "wep_key_editor_combo");
-
-	parentWindow = GTK_WINDOW(gtk_widget_get_ancestor(
-					GTK_WIDGET(button), GTK_TYPE_WINDOW));
-
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), parentWindow);
+	glade_xml = glade_xml_new (we_data->glade_file, "wep_key_editor", NULL);
 
 	store = gtk_list_store_new (1, G_TYPE_STRING);
 
 	gtk_list_store_append (store, &iter);
-	gtk_list_store_set (store, &iter, 
-						0, _("Hex"), 
-						-1);
+	gtk_list_store_set (store, &iter, 0, _("Hex"), -1);
 
 	gtk_list_store_append (store, &iter);
-	gtk_list_store_set (store, &iter, 
-						0, _("ASCII"), 
-						-1);
+	gtk_list_store_set (store, &iter, 0, _("ASCII"), -1);
 
-	gint we_cipher = eh_gconf_client_get_int(we_data, "we_cipher");
-	if(we_cipher == IW_AUTH_CIPHER_WEP104)
-	{
+	we_cipher = eh_gconf_client_get_int (we_data, "we_cipher");
+	if (we_cipher == IW_AUTH_CIPHER_WEP104) {
 		gtk_list_store_append (store, &iter);
-		gtk_list_store_set (store, &iter, 
-				0, _("Passphrase"), 
-				-1);
+		gtk_list_store_set (store, &iter, 0, _("Passphrase"), -1);
 	}
 
-	gtk_combo_box_set_model(GTK_COMBO_BOX(formatCombo), 
-									GTK_TREE_MODEL (store));
-
-	gtk_combo_box_set_active(GTK_COMBO_BOX(formatCombo), 0);
-
+	widget = glade_xml_get_widget (glade_xml, "wep_key_editor_combo");
+	gtk_combo_box_set_model (GTK_COMBO_BOX (widget), GTK_TREE_MODEL (store));
 	g_object_unref (store);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 
-	gint result = gtk_dialog_run (GTK_DIALOG (dialog));
+	parent = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW));
 
-	if(result == GTK_RESPONSE_OK)
-	{
+	widget = glade_xml_get_widget (glade_xml, "wep_key_editor");
+	gtk_window_set_transient_for (GTK_WINDOW (widget), parent);
+	result = gtk_dialog_run (GTK_DIALOG (widget));
+	gtk_widget_hide (widget);
+
+	if (result == GTK_RESPONSE_OK) {
 		const gchar *key;
 		GnomeKeyringResult kresult;
 
-		key = gtk_entry_get_text(GTK_ENTRY(keyEntry));
+		widget = (glade_xml_get_widget (glade_xml, "wep_key_editor_entry"));
+		key = gtk_entry_get_text (GTK_ENTRY (widget));
 
-		if(key != NULL)
-		{
+		/* FIXME: Nothing is done with the wep_key_editor_combo value ????? */
+
+		if (key) {
 			kresult = set_key_in_keyring (we_data->essid_value, key);
 
-			if(kresult != GNOME_KEYRING_RESULT_OK)
-			{
-				GtkWidget *errorDialog = gtk_message_dialog_new (parentWindow,
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_CLOSE,
-						_("Unable to set key"));
-				gtk_message_dialog_format_secondary_text (
-						GTK_MESSAGE_DIALOG (errorDialog),
-						_("There was a problem setting the wireless key to the gnome keyring. Error 0x%02X."),
-						(int)kresult);
+			if (kresult != GNOME_KEYRING_RESULT_OK) {
+				GtkWidget *errorDialog = gtk_message_dialog_new (parent,
+													    GTK_DIALOG_DESTROY_WITH_PARENT,
+													    GTK_MESSAGE_ERROR,
+													    GTK_BUTTONS_CLOSE,
+													    _("Unable to set key"));
+				gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (errorDialog),
+												  _("There was a problem setting the wireless key to the gnome keyring. Error 0x%02X."),
+												  (int) kresult);
 
 				gtk_dialog_run (GTK_DIALOG (errorDialog));
 				gtk_widget_destroy (errorDialog);
@@ -233,8 +153,39 @@ void set_key_button_clicked_cb(GtkButton *button, gpointer user_data)
 		}
 	}
 
-	gtk_widget_destroy(dialog);
-	g_free(glade_xml);
+	g_object_unref (glade_xml);
 }
 
+GtkWidget *
+get_wep_widget (WE_DATA *we_data)
+{
+	GtkWidget *main_widget;
+	GtkWidget *widget;
+	gint intValue;
 
+	we_data->sub_xml = glade_xml_new (we_data->glade_file, "wep_key_notebook", NULL);
+	if (!we_data->sub_xml)
+		return NULL;
+
+	main_widget = glade_xml_get_widget (we_data->sub_xml, "wep_key_notebook");
+	if (!main_widget)
+		return NULL;
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "show_checkbutton");
+	g_signal_connect (widget, "toggled", G_CALLBACK (wep_show_toggled), we_data);
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "auth_method_combo");
+	intValue = eh_gconf_client_get_int (we_data, "wep_auth_algorithm");
+	if (intValue == IW_AUTH_ALG_SHARED_KEY)
+		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
+	else
+		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
+
+	g_signal_connect (widget, "changed", GTK_SIGNAL_FUNC (wep_auth_method_changed), we_data);
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "wep_set_key");
+	gtk_widget_show (widget);
+	g_signal_connect (widget, "clicked", G_CALLBACK (set_key_button_clicked_cb), we_data);
+
+	return main_widget;
+}

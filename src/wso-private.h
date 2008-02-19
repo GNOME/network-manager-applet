@@ -76,11 +76,4 @@ void			wso_wep_auth_combo_setup (WirelessSecurityOption *opt, GtkComboBox * comb
 int			wso_wep_auth_combo_get_auth_alg (WirelessSecurityOption *opt, GtkComboBox * combo);
 void			wso_wep_auth_combo_cleanup (WirelessSecurityOption *opt, GtkComboBox * combo);
 
-#define WPA_KEY_TYPE_NAME_COL		0
-#define WPA_KEY_TYPE_CIPHER_COL	1
-
-GtkTreeModel *	wso_wpa_create_key_type_model (int capabilities, gboolean wpa_eap, int *num_added);
-GtkTreeModel *	wso_wpa_create_phase2_type_model (int capabilities, gboolean wpa_eap, int *num_added);
-
-
 #endif	/* WIRELESS_SECURITY_OPTION_PRIVATE_H */

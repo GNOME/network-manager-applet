@@ -27,13 +27,9 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <gconf/gconf-client.h>
-#include <glade/glade.h>
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
-#include <net/ethernet.h>
 
-gboolean run_bssid_editor(GtkWidget *parent, gchar *gconf_dir);
-
+gboolean run_bssid_editor (const char *glade_file,
+			   GtkWidget *parent,
+			   const char *gconf_dir);
 
 #endif // BSSID_EDITOR_DIALOG_H

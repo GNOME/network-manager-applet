@@ -3,6 +3,7 @@ NULL=
 bin_PROGRAMS = nm-applet
 
 nm_applet_CPPFLAGS =									\
+	-I$(top_srcdir)										\
 	$(DBUS_CFLAGS)										\
 	$(GTHREAD_CFLAGS)									\
 	$(HAL_CFLAGS)										\
@@ -114,12 +115,12 @@ nm_applet_LDADD =						\
 	$(LIBGNOMEUI_LIBS)					\
 	$(GNOME_KEYRING_LIBS)				\
 	$(NM_LIBS) \
+	 ../libnma/libnma.la \
 	$(NULL)
 
 if WITH_NOTIFY
 nm_applet_LDADD += $(NOTIFY_LIBS)
 endif
-
 
 gladedir = $(datadir)/nm-applet
 glade_DATA = applet.glade keyring.png

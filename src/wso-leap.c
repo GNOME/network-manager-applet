@@ -29,6 +29,7 @@
 #include "wso-leap.h"
 #include "wso-private.h"
 #include "dbus-helpers.h"
+#include "libnma/libnma.h"
 #include "NetworkManager.h"
 
 
@@ -77,7 +78,7 @@ append_dbus_params_func (WirelessSecurityOption *opt,
 	entry = glade_xml_get_widget (opt->uixml, "leap_key_mgmt_combobox");
 	combo_model = gtk_combo_box_get_model(GTK_COMBO_BOX(entry));
 	gtk_combo_box_get_active_iter(GTK_COMBO_BOX(entry), &iter);
-	gtk_tree_model_get(combo_model, &iter, 1, &opt->data->key_mgmt, -1);
+	gtk_tree_model_get(combo_model, &iter, LEAP_KEY_MGMT_VALUE_COL, &opt->data->key_mgmt, -1);
 
 	dbus_message_iter_init_append (message, &dbus_iter);
 
@@ -89,6 +90,11 @@ append_dbus_params_func (WirelessSecurityOption *opt,
 	return TRUE;
 }
 
+static void show_password_cb (GtkToggleButton *button, GtkEntry *entry)
+{
+	gtk_entry_set_visibility (entry, gtk_toggle_button_get_active (button));
+}
+
 static GtkWidget *
 widget_create_func (WirelessSecurityOption *opt,
                     GtkSignalFunc validate_cb,
@@ -97,8 +103,7 @@ widget_create_func (WirelessSecurityOption *opt,
 	GtkWidget *	entry;
 	GtkWidget *	widget;
 	GtkWidget *	key_mgmt;
-	GtkListStore *	list_store;
-	GtkTreeIter 	iter;
+	GtkTreeModel *	model;
 
 	g_return_val_if_fail (opt != NULL, NULL);
 	g_return_val_if_fail (opt->data != NULL, NULL);
@@ -112,18 +117,16 @@ widget_create_func (WirelessSecurityOption *opt,
 	entry = glade_xml_get_widget (opt->uixml, "leap_password_entry");
 	g_signal_connect (G_OBJECT (entry), "changed", validate_cb, user_data);
 
+	widget = glade_xml_get_widget (opt->uixml, "leap_show_password");
+	g_signal_connect (widget, "clicked", GTK_SIGNAL_FUNC (show_password_cb), entry);
+
 	/* set-up key_mgmt combo box */
 
 	key_mgmt = glade_xml_get_widget (opt->uixml, "leap_key_mgmt_combobox");
 
 	/* create tree model containing combo box items */
-	list_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
-	gtk_list_store_append(list_store, &iter);
-	gtk_list_store_set(list_store, &iter, 0, "IEEE 802.1X", 1, "IEEE8021X", -1);
-	gtk_list_store_append(list_store, &iter);
-	gtk_list_store_set(list_store, &iter, 0, "WPA-EAP", 1, "WPA-EAP", -1);
-
-	gtk_combo_box_set_model(GTK_COMBO_BOX(key_mgmt), GTK_TREE_MODEL(list_store));
+	model = wso_leap_create_key_mgmt_model ();
+	gtk_combo_box_set_model(GTK_COMBO_BOX(key_mgmt), model);
 
 	/* set default choice to be IEEE 802.1X */
 	gtk_combo_box_set_active(GTK_COMBO_BOX(key_mgmt), 0);

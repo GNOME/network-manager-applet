@@ -1,4 +1,4 @@
-SUBDIRS = src editor icons po
+SUBDIRS = libnma src editor icons po
 
 EXTRA_DIST =				\
 	CONTRIBUTING			\

@@ -34,6 +34,7 @@
 #include "cipher-wpa-psk-passphrase.h"
 #include "dbus-helpers.h"
 #include "NetworkManager.h"
+#include "libnma/libnma.h"
 
 
 struct OptData

@@ -43,7 +43,7 @@
 
 #include "editor-app.h"
 
-void eh_gconf_client_set_string(WE_DATA *we_data, gchar *subkey, gchar *value);
+void eh_gconf_client_set_string(WE_DATA *we_data, gchar *subkey, const gchar *value);
 gchar *eh_gconf_client_get_string(WE_DATA *we_data, gchar *subkey);
 void eh_gconf_client_set_int(WE_DATA *we_data, gchar *subkey, gint value);
 gint eh_gconf_client_get_int(WE_DATA *we_data, gchar *subkey);

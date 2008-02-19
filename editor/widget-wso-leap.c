@@ -1,9 +1,6 @@
 /* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
 
-/* Wireless Security Option WPA/WPA2 Personal Widget
- *
- * Calvin Gaisford <cgaisford@novell.com>
- *
+/*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -42,28 +39,47 @@
 #include "libnma/libnma.h"
 
 static void
-wpa_psk_type_changed (GtkComboBox *combo, gpointer data)
+key_mgmt_changed (GtkComboBox *combo, gpointer data)
 {
 	GtkTreeIter iter;
 
 	if (gtk_combo_box_get_active_iter (combo, &iter)) {
 		GtkTreeModel *model;
-		int value;
+		char *value;
 
 		model = gtk_combo_box_get_model (combo);
-		gtk_tree_model_get (model, &iter, WPA_KEY_TYPE_CIPHER_COL, &value, -1);
+		gtk_tree_model_get (model, &iter, LEAP_KEY_MGMT_VALUE_COL, &value, -1);
 
-		eh_gconf_client_set_int ((WE_DATA *) data, "wpa_psk_key_mgt", value);
+		eh_gconf_client_set_string ((WE_DATA *) data, "leap_key_mgmt", value);
+		g_free (value);
 	}
 }
 
 static void
-wpa_psk_show_toggled (GtkToggleButton *button, gpointer data)
+username_changed (GtkEntry *widget, gpointer data)
+{
+	WE_DATA *we_data = (WE_DATA *) data;
+	const gchar *strValue;
+
+	strValue = gtk_entry_get_text (widget);
+	if (strValue)
+		eh_gconf_client_set_string (we_data, "leap_username", strValue);
+}
+
+static gboolean
+username_entry_focus_lost (GtkWidget *widget, GdkEventFocus *event, gpointer data)
+{
+	username_changed (GTK_ENTRY (widget), data);
+	return FALSE;
+}
+
+static void
+show_password_toggled (GtkToggleButton *button, gpointer data)
 {
 	WE_DATA *we_data = (WE_DATA *) data;
 	GtkWidget *widget;
 
-	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_psk_entry");
+	widget = glade_xml_get_widget (we_data->sub_xml, "leap_password_entry");
 
 	if (gtk_toggle_button_get_active (button)) {
 		gchar *key;
@@ -89,7 +105,7 @@ wpa_psk_show_toggled (GtkToggleButton *button, gpointer data)
 }
 
 static void
-wpa_psk_set_password_button_clicked_cb (GtkButton *button, gpointer user_data)
+password_changed (GtkButton *button, gpointer user_data)
 {
 	WE_DATA *we_data = (WE_DATA *) user_data;
 	GladeXML			*glade_xml;
@@ -110,7 +126,7 @@ wpa_psk_set_password_button_clicked_cb (GtkButton *button, gpointer user_data)
 		const gchar *key;
 		GnomeKeyringResult kresult;
 
-		entry = glade_xml_get_widget (glade_xml, "password_entry");
+		entry = glade_xml_get_widget (glade_xml, "leap_password_entry");
 		key = gtk_entry_get_text (GTK_ENTRY (entry));
 		if (key) {
 			kresult = set_key_in_keyring (we_data->essid_value, key);
@@ -135,43 +151,56 @@ wpa_psk_set_password_button_clicked_cb (GtkButton *button, gpointer user_data)
 }
 
 GtkWidget *
-get_wpa_personal_widget (WE_DATA *we_data)
+get_leap_widget (WE_DATA *we_data)
 {
 	GtkWidget *main_widget;
 	GtkWidget	*widget;
-	gint intValue;
+	char *username;
+	char *key_mgmt;
 	GtkTreeModel *tree_model;
 	GtkTreeIter iter;
-	int num_added;
-	int capabilities = 0xFFFFFFFF;
 
-	we_data->sub_xml = glade_xml_new (we_data->glade_file, "wpa_psk_notebook", NULL);
+	we_data->sub_xml = glade_xml_new (we_data->glade_file, "leap_notebook", NULL);
 	if (!we_data->sub_xml)
 		return NULL;
 
-	main_widget = glade_xml_get_widget (we_data->sub_xml, "wpa_psk_notebook");
+	main_widget = glade_xml_get_widget (we_data->sub_xml, "leap_notebook");
 	if (!main_widget)
 		return NULL;
 
-	/* set the combo to match what is in gconf */
-	widget = glade_xml_get_widget (we_data->sub_xml, "show_checkbutton");
-	g_signal_connect (widget, "toggled", G_CALLBACK (wpa_psk_show_toggled), we_data);
+	widget = glade_xml_get_widget (we_data->sub_xml, "leap_show_password");
+	g_signal_connect (widget, "toggled", G_CALLBACK (show_password_toggled), we_data);
 
-	/* Key type combo */
-	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_psk_type_combo");
-	tree_model = wso_wpa_create_key_type_model (capabilities, TRUE, &num_added);
+	/* Username */
+	widget = glade_xml_get_widget (we_data->sub_xml, "leap_username_entry");
+	username = eh_gconf_client_get_string (we_data, "leap_username");
+	if (username) {
+		gtk_entry_set_text (GTK_ENTRY (widget), username);
+		g_free (username);
+	} else
+		gtk_entry_set_text (GTK_ENTRY (widget), "");
+
+	g_signal_connect (widget, "activate", GTK_SIGNAL_FUNC (username_changed), we_data);
+	g_signal_connect (widget, "focus-out-event", GTK_SIGNAL_FUNC (username_entry_focus_lost), we_data);
+
+	/* Set password */
+	widget = glade_xml_get_widget (we_data->sub_xml, "leap_set_password");
+	gtk_widget_show (widget);
+	g_signal_connect (widget, "clicked", GTK_SIGNAL_FUNC (password_changed), we_data);
+
+	/* Key management combo box */
+	widget = glade_xml_get_widget (we_data->sub_xml, "leap_key_mgmt_combobox");
+	tree_model = wso_leap_create_key_mgmt_model ();
 	gtk_combo_box_set_model (GTK_COMBO_BOX (widget), tree_model);
 	g_object_unref (tree_model);
 
-	intValue = eh_gconf_client_get_int (we_data, "wpa_psk_key_mgt");
-	if (wso_wpa_key_type_get_iter (tree_model, (uint) intValue, &iter))
+	key_mgmt = eh_gconf_client_get_string (we_data, "leap_key_mgmt");
+	if (key_mgmt && wso_leap_key_mgmt_get_iter (tree_model, key_mgmt, &iter))
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (widget), &iter);
 
-	g_signal_connect (widget, "changed", GTK_SIGNAL_FUNC (wpa_psk_type_changed), we_data);
+	g_free (key_mgmt);
 
-	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_psk_set_password");
-	g_signal_connect (widget, "clicked", G_CALLBACK (wpa_psk_set_password_button_clicked_cb), we_data);
-	gtk_widget_show (widget);
+	g_signal_connect (widget, "changed", GTK_SIGNAL_FUNC (key_mgmt_changed), we_data);
 
 	return main_widget;
 }

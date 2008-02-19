@@ -1,6 +1,6 @@
 NULL=
 
-INCLUDES = -I${top_srcdir}/../include -I${top_srcdir}/../libnm-util
+INCLUDES = -I${top_srcdir}
 
 bin_PROGRAMS = nm-editor
 
@@ -17,7 +17,7 @@ nm_editor_CPPFLAGS =									\
 	$(GNOME_KEYRING_CFLAGS)								\
 	$(NM_CFLAGS)									\
 	-DICONDIR=\""$(datadir)/pixmaps"\"						\
-	-DGLADEDIR=\""$(gladedir)"\"							\
+	-DGLADEDIR=\""$(datadir)/nm-applet"\"						\
 	-DBINDIR=\""$(bindir)"\"								\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"						\
 	-DAUTOSTARTDIR=\""$(datadir)/gnome/autostart"\"			\
@@ -36,6 +36,7 @@ nm_editor_SOURCES =			\
 	bssid-editor-dialog.c	\
 	bssid-editor-dialog.h	\
 	widget-wso.h			\
+	widget-wso-leap.c		\
 	widget-wso-wep.c		\
 	widget-wso-wpa-personal.c		\
 	widget-wso-wpa-enterprise.c		\
@@ -57,19 +58,15 @@ nm_editor_LDADD =						\
 	$(LIBGNOMEUI_LIBS)					\
 	$(GNOME_KEYRING_LIBS)				\
 	$(NM_LIBS) \
+	../libnma/libnma.la \
 	$(NULL)
 
 
-gladedir = $(datadir)/nm-editor
-glade_DATA = editor.glade
 desktopdatadir = $(datadir)/applications
 desktopdata_DATA = nm-editor.desktop
 
 CLEANFILES = $(server_DATA) *.bak *.gladep
 
 EXTRA_DIST = 				\
-	$(glade_DATA)			\
 	$(desktopdata_DATA)		\
 	$(NULL)
-
-

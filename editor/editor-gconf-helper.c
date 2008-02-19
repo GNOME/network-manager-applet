@@ -40,14 +40,15 @@
 #include "editor-gconf-helper.h"
 
 
-void eh_gconf_client_set_string(WE_DATA *we_data, gchar *subkey, gchar *value)
+void
+eh_gconf_client_set_string (WE_DATA *we_data, gchar *subkey, const gchar *value)
 {
-	gchar 	*key;
+	gchar *key;
 
-	key = g_strdup_printf("%s/%s", we_data->cur_gconf_dir, subkey);
-	gconf_client_set_string(we_data->gconf_client, key, value, NULL);
-	gconf_client_suggest_sync(we_data->gconf_client, NULL);
-	g_free(key);
+	key = g_strdup_printf ("%s/%s", we_data->cur_gconf_dir, subkey);
+	gconf_client_set_string (we_data->gconf_client, key, value, NULL);
+	gconf_client_suggest_sync (we_data->gconf_client, NULL);
+	g_free (key);
 }
 
 gchar *eh_gconf_client_get_string(WE_DATA *we_data, gchar *subkey)

@@ -33,9 +33,8 @@
 #include "cipher.h"
 #include "dbus-helpers.h"
 #include "NetworkManager.h"
+#include "libnma/libnma.h"
 
-#define WPA_EAP_NAME_COL		0
-#define WPA_EAP_VALUE_COL	1
 
 struct OptData
 {
@@ -237,16 +236,6 @@ wso_wpa_eap_new (const char *glade_file,
 	GtkCellRenderer *		renderer;
 	int					num_added;
 
-	struct {
-		const char *		name;
-		int				value;
-	} *list, eap_method_list[] = {
-		{ _("PEAP"),		NM_EAP_METHOD_PEAP },
-		{ _("TLS"),		NM_EAP_METHOD_TLS },
-		{ _("TTLS"),		NM_EAP_METHOD_TTLS },
-		{ NULL,			0 }
-	};
-
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
 	opt = g_malloc0 (sizeof (WirelessSecurityOption));
@@ -267,14 +256,7 @@ wso_wpa_eap_new (const char *glade_file,
 	}
 
 	eap_method_combo = glade_xml_get_widget (opt->uixml, "wpa_eap_eap_method_combo");
-	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_INT);
-	list = eap_method_list;
-	while (list->name)
-	{
-		gtk_list_store_append (model, &iter);
-		gtk_list_store_set (model, &iter, WPA_EAP_NAME_COL, list->name, WPA_EAP_VALUE_COL, list->value, -1);
-		list++;
-	}
+	model = wso_wpa_create_eap_method_model ();
 	gtk_combo_box_set_model (GTK_COMBO_BOX (eap_method_combo), GTK_TREE_MODEL (model));
 	gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter);
 	gtk_combo_box_set_active_iter (GTK_COMBO_BOX (eap_method_combo), &iter);
@@ -293,7 +275,7 @@ wso_wpa_eap_new (const char *glade_file,
 		gtk_widget_set_sensitive (key_type_combo, FALSE);
 
 	phase2_type_combo = glade_xml_get_widget (opt->uixml, "wpa_eap_phase2_type_combo");
-	tree_model = wso_wpa_create_phase2_type_model (capabilities, TRUE, &num_added);
+	tree_model = wso_wpa_create_phase2_type_model (capabilities, &num_added);
 	gtk_combo_box_set_model (GTK_COMBO_BOX (phase2_type_combo), tree_model);
 	gtk_tree_model_get_iter_first (tree_model, &iter);
 	gtk_combo_box_set_active_iter (GTK_COMBO_BOX (phase2_type_combo), &iter);

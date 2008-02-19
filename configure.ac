@@ -251,6 +251,7 @@ fi
 
 AC_OUTPUT([
 Makefile
+libnma/Makefile
 src/Makefile
 editor/Makefile
 icons/Makefile

@@ -33,6 +33,7 @@
 GtkWidget *get_wep_widget(WE_DATA *we_data);
 GtkWidget *get_wpa_personal_widget(WE_DATA *we_data);
 GtkWidget *get_wpa_enterprise_widget(WE_DATA *we_data);
+GtkWidget *get_leap_widget(WE_DATA *we_data);
 
 
 #endif // WIDGET_WSO_H
