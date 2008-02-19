@@ -1,109 +1,131 @@
 # Finnish messages for NetworkManager
-# Copyright (C) 2005 Ilkka Tuohela.
+# Copyright (C) 2005 Ilkka Tuohela, Timo Jyrinki.
 # This file is distributed under the same license as the NetworkManager package.
 #
-# Ilkka Tuohela <hile@iki.fi>, 2005.
+# Ilkka Tuohela <hile@iki.fi>, 2005-2008.
+# Timo Jyrinki <timo.jyrinki@iki.fi>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-10 22:42+0300\n"
-"PO-Revision-Date: 2007-03-10 22:44+0300\n"
-"Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
+"POT-Creation-Date: 2008-02-18 20:25+0200\n"
+"PO-Revision-Date: 2008-02-18 20:15+0200\n"
+"Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:937
+#: ../src/applet-compat.c:171 ../src/applet-compat.c:504
+#: ../src/nm-gconf-wso.c:387 ../editor/editor-keyring-helper.c:121
 #, c-format
 msgid "Passphrase for wireless network %s"
 msgstr "Langattoman verkon %s tunnuslause"
 
-#: ../src/applet-dbus-devices.c:898
+#. Save private_key_passwd to keyring
+#: ../src/applet-compat.c:459 ../src/nm-gconf-wso-wpa-eap.c:417
+#: ../editor/editor-keyring-helper.c:133
+#, c-format
+msgid "Private key password for wireless network %s"
+msgstr "Langattoman verkon %s salaisen avaimen salasana"
+
+#: ../src/applet-dbus-devices.c:919
 #, c-format
 msgid "You are now connected to the Ad-Hoc wireless network '%s'."
 msgstr "Yhteys langattomaan Ad-Hoc-verkkoon \"%s\" on nyt muodostettu."
 
-#: ../src/applet-dbus-devices.c:903
+#: ../src/applet-dbus-devices.c:922
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Yhteys langattomaan verkkoon \"%s\" on nyt muodostettu."
 
-#: ../src/applet-dbus-devices.c:910
+#: ../src/applet-dbus-devices.c:929
+msgid ""
+"You are now connected to the wired network with a self-assigned address."
+msgstr ""
+"Yhteys kiinteään verkkoon on nyt muodostettu itse määritellyllä osoitteella."
+
+#: ../src/applet-dbus-devices.c:933
+#, c-format
+msgid "You are now connected to the wired network '%s'."
+msgstr "Yhteys kiinteään verkkoon \"%s\" on nyt muodostettu."
+
+#: ../src/applet-dbus-devices.c:935
 msgid "You are now connected to the wired network."
 msgstr "Yhteys kiinteään verkkoon on nyt muodostettu."
 
-#: ../src/applet-dbus-devices.c:916
+#: ../src/applet-dbus-devices.c:943
 msgid "Connection Established"
 msgstr "Yhteys muodostettu"
 
-#: ../src/applet-dbus-devices.c:959
+#: ../src/applet-dbus-devices.c:986
 msgid "Disconnected"
 msgstr "Yhteys katkaistu"
 
-#: ../src/applet-dbus-devices.c:960
+#: ../src/applet-dbus-devices.c:987
 msgid "The network connection has been disconnected."
 msgstr "Yhteys verkkoon on katkaistu."
 
-#: ../src/applet-dbus.c:274
+#: ../src/applet-dbus.c:276
 #, c-format
 msgid "Connection to the wireless network '%s' failed."
 msgstr "Yhteys langattomaan verkkoon \"%s\" epäonnistui."
 
-#: ../src/applet-dbus.c:279
+#: ../src/applet-dbus.c:281
 msgid "Connection to the wired network failed."
 msgstr "Yhteys kiinteään verkkoon epäonnistui."
 
-#: ../src/applet.c:186
+#: ../src/applet.c:190
 msgid "Error displaying connection information:"
 msgstr "Virhe näytettäessä yhteyden tietoja:"
 
-#: ../src/applet.c:204
+#: ../src/applet.c:208
 msgid "Could not find some required resources (the glade file)!"
 msgstr "Joitain vaadittuja osia ei löytynyt (glade-tiedostoa)!"
 
-#: ../src/applet.c:215
+#: ../src/applet.c:219
 msgid "No active connections!"
 msgstr "Ei aktiivisia yhteyksiä!"
 
-#: ../src/applet.c:236
+#: ../src/applet.c:240
 #, c-format
 msgid "Wired Ethernet (%s)"
 msgstr "Kiinteä Ethernet-yhteys (%s)"
 
-#: ../src/applet.c:238
+#: ../src/applet.c:242
 #, c-format
 msgid "Wireless Ethernet (%s)"
 msgstr "Langaton Ethernet (%s)"
 
-#: ../src/applet.c:334 ../src/applet.c:360
+#: ../src/applet.c:339 ../src/applet.c:365
 msgid "NetworkManager Applet"
 msgstr "NetworkManager-sovelma"
 
-#: ../src/applet.c:336
+#: ../src/applet.c:341
 msgid ""
-"Copyright © 2004-2006 Red Hat, Inc.\n"
-"Copyright © 2005-2006 Novell, Inc."
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 msgstr ""
-"Copyright © 2004-2006 Red Hat, Inc.\n"
-"Copyright © 2005-2006 Novell, Inc."
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 
-#: ../src/applet.c:338 ../src/applet.c:364
+#: ../src/applet.c:343 ../src/applet.c:369
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Ilmoitusalueen sovelma verkkolaitteiden ja yhteyksien hallintaan."
 
-#: ../src/applet.c:341 ../src/applet.c:368
+#: ../src/applet.c:346 ../src/applet.c:373 ../editor/editor-app.c:267
+#: ../editor/editor-app.c:296
 msgid "translator-credits"
 msgstr ""
-"Ilkka Tuohela, 2005-2007.\n"
+"Timo Jyrinki, 2008.\n"
+"Ilkka Tuohela, 2005-2008.\n"
 "\n"
 "http://www.gnome.fi/"
 
-#: ../src/applet.c:362
+#: ../src/applet.c:367
 msgid ""
 "Copyright © 2004-2005 Red Hat, Inc.\n"
 "Copyright © 2005-2006 Novell, Inc."
@@ -111,20 +133,20 @@ msgstr ""
 "Copyright © 2004-2005 Red Hat, Inc.\n"
 "Copyright © 2005-2006 Novell, Inc."
 
-#: ../src/applet.c:424
+#: ../src/applet.c:429
 msgid "VPN Login Failure"
 msgstr "Virhe kirjauduttaessa VPN:ään"
 
-#: ../src/applet.c:425
+#: ../src/applet.c:430
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a login failure."
 msgstr "VPN-yhteyttä \"%s\" ei voitu käynnistää kirjautumisvirheen takia."
 
-#: ../src/applet.c:429
+#: ../src/applet.c:434
 msgid "VPN Start Failure"
 msgstr "VPN-yhteyden käynnistysvirhe"
 
-#: ../src/applet.c:430
+#: ../src/applet.c:435
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' due to a failure launching the VPN "
@@ -133,25 +155,25 @@ msgstr ""
 "VPN-yhteyttä \"%s\" ei voitu käynnistää, koska VPN-ohjelman suorittaminen "
 "epäonnistui."
 
-#: ../src/applet.c:434 ../src/applet.c:444
+#: ../src/applet.c:439 ../src/applet.c:449
 msgid "VPN Connect Failure"
 msgstr "VPN-yhteyden yhteydenottovirhe"
 
-#: ../src/applet.c:435
+#: ../src/applet.c:440
 #, c-format
 msgid "Could not start the VPN connection '%s' due to a connection error."
 msgstr "VPN-yhteyttä \"%s\" ei voitu käynnistää, koska tapahtui yhteysvirhe."
 
-#: ../src/applet.c:439
+#: ../src/applet.c:444
 msgid "VPN Configuration Error"
 msgstr "VPN-yhteyden asetusvirhe"
 
-#: ../src/applet.c:440
+#: ../src/applet.c:445
 #, c-format
 msgid "The VPN connection '%s' was not correctly configured."
 msgstr "VPN-yhteyden \"%s\" asetukset ovat virheelliset."
 
-#: ../src/applet.c:445
+#: ../src/applet.c:450
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' because the VPN server did not "
@@ -160,12 +182,12 @@ msgstr ""
 "VPN-yhteyttä \"%s\" ei voitu käynnistää, koska VPN-palvelin ei palauttanut "
 "kelvollista verkkomäärittelyä."
 
-#: ../src/applet.c:515
+#: ../src/applet.c:520
 msgid "VPN Login Message"
 msgstr "VPN-yhteyden kirjautumisviesti"
 
-#: ../src/applet.c:739 ../src/applet.c:2536 ../src/other-network-dialog.c:453
-#: ../src/passphrase-dialog.c:232
+#: ../src/applet.c:744 ../src/applet.c:2707 ../src/nm-wired-dialog.c:133
+#: ../src/other-network-dialog.c:455 ../src/passphrase-dialog.c:218
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -173,163 +195,178 @@ msgstr ""
 "NetworkManager-sovelma ei voinut ladata jotain vaadituista resursseista "
 "(glade-tiedostoa ei löytynyt)."
 
-#: ../src/applet.c:751
+#: ../src/applet.c:756
 #, c-format
 msgid "The network device \"%s (%s)\" does not support wireless scanning."
 msgstr "Verkkolaite \"%s (%s)\" ei tue langattomien verkkojen etsimistä."
 
-#: ../src/applet.c:759
+#: ../src/applet.c:764
 #, c-format
 msgid "The network device \"%s (%s)\" does not support link detection."
 msgstr "Verkkolaite \"%s (%s)\" ei tue verkkoyhteyden havaitsemista."
 
-#: ../src/applet.c:906
+#: ../src/applet.c:916
 #, c-format
 msgid "Preparing device %s for the wired network..."
 msgstr "Valmistellaan laitetta %s kiinteälle verkkoyhteydelle..."
 
-#: ../src/applet.c:908
+#: ../src/applet.c:918
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
 msgstr "Valmistellaan laitetta %s langattomalle verkolle \"%s\"..."
 
-#: ../src/applet.c:916
+#: ../src/applet.c:926
 #, c-format
 msgid "Configuring device %s for the wired network..."
 msgstr "Määritellään laitetta %s kiinteälle verkkoyhteydelle..."
 
-#: ../src/applet.c:918
+#: ../src/applet.c:928
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
 msgstr "Yritetään liittyä langattomaan verkkoon \"%s\"..."
 
-#: ../src/applet.c:926
+#: ../src/applet.c:936
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
 msgstr "Odotetaan verkon avainta langattomalle verkolle \"%s\""
 
-#: ../src/applet.c:934 ../src/applet.c:944
+#: ../src/applet.c:944 ../src/applet.c:954
+#, c-format
 msgid "Requesting a network address from the wired network..."
 msgstr "Pyydetään verkko-osoitetta kiinteästä verkosta..."
 
-#: ../src/applet.c:936 ../src/applet.c:946
+#: ../src/applet.c:946 ../src/applet.c:956
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Pyydetään verkko-osoitettta langattomasta verkosta \"%s\"..."
+msgstr "Pyydetään verkko-osoitetta langattomasta verkosta \"%s\"..."
 
-#: ../src/applet.c:954
+#: ../src/applet.c:964
+#, c-format
 msgid "Finishing connection to the wired network..."
 msgstr "Viimeistellään yhteyttä kiinteään verkkoon..."
 
-#: ../src/applet.c:956
+#: ../src/applet.c:966
 #, c-format
 msgid "Finishing connection to the wireless network '%s'..."
 msgstr "Viimeistellään yhteyttä langattomaan verkkoon \"%s\"..."
 
-#: ../src/applet.c:1073
+#: ../src/applet.c:1083
 msgid "NetworkManager is not running"
 msgstr "NetworkManager ei ole käytössä"
 
-#: ../src/applet.c:1081 ../src/applet.c:1828
+#: ../src/applet.c:1091 ../src/applet.c:1931
 msgid "Networking disabled"
 msgstr "Verkko ei ole käytössä"
 
-#: ../src/applet.c:1086
+#: ../src/applet.c:1096
 msgid "No network connection"
 msgstr "Ei verkkoyhteyttä"
 
-#: ../src/applet.c:1091
+#: ../src/applet.c:1104
+msgid "Wired network connection with a self-assigned address"
+msgstr "Kiinteä verkkoyhteys itse määritellyllä osoitteella"
+
+#: ../src/applet.c:1106
 msgid "Wired network connection"
 msgstr "Kiinteä verkkoyhteys"
 
-#: ../src/applet.c:1095
+#: ../src/applet.c:1109
 msgid "Connected to an Ad-Hoc wireless network"
 msgstr "Yhteys langattomaan Ad-Hoc-verkkoon"
 
-#: ../src/applet.c:1097
+#: ../src/applet.c:1111
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
 msgstr "Langaton verkkoyhteys \"%s\" (%d%%)"
 
-#: ../src/applet.c:1118
+#: ../src/applet.c:1132
 #, c-format
 msgid "VPN connection to '%s'"
 msgstr "VPN-yhteys \"%s\""
 
-#: ../src/applet.c:1126
+#: ../src/applet.c:1140
 #, c-format
 msgid "VPN connecting to '%s'"
 msgstr "VPN-yhteyttä \"%s\" avataan"
 
-#: ../src/applet.c:1539
+#: ../src/applet.c:1595
 msgid "_Connect to Other Wireless Network..."
 msgstr "_Yhdistä muihin langattomiin verkkoihin..."
 
-#: ../src/applet.c:1560
+#: ../src/applet.c:1622
 msgid "Create _New Wireless Network..."
 msgstr "Luo _uusi langaton verkko..."
 
-#: ../src/applet.c:1683
+#: ../src/applet.c:1642
+msgid "Connect to 802.1X _Protected Wired Network..."
+msgstr "Yhdistä 802.1X-_suojattuihin langattomiin verkkoihin..."
+
+#: ../src/applet.c:1785
 msgid "_VPN Connections"
 msgstr "_VPN-yhteydet"
 
-#: ../src/applet.c:1728
+#: ../src/applet.c:1830
 msgid "_Configure VPN..."
 msgstr "_Määrittele VPN-yhteys..."
 
-#: ../src/applet.c:1732
+#: ../src/applet.c:1834
 msgid "_Disconnect VPN..."
 msgstr "_Katkaise VPN-yhteys..."
 
-#: ../src/applet.c:1754
+#: ../src/applet.c:1856
 msgid "_Dial Up Connections"
 msgstr "_Modeemiyhteydet"
 
 #. FIXME: We should save and then check the state of the devices and show Connect _or_ Disconnect for each item
-#: ../src/applet.c:1765
+#: ../src/applet.c:1867
 #, c-format
 msgid "Connect to %s..."
 msgstr "Ota yhteyttä kohteeseen %s..."
 
-#: ../src/applet.c:1772
+#: ../src/applet.c:1874
 #, c-format
 msgid "Disconnect from %s..."
 msgstr "Katkaise yhteys kohteeseen %s..."
 
-#: ../src/applet.c:1822
+#: ../src/applet.c:1925
 msgid "No network devices have been found"
 msgstr "Verkkolaitteita ei löytynyt"
 
-#: ../src/applet.c:2014
+#: ../src/applet.c:2138
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager ei ole käytössä..."
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2193
+#: ../src/applet.c:2320
 msgid "Enable _Networking"
 msgstr "Ota _verkko käyttöön"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2199
+#: ../src/applet.c:2326
 msgid "Enable _Wireless"
 msgstr "Ota _langaton käyttöön"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2205
+#: ../src/applet.c:2335
 msgid "Connection _Information"
 msgstr "Tietoja _yhteydestä"
 
+#. Edit networks item
+#: ../src/applet.c:2342
+msgid "_Edit Wireless Networks..."
+msgstr "_Muokkaa langattomia verkkoja..."
+
 #. Help item
-#: ../src/applet.c:2216
+#: ../src/applet.c:2353
 msgid "_Help"
 msgstr "O_hje"
 
 #. About item
-#: ../src/applet.c:2225
+#: ../src/applet.c:2362
 msgid "_About"
 msgstr "_Tietoja"
 
-#: ../src/applet.c:2697
+#: ../src/applet.c:2877
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -390,19 +427,19 @@ msgstr ""
 "tämä langaton verkko on turvallinen, napsauta alla olevaa ruutua ja "
 "NetworkManager ei kysy tätä vahvistusikkunaa enää uudestaan."
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:15 ../editor/editor.glade.h:3
 msgid "Anonymous Identity:"
 msgstr "Anonyymi tunniste:"
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:16 ../editor/editor.glade.h:4
 msgid "Authentication:"
-msgstr "Tunnistautuminen:"
+msgstr "Todentaminen:"
 
 #: ../src/applet.glade.h:17
 msgid "Broadcast Address:"
 msgstr "Broadcast-osoite:"
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:18 ../editor/editor.glade.h:12
 msgid "CA Certificate File:"
 msgstr "CA-varmenteen tiedosto:"
 
@@ -410,7 +447,7 @@ msgstr "CA-varmenteen tiedosto:"
 msgid "C_onnect"
 msgstr "_Yhdistä"
 
-#: ../src/applet.glade.h:20
+#: ../src/applet.glade.h:20 ../editor/editor.glade.h:13
 msgid "Client Certificate File:"
 msgstr "Asiakasvarmenteen tiedosto:"
 
@@ -430,7 +467,7 @@ msgstr "Kohdeosoite:"
 msgid "Driver:"
 msgstr "Ajuri:"
 
-#: ../src/applet.glade.h:25
+#: ../src/applet.glade.h:25 ../editor/editor.glade.h:14
 msgid "EAP Method:"
 msgstr "EPA-menetelmä:"
 
@@ -442,7 +479,7 @@ msgstr "Laiteosoite:"
 msgid "IP Address:"
 msgstr "IP-osoite:"
 
-#: ../src/applet.glade.h:28
+#: ../src/applet.glade.h:28 ../editor/editor.glade.h:20
 msgid "Identity:"
 msgstr "Tunniste:"
 
@@ -450,15 +487,15 @@ msgstr "Tunniste:"
 msgid "Interface:"
 msgstr "Verkkolaite:"
 
-#: ../src/applet.glade.h:30
+#: ../src/applet.glade.h:30 ../editor/editor.glade.h:21
 msgid "Key Type:"
 msgstr "Avaimen tyyppi:"
 
 #: ../src/applet.glade.h:31
 msgid "Key management:"
-msgstr "Avainten hallinta:"
+msgstr "Avaintenhallinta:"
 
-#: ../src/applet.glade.h:32
+#: ../src/applet.glade.h:32 ../editor/editor.glade.h:22
 msgid "Key:"
 msgstr "Avain:"
 
@@ -474,7 +511,7 @@ msgstr ""
 "WEP 64/128-bittinen heksadesimaali\n"
 "WEP 64/128-bittinen ASCII\n"
 
-#: ../src/applet.glade.h:38
+#: ../src/applet.glade.h:38 ../editor/editor.glade.h:37
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -490,7 +527,7 @@ msgstr "Muu langaton verkko..."
 msgid "Passphrase:"
 msgstr "Tunnuslause:"
 
-#: ../src/applet.glade.h:42
+#: ../src/applet.glade.h:42 ../editor/editor.glade.h:39
 msgid "Password:"
 msgstr "Salasana:"
 
@@ -502,11 +539,11 @@ msgstr "Vaiheen 2 tyyppi:"
 msgid "Primary DNS:"
 msgstr "Ensisijainen DNS:"
 
-#: ../src/applet.glade.h:45
+#: ../src/applet.glade.h:45 ../editor/editor.glade.h:40
 msgid "Private Key File:"
 msgstr "Salausavaimen tiedosto"
 
-#: ../src/applet.glade.h:46
+#: ../src/applet.glade.h:46 ../editor/editor.glade.h:41
 msgid "Private Key Password:"
 msgstr "Salausavaimen salasana:"
 
@@ -514,15 +551,15 @@ msgstr "Salausavaimen salasana:"
 msgid "Secondary DNS:"
 msgstr "Toissijainen DNS:"
 
-#: ../src/applet.glade.h:48
+#: ../src/applet.glade.h:48 ../editor/editor.glade.h:44
 msgid "Select the CA Certificate File"
 msgstr "Valise CA-varmenteen tiedosto"
 
-#: ../src/applet.glade.h:49
+#: ../src/applet.glade.h:49 ../editor/editor.glade.h:45
 msgid "Select the Client Certificate File"
 msgstr "Valitse asiakasvarmenteen tiedosto"
 
-#: ../src/applet.glade.h:50
+#: ../src/applet.glade.h:50 ../editor/editor.glade.h:46
 msgid "Select the Private Key File"
 msgstr "Valitse salaisen avaimen tiedosto"
 
@@ -538,7 +575,7 @@ msgstr "Näytä tunnuslause:"
 msgid "Show password"
 msgstr "Näytä salasana"
 
-#: ../src/applet.glade.h:54
+#: ../src/applet.glade.h:54 ../editor/editor.glade.h:52
 msgid "Show passwords"
 msgstr "Näytä salasanat"
 
@@ -550,7 +587,7 @@ msgstr "Nopeus:"
 msgid "Subnet Mask:"
 msgstr "Aliverkkopeite:"
 
-#: ../src/applet.glade.h:57
+#: ../src/applet.glade.h:57 ../editor/editor.glade.h:53
 msgid "Type:"
 msgstr "Tyyppi:"
 
@@ -620,7 +657,37 @@ msgstr[1] "Langattomat verkot"
 msgid " (invalid Unicode)"
 msgstr " (virheellistä Unicodea)"
 
-#: ../src/other-network-dialog.c:352
+#: ../src/nm-wired-dialog.c:143
+msgid "Connect to 802.1X protected wired network"
+msgstr "Yhteys 802.1X-suojattuun langattomaan verkkoon"
+
+#: ../src/nm-wired-dialog.c:152
+#, c-format
+msgid ""
+"<span size=\"larger\" weight=\"bold\">Connect to a 802.1X protected wired "
+"network</span>\n"
+"\n"
+"A passphrase or encryption key is required to access the network '%s'."
+msgstr ""
+"<span weight=\"bold\" size=\"larger\">Yhdistä 802.1X-suojattuun "
+"langattomaan verkkoon</span>\n"
+"\n"
+"Tunnuslause tai salausavain vaaditaan, jotta voit ottaa yhteyttä "
+"langattomaan verkkoon \"%s\"."
+
+#: ../src/nm-wired-dialog.c:157
+msgid ""
+"<span size=\"larger\" weight=\"bold\">Connect to a 802.1X protected wired "
+"network</span>\n"
+"\n"
+"Enter the name and security settings of the network you wish to join."
+msgstr ""
+"<span size=\"larger\" weight=\"bold\">Yhdistä 802.1X-suojattuun "
+"langattomaan verkkoon</span>\n"
+"\n"
+"Syötä yhdistettävän verkon nimi ja salausasetukset."
+
+#: ../src/other-network-dialog.c:354
 #, c-format
 msgid ""
 "By default, the wireless network's name is set to your computer's name, %s, "
@@ -629,37 +696,37 @@ msgstr ""
 "Oletuksena langattoman verkon nimi asetetaan samaksi kuin tietokoneesi nimi "
 "\"%s\" ja salaus on poissa käytöstä"
 
-#: ../src/other-network-dialog.c:358
+#: ../src/other-network-dialog.c:360
 msgid "Create new wireless network"
 msgstr "Luo uusi langaton verkko"
 
-#: ../src/other-network-dialog.c:359
+#: ../src/other-network-dialog.c:361
 msgid ""
 "Enter the name and security settings of the wireless network you wish to "
 "create."
 msgstr "Syötä luotavan langattoman verkon nimi ja turva-asetukset."
 
-#: ../src/other-network-dialog.c:363
+#: ../src/other-network-dialog.c:365
 msgid "Create New Wireless Network"
 msgstr "Luo uusi langaton verkko"
 
-#: ../src/other-network-dialog.c:368
+#: ../src/other-network-dialog.c:370
 msgid "Existing wireless network"
 msgstr "Olemassaoleva langaton verkko"
 
-#: ../src/other-network-dialog.c:369
+#: ../src/other-network-dialog.c:371
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Syötä sen langattoman verkon nimi, johon haluat ottaa yhteyttä."
 
-#: ../src/other-network-dialog.c:371
+#: ../src/other-network-dialog.c:373
 msgid "Connect to Other Wireless Network"
 msgstr "Ota yhteyttä muuhun langattomaan verkkoon"
 
-#: ../src/passphrase-dialog.c:219
+#: ../src/passphrase-dialog.c:205
 msgid "Error connecting to wireless network"
 msgstr "Virhe yhdistettäessä langattomaan verkkoon"
 
-#: ../src/passphrase-dialog.c:220
+#: ../src/passphrase-dialog.c:206
 msgid ""
 "The requested wireless network requires security capabilities unsupported by "
 "your hardware."
@@ -686,7 +753,7 @@ msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
 "type '%s'. Contact your system administrator."
 msgstr ""
-"Virhe käynnistettäessä kirjatumisikkunaa VPN-yhteyden tyypille \"%s\". Ota "
+"Virhe käynnistettäessä kirjautumisikkunaa VPN-yhteyden tyypille \"%s\". Ota "
 "yhteyttä järjestelmäsi ylläpitäjään."
 
 #: ../src/wireless-security-option.c:157
@@ -733,15 +800,15 @@ msgstr "MSCHAPV2"
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wso-none.c:53
+#: ../src/wso-none.c:53 ../editor/editor-app.c:374
 msgid "None"
 msgstr "Ei mitään"
 
-#: ../src/wso-wep-ascii.c:138
+#: ../src/wso-wep-ascii.c:172
 msgid "WEP 64/128-bit ASCII"
 msgstr "WEP 64/128-bittinen ASCII"
 
-#: ../src/wso-wep-hex.c:135
+#: ../src/wso-wep-hex.c:169
 msgid "WEP 64/128-bit Hex"
 msgstr "WEP 64/128-bittinen heksadesimaali"
 
@@ -761,31 +828,690 @@ msgstr "TLS"
 msgid "TTLS"
 msgstr "TTLS"
 
-#: ../src/wso-wpa-eap.c:254
+#: ../src/wso-wpa-eap.c:254 ../editor/editor-app.c:404
 msgid "WPA2 Enterprise"
 msgstr "WPA2 Enterprise"
 
-#: ../src/wso-wpa-eap.c:256
+#: ../src/wso-wpa-eap.c:256 ../editor/editor-app.c:399
 msgid "WPA Enterprise"
 msgstr "WPA Enterprise"
 
-#: ../src/wso-wpa-psk.c:178
+#: ../src/wso-wpa-psk.c:178 ../editor/editor-app.c:394
 msgid "WPA2 Personal"
 msgstr "WPA2 (henkilökohtainen)"
 
-#: ../src/wso-wpa-psk.c:180
+#: ../src/wso-wpa-psk.c:180 ../editor/editor-app.c:389
 msgid "WPA Personal"
 msgstr "WPA (henkilökohtainen)"
 
-#~ msgid "Cannot add VPN connection"
-#~ msgstr "VPN-yhteyttä ei voitu lisätä"
+#: ../editor/editor-app.c:261 ../editor/editor-app.c:288
+msgid "NetworkManager Editor"
+msgstr "NetworkManager-muokkain"
+
+#: ../editor/editor-app.c:263 ../editor/editor-app.c:290
+msgid "Copyright © 2007 Novell, Inc."
+msgstr "Tekijänoikeudet © 2007 Novell, Inc."
+
+#: ../editor/editor-app.c:264
+msgid "Editor for managing your wireless networks"
+msgstr "Langattomien verkkojen hallintamuokkain"
+
+#: ../editor/editor-app.c:291
+msgid "Editor for managing your wireless networks."
+msgstr "Langattomien verkkojen hallintamuokkain."
+
+#: ../editor/editor-app.c:379
+msgid "WEP 64-bit"
+msgstr "WEP 64-bittinen"
+
+#: ../editor/editor-app.c:384
+msgid "WEP 128-bit"
+msgstr "WEP 128-bittinen"
+
+#: ../editor/widget-wso-wep.c:77
+msgid "Key"
+msgstr "Avain"
+
+#: ../editor/widget-wso-wep.c:80 ../editor/editor.glade.h:58
+msgid "_Show Key"
+msgstr "_Näytä avain"
+
+#: ../editor/widget-wso-wep.c:138 ../editor/widget-wso-wpa-personal.c:138
+msgid "Unable to read key"
+msgstr "Avainta ei voi lukea"
+
+#: ../editor/widget-wso-wep.c:181
+msgid "Hex"
+msgstr "Hex"
+
+#: ../editor/widget-wso-wep.c:186
+msgid "ASCII"
+msgstr "ASCII"
+
+#: ../editor/widget-wso-wep.c:194
+msgid "Passphrase"
+msgstr "Tunnuslause"
+
+#: ../editor/widget-wso-wep.c:224
+msgid "Unable to set key"
+msgstr "Avainta ei voi asettaa"
+
+#: ../editor/widget-wso-wep.c:227
+#, c-format
+msgid ""
+"There was a problem setting the wireless key to the gnome keyring. Error 0x%"
+"02X."
+msgstr ""
+"Tapahtui virhe tallennettaessa avainta gnomen avainnippuun. Virhe 0x%02X."
+
+#: ../editor/widget-wso-wpa-enterprise.c:447
+#: ../editor/widget-wso-wpa-enterprise.c:491
+#: ../editor/widget-wso-wpa-personal.c:191
+msgid "Unable to set password"
+msgstr "Salasanaa ei voi asettaa"
+
+#: ../editor/widget-wso-wpa-enterprise.c:450
+#: ../editor/widget-wso-wpa-enterprise.c:494
+#, c-format
+msgid ""
+"There was a problem storing the private password in the gnome keyring. Error "
+"0x%02X."
+msgstr ""
+"Tapahtui virhe tallennettaessa yksityistä salasanaa gnomen avainnippuun. Virhe "
+"0x%02X."
+
+#: ../editor/widget-wso-wpa-personal.c:194
+#, c-format
+msgid ""
+"There was a problem storing the password in the gnome keyring. Error 0x%02X."
+msgstr ""
+"Tapahtui virhe tallennettaessa salasanaa gnomen avainnippuun. Virhe 0x%02X."
+
+#: ../editor/editor.glade.h:1
+msgid "Access Point:"
+msgstr "Liityntäpiste:"
+
+#: ../editor/editor.glade.h:2
+msgid "Access points"
+msgstr "Liityntäpisteet"
+
+#: ../editor/editor.glade.h:5
+msgid ""
+"Automatic (Default)\n"
+"AES-CCMP\n"
+"TKIP"
+msgstr ""
+"Automaattinen (oletus)\n"
+"AES-CCMP\n"
+"TKIP"
+
+#: ../editor/editor.glade.h:8
+msgid ""
+"Automatic (Default)\n"
+"AES-CCMP\n"
+"TKIP\n"
+"Dynamic WEP"
+msgstr ""
+"Automaattinen (oletus)\n"
+"AES-CCMP\n"
+"TKIP\n"
+"Dynaaminen WEP"
+#: ../editor/editor.glade.h:15
+msgid "Edit Access Point"
+msgstr "Muokkaa liityntäpistettä"
+
+#: ../editor/editor.glade.h:16
+msgid "Format:"
+msgstr "Muoto:"
+
+#: ../editor/editor.glade.h:17
+msgid ""
+"Hex\n"
+"ASCII\n"
+"Passphrase"
+msgstr ""
+"Heksadesimaali\n"
+"ASCII\n"
+"Tunnuslause"
+
+#: ../editor/editor.glade.h:23
+msgid "Last Used:"
+msgstr "Viimeksi käytetty:"
+
+#: ../editor/editor.glade.h:24
+msgid ""
+"MD5\n"
+"MSCHAPv2\n"
+"OTP\n"
+"GTC\n"
+"PEAP\n"
+"TLS\n"
+"TTLS"
+msgstr ""
+"MD5\n"
+"MSCHAPv2\n"
+"OTP\n"
+"GTC\n"
+"PEAP\n"
+"TLS\n"
+"TTLS"
+
+#: ../editor/editor.glade.h:31
+msgid "Name:"
+msgstr "Nimi:"
+
+#: ../editor/editor.glade.h:32
+msgid ""
+"None\n"
+"WEP 128-bit Passphrase\n"
+"WEB 64/128 bit Hex\n"
+"WEP 64/128-bit ASCII\n"
+msgstr ""
+"Ei mitään\n"
+"WEP 128-bittinen tunnuslause\n"
+"WEP 64/128-bittinen heksadesimaali\n"
+"WEP 64/128-bittinen ASCII\n"
+
+#: ../editor/editor.glade.h:42
+msgid "Properties"
+msgstr "Ominaisuudet"
+
+#: ../editor/editor.glade.h:43
+msgid "Security:"
+msgstr "Tietoturva:"
+
+#: ../editor/editor.glade.h:47
+msgid "Set Password"
+msgstr "Aseta salasana"
+
+#: ../editor/editor.glade.h:48
+msgid "Set WEP Key"
+msgstr "Aseta WEP-avain"
+
+#: ../editor/editor.glade.h:49
+msgid "Set _Key"
+msgstr "Aseta _avain"
+
+#: ../editor/editor.glade.h:50
+msgid "Set _Password"
+msgstr "Aseta _salasana"
+
+#: ../editor/editor.glade.h:51
+msgid "Show Password"
+msgstr "Näytä salasana"
+
+#: ../editor/editor.glade.h:54
+msgid "Wireless Networks"
+msgstr "Langattomat verkot"
+
+#: ../editor/editor.glade.h:55
+msgid "_Add"
+msgstr "_Lisää"
+
+#: ../editor/editor.glade.h:56
+msgid "_Edit"
+msgstr "_Muokkaa"
+
+#: ../editor/editor.glade.h:57
+msgid "_Remove"
+msgstr "_Poista"
+
+#: ../editor/editor.glade.h:59
+msgid "bssid editor"
+msgstr "bssid-editori"
+
+#: ../editor/editor.glade.h:60
+msgid "bssids:"
+msgstr "bssid:t:"
+
+#: ../editor/editor.glade.h:61
+msgid "wpa_eap_subwindow"
+msgstr "wep_eap_ali-ikkuna"
+
+#: ../editor/editor.glade.h:62
+msgid "wpa_psk_subwindow"
+msgstr "wpa_psk_ali-ikkuna"
+
+#~ msgid "Auto CDMA network connection"
+#~ msgstr "Automaattinen CDMA-verkkoyhteys"
+
+#~ msgid "Disconnect..."
+#~ msgstr "Katkaise..."
+
+#~ msgid "CDMA Connections (%s)"
+#~ msgstr "CDMA-yhteydet (%s)"
+
+#~ msgid "CDMA Network (%s)"
+#~ msgstr "CDMA-verkko (%s)"
+
+#~ msgid "CDMA Connections"
+#~ msgstr "CDMA-yhteydet"
+
+#~ msgid "CDMA Network"
+#~ msgstr "CDMA-verkko"
+
+#~ msgid "You are now connected to the CDMA network."
+#~ msgstr "Yhteys CDMA-verkkoon on nyt muodostettu."
+
+#~ msgid "Dialing CDMA device %s..."
+#~ msgstr "Soitetaan CDMA-laitteella %s..."
+
+#~ msgid "Running PPP on device %s..."
+#~ msgstr "Suoritetaan PPP laitteella %s..."
+
+#~ msgid "CDMA connection"
+#~ msgstr "CDMA-yhteys"
+
+#~ msgid "Auto GSM network connection"
+#~ msgstr "Automaattinen GSM-verkkoyhteys"
+
+#~ msgid "GSM Connections (%s)"
+#~ msgstr "GSM-yhteydet (%s)"
+
+#~ msgid "GSM Network (%s)"
+#~ msgstr "GSM-verkko (%s)"
+
+#~ msgid "GSM Connections"
+#~ msgstr "GSM-yhteydet"
+
+#~ msgid "GSM Network"
+#~ msgstr "GSM-verkko"
+
+#~ msgid "You are now connected to the GSM network."
+#~ msgstr "Yhteys GSM-verkkoon on nyt muodostettu."
+
+#~ msgid "Dialing GSM device %s..."
+#~ msgstr "Soitetaan GSM-laitteella %s..."
+
+#~ msgid "GSM connection"
+#~ msgstr "GSM-yhteys"
+
+#~ msgid "Auto Ethernet"
+#~ msgstr "Automaattinen Ethernet"
+
+#~ msgid "Wired Networks (%s)"
+#~ msgstr "Kiinteät verkkoyhteydet (%s)"
+
+#~ msgid "Wired Networks"
+#~ msgstr "Kiinteät verkkoyhteydet"
+
+#~ msgid "Wireless Networks (%s)"
+#~ msgstr "Langattomat verkot (%s)"
+
+#~ msgid "(none)"
+#~ msgstr "(ei mitään)"
+
+#~ msgid "Wireless network connection to '%s'"
+#~ msgstr "Langaton verkkoyhteys  \"%s\""
+
+#~ msgid "WPA/WPA2"
+#~ msgstr "WPA/WPA2"
+
+#~ msgid "Unknown"
+#~ msgstr "Tuntematon"
+
+#~ msgid "Ethernet (%s)"
+#~ msgstr "Ethernet (%s)"
+
+#~ msgid "802.11 WiFi (%s)"
+#~ msgstr "802.11 WiFi (%s)"
+
+#~ msgid "GSM (%s)"
+#~ msgstr "GSM (%s)"
+
+#~ msgid "CDMA (%s)"
+#~ msgstr "CDMA (%s)"
+
+#~ msgid "WEP"
+#~ msgstr "WEP"
+
+#~ msgid "%u Mb/s"
+#~ msgstr "%u Mb/s"
+
+#~ msgid "Edit Connections..."
+#~ msgstr "Muokkaa yhteyksiä..."
+
+#~ msgid "CA Certificate:"
+#~ msgstr "CA-varmenne:"
+
+#~ msgid "Inner Authentication:"
+#~ msgstr "Sisempi todentaminen:"
+
+#~ msgid "No"
+#~ msgstr "Ei"
+
+#~ msgid "PEAP Version:"
+#~ msgstr "PEAP-versio:"
+
+#~ msgid "Select A File"
+#~ msgstr "Valitse tiedosto"
+
+#~ msgid "User Certificate:"
+#~ msgstr "Käyttäjävarmenne:"
 
 #~ msgid ""
-#~ "No suitable VPN software was found on your system. Contact your system "
-#~ "administrator."
+#~ "Version 0\n"
+#~ "Version 1"
 #~ msgstr ""
-#~ "Sopivaa VPN-ohjelmistoa ei löytynyt järjestelmästäsi. Ota yhteyttä "
-#~ "järjestelmäsi ylläpitäjään."
+#~ "Versio 0\n"
+#~ "Versio 1"
+
+#~ msgid "Yes"
+#~ msgstr "Kyllä"
+
+#~ msgid "alert text"
+#~ msgstr "hälytysteksti"
+
+#~ msgid "<b>DNS Servers</b>"
+#~ msgstr "<b>DNS-palvelimet</b>"
+
+#~ msgid "<b>Search Domains</b>"
+#~ msgstr "<b>Haettavat aluenimet</b>"
+
+#~ msgid "_Manual configuration"
+#~ msgstr "_Manuaaliset asetukset"
+
+#~ msgid "Aut_onegotiate"
+#~ msgstr "Neuv_ottele automaattisesti"
+
+#~ msgid "Full duple_x"
+#~ msgstr "Kaksisuuntainen duple_ksi"
+
+#~ msgid "MT_U:"
+#~ msgstr "MT_U:"
+
+#~ msgid "_MAC address:"
+#~ msgstr "_MAC-osoite:"
+
+#~ msgid "_Speed:"
+#~ msgstr "Nopeu_s:"
+
+#~ msgid ""
+#~ "default\n"
+#~ "10 Mb/s\n"
+#~ "100 Mb/s\n"
+#~ "1 Gb/s\n"
+#~ "10 Gb/s"
+#~ msgstr ""
+#~ "oletus\n"
+#~ "10 Mb/s\n"
+#~ "100 Mb/s\n"
+#~ "1 Gb/s\n"
+#~ "10 Gb/s"
+
+#~ msgid ""
+#~ "default\n"
+#~ "Twisted Pair (TP)\n"
+#~ "Attachment Unit Interface (AUI)\n"
+#~ "BNC\n"
+#~ "Media Independent Interface (MII)"
+#~ msgstr ""
+#~ "oletus\n"
+#~ "Kerrattu johdinpari (TP)Attachment Unit Interface (AUI)\n"
+#~ "BNC\n"
+#~ "Media Independent Interface (MII)"
+
+#~ msgid "Ban_d:"
+#~ msgstr "Taajuus_alue"
+
+#~ msgid "C_hannel:"
+#~ msgstr "_Kanava"
+
+#~ msgid ""
+#~ "Infrastructure\n"
+#~ "Adhoc"
+#~ msgstr ""
+#~ "Infrastruktuuri\n"
+#~ "Adhoc"
+
+#~ msgid "M_ode:"
+#~ msgstr "M_enetelmä:"
+
+#~ msgid "Transmission po_wer:"
+#~ msgstr "Lähetyste_ho:"
+
+#~ msgid "_BSSID:"
+#~ msgstr "_BSSID:"
+
+#~ msgid "_Rate:"
+#~ msgstr "_Nopeus:"
+
+#~ msgid "_SSID:"
+#~ msgstr "_SSID:"
+
+#~ msgid ""
+#~ "default\n"
+#~ "A (5 GHz)\n"
+#~ "B/G (2.4 GHz)"
+#~ msgstr ""
+#~ "oletus\n"
+#~ "A (5 GHz)\n"
+#~ "B/G (2.4 GHz)"
+
+#~ msgid "IPv4 Addresses"
+#~ msgstr "IPv4-osoitteet"
+
+#~ msgid "IPv4 Settings"
+#~ msgstr "IPv4-asetukset"
+
+#~ msgid "Wired"
+#~ msgstr "Kiinteä"
+
+#~ msgid "default"
+#~ msgstr "oletus"
+
+#~ msgid "%u (%u MHz)"
+#~ msgstr "%u (%u MHz)"
+
+#~ msgid "Wireless"
+#~ msgstr "Langaton"
+
+#~ msgid "Wireless Security"
+#~ msgstr "Langaton tietoturva"
+
+#~ msgid "WEP 40/128-bit Hexadecimal"
+#~ msgstr "WEP 40/128-bittinen heksadesimaali"
+
+#~ msgid "WEP 40/128-bit ASCII"
+#~ msgstr "WEP 40/128-bittinen ASCII"
+
+#~ msgid "LEAP"
+#~ msgstr "LEAP"
+
+#~ msgid "Dynamic WEP (802.1x)"
+#~ msgstr "Dynaaminen WEP (802.1x)"
+
+#~ msgid "WPA & WPA2 Enterprise"
+#~ msgstr "WPA2 Enterprise"
+
+#~ msgid "Editing %s"
+#~ msgstr "Muokataan %s"
+
+#~ msgid "Editing unamed connection"
+#~ msgstr "Muokkaa nimeämätöntä yhteyttä"
+
+#~ msgid ""
+#~ "The connection editor could not find some required resources (the "
+#~ "NetworkManager applet glade file was not found)."
+#~ msgstr ""
+#~ "Yhteyseditori ei voinut ladata jotain vaadituista resursseista "
+#~ "(NetworkManager-sovelman glade-tiedostoa ei löytynyt)."
+
+#~ msgid ""
+#~ "The connection editor could not find some required resources (the glade "
+#~ "file was not found)."
+#~ msgstr ""
+#~ "Yhteyseditori ei voinut ladata jotain vaadituista resursseista (glade-"
+#~ "tiedostoa ei löytynyt)."
+
+#~ msgid "Connect _automatically"
+#~ msgstr "Yhdistä _automaattisesti"
+
+#~ msgid "Connection Editor"
+#~ msgstr "Yhteyseditori"
+
+#~ msgid "Connection _name:"
+#~ msgstr "Yhteyden _nimi:"
+
+#~ msgid "Mobile Broadband"
+#~ msgstr "Mobiililaajakaista"
+
+#~ msgid "Network Connections"
+#~ msgstr "Verkkoyhteydet"
+
+#~ msgid "VPN"
+#~ msgstr "VPN"
+
+#~ msgid "Are you sure you wish to delete the connection %s?"
+#~ msgstr "Haluatko varmasti poistaa yhteyden %s?"
+
+#~ msgid "never"
+#~ msgstr "ei koskaan"
+
+#~ msgid "now"
+#~ msgstr "nyt"
+
+#~ msgid "%d minute ago"
+#~ msgid_plural "%d minutes ago"
+#~ msgstr[0] "%d minuutti sitten"
+#~ msgstr[1] "%d minuuttia sitten"
+
+#~ msgid "%d hour ago"
+#~ msgid_plural "%d hours ago"
+#~ msgstr[0] "%d tunti sitten"
+#~ msgstr[1] "%d tuntia sitten"
+
+#~ msgid "%d day ago"
+#~ msgid_plural "%d days ago"
+#~ msgstr[0] "%d päivä sitten"
+#~ msgstr[1] "%d päivää sitten"
+
+#~ msgid "%d month ago"
+#~ msgid_plural "%d months ago"
+#~ msgstr[0] "%d kuukausi sitten"
+#~ msgstr[1] "%d kuukautta sitten"
+
+#~ msgid "%d year ago"
+#~ msgid_plural "%d years ago"
+#~ msgstr[0] "%d vuosi sitten"
+#~ msgstr[1] "%d vuotta sitten"
+
+#~ msgid "PEM key file had no end tag '%s'."
+#~ msgstr "PEM-avaintiedostossa ei ollut lopetusmerkintää \"%s\"."
+
+#~ msgid "Doesn't look like a PEM private key file."
+#~ msgstr "Ei näytä salaiselta PEM-avaintiedostolta"
+
+#~ msgid "Not enough memory to store PEM file data."
+#~ msgstr "Muistia ei ole tarpeeksi tallentamaan PEM-tiedoston tiedot."
+
+#~ msgid "Malformed PEM file: Proc-Type was not first tag."
+#~ msgstr ""
+#~ "Virheellisesti muotoiltu PEM-tiedosto: Proc-Type ei ollut ensimmäinen "
+#~ "merkintä."
+
+#~ msgid "Malformed PEM file: unknown Proc-Type tag '%s'."
+#~ msgstr ""
+#~ "Virheellisesti muotoiltu PEM-tiedosto: Proc-Type-merkintä \"%s\" "
+#~ "tuntematon."
+
+#~ msgid "Malformed PEM file: DEK-Info was not the second tag."
+#~ msgstr ""
+#~ "Virheellisesti muotoiltu PEM-tiedosto: DEK-Info ei ollut toisena "
+#~ "merkintänä."
+
+#~ msgid "Malformed PEM file: no IV found in DEK-Info tag."
+#~ msgstr ""
+#~ "Virheellisesti muotoiltu PEM-tiedosto: DEK-Info-merkinnästä ei löytynyt "
+#~ "IV-kohtaa."
+
+#~ msgid "Malformed PEM file: invalid format of IV in DEK-Info tag."
+#~ msgstr ""
+#~ "Virheellisesti muotoiltu PEM-tiedosto: Epäkelpo IV-muoto DEK-Info-"
+#~ "merkinnässä."
+
+#~ msgid "Malformed PEM file: unknown private key cipher '%s'."
+#~ msgstr ""
+#~ "Virheellisesti muotoiltu PEM-tiedosto: tuntematon salaisen avaimen "
+#~ "salaustapa \"%s\"."
+
+#~ msgid "Could not decode private key."
+#~ msgstr "Salaista avainta ei voi purkaa."
+
+#~ msgid "PEM certificate '%s' had no end tag '%s'."
+#~ msgstr "PEM-varmenteessa \"%s\" ei ole lopetusmerkintää \"%s\"."
+
+#~ msgid "Failed to decode certificate."
+#~ msgstr "Varmennetta ei voi purkaa."
+
+#~ msgid "Not enough memory to store certificate data."
+#~ msgstr "Muistia ei ole tarpeeksi tallentamaan varmenteen tietoja."
+
+#~ msgid "IV must be an even number of bytes in length."
+#~ msgstr "IV:n täytyy olla pituudeltaan parillinen määrä tavuja."
+
+#~ msgid "Not enough memory to store the IV."
+#~ msgstr "Muistia ei ole tarpeeksi tallentamaan IV:tä."
+
+#~ msgid "IV contains non-hexadecimal digits."
+#~ msgstr "IV sisältää lukuja, jotka eivät ole heksadesimaaleja."
+
+#~ msgid "Private key cipher '%s' was unknown."
+#~ msgstr "Salaisen avaimen salaustapa \"%s\" oli tuntematon."
+
+#~ msgid "Not enough memory to create private key decryption key."
+#~ msgstr "Muistia ei ole tarpeeksi salaisen avaimen purkuavaimen luomiseen."
+
+#~ msgid "Not enough memory to store decrypted private key."
+#~ msgstr "Muistia ei ole tarpeeksi tallentamaan purettua salaista avainta."
+
+#~ msgid "Failed to initialize the MD5 engine: %s / %s."
+#~ msgstr "MD5-osiota ei voi alustaa käyttöön: %s / %s."
+
+#~ msgid "Not enough memory for decrypted key buffer."
+#~ msgstr "Muistia ei ole tarpeeksi puretun avaimen puskurille."
+
+#~ msgid "Failed to initialize the decryption cipher context: %s / %s."
+#~ msgstr "Salauksen purkukontekstia ei voi alustaa: %s / %s."
+
+#~ msgid "Failed to set symmetric key for decryption: %s / %s."
+#~ msgstr "Salauksen purun symmetristä avainta ei voi asettaa: %s / %s."
+
+#~ msgid "Failed to set IV for decryption: %s / %s."
+#~ msgstr "Salauksen purun IV:tä ei voi asettaa: %s / %s."
+
+#~ msgid "Failed to decrypt the private key: %s / %s."
+#~ msgstr "Salaista avainta ei voi purkaa: %s / %s."
+
+#~ msgid "Error initializing certificate data: %s"
+#~ msgstr "Virhe alustettaessa varmennetietoja: %s"
+
+#~ msgid "Couldn't decode certificate: %s"
+#~ msgstr "Varmennetta ei voi purkaa: %s"
+
+#~ msgid "Failed to initialize the MD5 context: %d."
+#~ msgstr "MD5-kontekstin alustus epäonnistui: %d."
+
+#~ msgid "Failed to initialize the decryption cipher slot."
+#~ msgstr "Salauksen purkutavan paikan alustus epäonnistui."
+
+#~ msgid "Failed to set symmetric key for decryption."
+#~ msgstr "Salauksen purun symmetrisen avaimen asetus epäonnistui."
+
+#~ msgid "Failed to set IV for decryption."
+#~ msgstr "Salauksen purun IV:n asetus epäonnistui."
+
+#~ msgid "Failed to initialize the decryption context."
+#~ msgstr "Salauksen purun kontekstin alustus epäonnistui."
+
+#~ msgid "Failed to decrypt the private key: %d."
+#~ msgstr "Salaisen avaimen purki epäonnistui: %d"
+
+#~ msgid "Failed to finalize decryption of the private key: %d."
+#~ msgstr "Salaisen avaimen purun viimeistely epäonnistui: %d."
+
+#~ msgid "Couldn't decode certificate: %d"
+#~ msgstr "Varmennetta ei voi purkaa: %d"
 
 #~ msgid "Cannot import VPN connection"
 #~ msgstr "VPN-yhteyttä ei voida tuoda"
@@ -797,16 +1523,6 @@ msgstr "WPA (henkilökohtainen)"
 #~ "Sopivaa VPN-ohjelmistoa VPN-yhteyden tyypille \"%s\" ei löydy tuotaessa "
 #~ "asetustiedostoa \"%s\". Ota yhteyttä järjestelmäsi ylläpitäjään."
 
-#~ msgid "Error retrieving VPN connection '%s'"
-#~ msgstr "Virhe haettaessa VPN-yhteyttä \"%s\""
-
-#~ msgid ""
-#~ "Could not find the UI files for VPN connection type '%s'. Contact your "
-#~ "system administrator."
-#~ msgstr ""
-#~ "VPN-yhteyden tyypille \"%s\" ei löydy käyttöliittymää. Ota yhteyttä "
-#~ "järjestelmäsi ylläpitäjään."
-
 #~ msgid "Delete VPN connection \"%s\"?"
 #~ msgstr "Poistetaanko VPN-yhteys \"%s\"?"
 
@@ -816,35 +1532,69 @@ msgstr "WPA (henkilökohtainen)"
 #~ "connection."
 #~ msgstr ""
 #~ "Kaikki tiedot VPN-yhteydestä \"%s\" hukataan ja voit joutua ottamaan "
-#~ "yhteyttä järjestelmäsiylläpitäjään, jotta saat uuden yhteyden luomiseen "
+#~ "yhteyttä järjestelmäsi ylläpitäjään, jotta saat uuden yhteyden luomiseen "
 #~ "tarvittavat tiedot."
-
-#~ msgid "Unable to load"
-#~ msgstr "Ei voitu ladata"
 
 #~ msgid "Cannot find some needed resources (the glade file)!"
 #~ msgstr "Jotain tarvittavista resursseista ei löydy (glade-tiedosto)!"
 
-#~ msgid "Edit VPN Connection"
-#~ msgstr "Muokkaa VPN-yhteyttä"
+#~ msgid "Cannot add VPN connection"
+#~ msgstr "VPN-yhteyttä ei voitu lisätä"
 
-#~ msgid "Add a new VPN connection"
-#~ msgstr "Lisää uusi VPN-yhteys"
+#~ msgid ""
+#~ "No suitable VPN software was found on your system. Contact your system "
+#~ "administrator."
+#~ msgstr ""
+#~ "Sopivaa VPN-ohjelmistoa ei löytynyt järjestelmästäsi. Ota yhteyttä "
+#~ "järjestelmäsi ylläpitäjään."
 
-#~ msgid "Choose which type of VPN connection you wish to create."
-#~ msgstr "Valitse minkä tyyppisen VPN-yhteyden haluat lisätä."
+#~ msgid ""
+#~ "This assistant will guide you through the creation of a connection to a "
+#~ "Virtual Private Network (VPN)."
+#~ msgstr "Tämä apulainen ohjaa sinua VPN-yhteyden määrittelyssä."
 
-#~ msgid "Connect to:"
-#~ msgstr "Yhdistä kohteeseen:"
+#~ msgid ""
+#~ "It will require some information, such as IP addresses and secrets.  "
+#~ "Please see your system administrator to obtain this information."
+#~ msgstr ""
+#~ "Yhteyden luominen vaatii joitakin tietoja, kuten IP-osoitteita ja "
+#~ "salasanoja. Pyydä vaadittavat tiedot järjestelmäsi ylläpitäjältä."
+
+#~ msgid "Create VPN connection"
+#~ msgstr "Luo VPN-yhteys"
 
 #~ msgid "Create VPN Connection"
 #~ msgstr "Luo VPN-yhteys"
 
-#~ msgid "Create VPN Connection - 1 of 2"
-#~ msgstr "Luo VPN-yhteys - vaihe 1/2"
+#~ msgid "1 of 2"
+#~ msgstr "1 / 2"
 
-#~ msgid "Create VPN Connection - 2 of 2"
-#~ msgstr "Luo VPN-yhteys - vaihe 2/2"
+#~ msgid "Choose which type of _VPN connection you wish to create:"
+#~ msgstr "Valitse minkä tyyppisen _VPN-yhteyden haluat lisätä:"
+
+#~ msgid "Choose which type of VPN connection you wish to create:"
+#~ msgstr "Valitse minkä tyyppisen VPN-yhteyden haluat lisätä:"
+
+#~ msgid "2 of 2"
+#~ msgstr "2 / 2"
+
+#~ msgid "Finished Create VPN Connection"
+#~ msgstr "VPN-yhteys on nyt määritelty"
+
+#~ msgid "Edit VPN Connection"
+#~ msgstr "Muokkaa VPN-yhteyttä"
+
+#~ msgid "VPN Service for importing"
+#~ msgstr "VPN-tietojen tuontipalvelu"
+
+#~ msgid "File to import"
+#~ msgstr "Tuotava tiedosto"
+
+#~ msgid "- NetworkManager VPN properties"
+#~ msgstr "- NetworkManagerin VPN-ominaisuudet"
+
+#~ msgid "Add a new VPN connection"
+#~ msgstr "Lisää uusi VPN-yhteys"
 
 #~ msgid "Delete the selected VPN connection"
 #~ msgstr "Poista valittu VPN-yhteys"
@@ -861,26 +1611,91 @@ msgstr "WPA (henkilökohtainen)"
 #~ msgid "Export the selected VPN connection to a file"
 #~ msgstr "Vie valittu VPN-yhteys tiedostoon"
 
-#~ msgid "Finish Creating VPN Connection"
-#~ msgstr "Viimeistele VPN-yhteyden luonti"
-
 #~ msgid "Manage Virtual Private Network Connections"
 #~ msgstr "Hallitse VPN-yhteyksiä"
 
-#~ msgid ""
-#~ "This assistant will guide you through the creation of a connection to a "
-#~ "Virtual Private Network (VPN).\n"
-#~ "\n"
-#~ "It will require some information, such as IP addresses and secrets.  "
-#~ "Please see your system administrator to obtain this information."
-#~ msgstr ""
-#~ "Tämä velho ohjaa sinua määrittelmään VPN-yhteyden\n"
-#~ "\n"
-#~ "Yhteyden luominen vaatii joitakin tietoja, kuten IP-osoitteita ja "
-#~ "salasanoja. Pyydä vaadittavat tiedot järjestelmäsi ylläpitäjältä."
-
 #~ msgid "VPN Connections"
 #~ msgstr "VPN-yhteydet"
+
+#~ msgid ""
+#~ "Passwords or encryption keys are required to access the wireless network "
+#~ "'%s'."
+#~ msgstr ""
+#~ "Salasanoja tai salausavaimia tarvitaan langattomaan verkkoon \"%s\" "
+#~ "pääsemiseksi."
+
+#~ msgid "Secrets required by wireless network"
+#~ msgstr "Langaton verkko vaatii salaustietoja"
+
+#~ msgid "New wireless network"
+#~ msgstr "Uusi langaton verkko"
+
+#~ msgid "Enter a name for the wireless network you wish to create."
+#~ msgstr "Syötä sen langattoman verkon nimi, jonka haluat luoda."
+
+#~ msgid "DER or PEM certificates (*.der, *.pem)"
+#~ msgstr "DER- tai PEM-varmeneet (*.der, *.pem)"
+
+#~ msgid "No Certificate Authority certificate chosen"
+#~ msgstr "Varmentajavarmennetta ei valittu"
+
+#~ msgid ""
+#~ "Not using a Certificate Authority (CA) certificate can result in "
+#~ "connections to insecure, rogue wireless networks.  Would you like to "
+#~ "choose a Certificate Authority certificate?"
+#~ msgstr ""
+#~ "Varmentajan (CA) käyttämättä jättäminen voi johtaa yhteyksien ottamiseen "
+#~ "turvattomiin, epäluotettaviin langattomiin verkkoihin. Haluatko valita "
+#~ "varmentajan varmenteen?"
+
+#~ msgid "Ignore"
+#~ msgstr "Ohita"
+
+#~ msgid "Choose CA Certificate"
+#~ msgstr "Valitse CA-varmenne"
+
+#~ msgid "MD5"
+#~ msgstr "MD5"
+
+#~ msgid "Choose a Certificate Authority certificate..."
+#~ msgstr "Valitse varmentajavarmenne..."
+
+#~ msgid "Choose your personal certificate..."
+#~ msgstr "Valitse oma varmenne..."
+
+#~ msgid "Choose your private key..."
+#~ msgstr "Valitse salainen avain..."
+
+#~ msgid "CHAP"
+#~ msgstr "CHAP"
+
+#~ msgid "Tunneled TLS"
+#~ msgstr "Tunneloitu TLS"
+
+#~ msgid "Protected EAP (PEAP)"
+#~ msgstr "Suojattu EAP (PEAP)"
+
+#~ msgid "_Fallback on this Network"
+#~ msgstr "_Käytä tätä verkkoa kun muut eivät toimi"
+
+#~ msgid "Error retrieving VPN connection '%s'"
+#~ msgstr "Virhe haettaessa VPN-yhteyttä \"%s\""
+
+#~ msgid ""
+#~ "Could not find the UI files for VPN connection type '%s'. Contact your "
+#~ "system administrator."
+#~ msgstr ""
+#~ "VPN-yhteyden tyypille \"%s\" ei löydy käyttöliittymää. Ota yhteyttä "
+#~ "järjestelmäsi ylläpitäjään."
+
+#~ msgid "(unknown)"
+#~ msgstr "(tuntematon)"
+
+#~ msgid "Create VPN Connection - 1 of 2"
+#~ msgstr "Luo VPN-yhteys - vaihe 1/2"
+
+#~ msgid "Create VPN Connection - 2 of 2"
+#~ msgstr "Luo VPN-yhteys - vaihe 2/2"
 
 #~ msgid "40-bit WEP"
 #~ msgstr "40-bittinen WEP"
@@ -905,9 +1720,6 @@ msgstr "WPA (henkilökohtainen)"
 
 #~ msgid "WPA2 Automatic"
 #~ msgstr "WPA2 (automaattinen)"
-
-#~ msgid "none"
-#~ msgstr "ei mitään"
 
 #~ msgid ""
 #~ "unable to create netlink socket for monitoring wired ethernet devices - %s"
@@ -937,12 +1749,6 @@ msgstr "WPA (henkilökohtainen)"
 #~ msgid "error occurred while waiting for data on socket"
 #~ msgstr "virhe odotettaessa tietoja pistokkeesta"
 
-#~ msgid "WEP 40/128-bit ASCII"
-#~ msgstr "WEP 40/128-bittinen ASCII"
-
-#~ msgid "WEP 40/128-bit hex"
-#~ msgstr "WEP 40/128-bittinen heksadesimaali"
-
 #~ msgid "WEP Passphrase"
 #~ msgstr "WEP-tunnuslause:"
 
@@ -965,12 +1771,6 @@ msgstr "WPA (henkilökohtainen)"
 
 #~ msgid "wep_passphrase_subwindow"
 #~ msgstr "wep_salalauseen_ali-ikkuna"
-
-#~ msgid "wpa_eap_subwindow"
-#~ msgstr "wep_eap_ali-ikkuna"
-
-#~ msgid "wpa_psk_subwindow"
-#~ msgstr "wpa_psk_ali-ikkuna"
 
 #~ msgid "The VPN service said: \"%s\""
 #~ msgstr "VPN-palvelin vastasi: \"%s\""
@@ -1005,9 +1805,6 @@ msgstr "WPA (henkilökohtainen)"
 #~ msgid "_Hex Key:"
 #~ msgstr "HEX-avain:"
 
-#~ msgid "ASCII Key:"
-#~ msgstr "ASCII-avain:"
-
 #~ msgid ""
 #~ "128-bit Passphrase (WEP)\n"
 #~ "ASCII Key (WEP)\n"
@@ -1034,3 +1831,30 @@ msgstr "WPA (henkilökohtainen)"
 
 #~ msgid "_Key type:"
 #~ msgstr "_Avaimen tyyppi:"
+
+#~ msgid "Choose which type of VPN connection you wish to create."
+#~ msgstr "Valitse minkä tyyppisen VPN-yhteyden haluat lisätä."
+
+#~ msgid "Connect to:"
+#~ msgstr "Yhdistä kohteeseen:"
+
+#~ msgid "Finish Creating VPN Connection"
+#~ msgstr "Viimeistele VPN-yhteyden luonti"
+
+#~ msgid ""
+#~ "This assistant will guide you through the creation of a connection to a "
+#~ "Virtual Private Network (VPN).\n"
+#~ "\n"
+#~ "It will require some information, such as IP addresses and secrets.  "
+#~ "Please see your system administrator to obtain this information."
+#~ msgstr ""
+#~ "Tämä velho ohjaa sinua määrittelmään VPN-yhteyden\n"
+#~ "\n"
+#~ "Yhteyden luominen vaatii joitakin tietoja, kuten IP-osoitteita ja "
+#~ "salasanoja. Pyydä vaadittavat tiedot järjestelmäsi ylläpitäjältä."
+
+#~ msgid "none"
+#~ msgstr "ei mitään"
+
+#~ msgid "WEP 40/128-bit hex"
+#~ msgstr "WEP 40/128-bittinen heksadesimaali"
