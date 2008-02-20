@@ -685,17 +685,20 @@ out:
 }
 
 static gboolean
-add_seen_bssid (AppletDbusConnectionSettings *connection, NMAccessPoint *ap)
+add_seen_bssid (AppletExportedConnection *exported, NMAccessPoint *ap)
 {
+	NMConnection *connection;
 	NMSettingWireless *s_wireless;
 	gboolean found = FALSE;
 	gboolean added = FALSE;
 	char *lower_bssid;
 	GSList *iter;
 	const char *bssid;
-	
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection->connection,
-													 NM_TYPE_SETTING_WIRELESS));
+
+	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	if (!s_wireless)
 		return FALSE;
 
@@ -733,7 +736,8 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
                              GParamSpec *pspec,
                              NMApplet *applet)
 {
-	AppletDbusConnectionSettings *connection_settings = NULL;
+	AppletExportedConnection *exported = NULL;
+	NMConnection *connection;
 	NMSettingWireless *s_wireless;
 	NMAccessPoint *ap;
 	const GByteArray *ssid;
@@ -745,12 +749,14 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
 	if (!ap)
 		return;
 
-	connection_settings = applet_get_connection_settings_for_device (NM_DEVICE (device), applet);
-	if (!connection_settings)
+	exported = applet_get_exported_connection_for_device (NM_DEVICE (device), applet);
+	if (!exported)
 		return;
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection_settings->connection,
-													 NM_TYPE_SETTING_WIRELESS));
+	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
+	g_return_if_fail (NM_IS_CONNECTION (connection));
+
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	if (!s_wireless)
 		return;
 
@@ -758,8 +764,8 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
 	if (!ssid || !nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
 		return;
 
-	if (add_seen_bssid (connection_settings, ap))
-		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));		
+	if (add_seen_bssid (exported, ap))
+		applet_exported_connection_save (exported);		
 
 	applet_schedule_update_icon (applet);
 }
@@ -901,7 +907,7 @@ wireless_device_state_changed (NMDevice *device,
                                NMDeviceState state,
                                NMApplet *applet)
 {
-	AppletDbusConnectionSettings *connection_settings;
+	AppletExportedConnection *exported;
 	NMAccessPoint *ap = NULL;
 	char *msg;
 	char *esc_ssid = NULL;
@@ -943,9 +949,9 @@ wireless_device_state_changed (NMDevice *device,
 		                  applet);
 
 		/* Save this BSSID to seen-bssids list */
-		connection_settings = applet_get_connection_settings_for_device (device, applet);
-		if (connection_settings && add_seen_bssid (connection_settings, applet->current_ap))
-			applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (connection_settings));
+		exported = applet_get_exported_connection_for_device (device, applet);
+		if (exported && add_seen_bssid (exported, applet->current_ap))
+			applet_exported_connection_save (exported);
 	}
 
 	msg = g_strdup_printf (_("You are now connected to the wireless network '%s'."),
@@ -1065,8 +1071,7 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 	NMDevice *device = NULL;
 	NMAccessPoint *ap = NULL;
 	NMSettingConnection *s_con;
-	AppletDbusConnectionSettings *exported_con = NULL;
-	const char *con_path;
+	AppletExportedConnection *exported = NULL;
 	gboolean ignored = FALSE;
 
 	if (response != GTK_RESPONSE_OK)
@@ -1111,25 +1116,22 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 			s_con->autoconnect = TRUE;
 	}
 
-	exported_con = applet_dbus_settings_user_get_by_connection (APPLET_DBUS_SETTINGS (applet->settings),
-	                                                            connection);
-	if (!exported_con) {
-		exported_con = applet_dbus_settings_user_add_connection (APPLET_DBUS_SETTINGS (applet->settings),
-		                                                         connection);
-		if (!exported_con) {
+	exported = applet_dbus_settings_user_get_by_connection (applet->settings, connection);
+	if (!exported) {
+		exported = applet_dbus_settings_user_add_connection (applet->settings, connection);
+		if (!exported) {
 			nm_warning ("Couldn't create other network connection.");
 			goto done;
 		}
 	} else {
 		/* Save the updated settings to GConf */
-		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (exported_con));
+		applet_exported_connection_save (exported);
 	}
 
-	con_path = nm_connection_settings_get_dbus_object_path (NM_CONNECTION_SETTINGS (exported_con));
 	nm_client_activate_device (applet->nm_client,
 	                           device,
 	                           NM_DBUS_SERVICE_USER_SETTINGS,
-	                           con_path,
+	                           nm_connection_get_path (connection),
 	                           ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
 	                           activate_device_cb,
 	                           applet);
@@ -1172,7 +1174,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	DBusGMethodInvocation *context;
-	AppletDbusConnectionSettings *applet_connection;
+	AppletExportedConnection *exported;
 	NMConnection *connection = NULL;
 	NMDevice *device = NULL;
 	GHashTable *setting_hash;
@@ -1249,9 +1251,9 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	 * saving to GConf might trigger the GConf change notifiers, resulting
 	 * in the connection being read back in from GConf which clears secrets.
 	 */
-	applet_connection = applet_dbus_settings_user_get_by_connection (APPLET_DBUS_SETTINGS (applet->settings), connection);
-	if (applet_connection)
-		applet_dbus_connection_settings_save (NM_CONNECTION_SETTINGS (applet_connection));
+	exported = applet_dbus_settings_user_get_by_connection (applet->settings, connection);
+	if (exported)
+		applet_exported_connection_save (exported);
 
 done:
 	if (error) {

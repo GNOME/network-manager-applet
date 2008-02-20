@@ -27,37 +27,34 @@
 #include <nm-connection.h>
 #include <nm-settings.h>
 
-#define APPLET_TYPE_DBUS_CONNECTION_SETTINGS    (applet_dbus_connection_settings_get_type ())
-#define APPLET_IS_DBUS_CONNECTION_SETTINGS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_DBUS_CONNECTION_SETTINGS))
-#define APPLET_DBUS_CONNECTION_SETTINGS(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), APPLET_TYPE_DBUS_CONNECTION_SETTINGS, AppletDbusConnectionSettings))
+#define APPLET_TYPE_EXPORTED_CONNECTION    (applet_exported_connection_get_type ())
+#define APPLET_IS_EXPORTED_CONNECTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_EXPORTED_CONNECTION))
+#define APPLET_EXPORTED_CONNECTION(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), APPLET_TYPE_EXPORTED_CONNECTION, AppletExportedConnection))
 
 typedef struct {
-	NMConnectionSettings parent;
+	NMExportedConnection parent;
 
 	/* private data */
 	GConfClient *conf_client;
 	gchar *conf_dir;
 	gchar *id;
-	NMConnection *connection;
-} AppletDbusConnectionSettings;
+} AppletExportedConnection;
 
 typedef struct {
-	NMConnectionSettingsClass parent_class;
+	NMExportedConnectionClass parent_class;
 
 	/* Signals */
-	void (*new_secrets_requested)  (AppletDbusConnectionSettings *connection,
+	void (*new_secrets_requested)  (AppletExportedConnection *exported,
 	                                const char *setting_name,
 	                                const char **hints,
 	                                gboolean ask_user,
 	                                DBusGMethodInvocation *context);
-} AppletDbusConnectionSettingsClass;
+} AppletExportedConnectionClass;
 
-GType                 applet_dbus_connection_settings_get_type (void);
-NMConnectionSettings *applet_dbus_connection_settings_new (GConfClient *conf_client, const gchar *conf_dir);
+GType                     applet_exported_connection_get_type (void);
+AppletExportedConnection *applet_exported_connection_new (GConfClient *conf_client, const gchar *conf_dir);
 
-NMConnection * applet_dbus_connection_settings_get_connection (NMConnectionSettings *connection);
-
-void applet_dbus_connection_settings_save (NMConnectionSettings *connection);
+void applet_exported_connection_save (AppletExportedConnection *exported);
 
 
 #define APPLET_TYPE_DBUS_SETTINGS    (applet_dbus_settings_get_type ())
@@ -82,7 +79,7 @@ typedef struct {
 
 	/* Signals */
 	void (*new_secrets_requested)  (AppletDbusSettings *settings,
-	                                AppletDbusConnectionSettings *connection,
+	                                AppletExportedConnection *exported,
 	                                const char *setting_name,
 	                                const char **hints,
 	                                gboolean ask_user,
@@ -90,16 +87,16 @@ typedef struct {
 } AppletDbusSettingsClass;
 
 GType       applet_dbus_settings_get_type (void);
-NMSettings *applet_dbus_settings_new (void);
+AppletDbusSettings *applet_dbus_settings_new (void);
 
-AppletDbusConnectionSettings * applet_dbus_settings_user_add_connection (AppletDbusSettings *settings,
-                                                                         NMConnection *connection);
+AppletExportedConnection * applet_dbus_settings_user_add_connection (AppletDbusSettings *settings,
+                                                                     NMConnection *connection);
 
-AppletDbusConnectionSettings * applet_dbus_settings_user_get_by_dbus_path (AppletDbusSettings *settings,
+AppletExportedConnection * applet_dbus_settings_user_get_by_dbus_path (AppletDbusSettings *settings,
                                                                            const char *path);
 
-AppletDbusConnectionSettings * applet_dbus_settings_user_get_by_connection (AppletDbusSettings *settings,
-                                                                            NMConnection *connection);
+AppletExportedConnection * applet_dbus_settings_user_get_by_connection (AppletDbusSettings *settings,
+                                                                        NMConnection *connection);
 
 const char * applet_dbus_settings_system_get_dbus_path (AppletDbusSettings *settings,
                                                         NMConnection *connection);

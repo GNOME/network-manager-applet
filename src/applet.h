@@ -89,7 +89,7 @@ typedef struct
 	NMAccessPoint *current_ap;
 	GHashTable *vpn_connections;
 
-	NMSettings * settings;
+	AppletDbusSettings *settings;
 	GSList * active_connections;
 
 	GConfClient *	gconf_client;
@@ -178,7 +178,7 @@ void applet_menu_item_activate_helper (NMDevice *device,
                                        NMApplet *applet,
                                        gpointer user_data);
 
-AppletDbusConnectionSettings *applet_get_connection_settings_for_device (NMDevice *device, NMApplet *applet);
+AppletExportedConnection *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 
 void applet_do_notify (NMApplet *applet, 
                        NotifyUrgency urgency,
