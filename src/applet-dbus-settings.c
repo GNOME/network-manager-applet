@@ -902,7 +902,7 @@ applet_exported_connection_changed (AppletExportedConnection *exported,
 	utils_clear_filled_connection_certs (gconf_connection);
 
 	/* Ignore the GConf update if nothing changed */
-	if (nm_connection_compare (wrapped_connection, gconf_connection))
+	if (nm_connection_compare (wrapped_connection, gconf_connection, COMPARE_FLAGS_EXACT))
 		return TRUE;
 
 	new_settings = nm_connection_to_hash (gconf_connection);
