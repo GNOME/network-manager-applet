@@ -66,6 +66,8 @@ struct WirelessSecurityOption
 	 * dbus message describing this particular security option
 	 */
 	gboolean		(*append_dbus_params_func)(WirelessSecurityOption *opt, const char *ssid, DBusMessage *message);
+
+	gboolean		(*populate_from_dbus_func)(WirelessSecurityOption *opt, DBusMessageIter *iter);
 };
 
 

@@ -39,6 +39,8 @@ gboolean		wso_validate_input (WirelessSecurityOption * opt, const char * ssid, I
 
 gboolean		wso_append_dbus_params (WirelessSecurityOption *opt, const char *ssid, DBusMessage *message);
 
+gboolean		wso_populate_from_dbus_params (WirelessSecurityOption *opt, DBusMessageIter *iter);
+
 void			wso_free (WirelessSecurityOption * opt);
 
 #endif	/* WIRELESS_SECURITY_OPTION_H */

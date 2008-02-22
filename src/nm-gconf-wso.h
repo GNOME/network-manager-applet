@@ -80,6 +80,8 @@ NMGConfWSO * nm_gconf_wso_new_deserialize_gconf (GConfClient *client,
 
 NMGConfWSO * nm_gconf_wso_new_from_wso (WirelessSecurityOption *opt, const char *ssid);
 
+gboolean nm_gconf_wso_populate_wso (NMGConfWSO *self, WirelessSecurityOption *opt);
+
 int nm_gconf_wso_get_we_cipher (NMGConfWSO *self);
 
 const char * nm_gconf_wso_get_key (NMGConfWSO *self);

@@ -220,6 +220,99 @@ append_dbus_params_func (WirelessSecurityOption *opt,
 }
 
 
+typedef struct {
+	GtkComboBox *combo;
+	gint value;
+} ComboSelectInfo;
+
+static gboolean
+combo_select (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer user_data)
+{
+	ComboSelectInfo *info = user_data;
+	GValue val = { 0, };
+	gint i;
+
+	gtk_tree_model_get_value (model, iter, 1, &val);
+	i = g_value_get_int (&val);
+
+	if (i == info->value) {
+		gtk_combo_box_set_active_iter (info->combo, iter);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
+populate_from_dbus_func (WirelessSecurityOption *opt, DBusMessageIter *iter)
+{
+	char *identity = NULL;
+	char *passwd = NULL;
+	char *anon_identity = NULL;
+	char *private_key_passwd = NULL;
+	char *private_key_file = NULL;
+	char *client_cert_file = NULL;
+	char *ca_cert_file = NULL;
+	int wpa_version;
+	int eap_method;
+	int key_type;
+	GtkWidget *w;
+	ComboSelectInfo info;
+
+	if (!nmu_security_deserialize_wpa_eap (iter, &eap_method, &key_type, &identity, &passwd,
+								    &anon_identity, &private_key_passwd, &private_key_file,
+								    &client_cert_file, &ca_cert_file, &wpa_version))
+		return FALSE;
+
+	w = glade_xml_get_widget (opt->uixml, "wpa_eap_eap_method_combo");
+	info.combo = GTK_COMBO_BOX (w);
+	info.value = eap_method;
+	gtk_tree_model_foreach (gtk_combo_box_get_model (info.combo), combo_select, &info);
+
+	w = glade_xml_get_widget (opt->uixml, "wpa_eap_key_type_combo");
+	info.combo = GTK_COMBO_BOX (w);
+	info.value = key_type;
+	gtk_tree_model_foreach (gtk_combo_box_get_model (info.combo), combo_select, &info);
+
+	if (identity) {
+		w = glade_xml_get_widget (opt->uixml, "wpa_eap_identity_entry");
+		gtk_entry_set_text (GTK_ENTRY (w), identity);
+	}
+
+	if (passwd) {
+		w = glade_xml_get_widget (opt->uixml, "wpa_eap_passwd_entry");
+		gtk_entry_set_text (GTK_ENTRY (w), passwd);
+	}
+
+	if (anon_identity) {
+		w = glade_xml_get_widget (opt->uixml, "wpa_eap_anon_identity_entry");
+		gtk_entry_set_text (GTK_ENTRY (w), anon_identity);
+	}
+
+	if (private_key_passwd) {
+		w = glade_xml_get_widget (opt->uixml, "wpa_eap_private_key_passwd_entry");
+		gtk_entry_set_text (GTK_ENTRY (w), private_key_passwd);
+	}
+
+	if (client_cert_file && g_file_test (client_cert_file, G_FILE_TEST_EXISTS)) {
+		w = glade_xml_get_widget (opt->uixml, "wpa_eap_client_cert_file_chooser_button");
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (w), client_cert_file);
+	}
+
+	if (ca_cert_file && g_file_test (ca_cert_file, G_FILE_TEST_EXISTS)) {
+		w = glade_xml_get_widget (opt->uixml, "wpa_eap_ca_cert_file_chooser_button");
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (w), ca_cert_file);
+	}
+
+	if (private_key_file && g_file_test (private_key_file, G_FILE_TEST_EXISTS)) {
+		w = glade_xml_get_widget (opt->uixml, "wpa_eap_private_key_file_chooser_button");
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (w), private_key_file);
+	}
+
+	return TRUE;
+}
+
+
 WirelessSecurityOption *
 wso_wpa_eap_new (const char *glade_file,
                  int capabilities,
@@ -230,7 +323,6 @@ wso_wpa_eap_new (const char *glade_file,
 	GtkWidget *			eap_method_combo;
 	GtkWidget *			key_type_combo;
 	GtkWidget *			phase2_type_combo;
-	GtkListStore *			model;
 	GtkTreeModel *			tree_model;
 	GtkTreeIter			iter;
 	GtkCellRenderer *		renderer;
@@ -248,6 +340,7 @@ wso_wpa_eap_new (const char *glade_file,
 	opt->validate_input_func = validate_input_func;
 	opt->widget_create_func = widget_create_func;
 	opt->append_dbus_params_func = append_dbus_params_func;
+	opt->populate_from_dbus_func = populate_from_dbus_func;
 
 	if (!(opt->uixml = glade_xml_new (glade_file, opt->widget_name, NULL)))
 	{
@@ -256,9 +349,9 @@ wso_wpa_eap_new (const char *glade_file,
 	}
 
 	eap_method_combo = glade_xml_get_widget (opt->uixml, "wpa_eap_eap_method_combo");
-	model = wso_wpa_create_eap_method_model ();
-	gtk_combo_box_set_model (GTK_COMBO_BOX (eap_method_combo), GTK_TREE_MODEL (model));
-	gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter);
+	tree_model = wso_wpa_create_eap_method_model ();
+	gtk_combo_box_set_model (GTK_COMBO_BOX (eap_method_combo), tree_model);
+	gtk_tree_model_get_iter_first (tree_model, &iter);
 	gtk_combo_box_set_active_iter (GTK_COMBO_BOX (eap_method_combo), &iter);
 
 	/* FIXME: Why do we need this here but not in the same place in wso-wpa-psk.c ? */

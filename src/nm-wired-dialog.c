@@ -11,6 +11,7 @@
 #include "nm-utils.h"
 #include "NetworkManager.h"
 #include "wso-wpa-eap.h"
+#include "nm-gconf-wso-wpa-eap.h"
 
 
 #define WIRED_DIALOG_INFO_TAG "wired-dialog-info-tag"
@@ -215,6 +216,27 @@ nma_wired_dialog_create (NMApplet *applet)
 	gtk_window_present (GTK_WINDOW (dialog));
 }
 
+static void
+populate_dialog (GtkWidget *dialog, GConfClient *gconf_client, const char *network_id)
+{
+	char *escaped_network;
+	NMGConfWSO *gconf_wso;
+
+	if (!network_id)
+		return;
+
+	escaped_network = gconf_escape_key (network_id, strlen (network_id));
+	gconf_wso = nm_gconf_wso_new_deserialize_gconf (gconf_client, NETWORK_TYPE_WIRED, escaped_network);
+	g_free (escaped_network);
+
+	if (gconf_wso && NM_IS_GCONF_WSO_WPA_EAP (gconf_wso)) {
+		WiredDialogInfo *info;
+
+		info = g_object_get_data (G_OBJECT (dialog), WIRED_DIALOG_INFO_TAG);
+		nm_gconf_wso_populate_wso (gconf_wso, info->opt);
+	}
+}
+
 void
 nma_wired_dialog_ask_password (NMApplet *applet,
 						 const char *network_id,
@@ -235,6 +257,8 @@ nma_wired_dialog_ask_password (NMApplet *applet,
 	g_object_weak_ref (G_OBJECT (dialog), wired_dialog_destroyed, applet);
 
 	g_signal_connect (dialog, "response", G_CALLBACK (ask_password_response), NULL);
+
+	populate_dialog (dialog, applet->gconf_client, network_id);
 
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (dialog);

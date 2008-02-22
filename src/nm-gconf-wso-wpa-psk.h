@@ -58,4 +58,6 @@ NMGConfWSOWPA_PSK * nm_gconf_wso_wpa_psk_new_deserialize_dbus (DBusMessageIter *
 
 NMGConfWSOWPA_PSK * nm_gconf_wso_wpa_psk_new_deserialize_gconf (GConfClient *client, NMNetworkType type, const char *network, int we_cipher);
 
+gboolean nm_gconf_wso_wpa_psk_get_wpa_version (NMGConfWSOWPA_PSK *self);
+
 #endif	/* NM_GCONF_WSO_WPA_PSK_H */

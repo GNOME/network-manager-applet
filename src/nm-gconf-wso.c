@@ -202,6 +202,34 @@ out:
 	return gconf_wso;
 }
 
+/* HACK: to convert the NMGConfWSO -> WirelessSecurityOption,
+ * we serialize the NMGConfWSO to a dbus message and then let
+ * the WSO to deserialize it.
+ */
+gboolean
+nm_gconf_wso_populate_wso (NMGConfWSO *self, WirelessSecurityOption *opt)
+{
+	DBusMessage *message;
+	DBusMessageIter iter;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (opt != NULL, FALSE);
+
+	message = dbus_message_new_method_call (NMI_DBUS_SERVICE, NMI_DBUS_PATH, NMI_DBUS_INTERFACE, "foobar");
+	dbus_message_iter_init_append (message, &iter);
+
+	if (nm_gconf_wso_serialize_dbus (self, &iter)) {
+		dbus_message_iter_init (message, &iter);
+
+		success = wso_populate_from_dbus_params (opt, &iter);
+	}
+
+	dbus_message_unref (message);
+
+	return success;
+}
+
 void
 nm_gconf_wso_set_we_cipher (NMGConfWSO *self,
                             int we_cipher)

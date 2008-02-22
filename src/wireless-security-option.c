@@ -81,6 +81,28 @@ gboolean wso_append_dbus_params (WirelessSecurityOption *opt, const char *ssid, 
 	return (*(opt->append_dbus_params_func))(opt, ssid, message);
 }
 
+gboolean
+wso_populate_from_dbus_params (WirelessSecurityOption *opt, DBusMessageIter *iter)
+{
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (opt != NULL, FALSE);
+	g_return_val_if_fail (iter != NULL, FALSE);
+
+	if (opt->append_dbus_params_func) {
+		int cipher;
+
+		/* Remove the cipher */
+		g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_INT32, FALSE);
+		dbus_message_iter_get_basic (iter, &cipher);
+		dbus_message_iter_next (iter);
+
+		success = opt->populate_from_dbus_func (opt, iter);
+	}
+
+	return success;
+}
+
 void wso_free (WirelessSecurityOption * opt)
 {
 	/* Free the option-specific data first */

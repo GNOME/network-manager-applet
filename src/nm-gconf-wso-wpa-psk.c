@@ -135,6 +135,14 @@ real_serialize_gconf (NMGConfWSO *instance, GConfClient *client, NMNetworkType t
 	return TRUE;
 }
 
+gboolean
+nm_gconf_wso_wpa_psk_get_wpa_version (NMGConfWSOWPA_PSK *self)
+{
+	g_return_val_if_fail (self != NULL, FALSE);
+
+	return self->priv->wpa_version;
+}
+
 static void
 nm_gconf_wso_wpa_psk_init (NMGConfWSOWPA_PSK * self)
 {

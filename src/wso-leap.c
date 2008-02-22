@@ -117,8 +117,9 @@ widget_create_func (WirelessSecurityOption *opt,
 	entry = glade_xml_get_widget (opt->uixml, "leap_password_entry");
 	g_signal_connect (G_OBJECT (entry), "changed", validate_cb, user_data);
 
-	widget = glade_xml_get_widget (opt->uixml, "leap_show_password");
-	g_signal_connect (widget, "clicked", GTK_SIGNAL_FUNC (show_password_cb), entry);
+	/* FIXME: ugh, this breaks everything and I have no idea why */
+/* 	widget = glade_xml_get_widget (opt->uixml, "leap_show_password"); */
+/* 	g_signal_connect (widget, "clicked", GTK_SIGNAL_FUNC (show_password_cb), entry); */
 
 	/* set-up key_mgmt combo box */
 
@@ -143,6 +144,54 @@ validate_input_func (WirelessSecurityOption *opt,
 }
 
 
+static gboolean
+populate_from_dbus_func (WirelessSecurityOption *opt, DBusMessageIter *iter)
+{
+	char *username = NULL;
+	char *password = NULL;
+	char *key_mgmt = NULL;
+	GtkWidget *w;
+
+	if (!nmu_security_deserialize_leap (iter, &username, &password, &key_mgmt))
+		return FALSE;
+
+	if (username) {
+		w = glade_xml_get_widget (opt->uixml, "leap_username_entry");
+		gtk_entry_set_text (GTK_ENTRY (w), username);
+	}
+
+	if (password) {
+		w = glade_xml_get_widget (opt->uixml, "leap_password_entry");
+		gtk_entry_set_text (GTK_ENTRY (w), password);
+	}
+
+	if (key_mgmt) {
+		GtkTreeModel *model;
+		GtkTreeIter iter;
+		gboolean valid;
+
+		w = glade_xml_get_widget (opt->uixml, "leap_key_mgmt_combobox");
+		model = gtk_combo_box_get_model (GTK_COMBO_BOX (w));
+
+		valid = gtk_tree_model_get_iter_first (model, &iter);
+		while (valid) {
+			gchar *row = NULL;
+
+			gtk_tree_model_get (model, &iter, 1, &row, -1);
+			if (row && strcmp (row, key_mgmt) == 0) {
+				gtk_combo_box_set_active_iter (GTK_COMBO_BOX (w), &iter);
+				valid = FALSE;
+			} else 
+				valid = gtk_tree_model_iter_next (model, &iter);
+
+			g_free (row);
+		}
+	}
+
+	return TRUE;
+}
+
+
 WirelessSecurityOption *
 wso_leap_new (const char *glade_file,
               int capabilities)
@@ -158,6 +207,7 @@ wso_leap_new (const char *glade_file,
 	opt->validate_input_func = validate_input_func;
 	opt->widget_create_func = widget_create_func;
 	opt->append_dbus_params_func = append_dbus_params_func;
+	opt->populate_from_dbus_func = populate_from_dbus_func;
 
 	if (!(opt->uixml = glade_xml_new (glade_file, opt->widget_name, NULL)))
 	{

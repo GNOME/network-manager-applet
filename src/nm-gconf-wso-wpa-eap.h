@@ -59,4 +59,6 @@ NMGConfWSOWPA_EAP * nm_gconf_wso_wpa_eap_new_deserialize_dbus (DBusMessageIter *
 
 NMGConfWSOWPA_EAP * nm_gconf_wso_wpa_eap_new_deserialize_gconf (GConfClient *client, NMNetworkType type, const char *network, int we_cipher);
 
+gboolean nm_gconf_wso_wpa_eap_get_wpa_version (NMGConfWSOWPA_EAP *gconf_wso);
+
 #endif	/* NM_GCONF_WSO_WPA_EAP_H */

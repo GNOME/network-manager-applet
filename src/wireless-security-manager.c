@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -41,7 +43,7 @@
 struct WirelessSecurityManager
 {
 	char *	glade_file;
-	GSList *	options;
+	GHashTable *options;
 };
 
 
@@ -53,10 +55,17 @@ WirelessSecurityManager * wsm_new (const char * glade_file)
 
 	wsm = g_malloc0 (sizeof (WirelessSecurityManager));
 	wsm->glade_file = g_strdup (glade_file);
+	wsm->options = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify) wso_free);
 
 	return wsm;
 }
 
+
+static gboolean
+remove_all (gpointer key, gpointer value, gpointer user_data)
+{
+	return TRUE;
+}
 
 gboolean wsm_set_capabilities (WirelessSecurityManager *wsm, guint32 capabilities)
 {
@@ -66,27 +75,25 @@ gboolean wsm_set_capabilities (WirelessSecurityManager *wsm, guint32 capabilitie
 	g_return_val_if_fail (wsm != NULL, FALSE);
 
 	/* Free previous options */
-	g_slist_foreach (wsm->options, (GFunc) wso_free, NULL);
-	g_slist_free (wsm->options);
-	wsm->options = NULL;
+	g_hash_table_foreach_remove (wsm->options, remove_all, NULL);
 
 	if (capabilities & NM_802_11_CAP_PROTO_NONE)
 	{
 		opt = wso_none_new (wsm->glade_file);
 		if (opt)
-			wsm->options = g_slist_append (wsm->options, opt);
+			g_hash_table_insert (wsm->options, GINT_TO_POINTER (WSO_TYPE_NONE), opt);
 	}
 
 	if (capabilities & NM_802_11_CAP_PROTO_WEP)
 	{
 		if ((opt = wso_wep_passphrase_new (wsm->glade_file)))
-			wsm->options = g_slist_append (wsm->options, opt);
+			g_hash_table_insert (wsm->options, GINT_TO_POINTER (WSO_TYPE_WEP_PASSPHRASE), opt);
 
 		if ((opt = wso_wep_hex_new (wsm->glade_file)))
-			wsm->options = g_slist_append (wsm->options, opt);
+			g_hash_table_insert (wsm->options, GINT_TO_POINTER (WSO_TYPE_WEP_HEX), opt);
 
 		if ((opt = wso_wep_ascii_new (wsm->glade_file)))
-			wsm->options = g_slist_append (wsm->options, opt);
+			g_hash_table_insert (wsm->options, GINT_TO_POINTER (WSO_TYPE_WEP_ASCII), opt);
 	}
 
 	if (capabilities & NM_802_11_CAP_PROTO_WPA)
@@ -94,12 +101,12 @@ gboolean wsm_set_capabilities (WirelessSecurityManager *wsm, guint32 capabilitie
 		if (capabilities & NM_802_11_CAP_KEY_MGMT_802_1X)
 		{
 			if ((opt = wso_wpa_eap_new (wsm->glade_file, capabilities, FALSE)))
-				wsm->options = g_slist_append (wsm->options, opt);
+				g_hash_table_insert (wsm->options, GINT_TO_POINTER (WSO_TYPE_WPA_EAP), opt);
 		}
 		if (capabilities & NM_802_11_CAP_KEY_MGMT_PSK)
 		{
 			if ((opt = wso_wpa_psk_new (wsm->glade_file, capabilities, FALSE)))
-				wsm->options = g_slist_append (wsm->options, opt);
+				g_hash_table_insert (wsm->options, GINT_TO_POINTER (WSO_TYPE_WPA_PSK), opt);
 		}
 	}
 
@@ -108,19 +115,19 @@ gboolean wsm_set_capabilities (WirelessSecurityManager *wsm, guint32 capabilitie
 		if (capabilities & NM_802_11_CAP_KEY_MGMT_802_1X)
 		{
 			if ((opt = wso_wpa_eap_new (wsm->glade_file, capabilities, TRUE)))
-				wsm->options = g_slist_append (wsm->options, opt);
+				g_hash_table_insert (wsm->options, GINT_TO_POINTER (WSO_TYPE_WPA2_EAP), opt);
 		}
 		if (capabilities & NM_802_11_CAP_KEY_MGMT_PSK)
 		{
 			if ((opt = wso_wpa_psk_new (wsm->glade_file, capabilities, TRUE)))
-				wsm->options = g_slist_append (wsm->options, opt);
+				g_hash_table_insert (wsm->options, GINT_TO_POINTER (WSO_TYPE_WPA2_PSK), opt);
 		}
 	}
 
 	if ((opt = wso_leap_new (wsm->glade_file, capabilities)))
-		wsm->options = g_slist_append (wsm->options, opt);
+		g_hash_table_insert (wsm->options, GINT_TO_POINTER (WSO_TYPE_LEAP), opt);
 
-	if (!wsm->options)
+	if (g_hash_table_size (wsm->options) == 0)
 	{
 		nm_warning ("capabilities='%x' and did not match any protocals, not even none!", capabilities);
 		ret = FALSE;
@@ -131,26 +138,56 @@ gboolean wsm_set_capabilities (WirelessSecurityManager *wsm, guint32 capabilitie
 
 #define NAME_COLUMN	0
 #define OPT_COLUMN	1
+
+static void
+add_wso_type (gpointer key, gpointer val, gpointer user_data)
+{
+	GSList **list = (GSList **) user_data;
+
+	*list = g_slist_prepend (*list, key);
+}
+
+static int
+sort_wso_types (gconstpointer a, gconstpointer b)
+{
+	int aa = GPOINTER_TO_INT (a);
+	int bb = GPOINTER_TO_INT (b);
+
+	if (aa < bb)
+		return -1;
+	if (aa > bb)
+		return 1;
+
+	return 0;
+}
+
 void wsm_update_combo (WirelessSecurityManager *wsm, GtkComboBox *combo)
 {
-	GtkListStore *	model;
-	GSList *		elt;
+	GtkListStore *model;
+	GSList *iter;
+	GSList *wso_types = NULL;
 
 	g_return_if_fail (wsm != NULL);
 	g_return_if_fail (combo != NULL);
 
+	/* All this messing around with wso_types list is for sorting.
+	   We can't just sort the model since the model itself doesn't
+	   have enough information for sorting. */
+
+	g_hash_table_foreach (wsm->options, add_wso_type, &wso_types);
+	wso_types = g_slist_sort (wso_types, sort_wso_types);
+
 	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_POINTER);
 
-	for (elt = wsm->options; elt; elt = elt->next)
-	{
-		WirelessSecurityOption * opt = (WirelessSecurityOption *) (elt->data);
-		GtkTreeIter			iter;
-
-		g_assert (opt);
+	for (iter = wso_types; iter; iter = iter->next) {
+		WirelessSecurityOption *opt = (WirelessSecurityOption *) g_hash_table_lookup (wsm->options, iter->data);
+		GtkTreeIter iter;
 
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter, NAME_COLUMN, wso_get_name (opt), OPT_COLUMN, opt, -1);
 	}
+
+	g_slist_free (wso_types);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (model));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
@@ -210,13 +247,19 @@ WirelessSecurityOption * wsm_get_option_for_active (WirelessSecurityManager *wsm
 }
 
 
+WirelessSecurityOption * wsm_get_option_by_type (WirelessSecurityManager *wsm, WSOType type)
+{
+	g_return_val_if_fail (wsm != NULL, NULL);
+
+	return (WirelessSecurityOption *) g_hash_table_lookup (wsm->options, GINT_TO_POINTER (type));
+}
+
 void wsm_free (WirelessSecurityManager *wsm)
 {
 	g_return_if_fail (wsm != NULL);
 
 	g_free (wsm->glade_file);
-	g_slist_foreach (wsm->options, (GFunc) wso_free, NULL);
-	g_slist_free (wsm->options);
+	g_hash_table_destroy (wsm->options);
 	memset (wsm, 0, sizeof (WirelessSecurityManager));
 	g_free (wsm);
 }

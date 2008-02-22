@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iwlib.h>
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <glib.h>
@@ -38,6 +39,10 @@
 #include "nm-utils.h"
 #include "NetworkManager.h"
 #include "wireless-security-manager.h"
+
+#include "nm-gconf-wso-wpa-eap.h"
+#include "nm-gconf-wso-wpa-psk.h"
+#include "nm-gconf-wso-leap.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -162,6 +167,44 @@ out:
 }
 
 
+static void
+populate_dialog (GConfClient *gconf_client, const char *essid, WirelessSecurityManager *wsm)
+{
+	char *escaped_network;
+	NMGConfWSO *gconf_wso;
+	WirelessSecurityOption *wso = NULL;
+
+	if (!essid)
+		return;
+
+	escaped_network = gconf_escape_key (essid, strlen (essid));
+	gconf_wso = nm_gconf_wso_new_deserialize_gconf (gconf_client, NETWORK_TYPE_ALLOWED, escaped_network);
+	g_free (escaped_network);
+
+	if (!gconf_wso)
+		/* Not in GConf yet */
+		return;
+
+	if (NM_IS_GCONF_WSO_WPA_EAP (gconf_wso)) {
+		if (nm_gconf_wso_wpa_eap_get_wpa_version (NM_GCONF_WSO_WPA_EAP (gconf_wso)) == IW_AUTH_WPA_VERSION_WPA)
+			wso = wsm_get_option_by_type (wsm, WSO_TYPE_WPA_EAP);
+		else
+			wso = wsm_get_option_by_type (wsm, WSO_TYPE_WPA2_EAP);
+	} else if (NM_IS_GCONF_WSO_WPA_PSK (gconf_wso)) {
+		if (nm_gconf_wso_wpa_psk_get_wpa_version (NM_GCONF_WSO_WPA_PSK (gconf_wso)) == IW_AUTH_WPA_VERSION_WPA)
+			wso = wsm_get_option_by_type (wsm, WSO_TYPE_WPA_PSK);
+		else
+			wso = wsm_get_option_by_type (wsm, WSO_TYPE_WPA2_PSK);
+	} else if (NM_IS_GCONF_WSO_LEAP (gconf_wso))
+		wso = wsm_get_option_by_type (wsm, WSO_TYPE_LEAP);
+
+	/* FIXME: Handle WEPs */
+
+	if (wso)
+		nm_gconf_wso_populate_wso (gconf_wso, wso);
+}
+
+
 /*
  * nmi_passphrase_dialog_new
  *
@@ -252,6 +295,8 @@ nmi_passphrase_dialog_new (NMApplet *applet,
 	nmi_passphrase_dialog_security_combo_changed (GTK_WIDGET (security_combo), info);
 
 	g_signal_connect (dialog, "response", GTK_SIGNAL_FUNC (nmi_passphrase_dialog_response_received), info);
+
+	populate_dialog (applet->gconf_client, wireless_network_get_essid (net), wsm);
 
 	/* Bash focus-stealing prevention in the face */
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);

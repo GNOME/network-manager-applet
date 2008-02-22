@@ -436,6 +436,14 @@ real_write_secrets (NMGConfWSO *instance,
 	gnome_keyring_attribute_list_free (attributes);
 }
 
+gboolean
+nm_gconf_wso_wpa_eap_get_wpa_version (NMGConfWSOWPA_EAP *self)
+{
+	g_return_val_if_fail (self != NULL, FALSE);
+
+	return self->priv->wpa_version;
+}
+
 static void
 nm_gconf_wso_wpa_eap_init (NMGConfWSOWPA_EAP *self)
 {

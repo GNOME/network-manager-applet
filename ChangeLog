@@ -1,3 +1,32 @@
+2008-02-22  Tambet Ingo  <tambet@gmail.com>
+
+	Implement prepopulating of the passphrase dialog with the last known good
+	values. Especially helpful for WPA-EAP which has a lot of widgets to fill.
+
+	* src/passphrase-dialog.c (populate_dialog): Implement.
+
+	* src/nm-wired-dialog.c (populate_dialog): Implement.
+
+	* src/wireless-security-manager.c: Store wireless options in a hash to store
+	their types.
+	(wsm_get_option_by_type): Implement.
+
+	* src/nm-gconf-wso.c (nm_gconf_wso_populate_wso): Implement.
+
+	* src/nm-gconf-wso-wpa-psk.c (nm_gconf_wso_wpa_psk_get_wpa_version): Implement.
+
+	* src/nm-gconf-wso-wpa-eap.c (nm_gconf_wso_wpa_eap_get_wpa_version): Implement.
+
+	* src/wireless-security-option.c (wso_populate_from_dbus_params): Implement.
+
+	* src/wso-wpa-psk.c (populate_from_dbus_func): Implement.
+
+	* src/wso-wpa-eap.c (populate_from_dbus_func): Implement.
+
+	* src/wso-leap.c (widget_create_func): Comment out the "show_password" button
+	signal handler. For some unknown reason, it totally breaks the LEAP dialog.
+	(populate_from_dbus_func): Implement.
+
 2008-02-19  Tambet Ingo  <tambet@gmail.com>
 
 	Improve the editor to support wired networks and LEAP and phase2 authentications.

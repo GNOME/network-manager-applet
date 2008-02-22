@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -132,6 +134,49 @@ append_dbus_params_func (WirelessSecurityOption *opt,
 }
 
 
+typedef struct {
+	GtkComboBox *combo;
+	gint value;
+} ComboSelectInfo;
+
+static gboolean
+combo_select (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer user_data)
+{
+	ComboSelectInfo *info = user_data;
+	GValue val = { 0, };
+	gint i;
+
+	gtk_tree_model_get_value (model, iter, WPA_KEY_TYPE_CIPHER_COL, &val);
+	i = g_value_get_int (&val);
+
+	if (i == info->value) {
+		gtk_combo_box_set_active_iter (info->combo, iter);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
+populate_from_dbus_func (WirelessSecurityOption *opt, DBusMessageIter *iter)
+{
+	char *key = NULL;
+	int key_len;
+	int wpa_version;
+	int key_mgt;
+	ComboSelectInfo info;
+
+  	if (!nmu_security_deserialize_wpa_psk (iter, &key, &key_len, &wpa_version, &key_mgt))
+		return FALSE;
+
+	info.combo = GTK_COMBO_BOX (glade_xml_get_widget (opt->uixml, opt->data->key_type_combo_name));
+	info.value = key_mgt;
+	gtk_tree_model_foreach (gtk_combo_box_get_model (info.combo), combo_select, &info);
+
+	return TRUE;
+}
+
+
 static void
 key_type_combo_changed_cb (GtkComboBox *combo,
                            gpointer user_data)
@@ -184,6 +229,7 @@ wso_wpa_psk_new (const char *glade_file,
 	opt->validate_input_func = validate_input_func;
 	opt->widget_create_func = widget_create_func;
 	opt->append_dbus_params_func = append_dbus_params_func;
+	opt->populate_from_dbus_func = populate_from_dbus_func;
 
 	if (!(opt->uixml = glade_xml_new (glade_file, opt->widget_name, NULL)))
 	{

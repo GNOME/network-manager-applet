@@ -28,6 +28,17 @@
 
 typedef struct WirelessSecurityManager WirelessSecurityManager;
 
+typedef enum {
+  WSO_TYPE_NONE,
+  WSO_TYPE_WEP_PASSPHRASE,
+  WSO_TYPE_WEP_HEX,
+  WSO_TYPE_WEP_ASCII,
+  WSO_TYPE_WPA_EAP,
+  WSO_TYPE_WPA_PSK,
+  WSO_TYPE_WPA2_EAP,
+  WSO_TYPE_WPA2_PSK,
+  WSO_TYPE_LEAP
+} WSOType;
 
 WirelessSecurityManager *	wsm_new (const char * glade_file);
 
@@ -44,5 +55,7 @@ gboolean					wsm_validate_active (WirelessSecurityManager *wsm, GtkComboBox *com
 								const char *ssid);
 
 WirelessSecurityOption *		wsm_get_option_for_active (WirelessSecurityManager *wsm, GtkComboBox *combo);
+
+WirelessSecurityOption * wsm_get_option_by_type (WirelessSecurityManager *wsm, WSOType type);
 
 #endif	/* WIRELESS_SECURITY_MANAGER_H */
