@@ -7,15 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-07 21:55+0100\n"
-"PO-Revision-Date: 2008-02-06 19:37+0100\n"
-"Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
+"POT-Creation-Date: 2008-02-23 23:47+0100\n"
+"PO-Revision-Date: 2008-02-23 23:51+0100\n"
+"Last-Translator: wadim dziedzic <nikdo@aviary.pl>\n"
 "Language-Team: Tomasz Dominikowski (Aviary.pl) <dominikowski@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: Poland\n"
 
@@ -23,7 +22,8 @@ msgstr ""
 msgid "Auto CDMA network connection"
 msgstr "Automatyczne połączenie z siecią CDMA"
 
-#: ../src/applet-device-cdma.c:190 ../src/applet-device-gsm.c:190
+#: ../src/applet-device-cdma.c:190
+#: ../src/applet-device-gsm.c:190
 msgid "Disconnect..."
 msgstr "Rozłącz..."
 
@@ -45,8 +45,10 @@ msgstr "Połączenia CDMA"
 msgid "CDMA Network"
 msgstr "Sieć CDMA"
 
-#: ../src/applet-device-cdma.c:274 ../src/applet-device-gsm.c:274
-#: ../src/applet-device-wired.c:206 ../src/applet-device-wireless.c:953
+#: ../src/applet-device-cdma.c:274
+#: ../src/applet-device-gsm.c:274
+#: ../src/applet-device-wired.c:206
+#: ../src/applet-device-wireless.c:959
 msgid "Connection Established"
 msgstr "Połączenie ustanowione."
 
@@ -59,7 +61,8 @@ msgstr "Ustanowiono połączenie z siecią CDMA."
 msgid "Dialing CDMA device %s..."
 msgstr "Wybieranie urządzenia CDMA %s..."
 
-#: ../src/applet-device-cdma.c:296 ../src/applet-device-gsm.c:296
+#: ../src/applet-device-cdma.c:296
+#: ../src/applet-device-gsm.c:296
 #, c-format
 msgid "Running PPP on device %s..."
 msgstr "Uruchamianie PPP na urządzeniu %s..."
@@ -140,7 +143,6 @@ msgid "Configuring device %s for the wired network..."
 msgstr "Konfigurowanie urządzenia %s dla sieci przewodowej..."
 
 #: ../src/applet-device-wired.c:231
-#, c-format
 msgid "Requesting a network address from the wired network..."
 msgstr "Żądanie adresu sieciowego od sieci przewodowej..."
 
@@ -150,7 +152,7 @@ msgstr "Przewodowe połączenie sieciowe"
 
 #: ../src/applet-device-wireless.c:84
 msgid "_Connect to Other Wireless Network..."
-msgstr "_Połącz z inną siecią przewodową..."
+msgstr "_Połącz z inną siecią bezprzewodową..."
 
 #: ../src/applet-device-wireless.c:122
 msgid "Create _New Wireless Network..."
@@ -173,41 +175,42 @@ msgstr[0] "Sieć bezprzewodowa"
 msgstr[1] "Sieci bezprzewodowe"
 msgstr[2] "Sieci bezprzewodowe"
 
-#: ../src/applet-device-wireless.c:951
+#: ../src/applet-device-wireless.c:957
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Nawiązano połączenie z siecią bezprzewodową \"%s\"."
 
-#: ../src/applet-device-wireless.c:952 ../src/applet-device-wireless.c:966
+#: ../src/applet-device-wireless.c:958
+#: ../src/applet-device-wireless.c:972
 msgid "(none)"
 msgstr "(brak)"
 
-#: ../src/applet-device-wireless.c:980
+#: ../src/applet-device-wireless.c:986
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
 msgstr "Przygotowywanie urządzenia %s dla sieci bezprzewodowej \"%s\"..."
 
-#: ../src/applet-device-wireless.c:983
+#: ../src/applet-device-wireless.c:989
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
 msgstr "Próba połączenia z siecią bezprzewodową \"%s\"..."
 
-#: ../src/applet-device-wireless.c:986
+#: ../src/applet-device-wireless.c:992
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
 msgstr "Żądanie adresu sieciowego od sieci bezprzewodowej \"%s\"..."
 
-#: ../src/applet-device-wireless.c:989
+#: ../src/applet-device-wireless.c:995
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
 msgstr "Oczekiwanie na klucz sieciowy dla sieci bezprzewodowej \"%s\"..."
 
-#: ../src/applet-device-wireless.c:1009
+#: ../src/applet-device-wireless.c:1015
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
 msgstr "Połączenie bezprzewodowe z \"%s\" (%d%%)"
 
-#: ../src/applet-device-wireless.c:1013
+#: ../src/applet-device-wireless.c:1019
 #, c-format
 msgid "Wireless network connection to '%s'"
 msgstr "Połączenie bezprzewodowe z \"%s\""
@@ -220,20 +223,20 @@ msgstr "Błąd podczas wyświetlania informacji o połączeniu:"
 msgid "Dynamic WEP"
 msgstr "Dynamiczny WEP"
 
-#: ../src/applet-dialogs.c:75 ../src/applet-dialogs.c:184
+#: ../src/applet-dialogs.c:75
+#: ../src/applet-dialogs.c:184
 #: ../src/applet-dialogs.c:186
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:77 ../src/applet-dialogs.c:207
+#: ../src/applet-dialogs.c:77
+#: ../src/applet-dialogs.c:207
 msgid "Unknown"
 msgstr "Nieznane"
 
 #: ../src/applet-dialogs.c:123
 msgid "Could not find some required resources (the glade file)!"
-msgstr ""
-"Nie można odnaleźć niektórych wymaganych zasobów (plik glade nie został "
-"odnaleziony)!"
+msgstr "Nie można odnaleźć niektórych wymaganych zasobów (plik glade nie został odnaleziony)!"
 
 #: ../src/applet-dialogs.c:141
 #, c-format
@@ -283,10 +286,8 @@ msgstr ""
 "Copyright © 2005-2008 Novell, Inc."
 
 #: ../src/applet-dialogs.c:389
-msgid ""
-"Notification area applet for managing your network devices and connections."
-msgstr ""
-"Aplet w obszarze powiadamiania do obsługi urządzeń sieciowych i połączeń."
+msgid "Notification area applet for managing your network devices and connections."
+msgstr "Aplet w obszarze powiadamiania do obsługi urządzeń sieciowych i połączeń."
 
 #: ../src/applet-dialogs.c:391
 msgid "NetworkManager Website"
@@ -294,107 +295,99 @@ msgstr "Strona domowa NetworkManager"
 
 #: ../src/applet-dialogs.c:394
 msgid "translator-credits"
-msgstr "Tomasz Dominikowski (Aviary.pl) <dominikowski@gmail.com>"
+msgstr "GNOME PL Team <gnome-l10n@lists.aviary.pl>"
 
 #: ../src/applet.c:267
 msgid "VPN Login Message"
 msgstr "Wiadomość logowania VPN"
 
-#: ../src/applet.c:563
+#: ../src/applet.c:571
 msgid "No network devices have been found"
 msgstr "Nie odnaleziono żadnych urządzeń sieciowych"
 
-#: ../src/applet.c:646
+#: ../src/applet.c:655
 msgid "_VPN Connections"
 msgstr "Połączenia _VPN"
 
-#: ../src/applet.c:687
+#: ../src/applet.c:696
 msgid "_Configure VPN..."
 msgstr "_Skonfiguruj VPN..."
 
-#: ../src/applet.c:691
+#: ../src/applet.c:700
 msgid "_Disconnect VPN..."
 msgstr "_Rozłącz VPN..."
 
-#: ../src/applet.c:738
+#: ../src/applet.c:747
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager nie jest uruchomiony..."
 
-#: ../src/applet.c:743 ../src/applet.c:1282
+#: ../src/applet.c:752
+#: ../src/applet.c:1315
 msgid "Networking disabled"
 msgstr "Sieć wyłączona"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:865
+#: ../src/applet.c:894
 msgid "Enable _Networking"
 msgstr "Uruchom _sieć"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:873
+#: ../src/applet.c:902
 msgid "Enable _Wireless"
 msgstr "Uruchom sieć _bezprzewodową"
 
 #. 'Connection Information' item
-#: ../src/applet.c:883
+#: ../src/applet.c:912
 msgid "Connection _Information"
 msgstr "_Informacje o połączeniu"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:893
+#: ../src/applet.c:922
 msgid "Edit Connections..."
 msgstr "Modyfikuj połączenia..."
 
 #. Help item
-#: ../src/applet.c:905
+#: ../src/applet.c:936
 msgid "_Help"
 msgstr "P_omoc"
 
 #. About item
-#: ../src/applet.c:914
+#: ../src/applet.c:945
 msgid "_About"
 msgstr "O _programie"
 
-#: ../src/applet.c:1087
+#: ../src/applet.c:1120
 msgid "Disconnected"
 msgstr "Rozłączony"
 
-#: ../src/applet.c:1088
+#: ../src/applet.c:1121
 msgid "The network connection has been disconnected."
 msgstr "Połączenie sieciowe zostało rozłączone."
 
-#: ../src/applet.c:1286
+#: ../src/applet.c:1319
 msgid "No network connection"
 msgstr "Brak połączeń sieciowych"
 
-#: ../src/applet.c:1531
-msgid ""
-"The NetworkManager applet could not find some required resources.  It cannot "
-"continue.\n"
-msgstr ""
-"Aplet NetworkManager nie mógł odnaleźć niektórych wymaganych zasobów. Nie "
-"można kontynuować.\n"
+#: ../src/applet.c:1565
+msgid "The NetworkManager applet could not find some required resources.  It cannot continue.\n"
+msgstr "Aplet NetworkManager nie mógł odnaleźć niektórych wymaganych zasobów. Nie można kontynuować.\n"
 
-#: ../src/applet.c:1672
+#: ../src/applet.c:1706
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
-#: ../src/applet.c:1677 ../src/wireless-dialog.c:786
-msgid ""
-"The NetworkManager Applet could not find some required resources (the glade "
-"file was not found)."
-msgstr ""
-"Aplet NetworkManager nie mógł odnaleźć niektórych wymaganych zasobów (plik "
-"glade nie został odnaleziony)."
+#: ../src/applet.c:1711
+#: ../src/wireless-dialog.c:786
+msgid "The NetworkManager Applet could not find some required resources (the glade file was not found)."
+msgstr "Aplet NetworkManager nie mógł odnaleźć niektórych wymaganych zasobów (plik glade nie został odnaleziony)."
 
 #: ../src/applet.glade.h:1
 msgid " "
 msgstr " "
 
 #: ../src/applet.glade.h:2
-msgid ""
-"<span weight=\"bold\" size=\"larger\">Active Connection Information</span>"
-msgstr ""
-"<span weight=\"bold\" size=\"larger\">Informacje o aktywnym połączeniu</span>"
+msgid "<span weight=\"bold\" size=\"larger\">Active Connection Information</span>"
+msgstr "<span weight=\"bold\" size=\"larger\">Informacje o aktywnym połączeniu</span>"
 
 #: ../src/applet.glade.h:3
 msgid "Anonymous Identity:"
@@ -690,6 +683,8 @@ msgid "IPv4 Settings"
 msgstr "Ustawienia IPv4"
 
 #: ../src/connection-editor/page-wired.c:53
+#: ../src/connection-editor/nm-connection-editor.glade.h:7
+#: ../src/connection-editor/nm-connection-list.c:472
 msgid "Wired"
 msgstr "Przewodowe"
 
@@ -705,6 +700,8 @@ msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
 #: ../src/connection-editor/page-wireless.c:176
+#: ../src/connection-editor/nm-connection-editor.glade.h:8
+#: ../src/connection-editor/nm-connection-list.c:476
 msgid "Wireless"
 msgstr "Sieć bezprzewodowa"
 
@@ -758,20 +755,12 @@ msgid "Editing unamed connection"
 msgstr "Modyfikowanie połączenia bez nazwy"
 
 #: ../src/connection-editor/nm-connection-editor.c:147
-msgid ""
-"The connection editor could not find some required resources (the "
-"NetworkManager applet glade file was not found)."
-msgstr ""
-"Edytor połączenie nie mógł odnaleźć niektórych wymaganych zasobów (plik "
-"glade apletu NetworkManager nie został odnaleziony)."
+msgid "The connection editor could not find some required resources (the NetworkManager applet glade file was not found)."
+msgstr "Edytor połączenie nie mógł odnaleźć niektórych wymaganych zasobów (plik glade apletu NetworkManager nie został odnaleziony)."
 
 #: ../src/connection-editor/nm-connection-editor.c:160
-msgid ""
-"The connection editor could not find some required resources (the glade file "
-"was not found)."
-msgstr ""
-"Edytor połączeń nie mógł odnaleźć niektórych wymaganych zasobów (plik glade "
-"nie został odnaleziony)."
+msgid "The connection editor could not find some required resources (the glade file was not found)."
+msgstr "Edytor połączeń nie mógł odnaleźć niektórych wymaganych zasobów (plik glade nie został odnaleziony)."
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
 msgid "Connect _automatically"
@@ -786,13 +775,73 @@ msgid "Connection _name:"
 msgstr "_Nazwa połączenia:"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
+#: ../src/connection-editor/nm-connection-list.c:481
+msgid "Mobile Broadband"
+msgstr "Mobile Broadband"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:5
 msgid "Network Connections"
 msgstr "Połączenia sieciowe"
 
-#: ../src/connection-editor/nm-connection-list.c:140
+#: ../src/connection-editor/nm-connection-editor.glade.h:6
+#: ../src/connection-editor/nm-connection-list.c:485
+msgid "VPN"
+msgstr "VPN"
+
+#: ../src/connection-editor/nm-connection-list.c:155
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Na pewno usunąć połączenie %s?"
+
+#: ../src/connection-editor/nm-connection-list.c:260
+msgid "never"
+msgstr "nigdy"
+
+#: ../src/connection-editor/nm-connection-list.c:271
+#: ../src/connection-editor/nm-connection-list.c:282
+msgid "now"
+msgstr "teraz"
+
+#. less than an hour ago
+#: ../src/connection-editor/nm-connection-list.c:289
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d minutę temu"
+msgstr[1] "%d minuty temu"
+msgstr[2] "%d minut temu"
+
+#: ../src/connection-editor/nm-connection-list.c:293
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d godzinę temu"
+msgstr[1] "%d godziny temu"
+msgstr[2] "%d godzin temu"
+
+#: ../src/connection-editor/nm-connection-list.c:305
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dzień temu"
+msgstr[1] "%d dni temu"
+msgstr[2] "%d dni temu"
+
+#: ../src/connection-editor/nm-connection-list.c:311
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d miesiąc temu"
+msgstr[1] "%d miesiące temu"
+msgstr[2] "%d miesięcy temu"
+
+#: ../src/connection-editor/nm-connection-list.c:315
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d rok temu"
+msgstr[1] "%d lata temu"
+msgstr[2] "%d lat temu"
 
 #: ../src/utils/crypto.c:123
 #, c-format
@@ -800,17 +849,14 @@ msgid "PEM key file had no end tag '%s'."
 msgstr "Klucz PEM nie zawiera kończącego znacznika \"%s\"."
 
 #: ../src/utils/crypto.c:133
-#, c-format
 msgid "Doesn't look like a PEM private key file."
 msgstr "To nie jest plik prywatnego klucza PEM."
 
 #: ../src/utils/crypto.c:141
-#, c-format
 msgid "Not enough memory to store PEM file data."
 msgstr "Brak wystarczającej ilości pamięci do przechowania danych pliku PEM."
 
 #: ../src/utils/crypto.c:157
-#, c-format
 msgid "Malformed PEM file: Proc-Type was not first tag."
 msgstr "Uszkodzony plik PEM: Proc-Type nie jest pierwszym znacznikiem."
 
@@ -820,17 +866,14 @@ msgid "Malformed PEM file: unknown Proc-Type tag '%s'."
 msgstr "Uszkodzony plik PEM: nieznany znacznik Proc-Type \"%s\"."
 
 #: ../src/utils/crypto.c:175
-#, c-format
 msgid "Malformed PEM file: DEK-Info was not the second tag."
 msgstr "Uszkodzony plik PEM: DEK-Info nie jest drugim znacznikiem."
 
 #: ../src/utils/crypto.c:186
-#, c-format
 msgid "Malformed PEM file: no IV found in DEK-Info tag."
 msgstr "Uszkodzony plik PEM: brak IV w znaczniku DEK-Info."
 
 #: ../src/utils/crypto.c:193
-#, c-format
 msgid "Malformed PEM file: invalid format of IV in DEK-Info tag."
 msgstr "Uszkodzony plik PEM: niepoprawny format IV w znaczniku DEK-Info."
 
@@ -840,7 +883,6 @@ msgid "Malformed PEM file: unknown private key cipher '%s'."
 msgstr "Uszkodzony plik PEM: nieznany szyfr klucza prywatnego \"%s\"."
 
 #: ../src/utils/crypto.c:225
-#, c-format
 msgid "Could not decode private key."
 msgstr "Nie można zdekodować klucza prywatnego."
 
@@ -850,57 +892,48 @@ msgid "PEM certificate '%s' had no end tag '%s'."
 msgstr "Certyfikat PEM \"%s\" nie zawiera znacznika końcowego \"%s\"."
 
 #: ../src/utils/crypto.c:279
-#, c-format
 msgid "Failed to decode certificate."
 msgstr "Zdekodowanie certyfikatu nieudane."
 
-#: ../src/utils/crypto.c:288 ../src/utils/crypto.c:296
-#, c-format
+#: ../src/utils/crypto.c:288
+#: ../src/utils/crypto.c:296
 msgid "Not enough memory to store certificate data."
 msgstr "Brak wystarczającej ilości pamięci do przechowania danych certyfikatu."
 
 #: ../src/utils/crypto.c:326
-#, c-format
 msgid "IV must be an even number of bytes in length."
 msgstr "IV musi być parzystą liczbą bajtów."
 
 #: ../src/utils/crypto.c:335
-#, c-format
 msgid "Not enough memory to store the IV."
 msgstr "Brak wystarczającej ilości pamięci do przechowania IV."
 
 #: ../src/utils/crypto.c:346
-#, c-format
 msgid "IV contains non-hexadecimal digits."
 msgstr "IV zawiera nie-heksadecymalne cyfry."
 
-#: ../src/utils/crypto.c:384 ../src/utils/crypto_gnutls.c:125
+#: ../src/utils/crypto.c:384
+#: ../src/utils/crypto_gnutls.c:125
 #: ../src/utils/crypto_nss.c:134
 #, c-format
 msgid "Private key cipher '%s' was unknown."
 msgstr "Szyfr klucza prywatnego \"%s\" jest nieznany."
 
 #: ../src/utils/crypto.c:393
-#, c-format
 msgid "Not enough memory to create private key decryption key."
-msgstr ""
-"Brak wystarczającej ilości pamięci do utworzenia prywatnego klucza "
-"dekodującego."
+msgstr "Brak wystarczającej ilości pamięci do utworzenia prywatnego klucza dekodującego."
 
 #: ../src/utils/crypto.c:511
-#, c-format
 msgid "Not enough memory to store decrypted private key."
-msgstr ""
-"Brak wystarczającej ilości pamięci do przechowania zdekodowanego klucza "
-"prywatnego."
+msgstr "Brak wystarczającej ilości pamięci do przechowania zdekodowanego klucza prywatnego."
 
 #: ../src/utils/crypto_gnutls.c:72
 #, c-format
 msgid "Failed to initialize the MD5 engine: %s / %s."
 msgstr "Inicjacja silnika MD5 nie powiodła się: %s / %s."
 
-#: ../src/utils/crypto_gnutls.c:134 ../src/utils/crypto_nss.c:143
-#, c-format
+#: ../src/utils/crypto_gnutls.c:134
+#: ../src/utils/crypto_nss.c:143
 msgid "Not enough memory for decrypted key buffer."
 msgstr "Brak wystarczającej ilości pamięci dla bufora klucza dekodującego."
 
@@ -940,22 +973,18 @@ msgid "Failed to initialize the MD5 context: %d."
 msgstr "Inicjacja kontekstu MD5 nieudana: %d."
 
 #: ../src/utils/crypto_nss.c:151
-#, c-format
 msgid "Failed to initialize the decryption cipher slot."
 msgstr "Inicjacja slotu szyfru dekodującego nieudana."
 
 #: ../src/utils/crypto_nss.c:161
-#, c-format
 msgid "Failed to set symmetric key for decryption."
 msgstr "Ustawienie klucza symetrycznego do dekodowania nieudane."
 
 #: ../src/utils/crypto_nss.c:171
-#, c-format
 msgid "Failed to set IV for decryption."
 msgstr "Ustawienie IV do dekodowania nieudane."
 
 #: ../src/utils/crypto_nss.c:179
-#, c-format
 msgid "Failed to initialize the decryption context."
 msgstr "Inicjacja kontekstu dekodowania nieudana."
 
@@ -980,12 +1009,8 @@ msgstr "Nie można importować połączenia VPN"
 
 #: ../src/vpn-properties/nm-vpn-properties.c:566
 #, c-format
-msgid ""
-"Cannot find suitable software for VPN connection type '%s' to import the "
-"file '%s'. Contact your system administrator."
-msgstr ""
-"Nie odnaleziono odpowiednio oprogramowania do obsługi połączenia VPN typu \"%"
-"s\", aby zaimportować plik \"%s\". Skontaktuj się z administratorem systemu."
+msgid "Cannot find suitable software for VPN connection type '%s' to import the file '%s'. Contact your system administrator."
+msgstr "Nie odnaleziono odpowiednio oprogramowania do obsługi połączenia VPN typu \"%s\", aby zaimportować plik \"%s\". Skontaktuj się z administratorem systemu."
 
 #: ../src/vpn-properties/nm-vpn-properties.c:718
 #, c-format
@@ -994,13 +1019,8 @@ msgstr "Usunąć połączenie VPN \"%s\"?"
 
 #: ../src/vpn-properties/nm-vpn-properties.c:721
 #, c-format
-msgid ""
-"All information about the VPN connection \"%s\" will be lost and you may "
-"need your system administrator to provide information to create a new "
-"connection."
-msgstr ""
-"Wszystkie informacje dotyczące połączenia VPN \"%s\" zostaną utracone, a do "
-"utworzenia nowego połączenia może być potrzebny administrator systemu."
+msgid "All information about the VPN connection \"%s\" will be lost and you may need your system administrator to provide information to create a new connection."
+msgstr "Wszystkie informacje dotyczące połączenia VPN \"%s\" zostaną utracone, a do utworzenia nowego połączenia może być potrzebny administrator systemu."
 
 #: ../src/vpn-properties/nm-vpn-properties.c:992
 msgid "Unable to load"
@@ -1008,36 +1028,24 @@ msgstr "Wczytanie niemożliwe"
 
 #: ../src/vpn-properties/nm-vpn-properties.c:994
 msgid "Cannot find some needed resources (the glade file)!"
-msgstr ""
-"Nie można odnaleźć niektórych wymaganych zasobów (plik glade nie został "
-"odnaleziony)!"
+msgstr "Nie można odnaleźć niektórych wymaganych zasobów (plik glade nie został odnaleziony)!"
 
 #: ../src/vpn-properties/nm-vpn-properties.c:1010
 msgid "Cannot add VPN connection"
 msgstr "Nie można dodać połączenia VPN"
 
 #: ../src/vpn-properties/nm-vpn-properties.c:1012
-msgid ""
-"No suitable VPN software was found on your system. Contact your system "
-"administrator."
-msgstr ""
-"Nie odnaleziono odpowiednio oprogramowania do obsługi VPN. Skontaktuj się z "
-"administratorem systemu."
+msgid "No suitable VPN software was found on your system. Contact your system administrator."
+msgstr "Nie odnaleziono odpowiednio oprogramowania do obsługi VPN. Skontaktuj się z administratorem systemu."
 
 #. Druid Page 1 - Create VPN Connection
 #: ../src/vpn-properties/nm-vpn-properties.c:1091
-msgid ""
-"This assistant will guide you through the creation of a connection to a "
-"Virtual Private Network (VPN)."
+msgid "This assistant will guide you through the creation of a connection to a Virtual Private Network (VPN)."
 msgstr "Ten asystent pomoże skonfigurować połączenie VPN."
 
 #: ../src/vpn-properties/nm-vpn-properties.c:1092
-msgid ""
-"It will require some information, such as IP addresses and secrets.  Please "
-"see your system administrator to obtain this information."
-msgstr ""
-"Wymagane będą pewne informacje, takie jak adresy IP oraz hasła lub klucze. "
-"Informacje te powinny być dostępne u administratora sieci."
+msgid "It will require some information, such as IP addresses and secrets.  Please see your system administrator to obtain this information."
+msgstr "Wymagane będą pewne informacje, takie jak adresy IP oraz hasła lub klucze. Informacje te powinny być dostępne u administratora sieci."
 
 #: ../src/vpn-properties/nm-vpn-properties.c:1097
 #: ../src/vpn-properties/nm-vpn-properties.c:1112
@@ -1126,37 +1134,26 @@ msgstr "Obsługa połączeń VPN"
 msgid "VPN Connections"
 msgstr "Połączenia VPN"
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:231
+#: ../src/vpn-password-dialog.c:137
+#: ../src/vpn-password-dialog.c:231
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "Nie można uruchomić połączenia VPN \"%s\""
 
 #: ../src/vpn-password-dialog.c:140
 #, c-format
-msgid ""
-"Could not find the authentication dialog for VPN connection type '%s'. "
-"Contact your system administrator."
-msgstr ""
-"Nie można odnaleźć dialogu uwierzytelniającego dla połączenia VPN typu \"%s"
-"\". Skontaktuj się z administratorem systemu."
+msgid "Could not find the authentication dialog for VPN connection type '%s'. Contact your system administrator."
+msgstr "Nie można odnaleźć dialogu uwierzytelniającego dla połączenia VPN typu \"%s\". Skontaktuj się z administratorem systemu."
 
 #: ../src/vpn-password-dialog.c:234
 #, c-format
-msgid ""
-"There was a problem launching the authentication dialog for VPN connection "
-"type '%s'. Contact your system administrator."
-msgstr ""
-"Wystąpił problem podczas uruchamiania okna dialogowego uwierzytelniania dla "
-"połączenia VPN typu \"%s\". Skontaktuj się z administratorem systemu."
+msgid "There was a problem launching the authentication dialog for VPN connection type '%s'. Contact your system administrator."
+msgstr "Wystąpił problem podczas uruchamiania okna dialogowego uwierzytelniania dla połączenia VPN typu \"%s\". Skontaktuj się z administratorem systemu."
 
 #: ../src/wireless-dialog.c:664
 #, c-format
-msgid ""
-"Passwords or encryption keys are required to access the wireless network '%"
-"s'."
-msgstr ""
-"Wymagane są hasła lub klucze szyfrujące do połączenia z siecią bezprzewodową "
-"\"%s\"."
+msgid "Passwords or encryption keys are required to access the wireless network '%s'."
+msgstr "Wymagane są hasła lub klucze szyfrujące do połączenia z siecią bezprzewodową \"%s\"."
 
 #: ../src/wireless-dialog.c:666
 msgid "Wireless Network Secrets Required"
@@ -1188,8 +1185,7 @@ msgstr "Istniejąca sieć bezprzewodowa"
 
 #: ../src/wireless-dialog.c:681
 msgid "Enter the name of the wireless network to which you wish to connect."
-msgstr ""
-"Proszę wprowadzić nazwę sieci bezprzewodowej, z którą należy się połączyć."
+msgstr "Proszę wprowadzić nazwę sieci bezprzewodowej, z którą należy się połączyć."
 
 #: ../src/wireless-security/eap-method.c:302
 msgid "DER or PEM certificates (*.der, *.pem)"
@@ -1204,13 +1200,8 @@ msgstr "Nie wybrano certyfikatu CA"
 #: ../src/wireless-security/eap-method-peap.c:236
 #: ../src/wireless-security/eap-method-tls.c:292
 #: ../src/wireless-security/eap-method-ttls.c:223
-msgid ""
-"Not using a Certificate Authority (CA) certificate can result in connections "
-"to insecure, rogue wireless networks.  Would you like to choose a "
-"Certificate Authority certificate?"
-msgstr ""
-"Nieskorzystanie z certyfikatu CA może spowodować połączenia z "
-"niezabezpieczonymi sieciami bezprzewodowymi. Czy wybrać certyfikat CA?"
+msgid "Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue wireless networks.  Would you like to choose a Certificate Authority certificate?"
+msgstr "Nieskorzystanie z certyfikatu CA może spowodować połączenia z niezabezpieczonymi sieciami bezprzewodowymi. Czy wybrać certyfikat CA?"
 
 #: ../src/wireless-security/eap-method-peap.c:241
 #: ../src/wireless-security/eap-method-tls.c:297
@@ -1273,47 +1264,36 @@ msgstr "Protected EAP (PEAP)"
 
 #~ msgid "Wireless Ethernet (%s)"
 #~ msgstr "Połączenie bezprzewodowe (%s)"
-
 #~ msgid "VPN Login Failure"
 #~ msgstr "Logowanie do VPN nieudane"
-
 #~ msgid "Could not start the VPN connection '%s' due to a login failure."
 #~ msgstr ""
 #~ "Nie można uruchomić połączenia VPN \"%s\" z powodu nieudanego logowania."
-
 #~ msgid "VPN Start Failure"
 #~ msgstr "Uruchomienie VPN nieudane"
-
 #~ msgid ""
 #~ "Could not start the VPN connection '%s' due to a failure launching the "
 #~ "VPN program."
 #~ msgstr ""
 #~ "Nie można uruchomić połączenia VPN \"%s\" z powodu problemu z "
 #~ "uruchomieniem programu VPN"
-
 #~ msgid "VPN Connect Failure"
 #~ msgstr "Połączenie VPN nieudane"
-
 #~ msgid "Could not start the VPN connection '%s' due to a connection error."
 #~ msgstr ""
 #~ "Nie można uruchomić połączenia VPN \"%s\" z powodu błędu połączenia."
-
 #~ msgid "VPN Configuration Error"
 #~ msgstr "Błąd konfiguracji VPN"
-
 #~ msgid "The VPN connection '%s' was not correctly configured."
 #~ msgstr "Połączenie VPN \"%s\" nie zostało poprawnie skonfigurowane."
-
 #~ msgid ""
 #~ "Could not start the VPN connection '%s' because the VPN server did not "
 #~ "return an adequate network configuration."
 #~ msgstr ""
 #~ "Nie można uruchomić połączenia VPN \"%s\", ponieważ serwer VPN nie "
 #~ "zwrócił odpowiedniej konfiguracji sieci."
-
 #~ msgid "Passphrase for wireless network %s"
 #~ msgstr "Długie hasło dla sieci bezprzewodowej %s"
-
 #~ msgid ""
 #~ "<span weight=\"bold\" size=\"larger\">Passphrase Required by Wireless "
 #~ "Network</span>\n"
@@ -1326,7 +1306,6 @@ msgstr "Protected EAP (PEAP)"
 #~ "\n"
 #~ "Wymagane jest długie hasło lub klucz szyfrujący do zalogowania się do "
 #~ "sieci bezprzewodowej \"%s\"."
-
 #~ msgid ""
 #~ "<span weight=\"bold\" size=\"larger\">Reduced Network Functionality</"
 #~ "span>\n"
@@ -1337,7 +1316,6 @@ msgstr "Protected EAP (PEAP)"
 #~ "span>\n"
 #~ "\n"
 #~ "%s  Nie będzi w pełni funkcjonalny."
-
 #~ msgid ""
 #~ "<span weight=\"bold\" size=\"larger\">Wireless Network Login "
 #~ "Confirmation</span>\n"
@@ -1353,22 +1331,16 @@ msgstr "Protected EAP (PEAP)"
 #~ "bezpieczna sieć bezprzewodowa, zaznacz kratkę poniżej, a NetworkManager "
 #~ "nie będzie już więcej prosił o potwierdzenie podczas logowania do tej "
 #~ "sieci."
-
 #~ msgid "Client Certificate File:"
 #~ msgstr "Plik certyfikatu klienta:"
-
 #~ msgid "Destination Address:"
 #~ msgstr "Adres docelowy:"
-
 #~ msgid "EAP Method:"
 #~ msgstr "Metoda EAP:"
-
 #~ msgid "Key Type:"
 #~ msgstr "Rodzaj klucza:"
-
 #~ msgid "Key management:"
 #~ msgstr "Obsługa klucza:"
-
 #~ msgid ""
 #~ "None\n"
 #~ "WEP 128-bit Passphrase\n"
@@ -1379,75 +1351,56 @@ msgstr "Protected EAP (PEAP)"
 #~ "WEP 128-bit Hasło\n"
 #~ "WEP 64/128-bit Hex\n"
 #~ "WEP 64/128-bit ASCII\n"
-
 #~ msgid "Select the Client Certificate File"
 #~ msgstr "Wybierz plik certyfikatu klienta"
-
 #~ msgid "Select the Private Key File"
 #~ msgstr "Wybierz plik klucza prywatnego"
-
 #~ msgid "Show passwords"
 #~ msgstr "Wyświetl hasła"
-
 #~ msgid "_Always Trust this Wireless Network"
 #~ msgstr "Z_awsze ufaj tej sieci bezprzewodowej"
-
 #~ msgid "_Fallback on this Network"
 #~ msgstr "Sieć _zapasowa"
-
 #~ msgid "_Login to Network"
 #~ msgstr "Za_loguj do sieci"
-
 #~ msgid "Orientation"
 #~ msgstr "Położenie"
-
 #~ msgid "The orientation of the tray."
 #~ msgstr "Położenie obszaru powiadamiania."
-
 #~ msgid " (invalid Unicode)"
 #~ msgstr " (niepoprawny Unikod)"
-
 #~ msgid ""
 #~ "By default, the wireless network's name is set to your computer's name, %"
 #~ "s, with no encryption enabled"
 #~ msgstr ""
 #~ "Domyślnie nazwą sieci bezprzewodowej jest nazwa komputera, %s, z "
 #~ "wyłączonym szyfrowaniem"
-
 #~ msgid ""
 #~ "Enter the name and security settings of the wireless network you wish to "
 #~ "create."
 #~ msgstr ""
 #~ "Wprowadź nazwę i ustawienia bezpieczeństwa dla sieci bezprzewodowej, "
 #~ "którą chcesz utworzyć."
-
 #~ msgid "Error connecting to wireless network"
 #~ msgstr "Błąd podczas łączenia się z siecią bezprzewodową"
-
 #~ msgid ""
 #~ "The requested wireless network requires security capabilities unsupported "
 #~ "by your hardware."
 #~ msgstr ""
 #~ "Żądana sieć bezprzewodowa wymaga ustawień bezpieczeństwa nieobsługiwanych "
 #~ "przez twój sprzęt."
-
 #~ msgid "Open System"
 #~ msgstr "Otwarty system"
-
 #~ msgid "Shared Key"
 #~ msgstr "Klucz współdzielony"
-
 #~ msgid "Automatic (Default)"
 #~ msgstr "Automatycznie (domyślnie)"
-
 #~ msgid "AES-CCMP"
 #~ msgstr "AES-CCMP"
-
 #~ msgid "TKIP"
 #~ msgstr "TKIP"
-
 #~ msgid "TTLS"
 #~ msgstr "TTLS"
-
 #~ msgid "WPA Enterprise"
 #~ msgstr "WPA Enterprise"
+
