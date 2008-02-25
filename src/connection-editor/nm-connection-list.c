@@ -131,8 +131,8 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 	gint result;
 	const char *dir;
 	GError *error = NULL;
-	GtkTreeModel *model = NULL;
-	GtkTreeIter iter;
+	GtkTreeModel *model = NULL, *sorted_model;
+	GtkTreeIter iter, sorted_iter;
 
 	connection = get_connection_for_selection (clist, &model, &iter);
 	g_return_if_fail (connection != NULL);
@@ -170,7 +170,11 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 		g_error_free (error);
 	}
 
-	gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+	gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (model),
+	                                                &sorted_iter,
+	                                                &iter);
+	sorted_model = gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (model));
+	gtk_list_store_remove (GTK_LIST_STORE (sorted_model), &sorted_iter);
 
 	if (!g_hash_table_remove (list->connections, dir))
 		g_warning ("%s: couldn't remove connection from hash table.", __func__);
