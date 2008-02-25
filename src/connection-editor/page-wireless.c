@@ -28,6 +28,7 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
+#include <nm-utils.h>
 
 #include "page-wireless.h"
 #include "utils.h"
@@ -155,18 +156,20 @@ GtkWidget *
 page_wireless_new (NMConnection *connection, const char **title)
 {
 	GladeXML *xml;
-	GtkWidget *page;
 	NMSettingWireless *s_wireless;
-	int band_idx = 0;
+	GtkWidget *page;
 	GtkWidget *mode;
 	GtkWidget *band;
 	GtkWidget *channel;
 	GtkWidget *rate;
+	GtkWidget *ssid;
+	int band_idx = 0;
 	int rate_def;
 	GtkWidget *tx_power;
 	int tx_power_def;
 	GtkWidget *mtu;
 	int mtu_def;
+	char *utf8_ssid;
 
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	g_return_val_if_fail (s_wireless != NULL, NULL);
@@ -199,7 +202,10 @@ page_wireless_new (NMConnection *connection, const char **title)
 	                  (GCallback) ce_spin_output_with_default,
 	                  GINT_TO_POINTER (mtu_def));
 
-	/* FIXME: SSID */
+	ssid = glade_xml_get_widget (xml, "wireless_ssid");
+	utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
+	gtk_entry_set_text (GTK_ENTRY (ssid), utf8_ssid);
+	g_free (utf8_ssid);
 
 	mode = glade_xml_get_widget (xml, "wireless_mode");
 	if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "infrastructure"))
