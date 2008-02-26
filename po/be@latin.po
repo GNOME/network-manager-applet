@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-18 01:18+0200\n"
-"PO-Revision-Date: 2008-02-18 01:27+0200\n"
+"POT-Creation-Date: 2008-02-26 13:17+0200\n"
+"PO-Revision-Date: 2008-02-26 13:18+0200\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian Latin <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,18 +17,174 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: ../src/applet-compat.c:171 ../src/applet-compat.c:504
-#: ../src/nm-gconf-wso.c:387 ../editor/editor-keyring-helper.c:121
+#: ../editor/editor-app.c:596 ../src/wso-none.c:53
+msgid "None"
+msgstr "Niama"
+
+#: ../editor/editor-app.c:601
+msgid "WEP 64-bit"
+msgstr "WEP 64-bit"
+
+#: ../editor/editor-app.c:606
+msgid "WEP 128-bit"
+msgstr "WEP 128-bit"
+
+#: ../editor/editor-app.c:611 ../src/wso-wpa-psk.c:226
+msgid "WPA Personal"
+msgstr "WPA Personal"
+
+#: ../editor/editor-app.c:616 ../src/wso-wpa-psk.c:224
+msgid "WPA2 Personal"
+msgstr "WPA2 Personal"
+
+#: ../editor/editor-app.c:621 ../src/wso-wpa-eap.c:337
+msgid "WPA Enterprise"
+msgstr "WPA Enterprise"
+
+#: ../editor/editor-app.c:626 ../src/wso-wpa-eap.c:335
+msgid "WPA2 Enterprise"
+msgstr "WPA2 Enterprise"
+
+#: ../editor/editor-app.c:631
+msgid "LEAP"
+msgstr "LEAP"
+
+#: ../editor/editor-app.c:718 ../editor/editor-app.c:745
+msgid "NetworkManager Editor"
+msgstr "Redaktar NetworkManager"
+
+#: ../editor/editor-app.c:720 ../editor/editor-app.c:747
+msgid "Copyright © 2007 Novell, Inc."
+msgstr "Aŭtarskija pravy © 2007 Novell, Inc."
+
+#: ../editor/editor-app.c:721
+msgid "Editor for managing your wireless networks"
+msgstr ""
+"Redaktar, jaki dapamahaje kiravać spałučeńniami ź biazdrotavymi sietkami"
+
+#: ../editor/editor-app.c:724 ../editor/editor-app.c:753 ../src/applet.c:346
+#: ../src/applet.c:373
+msgid "translator-credits"
+msgstr "Ihar Hračyška <ihar.hrachyshka@gmail.com>"
+
+#: ../editor/editor-app.c:748
+msgid "Editor for managing your wireless networks."
+msgstr "Redaktar dla kiravańnia spałučeńniami ź biazdrotavymi sietkami."
+
+#: ../editor/editor-keyring-helper.c:121 ../src/applet-compat.c:171
+#: ../src/applet-compat.c:504 ../src/nm-gconf-wso.c:415
 #, c-format
 msgid "Passphrase for wireless network %s"
 msgstr "Parolnaja fraza dla biazdrotavaha spałučeńnia %s"
 
 #. Save private_key_passwd to keyring
-#: ../src/applet-compat.c:459 ../src/nm-gconf-wso-wpa-eap.c:417
-#: ../editor/editor-keyring-helper.c:133
+#: ../editor/editor-keyring-helper.c:133 ../src/applet-compat.c:459
+#: ../src/nm-gconf-wso-wpa-eap.c:417
 #, c-format
 msgid "Private key password for wireless network %s"
 msgstr "Parol pryvatnaha kluča dla biazdrotavaha spałučeńnia %s"
+
+#: ../editor/widget-wso-leap.c:100 ../editor/widget-wso-wep.c:81
+#: ../editor/widget-wso-wpa-personal.c:84
+msgid "Unable to read key"
+msgstr "Niemahčyma pračytać kluč"
+
+#: ../editor/widget-wso-leap.c:138 ../editor/widget-wso-wpa-enterprise.c:151
+#: ../editor/widget-wso-wpa-enterprise.c:189
+#: ../editor/widget-wso-wpa-personal.c:122
+msgid "Unable to set password"
+msgstr "Niemahčyma akreślić parol"
+
+#: ../editor/widget-wso-leap.c:140 ../editor/widget-wso-wpa-personal.c:124
+#, c-format
+msgid ""
+"There was a problem storing the password in the gnome keyring. Error 0x%02X."
+msgstr ""
+"Uźnikła prablema padčas zachavańnia parolu ŭ klučnika gnome-keyring. Pamyłka "
+"0x%02X."
+
+#: ../editor/widget-wso-wep.c:105
+msgid "Hex"
+msgstr "Hex"
+
+#: ../editor/widget-wso-wep.c:108
+msgid "ASCII"
+msgstr "ASCII"
+
+#: ../editor/widget-wso-wep.c:113
+msgid "Passphrase"
+msgstr "Parolnaja fraza"
+
+#: ../editor/widget-wso-wep.c:145
+msgid "Unable to set key"
+msgstr "Niemahčyma akreślić kluč"
+
+#: ../editor/widget-wso-wep.c:147
+#, c-format
+msgid ""
+"There was a problem setting the wireless key to the gnome keyring. Error 0x%"
+"02X."
+msgstr ""
+"Uźnikła prablema padčas akreśleńnia kluča biazdrotavaha spałučeńnia dla "
+"klučnika gnome-keyring. Pamyłka 0x%02X."
+
+#: ../editor/widget-wso-wpa-enterprise.c:153
+#: ../editor/widget-wso-wpa-enterprise.c:191
+#, c-format
+msgid ""
+"There was a problem storing the private password in the gnome keyring. Error "
+"0x%02X."
+msgstr ""
+"Uźnikła prablema padčas zachavańnia pryvatnaha parolu ŭ klučnika gnome-"
+"keyring. Pamyłka 0x%02X."
+
+#: ../libnma/libnma.c:20
+msgid "Automatic (Default)"
+msgstr "Aŭtamatyčny (zmoŭčana)"
+
+#: ../libnma/libnma.c:27
+msgid "AES-CCMP"
+msgstr "AES-CCMP"
+
+#: ../libnma/libnma.c:35
+msgid "TKIP"
+msgstr "TKIP"
+
+#: ../libnma/libnma.c:43
+msgid "Dynamic WEP"
+msgstr "Dynamičny WEP"
+
+#: ../libnma/libnma.c:85
+msgid "None (Default)"
+msgstr "Niama (zmoŭčana)"
+
+#: ../libnma/libnma.c:90
+msgid "PAP"
+msgstr "PAP"
+
+#: ../libnma/libnma.c:95
+msgid "MSCHAP"
+msgstr "MSCHAP"
+
+#: ../libnma/libnma.c:100
+msgid "MSCHAPV2"
+msgstr "MSCHAPV2"
+
+#: ../libnma/libnma.c:105
+msgid "GTC"
+msgstr "GTC"
+
+#: ../libnma/libnma.c:143
+msgid "PEAP"
+msgstr "PEAP"
+
+#: ../libnma/libnma.c:144
+msgid "TLS"
+msgstr "TLS"
+
+#: ../libnma/libnma.c:145
+msgid "TTLS"
+msgstr "TTLS"
 
 #: ../src/applet-dbus-devices.c:919
 #, c-format
@@ -113,12 +269,7 @@ msgstr ""
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
-"Aplet abšaru nahadvańniaŭ dla kiravańnia setkavymi pryładami j spałučeńniami."
-
-#: ../src/applet.c:346 ../src/applet.c:373 ../editor/editor-app.c:267
-#: ../editor/editor-app.c:296
-msgid "translator-credits"
-msgstr "Ihar Hračyška <ihar.hrachyshka@gmail.com>"
+"Aplet abšaru nahadvańniaŭ dla kiravańnia sietkavymi pryładami j spałučeńniami."
 
 #: ../src/applet.c:367
 msgid ""
@@ -181,8 +332,8 @@ msgstr ""
 msgid "VPN Login Message"
 msgstr "Paviedamleńnie aŭtaryzacyi VPN"
 
-#: ../src/applet.c:744 ../src/applet.c:2707 ../src/other-network-dialog.c:455
-#: ../src/passphrase-dialog.c:218
+#: ../src/applet.c:744 ../src/applet.c:2707 ../src/nm-wired-dialog.c:134
+#: ../src/other-network-dialog.c:455 ../src/passphrase-dialog.c:261
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -425,79 +576,129 @@ msgstr ""
 "hetaja biazdrotavaja sietka biaśpiečnaja, zaznač nižejšuju opcyju, i "
 "NetworkManager nia budzie patrabavać paćvierdžańniaŭ dla ŭvachodu."
 
-#: ../src/applet.glade.h:15 ../editor/editor.glade.h:3
+#: ../src/applet.glade.h:15
+msgid "Access Point:"
+msgstr "Punkt dostupu:"
+
+#: ../src/applet.glade.h:16
+msgid "Access points"
+msgstr "Punkty dostupu"
+
+#: ../src/applet.glade.h:17
 msgid "Anonymous Identity:"
 msgstr "Ananimnaja tojesnaść:"
 
-#: ../src/applet.glade.h:16 ../editor/editor.glade.h:4
+#: ../src/applet.glade.h:18
 msgid "Authentication:"
 msgstr "Aŭtaryzacyja:"
 
-#: ../src/applet.glade.h:17
+#: ../src/applet.glade.h:19
 msgid "Broadcast Address:"
 msgstr "Tranślacyjny adras:"
 
-#: ../src/applet.glade.h:18 ../editor/editor.glade.h:12
+#: ../src/applet.glade.h:20
 msgid "CA Certificate File:"
 msgstr "Fajł sertyfikatu CA:"
 
-#: ../src/applet.glade.h:19
+#: ../src/applet.glade.h:21
 msgid "C_onnect"
 msgstr "_Spałučy"
 
-#: ../src/applet.glade.h:20 ../editor/editor.glade.h:13
+#: ../src/applet.glade.h:22
 msgid "Client Certificate File:"
 msgstr "Fajł sertyfikatu klijenta:"
 
-#: ../src/applet.glade.h:21
+#: ../src/applet.glade.h:23
 msgid "Connection Information"
 msgstr "Źviestki ab spałučeńni"
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:24
 msgid "Default Route:"
 msgstr "Zmoŭčany šlach:"
 
-#: ../src/applet.glade.h:23
+#: ../src/applet.glade.h:25
 msgid "Destination Address:"
 msgstr "Metavy adras:"
 
-#: ../src/applet.glade.h:24
+#: ../src/applet.glade.h:26
 msgid "Driver:"
 msgstr "Drajver:"
 
-#: ../src/applet.glade.h:25 ../editor/editor.glade.h:14
+#: ../src/applet.glade.h:27
 msgid "EAP Method:"
 msgstr "Metad EAP:"
 
-#: ../src/applet.glade.h:26
+#: ../src/applet.glade.h:28
+msgid "Edit Access Point"
+msgstr "Źmiani punkt dostupu"
+
+#: ../src/applet.glade.h:29
+msgid "Format:"
+msgstr "Farmat:"
+
+#: ../src/applet.glade.h:30
 msgid "Hardware Address:"
 msgstr "Aparatny adras:"
 
-#: ../src/applet.glade.h:27
+#: ../src/applet.glade.h:31
+msgid ""
+"Hex\n"
+"ASCII\n"
+"Passphrase"
+msgstr ""
+"Hex\n"
+"ASCII\n"
+"Parolnaja fraza"
+
+#: ../src/applet.glade.h:34
 msgid "IP Address:"
 msgstr "Adras IP:"
 
-#: ../src/applet.glade.h:28 ../editor/editor.glade.h:20
+#: ../src/applet.glade.h:35
 msgid "Identity:"
 msgstr "Tojesnaść:"
 
-#: ../src/applet.glade.h:29
+#: ../src/applet.glade.h:36
 msgid "Interface:"
 msgstr "Interfejs:"
 
-#: ../src/applet.glade.h:30 ../editor/editor.glade.h:21
+#: ../src/applet.glade.h:37
 msgid "Key Type:"
 msgstr "Typ kluča:"
 
-#: ../src/applet.glade.h:31
+#: ../src/applet.glade.h:38
 msgid "Key management:"
 msgstr "Kiravańnie klučami:"
 
-#: ../src/applet.glade.h:32 ../editor/editor.glade.h:22
+#: ../src/applet.glade.h:39
 msgid "Key:"
 msgstr "Kluč:"
 
-#: ../src/applet.glade.h:33
+#: ../src/applet.glade.h:40
+msgid "Last Used:"
+msgstr "Apošniaje vykarystańnie:"
+
+#: ../src/applet.glade.h:41
+msgid "Name:"
+msgstr "Nazva:"
+
+#: ../src/applet.glade.h:42
+msgid "Networks"
+msgstr "Sietki"
+
+#: ../src/applet.glade.h:43
+msgid ""
+"None\n"
+"WEP 128-bit Passphrase\n"
+"WEB 64/128 bit Hex\n"
+"WEP 64/128-bit ASCII\n"
+msgstr ""
+"Niama\n"
+"WEP 128-bit Parolnaja fraza\n"
+"WEP 64/128-bit Hex\n"
+"WEP 64/128-bit ASCII\n"
+
+#: ../src/applet.glade.h:48
 msgid ""
 "None\n"
 "WEP 128-bit Passphrase\n"
@@ -509,7 +710,7 @@ msgstr ""
 "WEP 64/128-bit Hex\n"
 "WEP 64/128-bit ASCII\n"
 
-#: ../src/applet.glade.h:38 ../editor/editor.glade.h:37
+#: ../src/applet.glade.h:53
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -517,109 +718,157 @@ msgstr ""
 "Adkrytaja systema\n"
 "Supolny kluč"
 
-#: ../src/applet.glade.h:40
+#: ../src/applet.glade.h:55
 msgid "Other Wireless Network..."
 msgstr "Inšaja biazdrotavaja sietka..."
 
-#: ../src/applet.glade.h:41
+#: ../src/applet.glade.h:56
 msgid "Passphrase:"
 msgstr "Parolnaja fraza:"
 
-#: ../src/applet.glade.h:42 ../editor/editor.glade.h:39
+#: ../src/applet.glade.h:57
 msgid "Password:"
 msgstr "Parol:"
 
-#: ../src/applet.glade.h:43
+#: ../src/applet.glade.h:58
 msgid "Phase2 Type:"
 msgstr "Typ Phase2:"
 
-#: ../src/applet.glade.h:44
+#: ../src/applet.glade.h:59
 msgid "Primary DNS:"
 msgstr "Pieršy DNS:"
 
-#: ../src/applet.glade.h:45 ../editor/editor.glade.h:40
+#: ../src/applet.glade.h:60
 msgid "Private Key File:"
 msgstr "Fajł pryvatnaha kluča:"
 
-#: ../src/applet.glade.h:46 ../editor/editor.glade.h:41
+#: ../src/applet.glade.h:61
 msgid "Private Key Password:"
 msgstr "Parol pryvatnaha kluča:"
 
-#: ../src/applet.glade.h:47
+#: ../src/applet.glade.h:62
+msgid "Properties"
+msgstr "Ułaścivaści"
+
+#: ../src/applet.glade.h:63
 msgid "Secondary DNS:"
 msgstr "Druhi DNS:"
 
-#: ../src/applet.glade.h:48 ../editor/editor.glade.h:44
+#: ../src/applet.glade.h:64
+msgid "Security:"
+msgstr "Biaśpieka:"
+
+#: ../src/applet.glade.h:65
 msgid "Select the CA Certificate File"
 msgstr "Abiary fajł sertyfikatu CA"
 
-#: ../src/applet.glade.h:49 ../editor/editor.glade.h:45
+#: ../src/applet.glade.h:66
 msgid "Select the Client Certificate File"
 msgstr "Abiary fajł sertyfikatu klijenta"
 
-#: ../src/applet.glade.h:50 ../editor/editor.glade.h:46
+#: ../src/applet.glade.h:67
 msgid "Select the Private Key File"
 msgstr "Abiary fajł pryvatnaha kluča"
 
-#: ../src/applet.glade.h:51
+#: ../src/applet.glade.h:68
+msgid "Set Password"
+msgstr "Akreśl parol"
+
+#: ../src/applet.glade.h:69
+msgid "Set WEP Key"
+msgstr "Akreśl kluč WEP"
+
+#: ../src/applet.glade.h:70
+msgid "Set _Key"
+msgstr "Akreśl _kluč"
+
+#: ../src/applet.glade.h:71
+msgid "Set _Password"
+msgstr "Akreśl _parol"
+
+#: ../src/applet.glade.h:72
 msgid "Show key"
 msgstr "Pakažy kluč"
 
-#: ../src/applet.glade.h:52
+#: ../src/applet.glade.h:73
 msgid "Show passphrase"
 msgstr "Pakažy parolnuju frazu"
 
-#: ../src/applet.glade.h:53
+#: ../src/applet.glade.h:74
 msgid "Show password"
 msgstr "Pakažy parol"
 
-#: ../src/applet.glade.h:54 ../editor/editor.glade.h:52
+#: ../src/applet.glade.h:75
 msgid "Show passwords"
 msgstr "Pakažy paroli"
 
-#: ../src/applet.glade.h:55
+#: ../src/applet.glade.h:76
 msgid "Speed:"
 msgstr "Chutkaść:"
 
-#: ../src/applet.glade.h:56
+#: ../src/applet.glade.h:77
 msgid "Subnet Mask:"
 msgstr "Maska padsietki:"
 
-#: ../src/applet.glade.h:57 ../editor/editor.glade.h:53
+#: ../src/applet.glade.h:78
 msgid "Type:"
 msgstr "Typ:"
 
-#: ../src/applet.glade.h:58
+#: ../src/applet.glade.h:79
 msgid "User Name:"
 msgstr "Nazva karystalnika:"
 
-#: ../src/applet.glade.h:59
+#: ../src/applet.glade.h:80
 msgid "Wireless Network Key Required"
 msgstr "Vymahaje kluča dla biazdrotavaj sietki"
 
-#: ../src/applet.glade.h:60
+#: ../src/applet.glade.h:81
+msgid "Wireless Networks"
+msgstr "Biazdrotavyja sietki"
+
+#: ../src/applet.glade.h:82
 msgid "Wireless _adapter:"
 msgstr "Biazdrotavy _adapter:"
 
-#: ../src/applet.glade.h:61
+#: ../src/applet.glade.h:83
+msgid "_Add"
+msgstr "_Dadaj"
+
+#: ../src/applet.glade.h:84
 msgid "_Always Trust this Wireless Network"
 msgstr "_Zaŭždy daviaraj hetaj biazdrotavaj sietcy"
 
-#: ../src/applet.glade.h:62
+#: ../src/applet.glade.h:85
 msgid "_Don't remind me again"
 msgstr "_Bolš nie nahadvaj"
 
-#: ../src/applet.glade.h:63
+#: ../src/applet.glade.h:86
+msgid "_Edit"
+msgstr "_Źmiani"
+
+#: ../src/applet.glade.h:87
 msgid "_Login to Network"
 msgstr "_Uvajdzi ŭ sietku"
 
-#: ../src/applet.glade.h:64
+#: ../src/applet.glade.h:88
 msgid "_Network Name:"
 msgstr "_Nazva sietki:"
 
-#: ../src/applet.glade.h:65
+#: ../src/applet.glade.h:89
+msgid "_Remove"
+msgstr "_Vydal"
+
+#: ../src/applet.glade.h:90
 msgid "_Wireless Security:"
 msgstr "_Biazdrotavaja biaśpieka:"
+
+#: ../src/applet.glade.h:91
+msgid "bssid editor"
+msgstr "redaktar bssid"
+
+#: ../src/applet.glade.h:92
+msgid "bssids:"
+msgstr "bssidy:"
 
 #: ../src/eggtrayicon.c:134
 msgid "Orientation"
@@ -656,6 +905,32 @@ msgstr[2] "Biazdrotavyja sietki"
 #: ../src/menu-items.c:344
 msgid " (invalid Unicode)"
 msgstr " (niapravilny Unikod)"
+
+#: ../src/nm-wired-dialog.c:144
+msgid "Connect to 802.1X protected wired network"
+msgstr "Spałučy z abaronienaj dracianoj 802.1X sietkaj"
+
+#: ../src/nm-wired-dialog.c:153
+#, fuzzy, c-format
+msgid ""
+"<span size=\"larger\" weight=\"bold\">Connect to a 802.1X protected wired "
+"network</span>\n"
+"\n"
+"A passphrase or encryption key is required to access the network '%s'."
+msgstr ""
+"<span weight=\"bold\" size=\"larger\">Biazdrotavaja sietka vymahaje "
+"parolnuju frazu</span>\n"
+"\n"
+"Kab atrymać dostup da biazdrotavaj sietki \"%s\", treba akreślić parolnuju "
+"frazu ci kluč šyfravańnia."
+
+#: ../src/nm-wired-dialog.c:158
+msgid ""
+"<span size=\"larger\" weight=\"bold\">Connect to a 802.1X protected wired "
+"network</span>\n"
+"\n"
+"Enter the name and security settings of the network you wish to join."
+msgstr ""
 
 #: ../src/other-network-dialog.c:354
 #, c-format
@@ -694,11 +969,11 @@ msgstr "Akreśl nazvu biazdrotavaj sietki, ź jakoj chočaš spałučycca."
 msgid "Connect to Other Wireless Network"
 msgstr "Spałučy ź inšaj biazdrotavaj sietkaj"
 
-#: ../src/passphrase-dialog.c:205
+#: ../src/passphrase-dialog.c:248
 msgid "Error connecting to wireless network"
 msgstr "Pamyłka spałučeńnia ź biazdrotavaj sietkaj"
 
-#: ../src/passphrase-dialog.c:206
+#: ../src/passphrase-dialog.c:249
 msgid ""
 "The requested wireless network requires security capabilities unsupported by "
 "your hardware."
@@ -729,53 +1004,13 @@ msgstr ""
 "Pry ŭruchamleńni dyjalohu aŭtaryzacyi dla spałučeńnia VPN typu \"%s\" "
 "uźnikła prablema. Skantaktujsia z systemnym administrataram."
 
-#: ../src/wireless-security-option.c:157
+#: ../src/wireless-security-option.c:179
 msgid "Open System"
 msgstr "Adkrytaja systema"
 
-#: ../src/wireless-security-option.c:160
+#: ../src/wireless-security-option.c:182
 msgid "Shared Key"
 msgstr "Supolny kluč"
-
-#: ../src/wireless-security-option.c:207
-msgid "Automatic (Default)"
-msgstr "Aŭtamatyčny (zmoŭčana)"
-
-#: ../src/wireless-security-option.c:214
-msgid "AES-CCMP"
-msgstr "AES-CCMP"
-
-#: ../src/wireless-security-option.c:222
-msgid "TKIP"
-msgstr "TKIP"
-
-#: ../src/wireless-security-option.c:230
-msgid "Dynamic WEP"
-msgstr "Dynamičny WEP"
-
-#: ../src/wireless-security-option.c:252
-msgid "None (Default)"
-msgstr "Niama (zmoŭčana)"
-
-#: ../src/wireless-security-option.c:257
-msgid "PAP"
-msgstr "PAP"
-
-#: ../src/wireless-security-option.c:262
-msgid "MSCHAP"
-msgstr "MSCHAP"
-
-#: ../src/wireless-security-option.c:267
-msgid "MSCHAPV2"
-msgstr "MSCHAPV2"
-
-#: ../src/wireless-security-option.c:272
-msgid "GTC"
-msgstr "GTC"
-
-#: ../src/wso-none.c:53 ../editor/editor-app.c:374
-msgid "None"
-msgstr "Niama"
 
 #: ../src/wso-wep-ascii.c:172
 msgid "WEP 64/128-bit ASCII"
@@ -789,264 +1024,57 @@ msgstr "WEP 64/128-bit Hex"
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit Parolnaja fraza"
 
-#: ../src/wso-wpa-eap.c:244
-msgid "PEAP"
-msgstr "PEAP"
+#~ msgid "Key"
+#~ msgstr "Kluč"
 
-#: ../src/wso-wpa-eap.c:245
-msgid "TLS"
-msgstr "TLS"
+#~ msgid "_Show Key"
+#~ msgstr "_Pakažy kluč"
 
-#: ../src/wso-wpa-eap.c:246
-msgid "TTLS"
-msgstr "TTLS"
+#~ msgid ""
+#~ "Automatic (Default)\n"
+#~ "AES-CCMP\n"
+#~ "TKIP"
+#~ msgstr ""
+#~ "Aŭtamatyčny (zmoŭčana)\n"
+#~ "AES-CCMP\n"
+#~ "TKIP"
 
-#: ../src/wso-wpa-eap.c:254 ../editor/editor-app.c:404
-msgid "WPA2 Enterprise"
-msgstr "WPA2 Enterprise"
+#~ msgid ""
+#~ "Automatic (Default)\n"
+#~ "AES-CCMP\n"
+#~ "TKIP\n"
+#~ "Dynamic WEP"
+#~ msgstr ""
+#~ "Aŭtamatyčna (zmoŭčana)\n"
+#~ "AES-CCMP\n"
+#~ "TKIP\n"
+#~ "Dynamičny WEP"
 
-#: ../src/wso-wpa-eap.c:256 ../editor/editor-app.c:399
-msgid "WPA Enterprise"
-msgstr "WPA Enterprise"
+#~ msgid ""
+#~ "MD5\n"
+#~ "MSCHAPv2\n"
+#~ "OTP\n"
+#~ "GTC\n"
+#~ "PEAP\n"
+#~ "TLS\n"
+#~ "TTLS"
+#~ msgstr ""
+#~ "MD5\n"
+#~ "MSCHAPv2\n"
+#~ "OTP\n"
+#~ "GTC\n"
+#~ "PEAP\n"
+#~ "TLS\n"
+#~ "TTLS"
 
-#: ../src/wso-wpa-psk.c:178 ../editor/editor-app.c:394
-msgid "WPA2 Personal"
-msgstr "WPA2 Personal"
+#~ msgid "Show Password"
+#~ msgstr "Pakažy parol"
 
-#: ../src/wso-wpa-psk.c:180 ../editor/editor-app.c:389
-msgid "WPA Personal"
-msgstr "WPA Personal"
+#~ msgid "wpa_eap_subwindow"
+#~ msgstr "wpa_eap_subwindow"
 
-#: ../editor/editor-app.c:261 ../editor/editor-app.c:288
-msgid "NetworkManager Editor"
-msgstr "Redaktar NetworkManager"
-
-#: ../editor/editor-app.c:263 ../editor/editor-app.c:290
-msgid "Copyright © 2007 Novell, Inc."
-msgstr "Aŭtarskija pravy © 2007 Novell, Inc."
-
-#: ../editor/editor-app.c:264
-msgid "Editor for managing your wireless networks"
-msgstr "Redaktar, jaki dapamahaje kiravać spałučeńniami ź biazdrotavymi sietkami"
-
-#: ../editor/editor-app.c:291
-msgid "Editor for managing your wireless networks."
-msgstr "Redaktar dla kiravańnia spałučeńniami ź biazdrotavymi sietkami."
-
-#: ../editor/editor-app.c:379
-msgid "WEP 64-bit"
-msgstr "WEP 64-bit"
-
-#: ../editor/editor-app.c:384
-msgid "WEP 128-bit"
-msgstr "WEP 128-bit"
-
-#: ../editor/widget-wso-wep.c:77
-msgid "Key"
-msgstr "Kluč"
-
-#: ../editor/widget-wso-wep.c:80 ../editor/editor.glade.h:58
-msgid "_Show Key"
-msgstr "_Pakažy kluč"
-
-#: ../editor/widget-wso-wep.c:138 ../editor/widget-wso-wpa-personal.c:138
-msgid "Unable to read key"
-msgstr "Niemahčyma pračytać kluč"
-
-#: ../editor/widget-wso-wep.c:181
-msgid "Hex"
-msgstr "Hex"
-
-#: ../editor/widget-wso-wep.c:186
-msgid "ASCII"
-msgstr "ASCII"
-
-#: ../editor/widget-wso-wep.c:194
-msgid "Passphrase"
-msgstr "Parolnaja fraza"
-
-#: ../editor/widget-wso-wep.c:224
-msgid "Unable to set key"
-msgstr "Niemahčyma akreślić kluč"
-
-#: ../editor/widget-wso-wep.c:227
-#, c-format
-msgid ""
-"There was a problem setting the wireless key to the gnome keyring. Error 0x%"
-"02X."
-msgstr ""
-"Uźnikła prablema padčas akreśleńnia kluča biazdrotavaha spałučeńnia dla klučnika gnome-keyring. Pamyłka 0x%"
-"02X."
-
-#: ../editor/widget-wso-wpa-enterprise.c:447
-#: ../editor/widget-wso-wpa-enterprise.c:491
-#: ../editor/widget-wso-wpa-personal.c:191
-msgid "Unable to set password"
-msgstr "Niemahčyma akreślić parol"
-
-#: ../editor/widget-wso-wpa-enterprise.c:450
-#: ../editor/widget-wso-wpa-enterprise.c:494
-#, c-format
-msgid ""
-"There was a problem storing the private password in the gnome keyring. Error "
-"0x%02X."
-msgstr ""
-"Uźnikła prablema padčas zachavańnia pryvatnaha parolu ŭ klučnika gnome-keyring. Pamyłka "
-"0x%02X."
-
-#: ../editor/widget-wso-wpa-personal.c:194
-#, c-format
-msgid ""
-"There was a problem storing the password in the gnome keyring. Error 0x%02X."
-msgstr ""
-"Uźnikła prablema padčas zachavańnia parolu ŭ klučnika gnome-keyring. Pamyłka "
-"0x%02X."
-
-#: ../editor/editor.glade.h:1
-msgid "Access Point:"
-msgstr "Punkt dostupu:"
-
-#: ../editor/editor.glade.h:2
-msgid "Access points"
-msgstr "Punkty dostupu"
-
-#: ../editor/editor.glade.h:5
-msgid ""
-"Automatic (Default)\n"
-"AES-CCMP\n"
-"TKIP"
-msgstr ""
-"Aŭtamatyčny (zmoŭčana)\n"
-"AES-CCMP\n"
-"TKIP"
-
-#: ../editor/editor.glade.h:8
-msgid ""
-"Automatic (Default)\n"
-"AES-CCMP\n"
-"TKIP\n"
-"Dynamic WEP"
-msgstr ""
-"Aŭtamatyčna (zmoŭčana)\n"
-"AES-CCMP\n"
-"TKIP\n"
-"Dynamičny WEP"
-
-#: ../editor/editor.glade.h:15
-msgid "Edit Access Point"
-msgstr "Źmiani punkt dostupu"
-
-#: ../editor/editor.glade.h:16
-msgid "Format:"
-msgstr "Farmat:"
-
-#: ../editor/editor.glade.h:17
-msgid ""
-"Hex\n"
-"ASCII\n"
-"Passphrase"
-msgstr ""
-"Hex\n"
-"ASCII\n"
-"Parolnaja fraza"
-
-#: ../editor/editor.glade.h:23
-msgid "Last Used:"
-msgstr "Apošniaje vykarystańnie:"
-
-#: ../editor/editor.glade.h:24
-msgid ""
-"MD5\n"
-"MSCHAPv2\n"
-"OTP\n"
-"GTC\n"
-"PEAP\n"
-"TLS\n"
-"TTLS"
-msgstr ""
-"MD5\n"
-"MSCHAPv2\n"
-"OTP\n"
-"GTC\n"
-"PEAP\n"
-"TLS\n"
-"TTLS"
-
-#: ../editor/editor.glade.h:31
-msgid "Name:"
-msgstr "Nazva:"
-
-#: ../editor/editor.glade.h:32
-msgid ""
-"None\n"
-"WEP 128-bit Passphrase\n"
-"WEB 64/128 bit Hex\n"
-"WEP 64/128-bit ASCII\n"
-msgstr ""
-"Niama\n"
-"WEP 128-bit Parolnaja fraza\n"
-"WEP 64/128-bit Hex\n"
-"WEP 64/128-bit ASCII\n"
-
-#: ../editor/editor.glade.h:42
-msgid "Properties"
-msgstr "Ułaścivaści"
-
-#: ../editor/editor.glade.h:43
-msgid "Security:"
-msgstr "Biaśpieka:"
-
-#: ../editor/editor.glade.h:47
-msgid "Set Password"
-msgstr "Akreśl parol"
-
-#: ../editor/editor.glade.h:48
-msgid "Set WEP Key"
-msgstr "Akreśl kluč WEP"
-
-#: ../editor/editor.glade.h:49
-msgid "Set _Key"
-msgstr "Akreśl _kluč"
-
-#: ../editor/editor.glade.h:50
-msgid "Set _Password"
-msgstr "Akreśl _parol"
-
-#: ../editor/editor.glade.h:51
-msgid "Show Password"
-msgstr "Pakažy parol"
-
-#: ../editor/editor.glade.h:54
-msgid "Wireless Networks"
-msgstr "Biazdrotavyja sietki"
-
-#: ../editor/editor.glade.h:55
-msgid "_Add"
-msgstr "_Dadaj"
-
-#: ../editor/editor.glade.h:56
-msgid "_Edit"
-msgstr "_Źmiani"
-
-#: ../editor/editor.glade.h:57
-msgid "_Remove"
-msgstr "_Vydal"
-
-#: ../editor/editor.glade.h:59
-msgid "bssid editor"
-msgstr "redaktar bssid"
-
-#: ../editor/editor.glade.h:60
-msgid "bssids:"
-msgstr "bssidy:"
-
-#: ../editor/editor.glade.h:61
-msgid "wpa_eap_subwindow"
-msgstr "wpa_eap_subwindow"
-
-#: ../editor/editor.glade.h:62
-msgid "wpa_psk_subwindow"
-msgstr "wpa_psk_subwindow"
+#~ msgid "wpa_psk_subwindow"
+#~ msgstr "wpa_psk_subwindow"
 
 #~ msgid "%d Mb/s"
 #~ msgstr "%d Mb/s"
