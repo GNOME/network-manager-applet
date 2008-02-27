@@ -25,10 +25,38 @@
 
 #include "nm-connection-editor.h"
 
-GtkWidget * page_wireless_security_new (NMConnection *connection,
-                                        GtkWidget *ok_button,
-                                        GtkWidget *wireless_page,
-                                        const char **title);
+#include <nm-connection.h>
+
+#include <glib/gtypes.h>
+#include <glib-object.h>
+
+#include "ce-page.h"
+
+#define CE_TYPE_PAGE_WIRELESS_SECURITY            (ce_page_wireless_security_get_type ())
+#define CE_PAGE_WIRELESS_SECURITY(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_WIRELESS_SECURITY, CEPageWirelessSecurity))
+#define CE_PAGE_WIRELESS_SECURITY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE_WIRELESS_SECURITY, CEPageWirelessSecurityClass))
+#define CE_IS_PAGE_WIRELESS_SECURITY(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CE_TYPE_PAGE_WIRELESS_SECURITY))
+#define CE_IS_PAGE_WIRELESS_SECURITY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), CE_TYPE_PAGE_WIRELESS_SECURITY))
+#define CE_PAGE_WIRELESS_SECURITY_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_WIRELESS_SECURITY, CEPageWirelessSecurityClass))
+
+typedef struct {
+	CEPage parent;
+
+	gboolean disposed;
+	GtkSizeGroup *group;
+	GtkWidget *ok_button;
+	CEPageWireless *wireless_page;
+} CEPageWirelessSecurity;
+
+typedef struct {
+	CEPageClass parent;
+} CEPageWirelessSecurityClass;
+
+GType ce_page_wireless_security_get_type (void);
+
+CEPageWirelessSecurity *ce_page_wireless_security_new (NMConnection *connection,
+                                                       GtkWidget *ok_button,
+                                                       CEPageWireless *wireless_page);
 
 #endif  /* __PAGE_WIRELESS_SECURITY_H__ */
 

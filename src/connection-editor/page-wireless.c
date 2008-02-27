@@ -32,15 +32,16 @@
 
 #include "page-wireless.h"
 #include "utils.h"
+#include "nm-connection-editor.h"
+
+G_DEFINE_TYPE (CEPageWireless, ce_page_wireless, CE_TYPE_PAGE)
 
 static gboolean
-band_helper (GtkWidget *page, gboolean *aband, gboolean *gband)
+band_helper (CEPageWireless *self, gboolean *aband, gboolean *gband)
 {
-	GladeXML *xml;
 	GtkWidget *band_combo;
 
-	xml = g_object_get_data (G_OBJECT (page), "glade-xml");
-	band_combo = glade_xml_get_widget (xml, "wireless_band");
+	band_combo = glade_xml_get_widget (CE_PAGE (self)->xml, "wireless_band");
 
 	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (band_combo))) {
 	case 1: /* A */
@@ -57,13 +58,13 @@ band_helper (GtkWidget *page, gboolean *aband, gboolean *gband)
 static gint
 channel_spin_input_cb (GtkSpinButton *spin, gdouble *new_val, gpointer user_data)
 {
-	GtkWidget *page = GTK_WIDGET (user_data);
+	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
 	gdouble channel;
 	guint32 int_channel = 0;
 	gboolean aband = TRUE;
 	gboolean gband = TRUE;
 
-	if (!band_helper (page, &aband, &gband))
+	if (!band_helper (self, &aband, &gband))
 		return GTK_INPUT_ERROR;
 
 	channel = g_strtod (gtk_entry_get_text (GTK_ENTRY (spin)), NULL);
@@ -82,17 +83,14 @@ channel_spin_input_cb (GtkSpinButton *spin, gdouble *new_val, gpointer user_data
 static gint
 channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
 {
-	GtkWidget *page = GTK_WIDGET (user_data);
+	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
 	int channel;
 	gchar *buf = NULL;
 	guint32 freq;
 	gboolean aband = TRUE;
 	gboolean gband = TRUE;
-	guint32 last_channel;
 
-	last_channel = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (page), "last-channel"));
-
-	if (!band_helper (page, &aband, &gband))
+	if (!band_helper (self, &aband, &gband))
 		buf = g_strdup (_("default"));
 	else {
 		channel = gtk_spin_button_get_value_as_int (spin);
@@ -103,9 +101,9 @@ channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
 			if (freq == -1) {
 				int direction = 0;
 
-				if (last_channel < channel)
+				if (self->last_channel < channel)
 					direction = 1;
-				else if (last_channel > channel)
+				else if (self->last_channel > channel)
 					direction = -1;
 				channel = utils_find_next_channel (channel, direction, aband ? "a" : "bg");
 				freq = utils_channel_to_freq (channel, aband ? "a" : "bg");
@@ -117,7 +115,7 @@ channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
 			}
 			buf = g_strdup_printf (_("%u (%u MHz)"), channel, freq);
 		}
-		g_object_set_data (G_OBJECT (page), "last-channel", GUINT_TO_POINTER (channel));
+		self->last_channel = channel;
 	}
 
 	if (strcmp (buf, gtk_entry_get_text (GTK_ENTRY (spin))))
@@ -131,14 +129,12 @@ out:
 static void
 band_value_changed_cb (GtkComboBox *box, gpointer user_data)
 {
-	GtkWidget *page = GTK_WIDGET (user_data);
+	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
 	GtkWidget *widget;
-	GladeXML *xml;
 
-	g_object_set_data (G_OBJECT (page), "last-channel", GUINT_TO_POINTER (0));
+	self->last_channel = 0;
 
-	xml = g_object_get_data (G_OBJECT (page), "glade-xml");
-	widget = glade_xml_get_widget (xml, "wireless_channel");
+	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "wireless_channel");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (widget), 0);
 
 	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (box))) {
@@ -152,12 +148,12 @@ band_value_changed_cb (GtkComboBox *box, gpointer user_data)
 	}
 }
 
-GtkWidget *
-page_wireless_new (NMConnection *connection, const char **title)
+CEPageWireless *
+ce_page_wireless_new (NMConnection *connection)
 {
-	GladeXML *xml;
+	CEPageWireless *self;
+	CEPage *parent;
 	NMSettingWireless *s_wireless;
-	GtkWidget *page;
 	GtkWidget *mode;
 	GtkWidget *band;
 	GtkWidget *channel;
@@ -171,43 +167,57 @@ page_wireless_new (NMConnection *connection, const char **title)
 	int mtu_def;
 	char *utf8_ssid;
 
+	self = CE_PAGE_WIRELESS (g_object_new (CE_TYPE_PAGE_WIRELESS, NULL));
+	parent = CE_PAGE (self);
+
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-	g_return_val_if_fail (s_wireless != NULL, NULL);
+	if (!s_wireless) {
+		g_warning ("%s: Connection didn't have a wireless setting!", __func__);
+		g_object_unref (self);
+		return NULL;
+	}
 
-	xml = glade_xml_new (GLADEDIR "/ce-page-wireless.glade", "WirelessPage", NULL);
-	g_return_val_if_fail (xml != NULL, NULL);
-	*title = _("Wireless");
+	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wireless.glade", "WirelessPage", NULL);
+	if (!parent->xml) {
+		g_warning ("%s: Couldn't load wireless page glade file.", __func__);
+		g_object_unref (self);
+		return NULL;
+	}
 
-	page = glade_xml_get_widget (xml, "WirelessPage");
-	g_return_val_if_fail (page != NULL, NULL);
-	g_object_set_data_full (G_OBJECT (page),
-	                        "glade-xml", xml,
-	                        (GDestroyNotify) g_object_unref);
+	parent->page = glade_xml_get_widget (parent->xml, "WirelessPage");
+	if (!parent->page) {
+		g_warning ("%s: Couldn't load wireless page from glade file.", __func__);
+		g_object_unref (self);
+		return NULL;
+	}
+	g_object_ref_sink (parent->page);
 
-	rate = glade_xml_get_widget (xml, "wireless_rate");
+	parent->title = g_strdup (_("Wireless"));
+
+	rate = glade_xml_get_widget (parent->xml, "wireless_rate");
 	rate_def = ce_get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_RATE);
 	g_signal_connect (G_OBJECT (rate), "output",
 	                  (GCallback) ce_spin_output_with_default,
 	                  GINT_TO_POINTER (rate_def));
 
-	tx_power = glade_xml_get_widget (xml, "wireless_tx_power");
+	tx_power = glade_xml_get_widget (parent->xml, "wireless_tx_power");
 	tx_power_def = ce_get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_TX_POWER);
 	g_signal_connect (G_OBJECT (tx_power), "output",
 	                  (GCallback) ce_spin_output_with_default,
 	                  GINT_TO_POINTER (tx_power_def));
 
-	mtu = glade_xml_get_widget (xml, "wireless_mtu");
+	mtu = glade_xml_get_widget (parent->xml, "wireless_mtu");
 	mtu_def = ce_get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_MTU);
 	g_signal_connect (G_OBJECT (mtu), "output",
 	                  (GCallback) ce_spin_output_with_default,
 	                  GINT_TO_POINTER (mtu_def));
 
-	ssid = glade_xml_get_widget (xml, "wireless_ssid");
+	ssid = glade_xml_get_widget (parent->xml, "wireless_ssid");
 	utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
 	gtk_entry_set_text (GTK_ENTRY (ssid), utf8_ssid);
 	g_free (utf8_ssid);
 
-	mode = glade_xml_get_widget (xml, "wireless_mode");
+	mode = glade_xml_get_widget (parent->xml, "wireless_mode");
 	if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "infrastructure"))
 		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), 0);
 	else if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "adhoc"))
@@ -215,13 +225,13 @@ page_wireless_new (NMConnection *connection, const char **title)
 	else
 		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), -1);
 
-	channel = glade_xml_get_widget (xml, "wireless_channel");
+	channel = glade_xml_get_widget (parent->xml, "wireless_channel");
 	g_signal_connect (G_OBJECT (channel), "output",
 	                  (GCallback) channel_spin_output_cb,
-	                  page);
+	                  self);
 	g_signal_connect (G_OBJECT (channel), "input",
 	                  (GCallback) channel_spin_input_cb,
-	                  page);
+	                  self);
 
 	gtk_widget_set_sensitive (channel, FALSE);
 	if (s_wireless->band) {
@@ -233,15 +243,15 @@ page_wireless_new (NMConnection *connection, const char **title)
 			gtk_widget_set_sensitive (channel, TRUE);
 		}
 	}
-	band = glade_xml_get_widget (xml, "wireless_band");
+	band = glade_xml_get_widget (parent->xml, "wireless_band");
 	gtk_combo_box_set_active (GTK_COMBO_BOX (band), band_idx);
 	g_signal_connect (G_OBJECT (band), "changed",
 	                  (GCallback) band_value_changed_cb,
-	                  page);
+	                  self);
 
 	/* Update the channel _after_ the band has been set so that it gets
 	 * the right values */
-	g_object_set_data (G_OBJECT (page), "last-channel", GUINT_TO_POINTER (s_wireless->channel));
+	self->last_channel = s_wireless->channel;
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (channel), (gdouble) s_wireless->channel);
 
 	/* FIXME: BSSID */
@@ -251,7 +261,37 @@ page_wireless_new (NMConnection *connection, const char **title)
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (tx_power), (gdouble) s_wireless->tx_power);
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wireless->mtu);
 
-	return page;
+	return self;
 }
 
+GByteArray *
+ce_page_wireless_get_ssid (CEPageWireless *self)
+{
+	GtkWidget *widget;
+	const char *txt_ssid;
+	GByteArray *ssid;
+
+	g_return_val_if_fail (CE_IS_PAGE_WIRELESS (self), NULL);
+
+	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "wireless_ssid");
+	g_return_val_if_fail (widget != NULL, NULL);
+
+	txt_ssid = gtk_entry_get_text (GTK_ENTRY (widget));
+	if (!txt_ssid || !strlen (txt_ssid))
+		return NULL;
+
+	ssid = g_byte_array_sized_new (strlen (txt_ssid));
+	g_byte_array_append (ssid, (const guint8 *) txt_ssid, strlen (txt_ssid));
+	return ssid;
+}
+
+static void
+ce_page_wireless_init (CEPageWireless *self)
+{
+}
+
+static void
+ce_page_wireless_class_init (CEPageWirelessClass *wired_class)
+{
+}
 

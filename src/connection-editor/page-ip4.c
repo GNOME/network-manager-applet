@@ -30,29 +30,53 @@
 
 #include "page-ip4.h"
 
-GtkWidget *
-page_ip4_new (NMConnection *connection, const char **title)
+G_DEFINE_TYPE (CEPageIP4, ce_page_ip4, CE_TYPE_PAGE)
+
+CEPageIP4 *
+ce_page_ip4_new (NMConnection *connection)
 {
-	GladeXML *xml;
-	GtkWidget *page;
+	CEPageIP4 *self;
+	CEPage *parent;
 	NMSettingIP4Config *s_ip4;
 
-	xml = glade_xml_new (GLADEDIR "/ce-page-ip4.glade", "IP4Page", NULL);
-	g_return_val_if_fail (xml != NULL, NULL);
-	*title = _("IPv4 Settings");
+	self = CE_PAGE_IP4 (g_object_new (CE_TYPE_PAGE_IP4, NULL));
+	parent = CE_PAGE (self);
 
-	page = glade_xml_get_widget (xml, "IP4Page");
-	g_return_val_if_fail (page != NULL, NULL);
-	g_object_set_data_full (G_OBJECT (page),
-	                        "glade-xml", xml,
-	                        (GDestroyNotify) g_object_unref);
+	parent->xml = glade_xml_new (GLADEDIR "/ce-page-ip4.glade", "IP4Page", NULL);
+	if (!parent->xml) {
+		g_warning ("%s: Couldn't load wired page glade file.", __func__);
+		g_object_unref (self);
+		return NULL;
+	}
+
+	parent->page = glade_xml_get_widget (parent->xml, "IP4Page");
+	if (!parent->page) {
+		g_warning ("%s: Couldn't load wired page from glade file.", __func__);
+		g_object_unref (self);
+		return NULL;
+	}
+	g_object_ref_sink (parent->page);
+
+	parent->title = g_strdup (_("IPv4 Settings"));
 
 	s_ip4 = NM_SETTING_IP4_CONFIG (nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG));
 	if (s_ip4 == NULL)
 		goto out;
 
+	// FIXME: fill in UI from setting
+
 out:
-	return page;
+	return self;
 }
 
+
+static void
+ce_page_ip4_init (CEPageIP4 *self)
+{
+}
+
+static void
+ce_page_ip4_class_init (CEPageIP4Class *ip4_class)
+{
+}
 

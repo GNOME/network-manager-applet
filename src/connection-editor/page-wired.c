@@ -29,12 +29,15 @@
 #include <nm-setting-wired.h>
 
 #include "page-wired.h"
+#include "nm-connection-editor.h"
 
-GtkWidget *
-page_wired_new (NMConnection *connection, const char **title)
+G_DEFINE_TYPE (CEPageWired, ce_page_wired, CE_TYPE_PAGE)
+
+CEPageWired *
+ce_page_wired_new (NMConnection *connection)
 {
-	GladeXML *xml;
-	GtkWidget *page;
+	CEPageWired *self;
+	CEPage *parent;
 	NMSettingWired *s_wired;
 	GtkWidget *port;
 	int port_idx = 0;
@@ -45,25 +48,39 @@ page_wired_new (NMConnection *connection, const char **title)
 	GtkWidget *mtu;
 	int mtu_def;
 
+	self = CE_PAGE_WIRED (g_object_new (CE_TYPE_PAGE_WIRED, NULL));
+	parent = CE_PAGE (self);
+
 	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED));
-	g_return_val_if_fail (s_wired != NULL, NULL);
+	if (!s_wired) {
+		g_warning ("%s: Connection didn't have a wired setting!", __func__);
+		g_object_unref (self);
+		return NULL;
+	}
 
-	xml = glade_xml_new (GLADEDIR "/ce-page-wired.glade", "WiredPage", NULL);
-	g_return_val_if_fail (xml != NULL, NULL);
-	*title = _("Wired");
+	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wired.glade", "WiredPage", NULL);
+	if (!parent->xml) {
+		g_warning ("%s: Couldn't load wired page glade file.", __func__);
+		g_object_unref (self);
+		return NULL;
+	}
 
-	page = glade_xml_get_widget (xml, "WiredPage");
-	g_return_val_if_fail (page != NULL, NULL);
-	g_object_set_data_full (G_OBJECT (page),
-	                        "glade-xml", xml,
-	                        (GDestroyNotify) g_object_unref);
+	parent->page = glade_xml_get_widget (parent->xml, "WiredPage");
+	if (!parent->page) {
+		g_warning ("%s: Couldn't load wired page from glade file.", __func__);
+		g_object_unref (self);
+		return NULL;
+	}
+	g_object_ref_sink (parent->page);
 
-	port = glade_xml_get_widget (xml, "wired_port");
-	speed = glade_xml_get_widget (xml, "wired_speed");
-	duplex = glade_xml_get_widget (xml, "wired_duplex");
-	autoneg = glade_xml_get_widget (xml, "wired_autonegotiate");
+	parent->title = g_strdup (_("Wired"));
 
-	mtu = glade_xml_get_widget (xml, "wired_mtu");
+	port = glade_xml_get_widget (parent->xml, "wired_port");
+	speed = glade_xml_get_widget (parent->xml, "wired_speed");
+	duplex = glade_xml_get_widget (parent->xml, "wired_duplex");
+	autoneg = glade_xml_get_widget (parent->xml, "wired_autonegotiate");
+
+	mtu = glade_xml_get_widget (parent->xml, "wired_mtu");
 	mtu_def = ce_get_property_default (NM_SETTING (s_wired), NM_SETTING_WIRED_MTU);
 	g_signal_connect (G_OBJECT (mtu), "output",
 	                  (GCallback) ce_spin_output_with_default,
@@ -109,7 +126,17 @@ page_wired_new (NMConnection *connection, const char **title)
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wired->mtu);
 
 	/* FIXME: MAC address */
-	return page;
+
+	return self;
 }
 
+static void
+ce_page_wired_init (CEPageWired *self)
+{
+}
+
+static void
+ce_page_wired_class_init (CEPageWiredClass *wired_class)
+{
+}
 

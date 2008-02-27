@@ -23,10 +23,31 @@
 #ifndef __PAGE_WIRED_H__
 #define __PAGE_WIRED_H__
 
-#include "nm-connection-editor.h"
+#include <nm-connection.h>
 
-GtkWidget *page_wired_new (NMConnection *connection, const char **title);
+#include <glib/gtypes.h>
+#include <glib-object.h>
 
+#include "ce-page.h"
+
+#define CE_TYPE_PAGE_WIRED            (ce_page_wired_get_type ())
+#define CE_PAGE_WIRED(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_WIRED, CEPageWired))
+#define CE_PAGE_WIRED_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE_WIRED, CEPageWiredClass))
+#define CE_IS_PAGE_WIRED(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CE_TYPE_PAGE_WIRED))
+#define CE_IS_PAGE_WIRED_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), CE_TYPE_PAGE_WIRED))
+#define CE_PAGE_WIRED_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_WIRED, CEPageWiredClass))
+
+typedef struct {
+	CEPage parent;
+} CEPageWired;
+
+typedef struct {
+	CEPageClass parent;
+} CEPageWiredClass;
+
+GType ce_page_wired_get_type (void);
+
+CEPageWired *ce_page_wired_new (NMConnection *connection);
 
 #endif  /* __PAGE_WIRED_H__ */
 

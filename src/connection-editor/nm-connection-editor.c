@@ -44,6 +44,7 @@
 #include "nm-connection-editor.h"
 #include "utils.h"
 
+#include "ce-page.h"
 #include "page-wired.h"
 #include "page-wireless.h"
 #include "page-wireless-security.h"
@@ -88,19 +89,6 @@ ce_get_property_default (NMSetting *setting, const char *property_name)
 		return (int) g_value_get_uchar (&value);
 	g_return_val_if_fail (FALSE, 0);
 	return 0;
-}
-
-static void
-add_page (NMConnectionEditor *editor,
-          GtkWidget *page,
-          const char *title)
-{
-	GtkWidget *notebook;
-	GtkWidget *label;
-
-	notebook = glade_xml_get_widget (editor->xml, "notebook");
-	label = gtk_label_new (title);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
 }
 
 static void
@@ -170,12 +158,18 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	widget = glade_xml_get_widget (editor->xml, "connection_name");
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  G_CALLBACK (connection_name_changed), editor);
+
+	editor->pages = NULL;
 }
 
 static void
-nm_connection_editor_finalize (GObject *object)
+dispose (GObject *object)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (object);
+
+	g_slist_foreach (editor->pages, (GFunc) g_object_unref, NULL);
+	g_slist_free (editor->pages);
+	editor->pages = NULL;
 
 	if (editor->connection)
 		g_object_unref (editor->connection);
@@ -183,7 +177,7 @@ nm_connection_editor_finalize (GObject *object)
 	gtk_widget_destroy (editor->dialog);
 	g_object_unref (editor->xml);
 
-	G_OBJECT_CLASS (nm_connection_editor_parent_class)->finalize (object);
+	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);
 }
 
 static void
@@ -192,7 +186,7 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	/* virtual methods */
-	object_class->finalize = nm_connection_editor_finalize;
+	object_class->dispose = dispose;
 }
 
 NMConnectionEditor *
@@ -256,13 +250,25 @@ fill_connection_values (NMConnectionEditor *editor)
 	}
 }
 
+static void
+add_page (NMConnectionEditor *editor, CEPage *page)
+{
+	GtkWidget *widget;
+	GtkWidget *notebook;
+	GtkWidget *label;
+
+	notebook = glade_xml_get_widget (editor->xml, "notebook");
+	label = gtk_label_new (ce_page_get_title (page));
+	widget = ce_page_get_page (page);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
+
+	editor->pages = g_slist_append (editor->pages, page);
+}
+
 void
 nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection)
 {
 	NMSettingConnection *s_con;
-	GtkWidget *widget;
-	char *title = NULL;
-	GtkWidget *ok_button;
 
 	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
 	g_return_if_fail (connection != NULL);
@@ -276,49 +282,30 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 	editor->connection = (NMConnection *) g_object_ref (connection);
 	nm_connection_editor_update_title (editor);
 
-	ok_button = glade_xml_get_widget (editor->xml, "ok_button");
-
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
 	if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME)) {
-		widget = page_wired_new (editor->connection, (const char **) &title);
-		if (widget)
-			add_page (editor, widget, title);
-
-		widget = page_ip4_address_new (editor->connection, (const char **) &title);
-		if (widget)
-			add_page (editor, widget, title);
-
-		widget = page_ip4_new (editor->connection, (const char **) &title);
-		if (widget)
-			add_page (editor, widget, title);
+		add_page (editor, CE_PAGE (ce_page_wired_new (editor->connection)));
+		add_page (editor, CE_PAGE (ce_page_ip4_address_new (editor->connection)));
+		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME)) {
-		GtkWidget *wireless_page;
+		CEPageWireless *wireless_page;
+		CEPageWirelessSecurity *wireless_security_page;
+		GtkWidget *ok_button;
 
-		wireless_page = page_wireless_new (editor->connection, (const char **) &title);
-		if (wireless_page)
-			add_page (editor, wireless_page, title);
+		wireless_page = ce_page_wireless_new (editor->connection);
+		add_page (editor, CE_PAGE (wireless_page));
 
-		widget = page_wireless_security_new (editor->connection, ok_button, wireless_page, (const char **) &title);
-		if (widget)
-			add_page (editor, widget, title);
+		ok_button = glade_xml_get_widget (editor->xml, "ok_button");
+		wireless_security_page = ce_page_wireless_security_new (editor->connection, ok_button, wireless_page);
+		add_page (editor, CE_PAGE (wireless_security_page));
 
-		widget = page_ip4_address_new (editor->connection, (const char **) &title);
-		if (widget)
-			add_page (editor, widget, title);
-
-		widget = page_ip4_new (editor->connection, (const char **) &title);
-		if (widget)
-			add_page (editor, widget, title);
+		add_page (editor, CE_PAGE (ce_page_ip4_address_new (editor->connection)));
+		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
-		widget = page_ip4_address_new (editor->connection, (const char **) &title);
-		if (widget)
-			add_page (editor, widget, title);
-
-		widget = page_ip4_new (editor->connection, (const char **) &title);
-		if (widget)
-			add_page (editor, widget, title);
+		add_page (editor, CE_PAGE (ce_page_ip4_address_new (editor->connection)));
+		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else {
 		g_warning ("Unhandled setting type '%s'", s_con->type);
 	}

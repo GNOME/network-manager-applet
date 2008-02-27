@@ -23,10 +23,36 @@
 #ifndef __PAGE_WIRELESS_H__
 #define __PAGE_WIRELESS_H__
 
-#include "nm-connection-editor.h"
+#include <nm-connection.h>
 
-GtkWidget *page_wireless_new (NMConnection *connection, const char **title);
+#include <glib/gtypes.h>
+#include <glib-object.h>
 
+#include "ce-page.h"
+
+#define CE_TYPE_PAGE_WIRELESS            (ce_page_wireless_get_type ())
+#define CE_PAGE_WIRELESS(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_WIRELESS, CEPageWireless))
+#define CE_PAGE_WIRELESS_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE_WIRELESS, CEPageWirelessClass))
+#define CE_IS_PAGE_WIRELESS(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CE_TYPE_PAGE_WIRELESS))
+#define CE_IS_PAGE_WIRELESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), CE_TYPE_PAGE_WIRELESS))
+#define CE_PAGE_WIRELESS_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_WIRELESS, CEPageWirelessClass))
+
+typedef struct {
+	CEPage parent;
+
+	int last_channel;
+} CEPageWireless;
+
+typedef struct {
+	CEPageClass parent;
+} CEPageWirelessClass;
+
+GType ce_page_wireless_get_type (void);
+
+CEPageWireless *ce_page_wireless_new (NMConnection *connection);
+
+/* Caller must free returned array */
+GByteArray *ce_page_wireless_get_ssid (CEPageWireless *self);
 
 #endif  /* __PAGE_WIRELESS_H__ */
 

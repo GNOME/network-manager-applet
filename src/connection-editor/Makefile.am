@@ -24,6 +24,8 @@ nm_connection_editor_SOURCES = \
 	nm-connection-list.c \
 	nm-connection-list.h \
 	main.c \
+	ce-page.h \
+	ce-page.c \
 	page-wired.h \
 	page-wired.c \
 	page-wireless.h \

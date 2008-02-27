@@ -1,3 +1,28 @@
+2008-02-27  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/Makefile.am
+	  connection-editor/ce-page.c
+	  connection-editor/ce-page.h
+		- Add the base CEPage class from which all other connection editor pages
+			derive
+
+	* connection-editor/page-ip4-address.c
+	  connection-editor/page-ip4-address.h
+	  connection-editor/page-ip4.c
+	  connection-editor/page-ip4.h
+	  connection-editor/page-wired.c
+	  connection-editor/page-wired.h
+	  connection-editor/page-wireless-security.c
+	  connection-editor/page-wireless-security.h
+	  connection-editor/page-wireless.c
+	  connection-editor/page-wireless.h
+		- Make each page a subclass of CEPage
+
+	* connection-editor/nm-connection-editor.c
+	  connection-editor/nm-connection-editor.h
+		- Update for these changes; handle CEPage objects instead of just
+			GtkWidgets
+
 2008-02-25  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/page-wireless.c

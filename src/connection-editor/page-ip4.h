@@ -23,10 +23,31 @@
 #ifndef __PAGE_IP4_H__
 #define __PAGE_IP4_H__
 
-#include "nm-connection-editor.h"
+#include <nm-connection.h>
 
-GtkWidget *page_ip4_new (NMConnection *connection, const char **title);
+#include <glib/gtypes.h>
+#include <glib-object.h>
 
+#include "ce-page.h"
+
+#define CE_TYPE_PAGE_IP4            (ce_page_ip4_get_type ())
+#define CE_PAGE_IP4(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_IP4, CEPageIP4))
+#define CE_PAGE_IP4_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE_IP4, CEPageIP4Class))
+#define CE_IS_PAGE_IP4(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CE_TYPE_PAGE_IP4))
+#define CE_IS_PAGE_IP4_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), CE_TYPE_PAGE_IP4))
+#define CE_PAGE_IP4_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_IP4, CEPageIP4Class))
+
+typedef struct {
+	CEPage parent;
+} CEPageIP4;
+
+typedef struct {
+	CEPageClass parent;
+} CEPageIP4Class;
+
+GType ce_page_ip4_get_type (void);
+
+CEPageIP4 *ce_page_ip4_new (NMConnection *connection);
 
 #endif  /* __PAGE_IP4_H__ */
 
