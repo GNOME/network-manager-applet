@@ -163,13 +163,14 @@ applet_menu_item_activate_helper (NMDevice *device,
 			 */
 
 			nm_warning ("Invalid connection; asking for more information.");
-			if (dclass->get_more_info) {
+			if (dclass->get_more_info)
 				dclass->get_more_info (device, connection, applet, user_data);
-			}
+			g_object_unref (connection);
 			return;
 		}
 
 		con_path = (char *) nm_connection_get_path (connection);
+		g_object_unref (connection);
 	}
 
 	g_assert (con_path);

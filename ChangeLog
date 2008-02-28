@@ -1,3 +1,26 @@
+2008-02-28  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-dbus-settings.c
+		- (applet_dbus_settings_user_get_by_dbus_path): don't segfault on
+			bad path
+		- (applet_dbus_settings_get_by_gconf_path): don't segfault on bad path
+		- (applet_exported_connection_new): don't leak a connection; the
+			g_object_new() will reference the connection
+
+	* src/applet-device-wired.c
+		- (add_default_wired_connection): don't leak a connection; exporting
+			the connection references it
+
+	* src/applet.c
+		- (applet_menu_item_activate_helper): don't leak a connection; exporting
+			the connection references it
+
+	* src/applet-device-wireless.c
+		- (wireless_dialog_response_cb): find a compatible exported connection
+			before creating a new one; don't leak connections either, and be
+			sure to reference any connection passed to nma_wireless_dialog_new()
+			since it will get unreffed on the dialog response.
+
 2008-02-27  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/Makefile.am

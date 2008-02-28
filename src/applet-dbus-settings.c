@@ -535,6 +535,11 @@ applet_dbus_settings_user_get_by_dbus_path (AppletDbusSettings *applet_settings,
 
 		connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
 		sc_path = nm_connection_get_path (connection);
+		if (!sc_path) {
+			g_warning ("%s: connection in exported list didn't have a D-Bus path.", __func__);
+			continue;
+		}
+
 		if (!strcmp (sc_path, path))
 			return exported;
 	}
@@ -615,8 +620,10 @@ applet_dbus_settings_get_by_gconf_path (AppletDbusSettings *applet_settings,
 
 	for (elt = applet_settings->connections; elt; elt = g_slist_next (elt)) {
 		AppletExportedConnection *exported = APPLET_EXPORTED_CONNECTION (elt->data);
+		const char *gconf_path;
 
-		if (!strcmp (applet_exported_connection_get_gconf_path (exported), path))
+		gconf_path = applet_exported_connection_get_gconf_path (exported);
+		if (gconf_path && !strcmp (gconf_path, path))
 			return exported;
 	}
 
@@ -929,7 +936,7 @@ applet_exported_connection_new (GConfClient *conf_client, const gchar *conf_dir)
 {
 	AppletExportedConnection *exported;
 	AppletDBusManager *manager;
-	NMConnection *gconf_connection;
+	NMConnection *gconf_connection = NULL;
 
 	g_return_val_if_fail (conf_client != NULL, NULL);
 	g_return_val_if_fail (conf_dir != NULL, NULL);
@@ -952,7 +959,7 @@ applet_exported_connection_new (GConfClient *conf_client, const gchar *conf_dir)
 		utils_clear_filled_connection_certs (gconf_connection);
 		g_warning ("Invalid connection read from GConf at %s.", conf_dir);
 		g_object_unref (exported);
-		return NULL;
+		goto out;
 	}
 	utils_clear_filled_connection_certs (gconf_connection);
 
@@ -964,6 +971,8 @@ applet_exported_connection_new (GConfClient *conf_client, const gchar *conf_dir)
 	                                        applet_dbus_manager_get_connection (manager));
 	g_object_unref (manager);
 
+out:
+	g_object_unref (gconf_connection);
 	return exported;
 }
 

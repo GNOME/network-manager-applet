@@ -1067,10 +1067,9 @@ wireless_dialog_response_cb (GtkDialog *dialog,
                              gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	NMConnection *connection = NULL;
+	NMConnection *connection = NULL, *fuzzy_match = NULL;
 	NMDevice *device = NULL;
 	NMAccessPoint *ap = NULL;
-	NMSettingConnection *s_con;
 	AppletExportedConnection *exported = NULL;
 	gboolean ignored = FALSE;
 
@@ -1097,35 +1096,74 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device, &ap);
 	g_assert (connection);
 	g_assert (device);
-	// FIXME: find a compatible connection in the current connection list before adding
-	// a new connection
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_con->id) {
-		NMSettingWireless *s_wireless;
-		char *ssid;
-
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-		ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
-		s_con->id = g_strdup_printf ("Auto %s", ssid);
-		g_free (ssid);
-
-		// FIXME: don't autoconnect until the connection is successful at least once
-		/* Don't autoconnect adhoc networks by default for now */
-		if (!s_wireless->mode || !strcmp (s_wireless->mode, "infrastructure"))
-			s_con->autoconnect = TRUE;
-	}
 
 	exported = applet_dbus_settings_user_get_by_connection (applet->settings, connection);
-	if (!exported) {
-		exported = applet_dbus_settings_user_add_connection (applet->settings, connection);
-		if (!exported) {
-			nm_warning ("Couldn't create other network connection.");
-			goto done;
-		}
-	} else {
-		/* Save the updated settings to GConf */
+	if (exported) {
+		/* Not a new or system connection, save the updated settings to GConf */
 		applet_exported_connection_save (exported);
+	} else {
+		GSList *all, *iter;
+
+		/* Find a similar connection and use that instead */
+		all = applet_dbus_settings_get_all_connections (applet->settings);
+		for (iter = all; iter; iter = g_slist_next (iter)) {
+			if (nm_connection_compare (connection,
+			                           NM_CONNECTION (iter->data),
+			                           (COMPARE_FLAGS_FUZZY | COMPARE_FLAGS_IGNORE_ID))) {
+				fuzzy_match = g_object_ref (NM_CONNECTION (iter->data));
+				break;
+			}
+		}
+		g_slist_free (all);
+
+		if (fuzzy_match) {
+			if (nm_connection_get_scope (fuzzy_match) == NM_CONNECTION_SCOPE_SYSTEM) {
+				// FIXME: do something other than just use the system connection?
+			} else {
+				NMSettingWirelessSecurity *s_wireless_sec;
+
+				/* Copy secrets & wireless security */
+				s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+				if (s_wireless_sec) {
+					GHashTable *hash;
+					NMSetting *dup_setting;
+
+					hash = nm_setting_to_hash (NM_SETTING (s_wireless_sec));
+					dup_setting = nm_setting_from_hash (NM_TYPE_SETTING_WIRELESS_SECURITY, hash);
+					g_hash_table_destroy (hash);
+					nm_connection_add_setting (fuzzy_match, dup_setting);
+				}
+			}
+
+			/* Balance the caller of wireless_dialog_new () */
+			g_object_unref (connection);
+
+			connection = g_object_ref (fuzzy_match);
+		} else {
+			/* Entirely new connection */
+			NMSettingConnection *s_con;
+
+			/* Update a new connection's name and autoconnect status */
+			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+			if (!s_con->id) {
+				NMSettingWireless *s_wireless;
+
+				s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+				s_con->id = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
+
+				// FIXME: don't autoconnect until the connection is successful at least once
+				/* Don't autoconnect adhoc networks by default for now */
+				if (!s_wireless->mode || !strcmp (s_wireless->mode, "infrastructure"))
+					s_con->autoconnect = TRUE;
+			}
+
+			/* Export it over D-Bus */
+			exported = applet_dbus_settings_user_add_connection (applet->settings, connection);
+			if (!exported) {
+				nm_warning ("Couldn't create other network connection.");
+				goto done;
+			}
+		}
 	}
 
 	nm_client_activate_device (applet->nm_client,
@@ -1137,6 +1175,10 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 	                           applet);
 
 done:
+	/* Balance the caller of wireless_dialog_new () */
+	if (connection)
+		g_object_unref (connection);
+
 	gtk_widget_hide (GTK_WIDGET (dialog));
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
@@ -1152,7 +1194,7 @@ wireless_get_more_info (NMDevice *device,
 
 	dialog = nma_wireless_dialog_new (applet->glade_file,
 	                                  applet->nm_client,
-	                                  connection,
+	                                  g_object_ref (connection),
 	                                  device,
 	                                  info->ap,
 	                                  FALSE);
@@ -1286,7 +1328,7 @@ wireless_get_secrets (NMDevice *device,
 
 	dialog = nma_wireless_dialog_new (applet->glade_file,
 	                                  applet->nm_client,
-	                                  connection,
+	                                  g_object_ref (connection),
 	                                  device,
 	                                  ap,
 	                                  FALSE);

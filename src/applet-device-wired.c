@@ -267,6 +267,7 @@ add_default_wired_connection (AppletDbusSettings *settings)
 	nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 	applet_dbus_settings_user_add_connection (settings, connection);
+	g_object_unref (connection);
 }
 
 NMADeviceClass *
