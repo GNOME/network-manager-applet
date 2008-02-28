@@ -109,20 +109,16 @@ widget_create_func (WirelessSecurityOption *opt,
 	g_return_val_if_fail (opt->data != NULL, NULL);
 	g_return_val_if_fail (validate_cb != NULL, NULL);
 
-	widget = wso_widget_helper (opt);
-
 	entry = glade_xml_get_widget (opt->uixml, "leap_username_entry");
 	g_signal_connect (G_OBJECT (entry), "changed", validate_cb, user_data);
 
 	entry = glade_xml_get_widget (opt->uixml, "leap_password_entry");
 	g_signal_connect (G_OBJECT (entry), "changed", validate_cb, user_data);
 
-	/* FIXME: ugh, this breaks everything and I have no idea why */
-/* 	widget = glade_xml_get_widget (opt->uixml, "leap_show_password"); */
-/* 	g_signal_connect (widget, "clicked", GTK_SIGNAL_FUNC (show_password_cb), entry); */
+ 	widget = glade_xml_get_widget (opt->uixml, "leap_show_password");
+ 	g_signal_connect (widget, "toggled", GTK_SIGNAL_FUNC (show_password_cb), entry);
 
 	/* set-up key_mgmt combo box */
-
 	key_mgmt = glade_xml_get_widget (opt->uixml, "leap_key_mgmt_combobox");
 
 	/* create tree model containing combo box items */
@@ -132,7 +128,7 @@ widget_create_func (WirelessSecurityOption *opt,
 	/* set default choice to be IEEE 802.1X */
 	gtk_combo_box_set_active(GTK_COMBO_BOX(key_mgmt), 0);
 
-	return widget;
+	return wso_widget_helper (opt);
 }
 
 static gboolean
