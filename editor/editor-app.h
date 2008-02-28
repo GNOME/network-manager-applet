@@ -33,24 +33,18 @@
 #include <dbus/dbus-glib.h>
 #include <net/ethernet.h>
 
+#include <iwlib.h>
 
-// FIX THIS... these should be included from the proper files!
-/* IW_AUTH_WPA_VERSION values (bit field) */
-#define IW_AUTH_WPA_VERSION_DISABLED    0x00000001
-#define IW_AUTH_WPA_VERSION_WPA     0x00000002
-#define IW_AUTH_WPA_VERSION_WPA2    0x00000004
-
-/* IW_AUTH_PAIRWISE_CIPHER and IW_AUTH_GROUP_CIPHER values (bit field) */
-#define IW_AUTH_CIPHER_NONE 0x00000001
-#define IW_AUTH_CIPHER_WEP40    0x00000002
-#define IW_AUTH_CIPHER_TKIP 0x00000004
-#define IW_AUTH_CIPHER_CCMP 0x00000008
-#define IW_AUTH_CIPHER_WEP104   0x00000010
-
-/* IW_AUTH_80211_AUTH_ALG values (bit field) */
-#define IW_AUTH_ALG_OPEN_SYSTEM	0x00000001
-#define IW_AUTH_ALG_SHARED_KEY	0x00000002
-#define IW_AUTH_ALG_LEAP	0x00000004
+// Security Options for Combo Box
+#define SEC_OPTION_NONE				0
+#define SEC_OPTION_WEP_PASSPHRASE	1
+#define SEC_OPTION_WEP_HEX			2
+#define SEC_OPTION_WEP_ASCII		3
+#define SEC_OPTION_WPA_PERSONAL		4
+#define SEC_OPTION_WPA2_PERSONAL	5
+#define SEC_OPTION_WPA_ENTERPRISE	6
+#define SEC_OPTION_WPA2_ENTERPRISE	7
+#define SEC_OPTION_LEAP				8
 
 
 typedef struct _wireless_editor_data
@@ -72,6 +66,8 @@ typedef struct _wireless_editor_data
 	gulong		stamp_date_shid;
 	gulong		stamp_time_shid;
 	gulong		combo_shid;
+
+	guint       sec_option;
 } WE_DATA;
 
 

@@ -80,93 +80,73 @@ show_password_toggled (GtkToggleButton *button, gpointer data)
 	GtkWidget *widget;
 
 	widget = glade_xml_get_widget (we_data->sub_xml, "leap_password_entry");
-
-	if (gtk_toggle_button_get_active (button)) {
-		gchar *key;
-		GnomeKeyringResult kresult;
-
-		kresult = get_key_from_keyring (we_data->essid_value, &key);
-		if (kresult == GNOME_KEYRING_RESULT_OK || kresult == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
-			gtk_widget_set_sensitive (widget, TRUE);
-
-			if (key) {
-				gtk_entry_set_text (GTK_ENTRY (widget), key);
-				g_free (key);
-			}
-		} else
-			gtk_toggle_button_set_active (button, FALSE);
-
-		if (kresult == GNOME_KEYRING_RESULT_DENIED)
-			gtk_entry_set_text (GTK_ENTRY (widget), _("Unable to read key"));
-	} else {
-		gtk_widget_set_sensitive (widget, FALSE);
-		gtk_entry_set_text (GTK_ENTRY (widget), "");
-	}
+	gtk_entry_set_visibility (GTK_ENTRY (widget), gtk_toggle_button_get_active (button));
 }
 
 static void
 password_changed (GtkButton *button, gpointer user_data)
 {
 	WE_DATA *we_data = (WE_DATA *) user_data;
-	GladeXML			*glade_xml;
-	GtkWidget			*dialog;
-	GtkWindow			*parentWindow;
-	gint result;
+	GtkWidget *widget;
+	const gchar *key;
+	GnomeKeyringResult kresult;
 
-	glade_xml = glade_xml_new (we_data->glade_file, "set_password_dialog", NULL);
-	dialog = glade_xml_get_widget (glade_xml, "set_password_dialog");
+	widget = glade_xml_get_widget (we_data->sub_xml, "leap_password_entry");
+	key = gtk_entry_get_text (GTK_ENTRY (widget));
+	if (!key)
+		return;
 
-	parentWindow = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW));
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), parentWindow);
+	kresult = set_key_in_keyring (we_data->essid_value, key);
+	if (kresult != GNOME_KEYRING_RESULT_OK) {
+		GtkWindow *parent;
 
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	if (result == GTK_RESPONSE_OK) {
-		GtkWidget *entry;
+		parent = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW));
+		widget = gtk_message_dialog_new (parent,
+										 GTK_DIALOG_DESTROY_WITH_PARENT,
+										 GTK_MESSAGE_ERROR,
+										 GTK_BUTTONS_CLOSE,
+										 _("Unable to set password"));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (widget),
+										  _("There was a problem storing the password in the gnome keyring. Error 0x%02X."),
+										  (int) kresult);
 
-		const gchar *key;
-		GnomeKeyringResult kresult;
-
-		entry = glade_xml_get_widget (glade_xml, "leap_password_entry");
-		key = gtk_entry_get_text (GTK_ENTRY (entry));
-		if (key) {
-			kresult = set_key_in_keyring (we_data->essid_value, key);
-			if (kresult != GNOME_KEYRING_RESULT_OK) {
-				GtkWidget *errorDialog = gtk_message_dialog_new (parentWindow,
-													    GTK_DIALOG_DESTROY_WITH_PARENT,
-													    GTK_MESSAGE_ERROR,
-													    GTK_BUTTONS_CLOSE,
-													    _("Unable to set password"));
-				gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (errorDialog),
-												  _("There was a problem storing the password in the gnome keyring. Error 0x%02X."),
-												  (int) kresult);
-
-				gtk_dialog_run (GTK_DIALOG (errorDialog));
-				gtk_widget_destroy (errorDialog);
-			}
-		}
+		gtk_dialog_run (GTK_DIALOG (widget));
+		gtk_widget_destroy (widget);
 	}
-
-	gtk_widget_destroy (dialog);
-	g_object_unref (glade_xml);
 }
 
 GtkWidget *
 get_leap_widget (WE_DATA *we_data)
 {
 	GtkWidget *main_widget;
-	GtkWidget	*widget;
+	GtkWidget *widget;
 	char *username;
 	char *key_mgmt;
 	GtkTreeModel *tree_model;
 	GtkTreeIter iter;
+	GnomeKeyringResult kresult;
+	gchar *key;
 
 	we_data->sub_xml = glade_xml_new (we_data->glade_file, "leap_notebook", NULL);
 	if (!we_data->sub_xml)
 		return NULL;
 
 	main_widget = glade_xml_get_widget (we_data->sub_xml, "leap_notebook");
-	if (!main_widget)
+	if (!main_widget) {
+		g_object_unref (we_data->sub_xml);
+		we_data->sub_xml = NULL;
 		return NULL;
+	}
+
+	/* Try to grab key from the keyring */
+	widget = glade_xml_get_widget (we_data->sub_xml, "leap_password_entry");
+	kresult = get_key_from_keyring (we_data->essid_value, &key);
+	if (kresult == GNOME_KEYRING_RESULT_OK || kresult == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
+		if (key) {
+			gtk_entry_set_text (GTK_ENTRY (widget), key);
+			g_free (key);
+		}
+	}
 
 	widget = glade_xml_get_widget (we_data->sub_xml, "leap_show_password");
 	g_signal_connect (widget, "toggled", G_CALLBACK (show_password_toggled), we_data);

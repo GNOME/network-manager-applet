@@ -38,6 +38,10 @@
 #include <glade/glade.h>
 #include <gconf/gconf-client.h>
 #include <NetworkManager.h>
+#include <cipher.h>
+#include <cipher-wpa-psk-hex.h>
+#include <cipher-wpa-psk-passphrase.h>
+
 #include "widget-wso.h"
 #include "libnma/libnma.h"
 
@@ -58,92 +62,116 @@ wpa_psk_type_changed (GtkComboBox *combo, gpointer data)
 }
 
 static void
+wpa_psk_key_entry_changed_cb (GtkEditable *editable, gpointer user_data)
+{
+	WE_DATA *we_data = (WE_DATA *) user_data;
+	GtkEntry *entry = GTK_ENTRY (editable);
+	GtkWidget *widget;
+	const char *key;
+	IEEE_802_11_Cipher *cipher_passphrase = NULL;
+	gboolean cipher_passphrase_valid = FALSE;
+	IEEE_802_11_Cipher *cipher_hex = NULL;
+	gboolean cipher_hex_valid = FALSE;
+
+	key = gtk_entry_get_text (entry);
+
+	cipher_passphrase = g_object_get_data (G_OBJECT (entry), "cipher-passphrase");
+	if (cipher_passphrase && (ieee_802_11_cipher_validate (cipher_passphrase, we_data->essid_value, key) == 0))
+		cipher_passphrase_valid = TRUE;
+
+	cipher_hex = g_object_get_data (G_OBJECT (entry), "cipher-hex");
+	if (cipher_hex && (ieee_802_11_cipher_validate (cipher_hex, we_data->essid_value, key) == 0))
+		cipher_hex_valid = TRUE;
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_psk_set_password");
+	gtk_widget_set_sensitive (widget, (cipher_passphrase_valid || cipher_hex_valid) ? TRUE : FALSE);
+}
+
+static void
 wpa_psk_show_toggled (GtkToggleButton *button, gpointer data)
 {
 	WE_DATA *we_data = (WE_DATA *) data;
 	GtkWidget *widget;
 
 	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_psk_entry");
-
-	if (gtk_toggle_button_get_active (button)) {
-		gchar *key;
-		GnomeKeyringResult kresult;
-
-		kresult = get_key_from_keyring (we_data->essid_value, &key);
-		if (kresult == GNOME_KEYRING_RESULT_OK || kresult == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
-			gtk_widget_set_sensitive (widget, TRUE);
-
-			if (key) {
-				gtk_entry_set_text (GTK_ENTRY (widget), key);
-				g_free (key);
-			}
-		} else
-			gtk_toggle_button_set_active (button, FALSE);
-
-		if (kresult == GNOME_KEYRING_RESULT_DENIED)
-			gtk_entry_set_text (GTK_ENTRY (widget), _("Unable to read key"));
-	} else {
-		gtk_widget_set_sensitive (widget, FALSE);
-		gtk_entry_set_text (GTK_ENTRY (widget), "");
-	}
+	gtk_entry_set_visibility (GTK_ENTRY (widget), gtk_toggle_button_get_active (button));
 }
 
 static void
 wpa_psk_set_password_button_clicked_cb (GtkButton *button, gpointer user_data)
 {
 	WE_DATA *we_data = (WE_DATA *) user_data;
-	GladeXML			*glade_xml;
-	GtkWidget			*dialog;
-	GtkWindow			*parentWindow;
 	gint result;
+	GtkWidget *entry;
+	const gchar *key;
+	char *hashed_key = NULL;
+	GnomeKeyringResult kresult;
+	IEEE_802_11_Cipher *cipher_passphrase = NULL;
+	gboolean cipher_passphrase_valid = FALSE;
+	IEEE_802_11_Cipher *cipher_hex = NULL;
+	gboolean cipher_hex_valid = FALSE;
 
-	glade_xml = glade_xml_new (we_data->glade_file, "set_password_dialog", NULL);
-	dialog = glade_xml_get_widget (glade_xml, "set_password_dialog");
+	entry = glade_xml_get_widget (we_data->sub_xml, "password_entry");
+	key = gtk_entry_get_text (GTK_ENTRY (entry));
+	if (!key)
+		return;
 
-	parentWindow = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW));
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), parentWindow);
+	cipher_passphrase = g_object_get_data (G_OBJECT (entry), "cipher-passphrase");
+	if (cipher_passphrase && (ieee_802_11_cipher_validate (cipher_passphrase, we_data->essid_value, key) == 0)) {
+		hashed_key = ieee_802_11_cipher_hash (cipher_passphrase, we_data->essid_value, key);
+		cipher_passphrase_valid = TRUE;
+	}
 
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	if (result == GTK_RESPONSE_OK) {
-		GtkWidget *entry;
-
-		const gchar *key;
-		GnomeKeyringResult kresult;
-
-		entry = glade_xml_get_widget (glade_xml, "password_entry");
-		key = gtk_entry_get_text (GTK_ENTRY (entry));
-		if (key) {
-			kresult = set_key_in_keyring (we_data->essid_value, key);
-			if (kresult != GNOME_KEYRING_RESULT_OK) {
-				GtkWidget *errorDialog = gtk_message_dialog_new (parentWindow,
-													    GTK_DIALOG_DESTROY_WITH_PARENT,
-													    GTK_MESSAGE_ERROR,
-													    GTK_BUTTONS_CLOSE,
-													    _("Unable to set password"));
-				gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (errorDialog),
-												  _("There was a problem storing the password in the gnome keyring. Error 0x%02X."),
-												  (int) kresult);
-
-				gtk_dialog_run (GTK_DIALOG (errorDialog));
-				gtk_widget_destroy (errorDialog);
-			}
+	cipher_hex = g_object_get_data (G_OBJECT (entry), "cipher-hex");
+	if (!cipher_passphrase_valid) {
+		if (cipher_hex && (ieee_802_11_cipher_validate (cipher_hex, we_data->essid_value, key) == 0)) {
+			hashed_key = ieee_802_11_cipher_hash (cipher_hex, we_data->essid_value, key);
+			cipher_hex_valid = TRUE;
 		}
 	}
 
-	gtk_widget_destroy (dialog);
-	g_object_unref (glade_xml);
+	if (!cipher_passphrase_valid && !cipher_hex_valid) {
+		g_warning ("%s: Couldn't validate the WPA passphrase/key.", __func__);
+		goto done;
+	}
+
+	kresult = set_key_in_keyring (we_data->essid_value, hashed_key);
+	if (kresult != GNOME_KEYRING_RESULT_OK) {
+		GtkWindow *parent;
+		GtkWidget *dialog;
+
+		parent = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW));
+		dialog = gtk_message_dialog_new (parent,
+										 GTK_DIALOG_DESTROY_WITH_PARENT,
+										 GTK_MESSAGE_ERROR,
+										 GTK_BUTTONS_CLOSE,
+										 _("Unable to set password"));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+										  _("There was a problem storing the password in the gnome keyring. Error 0x%02X."),
+										  (int) kresult);
+
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+
+done:
+	g_free (hashed_key);
 }
 
 GtkWidget *
 get_wpa_personal_widget (WE_DATA *we_data)
 {
 	GtkWidget *main_widget;
-	GtkWidget	*widget;
+	GtkWidget *widget;
 	gint intValue;
 	GtkTreeModel *tree_model;
 	GtkTreeIter iter;
 	int num_added;
 	int capabilities = 0xFFFFFFFF;
+	IEEE_802_11_Cipher *cipher_passphrase = NULL;
+	IEEE_802_11_Cipher *cipher_hex = NULL;
+	GnomeKeyringResult kresult;
+	char *key = NULL;
 
 	we_data->sub_xml = glade_xml_new (we_data->glade_file, "wpa_psk_notebook", NULL);
 	if (!we_data->sub_xml)
@@ -168,6 +196,25 @@ get_wpa_personal_widget (WE_DATA *we_data)
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (widget), &iter);
 
 	g_signal_connect (widget, "changed", GTK_SIGNAL_FUNC (wpa_psk_type_changed), we_data);
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_psk_entry");
+	g_signal_connect (widget, "changed", GTK_SIGNAL_FUNC (wpa_psk_key_entry_changed_cb), we_data);
+	cipher_passphrase = cipher_wpa_psk_passphrase_new ();
+	cipher_hex = cipher_wpa_psk_hex_new ();
+	g_object_set_data_full (G_OBJECT (widget), "cipher-passphrase", cipher_passphrase,
+	                        (GDestroyNotify) ieee_802_11_cipher_unref);
+	g_object_set_data_full (G_OBJECT (widget), "cipher-hex", cipher_hex,
+	                        (GDestroyNotify) ieee_802_11_cipher_unref);
+
+	/* Try to grab key from the keyring */
+	kresult = get_key_from_keyring (we_data->essid_value, &key);
+	if (kresult == GNOME_KEYRING_RESULT_OK || kresult == GNOME_KEYRING_RESULT_NO_SUCH_KEYRING) {
+		if (key) {
+			gtk_entry_set_text (GTK_ENTRY (widget), key);
+			g_free (key);
+		}
+	}
+	wpa_psk_key_entry_changed_cb (GTK_EDITABLE (widget), we_data);
 
 	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_psk_set_password");
 	g_signal_connect (widget, "clicked", G_CALLBACK (wpa_psk_set_password_button_clicked_cb), we_data);

@@ -129,79 +129,69 @@ wpa_eap_ca_key_changed (GtkFileChooser *chooser, gpointer data)
 }
 
 static void
-wpa_eap_password_entry_changed (GtkEntry *password_entry, gpointer data)
+wpa_eap_set_password_cb (GtkButton *button, gpointer data)
 {
 	WE_DATA *we_data = (WE_DATA *) data;
-	const gchar *password;
+	GtkWidget *widget;
+	const gchar *key;
+	GnomeKeyringResult kresult;
 
-	password = gtk_entry_get_text (password_entry);
-	if (password) {
-		GnomeKeyringResult kresult;
+	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_passwd_entry");
+	key = gtk_entry_get_text (GTK_ENTRY (widget));
+	if (!key)
+		return;
 
-		kresult = set_eap_key_in_keyring (we_data->essid_value, password);
-		if (kresult != GNOME_KEYRING_RESULT_OK) {
-			GtkWindow *parentWindow;
-			GtkWidget *errorDialog;
+	kresult = set_eap_key_in_keyring (we_data->essid_value, key);
+	if (kresult != GNOME_KEYRING_RESULT_OK) {
+		GtkWindow *parent;
+		GtkWidget *dialog;
 
-			parentWindow = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (password_entry), GTK_TYPE_WINDOW));
-			errorDialog = gtk_message_dialog_new (parentWindow,
-										   GTK_DIALOG_DESTROY_WITH_PARENT,
-										   GTK_MESSAGE_ERROR,
-										   GTK_BUTTONS_CLOSE,
-										   _("Unable to set password"));
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (errorDialog),
-											  _("There was a problem storing the private password in the gnome keyring. Error 0x%02X."),
-											  (int) kresult);
+		parent = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW));
+		dialog = gtk_message_dialog_new (parent,
+										 GTK_DIALOG_DESTROY_WITH_PARENT,
+										 GTK_MESSAGE_ERROR,
+										 GTK_BUTTONS_CLOSE,
+										 _("Unable to set password"));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+										  _("There was a problem storing the EAP password in the gnome keyring. Error 0x%02X."),
+										  (int) kresult);
 
-			gtk_dialog_run (GTK_DIALOG (errorDialog));
-			gtk_widget_destroy (errorDialog);
-		}
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
 	}
-}
-
-static gboolean
-wpa_eap_password_entry_focus_lost (GtkWidget *widget, GdkEventFocus *event, gpointer data)
-{
-	wpa_eap_password_entry_changed (GTK_ENTRY (widget), data);
-	return FALSE;
 }
 
 static void
-wpa_eap_priv_password_entry_changed (GtkEntry *pass_entry, gpointer data)
+wpa_eap_set_private_key_password_cb (GtkButton *button, gpointer data)
 {
 	WE_DATA *we_data = (WE_DATA *) data;
-	const gchar *password;
+	GtkWidget *widget;
+	const gchar *key;
+	GnomeKeyringResult kresult;
 
-	password = gtk_entry_get_text (pass_entry);
-	if (password) {
-		GnomeKeyringResult kresult;
+	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_private_key_passwd_entry");
+	key = gtk_entry_get_text (GTK_ENTRY (widget));
+	if (!key)
+		return;
 
-		kresult = set_key_in_keyring (we_data->essid_value, password);
-		if (kresult != GNOME_KEYRING_RESULT_OK) {
-			GtkWindow *parentWindow;
-			GtkWidget *errorDialog;
+	kresult = set_key_in_keyring (we_data->essid_value, key);
+	if (kresult != GNOME_KEYRING_RESULT_OK) {
+		GtkWindow *parent;
+		GtkWidget *dialog;
 
-			parentWindow = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (pass_entry), GTK_TYPE_WINDOW));
-			errorDialog = gtk_message_dialog_new (parentWindow,
-										   GTK_DIALOG_DESTROY_WITH_PARENT,
-										   GTK_MESSAGE_ERROR,
-										   GTK_BUTTONS_CLOSE,
-										   _("Unable to set password"));
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (errorDialog),
-											  _("There was a problem storing the private password in the gnome keyring. Error 0x%02X."),
-											  (int) kresult);
+		parent = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW));
+		dialog = gtk_message_dialog_new (parent,
+										 GTK_DIALOG_DESTROY_WITH_PARENT,
+										 GTK_MESSAGE_ERROR,
+										 GTK_BUTTONS_CLOSE,
+										 _("Unable to set password"));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+										  _("There was a problem storing the private key password in the gnome keyring. Error 0x%02X."),
+										  (int) kresult);
 
-			gtk_dialog_run (GTK_DIALOG (errorDialog));
-			gtk_widget_destroy (errorDialog);
-		}
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
 	}
-}
-
-static gboolean
-wpa_eap_priv_password_entry_focus_lost (GtkWidget *widget, GdkEventFocus *event, gpointer data)
-{
-	wpa_eap_priv_password_entry_changed (GTK_ENTRY (widget), data);
-	return FALSE;
 }
 
 static void
@@ -209,69 +199,12 @@ wpa_eap_show_toggled (GtkToggleButton *button, gpointer data)
 {
 	WE_DATA *we_data = (WE_DATA *) data;
 	GtkWidget *widget;
-	gint32	sid;
-	gchar *key = NULL;
-	GnomeKeyringResult kresult;
 
 	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_passwd_entry");
-	if (gtk_toggle_button_get_active (button)) {
-		kresult = get_eap_key_from_keyring (we_data->essid_value, &key);
-		if (key) {
-			gtk_entry_set_text (GTK_ENTRY (widget), key);
-			g_free (key);
-		} else
-			gtk_entry_set_text (GTK_ENTRY (widget), "");
+	gtk_entry_set_visibility (GTK_ENTRY (widget), gtk_toggle_button_get_active (button));
 
-		gtk_widget_set_sensitive (widget, TRUE);
-		gtk_entry_set_editable (GTK_ENTRY (widget), TRUE);
-
-		sid = g_signal_connect (widget, "activate", 
-						    GTK_SIGNAL_FUNC (wpa_eap_password_entry_changed), we_data);
-		g_object_set_data (G_OBJECT (widget), "password_activate_sid", GINT_TO_POINTER (sid));
-		sid = g_signal_connect (widget, "focus-out-event", 
-						    GTK_SIGNAL_FUNC (wpa_eap_password_entry_focus_lost), 
-						    we_data);
-		g_object_set_data (G_OBJECT (widget), "password_focus_out_sid", GINT_TO_POINTER (sid));
-	} else {
-		gtk_widget_set_sensitive (widget, FALSE);
-		gtk_entry_set_editable (GTK_ENTRY (widget), FALSE);
-		gtk_entry_set_text (GTK_ENTRY (widget), "");
-
-		sid = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "password_activate_sid"));
-		g_signal_handler_disconnect (widget, sid);
-		sid = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "password_focus_out_sid"));
-		g_signal_handler_disconnect (widget, sid);
-	}
-
-	widget = glade_xml_get_widget(we_data->sub_xml, "wpa_eap_private_key_passwd_entry");
-	if (gtk_toggle_button_get_active(button)) {
-		kresult = get_key_from_keyring (we_data->essid_value, &key);
-		if(key) {
-			gtk_entry_set_text (GTK_ENTRY (widget), key);
-			g_free (key);
-		}
-
-		gtk_widget_set_sensitive (widget, TRUE);
-		gtk_entry_set_editable (GTK_ENTRY (widget), TRUE);
-
-		sid = g_signal_connect (widget, "activate", 
-						    GTK_SIGNAL_FUNC (wpa_eap_priv_password_entry_changed), 
-						    we_data);
-		g_object_set_data (G_OBJECT (widget), "priv_password_activate_sid", GINT_TO_POINTER (sid));
-		sid = g_signal_connect (widget, "focus-out-event", 
-						    GTK_SIGNAL_FUNC (wpa_eap_priv_password_entry_focus_lost), 
-						    we_data);
-		g_object_set_data (G_OBJECT (widget), "priv_password_focus_out_sid", GINT_TO_POINTER(sid));
-	} else {
-		gtk_widget_set_sensitive (widget, FALSE);
-		gtk_entry_set_editable (GTK_ENTRY (widget), FALSE);
-		gtk_entry_set_text (GTK_ENTRY (widget), "");
-
-		sid = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "priv_password_activate_sid"));
-		g_signal_handler_disconnect(widget, sid);
-		sid = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "priv_password_focus_out_sid"));
-		g_signal_handler_disconnect (widget, sid);
-	}
+	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_private_key_passwd_entry");
+	gtk_entry_set_visibility (GTK_ENTRY (widget), gtk_toggle_button_get_active (button));
 }
 
 static void
@@ -313,15 +246,17 @@ wpa_eap_anon_identity_entry_focus_lost (GtkWidget *widget, GdkEventFocus *event,
 GtkWidget *
 get_wpa_enterprise_widget (WE_DATA *we_data)
 {
-	GtkWidget			*main_widget = NULL;
-	GtkWidget			*widget = NULL;
-	gint				intValue;
-	gchar				*strValue;
+	GtkWidget *main_widget = NULL;
+	GtkWidget *widget = NULL;
+	gint intValue;
+	gchar* strValue;
 	GtkTreeModel *tree_model;
 	GtkTreeIter iter;
 	GtkCellRenderer *renderer;
 	int num_added;
 	int capabilities = 0xFFFFFFFF;
+	GnomeKeyringResult kresult;
+	char *key = NULL;
 
 	we_data->sub_xml = glade_xml_new (we_data->glade_file, "wpa_eap_notebook", NULL);
 	if (!we_data->sub_xml)
@@ -330,9 +265,6 @@ get_wpa_enterprise_widget (WE_DATA *we_data)
 	main_widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_notebook");
 	if (!main_widget)
 		return NULL;
-
-	widget = glade_xml_get_widget (we_data->sub_xml, "show_checkbutton");
-	g_signal_connect (widget, "toggled", G_CALLBACK (wpa_eap_show_toggled), we_data);
 
 	renderer = gtk_cell_renderer_text_new ();
 
@@ -426,6 +358,32 @@ get_wpa_enterprise_widget (WE_DATA *we_data)
 	}
 
 	g_signal_connect (widget, "selection-changed", GTK_SIGNAL_FUNC (wpa_eap_ca_key_changed), we_data);
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "show_checkbutton");
+	g_signal_connect (widget, "toggled", G_CALLBACK (wpa_eap_show_toggled), we_data);
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_set_password");
+	g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (wpa_eap_set_password_cb), we_data);
+	gtk_widget_show (widget);
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_passwd_entry");
+	kresult = get_eap_key_from_keyring (we_data->essid_value, &key);
+	if (key) {
+		gtk_entry_set_text (GTK_ENTRY (widget), key);
+		g_free (key);
+		key = NULL;
+	}
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_set_private_key_password");
+	g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (wpa_eap_set_private_key_password_cb), we_data);
+	gtk_widget_show (widget);
+
+	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_private_key_passwd_entry");
+	kresult = get_key_from_keyring (we_data->essid_value, &key);
+	if (key) {
+		gtk_entry_set_text (GTK_ENTRY (widget), key);
+		g_free (key);
+	}
 
 	return main_widget;
 }

@@ -56,16 +56,6 @@
 #define WNTV_DATA_COLUMN	2
 #define WNTV_NUM_COLUMNS	3
 
-// Security Options for Combo Box
-#define SEC_OPTION_NONE				0
-#define SEC_OPTION_WEP64			1
-#define SEC_OPTION_WEP128			2
-#define SEC_OPTION_WPA_PERSONAL		3
-#define SEC_OPTION_WPA2_PERSONAL	4
-#define SEC_OPTION_WPA_ENTERPRISE	5
-#define SEC_OPTION_WPA2_ENTERPRISE	6
-#define SEC_OPTION_LEAP				7
-
 // This function not only updated the gconf entry with the new
 // essid entry, but also moves the gconf dir for the entire set
 // of entries since they are stored in gconf by the essid
@@ -187,6 +177,7 @@ static void
 change_security_settings (gint option, gpointer data)
 {
 	WE_DATA		*we_data;
+	gint we_cipher;
 
 	we_data = data;
 	g_return_if_fail(we_data != NULL);
@@ -200,16 +191,16 @@ change_security_settings (gint option, gpointer data)
 			eh_gconf_client_unset(we_data, "wep_auth_algorithm");
 			eh_gconf_client_unset(we_data, "wpa_psk_wpa_version");
 			break;
-		case SEC_OPTION_WEP64:
-			eh_gconf_client_set_int(we_data, "we_cipher", 
-					IW_AUTH_CIPHER_WEP40);
-			eh_gconf_client_set_int(we_data, "wep_auth_algorithm", 
-					IW_AUTH_ALG_OPEN_SYSTEM);
-			eh_gconf_client_unset(we_data, "wpa_psk_wpa_version");
-			break;
-		case SEC_OPTION_WEP128:
-			eh_gconf_client_set_int(we_data, "we_cipher", 
-					IW_AUTH_CIPHER_WEP104);
+		case SEC_OPTION_WEP_PASSPHRASE:
+		case SEC_OPTION_WEP_HEX:
+		case SEC_OPTION_WEP_ASCII:
+			/* Only update the cipher if it's not already a WEP cipher */
+			we_cipher = eh_gconf_client_get_int(we_data, "we_cipher");
+			if (   (we_cipher != IW_AUTH_CIPHER_WEP104)
+			    && (we_cipher != IW_AUTH_CIPHER_WEP40)) {
+				eh_gconf_client_set_int(we_data, "we_cipher", 
+						IW_AUTH_CIPHER_WEP104);
+			}
 			eh_gconf_client_set_int(we_data, "wep_auth_algorithm", 
 					IW_AUTH_ALG_OPEN_SYSTEM);
 			eh_gconf_client_unset(we_data, "wpa_psk_wpa_version");
@@ -277,14 +268,16 @@ update_security_widget (gint option, gpointer data)
 		we_data->sub_xml = NULL;
 	}
 
+	we_data->sec_option = option;
 	switch(option)
 	{
 		default:
 		case SEC_OPTION_NONE:
 			childWidget = NULL;
 			break;
-		case SEC_OPTION_WEP64:
-		case SEC_OPTION_WEP128:
+		case SEC_OPTION_WEP_PASSPHRASE:
+		case SEC_OPTION_WEP_HEX:
+		case SEC_OPTION_WEP_ASCII:
 			childWidget = get_wep_widget(we_data);
 			break;
 		case SEC_OPTION_WPA_PERSONAL:
@@ -598,12 +591,17 @@ setup_dialog (WE_DATA *we_data)
 
 	gtk_list_store_append (store, &iter);
 	gtk_list_store_set (store, &iter, 
-			0, _("WEP 64-bit"), 
+			0, _("WEP 128-bit Passphrase"), 
 			-1);
 
 	gtk_list_store_append (store, &iter);
 	gtk_list_store_set (store, &iter, 
-			0, _("WEP 128-bit"), 
+			0, _("WEP 64/128-bit Hex"), 
+			-1);
+
+	gtk_list_store_append (store, &iter);
+	gtk_list_store_set (store, &iter, 
+			0, _("WEP 64/128-bit ASCII"), 
 			-1);
 
 	gtk_list_store_append (store, &iter);
@@ -893,10 +891,8 @@ update_dialog_for_current_network (WE_DATA *we_data, gboolean enabled)
 			set_security_combo(SEC_OPTION_NONE, we_data);
 			break;
 		case IW_AUTH_CIPHER_WEP40:		// WEP 64bit
-			set_security_combo(SEC_OPTION_WEP64, we_data);
-			break;
 		case IW_AUTH_CIPHER_WEP104:		// WEP 128bit
-			set_security_combo(SEC_OPTION_WEP128, we_data);
+			set_security_combo(SEC_OPTION_WEP_HEX, we_data);
 			break;
 		case NM_AUTH_TYPE_WPA_PSK_AUTO:	// WPA or WPA2 PERSONAL
 		case IW_AUTH_CIPHER_TKIP:

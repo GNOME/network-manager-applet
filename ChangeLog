@@ -1,5 +1,25 @@
 2008-02-28  Dan Williams  <dcbw@redhat.com>
 
+	* editor/editor-app.c
+	  editor/editor-app.h
+		- Split WEP options out to match applet's usage
+
+	* src/applet.glade
+		- Add "Set password" buttons to WPA-EAP password
+		- Remove standalone set password dialogs
+
+	* editor/widget-wso-leap.c
+	  editor/widget-wso-wep.c
+	  editor/widget-wso-wpa-enterprise.c
+	  editor/widget-wso-wpa-personal.c
+		- Make "Show password" just obfuscate/unobfuscate passwords
+		- Only set passwords in the keyring when the "Set Password" button is
+			clicked
+		- Do validation on WEP and WPA-PSK keys
+		- Populate the password/key entries when security widget is shown
+
+2008-02-28  Dan Williams  <dcbw@redhat.com>
+
 	* src/wso-leap.c
 		- (widget_create_func): fix up show password stuff
 
