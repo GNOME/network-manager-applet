@@ -959,6 +959,7 @@ applet_exported_connection_new (GConfClient *conf_client, const gchar *conf_dir)
 		utils_clear_filled_connection_certs (gconf_connection);
 		g_warning ("Invalid connection read from GConf at %s.", conf_dir);
 		g_object_unref (exported);
+		exported = NULL;
 		goto out;
 	}
 	utils_clear_filled_connection_certs (gconf_connection);
