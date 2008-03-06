@@ -157,19 +157,22 @@ security_combo_changed (GtkWidget *combo,
 		gtk_container_remove (GTK_CONTAINER (vbox), GTK_WIDGET (elt->data));
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
-	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
-	if (sec) {
-		GtkWidget *sec_widget;
+	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter)) {
+		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+		if (sec) {
+			GtkWidget *sec_widget;
 
-		sec_widget = wireless_security_get_widget (sec);
-		g_assert (sec_widget);
+			sec_widget = wireless_security_get_widget (sec);
+			g_assert (sec_widget);
 
-		size_group_add_permanent (group, xml);
-		wireless_security_add_to_size_group (sec, group);
+			size_group_add_permanent (group, xml);
+			wireless_security_add_to_size_group (sec, group);
 
-		gtk_container_add (GTK_CONTAINER (vbox), sec_widget);
-		wireless_security_unref (sec);
+			gtk_container_add (GTK_CONTAINER (vbox), sec_widget);
+			wireless_security_unref (sec);
+		}
+	} else {
+		g_warning ("%s: no active security combo box item.", __func__);
 	}
 }
 
