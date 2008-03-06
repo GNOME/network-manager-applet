@@ -237,9 +237,9 @@ static gboolean nma_update_info (NMApplet *applet)
 		speed = g_strdup_printf ("%d Mb/s", mbs);
 
 	if (network_device_is_wired (dev))
-		iface_and_type = g_strdup_printf (_("Wired Ethernet (%s)"), iface);
+		iface_and_type = g_strdup_printf (_("Ethernet (%s)"), iface);
 	else
-		iface_and_type = g_strdup_printf (_("Wireless Ethernet (%s)"), iface);	
+		iface_and_type = g_strdup_printf (_("802.11 WiFi (%s)"), iface);	
 
 	label = get_label (info_dialog, applet->info_dialog_xml, "label-interface");
 	gtk_label_set_text (GTK_LABEL (label), iface_and_type);
