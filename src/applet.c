@@ -1182,7 +1182,7 @@ foo_client_setup (NMApplet *applet)
 	if (!applet->nm_client)
 		return;
 
-	g_signal_connect (applet->nm_client, "state-change",
+	g_signal_connect (applet->nm_client, "state-changed",
 	                  G_CALLBACK (foo_client_state_change_cb),
 	                  applet);
 	g_signal_connect (applet->nm_client, "device-added",
