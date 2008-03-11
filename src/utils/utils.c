@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
+
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -36,6 +38,7 @@
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
+#include <nm-setting-pppoe.h>
 #include <nm-utils.h>
 
 #include "crypto.h"
@@ -536,6 +539,9 @@ connection_valid_for_wired (NMConnection *connection,
 	NMSettingWired *s_wired;
 	const char *str_mac;
 	struct ether_addr *bin_mac;
+
+	if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME))
+		return TRUE;
 	
 	if (strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
 		return FALSE;
