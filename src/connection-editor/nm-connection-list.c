@@ -42,6 +42,7 @@
 #include <nm-setting-vpn.h>
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
+#include <nm-setting-pppoe.h>
 
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
@@ -487,6 +488,10 @@ init_connection_lists (NMConnectionList *list)
 
 	types = g_slist_append (NULL, NM_SETTING_VPN_SETTING_NAME);
 	clist = new_connection_list (list, types, "vpn", list->vpn_icon, _("VPN"));
+	g_slist_free (types);
+
+	types = g_slist_append (NULL, NM_SETTING_PPPOE_SETTING_NAME);
+	clist = new_connection_list (list, types, "dsl", list->wired_icon, _("DSL"));
 	g_slist_free (types);
 
 	return TRUE;

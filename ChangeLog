@@ -1,3 +1,25 @@
+2008-03-11  Tambet Ingo  <tambet@gmail.com>
+
+	Add support for PPPoE.
+
+	* src/utils/utils.c (connection_valid_for_wired): Add PPPoE connection 
+	type to the list of valid connection types.
+
+	* src/connection-editor/nm-connection-list.c (init_connection_lists): Add
+	DSL connections.
+
+	* src/connection-editor/nm-connection-editor.glade: Add DSL tab.
+
+	* src/connection-editor/nm-connection-editor.c (nm_connection_editor_init):
+	Fix a typo.
+	(nm_connection_editor_set_connection): Handle PPPoE connection.
+
+	* src/connection-editor/Makefile.am: Add new files to build.
+
+	* src/connection-editor/ce-page-dsl.glade: 
+	* src/connection-editor/page-dsl.c: 
+	* src/connection-editor/page-dsl.c: New files.
+
 2008-03-11  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-device-wired.c

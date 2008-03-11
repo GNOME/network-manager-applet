@@ -39,6 +39,7 @@
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-vpn.h>
+#include <nm-setting-pppoe.h>
 #include <nm-utils.h>
 
 #include "nm-connection-editor.h"
@@ -50,6 +51,7 @@
 #include "page-wireless-security.h"
 #include "page-ip4.h"
 #include "page-ip4-address.h"
+#include "page-dsl.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -127,6 +129,8 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	GtkWidget *widget;
 	GtkWidget *dialog;
 
+	/* Yes, we mean applet.glade, not nm-connection-editor.glade. The wireless security bits
+	   are taken from applet.glade. */
 	if (!g_file_test (GLADEDIR "/applet.glade", G_FILE_TEST_EXISTS)) {
 		dialog = gtk_message_dialog_new (NULL, 0,
 		                                 GTK_MESSAGE_ERROR,
@@ -306,6 +310,8 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 	} else if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_ip4_address_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
+	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME)) {
+		add_page (editor, CE_PAGE (ce_page_dsl_new (editor->connection)));
 	} else {
 		g_warning ("Unhandled setting type '%s'", s_con->type);
 	}
