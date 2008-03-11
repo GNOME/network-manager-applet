@@ -242,34 +242,6 @@ wired_get_icon (NMDevice *device,
 	return pixbuf;
 }
 
-static void
-add_default_wired_connection (AppletDbusSettings *settings)
-{
-	GSList *connections;
-	NMConnection *connection;
-	NMSettingConnection *s_con;
-	NMSettingWired *s_wired;
-
-	connections = applet_dbus_settings_list_connections (settings);
-	if (g_slist_length (connections) > 0)
-		return;
-
-	connection = nm_connection_new ();
-
-	s_con = (NMSettingConnection *) nm_setting_connection_new ();
-	s_con->id = g_strdup ("Auto Ethernet");
-	s_con->type = g_strdup ("802-3-ethernet");
-	s_con->autoconnect = TRUE;
-
-	s_wired = (NMSettingWired *) nm_setting_wired_new ();
-
-	nm_connection_add_setting (connection, (NMSetting *) s_wired);
-	nm_connection_add_setting (connection, (NMSetting *) s_con);
-
-	applet_dbus_settings_user_add_connection (settings, connection);
-	g_object_unref (connection);
-}
-
 NMADeviceClass *
 applet_device_wired_get_class (NMApplet *applet)
 {
@@ -283,8 +255,6 @@ applet_device_wired_get_class (NMApplet *applet)
 	dclass->add_menu_item = wired_add_menu_item;
 	dclass->device_state_changed = wired_device_state_changed;
 	dclass->get_icon = wired_get_icon;
-
-	add_default_wired_connection ((AppletDbusSettings *) applet->settings);
 
 	return dclass;
 }
