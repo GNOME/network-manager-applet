@@ -1,3 +1,13 @@
+2008-03-12  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-dialogs.c
+		- (info_dialog_update): strdup returned hardware address to match
+			changes in libnm-glib API
+
+	* src/applet-device-wired.c
+		- (wired_add_menu_item): carrier detect is a property of the
+			wired object now, not the generic device object
+
 2008-03-11  Tambet Ingo  <tambet@gmail.com>
 
 	Add support for PPPoE.

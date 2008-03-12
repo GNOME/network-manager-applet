@@ -179,7 +179,7 @@ wired_add_menu_item (NMDevice *device,
 	 * we know it doesn't have a link.
 	 */
  	if (nm_device_get_capabilities (device) & NM_DEVICE_CAP_CARRIER_DETECT) {
-		carrier = nm_device_get_carrier (device);
+		carrier = nm_device_802_3_ethernet_get_carrier (NM_DEVICE_802_3_ETHERNET (device));
  		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
 	}
 
