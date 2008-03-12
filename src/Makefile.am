@@ -14,7 +14,7 @@ nm_applet_CPPFLAGS = \
 	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\"			\
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\"	\
 	-DDBUS_API_SUBJECT_TO_CHANGE							\
-	-DGNOMELOCALEDIR=\"$(datadir)/locale\"					\
+	-DNMALOCALEDIR=\"$(datadir)/locale\"					\
 	$(DBUS_CFLAGS)										\
 	$(DISABLE_DEPRECATED)	\
 	-I${top_srcdir}/src/utils \

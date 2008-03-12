@@ -8,7 +8,7 @@ nm_connection_editor_CPPFLAGS =			\
 	-DGLADEDIR=\""$(gladedir)"\"		\
 	-DBINDIR=\""$(bindir)"\"		\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"	\
-	-DGNOMELOCALEDIR=\"$(datadir)/locale\"	\
+	-DNMALOCALEDIR=\"$(datadir)/locale\"	\
 	$(DBUS_CFLAGS)				\
 	$(DISABLE_DEPRECATED)			\
 	-I${top_srcdir}/src/gconf-helpers  \

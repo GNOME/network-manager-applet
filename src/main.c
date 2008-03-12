@@ -63,7 +63,7 @@ int main (int argc, char *argv[])
 {
 	NMApplet * applet;
 
-	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bindtextdomain (GETTEXT_PACKAGE, NMALOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	gtk_init (&argc, &argv);
 	textdomain (GETTEXT_PACKAGE);

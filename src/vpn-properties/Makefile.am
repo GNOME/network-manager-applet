@@ -22,7 +22,7 @@ nm_vpn_properties_CFLAGS = \
 	-DSYSCONFDIR=\"$(sysconfdir)\" \
 	-DG_DISABLE_DEPRECATED \
 	-DGDK_DISABLE_DEPRECATED \
-	-DGNOMELOCALEDIR=\"$(datadir)/locale\" \
+	-DNMALOCALEDIR=\"$(datadir)/locale\" \
 	-I${top_srcdir}/src/gconf-helpers  \
 	-DVERSION=\"$(VERSION)\"
 
