@@ -128,12 +128,12 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 
 	speed = 0;
 	if (NM_IS_DEVICE_802_3_ETHERNET (device)) {
-		/* Wireless speed in Mb/s */
+		/* Wired speed in Mb/s */
 		speed = nm_device_802_3_ethernet_get_speed (NM_DEVICE_802_3_ETHERNET (device));
 	} else if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
-		/* Wireless speed in b/s */
+		/* Wireless speed in Kb/s */
 		speed = nm_device_802_11_wireless_get_bitrate (NM_DEVICE_802_11_WIRELESS (device));
-		speed /= 1000000;
+		speed /= 1000;
 	}
 
 	str = nm_device_get_iface (device);
