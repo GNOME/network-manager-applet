@@ -56,6 +56,8 @@ wired_menu_item_info_destroy (gpointer data)
 	g_slice_free (WiredMenuItemInfo, data);
 }
 
+#define DEFAULT_WIRED_NAME _("Auto Ethernet")
+
 static NMConnection *
 wired_new_auto_connection (NMDevice *device,
                            NMApplet *applet,
@@ -71,7 +73,7 @@ wired_new_auto_connection (NMDevice *device,
 	nm_connection_add_setting (connection, NM_SETTING (s_wired));
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	s_con->id = g_strdup (_("Auto Ethernet"));
+	s_con->id = g_strdup (DEFAULT_WIRED_NAME);
 	s_con->type = g_strdup (NM_SETTING (s_wired)->name);
 	s_con->autoconnect = TRUE;
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
@@ -130,6 +132,31 @@ add_connection_items (NMDevice *device,
 }
 
 static void
+add_default_connection_item (NMDevice *device,
+                             gboolean carrier,
+                             GtkWidget *menu,
+                             NMApplet *applet)
+{
+	WiredMenuItemInfo *info;
+	GtkWidget *item;
+	
+	item = gtk_check_menu_item_new_with_label (DEFAULT_WIRED_NAME);
+	gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
+	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
+
+	info = g_slice_new0 (WiredMenuItemInfo);
+	info->applet = applet;
+	info->device = g_object_ref (G_OBJECT (device));
+
+	g_signal_connect_data (item, "activate",
+	                       G_CALLBACK (wired_menu_item_activate),
+	                       info,
+	                       (GClosureNotify) wired_menu_item_info_destroy, 0);
+
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+}
+
+static void
 wired_add_menu_item (NMDevice *device,
                      guint32 n_devices,
                      NMConnection *active,
@@ -178,10 +205,8 @@ wired_add_menu_item (NMDevice *device,
 	/* Only dim the item if the device supports carrier detection AND
 	 * we know it doesn't have a link.
 	 */
- 	if (nm_device_get_capabilities (device) & NM_DEVICE_CAP_CARRIER_DETECT) {
+ 	if (nm_device_get_capabilities (device) & NM_DEVICE_CAP_CARRIER_DETECT)
 		carrier = nm_device_802_3_ethernet_get_carrier (NM_DEVICE_802_3_ETHERNET (device));
- 		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
-	}
 
 	label = gtk_bin_get_child (GTK_BIN (item));
 	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
@@ -189,7 +214,10 @@ wired_add_menu_item (NMDevice *device,
 	gtk_label_set_markup (GTK_LABEL (label), bold_text);
 	g_free (bold_text);
 
-	add_connection_items (device, connections, carrier, active, menu, applet);
+	if (g_slist_length (connections))
+		add_connection_items (device, connections, carrier, active, menu, applet);
+	else
+		add_default_connection_item (device, carrier, menu, applet);
 
 	gtk_widget_set_sensitive (item, FALSE);
 	gtk_widget_show (item);
