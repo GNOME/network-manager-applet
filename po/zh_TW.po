@@ -1,334 +1,530 @@
-# Chinese (Taiwan) translation of network-manager-applet.
-# Copyright (C) 2005, 07 Free Software Foundation, Inc.
-# Woodman Tuen <wmtuen@gmail.com>, 2005, 07.
-# 
-# 
+# Traditional Chinese translation of Network Manager.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+# Woodman Tuen <wmtuen@gmail.com>, 2005.
+# Hialan Liu <hialan.liu@gmail.com>, 2008.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: network-manager-applet 0.6.5\n"
+"Project-Id-Version: Network Manager 0.6.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-05 20:21+0800\n"
-"PO-Revision-Date: 2007-03-04 16:33+0800\n"
-"Last-Translator: Woodman Tuen <wmtuen@gmail.com>\n"
-"Language-Team: Chinese (Taiwan) <community@linuxhall.org>\n"
+"POT-Creation-Date: 2008-03-13 20:43+0800\n"
+"PO-Revision-Date: 2008-03-13 02:53+0800\n"
+"Last-Translator: Hialan Liu <hialan.liu@gmail.com>\n"
+"Language-Team: Chinese/Traditional <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/applet-compat.c:171 ../src/applet-dbus-info.c:937
+#: ../editor/editor-app.c:589 ../src/wso-none.c:53
+msgid "None"
+msgstr "無"
+
+#: ../editor/editor-app.c:594 ../src/wso-wep-passphrase.c:135
+#, fuzzy
+msgid "WEP 128-bit Passphrase"
+msgstr "通行碼："
+
+#: ../editor/editor-app.c:599 ../src/wso-wep-hex.c:169
+#, fuzzy
+msgid "WEP 64/128-bit Hex"
+msgstr "WEP 40/128-bit 十六位元"
+
+#: ../editor/editor-app.c:604 ../src/wso-wep-ascii.c:172
+#, fuzzy
+msgid "WEP 64/128-bit ASCII"
+msgstr "WEP 40/128-bit ASCII"
+
+#: ../editor/editor-app.c:609 ../src/wso-wpa-psk.c:226
+#, fuzzy
+msgid "WPA Personal"
+msgstr "WPA & WPA2 個人版"
+
+#: ../editor/editor-app.c:614 ../src/wso-wpa-psk.c:224
+#, fuzzy
+msgid "WPA2 Personal"
+msgstr "WPA & WPA2 個人版"
+
+#: ../editor/editor-app.c:619 ../src/wso-wpa-eap.c:337
+#, fuzzy
+msgid "WPA Enterprise"
+msgstr "WPA & WPA2 企業版"
+
+#: ../editor/editor-app.c:624 ../src/wso-wpa-eap.c:335
+#, fuzzy
+msgid "WPA2 Enterprise"
+msgstr "WPA & WPA2 企業版"
+
+#: ../editor/editor-app.c:629
+msgid "LEAP"
+msgstr "LEAP"
+
+#: ../editor/editor-app.c:716 ../editor/editor-app.c:743
+#, fuzzy
+msgid "NetworkManager Editor"
+msgstr "NetworkManager 網站"
+
+#: ../editor/editor-app.c:718 ../editor/editor-app.c:745
+msgid "Copyright © 2007 Novell, Inc."
+msgstr ""
+
+#: ../editor/editor-app.c:719
+#, fuzzy
+msgid "Editor for managing your wireless networks"
+msgstr "現存的無線網路"
+
+#: ../editor/editor-app.c:722 ../editor/editor-app.c:751 ../src/applet.c:346
+#: ../src/applet.c:373
+msgid "translator-credits"
+msgstr ""
+"如對翻譯有任何意見，請送一封電子郵件給\n"
+"以下地址，GNOME 翻譯團隊會儘快回覆您：\n"
+"community@linuxhall.org\n"
+"\n"
+"Hialan Liu <hialan.liu@gmail.com>, 2008.\n"
+"Woodman Tuen <wmtuen@gmail.com>, 2005."
+
+#: ../editor/editor-app.c:746
+#, fuzzy
+msgid "Editor for managing your wireless networks."
+msgstr "現存的無線網路"
+
+#: ../editor/editor-keyring-helper.c:121 ../src/applet-compat.c:171
+#: ../src/applet-compat.c:504 ../src/nm-gconf-wso.c:415
 #, c-format
 msgid "Passphrase for wireless network %s"
-msgstr "無線網路 %s 的密語"
+msgstr "無線網路 %s 的通行碼"
 
-#: ../src/applet-dbus-devices.c:898
+#. Save private_key_passwd to keyring
+#: ../editor/editor-keyring-helper.c:133 ../src/applet-compat.c:459
+#: ../src/nm-gconf-wso-wpa-eap.c:417
+#, fuzzy, c-format
+msgid "Private key password for wireless network %s"
+msgstr "無線網路 %s 的通行碼"
+
+#: ../editor/widget-wso-leap.c:108 ../editor/widget-wso-wpa-enterprise.c:154
+#: ../editor/widget-wso-wpa-enterprise.c:187
+#: ../editor/widget-wso-wpa-personal.c:148
+#, fuzzy
+msgid "Unable to set password"
+msgstr "無法載入"
+
+#: ../editor/widget-wso-leap.c:110 ../editor/widget-wso-wpa-personal.c:150
 #, c-format
-msgid "You are now connected to the Ad-Hoc wireless network '%s'."
-msgstr "現在已連線到 Ad-Hoc 點對點式無線網路‘%s’。"
+msgid ""
+"There was a problem storing the password in the gnome keyring. Error 0x%02X."
+msgstr ""
 
-#: ../src/applet-dbus-devices.c:903
+#: ../editor/widget-wso-wep.c:150
+#, fuzzy
+msgid "Unable to set key"
+msgstr "無法載入"
+
+#: ../editor/widget-wso-wep.c:152
+#, c-format
+msgid ""
+"There was a problem setting the wireless key to the gnome keyring. Error 0x%"
+"02X."
+msgstr ""
+
+#: ../editor/widget-wso-wpa-enterprise.c:156
+#, c-format
+msgid ""
+"There was a problem storing the EAP password in the gnome keyring. Error 0x%"
+"02X."
+msgstr ""
+
+#: ../editor/widget-wso-wpa-enterprise.c:189
+#, c-format
+msgid ""
+"There was a problem storing the private key password in the gnome keyring. "
+"Error 0x%02X."
+msgstr ""
+
+#: ../libnma/libnma.c:20
+msgid "Automatic (Default)"
+msgstr ""
+
+#: ../libnma/libnma.c:27
+msgid "AES-CCMP"
+msgstr ""
+
+#: ../libnma/libnma.c:35
+msgid "TKIP"
+msgstr ""
+
+#: ../libnma/libnma.c:43
+msgid "Dynamic WEP"
+msgstr "動態 WEP"
+
+#: ../libnma/libnma.c:85
+msgid "None (Default)"
+msgstr ""
+
+#: ../libnma/libnma.c:90
+msgid "PAP"
+msgstr "PAP"
+
+#: ../libnma/libnma.c:95
+msgid "MSCHAP"
+msgstr "MSCHAP"
+
+#: ../libnma/libnma.c:100
+#, fuzzy
+msgid "MSCHAPV2"
+msgstr "MSCHAPv2"
+
+#: ../libnma/libnma.c:105
+msgid "GTC"
+msgstr ""
+
+#: ../libnma/libnma.c:143
+#, fuzzy
+msgid "PEAP"
+msgstr "PAP"
+
+#: ../libnma/libnma.c:144
+msgid "TLS"
+msgstr "TLS"
+
+#: ../libnma/libnma.c:145
+#, fuzzy
+msgid "TTLS"
+msgstr "TLS"
+
+#: ../src/applet-dbus-devices.c:919
+#, fuzzy, c-format
+msgid "You are now connected to the Ad-Hoc wireless network '%s'."
+msgstr "您現在已連線到無線網路「%s」。"
+
+#: ../src/applet-dbus-devices.c:922
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
-msgstr "現已連接無線網路‘%s’。"
+msgstr "您現在已連線到無線網路「%s」。"
 
-#: ../src/applet-dbus-devices.c:910
+#: ../src/applet-dbus-devices.c:929
+#, fuzzy
+msgid ""
+"You are now connected to the wired network with a self-assigned address."
+msgstr "您現在已連線至有線網路。"
+
+#: ../src/applet-dbus-devices.c:933
+#, fuzzy, c-format
+msgid "You are now connected to the wired network '%s'."
+msgstr "您現在已連線到無線網路「%s」。"
+
+#: ../src/applet-dbus-devices.c:935
 msgid "You are now connected to the wired network."
-msgstr "現已連接有線網路。"
+msgstr "您現在已連線至有線網路。"
 
-#: ../src/applet-dbus-devices.c:916
+#: ../src/applet-dbus-devices.c:943
 msgid "Connection Established"
 msgstr "已建立連線"
 
-#: ../src/applet-dbus-devices.c:959
+#: ../src/applet-dbus-devices.c:986
 msgid "Disconnected"
-msgstr "中斷連線"
+msgstr "已斷線"
 
-#: ../src/applet-dbus-devices.c:960
+#: ../src/applet-dbus-devices.c:987
 msgid "The network connection has been disconnected."
-msgstr "網路連線已經中斷。"
+msgstr "網路連線已中斷。"
 
-#: ../src/applet-dbus.c:274
-#, c-format
+#: ../src/applet-dbus.c:276
+#, fuzzy, c-format
 msgid "Connection to the wireless network '%s' failed."
-msgstr "連接無線網路 '%s' 失敗。"
+msgstr "連接無線網路‘%s’失敗。\n"
 
-#: ../src/applet-dbus.c:279
+#: ../src/applet-dbus.c:281
+#, fuzzy
 msgid "Connection to the wired network failed."
-msgstr "連接有線網路失敗。"
+msgstr "連接有線網路失敗。\n"
 
-#: ../src/applet.c:186
+#: ../src/applet.c:190
 msgid "Error displaying connection information:"
-msgstr "顯示連線資訊時發生錯誤："
+msgstr "顯示連線資訊發生錯誤："
 
-#: ../src/applet.c:204
+#: ../src/applet.c:208
 msgid "Could not find some required resources (the glade file)!"
 msgstr "無法找到一些需要的資源（glade 檔）！"
 
-#: ../src/applet.c:215
+#: ../src/applet.c:219
 msgid "No active connections!"
-msgstr "沒有使用中的連線！"
+msgstr "沒有使用中的連線"
 
-#: ../src/applet.c:236
+#: ../src/applet.c:240
 #, c-format
-msgid "Wired Ethernet (%s)"
-msgstr "有線乙太網路 (%s)"
+msgid "Ethernet (%s)"
+msgstr "乙太網路 (%s)"
 
-#: ../src/applet.c:238
+#: ../src/applet.c:242
 #, c-format
-msgid "Wireless Ethernet (%s)"
-msgstr "無線乙太網路 (%s)"
+msgid "802.11 WiFi (%s)"
+msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet.c:334 ../src/applet.c:360
+#: ../src/applet.c:339 ../src/applet.c:365
 msgid "NetworkManager Applet"
-msgstr "網路管理員面板程式"
+msgstr "NetworkManager 面板程式"
 
-#: ../src/applet.c:336
+#: ../src/applet.c:341
 msgid ""
-"Copyright © 2004-2006 Red Hat, Inc.\n"
-"Copyright © 2005-2006 Novell, Inc."
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 msgstr ""
-"版權所有 © 2004-2005 Red Hat, Inc.\n"
-"版權所有 © 2005-2006 Novell, Inc."
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 
-#: ../src/applet.c:338 ../src/applet.c:364
+#: ../src/applet.c:343 ../src/applet.c:369
 msgid ""
 "Notification area applet for managing your network devices and connections."
-msgstr "用作管理網路設備和連線的面板程式。"
-
-#: ../src/applet.c:341 ../src/applet.c:368
-msgid "translator-credits"
 msgstr ""
-"GNOME 程式中文化郵件論壇\n"
-"community@linuxhall.org\n"
-"\n"
-"Woodman Tuen <wmtuen@gmail.com>, 2005-07\n"
-"Stanley Wong <stanley18fan0k@yahoo.com.hk>, 2005"
 
-#: ../src/applet.c:362
+#: ../src/applet.c:367
+#, fuzzy
 msgid ""
 "Copyright © 2004-2005 Red Hat, Inc.\n"
 "Copyright © 2005-2006 Novell, Inc."
 msgstr ""
-"版權所有 © 2004-2005 Red Hat, Inc.\n"
-"版權所有 © 2005-2006 Novell, Inc."
-
-#: ../src/applet.c:424
-msgid "VPN Login Failure"
-msgstr "VPN 登入失敗"
-
-#: ../src/applet.c:425
-#, c-format
-msgid "Could not start the VPN connection '%s' due to a login failure."
-msgstr "因登入失敗而無法啟動 VPN 連線‘%s’。"
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 
 #: ../src/applet.c:429
-msgid "VPN Start Failure"
-msgstr "VPN 啟動失敗"
+#, fuzzy
+msgid "VPN Login Failure"
+msgstr "VPN 登錄訊息"
 
 #: ../src/applet.c:430
+#, fuzzy, c-format
+msgid "Could not start the VPN connection '%s' due to a login failure."
+msgstr "無法執行 VPN 連線‘%s’"
+
+#: ../src/applet.c:434
+msgid "VPN Start Failure"
+msgstr ""
+
+#: ../src/applet.c:435
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' due to a failure launching the VPN "
 "program."
-msgstr "由於 VPN 程式啟動失敗，因此無法啟動 VPN 連線‘%s’。"
+msgstr ""
 
-#: ../src/applet.c:434 ../src/applet.c:444
+#: ../src/applet.c:439 ../src/applet.c:449
+#, fuzzy
 msgid "VPN Connect Failure"
-msgstr "VPN 連線失敗"
-
-#: ../src/applet.c:435
-#, c-format
-msgid "Could not start the VPN connection '%s' due to a connection error."
-msgstr "由於發生連線錯誤，因此無法啟動 VPN 連線‘%s’。"
-
-#: ../src/applet.c:439
-msgid "VPN Configuration Error"
-msgstr "VPN 設定錯誤"
+msgstr "VPN 連線"
 
 #: ../src/applet.c:440
-#, c-format
-msgid "The VPN connection '%s' was not correctly configured."
-msgstr "VPN 連線‘%s’沒有正確地設定。"
+#, fuzzy, c-format
+msgid "Could not start the VPN connection '%s' due to a connection error."
+msgstr "無法執行 VPN 連線‘%s’"
+
+#: ../src/applet.c:444
+msgid "VPN Configuration Error"
+msgstr ""
 
 #: ../src/applet.c:445
+#, c-format
+msgid "The VPN connection '%s' was not correctly configured."
+msgstr ""
+
+#: ../src/applet.c:450
 #, c-format
 msgid ""
 "Could not start the VPN connection '%s' because the VPN server did not "
 "return an adequate network configuration."
-msgstr "由於 VPN 伺服器未傳回足夠的網路設定，因此無法啟動 VPN 連線‘%s’。"
+msgstr ""
 
-#: ../src/applet.c:515
+#: ../src/applet.c:520
 msgid "VPN Login Message"
-msgstr "VPN 登入訊息"
+msgstr "VPN 登錄訊息"
 
-#: ../src/applet.c:739 ../src/applet.c:2536 ../src/other-network-dialog.c:453
-#: ../src/passphrase-dialog.c:232
+#: ../src/applet.c:744 ../src/applet.c:2707 ../src/nm-wired-dialog.c:134
+#: ../src/other-network-dialog.c:455 ../src/passphrase-dialog.c:261
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
-msgstr "網路管理員面板程式無法找到一些需要的資源（找不到 glade 檔）"
+msgstr "NetworkManager 面板程式無法找到一些需要的資源（找不到 glade 檔）"
 
-#: ../src/applet.c:751
+#: ../src/applet.c:756
 #, c-format
 msgid "The network device \"%s (%s)\" does not support wireless scanning."
 msgstr "網路裝置“%s (%s)”不支援無線網路掃描。"
 
-#: ../src/applet.c:759
+#: ../src/applet.c:764
 #, c-format
 msgid "The network device \"%s (%s)\" does not support link detection."
-msgstr "網路裝置“%s (%s)”不支援連線偵測。"
+msgstr "網路裝置“%s (%s)”不支援連接偵測"
 
-#: ../src/applet.c:906
+#: ../src/applet.c:916
 #, c-format
 msgid "Preparing device %s for the wired network..."
 msgstr "裝置 %s 正準備連接有線網路..."
 
-#: ../src/applet.c:908
+#: ../src/applet.c:918
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
 msgstr "裝置 %s 正準備連接無線網路‘%s’..."
 
-#: ../src/applet.c:916
+#: ../src/applet.c:926
 #, c-format
 msgid "Configuring device %s for the wired network..."
-msgstr "正在設定裝置 %s 的有線網路... "
+msgstr "為有線網路設置裝置 %s ..."
 
-#: ../src/applet.c:918
+#: ../src/applet.c:928
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
 msgstr "正在嘗試加入無線網路‘%s’..."
 
-#: ../src/applet.c:926
+#: ../src/applet.c:936
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
 msgstr "正在等待無線網路‘%s’的網路金鑰..."
 
-#: ../src/applet.c:934 ../src/applet.c:944
+#: ../src/applet.c:944 ../src/applet.c:954
+#, c-format
 msgid "Requesting a network address from the wired network..."
 msgstr "正要求有線網路提供網路位址..."
 
-#: ../src/applet.c:936 ../src/applet.c:946
+#: ../src/applet.c:946 ../src/applet.c:956
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
 msgstr "正要求無線網路‘%s’提供網路位址..."
 
-#: ../src/applet.c:954
+#: ../src/applet.c:964
+#, fuzzy, c-format
 msgid "Finishing connection to the wired network..."
-msgstr "完成有線網路連線..."
+msgstr "連接有線網路失敗。\n"
 
-#: ../src/applet.c:956
-#, c-format
+#: ../src/applet.c:966
+#, fuzzy, c-format
 msgid "Finishing connection to the wireless network '%s'..."
-msgstr "連接無線網路‘%s’完成..."
+msgstr "連接無線網路‘%s’失敗。\n"
 
-#: ../src/applet.c:1073
+#: ../src/applet.c:1083
 msgid "NetworkManager is not running"
-msgstr "網路管理員沒有執行"
+msgstr "NetworkManager 沒有執行"
 
-#: ../src/applet.c:1081 ../src/applet.c:1828
+#: ../src/applet.c:1091 ../src/applet.c:1931
 msgid "Networking disabled"
 msgstr "網路已停用"
 
-#: ../src/applet.c:1086
+#: ../src/applet.c:1096
 msgid "No network connection"
-msgstr "沒有網路連線"
+msgstr "沒有網路連接"
 
-#: ../src/applet.c:1091
+#: ../src/applet.c:1104
+#, fuzzy
+msgid "Wired network connection with a self-assigned address"
+msgstr "有線網路連接"
+
+#: ../src/applet.c:1106
 msgid "Wired network connection"
-msgstr "有線網路連線"
+msgstr "有線網路連接"
 
-#: ../src/applet.c:1095
+#: ../src/applet.c:1109
 msgid "Connected to an Ad-Hoc wireless network"
 msgstr "連接到 Ad-Hoc 點對點式無線網路"
 
-#: ../src/applet.c:1097
+#: ../src/applet.c:1111
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
 msgstr "無線網路連接到‘%s’ (%d%%)"
 
-#: ../src/applet.c:1118
+#: ../src/applet.c:1132
 #, c-format
 msgid "VPN connection to '%s'"
 msgstr "VPN 連線連接到‘%s’"
 
-#: ../src/applet.c:1126
-#, c-format
+#: ../src/applet.c:1140
+#, fuzzy, c-format
 msgid "VPN connecting to '%s'"
-msgstr "連線到 VPN‘%s’"
+msgstr "VPN 連線連接到‘%s’"
 
-#: ../src/applet.c:1539
+#: ../src/applet.c:1595
 msgid "_Connect to Other Wireless Network..."
 msgstr "連接到其它的無線網路(_C)..."
 
-#: ../src/applet.c:1560
+#: ../src/applet.c:1622
 msgid "Create _New Wireless Network..."
 msgstr "建立新的無線網路(_N)..."
 
-#: ../src/applet.c:1683
+#: ../src/applet.c:1642
+#, fuzzy
+msgid "Connect to 802.1X _Protected Wired Network..."
+msgstr "連接到其它的無線網路(_C)..."
+
+#: ../src/applet.c:1785
 msgid "_VPN Connections"
-msgstr "VPN 連線(_V)"
+msgstr "_VPN 連線"
 
-#: ../src/applet.c:1728
+#: ../src/applet.c:1830
 msgid "_Configure VPN..."
-msgstr "設定 VPN(_C)..."
+msgstr "設置 VPN(_C)..."
 
-#: ../src/applet.c:1732
+#: ../src/applet.c:1834
 msgid "_Disconnect VPN..."
-msgstr "中斷 VPN 連線(_D)..."
+msgstr "與 VPN 斷線(_D)..."
 
-#: ../src/applet.c:1754
+#: ../src/applet.c:1856
+#, fuzzy
 msgid "_Dial Up Connections"
-msgstr "撥號連線(_D)"
+msgstr "CDMA 連線"
 
 #. FIXME: We should save and then check the state of the devices and show Connect _or_ Disconnect for each item
-#: ../src/applet.c:1765
-#, c-format
+#: ../src/applet.c:1867
+#, fuzzy, c-format
 msgid "Connect to %s..."
-msgstr "連線到 %s..."
+msgstr "編輯連線..."
 
-#: ../src/applet.c:1772
-#, c-format
+#: ../src/applet.c:1874
+#, fuzzy, c-format
 msgid "Disconnect from %s..."
-msgstr "從 %s 中斷連線..."
+msgstr "斷線..."
 
-#: ../src/applet.c:1822
+#: ../src/applet.c:1925
 msgid "No network devices have been found"
 msgstr "找不到任何網路裝置"
 
-#: ../src/applet.c:2014
+#: ../src/applet.c:2138
 msgid "NetworkManager is not running..."
-msgstr "網路管理員沒有執行...."
+msgstr "NetworkManager 沒有執行...."
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2193
+#: ../src/applet.c:2320
 msgid "Enable _Networking"
 msgstr "啟用網路(_N)"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2199
+#: ../src/applet.c:2326
 msgid "Enable _Wireless"
 msgstr "啟用無線網路(_W)"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2205
+#: ../src/applet.c:2335
 msgid "Connection _Information"
 msgstr "連線資訊(_I)"
 
+#. Edit networks item
+#: ../src/applet.c:2342
+#, fuzzy
+msgid "_Edit Wireless Networks..."
+msgstr "其它無線網路..."
+
 #. Help item
-#: ../src/applet.c:2216
+#: ../src/applet.c:2353
 msgid "_Help"
 msgstr "求助(_H)"
 
 #. About item
-#: ../src/applet.c:2225
+#: ../src/applet.c:2362
 msgid "_About"
 msgstr "關於(_A)"
 
-#: ../src/applet.c:2697
+#: ../src/applet.c:2877
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
-msgstr "網路管理員面板程式無法找到一些需要的資源。它無法繼續。\n"
+msgstr "NetworkManager 面板程式無法找到一些需要的資源。它無法繼續。\n"
 
 #: ../src/applet.glade.h:1
 msgid " "
@@ -340,7 +536,7 @@ msgid ""
 msgstr "<span weight=\"bold\">使用中的連線資訊：</span>"
 
 #: ../src/applet.glade.h:4
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Passphrase Required by Wireless "
 "Network</span>\n"
@@ -348,9 +544,9 @@ msgid ""
 "A passphrase or encryption key is required to access the wireless network '%"
 "s'."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">無線網路要求密語</span>\n"
+"<span weight=\"bold\" size=\"larger\">無線網路通行碼請求</span>\n"
 "\n"
-"需要密語或密鑰來存取無線網路‘%s’。"
+"需要一個通行碼或是密鑰來存取無線網路‘%s’"
 
 #: ../src/applet.glade.h:8
 #, no-c-format
@@ -359,224 +555,287 @@ msgid ""
 "\n"
 "%s  It will not be completely functional."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">減少網路功能</span>\n"
-"\n"
-"%s  這樣會沒有完整的功能。"
+
+#: ../src/applet.glade.h:11
+msgid "Access Point:"
+msgstr ""
 
 #: ../src/applet.glade.h:12
-#, no-c-format
-msgid ""
-"<span weight=\"bold\" size=\"larger\">Wireless Network Login Confirmation</"
-"span>\n"
-"\n"
-"You have chosen to log in to the wireless network '%s'.  If you are sure "
-"that this wireless network is secure, click the checkbox below and "
-"NetworkManager will not require confirmation on subsequent log ins."
+msgid "Access points"
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">無線網路登入確認</span>\n"
-"\n"
-"您已經選擇登入無線網路‘%s’。如果確定這是安全的無線網路，請在按一下下面的核取"
-"方塊， 網路管理員在以後登入時就不會要求您進行確認。"
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:13
 msgid "Anonymous Identity:"
-msgstr "匿名身份："
+msgstr "匿名識別："
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:14
 msgid "Authentication:"
 msgstr "驗證："
 
-#: ../src/applet.glade.h:17
+#: ../src/applet.glade.h:15
 msgid "Broadcast Address:"
 msgstr "廣播位址："
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:16
+#, fuzzy
 msgid "CA Certificate File:"
-msgstr "CA 憑證檔案："
+msgstr "CA 憑證："
 
-#: ../src/applet.glade.h:19
+#: ../src/applet.glade.h:17
 msgid "C_onnect"
 msgstr "連線(_O)"
 
-#: ../src/applet.glade.h:20
+#: ../src/applet.glade.h:18
+#, fuzzy
 msgid "Client Certificate File:"
-msgstr "客戶端憑證檔案："
+msgstr "CA 憑證："
 
-#: ../src/applet.glade.h:21
+#: ../src/applet.glade.h:19
 msgid "Connection Information"
 msgstr "連線資訊"
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:20
 msgid "Default Route:"
 msgstr "預設路由："
 
-#: ../src/applet.glade.h:23
+#: ../src/applet.glade.h:21
 msgid "Destination Address:"
 msgstr "目的地位址："
 
-#: ../src/applet.glade.h:24
+#: ../src/applet.glade.h:22
 msgid "Driver:"
 msgstr "驅動程式："
 
-#: ../src/applet.glade.h:25
+#: ../src/applet.glade.h:23
 msgid "EAP Method:"
-msgstr "EAP 方法："
+msgstr ""
 
-#: ../src/applet.glade.h:26
+#: ../src/applet.glade.h:24
+msgid "Edit Access Point"
+msgstr ""
+
+#: ../src/applet.glade.h:25
 msgid "Hardware Address:"
 msgstr "硬體位址："
 
-#: ../src/applet.glade.h:27
+#: ../src/applet.glade.h:26
 msgid "IP Address:"
 msgstr "IP 位址："
 
-#: ../src/applet.glade.h:28
+#: ../src/applet.glade.h:27
 msgid "Identity:"
-msgstr "身份："
+msgstr "識別："
 
-#: ../src/applet.glade.h:29
+#: ../src/applet.glade.h:28
 msgid "Interface:"
 msgstr "介面："
 
-#: ../src/applet.glade.h:30
+#: ../src/applet.glade.h:29
+#, fuzzy
 msgid "Key Type:"
 msgstr "金鑰類型："
 
-#: ../src/applet.glade.h:31
+#: ../src/applet.glade.h:30
 msgid "Key management:"
-msgstr "金鑰管理："
+msgstr ""
 
-#: ../src/applet.glade.h:32
+#: ../src/applet.glade.h:31
 msgid "Key:"
 msgstr "金鑰："
 
+#: ../src/applet.glade.h:32
+msgid "Last Used:"
+msgstr ""
+
 #: ../src/applet.glade.h:33
+#, fuzzy
+msgid "Name:"
+msgstr "使用者名稱："
+
+#: ../src/applet.glade.h:34
+#, fuzzy
+msgid "Networks"
+msgstr "GSM 網路"
+
+#: ../src/applet.glade.h:35
+msgid ""
+"None\n"
+"WEP 128-bit Passphrase\n"
+"WEB 64/128 bit Hex\n"
+"WEP 64/128-bit ASCII\n"
+msgstr ""
+
+#: ../src/applet.glade.h:40
 msgid ""
 "None\n"
 "WEP 128-bit Passphrase\n"
 "WEP 64/128-bit Hex\n"
 "WEP 64/128-bit ASCII\n"
 msgstr ""
-"無\n"
-"WEP 128 位元密語\n"
-"WEP 64/128 位元 十六進位\n"
-"WEP 64/128 位元 ASCII\n"
 
-#: ../src/applet.glade.h:38
+#: ../src/applet.glade.h:45
 msgid ""
 "Open System\n"
 "Shared Key"
 msgstr ""
 "開放系統\n"
-"共享金鑰"
+"共用金鑰"
 
-#: ../src/applet.glade.h:40
+#: ../src/applet.glade.h:47
 msgid "Other Wireless Network..."
 msgstr "其它無線網路..."
 
-#: ../src/applet.glade.h:41
+#: ../src/applet.glade.h:48
 msgid "Passphrase:"
-msgstr "密語："
+msgstr "通行碼："
 
-#: ../src/applet.glade.h:42
+#: ../src/applet.glade.h:49
 msgid "Password:"
 msgstr "密碼："
 
-#: ../src/applet.glade.h:43
+#: ../src/applet.glade.h:50
 msgid "Phase2 Type:"
-msgstr "Phase2 類型："
+msgstr ""
 
-#: ../src/applet.glade.h:44
+#: ../src/applet.glade.h:51
 msgid "Primary DNS:"
 msgstr "主要 DNS："
 
-#: ../src/applet.glade.h:45
+#: ../src/applet.glade.h:52
+#, fuzzy
 msgid "Private Key File:"
-msgstr "私鑰檔案："
+msgstr "私密金鑰："
 
-#: ../src/applet.glade.h:46
+#: ../src/applet.glade.h:53
 msgid "Private Key Password:"
-msgstr "私鑰密碼："
+msgstr "私密金鑰密碼："
 
-#: ../src/applet.glade.h:47
+#: ../src/applet.glade.h:54
+msgid "Properties"
+msgstr ""
+
+#: ../src/applet.glade.h:55
 msgid "Secondary DNS:"
 msgstr "次要 DNS："
 
-#: ../src/applet.glade.h:48
+#: ../src/applet.glade.h:56
+msgid "Security:"
+msgstr "安全性："
+
+#: ../src/applet.glade.h:57
+#, fuzzy
 msgid "Select the CA Certificate File"
-msgstr "選取 CA 憑證檔案"
+msgstr "選擇 CA 憑證"
 
-#: ../src/applet.glade.h:49
+#: ../src/applet.glade.h:58
 msgid "Select the Client Certificate File"
-msgstr "選取客戶端憑證檔案"
+msgstr ""
 
-#: ../src/applet.glade.h:50
+#: ../src/applet.glade.h:59
+#, fuzzy
 msgid "Select the Private Key File"
-msgstr "選取私鑰檔案"
+msgstr "選擇檔案"
 
-#: ../src/applet.glade.h:51
+#: ../src/applet.glade.h:60
+#, fuzzy
+msgid "Set Password"
+msgstr "密碼："
+
+#: ../src/applet.glade.h:61
+msgid "Set _Key"
+msgstr ""
+
+#: ../src/applet.glade.h:62
+#, fuzzy
+msgid "Set _Password"
+msgstr "密碼："
+
+#: ../src/applet.glade.h:63
 msgid "Show key"
 msgstr "顯示金鑰"
 
-#: ../src/applet.glade.h:52
+#: ../src/applet.glade.h:64
+#, fuzzy
 msgid "Show passphrase"
-msgstr "顯示密語"
+msgstr "通行碼："
 
-#: ../src/applet.glade.h:53
+#: ../src/applet.glade.h:65
 msgid "Show password"
 msgstr "顯示密碼"
 
-#: ../src/applet.glade.h:54
+#: ../src/applet.glade.h:66
+#, fuzzy
 msgid "Show passwords"
 msgstr "顯示密碼"
 
-#: ../src/applet.glade.h:55
+#: ../src/applet.glade.h:67
 msgid "Speed:"
 msgstr "速度："
 
-#: ../src/applet.glade.h:56
+#: ../src/applet.glade.h:68
 msgid "Subnet Mask:"
 msgstr "子網路遮罩："
 
-#: ../src/applet.glade.h:57
+#: ../src/applet.glade.h:69
 msgid "Type:"
 msgstr "類型："
 
-#: ../src/applet.glade.h:58
+#: ../src/applet.glade.h:70
 msgid "User Name:"
 msgstr "使用者名稱："
 
-#: ../src/applet.glade.h:59
+#: ../src/applet.glade.h:71
+#, fuzzy
 msgid "Wireless Network Key Required"
 msgstr "需要無線網路金鑰"
 
-#: ../src/applet.glade.h:60
+#: ../src/applet.glade.h:72
+#, fuzzy
+msgid "Wireless Networks"
+msgstr "無線網路"
+
+#: ../src/applet.glade.h:73
 msgid "Wireless _adapter:"
 msgstr "無線網絡卡(_A)："
 
-#: ../src/applet.glade.h:61
-msgid "_Always Trust this Wireless Network"
-msgstr "總是信任此無線網路(_A)"
+#: ../src/applet.glade.h:74
+msgid "_Add"
+msgstr ""
 
-#: ../src/applet.glade.h:62
+#: ../src/applet.glade.h:75
+#, fuzzy
 msgid "_Don't remind me again"
-msgstr "不要再提醒我(_D)"
+msgstr "不要再提醒我"
 
-#: ../src/applet.glade.h:63
-msgid "_Login to Network"
-msgstr "登入網路(_L)"
+#: ../src/applet.glade.h:76
+msgid "_Edit"
+msgstr ""
 
-#: ../src/applet.glade.h:64
+#: ../src/applet.glade.h:77
 msgid "_Network Name:"
 msgstr "網路名稱(_N)："
 
-#: ../src/applet.glade.h:65
+#: ../src/applet.glade.h:78
+msgid "_Remove"
+msgstr ""
+
+#: ../src/applet.glade.h:79
+#, fuzzy
 msgid "_Wireless Security:"
-msgstr "無線網路安全(_W)："
+msgstr "無線網絡卡(_A)："
+
+#: ../src/applet.glade.h:80
+msgid "bssid editor"
+msgstr ""
+
+#: ../src/applet.glade.h:81
+msgid "bssids:"
+msgstr ""
 
 #: ../src/eggtrayicon.c:134
+#, fuzzy
 msgid "Orientation"
-msgstr "方向"
+msgstr "驗證："
 
 #: ../src/eggtrayicon.c:135
 msgid "The orientation of the tray."
@@ -588,11 +847,12 @@ msgid "Wired Network (%s)"
 msgstr "有線網路 (%s)"
 
 #: ../src/menu-items.c:91
+#, fuzzy
 msgid "_Wired Network"
-msgstr "有線網路(_W)"
+msgstr "有線網路"
 
 #: ../src/menu-items.c:163
-#, c-format
+#, fuzzy, c-format
 msgid "Wireless Network (%s)"
 msgid_plural "Wireless Networks (%s)"
 msgstr[0] "無線網路 (%s)"
@@ -606,48 +866,74 @@ msgstr[0] "無線網路"
 msgid " (invalid Unicode)"
 msgstr "（無效的統一碼）"
 
-#: ../src/other-network-dialog.c:352
+#: ../src/nm-wired-dialog.c:144
+#, fuzzy
+msgid "Connect to 802.1X protected wired network"
+msgstr "連接到 Ad-Hoc 點對點式無線網路"
+
+#: ../src/nm-wired-dialog.c:153
+#, c-format
+msgid ""
+"<span size=\"larger\" weight=\"bold\">Connect to a 802.1X protected wired "
+"network</span>\n"
+"\n"
+"A passphrase or encryption key is required to access the network '%s'."
+msgstr ""
+
+#: ../src/nm-wired-dialog.c:158
+msgid ""
+"<span size=\"larger\" weight=\"bold\">Connect to a 802.1X protected wired "
+"network</span>\n"
+"\n"
+"Enter the name and security settings of the network you wish to join."
+msgstr ""
+
+#: ../src/other-network-dialog.c:354
 #, c-format
 msgid ""
 "By default, the wireless network's name is set to your computer's name, %s, "
 "with no encryption enabled"
-msgstr "根據預設，此無線網路名稱已設定為電腦的名稱 %s，但沒有啟用加密"
+msgstr ""
 
-#: ../src/other-network-dialog.c:358
+#: ../src/other-network-dialog.c:360
+#, fuzzy
 msgid "Create new wireless network"
 msgstr "建立新的無線網路"
 
-#: ../src/other-network-dialog.c:359
+#: ../src/other-network-dialog.c:361
+#, fuzzy
 msgid ""
 "Enter the name and security settings of the wireless network you wish to "
 "create."
-msgstr "輸入要建立的無線網路的名稱和安全設定。"
+msgstr "輸入您要建立的無線網路的名稱。"
 
-#: ../src/other-network-dialog.c:363
+#: ../src/other-network-dialog.c:365
 msgid "Create New Wireless Network"
 msgstr "建立新的無線網路"
 
-#: ../src/other-network-dialog.c:368
+#: ../src/other-network-dialog.c:370
 msgid "Existing wireless network"
 msgstr "現存的無線網路"
 
-#: ../src/other-network-dialog.c:369
-msgid "Enter the name of the wireless network to which you wish to connect."
-msgstr "輸入要連接的無線網路的名稱。"
-
 #: ../src/other-network-dialog.c:371
+#, fuzzy
+msgid "Enter the name of the wireless network to which you wish to connect."
+msgstr "輸入您要連接的無線網路的 ESSID。"
+
+#: ../src/other-network-dialog.c:373
 msgid "Connect to Other Wireless Network"
-msgstr "連接其它無線網路"
+msgstr "連接到其它的無線網路"
 
-#: ../src/passphrase-dialog.c:219
+#: ../src/passphrase-dialog.c:248
+#, fuzzy
 msgid "Error connecting to wireless network"
-msgstr "連接無線網路時發生錯誤"
+msgstr "現存的無線網路"
 
-#: ../src/passphrase-dialog.c:220
+#: ../src/passphrase-dialog.c:249
 msgid ""
 "The requested wireless network requires security capabilities unsupported by "
 "your hardware."
-msgstr "要求的無線網路必須使用您的硬體不支援的安全性功能。"
+msgstr ""
 
 #: ../src/vpn-password-dialog.c:154 ../src/vpn-password-dialog.c:191
 #, c-format
@@ -659,99 +945,499 @@ msgstr "無法執行 VPN 連線‘%s’"
 msgid ""
 "Could not find the authentication dialog for VPN connection type '%s'. "
 "Contact your system administrator."
-msgstr "無法找到 VPN 連線類型‘%s’的驗證對話視窗。請聯絡系統管理員。"
+msgstr ""
 
 #: ../src/vpn-password-dialog.c:194
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
 "type '%s'. Contact your system administrator."
-msgstr "啟動 VPN 連線類型‘%s’的驗證對話視窗時發生問題。請聯絡系統管理員。"
+msgstr ""
 
-#: ../src/wireless-security-option.c:157
+#: ../src/wireless-security-option.c:179
+#, fuzzy
 msgid "Open System"
-msgstr "開放系統"
+msgstr ""
+"開放系統\n"
+"共用金鑰"
 
-#: ../src/wireless-security-option.c:160
+#: ../src/wireless-security-option.c:182
+#, fuzzy
 msgid "Shared Key"
-msgstr "共用金鑰"
+msgstr ""
+"開放系統\n"
+"共用金鑰"
 
-#: ../src/wireless-security-option.c:207
-msgid "Automatic (Default)"
-msgstr "自動（預設）"
+#~ msgid "Auto CDMA network connection"
+#~ msgstr "自動 CDMA 網路連線"
 
-#: ../src/wireless-security-option.c:214
-msgid "AES-CCMP"
-msgstr "AES-CCMP"
+#~ msgid "CDMA Connections (%s)"
+#~ msgstr "CDMA 連線 (%s)"
 
-#: ../src/wireless-security-option.c:222
-msgid "TKIP"
-msgstr "TKIP"
+#~ msgid "CDMA Network (%s)"
+#~ msgstr "CDMA 網路 (%s)"
 
-#: ../src/wireless-security-option.c:230
-msgid "Dynamic WEP"
-msgstr "動態 WEP"
+#~ msgid "CDMA Network"
+#~ msgstr "CDMA 網路"
 
-#: ../src/wireless-security-option.c:252
-msgid "None (Default)"
-msgstr "沒有（預設）"
+#~ msgid "You are now connected to the CDMA network."
+#~ msgstr "您現在已連線至 CDMA 網路。"
 
-#: ../src/wireless-security-option.c:257
-msgid "PAP"
-msgstr "PAP"
+#~ msgid "Dialing CDMA device %s..."
+#~ msgstr "正在撥號 CDMA 裝置 %s..."
 
-#: ../src/wireless-security-option.c:262
-msgid "MSCHAP"
-msgstr "MSCHAP"
+#~ msgid "Running PPP on device %s..."
+#~ msgstr "正在執行 PPP 於裝置 %s..."
 
-#: ../src/wireless-security-option.c:267
-msgid "MSCHAPV2"
-msgstr "MSCHAPV2"
+#~ msgid "CDMA connection"
+#~ msgstr "CDMA 連線"
 
-#: ../src/wireless-security-option.c:272
-msgid "GTC"
-msgstr "GTC"
+#~ msgid "Auto GSM network connection"
+#~ msgstr "自動 GSM 網路連線"
 
-#: ../src/wso-none.c:53
-msgid "None"
-msgstr "無"
+#~ msgid "GSM Connections (%s)"
+#~ msgstr "GSM 連線 (%s)"
 
-#: ../src/wso-wep-ascii.c:138
-msgid "WEP 64/128-bit ASCII"
-msgstr "WEP 64/128 位元 (ASCII)"
+#~ msgid "GSM Network (%s)"
+#~ msgstr "GSM 網路 (%s)"
 
-#: ../src/wso-wep-hex.c:135
-msgid "WEP 64/128-bit Hex"
-msgstr "WEP 64/128 位元（十六進位）"
+#~ msgid "GSM Connections"
+#~ msgstr "GSM 連線"
 
-#: ../src/wso-wep-passphrase.c:135
-msgid "WEP 128-bit Passphrase"
-msgstr "WEP 128 位元密語"
+#~ msgid "You are now connected to the GSM network."
+#~ msgstr "您現在已連線至 GSM 網路。"
 
-#: ../src/wso-wpa-eap.c:244
-msgid "PEAP"
-msgstr "PEAP"
+#~ msgid "Dialing GSM device %s..."
+#~ msgstr "正在撥號 GSM 裝置 %s..."
 
-#: ../src/wso-wpa-eap.c:245
-msgid "TLS"
-msgstr "TLS"
+#~ msgid "GSM connection"
+#~ msgstr "GSM 連線"
 
-#: ../src/wso-wpa-eap.c:246
-msgid "TTLS"
-msgstr "TTLS"
+#~ msgid "Auto Ethernet"
+#~ msgstr "自動乙太網路"
 
-#: ../src/wso-wpa-eap.c:254
-msgid "WPA2 Enterprise"
-msgstr "WPA2 企業版"
+#~ msgid "Wired Networks (%s)"
+#~ msgstr "有線網路 (%s)"
 
-#: ../src/wso-wpa-eap.c:256
-msgid "WPA Enterprise"
-msgstr "WPA 企業版"
+#~ msgid "Wired Networks"
+#~ msgstr "有線網路"
 
-#: ../src/wso-wpa-psk.c:178
-msgid "WPA2 Personal"
-msgstr "WPA2 個人版"
+#~ msgid "Wireless Networks (%s)"
+#~ msgstr "無線網路 (%s)"
 
-#: ../src/wso-wpa-psk.c:180
-msgid "WPA Personal"
-msgstr "WPA 個人版"
+#~ msgid "(none)"
+#~ msgstr "(無)"
+
+#~ msgid "Wireless network connection to '%s'"
+#~ msgstr "無線網路連接到「%s」"
+
+#~ msgid "WPA/WPA2"
+#~ msgstr "WPA/WPA2"
+
+#~ msgid "Unknown"
+#~ msgstr "未知"
+
+#~ msgid "GSM (%s)"
+#~ msgstr "GSM (%s)"
+
+#~ msgid "CDMA (%s)"
+#~ msgstr "CDMA (%s)"
+
+#~ msgid "WEP"
+#~ msgstr "WEP"
+
+#~ msgid "%u Mb/s"
+#~ msgstr "%u Mb/s"
+
+#~ msgid "No"
+#~ msgstr "否"
+
+#~ msgid "PEAP Version:"
+#~ msgstr "PEAP 版本："
+
+#~ msgid "User Certificate:"
+#~ msgstr "使用者憑證："
+
+#~ msgid ""
+#~ "Version 0\n"
+#~ "Version 1"
+#~ msgstr ""
+#~ "版本 0\n"
+#~ "版本 1"
+
+#~ msgid "Yes"
+#~ msgstr "是"
+
+#~ msgid "<b>DNS Servers</b>"
+#~ msgstr "<b>DNS 伺服器</b>"
+
+#~ msgid "<b>Search Domains</b>"
+#~ msgstr "<b>搜尋網域</b>"
+
+#~ msgid "_Manual configuration"
+#~ msgstr "手動設定(_M)"
+
+#~ msgid "MT_U:"
+#~ msgstr "MT_U:"
+
+#~ msgid "_MAC address:"
+#~ msgstr "_MAC 位址："
+
+#~ msgid "_Port:"
+#~ msgstr "連接埠(_P)："
+
+#~ msgid "_Speed:"
+#~ msgstr "速度(_S)："
+
+#~ msgid ""
+#~ "default\n"
+#~ "10 Mb/s\n"
+#~ "100 Mb/s\n"
+#~ "1 Gb/s\n"
+#~ "10 Gb/s"
+#~ msgstr ""
+#~ "預設\n"
+#~ "10 Mb/s\n"
+#~ "100 Mb/s\n"
+#~ "1 Gb/s\n"
+#~ "10 Gb/s"
+
+#~ msgid "C_hannel:"
+#~ msgstr "頻道(_H)："
+
+#~ msgid "M_ode:"
+#~ msgstr "模式(_O)："
+
+#~ msgid "_BSSID:"
+#~ msgstr "_BSSID:"
+
+#~ msgid "_SSID:"
+#~ msgstr "_SSID:"
+
+#~ msgid ""
+#~ "default\n"
+#~ "A (5 GHz)\n"
+#~ "B/G (2.4 GHz)"
+#~ msgstr ""
+#~ "預設\n"
+#~ "A (5 GHz)\n"
+#~ "B/G (2.4 GHz)"
+
+#~ msgid "IPv4 Addresses"
+#~ msgstr "IPv4 位址"
+
+#~ msgid "IPv4 Settings"
+#~ msgstr "IPv4 設定"
+
+#~ msgid "Wired"
+#~ msgstr "有線"
+
+#~ msgid "default"
+#~ msgstr "預設"
+
+#~ msgid "%u (%u MHz)"
+#~ msgstr "%u (%u MHz)"
+
+#~ msgid "Wireless"
+#~ msgstr "無線網路"
+
+#, fuzzy
+#~ msgid "Wireless Security"
+#~ msgstr "無線網路"
+
+#~ msgid "Dynamic WEP (802.1x)"
+#~ msgstr "動態 WEP (802.1x)"
+
+#~ msgid "Editing %s"
+#~ msgstr "編輯 %s"
+
+#~ msgid "Editing unamed connection"
+#~ msgstr "編輯未命名的連線"
+
+#~ msgid ""
+#~ "The connection editor could not find some required resources (the "
+#~ "NetworkManager applet glade file was not found)."
+#~ msgstr ""
+#~ "連線編輯器無法找到一些需要的資源（找不到 NetworkManager 面板程式 glade "
+#~ "檔）"
+
+#~ msgid ""
+#~ "The connection editor could not find some required resources (the glade "
+#~ "file was not found)."
+#~ msgstr "連線編輯器無法找到一些需要的資源（找不到 glade 檔）"
+
+#~ msgid "Connect _automatically"
+#~ msgstr "自動連線(_A)"
+
+#~ msgid "Connection Editor"
+#~ msgstr "連線編輯器"
+
+#~ msgid "Connection _name:"
+#~ msgstr "連線名稱(_N)："
+
+#~ msgid "DSL"
+#~ msgstr "DSL"
+
+#~ msgid "Network Connections"
+#~ msgstr "網路連線"
+
+#~ msgid "VPN"
+#~ msgstr "VPN"
+
+#~ msgid "Are you sure you wish to delete the connection %s?"
+#~ msgstr "您確定要刪除連線 %s ？"
+
+#~ msgid "never"
+#~ msgstr "永不"
+
+#~ msgid "now"
+#~ msgstr "現在"
+
+#~ msgid "%d minute ago"
+#~ msgid_plural "%d minutes ago"
+#~ msgstr[0] "%d 分鐘以前"
+
+#~ msgid "%d hour ago"
+#~ msgid_plural "%d hours ago"
+#~ msgstr[0] "%d 小時以前"
+
+#~ msgid "%d day ago"
+#~ msgid_plural "%d days ago"
+#~ msgstr[0] "%d 天以前"
+
+#~ msgid "%d month ago"
+#~ msgid_plural "%d months ago"
+#~ msgstr[0] "%d 個月以前"
+
+#~ msgid "%d year ago"
+#~ msgid_plural "%d years ago"
+#~ msgstr[0] "%d 年以前"
+
+#~ msgid "Doesn't look like a PEM private key file."
+#~ msgstr "看起來不像是 PEM 私密金鑰檔案。"
+
+#~ msgid "Not enough memory to store PEM file data."
+#~ msgstr "沒有足夠的記憶體儲存 PEM 檔資料。"
+
+#~ msgid "Could not decode private key."
+#~ msgstr "無法解開私密金鑰。"
+
+#~ msgid "Failed to decode certificate."
+#~ msgstr "憑證解碼失敗。"
+
+#~ msgid "Not enough memory to store decrypted private key."
+#~ msgstr "沒有足夠的記憶體來儲存解碼後的私密金鑰。"
+
+#~ msgid "Failed to initialize the MD5 engine: %s / %s."
+#~ msgstr "初始化 MD5 引擎失敗：%s / %s。"
+
+#~ msgid "Error initializing certificate data: %s"
+#~ msgstr "初始化憑證資料時錯誤：%s"
+
+#~ msgid "Couldn't decode certificate: %s"
+#~ msgstr "無法解碼憑證：%s"
+
+#~ msgid "Couldn't decode certificate: %d"
+#~ msgstr "無法解開憑證：%d"
+
+#~ msgid "Cannot import VPN connection"
+#~ msgstr "無法匯入 VPN 網路連線"
+
+#~ msgid "Delete VPN connection \"%s\"?"
+#~ msgstr "刪除 VPN 連線“%s”？"
+
+#~ msgid "Cannot find some needed resources (the glade file)!"
+#~ msgstr "無法找到一些需要的資源（ glade 檔）！"
+
+#~ msgid "Cannot add VPN connection"
+#~ msgstr "無法加入 VPN 連線"
+
+#~ msgid ""
+#~ "This assistant will guide you through the creation of a connection to a "
+#~ "Virtual Private Network (VPN)."
+#~ msgstr "此助理將指導您建立連線至虛擬私人網路(VPN)。"
+
+#~ msgid ""
+#~ "It will require some information, such as IP addresses and secrets.  "
+#~ "Please see your system administrator to obtain this information."
+#~ msgstr ""
+#~ "他將需要一些資訊，像是 IP 位址及機密資料。請詢問您的系統管理員以取得這些資"
+#~ "訊。"
+
+#~ msgid "Create VPN connection"
+#~ msgstr "建立 VPN 連線"
+
+#~ msgid "Create VPN Connection"
+#~ msgstr "建立 VPN 連線"
+
+#~ msgid "1 of 2"
+#~ msgstr "2 之 1"
+
+#~ msgid "Choose which type of _VPN connection you wish to create:"
+#~ msgstr "選擇您想要建立的 VPN 連線類型(_V)："
+
+#~ msgid "Choose which type of VPN connection you wish to create:"
+#~ msgstr "選擇您想要建立的 VPN 連線類型："
+
+#~ msgid "2 of 2"
+#~ msgstr "2 之 2"
+
+#~ msgid "Finished Create VPN Connection"
+#~ msgstr "建立 VPN 連線完成"
+
+#~ msgid "Edit VPN Connection"
+#~ msgstr "編輯 VPN 連線"
+
+#~ msgid "File to import"
+#~ msgstr "要匯入的檔案"
+
+#~ msgid "- NetworkManager VPN properties"
+#~ msgstr "- 網路管理員 VPN 屬性"
+
+#~ msgid "Add a new VPN connection"
+#~ msgstr "加入新的 VPN 連線"
+
+#~ msgid "Delete the selected VPN connection"
+#~ msgstr "刪除所選的 VPN 連線"
+
+#~ msgid "E_xport"
+#~ msgstr "匯出(_X)"
+
+#~ msgid "Edit the selected VPN connection"
+#~ msgstr "編輯已選的 VPN 連線"
+
+#~ msgid "Export the VPN settings to a file"
+#~ msgstr "匯出 VPN 設定至檔案"
+
+#~ msgid "Export the selected VPN connection to a file"
+#~ msgstr "匯出所選的 VPN 連線至檔案"
+
+#~ msgid "Manage Virtual Private Network Connections"
+#~ msgstr "管理虛擬私有網路(VPN)連線"
+
+#, fuzzy
+#~ msgid "Secrets required by wireless network"
+#~ msgstr "建立新的無線網路"
+
+#~ msgid "New wireless network"
+#~ msgstr "新的無線網路"
+
+#~ msgid "DER or PEM certificates (*.der, *.pem)"
+#~ msgstr "DER 或 PEM 憑證 (*.der, *.pem)"
+
+#~ msgid "No Certificate Authority certificate chosen"
+#~ msgstr "未選擇任何憑證授權單位(CA)憑證"
+
+#~ msgid "Ignore"
+#~ msgstr "忽略"
+
+#~ msgid "MD5"
+#~ msgstr "MD5"
+
+#~ msgid "Choose a Certificate Authority certificate..."
+#~ msgstr "選擇憑證授權單位(CA)憑證..."
+
+#~ msgid "Choose your personal certificate..."
+#~ msgstr "選擇您的個人憑證..."
+
+#~ msgid "Choose your private key..."
+#~ msgstr "選擇您的私密金鑰..."
+
+#~ msgid "CHAP"
+#~ msgstr "CHAP"
+
+#~ msgid "Failed to get information about the interface!"
+#~ msgstr "無法取得網路介面的訊資！"
+
+#~ msgid "Wireless Ethernet (%s)"
+#~ msgstr "有線乙太網路 (%s)"
+
+#~ msgid "VPN Error"
+#~ msgstr "VPN 錯誤"
+
+#~ msgid ""
+#~ "<span weight=\"bold\" size=\"larger\">VPN Login Message</span>\n"
+#~ "\n"
+#~ "VPN connection '%s' said:\n"
+#~ "\n"
+#~ "\"%s\""
+#~ msgstr ""
+#~ "<span weight=\"bold\" size=\"larger\">VPN 登入訊息</span>\n"
+#~ "\n"
+#~ "VPN 連線‘%s’說：\n"
+#~ "\n"
+#~ "\"%s\""
+
+#~ msgid "_Stop All Wireless Devices"
+#~ msgstr "停止所有無線網路裝置(_S)"
+
+#~ msgid "_Start All Wireless Devices"
+#~ msgstr "開始執行所有無線網路裝置(_S)"
+
+#, fuzzy
+#~ msgid "_Wireless Network Discovery"
+#~ msgstr "無線網路 (%s)"
+
+#~ msgid "Always Search"
+#~ msgstr "總是搜尋"
+
+#~ msgid "Search Only When Disconnected"
+#~ msgstr "在斷線時才搜尋"
+
+#~ msgid "Never Search"
+#~ msgstr "永不搜尋"
+
+#~ msgid "Stop All Wireless Devices"
+#~ msgstr "停止所有無線網路裝置"
+
+#, fuzzy
+#~ msgid "ASCII Key:"
+#~ msgstr "Acii 格式金鑰："
+
+#~ msgid ""
+#~ "128-bit Passphrase (WEP)\n"
+#~ "Ascii Key (WEP)\n"
+#~ "Hex Key (WEP)"
+#~ msgstr ""
+#~ "128位元通行碼 (WEP)\n"
+#~ "Acii 格式金鑰 (WEP)\n"
+#~ "Hex 格式金鑰 (WEP)"
+
+#~ msgid ""
+#~ "128-bit passphrase (WEP)\n"
+#~ "Ascii key (WEP)\n"
+#~ "Hex key (WEP)"
+#~ msgstr ""
+#~ "128位元通行碼 (WEP)\n"
+#~ "Acii 格式金鑰 (WEP)\n"
+#~ "Hex 格式金鑰 (WEP)"
+
+#~ msgid "Always Trust this Wireless Network"
+#~ msgstr "總是信任這無線網路"
+
+#~ msgid "Wireless _network:"
+#~ msgstr "無線網路(_N)："
+
+#~ msgid "_Login to Network"
+#~ msgstr "登入網路(_L)"
+
+#~ msgid "_OK"
+#~ msgstr "確定(_O)"
+
+#~ msgid "Create VPN Connection - 1 of 2"
+#~ msgstr "建立 VPN 連線 - 第一步"
+
+#~ msgid "Create VPN Connection - 2 of 2"
+#~ msgstr "建立 VPN 連線 - 第二步"
+
+#~ msgid "%s"
+#~ msgstr "%s"
+
+#~ msgid "Modify Wireless Networks"
+#~ msgstr "修改無線網路"
+
+#~ msgid "*"
+#~ msgstr "*"
+
+#~ msgid "You must log in to access the private network %s"
+#~ msgstr "您需要登入來存取私有網路 %s"
