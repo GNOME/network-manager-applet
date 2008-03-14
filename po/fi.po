@@ -1,15 +1,16 @@
-# Finnish messages for NetworkManager
+# Finnish messages for network-manager-applet 
 # Copyright (C) 2005 Ilkka Tuohela, Timo Jyrinki.
-# This file is distributed under the same license as the NetworkManager package.
+# This file is distributed under the same license as the 
+# network-manager-applet package.
 #
 # Ilkka Tuohela <hile@iki.fi>, 2005-2008.
 # Timo Jyrinki <timo.jyrinki@iki.fi>, 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: NetworkManager\n"
+"Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-18 20:25+0200\n"
+"POT-Creation-Date: 2008-03-14 09:23+0300\n"
 "PO-Revision-Date: 2008-02-18 20:15+0200\n"
 "Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -18,18 +19,170 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/applet-compat.c:171 ../src/applet-compat.c:504
-#: ../src/nm-gconf-wso.c:387 ../editor/editor-keyring-helper.c:121
+#: ../editor/editor-app.c:589 ../src/wso-none.c:53
+msgid "None"
+msgstr "Ei mitään"
+
+#: ../editor/editor-app.c:594 ../src/wso-wep-passphrase.c:135
+msgid "WEP 128-bit Passphrase"
+msgstr "WEP 128-bittinen tunnuslause"
+
+#: ../editor/editor-app.c:599 ../src/wso-wep-hex.c:169
+msgid "WEP 64/128-bit Hex"
+msgstr "WEP 64/128-bittinen heksadesimaali"
+
+#: ../editor/editor-app.c:604 ../src/wso-wep-ascii.c:172
+msgid "WEP 64/128-bit ASCII"
+msgstr "WEP 64/128-bittinen ASCII"
+
+#: ../editor/editor-app.c:609 ../src/wso-wpa-psk.c:226
+msgid "WPA Personal"
+msgstr "WPA (henkilökohtainen)"
+
+#: ../editor/editor-app.c:614 ../src/wso-wpa-psk.c:224
+msgid "WPA2 Personal"
+msgstr "WPA2 (henkilökohtainen)"
+
+#: ../editor/editor-app.c:619 ../src/wso-wpa-eap.c:337
+msgid "WPA Enterprise"
+msgstr "WPA Enterprise"
+
+#: ../editor/editor-app.c:624 ../src/wso-wpa-eap.c:335
+msgid "WPA2 Enterprise"
+msgstr "WPA2 Enterprise"
+
+#: ../editor/editor-app.c:629
+msgid "LEAP"
+msgstr "LEAP"
+
+#: ../editor/editor-app.c:716 ../editor/editor-app.c:743
+msgid "NetworkManager Editor"
+msgstr "NetworkManager-muokkain"
+
+#: ../editor/editor-app.c:718 ../editor/editor-app.c:745
+msgid "Copyright © 2007 Novell, Inc."
+msgstr "Tekijänoikeudet © 2007 Novell, Inc."
+
+#: ../editor/editor-app.c:719
+msgid "Editor for managing your wireless networks"
+msgstr "Langattomien verkkojen hallintamuokkain"
+
+#: ../editor/editor-app.c:722 ../editor/editor-app.c:751 ../src/applet.c:346
+#: ../src/applet.c:373
+msgid "translator-credits"
+msgstr ""
+"Timo Jyrinki, 2008.\n"
+"Ilkka Tuohela, 2005-2008.\n"
+"\n"
+"http://www.gnome.fi/"
+
+#: ../editor/editor-app.c:746
+msgid "Editor for managing your wireless networks."
+msgstr "Langattomien verkkojen hallintamuokkain."
+
+#: ../editor/editor-keyring-helper.c:121 ../src/applet-compat.c:171
+#: ../src/applet-compat.c:504 ../src/nm-gconf-wso.c:415
 #, c-format
 msgid "Passphrase for wireless network %s"
 msgstr "Langattoman verkon %s tunnuslause"
 
 #. Save private_key_passwd to keyring
-#: ../src/applet-compat.c:459 ../src/nm-gconf-wso-wpa-eap.c:417
-#: ../editor/editor-keyring-helper.c:133
+#: ../editor/editor-keyring-helper.c:133 ../src/applet-compat.c:459
+#: ../src/nm-gconf-wso-wpa-eap.c:417
 #, c-format
 msgid "Private key password for wireless network %s"
 msgstr "Langattoman verkon %s salaisen avaimen salasana"
+
+#: ../editor/widget-wso-leap.c:108 ../editor/widget-wso-wpa-enterprise.c:154
+#: ../editor/widget-wso-wpa-enterprise.c:187
+#: ../editor/widget-wso-wpa-personal.c:148
+msgid "Unable to set password"
+msgstr "Salasanaa ei voi asettaa"
+
+#: ../editor/widget-wso-leap.c:110 ../editor/widget-wso-wpa-personal.c:150
+#, c-format
+msgid ""
+"There was a problem storing the password in the gnome keyring. Error 0x%02X."
+msgstr ""
+"Tapahtui virhe tallennettaessa salasanaa gnomen avainnippuun. Virhe 0x%02X."
+
+#: ../editor/widget-wso-wep.c:150
+msgid "Unable to set key"
+msgstr "Avainta ei voi asettaa"
+
+#: ../editor/widget-wso-wep.c:152
+#, c-format
+msgid ""
+"There was a problem setting the wireless key to the gnome keyring. Error 0x%"
+"02X."
+msgstr ""
+"Tapahtui virhe tallennettaessa avainta gnomen avainnippuun. Virhe 0x%02X."
+
+#: ../editor/widget-wso-wpa-enterprise.c:156
+#, c-format
+msgid ""
+"There was a problem storing the EAP password in the gnome keyring. Error 0x%"
+"02X."
+msgstr ""
+"Virhe tallennettaessa EAP-salasanaa gnomen avainnippuun. "
+"Virhe 0x%02X."
+
+#: ../editor/widget-wso-wpa-enterprise.c:189
+#, c-format
+msgid ""
+"There was a problem storing the private key password in the gnome keyring. "
+"Error 0x%02X."
+msgstr ""
+"Virhe tallennettaessa yksityisen avaimen salasanaa gnomen avainnippuun. "
+"Virhe 0x%02X."
+
+#: ../libnma/libnma.c:20
+msgid "Automatic (Default)"
+msgstr "Automaattinen (oletus)"
+
+#: ../libnma/libnma.c:27
+msgid "AES-CCMP"
+msgstr "AES-CCMP"
+
+#: ../libnma/libnma.c:35
+msgid "TKIP"
+msgstr "TKIP"
+
+#: ../libnma/libnma.c:43
+msgid "Dynamic WEP"
+msgstr "Dynaaminen WEP"
+
+#: ../libnma/libnma.c:85
+msgid "None (Default)"
+msgstr "Ei mitään (oletus)"
+
+#: ../libnma/libnma.c:90
+msgid "PAP"
+msgstr "PAP"
+
+#: ../libnma/libnma.c:95
+msgid "MSCHAP"
+msgstr "MSCHAP"
+
+#: ../libnma/libnma.c:100
+msgid "MSCHAPV2"
+msgstr "MSCHAPV2"
+
+#: ../libnma/libnma.c:105
+msgid "GTC"
+msgstr "GTC"
+
+#: ../libnma/libnma.c:143
+msgid "PEAP"
+msgstr "PEAP"
+
+#: ../libnma/libnma.c:144
+msgid "TLS"
+msgstr "TLS"
+
+#: ../libnma/libnma.c:145
+msgid "TTLS"
+msgstr "TTLS"
 
 #: ../src/applet-dbus-devices.c:919
 #, c-format
@@ -116,15 +269,6 @@ msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Ilmoitusalueen sovelma verkkolaitteiden ja yhteyksien hallintaan."
 
-#: ../src/applet.c:346 ../src/applet.c:373 ../editor/editor-app.c:267
-#: ../editor/editor-app.c:296
-msgid "translator-credits"
-msgstr ""
-"Timo Jyrinki, 2008.\n"
-"Ilkka Tuohela, 2005-2008.\n"
-"\n"
-"http://www.gnome.fi/"
-
 #: ../src/applet.c:367
 msgid ""
 "Copyright © 2004-2005 Red Hat, Inc.\n"
@@ -186,8 +330,8 @@ msgstr ""
 msgid "VPN Login Message"
 msgstr "VPN-yhteyden kirjautumisviesti"
 
-#: ../src/applet.c:744 ../src/applet.c:2707 ../src/nm-wired-dialog.c:133
-#: ../src/other-network-dialog.c:455 ../src/passphrase-dialog.c:218
+#: ../src/applet.c:744 ../src/applet.c:2707 ../src/nm-wired-dialog.c:134
+#: ../src/other-network-dialog.c:455 ../src/passphrase-dialog.c:261
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -410,96 +554,115 @@ msgstr ""
 "\n"
 "%s  Verkkoyhteys ei ole täysin toimiva."
 
-#: ../src/applet.glade.h:12
-#, no-c-format
-msgid ""
-"<span weight=\"bold\" size=\"larger\">Wireless Network Login Confirmation</"
-"span>\n"
-"\n"
-"You have chosen to log in to the wireless network '%s'.  If you are sure "
-"that this wireless network is secure, click the checkbox below and "
-"NetworkManager will not require confirmation on subsequent log ins."
-msgstr ""
-"<span weight=\"bold\" size=\"larger\">Langattoman yhteyden kirjatumisen "
-"vahvistus</span>\n"
-"\n"
-"Olet ottamassa yhteyttä langattomaan verkkoon \"%s\". Jos olet varma, että "
-"tämä langaton verkko on turvallinen, napsauta alla olevaa ruutua ja "
-"NetworkManager ei kysy tätä vahvistusikkunaa enää uudestaan."
+#: ../src/applet.glade.h:11
+msgid "Access Point:"
+msgstr "Liityntäpiste:"
 
-#: ../src/applet.glade.h:15 ../editor/editor.glade.h:3
+#: ../src/applet.glade.h:12
+msgid "Access points"
+msgstr "Liityntäpisteet"
+
+#: ../src/applet.glade.h:13
 msgid "Anonymous Identity:"
 msgstr "Anonyymi tunniste:"
 
-#: ../src/applet.glade.h:16 ../editor/editor.glade.h:4
+#: ../src/applet.glade.h:14
 msgid "Authentication:"
 msgstr "Todentaminen:"
 
-#: ../src/applet.glade.h:17
+#: ../src/applet.glade.h:15
 msgid "Broadcast Address:"
 msgstr "Broadcast-osoite:"
 
-#: ../src/applet.glade.h:18 ../editor/editor.glade.h:12
+#: ../src/applet.glade.h:16
 msgid "CA Certificate File:"
 msgstr "CA-varmenteen tiedosto:"
 
-#: ../src/applet.glade.h:19
+#: ../src/applet.glade.h:17
 msgid "C_onnect"
 msgstr "_Yhdistä"
 
-#: ../src/applet.glade.h:20 ../editor/editor.glade.h:13
+#: ../src/applet.glade.h:18
 msgid "Client Certificate File:"
 msgstr "Asiakasvarmenteen tiedosto:"
 
-#: ../src/applet.glade.h:21
+#: ../src/applet.glade.h:19
 msgid "Connection Information"
 msgstr "Tietoja yhteydestä"
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:20
 msgid "Default Route:"
 msgstr "Oletusyhdyskäytävä:"
 
-#: ../src/applet.glade.h:23
+#: ../src/applet.glade.h:21
 msgid "Destination Address:"
 msgstr "Kohdeosoite:"
 
-#: ../src/applet.glade.h:24
+#: ../src/applet.glade.h:22
 msgid "Driver:"
 msgstr "Ajuri:"
 
-#: ../src/applet.glade.h:25 ../editor/editor.glade.h:14
+#: ../src/applet.glade.h:23
 msgid "EAP Method:"
 msgstr "EPA-menetelmä:"
 
-#: ../src/applet.glade.h:26
+#: ../src/applet.glade.h:24
+msgid "Edit Access Point"
+msgstr "Muokkaa liityntäpistettä"
+
+#: ../src/applet.glade.h:25
 msgid "Hardware Address:"
 msgstr "Laiteosoite:"
 
-#: ../src/applet.glade.h:27
+#: ../src/applet.glade.h:26
 msgid "IP Address:"
 msgstr "IP-osoite:"
 
-#: ../src/applet.glade.h:28 ../editor/editor.glade.h:20
+#: ../src/applet.glade.h:27
 msgid "Identity:"
 msgstr "Tunniste:"
 
-#: ../src/applet.glade.h:29
+#: ../src/applet.glade.h:28
 msgid "Interface:"
 msgstr "Verkkolaite:"
 
-#: ../src/applet.glade.h:30 ../editor/editor.glade.h:21
+#: ../src/applet.glade.h:29
 msgid "Key Type:"
 msgstr "Avaimen tyyppi:"
 
-#: ../src/applet.glade.h:31
+#: ../src/applet.glade.h:30
 msgid "Key management:"
 msgstr "Avaintenhallinta:"
 
-#: ../src/applet.glade.h:32 ../editor/editor.glade.h:22
+#: ../src/applet.glade.h:31
 msgid "Key:"
 msgstr "Avain:"
 
+#: ../src/applet.glade.h:32
+msgid "Last Used:"
+msgstr "Viimeksi käytetty:"
+
 #: ../src/applet.glade.h:33
+msgid "Name:"
+msgstr "Nimi:"
+
+#: ../src/applet.glade.h:34
+msgid "Networks"
+msgstr "Verkot"
+
+#: ../src/applet.glade.h:35
+msgid ""
+"None\n"
+"WEP 128-bit Passphrase\n"
+"WEB 64/128 bit Hex\n"
+"WEP 64/128-bit ASCII\n"
+msgstr ""
+"Ei mitään\n"
+"WEP 128-bittinen tunnuslause\n"
+"WEP 64/128-bittinen heksadesimaali\n"
+"WEP 64/128-bittinen ASCII\n"
+
+#: ../src/applet.glade.h:40
 msgid ""
 "None\n"
 "WEP 128-bit Passphrase\n"
@@ -511,7 +674,7 @@ msgstr ""
 "WEP 64/128-bittinen heksadesimaali\n"
 "WEP 64/128-bittinen ASCII\n"
 
-#: ../src/applet.glade.h:38 ../editor/editor.glade.h:37
+#: ../src/applet.glade.h:45
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -519,109 +682,145 @@ msgstr ""
 "Avoin järjestelmä\n"
 "Jaettu avain"
 
-#: ../src/applet.glade.h:40
+#: ../src/applet.glade.h:47
 msgid "Other Wireless Network..."
 msgstr "Muu langaton verkko..."
 
-#: ../src/applet.glade.h:41
+#: ../src/applet.glade.h:48
 msgid "Passphrase:"
 msgstr "Tunnuslause:"
 
-#: ../src/applet.glade.h:42 ../editor/editor.glade.h:39
+#: ../src/applet.glade.h:49
 msgid "Password:"
 msgstr "Salasana:"
 
-#: ../src/applet.glade.h:43
+#: ../src/applet.glade.h:50
 msgid "Phase2 Type:"
 msgstr "Vaiheen 2 tyyppi:"
 
-#: ../src/applet.glade.h:44
+#: ../src/applet.glade.h:51
 msgid "Primary DNS:"
 msgstr "Ensisijainen DNS:"
 
-#: ../src/applet.glade.h:45 ../editor/editor.glade.h:40
+#: ../src/applet.glade.h:52
 msgid "Private Key File:"
 msgstr "Salausavaimen tiedosto"
 
-#: ../src/applet.glade.h:46 ../editor/editor.glade.h:41
+#: ../src/applet.glade.h:53
 msgid "Private Key Password:"
 msgstr "Salausavaimen salasana:"
 
-#: ../src/applet.glade.h:47
+#: ../src/applet.glade.h:54
+msgid "Properties"
+msgstr "Ominaisuudet"
+
+#: ../src/applet.glade.h:55
 msgid "Secondary DNS:"
 msgstr "Toissijainen DNS:"
 
-#: ../src/applet.glade.h:48 ../editor/editor.glade.h:44
+#: ../src/applet.glade.h:56
+msgid "Security:"
+msgstr "Tietoturva:"
+
+#: ../src/applet.glade.h:57
 msgid "Select the CA Certificate File"
 msgstr "Valise CA-varmenteen tiedosto"
 
-#: ../src/applet.glade.h:49 ../editor/editor.glade.h:45
+#: ../src/applet.glade.h:58
 msgid "Select the Client Certificate File"
 msgstr "Valitse asiakasvarmenteen tiedosto"
 
-#: ../src/applet.glade.h:50 ../editor/editor.glade.h:46
+#: ../src/applet.glade.h:59
 msgid "Select the Private Key File"
 msgstr "Valitse salaisen avaimen tiedosto"
 
-#: ../src/applet.glade.h:51
+#: ../src/applet.glade.h:60
+msgid "Set Password"
+msgstr "Aseta salasana"
+
+#: ../src/applet.glade.h:61
+msgid "Set _Key"
+msgstr "Aseta _avain"
+
+#: ../src/applet.glade.h:62
+msgid "Set _Password"
+msgstr "Aseta _salasana"
+
+#: ../src/applet.glade.h:63
 msgid "Show key"
 msgstr "Näytä avain"
 
-#: ../src/applet.glade.h:52
+#: ../src/applet.glade.h:64
 msgid "Show passphrase"
 msgstr "Näytä tunnuslause:"
 
-#: ../src/applet.glade.h:53
+#: ../src/applet.glade.h:65
 msgid "Show password"
 msgstr "Näytä salasana"
 
-#: ../src/applet.glade.h:54 ../editor/editor.glade.h:52
+#: ../src/applet.glade.h:66
 msgid "Show passwords"
 msgstr "Näytä salasanat"
 
-#: ../src/applet.glade.h:55
+#: ../src/applet.glade.h:67
 msgid "Speed:"
 msgstr "Nopeus:"
 
-#: ../src/applet.glade.h:56
+#: ../src/applet.glade.h:68
 msgid "Subnet Mask:"
 msgstr "Aliverkkopeite:"
 
-#: ../src/applet.glade.h:57 ../editor/editor.glade.h:53
+#: ../src/applet.glade.h:69
 msgid "Type:"
 msgstr "Tyyppi:"
 
-#: ../src/applet.glade.h:58
+#: ../src/applet.glade.h:70
 msgid "User Name:"
 msgstr "Käyttäjätunnus:"
 
-#: ../src/applet.glade.h:59
+#: ../src/applet.glade.h:71
 msgid "Wireless Network Key Required"
 msgstr "Langattoman verkon salausavain vaaditaan"
 
-#: ../src/applet.glade.h:60
+#: ../src/applet.glade.h:72
+msgid "Wireless Networks"
+msgstr "Langattomat verkot"
+
+#: ../src/applet.glade.h:73
 msgid "Wireless _adapter:"
 msgstr "Langaton _verkkolaite:"
 
-#: ../src/applet.glade.h:61
-msgid "_Always Trust this Wireless Network"
-msgstr "_Luota aina tähän langattomaan verkkoon"
+#: ../src/applet.glade.h:74
+msgid "_Add"
+msgstr "_Lisää"
 
-#: ../src/applet.glade.h:62
+#: ../src/applet.glade.h:75
 msgid "_Don't remind me again"
 msgstr "_Älä huomauta uudestaan"
 
-#: ../src/applet.glade.h:63
-msgid "_Login to Network"
-msgstr "_Kirjaudu verkkoon"
+#: ../src/applet.glade.h:76
+msgid "_Edit"
+msgstr "_Muokkaa"
 
-#: ../src/applet.glade.h:64
+#: ../src/applet.glade.h:77
 msgid "_Network Name:"
 msgstr "_Verkon nimi:"
 
-#: ../src/applet.glade.h:65
+#: ../src/applet.glade.h:78
+msgid "_Remove"
+msgstr "_Poista"
+
+#: ../src/applet.glade.h:79
 msgid "_Wireless Security:"
 msgstr "_Langaton tietoturva:"
+
+#: ../src/applet.glade.h:80
+msgid "bssid editor"
+msgstr "bssid-editori"
+
+#: ../src/applet.glade.h:81
+msgid "bssids:"
+msgstr "bssid:t:"
 
 #: ../src/eggtrayicon.c:134
 msgid "Orientation"
@@ -657,11 +856,11 @@ msgstr[1] "Langattomat verkot"
 msgid " (invalid Unicode)"
 msgstr " (virheellistä Unicodea)"
 
-#: ../src/nm-wired-dialog.c:143
+#: ../src/nm-wired-dialog.c:144
 msgid "Connect to 802.1X protected wired network"
 msgstr "Yhteys 802.1X-suojattuun langattomaan verkkoon"
 
-#: ../src/nm-wired-dialog.c:152
+#: ../src/nm-wired-dialog.c:153
 #, c-format
 msgid ""
 "<span size=\"larger\" weight=\"bold\">Connect to a 802.1X protected wired "
@@ -669,21 +868,21 @@ msgid ""
 "\n"
 "A passphrase or encryption key is required to access the network '%s'."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">Yhdistä 802.1X-suojattuun "
-"langattomaan verkkoon</span>\n"
+"<span weight=\"bold\" size=\"larger\">Yhdistä 802.1X-suojattuun langattomaan "
+"verkkoon</span>\n"
 "\n"
 "Tunnuslause tai salausavain vaaditaan, jotta voit ottaa yhteyttä "
 "langattomaan verkkoon \"%s\"."
 
-#: ../src/nm-wired-dialog.c:157
+#: ../src/nm-wired-dialog.c:158
 msgid ""
 "<span size=\"larger\" weight=\"bold\">Connect to a 802.1X protected wired "
 "network</span>\n"
 "\n"
 "Enter the name and security settings of the network you wish to join."
 msgstr ""
-"<span size=\"larger\" weight=\"bold\">Yhdistä 802.1X-suojattuun "
-"langattomaan verkkoon</span>\n"
+"<span size=\"larger\" weight=\"bold\">Yhdistä 802.1X-suojattuun langattomaan "
+"verkkoon</span>\n"
 "\n"
 "Syötä yhdistettävän verkon nimi ja salausasetukset."
 
@@ -722,11 +921,11 @@ msgstr "Syötä sen langattoman verkon nimi, johon haluat ottaa yhteyttä."
 msgid "Connect to Other Wireless Network"
 msgstr "Ota yhteyttä muuhun langattomaan verkkoon"
 
-#: ../src/passphrase-dialog.c:205
+#: ../src/passphrase-dialog.c:248
 msgid "Error connecting to wireless network"
 msgstr "Virhe yhdistettäessä langattomaan verkkoon"
 
-#: ../src/passphrase-dialog.c:206
+#: ../src/passphrase-dialog.c:249
 msgid ""
 "The requested wireless network requires security capabilities unsupported by "
 "your hardware."
@@ -756,321 +955,119 @@ msgstr ""
 "Virhe käynnistettäessä kirjautumisikkunaa VPN-yhteyden tyypille \"%s\". Ota "
 "yhteyttä järjestelmäsi ylläpitäjään."
 
-#: ../src/wireless-security-option.c:157
+#: ../src/wireless-security-option.c:179
 msgid "Open System"
 msgstr "Avoin järjestelmä"
 
-#: ../src/wireless-security-option.c:160
+#: ../src/wireless-security-option.c:182
 msgid "Shared Key"
 msgstr "Jaettu avain"
 
-#: ../src/wireless-security-option.c:207
-msgid "Automatic (Default)"
-msgstr "Automaattinen (oletus)"
+#~ msgid "WEP 64-bit"
+#~ msgstr "WEP 64-bittinen"
 
-#: ../src/wireless-security-option.c:214
-msgid "AES-CCMP"
-msgstr "AES-CCMP"
+#~ msgid "WEP 128-bit"
+#~ msgstr "WEP 128-bittinen"
 
-#: ../src/wireless-security-option.c:222
-msgid "TKIP"
-msgstr "TKIP"
+#~ msgid "Unable to read key"
+#~ msgstr "Avainta ei voi lukea"
 
-#: ../src/wireless-security-option.c:230
-msgid "Dynamic WEP"
-msgstr "Dynaaminen WEP"
+#~ msgid "Hex"
+#~ msgstr "Hex"
 
-#: ../src/wireless-security-option.c:252
-msgid "None (Default)"
-msgstr "Ei mitään (oletus)"
+#~ msgid "ASCII"
+#~ msgstr "ASCII"
 
-#: ../src/wireless-security-option.c:257
-msgid "PAP"
-msgstr "PAP"
+#~ msgid "Passphrase"
+#~ msgstr "Tunnuslause"
 
-#: ../src/wireless-security-option.c:262
-msgid "MSCHAP"
-msgstr "MSCHAP"
+#~ msgid ""
+#~ "<span weight=\"bold\" size=\"larger\">Wireless Network Login "
+#~ "Confirmation</span>\n"
+#~ "\n"
+#~ "You have chosen to log in to the wireless network '%s'.  If you are sure "
+#~ "that this wireless network is secure, click the checkbox below and "
+#~ "NetworkManager will not require confirmation on subsequent log ins."
+#~ msgstr ""
+#~ "<span weight=\"bold\" size=\"larger\">Langattoman yhteyden kirjatumisen "
+#~ "vahvistus</span>\n"
+#~ "\n"
+#~ "Olet ottamassa yhteyttä langattomaan verkkoon \"%s\". Jos olet varma, "
+#~ "että tämä langaton verkko on turvallinen, napsauta alla olevaa ruutua ja "
+#~ "NetworkManager ei kysy tätä vahvistusikkunaa enää uudestaan."
 
-#: ../src/wireless-security-option.c:267
-msgid "MSCHAPV2"
-msgstr "MSCHAPV2"
+#~ msgid "Format:"
+#~ msgstr "Muoto:"
 
-#: ../src/wireless-security-option.c:272
-msgid "GTC"
-msgstr "GTC"
+#~ msgid ""
+#~ "Hex\n"
+#~ "ASCII\n"
+#~ "Passphrase"
+#~ msgstr ""
+#~ "Heksadesimaali\n"
+#~ "ASCII\n"
+#~ "Tunnuslause"
 
-#: ../src/wso-none.c:53 ../editor/editor-app.c:374
-msgid "None"
-msgstr "Ei mitään"
+#~ msgid "Set WEP Key"
+#~ msgstr "Aseta WEP-avain"
 
-#: ../src/wso-wep-ascii.c:172
-msgid "WEP 64/128-bit ASCII"
-msgstr "WEP 64/128-bittinen ASCII"
+#~ msgid "_Always Trust this Wireless Network"
+#~ msgstr "_Luota aina tähän langattomaan verkkoon"
 
-#: ../src/wso-wep-hex.c:169
-msgid "WEP 64/128-bit Hex"
-msgstr "WEP 64/128-bittinen heksadesimaali"
+#~ msgid "_Login to Network"
+#~ msgstr "_Kirjaudu verkkoon"
 
-#: ../src/wso-wep-passphrase.c:135
-msgid "WEP 128-bit Passphrase"
-msgstr "WEP 128-bittinen tunnuslause"
+#~ msgid "Key"
+#~ msgstr "Avain"
 
-#: ../src/wso-wpa-eap.c:244
-msgid "PEAP"
-msgstr "PEAP"
+#~ msgid "_Show Key"
+#~ msgstr "_Näytä avain"
 
-#: ../src/wso-wpa-eap.c:245
-msgid "TLS"
-msgstr "TLS"
+#~ msgid ""
+#~ "Automatic (Default)\n"
+#~ "AES-CCMP\n"
+#~ "TKIP"
+#~ msgstr ""
+#~ "Automaattinen (oletus)\n"
+#~ "AES-CCMP\n"
+#~ "TKIP"
 
-#: ../src/wso-wpa-eap.c:246
-msgid "TTLS"
-msgstr "TTLS"
+#~ msgid ""
+#~ "Automatic (Default)\n"
+#~ "AES-CCMP\n"
+#~ "TKIP\n"
+#~ "Dynamic WEP"
+#~ msgstr ""
+#~ "Automaattinen (oletus)\n"
+#~ "AES-CCMP\n"
+#~ "TKIP\n"
+#~ "Dynaaminen WEP"
 
-#: ../src/wso-wpa-eap.c:254 ../editor/editor-app.c:404
-msgid "WPA2 Enterprise"
-msgstr "WPA2 Enterprise"
+#~ msgid ""
+#~ "MD5\n"
+#~ "MSCHAPv2\n"
+#~ "OTP\n"
+#~ "GTC\n"
+#~ "PEAP\n"
+#~ "TLS\n"
+#~ "TTLS"
+#~ msgstr ""
+#~ "MD5\n"
+#~ "MSCHAPv2\n"
+#~ "OTP\n"
+#~ "GTC\n"
+#~ "PEAP\n"
+#~ "TLS\n"
+#~ "TTLS"
 
-#: ../src/wso-wpa-eap.c:256 ../editor/editor-app.c:399
-msgid "WPA Enterprise"
-msgstr "WPA Enterprise"
+#~ msgid "Show Password"
+#~ msgstr "Näytä salasana"
 
-#: ../src/wso-wpa-psk.c:178 ../editor/editor-app.c:394
-msgid "WPA2 Personal"
-msgstr "WPA2 (henkilökohtainen)"
+#~ msgid "wpa_eap_subwindow"
+#~ msgstr "wep_eap_ali-ikkuna"
 
-#: ../src/wso-wpa-psk.c:180 ../editor/editor-app.c:389
-msgid "WPA Personal"
-msgstr "WPA (henkilökohtainen)"
-
-#: ../editor/editor-app.c:261 ../editor/editor-app.c:288
-msgid "NetworkManager Editor"
-msgstr "NetworkManager-muokkain"
-
-#: ../editor/editor-app.c:263 ../editor/editor-app.c:290
-msgid "Copyright © 2007 Novell, Inc."
-msgstr "Tekijänoikeudet © 2007 Novell, Inc."
-
-#: ../editor/editor-app.c:264
-msgid "Editor for managing your wireless networks"
-msgstr "Langattomien verkkojen hallintamuokkain"
-
-#: ../editor/editor-app.c:291
-msgid "Editor for managing your wireless networks."
-msgstr "Langattomien verkkojen hallintamuokkain."
-
-#: ../editor/editor-app.c:379
-msgid "WEP 64-bit"
-msgstr "WEP 64-bittinen"
-
-#: ../editor/editor-app.c:384
-msgid "WEP 128-bit"
-msgstr "WEP 128-bittinen"
-
-#: ../editor/widget-wso-wep.c:77
-msgid "Key"
-msgstr "Avain"
-
-#: ../editor/widget-wso-wep.c:80 ../editor/editor.glade.h:58
-msgid "_Show Key"
-msgstr "_Näytä avain"
-
-#: ../editor/widget-wso-wep.c:138 ../editor/widget-wso-wpa-personal.c:138
-msgid "Unable to read key"
-msgstr "Avainta ei voi lukea"
-
-#: ../editor/widget-wso-wep.c:181
-msgid "Hex"
-msgstr "Hex"
-
-#: ../editor/widget-wso-wep.c:186
-msgid "ASCII"
-msgstr "ASCII"
-
-#: ../editor/widget-wso-wep.c:194
-msgid "Passphrase"
-msgstr "Tunnuslause"
-
-#: ../editor/widget-wso-wep.c:224
-msgid "Unable to set key"
-msgstr "Avainta ei voi asettaa"
-
-#: ../editor/widget-wso-wep.c:227
-#, c-format
-msgid ""
-"There was a problem setting the wireless key to the gnome keyring. Error 0x%"
-"02X."
-msgstr ""
-"Tapahtui virhe tallennettaessa avainta gnomen avainnippuun. Virhe 0x%02X."
-
-#: ../editor/widget-wso-wpa-enterprise.c:447
-#: ../editor/widget-wso-wpa-enterprise.c:491
-#: ../editor/widget-wso-wpa-personal.c:191
-msgid "Unable to set password"
-msgstr "Salasanaa ei voi asettaa"
-
-#: ../editor/widget-wso-wpa-enterprise.c:450
-#: ../editor/widget-wso-wpa-enterprise.c:494
-#, c-format
-msgid ""
-"There was a problem storing the private password in the gnome keyring. Error "
-"0x%02X."
-msgstr ""
-"Tapahtui virhe tallennettaessa yksityistä salasanaa gnomen avainnippuun. Virhe "
-"0x%02X."
-
-#: ../editor/widget-wso-wpa-personal.c:194
-#, c-format
-msgid ""
-"There was a problem storing the password in the gnome keyring. Error 0x%02X."
-msgstr ""
-"Tapahtui virhe tallennettaessa salasanaa gnomen avainnippuun. Virhe 0x%02X."
-
-#: ../editor/editor.glade.h:1
-msgid "Access Point:"
-msgstr "Liityntäpiste:"
-
-#: ../editor/editor.glade.h:2
-msgid "Access points"
-msgstr "Liityntäpisteet"
-
-#: ../editor/editor.glade.h:5
-msgid ""
-"Automatic (Default)\n"
-"AES-CCMP\n"
-"TKIP"
-msgstr ""
-"Automaattinen (oletus)\n"
-"AES-CCMP\n"
-"TKIP"
-
-#: ../editor/editor.glade.h:8
-msgid ""
-"Automatic (Default)\n"
-"AES-CCMP\n"
-"TKIP\n"
-"Dynamic WEP"
-msgstr ""
-"Automaattinen (oletus)\n"
-"AES-CCMP\n"
-"TKIP\n"
-"Dynaaminen WEP"
-#: ../editor/editor.glade.h:15
-msgid "Edit Access Point"
-msgstr "Muokkaa liityntäpistettä"
-
-#: ../editor/editor.glade.h:16
-msgid "Format:"
-msgstr "Muoto:"
-
-#: ../editor/editor.glade.h:17
-msgid ""
-"Hex\n"
-"ASCII\n"
-"Passphrase"
-msgstr ""
-"Heksadesimaali\n"
-"ASCII\n"
-"Tunnuslause"
-
-#: ../editor/editor.glade.h:23
-msgid "Last Used:"
-msgstr "Viimeksi käytetty:"
-
-#: ../editor/editor.glade.h:24
-msgid ""
-"MD5\n"
-"MSCHAPv2\n"
-"OTP\n"
-"GTC\n"
-"PEAP\n"
-"TLS\n"
-"TTLS"
-msgstr ""
-"MD5\n"
-"MSCHAPv2\n"
-"OTP\n"
-"GTC\n"
-"PEAP\n"
-"TLS\n"
-"TTLS"
-
-#: ../editor/editor.glade.h:31
-msgid "Name:"
-msgstr "Nimi:"
-
-#: ../editor/editor.glade.h:32
-msgid ""
-"None\n"
-"WEP 128-bit Passphrase\n"
-"WEB 64/128 bit Hex\n"
-"WEP 64/128-bit ASCII\n"
-msgstr ""
-"Ei mitään\n"
-"WEP 128-bittinen tunnuslause\n"
-"WEP 64/128-bittinen heksadesimaali\n"
-"WEP 64/128-bittinen ASCII\n"
-
-#: ../editor/editor.glade.h:42
-msgid "Properties"
-msgstr "Ominaisuudet"
-
-#: ../editor/editor.glade.h:43
-msgid "Security:"
-msgstr "Tietoturva:"
-
-#: ../editor/editor.glade.h:47
-msgid "Set Password"
-msgstr "Aseta salasana"
-
-#: ../editor/editor.glade.h:48
-msgid "Set WEP Key"
-msgstr "Aseta WEP-avain"
-
-#: ../editor/editor.glade.h:49
-msgid "Set _Key"
-msgstr "Aseta _avain"
-
-#: ../editor/editor.glade.h:50
-msgid "Set _Password"
-msgstr "Aseta _salasana"
-
-#: ../editor/editor.glade.h:51
-msgid "Show Password"
-msgstr "Näytä salasana"
-
-#: ../editor/editor.glade.h:54
-msgid "Wireless Networks"
-msgstr "Langattomat verkot"
-
-#: ../editor/editor.glade.h:55
-msgid "_Add"
-msgstr "_Lisää"
-
-#: ../editor/editor.glade.h:56
-msgid "_Edit"
-msgstr "_Muokkaa"
-
-#: ../editor/editor.glade.h:57
-msgid "_Remove"
-msgstr "_Poista"
-
-#: ../editor/editor.glade.h:59
-msgid "bssid editor"
-msgstr "bssid-editori"
-
-#: ../editor/editor.glade.h:60
-msgid "bssids:"
-msgstr "bssid:t:"
-
-#: ../editor/editor.glade.h:61
-msgid "wpa_eap_subwindow"
-msgstr "wep_eap_ali-ikkuna"
-
-#: ../editor/editor.glade.h:62
-msgid "wpa_psk_subwindow"
-msgstr "wpa_psk_ali-ikkuna"
+#~ msgid "wpa_psk_subwindow"
+#~ msgstr "wpa_psk_ali-ikkuna"
 
 #~ msgid "Auto CDMA network connection"
 #~ msgstr "Automaattinen CDMA-verkkoyhteys"
@@ -1113,9 +1110,6 @@ msgstr "wpa_psk_ali-ikkuna"
 
 #~ msgid "GSM Connections"
 #~ msgstr "GSM-yhteydet"
-
-#~ msgid "GSM Network"
-#~ msgstr "GSM-verkko"
 
 #~ msgid "You are now connected to the GSM network."
 #~ msgstr "Yhteys GSM-verkkoon on nyt muodostettu."
@@ -1308,9 +1302,6 @@ msgstr "wpa_psk_ali-ikkuna"
 
 #~ msgid "WEP 40/128-bit ASCII"
 #~ msgstr "WEP 40/128-bittinen ASCII"
-
-#~ msgid "LEAP"
-#~ msgstr "LEAP"
 
 #~ msgid "Dynamic WEP (802.1x)"
 #~ msgstr "Dynaaminen WEP (802.1x)"
