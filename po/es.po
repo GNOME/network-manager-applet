@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-14 17:26+0000\n"
-"PO-Revision-Date: 2008-02-18 12:53+0100\n"
+"POT-Creation-Date: 2008-03-11 22:49+0000\n"
+"PO-Revision-Date: 2008-03-16 13:20+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -49,7 +49,7 @@ msgid "CDMA Network"
 msgstr "Redes CDMA"
 
 #: ../src/applet-device-cdma.c:274 ../src/applet-device-gsm.c:274
-#: ../src/applet-device-wired.c:206 ../src/applet-device-wireless.c:953
+#: ../src/applet-device-wired.c:206 ../src/applet-device-wireless.c:959
 msgid "Connection Established"
 msgstr "Se ha establecido la conexión"
 
@@ -143,6 +143,7 @@ msgid "Configuring device %s for the wired network..."
 msgstr "Configurando el dispositivo %s para la red cableada…"
 
 #: ../src/applet-device-wired.c:231
+#, c-format
 msgid "Requesting a network address from the wired network..."
 msgstr "Solicitando una dirección de red a la red cableada…"
 
@@ -174,41 +175,41 @@ msgid_plural "Wireless Networks"
 msgstr[0] "Red inalámbrica"
 msgstr[1] "Redes inalámbricas"
 
-#: ../src/applet-device-wireless.c:951
+#: ../src/applet-device-wireless.c:957
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Ahora está conectado a la red inalámbrica «%s»."
 
-#: ../src/applet-device-wireless.c:952 ../src/applet-device-wireless.c:966
+#: ../src/applet-device-wireless.c:958 ../src/applet-device-wireless.c:972
 msgid "(none)"
 msgstr "(ninguna)"
 
-#: ../src/applet-device-wireless.c:980
+#: ../src/applet-device-wireless.c:986
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
 msgstr "Preparando el dispositivo %s para la red inalámbrica «%s»…"
 
-#: ../src/applet-device-wireless.c:983
+#: ../src/applet-device-wireless.c:989
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
 msgstr "Intentando conectar con la red inalámbrica «%s»…"
 
-#: ../src/applet-device-wireless.c:986
+#: ../src/applet-device-wireless.c:992
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
 msgstr "Solicitando una dirección de red a la red inalámbrica «%s»…"
 
-#: ../src/applet-device-wireless.c:989
+#: ../src/applet-device-wireless.c:995
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
 msgstr "Esperando la contraseña de red para la red inalámbrica «%s»…"
 
-#: ../src/applet-device-wireless.c:1009
+#: ../src/applet-device-wireless.c:1015
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
 msgstr "Conexión de red inalámbrica a «%s» (%d%%)"
 
-#: ../src/applet-device-wireless.c:1013
+#: ../src/applet-device-wireless.c:1019
 #, c-format
 msgid "Wireless network connection to '%s'"
 msgstr "Conexión de red inalámbrica a «%s»"
@@ -259,8 +260,8 @@ msgid "WEP"
 msgstr "WEP"
 
 #: ../src/applet-dialogs.c:191
-#: ../src/connection-editor/page-wireless-security.c:251
-#: ../src/wireless-dialog.c:470
+#: ../src/connection-editor/page-wireless-security.c:249
+#: ../src/wireless-dialog.c:473
 msgid "None"
 msgstr "Ninguna"
 
@@ -297,77 +298,77 @@ msgstr ""
 "Jorge González <jorgegonz@svn.gnome.org>, 2007-2008\n"
 "Lucas Vieites <lucas@asixinformatica.com>, 2005-2006"
 
-#: ../src/applet.c:267
+#: ../src/applet.c:268
 msgid "VPN Login Message"
 msgstr "Mensaje de acceso VPN"
 
-#: ../src/applet.c:563
+#: ../src/applet.c:572
 msgid "No network devices have been found"
 msgstr "No se ha encontrado ningún dispositivo de red"
 
-#: ../src/applet.c:646
+#: ../src/applet.c:656
 msgid "_VPN Connections"
 msgstr "Conexiones _VPN"
 
-#: ../src/applet.c:687
+#: ../src/applet.c:697
 msgid "_Configure VPN..."
 msgstr "_Configurar VPN…"
 
-#: ../src/applet.c:691
+#: ../src/applet.c:701
 msgid "_Disconnect VPN..."
 msgstr "_Desconectar VPN…"
 
-#: ../src/applet.c:738
+#: ../src/applet.c:748
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager no se está ejecutando…"
 
-#: ../src/applet.c:743 ../src/applet.c:1304
+#: ../src/applet.c:753 ../src/applet.c:1316
 msgid "Networking disabled"
 msgstr "Red desactivada"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:885
+#: ../src/applet.c:895
 msgid "Enable _Networking"
 msgstr "Activar _red"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:893
+#: ../src/applet.c:903
 msgid "Enable _Wireless"
 msgstr "Activar _inalámbrico"
 
 #. 'Connection Information' item
-#: ../src/applet.c:903
+#: ../src/applet.c:913
 msgid "Connection _Information"
 msgstr "_Información de la conexión"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:913
+#: ../src/applet.c:923
 msgid "Edit Connections..."
 msgstr "Editar las conexiones…"
 
 #. Help item
-#: ../src/applet.c:927
+#: ../src/applet.c:937
 msgid "_Help"
 msgstr "Ay_uda"
 
 #. About item
-#: ../src/applet.c:936
+#: ../src/applet.c:946
 msgid "_About"
 msgstr "A_cerca de"
 
-#: ../src/applet.c:1109
+#: ../src/applet.c:1121
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../src/applet.c:1110
+#: ../src/applet.c:1122
 msgid "The network connection has been disconnected."
 msgstr "La conexión de red ha sido desconectada."
 
-#: ../src/applet.c:1308
+#: ../src/applet.c:1320
 msgid "No network connection"
 msgstr "Sin conexión de red"
 
-#: ../src/applet.c:1553
+#: ../src/applet.c:1566
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -375,11 +376,11 @@ msgstr ""
 "La miniaplicación NetworkManager no pudo encontrar algunos recursos "
 "necesarios. No se puede continuar.\n"
 
-#: ../src/applet.c:1694
+#: ../src/applet.c:1707
 msgid "NetworkManager Applet"
 msgstr "Miniaplicación NetworkManager"
 
-#: ../src/applet.c:1699 ../src/wireless-dialog.c:786
+#: ../src/applet.c:1712 ../src/wireless-dialog.c:789
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -682,87 +683,87 @@ msgstr ""
 "A (5 GHz)\n"
 "B/G (2.4 GHz)"
 
-#: ../src/connection-editor/page-ip4-address.c:42
+#: ../src/connection-editor/page-ip4-address.c:60
 msgid "IPv4 Addresses"
 msgstr "Dirección IPv4"
 
-#: ../src/connection-editor/page-ip4.c:42
+#: ../src/connection-editor/page-ip4.c:60
 msgid "IPv4 Settings"
 msgstr "Ajustes de IPv4"
 
-#: ../src/connection-editor/page-wired.c:53
-#: ../src/connection-editor/nm-connection-editor.glade.h:7
-#: ../src/connection-editor/nm-connection-list.c:472
+#: ../src/connection-editor/page-wired.c:76
+#: ../src/connection-editor/nm-connection-editor.glade.h:8
+#: ../src/connection-editor/nm-connection-list.c:477
 msgid "Wired"
 msgstr "Cableado"
 
-#: ../src/connection-editor/page-wireless.c:95
-#: ../src/connection-editor/page-wireless.c:99
-#: ../src/connection-editor/nm-connection-editor.c:228
+#: ../src/connection-editor/page-wireless.c:94
+#: ../src/connection-editor/page-wireless.c:98
+#: ../src/connection-editor/nm-connection-editor.c:226
 msgid "default"
 msgstr "predeterminado"
 
-#: ../src/connection-editor/page-wireless.c:117
+#: ../src/connection-editor/page-wireless.c:116
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:176
-#: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:476
+#: ../src/connection-editor/page-wireless.c:195
+#: ../src/connection-editor/nm-connection-editor.glade.h:9
+#: ../src/connection-editor/nm-connection-list.c:481
 msgid "Wireless"
 msgstr "Inalámbrico"
 
-#: ../src/connection-editor/page-wireless-security.c:214
+#: ../src/connection-editor/page-wireless-security.c:221
 msgid "Wireless Security"
 msgstr "Seguridad inalámbrica"
 
-#: ../src/connection-editor/page-wireless-security.c:265
-#: ../src/wireless-dialog.c:488
+#: ../src/connection-editor/page-wireless-security.c:263
+#: ../src/wireless-dialog.c:491
 msgid "WEP 128-bit Passphrase"
 msgstr "Frase de paso WEP de 128 bits"
 
-#: ../src/connection-editor/page-wireless-security.c:273
-#: ../src/wireless-dialog.c:496
+#: ../src/connection-editor/page-wireless-security.c:271
+#: ../src/wireless-dialog.c:499
 msgid "WEP 40/128-bit Hexadecimal"
 msgstr "Hexadecimal WEP de 64/128 bits"
 
-#: ../src/connection-editor/page-wireless-security.c:281
-#: ../src/wireless-dialog.c:504
+#: ../src/connection-editor/page-wireless-security.c:279
+#: ../src/wireless-dialog.c:507
 msgid "WEP 40/128-bit ASCII"
 msgstr "ASCII WEP de 40/128 bits"
 
-#: ../src/connection-editor/page-wireless-security.c:293
-#: ../src/wireless-dialog.c:520
+#: ../src/connection-editor/page-wireless-security.c:291
+#: ../src/wireless-dialog.c:523
 #: ../src/wireless-security/wireless-security.c:354
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/connection-editor/page-wireless-security.c:305
-#: ../src/wireless-dialog.c:532
+#: ../src/connection-editor/page-wireless-security.c:303
+#: ../src/wireless-dialog.c:535
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinámica (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:318
-#: ../src/wireless-dialog.c:545
+#: ../src/connection-editor/page-wireless-security.c:316
+#: ../src/wireless-dialog.c:548
 msgid "WPA & WPA2 Personal"
 msgstr "WPA y WPA2 personal"
 
-#: ../src/connection-editor/page-wireless-security.c:331
-#: ../src/wireless-dialog.c:558
+#: ../src/connection-editor/page-wireless-security.c:329
+#: ../src/wireless-dialog.c:561
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA y WPA2 Enterprise"
 
-#: ../src/connection-editor/nm-connection-editor.c:117
+#: ../src/connection-editor/nm-connection-editor.c:107
 #, c-format
 msgid "Editing %s"
 msgstr "Editando %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:121
+#: ../src/connection-editor/nm-connection-editor.c:111
 msgid "Editing unamed connection"
 msgstr "Editando la conexión sin nombre"
 
-#: ../src/connection-editor/nm-connection-editor.c:147
+#: ../src/connection-editor/nm-connection-editor.c:139
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
@@ -770,7 +771,7 @@ msgstr ""
 "El editor de la conexión no pudo encontrar algunos archivos de recursos (no "
 "se encontró el archivo de glade de la miniaplicación NetworkManager)."
 
-#: ../src/connection-editor/nm-connection-editor.c:160
+#: ../src/connection-editor/nm-connection-editor.c:152
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
@@ -791,63 +792,68 @@ msgid "Connection _name:"
 msgstr "_Nombre de la conexión:"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:481
+#: ../src/connection-editor/nm-connection-list.c:494
+msgid "DSL"
+msgstr "DSL"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:5
+#: ../src/connection-editor/nm-connection-list.c:486
 msgid "Mobile Broadband"
 msgstr "Banda ancha móvil"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:5
+#: ../src/connection-editor/nm-connection-editor.glade.h:6
 msgid "Network Connections"
 msgstr "Conexiones de red"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:485
+#: ../src/connection-editor/nm-connection-editor.glade.h:7
+#: ../src/connection-editor/nm-connection-list.c:490
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:155
+#: ../src/connection-editor/nm-connection-list.c:156
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "¿Está seguro de que quiere borrar la conexión %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:260
+#: ../src/connection-editor/nm-connection-list.c:265
 msgid "never"
 msgstr "nunca"
 
-#: ../src/connection-editor/nm-connection-list.c:271
-#: ../src/connection-editor/nm-connection-list.c:282
+#: ../src/connection-editor/nm-connection-list.c:276
+#: ../src/connection-editor/nm-connection-list.c:287
 msgid "now"
 msgstr "ahora"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:289
+#: ../src/connection-editor/nm-connection-list.c:294
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "hace %d minuto"
 msgstr[1] "hace %d minutos"
 
-#: ../src/connection-editor/nm-connection-list.c:293
+#: ../src/connection-editor/nm-connection-list.c:298
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "hace %d hora"
 msgstr[1] "hace %d horas"
 
-#: ../src/connection-editor/nm-connection-list.c:305
+#: ../src/connection-editor/nm-connection-list.c:310
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "hace %d día"
 msgstr[1] "hace %d días"
 
-#: ../src/connection-editor/nm-connection-list.c:311
+#: ../src/connection-editor/nm-connection-list.c:316
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "hace %d mes"
 msgstr[1] "hace %d meses"
 
-#: ../src/connection-editor/nm-connection-list.c:315
+#: ../src/connection-editor/nm-connection-list.c:320
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
@@ -860,14 +866,17 @@ msgid "PEM key file had no end tag '%s'."
 msgstr "El archivo de clave PEM no tiene la etiqueta de final «%s»."
 
 #: ../src/utils/crypto.c:133
+#, c-format
 msgid "Doesn't look like a PEM private key file."
 msgstr "No parece un archivo de clave privada PEM."
 
 #: ../src/utils/crypto.c:141
+#, c-format
 msgid "Not enough memory to store PEM file data."
 msgstr "No hay suficiente memoria para almacenar el archivo de datos PEM."
 
 #: ../src/utils/crypto.c:157
+#, c-format
 msgid "Malformed PEM file: Proc-Type was not first tag."
 msgstr "Archivo PEM malformado: Proc-Type no es la primera etiqueta."
 
@@ -877,14 +886,17 @@ msgid "Malformed PEM file: unknown Proc-Type tag '%s'."
 msgstr "Archivo PEM malformado: etiqueta Proc-Type «%s» desconocida."
 
 #: ../src/utils/crypto.c:175
+#, c-format
 msgid "Malformed PEM file: DEK-Info was not the second tag."
 msgstr "Archivo PEM malformado: DEK-Info no es la segunda etiqueta."
 
 #: ../src/utils/crypto.c:186
+#, c-format
 msgid "Malformed PEM file: no IV found in DEK-Info tag."
 msgstr "Archivo PEM malformado: no se encontró ningún IV en la etiqueta DEK-Info."
 
 #: ../src/utils/crypto.c:193
+#, c-format
 msgid "Malformed PEM file: invalid format of IV in DEK-Info tag."
 msgstr "Archivo PEM malformado: formato no válido de IV en la etiqueta DEK-Info."
 
@@ -894,6 +906,7 @@ msgid "Malformed PEM file: unknown private key cipher '%s'."
 msgstr "Archivo PEM malformado: cifrado de clave privada «%s» desconocido."
 
 #: ../src/utils/crypto.c:225
+#, c-format
 msgid "Could not decode private key."
 msgstr "No se pudo decodificar la clave privada."
 
@@ -903,22 +916,27 @@ msgid "PEM certificate '%s' had no end tag '%s'."
 msgstr "El certificado PEM «%s» no tiene una etiqueta de final «%s»."
 
 #: ../src/utils/crypto.c:279
+#, c-format
 msgid "Failed to decode certificate."
 msgstr "Falló al decodificar el certificado."
 
 #: ../src/utils/crypto.c:288 ../src/utils/crypto.c:296
+#, c-format
 msgid "Not enough memory to store certificate data."
 msgstr "No hay suficiente memoria para almacenar los datos del certificado."
 
 #: ../src/utils/crypto.c:326
+#, c-format
 msgid "IV must be an even number of bytes in length."
 msgstr "IV debe ser un número par de bytes de longitud."
 
 #: ../src/utils/crypto.c:335
+#, c-format
 msgid "Not enough memory to store the IV."
 msgstr "No hay suficiente memoria para almacenar los IV."
 
 #: ../src/utils/crypto.c:346
+#, c-format
 msgid "IV contains non-hexadecimal digits."
 msgstr "IV contiene dígitos no hexadecimales."
 
@@ -929,10 +947,12 @@ msgid "Private key cipher '%s' was unknown."
 msgstr "El cifrado «%s» de la clave privada es desconocido."
 
 #: ../src/utils/crypto.c:393
+#, c-format
 msgid "Not enough memory to create private key decryption key."
 msgstr "No hay suficiente memoria para crear la clave descifrada de la clave privada."
 
 #: ../src/utils/crypto.c:511
+#, c-format
 msgid "Not enough memory to store decrypted private key."
 msgstr "No hay suficiente memoria para almacenar la clave privada descifrada."
 
@@ -942,6 +962,7 @@ msgid "Failed to initialize the MD5 engine: %s / %s."
 msgstr "Falló al inicializar el motor MD5: %s / %s."
 
 #: ../src/utils/crypto_gnutls.c:134 ../src/utils/crypto_nss.c:143
+#, c-format
 msgid "Not enough memory for decrypted key buffer."
 msgstr "No hay suficiente memoria para el búfer de la clave descifrada."
 
@@ -981,18 +1002,22 @@ msgid "Failed to initialize the MD5 context: %d."
 msgstr "Falló al inicializar el contexto MD5: %d."
 
 #: ../src/utils/crypto_nss.c:151
+#, c-format
 msgid "Failed to initialize the decryption cipher slot."
 msgstr "Falló al inicializar la ranura de cifrado para el desciframiento."
 
 #: ../src/utils/crypto_nss.c:161
+#, c-format
 msgid "Failed to set symmetric key for decryption."
 msgstr "Falló al establecer la clave simétrica para el desciframiento."
 
 #: ../src/utils/crypto_nss.c:171
+#, c-format
 msgid "Failed to set IV for decryption."
 msgstr "Falló al establecer IV para el desciframiento."
 
 #: ../src/utils/crypto_nss.c:179
+#, c-format
 msgid "Failed to initialize the decryption context."
 msgstr "Falló al inicializar el contexto de desciframiento."
 
@@ -1187,7 +1212,7 @@ msgstr ""
 "Ha habido un problema al iniciar el diálogo de autenticación para el tipo de "
 "conexión VPN «%s». Póngase en contacto con su administrador de sistemas."
 
-#: ../src/wireless-dialog.c:664
+#: ../src/wireless-dialog.c:667
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -1196,35 +1221,35 @@ msgstr ""
 "Se requieren contraseñas o claves de cifrado para acceder a la red "
 "inalámbrica «%s»."
 
-#: ../src/wireless-dialog.c:666
+#: ../src/wireless-dialog.c:669
 msgid "Wireless Network Secrets Required"
 msgstr "Clave requerida para la red inalámbrica"
 
-#: ../src/wireless-dialog.c:668
+#: ../src/wireless-dialog.c:671
 msgid "Secrets required by wireless network"
 msgstr "Se requiere contraseña para la red inalámbrica"
 
-#: ../src/wireless-dialog.c:673
+#: ../src/wireless-dialog.c:676
 msgid "Create New Wireless Network"
 msgstr "Crear una red inalámbrica nueva"
 
-#: ../src/wireless-dialog.c:675
+#: ../src/wireless-dialog.c:678
 msgid "New wireless network"
 msgstr "Red inalámbrica nueva"
 
-#: ../src/wireless-dialog.c:676
+#: ../src/wireless-dialog.c:679
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Introduzca un nombre para la red inalámbrica que desea crear."
 
-#: ../src/wireless-dialog.c:678
+#: ../src/wireless-dialog.c:681
 msgid "Connect to Other Wireless Network"
 msgstr "Conectar a otra red inalámbrica"
 
-#: ../src/wireless-dialog.c:680
+#: ../src/wireless-dialog.c:683
 msgid "Existing wireless network"
 msgstr "Red inalámbrica existente"
 
-#: ../src/wireless-dialog.c:681
+#: ../src/wireless-dialog.c:684
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Introduzca el nombre de la red inalámbrica a la que desea conectarse."
 
