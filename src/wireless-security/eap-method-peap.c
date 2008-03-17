@@ -23,7 +23,7 @@
 #include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
-#include <nm-setting-wireless.h>
+#include <nm-setting-8021x.h>
 
 #include "eap-method.h"
 #include "wireless-security.h"
@@ -111,7 +111,7 @@ static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	EAPMethodPEAP *method = (EAPMethodPEAP *) parent;
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
 	const char *text;
 	char *filename;
@@ -121,11 +121,10 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	int int_version = 0;
 	char *version = NULL;
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-										  NM_TYPE_SETTING_WIRELESS_SECURITY));
-	g_assert (s_wireless_sec);
+	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	g_assert (s_8021x);
 
-	s_wireless_sec->eap = g_slist_append (s_wireless_sec->eap, g_strdup ("peap"));
+	s_8021x->eap = g_slist_append (s_8021x->eap, g_strdup ("peap"));
 
 	// FIXME: allow protocol selection and filter on device capabilities
 	// FIXME: allow pairwise cipher selection and filter on device capabilities
@@ -136,7 +135,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_assert (widget);
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (text && strlen (text))
-		s_wireless_sec->anonymous_identity = g_strdup (text);
+		s_8021x->anonymous_identity = g_strdup (text);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_ca_cert_button");
 	g_assert (widget);
@@ -159,7 +158,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	int_version = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 	g_assert (int_version == 0 || int_version == 1);
 	version = g_strdup_printf ("%d", int_version);
-	g_object_set (G_OBJECT (s_wireless_sec), "phase1-peapver", version, NULL);
+	g_object_set (G_OBJECT (s_8021x), "phase1-peapver", version, NULL);
 	g_free (version);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_inner_auth_combo");

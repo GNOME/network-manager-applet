@@ -153,5 +153,11 @@ nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
                            const char *dir);
 
+void
+nm_gconf_add_keyring_item (const char *connection_id,
+                           const char *setting_name,
+                           const char *setting_key,
+                           const char *secret);
+
 #endif	/* GCONF_HELPERS_H */
 

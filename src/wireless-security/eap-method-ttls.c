@@ -23,7 +23,7 @@
 #include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
-#include <nm-setting-wireless.h>
+#include <nm-setting-8021x.h>
 
 #include "eap-method.h"
 #include "wireless-security.h"
@@ -107,7 +107,7 @@ static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	EAPMethodTTLS *method = (EAPMethodTTLS *) parent;
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
 	const char *text;
 	char *filename;
@@ -115,11 +115,10 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-										  NM_TYPE_SETTING_WIRELESS_SECURITY));
-	g_assert (s_wireless_sec);
+	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	g_assert (s_8021x);
 
-	s_wireless_sec->eap = g_slist_append (s_wireless_sec->eap, g_strdup ("ttls"));
+	s_8021x->eap = g_slist_append (s_8021x->eap, g_strdup ("ttls"));
 
 	// FIXME: allow protocol selection and filter on device capabilities
 	// FIXME: allow pairwise cipher selection and filter on device capabilities
@@ -130,7 +129,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_assert (widget);
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (text && strlen (text))
-		s_wireless_sec->anonymous_identity = g_strdup (text);
+		s_8021x->anonymous_identity = g_strdup (text);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_ttls_ca_cert_button");
 	g_assert (widget);

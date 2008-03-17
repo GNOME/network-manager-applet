@@ -25,7 +25,8 @@
 #include <nm-connection.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
-#include <nm-setting-wireless.h>
+#include <nm-setting-wireless-security.h>
+#include <nm-setting-8021x.h>
 
 #include "applet.h"
 #include "applet-dbus-settings.h"
@@ -1093,10 +1094,10 @@ get_one_private_key (NMConnection *connection,
 
 	if (!strcmp (tag, NMA_PRIVATE_KEY_PASSWORD_TAG)) {
 		privkey_tag = NMA_PATH_PRIVATE_KEY_TAG;
-		secret_name = NM_SETTING_WIRELESS_SECURITY_PRIVATE_KEY;
+		secret_name = NM_SETTING_802_1X_PRIVATE_KEY;
 	} else if (!strcmp (tag, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG)) {
 		privkey_tag = NMA_PATH_PHASE2_PRIVATE_KEY_TAG;
-		secret_name = NM_SETTING_WIRELESS_SECURITY_PHASE2_PRIVATE_KEY;
+		secret_name = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY;
 	} else {
 		g_warning ("Unknown private key password type '%s'", tag);
 		return FALSE;
@@ -1165,7 +1166,7 @@ extract_secrets (NMConnection *connection,
 			break;
 		}
 
-		if (   !strcmp (setting_name, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)
+		if (   !strcmp (setting_name, NM_SETTING_802_1X_SETTING_NAME)
 		    && (   !strcmp (key_name, NMA_PRIVATE_KEY_PASSWORD_TAG)
 		        || !strcmp (key_name, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG))) {
 			/* Private key passwords aren't passed to NM, they are used
@@ -1218,6 +1219,7 @@ applet_exported_connection_get_secrets (NMExportedConnection *parent,
 	AppletExportedConnection *exported = APPLET_EXPORTED_CONNECTION (parent);
 	NMConnection *connection;
 	GError *error = NULL;
+	GHashTable *settings = NULL;
 	GHashTable *secrets = NULL;
 	GList *found_list = NULL;
 	GnomeKeyringResult ret;
@@ -1280,6 +1282,13 @@ applet_exported_connection_get_secrets (NMExportedConnection *parent,
 		goto get_secrets;
 	}
 
+	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
+	 * will contain all the individual settings hashes.
+	 */
+	settings = g_hash_table_new_full (g_str_hash, g_str_equal,
+	                                  g_free, (GDestroyNotify) g_hash_table_destroy);
+
+	/* Inner a{sv} hash of one setting */
 	secrets = extract_secrets (connection, found_list, s_con->id, setting_name, &error);
 	if (error) {
 		g_warning (error->message);
@@ -1291,11 +1300,13 @@ applet_exported_connection_get_secrets (NMExportedConnection *parent,
 			g_warning ("%s.%d - Secrets were found for setting '%s' but none"
 		               " were valid.", __FILE__, __LINE__, setting_name);
 			goto get_secrets;
+		} else {
+			g_hash_table_insert (settings, g_strdup (setting_name), secrets);
+			dbus_g_method_return (context, settings);
 		}
-		dbus_g_method_return (context, secrets);
-		g_hash_table_destroy (secrets);
 	}
 
+	g_hash_table_destroy (settings);
 	gnome_keyring_found_list_free (found_list);
 	return;
 

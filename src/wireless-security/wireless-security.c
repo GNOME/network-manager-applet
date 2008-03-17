@@ -26,6 +26,8 @@
 #include <glib/gi18n.h>
 
 #include <nm-setting-wireless.h>
+#include <nm-setting-wireless-security.h>
+#include <nm-setting-8021x.h>
 
 #include "wireless-security.h"
 #include "eap-method.h"
@@ -328,11 +330,11 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 		if (s_wireless && s_wireless->security && !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)) {
-			NMSettingWirelessSecurity *s_wireless_sec;
+			NMSetting8021x *s_8021x;
 
-			s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
-			if (s_wireless_sec->eap)
-				default_method = g_slist_nth_data (s_wireless_sec->eap, 0);
+			s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+			if (s_8021x && s_8021x->eap)
+				default_method = g_slist_nth_data (s_8021x->eap, 0);
 		}
 	}
 
@@ -398,6 +400,7 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
 	GtkWidget *widget;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x;
 	EAPMethod *eap = NULL;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -409,9 +412,13 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
 		g_free (s_wireless->security);
 	s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
 
-	/* Blow away the old security setting by adding a clear one */
+	/* Blow away the old wireless security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
+
+	/* Blow away the old 802.1x setting by adding a clear one */
+	s_8021x = (NMSetting8021x *) nm_setting_802_1x_new ();
+	nm_connection_add_setting (connection, (NMSetting *) s_8021x);
 
 	widget = glade_xml_get_widget (sec->xml, combo_name);
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));

@@ -23,7 +23,7 @@
 #include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
-#include <nm-setting-wireless.h>
+#include <nm-setting-8021x.h>
 
 #include "gconf-helpers.h"
 #include "eap-method.h"
@@ -127,20 +127,19 @@ static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	EAPMethodTLS *method = (EAPMethodTLS *) parent;
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
 	char *filename;
 	char *password = NULL;
 	GError *error = NULL;
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-										  NM_TYPE_SETTING_WIRELESS_SECURITY));
-	g_assert (s_wireless_sec);
+	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	g_assert (s_8021x);
 
 	if (method->phase2)
-		s_wireless_sec->phase2_auth = g_strdup ("tls");
+		s_8021x->phase2_auth = g_strdup ("tls");
 	else
-		s_wireless_sec->eap = g_slist_append (s_wireless_sec->eap, g_strdup ("tls"));
+		s_8021x->eap = g_slist_append (s_8021x->eap, g_strdup ("tls"));
 
 	// FIXME: allow protocol selection and filter on device capabilities
 	// FIXME: allow pairwise cipher selection and filter on device capabilities
@@ -149,7 +148,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_identity_entry");
 	g_assert (widget);
-	s_wireless_sec->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	s_8021x->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_user_cert_button");
 	g_assert (widget);
@@ -203,14 +202,14 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	if (method->phase2) {
 		utils_fill_one_crypto_object (connection, NMA_PATH_PHASE2_PRIVATE_KEY_TAG,
-		                              TRUE, password, &s_wireless_sec->phase2_private_key, &error);
+		                              TRUE, password, &s_8021x->phase2_private_key, &error);
 		if (error) {
 			g_warning ("Couldn't read phase2 private key: %s", error->message);
 			g_clear_error (&error);
 		}
 	} else {
 		utils_fill_one_crypto_object (connection, NMA_PATH_PRIVATE_KEY_TAG,
-		                              TRUE, password, &s_wireless_sec->private_key, &error);
+		                              TRUE, password, &s_8021x->private_key, &error);
 		if (error) {
 			g_warning ("Couldn't read private key: %s", error->message);
 			g_clear_error (&error);

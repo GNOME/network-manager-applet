@@ -22,7 +22,7 @@
 #include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
-#include <nm-setting-wireless.h>
+#include <nm-setting-8021x.h>
 
 #include "eap-method.h"
 #include "wireless-security.h"
@@ -86,14 +86,13 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-										  NM_TYPE_SETTING_WIRELESS_SECURITY));
-	g_assert (s_wireless_sec);
+	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	g_assert (s_8021x);
 
-	s_wireless_sec->eap = g_slist_append (s_wireless_sec->eap, g_strdup ("leap"));
+	s_8021x->eap = g_slist_append (s_8021x->eap, g_strdup ("leap"));
 
 	// FIXME: allow protocol selection and filter on device capabilities
 	// FIXME: allow pairwise cipher selection and filter on device capabilities
@@ -102,11 +101,11 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	widget = glade_xml_get_widget (parent->xml, "eap_leap_username_entry");
 	g_assert (widget);
-	s_wireless_sec->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	s_8021x->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
 
 	widget = glade_xml_get_widget (parent->xml, "eap_leap_password_entry");
 	g_assert (widget);
-	s_wireless_sec->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	s_8021x->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
 }
 
 EAPMethodLEAP *
@@ -151,11 +150,11 @@ eap_method_leap_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 	if (connection) {
-		NMSettingWirelessSecurity *s_wireless_sec;
+		NMSetting8021x *s_8021x;
 
-		s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
-		if (s_wireless_sec && s_wireless_sec->identity)
-			gtk_entry_set_text (GTK_ENTRY (widget), s_wireless_sec->identity);
+		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+		if (s_8021x && s_8021x->identity)
+			gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->identity);
 	}
 
 	widget = glade_xml_get_widget (xml, "eap_leap_password_entry");

@@ -38,6 +38,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
 #include <nm-device-802-11-wireless.h>
+#include <nm-setting-8021x.h>
 #include <nm-utils.h>
 
 #include "applet.h"
@@ -200,7 +201,10 @@ add_ciphers_from_flags (guint32 flags, gboolean pairwise)
 }
 
 static NMSettingWirelessSecurity *
-get_security_for_ap (NMAccessPoint *ap, guint32 dev_caps, gboolean *supported)
+get_security_for_ap (NMAccessPoint *ap,
+                     guint32 dev_caps,
+                     gboolean *supported,
+                     NMSetting8021x **s_8021x)
 {
 	NMSettingWirelessSecurity *sec;
 	int mode;
@@ -211,6 +215,8 @@ get_security_for_ap (NMAccessPoint *ap, guint32 dev_caps, gboolean *supported)
 	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), NULL);
 	g_return_val_if_fail (supported != NULL, NULL);
 	g_return_val_if_fail (*supported == TRUE, NULL);
+	g_return_val_if_fail (s_8021x != NULL, NULL);
+	g_return_val_if_fail (*s_8021x == NULL, NULL);
 
 	sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 
@@ -267,8 +273,10 @@ get_security_for_ap (NMAccessPoint *ap, guint32 dev_caps, gboolean *supported)
 		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
 		sec->pairwise = add_ciphers_from_flags (rsn_flags, TRUE);
 		sec->group = add_ciphers_from_flags (rsn_flags, FALSE);
-		sec->eap = g_slist_append (sec->eap, g_strdup ("ttls"));
-		sec->phase2_auth = g_strdup ("mschapv2");
+
+		*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
+		(*s_8021x)->eap = g_slist_append ((*s_8021x)->eap, g_strdup ("ttls"));
+		(*s_8021x)->phase2_auth = g_strdup ("mschapv2");
 		return sec;
 	}
 
@@ -279,8 +287,10 @@ get_security_for_ap (NMAccessPoint *ap, guint32 dev_caps, gboolean *supported)
 		sec->proto = g_slist_append (sec->proto, g_strdup ("wpa"));
 		sec->pairwise = add_ciphers_from_flags (wpa_flags, TRUE);
 		sec->group = add_ciphers_from_flags (wpa_flags, FALSE);
-		sec->eap = g_slist_append (sec->eap, g_strdup ("ttls"));
-		sec->phase2_auth = g_strdup ("mschapv2");
+
+		*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
+		(*s_8021x)->eap = g_slist_append ((*s_8021x)->eap, g_strdup ("ttls"));
+		(*s_8021x)->phase2_auth = g_strdup ("mschapv2");
 		return sec;
 	}
 
@@ -301,6 +311,7 @@ wireless_new_auto_connection (NMDevice *device,
 	NMSettingConnection *s_con = NULL;
 	NMSettingWireless *s_wireless = NULL;
 	NMSettingWirelessSecurity *s_wireless_sec = NULL;
+	NMSetting8021x *s_8021x = NULL;
 	const GByteArray *ap_ssid;
 	char buf[33];
 	int buf_len;
@@ -328,7 +339,7 @@ wireless_new_auto_connection (NMDevice *device,
 		g_assert_not_reached ();
 
 	dev_caps = nm_device_802_11_wireless_get_capabilities (NM_DEVICE_802_11_WIRELESS (device));
-	s_wireless_sec = get_security_for_ap (info->ap, dev_caps, &supported);
+	s_wireless_sec = get_security_for_ap (info->ap, dev_caps, &supported, &s_8021x);
 	if (!supported) {
 		g_object_unref (s_wireless);
 		goto out;
@@ -340,6 +351,8 @@ wireless_new_auto_connection (NMDevice *device,
 	nm_connection_add_setting (connection, NM_SETTING (s_wireless));
 	if (s_wireless_sec)
 		nm_connection_add_setting (connection, NM_SETTING (s_wireless_sec));
+	if (s_8021x)
+		nm_connection_add_setting (connection, NM_SETTING (s_8021x));
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 	s_con->type = g_strdup (NM_SETTING (s_wireless)->name);
@@ -1209,6 +1222,35 @@ wireless_get_more_info (NMDevice *device,
 	gtk_window_present (GTK_WINDOW (dialog));
 }
 
+static gboolean
+add_one_setting (GHashTable *settings,
+                 NMConnection *connection,
+                 NMSetting *setting,
+                 GError **error)
+{
+	GHashTable *secrets;
+
+	g_return_val_if_fail (settings != NULL, FALSE);
+	g_return_val_if_fail (connection != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+	g_return_val_if_fail (error != NULL, FALSE);
+	g_return_val_if_fail (*error == NULL, FALSE);
+
+	utils_fill_connection_certs (connection);
+	secrets = nm_setting_to_hash (setting);
+	utils_clear_filled_connection_certs (connection);
+
+	if (secrets) {
+		g_hash_table_insert (settings, g_strdup (setting->name), secrets);
+	} else {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): failed to hash setting '%s'.",
+		             __FILE__, __LINE__, __func__, setting->name);
+	}
+
+	return secrets ? TRUE : FALSE;
+}
+
 static void
 get_secrets_dialog_response_cb (GtkDialog *dialog,
                                 gint response,
@@ -1218,10 +1260,10 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	DBusGMethodInvocation *context;
 	AppletExportedConnection *exported;
 	NMConnection *connection = NULL;
+	NMSettingWirelessSecurity *s_wireless_sec;
 	NMDevice *device = NULL;
-	GHashTable *setting_hash;
+	GHashTable *settings = NULL;
 	const char *setting_name;
-	NMSetting *setting;
 	GError *error = NULL;
 	gboolean ignored;
 
@@ -1266,28 +1308,60 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		goto done;
 	}
 
-	setting = nm_connection_get_setting_by_name (connection, setting_name);
-	if (!setting) {
+	/* Second-guess which setting NM wants secrets for. */
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+	if (!s_wireless_sec) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
-		             "%s.%d (%s): requested setting '%s' didn't exist in the "
-		             " connection.",
-		             __FILE__, __LINE__, __func__, setting_name);
+		             "%s.%d (%s): requested setting '802-11-wireless-security'"
+		             " didn't exist in the connection.",
+		             __FILE__, __LINE__, __func__);
+		goto done;  /* Unencrypted */
+	}
+
+	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
+	 * will contain all the individual settings hashes.
+	 */
+	settings = g_hash_table_new_full (g_str_hash, g_str_equal,
+	                                  g_free, (GDestroyNotify) g_hash_table_destroy);
+	if (!settings) {
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): not enough memory to return secrets.",
+		             __FILE__, __LINE__, __func__);
 		goto done;
 	}
 
-	utils_fill_connection_certs (connection);
-	setting_hash = nm_setting_to_hash (setting);
-	utils_clear_filled_connection_certs (connection);
+	/* If the user chose an 802.1x-based auth method, return 802.1x secrets,
+	 * not wireless secrets.  Can happen with Dynamic WEP, because NM doesn't
+	 * know the capabilities of the AP (since Dynamic WEP APs don't broadcast
+	 * beacons), and therefore defaults to requesting WEP secrets from the
+	 * wireless-security setting, not the 802.1x setting.
+	 */
+	if (   !strcmp (s_wireless_sec->key_mgmt, "ieee8021x")
+	    || !strcmp (s_wireless_sec->key_mgmt, "wpa-eap")) {
+		/* LEAP secrets aren't in the 802.1x setting */
+		if (!s_wireless_sec->auth_alg || strcmp (s_wireless_sec->auth_alg, "leap")) {
+			NMSetting8021x *s_8021x;
 
-	if (!setting_hash) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
-		             "%s.%d (%s): failed to hash setting '%s'.",
-		             __FILE__, __LINE__, __func__, setting_name);
-		goto done;
+			s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+			if (!s_8021x) {
+				g_set_error (&error, NM_SETTINGS_ERROR, 1,
+				             "%s.%d (%s): requested setting '802-1x' didn't"
+				             " exist in the connection.",
+				             __FILE__, __LINE__, __func__);
+				goto done;
+			}
+
+			/* Add the 802.1x setting */
+			if (!add_one_setting (settings, connection, NM_SETTING (s_8021x), &error))
+				goto done;
+		}
 	}
 
-	dbus_g_method_return (context, setting_hash);
-	g_hash_table_destroy (setting_hash);
+	/* Add the 802-11-wireless-security setting no matter what */
+	if (!add_one_setting (settings, connection, NM_SETTING (s_wireless_sec), &error))
+		goto done;
+
+	dbus_g_method_return (context, settings);
 
 	/* Save the connection back to GConf _after_ hashing it, because
 	 * saving to GConf might trigger the GConf change notifiers, resulting
@@ -1298,6 +1372,9 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		applet_exported_connection_save (exported);
 
 done:
+	if (settings)
+		g_hash_table_destroy (settings);
+
 	if (error) {
 		g_warning (error->message);
 		dbus_g_method_return_error (context, error);
@@ -1306,6 +1383,7 @@ done:
 
 	if (connection)
 		nm_connection_clear_secrets (connection);
+
 	gtk_widget_hide (GTK_WIDGET (dialog));
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }

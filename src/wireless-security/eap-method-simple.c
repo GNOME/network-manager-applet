@@ -22,7 +22,7 @@
 #include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
-#include <nm-setting-wireless.h>
+#include <nm-setting-8021x.h>
 
 #include "eap-method.h"
 #include "wireless-security.h"
@@ -87,28 +87,27 @@ static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	EAPMethodSimple *method = (EAPMethodSimple *) parent;
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-										  NM_TYPE_SETTING_WIRELESS_SECURITY));
-	g_assert (s_wireless_sec);
+	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	g_assert (s_8021x);
 
 	switch (method->type) {
 		case EAP_METHOD_SIMPLE_TYPE_PAP:
-			s_wireless_sec->phase2_auth = g_strdup ("pap");
+			s_8021x->phase2_auth = g_strdup ("pap");
 			break;
 		case EAP_METHOD_SIMPLE_TYPE_MSCHAP:
-			s_wireless_sec->phase2_auth = g_strdup ("mschap");
+			s_8021x->phase2_auth = g_strdup ("mschap");
 			break;
 		case EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2:
-			s_wireless_sec->phase2_auth = g_strdup ("mschapv2");
+			s_8021x->phase2_auth = g_strdup ("mschapv2");
 			break;
 		case EAP_METHOD_SIMPLE_TYPE_MD5:
-			s_wireless_sec->phase2_auth = g_strdup ("md5");
+			s_8021x->phase2_auth = g_strdup ("md5");
 			break;
 		case EAP_METHOD_SIMPLE_TYPE_CHAP:
-			s_wireless_sec->phase2_auth = g_strdup ("chap");
+			s_8021x->phase2_auth = g_strdup ("chap");
 			break;
 		default:
 			g_assert_not_reached ();
@@ -117,11 +116,11 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	widget = glade_xml_get_widget (parent->xml, "eap_simple_username_entry");
 	g_assert (widget);
-	s_wireless_sec->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	s_8021x->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
 
 	widget = glade_xml_get_widget (parent->xml, "eap_simple_password_entry");
 	g_assert (widget);
-	s_wireless_sec->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	s_8021x->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
 }
 
 EAPMethodSimple *
@@ -169,11 +168,11 @@ eap_method_simple_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 	if (connection) {
-		NMSettingWirelessSecurity *s_wireless_sec;
+		NMSetting8021x *s_8021x;
 
-		s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
-		if (s_wireless_sec && s_wireless_sec->identity)
-			gtk_entry_set_text (GTK_ENTRY (widget), s_wireless_sec->identity);
+		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+		if (s_8021x && s_8021x->identity)
+			gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->identity);
 	}
 
 	widget = glade_xml_get_widget (xml, "eap_simple_password_entry");

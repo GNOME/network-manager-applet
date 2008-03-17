@@ -1,3 +1,60 @@
+2008-03-17  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-dialogs.c
+		- (set_eap_info_label, info_dialog_update): handle spit-out 802.1x
+
+	* src/gconf-helpers/gconf-upgrade.c
+	  src/gconf-helpers/gconf-upgrade.h
+		- (nm_gconf_read_0_6_eap_settings): copy to 802.1x, not wireless-security
+		- (nm_gconf_read_0_6_leap_settings): fixup for new LEAP layout
+		- (nm_gconf_read_0_6_wireless_connection): handle split-out 802.1x
+		- (unset_ws_key, copy_stringlist_to_8021x, copy_string_to_8021x,
+		   copy_bool_to_8021x): new functions
+		- (try_convert_leap): convert a pre-split LEAP config
+		- (copy_keyring_to_8021x): convert pre-split keyring items
+		- (nm_gconf_migrate_0_7_wireless_security): split up wireless-security
+			into 802.1x and wireless-security
+
+	* src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/gconf-helpers.h
+		- (nm_gconf_get_all_connections): update GConf for split 802.1x
+		- (read_one_setting_value_from_gconf,
+		   read_applet_private_values_from_gconf,
+		   copy_one_setting_value_to_gconf,
+		   write_ignore_ca_cert_helper, write_one_private_string_value,
+		   write_one_password, write_applet_private_values_to_gconf): update for
+			split 802.1x
+		- (nm_gconf_add_keyring_item): export
+
+	* src/utils/utils.c
+		- (utils_fill_connection_certs, utils_clear_filled_connection_certs):
+			use 802.1x setting, not wireless-security
+
+	* src/applet-device-wireless.c
+		- (get_security_for_ap, wireless_new_auto_connection): handle split 802.1x
+		- (add_one_setting): new function; add one setting to returned hash for
+			GetSecrets response
+		- (get_secrets_dialog_response_cb): update for returning multiple
+			settings in GetSecrets response
+
+	* src/wireless-security/eap-method-leap.c
+	  src/wireless-security/eap-method-peap.c
+	  src/wireless-security/eap-method-ttls.c
+	  src/wireless-security/ws-leap.c
+	  src/wireless-security/eap-method-simple.c
+	  src/wireless-security/eap-method-tls.c
+		- Update for 802.1x split; these don't need to know _anything_ about
+			wireless-security
+
+	* src/wireless-security/wireless-security.c
+		- (ws_802_1x_auth_combo_init, ws_802_1x_fill_connection): 802.1x, not
+			wireless-security
+
+	* src/applet-dbus-settings.c
+		- (get_one_private_key, extract_secrets,
+		   applet_exported_connection_get_secrets): update for 802.1x and
+			new return signature of GetSecrets
+
 2008-03-12  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-device-wired.c

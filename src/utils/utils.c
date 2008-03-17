@@ -36,6 +36,7 @@
 #include <nm-setting-wired.h>
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
+#include <nm-setting-8021x.h>
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
 #include <nm-setting-pppoe.h>
@@ -228,59 +229,57 @@ utils_fill_one_crypto_object (NMConnection *connection,
 void
 utils_fill_connection_certs (NMConnection *connection)
 {
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x;
 
 	g_return_if_fail (connection != NULL);
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-															    NM_TYPE_SETTING_WIRELESS_SECURITY));
-	if (!s_wireless_sec)
+	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	if (!s_8021x)
 		return;
 
 	utils_fill_one_crypto_object (connection,
 	                              NMA_PATH_CA_CERT_TAG,
 	                              FALSE,
 	                              NULL,
-	                              &s_wireless_sec->ca_cert,
+	                              &s_8021x->ca_cert,
 	                              NULL);
 	utils_fill_one_crypto_object (connection,
 	                              NMA_PATH_CLIENT_CERT_TAG,
 	                              FALSE,
 	                              NULL,
-	                              &s_wireless_sec->client_cert,
+	                              &s_8021x->client_cert,
 	                              NULL);
 	utils_fill_one_crypto_object (connection,
 	                              NMA_PATH_PHASE2_CA_CERT_TAG,
 	                              FALSE,
 	                              NULL,
-	                              &s_wireless_sec->phase2_ca_cert,
+	                              &s_8021x->phase2_ca_cert,
 	                              NULL);
 	utils_fill_one_crypto_object (connection,
 	                              NMA_PATH_PHASE2_CLIENT_CERT_TAG,
 	                              FALSE,
 	                              NULL,
-	                              &s_wireless_sec->phase2_client_cert,
+	                              &s_8021x->phase2_client_cert,
 	                              NULL);
 }
 
 void
 utils_clear_filled_connection_certs (NMConnection *connection)
 {
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x;
 
 	g_return_if_fail (connection != NULL);
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-															    NM_TYPE_SETTING_WIRELESS_SECURITY));
-	if (!s_wireless_sec)
+	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	if (!s_8021x)
 		return;
 
-	clear_one_byte_array_field (&s_wireless_sec->ca_cert);
-	clear_one_byte_array_field (&s_wireless_sec->client_cert);
-	clear_one_byte_array_field (&s_wireless_sec->private_key);
-	clear_one_byte_array_field (&s_wireless_sec->phase2_ca_cert);
-	clear_one_byte_array_field (&s_wireless_sec->phase2_client_cert);
-	clear_one_byte_array_field (&s_wireless_sec->phase2_private_key);
+	clear_one_byte_array_field (&s_8021x->ca_cert);
+	clear_one_byte_array_field (&s_8021x->client_cert);
+	clear_one_byte_array_field (&s_8021x->private_key);
+	clear_one_byte_array_field (&s_8021x->phase2_ca_cert);
+	clear_one_byte_array_field (&s_8021x->phase2_client_cert);
+	clear_one_byte_array_field (&s_8021x->phase2_private_key);
 }
 
 

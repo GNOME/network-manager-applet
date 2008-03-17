@@ -29,13 +29,14 @@
 #include <dbus/dbus-glib.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless-security.h>
+#include <nm-setting-8021x.h>
 #include <nm-setting-vpn.h>
 #include <nm-utils.h>
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
 
-const char *wireless_security_ignore_keys[] = {
+const char *applet_8021x_ignore_keys[] = {
 	"ca-cert",
 	"client-cert",
 	"private-key",
@@ -564,6 +565,7 @@ nm_gconf_get_all_connections (GConfClient *client)
 
 	nm_gconf_migrate_0_7_connection_names (client);
 	nm_gconf_migrate_0_7_vpn_connections (client);
+	nm_gconf_migrate_0_7_wireless_security (client);
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!connections) {
@@ -600,8 +602,8 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	/* Some keys (like certs) aren't read directly from GConf but are handled
 	 * separately.
 	 */
-	if (NM_IS_SETTING_WIRELESS_SECURITY (setting)) {
-		if (nm_utils_string_in_list (key, wireless_security_ignore_keys))
+	if (NM_IS_SETTING_802_1X (setting)) {
+		if (nm_utils_string_in_list (key, applet_8021x_ignore_keys))
 			return;
 	} else if (NM_IS_SETTING_VPN (setting)) {
 		if (nm_utils_string_in_list (key, vpn_ignore_keys))
@@ -698,7 +700,7 @@ static void
 read_applet_private_values_from_gconf (NMSetting *setting,
                                        ReadFromGConfInfo *info)
 {
-	if (NM_IS_SETTING_WIRELESS_SECURITY (setting)) {
+	if (NM_IS_SETTING_802_1X (setting)) {
 		gboolean value;
 
 		if (nm_gconf_get_bool_helper (info->client, info->dir,
@@ -785,11 +787,11 @@ nm_gconf_read_connection (GConfClient *client,
 }
 
 
-static void
-add_keyring_item (const char *connection_id,
-                  const char *setting_name,
-                  const char *setting_key,
-                  const char *secret)
+void
+nm_gconf_add_keyring_item (const char *connection_id,
+                           const char *setting_name,
+                           const char *setting_key,
+                           const char *secret)
 {
 	GnomeKeyringResult ret;
 	char *display_name = NULL;
@@ -855,8 +857,8 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	/* Some keys (like certs) aren't written directly to GConf but are handled
 	 * separately.
 	 */
-	if (NM_IS_SETTING_WIRELESS_SECURITY (setting)) {
-		if (nm_utils_string_in_list (key, wireless_security_ignore_keys))
+	if (NM_IS_SETTING_802_1X (setting)) {
+		if (nm_utils_string_in_list (key, applet_8021x_ignore_keys))
 			return;
 	} else if (NM_IS_SETTING_VPN (setting)) {
 		if (nm_utils_string_in_list (key, vpn_ignore_keys))
@@ -868,7 +870,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		if (str_val) {
 			if (secret) {
 				if (strlen (str_val))
-					add_keyring_item (info->connection_id, setting->name, key, str_val);
+					nm_gconf_add_keyring_item (info->connection_id, setting->name, key, str_val);
 			} else
 				nm_gconf_set_string_helper (info->client, info->dir, key, setting->name, str_val);
 		}
@@ -923,12 +925,12 @@ write_ignore_ca_cert_helper (CopyOneSettingValueInfo *info,
 	if (cert) {
 		char *key;
 
-		key = g_strdup_printf ("%s/%s/%s", info->dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, tag);
+		key = g_strdup_printf ("%s/%s/%s", info->dir, NM_SETTING_802_1X_SETTING_NAME, tag);
 		gconf_client_unset (info->client, key, NULL);
 		g_free (key);
 	} else {
 		if (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (info->connection), tag)))
-			nm_gconf_set_bool_helper (info->client, info->dir, tag, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, TRUE);
+			nm_gconf_set_bool_helper (info->client, info->dir, tag, NM_SETTING_802_1X_SETTING_NAME, TRUE);
 	}
 }
 
@@ -943,12 +945,12 @@ write_one_private_string_value (CopyOneSettingValueInfo *info, const char *tag)
 	value = g_object_get_data (G_OBJECT (info->connection), tag);
 	if (value) {
 		nm_gconf_set_string_helper (info->client, info->dir, tag,
-		                            NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                            NM_SETTING_802_1X_SETTING_NAME,
 		                            value);
 	} else {
 		char *key;
 
-		key = g_strdup_printf ("%s/%s/%s", info->dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, tag);
+		key = g_strdup_printf ("%s/%s/%s", info->dir, NM_SETTING_802_1X_SETTING_NAME, tag);
 		gconf_client_unset (info->client, key, NULL);
 		g_free (key);
 	}
@@ -964,10 +966,10 @@ write_one_password (CopyOneSettingValueInfo *info, const char *tag)
 
 	value = g_object_get_data (G_OBJECT (info->connection), tag);
 	if (value) {
-		add_keyring_item (info->connection_id,
-		                  NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-		                  tag,
-		                  value);
+		nm_gconf_add_keyring_item (info->connection_id,
+		                           NM_SETTING_802_1X_SETTING_NAME,
+		                           tag,
+		                           value);
 
 		/* Try not to leave the password lying around in memory */
 		g_object_set_data (G_OBJECT (info->connection), tag, NULL);
@@ -977,17 +979,17 @@ write_one_password (CopyOneSettingValueInfo *info, const char *tag)
 static void
 write_applet_private_values_to_gconf (CopyOneSettingValueInfo *info)
 {
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x;
 
 	g_return_if_fail (info != NULL);
 
 	/* Handle values private to the applet that are not supposed to
 	 * be sent to NetworkManager.
 	 */
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
-	if (s_wireless_sec) {
-		write_ignore_ca_cert_helper (info, NMA_CA_CERT_IGNORE_TAG, s_wireless_sec->ca_cert);
-		write_ignore_ca_cert_helper (info, NMA_PHASE2_CA_CERT_IGNORE_TAG, s_wireless_sec->phase2_ca_cert);
+	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_802_1X));
+	if (s_8021x) {
+		write_ignore_ca_cert_helper (info, NMA_CA_CERT_IGNORE_TAG, s_8021x->ca_cert);
+		write_ignore_ca_cert_helper (info, NMA_PHASE2_CA_CERT_IGNORE_TAG, s_8021x->phase2_ca_cert);
 
 		/* Binary certificate and key data doesn't get stored in GConf.  Instead,
 		 * the path to the certificate gets stored in a special key and the

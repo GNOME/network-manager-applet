@@ -101,13 +101,12 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	s_wireless_sec->key_mgmt = g_strdup ("ieee8021x");
 	s_wireless_sec->auth_alg = g_strdup ("leap");
-	s_wireless_sec->eap = g_slist_append (s_wireless_sec->eap, g_strdup ("leap"));
 
 	widget = glade_xml_get_widget (parent->xml, "leap_username_entry");
-	s_wireless_sec->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	s_wireless_sec->leap_username = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
 
 	widget = glade_xml_get_widget (parent->xml, "leap_password_entry");
-	s_wireless_sec->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	s_wireless_sec->leap_password = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
 }
 
 WirelessSecurityLEAP *

@@ -31,6 +31,7 @@
 
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
+#include <nm-setting-8021x.h>
 
 #include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
@@ -64,31 +65,39 @@ ip4_address_as_string (guint32 ip)
 }
 
 static void
-set_eap_info_label (GtkWidget *label, NMSettingWirelessSecurity *sec)
+set_eap_info_label (GtkWidget *label,
+                    NMSettingWirelessSecurity *sec,
+                    NMSetting8021x *s_8021x)
 {
 	GString *str = NULL;
 	char *phase2_str = NULL;
 
-	if (!strcmp (sec->key_mgmt, "ieee8021x"))
-		str = g_string_new (_("Dynamic WEP"));
-	else if (!strcmp (sec->key_mgmt, "wpa-eap"))
+	if (!strcmp (sec->key_mgmt, "ieee8021x")) {
+		if (sec->auth_alg && !strcmp (sec->auth_alg, "leap"))
+			str = g_string_new (_("LEAP"));
+		else
+			str = g_string_new (_("Dynamic WEP"));
+	} else if (!strcmp (sec->key_mgmt, "wpa-eap"))
 		str = g_string_new (_("WPA/WPA2"));
 	else {
 		str = g_string_new (_("Unknown"));
 		goto out;
 	}
 
-	if (sec->eap && sec->eap->data) {
-		char *eap_str = g_ascii_strup (sec->eap->data, -1);
+	if (!s_8021x)
+		goto out;
+
+	if (s_8021x->eap && s_8021x->eap->data) {
+		char *eap_str = g_ascii_strup (s_8021x->eap->data, -1);
 		g_string_append (str, ", EAP-");
 		g_string_append (str, eap_str);
 		g_free (eap_str);
 	}
 
-	if (sec->phase2_auth)
-		phase2_str = g_ascii_strup (sec->phase2_auth, -1);
-	else if (sec->phase2_autheap)
-		phase2_str = g_ascii_strup (sec->phase2_autheap, -1);
+	if (s_8021x->phase2_auth)
+		phase2_str = g_ascii_strup (s_8021x->phase2_auth, -1);
+	else if (s_8021x->phase2_autheap)
+		phase2_str = g_ascii_strup (s_8021x->phase2_autheap, -1);
 
 	if (phase2_str) {
 		g_string_append (str, ", ");
@@ -170,9 +179,11 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 	if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
 		NMSettingWireless *s_wireless;
 		NMSettingWirelessSecurity *s_wireless_sec;
+		NMSetting8021x *s_8021x;
 
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 		s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 		if (   s_wireless
 		    && s_wireless->security
 		    && !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)
@@ -185,7 +196,7 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 			} else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-psk")) {
 				gtk_label_set_text (GTK_LABEL (label), _("WPA/WPA2"));
 			} else {
-				set_eap_info_label (label, s_wireless_sec);
+				set_eap_info_label (label, s_wireless_sec, s_8021x);
 			}
 		} else {
 			gtk_label_set_text (GTK_LABEL (label), _("None"));

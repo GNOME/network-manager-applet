@@ -28,8 +28,11 @@
 #include <iwlib.h>
 #include <wireless.h>
 
+#include <gnome-keyring.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
+#include <nm-setting-wireless-security.h>
+#include <nm-setting-8021x.h>
 #include <nm-setting-vpn.h>
 #include <nm-setting-vpn-properties.h>
 #include "gconf-upgrade.h"
@@ -252,7 +255,9 @@ static const struct flagnames eap_phase2_types[] = {
 
 static NMSettingWirelessSecurity *
 nm_gconf_read_0_6_eap_settings (GConfClient *client,
-						  const char *path, const char *network)
+                                const char *path,
+                                const char *network,
+                                NMSetting8021x **s_8021x)
 {
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GSList *eap = NULL, *key_type = NULL, *proto = NULL;
@@ -271,16 +276,17 @@ nm_gconf_read_0_6_eap_settings (GConfClient *client,
 		goto fail;
 	nm_gconf_get_string_helper (client, path, "wpa_eap_anon_identity", network, &anon_identity);
 
-	s_wireless_sec = (NMSettingWirelessSecurity *)nm_setting_wireless_security_new ();
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	/* AFAICT, 0.6 reads this value from gconf, and then ignores it and always uses IW_AUTH_KEY_MGMT_802_1X */
 	s_wireless_sec->key_mgmt = g_strdup ("ieee8021x"); /* FIXME? wpa-eap? */
 	s_wireless_sec->proto = proto;
-	s_wireless_sec->eap = eap;
 	s_wireless_sec->group = key_type; /* FIXME? */
-	s_wireless_sec->phase2_auth = phase2_type; /* FIXME? phase2_autheap? */
-	s_wireless_sec->identity = identity;
-	s_wireless_sec->password = g_strdup ("");
-	s_wireless_sec->anonymous_identity = anon_identity;
+
+	*s_8021x = (NMSetting8021x *) nm_setting_802_1x_new ();
+	(*s_8021x)->eap = eap;
+	(*s_8021x)->phase2_auth = phase2_type; /* FIXME? phase2_autheap? */
+	(*s_8021x)->identity = identity;
+	(*s_8021x)->anonymous_identity = anon_identity;
 
 	return s_wireless_sec;
 
@@ -309,9 +315,9 @@ nm_gconf_read_0_6_leap_settings (GConfClient *client,
 		return NULL;
 	}
 
-	s_wireless_sec = (NMSettingWirelessSecurity *)nm_setting_wireless_security_new ();
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	s_wireless_sec->key_mgmt = key_mgmt;
-	s_wireless_sec->identity = username;
+	s_wireless_sec->leap_username = username;
 
 	return s_wireless_sec;
 }
@@ -324,6 +330,7 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	NMSettingConnection *s_con;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSetting8021x *s_8021x = NULL;
 	char *path, *network, *essid = NULL;
 	int timestamp, we_cipher;
 	GSList *bssids = NULL;
@@ -372,7 +379,7 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 			s_wireless_sec = nm_gconf_read_0_6_wpa_settings (client, path, network);
 			break;
 		case NM_AUTH_TYPE_WPA_EAP:
-			s_wireless_sec = nm_gconf_read_0_6_eap_settings (client, path, network);
+			s_wireless_sec = nm_gconf_read_0_6_eap_settings (client, path, network, &s_8021x);
 			break;
 		case NM_AUTH_TYPE_LEAP:
 			s_wireless_sec = nm_gconf_read_0_6_leap_settings (client, path, network);
@@ -398,6 +405,8 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	nm_connection_add_setting (connection, (NMSetting *)s_wireless);
 	if (s_wireless_sec)
 		nm_connection_add_setting (connection, (NMSetting *)s_wireless_sec);
+	if (s_8021x)
+		nm_connection_add_setting (connection, (NMSetting *)s_8021x);
 
 	/* Would be better in nm_gconf_read_0_6_eap_settings, except that
 	 * the connection object doesn't exist at that point. Hrmph.
@@ -652,6 +661,248 @@ nm_gconf_migrate_0_7_connection_names (GConfClient *client)
 				g_free (old_key);
 			}
 		}
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+
+static void
+unset_ws_key (GConfClient *client, const char *dir, const char *key)
+{
+	char *old_key;
+
+	old_key = g_strdup_printf ("%s/" NM_SETTING_WIRELESS_SECURITY_SETTING_NAME "/%s", dir, key);
+	gconf_client_unset (client, old_key, NULL);
+	g_free (old_key);
+}
+
+static void
+copy_stringlist_to_8021x (GConfClient *client, const char *dir, const char *key)
+{
+	GSList *sa_val = NULL;
+
+	if (!nm_gconf_get_stringlist_helper (client, dir, key, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &sa_val))
+		return;
+
+	if (!nm_gconf_set_stringlist_helper (client, dir, key, NM_SETTING_802_1X_SETTING_NAME, sa_val))
+		g_warning ("Could not convert string list value '%s' from wireless-security to 8021x setting", key);
+
+	g_slist_foreach (sa_val, (GFunc) g_free, NULL);
+	g_slist_free (sa_val);
+
+	unset_ws_key (client, dir, key);
+}
+
+static void
+copy_string_to_8021x (GConfClient *client, const char *dir, const char *key)
+{
+	char *val = NULL;
+
+	if (!nm_gconf_get_string_helper (client, dir, key, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &val))
+		return;
+
+	if (!nm_gconf_set_string_helper (client, dir, key, NM_SETTING_802_1X_SETTING_NAME, val))
+		g_warning ("Could not convert string value '%s' from wireless-security to 8021x setting", key);
+
+	g_free (val);
+
+	unset_ws_key (client, dir, key);
+}
+
+static void
+copy_bool_to_8021x (GConfClient *client, const char *dir, const char *key)
+{
+	gboolean val;
+
+	if (!nm_gconf_get_bool_helper (client, dir, key, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &val))
+		return;
+
+	if (val && !nm_gconf_set_bool_helper (client, dir, key, NM_SETTING_802_1X_SETTING_NAME, val))
+		g_warning ("Could not convert string value '%s' from wireless-security to 8021x setting", key);
+
+	unset_ws_key (client, dir, key);
+}
+
+static gboolean
+try_convert_leap (GConfClient *client, const char *dir)
+{
+	char *val = NULL;
+	GnomeKeyringResult ret;
+	GList *found_list = NULL;
+	GnomeKeyringFound *found;
+
+	if (!nm_gconf_get_string_helper (client, dir,
+	                                 NM_SETTING_WIRELESS_SECURITY_KEY_MGMT,
+	                                 NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                                 &val))
+		return FALSE;
+
+	if (strcmp (val, "ieee8021x")) {
+		g_free (val);
+		return FALSE;
+	}
+	g_free (val);
+	val = NULL;
+
+	if (!nm_gconf_get_string_helper (client, dir,
+	                                 NM_SETTING_WIRELESS_SECURITY_AUTH_ALG,
+	                                 NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                                 &val))
+		return FALSE;
+
+	if (strcmp (val, "leap")) {
+		g_free (val);
+		return FALSE;
+	}
+	g_free (val);
+	val = NULL;
+
+	/* Copy leap username */
+	if (!nm_gconf_get_string_helper (client, dir,
+	                                 "identity",
+	                                 NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                                 &val))
+		return FALSE;
+
+	if (!nm_gconf_set_string_helper (client, dir,
+	                                 NM_SETTING_WIRELESS_SECURITY_LEAP_USERNAME,
+	                                 NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                                 val))
+		g_warning ("Could not convert leap-username.");
+
+	g_free (val);
+	val = NULL;
+
+	unset_ws_key (client, dir, NM_SETTING_802_1X_IDENTITY);
+
+	if (!nm_gconf_get_string_helper (client, dir,
+	                                 "id",
+	                                 NM_SETTING_CONNECTION_SETTING_NAME,
+	                                 &val))
+		goto done;
+
+	/* Copy the LEAP password */
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      "connection-name",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      val,
+	                                      "setting-name",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                                      "setting-key",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      "password",
+	                                      NULL);
+	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0))
+		goto done;
+
+	found = (GnomeKeyringFound *) found_list->data;
+	nm_gconf_add_keyring_item (val,
+	                           NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                           NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD,
+	                           found->secret);
+	gnome_keyring_item_delete_sync (found->keyring, found->item_id);
+
+done:
+	g_free (val);
+	gnome_keyring_found_list_free (found_list);
+	return TRUE;
+}
+
+static void
+copy_keyring_to_8021x (GConfClient *client, const char *dir, const char *key)
+{
+	char *id = NULL;
+	GnomeKeyringResult ret;
+	GList *found_list = NULL;
+	GnomeKeyringFound *found;
+
+	if (!nm_gconf_get_string_helper (client, dir,
+	                                 "id",
+	                                 NM_SETTING_CONNECTION_SETTING_NAME,
+	                                 &id))
+		return;
+
+	/* Copy the LEAP password */
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      "connection-name",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      id,
+	                                      "setting-name",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                                      "setting-key",
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      key,
+	                                      NULL);
+	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0))
+		goto done;
+
+	found = (GnomeKeyringFound *) found_list->data;
+	nm_gconf_add_keyring_item (id, NM_SETTING_802_1X_SETTING_NAME, key, found->secret);
+
+	gnome_keyring_item_delete_sync (found->keyring, found->item_id);
+
+done:
+	g_free (id);
+	gnome_keyring_found_list_free (found_list);
+}
+
+void
+nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *key_mgmt = NULL;
+
+		if (!nm_gconf_get_string_helper (client, iter->data,
+		                                 NM_SETTING_WIRELESS_SECURITY_KEY_MGMT,
+		                                 NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                                 &key_mgmt))
+			continue;
+
+		/* Only convert 802.1x-based connections */
+		if (strcmp (key_mgmt, "ieee8021x") && strcmp (key_mgmt, "wpa-eap")) {
+			g_free (key_mgmt);
+			continue;
+		}
+		g_free (key_mgmt);
+
+		/* Leap gets converted differently */
+		if (try_convert_leap (client, iter->data))
+			continue;
+
+		/* Otherwise straight 802.1x */
+		copy_stringlist_to_8021x (client, iter->data, NM_SETTING_802_1X_EAP);
+		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_IDENTITY);
+		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_ANONYMOUS_IDENTITY);
+		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_CA_PATH);
+		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_PHASE1_PEAPVER);
+		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_PHASE1_PEAPLABEL);
+		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_PHASE1_FAST_PROVISIONING);
+		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_PHASE2_AUTH);
+		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_PHASE2_AUTHEAP);
+		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_PHASE2_CA_PATH);
+		copy_string_to_8021x (client, iter->data, NMA_PATH_CA_CERT_TAG);
+		copy_string_to_8021x (client, iter->data, NMA_PATH_CLIENT_CERT_TAG);
+		copy_string_to_8021x (client, iter->data, NMA_PATH_PRIVATE_KEY_TAG);
+		copy_string_to_8021x (client, iter->data, NMA_PATH_PHASE2_CA_CERT_TAG);
+		copy_string_to_8021x (client, iter->data, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
+		copy_string_to_8021x (client, iter->data, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
+
+		copy_bool_to_8021x (client, iter->data, NMA_CA_CERT_IGNORE_TAG);
+		copy_bool_to_8021x (client, iter->data, NMA_PHASE2_CA_CERT_IGNORE_TAG);
+
+		copy_keyring_to_8021x (client, iter->data, NM_SETTING_802_1X_PASSWORD);
+		copy_keyring_to_8021x (client, iter->data, NM_SETTING_802_1X_PIN);
+		copy_keyring_to_8021x (client, iter->data, NM_SETTING_802_1X_PSK);
+		copy_keyring_to_8021x (client, iter->data, NMA_PRIVATE_KEY_PASSWORD_TAG);
+		copy_keyring_to_8021x (client, iter->data, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
 	}
 	free_slist (connections);
 
