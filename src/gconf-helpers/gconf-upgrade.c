@@ -732,6 +732,15 @@ try_convert_leap (GConfClient *client, const char *dir)
 	GList *found_list = NULL;
 	GnomeKeyringFound *found;
 
+	if (nm_gconf_get_string_helper (client, dir,
+	                                NM_SETTING_WIRELESS_SECURITY_LEAP_USERNAME,
+	                                NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                                &val)) {
+		/* Alredy converted */
+		g_free (val);
+		return TRUE;
+	}
+
 	if (!nm_gconf_get_string_helper (client, dir,
 	                                 NM_SETTING_WIRELESS_SECURITY_KEY_MGMT,
 	                                 NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
@@ -859,6 +868,7 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	for (iter = connections; iter; iter = iter->next) {
 		char *key_mgmt = NULL;
+		GSList *eap = NULL;
 
 		if (!nm_gconf_get_string_helper (client, iter->data,
 		                                 NM_SETTING_WIRELESS_SECURITY_KEY_MGMT,
@@ -878,6 +888,16 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 			continue;
 
 		/* Otherwise straight 802.1x */
+		if (nm_gconf_get_stringlist_helper (client, iter->data,
+		                                NM_SETTING_802_1X_EAP,
+		                                NM_SETTING_802_1X_SETTING_NAME,
+		                                &eap)) {
+			/* Already converted */
+			g_slist_foreach (eap, (GFunc) g_free, NULL);
+			g_slist_free (eap);
+			continue;
+		}
+
 		copy_stringlist_to_8021x (client, iter->data, NM_SETTING_802_1X_EAP);
 		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_IDENTITY);
 		copy_string_to_8021x (client, iter->data, NM_SETTING_802_1X_ANONYMOUS_IDENTITY);
