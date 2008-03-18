@@ -25,8 +25,8 @@
 #endif
 
 #include <string.h>
-#include <iwlib.h>
-#include <wireless.h>
+#include "wireless-helper.h"
+#include <stdlib.h>
 
 #include <gnome-keyring.h>
 #include <nm-setting-connection.h>
@@ -545,7 +545,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	else if (!strcmp (service_name, "org.freedesktop.NetworkManager.openvpn"))
 		s_vpn_props = nm_gconf_0_6_openvpn_settings (vpn_data);
 	else {
-		printf ("unmatched service name %s\n", service_name);
+		g_warning ("unmatched service name %s\n", service_name);
 		s_vpn_props = NULL;
 	}
 

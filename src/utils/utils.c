@@ -24,7 +24,7 @@
 #include <string.h>
 #include <netinet/ether.h>
 #include <glib.h>
-#include <iwlib.h>
+#include "wireless-helper.h"
 
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>

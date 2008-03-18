@@ -35,9 +35,8 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <iwlib.h>
-#include <wireless.h>
-
+#include "wireless-helper.h"
+#include <unistd.h>
 #include <sys/socket.h>
 
 #include <NetworkManagerVPN.h>

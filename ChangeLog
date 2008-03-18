@@ -1,3 +1,18 @@
+2008-03-18  Dan Williams  <dcbw@redhat.com>
+
+	* configure.ac
+		- Convert check for iwlib into just check for wireless.h
+
+	* src/wireless-helper.h
+		- Stuff that's needed to include wireless.h
+
+	* src/ap-menu-item.c
+	  src/applet-device-wireless.c
+	  src/applet.c
+	  src/gconf-helpers/gconf-upgrade.c
+	  src/utils/utils.c
+		- Add missing includes, don't include iwlib.h
+
 2008-03-17  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-dialogs.c

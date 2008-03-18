@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <glib/gi18n.h>
 #include <string.h>
-#include <iwlib.h>
+#include "wireless-helper.h"
 
 #include <nm-utils.h>
 #include "ap-menu-item.h"

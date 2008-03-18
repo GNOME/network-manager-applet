@@ -109,8 +109,15 @@ else
 fi
 AC_SUBST(DBUS_CFLAGS)
 
-AC_MSG_CHECKING([for wireless-tools >= 28pre9])
-AC_TRY_COMPILE([#include <iwlib.h>],
+AC_MSG_CHECKING([Linux Wireless Extensions >= 18])
+AC_TRY_COMPILE([#ifndef __user
+                #define __user
+                #endif
+                #include <sys/types.h>
+                #include <linux/types.h>
+                #include <sys/socket.h>
+                #include <net/if.h>
+                #include <wireless.h>],
                [#ifndef IWEVGENIE
                 #error "not found"
                 #endif],
@@ -120,8 +127,6 @@ AC_MSG_RESULT($ac_have_iwevgenie)
 if test "$ac_have_iwevgenie" = no; then
 	AC_MSG_ERROR(wireless-tools >= 28pre9 not installed or not functional)
 fi
-IWLIB=-liw
-AC_SUBST(IWLIB)
 
 AC_ARG_WITH(nss, AC_HELP_STRING([--with-nss], [Use NSS library for certificate and key operations]), ac_nss=$withval, ac_nss=auto)
 if test x"$ac_nss" != xno; then
