@@ -265,7 +265,11 @@ nma_vpn_request_password (NMConnection *connection,
 
 	if (child_status == 0) {
 		GSList *iter;
+		GHashTable *settings;
 		GHashTable *secrets;
+
+		settings = g_hash_table_new_full (g_str_hash, g_str_equal, g_free,
+		                                  (GDestroyNotify) g_hash_table_destroy);
 
 		/* Send the secret back to NM */
 		secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
@@ -283,8 +287,10 @@ nma_vpn_request_password (NMConnection *connection,
 			g_hash_table_insert (secrets, g_strdup (iter->data), val);
 			iter = iter->next;
 		}
-		dbus_g_method_return (context, secrets);
-		g_hash_table_destroy (secrets);
+		g_hash_table_insert (settings, g_strdup (setting_name), secrets);
+
+		dbus_g_method_return (context, settings);
+		g_hash_table_destroy (settings);
 		success = TRUE;
 	} else {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
