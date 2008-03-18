@@ -36,6 +36,8 @@ nm_applet_SOURCES =			\
 	vpn-connection-info.h		\
 	vpn-password-dialog.c	\
 	vpn-password-dialog.h	\
+	wired-dialog.h \
+	wired-dialog.c \
 	wireless-dialog.h \
 	wireless-dialog.c \
 	applet-dialogs.h \

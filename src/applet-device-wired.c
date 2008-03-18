@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
+
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -31,11 +33,13 @@
 #include <nm-device.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-wired.h>
+#include <nm-setting-8021x.h>
 #include <nm-device-802-3-ethernet.h>
 
 #include "applet.h"
 #include "applet-dbus-settings.h"
 #include "applet-device-wired.h"
+#include "wired-dialog.h"
 #include "utils.h"
 
 typedef struct {
@@ -270,6 +274,137 @@ wired_get_icon (NMDevice *device,
 	return pixbuf;
 }
 
+
+
+static void
+get_secrets_dialog_response_cb (GtkDialog *dialog,
+                                gint response,
+                                gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+	DBusGMethodInvocation *context;
+	AppletExportedConnection *exported;
+	NMConnection *connection = NULL;
+	NMSetting *setting;
+	GHashTable *settings_hash;
+	GHashTable *secrets;
+	GError *err = NULL;
+
+	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
+	if (!context) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): couldn't get dialog data",
+		             __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	if (response != GTK_RESPONSE_OK) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): canceled",
+		             __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	connection = nma_wired_dialog_get_connection (GTK_WIDGET (dialog));
+	if (!connection) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): couldn't get connection from wired dialog.",
+		             __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+	if (!setting) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+					 "%s.%d (%s): requested setting '802-1x' didn't"
+					 " exist in the connection.",
+					 __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	secrets = nm_setting_to_hash (setting);
+	if (!secrets) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+					 "%s.%d (%s): failed to hash setting '%s'.",
+					 __FILE__, __LINE__, __func__, setting->name);
+		goto done;
+	}
+
+	utils_fill_connection_certs (connection);
+	utils_clear_filled_connection_certs (connection);
+
+	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
+	 * will contain all the individual settings hashes.
+	 */
+	settings_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+										   g_free, (GDestroyNotify) g_hash_table_destroy);
+
+	g_hash_table_insert (settings_hash, g_strdup (setting->name), secrets);
+	dbus_g_method_return (context, settings_hash);
+	g_hash_table_destroy (settings_hash);
+
+	/* Save the connection back to GConf _after_ hashing it, because
+	 * saving to GConf might trigger the GConf change notifiers, resulting
+	 * in the connection being read back in from GConf which clears secrets.
+	 */
+	exported = applet_dbus_settings_user_get_by_connection (applet->settings, connection);
+	if (exported)
+		applet_exported_connection_save (exported);
+
+done:
+	if (err) {
+		g_warning (err->message);
+
+		if (context)
+			dbus_g_method_return_error (context, err);
+
+		g_error_free (err);
+	}
+
+	if (connection)
+		nm_connection_clear_secrets (connection);
+	gtk_widget_hide (GTK_WIDGET (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+static gboolean
+wired_get_secrets (NMDevice *device,
+				   NMConnection *connection,
+				   const char *specific_object,
+				   const char *setting_name,
+				   DBusGMethodInvocation *context,
+				   NMApplet *applet,
+				   GError **error)
+{
+	GtkWidget *dialog;
+
+	dialog = nma_wired_dialog_new (applet->glade_file,
+								   applet->nm_client,
+								   g_object_ref (connection),
+								   device);
+	if (!dialog) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): couldn't display secrets UI",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
+
+	g_object_set_data (G_OBJECT (dialog), "dbus-context", context);
+	g_object_set_data_full (G_OBJECT (dialog),
+	                        "setting-name", g_strdup (setting_name),
+	                        (GDestroyNotify) g_free);
+
+	g_signal_connect (dialog, "response",
+	                  G_CALLBACK (get_secrets_dialog_response_cb),
+	                  applet);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+
+	return TRUE;
+}
+
 NMADeviceClass *
 applet_device_wired_get_class (NMApplet *applet)
 {
@@ -283,7 +418,7 @@ applet_device_wired_get_class (NMApplet *applet)
 	dclass->add_menu_item = wired_add_menu_item;
 	dclass->device_state_changed = wired_device_state_changed;
 	dclass->get_icon = wired_get_icon;
+	dclass->get_secrets = wired_get_secrets;
 
 	return dclass;
 }
-
