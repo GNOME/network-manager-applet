@@ -34,6 +34,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-wired.h>
 #include <nm-setting-8021x.h>
+#include <nm-setting-pppoe.h>
 #include <nm-device-802-3-ethernet.h>
 
 #include "applet.h"
@@ -274,12 +275,222 @@ wired_get_icon (NMDevice *device,
 	return pixbuf;
 }
 
+/* PPPoE */
 
+typedef struct {
+	GladeXML *xml;
+	GtkEntry *username_entry;
+	GtkEntry *service_entry;
+	GtkEntry *password_entry;
+	GtkWidget *ok_button;
+
+	NMApplet *applet;
+	NMConnection *connection;
+	DBusGMethodInvocation *context;
+} NMPppoeInfo;
 
 static void
-get_secrets_dialog_response_cb (GtkDialog *dialog,
-                                gint response,
-                                gpointer user_data)
+pppoe_verify (GtkEditable *editable, gpointer user_data)
+{
+	NMPppoeInfo *info = (NMPppoeInfo *) user_data;
+	const char *s;
+	gboolean valid = TRUE;
+
+	s = gtk_entry_get_text (info->username_entry);
+	if (!s || strlen (s) < 1)
+		valid = FALSE;
+
+	if (valid) {
+		s = gtk_entry_get_text (info->password_entry);
+		if (!s || strlen (s) < 1)
+			valid = FALSE;
+	}
+
+	gtk_widget_set_sensitive (info->ok_button, valid);
+}
+
+static void
+pppoe_update_setting (NMSettingPPPOE *pppoe, NMPppoeInfo *info)
+{
+	const char *s;
+
+	g_free (pppoe->username);
+	pppoe->username = g_strdup (gtk_entry_get_text (info->username_entry));
+
+	g_free (pppoe->service);
+	s = gtk_entry_get_text (info->service_entry);
+	if (s && strlen (s) > 0)
+		pppoe->service = g_strdup (s);
+
+	g_free (pppoe->password);
+	pppoe->password = g_strdup (gtk_entry_get_text (info->password_entry));
+}
+
+static void
+pppoe_update_ui (NMSettingPPPOE *pppoe, NMPppoeInfo *info)
+{
+	g_return_if_fail (NM_IS_SETTING_PPPOE (pppoe));
+	g_return_if_fail (info != NULL);
+
+	if (pppoe->username)
+		gtk_entry_set_text (info->username_entry, pppoe->username);
+
+	if (pppoe->service)
+		gtk_entry_set_text (info->service_entry, pppoe->service);
+
+	if (pppoe->password)
+		gtk_entry_set_text (info->password_entry, pppoe->password);
+}
+
+static NMPppoeInfo *
+pppoe_info_new (GladeXML *xml)
+{
+	NMPppoeInfo *info;
+
+	info = g_new0 (NMPppoeInfo, 1);
+	info->xml = xml;
+	
+	info->username_entry = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_username"));
+	g_signal_connect (info->username_entry, "changed", G_CALLBACK (pppoe_verify), info);
+
+	info->service_entry = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_service"));
+
+	info->password_entry = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_password"));
+	g_signal_connect (info->password_entry, "changed", G_CALLBACK (pppoe_verify), info);
+
+	return info;
+}
+
+static void
+pppoe_info_destroy (gpointer data, GObject *destroyed_object)
+{
+	NMPppoeInfo *info = (NMPppoeInfo *) data;
+
+	g_object_unref (info->connection);
+	g_object_unref (info->xml);
+	
+	g_free (info);
+}
+
+static void
+get_pppoe_secrets_cb (GtkDialog *dialog,
+					  gint response,
+					  gpointer user_data)
+{
+	NMPppoeInfo *info = (NMPppoeInfo *) user_data;
+	AppletExportedConnection *exported;
+	NMSetting *setting;
+	GHashTable *settings_hash;
+	GHashTable *secrets;
+	GError *err = NULL;
+
+	if (response != GTK_RESPONSE_OK) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): canceled",
+		             __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	setting = nm_connection_get_setting (info->connection, NM_TYPE_SETTING_PPPOE);
+	pppoe_update_setting (NM_SETTING_PPPOE (setting), info);
+
+	secrets = nm_setting_to_hash (setting);
+	if (!secrets) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+					 "%s.%d (%s): failed to hash setting '%s'.",
+					 __FILE__, __LINE__, __func__, setting->name);
+		goto done;
+	}
+
+	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
+	 * will contain all the individual settings hashes.
+	 */
+	settings_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+										   g_free, (GDestroyNotify) g_hash_table_destroy);
+
+	g_hash_table_insert (settings_hash, g_strdup (setting->name), secrets);
+	dbus_g_method_return (info->context, settings_hash);
+	g_hash_table_destroy (settings_hash);
+
+	/* Save the connection back to GConf _after_ hashing it, because
+	 * saving to GConf might trigger the GConf change notifiers, resulting
+	 * in the connection being read back in from GConf which clears secrets.
+	 */
+	exported = applet_dbus_settings_user_get_by_connection (info->applet->settings, info->connection);
+	if (exported)
+		applet_exported_connection_save (exported);
+
+done:
+	if (err) {
+		g_warning (err->message);
+		dbus_g_method_return_error (info->context, err);
+		g_error_free (err);
+	}
+
+	nm_connection_clear_secrets (info->connection);
+	gtk_widget_hide (GTK_WIDGET (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+static gboolean
+pppoe_get_secrets (NMDevice *device,
+				   NMConnection *connection,
+				   const char *specific_object,
+				   const char *setting_name,
+				   DBusGMethodInvocation *context,
+				   NMApplet *applet,
+				   GError **error)
+{
+	GladeXML *xml;
+	GtkWidget *dialog;
+	NMPppoeInfo *info;
+	GtkWidget *w;
+
+	xml = glade_xml_new (GLADEDIR "/ce-page-dsl.glade", "DslPage", NULL);
+	if (!xml) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+					 "%s.%d (%s): couldn't display secrets UI",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
+
+	info = pppoe_info_new (xml);
+	info->applet = applet;
+	info->context = context;
+	info->connection = g_object_ref (connection);
+
+	/* Create the dialog */
+	dialog = gtk_dialog_new ();
+	gtk_window_set_title (GTK_WINDOW (dialog), _("DSL authentication"));
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	w = gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
+	w = gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
+	info->ok_button = w;
+
+	gtk_box_pack_start_defaults (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+								 glade_xml_get_widget (xml, "DslPage"));
+
+	pppoe_update_ui (NM_SETTING_PPPOE (nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE)), info);
+	g_object_weak_ref (G_OBJECT (dialog), pppoe_info_destroy, info);
+
+	g_signal_connect (dialog, "response",
+	                  G_CALLBACK (get_pppoe_secrets_cb),
+	                  info);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+
+	return TRUE;
+}
+
+/* 802.1x */
+
+static void
+get_8021x_secrets_cb (GtkDialog *dialog,
+					  gint response,
+					  gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	DBusGMethodInvocation *context;
@@ -368,13 +579,13 @@ done:
 }
 
 static gboolean
-wired_get_secrets (NMDevice *device,
-				   NMConnection *connection,
-				   const char *specific_object,
-				   const char *setting_name,
-				   DBusGMethodInvocation *context,
-				   NMApplet *applet,
-				   GError **error)
+nm_8021x_get_secrets (NMDevice *device,
+					  NMConnection *connection,
+					  const char *specific_object,
+					  const char *setting_name,
+					  DBusGMethodInvocation *context,
+					  NMApplet *applet,
+					  GError **error)
 {
 	GtkWidget *dialog;
 
@@ -395,7 +606,7 @@ wired_get_secrets (NMDevice *device,
 	                        (GDestroyNotify) g_free);
 
 	g_signal_connect (dialog, "response",
-	                  G_CALLBACK (get_secrets_dialog_response_cb),
+	                  G_CALLBACK (get_8021x_secrets_cb),
 	                  applet);
 
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
@@ -403,6 +614,34 @@ wired_get_secrets (NMDevice *device,
 	gtk_window_present (GTK_WINDOW (dialog));
 
 	return TRUE;
+}
+
+static gboolean
+wired_get_secrets (NMDevice *device,
+				   NMConnection *connection,
+				   const char *specific_object,
+				   const char *setting_name,
+				   DBusGMethodInvocation *context,
+				   NMApplet *applet,
+				   GError **error)
+{
+	NMSettingConnection *s_con;
+	gboolean success = FALSE;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	if (!s_con) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): Invalid connection",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
+
+	if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME)) {
+		success = nm_8021x_get_secrets (device, connection, specific_object, setting_name, context, applet, error);
+	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME))
+		success = pppoe_get_secrets (device, connection, specific_object, setting_name, context, applet, error);
+
+	return success;
 }
 
 NMADeviceClass *
