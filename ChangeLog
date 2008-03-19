@@ -1,3 +1,14 @@
+2008-03-19  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (update_connection_timestamp): common function for updating connection
+			timestamp
+		- (vpn_connection_state_changed): update timestamp
+		- (applet_common_device_state_change): use common timestamp update
+			function
+		- (nma_menu_vpn_item_clicked, add_one_vpn_connection): associate a VPN
+			connection with its originating connection's dbus path
+
 2008-03-18  Tambet Ingo  <tambet@gmail.com>
 
 	Implement wired 802.1x authentication.

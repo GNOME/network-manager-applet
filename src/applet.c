@@ -245,6 +245,33 @@ clear_animation_timeout (NMApplet *applet)
 }
 
 static void
+update_connection_timestamp (NMApplet *applet, NMDevice *device, NMVPNConnection *vpn)
+{
+	AppletExportedConnection *exported = NULL;
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+	const char *path;
+
+	if (device)
+		exported = applet_get_exported_connection_for_device (device, applet);
+	else if (vpn) {
+		path = g_object_get_data (G_OBJECT (vpn), "dbus-path");
+		exported = applet_dbus_settings_user_get_by_dbus_path (applet->settings, path);
+	}
+
+	if (!exported)
+		return;
+
+	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
+	g_assert (connection);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
+
+	s_con->timestamp = (guint64) time (NULL);
+	applet_exported_connection_save (exported);
+}
+
+static void
 vpn_connection_state_changed (NMVPNConnection *connection,
                               NMVPNConnectionState state,
                               NMVPNConnectionStateReason reason,
@@ -269,6 +296,7 @@ vpn_connection_state_changed (NMVPNConnection *connection,
 			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
 			g_free (msg);
 		}
+		update_connection_timestamp (applet, NULL, connection);
 		clear_animation_timeout (applet);
 		break;
 	case NM_VPN_CONNECTION_STATE_FAILED:
@@ -298,7 +326,9 @@ get_connection_id (AppletExportedConnection *exported)
 }
 
 static void
-add_one_vpn_connection (NMVPNConnection *connection, NMApplet *applet)
+add_one_vpn_connection (NMVPNConnection *connection,
+                        const char *path,
+                        NMApplet *applet)
 {
 	const char *name;
 
@@ -317,6 +347,9 @@ add_one_vpn_connection (NMVPNConnection *connection, NMApplet *applet)
 	g_hash_table_insert (applet->vpn_connections,
 	                     g_strdup (name),
 	                     connection);
+
+	g_object_set_data_full (G_OBJECT (connection),
+	                        "dbus-path", g_strdup (path), (GDestroyNotify) g_free);
 }
 
 static void
@@ -347,7 +380,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 								  nm_connection_get_path (wrapped),
 								  device);
 	if (connection) {
-		add_one_vpn_connection (connection, applet);
+		add_one_vpn_connection (connection, nm_connection_get_path (wrapped), applet);
 	} else {
 		/* FIXME: show a dialog or something */
 		g_warning ("Can't connect");
@@ -1030,9 +1063,6 @@ applet_common_device_state_change (NMDevice *device,
                                    NMDeviceState state,
                                    NMApplet *applet)
 {
-	AppletExportedConnection *exported;
-	NMSettingConnection *s_con;
-
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
 	case NM_DEVICE_STATE_CONFIG:
@@ -1044,18 +1074,7 @@ applet_common_device_state_change (NMDevice *device,
 		/* If the device activation was successful, update the corresponding
 		 * connection object with a current timestamp.
 		 */
-		exported = applet_get_exported_connection_for_device (device, applet);
-		if (exported) {
-			NMConnection *connection;
-
-			connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection,
-														   NM_TYPE_SETTING_CONNECTION));
-			if (s_con && s_con->autoconnect) {
-				s_con->timestamp = (guint64) time (NULL);
-				applet_exported_connection_save (exported);
-			}
-		}
+		update_connection_timestamp (applet, device, NULL);
 		/* Fall through */
 	default:
 		clear_animation_timeout (applet);
