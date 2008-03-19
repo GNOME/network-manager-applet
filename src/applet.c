@@ -76,19 +76,19 @@ NMDevice *
 applet_get_first_active_device (NMApplet *applet)
 {
 	GSList *iter;
-	NMDevice *dev = NULL;
 
 	if (g_slist_length (applet->active_connections) == 0)
 		return NULL;
 
 	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
-		NMClientActiveConnection * act_con = (NMClientActiveConnection *) iter->data;
+		GSList *devices;
 
-		if (act_con->devices)
-			return g_slist_nth_data (act_con->devices, 0);
+		devices = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_DEVICES);
+		if (devices)
+			return g_slist_nth_data (devices, 0);
 	}
 
-	return dev;
+	return NULL;
 }
 
 static inline NMADeviceClass *
@@ -175,13 +175,13 @@ applet_menu_item_activate_helper (NMDevice *device,
 	g_assert (con_path);
 
 	/* Finally, tell NM to activate the connection */
-	nm_client_activate_device (applet->nm_client,
-	                           device,
-	                           is_system ? NM_DBUS_SERVICE_SYSTEM_SETTINGS : NM_DBUS_SERVICE_USER_SETTINGS,
-	                           con_path,
-	                           specific_object,
-	                           activate_device_cb,
-	                           user_data);
+	nm_client_activate_connection (applet->nm_client,
+	                               is_system ? NM_DBUS_SERVICE_SYSTEM_SETTINGS : NM_DBUS_SERVICE_USER_SETTINGS,
+	                               con_path,
+	                               device,
+	                               specific_object,
+	                               activate_device_cb,
+	                               user_data);
 }
 
 void
@@ -552,17 +552,23 @@ applet_find_active_connection_for_device (NMDevice *device, NMApplet *applet)
 	g_return_val_if_fail (NM_IS_APPLET (applet), NULL);
 
 	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
-		NMClientActiveConnection *con = (NMClientActiveConnection *) iter->data;
+		const char *service_name;
+		const char *connection_path;
+		GSList *devices;
 
-		if (!g_slist_find (con->devices, device))
+		devices = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_DEVICES);
+		service_name = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_SERVICE_NAME);
+		connection_path = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_CONNECTION);
+
+		if (!g_slist_find (devices, device))
 			continue;
 
-		if (!strcmp (con->service_name, NM_DBUS_SERVICE_SYSTEM_SETTINGS)) {
-			connection = applet_dbus_settings_system_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), con->connection_path);
-		} else if (!strcmp (con->service_name, NM_DBUS_SERVICE_USER_SETTINGS)) {
+		if (!strcmp (service_name, NM_DBUS_SERVICE_SYSTEM_SETTINGS)) {
+			connection = applet_dbus_settings_system_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), connection_path);
+		} else if (!strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS)) {
 			AppletExportedConnection *tmp;
 
-			tmp = applet_dbus_settings_user_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), con->connection_path);
+			tmp = applet_dbus_settings_user_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), connection_path);
 			if (tmp) {
 				connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (tmp));
 				break;
@@ -1040,16 +1046,22 @@ applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 	GSList *iter;
 
 	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
-		NMClientActiveConnection * act_con = (NMClientActiveConnection *) iter->data;
 		AppletExportedConnection *exported;
+		const char *service_name;
+		const char *connection_path;
+		GSList *devices;
 
-		if (strcmp (act_con->service_name, NM_DBUS_SERVICE_USER_SETTINGS) != 0)
+		devices = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_DEVICES);
+		service_name = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_SERVICE_NAME);
+		connection_path = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_CONNECTION);
+
+		if (strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS) != 0)
 			continue;
 
-		if (!g_slist_find (act_con->devices, device))
+		if (!g_slist_find (devices, device))
 			continue;
 
-		exported = applet_dbus_settings_user_get_by_dbus_path (applet->settings, act_con->connection_path);
+		exported = applet_dbus_settings_user_get_by_dbus_path (applet->settings, connection_path);
 		if (!exported || !nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported)))
 			continue;
 
@@ -1086,7 +1098,7 @@ static void
 clear_active_connections (NMApplet *applet)
 {
 	g_slist_foreach (applet->active_connections,
-	                 (GFunc) nm_client_free_active_connection_element,
+	                 (GFunc) nm_client_free_active_connections_element,
 	                 NULL);
 	g_slist_free (applet->active_connections);
 	applet->active_connections = NULL;
@@ -1383,7 +1395,7 @@ applet_schedule_update_icon (NMApplet *applet)
 static NMDevice *
 find_active_device (AppletExportedConnection *exported,
                     NMApplet *applet,
-                    const char **specific_object)
+                    const char **out_specific_object)
 {
 	GSList *iter;
 
@@ -1398,18 +1410,24 @@ find_active_device (AppletExportedConnection *exported,
 	 * object path of applet_connection.
 	 */
 	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
-		NMClientActiveConnection *con = (NMClientActiveConnection *) iter->data;
 		NMConnection *connection;
-		const char *con_path;
+		const char *service_name;
+		const char *connection_path;
+		const char *specific_object;
+		GSList *devices;
 
-		if (strcmp (con->service_name, NM_DBUS_SERVICE_USER_SETTINGS))
+		devices = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_DEVICES);
+		service_name = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_SERVICE_NAME);
+		connection_path = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_CONNECTION);
+		specific_object = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_SPECIFIC_OBJECT);
+
+		if (strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS))
 			continue;
 
 		connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
-		con_path = nm_connection_get_path (connection);
-		if (!strcmp (con_path, con->connection_path)) {
-			*specific_object = con->specific_object;
-			return NM_DEVICE (con->devices->data);
+		if (!strcmp (connection_path, nm_connection_get_path (connection))) {
+			*out_specific_object = specific_object;
+			return NM_DEVICE (g_slist_nth_data (devices, 0));
 		}
 	}
 

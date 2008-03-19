@@ -1180,13 +1180,13 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 		}
 	}
 
-	nm_client_activate_device (applet->nm_client,
-	                           device,
-	                           NM_DBUS_SERVICE_USER_SETTINGS,
-	                           nm_connection_get_path (connection),
-	                           ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
-	                           activate_device_cb,
-	                           applet);
+	nm_client_activate_connection (applet->nm_client,
+	                               NM_DBUS_SERVICE_USER_SETTINGS,
+	                               nm_connection_get_path (connection),
+	                               device,
+	                               ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
+	                               activate_device_cb,
+	                               applet);
 
 done:
 	/* Balance the caller of wireless_dialog_new () */

@@ -1,3 +1,17 @@
+2008-03-19  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-device-wireless.c
+		- (wireless_dialog_response_cb): fix up for ActivateDevice ->
+			ActivateConnection
+
+	* src/applet.c
+		- (applet_menu_item_activate_helper): fix up for ActivateDevice ->
+			ActivateConnection
+		- (applet_get_first_active_device,
+		   applet_find_active_connection_for_device,
+		   applet_get_exported_connection_for_device, clear_active_connections,
+		   find_active_device): fix up for changes to GetActiveConnections
+
 2008-03-19  Tambet Ingo  <tambet@gmail.com>
 
 	* src/applet-device-wired.c: Implement asking DSL passwords.
