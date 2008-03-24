@@ -10,7 +10,8 @@ libutils_la_SOURCES = \
 
 libutils_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \
-	-I${top_srcdir}/src/gconf-helpers
+	-I${top_srcdir}/src/gconf-helpers \
+	-I${top_srcdir}/src
 
 libutils_la_LIBADD = $(NMA_LIBS)
 

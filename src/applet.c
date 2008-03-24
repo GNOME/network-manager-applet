@@ -50,6 +50,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
 #include <nm-setting-vpn-properties.h>
+#include <nm-active-connection.h>
 
 #include <glade/glade.h>
 #include <gconf/gconf-client.h>
@@ -75,19 +76,17 @@ G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
 NMDevice *
 applet_get_first_active_device (NMApplet *applet)
 {
-	GSList *iter;
+	const GPtrArray *connections;
+	int i;
 
-	if (g_slist_length (applet->active_connections) == 0)
-		return NULL;
+	connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; connections && (i < connections->len); i++) {
+		const GPtrArray *devices;
 
-	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
-		GSList *devices;
-
-		devices = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_DEVICES);
-		if (devices)
-			return g_slist_nth_data (devices, 0);
+		devices = nm_active_connection_get_devices (g_ptr_array_index (connections, i));
+		if (devices && devices->len)
+			return g_ptr_array_index (devices, 0);
 	}
-
 	return NULL;
 }
 
@@ -487,41 +486,27 @@ sort_devices (gconstpointer a, gconstpointer b)
 	bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
 
 	if (aa_type == bb_type) {
-		const char *foo;
 		char *aa_desc = NULL;
 		char *bb_desc = NULL;
-		gint ret;
 
-		foo = utils_get_device_description (aa);
-		if (foo)
-			aa_desc = g_strdup (foo);
+		aa_desc = (char *) utils_get_device_description (aa);
 		if (!aa_desc)
-			aa_desc = nm_device_get_iface (aa);
+			aa_desc = (char *) nm_device_get_iface (aa);
 
-		foo = utils_get_device_description (bb);
-		if (foo)
-			bb_desc = g_strdup (foo);
+		bb_desc = (char *) utils_get_device_description (bb);
 		if (!bb_desc)
-			bb_desc = nm_device_get_iface (bb);
+			bb_desc = (char *) nm_device_get_iface (bb);
 
-		if (!aa_desc && bb_desc) {
-			g_free (bb_desc);
+		if (!aa_desc && bb_desc)
 			return -1;
-		} else if (aa_desc && !bb_desc) {
-			g_free (aa_desc);
+		else if (aa_desc && !bb_desc)
 			return 1;
-		} else if (!aa_desc && !bb_desc) {
+		else if (!aa_desc && !bb_desc)
 			return 0;
-		}
 
 		g_assert (aa_desc);
 		g_assert (bb_desc);
-		ret = strcmp (aa_desc, bb_desc);
-
-		g_free (aa_desc);
-		g_free (bb_desc);
-
-		return ret;
+		return strcmp (aa_desc, bb_desc);
 	}
 
 	if (aa_type == NM_TYPE_DEVICE_802_3_ETHERNET && bb_type == NM_TYPE_DEVICE_802_11_WIRELESS)
@@ -542,25 +527,45 @@ sort_devices (gconstpointer a, gconstpointer b)
 	return 1;
 }
 
-NMConnection *
-applet_find_active_connection_for_device (NMDevice *device, NMApplet *applet)
+static gboolean
+nm_g_ptr_array_contains (const GPtrArray *haystack, gpointer needle)
 {
+	int i;
+
+	for (i = 0; haystack && (i < haystack->len); i++) {
+		if (g_ptr_array_index (haystack, i) == needle)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+NMConnection *
+applet_find_active_connection_for_device (NMDevice *device,
+                                          NMApplet *applet,
+                                          NMActiveConnection **out_active)
+{
+	const GPtrArray *active_connections;
 	NMConnection *connection = NULL;
-	GSList *iter;
+	int i;
 
 	g_return_val_if_fail (NM_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (NM_IS_APPLET (applet), NULL);
+	if (out_active)
+		g_return_val_if_fail (*out_active == NULL, NULL);
 
-	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
+	active_connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; active_connections && (i < active_connections->len); i++) {
+		NMActiveConnection *active;
 		const char *service_name;
 		const char *connection_path;
-		GSList *devices;
+		const GPtrArray *devices;
 
-		devices = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_DEVICES);
-		service_name = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_SERVICE_NAME);
-		connection_path = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_CONNECTION);
+		active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_connections, i));
+		devices = nm_active_connection_get_devices (active);
+		service_name = nm_active_connection_get_service_name (active);
+		connection_path = nm_active_connection_get_connection (active);
 
-		if (!g_slist_find (devices, device))
+		if (!nm_g_ptr_array_contains (devices, device))
 			continue;
 
 		if (!strcmp (service_name, NM_DBUS_SERVICE_SYSTEM_SETTINGS)) {
@@ -571,6 +576,8 @@ applet_find_active_connection_for_device (NMDevice *device, NMApplet *applet)
 			tmp = applet_dbus_settings_user_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), connection_path);
 			if (tmp) {
 				connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (tmp));
+				if (out_active)
+					*out_active = active;
 				break;
 			}
 		}
@@ -582,13 +589,15 @@ applet_find_active_connection_for_device (NMDevice *device, NMApplet *applet)
 static guint32
 nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 {
-	GSList *devices = NULL;
-	GSList *iter;
+	GPtrArray *temp = NULL;
+	GSList *devices = NULL, *iter = NULL;
 	gint n_wireless_interfaces = 0;
 	gint n_wired_interfaces = 0;
+	int i;
 
-	devices = nm_client_get_devices (applet->nm_client);
-
+	temp = nm_client_get_devices (applet->nm_client);
+	for (i = 0; temp && (i < temp->len); i++)
+		devices = g_slist_append (devices, g_ptr_array_index (temp, i));
 	if (devices)
 		devices = g_slist_sort (devices, sort_devices);
 
@@ -627,7 +636,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		else if (NM_IS_DEVICE_802_3_ETHERNET (device))
 			n_devices = n_wired_interfaces++;
 
-		active = applet_find_active_connection_for_device (device, applet);
+		active = applet_find_active_connection_for_device (device, applet, NULL);
 
 		dclass = get_device_class (device, applet);
 		if (dclass)
@@ -782,7 +791,7 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 
 	gtk_status_icon_set_tooltip (applet->status_icon, NULL);
 
-	if (!nm_client_manager_is_running (applet->nm_client)) {
+	if (!nm_client_get_manager_running (applet->nm_client)) {
 		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
 		return;
 	}
@@ -869,17 +878,16 @@ nma_context_menu_update (NMApplet *applet)
 						 state == NM_STATE_CONNECTED);
 
 	if (state != NM_STATE_ASLEEP) {
-		GSList *list;
-		GSList *iter;
-	
-		list = nm_client_get_devices (applet->nm_client);
-		for (iter = list; iter; iter = iter->next) {
-			if (NM_IS_DEVICE_802_11_WIRELESS (iter->data)) {
+		GPtrArray *devices;
+		int i;
+
+		devices = nm_client_get_devices (applet->nm_client);
+		for (i = 0; devices && (i < devices->len); i++) {
+			if (NM_IS_DEVICE_802_11_WIRELESS (g_ptr_array_index (devices, i))) {
 				have_wireless = TRUE;
 				break;
 			}
 		}
-		g_slist_free (list);
 	}
 
 	if (have_wireless)
@@ -1043,22 +1051,26 @@ foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
 AppletExportedConnection *
 applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 {
-	GSList *iter;
+	const GPtrArray *active_connections;
+	int i;
 
-	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
+	active_connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; active_connections && (i < active_connections->len); i++) {
+		NMActiveConnection *active;
 		AppletExportedConnection *exported;
 		const char *service_name;
 		const char *connection_path;
-		GSList *devices;
+		const GPtrArray *devices;
 
-		devices = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_DEVICES);
-		service_name = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_SERVICE_NAME);
-		connection_path = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_CONNECTION);
+		active = g_ptr_array_index (active_connections, i);
+		devices = nm_active_connection_get_devices (active);
+		service_name = nm_active_connection_get_service_name (active);
+		connection_path = nm_active_connection_get_connection (active);
 
 		if (strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS) != 0)
 			continue;
 
-		if (!g_slist_find (devices, device))
+		if (!nm_g_ptr_array_contains (devices, device))
 			continue;
 
 		exported = applet_dbus_settings_user_get_by_dbus_path (applet->settings, connection_path);
@@ -1095,27 +1107,16 @@ applet_common_device_state_change (NMDevice *device,
 }
 
 static void
-clear_active_connections (NMApplet *applet)
-{
-	g_slist_foreach (applet->active_connections,
-	                 (GFunc) nm_client_free_active_connections_element,
-	                 NULL);
-	g_slist_free (applet->active_connections);
-	applet->active_connections = NULL;
-}
-
-static void
-foo_device_state_changed_cb (NMDevice *device, NMDeviceState state, gpointer user_data)
+foo_device_state_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	NMADeviceClass *dclass;
-
-	clear_active_connections (applet);
-	applet->active_connections = nm_client_get_active_connections (applet->nm_client);
+	NMDeviceState state;
 
 	dclass = get_device_class (device, applet);
 	g_assert (dclass);
 
+	state = nm_device_get_state (device);
 	dclass->device_state_changed (device, state, applet);
 	applet_common_device_state_change (device, state, applet);
 
@@ -1134,19 +1135,19 @@ foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 	if (dclass->device_added)
 		dclass->device_added (device, applet);
 
-	g_signal_connect (device, "state-changed",
+	g_signal_connect (device, "notify::state",
 				   G_CALLBACK (foo_device_state_changed_cb),
 				   user_data);
 
-	foo_device_state_changed_cb	(device, nm_device_get_state (device), applet);
+	foo_device_state_changed_cb	(device, NULL, applet);
 }
 
 static void
-foo_client_state_change_cb (NMClient *client, NMState state, gpointer user_data)
+foo_client_state_change_cb (NMClient *client, GParamSpec *pspec, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
-	switch (state) {
+	switch (nm_client_get_state (client)) {
 	case NM_STATE_DISCONNECTED:
 		applet_do_notify (applet, NOTIFY_URGENCY_NORMAL, _("Disconnected"),
 						  _("The network connection has been disconnected."),
@@ -1156,7 +1157,6 @@ foo_client_state_change_cb (NMClient *client, NMState state, gpointer user_data)
 		/* Clear any VPN connections */
 		if (applet->vpn_connections)
 			g_hash_table_remove_all (applet->vpn_connections);
-		clear_active_connections (applet);
 		break;
 	default:
 		break;
@@ -1167,19 +1167,18 @@ foo_client_state_change_cb (NMClient *client, NMState state, gpointer user_data)
 
 static void
 foo_manager_running_cb (NMClient *client,
-                        gboolean running,
+                        GParamSpec *pspec,
                         gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
-	if (running) {
+	if (nm_client_get_manager_running (client)) {
 		g_message ("NM appeared");
 	} else {
 		g_message ("NM disappeared");
 		clear_animation_timeout (applet);
 	}
 
-	applet->nm_running = running;
 	applet_schedule_update_icon (applet);
 }
 
@@ -1187,12 +1186,13 @@ static gboolean
 foo_set_initial_state (gpointer data)
 {
 	NMApplet *applet = NM_APPLET (data);
-	GSList *list, *iter;
+	GSList *list;
+	const GPtrArray *devices;
+	int i;
 
-	list = nm_client_get_devices (applet->nm_client);
-	for (iter = list; iter; iter = g_slist_next (iter))
-		foo_device_added_cb (applet->nm_client, NM_DEVICE (iter->data), applet);
-	g_slist_free (list);
+	devices = nm_client_get_devices (applet->nm_client);
+	for (i = 0; devices && (i < devices->len); i++)
+		foo_device_added_cb (applet->nm_client, NM_DEVICE (g_ptr_array_index (devices, i)), applet);
 
 	list = nm_vpn_manager_get_connections (applet->vpn_manager);
 	if (list) {
@@ -1212,18 +1212,17 @@ foo_client_setup (NMApplet *applet)
 	if (!applet->nm_client)
 		return;
 
-	g_signal_connect (applet->nm_client, "state-changed",
+	g_signal_connect (applet->nm_client, "notify::state",
 	                  G_CALLBACK (foo_client_state_change_cb),
 	                  applet);
 	g_signal_connect (applet->nm_client, "device-added",
 	                  G_CALLBACK (foo_device_added_cb),
 	                  applet);
-	g_signal_connect (applet->nm_client, "manager-running",
+	g_signal_connect (applet->nm_client, "notify::manager-running",
 	                  G_CALLBACK (foo_manager_running_cb),
 	                  applet);
 
-	applet->nm_running = nm_client_manager_is_running (applet->nm_client);
-	if (applet->nm_running)
+	if (nm_client_get_manager_running (applet->nm_client))
 		g_idle_add (foo_set_initial_state, applet);
 }
 
@@ -1328,15 +1327,17 @@ applet_update_icon (gpointer user_data)
 	char *tip = NULL;
 	NMVPNConnection *vpn_connection;
 	NMVPNConnectionState vpn_state = NM_VPN_SERVICE_STATE_UNKNOWN;
+	gboolean nm_running;
 
 	applet->update_icon_id = 0;
 
-	gtk_status_icon_set_visible (applet->status_icon, applet->nm_running);
+	nm_running = nm_client_get_manager_running (applet->nm_client);
+	gtk_status_icon_set_visible (applet->status_icon, nm_running);
 	
 	/* Handle device state first */
 
 	state = nm_client_get_state (applet->nm_client);
-	if (!applet->nm_running)
+	if (!nm_running)
 		state = NM_STATE_UNKNOWN;
 
 	switch (state) {
@@ -1397,37 +1398,37 @@ find_active_device (AppletExportedConnection *exported,
                     NMApplet *applet,
                     const char **out_specific_object)
 {
-	GSList *iter;
+	const GPtrArray *active_connections;
+	int i;
 
 	g_return_val_if_fail (exported != NULL, NULL);
 	g_return_val_if_fail (applet != NULL, NULL);
 
-	/* Ensure the active connection list is up-to-date */
-	if (g_slist_length (applet->active_connections) == 0)
-		applet->active_connections = nm_client_get_active_connections (applet->nm_client);
-
 	/* Look through the active connection list trying to find the D-Bus
 	 * object path of applet_connection.
 	 */
-	for (iter = applet->active_connections; iter; iter = g_slist_next (iter)) {
+	active_connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; active_connections && (i < active_connections->len); i++) {
+		NMActiveConnection *active;
 		NMConnection *connection;
 		const char *service_name;
 		const char *connection_path;
 		const char *specific_object;
-		GSList *devices;
+		const GPtrArray *devices;
 
-		devices = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_DEVICES);
-		service_name = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_SERVICE_NAME);
-		connection_path = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_CONNECTION);
-		specific_object = g_hash_table_lookup ((GHashTable *) iter->data, NM_AC_KEY_SPECIFIC_OBJECT);
-
+		active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_connections, i));
+		service_name = nm_active_connection_get_service_name (active);
 		if (strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS))
 			continue;
 
+		connection_path = nm_active_connection_get_connection (active);
+		specific_object = nm_active_connection_get_specific_object (active);
+
 		connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
 		if (!strcmp (connection_path, nm_connection_get_path (connection))) {
+			devices = nm_active_connection_get_devices (active);
 			*out_specific_object = specific_object;
-			return NM_DEVICE (g_slist_nth_data (devices, 0));
+			return devices ? NM_DEVICE (g_ptr_array_index (devices, 0)) : NULL;
 		}
 	}
 
@@ -1762,8 +1763,6 @@ constructor (GType type,
 	    goto error;
 	nma_icons_init (applet);
 
-	applet->active_connections = NULL;
-	
 	dbus_mgr = applet_dbus_manager_get ();
 	if (dbus_mgr == NULL) {
 		nm_warning ("Couldn't initialize the D-Bus manager.");
@@ -1839,8 +1838,6 @@ static void finalize (GObject *object)
 	g_hash_table_destroy (applet->vpn_connections);
 	g_object_unref (applet->vpn_manager);
 	g_object_unref (applet->nm_client);
-
-	clear_active_connections (applet);
 
 	crypto_deinit ();
 

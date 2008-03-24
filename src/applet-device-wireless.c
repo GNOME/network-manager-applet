@@ -635,10 +635,10 @@ wireless_add_menu_item (NMDevice *device,
 	NMDevice80211Wireless *wdev;
 	char *text;
 	GtkWidget *item;
-	GSList *aps;
-	GSList *iter;
+	const GPtrArray *aps;
+	int i;
 	NMAccessPoint *active_ap = NULL;
-	GSList *connections = NULL, *all;
+	GSList *connections = NULL, *all, *sorted_aps = NULL, *iter;
 	GtkWidget *label;
 	char *bold_text;
 
@@ -650,23 +650,19 @@ wireless_add_menu_item (NMDevice *device,
 	g_slist_free (all);
 
 	if (n_devices > 1) {
-		const char *desc;
-		char *dev_name = NULL;
+		char *desc;
 
-		desc = utils_get_device_description (device);
-		if (desc)
-			dev_name = g_strdup (desc);
-		if (!dev_name)
-			dev_name = nm_device_get_iface (device);
-		g_assert (dev_name);
+		desc = (char *) utils_get_device_description (device);
+		if (!desc)
+			desc = (char *) nm_device_get_iface (device);
+		g_assert (desc);
 
-		if (g_slist_length (aps) > 1)
-			text = g_strdup_printf (_("Wireless Networks (%s)"), dev_name);
+		if (aps && aps->len > 1)
+			text = g_strdup_printf (_("Wireless Networks (%s)"), desc);
 		else
-			text = g_strdup_printf (_("Wireless Network (%s)"), dev_name);
-		g_free (dev_name);
+			text = g_strdup_printf (_("Wireless Network (%s)"), desc);
 	} else
-		text = g_strdup (ngettext ("Wireless Network", "Wireless Networks", g_slist_length (aps)));
+		text = g_strdup (ngettext ("Wireless Network", "Wireless Networks", aps ? aps->len : 0));
 
 	item = gtk_menu_item_new_with_mnemonic (text);
 	g_free (text);
@@ -685,17 +681,19 @@ wireless_add_menu_item (NMDevice *device,
 	if (!nm_client_wireless_get_enabled (applet->nm_client))
 		goto out;
 
-	aps = nm_device_802_11_wireless_get_access_points (wdev);
 	active_ap = nm_device_802_11_wireless_get_active_access_point (wdev);
 
 	/* Add all networks in our network list to the menu */
-	aps = g_slist_sort (aps, sort_wireless_networks);
-	for (iter = aps; iter; iter = g_slist_next (iter))
+	for (i = 0; aps && (i < aps->len); i++)
+		sorted_aps = g_slist_append (sorted_aps, g_ptr_array_index (aps, i));
+
+	sorted_aps = g_slist_sort (sorted_aps, sort_wireless_networks);
+	for (iter = sorted_aps; iter; iter = g_slist_next (iter))
 		add_one_ap_menu_item (wdev, NM_ACCESS_POINT (iter->data), connections, active_ap, active, menu, applet);
 
 out:
 	g_slist_free (connections);
-	g_slist_free (aps);
+	g_slist_free (sorted_aps);
 }
 
 static gboolean
@@ -889,7 +887,8 @@ static void
 wireless_device_added (NMDevice *device, NMApplet *applet)
 {
 	NMDevice80211Wireless *wdev = NM_DEVICE_802_11_WIRELESS (device);
-	GSList *aps, *iter;
+	const GPtrArray *aps;
+	int i;
 
 	g_signal_connect (wdev,
 	                  "notify::" NM_DEVICE_802_11_WIRELESS_ACTIVE_ACCESS_POINT,
@@ -903,11 +902,8 @@ wireless_device_added (NMDevice *device, NMApplet *applet)
 
 	/* Hash all APs this device knows about */
 	aps = nm_device_802_11_wireless_get_access_points (wdev);
-	for (iter = aps; iter; iter = g_slist_next (iter)) {
-		NMAccessPoint *ap = NM_ACCESS_POINT (iter->data);
-		add_hash_to_ap (ap);
-	}
-	g_slist_free (aps);
+	for (i = 0; aps && (i < aps->len); i++)
+		add_hash_to_ap (g_ptr_array_index (aps, i));
 }
 
 static void
@@ -982,7 +978,7 @@ wireless_get_icon (NMDevice *device,
                    NMApplet *applet)
 {
 	GdkPixbuf *pixbuf = NULL;
-	char *iface;
+	const char *iface;
 	char *esc_ssid = _("(none)");
 
 	iface = nm_device_get_iface (device);
@@ -1037,7 +1033,6 @@ wireless_get_icon (NMDevice *device,
 		break;
 	}
 
-	g_free (iface);
 	return pixbuf;
 }
 

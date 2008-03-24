@@ -120,9 +120,9 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 	GtkWidget *label2;
 	NMIP4Config *cfg;
 	guint32 speed;
-	char *str;
-	char *iface_and_type;
-	GArray *dns;
+	char *str, *iface_and_type;
+	const char *iface;
+	const GArray *dns;
 
 	g_return_val_if_fail (xml != NULL, NULL);
 	g_return_val_if_fail (device != NULL, NULL);
@@ -145,19 +145,17 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 		speed /= 1000;
 	}
 
-	str = nm_device_get_iface (device);
+	iface = nm_device_get_iface (device);
 	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		iface_and_type = g_strdup_printf (_("Ethernet (%s)"), str);
+		iface_and_type = g_strdup_printf (_("Ethernet (%s)"), iface);
 	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		iface_and_type = g_strdup_printf (_("802.11 WiFi (%s)"), str);
+		iface_and_type = g_strdup_printf (_("802.11 WiFi (%s)"), iface);
 	else if (NM_IS_GSM_DEVICE (device))
-		iface_and_type = g_strdup_printf (_("GSM (%s)"), str);
+		iface_and_type = g_strdup_printf (_("GSM (%s)"), iface);
 	else if (NM_IS_CDMA_DEVICE (device))
-		iface_and_type = g_strdup_printf (_("CDMA (%s)"), str);
+		iface_and_type = g_strdup_printf (_("CDMA (%s)"), iface);
 	else
-		iface_and_type = g_strdup (str);
-
-	g_free (str);
+		iface_and_type = g_strdup (iface);
 
 	label = glade_xml_get_widget (xml, "label-interface");
 	gtk_label_set_text (GTK_LABEL (label), iface_and_type);
@@ -217,10 +215,8 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 	} else
 		gtk_label_set_text (GTK_LABEL (label), _("Unknown"));
 
-	str = nm_device_get_driver (device);
 	label = glade_xml_get_widget (xml, "label-driver");
-	gtk_label_set_text (GTK_LABEL (label), str);
-	g_free (str);
+	gtk_label_set_text (GTK_LABEL (label), nm_device_get_driver (device));
 
 	label = glade_xml_get_widget (xml, "label-ip-address");
 	gtk_label_set_text (GTK_LABEL (label),
@@ -239,7 +235,7 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 					ip4_address_as_string (nm_ip4_config_get_gateway (cfg)));
 
 	dns = nm_ip4_config_get_nameservers (cfg);
-	if (dns) {
+	if (dns && dns->len) {
 		label = glade_xml_get_widget (xml, "label-primary-dns");
 		if (dns->len > 0) {
 			gtk_label_set_text (GTK_LABEL (label),
@@ -259,7 +255,6 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 			gtk_widget_hide (label);
 			gtk_widget_hide (label2);
 		}
-		g_array_free (dns, TRUE);
 	}
 
 	return dialog;
@@ -274,7 +269,7 @@ applet_info_dialog_show (NMApplet *applet)
 
 	device = applet_get_first_active_device (applet);
 	if (device)
-		connection = applet_find_active_connection_for_device (device, applet);
+		connection = applet_find_active_connection_for_device (device, applet, NULL);
 
 	if (!connection || !device) {
 		info_dialog_show_error (_("No active connections!"));

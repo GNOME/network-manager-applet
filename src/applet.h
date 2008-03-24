@@ -46,6 +46,7 @@
 #include <nm-vpn-manager.h>
 #include <nm-device.h>
 #include <NetworkManager.h>
+#include <nm-active-connection.h>
 
 #include "applet-dbus-manager.h"
 #include "applet-dbus-settings.h"
@@ -90,7 +91,6 @@ typedef struct
 	GHashTable *vpn_connections;
 
 	AppletDbusSettings *settings;
-	GSList * active_connections;
 
 	GConfClient *	gconf_client;
 	char	*		glade_file;
@@ -103,7 +103,6 @@ typedef struct
 
 	/* Data model elements */
 	guint			update_icon_id;
-	gboolean		nm_running;
 	gboolean		icons_loaded;
 
 	GtkIconTheme *	icon_theme;
@@ -186,6 +185,8 @@ void applet_do_notify (NMApplet *applet,
                        const char *message,
                        const char *icon);
 
-NMConnection * applet_find_active_connection_for_device (NMDevice *device, NMApplet *applet);
+NMConnection * applet_find_active_connection_for_device (NMDevice *device,
+                                                         NMApplet *applet,
+                                                         NMActiveConnection **out_active);
 
 #endif

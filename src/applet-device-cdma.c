@@ -167,8 +167,13 @@ static void
 cdma_menu_item_deactivate (GtkMenuItem *item, gpointer user_data)
 {
 	CdmaMenuItemInfo *info = (CdmaMenuItemInfo *) user_data;
+	NMActiveConnection *active = NULL;
 
-	nm_device_deactivate (info->device);
+	applet_find_active_connection_for_device (info->device, info->applet, &active);
+	if (active)
+		nm_client_deactivate_connection (info->applet->nm_client, active);
+	else
+		g_warning ("%s: couldn't find active connection to deactive", __func__);
 }
 
 static void
@@ -219,21 +224,17 @@ cdma_add_menu_item (NMDevice *device,
 	g_slist_free (all);
 
 	if (n_devices > 1) {
-		const char *desc;
-		char *dev_name = NULL;
+		char *desc;
 
-		desc = utils_get_device_description (device);
-		if (desc)
-			dev_name = g_strdup (desc);
-		if (!dev_name)
-			dev_name = nm_device_get_iface (device);
-		g_assert (dev_name);
+		desc = (char *) utils_get_device_description (device);
+		if (!desc)
+			desc = (char *) nm_device_get_iface (device);
+		g_assert (desc);
 
 		if (g_slist_length (connections) > 1)
-			text = g_strdup_printf (_("CDMA Connections (%s)"), dev_name);
+			text = g_strdup_printf (_("CDMA Connections (%s)"), desc);
 		else
-			text = g_strdup_printf (_("CDMA Network (%s)"), dev_name);
-		g_free (dev_name);
+			text = g_strdup_printf (_("CDMA Network (%s)"), desc);
 	} else {
 		if (g_slist_length (connections) > 1)
 			text = g_strdup (_("CDMA Connections"));
@@ -284,7 +285,7 @@ cdma_get_icon (NMDevice *device,
                NMApplet *applet)
 {
 	GdkPixbuf *pixbuf = NULL;
-	char *iface;
+	const char *iface;
 
 	iface = nm_device_get_iface (NM_DEVICE (device));
 
@@ -303,7 +304,6 @@ cdma_get_icon (NMDevice *device,
 		break;
 	}
 
-	g_free (iface);
 	return pixbuf;
 }
 

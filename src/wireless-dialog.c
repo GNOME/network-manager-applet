@@ -277,27 +277,24 @@ add_device_to_model (GtkListStore *model,
                      GtkTreeIter *iter,
                      NMDevice *device)
 {
-	const char *desc;
-	char *name = NULL;
+	char *desc;
 
-	desc = utils_get_device_description (device);
-	if (desc)
-		name = g_strdup (desc);
-	if (!name)
-		name = nm_device_get_iface (device);
+	desc = (char *) utils_get_device_description (device);
+	if (!desc)
+		desc = (char *) nm_device_get_iface (device);
+	g_assert (desc);
 
 	gtk_list_store_append (model, iter);
-	gtk_list_store_set (model, iter, D_NAME_COLUMN, name, D_DEV_COLUMN, device, -1);
-	g_free (name);
+	gtk_list_store_set (model, iter, D_NAME_COLUMN, g_strdup (desc), D_DEV_COLUMN, device, -1);
 }
 
 static GtkTreeModel *
 create_device_model (NMClient *client, NMDevice *use_this_device, guint32 *num)
 {
 	GtkListStore *model;
-	GSList *devices;
-	GSList *iter;
+	const GPtrArray *devices;
 	GtkTreeIter tree_iter;
+	int i;
 
 	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (num != NULL, NULL);
@@ -310,8 +307,8 @@ create_device_model (NMClient *client, NMDevice *use_this_device, guint32 *num)
 		*num = 1;
 	} else {
 		devices = nm_client_get_devices (client);
-		for (iter = devices; iter; iter = g_slist_next (iter)) {
-			NMDevice *dev = (NMDevice *) iter->data;
+		for (i = 0; devices && (i < devices->len); i++) {
+			NMDevice *dev = NM_DEVICE (g_ptr_array_index (devices, i));
 
 			/* Ignore unsupported devices */
 			if (!(nm_device_get_capabilities (dev) & NM_DEVICE_CAP_NM_SUPPORTED))
@@ -323,7 +320,6 @@ create_device_model (NMClient *client, NMDevice *use_this_device, guint32 *num)
 			add_device_to_model (model, &tree_iter, dev);
 			*num += 1;
 		}
-		g_slist_free (devices);
 	}
 
 	return GTK_TREE_MODEL (model);

@@ -6,7 +6,9 @@ libgconf_helpers_la_SOURCES =	\
 	gconf-upgrade.h		\
 	gconf-upgrade.c
 
-libgconf_helpers_la_CPPFLAGS = $(NMA_CFLAGS)
+libgconf_helpers_la_CPPFLAGS = \
+	$(NMA_CFLAGS) \
+	-I${top_srcdir}/src
 
 libgconf_helpers_la_LIBADD = $(NMA_LIBS)
 

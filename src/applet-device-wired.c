@@ -180,21 +180,17 @@ wired_add_menu_item (NMDevice *device,
 	g_slist_free (all);
 
 	if (n_devices > 1) {
-		const char *desc;
-		char *dev_name = NULL;
+		char *desc = NULL;
 
-		desc = utils_get_device_description (device);
-		if (desc)
-			dev_name = g_strdup (desc);
-		if (!dev_name)
-			dev_name = nm_device_get_iface (device);
-		g_assert (dev_name);
+		desc = (char *) utils_get_device_description (device);
+		if (!desc)
+			desc = (char *) nm_device_get_iface (device);
+		g_assert (desc);
 
 		if (g_slist_length (connections) > 1)
-			text = g_strdup_printf (_("Wired Networks (%s)"), dev_name);
+			text = g_strdup_printf (_("Wired Networks (%s)"), desc);
 		else
-			text = g_strdup_printf (_("Wired Network (%s)"), dev_name);
-		g_free (dev_name);
+			text = g_strdup_printf (_("Wired Network (%s)"), desc);
 	} else {
 		if (g_slist_length (connections) > 1)
 			text = g_strdup (_("Wired Networks"));
@@ -249,7 +245,7 @@ wired_get_icon (NMDevice *device,
                 NMApplet *applet)
 {
 	GdkPixbuf *pixbuf = NULL;
-	char *iface;
+	const char *iface;
 
 	iface = nm_device_get_iface (NM_DEVICE (device));
 
@@ -271,7 +267,6 @@ wired_get_icon (NMDevice *device,
 		break;
 	}
 
-	g_free (iface);
 	return pixbuf;
 }
 
