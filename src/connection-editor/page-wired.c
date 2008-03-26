@@ -131,6 +131,12 @@ ce_page_wired_new (NMConnection *connection)
 }
 
 static void
+update_connection (CEPage *page, NMConnection *connection)
+{
+	g_print ("FIXME: update wired page\n");
+}
+
+static void
 ce_page_wired_init (CEPageWired *self)
 {
 }
@@ -138,5 +144,8 @@ ce_page_wired_init (CEPageWired *self)
 static void
 ce_page_wired_class_init (CEPageWiredClass *wired_class)
 {
-}
+	CEPageClass *parent_class = CE_PAGE_CLASS (wired_class);
 
+	/* virtual methods */
+	parent_class->update_connection = update_connection;
+}

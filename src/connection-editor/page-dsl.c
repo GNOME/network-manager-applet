@@ -87,6 +87,12 @@ ce_page_dsl_new (NMConnection *connection)
 }
 
 static void
+update_connection (CEPage *page, NMConnection *connection)
+{
+	g_print ("FIXME: update DSL page\n");
+}
+
+static void
 ce_page_dsl_init (CEPageDsl *self)
 {
 }
@@ -94,5 +100,8 @@ ce_page_dsl_init (CEPageDsl *self)
 static void
 ce_page_dsl_class_init (CEPageDslClass *dsl_class)
 {
-}
+	CEPageClass *parent_class = CE_PAGE_CLASS (dsl_class);
 
+	/* virtual methods */
+	parent_class->update_connection = update_connection;
+}

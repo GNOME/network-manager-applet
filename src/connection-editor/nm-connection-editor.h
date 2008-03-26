@@ -39,8 +39,9 @@ typedef struct {
 	/* private data */
 	NMConnection *connection;
 	GSList *pages;
-	GtkWidget *dialog;
 	GladeXML *xml;
+	GtkWidget *dialog;
+	GtkWidget *ok_button;
 } NMConnectionEditor;
 
 typedef struct {

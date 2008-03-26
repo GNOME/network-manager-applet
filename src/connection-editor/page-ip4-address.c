@@ -69,6 +69,11 @@ out:
 	return self;
 }
 
+static void
+update_connection (CEPage *page, NMConnection *connection)
+{
+	g_print ("FIXME: update IP4 address page\n");
+}
 
 static void
 ce_page_ip4_address_init (CEPageIP4Address *self)
@@ -78,5 +83,8 @@ ce_page_ip4_address_init (CEPageIP4Address *self)
 static void
 ce_page_ip4_address_class_init (CEPageIP4AddressClass *ip4_address_class)
 {
-}
+	CEPageClass *parent_class = CE_PAGE_CLASS (ip4_address_class);
 
+	/* virtual methods */
+	parent_class->update_connection = update_connection;
+}

@@ -29,6 +29,7 @@
 
 #include <glib/gtypes.h>
 #include <glib-object.h>
+#include <gtk/gtk.h>
 
 #include "ce-page.h"
 
@@ -44,7 +45,7 @@ typedef struct {
 
 	gboolean disposed;
 	GtkSizeGroup *group;
-	GtkWidget *ok_button;
+	GtkComboBox *security_combo;
 	CEPageWireless *wireless_page;
 } CEPageWirelessSecurity;
 
@@ -55,7 +56,6 @@ typedef struct {
 GType ce_page_wireless_security_get_type (void);
 
 CEPageWirelessSecurity *ce_page_wireless_security_new (NMConnection *connection,
-                                                       GtkWidget *ok_button,
                                                        CEPageWireless *wireless_page);
 
 #endif  /* __PAGE_WIRELESS_SECURITY_H__ */

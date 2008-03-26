@@ -1,5 +1,26 @@
 2008-03-26  Dan Williams  <dcbw@redhat.com>
 
+	Patch from Tambet Ingo <tambet@gmail.com>
+
+	* src/connection-editor/ce-page.[ch]: Add a "changed" signal so that the pages
+	can tell when they change and the connection editor to notice it.
+
+	* src/connection-editor/nm-connection-editor.c: Listen to the CEPage::changed
+	signals, validate them, and update the dialog's "OK" button's sensitivity
+	accordingly.
+	(nm_connection_editor_run_and_close): Update the connection by iterating over
+	all pages and letting each update their own part.
+
+	* src/connection-editor/page-*.c: Add a stub for required "update_connection"
+	virtual function.
+
+	* src/connection-editor/page-wireless-security.c (ce_page_wireless_security_new):
+	Fix a bug where the default wireless combo box would always be the first item.
+	Don't take the "ok_button" argument, it's handled by the framework now.
+	(validate): Implement.
+
+2008-03-26  Dan Williams  <dcbw@redhat.com>
+
 	Fixup to match libnm-glib VPN changes in NM r3504; handle VPN connections
 	like any other connection and use NMClient to activate/deactivate then
 	instead of the VPNManager.

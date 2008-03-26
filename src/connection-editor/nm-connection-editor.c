@@ -159,6 +159,8 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	editor->dialog = glade_xml_get_widget (editor->xml, "NMConnectionEditor");
 	g_signal_connect (G_OBJECT (editor->dialog), "response", G_CALLBACK (dialog_response_cb), editor);
 
+	editor->ok_button = glade_xml_get_widget (editor->xml, "ok_button");
+
 	widget = glade_xml_get_widget (editor->xml, "connection_name");
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  G_CALLBACK (connection_name_changed), editor);
@@ -255,6 +257,14 @@ fill_connection_values (NMConnectionEditor *editor)
 }
 
 static void
+page_changed (CEPage *page, gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+
+	gtk_widget_set_sensitive (editor->ok_button, ce_page_validate (page));
+}
+
+static void
 add_page (NMConnectionEditor *editor, CEPage *page)
 {
 	GtkWidget *widget;
@@ -265,6 +275,10 @@ add_page (NMConnectionEditor *editor, CEPage *page)
 	label = gtk_label_new (ce_page_get_title (page));
 	widget = ce_page_get_page (page);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
+
+	g_signal_connect (page, "changed",
+				   G_CALLBACK (page_changed),
+				   editor);
 
 	editor->pages = g_slist_append (editor->pages, page);
 }
@@ -296,13 +310,11 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 	} else if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME)) {
 		CEPageWireless *wireless_page;
 		CEPageWirelessSecurity *wireless_security_page;
-		GtkWidget *ok_button;
 
 		wireless_page = ce_page_wireless_new (editor->connection);
 		add_page (editor, CE_PAGE (wireless_page));
 
-		ok_button = glade_xml_get_widget (editor->xml, "ok_button");
-		wireless_security_page = ce_page_wireless_security_new (editor->connection, ok_button, wireless_page);
+		wireless_security_page = ce_page_wireless_security_new (editor->connection, wireless_page);
 		add_page (editor, CE_PAGE (wireless_security_page));
 
 		add_page (editor, CE_PAGE (ce_page_ip4_address_new (editor->connection)));
@@ -328,6 +340,12 @@ nm_connection_editor_show (NMConnectionEditor *editor)
 	gtk_widget_show (editor->dialog);
 }
 
+static void
+update_one_page (gpointer data, gpointer user_data)
+{
+	ce_page_update_connection (CE_PAGE (data), NM_CONNECTION (user_data));
+}
+
 gint
 nm_connection_editor_run_and_close (NMConnectionEditor *editor)
 {
@@ -337,6 +355,14 @@ nm_connection_editor_run_and_close (NMConnectionEditor *editor)
 
 	result = gtk_dialog_run (GTK_DIALOG (editor->dialog));
 	gtk_widget_hide (editor->dialog);
+
+	switch (result) {
+	case GTK_RESPONSE_OK:
+		g_slist_foreach (editor->pages, update_one_page, editor->connection);
+		break;
+	default:
+		break;
+	}
 
 	return result;
 }

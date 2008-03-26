@@ -95,17 +95,7 @@ get_default_type_for_security (NMSettingWirelessSecurity *sec)
 static void
 stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 {
-	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (user_data);
-	GByteArray *ssid = NULL;
-	gboolean valid = FALSE;
-
-	ssid = ce_page_wireless_get_ssid (self->wireless_page);
-	if (ssid) {
-		valid = wireless_security_validate (sec, ssid);
-		g_byte_array_free (ssid, TRUE);
-	}
-
-	gtk_widget_set_sensitive (self->ok_button, valid);
+	ce_page_changed (CE_PAGE (user_data));
 }
 
 static void
@@ -121,16 +111,28 @@ wsec_size_group_clear (GtkSizeGroup *group)
 		gtk_size_group_remove_widget (group, GTK_WIDGET (iter->data));
 }
 
+static WirelessSecurity *
+wireless_security_combo_get_active (CEPageWirelessSecurity *self)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	WirelessSecurity *sec = NULL;
+
+	model = gtk_combo_box_get_model (self->security_combo);
+	gtk_combo_box_get_active_iter (self->security_combo, &iter);
+	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+
+	return sec;
+}
+
 static void
-wireless_security_combo_changed (GtkWidget *combo,
+wireless_security_combo_changed (GtkComboBox *combo,
                                  gpointer user_data)
 {
 	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (user_data);
 	GtkWidget *vbox;
 	GList *elt, *children;
-	GtkTreeIter iter;
-	GtkTreeModel *model;
-	WirelessSecurity *sec = NULL;
+	WirelessSecurity *sec;
 
 	vbox = glade_xml_get_widget (CE_PAGE (self)->xml, "wireless_security_vbox");
 	g_assert (vbox);
@@ -142,9 +144,7 @@ wireless_security_combo_changed (GtkWidget *combo,
 	for (elt = children; elt; elt = g_list_next (elt))
 		gtk_container_remove (GTK_CONTAINER (vbox), GTK_WIDGET (elt->data));
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
-	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+	sec = wireless_security_combo_get_active (self);
 	if (sec) {
 		GtkWidget *sec_widget;
 		GtkWidget *widget;
@@ -159,6 +159,8 @@ wireless_security_combo_changed (GtkWidget *combo,
 		gtk_container_add (GTK_CONTAINER (vbox), sec_widget);
 		wireless_security_unref (sec);
 	}
+
+	ce_page_changed (CE_PAGE (self));
 }
 
 static void
@@ -176,7 +178,6 @@ add_security_item (CEPageWirelessSecurity *self,
 
 CEPageWirelessSecurity *
 ce_page_wireless_security_new (NMConnection *connection,
-                               GtkWidget *ok_button,
                                CEPageWireless *wireless_page)
 {
 	CEPageWirelessSecurity *self;
@@ -191,7 +192,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 	int active = -1;
 	int item = 0;
 	const char *glade_file = GLADEDIR "/applet.glade";
-	GtkWidget *combo;
+	GtkComboBox *combo;
 
 	self = CE_PAGE_WIRELESS_SECURITY (g_object_new (CE_TYPE_PAGE_WIRELESS_SECURITY, NULL));
 	parent = CE_PAGE (self);
@@ -223,9 +224,8 @@ ce_page_wireless_security_new (NMConnection *connection,
 	self->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	self->wireless_page = g_object_ref (wireless_page);
-	self->ok_button = g_object_ref (ok_button);
 
-	combo = glade_xml_get_widget (parent->xml, "wireless_security_combo");
+	combo = GTK_COMBO_BOX (glade_xml_get_widget (parent->xml, "wireless_security_combo"));
 
 	dev_caps =   NM_802_11_DEVICE_CAP_CIPHER_WEP40
 	           | NM_802_11_DEVICE_CAP_CIPHER_WEP104
@@ -261,24 +261,27 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_wep_passphrase) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep_passphrase), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
-				active = item++;
+				active = item;
 		}
 
 		ws_wep_hex = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_HEX);
 		if (ws_wep_hex) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep_hex), sec_model,
 			                   &iter, _("WEP 40/128-bit Hexadecimal"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
-				active = item++;
+				active = item;
 		}
 
 		ws_wep_ascii = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_ASCII);
 		if (ws_wep_ascii) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep_ascii), sec_model,
 			                   &iter, _("WEP 40/128-bit ASCII"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
-				active = item++;
+				active = item;
 		}
 	}
 
@@ -289,8 +292,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_LEAP))
-				active = item++;
+				active = item;
 		}
 	}
 
@@ -301,8 +305,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_DYNAMIC_WEP))
-				active = item++;
+				active = item;
 		}
 	}
 
@@ -314,8 +319,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
+			item++;
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_PSK) || (default_type == NMU_SEC_WPA2_PSK)))
-				active = item++;
+				active = item;
 		}
 	}
 
@@ -327,18 +333,20 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
+			item++;
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_ENTERPRISE) || (default_type == NMU_SEC_WPA2_ENTERPRISE)))
-				active = item++;
+				active = item;
 		}
 	}
 
-	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (sec_model));
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), active < 0 ? 0 : (guint32) active);
+	gtk_combo_box_set_model (combo, GTK_TREE_MODEL (sec_model));
+	gtk_combo_box_set_active (combo, active < 0 ? 0 : (guint32) active);
 	g_object_unref (G_OBJECT (sec_model));
 
+	self->security_combo = combo;
+
 	wireless_security_combo_changed (combo, self);
-	g_signal_connect (G_OBJECT (combo),
-	                  "changed",
+	g_signal_connect (combo, "changed",
 	                  GTK_SIGNAL_FUNC (wireless_security_combo_changed),
 	                  self);
 
@@ -364,21 +372,49 @@ dispose (GObject *object)
 	if (self->group)
 		g_object_unref (self->group);
 
-	if (self->ok_button)
-		g_object_unref (self->ok_button);
-
 	if (self->wireless_page)
 		g_object_unref (self->wireless_page);
 
 	G_OBJECT_CLASS (ce_page_wireless_security_parent_class)->dispose (object);
 }
 
+static gboolean
+validate (CEPage *page)
+{
+	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (page);
+	GByteArray *ssid;
+	WirelessSecurity *sec;
+	gboolean valid = FALSE;
+
+	sec = wireless_security_combo_get_active (self);
+	if (!sec)
+		return FALSE;
+
+	ssid = ce_page_wireless_get_ssid (self->wireless_page);
+	if (ssid) {
+		valid = wireless_security_validate (sec, ssid);
+		g_byte_array_free (ssid, TRUE);
+	}
+
+	return valid;
+}
+
+static void
+update_connection (CEPage *page, NMConnection *connection)
+{
+	g_print ("FIXME: update wireless security page\n");
+}
+
 static void
 ce_page_wireless_security_class_init (CEPageWirelessSecurityClass *wireless_security_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (wireless_security_class);
+	CEPageClass *parent_class = CE_PAGE_CLASS (wireless_security_class);
 
 	/* virtual methods */
 	object_class->dispose = dispose;
+
+	parent_class->validate = validate;
+	parent_class->update_connection = update_connection;
 }
 

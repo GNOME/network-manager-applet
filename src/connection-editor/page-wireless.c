@@ -286,12 +286,21 @@ ce_page_wireless_get_ssid (CEPageWireless *self)
 }
 
 static void
+update_connection (CEPage *page, NMConnection *connection)
+{
+	g_print ("FIXME: update wireless page\n");
+}
+
+static void
 ce_page_wireless_init (CEPageWireless *self)
 {
 }
 
 static void
-ce_page_wireless_class_init (CEPageWirelessClass *wired_class)
+ce_page_wireless_class_init (CEPageWirelessClass *wireless_class)
 {
-}
+	CEPageClass *parent_class = CE_PAGE_CLASS (wireless_class);
 
+	/* virtual methods */
+	parent_class->update_connection = update_connection;
+}

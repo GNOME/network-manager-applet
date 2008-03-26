@@ -53,8 +53,10 @@ typedef struct {
 
 	/* Virtual functions */
 	gboolean    (*validate)            (CEPage *self);
-
 	void        (*update_connection)   (CEPage *self, NMConnection *connection);
+
+	/* Signals */
+	void        (*changed)             (CEPage *self);
 } CEPageClass;
 
 GType ce_page_get_type (void);
@@ -66,6 +68,8 @@ const char * ce_page_get_title (CEPage *self);
 gboolean ce_page_validate (CEPage *self);
 
 void ce_page_update_connection (CEPage *self, NMConnection *connection);
+
+void ce_page_changed (CEPage *self);
 
 #endif  /* __CE_PAGE_H__ */
 

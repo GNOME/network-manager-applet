@@ -24,6 +24,14 @@
 
 G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 
+enum {
+	CHANGED,
+
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
 gboolean
 ce_page_validate (CEPage *self)
 {
@@ -91,6 +99,14 @@ ce_page_get_title (CEPage *self)
 	return self->title;
 }
 
+void
+ce_page_changed (CEPage *self)
+{
+	g_return_if_fail (CE_IS_PAGE (self));
+
+	g_signal_emit (self, signals[CHANGED], 0);
+}
+
 static void
 ce_page_class_init (CEPageClass *page_class)
 {
@@ -99,5 +115,14 @@ ce_page_class_init (CEPageClass *page_class)
 	/* virtual methods */
 	object_class->dispose     = dispose;
 	object_class->finalize    = finalize;
-}
 
+	/* Signals */
+	signals[CHANGED] = 
+		g_signal_new ("changed",
+					  G_OBJECT_CLASS_TYPE (object_class),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (CEPageClass, changed),
+					  NULL, NULL,
+					  g_cclosure_marshal_VOID__VOID,
+					  G_TYPE_NONE, 0);
+}
