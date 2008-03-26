@@ -43,7 +43,6 @@
 #include <nm-connection.h>
 #include <nm-client.h>
 #include <nm-access-point.h>
-#include <nm-vpn-manager.h>
 #include <nm-device.h>
 #include <NetworkManager.h>
 #include <nm-active-connection.h>
@@ -86,9 +85,7 @@ typedef struct
 	GObject parent_instance;
 
 	NMClient *nm_client;
-	NMVPNManager *vpn_manager;
 	NMAccessPoint *current_ap;
-	GHashTable *vpn_connections;
 
 	AppletDbusSettings *settings;
 
@@ -166,8 +163,6 @@ struct NMADeviceClass {
 GType nma_get_type (void);
 
 NMApplet *nm_applet_new (void);
-
-NMDevice *applet_get_first_active_device (NMApplet *applet);
 
 void applet_schedule_update_icon (NMApplet *applet);
 

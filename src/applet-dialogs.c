@@ -261,20 +261,9 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 }
 
 void
-applet_info_dialog_show (NMApplet *applet)
+applet_info_dialog_show (NMConnection *connection, NMDevice *device, NMApplet *applet)
 {
 	GtkWidget *dialog;
-	NMDevice *device;
-	NMConnection *connection = NULL;
-
-	device = applet_get_first_active_device (applet);
-	if (device)
-		connection = applet_find_active_connection_for_device (device, applet, NULL);
-
-	if (!connection || !device) {
-		info_dialog_show_error (_("No active connections!"));
-		return;
-	}
 
 	dialog = info_dialog_update (applet->info_dialog_xml, device, connection);
 	if (!dialog)

@@ -62,6 +62,8 @@ static gboolean applet_exported_connection_changed (AppletExportedConnection *co
 
 enum {
 	SETTINGS_NEW_SECRETS_REQUESTED,
+	SETTINGS_SYSTEM_SETTINGS_CHANGED,
+
 	SETTINGS_LAST_SIGNAL
 };
 
@@ -131,6 +133,9 @@ connection_get_settings_cb  (DBusGProxy *proxy,
 		if (connection == NULL)
 			goto out;
 
+		nm_connection_set_scope (connection, NM_CONNECTION_SCOPE_SYSTEM);
+		nm_connection_set_path (connection, path);
+
 		g_object_set_data_full (G_OBJECT (connection),
 		                        APPLET_CONNECTION_PROXY_TAG,
 		                        proxy,
@@ -138,6 +143,10 @@ connection_get_settings_cb  (DBusGProxy *proxy,
 		g_hash_table_insert (applet_settings->system_connections,
 		                     g_strdup (path),
 		                     connection);
+
+		g_signal_emit (applet_settings,
+		               settings_signals[SETTINGS_SYSTEM_SETTINGS_CHANGED],
+		               0);
 	} else {
 		// FIXME: merge settings? or just replace?
 		nm_warning ("%s (#%d): implement merge settings", __func__, __LINE__);
@@ -157,6 +166,10 @@ connection_removed_cb (DBusGProxy *proxy, gpointer user_data)
 
 	g_hash_table_remove (applet_settings->system_connections,
 	                     dbus_g_proxy_get_path (proxy));
+
+	g_signal_emit (applet_settings,
+	               settings_signals[SETTINGS_SYSTEM_SETTINGS_CHANGED],
+	               0);
 }
 
 static void
@@ -183,6 +196,10 @@ connection_updated_cb (DBusGProxy *proxy, GHashTable *settings, gpointer user_da
 	valid = nm_connection_replace_settings (old_connection, settings);
 	if (!valid)
 		g_hash_table_remove (applet_settings->system_connections, path);
+
+	g_signal_emit (applet_settings,
+	               settings_signals[SETTINGS_SYSTEM_SETTINGS_CHANGED],
+	               0);
 }
 
 static void
@@ -429,6 +446,15 @@ applet_dbus_settings_class_init (AppletDbusSettingsClass *klass)
 					  applet_marshal_VOID__OBJECT_STRING_POINTER_BOOLEAN_POINTER,
 					  G_TYPE_NONE, 5,
 					  G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_BOOLEAN, G_TYPE_POINTER);
+
+	settings_signals[SETTINGS_SYSTEM_SETTINGS_CHANGED] =
+		g_signal_new ("system-settings-changed",
+					  G_OBJECT_CLASS_TYPE (object_class),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (AppletDbusSettingsClass, system_settings_changed),
+					  NULL, NULL,
+					  g_cclosure_marshal_VOID__VOID,
+					  G_TYPE_NONE, 0);
 }
 
 AppletDbusSettings *

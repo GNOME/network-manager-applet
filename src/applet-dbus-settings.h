@@ -84,6 +84,8 @@ typedef struct {
 	                                const char **hints,
 	                                gboolean ask_user,
 	                                DBusGMethodInvocation *context);
+
+	void (*system_settings_changed)(AppletDbusSettings *settings);
 } AppletDbusSettingsClass;
 
 GType       applet_dbus_settings_get_type (void);

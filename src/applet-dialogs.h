@@ -28,7 +28,7 @@
 
 #include "applet.h"
 
-void applet_info_dialog_show (NMApplet *applet);
+void applet_info_dialog_show (NMConnection *connection, NMDevice *device, NMApplet *applet);
 
 void applet_about_dialog_show (NMApplet *applet);
 
