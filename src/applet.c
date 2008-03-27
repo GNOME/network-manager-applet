@@ -675,7 +675,7 @@ applet_find_active_connection_for_device (NMDevice *device,
 static guint32
 nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 {
-	GPtrArray *temp = NULL;
+	const GPtrArray *temp = NULL;
 	GSList *devices = NULL, *iter = NULL;
 	gint n_wireless_interfaces = 0;
 	gint n_wired_interfaces = 0;
@@ -971,7 +971,7 @@ nma_context_menu_update (NMApplet *applet)
 						 state == NM_STATE_CONNECTED);
 
 	if (state != NM_STATE_ASLEEP) {
-		GPtrArray *devices;
+		const GPtrArray *devices;
 		int i;
 
 		devices = nm_client_get_devices (applet->nm_client);
