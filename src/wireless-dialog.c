@@ -483,24 +483,27 @@ security_combo_init (const char *glade_file,
 		if (ws_wep) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
-				active = item++;
+				active = item;
 		}
 
 		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_HEX);
 		if (ws_wep) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Hexadecimal"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
-				active = item++;
+				active = item;
 		}
 
 		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_ASCII);
 		if (ws_wep) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit ASCII"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
-				active = item++;
+				active = item;
 		}
 	}
 
@@ -515,8 +518,9 @@ security_combo_init (const char *glade_file,
 		if (ws_leap) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_LEAP))
-				active = item++;
+				active = item;
 		}
 	}
 
@@ -527,8 +531,9 @@ security_combo_init (const char *glade_file,
 		if (ws_dynamic_wep) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
+			item++;
 			if ((active < 0) && (default_type == NMU_SEC_DYNAMIC_WEP))
-				active = item++;
+				active = item;
 		}
 	}
 
@@ -540,8 +545,9 @@ security_combo_init (const char *glade_file,
 		if (ws_wpa_psk) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
+			item++;
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_PSK) || (default_type == NMU_SEC_WPA2_PSK)))
-				active = item++;
+				active = item;
 		}
 	}
 
@@ -553,8 +559,9 @@ security_combo_init (const char *glade_file,
 		if (ws_wpa_eap) {
 			add_security_item (dialog, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
+			item++;
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_ENTERPRISE) || (default_type == NMU_SEC_WPA2_ENTERPRISE)))
-				active = item++;
+				active = item;
 		}
 	}
 
