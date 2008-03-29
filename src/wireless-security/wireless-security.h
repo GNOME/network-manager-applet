@@ -82,7 +82,6 @@ GType wireless_security_get_g_type (void);
 /* Below for internal use only */
 
 #include "ws-wep-key.h"
-#include "ws-wep-passphrase.h"
 #include "ws-wpa-psk.h"
 #include "ws-leap.h"
 #include "ws-wpa-eap.h"

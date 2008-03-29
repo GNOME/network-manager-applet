@@ -25,6 +25,7 @@
 
 #include "wireless-security.h"
 #include "utils.h"
+#include "gnome-keyring-md5.h"
 
 
 static void
@@ -76,6 +77,9 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 			if (!isascii (key[i]))
 				return FALSE;
 		}
+	} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE) {
+		if (!key || !strlen (key) || (strlen (key) > 64))
+			return FALSE;
 	}
 
 	return TRUE;
@@ -93,6 +97,30 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 	gtk_size_group_add_widget (group, widget);
 }
 
+static char *
+wep128_passphrase_hash (const char *input)
+{
+	char md5_data[65];
+	unsigned char digest[16];
+	int input_len;
+	int i;
+
+	g_return_val_if_fail (input != NULL, NULL);
+
+	input_len = strlen (input);
+	if (input_len < 1)
+		return NULL;
+
+	/* Get at least 64 bytes */
+	for (i = 0; i < 64; i++)
+		md5_data [i] = input [i % input_len];
+
+	/* Null terminate md5 seed data and hash it */
+	md5_data[64] = 0;
+	gnome_keyring_md5_string (md5_data, digest);
+	return (utils_bin2hexstr ((const char *) &digest, 16, 26));
+}
+
 static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
@@ -100,6 +128,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	GtkWidget *widget;
 	gint auth_alg;
 	const char *key;
+	char *hashed;
 
 	widget = glade_xml_get_widget (parent->xml, "auth_method_combo");
 	auth_alg = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
@@ -109,10 +138,12 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	if (sec->type == WEP_KEY_TYPE_HEX) {
 		ws_wep_fill_connection (connection, key, auth_alg);
-	} else {
-		char *hashed;
-
+	} else if (sec->type == WEP_KEY_TYPE_ASCII) {
 		hashed = utils_bin2hexstr (key, strlen (key), strlen (key) * 2);
+		ws_wep_fill_connection (connection, hashed, auth_alg);
+		g_free (hashed);
+	} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE) {
+		hashed = wep128_passphrase_hash (key);
 		ws_wep_fill_connection (connection, hashed, auth_alg);
 		g_free (hashed);
 	}
@@ -140,6 +171,9 @@ wep_entry_filter_cb (GtkEntry *   entry,
 			if (isascii(text[i]))
 				result[count++] = text[i];
 		}
+	} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE) {
+		for (i = 0; i < length; i++)
+			result[count++] = text[i];
 	}
 
 	if (count == 0)
@@ -203,6 +237,12 @@ ws_wep_key_new (const char *glade_file,
 	g_signal_connect (G_OBJECT (widget), "insert-text",
 	                  (GCallback) wep_entry_filter_cb,
 	                  sec);
+	if (sec->type == WEP_KEY_TYPE_HEX)
+		gtk_entry_set_max_length (GTK_ENTRY (widget), 26);
+	else if (sec->type == WEP_KEY_TYPE_ASCII)
+		gtk_entry_set_max_length (GTK_ENTRY (widget), 13);
+	else if (sec->type == WEP_KEY_TYPE_PASSPHRASE)
+		gtk_entry_set_max_length (GTK_ENTRY (widget), 64);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);

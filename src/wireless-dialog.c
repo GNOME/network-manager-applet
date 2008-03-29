@@ -477,29 +477,27 @@ security_combo_init (const char *glade_file,
 	 */
 	if (   nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!cur_ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_802_11_DEVICE_CAP_WPA | NM_802_11_DEVICE_CAP_RSN)))) {
-		WirelessSecurityWEPKey *ws_wep_hex;
-		WirelessSecurityWEPKey *ws_wep_ascii;
-		WirelessSecurityWEPPassphrase *ws_wep_passphrase;
+		WirelessSecurityWEPKey *ws_wep;
 
-		ws_wep_passphrase = ws_wep_passphrase_new (glade_file, connection);
-		if (ws_wep_passphrase) {
-			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_passphrase), sec_model,
+		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_PASSPHRASE);
+		if (ws_wep) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
 				active = item++;
 		}
 
-		ws_wep_hex = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_HEX);
-		if (ws_wep_hex) {
-			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_hex), sec_model,
+		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_HEX);
+		if (ws_wep) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Hexadecimal"));
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
 				active = item++;
 		}
 
-		ws_wep_ascii = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_ASCII);
-		if (ws_wep_ascii) {
-			add_security_item (dialog, WIRELESS_SECURITY (ws_wep_ascii), sec_model,
+		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_ASCII);
+		if (ws_wep) {
+			add_security_item (dialog, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit ASCII"));
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
 				active = item++;

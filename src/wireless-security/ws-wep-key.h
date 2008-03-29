@@ -24,7 +24,8 @@
 
 typedef enum {
 	WEP_KEY_TYPE_HEX = 0,
-	WEP_KEY_TYPE_ASCII = 1
+	WEP_KEY_TYPE_ASCII = 1,
+	WEP_KEY_TYPE_PASSPHRASE = 2,
 } WEPKeyType;
 
 typedef struct {

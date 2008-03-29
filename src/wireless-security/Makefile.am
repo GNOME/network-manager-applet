@@ -5,8 +5,6 @@ libwireless_security_la_SOURCES = \
 	wireless-security.c \
 	ws-wep-key.h \
 	ws-wep-key.c \
-	ws-wep-passphrase.h \
-	ws-wep-passphrase.c \
 	ws-wpa-psk.h \
 	ws-wpa-psk.c \
 	sha1.c \
