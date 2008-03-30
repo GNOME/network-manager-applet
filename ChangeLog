@@ -1,5 +1,14 @@
 2008-03-30  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/page-wireless-security.c
+		- (get_default_type_for_security): unencrypted connections shouldn't
+			have a wireless-security setting
+		- (ce_page_wireless_security_new): don't set the wireless-security
+			setting if security isn't specified in the wireless setting; guess
+			the WEP key type
+
+2008-03-30  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-security/ws-wep-key.c
 	  src/wireless-security/ws-wep-key.h
 		- (ws_wep_key_new): fill WEP keys from keyring

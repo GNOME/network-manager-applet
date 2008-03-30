@@ -46,23 +46,11 @@ G_DEFINE_TYPE (CEPageWirelessSecurity, ce_page_wireless_security, CE_TYPE_PAGE)
 static NMUtilsSecurityType
 get_default_type_for_security (NMSettingWirelessSecurity *sec)
 {
-	if (!sec)
-		return NMU_SEC_NONE;
+	g_return_val_if_fail (sec != NULL, NMU_SEC_NONE);
 
 	/* No IEEE 802.1x */
-	if (!strcmp (sec->key_mgmt, "none")) {
-		/* Static WEP */
-		if (   sec->wep_tx_keyidx
-		    || sec->wep_key0
-		    || sec->wep_key1
-		    || sec->wep_key2
-		    || sec->wep_key3
-		    || (sec->auth_alg && !strcmp (sec->auth_alg, "shared")))
-			return NMU_SEC_STATIC_WEP;
-
-		/* Unencrypted */
-		return NMU_SEC_NONE;
-	}
+	if (!strcmp (sec->key_mgmt, "none"))
+		return NMU_SEC_STATIC_WEP;
 
 	if (!strcmp (sec->key_mgmt, "ieee8021x")) {
 		if (sec->auth_alg && !strcmp (sec->auth_alg, "leap"))
@@ -239,7 +227,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 
 	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
 	                                               NM_TYPE_SETTING_WIRELESS_SECURITY));
-	if (s_wireless_sec && s_wireless->security && !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+	if (!s_wireless->security || strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+		s_wireless_sec = NULL;
+	if (s_wireless_sec)
 		default_type = get_default_type_for_security (s_wireless_sec);
 
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
@@ -255,13 +245,17 @@ ce_page_wireless_security_new (NMConnection *connection,
 
 	if (nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityWEPKey *ws_wep;
+		WEPKeyType default_wep_type = WEP_KEY_TYPE_PASSPHRASE;
+
+		if (default_type == NMU_SEC_STATIC_WEP)
+			default_wep_type = ws_wep_guess_key_type (connection);
 
 		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_PASSPHRASE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
 			item++;
-			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_PASSPHRASE))
 				active = item;
 		}
 
@@ -270,7 +264,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Hexadecimal"));
 			item++;
-			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_HEX))
 				active = item;
 		}
 
@@ -279,7 +273,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit ASCII"));
 			item++;
-			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP))
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_ASCII))
 				active = item;
 		}
 	}
