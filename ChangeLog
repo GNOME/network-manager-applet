@@ -1,5 +1,15 @@
 2008-03-30  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-dialog.c
+		- (security_combo_init): fix item counting to determine default security
+			type
+
+	* src/connection-editor/page-wireless-security.c
+		- (ce_page_wireless_security_new): fix item counting to determine
+			default security type
+
+2008-03-30  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (nma_menu_deactivate_cb, nma_menu_clear): punt the menu destruction
 			to a low-priority idle handler so that any menu item 'activate'

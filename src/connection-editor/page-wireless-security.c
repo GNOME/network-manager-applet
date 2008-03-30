@@ -241,6 +241,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 		                    -1);
 		if (default_type == NMU_SEC_NONE)
 			active = item;
+		item++;
 	}
 
 	if (nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
@@ -254,27 +255,27 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
-			item++;
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_PASSPHRASE))
 				active = item;
+			item++;
 		}
 
 		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_HEX);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Hexadecimal"));
-			item++;
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_HEX))
 				active = item;
+			item++;
 		}
 
 		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_ASCII);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit ASCII"));
-			item++;
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_ASCII))
 				active = item;
+			item++;
 		}
 	}
 
@@ -285,9 +286,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
-			item++;
 			if ((active < 0) && (default_type == NMU_SEC_LEAP))
 				active = item;
+			item++;
 		}
 	}
 
@@ -298,9 +299,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
-			item++;
 			if ((active < 0) && (default_type == NMU_SEC_DYNAMIC_WEP))
 				active = item;
+			item++;
 		}
 	}
 
@@ -312,9 +313,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
-			item++;
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_PSK) || (default_type == NMU_SEC_WPA2_PSK)))
 				active = item;
+			item++;
 		}
 	}
 
@@ -326,9 +327,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
-			item++;
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_ENTERPRISE) || (default_type == NMU_SEC_WPA2_ENTERPRISE)))
 				active = item;
+			item++;
 		}
 	}
 
