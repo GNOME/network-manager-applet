@@ -910,13 +910,16 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
+static gboolean nma_menu_clear (NMApplet *applet);
+
 static void
 nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 {
-	if (applet->menu) {
-		gtk_widget_destroy (applet->menu);
-		applet->menu = NULL;
-	}
+	/* Must punt the destroy to a low-priority idle to ensure that
+	 * the menu items don't get destroyed before any 'activate' signal
+	 * fires for an item.
+	 */
+	g_idle_add_full (G_PRIORITY_LOW, (GSourceFunc) nma_menu_clear, applet, NULL);
 }
 
 /*
@@ -945,13 +948,14 @@ nma_menu_create (NMApplet *applet)
  * Destroy the menu and each of its items data tags
  *
  */
-static void nma_menu_clear (NMApplet *applet)
+static gboolean nma_menu_clear (NMApplet *applet)
 {
-	g_return_if_fail (applet != NULL);
+	g_return_val_if_fail (applet != NULL, FALSE);
 
 	if (applet->menu)
 		gtk_widget_destroy (applet->menu);
 	applet->menu = nma_menu_create (applet);
+	return FALSE;
 }
 
 

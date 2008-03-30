@@ -1,6 +1,13 @@
 2008-03-30  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
+		- (nma_menu_deactivate_cb, nma_menu_clear): punt the menu destruction
+			to a low-priority idle handler so that any menu item 'activate'
+			signals fire before the menu is destroyed
+
+2008-03-30  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
 		- (nma_menu_create): connect to the menu's deactivate signal
 		- (nma_menu_deactivate_cb): free menu items (and thus devices) when
 			the menu disappears to ensure that everything gets unreffed
