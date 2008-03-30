@@ -131,42 +131,6 @@ wireless_security_unref (WirelessSecurity *sec)
 }
 
 void
-ws_wep_fill_connection (NMConnection *connection,
-                        const char *key,
-                        int auth_alg)
-{
-	NMSettingWireless *s_wireless;
-	NMSettingWirelessSecurity *s_wireless_sec;
-
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-	g_assert (s_wireless);
-
-	if (s_wireless->security)
-		g_free (s_wireless->security);
-	s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
-
-	/* Blow away the old security setting by adding a clear one */
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
-	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
-
-	s_wireless_sec->wep_key0 = g_strdup (key);
-	s_wireless_sec->key_mgmt = g_strdup ("none");
-	s_wireless_sec->wep_tx_keyidx = 0;
-
-	switch (auth_alg) {
-		case 0:
-			s_wireless_sec->auth_alg = g_strdup ("open");
-			break;
-		case 1:
-			s_wireless_sec->auth_alg = g_strdup ("shared");
-			break;
-		default:
-			g_assert_not_reached ();
-			break;
-	}
-}
-
-void
 wireless_security_init (WirelessSecurity *sec,
                         WSValidateFunc validate,
                         WSAddToSizeGroupFunc add_to_size_group,

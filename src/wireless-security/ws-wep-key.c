@@ -23,6 +23,9 @@
 #include <ctype.h>
 #include <string.h>
 
+#include <nm-setting-wireless.h>
+#include <nm-setting-wireless-security.h>
+
 #include "wireless-security.h"
 #include "utils.h"
 #include "gnome-keyring-md5.h"
@@ -42,9 +45,38 @@ show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
 }
 
 static void
+key_index_combo_changed_cb (GtkWidget *combo, WirelessSecurity *parent)
+{
+	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
+	GtkWidget *entry;
+	const char *key;
+	int key_index;
+
+	/* Save WEP key for old key index */
+	entry = glade_xml_get_widget (parent->xml, "wep_key_entry");
+	key = gtk_entry_get_text (GTK_ENTRY (entry));
+	if (key)
+		strcpy (sec->keys[sec->cur_index], key);
+	else
+		memset (sec->keys[sec->cur_index], 0, sizeof (sec->keys[sec->cur_index]));
+
+	key_index = gtk_combo_box_get_active (GTK_COMBO_BOX (combo));
+	g_return_if_fail (key_index < 3);
+	g_return_if_fail (key_index > 0);
+
+	/* Populate entry with key from new index */
+	gtk_entry_set_text (GTK_ENTRY (entry), sec->keys[key_index]);
+	sec->cur_index = key_index;
+}
+
+static void
 destroy (WirelessSecurity *parent)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
+	int i;
+
+	for (i = 0; i < 4; i++)
+		memset (sec->keys[i], 0, sizeof (sec->keys[i]));
 
 	g_slice_free (WirelessSecurityWEPKey, sec);
 }
@@ -95,6 +127,9 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 
 	widget = glade_xml_get_widget (parent->xml, "wep_key_label");
 	gtk_size_group_add_widget (group, widget);
+
+	widget = glade_xml_get_widget (parent->xml, "key_index_label");
+	gtk_size_group_add_widget (group, widget);
 }
 
 static char *
@@ -125,28 +160,64 @@ static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
+	NMSettingWireless *s_wireless;
+	NMSettingWirelessSecurity *s_wireless_sec;
 	GtkWidget *widget;
 	gint auth_alg;
 	const char *key;
-	char *hashed;
+	char *hashed = NULL;
+	int i;
 
 	widget = glade_xml_get_widget (parent->xml, "auth_method_combo");
 	auth_alg = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
 	widget = glade_xml_get_widget (parent->xml, "wep_key_entry");
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
+	strcpy (sec->keys[sec->cur_index], key);
 
-	if (sec->type == WEP_KEY_TYPE_HEX) {
-		ws_wep_fill_connection (connection, key, auth_alg);
-	} else if (sec->type == WEP_KEY_TYPE_ASCII) {
-		hashed = utils_bin2hexstr (key, strlen (key), strlen (key) * 2);
-		ws_wep_fill_connection (connection, hashed, auth_alg);
-		g_free (hashed);
-	} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE) {
-		hashed = wep128_passphrase_hash (key);
-		ws_wep_fill_connection (connection, hashed, auth_alg);
-		g_free (hashed);
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	g_assert (s_wireless);
+
+	if (s_wireless->security)
+		g_free (s_wireless->security);
+	s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
+
+	/* Blow away the old security setting by adding a clear one */
+	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
+	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
+
+	s_wireless_sec->key_mgmt = g_strdup ("none");
+	s_wireless_sec->wep_tx_keyidx = sec->cur_index;
+
+	for (i = 0; i < 4; i++) {
+		int key_len = strlen (sec->keys[i]);
+
+		if (!key_len)
+			continue;
+
+		if (sec->type == WEP_KEY_TYPE_HEX)
+			hashed = g_strdup (sec->keys[i]);
+		else if (sec->type == WEP_KEY_TYPE_ASCII)
+			hashed = utils_bin2hexstr (sec->keys[i], key_len, key_len * 2);
+		else if (sec->type == WEP_KEY_TYPE_PASSPHRASE)
+			hashed = wep128_passphrase_hash (sec->keys[i]);
+
+		if (i == 0)
+			s_wireless_sec->wep_key0 = hashed;
+		else if (i == 1)
+			s_wireless_sec->wep_key1 = hashed;
+		else if (i == 2)
+			s_wireless_sec->wep_key2 = hashed;
+		else if (i == 3)
+			s_wireless_sec->wep_key3 = hashed;
 	}
+
+	if (auth_alg == 0)
+		s_wireless_sec->auth_alg = g_strdup ("open");
+	else if (auth_alg == 1)
+		s_wireless_sec->auth_alg = g_strdup ("shared");
+	else
+		g_assert_not_reached ();
 }
 
 static void
@@ -200,6 +271,8 @@ ws_wep_key_new (const char *glade_file,
 	WirelessSecurityWEPKey *sec;
 	GtkWidget *widget;
 	GladeXML *xml;
+	NMSettingWirelessSecurity *s_wsec;
+	guint8 default_key_idx = 0;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -243,6 +316,18 @@ ws_wep_key_new (const char *glade_file,
 		gtk_entry_set_max_length (GTK_ENTRY (widget), 13);
 	else if (sec->type == WEP_KEY_TYPE_PASSPHRASE)
 		gtk_entry_set_max_length (GTK_ENTRY (widget), 64);
+
+	widget = glade_xml_get_widget (xml, "key_index_combo");
+	if (connection) {
+		s_wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+		if (s_wsec)
+			default_key_idx = s_wsec->wep_tx_keyidx;
+	}
+	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), default_key_idx);
+	sec->cur_index = default_key_idx;
+	g_signal_connect (G_OBJECT (widget), "changed",
+	                  (GCallback) key_index_combo_changed_cb,
+	                  sec);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);

@@ -1,3 +1,30 @@
+2008-03-30  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.glade
+		- Add combo for specifying WEP key index
+
+	* src/wireless-security/wireless-security.c
+	  src/wireless-security/wireless-security.h
+		- (ws_wep_fill_connection): fold into ws-wep-key.c's fill_connection()
+			which is now it's only user
+
+	* src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wep-key.h
+		- (key_index_combo_changed_cb): new function; save current key to its
+			index
+		- (destroy): zero out keys
+		- (fill_connection): fold in functionality of ws_wep_fill_connection(),
+			handle WEP key index too
+		- (ws_wep_key_new): select the WEP key index
+
+	* src/wireless-dialog.c
+		- (security_combo_init): only get default type for security if security
+			is specified
+
+	* src/connection-editor/page-wireless-security.c
+		- (ce_page_wireless_security_new): only get default type for security
+			if security is specified
+
 2008-03-29  Dan Williams  <dcbw@redhat.com>
 
 	* src/wireless-dialog.c

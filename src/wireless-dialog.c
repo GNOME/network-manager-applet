@@ -458,7 +458,8 @@ security_combo_init (const char *glade_file,
 
 		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
 										NM_TYPE_SETTING_WIRELESS_SECURITY));
-		default_type = get_default_type_for_security (wsec, ap_flags, dev_caps);
+		if (wsec && s_wireless->security && !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+			default_type = get_default_type_for_security (wsec, ap_flags, dev_caps);
 	}
 
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());

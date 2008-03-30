@@ -97,10 +97,6 @@ void wireless_security_init (WirelessSecurity *sec,
 
 void wireless_security_changed_cb (GtkWidget *entry, gpointer user_data);
 
-void ws_wep_fill_connection (NMConnection *connection,
-                             const char *key,
-                             gint auth_alg);
-
 void ws_wpa_fill_default_ciphers (NMConnection *connection);
 
 #define AUTH_NAME_COLUMN   0

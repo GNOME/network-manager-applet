@@ -32,6 +32,8 @@ typedef struct {
 	struct _WirelessSecurity parent;
 
 	WEPKeyType type;
+	char keys[4][65];
+	guint8 cur_index;
 } WirelessSecurityWEPKey;
 
 WirelessSecurityWEPKey * ws_wep_key_new (const char *glade_file,
