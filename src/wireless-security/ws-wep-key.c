@@ -29,6 +29,7 @@
 #include "wireless-security.h"
 #include "utils.h"
 #include "gnome-keyring-md5.h"
+#include "gconf-helpers.h"
 
 
 static void
@@ -304,6 +305,35 @@ ws_wep_key_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "wep_key_entry");
 	g_assert (widget);
+
+	/* Fill secrets, if any */
+	if (connection) {
+		GHashTable *secrets;
+		GError *error = NULL;
+		GValue *value;
+
+		secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
+		if (secrets) {
+			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY0);
+			if (value)
+				strcpy (sec->keys[0], g_value_get_string (value));
+
+			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY1);
+			if (value)
+				strcpy (sec->keys[1], g_value_get_string (value));
+
+			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY2);
+			if (value)
+				strcpy (sec->keys[2], g_value_get_string (value));
+
+			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY3);
+			if (value)
+				strcpy (sec->keys[3], g_value_get_string (value));
+
+			g_hash_table_destroy (secrets);
+		}
+	}
+
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
@@ -329,6 +359,11 @@ ws_wep_key_new (const char *glade_file,
 	                  (GCallback) key_index_combo_changed_cb,
 	                  sec);
 
+	/* Fill the key entry with the key for that index */
+	widget = glade_xml_get_widget (xml, "wep_key_entry");
+	if (strlen (sec->keys[default_key_idx]))
+		gtk_entry_set_text (GTK_ENTRY (widget), sec->keys[default_key_idx]);
+
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
@@ -339,5 +374,87 @@ ws_wep_key_new (const char *glade_file,
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 
 	return sec;
+}
+
+static WEPKeyType
+guess_type_for_key (const char *key)
+{
+	size_t len = key ? strlen (key) : 0;
+	int i;
+
+	if (!key || !len)
+		return WEP_KEY_TYPE_PASSPHRASE;
+
+	if ((len == 10) || (len == 26)) {
+		gboolean hex = TRUE;
+
+		for (i = 0; i < len; i++) {
+			if (!isxdigit(key[i])) {
+				hex = FALSE;
+				break;
+			}
+		}
+		if (hex)
+			return WEP_KEY_TYPE_HEX;
+	}
+
+	if ((len == 5) || (len == 13)) {
+		gboolean ascii = TRUE;
+
+		for (i = 0; i < len; i++) {
+			if (!isascii (key[i])) {
+				ascii = FALSE;
+				break;
+			}
+		}
+		if (ascii)
+			return WEP_KEY_TYPE_ASCII;
+	}
+
+	return WEP_KEY_TYPE_PASSPHRASE;
+}
+
+WEPKeyType
+ws_wep_guess_key_type (NMConnection *connection)
+{
+	GHashTable *secrets;
+	GError *error = NULL;
+	GValue *value;
+	WEPKeyType key_type = WEP_KEY_TYPE_PASSPHRASE;
+
+	if (!connection)
+		return WEP_KEY_TYPE_PASSPHRASE;
+
+	secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
+	if (!secrets || (g_hash_table_size (secrets) == 0))
+		return WEP_KEY_TYPE_PASSPHRASE;
+
+	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY0);
+	if (value) {
+		key_type = guess_type_for_key (g_value_get_string (value));
+		goto out;
+	}
+
+	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY1);
+	if (value) {
+		key_type = guess_type_for_key (g_value_get_string (value));
+		goto out;
+	}
+
+	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY2);
+	if (value) {
+		key_type = guess_type_for_key (g_value_get_string (value));
+		goto out;
+	}
+
+	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY3);
+	if (value) {
+		key_type = guess_type_for_key (g_value_get_string (value));
+		goto out;
+	}
+
+out:
+	g_hash_table_destroy (secrets);
+	return key_type;
 }
 

@@ -1,5 +1,13 @@
 2008-03-30  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wep-key.h
+		- (ws_wep_key_new): fill WEP keys from keyring
+		- (ws_wep_guess_key_type): new function; guess the WEP key type for a
+			given WEP connection's secrets
+
+2008-03-30  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-dialog.c
 		- (get_default_type_for_security): unencrypted connections shouldn't
 			have a wireless-security setting

@@ -40,5 +40,7 @@ WirelessSecurityWEPKey * ws_wep_key_new (const char *glade_file,
                                          NMConnection *connection,
                                          WEPKeyType type);
 
+WEPKeyType ws_wep_guess_key_type (NMConnection *connection);
+
 #endif /* WS_WEP_KEY_H */
 
