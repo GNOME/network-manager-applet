@@ -27,6 +27,7 @@
 #include "wireless-security.h"
 #include "utils.h"
 #include "sha1.h"
+#include "gconf-helpers.h"
 
 #define WPA_PMK_LEN 32
 
@@ -185,6 +186,21 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
+
+	/* Fill secrets, if any */
+	if (connection) {
+		GHashTable *secrets;
+		GError *error = NULL;
+		GValue *value;
+
+		secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
+		if (secrets) {
+			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_PSK);
+			if (value)
+				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
+			g_hash_table_destroy (secrets);
+		}
+	}
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);
