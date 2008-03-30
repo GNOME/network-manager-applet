@@ -910,6 +910,15 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
+static void
+nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
+{
+	if (applet->menu) {
+		gtk_widget_destroy (applet->menu);
+		applet->menu = NULL;
+	}
+}
+
 /*
  * nma_menu_create
  *
@@ -926,6 +935,7 @@ nma_menu_create (NMApplet *applet)
 	menu = gtk_menu_new ();
 	gtk_container_set_border_width (GTK_CONTAINER (menu), 0);
 	g_signal_connect (menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
+	g_signal_connect (menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
 	return menu;
 }
 
