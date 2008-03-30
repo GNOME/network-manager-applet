@@ -351,20 +351,8 @@ get_default_type_for_security (NMSettingWirelessSecurity *sec,
 	g_return_val_if_fail (sec != NULL, NMU_SEC_NONE);
 
 	/* No IEEE 802.1x */
-	if (!strcmp (sec->key_mgmt, "none")) {
-		/* Static WEP */
-		if (   sec->wep_tx_keyidx
-		    || sec->wep_key0
-		    || sec->wep_key1
-		    || sec->wep_key2
-		    || sec->wep_key3
-		    || (ap_flags & NM_802_11_AP_FLAGS_PRIVACY)
-		    || (sec->auth_alg && !strcmp (sec->auth_alg, "shared")))
-			return NMU_SEC_STATIC_WEP;
-
-		/* Unencrypted */
-		return NMU_SEC_NONE;
-	}
+	if (!strcmp (sec->key_mgmt, "none"))
+		return NMU_SEC_STATIC_WEP;
 
 	if (   !strcmp (sec->key_mgmt, "ieee8021x")
 	    && (ap_flags & NM_802_11_AP_FLAGS_PRIVACY)) {
@@ -458,7 +446,9 @@ security_combo_init (const char *glade_file,
 
 		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
 										NM_TYPE_SETTING_WIRELESS_SECURITY));
-		if (wsec && s_wireless->security && !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+		if (!s_wireless->security || strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+			wsec = NULL;
+		if (wsec)
 			default_type = get_default_type_for_security (wsec, ap_flags, dev_caps);
 	}
 
@@ -748,6 +738,15 @@ nma_wireless_dialog_get_connection (GtkWidget *dialog,
 	if (sec) {
 		wireless_security_fill_connection (sec, connection);
 		wireless_security_unref (sec);
+	} else {
+		/* Unencrypted */
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+		g_assert (s_wireless);
+
+		if (s_wireless->security) {
+			g_free (s_wireless->security);
+			s_wireless->security = NULL;
+		}
 	}
 
 	/* Fill device */
