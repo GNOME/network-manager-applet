@@ -159,5 +159,10 @@ nm_gconf_add_keyring_item (const char *connection_id,
                            const char *setting_key,
                            const char *secret);
 
+GHashTable *
+nm_gconf_get_keyring_items (NMConnection *connection,
+                            const char *setting_name,
+                            GError **error);
+
 #endif	/* GCONF_HELPERS_H */
 

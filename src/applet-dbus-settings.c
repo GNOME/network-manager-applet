@@ -1069,153 +1069,6 @@ applet_exported_connection_get_gconf_path (AppletExportedConnection *exported)
 	return exported->conf_dir;
 }
 
-static GValue *
-string_to_gvalue (const char *str)
-{
-	GValue *val;
-
-	val = g_slice_new0 (GValue);
-	g_value_init (val, G_TYPE_STRING);
-	g_value_set_string (val, str);
-
-	return val;
-}
-
-static GValue *
-byte_array_to_gvalue (const GByteArray *array)
-{
-	GValue *val;
-
-	val = g_slice_new0 (GValue);
-	g_value_init (val, DBUS_TYPE_G_UCHAR_ARRAY);
-	g_value_set_boxed (val, array);
-
-	return val;
-}
-
-static void
-destroy_gvalue (gpointer data)
-{
-	GValue *value = (GValue *) data;
-
-	g_value_unset (value);
-	g_slice_free (GValue, value);
-}
-
-static gboolean
-get_one_private_key (NMConnection *connection,
-                     const char *tag,
-                     const char *password,
-                     GHashTable *secrets)
-{
-	GByteArray *array = NULL;
-	const char *privkey_tag;
-	const char *secret_name;
-	gboolean success = FALSE;
-	GError *error = NULL;
-
-	g_return_val_if_fail (connection != NULL, FALSE);
-	g_return_val_if_fail (tag != NULL, FALSE);
-	g_return_val_if_fail (password != NULL, FALSE);
-
-	if (!strcmp (tag, NMA_PRIVATE_KEY_PASSWORD_TAG)) {
-		privkey_tag = NMA_PATH_PRIVATE_KEY_TAG;
-		secret_name = NM_SETTING_802_1X_PRIVATE_KEY;
-	} else if (!strcmp (tag, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG)) {
-		privkey_tag = NMA_PATH_PHASE2_PRIVATE_KEY_TAG;
-		secret_name = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY;
-	} else {
-		g_warning ("Unknown private key password type '%s'", tag);
-		return FALSE;
-	}
-
-	utils_fill_one_crypto_object (connection, privkey_tag, TRUE, password, &array, &error);
-	if (error) {
-		g_warning ("Couldn't read private key: %s", error->message);
-		g_clear_error (&error);
-	} else if (!array || !array->len) {
-		g_warning ("Couldn't read private key; unknown reason.");
-		goto out;
-	}
-
-	g_hash_table_insert (secrets,
-	                     g_strdup (secret_name),
-	                     byte_array_to_gvalue (array));
-	success = TRUE;
-
-out:
-	if (array) {
-		/* Try not to leave the decrypted private key around in memory */
-		memset (array->data, 0, array->len);
-		g_byte_array_free (array, TRUE);
-	}
-	return success;
-}
-
-static GHashTable *
-extract_secrets (NMConnection *connection,
-                 GList *found_list,
-                 const char *connection_name,
-                 const char *setting_name,
-                 GError **error)
-{
-	GHashTable *secrets;
-	GList *iter;
-
-	g_return_val_if_fail (setting_name != NULL, NULL);
-	g_return_val_if_fail (error != NULL, NULL);
-	g_return_val_if_fail (*error == NULL, NULL);
-
-	secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
-
-	for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
-		GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
-		int i;
-		const char * key_name = NULL;
-
-		for (i = 0; i < found->attributes->len; i++) {
-			GnomeKeyringAttribute *attr;
-
-			attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
-			if (   (strcmp (attr->name, "setting-key") == 0)
-			    && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
-				key_name = attr->value.string;
-				break;
-			}
-		}
-
-		if (key_name == NULL) {
-			g_set_error (error, NM_SETTINGS_ERROR, 1,
-			             "%s.%d - Internal error; keyring item '%s/%s' didn't "
-			             "have a 'setting-key' attribute.",
-			             __FILE__, __LINE__, connection_name, setting_name);
-			break;
-		}
-
-		if (   !strcmp (setting_name, NM_SETTING_802_1X_SETTING_NAME)
-		    && (   !strcmp (key_name, NMA_PRIVATE_KEY_PASSWORD_TAG)
-		        || !strcmp (key_name, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG))) {
-			/* Private key passwords aren't passed to NM, they are used
-			 * to decrypt the private key and send _that_ to NM.
-			 */
-			if (!get_one_private_key (connection, key_name, found->secret, secrets))
-				g_warning ("Couldn't retrieve and decrypt private key.");
-		} else {
-			/* Ignore older obsolete keyring keys that we don't want to leak
-			 * through to NM.
-			 */
-			if (   strcmp (key_name, "private-key-passwd")
-			    && strcmp (key_name, "phase2-private-key-passwd")) {
-				g_hash_table_insert (secrets,
-				                     g_strdup (key_name),
-				                     string_to_gvalue (found->secret));
-			}
-		}
-	}
-
-	return secrets;
-}
-
 static GHashTable *
 applet_exported_connection_get_settings (NMExportedConnection *parent)
 {
@@ -1247,8 +1100,6 @@ applet_exported_connection_get_secrets (NMExportedConnection *parent,
 	GError *error = NULL;
 	GHashTable *settings = NULL;
 	GHashTable *secrets = NULL;
-	GList *found_list = NULL;
-	GnomeKeyringResult ret;
 	NMSettingConnection *s_con;
 	NMSetting *setting;
 
@@ -1293,33 +1144,23 @@ applet_exported_connection_get_secrets (NMExportedConnection *parent,
 		goto get_secrets;
 	}
 
-	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                                      &found_list,
-	                                      "connection-name",
-	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      s_con->id,
-	                                      "setting-name",
-	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      setting_name,
-	                                      NULL);
-	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0)) {
-		nm_info ("No keyring secrets found for %s/%s; ask the user",
-		         s_con->id, setting_name);
-		goto get_secrets;
-	}
-
 	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
 	 * will contain all the individual settings hashes.
 	 */
 	settings = g_hash_table_new_full (g_str_hash, g_str_equal,
 	                                  g_free, (GDestroyNotify) g_hash_table_destroy);
 
-	/* Inner a{sv} hash of one setting */
-	secrets = extract_secrets (connection, found_list, s_con->id, setting_name, &error);
-	if (error) {
-		g_warning (error->message);
-		dbus_g_method_return_error (context, error);
-		g_error_free (error);
+	secrets = nm_gconf_get_keyring_items (connection, setting_name, &error);
+	if (!secrets) {
+		if (error) {
+			nm_warning ("Error getting secrets: %s", error->message);
+			dbus_g_method_return_error (context, error);
+			g_error_free (error);
+		} else {
+			nm_info ("No keyring secrets found for %s/%s; asking user.",
+			         s_con->id, setting_name);
+			goto get_secrets;
+		}
 	} else {
 		if (g_hash_table_size (secrets) == 0) {
 			g_hash_table_destroy (secrets);
@@ -1333,7 +1174,6 @@ applet_exported_connection_get_secrets (NMExportedConnection *parent,
 	}
 
 	g_hash_table_destroy (settings);
-	gnome_keyring_found_list_free (found_list);
 	return;
 
 get_secrets:

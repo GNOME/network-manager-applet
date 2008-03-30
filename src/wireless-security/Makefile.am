@@ -35,5 +35,6 @@ libwireless_security_la_CPPFLAGS = \
 
 libwireless_security_la_LIBADD = \
 	$(NMA_LIBS) \
-	${top_builddir}/src/utils/libutils.la
+	${top_builddir}/src/utils/libutils.la \
+	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
 

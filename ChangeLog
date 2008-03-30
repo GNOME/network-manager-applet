@@ -1,5 +1,18 @@
 2008-03-30  Dan Williams  <dcbw@redhat.com>
 
+	* src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/gconf-helpers.h
+	  src/gconf-helpers/Makefile.am
+		- (nm_gconf_get_keyring_items): new function; pull generic bits out
+			of applet_exported_connection_get_secrets() so that the connection
+			editor can use them too
+
+	* src/applet-dbus-settings.c
+		- (applet_exported_connection_get_secrets): pull keyring-reading stuff
+			out into nm_gconf_get_keyring_items() and use that instead
+
+2008-03-30  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.glade
 		- Add combo for specifying WEP key index
 
