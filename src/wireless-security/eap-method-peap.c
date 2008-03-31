@@ -345,6 +345,8 @@ eap_method_peap_new (const char *glade_file,
 	GladeXML *xml;
 	GladeXML *nag_dialog_xml;
 	GtkFileFilter *filter;
+	NMSetting8021x *s_8021x = NULL;
+	const char *filename;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -385,8 +387,10 @@ eap_method_peap_new (const char *glade_file,
 	method->nag_dialog_xml = nag_dialog_xml;
 	method->sec_parent = parent;
 
-	if (connection)
+	if (connection) {
 		method->ignore_ca_cert = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG));
+		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	}
 
 	widget = glade_xml_get_widget (xml, "eap_peap_ca_cert_button");
 	g_assert (widget);
@@ -398,13 +402,28 @@ eap_method_peap_new (const char *glade_file,
 	                  parent);
 	filter = eap_method_default_file_chooser_filter_new ();
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (widget), filter);
+	if (connection) {
+		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG);
+		if (filename)
+			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
+	}
 
 	widget = inner_auth_combo_init (method, glade_file, connection);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);
 
 	widget = glade_xml_get_widget (xml, "eap_peap_version_combo");
 	g_assert (widget);
-	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
+	if (s_8021x) {
+		if (s_8021x->phase1_peapver && !strcmp (s_8021x->phase1_peapver, "0"))
+			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
+		else
+			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
+	} else
+		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
+
+	widget = glade_xml_get_widget (parent->xml, "eap_peap_anon_identity_entry");
+	if (s_8021x && s_8021x->anonymous_identity)
+		gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->anonymous_identity);
 
 	return method;
 }

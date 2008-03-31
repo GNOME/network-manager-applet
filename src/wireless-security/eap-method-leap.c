@@ -26,6 +26,7 @@
 
 #include "eap-method.h"
 #include "wireless-security.h"
+#include "gconf-helpers.h"
 
 static void
 show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
@@ -162,6 +163,20 @@ eap_method_leap_new (const char *glade_file,
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
+	/* Fill secrets, if any */
+	if (connection) {
+		GHashTable *secrets;
+		GError *error = NULL;
+		GValue *value;
+
+		secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_802_1X_SETTING_NAME, &error);
+		if (secrets) {
+			value = g_hash_table_lookup (secrets, NM_SETTING_802_1X_PASSWORD);
+			if (value)
+				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
+			g_hash_table_destroy (secrets);
+		}
+	}
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);
