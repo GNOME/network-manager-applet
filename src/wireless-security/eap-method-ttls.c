@@ -356,6 +356,8 @@ eap_method_ttls_new (const char *glade_file,
 	GladeXML *xml;
 	GladeXML *nag_dialog_xml;
 	GtkFileFilter *filter;
+	NMSetting8021x *s_8021x = NULL;
+	const char *filename;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -396,8 +398,10 @@ eap_method_ttls_new (const char *glade_file,
 	method->nag_dialog_xml = nag_dialog_xml;
 	method->sec_parent = parent;
 
-	if (connection)
+	if (connection) {
 		method->ignore_ca_cert = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG));
+		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	}
 
 	widget = glade_xml_get_widget (xml, "eap_ttls_ca_cert_button");
 	g_assert (widget);
@@ -409,6 +413,15 @@ eap_method_ttls_new (const char *glade_file,
 	                  parent);
 	filter = eap_method_default_file_chooser_filter_new ();
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (widget), filter);
+	if (connection) {
+		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG);
+		if (filename)
+			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
+	}
+
+	widget = glade_xml_get_widget (parent->xml, "eap_ttls_anon_identity_entry");
+	if (s_8021x && s_8021x->anonymous_identity)
+		gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->anonymous_identity);
 
 	widget = inner_auth_combo_init (method, glade_file, connection);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);
