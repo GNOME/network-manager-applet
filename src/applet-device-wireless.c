@@ -1037,11 +1037,11 @@ wireless_get_icon (NMDevice *device,
 }
 
 static void
-activate_device_cb (gpointer user_data, GError *err)
+activate_device_cb (gpointer user_data, const char *path, GError *error)
 {
-	if (err) {
-		nm_warning ("Device Activation failed: %s", err->message);
-	}
+	if (error)
+		nm_warning ("Device Activation failed: %s", error->message);
+	applet_schedule_update_icon (NM_APPLET (user_data));
 }
 
 static gboolean

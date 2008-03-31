@@ -203,10 +203,12 @@ is_system_connection (NMConnection *connection)
 }
 
 static void
-activate_connection_cb (gpointer user_data, GError *err)
+activate_connection_cb (gpointer user_data, const char *path, GError *error)
 {
-	if (err)
-		nm_warning ("Connection activation failed: %s", err->message);
+	if (error)
+		nm_warning ("Connection activation failed: %s", error->message);
+
+	applet_schedule_update_icon (NM_APPLET (user_data));
 }
 
 void
@@ -264,7 +266,7 @@ applet_menu_item_activate_helper (NMDevice *device,
 	                               device,
 	                               specific_object,
 	                               activate_connection_cb,
-	                               user_data);
+	                               applet);
 }
 
 void
@@ -351,6 +353,66 @@ update_connection_timestamp (NMActiveConnection *active,
 	applet_exported_connection_save (exported);
 }
 
+static char *
+make_vpn_failure_message (NMVPNConnection *vpn,
+                          NMVPNConnectionStateReason reason,
+                          NMApplet *applet)
+{
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+
+	g_return_val_if_fail (vpn != NULL, NULL);
+
+	connection = applet_get_connection_for_active (applet, NM_ACTIVE_CONNECTION (vpn));
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+
+	switch (reason) {
+	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the network connection was interrupted."), s_con->id);
+	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_STOPPED:
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service stopped unexpectedly."), s_con->id);
+	case NM_VPN_CONNECTION_STATE_REASON_IP_CONFIG_INVALID:
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service returned invalid configuration."), s_con->id);
+	case NM_VPN_CONNECTION_STATE_REASON_CONNECT_TIMEOUT:
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the connection attempt timed out."), s_con->id);
+	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT:
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service did not start in time."), s_con->id);
+	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_START_FAILED:
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service failed to start."), s_con->id);
+	case NM_VPN_CONNECTION_STATE_REASON_NO_SECRETS:
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because there were no valid VPN secrets."), s_con->id);
+	default:
+		break;
+	}
+
+	return g_strdup_printf (_("\nThe VPN connection '%s' failed."), s_con->id);
+}
+
+static char *
+make_vpn_disconnection_message (NMVPNConnection *vpn,
+                                NMVPNConnectionStateReason reason,
+                                NMApplet *applet)
+{
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+
+	g_return_val_if_fail (vpn != NULL, NULL);
+
+	connection = applet_get_connection_for_active (applet, NM_ACTIVE_CONNECTION (vpn));
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+
+	switch (reason) {
+	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
+		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the network connection was interrupted."), s_con->id);
+	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_STOPPED:
+		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the VPN service stopped."), s_con->id);
+	default:
+		break;
+	}
+
+	return g_strdup_printf (_("\nThe VPN connection '%s' disconnected."), s_con->id);
+}
+
 static void
 vpn_connection_state_changed (NMVPNConnection *vpn,
                               NMVPNConnectionState state,
@@ -358,10 +420,10 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
                               gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	NMActiveConnection *active;
 	NMConnection *connection;
 	const char *banner;
-	char *title, *msg;
+	char *title = NULL, *msg = NULL;
+	gboolean clear_timeout = TRUE;
 
 	switch (state) {
 	case NM_VPN_CONNECTION_STATE_PREPARE:
@@ -369,6 +431,7 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 	case NM_VPN_CONNECTION_STATE_CONNECT:
 	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
 		start_animation_timeout (applet);
+		clear_timeout = FALSE;
 		break;
 	case NM_VPN_CONNECTION_STATE_ACTIVATED:
 		banner = nm_vpn_connection_get_banner (vpn);
@@ -379,19 +442,30 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 			g_free (msg);
 		}
 
-		active = NM_ACTIVE_CONNECTION (vpn);
-		connection = applet_get_connection_for_active (applet, active);
+		connection = applet_get_connection_for_active (applet, NM_ACTIVE_CONNECTION (vpn));
 		if (connection)
-			update_connection_timestamp (active, connection, applet);
-		clear_animation_timeout (applet);
+			update_connection_timestamp (NM_ACTIVE_CONNECTION (vpn), connection, applet);
 		break;
 	case NM_VPN_CONNECTION_STATE_FAILED:
+		title = _("VPN Connection Failed");
+		msg = make_vpn_failure_message (vpn, reason, applet);
+		applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
+		g_free (msg);
+		break;
 	case NM_VPN_CONNECTION_STATE_DISCONNECTED:
+		if (reason != NM_VPN_CONNECTION_STATE_REASON_USER_DISCONNECTED) {
+			title = _("VPN Connection Failed");
+			msg = make_vpn_disconnection_message (vpn, reason, applet);
+			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
+			g_free (msg);
+		}
+		break;
 	default:
-		clear_animation_timeout (applet);
 		break;
 	}
 
+	if (clear_timeout)
+		clear_animation_timeout (applet);
 	applet_schedule_update_icon (applet);
 }
 
@@ -409,19 +483,50 @@ get_connection_id (NMConnection *connection)
 	return s_con->id;
 }
 
+typedef struct {
+	NMApplet *applet;
+	char *vpn_name;
+} VPNActivateInfo;
+
 static void
-activate_vpn_cb (gpointer user_data, GError *err)
+activate_vpn_cb (gpointer user_data, const char *path, GError *error)
 {
-	if (err)
-		nm_warning ("Connection activation failed: %s", err->message);
-	applet_schedule_update_icon (NM_APPLET (user_data));
+	VPNActivateInfo *info = (VPNActivateInfo *) user_data;
+	char *title, *msg, *name;
+
+	if (error) {
+		title = _("VPN Connection Failed");
+
+		/* dbus-glib GError messages _always_ have two NULLs, the D-Bus error
+		 * name comes after the first NULL.  Find it.
+		 */
+		name = error->message + strlen (error->message) + 1;
+		if (strstr (name, "ServiceStartFailed")) {
+			msg = g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service failed to start.\n\n%s"),
+			                       info->vpn_name, error->message);
+		} else {
+			msg = g_strdup_printf (_("\nThe VPN connection '%s' failed to start.\n\n%s"),
+			                       info->vpn_name, error->message);
+		}
+
+		applet_do_notify (info->applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
+		g_free (msg);
+
+		nm_warning ("VPN Connection activation failed: (%s) %s", name, error->message);
+	}
+
+	applet_schedule_update_icon (info->applet);
+	g_free (info->vpn_name);
+	g_free (info);
 }
 
 static void
 nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
+	VPNActivateInfo *info;
 	NMConnection *connection;
+	NMSettingConnection *s_con;
 	NMActiveConnection *active;
 	NMDevice *device = NULL;
 	gboolean is_system;
@@ -442,6 +547,11 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 		/* Connection already active; do nothing */
 		return;
 
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	info = g_malloc0 (sizeof (VPNActivateInfo));
+	info->applet = applet;
+	info->vpn_name = g_strdup (s_con->id);
+
 	/* Connection inactive, activate */
 	is_system = is_system_connection (connection);
 	nm_client_activate_connection (applet->nm_client,
@@ -450,7 +560,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	                               device,
 	                               nm_object_get_path (NM_OBJECT (active)),
 	                               activate_vpn_cb,
-	                               applet);
+	                               info);
 		
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }

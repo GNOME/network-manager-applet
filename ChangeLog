@@ -1,3 +1,17 @@
+2008-03-31  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-device-wireless.c
+		- (activate_device_cb): fix for libnm-glib arguments change
+
+	* src/applet.c
+		- (activate_connection_cb): fix for libnm-glib arguments change
+		- (make_vpn_failure_message, make_vpn_disconnection_message): new
+			functions; do something with VPN errors
+		- (vpn_connection_state_changed): show errors on VPN failure
+		- (activate_vpn_cb): notify the user on VPN failure
+		- (nma_menu_vpn_item_clicked): pass VPN connection name to
+			activate_vpn_cb() so it knows what VPN connection failed
+
 2008-03-30  Dan Williams  <dcbw@redhat.com>
 
 	* src/wireless-security/eap-method-leap.c
