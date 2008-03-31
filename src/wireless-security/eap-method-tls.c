@@ -388,7 +388,6 @@ eap_method_tls_new (const char *glade_file,
 
 	if (connection) {
 		method->ignore_ca_cert = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG));
-
 		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	}
 
