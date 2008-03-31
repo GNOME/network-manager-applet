@@ -1,5 +1,11 @@
 2008-03-30  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/main.c
+		- (main): init the crypto system so that NSS and gnutls don't segfault
+			when editing EAP-TLS and EAP-TTLS connections
+
+2008-03-30  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-security/ws-wpa-psk.c
 		- (ws_wpa_psk_new): fill WPA key
 

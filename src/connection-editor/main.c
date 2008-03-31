@@ -24,12 +24,14 @@
 #include <dbus/dbus-glib.h>
 
 #include "nm-connection-list.h"
+#include "crypto.h"
 
 int
 main (int argc, char *argv[])
 {
 	NMConnectionList *list;
 	DBusGConnection *ignore;
+	GError *error = NULL;
 
 	gtk_init (&argc, &argv);
 
@@ -40,9 +42,17 @@ main (int argc, char *argv[])
 	ignore = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
 	dbus_g_connection_unref (ignore);
 
+	if (!crypto_init (&error)) {
+		g_warning ("Couldn't initilize crypto system: %d %s",
+		           error->code, error->message);
+		return 1;
+	}
+
 	list = nm_connection_list_new ();
 	nm_connection_list_run_and_close (list);
 	g_object_unref (list);
+
+	crypto_deinit ();
 
 	return 0;
 }
