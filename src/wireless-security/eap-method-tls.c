@@ -309,10 +309,13 @@ static void
 setup_filepicker (GladeXML *xml,
                   const char *name,
                   const char *title,
-                  WirelessSecurity *parent)
+                  WirelessSecurity *parent,
+                  NMConnection *connection,
+                  const char *tag)
 {
 	GtkWidget *widget;
 	GtkFileFilter *filter;
+	const char *filename;
 
 	widget = glade_xml_get_widget (xml, name);
 	g_assert (widget);
@@ -321,6 +324,11 @@ setup_filepicker (GladeXML *xml,
 	g_signal_connect (G_OBJECT (widget), "selection-changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
+	if (connection && tag) {
+		filename = g_object_get_data (G_OBJECT (connection), tag);
+		if (filename)
+			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
+	}
 
 	filter = eap_method_default_file_chooser_filter_new ();
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (widget), filter);
@@ -336,6 +344,7 @@ eap_method_tls_new (const char *glade_file,
 	GtkWidget *widget;
 	GladeXML *xml;
 	GladeXML *nag_dialog_xml;
+	NMSetting8021x *s_8021x = NULL;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -377,33 +386,53 @@ eap_method_tls_new (const char *glade_file,
 
 	method->phase2 = phase2;
 
-	if (connection)
+	if (connection) {
 		method->ignore_ca_cert = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG));
+
+		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	}
 
 	widget = glade_xml_get_widget (xml, "eap_tls_identity_entry");
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
+	if (s_8021x && s_8021x->identity)
+		gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->identity);
 
 	widget = glade_xml_get_widget (xml, "eap_tls_private_key_password_entry");
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
+	/* Fill secrets, if any */
+	if (connection) {
+		GHashTable *secrets;
+		GError *error = NULL;
+		GValue *value;
 
-	setup_filepicker (xml,
-	                  "eap_tls_user_cert_button",
+		secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_802_1X_SETTING_NAME, &error);
+		if (secrets) {
+			value = g_hash_table_lookup (secrets, NMA_PRIVATE_KEY_PASSWORD_TAG);
+			if (value)
+				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
+			g_hash_table_destroy (secrets);
+		}
+	}
+
+	setup_filepicker (xml, "eap_tls_user_cert_button",
 	                  _("Choose your personal certificate..."),
-	                  parent);
-	setup_filepicker (xml,
-	                  "eap_tls_ca_cert_button",
+	                  parent, connection,
+	                  phase2 ? NMA_PATH_PHASE2_CLIENT_CERT_TAG : NMA_PATH_CLIENT_CERT_TAG);
+	setup_filepicker (xml, "eap_tls_ca_cert_button",
 	                  _("Choose a Certificate Authority certificate..."),
-	                  parent);
+	                  parent, connection,
+	                  phase2 ? NMA_PATH_PHASE2_CA_CERT_TAG : NMA_PATH_CA_CERT_TAG);
 	setup_filepicker (xml,
 	                  "eap_tls_private_key_button",
 	                  _("Choose your private key..."),
-	                  parent);
+	                  parent, connection,
+	                  phase2 ? NMA_PATH_PHASE2_PRIVATE_KEY_TAG : NMA_PATH_PRIVATE_KEY_TAG);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);

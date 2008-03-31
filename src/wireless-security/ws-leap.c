@@ -25,6 +25,7 @@
 
 #include "wireless-security.h"
 #include "utils.h"
+#include "gconf-helpers.h"
 
 
 static void
@@ -115,6 +116,7 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 	WirelessSecurityLEAP *sec;
 	GtkWidget *widget;
 	GladeXML *xml;
+	NMSettingWirelessSecurity *wsec = NULL;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -143,17 +145,41 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 	                        xml,
 	                        widget);
 
+	if (connection) {
+		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+		if (wsec) {
+			/* Ignore if wireless security doesn't specify LEAP */
+			if (!wsec->auth_alg || strcmp (wsec->auth_alg, "leap"))
+				wsec = NULL;
+		}
+	}
+
 	widget = glade_xml_get_widget (xml, "leap_password_entry");
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
+	if (wsec) {
+		GHashTable *secrets;
+		GError *error = NULL;
+		GValue *value;
+
+		secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
+		if (secrets) {
+			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD);
+			if (value)
+				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
+			g_hash_table_destroy (secrets);
+		}
+	}
 
 	widget = glade_xml_get_widget (xml, "leap_username_entry");
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
+	if (wsec)
+		gtk_entry_set_text (GTK_ENTRY (widget), wsec->leap_username);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);
