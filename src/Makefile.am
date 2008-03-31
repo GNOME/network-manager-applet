@@ -1,4 +1,4 @@
-SUBDIRS = gconf-helpers utils wireless-security connection-editor vpn-properties
+SUBDIRS = utils gconf-helpers wireless-security connection-editor vpn-properties
 
 NULL=
 
