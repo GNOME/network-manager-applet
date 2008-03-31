@@ -68,7 +68,6 @@
 #include "utils.h"
 #include "crypto.h"
 #include "gconf-helpers.h"
-#include "vpn-connection-info.h"
 
 
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
