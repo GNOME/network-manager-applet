@@ -950,7 +950,7 @@ wireless_device_state_changed (NMDevice *device,
 		const GByteArray *ssid = nm_access_point_get_ssid (applet->current_ap);
 
 		if (ssid)
-			esc_ssid = (char *) nm_utils_escape_ssid (ssid->data, ssid->len);
+			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 
 		g_object_ref (applet->current_ap);
 		g_signal_connect (applet->current_ap,
@@ -969,6 +969,7 @@ wireless_device_state_changed (NMDevice *device,
 	applet_do_notify (applet, NOTIFY_URGENCY_LOW, _("Connection Established"),
 					  msg, "nm-device-wireless");
 	g_free (msg);
+	g_free (esc_ssid);
 }
 
 static GdkPixbuf *
@@ -979,7 +980,7 @@ wireless_get_icon (NMDevice *device,
 {
 	GdkPixbuf *pixbuf = NULL;
 	const char *iface;
-	char *esc_ssid = _("(none)");
+	char *esc_ssid = NULL;
 
 	iface = nm_device_get_iface (device);
 
@@ -988,8 +989,11 @@ wireless_get_icon (NMDevice *device,
 
 		ssid = nm_access_point_get_ssid (applet->current_ap);
 		if (ssid)
-			esc_ssid = (char *) nm_utils_escape_ssid (ssid->data, ssid->len);
+			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 	}
+
+	if (!esc_ssid)
+		esc_ssid = g_strdup (_("(none)"));
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
@@ -1033,6 +1037,7 @@ wireless_get_icon (NMDevice *device,
 		break;
 	}
 
+	g_free (esc_ssid);
 	return pixbuf;
 }
 

@@ -1,6 +1,14 @@
 2008-03-31  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-device-wireless.c
+		- (wireless_device_state_changed, wireless_get_icon): notification
+			serivce needs UTF-8 safe strings since they get sent to the
+			notification daemon over D-Bus, so use the right SSID->string
+			conversion function (rh #435384)
+
+2008-03-31  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-device-wireless.c
 		- (activate_device_cb): fix for libnm-glib arguments change
 
 	* src/applet.c
