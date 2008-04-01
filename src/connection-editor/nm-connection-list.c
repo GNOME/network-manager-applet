@@ -65,6 +65,47 @@ static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
 #define COL_TIMESTAMP	2
 #define COL_CONNECTION	3
 
+static gboolean
+get_iter_for_connection (GtkWidget *clist,
+                         NMConnection *connection,
+                         GtkTreeModel **model,
+                         GtkTreeIter *iter)
+{
+	GtkTreeModel *sort_model;
+	GtkTreeModel *temp_model;
+	GtkTreeIter temp_iter;
+	gboolean found = FALSE;
+
+	g_return_val_if_fail (GTK_IS_TREE_VIEW (clist), FALSE);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+	g_return_val_if_fail (model != NULL, FALSE);
+	g_return_val_if_fail (*model == NULL, FALSE);
+	g_return_val_if_fail (iter != NULL, FALSE);
+
+	sort_model = gtk_tree_view_get_model (GTK_TREE_VIEW (clist));
+	g_return_val_if_fail (sort_model != NULL, FALSE);
+
+	temp_model = gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (sort_model));
+	g_return_val_if_fail (temp_model != NULL, FALSE);
+
+	if (!gtk_tree_model_get_iter_first (temp_model, &temp_iter))
+		return FALSE;
+
+	do {
+		NMConnection *candidate = NULL;
+
+		gtk_tree_model_get (temp_model, &temp_iter, COL_CONNECTION, &candidate, -1);
+		if (candidate && (candidate == connection)) {
+			*iter = temp_iter;
+			*model = temp_model;
+			found = TRUE;
+			break;
+		}
+	} while (gtk_tree_model_iter_next (temp_model, &temp_iter));
+
+	return found;
+}
+
 static NMConnection *
 get_connection_for_selection (GtkWidget *clist,
                               GtkTreeModel **model,
@@ -99,6 +140,78 @@ get_connection_for_selection (GtkWidget *clist,
 	return connection;
 }
 
+static char *
+format_last_used (guint64 timestamp)
+{
+	GTimeVal now_tv;
+	GDate *now, *last;
+	char *last_used = NULL;
+
+	if (!timestamp)
+		return g_strdup (_("never"));
+
+	g_get_current_time (&now_tv);
+	now = g_date_new ();
+	g_date_set_time_val (now, &now_tv);
+
+	last = g_date_new ();
+	g_date_set_time_t (last, (time_t) timestamp);
+
+	/* timestamp is now or in the future */
+	if (now_tv.tv_sec <= timestamp) {
+		last_used = g_strdup (_("now"));
+		goto out;
+	}
+
+	if (g_date_compare (now, last) <= 0) {
+		guint minutes, hours;
+
+		/* Same day */
+
+		minutes = (now_tv.tv_sec - timestamp) / 60;
+		if (minutes == 0) {
+			last_used = g_strdup (_("now"));
+			goto out;
+		}
+
+		hours = (now_tv.tv_sec - timestamp) / 3600;
+		if (hours == 0) {
+			/* less than an hour ago */
+			last_used = g_strdup_printf (ngettext ("%d minute ago", "%d minutes ago", minutes), minutes);
+			goto out;
+		}
+
+		last_used = g_strdup_printf (ngettext ("%d hour ago", "%d hours ago", hours), hours);
+	} else {
+		guint days, months, years;
+
+		days = g_date_get_julian (now) - g_date_get_julian (last);
+		if (days == 0) {
+			last_used = g_strdup ("today");
+			goto out;
+		}
+
+		months = days / 30;
+		if (months == 0) {
+			last_used = g_strdup_printf (ngettext ("%d day ago", "%d days ago", days), days);
+			goto out;
+		}
+
+		years = days / 365;
+		if (years == 0) {
+			last_used = g_strdup_printf (ngettext ("%d month ago", "%d months ago", months), months);
+			goto out;
+		}
+
+		last_used = g_strdup_printf (ngettext ("%d year ago", "%d years ago", years), years);
+	}
+
+out:
+	g_date_free (now);
+	g_date_free (last);
+	return last_used;
+}
+
 typedef struct {
 	NMConnectionList *list;
 	GtkWidget *clist;
@@ -113,7 +226,12 @@ add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 	connection = nm_connection_editor_get_connection (editor);
 
 	if (response == GTK_RESPONSE_OK) {
+		NMSettingConnection *s_con;
 		const char *path;
+		char *last_used;
+		GtkTreeModel *sort_model;
+		GtkListStore *store;
+		GtkTreeIter iter;
 
 		path = nm_connection_editor_get_gconf_path (editor);
 
@@ -121,7 +239,22 @@ add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 						    CE_GCONF_PATH_TAG, 
 						    g_strdup (path),
 						    (GDestroyNotify) g_free);
-		// FIXME: add connection to the list
+
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		g_assert (s_con);
+
+		sort_model = gtk_tree_view_get_model (GTK_TREE_VIEW (info->clist));
+		store = GTK_LIST_STORE (gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (sort_model)));
+		gtk_list_store_insert (store, &iter, G_MAXINT);
+
+		last_used = format_last_used (s_con->timestamp);
+		gtk_list_store_set (store, &iter,
+		                    COL_ID, s_con->id,
+		                    COL_LAST_USED, last_used,
+		                    COL_TIMESTAMP, s_con->timestamp,
+		                    COL_CONNECTION, connection,
+		                    -1);
+		g_free (last_used);
 	}
 
 	g_hash_table_remove (info->list->editors, connection);
@@ -158,11 +291,19 @@ edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 {
 	EditorDoneInfo *info = (EditorDoneInfo *) user_data;
 	NMConnection *connection;
+	NMSettingConnection *s_con;
 
 	connection = nm_connection_editor_get_connection (editor);
 
 	if (response == GTK_RESPONSE_OK) {
-		// FIXME: update connection name in list if needed
+		GtkTreeModel *model = NULL;
+		GtkTreeIter iter;
+
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		g_assert (s_con);
+
+		if (get_iter_for_connection (info->clist, connection, &model, &iter) && model)
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter, COL_ID, s_con->id, -1);
 	}
 
 	g_hash_table_remove (info->list->editors, connection);
@@ -221,6 +362,7 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 {
 	GtkWidget *clist = GTK_WIDGET (user_data);
 	NMConnectionList *list;
+	NMConnectionEditor *editor;
 	NMSettingConnection *s_con;
 	NMConnection *connection;
 	GtkWidget *dialog;
@@ -259,6 +401,11 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 	gtk_widget_destroy (dialog);
 	if (result != GTK_RESPONSE_YES)
 		return;
+
+	/* Close any open editor windows for this connection */
+	editor = g_hash_table_lookup (list->editors, connection);
+	if (editor)
+		g_hash_table_remove (list->editors, connection);
 
 	if (!gconf_client_recursive_unset (list->client, dir, 0, &error)) {
 		g_warning ("%s: Failed to completely remove connection '%s': (%d) %s",
@@ -345,78 +492,6 @@ connection_double_clicked_cb (GtkTreeView *tree_view,
 	g_return_if_fail (connection != NULL);
 
 	do_edit (list, connection, GTK_WIDGET (tree_view));
-}
-
-static char *
-format_last_used (guint64 timestamp)
-{
-	GTimeVal now_tv;
-	GDate *now, *last;
-	char *last_used = NULL;
-
-	if (!timestamp)
-		return g_strdup (_("never"));
-
-	g_get_current_time (&now_tv);
-	now = g_date_new ();
-	g_date_set_time_val (now, &now_tv);
-
-	last = g_date_new ();
-	g_date_set_time_t (last, (time_t) timestamp);
-
-	/* timestamp is now or in the future */
-	if (now_tv.tv_sec <= timestamp) {
-		last_used = g_strdup (_("now"));
-		goto out;
-	}
-
-	if (g_date_compare (now, last) <= 0) {
-		guint minutes, hours;
-
-		/* Same day */
-
-		minutes = (now_tv.tv_sec - timestamp) / 60;
-		if (minutes == 0) {
-			last_used = g_strdup (_("now"));
-			goto out;
-		}
-
-		hours = (now_tv.tv_sec - timestamp) / 3600;
-		if (hours == 0) {
-			/* less than an hour ago */
-			last_used = g_strdup_printf (ngettext ("%d minute ago", "%d minutes ago", minutes), minutes);
-			goto out;
-		}
-
-		last_used = g_strdup_printf (ngettext ("%d hour ago", "%d hours ago", hours), hours);
-	} else {
-		guint days, months, years;
-
-		days = g_date_get_julian (now) - g_date_get_julian (last);
-		if (days == 0) {
-			last_used = g_strdup ("today");
-			goto out;
-		}
-
-		months = days / 30;
-		if (months == 0) {
-			last_used = g_strdup_printf (ngettext ("%d day ago", "%d days ago", days), days);
-			goto out;
-		}
-
-		years = days / 365;
-		if (years == 0) {
-			last_used = g_strdup_printf (ngettext ("%d month ago", "%d months ago", months), months);
-			goto out;
-		}
-
-		last_used = g_strdup_printf (ngettext ("%d year ago", "%d years ago", years), years);
-	}
-
-out:
-	g_date_free (now);
-	g_date_free (last);
-	return last_used;
 }
 
 typedef struct {

@@ -1,5 +1,16 @@
 2008-04-01  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/nm-connection-list.c
+		- (format_last_used): move above all users
+		- (get_iter_for_connection): new function; get the model and iter for
+			a specific NMConnection
+		- (add_done_cb): add the new connection to the list
+		- (edit_done_cb): update the list with the new connection name
+		- (delete_connection_cb): close any open editors when deleting a
+			connection
+
+2008-04-01  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/main.c
 		- exit cleanly
 		- (main): init gettext stuff; connection list is no longer modal
