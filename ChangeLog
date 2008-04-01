@@ -1,3 +1,33 @@
+2008-04-01  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/main.c
+		- exit cleanly
+		- (main): init gettext stuff; connection list is no longer modal
+
+	* src/connection-editor/page-wireless.c
+		- (ce_page_wireless_new): validate on SSID change
+
+	* src/connection-editor/nm-connection-list.c
+	  src/connection-editor/nm-connection-list.h
+		- (add_connection_cb, edit_connection_cb, connection_double_clicked_cb):
+			allow multiple connection editors
+		- (nm_connection_list_run): new function; no longer modal so must
+			monitor response from dialog and re-emit for listeners
+
+	* src/connection-editor/nm-connection-editor.c
+	  src/connection-editor/nm-connection-editor.h
+		- (connection_editor_validate): new function; perform validation of the
+			entire connection and set OK button accordingly
+		- (connection_name_changed): revalidate when name changes
+		- (nm_connection_editor_new): need a GConfClient and a GConf path
+			to be able to save an existing connection
+		- (page_changed): do complete validation if a page changes
+		- (connection_editor_update_connection): save a connection back to
+			GConf
+		- (nm_connection_editor_run): no longer modal; so set up signals to
+			monitor response from dialog, save connection as appropriate, and
+			re-emit for listeners
+
 2008-03-31  Dan Williams  <dcbw@redhat.com>
 
 	* src/vpn-connection-info.c

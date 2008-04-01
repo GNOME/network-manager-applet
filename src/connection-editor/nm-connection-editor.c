@@ -44,6 +44,7 @@
 
 #include "nm-connection-editor.h"
 #include "utils.h"
+#include "gconf-helpers.h"
 
 #include "ce-page.h"
 #include "page-wired.h"
@@ -54,6 +55,14 @@
 #include "page-dsl.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
+
+enum {
+	EDITOR_DONE,
+	EDITOR_LAST_SIGNAL
+};
+
+static guint editor_signals[EDITOR_LAST_SIGNAL] = { 0 };
+
 
 static void
 dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
@@ -103,7 +112,7 @@ nm_connection_editor_update_title (NMConnectionEditor *editor)
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
-	if (s_con->id) {
+	if (s_con->id && strlen (s_con->id)) {
 		char *title = g_strdup_printf (_("Editing %s"), s_con->id);
 		gtk_window_set_title (GTK_WINDOW (editor->dialog), title);
 		g_free (title);
@@ -112,15 +121,45 @@ nm_connection_editor_update_title (NMConnectionEditor *editor)
 }
 
 static void
+connection_editor_validate (NMConnectionEditor *editor)
+{
+	GtkWidget *widget;
+	gboolean valid = FALSE;
+	const char *name;
+	GSList *iter;
+
+	widget = glade_xml_get_widget (editor->xml, "connection_name");
+	name = gtk_entry_get_text (GTK_ENTRY (widget));
+
+	/* Re-validate */
+	if (!name || !strlen (name))
+		goto done;
+
+	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
+		if (!ce_page_validate (CE_PAGE (iter->data)))
+			goto done;
+	}
+	valid = TRUE;
+
+done:
+	gtk_widget_set_sensitive (editor->ok_button, valid);
+}
+
+static void
 connection_name_changed (GtkEditable *editable, gpointer user_data)
 {
 	NMSettingConnection *s_con;
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	const char *name;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
-	if (s_con)
-		g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_ID, gtk_entry_get_text (GTK_ENTRY (editable)), NULL);
+	g_assert (s_con);
+
+	name = gtk_entry_get_text (GTK_ENTRY (editable));
+	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_ID, name, NULL);
 	nm_connection_editor_update_title (editor);
+
+	connection_editor_validate (editor);
 }
 
 static void
@@ -173,12 +212,17 @@ dispose (GObject *object)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (object);
 
+	gtk_widget_hide (GTK_WIDGET (editor->dialog));
+
 	g_slist_foreach (editor->pages, (GFunc) g_object_unref, NULL);
 	g_slist_free (editor->pages);
 	editor->pages = NULL;
 
 	if (editor->connection)
 		g_object_unref (editor->connection);
+
+	g_object_unref (editor->gconf_client);
+	g_free (editor->gconf_path);
 
 	gtk_widget_destroy (editor->dialog);
 	g_object_unref (editor->xml);
@@ -193,17 +237,33 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 
 	/* virtual methods */
 	object_class->dispose = dispose;
+
+	/* Signals */
+	editor_signals[EDITOR_DONE] =
+		g_signal_new ("done",
+					  G_OBJECT_CLASS_TYPE (object_class),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (NMConnectionEditorClass, done),
+					  NULL, NULL,
+					  g_cclosure_marshal_VOID__INT,
+					  G_TYPE_NONE, 1, G_TYPE_INT);
 }
 
 NMConnectionEditor *
-nm_connection_editor_new (NMConnection *connection)
+nm_connection_editor_new (NMConnection *connection,
+                          const char *gconf_path,
+                          GConfClient *client)
 {
 	NMConnectionEditor *editor;
 
 	g_return_val_if_fail (connection != NULL, NULL);
+	g_return_val_if_fail (client != NULL, NULL);
 
 	editor = g_object_new (NM_TYPE_CONNECTION_EDITOR, NULL);
 	nm_connection_editor_set_connection (editor, connection);
+	editor->gconf_client = g_object_ref (client);
+	if (gconf_path)
+		editor->gconf_path = g_strdup (gconf_path);
 
 	return editor;
 }
@@ -214,6 +274,14 @@ nm_connection_editor_get_connection (NMConnectionEditor *editor)
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), NULL);
 
 	return editor->connection;
+}
+
+const char *
+nm_connection_editor_get_gconf_path (NMConnectionEditor *editor)
+{
+	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), NULL);
+
+	return editor->gconf_path;
 }
 
 gint
@@ -261,7 +329,7 @@ page_changed (CEPage *page, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
 
-	gtk_widget_set_sensitive (editor->ok_button, ce_page_validate (page));
+	connection_editor_validate (editor);
 }
 
 static void
@@ -333,11 +401,11 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 }
 
 void
-nm_connection_editor_show (NMConnectionEditor *editor)
+nm_connection_editor_present (NMConnectionEditor *editor)
 {
 	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
 
-	gtk_widget_show (editor->dialog);
+	gtk_window_present (GTK_WINDOW (editor->dialog));
 }
 
 static void
@@ -346,23 +414,80 @@ update_one_page (gpointer data, gpointer user_data)
 	ce_page_update_connection (CE_PAGE (data), NM_CONNECTION (user_data));
 }
 
-gint
-nm_connection_editor_run_and_close (NMConnectionEditor *editor)
+static void
+connection_editor_update_connection (NMConnectionEditor *editor)
 {
-	gint result;
+	NMSettingConnection *s_con;
+	GtkWidget *widget;
+	const char *name;
 
-	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), GTK_RESPONSE_CANCEL);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
 
-	result = gtk_dialog_run (GTK_DIALOG (editor->dialog));
-	gtk_widget_hide (editor->dialog);
+	widget = glade_xml_get_widget (editor->xml, "connection_name");
+	name = gtk_entry_get_text (GTK_ENTRY (widget));
+	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_ID, name, NULL);
 
-	switch (result) {
-	case GTK_RESPONSE_OK:
-		g_slist_foreach (editor->pages, update_one_page, editor->connection);
-		break;
-	default:
-		break;
+	g_slist_foreach (editor->pages, update_one_page, editor->connection);
+
+	if (!nm_connection_verify (editor->connection)) {
+		g_warning ("%s: connection invalid after update; bug in the connection editor.", __func__);
+		return;
 	}
 
-	return result;
+	if (!editor->gconf_path) {
+		guint32 i = 0;
+
+		/* Find free GConf directory */
+		while (i++ < G_MAXUINT32) {
+			char buf[255];
+
+			snprintf (&buf[0], 255, GCONF_PATH_CONNECTIONS"/%d", i);
+			if (!gconf_client_dir_exists (editor->gconf_client, buf, NULL)) {
+				editor->gconf_path = g_strdup_printf (buf);
+				break;
+			}
+		};
+	}
+
+	if (editor->gconf_path) {
+		/* Save the connection back to GConf */
+		nm_gconf_write_connection (editor->connection,
+		                           editor->gconf_client,
+		                           editor->gconf_path);
+		gconf_client_notify (editor->gconf_client, editor->gconf_path);
+		gconf_client_suggest_sync (editor->gconf_client, NULL);
+	} else
+		nm_warning ("Couldn't find free GConf directory for new connection.");
 }
+
+static void
+editor_response_cb (GtkDialog *dialog, gint response, gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+
+	if (response == GTK_RESPONSE_OK)
+		connection_editor_update_connection (editor);
+
+	g_signal_emit (editor, editor_signals[EDITOR_DONE], 0, response);
+}
+
+static void
+editor_close_cb (GtkDialog *dialog, gpointer user_data)
+{
+	gtk_dialog_response (dialog, GTK_RESPONSE_CLOSE);
+}
+
+void
+nm_connection_editor_run (NMConnectionEditor *editor)
+{
+	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
+
+	g_signal_connect (G_OBJECT (editor->dialog), "response",
+	                  G_CALLBACK (editor_response_cb), editor);
+	g_signal_connect (G_OBJECT (editor->dialog), "close",
+	                  G_CALLBACK (editor_close_cb), editor);
+
+	nm_connection_editor_present (editor);
+}
+

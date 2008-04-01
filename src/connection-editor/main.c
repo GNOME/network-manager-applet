@@ -20,11 +20,51 @@
  * (C) Copyright 2004-2005 Red Hat, Inc.
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include <string.h>
+#include <stdlib.h>
+#include <signal.h>
+
 #include <gtk/gtk.h>
+#include <glib/gi18n-lib.h>
 #include <dbus/dbus-glib.h>
 
 #include "nm-connection-list.h"
 #include "crypto.h"
+
+static GMainLoop *loop = NULL;
+
+static void
+signal_handler (int signo)
+{
+	if (signo == SIGINT || signo == SIGTERM) {
+		g_message ("Caught signal %d, shutting down...", signo);
+		g_main_loop_quit (loop);
+	}
+}
+
+static void
+setup_signals (void)
+{
+	struct sigaction action;
+	sigset_t mask;
+
+	sigemptyset (&mask);
+	action.sa_handler = signal_handler;
+	action.sa_mask = mask;
+	action.sa_flags = 0;
+	sigaction (SIGTERM,  &action, NULL);
+	sigaction (SIGINT,  &action, NULL);
+}
+
+static void
+list_done_cb (NMConnectionList *list, gint response, gpointer user_data)
+{
+	g_main_loop_quit (loop);
+}
 
 int
 main (int argc, char *argv[])
@@ -33,7 +73,10 @@ main (int argc, char *argv[])
 	DBusGConnection *ignore;
 	GError *error = NULL;
 
+	bindtextdomain (GETTEXT_PACKAGE, NMALOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	gtk_init (&argc, &argv);
+	textdomain (GETTEXT_PACKAGE);
 
 	/* parse arguments: an idea is to use gconf://$setting_name / system://$setting_name to
 	   allow this program to work with both GConf and system-wide settings */
@@ -48,11 +91,16 @@ main (int argc, char *argv[])
 		return 1;
 	}
 
+	loop = g_main_loop_new (NULL, FALSE);
+
 	list = nm_connection_list_new ();
-	nm_connection_list_run_and_close (list);
+	g_signal_connect (G_OBJECT (list), "done", G_CALLBACK (list_done_cb), NULL);
+	nm_connection_list_run (list);
+
+	setup_signals ();
+	g_main_loop_run (loop);
+
 	g_object_unref (list);
-
 	crypto_deinit ();
-
 	return 0;
 }

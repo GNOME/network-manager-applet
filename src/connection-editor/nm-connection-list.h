@@ -39,6 +39,7 @@ typedef struct {
 
 	/* private data */
 	GHashTable *connections;
+	GHashTable *editors;
 
 	GConfClient *client;
 
@@ -55,12 +56,14 @@ typedef struct {
 
 typedef struct {
 	GObjectClass parent_class;
+
+	/* Signals */
+	void (*done)  (NMConnectionList *list, gint result);
 } NMConnectionListClass;
 
 GType             nm_connection_list_get_type (void);
 NMConnectionList *nm_connection_list_new (void);
 
-void              nm_connection_list_show (NMConnectionList *list);
-gint              nm_connection_list_run_and_close (NMConnectionList *list);
+void              nm_connection_list_run (NMConnectionList *list);
 
 #endif

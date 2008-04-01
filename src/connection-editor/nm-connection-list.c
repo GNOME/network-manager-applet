@@ -50,7 +50,15 @@
 
 G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
 
+enum {
+	LIST_DONE,
+	LIST_LAST_SIGNAL
+};
+
+static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
+
 #define CE_GCONF_PATH_TAG "ce-gconf-path"
+#define CONNECTION_LIST_TAG "nm-connection-list"
 
 #define COL_ID 			0
 #define COL_LAST_USED	1
@@ -91,24 +99,110 @@ get_connection_for_selection (GtkWidget *clist,
 	return connection;
 }
 
+typedef struct {
+	NMConnectionList *list;
+	GtkWidget *clist;
+} EditorDoneInfo;
+
+static void
+add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
+{
+	EditorDoneInfo *info = (EditorDoneInfo *) user_data;
+	NMConnection *connection;
+
+	connection = nm_connection_editor_get_connection (editor);
+
+	if (response == GTK_RESPONSE_OK) {
+		const char *path;
+
+		path = nm_connection_editor_get_gconf_path (editor);
+
+		g_object_set_data_full (G_OBJECT (connection),
+						    CE_GCONF_PATH_TAG, 
+						    g_strdup (path),
+						    (GDestroyNotify) g_free);
+		// FIXME: add connection to the list
+	}
+
+	g_hash_table_remove (info->list->editors, connection);
+	g_free (info);
+}
+
 static void
 add_connection_cb (GtkButton *button, gpointer user_data)
 {
+	GtkWidget *clist = GTK_WIDGET (user_data);
+	NMConnectionList *list;
 	NMConnectionEditor *editor;
-	NMConnection *connection = nm_connection_new ();
+	NMConnection *connection;
+	EditorDoneInfo *info;
 
-	editor = nm_connection_editor_new (connection);
-	nm_connection_editor_run_and_close (editor);
+	list = NM_CONNECTION_LIST (g_object_get_data (G_OBJECT (button), CONNECTION_LIST_TAG));
+	g_assert (list);
 
-	g_object_unref (editor);
-	g_object_unref (connection);
+	info = g_malloc0 (sizeof (EditorDoneInfo));
+	g_assert (info);
+	info->list = list;
+	info->clist = clist;
+
+	connection = nm_connection_new ();
+	editor = nm_connection_editor_new (connection, NULL, NULL);
+	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
+	g_hash_table_insert (list->editors, connection, editor);
+
+	nm_connection_editor_run (editor);
+}
+
+static void
+edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
+{
+	EditorDoneInfo *info = (EditorDoneInfo *) user_data;
+	NMConnection *connection;
+
+	connection = nm_connection_editor_get_connection (editor);
+
+	if (response == GTK_RESPONSE_OK) {
+		// FIXME: update connection name in list if needed
+	}
+
+	g_hash_table_remove (info->list->editors, connection);
+	g_free (info);
+}
+
+static void
+do_edit (NMConnectionList *list, NMConnection *connection, GtkWidget *clist)
+{
+	NMConnectionEditor *editor;
+	const char *gconf_path;
+	EditorDoneInfo *info;
+
+	/* Don't allow two editors for the same connection */
+	editor = NM_CONNECTION_EDITOR (g_hash_table_lookup (list->editors, connection));
+	if (editor) {
+		nm_connection_editor_present (editor);
+		return;
+	}
+
+	gconf_path = g_object_get_data (G_OBJECT (connection), CE_GCONF_PATH_TAG);
+	g_assert (gconf_path);
+
+	info = g_malloc0 (sizeof (EditorDoneInfo));
+	g_assert (info);
+	info->list = list;
+	info->clist = clist;
+
+	editor = nm_connection_editor_new (connection, gconf_path, list->client);
+	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (edit_done_cb), info);
+	g_hash_table_insert (list->editors, connection, editor);
+
+	nm_connection_editor_run (editor);
 }
 
 static void
 edit_connection_cb (GtkButton *button, gpointer user_data)
 {
+	NMConnectionList *list;
 	GtkWidget *clist = GTK_WIDGET (user_data);
-	NMConnectionEditor *editor;
 	NMConnection *connection;
 	GtkTreeModel *ignore1 = NULL;
 	GtkTreeIter ignore2;
@@ -116,9 +210,10 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 	connection = get_connection_for_selection (clist, &ignore1, &ignore2);
 	g_return_if_fail (connection != NULL);
 
-	editor = nm_connection_editor_new (connection);
-	nm_connection_editor_run_and_close (editor);
-	g_object_unref (editor);
+	list = NM_CONNECTION_LIST (g_object_get_data (G_OBJECT (button), CONNECTION_LIST_TAG));
+	g_assert (list);
+
+	do_edit (list, connection, clist);
 }
 
 static void
@@ -146,7 +241,7 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 	if (!s_con || !s_con->id)
 		return;
 
-	list = NM_CONNECTION_LIST (g_object_get_data (G_OBJECT (button), "nm-connection-list"));
+	list = NM_CONNECTION_LIST (g_object_get_data (G_OBJECT (button), CONNECTION_LIST_TAG));
 	g_return_if_fail (list != NULL);
 
 	dialog = gtk_message_dialog_new (GTK_WINDOW (list->dialog),
@@ -235,9 +330,9 @@ connection_double_clicked_cb (GtkTreeView *tree_view,
                               GtkTreeViewColumn *column,
                               gpointer user_data)
 {
+	NMConnectionList *list = NM_CONNECTION_LIST (user_data);
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	NMConnectionEditor *editor;
 	NMConnection *connection;
 	gboolean success;
 
@@ -249,9 +344,7 @@ connection_double_clicked_cb (GtkTreeView *tree_view,
 	gtk_tree_model_get (model, &iter, COL_CONNECTION, &connection, -1);
 	g_return_if_fail (connection != NULL);
 
-	editor = nm_connection_editor_new (connection);
-	nm_connection_editor_run_and_close (editor);
-	g_object_unref (editor);
+	do_edit (list, connection, GTK_WIDGET (tree_view));
 }
 
 static char *
@@ -420,7 +513,7 @@ new_connection_list (NMConnectionList *list,
 
 	g_signal_connect (G_OBJECT (clist),
 	                  "row-activated", G_CALLBACK (connection_double_clicked_cb),
-	                  NULL);
+	                  list);
 
 	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (clist),
 	                                             -1, "Name", gtk_cell_renderer_text_new (),
@@ -442,13 +535,13 @@ new_connection_list (NMConnectionList *list,
 
 	name = g_strdup_printf ("%s_add", prefix);
 	button = glade_xml_get_widget (list->gui, name);
-	g_object_set_data (G_OBJECT (button), "nm-connection-list", list);
+	g_object_set_data (G_OBJECT (button), CONNECTION_LIST_TAG, list);
 	g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (add_connection_cb), clist);
 	g_free (name);
 
 	name = g_strdup_printf ("%s_edit", prefix);
 	button = glade_xml_get_widget (list->gui, name);
-	g_object_set_data (G_OBJECT (button), "nm-connection-list", list);
+	g_object_set_data (G_OBJECT (button), CONNECTION_LIST_TAG, list);
 	g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (edit_connection_cb), clist);
 	g_signal_connect (G_OBJECT (select),
 	                  "changed", G_CALLBACK (list_selection_changed_cb),
@@ -457,7 +550,7 @@ new_connection_list (NMConnectionList *list,
 
 	name = g_strdup_printf ("%s_delete", prefix);
 	button = glade_xml_get_widget (list->gui, name);
-	g_object_set_data (G_OBJECT (button), "nm-connection-list", list);
+	g_object_set_data (G_OBJECT (button), CONNECTION_LIST_TAG, list);
 	g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (delete_connection_cb), clist);
 	g_signal_connect (G_OBJECT (select),
 	                  "changed", G_CALLBACK (list_selection_changed_cb),
@@ -541,14 +634,20 @@ nm_connection_list_init (NMConnectionList *list)
 	load_connections (list);
 	init_connection_lists (list);
 
+	list->editors = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_object_unref);
+
 	list->dialog = glade_xml_get_widget (list->gui, "NMConnectionList");
 	g_signal_connect (G_OBJECT (list->dialog), "response", G_CALLBACK (dialog_response_cb), list);
 }
 
 static void
-nm_connection_list_finalize (GObject *object)
+dispose (GObject *object)
 {
 	NMConnectionList *list = NM_CONNECTION_LIST (object);
+
+	gtk_widget_hide (list->dialog);
+
+	g_hash_table_destroy (list->editors);
 
 	g_object_unref (list->wired_icon);
 	g_object_unref (list->wireless_icon);
@@ -561,7 +660,7 @@ nm_connection_list_finalize (GObject *object)
 	g_hash_table_destroy (list->connections);
 	g_object_unref (list->client);
 
-	G_OBJECT_CLASS (nm_connection_list_parent_class)->finalize (object);
+	G_OBJECT_CLASS (nm_connection_list_parent_class)->dispose (object);
 }
 
 static void
@@ -570,7 +669,17 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	/* virtual methods */
-	object_class->finalize = nm_connection_list_finalize;
+	object_class->dispose = dispose;
+
+	/* Signals */
+	list_signals[LIST_DONE] =
+		g_signal_new ("done",
+					  G_OBJECT_CLASS_TYPE (object_class),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (NMConnectionListClass, done),
+					  NULL, NULL,
+					  g_cclosure_marshal_VOID__INT,
+					  G_TYPE_NONE, 1, G_TYPE_INT);
 }
 
 NMConnectionList *
@@ -583,23 +692,36 @@ nm_connection_list_new (void)
 	return list;
 }
 
-void
-nm_connection_list_show (NMConnectionList *list)
+static void
+nm_connection_list_present (NMConnectionList *list)
 {
 	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
 
-	gtk_widget_show (GTK_WIDGET (list->dialog));
+	gtk_window_present (GTK_WINDOW (list->dialog));
 }
 
-gint
-nm_connection_list_run_and_close (NMConnectionList *list)
+static void
+list_response_cb (GtkDialog *dialog, gint response, gpointer user_data)
 {
-	gint result;
-
-	g_return_val_if_fail (NM_IS_CONNECTION_LIST (list), GTK_RESPONSE_CANCEL);
-
-	result = gtk_dialog_run (GTK_DIALOG (list->dialog));
-	gtk_widget_hide (GTK_WIDGET (list->dialog));
-
-	return result;
+	g_signal_emit (NM_CONNECTION_LIST (user_data), list_signals[LIST_DONE], 0, response);
 }
+
+static void
+list_close_cb (GtkDialog *dialog, gpointer user_data)
+{
+	gtk_dialog_response (dialog, GTK_RESPONSE_CLOSE);
+}
+
+void
+nm_connection_list_run (NMConnectionList *list)
+{
+	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
+
+	g_signal_connect (G_OBJECT (list->dialog), "response",
+	                  G_CALLBACK (list_response_cb), list);
+	g_signal_connect (G_OBJECT (list->dialog), "close",
+	                  G_CALLBACK (list_close_cb), list);
+
+	nm_connection_list_present (list);
+}
+

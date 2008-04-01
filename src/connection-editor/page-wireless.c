@@ -148,6 +148,12 @@ band_value_changed_cb (GtkComboBox *box, gpointer user_data)
 	}
 }
 
+static void
+ssid_value_changed_cb (GtkEditable *entry, gpointer user_data)
+{
+	ce_page_changed (CE_PAGE (user_data));
+}
+
 CEPageWireless *
 ce_page_wireless_new (NMConnection *connection)
 {
@@ -216,6 +222,7 @@ ce_page_wireless_new (NMConnection *connection)
 	utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
 	gtk_entry_set_text (GTK_ENTRY (ssid), utf8_ssid);
 	g_free (utf8_ssid);
+	g_signal_connect (G_OBJECT (ssid), "changed", G_CALLBACK (ssid_value_changed_cb), self);
 
 	mode = glade_xml_get_widget (parent->xml, "wireless_mode");
 	if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "infrastructure"))
