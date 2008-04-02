@@ -786,8 +786,10 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 {
 	const GPtrArray *temp = NULL;
 	GSList *devices = NULL, *iter = NULL;
-	gint n_wireless_interfaces = 0;
-	gint n_wired_interfaces = 0;
+	gint n_wireless_devices = 0;
+	gint n_wired_devices = 0;
+	gint n_cdma_devices = 0;
+	gint n_gsm_devices = 0;
 	int i;
 
 	temp = nm_client_get_devices (applet->nm_client);
@@ -805,13 +807,17 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 
 		if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
 			if (nm_client_wireless_get_enabled (applet->nm_client))
-				n_wireless_interfaces++;
+				n_wireless_devices++;
 		} else if (NM_IS_DEVICE_802_3_ETHERNET (device))
-			n_wired_interfaces++;
+			n_wired_devices++;
+		else if (NM_IS_CDMA_DEVICE (device))
+			n_cdma_devices++;
+		else if (NM_IS_GSM_DEVICE (device))
+			n_gsm_devices++;
 	}
 
-	if (n_wired_interfaces == 0 && n_wireless_interfaces == 0) {
-		nma_menu_add_text_item (menu, _("No network devices have been found"));
+	if (!n_wired_devices && !n_wireless_devices && !n_cdma_devices && !n_gsm_devices) {
+		nma_menu_add_text_item (menu, _("No network devices available"));
 		goto out;
 	}
 
@@ -827,9 +833,13 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			continue;
 
 		if (NM_IS_DEVICE_802_11_WIRELESS (device))
-			n_devices = n_wireless_interfaces;
+			n_devices = n_wireless_devices;
 		else if (NM_IS_DEVICE_802_3_ETHERNET (device))
-			n_devices = n_wired_interfaces++;
+			n_devices = n_wired_devices;
+		else if (NM_IS_CDMA_DEVICE (device))
+			n_devices = n_cdma_devices;
+		else if (NM_IS_GSM_DEVICE (device))
+			n_devices = n_gsm_devices;
 
 		active = applet_find_active_connection_for_device (device, applet, NULL);
 
@@ -840,7 +850,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 
  out:
 	g_slist_free (devices);
-	return n_wireless_interfaces;
+	return n_wireless_devices;
 }
 
 static int
