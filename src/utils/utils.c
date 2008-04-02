@@ -538,28 +538,32 @@ connection_valid_for_wired (NMConnection *connection,
 	NMSettingWired *s_wired;
 	const char *str_mac;
 	struct ether_addr *bin_mac;
+	gboolean is_pppoe = FALSE;
 
 	if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME))
-		return TRUE;
+		is_pppoe = TRUE;
 	
-	if (strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
+	if (!is_pppoe && strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
 		return FALSE;
 
 	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED));
-	g_return_val_if_fail (s_wired != NULL, FALSE);
-
-	/* Match MAC address */
-	if (!s_wired->mac_address)
-		return TRUE;
-
-	str_mac = nm_device_802_3_ethernet_get_hw_address (ethdev);
-	g_return_val_if_fail (str_mac != NULL, FALSE);
-
-	bin_mac = ether_aton (str_mac);
-	g_return_val_if_fail (bin_mac != NULL, FALSE);
-
-	if (memcmp (bin_mac->ether_addr_octet, s_wired->mac_address->data, ETH_ALEN))
+	if (!is_pppoe && !s_wired)
 		return FALSE;
+
+	if (s_wired) {
+		/* Match MAC address */
+		if (!s_wired->mac_address)
+			return TRUE;
+
+		str_mac = nm_device_802_3_ethernet_get_hw_address (ethdev);
+		g_return_val_if_fail (str_mac != NULL, FALSE);
+
+		bin_mac = ether_aton (str_mac);
+		g_return_val_if_fail (bin_mac != NULL, FALSE);
+
+		if (memcmp (bin_mac->ether_addr_octet, s_wired->mac_address->data, ETH_ALEN))
+			return FALSE;
+	}
 
 	return TRUE;
 }
