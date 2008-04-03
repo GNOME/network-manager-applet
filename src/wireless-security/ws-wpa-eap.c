@@ -94,7 +94,8 @@ nag_user (WirelessSecurity *parent)
 
 WirelessSecurityWPAEAP *
 ws_wpa_eap_new (const char *glade_file,
-                NMConnection *connection)
+                NMConnection *connection,
+                const char *connection_id)
 {
 	WirelessSecurityWPAEAP *sec;
 	GtkWidget *widget;
@@ -133,7 +134,8 @@ ws_wpa_eap_new (const char *glade_file,
 	                                    glade_file,
 	                                    "wpa_eap_auth_combo",
 	                                    (GCallback) auth_combo_changed_cb,
-	                                    connection);
+	                                    connection,
+	                                    connection_id);
 	auth_combo_changed_cb (widget, (gpointer) sec);
 
 	return sec;

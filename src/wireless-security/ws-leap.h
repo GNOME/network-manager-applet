@@ -28,7 +28,8 @@ typedef struct {
 } WirelessSecurityLEAP;
 
 WirelessSecurityLEAP * ws_leap_new (const char *glade_file,
-                                    NMConnection *connection);
+                                    NMConnection *connection,
+                                    const char *connection_id);
 
 #endif /* WS_LEAP_H */
 

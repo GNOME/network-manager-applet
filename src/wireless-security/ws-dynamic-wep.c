@@ -97,13 +97,17 @@ nag_user (WirelessSecurity *parent)
 }
 
 WirelessSecurityDynamicWEP *
-ws_dynamic_wep_new (const char *glade_file, NMConnection *connection)
+ws_dynamic_wep_new (const char *glade_file,
+                    NMConnection *connection,
+                    const char *connection_id)
 {
 	WirelessSecurityDynamicWEP *sec;
 	GtkWidget *widget;
 	GladeXML *xml;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
+	if (connection)
+		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "dynamic_wep_notebook", NULL);
 	if (xml == NULL) {
@@ -136,7 +140,8 @@ ws_dynamic_wep_new (const char *glade_file, NMConnection *connection)
 	                                    glade_file,
 	                                    "dynamic_wep_auth_combo",
 	                                    (GCallback) auth_combo_changed_cb,
-	                                    connection);
+	                                    connection,
+	                                    connection_id);
 	auth_combo_changed_cb (widget, (gpointer) sec);
 
 	return sec;

@@ -53,9 +53,6 @@ static void connections_changed_cb (GConfClient *conf_client,
 
 static const char *applet_exported_connection_get_gconf_path (AppletExportedConnection *exported);
 
-static AppletExportedConnection *applet_dbus_settings_get_by_gconf_path (AppletDbusSettings *applet_settings,
-                                                                         const char *path);
-
 static gboolean applet_exported_connection_changed (AppletExportedConnection *connection,
                                                     GConfEntry *entry);
 
@@ -497,6 +494,27 @@ connection_new_secrets_requested_cb (AppletExportedConnection *exported,
 	               context);
 }
 
+static AppletExportedConnection *
+applet_dbus_settings_get_by_gconf_path (AppletDbusSettings *applet_settings,
+                                        const char *path)
+{
+	GSList *elt;
+
+	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings), NULL);
+	g_return_val_if_fail (path != NULL, NULL);
+
+	for (elt = applet_settings->connections; elt; elt = g_slist_next (elt)) {
+		AppletExportedConnection *exported = APPLET_EXPORTED_CONNECTION (elt->data);
+		const char *gconf_path;
+
+		gconf_path = applet_exported_connection_get_gconf_path (exported);
+		if (gconf_path && !strcmp (gconf_path, path))
+			return exported;
+	}
+
+	return NULL;
+}
+
 static void
 connections_changed_cb (GConfClient *conf_client,
                         guint cnxn_id,
@@ -630,27 +648,6 @@ applet_dbus_settings_user_get_by_connection (AppletDbusSettings *applet_settings
 
 		list_con = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
 		if (connection == list_con)
-			return exported;
-	}
-
-	return NULL;
-}
-
-static AppletExportedConnection *
-applet_dbus_settings_get_by_gconf_path (AppletDbusSettings *applet_settings,
-                                        const char *path)
-{
-	GSList *elt;
-
-	g_return_val_if_fail (APPLET_IS_DBUS_SETTINGS (applet_settings), NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-
-	for (elt = applet_settings->connections; elt; elt = g_slist_next (elt)) {
-		AppletExportedConnection *exported = APPLET_EXPORTED_CONNECTION (elt->data);
-		const char *gconf_path;
-
-		gconf_path = applet_exported_connection_get_gconf_path (exported);
-		if (gconf_path && !strcmp (gconf_path, path))
 			return exported;
 	}
 
@@ -847,21 +844,43 @@ applet_exported_connection_init (AppletExportedConnection *exported)
 }
 
 static void
-applet_exported_connection_finalize (GObject *object)
+applet_exported_connection_dispose (GObject *object)
 {
 	AppletExportedConnection *exported = APPLET_EXPORTED_CONNECTION (object);
+	NMConnection *connection;
 
 	if (exported->conf_client) {
 		g_object_unref (exported->conf_client);
 		exported->conf_client = NULL;
 	}
 
-	if (exported->conf_dir) {
-		g_free (exported->conf_dir);
-		exported->conf_dir = NULL;
-	}
+	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
+	if (connection)
+		g_object_set_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG, NULL);
+
+	G_OBJECT_CLASS (applet_exported_connection_parent_class)->dispose (object);
+}
+
+static void
+applet_exported_connection_finalize (GObject *object)
+{
+	AppletExportedConnection *exported = APPLET_EXPORTED_CONNECTION (object);
+
+	g_free (exported->conf_dir);
+	exported->conf_dir = NULL;
+
+	g_free (exported->id);
+	exported->id = NULL;
 
 	G_OBJECT_CLASS (applet_exported_connection_parent_class)->finalize (object);
+}
+
+static const char *
+real_get_id (NMExportedConnection *connection)
+{
+	AppletExportedConnection *exported = APPLET_EXPORTED_CONNECTION (connection);
+
+	return exported->id;
 }
 
 static void
@@ -871,10 +890,12 @@ applet_exported_connection_class_init (AppletExportedConnectionClass *exported_c
 	NMExportedConnectionClass *connection_class = NM_EXPORTED_CONNECTION_CLASS (exported_class);
 
 	/* virtual methods */
+	object_class->dispose = applet_exported_connection_dispose;
 	object_class->finalize = applet_exported_connection_finalize;
 
 	connection_class->get_settings = applet_exported_connection_get_settings;
 	connection_class->get_secrets = applet_exported_connection_get_secrets;
+	connection_class->get_id = real_get_id;
 
 	/* Signals */
 	connection_signals[CONNECTION_NEW_SECRETS_REQUESTED] =
@@ -980,6 +1001,9 @@ applet_exported_connection_new (GConfClient *conf_client, const gchar *conf_dir)
 	                         NULL);
 	exported->conf_client = g_object_ref (conf_client);
 	exported->conf_dir = g_strdup (conf_dir);
+	exported->id = g_path_get_basename (conf_dir);
+	g_object_set_data (G_OBJECT (gconf_connection),
+	                   NMA_CONNECTION_ID_TAG, exported->id);
 
 	utils_fill_connection_certs (gconf_connection);
 	if (!nm_connection_verify (gconf_connection)) {
@@ -1014,7 +1038,8 @@ applet_exported_connection_save (AppletExportedConnection *exported)
 	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
 	nm_gconf_write_connection (connection,
 	                           exported->conf_client,
-	                           exported->conf_dir);
+	                           exported->conf_dir,
+	                           exported->id);
 	gconf_client_notify (exported->conf_client, exported->conf_dir);
 	gconf_client_suggest_sync (exported->conf_client, NULL);
 }
@@ -1044,6 +1069,9 @@ applet_exported_connection_new_from_connection (GConfClient *conf_client,
 	                         NULL);
 	exported->conf_client = g_object_ref (conf_client);
 	exported->conf_dir = g_strdup (conf_dir);
+	exported->id = g_path_get_basename (conf_dir);
+	g_object_set_data (G_OBJECT (connection),
+	                   NMA_CONNECTION_ID_TAG, exported->id);
 
 	fill_vpn_user_name (connection);
 
@@ -1102,6 +1130,7 @@ applet_exported_connection_get_secrets (NMExportedConnection *parent,
 	GHashTable *secrets = NULL;
 	NMSettingConnection *s_con;
 	NMSetting *setting;
+	const char *id = NULL;
 
 	g_return_if_fail (APPLET_IS_EXPORTED_CONNECTION (exported));
 	g_return_if_fail (setting_name != NULL);
@@ -1150,7 +1179,8 @@ applet_exported_connection_get_secrets (NMExportedConnection *parent,
 	settings = g_hash_table_new_full (g_str_hash, g_str_equal,
 	                                  g_free, (GDestroyNotify) g_hash_table_destroy);
 
-	secrets = nm_gconf_get_keyring_items (connection, setting_name, &error);
+	id = nm_exported_connection_get_id (parent);
+	secrets = nm_gconf_get_keyring_items (connection, id, setting_name, &error);
 	if (!secrets) {
 		if (error) {
 			nm_warning ("Error getting secrets: %s", error->message);

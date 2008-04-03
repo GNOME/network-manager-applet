@@ -566,10 +566,13 @@ static void
 nm_gconf_write_0_6_connection (NMConnection *conn, GConfClient *client, int n)
 {
 	char *dir;
+	char *id;
 
 	dir = g_strdup_printf ("%s/%d", GCONF_PATH_CONNECTIONS, n);
-	nm_gconf_write_connection (conn, client, dir);
+	id = g_strdup_printf ("%d", n);
+	nm_gconf_write_connection (conn, client, dir, id);
 	g_free (dir);
+	g_free (id);
 }
 
 #define GCONF_PATH_0_6_WIRELESS_NETWORKS "/system/networking/wireless/networks"
@@ -725,7 +728,7 @@ copy_bool_to_8021x (GConfClient *client, const char *dir, const char *key)
 }
 
 static gboolean
-try_convert_leap (GConfClient *client, const char *dir)
+try_convert_leap (GConfClient *client, const char *dir, const char *connection_id)
 {
 	char *val = NULL;
 	GnomeKeyringResult ret;
@@ -794,13 +797,13 @@ try_convert_leap (GConfClient *client, const char *dir)
 	/* Copy the LEAP password */
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,
-	                                      "connection-name",
+	                                      KEYRING_CID_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      val,
-	                                      "setting-name",
+	                                      KEYRING_SN_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-	                                      "setting-key",
+	                                      KEYRING_SK_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      "password",
 	                                      NULL);
@@ -808,7 +811,8 @@ try_convert_leap (GConfClient *client, const char *dir)
 		goto done;
 
 	found = (GnomeKeyringFound *) found_list->data;
-	nm_gconf_add_keyring_item (val,
+	nm_gconf_add_keyring_item (connection_id,
+	                           val,
 	                           NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 	                           NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD,
 	                           found->secret);
@@ -821,9 +825,12 @@ done:
 }
 
 static void
-copy_keyring_to_8021x (GConfClient *client, const char *dir, const char *key)
+copy_keyring_to_8021x (GConfClient *client,
+                       const char *dir,
+                       const char *connection_id,
+                       const char *key)
 {
-	char *id = NULL;
+	char *name = NULL;
 	GnomeKeyringResult ret;
 	GList *found_list = NULL;
 	GnomeKeyringFound *found;
@@ -831,19 +838,19 @@ copy_keyring_to_8021x (GConfClient *client, const char *dir, const char *key)
 	if (!nm_gconf_get_string_helper (client, dir,
 	                                 "id",
 	                                 NM_SETTING_CONNECTION_SETTING_NAME,
-	                                 &id))
+	                                 &name))
 		return;
 
 	/* Copy the LEAP password */
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,
-	                                      "connection-name",
+	                                      KEYRING_CID_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      id,
-	                                      "setting-name",
+	                                      connection_id,
+	                                      KEYRING_SN_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-	                                      "setting-key",
+	                                      KEYRING_SK_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      key,
 	                                      NULL);
@@ -851,12 +858,12 @@ copy_keyring_to_8021x (GConfClient *client, const char *dir, const char *key)
 		goto done;
 
 	found = (GnomeKeyringFound *) found_list->data;
-	nm_gconf_add_keyring_item (id, NM_SETTING_802_1X_SETTING_NAME, key, found->secret);
+	nm_gconf_add_keyring_item (connection_id, name, NM_SETTING_802_1X_SETTING_NAME, key, found->secret);
 
 	gnome_keyring_item_delete_sync (found->keyring, found->item_id);
 
 done:
-	g_free (id);
+	g_free (name);
 	gnome_keyring_found_list_free (found_list);
 }
 
@@ -869,23 +876,24 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 	for (iter = connections; iter; iter = iter->next) {
 		char *key_mgmt = NULL;
 		GSList *eap = NULL;
+		char *id = g_path_get_basename ((const char *) iter->data);
 
 		if (!nm_gconf_get_string_helper (client, iter->data,
 		                                 NM_SETTING_WIRELESS_SECURITY_KEY_MGMT,
 		                                 NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 		                                 &key_mgmt))
-			continue;
+			goto next;
 
 		/* Only convert 802.1x-based connections */
 		if (strcmp (key_mgmt, "ieee8021x") && strcmp (key_mgmt, "wpa-eap")) {
 			g_free (key_mgmt);
-			continue;
+			goto next;
 		}
 		g_free (key_mgmt);
 
 		/* Leap gets converted differently */
-		if (try_convert_leap (client, iter->data))
-			continue;
+		if (try_convert_leap (client, iter->data, id))
+			goto next;
 
 		/* Otherwise straight 802.1x */
 		if (nm_gconf_get_stringlist_helper (client, iter->data,
@@ -895,7 +903,7 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 			/* Already converted */
 			g_slist_foreach (eap, (GFunc) g_free, NULL);
 			g_slist_free (eap);
-			continue;
+			goto next;
 		}
 
 		copy_stringlist_to_8021x (client, iter->data, NM_SETTING_802_1X_EAP);
@@ -918,14 +926,79 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 		copy_bool_to_8021x (client, iter->data, NMA_CA_CERT_IGNORE_TAG);
 		copy_bool_to_8021x (client, iter->data, NMA_PHASE2_CA_CERT_IGNORE_TAG);
 
-		copy_keyring_to_8021x (client, iter->data, NM_SETTING_802_1X_PASSWORD);
-		copy_keyring_to_8021x (client, iter->data, NM_SETTING_802_1X_PIN);
-		copy_keyring_to_8021x (client, iter->data, NM_SETTING_802_1X_PSK);
-		copy_keyring_to_8021x (client, iter->data, NMA_PRIVATE_KEY_PASSWORD_TAG);
-		copy_keyring_to_8021x (client, iter->data, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
+		copy_keyring_to_8021x (client, iter->data, id, NM_SETTING_802_1X_PASSWORD);
+		copy_keyring_to_8021x (client, iter->data, id, NM_SETTING_802_1X_PIN);
+		copy_keyring_to_8021x (client, iter->data, id, NM_SETTING_802_1X_PSK);
+		copy_keyring_to_8021x (client, iter->data, id, NMA_PRIVATE_KEY_PASSWORD_TAG);
+		copy_keyring_to_8021x (client, iter->data, id, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
+
+next:
+		g_free (id);
 	}
 	free_slist (connections);
 
 	gconf_client_suggest_sync (client, NULL);
+}
+
+/*
+ * Move all keyring items to use 'connection-id' instead of 'connection-name'
+ */
+void
+nm_gconf_migrate_0_7_keyring_items (GConfClient *client)
+{
+	GSList *connections;
+	GSList *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = g_slist_next (iter)) {
+		GnomeKeyringResult ret;
+		GList *found_list = NULL, *elt;
+		char *name = NULL;
+		char *id = g_path_get_basename (iter->data);
+
+		if (!nm_gconf_get_string_helper (client, iter->data,
+		                                 "id",
+		                                 NM_SETTING_CONNECTION_SETTING_NAME,
+		                                 &name))
+			goto next;
+
+		ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+		                                      &found_list,
+		                                      "connection-name",
+		                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+		                                      name,
+		                                      NULL);
+		if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0))
+			goto next;
+
+		for (elt = found_list; elt; elt = g_list_next (elt)) {
+			GnomeKeyringFound *found = (GnomeKeyringFound *) elt->data;
+			char *setting_name = NULL;
+			char *setting_key = NULL;
+			int i;
+
+			for (i = 0; found->attributes && (i < found->attributes->len); i++) {
+				GnomeKeyringAttribute *attr;
+
+				attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
+				if (!strcmp (attr->name, KEYRING_SN_TAG) && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING))
+					setting_name = attr->value.string;
+				else if (!strcmp (attr->name, KEYRING_SK_TAG) && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING))
+					setting_key = attr->value.string;
+			}
+
+			if (setting_name && setting_key) {
+				nm_gconf_add_keyring_item (id, name, setting_name, setting_key, found->secret);
+				ret = gnome_keyring_item_delete_sync (found->keyring, found->item_id);
+			}
+		}
+		gnome_keyring_found_list_free (found_list);
+
+	next:
+		g_free (name);
+		g_free (id);
+	}
+
+
 }
 

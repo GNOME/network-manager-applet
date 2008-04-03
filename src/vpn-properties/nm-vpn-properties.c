@@ -178,6 +178,7 @@ static gboolean
 write_vpn_connection_to_gconf (NMConnection *connection)
 {
 	const char *path;
+	const char *id;
 
 	g_return_val_if_fail (connection != NULL, FALSE);
 
@@ -188,7 +189,8 @@ write_vpn_connection_to_gconf (NMConnection *connection)
 
 	path = g_object_get_data (G_OBJECT (connection), "gconf-path");
 	g_assert (path);
-	nm_gconf_write_connection (connection, gconf_client, path);
+	id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
+	nm_gconf_write_connection (connection, gconf_client, path, id);
 
 	gconf_client_suggest_sync (gconf_client, NULL);
 	return TRUE;
@@ -230,6 +232,10 @@ add_vpn_connection (NMConnection *connection)
 
 	g_object_set_data_full (G_OBJECT (connection),
 					    "gconf-path", path,
+					    (GDestroyNotify) g_free);
+
+	g_object_set_data_full (G_OBJECT (connection),
+					    NMA_CONNECTION_ID_TAG, g_path_get_basename (path),
 					    (GDestroyNotify) g_free);
 
 	write_vpn_connection_to_gconf (connection);
@@ -814,6 +820,10 @@ static void get_all_vpn_connections (void)
 
 		g_object_set_data_full (G_OBJECT (connection),
 						    "gconf-path", g_strdup (dir),
+						    (GDestroyNotify) g_free);
+
+		g_object_set_data_full (G_OBJECT (connection),
+						    NMA_CONNECTION_ID_TAG, g_path_get_basename (dir),
 						    (GDestroyNotify) g_free);
 
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));

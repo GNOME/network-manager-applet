@@ -29,7 +29,8 @@ typedef struct {
 } WirelessSecurityWPAEAP;
 
 WirelessSecurityWPAEAP * ws_wpa_eap_new (const char *glade_file,
-                                         NMConnection *connection);
+                                         NMConnection *connection,
+                                         const char *connection_id);
 
 #endif /* WS_WPA_EAP_H */
 

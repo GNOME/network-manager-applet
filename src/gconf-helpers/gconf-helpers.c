@@ -560,11 +560,13 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 	return TRUE;
 }
 
+#include <unistd.h>
 GSList *
 nm_gconf_get_all_connections (GConfClient *client)
 {
 	GSList *connections;
 
+	nm_gconf_migrate_0_7_keyring_items (client);
 	nm_gconf_migrate_0_7_connection_names (client);
 	nm_gconf_migrate_0_7_vpn_connections (client);
 	nm_gconf_migrate_0_7_wireless_security (client);
@@ -791,6 +793,7 @@ nm_gconf_read_connection (GConfClient *client,
 
 void
 nm_gconf_add_keyring_item (const char *connection_id,
+                           const char *connection_name,
                            const char *setting_name,
                            const char *setting_key,
                            const char *secret)
@@ -806,19 +809,19 @@ nm_gconf_add_keyring_item (const char *connection_id,
 	g_return_if_fail (secret != NULL);
 
 	display_name = g_strdup_printf ("Network secret for %s/%s/%s",
-	                                connection_id,
+	                                connection_name,
 	                                setting_name,
 	                                setting_key);
 
 	attrs = gnome_keyring_attribute_list_new ();
 	gnome_keyring_attribute_list_append_string (attrs,
-	                                            "connection-name",
+	                                            KEYRING_CID_TAG,
 	                                            connection_id);
 	gnome_keyring_attribute_list_append_string (attrs,
-	                                            "setting-name",
+	                                            KEYRING_SN_TAG,
 	                                            setting_name);
 	gnome_keyring_attribute_list_append_string (attrs,
-	                                            "setting-key",
+	                                            KEYRING_SK_TAG,
 	                                            setting_key);
 
 	ret = gnome_keyring_item_create_sync (NULL,
@@ -838,6 +841,7 @@ typedef struct CopyOneSettingValueInfo {
 	GConfClient *client;
 	const char *dir;
 	const char *connection_id;
+	const char *connection_name;
 } CopyOneSettingValueInfo;
 
 static void
@@ -871,8 +875,13 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		const char *str_val = g_value_get_string (value);
 		if (str_val) {
 			if (secret) {
-				if (strlen (str_val))
-					nm_gconf_add_keyring_item (info->connection_id, setting->name, key, str_val);
+				if (strlen (str_val)) {
+					nm_gconf_add_keyring_item (info->connection_id,
+					                           info->connection_name,
+					                           setting->name,
+					                           key,
+					                           str_val);
+				}
 			} else
 				nm_gconf_set_string_helper (info->client, info->dir, key, setting->name, str_val);
 		}
@@ -969,6 +978,7 @@ write_one_password (CopyOneSettingValueInfo *info, const char *tag)
 	value = g_object_get_data (G_OBJECT (info->connection), tag);
 	if (value) {
 		nm_gconf_add_keyring_item (info->connection_id,
+		                           info->connection_name,
 		                           NM_SETTING_802_1X_SETTING_NAME,
 		                           tag,
 		                           value);
@@ -1013,23 +1023,26 @@ write_applet_private_values_to_gconf (CopyOneSettingValueInfo *info)
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir)
+                           const char *dir,
+                           const char *connection_id)
 {
-	NMSettingConnection *s_connection;
+	NMSettingConnection *s_con;
 	CopyOneSettingValueInfo info;
 
 	g_return_if_fail (NM_IS_CONNECTION (connection));
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (dir != NULL);
+	g_return_if_fail (connection_id != NULL);
 
-	s_connection = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_connection)
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	if (!s_con)
 		return;
 
 	info.connection = connection;
 	info.client = client;
 	info.dir = dir;
-	info.connection_id = s_connection->id;
+	info.connection_id = connection_id;
+	info.connection_name = s_con->id;
 	nm_connection_for_each_setting_value (connection,
 	                                      copy_one_setting_value_to_gconf,
 	                                      &info);
@@ -1130,6 +1143,7 @@ out:
 
 GHashTable *
 nm_gconf_get_keyring_items (NMConnection *connection,
+                            const char *connection_id,
                             const char *setting_name,
                             GError **error)
 {
@@ -1138,8 +1152,10 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 	GList *found_list = NULL;
 	GnomeKeyringResult ret;
 	GList *iter;
+	const char *connection_name;
 
 	g_return_val_if_fail (connection != NULL, NULL);
+	g_return_val_if_fail (connection_id != NULL, NULL);
 	g_return_val_if_fail (setting_name != NULL, NULL);
 	g_return_val_if_fail (error != NULL, NULL);
 	g_return_val_if_fail (*error == NULL, NULL);
@@ -1147,13 +1163,14 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 	g_assert (s_con->id);
+	connection_name = s_con->id;
 
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,
-	                                      "connection-name",
+	                                      KEYRING_CID_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      s_con->id,
-	                                      "setting-name",
+	                                      connection_id,
+	                                      KEYRING_SN_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      setting_name,
 	                                      NULL);
@@ -1182,7 +1199,7 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 			g_set_error (error, NM_SETTINGS_ERROR, 1,
 			             "%s.%d - Internal error; keyring item '%s/%s' didn't "
 			             "have a 'setting-key' attribute.",
-			             __FILE__, __LINE__, s_con->id, setting_name);
+			             __FILE__, __LINE__, connection_name, setting_name);
 			break;
 		}
 
@@ -1197,7 +1214,7 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 				if (!*error) {
 					g_set_error (error, NM_SETTINGS_ERROR, 1,
 					             "%s.%d - %s/%s unknown error from get_one_private_key().",
-					             __FILE__, __LINE__, s_con->id, setting_name);
+					             __FILE__, __LINE__, connection_name, setting_name);
 				}
 				break;
 			}

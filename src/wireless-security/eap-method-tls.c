@@ -338,6 +338,7 @@ EAPMethodTLS *
 eap_method_tls_new (const char *glade_file,
                     WirelessSecurity *parent,
                     NMConnection *connection,
+                    const char *connection_id,
                     gboolean phase2)
 {
 	EAPMethodTLS *method;
@@ -347,6 +348,8 @@ eap_method_tls_new (const char *glade_file,
 	NMSetting8021x *s_8021x = NULL;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
+	if (connection)
+		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "eap_tls_notebook", NULL);
 	if (xml == NULL) {
@@ -410,7 +413,7 @@ eap_method_tls_new (const char *glade_file,
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_802_1X_SETTING_NAME, &error);
+		secrets = nm_gconf_get_keyring_items (connection, connection_id, NM_SETTING_802_1X_SETTING_NAME, &error);
 		if (secrets) {
 			value = g_hash_table_lookup (secrets, NMA_PRIVATE_KEY_PASSWORD_TAG);
 			if (value)

@@ -35,6 +35,7 @@
 #include "page-wireless.h"
 #include "page-wireless-security.h"
 #include "nm-connection-editor.h"
+#include "gconf-helpers.h"
 
 
 G_DEFINE_TYPE (CEPageWirelessSecurity, ce_page_wireless_security, CE_TYPE_PAGE)
@@ -181,6 +182,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 	int item = 0;
 	const char *glade_file = GLADEDIR "/applet.glade";
 	GtkComboBox *combo;
+	const char *connection_id;
+
+	connection_id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
 
 	self = CE_PAGE_WIRELESS_SECURITY (g_object_new (CE_TYPE_PAGE_WIRELESS_SECURITY, NULL));
 	parent = CE_PAGE (self);
@@ -249,9 +253,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 		WEPKeyType default_wep_type = WEP_KEY_TYPE_PASSPHRASE;
 
 		if (default_type == NMU_SEC_STATIC_WEP)
-			default_wep_type = ws_wep_guess_key_type (connection);
+			default_wep_type = ws_wep_guess_key_type (connection, connection_id);
 
-		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_PASSPHRASE);
+		ws_wep = ws_wep_key_new (glade_file, connection, connection_id, WEP_KEY_TYPE_PASSPHRASE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -260,7 +264,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_HEX);
+		ws_wep = ws_wep_key_new (glade_file, connection, connection_id, WEP_KEY_TYPE_HEX);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Hexadecimal"));
@@ -269,7 +273,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (glade_file, connection, WEP_KEY_TYPE_ASCII);
+		ws_wep = ws_wep_key_new (glade_file, connection, connection_id, WEP_KEY_TYPE_ASCII);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit ASCII"));
@@ -282,7 +286,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 	if (nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityLEAP *ws_leap;
 
-		ws_leap = ws_leap_new (glade_file, connection);
+		ws_leap = ws_leap_new (glade_file, connection, connection_id);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
@@ -295,7 +299,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (glade_file, connection);
+		ws_dynamic_wep = ws_dynamic_wep_new (glade_file, connection, connection_id);
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
@@ -309,7 +313,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;
 
-		ws_wpa_psk = ws_wpa_psk_new (glade_file, connection);
+		ws_wpa_psk = ws_wpa_psk_new (glade_file, connection, connection_id);
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
@@ -323,7 +327,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (glade_file, connection);
+		ws_wpa_eap = ws_wpa_eap_new (glade_file, connection, connection_id);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));

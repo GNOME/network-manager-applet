@@ -128,6 +128,7 @@ EAPMethodSimple *
 eap_method_simple_new (const char *glade_file,
                        WirelessSecurity *parent,
                        NMConnection *connection,
+                       const char *connection_id,
                        EAPMethodSimpleType type)
 {
 	EAPMethodSimple *method;
@@ -135,6 +136,8 @@ eap_method_simple_new (const char *glade_file,
 	GladeXML *xml;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
+	if (connection)
+		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "eap_simple_notebook", NULL);
 	if (xml == NULL) {
@@ -187,7 +190,7 @@ eap_method_simple_new (const char *glade_file,
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_802_1X_SETTING_NAME, &error);
+		secrets = nm_gconf_get_keyring_items (connection, connection_id, NM_SETTING_802_1X_SETTING_NAME, &error);
 		if (secrets) {
 			value = g_hash_table_lookup (secrets, NM_SETTING_802_1X_PASSWORD);
 			if (value)

@@ -148,13 +148,15 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityWPAPSK *
-ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
+ws_wpa_psk_new (const char *glade_file, NMConnection *connection, const char *connection_id)
 {
 	WirelessSecurityWPAPSK *sec;
 	GtkWidget *widget;
 	GladeXML *xml;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
+	if (connection)
+		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "wpa_psk_notebook", NULL);
 	if (xml == NULL) {
@@ -193,7 +195,7 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
+		secrets = nm_gconf_get_keyring_items (connection, connection_id, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
 		if (secrets) {
 			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_PSK);
 			if (value)

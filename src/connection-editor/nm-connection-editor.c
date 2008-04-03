@@ -448,13 +448,21 @@ connection_editor_update_connection (NMConnectionEditor *editor)
 				break;
 			}
 		};
+		g_assert (editor->gconf_path);
+		g_object_set_data_full (G_OBJECT (editor->connection),
+		                        NMA_CONNECTION_ID_TAG, g_path_get_basename (editor->gconf_path),
+		                        (GDestroyNotify) g_free);
 	}
 
 	if (editor->gconf_path) {
+		const char *id;
+
+		id = g_object_get_data (G_OBJECT (editor->connection), NMA_CONNECTION_ID_TAG);
 		/* Save the connection back to GConf */
 		nm_gconf_write_connection (editor->connection,
 		                           editor->gconf_client,
-		                           editor->gconf_path);
+		                           editor->gconf_path,
+		                           id);
 		gconf_client_notify (editor->gconf_client, editor->gconf_path);
 		gconf_client_suggest_sync (editor->gconf_client, NULL);
 	} else

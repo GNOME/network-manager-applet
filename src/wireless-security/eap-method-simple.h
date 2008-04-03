@@ -41,6 +41,7 @@ typedef struct {
 EAPMethodSimple * eap_method_simple_new (const char *glade_file,
                                          WirelessSecurity *parent,
                                          NMConnection *connection,
+                                         const char *connection_id,
                                          EAPMethodSimpleType type);
 
 #endif /* EAP_METHOD_SIMPLE_H */

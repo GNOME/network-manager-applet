@@ -443,6 +443,10 @@ load_connections (NMConnectionList *list)
 		connection = nm_gconf_read_connection (list->client, dir);
 		if (connection) {
 			g_object_set_data_full (G_OBJECT (connection),
+			                        NMA_CONNECTION_ID_TAG, g_path_get_basename (dir),
+			                        (GDestroyNotify) g_free);
+
+			g_object_set_data_full (G_OBJECT (connection),
 							    CE_GCONF_PATH_TAG, 
 							    g_strdup (dir),
 							    (GDestroyNotify) g_free);

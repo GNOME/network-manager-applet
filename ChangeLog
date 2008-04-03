@@ -1,3 +1,62 @@
+2008-04-03  Dan Williams  <dcbw@redhat.com>
+
+	Switch keyring tagging of passwords to use the connection ID, not the
+	connection's name, so secrets are associated with the same connection
+	across connection renames.
+
+	* src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/gconf-helpers.h
+		- (nm_gconf_add_keyring_item): take a connection ID argument and use
+			that when setting the keyring item, instead of using the connection
+			name
+		- (copy_one_setting_value_to_gconf, write_one_password,
+		   nm_gconf_write_connection): pass the connection ID on to
+			nm_gconf_add_keyring_item()
+		- (nm_gconf_get_keyring_items): take a connection ID argument
+
+	* src/gconf-helpers/gconf-upgrade.c
+	  src/gconf-helpers/gconf-upgrade.h
+		- (nm_gconf_migrate_0_7_keyring_items): migrate keyring items to new
+			tagging style
+		- (nm_gconf_write_0_6_connection, try_convert_leap,
+		   copy_keyring_to_8021x, nm_gconf_migrate_0_7_wireless_security): pass
+			connection ID along
+
+	* src/wireless-dialog.c
+	  src/wired-dialog.c
+	  src/vpn-properties/nm-vpn-properties.c
+	  src/connection-editor/page-wireless-security.c
+	  src/connection-editor/nm-connection-list.c
+	  src/connection-editor/nm-connection-editor.c
+	  src/applet-dbus-settings.c
+		- Get/set the connection ID based on the connection's GConf path, and
+			pass that to UI bits as appropriate
+
+	* src/wireless-security/eap-method-leap.c
+	  src/wireless-security/eap-method-leap.h
+	  src/wireless-security/eap-method-peap.c
+	  src/wireless-security/eap-method-peap.h
+	  src/wireless-security/eap-method-simple.c
+	  src/wireless-security/eap-method-simple.h
+	  src/wireless-security/eap-method-tls.c
+	  src/wireless-security/eap-method-tls.h
+	  src/wireless-security/eap-method-ttls.c
+	  src/wireless-security/eap-method-ttls.h
+	  src/wireless-security/wireless-security.c
+	  src/wireless-security/wireless-security.h
+	  src/wireless-security/ws-dynamic-wep.c
+	  src/wireless-security/ws-dynamic-wep.h
+	  src/wireless-security/ws-leap.c
+	  src/wireless-security/ws-leap.h
+	  src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wep-key.h
+	  src/wireless-security/ws-wpa-eap.c
+	  src/wireless-security/ws-wpa-eap.h
+	  src/wireless-security/ws-wpa-psk.c
+	  src/wireless-security/ws-wpa-psk.h
+		- Take a connection ID to the xxxx_new () functions to be passed along
+			to nm_gconf_get_keyring_items()
+
 2008-04-02  Dan Williams  <dcbw@redhat.com>
 
 	* src/utils/utils.c

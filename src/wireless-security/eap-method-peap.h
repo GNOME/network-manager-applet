@@ -35,7 +35,8 @@ typedef struct {
 
 EAPMethodPEAP * eap_method_peap_new (const char *glade_file,
                                      WirelessSecurity *parent,
-                                     NMConnection *connection);
+                                     NMConnection *connection,
+                                     const char *connection_id);
 
 #endif /* EAP_METHOD_PEAP_H */
 

@@ -43,6 +43,12 @@
 #define NMA_PATH_PHASE2_PRIVATE_KEY_TAG "nma-path-phase2-private-key"
 #define NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG "nma-phase2-private-key-password"
 
+#define KEYRING_CID_TAG "connection-id"
+#define KEYRING_SN_TAG "setting-name"
+#define KEYRING_SK_TAG "setting-key"
+
+#define NMA_CONNECTION_ID_TAG "nma-connection-id"
+
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,
 					const char *path,
@@ -151,16 +157,19 @@ nm_gconf_read_connection (GConfClient *client,
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir);
+                           const char *dir,
+                           const char *connection_id);
 
 void
 nm_gconf_add_keyring_item (const char *connection_id,
+                           const char *connection_name,
                            const char *setting_name,
                            const char *setting_key,
                            const char *secret);
 
 GHashTable *
 nm_gconf_get_keyring_items (NMConnection *connection,
+                            const char *connection_id,
                             const char *setting_name,
                             GError **error);
 

@@ -12,6 +12,7 @@
 #include "wired-dialog.h"
 #include "wireless-security.h"
 #include "applet-dialogs.h"
+#include "gconf-helpers.h"
 
 static void
 stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
@@ -40,8 +41,10 @@ dialog_set_security (NMConnection *connection,
 	GList *children;
 	GList *iter;
 	WirelessSecurity *security;
+	const char *id;
 
-	security = (WirelessSecurity *) ws_wpa_eap_new (glade_file, connection);
+	id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
+	security = (WirelessSecurity *) ws_wpa_eap_new (glade_file, connection, id);
 
 	/* Remove any previous wireless security widgets */
 	children = gtk_container_get_children (GTK_CONTAINER (box));

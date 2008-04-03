@@ -289,7 +289,8 @@ inner_auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 static GtkWidget *
 inner_auth_combo_init (EAPMethodPEAP *method,
                        const char *glade_file,
-                       NMConnection *connection)
+                       NMConnection *connection,
+                       const char *connection_id)
 {
 	GladeXML *xml = EAP_METHOD (method)->xml;
 	GtkWidget *combo;
@@ -303,6 +304,7 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	em_mschap_v2 = eap_method_simple_new (glade_file,
 	                                      method->sec_parent,
 	                                      connection,
+	                                      connection_id,
 	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
@@ -314,6 +316,7 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	em_md5 = eap_method_simple_new (glade_file,
 	                                 method->sec_parent,
 	                                 connection,
+	                                 connection_id,
 	                                 EAP_METHOD_SIMPLE_TYPE_MD5);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
@@ -338,7 +341,8 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 EAPMethodPEAP *
 eap_method_peap_new (const char *glade_file,
                      WirelessSecurity *parent,
-                     NMConnection *connection)
+                     NMConnection *connection,
+                     const char *connection_id)
 {
 	EAPMethodPEAP *method;
 	GtkWidget *widget;
@@ -349,6 +353,8 @@ eap_method_peap_new (const char *glade_file,
 	const char *filename;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
+	if (connection)
+		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "eap_peap_notebook", NULL);
 	if (xml == NULL) {
@@ -408,7 +414,7 @@ eap_method_peap_new (const char *glade_file,
 			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
 	}
 
-	widget = inner_auth_combo_init (method, glade_file, connection);
+	widget = inner_auth_combo_init (method, glade_file, connection, connection_id);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);
 
 	widget = glade_xml_get_widget (xml, "eap_peap_version_combo");

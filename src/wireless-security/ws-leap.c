@@ -111,7 +111,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityLEAP *
-ws_leap_new (const char *glade_file, NMConnection *connection)
+ws_leap_new (const char *glade_file, NMConnection *connection, const char *connection_id)
 {
 	WirelessSecurityLEAP *sec;
 	GtkWidget *widget;
@@ -119,6 +119,8 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 	NMSettingWirelessSecurity *wsec = NULL;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
+	if (connection)
+		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "leap_notebook", NULL);
 	if (xml == NULL) {
@@ -164,7 +166,7 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
+		secrets = nm_gconf_get_keyring_items (connection, connection_id, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
 		if (secrets) {
 			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD);
 			if (value)

@@ -276,7 +276,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                            const char *glade_file,
                            const char *combo_name,
                            GCallback auth_combo_changed_cb,
-                           NMConnection *connection)
+                           NMConnection *connection,
+                           const char *connection_id)
 {
 	GtkWidget *combo;
 	GtkListStore *auth_model;
@@ -287,6 +288,9 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	EAPMethodPEAP *em_peap;
 	const char *default_method = NULL;
 	int active = -1;
+
+	if (connection)
+		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	/* Grab the default EAP method out of the security object */
 	if (connection) {
@@ -304,7 +308,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
-	em_tls = eap_method_tls_new (glade_file, sec, connection, FALSE);
+	em_tls = eap_method_tls_new (glade_file, sec, connection, connection_id, FALSE);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("TLS"),
@@ -314,7 +318,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	if (default_method && (active < 0) && !strcmp (default_method, "tls"))
 		active = 0;
 
-	em_leap = eap_method_leap_new (glade_file, sec, connection);
+	em_leap = eap_method_leap_new (glade_file, sec, connection, connection_id);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("LEAP"),
@@ -324,7 +328,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	if (default_method && (active < 0) && !strcmp (default_method, "leap"))
 		active = 1;
 
-	em_ttls = eap_method_ttls_new (glade_file, sec, connection);
+	em_ttls = eap_method_ttls_new (glade_file, sec, connection, connection_id);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Tunneled TLS"),
@@ -334,7 +338,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	if (default_method && (active < 0) && !strcmp (default_method, "ttls"))
 		active = 2;
 
-	em_peap = eap_method_peap_new (glade_file, sec, connection);
+	em_peap = eap_method_peap_new (glade_file, sec, connection, connection_id);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Protected EAP (PEAP)"),
