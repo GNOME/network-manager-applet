@@ -63,7 +63,7 @@ key_index_combo_changed_cb (GtkWidget *combo, WirelessSecurity *parent)
 
 	key_index = gtk_combo_box_get_active (GTK_COMBO_BOX (combo));
 	g_return_if_fail (key_index <= 3);
-	g_return_if_fail (key_index => 0);
+	g_return_if_fail (key_index >= 0);
 
 	/* Populate entry with key from new index */
 	gtk_entry_set_text (GTK_ENTRY (entry), sec->keys[key_index]);
