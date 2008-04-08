@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -186,10 +187,11 @@ add_disconnect_item (NMDevice *device,
 	GSMMenuItemInfo *info;
 
 	state = nm_device_get_state (device);
-	if (   state == NM_DEVICE_STATE_DOWN
-	    || state == NM_DEVICE_STATE_DISCONNECTED
-	    || state == NM_DEVICE_STATE_FAILED
-	    || state == NM_DEVICE_STATE_CANCELLED)
+	if (!(state == NM_DEVICE_STATE_ACTIVATED || /* activated */
+	      state == NM_DEVICE_STATE_PREPARE ||   /* or activating */
+	      state == NM_DEVICE_STATE_CONFIG ||
+	      state == NM_DEVICE_STATE_NEED_AUTH ||
+	      state == NM_DEVICE_STATE_IP_CONFIG))
 		return;
 
 	item = gtk_menu_item_new_with_label (_("Disconnect..."));
