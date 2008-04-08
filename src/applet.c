@@ -1741,6 +1741,60 @@ error:
 	g_error_free (error);
 }
 
+static gboolean
+periodic_update_active_connection_timestamps (gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+	const GPtrArray *connections;
+	int i;
+
+	if (!applet->nm_client || !nm_client_get_manager_running (applet->nm_client))
+		return TRUE;
+
+	connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; connections && (i < connections->len); i++) {
+		NMActiveConnection *active = NM_ACTIVE_CONNECTION (g_ptr_array_index (connections, i));
+		const char *path;
+		AppletExportedConnection *exported;
+		NMConnection *connection;
+		const GPtrArray *devices;
+		int k;
+
+		if (nm_active_connection_get_scope (active) == NM_CONNECTION_SCOPE_SYSTEM)
+			continue;
+
+		path = nm_active_connection_get_connection (active);
+		exported = applet_dbus_settings_user_get_by_dbus_path (applet->settings, path);
+		if (!exported)
+			continue;
+
+		devices = nm_active_connection_get_devices (active);
+		if (!devices || !devices->len)
+			continue;
+
+		/* Check if a device owned by the active connection is completely
+		 * activated before updating timestamp.
+		 */
+		for (k = 0; devices && (k < devices->len); k++) {
+			NMDevice *device = NM_DEVICE (g_ptr_array_index (devices, k));
+
+			if (nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED) {
+				NMSettingConnection *s_con;
+
+				connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
+				s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+				g_assert (s_con);
+
+				s_con->timestamp = (guint64) time (NULL);
+				applet_exported_connection_save (exported);
+				break;
+			}
+		}
+	}
+
+	return TRUE;
+}
+
 /*****************************************************************************/
 
 #define CLEAR_ICON(x) \
@@ -2045,6 +2099,10 @@ constructor (GType type,
 
 	foo_client_setup (applet);
 
+	/* timeout to update connection timestamps every 5 minutes */
+	applet->update_timestamps_id = g_timeout_add (300000,
+			(GSourceFunc) periodic_update_active_connection_timestamps, applet);
+
 	return G_OBJECT (applet);
 
 error:
@@ -2055,6 +2113,9 @@ error:
 static void finalize (GObject *object)
 {
 	NMApplet *applet = NM_APPLET (object);
+
+	if (applet->update_timestamps_id)
+		g_source_remove (applet->update_timestamps_id);
 
 	g_slice_free (NMADeviceClass, applet->wired_class);
 	g_slice_free (NMADeviceClass, applet->wireless_class);

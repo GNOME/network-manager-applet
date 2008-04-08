@@ -92,6 +92,8 @@ typedef struct
 	GConfClient *	gconf_client;
 	char	*		glade_file;
 
+	guint update_timestamps_id;
+
 	/* Device classes */
 	NMADeviceClass *wired_class;
 	NMADeviceClass *wireless_class;
