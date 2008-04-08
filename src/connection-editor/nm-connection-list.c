@@ -565,8 +565,10 @@ new_connection_list (NMConnectionList *list,
 
 	/* Tab label with icon */
 	hbox = gtk_hbox_new (FALSE, 6);
-	image = gtk_image_new_from_pixbuf (pixbuf);
-	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	if (pixbuf) {
+		image = gtk_image_new_from_pixbuf (pixbuf);
+		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	}
 	gtk_box_pack_start (GTK_BOX (hbox), gtk_label_new (label_text), FALSE, FALSE, 0);
 	gtk_widget_show_all (hbox);
 
@@ -675,48 +677,9 @@ dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
 	gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
-#define ICON_LOAD(x, y)	\
-	{ \
-		x = gtk_icon_theme_load_icon (list->icon_theme, y, 16, 0, &error); \
-		if (x == NULL) { \
-			g_warning ("Icon %s missing: %s", y, error->message); \
-			g_error_free (error); \
-			return; \
-		} \
-	}
-
 static void
 nm_connection_list_init (NMConnectionList *list)
 {
-	GError *error = NULL;
-
-	/* load GUI */
-	list->gui = glade_xml_new (GLADEDIR "/nm-connection-editor.glade", "NMConnectionList", NULL);
-	if (!list->gui) {
-		g_warning ("Could not load Glade file for connection list");
-		return;
-	}
-
-	list->icon_theme = gtk_icon_theme_get_for_screen (gdk_screen_get_default ());
-
-	/* Load icons */
-	ICON_LOAD(list->wired_icon, "nm-device-wired");
-	ICON_LOAD(list->wireless_icon, "nm-device-wireless");
-	ICON_LOAD(list->wwan_icon, "nm-device-wwan");
-	ICON_LOAD(list->vpn_icon, "lock");
-	ICON_LOAD(list->unknown_icon, "nm-no-connection");
-
-	list->client = gconf_client_get_default ();
-
-	/* read connections */
-	list->connections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
-	load_connections (list);
-	init_connection_lists (list);
-
-	list->editors = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_object_unref);
-
-	list->dialog = glade_xml_get_widget (list->gui, "NMConnectionList");
-	g_signal_connect (G_OBJECT (list->dialog), "response", G_CALLBACK (dialog_response_cb), list);
 }
 
 static void
@@ -724,20 +687,31 @@ dispose (GObject *object)
 {
 	NMConnectionList *list = NM_CONNECTION_LIST (object);
 
-	gtk_widget_hide (list->dialog);
+	if (list->dialog)
+		gtk_widget_hide (list->dialog);
 
-	g_hash_table_destroy (list->editors);
+	if (list->editors)
+		g_hash_table_destroy (list->editors);
 
-	g_object_unref (list->wired_icon);
-	g_object_unref (list->wireless_icon);
-	g_object_unref (list->wwan_icon);
-	g_object_unref (list->vpn_icon);
-	g_object_unref (list->unknown_icon);
+	if (list->wired_icon)
+		g_object_unref (list->wired_icon);
+	if (list->wireless_icon)
+		g_object_unref (list->wireless_icon);
+	if (list->wwan_icon)
+		g_object_unref (list->wwan_icon);
+	if (list->vpn_icon)
+		g_object_unref (list->vpn_icon);
+	if (list->unknown_icon)
+		g_object_unref (list->unknown_icon);
 
-	gtk_widget_destroy (list->dialog);
-	g_object_unref (list->gui);
-	g_hash_table_destroy (list->connections);
-	g_object_unref (list->client);
+	if (list->dialog)
+		gtk_widget_destroy (list->dialog);
+	if (list->gui)
+		g_object_unref (list->gui);
+	if (list->connections)
+		g_hash_table_destroy (list->connections);
+	if (list->client)
+		g_object_unref (list->client);
 
 	G_OBJECT_CLASS (nm_connection_list_parent_class)->dispose (object);
 }
@@ -761,14 +735,63 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 					  G_TYPE_NONE, 1, G_TYPE_INT);
 }
 
+#define ICON_LOAD(x, y)	\
+	{ \
+		x = gtk_icon_theme_load_icon (list->icon_theme, y, 16, 0, &error); \
+		if (x == NULL) { \
+			g_warning ("Icon %s missing: %s", y, error->message); \
+			g_error_free (error); \
+			goto error; \
+		} \
+	}
+
 NMConnectionList *
 nm_connection_list_new (void)
 {
 	NMConnectionList *list;
+	GError *error = NULL;
 
 	list = g_object_new (NM_TYPE_CONNECTION_LIST, NULL);
+	if (!list)
+		return NULL;
+
+	/* load GUI */
+	list->gui = glade_xml_new (GLADEDIR "/nm-connection-editor.glade", "NMConnectionList", NULL);
+	if (!list->gui) {
+		g_warning ("Could not load Glade file for connection list");
+		goto error;
+	}
+
+	list->icon_theme = gtk_icon_theme_get_for_screen (gdk_screen_get_default ());
+
+	/* Load icons */
+	ICON_LOAD(list->wired_icon, "nm-device-wired");
+	ICON_LOAD(list->wireless_icon, "nm-device-wireless");
+	ICON_LOAD(list->wwan_icon, "nm-device-wwan");
+	ICON_LOAD(list->vpn_icon, "nm-vpn-standalone-lock");
+	ICON_LOAD(list->unknown_icon, "nm-no-connection");
+
+	list->client = gconf_client_get_default ();
+	if (!list->client)
+		goto error;
+
+	/* read connections */
+	list->connections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+	load_connections (list);
+	init_connection_lists (list);
+
+	list->editors = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_object_unref);
+
+	list->dialog = glade_xml_get_widget (list->gui, "NMConnectionList");
+	if (!list->dialog)
+		goto error;
+	g_signal_connect (G_OBJECT (list->dialog), "response", G_CALLBACK (dialog_response_cb), list);
 
 	return list;
+
+error:
+	g_object_unref (list);
+	return NULL;
 }
 
 static void

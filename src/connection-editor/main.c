@@ -94,6 +94,11 @@ main (int argc, char *argv[])
 	loop = g_main_loop_new (NULL, FALSE);
 
 	list = nm_connection_list_new ();
+	if (!list) {
+		g_warning ("Failed to initialize the UI, exiting...");
+		return 1;
+	}
+
 	g_signal_connect (G_OBJECT (list), "done", G_CALLBACK (list_done_cb), NULL);
 	nm_connection_list_run (list);
 

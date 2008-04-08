@@ -1,5 +1,27 @@
 2008-04-08  Dan Williams  <dcbw@redhat.com>
 
+	* icons/Makefile.am
+	  icons/nm-vpn-standalone-lock.png
+	  icons/nm-vpn-active-lock.png
+		- Split VPN lock icons; add 16x16 centered icon for connection editor
+
+	* icons/nm-vpn-lock.png
+		- remove
+
+	* src/applet.c
+		- (nma_icons_load): use nm-vpn-active-lock.png
+
+	* src/connection-editor/nm-connection-list.c
+		- (new_connection_list): allow NULL icon pixbuf
+		- (nm_connection_list_init): don't init stuff here because it can fail
+		- (dispose): don't dispose of stuff that's not allocated
+		- (nm_connection_list_new): init stuff here and clean up if it fails
+
+	* src/connection-editor/main.c
+		- (main): exit cleanly on init failure
+
+2008-04-08  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (periodic_update_active_connection_timestamps): new function; update
 			active connection timestamps every 5 minutes

@@ -63,9 +63,16 @@ smallicon_DATA=		\
 	nm-vpn-connecting12.png	\
 	nm-vpn-connecting13.png	\
 	nm-vpn-connecting14.png	\
-	nm-vpn-lock.png	\
+	nm-vpn-active-lock.png	\
+	$(NULL)
+
+smallericondir=${datadir}/icons/hicolor/16x16/apps
+smallericon_DATA= \
+	nm-vpn-standalone-lock.png \
 	$(NULL)
 
 EXTRA_DIST=\
-	$(largeicon_DATA)	\
-	$(smallicon_DATA)
+	$(largeicon_DATA) \
+	$(smallicon_DATA) \
+	$(smallericon_DATA)
+
