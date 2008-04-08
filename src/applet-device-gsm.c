@@ -187,11 +187,11 @@ add_disconnect_item (NMDevice *device,
 	GSMMenuItemInfo *info;
 
 	state = nm_device_get_state (device);
-	if (!(state == NM_DEVICE_STATE_ACTIVATED || /* activated */
-	      state == NM_DEVICE_STATE_PREPARE ||   /* or activating */
-	      state == NM_DEVICE_STATE_CONFIG ||
-	      state == NM_DEVICE_STATE_NEED_AUTH ||
-	      state == NM_DEVICE_STATE_IP_CONFIG))
+	if (   state == NM_DEVICE_STATE_UNKNOWN
+	    || state == NM_DEVICE_STATE_UNMANAGED
+	    || state == NM_DEVICE_STATE_UNAVAILABLE
+	    || state == NM_DEVICE_STATE_DISCONNECTED
+	    || state == NM_DEVICE_STATE_FAILED)
 		return;
 
 	item = gtk_menu_item_new_with_label (_("Disconnect..."));
@@ -247,8 +247,6 @@ gsm_add_menu_item (NMDevice *device,
 	item = gtk_menu_item_new_with_label (text);
 	g_free (text);
 
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-
 	label = gtk_bin_get_child (GTK_BIN (item));
 	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
 	                                     gtk_label_get_text (GTK_LABEL (label)));
@@ -256,6 +254,17 @@ gsm_add_menu_item (NMDevice *device,
 	g_free (bold_text);
 
 	gtk_widget_set_sensitive (item, FALSE);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	gtk_widget_show (item);
+
+	/* Notify user of unmanaged device */
+	if (!nm_device_get_managed (device)) {
+		item = gtk_menu_item_new_with_label (_("device is unmanaged"));
+		gtk_widget_set_sensitive (item, FALSE);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show (item);
+		goto out;
+	}
 
 	if (g_slist_length (connections))
 		add_connection_items (device, connections, active, menu, applet);
@@ -263,7 +272,7 @@ gsm_add_menu_item (NMDevice *device,
 		add_default_connection_item (device, menu, applet);
 	add_disconnect_item (device, menu, applet);
 
-	gtk_widget_show (item);
+out:
 	g_slist_free (connections);
 }
 

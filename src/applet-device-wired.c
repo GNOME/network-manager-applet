@@ -201,8 +201,6 @@ wired_add_menu_item (NMDevice *device,
 	item = gtk_menu_item_new_with_label (text);
 	g_free (text);
 
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-
 	/* Only dim the item if the device supports carrier detection AND
 	 * we know it doesn't have a link.
 	 */
@@ -215,13 +213,25 @@ wired_add_menu_item (NMDevice *device,
 	gtk_label_set_markup (GTK_LABEL (label), bold_text);
 	g_free (bold_text);
 
+	gtk_widget_set_sensitive (item, FALSE);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	gtk_widget_show (item);
+
+	/* Notify user of unmanaged device */
+	if (!nm_device_get_managed (device)) {
+		item = gtk_menu_item_new_with_label (_("device is unmanaged"));
+		gtk_widget_set_sensitive (item, FALSE);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show (item);
+		goto out;
+	}
+
 	if (g_slist_length (connections))
 		add_connection_items (device, connections, carrier, active, menu, applet);
 	else
 		add_default_connection_item (device, carrier, menu, applet);
 
-	gtk_widget_set_sensitive (item, FALSE);
-	gtk_widget_show (item);
+out:
 	g_slist_free (connections);
 }
 

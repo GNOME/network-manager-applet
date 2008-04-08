@@ -678,8 +678,22 @@ wireless_add_menu_item (NMDevice *device,
 	gtk_widget_show (item);
 
 	/* Don't display APs when wireless is disabled */
-	if (!nm_client_wireless_get_enabled (applet->nm_client))
+	if (!nm_client_wireless_get_enabled (applet->nm_client)) {
+		item = gtk_menu_item_new_with_label (_("wireless is disabled"));
+		gtk_widget_set_sensitive (item, FALSE);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show (item);
 		goto out;
+	}
+
+	/* Notify user of unmanaged device */
+	if (!nm_device_get_managed (device)) {
+		item = gtk_menu_item_new_with_label (_("device is unmanaged"));
+		gtk_widget_set_sensitive (item, FALSE);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show (item);
+		goto out;
+	}
 
 	active_ap = nm_device_802_11_wireless_get_active_access_point (wdev);
 
