@@ -214,7 +214,10 @@ populate_ui (CEPageWireless *self)
 	                  G_CALLBACK (ce_spin_output_with_default),
 	                  GINT_TO_POINTER (mtu_def));
 
-	utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) setting->ssid->data, setting->ssid->len);
+	if (setting->ssid)
+		utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) setting->ssid->data, setting->ssid->len);
+	else
+		utf8_ssid = g_strdup ("");
 	gtk_entry_set_text (priv->ssid, utf8_ssid);
 	g_signal_connect (priv->ssid, "changed", G_CALLBACK (entry_changed), self);
 	g_free (utf8_ssid);
