@@ -36,14 +36,46 @@
 
 G_DEFINE_TYPE (CEPageWireless, ce_page_wireless, CE_TYPE_PAGE)
 
+#define CE_PAGE_WIRELESS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_WIRELESS, CEPageWirelessPrivate))
+
+typedef struct {
+	NMSettingWireless *setting;
+
+	GtkEntry *ssid;
+	GtkComboBox *mode;
+	GtkComboBox *band;
+	GtkSpinButton *channel;
+	GtkSpinButton *rate;
+	GtkSpinButton *tx_power;
+	GtkSpinButton *mtu;
+
+	int last_channel;
+	gboolean disposed;
+} CEPageWirelessPrivate;
+
+static void
+wireless_private_init (CEPageWireless *self)
+{
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	GladeXML *xml;
+
+	xml = CE_PAGE (self)->xml;
+
+	priv->ssid     = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_ssid"));
+	priv->mode     = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wireless_mode"));
+	priv->band     = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wireless_band"));
+	priv->channel  = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_channel"));
+	priv->rate     = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_rate"));
+	priv->tx_power = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_tx_power"));
+	priv->mtu      = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_mtu"));
+}
+
 static gboolean
 band_helper (CEPageWireless *self, gboolean *aband, gboolean *gband)
 {
-	GtkWidget *band_combo;
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 
-	band_combo = glade_xml_get_widget (CE_PAGE (self)->xml, "wireless_band");
-
-	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (band_combo))) {
+	switch (gtk_combo_box_get_active (priv->band)) {
 	case 1: /* A */
 		*gband = FALSE;
 		return TRUE;
@@ -84,6 +116,7 @@ static gint
 channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
 {
 	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 	int channel;
 	gchar *buf = NULL;
 	guint32 freq;
@@ -101,9 +134,9 @@ channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
 			if (freq == -1) {
 				int direction = 0;
 
-				if (self->last_channel < channel)
+				if (priv->last_channel < channel)
 					direction = 1;
-				else if (self->last_channel > channel)
+				else if (priv->last_channel > channel)
 					direction = -1;
 				channel = utils_find_next_channel (channel, direction, aband ? "a" : "bg");
 				freq = utils_channel_to_freq (channel, aband ? "a" : "bg");
@@ -115,7 +148,7 @@ channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
 			}
 			buf = g_strdup_printf (_("%u (%u MHz)"), channel, freq);
 		}
-		self->last_channel = channel;
+		priv->last_channel = channel;
 	}
 
 	if (strcmp (buf, gtk_entry_get_text (GTK_ENTRY (spin))))
@@ -130,58 +163,117 @@ static void
 band_value_changed_cb (GtkComboBox *box, gpointer user_data)
 {
 	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
-	GtkWidget *widget;
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	gboolean sensitive;
 
-	self->last_channel = 0;
-
-	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "wireless_channel");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (widget), 0);
-
-	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (box))) {
-	case 1: /* A */
-	case 2: /* B/G */
-		gtk_widget_set_sensitive (widget, TRUE);
-		break;
-	default:
-		gtk_widget_set_sensitive (widget, FALSE);
-		break;
-	}
+	priv->last_channel = 0;
+	gtk_spin_button_set_value (priv->channel, 0);
+ 
+ 	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (box))) {
+ 	case 1: /* A */
+ 	case 2: /* B/G */
+		sensitive = TRUE;
+ 		break;
+ 	default:
+		sensitive = FALSE;
+ 		break;
+ 	}
+	
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), sensitive);
 }
 
 static void
-ssid_value_changed_cb (GtkEditable *entry, gpointer user_data)
+entry_changed (GtkEditable *entry, gpointer user_data)
 {
 	ce_page_changed (CE_PAGE (user_data));
+}
+
+static void
+populate_ui (CEPageWireless *self)
+{
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	NMSettingWireless *setting = priv->setting;
+	int band_idx = 0;
+	int rate_def;
+	int tx_power_def;
+	int mtu_def;
+	char *utf8_ssid;
+
+	rate_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_RATE);
+	g_signal_connect (priv->rate, "output",
+	                  G_CALLBACK (ce_spin_output_with_default),
+	                  GINT_TO_POINTER (rate_def));
+
+	tx_power_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_TX_POWER);
+	g_signal_connect (priv->tx_power, "output",
+	                  G_CALLBACK (ce_spin_output_with_default),
+	                  GINT_TO_POINTER (tx_power_def));
+
+	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_MTU);
+	g_signal_connect (priv->mtu, "output",
+	                  G_CALLBACK (ce_spin_output_with_default),
+	                  GINT_TO_POINTER (mtu_def));
+
+	utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) setting->ssid->data, setting->ssid->len);
+	gtk_entry_set_text (priv->ssid, utf8_ssid);
+	g_signal_connect (priv->ssid, "changed", G_CALLBACK (entry_changed), self);
+	g_free (utf8_ssid);
+
+	if (!strcmp (setting->mode ? setting->mode : "", "infrastructure"))
+		gtk_combo_box_set_active (priv->mode, 0);
+	else if (!strcmp (setting->mode ? setting->mode : "", "adhoc"))
+		gtk_combo_box_set_active (priv->mode, 1);
+	else
+		gtk_combo_box_set_active (priv->mode, -1);
+
+	g_signal_connect (priv->channel, "output",
+	                  G_CALLBACK (channel_spin_output_cb),
+	                  self);
+	g_signal_connect (priv->channel, "input",
+	                  G_CALLBACK (channel_spin_input_cb),
+	                  self);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), FALSE);
+	if (setting->band) {
+		if (!strcmp (setting->band ? setting->band : "", "a")) {
+			band_idx = 1;
+			gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), TRUE);
+		} else if (!strcmp (setting->band ? setting->band : "", "bg")) {
+			band_idx = 2;
+			gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), TRUE);
+		}
+	}
+
+	gtk_combo_box_set_active (priv->band, band_idx);
+	g_signal_connect (priv->band, "changed",
+	                  G_CALLBACK (band_value_changed_cb),
+	                  self);
+
+	/* Update the channel _after_ the band has been set so that it gets
+	 * the right values */
+	priv->last_channel = setting->channel;
+	gtk_spin_button_set_value (priv->channel, (gdouble) setting->channel);
+
+	/* FIXME: BSSID */
+	/* FIXME: MAC address */
+
+	gtk_spin_button_set_value (priv->rate, (gdouble) setting->rate);
+	gtk_spin_button_set_value (priv->tx_power, (gdouble) setting->tx_power);
+	gtk_spin_button_set_value (priv->mtu, (gdouble) setting->mtu);
 }
 
 CEPageWireless *
 ce_page_wireless_new (NMConnection *connection)
 {
 	CEPageWireless *self;
+	CEPageWirelessPrivate *priv;
 	CEPage *parent;
 	NMSettingWireless *s_wireless;
-	GtkWidget *mode;
-	GtkWidget *band;
-	GtkWidget *channel;
-	GtkWidget *rate;
-	GtkWidget *ssid;
-	int band_idx = 0;
-	int rate_def;
-	GtkWidget *tx_power;
-	int tx_power_def;
-	GtkWidget *mtu;
-	int mtu_def;
-	char *utf8_ssid;
+
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	self = CE_PAGE_WIRELESS (g_object_new (CE_TYPE_PAGE_WIRELESS, NULL));
 	parent = CE_PAGE (self);
-
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-	if (!s_wireless) {
-		g_warning ("%s: Connection didn't have a wireless setting!", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
 
 	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wireless.glade", "WirelessPage", NULL);
 	if (!parent->xml) {
@@ -200,73 +292,22 @@ ce_page_wireless_new (NMConnection *connection)
 
 	parent->title = g_strdup (_("Wireless"));
 
-	rate = glade_xml_get_widget (parent->xml, "wireless_rate");
-	rate_def = ce_get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_RATE);
-	g_signal_connect (G_OBJECT (rate), "output",
-	                  (GCallback) ce_spin_output_with_default,
-	                  GINT_TO_POINTER (rate_def));
+	wireless_private_init (self);
+	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 
-	tx_power = glade_xml_get_widget (parent->xml, "wireless_tx_power");
-	tx_power_def = ce_get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_TX_POWER);
-	g_signal_connect (G_OBJECT (tx_power), "output",
-	                  (GCallback) ce_spin_output_with_default,
-	                  GINT_TO_POINTER (tx_power_def));
+	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
+	if (s_wireless) {
+		/* Duplicate it */
+		/* FIXME: Implement nm_setting_dup () in nm-setting.[ch] maybe? */
+		GHashTable *hash;
 
-	mtu = glade_xml_get_widget (parent->xml, "wireless_mtu");
-	mtu_def = ce_get_property_default (NM_SETTING (s_wireless), NM_SETTING_WIRELESS_MTU);
-	g_signal_connect (G_OBJECT (mtu), "output",
-	                  (GCallback) ce_spin_output_with_default,
-	                  GINT_TO_POINTER (mtu_def));
+		hash = nm_setting_to_hash (NM_SETTING (s_wireless));
+		priv->setting = NM_SETTING_WIRELESS (nm_setting_from_hash (NM_TYPE_SETTING_WIRELESS, hash));
+		g_hash_table_destroy (hash);
+	} else
+		priv->setting = NM_SETTING_WIRELESS (nm_setting_wireless_new ());
 
-	ssid = glade_xml_get_widget (parent->xml, "wireless_ssid");
-	utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
-	gtk_entry_set_text (GTK_ENTRY (ssid), utf8_ssid);
-	g_free (utf8_ssid);
-	g_signal_connect (G_OBJECT (ssid), "changed", G_CALLBACK (ssid_value_changed_cb), self);
-
-	mode = glade_xml_get_widget (parent->xml, "wireless_mode");
-	if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "infrastructure"))
-		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), 0);
-	else if (!strcmp (s_wireless->mode ? s_wireless->mode : "", "adhoc"))
-		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), 1);
-	else
-		gtk_combo_box_set_active (GTK_COMBO_BOX (mode), -1);
-
-	channel = glade_xml_get_widget (parent->xml, "wireless_channel");
-	g_signal_connect (G_OBJECT (channel), "output",
-	                  (GCallback) channel_spin_output_cb,
-	                  self);
-	g_signal_connect (G_OBJECT (channel), "input",
-	                  (GCallback) channel_spin_input_cb,
-	                  self);
-
-	gtk_widget_set_sensitive (channel, FALSE);
-	if (s_wireless->band) {
-		if (!strcmp (s_wireless->band ? s_wireless->band : "", "a")) {
-			band_idx = 1;
-			gtk_widget_set_sensitive (channel, TRUE);
-		} else if (!strcmp (s_wireless->band ? s_wireless->band : "", "bg")) {
-			band_idx = 2;
-			gtk_widget_set_sensitive (channel, TRUE);
-		}
-	}
-	band = glade_xml_get_widget (parent->xml, "wireless_band");
-	gtk_combo_box_set_active (GTK_COMBO_BOX (band), band_idx);
-	g_signal_connect (G_OBJECT (band), "changed",
-	                  (GCallback) band_value_changed_cb,
-	                  self);
-
-	/* Update the channel _after_ the band has been set so that it gets
-	 * the right values */
-	self->last_channel = s_wireless->channel;
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (channel), (gdouble) s_wireless->channel);
-
-	/* FIXME: BSSID */
-	/* FIXME: MAC address */
-
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (rate), (gdouble) s_wireless->rate);
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (tx_power), (gdouble) s_wireless->tx_power);
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wireless->mtu);
+	populate_ui (self);
 
 	return self;
 }
@@ -274,28 +315,90 @@ ce_page_wireless_new (NMConnection *connection)
 GByteArray *
 ce_page_wireless_get_ssid (CEPageWireless *self)
 {
-	GtkWidget *widget;
+	CEPageWirelessPrivate *priv;
 	const char *txt_ssid;
 	GByteArray *ssid;
 
 	g_return_val_if_fail (CE_IS_PAGE_WIRELESS (self), NULL);
 
-	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "wireless_ssid");
-	g_return_val_if_fail (widget != NULL, NULL);
-
-	txt_ssid = gtk_entry_get_text (GTK_ENTRY (widget));
+	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	txt_ssid = gtk_entry_get_text (priv->ssid);
 	if (!txt_ssid || !strlen (txt_ssid))
 		return NULL;
 
 	ssid = g_byte_array_sized_new (strlen (txt_ssid));
 	g_byte_array_append (ssid, (const guint8 *) txt_ssid, strlen (txt_ssid));
+
 	return ssid;
+}
+
+static void
+ui_to_setting (CEPageWireless *self)
+{
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	GByteArray *ssid;
+	const char *mode;
+	const char *band;
+
+	ssid = ce_page_wireless_get_ssid (self);
+
+	if (gtk_combo_box_get_active (priv->mode) == 1)
+		mode = "adhoc";
+	else
+		mode = "infrastructure";
+
+	switch (gtk_combo_box_get_active (priv->band)) {
+	case 1:
+		band = "a";
+		break;
+	case 2:
+		band = "bg";
+		break;
+	case 0:
+	default:
+		band = NULL;
+		break;
+	}
+
+	g_object_set (priv->setting,
+				  NM_SETTING_WIRELESS_SSID, ssid,
+				  NM_SETTING_WIRELESS_MODE, mode,
+				  NM_SETTING_WIRELESS_BAND, band,
+				  NM_SETTING_WIRELESS_CHANNEL, gtk_spin_button_get_value_as_int (priv->channel),
+				  NM_SETTING_WIRELESS_RATE, gtk_spin_button_get_value_as_int (priv->rate),
+				  NM_SETTING_WIRELESS_TX_POWER, gtk_spin_button_get_value_as_int (priv->tx_power),
+				  NM_SETTING_WIRELESS_MTU, gtk_spin_button_get_value_as_int (priv->mtu),
+				  NULL);
+
+	g_byte_array_free (ssid, TRUE);
+}
+
+static gboolean
+validate (CEPage *page)
+{
+	CEPageWireless *self = CE_PAGE_WIRELESS (page);
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	char *security;
+	gboolean success;
+
+	ui_to_setting (self);
+
+	/* A hack to not check the wireless security here */
+	security = priv->setting->security;
+	priv->setting->security = NULL;
+
+	success = nm_setting_verify (NM_SETTING (priv->setting), NULL);
+	priv->setting->security = security;
+
+	return success;
 }
 
 static void
 update_connection (CEPage *page, NMConnection *connection)
 {
-	g_print ("FIXME: update wireless page\n");
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (page);
+
+	nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 }
 
 static void
@@ -304,10 +407,30 @@ ce_page_wireless_init (CEPageWireless *self)
 }
 
 static void
+dispose (GObject *object)
+{
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (object);
+
+	if (priv->disposed)
+		return;
+
+	priv->disposed = TRUE;
+	g_object_unref (priv->setting);
+
+	G_OBJECT_CLASS (ce_page_wireless_parent_class)->dispose (object);
+}
+
+static void
 ce_page_wireless_class_init (CEPageWirelessClass *wireless_class)
 {
+	GObjectClass *object_class = G_OBJECT_CLASS (wireless_class);
 	CEPageClass *parent_class = CE_PAGE_CLASS (wireless_class);
 
+	g_type_class_add_private (object_class, sizeof (CEPageWirelessPrivate));
+
 	/* virtual methods */
+	object_class->dispose = dispose;
+
+	parent_class->validate = validate;
 	parent_class->update_connection = update_connection;
 }

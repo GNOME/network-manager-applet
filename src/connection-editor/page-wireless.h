@@ -39,8 +39,6 @@
 
 typedef struct {
 	CEPage parent;
-
-	int last_channel;
 } CEPageWireless;
 
 typedef struct {

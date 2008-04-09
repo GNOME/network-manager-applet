@@ -400,7 +400,12 @@ validate (CEPage *page)
 static void
 update_connection (CEPage *page, NMConnection *connection)
 {
-	g_print ("FIXME: update wireless security page\n");
+	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (page);
+	WirelessSecurity *sec;
+
+	sec = wireless_security_combo_get_active (self);
+	g_assert (sec);
+	wireless_security_fill_connection (sec, connection);
 }
 
 static void
