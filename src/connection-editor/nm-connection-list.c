@@ -59,6 +59,7 @@ static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
 
 #define CE_GCONF_PATH_TAG "ce-gconf-path"
 #define CONNECTION_LIST_TAG "nm-connection-list"
+#define CONNECTION_TYPE_TAG "connection-type"
 
 #define COL_ID 			0
 #define COL_LAST_USED	1
@@ -262,6 +263,107 @@ add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 }
 
 static void
+add_one_name (gpointer key, gpointer data, gpointer user_data)
+{
+	NMConnection *connection = NM_CONNECTION (data);
+	NMSettingConnection *s_con;
+	GSList **list = (GSList **) user_data;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con->id);
+	*list = g_slist_append (*list, s_con->id);
+}
+
+static char *
+get_next_available_name (NMConnectionList *list, const char *format)
+{
+	GSList *names = NULL, *iter;
+	char *cname = NULL;
+	int i = 0;
+
+	g_hash_table_foreach (list->connections, add_one_name, &names);
+	if (g_slist_length (names) == 0)
+		return g_strdup_printf (format, 1);
+
+	/* Find the next available unique connection name */
+	while (!cname && (i++ < 10000)) {
+		char *temp;
+		gboolean found = FALSE;
+
+		temp = g_strdup_printf (format, i);
+		for (iter = names; iter; iter = g_slist_next (iter)) {
+			if (!strcmp (iter->data, temp)) {
+				found = TRUE;
+				break;
+			}
+		}
+		if (!found)
+			cname = temp;
+		else
+			g_free (temp);
+	}
+
+	g_slist_free (names);
+	return cname;
+}
+
+static NMConnection *
+create_new_connection_for_type (NMConnectionList *list, GType ctype)
+{
+	NMConnection *connection = NULL;
+	NMSettingConnection *s_con;
+	NMSetting *type_setting = NULL;
+
+	connection = nm_connection_new ();
+	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
+	nm_connection_add_setting (connection, NM_SETTING (s_con));
+
+	if (ctype == NM_TYPE_SETTING_WIRED) {
+		s_con->id = get_next_available_name (list, _("Wired connection %d"));
+		s_con->type = g_strdup (NM_SETTING_WIRED_SETTING_NAME);
+		s_con->autoconnect = TRUE;
+
+		type_setting = nm_setting_wired_new ();
+	} else if (ctype == NM_TYPE_SETTING_WIRELESS) {
+		s_con->id = get_next_available_name (list, _("Wireless connection %d"));
+		s_con->type = g_strdup (NM_SETTING_WIRELESS_SETTING_NAME);
+		s_con->autoconnect = TRUE;
+
+		type_setting = nm_setting_wireless_new ();
+		/* WSEC??? */
+	} else if (ctype == NM_TYPE_SETTING_GSM) {
+		/* Since GSM is a placeholder for both GSM and CDMA; as the user which
+		 * one they really want.
+		 */
+	} else if (ctype == NM_TYPE_SETTING_VPN) {
+		s_con->id = get_next_available_name (list, _("VPN connection %d"));
+		s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
+
+		type_setting = nm_setting_vpn_new ();
+	} else if (ctype == NM_TYPE_SETTING_PPPOE) {
+		NMSetting *s_wired;
+
+		s_con->id = get_next_available_name (list, _("DSL connection %d"));
+		s_con->type = g_strdup (NM_SETTING_PPPOE_SETTING_NAME);
+
+		type_setting = nm_setting_pppoe_new ();
+		s_wired = nm_setting_wired_new ();
+		nm_connection_add_setting (connection, s_wired);
+	} else {
+		g_warning ("%s: unhandled connection type '%s'", __func__, g_type_name (ctype)); 
+	}
+
+	if (type_setting) {
+		nm_connection_add_setting (connection, type_setting);
+	} else {
+		g_object_unref (connection);
+		connection = NULL;
+	}
+
+	return connection;
+}
+
+static void
 add_connection_cb (GtkButton *button, gpointer user_data)
 {
 	GtkWidget *clist = GTK_WIDGET (user_data);
@@ -269,6 +371,7 @@ add_connection_cb (GtkButton *button, gpointer user_data)
 	NMConnectionEditor *editor;
 	NMConnection *connection;
 	EditorDoneInfo *info;
+	GType ctype;
 
 	list = NM_CONNECTION_LIST (g_object_get_data (G_OBJECT (button), CONNECTION_LIST_TAG));
 	g_assert (list);
@@ -278,8 +381,14 @@ add_connection_cb (GtkButton *button, gpointer user_data)
 	info->list = list;
 	info->clist = clist;
 
-	connection = nm_connection_new ();
-	editor = nm_connection_editor_new (connection, NULL, NULL);
+	ctype = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (clist), CONNECTION_TYPE_TAG));
+	connection = create_new_connection_for_type (list, ctype);
+	if (!connection) {
+		g_warning ("Can't add new connection of type '%s'", g_type_name (ctype));
+		return;
+	}
+
+	editor = nm_connection_editor_new (connection, NULL, list->client);
 	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
 	g_hash_table_insert (list->editors, connection, editor);
 
@@ -546,7 +655,8 @@ new_connection_list (NMConnectionList *list,
                      GSList *types,
                      const char *prefix,
                      GdkPixbuf *pixbuf,
-                     const char *label_text)
+                     const char *label_text,
+                     GType ctype)
 {
 	GtkWidget *notebook;
 	GtkWidget *clist;
@@ -578,6 +688,7 @@ new_connection_list (NMConnectionList *list,
 	name = g_strdup_printf ("%s_list", prefix);
 	clist = glade_xml_get_widget (list->gui, name);
 	g_free (name);
+	g_object_set_data (G_OBJECT (clist), CONNECTION_TYPE_TAG, GUINT_TO_POINTER (ctype));
 
 	model = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT64, G_TYPE_OBJECT);
 
@@ -648,24 +759,29 @@ init_connection_lists (NMConnectionList *list)
 	GtkWidget *clist;
 
 	types = g_slist_append (NULL, NM_SETTING_WIRED_SETTING_NAME);
-	clist = new_connection_list (list, types, "wired", list->wired_icon, _("Wired"));
+	clist = new_connection_list (list, types, "wired", list->wired_icon,
+	                             _("Wired"), NM_TYPE_SETTING_WIRED);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_WIRELESS_SETTING_NAME);
-	clist = new_connection_list (list, types, "wireless", list->wireless_icon, _("Wireless"));
+	clist = new_connection_list (list, types, "wireless", list->wireless_icon,
+	                             _("Wireless"), NM_TYPE_SETTING_WIRELESS);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_GSM_SETTING_NAME);
 	types = g_slist_append (types, NM_SETTING_CDMA_SETTING_NAME);
-	clist = new_connection_list (list, types, "wwan", list->wwan_icon, _("Mobile Broadband"));
+	clist = new_connection_list (list, types, "wwan", list->wwan_icon,
+	                             _("Mobile Broadband"), NM_TYPE_SETTING_GSM);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_VPN_SETTING_NAME);
-	clist = new_connection_list (list, types, "vpn", list->vpn_icon, _("VPN"));
+	clist = new_connection_list (list, types, "vpn", list->vpn_icon,
+	                             _("VPN"), NM_TYPE_SETTING_VPN);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_PPPOE_SETTING_NAME);
-	clist = new_connection_list (list, types, "dsl", list->wired_icon, _("DSL"));
+	clist = new_connection_list (list, types, "dsl", list->wired_icon,
+	                             _("DSL"), NM_TYPE_SETTING_PPPOE);
 	g_slist_free (types);
 
 	return TRUE;
