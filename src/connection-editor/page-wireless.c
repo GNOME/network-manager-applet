@@ -398,6 +398,7 @@ update_connection (CEPage *page, NMConnection *connection)
 {
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (page);
 
+	g_object_ref (priv->setting); /* Add setting steals the reference. */
 	nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 }
 

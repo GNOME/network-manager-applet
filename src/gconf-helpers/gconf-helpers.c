@@ -273,6 +273,47 @@ out:
 	return success;
 }
 
+gboolean
+nm_gconf_get_uint_array_helper (GConfClient *client,
+						  const char *path,
+						  const char *key,
+						  const char *network,
+						  GArray **value)
+{
+	char *gc_key;
+	GConfValue *gc_value;
+	GArray *array;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
+		goto out;
+
+	if (gc_value->type == GCONF_VALUE_LIST
+	    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_INT)
+	{
+		GSList *elt;
+
+		array = g_array_new (FALSE, FALSE, sizeof (gint));
+		for (elt = gconf_value_get_list (gc_value); elt != NULL; elt = g_slist_next (elt))
+		{
+			int i = gconf_value_get_int ((GConfValue *) elt->data);
+			g_array_append_val (array, i);
+		}
+
+		*value = array;
+		success = TRUE;
+	}
+
+out:
+	g_free (gc_key);
+	return success;
+}
+
 static void
 property_value_destroy (gpointer data)
 {
@@ -457,9 +498,6 @@ nm_gconf_set_stringlist_helper (GConfClient *client,
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (network != NULL, FALSE);
 
-	if (!value)
-		return TRUE;
-
 	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
@@ -496,6 +534,39 @@ nm_gconf_set_bytearray_helper (GConfClient *client,
 
 	for (i = 0; i < value->len; i++)
 		list = g_slist_append(list, GINT_TO_POINTER ((int) value->data[i]));
+
+	gconf_client_set_list (client, gc_key, GCONF_VALUE_INT, list, NULL);
+
+	g_slist_free (list);
+	g_free (gc_key);
+	return TRUE;
+}
+
+gboolean
+nm_gconf_set_uint_array_helper (GConfClient *client,
+					  const char *path,
+					  const char *key,
+					  const char *network,
+					  GArray *value)
+{
+	char *gc_key;
+	int i;
+	GSList *list = NULL;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+
+	if (!value)
+		return TRUE;
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	for (i = 0; i < value->len; i++)
+		list = g_slist_append (list, GUINT_TO_POINTER (g_array_index (value, guint, i)));
 
 	gconf_client_set_list (client, gc_key, GCONF_VALUE_INT, list, NULL);
 
@@ -681,8 +752,16 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			g_object_set (setting, key, vh_val, NULL);
 			g_hash_table_destroy (vh_val);
 		}
+	} else if (type == DBUS_TYPE_G_UINT_ARRAY) {
+		GArray *a_val = NULL;
+
+		if (nm_gconf_get_uint_array_helper (info->client, info->dir, key, setting->name, &a_val)) {
+			g_object_set (setting, key, a_val, NULL);
+			g_array_free (a_val, TRUE);
+		}
 	} else
-		g_warning ("Unhandled setting property type: '%s'", G_VALUE_TYPE_NAME (value));
+		g_warning ("Unhandled setting property type (read): '%s/%s' : '%s'",
+				 setting->name, key, G_VALUE_TYPE_NAME (value));
 }
 
 static void
@@ -921,8 +1000,13 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		nm_gconf_set_valuehash_helper (info->client, info->dir,
 								 setting->name,
 								 (GHashTable *) g_value_get_boxed (value));
-	} else
-		g_warning ("Unhandled type '%s'", g_type_name (type));
+	} else if (type == DBUS_TYPE_G_UINT_ARRAY) {
+		nm_gconf_set_uint_array_helper (info->client, info->dir,
+								  key, setting->name,
+								  (GArray *) g_value_get_boxed (value));
+ 	} else
+		g_warning ("Unhandled setting property type (write) '%s/%s' : '%s'", 
+				 setting->name, key, g_type_name (type));
 }
 
 static void

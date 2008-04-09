@@ -92,6 +92,14 @@ nm_gconf_get_bytearray_helper (GConfClient *client,
 			       GByteArray **value);
 
 gboolean
+nm_gconf_get_uint_array_helper (GConfClient *client,
+				const char *path,
+				const char *key,
+				const char *network,
+				GArray **value);
+
+
+gboolean
 nm_gconf_get_valuehash_helper (GConfClient *client,
 			       const char *path,
 			       const char *network,
@@ -140,6 +148,13 @@ nm_gconf_set_bytearray_helper (GConfClient *client,
                                const char *key,
                                const char *network,
                                GByteArray *value);
+
+gboolean
+nm_gconf_set_uint_array_helper (GConfClient *client,
+				const char *path,
+				const char *key,
+				const char *network,
+				GArray *value);
 
 gboolean
 nm_gconf_set_valuehash_helper (GConfClient *client,

@@ -1,3 +1,22 @@
+2008-04-09  Tambet Ingo  <tambet@gmail.com>
+
+	* src/gconf-helpers/gconf-helpers.c
+	(nm_gconf_set_uint_array_helper): Implement.
+	(nm_gconf_get_uint_array_helper): Implement.
+	(read_one_setting_value_from_gconf): Handle DBUS_TYPE_G_UINT_ARRAY.
+	(copy_one_setting_value_to_gconf): Ditto.
+	(nm_gconf_set_stringlist_helper): Don't ignore NULL lists, it's an empty list
+	and without this change, it was not possible to reset string list values.
+
+	* src/connection-editor/page-ip4.c: Finish the implemention to load, validate,
+	and save.
+
+	* src/connection-editor/ce-page-ip4.glade: Replace the "Manual" checkbox with
+	combo box to allow selecting "DHCP", "Auto IP", and "Manual".
+
+	* src/connection-editor/page-wireless.c (update_connection): Fix a reference
+	counting issue.
+
 2008-04-08  Dan Williams  <dcbw@redhat.com>
 
 	* icons/Makefile.am
