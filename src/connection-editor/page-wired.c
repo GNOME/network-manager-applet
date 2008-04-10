@@ -33,30 +33,125 @@
 
 G_DEFINE_TYPE (CEPageWired, ce_page_wired, CE_TYPE_PAGE)
 
+#define CE_PAGE_WIRED_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_WIRED, CEPageWiredPrivate))
+
+typedef struct {
+	NMSettingWired *setting;
+
+	GtkComboBox *port;
+	GtkComboBox *speed;
+	GtkToggleButton *duplex;
+	GtkToggleButton *autonegotiate;
+	GtkSpinButton *mtu;
+
+	gboolean disposed;
+} CEPageWiredPrivate;
+
+#define PORT_DEFAULT  0
+#define PORT_TP       1
+#define PORT_AUI      2
+#define PORT_BNC      3
+#define PORT_MII      4
+
+#define SPEED_DEFAULT 0
+#define SPEED_10      1
+#define SPEED_100     2
+#define SPEED_1000    3
+#define SPEED_10000   4
+
+static void
+wired_private_init (CEPageWired *self)
+{
+	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	GladeXML *xml;
+
+	xml = CE_PAGE (self)->xml;
+
+	priv->port = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wired_port"));
+	priv->speed = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wired_speed"));
+	priv->duplex = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "wired_duplex"));
+	priv->autonegotiate = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "wired_autonegotiate"));
+	priv->mtu = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wired_mtu"));
+}
+
+static void
+populate_ui (CEPageWired *self)
+{
+	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	NMSettingWired *setting = priv->setting;
+	int port_idx = PORT_DEFAULT;
+	int speed_idx;
+	int mtu_def;
+
+	/* Port */
+	if (setting->port) {
+		if (!strcmp (setting->port, "tp"))
+			port_idx = PORT_TP;
+		else if (!strcmp (setting->port, "aui"))
+			port_idx = PORT_AUI;
+		else if (!strcmp (setting->port, "bnc"))
+			port_idx = PORT_BNC;
+		else if (!strcmp (setting->port, "mii"))
+			port_idx = PORT_MII;
+	}
+	gtk_combo_box_set_active (priv->port, port_idx);
+
+	/* Speed */
+	switch (setting->speed) {
+	case 10:
+		speed_idx = SPEED_10;
+		break;
+	case 100:
+		speed_idx = SPEED_100;
+		break;
+	case 1000:
+		speed_idx = SPEED_1000;
+		break;
+	case 10000:
+		speed_idx = SPEED_10000;
+		break;
+	default:
+		speed_idx = SPEED_DEFAULT;
+		break;
+	}
+	gtk_combo_box_set_active (priv->speed, speed_idx);
+
+	/* Duplex */
+	if (!strcmp (setting->duplex ? setting->duplex : "", "half"))
+		gtk_toggle_button_set_active (priv->duplex, FALSE);
+	else
+		gtk_toggle_button_set_active (priv->duplex, TRUE);
+
+	/* Autonegotiate */
+	gtk_toggle_button_set_active (priv->autonegotiate, setting->auto_negotiate);
+
+	/* FIXME: MAC address */
+
+	/* MTU */
+	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRED_MTU);
+	g_signal_connect (priv->mtu, "output",
+	                  G_CALLBACK (ce_spin_output_with_default),
+	                  GINT_TO_POINTER (mtu_def));
+
+	gtk_spin_button_set_value (priv->mtu, (gdouble) setting->mtu);
+}
+
+static void
+stuff_changed (GtkWidget *w, gpointer user_data)
+{
+	ce_page_changed (CE_PAGE (user_data));
+}
+
 CEPageWired *
 ce_page_wired_new (NMConnection *connection)
 {
 	CEPageWired *self;
+	CEPageWiredPrivate *priv;
 	CEPage *parent;
 	NMSettingWired *s_wired;
-	GtkWidget *port;
-	int port_idx = 0;
-	GtkWidget *speed;
-	int speed_idx = 0;
-	GtkWidget *duplex;
-	GtkWidget *autoneg;
-	GtkWidget *mtu;
-	int mtu_def;
 
 	self = CE_PAGE_WIRED (g_object_new (CE_TYPE_PAGE_WIRED, NULL));
 	parent = CE_PAGE (self);
-
-	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED));
-	if (!s_wired) {
-		g_warning ("%s: Connection didn't have a wired setting!", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
 
 	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wired.glade", "WiredPage", NULL);
 	if (!parent->xml) {
@@ -75,65 +170,105 @@ ce_page_wired_new (NMConnection *connection)
 
 	parent->title = g_strdup (_("Wired"));
 
-	port = glade_xml_get_widget (parent->xml, "wired_port");
-	speed = glade_xml_get_widget (parent->xml, "wired_speed");
-	duplex = glade_xml_get_widget (parent->xml, "wired_duplex");
-	autoneg = glade_xml_get_widget (parent->xml, "wired_autonegotiate");
+	wired_private_init (self);
+	priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 
-	mtu = glade_xml_get_widget (parent->xml, "wired_mtu");
-	mtu_def = ce_get_property_default (NM_SETTING (s_wired), NM_SETTING_WIRED_MTU);
-	g_signal_connect (G_OBJECT (mtu), "output",
-	                  (GCallback) ce_spin_output_with_default,
-	                  GINT_TO_POINTER (mtu_def));
+	s_wired = (NMSettingWired *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED);
+	if (s_wired) {
+		/* Duplicate it */
+		/* FIXME: Implement nm_setting_dup () in nm-setting.[ch] maybe? */
+		GHashTable *hash;
 
-	if (s_wired->port) {
-		if (!strcmp (s_wired->port, "tp"))
-			port_idx = 1;
-		else if (!strcmp (s_wired->port, "aui"))
-			port_idx = 2;
-		else if (!strcmp (s_wired->port, "bnc"))
-			port_idx = 3;
-		else if (!strcmp (s_wired->port, "mii"))
-			port_idx = 4;
-	}
-	gtk_combo_box_set_active (GTK_COMBO_BOX (port), port_idx);
+		hash = nm_setting_to_hash (NM_SETTING (s_wired));
+		priv->setting = NM_SETTING_WIRED (nm_setting_from_hash (NM_TYPE_SETTING_WIRED, hash));
+		g_hash_table_destroy (hash);
+	} else
+		priv->setting = NM_SETTING_WIRED (nm_setting_wired_new ());
 
-	switch (s_wired->speed) {
-	case 10:
-		speed_idx = 1;
-		break;
-	case 100:
-		speed_idx = 2;
-		break;
-	case 1000:
-		speed_idx = 3;
-		break;
-	case 10000:
-		speed_idx = 4;
-		break;
-	default:
-		break;
-	}
-	gtk_combo_box_set_active (GTK_COMBO_BOX (speed), speed_idx);
+	populate_ui (self);
 
-	if (!strcmp (s_wired->duplex ? s_wired->duplex : "", "half"))
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (duplex), FALSE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (duplex), TRUE);
-
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoneg), s_wired->auto_negotiate);
-
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (mtu), (gdouble) s_wired->mtu);
-
-	/* FIXME: MAC address */
+	g_signal_connect (priv->port, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->speed, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->duplex, "toggled", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->autonegotiate, "toggled", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
 	return self;
 }
 
 static void
+ui_to_setting (CEPageWired *self)
+{
+	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	const char *port;
+	guint32 speed;
+
+	/* Port */
+	switch (gtk_combo_box_get_active (priv->port)) {
+	case PORT_TP:
+		port = "tp";
+		break;
+	case PORT_AUI:
+		port = "aui";
+		break;
+	case PORT_BNC:
+		port = "bnc";
+		break;
+	case PORT_MII:
+		port = "mii";
+		break;
+	default:
+		port = NULL;
+		break;
+	}
+
+	/* Speed */
+	switch (gtk_combo_box_get_active (priv->speed)) {
+	case SPEED_10:
+		speed = 10;
+		break;
+	case SPEED_100:
+		speed = 100;
+		break;
+	case SPEED_1000:
+		speed = 1000;
+		break;
+	case SPEED_10000:
+		speed = 10000;
+		break;
+	default:
+		speed = 0;
+		break;
+	}
+
+	g_object_set (priv->setting,
+				  NM_SETTING_WIRED_PORT, port,
+				  NM_SETTING_WIRED_SPEED, speed,
+				  NM_SETTING_WIRED_DUPLEX, gtk_toggle_button_get_active (priv->duplex) ? "full" : "half",
+				  NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
+				  NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
+				  NULL);
+}
+
+static gboolean
+validate (CEPage *page)
+{
+	CEPageWired *self = CE_PAGE_WIRED (page);
+	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+
+	ui_to_setting (self);
+	return nm_setting_verify (NM_SETTING (priv->setting), NULL);
+}
+
+static void
 update_connection (CEPage *page, NMConnection *connection)
 {
-	g_print ("FIXME: update wired page\n");
+	CEPageWired *self = CE_PAGE_WIRED (page);
+	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+
+	ui_to_setting (self);
+	g_object_ref (priv->setting); /* Add setting steals the reference. */
+	nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 }
 
 static void
@@ -142,10 +277,30 @@ ce_page_wired_init (CEPageWired *self)
 }
 
 static void
+dispose (GObject *object)
+{
+	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (object);
+
+	if (priv->disposed)
+		return;
+
+	priv->disposed = TRUE;
+	g_object_unref (priv->setting);
+
+	G_OBJECT_CLASS (ce_page_wired_parent_class)->dispose (object);
+}
+
+static void
 ce_page_wired_class_init (CEPageWiredClass *wired_class)
 {
+	GObjectClass *object_class = G_OBJECT_CLASS (wired_class);
 	CEPageClass *parent_class = CE_PAGE_CLASS (wired_class);
 
+	g_type_class_add_private (object_class, sizeof (CEPageWiredPrivate));
+
 	/* virtual methods */
+	object_class->dispose = dispose;
+
+	parent_class->validate = validate;
 	parent_class->update_connection = update_connection;
 }
