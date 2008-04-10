@@ -33,23 +33,71 @@
 
 G_DEFINE_TYPE (CEPageDsl, ce_page_dsl, CE_TYPE_PAGE)
 
+#define CE_PAGE_DSL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_DSL, CEPageDslPrivate))
+
+typedef struct {
+	NMSettingPPPOE *setting;
+
+	GtkEntry *username;
+	GtkEntry *password;
+	GtkEntry *service;
+
+	gboolean disposed;
+} CEPageDslPrivate;
+
+static void
+dsl_private_init (CEPageDsl *self)
+{
+	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
+	GladeXML *xml;
+
+	xml = CE_PAGE (self)->xml;
+
+	priv->username = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_username"));
+	priv->password = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_password"));
+	priv->service = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_service"));
+}
+
+static void
+populate_ui (CEPageDsl *self)
+{
+	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
+	NMSettingPPPOE *setting = priv->setting;
+
+	if (setting->username)
+		gtk_entry_set_text (priv->username, setting->username);
+
+	if (setting->password)
+		gtk_entry_set_text (priv->password, setting->password);
+
+	if (setting->service)
+		gtk_entry_set_text (priv->service, setting->service);
+}
+
+static void
+stuff_changed (GtkEditable *editable, gpointer user_data)
+{
+	ce_page_changed (CE_PAGE (user_data));
+}
+
+static void
+show_password (GtkToggleButton *button, gpointer user_data)
+{
+	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (user_data);
+
+	gtk_entry_set_visibility (priv->password, gtk_toggle_button_get_active (button));
+}
+
 CEPageDsl *
 ce_page_dsl_new (NMConnection *connection)
 {
 	CEPageDsl *self;
+	CEPageDslPrivate *priv;
 	CEPage *parent;
 	NMSettingPPPOE *s_pppoe;
-	GtkWidget *w;
 
 	self = CE_PAGE_DSL (g_object_new (CE_TYPE_PAGE_DSL, NULL));
 	parent = CE_PAGE (self);
-
-	s_pppoe = NM_SETTING_PPPOE (nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE));
-	if (!s_pppoe) {
-		g_warning ("%s: Connection didn't have a PPPOE setting!", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
 
 	parent->xml = glade_xml_new (GLADEDIR "/ce-page-dsl.glade", "DslPage", NULL);
 	if (!parent->xml) {
@@ -68,28 +116,79 @@ ce_page_dsl_new (NMConnection *connection)
 
 	parent->title = g_strdup (_("DSL"));
 
-	if (s_pppoe->username) {
-		w = glade_xml_get_widget (parent->xml, "dsl_username");
-		gtk_entry_set_text (GTK_ENTRY (w), s_pppoe->username);
-	}
+	dsl_private_init (self);
+	priv = CE_PAGE_DSL_GET_PRIVATE (self);
 
-	if (s_pppoe->password) {
-		w = glade_xml_get_widget (parent->xml, "dsl_password");
-		gtk_entry_set_text (GTK_ENTRY (w), s_pppoe->password);
-	}
+	s_pppoe = (NMSettingPPPOE *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE);
+	if (s_pppoe) {
+		/* Duplicate it */
+		/* FIXME: Implement nm_setting_dup () in nm-setting.[ch] maybe? */
+		GHashTable *hash;
 
-	if (s_pppoe->service) {
-		w = glade_xml_get_widget (parent->xml, "dsl_service");
-		gtk_entry_set_text (GTK_ENTRY (w), s_pppoe->service);
-	}
+		hash = nm_setting_to_hash (NM_SETTING (s_pppoe));
+		priv->setting = NM_SETTING_PPPOE (nm_setting_from_hash (NM_TYPE_SETTING_PPPOE, hash));
+		g_hash_table_destroy (hash);
+	} else
+		priv->setting = NM_SETTING_PPPOE (nm_setting_pppoe_new ());
+
+	populate_ui (self);
+
+	g_signal_connect (priv->username, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->password, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->service, "changed", G_CALLBACK (stuff_changed), self);
+
+	g_signal_connect (glade_xml_get_widget (parent->xml, "dsl_show_password"), "toggled",
+					  G_CALLBACK (show_password), self);
 
 	return self;
 }
 
 static void
+ui_to_setting (CEPageDsl *self)
+{
+	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
+	const char *username;
+	const char *password;
+	const char *service;
+
+	username = gtk_entry_get_text (priv->username);
+	if (username && strlen (username) < 1)
+		username = NULL;
+
+	password = gtk_entry_get_text (priv->password);
+	if (password && strlen (password) < 1)
+		password = NULL;
+
+	service = gtk_entry_get_text (priv->service);
+	if (service && strlen (service) < 1)
+		service = NULL;
+
+	g_object_set (priv->setting,
+				  NM_SETTING_PPPOE_USERNAME, username,
+				  NM_SETTING_PPPOE_PASSWORD, password,
+				  NM_SETTING_PPPOE_SERVICE, service,
+				  NULL);
+}
+
+static gboolean
+validate (CEPage *page)
+{
+	CEPageDsl *self = CE_PAGE_DSL (page);
+	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
+
+	ui_to_setting (self);
+	return nm_setting_verify (NM_SETTING (priv->setting), NULL);
+}
+
+static void
 update_connection (CEPage *page, NMConnection *connection)
 {
-	g_print ("FIXME: update DSL page\n");
+	CEPageDsl *self = CE_PAGE_DSL (page);
+	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
+
+	ui_to_setting (self);
+	g_object_ref (priv->setting); /* Add setting steals the reference. */
+	nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 }
 
 static void
@@ -98,10 +197,30 @@ ce_page_dsl_init (CEPageDsl *self)
 }
 
 static void
+dispose (GObject *object)
+{
+	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (object);
+
+	if (priv->disposed)
+		return;
+
+	priv->disposed = TRUE;
+	g_object_unref (priv->setting);
+
+	G_OBJECT_CLASS (ce_page_dsl_parent_class)->dispose (object);
+}
+
+static void
 ce_page_dsl_class_init (CEPageDslClass *dsl_class)
 {
+	GObjectClass *object_class = G_OBJECT_CLASS (dsl_class);
 	CEPageClass *parent_class = CE_PAGE_CLASS (dsl_class);
 
+	g_type_class_add_private (object_class, sizeof (CEPageDslPrivate));
+
 	/* virtual methods */
+	object_class->dispose = dispose;
+
+	parent_class->validate = validate;
 	parent_class->update_connection = update_connection;
 }
