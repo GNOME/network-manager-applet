@@ -23,10 +23,10 @@
 #define VPN_PASSWORD_DIALOG_H
 
 #include <glib.h>
-#include <nm-connection.h>
 #include <dbus/dbus-glib.h>
+#include <nm-settings.h>
 
-gboolean nma_vpn_request_password (NMConnection *connection,
+gboolean nma_vpn_request_password (NMExportedConnection *exported,
                                    const char *setting_name,
                                    gboolean retry,
                                    DBusGMethodInvocation *context);

@@ -1,5 +1,16 @@
 2008-04-09  Dan Williams  <dcbw@redhat.com>
 
+	* src/vpn-password-dialog.c
+	  src/vpn-password-dialog.h
+		- (nma_vpn_request_password): pass the VPN connection ID to the auth
+			dialog too because that's needed to get keyring items in some cases
+
+	* src/applet.c
+		- (applet_settings_new_secrets_requested_cb): pass the exported
+			connection so that the connection's ID can be found
+
+2008-04-09  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/nm-connection-list.c
 		- (get_next_available_name): get the next available connection name
 			that's not taken

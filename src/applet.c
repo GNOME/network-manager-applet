@@ -1700,7 +1700,7 @@ applet_settings_new_secrets_requested_cb (AppletDbusSettings *settings,
 
 	/* VPN secrets get handled a bit differently */
 	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
-		nma_vpn_request_password (connection, setting_name, ask_user, context);
+		nma_vpn_request_password (NM_EXPORTED_CONNECTION (exported), setting_name, ask_user, context);
 		return;
 	}
 

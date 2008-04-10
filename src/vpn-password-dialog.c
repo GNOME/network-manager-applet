@@ -156,12 +156,13 @@ destroy_gvalue (gpointer data)
 }
 
 gboolean
-nma_vpn_request_password (NMConnection *connection,
+nma_vpn_request_password (NMExportedConnection *exported,
                           const char *setting_name,
                           gboolean retry,
                           DBusGMethodInvocation *context)
 {
 	const char *argv[] = { NULL /*"/usr/libexec/nm-vpnc-auth-dialog"*/, 
+	                       "-i", NULL /*"1"*/, 
 	                       "-n", NULL /*"davidznet42"*/, 
 	                       "-s", NULL /*"org.freedesktop.vpnc"*/, 
 	                       "-r",
@@ -179,9 +180,11 @@ nma_vpn_request_password (NMConnection *connection,
 	NMSettingVPN *s_vpn;
 	gboolean success = FALSE;
 	GError *error = NULL;
+	NMConnection *connection;
 
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+	g_return_val_if_fail (NM_IS_EXPORTED_CONNECTION (exported), FALSE);
 
+	connection = nm_exported_connection_get_connection (exported);
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_return_val_if_fail (s_con != NULL, FALSE);
 	g_return_val_if_fail (s_con->id != NULL, FALSE);
@@ -203,10 +206,11 @@ nma_vpn_request_password (NMConnection *connection,
 
 	/* Fix up parameters with what we got */
 	argv[0] = auth_dialog_binary;
-	argv[2] = s_con->id;
-	argv[4] = s_vpn->service_type;
+	argv[2] = nm_exported_connection_get_id (exported);
+	argv[4] = s_con->id;
+	argv[6] = s_vpn->service_type;
 	if (!retry)
-		argv[5] = NULL;
+		argv[7] = NULL;
 
 	child_status = -1;
 
