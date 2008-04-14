@@ -452,14 +452,18 @@ nm_gconf_set_string_helper (GConfClient *client,
 
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (network != NULL, FALSE);
-	g_return_val_if_fail (value != NULL, FALSE);
 
 	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
 	}
-	gconf_client_set_string (client, gc_key, value, NULL);
+
+	if (value)
+		gconf_client_set_string (client, gc_key, value, NULL);
+	else
+		gconf_client_unset (client, gc_key, NULL);
+
 	g_free (gc_key);
 	return TRUE;
 }
@@ -952,18 +956,16 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 
 	if (type == G_TYPE_STRING) {
 		const char *str_val = g_value_get_string (value);
-		if (str_val) {
-			if (secret) {
-				if (strlen (str_val)) {
-					nm_gconf_add_keyring_item (info->connection_id,
-					                           info->connection_name,
-					                           setting->name,
-					                           key,
-					                           str_val);
-				}
-			} else
-				nm_gconf_set_string_helper (info->client, info->dir, key, setting->name, str_val);
-		}
+
+		if (secret) {
+			if (str_val && strlen (str_val))
+				nm_gconf_add_keyring_item (info->connection_id,
+									  info->connection_name,
+									  setting->name,
+									  key,
+									  str_val);
+		} else
+			nm_gconf_set_string_helper (info->client, info->dir, key, setting->name, str_val);
 	} else if (type == G_TYPE_UINT) {
 		nm_gconf_set_int_helper (info->client, info->dir,
 							key, setting->name,
@@ -1038,17 +1040,9 @@ write_one_private_string_value (CopyOneSettingValueInfo *info, const char *tag)
 	g_return_if_fail (tag != NULL);
 
 	value = g_object_get_data (G_OBJECT (info->connection), tag);
-	if (value) {
-		nm_gconf_set_string_helper (info->client, info->dir, tag,
-		                            NM_SETTING_802_1X_SETTING_NAME,
-		                            value);
-	} else {
-		char *key;
-
-		key = g_strdup_printf ("%s/%s/%s", info->dir, NM_SETTING_802_1X_SETTING_NAME, tag);
-		gconf_client_unset (info->client, key, NULL);
-		g_free (key);
-	}
+	nm_gconf_set_string_helper (info->client, info->dir, tag,
+						   NM_SETTING_802_1X_SETTING_NAME,
+						   value);
 }
 
 static void

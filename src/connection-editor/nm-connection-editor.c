@@ -40,6 +40,8 @@
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-vpn.h>
 #include <nm-setting-pppoe.h>
+#include <nm-setting-gsm.h>
+#include <nm-setting-cdma.h>
 #include <nm-utils.h>
 
 #include "nm-connection-editor.h"
@@ -53,6 +55,7 @@
 #include "page-ip4.h"
 #include "page-ip4-address.h"
 #include "page-dsl.h"
+#include "page-mobile.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -392,6 +395,9 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_dsl_new (editor->connection)));
+	} else if (!strcmp (s_con->type, NM_SETTING_GSM_SETTING_NAME) || 
+			 !strcmp (s_con->type, NM_SETTING_CDMA_SETTING_NAME)) {
+		add_page (editor, CE_PAGE (ce_page_mobile_new (editor->connection)));
 	} else {
 		g_warning ("Unhandled setting type '%s'", s_con->type);
 	}

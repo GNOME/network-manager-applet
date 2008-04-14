@@ -1,3 +1,23 @@
+2008-04-14  Tambet Ingo  <tambet@gmail.com>
+
+	* src/connection-editor/ce-page-mobile.glade: Implement.
+
+	* src/connection-editor/page-mobile.[ch]: Implement.
+
+	* src/connection-editor/nm-connection-editor.c 
+	(nm_connection_editor_set_connection): Handle GSM and CDMA settings.
+
+	* src/connection-editor/Makefile.am: Add new files to build.
+
+	* src/gconf-helpers/gconf-helpers.c (nm_gconf_set_string_helper):
+	Allow NULL value, in that case, unset the GConf value. Otherwise,
+	it was not possible to reset string values which already had non-null
+	value.
+	(copy_one_setting_value_to_gconf): Write string to gconf even if it's
+	null to make sure it doesn't have a previous value.
+	(write_one_private_string_value): No need to check for null here,
+	string helper already does that.
+
 2008-04-10  Tambet Ingo  <tambet@gmail.com>
 
 	* src/connection-editor/page-wired.c: Another day, another page.
