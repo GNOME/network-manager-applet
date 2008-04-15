@@ -1,3 +1,31 @@
+2008-04-15  Tambet Ingo  <tambet@gmail.com>
+
+	* src/connection-editor/page-wireless.c (ce_page_wireless_new):
+	* src/connection-editor/page-wired.c (ce_page_wired_new): 
+	* src/connection-editor/page-mobile.c (ce_page_mobile_new): 
+	* src/connection-editor/page-ip4.c (ce_page_ip4_new): 
+	* src/connection-editor/page-dsl.c (ce_page_dsl_new): Use 
+	nm_setting_duplicate() instead of hashing the setting first and then
+	creating a new setting out of the hash. In addition to being annoying
+	to do, it also missed non-serializable properties in the duplicate.
+
+2008-04-15  Tambet Ingo  <tambet@gmail.com>
+
+	* src/connection-editor/page-wired-security.[ch]: Implement.
+
+	* src/connection-editor/nm-connection-editor.c 
+	(nm_connection_editor_set_connection): Add wired security page.
+
+	* src/connection-editor/Makefile.am: Build new files.
+
+	* src/wireless-security/wireless-security.c 
+	(ws_802_1x_auth_combo_init): Don't require a wireless security setting,
+	makes it preselect the correct EAP method for wired security as well.
+
+	* src/gconf-helpers/gconf-helpers.c (remove_leftovers): Implement.
+	(nm_gconf_write_connection): Remove the left over settings from GConf
+	which are not part of NMConnection anymore.
+
 2008-04-14  Tambet Ingo  <tambet@gmail.com>
 
 	* src/connection-editor/ce-page-mobile.glade: Implement.

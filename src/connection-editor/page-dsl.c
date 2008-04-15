@@ -120,15 +120,9 @@ ce_page_dsl_new (NMConnection *connection)
 	priv = CE_PAGE_DSL_GET_PRIVATE (self);
 
 	s_pppoe = (NMSettingPPPOE *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE);
-	if (s_pppoe) {
-		/* Duplicate it */
-		/* FIXME: Implement nm_setting_dup () in nm-setting.[ch] maybe? */
-		GHashTable *hash;
-
-		hash = nm_setting_to_hash (NM_SETTING (s_pppoe));
-		priv->setting = NM_SETTING_PPPOE (nm_setting_from_hash (NM_TYPE_SETTING_PPPOE, hash));
-		g_hash_table_destroy (hash);
-	} else
+	if (s_pppoe)
+		priv->setting = NM_SETTING_PPPOE (nm_setting_duplicate (NM_SETTING (s_pppoe)));
+	else
 		priv->setting = NM_SETTING_PPPOE (nm_setting_pppoe_new ());
 
 	populate_ui (self);

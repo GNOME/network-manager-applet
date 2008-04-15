@@ -282,15 +282,9 @@ ce_page_ip4_new (NMConnection *connection)
 	priv = CE_PAGE_IP4_GET_PRIVATE (self);
 
 	s_ip4 = (NMSettingIP4Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG);
-	if (s_ip4) {
-		/* Duplicate it */
-		/* FIXME: Implement nm_setting_dup () in nm-setting.[ch] maybe? */
-		GHashTable *hash;
-
-		hash = nm_setting_to_hash (NM_SETTING (s_ip4));
-		priv->setting = NM_SETTING_IP4_CONFIG (nm_setting_from_hash (NM_TYPE_SETTING_IP4_CONFIG, hash));
-		g_hash_table_destroy (hash);
-	} else
+	if (s_ip4)
+		priv->setting = NM_SETTING_IP4_CONFIG (nm_setting_duplicate (NM_SETTING (s_ip4)));
+	else
 		priv->setting = NM_SETTING_IP4_CONFIG (nm_setting_ip4_config_new ());
 
 	populate_ui (self);

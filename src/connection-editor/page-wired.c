@@ -174,15 +174,9 @@ ce_page_wired_new (NMConnection *connection)
 	priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 
 	s_wired = (NMSettingWired *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED);
-	if (s_wired) {
-		/* Duplicate it */
-		/* FIXME: Implement nm_setting_dup () in nm-setting.[ch] maybe? */
-		GHashTable *hash;
-
-		hash = nm_setting_to_hash (NM_SETTING (s_wired));
-		priv->setting = NM_SETTING_WIRED (nm_setting_from_hash (NM_TYPE_SETTING_WIRED, hash));
-		g_hash_table_destroy (hash);
-	} else
+	if (s_wired)
+		priv->setting = NM_SETTING_WIRED (nm_setting_duplicate (NM_SETTING (s_wired)));
+	else
 		priv->setting = NM_SETTING_WIRED (nm_setting_wired_new ());
 
 	populate_ui (self);

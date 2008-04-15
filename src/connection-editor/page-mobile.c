@@ -192,7 +192,6 @@ ce_page_mobile_new (NMConnection *connection)
 	CEPageMobilePrivate *priv;
 	CEPage *parent;
 	NMSetting *setting;
-	GHashTable *hash;
 
 	self = CE_PAGE_MOBILE (g_object_new (CE_TYPE_PAGE_MOBILE, NULL));
 	parent = CE_PAGE (self);
@@ -228,10 +227,7 @@ ce_page_mobile_new (NMConnection *connection)
 		return NULL;
 	}
 
-	hash = nm_setting_to_hash (setting);
-	priv->setting = nm_setting_from_hash (G_OBJECT_TYPE (setting), hash);
-	g_hash_table_destroy (hash);
-
+	priv->setting = nm_setting_duplicate (setting);
 	populate_ui (self);
 
 	g_signal_connect (priv->number, "changed", G_CALLBACK (stuff_changed), self);

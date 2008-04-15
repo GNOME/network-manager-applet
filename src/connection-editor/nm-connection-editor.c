@@ -36,6 +36,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-ip4-config.h>
 #include <nm-setting-wired.h>
+#include <nm-setting-8021x.h>
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-vpn.h>
@@ -50,6 +51,7 @@
 
 #include "ce-page.h"
 #include "page-wired.h"
+#include "page-wired-security.h"
 #include "page-wireless.h"
 #include "page-wireless-security.h"
 #include "page-ip4.h"
@@ -376,6 +378,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 
 	if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_wired_new (editor->connection)));
+		add_page (editor, CE_PAGE (ce_page_wired_security_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_address_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME)) {

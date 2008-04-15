@@ -299,15 +299,9 @@ ce_page_wireless_new (NMConnection *connection)
 	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 
 	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
-	if (s_wireless) {
-		/* Duplicate it */
-		/* FIXME: Implement nm_setting_dup () in nm-setting.[ch] maybe? */
-		GHashTable *hash;
-
-		hash = nm_setting_to_hash (NM_SETTING (s_wireless));
-		priv->setting = NM_SETTING_WIRELESS (nm_setting_from_hash (NM_TYPE_SETTING_WIRELESS, hash));
-		g_hash_table_destroy (hash);
-	} else
+	if (s_wireless)
+		priv->setting = NM_SETTING_WIRELESS (nm_setting_duplicate (NM_SETTING (s_wireless)));
+	else
 		priv->setting = NM_SETTING_WIRELESS (nm_setting_wireless_new ());
 
 	populate_ui (self);

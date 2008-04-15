@@ -28,6 +28,8 @@ nm_connection_editor_SOURCES = \
 	ce-page.c \
 	page-wired.h \
 	page-wired.c \
+	page-wired-security.h \
+	page-wired-security.c \
 	page-wireless.h \
 	page-wireless.c \
 	page-wireless-security.h \

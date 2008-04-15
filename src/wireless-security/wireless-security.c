@@ -294,16 +294,11 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 
 	/* Grab the default EAP method out of the security object */
 	if (connection) {
-		NMSettingWireless *s_wireless;
+		NMSetting8021x *s_8021x;
 
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-		if (s_wireless && s_wireless->security && !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)) {
-			NMSetting8021x *s_8021x;
-
-			s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
-			if (s_8021x && s_8021x->eap)
-				default_method = g_slist_nth_data (s_8021x->eap, 0);
-		}
+		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+		if (s_8021x && s_8021x->eap)
+			default_method = g_slist_nth_data (s_8021x->eap, 0);
 	}
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
