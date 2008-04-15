@@ -367,7 +367,8 @@ ui_to_setting (CEPageWireless *self)
 				  NM_SETTING_WIRELESS_MTU, gtk_spin_button_get_value_as_int (priv->mtu),
 				  NULL);
 
-	g_byte_array_free (ssid, TRUE);
+	if (ssid)
+		g_byte_array_free (ssid, TRUE);
 }
 
 static gboolean
