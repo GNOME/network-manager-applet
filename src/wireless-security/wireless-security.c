@@ -289,9 +289,6 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	const char *default_method = NULL;
 	int active = -1;
 
-	if (connection)
-		g_return_val_if_fail (connection_id != NULL, NULL);
-
 	/* Grab the default EAP method out of the security object */
 	if (connection) {
 		NMSetting8021x *s_8021x;

@@ -106,8 +106,6 @@ ws_dynamic_wep_new (const char *glade_file,
 	GladeXML *xml;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
-	if (connection)
-		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "dynamic_wep_notebook", NULL);
 	if (xml == NULL) {

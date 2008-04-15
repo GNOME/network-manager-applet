@@ -277,8 +277,6 @@ ws_wep_key_new (const char *glade_file,
 	guint8 default_key_idx = 0;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
-	if (connection)
-		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "wep_key_notebook", NULL);
 	if (xml == NULL) {
@@ -310,7 +308,7 @@ ws_wep_key_new (const char *glade_file,
 	g_assert (widget);
 
 	/* Fill secrets, if any */
-	if (connection) {
+	if (connection && connection_id) {
 		GHashTable *secrets;
 		GError *error = NULL;
 		GValue *value;
@@ -430,6 +428,8 @@ ws_wep_guess_key_type (NMConnection *connection, const char *connection_id)
 
 	if (!connection)
 		return WEP_KEY_TYPE_PASSPHRASE;
+
+	g_return_val_if_fail (connection_id != NULL, WEP_KEY_TYPE_PASSPHRASE);
 
 	secrets = nm_gconf_get_keyring_items (connection, connection_id,
 	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,

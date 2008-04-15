@@ -353,8 +353,6 @@ eap_method_peap_new (const char *glade_file,
 	const char *filename;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
-	if (connection)
-		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "eap_peap_notebook", NULL);
 	if (xml == NULL) {

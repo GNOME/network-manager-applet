@@ -119,8 +119,6 @@ ws_leap_new (const char *glade_file, NMConnection *connection, const char *conne
 	NMSettingWirelessSecurity *wsec = NULL;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
-	if (connection)
-		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "leap_notebook", NULL);
 	if (xml == NULL) {
@@ -161,7 +159,7 @@ ws_leap_new (const char *glade_file, NMConnection *connection, const char *conne
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
-	if (wsec) {
+	if (wsec && connection_id) {
 		GHashTable *secrets;
 		GError *error = NULL;
 		GValue *value;

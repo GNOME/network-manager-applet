@@ -136,8 +136,6 @@ eap_method_simple_new (const char *glade_file,
 	GladeXML *xml;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
-	if (connection)
-		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "eap_simple_notebook", NULL);
 	if (xml == NULL) {
@@ -185,7 +183,7 @@ eap_method_simple_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 	/* Fill secrets, if any */
-	if (connection) {
+	if (connection && connection_id) {
 		GHashTable *secrets;
 		GError *error = NULL;
 		GValue *value;

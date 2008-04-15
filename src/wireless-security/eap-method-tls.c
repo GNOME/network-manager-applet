@@ -348,8 +348,6 @@ eap_method_tls_new (const char *glade_file,
 	NMSetting8021x *s_8021x = NULL;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
-	if (connection)
-		g_return_val_if_fail (connection_id != NULL, NULL);
 
 	xml = glade_xml_new (glade_file, "eap_tls_notebook", NULL);
 	if (xml == NULL) {
@@ -408,7 +406,7 @@ eap_method_tls_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 	/* Fill secrets, if any */
-	if (connection) {
+	if (connection && connection_id) {
 		GHashTable *secrets;
 		GError *error = NULL;
 		GValue *value;
