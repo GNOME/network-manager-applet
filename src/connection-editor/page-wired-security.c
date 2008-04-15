@@ -90,14 +90,14 @@ ce_page_wired_security_new (NMConnection *connection)
 	wireless_security_set_changed_notify (priv->security, stuff_changed, self);
 	priv->security_widget = wireless_security_get_widget (priv->security);
 
-	priv->enabled = GTK_TOGGLE_BUTTON (gtk_check_button_new_with_label (_("Enabled")));
+	priv->enabled = GTK_TOGGLE_BUTTON (gtk_check_button_new_with_label (_("Use 802.1X security for this connection")));
 	g_signal_connect (priv->enabled, "toggled",
 					  G_CALLBACK (enable_toggled), self);
 
 	gtk_toggle_button_set_active (priv->enabled, setting != NULL);
 	gtk_widget_set_sensitive (priv->security_widget, setting != NULL);
 
-	gtk_box_pack_start_defaults (GTK_BOX (parent->page), GTK_WIDGET (priv->enabled));
+	gtk_box_pack_start (GTK_BOX (parent->page), GTK_WIDGET (priv->enabled), FALSE, TRUE, 12);
 	gtk_box_pack_start_defaults (GTK_BOX (parent->page), priv->security_widget);
 	g_object_ref_sink (parent->page);
 	gtk_widget_show_all (parent->page);
