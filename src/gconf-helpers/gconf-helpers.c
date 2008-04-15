@@ -38,6 +38,9 @@
 #include "gconf-upgrade.h"
 #include "utils.h"
 
+#define DBUS_TYPE_G_ARRAY_OF_UINT          (dbus_g_type_get_collection ("GArray", G_TYPE_UINT))
+#define DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UINT (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_ARRAY_OF_UINT))
+
 const char *applet_8021x_ignore_keys[] = {
 	"ca-cert",
 	"client-cert",
@@ -398,6 +401,57 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 }
 
 gboolean
+nm_gconf_get_ip4_addresses_helper (GConfClient *client,
+						  const char *path,
+						  const char *key,
+						  const char *network,
+						  GPtrArray **value)
+{
+	char *gc_key;
+	GConfValue *gc_value;
+	GPtrArray *array;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
+		goto out;
+
+	if (gc_value->type == GCONF_VALUE_LIST
+	    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_INT)
+	{
+		GSList *elt;
+		GArray *tuple = NULL;
+
+		array = g_ptr_array_sized_new (1);
+		for (elt = gconf_value_get_list (gc_value); elt != NULL; elt = g_slist_next (elt)) {
+			int i = gconf_value_get_int ((GConfValue *) elt->data);
+
+			if (tuple == NULL)
+				tuple = g_array_sized_new (FALSE, TRUE, sizeof (guint32), 3);
+
+			g_array_append_val (tuple, i);
+
+			/* Got addr, netmask, and gateway, add to ptr array */
+			if (tuple->len == 3) {
+				g_ptr_array_add (array, tuple);
+				tuple = NULL;
+			}
+		}
+
+		*value = array;
+		success = TRUE;
+	}
+
+out:
+	g_free (gc_key);
+	return success;
+}
+
+gboolean
 nm_gconf_set_int_helper (GConfClient *client,
                          const char *path,
                          const char *key,
@@ -635,7 +689,59 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 	return TRUE;
 }
 
-#include <unistd.h>
+gboolean
+nm_gconf_set_ip4_addresses_helper (GConfClient *client,
+					  const char *path,
+					  const char *key,
+					  const char *network,
+					  GPtrArray *value)
+{
+	char *gc_key;
+	int i;
+	GSList *list = NULL;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (network != NULL, FALSE);
+
+	if (!value)
+		return TRUE;
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	for (i = 0; i < value->len; i++) {
+		GArray *tuple = g_ptr_array_index (value, i);
+
+		if ((tuple->len < 2) || (tuple->len > 3)) {
+			g_warning ("%s: invalid IPv4 address structure!", __func__);
+			goto out;
+		}
+
+		/* IP address */
+		list = g_slist_append (list, GUINT_TO_POINTER (g_array_index (tuple, guint32, 0)));
+		/* Netmask */
+		list = g_slist_append (list, GUINT_TO_POINTER (g_array_index (tuple, guint32, 1)));
+
+		/* Gateway */
+		if (tuple->len == 3)
+			list = g_slist_append (list, GUINT_TO_POINTER (g_array_index (tuple, guint32, 2)));
+		else
+			list = g_slist_append (list, GUINT_TO_POINTER (0));
+	}
+
+	gconf_client_set_list (client, gc_key, GCONF_VALUE_INT, list, NULL);
+	success = TRUE;
+
+out:
+	g_slist_free (list);
+	g_free (gc_key);
+	return success;
+}
+
 GSList *
 nm_gconf_get_all_connections (GConfClient *client)
 {
@@ -653,6 +759,12 @@ nm_gconf_get_all_connections (GConfClient *client)
 	}
 
 	return connections;
+}
+
+static void
+free_one_addr (gpointer data)
+{
+	g_array_free ((GArray *) data, TRUE);
 }
 
 typedef struct ReadFromGConfInfo {
@@ -763,9 +875,18 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			g_object_set (setting, key, a_val, NULL);
 			g_array_free (a_val, TRUE);
 		}
-	} else
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UINT) {
+		GPtrArray *pa_val = NULL;
+
+		if (nm_gconf_get_ip4_addresses_helper (info->client, info->dir, key, setting->name, &pa_val)) {
+			g_object_set (setting, key, pa_val, NULL);
+			g_ptr_array_foreach (pa_val, (GFunc) free_one_addr, NULL);
+			g_ptr_array_free (pa_val, TRUE);
+		}
+	} else {
 		g_warning ("Unhandled setting property type (read): '%s/%s' : '%s'",
 				 setting->name, key, G_VALUE_TYPE_NAME (value));
+	}
 }
 
 static void
@@ -1006,7 +1127,11 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		nm_gconf_set_uint_array_helper (info->client, info->dir,
 								  key, setting->name,
 								  (GArray *) g_value_get_boxed (value));
- 	} else
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UINT) {
+		nm_gconf_set_ip4_addresses_helper (info->client, info->dir,
+								  key, setting->name,
+								  (GPtrArray *) g_value_get_boxed (value));
+	} else
 		g_warning ("Unhandled setting property type (write) '%s/%s' : '%s'", 
 				 setting->name, key, g_type_name (type));
 }

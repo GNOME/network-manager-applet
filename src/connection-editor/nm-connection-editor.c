@@ -55,7 +55,6 @@
 #include "page-wireless.h"
 #include "page-wireless-security.h"
 #include "page-ip4.h"
-#include "page-ip4-address.h"
 #include "page-dsl.h"
 #include "page-mobile.h"
 
@@ -379,7 +378,6 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 	if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_wired_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_wired_security_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_ip4_address_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME)) {
 		CEPageWireless *wireless_page;
@@ -391,10 +389,8 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 		wireless_security_page = ce_page_wireless_security_new (editor->connection, wireless_page);
 		add_page (editor, CE_PAGE (wireless_security_page));
 
-		add_page (editor, CE_PAGE (ce_page_ip4_address_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
-		add_page (editor, CE_PAGE (ce_page_ip4_address_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_dsl_new (editor->connection)));
@@ -439,10 +435,13 @@ connection_editor_update_connection (NMConnectionEditor *editor)
 
 	g_slist_foreach (editor->pages, update_one_page, editor->connection);
 
+	utils_fill_connection_certs (editor->connection);
 	if (!nm_connection_verify (editor->connection)) {
+		utils_clear_filled_connection_certs (editor->connection);
 		g_warning ("%s: connection invalid after update; bug in the connection editor.", __func__);
 		return;
 	}
+	utils_clear_filled_connection_certs (editor->connection);
 
 	if (!editor->gconf_path) {
 		guint32 i = 0;

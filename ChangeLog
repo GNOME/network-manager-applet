@@ -1,3 +1,28 @@
+2008-04-15  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/page-ip4-address.c
+	  src/connection-editor/page-ip4-address.h
+	  src/connection-editor/ce-page-ip4-address.glade
+	  src/connection-editor/Makefile.am
+		- remove the source and glade files, everything IPv4 in one pane for now
+
+	* src/connection-editor/nm-connection-editor.c
+		- (nm_connection_editor_set_connection): remove usage of old ip4_address
+			page
+		- (connection_editor_update_connection): fill certs so that the connection
+			has a chance of getting validated
+
+	* src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/gconf-helpers.h
+		- (nm_gconf_get_ip4_addresses_helper, nm_gconf_set_ip4_addresses_helper):
+			implement
+
+	* src/connection-editor/ce-page-ip4.glade
+		- Add IPv4 address bits; change DNS and search to entries
+
+	* src/connection-editor/page-ip4.c
+		- Fix up to work with new IPv4 page UI bits
+
 2008-04-15  Tambet Ingo  <tambet@gmail.com>
 
 	* src/connection-editor/page-wireless.c (ce_page_wireless_new):
