@@ -330,7 +330,6 @@ create_new_connection_for_type (NMConnectionList *list, GType ctype)
 		s_con->autoconnect = TRUE;
 
 		type_setting = nm_setting_wireless_new ();
-		/* WSEC??? */
 	} else if (ctype == NM_TYPE_SETTING_GSM) {
 		/* Since GSM is a placeholder for both GSM and CDMA; as the user which
 		 * one they really want.
