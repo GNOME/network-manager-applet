@@ -24,7 +24,6 @@
 #include <string.h>
 #include <netinet/ether.h>
 #include <glib.h>
-#include "wireless-helper.h"
 
 #include <nm-device-802-3-ethernet.h>
 #include <nm-device-802-11-wireless.h>
@@ -471,7 +470,7 @@ utils_check_ap_compatible (NMAccessPoint *ap,
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	const GByteArray *ssid;
-	int mode;
+	NM80211Mode mode;
 	guint32 freq;
 
 	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
@@ -497,10 +496,10 @@ utils_check_ap_compatible (NMAccessPoint *ap,
 	mode = nm_access_point_get_mode (ap);
 	if (s_wireless->mode) {
 		if (   !strcmp (s_wireless->mode, "infrastructure")
-		    && (mode != IW_MODE_INFRA))
+		    && (mode != NM_802_11_MODE_INFRA))
 			return FALSE;
 		if (   !strcmp (s_wireless->mode, "adhoc")
-		    && (mode != IW_MODE_ADHOC))
+		    && (mode != NM_802_11_MODE_ADHOC))
 			return FALSE;
 	}
 

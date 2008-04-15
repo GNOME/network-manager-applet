@@ -208,7 +208,7 @@ get_security_for_ap (NMAccessPoint *ap,
                      NMSetting8021x **s_8021x)
 {
 	NMSettingWirelessSecurity *sec;
-	int mode;
+	NM80211Mode mode;
 	guint32 flags;
 	guint32 wpa_flags;
 	guint32 rsn_flags;
@@ -242,7 +242,7 @@ get_security_for_ap (NMAccessPoint *ap,
 	}
 
 	/* Stuff after this point requires infrastructure */
-	if (mode != IW_MODE_INFRA) {
+	if (mode != NM_802_11_MODE_INFRA) {
 		*supported = FALSE;
 		goto none;
 	}
@@ -316,7 +316,7 @@ wireless_new_auto_connection (NMDevice *device,
 	const GByteArray *ap_ssid;
 	char buf[33];
 	int buf_len;
-	int mode;
+	NM80211Mode mode;
 	guint32 dev_caps;
 	gboolean supported = TRUE;
 
@@ -332,9 +332,9 @@ wireless_new_auto_connection (NMDevice *device,
 	g_byte_array_append (s_wireless->ssid, ap_ssid->data, ap_ssid->len);
 
 	mode = nm_access_point_get_mode (info->ap);
-	if (mode == IW_MODE_ADHOC)
+	if (mode == NM_802_11_MODE_ADHOC)
 		s_wireless->mode = g_strdup ("adhoc");
-	else if (mode == IW_MODE_INFRA)
+	else if (mode == NM_802_11_MODE_INFRA)
 		s_wireless->mode = g_strdup ("infrastructure");
 	else
 		g_assert_not_reached ();
@@ -582,7 +582,8 @@ sort_wireless_networks (gconstpointer tmpa,
 	NMAccessPoint * b = NM_ACCESS_POINT (tmpb);
 	const GByteArray * a_ssid;
 	const GByteArray * b_ssid;
-	int a_mode, b_mode, i;
+	NM80211Mode a_mode, b_mode;
+	int i;
 
 	if (a && !b)
 		return 1;
@@ -617,7 +618,7 @@ sort_wireless_networks (gconstpointer tmpa,
 	a_mode = nm_access_point_get_mode (a);
 	b_mode = nm_access_point_get_mode (b);
 	if (a_mode != b_mode) {
-		if (a_mode == IW_MODE_INFRA)
+		if (a_mode == NM_802_11_MODE_INFRA)
 			return 1;
 		return -1;
 	}
@@ -804,7 +805,7 @@ ap_hash (NMAccessPoint * ap)
 	unsigned char md5_data[66];
 	unsigned char input[33];
 	const GByteArray * ssid;
-	int mode;
+	NM80211Mode mode;
 	guint32 flags, wpa_flags, rsn_flags;
 
 	g_return_val_if_fail (ap, NULL);
@@ -820,9 +821,9 @@ ap_hash (NMAccessPoint * ap)
 	if (ssid)
 		memcpy (input, ssid->data, ssid->len);
 
-	if (mode == IW_MODE_INFRA)
+	if (mode == NM_802_11_MODE_INFRA)
 		input[32] |= (1 << 0);
-	else if (mode == IW_MODE_ADHOC)
+	else if (mode == NM_802_11_MODE_ADHOC)
 		input[32] |= (1 << 1);
 	else
 		input[32] |= (1 << 2);

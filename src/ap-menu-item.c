@@ -29,7 +29,6 @@
 #include <stdio.h>
 #include <glib/gi18n.h>
 #include <string.h>
-#include "wireless-helper.h"
 
 #include <nm-utils.h>
 #include "ap-menu-item.h"
@@ -203,7 +202,7 @@ nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
 	    || (rsn_flags != NM_802_11_AP_SEC_NONE))
 		encrypted = TRUE;
 
-	if (nm_access_point_get_mode (ap) == IW_MODE_ADHOC)
+	if (nm_access_point_get_mode (ap) == NM_802_11_MODE_ADHOC)
 		adhoc = TRUE;
 
 	if (adhoc) {
