@@ -195,7 +195,10 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection, const char *co
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, connection_id, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
+		secrets = nm_gconf_get_keyring_items (connection, connection_id,
+		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                                      FALSE,
+		                                      &error);
 		if (secrets) {
 			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_PSK);
 			if (value)

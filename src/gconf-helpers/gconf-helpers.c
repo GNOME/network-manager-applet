@@ -1375,6 +1375,7 @@ GHashTable *
 nm_gconf_get_keyring_items (NMConnection *connection,
                             const char *connection_id,
                             const char *setting_name,
+                            gboolean include_private_passwords,
                             GError **error)
 {
 	NMSettingConnection *s_con;
@@ -1447,6 +1448,14 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 					             __FILE__, __LINE__, connection_name, setting_name);
 				}
 				break;
+			} else if (include_private_passwords) {
+				/* If asked, include the actual private key passwords and such
+				 * too.  NOT to be used in response to a GetSecrets call, but
+				 * for displaying the passwords in the UI if required.
+				 */
+				g_hash_table_insert (secrets,
+				                     g_strdup (key_name),
+				                     string_to_gvalue (found->secret));
 			}
 		} else {
 			/* Ignore older obsolete keyring keys that we don't want to leak

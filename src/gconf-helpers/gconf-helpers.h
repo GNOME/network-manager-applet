@@ -200,6 +200,7 @@ GHashTable *
 nm_gconf_get_keyring_items (NMConnection *connection,
                             const char *connection_id,
                             const char *setting_name,
+                            gboolean include_private_passwords,
                             GError **error);
 
 #endif	/* GCONF_HELPERS_H */

@@ -413,7 +413,10 @@ eap_method_tls_new (const char *glade_file,
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, connection_id, NM_SETTING_802_1X_SETTING_NAME, &error);
+		secrets = nm_gconf_get_keyring_items (connection, connection_id,
+		                                      NM_SETTING_802_1X_SETTING_NAME,
+		                                      TRUE,
+		                                      &error);
 		if (secrets) {
 			value = g_hash_table_lookup (secrets, NMA_PRIVATE_KEY_PASSWORD_TAG);
 			if (value)

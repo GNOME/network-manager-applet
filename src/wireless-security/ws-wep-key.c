@@ -315,7 +315,10 @@ ws_wep_key_new (const char *glade_file,
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, connection_id, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
+		secrets = nm_gconf_get_keyring_items (connection, connection_id,
+		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                                      FALSE,
+		                                      &error);
 		if (secrets) {
 			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY0);
 			if (value)
@@ -428,7 +431,10 @@ ws_wep_guess_key_type (NMConnection *connection, const char *connection_id)
 	if (!connection)
 		return WEP_KEY_TYPE_PASSPHRASE;
 
-	secrets = nm_gconf_get_keyring_items (connection, connection_id, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, &error);
+	secrets = nm_gconf_get_keyring_items (connection, connection_id,
+	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                                      FALSE,
+	                                      &error);
 	if (!secrets || (g_hash_table_size (secrets) == 0))
 		return WEP_KEY_TYPE_PASSPHRASE;
 

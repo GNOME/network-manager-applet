@@ -1180,7 +1180,7 @@ applet_exported_connection_get_secrets (NMExportedConnection *parent,
 	                                  g_free, (GDestroyNotify) g_hash_table_destroy);
 
 	id = nm_exported_connection_get_id (parent);
-	secrets = nm_gconf_get_keyring_items (connection, id, setting_name, &error);
+	secrets = nm_gconf_get_keyring_items (connection, id, setting_name, FALSE, &error);
 	if (!secrets) {
 		if (error) {
 			nm_warning ("Error getting secrets: %s", error->message);

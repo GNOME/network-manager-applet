@@ -1,5 +1,24 @@
 2008-04-15  Dan Williams  <dcbw@redhat.com>
 
+	* src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/gconf-helpers.h
+		- (nm_gconf_get_keyring_items): add option to include private passwords
+			 (like the private key password and phase2 private key passwords)
+			 in the returned tables for use in UI bits.  Fixes issue where the
+			 802.1x security widgets couldn't get the private key password to
+			 display to the user.
+
+	* src/wireless-security/eap-method-leap.c
+	  src/wireless-security/ws-leap.c
+	  src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wpa-psk.c
+	  src/wireless-security/eap-method-simple.c
+	  src/wireless-security/eap-method-tls.c
+	  src/applet-dbus-settings.c
+		- Fix up for nm_gconf_get_keyring_items() changes
+
+2008-04-15  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/page-ip4-address.c
 	  src/connection-editor/page-ip4-address.h
 	  src/connection-editor/ce-page-ip4-address.glade
