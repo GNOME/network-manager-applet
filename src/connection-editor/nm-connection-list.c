@@ -43,10 +43,12 @@
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
 #include <nm-setting-pppoe.h>
+#include <nm-setting-serial.h>
 
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
 #include "gconf-helpers.h"
+#include "mobile-wizard.h"
 
 G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
 
@@ -307,12 +309,26 @@ get_next_available_name (NMConnectionList *list, const char *format)
 	return cname;
 }
 
+static void
+add_default_serial_setting (NMConnection *connection)
+{
+	NMSettingSerial *s_serial;
+
+	s_serial = NM_SETTING_SERIAL (nm_setting_serial_new ());
+	s_serial->baud = 115200;
+	s_serial->bits = 8;
+	s_serial->parity = 'n';
+	s_serial->stopbits = 1;
+	nm_connection_add_setting (connection, NM_SETTING (s_serial));
+}
+
 static NMConnection *
 create_new_connection_for_type (NMConnectionList *list, GType ctype)
 {
 	NMConnection *connection = NULL;
 	NMSettingConnection *s_con;
 	NMSetting *type_setting = NULL;
+	GType mb_type;
 
 	connection = nm_connection_new ();
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
@@ -331,9 +347,37 @@ create_new_connection_for_type (NMConnectionList *list, GType ctype)
 
 		type_setting = nm_setting_wireless_new ();
 	} else if (ctype == NM_TYPE_SETTING_GSM) {
-		/* Since GSM is a placeholder for both GSM and CDMA; as the user which
+		/* Since GSM is a placeholder for both GSM and CDMA; ask the user which
 		 * one they really want.
 		 */
+		mb_type = mobile_wizard_ask_connection_type ();
+		if (mb_type == NM_TYPE_SETTING_GSM) {
+			NMSettingGsm *s_gsm;
+
+			s_con->id = get_next_available_name (list, _("GSM connection %d"));
+			s_con->type = g_strdup (NM_SETTING_GSM_SETTING_NAME);
+			s_con->autoconnect = FALSE;
+
+			add_default_serial_setting (connection);
+
+			type_setting = nm_setting_gsm_new ();
+			s_gsm = NM_SETTING_GSM (type_setting);
+			s_gsm->number = g_strdup ("*99#"); /* De-facto standard for GSM */
+		} else if (mb_type == NM_TYPE_SETTING_CDMA) {
+			NMSettingCdma *s_cdma;
+
+			s_con->id = get_next_available_name (list, _("CDMA connection %d"));
+			s_con->type = g_strdup (NM_SETTING_CDMA_SETTING_NAME);
+			s_con->autoconnect = FALSE;
+
+			add_default_serial_setting (connection);
+
+			type_setting = nm_setting_cdma_new ();
+			s_cdma = NM_SETTING_CDMA (type_setting);
+			s_cdma->number = g_strdup ("#777"); /* De-facto standard for CDMA */
+		} else {
+			/* user canceled; do nothing */
+		}
 	} else if (ctype == NM_TYPE_SETTING_VPN) {
 		s_con->id = get_next_available_name (list, _("VPN connection %d"));
 		s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
