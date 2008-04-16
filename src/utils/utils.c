@@ -103,7 +103,6 @@ utils_get_device_description (NMDevice *device)
 	char **words;
 	char **item;
 	GString *str;
-	gboolean need_space = FALSE;
 
 	g_return_val_if_fail (device != NULL, NULL);
 
@@ -150,10 +149,9 @@ utils_get_device_description (NMDevice *device)
 		}
 
 		if (!ignore) {
-			g_string_append (str, *item);
-			if (need_space)
+			if (str->len)
 				g_string_append_c (str, ' ');
-			need_space = TRUE;
+			g_string_append (str, *item);
 		}
 	}
 	g_strfreev (words);
