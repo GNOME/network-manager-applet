@@ -197,7 +197,8 @@ eap_method_simple_new (const char *glade_file,
 			if (value)
 				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
 			g_hash_table_destroy (secrets);
-		}
+		} else
+			g_error_free (error);
 	}
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");

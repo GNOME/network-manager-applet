@@ -420,7 +420,8 @@ eap_method_tls_new (const char *glade_file,
 			if (value)
 				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
 			g_hash_table_destroy (secrets);
-		}
+		} else
+			g_error_free (error);
 	}
 
 	setup_filepicker (xml, "eap_tls_user_cert_button",

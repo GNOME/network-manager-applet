@@ -335,7 +335,8 @@ ws_wep_key_new (const char *glade_file,
 				strcpy (sec->keys[3], g_value_get_string (value));
 
 			g_hash_table_destroy (secrets);
-		}
+		} else
+			g_error_free (error);
 	}
 
 	g_signal_connect (G_OBJECT (widget), "changed",
@@ -435,8 +436,11 @@ ws_wep_guess_key_type (NMConnection *connection, const char *connection_id)
 	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 	                                      FALSE,
 	                                      &error);
-	if (!secrets || (g_hash_table_size (secrets) == 0))
+	if (!secrets || (g_hash_table_size (secrets) == 0)) {
+		if (error)
+			g_error_free (error);
 		return WEP_KEY_TYPE_PASSPHRASE;
+	}
 
 	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY0);
 	if (value) {
