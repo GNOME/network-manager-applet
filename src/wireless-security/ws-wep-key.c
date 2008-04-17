@@ -335,7 +335,7 @@ ws_wep_key_new (const char *glade_file,
 				strcpy (sec->keys[3], g_value_get_string (value));
 
 			g_hash_table_destroy (secrets);
-		} else
+		} else if (error)
 			g_error_free (error);
 	}
 

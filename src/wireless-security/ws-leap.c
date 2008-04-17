@@ -173,7 +173,7 @@ ws_leap_new (const char *glade_file, NMConnection *connection, const char *conne
 			if (value)
 				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
 			g_hash_table_destroy (secrets);
-		} else
+		} else if (error)
 			g_error_free (error);
 	}
 
