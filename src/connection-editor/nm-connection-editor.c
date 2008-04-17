@@ -297,7 +297,7 @@ ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
 
 	val = gtk_spin_button_get_value_as_int (spin);
 	if (val == defvalue)
-		buf = g_strdup (_("default"));
+		buf = g_strdup (_("automatic"));
 	else
 		buf = g_strdup_printf ("%d", val);
 

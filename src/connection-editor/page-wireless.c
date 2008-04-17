@@ -49,6 +49,8 @@ typedef struct {
 	GtkSpinButton *tx_power;
 	GtkSpinButton *mtu;
 
+	GtkSizeGroup *group;
+
 	int last_channel;
 	gboolean disposed;
 } CEPageWirelessPrivate;
@@ -58,16 +60,28 @@ wireless_private_init (CEPageWireless *self)
 {
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 	GladeXML *xml;
+	GtkWidget *widget;
 
 	xml = CE_PAGE (self)->xml;
+
+	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	priv->ssid     = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_ssid"));
 	priv->mode     = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wireless_mode"));
 	priv->band     = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wireless_band"));
 	priv->channel  = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_channel"));
+
 	priv->rate     = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_rate"));
+	widget = glade_xml_get_widget (xml, "rate_units");
+	gtk_size_group_add_widget (priv->group, widget);
+
 	priv->tx_power = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_tx_power"));
+	widget = glade_xml_get_widget (xml, "tx_power_units");
+	gtk_size_group_add_widget (priv->group, widget);
+
 	priv->mtu      = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_mtu"));
+	widget = glade_xml_get_widget (xml, "mtu_units");
+	gtk_size_group_add_widget (priv->group, widget);
 }
 
 static gboolean

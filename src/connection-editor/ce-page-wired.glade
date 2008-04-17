@@ -60,7 +60,7 @@
       <child>
 	<widget class="GtkComboBox" id="wired_port">
 	  <property name="visible">True</property>
-	  <property name="items" translatable="yes">default
+	  <property name="items" translatable="yes">Automatic
 Twisted Pair (TP)
 Attachment Unit Interface (AUI)
 BNC
@@ -109,7 +109,7 @@ Media Independent Interface (MII)</property>
       <child>
 	<widget class="GtkComboBox" id="wired_speed">
 	  <property name="visible">True</property>
-	  <property name="items" translatable="yes">default
+	  <property name="items" translatable="yes">Automatic
 10 Mb/s
 100 Mb/s
 1 Gb/s
@@ -229,27 +229,6 @@ Media Independent Interface (MII)</property>
       </child>
 
       <child>
-	<widget class="GtkSpinButton" id="wired_mtu">
-	  <property name="visible">True</property>
-	  <property name="can_focus">True</property>
-	  <property name="climb_rate">1</property>
-	  <property name="digits">0</property>
-	  <property name="numeric">False</property>
-	  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
-	  <property name="snap_to_ticks">False</property>
-	  <property name="wrap">False</property>
-	  <property name="adjustment">0 0 100 1 10 10</property>
-	</widget>
-	<packing>
-	  <property name="left_attach">1</property>
-	  <property name="right_attach">2</property>
-	  <property name="top_attach">5</property>
-	  <property name="bottom_attach">6</property>
-	  <property name="y_options"></property>
-	</packing>
-      </child>
-
-      <child>
 	<widget class="Custom" id="wired_mac_address">
 	  <property name="visible">True</property>
 	  <property name="creation_function">create_byte_array_editor</property>
@@ -263,6 +242,66 @@ Media Independent Interface (MII)</property>
 	  <property name="top_attach">4</property>
 	  <property name="bottom_attach">5</property>
 	  <property name="x_options">expand|shrink|fill</property>
+	  <property name="y_options">fill</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkHBox" id="hbox1">
+	  <property name="visible">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">6</property>
+
+	  <child>
+	    <widget class="GtkSpinButton" id="wired_mtu">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="climb_rate">1</property>
+	      <property name="digits">0</property>
+	      <property name="numeric">False</property>
+	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+	      <property name="snap_to_ticks">False</property>
+	      <property name="wrap">False</property>
+	      <property name="adjustment">0 0 10000 1 10 10</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkLabel" id="label28">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">bytes</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0.5</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="left_attach">1</property>
+	  <property name="right_attach">2</property>
+	  <property name="top_attach">5</property>
+	  <property name="bottom_attach">6</property>
+	  <property name="x_options">fill</property>
 	  <property name="y_options">fill</property>
 	</packing>
       </child>
