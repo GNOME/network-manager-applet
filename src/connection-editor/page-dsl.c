@@ -85,7 +85,7 @@ populate_ui (CEPageDsl *self, NMConnection *connection)
 			value = g_hash_table_lookup (secrets, NM_SETTING_PPPOE_PASSWORD);
 			if (value)
 				password = (char *) g_value_get_string (value);
-		} else
+		} else if (error)
 			g_error_free (error);
 	}
 

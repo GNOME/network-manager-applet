@@ -98,7 +98,7 @@ get_secrets (NMConnection *connection, const char *setting_name)
 	                                      setting_name,
 	                                      FALSE,
 	                                      &error);
-	if (!secrets)
+	if (!secrets && error)
 		g_error_free (error);
 
 	return secrets;
