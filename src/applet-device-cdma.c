@@ -193,7 +193,7 @@ add_disconnect_item (NMDevice *device,
 	    || state == NM_DEVICE_STATE_FAILED)
 		return;
 
-	item = gtk_menu_item_new_with_label (_("Disconnect..."));
+	item = gtk_menu_item_new_with_label (_("Disconnect"));
 
 	info = g_slice_new0 (CdmaMenuItemInfo);
 	info->applet = applet;
