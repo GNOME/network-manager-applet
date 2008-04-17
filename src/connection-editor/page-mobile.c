@@ -31,6 +31,7 @@
 
 #include "page-mobile.h"
 #include "nm-connection-editor.h"
+#include "gconf-helpers.h"
 
 G_DEFINE_TYPE (CEPageMobile, ce_page_mobile, CE_TYPE_PAGE)
 
@@ -82,21 +83,41 @@ mobile_private_init (CEPageMobile *self)
 	priv->puk = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_puk"));
 }
 
+static GHashTable *
+get_secrets (NMConnection *connection, const char *setting_name)
+{
+	const char *connection_id;
+	GError *error = NULL;
+	GHashTable *secrets;
+
+	connection_id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
+	if (!connection_id)
+		return NULL;
+
+	secrets = nm_gconf_get_keyring_items (connection, connection_id,
+	                                      setting_name,
+	                                      FALSE,
+	                                      &error);
+	if (!secrets)
+		g_error_free (error);
+
+	return secrets;
+}
+
 static void
-populate_gsm_ui (CEPageMobile *self)
+populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 {
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 	NMSettingGsm *setting = NM_SETTING_GSM (priv->setting);
 	int type_idx;
+	GHashTable *secrets;
+	GValue *value;
 
 	if (setting->number)
 		gtk_entry_set_text (priv->number, setting->number);
 
 	if (setting->username)
 		gtk_entry_set_text (priv->username, setting->username);
-
-	if (setting->password)
-		gtk_entry_set_text (priv->password, setting->password);
 
 	if (setting->apn)
 		gtk_entry_set_text (priv->apn, setting->apn);
@@ -126,18 +147,43 @@ populate_gsm_ui (CEPageMobile *self)
 
 	/* FIXME:  band */
 
+	secrets = get_secrets (connection, nm_setting_get_name (priv->setting));
+
+	if (setting->password)
+		gtk_entry_set_text (priv->password, setting->password);
+	else if (secrets) {
+		value = g_hash_table_lookup (secrets, NM_SETTING_GSM_PASSWORD);
+		if (value)
+			gtk_entry_set_text (priv->password, g_value_get_string (value));
+	}
+
 	if (setting->pin)
 		gtk_entry_set_text (priv->pin, setting->pin);
+	else if (secrets) {
+		value = g_hash_table_lookup (secrets, NM_SETTING_GSM_PIN);
+		if (value)
+			gtk_entry_set_text (priv->pin, g_value_get_string (value));
+	}
 
 	if (setting->puk)
 		gtk_entry_set_text (priv->pin, setting->puk);
+	else if (secrets) {
+		value = g_hash_table_lookup (secrets, NM_SETTING_GSM_PUK);
+		if (value)
+			gtk_entry_set_text (priv->puk, g_value_get_string (value));
+	}
+
+	if (secrets)
+		g_hash_table_destroy (secrets);
 }
 
 static void
-populate_cdma_ui (CEPageMobile *self)
+populate_cdma_ui (CEPageMobile *self, NMConnection *connection)
 {
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 	NMSettingCdma *setting = NM_SETTING_CDMA (priv->setting);
+	GHashTable *secrets;
+	GValue *value;
 
 	if (setting->number)
 		gtk_entry_set_text (priv->number, setting->number);
@@ -145,8 +191,18 @@ populate_cdma_ui (CEPageMobile *self)
 	if (setting->username)
 		gtk_entry_set_text (priv->username, setting->username);
 
+	secrets = get_secrets (connection, nm_setting_get_name (priv->setting));
+
 	if (setting->password)
 		gtk_entry_set_text (priv->password, setting->password);
+	else if (secrets) {
+		value = g_hash_table_lookup (secrets, NM_SETTING_CDMA_PASSWORD);
+		if (value)
+			gtk_entry_set_text (priv->password, g_value_get_string (value));
+	}
+
+	if (secrets)
+		g_hash_table_destroy (secrets);
 
 	/* Hide GSM specific widgets */
 	gtk_widget_hide (glade_xml_get_widget (CE_PAGE (self)->xml, "mobile_basic_label"));
@@ -154,14 +210,14 @@ populate_cdma_ui (CEPageMobile *self)
 }
 
 static void
-populate_ui (CEPageMobile *self)
+populate_ui (CEPageMobile *self, NMConnection *connection)
 {
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 
 	if (NM_IS_SETTING_GSM (priv->setting))
-		populate_gsm_ui (self);
+		populate_gsm_ui (self, connection);
 	else if (NM_IS_SETTING_CDMA (priv->setting))
-		populate_cdma_ui (self);
+		populate_cdma_ui (self, connection);
 	else
 		g_error ("Invalid setting");
 }
@@ -228,7 +284,7 @@ ce_page_mobile_new (NMConnection *connection)
 	}
 
 	priv->setting = nm_setting_duplicate (setting);
-	populate_ui (self);
+	populate_ui (self, connection);
 
 	g_signal_connect (priv->number, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->username, "changed", G_CALLBACK (stuff_changed), self);

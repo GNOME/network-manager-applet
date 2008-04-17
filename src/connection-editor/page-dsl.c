@@ -30,6 +30,7 @@
 
 #include "page-dsl.h"
 #include "nm-connection-editor.h"
+#include "gconf-helpers.h"
 
 G_DEFINE_TYPE (CEPageDsl, ce_page_dsl, CE_TYPE_PAGE)
 
@@ -59,16 +60,40 @@ dsl_private_init (CEPageDsl *self)
 }
 
 static void
-populate_ui (CEPageDsl *self)
+populate_ui (CEPageDsl *self, NMConnection *connection)
 {
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
 	NMSettingPPPOE *setting = priv->setting;
+	char *password = setting->password;
+	const char *connection_id;
+	GHashTable *secrets = NULL;
 
 	if (setting->username)
 		gtk_entry_set_text (priv->username, setting->username);
 
-	if (setting->password)
-		gtk_entry_set_text (priv->password, setting->password);
+	/* Grab password from keyring if possible */
+	connection_id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
+	if (!password && connection_id) {
+		GError *error = NULL;
+		GValue *value;
+
+		secrets = nm_gconf_get_keyring_items (connection, connection_id,
+		                                      nm_setting_get_name (NM_SETTING (priv->setting)),
+		                                      FALSE,
+		                                      &error);
+		if (secrets) {
+			value = g_hash_table_lookup (secrets, NM_SETTING_PPPOE_PASSWORD);
+			if (value)
+				password = (char *) g_value_get_string (value);
+		} else
+			g_error_free (error);
+	}
+
+	if (password)
+		gtk_entry_set_text (priv->password, password);
+
+	if (secrets)
+		g_hash_table_destroy (secrets);
 
 	if (setting->service)
 		gtk_entry_set_text (priv->service, setting->service);
@@ -125,7 +150,7 @@ ce_page_dsl_new (NMConnection *connection)
 	else
 		priv->setting = NM_SETTING_PPPOE (nm_setting_pppoe_new ());
 
-	populate_ui (self);
+	populate_ui (self, connection);
 
 	g_signal_connect (priv->username, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->password, "changed", G_CALLBACK (stuff_changed), self);
