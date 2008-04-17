@@ -309,7 +309,7 @@ ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
 }
 
 static void
-fill_connection_values (NMConnectionEditor *editor)
+populate_connection_ui (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
 	GtkWidget *name;
@@ -402,7 +402,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 	}
 
 	/* set the UI */
-	fill_connection_values (editor);
+	populate_connection_ui (editor);
 }
 
 void
@@ -425,13 +425,19 @@ connection_editor_update_connection (NMConnectionEditor *editor)
 	NMSettingConnection *s_con;
 	GtkWidget *widget;
 	const char *name;
+	gboolean autoconnect = FALSE;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
 	widget = glade_xml_get_widget (editor->xml, "connection_name");
 	name = gtk_entry_get_text (GTK_ENTRY (widget));
-	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_ID, name, NULL);
+	widget = glade_xml_get_widget (editor->xml, "connection_autoconnect");
+	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+	g_object_set (G_OBJECT (s_con),
+	              NM_SETTING_CONNECTION_ID, name,
+	              NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect,
+	              NULL);
 
 	g_slist_foreach (editor->pages, update_one_page, editor->connection);
 
