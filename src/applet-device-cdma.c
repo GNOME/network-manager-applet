@@ -80,7 +80,6 @@ cdma_new_auto_connection (NMDevice *device,
 	nm_connection_add_setting (connection, NM_SETTING (s_serial));
 
 	s_ppp = (NMSettingPPP *) nm_setting_ppp_new ();
-	s_ppp->usepeerdns = TRUE; /* This is probably a good default as well */
 	nm_connection_add_setting (connection, NM_SETTING (s_ppp));
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
