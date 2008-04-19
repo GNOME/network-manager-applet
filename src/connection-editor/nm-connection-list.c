@@ -43,6 +43,7 @@
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
 #include <nm-setting-pppoe.h>
+#include <nm-setting-ppp.h>
 #include <nm-setting-serial.h>
 
 #include "nm-connection-editor.h"
@@ -363,6 +364,8 @@ create_new_connection_for_type (NMConnectionList *list, GType ctype)
 			type_setting = nm_setting_gsm_new ();
 			s_gsm = NM_SETTING_GSM (type_setting);
 			s_gsm->number = g_strdup ("*99#"); /* De-facto standard for GSM */
+
+			nm_connection_add_setting (connection, nm_setting_ppp_new ());
 		} else if (mb_type == NM_TYPE_SETTING_CDMA) {
 			NMSettingCdma *s_cdma;
 
@@ -375,6 +378,8 @@ create_new_connection_for_type (NMConnectionList *list, GType ctype)
 			type_setting = nm_setting_cdma_new ();
 			s_cdma = NM_SETTING_CDMA (type_setting);
 			s_cdma->number = g_strdup ("#777"); /* De-facto standard for CDMA */
+
+			nm_connection_add_setting (connection, nm_setting_ppp_new ());
 		} else {
 			/* user canceled; do nothing */
 		}
@@ -384,14 +389,13 @@ create_new_connection_for_type (NMConnectionList *list, GType ctype)
 
 		type_setting = nm_setting_vpn_new ();
 	} else if (ctype == NM_TYPE_SETTING_PPPOE) {
-		NMSetting *s_wired;
-
 		s_con->id = get_next_available_name (list, _("DSL connection %d"));
 		s_con->type = g_strdup (NM_SETTING_PPPOE_SETTING_NAME);
 
 		type_setting = nm_setting_pppoe_new ();
-		s_wired = nm_setting_wired_new ();
-		nm_connection_add_setting (connection, s_wired);
+
+		nm_connection_add_setting (connection, nm_setting_wired_new ());
+		nm_connection_add_setting (connection, nm_setting_ppp_new ());
 	} else {
 		g_warning ("%s: unhandled connection type '%s'", __func__, g_type_name (ctype)); 
 	}

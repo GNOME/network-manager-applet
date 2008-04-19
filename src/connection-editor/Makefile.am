@@ -41,7 +41,9 @@ nm_connection_editor_SOURCES = \
 	page-mobile.h \
 	page-mobile.c \
 	mobile-wizard.h \
-	mobile-wizard.c
+	mobile-wizard.c \
+	page-ppp.h \
+	page-ppp.c
 
 nm_connection_editor_LDADD = \
 	$(top_builddir)/src/gconf-helpers/libgconf-helpers.la \
@@ -58,7 +60,8 @@ glade_DATA = \
 	ce-page-ip4.glade \
 	ce-page-dsl.glade \
 	ce-page-mobile.glade \
-	ce-mobile-wizard.glade
+	ce-mobile-wizard.glade \
+	ce-page-ppp.glade
 
 CLEANFILES = *.bak *.gladep
 

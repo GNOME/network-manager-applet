@@ -27,6 +27,7 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-pppoe.h>
+#include <nm-setting-ppp.h>
 
 #include "page-dsl.h"
 #include "nm-connection-editor.h"
@@ -38,6 +39,7 @@ G_DEFINE_TYPE (CEPageDsl, ce_page_dsl, CE_TYPE_PAGE)
 
 typedef struct {
 	NMSettingPPPOE *setting;
+	NMConnection *connection; /* ugh */
 
 	GtkEntry *username;
 	GtkEntry *password;
@@ -150,6 +152,8 @@ ce_page_dsl_new (NMConnection *connection)
 	else
 		priv->setting = NM_SETTING_PPPOE (nm_setting_pppoe_new ());
 
+	priv->connection = connection;
+
 	populate_ui (self, connection);
 
 	g_signal_connect (priv->username, "changed", G_CALLBACK (stuff_changed), self);
@@ -194,9 +198,16 @@ validate (CEPage *page)
 {
 	CEPageDsl *self = CE_PAGE_DSL (page);
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
+	GSList *foo;
+	gboolean valid;
 
 	ui_to_setting (self);
-	return nm_setting_verify (NM_SETTING (priv->setting), NULL);
+
+	foo = g_slist_append (NULL, nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_PPP));
+	valid = nm_setting_verify (NM_SETTING (priv->setting), foo);
+	g_slist_free (foo);
+
+	return valid;
 }
 
 static void
