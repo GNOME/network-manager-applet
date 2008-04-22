@@ -25,6 +25,8 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
+#include <nm-setting-connection.h>
+#include <nm-setting-wired.h>
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-8021x.h>
@@ -288,10 +290,18 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	EAPMethodPEAP *em_peap;
 	const char *default_method = NULL;
 	int active = -1;
+	gboolean wired = FALSE;
 
 	/* Grab the default EAP method out of the security object */
 	if (connection) {
+		NMSettingConnection *s_con;
 		NMSetting8021x *s_8021x;
+
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		g_assert (s_con);
+		g_assert (s_con->type);
+		if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
+			wired = TRUE;
 
 		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
 		if (s_8021x && s_8021x->eap)
@@ -310,15 +320,17 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	if (default_method && (active < 0) && !strcmp (default_method, "tls"))
 		active = 0;
 
-	em_leap = eap_method_leap_new (glade_file, sec, connection, connection_id);
-	gtk_list_store_append (auth_model, &iter);
-	gtk_list_store_set (auth_model, &iter,
-	                    AUTH_NAME_COLUMN, _("LEAP"),
-	                    AUTH_METHOD_COLUMN, em_leap,
-	                    -1);
-	eap_method_unref (EAP_METHOD (em_leap));
-	if (default_method && (active < 0) && !strcmp (default_method, "leap"))
-		active = 1;
+	if (!wired) {
+		em_leap = eap_method_leap_new (glade_file, sec, connection, connection_id);
+		gtk_list_store_append (auth_model, &iter);
+		gtk_list_store_set (auth_model, &iter,
+		                    AUTH_NAME_COLUMN, _("LEAP"),
+		                    AUTH_METHOD_COLUMN, em_leap,
+		                    -1);
+		eap_method_unref (EAP_METHOD (em_leap));
+		if (default_method && (active < 0) && !strcmp (default_method, "leap"))
+			active = 1;
+	}
 
 	em_ttls = eap_method_ttls_new (glade_file, sec, connection, connection_id);
 	gtk_list_store_append (auth_model, &iter);
