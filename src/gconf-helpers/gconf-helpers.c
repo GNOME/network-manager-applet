@@ -1057,6 +1057,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 {
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
 	GType type = G_VALUE_TYPE (value);
+	GParamSpec *pspec;
 
 	/* The 'name' key isn't written to GConf because it's pulled from the
 	 * gconf directory name instead.
@@ -1073,6 +1074,20 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	} else if (NM_IS_SETTING_VPN (setting)) {
 		if (nm_utils_string_in_list (key, vpn_ignore_keys))
 			return;
+	}
+
+	/* If the value is the default value, remove the item from GConf */
+	pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (setting), key);
+	if (pspec) {
+		if (g_param_value_defaults (pspec, (GValue *) value)) {
+		char *path;
+
+		path = g_strdup_printf ("%s/%s/%s", info->dir, setting->name, key);
+		if (path)
+			gconf_client_unset (info->client, path, NULL);
+		g_free (path);		
+		return;
+		}
 	}
 
 	if (type == G_TYPE_STRING) {
