@@ -73,7 +73,7 @@
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
 
 static NMActiveConnection *
-applet_get_best_active_connection (NMApplet *applet, NMDevice **device)
+applet_get_best_activating_connection (NMApplet *applet, NMDevice **device)
 {
 	NMActiveConnection *best = NULL;
 	NMDevice *best_dev = NULL;
@@ -89,6 +89,9 @@ applet_get_best_active_connection (NMApplet *applet, NMDevice **device)
 		NMActiveConnection *candidate = g_ptr_array_index (connections, i);
 		const GPtrArray *devices;
 		NMDevice *candidate_dev;
+
+		if (nm_active_connection_get_state (candidate) != NM_ACTIVE_CONNECTION_STATE_ACTIVATING)
+			continue;
 
 		devices = nm_active_connection_get_devices (candidate);
 		if (!devices || !devices->len)
@@ -124,6 +127,40 @@ applet_get_best_active_connection (NMApplet *applet, NMDevice **device)
 
 	*device = best_dev;
 	return best;
+}
+
+static NMActiveConnection *
+applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
+{
+	NMActiveConnection *default_ac = NULL;
+	const GPtrArray *connections;
+	int i;
+
+	g_return_val_if_fail (NM_IS_APPLET (applet), NULL);
+	g_return_val_if_fail (device != NULL, NULL);
+	g_return_val_if_fail (*device == NULL, NULL);
+
+	connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; connections && (i < connections->len); i++) {
+		NMActiveConnection *candidate = g_ptr_array_index (connections, i);
+		const GPtrArray *devices;
+
+		if (!nm_active_connection_get_default (candidate))
+			continue;
+
+		devices = nm_active_connection_get_devices (candidate);
+		if (!devices || !devices->len) {
+			g_warning ("Active connection %s had no devices!",
+			           nm_object_get_path (NM_OBJECT (candidate)));
+			continue;
+		}
+
+		*device = g_ptr_array_index (devices, 0);
+		default_ac = candidate;
+		break;
+	}
+
+	return default_ac;
 }
 
 static NMConnection *
@@ -530,7 +567,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	NMDevice *device = NULL;
 	gboolean is_system;
 
-	active = applet_get_best_active_connection (applet, &device);
+	active = applet_get_default_active_connection (applet, &device);
 	if (!active || !device) {
 		g_warning ("%s: no active connection or device.", __func__);
 		return;
@@ -605,7 +642,7 @@ applet_get_first_active_vpn_connection (NMApplet *applet,
 
 		if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
 			if (out_state)
-				*out_state = nm_vpn_connection_get_state (NM_VPN_CONNECTION (candidate));
+				*out_state = nm_vpn_connection_get_vpn_state (NM_VPN_CONNECTION (candidate));
 			return candidate;
 		}
 	}
@@ -1154,15 +1191,15 @@ applet_connection_info_cb (NMApplet *applet)
 	NMConnection *connection;
 	NMDevice *device = NULL;
 
-	active = applet_get_best_active_connection (applet, &device);
+	active = applet_get_default_active_connection (applet, &device);
 	if (!active) {
-		g_warning ("%s: couldn't find the best active connection!", __func__);
+		g_warning ("%s: couldn't find the default active connection!", __func__);
 		return;
 	}
 
 	connection = applet_get_connection_for_active (applet, active);
 	if (!connection) {
-		g_warning ("%s: couldn't find the best active connection's NMConnection!", __func__);
+		g_warning ("%s: couldn't find the default active connection's NMConnection!", __func__);
 		return;
 	}
 
@@ -1451,7 +1488,7 @@ foo_active_connections_changed_cb (NMClient *client,
 		    || g_object_get_data (G_OBJECT (candidate), VPN_STATE_ID_TAG))
 			continue;
 
-		id = g_signal_connect (G_OBJECT (candidate), "state-changed",
+		id = g_signal_connect (G_OBJECT (candidate), "vpn-state-changed",
 		                       G_CALLBACK (vpn_connection_state_changed), applet);
 		g_object_set_data (G_OBJECT (candidate), VPN_STATE_ID_TAG, GUINT_TO_POINTER (id));
 	}
@@ -1542,9 +1579,16 @@ applet_get_device_icon_for_state (NMApplet *applet, char **tip)
 
 	// FIXME: handle multiple device states here
 
-	active = applet_get_best_active_connection (applet, &device);
-	if (!active || !device)
-		goto out;
+	/* First show the best activating device's state */
+	active = applet_get_best_activating_connection (applet, &device);
+	if (!active || !device) {
+		/* If there aren't any activating devices, then show the state of
+		 * the default active connection instead.
+		 */
+		active = applet_get_default_active_connection (applet, &device);
+		if (!active || !device)
+			goto out;
+	}
 
 	state = nm_device_get_state (device);
 

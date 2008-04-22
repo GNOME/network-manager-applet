@@ -1,5 +1,22 @@
 2008-04-22  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+		- (applet_get_best_activating_connection): renamed from
+			applet_get_best_active_connection(); only care about activating
+			connections
+		- (applet_get_default_active_connection): return the current default
+			active connection
+		- (nma_menu_vpn_item_clicked, applet_connection_info_cb): we care about
+			the default connection here, not the first active connection
+		- (applet_get_first_active_vpn_connection,
+		   foo_active_connections_changed_cb): fix up for NMVPNConnection changes
+			in libnm-glib
+		- (applet_get_device_icon_for_state): we care about activating
+			connections first, because something is happening, and if there is
+			no activating connection, then the current default active connection
+
+2008-04-22  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-security/wireless-security.c
 		- (ws_802_1x_auth_combo_init): LEAP is not a valid wired 802.1x auth
 			method
