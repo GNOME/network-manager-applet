@@ -277,7 +277,8 @@ static GtkWidget *
 inner_auth_combo_init (EAPMethodTTLS *method,
                        const char *glade_file,
                        NMConnection *connection,
-                       const char *connection_id)
+                       const char *connection_id,
+                       NMSetting8021x *s_8021x)
 {
 	GladeXML *xml = EAP_METHOD (method)->xml;
 	GtkWidget *combo;
@@ -287,8 +288,17 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	EAPMethodSimple *em_mschap;
 	EAPMethodSimple *em_mschap_v2;
 	EAPMethodSimple *em_chap;
+	guint32 active = 0;
+	char *phase2_auth = NULL;
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
+
+	if (s_8021x) {
+		if (s_8021x->phase2_auth)
+			phase2_auth = s_8021x->phase2_auth;
+		else if (s_8021x->phase2_autheap)
+			phase2_auth = s_8021x->phase2_autheap;
+	}
 
 	em_pap = eap_method_simple_new (glade_file,
 	                                method->sec_parent,
@@ -302,6 +312,10 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_pap));
 
+	/* Check for defaulting to PAP */
+	if (phase2_auth && !strcasecmp (phase2_auth, "pap"))
+		active = 0;
+
 	em_mschap = eap_method_simple_new (glade_file,
 	                                   method->sec_parent,
 	                                   connection,
@@ -313,6 +327,10 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	                    I_METHOD_COLUMN, em_mschap,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_mschap));
+
+	/* Check for defaulting to MSCHAP */
+	if (phase2_auth && !strcasecmp (phase2_auth, "mschap"))
+		active = 1;
 
 	em_mschap_v2 = eap_method_simple_new (glade_file,
 	                                      method->sec_parent,
@@ -326,6 +344,10 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_mschap_v2));
 
+	/* Check for defaulting to MSCHAPv2 */
+	if (phase2_auth && !strcasecmp (phase2_auth, "mschapv2"))
+		active = 2;
+
 	em_chap = eap_method_simple_new (glade_file,
 	                                 method->sec_parent,
 	                                 connection,
@@ -338,12 +360,16 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_chap));
 
+	/* Check for defaulting to CHAP */
+	if (phase2_auth && !strcasecmp (phase2_auth, "chap"))
+		active = 4;
+
 	combo = glade_xml_get_widget (xml, "eap_ttls_inner_auth_combo");
 	g_assert (combo);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (auth_model));
 	g_object_unref (G_OBJECT (auth_model));
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), active);
 
 	g_signal_connect (G_OBJECT (combo), "changed",
 	                  (GCallback) inner_auth_combo_changed_cb,
@@ -425,11 +451,11 @@ eap_method_ttls_new (const char *glade_file,
 			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
 	}
 
-	widget = glade_xml_get_widget (parent->xml, "eap_ttls_anon_identity_entry");
+	widget = glade_xml_get_widget (xml, "eap_ttls_anon_identity_entry");
 	if (s_8021x && s_8021x->anonymous_identity)
 		gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->anonymous_identity);
 
-	widget = inner_auth_combo_init (method, glade_file, connection, connection_id);
+	widget = inner_auth_combo_init (method, glade_file, connection, connection_id, s_8021x);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);
 
 	return method;
