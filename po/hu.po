@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Networkamanager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-31 17:52+0000\n"
-"PO-Revision-Date: 2008-03-15 22:22+0100\n"
+"POT-Creation-Date: 2008-04-17 18:04+0100\n"
+"PO-Revision-Date: 2008-04-26 14:01+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@fsf.hu>\n"
 "MIME-Version: 1.0\n"
@@ -17,279 +17,603 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../src/applet.c:160
+#: ../src/applet-device-cdma.c:55
+msgid "Auto CDMA network connection"
+msgstr "Automatikus CDMA hálózati kapcsolat"
+
+#: ../src/applet-device-cdma.c:196 ../src/applet-device-gsm.c:197
+msgid "Disconnect"
+msgstr "Bontás"
+
+#: ../src/applet-device-cdma.c:236
+#, c-format
+msgid "CDMA Connections (%s)"
+msgstr "CDMA kapcsolatok (%s)"
+
+#: ../src/applet-device-cdma.c:238
+#, c-format
+msgid "CDMA Network (%s)"
+msgstr "CDMA hálózat (%s)"
+
+#: ../src/applet-device-cdma.c:241
+msgid "CDMA Connections"
+msgstr "CDMA kapcsolatok"
+
+#: ../src/applet-device-cdma.c:243
+msgid "CDMA Network"
+msgstr "CDMA hálózat"
+
+#: ../src/applet-device-cdma.c:261 ../src/applet-device-gsm.c:262
+#: ../src/applet-device-wired.c:222 ../src/applet-device-wireless.c:692
+msgid "device is unmanaged"
+msgstr "az eszköz nem kezelt"
+
+#: ../src/applet-device-cdma.c:285 ../src/applet-device-gsm.c:286
+#: ../src/applet-device-wired.c:245 ../src/applet-device-wireless.c:984
+msgid "Connection Established"
+msgstr "Kapcsolat létrehozva"
+
+#: ../src/applet-device-cdma.c:286
+msgid "You are now connected to the CDMA network."
+msgstr "Kapcsolódott a CDMA hálózathoz."
+
+#: ../src/applet-device-cdma.c:304
+#, c-format
+msgid "Dialing CDMA device %s..."
+msgstr "%s CDMA eszköz hívása..."
+
+#: ../src/applet-device-cdma.c:307 ../src/applet-device-gsm.c:308
+#, c-format
+msgid "Running PPP on device %s..."
+msgstr "PPP futtatása %s eszközön..."
+
+#: ../src/applet-device-cdma.c:310
+msgid "CDMA connection"
+msgstr "CDMA kapcsolat"
+
+#: ../src/applet-device-gsm.c:56
+msgid "Auto GSM network connection"
+msgstr "Automatikus GSM hálózati kapcsolat"
+
+#: ../src/applet-device-gsm.c:237
+#, c-format
+msgid "GSM Connections (%s)"
+msgstr "GSM kapcsolatok (%s)"
+
+#: ../src/applet-device-gsm.c:239
+#, c-format
+msgid "GSM Network (%s)"
+msgstr "GSM hálózat (%s)"
+
+#: ../src/applet-device-gsm.c:242
+msgid "GSM Connections"
+msgstr "GSM kapcsolatok"
+
+#: ../src/applet-device-gsm.c:244
+msgid "GSM Network"
+msgstr "GSM hálózat"
+
+#: ../src/applet-device-gsm.c:287
+msgid "You are now connected to the GSM network."
+msgstr "Kapcsolódott a GSM hálózathoz."
+
+#: ../src/applet-device-gsm.c:305
+#, c-format
+msgid "Dialing GSM device %s..."
+msgstr "%s GSM  eszköz hívása..."
+
+#: ../src/applet-device-gsm.c:311
+msgid "GSM connection"
+msgstr "GSM kapcsolat"
+
+#: ../src/applet-device-wired.c:64
+msgid "Auto Ethernet"
+msgstr "Automatikus Ethernet"
+
+#: ../src/applet-device-wired.c:191
+#, c-format
+msgid "Wired Networks (%s)"
+msgstr "Vezetékes hálózatok (%s)"
+
+#: ../src/applet-device-wired.c:193
+#, c-format
+msgid "Wired Network (%s)"
+msgstr "Vezetékes hálózat (%s)"
+
+#: ../src/applet-device-wired.c:196
+msgid "Wired Networks"
+msgstr "Vezetékes hálózatok"
+
+#: ../src/applet-device-wired.c:198
+msgid "Wired Network"
+msgstr "Vezetékes hálózat"
+
+#: ../src/applet-device-wired.c:246
+msgid "You are now connected to the wired network."
+msgstr "Kapcsolódott a vezetékes hálózathoz."
+
+#: ../src/applet-device-wired.c:264
+#, c-format
+msgid "Preparing device %s for the wired network..."
+msgstr "%s eszköz előkészítése a vezetékes hálózathoz..."
+
+#: ../src/applet-device-wired.c:267
+#, c-format
+msgid "Configuring device %s for the wired network..."
+msgstr "%s eszköz beállítása a vezetékes hálózathoz..."
+
+#: ../src/applet-device-wired.c:270
+#, c-format
+msgid "Requesting a network address from the wired network..."
+msgstr "Hálózati cím kérése a vezetékes hálózattól..."
+
+#: ../src/applet-device-wired.c:274
+msgid "Wired network connection"
+msgstr "Vezetékes hálózati kapcsolat"
+
+#: ../src/applet-device-wired.c:469
+msgid "DSL authentication"
+msgstr "DSL hitelesítés"
+
+#: ../src/applet-device-wireless.c:86
+msgid "_Connect to Other Wireless Network..."
+msgstr "Kapcsolódás _más vezeték nélküli hálózathoz..."
+
+#: ../src/applet-device-wireless.c:124
+msgid "Create _New Wireless Network..."
+msgstr "Ú_j vezeték nélküli hálózat létrehozása..."
+
+#: ../src/applet-device-wireless.c:662
+#, c-format
+msgid "Wireless Networks (%s)"
+msgstr "Vezeték nélküli hálózatok (%s)"
+
+#: ../src/applet-device-wireless.c:664
+#, c-format
+msgid "Wireless Network (%s)"
+msgstr "Vezeték nélküli hálózat (%s)"
+
+#: ../src/applet-device-wireless.c:666
+msgid "Wireless Network"
+msgid_plural "Wireless Networks"
+msgstr[0] "Vezeték nélküli hálózat"
+msgstr[1] "Vezeték nélküli hálózatok"
+
+#: ../src/applet-device-wireless.c:683
+msgid "wireless is disabled"
+msgstr "a vezeték nélküli hálózat letiltva"
+
+#: ../src/applet-device-wireless.c:982
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "Kapcsolódott a(z) „%s” vezeték nélküli hálózathoz."
+
+#: ../src/applet-device-wireless.c:983 ../src/applet-device-wireless.c:1011
+msgid "(none)"
+msgstr "(nincs)"
+
+#: ../src/applet-device-wireless.c:1015
+#, c-format
+msgid "Preparing device %s for the wireless network '%s'..."
+msgstr "%s eszköz előkészítése „%s” vezeték nélküli hálózathoz..."
+
+#: ../src/applet-device-wireless.c:1018
+#, c-format
+msgid "Attempting to join the wireless network '%s'..."
+msgstr "Kísérlet „%s” vezeték nélküli hálózathoz való kapcsolódásra..."
+
+#: ../src/applet-device-wireless.c:1021
+#, c-format
+msgid "Requesting a network address from the wireless network '%s'..."
+msgstr "Hálózati cím kérése „%s” vezeték nélküli hálózattól..."
+
+#: ../src/applet-device-wireless.c:1024
+#, c-format
+msgid "Waiting for Network Key for the wireless network '%s'..."
+msgstr "Várakozás „%s” vezeték nélküli hálózat hálózati kulcsára..."
+
+#: ../src/applet-device-wireless.c:1044
+#, c-format
+msgid "Wireless network connection to '%s' (%d%%)"
+msgstr "Vezeték nélküli hálózati kapcsolat a következővel: „%s” (%d%%)"
+
+#: ../src/applet-device-wireless.c:1048
+#, c-format
+msgid "Wireless network connection to '%s'"
+msgstr "Vezeték nélküli hálózati kapcsolat a következővel: „%s”"
+
+#: ../src/applet-dialogs.c:50
 msgid "Error displaying connection information:"
 msgstr "Hiba a kapcsolatinformációk megjelenítése közben:"
 
-#: ../src/applet.c:197
-msgid "No active connections!"
-msgstr "Nincs aktív kapcsolat!"
+#: ../src/applet-dialogs.c:77
+#: ../src/connection-editor/page-wireless-security.c:292
+#: ../src/wireless-dialog.c:516
+#: ../src/wireless-security/wireless-security.c:316
+msgid "LEAP"
+msgstr "LEAP"
 
-#: ../src/applet.c:215
+#: ../src/applet-dialogs.c:79
+msgid "Dynamic WEP"
+msgstr "Dinamikus WEP"
+
+#: ../src/applet-dialogs.c:81 ../src/applet-dialogs.c:193
+#: ../src/applet-dialogs.c:195
+msgid "WPA/WPA2"
+msgstr "WPA/WPA2"
+
+#: ../src/applet-dialogs.c:83 ../src/applet-dialogs.c:216
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: ../src/applet-dialogs.c:132
+msgid "Could not find some required resources (the glade file)!"
+msgstr "Nem található néhány szükséges erőforrás (a glade fájl)!"
+
+#: ../src/applet-dialogs.c:150
 #, c-format
-msgid "Wired Ethernet (%s)"
-msgstr "Vezetékes Ethernet (%s)"
+msgid "Ethernet (%s)"
+msgstr "Ethernet (%s)"
 
-#: ../src/applet.c:217
+#: ../src/applet-dialogs.c:152
 #, c-format
-msgid "Wireless Ethernet (%s)"
-msgstr "Vezeték nélküli Ethernet (%s)"
+msgid "802.11 WiFi (%s)"
+msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet.c:229
+#: ../src/applet-dialogs.c:154
+#, c-format
+msgid "GSM (%s)"
+msgstr "GSM (%s)"
+
+#: ../src/applet-dialogs.c:156
+#, c-format
+msgid "CDMA (%s)"
+msgstr "CDMA (%s)"
+
+#: ../src/applet-dialogs.c:191
+msgid "WEP"
+msgstr "WEP"
+
+#: ../src/applet-dialogs.c:200
+#: ../src/connection-editor/page-wireless-security.c:244
+#: ../src/wireless-dialog.c:464
+msgid "None"
+msgstr "Nincs"
+
+#: ../src/applet-dialogs.c:212
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/mp"
 
-#: ../src/applet.c:233
-msgid "Unknown"
-msgstr "Ismeretlen"
-
-#: ../src/applet.c:385
-msgid "NetworkManager Applet"
-msgstr "NetworkManager kisalkalmazás"
-
-#: ../src/applet.c:387
+#: ../src/applet-dialogs.c:382
 msgid ""
-"Copyright © 2004-2007 Red Hat, Inc.\n"
-"Copyright © 2005-2007 Novell, Inc."
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
 msgstr ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
 
-#: ../src/applet.c:389
+#: ../src/applet-dialogs.c:384
 msgid "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Értesítésiterület-kisalkalmazás a hálózati eszközök és kapcsolatok "
 "kezelésére."
 
-#: ../src/applet.c:393
+#: ../src/applet-dialogs.c:386
+msgid "NetworkManager Website"
+msgstr "A Hálózatkezelő webhelye"
+
+#: ../src/applet-dialogs.c:389
 msgid "translator-credits"
 msgstr ""
 "Kelemen Gábor <kelemeng@gnome.hu>\n"
 "Kéménczy Kálmán <kkemenczy@novell.com>"
 
-#: ../src/applet.c:918
+#: ../src/applet.c:370
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat meghiúsult, mivel a hálózati kapcsolat megszakadt."
+
+#: ../src/applet.c:372
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service stopped unexpectedly."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat meghiúsult, mivel a VPN szolgáltatás váratlanul leállt."
+
+#: ../src/applet.c:374
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service returned invalid "
+"configuration."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat meghiúsult, mivel a VPN szolgáltatás érvénytelen konfigurációt adott vissza."
+
+#: ../src/applet.c:376
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the connection attempt timed out."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat meghiúsult, mivel a kapcsolódási kísérlet túllépte az időkorlátot."
+
+#: ../src/applet.c:378
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service did not start in time."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat meghiúsult, mivel a VPN szolgáltatás nem indult el időben."
+
+#: ../src/applet.c:380
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service failed to start."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat meghiúsult, mivel a VPN szolgáltatás nem indult el."
+
+#: ../src/applet.c:382
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because there were no valid VPN secrets."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat meghiúsult, mivel nem találhatók érvényes titkos VPN információk."
+
+#: ../src/applet.c:387
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat meghiúsult."
+
+#: ../src/applet.c:405
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' disconnected because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat bontva, mivel a hálózati kapcsolat megszakadt."
+
+#: ../src/applet.c:407
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' disconnected because the VPN service stopped."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat bontva, mivel a VPN szolgáltatás leállt."
+
+#: ../src/applet.c:412
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' disconnected."
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat bontva."
+
+#: ../src/applet.c:438
 msgid "VPN Login Message"
 msgstr "VPN bejelentkezési üzenet"
 
-#: ../src/applet.c:1267
-msgid "_Connect to Other Wireless Network..."
-msgstr "Kapcsolódás _más vezeték nélküli hálózathoz..."
+#: ../src/applet.c:449 ../src/applet.c:456 ../src/applet.c:497
+msgid "VPN Connection Failed"
+msgstr "A VPN kapcsolat meghiúsult"
 
-#: ../src/applet.c:1288
-msgid "Create _New Wireless Network..."
-msgstr "Ú_j vezeték nélküli hálózat létrehozása..."
+#: ../src/applet.c:504
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service failed to start.\n"
+"\n"
+"%s"
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat meghiúsult, mivel a VPN szolgáltatás nem tudott elindulni.\n"
+"\n"
+"%s"
 
-#: ../src/applet.c:1561
-msgid "No network devices have been found"
-msgstr "Nem találtam hálózati eszközöket"
+#: ../src/applet.c:507
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed to start.\n"
+"\n"
+"%s"
+msgstr ""
+"\n"
+"A(z) „%s” VPN kapcsolat indítása meghiúsult, mivel.\n"
+"\n"
+"%s"
 
-#: ../src/applet.c:1636
+#: ../src/applet.c:820
+msgid "No network devices available"
+msgstr "Nem érhetők el hálózati eszközök"
+
+#: ../src/applet.c:904
 msgid "_VPN Connections"
 msgstr "_VPN kapcsolatok"
 
-#: ../src/applet.c:1677
+#: ../src/applet.c:954
 msgid "_Configure VPN..."
 msgstr "V_PN beállítása..."
 
-#: ../src/applet.c:1681
+#: ../src/applet.c:958
 msgid "_Disconnect VPN..."
 msgstr "VP_N bontása..."
 
-#: ../src/applet.c:1757
+#: ../src/applet.c:1007
 msgid "NetworkManager is not running..."
-msgstr "A NetworkManager nem fut..."
+msgstr "A Hálózatkezelő nem fut..."
 
-#: ../src/applet.c:1762 ../src/applet.c:2823
+#: ../src/applet.c:1012 ../src/applet.c:1586
 msgid "Networking disabled"
 msgstr "Hálózat letiltva"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1859
+#: ../src/applet.c:1189
 msgid "Enable _Networking"
 msgstr "_Hálózat engedélyezése"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1867
+#: ../src/applet.c:1197
 msgid "Enable _Wireless"
 msgstr "_Vezeték nélküli kapcsolat engedélyezése"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1875
+#: ../src/applet.c:1207
 msgid "Connection _Information"
 msgstr "_Kapcsolatinformációk"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1885
+#: ../src/applet.c:1217
 msgid "Edit Connections..."
 msgstr "Kapcsolatok szerkesztése..."
 
 #. Help item
-#: ../src/applet.c:1897
+#: ../src/applet.c:1231
 msgid "_Help"
 msgstr "_Súgó"
 
 #. About item
-#: ../src/applet.c:1906
+#: ../src/applet.c:1240
 msgid "_About"
 msgstr "_Névjegy"
 
-#: ../src/applet.c:2345
-#, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "Vezeték nélküli hálózati kapcsolat a következővel: „%s” (%d%%)"
-
-#: ../src/applet.c:2407
-#, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "%s eszköz előkészítése „%s” vezeték nélküli hálózathoz..."
-
-#: ../src/applet.c:2410
-#, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "Kísérlet „%s” vezeték nélküli hálózathoz való kapcsolódásra..."
-
-#: ../src/applet.c:2413
-#, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Hálózati cím kérése „%s” vezeték nélküli hálózattól..."
-
-#: ../src/applet.c:2416
-#, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "Várakozás „%s” vezeték nélküli hálózat hálózati kulcsára..."
-
-#: ../src/applet.c:2436
-#, c-format
-msgid "You are now connected to the wireless network '%s'."
-msgstr "Kapcsolódott a(z) „%s” vezeték nélküli hálózathoz."
-
-#: ../src/applet.c:2437 ../src/applet.c:2495
-msgid "Connection Established"
-msgstr "Kapcsolat létrehozva"
-
-#: ../src/applet.c:2443
-#, c-format
-msgid "Wireless network connection to '%s'"
-msgstr "Vezeték nélküli hálózati kapcsolat a következővel: „%s”"
-
-#: ../src/applet.c:2480
-#, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "%s eszköz előkészítése a vezetékes hálózathoz..."
-
-#: ../src/applet.c:2483
-#, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "%s eszköz beállítása a vezetékes hálózathoz..."
-
-#: ../src/applet.c:2486
-msgid "Requesting a network address from the wired network..."
-msgstr "Hálózati cím kérése a vezetékes hálózattól..."
-
-#: ../src/applet.c:2490
-msgid "Wired network connection"
-msgstr "Vezetékes hálózati kapcsolat"
-
-#: ../src/applet.c:2496
-msgid "You are now connected to the wired network."
-msgstr "Kapcsolódott a vezetékes hálózathoz."
-
-#: ../src/applet.c:2827
-msgid "No network connection"
-msgstr "Nincs hálózati kapcsolat"
-
-#: ../src/applet.c:2831
+#: ../src/applet.c:1405
 msgid "Disconnected"
 msgstr "Kapcsolat bontva"
 
-#: ../src/applet.c:2832
+#: ../src/applet.c:1406
 msgid "The network connection has been disconnected."
 msgstr "A hálózati kapcsolat bontva."
 
-#: ../src/applet.c:3257 ../src/wireless-dialog.c:749
-msgid ""
-"The NetworkManager Applet could not find some required resources (the glade "
-"file was not found)."
-msgstr "A NetworkManager kisalkalmazás nem talál néhány szükséges glade fájlt."
+#: ../src/applet.c:1590
+msgid "No network connection"
+msgstr "Nincs hálózati kapcsolat"
 
-#: ../src/applet.c:3467
+#: ../src/applet.c:1896
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
 msgstr ""
-"A NetworkManager kisalkalmazás nem talál néhány szükséges erőforrást, ezért "
+"A Hálózatkezelő kisalkalmazás nem talál néhány szükséges erőforrást, ezért "
 "a futása nem folytatódhat.\n"
 
-#: ../src/applet.glade.h:1
+#: ../src/applet.c:2043
+msgid "NetworkManager Applet"
+msgstr "Hálózatkezelő kisalkalmazás"
+
+#: ../src/applet.c:2048 ../src/wireless-dialog.c:795
+msgid ""
+"The NetworkManager Applet could not find some required resources (the glade "
+"file was not found)."
+msgstr "A Hálózatkezelő kisalkalmazás nem talál néhány szükséges glade fájlt."
+
+#: ../src/applet.glade.h:1 ../src/connection-editor/ce-mobile-wizard.glade.h:1
 msgid " "
 msgstr " "
 
 #: ../src/applet.glade.h:2
+msgid ""
+"1 (Default)\n"
+"2\n"
+"3\n"
+"4"
+msgstr ""
+"1 (alapértelmezett)\n"
+"2\n"
+"3\n"
+"4"
+
+#: ../src/applet.glade.h:6
 msgid "<span weight=\"bold\" size=\"larger\">Active Connection Information</span>"
 msgstr "<span weight=\"bold\" size=\"larger\">Aktív kapcsolat információi</span>"
 
-#: ../src/applet.glade.h:3
+#: ../src/applet.glade.h:7
 msgid "Anonymous Identity:"
 msgstr "Névtelen személyazonosság:"
 
-#: ../src/applet.glade.h:4
+#: ../src/applet.glade.h:8
 msgid "Authentication:"
 msgstr "Hitelesítés:"
 
-#: ../src/applet.glade.h:5
+#: ../src/applet.glade.h:9
 msgid "Broadcast Address:"
 msgstr "Broadcast cím:"
 
-#: ../src/applet.glade.h:6
+#: ../src/applet.glade.h:10
 msgid "CA Certificate:"
 msgstr "CA tanúsítvány:"
 
-#: ../src/applet.glade.h:7
+#: ../src/applet.glade.h:11
 msgid "C_onnect"
 msgstr "Kapcs_olódás"
 
-#: ../src/applet.glade.h:8
+#: ../src/applet.glade.h:12
 msgid "Connection Information"
 msgstr "Kapcsolatinformációk"
 
-#: ../src/applet.glade.h:9
+#: ../src/applet.glade.h:13
 msgid "Default Route:"
 msgstr "Alapértelmezett útvonal:"
 
-#: ../src/applet.glade.h:10
-msgid "Destination Address:"
-msgstr "Célcím:"
+#: ../src/applet.glade.h:14
+msgid "Don't warn me again"
+msgstr "Ne figyelmeztessen újra"
 
-#: ../src/applet.glade.h:11
+#: ../src/applet.glade.h:15
 msgid "Driver:"
 msgstr "Illesztőprogram:"
 
-#: ../src/applet.glade.h:12
+#: ../src/applet.glade.h:16
 msgid "Hardware Address:"
 msgstr "Hardvercím:"
 
-#: ../src/applet.glade.h:13
+#: ../src/applet.glade.h:17
 msgid "IP Address:"
-msgstr "IP-cím:"
+msgstr "IP cím:"
 
-#: ../src/applet.glade.h:14
+#: ../src/applet.glade.h:18
 msgid "Identity:"
 msgstr "Személyazonosság:"
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:19
 msgid "Inner Authentication:"
 msgstr "Belső hitelesítés:"
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:20
 msgid "Interface:"
 msgstr "Csatoló:"
 
-#: ../src/applet.glade.h:17
+#: ../src/applet.glade.h:21
 msgid "Key:"
 msgstr "Kulcs:"
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:22
+msgid "No"
+msgstr "Nem"
+
+#: ../src/applet.glade.h:23
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -297,143 +621,228 @@ msgstr ""
 "Nyílt rendszer\n"
 "Megosztott kulcs"
 
-#: ../src/applet.glade.h:20
+#: ../src/applet.glade.h:25
 msgid "Other Wireless Network..."
 msgstr "Egyéb vezeték nélküli hálózat..."
 
-#: ../src/applet.glade.h:21
-msgid "Passphrase:"
-msgstr "Jelmondat:"
+#: ../src/applet.glade.h:26
+msgid "PEAP Version:"
+msgstr "PEAP verzió:"
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:27
 msgid "Password:"
 msgstr "Jelszó:"
 
-#: ../src/applet.glade.h:23
+#: ../src/applet.glade.h:28
 msgid "Primary DNS:"
 msgstr "Elsődleges DNS:"
 
-#: ../src/applet.glade.h:24
+#: ../src/applet.glade.h:29
 msgid "Private Key Password:"
 msgstr "Személyes kulcs jelszava:"
 
-#: ../src/applet.glade.h:25
+#: ../src/applet.glade.h:30
 msgid "Private Key:"
 msgstr "Személyes kulcs:"
 
-#: ../src/applet.glade.h:26
+#: ../src/applet.glade.h:31
 msgid "Secondary DNS:"
 msgstr "Másodlagos DNS:"
 
-#: ../src/applet.glade.h:27
+#: ../src/applet.glade.h:32
+#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
+msgid "Security:"
+msgstr "Biztonság:"
+
+#: ../src/applet.glade.h:33
 msgid "Select A File"
 msgstr "Válasszon egy fájlt"
 
-#: ../src/applet.glade.h:28
+#: ../src/applet.glade.h:34
 msgid "Show key"
 msgstr "Kulcs megjelenítése"
 
-#: ../src/applet.glade.h:29
-msgid "Show passphrase"
-msgstr "Jelmondat megjelenítése:"
-
-#: ../src/applet.glade.h:30
+#: ../src/applet.glade.h:35
 msgid "Show password"
 msgstr "Jelszó megjelenítése:"
 
-#: ../src/applet.glade.h:31
+#: ../src/applet.glade.h:36
 msgid "Speed:"
 msgstr "Sebesség:"
 
-#: ../src/applet.glade.h:32
+#: ../src/applet.glade.h:37
 msgid "Subnet Mask:"
 msgstr "Alhálózati maszk:"
 
-#: ../src/applet.glade.h:33
+#: ../src/applet.glade.h:38
 msgid "Type:"
 msgstr "Típus:"
 
-#: ../src/applet.glade.h:34
+#: ../src/applet.glade.h:39
 msgid "User Certificate:"
 msgstr "Felhasználói tanúsítvány:"
 
-#: ../src/applet.glade.h:35
+#: ../src/applet.glade.h:40
 msgid "User Name:"
 msgstr "Felhasználói név:"
 
-#: ../src/applet.glade.h:36
+#: ../src/applet.glade.h:41
+msgid ""
+"Version 0\n"
+"Version 1"
+msgstr ""
+"0. változat\n"
+"1. változat"
+
+#: ../src/applet.glade.h:43
+msgid "WEP Index:"
+msgstr "WEP index:"
+
+#: ../src/applet.glade.h:44
 msgid "Wireless _adapter:"
 msgstr "Vezeték _nélküli csatoló:"
 
-#: ../src/applet.glade.h:37
+#: ../src/applet.glade.h:45
+msgid "Yes"
+msgstr "Igen"
+
+#: ../src/applet.glade.h:46
 msgid "_Network Name:"
 msgstr "_Hálózatnév:"
 
-#: ../src/applet.glade.h:38
+#: ../src/applet.glade.h:47
 msgid "_Wireless Security:"
 msgstr "Vezeték _nélküli biztonság:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:1
-msgid "<b>Connection</b>"
-msgstr "<b>Kapcsolat</b>"
+#: ../src/applet.glade.h:48
+msgid "alert text"
+msgstr "riasztás szövege"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:2
-msgid "<b>DNS Servers</b>"
-msgstr "<b>DNS kiszolgálók</b>"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:3
-msgid "<b>Search domains</b>"
-msgstr "<b>Keresési tartományok</b>"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:4
+#: ../src/connection-editor/ce-mobile-wizard.glade.h:2
 msgid ""
-"A\n"
-"BG"
+"<span weight=\"bold\" size=\"larger\">Choose a Mobile Broadband Connection</"
+"span>\n"
+"\n"
+"Select or connect the mobile broadband device you wish to use for the new "
+"connection.  If the device is not availabe, you may select a generic "
+"connection type."
 msgstr ""
-"A\n"
-"BG"
+"<span weight=\"bold\" size=\"larger\">Válasszon mobil széles sávú kapcsolatot</span>\n"
+"\n"
+"Válassza ki vagy csatlakoztassa az új kapcsolathoz használni kívánt mobil széles sávú eszközt. Ha az eszköz nem érhető el, akkor választhat általános kapcsolattípust."
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-msgid "Autoconnect"
-msgstr "Automatikus kapcsolódás"
+#: ../src/connection-editor/ce-page-ip4.glade.h:1
+msgid "<b>Addresses</b>"
+msgstr "<b>Címek</b>"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:7
-msgid "Autonegotiate"
-msgstr "Automatikus egyeztetés"
+#: ../src/connection-editor/ce-page-ip4.glade.h:2
+msgid "<span style=\"italic\">Example: 10.10.10.1, 10.10.10.2</span>"
+msgstr "<span style=\"italic\">Például: 10.10.10.1, 10.10.10.2</span>"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:8
-msgid "BSSID"
-msgstr "BSSID"
+#: ../src/connection-editor/ce-page-ip4.glade.h:3
+msgid "<span style=\"italic\">Example: lab.gnome.org, gnome.org</span>"
+msgstr "<span style=\"italic\">Például: lab.gnome.org, gnome.org</span>"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:9
-msgid "Band"
-msgstr "Sáv"
+#: ../src/connection-editor/ce-page-ip4.glade.h:4
+msgid ""
+"DHCP\n"
+"Auto IP\n"
+"Manual"
+msgstr ""
+"DHCP\n"
+"Auto IP\n"
+"Kézi"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:10
-msgid "Channel"
-msgstr "Csatorna"
+#: ../src/connection-editor/ce-page-ip4.glade.h:7
+msgid "DNS Servers:"
+msgstr "DNS kiszolgálók:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:11
-msgid "Connection Editor"
-msgstr "Kapcsolatszerkesztő"
+#: ../src/connection-editor/ce-page-ip4.glade.h:8
+msgid "Method:"
+msgstr "Módszer:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:12
-msgid "Ethernet"
-msgstr "Ethernet"
+#: ../src/connection-editor/ce-page-ip4.glade.h:9
+msgid "Search Domains:"
+msgstr "Keresési tartományok:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:13
-msgid "Full duplex"
-msgstr "Full duplex"
+#: ../src/connection-editor/ce-page-wired.glade.h:1
+msgid "Aut_onegotiate"
+msgstr "A_utomatikus egyeztetés"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:14
-msgid "IP"
-msgstr "IP"
+#: ../src/connection-editor/ce-page-wired.glade.h:2
+msgid ""
+"Automatic\n"
+"10 Mb/s\n"
+"100 Mb/s\n"
+"1 Gb/s\n"
+"10 Gb/s"
+msgstr ""
+"Automatikus\n"
+"10 Mb/s\n"
+"100 Mb/s\n"
+"1 Gb/s\n"
+"10 Gb/s"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:15
-msgid "IP addresses"
-msgstr "IP címek"
+#: ../src/connection-editor/ce-page-wired.glade.h:7
+msgid ""
+"Automatic\n"
+"Twisted Pair (TP)\n"
+"Attachment Unit Interface (AUI)\n"
+"BNC\n"
+"Media Independent Interface (MII)"
+msgstr ""
+"Automatikus\n"
+"Csavart érpár (TP)\n"
+"Csatolóegység-felület (AUI)\n"
+"BNC\n"
+"Hordozófüggetlen felület (MII)"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:16
+#: ../src/connection-editor/ce-page-wired.glade.h:12
+msgid "Full duple_x"
+msgstr "Full duple_x"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:13
+#: ../src/connection-editor/ce-page-wireless.glade.h:8
+msgid "MT_U:"
+msgstr "MT_U:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:14
+#: ../src/connection-editor/ce-page-wireless.glade.h:13
+msgid "_MAC address:"
+msgstr "MAC _cím:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:15
+msgid "_Port:"
+msgstr "_Port:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:16
+msgid "_Speed:"
+msgstr "_Sebesség:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:17
+#: ../src/connection-editor/ce-page-wireless.glade.h:16
+msgid "bytes"
+msgstr "bájt"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:1
+msgid ""
+"Automatic\n"
+"A (5 GHz)\n"
+"B/G (2.4 GHz)"
+msgstr ""
+"Automatikus\n"
+"A (5 GHz)\n"
+"B/G (2.4 GHz)"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:4
+msgid "Ban_d:"
+msgstr "Sá_v:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:5
+msgid "C_hannel:"
+msgstr "_Csatorna:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:6
 msgid ""
 "Infrastructure\n"
 "Adhoc"
@@ -441,121 +850,461 @@ msgstr ""
 "Kiépített\n"
 "Eseti"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:18
-msgid "MAC address"
-msgstr "MAC cím"
+#: ../src/connection-editor/ce-page-wireless.glade.h:9
+msgid "M_ode:"
+msgstr "Mó_d:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:19
-msgid "MTU"
-msgstr "MTU"
+#: ../src/connection-editor/ce-page-wireless.glade.h:10
+msgid "Mb/s"
+msgstr "Mb/s"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:20
-msgid "Manage Network connections"
-msgstr "Hálózati kapcsolatok kezelése"
+#: ../src/connection-editor/ce-page-wireless.glade.h:11
+msgid "Transmission po_wer:"
+msgstr "Átvitel _erőssége:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:21
-msgid "Manual"
-msgstr "Kézi"
+#: ../src/connection-editor/ce-page-wireless.glade.h:12
+msgid "_BSSID:"
+msgstr "BSS_ID:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:22
-msgid "Mode"
-msgstr "Mód"
+#: ../src/connection-editor/ce-page-wireless.glade.h:14
+msgid "_Rate:"
+msgstr "Se_besség:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:23
-msgid "Name"
-msgstr "Név"
+#: ../src/connection-editor/ce-page-wireless.glade.h:15
+msgid "_SSID:"
+msgstr "_SSID:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:24
-msgid "Network connections"
-msgstr "Hálózati kapcsolatok"
+#: ../src/connection-editor/ce-page-wireless.glade.h:17
+msgid "mW"
+msgstr "mW"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:25
-msgid "Port"
-msgstr "Port"
+#: ../src/connection-editor/mobile-wizard.c:76
+msgid "Installed GSM device"
+msgstr "Telepített GSM eszköz"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:26
-msgid "Rate"
-msgstr "Sebesség"
+#: ../src/connection-editor/mobile-wizard.c:87
+msgid "Installed CDMA device"
+msgstr "Telepített CDMA eszköz"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:27
-msgid "SSID"
-msgstr "SSID"
+#: ../src/connection-editor/mobile-wizard.c:153
+msgid "Create a GSM connection"
+msgstr "GSM kapcsolat létrehozása"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:28
-msgid "Speed"
-msgstr "Sebesség"
+#: ../src/connection-editor/mobile-wizard.c:154
+msgid "Create a CDMA connection"
+msgstr "CDMA kapcsolat létrehozása"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:29
-msgid "Transmission power"
-msgstr "Átvitel erőssége"
+#: ../src/connection-editor/page-ip4.c:422
+msgid "IPv4 Settings"
+msgstr "IPv4 beállításai"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:30
+#: ../src/connection-editor/page-ip4.c:446
+msgid "Address"
+msgstr "Cím"
+
+#: ../src/connection-editor/page-ip4.c:461
+msgid "Netmask"
+msgstr "Hálózati maszk"
+
+#: ../src/connection-editor/page-ip4.c:476
+msgid "Gateway"
+msgstr "Átjáró"
+
+#: ../src/connection-editor/page-wired.c:171
+#: ../src/connection-editor/nm-connection-editor.glade.h:8
+#: ../src/connection-editor/nm-connection-list.c:806
+msgid "Wired"
+msgstr "Vezetékes"
+
+#: ../src/connection-editor/page-wired-security.c:82
+msgid "802.1x Security"
+msgstr "802.1x biztonság"
+
+#: ../src/connection-editor/page-wired-security.c:93
+msgid "Use 802.1X security for this connection"
+msgstr "802.1X biztonsági szolgáltatás használata a kapcsolathoz"
+
+#: ../src/connection-editor/page-wireless.c:141
+#: ../src/connection-editor/page-wireless.c:145
+msgid "default"
+msgstr "alapértelmezett"
+
+#: ../src/connection-editor/page-wireless.c:163
+#, c-format
+msgid "%u (%u MHz)"
+msgstr "%u (%u MHz)"
+
+#: ../src/connection-editor/page-wireless.c:310
+#: ../src/connection-editor/nm-connection-editor.glade.h:9
+#: ../src/connection-editor/nm-connection-list.c:811
 msgid "Wireless"
 msgstr "Vezeték nélküli"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:31
-msgid "Wireless security"
+#: ../src/connection-editor/page-wireless-security.c:214
+msgid "Wireless Security"
 msgstr "Vezeték nélküli biztonság"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:32
+#: ../src/connection-editor/page-wireless-security.c:261
+#: ../src/wireless-dialog.c:481
+msgid "WEP 128-bit Passphrase"
+msgstr "WEP 128 bites jelmondat"
+
+#: ../src/connection-editor/page-wireless-security.c:270
+#: ../src/wireless-dialog.c:490
+msgid "WEP 40/128-bit Hexadecimal"
+msgstr "WEP 40/128 bites hexadecimális"
+
+#: ../src/connection-editor/page-wireless-security.c:279
+#: ../src/wireless-dialog.c:499
+msgid "WEP 40/128-bit ASCII"
+msgstr "WEP 40/128 bites ASCII"
+
+#: ../src/connection-editor/page-wireless-security.c:305
+#: ../src/wireless-dialog.c:529
+msgid "Dynamic WEP (802.1x)"
+msgstr "Dinamikus WEP (802.1x)"
+
+#: ../src/connection-editor/page-wireless-security.c:319
+#: ../src/wireless-dialog.c:543
+msgid "WPA & WPA2 Personal"
+msgstr "WPA és WPA2 Personal"
+
+#: ../src/connection-editor/page-wireless-security.c:333
+#: ../src/wireless-dialog.c:557
+msgid "WPA & WPA2 Enterprise"
+msgstr "WPA és WPA2 Enterprise"
+
+#: ../src/connection-editor/nm-connection-editor.c:120
+#, c-format
+msgid "Editing %s"
+msgstr "%s szerkesztése"
+
+#: ../src/connection-editor/nm-connection-editor.c:124
+msgid "Editing unamed connection"
+msgstr "Névtelen kapcsolat szerkesztése"
+
+#: ../src/connection-editor/nm-connection-editor.c:182
 msgid ""
-"tp\n"
-"aui\n"
-"bnc\n"
-"mii"
-msgstr ""
-"tp\n"
-"aui\n"
-"bnc\n"
-"mii"
+"The connection editor could not find some required resources (the "
+"NetworkManager applet glade file was not found)."
+msgstr "A kapcsolatszerkesztő nem talál néhány szükséges erőforrást (a Hálózatkezelő kisalkalmazás glade fájlja nem található)."
 
-#: ../src/eggtrayicon.c:134
-msgid "Orientation"
-msgstr "Tájolás"
+#: ../src/connection-editor/nm-connection-editor.c:195
+msgid ""
+"The connection editor could not find some required resources (the glade file "
+"was not found)."
+msgstr "A kapcsolatszerkesztő nem talál néhány szükséges erőforrást (a glade fájl nem található)."
 
-#: ../src/eggtrayicon.c:135
-msgid "The orientation of the tray."
-msgstr "A tálca tájolása."
+#: ../src/connection-editor/nm-connection-editor.c:300
+msgid "automatic"
+msgstr "automatikus"
 
-#: ../src/menu-items.c:63
+#: ../src/connection-editor/nm-connection-editor.glade.h:1
+msgid "Connect _automatically"
+msgstr "A_utomatikus csatlakozás"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:2
+msgid "Connection Editor"
+msgstr "Kapcsolatszerkesztő"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:3
+msgid "Connection _name:"
+msgstr "Kapcsolat _neve:"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:4
+#: ../src/connection-editor/nm-connection-list.c:827
+msgid "DSL"
+msgstr "DSL"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:5
+#: ../src/connection-editor/nm-connection-list.c:817
+msgid "Mobile Broadband"
+msgstr "Mobil széles sáv"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:6
+msgid "Network Connections"
+msgstr "Hálózati kapcsolatok"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:7
+#: ../src/connection-editor/nm-connection-list.c:822
+msgid "VPN"
+msgstr "VPN"
+
+#: ../src/connection-editor/nm-connection-list.c:154
+msgid "never"
+msgstr "soha"
+
+#: ../src/connection-editor/nm-connection-list.c:165
+#: ../src/connection-editor/nm-connection-list.c:176
+msgid "now"
+msgstr "most"
+
+#. less than an hour ago
+#: ../src/connection-editor/nm-connection-list.c:183
 #, c-format
-msgid "Wired Network (%s)"
-msgstr "Vezetékes hálózat (%s)"
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "%d perce"
+msgstr[1] "%d perce"
 
-#: ../src/menu-items.c:66
-msgid "_Wired Network"
-msgstr "_Vezetékes hálózat"
-
-#: ../src/menu-items.c:114
+#: ../src/connection-editor/nm-connection-list.c:187
 #, c-format
-msgid "Wireless Network (%s)"
-msgid_plural "Wireless Networks (%s)"
-msgstr[0] "Vezeték nélküli hálózat (%s)"
-msgstr[1] "Vezeték nélküli hálózatok (%s)"
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "%d órája"
+msgstr[1] "%d órája"
 
-#: ../src/menu-items.c:118
-msgid "Wireless Network"
-msgid_plural "Wireless Networks"
-msgstr[0] "Vezeték nélküli hálózat"
-msgstr[1] "Vezeték nélküli hálózatok"
+#: ../src/connection-editor/nm-connection-list.c:199
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d napja"
+msgstr[1] "%d napja"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:548
+#: ../src/connection-editor/nm-connection-list.c:205
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d hónapja"
+msgstr[1] "%d hónapja"
+
+#: ../src/connection-editor/nm-connection-list.c:209
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d éve"
+msgstr[1] "%d éve"
+
+#: ../src/connection-editor/nm-connection-list.c:338
+#, c-format
+msgid "Wired connection %d"
+msgstr "%d. vezetékes kapcsolat"
+
+#: ../src/connection-editor/nm-connection-list.c:344
+#, c-format
+msgid "Wireless connection %d"
+msgstr "%d. vezeték nélküli kapcsolat"
+
+#: ../src/connection-editor/nm-connection-list.c:357
+#, c-format
+msgid "GSM connection %d"
+msgstr "%d. GSM kapcsolat"
+
+#: ../src/connection-editor/nm-connection-list.c:369
+#, c-format
+msgid "CDMA connection %d"
+msgstr "%d. CDMA kapcsolat"
+
+#: ../src/connection-editor/nm-connection-list.c:382
+#, c-format
+msgid "VPN connection %d"
+msgstr "%d. VPN kapcsolat"
+
+#: ../src/connection-editor/nm-connection-list.c:389
+#, c-format
+msgid "DSL connection %d"
+msgstr "%d. DSL kapcsolat"
+
+#: ../src/connection-editor/nm-connection-list.c:545
+#, c-format
+msgid "Are you sure you wish to delete the connection %s?"
+msgstr "Valóban törölni kívánja a(z) %s kapcsolatot?"
+
+#: ../src/utils/crypto.c:123
+#, c-format
+msgid "PEM key file had no end tag '%s'."
+msgstr "A PEM kulcsfájl nem rendelkezik „%s” zárócímkével."
+
+#: ../src/utils/crypto.c:133
+#, c-format
+msgid "Doesn't look like a PEM private key file."
+msgstr "Nem tűnik PEM személyes kulcs fájlnak."
+
+#: ../src/utils/crypto.c:141
+#, c-format
+msgid "Not enough memory to store PEM file data."
+msgstr "Nincs elég memória a PEM fájl adatainak tárolásához."
+
+#: ../src/utils/crypto.c:157
+#, c-format
+msgid "Malformed PEM file: Proc-Type was not first tag."
+msgstr "Rosszul formázott PEM fájl: a Proc-Type nem az első címke."
+
+#: ../src/utils/crypto.c:165
+#, c-format
+msgid "Malformed PEM file: unknown Proc-Type tag '%s'."
+msgstr "Rosszul formázott PEM fájl: ismeretlen Proc-Type címke („%s”)."
+
+#: ../src/utils/crypto.c:175
+#, c-format
+msgid "Malformed PEM file: DEK-Info was not the second tag."
+msgstr "Rosszul formázott PEM fájl: A DEK-Info nem a második címke."
+
+#: ../src/utils/crypto.c:186
+#, c-format
+msgid "Malformed PEM file: no IV found in DEK-Info tag."
+msgstr "Rosszul formázott PEM fájl: nem található IV a DEK-Info címkében."
+
+#: ../src/utils/crypto.c:193
+#, c-format
+msgid "Malformed PEM file: invalid format of IV in DEK-Info tag."
+msgstr "Rosszul formázott PEM fájl: az IV formátuma érvénytelen a DEK-Info címkében."
+
+#: ../src/utils/crypto.c:206
+#, c-format
+msgid "Malformed PEM file: unknown private key cipher '%s'."
+msgstr "Rosszul formázott PEM fájl: ismeretlen személyes kulcs titkosító: „%s”."
+
+#: ../src/utils/crypto.c:225
+#, c-format
+msgid "Could not decode private key."
+msgstr "A személyes kulcs nem fejthető vissza."
+
+#: ../src/utils/crypto.c:269
+#, c-format
+msgid "PEM certificate '%s' had no end tag '%s'."
+msgstr "A(z) „%s” PEM tanúsítvány nem tartalmaz záró „%s” címkét."
+
+#: ../src/utils/crypto.c:279
+#, c-format
+msgid "Failed to decode certificate."
+msgstr "A tanúsítvány visszafejtése meghiúsult."
+
+#: ../src/utils/crypto.c:288 ../src/utils/crypto.c:296
+#, c-format
+msgid "Not enough memory to store certificate data."
+msgstr "Nincs elég memória a tanúsítvány adatainak tárolásához."
+
+#: ../src/utils/crypto.c:326
+#, c-format
+msgid "IV must be an even number of bytes in length."
+msgstr "Az IV hosszának páros számú bájtnak kell lennie."
+
+#: ../src/utils/crypto.c:335
+#, c-format
+msgid "Not enough memory to store the IV."
+msgstr "Nincs elég memória az IV tárolásához."
+
+#: ../src/utils/crypto.c:346
+#, c-format
+msgid "IV contains non-hexadecimal digits."
+msgstr "Az IV nem hexadecimális számjegyeket tartalmaz."
+
+#: ../src/utils/crypto.c:384 ../src/utils/crypto_gnutls.c:125
+#: ../src/utils/crypto_nss.c:134
+#, c-format
+msgid "Private key cipher '%s' was unknown."
+msgstr "A(z) „%s” személyeskulcs-titkosító ismeretlen."
+
+#: ../src/utils/crypto.c:393
+#, c-format
+msgid "Not enough memory to create private key decryption key."
+msgstr "Nincs elég memória a személyes kulcs visszafejtési kulcsának létrehozásához."
+
+#: ../src/utils/crypto.c:511
+#, c-format
+msgid "Not enough memory to store decrypted private key."
+msgstr "Nincs elég memória a visszafejtett személyes kulcs tárolásához."
+
+#: ../src/utils/crypto_gnutls.c:72
+#, c-format
+msgid "Failed to initialize the MD5 engine: %s / %s."
+msgstr "Az MD5 alrendszer inicializálása meghiúsult: %s / %s."
+
+#: ../src/utils/crypto_gnutls.c:134 ../src/utils/crypto_nss.c:143
+#, c-format
+msgid "Not enough memory for decrypted key buffer."
+msgstr "Nincs elég memória a visszafejtett kulcspufferhez."
+
+#: ../src/utils/crypto_gnutls.c:142
+#, c-format
+msgid "Failed to initialize the decryption cipher context: %s / %s."
+msgstr "A visszafejtési titkosító kontextusának inicializálása meghiúsult: %s /%s."
+
+#: ../src/utils/crypto_gnutls.c:151
+#, c-format
+msgid "Failed to set symmetric key for decryption: %s / %s."
+msgstr "A szimmetrikus kulcs beállítása meghiúsult a visszafejtéshez: %s / %s."
+
+#: ../src/utils/crypto_gnutls.c:160
+#, c-format
+msgid "Failed to set IV for decryption: %s / %s."
+msgstr "Az IV beállítása meghiúsult a visszafejtéshez: %s / %s."
+
+#: ../src/utils/crypto_gnutls.c:169
+#, c-format
+msgid "Failed to decrypt the private key: %s / %s."
+msgstr "A személyes kulcs visszafejtése meghiúsult: %s / %s."
+
+#: ../src/utils/crypto_gnutls.c:207
+#, c-format
+msgid "Error initializing certificate data: %s"
+msgstr "Hiba a tanúsítvány adatainak inicializálásakor: %s"
+
+#: ../src/utils/crypto_gnutls.c:219
+#, c-format
+msgid "Couldn't decode certificate: %s"
+msgstr "A tanúsítvány nem fejthető vissza: %s"
+
+#: ../src/utils/crypto_nss.c:76
+#, c-format
+msgid "Failed to initialize the MD5 context: %d."
+msgstr "Az MD5 kontextus inicializálása meghiúsult: %d."
+
+#: ../src/utils/crypto_nss.c:151
+#, c-format
+msgid "Failed to initialize the decryption cipher slot."
+msgstr "A visszafejtési titkosítóhely inicializálása meghiúsult."
+
+#: ../src/utils/crypto_nss.c:161
+#, c-format
+msgid "Failed to set symmetric key for decryption."
+msgstr "A szimmetrikus kulcs nem állítható be a visszafejtéshez."
+
+#: ../src/utils/crypto_nss.c:171
+#, c-format
+msgid "Failed to set IV for decryption."
+msgstr "Az IV nem állítható be a visszafejtéshez."
+
+#: ../src/utils/crypto_nss.c:179
+#, c-format
+msgid "Failed to initialize the decryption context."
+msgstr "A visszafejtési kontextus inicializálása meghiúsult."
+
+#: ../src/utils/crypto_nss.c:192
+#, c-format
+msgid "Failed to decrypt the private key: %d."
+msgstr "A személyes kulcs visszafejtése meghiúsult: %d."
+
+#: ../src/utils/crypto_nss.c:204
+#, c-format
+msgid "Failed to finalize decryption of the private key: %d."
+msgstr "A személyes kulcs visszafejtésének befejezése meghiúsult: %d."
+
+#: ../src/utils/crypto_nss.c:248
+#, c-format
+msgid "Couldn't decode certificate: %d"
+msgstr "A tanúsítvány nem fejthető vissza: %d"
+
+#: ../src/vpn-properties/nm-vpn-properties.c:570
 msgid "Cannot import VPN connection"
 msgstr "Nem lehet importálni a VPN kapcsolatot"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:550
+#: ../src/vpn-properties/nm-vpn-properties.c:572
 #, c-format
 msgid ""
 "Cannot find suitable software for VPN connection type '%s' to import the "
 "file '%s'. Contact your system administrator."
-msgstr "Nem található a megfelelő szoftver a(z) „%s” típusú VPN kapcsolathoz a(z) „%s” fájl importálásához. Lépjen kapcsolatba a rendszergazdával."
+msgstr ""
+"Nem található a megfelelő szoftver a(z) „%s” típusú VPN kapcsolathoz a(z) „%"
+"s” fájl importálásához. Lépjen kapcsolatba a rendszergazdával."
 
-#: ../src/vpn-properties/nm-vpn-properties.c:695
+#: ../src/vpn-properties/nm-vpn-properties.c:724
 #, c-format
 msgid "Delete VPN connection \"%s\"?"
 msgstr "Törli a következő VPN kapcsolatot: „%s”?"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:698
+#: ../src/vpn-properties/nm-vpn-properties.c:727
 #, c-format
 msgid ""
 "All information about the VPN connection \"%s\" will be lost and you may "
@@ -566,26 +1315,28 @@ msgstr ""
 "létrehozásához szükséges információkért szükség lehet a rendszergazda "
 "megkeresésére."
 
-#: ../src/vpn-properties/nm-vpn-properties.c:956
+#: ../src/vpn-properties/nm-vpn-properties.c:1002
 msgid "Unable to load"
 msgstr "Nem tölthető be"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:958
+#: ../src/vpn-properties/nm-vpn-properties.c:1004
 msgid "Cannot find some needed resources (the glade file)!"
 msgstr "Nem található néhány szükséges erőforrás (a glade fájl)!"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:974
+#: ../src/vpn-properties/nm-vpn-properties.c:1020
 msgid "Cannot add VPN connection"
 msgstr "Nem vehető fel a VPN kapcsolat"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:976
+#: ../src/vpn-properties/nm-vpn-properties.c:1022
 msgid ""
 "No suitable VPN software was found on your system. Contact your system "
 "administrator."
-msgstr "Nem található megfelelő VPN szoftver a rendszeren. Lépjen kapcsolatba a rendszergazdával."
+msgstr ""
+"Nem található megfelelő VPN szoftver a rendszeren. Lépjen kapcsolatba a "
+"rendszergazdával."
 
 #. Druid Page 1 - Create VPN Connection
-#: ../src/vpn-properties/nm-vpn-properties.c:1046
+#: ../src/vpn-properties/nm-vpn-properties.c:1101
 msgid ""
 "This assistant will guide you through the creation of a connection to a "
 "Virtual Private Network (VPN)."
@@ -593,65 +1344,68 @@ msgstr ""
 "Ez az asszisztens végigvezeti egy magánhálózathoz tartozó új Virtuális "
 "magánhálózati (VPN) kapcsolat létrehozásán."
 
-#: ../src/vpn-properties/nm-vpn-properties.c:1047
+#: ../src/vpn-properties/nm-vpn-properties.c:1102
 msgid ""
 "It will require some information, such as IP addresses and secrets.  Please "
 "see your system administrator to obtain this information."
 msgstr ""
-"Ehhez IP-címekre és titkos információkra lesz szükség, ezekért keresse meg a "
+"Ehhez IP címekre és titkos információkra lesz szükség, ezekért keresse meg a "
 "rendszergazdát."
 
-#: ../src/vpn-properties/nm-vpn-properties.c:1052
-#: ../src/vpn-properties/nm-vpn-properties.c:1061
+#: ../src/vpn-properties/nm-vpn-properties.c:1107
+#: ../src/vpn-properties/nm-vpn-properties.c:1122
 msgid "Create VPN connection"
 msgstr "VPN kapcsolat létrehozása"
 
 #. Druid Page 2 - Select Connection Type
 #. Translators: this will be "Create VPN Connection - [1|2] of 2"
-#: ../src/vpn-properties/nm-vpn-properties.c:1070
-#: ../src/vpn-properties/nm-vpn-properties.c:1083
-#: ../src/vpn-properties/nm-vpn-properties.c:1167
+#: ../src/vpn-properties/nm-vpn-properties.c:1131
+#: ../src/vpn-properties/nm-vpn-properties.c:1144
+#: ../src/vpn-properties/nm-vpn-properties.c:1242
 msgid "Create VPN Connection"
 msgstr "VPN kapcsolat létrehozása"
 
 #. Translators: this will be "Create VPN Connection - 1 of 2"
-#: ../src/vpn-properties/nm-vpn-properties.c:1085
+#: ../src/vpn-properties/nm-vpn-properties.c:1146
 msgid "1 of 2"
 msgstr "1/2"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:1089
-#: ../src/vpn-properties/nm-vpn-properties.c:1106
+#: ../src/vpn-properties/nm-vpn-properties.c:1153
+msgid "Choose which type of _VPN connection you wish to create:"
+msgstr "Válassza ki a létrehozni kívánt _VPN kapcsolat típusát:"
+
+#: ../src/vpn-properties/nm-vpn-properties.c:1172
 msgid "Choose which type of VPN connection you wish to create:"
 msgstr "Válassza ki a létrehozni kívánt VPN típusát:"
 
 #. Druid Page 3 - Connection Details
 #. Translators: this will be "Create VPN Connection - [1|2] of 2"
-#: ../src/vpn-properties/nm-vpn-properties.c:1115
+#: ../src/vpn-properties/nm-vpn-properties.c:1181
 msgid "2 of 2"
 msgstr "2/2"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:1144
-#: ../src/vpn-properties/nm-vpn-properties.c:1151
+#: ../src/vpn-properties/nm-vpn-properties.c:1219
+#: ../src/vpn-properties/nm-vpn-properties.c:1226
 msgid "Finished Create VPN Connection"
 msgstr "A VPN kapcsolat létrehozása befejeződött"
 
 #. Edit dialog
-#: ../src/vpn-properties/nm-vpn-properties.c:1176
+#: ../src/vpn-properties/nm-vpn-properties.c:1251
 msgid "Edit VPN Connection"
 msgstr "VPN kapcsolat szerkesztése"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:1202
+#: ../src/vpn-properties/nm-vpn-properties.c:1279
 msgid "VPN Service for importing"
 msgstr "Importálandó VPN szolgáltatás"
 
-#: ../src/vpn-properties/nm-vpn-properties.c:1203
+#: ../src/vpn-properties/nm-vpn-properties.c:1280
 msgid "File to import"
 msgstr "Importálandó fájl"
 
 #. Translators: this is the description seen when running nm-vpn-properties --help
-#: ../src/vpn-properties/nm-vpn-properties.c:1212
+#: ../src/vpn-properties/nm-vpn-properties.c:1289
 msgid "- NetworkManager VPN properties"
-msgstr "– NetworkManager VPN tulajdonságok"
+msgstr "– Hálózatkezelő VPN tulajdonságok"
 
 #: ../src/vpn-properties/nm-vpn-properties.glade.h:1
 msgid "Add a new VPN connection"
@@ -685,12 +1439,12 @@ msgstr "Virtuális hálózati kapcsolatok kezelése"
 msgid "VPN Connections"
 msgstr "VPN kapcsolatok"
 
-#: ../src/vpn-password-dialog.c:135 ../src/vpn-password-dialog.c:229
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:235
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "Nem lehet elindítani „%s” VPN kapcsolatot"
 
-#: ../src/vpn-password-dialog.c:138
+#: ../src/vpn-password-dialog.c:140
 #, c-format
 msgid ""
 "Could not find the authentication dialog for VPN connection type '%s'. "
@@ -699,7 +1453,7 @@ msgstr ""
 "Nem található a hitelesítési párbeszédablak a(z) „%s” típusú VPN "
 "kapcsolathoz. Lépjen kapcsolatba a rendszergazdával."
 
-#: ../src/vpn-password-dialog.c:232
+#: ../src/vpn-password-dialog.c:238
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
@@ -708,87 +1462,122 @@ msgstr ""
 "Hiba lépett fel a(z) „%s” típusú VPN kapcsolathoz tartozó párbeszédablak "
 "elindítása közben. Lépjen kapcsolatba a rendszergazdával."
 
-#: ../src/wireless-dialog.c:448
-msgid "None"
-msgstr "Nincs"
-
-#: ../src/wireless-dialog.c:466
-msgid "WEP 128-bit Passphrase"
-msgstr "WEP 128 bites jelmondat"
-
-#: ../src/wireless-dialog.c:474
-msgid "WEP 40/128-bit Hexadecimal"
-msgstr "WEP 40/128 bites hexadecimális"
-
-#: ../src/wireless-dialog.c:482
-msgid "WEP 40/128-bit ASCII"
-msgstr "WEP 40/128 bites ASCII"
-
-#: ../src/wireless-dialog.c:498
-#: ../src/wireless-security/wireless-security.c:322
-msgid "LEAP"
-msgstr "LEAP"
-
-#: ../src/wireless-dialog.c:510
-msgid "Dynamic WEP (802.1x)"
-msgstr "Dinamikus WEP (802.1x)"
-
-#: ../src/wireless-dialog.c:523
-msgid "WPA Pre-Shared Key"
-msgstr "WPA előzetesen megosztott kulcs"
-
-#: ../src/wireless-dialog.c:536
-msgid "WPA & WPA2 Enterprise"
-msgstr "WPA és WPA2 Enterprise"
-
-#: ../src/wireless-dialog.c:644
+#: ../src/wireless-dialog.c:664
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
 "s'."
-msgstr "Jelszavak vagy titkosítási kulcsok szükségesek a(z) „%s” vezeték nélküli hálózat eléréséhez."
+msgstr ""
+"Jelszavak vagy titkosítási kulcsok szükségesek a(z) „%s” vezeték nélküli "
+"hálózat eléréséhez."
 
-#: ../src/wireless-dialog.c:646
+#: ../src/wireless-dialog.c:666
 msgid "Wireless Network Secrets Required"
 msgstr "Titkos információk szükségesek a vezeték nélküli hálózathoz"
 
-#: ../src/wireless-dialog.c:648
+#: ../src/wireless-dialog.c:668
 msgid "Secrets required by wireless network"
 msgstr "A vezeték nélküli hálózat titkos információkat igényel"
 
-#: ../src/wireless-dialog.c:652
+#: ../src/wireless-dialog.c:673
+msgid "Create New Wireless Network"
+msgstr "Új vezeték nélküli hálózat létrehozása"
+
+#: ../src/wireless-dialog.c:675
+msgid "New wireless network"
+msgstr "Új vezeték nélküli hálózat"
+
+#: ../src/wireless-dialog.c:676
+msgid "Enter a name for the wireless network you wish to create."
+msgstr "Adja meg a létrehozni kívánt vezeték nélküli hálózat nevét."
+
+#: ../src/wireless-dialog.c:678
 msgid "Connect to Other Wireless Network"
 msgstr "Kapcsolódás más vezeték nélküli hálózathoz"
 
-#: ../src/wireless-dialog.c:654
+#: ../src/wireless-dialog.c:680
 msgid "Existing wireless network"
 msgstr "Létező vezeték nélküli hálózat"
 
-#: ../src/wireless-dialog.c:655
+#: ../src/wireless-dialog.c:681
 msgid "Enter the name of the wireless network to which you wish to connect."
-msgstr "Adja meg azon vezeték nélküli hálózat nevét, amelyhez kapcsolódni kíván."
+msgstr "Adja meg a vezeték nélküli hálózat nevét, amelyhez kapcsolódni kíván."
 
-#: ../src/wireless-security/eap-method-ttls.c:219
-msgid "PAP"
-msgstr "PAP"
+#: ../src/wireless-security/eap-method.c:302
+msgid "DER or PEM certificates (*.der, *.pem)"
+msgstr "DER vagy PEM tanúsítványok (*.der, *.pem)"
 
+#: ../src/wireless-security/eap-method-peap.c:234
+#: ../src/wireless-security/eap-method-tls.c:290
+#: ../src/wireless-security/eap-method-ttls.c:221
+msgid "No Certificate Authority certificate chosen"
+msgstr "Nincs kiválasztva hitelesítésszolgáltatói tanúsítvány"
+
+#: ../src/wireless-security/eap-method-peap.c:235
+#: ../src/wireless-security/eap-method-tls.c:291
+#: ../src/wireless-security/eap-method-ttls.c:222
+msgid ""
+"Not using a Certificate Authority (CA) certificate can result in connections "
+"to insecure, rogue wireless networks.  Would you like to choose a "
+"Certificate Authority certificate?"
+msgstr "Ha nem használ hitelesítésszolgáltatói (CA) tanúsítványt, akkor nem biztonságos vezeték nélküli hálózatokhoz is kapcsolódhat. Ki kíván választani egy hitelesítésszolgáltatói tanúsítványt?"
+
+#: ../src/wireless-security/eap-method-peap.c:240
+#: ../src/wireless-security/eap-method-tls.c:296
 #: ../src/wireless-security/eap-method-ttls.c:227
-msgid "MSCHAP"
-msgstr "MSCHAP"
+msgid "Ignore"
+msgstr "Mellőzés"
 
-#: ../src/wireless-security/eap-method-ttls.c:235
+#: ../src/wireless-security/eap-method-peap.c:244
+#: ../src/wireless-security/eap-method-tls.c:300
+#: ../src/wireless-security/eap-method-ttls.c:231
+msgid "Choose CA Certificate"
+msgstr "CA tanúsítvány kiválasztása"
+
+#: ../src/wireless-security/eap-method-peap.c:311
+#: ../src/wireless-security/eap-method-ttls.c:324
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
-#: ../src/wireless-security/eap-method-ttls.c:243
+#: ../src/wireless-security/eap-method-peap.c:323
+msgid "MD5"
+msgstr "MD5"
+
+#: ../src/wireless-security/eap-method-peap.c:403
+#: ../src/wireless-security/eap-method-tls.c:432
+#: ../src/wireless-security/eap-method-ttls.c:416
+msgid "Choose a Certificate Authority certificate..."
+msgstr "Válasszon hitelesítésszolgáltatói tanúsítványt..."
+
+#: ../src/wireless-security/eap-method-tls.c:428
+msgid "Choose your personal certificate..."
+msgstr "Válassza ki a személyes tanúsítványát..."
+
+#: ../src/wireless-security/eap-method-tls.c:437
+msgid "Choose your private key..."
+msgstr "Válassza ki a személyes kulcsát..."
+
+#: ../src/wireless-security/eap-method-ttls.c:300
+msgid "PAP"
+msgstr "PAP"
+
+#: ../src/wireless-security/eap-method-ttls.c:312
+msgid "MSCHAP"
+msgstr "MSCHAP"
+
+#: ../src/wireless-security/eap-method-ttls.c:336
 msgid "CHAP"
 msgstr "CHAP"
 
-#: ../src/wireless-security/wireless-security.c:312
+#: ../src/wireless-security/wireless-security.c:306
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:332
+#: ../src/wireless-security/wireless-security.c:326
 msgid "Tunneled TLS"
 msgstr "Alagutazott TLS"
+
+#: ../src/wireless-security/wireless-security.c:336
+msgid "Protected EAP (PEAP)"
+msgstr "Védett EAP (PEAP)"
 
