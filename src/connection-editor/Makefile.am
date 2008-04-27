@@ -17,8 +17,6 @@ nm_connection_editor_CPPFLAGS =			\
 	$(NULL)
 
 nm_connection_editor_SOURCES = \
-	byte-array-editor.c \
-	byte-array-editor.h \
 	nm-connection-editor.c \
 	nm-connection-editor.h \
 	nm-connection-list.c \
