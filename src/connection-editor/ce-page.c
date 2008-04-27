@@ -20,7 +20,13 @@
  * (C) Copyright 2008 Red Hat, Inc.
  */
 
+#include <net/ethernet.h>
+#include <netinet/ether.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "ce-page.h"
+#include "utils.h"
 
 G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 
@@ -45,6 +51,53 @@ void
 ce_page_update_connection (CEPage *self, NMConnection *connection)
 {
 	CE_PAGE_GET_CLASS (self)->update_connection (self, connection);
+}
+
+void
+ce_page_mac_to_entry (GByteArray *mac, GtkEntry *entry)
+{
+	struct ether_addr addr;
+	char *str_addr;
+
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (GTK_IS_ENTRY (entry));
+
+	if (!mac || !mac->len)
+		return;
+
+	memcpy (addr.ether_addr_octet, mac->data, ETH_ALEN);
+	str_addr = utils_ether_ntop (&addr);
+	gtk_entry_set_text (entry, str_addr);
+	g_free (str_addr);
+}
+
+GByteArray *
+ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid)
+{
+	struct ether_addr *ether;
+	const char *temp;
+	GByteArray *mac;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GTK_IS_ENTRY (entry), NULL);
+
+	if (invalid)
+		g_return_val_if_fail (*invalid == FALSE, NULL);
+
+	temp = gtk_entry_get_text (entry);
+	if (!temp || !strlen (temp))
+		return NULL;
+
+	ether = ether_aton (temp);
+	if (!ether || !utils_mac_valid (ether)) {
+		if (invalid)
+			*invalid = TRUE;
+		return NULL;
+	}
+
+	mac = g_byte_array_sized_new (ETH_ALEN);
+	g_byte_array_append (mac, (const guint8 *) ether->ether_addr_octet, ETH_ALEN);
+	return mac;
 }
 
 static void

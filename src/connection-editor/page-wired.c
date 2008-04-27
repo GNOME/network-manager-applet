@@ -21,6 +21,7 @@
  */
 
 #include <string.h>
+#include <net/ethernet.h>
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -38,6 +39,7 @@ G_DEFINE_TYPE (CEPageWired, ce_page_wired, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingWired *setting;
 
+	GtkEntry *mac;
 	GtkComboBox *port;
 	GtkComboBox *speed;
 	GtkToggleButton *duplex;
@@ -67,11 +69,18 @@ wired_private_init (CEPageWired *self)
 
 	xml = CE_PAGE (self)->xml;
 
+	priv->mac = GTK_ENTRY (glade_xml_get_widget (xml, "wired_mac"));
 	priv->port = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wired_port"));
 	priv->speed = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wired_speed"));
 	priv->duplex = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "wired_duplex"));
 	priv->autonegotiate = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "wired_autonegotiate"));
 	priv->mtu = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wired_mtu"));
+}
+
+static void
+stuff_changed (GtkWidget *w, gpointer user_data)
+{
+	ce_page_changed (CE_PAGE (user_data));
 }
 
 static void
@@ -125,7 +134,9 @@ populate_ui (CEPageWired *self)
 	/* Autonegotiate */
 	gtk_toggle_button_set_active (priv->autonegotiate, setting->auto_negotiate);
 
-	/* FIXME: MAC address */
+	/* MAC address */
+	ce_page_mac_to_entry (setting->mac_address, priv->mac);
+	g_signal_connect (priv->mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */
 	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRED_MTU);
@@ -136,12 +147,6 @@ populate_ui (CEPageWired *self)
 	gtk_spin_button_set_value (priv->mtu, (gdouble) setting->mtu);
 }
 
-static void
-stuff_changed (GtkWidget *w, gpointer user_data)
-{
-	ce_page_changed (CE_PAGE (user_data));
-}
-
 CEPageWired *
 ce_page_wired_new (NMConnection *connection)
 {
@@ -149,6 +154,7 @@ ce_page_wired_new (NMConnection *connection)
 	CEPageWiredPrivate *priv;
 	CEPage *parent;
 	NMSettingWired *s_wired;
+	GtkWidget *widget;
 
 	self = CE_PAGE_WIRED (g_object_new (CE_TYPE_PAGE_WIRED, NULL));
 	parent = CE_PAGE (self);
@@ -187,6 +193,22 @@ ce_page_wired_new (NMConnection *connection)
 	g_signal_connect (priv->autonegotiate, "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
+	/* Hide widgets we don't yet support */
+	widget = glade_xml_get_widget (parent->xml, "wired_port_label");
+	gtk_widget_hide (widget);
+	widget = glade_xml_get_widget (parent->xml, "wired_port");
+	gtk_widget_hide (widget);
+
+	widget = glade_xml_get_widget (parent->xml, "wired_speed_label");
+	gtk_widget_hide (widget);
+	widget = glade_xml_get_widget (parent->xml, "wired_speed");
+	gtk_widget_hide (widget);
+
+	widget = glade_xml_get_widget (parent->xml, "wired_duplex");
+	gtk_widget_hide (widget);
+	widget = glade_xml_get_widget (parent->xml, "wired_autonegotiate");
+	gtk_widget_hide (widget);
+
 	return self;
 }
 
@@ -196,6 +218,7 @@ ui_to_setting (CEPageWired *self)
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 	const char *port;
 	guint32 speed;
+	GByteArray *mac = NULL;
 
 	/* Port */
 	switch (gtk_combo_box_get_active (priv->port)) {
@@ -235,13 +258,19 @@ ui_to_setting (CEPageWired *self)
 		break;
 	}
 
+	mac = ce_page_entry_to_mac (priv->mac, NULL);
+
 	g_object_set (priv->setting,
+				  NM_SETTING_WIRED_MAC_ADDRESS, mac,
 				  NM_SETTING_WIRED_PORT, port,
 				  NM_SETTING_WIRED_SPEED, speed,
 				  NM_SETTING_WIRED_DUPLEX, gtk_toggle_button_get_active (priv->duplex) ? "full" : "half",
 				  NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
 				  NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
 				  NULL);
+
+	if (mac)
+		g_byte_array_free (mac, TRUE);
 }
 
 static gboolean
@@ -249,6 +278,12 @@ validate (CEPage *page)
 {
 	CEPageWired *self = CE_PAGE_WIRED (page);
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	gboolean invalid = FALSE;
+	GByteArray *ignore;
+
+	ignore = ce_page_entry_to_mac (priv->mac, &invalid);
+	if (invalid)
+		return FALSE;
 
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL);

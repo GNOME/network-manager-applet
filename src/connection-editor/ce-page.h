@@ -27,6 +27,7 @@
 #include <glib-object.h>
 
 #include <gtk/gtkwidget.h>
+#include <gtk/gtkentry.h>
 #include <glade/glade.h>
 
 #include <nm-connection.h>
@@ -70,6 +71,10 @@ gboolean ce_page_validate (CEPage *self);
 void ce_page_update_connection (CEPage *self, NMConnection *connection);
 
 void ce_page_changed (CEPage *self);
+
+void ce_page_mac_to_entry (GByteArray *mac, GtkEntry *entry);
+
+GByteArray *ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid);
 
 #endif  /* __CE_PAGE_H__ */
 

@@ -729,3 +729,44 @@ utils_filter_connections_for_device (NMDevice *device, GSList *connections)
 	return filtered;
 }
 
+gboolean
+utils_mac_valid (const struct ether_addr *addr)
+{
+	guint8 invalid1[ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+	guint8 invalid2[ETH_ALEN] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	guint8 invalid3[ETH_ALEN] = {0x44, 0x44, 0x44, 0x44, 0x44, 0x44};
+	guint8 invalid4[ETH_ALEN] = {0x00, 0x30, 0xb4, 0x00, 0x00, 0x00}; /* prism54 dummy MAC */
+
+	g_return_val_if_fail (addr != NULL, FALSE);
+
+	/* Compare the AP address the card has with invalid ethernet MAC addresses. */
+	if (!memcmp (addr->ether_addr_octet, &invalid1, ETH_ALEN))
+		return FALSE;
+
+	if (!memcmp (addr->ether_addr_octet, &invalid2, ETH_ALEN))
+		return FALSE;
+
+	if (!memcmp (addr->ether_addr_octet, &invalid3, ETH_ALEN))
+		return FALSE;
+
+	if (!memcmp (addr->ether_addr_octet, &invalid4, ETH_ALEN))
+		return FALSE;
+
+	if (addr->ether_addr_octet[0] & 1) /* Multicast addresses */
+		return FALSE;
+	
+	return TRUE;
+}
+
+char *
+utils_ether_ntop (const struct ether_addr *mac)
+{
+	/* we like leading zeros and all-caps, instead
+	 * of what glibc's ether_ntop() gives us
+	 */
+	return g_strdup_printf ("%02X:%02X:%02X:%02X:%02X:%02X",
+	                        mac->ether_addr_octet[0], mac->ether_addr_octet[1],
+	                        mac->ether_addr_octet[2], mac->ether_addr_octet[3],
+	                        mac->ether_addr_octet[4], mac->ether_addr_octet[5]);
+}
+

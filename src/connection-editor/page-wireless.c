@@ -42,6 +42,8 @@ typedef struct {
 	NMSettingWireless *setting;
 
 	GtkEntry *ssid;
+	GtkEntry *bssid;
+	GtkEntry *mac;
 	GtkComboBox *mode;
 	GtkComboBox *band;
 	GtkSpinButton *channel;
@@ -67,6 +69,8 @@ wireless_private_init (CEPageWireless *self)
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	priv->ssid     = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_ssid"));
+	priv->bssid    = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_bssid"));
+	priv->mac      = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_mac"));
 	priv->mode     = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wireless_mode"));
 	priv->band     = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wireless_band"));
 	priv->channel  = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_channel"));
@@ -271,8 +275,13 @@ populate_ui (CEPageWireless *self)
 	priv->last_channel = setting->channel;
 	gtk_spin_button_set_value (priv->channel, (gdouble) setting->channel);
 
-	/* FIXME: BSSID */
-	/* FIXME: MAC address */
+	/* BSSID */
+	ce_page_mac_to_entry (setting->bssid, priv->bssid);
+	g_signal_connect (priv->bssid, "changed", G_CALLBACK (entry_changed), self);
+
+	/* MAC address */
+	ce_page_mac_to_entry (setting->mac_address, priv->mac);
+	g_signal_connect (priv->mac, "changed", G_CALLBACK (entry_changed), self);
 
 	gtk_spin_button_set_value (priv->rate, (gdouble) setting->rate);
 	gtk_spin_button_set_value (priv->tx_power, (gdouble) setting->tx_power);
@@ -286,6 +295,7 @@ ce_page_wireless_new (NMConnection *connection)
 	CEPageWirelessPrivate *priv;
 	CEPage *parent;
 	NMSettingWireless *s_wireless;
+	GtkWidget *widget;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
@@ -320,6 +330,27 @@ ce_page_wireless_new (NMConnection *connection)
 
 	populate_ui (self);
 
+	/* Hide widgets we don't yet support */
+	widget = glade_xml_get_widget (parent->xml, "wireless_band_label");
+	gtk_widget_hide (widget);
+	widget = glade_xml_get_widget (parent->xml, "wireless_band");
+	gtk_widget_hide (widget);
+
+	widget = glade_xml_get_widget (parent->xml, "wireless_channel_label");
+	gtk_widget_hide (widget);
+	widget = glade_xml_get_widget (parent->xml, "wireless_channel");
+	gtk_widget_hide (widget);
+
+	widget = glade_xml_get_widget (parent->xml, "wireless_tx_power_label");
+	gtk_widget_hide (widget);
+	widget = glade_xml_get_widget (parent->xml, "wireless_tx_power_hbox");
+	gtk_widget_hide (widget);
+
+	widget = glade_xml_get_widget (parent->xml, "wireless_rate_label");
+	gtk_widget_hide (widget);
+	widget = glade_xml_get_widget (parent->xml, "wireless_rate_hbox");
+	gtk_widget_hide (widget);
+
 	return self;
 }
 
@@ -348,6 +379,8 @@ ui_to_setting (CEPageWireless *self)
 {
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 	GByteArray *ssid;
+	GByteArray *bssid = NULL;
+	GByteArray *mac = NULL;
 	const char *mode;
 	const char *band;
 
@@ -371,8 +404,13 @@ ui_to_setting (CEPageWireless *self)
 		break;
 	}
 
+	bssid = ce_page_entry_to_mac (priv->bssid, NULL);
+	mac = ce_page_entry_to_mac (priv->mac, NULL);
+
 	g_object_set (priv->setting,
 				  NM_SETTING_WIRELESS_SSID, ssid,
+				  NM_SETTING_WIRELESS_BSSID, bssid,
+				  NM_SETTING_WIRELESS_MAC_ADDRESS, mac,
 				  NM_SETTING_WIRELESS_MODE, mode,
 				  NM_SETTING_WIRELESS_BAND, band,
 				  NM_SETTING_WIRELESS_CHANNEL, gtk_spin_button_get_value_as_int (priv->channel),
@@ -383,6 +421,10 @@ ui_to_setting (CEPageWireless *self)
 
 	if (ssid)
 		g_byte_array_free (ssid, TRUE);
+	if (mac)
+		g_byte_array_free (mac, TRUE);
+	if (bssid)
+		g_byte_array_free (bssid, TRUE);
 }
 
 static gboolean
@@ -392,6 +434,16 @@ validate (CEPage *page)
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 	char *security;
 	gboolean success;
+	gboolean invalid = FALSE;
+	GByteArray *ignore;
+
+	ignore = ce_page_entry_to_mac (priv->bssid, &invalid);
+	if (invalid)
+		return FALSE;
+
+	ignore = ce_page_entry_to_mac (priv->mac, &invalid);
+	if (invalid)
+		return FALSE;
 
 	ui_to_setting (self);
 
