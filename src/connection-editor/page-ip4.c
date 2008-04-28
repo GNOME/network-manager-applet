@@ -331,7 +331,9 @@ cell_edited (GtkCellRendererText *cell,
              const gchar *new_text,
              gpointer user_data)
 {
-	GtkListStore *store = GTK_LIST_STORE (user_data);
+	CEPageIP4 *self = CE_PAGE_IP4 (user_data);
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
+	GtkListStore *store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
 	GtkTreePath *path = gtk_tree_path_new_from_string (path_string);
 	GtkTreeIter iter;
 	guint32 column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (cell), "column"));
@@ -339,6 +341,8 @@ cell_edited (GtkCellRendererText *cell,
 	gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, path);
 	gtk_list_store_set (store, &iter, column, new_text, -1);
 	gtk_tree_path_free (path);
+
+	ce_page_changed (CE_PAGE (self));
 }
 
 static void
@@ -438,7 +442,7 @@ ce_page_ip4_new (NMConnection *connection)
 	/* IP Address column */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
-	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), store);
+	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_ADDRESS));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
 
@@ -453,7 +457,7 @@ ce_page_ip4_new (NMConnection *connection)
 	/* Netmask column */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
-	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), store);
+	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_NETMASK));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
 
@@ -468,7 +472,7 @@ ce_page_ip4_new (NMConnection *connection)
 	/* Gateway column */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
-	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), store);
+	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_GATEWAY));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
 

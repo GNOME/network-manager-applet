@@ -1,5 +1,18 @@
 2008-04-27  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/page-wireless-security.c
+		- (validate): unencrypted method doesn't have a security object so
+			NULL here means valid
+
+	* src/connection-editor/nm-connection-list.c
+		- (create_new_connection_for_type): set default wireless mode
+
+	* src/connection-editor/page-ip4.c
+		- (cell_edited, ce_page_ip4_new): trigger validation when IP addresses
+			change too
+
+2008-04-27  Dan Williams  <dcbw@redhat.com>
+
 	* src/utils/utils.c
 	  src/utils/utils.h
 		- (utils_ether_ntop, utils_mac_valid): new functions

@@ -386,7 +386,7 @@ validate (CEPage *page)
 
 	sec = wireless_security_combo_get_active (self);
 	if (!sec)
-		return FALSE;
+		return TRUE; /* Unencrypted/open method doesn't have a WirelessSecurity */
 
 	ssid = ce_page_wireless_get_ssid (self->wireless_page);
 	if (ssid) {
