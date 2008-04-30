@@ -1,3 +1,13 @@
+2008-04-29  Dan Williams  <dcbw@redhat.com>
+
+	* gconf-helpers/gconf-helpers.c
+		- (copy_one_setting_value_to_gconf): write the 'name' key to GConf too;
+			because of the default-value removal code, and because GConf will
+			automatically delete directories that are empty, we need to make
+			sure that some directories stick around.  For example, PPPoE
+			connections need the PPP setting too, but if it's all default
+			values GConf will remove it.
+
 2008-04-27  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/page-wireless-security.c

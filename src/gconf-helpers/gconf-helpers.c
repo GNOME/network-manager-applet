@@ -784,7 +784,7 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	ReadFromGConfInfo *info = (ReadFromGConfInfo *) user_data;
 	GType type = G_VALUE_TYPE (value);
 
-	/* The 'name' key isn't pulled from GConf because it's pulled from the
+	/* The 'name' key is ignored when reading, because it's pulled from the
 	 * gconf directory name instead.
 	 */
 	if (!strcmp (key, NM_SETTING_NAME))
@@ -1058,12 +1058,6 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
 	GType type = G_VALUE_TYPE (value);
 	GParamSpec *pspec;
-
-	/* The 'name' key isn't written to GConf because it's pulled from the
-	 * gconf directory name instead.
-	 */
-	if (!strcmp (key, NM_SETTING_NAME))
-		return;
 
 	/* Some keys (like certs) aren't written directly to GConf but are handled
 	 * separately.
