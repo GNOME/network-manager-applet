@@ -396,6 +396,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_dsl_new (editor->connection)));
+		add_page (editor, CE_PAGE (ce_page_wired_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ppp_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_GSM_SETTING_NAME) || 
 			 !strcmp (s_con->type, NM_SETTING_CDMA_SETTING_NAME)) {
