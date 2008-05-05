@@ -404,8 +404,17 @@ update_connection (CEPage *page, NMConnection *connection)
 	WirelessSecurity *sec;
 
 	sec = wireless_security_combo_get_active (self);
-	g_assert (sec);
-	wireless_security_fill_connection (sec, connection);
+	if (sec)
+		wireless_security_fill_connection (sec, connection);
+	else {
+		NMSettingWireless *s_wireless;
+
+		/* No security, unencrypted */
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+		g_assert (s_wireless);
+		g_free (s_wireless->security);
+		s_wireless->security = NULL;
+	}
 }
 
 static void
