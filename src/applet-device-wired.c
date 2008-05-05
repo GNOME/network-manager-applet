@@ -38,7 +38,6 @@
 #include <nm-device-802-3-ethernet.h>
 
 #include "applet.h"
-#include "applet-dbus-settings.h"
 #include "applet-device-wired.h"
 #include "wired-dialog.h"
 #include "utils.h"
@@ -175,7 +174,7 @@ wired_add_menu_item (NMDevice *device,
 	GtkWidget *label;
 	char *bold_text;
 
-	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
+	all = applet_get_all_connections (applet);
 	connections = utils_filter_connections_for_device (device, all);
 	g_slist_free (all);
 
@@ -383,7 +382,7 @@ get_pppoe_secrets_cb (GtkDialog *dialog,
 					  gpointer user_data)
 {
 	NMPppoeInfo *info = (NMPppoeInfo *) user_data;
-	AppletExportedConnection *exported;
+	NMAGConfConnection *gconf_connection;
 	NMSetting *setting;
 	GHashTable *settings_hash;
 	GHashTable *secrets;
@@ -421,9 +420,9 @@ get_pppoe_secrets_cb (GtkDialog *dialog,
 	 * saving to GConf might trigger the GConf change notifiers, resulting
 	 * in the connection being read back in from GConf which clears secrets.
 	 */
-	exported = applet_dbus_settings_user_get_by_connection (info->applet->settings, info->connection);
-	if (exported)
-		applet_exported_connection_save (exported);
+	gconf_connection = nma_gconf_settings_get_by_connection (info->applet->gconf_settings, info->connection);
+	if (gconf_connection)
+		nma_gconf_connection_save (gconf_connection);
 
 done:
 	if (err) {
@@ -499,7 +498,7 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	DBusGMethodInvocation *context;
-	AppletExportedConnection *exported;
+	NMAGConfConnection *gconf_connection;
 	NMConnection *connection = NULL;
 	NMSetting *setting;
 	GHashTable *settings_hash;
@@ -563,9 +562,9 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 	 * saving to GConf might trigger the GConf change notifiers, resulting
 	 * in the connection being read back in from GConf which clears secrets.
 	 */
-	exported = applet_dbus_settings_user_get_by_connection (applet->settings, connection);
-	if (exported)
-		applet_exported_connection_save (exported);
+	gconf_connection = nma_gconf_settings_get_by_connection (applet->gconf_settings, connection);
+	if (gconf_connection)
+		nma_gconf_connection_save (gconf_connection);
 
 done:
 	if (err) {

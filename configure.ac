@@ -63,6 +63,8 @@ dnl Make sha1.c happy on big endian systems
 dnl
 AC_C_BIGENDIAN
 
+PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
+
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.72
 		 glib-2.0 >= 2.10
@@ -209,6 +211,7 @@ fi
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/marshallers/Makefile
 src/utils/Makefile
 src/gconf-helpers/Makefile
 src/wireless-security/Makefile

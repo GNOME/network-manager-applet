@@ -24,11 +24,11 @@
 #define NM_CONNECTION_EDITOR_H
 
 #include <glib-object.h>
-#include <nm-connection.h>
 #include <glade/glade-xml.h>
 #include <gtk/gtksizegroup.h>
 #include <gtk/gtkspinbutton.h>
 #include <gconf/gconf-client.h>
+#include <nm-settings.h>
 
 #define NM_TYPE_CONNECTION_EDITOR    (nm_connection_editor_get_type ())
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))
@@ -38,9 +38,8 @@ typedef struct {
 	GObject parent;
 
 	/* private data */
+	NMExportedConnection *exported;
 	NMConnection *connection;
-	char *gconf_path;
-	GConfClient *gconf_client;
 
 	GSList *pages;
 	GladeXML *xml;
@@ -56,13 +55,11 @@ typedef struct {
 } NMConnectionEditorClass;
 
 GType               nm_connection_editor_get_type (void);
-NMConnectionEditor *nm_connection_editor_new (NMConnection *connection, const char *path, GConfClient *client);
+NMConnectionEditor *nm_connection_editor_new (NMExportedConnection *exported);
 
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
-const char *        nm_connection_editor_get_gconf_path (NMConnectionEditor *editor);
-NMConnection *      nm_connection_editor_get_connection (NMConnectionEditor *editor);
-void                nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection);
+NMExportedConnection *nm_connection_editor_get_connection (NMConnectionEditor *editor);
 
 gint ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
 

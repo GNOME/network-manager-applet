@@ -46,16 +46,10 @@
 #include <nm-device.h>
 #include <NetworkManager.h>
 #include <nm-active-connection.h>
+#include <nm-dbus-settings.h>
 
 #include "applet-dbus-manager.h"
-#include "applet-dbus-settings.h"
-
-/*
- * Preference locations
- */
-#define GCONF_PATH_PREFS				"/apps/NetworkManagerApplet"
-
-
+#include "nma-gconf-settings.h"
 
 #define NM_TYPE_APPLET			(nma_get_type())
 #define NM_APPLET(object)		(G_TYPE_CHECK_INSTANCE_CAST((object), NM_TYPE_APPLET, NMApplet))
@@ -87,7 +81,8 @@ typedef struct
 	NMClient *nm_client;
 	NMAccessPoint *current_ap;
 
-	AppletDbusSettings *settings;
+	NMDBusSettings *dbus_settings;
+	NMAGConfSettings *gconf_settings;
 
 	GConfClient *	gconf_client;
 	char	*		glade_file;
@@ -168,13 +163,15 @@ NMApplet *nm_applet_new (void);
 
 void applet_schedule_update_icon (NMApplet *applet);
 
+GSList *applet_get_all_connections (NMApplet *applet);
+
 void applet_menu_item_activate_helper (NMDevice *device,
                                        NMConnection *connection,
                                        const char *specific_object,
                                        NMApplet *applet,
                                        gpointer user_data);
 
-AppletExportedConnection *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
+NMAGConfConnection *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 
 void applet_do_notify (NMApplet *applet, 
                        NotifyUrgency urgency,

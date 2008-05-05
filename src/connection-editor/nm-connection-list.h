@@ -29,6 +29,8 @@
 #include <gdk/gdkpixbuf.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkicontheme.h>
+#include <nm-dbus-settings-system.h>
+#include "nma-gconf-settings.h"
 
 #define NM_TYPE_CONNECTION_LIST    (nm_connection_list_get_type ())
 #define NM_IS_CONNECTION_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_LIST))
@@ -38,10 +40,12 @@ typedef struct {
 	GObject parent;
 
 	/* private data */
-	GHashTable *connections;
 	GHashTable *editors;
+	GHashTable *treeviews;
 
 	GConfClient *client;
+	NMAGConfSettings *gconf_settings;
+	NMDBusSettingsSystem *system_settings;
 
 	GladeXML *gui;
 	GtkWidget *dialog;

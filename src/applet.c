@@ -51,6 +51,7 @@
 #include <nm-setting-vpn.h>
 #include <nm-setting-vpn-properties.h>
 #include <nm-active-connection.h>
+#include <nm-dbus-settings-system.h>
 
 #include <glade/glade.h>
 #include <gconf/gconf-client.h>
@@ -163,10 +164,36 @@ applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
 	return default_ac;
 }
 
+static void
+exported_connection_to_connection (gpointer data, gpointer user_data)
+{
+	GSList **list = (GSList **) user_data;
+
+	*list = g_slist_prepend (*list, nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (data)));
+}
+
+GSList *
+applet_get_all_connections (NMApplet *applet)
+{
+	GSList *list;
+	GSList *connections = NULL;
+
+	list = nm_settings_list_connections (NM_SETTINGS (applet->dbus_settings));
+	g_slist_foreach (list, exported_connection_to_connection, &connections);
+	g_slist_free (list);
+
+	list = nm_settings_list_connections (NM_SETTINGS (applet->gconf_settings));
+	g_slist_foreach (list, exported_connection_to_connection, &connections);
+	g_slist_free (list);
+
+	return connections;
+}
+
 static NMConnection *
 applet_get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
 {
 	GSList *list, *iter;
+	NMConnection *connection = NULL;
 	NMConnectionScope scope;
 	const char *path;
 
@@ -176,16 +203,20 @@ applet_get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
 	path = nm_active_connection_get_connection (active);
 	g_return_val_if_fail (path != NULL, NULL);
 
-	list = applet_dbus_settings_get_all_connections (applet->settings);
+	list = applet_get_all_connections (applet);
 	for (iter = list; iter; iter = g_slist_next (iter)) {
 		NMConnection *candidate = NM_CONNECTION (iter->data);
 
 		if (   (nm_connection_get_scope (candidate) == scope)
-		    && !strcmp (nm_connection_get_path (candidate), path))
-			return candidate;
+			   && !strcmp (nm_connection_get_path (candidate), path)) {
+			connection = candidate;
+			break;
+		}
 	}
 
-	return NULL;
+	g_slist_free (list);
+
+	return connection;
 }
 
 static NMActiveConnection *
@@ -254,8 +285,7 @@ applet_menu_item_activate_helper (NMDevice *device,
                                   NMApplet *applet,
                                   gpointer user_data)
 {
-	AppletDbusSettings *applet_settings = APPLET_DBUS_SETTINGS (applet->settings);
-	AppletExportedConnection *exported = NULL;
+	NMAGConfConnection *exported;
 	const char *con_path;
 	gboolean is_system = FALSE;
 
@@ -276,7 +306,7 @@ applet_menu_item_activate_helper (NMDevice *device,
 			return;
 		}
 
-		exported = applet_dbus_settings_user_add_connection (applet_settings, connection);
+		exported = nma_gconf_settings_add_connection (applet->gconf_settings, connection);
 		if (!exported) {
 			/* If the setting isn't valid, because it needs more authentication
 			 * or something, ask the user for it.
@@ -370,7 +400,7 @@ update_connection_timestamp (NMActiveConnection *active,
                              NMConnection *connection,
                              NMApplet *applet)
 {
-	AppletExportedConnection *exported = NULL;
+	NMAGConfConnection *gconf_connection;
 	const char *path;
 	NMSettingConnection *s_con;
 
@@ -378,15 +408,15 @@ update_connection_timestamp (NMActiveConnection *active,
 		return;
 
 	path = nm_connection_get_path (connection);
-	exported = applet_dbus_settings_user_get_by_dbus_path (applet->settings, path);
-	if (!exported)
+	gconf_connection = nma_gconf_settings_get_by_dbus_path (applet->gconf_settings, path);
+	if (!gconf_connection)
 		return;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
 	s_con->timestamp = (guint64) time (NULL);
-	applet_exported_connection_save (exported);
+	nma_gconf_connection_save (gconf_connection);
 }
 
 static char *
@@ -801,11 +831,15 @@ applet_find_active_connection_for_device (NMDevice *device,
 			continue;
 
 		if (!strcmp (service_name, NM_DBUS_SERVICE_SYSTEM_SETTINGS)) {
-			connection = applet_dbus_settings_system_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), connection_path);
-		} else if (!strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS)) {
-			AppletExportedConnection *tmp;
+			NMDBusConnection *tmp;
 
-			tmp = applet_dbus_settings_user_get_by_dbus_path (APPLET_DBUS_SETTINGS (applet->settings), connection_path);
+			tmp = nm_dbus_settings_get_connection_by_path (applet->dbus_settings, connection_path);
+			if (tmp)
+				connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (tmp));
+		} else if (!strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS)) {
+			NMAGConfConnection *tmp;
+
+			tmp = nma_gconf_settings_get_by_dbus_path (applet->gconf_settings, connection_path);
 			if (tmp) {
 				connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (tmp));
 				if (out_active)
@@ -903,7 +937,7 @@ get_vpn_connections (NMApplet *applet)
 	GSList *iter;
 	GSList *list = NULL;
 
-	all_connections = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
+	all_connections = applet_get_all_connections (applet);
 
 	for (iter = all_connections; iter; iter = iter->next) {
 		NMConnection *connection = NM_CONNECTION (iter->data);
@@ -922,6 +956,8 @@ get_vpn_connections (NMApplet *applet)
 
 		list = g_slist_prepend (list, connection);
 	}
+
+	g_slist_free (all_connections);
 
 	return g_slist_sort (list, sort_vpn_connections);
 }
@@ -1333,7 +1369,7 @@ foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
 }
 
 
-AppletExportedConnection *
+NMAGConfConnection *
 applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 {
 	const GPtrArray *active_connections;
@@ -1342,7 +1378,7 @@ applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 	active_connections = nm_client_get_active_connections (applet->nm_client);
 	for (i = 0; active_connections && (i < active_connections->len); i++) {
 		NMActiveConnection *active;
-		AppletExportedConnection *exported;
+		NMAGConfConnection *gconf_connection;
 		const char *service_name;
 		const char *connection_path;
 		const GPtrArray *devices;
@@ -1358,11 +1394,11 @@ applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 		if (!nm_g_ptr_array_contains (devices, device))
 			continue;
 
-		exported = applet_dbus_settings_user_get_by_dbus_path (applet->settings, connection_path);
-		if (!exported || !nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported)))
+		gconf_connection = nma_gconf_settings_get_by_dbus_path (applet->gconf_settings, connection_path);
+		if (!gconf_connection || !nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (gconf_connection)))
 			continue;
 
-		return exported;
+		return gconf_connection;
 	}
 	return NULL;
 }
@@ -1677,7 +1713,7 @@ applet_schedule_update_icon (NMApplet *applet)
 }
 
 static NMDevice *
-find_active_device (AppletExportedConnection *exported,
+find_active_device (NMAGConfConnection *exported,
                     NMApplet *applet,
                     const char **out_specific_object)
 {
@@ -1719,8 +1755,8 @@ find_active_device (AppletExportedConnection *exported,
 }
 
 static void
-applet_settings_new_secrets_requested_cb (AppletDbusSettings *settings,
-                                          AppletExportedConnection *exported,
+applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
+                                          NMAGConfConnection *exported,
                                           const char *setting_name,
                                           const char **hints,
                                           gboolean ask_user,
@@ -1799,7 +1835,7 @@ periodic_update_active_connection_timestamps (gpointer user_data)
 	for (i = 0; connections && (i < connections->len); i++) {
 		NMActiveConnection *active = NM_ACTIVE_CONNECTION (g_ptr_array_index (connections, i));
 		const char *path;
-		AppletExportedConnection *exported;
+		NMAGConfConnection *gconf_connection;
 		NMConnection *connection;
 		const GPtrArray *devices;
 		int k;
@@ -1808,8 +1844,8 @@ periodic_update_active_connection_timestamps (gpointer user_data)
 			continue;
 
 		path = nm_active_connection_get_connection (active);
-		exported = applet_dbus_settings_user_get_by_dbus_path (applet->settings, path);
-		if (!exported)
+		gconf_connection = nma_gconf_settings_get_by_dbus_path (applet->gconf_settings, path);
+		if (!gconf_connection)
 			continue;
 
 		devices = nm_active_connection_get_devices (active);
@@ -1825,12 +1861,12 @@ periodic_update_active_connection_timestamps (gpointer user_data)
 			if (nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED) {
 				NMSettingConnection *s_con;
 
-				connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
+				connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (gconf_connection));
 				s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 				g_assert (s_con);
 
 				s_con->timestamp = (guint64) time (NULL);
-				applet_exported_connection_save (exported);
+				nma_gconf_connection_save (gconf_connection);
 				break;
 			}
 		}
@@ -2060,12 +2096,6 @@ setup_widgets (NMApplet *applet)
 	return TRUE;
 }
 
-static void
-applet_settings_system_settings_changed_cb (AppletDbusSettings *foo, gpointer user_data)
-{
-	applet_schedule_update_icon (NM_APPLET (user_data));
-}
-
 static GObject *
 constructor (GType type,
              guint n_props,
@@ -2113,14 +2143,16 @@ constructor (GType type,
 		return NULL;
 	}
 
-	applet->settings = applet_dbus_settings_new ();
-	g_signal_connect (G_OBJECT (applet->settings), "new-secrets-requested",
-	                  (GCallback) applet_settings_new_secrets_requested_cb,
+	applet->dbus_settings = (NMDBusSettings *) nm_dbus_settings_system_new (applet_dbus_manager_get_connection (dbus_mgr));
+
+	applet->gconf_settings = nma_gconf_settings_new ();
+	g_signal_connect (applet->gconf_settings, "new-secrets-requested",
+	                  G_CALLBACK (applet_settings_new_secrets_requested_cb),
 	                  applet);
 
-	g_signal_connect (G_OBJECT (applet->settings), "system-settings-changed",
-	                  (GCallback) applet_settings_system_settings_changed_cb,
-	                  applet);
+	dbus_g_connection_register_g_object (applet_dbus_manager_get_connection (dbus_mgr),
+										 NM_DBUS_PATH_SETTINGS,
+										 G_OBJECT (applet->gconf_settings));
 
     /* Start our DBus service */
     if (!applet_dbus_manager_start_service (dbus_mgr)) {
@@ -2179,6 +2211,9 @@ static void finalize (GObject *object)
 	g_free (applet->glade_file);
 	if (applet->info_dialog_xml)
 		g_object_unref (applet->info_dialog_xml);
+
+	g_object_unref (applet->gconf_settings);
+	g_object_unref (applet->dbus_settings);
 
 	g_object_unref (applet->gconf_client);
 

@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -43,7 +45,6 @@
 #include <nm-utils.h>
 
 #include "applet.h"
-#include "applet-dbus-settings.h"
 #include "applet-device-wireless.h"
 #include "ap-menu-item.h"
 #include "utils.h"
@@ -646,7 +647,7 @@ wireless_add_menu_item (NMDevice *device,
 	wdev = NM_DEVICE_802_11_WIRELESS (device);
 	aps = nm_device_802_11_wireless_get_access_points (wdev);
 
-	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
+	all = applet_get_all_connections (applet);
 	connections = utils_filter_connections_for_device (device, all);
 	g_slist_free (all);
 
@@ -712,7 +713,7 @@ out:
 }
 
 static gboolean
-add_seen_bssid (AppletExportedConnection *exported, NMAccessPoint *ap)
+add_seen_bssid (NMAGConfConnection *gconf_connection, NMAccessPoint *ap)
 {
 	NMConnection *connection;
 	NMSettingWireless *s_wireless;
@@ -722,7 +723,7 @@ add_seen_bssid (AppletExportedConnection *exported, NMAccessPoint *ap)
 	GSList *iter;
 	const char *bssid;
 
-	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
+	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (gconf_connection));
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
@@ -763,7 +764,7 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
                              GParamSpec *pspec,
                              NMApplet *applet)
 {
-	AppletExportedConnection *exported = NULL;
+	NMAGConfConnection *gconf_connection;
 	NMConnection *connection;
 	NMSettingWireless *s_wireless;
 	NMAccessPoint *ap;
@@ -776,11 +777,11 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
 	if (!ap)
 		return;
 
-	exported = applet_get_exported_connection_for_device (NM_DEVICE (device), applet);
-	if (!exported)
+	gconf_connection = applet_get_exported_connection_for_device (NM_DEVICE (device), applet);
+	if (!gconf_connection)
 		return;
 
-	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
+	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (gconf_connection));
 	g_return_if_fail (NM_IS_CONNECTION (connection));
 
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
@@ -791,8 +792,8 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
 	if (!ssid || !nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
 		return;
 
-	if (add_seen_bssid (exported, ap))
-		applet_exported_connection_save (exported);		
+	if (add_seen_bssid (gconf_connection, ap))
+		nma_gconf_connection_save (gconf_connection);
 
 	applet_schedule_update_icon (applet);
 }
@@ -932,7 +933,7 @@ wireless_device_state_changed (NMDevice *device,
                                NMDeviceState state,
                                NMApplet *applet)
 {
-	AppletExportedConnection *exported;
+	NMAGConfConnection *gconf_connection;
 	NMAccessPoint *ap = NULL;
 	char *msg;
 	char *esc_ssid = NULL;
@@ -974,9 +975,9 @@ wireless_device_state_changed (NMDevice *device,
 		                  applet);
 
 		/* Save this BSSID to seen-bssids list */
-		exported = applet_get_exported_connection_for_device (device, applet);
-		if (exported && add_seen_bssid (exported, applet->current_ap))
-			applet_exported_connection_save (exported);
+		gconf_connection = applet_get_exported_connection_for_device (device, applet);
+		if (gconf_connection && add_seen_bssid (gconf_connection, applet->current_ap))
+			nma_gconf_connection_save (gconf_connection);
 	}
 
 	msg = g_strdup_printf (_("You are now connected to the wireless network '%s'."),
@@ -1099,7 +1100,7 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 	NMConnection *connection = NULL, *fuzzy_match = NULL;
 	NMDevice *device = NULL;
 	NMAccessPoint *ap = NULL;
-	AppletExportedConnection *exported = NULL;
+	NMAGConfConnection *gconf_connection;
 	gboolean ignored = FALSE;
 
 	if (response != GTK_RESPONSE_OK)
@@ -1126,15 +1127,15 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 	g_assert (connection);
 	g_assert (device);
 
-	exported = applet_dbus_settings_user_get_by_connection (applet->settings, connection);
-	if (exported) {
+	gconf_connection = nma_gconf_settings_get_by_connection (applet->gconf_settings, connection);
+	if (gconf_connection) {
 		/* Not a new or system connection, save the updated settings to GConf */
-		applet_exported_connection_save (exported);
+		nma_gconf_connection_save (gconf_connection);
 	} else {
 		GSList *all, *iter;
 
 		/* Find a similar connection and use that instead */
-		all = applet_dbus_settings_get_all_connections (applet->settings);
+		all = applet_get_all_connections (applet);
 		for (iter = all; iter; iter = g_slist_next (iter)) {
 			if (nm_connection_compare (connection,
 			                           NM_CONNECTION (iter->data),
@@ -1187,8 +1188,8 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 			}
 
 			/* Export it over D-Bus */
-			exported = applet_dbus_settings_user_add_connection (applet->settings, connection);
-			if (!exported) {
+			gconf_connection = nma_gconf_settings_add_connection (applet->gconf_settings, connection);
+			if (!gconf_connection) {
 				nm_warning ("Couldn't create other network connection.");
 				goto done;
 			}
@@ -1274,7 +1275,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	DBusGMethodInvocation *context;
-	AppletExportedConnection *exported;
+	NMAGConfConnection *gconf_connection;
 	NMConnection *connection = NULL;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	NMDevice *device = NULL;
@@ -1383,9 +1384,9 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	 * saving to GConf might trigger the GConf change notifiers, resulting
 	 * in the connection being read back in from GConf which clears secrets.
 	 */
-	exported = applet_dbus_settings_user_get_by_connection (applet->settings, connection);
-	if (exported)
-		applet_exported_connection_save (exported);
+	gconf_connection = nma_gconf_settings_get_by_connection (applet->gconf_settings, connection);
+	if (gconf_connection)
+		nma_gconf_connection_save (gconf_connection);
 
 done:
 	if (settings)

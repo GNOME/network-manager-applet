@@ -36,7 +36,6 @@
 #include <nm-cdma-device.h>
 
 #include "applet.h"
-#include "applet-dbus-settings.h"
 #include "applet-device-cdma.h"
 #include "utils.h"
 
@@ -219,7 +218,7 @@ cdma_add_menu_item (NMDevice *device,
 	GtkWidget *label;
 	char *bold_text;
 
-	all = applet_dbus_settings_get_all_connections (APPLET_DBUS_SETTINGS (applet->settings));
+	all = applet_get_all_connections (applet);
 	connections = utils_filter_connections_for_device (device, all);
 	g_slist_free (all);
 

@@ -69,6 +69,8 @@ enum {
 
 static guint editor_signals[EDITOR_LAST_SIGNAL] = { 0 };
 
+static void nm_connection_editor_set_connection (NMConnectionEditor *editor,
+									    NMExportedConnection *exported);
 
 static void
 dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
@@ -224,11 +226,8 @@ dispose (GObject *object)
 	g_slist_free (editor->pages);
 	editor->pages = NULL;
 
-	if (editor->connection)
-		g_object_unref (editor->connection);
-
-	g_object_unref (editor->gconf_client);
-	g_free (editor->gconf_path);
+	if (editor->exported)
+		g_object_unref (editor->exported);
 
 	gtk_widget_destroy (editor->dialog);
 	g_object_unref (editor->xml);
@@ -256,38 +255,24 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 }
 
 NMConnectionEditor *
-nm_connection_editor_new (NMConnection *connection,
-                          const char *gconf_path,
-                          GConfClient *client)
+nm_connection_editor_new (NMExportedConnection *exported)
 {
 	NMConnectionEditor *editor;
 
-	g_return_val_if_fail (connection != NULL, NULL);
-	g_return_val_if_fail (client != NULL, NULL);
+	g_return_val_if_fail (NM_IS_EXPORTED_CONNECTION (exported), NULL);
 
 	editor = g_object_new (NM_TYPE_CONNECTION_EDITOR, NULL);
-	nm_connection_editor_set_connection (editor, connection);
-	editor->gconf_client = g_object_ref (client);
-	if (gconf_path)
-		editor->gconf_path = g_strdup (gconf_path);
+	nm_connection_editor_set_connection (editor, exported);
 
 	return editor;
 }
 
-NMConnection *
+NMExportedConnection *
 nm_connection_editor_get_connection (NMConnectionEditor *editor)
 {
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), NULL);
 
-	return editor->connection;
-}
-
-const char *
-nm_connection_editor_get_gconf_path (NMConnectionEditor *editor)
-{
-	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), NULL);
-
-	return editor->gconf_path;
+	return editor->exported;
 }
 
 gint
@@ -316,14 +301,17 @@ populate_connection_ui (NMConnectionEditor *editor)
 	NMSettingConnection *s_con;
 	GtkWidget *name;
 	GtkWidget *autoconnect;
+	GtkWidget *system;
 
 	name = glade_xml_get_widget (editor->xml, "connection_name");
 	autoconnect = glade_xml_get_widget (editor->xml, "connection_autoconnect");
+	system = glade_xml_get_widget (editor->xml, "connection_system");
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	if (s_con) {
 		gtk_entry_set_text (GTK_ENTRY (name), s_con->id);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoconnect), s_con->autoconnect);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (system), nm_connection_get_scope (editor->connection) == NM_CONNECTION_SCOPE_SYSTEM);
 	} else {
 		gtk_entry_set_text (GTK_ENTRY (name), NULL);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoconnect), FALSE);
@@ -357,24 +345,24 @@ add_page (NMConnectionEditor *editor, CEPage *page)
 	editor->pages = g_slist_append (editor->pages, page);
 }
 
-void
-nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection)
+static void
+nm_connection_editor_set_connection (NMConnectionEditor *editor, NMExportedConnection *exported)
 {
 	NMSettingConnection *s_con;
 
 	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
-	g_return_if_fail (connection != NULL);
+	g_return_if_fail (NM_IS_EXPORTED_CONNECTION (exported));
 
 	/* clean previous connection */
-	if (editor->connection) {
-		g_object_unref (G_OBJECT (editor->connection));
-		editor->connection = NULL;
-	}
+	if (editor->exported)
+		g_object_unref (editor->exported);
 
-	editor->connection = (NMConnection *) g_object_ref (connection);
+	editor->exported = g_object_ref (exported);
+	editor->connection = nm_exported_connection_get_connection (exported);
+
 	nm_connection_editor_update_title (editor);
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
 	if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME)) {
@@ -430,6 +418,7 @@ connection_editor_update_connection (NMConnectionEditor *editor)
 	NMSettingConnection *s_con;
 	GtkWidget *widget;
 	const char *name;
+	GHashTable *settings;
 	gboolean autoconnect = FALSE;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
@@ -444,6 +433,12 @@ connection_editor_update_connection (NMConnectionEditor *editor)
 	              NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect,
 	              NULL);
 
+	widget = glade_xml_get_widget (editor->xml, "connection_system");
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
+		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_SYSTEM);
+	else
+		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_USER);
+
 	g_slist_foreach (editor->pages, update_one_page, editor->connection);
 
 	utils_fill_connection_certs (editor->connection);
@@ -454,38 +449,9 @@ connection_editor_update_connection (NMConnectionEditor *editor)
 	}
 	utils_clear_filled_connection_certs (editor->connection);
 
-	if (!editor->gconf_path) {
-		guint32 i = 0;
-
-		/* Find free GConf directory */
-		while (i++ < G_MAXUINT32) {
-			char buf[255];
-
-			snprintf (&buf[0], 255, GCONF_PATH_CONNECTIONS"/%d", i);
-			if (!gconf_client_dir_exists (editor->gconf_client, buf, NULL)) {
-				editor->gconf_path = g_strdup_printf (buf);
-				break;
-			}
-		};
-		g_assert (editor->gconf_path);
-		g_object_set_data_full (G_OBJECT (editor->connection),
-		                        NMA_CONNECTION_ID_TAG, g_path_get_basename (editor->gconf_path),
-		                        (GDestroyNotify) g_free);
-	}
-
-	if (editor->gconf_path) {
-		const char *id;
-
-		id = g_object_get_data (G_OBJECT (editor->connection), NMA_CONNECTION_ID_TAG);
-		/* Save the connection back to GConf */
-		nm_gconf_write_connection (editor->connection,
-		                           editor->gconf_client,
-		                           editor->gconf_path,
-		                           id);
-		gconf_client_notify (editor->gconf_client, editor->gconf_path);
-		gconf_client_suggest_sync (editor->gconf_client, NULL);
-	} else
-		nm_warning ("Couldn't find free GConf directory for new connection.");
+	settings = nm_connection_to_hash (editor->connection);
+	nm_exported_connection_update (editor->exported, settings);
+	/* FIXME: destroy hash? */
 }
 
 static void

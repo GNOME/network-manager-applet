@@ -1,3 +1,81 @@
+2008-04-30  Tambet Ingo  <tambet@gmail.com>
+
+	* src/applet.c (constructor): Get system connections from dbus.
+
+2008-04-30  Tambet Ingo  <tambet@gmail.com>
+
+	Implement system settings handling in the connection editor.
+
+	* src/connection-editor/nm-connection-list.[ch]: Use NMAGconfSettings
+	and NMDBusSettingsSystem to get connections. Update the connection
+	lists dynamically based on signals received from the connections.
+
+	* src/connection-editor/nm-connection-editor.[ch]: Work with
+	NMExportedConnection so that updating and removing of the connections
+	is handled by the connections, not special cased here.
+
+2008-04-30  Tambet Ingo  <tambet@gmail.com>
+
+	Add a toggle button to the connection editor to indicate and change the
+	connection scope (system or user).
+
+	* src/connection-editor/nm-connection-editor.c (populate_connection_ui):
+	Set the toggle button state according to the connection scope.
+	(connection_editor_update_connection): Update the connection scope
+	according to the toggle button state.
+
+	* src/connection-editor/nm-connection-editor.glade: Add a toggle button
+	to indicate and possibly change system/user connections.
+
+2008-04-30  Tambet Ingo  <tambet@gmail.com>
+
+	Replace applet-dbus-settings.[ch] with NMAGConfSettings and
+	NMAGConfConnection.
+
+	* src/applet.c:
+	* src/applet.h: Use NMAGConfSettings for locally stored settings and
+	NMDBusSettingsSystem for system settings.
+
+	* src/applet-device-cdma.c:
+	* src/applet-device-gsm.c:
+	* src/applet-device-wired.c:
+	* src/applet-device-wireless.c: Update to use NMAGConfSettings and
+	NMAGConfConnection.
+
+	* src/Makefile.am: Remove applet-dbus-settings.[ch] from the build.
+
+	* src/applet-dbus-settings.[ch]: Removed.
+
+2008-04-30  Tambet Ingo  <tambet@gmail.com>
+
+	Implement NMSettings and NMExportedConnection subclasses for handling
+	NMConnections stored in GConf.
+
+	* src/gconf-helpers/nma-gconf-settings.[ch]:
+	* src/gconf-helpers/nma-gconf-connection.[ch]: Implement.
+
+	* src/gconf-helpers/Makefile.am: Add new files to the build.
+
+2008-04-30  Tambet Ingo  <tambet@gmail.com>
+
+	Move marshallers to it's own directory so they can be shared.
+
+	* src/marshallers/Makefile.am:
+	* src/marshallers/nma-marshal.main.c:
+	* src/marshallers/nma-marshal.list: Implement.
+
+	* configure.ac: Create src/marshallers/Makefile.
+
+	* src/Makefile.am: Add marshallers to the list of build directories.
+	Include marshallers to the cflags and libs.
+	Remove applet-marshal* references.
+
+	* src/applet-dbus-manager.c:
+	* src/applet-dbus-settings.c: Use the common marshallers.
+
+	* src/applet-marshal-main.c:
+	* src/applet-marshal.list: Remove
+
 2008-04-30  Dan Williams  <dcbw@redhat.com>
 
 	* src/wireless-dialog.c

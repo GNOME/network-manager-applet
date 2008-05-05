@@ -60,88 +60,91 @@ enum {
 
 static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
 
-#define CE_GCONF_PATH_TAG "ce-gconf-path"
-#define CONNECTION_LIST_TAG "nm-connection-list"
-#define CONNECTION_TYPE_TAG "connection-type"
-
 #define COL_ID 			0
 #define COL_LAST_USED	1
 #define COL_TIMESTAMP	2
 #define COL_CONNECTION	3
 
-static gboolean
-get_iter_for_connection (GtkWidget *clist,
-                         NMConnection *connection,
-                         GtkTreeModel **model,
-                         GtkTreeIter *iter)
-{
-	GtkTreeModel *sort_model;
-	GtkTreeModel *temp_model;
-	GtkTreeIter temp_iter;
-	gboolean found = FALSE;
+typedef struct {
+	NMConnectionList *list;
+	GtkTreeView *treeview;
+} ActionInfo;
 
-	g_return_val_if_fail (GTK_IS_TREE_VIEW (clist), FALSE);
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
-	g_return_val_if_fail (model != NULL, FALSE);
-	g_return_val_if_fail (*model == NULL, FALSE);
-	g_return_val_if_fail (iter != NULL, FALSE);
-
-	sort_model = gtk_tree_view_get_model (GTK_TREE_VIEW (clist));
-	g_return_val_if_fail (sort_model != NULL, FALSE);
-
-	temp_model = gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (sort_model));
-	g_return_val_if_fail (temp_model != NULL, FALSE);
-
-	if (!gtk_tree_model_get_iter_first (temp_model, &temp_iter))
-		return FALSE;
-
-	do {
-		NMConnection *candidate = NULL;
-
-		gtk_tree_model_get (temp_model, &temp_iter, COL_CONNECTION, &candidate, -1);
-		if (candidate && (candidate == connection)) {
-			*iter = temp_iter;
-			*model = temp_model;
-			found = TRUE;
-			break;
-		}
-	} while (gtk_tree_model_iter_next (temp_model, &temp_iter));
-
-	return found;
-}
-
-static NMConnection *
-get_connection_for_selection (GtkWidget *clist,
-                              GtkTreeModel **model,
-                              GtkTreeIter *iter)
+static NMExportedConnection *
+get_active_connection (GtkTreeView *treeview)
 {
 	GtkTreeSelection *selection;
 	GList *selected_rows;
-	NMConnection *connection = NULL;
+	GtkTreeModel *model = NULL;
+	GtkTreeIter iter;
+	NMExportedConnection *exported = NULL;
 
-	g_return_val_if_fail (clist != NULL, NULL);
-	g_return_val_if_fail (GTK_IS_TREE_VIEW (clist), NULL);
-	g_return_val_if_fail (model != NULL, NULL);
-	g_return_val_if_fail (*model == NULL, NULL);
-	g_return_val_if_fail (iter != NULL, NULL);
-
-	/* get selected row from the tree view */
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (clist));
-	if (gtk_tree_selection_count_selected_rows (selection) != 1)
-		return NULL;
-
-	selected_rows = gtk_tree_selection_get_selected_rows (selection, model);
+	selection = gtk_tree_view_get_selection (treeview);
+	selected_rows = gtk_tree_selection_get_selected_rows (selection, &model);
 	if (!selected_rows)
 		return NULL;
-	
-	if (gtk_tree_model_get_iter (*model, iter, (GtkTreePath *) selected_rows->data))
-		gtk_tree_model_get (*model, iter, COL_CONNECTION, &connection, -1);
+
+	if (gtk_tree_model_get_iter (model, &iter, (GtkTreePath *) selected_rows->data))
+		gtk_tree_model_get (model, &iter, COL_CONNECTION, &exported, -1);
 
 	/* free memory */
 	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
 	g_list_free (selected_rows);
 
-	return connection;
+	return exported;
+}
+
+static GtkListStore *
+get_model_for_connection (NMConnectionList *list, NMExportedConnection *exported)
+{
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+	GtkTreeView *treeview;
+	GtkTreeModel *model;
+
+	connection = nm_exported_connection_get_connection (exported);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	if (!s_con || !s_con->type) {
+		g_warning ("Ignoring incomplete connection");
+		return NULL;
+	}
+
+	treeview = (GtkTreeView *) g_hash_table_lookup (list->treeviews, s_con->type);
+	if (!treeview) {
+		g_warning ("No registered treeview for connection type '%s'", s_con->type);
+		return NULL;
+	}
+
+	model = gtk_tree_view_get_model (treeview);
+	if (GTK_IS_TREE_MODEL_SORT (model))
+		return GTK_LIST_STORE (gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (model)));
+
+	return GTK_LIST_STORE (model);
+}
+
+static gboolean
+get_iter_for_connection (GtkTreeModel *model,
+					NMExportedConnection *exported,
+					GtkTreeIter *iter)
+{
+	GtkTreeIter temp_iter;
+	gboolean found = FALSE;
+
+	if (!gtk_tree_model_get_iter_first (model, &temp_iter))
+		return FALSE;
+
+	do {
+		NMExportedConnection *candidate = NULL;
+
+		gtk_tree_model_get (model, &temp_iter, COL_CONNECTION, &candidate, -1);
+		if (candidate && (candidate == exported)) {
+			*iter = temp_iter;
+			found = TRUE;
+			break;
+		}
+	} while (gtk_tree_model_iter_next (model, &temp_iter));
+
+	return found;
 }
 
 static char *
@@ -216,62 +219,58 @@ out:
 	return last_used;
 }
 
-typedef struct {
-	NMConnectionList *list;
-	GtkWidget *clist;
-} EditorDoneInfo;
+static void
+update_connection_row (GtkListStore *store,
+				   GtkTreeIter *iter,
+				   NMExportedConnection *exported)
+{
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+	char *last_used;
+
+	connection = nm_exported_connection_get_connection (exported);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
+
+	last_used = format_last_used (s_con->timestamp);
+	gtk_list_store_set (store, iter,
+					COL_ID, s_con->id,
+					COL_LAST_USED, last_used,
+					COL_TIMESTAMP, s_con->timestamp,
+					COL_CONNECTION, exported,
+					-1);
+	g_free (last_used);
+}
 
 static void
 add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 {
-	EditorDoneInfo *info = (EditorDoneInfo *) user_data;
-	NMConnection *connection;
+	ActionInfo *info = (ActionInfo *) user_data;
+	NMExportedConnection *exported;
 
-	connection = nm_connection_editor_get_connection (editor);
+	exported = nm_connection_editor_get_connection (editor);
+	g_hash_table_remove (info->list->editors, exported);
 
 	if (response == GTK_RESPONSE_OK) {
-		NMSettingConnection *s_con;
-		const char *path;
-		char *last_used;
-		GtkTreeModel *sort_model;
-		GtkListStore *store;
-		GtkTreeIter iter;
+		NMConnection *connection;
 
-		path = nm_connection_editor_get_gconf_path (editor);
-
-		g_object_set_data_full (G_OBJECT (connection),
-						    CE_GCONF_PATH_TAG, 
-						    g_strdup (path),
-						    (GDestroyNotify) g_free);
-
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		g_assert (s_con);
-
-		sort_model = gtk_tree_view_get_model (GTK_TREE_VIEW (info->clist));
-		store = GTK_LIST_STORE (gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (sort_model)));
-		gtk_list_store_insert (store, &iter, G_MAXINT);
-
-		last_used = format_last_used (s_con->timestamp);
-		gtk_list_store_set (store, &iter,
-		                    COL_ID, s_con->id,
-		                    COL_LAST_USED, last_used,
-		                    COL_TIMESTAMP, s_con->timestamp,
-		                    COL_CONNECTION, connection,
-		                    -1);
-		g_free (last_used);
+		connection = nm_exported_connection_get_connection (exported);
+		if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM)
+			nm_dbus_settings_system_add_connection (info->list->system_settings, connection);
+		else
+			nma_gconf_settings_add_connection (info->list->gconf_settings, connection);
 	}
-
-	g_hash_table_remove (info->list->editors, connection);
-	g_free (info);
 }
 
 static void
-add_one_name (gpointer key, gpointer data, gpointer user_data)
+add_one_name (gpointer data, gpointer user_data)
 {
-	NMConnection *connection = NM_CONNECTION (data);
+	NMExportedConnection *exported = NM_EXPORTED_CONNECTION (data);
+	NMConnection *connection;
 	NMSettingConnection *s_con;
 	GSList **list = (GSList **) user_data;
 
+	connection = nm_exported_connection_get_connection (exported);
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con->id);
 	*list = g_slist_append (*list, s_con->id);
@@ -280,11 +279,17 @@ add_one_name (gpointer key, gpointer data, gpointer user_data)
 static char *
 get_next_available_name (NMConnectionList *list, const char *format)
 {
+	GSList *connections;
 	GSList *names = NULL, *iter;
 	char *cname = NULL;
 	int i = 0;
 
-	g_hash_table_foreach (list->connections, add_one_name, &names);
+	connections = nm_settings_list_connections (NM_SETTINGS (list->system_settings));
+	connections = g_slist_concat (connections, nm_settings_list_connections (NM_SETTINGS (list->gconf_settings)));
+
+	g_slist_foreach (connections, add_one_name, &names);
+	g_slist_free (connections);
+
 	if (g_slist_length (names) == 0)
 		return g_strdup_printf (format, 1);
 
@@ -324,12 +329,15 @@ add_default_serial_setting (NMConnection *connection)
 }
 
 static NMConnection *
-create_new_connection_for_type (NMConnectionList *list, GType ctype)
+create_new_connection_for_type (NMConnectionList *list, const char *connection_type)
 {
+	GType ctype;
 	NMConnection *connection = NULL;
 	NMSettingConnection *s_con;
 	NMSetting *type_setting = NULL;
 	GType mb_type;
+
+	ctype = nm_connection_lookup_setting_type (connection_type);
 
 	connection = nm_connection_new ();
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
@@ -414,34 +422,58 @@ create_new_connection_for_type (NMConnectionList *list, GType ctype)
 	return connection;
 }
 
+typedef struct {
+	const char *type;
+	GtkTreeView *treeview;
+} LookupTreeViewInfo;
+
+static void
+lookup_treeview (gpointer key, gpointer value, gpointer user_data)
+{
+	LookupTreeViewInfo *info = (LookupTreeViewInfo *) user_data;
+
+	if (!info->type && info->treeview == value)
+		info->type = (const char *) key;
+}
+
+static const char *
+get_connection_type_from_treeview (NMConnectionList *self,
+							GtkTreeView *treeview)
+{
+	LookupTreeViewInfo info;
+
+	info.type = NULL;
+	info.treeview = treeview;
+
+	g_hash_table_foreach (self->treeviews, lookup_treeview, &info);
+
+	return info.type;
+}
+
 static void
 add_connection_cb (GtkButton *button, gpointer user_data)
 {
-	GtkWidget *clist = GTK_WIDGET (user_data);
-	NMConnectionList *list;
-	NMConnectionEditor *editor;
+	ActionInfo *info = (ActionInfo *) user_data;
+	const char *connection_type;
 	NMConnection *connection;
-	EditorDoneInfo *info;
-	GType ctype;
+	NMExportedConnection *exported;
+	NMConnectionEditor *editor;
 
-	list = NM_CONNECTION_LIST (g_object_get_data (G_OBJECT (button), CONNECTION_LIST_TAG));
-	g_assert (list);
+	connection_type = get_connection_type_from_treeview (info->list, info->treeview);
+	g_assert (connection_type);
 
-	info = g_malloc0 (sizeof (EditorDoneInfo));
-	g_assert (info);
-	info->list = list;
-	info->clist = clist;
-
-	ctype = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (clist), CONNECTION_TYPE_TAG));
-	connection = create_new_connection_for_type (list, ctype);
+	connection = create_new_connection_for_type (info->list, connection_type);
 	if (!connection) {
-		g_warning ("Can't add new connection of type '%s'", g_type_name (ctype));
+		g_warning ("Can't add new connection of type '%s'", connection_type);
 		return;
 	}
 
-	editor = nm_connection_editor_new (connection, NULL, list->client);
+	exported = nm_exported_connection_new (connection);
+	g_object_unref (connection);
+
+	editor = nm_connection_editor_new (exported);
 	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
-	g_hash_table_insert (list->editors, connection, editor);
+	g_hash_table_insert (info->list->editors, exported, editor);
 
 	nm_connection_editor_run (editor);
 }
@@ -449,52 +481,43 @@ add_connection_cb (GtkButton *button, gpointer user_data)
 static void
 edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 {
-	EditorDoneInfo *info = (EditorDoneInfo *) user_data;
-	NMConnection *connection;
-	NMSettingConnection *s_con;
+	ActionInfo *info = (ActionInfo *) user_data;
+	NMExportedConnection *exported;
 
-	connection = nm_connection_editor_get_connection (editor);
+	exported = nm_connection_editor_get_connection (editor);
 
 	if (response == GTK_RESPONSE_OK) {
-		GtkTreeModel *model = NULL;
+		GtkListStore *store;
 		GtkTreeIter iter;
 
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		g_assert (s_con);
-
-		if (get_iter_for_connection (info->clist, connection, &model, &iter) && model)
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter, COL_ID, s_con->id, -1);
+		store = get_model_for_connection (info->list, exported);
+		g_assert (store);
+		if (get_iter_for_connection (GTK_TREE_MODEL (store), exported, &iter))
+			update_connection_row (store, &iter, exported);
 	}
 
-	g_hash_table_remove (info->list->editors, connection);
-	g_free (info);
+	g_hash_table_remove (info->list->editors, exported);
 }
 
 static void
-do_edit (NMConnectionList *list, NMConnection *connection, GtkWidget *clist)
+do_edit (ActionInfo *info)
 {
+	NMExportedConnection *exported;
 	NMConnectionEditor *editor;
-	const char *gconf_path;
-	EditorDoneInfo *info;
+
+	exported = get_active_connection (info->treeview);
+	g_return_if_fail (exported != NULL);
 
 	/* Don't allow two editors for the same connection */
-	editor = NM_CONNECTION_EDITOR (g_hash_table_lookup (list->editors, connection));
+	editor = NM_CONNECTION_EDITOR (g_hash_table_lookup (info->list->editors, exported));
 	if (editor) {
 		nm_connection_editor_present (editor);
 		return;
 	}
 
-	gconf_path = g_object_get_data (G_OBJECT (connection), CE_GCONF_PATH_TAG);
-	g_assert (gconf_path);
-
-	info = g_malloc0 (sizeof (EditorDoneInfo));
-	g_assert (info);
-	info->list = list;
-	info->clist = clist;
-
-	editor = nm_connection_editor_new (connection, gconf_path, list->client);
-	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (edit_done_cb), info);
-	g_hash_table_insert (list->editors, connection, editor);
+	editor = nm_connection_editor_new (exported);
+	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), info);
+	g_hash_table_insert (info->list->editors, exported, editor);
 
 	nm_connection_editor_run (editor);
 }
@@ -502,51 +525,27 @@ do_edit (NMConnectionList *list, NMConnection *connection, GtkWidget *clist)
 static void
 edit_connection_cb (GtkButton *button, gpointer user_data)
 {
-	NMConnectionList *list;
-	GtkWidget *clist = GTK_WIDGET (user_data);
-	NMConnection *connection;
-	GtkTreeModel *ignore1 = NULL;
-	GtkTreeIter ignore2;
-
-	connection = get_connection_for_selection (clist, &ignore1, &ignore2);
-	g_return_if_fail (connection != NULL);
-
-	list = NM_CONNECTION_LIST (g_object_get_data (G_OBJECT (button), CONNECTION_LIST_TAG));
-	g_assert (list);
-
-	do_edit (list, connection, clist);
+	do_edit ((ActionInfo *) user_data);
 }
 
 static void
 delete_connection_cb (GtkButton *button, gpointer user_data)
 {
-	GtkWidget *clist = GTK_WIDGET (user_data);
-	NMConnectionList *list;
-	NMConnectionEditor *editor;
-	NMSettingConnection *s_con;
+	ActionInfo *info = (ActionInfo *) user_data;
+	NMExportedConnection *exported = NULL;
 	NMConnection *connection;
+	NMSettingConnection *s_con;
 	GtkWidget *dialog;
-	gint result;
-	const char *dir;
-	GError *error = NULL;
-	GtkTreeModel *model = NULL, *sorted_model;
-	GtkTreeIter iter, sorted_iter;
+	guint result;
 
-	connection = get_connection_for_selection (clist, &model, &iter);
-	g_return_if_fail (connection != NULL);
-	g_return_if_fail (model != NULL);
-
-	dir = g_object_get_data (G_OBJECT (connection), CE_GCONF_PATH_TAG);
-	g_return_if_fail (dir != NULL);
-
+	exported = get_active_connection (info->treeview);
+	g_return_if_fail (exported != NULL);
+	connection = nm_exported_connection_get_connection (exported);
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_con || !s_con->id)
 		return;
 
-	list = NM_CONNECTION_LIST (g_object_get_data (G_OBJECT (button), CONNECTION_LIST_TAG));
-	g_return_if_fail (list != NULL);
-
-	dialog = gtk_message_dialog_new (GTK_WINDOW (list->dialog),
+	dialog = gtk_message_dialog_new (GTK_WINDOW (info->list->dialog),
 	                                 GTK_DIALOG_DESTROY_WITH_PARENT,
 	                                 GTK_MESSAGE_QUESTION,
 	                                 GTK_BUTTONS_NONE,
@@ -563,63 +562,9 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 		return;
 
 	/* Close any open editor windows for this connection */
-	editor = g_hash_table_lookup (list->editors, connection);
-	if (editor)
-		g_hash_table_remove (list->editors, connection);
+	g_hash_table_remove (info->list->editors, exported);
 
-	if (!gconf_client_recursive_unset (list->client, dir, 0, &error)) {
-		g_warning ("%s: Failed to completely remove connection '%s': (%d) %s",
-		           __func__, s_con->id, error->code, error->message);
-		g_error_free (error);
-	}
-
-	gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (model),
-	                                                &sorted_iter,
-	                                                &iter);
-	sorted_model = gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (model));
-	gtk_list_store_remove (GTK_LIST_STORE (sorted_model), &sorted_iter);
-
-	if (!g_hash_table_remove (list->connections, dir))
-		g_warning ("%s: couldn't remove connection from hash table.", __func__);
-}
-
-static void
-load_connections (NMConnectionList *list)
-{
-	GSList *conf_list;
-
-	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
-
-	conf_list = nm_gconf_get_all_connections (list->client);
-	if (!conf_list) {
-		g_warning ("No connections defined");
-		return;
-	}
-
-	while (conf_list != NULL) {
-		NMConnection *connection;
-		gchar *dir = (gchar *) conf_list->data;
-
-		connection = nm_gconf_read_connection (list->client, dir);
-		if (connection) {
-			g_object_set_data_full (G_OBJECT (connection),
-			                        NMA_CONNECTION_ID_TAG, g_path_get_basename (dir),
-			                        (GDestroyNotify) g_free);
-
-			g_object_set_data_full (G_OBJECT (connection),
-							    CE_GCONF_PATH_TAG, 
-							    g_strdup (dir),
-							    (GDestroyNotify) g_free);
-
-			g_hash_table_insert (list->connections,
-			                     g_strdup (dir),
-			                     connection);
-		}
-
-		conf_list = g_slist_remove (conf_list, dir);
-		g_free (dir);
-	}
-	g_slist_free (conf_list);
+	nm_exported_connection_delete (exported);
 }
 
 static void
@@ -641,201 +586,7 @@ connection_double_clicked_cb (GtkTreeView *tree_view,
                               GtkTreeViewColumn *column,
                               gpointer user_data)
 {
-	NMConnectionList *list = NM_CONNECTION_LIST (user_data);
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	NMConnection *connection;
-	gboolean success;
-
-	model = gtk_tree_view_get_model (tree_view);
-	g_return_if_fail (model != NULL);
-
-	success = gtk_tree_model_get_iter (model, &iter, path);
-	g_return_if_fail (success);
-	gtk_tree_model_get (model, &iter, COL_CONNECTION, &connection, -1);
-	g_return_if_fail (connection != NULL);
-
-	do_edit (list, connection, GTK_WIDGET (tree_view));
-}
-
-typedef struct {
-	GSList *types;
-	GtkListStore *model;
-} NewListInfo;
-
-static void
-hash_add_connection_to_list (gpointer key, gpointer value, gpointer user_data)
-{
-	NewListInfo *info = (NewListInfo *) user_data;
-	NMConnection *connection = (NMConnection *) value;
-	NMSettingConnection *s_con;
-	GtkTreeIter model_iter;
-	gboolean found = FALSE;
-	GSList *iter;
-	char *last_used;
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_con || !s_con->type)
-		return;
-
-	/* Filter on requested types */
-	for (iter = info->types; iter; iter = g_slist_next (iter)) {
-		if (!strcmp (s_con->type, (const char *) iter->data)) {
-			found = TRUE;
-			break;
-		}
-	}
-
-	if (!found)
-		return;
-
-	last_used = format_last_used (s_con->timestamp);
-
-	gtk_list_store_append (info->model, &model_iter);
-	gtk_list_store_set (info->model, &model_iter,
-	                    COL_ID, s_con->id,
-	                    COL_LAST_USED, last_used,
-	                    COL_TIMESTAMP, s_con->timestamp,
-	                    COL_CONNECTION, connection,
-	                    -1);
-	g_free (last_used);
-}
-
-static GtkWidget *
-new_connection_list (NMConnectionList *list,
-                     GSList *types,
-                     const char *prefix,
-                     GdkPixbuf *pixbuf,
-                     const char *label_text,
-                     GType ctype)
-{
-	GtkWidget *notebook;
-	GtkWidget *clist;
-	GtkListStore *model;
-	GtkTreeModel *sort_model;
-	char *name;
-	GtkWidget *image, *hbox, *button, *child;
-	GtkTreeSelection *select;
-	NewListInfo info;
-	GtkCellRenderer *renderer;
-	GValue val = { 0, };
-
-	name = g_strdup_printf ("%s_child", prefix);
-	child = glade_xml_get_widget (list->gui, name);
-	g_free (name);
-
-	/* Tab label with icon */
-	hbox = gtk_hbox_new (FALSE, 6);
-	if (pixbuf) {
-		image = gtk_image_new_from_pixbuf (pixbuf);
-		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
-	}
-	gtk_box_pack_start (GTK_BOX (hbox), gtk_label_new (label_text), FALSE, FALSE, 0);
-	gtk_widget_show_all (hbox);
-
-	notebook = glade_xml_get_widget (list->gui, "list_notebook");
-	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), child, hbox);
-
-	name = g_strdup_printf ("%s_list", prefix);
-	clist = glade_xml_get_widget (list->gui, name);
-	g_free (name);
-	g_object_set_data (G_OBJECT (clist), CONNECTION_TYPE_TAG, GUINT_TO_POINTER (ctype));
-
-	model = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT64, G_TYPE_OBJECT);
-
-	info.types = types;
-	info.model = model;
-	g_hash_table_foreach (list->connections,
-	                      (GHFunc) hash_add_connection_to_list,
-	                      &info);
-
-	sort_model = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (model));
-	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (sort_model),
-	                                      COL_TIMESTAMP, GTK_SORT_DESCENDING);
-	gtk_tree_view_set_model (GTK_TREE_VIEW (clist), GTK_TREE_MODEL (sort_model));
-
-	g_signal_connect (G_OBJECT (clist),
-	                  "row-activated", G_CALLBACK (connection_double_clicked_cb),
-	                  list);
-
-	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (clist),
-	                                             -1, "Name", gtk_cell_renderer_text_new (),
-	                                             "text", COL_ID,
-	                                             NULL);
-	gtk_tree_view_column_set_expand (gtk_tree_view_get_column (GTK_TREE_VIEW (clist), 0), TRUE);
-
-	renderer = gtk_cell_renderer_text_new ();
-	g_value_init (&val, G_TYPE_STRING);
-	g_value_set_string (&val, "SlateGray");
-	g_object_set_property (G_OBJECT (renderer), "foreground", &val);
-	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (clist),
-	                                             -1, "Last Used", renderer,
-	                                             "text", COL_LAST_USED,
-	                                             NULL);
-
-	select = gtk_tree_view_get_selection (GTK_TREE_VIEW (clist));
-	gtk_tree_selection_set_mode (select, GTK_SELECTION_SINGLE);
-
-	name = g_strdup_printf ("%s_add", prefix);
-	button = glade_xml_get_widget (list->gui, name);
-	g_object_set_data (G_OBJECT (button), CONNECTION_LIST_TAG, list);
-	g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (add_connection_cb), clist);
-	g_free (name);
-
-	name = g_strdup_printf ("%s_edit", prefix);
-	button = glade_xml_get_widget (list->gui, name);
-	g_object_set_data (G_OBJECT (button), CONNECTION_LIST_TAG, list);
-	g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (edit_connection_cb), clist);
-	g_signal_connect (G_OBJECT (select),
-	                  "changed", G_CALLBACK (list_selection_changed_cb),
-	                  button);
-	g_free (name);
-
-	name = g_strdup_printf ("%s_delete", prefix);
-	button = glade_xml_get_widget (list->gui, name);
-	g_object_set_data (G_OBJECT (button), CONNECTION_LIST_TAG, list);
-	g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (delete_connection_cb), clist);
-	g_signal_connect (G_OBJECT (select),
-	                  "changed", G_CALLBACK (list_selection_changed_cb),
-	                  button);
-	g_free (name);
-
-	return clist;
-}
-
-static gboolean
-init_connection_lists (NMConnectionList *list)
-{
-	GSList *types = NULL;
-	GtkWidget *clist;
-
-	types = g_slist_append (NULL, NM_SETTING_WIRED_SETTING_NAME);
-	clist = new_connection_list (list, types, "wired", list->wired_icon,
-	                             _("Wired"), NM_TYPE_SETTING_WIRED);
-	g_slist_free (types);
-
-	types = g_slist_append (NULL, NM_SETTING_WIRELESS_SETTING_NAME);
-	clist = new_connection_list (list, types, "wireless", list->wireless_icon,
-	                             _("Wireless"), NM_TYPE_SETTING_WIRELESS);
-	g_slist_free (types);
-
-	types = g_slist_append (NULL, NM_SETTING_GSM_SETTING_NAME);
-	types = g_slist_append (types, NM_SETTING_CDMA_SETTING_NAME);
-	clist = new_connection_list (list, types, "wwan", list->wwan_icon,
-	                             _("Mobile Broadband"), NM_TYPE_SETTING_GSM);
-	g_slist_free (types);
-
-	types = g_slist_append (NULL, NM_SETTING_VPN_SETTING_NAME);
-	clist = new_connection_list (list, types, "vpn", list->vpn_icon,
-	                             _("VPN"), NM_TYPE_SETTING_VPN);
-	g_slist_free (types);
-
-	types = g_slist_append (NULL, NM_SETTING_PPPOE_SETTING_NAME);
-	clist = new_connection_list (list, types, "dsl", list->wired_icon,
-	                             _("DSL"), NM_TYPE_SETTING_PPPOE);
-	g_slist_free (types);
-
-	return TRUE;
+	do_edit ((ActionInfo *) user_data);
 }
 
 static void
@@ -847,6 +598,7 @@ dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
 static void
 nm_connection_list_init (NMConnectionList *list)
 {
+	list->treeviews = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
 static void
@@ -875,10 +627,16 @@ dispose (GObject *object)
 		gtk_widget_destroy (list->dialog);
 	if (list->gui)
 		g_object_unref (list->gui);
-	if (list->connections)
-		g_hash_table_destroy (list->connections);
 	if (list->client)
 		g_object_unref (list->client);
+
+	g_hash_table_destroy (list->treeviews);
+
+	if (list->gconf_settings)
+		g_object_unref (list->gconf_settings);
+
+	if (list->system_settings)
+		g_object_unref (list->system_settings);
 
 	G_OBJECT_CLASS (nm_connection_list_parent_class)->dispose (object);
 }
@@ -902,6 +660,214 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 					  G_TYPE_NONE, 1, G_TYPE_INT);
 }
 
+static GtkTreeView *
+add_connection_treeview (NMConnectionList *self, const char *prefix)
+{
+	GtkTreeModel *model;
+	GtkTreeModel *sort_model;
+	GtkCellRenderer *renderer;
+	GtkTreeSelection *select;
+	GValue val = { 0, };
+	char *name;
+	GtkTreeView *treeview;
+
+	name = g_strdup_printf ("%s_list", prefix);
+	treeview = GTK_TREE_VIEW (glade_xml_get_widget (self->gui, name));
+	g_free (name);
+
+	/* Model */
+	model = GTK_TREE_MODEL (gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT64, G_TYPE_OBJECT));
+	sort_model = gtk_tree_model_sort_new_with_model (model);
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (sort_model),
+	                                      COL_TIMESTAMP, GTK_SORT_DESCENDING);
+	gtk_tree_view_set_model (treeview, sort_model);
+
+	/* Name column */
+	gtk_tree_view_insert_column_with_attributes (treeview,
+	                                             -1, "Name", gtk_cell_renderer_text_new (),
+	                                             "text", COL_ID,
+	                                             NULL);
+	gtk_tree_view_column_set_expand (gtk_tree_view_get_column (treeview, 0), TRUE);
+
+	/* Last Used column */
+	renderer = gtk_cell_renderer_text_new ();
+	g_value_init (&val, G_TYPE_STRING);
+	g_value_set_string (&val, "SlateGray");
+	g_object_set_property (G_OBJECT (renderer), "foreground", &val);
+
+	gtk_tree_view_insert_column_with_attributes (treeview,
+	                                             -1, "Last Used", renderer,
+	                                             "text", COL_LAST_USED,
+	                                             NULL);
+
+	/* Selection */
+	select = gtk_tree_view_get_selection (treeview);
+	gtk_tree_selection_set_mode (select, GTK_SELECTION_SINGLE);
+
+	return treeview;
+}
+
+static void
+add_connection_buttons (NMConnectionList *self,
+				    const char *prefix,
+				    GtkTreeView *treeview)
+{
+	char *name;
+	GtkWidget *button;
+	ActionInfo *info;
+	GtkTreeSelection *selection;
+
+	info = g_new (ActionInfo, 1);
+	info->list = self;
+	info->treeview = treeview;
+
+	selection = gtk_tree_view_get_selection (treeview);
+
+	g_object_weak_ref (G_OBJECT (self), (GWeakNotify) g_free, info);
+
+	/* Add */
+	name = g_strdup_printf ("%s_add", prefix);
+	button = glade_xml_get_widget (self->gui, name);
+	g_free (name);
+	g_signal_connect (button, "clicked", G_CALLBACK (add_connection_cb), info);
+
+	/* Edit */
+	name = g_strdup_printf ("%s_edit", prefix);
+	button = glade_xml_get_widget (self->gui, name);
+	g_free (name);
+	g_signal_connect (button, "clicked", G_CALLBACK (edit_connection_cb), info);
+	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed_cb), button);
+	g_signal_connect (treeview, "row-activated", G_CALLBACK (connection_double_clicked_cb), info);
+
+	/* Delete */
+	name = g_strdup_printf ("%s_delete", prefix);
+	button = glade_xml_get_widget (self->gui, name);
+	g_free (name);
+	g_signal_connect (button, "clicked", G_CALLBACK (delete_connection_cb), info);
+	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed_cb), button);
+}
+
+static void
+add_connection_tab (NMConnectionList *self,
+				GSList *connection_types,
+				GdkPixbuf *pixbuf,
+				const char *prefix,
+				const char *label_text)
+{
+	char *name;
+	GtkWidget *child;
+	GtkWidget *hbox;
+	GtkTreeView *treeview;
+	GSList *iter;
+
+	name = g_strdup_printf ("%s_child", prefix);
+	child = glade_xml_get_widget (self->gui, name);
+	g_free (name);
+
+	/* Notebook tab */
+	hbox = gtk_hbox_new (FALSE, 6);
+	if (pixbuf) {
+		GtkWidget *image;
+
+		image = gtk_image_new_from_pixbuf (pixbuf);
+		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	}
+	gtk_box_pack_start (GTK_BOX (hbox), gtk_label_new (label_text), FALSE, FALSE, 0);
+	gtk_widget_show_all (hbox);
+
+	gtk_notebook_set_tab_label (GTK_NOTEBOOK (glade_xml_get_widget (self->gui, "list_notebook")), child, hbox);
+
+	treeview = add_connection_treeview (self, prefix);
+	add_connection_buttons (self, prefix, treeview);
+
+	for (iter = connection_types; iter; iter = iter->next)
+		g_hash_table_insert (self->treeviews, g_strdup ((const char *) iter->data), treeview);
+}
+
+static void
+add_connection_tabs (NMConnectionList *self)
+{
+	GSList *types;
+
+	types = g_slist_append (NULL, NM_SETTING_WIRED_SETTING_NAME);
+	add_connection_tab (self, types, self->wired_icon, "wired", _("Wired"));
+	g_slist_free (types);
+
+	types = g_slist_append (NULL, NM_SETTING_WIRELESS_SETTING_NAME);
+	add_connection_tab (self, types, self->wireless_icon, "wireless", _("Wireless"));
+	g_slist_free (types);
+
+	types = g_slist_append (NULL, NM_SETTING_GSM_SETTING_NAME);
+	types = g_slist_append (types, NM_SETTING_CDMA_SETTING_NAME);
+	add_connection_tab (self, types, self->wwan_icon, "wwan", _("Mobile Broadband"));
+	g_slist_free (types);
+
+	types = g_slist_append (NULL, NM_SETTING_VPN_SETTING_NAME);
+	add_connection_tab (self, types, self->vpn_icon, "vpn", _("VPN"));
+	g_slist_free (types);
+
+	types = g_slist_append (NULL, NM_SETTING_PPPOE_SETTING_NAME);
+	add_connection_tab (self, types, self->wired_icon, "dsl", _("DSL"));
+	g_slist_free (types);
+}
+
+static void
+connection_removed (NMExportedConnection *exported, gpointer user_data)
+{
+	GtkListStore *store = GTK_LIST_STORE (user_data);
+	GtkTreeIter iter;
+
+	if (get_iter_for_connection (GTK_TREE_MODEL (store), exported, &iter))
+		gtk_list_store_remove (store, &iter);
+}
+
+static void
+connection_updated (NMExportedConnection *exported,
+				GHashTable *settings,
+				gpointer user_data)
+{
+	GtkListStore *store = GTK_LIST_STORE (user_data);
+	GtkTreeIter iter;
+
+	if (get_iter_for_connection (GTK_TREE_MODEL (store), exported, &iter))
+		update_connection_row (store, &iter, exported);
+}
+
+static void
+connection_added (NMSettings *settings,
+			   NMExportedConnection *exported,
+			   gpointer user_data)
+{
+	NMConnectionList *self = NM_CONNECTION_LIST (user_data);
+	GtkListStore *store;
+	GtkTreeIter iter;
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+	char *last_used;
+
+	store = get_model_for_connection (self, exported);
+	if (!store)
+		return;
+
+	connection = nm_exported_connection_get_connection (exported);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+
+	last_used = format_last_used (s_con->timestamp);
+
+	gtk_list_store_append (store, &iter);
+	gtk_list_store_set (store, &iter,
+	                    COL_ID, s_con->id,
+	                    COL_LAST_USED, last_used,
+	                    COL_TIMESTAMP, s_con->timestamp,
+	                    COL_CONNECTION, exported,
+	                    -1);
+
+	g_free (last_used);
+
+	g_signal_connect (exported, "removed", G_CALLBACK (connection_removed), store);
+	g_signal_connect (exported, "updated", G_CALLBACK (connection_updated), store);
+}
+
 #define ICON_LOAD(x, y)	\
 	{ \
 		x = gtk_icon_theme_load_icon (list->icon_theme, y, 16, 0, &error); \
@@ -916,6 +882,7 @@ NMConnectionList *
 nm_connection_list_new (void)
 {
 	NMConnectionList *list;
+	DBusGConnection *dbus_connection;
 	GError *error = NULL;
 
 	list = g_object_new (NM_TYPE_CONNECTION_LIST, NULL);
@@ -942,10 +909,25 @@ nm_connection_list_new (void)
 	if (!list->client)
 		goto error;
 
-	/* read connections */
-	list->connections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
-	load_connections (list);
-	init_connection_lists (list);
+	dbus_connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (error) {
+		g_warning ("Could not connect to the system bus: %s", error->message);
+		g_error_free (error);
+		goto error;
+	}
+
+	list->system_settings = nm_dbus_settings_system_new (dbus_connection);
+	dbus_g_connection_unref (dbus_connection);
+	g_signal_connect (list->system_settings, "new-connection",
+				   G_CALLBACK (connection_added),
+				   list);
+
+	list->gconf_settings = nma_gconf_settings_new ();
+	g_signal_connect (list->gconf_settings, "new-connection",
+				   G_CALLBACK (connection_added),
+				   list);
+
+	add_connection_tabs (list);
 
 	list->editors = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_object_unref);
 
