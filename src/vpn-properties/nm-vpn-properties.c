@@ -686,7 +686,7 @@ edit_cb (GtkButton *button, gpointer user_data)
 		if (strcmp (s_con->id, cur_id) != 0) {
 			/* Update the name in the list */
 			gtk_list_store_set (vpn_conn_list, &iter, 
-			                    VPNCONN_NAME_COLUMN, &s_con->id
+			                    VPNCONN_NAME_COLUMN, s_con->id,
 			                    -1);
 		}
 	}
