@@ -17,7 +17,7 @@ nm_applet_CPPFLAGS = \
 	-DNMALOCALEDIR=\"$(datadir)/locale\"					\
 	$(DBUS_CFLAGS)										\
 	$(DISABLE_DEPRECATED)	\
-	-I${top_srcdir}/src/marshallers \
+	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/gconf-helpers  \
 	-I${top_srcdir}/src/wireless-security  \

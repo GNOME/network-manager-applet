@@ -13,7 +13,7 @@ libgconf_helpers_la_SOURCES =	\
 libgconf_helpers_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \
 	-I${top_srcdir}/src \
-	-I${top_srcdir}/src/marshallers \
+	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils
 
 libgconf_helpers_la_LIBADD = \
