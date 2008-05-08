@@ -32,6 +32,7 @@
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-8021x.h>
+#include <nm-setting-ip4-config.h>
 
 #include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
@@ -123,6 +124,8 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 	char *str, *iface_and_type;
 	const char *iface;
 	const GArray *dns;
+	NMSettingIP4Address *def_addr;
+	guint32 hostmask, network, bcast;
 
 	g_return_val_if_fail (xml != NULL, NULL);
 	g_return_val_if_fail (device != NULL, NULL);
@@ -218,21 +221,25 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 	label = glade_xml_get_widget (xml, "label-driver");
 	gtk_label_set_text (GTK_LABEL (label), nm_device_get_driver (device));
 
+	def_addr = nm_ip4_config_get_addresses (cfg)->data;
 	label = glade_xml_get_widget (xml, "label-ip-address");
 	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (nm_ip4_config_get_address (cfg)));
-
-	label = glade_xml_get_widget (xml, "label-broadcast-address");
-	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (nm_ip4_config_get_broadcast (cfg)));
+					ip4_address_as_string (def_addr->address));
 
 	label = glade_xml_get_widget (xml, "label-subnet-mask");
 	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (nm_ip4_config_get_netmask (cfg)));
+					ip4_address_as_string (def_addr->netmask));
+
+	network = ntohl (def_addr->address) & ntohl (def_addr->netmask);
+	hostmask = ~ntohl (def_addr->netmask);
+	bcast = htonl (network | hostmask);
+	label = glade_xml_get_widget (xml, "label-broadcast-address");
+	gtk_label_set_text (GTK_LABEL (label),
+					ip4_address_as_string (bcast));
 
 	label = glade_xml_get_widget (xml, "label-default-route");
 	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (nm_ip4_config_get_gateway (cfg)));
+					ip4_address_as_string (def_addr->gateway));
 
 	dns = nm_ip4_config_get_nameservers (cfg);
 	if (dns && dns->len) {
