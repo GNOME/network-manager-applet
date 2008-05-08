@@ -316,6 +316,169 @@ gsm_get_icon (NMDevice *device,
 	return pixbuf;
 }
 
+typedef struct {
+	DBusGMethodInvocation *context;
+	NMApplet *applet;
+	NMConnection *connection;
+	GtkWidget *ok_button;
+	GtkEntry *pin_entry;
+} NMGsmInfo;
+
+static void
+pin_entry_changed (GtkEditable *editable, gpointer user_data)
+{
+	NMGsmInfo *info = (NMGsmInfo *) user_data;
+	const char *s;
+	int i;
+	gboolean valid = FALSE;
+
+	s = gtk_entry_get_text (info->pin_entry);
+	if (s && strlen (s) == 4) {
+		valid = TRUE;
+		for (i = 0; i < 4; i++) {
+			if (!g_ascii_isdigit (s[i])) {
+				valid = FALSE;
+				break;
+			}
+		}
+	}
+
+	gtk_widget_set_sensitive (info->ok_button, valid);
+}
+
+static void
+get_gsm_secrets_cb (GtkDialog *dialog,
+				gint response,
+				gpointer user_data)
+{
+	NMGsmInfo *info = (NMGsmInfo *) user_data;
+	NMAGConfConnection *gconf_connection;
+	NMSettingGsm *setting;
+	GHashTable *settings_hash;
+	GHashTable *secrets;
+	GError *err = NULL;
+
+	if (response != GTK_RESPONSE_OK) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): canceled",
+		             __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	setting = NM_SETTING_GSM (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_GSM));
+	g_free (setting->pin);
+	setting->pin = g_strdup (gtk_entry_get_text (info->pin_entry));
+
+	secrets = nm_setting_to_hash (NM_SETTING (setting));
+	if (!secrets) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+				   "%s.%d (%s): failed to hash setting '%s'.",
+				   __FILE__, __LINE__, __func__, NM_SETTING (setting)->name);
+		goto done;
+	}
+
+	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
+	 * will contain all the individual settings hashes.
+	 */
+	settings_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+								    g_free, (GDestroyNotify) g_hash_table_destroy);
+
+	g_hash_table_insert (settings_hash, g_strdup (NM_SETTING (setting)->name), secrets);
+	dbus_g_method_return (info->context, settings_hash);
+	g_hash_table_destroy (settings_hash);
+
+	/* Save the connection back to GConf _after_ hashing it, because
+	 * saving to GConf might trigger the GConf change notifiers, resulting
+	 * in the connection being read back in from GConf which clears secrets.
+	 */
+	gconf_connection = nma_gconf_settings_get_by_connection (info->applet->gconf_settings, info->connection);
+	if (gconf_connection)
+		nma_gconf_connection_save (gconf_connection);
+
+ done:
+	if (err) {
+		g_warning (err->message);
+		dbus_g_method_return_error (info->context, err);
+		g_error_free (err);
+	}
+
+	gtk_widget_hide (GTK_WIDGET (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+
+	nm_connection_clear_secrets (info->connection);
+	g_object_unref (info->connection);
+	g_free (info);
+}
+
+static gboolean
+gsm_get_secrets (NMDevice *device,
+			  NMConnection *connection,
+			  const char *specific_object,
+			  const char *setting_name,
+			  DBusGMethodInvocation *context,
+			  NMApplet *applet,
+			  GError **error)
+{
+	GtkDialog *dialog;
+	GtkWidget *w;
+	GtkBox *box;
+	char *dev_str;
+	NMGsmInfo *info;
+
+	info = g_new (NMGsmInfo, 1);
+	info->context = context;
+	info->applet = applet;
+	info->connection = g_object_ref (connection);
+
+	dialog = GTK_DIALOG (gtk_dialog_new ());
+	gtk_window_set_title (GTK_WINDOW (dialog), _("PIN code"));
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
+	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
+	info->ok_button = w;
+	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
+
+	w = gtk_label_new ("PIN code is needed for device");
+	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+
+	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
+	w = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (w), dev_str);
+	g_free (dev_str);
+	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+
+	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
+	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+
+	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
+	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
+	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (box));
+
+	gtk_box_pack_start (box, gtk_label_new ("PIN:"), FALSE, FALSE, 0);
+
+	w = gtk_entry_new ();
+	info->pin_entry = GTK_ENTRY (w);
+	gtk_entry_set_max_length (info->pin_entry, 4);
+	gtk_entry_set_width_chars (info->pin_entry, 4);
+	gtk_entry_set_activates_default (info->pin_entry, TRUE);
+	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
+	g_signal_connect (w, "changed", G_CALLBACK (pin_entry_changed), info);
+	pin_entry_changed (GTK_EDITABLE (w), info);
+
+	gtk_widget_show_all (dialog->vbox);
+
+	g_signal_connect (dialog, "response",
+				   G_CALLBACK (get_gsm_secrets_cb),
+				   info);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (GTK_WIDGET (dialog));
+	gtk_window_present (GTK_WINDOW (dialog));
+
+	return TRUE;
+}
+
 NMADeviceClass *
 applet_device_gsm_get_class (NMApplet *applet)
 {
@@ -329,6 +492,7 @@ applet_device_gsm_get_class (NMApplet *applet)
 	dclass->add_menu_item = gsm_add_menu_item;
 	dclass->device_state_changed = gsm_device_state_changed;
 	dclass->get_icon = gsm_get_icon;
+	dclass->get_secrets = gsm_get_secrets;
 
 	return dclass;
 }

@@ -84,8 +84,10 @@ static char * vnd_ignore[] = {
 	"Corporation",
 	"Corp.",
 	"Corp",
+	"Co.",
 	"Inc.",
 	"Inc",
+	"Ltd.",
 	NULL
 };
 
