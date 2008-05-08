@@ -542,6 +542,7 @@ ui_to_setting (CEPageIP4 *self)
 		char *str_gateway = NULL;
 		struct in_addr tmp_addr, tmp_netmask, tmp_gateway = { 0 };
 		GArray *addr;
+		guint32 empty_val = 0;
 		
 		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &str_address, -1);
 		gtk_tree_model_get (model, &tree_iter, COL_NETMASK, &str_netmask, -1);
@@ -571,6 +572,8 @@ ui_to_setting (CEPageIP4 *self)
 		g_array_append_val (addr, tmp_netmask.s_addr);
 		if (tmp_gateway.s_addr)
 			g_array_append_val (addr, tmp_gateway.s_addr);
+		else
+			g_array_append_val (addr, empty_val);
 		g_ptr_array_add (addresses, addr);
 
 next:
