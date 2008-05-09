@@ -21,6 +21,8 @@
  */
 
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkdialog.h>
@@ -31,7 +33,7 @@
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkstock.h>
 #include <gconf/gconf-client.h>
-
+#include <polkit-gnome/polkit-gnome.h>
 #include <glib/gi18n.h>
 
 #include <nm-setting-connection.h>
@@ -69,6 +71,9 @@ typedef struct {
 	NMConnectionList *list;
 	GtkTreeView *treeview;
 } ActionInfo;
+
+static void add_system_connection (NMConnectionList *self, NMConnection *connection);
+static void delete_connection (NMExportedConnection *exported);
 
 static NMExportedConnection *
 get_active_connection (GtkTreeView *treeview)
@@ -242,6 +247,82 @@ update_connection_row (GtkListStore *store,
 	g_free (last_used);
 }
 
+typedef struct {
+	NMConnectionList *list;
+	NMConnection *connection;
+} AddSystemConnectionInfo;
+
+static void
+add_system_connection_auth_cb (PolKitAction *action,
+						 gboolean gained_privilege,
+						 GError *error,
+						 gpointer user_data)
+{
+	AddSystemConnectionInfo *info = (AddSystemConnectionInfo *) user_data;
+
+	if (gained_privilege)
+		add_system_connection (info->list, info->connection);
+	else if (error) {
+		g_warning ("Could not obtain required privileges: %s", error->message);
+		g_error_free (error);
+	} else
+		g_warning ("Could not add system connection, permission denied");
+
+	g_object_unref (info->list);
+	g_object_unref (info->connection);
+	g_free (info);
+}
+
+static void
+add_system_connection (NMConnectionList *self, NMConnection *connection)
+{
+	GError *err = NULL;
+
+	if (nm_dbus_settings_system_add_connection (self->system_settings, connection, &err))
+		/* Done */
+		return;
+
+	if (dbus_g_error_has_name (err, "org.freedesktop.NetworkManagerSettings.System.NotPrivileged")) {
+		AddSystemConnectionInfo *info;
+		PolKitAction *pk_action;
+		char **tokens;
+		guint xid;
+		pid_t pid;
+
+		tokens = g_strsplit (err->message, " ", 2);
+		if (g_strv_length (tokens) != 2) {
+			g_warning ("helper return string malformed");
+			g_strfreev (tokens);
+			goto out;
+		}
+
+		pk_action = polkit_action_new ();
+		polkit_action_set_action_id (pk_action, tokens[0]);
+		g_strfreev (tokens);
+
+		xid = 0;
+		pid = getpid ();
+
+		g_error_free (err);
+		err = NULL;
+
+		info = g_new (AddSystemConnectionInfo, 1);
+		info->list = g_object_ref (self);
+		info->connection = g_object_ref (connection);
+		if (!polkit_gnome_auth_obtain (pk_action, xid, pid, add_system_connection_auth_cb, info, &err)) {
+			g_object_unref (info->list);
+			g_object_unref (info->connection);
+			g_free (info);
+		}
+	}
+
+ out:
+	if (err) {
+		g_warning ("Could not add system settings: %s", err->message);
+		g_error_free (err);
+	}
+}
+
 static void
 add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 {
@@ -256,7 +337,7 @@ add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 
 		connection = nm_exported_connection_get_connection (exported);
 		if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM)
-			nm_dbus_settings_system_add_connection (info->list->system_settings, connection);
+			add_system_connection (info->list, connection);
 		else
 			nma_gconf_settings_add_connection (info->list->gconf_settings, connection);
 	}
@@ -529,6 +610,68 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 }
 
 static void
+delete_connection_auth_cb (PolKitAction *action,
+					  gboolean gained_privilege,
+					  GError *error,
+					  gpointer user_data)
+{
+	NMExportedConnection *exported = NM_EXPORTED_CONNECTION (user_data);
+
+	if (gained_privilege)
+		delete_connection (exported);
+	else if (error) {
+		g_warning ("Could not obtain required privileges: %s", error->message);
+		g_error_free (error);
+	} else
+		g_warning ("Could not remove system connection, permission denied");
+
+	g_object_unref (exported);
+}
+
+static void
+delete_connection (NMExportedConnection *exported)
+{
+	GError *err = NULL;
+
+	if (nm_exported_connection_delete (exported, &err))
+		/* Done */
+		return;
+
+	if (dbus_g_error_has_name (err, "org.freedesktop.NetworkManagerSettings.Connection.NotPrivileged")) {
+		PolKitAction *pk_action;
+		char **tokens;
+		guint xid;
+		pid_t pid;
+
+		tokens = g_strsplit (err->message, " ", 2);
+		if (g_strv_length (tokens) != 2) {
+			g_warning ("helper return string malformed");
+			g_strfreev (tokens);
+			goto out;
+		}
+
+		pk_action = polkit_action_new ();
+		polkit_action_set_action_id (pk_action, tokens[0]);
+		g_strfreev (tokens);
+
+		xid = 0;
+		pid = getpid ();
+
+		g_error_free (err);
+		err = NULL;
+
+		if (polkit_gnome_auth_obtain (pk_action, xid, pid, delete_connection_auth_cb, exported, &err))
+			g_object_ref (exported);
+	}
+
+ out:
+	if (err) {
+		g_warning ("Deleting the connection failed: %s", err->message);
+		g_error_free (err);
+	}
+}
+
+static void
 delete_connection_cb (GtkButton *button, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
@@ -564,7 +707,7 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 	/* Close any open editor windows for this connection */
 	g_hash_table_remove (info->list->editors, exported);
 
-	nm_exported_connection_delete (exported);
+	delete_connection (exported);
 }
 
 static void
@@ -666,7 +809,7 @@ add_connection_treeview (NMConnectionList *self, const char *prefix)
 	GtkTreeModel *model;
 	GtkTreeModel *sort_model;
 	GtkCellRenderer *renderer;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 	GValue val = { 0, };
 	char *name;
 	GtkTreeView *treeview;
@@ -701,8 +844,8 @@ add_connection_treeview (NMConnectionList *self, const char *prefix)
 	                                             NULL);
 
 	/* Selection */
-	select = gtk_tree_view_get_selection (treeview);
-	gtk_tree_selection_set_mode (select, GTK_SELECTION_SINGLE);
+	selection = gtk_tree_view_get_selection (treeview);
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
 
 	return treeview;
 }

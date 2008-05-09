@@ -21,6 +21,8 @@
  */
 
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <gtk/gtk.h>
 #include <gtk/gtkcombobox.h>
@@ -31,6 +33,7 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmessagedialog.h>
+#include <polkit-gnome/polkit-gnome.h>
 #include <glib/gi18n.h>
 
 #include <nm-setting-connection.h>
@@ -71,6 +74,8 @@ static guint editor_signals[EDITOR_LAST_SIGNAL] = { 0 };
 
 static void nm_connection_editor_set_connection (NMConnectionEditor *editor,
 									    NMExportedConnection *exported);
+
+static void update_connection (NMExportedConnection *exported);
 
 static void
 dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
@@ -413,12 +418,78 @@ update_one_page (gpointer data, gpointer user_data)
 }
 
 static void
+update_connection_auth_cb (PolKitAction *action,
+					  gboolean gained_privilege,
+					  GError *error,
+					  gpointer user_data)
+{
+	NMExportedConnection *exported = NM_EXPORTED_CONNECTION (user_data);
+
+	if (gained_privilege)
+		update_connection (exported);
+	else if (error) {
+		g_warning ("Could not obtain required privileges: %s", error->message);
+		g_error_free (error);
+	} else
+		g_warning ("Could not update system connection, permission denied");
+
+	g_object_unref (exported);
+}
+
+static void
+update_connection (NMExportedConnection *exported)
+{
+	GHashTable *settings;
+	gboolean success;
+	GError *err = NULL;
+
+	settings = nm_connection_to_hash (nm_exported_connection_get_connection (exported));
+	success = nm_exported_connection_update (exported, settings, &err);
+	g_hash_table_destroy (settings);
+
+	if (success)
+		return;
+
+	if (dbus_g_error_has_name (err, "org.freedesktop.NetworkManagerSettings.Connection.NotPrivileged")) {
+		PolKitAction *pk_action;
+		char **tokens;
+		guint xid;
+		pid_t pid;
+
+		tokens = g_strsplit (err->message, " ", 2);
+		if (g_strv_length (tokens) != 2) {
+			g_warning ("helper return string malformed");
+			g_strfreev (tokens);
+			goto out;
+		}
+
+		pk_action = polkit_action_new ();
+		polkit_action_set_action_id (pk_action, tokens[0]);
+		g_strfreev (tokens);
+
+		xid = 0;
+		pid = getpid ();
+
+		g_error_free (err);
+		err = NULL;
+
+		if (polkit_gnome_auth_obtain (pk_action, xid, pid, update_connection_auth_cb, exported, &err))
+			g_object_ref (exported);
+	}
+
+ out:
+	if (err) {
+		g_warning ("Updating the connection failed: %s", err->message);
+		g_error_free (err);
+	}
+}
+
+static void
 connection_editor_update_connection (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
 	GtkWidget *widget;
 	const char *name;
-	GHashTable *settings;
 	gboolean autoconnect = FALSE;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
@@ -449,9 +520,7 @@ connection_editor_update_connection (NMConnectionEditor *editor)
 	}
 	utils_clear_filled_connection_certs (editor->connection);
 
-	settings = nm_connection_to_hash (editor->connection);
-	nm_exported_connection_update (editor->exported, settings);
-	/* FIXME: destroy hash? */
+	update_connection (editor->exported);
 }
 
 static void

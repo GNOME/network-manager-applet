@@ -290,29 +290,31 @@ get_id (NMExportedConnection *self)
 	return NMA_GCONF_CONNECTION_GET_PRIVATE (self)->id;
 }
 
-static void
-update (NMExportedConnection *exported, GHashTable *new_settings)
+static gboolean
+update (NMExportedConnection *exported, GHashTable *new_settings, GError **err)
 {
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (exported);
+	NMConnection *tmp;
 
-	nm_gconf_write_connection (nm_exported_connection_get_connection (exported),
+	tmp = nm_connection_new_from_hash (new_settings);
+	nm_gconf_write_connection (tmp,
 	                           priv->client,
 	                           priv->dir,
 	                           priv->id);
+	g_object_unref (tmp);
+
 	gconf_client_notify (priv->client, priv->dir);
 	gconf_client_suggest_sync (priv->client, NULL);
+
+	return TRUE;
 }
 
-static void
-delete (NMExportedConnection *exported)
+static gboolean
+delete (NMExportedConnection *exported, GError **err)
 {
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (exported);
-	GError *err = NULL;
 
-	if (!gconf_client_recursive_unset (priv->client, priv->dir, 0, &err)) {
-		g_warning ("Can not delete GConf connection: %s", err->message);
-		g_error_free (err);
-	}
+	return gconf_client_recursive_unset (priv->client, priv->dir, 0, err);
 }
 
 /* GObject */

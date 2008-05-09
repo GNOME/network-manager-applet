@@ -76,7 +76,8 @@ PKG_CHECK_MODULES(NMA,
 		 gmodule-export-2.0
 		 gconf-2.0
 		 gnome-keyring-1
-		 libnotify >= 0.4.3])
+		 libnotify >= 0.4.3
+		 polkit-gnome])
 
 ##### Find out the version of DBUS we're using
 dbus_version=`pkg-config --modversion dbus-1`

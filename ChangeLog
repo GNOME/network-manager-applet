@@ -1,3 +1,32 @@
+2008-05-02  Tambet Ingo  <tambet@gmail.com>
+
+	Use PolicyKit to authorize the system connection handling.
+
+	* src/gconf-helpers/nma-gconf-connection.c (update, delete): Update,
+	NMExportedConnection::update and ::delete now handle errors.
+
+	* src/connection-editor/nm-connection-list.c 
+	(delete_connection_auth_cb): Implement
+	(delete_connection): Implement.
+	(delete_connection_cb): Use PolicyKit.
+
+	* src/connection-editor/nm-connection-editor.c 
+	(connection_editor_update_connection): Use a PolicyKit aware helper
+	function to update connections.
+	(update_connection): Implmenet.
+	(update_connection_auth_cb): Implement.
+
+	* src/connection-editor/nm-connection-list.c (add_done_cb): Use the
+	PolicyKit aware helper function to add new system connection.
+	(add_system_connection): Implement. If the request fails because of
+	authorization, use PolicyKit gnome helper to request the authorization.
+	(add_system_connection_auth_cb): Implement. Try again if the 
+	authorization was granted.
+	(add_connection_treeview): Rename an internal variable, 'select' clashes
+	with a syscall name.
+
+	* configure.ac: Require PolicyKit-gnome.
+
 2008-05-08  Tambet Ingo  <tambet@gmail.com>
 
 	Implement asking GSM device PIN.
