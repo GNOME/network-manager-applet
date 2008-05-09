@@ -75,6 +75,28 @@ typedef struct {
 static void add_system_connection (NMConnectionList *self, NMConnection *connection);
 static void delete_connection (NMExportedConnection *exported);
 
+static void
+show_error_dialog (const gchar *format, ...)
+{
+	GtkWidget *dialog;
+	va_list args;
+	char *msg;
+
+	va_start (args, format);
+	msg = g_strdup_vprintf (format, args);
+	va_end (args);
+
+	dialog = gtk_message_dialog_new (NULL,
+							   GTK_DIALOG_DESTROY_WITH_PARENT,
+							   GTK_MESSAGE_ERROR,
+							   GTK_BUTTONS_CLOSE,
+							   msg);
+	g_free (msg);
+
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+}
+
 static NMExportedConnection *
 get_active_connection (GtkTreeView *treeview)
 {
@@ -263,10 +285,10 @@ add_system_connection_auth_cb (PolKitAction *action,
 	if (gained_privilege)
 		add_system_connection (info->list, info->connection);
 	else if (error) {
-		g_warning ("Could not obtain required privileges: %s", error->message);
+		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
 		g_error_free (error);
 	} else
-		g_warning ("Could not add system connection, permission denied");
+		show_error_dialog (_("Could not add system connection: permission denied."));
 
 	g_object_unref (info->list);
 	g_object_unref (info->connection);
@@ -318,7 +340,7 @@ add_system_connection (NMConnectionList *self, NMConnection *connection)
 
  out:
 	if (err) {
-		g_warning ("Could not add system settings: %s", err->message);
+		show_error_dialog (_("Could not add system settings: %s."), err->message);
 		g_error_free (err);
 	}
 }
@@ -620,10 +642,10 @@ delete_connection_auth_cb (PolKitAction *action,
 	if (gained_privilege)
 		delete_connection (exported);
 	else if (error) {
-		g_warning ("Could not obtain required privileges: %s", error->message);
+		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
 		g_error_free (error);
 	} else
-		g_warning ("Could not remove system connection, permission denied");
+		show_error_dialog (_("Could not remove system connection: permission denied."));
 
 	g_object_unref (exported);
 }
@@ -666,7 +688,7 @@ delete_connection (NMExportedConnection *exported)
 
  out:
 	if (err) {
-		g_warning ("Deleting the connection failed: %s", err->message);
+		show_error_dialog (_("Deleting the connection failed: %s."), err->message);
 		g_error_free (err);
 	}
 }
