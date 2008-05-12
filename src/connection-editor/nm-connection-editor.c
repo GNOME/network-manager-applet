@@ -32,8 +32,6 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtkmessagedialog.h>
-#include <polkit-gnome/polkit-gnome.h>
 #include <glib/gi18n.h>
 
 #include <nm-setting-connection.h>
@@ -50,7 +48,6 @@
 #include <nm-utils.h>
 
 #include "nm-connection-editor.h"
-#include "utils.h"
 #include "gconf-helpers.h"
 
 #include "ce-page.h"
@@ -74,30 +71,6 @@ static guint editor_signals[EDITOR_LAST_SIGNAL] = { 0 };
 
 static void nm_connection_editor_set_connection (NMConnectionEditor *editor,
 									    NMExportedConnection *exported);
-
-static void update_connection (NMExportedConnection *exported);
-
-static void
-show_error_dialog (const gchar *format, ...)
-{
-	GtkWidget *dialog;
-	va_list args;
-	char *msg;
-
-	va_start (args, format);
-	msg = g_strdup_vprintf (format, args);
-	va_end (args);
-
-	dialog = gtk_message_dialog_new (NULL,
-							   GTK_DIALOG_DESTROY_WITH_PARENT,
-							   GTK_MESSAGE_ERROR,
-							   GTK_BUTTONS_CLOSE,
-							   msg);
-	g_free (msg);
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
-}
 
 static void
 dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
@@ -440,73 +413,6 @@ update_one_page (gpointer data, gpointer user_data)
 }
 
 static void
-update_connection_auth_cb (PolKitAction *action,
-					  gboolean gained_privilege,
-					  GError *error,
-					  gpointer user_data)
-{
-	NMExportedConnection *exported = NM_EXPORTED_CONNECTION (user_data);
-
-	if (gained_privilege)
-		update_connection (exported);
-	else if (error) {
-		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
-		g_error_free (error);
-	} else
-		show_error_dialog (_("Could not update system connection: permission denied."));
-
-	g_object_unref (exported);
-}
-
-static void
-update_connection (NMExportedConnection *exported)
-{
-	GHashTable *settings;
-	gboolean success;
-	GError *err = NULL;
-
-	settings = nm_connection_to_hash (nm_exported_connection_get_connection (exported));
-	success = nm_exported_connection_update (exported, settings, &err);
-	g_hash_table_destroy (settings);
-
-	if (success)
-		return;
-
-	if (dbus_g_error_has_name (err, "org.freedesktop.NetworkManagerSettings.Connection.NotPrivileged")) {
-		PolKitAction *pk_action;
-		char **tokens;
-		guint xid;
-		pid_t pid;
-
-		tokens = g_strsplit (err->message, " ", 2);
-		if (g_strv_length (tokens) != 2) {
-			g_warning ("helper return string malformed");
-			g_strfreev (tokens);
-			goto out;
-		}
-
-		pk_action = polkit_action_new ();
-		polkit_action_set_action_id (pk_action, tokens[0]);
-		g_strfreev (tokens);
-
-		xid = 0;
-		pid = getpid ();
-
-		g_error_free (err);
-		err = NULL;
-
-		if (polkit_gnome_auth_obtain (pk_action, xid, pid, update_connection_auth_cb, exported, &err))
-			g_object_ref (exported);
-	}
-
- out:
-	if (err) {
-		show_error_dialog (("Updating the connection failed: %s."), err->message);
-		g_error_free (err);
-	}
-}
-
-static void
 connection_editor_update_connection (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
@@ -533,16 +439,6 @@ connection_editor_update_connection (NMConnectionEditor *editor)
 		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_USER);
 
 	g_slist_foreach (editor->pages, update_one_page, editor->connection);
-
-	utils_fill_connection_certs (editor->connection);
-	if (!nm_connection_verify (editor->connection)) {
-		utils_clear_filled_connection_certs (editor->connection);
-		g_warning ("%s: connection invalid after update; bug in the connection editor.", __func__);
-		return;
-	}
-	utils_clear_filled_connection_certs (editor->connection);
-
-	update_connection (editor->exported);
 }
 
 static void
