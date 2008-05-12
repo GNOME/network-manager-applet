@@ -1,3 +1,21 @@
+2008-05-12  Dan Williams  <dcbw@redhat.com>
+
+	* configure.ac
+		- Handle PolicyKit 0.6 and grab PK version for later use
+		- Split out PK CFLAGS and LIBS from main NMA flags and libs
+
+	* src/connection-editor/Makefile.am
+		- Use split out PK CFLAGS and LIBS
+		- Build in PK 0.6 helpers when needed
+
+	* src/connection-editor/polkit-06-helpers.c
+	  src/connection-editor/polkit-06-helpers.h
+		- (polkit_gnome_auth_obtain): re-implement for PK 0.6 using ShowDialog
+			instead
+
+	* src/connection-editor/nm-connection-list.c
+		- Use polkit-06-helpers when needed
+
 2008-05-12  Tambet Ingo  <tambet@gmail.com>
 
 	* src/connection-editor/nm-connection-list.c: Unify all the PolicyKit

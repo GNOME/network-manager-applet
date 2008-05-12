@@ -20,6 +20,7 @@
  * (C) Copyright 2004-2005 Red Hat, Inc.
  */
 
+#include <config.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -33,8 +34,13 @@
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkstock.h>
 #include <gconf/gconf-client.h>
-#include <polkit-gnome/polkit-gnome.h>
 #include <glib/gi18n.h>
+
+#ifdef NO_POLKIT_GNOME
+#include "polkit-06-helpers.h"
+#else
+#include <polkit-gnome/polkit-gnome.h>
+#endif
 
 #include <nm-setting-connection.h>
 #include <nm-connection.h>
