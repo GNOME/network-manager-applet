@@ -1,5 +1,21 @@
 2008-05-15  Tambet Ingo  <tambet@gmail.com>
 
+	Update GConf connections after all the changes are done to avoid
+	invalid connection states while in between changes.
+
+	* src/gconf-helpers/nma-gconf-settings.c (connections_changed_cb):
+	Collect all pending changes and handle them after all GConf changes
+	are done. Also fixes a bunch of ugly warnings when connections get
+	deleted.
+
+	* src/gconf-helpers/nma-gconf-connection.c
+	(nma_gconf_connection_changed): Remove the GConfEntry, we collect all
+	changes before calling this, the connection is in invalid state while
+	some setting values are update and others aren't.
+	(delete): Suggest a sync after recursive unset.
+
+2008-05-15  Tambet Ingo  <tambet@gmail.com>
+
 	Move crypto functions from here to NetworkManager/libnm-util.
 
 	* src/utils/crypto.[ch]

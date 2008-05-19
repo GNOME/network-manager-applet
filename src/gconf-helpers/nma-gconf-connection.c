@@ -120,8 +120,7 @@ fill_vpn_user_name (NMConnection *connection)
 }
 
 gboolean
-nma_gconf_connection_changed (NMAGConfConnection *self,
-						GConfEntry *entry)
+nma_gconf_connection_changed (NMAGConfConnection *self)
 {
 	NMAGConfConnectionPrivate *priv;
 	GHashTable *settings;
@@ -130,12 +129,10 @@ nma_gconf_connection_changed (NMAGConfConnection *self,
 	GHashTable *new_settings;
 
 	g_return_val_if_fail (NMA_IS_GCONF_CONNECTION (self), FALSE);
-	g_return_val_if_fail (entry != NULL, FALSE);
 
 	priv = NMA_GCONF_CONNECTION_GET_PRIVATE (self);
 	wrapped_connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (self));
 
-	/* FIXME: just update the modified field, no need to re-read all */
 	gconf_connection = nm_gconf_read_connection (priv->client, priv->dir);
 	if (!gconf_connection) {
 		g_warning ("No connection read from GConf at %s.", priv->dir);
@@ -313,8 +310,12 @@ static gboolean
 delete (NMExportedConnection *exported, GError **err)
 {
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (exported);
+	gboolean success;
 
-	return gconf_client_recursive_unset (priv->client, priv->dir, 0, err);
+	success = gconf_client_recursive_unset (priv->client, priv->dir, 0, err);
+	gconf_client_suggest_sync (priv->client, NULL);
+
+	return success;
 }
 
 /* GObject */

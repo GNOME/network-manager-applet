@@ -16,6 +16,7 @@ typedef struct {
 	guint conf_notify_id;
 	GSList *connections;
 	guint read_connections_id;
+	GHashTable *pending_changes;
 
 	gboolean disposed;
 } NMAGConfSettingsPrivate;
@@ -237,6 +238,52 @@ list_connections (NMSettings *settings)
 	return g_slist_copy (priv->connections);
 }
 
+typedef struct {
+	NMAGConfSettings *settings;
+	char *path;
+} ConnectionChangedInfo;
+
+static void
+connection_changed_info_destroy (gpointer data)
+{
+	ConnectionChangedInfo *info = (ConnectionChangedInfo *) data;
+
+	g_free (info->path);
+	g_free (info);
+}
+
+static gboolean
+connection_changes_done (gpointer data)
+{
+	ConnectionChangedInfo *info = (ConnectionChangedInfo *) data;
+	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (info->settings);
+	NMAGConfConnection *connection;
+
+	connection = nma_gconf_settings_get_by_path (info->settings, info->path);
+	if (!connection) {
+		/* New connection */
+		connection = nma_gconf_connection_new (priv->client, info->path);
+		if (connection) {
+			g_signal_connect (connection, "new-secrets-requested",
+						   G_CALLBACK (connection_new_secrets_requested_cb),
+						   info->settings);
+			priv->connections = g_slist_append (priv->connections, connection);
+			nm_settings_signal_new_connection (NM_SETTINGS (info->settings),
+										NM_EXPORTED_CONNECTION (connection));
+		}
+	} else {
+		if (gconf_client_dir_exists (priv->client, info->path, NULL)) {
+			/* Updated connection */
+			if (!nma_gconf_connection_changed (connection))
+				priv->connections = g_slist_remove (priv->connections, connection);
+		}
+	}
+
+	g_hash_table_remove (priv->pending_changes, info->path);
+
+	return FALSE;
+}
+
 static void
 connections_changed_cb (GConfClient *conf_client,
                         guint cnxn_id,
@@ -248,8 +295,6 @@ connections_changed_cb (GConfClient *conf_client,
 	char **dirs = NULL;
 	guint len;
 	char *path = NULL;
-	NMAGConfConnection *connection;
-	gboolean valid = FALSE;
 
 	dirs = g_strsplit (gconf_entry_get_key (entry), "/", -1);
 	len = g_strv_length (dirs);
@@ -263,28 +308,30 @@ connections_changed_cb (GConfClient *conf_client,
 		goto out;
 
 	path = g_strconcat ("/", dirs[1], "/", dirs[2], "/", dirs[3], "/", dirs[4], NULL);
-	connection = nma_gconf_settings_get_by_path (self, path);
-	if (!connection) {
-		/* New connection */
-		connection = nma_gconf_connection_new (priv->client, path);
-		if (connection) {
-			g_signal_connect (connection, "new-secrets-requested",
-						   G_CALLBACK (connection_new_secrets_requested_cb),
-						   self);
-			priv->connections = g_slist_append (priv->connections, connection);
-			nm_settings_signal_new_connection (NM_SETTINGS (self),
-										NM_EXPORTED_CONNECTION (connection));
-		}
-	} else {
-		/* Updated or removed connection */
-		valid = nma_gconf_connection_changed (connection, entry);
-		if (!valid)
-			priv->connections = g_slist_remove (priv->connections, connection);
+
+	if (!g_hash_table_lookup (priv->pending_changes, path)) {
+		ConnectionChangedInfo *info;
+		guint id;
+
+		info = g_new (ConnectionChangedInfo, 1);
+		info->settings = self;
+		info->path = path;
+		path = NULL;
+
+		id = g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, connection_changes_done, 
+						  info, connection_changed_info_destroy);
+		g_hash_table_insert (priv->pending_changes, info->path, GUINT_TO_POINTER (id));
 	}
 
 out:
 	g_free (path);
 	g_strfreev (dirs);
+}
+
+static void
+remove_pending_change (gpointer data)
+{
+	g_source_remove (GPOINTER_TO_UINT (data));
 }
 
 /* GObject */
@@ -295,6 +342,7 @@ nma_gconf_settings_init (NMAGConfSettings *settings)
 	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (settings);
 
 	priv->client = gconf_client_get_default ();
+	priv->pending_changes = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, remove_pending_change);
 
 	gconf_client_add_dir (priv->client,
 	                      GCONF_PATH_CONNECTIONS,
@@ -337,6 +385,8 @@ dispose (GObject *object)
 		return;
 
 	priv->disposed = TRUE;
+
+	g_hash_table_destroy (priv->pending_changes);
 
 	if (priv->read_connections_id) {
 		g_source_remove (priv->read_connections_id);

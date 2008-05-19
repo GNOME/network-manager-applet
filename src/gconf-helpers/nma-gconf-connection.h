@@ -47,8 +47,7 @@ const char         *nma_gconf_connection_get_path (NMAGConfConnection *self);
 
 void                nma_gconf_connection_save (NMAGConfConnection *self);
 
-gboolean            nma_gconf_connection_changed (NMAGConfConnection *self,
-										GConfEntry *entry);
+gboolean            nma_gconf_connection_changed (NMAGConfConnection *self);
 
 G_END_DECLS
 
