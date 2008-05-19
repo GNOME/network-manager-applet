@@ -41,7 +41,6 @@
 #include <nm-setting-pppoe.h>
 #include <nm-utils.h>
 
-#include "crypto.h"
 #include "utils.h"
 #include "gconf-helpers.h"
 
@@ -183,52 +182,11 @@ clear_one_byte_array_field (GByteArray **field)
 	*field = NULL;
 }
 
-gboolean
-utils_fill_one_crypto_object (NMConnection *connection,
-                              const char *key_name,
-                              gboolean is_private_key,
-                              const char *password,
-                              GByteArray **field,
-                              GError **error)
-{
-	const char *filename;
-	NMSettingConnection *s_con;
-	guint32 ignore;
-
-	g_return_val_if_fail (key_name != NULL, FALSE);
-	g_return_val_if_fail (field != NULL, FALSE);
-
-	clear_one_byte_array_field (field);
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_return_val_if_fail (s_con != NULL, FALSE);
-
-	filename = g_object_get_data (G_OBJECT (connection), key_name);
-	if (!filename)
-		return TRUE;
-
-	if (is_private_key)
-		g_return_val_if_fail (password != NULL, FALSE);
-
-	if (is_private_key) {
-		*field = crypto_get_private_key (filename, password, &ignore, error);
-		if (error && *error)
-			clear_one_byte_array_field (field);
-	} else {
-		*field = crypto_load_and_verify_certificate (filename, error);
-		if (error && *error)
-			clear_one_byte_array_field (field);
-	}
-
-	if (error && *error)
-		return FALSE;
-	return TRUE;
-}
-
 void
 utils_fill_connection_certs (NMConnection *connection)
 {
 	NMSetting8021x *s_8021x;
+	const char *filename;
 
 	g_return_if_fail (connection != NULL);
 
@@ -236,30 +194,21 @@ utils_fill_connection_certs (NMConnection *connection)
 	if (!s_8021x)
 		return;
 
-	utils_fill_one_crypto_object (connection,
-	                              NMA_PATH_CA_CERT_TAG,
-	                              FALSE,
-	                              NULL,
-	                              &s_8021x->ca_cert,
-	                              NULL);
-	utils_fill_one_crypto_object (connection,
-	                              NMA_PATH_CLIENT_CERT_TAG,
-	                              FALSE,
-	                              NULL,
-	                              &s_8021x->client_cert,
-	                              NULL);
-	utils_fill_one_crypto_object (connection,
-	                              NMA_PATH_PHASE2_CA_CERT_TAG,
-	                              FALSE,
-	                              NULL,
-	                              &s_8021x->phase2_ca_cert,
-	                              NULL);
-	utils_fill_one_crypto_object (connection,
-	                              NMA_PATH_PHASE2_CLIENT_CERT_TAG,
-	                              FALSE,
-	                              NULL,
-	                              &s_8021x->phase2_client_cert,
-	                              NULL);
+	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG);
+	if (filename)
+		nm_setting_802_1x_set_ca_cert (s_8021x, filename, NULL);
+
+	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CLIENT_CERT_TAG);
+	if (filename)
+		nm_setting_802_1x_set_client_cert (s_8021x, filename, NULL);
+
+	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CA_CERT_TAG);
+	if (filename)
+		nm_setting_802_1x_set_phase2_ca_cert (s_8021x, filename, NULL);
+
+	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CLIENT_CERT_TAG);
+	if (filename)
+		nm_setting_802_1x_set_phase2_client_cert (s_8021x, filename, NULL);
 }
 
 void

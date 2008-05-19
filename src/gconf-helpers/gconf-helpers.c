@@ -1331,7 +1331,7 @@ get_one_private_key (NMConnection *connection,
 {
 	NMSettingConnection *s_con;
 	GByteArray *array = NULL;
-	const char *privkey_tag;
+	const char *filename = NULL;
 	const char *secret_name;
 	gboolean success = FALSE;
 
@@ -1344,10 +1344,10 @@ get_one_private_key (NMConnection *connection,
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 
 	if (!strcmp (tag, NMA_PRIVATE_KEY_PASSWORD_TAG)) {
-		privkey_tag = NMA_PATH_PRIVATE_KEY_TAG;
+		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PRIVATE_KEY_TAG);
 		secret_name = NM_SETTING_802_1X_PRIVATE_KEY;
 	} else if (!strcmp (tag, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG)) {
-		privkey_tag = NMA_PATH_PHASE2_PRIVATE_KEY_TAG;
+		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
 		secret_name = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY;
 	} else {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
@@ -1356,7 +1356,19 @@ get_one_private_key (NMConnection *connection,
 		return FALSE;
 	}
 
-	utils_fill_one_crypto_object (connection, privkey_tag, TRUE, password, &array, error);
+	if (filename) {
+		NMSetting8021x *setting;
+
+		setting = (NMSetting8021x *) nm_setting_802_1x_new ();
+		nm_setting_802_1x_set_private_key (setting, filename, password, error);
+
+		/* Steal the private key */
+		array = setting->private_key;
+		setting->private_key = NULL;
+
+		g_object_unref (setting);
+	}
+
 	if (*error) {
 		goto out;
 	} else if (!array || !array->len) {

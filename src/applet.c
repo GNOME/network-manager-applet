@@ -67,7 +67,6 @@
 #include "vpn-password-dialog.h"
 #include "applet-dbus-manager.h"
 #include "utils.h"
-#include "crypto.h"
 #include "gconf-helpers.h"
 
 
@@ -2103,14 +2102,6 @@ constructor (GType type,
 {
 	NMApplet *applet;
 	AppletDBusManager * dbus_mgr;
-	GError *error = NULL;
-
-	if (!crypto_init (&error)) {
-		g_warning ("Couldn't initilize crypto system: %d %s",
-		           error->code, error->message);
-		g_error_free (error);
-		return NULL;
-	}
 
 	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
 
@@ -2221,8 +2212,6 @@ static void finalize (GObject *object)
 		g_object_unref (applet->status_icon);
 
 	g_object_unref (applet->nm_client);
-
-	crypto_deinit ();
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }

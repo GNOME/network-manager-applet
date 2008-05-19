@@ -33,7 +33,6 @@
 #include <dbus/dbus-glib.h>
 
 #include "nm-connection-list.h"
-#include "crypto.h"
 
 static GMainLoop *loop = NULL;
 
@@ -71,7 +70,6 @@ main (int argc, char *argv[])
 {
 	NMConnectionList *list;
 	DBusGConnection *ignore;
-	GError *error = NULL;
 
 	bindtextdomain (GETTEXT_PACKAGE, NMALOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -84,12 +82,6 @@ main (int argc, char *argv[])
 	/* Hack to init the dbus-glib type system */
 	ignore = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
 	dbus_g_connection_unref (ignore);
-
-	if (!crypto_init (&error)) {
-		g_warning ("Couldn't initilize crypto system: %d %s",
-		           error->code, error->message);
-		return 1;
-	}
 
 	loop = g_main_loop_new (NULL, FALSE);
 
@@ -106,6 +98,6 @@ main (int argc, char *argv[])
 	g_main_loop_run (loop);
 
 	g_object_unref (list);
-	crypto_deinit ();
+
 	return 0;
 }

@@ -32,13 +32,6 @@ char * utils_bin2hexstr (const char *bytes, int len, int final_len);
 
 const char * utils_get_device_description (NMDevice *device);
 
-gboolean utils_fill_one_crypto_object (NMConnection *connection,
-                                       const char *key_name,
-                                       gboolean is_private_key,
-                                       const char *password,
-                                       GByteArray **field,
-                                       GError **error);
-
 void utils_fill_connection_certs (NMConnection *connection);
 
 void utils_clear_filled_connection_certs (NMConnection *connection);

@@ -172,44 +172,6 @@ if test "$ac_have_iwevgenie" = no; then
 	AC_MSG_ERROR(wireless-tools >= 28pre9 not installed or not functional)
 fi
 
-AC_ARG_WITH(nss, AC_HELP_STRING([--with-nss], [Use NSS library for certificate and key operations]), ac_nss=$withval, ac_nss=auto)
-if test x"$ac_nss" != xno; then
-  PKG_CHECK_MODULES(NSS, [nss >= 3.11])
-  AC_DEFINE(HAVE_NSS, 1, [Define if you have NSS])
-fi
-AM_CONDITIONAL(WITH_NSS, test x"$ac_nss" != xno)
-
-AC_ARG_WITH(gnutls, AC_HELP_STRING([--with-gnutls], [Use gnutls and gcrypt libraries for certificate and key operations]), ac_gnutls=$withval, ac_gnutls=no)
-if test x"$ac_gnutls" != xno; then
-  PKG_CHECK_MODULES(GNUTLS, [gnutls >= 1.2])
-  AC_PATH_PROG(LIBGCRYPT_CONFIG, libgcrypt-config, no)
-else
-  LIBGCRYPT_CONFIG=no
-fi 
-if test x"$LIBGCRYPT_CONFIG" = xno; then
-   if test x"$ac_gnutls" = xyes; then
-      AC_MSG_ERROR([gnutls explicitly requested but gcrypt not found on system])
-   fi
-   ac_gnutls=no
-else
-   if test x"$ac_gnutls" != xno; then
-     AC_DEFINE(HAVE_GNUTLS, 1, [Define if you have libgnutls])
-     LIBGCRYPT_CFLAGS=`$LIBGCRYPT_CONFIG --cflags`
-     LIBGCRYPT_LIBS=`$LIBGCRYPT_CONFIG --libs`
-     AC_SUBST(LIBGCRYPT_CFLAGS)
-     AC_SUBST(LIBGCRYPT_LIBS)
-   fi
-fi
-AM_CONDITIONAL(WITH_GNUTLS, test x"$ac_gnutls" != xno)
-
-if test x"$ac_nss" = xno -a x"$ac_gnutls" = xno; then
-  AC_MSG_ERROR([Please choose either NSS or gnutls for certificate and key operations])
-fi
-
-if test x"$ac_nss" = xyes -a x"$ac_gnutls" = xyes; then
-  AC_MSG_ERROR([Please choose _one_ of NSS or gnutls for certificate and key operations])
-fi
-
 AC_ARG_WITH(dbus-sys, AC_HELP_STRING([--with-dbus-sys=DIR], [where D-BUS system.d directory is]))
 
 if ! test -z "$with_dbus_sys" ; then

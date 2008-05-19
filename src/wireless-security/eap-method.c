@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -29,8 +31,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <nm-setting-8021x.h>
 #include "eap-method.h"
-#include "crypto.h"
+
 
 GType
 eap_method_get_g_type (void)
@@ -149,6 +152,7 @@ eap_method_validate_filepicker (GladeXML *xml,
 {
 	GtkWidget *widget;
 	char *filename;
+	NMSetting8021x *setting;
 	gboolean success = FALSE;
 	GError *error = NULL;
 
@@ -164,10 +168,10 @@ eap_method_validate_filepicker (GladeXML *xml,
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
 		goto out;
 
+	setting = (NMSetting8021x *) nm_setting_802_1x_new ();
+
 	if (is_private_key) {
-		GByteArray *key;
 		const char *pw;
-		guint32 key_type = NM_CRYPTO_KEY_TYPE_UNKNOWN;
 
 		if (!pw_entry_name)
 			goto out;
@@ -179,30 +183,17 @@ eap_method_validate_filepicker (GladeXML *xml,
 		if (!pw || !strlen (pw))
 			goto out;
 
-		key = crypto_get_private_key (filename, pw, &key_type, &error);
-		if (error != NULL)
-			g_clear_error (&error);
-
-		if (key) {
-			memset (key->data, 0, key->len);
-			g_byte_array_free (key, TRUE);
-			success = TRUE;
-		}
+		success = nm_setting_802_1x_set_private_key (setting, filename, pw, NULL);
 	} else {
-		GByteArray *cert;
-
-		cert = crypto_load_and_verify_certificate (filename, &error);
-		if (error != NULL) {
+		success = nm_setting_802_1x_set_ca_cert (setting, filename, &error);
+		if (error) {
 			g_warning ("Error: couldn't verify certificate: %d %s",
 			           error->code, error->message);
 			g_clear_error (&error);
 		}
-
-		if (cert) {
-			g_byte_array_free (cert, TRUE);
-			success = TRUE;
-		}
 	}
+
+	g_object_unref (setting);
 
 out:
 	g_free (filename);

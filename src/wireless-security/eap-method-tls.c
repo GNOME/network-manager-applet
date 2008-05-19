@@ -1,3 +1,5 @@
+/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -198,23 +200,21 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	                        method->phase2 ? NMA_PATH_PHASE2_PRIVATE_KEY_TAG : NMA_PATH_PRIVATE_KEY_TAG,
 	                        g_strdup (filename),
 	                        (GDestroyNotify) g_free);
-	g_free (filename);
-
 	if (method->phase2) {
-		utils_fill_one_crypto_object (connection, NMA_PATH_PHASE2_PRIVATE_KEY_TAG,
-		                              TRUE, password, &s_8021x->phase2_private_key, &error);
+		nm_setting_802_1x_set_phase2_private_key (s_8021x, filename, password, &error);
 		if (error) {
 			g_warning ("Couldn't read phase2 private key: %s", error->message);
 			g_clear_error (&error);
 		}
 	} else {
-		utils_fill_one_crypto_object (connection, NMA_PATH_PRIVATE_KEY_TAG,
-		                              TRUE, password, &s_8021x->private_key, &error);
+		nm_setting_802_1x_set_private_key (s_8021x, filename, password, &error);
 		if (error) {
 			g_warning ("Couldn't read private key: %s", error->message);
 			g_clear_error (&error);
 		}
 	}
+
+	g_free (filename);
 
 	if (method->ignore_ca_cert) {
 		g_object_set_data (G_OBJECT (connection),
