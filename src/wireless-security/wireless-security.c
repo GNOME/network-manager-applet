@@ -289,7 +289,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	EAPMethodTTLS *em_ttls;
 	EAPMethodPEAP *em_peap;
 	const char *default_method = NULL;
-	int active = -1;
+	int active = -1, item = 0;
 	gboolean wired = FALSE;
 
 	/* Grab the default EAP method out of the security object */
@@ -318,7 +318,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_tls));
 	if (default_method && (active < 0) && !strcmp (default_method, "tls"))
-		active = 0;
+		active = item;
+	item++;
 
 	if (!wired) {
 		em_leap = eap_method_leap_new (glade_file, sec, connection, connection_id);
@@ -329,7 +330,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		                    -1);
 		eap_method_unref (EAP_METHOD (em_leap));
 		if (default_method && (active < 0) && !strcmp (default_method, "leap"))
-			active = 1;
+			active = item;
+		item++;
 	}
 
 	em_ttls = eap_method_ttls_new (glade_file, sec, connection, connection_id);
@@ -340,7 +342,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_ttls));
 	if (default_method && (active < 0) && !strcmp (default_method, "ttls"))
-		active = 2;
+		active = item;
+	item++;
 
 	em_peap = eap_method_peap_new (glade_file, sec, connection, connection_id);
 	gtk_list_store_append (auth_model, &iter);
@@ -350,7 +353,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_peap));
 	if (default_method && (active < 0) && !strcmp (default_method, "peap"))
-		active = 3;
+		active = item;
+	item++;
 
 	combo = glade_xml_get_widget (sec->xml, combo_name);
 	g_assert (combo);
