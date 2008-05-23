@@ -56,9 +56,10 @@ typedef struct {
 	gboolean disposed;
 } CEPageIP4Private;
 
-#define IP4_METHOD_DHCP   0
-#define IP4_METHOD_AUTOIP 1
-#define IP4_METHOD_MANUAL 2
+#define IP4_METHOD_DHCP            0
+#define IP4_METHOD_AUTOIP          1
+#define IP4_METHOD_MANUAL          2
+#define IP4_METHOD_DHCP_MANUAL_DNS 3
 
 #define COL_ADDRESS 0
 #define COL_NETMASK 1
@@ -123,6 +124,10 @@ populate_ui (CEPageIP4 *self)
 		else if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_MANUAL))
 			method = IP4_METHOD_MANUAL;
 	}
+
+	if (method == IP4_METHOD_DHCP && setting->ignore_dhcp_dns)
+		method = IP4_METHOD_DHCP_MANUAL_DNS;
+
 	gtk_combo_box_set_active (priv->method, method);
 	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
 
@@ -517,6 +522,7 @@ ui_to_setting (CEPageIP4 *self)
 	gboolean valid;
 	const char *text;
 	char **items = NULL, **iter;
+	gboolean ignore_dhcp_dns = FALSE;
 
 	/* Method */
 	switch (gtk_combo_box_get_active (priv->method)) {
@@ -526,6 +532,9 @@ ui_to_setting (CEPageIP4 *self)
 	case IP4_METHOD_MANUAL:
 		method = NM_SETTING_IP4_CONFIG_METHOD_MANUAL;
 		break;
+	case IP4_METHOD_DHCP_MANUAL_DNS:
+		ignore_dhcp_dns = TRUE;
+		/* fall through */
 	default:
 		method = NM_SETTING_IP4_CONFIG_METHOD_DHCP;
 		break;
@@ -621,6 +630,7 @@ next:
 				  NM_SETTING_IP4_CONFIG_ADDRESSES, addresses,
 				  NM_SETTING_IP4_CONFIG_DNS, dns_servers,
 				  NM_SETTING_IP4_CONFIG_DNS_SEARCH, search_domains,
+				  NM_SETTING_IP4_CONFIG_IGNORE_DHCP_DNS, ignore_dhcp_dns,
 				  NULL);
 
 	if (addresses) {
