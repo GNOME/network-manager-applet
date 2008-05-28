@@ -77,7 +77,7 @@ utils_bin2hexstr (const char *bytes, int len, int final_len)
 	return result;
 }
 
-static char * vnd_ignore[] = {
+static char * ignored_words[] = {
 	"Semiconductor",
 	"Components",
 	"Corporation",
@@ -87,8 +87,57 @@ static char * vnd_ignore[] = {
 	"Inc.",
 	"Inc",
 	"Ltd.",
+	"Multiprotocol",
+	"MAC/baseband",
+	"processor",
 	NULL
 };
+
+static char *
+fixup_desc_string (const char *desc)
+{
+	char *p, *temp;
+	char **words, **item;
+	GString *str;
+
+	p = temp = g_strdup (desc);
+	while (*p) {
+		if (*p == '_' || *p == ',')
+			*p = ' ';
+		p++;
+	}
+
+	/* Attmept to shorted ID by ignoring certain words */
+	words = g_strsplit (temp, " ", 0);
+	str = g_string_new_len (NULL, strlen (temp));
+	g_free (temp);
+
+	for (item = words; *item; item++) {
+		int i = 0;
+		gboolean ignore = FALSE;
+
+		if (g_ascii_isspace (**item) || (**item == '\0'))
+			continue;
+
+		while (ignored_words[i] && !ignore) {
+			if (!strcmp (*item, ignored_words[i]))
+				ignore = TRUE;
+			i++;
+		}
+
+		if (!ignore) {
+			if (str->len)
+				g_string_append_c (str, ' ');
+			g_string_append (str, *item);
+		}
+	}
+	g_strfreev (words);
+
+	temp = str->str;
+	g_string_free (str, FALSE);
+
+	return temp;
+}
 
 #define DESC_TAG "description"
 
@@ -100,9 +149,6 @@ utils_get_device_description (NMDevice *device)
 	const char *dev_vendor;
 	char *product = NULL;
 	char *vendor = NULL;
-	char *p;
-	char **words;
-	char **item;
 	GString *str;
 
 	g_return_val_if_fail (device != NULL, NULL);
@@ -116,49 +162,18 @@ utils_get_device_description (NMDevice *device)
 	if (!dev_product || !dev_vendor)
 		return NULL;
 
-	/* Replace stupid '_' with ' ' */
-	p = product = g_strdup (dev_product);
-	while (*p) {
-		if (*p == '_')
-			*p = ' ';
-		p++;
-	}
+	product = fixup_desc_string (dev_product);
+	vendor = fixup_desc_string (dev_vendor);
 
-	p = vendor = g_strdup (dev_vendor);
-	while (*p) {
-		if (*p == '_' || *p == ',')
-			*p = ' ';
-		p++;
-	}
+	str = g_string_new_len (NULL, strlen (vendor) + strlen (product) + 1);
 
-	str = g_string_new_len (NULL, strlen (vendor) + strlen (product));
-
-	/* In a futile attempt to shorten the vendor ID, ignore certain words */
-	words = g_strsplit (vendor, " ", 0);
-
-	for (item = words; *item; item++) {
-		int i = 0;
-		gboolean ignore = FALSE;
-
-		if (g_ascii_isspace (**item) || (**item == '\0'))
-			continue;
-
-		while (vnd_ignore[i] && !ignore) {
-			if (!strcmp (*item, vnd_ignore[i]))
-				ignore = TRUE;
-			i++;
-		}
-
-		if (!ignore) {
-			if (str->len)
-				g_string_append_c (str, ' ');
-			g_string_append (str, *item);
-		}
-	}
-	g_strfreev (words);
+	g_string_append (str, vendor);
+	g_free (vendor);
 
 	g_string_append_c (str, ' ');
 	g_string_append (str, product);
+	g_free (product);
+
 	description = str->str;
 	g_string_free (str, FALSE);
 
@@ -166,8 +181,6 @@ utils_get_device_description (NMDevice *device)
 	                        "description", description,
 	                        (GDestroyNotify) g_free);
 
-	g_free (product);
-	g_free (vendor);
 	return description;
 }
 
