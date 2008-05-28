@@ -241,7 +241,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	table = GTK_TABLE (gtk_table_new (12, 2, FALSE));
 	gtk_table_set_col_spacings (table, 12);
 	gtk_table_set_row_spacings (table, 6);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 6);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 12);
 
 	/* Interface */
 	iface = nm_device_get_iface (device);
