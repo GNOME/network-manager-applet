@@ -23,28 +23,49 @@
 #define WIRELESS_DIALOG_H
 
 #include <gtk/gtk.h>
+#include <gtk/gtkdialog.h>
+#include <glib/gtypes.h>
+#include <glib-object.h>
+
 #include <nm-connection.h>
+#include <nm-device.h>
+#include <nm-access-point.h>
 
-/* The wireless dialog is used in a few situations:
- * 1) Connecting to an unseen network, in which case 'cur_device' and 'cur_ap'
- *      can be NULL because the user gets to choose
- * 2) As the password/passphrase/key dialog, in which case 'cur_device' and
- *      'cur_ap' are given and shouldn't change (and the dialog should filter
- *      options based on the capability of the device and the AP
- * 3) Creating an adhoc network, which is much like (1)
- */
-GtkWidget *	nma_wireless_dialog_new (const char *glade_file,
-                                     NMClient *nm_client,
-                                     NMConnection *connection,
-                                     NMDevice *cur_device,
-                                     NMAccessPoint *cur_ap,
-                                     gboolean user_created_adhoc);
+#define NMA_TYPE_WIRELESS_DIALOG            (nma_wireless_dialog_get_type ())
+#define NMA_WIRELESS_DIALOG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NMA_TYPE_WIRELESS_DIALOG, NMAWirelessDialog))
+#define NMA_WIRELESS_DIALOG_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NMA_TYPE_WIRELESS_DIALOG, NMAWirelessDialogClass))
+#define NMA_IS_WIRELESS_DIALOG(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NMA_TYPE_WIRELESS_DIALOG))
+#define NMA_IS_WIRELESS_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), NMA_TYPE_WIRELESS_DIALOG))
+#define NMA_WIRELESS_DIALOG_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), NMA_TYPE_WIRELESS_DIALOG, NMAWirelessDialogClass))
 
-NMConnection * nma_wireless_dialog_get_connection (GtkWidget *dialog,
+typedef struct {
+	GtkDialog parent;
+} NMAWirelessDialog;
+
+typedef struct {
+	GtkDialogClass parent;
+} NMAWirelessDialogClass;
+
+GType nma_wireless_dialog_get_type (void);
+
+GtkWidget *nma_wireless_dialog_new (NMApplet *applet,
+                                    NMConnection *connection,
+                                    NMDevice *device,
+                                    NMAccessPoint *ap);
+
+GtkWidget *nma_wireless_dialog_new_for_other (NMApplet *applet);
+
+GtkWidget *nma_wireless_dialog_new_for_create (NMApplet *applet);
+
+NMConnection * nma_wireless_dialog_get_connection (NMAWirelessDialog *dialog,
                                                    NMDevice **device,
                                                    NMAccessPoint **ap);
 
-GtkWidget * nma_wireless_dialog_nag_user (GtkWidget *dialog);
+GtkWidget * nma_wireless_dialog_nag_user (NMAWirelessDialog *dialog);
+
+void nma_wireless_dialog_set_nag_ignored (NMAWirelessDialog *dialog, gboolean ignored);
+
+gboolean nma_wireless_dialog_get_nag_ignored (NMAWirelessDialog *dialog);
 
 #endif	/* WIRELESS_DIALOG_H */
 

@@ -1,5 +1,20 @@
 2008-05-28  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-dialog.c
+	  src/wireless-dialog.h
+	  src/applet.glade
+		- Convert the wireless dialog into a subclass of GtkDialog
+		- Add a "Connection" combo box and populate it with existing connections
+			that apply to the operation being performed; it's populated with
+			adhoc-create=True connections for "Create new...", populated with
+			adhoc-create=False connections for "Connect to other...", and hidden
+			when the applet is just asking for secrets.
+
+	* src/applet-device-wireless.c
+		- Handle new wireless dialog API
+
+2008-05-28  Dan Williams  <dcbw@redhat.com>
+
 	* src/utils/utils.c
 		- (utils_get_device_description): ignore words in the product string
 			too; add more ignored words

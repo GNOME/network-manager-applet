@@ -59,12 +59,7 @@ other_wireless_activate_cb (GtkWidget *menu_item,
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new (applet->glade_file,
-	                                  applet->nm_client,
-	                                  NULL,
-	                                  NULL,
-	                                  NULL,
-	                                  FALSE);
+	dialog = nma_wireless_dialog_new_for_other (applet);
 	if (!dialog)
 		return;
 
@@ -72,7 +67,6 @@ other_wireless_activate_cb (GtkWidget *menu_item,
 	                  G_CALLBACK (wireless_dialog_response_cb),
 	                  applet);
 
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (dialog);
 	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
 }
@@ -97,12 +91,7 @@ new_network_activate_cb (GtkWidget *menu_item, NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new (applet->glade_file,
-	                                  applet->nm_client,
-	                                  NULL,
-	                                  NULL,
-	                                  NULL,
-	                                  TRUE);
+	dialog = nma_wireless_dialog_new_for_create (applet);
 	if (!dialog)
 		return;
 
@@ -110,7 +99,6 @@ new_network_activate_cb (GtkWidget *menu_item, NMApplet *applet)
 	                  G_CALLBACK (wireless_dialog_response_cb),
 	                  applet);
 
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (dialog);
 	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
 }
@@ -1074,46 +1062,41 @@ wireless_dialog_close (gpointer user_data)
 	return FALSE;
 }
 
-#define NAG_IGNORED_TAG "nag-ignored"
-
 static void
 nag_dialog_response_cb (GtkDialog *nag_dialog,
                         gint response,
                         gpointer user_data)
 {
-	GtkWidget *wireless_dialog = GTK_WIDGET (user_data);
+	NMAWirelessDialog *wireless_dialog = NMA_WIRELESS_DIALOG (user_data);
 
 	if (response == GTK_RESPONSE_NO) {  /* user opted not to correct the warning */
-		g_object_set_data (G_OBJECT (wireless_dialog),
-		                   NAG_IGNORED_TAG,
-		                   GUINT_TO_POINTER (TRUE));
+		nma_wireless_dialog_set_nag_ignored (wireless_dialog, TRUE);
 		g_idle_add (wireless_dialog_close, wireless_dialog);
 	}
 }
 
 static void
-wireless_dialog_response_cb (GtkDialog *dialog,
+wireless_dialog_response_cb (GtkDialog *foo,
                              gint response,
                              gpointer user_data)
 {
+	NMAWirelessDialog *dialog = NMA_WIRELESS_DIALOG (foo);
 	NMApplet *applet = NM_APPLET (user_data);
 	NMConnection *connection = NULL, *fuzzy_match = NULL;
 	NMDevice *device = NULL;
 	NMAccessPoint *ap = NULL;
 	NMAGConfConnection *gconf_connection;
-	gboolean ignored = FALSE;
 
 	if (response != GTK_RESPONSE_OK)
 		goto done;
 
-	ignored = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (dialog), NAG_IGNORED_TAG));
-	if (!ignored) {
+	if (!nma_wireless_dialog_get_nag_ignored (dialog)) {
 		GtkWidget *nag_dialog;
 
 		/* Nag the user about certificates or whatever.  Only destroy the dialog
 		 * if no nagging was done.
 		 */
-		nag_dialog = nma_wireless_dialog_nag_user (GTK_WIDGET (dialog));
+		nag_dialog = nma_wireless_dialog_nag_user (dialog);
 		if (nag_dialog) {
 			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
 			g_signal_connect (nag_dialog, "response",
@@ -1123,7 +1106,7 @@ wireless_dialog_response_cb (GtkDialog *dialog,
 		}
 	}
 
-	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device, &ap);
+	connection = nma_wireless_dialog_get_connection (dialog, &device, &ap);
 	g_assert (connection);
 	g_assert (device);
 
@@ -1222,19 +1205,13 @@ wireless_get_more_info (NMDevice *device,
 	WirelessMenuItemInfo *info = (WirelessMenuItemInfo *) user_data;
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new (applet->glade_file,
-	                                  applet->nm_client,
-	                                  g_object_ref (connection),
-	                                  device,
-	                                  info->ap,
-	                                  FALSE);
+	dialog = nma_wireless_dialog_new (applet, connection, device, info->ap);
 	g_return_if_fail (dialog != NULL);
 
 	g_signal_connect (dialog, "response",
 	                  G_CALLBACK (wireless_dialog_response_cb),
 	                  applet);
 
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (dialog);
 	gtk_window_present (GTK_WINDOW (dialog));
 }
@@ -1269,10 +1246,11 @@ add_one_setting (GHashTable *settings,
 }
 
 static void
-get_secrets_dialog_response_cb (GtkDialog *dialog,
+get_secrets_dialog_response_cb (GtkDialog *foo,
                                 gint response,
                                 gpointer user_data)
 {
+	NMAWirelessDialog *dialog = NMA_WIRELESS_DIALOG (foo);
 	NMApplet *applet = NM_APPLET (user_data);
 	DBusGMethodInvocation *context;
 	NMAGConfConnection *gconf_connection;
@@ -1282,7 +1260,6 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 	GHashTable *settings = NULL;
 	const char *setting_name;
 	GError *error = NULL;
-	gboolean ignored;
 
 	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
 	setting_name = g_object_get_data (G_OBJECT (dialog), "setting-name");
@@ -1300,14 +1277,13 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		goto done;
 	}
 
-	ignored = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (dialog), NAG_IGNORED_TAG));
-	if (!ignored) {
+	if (!nma_wireless_dialog_get_nag_ignored (dialog)) {
 		GtkWidget *widget;
 
 		/* Nag the user about certificates or whatever.  Only destroy the dialog
 		 * if no nagging was done.
 		 */
-		widget = nma_wireless_dialog_nag_user (GTK_WIDGET (dialog));
+		widget = nma_wireless_dialog_nag_user (dialog);
 		if (widget) {
 			gtk_window_set_transient_for (GTK_WINDOW (widget), GTK_WINDOW (dialog));
 			g_signal_connect (widget, "response",
@@ -1317,7 +1293,7 @@ get_secrets_dialog_response_cb (GtkDialog *dialog,
 		}
 	}
 
-	connection = nma_wireless_dialog_get_connection (GTK_WIDGET (dialog), &device, NULL);
+	connection = nma_wireless_dialog_get_connection (dialog, &device, NULL);
 	if (!connection) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): couldn't get connection from wireless dialog.",
@@ -1421,12 +1397,7 @@ wireless_get_secrets (NMDevice *device,
 	ap = nm_device_802_11_wireless_get_access_point_by_path (NM_DEVICE_802_11_WIRELESS (device),
 	                                                         specific_object);
 
-	dialog = nma_wireless_dialog_new (applet->glade_file,
-	                                  applet->nm_client,
-	                                  g_object_ref (connection),
-	                                  device,
-	                                  ap,
-	                                  FALSE);
+	dialog = nma_wireless_dialog_new (applet, connection, device, ap);
 	if (!dialog) {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): couldn't display secrets UI",
@@ -1443,7 +1414,6 @@ wireless_get_secrets (NMDevice *device,
 	                  G_CALLBACK (get_secrets_dialog_response_cb),
 	                  applet);
 
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (dialog);
 	gtk_window_present (GTK_WINDOW (dialog));
 
