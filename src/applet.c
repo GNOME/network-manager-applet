@@ -1222,23 +1222,7 @@ nma_edit_connections_cb (GtkMenuItem *mi, NMApplet *applet)
 static void
 applet_connection_info_cb (NMApplet *applet)
 {
-	NMActiveConnection *active;
-	NMConnection *connection;
-	NMDevice *device = NULL;
-
-	active = applet_get_default_active_connection (applet, &device);
-	if (!active) {
-		g_warning ("%s: couldn't find the default active connection!", __func__);
-		return;
-	}
-
-	connection = applet_get_connection_for_active (applet, active);
-	if (!connection) {
-		g_warning ("%s: couldn't find the default active connection's NMConnection!", __func__);
-		return;
-	}
-
-	applet_info_dialog_show (connection, device, applet);
+	applet_info_dialog_show (applet);
 }
 
 /*

@@ -1,3 +1,16 @@
+2008-05-28  Tambet Ingo  <tambet@gmail.com>
+
+	Show all active connections in "Connection Information" dialog.
+
+	* src/applet.glade: Remove the connection editor's content, it's
+	built in C now, one page per active connection.
+
+	* src/applet-dialogs.c: Add a tab per connection when showing the
+	connection information.
+
+	* src/applet.c (applet_connection_info_cb): Don't find the default
+	connection, all active connections are shown.
+
 2008-05-23  Tambet Ingo  <tambet@gmail.com>
 
 	* src/connection-editor/page-ip4.c: Add a "DHCP with manual DNS settings"

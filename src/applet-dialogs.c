@@ -29,8 +29,10 @@
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
 
+#include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
+#include <nm-setting-wired.h>
 #include <nm-setting-8021x.h>
 #include <nm-setting-ip4-config.h>
 
@@ -65,33 +67,32 @@ ip4_address_as_string (guint32 ip)
 	return ip_string;
 }
 
-static void
-set_eap_info_label (GtkWidget *label,
-                    NMSettingWirelessSecurity *sec,
-                    NMSetting8021x *s_8021x)
+static char *
+get_eap_label (NMSettingWirelessSecurity *sec,
+			   NMSetting8021x *s_8021x)
 {
 	GString *str = NULL;
 	char *phase2_str = NULL;
 
-	if (!strcmp (sec->key_mgmt, "ieee8021x")) {
-		if (sec->auth_alg && !strcmp (sec->auth_alg, "leap"))
-			str = g_string_new (_("LEAP"));
+	if (sec) {
+		if (!strcmp (sec->key_mgmt, "ieee8021x")) {
+			if (sec->auth_alg && !strcmp (sec->auth_alg, "leap"))
+				str = g_string_new (_("LEAP"));
+			else
+				str = g_string_new (_("Dynamic WEP"));
+		} else if (!strcmp (sec->key_mgmt, "wpa-eap"))
+			str = g_string_new (_("WPA/WPA2"));
 		else
-			str = g_string_new (_("Dynamic WEP"));
-	} else if (!strcmp (sec->key_mgmt, "wpa-eap"))
-		str = g_string_new (_("WPA/WPA2"));
-	else {
-		str = g_string_new (_("Unknown"));
-		goto out;
-	}
+			return NULL;
+	} else if (s_8021x)
+		str = g_string_new ("802.1x");
 
 	if (!s_8021x)
 		goto out;
 
 	if (s_8021x->eap && s_8021x->eap->data) {
 		char *eap_str = g_ascii_strup (s_8021x->eap->data, -1);
-		g_string_append (str, ", EAP-");
-		g_string_append (str, eap_str);
+		g_string_append_printf (str, ", EAP-%s", eap_str);
 		g_free (eap_str);
 	}
 
@@ -107,37 +108,189 @@ set_eap_info_label (GtkWidget *label,
 	}
 	
 out:
-	gtk_label_set_text (GTK_LABEL (label), str->str);
+	return g_string_free (str, FALSE);
+}
 
-	g_free (phase2_str);
-	g_string_free (str, TRUE);
+static NMConnection *
+get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
+{
+	GSList *list, *iter;
+	NMConnection *connection = NULL;
+	NMConnectionScope scope;
+	const char *path;
+
+	scope = nm_active_connection_get_scope (active);
+	g_return_val_if_fail (scope != NM_CONNECTION_SCOPE_UNKNOWN, NULL);
+
+	path = nm_active_connection_get_connection (active);
+	g_return_val_if_fail (path != NULL, NULL);
+
+	list = applet_get_all_connections (applet);
+	for (iter = list; iter; iter = g_slist_next (iter)) {
+		NMConnection *candidate = NM_CONNECTION (iter->data);
+
+		if (   (nm_connection_get_scope (candidate) == scope)
+			   && !strcmp (nm_connection_get_path (candidate), path)) {
+			connection = candidate;
+			break;
+		}
+	}
+
+	g_slist_free (list);
+
+	return connection;
 }
 
 static GtkWidget *
-info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
+create_info_label (const char *text)
 {
-	GtkWidget *dialog;
 	GtkWidget *label;
-	GtkWidget *label2;
-	NMIP4Config *cfg;
+
+	label = gtk_label_new (text ? text : "");
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+
+	return label;
+}
+
+static GtkWidget *
+create_info_label_security (NMConnection *connection)
+{
+	NMSettingConnection *s_con;
+	char *label = NULL;
+	GtkWidget *w;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
+
+	if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME)) {
+		NMSettingWireless *s_wireless;
+		NMSettingWirelessSecurity *s_wireless_sec;
+		NMSetting8021x *s_8021x;
+
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+		s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, 
+																				  NM_TYPE_SETTING_WIRELESS_SECURITY);
+		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+		if (s_wireless
+			&& s_wireless->security
+			&& !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)
+		    && s_wireless_sec) {
+
+			if (!strcmp (s_wireless_sec->key_mgmt, "none"))
+				label = g_strdup (_("WEP"));
+			else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-none"))
+				label = g_strdup (_("WPA/WPA2"));
+			else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-psk"))
+				label = g_strdup (_("WPA/WPA2"));
+			else
+				label = get_eap_label (s_wireless_sec, s_8021x);
+		} else {
+			label = g_strdup (_("None"));
+		}
+	} else if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME)) {
+		NMSetting8021x *s_8021x;
+
+		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+		if (s_8021x)
+			label = get_eap_label (NULL, s_8021x);
+	}
+
+	w = create_info_label (label ? label : _("Unknown"));
+	g_free (label);
+
+	return w;
+}
+
+static GtkWidget *
+create_info_notebook_label (NMConnection *connection, gboolean is_default)
+{
+	GtkWidget *label;
+	NMSettingConnection *s_con;
+	GString *str;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
+
+	str = g_string_new (s_con->id);
+
+	if (is_default)
+		str = g_string_append (str, " (default)");
+
+	label = gtk_label_new (str->str);
+	g_string_free (str, TRUE);
+
+	return label;
+}
+
+static void
+info_dialog_add_page (GtkNotebook *notebook,
+					  NMConnection *connection,
+					  gboolean is_default,
+					  NMDevice *device)
+{
+	GtkTable *table;
 	guint32 speed;
-	char *str, *iface_and_type;
+	char *str;
 	const char *iface;
+	NMIP4Config *ip4_config;
 	const GArray *dns;
 	NMSettingIP4Address *def_addr;
 	guint32 hostmask, network, bcast;
+	int row = 0;
 
-	g_return_val_if_fail (xml != NULL, NULL);
-	g_return_val_if_fail (device != NULL, NULL);
+	table = GTK_TABLE (gtk_table_new (12, 2, FALSE));
+	gtk_table_set_col_spacings (table, 12);
+	gtk_table_set_row_spacings (table, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 6);
 
-	dialog = glade_xml_get_widget (xml, "info_dialog");
-	if (!dialog) {
-		info_dialog_show_error (_("Could not find some required resources (the glade file)!"));
-		return NULL;
-	}
+	/* Interface */
+	iface = nm_device_get_iface (device);
+	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+		str = g_strdup_printf (_("Ethernet (%s)"), iface);
+	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
+		str = g_strdup_printf (_("802.11 WiFi (%s)"), iface);
+	else if (NM_IS_GSM_DEVICE (device))
+		str = g_strdup_printf (_("GSM (%s)"), iface);
+	else if (NM_IS_CDMA_DEVICE (device))
+		str = g_strdup_printf (_("CDMA (%s)"), iface);
+	else
+		str = g_strdup (iface);
 
-	cfg = nm_device_get_ip4_config (device);
+	gtk_table_attach_defaults (table,
+							   create_info_label (_("Interface:")),
+							   0, 1, row, row + 1);
+	gtk_table_attach_defaults (table,
+							   create_info_label (str),
+							   1, 2, row, row + 1);
+	g_free (str);
+	row++;
 
+	/* Hardware address */
+	str = NULL;
+	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+		str = g_strdup (nm_device_802_3_ethernet_get_hw_address (NM_DEVICE_802_3_ETHERNET (device)));
+	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
+		str = g_strdup (nm_device_802_11_wireless_get_hw_address (NM_DEVICE_802_11_WIRELESS (device)));
+
+	gtk_table_attach_defaults (table,
+							   create_info_label (_("Hardware Address:")),
+							   0, 1, row, row + 1);
+	gtk_table_attach_defaults (table,
+							   create_info_label (str),
+							   1, 2, row, row + 1);
+	g_free (str);
+	row++;
+
+	/* Driver */
+	gtk_table_attach_defaults (table,
+							   create_info_label (_("Driver:")),
+							   0, 1, row, row + 1);
+	gtk_table_attach_defaults (table,
+							   create_info_label (nm_device_get_driver (device)),
+							   1, 2, row, row + 1);
+	row++;
+
+	/* Speed */
 	speed = 0;
 	if (NM_IS_DEVICE_802_3_ETHERNET (device)) {
 		/* Wired speed in Mb/s */
@@ -148,131 +301,168 @@ info_dialog_update (GladeXML *xml, NMDevice *device, NMConnection *connection)
 		speed /= 1000;
 	}
 
-	iface = nm_device_get_iface (device);
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		iface_and_type = g_strdup_printf (_("Ethernet (%s)"), iface);
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		iface_and_type = g_strdup_printf (_("802.11 WiFi (%s)"), iface);
-	else if (NM_IS_GSM_DEVICE (device))
-		iface_and_type = g_strdup_printf (_("GSM (%s)"), iface);
-	else if (NM_IS_CDMA_DEVICE (device))
-		iface_and_type = g_strdup_printf (_("CDMA (%s)"), iface);
-	else
-		iface_and_type = g_strdup (iface);
-
-	label = glade_xml_get_widget (xml, "label-interface");
-	gtk_label_set_text (GTK_LABEL (label), iface_and_type);
-	g_free (iface_and_type);
-
-	str = NULL;
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		str = g_strdup (nm_device_802_3_ethernet_get_hw_address (NM_DEVICE_802_3_ETHERNET (device)));
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		str = g_strdup (nm_device_802_11_wireless_get_hw_address (NM_DEVICE_802_11_WIRELESS (device)));
-
-	label = glade_xml_get_widget (xml, "label-hardware-address");
-	gtk_label_set_text (GTK_LABEL (label), str ? str : "");
-	g_free (str);
-
-	label = glade_xml_get_widget (xml, "label-security");
-	label2 = glade_xml_get_widget (xml, "label-security-label");
-	// FIXME: handle 802.1x wired auth too
-	if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
-		NMSettingWireless *s_wireless;
-		NMSettingWirelessSecurity *s_wireless_sec;
-		NMSetting8021x *s_8021x;
-
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-		s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
-		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
-		if (   s_wireless
-		    && s_wireless->security
-		    && !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)
-		    && s_wireless_sec) {
-
-			if (!strcmp (s_wireless_sec->key_mgmt, "none")) {
-				gtk_label_set_text (GTK_LABEL (label), _("WEP"));
-			} else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-none")) {
-				gtk_label_set_text (GTK_LABEL (label), _("WPA/WPA2"));
-			} else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-psk")) {
-				gtk_label_set_text (GTK_LABEL (label), _("WPA/WPA2"));
-			} else {
-				set_eap_info_label (label, s_wireless_sec, s_8021x);
-			}
-		} else {
-			gtk_label_set_text (GTK_LABEL (label), _("None"));
-		}
-
-		gtk_widget_show (label);
-		gtk_widget_show (label2);
-	} else {
-		gtk_widget_hide (label);
-		gtk_widget_hide (label2);
-	}
-
-	label = glade_xml_get_widget (xml, "label-speed");
-	if (speed) {
+	if (speed)
 		str = g_strdup_printf (_("%u Mb/s"), speed);
-		gtk_label_set_text (GTK_LABEL (label), str);
-		g_free (str);
-	} else
-		gtk_label_set_text (GTK_LABEL (label), _("Unknown"));
+	else
+		str = NULL;
 
-	label = glade_xml_get_widget (xml, "label-driver");
-	gtk_label_set_text (GTK_LABEL (label), nm_device_get_driver (device));
+	gtk_table_attach_defaults (table,
+							   create_info_label (_("Speed:")),
+							   0, 1, row, row + 1);
+	gtk_table_attach_defaults (table,
+							   create_info_label (str ? str : _("Unknown")),
+							   1, 2, row, row + 1);
+	g_free (str);
+	row++;
 
-	def_addr = nm_ip4_config_get_addresses (cfg)->data;
-	label = glade_xml_get_widget (xml, "label-ip-address");
-	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (def_addr->address));
+	/* Security */
+	gtk_table_attach_defaults (table,
+							   create_info_label (_("Security:")),
+							   0, 1, row, row + 1);
+	gtk_table_attach_defaults (table,
+							   create_info_label_security (connection),
+							   1, 2, row, row + 1);
+	row++;
 
-	label = glade_xml_get_widget (xml, "label-subnet-mask");
-	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (def_addr->netmask));
+	/* Empty line */
+	gtk_table_attach_defaults (table,
+							   gtk_label_new (""),
+							   0, 2, row, row + 1);
+	row++;
 
+	/* IP4 */
+
+	ip4_config = nm_device_get_ip4_config (device);
+	def_addr = nm_ip4_config_get_addresses (ip4_config)->data;
+
+	/* Address */
+	gtk_table_attach_defaults (table,
+							   create_info_label (_("IP Adrress:")),
+							   0, 1, row, row + 1);
+	gtk_table_attach_defaults (table,
+							   create_info_label (ip4_address_as_string (def_addr->address)),
+							   1, 2, row, row + 1);
+	row++;
+
+	/* Broadcast */
 	network = ntohl (def_addr->address) & ntohl (def_addr->netmask);
 	hostmask = ~ntohl (def_addr->netmask);
 	bcast = htonl (network | hostmask);
-	label = glade_xml_get_widget (xml, "label-broadcast-address");
-	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (bcast));
 
-	label = glade_xml_get_widget (xml, "label-default-route");
-	gtk_label_set_text (GTK_LABEL (label),
-					ip4_address_as_string (def_addr->gateway));
+	gtk_table_attach_defaults (table,
+							   create_info_label (_("Broadcast Address:")),
+							   0, 1, row, row + 1);
+	gtk_table_attach_defaults (table,
+							   create_info_label (ip4_address_as_string (bcast)),
+							   1, 2, row, row + 1);
+	row++;
 
-	dns = nm_ip4_config_get_nameservers (cfg);
+	/* Netmask */
+	gtk_table_attach_defaults (table,
+							   create_info_label (_("Subnet Mask:")),
+							   0, 1, row, row + 1);
+	gtk_table_attach_defaults (table,
+							   create_info_label (ip4_address_as_string (def_addr->netmask)),
+							   1, 2, row, row + 1);
+	row++;
+
+	/* Gateway */
+	gtk_table_attach_defaults (table,
+							   create_info_label (_("Default Route:")),
+							   0, 1, row, row + 1);
+	gtk_table_attach_defaults (table,
+							   create_info_label (ip4_address_as_string (def_addr->gateway)),
+							   1, 2, row, row + 1);
+	row++;
+
+	/* DNS */
+	dns = nm_ip4_config_get_nameservers (ip4_config);
+
 	if (dns && dns->len) {
-		label = glade_xml_get_widget (xml, "label-primary-dns");
-		if (dns->len > 0) {
-			gtk_label_set_text (GTK_LABEL (label),
-							ip4_address_as_string (g_array_index (dns, guint32, 0)));
-		} else {
-			gtk_label_set_text (GTK_LABEL (label), "");
-		}
+		gtk_table_attach_defaults (table,
+								   create_info_label (_("Primary DNS:")),
+								   0, 1, row, row + 1);
+		gtk_table_attach_defaults (table,
+								   create_info_label (ip4_address_as_string (g_array_index (dns, guint32, 0))),
+								   1, 2, row, row + 1);
+		row++;
 
-		label = glade_xml_get_widget (xml, "label-secondary-dns");
-		label2 = glade_xml_get_widget (xml, "label-secondary-dns-label");
 		if (dns->len > 1) {
-			gtk_label_set_text (GTK_LABEL (label),
-							ip4_address_as_string (g_array_index (dns, guint32, 1)));
-			gtk_widget_show (label);
-			gtk_widget_show (label2);
-		} else {
-			gtk_widget_hide (label);
-			gtk_widget_hide (label2);
+			gtk_table_attach_defaults (table,
+									   create_info_label (_("Secondary DNS:")),
+									   0, 1, row, row + 1);
+			gtk_table_attach_defaults (table,
+									   create_info_label (ip4_address_as_string (g_array_index (dns, guint32, 1))),
+									   1, 2, row, row + 1);
+			row++;
 		}
 	}
 
-	return dialog;
+	gtk_notebook_append_page (notebook, GTK_WIDGET (table),
+							  create_info_notebook_label (connection, is_default));
+
+	gtk_widget_show_all (GTK_WIDGET (table));
+}
+
+static GtkWidget *
+info_dialog_update (NMApplet *applet)
+{
+	GtkNotebook *notebook;
+	const GPtrArray *connections;
+	int i;
+	int pages = 0;
+
+	notebook = GTK_NOTEBOOK (glade_xml_get_widget (applet->info_dialog_xml, "info_notebook"));
+
+	/* Remove old pages */
+	for (i = gtk_notebook_get_n_pages (notebook); i > 0; i--)
+		gtk_notebook_remove_page (notebook, -1);
+
+	/* Add new pages */
+	connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; connections && (i < connections->len); i++) {
+		NMActiveConnection *active_connection = g_ptr_array_index (connections, i);
+		NMConnection *connection;
+		const GPtrArray *devices;
+
+		if (nm_active_connection_get_state (active_connection) != NM_ACTIVE_CONNECTION_STATE_ACTIVATED)
+			continue;
+
+		devices = nm_active_connection_get_devices (active_connection);
+		if (!devices || !devices->len) {
+			g_warning ("Active connection %s had no devices!",
+					   nm_object_get_path (NM_OBJECT (active_connection)));
+			continue;
+		}
+
+		connection = get_connection_for_active (applet, active_connection);
+		if (!connection) {
+			g_warning ("%s: couldn't find the default active connection's NMConnection!", __func__);
+			continue;
+		}
+			
+		info_dialog_add_page (notebook,
+							  connection,
+							  nm_active_connection_get_default (active_connection),
+							  g_ptr_array_index (devices, 0));
+		pages++;
+	}
+
+	if (pages == 0) {
+		/* Shouldn't really happen but ... */
+		info_dialog_show_error (_("No valid active connecitons found!"));
+		return NULL;
+	}
+
+	return glade_xml_get_widget (applet->info_dialog_xml, "info_dialog");
 }
 
 void
-applet_info_dialog_show (NMConnection *connection, NMDevice *device, NMApplet *applet)
+applet_info_dialog_show (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = info_dialog_update (applet->info_dialog_xml, device, connection);
+	dialog = info_dialog_update (applet);
 	if (!dialog)
 		return;
 
