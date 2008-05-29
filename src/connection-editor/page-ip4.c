@@ -60,6 +60,7 @@ typedef struct {
 #define IP4_METHOD_AUTOIP          1
 #define IP4_METHOD_MANUAL          2
 #define IP4_METHOD_DHCP_MANUAL_DNS 3
+#define IP4_METHOD_SHARED          4
 
 #define COL_ADDRESS 0
 #define COL_NETMASK 1
@@ -86,6 +87,29 @@ ip4_private_init (CEPageIP4 *self)
 static void
 method_changed (GtkComboBox *combo, gpointer user_data)
 {
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (user_data);
+	gboolean is_shared;
+
+	is_shared = (gtk_combo_box_get_active (priv->method) == IP4_METHOD_SHARED);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), !is_shared);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), !is_shared);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_list), !is_shared);
+	if (is_shared) {
+		GtkListStore *store;
+
+		store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
+		gtk_list_store_clear (store);
+	}
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_servers), !is_shared);
+	if (is_shared)
+		gtk_entry_set_text (priv->dns_servers, "");
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_searches), !is_shared);
+	if (is_shared)
+		gtk_entry_set_text (priv->dns_searches, "");
+
 	ce_page_changed (CE_PAGE (user_data));
 }
 
@@ -123,13 +147,14 @@ populate_ui (CEPageIP4 *self)
 			method = IP4_METHOD_AUTOIP;
 		else if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_MANUAL))
 			method = IP4_METHOD_MANUAL;
+		else if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_SHARED))
+			method = IP4_METHOD_SHARED;
 	}
 
 	if (method == IP4_METHOD_DHCP && setting->ignore_dhcp_dns)
 		method = IP4_METHOD_DHCP_MANUAL_DNS;
 
 	gtk_combo_box_set_active (priv->method, method);
-	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
 
 	/* Addresses */
 	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
@@ -500,6 +525,9 @@ ce_page_ip4_new (NMConnection *connection)
 	g_signal_connect (priv->dns_servers, "changed", G_CALLBACK (dns_servers_changed), self);
 	g_signal_connect (priv->dns_searches, "changed", G_CALLBACK (dns_searches_changed), self);
 
+	method_changed (priv->method, self);
+	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
+
 	return self;
 }
 
@@ -531,6 +559,9 @@ ui_to_setting (CEPageIP4 *self)
 		break;
 	case IP4_METHOD_MANUAL:
 		method = NM_SETTING_IP4_CONFIG_METHOD_MANUAL;
+		break;
+	case IP4_METHOD_SHARED:
+		method = NM_SETTING_IP4_CONFIG_METHOD_SHARED;
 		break;
 	case IP4_METHOD_DHCP_MANUAL_DNS:
 		ignore_dhcp_dns = TRUE;

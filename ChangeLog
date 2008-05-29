@@ -1,5 +1,22 @@
 2008-05-29  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-dialog.c
+		- (connection_combo_init): when creating a new adhoc network, only show
+			existing Ad-Hoc 'shared' connections
+		- (nma_wireless_dialog_get_connection): when creating a new adhoc
+			network, set the connection's ip4 method to 'shared'
+
+	* src/connection-editor/ce-page-ip4.glade
+		- Add a new IPv4 method "Shared to other computers"
+
+	* src/connection-editor/page-ip4.c
+		- (method_changed): enable/disable DNS stuff as appropriate when the
+			method changes
+		- (populate_ui, ui_to_setting): handle the 'shared' method
+		- (ce_page_ip4_new): call method_changed() to update widget sensitivity
+
+2008-05-29  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (applet_get_default_active_connection): if the only active connection
 			is an adhoc connection but it's not 'default' becuase it doesn't

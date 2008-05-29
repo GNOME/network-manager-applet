@@ -36,6 +36,7 @@
 #include <nm-device-802-11-wireless.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
+#include <nm-setting-ip4-config.h>
 
 #include "applet.h"
 #include "applet-dialogs.h"
@@ -422,12 +423,22 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 			if (strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME))
 				continue;
 
-			/* If creating a new Ad-Hoc network, only show adhoc networks
-			 * with adhoc-create = TRUE.
-			 */
 			s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (candidate, NM_TYPE_SETTING_WIRELESS));
-			if (!s_wireless || (priv->adhoc_create != s_wireless->adhoc_create))
+			if (!s_wireless)
 				continue;
+
+			/* If creating a new Ad-Hoc network, only show shared network connections */
+			if (priv->adhoc_create) {
+				NMSettingIP4Config *s_ip4;
+
+				s_ip4 = (NMSettingIP4Config *) nm_connection_get_setting (candidate, NM_TYPE_SETTING_IP4_CONFIG);
+				if (!s_ip4 || strcmp (s_ip4->method, "shared"))
+					continue;
+
+				/* Ignore non-Ad-Hoc connections too */
+				if (!s_wireless->mode || strcmp (s_wireless->mode, "adhoc"))
+					continue;
+			}
 
 			/* Ignore connections that don't apply to the selected device */
 			if (s_wireless->mac_address) {
@@ -969,8 +980,13 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 		g_assert (s_wireless->ssid);
 
 		if (priv->adhoc_create) {
+			NMSettingIP4Config *s_ip4;
+
 			s_wireless->mode = g_strdup ("adhoc");
-			s_wireless->adhoc_create = TRUE;
+
+			s_ip4 = (NMSettingIP4Config *) nm_setting_ip4_config_new ();
+			s_ip4->method = g_strdup ("shared");
+			nm_connection_add_setting (connection, (NMSetting *) s_ip4);
 		}
 
 		nm_connection_add_setting (connection, (NMSetting *) s_wireless);
