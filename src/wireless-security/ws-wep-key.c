@@ -273,8 +273,10 @@ ws_wep_key_new (const char *glade_file,
 	WirelessSecurityWEPKey *sec;
 	GtkWidget *widget;
 	GladeXML *xml;
-	NMSettingWirelessSecurity *s_wsec;
+	NMSettingWirelessSecurity *s_wsec = NULL;
 	guint8 default_key_idx = 0;
+	gboolean is_adhoc = FALSE;
+	gboolean is_shared_key = FALSE;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -339,6 +341,18 @@ ws_wep_key_new (const char *glade_file,
 			g_error_free (error);
 	}
 
+	if (connection) {
+		NMSettingWireless *s_wireless;
+
+		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
+		if (s_wireless && s_wireless->mode && !strcmp (s_wireless->mode, "adhoc"))
+			is_adhoc = TRUE;
+
+		s_wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+		if (s_wsec->auth_alg && !strcmp (s_wsec->auth_alg, "shared"))
+			is_shared_key = TRUE;
+	}
+
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
@@ -353,11 +367,9 @@ ws_wep_key_new (const char *glade_file,
 		gtk_entry_set_max_length (GTK_ENTRY (widget), 64);
 
 	widget = glade_xml_get_widget (xml, "key_index_combo");
-	if (connection) {
-		s_wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
-		if (s_wsec)
-			default_key_idx = s_wsec->wep_tx_keyidx;
-	}
+	if (connection && s_wsec)
+		default_key_idx = s_wsec->wep_tx_keyidx;
+
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), default_key_idx);
 	sec->cur_index = default_key_idx;
 	g_signal_connect (G_OBJECT (widget), "changed",
@@ -376,7 +388,13 @@ ws_wep_key_new (const char *glade_file,
 	                  sec);
 
 	widget = glade_xml_get_widget (xml, "auth_method_combo");
-	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), is_shared_key ? 1 : 0);
+
+	/* Ad-Hoc connections can't use Shared Key auth */
+	if (is_adhoc) {
+		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
+		gtk_widget_set_sensitive (widget, FALSE);
+	}
 
 	return sec;
 }
