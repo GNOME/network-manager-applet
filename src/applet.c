@@ -876,8 +876,10 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			continue;
 
 		if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
-			if (nm_client_wireless_get_enabled (applet->nm_client))
+			if (   nm_client_wireless_get_enabled (applet->nm_client)
+			    && (nm_device_get_state (device) >= NM_DEVICE_STATE_DISCONNECTED)) {
 				n_wireless_devices++;
+			}
 		} else if (NM_IS_DEVICE_802_3_ETHERNET (device))
 			n_wired_devices++;
 		else if (NM_IS_CDMA_DEVICE (device))
