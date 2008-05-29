@@ -1,6 +1,13 @@
 2008-05-29  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet.c
+		- (applet_get_default_active_connection): if the only active connection
+			is an adhoc connection but it's not 'default' becuase it doesn't
+			have a route the internet, show it's state anyway
+
+2008-05-29  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
 		- (nma_menu_add_devices): only count wireless devices that are actually
 			usable
 
