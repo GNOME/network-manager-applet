@@ -283,7 +283,7 @@ gsm_device_state_changed (NMDevice *device,
 		applet_do_notify (applet, NOTIFY_URGENCY_LOW,
 					      _("Connection Established"),
 						  _("You are now connected to the GSM network."),
-						  "nm-adhoc");
+						  "nm-device-wwan");
 	}
 }
 
