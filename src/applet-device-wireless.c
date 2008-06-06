@@ -410,6 +410,21 @@ find_duplicate (GtkWidget * widget, gpointer user_data)
 		data->found = widget;
 }
 
+static GSList *
+filter_connections_for_access_point (GSList *connections, NMDevice80211Wireless *device, NMAccessPoint *ap)
+{
+	GSList *ap_connections = NULL;
+	GSList *iter;
+
+	for (iter = connections; iter; iter = g_slist_next (iter)) {
+		NMConnection *candidate = NM_CONNECTION (iter->data);
+
+		if (utils_connection_valid_for_device (candidate, NM_DEVICE (device), (gpointer) ap))
+			ap_connections = g_slist_append (ap_connections, candidate);
+	}
+	return ap_connections;
+}
+
 static NMNetworkMenuItem *
 add_new_ap_item (NMDevice80211Wireless *device,
                  NMAccessPoint *ap,
@@ -428,12 +443,7 @@ add_new_ap_item (NMDevice80211Wireless *device,
 	const GByteArray *ssid;
 	guint8 strength;
 
-	for (iter = connections; iter; iter = g_slist_next (iter)) {
-		NMConnection *candidate = NM_CONNECTION (iter->data);
-
-		if (utils_connection_valid_for_device (candidate, NM_DEVICE (device), (gpointer) ap))
-			ap_connections = g_slist_append (ap_connections, candidate);
-	}
+	ap_connections = filter_connections_for_access_point (connections, device, ap);
 
 	foo = nm_network_menu_item_new (applet->encryption_size_group,
 	                                dup_data->hash, AP_HASH_LEN);
@@ -873,6 +883,100 @@ notify_ap_prop_changed_cb (NMAccessPoint *ap,
 	}
 }
 
+struct ap_notification_data 
+{
+	NMApplet *applet;
+	NMDevice80211Wireless *device;
+	guint id;
+	gulong last_notification_time;	
+};
+
+/* Scan the list of access points, looking for the case where we have no
+ * known (i.e. autoconnect) access points, but we do have unknown ones.
+ * 
+ * If we find one, notify the user.
+ */
+static gboolean
+idle_check_avail_access_point_notification (gpointer datap)
+{	
+	struct ap_notification_data *data = datap;
+	NMApplet *applet = data->applet;
+	NMDevice80211Wireless *device = data->device;
+	int i;
+	const GPtrArray *aps;
+	GSList *all_connections;
+	GSList *connections;
+	GTimeVal timeval;
+	gboolean have_unused_access_point = FALSE;
+	gboolean have_no_autoconnect_points = TRUE;
+
+	if (nm_client_get_state (data->applet->nm_client) != NM_STATE_DISCONNECTED)
+		return FALSE;
+
+	if (nm_device_get_state (NM_DEVICE (device)) != NM_DEVICE_STATE_DISCONNECTED)
+		return FALSE;
+
+	g_get_current_time (&timeval);
+	if ((timeval.tv_sec - data->last_notification_time) < 60*60) /* Notify at most once an hour */
+		return FALSE;	
+
+	all_connections = applet_get_all_connections (applet);
+	connections = utils_filter_connections_for_device (NM_DEVICE (device), all_connections);
+	g_slist_free (all_connections);	
+	all_connections = NULL;
+
+	aps = nm_device_802_11_wireless_get_access_points (device);
+	for (i = 0; aps && (i < aps->len); i++) {
+		NMAccessPoint *ap = aps->pdata[i];
+		GSList *ap_connections = filter_connections_for_access_point (connections, device, ap);
+		GSList *iter;
+		gboolean is_autoconnect = FALSE;
+
+		for (iter = ap_connections; iter; iter = g_slist_next (iter)) {
+			NMConnection *connection = NM_CONNECTION (iter->data);
+			NMSettingConnection *s_con;
+
+			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+			if (s_con->autoconnect)  {
+				is_autoconnect = TRUE;
+				break;
+			}
+		}
+		g_slist_free (ap_connections);
+
+		if (!is_autoconnect)
+			have_unused_access_point = TRUE;
+		else
+			have_no_autoconnect_points = FALSE;
+	}
+
+	if (!(have_unused_access_point && have_no_autoconnect_points))
+		return FALSE;
+
+	/* Avoid notifying too often */
+	g_get_current_time (&timeval);
+	data->last_notification_time = timeval.tv_sec;
+
+	applet_do_notify (applet,
+	                  NOTIFY_URGENCY_LOW,
+	                  _("Wireless Networks Available"),
+	                  _("Click on this icon to connect to a wireless network"),
+	                  "nm-device-wireless");
+	return FALSE;
+}
+
+static void
+queue_avail_access_point_notification (NMDevice *device)
+{
+	struct ap_notification_data *data;
+	data = g_object_get_data (G_OBJECT (device), "notify-wireless-avail-data");	
+
+	if (data->id != 0)
+		return;
+
+	data->id = g_timeout_add (3000, idle_check_avail_access_point_notification, data);
+}
+
 static void
 access_point_added_cb (NMDevice80211Wireless *device,
                        NMAccessPoint *ap,
@@ -885,6 +989,15 @@ access_point_added_cb (NMDevice80211Wireless *device,
 	                  "notify",
 	                  G_CALLBACK (notify_ap_prop_changed_cb),
 	                  applet);
+	
+	queue_avail_access_point_notification (NM_DEVICE (device));
+}
+
+static void
+on_new_connection (NMSettings *settings, NMExportedConnection *connection, gpointer datap)
+{
+	struct ap_notification_data *data = datap;
+	queue_avail_access_point_notification (NM_DEVICE (data->device));
 }
 
 static void
@@ -893,6 +1006,7 @@ wireless_device_added (NMDevice *device, NMApplet *applet)
 	NMDevice80211Wireless *wdev = NM_DEVICE_802_11_WIRELESS (device);
 	const GPtrArray *aps;
 	int i;
+	struct ap_notification_data *data;
 
 	g_signal_connect (wdev,
 	                  "notify::" NM_DEVICE_802_11_WIRELESS_ACTIVE_ACCESS_POINT,
@@ -903,6 +1017,21 @@ wireless_device_added (NMDevice *device, NMApplet *applet)
 	                  "access-point-added",
 	                  G_CALLBACK (access_point_added_cb),
 	                  applet);
+
+	/* Now create the per-device hooks for watching for available wireless
+	 * connections.
+	 */
+	data = g_new0 (struct ap_notification_data, 1);
+	data->applet = applet;
+	data->device = wdev;	
+	g_object_set_data_full (G_OBJECT (wdev), "notify-wireless-avail-data", data, g_free);
+	/* We also need to hook up to the settings to find out when we have new connections
+	 * that might be candididates.
+	 */ 
+	g_signal_connect (applet_get_settings (applet), "new-connection",
+						G_CALLBACK (on_new_connection),
+						data);	
+	queue_avail_access_point_notification (device);
 
 	/* Hash all APs this device knows about */
 	aps = nm_device_802_11_wireless_get_access_points (wdev);
@@ -946,6 +1075,9 @@ wireless_device_state_changed (NMDevice *device,
 		if (ap)
 			applet->current_ap = g_object_ref (ap);
 	}
+
+	if (state == NM_DEVICE_STATE_DISCONNECTED)
+		queue_avail_access_point_notification (device);
 
 	if (state != NM_DEVICE_STATE_ACTIVATED)
 		return;

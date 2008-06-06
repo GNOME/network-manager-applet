@@ -163,6 +163,8 @@ NMApplet *nm_applet_new (void);
 
 void applet_schedule_update_icon (NMApplet *applet);
 
+NMSettings *applet_get_settings (NMApplet *applet);
+
 GSList *applet_get_all_connections (NMApplet *applet);
 
 void applet_menu_item_activate_helper (NMDevice *device,

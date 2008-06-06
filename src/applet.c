@@ -225,6 +225,12 @@ exported_connection_to_connection (gpointer data, gpointer user_data)
 	*list = g_slist_prepend (*list, nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (data)));
 }
 
+NMSettings *
+applet_get_settings (NMApplet *applet)
+{
+	return NM_SETTINGS (applet->gconf_settings);
+}
+
 GSList *
 applet_get_all_connections (NMApplet *applet)
 {
