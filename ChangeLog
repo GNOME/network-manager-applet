@@ -1,5 +1,24 @@
 2008-06-05  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+	  src/applet.h
+		- (applet_do_notify): add action support
+
+	* src/applet-device-wireless.c
+		- (wifi_available_dont_show_cb): suppress notification of APs when the
+			user says so
+		- (idle_check_avail_access_point_notification): add suppression action
+		- (queue_avail_access_point_notification): don't show the notificiation
+			if it's suppressed
+
+	* src/applet-device-gsm.c
+	  src/applet-device-cdma.c
+	  src/applet-device-wired.c
+	  src/applet.c
+		- Fix for applet_do_notify() changes
+
+2008-06-05  Dan Williams  <dcbw@redhat.com>
+
 	Patch from Colin Walters <walters@verbum.org>  (gnome.org #534427)
 
 	* src/applet.c

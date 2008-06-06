@@ -395,13 +395,18 @@ applet_menu_item_activate_helper (NMDevice *device,
 }
 
 void
-applet_do_notify (NMApplet *applet, 
+applet_do_notify (NMApplet *applet,
                   NotifyUrgency urgency,
                   const char *summary,
                   const char *message,
-                  const char *icon)
+                  const char *icon,
+                  const char *action1,
+                  const char *action1_label,
+                  NotifyActionCallback action1_cb,
+                  gpointer action1_user_data)
 {
-	const char *notify_icon;
+	NotifyNotification *notify;
+	GError *error = NULL;
 
 	g_return_if_fail (applet != NULL);
 	g_return_if_fail (summary != NULL);
@@ -412,20 +417,27 @@ applet_do_notify (NMApplet *applet,
 		return;
 #endif
 
-	if (!notify_is_initted ())
-		notify_init ("NetworkManager");
-
 	if (applet->notification != NULL) {
 		notify_notification_close (applet->notification, NULL);
 		g_object_unref (applet->notification);
 	}
 
-	notify_icon = icon ? icon : GTK_STOCK_NETWORK;
+	notify = notify_notification_new (summary, message,
+	                                  icon ? icon : GTK_STOCK_NETWORK, NULL);
+	applet->notification = notify;
 
-	applet->notification = notify_notification_new_with_status_icon (summary, message, notify_icon, applet->status_icon);
+	notify_notification_attach_to_status_icon (notify, applet->status_icon);
+	notify_notification_set_urgency (notify, urgency);
 
-	notify_notification_set_urgency (applet->notification, urgency);
-	notify_notification_show (applet->notification, NULL);
+	if (action1) {
+		notify_notification_add_action (notify, action1, action1_label,
+		                                action1_cb, action1_user_data, NULL);
+	}
+
+	if (!notify_notification_show (notify, &error)) {
+		g_warning ("Failed to show notification: %s", error->message);
+		g_error_free (error);
+	}
 }
 
 static gboolean
@@ -563,7 +575,8 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 		if (banner && strlen (banner)) {
 			title = _("VPN Login Message");
 			msg = g_strdup_printf ("\n%s", banner);
-			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
+			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
+			                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
 			g_free (msg);
 		}
 
@@ -574,14 +587,16 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 	case NM_VPN_CONNECTION_STATE_FAILED:
 		title = _("VPN Connection Failed");
 		msg = make_vpn_failure_message (vpn, reason, applet);
-		applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
+		applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
+		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
 		g_free (msg);
 		break;
 	case NM_VPN_CONNECTION_STATE_DISCONNECTED:
 		if (reason != NM_VPN_CONNECTION_STATE_REASON_USER_DISCONNECTED) {
 			title = _("VPN Connection Failed");
 			msg = make_vpn_disconnection_message (vpn, reason, applet);
-			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
+			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
+			                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
 			g_free (msg);
 		}
 		break;
@@ -634,7 +649,8 @@ activate_vpn_cb (gpointer user_data, const char *path, GError *error)
 			                       info->vpn_name, error->message);
 		}
 
-		applet_do_notify (info->applet, NOTIFY_URGENCY_LOW, title, msg, "gnome-lockscreen");
+		applet_do_notify (info->applet, NOTIFY_URGENCY_LOW, title, msg,
+		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
 		g_free (msg);
 
 		nm_warning ("VPN Connection activation failed: (%s) %s", name, error->message);
@@ -1522,7 +1538,7 @@ foo_client_state_changed_cb (NMClient *client, GParamSpec *pspec, gpointer user_
 	case NM_STATE_DISCONNECTED:
 		applet_do_notify (applet, NOTIFY_URGENCY_NORMAL, _("Disconnected"),
 						  _("The network connection has been disconnected."),
-						  "nm-no-connection");
+						  "nm-no-connection", NULL, NULL, NULL, NULL);
 		/* Fall through */
 	default:
 		break;
@@ -2172,6 +2188,9 @@ constructor (GType type,
 	if (!setup_widgets (applet))
 	    goto error;
 	nma_icons_init (applet);
+
+	if (!notify_is_initted ())
+		notify_init ("NetworkManager");
 
 	dbus_mgr = applet_dbus_manager_get ();
 	if (dbus_mgr == NULL) {

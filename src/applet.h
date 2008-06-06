@@ -63,6 +63,7 @@ typedef struct
 	GObjectClass	parent_class;
 } NMAppletClass; 
 
+#define APPLET_PREFS_PATH "/apps/nm-applet"
 
 #define ICON_LAYER_LINK 0
 #define ICON_LAYER_VPN 1
@@ -175,11 +176,15 @@ void applet_menu_item_activate_helper (NMDevice *device,
 
 NMAGConfConnection *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 
-void applet_do_notify (NMApplet *applet, 
+void applet_do_notify (NMApplet *applet,
                        NotifyUrgency urgency,
                        const char *summary,
                        const char *message,
-                       const char *icon);
+                       const char *icon,
+                       const char *action1,
+                       const char *action1_label,
+                       NotifyActionCallback action1_cb,
+                       gpointer action1_user_data);
 
 NMConnection * applet_find_active_connection_for_device (NMDevice *device,
                                                          NMApplet *applet,

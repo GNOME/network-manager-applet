@@ -51,6 +51,8 @@
 #include "gnome-keyring-md5.h"
 #include "wireless-dialog.h"
 
+#define PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE    APPLET_PREFS_PATH "/suppress-wireless-networks-available"
+
 static void wireless_dialog_response_cb (GtkDialog *dialog, gint response, gpointer user_data);
 
 static void
@@ -883,6 +885,23 @@ notify_ap_prop_changed_cb (NMAccessPoint *ap,
 	}
 }
 
+static void
+wifi_available_dont_show_cb (NotifyNotification *notify,
+			                 gchar *id,
+			                 gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+
+	if (id || strcmp (id, "dont-show"))
+		return;
+
+	gconf_client_set_bool (applet->gconf_client,
+	                       PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE,
+	                       TRUE,
+	                       NULL);
+}
+
+
 struct ap_notification_data 
 {
 	NMApplet *applet;
@@ -961,7 +980,11 @@ idle_check_avail_access_point_notification (gpointer datap)
 	                  NOTIFY_URGENCY_LOW,
 	                  _("Wireless Networks Available"),
 	                  _("Click on this icon to connect to a wireless network"),
-	                  "nm-device-wireless");
+	                  "nm-device-wireless",
+	                  "dont-show",
+	                  _("Don't show this message again"),
+	                  wifi_available_dont_show_cb,
+	                  applet);
 	return FALSE;
 }
 
@@ -969,9 +992,14 @@ static void
 queue_avail_access_point_notification (NMDevice *device)
 {
 	struct ap_notification_data *data;
-	data = g_object_get_data (G_OBJECT (device), "notify-wireless-avail-data");	
 
+	data = g_object_get_data (G_OBJECT (device), "notify-wireless-avail-data");	
 	if (data->id != 0)
+		return;
+
+	if (gconf_client_get_bool (data->applet->gconf_client,
+	                           PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE,
+	                           NULL))
 		return;
 
 	data->id = g_timeout_add (3000, idle_check_avail_access_point_notification, data);
@@ -1030,7 +1058,7 @@ wireless_device_added (NMDevice *device, NMApplet *applet)
 	 */ 
 	g_signal_connect (applet_get_settings (applet), "new-connection",
 						G_CALLBACK (on_new_connection),
-						data);	
+						data);
 	queue_avail_access_point_notification (device);
 
 	/* Hash all APs this device knows about */
@@ -1103,7 +1131,7 @@ wireless_device_state_changed (NMDevice *device,
 	msg = g_strdup_printf (_("You are now connected to the wireless network '%s'."),
 	                       esc_ssid ? esc_ssid : _("(none)"));
 	applet_do_notify (applet, NOTIFY_URGENCY_LOW, _("Connection Established"),
-					  msg, "nm-device-wireless");
+					  msg, "nm-device-wireless", NULL, NULL, NULL, NULL);
 	g_free (msg);
 	g_free (esc_ssid);
 }
