@@ -394,6 +394,17 @@ applet_menu_item_activate_helper (NMDevice *device,
 	                               applet);
 }
 
+static void
+applet_clear_notify (NMApplet *applet)
+{
+	if (applet->notification == NULL)
+		return;
+
+	notify_notification_close (applet->notification, NULL);
+	g_object_unref (applet->notification);
+	applet->notification = NULL;
+}
+
 void
 applet_do_notify (NMApplet *applet,
                   NotifyUrgency urgency,
@@ -417,10 +428,7 @@ applet_do_notify (NMApplet *applet,
 		return;
 #endif
 
-	if (applet->notification != NULL) {
-		notify_notification_close (applet->notification, NULL);
-		g_object_unref (applet->notification);
-	}
+	applet_clear_notify (applet);
 
 	notify = notify_notification_new (summary, message,
 	                                  icon ? icon : GTK_STOCK_NETWORK, NULL);
@@ -2107,6 +2115,11 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
 static void
 status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
 {
+	/* Have clicking on the applet act also as acknowledgement
+	 * of the notification. 
+	 */
+	applet_clear_notify (applet);
+
 	nma_menu_clear (applet);
 	gtk_menu_popup (GTK_MENU (applet->menu), NULL, NULL,
 			gtk_status_icon_position_menu, icon,
@@ -2119,6 +2132,11 @@ status_icon_popup_menu_cb (GtkStatusIcon *icon,
                            guint32 activate_time,
                            NMApplet *applet)
 {
+	/* Have clicking on the applet act also as acknowledgement
+	 * of the notification. 
+	 */
+	applet_clear_notify (applet);
+
 	nma_context_menu_update (applet);
 	gtk_menu_popup (GTK_MENU (applet->context_menu), NULL, NULL,
 			gtk_status_icon_position_menu, icon,
