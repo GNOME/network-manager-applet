@@ -337,7 +337,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 
 	/* Address */
 	gtk_table_attach_defaults (table,
-							   create_info_label (_("IP Adrress:")),
+							   create_info_label (_("IP Address:")),
 							   0, 1, row, row + 1);
 	gtk_table_attach_defaults (table,
 							   create_info_label (ip4_address_as_string (def_addr->address)),
