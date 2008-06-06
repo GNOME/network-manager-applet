@@ -367,13 +367,15 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	/* Gateway */
-	gtk_table_attach_defaults (table,
-							   create_info_label (_("Default Route:")),
-							   0, 1, row, row + 1);
-	gtk_table_attach_defaults (table,
-							   create_info_label (ip4_address_as_string (def_addr->gateway)),
-							   1, 2, row, row + 1);
-	row++;
+	if (def_addr->gateway) {
+		gtk_table_attach_defaults (table,
+								   create_info_label (_("Default Route:")),
+								   0, 1, row, row + 1);
+		gtk_table_attach_defaults (table,
+								   create_info_label (ip4_address_as_string (def_addr->gateway)),
+								   1, 2, row, row + 1);
+		row++;
+	}
 
 	/* DNS */
 	dns = nm_ip4_config_get_nameservers (ip4_config);
