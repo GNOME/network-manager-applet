@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager 0.9.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-14 17:09+0200\n"
-"PO-Revision-Date: 2008-05-14 17:16+0200\n"
+"POT-Creation-Date: 2008-06-07 17:51+0200\n"
+"PO-Revision-Date: 2008-06-07 17:59+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -49,7 +49,7 @@ msgid "device is unmanaged"
 msgstr "enheten er ikke håndtert"
 
 #: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:284
-#: ../src/applet-device-wired.c:244 ../src/applet-device-wireless.c:985
+#: ../src/applet-device-wired.c:244 ../src/applet-device-wireless.c:1133
 msgid "Connection Established"
 msgstr "Tilkoblingen er satt opp"
 
@@ -159,11 +159,11 @@ msgstr "Kablet nettverkforbindelse"
 msgid "DSL authentication"
 msgstr "DSL-autentisering"
 
-#: ../src/applet-device-wireless.c:87
+#: ../src/applet-device-wireless.c:83
 msgid "_Connect to Other Wireless Network..."
 msgstr "_Koble til annet trådløst nettverk ..."
 
-#: ../src/applet-device-wireless.c:125
+#: ../src/applet-device-wireless.c:115
 msgid "Create _New Wireless Network..."
 msgstr "Opprett _nytt trådløst nettverk ..."
 
@@ -187,109 +187,167 @@ msgstr[1] "Trådløse nettverk"
 msgid "wireless is disabled"
 msgstr "trådløs er slått av"
 
-#: ../src/applet-device-wireless.c:983
+#: ../src/applet-device-wireless.c:981
+msgid "Wireless Networks Available"
+msgstr "Trådløse nettverk er tilgjengelige"
+
+#: ../src/applet-device-wireless.c:982
+msgid "Click on this icon to connect to a wireless network"
+msgstr "Klikk på dette ikonet for å koble til et trådløst nettverk"
+
+#: ../src/applet-device-wireless.c:985
+msgid "Don't show this message again"
+msgstr "Ikke vis denne meldingen igjen"
+
+#: ../src/applet-device-wireless.c:1131
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Du er nå koblet til trådløst nettverk «%s»."
 
-#: ../src/applet-device-wireless.c:984 ../src/applet-device-wireless.c:1012
+#: ../src/applet-device-wireless.c:1132 ../src/applet-device-wireless.c:1160
 msgid "(none)"
 msgstr "(ingen)"
 
-#: ../src/applet-device-wireless.c:1016
+#: ../src/applet-device-wireless.c:1164
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
 msgstr "Forbereder enhet %s for trådløst nettverk «%s» ..."
 
-#: ../src/applet-device-wireless.c:1019
+#: ../src/applet-device-wireless.c:1167
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
 msgstr "Forsøker å koble til trådløst nettverk «%s» ..."
 
-#: ../src/applet-device-wireless.c:1022
+#: ../src/applet-device-wireless.c:1170
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
 msgstr "Ber om en nettverksadresse fra trådløst nettverk «%s»..."
 
-#: ../src/applet-device-wireless.c:1025
+#: ../src/applet-device-wireless.c:1173
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
 msgstr "Venter på nettverksnøkkel for trådløst nettverk «%s» ..."
 
-#: ../src/applet-device-wireless.c:1045
+#: ../src/applet-device-wireless.c:1193
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
 msgstr "Trådløs nettverkstilkobling til «%s» (%d%%)"
 
-#: ../src/applet-device-wireless.c:1049
+#: ../src/applet-device-wireless.c:1197
 #, c-format
 msgid "Wireless network connection to '%s'"
 msgstr "Trådløs nettverkstilkobling til «%s»"
 
-#: ../src/applet-dialogs.c:51
+#: ../src/applet-dialogs.c:53
 msgid "Error displaying connection information:"
 msgstr "Feil under visning av tilkoblingsinformasjon:"
 
-#: ../src/applet-dialogs.c:78
+#: ../src/applet-dialogs.c:80
 #: ../src/connection-editor/page-wireless-security.c:292
-#: ../src/wireless-dialog.c:523
-#: ../src/wireless-security/wireless-security.c:327
+#: ../src/wireless-dialog.c:787
+#: ../src/wireless-security/wireless-security.c:328
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:80
+#: ../src/applet-dialogs.c:82
 msgid "Dynamic WEP"
 msgstr "Dynamisk WEP"
 
-#: ../src/applet-dialogs.c:82 ../src/applet-dialogs.c:196
-#: ../src/applet-dialogs.c:198
+#: ../src/applet-dialogs.c:84 ../src/applet-dialogs.c:182
+#: ../src/applet-dialogs.c:184
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:84 ../src/applet-dialogs.c:219
+#: ../src/applet-dialogs.c:180
+msgid "WEP"
+msgstr "WEP"
+
+#: ../src/applet-dialogs.c:188
+#: ../src/connection-editor/page-wireless-security.c:244
+#: ../src/wireless-dialog.c:731
+msgid "None"
+msgstr "Ingen"
+
+#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:313
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: ../src/applet-dialogs.c:135
-msgid "Could not find some required resources (the glade file)!"
-msgstr "Fant ikke nødvendige ressurser (glade-filen)."
-
-#: ../src/applet-dialogs.c:153
+#: ../src/applet-dialogs.c:249
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:155
+#: ../src/applet-dialogs.c:251
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:157
+#: ../src/applet-dialogs.c:253
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:159
+#: ../src/applet-dialogs.c:255
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:194
-msgid "WEP"
-msgstr "WEP"
+#: ../src/applet-dialogs.c:260
+msgid "Interface:"
+msgstr "Grensesnitt:"
 
-#: ../src/applet-dialogs.c:203
-#: ../src/connection-editor/page-wireless-security.c:244
-#: ../src/wireless-dialog.c:467
-msgid "None"
-msgstr "Ingen"
+#: ../src/applet-dialogs.c:276
+msgid "Hardware Address:"
+msgstr "Maskinvareadresse:"
 
-#: ../src/applet-dialogs.c:215
+#: ../src/applet-dialogs.c:286
+msgid "Driver:"
+msgstr "Driver:"
+
+#: ../src/applet-dialogs.c:305
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:389
+#: ../src/applet-dialogs.c:310
+msgid "Speed:"
+msgstr "Hastighet:"
+
+#: ../src/applet-dialogs.c:320
+#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
+msgid "Security:"
+msgstr "Sikkerhet:"
+
+#: ../src/applet-dialogs.c:340
+msgid "IP Address:"
+msgstr "IP-adresse:"
+
+#: ../src/applet-dialogs.c:353
+msgid "Broadcast Address:"
+msgstr "Kringkastingsadresse:"
+
+#: ../src/applet-dialogs.c:362
+msgid "Subnet Mask:"
+msgstr "Subnettmaske:"
+
+#: ../src/applet-dialogs.c:372
+msgid "Default Route:"
+msgstr "Forvalgt rute:"
+
+#: ../src/applet-dialogs.c:385
+msgid "Primary DNS:"
+msgstr "Primær DNS:"
+
+#: ../src/applet-dialogs.c:394
+msgid "Secondary DNS:"
+msgstr "Sekundær DNS:"
+
+#. Shouldn't really happen but ...
+#: ../src/applet-dialogs.c:455
+msgid "No valid active connecitons found!"
+msgstr "Ingen gyldige aktive forbindelser funnet!"
+
+#: ../src/applet-dialogs.c:581
 msgid ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
@@ -297,22 +355,22 @@ msgstr ""
 "Opphavsrett © 2004-2008 Red Hat, Inc.\n"
 "Opphavsrett © 2005-2008 Novell, Inc."
 
-#: ../src/applet-dialogs.c:391
+#: ../src/applet-dialogs.c:583
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Panelprogram for håndtering av dine nettverksenheter og -tilkoblinger."
 
-#: ../src/applet-dialogs.c:393
+#: ../src/applet-dialogs.c:585
 msgid "NetworkManager Website"
 msgstr "NetworkManager nettsted"
 
-#: ../src/applet-dialogs.c:396
+#: ../src/applet-dialogs.c:588
 msgid "translator-credits"
 msgstr ""
 "Kjartan Maraas <kmaraas AT gnome DOT org>\n"
 "Espen Stefansen <libbe AT stefansen DOT net>, 2007"
 
-#: ../src/applet.c:437
+#: ../src/applet.c:516
 #, c-format
 msgid ""
 "\n"
@@ -320,14 +378,14 @@ msgid ""
 "interrupted."
 msgstr ""
 
-#: ../src/applet.c:439
+#: ../src/applet.c:518
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service stopped unexpectedly."
 msgstr ""
 
-#: ../src/applet.c:441
+#: ../src/applet.c:520
 #, c-format
 msgid ""
 "\n"
@@ -335,42 +393,44 @@ msgid ""
 "configuration."
 msgstr ""
 
-#: ../src/applet.c:443
+#: ../src/applet.c:522
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the connection attempt timed out."
 msgstr ""
 
-#: ../src/applet.c:445
+#: ../src/applet.c:524
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service did not start in time."
 msgstr ""
 
-#: ../src/applet.c:447
+#: ../src/applet.c:526
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service failed to start."
 msgstr ""
 
-#: ../src/applet.c:449
+#: ../src/applet.c:528
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because there were no valid VPN secrets."
 msgstr ""
 
-#: ../src/applet.c:454
+#: ../src/applet.c:533
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed."
-msgstr "\nVPN-tilkobling «%s» feilet."
+msgstr ""
+"\n"
+"VPN-tilkobling «%s» feilet."
 
-#: ../src/applet.c:472
+#: ../src/applet.c:551
 #, c-format
 msgid ""
 "\n"
@@ -378,29 +438,31 @@ msgid ""
 "interrupted."
 msgstr ""
 
-#: ../src/applet.c:474
+#: ../src/applet.c:553
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' disconnected because the VPN service stopped."
 msgstr ""
 
-#: ../src/applet.c:479
+#: ../src/applet.c:558
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' disconnected."
-msgstr "\nVPN-tilkobling «%s» koblet fra."
+msgstr ""
+"\n"
+"VPN-tilkobling «%s» koblet fra."
 
-#: ../src/applet.c:505
+#: ../src/applet.c:584
 msgid "VPN Login Message"
 msgstr "Påloggingsmelding for VPN"
 
-#: ../src/applet.c:516 ../src/applet.c:523 ../src/applet.c:564
+#: ../src/applet.c:596 ../src/applet.c:604 ../src/applet.c:646
 msgid "VPN Connection Failed"
 msgstr "VPN-tilkobling feilet"
 
-#: ../src/applet.c:571
+#: ../src/applet.c:653
 #, c-format
 msgid ""
 "\n"
@@ -409,7 +471,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/applet.c:574
+#: ../src/applet.c:656
 #, c-format
 msgid ""
 "\n"
@@ -418,73 +480,73 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/applet.c:891
+#: ../src/applet.c:976
 msgid "No network devices available"
 msgstr "Ingen nettverksenheter tilgjengelig"
 
-#: ../src/applet.c:977
+#: ../src/applet.c:1062
 msgid "_VPN Connections"
 msgstr "_VPN-tilkoblinger"
 
-#: ../src/applet.c:1027
+#: ../src/applet.c:1112
 msgid "_Configure VPN..."
 msgstr "_Sett opp VPN ..."
 
-#: ../src/applet.c:1031
+#: ../src/applet.c:1116
 msgid "_Disconnect VPN..."
 msgstr "Ko_ble fra VPN ..."
 
-#: ../src/applet.c:1080
+#: ../src/applet.c:1165
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager kjører ikke ..."
 
-#: ../src/applet.c:1085 ../src/applet.c:1666
+#: ../src/applet.c:1170 ../src/applet.c:1735
 msgid "Networking disabled"
 msgstr "Nettverk slått av"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1262
+#: ../src/applet.c:1331
 msgid "Enable _Networking"
 msgstr "Slå på _nettverk"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1270
+#: ../src/applet.c:1339
 msgid "Enable _Wireless"
 msgstr "Slå på _trådløs"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1280
+#: ../src/applet.c:1349
 msgid "Connection _Information"
 msgstr "Tilkoblings_informasjon"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1290
+#: ../src/applet.c:1359
 msgid "Edit Connections..."
 msgstr "Rediger tilkoblinger ..."
 
 #. Help item
-#: ../src/applet.c:1304
+#: ../src/applet.c:1373
 msgid "_Help"
 msgstr "_Hjelp"
 
 #. About item
-#: ../src/applet.c:1313
+#: ../src/applet.c:1382
 msgid "_About"
 msgstr "_Om"
 
-#: ../src/applet.c:1478
+#: ../src/applet.c:1547
 msgid "Disconnected"
 msgstr "Frakoblet"
 
-#: ../src/applet.c:1479
+#: ../src/applet.c:1548
 msgid "The network connection has been disconnected."
 msgstr "Nettverksforbindelsen har blitt frakoblet."
 
-#: ../src/applet.c:1670
+#: ../src/applet.c:1739
 msgid "No network connection"
 msgstr "Ingen nettverksforbindelse"
 
-#: ../src/applet.c:1976
+#: ../src/applet.c:2045
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -492,11 +554,11 @@ msgstr ""
 "Panelprogrammet for NetworkManager fant ikke noen av de nødvendige "
 "ressursene. Det kan ikke fortsette.\n"
 
-#: ../src/applet.c:2117
+#: ../src/applet.c:2188
 msgid "NetworkManager Applet"
 msgstr "NetworkManager panelprogram"
 
-#: ../src/applet.c:2122 ../src/wired-dialog.c:100 ../src/wireless-dialog.c:802
+#: ../src/applet.c:2193 ../src/wired-dialog.c:100
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -514,12 +576,14 @@ msgid ""
 "3\n"
 "4"
 msgstr ""
+"1 (forvalg)\n"
+"2\n"
+"3\n"
+"4"
 
 #: ../src/applet.glade.h:6
-msgid ""
-"<span weight=\"bold\" size=\"larger\">Active Connection Information</span>"
-msgstr ""
-"<span weight=\"bold\" size=\"larger\">Informasjon om aktiv tilkobling</span>"
+msgid "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
+msgstr "<span size=\"larger\" weight=\"bold\">Aktive nettverksforbindelser</span>"
 
 #: ../src/applet.glade.h:7
 msgid "Anonymous Identity:"
@@ -530,62 +594,42 @@ msgid "Authentication:"
 msgstr "Autentisering:"
 
 #: ../src/applet.glade.h:9
-msgid "Broadcast Address:"
-msgstr "Kringkastingsadresse:"
-
-#: ../src/applet.glade.h:10
 msgid "CA Certificate:"
 msgstr "CA-sertifikat:"
 
-#: ../src/applet.glade.h:11
+#: ../src/applet.glade.h:10
 msgid "C_onnect"
 msgstr "K_oble til"
 
-#: ../src/applet.glade.h:12
+#: ../src/applet.glade.h:11
 msgid "Connection Information"
 msgstr "Tilkoblingsinformasjon"
 
-#: ../src/applet.glade.h:13
-msgid "Default Route:"
-msgstr "Forvalgt rute:"
+#: ../src/applet.glade.h:12
+msgid "Connection:"
+msgstr "Tilkobling:"
 
-#: ../src/applet.glade.h:14
+#: ../src/applet.glade.h:13
 msgid "Don't warn me again"
 msgstr "Ikke advar meg igjen"
 
-#: ../src/applet.glade.h:15
-msgid "Driver:"
-msgstr "Driver:"
-
-#: ../src/applet.glade.h:16
-msgid "Hardware Address:"
-msgstr "Maskinvareadresse:"
-
-#: ../src/applet.glade.h:17
-msgid "IP Address:"
-msgstr "IP-adresse:"
-
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:14
 msgid "Identity:"
 msgstr "Identitet:"
 
-#: ../src/applet.glade.h:19
+#: ../src/applet.glade.h:15
 msgid "Inner Authentication:"
 msgstr "Intern autentisering:"
 
-#: ../src/applet.glade.h:20
-msgid "Interface:"
-msgstr "Grensesnitt:"
-
-#: ../src/applet.glade.h:21
+#: ../src/applet.glade.h:16
 msgid "Key:"
 msgstr "Nøkkel:"
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:17
 msgid "No"
 msgstr "Nei"
 
-#: ../src/applet.glade.h:23
+#: ../src/applet.glade.h:18
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -593,73 +637,52 @@ msgstr ""
 "Åpent system\n"
 "Delt nøkkel"
 
-#: ../src/applet.glade.h:25
+#: ../src/applet.glade.h:20
 msgid "Other Wireless Network..."
 msgstr "Annet trådløst nettverk ..."
 
-#: ../src/applet.glade.h:26
+#: ../src/applet.glade.h:21
 msgid "PEAP Version:"
 msgstr "PEAP-versjon:"
 
-#: ../src/applet.glade.h:27 ../src/connection-editor/ce-page-dsl.glade.h:1
+#: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
 #: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "Password:"
 msgstr "Passord:"
 
-#: ../src/applet.glade.h:28
-msgid "Primary DNS:"
-msgstr "Primær DNS:"
-
-#: ../src/applet.glade.h:29
+#: ../src/applet.glade.h:23
 msgid "Private Key Password:"
 msgstr "Passord for privat nøkkel:"
 
-#: ../src/applet.glade.h:30
+#: ../src/applet.glade.h:24
 msgid "Private Key:"
 msgstr "Privat nøkkel:"
 
-#: ../src/applet.glade.h:31
-msgid "Secondary DNS:"
-msgstr "Sekundær DNS:"
-
-#: ../src/applet.glade.h:32
-#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
-msgid "Security:"
-msgstr "Sikkerhet:"
-
-#: ../src/applet.glade.h:33
+#: ../src/applet.glade.h:25
 msgid "Select A File"
 msgstr "Velg en fil"
 
-#: ../src/applet.glade.h:34
+#: ../src/applet.glade.h:26
 msgid "Show key"
 msgstr "Vis nøkkel"
 
-#: ../src/applet.glade.h:35 ../src/connection-editor/ce-page-dsl.glade.h:3
+#: ../src/applet.glade.h:27 ../src/connection-editor/ce-page-dsl.glade.h:3
 msgid "Show password"
 msgstr "Vis passord"
 
-#: ../src/applet.glade.h:36
-msgid "Speed:"
-msgstr "Hastighet:"
-
-#: ../src/applet.glade.h:37
-msgid "Subnet Mask:"
-msgstr "Subnettmaske:"
-
-#: ../src/applet.glade.h:38 ../src/connection-editor/ce-page-mobile.glade.h:16
+#: ../src/applet.glade.h:28 ../src/connection-editor/ce-page-mobile.glade.h:16
 msgid "Type:"
 msgstr "Type:"
 
-#: ../src/applet.glade.h:39
+#: ../src/applet.glade.h:29
 msgid "User Certificate:"
 msgstr "Brukersertifikat:"
 
-#: ../src/applet.glade.h:40
+#: ../src/applet.glade.h:30
 msgid "User Name:"
 msgstr "Brukernavn:"
 
-#: ../src/applet.glade.h:41
+#: ../src/applet.glade.h:31
 msgid ""
 "Version 0\n"
 "Version 1"
@@ -667,27 +690,27 @@ msgstr ""
 "Versjon 0\n"
 "Versjon 1"
 
-#: ../src/applet.glade.h:43
+#: ../src/applet.glade.h:33
 msgid "WEP Index:"
 msgstr "WEP-indeks:"
 
-#: ../src/applet.glade.h:44
+#: ../src/applet.glade.h:34
 msgid "Wireless _adapter:"
 msgstr "Trådløst _kort:"
 
-#: ../src/applet.glade.h:45
+#: ../src/applet.glade.h:35
 msgid "Yes"
 msgstr "Ja"
 
-#: ../src/applet.glade.h:46
+#: ../src/applet.glade.h:36
 msgid "_Network Name:"
 msgstr "_Nettverksnavn:"
 
-#: ../src/applet.glade.h:47
+#: ../src/applet.glade.h:37
 msgid "_Wireless Security:"
 msgstr "Tr_ådløs sikkerhet:"
 
-#: ../src/applet.glade.h:48
+#: ../src/applet.glade.h:38
 msgid "alert text"
 msgstr "alarmtekst"
 
@@ -716,31 +739,35 @@ msgstr "<b>Adresser</b>"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:2
 msgid "<span style=\"italic\">Example: 10.10.10.1, 10.10.10.2</span>"
-msgstr ""
+msgstr "<span style=\"italic\">Eksempel: 10.10.10.1, 10.10.10.2</span>"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:3
 msgid "<span style=\"italic\">Example: lab.gnome.org, gnome.org</span>"
-msgstr ""
+msgstr "<span style=\"italic\">Eksempel: lab.gnome.org, gnome.org</span>"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:4
 msgid ""
 "DHCP\n"
 "Auto IP\n"
-"Manual"
+"Manual\n"
+"DHCP with manual DNS settings\n"
+"Shared to other computers"
 msgstr ""
 "DHCP\n"
 "Automatisk IP\n"
-"Manuell"
+"Manuell\n"
+"DHCP med manuelle DNS-innstillinger\n"
+"Del til andre datamaskiner"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:7
+#: ../src/connection-editor/ce-page-ip4.glade.h:9
 msgid "DNS Servers:"
 msgstr "DNS-tjenere"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:8
+#: ../src/connection-editor/ce-page-ip4.glade.h:10
 msgid "Method:"
 msgstr "Metode:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:9
+#: ../src/connection-editor/ce-page-ip4.glade.h:11
 msgid "Search Domains:"
 msgstr "Søkedomener:"
 
@@ -808,7 +835,7 @@ msgstr "<b>Ekko</b>"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:4
 msgid "Allow BSD data compression"
-msgstr ""
+msgstr "Tillat BSD-datakomprimering"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:5
 msgid "Allow Deflate data compression"
@@ -978,19 +1005,19 @@ msgstr "Opprett CDMA-tilkobling"
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-ip4.c:426
+#: ../src/connection-editor/page-ip4.c:456
 msgid "IPv4 Settings"
 msgstr "IPv4-innstillinger"
 
-#: ../src/connection-editor/page-ip4.c:450
+#: ../src/connection-editor/page-ip4.c:480
 msgid "Address"
 msgstr "Adresse"
 
-#: ../src/connection-editor/page-ip4.c:465
+#: ../src/connection-editor/page-ip4.c:495
 msgid "Netmask"
 msgstr "Nettverksmaske"
 
-#: ../src/connection-editor/page-ip4.c:480
+#: ../src/connection-editor/page-ip4.c:510
 msgid "Gateway"
 msgstr "Gateway"
 
@@ -1064,32 +1091,32 @@ msgid "Wireless Security"
 msgstr "Trådløs sikkerhet"
 
 #: ../src/connection-editor/page-wireless-security.c:261
-#: ../src/wireless-dialog.c:488
+#: ../src/wireless-dialog.c:752
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit passord"
 
 #: ../src/connection-editor/page-wireless-security.c:270
-#: ../src/wireless-dialog.c:497
+#: ../src/wireless-dialog.c:761
 msgid "WEP 40/128-bit Hexadecimal"
 msgstr "WEP 40/128-bit heksadesimal"
 
 #: ../src/connection-editor/page-wireless-security.c:279
-#: ../src/wireless-dialog.c:506
+#: ../src/wireless-dialog.c:770
 msgid "WEP 40/128-bit ASCII"
 msgstr "WEP 40/128-bit ASCII"
 
 #: ../src/connection-editor/page-wireless-security.c:305
-#: ../src/wireless-dialog.c:536
+#: ../src/wireless-dialog.c:800
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamisk WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:319
-#: ../src/wireless-dialog.c:550
+#: ../src/wireless-dialog.c:814
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 personlig"
 
 #: ../src/connection-editor/page-wireless-security.c:333
-#: ../src/wireless-dialog.c:564
+#: ../src/wireless-dialog.c:828
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA og WPA2 enterprise"
 
@@ -1249,183 +1276,6 @@ msgstr "DSL-tilkobling %d"
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Sikker på at du vil slette denne tilkoblingen %s?"
-
-#: ../src/utils/crypto.c:123
-#, c-format
-msgid "PEM key file had no end tag '%s'."
-msgstr "PEM-nøkkelfilen har ingen avslutningstagg «%s»."
-
-#: ../src/utils/crypto.c:133
-#, c-format
-msgid "Doesn't look like a PEM private key file."
-msgstr "Ser ikke ut som en privat PEM-nøkkelfil."
-
-#: ../src/utils/crypto.c:141
-#, c-format
-msgid "Not enough memory to store PEM file data."
-msgstr "Ikke nok minne til å lagre PEM-fildata."
-
-#: ../src/utils/crypto.c:157
-#, c-format
-msgid "Malformed PEM file: Proc-Type was not first tag."
-msgstr "Feilformatert PEM-fil: Proc-Type var ikke første taggen."
-
-#: ../src/utils/crypto.c:165
-#, c-format
-msgid "Malformed PEM file: unknown Proc-Type tag '%s'."
-msgstr "Feilformatert PEM-fil: ukjent Proc-Type-tagg «%s»."
-
-#: ../src/utils/crypto.c:175
-#, c-format
-msgid "Malformed PEM file: DEK-Info was not the second tag."
-msgstr "Feilformatert PEM-fil: DEK-Info var ikke andre taggen."
-
-#: ../src/utils/crypto.c:186
-#, c-format
-msgid "Malformed PEM file: no IV found in DEK-Info tag."
-msgstr "Feilformatert PEM-fil: ingen IV ble funnet i DEK-Info-taggen."
-
-#: ../src/utils/crypto.c:193
-#, c-format
-msgid "Malformed PEM file: invalid format of IV in DEK-Info tag."
-msgstr "Feilformatert PEM-fil: ugyldig format på IV i DEK-Info-taggen."
-
-#: ../src/utils/crypto.c:206
-#, c-format
-msgid "Malformed PEM file: unknown private key cipher '%s'."
-msgstr ""
-"Feilformatert PEM-fil: ukjent krypteringsmetode for private nøkkelen «%s»."
-
-#: ../src/utils/crypto.c:225
-#, c-format
-msgid "Could not decode private key."
-msgstr "Kunne ikke dekode privat nøkkel."
-
-#: ../src/utils/crypto.c:269
-#, c-format
-msgid "PEM certificate '%s' had no end tag '%s'."
-msgstr "PEM-sertifikat «%s» har ingen sluttagg «%s»."
-
-#: ../src/utils/crypto.c:279
-#, c-format
-msgid "Failed to decode certificate."
-msgstr "Feilet med å dekode sertifikatet."
-
-#: ../src/utils/crypto.c:288 ../src/utils/crypto.c:296
-#, c-format
-msgid "Not enough memory to store certificate data."
-msgstr "Ikke nok minne for å lagre sertifikatdata."
-
-#: ../src/utils/crypto.c:326
-#, c-format
-msgid "IV must be an even number of bytes in length."
-msgstr "IV må være et heltall i antall byte."
-
-#: ../src/utils/crypto.c:335
-#, c-format
-msgid "Not enough memory to store the IV."
-msgstr "Ikke nok minne for å lagre IV."
-
-#: ../src/utils/crypto.c:346
-#, c-format
-msgid "IV contains non-hexadecimal digits."
-msgstr "IV inneholder ikke-heksadesimale tall. "
-
-#: ../src/utils/crypto.c:384 ../src/utils/crypto_gnutls.c:125
-#: ../src/utils/crypto_nss.c:134
-#, c-format
-msgid "Private key cipher '%s' was unknown."
-msgstr "Ukjent krypteringsmetode for privat nøkkel «%s»."
-
-#: ../src/utils/crypto.c:393
-#, c-format
-msgid "Not enough memory to create private key decryption key."
-msgstr "Ikke nok minne for å opprette dekrypteringsnøkkel for privat nøkkel."
-
-#: ../src/utils/crypto.c:511
-#, c-format
-msgid "Not enough memory to store decrypted private key."
-msgstr "Ikke nok minne for å lagre dekryptert privat nøkkel."
-
-#: ../src/utils/crypto_gnutls.c:72
-#, c-format
-msgid "Failed to initialize the MD5 engine: %s / %s."
-msgstr "Mislyktes med oppstart av MD5-motoren: %s / %s."
-
-#: ../src/utils/crypto_gnutls.c:134 ../src/utils/crypto_nss.c:143
-#, c-format
-msgid "Not enough memory for decrypted key buffer."
-msgstr "Ikke nok minne for dekryptert møkkel-mellomlager."
-
-#: ../src/utils/crypto_gnutls.c:142
-#, c-format
-msgid "Failed to initialize the decryption cipher context: %s / %s."
-msgstr "Klarte ikke å initiere cipherkontekst for kryptering: %s / %s."
-
-#: ../src/utils/crypto_gnutls.c:151
-#, c-format
-msgid "Failed to set symmetric key for decryption: %s / %s."
-msgstr "Mislyktes å sette symmetrisk nøkkel for dekryptering: %s / %s."
-
-#: ../src/utils/crypto_gnutls.c:160
-#, c-format
-msgid "Failed to set IV for decryption: %s / %s."
-msgstr "Mislyktes å sette IV for dekryptering: %s / %s."
-
-#: ../src/utils/crypto_gnutls.c:169
-#, c-format
-msgid "Failed to decrypt the private key: %s / %s."
-msgstr "Mislyktes å dekryptere den private nøkkelen: %s / %s."
-
-#: ../src/utils/crypto_gnutls.c:207
-#, c-format
-msgid "Error initializing certificate data: %s"
-msgstr "Feil under oppstart av sertifikatdata: %s"
-
-#: ../src/utils/crypto_gnutls.c:219
-#, c-format
-msgid "Couldn't decode certificate: %s"
-msgstr "Kunne ikke dekode sertifikat: %s"
-
-#: ../src/utils/crypto_nss.c:76
-#, c-format
-msgid "Failed to initialize the MD5 context: %d."
-msgstr "Mislyktes å starte opp MD5-konteksten: %d."
-
-#: ../src/utils/crypto_nss.c:151
-#, c-format
-msgid "Failed to initialize the decryption cipher slot."
-msgstr "Kunne ikke initiere sifferplass for dekryptering."
-
-#: ../src/utils/crypto_nss.c:161
-#, c-format
-msgid "Failed to set symmetric key for decryption."
-msgstr "Mislyktes å setet symmetrisk nøkkel for dekryptering."
-
-#: ../src/utils/crypto_nss.c:171
-#, c-format
-msgid "Failed to set IV for decryption."
-msgstr "Mislyktes å sette IV for dekryptering."
-
-#: ../src/utils/crypto_nss.c:179
-#, c-format
-msgid "Failed to initialize the decryption context."
-msgstr "Mislyktes å starte opp dekrypteringskonteksten."
-
-#: ../src/utils/crypto_nss.c:192
-#, c-format
-msgid "Failed to decrypt the private key: %d."
-msgstr "Mislyktes å dekryptere den private nøkkelen: %d."
-
-#: ../src/utils/crypto_nss.c:204
-#, c-format
-msgid "Failed to finalize decryption of the private key: %d."
-msgstr "Mislyktes med å avslutte dekryptering av den private nøkkelen: %d"
-
-#: ../src/utils/crypto_nss.c:248
-#, c-format
-msgid "Couldn't decode certificate: %d"
-msgstr "Kunne ikke dekode sertifikatet: %d"
 
 #: ../src/vpn-properties/nm-vpn-properties.c:570
 msgid "Cannot import VPN connection"
@@ -1606,7 +1456,11 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "Kablet 802.1X-autentisering"
 
-#: ../src/wireless-dialog.c:671
+#: ../src/wireless-dialog.c:408
+msgid "New..."
+msgstr "Ny..."
+
+#: ../src/wireless-dialog.c:923
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -1615,39 +1469,39 @@ msgstr ""
 "Passord eller krypteringsnøkler er nødvendig for å koble til trådløst "
 "nettverk «%s»."
 
-#: ../src/wireless-dialog.c:673
+#: ../src/wireless-dialog.c:925
 msgid "Wireless Network Secrets Required"
 msgstr "Hemmeligheter for trådløst nettverk kreves"
 
-#: ../src/wireless-dialog.c:675
+#: ../src/wireless-dialog.c:927
 msgid "Secrets required by wireless network"
 msgstr "Hemmeligheter som kreves for trådløst nettverk"
 
-#: ../src/wireless-dialog.c:680
+#: ../src/wireless-dialog.c:932
 msgid "Create New Wireless Network"
 msgstr "Opprett nytt trådløst nettverk"
 
-#: ../src/wireless-dialog.c:682
+#: ../src/wireless-dialog.c:934
 msgid "New wireless network"
 msgstr "Nytt trådløst nettverk"
 
-#: ../src/wireless-dialog.c:683
+#: ../src/wireless-dialog.c:935
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Oppgi et navn på det trådløse nettverket du ønsker å opprette."
 
-#: ../src/wireless-dialog.c:685
+#: ../src/wireless-dialog.c:937
 msgid "Connect to Other Wireless Network"
 msgstr "Koble til annet trådløst nettverk"
 
-#: ../src/wireless-dialog.c:687
+#: ../src/wireless-dialog.c:939
 msgid "Existing wireless network"
 msgstr "Eksisterende trådløse nettverk"
 
-#: ../src/wireless-dialog.c:688
+#: ../src/wireless-dialog.c:940
 msgid "Enter the name of the wireless network to which you wish to connect."
 msgstr "Oppgi navnet til det trådløse nettverket du ønsker å koble deg til."
 
-#: ../src/wireless-security/eap-method.c:302
+#: ../src/wireless-security/eap-method.c:293
 msgid "DER or PEM certificates (*.der, *.pem)"
 msgstr "DER- eller PEM-sertifikater (*.der, *.pem)"
 
@@ -1703,10 +1557,129 @@ msgstr "Velg din private nøkkel ..."
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:338
+#: ../src/wireless-security/wireless-security.c:340
 msgid "Tunneled TLS"
 msgstr "Tunnelert TLS (TTLS)"
 
-#: ../src/wireless-security/wireless-security.c:348
+#: ../src/wireless-security/wireless-security.c:351
 msgid "Protected EAP (PEAP)"
 msgstr "Beskyttet EAP (PEAP)"
+
+#~ msgid "Could not find some required resources (the glade file)!"
+#~ msgstr "Fant ikke nødvendige ressurser (glade-filen)."
+
+#~ msgid ""
+#~ "DHCP\n"
+#~ "Auto IP\n"
+#~ "Manual"
+#~ msgstr ""
+#~ "DHCP\n"
+#~ "Automatisk IP\n"
+#~ "Manuell"
+
+#~ msgid "PEM key file had no end tag '%s'."
+#~ msgstr "PEM-nøkkelfilen har ingen avslutningstagg «%s»."
+
+#~ msgid "Doesn't look like a PEM private key file."
+#~ msgstr "Ser ikke ut som en privat PEM-nøkkelfil."
+
+#~ msgid "Not enough memory to store PEM file data."
+#~ msgstr "Ikke nok minne til å lagre PEM-fildata."
+
+#~ msgid "Malformed PEM file: Proc-Type was not first tag."
+#~ msgstr "Feilformatert PEM-fil: Proc-Type var ikke første taggen."
+
+#~ msgid "Malformed PEM file: unknown Proc-Type tag '%s'."
+#~ msgstr "Feilformatert PEM-fil: ukjent Proc-Type-tagg «%s»."
+
+#~ msgid "Malformed PEM file: DEK-Info was not the second tag."
+#~ msgstr "Feilformatert PEM-fil: DEK-Info var ikke andre taggen."
+
+#~ msgid "Malformed PEM file: no IV found in DEK-Info tag."
+#~ msgstr "Feilformatert PEM-fil: ingen IV ble funnet i DEK-Info-taggen."
+
+#~ msgid "Malformed PEM file: invalid format of IV in DEK-Info tag."
+#~ msgstr "Feilformatert PEM-fil: ugyldig format på IV i DEK-Info-taggen."
+
+#~ msgid "Malformed PEM file: unknown private key cipher '%s'."
+#~ msgstr ""
+#~ "Feilformatert PEM-fil: ukjent krypteringsmetode for private nøkkelen «%s»."
+
+#~ msgid "Could not decode private key."
+#~ msgstr "Kunne ikke dekode privat nøkkel."
+
+#~ msgid "PEM certificate '%s' had no end tag '%s'."
+#~ msgstr "PEM-sertifikat «%s» har ingen sluttagg «%s»."
+
+#~ msgid "Failed to decode certificate."
+#~ msgstr "Feilet med å dekode sertifikatet."
+
+#~ msgid "Not enough memory to store certificate data."
+#~ msgstr "Ikke nok minne for å lagre sertifikatdata."
+
+#~ msgid "IV must be an even number of bytes in length."
+#~ msgstr "IV må være et heltall i antall byte."
+
+#~ msgid "Not enough memory to store the IV."
+#~ msgstr "Ikke nok minne for å lagre IV."
+
+#~ msgid "IV contains non-hexadecimal digits."
+#~ msgstr "IV inneholder ikke-heksadesimale tall. "
+
+#~ msgid "Private key cipher '%s' was unknown."
+#~ msgstr "Ukjent krypteringsmetode for privat nøkkel «%s»."
+
+#~ msgid "Not enough memory to create private key decryption key."
+#~ msgstr ""
+#~ "Ikke nok minne for å opprette dekrypteringsnøkkel for privat nøkkel."
+
+#~ msgid "Not enough memory to store decrypted private key."
+#~ msgstr "Ikke nok minne for å lagre dekryptert privat nøkkel."
+
+#~ msgid "Failed to initialize the MD5 engine: %s / %s."
+#~ msgstr "Mislyktes med oppstart av MD5-motoren: %s / %s."
+
+#~ msgid "Not enough memory for decrypted key buffer."
+#~ msgstr "Ikke nok minne for dekryptert møkkel-mellomlager."
+
+#~ msgid "Failed to initialize the decryption cipher context: %s / %s."
+#~ msgstr "Klarte ikke å initiere cipherkontekst for kryptering: %s / %s."
+
+#~ msgid "Failed to set symmetric key for decryption: %s / %s."
+#~ msgstr "Mislyktes å sette symmetrisk nøkkel for dekryptering: %s / %s."
+
+#~ msgid "Failed to set IV for decryption: %s / %s."
+#~ msgstr "Mislyktes å sette IV for dekryptering: %s / %s."
+
+#~ msgid "Failed to decrypt the private key: %s / %s."
+#~ msgstr "Mislyktes å dekryptere den private nøkkelen: %s / %s."
+
+#~ msgid "Error initializing certificate data: %s"
+#~ msgstr "Feil under oppstart av sertifikatdata: %s"
+
+#~ msgid "Couldn't decode certificate: %s"
+#~ msgstr "Kunne ikke dekode sertifikat: %s"
+
+#~ msgid "Failed to initialize the MD5 context: %d."
+#~ msgstr "Mislyktes å starte opp MD5-konteksten: %d."
+
+#~ msgid "Failed to initialize the decryption cipher slot."
+#~ msgstr "Kunne ikke initiere sifferplass for dekryptering."
+
+#~ msgid "Failed to set symmetric key for decryption."
+#~ msgstr "Mislyktes å setet symmetrisk nøkkel for dekryptering."
+
+#~ msgid "Failed to set IV for decryption."
+#~ msgstr "Mislyktes å sette IV for dekryptering."
+
+#~ msgid "Failed to initialize the decryption context."
+#~ msgstr "Mislyktes å starte opp dekrypteringskonteksten."
+
+#~ msgid "Failed to decrypt the private key: %d."
+#~ msgstr "Mislyktes å dekryptere den private nøkkelen: %d."
+
+#~ msgid "Failed to finalize decryption of the private key: %d."
+#~ msgstr "Mislyktes med å avslutte dekryptering av den private nøkkelen: %d"
+
+#~ msgid "Couldn't decode certificate: %d"
+#~ msgstr "Kunne ikke dekode sertifikatet: %d"
