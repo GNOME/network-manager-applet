@@ -428,7 +428,7 @@ set_property (GObject *object, guint prop_id,
 	switch (prop_id) {
 	case PROP_CLIENT:
 		/* Construct only */
-		priv->client = g_value_dup_object (value);
+		priv->client = GCONF_CLIENT (g_value_dup_object (value));
 		break;
 	case PROP_DIR:
 		/* Construct only */
