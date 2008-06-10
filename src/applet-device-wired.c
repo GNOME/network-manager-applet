@@ -35,7 +35,7 @@
 #include <nm-setting-wired.h>
 #include <nm-setting-8021x.h>
 #include <nm-setting-pppoe.h>
-#include <nm-device-802-3-ethernet.h>
+#include <nm-device-ethernet.h>
 
 #include "applet.h"
 #include "applet-device-wired.h"
@@ -204,7 +204,7 @@ wired_add_menu_item (NMDevice *device,
 	 * we know it doesn't have a link.
 	 */
  	if (nm_device_get_capabilities (device) & NM_DEVICE_CAP_CARRIER_DETECT)
-		carrier = nm_device_802_3_ethernet_get_carrier (NM_DEVICE_802_3_ETHERNET (device));
+		carrier = nm_device_ethernet_get_carrier (NM_DEVICE_ETHERNET (device));
 
 	label = gtk_bin_get_child (GTK_BIN (item));
 	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",

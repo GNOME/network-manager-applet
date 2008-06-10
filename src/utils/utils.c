@@ -25,8 +25,8 @@
 #include <netinet/ether.h>
 #include <glib.h>
 
-#include <nm-device-802-3-ethernet.h>
-#include <nm-device-802-11-wireless.h>
+#include <nm-device-ethernet.h>
+#include <nm-device-wifi.h>
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
 #include <nm-access-point.h>
@@ -495,7 +495,7 @@ connection_valid_for_wired (NMConnection *connection,
                             NMDevice *device,
                             gpointer specific_object)
 {
-	NMDevice8023Ethernet *ethdev = NM_DEVICE_802_3_ETHERNET (device);
+	NMDeviceEthernet *ethdev = NM_DEVICE_ETHERNET (device);
 	NMSettingWired *s_wired;
 	const char *str_mac;
 	struct ether_addr *bin_mac;
@@ -516,7 +516,7 @@ connection_valid_for_wired (NMConnection *connection,
 		if (!s_wired->mac_address)
 			return TRUE;
 
-		str_mac = nm_device_802_3_ethernet_get_hw_address (ethdev);
+		str_mac = nm_device_ethernet_get_hw_address (ethdev);
 		g_return_val_if_fail (str_mac != NULL, FALSE);
 
 		bin_mac = ether_aton (str_mac);
@@ -535,7 +535,7 @@ connection_valid_for_wireless (NMConnection *connection,
                                NMDevice *device,
                                gpointer specific_object)
 {
-	NMDevice80211Wireless *wdev = NM_DEVICE_802_11_WIRELESS (device);
+	NMDeviceWifi *wdev = NM_DEVICE_WIFI (device);
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	guint32 wcaps;
@@ -552,7 +552,7 @@ connection_valid_for_wireless (NMConnection *connection,
 		const char *str_mac;
 		struct ether_addr *bin_mac;
 
-		str_mac = nm_device_802_11_wireless_get_hw_address (wdev);
+		str_mac = nm_device_wifi_get_hw_address (wdev);
 		g_return_val_if_fail (str_mac != NULL, FALSE);
 
 		bin_mac = ether_aton (str_mac);
@@ -587,29 +587,29 @@ connection_valid_for_wireless (NMConnection *connection,
 		return TRUE;
 
 	/* Match security with device capabilities */
-	wcaps = nm_device_802_11_wireless_get_capabilities (wdev);
+	wcaps = nm_device_wifi_get_capabilities (wdev);
 
 	/* At this point, the device better have basic WPA support. */
-	if (   !(wcaps & NM_802_11_DEVICE_CAP_WPA)
-	    || !(wcaps & NM_802_11_DEVICE_CAP_CIPHER_TKIP))
+	if (   !(wcaps & NM_WIFI_DEVICE_CAP_WPA)
+	    || !(wcaps & NM_WIFI_DEVICE_CAP_CIPHER_TKIP))
 		return FALSE;
 
 	/* Check for only RSN */
 	if (   (g_slist_length (s_wireless_sec->proto) == 1)
 	    && !strcmp (s_wireless_sec->proto->data, "rsn")
-	    && !(wcaps & NM_802_11_DEVICE_CAP_RSN))
+	    && !(wcaps & NM_WIFI_DEVICE_CAP_RSN))
 		return FALSE;
 
 	/* Check for only pairwise CCMP */
 	if (   (g_slist_length (s_wireless_sec->pairwise) == 1)
 	    && !strcmp (s_wireless_sec->pairwise->data, "ccmp")
-	    && !(wcaps & NM_802_11_DEVICE_CAP_CIPHER_CCMP))
+	    && !(wcaps & NM_WIFI_DEVICE_CAP_CIPHER_CCMP))
 		return FALSE;
 
 	/* Check for only group CCMP */
 	if (   (g_slist_length (s_wireless_sec->group) == 1)
 	    && !strcmp (s_wireless_sec->group->data, "ccmp")
-	    && !(wcaps & NM_802_11_DEVICE_CAP_CIPHER_CCMP))
+	    && !(wcaps & NM_WIFI_DEVICE_CAP_CIPHER_CCMP))
 		return FALSE;
 
 	return TRUE;
@@ -663,9 +663,9 @@ utils_connection_valid_for_device (NMConnection *connection,
 	g_return_val_if_fail (s_con != NULL, FALSE);
 	g_return_val_if_fail (s_con->type != NULL, FALSE);
 
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+	if (NM_IS_DEVICE_ETHERNET (device))
 		return connection_valid_for_wired (connection, s_con, device, specific_object);
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
+	else if (NM_IS_DEVICE_WIFI (device))
 		return connection_valid_for_wireless (connection, s_con, device, specific_object);
 	else if (NM_IS_GSM_DEVICE (device))
 		return connection_valid_for_gsm (connection, s_con, device, specific_object);

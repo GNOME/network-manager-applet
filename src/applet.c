@@ -40,8 +40,8 @@
 #include <sys/socket.h>
 
 #include <NetworkManagerVPN.h>
-#include <nm-device-802-3-ethernet.h>
-#include <nm-device-802-11-wireless.h>
+#include <nm-device-ethernet.h>
+#include <nm-device-wifi.h>
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
 #include <nm-utils.h>
@@ -61,7 +61,7 @@
 
 #include "applet.h"
 #include "applet-device-wired.h"
-#include "applet-device-wireless.h"
+#include "applet-device-wifi.h"
 #include "applet-device-gsm.h"
 #include "applet-device-cdma.h"
 #include "applet-dialogs.h"
@@ -105,20 +105,20 @@ applet_get_best_activating_connection (NMApplet *applet, NMDevice **device)
 			continue;
 		}
 
-		if (NM_IS_DEVICE_802_11_WIRELESS (best_dev)) {
-			if (NM_IS_DEVICE_802_3_ETHERNET (candidate)) {
+		if (NM_IS_DEVICE_WIFI (best_dev)) {
+			if (NM_IS_DEVICE_ETHERNET (candidate)) {
 				best_dev = candidate_dev;
 				best = candidate;
 			}
 		} else if (NM_IS_CDMA_DEVICE (best_dev)) {
-			if (   NM_IS_DEVICE_802_3_ETHERNET (candidate)
-			    || NM_IS_DEVICE_802_11_WIRELESS (candidate)) {
+			if (   NM_IS_DEVICE_ETHERNET (candidate)
+			    || NM_IS_DEVICE_WIFI (candidate)) {
 				best_dev = candidate_dev;
 				best = candidate;
 			}
 		} else if (NM_IS_GSM_DEVICE (best_dev)) {
-			if (   NM_IS_DEVICE_802_3_ETHERNET (candidate)
-			    || NM_IS_DEVICE_802_11_WIRELESS (candidate)
+			if (   NM_IS_DEVICE_ETHERNET (candidate)
+			    || NM_IS_DEVICE_WIFI (candidate)
 			    || NM_IS_CDMA_DEVICE (candidate)) {
 				best_dev = candidate_dev;
 				best = candidate;
@@ -309,10 +309,10 @@ get_device_class (NMDevice *device, NMApplet *applet)
 	g_return_val_if_fail (device != NULL, NULL);
 	g_return_val_if_fail (applet != NULL, NULL);
 
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+	if (NM_IS_DEVICE_ETHERNET (device))
 		return applet->wired_class;
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		return applet->wireless_class;
+	else if (NM_IS_DEVICE_WIFI (device))
+		return applet->wifi_class;
 	else if (NM_IS_GSM_DEVICE (device))
 		return applet->gsm_class;
 	else if (NM_IS_CDMA_DEVICE (device))
@@ -854,19 +854,19 @@ sort_devices (gconstpointer a, gconstpointer b)
 		return strcmp (aa_desc, bb_desc);
 	}
 
-	if (aa_type == NM_TYPE_DEVICE_802_3_ETHERNET && bb_type == NM_TYPE_DEVICE_802_11_WIRELESS)
+	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_DEVICE_WIFI)
 		return -1;
-	if (aa_type == NM_TYPE_DEVICE_802_3_ETHERNET && bb_type == NM_TYPE_GSM_DEVICE)
+	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_GSM_DEVICE)
 		return -1;
-	if (aa_type == NM_TYPE_DEVICE_802_3_ETHERNET && bb_type == NM_TYPE_CDMA_DEVICE)
+	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_CDMA_DEVICE)
 		return -1;
 
 	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_CDMA_DEVICE)
 		return -1;
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_802_11_WIRELESS)
+	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
 		return -1;
 
-	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_802_11_WIRELESS)
+	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
 		return -1;
 
 	return 1;
@@ -959,12 +959,12 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		if (!(nm_device_get_capabilities (device) & NM_DEVICE_CAP_NM_SUPPORTED))
 			continue;
 
-		if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+		if (NM_IS_DEVICE_WIFI (device)) {
 			if (   nm_client_wireless_get_enabled (applet->nm_client)
 			    && (nm_device_get_state (device) >= NM_DEVICE_STATE_DISCONNECTED)) {
 				n_wireless_devices++;
 			}
-		} else if (NM_IS_DEVICE_802_3_ETHERNET (device))
+		} else if (NM_IS_DEVICE_ETHERNET (device))
 			n_wired_devices++;
 		else if (NM_IS_CDMA_DEVICE (device))
 			n_cdma_devices++;
@@ -988,9 +988,9 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		if (!(nm_device_get_capabilities (device) & NM_DEVICE_CAP_NM_SUPPORTED))
 			continue;
 
-		if (NM_IS_DEVICE_802_11_WIRELESS (device))
+		if (NM_IS_DEVICE_WIFI (device))
 			n_devices = n_wireless_devices;
-		else if (NM_IS_DEVICE_802_3_ETHERNET (device))
+		else if (NM_IS_DEVICE_ETHERNET (device))
 			n_devices = n_wired_devices;
 		else if (NM_IS_CDMA_DEVICE (device))
 			n_devices = n_cdma_devices;
@@ -1267,7 +1267,7 @@ nma_context_menu_update (NMApplet *applet)
 
 		devices = nm_client_get_devices (applet->nm_client);
 		for (i = 0; devices && (i < devices->len); i++) {
-			if (NM_IS_DEVICE_802_11_WIRELESS (g_ptr_array_index (devices, i))) {
+			if (NM_IS_DEVICE_WIFI (g_ptr_array_index (devices, i))) {
 				have_wireless = TRUE;
 				break;
 			}
@@ -2238,8 +2238,8 @@ constructor (GType type,
 	applet->wired_class = applet_device_wired_get_class (applet);
 	g_assert (applet->wired_class);
 
-	applet->wireless_class = applet_device_wireless_get_class (applet);
-	g_assert (applet->wireless_class);
+	applet->wifi_class = applet_device_wifi_get_class (applet);
+	g_assert (applet->wifi_class);
 
 	applet->gsm_class = applet_device_gsm_get_class (applet);
 	g_assert (applet->gsm_class);
@@ -2268,7 +2268,7 @@ static void finalize (GObject *object)
 		g_source_remove (applet->update_timestamps_id);
 
 	g_slice_free (NMADeviceClass, applet->wired_class);
-	g_slice_free (NMADeviceClass, applet->wireless_class);
+	g_slice_free (NMADeviceClass, applet->wifi_class);
 	g_slice_free (NMADeviceClass, applet->gsm_class);
 
 	if (applet->update_icon_id)

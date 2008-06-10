@@ -219,12 +219,12 @@ ce_page_wireless_security_new (NMConnection *connection,
 
 	combo = GTK_COMBO_BOX (glade_xml_get_widget (parent->xml, "wireless_security_combo"));
 
-	dev_caps =   NM_802_11_DEVICE_CAP_CIPHER_WEP40
-	           | NM_802_11_DEVICE_CAP_CIPHER_WEP104
-	           | NM_802_11_DEVICE_CAP_CIPHER_TKIP
-	           | NM_802_11_DEVICE_CAP_CIPHER_CCMP
-	           | NM_802_11_DEVICE_CAP_WPA
-	           | NM_802_11_DEVICE_CAP_RSN;
+	dev_caps =   NM_WIFI_DEVICE_CAP_CIPHER_WEP40
+	           | NM_WIFI_DEVICE_CAP_CIPHER_WEP104
+	           | NM_WIFI_DEVICE_CAP_CIPHER_TKIP
+	           | NM_WIFI_DEVICE_CAP_CIPHER_CCMP
+	           | NM_WIFI_DEVICE_CAP_WPA
+	           | NM_WIFI_DEVICE_CAP_RSN;
 
 	if (s_wireless->mode && !strcmp (s_wireless->mode, "adhoc"))
 		is_adhoc = TRUE;

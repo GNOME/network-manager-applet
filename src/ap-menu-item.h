@@ -30,8 +30,6 @@
 #include "applet.h"
 #include "nm-access-point.h"
 
-#include <nm-device-802-11-wireless.h>
-
 #define NM_TYPE_NETWORK_MENU_ITEM            (nm_network_menu_item_get_type ())
 #define NM_NETWORK_MENU_ITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_NETWORK_MENU_ITEM, NMNetworkMenuItem))
 #define NM_NETWORK_MENU_ITEM_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NM_TYPE_NETWORK_MENU_ITEM, NMNetworkMenuItemClass))

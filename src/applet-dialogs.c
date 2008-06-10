@@ -24,8 +24,8 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#include <nm-device-802-3-ethernet.h>
-#include <nm-device-802-11-wireless.h>
+#include <nm-device-ethernet.h>
+#include <nm-device-wifi.h>
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
 
@@ -245,9 +245,9 @@ info_dialog_add_page (GtkNotebook *notebook,
 
 	/* Interface */
 	iface = nm_device_get_iface (device);
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
+	if (NM_IS_DEVICE_ETHERNET (device))
 		str = g_strdup_printf (_("Ethernet (%s)"), iface);
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
+	else if (NM_IS_DEVICE_WIFI (device))
 		str = g_strdup_printf (_("802.11 WiFi (%s)"), iface);
 	else if (NM_IS_GSM_DEVICE (device))
 		str = g_strdup_printf (_("GSM (%s)"), iface);
@@ -267,10 +267,10 @@ info_dialog_add_page (GtkNotebook *notebook,
 
 	/* Hardware address */
 	str = NULL;
-	if (NM_IS_DEVICE_802_3_ETHERNET (device))
-		str = g_strdup (nm_device_802_3_ethernet_get_hw_address (NM_DEVICE_802_3_ETHERNET (device)));
-	else if (NM_IS_DEVICE_802_11_WIRELESS (device))
-		str = g_strdup (nm_device_802_11_wireless_get_hw_address (NM_DEVICE_802_11_WIRELESS (device)));
+	if (NM_IS_DEVICE_ETHERNET (device))
+		str = g_strdup (nm_device_ethernet_get_hw_address (NM_DEVICE_ETHERNET (device)));
+	else if (NM_IS_DEVICE_WIFI (device))
+		str = g_strdup (nm_device_wifi_get_hw_address (NM_DEVICE_WIFI (device)));
 
 	gtk_table_attach_defaults (table,
 							   create_info_label (_("Hardware Address:")),
@@ -292,12 +292,12 @@ info_dialog_add_page (GtkNotebook *notebook,
 
 	/* Speed */
 	speed = 0;
-	if (NM_IS_DEVICE_802_3_ETHERNET (device)) {
+	if (NM_IS_DEVICE_ETHERNET (device)) {
 		/* Wired speed in Mb/s */
-		speed = nm_device_802_3_ethernet_get_speed (NM_DEVICE_802_3_ETHERNET (device));
-	} else if (NM_IS_DEVICE_802_11_WIRELESS (device)) {
+		speed = nm_device_ethernet_get_speed (NM_DEVICE_ETHERNET (device));
+	} else if (NM_IS_DEVICE_WIFI (device)) {
 		/* Wireless speed in Kb/s */
-		speed = nm_device_802_11_wireless_get_bitrate (NM_DEVICE_802_11_WIRELESS (device));
+		speed = nm_device_wifi_get_bitrate (NM_DEVICE_WIFI (device));
 		speed /= 1000;
 	}
 

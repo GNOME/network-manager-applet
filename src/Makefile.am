@@ -40,8 +40,8 @@ nm_applet_SOURCES =			\
 	applet-dialogs.c \
 	applet-device-wired.h \
 	applet-device-wired.c \
-	applet-device-wireless.h \
-	applet-device-wireless.c \
+	applet-device-wifi.h \
+	applet-device-wifi.c \
 	ap-menu-item.h \
 	ap-menu-item.c \
 	applet-device-gsm.h \

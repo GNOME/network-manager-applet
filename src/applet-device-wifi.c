@@ -40,12 +40,12 @@
 #include <nm-access-point.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
-#include <nm-device-802-11-wireless.h>
+#include <nm-device-wifi.h>
 #include <nm-setting-8021x.h>
 #include <nm-utils.h>
 
 #include "applet.h"
-#include "applet-device-wireless.h"
+#include "applet-device-wifi.h"
 #include "ap-menu-item.h"
 #include "utils.h"
 #include "gnome-keyring-md5.h"
@@ -124,7 +124,7 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 
 typedef struct {
 	NMApplet *applet;
-	NMDevice80211Wireless *device;
+	NMDeviceWifi *device;
 	NMAccessPoint *ap;
 	NMConnection *connection;
 } WirelessMenuItemInfo;
@@ -240,7 +240,7 @@ get_security_for_ap (NMAccessPoint *ap,
 
 	/* WPA2 PSK first */
 	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
-	    && (dev_caps & NM_802_11_DEVICE_CAP_RSN)) {
+	    && (dev_caps & NM_WIFI_DEVICE_CAP_RSN)) {
 		sec->key_mgmt = g_strdup ("wpa-psk");
 		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
 		sec->pairwise = add_ciphers_from_flags (rsn_flags, TRUE);
@@ -250,7 +250,7 @@ get_security_for_ap (NMAccessPoint *ap,
 
 	/* WPA PSK */
 	if (   (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
-	    && (dev_caps & NM_802_11_DEVICE_CAP_WPA)) {
+	    && (dev_caps & NM_WIFI_DEVICE_CAP_WPA)) {
 		sec->key_mgmt = g_strdup ("wpa-psk");
 		sec->proto = g_slist_append (sec->proto, g_strdup ("wpa"));
 		sec->pairwise = add_ciphers_from_flags (wpa_flags, TRUE);
@@ -260,7 +260,7 @@ get_security_for_ap (NMAccessPoint *ap,
 
 	/* WPA2 Enterprise */
 	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
-	    && (dev_caps & NM_802_11_DEVICE_CAP_RSN)) {
+	    && (dev_caps & NM_WIFI_DEVICE_CAP_RSN)) {
 		sec->key_mgmt = g_strdup ("wpa-eap");
 		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
 		sec->pairwise = add_ciphers_from_flags (rsn_flags, TRUE);
@@ -274,7 +274,7 @@ get_security_for_ap (NMAccessPoint *ap,
 
 	/* WPA Enterprise */
 	if (   (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
-	    && (dev_caps & NM_802_11_DEVICE_CAP_WPA)) {
+	    && (dev_caps & NM_WIFI_DEVICE_CAP_WPA)) {
 		sec->key_mgmt = g_strdup ("wpa-eap");
 		sec->proto = g_slist_append (sec->proto, g_strdup ("wpa"));
 		sec->pairwise = add_ciphers_from_flags (wpa_flags, TRUE);
@@ -330,7 +330,7 @@ wireless_new_auto_connection (NMDevice *device,
 	else
 		g_assert_not_reached ();
 
-	dev_caps = nm_device_802_11_wireless_get_capabilities (NM_DEVICE_802_11_WIRELESS (device));
+	dev_caps = nm_device_wifi_get_capabilities (NM_DEVICE_WIFI (device));
 	s_wireless_sec = get_security_for_ap (info->ap, dev_caps, &supported, &s_8021x);
 	if (!supported) {
 		g_object_unref (s_wireless);
@@ -413,7 +413,7 @@ find_duplicate (GtkWidget * widget, gpointer user_data)
 }
 
 static GSList *
-filter_connections_for_access_point (GSList *connections, NMDevice80211Wireless *device, NMAccessPoint *ap)
+filter_connections_for_access_point (GSList *connections, NMDeviceWifi *device, NMAccessPoint *ap)
 {
 	GSList *ap_connections = NULL;
 	GSList *iter;
@@ -428,7 +428,7 @@ filter_connections_for_access_point (GSList *connections, NMDevice80211Wireless 
 }
 
 static NMNetworkMenuItem *
-add_new_ap_item (NMDevice80211Wireless *device,
+add_new_ap_item (NMDeviceWifi *device,
                  NMAccessPoint *ap,
                  struct dup_data *dup_data,
                  NMAccessPoint *active_ap,
@@ -521,7 +521,7 @@ add_new_ap_item (NMDevice80211Wireless *device,
 }
 
 static void
-add_one_ap_menu_item (NMDevice80211Wireless *device,
+add_one_ap_menu_item (NMDeviceWifi *device,
                       NMAccessPoint *ap,
                       GSList *connections,
                       NMAccessPoint *active_ap,
@@ -634,7 +634,7 @@ wireless_add_menu_item (NMDevice *device,
                         GtkWidget *menu,
                         NMApplet *applet)
 {
-	NMDevice80211Wireless *wdev;
+	NMDeviceWifi *wdev;
 	char *text;
 	GtkWidget *item;
 	const GPtrArray *aps;
@@ -644,8 +644,8 @@ wireless_add_menu_item (NMDevice *device,
 	GtkWidget *label;
 	char *bold_text;
 
-	wdev = NM_DEVICE_802_11_WIRELESS (device);
-	aps = nm_device_802_11_wireless_get_access_points (wdev);
+	wdev = NM_DEVICE_WIFI (device);
+	aps = nm_device_wifi_get_access_points (wdev);
 
 	all = applet_get_all_connections (applet);
 	connections = utils_filter_connections_for_device (device, all);
@@ -697,7 +697,7 @@ wireless_add_menu_item (NMDevice *device,
 		goto out;
 	}
 
-	active_ap = nm_device_802_11_wireless_get_active_access_point (wdev);
+	active_ap = nm_device_wifi_get_active_access_point (wdev);
 
 	/* Add all networks in our network list to the menu */
 	for (i = 0; aps && (i < aps->len); i++)
@@ -760,7 +760,7 @@ add_seen_bssid (NMAGConfConnection *gconf_connection, NMAccessPoint *ap)
 }
 
 static void
-notify_active_ap_changed_cb (NMDevice80211Wireless *device,
+notify_active_ap_changed_cb (NMDeviceWifi *device,
                              GParamSpec *pspec,
                              NMApplet *applet)
 {
@@ -773,7 +773,7 @@ notify_active_ap_changed_cb (NMDevice80211Wireless *device,
 	if (nm_device_get_state (NM_DEVICE (device)) != NM_DEVICE_STATE_ACTIVATED)
 		return;
 
-	ap = nm_device_802_11_wireless_get_active_access_point (device);
+	ap = nm_device_wifi_get_active_access_point (device);
 	if (!ap)
 		return;
 
@@ -905,7 +905,7 @@ wifi_available_dont_show_cb (NotifyNotification *notify,
 struct ap_notification_data 
 {
 	NMApplet *applet;
-	NMDevice80211Wireless *device;
+	NMDeviceWifi *device;
 	guint id;
 	gulong last_notification_time;	
 };
@@ -920,7 +920,7 @@ idle_check_avail_access_point_notification (gpointer datap)
 {	
 	struct ap_notification_data *data = datap;
 	NMApplet *applet = data->applet;
-	NMDevice80211Wireless *device = data->device;
+	NMDeviceWifi *device = data->device;
 	int i;
 	const GPtrArray *aps;
 	GSList *all_connections;
@@ -944,7 +944,7 @@ idle_check_avail_access_point_notification (gpointer datap)
 	g_slist_free (all_connections);	
 	all_connections = NULL;
 
-	aps = nm_device_802_11_wireless_get_access_points (device);
+	aps = nm_device_wifi_get_access_points (device);
 	for (i = 0; aps && (i < aps->len); i++) {
 		NMAccessPoint *ap = aps->pdata[i];
 		GSList *ap_connections = filter_connections_for_access_point (connections, device, ap);
@@ -1006,7 +1006,7 @@ queue_avail_access_point_notification (NMDevice *device)
 }
 
 static void
-access_point_added_cb (NMDevice80211Wireless *device,
+access_point_added_cb (NMDeviceWifi *device,
                        NMAccessPoint *ap,
                        gpointer user_data)
 {
@@ -1031,13 +1031,13 @@ on_new_connection (NMSettings *settings, NMExportedConnection *connection, gpoin
 static void
 wireless_device_added (NMDevice *device, NMApplet *applet)
 {
-	NMDevice80211Wireless *wdev = NM_DEVICE_802_11_WIRELESS (device);
+	NMDeviceWifi *wdev = NM_DEVICE_WIFI (device);
 	const GPtrArray *aps;
 	int i;
 	struct ap_notification_data *data;
 
 	g_signal_connect (wdev,
-	                  "notify::" NM_DEVICE_802_11_WIRELESS_ACTIVE_ACCESS_POINT,
+	                  "notify::" NM_DEVICE_WIFI_ACTIVE_ACCESS_POINT,
 	                  G_CALLBACK (notify_active_ap_changed_cb),
 	                  applet);
 
@@ -1062,7 +1062,7 @@ wireless_device_added (NMDevice *device, NMApplet *applet)
 	queue_avail_access_point_notification (device);
 
 	/* Hash all APs this device knows about */
-	aps = nm_device_802_11_wireless_get_access_points (wdev);
+	aps = nm_device_wifi_get_access_points (wdev);
 	for (i = 0; aps && (i < aps->len); i++)
 		add_hash_to_ap (g_ptr_array_index (aps, i));
 }
@@ -1088,7 +1088,7 @@ wireless_device_state_changed (NMDevice *device,
 	    state == NM_DEVICE_STATE_IP_CONFIG ||
 	    state == NM_DEVICE_STATE_NEED_AUTH ||
 	    state == NM_DEVICE_STATE_ACTIVATED) {
-		ap = nm_device_802_11_wireless_get_active_access_point (NM_DEVICE_802_11_WIRELESS (device));
+		ap = nm_device_wifi_get_active_access_point (NM_DEVICE_WIFI (device));
 	}
 
 	if (!ap || (ap != applet->current_ap)) {
@@ -1554,8 +1554,7 @@ wireless_get_secrets (NMDevice *device,
 	GtkWidget *dialog;
 
 	g_assert (specific_object);
-	ap = nm_device_802_11_wireless_get_access_point_by_path (NM_DEVICE_802_11_WIRELESS (device),
-	                                                         specific_object);
+	ap = nm_device_wifi_get_access_point_by_path (NM_DEVICE_WIFI (device), specific_object);
 
 	dialog = nma_wireless_dialog_new (applet, connection, device, ap);
 	if (!dialog) {
@@ -1581,7 +1580,7 @@ wireless_get_secrets (NMDevice *device,
 }
 
 NMADeviceClass *
-applet_device_wireless_get_class (NMApplet *applet)
+applet_device_wifi_get_class (NMApplet *applet)
 {
 	NMADeviceClass *dclass;
 

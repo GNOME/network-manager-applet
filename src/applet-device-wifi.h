@@ -19,16 +19,16 @@
  * (C) Copyright 2008 Red Hat, Inc.
  */
 
-#ifndef __APPLET_DEVICE_WIRELESS_H__
-#define __APPLET_DEVICE_WIRELESS_H__
+#ifndef __APPLET_DEVICE_WIFI_H__
+#define __APPLET_DEVICE_WIFI_H__
 
 #include <gtk/gtkwidget.h>
 
 #include "applet.h"
 
-NMADeviceClass *applet_device_wireless_get_class (NMApplet *applet);
+NMADeviceClass *applet_device_wifi_get_class (NMApplet *applet);
 
 void nma_menu_add_other_network_item (GtkWidget *menu, NMApplet *applet);
 void nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet);
 
-#endif /* __APPLET_DEVICE_WIRELESS_H__ */
+#endif /* __APPLET_DEVICE_WIFI_H__ */

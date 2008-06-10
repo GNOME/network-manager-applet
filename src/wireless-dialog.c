@@ -33,7 +33,7 @@
 
 #include <nm-client.h>
 #include <nm-utils.h>
-#include <nm-device-802-11-wireless.h>
+#include <nm-device-wifi.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
 #include <nm-setting-ip4-config.h>
@@ -444,7 +444,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 			if (s_wireless->mac_address) {
 				const char *hw_addr;
 
-				hw_addr = nm_device_802_11_wireless_get_hw_address (NM_DEVICE_802_11_WIRELESS (priv->device));
+				hw_addr = nm_device_wifi_get_hw_address (NM_DEVICE_WIFI (priv->device));
 				if (hw_addr) {
 					struct ether_addr *ether;
 
@@ -552,7 +552,7 @@ can_use_device (NMDevice *device)
 	if (!(nm_device_get_capabilities (device) & NM_DEVICE_CAP_NM_SUPPORTED))
 		return FALSE;
 
-	if (!NM_IS_DEVICE_802_11_WIRELESS (device))
+	if (!NM_IS_DEVICE_WIFI (device))
 		return FALSE;
 
 	if (nm_device_get_state (device) < NM_DEVICE_STATE_DISCONNECTED)
@@ -701,7 +701,7 @@ security_combo_init (NMAWirelessDialog *self)
 	 * If a connection is given, that connection's options should be selected
 	 * by default.
 	 */
-	dev_caps = nm_device_802_11_wireless_get_capabilities (NM_DEVICE_802_11_WIRELESS (priv->device));
+	dev_caps = nm_device_wifi_get_capabilities (NM_DEVICE_WIFI (priv->device));
 	if (priv->ap != NULL) {
 		ap_flags = nm_access_point_get_flags (priv->ap);
 		ap_wpa = nm_access_point_get_wpa_flags (priv->ap);
@@ -739,7 +739,7 @@ security_combo_init (NMAWirelessDialog *self)
 	 * even though technically it's possible to have this configuration.
 	 */
 	if (   nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)
-	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_802_11_DEVICE_CAP_WPA | NM_802_11_DEVICE_CAP_RSN)))) {
+	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep;
 		WEPKeyType default_wep_type = WEP_KEY_TYPE_PASSPHRASE;
 
@@ -778,7 +778,7 @@ security_combo_init (NMAWirelessDialog *self)
 	 * even though technically it's possible to have this configuration.
 	 */
 	if (   nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)
-	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_802_11_DEVICE_CAP_WPA | NM_802_11_DEVICE_CAP_RSN)))) {
+	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityLEAP *ws_leap;
 
 		ws_leap = ws_leap_new (priv->glade_file, priv->connection, connection_id);
@@ -1041,7 +1041,7 @@ nma_wireless_dialog_new (NMApplet *applet,
 	/* Ensure device validity */
 	dev_caps = nm_device_get_capabilities (device);
 	g_return_val_if_fail (dev_caps & NM_DEVICE_CAP_NM_SUPPORTED, NULL);
-	g_return_val_if_fail (NM_IS_DEVICE_802_11_WIRELESS (device), NULL);
+	g_return_val_if_fail (NM_IS_DEVICE_WIFI (device), NULL);
 
 	self = NMA_WIRELESS_DIALOG (g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL));
 	if (!self)

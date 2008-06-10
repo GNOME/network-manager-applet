@@ -92,7 +92,7 @@ typedef struct
 
 	/* Device classes */
 	NMADeviceClass *wired_class;
-	NMADeviceClass *wireless_class;
+	NMADeviceClass *wifi_class;
 	NMADeviceClass *gsm_class;
 	NMADeviceClass *cdma_class;
 
