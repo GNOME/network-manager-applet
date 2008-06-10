@@ -1,5 +1,11 @@
 2008-06-09  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-security/ws-wep-key.c
+		- (ws_wep_key_new): don't crash if the connection doesn't have wireless
+			security yet (like in the Create New... dialog)
+
+2008-06-09  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-device-wireless.c
 		- (wifi_available_dont_show_cb): fix comparison that caused applet to
 			not save the "don't show again" preference

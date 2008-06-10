@@ -349,7 +349,7 @@ ws_wep_key_new (const char *glade_file,
 			is_adhoc = TRUE;
 
 		s_wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
-		if (s_wsec->auth_alg && !strcmp (s_wsec->auth_alg, "shared"))
+		if (s_wsec && s_wsec->auth_alg && !strcmp (s_wsec->auth_alg, "shared"))
 			is_shared_key = TRUE;
 	}
 
