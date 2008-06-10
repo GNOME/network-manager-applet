@@ -892,7 +892,7 @@ wifi_available_dont_show_cb (NotifyNotification *notify,
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
-	if (id || strcmp (id, "dont-show"))
+	if (!id || strcmp (id, "dont-show"))
 		return;
 
 	gconf_client_set_bool (applet->gconf_client,
