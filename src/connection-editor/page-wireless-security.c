@@ -377,7 +377,7 @@ dispose (GObject *object)
 }
 
 static gboolean
-validate (CEPage *page)
+validate (CEPage *page, GError **error)
 {
 	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (page);
 	GByteArray *ssid;
@@ -390,9 +390,13 @@ validate (CEPage *page)
 
 	ssid = ce_page_wireless_get_ssid (self->wireless_page);
 	if (ssid) {
+		/* FIXME: get failed property and error out of wireless security objects */
 		valid = wireless_security_validate (sec, ssid);
+		if (!valid)
+			g_set_error (error, 0, 0, "Invalid wireless security");
 		g_byte_array_free (ssid, TRUE);
-	}
+	} else
+		g_set_error (error, 0, 0, "Missing SSID");
 
 	return valid;
 }

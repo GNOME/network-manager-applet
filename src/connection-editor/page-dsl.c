@@ -194,7 +194,7 @@ ui_to_setting (CEPageDsl *self)
 }
 
 static gboolean
-validate (CEPage *page)
+validate (CEPage *page, GError **error)
 {
 	CEPageDsl *self = CE_PAGE_DSL (page);
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
@@ -204,7 +204,7 @@ validate (CEPage *page)
 	ui_to_setting (self);
 
 	foo = g_slist_append (NULL, nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_PPP));
-	valid = nm_setting_verify (NM_SETTING (priv->setting), foo);
+	valid = nm_setting_verify (NM_SETTING (priv->setting), foo, error);
 	g_slist_free (foo);
 
 	return valid;

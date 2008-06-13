@@ -432,6 +432,7 @@ fixup_nm_connection_vpn (NMConnection *connection,
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
 	const char *svc_name;
+	GError *error = NULL;
 
 	g_return_val_if_fail (connection != NULL, FALSE);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
@@ -460,8 +461,12 @@ fixup_nm_connection_vpn (NMConnection *connection,
 		g_free (s_vpn->service_type);
 	s_vpn->service_type = g_strdup (svc_name);
 
-	if (!nm_connection_verify (connection)) {
-		g_warning ("%s: connection returned from plugin was invalid!", __func__);
+	if (!nm_connection_verify (connection, &error)) {
+		g_warning ("%s: invalid connection returned from plugin: '%s' / '%s' invalid: %d",
+		            __func__,
+		            g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)),
+		            error->message, error->code);
+		g_error_free (error);
 		return FALSE;
 	}
 

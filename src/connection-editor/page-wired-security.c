@@ -106,13 +106,17 @@ ce_page_wired_security_new (NMConnection *connection)
 }
 
 static gboolean
-validate (CEPage *page)
+validate (CEPage *page, GError **error)
 {
 	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (page);
 	gboolean valid = TRUE;
 
-	if (gtk_toggle_button_get_active (priv->enabled))
+	if (gtk_toggle_button_get_active (priv->enabled)) {
+		/* FIXME: get failed property and error out of wireless security objects */
 		valid = wireless_security_validate (priv->security, NULL);
+		if (!valid)
+			g_set_error (error, 0, 0, "Invalid 802.1x security");
+	}
 
 	return valid;
 }

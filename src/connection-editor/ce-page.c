@@ -39,10 +39,10 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 gboolean
-ce_page_validate (CEPage *self)
+ce_page_validate (CEPage *self, GError **error)
 {
 	if (CE_PAGE_GET_CLASS (self)->validate)
-		return CE_PAGE_GET_CLASS (self)->validate (self);
+		return CE_PAGE_GET_CLASS (self)->validate (self, error);
 
 	return TRUE;
 }

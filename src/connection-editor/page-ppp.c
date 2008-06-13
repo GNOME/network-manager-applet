@@ -326,13 +326,13 @@ ui_to_setting (CEPagePpp *self)
 }
 
 static gboolean
-validate (CEPage *page)
+validate (CEPage *page, GError **error)
 {
 	CEPagePpp *self = CE_PAGE_PPP (page);
 	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
 
 	ui_to_setting (self);
-	return nm_setting_verify (NM_SETTING (priv->setting), NULL);
+	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 }
 
 static void

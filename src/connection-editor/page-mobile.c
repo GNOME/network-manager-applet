@@ -376,13 +376,13 @@ ui_to_setting (CEPageMobile *self)
 }
 
 static gboolean
-validate (CEPage *page)
+validate (CEPage *page, GError **error)
 {
 	CEPageMobile *self = CE_PAGE_MOBILE (page);
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 
 	ui_to_setting (self);
-	return nm_setting_verify (priv->setting, NULL);
+	return nm_setting_verify (priv->setting, NULL, error);
 }
 
 static void

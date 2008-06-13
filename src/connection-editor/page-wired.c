@@ -274,7 +274,7 @@ ui_to_setting (CEPageWired *self)
 }
 
 static gboolean
-validate (CEPage *page)
+validate (CEPage *page, GError **error)
 {
 	CEPageWired *self = CE_PAGE_WIRED (page);
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
@@ -286,7 +286,7 @@ validate (CEPage *page)
 		return FALSE;
 
 	ui_to_setting (self);
-	return nm_setting_verify (NM_SETTING (priv->setting), NULL);
+	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 }
 
 static void

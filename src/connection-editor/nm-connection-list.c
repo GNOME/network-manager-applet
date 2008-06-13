@@ -733,10 +733,11 @@ edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 	if (response == GTK_RESPONSE_OK) {
 		NMConnection *connection;
 		gboolean success;
+		GError *error = NULL;
 
 		connection = nm_exported_connection_get_connection (info->initial_connection);
 		utils_fill_connection_certs (connection);
-		success = nm_connection_verify (connection);
+		success = nm_connection_verify (connection, &error);
 		utils_clear_filled_connection_certs (connection);
 
 		if (success) {
@@ -753,8 +754,14 @@ edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 							    NM_MODIFY_CONNECTION_ADD,
 							    connection_update_add_done, info);
 			}
-		} else
-			g_warning ("%s: connection invalid after update; bug in the connection editor.", __func__);
+		} else {
+			g_warning ("%s: invalid connection after update: bug in the "
+			           "'%s' / '%s' invalid: %d",
+			           __func__,
+			           g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)),
+			           error->message, error->code);
+			g_error_free (error);
+		}
 	}
 }
 

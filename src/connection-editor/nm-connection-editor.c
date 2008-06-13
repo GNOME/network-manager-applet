@@ -144,8 +144,13 @@ connection_editor_validate (NMConnectionEditor *editor)
 		goto done;
 
 	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
-		if (!ce_page_validate (CE_PAGE (iter->data)))
+		GError *error = NULL;
+
+		if (!ce_page_validate (CE_PAGE (iter->data), &error)) {
+			/* FIXME: use the error to indicate which UI widgets are invalid */
+			g_error_free (error);
 			goto done;
+		}
 	}
 	valid = TRUE;
 

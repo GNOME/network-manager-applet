@@ -127,6 +127,7 @@ nma_gconf_connection_changed (NMAGConfConnection *self)
 	NMConnection *wrapped_connection;
 	NMConnection *gconf_connection;
 	GHashTable *new_settings;
+	GError *error = NULL;
 
 	g_return_val_if_fail (NMA_IS_GCONF_CONNECTION (self), FALSE);
 
@@ -140,9 +141,13 @@ nma_gconf_connection_changed (NMAGConfConnection *self)
 	}
 
 	utils_fill_connection_certs (gconf_connection);
-	if (!nm_connection_verify (gconf_connection)) {
+	if (!nm_connection_verify (gconf_connection, &error)) {
 		utils_clear_filled_connection_certs (gconf_connection);
-		g_warning ("Invalid connection read from GConf at %s.", priv->dir);
+		g_warning ("%s: Invalid connection %s: '%s' / '%s' invalid: %d",
+		           __func__, priv->dir,
+		           g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)),
+		           error->message, error->code);
+		g_error_free (error);
 		goto invalid;
 	}
 	utils_clear_filled_connection_certs (gconf_connection);
@@ -288,22 +293,31 @@ get_id (NMExportedConnection *self)
 }
 
 static gboolean
-update (NMExportedConnection *exported, GHashTable *new_settings, GError **err)
+update (NMExportedConnection *exported, GHashTable *new_settings, GError **error)
 {
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (exported);
 	NMConnection *tmp;
+	gboolean success = FALSE;
 
-	tmp = nm_connection_new_from_hash (new_settings);
-	nm_gconf_write_connection (tmp,
-	                           priv->client,
-	                           priv->dir,
-	                           priv->id);
-	g_object_unref (tmp);
+	tmp = nm_connection_new_from_hash (new_settings, error);
+	if (!tmp) {
+		nm_warning ("%s: Invalid connection: '%s' / '%s' invalid: %d",
+		            __func__,
+		            g_type_name (nm_connection_lookup_setting_type_by_quark ((*error)->domain)),
+		            (*error)->message, (*error)->code);
+	} else {
+		nm_gconf_write_connection (tmp,
+		                           priv->client,
+		                           priv->dir,
+		                           priv->id);
+		g_object_unref (tmp);
 
-	gconf_client_notify (priv->client, priv->dir);
-	gconf_client_suggest_sync (priv->client, NULL);
+		gconf_client_notify (priv->client, priv->dir);
+		gconf_client_suggest_sync (priv->client, NULL);
+		success = TRUE;
+	}
 
-	return TRUE;
+	return success;
 }
 
 static gboolean
@@ -334,7 +348,7 @@ constructor (GType type,
 	NMAGConfConnectionPrivate *priv;
 	NMConnection *connection;
 	DBusGConnection *bus;
-	GError *err = NULL;
+	GError *error = NULL;
 
 	object = G_OBJECT_CLASS (nma_gconf_connection_parent_class)->constructor (type, n_construct_params, construct_params);
 
@@ -359,19 +373,22 @@ constructor (GType type,
 	g_object_set_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG, priv->id);
 
 	utils_fill_connection_certs (connection);
-	if (!nm_connection_verify (connection)) {
+	if (!nm_connection_verify (connection, &error)) {
 		utils_clear_filled_connection_certs (connection);
-		nm_warning ("Invalid connection read from GConf at %s.", priv->dir);
+		g_warning ("Invalid connection: '%s' / '%s' invalid: %d",
+		           g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)),
+		           error->message, error->code);
+		g_error_free (error);
 		goto err;
 	}
 	utils_clear_filled_connection_certs (connection);
 
 	fill_vpn_user_name (connection);
 
-	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &err);
+	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
 	if (!bus) {
-		nm_warning ("Could not get the system bus: %s", err->message);
-		g_error_free (err);
+		nm_warning ("Could not get the system bus: %s", error->message);
+		g_error_free (error);
 		goto err;
 	}
 

@@ -53,7 +53,7 @@ typedef struct {
 	GObjectClass parent;
 
 	/* Virtual functions */
-	gboolean    (*validate)            (CEPage *self);
+	gboolean    (*validate)            (CEPage *self, GError **error);
 	void        (*update_connection)   (CEPage *self, NMConnection *connection);
 
 	/* Signals */
@@ -66,7 +66,7 @@ GtkWidget *  ce_page_get_page (CEPage *self);
 
 const char * ce_page_get_title (CEPage *self);
 
-gboolean ce_page_validate (CEPage *self);
+gboolean ce_page_validate (CEPage *self, GError **error);
 
 void ce_page_update_connection (CEPage *self, NMConnection *connection);
 

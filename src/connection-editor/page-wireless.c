@@ -428,7 +428,7 @@ ui_to_setting (CEPageWireless *self)
 }
 
 static gboolean
-validate (CEPage *page)
+validate (CEPage *page, GError **error)
 {
 	CEPageWireless *self = CE_PAGE_WIRELESS (page);
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
@@ -451,7 +451,7 @@ validate (CEPage *page)
 	security = priv->setting->security;
 	priv->setting->security = NULL;
 
-	success = nm_setting_verify (NM_SETTING (priv->setting), NULL);
+	success = nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 	priv->setting->security = security;
 
 	return success;
