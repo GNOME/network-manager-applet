@@ -1,4 +1,4 @@
-SUBDIRS = marshallers utils gconf-helpers wireless-security connection-editor vpn-properties
+SUBDIRS = marshallers utils gconf-helpers wireless-security connection-editor
 
 NULL=
 

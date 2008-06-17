@@ -221,7 +221,6 @@ src/utils/Makefile
 src/gconf-helpers/Makefile
 src/wireless-security/Makefile
 src/connection-editor/Makefile
-src/vpn-properties/Makefile
 icons/Makefile
 po/Makefile.in
 ])
