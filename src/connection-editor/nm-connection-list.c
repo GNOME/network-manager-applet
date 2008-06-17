@@ -2,6 +2,7 @@
 /* NetworkManager Connection editor -- Connection editor for NetworkManager
  *
  * Rodrigo Moya <rodrigo@gnome-db.org>
+ * Dan Williams <dcbw@redhat.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- * (C) Copyright 2004-2005 Red Hat, Inc.
+ * (C) Copyright 2007 - 2008 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -53,12 +54,14 @@
 #include <nm-setting-pppoe.h>
 #include <nm-setting-ppp.h>
 #include <nm-setting-serial.h>
+#include <nm-vpn-plugin-ui-interface.h>
 
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
 #include "gconf-helpers.h"
 #include "mobile-wizard.h"
 #include "utils.h"
+#include "vpn-helpers.h"
 
 G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
 
@@ -77,6 +80,7 @@ static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
 typedef struct {
 	NMConnectionList *list;
 	GtkTreeView *treeview;
+	GtkWidget *button;
 } ActionInfo;
 
 enum {
@@ -569,10 +573,19 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 			/* user canceled; do nothing */
 		}
 	} else if (ctype == NM_TYPE_SETTING_VPN) {
-		s_con->id = get_next_available_name (list, _("VPN connection %d"));
-		s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
+		char *service = NULL;
 
-		type_setting = nm_setting_vpn_new ();
+		service = vpn_ask_connection_type ();
+		if (service) {
+			NMSettingVPN *s_vpn;
+
+			s_con->id = get_next_available_name (list, _("VPN connection %d"));
+			s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
+
+			type_setting = nm_setting_vpn_new ();
+			s_vpn = NM_SETTING_VPN (type_setting);
+			s_vpn->service_type = service;
+		}		
 	} else if (ctype == NM_TYPE_SETTING_PPPOE) {
 		s_con->id = get_next_available_name (list, _("DSL connection %d"));
 		s_con->type = g_strdup (NM_SETTING_PPPOE_SETTING_NAME);
@@ -853,14 +866,124 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 static void
 list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 {
-	GtkWidget *button = GTK_WIDGET (user_data);
+	ActionInfo *info = (ActionInfo *) user_data;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
-		gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
+		gtk_widget_set_sensitive (info->button, TRUE);
 	else
-		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+		gtk_widget_set_sensitive (info->button, FALSE);
+}
+
+static void
+vpn_list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
+{
+	ActionInfo *info = (ActionInfo *) user_data;
+	NMVpnPluginUiInterface *plugin;
+	NMExportedConnection *exported;
+	NMConnection *connection = NULL;
+	NMSettingVPN *s_vpn;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	guint32 caps;
+	gboolean supported = FALSE;
+
+	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
+		goto done;
+
+	exported = get_active_connection (info->treeview);
+	if (exported)
+		connection = nm_exported_connection_get_connection (exported);
+	if (!connection)
+		goto done;
+
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
+	if (!s_vpn || !s_vpn->service_type)
+		goto done;
+
+	plugin = vpn_get_plugin_by_service (s_vpn->service_type);
+	if (!plugin)
+		goto done;
+
+	caps = nm_vpn_plugin_ui_interface_get_capabilities (plugin);
+	if (caps & NM_VPN_PLUGIN_UI_CAPABILITY_EXPORT)
+		supported = TRUE;
+
+done:
+	gtk_widget_set_sensitive (info->button, supported);
+}
+
+static void
+import_success_cb (NMConnection *connection, gpointer user_data)
+{
+	ActionInfo *info = (ActionInfo *) user_data;
+	NMExportedConnection *exported;
+	NMConnectionEditor *editor;
+	NMSettingConnection *s_con;
+	NMSettingVPN *s_vpn;
+
+	/* Basic sanity checks of the connection */
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	if (!s_con) {
+		s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
+		nm_connection_add_setting (connection, NM_SETTING (s_con));
+	}
+	if (!s_con->id)
+		s_con->id = get_next_available_name (info->list, _("VPN connection %d"));
+	if (!s_con->type || strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
+		g_free (s_con->type);
+		s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
+	}
+
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
+	if (!s_vpn || !s_vpn->service_type || !strlen (s_vpn->service_type)) {
+		GtkWidget *dialog;
+
+		dialog = gtk_message_dialog_new (NULL,
+		                                 GTK_DIALOG_DESTROY_WITH_PARENT,
+		                                 GTK_MESSAGE_ERROR,
+		                                 GTK_BUTTONS_OK,
+		                                 _("Cannot import VPN connection"));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                 _("The VPN plugin failed to import the VPN connection correctly\n\nError: no VPN service type."));
+		g_signal_connect (dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
+		g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
+		gtk_widget_show_all (dialog);
+		gtk_window_present (GTK_WINDOW (dialog));
+		return;
+	}
+
+	exported = nm_exported_connection_new (connection);
+	g_object_unref (connection);
+
+	editor = nm_connection_editor_new (exported);
+	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
+	g_hash_table_insert (info->list->editors, exported, editor);
+
+	nm_connection_editor_run (editor);
+}
+
+static void
+import_vpn_cb (GtkButton *button, gpointer user_data)
+{
+	vpn_import (import_success_cb, (ActionInfo *) user_data);
+}
+
+static void
+export_vpn_cb (GtkButton *button, gpointer user_data)
+{
+	ActionInfo *info = (ActionInfo *) user_data;
+	NMExportedConnection *exported;
+	NMConnection *connection = NULL;
+
+	exported = get_active_connection (info->treeview);
+	if (exported)
+		connection = nm_exported_connection_get_connection (exported);
+	if (!connection)
+		return;
+
+	vpn_export (connection);
 }
 
 static void
@@ -990,44 +1113,101 @@ add_connection_treeview (NMConnectionList *self, const char *prefix)
 	return treeview;
 }
 
+static ActionInfo *
+new_action_info (NMConnectionList *list, GtkTreeView *treeview, GtkWidget *button)
+{
+	ActionInfo *info;
+
+	info = g_malloc0 (sizeof (ActionInfo));
+	g_object_weak_ref (G_OBJECT (list), (GWeakNotify) g_free, info);
+
+	info->list = list;
+	info->treeview = treeview;
+	info->button = button;
+	return info;
+}
+
+static void
+check_vpn_import_supported (gpointer key, gpointer data, gpointer user_data)
+{
+	NMVpnPluginUiInterface *plugin = NM_VPN_PLUGIN_UI_INTERFACE (data);
+	gboolean *import_supported = user_data;
+
+	if (*import_supported)
+		return;
+
+	if (nm_vpn_plugin_ui_interface_get_capabilities (plugin) & NM_VPN_PLUGIN_UI_CAPABILITY_IMPORT)
+		*import_supported = TRUE;
+}
+
 static void
 add_connection_buttons (NMConnectionList *self,
-				    const char *prefix,
-				    GtkTreeView *treeview)
+                        const char *prefix,
+                        GtkTreeView *treeview,
+                        gboolean is_vpn)
 {
 	char *name;
 	GtkWidget *button;
 	ActionInfo *info;
 	GtkTreeSelection *selection;
 
-	info = g_new (ActionInfo, 1);
-	info->list = self;
-	info->treeview = treeview;
-
 	selection = gtk_tree_view_get_selection (treeview);
-
-	g_object_weak_ref (G_OBJECT (self), (GWeakNotify) g_free, info);
 
 	/* Add */
 	name = g_strdup_printf ("%s_add", prefix);
 	button = glade_xml_get_widget (self->gui, name);
 	g_free (name);
+	info = new_action_info (self, treeview, NULL);
 	g_signal_connect (button, "clicked", G_CALLBACK (add_connection_cb), info);
+	if (is_vpn) {
+		GHashTable *plugins;
+
+		/* disable the "Add..." button if there aren't any VPN plugins */
+		plugins = vpn_get_plugins (NULL);
+		gtk_widget_set_sensitive (button, (plugins && g_hash_table_size (plugins)));
+	}
 
 	/* Edit */
 	name = g_strdup_printf ("%s_edit", prefix);
 	button = glade_xml_get_widget (self->gui, name);
 	g_free (name);
+	info = new_action_info (self, treeview, button);
 	g_signal_connect (button, "clicked", G_CALLBACK (edit_connection_cb), info);
-	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed_cb), button);
+	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed_cb), info);
 	g_signal_connect (treeview, "row-activated", G_CALLBACK (connection_double_clicked_cb), info);
 
 	/* Delete */
 	name = g_strdup_printf ("%s_delete", prefix);
 	button = glade_xml_get_widget (self->gui, name);
 	g_free (name);
+	info = new_action_info (self, treeview, button);
 	g_signal_connect (button, "clicked", G_CALLBACK (delete_connection_cb), info);
-	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed_cb), button);
+	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed_cb), info);
+
+	/* Import */
+	name = g_strdup_printf ("%s_import", prefix);
+	button = glade_xml_get_widget (self->gui, name);
+	g_free (name);
+	if (button) {
+		gboolean import_supported = FALSE;
+
+		info = new_action_info (self, treeview, button);
+		g_signal_connect (button, "clicked", G_CALLBACK (import_vpn_cb), info);
+
+		g_hash_table_foreach (vpn_get_plugins (NULL), check_vpn_import_supported, &import_supported);
+		gtk_widget_set_sensitive (button, import_supported);
+	}
+
+	/* Export */
+	name = g_strdup_printf ("%s_export", prefix);
+	button = glade_xml_get_widget (self->gui, name);
+	g_free (name);
+	if (button) {
+		info = new_action_info (self, treeview, button);
+		g_signal_connect (button, "clicked", G_CALLBACK (export_vpn_cb), info);
+		g_signal_connect (selection, "changed", G_CALLBACK (vpn_list_selection_changed_cb), info);
+		gtk_widget_set_sensitive (button, FALSE);
+	}
 }
 
 static void
@@ -1035,7 +1215,8 @@ add_connection_tab (NMConnectionList *self,
 				GSList *connection_types,
 				GdkPixbuf *pixbuf,
 				const char *prefix,
-				const char *label_text)
+				const char *label_text,
+				gboolean is_vpn)
 {
 	char *name;
 	GtkWidget *child;
@@ -1061,7 +1242,7 @@ add_connection_tab (NMConnectionList *self,
 	gtk_notebook_set_tab_label (GTK_NOTEBOOK (glade_xml_get_widget (self->gui, "list_notebook")), child, hbox);
 
 	treeview = add_connection_treeview (self, prefix);
-	add_connection_buttons (self, prefix, treeview);
+	add_connection_buttons (self, prefix, treeview, is_vpn);
 
 	for (iter = connection_types; iter; iter = iter->next)
 		g_hash_table_insert (self->treeviews, g_strdup ((const char *) iter->data), treeview);
@@ -1073,24 +1254,24 @@ add_connection_tabs (NMConnectionList *self)
 	GSList *types;
 
 	types = g_slist_append (NULL, NM_SETTING_WIRED_SETTING_NAME);
-	add_connection_tab (self, types, self->wired_icon, "wired", _("Wired"));
+	add_connection_tab (self, types, self->wired_icon, "wired", _("Wired"), FALSE);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_WIRELESS_SETTING_NAME);
-	add_connection_tab (self, types, self->wireless_icon, "wireless", _("Wireless"));
+	add_connection_tab (self, types, self->wireless_icon, "wireless", _("Wireless"), FALSE);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_GSM_SETTING_NAME);
 	types = g_slist_append (types, NM_SETTING_CDMA_SETTING_NAME);
-	add_connection_tab (self, types, self->wwan_icon, "wwan", _("Mobile Broadband"));
+	add_connection_tab (self, types, self->wwan_icon, "wwan", _("Mobile Broadband"), FALSE);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_VPN_SETTING_NAME);
-	add_connection_tab (self, types, self->vpn_icon, "vpn", _("VPN"));
+	add_connection_tab (self, types, self->vpn_icon, "vpn", _("VPN"), TRUE);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_PPPOE_SETTING_NAME);
-	add_connection_tab (self, types, self->wired_icon, "dsl", _("DSL"));
+	add_connection_tab (self, types, self->wired_icon, "dsl", _("DSL"), FALSE);
 	g_slist_free (types);
 }
 
@@ -1218,6 +1399,11 @@ nm_connection_list_new (void)
 	if (!list->dialog)
 		goto error;
 	g_signal_connect (G_OBJECT (list->dialog), "response", G_CALLBACK (dialog_response_cb), list);
+
+	if (!vpn_get_plugins (&error)) {
+		g_message ("%s: failed to load VPN plugins: %s", __func__, error->message);
+		g_error_free (error);
+	}
 
 	return list;
 

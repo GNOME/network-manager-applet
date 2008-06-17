@@ -59,6 +59,7 @@
 #include "page-dsl.h"
 #include "page-mobile.h"
 #include "page-ppp.h"
+#include "page-vpn.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -148,7 +149,8 @@ connection_editor_validate (NMConnectionEditor *editor)
 
 		if (!ce_page_validate (CE_PAGE (iter->data), &error)) {
 			/* FIXME: use the error to indicate which UI widgets are invalid */
-			g_error_free (error);
+			if (error)
+				g_error_free (error);
 			goto done;
 		}
 	}
@@ -338,6 +340,9 @@ add_page (NMConnectionEditor *editor, CEPage *page)
 	GtkWidget *notebook;
 	GtkWidget *label;
 
+	g_return_if_fail (editor != NULL);
+	g_return_if_fail (page != NULL);
+
 	notebook = glade_xml_get_widget (editor->xml, "notebook");
 	label = gtk_label_new (ce_page_get_title (page));
 	widget = ce_page_get_page (page);
@@ -386,6 +391,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMExportedConne
 
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
+		add_page (editor, CE_PAGE (ce_page_vpn_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_dsl_new (editor->connection)));

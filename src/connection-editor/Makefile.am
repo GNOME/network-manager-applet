@@ -42,7 +42,11 @@ nm_connection_editor_SOURCES = \
 	mobile-wizard.h \
 	mobile-wizard.c \
 	page-ppp.h \
-	page-ppp.c
+	page-ppp.c \
+	page-vpn.h \
+	page-vpn.c \
+	vpn-helpers.h \
+	vpn-helpers.c
 
 if NO_POLKIT_GNOME
 nm_connection_editor_SOURCES += \
@@ -67,7 +71,8 @@ glade_DATA = \
 	ce-page-dsl.glade \
 	ce-page-mobile.glade \
 	ce-mobile-wizard.glade \
-	ce-page-ppp.glade
+	ce-page-ppp.glade \
+	ce-vpn-wizard.glade
 
 CLEANFILES = *.bak *.gladep
 
