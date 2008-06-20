@@ -106,41 +106,35 @@ ce_page_wired_security_new (NMConnection *connection)
 }
 
 static gboolean
-validate (CEPage *page, GError **error)
+validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (page);
 	gboolean valid = TRUE;
 
 	if (gtk_toggle_button_get_active (priv->enabled)) {
-		/* FIXME: get failed property and error out of wireless security objects */
-		valid = wireless_security_validate (priv->security, NULL);
-		if (!valid)
-			g_set_error (error, 0, 0, "Invalid 802.1x security");
-	}
-
-	return valid;
-}
-
-static void
-update_connection (CEPage *page, NMConnection *connection)
-{
-	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (page);
-
-	if (gtk_toggle_button_get_active (priv->enabled)) {
 		NMConnection *tmp_connection;
 		NMSetting *s_8021x;
 
-		/* Here's a nice hack to work around the fact that ws_802_1x_fill_connection needs wireless setting. */
-		tmp_connection = nm_connection_new ();
-		nm_connection_add_setting (tmp_connection, nm_setting_wireless_new ());
-		ws_802_1x_fill_connection (priv->security, "wpa_eap_auth_combo", tmp_connection);
+		/* FIXME: get failed property and error out of wireless security objects */
+		valid = wireless_security_validate (priv->security, NULL);
+		if (valid) {
+			/* Here's a nice hack to work around the fact that ws_802_1x_fill_connection needs wireless setting. */
+			tmp_connection = nm_connection_new ();
+			nm_connection_add_setting (tmp_connection, nm_setting_wireless_new ());
+			ws_802_1x_fill_connection (priv->security, "wpa_eap_auth_combo", tmp_connection);
 
-		s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
-		nm_connection_add_setting (connection, NM_SETTING (g_object_ref (s_8021x)));
+			s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
+			nm_connection_add_setting (connection, NM_SETTING (g_object_ref (s_8021x)));
 
-		g_object_unref (tmp_connection);
-	} else
+			g_object_unref (tmp_connection);
+		} else
+			g_set_error (error, 0, 0, "Invalid 802.1x security");
+	} else {
+		valid = TRUE;
 		nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
+	}
+
+	return valid;
 }
 
 static void
@@ -174,5 +168,4 @@ ce_page_wired_security_class_init (CEPageWiredSecurityClass *wired_security_clas
 	object_class->dispose = dispose;
 
 	parent_class->validate = validate;
-	parent_class->update_connection = update_connection;
 }

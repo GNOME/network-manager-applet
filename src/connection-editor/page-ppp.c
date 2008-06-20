@@ -174,7 +174,6 @@ ce_page_ppp_new (NMConnection *connection)
 	CEPagePpp *self;
 	CEPagePppPrivate *priv;
 	CEPage *parent;
-	NMSettingPPP *s_ppp;
 	GtkCellRenderer *renderer;
 	gint offset;
 	GtkTreeViewColumn *column;
@@ -202,11 +201,11 @@ ce_page_ppp_new (NMConnection *connection)
 	ppp_private_init (self);
 	priv = CE_PAGE_PPP_GET_PRIVATE (self);
 
-	s_ppp = (NMSettingPPP *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPP);
-	if (s_ppp)
-		priv->setting = NM_SETTING_PPP (nm_setting_duplicate (NM_SETTING (s_ppp)));
-	else
+	priv->setting = (NMSettingPPP *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPP);
+	if (!priv->setting) {
 		priv->setting = NM_SETTING_PPP (nm_setting_ppp_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
+	}
 
 	populate_ui (self, connection);
 
@@ -326,7 +325,7 @@ ui_to_setting (CEPagePpp *self)
 }
 
 static gboolean
-validate (CEPage *page, GError **error)
+validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPagePpp *self = CE_PAGE_PPP (page);
 	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
@@ -336,33 +335,8 @@ validate (CEPage *page, GError **error)
 }
 
 static void
-update_connection (CEPage *page, NMConnection *connection)
-{
-	CEPagePpp *self = CE_PAGE_PPP (page);
-	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
-
-	ui_to_setting (self);
-	g_object_ref (priv->setting); /* Add setting steals the reference. */
-	nm_connection_add_setting (connection, NM_SETTING (priv->setting));
-}
-
-static void
 ce_page_ppp_init (CEPagePpp *self)
 {
-}
-
-static void
-dispose (GObject *object)
-{
-	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (object);
-
-	if (priv->disposed)
-		return;
-
-	priv->disposed = TRUE;
-	g_object_unref (priv->setting);
-
-	G_OBJECT_CLASS (ce_page_ppp_parent_class)->dispose (object);
 }
 
 static void
@@ -374,8 +348,5 @@ ce_page_ppp_class_init (CEPagePppClass *ppp_class)
 	g_type_class_add_private (object_class, sizeof (CEPagePppPrivate));
 
 	/* virtual methods */
-	object_class->dispose = dispose;
-
 	parent_class->validate = validate;
-	parent_class->update_connection = update_connection;
 }

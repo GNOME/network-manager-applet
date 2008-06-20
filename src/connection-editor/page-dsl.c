@@ -39,7 +39,6 @@ G_DEFINE_TYPE (CEPageDsl, ce_page_dsl, CE_TYPE_PAGE)
 
 typedef struct {
 	NMSettingPPPOE *setting;
-	NMConnection *connection; /* ugh */
 
 	GtkEntry *username;
 	GtkEntry *password;
@@ -80,7 +79,7 @@ populate_ui (CEPageDsl *self, NMConnection *connection)
 		GValue *value;
 
 		secrets = nm_gconf_get_keyring_items (connection, connection_id,
-		                                      nm_setting_get_name (NM_SETTING (priv->setting)),
+		                                      nm_setting_get_name (NM_SETTING (setting)),
 		                                      FALSE,
 		                                      &error);
 		if (secrets) {
@@ -121,7 +120,6 @@ ce_page_dsl_new (NMConnection *connection)
 	CEPageDsl *self;
 	CEPageDslPrivate *priv;
 	CEPage *parent;
-	NMSettingPPPOE *s_pppoe;
 
 	self = CE_PAGE_DSL (g_object_new (CE_TYPE_PAGE_DSL, NULL));
 	parent = CE_PAGE (self);
@@ -146,13 +144,11 @@ ce_page_dsl_new (NMConnection *connection)
 	dsl_private_init (self);
 	priv = CE_PAGE_DSL_GET_PRIVATE (self);
 
-	s_pppoe = (NMSettingPPPOE *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE);
-	if (s_pppoe)
-		priv->setting = NM_SETTING_PPPOE (nm_setting_duplicate (NM_SETTING (s_pppoe)));
-	else
+	priv->setting = (NMSettingPPPOE *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE);
+	if (!priv->setting) {
 		priv->setting = NM_SETTING_PPPOE (nm_setting_pppoe_new ());
-
-	priv->connection = connection;
+		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
+	}
 
 	populate_ui (self, connection);
 
@@ -194,7 +190,7 @@ ui_to_setting (CEPageDsl *self)
 }
 
 static gboolean
-validate (CEPage *page, GError **error)
+validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageDsl *self = CE_PAGE_DSL (page);
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
@@ -203,7 +199,7 @@ validate (CEPage *page, GError **error)
 
 	ui_to_setting (self);
 
-	foo = g_slist_append (NULL, nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_PPP));
+	foo = g_slist_append (NULL, nm_connection_get_setting (connection, NM_TYPE_SETTING_PPP));
 	valid = nm_setting_verify (NM_SETTING (priv->setting), foo, error);
 	g_slist_free (foo);
 
@@ -211,33 +207,8 @@ validate (CEPage *page, GError **error)
 }
 
 static void
-update_connection (CEPage *page, NMConnection *connection)
-{
-	CEPageDsl *self = CE_PAGE_DSL (page);
-	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
-
-	ui_to_setting (self);
-	g_object_ref (priv->setting); /* Add setting steals the reference. */
-	nm_connection_add_setting (connection, NM_SETTING (priv->setting));
-}
-
-static void
 ce_page_dsl_init (CEPageDsl *self)
 {
-}
-
-static void
-dispose (GObject *object)
-{
-	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (object);
-
-	if (priv->disposed)
-		return;
-
-	priv->disposed = TRUE;
-	g_object_unref (priv->setting);
-
-	G_OBJECT_CLASS (ce_page_dsl_parent_class)->dispose (object);
 }
 
 static void
@@ -249,8 +220,5 @@ ce_page_dsl_class_init (CEPageDslClass *dsl_class)
 	g_type_class_add_private (object_class, sizeof (CEPageDslPrivate));
 
 	/* virtual methods */
-	object_class->dispose = dispose;
-
 	parent_class->validate = validate;
-	parent_class->update_connection = update_connection;
 }

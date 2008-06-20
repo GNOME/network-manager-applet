@@ -25,9 +25,7 @@
 
 #include <glib-object.h>
 #include <glade/glade-xml.h>
-#include <gtk/gtksizegroup.h>
 #include <gtk/gtkspinbutton.h>
-#include <gconf/gconf-client.h>
 #include <nm-settings.h>
 
 #define NM_TYPE_CONNECTION_EDITOR    (nm_connection_editor_get_type ())
@@ -38,7 +36,6 @@ typedef struct {
 	GObject parent;
 
 	/* private data */
-	NMExportedConnection *exported;
 	NMConnection *connection;
 
 	GSList *pages;
@@ -55,11 +52,11 @@ typedef struct {
 } NMConnectionEditorClass;
 
 GType               nm_connection_editor_get_type (void);
-NMConnectionEditor *nm_connection_editor_new (NMExportedConnection *exported);
+NMConnectionEditor *nm_connection_editor_new (NMConnection *connection);
 
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
-NMExportedConnection *nm_connection_editor_get_connection (NMConnectionEditor *editor);
+NMConnection *nm_connection_editor_get_connection (NMConnectionEditor *editor);
 
 gint ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
 

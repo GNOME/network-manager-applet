@@ -153,7 +153,6 @@ ce_page_wired_new (NMConnection *connection)
 	CEPageWired *self;
 	CEPageWiredPrivate *priv;
 	CEPage *parent;
-	NMSettingWired *s_wired;
 	GtkWidget *widget;
 
 	self = CE_PAGE_WIRED (g_object_new (CE_TYPE_PAGE_WIRED, NULL));
@@ -179,11 +178,11 @@ ce_page_wired_new (NMConnection *connection)
 	wired_private_init (self);
 	priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 
-	s_wired = (NMSettingWired *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED);
-	if (s_wired)
-		priv->setting = NM_SETTING_WIRED (nm_setting_duplicate (NM_SETTING (s_wired)));
-	else
+	priv->setting = (NMSettingWired *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED);
+	if (!priv->setting) {
 		priv->setting = NM_SETTING_WIRED (nm_setting_wired_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
+	}
 
 	populate_ui (self);
 
@@ -274,7 +273,7 @@ ui_to_setting (CEPageWired *self)
 }
 
 static gboolean
-validate (CEPage *page, GError **error)
+validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWired *self = CE_PAGE_WIRED (page);
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
@@ -290,33 +289,8 @@ validate (CEPage *page, GError **error)
 }
 
 static void
-update_connection (CEPage *page, NMConnection *connection)
-{
-	CEPageWired *self = CE_PAGE_WIRED (page);
-	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
-
-	ui_to_setting (self);
-	g_object_ref (priv->setting); /* Add setting steals the reference. */
-	nm_connection_add_setting (connection, NM_SETTING (priv->setting));
-}
-
-static void
 ce_page_wired_init (CEPageWired *self)
 {
-}
-
-static void
-dispose (GObject *object)
-{
-	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (object);
-
-	if (priv->disposed)
-		return;
-
-	priv->disposed = TRUE;
-	g_object_unref (priv->setting);
-
-	G_OBJECT_CLASS (ce_page_wired_parent_class)->dispose (object);
 }
 
 static void
@@ -328,8 +302,5 @@ ce_page_wired_class_init (CEPageWiredClass *wired_class)
 	g_type_class_add_private (object_class, sizeof (CEPageWiredPrivate));
 
 	/* virtual methods */
-	object_class->dispose = dispose;
-
 	parent_class->validate = validate;
-	parent_class->update_connection = update_connection;
 }

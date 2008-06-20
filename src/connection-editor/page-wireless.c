@@ -294,7 +294,6 @@ ce_page_wireless_new (NMConnection *connection)
 	CEPageWireless *self;
 	CEPageWirelessPrivate *priv;
 	CEPage *parent;
-	NMSettingWireless *s_wireless;
 	GtkWidget *widget;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
@@ -322,11 +321,11 @@ ce_page_wireless_new (NMConnection *connection)
 	wireless_private_init (self);
 	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 
-	s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
-	if (s_wireless)
-		priv->setting = NM_SETTING_WIRELESS (nm_setting_duplicate (NM_SETTING (s_wireless)));
-	else
+	priv->setting = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
+	if (!priv->setting) {
 		priv->setting = NM_SETTING_WIRELESS (nm_setting_wireless_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
+	}
 
 	populate_ui (self);
 
@@ -428,7 +427,7 @@ ui_to_setting (CEPageWireless *self)
 }
 
 static gboolean
-validate (CEPage *page, GError **error)
+validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWireless *self = CE_PAGE_WIRELESS (page);
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
@@ -458,31 +457,8 @@ validate (CEPage *page, GError **error)
 }
 
 static void
-update_connection (CEPage *page, NMConnection *connection)
-{
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (page);
-
-	g_object_ref (priv->setting); /* Add setting steals the reference. */
-	nm_connection_add_setting (connection, NM_SETTING (priv->setting));
-}
-
-static void
 ce_page_wireless_init (CEPageWireless *self)
 {
-}
-
-static void
-dispose (GObject *object)
-{
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (object);
-
-	if (priv->disposed)
-		return;
-
-	priv->disposed = TRUE;
-	g_object_unref (priv->setting);
-
-	G_OBJECT_CLASS (ce_page_wireless_parent_class)->dispose (object);
 }
 
 static void
@@ -494,8 +470,5 @@ ce_page_wireless_class_init (CEPageWirelessClass *wireless_class)
 	g_type_class_add_private (object_class, sizeof (CEPageWirelessPrivate));
 
 	/* virtual methods */
-	object_class->dispose = dispose;
-
 	parent_class->validate = validate;
-	parent_class->update_connection = update_connection;
 }

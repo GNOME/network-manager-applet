@@ -247,7 +247,6 @@ ce_page_mobile_new (NMConnection *connection)
 	CEPageMobile *self;
 	CEPageMobilePrivate *priv;
 	CEPage *parent;
-	NMSetting *setting;
 
 	self = CE_PAGE_MOBILE (g_object_new (CE_TYPE_PAGE_MOBILE, NULL));
 	parent = CE_PAGE (self);
@@ -272,18 +271,17 @@ ce_page_mobile_new (NMConnection *connection)
 	mobile_private_init (self);
 	priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 
-	setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_GSM);
-	if (!setting)
-		setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_CDMA);
+	priv->setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_GSM);
+	if (!priv->setting)
+		priv->setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_CDMA);
 
-	if (!setting) {
+	if (!priv->setting) {
 		/* FIXME: Support add. */
 		g_warning ("Adding mobile conneciton not supported yet.");
 		g_object_unref (self);
 		return NULL;
 	}
 
-	priv->setting = nm_setting_duplicate (setting);
 	populate_ui (self, connection);
 
 	g_signal_connect (priv->number, "changed", G_CALLBACK (stuff_changed), self);
@@ -376,7 +374,7 @@ ui_to_setting (CEPageMobile *self)
 }
 
 static gboolean
-validate (CEPage *page, GError **error)
+validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageMobile *self = CE_PAGE_MOBILE (page);
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
@@ -386,33 +384,8 @@ validate (CEPage *page, GError **error)
 }
 
 static void
-update_connection (CEPage *page, NMConnection *connection)
-{
-	CEPageMobile *self = CE_PAGE_MOBILE (page);
-	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
-
-	ui_to_setting (self);
-	g_object_ref (priv->setting); /* Add setting steals the reference. */
-	nm_connection_add_setting (connection, priv->setting);
-}
-
-static void
 ce_page_mobile_init (CEPageMobile *self)
 {
-}
-
-static void
-dispose (GObject *object)
-{
-	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (object);
-
-	if (priv->disposed)
-		return;
-
-	priv->disposed = TRUE;
-	g_object_unref (priv->setting);
-
-	G_OBJECT_CLASS (ce_page_mobile_parent_class)->dispose (object);
 }
 
 static void
@@ -424,8 +397,5 @@ ce_page_mobile_class_init (CEPageMobileClass *mobile_class)
 	g_type_class_add_private (object_class, sizeof (CEPageMobilePrivate));
 
 	/* virtual methods */
-	object_class->dispose = dispose;
-
 	parent_class->validate = validate;
-	parent_class->update_connection = update_connection;
 }

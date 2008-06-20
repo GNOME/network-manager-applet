@@ -39,18 +39,15 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 gboolean
-ce_page_validate (CEPage *self, GError **error)
+ce_page_validate (CEPage *self, NMConnection *connection, GError **error)
 {
+	g_return_val_if_fail (CE_IS_PAGE (self), FALSE);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+
 	if (CE_PAGE_GET_CLASS (self)->validate)
-		return CE_PAGE_GET_CLASS (self)->validate (self, error);
+		return CE_PAGE_GET_CLASS (self)->validate (self, connection, error);
 
 	return TRUE;
-}
-
-void
-ce_page_update_connection (CEPage *self, NMConnection *connection)
-{
-	CE_PAGE_GET_CLASS (self)->update_connection (self, connection);
 }
 
 void

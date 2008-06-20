@@ -428,7 +428,6 @@ ce_page_ip4_new (NMConnection *connection)
 	CEPageIP4 *self;
 	CEPageIP4Private *priv;
 	CEPage *parent;
-	NMSettingIP4Config *s_ip4;
 	GtkTreeSelection *selection;
 	gint offset;
 	GtkTreeViewColumn *column;
@@ -458,11 +457,11 @@ ce_page_ip4_new (NMConnection *connection)
 	ip4_private_init (self);
 	priv = CE_PAGE_IP4_GET_PRIVATE (self);
 
-	s_ip4 = (NMSettingIP4Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG);
-	if (s_ip4)
-		priv->setting = NM_SETTING_IP4_CONFIG (nm_setting_duplicate (NM_SETTING (s_ip4)));
-	else
+	priv->setting = (NMSettingIP4Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG);
+	if (!priv->setting) {
 		priv->setting = NM_SETTING_IP4_CONFIG (nm_setting_ip4_config_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
+	}
 
 	populate_ui (self);
 
@@ -675,7 +674,7 @@ next:
 }
 
 static gboolean
-validate (CEPage *page, GError **error)
+validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageIP4 *self = CE_PAGE_IP4 (page);
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
@@ -685,33 +684,8 @@ validate (CEPage *page, GError **error)
 }
 
 static void
-update_connection (CEPage *page, NMConnection *connection)
-{
-	CEPageIP4 *self = CE_PAGE_IP4 (page);
-	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (page);
-
-	ui_to_setting (self);
-	g_object_ref (priv->setting); /* Add setting steals the reference. */
-	nm_connection_add_setting (connection, NM_SETTING (priv->setting));
-}
-
-static void
 ce_page_ip4_init (CEPageIP4 *self)
 {
-}
-
-static void
-dispose (GObject *object)
-{
-	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (object);
-
-	if (priv->disposed)
-		return;
-
-	priv->disposed = TRUE;
-	g_object_unref (priv->setting);
-
-	G_OBJECT_CLASS (ce_page_ip4_parent_class)->dispose (object);
 }
 
 static void
@@ -723,8 +697,5 @@ ce_page_ip4_class_init (CEPageIP4Class *ip4_class)
 	g_type_class_add_private (object_class, sizeof (CEPageIP4Private));
 
 	/* virtual methods */
-	object_class->dispose = dispose;
-
 	parent_class->validate = validate;
-	parent_class->update_connection = update_connection;
 }

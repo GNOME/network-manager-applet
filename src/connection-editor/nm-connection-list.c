@@ -83,23 +83,6 @@ typedef struct {
 	GtkWidget *button;
 } ActionInfo;
 
-enum {
-	NM_MODIFY_CONNECTION_ADD,
-	NM_MODIFY_CONNECTION_REMOVE,
-	NM_MODIFY_CONNECTION_UPDATE
-};
-
-typedef void (*NMExportedConnectionChangedFn) (NMConnectionList *list,
-									  NMExportedConnection *exported,
-									  gboolean success,
-									  gpointer user_data);
-
-static void modify_connection (NMConnectionList *self,
-						 NMExportedConnection *exported,
-						 guint action,
-						 NMExportedConnectionChangedFn callback,
-						 gpointer user_data);
-
 static void
 show_error_dialog (const gchar *format, ...)
 {
@@ -294,25 +277,81 @@ update_connection_row (GtkListStore *store,
 	g_free (last_used);
 }
 
+
+/**********************************************/
+/* PolKit helpers */
+
+static gboolean
+is_permission_denied_error (GError *error)
+{
+	return dbus_g_error_has_name (error, "org.freedesktop.NetworkManagerSettings.Connection.NotPrivileged") ||
+		dbus_g_error_has_name (error, "org.freedesktop.NetworkManagerSettings.System.NotPrivileged");
+}
+
+static gboolean
+obtain_auth (GError *pk_error,
+		   PolKitGnomeAuthCB callback,
+		   gpointer user_data)
+{
+	PolKitAction *pk_action;
+	char **tokens;
+	GError *error;
+	guint xid;
+	pid_t pid;
+	gboolean success = FALSE;
+
+	tokens = g_strsplit (pk_error->message, " ", 2);
+	if (g_strv_length (tokens) != 2) {
+		g_warning ("helper return string malformed");
+		g_strfreev (tokens);
+		return FALSE;
+	}
+
+	pk_action = polkit_action_new ();
+	polkit_action_set_action_id (pk_action, tokens[0]);
+	g_strfreev (tokens);
+
+	xid = 0;
+	pid = getpid ();
+
+	error = NULL;
+	success = polkit_gnome_auth_obtain (pk_action, xid, pid, callback, user_data, &error);
+	if (error) {
+		g_warning ("Could not grant permssion: %s", error->message);
+		g_error_free (error);
+	}
+
+	return success;
+}
+
+/**********************************************/
+/* Connection removing */
+
+typedef void (*ConnectionRemovedFn) (NMExportedConnection *exported,
+							  gboolean success,
+							  gpointer user_data);
+
 typedef struct {
-	NMConnectionList *list;
 	NMExportedConnection *exported;
-	guint action;
-	NMExportedConnectionChangedFn callback;
-	gpointer callback_data;
-} ModifyConnectionInfo;
+	ConnectionRemovedFn callback;
+	gpointer user_data;
+} ConnectionRemoveInfo;
+
+static void remove_connection (NMExportedConnection *exported,
+						 ConnectionRemovedFn callback,
+						 gpointer user_data);
 
 static void
-modify_connection_auth_cb (PolKitAction *action,
-					  gboolean gained_privilege,
-					  GError *error,
-					  gpointer user_data)
+remove_connection_cb (PolKitAction *action,
+				  gboolean gained_privilege,
+				  GError *error,
+				  gpointer user_data)
 {
-	ModifyConnectionInfo *info = (ModifyConnectionInfo *) user_data;
+	ConnectionRemoveInfo *info = (ConnectionRemoveInfo *) user_data;
 	gboolean done = TRUE;
 
 	if (gained_privilege) {
-		modify_connection (info->list, info->exported, info->action, info->callback, info->callback_data);
+		remove_connection (info->exported, info->callback, info->user_data);
 		done = FALSE;
 	} else if (error) {
 		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
@@ -321,122 +360,308 @@ modify_connection_auth_cb (PolKitAction *action,
 		show_error_dialog (_("Could not remove system connection: permission denied."));
 
 	if (done && info->callback)
-		info->callback (info->list, info->exported, FALSE, info->callback_data);
+		info->callback (info->exported, FALSE, info->user_data);
 
 	g_object_unref (info->exported);
-	g_free (info);
+	g_slice_free (ConnectionRemoveInfo, info);
 }
 
 static void
-modify_connection (NMConnectionList *self,
-			    NMExportedConnection *exported,
-			    guint action,
-			    NMExportedConnectionChangedFn callback,
+remove_connection (NMExportedConnection *exported,
+			    ConnectionRemovedFn callback,
 			    gpointer user_data)
 {
-	const char *error_str;
-	NMConnection *connection;
-	GHashTable *settings;
-	GError *err = NULL;
+	GError *error = NULL;
 	gboolean success;
-	gboolean done = FALSE;
 
-	switch (action) {
-	case NM_MODIFY_CONNECTION_ADD:
-		error_str = _("Adding connection failed");
+	success = nm_exported_connection_delete (exported, &error);
 
-		connection = nm_exported_connection_get_connection (exported);
-		if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM)
-			success = nm_dbus_settings_system_add_connection (self->system_settings, connection, &err);
-		else {
-			NMExportedConnection *new_connection;
+	if (!success) {
+		gboolean auth_pending = FALSE;
 
-			new_connection = (NMExportedConnection *) nma_gconf_settings_add_connection (self->gconf_settings, connection);
-			if (new_connection) {
-				exported = new_connection;
-				success = TRUE;
-			} else
-				success = FALSE;
-		}
-		break;
-	case NM_MODIFY_CONNECTION_REMOVE:
-		error_str = _("Removing connection failed");
-		success = nm_exported_connection_delete (exported, &err);
-		break;
-	case NM_MODIFY_CONNECTION_UPDATE:
-		error_str = _("Updating connection failed");
-		settings = nm_connection_to_hash (nm_exported_connection_get_connection (exported));
-		success = nm_exported_connection_update (exported, settings, &err);
-		g_hash_table_destroy (settings);
-		break;
-	default:
-		g_warning ("Invalid action '%d' in %s", action, __func__);
-		return;
+		if (is_permission_denied_error (error)) {
+			ConnectionRemoveInfo *info;
+
+			info = g_slice_new (ConnectionRemoveInfo);
+			info->exported = g_object_ref (exported);
+			info->callback = callback;
+			info->user_data = user_data;
+
+			auth_pending = obtain_auth (error, remove_connection_cb, info);
+
+			if (!auth_pending) {
+				g_object_unref (info->exported);
+				g_slice_free (ConnectionRemoveInfo, info);
+			}
+		} else
+			show_error_dialog (_("Removing connection failed: %s."), error->message);
+
+		g_error_free (error);
+
+		if (auth_pending)
+			return;
 	}
+
+	if (callback)
+		callback (exported, success, user_data);
+}
+
+/**********************************************/
+/* Connection adding */
+
+typedef void (*ConnectionAddedFn) (NMExportedConnection *exported,
+							gboolean success,
+							gpointer user_data);
+
+typedef struct {
+	NMConnectionList *list;
+	NMConnection *connection;
+	ConnectionAddedFn callback;
+	gpointer user_data;
+} ConnectionAddInfo;
+
+static void add_connection (NMConnectionList *self,
+					   NMConnection *connection,
+					   ConnectionAddedFn callback,
+					   gpointer user_data);
+
+static void
+add_connection_cb (PolKitAction *action,
+			    gboolean gained_privilege,
+			    GError *error,
+			    gpointer user_data)
+{
+	ConnectionAddInfo *info = (ConnectionAddInfo *) user_data;
+	gboolean done = TRUE;
+
+	if (gained_privilege) {
+		add_connection (info->list, info->connection, info->callback, info->user_data);
+		done = FALSE;
+	} else if (error) {
+		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
+		g_error_free (error);
+	} else
+		show_error_dialog (_("Could not add system connection: permission denied."));
+
+	if (done && info->callback)
+		info->callback (NULL, FALSE, info->user_data);
+
+	g_object_unref (info->connection);
+	g_slice_free (ConnectionAddInfo, info);
+}
+
+static void
+add_connection (NMConnectionList *self,
+			 NMConnection *connection,
+			 ConnectionAddedFn callback,
+			 gpointer user_data)
+{
+	NMExportedConnection *exported = NULL;
+	gboolean success;
+
+	if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM) {
+		GError *error = NULL;
+
+		success = nm_dbus_settings_system_add_connection (self->system_settings, connection, &error);
+		if (!success) {
+			gboolean pending_auth = FALSE;
+
+			if (is_permission_denied_error (error)) {
+				ConnectionAddInfo *info;
+
+				info = g_slice_new (ConnectionAddInfo);
+				info->list = self;
+				info->connection = g_object_ref (connection);
+				info->callback = callback;
+				info->user_data = user_data;
+
+				pending_auth = obtain_auth (error, add_connection_cb, info);
+
+				if (!pending_auth) {
+					g_object_unref (info->connection);
+					g_slice_free (ConnectionAddInfo, info);
+				}
+			} else
+				show_error_dialog (_("Adding connection failed: %s."), error->message);
+
+			g_error_free (error);
+
+			if (pending_auth)
+				return;
+
+		}
+	} else {
+		exported = (NMExportedConnection *) nma_gconf_settings_add_connection (self->gconf_settings, connection);
+		success = exported != NULL;
+	}
+
+	if (callback)
+		callback (exported, success, user_data);
+
+	if (exported)
+		g_object_unref (exported);
+}
+
+/**********************************************/
+/* Connection updating */
+
+typedef void (*ConnectionUpdatedFn) (NMConnectionList *list,
+							  gboolean success,
+							  gpointer user_data);
+
+typedef struct {
+	NMConnectionList *list;
+	NMExportedConnection *original;
+	NMConnection *modified;
+	ConnectionUpdatedFn callback;
+	gpointer user_data;
+
+	NMExportedConnection *added_connection;
+} ConnectionUpdateInfo;
+
+static void update_connection (NMConnectionList *list,
+						 NMExportedConnection *original,
+						 NMConnection *modified,
+						 ConnectionUpdatedFn callback,
+						 gpointer user_data);
+
+
+static void
+connection_update_done (ConnectionUpdateInfo *info, gboolean success)
+{
+	if (info->callback)
+		info->callback (info->list, success, info->user_data);
+
+	g_object_unref (info->original);
+	g_object_unref (info->modified);
+	if (info->added_connection)
+		g_object_unref (info->added_connection);
+
+	g_slice_free (ConnectionUpdateInfo, info);
+}
+
+static void
+connection_update_remove_done (NMExportedConnection *exported,
+						 gboolean success,
+						 gpointer user_data)
+{
+	ConnectionUpdateInfo *info = (ConnectionUpdateInfo *) user_data;
 
 	if (success)
-		done = TRUE;
+		connection_update_done (info, success);
+	else if (info->added_connection) {
+		/* Revert the scope of the original connection and remove the connection we just successfully added */
+		/* FIXME: loops forever on error */
 
-	if (err && (dbus_g_error_has_name (err, "org.freedesktop.NetworkManagerSettings.Connection.NotPrivileged") ||
-			  dbus_g_error_has_name (err, "org.freedesktop.NetworkManagerSettings.System.NotPrivileged"))) {
+		remove_connection (info->added_connection,
+					    connection_update_remove_done, info);
+	}
+}
 
-		ModifyConnectionInfo *info;
-		PolKitAction *pk_action;
-		char **tokens;
-		guint xid;
-		pid_t pid;
+static void
+connection_update_add_done (NMExportedConnection *exported,
+					   gboolean success,
+					   gpointer user_data)
+{
+	ConnectionUpdateInfo *info = (ConnectionUpdateInfo *) user_data;
 
-		tokens = g_strsplit (err->message, " ", 2);
-		if (g_strv_length (tokens) != 2) {
-			g_warning ("helper return string malformed");
-			g_strfreev (tokens);
-			goto out;
+	if (success) {
+		/* Adding the connection with different scope succeeded, now try to remove the original */
+		info->added_connection = exported ? g_object_ref (exported) : NULL;
+
+		remove_connection (info->original,
+					    connection_update_remove_done,
+					    info);
+	} else
+		connection_update_done (info, success);
+}
+
+static void
+update_connection_cb (PolKitAction *action,
+				  gboolean gained_privilege,
+				  GError *error,
+				  gpointer user_data)
+{
+	ConnectionUpdateInfo *info = (ConnectionUpdateInfo *) user_data;
+	gboolean done = TRUE;
+
+	if (gained_privilege) {
+		update_connection (info->list, info->original, info->modified, info->callback, info->user_data);
+		done = FALSE;
+	} else if (error) {
+		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
+		g_error_free (error);
+	} else
+		show_error_dialog (_("Could not update system connection: permission denied."));
+
+	if (done)
+		connection_update_done (info, FALSE);
+	else {
+		g_object_unref (info->original);
+		g_object_unref (info->modified);
+		g_slice_free (ConnectionUpdateInfo, info);
+	}
+}
+
+static void
+update_connection (NMConnectionList *list,
+			    NMExportedConnection *original,
+			    NMConnection *modified,
+			    ConnectionUpdatedFn callback,
+			    gpointer user_data)
+{
+	NMConnectionScope original_scope;
+	ConnectionUpdateInfo *info;
+
+	info = g_slice_new0 (ConnectionUpdateInfo);
+	info->list = list;
+	info->original = g_object_ref (original);
+	info->modified = g_object_ref (modified);
+	info->callback = callback;
+	info->user_data = user_data;
+
+	original_scope = nm_connection_get_scope (nm_exported_connection_get_connection (original));
+	if (nm_connection_get_scope (modified) == original_scope) {
+		/* The easy part: Connection is updated */
+		GHashTable *new_settings;
+		GError *error = NULL;
+		gboolean success;
+		gboolean pending_auth = FALSE;
+
+		new_settings = nm_connection_to_hash (modified);
+		success = nm_exported_connection_update (original, new_settings, &error);
+		g_hash_table_destroy (new_settings);
+
+		if (!success) {
+			if (is_permission_denied_error (error))
+				pending_auth = obtain_auth (error, update_connection_cb, info);
+			else
+				show_error_dialog (_("Updating connection failed: %s."), error->message);
+
+			g_error_free (error);
 		}
 
-		pk_action = polkit_action_new ();
-		polkit_action_set_action_id (pk_action, tokens[0]);
-		g_strfreev (tokens);
-
-		xid = 0;
-		pid = getpid ();
-
-		g_error_free (err);
-		err = NULL;
-
-		info = g_new (ModifyConnectionInfo, 1);
-		info->list = self;
-		info->exported = g_object_ref (exported);
-		info->action = action;
-		info->callback = callback;
-		info->callback_data = user_data;
-
-		if (!polkit_gnome_auth_obtain (pk_action, xid, pid, modify_connection_auth_cb, info, &err)) {
-			g_object_unref (info->exported);
-			g_free (info);
-		}
+		if (!pending_auth)
+			connection_update_done (info, success);
+	} else {
+		/* The hard part: Connection scope changed:
+		   Add the exported connection,
+		   if it succeeds, remove the old one. */
+		add_connection (list, modified, connection_update_add_done, info);
 	}
-
- out:
-	if (err) {
-		show_error_dialog ("%s: %s.", error_str, err->message);
-		g_error_free (err);
-	}
-
-	if (done && callback)
-		callback (self, exported, success, user_data);
 }
 
 static void
 add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
-	NMExportedConnection *exported;
+	NMConnection *connection;
 
-	exported = nm_connection_editor_get_connection (editor);
+	connection = nm_connection_editor_get_connection (editor);
 	if (response == GTK_RESPONSE_OK)
-		modify_connection (info->list, exported, NM_MODIFY_CONNECTION_ADD, NULL, NULL);
+		add_connection (info->list, connection, NULL, NULL);
 
-	g_hash_table_remove (info->list->editors, exported);
+	g_hash_table_remove (info->list->editors, connection);
 }
 
 static void
@@ -637,12 +862,11 @@ get_connection_type_from_treeview (NMConnectionList *self,
 }
 
 static void
-add_connection_cb (GtkButton *button, gpointer user_data)
+add_connection_clicked (GtkButton *button, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
 	const char *connection_type;
 	NMConnection *connection;
-	NMExportedConnection *exported;
 	NMConnectionEditor *editor;
 
 	connection_type = get_connection_type_from_treeview (info->list, info->treeview);
@@ -654,28 +878,22 @@ add_connection_cb (GtkButton *button, gpointer user_data)
 		return;
 	}
 
-	exported = nm_exported_connection_new (connection);
-	g_object_unref (connection);
-
-	editor = nm_connection_editor_new (exported);
+	editor = nm_connection_editor_new (connection);
 	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
-	g_hash_table_insert (info->list->editors, exported, editor);
+	g_hash_table_insert (info->list->editors, connection, editor);
 
 	nm_connection_editor_run (editor);
 }
 
 typedef struct {
 	NMConnectionList *list;
-	NMExportedConnection *new_connection;
-	NMExportedConnection *initial_connection;
-	NMConnectionScope initial_scope;
+	NMExportedConnection *original_connection;
 } EditConnectionInfo;
 
 static void
-connection_update_done (NMConnectionList *list,
-				    NMExportedConnection *exported,
-				    gboolean success,
-				    gpointer user_data)
+connection_updated_cb (NMConnectionList *list,
+				   gboolean success,
+				   gpointer user_data)
 {
 	EditConnectionInfo *info = (EditConnectionInfo *) user_data;
 
@@ -683,57 +901,14 @@ connection_update_done (NMConnectionList *list,
 		GtkListStore *store;
 		GtkTreeIter iter;
 
-		store = get_model_for_connection (list, info->initial_connection);
+		store = get_model_for_connection (list, info->original_connection);
 		g_assert (store);
-		if (get_iter_for_connection (GTK_TREE_MODEL (store), info->initial_connection, &iter))
-			update_connection_row (store, &iter, info->initial_connection);
+		if (get_iter_for_connection (GTK_TREE_MODEL (store), info->original_connection, &iter))
+			update_connection_row (store, &iter, info->original_connection);
 	}
 
-	g_object_unref (info->initial_connection);
+	g_object_unref (info->original_connection);
 	g_free (info);
-}
-
-static void
-connection_update_remove_done (NMConnectionList *list,
-						 NMExportedConnection *exported,
-						 gboolean success,
-						 gpointer user_data)
-{
-	EditConnectionInfo *info = (EditConnectionInfo *) user_data;
-
-	if (success)
-		connection_update_done (list, exported, success, info);
-	else {
-		/* Revert the scope of the original connection and remove the connection we just successfully added */
-		nm_connection_set_scope (nm_exported_connection_get_connection (info->initial_connection),
-							info->initial_scope);
-
-		modify_connection (list, info->new_connection,
-					    NM_MODIFY_CONNECTION_REMOVE,
-					    connection_update_remove_done, info);
-	}
-}
-
-static void
-connection_update_add_done (NMConnectionList *list,
-					   NMExportedConnection *exported,
-					   gboolean success,
-					   gpointer user_data)
-{
-	EditConnectionInfo *info = (EditConnectionInfo *) user_data;
-
-	if (success) {
-		info->new_connection = exported;
-		modify_connection (list, info->initial_connection,
-					    NM_MODIFY_CONNECTION_REMOVE,
-					    connection_update_remove_done, info);
-	} else {
-		/* Revert the scope and clean up */
-		nm_connection_set_scope (nm_exported_connection_get_connection (info->initial_connection),
-							info->initial_scope);
-
-		connection_update_done (list, exported, success, info);
-	}
 }
 
 static void
@@ -741,32 +916,24 @@ edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 {
 	EditConnectionInfo *info = (EditConnectionInfo *) user_data;
 
-	g_hash_table_remove (info->list->editors, info->initial_connection);
+	g_hash_table_remove (info->list->editors, info->original_connection);
 
 	if (response == GTK_RESPONSE_OK) {
 		NMConnection *connection;
-		gboolean success;
 		GError *error = NULL;
+		gboolean success;
 
-		connection = nm_exported_connection_get_connection (info->initial_connection);
+		connection = nm_connection_editor_get_connection (editor);
+
 		utils_fill_connection_certs (connection);
 		success = nm_connection_verify (connection, &error);
 		utils_clear_filled_connection_certs (connection);
 
 		if (success) {
-			if (info->initial_scope == nm_connection_get_scope (connection)) {
-				/* The easy part: Connection is updated */
-				modify_connection (info->list, info->initial_connection,
-							    NM_MODIFY_CONNECTION_UPDATE,
-							    connection_update_done, info);
-			} else {
-				/* The hard part: Connection scope changed:
-				   Add the exported connection,
-				   if it succeeds, remove the old one. */
-				modify_connection (info->list, info->initial_connection,
-							    NM_MODIFY_CONNECTION_ADD,
-							    connection_update_add_done, info);
-			}
+			update_connection (info->list, info->original_connection,
+						    connection,
+						    connection_updated_cb,
+						    info);
 		} else {
 			g_warning ("%s: invalid connection after update: bug in the "
 			           "'%s' / '%s' invalid: %d",
@@ -774,6 +941,7 @@ edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 			           g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)),
 			           error->message, error->code);
 			g_error_free (error);
+			connection_updated_cb (info->list, FALSE, user_data);
 		}
 	}
 }
@@ -782,6 +950,7 @@ static void
 do_edit (ActionInfo *info)
 {
 	NMExportedConnection *exported;
+	NMConnection *connection;
 	NMConnectionEditor *editor;
 	EditConnectionInfo *edit_info;
 
@@ -795,13 +964,13 @@ do_edit (ActionInfo *info)
 		return;
 	}
 
-	editor = nm_connection_editor_new (exported);
+	connection = nm_connection_duplicate (nm_exported_connection_get_connection (exported));
+	editor = nm_connection_editor_new (connection);
+	g_object_unref (connection);
 
 	edit_info = g_new (EditConnectionInfo, 1);
 	edit_info->list = info->list;
-	edit_info->new_connection = NULL;
-	edit_info->initial_connection = g_object_ref (exported);
-	edit_info->initial_scope = nm_connection_get_scope (nm_exported_connection_get_connection (exported));
+	edit_info->original_connection = g_object_ref (exported);
 
 	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), edit_info);
 	g_hash_table_insert (info->list->editors, exported, editor);
@@ -816,14 +985,16 @@ edit_connection_cb (GtkButton *button, gpointer user_data)
 }
 
 static void
-connection_remove_done (NMConnectionList *list,
-				    NMExportedConnection *exported,
+connection_remove_done (NMExportedConnection *exported,
 				    gboolean success,
 				    gpointer user_data)
 {
-	if (success)
+	if (success) {
+		NMConnectionList *list = (NMConnectionList *) user_data;
+
 		/* Close any open editor windows for this connection */
 		g_hash_table_remove (list->editors, exported);
+	}
 }
 
 static void
@@ -858,9 +1029,7 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 	gtk_widget_destroy (dialog);
 
 	if (result == GTK_RESPONSE_YES)
-		modify_connection (info->list, exported,
-					    NM_MODIFY_CONNECTION_REMOVE, 
-					    connection_remove_done, NULL);
+		remove_connection (exported, connection_remove_done, info->list);
 }
 
 static void
@@ -918,7 +1087,6 @@ static void
 import_success_cb (NMConnection *connection, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
-	NMExportedConnection *exported;
 	NMConnectionEditor *editor;
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
@@ -954,12 +1122,9 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 		return;
 	}
 
-	exported = nm_exported_connection_new (connection);
-	g_object_unref (connection);
-
-	editor = nm_connection_editor_new (exported);
+	editor = nm_connection_editor_new (connection);
 	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
-	g_hash_table_insert (info->list->editors, exported, editor);
+	g_hash_table_insert (info->list->editors, connection, editor);
 
 	nm_connection_editor_run (editor);
 }
@@ -1158,7 +1323,7 @@ add_connection_buttons (NMConnectionList *self,
 	button = glade_xml_get_widget (self->gui, name);
 	g_free (name);
 	info = new_action_info (self, treeview, NULL);
-	g_signal_connect (button, "clicked", G_CALLBACK (add_connection_cb), info);
+	g_signal_connect (button, "clicked", G_CALLBACK (add_connection_clicked), info);
 	if (is_vpn) {
 		GHashTable *plugins;
 

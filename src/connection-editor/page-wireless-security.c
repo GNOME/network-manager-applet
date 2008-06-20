@@ -166,8 +166,7 @@ add_security_item (CEPageWirelessSecurity *self,
 }
 
 CEPageWirelessSecurity *
-ce_page_wireless_security_new (NMConnection *connection,
-                               CEPageWireless *wireless_page)
+ce_page_wireless_security_new (NMConnection *connection)
 {
 	CEPageWirelessSecurity *self;
 	CEPage *parent;
@@ -214,8 +213,6 @@ ce_page_wireless_security_new (NMConnection *connection,
 	parent->title = g_strdup (_("Wireless Security"));
 
 	self->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-
-	self->wireless_page = g_object_ref (wireless_page);
 
 	combo = GTK_COMBO_BOX (glade_xml_get_widget (parent->xml, "wireless_security_combo"));
 
@@ -370,55 +367,39 @@ dispose (GObject *object)
 	if (self->group)
 		g_object_unref (self->group);
 
-	if (self->wireless_page)
-		g_object_unref (self->wireless_page);
-
 	G_OBJECT_CLASS (ce_page_wireless_security_parent_class)->dispose (object);
 }
 
 static gboolean
-validate (CEPage *page, GError **error)
+validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (page);
-	GByteArray *ssid;
+	NMSettingWireless *s_wireless;
 	WirelessSecurity *sec;
 	gboolean valid = FALSE;
 
-	sec = wireless_security_combo_get_active (self);
-	if (!sec)
-		return TRUE; /* Unencrypted/open method doesn't have a WirelessSecurity */
-
-	ssid = ce_page_wireless_get_ssid (self->wireless_page);
-	if (ssid) {
-		/* FIXME: get failed property and error out of wireless security objects */
-		valid = wireless_security_validate (sec, ssid);
-		if (!valid)
-			g_set_error (error, 0, 0, "Invalid wireless security");
-		g_byte_array_free (ssid, TRUE);
-	} else
-		g_set_error (error, 0, 0, "Missing SSID");
-
-	return valid;
-}
-
-static void
-update_connection (CEPage *page, NMConnection *connection)
-{
-	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (page);
-	WirelessSecurity *sec;
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	g_assert (s_wireless);
 
 	sec = wireless_security_combo_get_active (self);
-	if (sec)
-		wireless_security_fill_connection (sec, connection);
-	else {
-		NMSettingWireless *s_wireless;
-
+	if (sec) {
+		if (s_wireless->ssid) {
+			/* FIXME: get failed property and error out of wireless security objects */
+			valid = wireless_security_validate (sec, s_wireless->ssid);
+			if (valid)
+				wireless_security_fill_connection (sec, connection);
+			else
+				g_set_error (error, 0, 0, "Invalid wireless security");
+		} else
+			g_set_error (error, 0, 0, "Missing SSID");
+	} else {
 		/* No security, unencrypted */
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-		g_assert (s_wireless);
 		g_free (s_wireless->security);
 		s_wireless->security = NULL;
+		valid = TRUE;
 	}
+
+	return valid;
 }
 
 static void
@@ -431,6 +412,4 @@ ce_page_wireless_security_class_init (CEPageWirelessSecurityClass *wireless_secu
 	object_class->dispose = dispose;
 
 	parent_class->validate = validate;
-	parent_class->update_connection = update_connection;
 }
-

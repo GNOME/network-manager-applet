@@ -46,7 +46,6 @@ typedef struct {
 	gboolean disposed;
 	GtkSizeGroup *group;
 	GtkComboBox *security_combo;
-	CEPageWireless *wireless_page;
 } CEPageWirelessSecurity;
 
 typedef struct {
@@ -55,8 +54,7 @@ typedef struct {
 
 GType ce_page_wireless_security_get_type (void);
 
-CEPageWirelessSecurity *ce_page_wireless_security_new (NMConnection *connection,
-                                                       CEPageWireless *wireless_page);
+CEPageWirelessSecurity *ce_page_wireless_security_new (NMConnection *connection);
 
 #endif  /* __PAGE_WIRELESS_SECURITY_H__ */
 

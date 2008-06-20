@@ -71,7 +71,7 @@ enum {
 static guint editor_signals[EDITOR_LAST_SIGNAL] = { 0 };
 
 static void nm_connection_editor_set_connection (NMConnectionEditor *editor,
-									    NMExportedConnection *exported);
+									    NMConnection *connection);
 
 static void
 dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
@@ -147,7 +147,7 @@ connection_editor_validate (NMConnectionEditor *editor)
 	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
 		GError *error = NULL;
 
-		if (!ce_page_validate (CE_PAGE (iter->data), &error)) {
+		if (!ce_page_validate (CE_PAGE (iter->data), editor->connection, &error)) {
 			/* FIXME: use the error to indicate which UI widgets are invalid */
 			if (error)
 				g_error_free (error);
@@ -233,8 +233,8 @@ dispose (GObject *object)
 	g_slist_free (editor->pages);
 	editor->pages = NULL;
 
-	if (editor->exported)
-		g_object_unref (editor->exported);
+	if (editor->connection)
+		g_object_unref (editor->connection);
 
 	gtk_widget_destroy (editor->dialog);
 	g_object_unref (editor->xml);
@@ -262,24 +262,24 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 }
 
 NMConnectionEditor *
-nm_connection_editor_new (NMExportedConnection *exported)
+nm_connection_editor_new (NMConnection *connection)
 {
 	NMConnectionEditor *editor;
 
-	g_return_val_if_fail (NM_IS_EXPORTED_CONNECTION (exported), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	editor = g_object_new (NM_TYPE_CONNECTION_EDITOR, NULL);
-	nm_connection_editor_set_connection (editor, exported);
+	nm_connection_editor_set_connection (editor, connection);
 
 	return editor;
 }
 
-NMExportedConnection *
+NMConnection *
 nm_connection_editor_get_connection (NMConnectionEditor *editor)
 {
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), NULL);
 
-	return editor->exported;
+	return editor->connection;
 }
 
 gint
@@ -356,20 +356,18 @@ add_page (NMConnectionEditor *editor, CEPage *page)
 }
 
 static void
-nm_connection_editor_set_connection (NMConnectionEditor *editor, NMExportedConnection *exported)
+nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection)
 {
 	NMSettingConnection *s_con;
 
 	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
-	g_return_if_fail (NM_IS_EXPORTED_CONNECTION (exported));
+	g_return_if_fail (NM_IS_CONNECTION (connection));
 
 	/* clean previous connection */
-	if (editor->exported)
-		g_object_unref (editor->exported);
+	if (editor->connection)
+		g_object_unref (editor->connection);
 
-	editor->exported = g_object_ref (exported);
-	editor->connection = nm_exported_connection_get_connection (exported);
-
+	editor->connection = g_object_ref (connection);
 	nm_connection_editor_update_title (editor);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
@@ -380,15 +378,8 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMExportedConne
 		add_page (editor, CE_PAGE (ce_page_wired_security_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME)) {
-		CEPageWireless *wireless_page;
-		CEPageWirelessSecurity *wireless_security_page;
-
-		wireless_page = ce_page_wireless_new (editor->connection);
-		add_page (editor, CE_PAGE (wireless_page));
-
-		wireless_security_page = ce_page_wireless_security_new (editor->connection, wireless_page);
-		add_page (editor, CE_PAGE (wireless_security_page));
-
+		add_page (editor, CE_PAGE (ce_page_wireless_new (editor->connection)));
+		add_page (editor, CE_PAGE (ce_page_wireless_security_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_vpn_new (editor->connection)));
@@ -418,12 +409,6 @@ nm_connection_editor_present (NMConnectionEditor *editor)
 }
 
 static void
-update_one_page (gpointer data, gpointer user_data)
-{
-	ce_page_update_connection (CE_PAGE (data), NM_CONNECTION (user_data));
-}
-
-static void
 connection_editor_update_connection (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
@@ -448,8 +433,6 @@ connection_editor_update_connection (NMConnectionEditor *editor)
 		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_SYSTEM);
 	else
 		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_USER);
-
-	g_slist_foreach (editor->pages, update_one_page, editor->connection);
 }
 
 static void

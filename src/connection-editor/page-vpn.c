@@ -42,7 +42,6 @@ G_DEFINE_TYPE (CEPageVpn, ce_page_vpn, CE_TYPE_PAGE)
 
 typedef struct {
 	NMSettingVPN *setting;
-	NMConnection *connection; /* ugh */
 
 	NMVpnPluginUiWidgetInterface *ui;
 	gboolean valid;
@@ -67,7 +66,6 @@ ce_page_vpn_new (NMConnection *connection)
 	CEPageVpn *self;
 	CEPageVpnPrivate *priv;
 	CEPage *parent;
-	NMSettingVPN *s_vpn;
 	GError *error = NULL;
 	NMVpnPluginUiInterface *plugin;
 
@@ -77,17 +75,14 @@ ce_page_vpn_new (NMConnection *connection)
 
 	parent->title = g_strdup (_("VPN"));
 
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
-	g_assert (s_vpn);
-	g_assert (s_vpn->service_type);
+	priv->setting = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	g_assert (priv->setting);
+	g_assert (priv->setting->service_type);
 
-	priv->setting = NM_SETTING_VPN (nm_setting_duplicate (NM_SETTING (s_vpn)));
-	priv->connection = connection;
-
-	plugin = vpn_get_plugin_by_service (s_vpn->service_type);
+	plugin = vpn_get_plugin_by_service (priv->setting->service_type);
 	if (!plugin) {
 		g_warning ("%s: couldn't find VPN plugin for service '%s'!",
-		           __func__, s_vpn->service_type);
+		           __func__, priv->setting->service_type);
 		g_object_unref (self);
 		return NULL;
 	}
@@ -95,7 +90,7 @@ ce_page_vpn_new (NMConnection *connection)
 	priv->ui = nm_vpn_plugin_ui_interface_ui_factory (plugin, connection, &error);
 	if (!priv->ui) {
 		g_warning ("%s: couldn't create VPN UI for service '%s': %s",
-		           __func__, s_vpn->service_type, error->message);
+		           __func__, priv->setting->service_type, error->message);
 		g_error_free (error);
 		g_object_unref (self);
 		return NULL;
@@ -116,21 +111,14 @@ ce_page_vpn_new (NMConnection *connection)
 }
 
 static gboolean
-validate (CEPage *page, GError **error)
-{
-	CEPageVpn *self = CE_PAGE_VPN (page);
-	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (self);
-
-	return priv->valid;
-}
-
-static void
-update_connection (CEPage *page, NMConnection *connection)
+validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageVpn *self = CE_PAGE_VPN (page);
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (self);
 
 	nm_vpn_plugin_ui_widget_interface_update_connection (priv->ui, connection);
+
+	return priv->valid;
 }
 
 static void
@@ -147,7 +135,6 @@ dispose (GObject *object)
 		return;
 
 	priv->disposed = TRUE;
-	g_object_unref (priv->setting);
 
 	if (priv->ui)
 		g_object_unref (priv->ui);
@@ -167,5 +154,4 @@ ce_page_vpn_class_init (CEPageVpnClass *vpn_class)
 	object_class->dispose = dispose;
 
 	parent_class->validate = validate;
-	parent_class->update_connection = update_connection;
 }
