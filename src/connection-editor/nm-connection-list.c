@@ -761,7 +761,7 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 		type_setting = nm_setting_wireless_new ();
 		s_wireless = NM_SETTING_WIRELESS (type_setting);
 		s_wireless->mode = g_strdup ("infrastructure");
-	} else if (ctype == NM_TYPE_SETTING_GSM) {
+	} else if ((ctype == NM_TYPE_SETTING_GSM) || (ctype == NM_TYPE_SETTING_CDMA)) {
 		/* Since GSM is a placeholder for both GSM and CDMA; ask the user which
 		 * one they really want.
 		 */
