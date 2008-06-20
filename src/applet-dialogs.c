@@ -193,6 +193,8 @@ create_info_label_security (NMConnection *connection)
 		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
 		if (s_8021x)
 			label = get_eap_label (NULL, s_8021x);
+		else
+			label = g_strdup (_("None"));
 	}
 
 	w = create_info_label (label ? label : _("Unknown"));
