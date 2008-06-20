@@ -44,19 +44,13 @@ typedef struct {
 	NMSettingVPN *setting;
 
 	NMVpnPluginUiWidgetInterface *ui;
-	gboolean valid;
 
 	gboolean disposed;
 } CEPageVpnPrivate;
 
 static void
-vpn_plugin_validity_changed_cb (NMVpnPluginUiInterface *plugin,
-                                gboolean valid,
-                                CEPageVpn *self)
+vpn_plugin_changed_cb (NMVpnPluginUiInterface *plugin, CEPageVpn *self)
 {
-	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (self);
-
-	priv->valid = valid;
 	ce_page_changed (CE_PAGE (self));
 }
 
@@ -95,8 +89,7 @@ ce_page_vpn_new (NMConnection *connection)
 		g_object_unref (self);
 		return NULL;
 	}
-	g_signal_connect (priv->ui, "validity-changed",
-	                  G_CALLBACK (vpn_plugin_validity_changed_cb), self);
+	g_signal_connect (priv->ui, "changed", G_CALLBACK (vpn_plugin_changed_cb), self);
 
 	parent->page = GTK_WIDGET (nm_vpn_plugin_ui_widget_interface_get_widget (priv->ui));
 	if (!parent->page) {
@@ -116,9 +109,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageVpn *self = CE_PAGE_VPN (page);
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (self);
 
-	nm_vpn_plugin_ui_widget_interface_update_connection (priv->ui, connection);
-
-	return priv->valid;
+	return nm_vpn_plugin_ui_widget_interface_update_connection (priv->ui, connection, error);
 }
 
 static void
