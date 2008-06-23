@@ -491,7 +491,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 	g_signal_connect (G_OBJECT (widget), "changed",
-	                  GTK_SIGNAL_FUNC (connection_combo_changed), self);
+	                  G_CALLBACK (connection_combo_changed), self);
 	if (connection || !num_added) {
 		gtk_widget_hide (glade_xml_get_widget (priv->xml, "connection_label"));
 		gtk_widget_hide (widget);
@@ -601,7 +601,7 @@ device_combo_init (NMAWirelessDialog *self, NMDevice *device)
 		gtk_combo_box_set_model (GTK_COMBO_BOX (widget), priv->device_model);
 		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 		g_signal_connect (G_OBJECT (widget), "changed",
-		                  GTK_SIGNAL_FUNC (device_combo_changed), self);
+		                  G_CALLBACK (device_combo_changed), self);
 		if (num_added == 1) {
 			gtk_widget_hide (glade_xml_get_widget (priv->xml, "device_label"));
 			gtk_widget_hide (widget);
@@ -909,7 +909,7 @@ internal_init (NMAWirelessDialog *self,
 		gtk_widget_grab_focus (priv->sec_combo);
 
 	security_combo_changed (priv->sec_combo, self);
-	g_signal_connect (G_OBJECT (priv->sec_combo), "changed", GTK_SIGNAL_FUNC (security_combo_changed), self);
+	g_signal_connect (G_OBJECT (priv->sec_combo), "changed", G_CALLBACK (security_combo_changed), self);
 
 	if (priv->connection) {
 		char *tmp;

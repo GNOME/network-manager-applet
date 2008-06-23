@@ -342,7 +342,7 @@ ce_page_wireless_security_new (NMConnection *connection)
 
 	wireless_security_combo_changed (combo, self);
 	g_signal_connect (combo, "changed",
-	                  GTK_SIGNAL_FUNC (wireless_security_combo_changed),
+	                  G_CALLBACK (wireless_security_combo_changed),
 	                  self);
 
 	return self;
