@@ -1,3 +1,18 @@
+2008-06-26  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (nma_menu_configure_vpn_item_activate): call the connection editor not
+			nm-vpn-properties
+
+	* src/connection-editor/nm-connection-list.c
+	  src/connection-editor/nm-connection-list.h
+		- (nm_connection_list_new): takes the default type
+		- (add_connection_tab): if a default type was given, select that type's
+			tab
+
+	* src/connection-editor/main.c
+		- (main): add --type argument which will select that type's tab
+
 2008-06-23  Christian Persch  <chpe@gnome.org>
 
 	* src/connection-editor/page-wireless-security.c:

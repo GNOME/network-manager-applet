@@ -1380,15 +1380,15 @@ add_connection_buttons (NMConnectionList *self,
 
 static void
 add_connection_tab (NMConnectionList *self,
-				GSList *connection_types,
-				GdkPixbuf *pixbuf,
-				const char *prefix,
-				const char *label_text,
-				gboolean is_vpn)
+                    const char *def_type,
+                    GSList *connection_types,
+                    GdkPixbuf *pixbuf,
+                    const char *prefix,
+                    const char *label_text,
+                    gboolean is_vpn)
 {
 	char *name;
-	GtkWidget *child;
-	GtkWidget *hbox;
+	GtkWidget *child, *hbox, *notebook;
 	GtkTreeView *treeview;
 	GSList *iter;
 
@@ -1407,39 +1407,47 @@ add_connection_tab (NMConnectionList *self,
 	gtk_box_pack_start (GTK_BOX (hbox), gtk_label_new (label_text), FALSE, FALSE, 0);
 	gtk_widget_show_all (hbox);
 
-	gtk_notebook_set_tab_label (GTK_NOTEBOOK (glade_xml_get_widget (self->gui, "list_notebook")), child, hbox);
+	notebook = glade_xml_get_widget (self->gui, "list_notebook");
+	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), child, hbox);
 
 	treeview = add_connection_treeview (self, prefix);
 	add_connection_buttons (self, prefix, treeview, is_vpn);
 
-	for (iter = connection_types; iter; iter = iter->next)
+	for (iter = connection_types; iter; iter = iter->next) {
 		g_hash_table_insert (self->treeviews, g_strdup ((const char *) iter->data), treeview);
+		if (def_type && !strcmp ((const char *) iter->data, def_type)) {
+			int pnum;
+
+			pnum = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), child);
+			gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), pnum);
+		}
+	}
 }
 
 static void
-add_connection_tabs (NMConnectionList *self)
+add_connection_tabs (NMConnectionList *self, const char *def_type)
 {
 	GSList *types;
 
 	types = g_slist_append (NULL, NM_SETTING_WIRED_SETTING_NAME);
-	add_connection_tab (self, types, self->wired_icon, "wired", _("Wired"), FALSE);
+	add_connection_tab (self, def_type, types, self->wired_icon, "wired", _("Wired"), FALSE);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_WIRELESS_SETTING_NAME);
-	add_connection_tab (self, types, self->wireless_icon, "wireless", _("Wireless"), FALSE);
+	add_connection_tab (self, def_type, types, self->wireless_icon, "wireless", _("Wireless"), FALSE);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_GSM_SETTING_NAME);
 	types = g_slist_append (types, NM_SETTING_CDMA_SETTING_NAME);
-	add_connection_tab (self, types, self->wwan_icon, "wwan", _("Mobile Broadband"), FALSE);
+	add_connection_tab (self, def_type, types, self->wwan_icon, "wwan", _("Mobile Broadband"), FALSE);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_VPN_SETTING_NAME);
-	add_connection_tab (self, types, self->vpn_icon, "vpn", _("VPN"), TRUE);
+	add_connection_tab (self, def_type, types, self->vpn_icon, "vpn", _("VPN"), TRUE);
 	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_PPPOE_SETTING_NAME);
-	add_connection_tab (self, types, self->wired_icon, "dsl", _("DSL"), FALSE);
+	add_connection_tab (self, def_type, types, self->wired_icon, "dsl", _("DSL"), FALSE);
 	g_slist_free (types);
 }
 
@@ -1511,7 +1519,7 @@ connection_added (NMSettings *settings,
 	}
 
 NMConnectionList *
-nm_connection_list_new (void)
+nm_connection_list_new (const char *def_type)
 {
 	NMConnectionList *list;
 	DBusGConnection *dbus_connection;
@@ -1559,7 +1567,7 @@ nm_connection_list_new (void)
 				   G_CALLBACK (connection_added),
 				   list);
 
-	add_connection_tabs (list);
+	add_connection_tabs (list, def_type);
 
 	list->editors = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_object_unref);
 

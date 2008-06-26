@@ -66,7 +66,7 @@ typedef struct {
 } NMConnectionListClass;
 
 GType             nm_connection_list_get_type (void);
-NMConnectionList *nm_connection_list_new (void);
+NMConnectionList *nm_connection_list_new (const char *def_type);
 
 void              nm_connection_list_run (NMConnectionList *list);
 

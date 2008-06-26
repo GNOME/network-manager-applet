@@ -32,6 +32,7 @@
 #include <glib/gi18n-lib.h>
 #include <dbus/dbus-glib.h>
 
+#include <nm-setting-wired.h>
 #include "nm-connection-list.h"
 
 static GMainLoop *loop = NULL;
@@ -68,8 +69,16 @@ list_done_cb (NMConnectionList *list, gint response, gpointer user_data)
 int
 main (int argc, char *argv[])
 {
+	GOptionContext *opt_ctx;
+	GError *error = NULL;
 	NMConnectionList *list;
 	DBusGConnection *ignore;
+	char *type = NULL;
+
+	GOptionEntry entries[] = {
+		{ "type", 0, 0, G_OPTION_ARG_STRING, &type, "Type of connection to show at launch", NM_SETTING_WIRED_SETTING_NAME },
+		{ NULL }
+	};
 
 	bindtextdomain (GETTEXT_PACKAGE, NMALOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -79,13 +88,25 @@ main (int argc, char *argv[])
 	/* parse arguments: an idea is to use gconf://$setting_name / system://$setting_name to
 	   allow this program to work with both GConf and system-wide settings */
 
+	opt_ctx = g_option_context_new (NULL);
+	g_option_context_set_summary (opt_ctx, "Allows users to view and edit network connection settings");
+	g_option_context_add_main_entries (opt_ctx, entries, NULL);
+
+	if (!g_option_context_parse (opt_ctx, &argc, &argv, &error)) {
+		g_warning ("%s\n", error->message);
+		g_error_free (error);
+		return 1;
+	}
+
+	g_option_context_free (opt_ctx);
+
 	/* Hack to init the dbus-glib type system */
 	ignore = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
 	dbus_g_connection_unref (ignore);
 
 	loop = g_main_loop_new (NULL, FALSE);
 
-	list = nm_connection_list_new ();
+	list = nm_connection_list_new (type);
 	if (!list) {
 		g_warning ("Failed to initialize the UI, exiting...");
 		return 1;
