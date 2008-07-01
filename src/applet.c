@@ -1703,10 +1703,13 @@ static void nma_add_wired_networks (NMApplet *applet, NetworkDevice *device, Gtk
 	networks = nma_wired_read_networks (applet->gconf_client);
 	for (iter = networks; iter; iter = iter->next) {
 		char *network_id = (char *) iter->data;
+		char *escaped_network;
 		NMGConfWSO *opt;
 		GtkWidget *w;
 
-		opt = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client, NETWORK_TYPE_WIRED, network_id);
+		escaped_network = gconf_escape_key (network_id, strlen (network_id));
+		opt = nm_gconf_wso_new_deserialize_gconf (applet->gconf_client, NETWORK_TYPE_WIRED, escaped_network);
+		g_free (escaped_network);
 		w = nma_wired_menu_item_new (applet, device, network_id, opt);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 	}
