@@ -315,6 +315,174 @@ cdma_get_icon (NMDevice *device,
 	return pixbuf;
 }
 
+typedef struct {
+	DBusGMethodInvocation *context;
+	NMApplet *applet;
+	NMConnection *connection;
+	GtkWidget *ok_button;
+	GtkEntry *secret_entry;
+	char *secret_name;
+} NMCdmaInfo;
+
+static void
+get_cdma_secrets_cb (GtkDialog *dialog,
+                     gint response,
+                     gpointer user_data)
+{
+	NMCdmaInfo *info = (NMCdmaInfo *) user_data;
+	NMAGConfConnection *gconf_connection;
+	NMSettingCdma *setting;
+	GHashTable *settings_hash;
+	GHashTable *secrets;
+	GError *err = NULL;
+
+	if (response != GTK_RESPONSE_OK) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): canceled",
+		             __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	setting = NM_SETTING_CDMA (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_CDMA));
+
+	if (!strcmp (info->secret_name, NM_SETTING_CDMA_PASSWORD)) {
+		g_free (setting->password);
+		setting->password = g_strdup (gtk_entry_get_text (info->secret_entry));
+	}
+
+	secrets = nm_setting_to_hash (NM_SETTING (setting));
+	if (!secrets) {
+		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+				   "%s.%d (%s): failed to hash setting '%s'.",
+				   __FILE__, __LINE__, __func__, NM_SETTING (setting)->name);
+		goto done;
+	}
+
+	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
+	 * will contain all the individual settings hashes.
+	 */
+	settings_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+								    g_free, (GDestroyNotify) g_hash_table_destroy);
+
+	g_hash_table_insert (settings_hash, g_strdup (NM_SETTING (setting)->name), secrets);
+	dbus_g_method_return (info->context, settings_hash);
+	g_hash_table_destroy (settings_hash);
+
+	/* Save the connection back to GConf _after_ hashing it, because
+	 * saving to GConf might trigger the GConf change notifiers, resulting
+	 * in the connection being read back in from GConf which clears secrets.
+	 */
+	gconf_connection = nma_gconf_settings_get_by_connection (info->applet->gconf_settings, info->connection);
+	if (gconf_connection)
+		nma_gconf_connection_save (gconf_connection);
+
+ done:
+	if (err) {
+		g_warning (err->message);
+		dbus_g_method_return_error (info->context, err);
+		g_error_free (err);
+	}
+
+	gtk_widget_hide (GTK_WIDGET (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+
+	nm_connection_clear_secrets (info->connection);
+	g_object_unref (info->connection);
+	g_free (info->secret_name);
+	g_free (info);
+}
+
+
+static void
+ask_for_password (NMDevice *device,
+                  NMConnection *connection,
+                  DBusGMethodInvocation *context,
+                  NMApplet *applet)
+{
+	GtkDialog *dialog;
+	GtkWidget *w;
+	GtkBox *box;
+	char *dev_str;
+	NMCdmaInfo *info;
+
+	info = g_new (NMCdmaInfo, 1);
+	info->context = context;
+	info->applet = applet;
+	info->connection = g_object_ref (connection);
+	info->secret_name = g_strdup (NM_SETTING_CDMA_PASSWORD);
+
+	dialog = GTK_DIALOG (gtk_dialog_new ());
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_title (GTK_WINDOW (dialog), _("CDMA Network Password"));
+
+	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
+	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
+	info->ok_button = w;
+	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
+
+	w = gtk_label_new (_("A password is required to connect to the CDMA network."));
+	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+
+	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
+	w = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (w), dev_str);
+	g_free (dev_str);
+	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+
+	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
+	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+
+	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
+	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
+	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (box));
+
+	gtk_box_pack_start (box, gtk_label_new (_("Password:")), FALSE, FALSE, 0);
+
+	w = gtk_entry_new ();
+	info->secret_entry = GTK_ENTRY (w);
+	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
+	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (dialog->vbox);
+
+	g_signal_connect (dialog, "response",
+				   G_CALLBACK (get_cdma_secrets_cb),
+				   info);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (GTK_WIDGET (dialog));
+	gtk_window_present (GTK_WINDOW (dialog));
+}
+
+static gboolean
+cdma_get_secrets (NMDevice *device,
+                 NMConnection *connection,
+                 const char *specific_object,
+                 const char *setting_name,
+                 const char **hints,
+                 DBusGMethodInvocation *context,
+                 NMApplet *applet,
+                 GError **error)
+{
+	if (!hints || !g_strv_length ((char **) hints)) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): missing secrets hints.",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
+
+	if (!strcmp (hints[0], NM_SETTING_CDMA_PASSWORD))
+		ask_for_password (device, connection, context, applet);
+	else {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): unknown secrets hint '%s'.",
+		             __FILE__, __LINE__, __func__, hints[0]);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 NMADeviceClass *
 applet_device_cdma_get_class (NMApplet *applet)
 {
@@ -328,6 +496,7 @@ applet_device_cdma_get_class (NMApplet *applet)
 	dclass->add_menu_item = cdma_add_menu_item;
 	dclass->device_state_changed = cdma_device_state_changed;
 	dclass->get_icon = cdma_get_icon;
+	dclass->get_secrets = cdma_get_secrets;
 
 	return dclass;
 }

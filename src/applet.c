@@ -1879,7 +1879,7 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 
 	/* Let the device class handle secrets */
 	if (!dclass->get_secrets (device, connection, specific_object, setting_name,
-	                          context, applet, &error))
+	                          hints, context, applet, &error))
 		goto error;
 
 	return;

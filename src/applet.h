@@ -153,6 +153,7 @@ struct NMADeviceClass {
 	                               NMConnection *connection,
 	                               const char *specific_object,
 	                               const char *setting_name,
+	                               const char **hints,
 	                               DBusGMethodInvocation *context,
 	                               NMApplet *applet,
 	                               GError **error);

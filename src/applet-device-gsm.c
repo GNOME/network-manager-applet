@@ -321,7 +321,8 @@ typedef struct {
 	NMApplet *applet;
 	NMConnection *connection;
 	GtkWidget *ok_button;
-	GtkEntry *pin_entry;
+	GtkEntry *secret_entry;
+	char *secret_name;
 } NMGsmInfo;
 
 static void
@@ -332,7 +333,7 @@ pin_entry_changed (GtkEditable *editable, gpointer user_data)
 	int i;
 	gboolean valid = FALSE;
 
-	s = gtk_entry_get_text (info->pin_entry);
+	s = gtk_entry_get_text (GTK_ENTRY (editable));
 	if (s && strlen (s) == 4) {
 		valid = TRUE;
 		for (i = 0; i < 4; i++) {
@@ -366,8 +367,17 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 	}
 
 	setting = NM_SETTING_GSM (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_GSM));
-	g_free (setting->pin);
-	setting->pin = g_strdup (gtk_entry_get_text (info->pin_entry));
+
+	if (!strcmp (info->secret_name, NM_SETTING_GSM_PIN)) {
+		g_free (setting->pin);
+		setting->pin = g_strdup (gtk_entry_get_text (info->secret_entry));
+	} else if (!strcmp (info->secret_name, NM_SETTING_GSM_PUK)) {
+		g_free (setting->puk);
+		setting->puk = g_strdup (gtk_entry_get_text (info->secret_entry));
+	} else if (!strcmp (info->secret_name, NM_SETTING_GSM_PASSWORD)) {
+		g_free (setting->password);
+		setting->password = g_strdup (gtk_entry_get_text (info->secret_entry));
+	}
 
 	secrets = nm_setting_to_hash (NM_SETTING (setting));
 	if (!secrets) {
@@ -407,17 +417,16 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 
 	nm_connection_clear_secrets (info->connection);
 	g_object_unref (info->connection);
+	g_free (info->secret_name);
 	g_free (info);
 }
 
-static gboolean
-gsm_get_secrets (NMDevice *device,
-			  NMConnection *connection,
-			  const char *specific_object,
-			  const char *setting_name,
-			  DBusGMethodInvocation *context,
-			  NMApplet *applet,
-			  GError **error)
+static void
+ask_for_pin_puk (NMDevice *device,
+                 NMConnection *connection,
+                 const char *secret_name,
+                 DBusGMethodInvocation *context,
+                 NMApplet *applet)
 {
 	GtkDialog *dialog;
 	GtkWidget *w;
@@ -429,17 +438,27 @@ gsm_get_secrets (NMDevice *device,
 	info->context = context;
 	info->applet = applet;
 	info->connection = g_object_ref (connection);
+	info->secret_name = g_strdup (secret_name);
 
 	dialog = GTK_DIALOG (gtk_dialog_new ());
-	gtk_window_set_title (GTK_WINDOW (dialog), _("PIN code"));
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	if (!strcmp (secret_name, NM_SETTING_GSM_PIN))
+		gtk_window_set_title (GTK_WINDOW (dialog), _("PIN code required"));
+	else if (!strcmp (secret_name, NM_SETTING_GSM_PUK))
+		gtk_window_set_title (GTK_WINDOW (dialog), _("PUK code required"));
+	else
+		g_assert_not_reached ();
 
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
 	info->ok_button = w;
 	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
 
-	w = gtk_label_new ("PIN code is needed for device");
+	if (!strcmp (secret_name, NM_SETTING_GSM_PIN))
+		w = gtk_label_new (_("PIN code is needed for the GSM device"));
+	else if (!strcmp (secret_name, NM_SETTING_GSM_PUK))
+		w = gtk_label_new (_("PUK code is needed for the GSM device"));
 	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
 
 	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
@@ -458,10 +477,10 @@ gsm_get_secrets (NMDevice *device,
 	gtk_box_pack_start (box, gtk_label_new ("PIN:"), FALSE, FALSE, 0);
 
 	w = gtk_entry_new ();
-	info->pin_entry = GTK_ENTRY (w);
-	gtk_entry_set_max_length (info->pin_entry, 4);
-	gtk_entry_set_width_chars (info->pin_entry, 4);
-	gtk_entry_set_activates_default (info->pin_entry, TRUE);
+	info->secret_entry = GTK_ENTRY (w);
+	gtk_entry_set_max_length (GTK_ENTRY (w), 4);
+	gtk_entry_set_width_chars (GTK_ENTRY (w), 4);
+	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
 	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
 	g_signal_connect (w, "changed", G_CALLBACK (pin_entry_changed), info);
 	pin_entry_changed (GTK_EDITABLE (w), info);
@@ -475,6 +494,97 @@ gsm_get_secrets (NMDevice *device,
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (GTK_WIDGET (dialog));
 	gtk_window_present (GTK_WINDOW (dialog));
+}
+
+static void
+ask_for_password (NMDevice *device,
+                  NMConnection *connection,
+                  DBusGMethodInvocation *context,
+                  NMApplet *applet)
+{
+	GtkDialog *dialog;
+	GtkWidget *w;
+	GtkBox *box;
+	char *dev_str;
+	NMGsmInfo *info;
+
+	info = g_new (NMGsmInfo, 1);
+	info->context = context;
+	info->applet = applet;
+	info->connection = g_object_ref (connection);
+	info->secret_name = g_strdup (NM_SETTING_GSM_PASSWORD);
+
+	dialog = GTK_DIALOG (gtk_dialog_new ());
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_title (GTK_WINDOW (dialog), _("GSM Network Password"));
+
+	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
+	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
+	info->ok_button = w;
+	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
+
+	w = gtk_label_new (_("A password is required to connect to the GSM network."));
+	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+
+	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
+	w = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (w), dev_str);
+	g_free (dev_str);
+	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+
+	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
+	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+
+	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
+	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
+	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (box));
+
+	gtk_box_pack_start (box, gtk_label_new (_("Password:")), FALSE, FALSE, 0);
+
+	w = gtk_entry_new ();
+	info->secret_entry = GTK_ENTRY (w);
+	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
+	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (dialog->vbox);
+
+	g_signal_connect (dialog, "response",
+				   G_CALLBACK (get_gsm_secrets_cb),
+				   info);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (GTK_WIDGET (dialog));
+	gtk_window_present (GTK_WINDOW (dialog));
+}
+
+static gboolean
+gsm_get_secrets (NMDevice *device,
+                 NMConnection *connection,
+                 const char *specific_object,
+                 const char *setting_name,
+                 const char **hints,
+                 DBusGMethodInvocation *context,
+                 NMApplet *applet,
+                 GError **error)
+{
+	if (!hints || !g_strv_length ((char **) hints)) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): missing secrets hints.",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
+
+	if (   !strcmp (hints[0], NM_SETTING_GSM_PIN)
+	    || !strcmp (hints[0], NM_SETTING_GSM_PUK))
+		ask_for_pin_puk (device, connection, hints[0], context, applet);
+	else if (!strcmp (hints[0], NM_SETTING_GSM_PASSWORD))
+		ask_for_password (device, connection, context, applet);
+	else {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): unknown secrets hint '%s'.",
+		             __FILE__, __LINE__, __func__, hints[0]);
+		return FALSE;
+	}
 
 	return TRUE;
 }

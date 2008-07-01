@@ -1,3 +1,25 @@
+2008-07-01  Dan Williams <dcbw@redhat.com>
+
+	* src/applet.c
+	  src/applet.h
+		- (applet_settings_new_secrets_requested_cb): pass hints to device
+			subclass
+
+	* src/applet-device-wifi.c
+	  src/applet-device-wired.c
+		- (wireless_get_secrets, wired_get_secrets): update for 'hints' argument
+
+	* src/applet-device-gsm.c
+		- (gsm_get_secrets): use hints to determine which secret (PIN, PUK, or
+			PPP password) NM is requesting
+		- (ask_for_password): ask for PPP password when required
+		- (ask_for_pin_puk): handle PUK too
+		- (get_gsm_secrets_cb): handle all of PIN, PUK, and PPP password
+
+	* src/applet-device-cdma.c
+		- (cdma_get_secrets, ask_for_password, get_cdma_secrets_cb): handle PPP
+			passwords
+
 2008-06-26  Dan Williams <dcbw@redhat.com>
 
 	* Update FSF address in license headers (Michael Biebl <biebl@debian.org>)
