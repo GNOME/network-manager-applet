@@ -1,3 +1,17 @@
+2008-07-02  Tambet Ingo  <tambet@gmail.com>
+
+	Patch from André Lemos <alemos@criticalsoftware.com>
+
+	* src/gconf-helpers/nma-gconf-settings.c 
+	(nma_gconf_settings_add_connection):
+	* src/connection-editor/nm-connection-list.c (show_error_dialog):
+	* src/applet.c (applet_settings_new_secrets_requested_cb): 
+	* src/applet-device-wired.c (get_pppoe_secrets_cb)
+	(get_8021x_secrets_cb): 
+	* src/applet-device-wifi.c (get_secrets_dialog_response_cb): 
+	* src/applet-device-gsm.c (get_gsm_secrets_cb): Always send a format
+	string to vararg message functions.
+
 2008-07-01  Dan Williams <dcbw@redhat.com>
 
 	* src/applet.c

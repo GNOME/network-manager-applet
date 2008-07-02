@@ -1529,7 +1529,7 @@ done:
 		g_hash_table_destroy (settings);
 
 	if (error) {
-		g_warning (error->message);
+		g_warning ("%s", error->message);
 		dbus_g_method_return_error (context, error);
 		g_error_free (error);
 	}

@@ -426,7 +426,7 @@ get_pppoe_secrets_cb (GtkDialog *dialog,
 
 done:
 	if (err) {
-		g_warning (err->message);
+		g_warning ("%s", err->message);
 		dbus_g_method_return_error (info->context, err);
 		g_error_free (err);
 	}
@@ -568,7 +568,7 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 
 done:
 	if (err) {
-		g_warning (err->message);
+		g_warning ("%s", err->message);
 
 		if (context)
 			dbus_g_method_return_error (context, err);

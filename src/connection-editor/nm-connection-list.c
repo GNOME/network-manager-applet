@@ -99,7 +99,7 @@ show_error_dialog (const gchar *format, ...)
 							   GTK_DIALOG_DESTROY_WITH_PARENT,
 							   GTK_MESSAGE_ERROR,
 							   GTK_BUTTONS_CLOSE,
-							   msg);
+							   "%s", msg);
 	g_free (msg);
 
 	gtk_dialog_run (GTK_DIALOG (dialog));

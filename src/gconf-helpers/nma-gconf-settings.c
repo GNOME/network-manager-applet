@@ -94,7 +94,7 @@ nma_gconf_settings_add_connection (NMAGConfSettings *self, NMConnection *connect
 
 		snprintf (&buf[0], 255, GCONF_PATH_CONNECTIONS"/%d", i);
 		if (!gconf_client_dir_exists (priv->client, buf, NULL)) {
-			path = g_strdup_printf (buf);
+			path = g_strdup (buf);
 			break;
 		}
 	}

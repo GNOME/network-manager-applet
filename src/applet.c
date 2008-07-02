@@ -1885,7 +1885,7 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 	return;
 
 error:
-	g_warning (error->message);
+	g_warning ("%s", error->message);
 	dbus_g_method_return_error (context, error);
 	g_error_free (error);
 }
