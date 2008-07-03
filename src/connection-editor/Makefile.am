@@ -8,6 +8,7 @@ nm_connection_editor_CPPFLAGS =			\
 	-DGLADEDIR=\""$(gladedir)"\"		\
 	-DBINDIR=\""$(bindir)"\"		\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"	\
+	-DLIBDIR=\""$(libdir)"\"	\
 	-DNMALOCALEDIR=\"$(datadir)/locale\"	\
 	$(DBUS_CFLAGS)				\
 	$(POLKIT_CFLAGS) \

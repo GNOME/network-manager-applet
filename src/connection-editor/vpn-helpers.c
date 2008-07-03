@@ -70,10 +70,9 @@ vpn_get_plugins (GError **error)
 	                                 (GDestroyNotify) g_free, (GDestroyNotify) g_object_unref);
 
 	while ((f = g_dir_read_name (dir))) {
-		char *path = NULL;
+		char *path = NULL, *service = NULL;
+		char *so_path = NULL, *so_name = NULL;
 		GKeyFile *keyfile = NULL;
-		char *so_path = NULL;
-		char *service = NULL;
 		GModule *module;
 		NMVpnPluginUiFactory factory = NULL;
 
@@ -93,6 +92,14 @@ vpn_get_plugins (GError **error)
 		so_path = g_key_file_get_string (keyfile,  "GNOME", "properties", NULL);
 		if (!so_path)
 			goto next;
+
+		/* Remove any path and extension components, then reconstruct path
+		 * to the SO in LIBDIR
+		 */
+		so_name = g_path_get_basename (so_path);
+		g_free (so_path);
+		so_path = g_strdup_printf ("%s/%s", LIBDIR, so_name);
+		g_free (so_name);
 
 		module = g_module_open (so_path, G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
 		if (!module) {
@@ -144,6 +151,7 @@ vpn_get_plugins (GError **error)
 		}
 
 	next:
+		g_free (so_path);
 		g_free (service);
 		g_key_file_free (keyfile);
 		g_free (path);
