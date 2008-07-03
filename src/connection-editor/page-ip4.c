@@ -53,6 +53,10 @@ typedef struct {
 	/* Search domains */
 	GtkEntry *dns_searches;
 
+	/* DHCP stuff */
+	GtkWidget *dhcp_client_id_label;
+	GtkEntry *dhcp_client_id_entry;
+
 	gboolean disposed;
 } CEPageIP4Private;
 
@@ -82,15 +86,20 @@ ip4_private_init (CEPageIP4 *self)
 
 	priv->dns_servers = GTK_ENTRY (glade_xml_get_widget (xml, "ip4_dns_servers_entry"));
 	priv->dns_searches = GTK_ENTRY (glade_xml_get_widget (xml, "ip4_dns_searches_entry"));
+
+	priv->dhcp_client_id_label = GTK_WIDGET (glade_xml_get_widget (xml, "dhcp_client_id_label"));
+	priv->dhcp_client_id_entry = GTK_ENTRY (glade_xml_get_widget (xml, "dhcp_client_id_entry"));
 }
 
 static void
 method_changed (GtkComboBox *combo, gpointer user_data)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (user_data);
+	guint32 method;
 	gboolean is_shared;
 
-	is_shared = (gtk_combo_box_get_active (priv->method) == IP4_METHOD_SHARED);
+	method = gtk_combo_box_get_active (priv->method);
+	is_shared = (method == IP4_METHOD_SHARED);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), !is_shared);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), !is_shared);
@@ -110,23 +119,14 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	if (is_shared)
 		gtk_entry_set_text (priv->dns_searches, "");
 
-	ce_page_changed (CE_PAGE (user_data));
-}
+	if ((method == IP4_METHOD_DHCP) || (method == IP4_METHOD_DHCP_MANUAL_DNS)) {
+		gtk_widget_show (priv->dhcp_client_id_label);
+		gtk_widget_show (GTK_WIDGET (priv->dhcp_client_id_entry));
+	} else {
+		gtk_widget_hide (priv->dhcp_client_id_label);
+		gtk_widget_hide (GTK_WIDGET (priv->dhcp_client_id_entry));
+	}
 
-static void
-row_added (GtkTreeModel *tree_model,
-		   GtkTreePath *path,
-		   GtkTreeIter *iter,
-		   gpointer user_data)
-{
-	ce_page_changed (CE_PAGE (user_data));
-}
-
-static void
-row_removed (GtkTreeModel *tree_model,
-			 GtkTreePath *path,
-			 gpointer user_data)
-{
 	ce_page_changed (CE_PAGE (user_data));
 }
 
@@ -184,8 +184,8 @@ populate_ui (CEPageIP4 *self)
 	}
 
 	gtk_tree_view_set_model (priv->addr_list, GTK_TREE_MODEL (store));
-	g_signal_connect (store, "row-inserted", G_CALLBACK (row_added), self);
-	g_signal_connect (store, "row-deleted", G_CALLBACK (row_removed), self);
+	g_signal_connect_swapped (store, "row-inserted", G_CALLBACK (ce_page_changed), self);
+	g_signal_connect_swapped (store, "row-deleted", G_CALLBACK (ce_page_changed), self);
 	g_object_unref (store);
 
 	/* DNS servers */
@@ -220,6 +220,11 @@ populate_ui (CEPageIP4 *self)
 	}
 	gtk_entry_set_text (priv->dns_searches, string->str);
 	g_string_free (string, TRUE);
+
+	if ((method == IP4_METHOD_DHCP) || (method = IP4_METHOD_DHCP_MANUAL_DNS)) {
+		if (setting->dhcp_client_id)
+			gtk_entry_set_text (priv->dhcp_client_id_entry, setting->dhcp_client_id);
+	}
 }
 
 static void
@@ -527,6 +532,8 @@ ce_page_ip4_new (NMConnection *connection)
 	method_changed (priv->method, self);
 	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
 
+	g_signal_connect_swapped (priv->dhcp_client_id_entry, "changed", G_CALLBACK (ce_page_changed), self);
+
 	return self;
 }
 
@@ -550,6 +557,7 @@ ui_to_setting (CEPageIP4 *self)
 	const char *text;
 	char **items = NULL, **iter;
 	gboolean ignore_dhcp_dns = FALSE;
+	const char *dhcp_client_id = NULL;
 
 	/* Method */
 	switch (gtk_combo_box_get_active (priv->method)) {
@@ -654,6 +662,13 @@ next:
 
 	search_domains = g_slist_reverse (search_domains);
 
+	/* DHCP client ID */
+	if (!strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_DHCP)) {
+		dhcp_client_id = gtk_entry_get_text (priv->dhcp_client_id_entry);
+		if (dhcp_client_id && !strlen (dhcp_client_id))
+			dhcp_client_id = NULL;
+	}
+
 	/* Update setting */
 	g_object_set (priv->setting,
 				  NM_SETTING_IP4_CONFIG_METHOD, method,
@@ -661,6 +676,7 @@ next:
 				  NM_SETTING_IP4_CONFIG_DNS, dns_servers,
 				  NM_SETTING_IP4_CONFIG_DNS_SEARCH, search_domains,
 				  NM_SETTING_IP4_CONFIG_IGNORE_DHCP_DNS, ignore_dhcp_dns,
+				  NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
 				  NULL);
 
 	if (addresses) {
