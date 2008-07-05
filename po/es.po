@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-06-20 11:21+0000\n"
-"PO-Revision-Date: 2008-06-21 19:02+0200\n"
+"POT-Creation-Date: 2008-07-03 17:37+0000\n"
+"PO-Revision-Date: 2008-07-04 17:38+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -76,6 +76,20 @@ msgstr "Ejecutando PPP sobre el dispositivo %s…"
 msgid "CDMA connection"
 msgstr "Conexión CDMA"
 
+#: ../src/applet-device-cdma.c:416
+msgid "CDMA Network Password"
+msgstr "Contraseña de la red CDMA"
+
+#: ../src/applet-device-cdma.c:423
+msgid "A password is required to connect to the CDMA network."
+msgstr "Se necesita una contraseña para conectar con la red CDMA."
+
+#: ../src/applet-device-cdma.c:439 ../src/applet-device-gsm.c:542
+#: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
+#: ../src/connection-editor/ce-page-mobile.glade.h:14
+msgid "Password:"
+msgstr "Contraseña:"
+
 #: ../src/applet-device-gsm.c:55
 msgid "Auto GSM network connection"
 msgstr "Conexión de red GSM automática"
@@ -111,9 +125,29 @@ msgstr "Llamando al servicio GSM %s…"
 msgid "GSM connection"
 msgstr "Conexiones GSM"
 
-#: ../src/applet-device-gsm.c:434
-msgid "PIN code"
-msgstr "Código PIN"
+#: ../src/applet-device-gsm.c:447
+msgid "PIN code required"
+msgstr "Se necesita un código PIN"
+
+#: ../src/applet-device-gsm.c:449
+msgid "PUK code required"
+msgstr "Se necesita un código PUK"
+
+#: ../src/applet-device-gsm.c:459
+msgid "PIN code is needed for the GSM device"
+msgstr "Se necesita un código PIN para el dispositivo GSM"
+
+#: ../src/applet-device-gsm.c:461
+msgid "PUK code is needed for the GSM device"
+msgstr "Se necesita un código PUK para el dispositivo GSM"
+
+#: ../src/applet-device-gsm.c:519
+msgid "GSM Network Password"
+msgstr "Contraseña de la red GSM"
+
+#: ../src/applet-device-gsm.c:526
+msgid "A password is required to connect to the GSM network."
+msgstr "Se necesita una contraseña para conectar con la red GSM."
 
 #: ../src/applet-device-wired.c:63
 msgid "Auto Ethernet"
@@ -267,92 +301,92 @@ msgstr "WPA/WPA2"
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:188
+#: ../src/applet-dialogs.c:188 ../src/applet-dialogs.c:197
 #: ../src/connection-editor/page-wireless-security.c:241
 #: ../src/wireless-dialog.c:731
 msgid "None"
 msgstr "Ninguna"
 
-#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:313
+#: ../src/applet-dialogs.c:200 ../src/applet-dialogs.c:315
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: ../src/applet-dialogs.c:249
+#: ../src/applet-dialogs.c:251
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:251
+#: ../src/applet-dialogs.c:253
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:253
+#: ../src/applet-dialogs.c:255
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:255
+#: ../src/applet-dialogs.c:257
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:260
+#: ../src/applet-dialogs.c:262
 msgid "Interface:"
 msgstr "Interfaz:"
 
-#: ../src/applet-dialogs.c:276
+#: ../src/applet-dialogs.c:278
 msgid "Hardware Address:"
 msgstr "Dirección hardware:"
 
-#: ../src/applet-dialogs.c:286
+#: ../src/applet-dialogs.c:288
 msgid "Driver:"
 msgstr "Controlador:"
 
-#: ../src/applet-dialogs.c:305
+#: ../src/applet-dialogs.c:307
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:310
+#: ../src/applet-dialogs.c:312
 msgid "Speed:"
 msgstr "Velocidad:"
 
-#: ../src/applet-dialogs.c:320
+#: ../src/applet-dialogs.c:322
 #: ../src/connection-editor/ce-page-wireless-security.glade.h:1
 msgid "Security:"
 msgstr "Seguridad:"
 
-#: ../src/applet-dialogs.c:340
+#: ../src/applet-dialogs.c:342
 msgid "IP Address:"
 msgstr "Dirección IP:"
 
-#: ../src/applet-dialogs.c:353
+#: ../src/applet-dialogs.c:355
 msgid "Broadcast Address:"
 msgstr "Dirección de difusión:"
 
-#: ../src/applet-dialogs.c:362
+#: ../src/applet-dialogs.c:364
 msgid "Subnet Mask:"
 msgstr "Máscara de subred:"
 
-#: ../src/applet-dialogs.c:372
+#: ../src/applet-dialogs.c:374
 msgid "Default Route:"
 msgstr "Ruta predeterminada:"
 
-#: ../src/applet-dialogs.c:385
+#: ../src/applet-dialogs.c:387
 msgid "Primary DNS:"
 msgstr "DNS primario:"
 
-#: ../src/applet-dialogs.c:394
+#: ../src/applet-dialogs.c:396
 msgid "Secondary DNS:"
 msgstr "DNS secundario:"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:455
+#: ../src/applet-dialogs.c:457
 msgid "No valid active connecitons found!"
 msgstr "No se encontró ninguna conexión activa válida"
 
-#: ../src/applet-dialogs.c:581
+#: ../src/applet-dialogs.c:583
 msgid ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
@@ -360,17 +394,17 @@ msgstr ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
 
-#: ../src/applet-dialogs.c:583
+#: ../src/applet-dialogs.c:585
 msgid "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Miniaplicación del área de notificación para gestionar sus dispositivos de "
 "red y conexiones."
 
-#: ../src/applet-dialogs.c:585
+#: ../src/applet-dialogs.c:587
 msgid "NetworkManager Website"
 msgstr "Página web de NetworkManager"
 
-#: ../src/applet-dialogs.c:588
+#: ../src/applet-dialogs.c:590
 msgid "translator-credits"
 msgstr ""
 "Jorge González <jorgegonz@svn.gnome.org>, 2007-2008\n"
@@ -681,11 +715,6 @@ msgstr "Otras redes inalámbricas…"
 msgid "PEAP Version:"
 msgstr "Versión PEAP:"
 
-#: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
-msgid "Password:"
-msgstr "Contraseña:"
-
 #: ../src/applet.glade.h:23
 msgid "Private Key Password:"
 msgstr "Contraseña de clave privada:"
@@ -802,14 +831,18 @@ msgstr ""
 "Compartida con otros equipos"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
+msgid "DHCP Client ID:"
+msgstr "ID del cliente DHCP:"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:10
 msgid "DNS Servers:"
 msgstr "Servidores DNS:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:10
+#: ../src/connection-editor/ce-page-ip4.glade.h:11
 msgid "Method:"
 msgstr "Método:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:11
+#: ../src/connection-editor/ce-page-ip4.glade.h:12
 msgid "Search Domains:"
 msgstr "Dominios de búsqueda:"
 
@@ -1057,29 +1090,29 @@ msgstr "Crear una conexión CDMA"
 
 #: ../src/connection-editor/page-dsl.c:142
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1439
+#: ../src/connection-editor/nm-connection-list.c:1450
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-ip4.c:455
+#: ../src/connection-editor/page-ip4.c:460
 msgid "IPv4 Settings"
 msgstr "Ajustes de IPv4"
 
-#: ../src/connection-editor/page-ip4.c:479
+#: ../src/connection-editor/page-ip4.c:484
 msgid "Address"
 msgstr "Dirección"
 
-#: ../src/connection-editor/page-ip4.c:494
+#: ../src/connection-editor/page-ip4.c:499
 msgid "Netmask"
 msgstr "Máscara de red"
 
-#: ../src/connection-editor/page-ip4.c:509
+#: ../src/connection-editor/page-ip4.c:514
 msgid "Gateway"
 msgstr "Puerta de enlace"
 
 #: ../src/connection-editor/page-mobile.c:269
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1431
+#: ../src/connection-editor/nm-connection-list.c:1442
 msgid "Mobile Broadband"
 msgstr "Banda ancha móvil"
 
@@ -1112,15 +1145,15 @@ msgstr "EAP"
 msgid "Point-to-Point Protocol (PPP)"
 msgstr "Protocolo Punto-a-punto (PPP)"
 
-#: ../src/connection-editor/page-vpn.c:76
+#: ../src/connection-editor/page-vpn.c:70
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1435
+#: ../src/connection-editor/nm-connection-list.c:1446
 msgid "VPN"
 msgstr "VPN"
 
 #: ../src/connection-editor/page-wired.c:176
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1422
+#: ../src/connection-editor/nm-connection-list.c:1433
 msgid "Wired"
 msgstr "Cableado"
 
@@ -1144,7 +1177,7 @@ msgstr "%u (%u MHz)"
 
 #: ../src/connection-editor/page-wireless.c:319
 #: ../src/connection-editor/nm-connection-editor.glade.h:11
-#: ../src/connection-editor/nm-connection-list.c:1426
+#: ../src/connection-editor/nm-connection-list.c:1437
 msgid "Wireless"
 msgstr "Inalámbrico"
 
@@ -1239,127 +1272,127 @@ msgstr "Ajustes del sistema"
 msgid "_Import"
 msgstr "_Importar"
 
-#: ../src/connection-editor/nm-connection-list.c:193
+#: ../src/connection-editor/nm-connection-list.c:194
 msgid "never"
 msgstr "nunca"
 
-#: ../src/connection-editor/nm-connection-list.c:204
-#: ../src/connection-editor/nm-connection-list.c:215
+#: ../src/connection-editor/nm-connection-list.c:205
+#: ../src/connection-editor/nm-connection-list.c:216
 msgid "now"
 msgstr "ahora"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:222
+#: ../src/connection-editor/nm-connection-list.c:223
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "hace %d minuto"
 msgstr[1] "hace %d minutos"
 
-#: ../src/connection-editor/nm-connection-list.c:226
+#: ../src/connection-editor/nm-connection-list.c:227
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "hace %d hora"
 msgstr[1] "hace %d horas"
 
-#: ../src/connection-editor/nm-connection-list.c:238
+#: ../src/connection-editor/nm-connection-list.c:239
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "hace %d día"
 msgstr[1] "hace %d días"
 
-#: ../src/connection-editor/nm-connection-list.c:244
+#: ../src/connection-editor/nm-connection-list.c:245
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "hace %d mes"
 msgstr[1] "hace %d meses"
 
-#: ../src/connection-editor/nm-connection-list.c:248
+#: ../src/connection-editor/nm-connection-list.c:249
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "hace %d año"
 msgstr[1] "hace %d años"
 
-#: ../src/connection-editor/nm-connection-list.c:357
-#: ../src/connection-editor/nm-connection-list.c:441
-#: ../src/connection-editor/nm-connection-list.c:592
+#: ../src/connection-editor/nm-connection-list.c:358
+#: ../src/connection-editor/nm-connection-list.c:442
+#: ../src/connection-editor/nm-connection-list.c:593
 #, c-format
 msgid "Could not obtain required privileges: %s."
 msgstr "No se pudieron obtener los privilegios requeridos: %s"
 
-#: ../src/connection-editor/nm-connection-list.c:360
+#: ../src/connection-editor/nm-connection-list.c:361
 msgid "Could not remove system connection: permission denied."
 msgstr "No se pudo eliminar la conexión del sistema: permiso denegado."
 
-#: ../src/connection-editor/nm-connection-list.c:397
+#: ../src/connection-editor/nm-connection-list.c:398
 #, c-format
 msgid "Removing connection failed: %s."
 msgstr "Falló al eliminar la conexión: %s"
 
-#: ../src/connection-editor/nm-connection-list.c:444
+#: ../src/connection-editor/nm-connection-list.c:445
 msgid "Could not add system connection: permission denied."
 msgstr "No se pudo añadir la conexión del sistema: permiso denegado."
 
-#: ../src/connection-editor/nm-connection-list.c:485
+#: ../src/connection-editor/nm-connection-list.c:486
 #, c-format
 msgid "Adding connection failed: %s."
 msgstr "Falló al añadir la conexión: %s."
 
-#: ../src/connection-editor/nm-connection-list.c:595
+#: ../src/connection-editor/nm-connection-list.c:596
 msgid "Could not update system connection: permission denied."
 msgstr "No se pudo actualizar la conexión del sistema: permiso denegado."
 
-#: ../src/connection-editor/nm-connection-list.c:639
+#: ../src/connection-editor/nm-connection-list.c:640
 #, c-format
 msgid "Updating connection failed: %s."
 msgstr "Falló al actualizar la conexión: %s."
 
-#: ../src/connection-editor/nm-connection-list.c:749
+#: ../src/connection-editor/nm-connection-list.c:750
 #, c-format
 msgid "Wired connection %d"
 msgstr "Conexión cableada %d"
 
-#: ../src/connection-editor/nm-connection-list.c:757
+#: ../src/connection-editor/nm-connection-list.c:758
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Conexión inalámbrica %d"
 
-#: ../src/connection-editor/nm-connection-list.c:772
+#: ../src/connection-editor/nm-connection-list.c:773
 #, c-format
 msgid "GSM connection %d"
 msgstr "Conexión GSM %d"
 
-#: ../src/connection-editor/nm-connection-list.c:786
+#: ../src/connection-editor/nm-connection-list.c:787
 #, c-format
 msgid "CDMA connection %d"
 msgstr "Conexión CDMA %d"
 
-#: ../src/connection-editor/nm-connection-list.c:807
-#: ../src/connection-editor/nm-connection-list.c:1101
+#: ../src/connection-editor/nm-connection-list.c:808
+#: ../src/connection-editor/nm-connection-list.c:1104
 #, c-format
 msgid "VPN connection %d"
 msgstr "Conexión VPN %d"
 
-#: ../src/connection-editor/nm-connection-list.c:815
+#: ../src/connection-editor/nm-connection-list.c:818
 #, c-format
 msgid "DSL connection %d"
 msgstr "Conexión DSL %d"
 
-#: ../src/connection-editor/nm-connection-list.c:1021
+#: ../src/connection-editor/nm-connection-list.c:1024
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "¿Está seguro de que quiere borrar la conexión %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:1115
-#: ../src/connection-editor/vpn-helpers.c:218
+#: ../src/connection-editor/nm-connection-list.c:1118
+#: ../src/connection-editor/vpn-helpers.c:226
 msgid "Cannot import VPN connection"
 msgstr "No se puede importar la conexión VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:1117
+#: ../src/connection-editor/nm-connection-list.c:1120
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1369,7 +1402,7 @@ msgstr ""
 "\n"
 "Error: no existe el tipo de servicio VPN."
 
-#: ../src/connection-editor/vpn-helpers.c:220
+#: ../src/connection-editor/vpn-helpers.c:228
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -1377,34 +1410,34 @@ msgid ""
 "\n"
 "Error: %s."
 msgstr ""
-"No se pudo leer el archivo «%s» o no contiene información de conexión VPN "
-"que se pueda reconocer\n"
+"No se pudo leer el archivo «%s» o no contiene información de conexión VPN que "
+"se pueda reconocer\n"
 "\n"
 "Error: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:251
+#: ../src/connection-editor/vpn-helpers.c:259
 msgid "Select file to import"
 msgstr "Seleccione el archivo que importar"
 
-#: ../src/connection-editor/vpn-helpers.c:297
+#: ../src/connection-editor/vpn-helpers.c:305
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "Ya existe un archivo llamado «%s»."
 
-#: ../src/connection-editor/vpn-helpers.c:299
+#: ../src/connection-editor/vpn-helpers.c:307
 msgid "_Replace"
 msgstr "_Reemplazar"
 
-#: ../src/connection-editor/vpn-helpers.c:301
+#: ../src/connection-editor/vpn-helpers.c:309
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "¿Quiere reemplazar %s con la conexión VPN que está guardando?"
 
-#: ../src/connection-editor/vpn-helpers.c:335
+#: ../src/connection-editor/vpn-helpers.c:343
 msgid "Cannot export VPN connection"
 msgstr "No se puede exportar la conexión VPN"
 
-#: ../src/connection-editor/vpn-helpers.c:337
+#: ../src/connection-editor/vpn-helpers.c:345
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -1415,11 +1448,11 @@ msgstr ""
 "\n"
 "Error: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:368
+#: ../src/connection-editor/vpn-helpers.c:376
 msgid "Export VPN connection..."
 msgstr "Exportar conexión VPN..."
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:235
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:245
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "No se puede iniciar la conexión VPN «%s»"
@@ -1433,7 +1466,7 @@ msgstr ""
 "No se ha podido encontrar el diálogo de autenticación para el tipo de "
 "conexión VPN «%s». Póngase en contacto con su administrador de sistemas."
 
-#: ../src/vpn-password-dialog.c:238
+#: ../src/vpn-password-dialog.c:248
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
