@@ -35,6 +35,7 @@
 #include <nm-setting-wired.h>
 #include <nm-setting-8021x.h>
 #include <nm-setting-ip4-config.h>
+#include <nm-utils.h>
 
 #include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
@@ -237,7 +238,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	NMIP4Config *ip4_config;
 	const GArray *dns;
 	NMSettingIP4Address *def_addr;
-	guint32 hostmask, network, bcast;
+	guint32 hostmask, network, bcast, netmask;
 	int row = 0;
 
 	table = GTK_TABLE (gtk_table_new (12, 2, FALSE));
@@ -347,8 +348,9 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	/* Broadcast */
-	network = ntohl (def_addr->address) & ntohl (def_addr->netmask);
-	hostmask = ~ntohl (def_addr->netmask);
+	netmask = nm_utils_ip4_prefix_to_netmask (def_addr->prefix);
+	network = ntohl (def_addr->address) & ntohl (netmask);
+	hostmask = ~ntohl (netmask);
 	bcast = htonl (network | hostmask);
 
 	gtk_table_attach_defaults (table,
@@ -359,12 +361,12 @@ info_dialog_add_page (GtkNotebook *notebook,
 							   1, 2, row, row + 1);
 	row++;
 
-	/* Netmask */
+	/* Prefix */
 	gtk_table_attach_defaults (table,
 							   create_info_label (_("Subnet Mask:")),
 							   0, 1, row, row + 1);
 	gtk_table_attach_defaults (table,
-							   create_info_label (ip4_address_as_string (def_addr->netmask)),
+							   create_info_label (ip4_address_as_string (netmask)),
 							   1, 2, row, row + 1);
 	row++;
 

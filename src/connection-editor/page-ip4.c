@@ -21,6 +21,8 @@
  */
 
 #include <string.h>
+#include <errno.h>
+#include <stdlib.h>
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -67,7 +69,7 @@ typedef struct {
 #define IP4_METHOD_SHARED          4
 
 #define COL_ADDRESS 0
-#define COL_NETMASK 1
+#define COL_PREFIX 1
 #define COL_GATEWAY 2
 
 static void
@@ -174,9 +176,7 @@ populate_ui (CEPageIP4 *self)
 		ip_string = inet_ntoa (tmp_addr);
 		gtk_list_store_set (store, &model_iter, COL_ADDRESS, g_strdup (ip_string), -1);
 
-		tmp_addr.s_addr = addr->netmask;
-		ip_string = inet_ntoa (tmp_addr);
-		gtk_list_store_set (store, &model_iter, COL_NETMASK, g_strdup (ip_string), -1);
+		gtk_list_store_set (store, &model_iter, COL_PREFIX, g_strdup_printf ("%d", addr->prefix), -1);
 
 		tmp_addr.s_addr = addr->gateway;
 		ip_string = inet_ntoa (tmp_addr);
@@ -488,16 +488,16 @@ ce_page_ip4_new (NMConnection *connection)
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 
-	/* Netmask column */
+	/* Prefix column */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
-	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_NETMASK));
+	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_PREFIX));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
 
 	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
-	                                                      -1, _("Netmask"), renderer,
-	                                                      "text", COL_NETMASK,
+	                                                      -1, _("Prefix"), renderer,
+	                                                      "text", COL_PREFIX,
 	                                                      NULL);
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
@@ -585,14 +585,15 @@ ui_to_setting (CEPageIP4 *self)
 	addresses = g_ptr_array_sized_new (1);
 	while (valid) {
 		char *str_address = NULL;
-		char *str_netmask = NULL;
+		char *str_prefix = NULL;
 		char *str_gateway = NULL;
-		struct in_addr tmp_addr, tmp_netmask, tmp_gateway = { 0 };
+		struct in_addr tmp_addr, tmp_gateway = { 0 };
 		GArray *addr;
-		guint32 empty_val = 0;
+		guint32 empty_val = 0, prefix;
+		long int tmp_prefix;
 		
 		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &str_address, -1);
-		gtk_tree_model_get (model, &tree_iter, COL_NETMASK, &str_netmask, -1);
+		gtk_tree_model_get (model, &tree_iter, COL_PREFIX, &str_prefix, -1);
 		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &str_gateway, -1);
 
 		if (!str_address || !inet_aton (str_address, &tmp_addr)) {
@@ -601,11 +602,20 @@ ui_to_setting (CEPageIP4 *self)
 			goto next;
 		}
 
-		if (!str_netmask || !inet_aton (str_netmask, &tmp_netmask)) {
-			g_warning ("%s: IPv4 netmask '%s' missing or invalid!",
-			           __func__, str_netmask ? str_netmask : "<none>");
+		if (!str_prefix) {
+			g_warning ("%s: IPv4 prefix '%s' missing!",
+			           __func__, str_prefix ? str_prefix : "<none>");
 			goto next;
 		}
+
+		errno = 0;
+		tmp_prefix = strtol (str_prefix, NULL, 10);
+		if (errno || tmp_prefix < 0 || tmp_prefix > 32) {
+			g_warning ("%s: IPv4 prefix '%s' invalid!",
+			           __func__, str_prefix ? str_prefix : "<none>");
+			goto next;
+		}
+		prefix = (guint32) tmp_prefix;
 
 		/* Gateway is optional... */
 		if (str_gateway && !inet_aton (str_gateway, &tmp_gateway)) {
@@ -616,7 +626,7 @@ ui_to_setting (CEPageIP4 *self)
 
 		addr = g_array_sized_new (FALSE, TRUE, sizeof (guint32), 3);
 		g_array_append_val (addr, tmp_addr.s_addr);
-		g_array_append_val (addr, tmp_netmask.s_addr);
+		g_array_append_val (addr, prefix);
 		if (tmp_gateway.s_addr)
 			g_array_append_val (addr, tmp_gateway.s_addr);
 		else
