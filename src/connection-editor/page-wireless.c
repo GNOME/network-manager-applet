@@ -32,7 +32,6 @@
 
 #include "page-wireless.h"
 #include "utils.h"
-#include "nm-connection-editor.h"
 
 G_DEFINE_TYPE (CEPageWireless, ce_page_wireless, CE_TYPE_PAGE)
 
@@ -198,12 +197,8 @@ band_value_changed_cb (GtkComboBox *box, gpointer user_data)
  	}
 	
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), sensitive);
-}
 
-static void
-entry_changed (GtkEditable *entry, gpointer user_data)
-{
-	ce_page_changed (CE_PAGE (user_data));
+	ce_page_changed (CE_PAGE (self));
 }
 
 static void
@@ -221,31 +216,33 @@ populate_ui (CEPageWireless *self)
 	g_signal_connect (priv->rate, "output",
 	                  G_CALLBACK (ce_spin_output_with_default),
 	                  GINT_TO_POINTER (rate_def));
+	g_signal_connect_swapped (priv->rate, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	tx_power_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_TX_POWER);
 	g_signal_connect (priv->tx_power, "output",
 	                  G_CALLBACK (ce_spin_output_with_default),
 	                  GINT_TO_POINTER (tx_power_def));
+	g_signal_connect_swapped (priv->tx_power, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_MTU);
 	g_signal_connect (priv->mtu, "output",
 	                  G_CALLBACK (ce_spin_output_with_default),
 	                  GINT_TO_POINTER (mtu_def));
+	g_signal_connect_swapped (priv->mtu, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	if (setting->ssid)
 		utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) setting->ssid->data, setting->ssid->len);
 	else
 		utf8_ssid = g_strdup ("");
 	gtk_entry_set_text (priv->ssid, utf8_ssid);
-	g_signal_connect (priv->ssid, "changed", G_CALLBACK (entry_changed), self);
+	g_signal_connect_swapped (priv->ssid, "changed", G_CALLBACK (ce_page_changed), self);
 	g_free (utf8_ssid);
 
-	if (!strcmp (setting->mode ? setting->mode : "", "infrastructure"))
-		gtk_combo_box_set_active (priv->mode, 0);
-	else if (!strcmp (setting->mode ? setting->mode : "", "adhoc"))
+	/* Default to Infrastructure */
+	gtk_combo_box_set_active (priv->mode, 0);
+	if (setting->mode && !strcmp (setting->mode, "adhoc"))
 		gtk_combo_box_set_active (priv->mode, 1);
-	else
-		gtk_combo_box_set_active (priv->mode, -1);
+	g_signal_connect_swapped (priv->mode, "changed", G_CALLBACK (ce_page_changed), self);
 
 	g_signal_connect (priv->channel, "output",
 	                  G_CALLBACK (channel_spin_output_cb),
@@ -274,14 +271,15 @@ populate_ui (CEPageWireless *self)
 	 * the right values */
 	priv->last_channel = setting->channel;
 	gtk_spin_button_set_value (priv->channel, (gdouble) setting->channel);
+	g_signal_connect_swapped (priv->channel, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	/* BSSID */
 	ce_page_mac_to_entry (setting->bssid, priv->bssid);
-	g_signal_connect (priv->bssid, "changed", G_CALLBACK (entry_changed), self);
+	g_signal_connect_swapped (priv->bssid, "changed", G_CALLBACK (ce_page_changed), self);
 
 	/* MAC address */
 	ce_page_mac_to_entry (setting->mac_address, priv->mac);
-	g_signal_connect (priv->mac, "changed", G_CALLBACK (entry_changed), self);
+	g_signal_connect_swapped (priv->mac, "changed", G_CALLBACK (ce_page_changed), self);
 
 	gtk_spin_button_set_value (priv->rate, (gdouble) setting->rate);
 	gtk_spin_button_set_value (priv->tx_power, (gdouble) setting->tx_power);
