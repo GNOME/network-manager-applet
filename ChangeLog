@@ -1,5 +1,13 @@
 2008-07-08  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+	  src/applet.h
+		- (nma_context_menu_create): remember signal IDs
+		- (nma_context_menu_update): block emission of 'toggled' handlers so
+			they don't get called when updating the checkitems' status
+
+2008-07-08  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/page-ip4.c
 		- (method_changed): disable manual configuration elements when AutoIP
 			is selected too

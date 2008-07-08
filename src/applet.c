@@ -1248,19 +1248,34 @@ nma_context_menu_update (NMApplet *applet)
 	gboolean wireless_hw_enabled;
 
 	state = nm_client_get_state (applet->nm_client);
+
+	gtk_widget_set_sensitive (applet->info_menu_item, state == NM_STATE_CONNECTED);
+
+	/* Update checkboxes, and block 'toggled' signal when updating so that the
+	 * callback doesn't get triggered.
+	 */
+
+	/* Enabled Networking */
+	g_signal_handler_block (G_OBJECT (applet->networking_enabled_item),
+	                        applet->networking_enabled_toggled_id);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->networking_enabled_item),
+	                                state != NM_STATE_ASLEEP);
+	g_signal_handler_unblock (G_OBJECT (applet->networking_enabled_item),
+	                          applet->networking_enabled_toggled_id);
+
+	/* Enabled Wireless */
+	g_signal_handler_block (G_OBJECT (applet->wifi_enabled_item),
+	                        applet->wifi_enabled_toggled_id);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->wifi_enabled_item),
+	                                nm_client_wireless_get_enabled (applet->nm_client));
+	g_signal_handler_block (G_OBJECT (applet->wifi_enabled_item),
+	                        applet->wifi_enabled_toggled_id);
+
 	wireless_hw_enabled = nm_client_wireless_hardware_get_enabled (applet->nm_client);
-
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->enable_networking_item),
-							  state != NM_STATE_ASLEEP);
-
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->stop_wireless_item),
-							  nm_client_wireless_get_enabled (applet->nm_client));
-	gtk_widget_set_sensitive (GTK_WIDGET (applet->stop_wireless_item),
+	gtk_widget_set_sensitive (GTK_WIDGET (applet->wifi_enabled_item),
 	                          wireless_hw_enabled);
 
-	gtk_widget_set_sensitive (applet->info_menu_item,
-						 state == NM_STATE_CONNECTED);
-
+	/* Don't show wifi-specific stuff if wireless is off */
 	if (state != NM_STATE_ASLEEP) {
 		const GPtrArray *devices;
 		int i;
@@ -1275,9 +1290,9 @@ nma_context_menu_update (NMApplet *applet)
 	}
 
 	if (have_wireless)
-		gtk_widget_show_all (applet->stop_wireless_item);
+		gtk_widget_show_all (applet->wifi_enabled_item);
 	else
-		gtk_widget_hide (applet->stop_wireless_item);
+		gtk_widget_hide (applet->wifi_enabled_item);
 }
 
 static void
@@ -1320,28 +1335,31 @@ applet_connection_info_cb (NMApplet *applet)
 static GtkWidget *nma_context_menu_create (NMApplet *applet)
 {
 	GtkMenuShell *menu;
-	GtkWidget	*menu_item;
+	GtkWidget *menu_item;
 	GtkWidget *image;
+	guint id;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 
 	menu = GTK_MENU_SHELL (gtk_menu_new ());
 
 	/* 'Enable Networking' item */
-	applet->enable_networking_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Networking"));
-	g_signal_connect (applet->enable_networking_item,
-				   "toggled",
-				   G_CALLBACK (nma_set_networking_enabled_cb),
-				   applet);
-	gtk_menu_shell_append (menu, applet->enable_networking_item);
+	applet->networking_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Networking"));
+	id = g_signal_connect (applet->networking_enabled_item,
+	                       "toggled",
+	                       G_CALLBACK (nma_set_networking_enabled_cb),
+	                       applet);
+	applet->networking_enabled_toggled_id = id;
+	gtk_menu_shell_append (menu, applet->networking_enabled_item);
 
 	/* 'Enable Wireless' item */
-	applet->stop_wireless_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Wireless"));
-	g_signal_connect (applet->stop_wireless_item,
-				   "toggled",
-				   G_CALLBACK (nma_set_wireless_enabled_cb),
-				   applet);
-	gtk_menu_shell_append (menu, applet->stop_wireless_item);
+	applet->wifi_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Wireless"));
+	id = g_signal_connect (applet->wifi_enabled_item,
+	                       "toggled",
+	                       G_CALLBACK (nma_set_wireless_enabled_cb),
+	                       applet);
+	applet->wifi_enabled_toggled_id = id;
+	gtk_menu_shell_append (menu, applet->wifi_enabled_item);
 
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 

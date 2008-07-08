@@ -132,8 +132,10 @@ typedef struct
 	GtkSizeGroup *	encryption_size_group;
 
 	GtkWidget *		context_menu;
-	GtkWidget *		enable_networking_item;
-	GtkWidget *		stop_wireless_item;
+	GtkWidget *		networking_enabled_item;
+	guint           networking_enabled_toggled_id;
+	GtkWidget *		wifi_enabled_item;
+	guint           wifi_enabled_toggled_id;
 	GtkWidget *		info_menu_item;
 	GtkWidget *		connections_menu_item;
 
