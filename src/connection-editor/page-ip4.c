@@ -98,27 +98,28 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (user_data);
 	guint32 method;
-	gboolean is_shared;
+	gboolean config_enabled = TRUE;
 
 	method = gtk_combo_box_get_active (priv->method);
-	is_shared = (method == IP4_METHOD_SHARED);
+	if (method == IP4_METHOD_SHARED || method == IP4_METHOD_AUTOIP)
+		config_enabled = FALSE;
 
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), !is_shared);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), !is_shared);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_list), !is_shared);
-	if (is_shared) {
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), config_enabled);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), config_enabled);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_list), config_enabled);
+	if (!config_enabled) {
 		GtkListStore *store;
 
 		store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
 		gtk_list_store_clear (store);
 	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_servers), !is_shared);
-	if (is_shared)
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_servers), config_enabled);
+	if (!config_enabled)
 		gtk_entry_set_text (priv->dns_servers, "");
 
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_searches), !is_shared);
-	if (is_shared)
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_searches), config_enabled);
+	if (!config_enabled)
 		gtk_entry_set_text (priv->dns_searches, "");
 
 	if ((method == IP4_METHOD_DHCP) || (method == IP4_METHOD_DHCP_MANUAL_DNS)) {
