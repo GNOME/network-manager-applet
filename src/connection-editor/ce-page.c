@@ -25,6 +25,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <glib/gi18n.h>
+
 #include "ce-page.h"
 #include "utils.h"
 
@@ -37,6 +39,58 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
+
+gint
+ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
+{
+	int defvalue = GPOINTER_TO_INT (user_data);
+	int val;
+	gchar *buf = NULL;
+
+	val = gtk_spin_button_get_value_as_int (spin);
+	if (val == defvalue)
+		buf = g_strdup (_("automatic"));
+	else
+		buf = g_strdup_printf ("%d", val);
+
+	if (strcmp (buf, gtk_entry_get_text (GTK_ENTRY (spin))))
+		gtk_entry_set_text (GTK_ENTRY (spin), buf);
+
+	g_free (buf);
+	return TRUE;
+}
+
+int
+ce_get_property_default (NMSetting *setting, const char *property_name)
+{
+	GParamSpec *spec;
+	GValue value = { 0, };
+
+	spec = g_object_class_find_property (G_OBJECT_GET_CLASS (setting), property_name);
+	g_return_val_if_fail (spec != NULL, -1);
+
+	g_value_init (&value, spec->value_type);
+	g_param_value_set_default (spec, &value);
+
+	if (G_VALUE_HOLDS_CHAR (&value))
+		return (int) g_value_get_char (&value);
+	else if (G_VALUE_HOLDS_INT (&value))
+		return g_value_get_int (&value);
+	else if (G_VALUE_HOLDS_INT64 (&value))
+		return (int) g_value_get_int64 (&value);
+	else if (G_VALUE_HOLDS_LONG (&value))
+		return (int) g_value_get_long (&value);
+	else if (G_VALUE_HOLDS_UINT (&value))
+		return (int) g_value_get_uint (&value);
+	else if (G_VALUE_HOLDS_UINT64 (&value))
+		return (int) g_value_get_uint64 (&value);
+	else if (G_VALUE_HOLDS_ULONG (&value))
+		return (int) g_value_get_ulong (&value);
+	else if (G_VALUE_HOLDS_UCHAR (&value))
+		return (int) g_value_get_uchar (&value);
+	g_return_val_if_fail (FALSE, 0);
+	return 0;
+}
 
 gboolean
 ce_page_validate (CEPage *self, NMConnection *connection, GError **error)

@@ -30,7 +30,6 @@
 #include <nm-setting-wired.h>
 
 #include "page-wired.h"
-#include "nm-connection-editor.h"
 
 G_DEFINE_TYPE (CEPageWired, ce_page_wired, CE_TYPE_PAGE)
 

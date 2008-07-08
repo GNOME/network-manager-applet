@@ -25,7 +25,6 @@
 
 #include <glib-object.h>
 #include <glade/glade-xml.h>
-#include <gtk/gtkspinbutton.h>
 #include <nm-settings.h>
 
 #define NM_TYPE_CONNECTION_EDITOR    (nm_connection_editor_get_type ())
@@ -57,9 +56,5 @@ NMConnectionEditor *nm_connection_editor_new (NMConnection *connection);
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
 NMConnection *nm_connection_editor_get_connection (NMConnectionEditor *editor);
-
-gint ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
-
-int ce_get_property_default (NMSetting *setting, const char *property_name);
 
 #endif

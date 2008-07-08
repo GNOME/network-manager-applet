@@ -28,6 +28,7 @@
 
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkentry.h>
+#include <gtk/gtkspinbutton.h>
 #include <glade/glade.h>
 
 #include <nm-connection.h>
@@ -72,6 +73,10 @@ void ce_page_changed (CEPage *self);
 void ce_page_mac_to_entry (GByteArray *mac, GtkEntry *entry);
 
 GByteArray *ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid);
+
+gint ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
+
+int ce_get_property_default (NMSetting *setting, const char *property_name);
 
 #endif  /* __CE_PAGE_H__ */
 
