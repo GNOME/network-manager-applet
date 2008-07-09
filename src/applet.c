@@ -134,8 +134,8 @@ static NMActiveConnection *
 applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
 {
 	NMActiveConnection *default_ac = NULL;
-	NMDevice *adhoc_device = NULL;
-	NMActiveConnection *adhoc_ac = NULL;
+	NMDevice *non_default_device = NULL;
+	NMActiveConnection *non_default_ac = NULL;
 	const GPtrArray *connections;
 	int i;
 
@@ -147,42 +147,6 @@ applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
 	for (i = 0; connections && (i < connections->len); i++) {
 		NMActiveConnection *candidate = g_ptr_array_index (connections, i);
 		const GPtrArray *devices;
-		gboolean is_adhoc = FALSE;
-
-		/* If the only connection is an adhoc connection, show it even though
-		 * it's not 'default'.
-		 */
-		if (adhoc_ac == NULL) {
-			NMConnectionScope scope;
-			const char *cpath;
-			NMConnection *connection = NULL;
-
-			scope = nm_active_connection_get_scope (candidate);
-			cpath = nm_active_connection_get_connection (candidate);
-			if (scope == NM_CONNECTION_SCOPE_USER) {
-				NMAGConfConnection *gconf_connection;
-
-				gconf_connection = nma_gconf_settings_get_by_dbus_path (applet->gconf_settings, cpath);
-				if (gconf_connection)
-					connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (gconf_connection));
-			} else if (scope == NM_CONNECTION_SCOPE_SYSTEM) {
-				NMDBusConnection *dbus_connection;
-
-				dbus_connection = nm_dbus_settings_get_connection_by_path (applet->dbus_settings, cpath);
-				if (dbus_connection)
-					connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (dbus_connection));
-			}
-
-			if (connection) {
-				NMSettingWireless *s_wireless;
-
-				s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
-				if (s_wireless) {
-					if (s_wireless->mode && !strcmp (s_wireless->mode, "adhoc"))
-						is_adhoc = TRUE;
-				}
-			}
-		}
 
 		devices = nm_active_connection_get_devices (candidate);
 		if (!devices || !devices->len) {
@@ -191,28 +155,25 @@ applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
 			continue;
 		}
 
-		if (!nm_active_connection_get_default (candidate)) {
-			/* Cache a non-default adhoc connection so that if it's the
-			 * only active connection, we'll return it even though it's not default.
-			 */
-			if (!adhoc_ac && is_adhoc) {
-				adhoc_device = g_ptr_array_index (devices, 0);
-				adhoc_ac = candidate;
+		if (nm_active_connection_get_default (candidate)) {
+			if (!default_ac) {
+				*device = g_ptr_array_index (devices, 0);
+				default_ac = candidate;
 			}
-			continue;
+		} else {
+			if (!non_default_ac) {
+				non_default_device = g_ptr_array_index (devices, 0);
+				non_default_ac = candidate;
+			}
 		}
-
-		*device = g_ptr_array_index (devices, 0);
-		default_ac = candidate;
-		break;
 	}
 
-	/* If the only active connection was a non-default adhoc connection,
-	 * return that.
+	/* Prefer the default connection if one exists, otherwise return the first
+	 * non-default connection.
 	 */
-	if (!default_ac && adhoc_ac) {
-		default_ac = adhoc_ac;
-		*device = adhoc_device;
+	if (!default_ac && non_default_ac) {
+		default_ac = non_default_ac;
+		*device = non_default_device;
 	}
 	return default_ac;
 }
