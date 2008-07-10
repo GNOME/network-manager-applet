@@ -1229,8 +1229,8 @@ nma_context_menu_update (NMApplet *applet)
 	                        applet->wifi_enabled_toggled_id);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->wifi_enabled_item),
 	                                nm_client_wireless_get_enabled (applet->nm_client));
-	g_signal_handler_block (G_OBJECT (applet->wifi_enabled_item),
-	                        applet->wifi_enabled_toggled_id);
+	g_signal_handler_unblock (G_OBJECT (applet->wifi_enabled_item),
+	                          applet->wifi_enabled_toggled_id);
 
 	wireless_hw_enabled = nm_client_wireless_hardware_get_enabled (applet->nm_client);
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wifi_enabled_item),
