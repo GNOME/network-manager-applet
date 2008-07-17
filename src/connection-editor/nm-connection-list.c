@@ -967,7 +967,7 @@ do_edit (ActionInfo *info)
 		return;
 	}
 
-	connection = nm_connection_duplicate (nm_exported_connection_get_connection (exported));
+	connection = nm_gconf_connection_duplicate (nm_exported_connection_get_connection (exported));
 	editor = nm_connection_editor_new (connection);
 	g_object_unref (connection);
 

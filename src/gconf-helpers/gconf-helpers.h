@@ -28,26 +28,28 @@
 
 #define GCONF_PATH_CONNECTIONS "/system/networking/connections"
 
+/* 
+   ATTENTION: Make sure to update nm_gconf_connection_duplicate() 
+   when new connection tag is added! Otherwise duplicating connection
+   will not work correctly.
+*/
 #define NMA_CA_CERT_IGNORE_TAG  "nma-ca-cert-ignore"
 #define NMA_PHASE2_CA_CERT_IGNORE_TAG  "nma-phase2-ca-cert-ignore"
-
 #define NMA_PATH_CLIENT_CERT_TAG "nma-path-client-cert"
 #define NMA_PATH_PHASE2_CLIENT_CERT_TAG "nma-path-phase2-client-cert"
-
 #define NMA_PATH_CA_CERT_TAG "nma-path-ca-cert"
 #define NMA_PATH_PHASE2_CA_CERT_TAG "nma-path-phase2-ca-cert"
-
 #define NMA_PATH_PRIVATE_KEY_TAG "nma-path-private-key"
 #define NMA_PRIVATE_KEY_PASSWORD_TAG "nma-private-key-password"
-
 #define NMA_PATH_PHASE2_PRIVATE_KEY_TAG "nma-path-phase2-private-key"
 #define NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG "nma-phase2-private-key-password"
+#define NMA_CONNECTION_ID_TAG "nma-connection-id"
+
+NMConnection *nm_gconf_connection_duplicate (NMConnection *connection);
 
 #define KEYRING_CID_TAG "connection-id"
 #define KEYRING_SN_TAG "setting-name"
 #define KEYRING_SK_TAG "setting-key"
-
-#define NMA_CONNECTION_ID_TAG "nma-connection-id"
 
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,

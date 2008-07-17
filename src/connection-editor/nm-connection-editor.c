@@ -117,8 +117,12 @@ connection_editor_validate (NMConnectionEditor *editor)
 
 		if (!ce_page_validate (CE_PAGE (iter->data), editor->connection, &error)) {
 			/* FIXME: use the error to indicate which UI widgets are invalid */
-			if (error)
+			if (error) {
+				g_warning ("Invalid setting %s: %s", CE_PAGE (iter->data)->title, error->message);
 				g_error_free (error);
+			} else
+				g_warning ("Invalid setting %s", CE_PAGE (iter->data)->title);
+
 			goto done;
 		}
 	}
