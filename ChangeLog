@@ -1,5 +1,13 @@
 2008-07-21  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/page-ip4.c
+		- (ip4_private_init, method_changed, populate_ui, ce_page_ip4_new,
+		   ui_to_setting): use a list store instead of the glade file's items
+			for the method combo so that we can remove the Link-Local item when
+			editing VPN connections
+
+2008-07-21  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/ce-page-ip4.glade
 	  src/connection-editor/page-ip4.c
 		- DHCP -> Automatic; so that it's appropriate to use with VPNs too

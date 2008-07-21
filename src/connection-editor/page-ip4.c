@@ -32,6 +32,7 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-ip4-config.h>
+#include <nm-setting-vpn.h>
 
 #include "page-ip4.h"
 
@@ -43,6 +44,7 @@ typedef struct {
 	NMSettingIP4Config *setting;
 
 	GtkComboBox *method;
+	GtkListStore *method_store;
 
 	/* Addresses */
 	GtkButton *addr_add;
@@ -62,10 +64,13 @@ typedef struct {
 	gboolean disposed;
 } CEPageIP4Private;
 
-#define IP4_METHOD_DHCP            0
-#define IP4_METHOD_DHCP_MANUAL_DNS 1
+#define METHOD_COL_NAME 0
+#define METHOD_COL_NUM  1
+
+#define IP4_METHOD_AUTO            0
+#define IP4_METHOD_AUTO_MANUAL_DNS 1
 #define IP4_METHOD_MANUAL          2
-#define IP4_METHOD_AUTOIP          3
+#define IP4_METHOD_LINK_LOCAL      3
 #define IP4_METHOD_SHARED          4
 
 #define COL_ADDRESS 0
@@ -73,14 +78,52 @@ typedef struct {
 #define COL_GATEWAY 2
 
 static void
-ip4_private_init (CEPageIP4 *self)
+ip4_private_init (CEPageIP4 *self, gboolean is_vpn)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	GladeXML *xml;
+	GtkTreeIter iter;
 
 	xml = CE_PAGE (self)->xml;
 
 	priv->method = GTK_COMBO_BOX (glade_xml_get_widget (xml, "ip4_method"));
+
+	priv->method_store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_UINT);
+
+	gtk_list_store_append (priv->method_store, &iter);
+	gtk_list_store_set (priv->method_store, &iter,
+	                    METHOD_COL_NAME, _("Automatic"),
+	                    METHOD_COL_NUM, IP4_METHOD_AUTO,
+	                    -1);
+
+	gtk_list_store_append (priv->method_store, &iter);
+	gtk_list_store_set (priv->method_store, &iter,
+	                    METHOD_COL_NAME, _("Automatic with manual DNS settings"),
+	                    METHOD_COL_NUM, IP4_METHOD_AUTO_MANUAL_DNS,
+	                    -1);
+
+	gtk_list_store_append (priv->method_store, &iter);
+	gtk_list_store_set (priv->method_store, &iter,
+	                    METHOD_COL_NAME, _("Manual"),
+	                    METHOD_COL_NUM, IP4_METHOD_MANUAL,
+	                    -1);
+
+	if (!is_vpn) {
+		/* Link-local is pointless for VPNs */
+		gtk_list_store_append (priv->method_store, &iter);
+		gtk_list_store_set (priv->method_store, &iter,
+		                    METHOD_COL_NAME, _("Link-Local Only"),
+		                    METHOD_COL_NUM, IP4_METHOD_LINK_LOCAL,
+		                    -1);
+	}
+
+	gtk_list_store_append (priv->method_store, &iter);
+	gtk_list_store_set (priv->method_store, &iter,
+	                    METHOD_COL_NAME, _("Shared to other computers"),
+	                    METHOD_COL_NUM, IP4_METHOD_SHARED,
+	                    -1);
+
+	gtk_combo_box_set_model (priv->method, GTK_TREE_MODEL (priv->method_store));
 
 	priv->addr_add = GTK_BUTTON (glade_xml_get_widget (xml, "ip4_addr_add_button"));
 	priv->addr_delete = GTK_BUTTON (glade_xml_get_widget (xml, "ip4_addr_delete_button"));
@@ -97,11 +140,16 @@ static void
 method_changed (GtkComboBox *combo, gpointer user_data)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (user_data);
-	guint32 method;
+	guint32 method = IP4_METHOD_AUTO;
 	gboolean config_enabled = TRUE;
+	GtkTreeIter iter;
 
-	method = gtk_combo_box_get_active (priv->method);
-	if (method == IP4_METHOD_SHARED || method == IP4_METHOD_AUTOIP)
+	if (gtk_combo_box_get_active_iter (priv->method, &iter)) {
+		gtk_tree_model_get (GTK_TREE_MODEL (priv->method_store), &iter,
+		                    METHOD_COL_NUM, &method, -1);
+	}
+
+	if (method == IP4_METHOD_SHARED || method == IP4_METHOD_LINK_LOCAL)
 		config_enabled = FALSE;
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), config_enabled);
@@ -122,7 +170,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	if (!config_enabled)
 		gtk_entry_set_text (priv->dns_searches, "");
 
-	if ((method == IP4_METHOD_DHCP) || (method == IP4_METHOD_DHCP_MANUAL_DNS)) {
+	if ((method == IP4_METHOD_AUTO) || (method == IP4_METHOD_AUTO_MANUAL_DNS)) {
 		gtk_widget_show (priv->dhcp_client_id_label);
 		gtk_widget_show (GTK_WIDGET (priv->dhcp_client_id_entry));
 	} else {
@@ -133,6 +181,25 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	ce_page_changed (CE_PAGE (user_data));
 }
 
+typedef struct {
+	int method;
+	GtkComboBox *combo;
+} SetMethodInfo;
+
+static gboolean
+set_method (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer user_data)
+{
+	SetMethodInfo *info = (SetMethodInfo *) user_data;
+	int method = 0;
+
+	gtk_tree_model_get (model, iter, METHOD_COL_NUM, &method, -1);
+	if (method == info->method) {
+		gtk_combo_box_set_active_iter (info->combo, iter);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 static void
 populate_ui (CEPageIP4 *self)
 {
@@ -141,23 +208,27 @@ populate_ui (CEPageIP4 *self)
 	GtkListStore *store;
 	GtkTreeIter model_iter;
 	GSList *iter;
-	int method = IP4_METHOD_DHCP;
+	int method = IP4_METHOD_AUTO;
 	GString *string = NULL;
+	SetMethodInfo info;
 
 	/* Method */
+	gtk_combo_box_set_active (priv->method, 0);
 	if (setting->method) {
 		if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_AUTOIP))
-			method = IP4_METHOD_AUTOIP;
+			method = IP4_METHOD_LINK_LOCAL;
 		else if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_MANUAL))
 			method = IP4_METHOD_MANUAL;
 		else if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_SHARED))
 			method = IP4_METHOD_SHARED;
 	}
 
-	if (method == IP4_METHOD_DHCP && setting->ignore_dhcp_dns)
-		method = IP4_METHOD_DHCP_MANUAL_DNS;
+	if (method == IP4_METHOD_AUTO && setting->ignore_dhcp_dns)
+		method = IP4_METHOD_AUTO_MANUAL_DNS;
 
-	gtk_combo_box_set_active (priv->method, method);
+	info.method = method;
+	info.combo = priv->method;
+	gtk_tree_model_foreach (GTK_TREE_MODEL (priv->method_store), set_method, &info);
 
 	/* Addresses */
 	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
@@ -222,7 +293,7 @@ populate_ui (CEPageIP4 *self)
 	gtk_entry_set_text (priv->dns_searches, string->str);
 	g_string_free (string, TRUE);
 
-	if ((method == IP4_METHOD_DHCP) || (method = IP4_METHOD_DHCP_MANUAL_DNS)) {
+	if ((method == IP4_METHOD_AUTO) || (method = IP4_METHOD_AUTO_MANUAL_DNS)) {
 		if (setting->dhcp_client_id)
 			gtk_entry_set_text (priv->dhcp_client_id_entry, setting->dhcp_client_id);
 	}
@@ -434,11 +505,13 @@ ce_page_ip4_new (NMConnection *connection)
 	CEPageIP4 *self;
 	CEPageIP4Private *priv;
 	CEPage *parent;
+	NMSettingConnection *s_con;
 	GtkTreeSelection *selection;
 	gint offset;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkListStore *store;
+	gboolean is_vpn = FALSE;
 
 	self = CE_PAGE_IP4 (g_object_new (CE_TYPE_PAGE_IP4, NULL));
 	parent = CE_PAGE (self);
@@ -460,7 +533,12 @@ ce_page_ip4_new (NMConnection *connection)
 
 	parent->title = g_strdup (_("IPv4 Settings"));
 
-	ip4_private_init (self);
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con && s_con->type);
+	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME))
+		is_vpn = TRUE;
+
+	ip4_private_init (self, is_vpn);
 	priv = CE_PAGE_IP4_GET_PRIVATE (self);
 
 	priv->setting = (NMSettingIP4Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG);
@@ -550,6 +628,7 @@ ui_to_setting (CEPageIP4 *self)
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	GtkTreeModel *model;
 	GtkTreeIter tree_iter;
+	int int_method = IP4_METHOD_AUTO;
 	const char *method;
 	GArray *dns_servers;
 	GSList *search_domains = NULL;
@@ -561,8 +640,13 @@ ui_to_setting (CEPageIP4 *self)
 	const char *dhcp_client_id = NULL;
 
 	/* Method */
-	switch (gtk_combo_box_get_active (priv->method)) {
-	case IP4_METHOD_AUTOIP:
+	if (gtk_combo_box_get_active_iter (priv->method, &tree_iter)) {
+		gtk_tree_model_get (GTK_TREE_MODEL (priv->method_store), &tree_iter,
+		                    METHOD_COL_NUM, &int_method, -1);
+	}
+
+	switch (int_method) {
+	case IP4_METHOD_LINK_LOCAL:
 		method = NM_SETTING_IP4_CONFIG_METHOD_AUTOIP;
 		break;
 	case IP4_METHOD_MANUAL:
@@ -571,7 +655,7 @@ ui_to_setting (CEPageIP4 *self)
 	case IP4_METHOD_SHARED:
 		method = NM_SETTING_IP4_CONFIG_METHOD_SHARED;
 		break;
-	case IP4_METHOD_DHCP_MANUAL_DNS:
+	case IP4_METHOD_AUTO_MANUAL_DNS:
 		ignore_dhcp_dns = TRUE;
 		/* fall through */
 	default:
