@@ -436,6 +436,19 @@ done:
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
+static void
+show_password_toggled (GtkToggleButton *button, gpointer user_data)
+{
+	NMPppoeInfo *info = (NMPppoeInfo *) user_data;
+	GtkWidget *entry;
+
+	entry = glade_xml_get_widget (info->xml, "dsl_password");
+	if (gtk_toggle_button_get_active (button))
+		gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
+	else
+		gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
+}
+
 static gboolean
 pppoe_get_secrets (NMDevice *device,
 				   NMConnection *connection,
@@ -477,6 +490,9 @@ pppoe_get_secrets (NMDevice *device,
 
 	pppoe_update_ui (NM_SETTING_PPPOE (nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE)), info);
 	g_object_weak_ref (G_OBJECT (dialog), pppoe_info_destroy, info);
+
+	w = glade_xml_get_widget (xml, "dsl_show_password");
+	g_signal_connect (G_OBJECT (w), "toggled", G_CALLBACK (show_password_toggled), info);
 
 	g_signal_connect (dialog, "response",
 	                  G_CALLBACK (get_pppoe_secrets_cb),
