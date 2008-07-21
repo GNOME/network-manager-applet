@@ -751,6 +751,7 @@ nm_gconf_get_all_connections (GConfClient *client)
 	nm_gconf_migrate_0_7_connection_names (client);
 	nm_gconf_migrate_0_7_vpn_connections (client);
 	nm_gconf_migrate_0_7_wireless_security (client);
+	nm_gconf_migrate_0_7_netmask_to_prefix (client);
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!connections) {

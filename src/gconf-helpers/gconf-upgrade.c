@@ -35,6 +35,9 @@
 #include <nm-setting-8021x.h>
 #include <nm-setting-vpn.h>
 #include <nm-setting-vpn-properties.h>
+#include <nm-setting-ip4-config.h>
+#include <nm-utils.h>
+
 #include "gconf-upgrade.h"
 #include "gconf-helpers.h"
 
@@ -1000,5 +1003,63 @@ nm_gconf_migrate_0_7_keyring_items (GConfClient *client)
 	}
 
 
+}
+
+void
+nm_gconf_migrate_0_7_netmask_to_prefix (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *id = g_path_get_basename ((const char *) iter->data);
+		GArray *array, *new;
+		int i;
+		gboolean need_update = FALSE;
+
+		if (!nm_gconf_get_uint_array_helper (client, iter->data,
+		                                     NM_SETTING_IP4_CONFIG_ADDRESSES,
+		                                     NM_SETTING_IP4_CONFIG_SETTING_NAME,
+		                                     &array))
+			goto next;
+
+		new = g_array_sized_new (FALSE, TRUE, sizeof (guint32), array->len);
+		for (i = 0; i < array->len; i+=3) {
+			guint32 addr, netmask, prefix, gateway;
+
+			addr = g_array_index (array, guint32, i);
+			g_array_append_val (new, addr);
+
+			/* get the second element of the 3-number IP address tuple */
+			netmask = g_array_index (array, guint32, i + 1);
+			if (netmask > 32) {
+				/* convert it */
+				prefix = nm_utils_ip4_netmask_to_prefix (netmask);
+				g_array_append_val (new, prefix);
+				need_update = TRUE;
+			} else {
+				/* Probably already a prefix */
+				g_array_append_val (new, netmask);
+			}
+
+			gateway = g_array_index (array, guint32, i + 2);
+			g_array_append_val (new, gateway);
+		}
+
+		/* Update GConf */
+		if (need_update) {
+			nm_gconf_set_uint_array_helper (client, iter->data,
+			                                NM_SETTING_IP4_CONFIG_ADDRESSES,
+			                                NM_SETTING_IP4_CONFIG_SETTING_NAME,
+			                                new);
+		}
+		g_array_free (new, TRUE);
+
+next:
+		g_free (id);
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
 }
 
