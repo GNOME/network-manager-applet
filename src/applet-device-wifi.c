@@ -1051,7 +1051,7 @@ wireless_device_added (NMDevice *device, NMApplet *applet)
 	 */
 	data = g_new0 (struct ap_notification_data, 1);
 	data->applet = applet;
-	data->device = wdev;	
+	data->device = wdev;
 	g_object_set_data_full (G_OBJECT (wdev), "notify-wireless-avail-data", data, g_free);
 	/* We also need to hook up to the settings to find out when we have new connections
 	 * that might be candididates.
