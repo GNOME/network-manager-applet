@@ -63,9 +63,9 @@ typedef struct {
 } CEPageIP4Private;
 
 #define IP4_METHOD_DHCP            0
-#define IP4_METHOD_AUTOIP          1
+#define IP4_METHOD_DHCP_MANUAL_DNS 1
 #define IP4_METHOD_MANUAL          2
-#define IP4_METHOD_DHCP_MANUAL_DNS 3
+#define IP4_METHOD_AUTOIP          3
 #define IP4_METHOD_SHARED          4
 
 #define COL_ADDRESS 0
