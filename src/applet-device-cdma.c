@@ -378,7 +378,7 @@ get_cdma_secrets_cb (GtkDialog *dialog,
 
  done:
 	if (err) {
-		g_warning (err->message);
+		g_warning ("%s", err->message);
 		dbus_g_method_return_error (info->context, err);
 		g_error_free (err);
 	}
