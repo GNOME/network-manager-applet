@@ -149,11 +149,8 @@ applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
 		const GPtrArray *devices;
 
 		devices = nm_active_connection_get_devices (candidate);
-		if (!devices || !devices->len) {
-			g_warning ("Active connection %s had no devices!",
-			           nm_object_get_path (NM_OBJECT (candidate)));
+		if (!devices || !devices->len)
 			continue;
-		}
 
 		if (nm_active_connection_get_default (candidate)) {
 			if (!default_ac) {
