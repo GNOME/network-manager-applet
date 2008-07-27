@@ -98,7 +98,7 @@ vpn_get_plugins (GError **error)
 		 */
 		so_name = g_path_get_basename (so_path);
 		g_free (so_path);
-		so_path = g_strdup_printf ("%s/%s", LIBDIR, so_name);
+		so_path = g_strdup_printf ("%s/NetworkManager/%s", LIBDIR, so_name);
 		g_free (so_name);
 
 		module = g_module_open (so_path, G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
