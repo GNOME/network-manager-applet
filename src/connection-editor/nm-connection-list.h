@@ -70,4 +70,6 @@ NMConnectionList *nm_connection_list_new (const char *def_type);
 
 void              nm_connection_list_run (NMConnectionList *list);
 
+void              nm_connection_list_set_type (NMConnectionList *list, const char *type);
+
 #endif

@@ -1413,6 +1413,9 @@ add_connection_tab (NMConnectionList *self,
 	treeview = add_connection_treeview (self, prefix);
 	add_connection_buttons (self, prefix, treeview, is_vpn);
 
+	g_object_set_data_full (G_OBJECT (child), "types",
+	                        connection_types, (GDestroyNotify) g_slist_free);
+
 	for (iter = connection_types; iter; iter = iter->next) {
 		g_hash_table_insert (self->treeviews, g_strdup ((const char *) iter->data), treeview);
 		if (def_type && !strcmp ((const char *) iter->data, def_type)) {
@@ -1431,24 +1434,19 @@ add_connection_tabs (NMConnectionList *self, const char *def_type)
 
 	types = g_slist_append (NULL, NM_SETTING_WIRED_SETTING_NAME);
 	add_connection_tab (self, def_type, types, self->wired_icon, "wired", _("Wired"), FALSE);
-	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_WIRELESS_SETTING_NAME);
 	add_connection_tab (self, def_type, types, self->wireless_icon, "wireless", _("Wireless"), FALSE);
-	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_GSM_SETTING_NAME);
 	types = g_slist_append (types, NM_SETTING_CDMA_SETTING_NAME);
 	add_connection_tab (self, def_type, types, self->wwan_icon, "wwan", _("Mobile Broadband"), FALSE);
-	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_VPN_SETTING_NAME);
 	add_connection_tab (self, def_type, types, self->vpn_icon, "vpn", _("VPN"), TRUE);
-	g_slist_free (types);
 
 	types = g_slist_append (NULL, NM_SETTING_PPPOE_SETTING_NAME);
 	add_connection_tab (self, def_type, types, self->wired_icon, "dsl", _("DSL"), FALSE);
-	g_slist_free (types);
 }
 
 static void
@@ -1596,6 +1594,39 @@ nm_connection_list_present (NMConnectionList *list)
 	gtk_window_present (GTK_WINDOW (list->dialog));
 }
 
+void
+nm_connection_list_set_type (NMConnectionList *self, const char *type)
+{
+	GtkWidget *notebook;
+	int i, num;
+	gboolean found = FALSE;
+
+	g_return_if_fail (NM_IS_CONNECTION_LIST (self));
+
+	/* If a notebook page is found that owns the requested type, set it
+	 * as the current page.
+	 */
+	notebook = glade_xml_get_widget (self->gui, "list_notebook");
+	num = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+	for (i = 0; i < num && !found; i++) {
+		GtkWidget *child;
+		GSList *types, *iter;
+
+		child = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), i);
+		types = g_object_get_data (G_OBJECT (child), "types");
+		for (iter = types; iter; iter = g_slist_next (iter)) {
+			if (!strcmp (type, (const char *) iter->data)) {
+				gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), i);
+				found = TRUE;
+				break;
+			}
+		}
+	}
+
+	/* Bring the connection list to the front */
+	nm_connection_list_present (self);
+}
+
 static void
 list_response_cb (GtkDialog *dialog, gint response, gpointer user_data)
 {
@@ -1620,3 +1651,4 @@ nm_connection_list_run (NMConnectionList *list)
 
 	nm_connection_list_present (list);
 }
+

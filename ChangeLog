@@ -1,3 +1,26 @@
+2008-07-27  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/Makefile.am
+	  src/connection-editor/nm-connection-editor-service.xml
+		- Add service definition for single-app-instance D-Bus API
+
+	* src/connection-editor/nm-connection-list.c
+	  src/connection-editor/nm-connection-list.h
+		- (add_connection_tab): keep connection type list around for later
+		- (add_connection_tabs): don't free connection type lists since they
+			are now kept around by add_connection_tab()
+		- (nm_connection_list_set_type): new function; given a connection type
+			select that type's tab in the connection list and bring the
+			connection list window to the front
+
+	* src/connection-editor/main.c
+		- Implement a single-app-instance object that exports a D-Bus API to
+			accept the same args that the connection editor does on the command
+			line
+		- (main, try_existing_instance): if a connection editor is already open
+			in the current session, just send the command-line arguments to that
+			existing editor over D-Bus instead of spawning a second editor
+
 2008-07-24  Tambet Ingo  <tambet@gmail.com>
 
 	* src/applet-device-cdma.c (get_cdma_secrets_cb): Add format argument to

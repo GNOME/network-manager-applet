@@ -55,6 +55,9 @@ nm_connection_editor_SOURCES += \
 	polkit-06-helpers.h
 endif
 
+nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-connection-editor-service.xml
+	dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<
+
 nm_connection_editor_LDADD = \
 	$(top_builddir)/src/gconf-helpers/libgconf-helpers.la \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
@@ -75,8 +78,9 @@ glade_DATA = \
 	ce-page-ppp.glade \
 	ce-vpn-wizard.glade
 
+BUILT_SOURCES = nm-connection-editor-service-glue.h
+
 CLEANFILES = *.bak *.gladep
 
-EXTRA_DIST = 		\
-	$(glade_DATA)	\
-	$(NULL)
+EXTRA_DIST = $(glade_DATA) nm-connection-editor-service.xml
+
