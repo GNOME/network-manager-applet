@@ -268,14 +268,15 @@ WirelessSecurityWEPKey *
 ws_wep_key_new (const char *glade_file,
                 NMConnection *connection,
                 const char *connection_id,
-                WEPKeyType type)
+                WEPKeyType type,
+                gboolean adhoc_create)
 {
 	WirelessSecurityWEPKey *sec;
 	GtkWidget *widget;
 	GladeXML *xml;
 	NMSettingWirelessSecurity *s_wsec = NULL;
 	guint8 default_key_idx = 0;
-	gboolean is_adhoc = FALSE;
+	gboolean is_adhoc = adhoc_create;
 	gboolean is_shared_key = FALSE;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
@@ -376,6 +377,13 @@ ws_wep_key_new (const char *glade_file,
 	                  (GCallback) key_index_combo_changed_cb,
 	                  sec);
 
+	/* Key index is useless with adhoc networks */
+	if (is_adhoc) {
+		gtk_widget_hide (widget);
+		widget = glade_xml_get_widget (xml, "key_index_label");
+		gtk_widget_hide (widget);
+	}
+
 	/* Fill the key entry with the key for that index */
 	widget = glade_xml_get_widget (xml, "wep_key_entry");
 	if (strlen (sec->keys[default_key_idx]))
@@ -393,7 +401,9 @@ ws_wep_key_new (const char *glade_file,
 	/* Ad-Hoc connections can't use Shared Key auth */
 	if (is_adhoc) {
 		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
-		gtk_widget_set_sensitive (widget, FALSE);
+		gtk_widget_hide (widget);
+		widget = glade_xml_get_widget (xml, "auth_method_label");
+		gtk_widget_hide (widget);
 	}
 
 	return sec;

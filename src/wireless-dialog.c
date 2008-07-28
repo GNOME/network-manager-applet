@@ -746,7 +746,7 @@ security_combo_init (NMAWirelessDialog *self)
 		if (default_type == NMU_SEC_STATIC_WEP)
 			default_wep_type = ws_wep_guess_key_type (priv->connection, connection_id);
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_PASSPHRASE);
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -755,7 +755,7 @@ security_combo_init (NMAWirelessDialog *self)
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_HEX);
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_HEX, priv->adhoc_create);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Hexadecimal"));
@@ -764,7 +764,7 @@ security_combo_init (NMAWirelessDialog *self)
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_ASCII);
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_ASCII, priv->adhoc_create);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit ASCII"));

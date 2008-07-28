@@ -1,3 +1,15 @@
+2008-07-28  Dan Williams  <dcbw@redhat.com>
+
+	* src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wep-key.h
+		- (ws_wep_key_new): WEP auth method and key indexes are pretty pointless
+			for Ad-Hoc networks; hide them in the Ad-Hoc case
+
+	* src/wireless-dialog.c
+	  src/connection-editor/page-wireless-security.c
+		- (security_combo_init, ce_page_wireless_security_new): fix up for
+			above change
+
 2008-07-27  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/vpn-helpers.c
