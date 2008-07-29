@@ -907,7 +907,8 @@ struct ap_notification_data
 	NMApplet *applet;
 	NMDeviceWifi *device;
 	guint id;
-	gulong last_notification_time;	
+	gulong last_notification_time;
+	guint new_con_id;
 };
 
 /* Scan the list of access points, looking for the case where we have no
@@ -1029,12 +1030,23 @@ on_new_connection (NMSettings *settings, NMExportedConnection *connection, gpoin
 }
 
 static void
+free_ap_notification_data (gpointer user_data)
+{
+	struct ap_notification_data *data = user_data;
+
+	g_signal_handler_disconnect (applet_get_settings (data->applet), data->new_con_id);
+	memset (data, 0, sizeof (*data));
+	g_free (data);
+}
+
+static void
 wireless_device_added (NMDevice *device, NMApplet *applet)
 {
 	NMDeviceWifi *wdev = NM_DEVICE_WIFI (device);
 	const GPtrArray *aps;
 	int i;
 	struct ap_notification_data *data;
+	guint id;
 
 	g_signal_connect (wdev,
 	                  "notify::" NM_DEVICE_WIFI_ACTIVE_ACCESS_POINT,
@@ -1052,13 +1064,17 @@ wireless_device_added (NMDevice *device, NMApplet *applet)
 	data = g_new0 (struct ap_notification_data, 1);
 	data->applet = applet;
 	data->device = wdev;
-	g_object_set_data_full (G_OBJECT (wdev), "notify-wireless-avail-data", data, g_free);
 	/* We also need to hook up to the settings to find out when we have new connections
-	 * that might be candididates.
+	 * that might be candididates.  Keep the ID around so we can disconnect
+	 * when the device is destroyed.
 	 */ 
-	g_signal_connect (applet_get_settings (applet), "new-connection",
-						G_CALLBACK (on_new_connection),
-						data);
+	id = g_signal_connect (applet_get_settings (applet), "new-connection",
+	                       G_CALLBACK (on_new_connection),
+	                       data);
+	data->new_con_id = id;
+	g_object_set_data_full (G_OBJECT (wdev), "notify-wireless-avail-data",
+	                        data, free_ap_notification_data);
+
 	queue_avail_access_point_notification (device);
 
 	/* Hash all APs this device knows about */

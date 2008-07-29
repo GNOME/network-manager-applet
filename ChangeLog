@@ -1,5 +1,12 @@
 2008-07-28  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet-device-wifi.c
+		- (wireless_device_added): disconnect from the Settings object's
+			new-connection signal when the device is destroyed to prevent
+			callbacks for invalid, removed devices
+
+2008-07-28  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-security/ws-wep-key.c
 	  src/wireless-security/ws-wep-key.h
 		- (ws_wep_key_new): WEP auth method and key indexes are pretty pointless
