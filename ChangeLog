@@ -1,3 +1,11 @@
+2008-07-29  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/page-ip4.c
+		- (dns_servers_changed, dns_searches_changed): remove, validation
+			handled by ui_to_setting() now
+		- (ui_to_setting): validate here too
+		- (validate): use ui_to_setting() for partial validation
+
 2008-07-28  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-device-wifi.c

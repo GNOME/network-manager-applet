@@ -300,63 +300,6 @@ populate_ui (CEPageIP4 *self)
 }
 
 static void
-dns_servers_changed (GtkEditable *entry, gpointer user_data)
-{
-	const char *text;
-	char **ips = NULL, **iter;
-	gboolean valid = TRUE;
-
-	text = gtk_entry_get_text (GTK_ENTRY (entry));
-	if (!text || !strlen (text))
-		goto out;
-
-	ips = g_strsplit (text, ",", 0);
-	for (iter = ips; *iter; iter++) {
-		struct in_addr tmp_addr;
-		
-		if (inet_aton (g_strstrip (*iter), &tmp_addr) == 0) {
-			valid = FALSE;
-			break;
-		}
-	}
-
-	if (ips)
-		g_strfreev (ips);
-
-out:
-	/* FIXME: do something with 'valid' */
-	return;
-}
-
-static void
-dns_searches_changed (GtkEditable *entry, gpointer user_data)
-{
-	const char *text;
-	char **searches = NULL, **iter;
-	gboolean valid = TRUE;
-
-	text = gtk_entry_get_text (GTK_ENTRY (entry));
-	if (!text || !strlen (text))
-		goto out;
-
-	searches = g_strsplit (text, ",", 0);
-	for (iter = searches; *iter; iter++) {
-		/* Need at least one . in the search domain */
-		if (!strchr (g_strstrip (*iter), '.')) {
-			valid = FALSE;
-			break;
-		}
-	}
-
-	if (searches)
-		g_strfreev (searches);
-
-out:
-	/* FIXME: do something with 'valid' */
-	return;
-}
-
-static void
 addr_add_clicked (GtkButton *button, gpointer user_data)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (user_data);
@@ -605,8 +548,8 @@ ce_page_ip4_new (NMConnection *connection)
 	selection = gtk_tree_view_get_selection (priv->addr_list);
 	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed), priv->addr_delete);
 
-	g_signal_connect (priv->dns_servers, "changed", G_CALLBACK (dns_servers_changed), self);
-	g_signal_connect (priv->dns_searches, "changed", G_CALLBACK (dns_searches_changed), self);
+	g_signal_connect_swapped (priv->dns_servers, "changed", G_CALLBACK (ce_page_changed), self);
+	g_signal_connect_swapped (priv->dns_searches, "changed", G_CALLBACK (ce_page_changed), self);
 
 	method_changed (priv->method, self);
 	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
@@ -622,7 +565,7 @@ free_one_addr (gpointer data)
 	g_array_free ((GArray *) data, TRUE);
 }
 
-static void
+static gboolean
 ui_to_setting (CEPageIP4 *self)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
@@ -630,14 +573,14 @@ ui_to_setting (CEPageIP4 *self)
 	GtkTreeIter tree_iter;
 	int int_method = IP4_METHOD_AUTO;
 	const char *method;
-	GArray *dns_servers;
+	GArray *dns_servers = NULL;
 	GSList *search_domains = NULL;
 	GPtrArray *addresses = NULL;
-	gboolean valid;
+	gboolean valid = FALSE, iter_valid;
 	const char *text;
-	char **items = NULL, **iter;
 	gboolean ignore_dhcp_dns = FALSE;
 	const char *dhcp_client_id = NULL;
+	char **items = NULL, **iter;
 
 	/* Method */
 	if (gtk_combo_box_get_active_iter (priv->method, &tree_iter)) {
@@ -665,49 +608,52 @@ ui_to_setting (CEPageIP4 *self)
 
 	/* IP addresses */
 	model = gtk_tree_view_get_model (priv->addr_list);
-	valid = gtk_tree_model_get_iter_first (model, &tree_iter);
+	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
 	addresses = g_ptr_array_sized_new (1);
-	while (valid) {
-		char *str_address = NULL;
-		char *str_prefix = NULL;
-		char *str_gateway = NULL;
+	while (iter_valid) {
+		char *item = NULL;
 		struct in_addr tmp_addr, tmp_gateway = { 0 };
 		GArray *addr;
 		guint32 empty_val = 0, prefix;
 		long int tmp_prefix;
-		
-		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &str_address, -1);
-		gtk_tree_model_get (model, &tree_iter, COL_PREFIX, &str_prefix, -1);
-		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &str_gateway, -1);
 
-		if (!str_address || !inet_aton (str_address, &tmp_addr)) {
+		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &item, -1);
+		if (!item || !inet_aton (item, &tmp_addr)) {
 			g_warning ("%s: IPv4 address '%s' missing or invalid!",
-			           __func__, str_address ? str_address : "<none>");
-			goto next;
+			           __func__, item ? item : "<none>");
+			g_free (item);
+			goto out;
 		}
+		g_free (item);
 
-		if (!str_prefix) {
+		gtk_tree_model_get (model, &tree_iter, COL_PREFIX, &item, -1);
+		if (!item) {
 			g_warning ("%s: IPv4 prefix '%s' missing!",
-			           __func__, str_prefix ? str_prefix : "<none>");
-			goto next;
+			           __func__, item ? item : "<none>");
+			goto out;
 		}
 
 		errno = 0;
-		tmp_prefix = strtol (str_prefix, NULL, 10);
+		tmp_prefix = strtol (item, NULL, 10);
 		if (errno || tmp_prefix < 0 || tmp_prefix > 32) {
 			g_warning ("%s: IPv4 prefix '%s' invalid!",
-			           __func__, str_prefix ? str_prefix : "<none>");
-			goto next;
+			           __func__, item ? item : "<none>");
+			g_free (item);
+			goto out;
 		}
+		g_free (item);
 		prefix = (guint32) tmp_prefix;
 
 		/* Gateway is optional... */
-		if (str_gateway && !inet_aton (str_gateway, &tmp_gateway)) {
-			g_warning ("%s: IPv4 gateway '%s' missing or invalid!",
-			           __func__, str_gateway ? str_gateway : "<none>");
-			goto next;
+		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &item, -1);
+		if (item && !inet_aton (item, &tmp_gateway)) {
+			g_warning ("%s: IPv4 gateway '%s' invalid!",
+			           __func__, item ? item : "<none>");
+			g_free (item);
+			goto out;
 		}
+		g_free (item);
 
 		addr = g_array_sized_new (FALSE, TRUE, sizeof (guint32), 3);
 		g_array_append_val (addr, tmp_addr.s_addr);
@@ -718,10 +664,10 @@ ui_to_setting (CEPageIP4 *self)
 			g_array_append_val (addr, empty_val);
 		g_ptr_array_add (addresses, addr);
 
-next:
-		valid = gtk_tree_model_iter_next (model, &tree_iter);
+		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
 	}
 
+	/* Don't pass empty array to the setting */
 	if (!addresses->len) {
 		g_ptr_array_free (addresses, TRUE);
 		addresses = NULL;
@@ -736,12 +682,14 @@ next:
 		for (iter = items; *iter; iter++) {
 			struct in_addr tmp_addr;
 
-			if (inet_aton (g_strstrip (*iter), &tmp_addr))
+			if (inet_pton (AF_INET, g_strstrip (*iter), &tmp_addr))
 				g_array_append_val (dns_servers, tmp_addr.s_addr);
+			else {
+				g_strfreev (items);
+				goto out;
+			}
 		}
-
-		if (items)
-			g_strfreev (items);
+		g_strfreev (items);
 	}
 
 	/* Search domains */
@@ -773,15 +721,21 @@ next:
 				  NM_SETTING_IP4_CONFIG_IGNORE_DHCP_DNS, ignore_dhcp_dns,
 				  NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
 				  NULL);
+	valid = TRUE;
 
+out:
 	if (addresses) {
 		g_ptr_array_foreach (addresses, (GFunc) free_one_addr, NULL);
 		g_ptr_array_free (addresses, TRUE);
 	}
 
-	g_array_free (dns_servers, TRUE);
+	if (dns_servers)
+		g_array_free (dns_servers, TRUE);
+
 	g_slist_foreach (search_domains, (GFunc) g_free, NULL);
 	g_slist_free (search_domains);
+
+	return valid;
 }
 
 static gboolean
@@ -790,7 +744,8 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageIP4 *self = CE_PAGE_IP4 (page);
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 
-	ui_to_setting (self);
+	if (!ui_to_setting (self))
+		return FALSE;
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 }
 
