@@ -141,7 +141,8 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (user_data);
 	guint32 method = IP4_METHOD_AUTO;
-	gboolean config_enabled = TRUE;
+	gboolean addr_enabled = FALSE;
+	gboolean dns_enabled = FALSE;
 	GtkTreeIter iter;
 
 	if (gtk_combo_box_get_active_iter (priv->method, &iter)) {
@@ -149,25 +150,34 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 		                    METHOD_COL_NUM, &method, -1);
 	}
 
-	if (method == IP4_METHOD_SHARED || method == IP4_METHOD_LINK_LOCAL)
-		config_enabled = FALSE;
+	switch (method) {
+	case IP4_METHOD_AUTO_MANUAL_DNS:
+		addr_enabled = FALSE;
+		dns_enabled = TRUE;
+		break;
+	case IP4_METHOD_MANUAL:
+		addr_enabled = dns_enabled = TRUE;
+		break;
+	default:
+		break;
+	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), config_enabled);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), config_enabled);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_list), config_enabled);
-	if (!config_enabled) {
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), addr_enabled);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), addr_enabled);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_list), addr_enabled);
+	if (!addr_enabled) {
 		GtkListStore *store;
 
 		store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
 		gtk_list_store_clear (store);
 	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_servers), config_enabled);
-	if (!config_enabled)
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_servers), dns_enabled);
+	if (!dns_enabled)
 		gtk_entry_set_text (priv->dns_servers, "");
 
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_searches), config_enabled);
-	if (!config_enabled)
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_searches), dns_enabled);
+	if (!dns_enabled)
 		gtk_entry_set_text (priv->dns_searches, "");
 
 	if ((method == IP4_METHOD_AUTO) || (method == IP4_METHOD_AUTO_MANUAL_DNS)) {
