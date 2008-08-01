@@ -898,7 +898,8 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 {
 	const GPtrArray *temp = NULL;
 	GSList *devices = NULL, *iter = NULL;
-	gint n_wireless_devices = 0;
+	gint n_wifi_devices = 0;
+	gint n_usable_wifi_devices = 0;
 	gint n_wired_devices = 0;
 	gint n_cdma_devices = 0;
 	gint n_gsm_devices = 0;
@@ -918,10 +919,10 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			continue;
 
 		if (NM_IS_DEVICE_WIFI (device)) {
+			n_wifi_devices++;
 			if (   nm_client_wireless_get_enabled (applet->nm_client)
-			    && (nm_device_get_state (device) >= NM_DEVICE_STATE_DISCONNECTED)) {
-				n_wireless_devices++;
-			}
+			    && (nm_device_get_state (device) >= NM_DEVICE_STATE_DISCONNECTED))
+				n_usable_wifi_devices++;
 		} else if (NM_IS_DEVICE_ETHERNET (device))
 			n_wired_devices++;
 		else if (NM_IS_CDMA_DEVICE (device))
@@ -930,7 +931,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			n_gsm_devices++;
 	}
 
-	if (!n_wired_devices && !n_wireless_devices && !n_cdma_devices && !n_gsm_devices) {
+	if (!n_wired_devices && !n_wifi_devices && !n_cdma_devices && !n_gsm_devices) {
 		nma_menu_add_text_item (menu, _("No network devices available"));
 		goto out;
 	}
@@ -947,7 +948,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			continue;
 
 		if (NM_IS_DEVICE_WIFI (device))
-			n_devices = n_wireless_devices;
+			n_devices = n_wifi_devices;
 		else if (NM_IS_DEVICE_ETHERNET (device))
 			n_devices = n_wired_devices;
 		else if (NM_IS_CDMA_DEVICE (device))
@@ -964,7 +965,11 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 
  out:
 	g_slist_free (devices);
-	return n_wireless_devices;
+
+	/* Return # of usable wifi devices here for correct enable/disable state
+	 * of things like Enable Wireless, "Connect to other..." and such.
+	 */
+	return n_usable_wifi_devices;
 }
 
 static int
