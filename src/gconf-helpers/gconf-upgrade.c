@@ -1063,3 +1063,41 @@ next:
 	gconf_client_suggest_sync (client, NULL);
 }
 
+void
+nm_gconf_migrate_0_7_ip4_method (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *id = g_path_get_basename ((const char *) iter->data);
+		char *method = NULL;
+
+		if (!nm_gconf_get_string_helper (client, iter->data,
+		                                 NM_SETTING_IP4_CONFIG_METHOD,
+		                                 NM_SETTING_IP4_CONFIG_SETTING_NAME,
+		                                 &method))
+			goto next;
+
+		if (!strcmp (method, "autoip")) {
+			nm_gconf_set_string_helper (client, iter->data,
+			                            NM_SETTING_IP4_CONFIG_METHOD,
+			                            NM_SETTING_IP4_CONFIG_SETTING_NAME,
+			                            NM_SETTING_IP4_CONFIG_METHOD_LINK_LOCAL);
+		} else if (!strcmp (method, "dhcp")) {
+			nm_gconf_set_string_helper (client, iter->data,
+			                            NM_SETTING_IP4_CONFIG_METHOD,
+			                            NM_SETTING_IP4_CONFIG_SETTING_NAME,
+			                            NM_SETTING_IP4_CONFIG_METHOD_AUTO);
+		}
+
+		g_free (method);
+
+next:
+		g_free (id);
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+

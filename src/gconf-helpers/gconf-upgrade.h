@@ -36,5 +36,7 @@ void nm_gconf_migrate_0_7_keyring_items (GConfClient *client);
 
 void nm_gconf_migrate_0_7_netmask_to_prefix (GConfClient *client);
 
+void nm_gconf_migrate_0_7_ip4_method (GConfClient *client);
+
 #endif	/* GCONF_UPGRADE_H */
 

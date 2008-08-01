@@ -225,7 +225,7 @@ populate_ui (CEPageIP4 *self)
 	/* Method */
 	gtk_combo_box_set_active (priv->method, 0);
 	if (setting->method) {
-		if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_AUTOIP))
+		if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_LINK_LOCAL))
 			method = IP4_METHOD_LINK_LOCAL;
 		else if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_MANUAL))
 			method = IP4_METHOD_MANUAL;
@@ -600,7 +600,7 @@ ui_to_setting (CEPageIP4 *self)
 
 	switch (int_method) {
 	case IP4_METHOD_LINK_LOCAL:
-		method = NM_SETTING_IP4_CONFIG_METHOD_AUTOIP;
+		method = NM_SETTING_IP4_CONFIG_METHOD_LINK_LOCAL;
 		break;
 	case IP4_METHOD_MANUAL:
 		method = NM_SETTING_IP4_CONFIG_METHOD_MANUAL;
@@ -612,7 +612,7 @@ ui_to_setting (CEPageIP4 *self)
 		ignore_dhcp_dns = TRUE;
 		/* fall through */
 	default:
-		method = NM_SETTING_IP4_CONFIG_METHOD_DHCP;
+		method = NM_SETTING_IP4_CONFIG_METHOD_AUTO;
 		break;
 	}
 
@@ -716,7 +716,7 @@ ui_to_setting (CEPageIP4 *self)
 	search_domains = g_slist_reverse (search_domains);
 
 	/* DHCP client ID */
-	if (!strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_DHCP)) {
+	if (!strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_AUTO)) {
 		dhcp_client_id = gtk_entry_get_text (priv->dhcp_client_id_entry);
 		if (dhcp_client_id && !strlen (dhcp_client_id))
 			dhcp_client_id = NULL;
