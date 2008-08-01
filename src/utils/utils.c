@@ -77,7 +77,7 @@ utils_bin2hexstr (const char *bytes, int len, int final_len)
 	return result;
 }
 
-static char * ignored_words[] = {
+static char *ignored_words[] = {
 	"Semiconductor",
 	"Components",
 	"Corporation",
@@ -87,9 +87,22 @@ static char * ignored_words[] = {
 	"Inc.",
 	"Inc",
 	"Ltd.",
-	"Multiprotocol",
-	"MAC/baseband",
-	"processor",
+	"chipset",
+	"adapter",
+	"[hex]",
+	NULL
+};
+
+static char *ignored_phrases[] = {
+	"Multiprotocol MAC/baseband processor",
+	"Wireless LAN Controller",
+	"Wireless LAN Adapter",
+	"Wireless Adapter",
+	"Network Connection",
+	"Wireless Cardbus Adapter",
+	"54 Mbps Wireless PC Card",
+	"Wireless PC Card",
+	"Wireless PC",
 	NULL
 };
 
@@ -107,7 +120,17 @@ fixup_desc_string (const char *desc)
 		p++;
 	}
 
-	/* Attmept to shorted ID by ignoring certain words */
+	/* Attempt to shorten ID by ignoring certain phrases */
+	for (item = ignored_phrases; *item; item++) {
+		guint32 temp_len = strlen (temp);
+		guint32 ignored_len = strlen (*item);
+
+		p = strstr (temp, *item);
+		if (p)
+			memmove (p, p + ignored_len, temp_len - (p - temp));
+	}
+
+	/* Attmept to shorten ID by ignoring certain individual words */
 	words = g_strsplit (temp, " ", 0);
 	str = g_string_new_len (NULL, strlen (temp));
 	g_free (temp);
