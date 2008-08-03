@@ -81,6 +81,7 @@ static char *ignored_words[] = {
 	"Semiconductor",
 	"Components",
 	"Corporation",
+	"Communications",
 	"Corp.",
 	"Corp",
 	"Co.",
@@ -90,6 +91,7 @@ static char *ignored_words[] = {
 	"chipset",
 	"adapter",
 	"[hex]",
+	"NDIS",
 	NULL
 };
 
@@ -100,9 +102,13 @@ static char *ignored_phrases[] = {
 	"Wireless Adapter",
 	"Network Connection",
 	"Wireless Cardbus Adapter",
+	"Wireless CardBus Adapter",
 	"54 Mbps Wireless PC Card",
 	"Wireless PC Card",
 	"Wireless PC",
+	"PC Card with XJACK(r) Antenna",
+	"Wireless cardbus",
+	"Wireless LAN PC Card",
 	NULL
 };
 
