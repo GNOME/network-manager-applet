@@ -47,19 +47,24 @@ typedef struct {
 	GtkListStore *method_store;
 
 	/* Addresses */
+	GtkWidget *addr_label;
 	GtkButton *addr_add;
 	GtkButton *addr_delete;
 	GtkTreeView *addr_list;
 
 	/* DNS servers */
+	GtkWidget *dns_servers_label;
 	GtkEntry *dns_servers;
 
 	/* Search domains */
+	GtkWidget *dns_searches_label;
 	GtkEntry *dns_searches;
 
 	/* DHCP stuff */
 	GtkWidget *dhcp_client_id_label;
-	GtkEntry *dhcp_client_id_entry;
+	GtkEntry *dhcp_client_id;
+
+	GtkButton *routes_button;
 
 	gboolean disposed;
 } CEPageIP4Private;
@@ -125,15 +130,21 @@ ip4_private_init (CEPageIP4 *self, gboolean is_vpn)
 
 	gtk_combo_box_set_model (priv->method, GTK_TREE_MODEL (priv->method_store));
 
+	priv->addr_label = glade_xml_get_widget (xml, "ip4_addr_label");
 	priv->addr_add = GTK_BUTTON (glade_xml_get_widget (xml, "ip4_addr_add_button"));
 	priv->addr_delete = GTK_BUTTON (glade_xml_get_widget (xml, "ip4_addr_delete_button"));
 	priv->addr_list = GTK_TREE_VIEW (glade_xml_get_widget (xml, "ip4_addresses"));
 
+	priv->dns_servers_label = glade_xml_get_widget (xml, "ip4_dns_servers_label");
 	priv->dns_servers = GTK_ENTRY (glade_xml_get_widget (xml, "ip4_dns_servers_entry"));
+
+	priv->dns_searches_label = glade_xml_get_widget (xml, "ip4_dns_searches_label");
 	priv->dns_searches = GTK_ENTRY (glade_xml_get_widget (xml, "ip4_dns_searches_entry"));
 
-	priv->dhcp_client_id_label = GTK_WIDGET (glade_xml_get_widget (xml, "dhcp_client_id_label"));
-	priv->dhcp_client_id_entry = GTK_ENTRY (glade_xml_get_widget (xml, "dhcp_client_id_entry"));
+	priv->dhcp_client_id_label = glade_xml_get_widget (xml, "ip4_dhcp_client_id_label");
+	priv->dhcp_client_id = GTK_ENTRY (glade_xml_get_widget (xml, "ip4_dhcp_client_id_entry"));
+
+	priv->routes_button = GTK_BUTTON (glade_xml_get_widget (xml, "ip4_routes_button"));
 }
 
 static void
@@ -143,6 +154,8 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	guint32 method = IP4_METHOD_AUTO;
 	gboolean addr_enabled = FALSE;
 	gboolean dns_enabled = FALSE;
+	gboolean dhcp_enabled = FALSE;
+	gboolean routes_enabled = FALSE;
 	GtkTreeIter iter;
 
 	if (gtk_combo_box_get_active_iter (priv->method, &iter)) {
@@ -151,17 +164,21 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	}
 
 	switch (method) {
+	case IP4_METHOD_AUTO:
+		dhcp_enabled = routes_enabled = TRUE;
+		break;
 	case IP4_METHOD_AUTO_MANUAL_DNS:
 		addr_enabled = FALSE;
-		dns_enabled = TRUE;
+		dns_enabled = dhcp_enabled = routes_enabled = TRUE;
 		break;
 	case IP4_METHOD_MANUAL:
-		addr_enabled = dns_enabled = TRUE;
+		addr_enabled = dns_enabled = routes_enabled = TRUE;
 		break;
 	default:
 		break;
 	}
 
+	gtk_widget_set_sensitive (priv->addr_label, addr_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), addr_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), addr_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_list), addr_enabled);
@@ -172,21 +189,22 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 		gtk_list_store_clear (store);
 	}
 
+	gtk_widget_set_sensitive (priv->dns_servers_label, dns_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_servers), dns_enabled);
 	if (!dns_enabled)
 		gtk_entry_set_text (priv->dns_servers, "");
 
+	gtk_widget_set_sensitive (priv->dns_searches_label, dns_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_searches), dns_enabled);
 	if (!dns_enabled)
 		gtk_entry_set_text (priv->dns_searches, "");
 
-	if ((method == IP4_METHOD_AUTO) || (method == IP4_METHOD_AUTO_MANUAL_DNS)) {
-		gtk_widget_show (priv->dhcp_client_id_label);
-		gtk_widget_show (GTK_WIDGET (priv->dhcp_client_id_entry));
-	} else {
-		gtk_widget_hide (priv->dhcp_client_id_label);
-		gtk_widget_hide (GTK_WIDGET (priv->dhcp_client_id_entry));
-	}
+	gtk_widget_set_sensitive (priv->dhcp_client_id_label, dhcp_enabled);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dhcp_client_id), dhcp_enabled);
+	if (!dhcp_enabled)
+		gtk_entry_set_text (priv->dhcp_client_id, "");
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->routes_button), routes_enabled);
 
 	ce_page_changed (CE_PAGE (user_data));
 }
@@ -305,7 +323,7 @@ populate_ui (CEPageIP4 *self)
 
 	if ((method == IP4_METHOD_AUTO) || (method = IP4_METHOD_AUTO_MANUAL_DNS)) {
 		if (setting->dhcp_client_id)
-			gtk_entry_set_text (priv->dhcp_client_id_entry, setting->dhcp_client_id);
+			gtk_entry_set_text (priv->dhcp_client_id, setting->dhcp_client_id);
 	}
 }
 
@@ -564,7 +582,7 @@ ce_page_ip4_new (NMConnection *connection)
 	method_changed (priv->method, self);
 	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
 
-	g_signal_connect_swapped (priv->dhcp_client_id_entry, "changed", G_CALLBACK (ce_page_changed), self);
+	g_signal_connect_swapped (priv->dhcp_client_id, "changed", G_CALLBACK (ce_page_changed), self);
 
 	return self;
 }
@@ -717,7 +735,7 @@ ui_to_setting (CEPageIP4 *self)
 
 	/* DHCP client ID */
 	if (!strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_AUTO)) {
-		dhcp_client_id = gtk_entry_get_text (priv->dhcp_client_id_entry);
+		dhcp_client_id = gtk_entry_get_text (priv->dhcp_client_id);
 		if (dhcp_client_id && !strlen (dhcp_client_id))
 			dhcp_client_id = NULL;
 	}
