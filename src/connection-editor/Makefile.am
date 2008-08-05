@@ -47,7 +47,9 @@ nm_connection_editor_SOURCES = \
 	page-vpn.h \
 	page-vpn.c \
 	vpn-helpers.h \
-	vpn-helpers.c
+	vpn-helpers.c \
+	ip4-routes-dialog.h \
+	ip4-routes-dialog.c
 
 if NO_POLKIT_GNOME
 nm_connection_editor_SOURCES += \

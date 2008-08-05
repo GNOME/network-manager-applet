@@ -35,6 +35,7 @@
 #include <nm-setting-vpn.h>
 
 #include "page-ip4.h"
+#include "ip4-routes-dialog.h"
 
 G_DEFINE_TYPE (CEPageIP4, ce_page_ip4, CE_TYPE_PAGE)
 
@@ -42,6 +43,7 @@ G_DEFINE_TYPE (CEPageIP4, ce_page_ip4, CE_TYPE_PAGE)
 
 typedef struct {
 	NMSettingIP4Config *setting;
+	char *connection_id;
 
 	GtkComboBox *method;
 	GtkListStore *method_store;
@@ -66,7 +68,8 @@ typedef struct {
 
 	GtkButton *routes_button;
 
-	gboolean disposed;
+	GtkWindowGroup *window_group;
+	gboolean window_added;
 } CEPageIP4Private;
 
 #define METHOD_COL_NAME 0
@@ -470,6 +473,57 @@ cell_editing_started (GtkCellRenderer *cell,
 	                  data);
 }
 
+static void
+routes_dialog_close_cb (GtkWidget *dialog, gpointer user_data)
+{
+	gtk_widget_hide (dialog);
+	/* gtk_widget_destroy() will remove the window from the window group */
+	gtk_widget_destroy (dialog);
+}
+
+static void
+routes_dialog_response_cb (GtkWidget *dialog, gint response, gpointer user_data)
+{
+	CEPageIP4 *self = CE_PAGE_IP4 (user_data);
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
+
+	if (response == GTK_RESPONSE_OK)
+		ip4_routes_dialog_update_setting (dialog, priv->setting);
+
+	routes_dialog_close_cb (dialog, NULL);
+}
+
+static void
+routes_button_clicked_cb (GtkWidget *button, gpointer user_data)
+{
+	CEPageIP4 *self = CE_PAGE_IP4 (user_data);
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
+	GtkWidget *dialog, *toplevel;
+
+	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
+	g_return_if_fail (GTK_WIDGET_TOPLEVEL (toplevel));
+
+	dialog = ip4_routes_dialog_new (priv->setting->routes);
+	if (!dialog) {
+		g_warning ("%s: failed to create the routes dialog!", __func__);
+		return;
+	}
+
+	gtk_window_group_add_window (priv->window_group, GTK_WINDOW (dialog));
+	if (!priv->window_added) {
+		gtk_window_group_add_window (priv->window_group, GTK_WINDOW (toplevel));
+		priv->window_added = TRUE;
+	}
+
+	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
+	gtk_window_set_title (GTK_WINDOW (dialog), g_strdup_printf (_("Editing IPv4 routes for %s"), priv->connection_id));
+
+	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (routes_dialog_response_cb), self);
+	g_signal_connect (G_OBJECT (dialog), "close", G_CALLBACK (routes_dialog_close_cb), self);
+
+	gtk_widget_show_all (dialog);
+}
+
 CEPageIP4 *
 ce_page_ip4_new (NMConnection *connection)
 {
@@ -506,11 +560,15 @@ ce_page_ip4_new (NMConnection *connection)
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con && s_con->type);
+
 	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME))
 		is_vpn = TRUE;
 
 	ip4_private_init (self, is_vpn);
 	priv = CE_PAGE_IP4_GET_PRIVATE (self);
+
+	priv->window_group = gtk_window_group_new ();
+	priv->connection_id = g_strdup (s_con->id);
 
 	priv->setting = (NMSettingIP4Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG);
 	if (!priv->setting) {
@@ -583,6 +641,8 @@ ce_page_ip4_new (NMConnection *connection)
 	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
 
 	g_signal_connect_swapped (priv->dhcp_client_id, "changed", G_CALLBACK (ce_page_changed), self);
+
+	g_signal_connect (priv->routes_button, "clicked", G_CALLBACK (routes_button_clicked_cb), self);
 
 	return self;
 }
@@ -783,6 +843,20 @@ ce_page_ip4_init (CEPageIP4 *self)
 }
 
 static void
+dispose (GObject *object)
+{
+	CEPageIP4 *self = CE_PAGE_IP4 (object);
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
+
+	if (priv->window_group)
+		g_object_unref (priv->window_group);
+
+	g_free (priv->connection_id);
+
+	G_OBJECT_CLASS (ce_page_ip4_parent_class)->dispose (object);
+}
+
+static void
 ce_page_ip4_class_init (CEPageIP4Class *ip4_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (ip4_class);
@@ -792,4 +866,5 @@ ce_page_ip4_class_init (CEPageIP4Class *ip4_class)
 
 	/* virtual methods */
 	parent_class->validate = validate;
+	object_class->dispose = dispose;
 }
