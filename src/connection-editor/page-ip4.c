@@ -76,7 +76,7 @@ typedef struct {
 #define METHOD_COL_NUM  1
 
 #define IP4_METHOD_AUTO            0
-#define IP4_METHOD_AUTO_MANUAL_DNS 1
+#define IP4_METHOD_AUTO_ADDRESSES  1
 #define IP4_METHOD_MANUAL          2
 #define IP4_METHOD_LINK_LOCAL      3
 #define IP4_METHOD_SHARED          4
@@ -106,8 +106,8 @@ ip4_private_init (CEPageIP4 *self, gboolean is_vpn)
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
-	                    METHOD_COL_NAME, _("Automatic addressing only"),
-	                    METHOD_COL_NUM, IP4_METHOD_AUTO_MANUAL_DNS,
+	                    METHOD_COL_NAME, _("Automatic addresses only"),
+	                    METHOD_COL_NUM, IP4_METHOD_AUTO_ADDRESSES,
 	                    -1);
 
 	gtk_list_store_append (priv->method_store, &iter);
@@ -123,13 +123,13 @@ ip4_private_init (CEPageIP4 *self, gboolean is_vpn)
 		                    METHOD_COL_NAME, _("Link-Local Only"),
 		                    METHOD_COL_NUM, IP4_METHOD_LINK_LOCAL,
 		                    -1);
-	}
 
-	gtk_list_store_append (priv->method_store, &iter);
-	gtk_list_store_set (priv->method_store, &iter,
-	                    METHOD_COL_NAME, _("Shared to other computers"),
-	                    METHOD_COL_NUM, IP4_METHOD_SHARED,
-	                    -1);
+		gtk_list_store_append (priv->method_store, &iter);
+		gtk_list_store_set (priv->method_store, &iter,
+		                    METHOD_COL_NAME, _("Shared to other computers"),
+		                    METHOD_COL_NUM, IP4_METHOD_SHARED,
+		                    -1);
+	}
 
 	gtk_combo_box_set_model (priv->method, GTK_TREE_MODEL (priv->method_store));
 
@@ -170,7 +170,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	case IP4_METHOD_AUTO:
 		dhcp_enabled = routes_enabled = TRUE;
 		break;
-	case IP4_METHOD_AUTO_MANUAL_DNS:
+	case IP4_METHOD_AUTO_ADDRESSES:
 		addr_enabled = FALSE;
 		dns_enabled = dhcp_enabled = routes_enabled = TRUE;
 		break;
@@ -255,7 +255,7 @@ populate_ui (CEPageIP4 *self)
 	}
 
 	if (method == IP4_METHOD_AUTO && setting->ignore_auto_dns)
-		method = IP4_METHOD_AUTO_MANUAL_DNS;
+		method = IP4_METHOD_AUTO_ADDRESSES;
 
 	info.method = method;
 	info.combo = priv->method;
@@ -324,7 +324,7 @@ populate_ui (CEPageIP4 *self)
 	gtk_entry_set_text (priv->dns_searches, string->str);
 	g_string_free (string, TRUE);
 
-	if ((method == IP4_METHOD_AUTO) || (method = IP4_METHOD_AUTO_MANUAL_DNS)) {
+	if ((method == IP4_METHOD_AUTO) || (method = IP4_METHOD_AUTO_ADDRESSES)) {
 		if (setting->dhcp_client_id)
 			gtk_entry_set_text (priv->dhcp_client_id, setting->dhcp_client_id);
 	}
@@ -690,7 +690,7 @@ ui_to_setting (CEPageIP4 *self)
 	case IP4_METHOD_SHARED:
 		method = NM_SETTING_IP4_CONFIG_METHOD_SHARED;
 		break;
-	case IP4_METHOD_AUTO_MANUAL_DNS:
+	case IP4_METHOD_AUTO_ADDRESSES:
 		ignore_auto_dns = TRUE;
 		/* fall through */
 	default:
