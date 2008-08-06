@@ -106,7 +106,7 @@ ip4_private_init (CEPageIP4 *self, gboolean is_vpn)
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
-	                    METHOD_COL_NAME, _("Automatic with manual DNS settings"),
+	                    METHOD_COL_NAME, _("Automatic addressing only"),
 	                    METHOD_COL_NUM, IP4_METHOD_AUTO_MANUAL_DNS,
 	                    -1);
 
@@ -254,7 +254,7 @@ populate_ui (CEPageIP4 *self)
 			method = IP4_METHOD_SHARED;
 	}
 
-	if (method == IP4_METHOD_AUTO && setting->ignore_dhcp_dns)
+	if (method == IP4_METHOD_AUTO && setting->ignore_auto_dns)
 		method = IP4_METHOD_AUTO_MANUAL_DNS;
 
 	info.method = method;
@@ -499,11 +499,15 @@ routes_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	CEPageIP4 *self = CE_PAGE_IP4 (user_data);
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	GtkWidget *dialog, *toplevel;
+	gboolean automatic = FALSE;
 
 	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
 	g_return_if_fail (GTK_WIDGET_TOPLEVEL (toplevel));
 
-	dialog = ip4_routes_dialog_new (priv->setting->routes);
+	if (!strcmp (priv->setting->method, NM_SETTING_IP4_CONFIG_METHOD_AUTO))
+		automatic = TRUE;
+	
+	dialog = ip4_routes_dialog_new (priv->setting->routes, automatic, priv->setting->ignore_auto_routes);
 	if (!dialog) {
 		g_warning ("%s: failed to create the routes dialog!", __func__);
 		return;
@@ -666,7 +670,7 @@ ui_to_setting (CEPageIP4 *self)
 	GPtrArray *addresses = NULL;
 	gboolean valid = FALSE, iter_valid;
 	const char *text;
-	gboolean ignore_dhcp_dns = FALSE;
+	gboolean ignore_auto_dns = FALSE;
 	const char *dhcp_client_id = NULL;
 	char **items = NULL, **iter;
 
@@ -687,7 +691,7 @@ ui_to_setting (CEPageIP4 *self)
 		method = NM_SETTING_IP4_CONFIG_METHOD_SHARED;
 		break;
 	case IP4_METHOD_AUTO_MANUAL_DNS:
-		ignore_dhcp_dns = TRUE;
+		ignore_auto_dns = TRUE;
 		/* fall through */
 	default:
 		method = NM_SETTING_IP4_CONFIG_METHOD_AUTO;
@@ -806,7 +810,7 @@ ui_to_setting (CEPageIP4 *self)
 				  NM_SETTING_IP4_CONFIG_ADDRESSES, addresses,
 				  NM_SETTING_IP4_CONFIG_DNS, dns_servers,
 				  NM_SETTING_IP4_CONFIG_DNS_SEARCH, search_domains,
-				  NM_SETTING_IP4_CONFIG_IGNORE_DHCP_DNS, ignore_dhcp_dns,
+				  NM_SETTING_IP4_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
 				  NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
 				  NULL);
 	valid = TRUE;

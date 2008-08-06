@@ -24,6 +24,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <errno.h>
+#include <stdlib.h>
 
 #include <glade/glade.h>
 #include <glib/gi18n.h>
@@ -32,7 +34,7 @@
 
 #define COL_ADDRESS 0
 #define COL_PREFIX  1
-#define COL_GATEWAY 2
+#define COL_NEXT_HOP 2
 #define COL_METRIC  3
 
 static void
@@ -184,7 +186,9 @@ cell_editing_started (GtkCellRenderer *cell,
 }
 
 GtkWidget *
-ip4_routes_dialog_new (GSList *routes)
+ip4_routes_dialog_new (GSList *routes,
+                       gboolean automatic,
+                       gboolean ignore_auto_routes)
 {
 	GladeXML *xml;
 	GtkWidget *dialog, *widget;
@@ -218,7 +222,7 @@ ip4_routes_dialog_new (GSList *routes)
 
 	/* Add existing routes */
 	for (iter = routes; iter; iter = g_slist_next (iter)) {
-		NMSettingIP4Address *route = (NMSettingIP4Address *) iter->data;
+		NMSettingIP4Route *route = (NMSettingIP4Route *) iter->data;
 		struct in_addr tmp_addr;
 		char ip_string[50];
 
@@ -235,11 +239,11 @@ ip4_routes_dialog_new (GSList *routes)
 
 		gtk_list_store_set (store, &model_iter, COL_PREFIX, g_strdup_printf ("%d", route->prefix), -1);
 
-		tmp_addr.s_addr = route->gateway;
+		tmp_addr.s_addr = route->next_hop;
 		if (inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
-			gtk_list_store_set (store, &model_iter, COL_GATEWAY, g_strdup (ip_string), -1);
+			gtk_list_store_set (store, &model_iter, COL_NEXT_HOP, g_strdup (ip_string), -1);
 
-		gtk_list_store_set (store, &model_iter, COL_METRIC, g_strdup_printf ("%d", 1), -1);
+		gtk_list_store_set (store, &model_iter, COL_METRIC, g_strdup_printf ("%d", route->metric), -1);
 	}
 
 	widget = glade_xml_get_widget (xml, "ip4_routes");
@@ -280,12 +284,12 @@ ip4_routes_dialog_new (GSList *routes)
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
-	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_GATEWAY));
+	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_NEXT_HOP));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
 	                                                      -1, _("Gateway"), renderer,
-	                                                      "text", COL_GATEWAY,
+	                                                      "text", COL_NEXT_HOP,
 	                                                      NULL);
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
@@ -322,11 +326,130 @@ ip4_routes_dialog_new (GSList *routes)
 	                  G_CALLBACK (route_delete_clicked),
 	                  glade_xml_get_widget (xml, "ip4_routes"));
 
+	widget = glade_xml_get_widget (xml, "ip4_ignore_auto_routes");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), ignore_auto_routes);
+	gtk_widget_set_sensitive (widget, automatic);
+
 	return dialog;
+}
+
+static gboolean
+get_one_int (GtkTreeModel *model,
+             GtkTreeIter *iter,
+             int column,
+             const char *name,
+             guint32 max_value,
+             guint32 *out)
+{
+	char *item = NULL;
+	gboolean success = FALSE;
+	long int tmp_int;
+
+	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (!item) {
+		g_warning ("%s: IPv4 %s '%s' missing!",
+		           __func__, name, item ? item : "<none>");
+		return FALSE;
+	}
+
+	errno = 0;
+	tmp_int = strtol (item, NULL, 10);
+	if (errno || tmp_int < 0 || tmp_int > max_value) {
+		g_warning ("%s: IPv4 %s '%s' invalid!",
+		           __func__, name, item ? item : "<none>");
+		goto out;
+	}
+	*out = (guint32) tmp_int;
+	success = TRUE;
+
+out:
+	g_free (item);
+	return success;
+}
+
+static gboolean
+get_one_addr (GtkTreeModel *model,
+              GtkTreeIter *iter,
+              int column,
+              const char *name,
+              gboolean fail_if_missing,
+              guint32 *out)
+{
+	char *item = NULL;
+	struct in_addr tmp_addr;
+	gboolean success = FALSE;
+
+	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (!item && !fail_if_missing)
+		return TRUE;
+
+	if (item && (inet_pton (AF_INET, item, &tmp_addr) > 0)) {
+		*out = tmp_addr.s_addr;
+		success = TRUE;
+	} else {
+		g_warning ("%s: IPv4 %s '%s' missing or invalid!",
+	           __func__, name, item ? item : "<none>");
+	}
+
+	g_free (item);
+	return success;
 }
 
 void
 ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
 {
+	GladeXML *xml;
+	GtkWidget *widget;
+	GtkTreeModel *model;
+	GtkTreeIter tree_iter;
+	gboolean iter_valid;
+
+	g_return_if_fail (dialog != NULL);
+	g_return_if_fail (s_ip4 != NULL);
+
+	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
+	g_return_if_fail (xml != NULL);
+	g_return_if_fail (GLADE_IS_XML (xml));
+
+	widget = glade_xml_get_widget (xml, "ip4_routes");
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
+	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
+
+	g_slist_foreach (s_ip4->routes, (GFunc) g_free, NULL);
+	g_slist_free (s_ip4->routes);
+	s_ip4->routes = NULL;
+
+	while (iter_valid) {
+		guint32 addr = 0, prefix = 0, next_hop = 0, metric = 0;
+		NMSettingIP4Route *route;
+
+		/* Address */
+		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, "address", TRUE, &addr))
+			goto next;
+
+		/* Prefix */
+		if (!get_one_int (model, &tree_iter, COL_PREFIX, "prefix", 32, &prefix))
+			goto next;
+
+		/* Next hop (optional) */
+		get_one_addr (model, &tree_iter, COL_NEXT_HOP, "next hop", TRUE, &next_hop);
+
+		/* Prefix (optional) */
+		get_one_int (model, &tree_iter, COL_METRIC, "metric", G_MAXUINT32, &metric);
+
+		route = g_malloc0 (sizeof (NMSettingIP4Route));
+		route->address = addr;
+		route->prefix = prefix;
+		route->next_hop = next_hop;
+		route->metric = metric;
+
+		s_ip4->routes = g_slist_append (s_ip4->routes, route);
+
+	next:
+		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
+	}
+
+	widget = glade_xml_get_widget (xml, "ip4_ignore_auto_routes");
+	s_ip4->ignore_auto_routes = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 }
 
