@@ -38,5 +38,9 @@ void nm_gconf_migrate_0_7_netmask_to_prefix (GConfClient *client);
 
 void nm_gconf_migrate_0_7_ip4_method (GConfClient *client);
 
+void nm_gconf_migrate_0_7_ignore_dhcp_dns (GConfClient *client);
+
+void nm_gconf_migrate_0_7_vpn_routes (GConfClient *client);
+
 #endif	/* GCONF_UPGRADE_H */
 

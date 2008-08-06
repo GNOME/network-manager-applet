@@ -108,10 +108,11 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 			       GHashTable **value);
 
 gboolean
-nm_gconf_get_ip4_addresses_helper (GConfClient *client,
+nm_gconf_get_ip4_helper (GConfClient *client,
 						  const char *path,
 						  const char *key,
 						  const char *network,
+						  guint32 tuple_len,
 						  GPtrArray **value);
 
 /* Setters */
@@ -172,10 +173,11 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 			       GHashTable *value);
 
 gboolean
-nm_gconf_set_ip4_addresses_helper (GConfClient *client,
+nm_gconf_set_ip4_helper (GConfClient *client,
 					  const char *path,
 					  const char *key,
 					  const char *network,
+					  guint32 tuple_len,
 					  GPtrArray *value);
 
 GSList *

@@ -27,6 +27,9 @@
 #include <string.h>
 #include "wireless-helper.h"
 #include <stdlib.h>
+#include <netinet/in.h>
+#include <errno.h>
+#include <arpa/inet.h>
 
 #include <gnome-keyring.h>
 #include <nm-setting-connection.h>
@@ -504,6 +507,50 @@ nm_gconf_0_6_openvpn_settings (GSList *vpn_data)
 	return s_vpn_props;
 }
 
+static GSList *
+convert_routes (GSList *str_routes)
+{
+	GSList *routes = NULL, *iter;
+
+	for (iter = str_routes; iter; iter = g_slist_next (iter)) {
+		struct in_addr tmp;
+		char *p, *str_route;
+		long int prefix = 32;
+
+		str_route = g_strdup (iter->data);
+		p = strchr (str_route, '/');
+		if (!p || !(*(p + 1))) {
+			g_warning ("Ignoring invalid route '%s'", str_route);
+			goto next;
+		}
+
+		errno = 0;
+		prefix = strtol (p + 1, NULL, 10);
+		if (errno || prefix <= 0 || prefix > 32) {
+			g_warning ("Ignoring invalid route '%s'", str_route);
+			goto next;
+		}
+
+		/* don't pass the prefix to inet_pton() */
+		*p = '\0';
+		if (inet_pton (AF_INET, str_route, &tmp) > 0) {
+			NMSettingIP4Route *route;
+
+			route = g_new0 (NMSettingIP4Route, 1);
+			route->address = tmp.s_addr;
+			route->prefix = (guint32) prefix;
+
+			routes = g_slist_append (routes, route);
+		} else
+			g_warning ("Ignoring invalid route '%s'", str_route);
+
+next:
+		g_free (str_route);
+	}
+
+	return routes;
+}
+
 static NMConnection *
 nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 						    const char *dir)
@@ -512,8 +559,9 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
 	NMSettingVPNProperties *s_vpn_props;
+	NMSettingIP4Config *s_ip4;
 	char *path, *network, *id = NULL, *service_name = NULL;
-	GSList *routes = NULL, *vpn_data = NULL;
+	GSList *str_routes = NULL, *vpn_data = NULL;
 
 	path = g_path_get_dirname (dir);
 	network = g_path_get_basename (dir);
@@ -530,10 +578,10 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 		return NULL;
 	}
 
-	if (!nm_gconf_get_stringlist_helper (client, path, "routes", network, &routes))
-		routes = NULL;
+	if (!nm_gconf_get_stringlist_helper (client, path, "routes", network, &str_routes))
+		str_routes = NULL;
 	if (!nm_gconf_get_stringlist_helper (client, path, "vpn_data", network, &vpn_data))
-		routes = NULL;
+		vpn_data = NULL;
 
 	s_con = (NMSettingConnection *)nm_setting_connection_new ();
 	s_con->id = id;
@@ -541,7 +589,6 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 
 	s_vpn = (NMSettingVPN *)nm_setting_vpn_new ();
 	s_vpn->service_type = service_name;
-	s_vpn->routes = routes;
 
 	if (!strcmp (service_name, "org.freedesktop.NetworkManager.vpnc"))
 		s_vpn_props = nm_gconf_0_6_vpnc_settings (vpn_data);
@@ -556,11 +603,18 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	g_free (path);
 	g_free (network);
 
+	if (str_routes) {
+		s_ip4 = NM_SETTING_IP4_CONFIG (nm_setting_ip4_config_new ());
+		s_ip4->routes = convert_routes (str_routes);
+	}
+
 	connection = nm_connection_new ();
-	nm_connection_add_setting (connection, (NMSetting *)s_con);
-	nm_connection_add_setting (connection, (NMSetting *)s_vpn);
+	nm_connection_add_setting (connection, NM_SETTING (s_con));
+	nm_connection_add_setting (connection, NM_SETTING (s_vpn));
 	if (s_vpn_props)
-		nm_connection_add_setting (connection, (NMSetting *)s_vpn_props);
+		nm_connection_add_setting (connection, NM_SETTING (s_vpn_props));
+	if (s_ip4)
+		nm_connection_add_setting (connection, NM_SETTING (s_vpn_props));
 
 	return connection;
 }
@@ -1095,6 +1149,172 @@ nm_gconf_migrate_0_7_ip4_method (GConfClient *client)
 
 next:
 		g_free (id);
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+
+#define IP4_KEY_IGNORE_DHCP_DNS "ignore-dhcp-dns"
+
+void
+nm_gconf_migrate_0_7_ignore_dhcp_dns (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *del_key;
+		gboolean ignore_auto_dns = FALSE;
+
+		if (!nm_gconf_get_bool_helper (client, iter->data,
+		                               IP4_KEY_IGNORE_DHCP_DNS,
+		                               NM_SETTING_IP4_CONFIG_SETTING_NAME,
+		                               &ignore_auto_dns))
+			continue;
+
+		/* add new key with new name */
+		if (ignore_auto_dns) {
+			nm_gconf_set_bool_helper (client, iter->data,
+			                          NM_SETTING_IP4_CONFIG_IGNORE_AUTO_DNS,
+			                          NM_SETTING_IP4_CONFIG_SETTING_NAME,
+			                          ignore_auto_dns);
+		}
+
+		/* delete old key */
+		del_key = g_strdup_printf ("%s/%s/%s",
+		                           (const char *) iter->data,
+		                           NM_SETTING_IP4_CONFIG_SETTING_NAME,
+		                           IP4_KEY_IGNORE_DHCP_DNS);
+		gconf_client_unset (client, del_key, NULL);
+		g_free (del_key);
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+
+static gboolean
+convert_route (const char *in_route, NMSettingIP4Route *converted)
+{
+	struct in_addr tmp;
+	char *p, *str_route;
+	long int prefix = 32;
+	gboolean success = FALSE;
+
+	memset (converted, 0, sizeof (*converted));
+
+	str_route = g_strdup (in_route);
+	p = strchr (str_route, '/');
+	if (!p || !(*(p + 1))) {
+		g_warning ("Ignoring invalid route '%s'", str_route);
+		goto out;
+	}
+
+	errno = 0;
+	prefix = strtol (p + 1, NULL, 10);
+	if (errno || prefix <= 0 || prefix > 32) {
+		g_warning ("Ignoring invalid route '%s'", str_route);
+		goto out;
+	}
+
+	/* don't pass the prefix to inet_pton() */
+	*p = '\0';
+	if (inet_pton (AF_INET, str_route, &tmp) <= 0) {
+		g_warning ("Ignoring invalid route '%s'", str_route);
+		goto out;
+	}
+
+	converted->address = tmp.s_addr;
+	converted->prefix = (guint32) prefix;
+	success = TRUE;
+
+out:
+	g_free (str_route);
+	return success;
+}
+
+#define VPN_KEY_ROUTES "routes"
+
+static void
+free_one_route (gpointer data, gpointer user_data)
+{
+	g_array_free ((GArray *) data, TRUE);
+}
+
+void
+nm_gconf_migrate_0_7_vpn_routes (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *del_key;
+		GSList *old_routes = NULL, *routes_iter;
+		GPtrArray *new_routes = NULL;
+
+		if (!nm_gconf_get_stringlist_helper (client, iter->data,
+		                                     VPN_KEY_ROUTES,
+		                                     NM_SETTING_VPN_SETTING_NAME,
+		                                     &old_routes))
+			continue;
+
+		/* Convert 'x.x.x.x/x' into a route structure */
+		for (routes_iter = old_routes; routes_iter; routes_iter = g_slist_next (routes_iter)) {
+			NMSettingIP4Route route;
+
+			if (convert_route (routes_iter->data, &route)) {
+				GArray *tmp_route;
+
+				if (!new_routes)
+					new_routes = g_ptr_array_sized_new (3);
+
+				tmp_route = g_array_sized_new (FALSE, TRUE, sizeof (guint32), 4);
+				g_array_append_val (tmp_route, route.address);
+				g_array_append_val (tmp_route, route.prefix);
+				g_array_append_val (tmp_route, route.next_hop);
+				g_array_append_val (tmp_route, route.metric);
+				g_ptr_array_add (new_routes, tmp_route);
+			}
+		}
+
+		if (new_routes) {
+			char *method = NULL;
+
+			/* Set new routes */
+			nm_gconf_set_ip4_helper (client, iter->data,
+			                         NM_SETTING_IP4_CONFIG_ROUTES,
+			                         NM_SETTING_IP4_CONFIG_SETTING_NAME,
+			                         4,
+			                         new_routes);
+
+			g_ptr_array_foreach (new_routes, (GFunc) free_one_route, NULL);
+			g_ptr_array_free (new_routes, TRUE);
+
+			/* To make a valid ip4 setting, need a method too */
+			if (!nm_gconf_get_string_helper (client, iter->data,
+			                                 NM_SETTING_IP4_CONFIG_METHOD,
+			                                 NM_SETTING_IP4_CONFIG_SETTING_NAME,
+			                                 &method)) {				
+				/* If no method was specified, use 'auto' */
+				nm_gconf_set_string_helper (client, iter->data,
+				                            NM_SETTING_IP4_CONFIG_METHOD,
+				                            NM_SETTING_IP4_CONFIG_SETTING_NAME,
+				                            NM_SETTING_IP4_CONFIG_METHOD_AUTO);
+			}
+			g_free (method);
+		}
+
+		/* delete old key */
+		del_key = g_strdup_printf ("%s/%s/%s",
+		                           (const char *) iter->data,
+		                           NM_SETTING_VPN_SETTING_NAME,
+		                           VPN_KEY_ROUTES);
+		gconf_client_unset (client, del_key, NULL);
+		g_free (del_key);
+
+		g_slist_foreach (old_routes, (GFunc) g_free, NULL);
+		g_slist_free (old_routes);
 	}
 	free_slist (connections);
 

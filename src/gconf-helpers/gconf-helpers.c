@@ -31,6 +31,7 @@
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-8021x.h>
 #include <nm-setting-vpn.h>
+#include <nm-setting-ip4-config.h>
 #include <nm-utils.h>
 #include <nm-settings.h>
 
@@ -401,52 +402,62 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 }
 
 gboolean
-nm_gconf_get_ip4_addresses_helper (GConfClient *client,
+nm_gconf_get_ip4_helper (GConfClient *client,
 						  const char *path,
 						  const char *key,
 						  const char *network,
+						  guint32 tuple_len,
 						  GPtrArray **value)
 {
 	char *gc_key;
-	GConfValue *gc_value;
+	GConfValue *gc_value = NULL;
 	GPtrArray *array;
 	gboolean success = FALSE;
+	GSList *values, *iter;
+	GArray *tuple = NULL;
 
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (network != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
+	g_return_val_if_fail (tuple_len > 0, FALSE);
 
 	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
 	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
 		goto out;
 
-	if (gc_value->type == GCONF_VALUE_LIST
-	    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_INT)
-	{
-		GSList *elt;
-		GArray *tuple = NULL;
+	if (   (gc_value->type != GCONF_VALUE_LIST)
+	    || (gconf_value_get_list_type (gc_value) != GCONF_VALUE_INT))
+		goto out;
 
-		array = g_ptr_array_sized_new (1);
-		for (elt = gconf_value_get_list (gc_value); elt != NULL; elt = g_slist_next (elt)) {
-			int i = gconf_value_get_int ((GConfValue *) elt->data);
-
-			if (tuple == NULL)
-				tuple = g_array_sized_new (FALSE, TRUE, sizeof (guint32), 3);
-
-			g_array_append_val (tuple, i);
-
-			/* Got addr, netmask, and gateway, add to ptr array */
-			if (tuple->len == 3) {
-				g_ptr_array_add (array, tuple);
-				tuple = NULL;
-			}
-		}
-
-		*value = array;
-		success = TRUE;
+	values = gconf_value_get_list (gc_value);
+	if (g_slist_length (values) % tuple_len != 0) {
+		g_warning ("%s: %s format invalid; # elements not divisible by %d",
+		           __func__, gc_key, tuple_len);
+		goto out;
 	}
 
+	array = g_ptr_array_sized_new (1);
+	for (iter = values; iter; iter = g_slist_next (iter)) {
+		int i = gconf_value_get_int ((GConfValue *) iter->data);
+
+		if (tuple == NULL)
+			tuple = g_array_sized_new (FALSE, TRUE, sizeof (guint32), tuple_len);
+
+		g_array_append_val (tuple, i);
+
+		/* Got all members; add to the array */
+		if (tuple->len == tuple_len) {
+			g_ptr_array_add (array, tuple);
+			tuple = NULL;
+		}
+	}
+
+	*value = array;
+	success = TRUE;
+
 out:
+	if (gc_value)
+		gconf_value_free (gc_value);
 	g_free (gc_key);
 	return success;
 }
@@ -690,10 +701,11 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 }
 
 gboolean
-nm_gconf_set_ip4_addresses_helper (GConfClient *client,
+nm_gconf_set_ip4_helper (GConfClient *client,
 					  const char *path,
 					  const char *key,
 					  const char *network,
+					  guint32 tuple_len,
 					  GPtrArray *value)
 {
 	char *gc_key;
@@ -703,6 +715,7 @@ nm_gconf_set_ip4_addresses_helper (GConfClient *client,
 
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (tuple_len > 0, FALSE);
 
 	if (!value)
 		return TRUE;
@@ -715,22 +728,15 @@ nm_gconf_set_ip4_addresses_helper (GConfClient *client,
 
 	for (i = 0; i < value->len; i++) {
 		GArray *tuple = g_ptr_array_index (value, i);
+		int j;
 
-		if ((tuple->len < 2) || (tuple->len > 3)) {
-			g_warning ("%s: invalid IPv4 address structure!", __func__);
+		if (tuple->len != tuple_len) {
+			g_warning ("%s: invalid IPv4 address/route structure!", __func__);
 			goto out;
 		}
 
-		/* IP address */
-		list = g_slist_append (list, GUINT_TO_POINTER (g_array_index (tuple, guint32, 0)));
-		/* Netmask */
-		list = g_slist_append (list, GUINT_TO_POINTER (g_array_index (tuple, guint32, 1)));
-
-		/* Gateway */
-		if (tuple->len == 3)
-			list = g_slist_append (list, GUINT_TO_POINTER (g_array_index (tuple, guint32, 2)));
-		else
-			list = g_slist_append (list, GUINT_TO_POINTER (0));
+		for (j = 0; j < tuple_len; j++)
+			list = g_slist_append (list, GUINT_TO_POINTER (g_array_index (tuple, guint32, j)));
 	}
 
 	gconf_client_set_list (client, gc_key, GCONF_VALUE_INT, list, NULL);
@@ -753,6 +759,8 @@ nm_gconf_get_all_connections (GConfClient *client)
 	nm_gconf_migrate_0_7_wireless_security (client);
 	nm_gconf_migrate_0_7_netmask_to_prefix (client);
 	nm_gconf_migrate_0_7_ip4_method (client);
+	nm_gconf_migrate_0_7_ignore_dhcp_dns (client);
+	nm_gconf_migrate_0_7_vpn_routes (client);	
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!connections) {
@@ -879,8 +887,14 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 		}
 	} else if (type == DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UINT) {
 		GPtrArray *pa_val = NULL;
+		guint32 tuple_len = 0;
 
-		if (nm_gconf_get_ip4_addresses_helper (info->client, info->dir, key, setting->name, &pa_val)) {
+		if (!strcmp (key, NM_SETTING_IP4_CONFIG_ADDRESSES))
+			tuple_len = 3;
+		else if (!strcmp (key, NM_SETTING_IP4_CONFIG_ROUTES))
+			tuple_len = 4;
+
+		if (nm_gconf_get_ip4_helper (info->client, info->dir, key, setting->name, tuple_len, &pa_val)) {
 			g_object_set (setting, key, pa_val, NULL);
 			g_ptr_array_foreach (pa_val, (GFunc) free_one_addr, NULL);
 			g_ptr_array_free (pa_val, TRUE);
@@ -1139,8 +1153,15 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 								  key, setting->name,
 								  (GArray *) g_value_get_boxed (value));
 	} else if (type == DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UINT) {
-		nm_gconf_set_ip4_addresses_helper (info->client, info->dir,
-								  key, setting->name,
+		guint32 tuple_len = 0;
+
+		if (!strcmp (key, NM_SETTING_IP4_CONFIG_ADDRESSES))
+			tuple_len = 3;
+		else if (!strcmp (key, NM_SETTING_IP4_CONFIG_ROUTES))
+			tuple_len = 4;
+
+		nm_gconf_set_ip4_helper (info->client, info->dir,
+								  key, setting->name, tuple_len,
 								  (GPtrArray *) g_value_get_boxed (value));
 	} else
 		g_warning ("Unhandled setting property type (write) '%s/%s' : '%s'", 
