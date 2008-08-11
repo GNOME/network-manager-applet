@@ -82,7 +82,7 @@ glade_DATA = \
 
 BUILT_SOURCES = nm-connection-editor-service-glue.h
 
-CLEANFILES = *.bak *.gladep
+CLEANFILES = *.bak *.gladep $(BUILT_SOURCES)
 
 EXTRA_DIST = $(glade_DATA) nm-connection-editor-service.xml
 
