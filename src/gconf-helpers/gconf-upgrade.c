@@ -528,7 +528,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	NMConnection *connection;
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
-	NMSettingIP4Config *s_ip4;
+	NMSettingIP4Config *s_ip4 = NULL;
 	char *path, *network, *id = NULL, *service_name = NULL;
 	GSList *str_routes = NULL, *vpn_data = NULL;
 
