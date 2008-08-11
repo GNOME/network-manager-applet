@@ -42,5 +42,9 @@ void nm_gconf_migrate_0_7_ignore_dhcp_dns (GConfClient *client);
 
 void nm_gconf_migrate_0_7_vpn_routes (GConfClient *client);
 
+void nm_gconf_migrate_0_7_vpn_properties (GConfClient *client);
+
+void nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client);
+
 #endif	/* GCONF_UPGRADE_H */
 

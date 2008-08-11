@@ -49,7 +49,6 @@
 #include <nm-vpn-connection.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
-#include <nm-setting-vpn-properties.h>
 #include <nm-active-connection.h>
 #include <nm-dbus-settings-system.h>
 #include <nm-setting-wireless.h>
@@ -996,9 +995,9 @@ get_vpn_connections (NMApplet *applet)
 			/* Not a VPN connection */
 			continue;
 
-		if (!nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN_PROPERTIES)) {
+		if (!nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN)) {
 			const char *name = NM_SETTING (s_con)->name;
-			g_warning ("%s: VPN connection '%s' didn't have requires vpn-properties setting.", __func__, name);
+			g_warning ("%s: VPN connection '%s' didn't have requires vpn setting.", __func__, name);
 			continue;
 		}
 

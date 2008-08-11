@@ -108,6 +108,12 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 			       GHashTable **value);
 
 gboolean
+nm_gconf_get_stringhash_helper (GConfClient *client,
+                                const char *path,
+                                const char *setting,
+                                GHashTable **value);
+
+gboolean
 nm_gconf_get_ip4_helper (GConfClient *client,
 						  const char *path,
 						  const char *key,
@@ -171,6 +177,12 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 			       const char *path,
 			       const char *network,
 			       GHashTable *value);
+
+gboolean
+nm_gconf_set_stringhash_helper (GConfClient *client,
+                                const char *path,
+                                const char *network,
+                                GHashTable *value);
 
 gboolean
 nm_gconf_set_ip4_helper (GConfClient *client,

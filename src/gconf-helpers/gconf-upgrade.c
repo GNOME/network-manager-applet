@@ -37,7 +37,6 @@
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-8021x.h>
 #include <nm-setting-vpn.h>
-#include <nm-setting-vpn-properties.h>
 #include <nm-setting-ip4-config.h>
 #include <nm-utils.h>
 
@@ -430,81 +429,52 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	return connection;
 }
 
-static NMSettingVPNProperties *
-nm_gconf_0_6_vpnc_settings (GSList *vpn_data)
+static void
+nm_gconf_0_6_vpnc_settings (NMSettingVPN *s_vpn, GSList *vpn_data)
 {
-	NMSettingVPNProperties *s_vpn_props;
 	GSList *iter;
-	const char *key, *value;
-	GValue *gvalue;
 
-	s_vpn_props = (NMSettingVPNProperties *)nm_setting_vpn_properties_new ();
 	for (iter = vpn_data; iter && iter->next; iter = iter->next->next) {
-		key = iter->data;
-		value = iter->next->data;
+		const char *key = iter->data;
+		const char *value = iter->next->data;
 
-		gvalue = g_slice_new0 (GValue);
 		if (*value) {
-			g_value_init (gvalue, G_TYPE_STRING);
-			g_value_set_string (gvalue, value);
+			/* A string value */
+			g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup (value));
 		} else {
-			g_value_init (gvalue, G_TYPE_BOOLEAN);
-			g_value_set_boolean (gvalue, TRUE);
+			/* A boolean; 0.6 treated key-without-value as "true" */
+			g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("yes"));
 		}
-		g_hash_table_insert (s_vpn_props->data, g_strdup (key), gvalue);
 	}
-
-	return s_vpn_props;
 }
 
-static const struct flagnames openvpn_contypes[] = {
-	{ "x509",       0 /* NM_OPENVPN_CONTYPE_X509 */ },
-	{ "shared-key", 1 /* NM_OPENVPN_CONTYPE_SHAREDKEY */ },
-	{ "password",   2 /* NM_OPENVPN_CONTYPE_PASSWORD */ },
-	{ NULL, 0 }
-};
-
-static NMSettingVPNProperties *
-nm_gconf_0_6_openvpn_settings (GSList *vpn_data)
+static void
+nm_gconf_0_6_openvpn_settings (NMSettingVPN *s_vpn, GSList *vpn_data)
 {
-	NMSettingVPNProperties *s_vpn_props;
 	GSList *iter;
-	const char *key, *value;
-	GValue *gvalue;
-	int i;
 
-	s_vpn_props = (NMSettingVPNProperties *)nm_setting_vpn_properties_new ();
 	for (iter = vpn_data; iter && iter->next; iter = iter->next->next) {
-		key = iter->data;
-		value = iter->next->data;
+		const char *key = iter->data;
+		const char *value = iter->next->data;
 
-		gvalue = g_slice_new0 (GValue);
-		if (!strcmp (key, "port")) {
-			g_value_init (gvalue, G_TYPE_UINT);
-			g_value_set_uint (gvalue, atoi (value));
-		} else if (!strcmp (key, "connection-type")) {
-			g_value_init (gvalue, G_TYPE_INT);
-			for (i = 0; openvpn_contypes[i].name; i++) {
-				if (!strcmp (openvpn_contypes[i].name, value))
-					g_value_set_int (gvalue, openvpn_contypes[i].value);
-			}
+		if (!strcmp (key, "connection-type")) {
+			if (!strcmp (value, "x509"))
+				g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("tls"));
+			else if (!strcmp (value, "shared-key"))
+				g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("static-key"));
+			else if (!strcmp (value, "password"))
+				g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("password"));
 		} else if (!strcmp (key, "comp-lzo")) {
-			g_value_init (gvalue, G_TYPE_BOOLEAN);
-			g_value_set_boolean (gvalue, !strcmp (value, "yes"));
+			g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("yes"));
 		} else if (!strcmp (key, "dev")) {
-			g_value_init (gvalue, G_TYPE_BOOLEAN);
-			g_value_set_boolean (gvalue, !strcmp (value, "tap")); 
+			if (!strcmp (value, "tap"))
+				g_hash_table_insert (s_vpn->data, g_strdup ("tap-dev"), g_strdup ("yes"));
 		} else if (!strcmp (key, "proto")) {
-			g_value_init (gvalue, G_TYPE_BOOLEAN);
-			g_value_set_boolean (gvalue, !strcmp (value, "tcp")); 
-		} else {
-			g_value_init (gvalue, G_TYPE_STRING);
-			g_value_set_string (gvalue, value);
-		}
-		g_hash_table_insert (s_vpn_props->data, g_strdup (key), gvalue);
+			if (!strcmp (value, "tcp"))
+				g_hash_table_insert (s_vpn->data, g_strdup ("proto-tcp"), g_strdup ("yes"));
+		} else
+			g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup (value));
 	}
-
-	return s_vpn_props;
 }
 
 static GSList *
@@ -558,7 +528,6 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	NMConnection *connection;
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
-	NMSettingVPNProperties *s_vpn_props;
 	NMSettingIP4Config *s_ip4;
 	char *path, *network, *id = NULL, *service_name = NULL;
 	GSList *str_routes = NULL, *vpn_data = NULL;
@@ -591,13 +560,11 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	s_vpn->service_type = service_name;
 
 	if (!strcmp (service_name, "org.freedesktop.NetworkManager.vpnc"))
-		s_vpn_props = nm_gconf_0_6_vpnc_settings (vpn_data);
+		nm_gconf_0_6_vpnc_settings (s_vpn, vpn_data);
 	else if (!strcmp (service_name, "org.freedesktop.NetworkManager.openvpn"))
-		s_vpn_props = nm_gconf_0_6_openvpn_settings (vpn_data);
-	else {
+		nm_gconf_0_6_openvpn_settings (s_vpn, vpn_data);
+	else
 		g_warning ("unmatched service name %s\n", service_name);
-		s_vpn_props = NULL;
-	}
 
 	free_slist (vpn_data);
 	g_free (path);
@@ -611,10 +578,8 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	connection = nm_connection_new ();
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 	nm_connection_add_setting (connection, NM_SETTING (s_vpn));
-	if (s_vpn_props)
-		nm_connection_add_setting (connection, NM_SETTING (s_vpn_props));
 	if (s_ip4)
-		nm_connection_add_setting (connection, NM_SETTING (s_vpn_props));
+		nm_connection_add_setting (connection, NM_SETTING (s_ip4));
 
 	return connection;
 }
@@ -1315,6 +1280,153 @@ nm_gconf_migrate_0_7_vpn_routes (GConfClient *client)
 
 		g_slist_foreach (old_routes, (GFunc) g_free, NULL);
 		g_slist_free (old_routes);
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+
+void
+nm_gconf_migrate_0_7_vpn_properties (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *path;
+		GSList *properties, *props_iter;
+
+		path = g_strdup_printf ("%s/vpn-properties", (const char *) iter->data);
+		properties = gconf_client_all_entries (client, path, NULL);
+
+		for (props_iter = properties; props_iter; props_iter = props_iter->next) {
+			GConfEntry *entry = (GConfEntry *) props_iter->data;
+			char *tmp;
+			char *key_name = g_path_get_basename (entry->key);
+
+			/* 'service-type' is reserved */
+			if (!strcmp (key_name, NM_SETTING_VPN_SERVICE_TYPE))
+				goto next;
+
+			/* Don't convert the setting name */
+			if (!strcmp (key_name, NM_SETTING_NAME))
+				goto next;
+
+			switch (entry->value->type) {
+			case GCONF_VALUE_STRING:
+				nm_gconf_set_string_helper (client, (const char *) iter->data,
+				                            key_name,
+				                            NM_SETTING_VPN_SETTING_NAME,
+				                            gconf_value_get_string (entry->value));
+				break;
+			case GCONF_VALUE_INT:
+				tmp = g_strdup_printf ("%d", gconf_value_get_int (entry->value));
+				nm_gconf_set_string_helper (client, (const char *) iter->data,
+				                            key_name,
+				                            NM_SETTING_VPN_SETTING_NAME,
+				                            tmp);
+				g_free (tmp);
+				break;
+			case GCONF_VALUE_BOOL:
+				tmp = gconf_value_get_bool (entry->value) ? "yes" : "no";
+				nm_gconf_set_string_helper (client, (const char *) iter->data,
+				                            key_name,
+				                            NM_SETTING_VPN_SETTING_NAME,
+				                            tmp);
+				break;
+			default:
+				g_warning ("%s: don't know how to convert type %d",
+				           __func__, entry->value->type);
+				break;
+			}
+
+		next:
+			g_free (key_name);
+		}
+
+		/* delete old vpn-properties dir */
+		gconf_client_recursive_unset (client, path, 0, NULL);
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+
+static void
+move_one_vpn_string_bool (GConfClient *client,
+                          const char *path,
+                          const char *old_key,
+                          const char *new_key)
+{
+	char *del_key;
+	char *value = NULL;
+
+	if (!nm_gconf_get_string_helper (client, path,
+	                                 old_key,
+	                                 NM_SETTING_VPN_SETTING_NAME,
+	                                 &value));
+		return;
+
+	if (value && !strcmp (value, "yes")) {
+		nm_gconf_set_string_helper (client, path,
+		                            new_key,
+		                            NM_SETTING_VPN_SETTING_NAME,
+		                            "yes");
+	}
+	g_free (value);
+
+	/* delete old key */
+	del_key = g_strdup_printf ("%s/%s/%s",
+	                           path,
+	                           NM_SETTING_VPN_SETTING_NAME,
+	                           old_key);
+	gconf_client_unset (client, del_key, NULL);
+	g_free (del_key);
+}
+
+void
+nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *old_type, *new_type = NULL, *service = NULL;
+
+		if (!nm_gconf_get_string_helper (client, (const char *) iter->data,
+		                                 NM_SETTING_VPN_SERVICE_TYPE,
+		                                 NM_SETTING_VPN_SETTING_NAME,
+		                                 &service))
+			continue;
+
+		if (!service || strcmp (service, "org.freedesktop.NetworkManager.openvpn"))
+			continue;
+
+		move_one_vpn_string_bool (client, iter->data, "dev", "tap-dev");
+		move_one_vpn_string_bool (client, iter->data, "proto", "proto-tcp");
+
+		if (!nm_gconf_get_string_helper (client, (const char *) iter->data,
+		                                 "connection-type",
+		                                 NM_SETTING_VPN_SETTING_NAME,
+		                                 &old_type))
+			continue;
+
+		/* Convert connection type from old integer to new string */
+		if (!strcmp (old_type, "0"))
+			new_type = "tls";
+		else if (!strcmp (old_type, "1"))
+			new_type = "static-key";
+		else if (!strcmp (old_type, "2"))
+			new_type = "password";
+		else if (!strcmp (old_type, "3"))
+			new_type = "password-tls";
+
+		if (new_type) {
+			nm_gconf_set_string_helper (client, (const char *) iter->data,
+			                            "connection-type",
+			                            NM_SETTING_VPN_SETTING_NAME,
+			                            new_type);
+		}
 	}
 	free_slist (connections);
 

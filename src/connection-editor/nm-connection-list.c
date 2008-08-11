@@ -49,7 +49,6 @@
 #include <nm-setting-wired.h>
 #include <nm-setting-wireless.h>
 #include <nm-setting-vpn.h>
-#include <nm-setting-vpn-properties.h>
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
 #include <nm-setting-pppoe.h>
@@ -811,8 +810,6 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 			type_setting = nm_setting_vpn_new ();
 			s_vpn = NM_SETTING_VPN (type_setting);
 			s_vpn->service_type = service;
-
-			nm_connection_add_setting (connection, nm_setting_vpn_properties_new ());
 		}		
 	} else if (ctype == NM_TYPE_SETTING_PPPOE) {
 		s_con->id = get_next_available_name (list, _("DSL connection %d"));

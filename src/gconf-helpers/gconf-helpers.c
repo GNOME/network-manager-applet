@@ -39,8 +39,15 @@
 #include "gconf-upgrade.h"
 #include "utils.h"
 
-#define DBUS_TYPE_G_ARRAY_OF_UINT          (dbus_g_type_get_collection ("GArray", G_TYPE_UINT))
-#define DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UINT (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_ARRAY_OF_UINT))
+#define DBUS_TYPE_G_ARRAY_OF_OBJECT_PATH    (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH))
+#define DBUS_TYPE_G_ARRAY_OF_STRING         (dbus_g_type_get_collection ("GPtrArray", G_TYPE_STRING))
+#define DBUS_TYPE_G_ARRAY_OF_UINT           (dbus_g_type_get_collection ("GArray", G_TYPE_UINT))
+#define DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UCHAR (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_UCHAR_ARRAY))
+#define DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UINT  (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_ARRAY_OF_UINT))
+#define DBUS_TYPE_G_MAP_OF_VARIANT          (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
+#define DBUS_TYPE_G_MAP_OF_MAP_OF_VARIANT   (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT))
+#define DBUS_TYPE_G_MAP_OF_STRING           (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_STRING))
+#define DBUS_TYPE_G_LIST_OF_STRING          (dbus_g_type_get_collection ("GSList", G_TYPE_STRING))
 
 const char *applet_8021x_ignore_keys[] = {
 	"ca-cert",
@@ -383,8 +390,8 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 		return FALSE;
 
 	*value = g_hash_table_new_full (g_str_hash, g_str_equal,
-							  (GDestroyNotify) g_free,
-							  property_value_destroy);
+	                                (GDestroyNotify) g_free,
+	                                property_value_destroy);
 
 	for (iter = gconf_entries; iter; iter = iter->next) {
 		GConfEntry *entry = (GConfEntry *) iter->data;
@@ -397,7 +404,58 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 	}
 
 	g_slist_free (gconf_entries);
+	return TRUE;
+}
 
+gboolean
+nm_gconf_get_stringhash_helper (GConfClient *client,
+                                const char *path,
+                                const char *setting,
+                                GHashTable **value)
+{
+	char *gc_key;
+	GSList *gconf_entries;
+	GSList *iter;
+	int prefix_len;
+
+	g_return_val_if_fail (setting != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s", path, setting);
+	prefix_len = strlen (gc_key);
+	gconf_entries = gconf_client_all_entries (client, gc_key, NULL);
+	g_free (gc_key);
+
+	if (!gconf_entries)
+		return FALSE;
+
+	*value = g_hash_table_new_full (g_str_hash, g_str_equal,
+	                                (GDestroyNotify) g_free,
+	                                (GDestroyNotify) g_free);
+
+	for (iter = gconf_entries; iter; iter = iter->next) {
+		GConfEntry *entry = (GConfEntry *) iter->data;
+
+		gc_key = (char *) gconf_entry_get_key (entry);
+		gc_key += prefix_len + 1; /* get rid of the full path */
+
+		if (   !strcmp (setting, NM_SETTING_VPN_SETTING_NAME)
+		    && (!strcmp (gc_key, NM_SETTING_VPN_SERVICE_TYPE) || !strcmp (gc_key, NM_SETTING_NAME))) {
+			/* Ignore; these handled elsewhere since they are not part of the
+			 * vpn service specific data
+			 */
+		} else {
+			GConfValue *gc_val = gconf_entry_get_value (entry);
+
+			if (gc_val && gconf_value_get_string (gc_val)) {
+				g_hash_table_insert (*value, gconf_unescape_key (gc_key, -1),
+				                     g_strdup (gconf_value_get_string (gc_val)));
+			}
+		}
+		gconf_entry_free (entry);
+	}
+
+	g_slist_free (gconf_entries);
 	return TRUE;
 }
 
@@ -650,7 +708,7 @@ typedef struct {
 } WritePropertiesInfo;
 
 static void
-write_properties (gpointer key, gpointer val, gpointer user_data)
+write_properties_valuehash (gpointer key, gpointer val, gpointer user_data)
 {
 	GValue *value = (GValue *) val;
 	WritePropertiesInfo *info = (WritePropertiesInfo *) user_data;
@@ -694,7 +752,48 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 	info.client = client;
 	info.path = gc_key;
 
-	g_hash_table_foreach (value, write_properties, &info);
+	g_hash_table_foreach (value, write_properties_valuehash, &info);
+
+	g_free (gc_key);
+	return TRUE;
+}
+
+static void
+write_properties_stringhash (gpointer key, gpointer value, gpointer user_data)
+{
+	WritePropertiesInfo *info = (WritePropertiesInfo *) user_data;
+	char *esc_key;
+	char *full_key;
+
+	esc_key = gconf_escape_key ((char *) key, -1);
+	full_key = g_strconcat (info->path, "/", esc_key, NULL);
+	gconf_client_set_string (info->client, full_key, (char *) value, NULL);
+	g_free (esc_key);
+	g_free (full_key);
+}
+
+gboolean
+nm_gconf_set_stringhash_helper (GConfClient *client,
+                                const char *path,
+                                const char *network,
+                                GHashTable *value)
+{
+	char *gc_key;
+	WritePropertiesInfo info;
+
+	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s", path, network);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	info.client = client;
+	info.path = gc_key;
+
+	g_hash_table_foreach (value, write_properties_stringhash, &info);
 
 	g_free (gc_key);
 	return TRUE;
@@ -760,7 +859,9 @@ nm_gconf_get_all_connections (GConfClient *client)
 	nm_gconf_migrate_0_7_netmask_to_prefix (client);
 	nm_gconf_migrate_0_7_ip4_method (client);
 	nm_gconf_migrate_0_7_ignore_dhcp_dns (client);
-	nm_gconf_migrate_0_7_vpn_routes (client);	
+	nm_gconf_migrate_0_7_vpn_routes (client);
+	nm_gconf_migrate_0_7_vpn_properties (client);
+	nm_gconf_migrate_0_7_openvpn_properties (client);
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!connections) {
@@ -864,19 +965,26 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			g_object_set (setting, key, ba_val, NULL);
 			g_byte_array_free (ba_val, TRUE);
 		}
-	} else if (type == dbus_g_type_get_collection ("GSList", G_TYPE_STRING)) {
+	} else if (type == DBUS_TYPE_G_LIST_OF_STRING) {
 		GSList *sa_val = NULL;
 
 		if (nm_gconf_get_stringlist_helper (info->client, info->dir, key, setting->name, &sa_val)) {
 			g_object_set (setting, key, sa_val, NULL);
 			// FIXME: how to free sa_val?
 		}
-	} else if (type == dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE)) {
+	} else if (type == DBUS_TYPE_G_MAP_OF_VARIANT) {
 		GHashTable *vh_val = NULL;
 
 		if (nm_gconf_get_valuehash_helper (info->client, info->dir, setting->name, &vh_val)) {
 			g_object_set (setting, key, vh_val, NULL);
 			g_hash_table_destroy (vh_val);
+		}
+	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
+		GHashTable *sh_val = NULL;
+
+		if (nm_gconf_get_stringhash_helper (info->client, info->dir, setting->name, &sh_val)) {
+			g_object_set (setting, key, sh_val, NULL);
+			g_hash_table_destroy (sh_val);
 		}
 	} else if (type == DBUS_TYPE_G_UINT_ARRAY) {
 		GArray *a_val = NULL;
@@ -1140,14 +1248,18 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		nm_gconf_set_bytearray_helper (info->client, info->dir,
 								 key, setting->name,
 								 (GByteArray *) g_value_get_boxed (value));
-	} else if (type == dbus_g_type_get_collection ("GSList", G_TYPE_STRING)) {
+	} else if (type == DBUS_TYPE_G_LIST_OF_STRING) {
 		nm_gconf_set_stringlist_helper (info->client, info->dir,
 								  key, setting->name,
 								  (GSList *) g_value_get_boxed (value));
-	} else if (type == dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE)) {
+	} else if (type == DBUS_TYPE_G_MAP_OF_VARIANT) {
 		nm_gconf_set_valuehash_helper (info->client, info->dir,
 								 setting->name,
 								 (GHashTable *) g_value_get_boxed (value));
+	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
+		nm_gconf_set_stringhash_helper (info->client, info->dir,
+		                                setting->name,
+		                                (GHashTable *) g_value_get_boxed (value));
 	} else if (type == DBUS_TYPE_G_UINT_ARRAY) {
 		nm_gconf_set_uint_array_helper (info->client, info->dir,
 								  key, setting->name,
