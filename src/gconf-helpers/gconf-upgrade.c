@@ -1384,6 +1384,38 @@ move_one_vpn_string_bool (GConfClient *client,
 	g_free (del_key);
 }
 
+static void
+move_one_vpn_string_string (GConfClient *client,
+                            const char *path,
+                            const char *old_key,
+                            const char *new_key)
+{
+	char *del_key;
+	char *value = NULL;
+
+	if (!nm_gconf_get_string_helper (client, path,
+	                                 old_key,
+	                                 NM_SETTING_VPN_SETTING_NAME,
+	                                 &value));
+		return;
+
+	if (value && strlen (value)) {
+		nm_gconf_set_string_helper (client, path,
+		                            new_key,
+		                            NM_SETTING_VPN_SETTING_NAME,
+		                            value);
+	}
+	g_free (value);
+
+	/* delete old key */
+	del_key = g_strdup_printf ("%s/%s/%s",
+	                           path,
+	                           NM_SETTING_VPN_SETTING_NAME,
+	                           old_key);
+	gconf_client_unset (client, del_key, NULL);
+	g_free (del_key);
+}
+
 void
 nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client)
 {
@@ -1391,7 +1423,7 @@ nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client)
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	for (iter = connections; iter; iter = iter->next) {
-		char *old_type, *new_type = NULL, *service = NULL;
+		char *old_type = NULL, *new_type = NULL, *service = NULL;
 
 		if (!nm_gconf_get_string_helper (client, (const char *) iter->data,
 		                                 NM_SETTING_VPN_SERVICE_TYPE,
@@ -1404,6 +1436,8 @@ nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client)
 
 		move_one_vpn_string_bool (client, iter->data, "dev", "tap-dev");
 		move_one_vpn_string_bool (client, iter->data, "proto", "proto-tcp");
+		move_one_vpn_string_string (client, iter->data, "shared-key", "static-key");
+		move_one_vpn_string_string (client, iter->data, "shared-key-direction", "static-key-direction");
 
 		if (!nm_gconf_get_string_helper (client, (const char *) iter->data,
 		                                 "connection-type",
