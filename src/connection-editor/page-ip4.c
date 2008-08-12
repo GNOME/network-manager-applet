@@ -33,6 +33,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-ip4-config.h>
 #include <nm-setting-vpn.h>
+#include <nm-utils.h>
 
 #include "page-ip4.h"
 #include "ip4-routes-dialog.h"
@@ -608,7 +609,7 @@ ce_page_ip4_new (NMConnection *connection)
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
 
 	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
-	                                                      -1, _("Prefix"), renderer,
+	                                                      -1, _("Netmask"), renderer,
 	                                                      "text", COL_PREFIX,
 	                                                      NULL);
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
@@ -655,6 +656,30 @@ static void
 free_one_addr (gpointer data)
 {
 	g_array_free ((GArray *) data, TRUE);
+}
+
+static gboolean
+parse_netmask (const char *str, guint32 *prefix)
+{
+	struct in_addr tmp_addr;
+	glong tmp_prefix;
+
+	errno = 0;
+
+	/* Is it a prefix? */
+	tmp_prefix = strtol (str, NULL, 10);
+	if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
+		*prefix = tmp_prefix;
+		return TRUE;
+	}
+
+	/* Is it a netmask? */
+	if (inet_aton (str, &tmp_addr)) {
+		*prefix = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static gboolean
@@ -708,7 +733,6 @@ ui_to_setting (CEPageIP4 *self)
 		struct in_addr tmp_addr, tmp_gateway = { 0 };
 		GArray *addr;
 		guint32 empty_val = 0, prefix;
-		long int tmp_prefix;
 
 		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &item, -1);
 		if (!item || !inet_aton (item, &tmp_addr)) {
@@ -726,16 +750,13 @@ ui_to_setting (CEPageIP4 *self)
 			goto out;
 		}
 
-		errno = 0;
-		tmp_prefix = strtol (item, NULL, 10);
-		if (errno || tmp_prefix < 0 || tmp_prefix > 32) {
+		if (!parse_netmask (item, &prefix)) {
 			g_warning ("%s: IPv4 prefix '%s' invalid!",
 			           __func__, item ? item : "<none>");
 			g_free (item);
 			goto out;
 		}
 		g_free (item);
-		prefix = (guint32) tmp_prefix;
 
 		/* Gateway is optional... */
 		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &item, -1);

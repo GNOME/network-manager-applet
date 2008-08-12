@@ -1,3 +1,11 @@
+2008-08-12  Tambet Ingo  <tambet@gmail.com>
+
+	* src/connection-editor/page-ip4.c (ce_page_ip4_new): Rename the 
+	"Prefix" column header to "Netmask", which is hopefully better
+	understood.
+	(parse_netmask): Implement. Accept both prefix length and netmask.
+	(ui_to_setting): Use parse_netmask() to ... parse netmask.
+
 2008-08-11  Dan Williams  <dcbw@redhat.com>
 
 	Update to match NM svn3924 vpn setting changes (consolidated vpn and
