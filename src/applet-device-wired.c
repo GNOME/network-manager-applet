@@ -485,8 +485,9 @@ pppoe_get_secrets (NMDevice *device,
 	w = gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
 	info->ok_button = w;
 
-	gtk_box_pack_start_defaults (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-								 glade_xml_get_widget (xml, "DslPage"));
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	                    glade_xml_get_widget (xml, "DslPage"),
+	                    TRUE, TRUE, 0);
 
 	pppoe_update_ui (NM_SETTING_PPPOE (nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE)), info);
 	g_object_weak_ref (G_OBJECT (dialog), pppoe_info_destroy, info);

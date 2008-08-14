@@ -51,7 +51,7 @@ dialog_set_security (NMConnection *connection,
 	for (iter = children; iter; iter = iter->next)
 		gtk_container_remove (GTK_CONTAINER (box), GTK_WIDGET (iter->data));
 
-	gtk_box_pack_start_defaults (box, wireless_security_get_widget (security));
+	gtk_box_pack_start (box, wireless_security_get_widget (security), TRUE, TRUE, 0);
 
 	return security;
 }

@@ -98,7 +98,7 @@ ce_page_wired_security_new (NMConnection *connection)
 	gtk_widget_set_sensitive (priv->security_widget, setting != NULL);
 
 	gtk_box_pack_start (GTK_BOX (parent->page), GTK_WIDGET (priv->enabled), FALSE, TRUE, 12);
-	gtk_box_pack_start_defaults (GTK_BOX (parent->page), priv->security_widget);
+	gtk_box_pack_start (GTK_BOX (parent->page), priv->security_widget, TRUE, TRUE, 0);
 	g_object_ref_sink (parent->page);
 	gtk_widget_show_all (parent->page);
 

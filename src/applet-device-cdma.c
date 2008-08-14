@@ -421,16 +421,16 @@ ask_for_password (NMDevice *device,
 	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
 
 	w = gtk_label_new (_("A password is required to connect to the CDMA network."));
-	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
 
 	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
 	w = gtk_label_new (NULL);
 	gtk_label_set_markup (GTK_LABEL (w), dev_str);
 	g_free (dev_str);
-	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
 
 	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
-	gtk_box_pack_start_defaults (GTK_BOX (dialog->vbox), w);
+	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
 
 	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
 	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
