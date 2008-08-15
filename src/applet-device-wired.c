@@ -41,6 +41,7 @@
 #include "applet-device-wired.h"
 #include "wired-dialog.h"
 #include "utils.h"
+#include "gconf-helpers.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -331,19 +332,47 @@ pppoe_update_setting (NMSettingPPPOE *pppoe, NMPppoeInfo *info)
 }
 
 static void
-pppoe_update_ui (NMSettingPPPOE *pppoe, NMPppoeInfo *info)
+pppoe_update_ui (NMConnection *connection, NMPppoeInfo *info)
 {
-	g_return_if_fail (NM_IS_SETTING_PPPOE (pppoe));
+	NMSettingPPPOE *s_pppoe;
+
+	g_return_if_fail (NM_IS_CONNECTION (connection));
 	g_return_if_fail (info != NULL);
 
-	if (pppoe->username)
-		gtk_entry_set_text (info->username_entry, pppoe->username);
+	s_pppoe = (NMSettingPPPOE *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE);
+	g_return_if_fail (s_pppoe != NULL);
 
-	if (pppoe->service)
-		gtk_entry_set_text (info->service_entry, pppoe->service);
+	if (s_pppoe->username)
+		gtk_entry_set_text (info->username_entry, s_pppoe->username);
 
-	if (pppoe->password)
-		gtk_entry_set_text (info->password_entry, pppoe->password);
+	if (s_pppoe->service)
+		gtk_entry_set_text (info->service_entry, s_pppoe->service);
+
+	if (s_pppoe->password)
+		gtk_entry_set_text (info->password_entry, s_pppoe->password);
+	else {
+		const char *connection_id;
+
+		/* Grab password from keyring if possible */
+		connection_id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
+		if (connection_id) {
+			GHashTable *secrets;
+			GError *error = NULL;
+			GValue *value;
+
+			secrets = nm_gconf_get_keyring_items (connection, connection_id,
+			                                      nm_setting_get_name (NM_SETTING (s_pppoe)),
+			                                      FALSE,
+			                                      &error);
+			if (secrets) {
+				value = g_hash_table_lookup (secrets, NM_SETTING_PPPOE_PASSWORD);
+				if (value)
+					gtk_entry_set_text (info->password_entry, g_value_get_string (value));
+				g_hash_table_destroy (secrets);
+			} else if (error)
+				g_error_free (error);
+		}
+	}
 }
 
 static NMPppoeInfo *
@@ -489,7 +518,7 @@ pppoe_get_secrets (NMDevice *device,
 	                    glade_xml_get_widget (xml, "DslPage"),
 	                    TRUE, TRUE, 0);
 
-	pppoe_update_ui (NM_SETTING_PPPOE (nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE)), info);
+	pppoe_update_ui (connection, info);
 	g_object_weak_ref (G_OBJECT (dialog), pppoe_info_destroy, info);
 
 	w = glade_xml_get_widget (xml, "dsl_show_password");
