@@ -454,6 +454,9 @@ eap_method_ttls_new (const char *glade_file,
 	widget = glade_xml_get_widget (xml, "eap_ttls_anon_identity_entry");
 	if (s_8021x && s_8021x->anonymous_identity)
 		gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->anonymous_identity);
+	g_signal_connect (G_OBJECT (widget), "changed",
+	                  (GCallback) wireless_security_changed_cb,
+	                  parent);
 
 	widget = inner_auth_combo_init (method, glade_file, connection, connection_id, s_8021x);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);

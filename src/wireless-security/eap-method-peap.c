@@ -424,10 +424,16 @@ eap_method_peap_new (const char *glade_file,
 			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
 	} else
 		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
+	g_signal_connect (G_OBJECT (widget), "changed",
+	                  (GCallback) wireless_security_changed_cb,
+	                  parent);
 
 	widget = glade_xml_get_widget (xml, "eap_peap_anon_identity_entry");
 	if (s_8021x && s_8021x->anonymous_identity)
 		gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->anonymous_identity);
+	g_signal_connect (G_OBJECT (widget), "changed",
+	                  (GCallback) wireless_security_changed_cb,
+	                  parent);
 
 	return method;
 }

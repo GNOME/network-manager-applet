@@ -68,6 +68,8 @@ key_index_combo_changed_cb (GtkWidget *combo, WirelessSecurity *parent)
 	/* Populate entry with key from new index */
 	gtk_entry_set_text (GTK_ENTRY (entry), sec->keys[key_index]);
 	sec->cur_index = key_index;
+
+	wireless_security_changed_cb (combo, parent);
 }
 
 static void
@@ -405,6 +407,10 @@ ws_wep_key_new (const char *glade_file,
 		widget = glade_xml_get_widget (xml, "auth_method_label");
 		gtk_widget_hide (widget);
 	}
+
+	g_signal_connect (G_OBJECT (widget), "changed",
+	                  (GCallback) wireless_security_changed_cb,
+	                  sec);
 
 	return sec;
 }
