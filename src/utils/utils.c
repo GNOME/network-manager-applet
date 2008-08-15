@@ -109,6 +109,7 @@ static char *ignored_phrases[] = {
 	"PC Card with XJACK(r) Antenna",
 	"Wireless cardbus",
 	"Wireless LAN PC Card",
+	"Technology Group Ltd.",
 	NULL
 };
 
