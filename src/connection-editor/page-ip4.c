@@ -32,6 +32,9 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-ip4-config.h>
+#include <nm-setting-gsm.h>
+#include <nm-setting-cdma.h>
+#include <nm-setting-pppoe.h>
 #include <nm-setting-vpn.h>
 #include <nm-utils.h>
 
@@ -87,13 +90,35 @@ typedef struct {
 #define COL_GATEWAY 2
 
 static void
-ip4_private_init (CEPageIP4 *self, gboolean is_vpn)
+ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	GladeXML *xml;
 	GtkTreeIter iter;
+	NMSettingConnection *s_con;
+	char *str_auto = NULL, *str_auto_only = NULL;
+	gboolean is_vpn = FALSE;
 
 	xml = CE_PAGE (self)->xml;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con && s_con->type);
+
+	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
+		str_auto = _("Automatic (VPN)");
+		str_auto_only = _("Automatic (VPN) addresses only");
+		is_vpn = TRUE;
+	} else if (   !strcmp (s_con->type, NM_SETTING_GSM_SETTING_NAME)
+	    || !strcmp (s_con->type, NM_SETTING_CDMA_SETTING_NAME)) {
+		str_auto = _("Automatic (PPP)");
+		str_auto_only = _("Automatic (PPP) addresses only");
+	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME)) {
+		str_auto = _("Automatic (PPPoE)");
+		str_auto_only = _("Automatic (PPPoE) addresses only");
+	} else {
+		str_auto = _("Automatic (DHCP)");
+		str_auto_only = _("Automatic (DHCP) addresses only");
+	}
 
 	priv->method = GTK_COMBO_BOX (glade_xml_get_widget (xml, "ip4_method"));
 
@@ -101,13 +126,13 @@ ip4_private_init (CEPageIP4 *self, gboolean is_vpn)
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
-	                    METHOD_COL_NAME, _("Automatic"),
+	                    METHOD_COL_NAME, str_auto,
 	                    METHOD_COL_NUM, IP4_METHOD_AUTO,
 	                    -1);
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
-	                    METHOD_COL_NAME, _("Automatic addresses only"),
+	                    METHOD_COL_NAME, str_auto_only,
 	                    METHOD_COL_NUM, IP4_METHOD_AUTO_ADDRESSES,
 	                    -1);
 
@@ -541,7 +566,6 @@ ce_page_ip4_new (NMConnection *connection)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkListStore *store;
-	gboolean is_vpn = FALSE;
 
 	self = CE_PAGE_IP4 (g_object_new (CE_TYPE_PAGE_IP4, NULL));
 	parent = CE_PAGE (self);
@@ -563,16 +587,13 @@ ce_page_ip4_new (NMConnection *connection)
 
 	parent->title = g_strdup (_("IPv4 Settings"));
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con && s_con->type);
-
-	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME))
-		is_vpn = TRUE;
-
-	ip4_private_init (self, is_vpn);
+	ip4_private_init (self, connection);
 	priv = CE_PAGE_IP4_GET_PRIVATE (self);
 
 	priv->window_group = gtk_window_group_new ();
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
 	priv->connection_id = g_strdup (s_con->id);
 
 	priv->setting = (NMSettingIP4Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG);
