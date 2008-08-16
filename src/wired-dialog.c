@@ -64,6 +64,7 @@ dialog_init (GtkWidget *dialog,
 			 NMConnection *connection)
 {
 	WirelessSecurity *security;
+	GtkWidget *widget;
 
 	/* Hide bunch of wireless specific widgets */
 	gtk_widget_hide (glade_xml_get_widget (xml, "device_label"));
@@ -81,6 +82,10 @@ dialog_init (GtkWidget *dialog,
 	g_object_set_data_full (G_OBJECT (dialog),
 							"security", security,
 							(GDestroyNotify) wireless_security_unref);
+
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "dialog-password");
+	widget = glade_xml_get_widget (xml, "image1");
+	gtk_image_set_from_icon_name (GTK_IMAGE (widget), "dialog-password", GTK_ICON_SIZE_DIALOG);
 
 	return TRUE;
 }

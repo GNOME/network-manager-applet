@@ -841,19 +841,28 @@ security_combo_init (NMAWirelessDialog *self)
 static gboolean
 internal_init (NMAWirelessDialog *self,
                NMConnection *specific_connection,
-               NMDevice *specific_device)
+               NMDevice *specific_device,
+               gboolean auth_only)
 {
 	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 	GtkWidget *widget;
-	char *label;
+	char *label, *icon_name = "network-wireless";
 	gboolean security_combo_focus = FALSE;
 
 	gtk_window_set_position (GTK_WINDOW (self), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_container_set_border_width (GTK_CONTAINER (self), 6);
 	gtk_window_set_default_size (GTK_WINDOW (self), 488, -1);
-	gtk_window_set_icon_name (GTK_WINDOW (self), "gtk-dialog-authentication");
 	gtk_window_set_resizable (GTK_WINDOW (self), FALSE);
 	gtk_dialog_set_has_separator (GTK_DIALOG (self), FALSE);
+
+	if (auth_only)
+		icon_name = "dialog-password";
+	else
+		icon_name = "network-wireless";
+
+	gtk_window_set_icon_name (GTK_WINDOW (self), icon_name);
+	widget = glade_xml_get_widget (priv->xml, "image1");
+	gtk_image_set_from_icon_name (GTK_IMAGE (widget), icon_name, GTK_ICON_SIZE_DIALOG);
 
 	gtk_box_set_spacing (GTK_BOX (gtk_bin_get_child (GTK_BIN (self))), 2);
 
@@ -1055,7 +1064,7 @@ nma_wireless_dialog_new (NMApplet *applet,
 	priv->sec_combo = glade_xml_get_widget (priv->xml, "security_combo");
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	if (!internal_init (self, connection, device)) {
+	if (!internal_init (self, connection, device, TRUE)) {
 		nm_warning ("Couldn't create wireless security dialog.");
 		g_object_unref (self);
 		return NULL;
@@ -1083,7 +1092,7 @@ internal_new_other (NMApplet *applet, gboolean create)
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	priv->adhoc_create = create;
 
-	if (!internal_init (self, NULL, NULL)) {
+	if (!internal_init (self, NULL, NULL, FALSE)) {
 		nm_warning ("Couldn't create wireless security dialog.");
 		g_object_unref (self);
 		return NULL;
