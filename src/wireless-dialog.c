@@ -741,34 +741,25 @@ security_combo_init (NMAWirelessDialog *self)
 	if (   nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep;
-		WEPKeyType default_wep_type = WEP_KEY_TYPE_PASSPHRASE;
+		WEPKeyType default_wep_type = WEP_KEY_TYPE_KEY;
 
 		if (default_type == NMU_SEC_STATIC_WEP)
 			default_wep_type = ws_wep_guess_key_type (priv->connection, connection_id);
+
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_KEY, priv->adhoc_create);
+		if (ws_wep) {
+			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
+			                   &iter, _("WEP 40/128-bit Key"));
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_KEY))
+				active = item;
+			item++;
+		}
 
 		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_PASSPHRASE))
-				active = item;
-			item++;
-		}
-
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_HEX, priv->adhoc_create);
-		if (ws_wep) {
-			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
-			                   &iter, _("WEP 40/128-bit Hexadecimal"));
-			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_HEX))
-				active = item;
-			item++;
-		}
-
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_ASCII, priv->adhoc_create);
-		if (ws_wep) {
-			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
-			                   &iter, _("WEP 40/128-bit ASCII"));
-			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_ASCII))
 				active = item;
 			item++;
 		}

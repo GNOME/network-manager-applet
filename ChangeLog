@@ -1,3 +1,16 @@
+2008-08-20  Dan Williams  <dcbw@redhat.com>
+
+	* src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wep-key.h
+		- Combine ASCII and Hex key types, becuase we can automatically
+			differentiate between the two
+		- Default to Hex/ASCII key type because apparently too many people have
+			trouble with the concept of WEP passphrases
+
+	* src/wireless-dialog.c
+	  src/connection-editor/page-wireless-security.c
+		- Combine ASCII and Hex key types
+
 2008-08-15  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/page-ip4.c

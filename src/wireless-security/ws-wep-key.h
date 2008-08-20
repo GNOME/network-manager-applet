@@ -23,9 +23,8 @@
 #define WS_WEP_KEY_H
 
 typedef enum {
-	WEP_KEY_TYPE_HEX = 0,
-	WEP_KEY_TYPE_ASCII = 1,
-	WEP_KEY_TYPE_PASSPHRASE = 2,
+	WEP_KEY_TYPE_KEY = 0,
+	WEP_KEY_TYPE_PASSPHRASE = 1,
 } WEPKeyType;
 
 typedef struct {

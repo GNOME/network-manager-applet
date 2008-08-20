@@ -96,24 +96,25 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 	g_assert (entry);
 
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
-	if (sec->type == WEP_KEY_TYPE_HEX) {
-		if (!key || ((strlen (key) != 10) && (strlen (key) != 26)))
-			return FALSE;
+	if (!key)
+		return FALSE;
 
-		for (i = 0; i < strlen (key); i++) {
-			if (!isxdigit (key[i]))
-				return FALSE;
-		}
-	} else if (sec->type == WEP_KEY_TYPE_ASCII) {
-		if (!key || ((strlen (key) != 5) && (strlen (key) != 13)))
+	if (sec->type == WEP_KEY_TYPE_KEY) {
+		if ((strlen (key) == 10) || (strlen (key) == 26)) {
+			for (i = 0; i < strlen (key); i++) {
+				if (!isxdigit (key[i]))
+					return FALSE;
+			}
+		} else if ((strlen (key) == 5) || (strlen (key) == 13)) {
+			for (i = 0; i < strlen (key); i++) {
+				if (!isascii (key[i]))
+					return FALSE;
+			}
+		} else {
 			return FALSE;
-
-		for (i = 0; i < strlen (key); i++) {
-			if (!isascii (key[i]))
-				return FALSE;
 		}
 	} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE) {
-		if (!key || !strlen (key) || (strlen (key) > 64))
+		if (!strlen (key) || (strlen (key) > 64))
 			return FALSE;
 	}
 
@@ -198,11 +199,12 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 		if (!key_len)
 			continue;
 
-		if (sec->type == WEP_KEY_TYPE_HEX)
-			hashed = g_strdup (sec->keys[i]);
-		else if (sec->type == WEP_KEY_TYPE_ASCII)
-			hashed = utils_bin2hexstr (sec->keys[i], key_len, key_len * 2);
-		else if (sec->type == WEP_KEY_TYPE_PASSPHRASE)
+		if (sec->type == WEP_KEY_TYPE_KEY) {
+			if ((key_len == 10) || (key_len == 26))
+				hashed = g_strdup (sec->keys[i]);
+			else if ((key_len == 5) || (key_len == 13))
+				hashed = utils_bin2hexstr (sec->keys[i], key_len, key_len * 2);
+		} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE)
 			hashed = wep128_passphrase_hash (sec->keys[i]);
 
 		if (i == 0)
@@ -235,14 +237,9 @@ wep_entry_filter_cb (GtkEntry *   entry,
 	int i, count = 0;
 	gchar *result = g_new (gchar, length);
 
-	if (sec->type == WEP_KEY_TYPE_HEX) {
+	if (sec->type == WEP_KEY_TYPE_KEY) {
 		for (i = 0; i < length; i++) {
-			if (isxdigit(text[i]))
-				result[count++] = text[i];
-		}
-	} else if (sec->type == WEP_KEY_TYPE_ASCII) {
-		for (i = 0; i < length; i++) {
-			if (isascii(text[i]))
+			if (isxdigit(text[i]) || isascii(text[i]))
 				result[count++] = text[i];
 		}
 	} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE) {
@@ -362,10 +359,8 @@ ws_wep_key_new (const char *glade_file,
 	g_signal_connect (G_OBJECT (widget), "insert-text",
 	                  (GCallback) wep_entry_filter_cb,
 	                  sec);
-	if (sec->type == WEP_KEY_TYPE_HEX)
+	if (sec->type == WEP_KEY_TYPE_KEY)
 		gtk_entry_set_max_length (GTK_ENTRY (widget), 26);
-	else if (sec->type == WEP_KEY_TYPE_ASCII)
-		gtk_entry_set_max_length (GTK_ENTRY (widget), 13);
 	else if (sec->type == WEP_KEY_TYPE_PASSPHRASE)
 		gtk_entry_set_max_length (GTK_ENTRY (widget), 64);
 
@@ -422,8 +417,9 @@ guess_type_for_key (const char *key)
 	int i;
 
 	if (!key || !len)
-		return WEP_KEY_TYPE_PASSPHRASE;
+		return WEP_KEY_TYPE_KEY;
 
+	/* Hex key */
 	if ((len == 10) || (len == 26)) {
 		gboolean hex = TRUE;
 
@@ -434,9 +430,10 @@ guess_type_for_key (const char *key)
 			}
 		}
 		if (hex)
-			return WEP_KEY_TYPE_HEX;
+			return WEP_KEY_TYPE_KEY;
 	}
 
+	/* ASCII key */
 	if ((len == 5) || (len == 13)) {
 		gboolean ascii = TRUE;
 
@@ -447,7 +444,7 @@ guess_type_for_key (const char *key)
 			}
 		}
 		if (ascii)
-			return WEP_KEY_TYPE_ASCII;
+			return WEP_KEY_TYPE_KEY;
 	}
 
 	return WEP_KEY_TYPE_PASSPHRASE;
@@ -459,12 +456,12 @@ ws_wep_guess_key_type (NMConnection *connection, const char *connection_id)
 	GHashTable *secrets;
 	GError *error = NULL;
 	GValue *value;
-	WEPKeyType key_type = WEP_KEY_TYPE_PASSPHRASE;
+	WEPKeyType key_type = WEP_KEY_TYPE_KEY;
 
 	if (!connection)
-		return WEP_KEY_TYPE_PASSPHRASE;
+		return WEP_KEY_TYPE_KEY;
 
-	g_return_val_if_fail (connection_id != NULL, WEP_KEY_TYPE_PASSPHRASE);
+	g_return_val_if_fail (connection_id != NULL, WEP_KEY_TYPE_KEY);
 
 	secrets = nm_gconf_get_keyring_items (connection, connection_id,
 	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
@@ -473,7 +470,7 @@ ws_wep_guess_key_type (NMConnection *connection, const char *connection_id)
 	if (!secrets || (g_hash_table_size (secrets) == 0)) {
 		if (error)
 			g_error_free (error);
-		return WEP_KEY_TYPE_PASSPHRASE;
+		return WEP_KEY_TYPE_KEY;
 	}
 
 	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY0);

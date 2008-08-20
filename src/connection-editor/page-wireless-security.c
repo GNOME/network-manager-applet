@@ -247,34 +247,25 @@ ce_page_wireless_security_new (NMConnection *connection)
 
 	if (nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityWEPKey *ws_wep;
-		WEPKeyType default_wep_type = WEP_KEY_TYPE_PASSPHRASE;
+		WEPKeyType default_wep_type = WEP_KEY_TYPE_KEY;
 
 		if (default_type == NMU_SEC_STATIC_WEP)
 			default_wep_type = ws_wep_guess_key_type (connection, connection_id);
+
+		ws_wep = ws_wep_key_new (glade_file, connection, connection_id, WEP_KEY_TYPE_KEY, FALSE);
+		if (ws_wep) {
+			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
+			                   &iter, _("WEP 40/128-bit Key"));
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_KEY))
+				active = item;
+			item++;
+		}
 
 		ws_wep = ws_wep_key_new (glade_file, connection, connection_id, WEP_KEY_TYPE_PASSPHRASE, FALSE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_PASSPHRASE))
-				active = item;
-			item++;
-		}
-
-		ws_wep = ws_wep_key_new (glade_file, connection, connection_id, WEP_KEY_TYPE_HEX, FALSE);
-		if (ws_wep) {
-			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
-			                   &iter, _("WEP 40/128-bit Hexadecimal"));
-			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_HEX))
-				active = item;
-			item++;
-		}
-
-		ws_wep = ws_wep_key_new (glade_file, connection, connection_id, WEP_KEY_TYPE_ASCII, FALSE);
-		if (ws_wep) {
-			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
-			                   &iter, _("WEP 40/128-bit ASCII"));
-			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_ASCII))
 				active = item;
 			item++;
 		}
