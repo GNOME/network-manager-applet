@@ -357,6 +357,8 @@ wireless_new_auto_connection (NMDevice *device,
 	/* Only utoconnect APs that don't use the manufacturer default SSID. */
 	s_con->autoconnect = !is_manufacturer_default_ssid (ap_ssid);
 
+	s_con->uuid = nm_utils_uuid_generate ();
+
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
 out:

@@ -686,7 +686,6 @@ security_combo_init (NMAWirelessDialog *self)
 	int item = 0;
 	NMSettingWireless *s_wireless = NULL;
 	gboolean is_adhoc;
-	char *connection_id = NULL;
 
 	g_return_val_if_fail (self != NULL, FALSE);
 
@@ -719,8 +718,6 @@ security_combo_init (NMAWirelessDialog *self)
 			wsec = NULL;
 		if (wsec)
 			default_type = get_default_type_for_security (wsec, !!priv->ap, ap_flags, dev_caps);
-
-		connection_id = g_object_get_data (G_OBJECT (priv->connection), NMA_CONNECTION_ID_TAG);
 	}
 
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
@@ -744,9 +741,9 @@ security_combo_init (NMAWirelessDialog *self)
 		WEPKeyType default_wep_type = WEP_KEY_TYPE_KEY;
 
 		if (default_type == NMU_SEC_STATIC_WEP)
-			default_wep_type = ws_wep_guess_key_type (priv->connection, connection_id);
+			default_wep_type = ws_wep_guess_key_type (priv->connection);
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_KEY, priv->adhoc_create);
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, WEP_KEY_TYPE_KEY, priv->adhoc_create);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Key"));
@@ -755,7 +752,7 @@ security_combo_init (NMAWirelessDialog *self)
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, connection_id, WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create);
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -772,7 +769,7 @@ security_combo_init (NMAWirelessDialog *self)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityLEAP *ws_leap;
 
-		ws_leap = ws_leap_new (priv->glade_file, priv->connection, connection_id);
+		ws_leap = ws_leap_new (priv->glade_file, priv->connection);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
@@ -785,7 +782,7 @@ security_combo_init (NMAWirelessDialog *self)
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (priv->glade_file, priv->connection, connection_id);
+		ws_dynamic_wep = ws_dynamic_wep_new (priv->glade_file, priv->connection);
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
@@ -799,7 +796,7 @@ security_combo_init (NMAWirelessDialog *self)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;
 
-		ws_wpa_psk = ws_wpa_psk_new (priv->glade_file, priv->connection, connection_id);
+		ws_wpa_psk = ws_wpa_psk_new (priv->glade_file, priv->connection);
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
@@ -813,7 +810,7 @@ security_combo_init (NMAWirelessDialog *self)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (priv->glade_file, priv->connection, connection_id);
+		ws_wpa_eap = ws_wpa_eap_new (priv->glade_file, priv->connection);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
@@ -973,6 +970,7 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 
 		s_con = (NMSettingConnection *) nm_setting_connection_new ();
 		s_con->type = g_strdup (NM_SETTING_WIRELESS_SETTING_NAME);
+		s_con->uuid = nm_utils_uuid_generate ();
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 		s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();

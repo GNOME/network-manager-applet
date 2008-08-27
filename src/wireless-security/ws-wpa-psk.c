@@ -148,9 +148,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityWPAPSK *
-ws_wpa_psk_new (const char *glade_file,
-                NMConnection *connection,
-                const char *connection_id)
+ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 {
 	WirelessSecurityWPAPSK *sec;
 	GtkWidget *widget;
@@ -190,12 +188,12 @@ ws_wpa_psk_new (const char *glade_file,
 	                  sec);
 
 	/* Fill secrets, if any */
-	if (connection && connection_id) {
+	if (connection) {
 		GHashTable *secrets;
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, connection_id,
+		secrets = nm_gconf_get_keyring_items (connection,
 		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 		                                      FALSE,
 		                                      &error);

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager -- Network link manager
  *
  * Dan Williams <dcbw@redhat.com>
@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2005 Red Hat, Inc.
+ * (C) Copyright 2005 - 2008 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -852,9 +852,8 @@ nm_gconf_get_all_connections (GConfClient *client)
 {
 	GSList *connections;
 
+	nm_gconf_migrate_0_7_connection_uuid (client);
 	nm_gconf_migrate_0_7_keyring_items (client);
-	nm_gconf_migrate_0_7_connection_names (client);
-	nm_gconf_migrate_0_7_vpn_connections (client);
 	nm_gconf_migrate_0_7_wireless_security (client);
 	nm_gconf_migrate_0_7_netmask_to_prefix (client);
 	nm_gconf_migrate_0_7_ip4_method (client);
@@ -1120,7 +1119,7 @@ nm_gconf_read_connection (GConfClient *client,
 
 
 void
-nm_gconf_add_keyring_item (const char *connection_id,
+nm_gconf_add_keyring_item (const char *connection_uuid,
                            const char *connection_name,
                            const char *setting_name,
                            const char *setting_key,
@@ -1131,7 +1130,7 @@ nm_gconf_add_keyring_item (const char *connection_id,
 	GnomeKeyringAttributeList *attrs = NULL;
 	guint32 id = 0;
 
-	g_return_if_fail (connection_id != NULL);
+	g_return_if_fail (connection_uuid != NULL);
 	g_return_if_fail (setting_name != NULL);
 	g_return_if_fail (setting_key != NULL);
 	g_return_if_fail (secret != NULL);
@@ -1143,8 +1142,8 @@ nm_gconf_add_keyring_item (const char *connection_id,
 
 	attrs = gnome_keyring_attribute_list_new ();
 	gnome_keyring_attribute_list_append_string (attrs,
-	                                            KEYRING_CID_TAG,
-	                                            connection_id);
+	                                            KEYRING_UUID_TAG,
+	                                            connection_uuid);
 	gnome_keyring_attribute_list_append_string (attrs,
 	                                            KEYRING_SN_TAG,
 	                                            setting_name);
@@ -1168,7 +1167,7 @@ typedef struct CopyOneSettingValueInfo {
 	NMConnection *connection;
 	GConfClient *client;
 	const char *dir;
-	const char *connection_id;
+	const char *connection_uuid;
 	const char *connection_name;
 } CopyOneSettingValueInfo;
 
@@ -1213,7 +1212,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 
 		if (secret) {
 			if (str_val && strlen (str_val))
-				nm_gconf_add_keyring_item (info->connection_id,
+				nm_gconf_add_keyring_item (info->connection_uuid,
 									  info->connection_name,
 									  setting->name,
 									  key,
@@ -1324,7 +1323,7 @@ write_one_password (CopyOneSettingValueInfo *info, const char *tag)
 
 	value = g_object_get_data (G_OBJECT (info->connection), tag);
 	if (value) {
-		nm_gconf_add_keyring_item (info->connection_id,
+		nm_gconf_add_keyring_item (info->connection_uuid,
 		                           info->connection_name,
 		                           NM_SETTING_802_1X_SETTING_NAME,
 		                           tag,
@@ -1394,8 +1393,7 @@ remove_leftovers (CopyOneSettingValueInfo *info)
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir,
-                           const char *connection_id)
+                           const char *dir)
 {
 	NMSettingConnection *s_con;
 	CopyOneSettingValueInfo info;
@@ -1403,7 +1401,6 @@ nm_gconf_write_connection (NMConnection *connection,
 	g_return_if_fail (NM_IS_CONNECTION (connection));
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (dir != NULL);
-	g_return_if_fail (connection_id != NULL);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_con)
@@ -1412,7 +1409,7 @@ nm_gconf_write_connection (NMConnection *connection,
 	info.connection = connection;
 	info.client = client;
 	info.dir = dir;
-	info.connection_id = connection_id;
+	info.connection_uuid = s_con->uuid;
 	info.connection_name = s_con->id;
 	nm_connection_for_each_setting_value (connection,
 	                                      copy_one_setting_value_to_gconf,
@@ -1529,7 +1526,6 @@ out:
 
 GHashTable *
 nm_gconf_get_keyring_items (NMConnection *connection,
-                            const char *connection_id,
                             const char *setting_name,
                             gboolean include_private_passwords,
                             GError **error)
@@ -1542,7 +1538,6 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 	const char *connection_name;
 
 	g_return_val_if_fail (connection != NULL, NULL);
-	g_return_val_if_fail (connection_id != NULL, NULL);
 	g_return_val_if_fail (setting_name != NULL, NULL);
 	g_return_val_if_fail (error != NULL, NULL);
 	g_return_val_if_fail (*error == NULL, NULL);
@@ -1550,13 +1545,14 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 	g_assert (s_con->id);
+	g_assert (s_con->uuid);
 	connection_name = s_con->id;
 
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,
-	                                      KEYRING_CID_TAG,
+	                                      KEYRING_UUID_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      connection_id,
+	                                      s_con->uuid,
 	                                      KEYRING_SN_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      setting_name,
@@ -1677,9 +1673,6 @@ nm_gconf_connection_duplicate (NMConnection *connection)
 
 	g_object_set_data_full (od, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG,
 					    g_strdup (g_object_get_data (oc, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG)), g_free);
-
-	g_object_set_data_full (od, NMA_CONNECTION_ID_TAG,
-					    g_strdup (g_object_get_data (oc, NMA_CONNECTION_ID_TAG)), g_free);
 
 	return dup;
 }

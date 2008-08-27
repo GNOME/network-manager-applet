@@ -172,8 +172,8 @@ nma_vpn_request_password (NMExportedConnection *exported,
                           DBusGMethodInvocation *context)
 {
 	const char *argv[] = { NULL /*"/usr/libexec/nm-vpnc-auth-dialog"*/, 
-	                       "-i", NULL /*"1"*/, 
-	                       "-n", NULL /*"davidznet42"*/, 
+	                       "-u", NULL /*"2a5d52b5-95b4-4431-b96e-3dd46128f9a7"*/, 
+	                       "-n", NULL /*"davidznet42"*/,
 	                       "-s", NULL /*"org.freedesktop.vpnc"*/, 
 	                       "-r",
 	                       NULL
@@ -216,7 +216,7 @@ nma_vpn_request_password (NMExportedConnection *exported,
 
 	/* Fix up parameters with what we got */
 	argv[0] = auth_dialog_binary;
-	argv[2] = nm_exported_connection_get_id (exported);
+	argv[2] = s_con->uuid;
 	argv[4] = s_con->id;
 	argv[6] = s_vpn->service_type;
 	if (!retry)
@@ -269,9 +269,8 @@ nma_vpn_request_password (NMExportedConnection *exported,
 	g_io_channel_set_encoding (child_stdout_channel, NULL, NULL);
 
 	/* recurse mainloop here until the child is finished (child_status is set in child_finished_cb) */
-	while (child_status == -1) {
+	while (child_status == -1)
 		g_main_context_iteration (NULL, TRUE);
-	}
 
 	g_spawn_close_pid (child_pid);
 	g_source_remove (child_stdout_channel_eventid);

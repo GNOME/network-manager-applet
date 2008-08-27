@@ -16,7 +16,6 @@ G_DEFINE_TYPE (NMAGConfConnection, nma_gconf_connection, NM_TYPE_EXPORTED_CONNEC
 typedef struct {
 	GConfClient *client;
 	char *dir;
-	char *id;
 
 	gboolean disposed;
 } NMAGConfConnectionPrivate;
@@ -97,8 +96,7 @@ nma_gconf_connection_save (NMAGConfConnection *self)
 	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (self));
 	nm_gconf_write_connection (connection,
 	                           priv->client,
-	                           priv->dir,
-	                           priv->id);
+	                           priv->dir);
 	gconf_client_notify (priv->client, priv->dir);
 	gconf_client_suggest_sync (priv->client, NULL);
 }
@@ -204,7 +202,6 @@ get_secrets (NMExportedConnection *exported,
 	GHashTable *secrets = NULL;
 	NMSettingConnection *s_con;
 	NMSetting *setting;
-	const char *id;
 
 	connection = nm_exported_connection_get_connection (exported);
 
@@ -249,8 +246,7 @@ get_secrets (NMExportedConnection *exported,
 	settings = g_hash_table_new_full (g_str_hash, g_str_equal,
 	                                  g_free, (GDestroyNotify) g_hash_table_destroy);
 
-	id = nm_exported_connection_get_id (exported);
-	secrets = nm_gconf_get_keyring_items (connection, id, setting_name, FALSE, &error);
+	secrets = nm_gconf_get_keyring_items (connection, setting_name, FALSE, &error);
 	if (!secrets) {
 		if (error) {
 			nm_warning ("Error getting secrets: %s", error->message);
@@ -286,12 +282,6 @@ get_secrets:
 	               context);
 }
 
-static const char *
-get_id (NMExportedConnection *self)
-{
-	return NMA_GCONF_CONNECTION_GET_PRIVATE (self)->id;
-}
-
 static gboolean
 update (NMExportedConnection *exported, GHashTable *new_settings, GError **error)
 {
@@ -306,10 +296,7 @@ update (NMExportedConnection *exported, GHashTable *new_settings, GError **error
 		            g_type_name (nm_connection_lookup_setting_type_by_quark ((*error)->domain)),
 		            (*error)->message, (*error)->code);
 	} else {
-		nm_gconf_write_connection (tmp,
-		                           priv->client,
-		                           priv->dir,
-		                           priv->id);
+		nm_gconf_write_connection (tmp, priv->client, priv->dir);
 		g_object_unref (tmp);
 
 		gconf_client_notify (priv->client, priv->dir);
@@ -369,9 +356,6 @@ constructor (GType type,
 
 	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (object));
 
-	priv->id = g_path_get_basename (priv->dir);
-	g_object_set_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG, priv->id);
-
 	utils_fill_connection_certs (connection);
 	if (!nm_connection_verify (connection, &error)) {
 		utils_clear_filled_connection_certs (connection);
@@ -409,16 +393,10 @@ static void
 dispose (GObject *object)
 {
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (object);
-	NMConnection *connection;
 
 	if (priv->disposed)
 		return;
-
 	priv->disposed = TRUE;
-
-	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (object));
-	if (connection)
-		g_object_set_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG, NULL);
 
 	g_object_unref (priv->client);
 
@@ -430,7 +408,6 @@ finalize (GObject *object)
 {
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (object);
 
-	g_free (priv->id);
 	g_free (priv->dir);
 
 	G_OBJECT_CLASS (nma_gconf_connection_parent_class)->finalize (object);
@@ -493,7 +470,6 @@ nma_gconf_connection_class_init (NMAGConfConnectionClass *gconf_connection_class
 
 	connection_class->get_settings = get_settings;
 	connection_class->get_secrets  = get_secrets;
-	connection_class->get_id       = get_id;
 	connection_class->update       = update;
 	connection_class->delete       = delete;
 

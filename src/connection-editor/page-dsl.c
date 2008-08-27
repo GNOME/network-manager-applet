@@ -66,19 +66,17 @@ populate_ui (CEPageDsl *self, NMConnection *connection)
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
 	NMSettingPPPOE *setting = priv->setting;
 	char *password = setting->password;
-	const char *connection_id;
 	GHashTable *secrets = NULL;
 
 	if (setting->username)
 		gtk_entry_set_text (priv->username, setting->username);
 
 	/* Grab password from keyring if possible */
-	connection_id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
-	if (!password && connection_id) {
+	if (!password) {
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, connection_id,
+		secrets = nm_gconf_get_keyring_items (connection,
 		                                      nm_setting_get_name (NM_SETTING (setting)),
 		                                      FALSE,
 		                                      &error);

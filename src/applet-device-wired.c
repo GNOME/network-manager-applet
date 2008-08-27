@@ -36,6 +36,7 @@
 #include <nm-setting-8021x.h>
 #include <nm-setting-pppoe.h>
 #include <nm-device-ethernet.h>
+#include <nm-utils.h>
 
 #include "applet.h"
 #include "applet-device-wired.h"
@@ -81,6 +82,7 @@ wired_new_auto_connection (NMDevice *device,
 	s_con->id = g_strdup (DEFAULT_WIRED_NAME);
 	s_con->type = g_strdup (NM_SETTING (s_wired)->name);
 	s_con->autoconnect = TRUE;
+	s_con->uuid = nm_utils_uuid_generate ();
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
 	return connection;
@@ -351,27 +353,22 @@ pppoe_update_ui (NMConnection *connection, NMPppoeInfo *info)
 	if (s_pppoe->password)
 		gtk_entry_set_text (info->password_entry, s_pppoe->password);
 	else {
-		const char *connection_id;
+		GHashTable *secrets;
+		GError *error = NULL;
+		GValue *value;
 
 		/* Grab password from keyring if possible */
-		connection_id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
-		if (connection_id) {
-			GHashTable *secrets;
-			GError *error = NULL;
-			GValue *value;
-
-			secrets = nm_gconf_get_keyring_items (connection, connection_id,
-			                                      nm_setting_get_name (NM_SETTING (s_pppoe)),
-			                                      FALSE,
-			                                      &error);
-			if (secrets) {
-				value = g_hash_table_lookup (secrets, NM_SETTING_PPPOE_PASSWORD);
-				if (value)
-					gtk_entry_set_text (info->password_entry, g_value_get_string (value));
-				g_hash_table_destroy (secrets);
-			} else if (error)
-				g_error_free (error);
-		}
+		secrets = nm_gconf_get_keyring_items (connection,
+		                                      nm_setting_get_name (NM_SETTING (s_pppoe)),
+		                                      FALSE,
+		                                      &error);
+		if (secrets) {
+			value = g_hash_table_lookup (secrets, NM_SETTING_PPPOE_PASSWORD);
+			if (value)
+				gtk_entry_set_text (info->password_entry, g_value_get_string (value));
+			g_hash_table_destroy (secrets);
+		} else if (error)
+			g_error_free (error);
 	}
 }
 

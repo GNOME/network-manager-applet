@@ -98,8 +98,7 @@ nag_user (WirelessSecurity *parent)
 
 WirelessSecurityDynamicWEP *
 ws_dynamic_wep_new (const char *glade_file,
-                    NMConnection *connection,
-                    const char *connection_id)
+                    NMConnection *connection)
 {
 	WirelessSecurityDynamicWEP *sec;
 	GtkWidget *widget;
@@ -138,8 +137,7 @@ ws_dynamic_wep_new (const char *glade_file,
 	                                    glade_file,
 	                                    "dynamic_wep_auth_combo",
 	                                    (GCallback) auth_combo_changed_cb,
-	                                    connection,
-	                                    connection_id);
+	                                    connection);
 	auth_combo_changed_cb (widget, (gpointer) sec);
 
 	return sec;

@@ -266,7 +266,6 @@ out:
 WirelessSecurityWEPKey *
 ws_wep_key_new (const char *glade_file,
                 NMConnection *connection,
-                const char *connection_id,
                 WEPKeyType type,
                 gboolean adhoc_create)
 {
@@ -310,12 +309,12 @@ ws_wep_key_new (const char *glade_file,
 	g_assert (widget);
 
 	/* Fill secrets, if any */
-	if (connection && connection_id) {
+	if (connection) {
 		GHashTable *secrets;
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, connection_id,
+		secrets = nm_gconf_get_keyring_items (connection,
 		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 		                                      FALSE,
 		                                      &error);
@@ -395,6 +394,10 @@ ws_wep_key_new (const char *glade_file,
 	widget = glade_xml_get_widget (xml, "auth_method_combo");
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), is_shared_key ? 1 : 0);
 
+	g_signal_connect (G_OBJECT (widget), "changed",
+	                  (GCallback) wireless_security_changed_cb,
+	                  sec);
+
 	/* Ad-Hoc connections can't use Shared Key auth */
 	if (is_adhoc) {
 		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
@@ -402,10 +405,6 @@ ws_wep_key_new (const char *glade_file,
 		widget = glade_xml_get_widget (xml, "auth_method_label");
 		gtk_widget_hide (widget);
 	}
-
-	g_signal_connect (G_OBJECT (widget), "changed",
-	                  (GCallback) wireless_security_changed_cb,
-	                  sec);
 
 	return sec;
 }
@@ -451,7 +450,7 @@ guess_type_for_key (const char *key)
 }
 
 WEPKeyType
-ws_wep_guess_key_type (NMConnection *connection, const char *connection_id)
+ws_wep_guess_key_type (NMConnection *connection)
 {
 	GHashTable *secrets;
 	GError *error = NULL;
@@ -461,9 +460,7 @@ ws_wep_guess_key_type (NMConnection *connection, const char *connection_id)
 	if (!connection)
 		return WEP_KEY_TYPE_KEY;
 
-	g_return_val_if_fail (connection_id != NULL, WEP_KEY_TYPE_KEY);
-
-	secrets = nm_gconf_get_keyring_items (connection, connection_id,
+	secrets = nm_gconf_get_keyring_items (connection,
 	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 	                                      FALSE,
 	                                      &error);

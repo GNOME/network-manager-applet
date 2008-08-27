@@ -86,15 +86,10 @@ mobile_private_init (CEPageMobile *self)
 static GHashTable *
 get_secrets (NMConnection *connection, const char *setting_name)
 {
-	const char *connection_id;
 	GError *error = NULL;
 	GHashTable *secrets;
 
-	connection_id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
-	if (!connection_id)
-		return NULL;
-
-	secrets = nm_gconf_get_keyring_items (connection, connection_id,
+	secrets = nm_gconf_get_keyring_items (connection,
 	                                      setting_name,
 	                                      FALSE,
 	                                      &error);

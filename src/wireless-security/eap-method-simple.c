@@ -128,7 +128,6 @@ EAPMethodSimple *
 eap_method_simple_new (const char *glade_file,
                        WirelessSecurity *parent,
                        NMConnection *connection,
-                       const char *connection_id,
                        EAPMethodSimpleType type)
 {
 	EAPMethodSimple *method;
@@ -183,12 +182,12 @@ eap_method_simple_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 	/* Fill secrets, if any */
-	if (connection && connection_id) {
+	if (connection) {
 		GHashTable *secrets;
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, connection_id,
+		secrets = nm_gconf_get_keyring_items (connection,
 		                                      NM_SETTING_802_1X_SETTING_NAME,
 		                                      TRUE,
 		                                      &error);

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager -- Network link manager
  *
  * Dan Williams <dcbw@redhat.com>
@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2005 Red Hat, Inc.
+ * (C) Copyright 2005 - 2008 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -362,6 +362,7 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	s_con->type = g_strdup ("802-11-wireless");
 	s_con->autoconnect = (timestamp != 0);
 	s_con->timestamp = timestamp;
+	s_con->uuid = nm_utils_uuid_generate ();
 
 	s_wireless = (NMSettingWireless *)nm_setting_wireless_new ();
 	s_wireless->ssid = g_byte_array_new ();
@@ -555,6 +556,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	s_con = (NMSettingConnection *)nm_setting_connection_new ();
 	s_con->id = id;
 	s_con->type = g_strdup ("vpn");
+	s_con->uuid = nm_utils_uuid_generate ();
 
 	s_vpn = (NMSettingVPN *)nm_setting_vpn_new ();
 	s_vpn->service_type = service_name;
@@ -585,16 +587,13 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 }
 
 static void
-nm_gconf_write_0_6_connection (NMConnection *conn, GConfClient *client, int n)
+nm_gconf_write_0_6_connection (NMConnection *connection, GConfClient *client, int n)
 {
 	char *dir;
-	char *id;
 
 	dir = g_strdup_printf ("%s/%d", GCONF_PATH_CONNECTIONS, n);
-	id = g_strdup_printf ("%d", n);
-	nm_gconf_write_connection (conn, client, dir, id);
+	nm_gconf_write_connection (connection, client, dir);
 	g_free (dir);
-	g_free (id);
 }
 
 #define GCONF_PATH_0_6_WIRELESS_NETWORKS "/system/networking/wireless/networks"
@@ -625,66 +624,6 @@ nm_gconf_migrate_0_6_connections (GConfClient *client)
 		if (conn) {
 			nm_gconf_write_0_6_connection (conn, client, n++);
 			g_object_unref (conn);
-		}
-	}
-	free_slist (connections);
-
-	gconf_client_suggest_sync (client, NULL);
-}
-
-/* Converting NMSetting objects to GObject resulted in a change of the
- * service_type key to service-type.  Fix that up.
- */
-void
-nm_gconf_migrate_0_7_vpn_connections (GConfClient *client)
-{
-	GSList *connections, *iter;
-
-	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
-	for (iter = connections; iter; iter = iter->next) {
-		char *value = NULL;
-
-		if (nm_gconf_get_string_helper (client, iter->data, "service_type", "vpn", &value)) {
-			char *old_key;
-
-			nm_gconf_set_string_helper (client, iter->data, "service-type", "vpn", value);
-			old_key = g_strdup_printf ("%s/vpn/service_type", (const char *) iter->data);
-			gconf_client_unset (client, old_key, NULL);
-			g_free (old_key);
-		}
-	}
-	free_slist (connections);
-
-	gconf_client_suggest_sync (client, NULL);
-}
-
-/* Changing the connection settings' 'name' property -> 'id' requires a rename
- * of the GConf key too.
- */
-void
-nm_gconf_migrate_0_7_connection_names (GConfClient *client)
-{
-	GSList *connections, *iter;
-
-	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
-	for (iter = connections; iter; iter = iter->next) {
-		char *id = NULL;
-
-		if (nm_gconf_get_string_helper (client, iter->data, "id", NM_SETTING_CONNECTION_SETTING_NAME, &id))
-			g_free (id);
-		else {
-			char *value = NULL;
-
-			if (nm_gconf_get_string_helper (client, iter->data, "name", NM_SETTING_CONNECTION_SETTING_NAME, &value)) {
-				char *old_key;
-
-				nm_gconf_set_string_helper (client, iter->data, "id", NM_SETTING_CONNECTION_SETTING_NAME, value);
-				g_free (value);
-
-				old_key = g_strdup_printf ("%s/" NM_SETTING_CONNECTION_SETTING_NAME "/name", (const char *) iter->data);
-				gconf_client_unset (client, old_key, NULL);
-				g_free (old_key);
-			}
 		}
 	}
 	free_slist (connections);
@@ -750,7 +689,7 @@ copy_bool_to_8021x (GConfClient *client, const char *dir, const char *key)
 }
 
 static gboolean
-try_convert_leap (GConfClient *client, const char *dir, const char *connection_id)
+try_convert_leap (GConfClient *client, const char *dir, const char *uuid)
 {
 	char *val = NULL;
 	GnomeKeyringResult ret;
@@ -819,9 +758,9 @@ try_convert_leap (GConfClient *client, const char *dir, const char *connection_i
 	/* Copy the LEAP password */
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,
-	                                      KEYRING_CID_TAG,
+	                                      KEYRING_UUID_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      val,
+	                                      uuid,
 	                                      KEYRING_SN_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
@@ -833,7 +772,7 @@ try_convert_leap (GConfClient *client, const char *dir, const char *connection_i
 		goto done;
 
 	found = (GnomeKeyringFound *) found_list->data;
-	nm_gconf_add_keyring_item (connection_id,
+	nm_gconf_add_keyring_item (uuid,
 	                           val,
 	                           NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 	                           NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD,
@@ -849,7 +788,7 @@ done:
 static void
 copy_keyring_to_8021x (GConfClient *client,
                        const char *dir,
-                       const char *connection_id,
+                       const char *uuid,
                        const char *key)
 {
 	char *name = NULL;
@@ -866,9 +805,9 @@ copy_keyring_to_8021x (GConfClient *client,
 	/* Copy the LEAP password */
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,
-	                                      KEYRING_CID_TAG,
+	                                      KEYRING_UUID_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      connection_id,
+	                                      uuid,
 	                                      KEYRING_SN_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
@@ -880,7 +819,7 @@ copy_keyring_to_8021x (GConfClient *client,
 		goto done;
 
 	found = (GnomeKeyringFound *) found_list->data;
-	nm_gconf_add_keyring_item (connection_id, name, NM_SETTING_802_1X_SETTING_NAME, key, found->secret);
+	nm_gconf_add_keyring_item (uuid, name, NM_SETTING_802_1X_SETTING_NAME, key, found->secret);
 
 	gnome_keyring_item_delete_sync (found->keyring, found->item_id);
 
@@ -898,12 +837,18 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 	for (iter = connections; iter; iter = iter->next) {
 		char *key_mgmt = NULL;
 		GSList *eap = NULL;
-		char *id = g_path_get_basename ((const char *) iter->data);
+		char *uuid = NULL;
 
 		if (!nm_gconf_get_string_helper (client, iter->data,
 		                                 NM_SETTING_WIRELESS_SECURITY_KEY_MGMT,
 		                                 NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 		                                 &key_mgmt))
+			goto next;
+
+		if (!nm_gconf_get_string_helper (client, iter->data,
+		                                 NM_SETTING_CONNECTION_UUID,
+		                                 NM_SETTING_CONNECTION_SETTING_NAME,
+		                                 &uuid))
 			goto next;
 
 		/* Only convert 802.1x-based connections */
@@ -914,7 +859,7 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 		g_free (key_mgmt);
 
 		/* Leap gets converted differently */
-		if (try_convert_leap (client, iter->data, id))
+		if (try_convert_leap (client, iter->data, uuid))
 			goto next;
 
 		/* Otherwise straight 802.1x */
@@ -948,80 +893,18 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 		copy_bool_to_8021x (client, iter->data, NMA_CA_CERT_IGNORE_TAG);
 		copy_bool_to_8021x (client, iter->data, NMA_PHASE2_CA_CERT_IGNORE_TAG);
 
-		copy_keyring_to_8021x (client, iter->data, id, NM_SETTING_802_1X_PASSWORD);
-		copy_keyring_to_8021x (client, iter->data, id, NM_SETTING_802_1X_PIN);
-		copy_keyring_to_8021x (client, iter->data, id, NM_SETTING_802_1X_PSK);
-		copy_keyring_to_8021x (client, iter->data, id, NMA_PRIVATE_KEY_PASSWORD_TAG);
-		copy_keyring_to_8021x (client, iter->data, id, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
+		copy_keyring_to_8021x (client, iter->data, uuid, NM_SETTING_802_1X_PASSWORD);
+		copy_keyring_to_8021x (client, iter->data, uuid, NM_SETTING_802_1X_PIN);
+		copy_keyring_to_8021x (client, iter->data, uuid, NM_SETTING_802_1X_PSK);
+		copy_keyring_to_8021x (client, iter->data, uuid, NMA_PRIVATE_KEY_PASSWORD_TAG);
+		copy_keyring_to_8021x (client, iter->data, uuid, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
 
 next:
-		g_free (id);
+		g_free (uuid);
 	}
 	free_slist (connections);
 
 	gconf_client_suggest_sync (client, NULL);
-}
-
-/*
- * Move all keyring items to use 'connection-id' instead of 'connection-name'
- */
-void
-nm_gconf_migrate_0_7_keyring_items (GConfClient *client)
-{
-	GSList *connections;
-	GSList *iter;
-
-	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
-	for (iter = connections; iter; iter = g_slist_next (iter)) {
-		GnomeKeyringResult ret;
-		GList *found_list = NULL, *elt;
-		char *name = NULL;
-		char *id = g_path_get_basename (iter->data);
-
-		if (!nm_gconf_get_string_helper (client, iter->data,
-		                                 "id",
-		                                 NM_SETTING_CONNECTION_SETTING_NAME,
-		                                 &name))
-			goto next;
-
-		ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-		                                      &found_list,
-		                                      "connection-name",
-		                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-		                                      name,
-		                                      NULL);
-		if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0))
-			goto next;
-
-		for (elt = found_list; elt; elt = g_list_next (elt)) {
-			GnomeKeyringFound *found = (GnomeKeyringFound *) elt->data;
-			char *setting_name = NULL;
-			char *setting_key = NULL;
-			int i;
-
-			for (i = 0; found->attributes && (i < found->attributes->len); i++) {
-				GnomeKeyringAttribute *attr;
-
-				attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
-				if (!strcmp (attr->name, KEYRING_SN_TAG) && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING))
-					setting_name = attr->value.string;
-				else if (!strcmp (attr->name, KEYRING_SK_TAG) && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING))
-					setting_key = attr->value.string;
-			}
-
-			if (setting_name && setting_key) {
-				nm_gconf_add_keyring_item (id, name, setting_name, setting_key, found->secret);
-				ret = gnome_keyring_item_delete_sync (found->keyring, found->item_id);
-			}
-		}
-		gnome_keyring_found_list_free (found_list);
-
-	next:
-		g_free (name);
-		g_free (id);
-	}
-
-
 }
 
 void
@@ -1461,6 +1344,154 @@ nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client)
 			                            NM_SETTING_VPN_SETTING_NAME,
 			                            new_type);
 		}
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+
+void
+nm_gconf_migrate_0_7_connection_uuid (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *uuid = NULL;
+
+		if (!nm_gconf_get_string_helper (client, iter->data,
+		                                NM_SETTING_CONNECTION_UUID,
+		                                NM_SETTING_CONNECTION_SETTING_NAME,
+		                                &uuid)) {
+			/* Give the connection a UUID */
+			uuid = nm_utils_uuid_generate ();
+			nm_gconf_set_string_helper (client, iter->data,
+			                            NM_SETTING_CONNECTION_UUID,
+			                            NM_SETTING_CONNECTION_SETTING_NAME,
+			                            uuid);
+		}
+
+		g_free (uuid);
+	}
+	free_slist (connections);
+
+	gconf_client_suggest_sync (client, NULL);
+}
+
+static void
+migrate_openvpn_secrets (const char *name, const char *uuid)
+{
+	int status;
+	GList *list = NULL;
+	GList *iter;
+
+	status = gnome_keyring_find_network_password_sync (g_get_user_name (),     /* user */
+	                                                   NULL,                   /* domain */
+	                                                   name,         /* server */
+	                                                   NULL,                   /* object */
+	                                                   "org.freedesktop.NetworkManager.openvpn", /* protocol */
+	                                                   NULL,                   /* authtype */
+	                                                   0,                      /* port */
+	                                                   &list);
+	if (status != GNOME_KEYRING_RESULT_OK || !g_list_length (list))
+		return;
+
+	/* Go through all passwords and assign to appropriate variable */
+	for (iter = list; iter; iter = iter->next) {
+		GnomeKeyringNetworkPasswordData *found = iter->data;
+
+		/* Ignore session items */
+		if (strcmp (found->keyring, "session") != 0)
+			nm_gconf_add_keyring_item (uuid, name, NM_SETTING_VPN_SETTING_NAME, found->object, found->password);
+
+		gnome_keyring_item_delete_sync (found->keyring, found->item_id);
+	}
+
+	gnome_keyring_network_password_list_free (list);
+}
+
+/* Move keyring items from 'connection-id' or 'connection-name' to 'connection-uuid' */
+void
+nm_gconf_migrate_0_7_keyring_items (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		GnomeKeyringResult ret;
+		GList *found_list = NULL, *found_iter;
+		char *uuid = NULL;
+		char *old_id = NULL;
+		char *name = NULL;
+
+		/* Get the connection's UUID and name */
+		if (!nm_gconf_get_string_helper (client, iter->data,
+		                                 NM_SETTING_CONNECTION_UUID,
+		                                 NM_SETTING_CONNECTION_SETTING_NAME,
+		                                 &uuid))
+			goto next;
+
+		if (!nm_gconf_get_string_helper (client, iter->data,
+		                                 NM_SETTING_CONNECTION_ID,
+		                                 NM_SETTING_CONNECTION_SETTING_NAME,
+		                                 &name))
+			goto next;
+
+		old_id = g_path_get_basename ((const char *) iter->data);
+
+		/* Move any keyring keys associated with the connection */
+		ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+		                                      &found_list,
+		                                      "connection-id",
+		                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+		                                      old_id,
+		                                      NULL);
+		if (ret != GNOME_KEYRING_RESULT_OK) {
+			/* Or even older keyring items */
+			ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+			                                      &found_list,
+			                                      "connection-name",
+			                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+			                                      name,
+			                                      NULL);
+			if (ret != GNOME_KEYRING_RESULT_OK)
+				goto next;
+		}
+
+		for (found_iter = found_list; found_iter; found_iter = g_list_next (found_iter)) {
+			GnomeKeyringFound *found = (GnomeKeyringFound *) found_iter->data;
+			char *setting_name = NULL;
+			char *setting_key = NULL;
+			int i;
+
+			for (i = 0; found->attributes && (i < found->attributes->len); i++) {
+				GnomeKeyringAttribute *attr;
+
+				attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
+				if (!strcmp (attr->name, KEYRING_SN_TAG) && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
+					/* Migrate old vpn-properties secrets too */
+					if (!strcmp (attr->value.string, "vpn-properties"))
+						setting_name = NM_SETTING_VPN_SETTING_NAME;
+					else
+						setting_name = attr->value.string;
+				} else if (!strcmp (attr->name, KEYRING_SK_TAG) && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING))
+					setting_key = attr->value.string;
+			}
+
+			if (setting_name && setting_key) {
+				nm_gconf_add_keyring_item (uuid, name, setting_name, setting_key, found->secret);
+				ret = gnome_keyring_item_delete_sync (found->keyring, found->item_id);
+			}
+		}
+		gnome_keyring_found_list_free (found_list);
+
+		/* Old OpenVPN secrets have a different keyring style */
+		migrate_openvpn_secrets (name, uuid);
+
+	next:
+		g_free (name);
+		g_free (old_id);
+		g_free (uuid);
 	}
 	free_slist (connections);
 

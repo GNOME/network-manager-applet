@@ -26,10 +26,6 @@
 
 void nm_gconf_migrate_0_6_connections (GConfClient *client);
 
-void nm_gconf_migrate_0_7_vpn_connections (GConfClient *client);
-
-void nm_gconf_migrate_0_7_connection_names (GConfClient *client);
-
 void nm_gconf_migrate_0_7_wireless_security (GConfClient *client);
 
 void nm_gconf_migrate_0_7_keyring_items (GConfClient *client);
@@ -45,6 +41,8 @@ void nm_gconf_migrate_0_7_vpn_routes (GConfClient *client);
 void nm_gconf_migrate_0_7_vpn_properties (GConfClient *client);
 
 void nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client);
+
+void nm_gconf_migrate_0_7_connection_uuid (GConfClient *client);
 
 #endif	/* GCONF_UPGRADE_H */
 

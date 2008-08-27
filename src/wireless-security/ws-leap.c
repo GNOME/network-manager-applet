@@ -111,7 +111,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityLEAP *
-ws_leap_new (const char *glade_file, NMConnection *connection, const char *connection_id)
+ws_leap_new (const char *glade_file, NMConnection *connection)
 {
 	WirelessSecurityLEAP *sec;
 	GtkWidget *widget;
@@ -159,12 +159,12 @@ ws_leap_new (const char *glade_file, NMConnection *connection, const char *conne
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
-	if (wsec && connection_id) {
+	if (wsec) {
 		GHashTable *secrets;
 		GError *error = NULL;
 		GValue *value;
 
-		secrets = nm_gconf_get_keyring_items (connection, connection_id,
+		secrets = nm_gconf_get_keyring_items (connection,
 		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 		                                      FALSE,
 		                                      &error);

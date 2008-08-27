@@ -34,6 +34,7 @@
 #include <nm-setting-serial.h>
 #include <nm-setting-ppp.h>
 #include <nm-cdma-device.h>
+#include <nm-utils.h>
 
 #include "applet.h"
 #include "applet-device-cdma.h"
@@ -85,6 +86,7 @@ cdma_new_auto_connection (NMDevice *device,
 	s_con->id = g_strdup (DEFAULT_CDMA_NAME);
 	s_con->type = g_strdup (NM_SETTING (s_cdma)->name);
 	s_con->autoconnect = FALSE;
+	s_con->uuid = nm_utils_uuid_generate ();
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
 	return connection;

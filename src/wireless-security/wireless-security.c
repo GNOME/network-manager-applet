@@ -284,8 +284,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                            const char *glade_file,
                            const char *combo_name,
                            GCallback auth_combo_changed_cb,
-                           NMConnection *connection,
-                           const char *connection_id)
+                           NMConnection *connection)
 {
 	GtkWidget *combo;
 	GtkListStore *auth_model;
@@ -306,6 +305,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 		g_assert (s_con);
 		g_assert (s_con->type);
+		g_assert (s_con->uuid);
 		if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
 			wired = TRUE;
 
@@ -316,7 +316,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
-	em_tls = eap_method_tls_new (glade_file, sec, connection, connection_id, FALSE);
+	em_tls = eap_method_tls_new (glade_file, sec, connection, FALSE);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("TLS"),
@@ -328,7 +328,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	item++;
 
 	if (!wired) {
-		em_leap = eap_method_leap_new (glade_file, sec, connection, connection_id);
+		em_leap = eap_method_leap_new (glade_file, sec, connection);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
 		                    AUTH_NAME_COLUMN, _("LEAP"),
@@ -340,7 +340,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		item++;
 	}
 
-	em_ttls = eap_method_ttls_new (glade_file, sec, connection, connection_id);
+	em_ttls = eap_method_ttls_new (glade_file, sec, connection);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Tunneled TLS"),
@@ -351,7 +351,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		active = item;
 	item++;
 
-	em_peap = eap_method_peap_new (glade_file, sec, connection, connection_id);
+	em_peap = eap_method_peap_new (glade_file, sec, connection);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Protected EAP (PEAP)"),

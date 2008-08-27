@@ -1,3 +1,65 @@
+2008-08-26  Dan Williams  <dcbw@redhat.com>
+
+	UUID updates.  Requires NM svn 4013 or later, and VPN plugins 4018 or later.
+
+	* src/applet-device-gsm.c
+	  src/applet-device-wifi.c
+	  src/applet-device-cdma.c
+	  src/applet-device-wired.c
+		- (*_new_auto_connection): add UUID
+
+	* src/gconf-helpers/gconf-upgrade.c
+	  src/gconf-helpers/gconf-upgrade.h
+		- (nm_gconf_read_0_6_wireless_connection,
+		   nm_gconf_read_0_6_vpn_connection): add UUID
+		- (nm_gconf_migrate_0_7_vpn_connections,
+		   nm_gconf_migrate_0_7_connection_names): remove; anybody using an NM
+			this old should be shot
+		- (try_convert_leap, copy_keyring_to_8021x,
+		   nm_gconf_migrate_0_7_wireless_security): UUIDs all around
+		- (nm_gconf_migrate_0_7_connection_uuid): add UUIDs to connections
+		- (nm_gconf_migrate_0_7_keyring_items): migrate keyring items from
+			'connection-name' or 'connection-id' to 'connection-uuid'
+
+	* src/gconf-helpers/nma-gconf-connection.c
+		- (get_id, constructor, dispose, finalize, get_secrets, update,
+		   nma_gconf_connection_class_init, nma_gconf_connection_save): remove
+			id-related stuff
+
+	* src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/gconf-helpers.h
+		- (nm_gconf_get_all_connections): add UUIDs to all connections, and
+			remove obsolete migration operations
+		- (nm_gconf_add_keyring_item, nm_gconf_write_connection,
+		   nm_gconf_get_keyring_items): remove 'id' argument since the
+			connection now provides the UUID
+
+	* src/wireless-security/eap-method-leap.c
+	  src/wireless-security/wireless-security.c
+	  src/wireless-security/ws-dynamic-wep.c
+	  src/wireless-security/eap-method-peap.c
+	  src/wireless-security/eap-method-ttls.c
+	  src/wireless-security/ws-leap.c
+	  src/wireless-security/ws-wep-key.c
+	  src/wireless-security/ws-wpa-psk.c
+	  src/wireless-security/eap-method-simple.c
+	  src/wireless-security/ws-wpa-eap.c
+	  src/wireless-security/eap-method-tls.c
+	  src/wireless-dialog.c
+	  src/connection-editor/page-wireless-security.c
+	  src/connection-editor/page-mobile.c
+	  src/connection-editor/page-wired-security.c
+	  src/connection-editor/page-dsl.c
+	  src/wired-dialog.c
+		- Use UUIDs from the connection, not a separate 'id'
+
+	* src/connection-editor/nm-connection-list.c
+		- (create_new_connection_for_type, import_success_cb): add UUIDs for
+			newly created or imported connections
+
+	* src/vpn-password-dialog.c
+		- (nma_vpn_request_password): pass 'uuid' to auth dialog, not 'id'
+
 2008-08-20  Dan Williams  <dcbw@redhat.com>
 
 	* src/wireless-security/ws-wep-key.c

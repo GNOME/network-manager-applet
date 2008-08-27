@@ -277,7 +277,6 @@ static GtkWidget *
 inner_auth_combo_init (EAPMethodTTLS *method,
                        const char *glade_file,
                        NMConnection *connection,
-                       const char *connection_id,
                        NMSetting8021x *s_8021x)
 {
 	GladeXML *xml = EAP_METHOD (method)->xml;
@@ -303,7 +302,6 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_pap = eap_method_simple_new (glade_file,
 	                                method->sec_parent,
 	                                connection,
-	                                connection_id,
 	                                EAP_METHOD_SIMPLE_TYPE_PAP);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
@@ -319,7 +317,6 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_mschap = eap_method_simple_new (glade_file,
 	                                   method->sec_parent,
 	                                   connection,
-	                                   connection_id,
 	                                   EAP_METHOD_SIMPLE_TYPE_MSCHAP);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
@@ -335,7 +332,6 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_mschap_v2 = eap_method_simple_new (glade_file,
 	                                      method->sec_parent,
 	                                      connection,
-	                                      connection_id,
 	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
@@ -351,7 +347,6 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_chap = eap_method_simple_new (glade_file,
 	                                 method->sec_parent,
 	                                 connection,
-	                                 connection_id,
 	                                 EAP_METHOD_SIMPLE_TYPE_CHAP);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
@@ -380,8 +375,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 EAPMethodTTLS *
 eap_method_ttls_new (const char *glade_file,
                      WirelessSecurity *parent,
-                     NMConnection *connection,
-                     const char *connection_id)
+                     NMConnection *connection)
 {
 	EAPMethodTTLS *method;
 	GtkWidget *widget;
@@ -458,7 +452,7 @@ eap_method_ttls_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 
-	widget = inner_auth_combo_init (method, glade_file, connection, connection_id, s_8021x);
+	widget = inner_auth_combo_init (method, glade_file, connection, s_8021x);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);
 
 	return method;

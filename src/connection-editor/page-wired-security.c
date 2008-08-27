@@ -72,7 +72,6 @@ ce_page_wired_security_new (NMConnection *connection)
 	CEPage *parent;
 	CEPageWiredSecurityPrivate *priv;
 	const char *glade_file = GLADEDIR "/applet.glade";
-	const char *connection_id;
 	NMSetting *setting;
 
 	self = CE_PAGE_WIRED_SECURITY (g_object_new (CE_TYPE_PAGE_WIRED_SECURITY, NULL));
@@ -85,8 +84,7 @@ ce_page_wired_security_new (NMConnection *connection)
 
 	setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
 
-	connection_id = g_object_get_data (G_OBJECT (connection), NMA_CONNECTION_ID_TAG);
-	priv->security = (WirelessSecurity *) ws_wpa_eap_new (glade_file, connection, connection_id);
+	priv->security = (WirelessSecurity *) ws_wpa_eap_new (glade_file, connection);
 	wireless_security_set_changed_notify (priv->security, stuff_changed, self);
 	priv->security_widget = wireless_security_get_widget (priv->security);
 

@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager -- Network link manager
  *
  * Dan Williams <dcbw@redhat.com>
@@ -43,11 +44,10 @@
 #define NMA_PRIVATE_KEY_PASSWORD_TAG "nma-private-key-password"
 #define NMA_PATH_PHASE2_PRIVATE_KEY_TAG "nma-path-phase2-private-key"
 #define NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG "nma-phase2-private-key-password"
-#define NMA_CONNECTION_ID_TAG "nma-connection-id"
 
 NMConnection *nm_gconf_connection_duplicate (NMConnection *connection);
 
-#define KEYRING_CID_TAG "connection-id"
+#define KEYRING_UUID_TAG "connection-uuid"
 #define KEYRING_SN_TAG "setting-name"
 #define KEYRING_SK_TAG "setting-key"
 
@@ -202,11 +202,10 @@ nm_gconf_read_connection (GConfClient *client,
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir,
-                           const char *connection_id);
+                           const char *dir);
 
 void
-nm_gconf_add_keyring_item (const char *connection_id,
+nm_gconf_add_keyring_item (const char *connection_uuid,
                            const char *connection_name,
                            const char *setting_name,
                            const char *setting_key,
@@ -214,7 +213,6 @@ nm_gconf_add_keyring_item (const char *connection_id,
 
 GHashTable *
 nm_gconf_get_keyring_items (NMConnection *connection,
-                            const char *connection_id,
                             const char *setting_name,
                             gboolean include_private_passwords,
                             GError **error);

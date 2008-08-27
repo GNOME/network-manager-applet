@@ -55,6 +55,7 @@
 #include <nm-setting-ppp.h>
 #include <nm-setting-serial.h>
 #include <nm-vpn-plugin-ui-interface.h>
+#include <nm-utils.h>
 
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
@@ -743,6 +744,7 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 
 	connection = nm_connection_new ();
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
+	s_con->uuid = nm_utils_uuid_generate ();
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
 	if (ctype == NM_TYPE_SETTING_WIRED) {
@@ -1103,6 +1105,8 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 		g_free (s_con->type);
 		s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
 	}
+	if (!s_con->uuid)
+		s_con->uuid = nm_utils_uuid_generate ();
 
 	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	if (!s_vpn || !s_vpn->service_type || !strlen (s_vpn->service_type)) {
