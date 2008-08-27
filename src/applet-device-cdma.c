@@ -304,7 +304,10 @@ cdma_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Dialing CDMA device %s..."), iface);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Running PPP on device %s..."), iface);
+		*tip = g_strdup_printf (_("Starting PPP on device %s..."), iface);
+		break;
+	case NM_DEVICE_STATE_NEED_AUTH:
+		*tip = g_strdup_printf (_("Waiting for user authentication on device '%s'..."), iface);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		*tip = g_strdup (_("CDMA connection"));
