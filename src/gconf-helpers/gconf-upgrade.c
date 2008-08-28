@@ -632,13 +632,16 @@ nm_gconf_migrate_0_6_connections (GConfClient *client)
 }
 
 static void
-unset_ws_key (GConfClient *client, const char *dir, const char *key)
+unset_one_setting_property (GConfClient *client,
+                            const char *dir,
+                            const char *setting,
+                            const char *key)
 {
-	char *old_key;
+	char *path;
 
-	old_key = g_strdup_printf ("%s/" NM_SETTING_WIRELESS_SECURITY_SETTING_NAME "/%s", dir, key);
-	gconf_client_unset (client, old_key, NULL);
-	g_free (old_key);
+	path = g_strdup_printf ("%s/%s/%s", dir, setting, key);
+	gconf_client_unset (client, path, NULL);
+	g_free (path);
 }
 
 static void
@@ -655,7 +658,7 @@ copy_stringlist_to_8021x (GConfClient *client, const char *dir, const char *key)
 	g_slist_foreach (sa_val, (GFunc) g_free, NULL);
 	g_slist_free (sa_val);
 
-	unset_ws_key (client, dir, key);
+	unset_one_setting_property (client, dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, key);
 }
 
 static void
@@ -671,7 +674,7 @@ copy_string_to_8021x (GConfClient *client, const char *dir, const char *key)
 
 	g_free (val);
 
-	unset_ws_key (client, dir, key);
+	unset_one_setting_property (client, dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, key);
 }
 
 static void
@@ -685,7 +688,7 @@ copy_bool_to_8021x (GConfClient *client, const char *dir, const char *key)
 	if (val && !nm_gconf_set_bool_helper (client, dir, key, NM_SETTING_802_1X_SETTING_NAME, val))
 		g_warning ("Could not convert string value '%s' from wireless-security to 8021x setting", key);
 
-	unset_ws_key (client, dir, key);
+	unset_one_setting_property (client, dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, key);
 }
 
 static gboolean
@@ -747,7 +750,8 @@ try_convert_leap (GConfClient *client, const char *dir, const char *uuid)
 	g_free (val);
 	val = NULL;
 
-	unset_ws_key (client, dir, NM_SETTING_802_1X_IDENTITY);
+	unset_one_setting_property (client, dir, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                            NM_SETTING_802_1X_IDENTITY);
 
 	if (!nm_gconf_get_string_helper (client, dir,
 	                                 "id",
@@ -1012,7 +1016,6 @@ nm_gconf_migrate_0_7_ignore_dhcp_dns (GConfClient *client)
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	for (iter = connections; iter; iter = iter->next) {
-		char *del_key;
 		gboolean ignore_auto_dns = FALSE;
 
 		if (!nm_gconf_get_bool_helper (client, iter->data,
@@ -1030,12 +1033,10 @@ nm_gconf_migrate_0_7_ignore_dhcp_dns (GConfClient *client)
 		}
 
 		/* delete old key */
-		del_key = g_strdup_printf ("%s/%s/%s",
-		                           (const char *) iter->data,
-		                           NM_SETTING_IP4_CONFIG_SETTING_NAME,
-		                           IP4_KEY_IGNORE_DHCP_DNS);
-		gconf_client_unset (client, del_key, NULL);
-		g_free (del_key);
+		unset_one_setting_property (client,
+		                            (const char *) iter->data,
+		                            NM_SETTING_IP4_CONFIG_SETTING_NAME,
+		                            IP4_KEY_IGNORE_DHCP_DNS);
 	}
 	free_slist (connections);
 
@@ -1097,7 +1098,6 @@ nm_gconf_migrate_0_7_vpn_routes (GConfClient *client)
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	for (iter = connections; iter; iter = iter->next) {
-		char *del_key;
 		GSList *old_routes = NULL, *routes_iter;
 		GPtrArray *new_routes = NULL;
 
@@ -1154,12 +1154,10 @@ nm_gconf_migrate_0_7_vpn_routes (GConfClient *client)
 		}
 
 		/* delete old key */
-		del_key = g_strdup_printf ("%s/%s/%s",
-		                           (const char *) iter->data,
-		                           NM_SETTING_VPN_SETTING_NAME,
-		                           VPN_KEY_ROUTES);
-		gconf_client_unset (client, del_key, NULL);
-		g_free (del_key);
+		unset_one_setting_property (client,
+		                            (const char *) iter->data,
+		                            NM_SETTING_VPN_SETTING_NAME,
+		                            VPN_KEY_ROUTES);
 
 		g_slist_foreach (old_routes, (GFunc) g_free, NULL);
 		g_slist_free (old_routes);
@@ -1241,7 +1239,6 @@ move_one_vpn_string_bool (GConfClient *client,
                           const char *old_key,
                           const char *new_key)
 {
-	char *del_key;
 	char *value = NULL;
 
 	if (!nm_gconf_get_string_helper (client, path,
@@ -1259,12 +1256,7 @@ move_one_vpn_string_bool (GConfClient *client,
 	g_free (value);
 
 	/* delete old key */
-	del_key = g_strdup_printf ("%s/%s/%s",
-	                           path,
-	                           NM_SETTING_VPN_SETTING_NAME,
-	                           old_key);
-	gconf_client_unset (client, del_key, NULL);
-	g_free (del_key);
+	unset_one_setting_property (client, path, NM_SETTING_VPN_SETTING_NAME, old_key);
 }
 
 static void
@@ -1273,7 +1265,6 @@ move_one_vpn_string_string (GConfClient *client,
                             const char *old_key,
                             const char *new_key)
 {
-	char *del_key;
 	char *value = NULL;
 
 	if (!nm_gconf_get_string_helper (client, path,
@@ -1291,12 +1282,7 @@ move_one_vpn_string_string (GConfClient *client,
 	g_free (value);
 
 	/* delete old key */
-	del_key = g_strdup_printf ("%s/%s/%s",
-	                           path,
-	                           NM_SETTING_VPN_SETTING_NAME,
-	                           old_key);
-	gconf_client_unset (client, del_key, NULL);
-	g_free (del_key);
+	unset_one_setting_property (client, path, NM_SETTING_VPN_SETTING_NAME, old_key);
 }
 
 void
