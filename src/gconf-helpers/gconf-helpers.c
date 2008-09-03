@@ -900,6 +900,10 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	if (!strcmp (key, NM_SETTING_NAME))
 		return;
 
+	/* Secrets don't get stored in GConf */
+	if (secret)
+		return;
+
 	/* Some keys (like certs) aren't read directly from GConf but are handled
 	 * separately.
 	 */
@@ -1193,17 +1197,21 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 			return;
 	}
 
+	/* Secrets don't get stored in GConf */
+	if (secret)
+		return;
+
 	/* If the value is the default value, remove the item from GConf */
 	pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (setting), key);
 	if (pspec) {
 		if (g_param_value_defaults (pspec, (GValue *) value)) {
-		char *path;
+			char *path;
 
-		path = g_strdup_printf ("%s/%s/%s", info->dir, setting->name, key);
-		if (path)
-			gconf_client_unset (info->client, path, NULL);
-		g_free (path);		
-		return;
+			path = g_strdup_printf ("%s/%s/%s", info->dir, setting->name, key);
+			if (path)
+				gconf_client_unset (info->client, path, NULL);
+			g_free (path);		
+			return;
 		}
 	}
 
