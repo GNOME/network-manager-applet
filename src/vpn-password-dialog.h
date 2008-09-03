@@ -27,7 +27,6 @@
 #include <nm-settings.h>
 
 gboolean nma_vpn_request_password (NMExportedConnection *exported,
-                                   const char *setting_name,
                                    gboolean retry,
                                    DBusGMethodInvocation *context);
 

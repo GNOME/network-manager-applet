@@ -167,7 +167,6 @@ destroy_gvalue (gpointer data)
 
 gboolean
 nma_vpn_request_password (NMExportedConnection *exported,
-                          const char *setting_name,
                           gboolean retry,
                           DBusGMethodInvocation *context)
 {
@@ -284,7 +283,7 @@ nma_vpn_request_password (NMExportedConnection *exported,
 		settings = g_hash_table_new_full (g_str_hash, g_str_equal, g_free,
 		                                  (GDestroyNotify) g_hash_table_destroy);
 
-		/* Send the secret back to NM */
+		/* Send the secrets back to NM */
 		secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
 
 		for (iter = io_user_data.lines; iter; iter = iter->next) {
@@ -300,7 +299,7 @@ nma_vpn_request_password (NMExportedConnection *exported,
 			g_hash_table_insert (secrets, g_strdup (iter->data), val);
 			iter = iter->next;
 		}
-		g_hash_table_insert (settings, g_strdup (setting_name), secrets);
+		g_hash_table_insert (settings, g_strdup (NM_SETTING_VPN_SETTING_NAME), secrets);
 
 		dbus_g_method_return (context, settings);
 		g_hash_table_destroy (settings);
