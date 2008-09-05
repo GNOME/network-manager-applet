@@ -53,7 +53,11 @@
 
 #define PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE    APPLET_PREFS_PATH "/suppress-wireless-networks-available"
 
+#define ACTIVE_AP_TAG "active-ap"
+
 static void wireless_dialog_response_cb (GtkDialog *dialog, gint response, gpointer user_data);
+
+static NMAccessPoint *update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet);
 
 static void
 other_wireless_activate_cb (GtkWidget *menu_item,
@@ -769,14 +773,14 @@ notify_active_ap_changed_cb (NMDeviceWifi *device,
 	NMAGConfConnection *gconf_connection;
 	NMConnection *connection;
 	NMSettingWireless *s_wireless;
-	NMAccessPoint *ap;
+	NMAccessPoint *new;
 	const GByteArray *ssid;
+	NMDeviceState state;
 
-	if (nm_device_get_state (NM_DEVICE (device)) != NM_DEVICE_STATE_ACTIVATED)
-		return;
+	state = nm_device_get_state (NM_DEVICE (device));
 
-	ap = nm_device_wifi_get_active_access_point (device);
-	if (!ap)
+	new = update_active_ap (NM_DEVICE (device), state, applet);
+	if (!new || (state != NM_DEVICE_STATE_ACTIVATED))
 		return;
 
 	gconf_connection = applet_get_exported_connection_for_device (NM_DEVICE (device), applet);
@@ -790,11 +794,11 @@ notify_active_ap_changed_cb (NMDeviceWifi *device,
 	if (!s_wireless)
 		return;
 
-	ssid = nm_access_point_get_ssid (ap);
+	ssid = nm_access_point_get_ssid (new);
 	if (!ssid || !nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
 		return;
 
-	if (add_seen_bssid (gconf_connection, ap))
+	if (add_seen_bssid (gconf_connection, new))
 		nma_gconf_connection_save (gconf_connection);
 
 	applet_schedule_update_icon (applet);
@@ -1025,6 +1029,24 @@ access_point_added_cb (NMDeviceWifi *device,
 }
 
 static void
+access_point_removed_cb (NMDeviceWifi *device,
+                         NMAccessPoint *ap,
+                         gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET  (user_data);
+	NMAccessPoint *old;
+
+	/* If this AP was the active AP, make sure ACTIVE_AP_TAG gets cleared from
+	 * its device.
+	 */
+	old = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
+	if (old == ap) {
+		g_object_set_data (G_OBJECT (device), ACTIVE_AP_TAG, NULL);
+		applet_schedule_update_icon (applet);
+	}
+}
+
+static void
 on_new_connection (NMSettings *settings, NMExportedConnection *connection, gpointer datap)
 {
 	struct ap_notification_data *data = datap;
@@ -1060,6 +1082,11 @@ wireless_device_added (NMDevice *device, NMApplet *applet)
 	                  G_CALLBACK (access_point_added_cb),
 	                  applet);
 
+	g_signal_connect (wdev,
+	                  "access-point-removed",
+	                  G_CALLBACK (access_point_removed_cb),
+	                  applet);
+
 	/* Now create the per-device hooks for watching for available wireless
 	 * connections.
 	 */
@@ -1091,36 +1118,52 @@ bssid_strength_changed (NMAccessPoint *ap, GParamSpec *pspec, gpointer user_data
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }
 
-static void
-wireless_device_state_changed (NMDevice *device,
-                               NMDeviceState state,
-                               NMApplet *applet)
+static NMAccessPoint *
+update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet)
 {
-	NMAGConfConnection *gconf_connection;
-	NMAccessPoint *ap = NULL;
-	char *msg;
-	char *esc_ssid = NULL;
+	NMAccessPoint *new = NULL, *old;
 
 	if (state == NM_DEVICE_STATE_PREPARE ||
 	    state == NM_DEVICE_STATE_CONFIG ||
 	    state == NM_DEVICE_STATE_IP_CONFIG ||
 	    state == NM_DEVICE_STATE_NEED_AUTH ||
 	    state == NM_DEVICE_STATE_ACTIVATED) {
-		ap = nm_device_wifi_get_active_access_point (NM_DEVICE_WIFI (device));
+		new = nm_device_wifi_get_active_access_point (NM_DEVICE_WIFI (device));
 	}
 
-	if (!ap || (ap != applet->current_ap)) {
-		if (applet->current_ap) {
-			g_signal_handlers_disconnect_by_func (applet->current_ap,
-			                                      G_CALLBACK (bssid_strength_changed),
-			                                      applet);
-			g_object_unref (applet->current_ap);
-			applet->current_ap = NULL;
-		}
+	old = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
+	if (new && (new == old))
+		return new;   /* no change */
 
-		if (ap)
-			applet->current_ap = g_object_ref (ap);
+	if (old) {
+		g_signal_handlers_disconnect_by_func (old, G_CALLBACK (bssid_strength_changed), applet);
+		g_object_set_data (G_OBJECT (device), ACTIVE_AP_TAG, NULL);
 	}
+
+	if (new) {
+		g_object_set_data (G_OBJECT (device), ACTIVE_AP_TAG, new);
+
+		/* monitor this AP's signal strength for updating the applet icon */
+		g_signal_connect (new,
+		                  "notify::" NM_ACCESS_POINT_STRENGTH,
+		                  G_CALLBACK (bssid_strength_changed),
+		                  applet);
+	}
+
+	return new;
+}
+
+static void
+wireless_device_state_changed (NMDevice *device,
+                               NMDeviceState state,
+                               NMApplet *applet)
+{
+	NMAGConfConnection *gconf_connection;
+	NMAccessPoint *new = NULL;
+	char *msg;
+	char *esc_ssid = NULL;
+
+	new = update_active_ap (device, state, applet);
 
 	if (state == NM_DEVICE_STATE_DISCONNECTED)
 		queue_avail_access_point_notification (device);
@@ -1128,21 +1171,15 @@ wireless_device_state_changed (NMDevice *device,
 	if (state != NM_DEVICE_STATE_ACTIVATED)
 		return;
 
-	if (applet->current_ap) {
-		const GByteArray *ssid = nm_access_point_get_ssid (applet->current_ap);
+	if (new) {
+		const GByteArray *ssid = nm_access_point_get_ssid (new);
 
 		if (ssid)
 			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 
-		g_object_ref (applet->current_ap);
-		g_signal_connect (applet->current_ap,
-		                  "notify::" NM_ACCESS_POINT_STRENGTH,
-		                  G_CALLBACK (bssid_strength_changed),
-		                  applet);
-
 		/* Save this BSSID to seen-bssids list */
 		gconf_connection = applet_get_exported_connection_for_device (device, applet);
-		if (gconf_connection && add_seen_bssid (gconf_connection, applet->current_ap))
+		if (gconf_connection && add_seen_bssid (gconf_connection, new))
 			nma_gconf_connection_save (gconf_connection);
 	}
 
@@ -1160,22 +1197,24 @@ wireless_get_icon (NMDevice *device,
                    char **tip,
                    NMApplet *applet)
 {
+	NMAccessPoint *ap;
 	GdkPixbuf *pixbuf = NULL;
 	const char *iface;
 	char *esc_ssid = NULL;
 
-	iface = nm_device_get_iface (device);
-
-	if (applet->current_ap) {
+	ap = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
+	if (ap) {
 		const GByteArray *ssid;
 
-		ssid = nm_access_point_get_ssid (applet->current_ap);
+		ssid = nm_access_point_get_ssid (ap);
 		if (ssid)
 			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 	}
 
 	if (!esc_ssid)
 		esc_ssid = g_strdup (_("(none)"));
+
+	iface = nm_device_get_iface (device);
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
@@ -1191,10 +1230,10 @@ wireless_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Waiting for Network Key for the wireless network '%s'..."), esc_ssid);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		if (applet->current_ap) {
+		if (ap) {
 			guint32 strength;
 
-			strength = nm_access_point_get_strength (applet->current_ap);
+			strength = nm_access_point_get_strength (ap);
 			strength = CLAMP (strength, 0, 100);
 
 			if (strength > 80)

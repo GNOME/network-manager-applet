@@ -1,3 +1,32 @@
+2008-09-05  Dan Williams  <dcbw@redhat.com>
+
+	Fix an NMAccessPoint leak due to erroneous handling of the active AP and
+	reference counts, and actually track signal strength for the active AP when
+	it changes.
+
+	* src/applet.h
+		- Remove global "current_ap" since each wifi device has its own active AP
+
+	* src/applet-device-wifi.c
+		- (update_active_ap): new function; update internal idea of the current
+			active AP for the device and attach signal strength handler.
+			Instead of holding references to the active AP like before (when
+			the code was in wireless_device_state_changed()), just tag the device
+			with the AP object.  The reference was useless since its only purpose
+			was to keep the AP object around for monitoring strength, but the
+			strength monitor won't be triggered any more when the AP is disposed
+			anyway.
+		- (wireless_device_state_changed): move active AP code to
+			update_active_ap()
+		- (wireless_get_icon): get active AP off the device, not the removed
+			global "current_ap"
+		- (wireless_device_added, access_point_removed_cb): be sure to clean up
+			when an active AP goes away
+		- (notify_active_ap_changed_cb): make sure signal strength monitoring
+			and applet icon state tracks the active access point.  Previously,
+			changes of the active access point would just be ignored because
+			it wasn't updated here.
+
 2008-08-28  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/gconf-upgrade.c

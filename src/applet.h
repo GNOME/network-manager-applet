@@ -80,7 +80,6 @@ typedef struct
 	GObject parent_instance;
 
 	NMClient *nm_client;
-	NMAccessPoint *current_ap;
 
 	NMDBusSettings *dbus_settings;
 	NMAGConfSettings *gconf_settings;
