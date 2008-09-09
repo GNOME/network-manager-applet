@@ -97,19 +97,46 @@ nm_connection_editor_update_title (NMConnectionEditor *editor)
 		gtk_window_set_title (GTK_WINDOW (editor->dialog), _("Editing unamed connection"));
 }
 
-static void
-connection_editor_validate (NMConnectionEditor *editor)
+static gboolean
+ui_to_setting (NMConnectionEditor *editor)
 {
+	NMSettingConnection *s_con;
 	GtkWidget *widget;
-	gboolean valid = FALSE;
 	const char *name;
-	GSList *iter;
+	gboolean autoconnect = FALSE;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
 
 	widget = glade_xml_get_widget (editor->xml, "connection_name");
 	name = gtk_entry_get_text (GTK_ENTRY (widget));
 
-	/* Re-validate */
+	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_ID, name, NULL);
+	nm_connection_editor_update_title (editor);
+
 	if (!name || !strlen (name))
+		return FALSE;
+
+	widget = glade_xml_get_widget (editor->xml, "connection_autoconnect");
+	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect, NULL);
+
+	widget = glade_xml_get_widget (editor->xml, "connection_system");
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
+		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_SYSTEM);
+	else
+		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_USER);
+
+	return TRUE;
+}
+
+static void
+connection_editor_validate (NMConnectionEditor *editor)
+{
+	gboolean valid = FALSE;
+	GSList *iter;
+
+	if (!ui_to_setting (editor))
 		goto done;
 
 	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
@@ -133,26 +160,8 @@ done:
 }
 
 static void
-connection_name_changed (GtkEditable *editable, gpointer user_data)
-{
-	NMSettingConnection *s_con;
-	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
-	const char *name;
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con);
-
-	name = gtk_entry_get_text (GTK_ENTRY (editable));
-	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_ID, name, NULL);
-	nm_connection_editor_update_title (editor);
-
-	connection_editor_validate (editor);
-}
-
-static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
-	GtkWidget *widget;
 	GtkWidget *dialog;
 
 	/* Yes, we mean applet.glade, not nm-connection-editor.glade. The wireless security bits
@@ -186,10 +195,6 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	g_signal_connect (G_OBJECT (editor->dialog), "response", G_CALLBACK (dialog_response_cb), editor);
 
 	editor->ok_button = glade_xml_get_widget (editor->xml, "ok_button");
-
-	widget = glade_xml_get_widget (editor->xml, "connection_name");
-	g_signal_connect (G_OBJECT (widget), "changed",
-	                  G_CALLBACK (connection_name_changed), editor);
 
 	editor->pages = NULL;
 }
@@ -275,6 +280,13 @@ populate_connection_ui (NMConnectionEditor *editor)
 		gtk_entry_set_text (GTK_ENTRY (name), NULL);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoconnect), FALSE);
 	}
+
+	g_signal_connect (G_OBJECT (name), "changed",
+	                  G_CALLBACK (connection_editor_validate), editor);
+	g_signal_connect (G_OBJECT (autoconnect), "toggled",
+	                  G_CALLBACK (connection_editor_validate), editor);
+	g_signal_connect (G_OBJECT (autoconnect), "toggled",
+	                  G_CALLBACK (connection_editor_validate), editor);
 }
 
 static void
@@ -361,39 +373,9 @@ nm_connection_editor_present (NMConnectionEditor *editor)
 }
 
 static void
-connection_editor_update_connection (NMConnectionEditor *editor)
-{
-	NMSettingConnection *s_con;
-	GtkWidget *widget;
-	const char *name;
-	gboolean autoconnect = FALSE;
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con);
-
-	widget = glade_xml_get_widget (editor->xml, "connection_name");
-	name = gtk_entry_get_text (GTK_ENTRY (widget));
-	widget = glade_xml_get_widget (editor->xml, "connection_autoconnect");
-	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
-	g_object_set (G_OBJECT (s_con),
-	              NM_SETTING_CONNECTION_ID, name,
-	              NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect,
-	              NULL);
-
-	widget = glade_xml_get_widget (editor->xml, "connection_system");
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
-		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_SYSTEM);
-	else
-		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_USER);
-}
-
-static void
 editor_response_cb (GtkDialog *dialog, gint response, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
-
-	if (response == GTK_RESPONSE_OK)
-		connection_editor_update_connection (editor);
 
 	g_signal_emit (editor, editor_signals[EDITOR_DONE], 0, response);
 }
@@ -415,5 +397,23 @@ nm_connection_editor_run (NMConnectionEditor *editor)
 	                  G_CALLBACK (editor_close_cb), editor);
 
 	nm_connection_editor_present (editor);
+}
+
+void
+nm_connection_editor_save_vpn_secrets (NMConnectionEditor *editor)
+{
+	GSList *iter;
+
+	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
+	g_return_if_fail (nm_connection_get_scope (editor->connection) == NM_CONNECTION_SCOPE_USER);
+
+	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
+		CEPage *page = CE_PAGE (iter->data);
+
+		if (CE_IS_PAGE_VPN (page)) {
+			ce_page_vpn_save_secrets (page, editor->connection);
+			break;
+		}
+	}
 }
 

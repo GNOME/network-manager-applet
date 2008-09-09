@@ -55,6 +55,7 @@ NMConnectionEditor *nm_connection_editor_new (NMConnection *connection);
 
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
+void                nm_connection_editor_save_vpn_secrets (NMConnectionEditor *editor);
 NMConnection *nm_connection_editor_get_connection (NMConnectionEditor *editor);
 
 #endif

@@ -49,4 +49,6 @@ GType ce_page_vpn_get_type (void);
 
 CEPageVpn *ce_page_vpn_new (NMConnection *connection);
 
+gboolean ce_page_vpn_save_secrets (CEPage *page, NMConnection *connection);
+
 #endif  /* __PAGE_VPN_H__ */

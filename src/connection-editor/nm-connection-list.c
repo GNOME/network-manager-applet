@@ -369,14 +369,13 @@ remove_connection_cb (PolKitAction *action,
 
 static void
 remove_connection (NMExportedConnection *exported,
-			    ConnectionRemovedFn callback,
-			    gpointer user_data)
+                   ConnectionRemovedFn callback,
+                   gpointer user_data)
 {
 	GError *error = NULL;
 	gboolean success;
 
 	success = nm_exported_connection_delete (exported, &error);
-
 	if (!success) {
 		gboolean auth_pending = FALSE;
 
@@ -401,6 +400,33 @@ remove_connection (NMExportedConnection *exported,
 
 		if (auth_pending)
 			return;
+	} else {
+		NMConnection *connection;
+		NMSettingConnection *s_con;
+		NMSettingVPN *s_vpn;
+		NMVpnPluginUiInterface *plugin;
+
+		connection = nm_exported_connection_get_connection (exported);
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		g_assert (s_con);
+		g_assert (s_con->type);
+
+		/* FIXME: clean up any left-over connection secrets here */
+
+		/* Clean up VPN secrets and any plugin-specific data */
+		if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
+			s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+			if (s_vpn) {
+				plugin = vpn_get_plugin_by_service (s_vpn->service_type);
+				if (plugin)
+					if (!nm_vpn_plugin_ui_interface_delete_connection (plugin, connection, &error)) {
+						g_warning ("%s: couldn't clean up VPN connection on delete: (%d) %s",
+						           __func__, error ? error->code : -1, error ? error->message : "unknown");
+						if (error)
+							g_error_free (error);
+					}
+			}
+		}
 	}
 
 	if (callback)
@@ -422,9 +448,10 @@ typedef struct {
 } ConnectionAddInfo;
 
 static void add_connection (NMConnectionList *self,
-					   NMConnection *connection,
-					   ConnectionAddedFn callback,
-					   gpointer user_data);
+                            NMConnectionEditor *editor,
+                            NMConnection *connection,
+                            ConnectionAddedFn callback,
+                            gpointer user_data);
 
 static void
 add_connection_cb (PolKitAction *action,
@@ -436,7 +463,7 @@ add_connection_cb (PolKitAction *action,
 	gboolean done = TRUE;
 
 	if (gained_privilege) {
-		add_connection (info->list, info->connection, info->callback, info->user_data);
+		add_connection (info->list, NULL, info->connection, info->callback, info->user_data);
 		done = FALSE;
 	} else if (error) {
 		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
@@ -453,14 +480,17 @@ add_connection_cb (PolKitAction *action,
 
 static void
 add_connection (NMConnectionList *self,
-			 NMConnection *connection,
-			 ConnectionAddedFn callback,
-			 gpointer user_data)
+                NMConnectionEditor *editor,
+                NMConnection *connection,
+                ConnectionAddedFn callback,
+                gpointer user_data)
 {
 	NMExportedConnection *exported = NULL;
-	gboolean success;
+	NMConnectionScope scope;
+	gboolean success = FALSE;
 
-	if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM) {
+	scope = nm_connection_get_scope (connection);
+	if (scope == NM_CONNECTION_SCOPE_SYSTEM) {
 		GError *error = NULL;
 
 		success = nm_dbus_settings_system_add_connection (self->system_settings, connection, &error);
@@ -491,10 +521,13 @@ add_connection (NMConnectionList *self,
 				return;
 
 		}
-	} else {
+	} else if (scope == NM_CONNECTION_SCOPE_USER) {
 		exported = (NMExportedConnection *) nma_gconf_settings_add_connection (self->gconf_settings, connection);
 		success = exported != NULL;
-	}
+		if (success && editor)
+			nm_connection_editor_save_vpn_secrets (editor);
+	} else
+		g_warning ("%s: unhandled connection scope %d!", __func__, scope);
 
 	if (callback)
 		callback (exported, success, user_data);
@@ -521,10 +554,11 @@ typedef struct {
 } ConnectionUpdateInfo;
 
 static void update_connection (NMConnectionList *list,
-						 NMExportedConnection *original,
-						 NMConnection *modified,
-						 ConnectionUpdatedFn callback,
-						 gpointer user_data);
+                               NMConnectionEditor *editor,
+                               NMExportedConnection *original,
+                               NMConnection *modified,
+                               ConnectionUpdatedFn callback,
+                               gpointer user_data);
 
 
 static void
@@ -587,7 +621,7 @@ update_connection_cb (PolKitAction *action,
 	gboolean done = TRUE;
 
 	if (gained_privilege) {
-		update_connection (info->list, info->original, info->modified, info->callback, info->user_data);
+		update_connection (info->list, NULL, info->original, info->modified, info->callback, info->user_data);
 		done = FALSE;
 	} else if (error) {
 		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
@@ -606,10 +640,11 @@ update_connection_cb (PolKitAction *action,
 
 static void
 update_connection (NMConnectionList *list,
-			    NMExportedConnection *original,
-			    NMConnection *modified,
-			    ConnectionUpdatedFn callback,
-			    gpointer user_data)
+                   NMConnectionEditor *editor,
+                   NMExportedConnection *original,
+                   NMConnection *modified,
+                   ConnectionUpdatedFn callback,
+                   gpointer user_data)
 {
 	NMConnectionScope original_scope;
 	ConnectionUpdateInfo *info;
@@ -640,6 +675,10 @@ update_connection (NMConnectionList *list,
 				show_error_dialog (_("Updating connection failed: %s."), error->message);
 
 			g_error_free (error);
+		} else {
+			/* Save user-connection vpn secrets */
+			if (editor && (original_scope == NM_CONNECTION_SCOPE_USER))
+				nm_connection_editor_save_vpn_secrets (editor);
 		}
 
 		if (!pending_auth)
@@ -648,7 +687,7 @@ update_connection (NMConnectionList *list,
 		/* The hard part: Connection scope changed:
 		   Add the exported connection,
 		   if it succeeds, remove the old one. */
-		add_connection (list, modified, connection_update_add_done, info);
+		add_connection (list, editor, modified, connection_update_add_done, info);
 	}
 }
 
@@ -660,7 +699,7 @@ add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 
 	connection = nm_connection_editor_get_connection (editor);
 	if (response == GTK_RESPONSE_OK)
-		add_connection (info->list, connection, NULL, NULL);
+		add_connection (info->list, editor, connection, NULL, NULL);
 
 	g_hash_table_remove (info->list->editors, connection);
 }
@@ -932,10 +971,8 @@ edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 		utils_clear_filled_connection_certs (connection);
 
 		if (success) {
-			update_connection (info->list, info->original_connection,
-						    connection,
-						    connection_updated_cb,
-						    info);
+			update_connection (info->list, editor, info->original_connection,
+			                   connection, connection_updated_cb, info);
 		} else {
 			g_warning ("%s: invalid connection after update: bug in the "
 			           "'%s' / '%s' invalid: %d",

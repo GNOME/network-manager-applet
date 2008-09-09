@@ -1,3 +1,23 @@
+2008-09-09  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/nm-connection-list.c
+		- (remove_connection): clean up left-over VPN secrets when removing the
+			connection
+		- (add_connection, update_connection): save VPN secrets for user-scope
+			connections
+
+	* src/connection-editor/nm-connection-editor.c
+		- (ui_to_setting, connection_editor_validate): validate and update the
+			'connection' setting just like any other setting
+		- (populate_connection_ui): hook up signals for notification of when
+			'connection' setting properties change; connection scope needs to be
+			up-to-date before any other settings are validated
+		- (nm_connection_editor_save_vpn_secrets): ask the VPN page to ask the
+			plugin to save its secrets
+
+	* src/connection-editor/page-vpn.c
+		- (ce_page_vpn_save_secrets): call VPN UI plugin's hook to save secrets
+
 2008-09-05  Dan Williams  <dcbw@redhat.com>
 
 	Fix an NMAccessPoint leak due to erroneous handling of the active AP and
