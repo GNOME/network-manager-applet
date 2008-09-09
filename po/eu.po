@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-27 11:14+0200\n"
-"PO-Revision-Date: 2008-08-27 12:09+0200\n"
+"POT-Creation-Date: 2008-09-09 14:47+0200\n"
+"PO-Revision-Date: 2008-09-09 14:48+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,12 +44,12 @@ msgid "CDMA Network"
 msgstr "CDMA sarea"
 
 #: ../src/applet-device-cdma.c:261 ../src/applet-device-gsm.c:262
-#: ../src/applet-device-wired.c:224 ../src/applet-device-wifi.c:695
+#: ../src/applet-device-wired.c:224 ../src/applet-device-wifi.c:699
 msgid "device is unmanaged"
 msgstr "gailua ez dago kudeatuta"
 
 #: ../src/applet-device-cdma.c:285 ../src/applet-device-gsm.c:286
-#: ../src/applet-device-wired.c:247 ../src/applet-device-wifi.c:1151
+#: ../src/applet-device-wired.c:247 ../src/applet-device-wifi.c:1188
 msgid "Connection Established"
 msgstr "Konektatuta"
 
@@ -64,22 +64,27 @@ msgstr "CDMAren %s gailura deitzen..."
 
 #: ../src/applet-device-cdma.c:307 ../src/applet-device-gsm.c:308
 #, c-format
-msgid "Running PPP on device %s..."
-msgstr "PPP exekutatzen %s gailuan..."
+msgid "Starting PPP on device %s..."
+msgstr "PPP abiarazten %s gailuan..."
 
-#: ../src/applet-device-cdma.c:310
+#: ../src/applet-device-cdma.c:310 ../src/applet-device-gsm.c:311
+#, c-format
+msgid "Waiting for user authentication on device '%s'..."
+msgstr "Erabiltzailearen autentifikatzeko zai '%s' gailuan..."
+
+#: ../src/applet-device-cdma.c:313
 msgid "CDMA connection"
 msgstr "CDMA konexioa"
 
-#: ../src/applet-device-cdma.c:418
+#: ../src/applet-device-cdma.c:421
 msgid "CDMA Network Password"
 msgstr "CDMA sarearen pasahitza"
 
-#: ../src/applet-device-cdma.c:425
+#: ../src/applet-device-cdma.c:428
 msgid "A password is required to connect to the CDMA network."
 msgstr "Pasahitza behar da CDMA sarera konektatzeko."
 
-#: ../src/applet-device-cdma.c:441 ../src/applet-device-gsm.c:544
+#: ../src/applet-device-cdma.c:444 ../src/applet-device-gsm.c:547
 #: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
 #: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "Password:"
@@ -116,31 +121,31 @@ msgstr "GSM sarera konektatuta."
 msgid "Dialing GSM device %s..."
 msgstr "GSMren %s gailura deitzen..."
 
-#: ../src/applet-device-gsm.c:311
+#: ../src/applet-device-gsm.c:314
 msgid "GSM connection"
 msgstr "GSM konexioa"
 
-#: ../src/applet-device-gsm.c:449
+#: ../src/applet-device-gsm.c:452
 msgid "PIN code required"
 msgstr "PIN kodea behar da"
 
-#: ../src/applet-device-gsm.c:451
+#: ../src/applet-device-gsm.c:454
 msgid "PUK code required"
 msgstr "PUK kodea behar da"
 
-#: ../src/applet-device-gsm.c:461
+#: ../src/applet-device-gsm.c:464
 msgid "PIN code is needed for the GSM device"
 msgstr "PIN kodea behar da GSM gailuarentzako"
 
-#: ../src/applet-device-gsm.c:463
+#: ../src/applet-device-gsm.c:466
 msgid "PUK code is needed for the GSM device"
 msgstr "PUK kodea behar da GSM gailuarentzako"
 
-#: ../src/applet-device-gsm.c:521
+#: ../src/applet-device-gsm.c:524
 msgid "GSM Network Password"
 msgstr "GSM sarearen pasahitza"
 
-#: ../src/applet-device-gsm.c:528
+#: ../src/applet-device-gsm.c:531
 msgid "A password is required to connect to the GSM network."
 msgstr "Pasahitza behar da GSM sarera konektatzeko."
 
@@ -193,81 +198,81 @@ msgstr "Haridun sareko konexioa"
 msgid "DSL authentication"
 msgstr "DSL autentifikazioa"
 
-#: ../src/applet-device-wifi.c:83
+#: ../src/applet-device-wifi.c:87
 msgid "_Connect to Other Wireless Network..."
 msgstr "_Konektatu beste haririk gabeko sarera..."
 
-#: ../src/applet-device-wifi.c:115
+#: ../src/applet-device-wifi.c:119
 msgid "Create _New Wireless Network..."
 msgstr "_Sortu haririk gabeko sare berria..."
 
-#: ../src/applet-device-wifi.c:665
+#: ../src/applet-device-wifi.c:669
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Haririk gabeko sareak (%s)"
 
-#: ../src/applet-device-wifi.c:667
+#: ../src/applet-device-wifi.c:671
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Haririk gabeko sarea (%s)"
 
-#: ../src/applet-device-wifi.c:669
+#: ../src/applet-device-wifi.c:673
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Haririk gabeko sarea"
 msgstr[1] "Haririk gabeko sareak"
 
-#: ../src/applet-device-wifi.c:686
+#: ../src/applet-device-wifi.c:690
 msgid "wireless is disabled"
 msgstr "haririk gabeko sarea desgaituta"
 
-#: ../src/applet-device-wifi.c:984
+#: ../src/applet-device-wifi.c:988
 msgid "Wireless Networks Available"
 msgstr "Haririk gabeko sare erabilgarriak"
 
-#: ../src/applet-device-wifi.c:985
+#: ../src/applet-device-wifi.c:989
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Egin klik ikono honetan haririk gabeko sare batera konektatzeko"
 
-#: ../src/applet-device-wifi.c:988
+#: ../src/applet-device-wifi.c:992
 msgid "Don't show this message again"
 msgstr "Ez erakutsi mezu hau berriro"
 
-#: ../src/applet-device-wifi.c:1149
+#: ../src/applet-device-wifi.c:1186
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Haririk gabeko '%s' sarera konektatuta."
 
-#: ../src/applet-device-wifi.c:1150 ../src/applet-device-wifi.c:1178
+#: ../src/applet-device-wifi.c:1187 ../src/applet-device-wifi.c:1215
 msgid "(none)"
 msgstr "(bat ere ez)"
 
-#: ../src/applet-device-wifi.c:1182
+#: ../src/applet-device-wifi.c:1221
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
 msgstr "%s gailua prestatzen haririk gabeko '%s' sarerako..."
 
-#: ../src/applet-device-wifi.c:1185
+#: ../src/applet-device-wifi.c:1224
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
 msgstr "Haririk gabeko '%s' sarera elkartzeko saiatzen..."
 
-#: ../src/applet-device-wifi.c:1188
+#: ../src/applet-device-wifi.c:1227
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
 msgstr "Sareko helbide bat eskatzen haririk gabeko '%s' sareari..."
 
-#: ../src/applet-device-wifi.c:1191
+#: ../src/applet-device-wifi.c:1230
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
 msgstr "Haririk gabeko '%s' sarearen sare-gakoari itxoiten..."
 
-#: ../src/applet-device-wifi.c:1211
+#: ../src/applet-device-wifi.c:1250
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
 msgstr "'%s'-(r)en haririk gabeko sareko konexioa (%%%d)"
 
-#: ../src/applet-device-wifi.c:1215
+#: ../src/applet-device-wifi.c:1254
 #, c-format
 msgid "Wireless network connection to '%s'"
 msgstr "'%s'-(r)en haririk gabeko sareko konexioa"
@@ -428,8 +433,8 @@ msgid ""
 "configuration."
 msgstr ""
 "\n"
-"'%s' VPN konexioak huts egin du, VPN zerbitzuak konfigurazio "
-"baliogabea itzuli duelako."
+"'%s' VPN konexioak huts egin du, VPN zerbitzuak konfigurazio baliogabea "
+"itzuli duelako."
 
 #: ../src/applet.c:479
 #, c-format
@@ -438,8 +443,7 @@ msgid ""
 "The VPN connection '%s' failed because the connection attempt timed out."
 msgstr ""
 "\n"
-"'%s' VPN konexioak huts egin du, konexio-saiakeren denbora "
-"iraungitu delako."
+"'%s' VPN konexioak huts egin du, konexio-saiakeren denbora iraungitu delako."
 
 #: ../src/applet.c:481
 #, c-format
@@ -457,7 +461,8 @@ msgid ""
 "The VPN connection '%s' failed because the VPN service failed to start."
 msgstr ""
 "\n"
-"'%s' VPN konexioak huts egin du, VPN zerbitzuak huts egin duelako abiaraztean."
+"'%s' VPN konexioak huts egin du, VPN zerbitzuak huts egin duelako "
+"abiaraztean."
 
 #: ../src/applet.c:485
 #, c-format
@@ -522,7 +527,8 @@ msgid ""
 "%s"
 msgstr ""
 "\n"
-"'%s' VPN konexioak huts egin du, VPN zerbitzuak huts egin duelako abiaraztean.\n"
+"'%s' VPN konexioak huts egin du, VPN zerbitzuak huts egin duelako "
+"abiaraztean.\n"
 "\n"
 "%s"
 
@@ -782,9 +788,9 @@ msgstr ""
 "<span weight=\"bold\" size=\"larger\">Aukeratu bandazabal mugikorraren "
 "konexioa</span>\n"
 "\n"
-"Hautatu edo konektatu konexioan erabiltzea nahi duzun "
-"bandazabal mugikorraren gailua. Gailua ez badago erabilgarri, konexio mota "
-"orokorra hauta dezakezu."
+"Hautatu edo konektatu konexioan erabiltzea nahi duzun bandazabal "
+"mugikorraren gailua. Gailua ez badago erabilgarri, konexio mota orokorra "
+"hauta dezakezu."
 
 #: ../src/connection-editor/ce-page.c:52
 msgid "automatic"
@@ -1066,9 +1072,9 @@ msgid ""
 msgstr ""
 "<span weight=\"bold\" size=\"larger\">Aukeratu VPN konexio mota</span>\n"
 "\n"
-"Hautatu konexio berrian erabiltzea nahi duzun VPN mota. "
-"Sortzea nahi duzun VPN konexio mota ez bada zerrendan agertzen "
-"baliteke VPN plugina ongi instalatuta ez egotea."
+"Hautatu konexio berrian erabiltzea nahi duzun VPN mota. Sortzea nahi duzun "
+"VPN konexio mota ez bada zerrendan agertzen baliteke VPN plugina ongi "
+"instalatuta ez egotea."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:261
 #: ../src/connection-editor/page-ip4.c:618
@@ -1458,8 +1464,8 @@ msgid ""
 "\n"
 "Error: %s."
 msgstr ""
-"Ezin izan da '%s' fitxategia irakurri, edo ez dauka "
-"VPN konexioaren informazio ezagunik.\n"
+"Ezin izan da '%s' fitxategia irakurri, edo ez dauka VPN konexioaren "
+"informazio ezagunik.\n"
 "\n"
 "Errorea: %s."
 
@@ -1500,7 +1506,7 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "Esportatu VPN konexioa..."
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:245
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:244
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "Ezin da '%s' VPN konexioa hasi"
@@ -1514,7 +1520,7 @@ msgstr ""
 "Ezin izan da '%s' VPN konexio motaren autentifikazioaren elkarrizketa-"
 "koadroa aurkitu. Jar zaitez sistemako administratzailearekin harremanetan."
 
-#: ../src/vpn-password-dialog.c:248
+#: ../src/vpn-password-dialog.c:247
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
