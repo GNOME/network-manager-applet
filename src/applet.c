@@ -600,6 +600,8 @@ activate_vpn_cb (gpointer user_data, const char *path, GError *error)
 	char *title, *msg, *name;
 
 	if (error) {
+		clear_animation_timeout (info->applet);
+
 		title = _("VPN Connection Failed");
 
 		/* dbus-glib GError messages _always_ have two NULLs, the D-Bus error
@@ -667,6 +669,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	                               nm_object_get_path (NM_OBJECT (active)),
 	                               activate_vpn_cb,
 	                               info);
+	start_animation_timeout (applet);
 		
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
