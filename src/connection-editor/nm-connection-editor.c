@@ -281,12 +281,10 @@ populate_connection_ui (NMConnectionEditor *editor)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoconnect), FALSE);
 	}
 
-	g_signal_connect (G_OBJECT (name), "changed",
-	                  G_CALLBACK (connection_editor_validate), editor);
-	g_signal_connect (G_OBJECT (autoconnect), "toggled",
-	                  G_CALLBACK (connection_editor_validate), editor);
-	g_signal_connect (G_OBJECT (autoconnect), "toggled",
-	                  G_CALLBACK (connection_editor_validate), editor);
+	g_signal_connect_swapped (name, "changed",
+						 G_CALLBACK (connection_editor_validate), editor);
+	g_signal_connect_swapped (autoconnect, "toggled",
+						 G_CALLBACK (connection_editor_validate), editor);
 }
 
 static void
