@@ -1,3 +1,10 @@
+2008-09-15  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.c
+		- (nm_gconf_write_connection, write_one_secret_to_keyring): split out
+			writing of secrets into it's own function for clarity.  Fixes a
+			regression introduced in r875 where secrets wouldn't get saved.
+
 2008-09-09  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/nm-connection-list.c

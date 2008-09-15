@@ -1176,6 +1176,36 @@ typedef struct CopyOneSettingValueInfo {
 } CopyOneSettingValueInfo;
 
 static void
+write_one_secret_to_keyring (NMSetting *setting,
+                             const char *key,
+                             const GValue *value,
+                             gboolean is_secret,
+                             gpointer user_data)
+{
+	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
+	GType type = G_VALUE_TYPE (value);
+	const char *secret;
+
+	if (!is_secret)
+		return;
+
+	if (type != G_TYPE_STRING) {
+		g_warning ("Unhandled setting secret type (write) '%s/%s' : '%s'", 
+				 setting->name, key, g_type_name (type));
+		return;
+	}
+
+	secret = g_value_get_string (value);
+	if (secret && strlen (secret)) {
+		nm_gconf_add_keyring_item (info->connection_uuid,
+		                           info->connection_name,
+		                           setting->name,
+		                           key,
+		                           secret);
+	}
+}
+
+static void
 copy_one_setting_value_to_gconf (NMSetting *setting,
                                  const char *key,
                                  const GValue *value,
@@ -1422,8 +1452,12 @@ nm_gconf_write_connection (NMConnection *connection,
 	nm_connection_for_each_setting_value (connection,
 	                                      copy_one_setting_value_to_gconf,
 	                                      &info);
-
 	remove_leftovers (&info);
+
+	/* write secrets */
+	nm_connection_for_each_setting_value (connection,
+	                                      write_one_secret_to_keyring,
+	                                      &info);
 
 	write_applet_private_values_to_gconf (&info);
 }
