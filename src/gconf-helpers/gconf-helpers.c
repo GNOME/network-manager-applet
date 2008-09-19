@@ -230,6 +230,8 @@ nm_gconf_get_stringlist_helper (GConfClient *client,
 	}
 
 out:
+	if (gc_value)
+		gconf_value_free (gc_value);
 	g_free (gc_key);
 	return success;
 }
@@ -280,6 +282,8 @@ nm_gconf_get_bytearray_helper (GConfClient *client,
 	}
 
 out:
+	if (gc_value)
+		gconf_value_free (gc_value);
 	g_free (gc_key);
 	return success;
 }
@@ -319,8 +323,10 @@ nm_gconf_get_uint_array_helper (GConfClient *client,
 		*value = array;
 		success = TRUE;
 	}
-
+	
 out:
+	if (gc_value)
+		gconf_value_free (gc_value);
 	g_free (gc_key);
 	return success;
 }
