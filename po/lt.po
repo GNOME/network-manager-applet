@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-21 05:15+0300\n"
-"PO-Revision-Date: 2008-09-21 05:15+0300\n"
+"POT-Creation-Date: 2008-09-21 15:40+0300\n"
+"PO-Revision-Date: 2008-09-21 15:40+0300\n"
 "Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
@@ -67,28 +67,26 @@ msgid "Dialing CDMA device %s..."
 msgstr "Skambinama CDMA įrenginiu %s..."
 
 #: ../src/applet-device-cdma.c:307 ../src/applet-device-gsm.c:308
-#, fuzzy, c-format
+#, c-format
 msgid "Starting PPP on device %s..."
 msgstr "Leidžiamas PPP įrenginiu %s..."
 
 #: ../src/applet-device-cdma.c:310 ../src/applet-device-gsm.c:311
 #, c-format
 msgid "Waiting for user authentication on device '%s'..."
-msgstr ""
+msgstr "Laukiama naudotojo autentikacijos įrenginiu „%s“..."
 
 #: ../src/applet-device-cdma.c:313
 msgid "CDMA connection"
 msgstr "CDMA prisijungimas"
 
 #: ../src/applet-device-cdma.c:421
-#, fuzzy
 msgid "CDMA Network Password"
-msgstr "CDMA tinklas (%s)"
+msgstr "CDMA tinklo slaptažodis"
 
 #: ../src/applet-device-cdma.c:428
-#, fuzzy
 msgid "A password is required to connect to the CDMA network."
-msgstr "Prisijungėte prie CDMA tinklo."
+msgstr "Norint prisijungti prie CDMA tinklo reikia slaptažodžio."
 
 #: ../src/applet-device-cdma.c:444 ../src/applet-device-gsm.c:547
 #: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
@@ -145,16 +143,15 @@ msgstr "GSM įrenginiui reikia PIN kodo"
 
 #: ../src/applet-device-gsm.c:466
 msgid "PUK code is needed for the GSM device"
-msgstr ""
+msgstr "GSM įrenginiui reikia PUK kodo"
 
 #: ../src/applet-device-gsm.c:524
 msgid "GSM Network Password"
 msgstr "GSM tinklo slaptažodis"
 
 #: ../src/applet-device-gsm.c:531
-#, fuzzy
 msgid "A password is required to connect to the GSM network."
-msgstr "Prisijungėte prie GSM tinklo."
+msgstr "Norint prisijungti prie GSM tinklo reikia slaptažodžio."
 
 #: ../src/applet-device-wired.c:65
 msgid "Auto Ethernet"
@@ -392,9 +389,8 @@ msgstr "Antrinis DNS:"
 
 #. Shouldn't really happen but ...
 #: ../src/applet-dialogs.c:459
-#, fuzzy
 msgid "No valid active connecitons found!"
-msgstr "Nėra aktyvių prisijungimų!"
+msgstr "Nėra validžių aktyvių prisijungimų!"
 
 #: ../src/applet-dialogs.c:585
 msgid ""
@@ -416,7 +412,9 @@ msgstr "NetworkManager svetainė"
 
 #: ../src/applet-dialogs.c:592
 msgid "translator-credits"
-msgstr "Žygimantas Beručka <zygis@gnome.org>"
+msgstr ""
+"Žygimantas Beručka <zygis@gnome.org>\n"
+"Gintautas Miliauskas <gintas@akl.lt>"
 
 #: ../src/applet.c:473
 #, c-format
@@ -425,6 +423,8 @@ msgid ""
 "The VPN connection '%s' failed because the network connection was "
 "interrupted."
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes nutrūko tinklo ryšys."
 
 #: ../src/applet.c:475
 #, c-format
@@ -432,6 +432,8 @@ msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service stopped unexpectedly."
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes VPN tarnyba netikėtai sustojo."
 
 #: ../src/applet.c:477
 #, c-format
@@ -440,6 +442,9 @@ msgid ""
 "The VPN connection '%s' failed because the VPN service returned invalid "
 "configuration."
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes VPN tarnyba grąžino "
+"netinkamą konfigūraciją."
 
 #: ../src/applet.c:479
 #, c-format
@@ -447,6 +452,9 @@ msgid ""
 "\n"
 "The VPN connection '%s' failed because the connection attempt timed out."
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes bandymo prisijungti laiko limitas "
+"baigėsi."
 
 #: ../src/applet.c:481
 #, c-format
@@ -454,6 +462,8 @@ msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service did not start in time."
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes VPN tarnyba laiku nepasileido."
 
 #: ../src/applet.c:483
 #, c-format
@@ -461,6 +471,8 @@ msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service failed to start."
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes VPN tarnyba nepasileido."
 
 #: ../src/applet.c:485
 #, c-format
@@ -468,13 +480,17 @@ msgid ""
 "\n"
 "The VPN connection '%s' failed because there were no valid VPN secrets."
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes nebuvo tinkamų VPN paslapčių."
 
 #: ../src/applet.c:490
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed."
-msgstr "Ištrinti VPN prisijungimą „%s“?"
+msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas."
 
 #: ../src/applet.c:508
 #, c-format
@@ -483,6 +499,8 @@ msgid ""
 "The VPN connection '%s' disconnected because the network connection was "
 "interrupted."
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes nutrūko tinklo ryšys."
 
 #: ../src/applet.c:510
 #, c-format
@@ -490,20 +508,23 @@ msgid ""
 "\n"
 "The VPN connection '%s' disconnected because the VPN service stopped."
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes sustojo VPN tarnyba."
 
 #: ../src/applet.c:515
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' disconnected."
-msgstr "Atsijungta nuo tinklo."
+msgstr ""
+"\n"
+"The VPN prisijungimas „%s“ atsijungė."
 
 #: ../src/applet.c:541
 msgid "VPN Login Message"
 msgstr "VPN prisijungimo pranešimas"
 
 #: ../src/applet.c:553 ../src/applet.c:561 ../src/applet.c:605
-#, fuzzy
 msgid "VPN Connection Failed"
 msgstr "VPN prisijungimas nesėkmingas"
 
@@ -515,6 +536,10 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nesėkmingas, nes nepasileido VPN tarnyba.\n"
+"\n"
+"%s"
 
 #: ../src/applet.c:615
 #, c-format
@@ -524,6 +549,10 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"\n"
+"VPN prisijungimas „%s“ nepasileido.\n"
+"\n"
+"%s"
 
 #: ../src/applet.c:937
 msgid "No network devices available"
@@ -766,6 +795,11 @@ msgid ""
 "connection.  If the device is not availabe, you may select a generic "
 "connection type."
 msgstr ""
+"<span weight=\"bold\" size=\"larger\">Pasirinkite mobilaus ryšio "
+"prisijungimą</span>\n"
+"\n"
+"Pasirinkite ar prijunkite mobilaus ryšio įrenginį, kurį norite naudoti.Jei "
+"įrenginys neprieinamas, galite pasirinkite bendrinį prisijungimo tipą."
 
 #: ../src/connection-editor/ce-page.c:52
 msgid "automatic"
@@ -792,6 +826,11 @@ msgid ""
 "Link-Local\n"
 "Shared to other computers"
 msgstr ""
+"Automatinis\n"
+"Automatinis su rankiniais DNS nustatymais\n"
+"Rankinis\n"
+"Vietinis\n"
+"Bendras kitiems kompiuteriams"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:7
 msgid "DHCP Client ID:"
@@ -799,11 +838,11 @@ msgstr "DHCP kliento ID:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:8
 msgid "DNS Servers:"
-msgstr "DNS serveriai"
+msgstr "DNS serveriai:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
 msgid "Ignore automatically obtained routes"
-msgstr ""
+msgstr "Ignoruoti automatiškai gautus maršrutus"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:10
 msgid "Method:"
@@ -827,11 +866,11 @@ msgstr "Gerai"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
-msgstr ""
+msgstr "<b>Išplėstiniai</b>"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:2
 msgid "<b>Basic</b>"
-msgstr ""
+msgstr "<b>Pagrindiniai</b>"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:3
 msgid "APN:"
@@ -845,6 +884,11 @@ msgid ""
 "Prefer GPRS\n"
 "Prefer GSM"
 msgstr ""
+"Bet kuris\n"
+"GPRS\n"
+"GSM\n"
+"Pirmiau GPRS\n"
+"Pirmiau GSM"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:9
 msgid "Band:"
@@ -879,25 +923,24 @@ msgid "<b>Compression</b>"
 msgstr "<b>Suspaudimas</b>"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:3
-#, fuzzy
 msgid "<b>Echo</b>"
-msgstr "<b>Paieškos sritys</b>"
+msgstr "<b>Aidas</b>"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:4
 msgid "Allow BSD data compression"
-msgstr ""
+msgstr "Leisti BSD duomenų suspaudimą"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:5
 msgid "Allow Deflate data compression"
-msgstr ""
+msgstr "Leisti Deflate duomenų suspaudimą"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:6
 msgid "Require 128-bit encryption"
-msgstr ""
+msgstr "Reikalauti 128 bitų šifravimo"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:7
 msgid "Send PPP echo packets"
-msgstr ""
+msgstr "Siųsti PPP aido paketus"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:8
 msgid "Use Authentication"
@@ -905,15 +948,15 @@ msgstr "Naudoti autentikaciją"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:9
 msgid "Use Point-to-Point Encryption (MPPE)"
-msgstr ""
+msgstr "Naudoti Point-to-Point šifravimą (MPPE)"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:10
 msgid "Use Stateful MPPE"
-msgstr ""
+msgstr "Naudoti Stateful MPPE"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:11
 msgid "Use TCP header compression"
-msgstr ""
+msgstr "Naudoti TCP antraščių suspaudimą"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:1
 msgid "Aut_onegotiate"
@@ -1036,6 +1079,11 @@ msgid ""
 "of VPN connection you wish to create does not appear in the list, you may "
 "not have the correct VPN plugin installed."
 msgstr ""
+"<span weight=\"bold\" size=\"larger\">Pasirinkite VPN prisijungimo tipą</"
+"span>\n"
+"\n"
+"Pasirinkite VPN tipą, kurį norite naudoti naujajam prisijungimui.  Jei "
+"norimo tipo nėra sąraše, gali būti, kad neįdiegtas reikiamas VPN įskiepis."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:261
 #: ../src/connection-editor/page-ip4.c:618
@@ -1049,7 +1097,7 @@ msgstr "Prefiksas"
 #: ../src/connection-editor/ip4-routes-dialog.c:291
 #: ../src/connection-editor/page-ip4.c:648
 msgid "Gateway"
-msgstr ""
+msgstr "Šliuzas"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:306
 msgid "Metric"
@@ -1057,22 +1105,19 @@ msgstr "Metrika"
 
 #: ../src/connection-editor/mobile-wizard.c:76
 msgid "Installed GSM device"
-msgstr ""
+msgstr "Įdiegtas GSM įrenginys"
 
 #: ../src/connection-editor/mobile-wizard.c:87
-#, fuzzy
 msgid "Installed CDMA device"
-msgstr "Skambinama CDMA įrenginiu %s..."
+msgstr "Įdiegtas CDMA įrenginys"
 
 #: ../src/connection-editor/mobile-wizard.c:153
-#, fuzzy
 msgid "Create a GSM connection"
-msgstr "Sukurti VPN prisijungimą"
+msgstr "Sukurti GSM prisijungimą"
 
 #: ../src/connection-editor/mobile-wizard.c:154
-#, fuzzy
 msgid "Create a CDMA connection"
-msgstr "Sukurti VPN prisijungimą"
+msgstr "Sukurti CDMA prisijungimą"
 
 #: ../src/connection-editor/page-dsl.c:140
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
@@ -1082,52 +1127,52 @@ msgstr "DSL"
 
 #: ../src/connection-editor/page-ip4.c:108
 msgid "Automatic (VPN)"
-msgstr ""
+msgstr "Automatinis (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:109
 msgid "Automatic (VPN) addresses only"
-msgstr ""
+msgstr "Automatinis (VPN) tik adresai"
 
 #: ../src/connection-editor/page-ip4.c:113
 msgid "Automatic (PPP)"
-msgstr ""
+msgstr "Automatinis (PPP)"
 
 #: ../src/connection-editor/page-ip4.c:114
 msgid "Automatic (PPP) addresses only"
-msgstr ""
+msgstr "Automatinis (PPP) tik adresai"
 
 #: ../src/connection-editor/page-ip4.c:116
 msgid "Automatic (PPPoE)"
-msgstr ""
+msgstr "Automatinis (PPPoE)"
 
 #: ../src/connection-editor/page-ip4.c:117
 msgid "Automatic (PPPoE) addresses only"
-msgstr ""
+msgstr "Automatinis (PPPoE) tik adresai"
 
 #: ../src/connection-editor/page-ip4.c:119
 msgid "Automatic (DHCP)"
-msgstr ""
+msgstr "Automatinis (DHCP)"
 
 #: ../src/connection-editor/page-ip4.c:120
 msgid "Automatic (DHCP) addresses only"
-msgstr ""
+msgstr "Automatinis (DHCP) tik adresai"
 
 #: ../src/connection-editor/page-ip4.c:141
 msgid "Manual"
-msgstr ""
+msgstr "Rankinis"
 
 #: ../src/connection-editor/page-ip4.c:149
 msgid "Link-Local Only"
-msgstr ""
+msgstr "Tik vietinis (link-local)"
 
 #: ../src/connection-editor/page-ip4.c:155
 msgid "Shared to other computers"
-msgstr ""
+msgstr "Bendras kitiems kompiuteriams"
 
 #: ../src/connection-editor/page-ip4.c:549
 #, c-format
 msgid "Editing IPv4 routes for %s"
-msgstr ""
+msgstr "Keičiami IPv4 maršrutai „%s“"
 
 #: ../src/connection-editor/page-ip4.c:588
 msgid "IPv4 Settings"
@@ -1135,7 +1180,7 @@ msgstr "IPv4 nustatymai"
 
 #: ../src/connection-editor/page-ip4.c:633
 msgid "Netmask"
-msgstr ""
+msgstr "Tinklo kaukė"
 
 #: ../src/connection-editor/page-mobile.c:264
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
@@ -1170,7 +1215,7 @@ msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:199
 msgid "Point-to-Point Protocol (PPP)"
-msgstr ""
+msgstr "Point-to-Point protokolas (PPP)"
 
 #: ../src/connection-editor/page-vpn.c:69
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
@@ -1190,7 +1235,7 @@ msgstr "802.1x saugumas"
 
 #: ../src/connection-editor/page-wired-security.c:91
 msgid "Use 802.1X security for this connection"
-msgstr ""
+msgstr "Naudoti 802.1X saugumą šiam prisijungimui"
 
 #: ../src/connection-editor/page-wireless.c:144
 #: ../src/connection-editor/page-wireless.c:148
@@ -1284,7 +1329,7 @@ msgstr "Tinklo prisijungimai"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
 msgid "System setting"
-msgstr ""
+msgstr "Sistemos nustatymas"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:12
 msgid "_Import"
@@ -1345,34 +1390,34 @@ msgstr[2] "prieš %d metų"
 #: ../src/connection-editor/nm-connection-list.c:627
 #, c-format
 msgid "Could not obtain required privileges: %s."
-msgstr ""
+msgstr "Nepavyko gauti reikalingų privilegijų: %s."
 
 #: ../src/connection-editor/nm-connection-list.c:361
 msgid "Could not remove system connection: permission denied."
-msgstr ""
+msgstr "Nepavyko pašalinti sisteminio prisijungimo: prieiga uždrausta"
 
 #: ../src/connection-editor/nm-connection-list.c:397
 #, c-format
 msgid "Removing connection failed: %s."
-msgstr ""
+msgstr "Nepavyko pašalinti prisijungimo: %s."
 
 #: ../src/connection-editor/nm-connection-list.c:472
 msgid "Could not add system connection: permission denied."
-msgstr ""
+msgstr "Nepavyko pridėti sistemos prisijungimo: prieiga uždrausta"
 
 #: ../src/connection-editor/nm-connection-list.c:516
 #, c-format
 msgid "Adding connection failed: %s."
-msgstr ""
+msgstr "Nepavyko pridėti prisijungimo: %s."
 
 #: ../src/connection-editor/nm-connection-list.c:630
 msgid "Could not update system connection: permission denied."
-msgstr ""
+msgstr "Nepavyko atnaujinti sistemos prisijungimo: prieiga uždrausta"
 
 #: ../src/connection-editor/nm-connection-list.c:675
 #, c-format
 msgid "Updating connection failed: %s."
-msgstr ""
+msgstr "Nepavyko atnaujinti prisijungimo: %s."
 
 #: ../src/connection-editor/nm-connection-list.c:790
 #, c-format
@@ -1421,6 +1466,9 @@ msgid ""
 "\n"
 "Error: no VPN service type."
 msgstr ""
+"VPN įskiepiui nepavyko importuoti VPN prisijungimo\n"
+"\n"
+"Klaida: nenurodytas VPN paslaugos tipas."
 
 #: ../src/connection-editor/vpn-helpers.c:228
 #, c-format
@@ -1430,6 +1478,10 @@ msgid ""
 "\n"
 "Error: %s."
 msgstr ""
+"Failas „%s“ negali būti nuskaitytas arba jame nėra tinkamos VPN prisijungimo "
+"informacijos\n"
+"\n"
+"Klaida: %s."
 
 #: ../src/connection-editor/vpn-helpers.c:259
 msgid "Select file to import"
@@ -1442,12 +1494,12 @@ msgstr "Failas pavadinimu „%s“ jau egzistuoja."
 
 #: ../src/connection-editor/vpn-helpers.c:307
 msgid "_Replace"
-msgstr ""
+msgstr "_Pakeisti"
 
 #: ../src/connection-editor/vpn-helpers.c:309
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
-msgstr ""
+msgstr "Ar norite pakeisti %s VPN prisijungimu, kurį bandote įrašyti?"
 
 #: ../src/connection-editor/vpn-helpers.c:343
 msgid "Cannot export VPN connection"
@@ -1460,6 +1512,9 @@ msgid ""
 "\n"
 "Error: %s."
 msgstr ""
+"VPN prisijungimo „%s“ nepavyko eksportuoti į %s.\n"
+"\n"
+"Klaida: %s."
 
 #: ../src/connection-editor/vpn-helpers.c:376
 msgid "Export VPN connection..."
@@ -1489,9 +1544,8 @@ msgstr ""
 "Susisiekite su savo sistemos administratoriumi."
 
 #: ../src/wired-dialog.c:74
-#, fuzzy
 msgid "Wired 802.1X authentication"
-msgstr "Vidinė autentikacija:"
+msgstr "Laidinė 802.1X autentikacija"
 
 #: ../src/wireless-dialog.c:408
 msgid "New..."
