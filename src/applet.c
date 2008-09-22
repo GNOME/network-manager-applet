@@ -483,6 +483,9 @@ make_vpn_failure_message (NMVPNConnection *vpn,
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service failed to start."), s_con->id);
 	case NM_VPN_CONNECTION_STATE_REASON_NO_SECRETS:
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because there were no valid VPN secrets."), s_con->id);
+	case NM_VPN_CONNECTION_STATE_REASON_LOGIN_FAILED:
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because of invalid VPN secrets."), s_con->id);
+
 	default:
 		break;
 	}
