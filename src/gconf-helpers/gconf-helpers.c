@@ -1207,6 +1207,12 @@ write_one_secret_to_keyring (NMSetting *setting,
 		return;
 	}
 
+	/* VPN secrets are handled by the VPN plugins */
+	if (   (type == DBUS_TYPE_G_MAP_OF_STRING)
+	    && NM_IS_SETTING_VPN (setting)
+	    && !strcmp (key, NM_SETTING_VPN_SECRETS))
+		return;
+
 	secret = g_value_get_string (value);
 	if (secret && strlen (secret)) {
 		nm_gconf_add_keyring_item (info->connection_uuid,

@@ -1,5 +1,12 @@
 2008-09-24  Dan Williams  <dcbw@redhat.com>
 
+	* src/gconf-helpers/gconf-helpers.c
+		- (write_one_secret_to_keyring): silence warning about VPN secrets, which
+			don't get written to the keyring by the generic GConf helper code,
+			but instead by the VPN plugins themselves
+
+2008-09-24  Dan Williams  <dcbw@redhat.com>
+
 	* src/gconf-helpers/gconf-upgrade.c
 		- (nm_gconf_migrate_0_7_vpn_properties): don't set empty values in GConf
 		- (move_one_vpn_string_bool, move_one_vpn_string_string): fix stray
