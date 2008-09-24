@@ -453,9 +453,11 @@ nm_gconf_get_stringhash_helper (GConfClient *client,
 		} else {
 			GConfValue *gc_val = gconf_entry_get_value (entry);
 
-			if (gc_val && gconf_value_get_string (gc_val)) {
-				g_hash_table_insert (*value, gconf_unescape_key (gc_key, -1),
-				                     g_strdup (gconf_value_get_string (gc_val)));
+			if (gc_val) {
+				const char *gc_str = gconf_value_get_string (gc_val);
+
+				if (gc_str && strlen (gc_str))
+					g_hash_table_insert (*value, gconf_unescape_key (gc_key, -1), g_strdup (gc_str));
 			}
 		}
 		gconf_entry_free (entry);
@@ -770,10 +772,14 @@ write_properties_stringhash (gpointer key, gpointer value, gpointer user_data)
 	WritePropertiesInfo *info = (WritePropertiesInfo *) user_data;
 	char *esc_key;
 	char *full_key;
+	const char *str_value = (const char *) value;
+
+	if (!str_value || !strlen (str_value))
+		return;
 
 	esc_key = gconf_escape_key ((char *) key, -1);
 	full_key = g_strconcat (info->path, "/", esc_key, NULL);
-	gconf_client_set_string (info->client, full_key, (char *) value, NULL);
+	gconf_client_set_string (info->client, full_key, (char *) str_value, NULL);
 	g_free (esc_key);
 	g_free (full_key);
 }
