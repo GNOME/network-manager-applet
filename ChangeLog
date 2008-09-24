@@ -1,4 +1,12 @@
-2008-09-15  Dan Williams  <dcbw@redhat.com>
+2008-09-24  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-upgrade.c
+		- (nm_gconf_migrate_0_7_vpn_properties): don't set empty values in GConf
+		- (move_one_vpn_string_bool, move_one_vpn_string_string): fix stray
+			semicolon that caused values to not get converted and removed
+			(second part of fix for bgo #553465)
+
+2008-09-24  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/gconf-helpers.c
 		- (nm_gconf_get_stringhash_helper, write_properties_stringhash): do not

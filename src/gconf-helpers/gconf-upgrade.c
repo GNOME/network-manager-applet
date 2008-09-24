@@ -1195,10 +1195,13 @@ nm_gconf_migrate_0_7_vpn_properties (GConfClient *client)
 
 			switch (entry->value->type) {
 			case GCONF_VALUE_STRING:
-				nm_gconf_set_string_helper (client, (const char *) iter->data,
-				                            key_name,
-				                            NM_SETTING_VPN_SETTING_NAME,
-				                            gconf_value_get_string (entry->value));
+				tmp = (char *) gconf_value_get_string (entry->value);
+				if (tmp && strlen (tmp)) {
+					nm_gconf_set_string_helper (client, (const char *) iter->data,
+					                            key_name,
+					                            NM_SETTING_VPN_SETTING_NAME,
+					                            gconf_value_get_string (entry->value));
+				}
 				break;
 			case GCONF_VALUE_INT:
 				tmp = g_strdup_printf ("%d", gconf_value_get_int (entry->value));
@@ -1244,7 +1247,7 @@ move_one_vpn_string_bool (GConfClient *client,
 	if (!nm_gconf_get_string_helper (client, path,
 	                                 old_key,
 	                                 NM_SETTING_VPN_SETTING_NAME,
-	                                 &value));
+	                                 &value))
 		return;
 
 	if (value && !strcmp (value, "yes")) {
@@ -1270,7 +1273,7 @@ move_one_vpn_string_string (GConfClient *client,
 	if (!nm_gconf_get_string_helper (client, path,
 	                                 old_key,
 	                                 NM_SETTING_VPN_SETTING_NAME,
-	                                 &value));
+	                                 &value))
 		return;
 
 	if (value && strlen (value)) {
