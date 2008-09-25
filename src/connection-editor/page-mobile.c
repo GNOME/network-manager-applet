@@ -57,10 +57,10 @@ typedef struct {
 } CEPageMobilePrivate;
 
 #define NET_TYPE_ANY         0
-#define NET_TYPE_GPRS        1
-#define NET_TYPE_GSM         2
-#define NET_TYPE_PREFER_GPRS 3
-#define NET_TYPE_PREFER_GSM  4
+#define NET_TYPE_3G          1
+#define NET_TYPE_2G          2
+#define NET_TYPE_PREFER_3G   3
+#define NET_TYPE_PREFER_2G   4
 
 static void
 mobile_private_init (CEPageMobile *self)
@@ -121,17 +121,17 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 		gtk_entry_set_text (priv->network_id, setting->network_id);
 
 	switch (setting->network_type) {
-	case NM_GSM_NETWORK_GPRS:
-		type_idx = NET_TYPE_GPRS;
+	case NM_GSM_NETWORK_UMTS_HSPA:
+		type_idx = NET_TYPE_3G;
 		break;
-	case NM_GSM_NETWORK_GSM:
-		type_idx = NET_TYPE_GSM;
+	case NM_GSM_NETWORK_GPRS_EDGE:
+		type_idx = NET_TYPE_2G;
 		break;
-	case NM_GSM_NETWORK_PREFER_GPRS:
-		type_idx = NET_TYPE_PREFER_GPRS;
+	case NM_GSM_NETWORK_PREFER_UMTS_HSPA:
+		type_idx = NET_TYPE_PREFER_3G;
 		break;
-	case NM_GSM_NETWORK_PREFER_GSM:
-		type_idx = NET_TYPE_PREFER_GSM;
+	case NM_GSM_NETWORK_PREFER_GPRS_EDGE:
+		type_idx = NET_TYPE_PREFER_2G;
 		break;
 	case NM_GSM_NETWORK_ANY:
 	default:
@@ -313,17 +313,17 @@ gsm_ui_to_setting (CEPageMobile *self)
 	int net_type;
 
 	switch (gtk_combo_box_get_active (priv->network_type)) {
-	case NET_TYPE_GPRS:
-		net_type = NM_GSM_NETWORK_GPRS;
+	case NET_TYPE_3G:
+		net_type = NM_GSM_NETWORK_UMTS_HSPA;
 		break;
-	case NET_TYPE_GSM:
-		net_type = NM_GSM_NETWORK_GSM;
+	case NET_TYPE_2G:
+		net_type = NM_GSM_NETWORK_GPRS_EDGE;
 		break;
-	case NET_TYPE_PREFER_GPRS:
-		net_type = NM_GSM_NETWORK_PREFER_GPRS;
+	case NET_TYPE_PREFER_3G:
+		net_type = NM_GSM_NETWORK_PREFER_UMTS_HSPA;
 		break;
-	case NET_TYPE_PREFER_GSM:
-		net_type = NM_GSM_NETWORK_PREFER_GSM;
+	case NET_TYPE_PREFER_2G:
+		net_type = NM_GSM_NETWORK_PREFER_GPRS_EDGE;
 		break;
 	case NET_TYPE_ANY:
 	default:
