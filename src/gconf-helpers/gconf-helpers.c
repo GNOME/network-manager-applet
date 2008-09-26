@@ -985,7 +985,8 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 
 		if (nm_gconf_get_stringlist_helper (info->client, info->dir, key, setting->name, &sa_val)) {
 			g_object_set (setting, key, sa_val, NULL);
-			// FIXME: how to free sa_val?
+			g_slist_foreach (sa_val, (GFunc) g_free, NULL);
+			g_slist_free (sa_val);
 		}
 	} else if (type == DBUS_TYPE_G_MAP_OF_VARIANT) {
 		GHashTable *vh_val = NULL;
