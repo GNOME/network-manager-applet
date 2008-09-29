@@ -812,7 +812,7 @@ ui_to_setting (CEPageIP4 *self)
 
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_servers));
 	if (text && strlen (text)) {
-		items = g_strsplit (text, ",", 0);
+		items = g_strsplit_set (text, ", ;:", 0);
 		for (iter = items; *iter; iter++) {
 			struct in_addr tmp_addr;
 
@@ -829,7 +829,7 @@ ui_to_setting (CEPageIP4 *self)
 	/* Search domains */
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_searches));
 	if (text && strlen (text)) {
-		items = g_strsplit (text, ",", 0);
+		items = g_strsplit_set (text, ", ;:", 0);
 		for (iter = items; *iter; iter++)
 			search_domains = g_slist_prepend (search_domains, g_strdup (g_strstrip (*iter)));
 
