@@ -456,7 +456,7 @@ info_dialog_update (NMApplet *applet)
 
 	if (pages == 0) {
 		/* Shouldn't really happen but ... */
-		info_dialog_show_error (_("No valid active connecitons found!"));
+		info_dialog_show_error (_("No valid active connections found!"));
 		return NULL;
 	}
 

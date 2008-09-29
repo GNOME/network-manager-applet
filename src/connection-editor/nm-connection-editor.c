@@ -94,7 +94,7 @@ nm_connection_editor_update_title (NMConnectionEditor *editor)
 		gtk_window_set_title (GTK_WINDOW (editor->dialog), title);
 		g_free (title);
 	} else
-		gtk_window_set_title (GTK_WINDOW (editor->dialog), _("Editing unamed connection"));
+		gtk_window_set_title (GTK_WINDOW (editor->dialog), _("Editing un-named connection"));
 }
 
 static gboolean
