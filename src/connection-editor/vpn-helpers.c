@@ -213,9 +213,11 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	g_hash_table_foreach (plugins, try_import, (gpointer) &import_info);
 
 	connection = import_info.connection;
-	if (connection)
+	if (connection) {
+		if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_UNKNOWN)
+			nm_connection_set_scope (connection, NM_CONNECTION_SCOPE_USER);
 		info->callback (connection, info->user_data);
-	else {
+	} else {
 		GtkWidget *err_dialog;
 		char *basename = g_path_get_basename (filename);
 

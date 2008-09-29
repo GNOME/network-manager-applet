@@ -1,5 +1,15 @@
 2008-09-29  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/vpn-helpers.c
+		- (import_vpn_from_file_cb): ensure scope is always valid
+
+	* src/connection-editor/nm-connection-editor.c
+		- (nm_connection_editor_set_connection): validate incoming connections
+			to ensure the OK button gets the right status when the dialog is
+			shown and that pages update their internal settings appropriately
+
+2008-09-29  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/page-ip4.c
 		- (ui_to_setting): accept ', ;:' as delimiters for DNS servers and 
 			searches

@@ -360,6 +360,8 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 
 	/* set the UI */
 	populate_connection_ui (editor);
+
+	connection_editor_validate (editor);
 }
 
 void
