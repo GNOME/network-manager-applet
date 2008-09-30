@@ -196,6 +196,8 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 
 	editor->ok_button = glade_xml_get_widget (editor->xml, "ok_button");
 
+	gtk_window_set_default_icon_name ("preferences-system-network");
+
 	editor->pages = NULL;
 }
 
