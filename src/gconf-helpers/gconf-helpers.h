@@ -101,11 +101,13 @@ nm_gconf_get_uint_array_helper (GConfClient *client,
 				GArray **value);
 
 
+#if UNUSED
 gboolean
 nm_gconf_get_valuehash_helper (GConfClient *client,
 			       const char *path,
 			       const char *network,
 			       GHashTable **value);
+#endif
 
 gboolean
 nm_gconf_get_stringhash_helper (GConfClient *client,
@@ -172,11 +174,13 @@ nm_gconf_set_uint_array_helper (GConfClient *client,
 				const char *network,
 				GArray *value);
 
+#if UNUSED
 gboolean
 nm_gconf_set_valuehash_helper (GConfClient *client,
 			       const char *path,
 			       const char *network,
 			       GHashTable *value);
+#endif
 
 gboolean
 nm_gconf_set_stringhash_helper (GConfClient *client,

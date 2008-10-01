@@ -331,6 +331,7 @@ out:
 	return success;
 }
 
+#if UNUSED
 static void
 property_value_destroy (gpointer data)
 {
@@ -412,6 +413,7 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 	g_slist_free (gconf_entries);
 	return TRUE;
 }
+#endif
 
 gboolean
 nm_gconf_get_stringhash_helper (GConfClient *client,
@@ -715,6 +717,7 @@ typedef struct {
 	char *path;
 } WritePropertiesInfo;
 
+#if UNUSED
 static void
 write_properties_valuehash (gpointer key, gpointer val, gpointer user_data)
 {
@@ -765,6 +768,7 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 	g_free (gc_key);
 	return TRUE;
 }
+#endif
 
 static void
 write_properties_stringhash (gpointer key, gpointer value, gpointer user_data)
@@ -988,6 +992,7 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			g_slist_foreach (sa_val, (GFunc) g_free, NULL);
 			g_slist_free (sa_val);
 		}
+#if UNUSED
 	} else if (type == DBUS_TYPE_G_MAP_OF_VARIANT) {
 		GHashTable *vh_val = NULL;
 
@@ -995,6 +1000,7 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			g_object_set (setting, key, vh_val, NULL);
 			g_hash_table_destroy (vh_val);
 		}
+#endif
 	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
 		GHashTable *sh_val = NULL;
 
@@ -1308,10 +1314,12 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		nm_gconf_set_stringlist_helper (info->client, info->dir,
 								  key, setting->name,
 								  (GSList *) g_value_get_boxed (value));
+#if UNUSED
 	} else if (type == DBUS_TYPE_G_MAP_OF_VARIANT) {
 		nm_gconf_set_valuehash_helper (info->client, info->dir,
 								 setting->name,
 								 (GHashTable *) g_value_get_boxed (value));
+#endif
 	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
 		nm_gconf_set_stringhash_helper (info->client, info->dir,
 		                                setting->name,
