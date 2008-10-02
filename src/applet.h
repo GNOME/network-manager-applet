@@ -144,20 +144,42 @@ typedef struct
 
 
 struct NMADeviceClass {
-	NMConnection * (*new_auto_connection) (NMDevice *device, NMApplet *applet, gpointer user_data);
-	void           (*add_menu_item) (NMDevice *device, guint32 num_devices, NMConnection *active, GtkWidget *menu, NMApplet *applet);
-	void           (*device_added) (NMDevice *device, NMApplet *applet);
-	void           (*device_state_changed) (NMDevice *device, NMDeviceState state, NMApplet *applet);
-	GdkPixbuf *    (*get_icon) (NMDevice *device, NMDeviceState state, char **tip, NMApplet *applet);
-	void           (*get_more_info) (NMDevice *device, NMConnection *connection, NMApplet *applet, gpointer user_data);
-	gboolean       (*get_secrets) (NMDevice *device,
-	                               NMConnection *connection,
-	                               const char *specific_object,
-	                               const char *setting_name,
-	                               const char **hints,
-	                               DBusGMethodInvocation *context,
-	                               NMApplet *applet,
-	                               GError **error);
+	NMConnection * (*new_auto_connection)  (NMDevice *device,
+	                                        NMApplet *applet,
+	                                        gpointer user_data);
+
+	void           (*add_menu_item)        (NMDevice *device,
+	                                        guint32 num_devices,
+	                                        NMConnection *active,
+	                                        GtkWidget *menu,
+	                                        NMApplet *applet);
+
+	void           (*device_added)         (NMDevice *device, NMApplet *applet);
+
+	void           (*device_state_changed) (NMDevice *device,
+	                                        NMDeviceState new_state,
+	                                        NMDeviceState old_state,
+	                                        NMDeviceStateReason reason,
+	                                        NMApplet *applet);
+
+	GdkPixbuf *    (*get_icon)             (NMDevice *device,
+	                                        NMDeviceState state,
+	                                        char **tip,
+	                                        NMApplet *applet);
+
+	void           (*get_more_info)        (NMDevice *device,
+	                                        NMConnection *connection,
+	                                        NMApplet *applet,
+	                                        gpointer user_data);
+
+	gboolean       (*get_secrets)          (NMDevice *device,
+	                                        NMConnection *connection,
+	                                        const char *specific_object,
+	                                        const char *setting_name,
+	                                        const char **hints,
+	                                        DBusGMethodInvocation *context,
+	                                        NMApplet *applet,
+	                                        GError **error);
 };
 
 GType nma_get_type (void);

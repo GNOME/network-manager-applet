@@ -1155,7 +1155,9 @@ update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet)
 
 static void
 wireless_device_state_changed (NMDevice *device,
-                               NMDeviceState state,
+                               NMDeviceState new_state,
+                               NMDeviceState old_state,
+                               NMDeviceStateReason reason,
                                NMApplet *applet)
 {
 	NMAGConfConnection *gconf_connection;
@@ -1163,12 +1165,12 @@ wireless_device_state_changed (NMDevice *device,
 	char *msg;
 	char *esc_ssid = NULL;
 
-	new = update_active_ap (device, state, applet);
+	new = update_active_ap (device, new_state, applet);
 
-	if (state == NM_DEVICE_STATE_DISCONNECTED)
+	if (new_state == NM_DEVICE_STATE_DISCONNECTED)
 		queue_avail_access_point_notification (device);
 
-	if (state != NM_DEVICE_STATE_ACTIVATED)
+	if (new_state != NM_DEVICE_STATE_ACTIVATED)
 		return;
 
 	if (new) {

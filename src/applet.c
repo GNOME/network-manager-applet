@@ -1460,13 +1460,15 @@ applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 
 static void
 applet_common_device_state_changed (NMDevice *device,
-                                    NMDeviceState state,
+                                    NMDeviceState new_state,
+                                    NMDeviceState old_state,
+                                    NMDeviceStateReason reason,
                                     NMApplet *applet)
 {
 	NMConnection *connection;
 	NMActiveConnection *active = NULL;
 
-	switch (state) {
+	switch (new_state) {
 	case NM_DEVICE_STATE_PREPARE:
 	case NM_DEVICE_STATE_CONFIG:
 	case NM_DEVICE_STATE_NEED_AUTH:
@@ -1488,18 +1490,20 @@ applet_common_device_state_changed (NMDevice *device,
 }
 
 static void
-foo_device_state_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
+foo_device_state_changed_cb (NMDevice *device,
+                             NMDeviceState new_state,
+                             NMDeviceState old_state,
+                             NMDeviceStateReason reason,
+                             gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	NMADeviceClass *dclass;
-	NMDeviceState state;
 
 	dclass = get_device_class (device, applet);
 	g_assert (dclass);
 
-	state = nm_device_get_state (device);
-	dclass->device_state_changed (device, state, applet);
-	applet_common_device_state_changed (device, state, applet);
+	dclass->device_state_changed (device, new_state, old_state, reason, applet);
+	applet_common_device_state_changed (device, new_state, old_state, reason, applet);
 
 	applet_schedule_update_icon (applet);
 }
@@ -1516,11 +1520,15 @@ foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 	if (dclass->device_added)
 		dclass->device_added (device, applet);
 
-	g_signal_connect (device, "notify::state",
+	g_signal_connect (device, "state-changed",
 				   G_CALLBACK (foo_device_state_changed_cb),
 				   user_data);
 
-	foo_device_state_changed_cb	(device, NULL, applet);
+	foo_device_state_changed_cb	(device,
+	                             nm_device_get_state (device),
+	                             NM_DEVICE_STATE_UNKNOWN,
+	                             NM_DEVICE_STATE_REASON_NONE,
+	                             applet);
 }
 
 static void

@@ -1,3 +1,17 @@
+2008-10-02  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+	  src/applet.h
+		- (foo_device_added_cb, foo_device_state_changed_cb): use the state-changed
+			signal rather than property notification so that old state and the
+			reason for the state change can be used as well
+
+	* src/applet-device-gsm.c
+	  src/applet-device-wifi.c
+	  src/applet-device-cdma.c
+	  src/applet-device-wired.c
+		- Update device state changed handler functions for these changes
+
 2008-10-01  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/gconf-helpers.c

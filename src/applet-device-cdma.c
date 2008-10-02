@@ -277,10 +277,12 @@ out:
 
 static void
 cdma_device_state_changed (NMDevice *device,
-                           NMDeviceState state,
+                           NMDeviceState new_state,
+                           NMDeviceState old_state,
+                           NMDeviceStateReason reason,
                            NMApplet *applet)
 {
-	if (state == NM_DEVICE_STATE_ACTIVATED) {
+	if (new_state == NM_DEVICE_STATE_ACTIVATED) {
 		applet_do_notify (applet, NOTIFY_URGENCY_LOW,
 					      _("Connection Established"),
 						  _("You are now connected to the CDMA network."),
