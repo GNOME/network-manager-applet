@@ -530,7 +530,7 @@ routes_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
 	g_return_if_fail (GTK_WIDGET_TOPLEVEL (toplevel));
 
-	if (!strcmp (priv->setting->method, NM_SETTING_IP4_CONFIG_METHOD_AUTO))
+	if (!priv->setting->method || !strcmp (priv->setting->method, NM_SETTING_IP4_CONFIG_METHOD_AUTO))
 		automatic = TRUE;
 	
 	dialog = ip4_routes_dialog_new (priv->setting->routes, automatic, priv->setting->ignore_auto_routes);
