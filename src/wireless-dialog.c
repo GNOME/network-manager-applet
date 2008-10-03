@@ -830,7 +830,8 @@ static gboolean
 internal_init (NMAWirelessDialog *self,
                NMConnection *specific_connection,
                NMDevice *specific_device,
-               gboolean auth_only)
+               gboolean auth_only,
+               gboolean create)
 {
 	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 	GtkWidget *widget;
@@ -858,9 +859,23 @@ internal_init (NMAWirelessDialog *self,
 	gtk_box_set_child_packing (GTK_BOX (GTK_DIALOG (self)->action_area), widget,
 	                           FALSE, TRUE, 0, GTK_PACK_END);
 
-	widget = gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CONNECT, GTK_RESPONSE_OK);
+	/* Connect/Create button */
+	if (create) {
+		GtkWidget *image;
+
+		widget = gtk_button_new_with_mnemonic (_("C_reate"));
+		image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_BUTTON);
+		gtk_button_set_image (GTK_BUTTON (widget), image);
+
+		gtk_widget_show (widget);
+		gtk_dialog_add_action_widget (GTK_DIALOG (self), widget, GTK_RESPONSE_OK);
+	} else
+		widget = gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CONNECT, GTK_RESPONSE_OK);
+
 	gtk_box_set_child_packing (GTK_BOX (GTK_DIALOG (self)->action_area), widget,
 	                           FALSE, TRUE, 0, GTK_PACK_END);
+	g_object_set (G_OBJECT (widget), "can-default", TRUE, NULL);
+	gtk_widget_grab_default (widget);
 
 	widget = glade_xml_get_widget (priv->xml, "hbox1");
 	if (!widget) {
@@ -1053,7 +1068,7 @@ nma_wireless_dialog_new (NMApplet *applet,
 	priv->sec_combo = glade_xml_get_widget (priv->xml, "security_combo");
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	if (!internal_init (self, connection, device, TRUE)) {
+	if (!internal_init (self, connection, device, TRUE, FALSE)) {
 		nm_warning ("Couldn't create wireless security dialog.");
 		g_object_unref (self);
 		return NULL;
@@ -1081,7 +1096,7 @@ internal_new_other (NMApplet *applet, gboolean create)
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	priv->adhoc_create = create;
 
-	if (!internal_init (self, NULL, NULL, FALSE)) {
+	if (!internal_init (self, NULL, NULL, FALSE, create)) {
 		nm_warning ("Couldn't create wireless security dialog.");
 		g_object_unref (self);
 		return NULL;
