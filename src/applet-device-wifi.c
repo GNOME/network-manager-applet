@@ -1057,8 +1057,10 @@ static void
 free_ap_notification_data (gpointer user_data)
 {
 	struct ap_notification_data *data = user_data;
+	NMSettings *settings = applet_get_settings (data->applet);
 
-	g_signal_handler_disconnect (applet_get_settings (data->applet), data->new_con_id);
+	if (settings)
+		g_signal_handler_disconnect (settings, data->new_con_id);
 	memset (data, 0, sizeof (*data));
 	g_free (data);
 }
