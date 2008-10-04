@@ -934,9 +934,9 @@ internal_init (NMAWirelessDialog *self,
 
 		tmp = g_strdup_printf (_("Passwords or encryption keys are required to access the wireless network '%s'."),
 		                       esc_ssid ? esc_ssid : "<unknown>");
-		gtk_window_set_title (GTK_WINDOW (self), _("Wireless Network Secrets Required"));
+		gtk_window_set_title (GTK_WINDOW (self), _("Wireless Network Authentication Required"));
 		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
-		                         _("Secrets required by wireless network"),
+		                         _("Authentication required by wireless network"),
 		                         tmp);
 		g_free (esc_ssid);
 		g_free (tmp);
@@ -946,10 +946,10 @@ internal_init (NMAWirelessDialog *self,
 		                         _("New wireless network"),
 		                         _("Enter a name for the wireless network you wish to create."));
 	} else {
-		gtk_window_set_title (GTK_WINDOW (self), _("Connect to Other Wireless Network"));
+		gtk_window_set_title (GTK_WINDOW (self), _("Connect to Hidden Wireless Network"));
 		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
-		                         _("Existing wireless network"),
-		                         _("Enter the name of the wireless network to which you wish to connect."));
+		                         _("Hidden wireless network"),
+		                         _("Enter the name and security details of the hidden wireless network you wish to connect to."));
 	}
 
 	widget = glade_xml_get_widget (priv->xml, "caption_label");

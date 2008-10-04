@@ -78,13 +78,13 @@ other_wireless_activate_cb (GtkWidget *menu_item,
 }
 
 void
-nma_menu_add_other_network_item (GtkWidget *menu, NMApplet *applet)
+nma_menu_add_hidden_network_item (GtkWidget *menu, NMApplet *applet)
 {
 	GtkWidget *menu_item;
 	GtkWidget *label;
 
 	menu_item = gtk_menu_item_new ();
-	label = gtk_label_new_with_mnemonic (_("_Connect to Other Wireless Network..."));
+	label = gtk_label_new_with_mnemonic (_("_Connect to Hidden Wireless Network..."));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_container_add (GTK_CONTAINER (menu_item), label);
 	gtk_widget_show_all (menu_item);

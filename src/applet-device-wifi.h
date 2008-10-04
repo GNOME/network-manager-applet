@@ -28,7 +28,7 @@
 
 NMADeviceClass *applet_device_wifi_get_class (NMApplet *applet);
 
-void nma_menu_add_other_network_item (GtkWidget *menu, NMApplet *applet);
+void nma_menu_add_hidden_network_item (GtkWidget *menu, NMApplet *applet);
 void nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet);
 
 #endif /* __APPLET_DEVICE_WIFI_H__ */

@@ -1144,9 +1144,9 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 	nma_menu_add_vpn_submenu (menu, applet);
 
 	if (n_wireless > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
-		/* Add the "Other wireless network..." entry */
+		/* Add the "Hidden wireless network..." entry */
 		nma_menu_add_separator_item (menu);
-		nma_menu_add_other_network_item (menu, applet);
+		nma_menu_add_hidden_network_item (menu, applet);
 		nma_menu_add_create_network_item (menu, applet);
 	}
 
