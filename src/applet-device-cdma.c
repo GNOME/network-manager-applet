@@ -283,10 +283,22 @@ cdma_device_state_changed (NMDevice *device,
                            NMApplet *applet)
 {
 	if (new_state == NM_DEVICE_STATE_ACTIVATED) {
+		NMConnection *connection;
+		NMSettingConnection *s_con = NULL;
+		char *str = NULL;
+
+		connection = applet_find_active_connection_for_device (device, applet, NULL);
+		if (connection) {
+			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+			if (s_con && s_con->id)
+				str = g_strdup_printf (_("You are now connected to '%s'."), s_con->id);
+		}
+
 		applet_do_notify (applet, NOTIFY_URGENCY_LOW,
 					      _("Connection Established"),
-						  _("You are now connected to the CDMA network."),
+						  str ? str : _("You are now connected to the CDMA network."),
 						  "nm-device-wwan", NULL, NULL, NULL, NULL);
+		g_free (str);
 	}
 }
 
