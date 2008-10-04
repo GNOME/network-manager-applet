@@ -185,7 +185,7 @@ exported_connection_to_connection (gpointer data, gpointer user_data)
 NMSettings *
 applet_get_settings (NMApplet *applet)
 {
-	return NM_SETTINGS (applet->gconf_settings);
+	return (NMSettings *) applet->gconf_settings;
 }
 
 GSList *
@@ -2281,7 +2281,9 @@ static void finalize (GObject *object)
 		g_object_unref (applet->info_dialog_xml);
 
 	g_object_unref (applet->gconf_settings);
+	applet->gconf_settings = NULL;
 	g_object_unref (applet->dbus_settings);
+	applet->dbus_settings = NULL;
 
 	g_object_unref (applet->gconf_client);
 
