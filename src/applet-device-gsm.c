@@ -53,7 +53,7 @@ gsm_menu_item_info_destroy (gpointer data)
 	g_slice_free (GSMMenuItemInfo, data);
 }
 
-#define DEFAULT_GSM_NAME _("Auto GSM network connection")
+#define DEFAULT_GSM_NAME _("Auto Mobile Broadband (GSM) connection")
 
 static NMConnection *
 gsm_new_auto_connection (NMDevice *device,
@@ -233,15 +233,9 @@ gsm_add_menu_item (NMDevice *device,
 			desc = (char *) nm_device_get_iface (device);
 		g_assert (desc);
 
-		if (g_slist_length (connections) > 1)
-			text = g_strdup_printf (_("GSM Connections (%s)"), desc);
-		else
-			text = g_strdup_printf (_("GSM Network (%s)"), desc);
+		text = g_strdup_printf (_("Mobile Broadband (%s)"), desc);
 	} else {
-		if (g_slist_length (connections) > 1)
-			text = g_strdup (_("GSM Connections"));
-		else
-			text = g_strdup (_("GSM Network"));
+		text = g_strdup (_("Mobile Broadband"));
 	}
 
 	item = gtk_menu_item_new_with_label (text);
@@ -316,7 +310,7 @@ gsm_get_icon (NMDevice *device,
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Dialing GSM device %s..."), iface);
+		*tip = g_strdup_printf (_("Dialing mobile broadband device %s..."), iface);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
 		*tip = g_strdup_printf (_("Starting PPP on device %s..."), iface);
@@ -475,9 +469,9 @@ ask_for_pin_puk (NMDevice *device,
 	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
 
 	if (!strcmp (secret_name, NM_SETTING_GSM_PIN))
-		w = gtk_label_new (_("PIN code is needed for the GSM device"));
+		w = gtk_label_new (_("PIN code is needed for the mobile broadband device"));
 	else if (!strcmp (secret_name, NM_SETTING_GSM_PUK))
-		w = gtk_label_new (_("PUK code is needed for the GSM device"));
+		w = gtk_label_new (_("PUK code is needed for the mobile broadband device"));
 	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
 
 	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
@@ -526,6 +520,8 @@ ask_for_password (NMDevice *device,
 	GtkBox *box;
 	char *dev_str;
 	NMGsmInfo *info;
+	NMSettingConnection *s_con;
+	char *tmp;
 
 	info = g_new (NMGsmInfo, 1);
 	info->context = context;
@@ -535,14 +531,18 @@ ask_for_password (NMDevice *device,
 
 	dialog = GTK_DIALOG (gtk_dialog_new ());
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	gtk_window_set_title (GTK_WINDOW (dialog), _("GSM Network Password"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Mobile broadband network password"));
 
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
 	info->ok_button = w;
 	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
 
-	w = gtk_label_new (_("A password is required to connect to the GSM network."));
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con->id);
+	tmp = g_strdup_printf (_("A password is required to connect to '%s'."), s_con->id);
+	w = gtk_label_new (tmp);
+	g_free (tmp);
 	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
 
 	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
