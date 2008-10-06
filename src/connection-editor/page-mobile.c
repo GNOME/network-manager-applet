@@ -107,6 +107,7 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 	int type_idx;
 	GHashTable *secrets;
 	GValue *value;
+	GtkWidget *widget;
 
 	if (setting->number)
 		gtk_entry_set_text (priv->number, setting->number);
@@ -140,7 +141,16 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 	}
 	gtk_combo_box_set_active (priv->network_type, type_idx);
 
-	/* FIXME:  band */
+	/* Hide network type widgets; not supported yet */
+	gtk_widget_hide (GTK_WIDGET (priv->network_type));
+	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "type_label");
+	gtk_widget_hide (widget);
+
+	/* Hide Band widgets; not supported yet */
+	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "mobile_band");
+	gtk_widget_hide (widget);
+	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "band_label");
+	gtk_widget_hide (widget);
 
 	secrets = get_secrets (connection, nm_setting_get_name (priv->setting));
 
