@@ -300,13 +300,17 @@ gsm_device_state_changed (NMDevice *device,
 static GdkPixbuf *
 gsm_get_icon (NMDevice *device,
               NMDeviceState state,
+              NMConnection *connection,
               char **tip,
               NMApplet *applet)
 {
 	GdkPixbuf *pixbuf = NULL;
 	const char *iface;
+	NMSettingConnection *s_con = NULL;
 
 	iface = nm_device_get_iface (NM_DEVICE (device));
+	if (connection)
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
@@ -319,7 +323,10 @@ gsm_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Waiting for user authentication on device '%s'..."), iface);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		*tip = g_strdup (_("GSM connection"));
+		if (s_con && s_con->id)
+			*tip = g_strdup_printf (_("Mobile broadband connection '%s'"), s_con->id);
+		else
+			*tip = g_strdup (_("Mobile broadband connection"));
 		pixbuf = applet->wwan_icon;
 		break;
 	default:

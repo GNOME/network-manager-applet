@@ -2,6 +2,20 @@
 
 	* src/applet-device-cdma.c
 	  src/applet-device-gsm.c
+	  src/applet-device-wifi.c
+	  src/applet-device-wired.c
+		- (*_get_icon): use the active connection for more information in the
+			tooltip
+
+	* src/applet.c
+	  src/applet.h
+		- (applet_get_device_icon_for_state): pass active connection through
+			to the get_icon device class handler
+
+2008-10-06  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet-device-cdma.c
+	  src/applet-device-gsm.c
 	  src/applet.c
 		- Use "Mobile Broadband" everywhere instead of GSM or CDMA (bgo #551361)
 

@@ -267,6 +267,7 @@ wired_device_state_changed (NMDevice *device,
 static GdkPixbuf *
 wired_get_icon (NMDevice *device,
                 NMDeviceState state,
+                NMConnection *connection,
                 char **tip,
                 NMApplet *applet)
 {

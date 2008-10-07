@@ -1687,8 +1687,12 @@ applet_get_device_icon_for_state (NMApplet *applet, char **tip)
 	state = nm_device_get_state (device);
 
 	dclass = get_device_class (device, applet);
-	if (dclass)
-		pixbuf = dclass->get_icon (device, state, tip, applet);
+	if (dclass) {
+		NMConnection *connection;
+
+		connection = applet_find_active_connection_for_device (device, applet, NULL);
+		pixbuf = dclass->get_icon (device, state, connection, tip, applet);
+	}
 
 out:
 	if (!pixbuf)
