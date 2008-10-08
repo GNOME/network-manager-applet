@@ -815,8 +815,12 @@ ui_to_setting (CEPageIP4 *self)
 		items = g_strsplit_set (text, ", ;:", 0);
 		for (iter = items; *iter; iter++) {
 			struct in_addr tmp_addr;
+			char *stripped = g_strstrip (*iter);
 
-			if (inet_pton (AF_INET, g_strstrip (*iter), &tmp_addr))
+			if (!strlen (stripped))
+				continue;
+
+			if (inet_pton (AF_INET, stripped, &tmp_addr))
 				g_array_append_val (dns_servers, tmp_addr.s_addr);
 			else {
 				g_strfreev (items);
@@ -830,8 +834,12 @@ ui_to_setting (CEPageIP4 *self)
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_searches));
 	if (text && strlen (text)) {
 		items = g_strsplit_set (text, ", ;:", 0);
-		for (iter = items; *iter; iter++)
-			search_domains = g_slist_prepend (search_domains, g_strdup (g_strstrip (*iter)));
+		for (iter = items; *iter; iter++) {
+			char *stripped = g_strstrip (*iter);
+
+			if (strlen (stripped))
+				search_domains = g_slist_prepend (search_domains, g_strdup (stripped));
+		}
 
 		if (items)
 			g_strfreev (items);
