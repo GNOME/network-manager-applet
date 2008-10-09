@@ -789,6 +789,20 @@ write_properties_stringhash (gpointer key, gpointer value, gpointer user_data)
 	g_free (full_key);
 }
 
+typedef struct {
+	const char *key;
+	gboolean found;
+} FindKeyInfo;
+
+static void
+find_gconf_key (gpointer key, gpointer value, gpointer user_data)
+{
+	FindKeyInfo *info = (FindKeyInfo *) user_data;
+
+	if (!info->found && !strcmp ((char *) key, info->key))
+		info->found = TRUE;
+}
+
 gboolean
 nm_gconf_set_stringhash_helper (GConfClient *client,
                                 const char *path,
@@ -796,6 +810,7 @@ nm_gconf_set_stringhash_helper (GConfClient *client,
                                 GHashTable *value)
 {
 	char *gc_key;
+	GSList *existing, *iter;
 	WritePropertiesInfo info;
 
 	g_return_val_if_fail (setting != NULL, FALSE);
@@ -807,9 +822,27 @@ nm_gconf_set_stringhash_helper (GConfClient *client,
 		return FALSE;
 	}
 
+	/* Delete GConf entries that are not in the hash table to be written */
+	existing = gconf_client_all_entries (client, gc_key, NULL);
+	for (iter = existing; iter; iter = g_slist_next (iter)) {
+		GConfEntry *entry = (GConfEntry *) iter->data;
+		char *basename = g_path_get_basename (entry->key);
+		FindKeyInfo fk_info = { basename, FALSE };
+
+		g_hash_table_foreach (value, find_gconf_key, &fk_info);
+		/* Be sure to never delete "special" VPN keys */
+		if (   (fk_info.found == FALSE)
+		    && strcmp ((char *) basename, NM_SETTING_VPN_SERVICE_TYPE)
+			&& strcmp ((char *) basename, NM_SETTING_VPN_USER_NAME))
+			gconf_client_unset (client, entry->key, NULL);
+		gconf_entry_free (entry);
+		g_free (basename);
+	}
+	g_slist_free (existing);
+
+	/* Now update entries and write new ones */
 	info.client = client;
 	info.path = gc_key;
-
 	g_hash_table_foreach (value, write_properties_stringhash, &info);
 
 	g_free (gc_key);

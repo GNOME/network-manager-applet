@@ -1,6 +1,13 @@
 2008-10-09  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/gconf-helpers.c
+		- (nm_gconf_set_stringhash_helper): ensure that stale info isn't left
+			around by removing keys that aren't in the stringhash that's about
+			to be written to GConf
+
+2008-10-09  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.c
 	  src/gconf-helpers/gconf-helpers.h
 		- 'network' -> 'setting'; 'network' was left over from 0.6 when SSIDs
 			were part of the GConf path
