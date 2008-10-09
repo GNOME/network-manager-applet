@@ -66,20 +66,20 @@ const char *vpn_ignore_keys[] = {
 
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,
-					const char *path,
-					const char *key,
-					const char *network,
-					int *value)
+                         const char *path,
+                         const char *key,
+                         const char *setting,
+                         int *value)
 {
 	char *		gc_key;
 	GConfValue *	gc_value;
 	gboolean		success = FALSE;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if ((gc_value = gconf_client_get (client, gc_key, NULL)))
 	{
 		if (gc_value->type == GCONF_VALUE_INT)
@@ -97,20 +97,20 @@ nm_gconf_get_int_helper (GConfClient *client,
 
 gboolean
 nm_gconf_get_float_helper (GConfClient *client,
-					const char *path,
-					const char *key,
-					const char *network,
-					gfloat *value)
+                           const char *path,
+                           const char *key,
+                           const char *setting,
+                           gfloat *value)
 {
 	char *		gc_key;
 	GConfValue *	gc_value;
 	gboolean		success = FALSE;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if ((gc_value = gconf_client_get (client, gc_key, NULL)))
 	{
 		if (gc_value->type == GCONF_VALUE_FLOAT)
@@ -128,21 +128,21 @@ nm_gconf_get_float_helper (GConfClient *client,
 
 gboolean
 nm_gconf_get_string_helper (GConfClient *client,
-					const char *path,
-					const char *key,
-					const char *network,
-					char **value)
+                            const char *path,
+                            const char *key,
+                            const char *setting,
+                            char **value)
 {
 	char *		gc_key;
 	GConfValue *	gc_value;
 	gboolean		success = FALSE;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 	g_return_val_if_fail (*value == NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if ((gc_value = gconf_client_get (client, gc_key, NULL)))
 	{
 		if (gc_value->type == GCONF_VALUE_STRING)
@@ -160,20 +160,20 @@ nm_gconf_get_string_helper (GConfClient *client,
 
 gboolean
 nm_gconf_get_bool_helper (GConfClient *client,
-					const char *path,
-					const char *key,
-					const char *network,
-					gboolean *value)
+                          const char *path,
+                          const char *key,
+                          const char *setting,
+                          gboolean *value)
 {
 	char *		gc_key;
 	GConfValue *	gc_value;
 	gboolean		success = FALSE;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if ((gc_value = gconf_client_get (client, gc_key, NULL)))
 	{
 		if (gc_value->type == GCONF_VALUE_BOOL)
@@ -197,20 +197,20 @@ nm_gconf_get_bool_helper (GConfClient *client,
 
 gboolean
 nm_gconf_get_stringlist_helper (GConfClient *client,
-				const char *path,
-				const char *key,
-				const char *network,
-				GSList **value)
+                                const char *path,
+                                const char *key,
+                                const char *setting,
+                                GSList **value)
 {
 	char *gc_key;
 	GConfValue *gc_value;
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
 		goto out;
 
@@ -238,10 +238,10 @@ out:
 
 gboolean
 nm_gconf_get_bytearray_helper (GConfClient *client,
-			       const char *path,
-			       const char *key,
-			       const char *network,
-			       GByteArray **value)
+                               const char *path,
+                               const char *key,
+                               const char *setting,
+                               GByteArray **value)
 {
 	char *gc_key;
 	GConfValue *gc_value;
@@ -249,10 +249,10 @@ nm_gconf_get_bytearray_helper (GConfClient *client,
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
 		goto out;
 
@@ -290,10 +290,10 @@ out:
 
 gboolean
 nm_gconf_get_uint_array_helper (GConfClient *client,
-						  const char *path,
-						  const char *key,
-						  const char *network,
-						  GArray **value)
+                                const char *path,
+                                const char *key,
+                                const char *setting,
+                                GArray **value)
 {
 	char *gc_key;
 	GConfValue *gc_value;
@@ -301,10 +301,10 @@ nm_gconf_get_uint_array_helper (GConfClient *client,
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
 		goto out;
 
@@ -376,19 +376,19 @@ add_property (GHashTable *properties, const char *key, GConfValue *gconf_value)
 
 gboolean
 nm_gconf_get_valuehash_helper (GConfClient *client,
-						 const char *path,
-						 const char *network,
-						 GHashTable **value)
+                               const char *path,
+                               const char *setting,
+                               GHashTable **value)
 {
 	char *gc_key;
 	GSList *gconf_entries;
 	GSList *iter;
 	int prefix_len;
 
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s", path, network);
+	gc_key = g_strdup_printf ("%s/%s", path, setting);
 	prefix_len = strlen (gc_key);
 	gconf_entries = gconf_client_all_entries (client, gc_key, NULL);
 	g_free (gc_key);
@@ -471,11 +471,11 @@ nm_gconf_get_stringhash_helper (GConfClient *client,
 
 gboolean
 nm_gconf_get_ip4_helper (GConfClient *client,
-						  const char *path,
-						  const char *key,
-						  const char *network,
-						  guint32 tuple_len,
-						  GPtrArray **value)
+                         const char *path,
+                         const char *key,
+                         const char *setting,
+                         guint32 tuple_len,
+                         GPtrArray **value)
 {
 	char *gc_key;
 	GConfValue *gc_value = NULL;
@@ -485,11 +485,11 @@ nm_gconf_get_ip4_helper (GConfClient *client,
 	GArray *tuple = NULL;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 	g_return_val_if_fail (tuple_len > 0, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
 		goto out;
 
@@ -534,15 +534,15 @@ gboolean
 nm_gconf_set_int_helper (GConfClient *client,
                          const char *path,
                          const char *key,
-                         const char *network,
+                         const char *setting,
                          int value)
 {
 	char * gc_key;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -556,15 +556,15 @@ gboolean
 nm_gconf_set_float_helper (GConfClient *client,
                            const char *path,
                            const char *key,
-                           const char *network,
+                           const char *setting,
                            gfloat value)
 {
 	char * gc_key;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -578,15 +578,15 @@ gboolean
 nm_gconf_set_string_helper (GConfClient *client,
                             const char *path,
                             const char *key,
-                            const char *network,
+                            const char *setting,
                             const char *value)
 {
 	char * gc_key;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -605,15 +605,15 @@ gboolean
 nm_gconf_set_bool_helper (GConfClient *client,
                           const char *path,
                           const char *key,
-                          const char *network,
+                          const char *setting,
                           gboolean value)
 {
 	char * gc_key;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -627,15 +627,15 @@ gboolean
 nm_gconf_set_stringlist_helper (GConfClient *client,
                                 const char *path,
                                 const char *key,
-                                const char *network,
+                                const char *setting,
                                 GSList *value)
 {
 	char *gc_key;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -650,20 +650,21 @@ gboolean
 nm_gconf_set_bytearray_helper (GConfClient *client,
                                const char *path,
                                const char *key,
-                               const char *network,
+                               const char *setting,
                                GByteArray *value)
 {
 	char *gc_key;
 	int i;
 	GSList *list = NULL;
 
+	g_return_val_if_fail (path != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 
 	if (!value)
 		return TRUE;
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -681,22 +682,22 @@ nm_gconf_set_bytearray_helper (GConfClient *client,
 
 gboolean
 nm_gconf_set_uint_array_helper (GConfClient *client,
-					  const char *path,
-					  const char *key,
-					  const char *network,
-					  GArray *value)
+                                const char *path,
+                                const char *key,
+                                const char *setting,
+                                GArray *value)
 {
 	char *gc_key;
 	int i;
 	GSList *list = NULL;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 
 	if (!value)
 		return TRUE;
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -744,17 +745,17 @@ write_properties_valuehash (gpointer key, gpointer val, gpointer user_data)
 
 gboolean
 nm_gconf_set_valuehash_helper (GConfClient *client,
-						 const char *path,
-						 const char *network,
-						 GHashTable *value)
+                               const char *path,
+                               const char *setting,
+                               GHashTable *value)
 {
 	char *gc_key;
 	WritePropertiesInfo info;
 
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s", path, network);
+	gc_key = g_strdup_printf ("%s/%s", path, setting);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -791,16 +792,16 @@ write_properties_stringhash (gpointer key, gpointer value, gpointer user_data)
 gboolean
 nm_gconf_set_stringhash_helper (GConfClient *client,
                                 const char *path,
-                                const char *network,
+                                const char *setting,
                                 GHashTable *value)
 {
 	char *gc_key;
 	WritePropertiesInfo info;
 
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s", path, network);
+	gc_key = g_strdup_printf ("%s/%s", path, setting);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -817,11 +818,11 @@ nm_gconf_set_stringhash_helper (GConfClient *client,
 
 gboolean
 nm_gconf_set_ip4_helper (GConfClient *client,
-					  const char *path,
-					  const char *key,
-					  const char *network,
-					  guint32 tuple_len,
-					  GPtrArray *value)
+                         const char *path,
+                         const char *key,
+                         const char *setting,
+                         guint32 tuple_len,
+                         GPtrArray *value)
 {
 	char *gc_key;
 	int i;
@@ -829,13 +830,13 @@ nm_gconf_set_ip4_helper (GConfClient *client,
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (network != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (tuple_len > 0, FALSE);
 
 	if (!value)
 		return TRUE;
 
-	gc_key = g_strdup_printf ("%s/%s/%s", path, network, key);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
