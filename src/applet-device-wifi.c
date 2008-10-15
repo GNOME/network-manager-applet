@@ -228,12 +228,26 @@ get_security_for_ap (NMAccessPoint *ap,
 		goto none;
 
 	/* Static WEP, Dynamic WEP, or LEAP */
-	if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
-	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
-	    && (rsn_flags == NM_802_11_AP_SEC_NONE)) {
-		sec->key_mgmt = g_strdup ("none");
-		sec->wep_tx_keyidx = 0;
-		return sec;
+	if (flags & NM_802_11_AP_FLAGS_PRIVACY) {
+		if ((dev_caps & NM_WIFI_DEVICE_CAP_RSN) || (dev_caps & NM_WIFI_DEVICE_CAP_WPA)) {
+			/* If the device can do WPA/RSN but the AP has no WPA/RSN informatoin
+			 * elements, it must be LEAP or static/dynamic WEP.
+			 */
+			if ((wpa_flags == NM_802_11_AP_SEC_NONE) && (rsn_flags == NM_802_11_AP_SEC_NONE)) {
+				sec->key_mgmt = g_strdup ("none");
+				sec->wep_tx_keyidx = 0;
+				return sec;
+			}
+			/* Otherwise, the AP supports WPA or RSN, which is preferred */
+		} else {
+			/* Device can't do WPA/RSN, but can at least pass through the
+			 * WPA/RSN information elements from a scan.  Since Privacy was
+			 * advertised, LEAP or static/dynamic WEP must be in use.
+			 */
+			sec->key_mgmt = g_strdup ("none");
+			sec->wep_tx_keyidx = 0;
+			return sec;
+		}
 	}
 
 	/* Stuff after this point requires infrastructure */
