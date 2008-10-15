@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-04 16:16+0300\n"
-"PO-Revision-Date: 2008-10-04 16:15+0300\n"
+"POT-Creation-Date: 2008-10-15 10:41+0300\n"
+"PO-Revision-Date: 2008-10-15 10:41+0300\n"
 "Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -20,136 +20,107 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../src/applet-device-cdma.c:55
-msgid "Auto CDMA network connection"
-msgstr "Automaattinen CDMA-verkkoyhteys"
+msgid "Auto Mobile Broadband (CDMA) connection"
+msgstr "Automaattinen mobiililaajakaistayhteys (CDMA)"
 
 #: ../src/applet-device-cdma.c:196 ../src/applet-device-gsm.c:197
 msgid "Disconnect"
 msgstr "Katkaise yhteys"
 
-#: ../src/applet-device-cdma.c:236
+#: ../src/applet-device-cdma.c:235 ../src/applet-device-gsm.c:236
 #, c-format
-msgid "CDMA Connections (%s)"
-msgstr "CDMA-yhteydet (%s)"
+msgid "Mobile Broadband (%s)"
+msgstr "Mobiililaajakaista (%s)"
 
-#: ../src/applet-device-cdma.c:238
-#, c-format
-msgid "CDMA Network (%s)"
-msgstr "CDMA-verkko (%s)"
+#: ../src/applet-device-cdma.c:237 ../src/applet-device-gsm.c:238
+#: ../src/connection-editor/page-mobile.c:274
+#: ../src/connection-editor/nm-connection-editor.glade.h:6
+#: ../src/connection-editor/nm-connection-list.c:1481
+msgid "Mobile Broadband"
+msgstr "Mobiililaajakaista"
 
-#: ../src/applet-device-cdma.c:241
-msgid "CDMA Connections"
-msgstr "CDMA-yhteydet"
-
-#: ../src/applet-device-cdma.c:243
-msgid "CDMA Network"
-msgstr "CDMA-verkko"
-
-#: ../src/applet-device-cdma.c:261 ../src/applet-device-gsm.c:262
+#: ../src/applet-device-cdma.c:255 ../src/applet-device-gsm.c:256
 #: ../src/applet-device-wired.c:224 ../src/applet-device-wifi.c:699
 msgid "device is unmanaged"
 msgstr "laiteta ei hallita"
 
-#: ../src/applet-device-cdma.c:287 ../src/applet-device-gsm.c:288
-#: ../src/applet-device-wired.c:249 ../src/applet-device-wifi.c:1190
+#: ../src/applet-device-cdma.c:288 ../src/applet-device-gsm.c:289
+#: ../src/applet-device-wired.c:256
+#, c-format
+msgid "You are now connected to '%s'."
+msgstr "Yhteys verkkoon \"%s\" on nyt muodostettu."
+
+#: ../src/applet-device-cdma.c:292 ../src/applet-device-gsm.c:293
+#: ../src/applet-device-wired.c:260 ../src/applet-device-wifi.c:1192
 msgid "Connection Established"
 msgstr "Yhteys muodostettu"
 
-#: ../src/applet-device-cdma.c:288
+#: ../src/applet-device-cdma.c:293
 msgid "You are now connected to the CDMA network."
 msgstr "Yhteys CDMA-verkkoon on nyt muodostettu."
 
-#: ../src/applet-device-cdma.c:306
+#: ../src/applet-device-cdma.c:316 ../src/applet-device-gsm.c:317
 #, c-format
-msgid "Dialing CDMA device %s..."
-msgstr "Soitetaan CDMA-laitteella %s..."
+msgid "Dialing mobile broadband device %s..."
+msgstr "Soitetaan mobiililaajakaistalaitteella %s..."
 
-#: ../src/applet-device-cdma.c:309 ../src/applet-device-gsm.c:310
+#: ../src/applet-device-cdma.c:319 ../src/applet-device-gsm.c:320
 #, c-format
 msgid "Starting PPP on device %s..."
 msgstr "Käynnistetään PPP laitteella %s..."
 
-#: ../src/applet-device-cdma.c:312 ../src/applet-device-gsm.c:313
+#: ../src/applet-device-cdma.c:322 ../src/applet-device-gsm.c:323
 #, c-format
 msgid "Waiting for user authentication on device '%s'..."
 msgstr "Odotetaan käyttäjän tunnistautumista laitteella \"%s\"..."
 
-#: ../src/applet-device-cdma.c:315
-msgid "CDMA connection"
-msgstr "CDMA-yhteys"
+#: ../src/applet-device-cdma.c:326 ../src/applet-device-gsm.c:327
+#, c-format
+msgid "Mobile broadband connection '%s'"
+msgstr "Mobiililaajakaistayhteys \"%s\""
 
-#: ../src/applet-device-cdma.c:423
-msgid "CDMA Network Password"
-msgstr "CDMA-verkon salasana"
+#: ../src/applet-device-cdma.c:328 ../src/applet-device-gsm.c:329
+msgid "Mobile broadband connection"
+msgstr "Mobiililaajakaistayhteys"
 
-#: ../src/applet-device-cdma.c:430
-msgid "A password is required to connect to the CDMA network."
-msgstr "Yhteys CDMA-verkkoon vaatii salasanan."
+#: ../src/applet-device-cdma.c:438 ../src/applet-device-gsm.c:541
+msgid "Mobile broadband network password"
+msgstr "Mobiililaajakaistaverkon salasana"
 
-#: ../src/applet-device-cdma.c:446 ../src/applet-device-gsm.c:549
+#: ../src/applet-device-cdma.c:447 ../src/applet-device-gsm.c:550
+#, c-format
+msgid "A password is required to connect to '%s'."
+msgstr "Yhteys verkkoon \"%s\" vaatii salasanan."
+
+#: ../src/applet-device-cdma.c:465 ../src/applet-device-gsm.c:568
 #: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
 #: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "Password:"
 msgstr "Salasana:"
 
 #: ../src/applet-device-gsm.c:56
-msgid "Auto GSM network connection"
-msgstr "Automaattinen GSM-verkkoyhteys"
+msgid "Auto Mobile Broadband (GSM) connection"
+msgstr "Automaattinen mobiililaajakaistayhteys (GSM)"
 
-#: ../src/applet-device-gsm.c:237
-#, c-format
-msgid "GSM Connections (%s)"
-msgstr "GSM-yhteydet (%s)"
-
-#: ../src/applet-device-gsm.c:239
-#, c-format
-msgid "GSM Network (%s)"
-msgstr "GSM-verkko (%s)"
-
-#: ../src/applet-device-gsm.c:242
-msgid "GSM Connections"
-msgstr "GSM-yhteydet"
-
-#: ../src/applet-device-gsm.c:244
-msgid "GSM Network"
-msgstr "GSM-verkko"
-
-#: ../src/applet-device-gsm.c:289
+#: ../src/applet-device-gsm.c:294
 msgid "You are now connected to the GSM network."
 msgstr "Yhteys GSM-verkkoon on nyt muodostettu."
 
-#: ../src/applet-device-gsm.c:307
-#, c-format
-msgid "Dialing GSM device %s..."
-msgstr "Soitetaan GSM-laitteella %s..."
-
-#: ../src/applet-device-gsm.c:316
-msgid "GSM connection"
-msgstr "GSM-yhteys"
-
-#: ../src/applet-device-gsm.c:454
+#: ../src/applet-device-gsm.c:467
 msgid "PIN code required"
 msgstr "PIN-koodi vaaditaan"
 
-#: ../src/applet-device-gsm.c:456
+#: ../src/applet-device-gsm.c:469
 msgid "PUK code required"
 msgstr "PUK-koodi vaaditaan"
 
-#: ../src/applet-device-gsm.c:466
-msgid "PIN code is needed for the GSM device"
-msgstr "GSM-laite vaatii PIN-koodin"
+#: ../src/applet-device-gsm.c:479
+msgid "PIN code is needed for the mobile broadband device"
+msgstr "Mobiililaajakaistalaite vaatii PIN-koodin"
 
-#: ../src/applet-device-gsm.c:468
-msgid "PUK code is needed for the GSM device"
-msgstr "GSM-laite vaatii PUK-koodin"
-
-#: ../src/applet-device-gsm.c:526
-msgid "GSM Network Password"
-msgstr "GSM-verkon salasana"
-
-#: ../src/applet-device-gsm.c:533
-msgid "A password is required to connect to the GSM network."
-msgstr "Yhteys GSM-verkkoon vaatii salasanan."
+#: ../src/applet-device-gsm.c:481
+msgid "PUK code is needed for the mobile broadband device"
+msgstr "Mobiililaajakaistalaite vaatii PUK-koodin"
 
 #: ../src/applet-device-wired.c:65
 msgid "Auto Ethernet"
@@ -173,36 +144,36 @@ msgstr "Kiinteät verkkoyhteydet"
 msgid "Wired Network"
 msgstr "Kiinteä verkkoyhteys"
 
-#: ../src/applet-device-wired.c:250
+#: ../src/applet-device-wired.c:261
 msgid "You are now connected to the wired network."
 msgstr "Yhteys kiinteään verkkoon on nyt muodostettu."
 
-#: ../src/applet-device-wired.c:268
+#: ../src/applet-device-wired.c:281
 #, c-format
 msgid "Preparing device %s for the wired network..."
 msgstr "Valmistellaan laitetta %s kiinteälle verkkoyhteydelle..."
 
-#: ../src/applet-device-wired.c:271
+#: ../src/applet-device-wired.c:284
 #, c-format
 msgid "Configuring device %s for the wired network..."
 msgstr "Määritellään laitetta %s kiinteälle verkkoyhteydelle..."
 
-#: ../src/applet-device-wired.c:274
+#: ../src/applet-device-wired.c:287
 #, c-format
 msgid "Requesting a network address from the wired network..."
 msgstr "Pyydetään verkko-osoitetta kiinteästä verkosta..."
 
-#: ../src/applet-device-wired.c:278
+#: ../src/applet-device-wired.c:291
 msgid "Wired network connection"
 msgstr "Kiinteä verkkoyhteys"
 
-#: ../src/applet-device-wired.c:509
+#: ../src/applet-device-wired.c:522
 msgid "DSL authentication"
 msgstr "DSL-todentaminen"
 
 #: ../src/applet-device-wifi.c:87
-msgid "_Connect to Other Wireless Network..."
-msgstr "_Yhdistä muihin langattomiin verkkoihin..."
+msgid "_Connect to Hidden Wireless Network..."
+msgstr "_Yhdistä piilotettuun langattomaan verkkoon..."
 
 #: ../src/applet-device-wifi.c:119
 msgid "Create _New Wireless Network..."
@@ -240,41 +211,41 @@ msgstr "Yhdistä langattomaan verkkoon napsauttamalla tästä"
 msgid "Don't show this message again"
 msgstr "Älä näytä tätä uudestaan"
 
-#: ../src/applet-device-wifi.c:1188
+#: ../src/applet-device-wifi.c:1190
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Yhteys langattomaan verkkoon \"%s\" on nyt muodostettu."
 
-#: ../src/applet-device-wifi.c:1189 ../src/applet-device-wifi.c:1217
+#: ../src/applet-device-wifi.c:1191 ../src/applet-device-wifi.c:1220
 msgid "(none)"
 msgstr "(ei mitään)"
 
-#: ../src/applet-device-wifi.c:1223
+#: ../src/applet-device-wifi.c:1226
 #, c-format
 msgid "Preparing device %s for the wireless network '%s'..."
 msgstr "Valmistellaan laitetta %s langattomalle verkolle \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1226
+#: ../src/applet-device-wifi.c:1229
 #, c-format
 msgid "Attempting to join the wireless network '%s'..."
 msgstr "Yritetään liittyä langattomaan verkkoon \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1229
+#: ../src/applet-device-wifi.c:1232
 #, c-format
 msgid "Requesting a network address from the wireless network '%s'..."
 msgstr "Pyydetään verkko-osoitetta langattomasta verkosta \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1232
+#: ../src/applet-device-wifi.c:1235
 #, c-format
 msgid "Waiting for Network Key for the wireless network '%s'..."
 msgstr "Odotetaan verkon avainta langattomalle verkolle \"%s\""
 
-#: ../src/applet-device-wifi.c:1252
+#: ../src/applet-device-wifi.c:1255
 #, c-format
 msgid "Wireless network connection to '%s' (%d%%)"
 msgstr "Langaton verkkoyhteys \"%s\" (%d%%)"
 
-#: ../src/applet-device-wifi.c:1256
+#: ../src/applet-device-wifi.c:1259
 #, c-format
 msgid "Wireless network connection to '%s'"
 msgstr "Langaton verkkoyhteys  \"%s\""
@@ -561,73 +532,73 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:940
+#: ../src/applet.c:937
 msgid "No network devices available"
 msgstr "Verkkolaitteita ei löytynyt"
 
-#: ../src/applet.c:1030
+#: ../src/applet.c:1025
 msgid "_VPN Connections"
 msgstr "_VPN-yhteydet"
 
-#: ../src/applet.c:1080
+#: ../src/applet.c:1075
 msgid "_Configure VPN..."
 msgstr "_Määrittele VPN-yhteys..."
 
-#: ../src/applet.c:1084
+#: ../src/applet.c:1079
 msgid "_Disconnect VPN..."
 msgstr "_Katkaise VPN-yhteys..."
 
-#: ../src/applet.c:1133
+#: ../src/applet.c:1128
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager ei ole käytössä..."
 
-#: ../src/applet.c:1138 ../src/applet.c:1729
+#: ../src/applet.c:1133 ../src/applet.c:1728
 msgid "Networking disabled"
 msgstr "Verkko ei ole käytössä"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1315
+#: ../src/applet.c:1310
 msgid "Enable _Networking"
 msgstr "Ota _verkko käyttöön"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1324
+#: ../src/applet.c:1319
 msgid "Enable _Wireless"
 msgstr "Ota _langaton käyttöön"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1335
+#: ../src/applet.c:1330
 msgid "Connection _Information"
 msgstr "Tietoja _yhteydestä"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1345
+#: ../src/applet.c:1340
 msgid "Edit Connections..."
 msgstr "Muokkaa yhteyksiä..."
 
 #. Help item
-#: ../src/applet.c:1359
+#: ../src/applet.c:1354
 msgid "_Help"
 msgstr "O_hje"
 
 #. About item
-#: ../src/applet.c:1368
+#: ../src/applet.c:1363
 msgid "_About"
 msgstr "_Tietoja"
 
-#: ../src/applet.c:1541
+#: ../src/applet.c:1536
 msgid "Disconnected"
 msgstr "Yhteys katkaistu"
 
-#: ../src/applet.c:1542
+#: ../src/applet.c:1537
 msgid "The network connection has been disconnected."
 msgstr "Yhteys verkkoon on katkaistu."
 
-#: ../src/applet.c:1733
+#: ../src/applet.c:1732
 msgid "No network connection"
 msgstr "Ei verkkoyhteyttä"
 
-#: ../src/applet.c:2039
+#: ../src/applet.c:2038
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -635,11 +606,11 @@ msgstr ""
 "NetworkManager-sovelma ei löytänyt joitain vaadituista resursseista eikä "
 "pysty jatkamaan.\n"
 
-#: ../src/applet.c:2182
+#: ../src/applet.c:2181
 msgid "NetworkManager Applet"
 msgstr "NetworkManager-sovelma"
 
-#: ../src/applet.c:2187 ../src/wired-dialog.c:103
+#: ../src/applet.c:2186 ../src/wired-dialog.c:103
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -798,14 +769,14 @@ msgid ""
 "span>\n"
 "\n"
 "Select or connect the mobile broadband device you wish to use for the new "
-"connection.  If the device is not availabe, you may select a generic "
+"connection.  If the device is not available, you may select a generic "
 "connection type."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">Valitse mobiililaajakaistan yhteys</"
+"<span weight=\"bold\" size=\"larger\">Valitse mobiililaajakaistayhteys</"
 "span>\n"
 "\n"
 "Valitse tai yhdistä mobiiliverkon laajakaistalaite, jota haluat käyttää "
-"uudessa yhteydessä. Jos laite ei ole käytettävissä, voit valita yleisen "
+"uudessa yhteydessä. Jos laite ei ole valittavissa, voit valita yleisen "
 "yhteystyypin."
 
 #: ../src/connection-editor/ce-page.c:52
@@ -1189,12 +1160,6 @@ msgstr "IPv4-asetukset"
 msgid "Netmask"
 msgstr "Verkkopeite"
 
-#: ../src/connection-editor/page-mobile.c:264
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1481
-msgid "Mobile Broadband"
-msgstr "Mobiililaajakaista"
-
 #: ../src/connection-editor/page-ppp.c:128
 #: ../src/wireless-security/eap-method-ttls.c:308
 msgid "PAP"
@@ -1568,11 +1533,11 @@ msgstr ""
 "pääsemiseksi."
 
 #: ../src/wireless-dialog.c:937
-msgid "Wireless Network Secrets Required"
+msgid "Wireless Network Authentication Required"
 msgstr "Langattoman verkon salaustiedot vaaditaan"
 
 #: ../src/wireless-dialog.c:939
-msgid "Secrets required by wireless network"
+msgid "Authentication required by wireless network"
 msgstr "Langaton verkko vaatii salaustietoja"
 
 #: ../src/wireless-dialog.c:944
@@ -1588,16 +1553,19 @@ msgid "Enter a name for the wireless network you wish to create."
 msgstr "Syötä sen langattoman verkon nimi, jonka haluat luoda."
 
 #: ../src/wireless-dialog.c:949
-msgid "Connect to Other Wireless Network"
-msgstr "Ota yhteyttä muuhun langattomaan verkkoon"
+msgid "Connect to Hidden Wireless Network"
+msgstr "Ota yhteys piilotettuun langattomaan verkkoon"
 
 #: ../src/wireless-dialog.c:951
-msgid "Existing wireless network"
-msgstr "Olemassaoleva langaton verkko"
+msgid "Hidden wireless network"
+msgstr "Piilotettu langaton verkko"
 
 #: ../src/wireless-dialog.c:952
-msgid "Enter the name of the wireless network to which you wish to connect."
-msgstr "Syötä sen langattoman verkon nimi, johon haluat ottaa yhteyttä."
+msgid ""
+"Enter the name and security details of the hidden wireless network you wish "
+"to connect to."
+msgstr ""
+"Syötä yhdistettävän piilotetun langattoman verkon nimi ja salaustiedot."
 
 #: ../src/wireless-security/eap-method.c:293
 msgid "DER or PEM certificates (*.der, *.pem)"
@@ -1662,6 +1630,60 @@ msgstr "Tunneloitu TLS"
 #: ../src/wireless-security/wireless-security.c:357
 msgid "Protected EAP (PEAP)"
 msgstr "Suojattu EAP (PEAP)"
+
+#~ msgid "Auto CDMA network connection"
+#~ msgstr "Automaattinen CDMA-verkkoyhteys"
+
+#~ msgid "CDMA Connections (%s)"
+#~ msgstr "CDMA-yhteydet (%s)"
+
+#~ msgid "CDMA Network (%s)"
+#~ msgstr "CDMA-verkko (%s)"
+
+#~ msgid "CDMA Connections"
+#~ msgstr "CDMA-yhteydet"
+
+#~ msgid "CDMA Network"
+#~ msgstr "CDMA-verkko"
+
+#~ msgid "Dialing CDMA device %s..."
+#~ msgstr "Soitetaan CDMA-laitteella %s..."
+
+#~ msgid "CDMA connection"
+#~ msgstr "CDMA-yhteys"
+
+#~ msgid "CDMA Network Password"
+#~ msgstr "CDMA-verkon salasana"
+
+#~ msgid "A password is required to connect to the CDMA network."
+#~ msgstr "Yhteys CDMA-verkkoon vaatii salasanan."
+
+#~ msgid "Auto GSM network connection"
+#~ msgstr "Automaattinen GSM-verkkoyhteys"
+
+#~ msgid "GSM Connections (%s)"
+#~ msgstr "GSM-yhteydet (%s)"
+
+#~ msgid "GSM Network (%s)"
+#~ msgstr "GSM-verkko (%s)"
+
+#~ msgid "GSM Connections"
+#~ msgstr "GSM-yhteydet"
+
+#~ msgid "GSM Network"
+#~ msgstr "GSM-verkko"
+
+#~ msgid "GSM connection"
+#~ msgstr "GSM-yhteys"
+
+#~ msgid "GSM Network Password"
+#~ msgstr "GSM-verkon salasana"
+
+#~ msgid "Existing wireless network"
+#~ msgstr "Olemassaoleva langaton verkko"
+
+#~ msgid "Enter the name of the wireless network to which you wish to connect."
+#~ msgstr "Syötä sen langattoman verkon nimi, johon haluat ottaa yhteyttä."
 
 #~ msgid ""
 #~ "Any\n"
@@ -2045,11 +2067,6 @@ msgstr "Suojattu EAP (PEAP)"
 #~ msgstr ""
 #~ "Oletuksena langattoman verkon nimi asetetaan samaksi kuin tietokoneesi "
 #~ "nimi \"%s\" ja salaus on poissa käytöstä"
-
-#~ msgid ""
-#~ "Enter the name and security settings of the wireless network you wish to "
-#~ "create."
-#~ msgstr "Syötä luotavan langattoman verkon nimi ja turva-asetukset."
 
 #~ msgid "Error connecting to wireless network"
 #~ msgstr "Virhe yhdistettäessä langattomaan verkkoon"
