@@ -241,7 +241,7 @@ default_filter (const GtkFileFilterInfo *filter_info, gpointer data)
 	ext = g_ascii_strdown (p, -1);
 	if (!ext)
 		return FALSE;
-	if (strcmp (ext, ".der") && strcmp (ext, ".pem")) {
+	if (strcmp (ext, ".der") && strcmp (ext, ".pem") && strcmp (ext, ".crt") && strcmp (ext, ".cer")) {
 		g_free (ext);
 		return FALSE;
 	}
@@ -290,7 +290,7 @@ eap_method_default_file_chooser_filter_new (void)
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_add_custom (filter, GTK_FILE_FILTER_FILENAME, default_filter, NULL, NULL);
-	gtk_file_filter_set_name (filter, _("DER or PEM certificates (*.der, *.pem)"));
+	gtk_file_filter_set_name (filter, _("DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"));
 	return filter;
 }
 
