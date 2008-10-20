@@ -71,7 +71,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	g_assert (s_wireless_sec);
 
 	s_wireless_sec->key_mgmt = g_strdup ("wpa-eap");
-	ws_wpa_fill_default_ciphers (connection);
 }
 
 static void

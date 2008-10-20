@@ -135,16 +135,26 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 		g_free (buf);
 	}
 
+	wireless_security_clear_ciphers (connection);
+
 	s_wireless_sec->psk = hashed;
-	if (is_adhoc)
+	if (is_adhoc) {
+		/* Ad-Hoc settings as specified by the supplicant */
 		s_wireless_sec->key_mgmt = g_strdup ("wpa-none");
-	else
+		s_wireless_sec->proto = g_slist_append (NULL, g_strdup ("wpa"));
+		s_wireless_sec->pairwise = g_slist_append (NULL, g_strdup ("none"));
+
+		/* Ad-hoc can only have _one_ group cipher... default to TKIP to be more
+		 * compatible for now.  Maybe we'll support selecting CCMP later.
+		 */
+		s_wireless_sec->group = g_slist_append (NULL, g_strdup ("tkip"));
+	} else {
 		s_wireless_sec->key_mgmt = g_strdup ("wpa-psk");
 
-	// FIXME: allow protocol selection and filter on device capabilities
-	// FIXME: allow pairwise cipher selection and filter on device capabilities
-	// FIXME: allow group cipher selection and filter on device capabilities
-	ws_wpa_fill_default_ciphers (connection);
+		/* Just leave ciphers and protocol empty, the supplicant will
+		 * figure that out magically based on the AP IEs and card capabilities.
+		 */
+	}
 }
 
 WirelessSecurityWPAPSK *

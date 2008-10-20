@@ -163,7 +163,7 @@ wireless_security_nag_user (WirelessSecurity *sec)
 }
 
 void
-ws_wpa_fill_default_ciphers (NMConnection *connection)
+wireless_security_clear_ciphers (NMConnection *connection)
 {
 	NMSettingWirelessSecurity *s_wireless_sec;
 
@@ -173,25 +173,20 @@ ws_wpa_fill_default_ciphers (NMConnection *connection)
 										  NM_TYPE_SETTING_WIRELESS_SECURITY));
 	g_assert (s_wireless_sec);
 
-	// FIXME: allow protocol selection and filter on device capabilities
+	/* Protocol */
 	g_slist_foreach (s_wireless_sec->proto, (GFunc) g_free, NULL);
 	g_slist_free (s_wireless_sec->proto);
-	s_wireless_sec->proto = g_slist_append (NULL, g_strdup ("wpa"));
-	s_wireless_sec->proto = g_slist_append (s_wireless_sec->proto, g_strdup ("rsn"));
+	s_wireless_sec->proto = NULL;
 
-	// FIXME: allow pairwise cipher selection and filter on device capabilities
+	/* Pairwise cipher */
 	g_slist_foreach (s_wireless_sec->pairwise, (GFunc) g_free, NULL);
 	g_slist_free (s_wireless_sec->pairwise);
-	s_wireless_sec->pairwise = g_slist_append (NULL, g_strdup ("tkip"));
-	s_wireless_sec->pairwise = g_slist_append (s_wireless_sec->pairwise, g_strdup ("ccmp"));
+	s_wireless_sec->pairwise = NULL;
 
-	// FIXME: allow group cipher selection and filter on device capabilities
+	/* Group cipher */
 	g_slist_foreach (s_wireless_sec->group, (GFunc) g_free, NULL);
 	g_slist_free (s_wireless_sec->group);
-	s_wireless_sec->group = g_slist_append (NULL, g_strdup ("wep40"));
-	s_wireless_sec->group = g_slist_append (s_wireless_sec->group, g_strdup ("wep104"));
-	s_wireless_sec->group = g_slist_append (s_wireless_sec->group, g_strdup ("tkip"));
-	s_wireless_sec->group = g_slist_append (s_wireless_sec->group, g_strdup ("ccmp"));
+	s_wireless_sec->group = NULL;
 }
 
 void

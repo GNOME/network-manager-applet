@@ -1,5 +1,21 @@
 2008-10-20  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-security/wireless-security.c
+	  src/wireless-security/wireless-security.h
+		- (ws_wpa_fill_default_ciphers): remove; the supplicant is smart enough
+			to figure out the intersection of the card's capabilities and the
+			AP's capabilities
+		- (wireless_security_clear_ciphers): new function
+
+	* src/wireless-security/ws-wpa-psk.c
+		- (fill_connection): unbreak WPA adhoc connections by actually writing
+			a valid config (rh #461197)
+
+	* src/wireless-security/ws-wpa-eap.c
+		- (fill_connection): don't call ws_wpa_fill_default_ciphers(), un-needed
+
+2008-10-20  Dan Williams  <dcbw@redhat.com>
+
 	* src/wireless-security/eap-method-tls.c
 	  src/wireless-security/eap-method-ttls.c
 	  src/wireless-security/eap-method-peap.c
