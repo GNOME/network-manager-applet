@@ -1,5 +1,14 @@
 2008-10-20  Dan Williams  <dcbw@redhat.com>
 
+	* src/wireless-security/eap-method-tls.c
+	  src/wireless-security/eap-method-ttls.c
+	  src/wireless-security/eap-method-peap.c
+	  src/wireless-security/eap-method-leap.c
+		- (fill_connection): don't fill default ciphers here, they will get
+			filled in the WirelessSecurity subclasses when appropriate
+
+2008-10-20  Dan Williams  <dcbw@redhat.com>
+
 	* gconf-helpers/nma-gconf-connection.c
 		- (service_get_secrets): fix for exported connection class clarifications
 

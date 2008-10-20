@@ -95,11 +95,6 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	s_8021x->eap = g_slist_append (s_8021x->eap, g_strdup ("leap"));
 
-	// FIXME: allow protocol selection and filter on device capabilities
-	// FIXME: allow pairwise cipher selection and filter on device capabilities
-	// FIXME: allow group cipher selection and filter on device capabilities
-	ws_wpa_fill_default_ciphers (connection);
-
 	widget = glade_xml_get_widget (parent->xml, "eap_leap_username_entry");
 	g_assert (widget);
 	s_8021x->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
