@@ -190,11 +190,11 @@ get_settings (NMExportedConnection *exported)
 }
 
 static void
-get_secrets (NMExportedConnection *exported,
-		   const gchar *setting_name,
-		   const gchar **hints,
-		   gboolean request_new,
-		   DBusGMethodInvocation *context)
+service_get_secrets (NMExportedConnection *exported,
+                     const gchar *setting_name,
+                     const gchar **hints,
+                     gboolean request_new,
+                     DBusGMethodInvocation *context)
 {
 	NMConnection *connection;
 	GError *error = NULL;
@@ -469,7 +469,7 @@ nma_gconf_connection_class_init (NMAGConfConnectionClass *gconf_connection_class
 	object_class->finalize     = finalize;
 
 	connection_class->get_settings = get_settings;
-	connection_class->get_secrets  = get_secrets;
+	connection_class->service_get_secrets = service_get_secrets;
 	connection_class->update       = update;
 	connection_class->delete       = delete;
 
