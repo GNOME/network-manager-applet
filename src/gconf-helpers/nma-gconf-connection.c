@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 
 #include <string.h>
 #include <nm-setting-connection.h>
@@ -190,6 +190,31 @@ get_settings (NMExportedConnection *exported)
 }
 
 static void
+secrets_return_error (DBusGMethodInvocation *context, GError *error)
+{
+	nm_warning ("Error getting secrets: %s", error->message);
+	dbus_g_method_return_error (context, error);
+	g_error_free (error);
+}
+
+typedef struct {
+	gboolean found;
+	const char **hints;
+} FindHintsInfo;
+
+static void
+find_hints_in_secrets (gpointer key, gpointer data, gpointer user_data)
+{
+	FindHintsInfo *info = (FindHintsInfo *) user_data;
+	const char **iter;
+
+	for (iter = info->hints; !info->found && *iter; iter++) {
+		if (!strcmp (*iter, (const char *) key) && data && G_IS_VALUE (data))
+			info->found = TRUE;
+	}
+}
+
+static void
 service_get_secrets (NMExportedConnection *exported,
                      const gchar *setting_name,
                      const gchar **hints,
@@ -210,9 +235,7 @@ service_get_secrets (NMExportedConnection *exported,
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d - Connection didn't have requested setting '%s'.",
 		             __FILE__, __LINE__, setting_name);
-		nm_warning ("%s", error->message);
-		dbus_g_method_return_error (context, error);
-		g_error_free (error);
+		secrets_return_error (context, error);
 		return;
 	}
 
@@ -223,9 +246,7 @@ service_get_secrets (NMExportedConnection *exported,
 		             NM_SETTING_CONNECTION_SETTING_NAME
 		             "' setting , or the connection name was invalid.",
 		             __FILE__, __LINE__);
-		nm_warning ("%s", error->message);
-		dbus_g_method_return_error (context, error);
-		g_error_free (error);
+		secrets_return_error (context, error);
 		return;
 	}
 
@@ -240,35 +261,45 @@ service_get_secrets (NMExportedConnection *exported,
 		goto get_secrets;
 	}
 
+	secrets = nm_gconf_get_keyring_items (connection, setting_name, FALSE, &error);
+	if (!secrets) {
+		if (error) {
+			secrets_return_error (context, error);
+			return;
+		}
+		nm_info ("No keyring secrets found for %s/%s; asking user.",
+		         s_con->id, setting_name);
+		goto get_secrets;
+	}
+
+	if (g_hash_table_size (secrets) == 0) {
+		g_hash_table_destroy (secrets);
+		nm_warning ("%s.%d - Secrets were found for setting '%s' but none"
+				  " were valid.", __FILE__, __LINE__, setting_name);
+		goto get_secrets;
+	}
+
+	/* If there were hints, and none of the hints were returned by the keyring,
+	 * get some new secrets.
+	 */
+	if (hints && g_strv_length ((char **) hints)) {
+		FindHintsInfo info = { .found = FALSE, .hints = hints };
+
+		g_hash_table_foreach (secrets, find_hints_in_secrets, &info);
+		if (info.found == FALSE) {
+			g_hash_table_destroy (secrets);
+			goto get_secrets;
+		}
+	}
+
 	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
 	 * will contain all the individual settings hashes.
 	 */
 	settings = g_hash_table_new_full (g_str_hash, g_str_equal,
-	                                  g_free, (GDestroyNotify) g_hash_table_destroy);
-
-	secrets = nm_gconf_get_keyring_items (connection, setting_name, FALSE, &error);
-	if (!secrets) {
-		if (error) {
-			nm_warning ("Error getting secrets: %s", error->message);
-			dbus_g_method_return_error (context, error);
-			g_error_free (error);
-		} else {
-			nm_info ("No keyring secrets found for %s/%s; asking user.",
-			         s_con->id, setting_name);
-			goto get_secrets;
-		}
-	} else {
-		if (g_hash_table_size (secrets) == 0) {
-			g_hash_table_destroy (secrets);
-			nm_warning ("%s.%d - Secrets were found for setting '%s' but none"
-					  " were valid.", __FILE__, __LINE__, setting_name);
-			goto get_secrets;
-		} else {
-			g_hash_table_insert (settings, g_strdup (setting_name), secrets);
-			dbus_g_method_return (context, settings);
-		}
-	}
-
+	                                  g_free,
+	                                  (GDestroyNotify) g_hash_table_destroy);
+	g_hash_table_insert (settings, g_strdup (setting_name), secrets);
+	dbus_g_method_return (context, settings);
 	g_hash_table_destroy (settings);
 	return;
 

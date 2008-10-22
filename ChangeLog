@@ -1,3 +1,11 @@
+2008-10-22  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/nma-gconf-connection.c
+		- (service_get_secrets): if the secrets requested by NM aren't found
+			from the keyring, ask the user for them; fixes an issue where the
+			applet wouldn't request a PIN for the mobile broadband card when
+			PPP secrets were set
+
 2008-10-20  Dan Williams  <dcbw@redhat.com>
 
 	* src/wireless-security/wireless-security.c
