@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManagerApplet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-16 19:24+0200\n"
-"PO-Revision-Date: 2008-10-16 19:25+0100\n"
+"POT-Creation-Date: 2008-10-22 16:42+0200\n"
+"PO-Revision-Date: 2008-10-22 16:42+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -272,7 +272,7 @@ msgstr "Fel vid visning av anslutningsinformation:"
 #: ../src/applet-dialogs.c:81
 #: ../src/connection-editor/page-wireless-security.c:277
 #: ../src/wireless-dialog.c:775
-#: ../src/wireless-security/wireless-security.c:334
+#: ../src/wireless-security/wireless-security.c:329
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -839,14 +839,6 @@ msgstr "Rutter..."
 msgid "Search Domains:"
 msgstr "Sökdomäner:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:13
-msgid "gtk-cancel"
-msgstr "Avbryt"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:14
-msgid "gtk-ok"
-msgstr "OK"
-
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
 msgstr "<b>Avancerat</b>"
@@ -1162,23 +1154,23 @@ msgid "Netmask"
 msgstr "Nätmask"
 
 #: ../src/connection-editor/page-ppp.c:128
-#: ../src/wireless-security/eap-method-ttls.c:308
+#: ../src/wireless-security/eap-method-ttls.c:303
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:129
-#: ../src/wireless-security/eap-method-ttls.c:353
+#: ../src/wireless-security/eap-method-ttls.c:348
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-peap.c:309
-#: ../src/wireless-security/eap-method-ttls.c:338
+#: ../src/wireless-security/eap-method-peap.c:304
+#: ../src/wireless-security/eap-method-ttls.c:333
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:323
+#: ../src/wireless-security/eap-method-ttls.c:318
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -1544,63 +1536,67 @@ msgid "Enter the name and security details of the hidden wireless network you wi
 msgstr "Ange namn och säkerhetsuppgifter för det dolda trådlösa nätverket som du vill ansluta till."
 
 #: ../src/wireless-security/eap-method.c:293
-msgid "DER or PEM certificates (*.der, *.pem)"
-msgstr "DER eller PEM-certifikat (*.der, *.pem)"
+msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
+msgstr "DER eller PEM-certifikat (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:234
-#: ../src/wireless-security/eap-method-tls.c:290
-#: ../src/wireless-security/eap-method-ttls.c:221
+#: ../src/wireless-security/eap-method-peap.c:229
+#: ../src/wireless-security/eap-method-tls.c:285
+#: ../src/wireless-security/eap-method-ttls.c:216
 msgid "No Certificate Authority certificate chosen"
 msgstr "Inget Certificate Authority-certifikat har valts"
+
+#: ../src/wireless-security/eap-method-peap.c:230
+#: ../src/wireless-security/eap-method-tls.c:286
+#: ../src/wireless-security/eap-method-ttls.c:217
+msgid "Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue wireless networks.  Would you like to choose a Certificate Authority certificate?"
+msgstr "Att inte använda ett Certificate Authority-certifikat (CA) kan resultera i anslutningar till osäkra och missledande trådlösa nätverk.  Vill du välja ett Certificate Authority-certifikat?"
 
 #: ../src/wireless-security/eap-method-peap.c:235
 #: ../src/wireless-security/eap-method-tls.c:291
 #: ../src/wireless-security/eap-method-ttls.c:222
-msgid "Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue wireless networks.  Would you like to choose a Certificate Authority certificate?"
-msgstr "Att inte använda ett Certificate Authority-certifikat (CA) kan resultera i anslutningar till osäkra och missledande trådlösa nätverk.  Vill du välja ett Certificate Authority-certifikat?"
-
-#: ../src/wireless-security/eap-method-peap.c:240
-#: ../src/wireless-security/eap-method-tls.c:296
-#: ../src/wireless-security/eap-method-ttls.c:227
 msgid "Ignore"
 msgstr "Ignorera"
 
-#: ../src/wireless-security/eap-method-peap.c:244
-#: ../src/wireless-security/eap-method-tls.c:300
-#: ../src/wireless-security/eap-method-ttls.c:231
+#: ../src/wireless-security/eap-method-peap.c:239
+#: ../src/wireless-security/eap-method-tls.c:295
+#: ../src/wireless-security/eap-method-ttls.c:226
 msgid "Choose CA Certificate"
 msgstr "Välj CA-certifikat"
 
-#: ../src/wireless-security/eap-method-peap.c:320
+#: ../src/wireless-security/eap-method-peap.c:315
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:399
-#: ../src/wireless-security/eap-method-tls.c:431
-#: ../src/wireless-security/eap-method-ttls.c:436
+#: ../src/wireless-security/eap-method-peap.c:394
+#: ../src/wireless-security/eap-method-tls.c:426
+#: ../src/wireless-security/eap-method-ttls.c:431
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Välj ett Certificate Authority-certifikat..."
 
-#: ../src/wireless-security/eap-method-tls.c:427
+#: ../src/wireless-security/eap-method-tls.c:422
 msgid "Choose your personal certificate..."
 msgstr "Välj ditt personliga certifikat..."
 
-#: ../src/wireless-security/eap-method-tls.c:436
+#: ../src/wireless-security/eap-method-tls.c:431
 msgid "Choose your private key..."
 msgstr "Välj din privata nyckel..."
 
-#: ../src/wireless-security/wireless-security.c:322
+#: ../src/wireless-security/wireless-security.c:317
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:346
+#: ../src/wireless-security/wireless-security.c:341
 msgid "Tunneled TLS"
 msgstr "Tunnlad TLS"
 
-#: ../src/wireless-security/wireless-security.c:357
+#: ../src/wireless-security/wireless-security.c:352
 msgid "Protected EAP (PEAP)"
 msgstr "Protected EAP (PEAP)"
 
+#~ msgid "gtk-cancel"
+#~ msgstr "Avbryt"
+#~ msgid "gtk-ok"
+#~ msgstr "OK"
 #~ msgid "Auto CDMA network connection"
 #~ msgstr "Automatisk anslutning till CDMA-nätverk"
 #~ msgid "CDMA Connections (%s)"
