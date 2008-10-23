@@ -26,6 +26,11 @@
 #include <glib-object.h>
 #include <glade/glade-xml.h>
 #include <nm-settings.h>
+#ifdef NO_POLKIT_GNOME
+#include "polkit-06-helpers.h"
+#else
+#include <polkit-gnome/polkit-gnome.h>
+#endif
 
 #define NM_TYPE_CONNECTION_EDITOR    (nm_connection_editor_get_type ())
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))
@@ -37,10 +42,14 @@ typedef struct {
 	/* private data */
 	NMConnection *connection;
 
+	PolKitGnomeToggleAction *system_action;
+	GtkWidget *system_button;
+
 	GSList *pages;
 	GladeXML *xml;
-	GtkWidget *dialog;
+	GtkWidget *window;
 	GtkWidget *ok_button;
+	GtkWidget *cancel_button;
 } NMConnectionEditor;
 
 typedef struct {

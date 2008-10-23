@@ -782,6 +782,7 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 	ctype = nm_connection_lookup_setting_type (connection_type);
 
 	connection = nm_connection_new ();
+	nm_connection_set_scope (connection, NM_CONNECTION_SCOPE_USER);
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 	s_con->uuid = nm_utils_uuid_generate ();
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
