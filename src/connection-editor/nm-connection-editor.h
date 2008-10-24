@@ -42,8 +42,11 @@ typedef struct {
 	/* private data */
 	NMConnection *connection;
 
-	PolKitGnomeToggleAction *system_action;
-	GtkWidget *system_button;
+	NMConnectionScope orig_scope;
+	PolKitAction *system_action;
+	PolKitGnomeAction *system_gnome_action;
+
+	GtkWidget *system_checkbutton;
 
 	GSList *pages;
 	GladeXML *xml;
