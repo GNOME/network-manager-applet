@@ -529,6 +529,7 @@ connection_valid_for_wired (NMConnection *connection,
 	NMSettingWired *s_wired;
 	const char *str_mac;
 	struct ether_addr *bin_mac;
+	const GByteArray *setting_mac;
 	gboolean is_pppoe = FALSE;
 
 	if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME))
@@ -543,7 +544,8 @@ connection_valid_for_wired (NMConnection *connection,
 
 	if (s_wired) {
 		/* Match MAC address */
-		if (!s_wired->mac_address)
+		setting_mac = nm_setting_wired_get_mac_address (s_wired);
+		if (!setting_mac)
 			return TRUE;
 
 		str_mac = nm_device_ethernet_get_hw_address (ethdev);
@@ -552,7 +554,7 @@ connection_valid_for_wired (NMConnection *connection,
 		bin_mac = ether_aton (str_mac);
 		g_return_val_if_fail (bin_mac != NULL, FALSE);
 
-		if (memcmp (bin_mac->ether_addr_octet, s_wired->mac_address->data, ETH_ALEN))
+		if (memcmp (bin_mac->ether_addr_octet, setting_mac->data, ETH_ALEN))
 			return FALSE;
 	}
 

@@ -70,7 +70,7 @@ gboolean ce_page_validate (CEPage *self, NMConnection *connection, GError **erro
 
 void ce_page_changed (CEPage *self);
 
-void ce_page_mac_to_entry (GByteArray *mac, GtkEntry *entry);
+void ce_page_mac_to_entry (const GByteArray *mac, GtkEntry *entry);
 
 GByteArray *ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid);
 

@@ -105,7 +105,7 @@ ce_page_validate (CEPage *self, NMConnection *connection, GError **error)
 }
 
 void
-ce_page_mac_to_entry (GByteArray *mac, GtkEntry *entry)
+ce_page_mac_to_entry (const GByteArray *mac, GtkEntry *entry)
 {
 	struct ether_addr addr;
 	char *str_addr;

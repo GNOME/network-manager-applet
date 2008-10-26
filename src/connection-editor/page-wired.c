@@ -87,25 +87,28 @@ populate_ui (CEPageWired *self)
 {
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 	NMSettingWired *setting = priv->setting;
+	const char *port;
+	const char *duplex;
 	int port_idx = PORT_DEFAULT;
 	int speed_idx;
 	int mtu_def;
 
 	/* Port */
-	if (setting->port) {
-		if (!strcmp (setting->port, "tp"))
+	port = nm_setting_wired_get_port (setting);
+	if (port) {
+		if (!strcmp (port, "tp"))
 			port_idx = PORT_TP;
-		else if (!strcmp (setting->port, "aui"))
+		else if (!strcmp (port, "aui"))
 			port_idx = PORT_AUI;
-		else if (!strcmp (setting->port, "bnc"))
+		else if (!strcmp (port, "bnc"))
 			port_idx = PORT_BNC;
-		else if (!strcmp (setting->port, "mii"))
+		else if (!strcmp (port, "mii"))
 			port_idx = PORT_MII;
 	}
 	gtk_combo_box_set_active (priv->port, port_idx);
 
 	/* Speed */
-	switch (setting->speed) {
+	switch (nm_setting_wired_get_speed (setting)) {
 	case 10:
 		speed_idx = SPEED_10;
 		break;
@@ -125,16 +128,18 @@ populate_ui (CEPageWired *self)
 	gtk_combo_box_set_active (priv->speed, speed_idx);
 
 	/* Duplex */
-	if (!strcmp (setting->duplex ? setting->duplex : "", "half"))
+	duplex = nm_setting_wired_get_duplex (setting);
+	if (duplex && !strcmp (duplex, "half"))
 		gtk_toggle_button_set_active (priv->duplex, FALSE);
 	else
 		gtk_toggle_button_set_active (priv->duplex, TRUE);
 
 	/* Autonegotiate */
-	gtk_toggle_button_set_active (priv->autonegotiate, setting->auto_negotiate);
+	gtk_toggle_button_set_active (priv->autonegotiate, 
+								  nm_setting_wired_get_auto_negotiate (setting));
 
 	/* MAC address */
-	ce_page_mac_to_entry (setting->mac_address, priv->mac);
+	ce_page_mac_to_entry (nm_setting_wired_get_mac_address (setting), priv->mac);
 	g_signal_connect (priv->mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */
@@ -143,7 +148,7 @@ populate_ui (CEPageWired *self)
 	                  G_CALLBACK (ce_spin_output_with_default),
 	                  GINT_TO_POINTER (mtu_def));
 
-	gtk_spin_button_set_value (priv->mtu, (gdouble) setting->mtu);
+	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wired_get_mtu (setting));
 }
 
 CEPageWired *
