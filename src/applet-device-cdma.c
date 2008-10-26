@@ -73,10 +73,13 @@ cdma_new_auto_connection (NMDevice *device,
 
 	/* Serial setting */
 	s_serial = (NMSettingSerial *) nm_setting_serial_new ();
-	s_serial->baud = 115200;
-	s_serial->bits = 8;
-	s_serial->parity = 'n';
-	s_serial->stopbits = 1;
+	g_object_set (s_serial,
+	              NM_SETTING_SERIAL_BAUD, 115200,
+	              NM_SETTING_SERIAL_BITS, 8,
+	              NM_SETTING_SERIAL_PARITY, 'n',
+	              NM_SETTING_SERIAL_STOPBITS, 1,
+	              NULL);
+
 	nm_connection_add_setting (connection, NM_SETTING (s_serial));
 
 	s_ppp = (NMSettingPPP *) nm_setting_ppp_new ();
