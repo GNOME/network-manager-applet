@@ -68,7 +68,8 @@ cdma_new_auto_connection (NMDevice *device,
 	connection = nm_connection_new ();
 
 	s_cdma = NM_SETTING_CDMA (nm_setting_cdma_new ());
-	s_cdma->number = g_strdup ("#777"); /* De-facto standard for CDMA */
+	/* De-facto standard for CDMA */
+	g_object_set (s_cdma, NM_SETTING_CDMA_NUMBER, "#777", NULL);
 	nm_connection_add_setting (connection, NM_SETTING (s_cdma));
 
 	/* Serial setting */
@@ -369,8 +370,9 @@ get_cdma_secrets_cb (GtkDialog *dialog,
 	setting = NM_SETTING_CDMA (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_CDMA));
 
 	if (!strcmp (info->secret_name, NM_SETTING_CDMA_PASSWORD)) {
-		g_free (setting->password);
-		setting->password = g_strdup (gtk_entry_get_text (info->secret_entry));
+		g_object_set (setting, 
+			      NM_SETTING_CDMA_PASSWORD, gtk_entry_get_text (info->secret_entry),
+			      NULL);
 	}
 
 	secrets = nm_setting_to_hash (NM_SETTING (setting));

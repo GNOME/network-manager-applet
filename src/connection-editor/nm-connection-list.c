@@ -836,7 +836,9 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 
 			type_setting = nm_setting_cdma_new ();
 			s_cdma = NM_SETTING_CDMA (type_setting);
-			s_cdma->number = g_strdup ("#777"); /* De-facto standard for CDMA */
+
+			/* De-facto standard for CDMA */
+			g_object_set (s_cdma, NM_SETTING_CDMA_NUMBER, "#777", NULL);
 
 			nm_connection_add_setting (connection, nm_setting_ppp_new ());
 		} else {

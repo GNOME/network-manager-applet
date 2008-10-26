@@ -189,17 +189,21 @@ populate_cdma_ui (CEPageMobile *self, NMConnection *connection)
 	NMSettingCdma *setting = NM_SETTING_CDMA (priv->setting);
 	GHashTable *secrets;
 	GValue *value;
+	const char *s;
 
-	if (setting->number)
-		gtk_entry_set_text (priv->number, setting->number);
+	s = nm_setting_cdma_get_number (setting);
+	if (s)
+		gtk_entry_set_text (priv->number, s);
 
-	if (setting->username)
-		gtk_entry_set_text (priv->username, setting->username);
+	s = nm_setting_cdma_get_username (setting);
+	if (s)
+		gtk_entry_set_text (priv->username, s);
 
 	secrets = get_secrets (connection, nm_setting_get_name (priv->setting));
 
-	if (setting->password)
-		gtk_entry_set_text (priv->password, setting->password);
+	s = nm_setting_cdma_get_password (setting);
+	if (s)
+		gtk_entry_set_text (priv->password, s);
 	else if (secrets) {
 		value = g_hash_table_lookup (secrets, NM_SETTING_CDMA_PASSWORD);
 		if (value)
