@@ -69,7 +69,8 @@ gsm_new_auto_connection (NMDevice *device,
 	connection = nm_connection_new ();
 
 	s_gsm = NM_SETTING_GSM (nm_setting_gsm_new ());
-	s_gsm->number = g_strdup ("*99#"); /* This should be a sensible default as it's seems to be quite standard */
+	/* This should be a sensible default as it's seems to be quite standard */
+	g_object_set (s_gsm, NM_SETTING_GSM_NUMBER, "*99#", NULL);
 	nm_connection_add_setting (connection, NM_SETTING (s_gsm));
 
 	/* Serial setting */
@@ -391,16 +392,10 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 
 	setting = NM_SETTING_GSM (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_GSM));
 
-	if (!strcmp (info->secret_name, NM_SETTING_GSM_PIN)) {
-		g_free (setting->pin);
-		setting->pin = g_strdup (gtk_entry_get_text (info->secret_entry));
-	} else if (!strcmp (info->secret_name, NM_SETTING_GSM_PUK)) {
-		g_free (setting->puk);
-		setting->puk = g_strdup (gtk_entry_get_text (info->secret_entry));
-	} else if (!strcmp (info->secret_name, NM_SETTING_GSM_PASSWORD)) {
-		g_free (setting->password);
-		setting->password = g_strdup (gtk_entry_get_text (info->secret_entry));
-	}
+	if (!strcmp (info->secret_name, NM_SETTING_GSM_PIN) ||
+	    !strcmp (info->secret_name, NM_SETTING_GSM_PUK) ||
+	    !strcmp (info->secret_name, NM_SETTING_GSM_PASSWORD))
+		g_object_set (setting, info->secret_name, gtk_entry_get_text (info->secret_entry), NULL);
 
 	secrets = nm_setting_to_hash (NM_SETTING (setting));
 	if (!secrets) {

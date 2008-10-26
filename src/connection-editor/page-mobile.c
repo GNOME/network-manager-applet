@@ -108,20 +108,25 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 	GHashTable *secrets;
 	GValue *value;
 	GtkWidget *widget;
+	const char *s;
 
-	if (setting->number)
-		gtk_entry_set_text (priv->number, setting->number);
+	s = nm_setting_gsm_get_number (setting);
+	if (s)
+		gtk_entry_set_text (priv->number, s);
 
-	if (setting->username)
-		gtk_entry_set_text (priv->username, setting->username);
+	s = nm_setting_gsm_get_username (setting);
+	if (s)
+		gtk_entry_set_text (priv->username, s);
 
-	if (setting->apn)
-		gtk_entry_set_text (priv->apn, setting->apn);
+	s = nm_setting_gsm_get_apn (setting);
+	if (s)
+		gtk_entry_set_text (priv->apn, s);
 
-	if (setting->network_id)
-		gtk_entry_set_text (priv->network_id, setting->network_id);
+	s = nm_setting_gsm_get_network_id (setting);
+	if (s)
+		gtk_entry_set_text (priv->network_id, s);
 
-	switch (setting->network_type) {
+	switch (nm_setting_gsm_get_network_type (setting)) {
 	case NM_GSM_NETWORK_UMTS_HSPA:
 		type_idx = NET_TYPE_3G;
 		break;
@@ -154,24 +159,27 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 
 	secrets = get_secrets (connection, nm_setting_get_name (priv->setting));
 
-	if (setting->password)
-		gtk_entry_set_text (priv->password, setting->password);
+	s = nm_setting_gsm_get_password (setting);
+	if (s)
+		gtk_entry_set_text (priv->password, s);
 	else if (secrets) {
 		value = g_hash_table_lookup (secrets, NM_SETTING_GSM_PASSWORD);
 		if (value)
 			gtk_entry_set_text (priv->password, g_value_get_string (value));
 	}
 
-	if (setting->pin)
-		gtk_entry_set_text (priv->pin, setting->pin);
+	s = nm_setting_gsm_get_pin (setting);
+	if (s)
+		gtk_entry_set_text (priv->pin, s);
 	else if (secrets) {
 		value = g_hash_table_lookup (secrets, NM_SETTING_GSM_PIN);
 		if (value)
 			gtk_entry_set_text (priv->pin, g_value_get_string (value));
 	}
 
-	if (setting->puk)
-		gtk_entry_set_text (priv->pin, setting->puk);
+	s = nm_setting_gsm_get_puk (setting);
+	if (s)
+		gtk_entry_set_text (priv->pin, s);
 	else if (secrets) {
 		value = g_hash_table_lookup (secrets, NM_SETTING_GSM_PUK);
 		if (value)

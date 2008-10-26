@@ -822,7 +822,8 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 
 			type_setting = nm_setting_gsm_new ();
 			s_gsm = NM_SETTING_GSM (type_setting);
-			s_gsm->number = g_strdup ("*99#"); /* De-facto standard for GSM */
+			 /* De-facto standard for GSM */
+			g_object_set (s_gsm, NM_SETTING_GSM_NUMBER, "*99#", NULL);
 
 			nm_connection_add_setting (connection, nm_setting_ppp_new ());
 		} else if (mb_type == NM_TYPE_SETTING_CDMA) {
