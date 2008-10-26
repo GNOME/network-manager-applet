@@ -65,14 +65,16 @@ populate_ui (CEPageDsl *self, NMConnection *connection)
 {
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
 	NMSettingPPPOE *setting = priv->setting;
-	char *password = setting->password;
+	const char *str;
 	GHashTable *secrets = NULL;
 
-	if (setting->username)
-		gtk_entry_set_text (priv->username, setting->username);
+	str = nm_setting_pppoe_get_username (setting);
+	if (str)
+		gtk_entry_set_text (priv->username, str);
 
 	/* Grab password from keyring if possible */
-	if (!password) {
+	str = nm_setting_pppoe_get_password (setting);
+	if (!str) {
 		GError *error = NULL;
 		GValue *value;
 
@@ -83,19 +85,20 @@ populate_ui (CEPageDsl *self, NMConnection *connection)
 		if (secrets) {
 			value = g_hash_table_lookup (secrets, NM_SETTING_PPPOE_PASSWORD);
 			if (value)
-				password = (char *) g_value_get_string (value);
+				str = g_value_get_string (value);
 		} else if (error)
 			g_error_free (error);
 	}
 
-	if (password)
-		gtk_entry_set_text (priv->password, password);
+	if (str)
+		gtk_entry_set_text (priv->password, str);
 
 	if (secrets)
 		g_hash_table_destroy (secrets);
 
-	if (setting->service)
-		gtk_entry_set_text (priv->service, setting->service);
+	str = nm_setting_pppoe_get_service (setting);
+	if (str)
+		gtk_entry_set_text (priv->service, str);
 }
 
 static void

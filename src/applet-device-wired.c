@@ -336,22 +336,22 @@ pppoe_update_setting (NMSettingPPPOE *pppoe, NMPppoeInfo *info)
 {
 	const char *s;
 
-	g_free (pppoe->username);
-	pppoe->username = g_strdup (gtk_entry_get_text (info->username_entry));
-
-	g_free (pppoe->service);
 	s = gtk_entry_get_text (info->service_entry);
-	if (s && strlen (s) > 0)
-		pppoe->service = g_strdup (s);
+	if (s && strlen (s) < 1)
+		s = NULL;
 
-	g_free (pppoe->password);
-	pppoe->password = g_strdup (gtk_entry_get_text (info->password_entry));
+	g_object_set (pppoe,
+				  NM_SETTING_PPPOE_USERNAME, gtk_entry_get_text (info->username_entry),
+				  NM_SETTING_PPPOE_PASSWORD, gtk_entry_get_text (info->password_entry),
+				  NM_SETTING_PPPOE_SERVICE, s,
+				  NULL);
 }
 
 static void
 pppoe_update_ui (NMConnection *connection, NMPppoeInfo *info)
 {
 	NMSettingPPPOE *s_pppoe;
+	const char *s;
 
 	g_return_if_fail (NM_IS_CONNECTION (connection));
 	g_return_if_fail (info != NULL);
@@ -359,14 +359,17 @@ pppoe_update_ui (NMConnection *connection, NMPppoeInfo *info)
 	s_pppoe = (NMSettingPPPOE *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE);
 	g_return_if_fail (s_pppoe != NULL);
 
-	if (s_pppoe->username)
-		gtk_entry_set_text (info->username_entry, s_pppoe->username);
+	s = nm_setting_pppoe_get_username (s_pppoe);
+	if (s)
+		gtk_entry_set_text (info->username_entry, s);
 
-	if (s_pppoe->service)
-		gtk_entry_set_text (info->service_entry, s_pppoe->service);
+	s = nm_setting_pppoe_get_service (s_pppoe);
+	if (s)
+		gtk_entry_set_text (info->service_entry, s);
 
-	if (s_pppoe->password)
-		gtk_entry_set_text (info->password_entry, s_pppoe->password);
+	s = nm_setting_pppoe_get_password (s_pppoe);
+	if (s)
+		gtk_entry_set_text (info->password_entry, s);
 	else {
 		GHashTable *secrets;
 		GError *error = NULL;
