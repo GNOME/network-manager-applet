@@ -137,17 +137,20 @@ get_model_for_connection (NMConnectionList *list, NMExportedConnection *exported
 	NMSettingConnection *s_con;
 	GtkTreeView *treeview;
 	GtkTreeModel *model;
+	const char *connection_type;
 
 	connection = nm_exported_connection_get_connection (exported);
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_con || !s_con->type) {
+	connection_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
+
+	if (!connection_type) {
 		g_warning ("Ignoring incomplete connection");
 		return NULL;
 	}
 
-	treeview = (GtkTreeView *) g_hash_table_lookup (list->treeviews, s_con->type);
+	treeview = (GtkTreeView *) g_hash_table_lookup (list->treeviews, connection_type);
 	if (!treeview) {
-		g_warning ("No registered treeview for connection type '%s'", s_con->type);
+		g_warning ("No registered treeview for connection type '%s'", connection_type);
 		return NULL;
 	}
 
@@ -268,11 +271,11 @@ update_connection_row (GtkListStore *store,
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
-	last_used = format_last_used (s_con->timestamp);
+	last_used = format_last_used (nm_setting_connection_get_timestamp (s_con));
 	gtk_list_store_set (store, iter,
-					COL_ID, s_con->id,
+					COL_ID, nm_setting_connection_get_id (s_con),
 					COL_LAST_USED, last_used,
-					COL_TIMESTAMP, s_con->timestamp,
+					COL_TIMESTAMP, nm_setting_connection_get_timestamp (s_con),
 					COL_CONNECTION, exported,
 					-1);
 	g_free (last_used);
@@ -409,12 +412,11 @@ remove_connection (NMExportedConnection *exported,
 		connection = nm_exported_connection_get_connection (exported);
 		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
 		g_assert (s_con);
-		g_assert (s_con->type);
 
 		/* FIXME: clean up any left-over connection secrets here */
 
 		/* Clean up VPN secrets and any plugin-specific data */
-		if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
+		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
 			s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
 			if (s_vpn) {
 				plugin = vpn_get_plugin_by_service (s_vpn->service_type);
@@ -710,12 +712,14 @@ add_one_name (gpointer data, gpointer user_data)
 	NMExportedConnection *exported = NM_EXPORTED_CONNECTION (data);
 	NMConnection *connection;
 	NMSettingConnection *s_con;
+	const char *id;
 	GSList **list = (GSList **) user_data;
 
 	connection = nm_exported_connection_get_connection (exported);
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con->id);
-	*list = g_slist_append (*list, s_con->id);
+	id = nm_setting_connection_get_id (s_con);
+	g_assert (id);
+	*list = g_slist_append (*list, (gpointer) id);
 }
 
 static char *
@@ -780,6 +784,7 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 	NMConnection *connection = NULL;
 	NMSettingConnection *s_con;
 	NMSetting *type_setting = NULL;
+	char *id, *uuid;
 	GType mb_type;
 
 	ctype = nm_connection_lookup_setting_type (connection_type);
@@ -787,25 +792,35 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 	connection = nm_connection_new ();
 	nm_connection_set_scope (connection, NM_CONNECTION_SCOPE_USER);
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	s_con->uuid = nm_utils_uuid_generate ();
+	uuid = nm_utils_uuid_generate ();
+	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, uuid, NULL);
+	g_free (uuid);
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
 	if (ctype == NM_TYPE_SETTING_WIRED) {
-		s_con->id = get_next_available_name (list, _("Wired connection %d"));
-		s_con->type = g_strdup (NM_SETTING_WIRED_SETTING_NAME);
-		s_con->autoconnect = TRUE;
+		id = get_next_available_name (list, _("Wired connection %d"));
+		g_object_set (s_con,
+		              NM_SETTING_CONNECTION_ID, id,
+		              NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRED_SETTING_NAME,
+		              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
+		              NULL);
+		g_free (id);
 
 		type_setting = nm_setting_wired_new ();
 	} else if (ctype == NM_TYPE_SETTING_WIRELESS) {
 		NMSettingWireless *s_wireless;
 
-		s_con->id = get_next_available_name (list, _("Wireless connection %d"));
-		s_con->type = g_strdup (NM_SETTING_WIRELESS_SETTING_NAME);
-		s_con->autoconnect = TRUE;
+		id = get_next_available_name (list, _("Wireless connection %d"));
+		g_object_set (s_con,
+		              NM_SETTING_CONNECTION_ID, id,
+		              NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRELESS_SETTING_NAME,
+		              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
+		              NULL);
+		g_free (id);
 
 		type_setting = nm_setting_wireless_new ();
 		s_wireless = NM_SETTING_WIRELESS (type_setting);
-		s_wireless->mode = g_strdup ("infrastructure");
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
 	} else if ((ctype == NM_TYPE_SETTING_GSM) || (ctype == NM_TYPE_SETTING_CDMA)) {
 		/* Since GSM is a placeholder for both GSM and CDMA; ask the user which
 		 * one they really want.
@@ -814,24 +829,32 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 		if (mb_type == NM_TYPE_SETTING_GSM) {
 			NMSettingGsm *s_gsm;
 
-			s_con->id = get_next_available_name (list, _("GSM connection %d"));
-			s_con->type = g_strdup (NM_SETTING_GSM_SETTING_NAME);
-			s_con->autoconnect = FALSE;
+			id = get_next_available_name (list, _("GSM connection %d"));
+			g_object_set (s_con,
+					    NM_SETTING_CONNECTION_ID, id,
+					    NM_SETTING_CONNECTION_TYPE, NM_SETTING_GSM_SETTING_NAME,
+					    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+					    NULL);
+			g_free (id);
 
 			add_default_serial_setting (connection);
 
 			type_setting = nm_setting_gsm_new ();
 			s_gsm = NM_SETTING_GSM (type_setting);
-			 /* De-facto standard for GSM */
+			/* De-facto standard for GSM */
 			g_object_set (s_gsm, NM_SETTING_GSM_NUMBER, "*99#", NULL);
 
 			nm_connection_add_setting (connection, nm_setting_ppp_new ());
 		} else if (mb_type == NM_TYPE_SETTING_CDMA) {
 			NMSettingCdma *s_cdma;
 
-			s_con->id = get_next_available_name (list, _("CDMA connection %d"));
-			s_con->type = g_strdup (NM_SETTING_CDMA_SETTING_NAME);
-			s_con->autoconnect = FALSE;
+			id = get_next_available_name (list, _("CDMA connection %d"));
+			g_object_set (s_con,
+					    NM_SETTING_CONNECTION_ID, id,
+					    NM_SETTING_CONNECTION_TYPE, NM_SETTING_CDMA_SETTING_NAME,
+					    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+					    NULL);
+			g_free (id);
 
 			add_default_serial_setting (connection);
 
@@ -852,16 +875,26 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 		if (service) {
 			NMSettingVPN *s_vpn;
 
-			s_con->id = get_next_available_name (list, _("VPN connection %d"));
-			s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
+			id = get_next_available_name (list, _("VPN connection %d"));
+			g_object_set (s_con,
+					    NM_SETTING_CONNECTION_ID, id,
+					    NM_SETTING_CONNECTION_TYPE, NM_SETTING_VPN_SETTING_NAME,
+					    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+					    NULL);
+			g_free (id);
 
 			type_setting = nm_setting_vpn_new ();
 			s_vpn = NM_SETTING_VPN (type_setting);
 			s_vpn->service_type = service;
 		}		
 	} else if (ctype == NM_TYPE_SETTING_PPPOE) {
-		s_con->id = get_next_available_name (list, _("DSL connection %d"));
-		s_con->type = g_strdup (NM_SETTING_PPPOE_SETTING_NAME);
+		id = get_next_available_name (list, _("DSL connection %d"));
+		g_object_set (s_con,
+				    NM_SETTING_CONNECTION_ID, id,
+				    NM_SETTING_CONNECTION_TYPE, NM_SETTING_PPPOE_SETTING_NAME,
+				    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+				    NULL);
+		g_free (id);
 
 		type_setting = nm_setting_pppoe_new ();
 
@@ -1051,13 +1084,16 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 	NMConnection *connection;
 	NMSettingConnection *s_con;
 	GtkWidget *dialog;
+	const char *id;
 	guint result;
 
 	exported = get_active_connection (info->treeview);
 	g_return_if_fail (exported != NULL);
 	connection = nm_exported_connection_get_connection (exported);
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_con || !s_con->id)
+	id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
+
+	if (!id)
 		return;
 
 	dialog = gtk_message_dialog_new (GTK_WINDOW (info->list->dialog),
@@ -1065,7 +1101,7 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 	                                 GTK_MESSAGE_QUESTION,
 	                                 GTK_BUTTONS_NONE,
 	                                 _("Are you sure you wish to delete the connection %s?"),
-	                                 s_con->id);
+	                                 id);
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 	                        GTK_STOCK_DELETE, GTK_RESPONSE_YES,
@@ -1136,6 +1172,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 	NMConnectionEditor *editor;
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
+	char *s;
 
 	/* Basic sanity checks of the connection */
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
@@ -1143,14 +1180,24 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 		s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 		nm_connection_add_setting (connection, NM_SETTING (s_con));
 	}
-	if (!s_con->id)
-		s_con->id = get_next_available_name (info->list, _("VPN connection %d"));
-	if (!s_con->type || strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
-		g_free (s_con->type);
-		s_con->type = g_strdup (NM_SETTING_VPN_SETTING_NAME);
+
+	s = (char *) nm_setting_connection_get_id (s_con);
+	if (!s) {
+		s = get_next_available_name (info->list, _("VPN connection %d"));
+		g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
+		g_free (s);
 	}
-	if (!s_con->uuid)
-		s_con->uuid = nm_utils_uuid_generate ();
+
+	s = (char *) nm_setting_connection_get_connection_type (s_con);
+	if (!s || strcmp (s, NM_SETTING_VPN_SETTING_NAME))
+		g_object_set (s_con, NM_SETTING_CONNECTION_TYPE, NM_SETTING_VPN_SETTING_NAME, NULL);
+
+	s = (char *) nm_setting_connection_get_uuid (s_con);
+	if (!s) {
+		s = nm_utils_uuid_generate ();
+		g_object_set (s_con, NM_SETTING_CONNECTION_UUID, s, NULL);
+		g_free (s);
+	}
 
 	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	if (!s_vpn || !s_vpn->service_type || !strlen (s_vpn->service_type)) {
@@ -1535,13 +1582,13 @@ connection_added (NMSettings *settings,
 	connection = nm_exported_connection_get_connection (exported);
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 
-	last_used = format_last_used (s_con->timestamp);
+	last_used = format_last_used (nm_setting_connection_get_timestamp (s_con));
 
 	gtk_list_store_append (store, &iter);
 	gtk_list_store_set (store, &iter,
-	                    COL_ID, s_con->id,
+	                    COL_ID, nm_setting_connection_get_id (s_con),
 	                    COL_LAST_USED, last_used,
-	                    COL_TIMESTAMP, s_con->timestamp,
+	                    COL_TIMESTAMP, nm_setting_connection_get_timestamp (s_con),
 	                    COL_CONNECTION, exported,
 	                    -1);
 

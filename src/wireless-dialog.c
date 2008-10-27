@@ -368,7 +368,8 @@ alphabetize_connections (NMConnection *a, NMConnection *b)
 	asc = NM_SETTING_CONNECTION (nm_connection_get_setting (a, NM_TYPE_SETTING_CONNECTION));
 	bsc = NM_SETTING_CONNECTION (nm_connection_get_setting (b, NM_TYPE_SETTING_CONNECTION));
 
-	return strcmp (asc->id, bsc->id);
+	return strcmp (nm_setting_connection_get_id (asc),
+		       nm_setting_connection_get_id (bsc));
 }
 
 static gboolean
@@ -381,6 +382,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 	GtkWidget *widget;
 	NMSettingConnection *s_con;
 	GtkCellRenderer *renderer;
+	const char *id;
 
 	g_return_val_if_fail (priv->connection == NULL, FALSE);
 
@@ -394,11 +396,13 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 	if (connection) {
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 		g_assert (s_con);
-		g_assert (s_con->id);
+
+		id = nm_setting_connection_get_id (s_con);
+		g_assert (id);
 
 		gtk_list_store_append (store, &tree_iter);
 		gtk_list_store_set (store, &tree_iter,
-		                    C_NAME_COLUMN, g_strdup (s_con->id),
+		                    C_NAME_COLUMN, id,
 		                    C_CON_COLUMN, connection, -1);
 	} else {
 		GSList *connections, *iter, *to_add = NULL;
@@ -415,12 +419,14 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 		for (iter = connections; iter; iter = g_slist_next (iter)) {
 			NMConnection *candidate = NM_CONNECTION (iter->data);
 			NMSettingWireless *s_wireless;
+			const char *connection_type;
 
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
-			if (!s_con || !s_con->type)
+			connection_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
+			if (connection_type)
 				continue;
 
-			if (strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME))
+			if (strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME))
 				continue;
 
 			s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (candidate, NM_TYPE_SETTING_WIRELESS));
@@ -466,7 +472,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
 			gtk_list_store_append (store, &tree_iter);
 			gtk_list_store_set (store, &tree_iter,
-			                    C_NAME_COLUMN, g_strdup (s_con->id),
+			                    C_NAME_COLUMN, nm_setting_connection_get_id (s_con),
 			                    C_CON_COLUMN, candidate, -1);
 			num_added++;
 		}
@@ -980,12 +986,17 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 
 	if (!priv->connection) {
 		NMSettingConnection *s_con;
+		char *uuid;
 
 		connection = nm_connection_new ();
 
 		s_con = (NMSettingConnection *) nm_setting_connection_new ();
-		s_con->type = g_strdup (NM_SETTING_WIRELESS_SETTING_NAME);
-		s_con->uuid = nm_utils_uuid_generate ();
+		uuid = nm_utils_uuid_generate ();
+		g_object_set (s_con,
+			      NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRELESS_SETTING_NAME,
+			      NM_SETTING_CONNECTION_UUID, uuid,
+			      NULL);
+		g_free (uuid);
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 		s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();

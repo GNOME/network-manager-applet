@@ -299,9 +299,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 		g_assert (s_con);
-		g_assert (s_con->type);
-		g_assert (s_con->uuid);
-		if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
+
+		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_WIRED_SETTING_NAME))
 			wired = TRUE;
 
 		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);

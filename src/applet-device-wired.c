@@ -72,6 +72,7 @@ wired_new_auto_connection (NMDevice *device,
 	NMConnection *connection;
 	NMSettingWired *s_wired = NULL;
 	NMSettingConnection *s_con;
+	char *uuid;
 
 	connection = nm_connection_new ();
 
@@ -79,10 +80,15 @@ wired_new_auto_connection (NMDevice *device,
 	nm_connection_add_setting (connection, NM_SETTING (s_wired));
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	s_con->id = g_strdup (DEFAULT_WIRED_NAME);
-	s_con->type = g_strdup (NM_SETTING (s_wired)->name);
-	s_con->autoconnect = TRUE;
-	s_con->uuid = nm_utils_uuid_generate ();
+	uuid = nm_utils_uuid_generate ();
+	g_object_set (s_con,
+				  NM_SETTING_CONNECTION_ID, DEFAULT_WIRED_NAME,
+				  NM_SETTING_CONNECTION_TYPE, NM_SETTING (s_wired)->name,
+				  NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
+				  NM_SETTING_CONNECTION_UUID, uuid,
+				  NULL);
+	g_free (uuid);
+
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
 	return connection;
@@ -117,7 +123,7 @@ add_connection_items (NMDevice *device,
 		GtkWidget *item;
 
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		item = gtk_check_menu_item_new_with_label (s_con->id);
+		item = gtk_check_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
  		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
 		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 
@@ -251,9 +257,11 @@ wired_device_state_changed (NMDevice *device,
 
 		connection = applet_find_active_connection_for_device (device, applet, NULL);
 		if (connection) {
+			const char *id;
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-			if (s_con && s_con->id)
-				str = g_strdup_printf (_("You are now connected to '%s'."), s_con->id);
+			id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
+			if (id)
+				str = g_strdup_printf (_("You are now connected to '%s'."), id);
 		}
 
 		applet_do_notify (applet, NOTIFY_URGENCY_LOW,
@@ -692,6 +700,7 @@ wired_get_secrets (NMDevice *device,
 				   GError **error)
 {
 	NMSettingConnection *s_con;
+	const char *connection_type;
 	gboolean success = FALSE;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
@@ -702,9 +711,10 @@ wired_get_secrets (NMDevice *device,
 		return FALSE;
 	}
 
-	if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME)) {
+	connection_type = nm_setting_connection_get_connection_type (s_con);
+	if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
 		success = nm_8021x_get_secrets (device, connection, specific_object, setting_name, context, applet, error);
-	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME))
+	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME))
 		success = pppoe_get_secrets (device, connection, specific_object, setting_name, context, applet, error);
 
 	return success;

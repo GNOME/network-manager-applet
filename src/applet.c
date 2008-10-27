@@ -451,7 +451,7 @@ update_connection_timestamp (NMActiveConnection *active,
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
-	s_con->timestamp = (guint64) time (NULL);
+	g_object_set (s_con, NM_SETTING_CONNECTION_TIMESTAMP, (guint64) time (NULL), NULL);
 	nma_gconf_connection_save (gconf_connection);
 }
 
@@ -470,27 +470,35 @@ make_vpn_failure_message (NMVPNConnection *vpn,
 
 	switch (reason) {
 	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the network connection was interrupted."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the network connection was interrupted."),
+								nm_setting_connection_get_id (s_con));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_STOPPED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service stopped unexpectedly."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service stopped unexpectedly."),
+								nm_setting_connection_get_id (s_con));
 	case NM_VPN_CONNECTION_STATE_REASON_IP_CONFIG_INVALID:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service returned invalid configuration."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service returned invalid configuration."),
+								nm_setting_connection_get_id (s_con));
 	case NM_VPN_CONNECTION_STATE_REASON_CONNECT_TIMEOUT:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the connection attempt timed out."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the connection attempt timed out."),
+								nm_setting_connection_get_id (s_con));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service did not start in time."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service did not start in time."),
+								nm_setting_connection_get_id (s_con));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_START_FAILED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service failed to start."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service failed to start."),
+								nm_setting_connection_get_id (s_con));
 	case NM_VPN_CONNECTION_STATE_REASON_NO_SECRETS:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because there were no valid VPN secrets."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because there were no valid VPN secrets."),
+								nm_setting_connection_get_id (s_con));
 	case NM_VPN_CONNECTION_STATE_REASON_LOGIN_FAILED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because of invalid VPN secrets."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' failed because of invalid VPN secrets."),
+								nm_setting_connection_get_id (s_con));
 
 	default:
 		break;
 	}
 
-	return g_strdup_printf (_("\nThe VPN connection '%s' failed."), s_con->id);
+	return g_strdup_printf (_("\nThe VPN connection '%s' failed."), nm_setting_connection_get_id (s_con));
 }
 
 static char *
@@ -508,14 +516,16 @@ make_vpn_disconnection_message (NMVPNConnection *vpn,
 
 	switch (reason) {
 	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the network connection was interrupted."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the network connection was interrupted."),
+								nm_setting_connection_get_id (s_con));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_STOPPED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the VPN service stopped."), s_con->id);
+		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the VPN service stopped."),
+								nm_setting_connection_get_id (s_con));
 	default:
 		break;
 	}
 
-	return g_strdup_printf (_("\nThe VPN connection '%s' disconnected."), s_con->id);
+	return g_strdup_printf (_("\nThe VPN connection '%s' disconnected."), nm_setting_connection_get_id (s_con));
 }
 
 static void
@@ -588,7 +598,7 @@ get_connection_id (NMConnection *connection)
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_return_val_if_fail (s_con != NULL, NULL);
 
-	return s_con->id;
+	return nm_setting_connection_get_id (s_con);
 }
 
 typedef struct {
@@ -661,7 +671,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	info = g_malloc0 (sizeof (VPNActivateInfo));
 	info->applet = applet;
-	info->vpn_name = g_strdup (s_con->id);
+	info->vpn_name = g_strdup (nm_setting_connection_get_id (s_con));
 
 	/* Connection inactive, activate */
 	is_system = is_system_connection (connection);
@@ -716,7 +726,7 @@ applet_get_first_active_vpn_connection (NMApplet *applet,
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 		g_assert (s_con);
 
-		if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
+		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
 			if (out_state)
 				*out_state = nm_vpn_connection_get_vpn_state (NM_VPN_CONNECTION (candidate));
 			return candidate;
@@ -992,7 +1002,7 @@ get_vpn_connections (NMApplet *applet)
 		NMSettingConnection *s_con;
 
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		if (strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME))
+		if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME))
 			/* Not a VPN connection */
 			continue;
 
@@ -1838,10 +1848,9 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_return_if_fail (s_con != NULL);
-	g_return_if_fail (s_con->type != NULL);
 
 	/* VPN secrets get handled a bit differently */
-	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
+	if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
 		nma_vpn_request_password (NM_EXPORTED_CONNECTION (exported), ask_user, context);
 		return;
 	}
@@ -1927,7 +1936,7 @@ periodic_update_active_connection_timestamps (gpointer user_data)
 				s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 				g_assert (s_con);
 
-				s_con->timestamp = (guint64) time (NULL);
+				g_object_set (s_con, NM_SETTING_CONNECTION_TIMESTAMP, (guint64) time (NULL), NULL);
 				nma_gconf_connection_save (gconf_connection);
 				break;
 			}

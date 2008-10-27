@@ -227,6 +227,8 @@ service_get_secrets (NMExportedConnection *exported,
 	GHashTable *secrets = NULL;
 	NMSettingConnection *s_con;
 	NMSetting *setting;
+	const char *connection_id;
+	const char *connection_type;
 
 	connection = nm_exported_connection_get_connection (exported);
 
@@ -240,7 +242,10 @@ service_get_secrets (NMExportedConnection *exported,
 	}
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_con || !s_con->id || !strlen (s_con->id) || !s_con->type) {
+	connection_id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
+	connection_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
+
+	if (!s_con || !connection_id || !strlen (connection_id) || !connection_type) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d - Connection didn't have required '"
 		             NM_SETTING_CONNECTION_SETTING_NAME
@@ -251,12 +256,12 @@ service_get_secrets (NMExportedConnection *exported,
 	}
 
 	/* VPN passwords are handled by the VPN plugin's auth dialog */
-	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME))
+	if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME))
 		goto get_secrets;
 
 	if (request_new) {
 		nm_info ("New secrets for %s/%s requested; ask the user",
-		         s_con->id, setting_name);
+		         connection_id, setting_name);
 		nm_connection_clear_secrets (connection);
 		goto get_secrets;
 	}
@@ -268,7 +273,7 @@ service_get_secrets (NMExportedConnection *exported,
 			return;
 		}
 		nm_info ("No keyring secrets found for %s/%s; asking user.",
-		         s_con->id, setting_name);
+		         connection_id, setting_name);
 		goto get_secrets;
 	}
 

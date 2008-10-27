@@ -96,23 +96,26 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	GladeXML *xml;
 	GtkTreeIter iter;
 	NMSettingConnection *s_con;
+	const char *connection_type;
 	char *str_auto = NULL, *str_auto_only = NULL;
 	gboolean is_vpn = FALSE;
 
 	xml = CE_PAGE (self)->xml;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con && s_con->type);
+	g_assert (s_con);
+	connection_type = nm_setting_connection_get_connection_type (s_con);
+	g_assert (connection_type);
 
-	if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
+	if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
 		str_auto = _("Automatic (VPN)");
 		str_auto_only = _("Automatic (VPN) addresses only");
 		is_vpn = TRUE;
-	} else if (   !strcmp (s_con->type, NM_SETTING_GSM_SETTING_NAME)
-	    || !strcmp (s_con->type, NM_SETTING_CDMA_SETTING_NAME)) {
+	} else if (   !strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME)
+	           || !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
 		str_auto = _("Automatic (PPP)");
 		str_auto_only = _("Automatic (PPP) addresses only");
-	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME)) {
+	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		str_auto = _("Automatic (PPPoE)");
 		str_auto_only = _("Automatic (PPPoE) addresses only");
 	} else {
@@ -594,7 +597,7 @@ ce_page_ip4_new (NMConnection *connection)
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
-	priv->connection_id = g_strdup (s_con->id);
+	priv->connection_id = g_strdup (nm_setting_connection_get_id (s_con));
 
 	priv->setting = (NMSettingIP4Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG);
 	if (!priv->setting) {

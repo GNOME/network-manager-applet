@@ -64,6 +64,7 @@ cdma_new_auto_connection (NMDevice *device,
 	NMSettingSerial *s_serial;
 	NMSettingPPP *s_ppp;
 	NMSettingConnection *s_con;
+	char *uuid;
 
 	connection = nm_connection_new ();
 
@@ -87,10 +88,14 @@ cdma_new_auto_connection (NMDevice *device,
 	nm_connection_add_setting (connection, NM_SETTING (s_ppp));
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	s_con->id = g_strdup (DEFAULT_CDMA_NAME);
-	s_con->type = g_strdup (NM_SETTING (s_cdma)->name);
-	s_con->autoconnect = FALSE;
-	s_con->uuid = nm_utils_uuid_generate ();
+	uuid = nm_utils_uuid_generate ();
+	g_object_set (s_con,
+		      NM_SETTING_CONNECTION_ID, DEFAULT_CDMA_NAME,
+		      NM_SETTING_CONNECTION_TYPE, NM_SETTING (s_cdma)->name,
+		      NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+		      NM_SETTING_CONNECTION_UUID, uuid,
+		      NULL);
+	g_free (uuid);
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
 	return connection;
@@ -124,7 +129,7 @@ add_connection_items (NMDevice *device,
 		GtkWidget *item;
 
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		item = gtk_check_menu_item_new_with_label (s_con->id);
+		item = gtk_check_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
 		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 
 		if (connection == active)
@@ -287,9 +292,12 @@ cdma_device_state_changed (NMDevice *device,
 
 		connection = applet_find_active_connection_for_device (device, applet, NULL);
 		if (connection) {
+			const char *id;
+
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-			if (s_con && s_con->id)
-				str = g_strdup_printf (_("You are now connected to '%s'."), s_con->id);
+			id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
+			if (id)
+				str = g_strdup_printf (_("You are now connected to '%s'."), id);
 		}
 
 		applet_do_notify (applet, NOTIFY_URGENCY_LOW,
@@ -326,10 +334,15 @@ cdma_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Waiting for user authentication on device '%s'..."), iface);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		if (s_con && s_con->id)
-			*tip = g_strdup_printf (_("Mobile broadband connection '%s'"), s_con->id);
-		else
+		if (s_con) {
+			const char *id = nm_setting_connection_get_id (s_con);
+			if (id)
+				*tip = g_strdup_printf (_("Mobile broadband connection '%s'"), id);
+		}
+
+		if (!*tip)
 			*tip = g_strdup (_("Mobile broadband connection"));
+
 		pixbuf = applet->wwan_icon;
 		break;
 	default:
@@ -431,6 +444,7 @@ ask_for_password (NMDevice *device,
 	NMCdmaInfo *info;
 	NMSettingConnection *s_con;
 	char *tmp;
+	const char *id;
 
 	info = g_new (NMCdmaInfo, 1);
 	info->context = context;
@@ -448,8 +462,9 @@ ask_for_password (NMDevice *device,
 	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con->id);
-	tmp = g_strdup_printf (_("A password is required to connect to '%s'."), s_con->id);
+	id = nm_setting_connection_get_id (s_con);
+	g_assert (id);
+	tmp = g_strdup_printf (_("A password is required to connect to '%s'."), id);
 	w = gtk_label_new (tmp);
 	g_free (tmp);
 	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);

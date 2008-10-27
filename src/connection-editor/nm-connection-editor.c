@@ -86,14 +86,16 @@ static void
 nm_connection_editor_update_title (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
+	const char *id;
 
 	g_return_if_fail (editor != NULL);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
-	if (s_con->id && strlen (s_con->id)) {
-		char *title = g_strdup_printf (_("Editing %s"), s_con->id);
+	id = nm_setting_connection_get_id (s_con);
+	if (id && strlen (id)) {
+		char *title = g_strdup_printf (_("Editing %s"), id);
 		gtk_window_set_title (GTK_WINDOW (editor->window), title);
 		g_free (title);
 	} else
@@ -420,8 +422,11 @@ populate_connection_ui (NMConnectionEditor *editor)
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	if (s_con) {
-		gtk_entry_set_text (GTK_ENTRY (name), s_con->id);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoconnect), s_con->autoconnect);
+		const char *id = nm_setting_connection_get_id (s_con);
+
+		gtk_entry_set_text (GTK_ENTRY (name), id);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoconnect),
+		                              nm_setting_connection_get_autoconnect (s_con));
 	} else {
 		gtk_entry_set_text (GTK_ENTRY (name), NULL);
 	}
@@ -470,6 +475,7 @@ static void
 nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection)
 {
 	NMSettingConnection *s_con;
+	const char *connection_type;
 
 	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
 	g_return_if_fail (NM_IS_CONNECTION (connection));
@@ -485,27 +491,28 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
-	if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME)) {
+	connection_type = nm_setting_connection_get_connection_type (s_con);
+	if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_wired_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_wired_security_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
-	} else if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME)) {
+	} else if (!strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_wireless_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_wireless_security_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
-	} else if (!strcmp (s_con->type, NM_SETTING_VPN_SETTING_NAME)) {
+	} else if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_vpn_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
-	} else if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME)) {
+	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_dsl_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_wired_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ppp_new (editor->connection)));
-	} else if (!strcmp (s_con->type, NM_SETTING_GSM_SETTING_NAME) || 
-			 !strcmp (s_con->type, NM_SETTING_CDMA_SETTING_NAME)) {
+	} else if (!strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME) || 
+			 !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_mobile_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ppp_new (editor->connection)));
 	} else {
-		g_warning ("Unhandled setting type '%s'", s_con->type);
+		g_warning ("Unhandled setting type '%s'", connection_type);
 	}
 
 	/* set the UI */

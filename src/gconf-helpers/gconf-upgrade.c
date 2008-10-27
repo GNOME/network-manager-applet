@@ -337,6 +337,7 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	NMSettingWirelessSecurity *s_wireless_sec;
 	NMSetting8021x *s_8021x = NULL;
 	char *path, *network, *essid = NULL;
+	char *s;
 	int timestamp, we_cipher;
 	GSList *bssids = NULL;
 	char *private_key_path = NULL, *client_cert_path = NULL, *ca_cert_path = NULL;
@@ -358,11 +359,19 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 		we_cipher = NM_AUTH_TYPE_NONE;
 
 	s_con = (NMSettingConnection *)nm_setting_connection_new ();
-	s_con->id = g_strdup_printf ("Auto %s", essid);
-	s_con->type = g_strdup ("802-11-wireless");
-	s_con->autoconnect = (timestamp != 0);
-	s_con->timestamp = timestamp;
-	s_con->uuid = nm_utils_uuid_generate ();
+	g_object_set (s_con,
+				  NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRELESS_SETTING_NAME,
+				  NM_SETTING_CONNECTION_AUTOCONNECT, (timestamp != 0),
+				  NM_SETTING_CONNECTION_TIMESTAMP, timestamp,
+				  NULL);
+
+	s = g_strdup_printf ("Auto %s", essid);
+	g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
+	g_free (s);
+
+	s = nm_utils_uuid_generate ();
+	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, s, NULL);
+	g_free (s);
 
 	s_wireless = (NMSettingWireless *)nm_setting_wireless_new ();
 	s_wireless->ssid = g_byte_array_new ();
@@ -554,9 +563,15 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 		vpn_data = NULL;
 
 	s_con = (NMSettingConnection *)nm_setting_connection_new ();
-	s_con->id = id;
-	s_con->type = g_strdup ("vpn");
-	s_con->uuid = nm_utils_uuid_generate ();
+	g_object_set (s_con,
+				  NM_SETTING_CONNECTION_ID, id,
+				  NM_SETTING_CONNECTION_TYPE, NM_SETTING_VPN_SETTING_NAME,
+				  NULL);
+
+	g_free (id);
+	id = nm_utils_uuid_generate ();
+	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, id, NULL);
+	g_free (id);
 
 	s_vpn = (NMSettingVPN *)nm_setting_vpn_new ();
 	s_vpn->service_type = service_name;

@@ -159,11 +159,13 @@ create_info_label_security (NMConnection *connection)
 	NMSettingConnection *s_con;
 	char *label = NULL;
 	GtkWidget *w;
+	const char *connection_type;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
-	if (!strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME)) {
+	connection_type = nm_setting_connection_get_connection_type (s_con);
+	if (!strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME)) {
 		NMSettingWireless *s_wireless;
 		NMSettingWirelessSecurity *s_wireless_sec;
 		NMSetting8021x *s_8021x;
@@ -188,7 +190,7 @@ create_info_label_security (NMConnection *connection)
 		} else {
 			label = g_strdup (_("None"));
 		}
-	} else if (!strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME)) {
+	} else if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
 		NMSetting8021x *s_8021x;
 
 		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
@@ -214,7 +216,7 @@ create_info_notebook_label (NMConnection *connection, gboolean is_default)
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
-	str = g_string_new (s_con->id);
+	str = g_string_new (nm_setting_connection_get_id (s_con));
 
 	if (is_default)
 		str = g_string_append (str, " (default)");

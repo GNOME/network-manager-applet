@@ -1508,8 +1508,8 @@ nm_gconf_write_connection (NMConnection *connection,
 	info.connection = connection;
 	info.client = client;
 	info.dir = dir;
-	info.connection_uuid = s_con->uuid;
-	info.connection_name = s_con->id;
+	info.connection_uuid = nm_setting_connection_get_uuid (s_con);
+	info.connection_name = nm_setting_connection_get_id (s_con);
 	nm_connection_for_each_setting_value (connection,
 	                                      copy_one_setting_value_to_gconf,
 	                                      &info);
@@ -1587,7 +1587,7 @@ get_one_private_key (NMConnection *connection,
 	} else {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d - %s/%s Unknown private key password type '%s'.",
-		             __FILE__, __LINE__, s_con->id, setting_name, tag);
+		             __FILE__, __LINE__, nm_setting_connection_get_id (s_con), setting_name, tag);
 		return FALSE;
 	}
 
@@ -1609,7 +1609,7 @@ get_one_private_key (NMConnection *connection,
 	} else if (!array || !array->len) {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d - %s/%s couldn't read private key.",
-		             __FILE__, __LINE__, s_con->id, setting_name);
+		             __FILE__, __LINE__, nm_setting_connection_get_id (s_con), setting_name);
 		goto out;
 	}
 
@@ -1647,15 +1647,15 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
-	g_assert (s_con->id);
-	g_assert (s_con->uuid);
-	connection_name = s_con->id;
+
+	connection_name = nm_setting_connection_get_id (s_con);
+	g_assert (connection_name);
 
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,
 	                                      KEYRING_UUID_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      s_con->uuid,
+										  nm_setting_connection_get_uuid (s_con),
 	                                      KEYRING_SN_TAG,
 	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                      setting_name,

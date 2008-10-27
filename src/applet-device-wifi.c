@@ -323,6 +323,7 @@ wireless_new_auto_connection (NMDevice *device,
 	NMSettingWirelessSecurity *s_wireless_sec = NULL;
 	NMSetting8021x *s_8021x = NULL;
 	const GByteArray *ap_ssid;
+	char *id;
 	char buf[33];
 	int buf_len;
 	NM80211Mode mode;
@@ -365,17 +366,21 @@ wireless_new_auto_connection (NMDevice *device,
 		nm_connection_add_setting (connection, NM_SETTING (s_8021x));
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	s_con->type = g_strdup (NM_SETTING (s_wireless)->name);
+	g_object_set (s_con,
+			    NM_SETTING_CONNECTION_TYPE, NM_SETTING (s_wireless)->name,
+			    NM_SETTING_CONNECTION_AUTOCONNECT, !is_manufacturer_default_ssid (ap_ssid),
+			    NULL);
 
 	memset (buf, 0, sizeof (buf));
 	buf_len = MIN(ap_ssid->len, sizeof (buf) - 1);
 	memcpy (buf, ap_ssid->data, buf_len);
-	s_con->id = g_strdup_printf ("Auto %s", nm_utils_ssid_to_utf8 (buf, buf_len));
+	id = g_strdup_printf ("Auto %s", nm_utils_ssid_to_utf8 (buf, buf_len));
+	g_object_set (s_con, NM_SETTING_CONNECTION_ID, id, NULL);
+	g_free (id);
 
-	/* Only utoconnect APs that don't use the manufacturer default SSID. */
-	s_con->autoconnect = !is_manufacturer_default_ssid (ap_ssid);
-
-	s_con->uuid = nm_utils_uuid_generate ();
+	id = nm_utils_uuid_generate ();
+	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, id, NULL);
+	g_free (id);
 
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
@@ -496,7 +501,7 @@ add_new_ap_item (NMDeviceWifi *device,
 			GtkWidget *subitem;
 
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-			subitem = gtk_menu_item_new_with_label (s_con->id);
+			subitem = gtk_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
 
 			info = g_slice_new0 (WirelessMenuItemInfo);
 			info->applet = applet;
@@ -977,7 +982,7 @@ idle_check_avail_access_point_notification (gpointer datap)
 			NMSettingConnection *s_con;
 
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-			if (s_con->autoconnect)  {
+			if (nm_setting_connection_get_autoconnect (s_con))  {
 				is_autoconnect = TRUE;
 				break;
 			}
@@ -1391,19 +1396,24 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		} else {
 			/* Entirely new connection */
 			NMSettingConnection *s_con;
+			char *id;
 
 			/* Update a new connection's name and autoconnect status */
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-			if (!s_con->id) {
+			id = (char *) nm_setting_connection_get_id (s_con);
+
+			if (!id) {
 				NMSettingWireless *s_wireless;
 
 				s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-				s_con->id = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
+				id = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
+				g_object_set (s_con, NM_SETTING_CONNECTION_ID, id, NULL);
+				g_free (id);
 
 				// FIXME: don't autoconnect until the connection is successful at least once
 				/* Don't autoconnect adhoc networks by default for now */
 				if (!s_wireless->mode || !strcmp (s_wireless->mode, "infrastructure"))
-					s_con->autoconnect = TRUE;
+					g_object_set (s_con, NM_SETTING_CONNECTION_AUTOCONNECT, TRUE, NULL);
 			}
 
 			/* Export it over D-Bus */

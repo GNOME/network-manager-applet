@@ -190,22 +190,28 @@ nma_vpn_request_password (NMExportedConnection *exported,
 	gboolean success = FALSE;
 	GError *error = NULL;
 	NMConnection *connection;
+	const char *id;
+	const char *connection_type;
 
 	g_return_val_if_fail (NM_IS_EXPORTED_CONNECTION (exported), FALSE);
 
 	connection = nm_exported_connection_get_connection (exported);
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_return_val_if_fail (s_con != NULL, FALSE);
-	g_return_val_if_fail (s_con->id != NULL, FALSE);
-	g_return_val_if_fail (s_con->type != NULL, FALSE);
-	g_return_val_if_fail (strcmp (s_con->type, "vpn") == 0, FALSE);
+
+	id = nm_setting_connection_get_id (s_con);
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	connection_type = nm_setting_connection_get_connection_type (s_con);
+	g_return_val_if_fail (connection_type != NULL, FALSE);
+	g_return_val_if_fail (strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME) == 0, FALSE);
 
 	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	g_return_val_if_fail (s_vpn != NULL, FALSE);
 	g_return_val_if_fail (s_vpn->service_type != NULL, FALSE);
 
 	/* find the auth-dialog binary */
-	auth_dialog_binary = find_auth_dialog_binary (s_vpn->service_type, s_con->id);
+	auth_dialog_binary = find_auth_dialog_binary (s_vpn->service_type, id);
 	if (!auth_dialog_binary) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): couldn't find VPN auth dialog  helper program '%s'.",
@@ -215,8 +221,8 @@ nma_vpn_request_password (NMExportedConnection *exported,
 
 	/* Fix up parameters with what we got */
 	argv[0] = auth_dialog_binary;
-	argv[2] = s_con->uuid;
-	argv[4] = s_con->id;
+	argv[2] = nm_setting_connection_get_uuid (s_con);
+	argv[4] = id;
 	argv[6] = s_vpn->service_type;
 	if (!retry)
 		argv[7] = NULL;
@@ -242,7 +248,7 @@ nma_vpn_request_password (NMExportedConnection *exported,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,
 						 _("Cannot start VPN connection '%s'"),
-						 s_con->id);
+						 id);
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
   _("There was a problem launching the authentication dialog for VPN connection type '%s'. Contact your system administrator."),
 							  s_vpn->service_type);

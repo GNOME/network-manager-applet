@@ -283,6 +283,7 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	NMVpnPluginUiInterface *plugin;
 	NMSettingConnection *s_con = NULL;
 	NMSettingVPN *s_vpn = NULL;
+	const char *id = NULL;
 	gboolean success = FALSE;
 
 	if (response != GTK_RESPONSE_ACCEPT)
@@ -317,7 +318,8 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	}
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	if (!s_con || !s_con->id) {
+	id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
+	if (!id) {
 		g_set_error (&error, 0, 0, "connection setting invalid");
 		goto done;
 	}
@@ -336,7 +338,6 @@ done:
 	if (!success) {
 		GtkWidget *err_dialog;
 		char *basename = filename ? g_path_get_basename (filename) : g_strdup ("(none)");
-		char *id = s_con ? s_con->id : "(unknown)";
 
 		err_dialog = gtk_message_dialog_new (NULL,
 		                                     GTK_DIALOG_DESTROY_WITH_PARENT,

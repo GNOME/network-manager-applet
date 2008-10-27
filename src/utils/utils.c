@@ -529,13 +529,15 @@ connection_valid_for_wired (NMConnection *connection,
 	NMSettingWired *s_wired;
 	const char *str_mac;
 	struct ether_addr *bin_mac;
+	const char *connection_type;
 	const GByteArray *setting_mac;
 	gboolean is_pppoe = FALSE;
 
-	if (!strcmp (s_con->type, NM_SETTING_PPPOE_SETTING_NAME))
+	connection_type = nm_setting_connection_get_connection_type (s_con);
+	if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME))
 		is_pppoe = TRUE;
 	
-	if (!is_pppoe && strcmp (s_con->type, NM_SETTING_WIRED_SETTING_NAME))
+	if (!is_pppoe && strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME))
 		return FALSE;
 
 	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED));
@@ -573,7 +575,7 @@ connection_valid_for_wireless (NMConnection *connection,
 	guint32 wcaps;
 	NMAccessPoint *ap;
 
-	if (strcmp (s_con->type, NM_SETTING_WIRELESS_SETTING_NAME))
+	if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_WIRELESS_SETTING_NAME))
 		return FALSE;
 
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
@@ -655,7 +657,7 @@ connection_valid_for_gsm (NMConnection *connection,
 {
 	NMSettingGsm *s_gsm;
 	
-	if (strcmp (s_con->type, NM_SETTING_GSM_SETTING_NAME))
+	if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_GSM_SETTING_NAME))
 		return FALSE;
 
 	s_gsm = NM_SETTING_GSM (nm_connection_get_setting (connection, NM_TYPE_SETTING_GSM));
@@ -672,7 +674,7 @@ connection_valid_for_cdma (NMConnection *connection,
 {
 	NMSettingCdma *s_cdma;
 	
-	if (strcmp (s_con->type, NM_SETTING_CDMA_SETTING_NAME))
+	if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_CDMA_SETTING_NAME))
 		return FALSE;
 
 	s_cdma = NM_SETTING_CDMA (nm_connection_get_setting (connection, NM_TYPE_SETTING_CDMA));
@@ -693,7 +695,7 @@ utils_connection_valid_for_device (NMConnection *connection,
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_return_val_if_fail (s_con != NULL, FALSE);
-	g_return_val_if_fail (s_con->type != NULL, FALSE);
+	g_return_val_if_fail (nm_setting_connection_get_connection_type (s_con) != NULL, FALSE);
 
 	if (NM_IS_DEVICE_ETHERNET (device))
 		return connection_valid_for_wired (connection, s_con, device, specific_object);

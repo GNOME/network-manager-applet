@@ -30,7 +30,7 @@ dialog_set_network_name (NMConnection *connection, GtkEntry *entry)
 	setting = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 
 	gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
-	gtk_entry_set_text (entry, setting->id);
+	gtk_entry_set_text (entry, nm_setting_connection_get_id (setting));
 }
 
 static WirelessSecurity *
