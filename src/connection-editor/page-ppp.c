@@ -124,27 +124,46 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 {
 	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
 	NMSettingPPP *setting = priv->setting;
+	gboolean refuse_pap, refuse_chap, refuse_mschapv2, refuse_mschap, refuse_eap, noauth,
+		require_mppe, require_mppe_128, mppe_stateful, nobsdcomp, nodeflate, no_vj_comp;
+	guint32 lcp_echo_interval;
 
-	add_one_auth_method (priv->auth_methods_list, _("PAP"), !setting->refuse_pap, TAG_PAP);
-	add_one_auth_method (priv->auth_methods_list, _("CHAP"), !setting->refuse_chap, TAG_CHAP);
-	add_one_auth_method (priv->auth_methods_list, _("MSCHAPv2"), !setting->refuse_mschapv2, TAG_MSCHAPV2);
-	add_one_auth_method (priv->auth_methods_list, _("MSCHAP"), !setting->refuse_mschap, TAG_MSCHAP);
-	add_one_auth_method (priv->auth_methods_list, _("EAP"), !setting->refuse_eap, TAG_EAP);
+	g_object_get (setting,
+				  NM_SETTING_PPP_REFUSE_PAP, &refuse_pap,
+				  NM_SETTING_PPP_REFUSE_CHAP, &refuse_chap,
+				  NM_SETTING_PPP_REFUSE_MSCHAPV2, &refuse_mschapv2,
+				  NM_SETTING_PPP_REFUSE_MSCHAP, &refuse_mschap,
+				  NM_SETTING_PPP_REFUSE_EAP, &refuse_eap,
+				  NM_SETTING_PPP_NOAUTH, &noauth,
+				  NM_SETTING_PPP_REQUIRE_MPPE, &require_mppe,
+				  NM_SETTING_PPP_REQUIRE_MPPE_128, &require_mppe_128,
+				  NM_SETTING_PPP_MPPE_STATEFUL, &mppe_stateful,
+				  NM_SETTING_PPP_NOBSDCOMP, &nobsdcomp,
+				  NM_SETTING_PPP_NODEFLATE, &nodeflate,
+				  NM_SETTING_PPP_NO_VJ_COMP, &no_vj_comp,
+				  NM_SETTING_PPP_LCP_ECHO_INTERVAL, &lcp_echo_interval,
+				  NULL);
 
-	gtk_toggle_button_set_active (priv->use_auth, !setting->noauth);
-	if (setting->noauth)
-		set_auth_items_sensitive (self, !setting->noauth);
+	add_one_auth_method (priv->auth_methods_list, _("PAP"), !refuse_pap, TAG_PAP);
+	add_one_auth_method (priv->auth_methods_list, _("CHAP"), !refuse_chap, TAG_CHAP);
+	add_one_auth_method (priv->auth_methods_list, _("MSCHAPv2"), !refuse_mschapv2, TAG_MSCHAPV2);
+	add_one_auth_method (priv->auth_methods_list, _("MSCHAP"), !refuse_mschap, TAG_MSCHAP);
+	add_one_auth_method (priv->auth_methods_list, _("EAP"), !refuse_eap, TAG_EAP);
+
+	gtk_toggle_button_set_active (priv->use_auth, !noauth);
+	if (noauth)
+		set_auth_items_sensitive (self, !noauth);
 	g_signal_connect (G_OBJECT (priv->use_auth), "toggled", G_CALLBACK (use_auth_toggled_cb), self);
 
-	gtk_toggle_button_set_active (priv->use_mppe, setting->require_mppe);
-	gtk_toggle_button_set_active (priv->mppe_require_128, setting->require_mppe_128);
-	gtk_toggle_button_set_active (priv->use_mppe_stateful, setting->mppe_stateful);
+	gtk_toggle_button_set_active (priv->use_mppe, require_mppe);
+	gtk_toggle_button_set_active (priv->mppe_require_128, require_mppe_128);
+	gtk_toggle_button_set_active (priv->use_mppe_stateful, mppe_stateful);
 
-	gtk_toggle_button_set_active (priv->allow_bsdcomp, !setting->nobsdcomp);
-	gtk_toggle_button_set_active (priv->allow_deflate, !setting->nodeflate);
-	gtk_toggle_button_set_active (priv->use_vj_comp, !setting->no_vj_comp);
+	gtk_toggle_button_set_active (priv->allow_bsdcomp, !nobsdcomp);
+	gtk_toggle_button_set_active (priv->allow_deflate, !nodeflate);
+	gtk_toggle_button_set_active (priv->use_vj_comp, !no_vj_comp);
 
-	gtk_toggle_button_set_active (priv->send_ppp_echo, (setting->lcp_echo_interval > 0) ? TRUE : FALSE);
+	gtk_toggle_button_set_active (priv->send_ppp_echo, (lcp_echo_interval > 0) ? TRUE : FALSE);
 }
 
 static void
