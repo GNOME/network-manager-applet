@@ -1626,6 +1626,8 @@ nm_connection_list_new (const char *def_type)
 		goto error;
 	}
 
+	gtk_window_set_default_icon_name ("preferences-system-network");
+
 	list->icon_theme = gtk_icon_theme_get_for_screen (gdk_screen_get_default ());
 
 	/* Load icons */
