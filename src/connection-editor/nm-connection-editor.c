@@ -167,7 +167,6 @@ static void
 system_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
 {
 	gboolean req_privs = FALSE;
-	NMSettingConnection *s_con;
 
 	/* If the connection was originally a system connection, obviously
 	 * privileges are required to change it.  If it was originally a user
@@ -185,11 +184,6 @@ system_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
 		g_object_set (editor->system_gnome_action, "polkit-action", editor->system_action, NULL);
 	else
 		g_object_set (editor->system_gnome_action, "polkit-action", NULL, NULL);
-
-	/* Can't ever modify read-only connections */
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
-	if (nm_setting_connection_get_read_only (s_con))
-		gtk_widget_set_sensitive (editor->ok_button, FALSE);
 
 	connection_editor_validate (editor);
 }
@@ -226,15 +220,7 @@ set_editor_sensitivity (NMConnectionEditor *editor, gboolean sensitive)
 static void
 update_sensitivity (NMConnectionEditor *editor, PolKitResult pk_result)
 {
-	NMSettingConnection *s_con;
 	gboolean denied = FALSE;
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
-	/* Can't ever modify read-only connections */
-	if (nm_setting_connection_get_read_only (s_con)) {
-		set_editor_sensitivity (editor, FALSE);
-		return;
-	}
 
 	if (pk_result == POLKIT_RESULT_UNKNOWN)
 		pk_result = polkit_gnome_action_get_polkit_result (editor->system_gnome_action);
