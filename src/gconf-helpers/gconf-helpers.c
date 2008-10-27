@@ -954,6 +954,11 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	if (secret)
 		return;
 
+	/* Don't read the NMSettingConnection object's 'read-only' property */
+	if (   NM_IS_SETTING_CONNECTION (setting)
+	    && !strcmp (key, NM_SETTING_CONNECTION_READ_ONLY))
+		return;
+
 	/* Some keys (like certs) aren't read directly from GConf but are handled
 	 * separately.
 	 */
@@ -1288,6 +1293,11 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 
 	/* Secrets don't get stored in GConf */
 	if (secret)
+		return;
+
+	/* Don't write the NMSettingConnection object's 'read-only' property */
+	if (   NM_IS_SETTING_CONNECTION (setting)
+	    && !strcmp (key, NM_SETTING_CONNECTION_READ_ONLY))
 		return;
 
 	/* If the value is the default value, remove the item from GConf */
