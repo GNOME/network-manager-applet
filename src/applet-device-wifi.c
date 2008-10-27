@@ -367,7 +367,7 @@ wireless_new_auto_connection (NMDevice *device,
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 	g_object_set (s_con,
-			    NM_SETTING_CONNECTION_TYPE, NM_SETTING (s_wireless)->name,
+			    NM_SETTING_CONNECTION_TYPE, nm_setting_get_name (NM_SETTING (s_wireless)),
 			    NM_SETTING_CONNECTION_AUTOCONNECT, !is_manufacturer_default_ssid (ap_ssid),
 			    NULL);
 
@@ -1481,11 +1481,11 @@ add_one_setting (GHashTable *settings,
 	utils_clear_filled_connection_certs (connection);
 
 	if (secrets) {
-		g_hash_table_insert (settings, g_strdup (setting->name), secrets);
+		g_hash_table_insert (settings, g_strdup (nm_setting_get_name (setting)), secrets);
 	} else {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): failed to hash setting '%s'.",
-		             __FILE__, __LINE__, __func__, setting->name);
+		             __FILE__, __LINE__, __func__, nm_setting_get_name (setting));
 	}
 
 	return secrets ? TRUE : FALSE;

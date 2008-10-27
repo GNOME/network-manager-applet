@@ -92,7 +92,7 @@ gsm_new_auto_connection (NMDevice *device,
 	uuid = nm_utils_uuid_generate ();
 	g_object_set (s_con,
 			    NM_SETTING_CONNECTION_ID, DEFAULT_GSM_NAME,
-			    NM_SETTING_CONNECTION_TYPE, NM_SETTING (s_gsm)->name,
+			    NM_SETTING_CONNECTION_TYPE, nm_setting_get_name (NM_SETTING (s_gsm)),
 			    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
 			    NM_SETTING_CONNECTION_UUID, uuid,
 			    NULL);
@@ -413,7 +413,7 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 	if (!secrets) {
 		g_set_error (&err, NM_SETTINGS_ERROR, 1,
 				   "%s.%d (%s): failed to hash setting '%s'.",
-				   __FILE__, __LINE__, __func__, NM_SETTING (setting)->name);
+				   __FILE__, __LINE__, __func__, nm_setting_get_name (NM_SETTING (setting)));
 		goto done;
 	}
 
@@ -423,7 +423,7 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 	settings_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
 								    g_free, (GDestroyNotify) g_hash_table_destroy);
 
-	g_hash_table_insert (settings_hash, g_strdup (NM_SETTING (setting)->name), secrets);
+	g_hash_table_insert (settings_hash, g_strdup (nm_setting_get_name (NM_SETTING (setting))), secrets);
 	dbus_g_method_return (info->context, settings_hash);
 	g_hash_table_destroy (settings_hash);
 

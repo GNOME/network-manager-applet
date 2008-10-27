@@ -942,6 +942,7 @@ read_one_setting_value_from_gconf (NMSetting *setting,
                                    gpointer user_data)
 {
 	ReadFromGConfInfo *info = (ReadFromGConfInfo *) user_data;
+	const char *setting_name;
 	GType type = G_VALUE_TYPE (value);
 
 	/* The 'name' key is ignored when reading, because it's pulled from the
@@ -959,6 +960,8 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	    && !strcmp (key, NM_SETTING_CONNECTION_READ_ONLY))
 		return;
 
+	setting_name = nm_setting_get_name (setting);
+
 	/* Some keys (like certs) aren't read directly from GConf but are handled
 	 * separately.
 	 */
@@ -973,14 +976,14 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	if (type == G_TYPE_STRING) {
 		char *str_val = NULL;
 
-		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting->name, &str_val)) {
+		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting_name, &str_val)) {
 			g_object_set (setting, key, str_val, NULL);
 			g_free (str_val);
 		}
 	} else if (type == G_TYPE_UINT) {
 		int int_val = 0;
 
-		if (nm_gconf_get_int_helper (info->client, info->dir, key, setting->name, &int_val)) {
+		if (nm_gconf_get_int_helper (info->client, info->dir, key, setting_name, &int_val)) {
 			if (int_val < 0)
 				g_warning ("Casting negative value (%i) to uint", int_val);
 
@@ -989,13 +992,13 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	} else if (type == G_TYPE_INT) {
 		int int_val;
 
-		if (nm_gconf_get_int_helper (info->client, info->dir, key, setting->name, &int_val))
+		if (nm_gconf_get_int_helper (info->client, info->dir, key, setting_name, &int_val))
 			g_object_set (setting, key, int_val, NULL);
 	} else if (type == G_TYPE_UINT64) {
 		char *tmp_str = NULL;
 
 		/* GConf doesn't do 64-bit values, so use strings instead */
-		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting->name, &tmp_str) && tmp_str) {
+		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting_name, &tmp_str) && tmp_str) {
 			guint64 uint_val = g_ascii_strtoull (tmp_str, NULL, 10);
 			
 			if (!(uint_val == G_MAXUINT64 && errno == ERANGE))
@@ -1005,12 +1008,12 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	} else if (type == G_TYPE_BOOLEAN) {
 		gboolean bool_val;
 
-		if (nm_gconf_get_bool_helper (info->client, info->dir, key, setting->name, &bool_val))
+		if (nm_gconf_get_bool_helper (info->client, info->dir, key, setting_name, &bool_val))
 			g_object_set (setting, key, bool_val, NULL);
 	} else if (type == G_TYPE_CHAR) {
 		int int_val = 0;
 
-		if (nm_gconf_get_int_helper (info->client, info->dir, key, setting->name, &int_val)) {
+		if (nm_gconf_get_int_helper (info->client, info->dir, key, setting_name, &int_val)) {
 			if (int_val < G_MININT8 || int_val > G_MAXINT8)
 				g_warning ("Casting value (%i) to char", int_val);
 
@@ -1019,14 +1022,14 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
 		GByteArray *ba_val = NULL;
 
-		if (nm_gconf_get_bytearray_helper (info->client, info->dir, key, setting->name, &ba_val)) {
+		if (nm_gconf_get_bytearray_helper (info->client, info->dir, key, setting_name, &ba_val)) {
 			g_object_set (setting, key, ba_val, NULL);
 			g_byte_array_free (ba_val, TRUE);
 		}
 	} else if (type == DBUS_TYPE_G_LIST_OF_STRING) {
 		GSList *sa_val = NULL;
 
-		if (nm_gconf_get_stringlist_helper (info->client, info->dir, key, setting->name, &sa_val)) {
+		if (nm_gconf_get_stringlist_helper (info->client, info->dir, key, setting_name, &sa_val)) {
 			g_object_set (setting, key, sa_val, NULL);
 			g_slist_foreach (sa_val, (GFunc) g_free, NULL);
 			g_slist_free (sa_val);
@@ -1035,7 +1038,7 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	} else if (type == DBUS_TYPE_G_MAP_OF_VARIANT) {
 		GHashTable *vh_val = NULL;
 
-		if (nm_gconf_get_valuehash_helper (info->client, info->dir, setting->name, &vh_val)) {
+		if (nm_gconf_get_valuehash_helper (info->client, info->dir, setting_name, &vh_val)) {
 			g_object_set (setting, key, vh_val, NULL);
 			g_hash_table_destroy (vh_val);
 		}
@@ -1043,14 +1046,14 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
 		GHashTable *sh_val = NULL;
 
-		if (nm_gconf_get_stringhash_helper (info->client, info->dir, setting->name, &sh_val)) {
+		if (nm_gconf_get_stringhash_helper (info->client, info->dir, setting_name, &sh_val)) {
 			g_object_set (setting, key, sh_val, NULL);
 			g_hash_table_destroy (sh_val);
 		}
 	} else if (type == DBUS_TYPE_G_UINT_ARRAY) {
 		GArray *a_val = NULL;
 
-		if (nm_gconf_get_uint_array_helper (info->client, info->dir, key, setting->name, &a_val)) {
+		if (nm_gconf_get_uint_array_helper (info->client, info->dir, key, setting_name, &a_val)) {
 			g_object_set (setting, key, a_val, NULL);
 			g_array_free (a_val, TRUE);
 		}
@@ -1063,14 +1066,14 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 		else if (!strcmp (key, NM_SETTING_IP4_CONFIG_ROUTES))
 			tuple_len = 4;
 
-		if (nm_gconf_get_ip4_helper (info->client, info->dir, key, setting->name, tuple_len, &pa_val)) {
+		if (nm_gconf_get_ip4_helper (info->client, info->dir, key, setting_name, tuple_len, &pa_val)) {
 			g_object_set (setting, key, pa_val, NULL);
 			g_ptr_array_foreach (pa_val, (GFunc) free_one_addr, NULL);
 			g_ptr_array_free (pa_val, TRUE);
 		}
 	} else {
 		g_warning ("Unhandled setting property type (read): '%s/%s' : '%s'",
-				 setting->name, key, G_VALUE_TYPE_NAME (value));
+				 setting_name, key, G_VALUE_TYPE_NAME (value));
 	}
 }
 
@@ -1094,11 +1097,12 @@ read_applet_private_values_from_gconf (NMSetting *setting,
                                        ReadFromGConfInfo *info)
 {
 	if (NM_IS_SETTING_802_1X (setting)) {
+		const char *setting_name = nm_setting_get_name (setting);
 		gboolean value;
 
 		if (nm_gconf_get_bool_helper (info->client, info->dir,
 		                              NMA_CA_CERT_IGNORE_TAG,
-		                              setting->name, &value)) {
+		                              setting_name, &value)) {
 			g_object_set_data (G_OBJECT (info->connection),
 			                   NMA_CA_CERT_IGNORE_TAG,
 			                   GUINT_TO_POINTER (value));
@@ -1106,7 +1110,7 @@ read_applet_private_values_from_gconf (NMSetting *setting,
 
 		if (nm_gconf_get_bool_helper (info->client, info->dir,
 		                              NMA_PHASE2_CA_CERT_IGNORE_TAG,
-		                              setting->name, &value)) {
+		                              setting_name, &value)) {
 			g_object_set_data (G_OBJECT (info->connection),
 			                   NMA_PHASE2_CA_CERT_IGNORE_TAG,
 			                   GUINT_TO_POINTER (value));
@@ -1117,12 +1121,12 @@ read_applet_private_values_from_gconf (NMSetting *setting,
 		 * certificate is read and stuffed into the setting right before
 		 * the connection is sent to NM
 		 */
-		read_one_cert (info, setting->name, NMA_PATH_CA_CERT_TAG);
-		read_one_cert (info, setting->name, NMA_PATH_CLIENT_CERT_TAG);
-		read_one_cert (info, setting->name, NMA_PATH_PRIVATE_KEY_TAG);
-		read_one_cert (info, setting->name, NMA_PATH_PHASE2_CA_CERT_TAG);
-		read_one_cert (info, setting->name, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
-		read_one_cert (info, setting->name, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
+		read_one_cert (info, setting_name, NMA_PATH_CA_CERT_TAG);
+		read_one_cert (info, setting_name, NMA_PATH_CLIENT_CERT_TAG);
+		read_one_cert (info, setting_name, NMA_PATH_PRIVATE_KEY_TAG);
+		read_one_cert (info, setting_name, NMA_PATH_PHASE2_CA_CERT_TAG);
+		read_one_cert (info, setting_name, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
+		read_one_cert (info, setting_name, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
 	}
 }
 
@@ -1243,13 +1247,16 @@ write_one_secret_to_keyring (NMSetting *setting,
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
 	GType type = G_VALUE_TYPE (value);
 	const char *secret;
+	const char *setting_name;
 
 	if (!is_secret)
 		return;
 
+	setting_name = nm_setting_get_name (setting);
+
 	if (type != G_TYPE_STRING) {
 		g_warning ("Unhandled setting secret type (write) '%s/%s' : '%s'", 
-				 setting->name, key, g_type_name (type));
+				 setting_name, key, g_type_name (type));
 		return;
 	}
 
@@ -1263,7 +1270,7 @@ write_one_secret_to_keyring (NMSetting *setting,
 	if (secret && strlen (secret)) {
 		nm_gconf_add_keyring_item (info->connection_uuid,
 		                           info->connection_name,
-		                           setting->name,
+		                           setting_name,
 		                           key,
 		                           secret);
 	}
@@ -1277,6 +1284,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
                                  gpointer user_data)
 {
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
+	const char *setting_name;
 	GType type = G_VALUE_TYPE (value);
 	GParamSpec *pspec;
 
@@ -1300,13 +1308,15 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	    && !strcmp (key, NM_SETTING_CONNECTION_READ_ONLY))
 		return;
 
+	setting_name = nm_setting_get_name (setting);
+
 	/* If the value is the default value, remove the item from GConf */
 	pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (setting), key);
 	if (pspec) {
 		if (g_param_value_defaults (pspec, (GValue *) value)) {
 			char *path;
 
-			path = g_strdup_printf ("%s/%s/%s", info->dir, setting->name, key);
+			path = g_strdup_printf ("%s/%s/%s", info->dir, setting_name, key);
 			if (path)
 				gconf_client_unset (info->client, path, NULL);
 			g_free (path);		
@@ -1321,18 +1331,18 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 			if (str_val && strlen (str_val))
 				nm_gconf_add_keyring_item (info->connection_uuid,
 									  info->connection_name,
-									  setting->name,
+									  setting_name,
 									  key,
 									  str_val);
 		} else
-			nm_gconf_set_string_helper (info->client, info->dir, key, setting->name, str_val);
+			nm_gconf_set_string_helper (info->client, info->dir, key, setting_name, str_val);
 	} else if (type == G_TYPE_UINT) {
 		nm_gconf_set_int_helper (info->client, info->dir,
-							key, setting->name,
+							key, setting_name,
 							g_value_get_uint (value));
 	} else if (type == G_TYPE_INT) {
 		nm_gconf_set_int_helper (info->client, info->dir,
-							key, setting->name,
+							key, setting_name,
 							g_value_get_int (value));
 	} else if (type == G_TYPE_UINT64) {
 		char *numstr;
@@ -1340,37 +1350,37 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		/* GConf doesn't do 64-bit values, so use strings instead */
 		numstr = g_strdup_printf ("%" G_GUINT64_FORMAT, g_value_get_uint64 (value));
 		nm_gconf_set_string_helper (info->client, info->dir,
-							   key, setting->name, numstr);
+							   key, setting_name, numstr);
 		g_free (numstr);
 	} else if (type == G_TYPE_BOOLEAN) {
 		nm_gconf_set_bool_helper (info->client, info->dir,
-							 key, setting->name,
+							 key, setting_name,
 							 g_value_get_boolean (value));
 	} else if (type == G_TYPE_CHAR) {
 		nm_gconf_set_int_helper (info->client, info->dir,
-							key, setting->name,
+							key, setting_name,
 							g_value_get_char (value));
 	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
 		nm_gconf_set_bytearray_helper (info->client, info->dir,
-								 key, setting->name,
+								 key, setting_name,
 								 (GByteArray *) g_value_get_boxed (value));
 	} else if (type == DBUS_TYPE_G_LIST_OF_STRING) {
 		nm_gconf_set_stringlist_helper (info->client, info->dir,
-								  key, setting->name,
+								  key, setting_name,
 								  (GSList *) g_value_get_boxed (value));
 #if UNUSED
 	} else if (type == DBUS_TYPE_G_MAP_OF_VARIANT) {
 		nm_gconf_set_valuehash_helper (info->client, info->dir,
-								 setting->name,
+								 setting_name,
 								 (GHashTable *) g_value_get_boxed (value));
 #endif
 	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
 		nm_gconf_set_stringhash_helper (info->client, info->dir,
-		                                setting->name,
+		                                setting_name,
 		                                (GHashTable *) g_value_get_boxed (value));
 	} else if (type == DBUS_TYPE_G_UINT_ARRAY) {
 		nm_gconf_set_uint_array_helper (info->client, info->dir,
-								  key, setting->name,
+								  key, setting_name,
 								  (GArray *) g_value_get_boxed (value));
 	} else if (type == DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UINT) {
 		guint32 tuple_len = 0;
@@ -1381,11 +1391,11 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 			tuple_len = 4;
 
 		nm_gconf_set_ip4_helper (info->client, info->dir,
-								  key, setting->name, tuple_len,
+								  key, setting_name, tuple_len,
 								  (GPtrArray *) g_value_get_boxed (value));
 	} else
 		g_warning ("Unhandled setting property type (write) '%s/%s' : '%s'", 
-				 setting->name, key, g_type_name (type));
+				 setting_name, key, g_type_name (type));
 }
 
 static void
