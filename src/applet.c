@@ -2177,6 +2177,18 @@ setup_widgets (NMApplet *applet)
 	return TRUE;
 }
 
+static void
+applet_pre_keyring_callback (gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+
+	if (applet->menu) {
+		gtk_widget_hide (applet->menu);
+		gtk_widget_destroy (applet->menu);
+		applet->menu = NULL;
+	}
+}
+
 static GObject *
 constructor (GType type,
              guint n_props,
@@ -2255,6 +2267,8 @@ constructor (GType type,
 	applet->update_timestamps_id = g_timeout_add (300000,
 			(GSourceFunc) periodic_update_active_connection_timestamps, applet);
 
+	nm_gconf_set_pre_keyring_callback (applet_pre_keyring_callback, applet);
+
 	return G_OBJECT (applet);
 
 error:
@@ -2265,6 +2279,8 @@ error:
 static void finalize (GObject *object)
 {
 	NMApplet *applet = NM_APPLET (object);
+
+	nm_gconf_set_pre_keyring_callback (NULL, NULL);
 
 	if (applet->update_timestamps_id)
 		g_source_remove (applet->update_timestamps_id);

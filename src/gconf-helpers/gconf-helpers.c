@@ -64,6 +64,37 @@ const char *vpn_ignore_keys[] = {
 	NULL
 };
 
+static PreKeyringCallback pre_keyring_cb = NULL;
+static gpointer pre_keyring_user_data = NULL;
+
+/* Sets a function to be called before each keyring access */
+void
+nm_gconf_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data)
+{
+	pre_keyring_cb = func;
+	pre_keyring_user_data = user_data;
+}
+
+static void
+pre_keyring_callback (void)
+{
+	GnomeKeyringInfo *info = NULL;
+
+	if (!pre_keyring_cb)
+		return;
+
+	/* Call the pre keyring callback if the keyring is locked or if there
+	 * was an error talking to the keyring.
+	 */
+	if (gnome_keyring_get_info_sync (NULL, &info) == GNOME_KEYRING_RESULT_OK) {
+		if (gnome_keyring_info_get_is_locked (info))
+			(*pre_keyring_cb) (pre_keyring_user_data);
+		gnome_keyring_info_free (info);
+	} else
+		(*pre_keyring_cb) (pre_keyring_user_data);
+}
+
+
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,
                          const char *path,
@@ -1217,6 +1248,8 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	                                            KEYRING_SK_TAG,
 	                                            setting_key);
 
+	pre_keyring_callback ();
+
 	ret = gnome_keyring_item_create_sync (NULL,
 	                                      GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      display_name,
@@ -1671,6 +1704,8 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 	connection_name = nm_setting_connection_get_id (s_con);
 	g_assert (connection_name);
 
+	pre_keyring_callback ();
+
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,
 	                                      KEYRING_UUID_TAG,
@@ -1799,3 +1834,4 @@ nm_gconf_connection_duplicate (NMConnection *connection)
 
 	return dup;
 }
+

@@ -221,5 +221,8 @@ nm_gconf_get_keyring_items (NMConnection *connection,
                             gboolean include_private_passwords,
                             GError **error);
 
+typedef void (*PreKeyringCallback) (gpointer user_data);
+void nm_gconf_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data);
+
 #endif	/* GCONF_HELPERS_H */
 

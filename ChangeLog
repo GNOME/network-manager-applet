@@ -1,5 +1,18 @@
 2008-10-27  Dan Williams  <dcbw@redhat.com>
 
+	* src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/gconf-helpers.h
+		- (nm_gconf_set_pre_keyring_callback): set a function to be called when
+			doing synchronous keyring operations
+		- (nm_gconf_add_keyring_item, nm_gconf_get_keyring_items): call that
+			function if the keyring is locked
+
+	* src/applet.c
+		- (applet_pre_keyring_callback): close the menu before showing accessing
+			the keyring (bgo #546034, rh #353451)
+
+2008-10-27  Dan Williams  <dcbw@redhat.com>
+
 	Patch from Tambet Ingo <tambet@gmail.com>
 
 	* src/connection-editor/page-ppp.c
