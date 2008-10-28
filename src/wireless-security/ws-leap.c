@@ -92,9 +92,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	g_assert (s_wireless);
 
-	if (s_wireless->security)
-		g_free (s_wireless->security);
-	s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
+	g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
 	/* Blow away the old security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();

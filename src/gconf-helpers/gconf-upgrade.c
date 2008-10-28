@@ -336,9 +336,11 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	NMSetting8021x *s_8021x = NULL;
+	GByteArray *ssid;
 	char *path, *network, *essid = NULL;
 	char *s;
 	int timestamp, we_cipher;
+	GSList *iter;
 	GSList *bssids = NULL;
 	char *private_key_path = NULL, *client_cert_path = NULL, *ca_cert_path = NULL;
 
@@ -374,14 +376,23 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	g_free (s);
 
 	s_wireless = (NMSettingWireless *)nm_setting_wireless_new ();
-	s_wireless->ssid = g_byte_array_new ();
-	g_byte_array_append (s_wireless->ssid, (unsigned char *)essid, strlen (essid));
+
+	ssid = g_byte_array_new ();
+	g_byte_array_append (ssid, (unsigned char *)essid, strlen (essid));
 	g_free (essid);
-	s_wireless->mode = g_strdup ("infrastructure");
-	s_wireless->seen_bssids = bssids;
+	g_object_set (s_wireless,
+				  NM_SETTING_WIRELESS_SSID, ssid,
+				  NM_SETTING_WIRELESS_MODE, "infrastructure",
+				  NULL);
+	g_byte_array_free (ssid, TRUE);
+
+	for (iter = bssids; iter; iter = iter->next)
+		nm_setting_wireless_add_seen_bssid (s_wireless, (char *) iter->data);
+
+	nm_utils_slist_free (bssids, g_free);
 
 	if (we_cipher != NM_AUTH_TYPE_NONE) {
-		s_wireless->security = g_strdup ("802-11-wireless-security");
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
 		switch (we_cipher) {
 		case NM_AUTH_TYPE_WEP40:

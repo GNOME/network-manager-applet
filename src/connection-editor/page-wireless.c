@@ -206,6 +206,9 @@ populate_ui (CEPageWireless *self)
 {
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 	NMSettingWireless *setting = priv->setting;
+	const GByteArray *ssid = NULL;
+	const char *mode = NULL;
+	const char *band = NULL;
 	int band_idx = 0;
 	int rate_def;
 	int tx_power_def;
@@ -230,8 +233,14 @@ populate_ui (CEPageWireless *self)
 	                  GINT_TO_POINTER (mtu_def));
 	g_signal_connect_swapped (priv->mtu, "value-changed", G_CALLBACK (ce_page_changed), self);
 
-	if (setting->ssid)
-		utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) setting->ssid->data, setting->ssid->len);
+	g_object_get (setting,
+				  NM_SETTING_WIRELESS_SSID, &ssid,
+				  NM_SETTING_WIRELESS_MODE, &mode,
+				  NM_SETTING_WIRELESS_BAND, &band,
+				  NULL);
+
+	if (ssid)
+		utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 	else
 		utf8_ssid = g_strdup ("");
 	gtk_entry_set_text (priv->ssid, utf8_ssid);
@@ -240,7 +249,7 @@ populate_ui (CEPageWireless *self)
 
 	/* Default to Infrastructure */
 	gtk_combo_box_set_active (priv->mode, 0);
-	if (setting->mode && !strcmp (setting->mode, "adhoc"))
+	if (mode && !strcmp (mode, "adhoc"))
 		gtk_combo_box_set_active (priv->mode, 1);
 	g_signal_connect_swapped (priv->mode, "changed", G_CALLBACK (ce_page_changed), self);
 
@@ -252,11 +261,11 @@ populate_ui (CEPageWireless *self)
 	                  self);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), FALSE);
-	if (setting->band) {
-		if (!strcmp (setting->band ? setting->band : "", "a")) {
+	if (band) {
+		if (!strcmp (band ? band : "", "a")) {
 			band_idx = 1;
 			gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), TRUE);
-		} else if (!strcmp (setting->band ? setting->band : "", "bg")) {
+		} else if (!strcmp (band ? band : "", "bg")) {
 			band_idx = 2;
 			gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), TRUE);
 		}
@@ -269,21 +278,21 @@ populate_ui (CEPageWireless *self)
 
 	/* Update the channel _after_ the band has been set so that it gets
 	 * the right values */
-	priv->last_channel = setting->channel;
-	gtk_spin_button_set_value (priv->channel, (gdouble) setting->channel);
+	priv->last_channel = nm_setting_wireless_get_channel (setting);
+	gtk_spin_button_set_value (priv->channel, (gdouble) priv->last_channel);
 	g_signal_connect_swapped (priv->channel, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	/* BSSID */
-	ce_page_mac_to_entry (setting->bssid, priv->bssid);
+	ce_page_mac_to_entry (nm_setting_wireless_get_bssid (setting), priv->bssid);
 	g_signal_connect_swapped (priv->bssid, "changed", G_CALLBACK (ce_page_changed), self);
 
 	/* MAC address */
-	ce_page_mac_to_entry (setting->mac_address, priv->mac);
+	ce_page_mac_to_entry (nm_setting_wireless_get_mac_address (setting), priv->mac);
 	g_signal_connect_swapped (priv->mac, "changed", G_CALLBACK (ce_page_changed), self);
 
-	gtk_spin_button_set_value (priv->rate, (gdouble) setting->rate);
-	gtk_spin_button_set_value (priv->tx_power, (gdouble) setting->tx_power);
-	gtk_spin_button_set_value (priv->mtu, (gdouble) setting->mtu);
+	gtk_spin_button_set_value (priv->rate, (gdouble) nm_setting_wireless_get_rate (setting));
+	gtk_spin_button_set_value (priv->tx_power, (gdouble) nm_setting_wireless_get_tx_power (setting));
+	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wireless_get_mtu (setting));
 }
 
 CEPageWireless *
@@ -429,7 +438,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWireless *self = CE_PAGE_WIRELESS (page);
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
-	char *security;
+	const char *security;
 	gboolean success;
 	gboolean invalid = FALSE;
 	GByteArray *ignore;
@@ -445,11 +454,11 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	ui_to_setting (self);
 
 	/* A hack to not check the wireless security here */
-	security = priv->setting->security;
-	priv->setting->security = NULL;
+	security = nm_setting_wireless_get_security (priv->setting);
+	g_object_set (priv->setting, NM_SETTING_WIRELESS_SEC, NULL, NULL);
 
 	success = nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
-	priv->setting->security = security;
+	g_object_set (priv->setting, NM_SETTING_WIRELESS_SEC, security, NULL);
 
 	return success;
 }

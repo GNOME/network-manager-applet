@@ -175,6 +175,8 @@ ce_page_wireless_security_new (NMConnection *connection)
 	gboolean is_adhoc = FALSE;
 	GtkListStore *sec_model;
 	GtkTreeIter iter;
+	const char *mode;
+	const char *security;
 	guint32 dev_caps = 0;
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
 	int active = -1;
@@ -220,12 +222,15 @@ ce_page_wireless_security_new (NMConnection *connection)
 	           | NM_WIFI_DEVICE_CAP_WPA
 	           | NM_WIFI_DEVICE_CAP_RSN;
 
-	if (s_wireless->mode && !strcmp (s_wireless->mode, "adhoc"))
+	mode = nm_setting_wireless_get_mode (s_wireless);
+	if (mode && !strcmp (mode, "adhoc"))
 		is_adhoc = TRUE;
 
 	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
 	                                               NM_TYPE_SETTING_WIRELESS_SECURITY));
-	if (!s_wireless->security || strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+
+	security = nm_setting_wireless_get_security (s_wireless);
+	if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
 		s_wireless_sec = NULL;
 	if (s_wireless_sec)
 		default_type = get_default_type_for_security (s_wireless_sec);
@@ -371,9 +376,11 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	sec = wireless_security_combo_get_active (self);
 	if (sec) {
-		if (s_wireless->ssid) {
+		const GByteArray *ssid = nm_setting_wireless_get_ssid (s_wireless);
+
+		if (ssid) {
 			/* FIXME: get failed property and error out of wireless security objects */
-			valid = wireless_security_validate (sec, s_wireless->ssid);
+			valid = wireless_security_validate (sec, ssid);
 			if (valid)
 				wireless_security_fill_connection (sec, connection);
 			else
@@ -382,8 +389,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 			g_set_error (error, 0, 0, "Missing SSID");
 	} else {
 		/* No security, unencrypted */
-		g_free (s_wireless->security);
-		s_wireless->security = NULL;
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
 		valid = TRUE;
 	}
 

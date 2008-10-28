@@ -102,18 +102,17 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	guint32 len;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
+	const char *mode;
 	gboolean is_adhoc = FALSE;
 
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	g_assert (s_wireless);
-	g_assert (s_wireless->ssid);
 
-	if (s_wireless && s_wireless->mode && !strcmp (s_wireless->mode, "adhoc"))
+	mode = nm_setting_wireless_get_mode (s_wireless);
+	if (mode && !strcmp (mode, "adhoc"))
 		is_adhoc = TRUE;
 
-	if (s_wireless->security)
-		g_free (s_wireless->security);
-	s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
+	g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
 	/* Blow away the old security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
@@ -128,9 +127,10 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 		hashed = g_strdup (key);
 	} else {
 		/* passphrase */
+		const GByteArray *ssid = nm_setting_wireless_get_ssid (s_wireless);
 		unsigned char *buf = g_malloc0 (WPA_PMK_LEN * 2);
-		pbkdf2_sha1 (key, (char *) s_wireless->ssid->data, s_wireless->ssid->len,
-		             4096, buf, WPA_PMK_LEN);
+
+		pbkdf2_sha1 (key, (char *) ssid->data, ssid->len, 4096, buf, WPA_PMK_LEN);
 		hashed = utils_bin2hexstr ((const char *) buf, WPA_PMK_LEN, WPA_PMK_LEN * 2);
 		g_free (buf);
 	}

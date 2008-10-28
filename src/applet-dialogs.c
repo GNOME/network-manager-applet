@@ -169,15 +169,15 @@ create_info_label_security (NMConnection *connection)
 		NMSettingWireless *s_wireless;
 		NMSettingWirelessSecurity *s_wireless_sec;
 		NMSetting8021x *s_8021x;
+		const char *security;
 
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 		s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, 
 																				  NM_TYPE_SETTING_WIRELESS_SECURITY);
 		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
-		if (s_wireless
-			&& s_wireless->security
-			&& !strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)
-		    && s_wireless_sec) {
+		security = s_wireless ? nm_setting_wireless_get_security (s_wireless) : NULL;
+
+		if (security && !strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME) && s_wireless_sec) {
 
 			if (!strcmp (s_wireless_sec->key_mgmt, "none"))
 				label = g_strdup (_("WEP"));

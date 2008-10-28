@@ -338,14 +338,13 @@ wireless_new_auto_connection (NMDevice *device,
 	s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
 
 	ap_ssid = nm_access_point_get_ssid (info->ap);
-	s_wireless->ssid = g_byte_array_sized_new (ap_ssid->len);
-	g_byte_array_append (s_wireless->ssid, ap_ssid->data, ap_ssid->len);
+	g_object_set (s_wireless, NM_SETTING_WIRELESS_SSID, ap_ssid, NULL);
 
 	mode = nm_access_point_get_mode (info->ap);
 	if (mode == NM_802_11_MODE_ADHOC)
-		s_wireless->mode = g_strdup ("adhoc");
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "adhoc", NULL);
 	else if (mode == NM_802_11_MODE_INFRA)
-		s_wireless->mode = g_strdup ("infrastructure");
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
 	else
 		g_assert_not_reached ();
 
@@ -354,9 +353,8 @@ wireless_new_auto_connection (NMDevice *device,
 	if (!supported) {
 		g_object_unref (s_wireless);
 		goto out;
-	} else if (s_wireless_sec) {
-		s_wireless->security = g_strdup (NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
-	}
+	} else if (s_wireless_sec)
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
 	connection = nm_connection_new ();
 	nm_connection_add_setting (connection, NM_SETTING (s_wireless));
@@ -742,10 +740,6 @@ add_seen_bssid (NMAGConfConnection *gconf_connection, NMAccessPoint *ap)
 {
 	NMConnection *connection;
 	NMSettingWireless *s_wireless;
-	gboolean found = FALSE;
-	gboolean added = FALSE;
-	char *lower_bssid;
-	GSList *iter;
 	const char *bssid;
 
 	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (gconf_connection));
@@ -759,29 +753,7 @@ add_seen_bssid (NMAGConfConnection *gconf_connection, NMAccessPoint *ap)
 	if (!bssid || !utils_ether_addr_valid (ether_aton (bssid)))
 		return FALSE;
 
-	lower_bssid = g_ascii_strdown (bssid, -1);
-	if (!lower_bssid)
-		return FALSE;
-
-	for (iter = s_wireless->seen_bssids; iter; iter = g_slist_next (iter)) {
-		char *lower_seen_bssid = g_ascii_strdown (iter->data, -1);
-
-		if (!strcmp (lower_seen_bssid, lower_bssid)) {
-			found = TRUE;
-			g_free (lower_seen_bssid);
-			break;
-		}
-		g_free (lower_seen_bssid);
-	}
-
-	/* Add this AP's BSSID to the seen-BSSIDs list */
-	if (!found) {
-		s_wireless->seen_bssids = g_slist_prepend (s_wireless->seen_bssids,
-		                                           g_strdup (lower_bssid));
-		added = TRUE;
-	}
-	g_free (lower_bssid);
-	return added;
+	return nm_setting_wireless_add_seen_bssid (s_wireless, bssid);
 }
 
 static void
@@ -814,7 +786,7 @@ notify_active_ap_changed_cb (NMDeviceWifi *device,
 		return;
 
 	ssid = nm_access_point_get_ssid (new);
-	if (!ssid || !nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
+	if (!ssid || !nm_utils_same_ssid (nm_setting_wireless_get_ssid (s_wireless), ssid, TRUE))
 		return;
 
 	if (add_seen_bssid (gconf_connection, new))
@@ -1404,15 +1376,20 @@ wireless_dialog_response_cb (GtkDialog *foo,
 
 			if (!id) {
 				NMSettingWireless *s_wireless;
+				const GByteArray *ssid;
+				const char *mode;
 
 				s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-				id = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
+				ssid = nm_setting_wireless_get_ssid (s_wireless);
+
+				id = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 				g_object_set (s_con, NM_SETTING_CONNECTION_ID, id, NULL);
 				g_free (id);
 
 				// FIXME: don't autoconnect until the connection is successful at least once
 				/* Don't autoconnect adhoc networks by default for now */
-				if (!s_wireless->mode || !strcmp (s_wireless->mode, "infrastructure"))
+				mode = nm_setting_wireless_get_mode (s_wireless);
+				if (!mode || !strcmp (mode, "infrastructure"))
 					g_object_set (s_con, NM_SETTING_CONNECTION_AUTOCONNECT, TRUE, NULL);
 			}
 

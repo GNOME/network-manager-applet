@@ -461,8 +461,10 @@ utils_check_ap_compatible (NMAccessPoint *ap,
 {
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
-	const GByteArray *ssid;
-	NM80211Mode mode;
+	const GByteArray *setting_bssid;
+	const char *setting_mode;
+	const char *setting_band;
+	NM80211Mode ap_mode;
 	guint32 freq;
 
 	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
@@ -472,35 +474,37 @@ utils_check_ap_compatible (NMAccessPoint *ap,
 	if (s_wireless == NULL)
 		return FALSE;
 	
-	ssid = nm_access_point_get_ssid (ap);
-	if (!nm_utils_same_ssid (s_wireless->ssid, ssid, TRUE))
+	if (!nm_utils_same_ssid (nm_setting_wireless_get_ssid (s_wireless), nm_access_point_get_ssid (ap), TRUE))
 		return FALSE;
 
-	if (s_wireless->bssid) {
+	setting_bssid = nm_setting_wireless_get_bssid (s_wireless);
+	if (setting_bssid) {
 		struct ether_addr ap_addr;
 
 		if (ether_aton_r (nm_access_point_get_hw_address (ap), &ap_addr)) {
-			if (memcmp (s_wireless->bssid->data, &ap_addr, ETH_ALEN))
+			if (memcmp (setting_bssid->data, &ap_addr, ETH_ALEN))
 				return FALSE;
 		}
 	}
 
-	mode = nm_access_point_get_mode (ap);
-	if (s_wireless->mode) {
-		if (   !strcmp (s_wireless->mode, "infrastructure")
-		    && (mode != NM_802_11_MODE_INFRA))
+	ap_mode = nm_access_point_get_mode (ap);
+	setting_mode = nm_setting_wireless_get_mode (s_wireless);
+	if (setting_mode) {
+		if (   !strcmp (setting_mode, "infrastructure")
+		    && (ap_mode != NM_802_11_MODE_INFRA))
 			return FALSE;
-		if (   !strcmp (s_wireless->mode, "adhoc")
-		    && (mode != NM_802_11_MODE_ADHOC))
+		if (   !strcmp (setting_mode, "adhoc")
+		    && (ap_mode != NM_802_11_MODE_ADHOC))
 			return FALSE;
 	}
 
 	freq = nm_access_point_get_frequency (ap);
-	if (s_wireless->band) {
-		if (!strcmp (s_wireless->band, "a")) {
+	setting_band = nm_setting_wireless_get_band (s_wireless);
+	if (setting_band) {
+		if (!strcmp (setting_band, "a")) {
 			if (freq < 5170 || freq > 5825)
 				return FALSE;
-		} else if (!strcmp (s_wireless->band, "bg")) {
+		} else if (!strcmp (setting_band, "bg")) {
 			if (freq < 2412 || freq > 2472)
 				return FALSE;
 		}
@@ -572,6 +576,8 @@ connection_valid_for_wireless (NMConnection *connection,
 	NMDeviceWifi *wdev = NM_DEVICE_WIFI (device);
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
+	const GByteArray *setting_mac;
+	const char *setting_security;
 	guint32 wcaps;
 	NMAccessPoint *ap;
 
@@ -582,7 +588,8 @@ connection_valid_for_wireless (NMConnection *connection,
 	g_return_val_if_fail (s_wireless != NULL, FALSE);
 
 	/* Match MAC address */
-	if (s_wireless->mac_address) {
+	setting_mac = nm_setting_wireless_get_mac_address (s_wireless);
+	if (setting_mac) {
 		const char *str_mac;
 		struct ether_addr *bin_mac;
 
@@ -592,7 +599,7 @@ connection_valid_for_wireless (NMConnection *connection,
 		bin_mac = ether_aton (str_mac);
 		g_return_val_if_fail (bin_mac != NULL, FALSE);
 
-		if (memcmp (bin_mac->ether_addr_octet, s_wireless->mac_address->data, ETH_ALEN))
+		if (memcmp (bin_mac->ether_addr_octet, setting_mac->data, ETH_ALEN))
 			return FALSE;
 	}
 
@@ -605,7 +612,8 @@ connection_valid_for_wireless (NMConnection *connection,
 			return FALSE;
 	}
 
-	if (!s_wireless->security || strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+	setting_security = nm_setting_wireless_get_security (s_wireless);
+	if (!setting_security || strcmp (setting_security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
 		return TRUE; /* all devices can do unencrypted networks */
 
 	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));

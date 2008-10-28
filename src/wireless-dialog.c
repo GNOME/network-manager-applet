@@ -235,7 +235,7 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 		NMSettingWireless *s_wireless;
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
 		g_assert (s_wireless);
-		ssid = s_wireless->ssid;
+		ssid = (GByteArray *) nm_setting_wireless_get_ssid (s_wireless);
 		free_ssid = FALSE;
 	} else {
 		ssid = validate_dialog_ssid (self);
@@ -311,8 +311,11 @@ connection_combo_changed (GtkWidget *combo,
 
 	widget = glade_xml_get_widget (priv->xml, "network_name_entry");
 	if (priv->connection) {
+		const GByteArray *ssid;
+
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
-		utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
+		ssid = nm_setting_wireless_get_ssid (s_wireless);
+		utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 		gtk_entry_set_text (GTK_ENTRY (widget), utf8_ssid);
 		g_free (utf8_ssid);
 	} else {
@@ -420,6 +423,8 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 			NMConnection *candidate = NM_CONNECTION (iter->data);
 			NMSettingWireless *s_wireless;
 			const char *connection_type;
+			const char *mode;
+			const GByteArray *setting_mac;
 
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
 			connection_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
@@ -442,12 +447,14 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 					continue;
 
 				/* Ignore non-Ad-Hoc connections too */
-				if (!s_wireless->mode || strcmp (s_wireless->mode, "adhoc"))
+				mode = nm_setting_wireless_get_mode (s_wireless);
+				if (!mode || strcmp (mode, "adhoc"))
 					continue;
 			}
 
 			/* Ignore connections that don't apply to the selected device */
-			if (s_wireless->mac_address) {
+			setting_mac = nm_setting_wireless_get_mac_address (s_wireless);
+			if (setting_mac) {
 				const char *hw_addr;
 
 				hw_addr = nm_device_wifi_get_hw_address (NM_DEVICE_WIFI (priv->device));
@@ -455,7 +462,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 					struct ether_addr *ether;
 
 					ether = ether_aton (hw_addr);
-					if (ether && memcmp (s_wireless->mac_address->data, ether->ether_addr_octet, ETH_ALEN))
+					if (ether && memcmp (setting_mac->data, ether->ether_addr_octet, ETH_ALEN))
 						continue;
 				}
 			}
@@ -714,13 +721,20 @@ security_combo_init (NMAWirelessDialog *self)
 	}
 
 	if (priv->connection) {
+		const char *mode;
+		const char *security;
+
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
-		if (s_wireless && s_wireless->mode && !strcmp (s_wireless->mode, "adhoc"))
+
+		mode = nm_setting_wireless_get_mode (s_wireless);
+		if (mode && !strcmp (mode, "adhoc"))
 			is_adhoc = TRUE;
 
 		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (priv->connection, 
 										NM_TYPE_SETTING_WIRELESS_SECURITY));
-		if (!s_wireless->security || strcmp (s_wireless->security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+
+		security = nm_setting_wireless_get_security (s_wireless);
+		if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
 			wsec = NULL;
 		if (wsec)
 			default_type = get_default_type_for_security (wsec, !!priv->ap, ap_flags, dev_caps);
@@ -933,10 +947,12 @@ internal_init (NMAWirelessDialog *self,
 		char *tmp;
 		char *esc_ssid = NULL;
 		NMSettingWireless *s_wireless;
+		const GByteArray *ssid;
 
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
-		if (s_wireless && s_wireless->ssid)
-			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) s_wireless->ssid->data, s_wireless->ssid->len);
+		ssid = s_wireless ? nm_setting_wireless_get_ssid (s_wireless) : NULL;
+		if (ssid)
+			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 
 		tmp = g_strdup_printf (_("Passwords or encryption keys are required to access the wireless network '%s'."),
 		                       esc_ssid ? esc_ssid : "<unknown>");
@@ -1000,13 +1016,12 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 		s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
-		s_wireless->ssid = validate_dialog_ssid (self);
-		g_assert (s_wireless->ssid);
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_SSID, validate_dialog_ssid (self), NULL);
 
 		if (priv->adhoc_create) {
 			NMSettingIP4Config *s_ip4;
 
-			s_wireless->mode = g_strdup ("adhoc");
+			g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "adhoc", NULL);
 
 			s_ip4 = (NMSettingIP4Config *) nm_setting_ip4_config_new ();
 			s_ip4->method = g_strdup ("shared");
@@ -1029,10 +1044,7 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 		g_assert (s_wireless);
 
-		if (s_wireless->security) {
-			g_free (s_wireless->security);
-			s_wireless->security = NULL;
-		}
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
 	}
 
 	/* Fill device */
