@@ -239,7 +239,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	const char *iface;
 	NMIP4Config *ip4_config;
 	const GArray *dns;
-	NMSettingIP4Address *def_addr;
+	NMIP4Address *def_addr;
 	guint32 hostmask, network, bcast, netmask;
 	int row = 0;
 
@@ -345,13 +345,13 @@ info_dialog_add_page (GtkNotebook *notebook,
 							   create_info_label (_("IP Address:")),
 							   0, 1, row, row + 1);
 	gtk_table_attach_defaults (table,
-							   create_info_label (ip4_address_as_string (def_addr->address)),
+							   create_info_label (ip4_address_as_string (nm_ip4_address_get_address (def_addr))),
 							   1, 2, row, row + 1);
 	row++;
 
 	/* Broadcast */
-	netmask = nm_utils_ip4_prefix_to_netmask (def_addr->prefix);
-	network = ntohl (def_addr->address) & ntohl (netmask);
+	netmask = nm_utils_ip4_prefix_to_netmask (nm_ip4_address_get_prefix (def_addr));
+	network = ntohl (nm_ip4_address_get_address (def_addr)) & ntohl (netmask);
 	hostmask = ~ntohl (netmask);
 	bcast = htonl (network | hostmask);
 
@@ -373,12 +373,12 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	/* Gateway */
-	if (def_addr->gateway) {
+	if (nm_ip4_address_get_gateway (def_addr)) {
 		gtk_table_attach_defaults (table,
 								   create_info_label (_("Default Route:")),
 								   0, 1, row, row + 1);
 		gtk_table_attach_defaults (table,
-								   create_info_label (ip4_address_as_string (def_addr->gateway)),
+								   create_info_label (ip4_address_as_string (nm_ip4_address_get_gateway (def_addr))),
 								   1, 2, row, row + 1);
 		row++;
 	}

@@ -428,7 +428,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
 			connection_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
-			if (connection_type)
+			if (!connection_type)
 				continue;
 
 			if (strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME))
@@ -441,9 +441,13 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 			/* If creating a new Ad-Hoc network, only show shared network connections */
 			if (priv->adhoc_create) {
 				NMSettingIP4Config *s_ip4;
+				const char *method = NULL;
 
 				s_ip4 = (NMSettingIP4Config *) nm_connection_get_setting (candidate, NM_TYPE_SETTING_IP4_CONFIG);
-				if (!s_ip4 || strcmp (s_ip4->method, "shared"))
+				if (s_ip4)
+					method = nm_setting_ip4_config_get_method (s_ip4);
+
+				if (!s_ip4 || strcmp (method, "shared"))
 					continue;
 
 				/* Ignore non-Ad-Hoc connections too */
@@ -1024,7 +1028,7 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 			g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "adhoc", NULL);
 
 			s_ip4 = (NMSettingIP4Config *) nm_setting_ip4_config_new ();
-			s_ip4->method = g_strdup ("shared");
+			g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_METHOD, NM_SETTING_IP4_CONFIG_METHOD_SHARED, NULL);
 			nm_connection_add_setting (connection, (NMSetting *) s_ip4);
 		}
 

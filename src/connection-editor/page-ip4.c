@@ -23,6 +23,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -267,23 +268,25 @@ populate_ui (CEPageIP4 *self)
 	NMSettingIP4Config *setting = priv->setting;
 	GtkListStore *store;
 	GtkTreeIter model_iter;
-	GSList *iter;
 	int method = IP4_METHOD_AUTO;
 	GString *string = NULL;
 	SetMethodInfo info;
+	const char *str_method;
+	int i;
 
 	/* Method */
 	gtk_combo_box_set_active (priv->method, 0);
-	if (setting->method) {
-		if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_LINK_LOCAL))
+	str_method = nm_setting_ip4_config_get_method (setting);
+	if (str_method) {
+		if (!strcmp (str_method, NM_SETTING_IP4_CONFIG_METHOD_LINK_LOCAL))
 			method = IP4_METHOD_LINK_LOCAL;
-		else if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_MANUAL))
+		else if (!strcmp (str_method, NM_SETTING_IP4_CONFIG_METHOD_MANUAL))
 			method = IP4_METHOD_MANUAL;
-		else if (!strcmp (setting->method, NM_SETTING_IP4_CONFIG_METHOD_SHARED))
+		else if (!strcmp (str_method, NM_SETTING_IP4_CONFIG_METHOD_SHARED))
 			method = IP4_METHOD_SHARED;
 	}
 
-	if (method == IP4_METHOD_AUTO && setting->ignore_auto_dns)
+	if (method == IP4_METHOD_AUTO && nm_setting_ip4_config_get_ignore_auto_dns (setting))
 		method = IP4_METHOD_AUTO_ADDRESSES;
 
 	info.method = method;
@@ -292,10 +295,12 @@ populate_ui (CEPageIP4 *self)
 
 	/* Addresses */
 	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-	for (iter = setting->addresses; iter; iter = g_slist_next (iter)) {
-		NMSettingIP4Address *addr = (NMSettingIP4Address *) iter->data;
+	for (i = 0; i < nm_setting_ip4_config_get_num_addresses (setting); i++) {
+		NMIP4Address *addr = nm_setting_ip4_config_get_address (setting, i);
 		struct in_addr tmp_addr;
-		gchar *ip_string;
+		char buf[INET_ADDRSTRLEN + 1];
+		char *tmp;
+		const char *ignored;
 
 		if (!addr) {
 			g_warning ("%s: empty IP4 Address structure!", __func__);
@@ -304,15 +309,17 @@ populate_ui (CEPageIP4 *self)
 
 		gtk_list_store_append (store, &model_iter);
 
-		tmp_addr.s_addr = addr->address;
-		ip_string = inet_ntoa (tmp_addr);
-		gtk_list_store_set (store, &model_iter, COL_ADDRESS, g_strdup (ip_string), -1);
+		tmp_addr.s_addr = nm_ip4_address_get_address (addr);
+		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
+		gtk_list_store_set (store, &model_iter, COL_ADDRESS, buf, -1);
 
-		gtk_list_store_set (store, &model_iter, COL_PREFIX, g_strdup_printf ("%d", addr->prefix), -1);
+		tmp = g_strdup_printf ("%d", nm_ip4_address_get_prefix (addr));
+		gtk_list_store_set (store, &model_iter, COL_PREFIX, tmp, -1);
+		g_free (tmp);
 
-		tmp_addr.s_addr = addr->gateway;
-		ip_string = inet_ntoa (tmp_addr);
-		gtk_list_store_set (store, &model_iter, COL_GATEWAY, g_strdup (ip_string), -1);
+		tmp_addr.s_addr = nm_ip4_address_get_gateway (addr);
+		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
+		gtk_list_store_set (store, &model_iter, COL_GATEWAY, buf, -1);
 	}
 
 	gtk_tree_view_set_model (priv->addr_list, GTK_TREE_MODEL (store));
@@ -321,41 +328,39 @@ populate_ui (CEPageIP4 *self)
 	g_object_unref (store);
 
 	/* DNS servers */
-	if (setting->dns) {
-		int i;
+	string = g_string_new ("");
+	for (i = 0; i < nm_setting_ip4_config_get_num_dns (setting); i++) {
+		struct in_addr tmp_addr;
+		char buf[INET_ADDRSTRLEN + 1];
+		const char *ignored;
 
-		string = g_string_new ("");
-		for (i = 0; i < setting->dns->len; i++) {
-			struct in_addr tmp_addr;
-			char *ip_string;
+		tmp_addr.s_addr = nm_setting_ip4_config_get_dns (setting, i);
+		if (!tmp_addr.s_addr)
+			continue;
 
-			tmp_addr.s_addr = g_array_index (setting->dns, guint32, i);
-			if (!tmp_addr.s_addr)
-				continue;
-
-			ip_string = inet_ntoa (tmp_addr);
-			if (string->len)
-				g_string_append (string, ", ");
-			g_string_append (string, ip_string);
-		}
-
-		gtk_entry_set_text (priv->dns_servers, string->str);
-		g_string_free (string, TRUE);
+		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
+		if (string->len)
+			g_string_append (string, ", ");
+		g_string_append (string, buf);
 	}
+	gtk_entry_set_text (priv->dns_servers, string->str);
+	g_string_free (string, TRUE);
 
 	/* DNS searches */
 	string = g_string_new ("");
-	for (iter = setting->dns_search; iter; iter = g_slist_next (iter)) {
+	for (i = 0; i < nm_setting_ip4_config_get_num_dns_searches (setting); i++) {
 		if (string->len)
 			g_string_append (string, ", ");
-		g_string_append (string, g_strdup (iter->data));
+		g_string_append (string, nm_setting_ip4_config_get_dns_search (setting, i));
 	}
 	gtk_entry_set_text (priv->dns_searches, string->str);
 	g_string_free (string, TRUE);
 
 	if ((method == IP4_METHOD_AUTO) || (method = IP4_METHOD_AUTO_ADDRESSES)) {
-		if (setting->dhcp_client_id)
-			gtk_entry_set_text (priv->dhcp_client_id, setting->dhcp_client_id);
+		if (nm_setting_ip4_config_get_dhcp_client_id (setting)) {
+			gtk_entry_set_text (priv->dhcp_client_id,
+			                    nm_setting_ip4_config_get_dhcp_client_id (setting));
+		}
 	}
 }
 
@@ -372,7 +377,7 @@ addr_add_clicked (GtkButton *button, gpointer user_data)
 
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
 	gtk_list_store_append (store, &iter);
-	gtk_list_store_set (store, &iter, 0, g_strdup (""), -1);
+	gtk_list_store_set (store, &iter, COL_ADDRESS, "", -1);
 
 	selection = gtk_tree_view_get_selection (priv->addr_list);
 	gtk_tree_selection_select_iter (selection, &iter);
@@ -529,14 +534,17 @@ routes_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	GtkWidget *dialog, *toplevel;
 	gboolean automatic = FALSE;
+	const char *method;
+	char *tmp;
 
 	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
 	g_return_if_fail (GTK_WIDGET_TOPLEVEL (toplevel));
 
-	if (!priv->setting->method || !strcmp (priv->setting->method, NM_SETTING_IP4_CONFIG_METHOD_AUTO))
+	method = nm_setting_ip4_config_get_method (priv->setting);
+	if (!method || !strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_AUTO))
 		automatic = TRUE;
-	
-	dialog = ip4_routes_dialog_new (priv->setting->routes, automatic, priv->setting->ignore_auto_routes);
+
+	dialog = ip4_routes_dialog_new (priv->setting, automatic);
 	if (!dialog) {
 		g_warning ("%s: failed to create the routes dialog!", __func__);
 		return;
@@ -549,7 +557,9 @@ routes_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	}
 
 	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
-	gtk_window_set_title (GTK_WINDOW (dialog), g_strdup_printf (_("Editing IPv4 routes for %s"), priv->connection_id));
+	tmp = g_strdup_printf (_("Editing IPv4 routes for %s"), priv->connection_id);
+	gtk_window_set_title (GTK_WINDOW (dialog), tmp);
+	g_free (tmp);
 
 	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (routes_dialog_response_cb), self);
 	g_signal_connect (G_OBJECT (dialog), "close", G_CALLBACK (routes_dialog_close_cb), self);

@@ -498,10 +498,10 @@ nm_gconf_0_6_openvpn_settings (NMSettingVPN *s_vpn, GSList *vpn_data)
 	}
 }
 
-static GSList *
-convert_routes (GSList *str_routes)
+static void
+add_routes (NMSettingIP4Config *s_ip4, GSList *str_routes)
 {
-	GSList *routes = NULL, *iter;
+	GSList *iter;
 
 	for (iter = str_routes; iter; iter = g_slist_next (iter)) {
 		struct in_addr tmp;
@@ -525,21 +525,20 @@ convert_routes (GSList *str_routes)
 		/* don't pass the prefix to inet_pton() */
 		*p = '\0';
 		if (inet_pton (AF_INET, str_route, &tmp) > 0) {
-			NMSettingIP4Route *route;
+			NMIP4Route *route;
 
-			route = g_new0 (NMSettingIP4Route, 1);
-			route->address = tmp.s_addr;
-			route->prefix = (guint32) prefix;
+			route = nm_ip4_route_new ();
+			nm_ip4_route_set_dest (route, tmp.s_addr);
+			nm_ip4_route_set_prefix (route, (guint32) prefix);
 
-			routes = g_slist_append (routes, route);
+			nm_setting_ip4_config_add_route (s_ip4, route);
+			nm_ip4_route_unref (route);
 		} else
 			g_warning ("Ignoring invalid route '%s'", str_route);
 
 next:
 		g_free (str_route);
 	}
-
-	return routes;
 }
 
 static NMConnection *
@@ -601,7 +600,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 
 	if (str_routes) {
 		s_ip4 = NM_SETTING_IP4_CONFIG (nm_setting_ip4_config_new ());
-		s_ip4->routes = convert_routes (str_routes);
+		add_routes (s_ip4, str_routes);
 	}
 
 	connection = nm_connection_new ();
@@ -1070,15 +1069,13 @@ nm_gconf_migrate_0_7_ignore_dhcp_dns (GConfClient *client)
 	gconf_client_suggest_sync (client, NULL);
 }
 
-static gboolean
-convert_route (const char *in_route, NMSettingIP4Route *converted)
+static NMIP4Route *
+convert_route (const char *in_route)
 {
+	NMIP4Route *route = NULL;
 	struct in_addr tmp;
 	char *p, *str_route;
 	long int prefix = 32;
-	gboolean success = FALSE;
-
-	memset (converted, 0, sizeof (*converted));
 
 	str_route = g_strdup (in_route);
 	p = strchr (str_route, '/');
@@ -1101,13 +1098,13 @@ convert_route (const char *in_route, NMSettingIP4Route *converted)
 		goto out;
 	}
 
-	converted->address = tmp.s_addr;
-	converted->prefix = (guint32) prefix;
-	success = TRUE;
+	route = nm_ip4_route_new ();
+	nm_ip4_route_set_dest (route, tmp.s_addr);
+	nm_ip4_route_set_prefix (route, (guint32) prefix);
 
 out:
 	g_free (str_route);
-	return success;
+	return route;
 }
 
 #define VPN_KEY_ROUTES "routes"
@@ -1136,20 +1133,27 @@ nm_gconf_migrate_0_7_vpn_routes (GConfClient *client)
 
 		/* Convert 'x.x.x.x/x' into a route structure */
 		for (routes_iter = old_routes; routes_iter; routes_iter = g_slist_next (routes_iter)) {
-			NMSettingIP4Route route;
+			NMIP4Route *route;
 
-			if (convert_route (routes_iter->data, &route)) {
+			route = convert_route (routes_iter->data);
+			if (route) {
 				GArray *tmp_route;
+				guint32 tmp;
 
 				if (!new_routes)
 					new_routes = g_ptr_array_sized_new (3);
 
 				tmp_route = g_array_sized_new (FALSE, TRUE, sizeof (guint32), 4);
-				g_array_append_val (tmp_route, route.address);
-				g_array_append_val (tmp_route, route.prefix);
-				g_array_append_val (tmp_route, route.next_hop);
-				g_array_append_val (tmp_route, route.metric);
+				tmp = nm_ip4_route_get_dest (route);
+				g_array_append_val (tmp_route, tmp);
+				tmp = nm_ip4_route_get_prefix (route);
+				g_array_append_val (tmp_route, tmp);
+				tmp = nm_ip4_route_get_next_hop (route);
+				g_array_append_val (tmp_route, tmp);
+				tmp = nm_ip4_route_get_metric (route);
+				g_array_append_val (tmp_route, tmp);
 				g_ptr_array_add (new_routes, tmp_route);
+				nm_ip4_route_unref (route);
 			}
 		}
 

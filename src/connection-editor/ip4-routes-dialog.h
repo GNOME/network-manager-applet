@@ -28,9 +28,7 @@
 
 #include "nm-setting-ip4-config.h"
 
-GtkWidget *ip4_routes_dialog_new (GSList *routes,
-                                  gboolean automatic,
-                                  gboolean ignore_auto_routes);
+GtkWidget *ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic);
 
 void ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4);
 
