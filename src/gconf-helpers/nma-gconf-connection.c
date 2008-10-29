@@ -111,10 +111,9 @@ fill_vpn_user_name (NMConnection *connection)
 	if (!s_vpn)
 		return;
 
-	g_free (s_vpn->user_name);
 	user_name = g_get_user_name ();
 	g_assert (g_utf8_validate (user_name, -1, NULL));
-	s_vpn->user_name = g_strdup (user_name);
+	g_object_set (s_vpn, NM_SETTING_VPN_USER_NAME, user_name, NULL);
 }
 
 gboolean

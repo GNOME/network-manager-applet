@@ -283,6 +283,7 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	NMVpnPluginUiInterface *plugin;
 	NMSettingConnection *s_con = NULL;
 	NMSettingVPN *s_vpn = NULL;
+	const char *service_type;
 	const char *id = NULL;
 	gboolean success = FALSE;
 
@@ -325,12 +326,14 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	}
 
 	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
-	if (!s_vpn || !s_vpn->service_type) {
+	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
+
+	if (service_type) {
 		g_set_error (&error, 0, 0, "VPN setting invalid");
 		goto done;
 	}
 
-	plugin = vpn_get_plugin_by_service (s_vpn->service_type);
+	plugin = vpn_get_plugin_by_service (service_type);
 	if (plugin)
 		success = nm_vpn_plugin_ui_interface_export (plugin, filename, connection, &error);
 
@@ -369,9 +372,12 @@ vpn_export (NMConnection *connection)
 	GtkWidget *dialog;
 	NMVpnPluginUiInterface *plugin;
 	NMSettingVPN *s_vpn = NULL;
+	const char *service_type;
 
 	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
-	if (!s_vpn || !s_vpn->service_type) {
+	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
+
+	if (!service_type) {
 		g_warning ("%s: invalid VPN connection!", __func__);
 		return;
 	}
@@ -383,7 +389,7 @@ vpn_export (NMConnection *connection)
 	                                      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 	                                      NULL);
 
-	plugin = vpn_get_plugin_by_service (s_vpn->service_type);
+	plugin = vpn_get_plugin_by_service (service_type);
 	if (plugin) {
 		char *suggested = NULL;
 

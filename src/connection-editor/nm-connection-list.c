@@ -419,7 +419,7 @@ remove_connection (NMExportedConnection *exported,
 		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
 			s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
 			if (s_vpn) {
-				plugin = vpn_get_plugin_by_service (s_vpn->service_type);
+				plugin = vpn_get_plugin_by_service (nm_setting_vpn_get_service_type (s_vpn));
 				if (plugin)
 					if (!nm_vpn_plugin_ui_interface_delete_connection (plugin, connection, &error)) {
 						g_warning ("%s: couldn't clean up VPN connection on delete: (%d) %s",
@@ -885,7 +885,8 @@ create_new_connection_for_type (NMConnectionList *list, const char *connection_t
 
 			type_setting = nm_setting_vpn_new ();
 			s_vpn = NM_SETTING_VPN (type_setting);
-			s_vpn->service_type = service;
+			g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service, NULL);
+			g_free (service);
 		}		
 	} else if (ctype == NM_TYPE_SETTING_PPPOE) {
 		id = get_next_available_name (list, _("DSL connection %d"));
@@ -1135,6 +1136,7 @@ vpn_list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 	NMExportedConnection *exported;
 	NMConnection *connection = NULL;
 	NMSettingVPN *s_vpn;
+	const char *service_type;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	guint32 caps;
@@ -1150,10 +1152,12 @@ vpn_list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 		goto done;
 
 	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
-	if (!s_vpn || !s_vpn->service_type)
+	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
+
+	if (!service_type)
 		goto done;
 
-	plugin = vpn_get_plugin_by_service (s_vpn->service_type);
+	plugin = vpn_get_plugin_by_service (service_type);
 	if (!plugin)
 		goto done;
 
@@ -1172,6 +1176,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 	NMConnectionEditor *editor;
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
+	const char *service_type;
 	char *s;
 
 	/* Basic sanity checks of the connection */
@@ -1200,7 +1205,9 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 	}
 
 	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
-	if (!s_vpn || !s_vpn->service_type || !strlen (s_vpn->service_type)) {
+	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
+
+	if (!service_type || !strlen (service_type)) {
 		GtkWidget *dialog;
 
 		dialog = gtk_message_dialog_new (NULL,

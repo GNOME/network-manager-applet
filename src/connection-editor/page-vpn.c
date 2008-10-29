@@ -61,6 +61,7 @@ ce_page_vpn_new (NMConnection *connection)
 	CEPage *parent;
 	GError *error = NULL;
 	NMVpnPluginUiInterface *plugin;
+	const char *service_type;
 
 	self = CE_PAGE_VPN (g_object_new (CE_TYPE_PAGE_VPN, NULL));
 	parent = CE_PAGE (self);
@@ -70,12 +71,14 @@ ce_page_vpn_new (NMConnection *connection)
 
 	priv->setting = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
 	g_assert (priv->setting);
-	g_assert (priv->setting->service_type);
 
-	plugin = vpn_get_plugin_by_service (priv->setting->service_type);
+	service_type = nm_setting_vpn_get_service_type (priv->setting);
+	g_assert (service_type);
+
+	plugin = vpn_get_plugin_by_service (service_type);
 	if (!plugin) {
 		g_warning ("%s: couldn't find VPN plugin for service '%s'!",
-		           __func__, priv->setting->service_type);
+		           __func__, service_type);
 		g_object_unref (self);
 		return NULL;
 	}
@@ -83,7 +86,7 @@ ce_page_vpn_new (NMConnection *connection)
 	priv->ui = nm_vpn_plugin_ui_interface_ui_factory (plugin, connection, &error);
 	if (!priv->ui) {
 		g_warning ("%s: couldn't create VPN UI for service '%s': %s",
-		           __func__, priv->setting->service_type, error->message);
+		           __func__, service_type, error->message);
 		g_error_free (error);
 		g_object_unref (self);
 		return NULL;

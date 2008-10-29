@@ -192,6 +192,7 @@ nma_vpn_request_password (NMExportedConnection *exported,
 	NMConnection *connection;
 	const char *id;
 	const char *connection_type;
+	const char *service_type;
 
 	g_return_val_if_fail (NM_IS_EXPORTED_CONNECTION (exported), FALSE);
 
@@ -208,14 +209,16 @@ nma_vpn_request_password (NMExportedConnection *exported,
 
 	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	g_return_val_if_fail (s_vpn != NULL, FALSE);
-	g_return_val_if_fail (s_vpn->service_type != NULL, FALSE);
+
+	service_type = nm_setting_vpn_get_service_type (s_vpn);
+	g_return_val_if_fail (service_type != NULL, FALSE);
 
 	/* find the auth-dialog binary */
-	auth_dialog_binary = find_auth_dialog_binary (s_vpn->service_type, id);
+	auth_dialog_binary = find_auth_dialog_binary (service_type, id);
 	if (!auth_dialog_binary) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): couldn't find VPN auth dialog  helper program '%s'.",
-		             __FILE__, __LINE__, __func__, s_vpn->service_type);
+		             __FILE__, __LINE__, __func__, service_type);
 		goto out;
 	}
 
@@ -223,7 +226,7 @@ nma_vpn_request_password (NMExportedConnection *exported,
 	argv[0] = auth_dialog_binary;
 	argv[2] = nm_setting_connection_get_uuid (s_con);
 	argv[4] = id;
-	argv[6] = s_vpn->service_type;
+	argv[6] = service_type;
 	if (!retry)
 		argv[7] = NULL;
 
@@ -251,7 +254,7 @@ nma_vpn_request_password (NMExportedConnection *exported,
 						 id);
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
   _("There was a problem launching the authentication dialog for VPN connection type '%s'. Contact your system administrator."),
-							  s_vpn->service_type);
+							  service_type);
 		gtk_window_present (GTK_WINDOW (dialog));
 		g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,

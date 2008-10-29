@@ -461,10 +461,10 @@ nm_gconf_0_6_vpnc_settings (NMSettingVPN *s_vpn, GSList *vpn_data)
 
 		if (*value) {
 			/* A string value */
-			g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup (value));
+			nm_setting_vpn_add_data_item (s_vpn, key, value);
 		} else {
 			/* A boolean; 0.6 treated key-without-value as "true" */
-			g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("yes"));
+			nm_setting_vpn_add_data_item (s_vpn, key, "yes");
 		}
 	}
 }
@@ -480,21 +480,21 @@ nm_gconf_0_6_openvpn_settings (NMSettingVPN *s_vpn, GSList *vpn_data)
 
 		if (!strcmp (key, "connection-type")) {
 			if (!strcmp (value, "x509"))
-				g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("tls"));
+				nm_setting_vpn_add_data_item (s_vpn, key, "tls");
 			else if (!strcmp (value, "shared-key"))
-				g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("static-key"));
+				nm_setting_vpn_add_data_item (s_vpn, key, "static-key");
 			else if (!strcmp (value, "password"))
-				g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("password"));
+				nm_setting_vpn_add_data_item (s_vpn, key, "password");
 		} else if (!strcmp (key, "comp-lzo")) {
-			g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup ("yes"));
+			nm_setting_vpn_add_data_item (s_vpn, key, "yes");
 		} else if (!strcmp (key, "dev")) {
 			if (!strcmp (value, "tap"))
-				g_hash_table_insert (s_vpn->data, g_strdup ("tap-dev"), g_strdup ("yes"));
+				nm_setting_vpn_add_data_item (s_vpn, "tap-dev", "yes");
 		} else if (!strcmp (key, "proto")) {
 			if (!strcmp (value, "tcp"))
-				g_hash_table_insert (s_vpn->data, g_strdup ("proto-tcp"), g_strdup ("yes"));
+				nm_setting_vpn_add_data_item (s_vpn, "proto-tcp", "yes");
 		} else
-			g_hash_table_insert (s_vpn->data, g_strdup (key), g_strdup (value));
+			nm_setting_vpn_add_data_item (s_vpn, key, value);
 	}
 }
 
@@ -585,7 +585,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	g_free (id);
 
 	s_vpn = (NMSettingVPN *)nm_setting_vpn_new ();
-	s_vpn->service_type = service_name;
+	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service_name, NULL);
 
 	if (!strcmp (service_name, "org.freedesktop.NetworkManager.vpnc"))
 		nm_gconf_0_6_vpnc_settings (s_vpn, vpn_data);
@@ -597,6 +597,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	free_slist (vpn_data);
 	g_free (path);
 	g_free (network);
+	g_free (service_name);
 
 	if (str_routes) {
 		s_ip4 = NM_SETTING_IP4_CONFIG (nm_setting_ip4_config_new ());
