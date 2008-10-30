@@ -293,8 +293,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 			wired = TRUE;
 
 		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
-		if (s_8021x && s_8021x->eap)
-			default_method = g_slist_nth_data (s_8021x->eap, 0);
+		if (s_8021x && nm_setting_802_1x_get_num_eap_methods (s_8021x))
+			default_method = nm_setting_802_1x_get_eap_method (s_8021x, 0);
 	}
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());

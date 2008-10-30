@@ -183,9 +183,9 @@ eap_method_validate_filepicker (GladeXML *xml,
 		if (!pw || !strlen (pw))
 			goto out;
 
-		success = nm_setting_802_1x_set_private_key (setting, filename, pw, NULL);
+		success = nm_setting_802_1x_set_private_key_from_file (setting, filename, pw, NULL);
 	} else {
-		success = nm_setting_802_1x_set_ca_cert (setting, filename, &error);
+		success = nm_setting_802_1x_set_ca_cert_from_file (setting, filename, &error);
 		if (error) {
 			g_warning ("Error: couldn't verify certificate: %d %s",
 			           error->code, error->message);

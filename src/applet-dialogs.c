@@ -94,16 +94,16 @@ get_eap_label (NMSettingWirelessSecurity *sec,
 	if (!s_8021x)
 		goto out;
 
-	if (s_8021x->eap && s_8021x->eap->data) {
-		char *eap_str = g_ascii_strup (s_8021x->eap->data, -1);
+	if (nm_setting_802_1x_get_num_eap_methods (s_8021x)) {
+		char *eap_str = g_ascii_strup (nm_setting_802_1x_get_eap_method (s_8021x, 0), -1);
 		g_string_append_printf (str, ", EAP-%s", eap_str);
 		g_free (eap_str);
 	}
 
-	if (s_8021x->phase2_auth)
-		phase2_str = g_ascii_strup (s_8021x->phase2_auth, -1);
-	else if (s_8021x->phase2_autheap)
-		phase2_str = g_ascii_strup (s_8021x->phase2_autheap, -1);
+	if (nm_setting_802_1x_get_phase2_auth (s_8021x))
+		phase2_str = g_ascii_strup (nm_setting_802_1x_get_phase2_auth (s_8021x), -1);
+	else if (nm_setting_802_1x_get_phase2_autheap (s_8021x))
+		phase2_str = g_ascii_strup (nm_setting_802_1x_get_phase2_autheap (s_8021x), -1);
 
 	if (phase2_str) {
 		g_string_append (str, ", ");

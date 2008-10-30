@@ -124,13 +124,13 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
 
-	s_8021x->eap = g_slist_append (s_8021x->eap, g_strdup ("peap"));
+	nm_setting_802_1x_add_eap_method (s_8021x, "peap");
 
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_anon_identity_entry");
 	g_assert (widget);
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (text && strlen (text))
-		s_8021x->anonymous_identity = g_strdup (text);
+		g_object_set (s_8021x, NM_SETTING_802_1X_ANONYMOUS_IDENTITY, text, NULL);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_ca_cert_button");
 	g_assert (widget);
@@ -409,7 +409,10 @@ eap_method_peap_new (const char *glade_file,
 	widget = glade_xml_get_widget (xml, "eap_peap_version_combo");
 	g_assert (widget);
 	if (s_8021x) {
-		if (s_8021x->phase1_peapver && !strcmp (s_8021x->phase1_peapver, "0"))
+		const char *peapver;
+
+		peapver = nm_setting_802_1x_get_phase1_peapver (s_8021x);
+		if (peapver && !strcmp (peapver, "0"))
 			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 		else
 			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
@@ -420,8 +423,8 @@ eap_method_peap_new (const char *glade_file,
 	                  parent);
 
 	widget = glade_xml_get_widget (xml, "eap_peap_anon_identity_entry");
-	if (s_8021x && s_8021x->anonymous_identity)
-		gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->anonymous_identity);
+	if (s_8021x && nm_setting_802_1x_get_anonymous_identity (s_8021x))
+		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_anonymous_identity (s_8021x));
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);

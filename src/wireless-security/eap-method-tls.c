@@ -139,13 +139,13 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_assert (s_8021x);
 
 	if (method->phase2)
-		s_8021x->phase2_auth = g_strdup ("tls");
+		g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "tls", NULL);
 	else
-		s_8021x->eap = g_slist_append (s_8021x->eap, g_strdup ("tls"));
+		nm_setting_802_1x_add_eap_method (s_8021x, "tls");
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_identity_entry");
 	g_assert (widget);
-	s_8021x->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_user_cert_button");
 	g_assert (widget);
@@ -196,13 +196,13 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	                        g_strdup (filename),
 	                        (GDestroyNotify) g_free);
 	if (method->phase2) {
-		nm_setting_802_1x_set_phase2_private_key (s_8021x, filename, password, &error);
+		nm_setting_802_1x_set_phase2_private_key_from_file (s_8021x, filename, password, &error);
 		if (error) {
 			g_warning ("Couldn't read phase2 private key: %s", error->message);
 			g_clear_error (&error);
 		}
 	} else {
-		nm_setting_802_1x_set_private_key (s_8021x, filename, password, &error);
+		nm_setting_802_1x_set_private_key_from_file (s_8021x, filename, password, &error);
 		if (error) {
 			g_warning ("Couldn't read private key: %s", error->message);
 			g_clear_error (&error);
@@ -391,8 +391,8 @@ eap_method_tls_new (const char *glade_file,
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
-	if (s_8021x && s_8021x->identity)
-		gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->identity);
+	if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
+		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 
 	widget = glade_xml_get_widget (xml, "eap_tls_private_key_password_entry");
 	g_assert (widget);

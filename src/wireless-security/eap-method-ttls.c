@@ -118,13 +118,13 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
 
-	s_8021x->eap = g_slist_append (s_8021x->eap, g_strdup ("ttls"));
+	nm_setting_802_1x_add_eap_method (s_8021x, "ttls");
 
 	widget = glade_xml_get_widget (parent->xml, "eap_ttls_anon_identity_entry");
 	g_assert (widget);
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (text && strlen (text))
-		s_8021x->anonymous_identity = g_strdup (text);
+		g_object_set (s_8021x, NM_SETTING_802_1X_ANONYMOUS_IDENTITY, text, NULL);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_ttls_ca_cert_button");
 	g_assert (widget);
@@ -283,15 +283,15 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	EAPMethodSimple *em_mschap_v2;
 	EAPMethodSimple *em_chap;
 	guint32 active = 0;
-	char *phase2_auth = NULL;
+	const char *phase2_auth = NULL;
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
 	if (s_8021x) {
-		if (s_8021x->phase2_auth)
-			phase2_auth = s_8021x->phase2_auth;
-		else if (s_8021x->phase2_autheap)
-			phase2_auth = s_8021x->phase2_autheap;
+		if (nm_setting_802_1x_get_phase2_auth (s_8021x))
+			phase2_auth = nm_setting_802_1x_get_phase2_auth (s_8021x);
+		else if (nm_setting_802_1x_get_phase2_autheap (s_8021x))
+			phase2_auth = nm_setting_802_1x_get_phase2_autheap (s_8021x);
 	}
 
 	em_pap = eap_method_simple_new (glade_file,
@@ -441,8 +441,8 @@ eap_method_ttls_new (const char *glade_file,
 	}
 
 	widget = glade_xml_get_widget (xml, "eap_ttls_anon_identity_entry");
-	if (s_8021x && s_8021x->anonymous_identity)
-		gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->anonymous_identity);
+	if (s_8021x && nm_setting_802_1x_get_anonymous_identity (s_8021x))
+		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_anonymous_identity (s_8021x));
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);

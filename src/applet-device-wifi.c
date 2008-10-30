@@ -287,8 +287,8 @@ get_security_for_ap (NMAccessPoint *ap,
 		add_ciphers_from_flags (sec, rsn_flags, FALSE);
 
 		*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
-		(*s_8021x)->eap = g_slist_append ((*s_8021x)->eap, g_strdup ("ttls"));
-		(*s_8021x)->phase2_auth = g_strdup ("mschapv2");
+		nm_setting_802_1x_add_eap_method (*s_8021x, "ttls");
+		g_object_set (*s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "mschapv2", NULL);
 		return sec;
 	}
 
@@ -301,8 +301,8 @@ get_security_for_ap (NMAccessPoint *ap,
 		add_ciphers_from_flags (sec, wpa_flags, FALSE);
 
 		*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
-		(*s_8021x)->eap = g_slist_append ((*s_8021x)->eap, g_strdup ("ttls"));
-		(*s_8021x)->phase2_auth = g_strdup ("mschapv2");
+		nm_setting_802_1x_add_eap_method (*s_8021x, "ttls");
+		g_object_set (*s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "mschapv2", NULL);
 		return sec;
 	}
 

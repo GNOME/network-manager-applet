@@ -214,17 +214,6 @@ utils_get_device_description (NMDevice *device)
 	return description;
 }
 
-static void
-clear_one_byte_array_field (GByteArray **field)
-{
-	g_return_if_fail (field != NULL);
-
-	if (!*field)
-		return;
-	g_byte_array_free (*field, TRUE);
-	*field = NULL;
-}
-
 void
 utils_fill_connection_certs (NMConnection *connection)
 {
@@ -239,19 +228,19 @@ utils_fill_connection_certs (NMConnection *connection)
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG);
 	if (filename)
-		nm_setting_802_1x_set_ca_cert (s_8021x, filename, NULL);
+		nm_setting_802_1x_set_ca_cert_from_file (s_8021x, filename, NULL);
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CLIENT_CERT_TAG);
 	if (filename)
-		nm_setting_802_1x_set_client_cert (s_8021x, filename, NULL);
+		nm_setting_802_1x_set_client_cert_from_file (s_8021x, filename, NULL);
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CA_CERT_TAG);
 	if (filename)
-		nm_setting_802_1x_set_phase2_ca_cert (s_8021x, filename, NULL);
+		nm_setting_802_1x_set_phase2_ca_cert_from_file (s_8021x, filename, NULL);
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CLIENT_CERT_TAG);
 	if (filename)
-		nm_setting_802_1x_set_phase2_client_cert (s_8021x, filename, NULL);
+		nm_setting_802_1x_set_phase2_client_cert_from_file (s_8021x, filename, NULL);
 }
 
 void
@@ -265,12 +254,14 @@ utils_clear_filled_connection_certs (NMConnection *connection)
 	if (!s_8021x)
 		return;
 
-	clear_one_byte_array_field (&s_8021x->ca_cert);
-	clear_one_byte_array_field (&s_8021x->client_cert);
-	clear_one_byte_array_field (&s_8021x->private_key);
-	clear_one_byte_array_field (&s_8021x->phase2_ca_cert);
-	clear_one_byte_array_field (&s_8021x->phase2_client_cert);
-	clear_one_byte_array_field (&s_8021x->phase2_private_key);
+	g_object_set (s_8021x,
+	              NM_SETTING_802_1X_CA_CERT, NULL,
+	              NM_SETTING_802_1X_CLIENT_CERT, NULL,
+	              NM_SETTING_802_1X_PRIVATE_KEY, NULL,
+	              NM_SETTING_802_1X_PHASE2_CA_CERT, NULL,
+	              NM_SETTING_802_1X_PHASE2_CLIENT_CERT, NULL,
+	              NM_SETTING_802_1X_PHASE2_PRIVATE_KEY, NULL,
+	              NULL);
 }
 
 

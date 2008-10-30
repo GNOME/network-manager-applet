@@ -93,15 +93,15 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
 
-	s_8021x->eap = g_slist_append (s_8021x->eap, g_strdup ("leap"));
+	nm_setting_802_1x_add_eap_method (s_8021x, "leap");
 
 	widget = glade_xml_get_widget (parent->xml, "eap_leap_username_entry");
 	g_assert (widget);
-	s_8021x->identity = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_leap_password_entry");
 	g_assert (widget);
-	s_8021x->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
+	g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 }
 
 EAPMethodLEAP *
@@ -149,8 +149,8 @@ eap_method_leap_new (const char *glade_file,
 		NMSetting8021x *s_8021x;
 
 		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
-		if (s_8021x && s_8021x->identity)
-			gtk_entry_set_text (GTK_ENTRY (widget), s_8021x->identity);
+		if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
+			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 	}
 
 	widget = glade_xml_get_widget (xml, "eap_leap_password_entry");

@@ -250,53 +250,54 @@ nm_gconf_read_0_6_eap_settings (GConfClient *client,
                                 const char *network,
                                 NMSetting8021x **s_8021x)
 {
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSettingWirelessSecurity *wsec = NULL;
 	GSList *eap = NULL, *key_type = NULL, *proto = NULL, *iter;
 	char *phase2_type = NULL, *identity = NULL, *anon_identity = NULL;
 
 	if (!get_bitfield_helper (client, path, "wpa_eap_eap_method", network, eap_methods, &eap))
-		goto fail;
+		goto out;
 	if (!get_bitfield_helper (client, path, "wpa_eap_key_type", network, eap_key_types, &key_type))
-		goto fail;
+		goto out;
 	if (!get_enum_helper (client, path, "wpa_eap_phase2_type", network, eap_phase2_types, &phase2_type))
-		goto fail;
+		goto out;
 	if (!get_bitfield_helper (client, path, "wpa_eap_wpa_version", network, wpa_versions, &proto))
-		goto fail;
+		goto out;
 
 	if (!get_mandatory_string_helper (client, path, "wpa_eap_identity", network, &identity))
-		goto fail;
+		goto out;
 	nm_gconf_get_string_helper (client, path, "wpa_eap_anon_identity", network, &anon_identity);
 
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
+	wsec = NM_SETTING_WIRELESS_SECURITY (nm_setting_wireless_security_new ());
 	/* AFAICT, 0.6 reads this value from gconf, and then ignores it and always uses IW_AUTH_KEY_MGMT_802_1X */
-	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "ieee8021x", NULL);  /* FIXME: wpa-eap? */
+	g_object_set (wsec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "ieee8021x", NULL);  /* FIXME: wpa-eap? */
 
 	for (iter = proto; iter; iter = g_slist_next (iter))
-		nm_setting_wireless_security_add_proto (s_wireless_sec, (const char *) iter->data);
+		nm_setting_wireless_security_add_proto (wsec, (const char *) iter->data);
 	nm_utils_slist_free (proto, g_free);
 
 	/* FIXME: what's the right mapping here? */
 	for (iter = key_type; iter; iter = g_slist_next (iter))
-		nm_setting_wireless_security_add_group (s_wireless_sec, (const char *) iter->data);
+		nm_setting_wireless_security_add_group (wsec, (const char *) iter->data);
 	nm_utils_slist_free (key_type, g_free);
 
-	*s_8021x = (NMSetting8021x *) nm_setting_802_1x_new ();
-	(*s_8021x)->eap = eap;
-	(*s_8021x)->phase2_auth = phase2_type; /* FIXME? phase2_autheap? */
-	(*s_8021x)->identity = identity;
-	(*s_8021x)->anonymous_identity = anon_identity;
+	*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
+	g_object_set (s_8021x,
+	              NM_SETTING_802_1X_PHASE2_AUTH, phase2_type,
+	              NM_SETTING_802_1X_IDENTITY, identity,
+	              NM_SETTING_802_1X_ANONYMOUS_IDENTITY, anon_identity,
+	              NULL);
 
-	return s_wireless_sec;
+	for (iter = eap; iter; iter = g_slist_next (iter))
+		nm_setting_802_1x_add_eap_method (*s_8021x, (const char *) iter->data);
 
-fail:
+out:
 	nm_utils_slist_free (proto, g_free);
 	nm_utils_slist_free (eap, g_free);
 	nm_utils_slist_free (key_type, g_free);
 	g_free (phase2_type);
 	g_free (identity);
 	g_free (anon_identity);
-
-	return NULL;
+	return wsec;
 }
 
 static NMSettingWirelessSecurity *

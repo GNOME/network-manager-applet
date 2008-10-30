@@ -1498,8 +1498,10 @@ write_applet_private_values_to_gconf (CopyOneSettingValueInfo *info)
 	 */
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_802_1X));
 	if (s_8021x) {
-		write_ignore_ca_cert_helper (info, NMA_CA_CERT_IGNORE_TAG, s_8021x->ca_cert);
-		write_ignore_ca_cert_helper (info, NMA_PHASE2_CA_CERT_IGNORE_TAG, s_8021x->phase2_ca_cert);
+		write_ignore_ca_cert_helper (info, NMA_CA_CERT_IGNORE_TAG,
+		                             nm_setting_802_1x_get_ca_cert (s_8021x));
+		write_ignore_ca_cert_helper (info, NMA_PHASE2_CA_CERT_IGNORE_TAG,
+		                             nm_setting_802_1x_get_phase2_ca_cert (s_8021x));
 
 		/* Binary certificate and key data doesn't get stored in GConf.  Instead,
 		 * the path to the certificate gets stored in a special key and the
@@ -1646,14 +1648,15 @@ get_one_private_key (NMConnection *connection,
 
 	if (filename) {
 		NMSetting8021x *setting;
+		const GByteArray *tmp;
 
 		setting = (NMSetting8021x *) nm_setting_802_1x_new ();
-		nm_setting_802_1x_set_private_key (setting, filename, password, error);
+		nm_setting_802_1x_set_private_key_from_file (setting, filename, password, error);
 
 		/* Steal the private key */
-		array = setting->private_key;
-		setting->private_key = NULL;
-
+		tmp = nm_setting_802_1x_get_private_key (setting);
+		array = g_byte_array_sized_new (tmp->len);
+		memcpy (array->data, tmp->data, tmp->len);
 		g_object_unref (setting);
 	}
 
