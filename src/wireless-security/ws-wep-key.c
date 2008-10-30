@@ -188,8 +188,11 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
 
-	s_wireless_sec->key_mgmt = g_strdup ("none");
-	s_wireless_sec->wep_tx_keyidx = sec->cur_index;
+	g_object_set (s_wireless_sec,
+	              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "none",
+	              NM_SETTING_WIRELESS_SECURITY_WEP_TX_KEYIDX, sec->cur_index,
+	              NM_SETTING_WIRELESS_SECURITY_AUTH_ALG, (auth_alg == 1) ? "shared" : "open",
+	              NULL);
 
 	for (i = 0; i < 4; i++) {
 		int key_len = strlen (sec->keys[i]);
@@ -205,22 +208,9 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 		} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE)
 			hashed = wep128_passphrase_hash (sec->keys[i]);
 
-		if (i == 0)
-			s_wireless_sec->wep_key0 = hashed;
-		else if (i == 1)
-			s_wireless_sec->wep_key1 = hashed;
-		else if (i == 2)
-			s_wireless_sec->wep_key2 = hashed;
-		else if (i == 3)
-			s_wireless_sec->wep_key3 = hashed;
+		nm_setting_wireless_security_set_wep_key (s_wireless_sec, i, hashed);
+		g_free (hashed);
 	}
-
-	if (auth_alg == 0)
-		s_wireless_sec->auth_alg = g_strdup ("open");
-	else if (auth_alg == 1)
-		s_wireless_sec->auth_alg = g_strdup ("shared");
-	else
-		g_assert_not_reached ();
 }
 
 static void
@@ -340,7 +330,7 @@ ws_wep_key_new (const char *glade_file,
 
 	if (connection) {
 		NMSettingWireless *s_wireless;
-		const char *mode;
+		const char *mode, *auth_alg;
 
 		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
 		mode = s_wireless ? nm_setting_wireless_get_mode (s_wireless) : NULL;
@@ -348,8 +338,11 @@ ws_wep_key_new (const char *glade_file,
 			is_adhoc = TRUE;
 
 		s_wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
-		if (s_wsec && s_wsec->auth_alg && !strcmp (s_wsec->auth_alg, "shared"))
-			is_shared_key = TRUE;
+		if (s_wsec) {
+			auth_alg = nm_setting_wireless_security_get_auth_alg (s_wsec);
+			if (auth_alg && !strcmp (auth_alg, "shared"))
+				is_shared_key = TRUE;
+		}
 	}
 
 	g_signal_connect (G_OBJECT (widget), "changed",
@@ -365,7 +358,7 @@ ws_wep_key_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "key_index_combo");
 	if (connection && s_wsec)
-		default_key_idx = s_wsec->wep_tx_keyidx;
+		default_key_idx = nm_setting_wireless_security_get_wep_tx_keyidx (s_wsec);
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), default_key_idx);
 	sec->cur_index = default_key_idx;

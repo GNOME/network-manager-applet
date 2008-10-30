@@ -70,12 +70,12 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 										  NM_TYPE_SETTING_WIRELESS_SECURITY));
 	g_assert (s_wireless_sec);
 
-	s_wireless_sec->key_mgmt = g_strdup ("ieee8021x");
+	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "ieee8021x", NULL);
 
-	s_wireless_sec->pairwise = g_slist_append (s_wireless_sec->pairwise, g_strdup ("wep40"));
-	s_wireless_sec->pairwise = g_slist_append (s_wireless_sec->pairwise, g_strdup ("wep104"));
-	s_wireless_sec->group = g_slist_append (s_wireless_sec->group, g_strdup ("wep40"));
-	s_wireless_sec->group = g_slist_append (s_wireless_sec->group, g_strdup ("wep104"));
+	nm_setting_wireless_security_add_pairwise (s_wireless_sec, "wep40");
+	nm_setting_wireless_security_add_pairwise (s_wireless_sec, "wep104");
+	nm_setting_wireless_security_add_group (s_wireless_sec, "wep40");
+	nm_setting_wireless_security_add_group (s_wireless_sec, "wep104");
 }
 
 static void

@@ -172,28 +172,26 @@ is_manufacturer_default_ssid (const GByteArray *ssid)
 	return FALSE;
 }
 
-static GSList *
-add_ciphers_from_flags (guint32 flags, gboolean pairwise)
+static void
+add_ciphers_from_flags (NMSettingWirelessSecurity *sec,
+                        guint32 flags,
+                        gboolean pairwise)
 {
-	GSList *ciphers = NULL;
-
 	if (pairwise) {
 		if (flags & NM_802_11_AP_SEC_PAIR_TKIP)
-			ciphers = g_slist_append (ciphers, g_strdup ("tkip"));
+			nm_setting_wireless_security_add_pairwise (sec, "tkip");
 		if (flags & NM_802_11_AP_SEC_PAIR_CCMP)
-			ciphers = g_slist_append (ciphers, g_strdup ("ccmp"));
+			nm_setting_wireless_security_add_pairwise (sec, "ccmp");
 	} else {
 		if (flags & NM_802_11_AP_SEC_GROUP_WEP40)
-			ciphers = g_slist_append (ciphers, g_strdup ("wep40"));
+			nm_setting_wireless_security_add_group (sec, "wep40");
 		if (flags & NM_802_11_AP_SEC_GROUP_WEP104)
-			ciphers = g_slist_append (ciphers, g_strdup ("wep104"));
+			nm_setting_wireless_security_add_group (sec, "wep104");
 		if (flags & NM_802_11_AP_SEC_GROUP_TKIP)
-			ciphers = g_slist_append (ciphers, g_strdup ("tkip"));
+			nm_setting_wireless_security_add_group (sec, "tkip");
 		if (flags & NM_802_11_AP_SEC_GROUP_CCMP)
-			ciphers = g_slist_append (ciphers, g_strdup ("ccmp"));
+			nm_setting_wireless_security_add_group (sec, "ccmp");
 	}
-
-	return ciphers;
 }
 
 static NMSettingWirelessSecurity *
@@ -234,8 +232,10 @@ get_security_for_ap (NMAccessPoint *ap,
 			 * elements, it must be LEAP or static/dynamic WEP.
 			 */
 			if ((wpa_flags == NM_802_11_AP_SEC_NONE) && (rsn_flags == NM_802_11_AP_SEC_NONE)) {
-				sec->key_mgmt = g_strdup ("none");
-				sec->wep_tx_keyidx = 0;
+				g_object_set (sec,
+				              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "none",
+				              NM_SETTING_WIRELESS_SECURITY_WEP_TX_KEYIDX, 0,
+				              NULL);
 				return sec;
 			}
 			/* Otherwise, the AP supports WPA or RSN, which is preferred */
@@ -244,8 +244,10 @@ get_security_for_ap (NMAccessPoint *ap,
 			 * WPA/RSN information elements from a scan.  Since Privacy was
 			 * advertised, LEAP or static/dynamic WEP must be in use.
 			 */
-			sec->key_mgmt = g_strdup ("none");
-			sec->wep_tx_keyidx = 0;
+			g_object_set (sec,
+			              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "none",
+			              NM_SETTING_WIRELESS_SECURITY_WEP_TX_KEYIDX, 0,
+			              NULL);
 			return sec;
 		}
 	}
@@ -259,30 +261,30 @@ get_security_for_ap (NMAccessPoint *ap,
 	/* WPA2 PSK first */
 	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
 	    && (dev_caps & NM_WIFI_DEVICE_CAP_RSN)) {
-		sec->key_mgmt = g_strdup ("wpa-psk");
-		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
-		sec->pairwise = add_ciphers_from_flags (rsn_flags, TRUE);
-		sec->group = add_ciphers_from_flags (rsn_flags, FALSE);
+		g_object_set (sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk", NULL);
+		nm_setting_wireless_security_add_proto (sec, "rsn");
+		add_ciphers_from_flags (sec, rsn_flags, TRUE);
+		add_ciphers_from_flags (sec, rsn_flags, FALSE);
 		return sec;
 	}
 
 	/* WPA PSK */
 	if (   (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
 	    && (dev_caps & NM_WIFI_DEVICE_CAP_WPA)) {
-		sec->key_mgmt = g_strdup ("wpa-psk");
-		sec->proto = g_slist_append (sec->proto, g_strdup ("wpa"));
-		sec->pairwise = add_ciphers_from_flags (wpa_flags, TRUE);
-		sec->group = add_ciphers_from_flags (wpa_flags, FALSE);
+		g_object_set (sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk", NULL);
+		nm_setting_wireless_security_add_proto (sec, "wpa");
+		add_ciphers_from_flags (sec, wpa_flags, TRUE);
+		add_ciphers_from_flags (sec, wpa_flags, FALSE);
 		return sec;
 	}
 
 	/* WPA2 Enterprise */
 	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
 	    && (dev_caps & NM_WIFI_DEVICE_CAP_RSN)) {
-		sec->key_mgmt = g_strdup ("wpa-eap");
-		sec->proto = g_slist_append (sec->proto, g_strdup ("rsn"));
-		sec->pairwise = add_ciphers_from_flags (rsn_flags, TRUE);
-		sec->group = add_ciphers_from_flags (rsn_flags, FALSE);
+		g_object_set (sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-eap", NULL);
+		nm_setting_wireless_security_add_proto (sec, "rsn");
+		add_ciphers_from_flags (sec, rsn_flags, TRUE);
+		add_ciphers_from_flags (sec, rsn_flags, FALSE);
 
 		*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
 		(*s_8021x)->eap = g_slist_append ((*s_8021x)->eap, g_strdup ("ttls"));
@@ -293,10 +295,10 @@ get_security_for_ap (NMAccessPoint *ap,
 	/* WPA Enterprise */
 	if (   (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
 	    && (dev_caps & NM_WIFI_DEVICE_CAP_WPA)) {
-		sec->key_mgmt = g_strdup ("wpa-eap");
-		sec->proto = g_slist_append (sec->proto, g_strdup ("wpa"));
-		sec->pairwise = add_ciphers_from_flags (wpa_flags, TRUE);
-		sec->group = add_ciphers_from_flags (wpa_flags, FALSE);
+		g_object_set (sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-eap", NULL);
+		nm_setting_wireless_security_add_proto (sec, "wpa");
+		add_ciphers_from_flags (sec, wpa_flags, TRUE);
+		add_ciphers_from_flags (sec, wpa_flags, FALSE);
 
 		*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
 		(*s_8021x)->eap = g_slist_append ((*s_8021x)->eap, g_strdup ("ttls"));
@@ -1481,7 +1483,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	NMSettingWirelessSecurity *s_wireless_sec;
 	NMDevice *device = NULL;
 	GHashTable *settings = NULL;
-	const char *setting_name;
+	const char *setting_name, *key_mgmt, *auth_alg;
 	GError *error = NULL;
 
 	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
@@ -1552,10 +1554,11 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	 * beacons), and therefore defaults to requesting WEP secrets from the
 	 * wireless-security setting, not the 802.1x setting.
 	 */
-	if (   !strcmp (s_wireless_sec->key_mgmt, "ieee8021x")
-	    || !strcmp (s_wireless_sec->key_mgmt, "wpa-eap")) {
+	key_mgmt = nm_setting_wireless_security_get_key_mgmt (s_wireless_sec);
+	if (!strcmp (key_mgmt, "ieee8021x") || !strcmp (key_mgmt, "wpa-eap")) {
 		/* LEAP secrets aren't in the 802.1x setting */
-		if (!s_wireless_sec->auth_alg || strcmp (s_wireless_sec->auth_alg, "leap")) {
+		auth_alg = nm_setting_wireless_security_get_auth_alg (s_wireless_sec);
+		if (!auth_alg || strcmp (auth_alg, "leap")) {
 			NMSetting8021x *s_8021x;
 
 			s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);

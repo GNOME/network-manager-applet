@@ -70,7 +70,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 										  NM_TYPE_SETTING_WIRELESS_SECURITY));
 	g_assert (s_wireless_sec);
 
-	s_wireless_sec->key_mgmt = g_strdup ("wpa-eap");
+	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-eap", NULL);
 }
 
 static void

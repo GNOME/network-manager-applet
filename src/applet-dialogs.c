@@ -76,12 +76,15 @@ get_eap_label (NMSettingWirelessSecurity *sec,
 	char *phase2_str = NULL;
 
 	if (sec) {
-		if (!strcmp (sec->key_mgmt, "ieee8021x")) {
-			if (sec->auth_alg && !strcmp (sec->auth_alg, "leap"))
+		const char *key_mgmt = nm_setting_wireless_security_get_key_mgmt (sec);
+		const char *auth_alg = nm_setting_wireless_security_get_auth_alg (sec);
+
+		if (!strcmp (key_mgmt, "ieee8021x")) {
+			if (auth_alg && !strcmp (auth_alg, "leap"))
 				str = g_string_new (_("LEAP"));
 			else
 				str = g_string_new (_("Dynamic WEP"));
-		} else if (!strcmp (sec->key_mgmt, "wpa-eap"))
+		} else if (!strcmp (key_mgmt, "wpa-eap"))
 			str = g_string_new (_("WPA/WPA2"));
 		else
 			return NULL;
@@ -178,12 +181,13 @@ create_info_label_security (NMConnection *connection)
 		security = s_wireless ? nm_setting_wireless_get_security (s_wireless) : NULL;
 
 		if (security && !strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME) && s_wireless_sec) {
+			const char *key_mgmt = nm_setting_wireless_security_get_key_mgmt (s_wireless_sec);
 
-			if (!strcmp (s_wireless_sec->key_mgmt, "none"))
+			if (!strcmp (key_mgmt, "none"))
 				label = g_strdup (_("WEP"));
-			else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-none"))
+			else if (!strcmp (key_mgmt, "wpa-none"))
 				label = g_strdup (_("WPA/WPA2"));
-			else if (!strcmp (s_wireless_sec->key_mgmt, "wpa-psk"))
+			else if (!strcmp (key_mgmt, "wpa-psk"))
 				label = g_strdup (_("WPA/WPA2"));
 			else
 				label = get_eap_label (s_wireless_sec, s_8021x);

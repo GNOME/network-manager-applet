@@ -44,35 +44,52 @@ G_DEFINE_TYPE (CEPageWirelessSecurity, ce_page_wireless_security, CE_TYPE_PAGE)
 #define S_NAME_COLUMN		0
 #define S_SEC_COLUMN		1
 
+static gboolean
+find_proto (NMSettingWirelessSecurity *sec, const char *item)
+{
+	guint32 i;
+
+	for (i = 0; i < nm_setting_wireless_security_get_num_protos (sec); i++) {
+		if (!strcmp (item, nm_setting_wireless_security_get_proto (sec, i)))
+			return TRUE;
+	}
+	return FALSE;
+}
+
 static NMUtilsSecurityType
 get_default_type_for_security (NMSettingWirelessSecurity *sec)
 {
+	const char *key_mgmt, *auth_alg;
+
 	g_return_val_if_fail (sec != NULL, NMU_SEC_NONE);
 
+	key_mgmt = nm_setting_wireless_security_get_key_mgmt (sec);
+	auth_alg = nm_setting_wireless_security_get_auth_alg (sec);
+
 	/* No IEEE 802.1x */
-	if (!strcmp (sec->key_mgmt, "none"))
+	if (!strcmp (key_mgmt, "none"))
 		return NMU_SEC_STATIC_WEP;
 
-	if (!strcmp (sec->key_mgmt, "ieee8021x")) {
-		if (sec->auth_alg && !strcmp (sec->auth_alg, "leap"))
+	if (!strcmp (key_mgmt, "ieee8021x")) {
+		if (auth_alg && !strcmp (auth_alg, "leap"))
 			return NMU_SEC_LEAP;
 		return NMU_SEC_DYNAMIC_WEP;
 	}
 
-	if (   !strcmp (sec->key_mgmt, "wpa-none")
-	    || !strcmp (sec->key_mgmt, "wpa-psk")) {
-		if (sec->proto && !strcmp (sec->proto->data, "rsn"))
+	if (   !strcmp (key_mgmt, "wpa-none")
+	    || !strcmp (key_mgmt, "wpa-psk")) {
+		if (find_proto (sec, "rsn"))
 			return NMU_SEC_WPA2_PSK;
-		else if (sec->proto && !strcmp (sec->proto->data, "wpa"))
+		else if (find_proto (sec, "wpa"))
 			return NMU_SEC_WPA_PSK;
 		else
 			return NMU_SEC_WPA_PSK;
 	}
 
-	if (!strcmp (sec->key_mgmt, "wpa-eap")) {
-		if (sec->proto && !strcmp (sec->proto->data, "rsn"))
+	if (!strcmp (key_mgmt, "wpa-eap")) {
+		if (find_proto (sec, "rsn"))
 			return NMU_SEC_WPA2_ENTERPRISE;
-		else if (sec->proto && !strcmp (sec->proto->data, "wpa"))
+		else if (find_proto (sec, "wpa"))
 			return NMU_SEC_WPA_ENTERPRISE;
 		else
 			return NMU_SEC_WPA_ENTERPRISE;

@@ -70,16 +70,6 @@
 #define NM_PHASE2_AUTH_MSCHAPV2   0x00030000
 #define NM_PHASE2_AUTH_GTC        0x00040000
 
-static void
-free_slist (GSList *slist)
-{
-	GSList *i;
-
-	for (i = slist; i; i = i->next)
-		g_free (i->data);
-	g_slist_free (slist);
-}
-
 struct flagnames {
 	const char * const name;
 	guint value;
@@ -141,7 +131,7 @@ get_bitfield_helper (GConfClient             *client,
 	}
 
 	if (ival) {
-		free_slist (*value);
+		nm_utils_slist_free (*value, g_free);
 		g_warning ("Bad value '%d' for key '%s' on NM 0.6 connection %s", ival, key, network);
 		return FALSE;
 	}
@@ -179,10 +169,13 @@ nm_gconf_read_0_6_wep_settings (GConfClient *client,
 	if (!get_enum_helper (client, path, "wep_auth_algorithm", network, wep_auth_algorithms, &auth_alg))
 		return NULL;
 
-	s_wireless_sec = (NMSettingWirelessSecurity *)nm_setting_wireless_security_new ();
-	s_wireless_sec->key_mgmt = g_strdup ("none");
-	s_wireless_sec->wep_tx_keyidx = 0;
-	s_wireless_sec->auth_alg = auth_alg;
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_setting_wireless_security_new ());
+	g_object_set (s_wireless_sec,
+	              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "none",
+	              NM_SETTING_WIRELESS_SECURITY_WEP_TX_KEYIDX, 0,
+	              NM_SETTING_WIRELESS_SECURITY_AUTH_ALG, auth_alg,
+	              NULL);
+	g_free (auth_alg);
 
 	return s_wireless_sec;
 }
@@ -203,31 +196,24 @@ static NMSettingWirelessSecurity *
 nm_gconf_read_0_6_wpa_settings (GConfClient *client,
 						  const char *path, const char *network)
 {
-	NMSettingWirelessSecurity *s_wireless_sec;
-	GSList *proto, *pairwise, *group;
-	char *key_mgmt;
+	NMSettingWirelessSecurity *s_wireless_sec = NULL;
+	GSList *proto, *iter;
+	char *key_mgmt = NULL;
 
 	if (!get_bitfield_helper (client, path, "wpa_psk_wpa_version", network, wpa_versions, &proto))
 		return NULL;
-	if (!get_enum_helper (client, path, "wpa_psk_key_mgt", network, wpa_key_mgmt, &key_mgmt)) {
-		free_slist (proto);
-		return NULL;
-	}
+	if (!get_enum_helper (client, path, "wpa_psk_key_mgt", network, wpa_key_mgmt, &key_mgmt))
+		goto out;
 
-	/* Allow all ciphers */
-	pairwise = g_slist_prepend (NULL, "tkip");
-	pairwise = g_slist_prepend (pairwise, "ccmp");
-	group = g_slist_prepend (NULL, "wep40");
-	group = g_slist_prepend (group, "wep104");
-	group = g_slist_prepend (group, "tkip");
-	group = g_slist_prepend (group, "ccmp");
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_setting_wireless_security_new ());
+	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, key_mgmt, NULL);
 
-	s_wireless_sec = (NMSettingWirelessSecurity *)nm_setting_wireless_security_new ();
-	s_wireless_sec->key_mgmt = key_mgmt;
-	s_wireless_sec->proto = proto;
-	s_wireless_sec->pairwise = pairwise;
-	s_wireless_sec->group = group;
+	for (iter = proto; iter; iter = g_slist_next (iter))
+		nm_setting_wireless_security_add_proto (s_wireless_sec, (const char *) iter->data);
 
+out:
+	g_free (key_mgmt);
+	nm_utils_slist_free (proto, g_free);
 	return s_wireless_sec;
 }
 
@@ -265,7 +251,7 @@ nm_gconf_read_0_6_eap_settings (GConfClient *client,
                                 NMSetting8021x **s_8021x)
 {
 	NMSettingWirelessSecurity *s_wireless_sec;
-	GSList *eap = NULL, *key_type = NULL, *proto = NULL;
+	GSList *eap = NULL, *key_type = NULL, *proto = NULL, *iter;
 	char *phase2_type = NULL, *identity = NULL, *anon_identity = NULL;
 
 	if (!get_bitfield_helper (client, path, "wpa_eap_eap_method", network, eap_methods, &eap))
@@ -283,9 +269,16 @@ nm_gconf_read_0_6_eap_settings (GConfClient *client,
 
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	/* AFAICT, 0.6 reads this value from gconf, and then ignores it and always uses IW_AUTH_KEY_MGMT_802_1X */
-	s_wireless_sec->key_mgmt = g_strdup ("ieee8021x"); /* FIXME? wpa-eap? */
-	s_wireless_sec->proto = proto;
-	s_wireless_sec->group = key_type; /* FIXME? */
+	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "ieee8021x", NULL);  /* FIXME: wpa-eap? */
+
+	for (iter = proto; iter; iter = g_slist_next (iter))
+		nm_setting_wireless_security_add_proto (s_wireless_sec, (const char *) iter->data);
+	nm_utils_slist_free (proto, g_free);
+
+	/* FIXME: what's the right mapping here? */
+	for (iter = key_type; iter; iter = g_slist_next (iter))
+		nm_setting_wireless_security_add_group (s_wireless_sec, (const char *) iter->data);
+	nm_utils_slist_free (key_type, g_free);
 
 	*s_8021x = (NMSetting8021x *) nm_setting_802_1x_new ();
 	(*s_8021x)->eap = eap;
@@ -296,9 +289,9 @@ nm_gconf_read_0_6_eap_settings (GConfClient *client,
 	return s_wireless_sec;
 
 fail:
-	free_slist (proto);
-	free_slist (eap);
-	free_slist (key_type);
+	nm_utils_slist_free (proto, g_free);
+	nm_utils_slist_free (eap, g_free);
+	nm_utils_slist_free (key_type, g_free);
 	g_free (phase2_type);
 	g_free (identity);
 	g_free (anon_identity);
@@ -310,20 +303,23 @@ static NMSettingWirelessSecurity *
 nm_gconf_read_0_6_leap_settings (GConfClient *client,
 						   const char *path, const char *network)
 {
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSettingWirelessSecurity *s_wireless_sec = NULL;
 	char *username = NULL, *key_mgmt = NULL;
 
 	if (!get_mandatory_string_helper (client, path, "leap_username", network, &username))
-		return NULL;
-	if (!get_mandatory_string_helper (client, path, "leap_key_mgmt", network, &key_mgmt)) {
-		g_free (username);
-		return NULL;
-	}
+		goto out;
+	if (!get_mandatory_string_helper (client, path, "leap_key_mgmt", network, &key_mgmt))
+		goto out;
 
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
-	s_wireless_sec->key_mgmt = key_mgmt;
-	s_wireless_sec->leap_username = username;
+	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_setting_wireless_security_new ());
+	g_object_set (s_wireless_sec,
+	              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, key_mgmt,
+	              NM_SETTING_WIRELESS_SECURITY_LEAP_USERNAME, username,
+	              NULL);
 
+out:
+	g_free (username);
+	g_free (key_mgmt);
 	return s_wireless_sec;
 }
 
@@ -388,7 +384,6 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 
 	for (iter = bssids; iter; iter = iter->next)
 		nm_setting_wireless_add_seen_bssid (s_wireless, (char *) iter->data);
-
 	nm_utils_slist_free (bssids, g_free);
 
 	if (we_cipher != NM_AUTH_TYPE_NONE) {
@@ -577,8 +572,8 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 				  NM_SETTING_CONNECTION_ID, id,
 				  NM_SETTING_CONNECTION_TYPE, NM_SETTING_VPN_SETTING_NAME,
 				  NULL);
-
 	g_free (id);
+
 	id = nm_utils_uuid_generate ();
 	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, id, NULL);
 	g_free (id);
@@ -593,7 +588,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	else
 		g_warning ("unmatched service name %s\n", service_name);
 
-	free_slist (vpn_data);
+	nm_utils_slist_free (vpn_data, g_free);
 	g_free (path);
 	g_free (network);
 	g_free (service_name);
@@ -642,7 +637,7 @@ nm_gconf_migrate_0_6_connections (GConfClient *client)
 			g_object_unref (conn);
 		}
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_0_6_VPN_CONNECTIONS, NULL);
 	for (iter = connections; iter; iter = iter->next) {
@@ -652,7 +647,7 @@ nm_gconf_migrate_0_6_connections (GConfClient *client)
 			g_object_unref (conn);
 		}
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -932,7 +927,7 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 next:
 		g_free (uuid);
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -990,7 +985,7 @@ nm_gconf_migrate_0_7_netmask_to_prefix (GConfClient *client)
 next:
 		g_free (id);
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1028,7 +1023,7 @@ nm_gconf_migrate_0_7_ip4_method (GConfClient *client)
 next:
 		g_free (id);
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1064,7 +1059,7 @@ nm_gconf_migrate_0_7_ignore_dhcp_dns (GConfClient *client)
 		                            NM_SETTING_IP4_CONFIG_SETTING_NAME,
 		                            IP4_KEY_IGNORE_DHCP_DNS);
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1193,7 +1188,7 @@ nm_gconf_migrate_0_7_vpn_routes (GConfClient *client)
 		g_slist_foreach (old_routes, (GFunc) g_free, NULL);
 		g_slist_free (old_routes);
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1262,7 +1257,7 @@ nm_gconf_migrate_0_7_vpn_properties (GConfClient *client)
 		/* delete old vpn-properties dir */
 		gconf_client_recursive_unset (client, path, 0, NULL);
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1365,7 +1360,7 @@ nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client)
 			                            new_type);
 		}
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1393,7 +1388,7 @@ nm_gconf_migrate_0_7_connection_uuid (GConfClient *client)
 
 		g_free (uuid);
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1513,7 +1508,7 @@ nm_gconf_migrate_0_7_keyring_items (GConfClient *client)
 		g_free (old_id);
 		g_free (uuid);
 	}
-	free_slist (connections);
+	nm_utils_slist_free (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }

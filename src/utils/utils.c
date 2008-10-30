@@ -577,7 +577,7 @@ connection_valid_for_wireless (NMConnection *connection,
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	const GByteArray *setting_mac;
-	const char *setting_security;
+	const char *setting_security, *key_mgmt;
 	guint32 wcaps;
 	NMAccessPoint *ap;
 
@@ -620,12 +620,14 @@ connection_valid_for_wireless (NMConnection *connection,
 	if (!s_wireless_sec)
 		return TRUE; /* all devices can do unencrypted networks */
 
+	key_mgmt = nm_setting_wireless_security_get_key_mgmt (s_wireless_sec);
+
 	/* All devices should support static WEP */
-	if (!strcmp (s_wireless_sec->key_mgmt, "none"))
+	if (!strcmp (key_mgmt, "none"))
 		return TRUE;
 
 	/* All devices should support legacy LEAP and Dynamic WEP */
-	if (!strcmp (s_wireless_sec->key_mgmt, "ieee8021x"))
+	if (!strcmp (key_mgmt, "ieee8021x"))
 		return TRUE;
 
 	/* Match security with device capabilities */
@@ -637,20 +639,20 @@ connection_valid_for_wireless (NMConnection *connection,
 		return FALSE;
 
 	/* Check for only RSN */
-	if (   (g_slist_length (s_wireless_sec->proto) == 1)
-	    && !strcmp (s_wireless_sec->proto->data, "rsn")
+	if (   (nm_setting_wireless_security_get_num_protos (s_wireless_sec) == 1)
+	    && !strcmp (nm_setting_wireless_security_get_proto (s_wireless_sec, 0), "rsn")
 	    && !(wcaps & NM_WIFI_DEVICE_CAP_RSN))
 		return FALSE;
 
 	/* Check for only pairwise CCMP */
-	if (   (g_slist_length (s_wireless_sec->pairwise) == 1)
-	    && !strcmp (s_wireless_sec->pairwise->data, "ccmp")
+	if (   (nm_setting_wireless_security_get_num_pairwise (s_wireless_sec) == 1)
+	    && !strcmp (nm_setting_wireless_security_get_pairwise (s_wireless_sec, 0), "ccmp")
 	    && !(wcaps & NM_WIFI_DEVICE_CAP_CIPHER_CCMP))
 		return FALSE;
 
 	/* Check for only group CCMP */
-	if (   (g_slist_length (s_wireless_sec->group) == 1)
-	    && !strcmp (s_wireless_sec->group->data, "ccmp")
+	if (   (nm_setting_wireless_security_get_num_groups (s_wireless_sec) == 1)
+	    && !strcmp (nm_setting_wireless_security_get_group (s_wireless_sec, 0), "ccmp")
 	    && !(wcaps & NM_WIFI_DEVICE_CAP_CIPHER_CCMP))
 		return FALSE;
 

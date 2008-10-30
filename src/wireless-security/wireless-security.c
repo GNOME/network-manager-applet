@@ -173,20 +173,9 @@ wireless_security_clear_ciphers (NMConnection *connection)
 										  NM_TYPE_SETTING_WIRELESS_SECURITY));
 	g_assert (s_wireless_sec);
 
-	/* Protocol */
-	g_slist_foreach (s_wireless_sec->proto, (GFunc) g_free, NULL);
-	g_slist_free (s_wireless_sec->proto);
-	s_wireless_sec->proto = NULL;
-
-	/* Pairwise cipher */
-	g_slist_foreach (s_wireless_sec->pairwise, (GFunc) g_free, NULL);
-	g_slist_free (s_wireless_sec->pairwise);
-	s_wireless_sec->pairwise = NULL;
-
-	/* Group cipher */
-	g_slist_foreach (s_wireless_sec->group, (GFunc) g_free, NULL);
-	g_slist_free (s_wireless_sec->group);
-	s_wireless_sec->group = NULL;
+	nm_setting_wireless_security_clear_protos (s_wireless_sec);
+	nm_setting_wireless_security_clear_pairwise (s_wireless_sec);
+	nm_setting_wireless_security_clear_groups (s_wireless_sec);
 }
 
 void
