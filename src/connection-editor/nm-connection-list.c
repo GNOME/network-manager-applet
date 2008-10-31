@@ -495,7 +495,10 @@ add_connection (NMConnectionList *self,
 	if (scope == NM_CONNECTION_SCOPE_SYSTEM) {
 		GError *error = NULL;
 
+		utils_fill_connection_certs (connection);
 		success = nm_dbus_settings_system_add_connection (self->system_settings, connection, &error);
+		utils_clear_filled_connection_certs (connection);
+
 		if (!success) {
 			gboolean pending_auth = FALSE;
 
@@ -666,13 +669,16 @@ update_connection (NMConnectionList *list,
 		gboolean success;
 		gboolean pending_auth = FALSE;
 
+		utils_fill_connection_certs (modified);
 		new_settings = nm_connection_to_hash (modified);
-		success = nm_exported_connection_update (original, new_settings, &error);
-		g_hash_table_destroy (new_settings);
 
 		/* Hack; make sure that gconf private values are copied */
 		nm_gconf_copy_private_connection_values (nm_exported_connection_get_connection (original),
 		                                         modified);
+
+		success = nm_exported_connection_update (original, new_settings, &error);
+		g_hash_table_destroy (new_settings);
+		utils_clear_filled_connection_certs (modified);
 
 		if (!success) {
 			if (is_permission_denied_error (error))

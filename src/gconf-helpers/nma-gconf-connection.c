@@ -331,6 +331,9 @@ update (NMExportedConnection *exported, GHashTable *new_settings, GError **error
 		            g_type_name (nm_connection_lookup_setting_type_by_quark ((*error)->domain)),
 		            (*error)->message, (*error)->code);
 	} else {
+		/* Copy private values to the connection that actually gets saved */
+		nm_gconf_copy_private_connection_values (tmp, nm_exported_connection_get_connection (exported));
+
 		nm_gconf_write_connection (tmp, priv->client, priv->dir);
 		g_object_unref (tmp);
 

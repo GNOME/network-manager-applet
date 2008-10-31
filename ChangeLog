@@ -1,5 +1,16 @@
 2008-10-31  Dan Williams  <dcbw@redhat.com>
 
+	* src/gconf-helpers/nma-gconf-connection.c
+		- (update): actually save private values like cert and key paths
+
+	* src/connection-editor/nm-connection-list.c
+		- (add_connection): fill certificate and private key items before adding
+			so that cert data actually gets to the system settings service
+		- (update_connection): copy private values before trying to update the
+			connection so that they actually get saved
+
+2008-10-31  Dan Williams  <dcbw@redhat.com>
+
 	* src/gconf-helpers/gconf-helpers.c
 	  src/gconf-helpers/gconf-helpers.h
 		- (nm_gconf_copy_private_connection_values): copy private values (like
