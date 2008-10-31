@@ -1,3 +1,15 @@
+2008-10-31  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/gconf-helpers.h
+		- (nm_gconf_copy_private_connection_values): copy private values (like
+			certificate paths and such) between connections
+		- (nm_gconf_connection_duplicate): use nm_gconf_copy_private_connection_values()
+
+	* src/connection-editor/nm-connection-list.c
+		- (update_connection): make sure to copy private values when updating
+			the connection
+
 2008-10-30  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-device-wifi.c

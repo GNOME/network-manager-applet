@@ -1794,46 +1794,44 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 	return secrets;
 }
 
+static inline void
+copy_str_item (NMConnection *dst, NMConnection *src, const char *tag)
+{
+	g_object_set_data_full (G_OBJECT (dst), tag, g_strdup (g_object_get_data (G_OBJECT (src), tag)), g_free);
+}
+
+void
+nm_gconf_copy_private_connection_values (NMConnection *dst, NMConnection *src)
+{
+	g_return_if_fail (NM_IS_CONNECTION (dst));
+	g_return_if_fail (NM_IS_CONNECTION (src));
+
+	g_object_set_data (G_OBJECT (dst), NMA_CA_CERT_IGNORE_TAG,
+	                   g_object_get_data (G_OBJECT (src), NMA_CA_CERT_IGNORE_TAG));
+	g_object_set_data (G_OBJECT (dst), NMA_PHASE2_CA_CERT_IGNORE_TAG,
+	                   g_object_get_data (G_OBJECT (src), NMA_PHASE2_CA_CERT_IGNORE_TAG));
+
+	copy_str_item (dst, src, NMA_PATH_CLIENT_CERT_TAG);
+	copy_str_item (dst, src, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
+	copy_str_item (dst, src, NMA_PATH_CA_CERT_TAG);
+	copy_str_item (dst, src, NMA_PATH_PHASE2_CA_CERT_TAG);
+	copy_str_item (dst, src, NMA_PATH_PRIVATE_KEY_TAG);
+	copy_str_item (dst, src, NMA_PRIVATE_KEY_PASSWORD_TAG);
+	copy_str_item (dst, src, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
+	copy_str_item (dst, src, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
+}
+
 NMConnection *
 nm_gconf_connection_duplicate (NMConnection *connection)
 {
 	NMConnection *dup;
-	GObject *oc;
-	GObject *od;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	dup = nm_connection_duplicate (connection);
 	g_return_val_if_fail (NM_IS_CONNECTION (dup), NULL);
 
-	oc = G_OBJECT (connection);
-	od = G_OBJECT (dup);
-
-	g_object_set_data (od, NMA_CA_CERT_IGNORE_TAG, g_object_get_data (oc, NMA_CA_CERT_IGNORE_TAG));
-	g_object_set_data (od, NMA_PHASE2_CA_CERT_IGNORE_TAG, g_object_get_data (oc, NMA_PHASE2_CA_CERT_IGNORE_TAG));
-	g_object_set_data_full (od, NMA_PATH_CLIENT_CERT_TAG,
-					    g_strdup (g_object_get_data (oc, NMA_PATH_CLIENT_CERT_TAG)), g_free);
-
-	g_object_set_data_full (od, NMA_PATH_PHASE2_CLIENT_CERT_TAG,
-					    g_strdup (g_object_get_data (oc, NMA_PATH_PHASE2_CLIENT_CERT_TAG)), g_free);
-
-	g_object_set_data_full (od, NMA_PATH_CA_CERT_TAG,
-					    g_strdup (g_object_get_data (oc, NMA_PATH_CA_CERT_TAG)), g_free);
-
-	g_object_set_data_full (od, NMA_PATH_PHASE2_CA_CERT_TAG,
-					    g_strdup (g_object_get_data (oc, NMA_PATH_PHASE2_CA_CERT_TAG)), g_free);
-
-	g_object_set_data_full (od, NMA_PATH_PRIVATE_KEY_TAG,
-					    g_strdup (g_object_get_data (oc, NMA_PATH_PRIVATE_KEY_TAG)), g_free);
-
-	g_object_set_data_full (od, NMA_PRIVATE_KEY_PASSWORD_TAG,
-					    g_strdup (g_object_get_data (oc, NMA_PRIVATE_KEY_PASSWORD_TAG)), g_free);
-
-	g_object_set_data_full (od, NMA_PATH_PHASE2_PRIVATE_KEY_TAG,
-					    g_strdup (g_object_get_data (oc, NMA_PATH_PHASE2_PRIVATE_KEY_TAG)), g_free);
-
-	g_object_set_data_full (od, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG,
-					    g_strdup (g_object_get_data (oc, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG)), g_free);
+	nm_gconf_copy_private_connection_values (dup, connection);
 
 	return dup;
 }

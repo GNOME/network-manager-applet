@@ -670,6 +670,10 @@ update_connection (NMConnectionList *list,
 		success = nm_exported_connection_update (original, new_settings, &error);
 		g_hash_table_destroy (new_settings);
 
+		/* Hack; make sure that gconf private values are copied */
+		nm_gconf_copy_private_connection_values (nm_exported_connection_get_connection (original),
+		                                         modified);
+
 		if (!success) {
 			if (is_permission_denied_error (error))
 				pending_auth = obtain_auth (error, update_connection_cb, info);
