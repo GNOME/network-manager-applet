@@ -355,16 +355,18 @@ gsm_get_icon (NMDevice *device,
 typedef struct {
 	DBusGMethodInvocation *context;
 	NMApplet *applet;
+	NMActiveConnection *active_connection;
+	GtkWidget *dialog;
 	NMConnection *connection;
-	GtkWidget *ok_button;
 	GtkEntry *secret_entry;
 	char *secret_name;
 } NMGsmInfo;
 
+
 static void
 pin_entry_changed (GtkEditable *editable, gpointer user_data)
 {
-	NMGsmInfo *info = (NMGsmInfo *) user_data;
+	GtkWidget *ok_button = GTK_WIDGET (user_data);
 	const char *s;
 	int i;
 	gboolean valid = FALSE;
@@ -380,7 +382,20 @@ pin_entry_changed (GtkEditable *editable, gpointer user_data)
 		}
 	}
 
-	gtk_widget_set_sensitive (info->ok_button, valid);
+	gtk_widget_set_sensitive (ok_button, valid);
+}
+
+static void
+destroy_gsm_dialog (gpointer user_data, GObject *finalized)
+{
+	NMGsmInfo *info = user_data;
+
+	gtk_widget_hide (info->dialog);
+	gtk_widget_destroy (info->dialog);
+
+	g_object_unref (info->connection);
+	g_free (info->secret_name);
+	g_free (info);
 }
 
 static void
@@ -394,6 +409,11 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 	GHashTable *settings_hash;
 	GHashTable *secrets;
 	GError *err = NULL;
+
+	/* Got a user response, clear the NMActiveConnection destroy handler for
+	 * this dialog since this function will now take over dialog destruction.
+	 */
+	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_gsm_dialog, info);
 
 	if (response != GTK_RESPONSE_OK) {
 		g_set_error (&err, NM_SETTINGS_ERROR, 1,
@@ -442,33 +462,20 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 		g_error_free (err);
 	}
 
-	gtk_widget_hide (GTK_WIDGET (dialog));
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-
 	nm_connection_clear_secrets (info->connection);
-	g_object_unref (info->connection);
-	g_free (info->secret_name);
-	g_free (info);
+	destroy_gsm_dialog (info, NULL);
 }
 
-static void
+static GtkWidget *
 ask_for_pin_puk (NMDevice *device,
                  NMConnection *connection,
                  const char *secret_name,
-                 DBusGMethodInvocation *context,
-                 NMApplet *applet)
+                 GtkEntry **out_secret_entry)
 {
 	GtkDialog *dialog;
-	GtkWidget *w;
+	GtkWidget *w, *ok_button;
 	GtkBox *box;
 	char *dev_str;
-	NMGsmInfo *info;
-
-	info = g_new (NMGsmInfo, 1);
-	info->context = context;
-	info->applet = applet;
-	info->connection = g_object_ref (connection);
-	info->secret_name = g_strdup (secret_name);
 
 	dialog = GTK_DIALOG (gtk_dialog_new ());
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -480,10 +487,9 @@ ask_for_pin_puk (NMDevice *device,
 	else
 		g_assert_not_reached ();
 
-	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
-	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
-	info->ok_button = w;
-	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
+	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
+	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
+	gtk_window_set_default (GTK_WINDOW (dialog), ok_button);
 
 	if (!strcmp (secret_name, NM_SETTING_GSM_PIN))
 		w = gtk_label_new (_("PIN code is needed for the mobile broadband device"));
@@ -507,45 +513,30 @@ ask_for_pin_puk (NMDevice *device,
 	gtk_box_pack_start (box, gtk_label_new ("PIN:"), FALSE, FALSE, 0);
 
 	w = gtk_entry_new ();
-	info->secret_entry = GTK_ENTRY (w);
+	*out_secret_entry = GTK_ENTRY (w);
 	gtk_entry_set_max_length (GTK_ENTRY (w), 4);
 	gtk_entry_set_width_chars (GTK_ENTRY (w), 4);
 	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
 	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
-	g_signal_connect (w, "changed", G_CALLBACK (pin_entry_changed), info);
-	pin_entry_changed (GTK_EDITABLE (w), info);
+	g_signal_connect (w, "changed", G_CALLBACK (pin_entry_changed), ok_button);
+	pin_entry_changed (GTK_EDITABLE (w), ok_button);
 
 	gtk_widget_show_all (dialog->vbox);
-
-	g_signal_connect (dialog, "response",
-				   G_CALLBACK (get_gsm_secrets_cb),
-				   info);
-
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (GTK_WIDGET (dialog));
-	gtk_window_present (GTK_WINDOW (dialog));
+	return GTK_WIDGET (dialog);
 }
 
-static void
+static GtkWidget *
 ask_for_password (NMDevice *device,
                   NMConnection *connection,
-                  DBusGMethodInvocation *context,
-                  NMApplet *applet)
+                  GtkEntry **out_secret_entry)
 {
 	GtkDialog *dialog;
 	GtkWidget *w;
 	GtkBox *box;
 	char *dev_str;
-	NMGsmInfo *info;
 	NMSettingConnection *s_con;
 	char *tmp;
 	const char *id;
-
-	info = g_new (NMGsmInfo, 1);
-	info->context = context;
-	info->applet = applet;
-	info->connection = g_object_ref (connection);
-	info->secret_name = g_strdup (NM_SETTING_GSM_PASSWORD);
 
 	dialog = GTK_DIALOG (gtk_dialog_new ());
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -553,8 +544,7 @@ ask_for_password (NMDevice *device,
 
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
-	info->ok_button = w;
-	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
+	gtk_window_set_default (GTK_WINDOW (dialog), w);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	id = nm_setting_connection_get_id (s_con);
@@ -580,31 +570,28 @@ ask_for_password (NMDevice *device,
 	gtk_box_pack_start (box, gtk_label_new (_("Password:")), FALSE, FALSE, 0);
 
 	w = gtk_entry_new ();
-	info->secret_entry = GTK_ENTRY (w);
+	*out_secret_entry = GTK_ENTRY (w);
 	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
 	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (dialog->vbox);
-
-	g_signal_connect (dialog, "response",
-				   G_CALLBACK (get_gsm_secrets_cb),
-				   info);
-
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (GTK_WIDGET (dialog));
-	gtk_window_present (GTK_WINDOW (dialog));
+	return GTK_WIDGET (dialog);
 }
 
 static gboolean
 gsm_get_secrets (NMDevice *device,
                  NMConnection *connection,
-                 const char *specific_object,
+                 NMActiveConnection *active_connection,
                  const char *setting_name,
                  const char **hints,
                  DBusGMethodInvocation *context,
                  NMApplet *applet,
                  GError **error)
 {
+	NMGsmInfo *info;
+	GtkWidget *widget;
+	GtkEntry *secret_entry = NULL;
+
 	if (!hints || !g_strv_length ((char **) hints)) {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): missing secrets hints.",
@@ -614,15 +601,42 @@ gsm_get_secrets (NMDevice *device,
 
 	if (   !strcmp (hints[0], NM_SETTING_GSM_PIN)
 	    || !strcmp (hints[0], NM_SETTING_GSM_PUK))
-		ask_for_pin_puk (device, connection, hints[0], context, applet);
+		widget = ask_for_pin_puk (device, connection, hints[0], &secret_entry);
 	else if (!strcmp (hints[0], NM_SETTING_GSM_PASSWORD))
-		ask_for_password (device, connection, context, applet);
+		widget = ask_for_password (device, connection, &secret_entry);
 	else {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): unknown secrets hint '%s'.",
 		             __FILE__, __LINE__, __func__, hints[0]);
 		return FALSE;
 	}
+
+	if (!widget || !secret_entry) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): error asking for GSM secrets.",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
+
+	info = g_new (NMGsmInfo, 1);
+	info->context = context;
+	info->applet = applet;
+	info->active_connection = active_connection;
+	info->connection = g_object_ref (connection);
+	info->secret_name = g_strdup (hints[0]);
+	info->dialog = widget;
+	info->secret_entry = secret_entry;
+
+	g_signal_connect (widget, "response", G_CALLBACK (get_gsm_secrets_cb), info);
+
+	/* Attach a destroy notifier to the NMActiveConnection so we can destroy
+	 * the dialog when the active connection goes away.
+	 */
+	g_object_weak_ref (G_OBJECT (active_connection), destroy_gsm_dialog, info);
+
+	gtk_window_set_position (GTK_WINDOW (widget), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (GTK_WIDGET (widget));
+	gtk_window_present (GTK_WINDOW (widget));
 
 	return TRUE;
 }

@@ -175,7 +175,7 @@ struct NMADeviceClass {
 
 	gboolean       (*get_secrets)          (NMDevice *device,
 	                                        NMConnection *connection,
-	                                        const char *specific_object,
+	                                        NMActiveConnection *active_connection,
 	                                        const char *setting_name,
 	                                        const char **hints,
 	                                        DBusGMethodInvocation *context,

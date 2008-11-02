@@ -1314,6 +1314,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		nag_dialog = nma_wireless_dialog_nag_user (dialog);
 		if (nag_dialog) {
 			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
+			gtk_window_set_destroy_with_parent (GTK_WINDOW (nag_dialog), TRUE);
 			g_signal_connect (nag_dialog, "response",
 			                  G_CALLBACK (nag_dialog_response_cb),
 			                  dialog);
@@ -1470,39 +1471,45 @@ add_one_setting (GHashTable *settings,
 	return secrets ? TRUE : FALSE;
 }
 
+typedef struct {
+	NMApplet *applet;
+	NMActiveConnection *active_connection;
+	GtkWidget *dialog;
+	GtkWidget *nag_dialog;
+	DBusGMethodInvocation *context;
+	char *setting_name;
+} NMWifiInfo;
+
+static void
+destroy_wifi_dialog (gpointer user_data, GObject *finalized)
+{
+	NMWifiInfo *info = user_data;
+
+	gtk_widget_hide (info->dialog);
+	gtk_widget_destroy (info->dialog);
+	g_free (info->setting_name);
+	g_free (info);
+}
+
 static void
 get_secrets_dialog_response_cb (GtkDialog *foo,
                                 gint response,
                                 gpointer user_data)
 {
-	NMAWirelessDialog *dialog = NMA_WIRELESS_DIALOG (foo);
-	NMApplet *applet = NM_APPLET (user_data);
-	DBusGMethodInvocation *context;
+	NMWifiInfo *info = user_data;
+	NMAWirelessDialog *dialog = NMA_WIRELESS_DIALOG (info->dialog);
 	NMAGConfConnection *gconf_connection;
 	NMConnection *connection = NULL;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	NMDevice *device = NULL;
 	GHashTable *settings = NULL;
-	const char *setting_name, *key_mgmt, *auth_alg;
+	const char *key_mgmt, *auth_alg;
 	GError *error = NULL;
 
-	context = g_object_get_data (G_OBJECT (dialog), "dbus-context");
-	setting_name = g_object_get_data (G_OBJECT (dialog), "setting-name");
-	if (!context || !setting_name) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
-		             "%s.%d (%s): couldn't get dialog data",
-		             __FILE__, __LINE__, __func__);
-		goto done;
-	}
-
-	if (response != GTK_RESPONSE_OK) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
-		             "%s.%d (%s): canceled",
-		             __FILE__, __LINE__, __func__);
-		goto done;
-	}
-
-	if (!nma_wireless_dialog_get_nag_ignored (dialog)) {
+	/* Handle the nag dialog specially; don't want to clear the NMActiveConnection
+	 * destroy handler yet if the main dialog isn't going away.
+	 */
+	if ((response == GTK_RESPONSE_OK) && !nma_wireless_dialog_get_nag_ignored (dialog)) {
 		GtkWidget *widget;
 
 		/* Nag the user about certificates or whatever.  Only destroy the dialog
@@ -1511,11 +1518,24 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 		widget = nma_wireless_dialog_nag_user (dialog);
 		if (widget) {
 			gtk_window_set_transient_for (GTK_WINDOW (widget), GTK_WINDOW (dialog));
+			gtk_window_set_destroy_with_parent (GTK_WINDOW (widget), TRUE);
 			g_signal_connect (widget, "response",
 			                  G_CALLBACK (nag_dialog_response_cb),
 			                  dialog);
 			return;
 		}
+	}
+
+	/* Got a user response, clear the NMActiveConnection destroy handler for
+	 * this dialog since this function will now take over dialog destruction.
+	 */
+	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_wifi_dialog, info);
+
+	if (response != GTK_RESPONSE_OK) {
+		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): canceled",
+		             __FILE__, __LINE__, __func__);
+		goto done;
 	}
 
 	connection = nma_wireless_dialog_get_connection (dialog, &device, NULL);
@@ -1580,13 +1600,13 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	if (!add_one_setting (settings, connection, NM_SETTING (s_wireless_sec), &error))
 		goto done;
 
-	dbus_g_method_return (context, settings);
+	dbus_g_method_return (info->context, settings);
 
 	/* Save the connection back to GConf _after_ hashing it, because
 	 * saving to GConf might trigger the GConf change notifiers, resulting
 	 * in the connection being read back in from GConf which clears secrets.
 	 */
-	gconf_connection = nma_gconf_settings_get_by_connection (applet->gconf_settings, connection);
+	gconf_connection = nma_gconf_settings_get_by_connection (info->applet->gconf_settings, connection);
 	if (gconf_connection)
 		nma_gconf_connection_save (gconf_connection);
 
@@ -1596,52 +1616,73 @@ done:
 
 	if (error) {
 		g_warning ("%s", error->message);
-		dbus_g_method_return_error (context, error);
+		dbus_g_method_return_error (info->context, error);
 		g_error_free (error);
 	}
 
 	if (connection)
 		nm_connection_clear_secrets (connection);
 
-	gtk_widget_hide (GTK_WIDGET (dialog));
-	gtk_widget_destroy (GTK_WIDGET (dialog));
+	destroy_wifi_dialog (info, NULL);
 }
 
 static gboolean
 wireless_get_secrets (NMDevice *device,
                       NMConnection *connection,
-                      const char *specific_object,
+                      NMActiveConnection *active_connection,
                       const char *setting_name,
                       const char **hints,
                       DBusGMethodInvocation *context,
                       NMApplet *applet,
                       GError **error)
 {
+	NMWifiInfo *info;
 	NMAccessPoint *ap;
-	GtkWidget *dialog;
+	const char *specific_object;
 
-	g_assert (specific_object);
-	ap = nm_device_wifi_get_access_point_by_path (NM_DEVICE_WIFI (device), specific_object);
-
-	dialog = nma_wireless_dialog_new (applet, connection, device, ap);
-	if (!dialog) {
+	if (!setting_name || !active_connection) {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
-		             "%s.%d (%s): couldn't display secrets UI",
+		             "%s.%d (%s): setting name and active connection object required",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
 	}
 
-	g_object_set_data (G_OBJECT (dialog), "dbus-context", context);
-	g_object_set_data_full (G_OBJECT (dialog),
-	                        "setting-name", g_strdup (setting_name),
-	                        (GDestroyNotify) g_free);
+	specific_object = nm_active_connection_get_specific_object (active_connection);
+	if (!specific_object) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): could not determine AP for specific object",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
 
-	g_signal_connect (dialog, "response",
+	info = g_malloc0 (sizeof (NMWifiInfo));
+
+	ap = nm_device_wifi_get_access_point_by_path (NM_DEVICE_WIFI (device), specific_object);
+	info->dialog = nma_wireless_dialog_new (applet, connection, device, ap);
+	if (!info->dialog) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): couldn't display secrets UI",
+		             __FILE__, __LINE__, __func__);
+		g_free (info);
+		return FALSE;
+	}
+
+	info->applet = applet;
+	info->active_connection = active_connection;
+	info->context = context;
+	info->setting_name = g_strdup (setting_name);
+
+	g_signal_connect (info->dialog, "response",
 	                  G_CALLBACK (get_secrets_dialog_response_cb),
-	                  applet);
+	                  info);
 
-	gtk_widget_realize (dialog);
-	gtk_window_present (GTK_WINDOW (dialog));
+	/* Attach a destroy notifier to the NMActiveConnection so we can destroy
+	 * the dialog when the active connection goes away.
+	 */
+	g_object_weak_ref (G_OBJECT (active_connection), destroy_wifi_dialog, info);
+
+	gtk_widget_realize (info->dialog);
+	gtk_window_present (GTK_WINDOW (info->dialog));
 
 	return TRUE;
 }

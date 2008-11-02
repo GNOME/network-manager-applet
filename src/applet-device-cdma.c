@@ -356,10 +356,24 @@ typedef struct {
 	DBusGMethodInvocation *context;
 	NMApplet *applet;
 	NMConnection *connection;
-	GtkWidget *ok_button;
+	NMActiveConnection *active_connection;
+	GtkWidget *dialog;
 	GtkEntry *secret_entry;
 	char *secret_name;
 } NMCdmaInfo;
+
+static void
+destroy_cdma_dialog (gpointer user_data, GObject *finalized)
+{
+	NMCdmaInfo *info = user_data;
+
+	gtk_widget_hide (info->dialog);
+	gtk_widget_destroy (info->dialog);
+
+	g_object_unref (info->connection);
+	g_free (info->secret_name);
+	g_free (info);
+}
 
 static void
 get_cdma_secrets_cb (GtkDialog *dialog,
@@ -372,6 +386,11 @@ get_cdma_secrets_cb (GtkDialog *dialog,
 	GHashTable *settings_hash;
 	GHashTable *secrets;
 	GError *err = NULL;
+
+	/* Got a user response, clear the NMActiveConnection destroy handler for
+	 * this dialog since this function will now take over dialog destruction.
+	 */
+	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_cdma_dialog, info);
 
 	if (response != GTK_RESPONSE_OK) {
 		g_set_error (&err, NM_SETTINGS_ERROR, 1,
@@ -421,36 +440,22 @@ get_cdma_secrets_cb (GtkDialog *dialog,
 		g_error_free (err);
 	}
 
-	gtk_widget_hide (GTK_WIDGET (dialog));
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-
 	nm_connection_clear_secrets (info->connection);
-	g_object_unref (info->connection);
-	g_free (info->secret_name);
-	g_free (info);
+	destroy_cdma_dialog (info, NULL);
 }
 
-
-static void
+static GtkWidget *
 ask_for_password (NMDevice *device,
                   NMConnection *connection,
-                  DBusGMethodInvocation *context,
-                  NMApplet *applet)
+                  GtkEntry **out_secret_entry)
 {
 	GtkDialog *dialog;
 	GtkWidget *w;
 	GtkBox *box;
 	char *dev_str;
-	NMCdmaInfo *info;
 	NMSettingConnection *s_con;
 	char *tmp;
 	const char *id;
-
-	info = g_new (NMCdmaInfo, 1);
-	info->context = context;
-	info->applet = applet;
-	info->connection = g_object_ref (connection);
-	info->secret_name = g_strdup (NM_SETTING_CDMA_PASSWORD);
 
 	dialog = GTK_DIALOG (gtk_dialog_new ());
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -458,8 +463,7 @@ ask_for_password (NMDevice *device,
 
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
-	info->ok_button = w;
-	gtk_window_set_default (GTK_WINDOW (dialog), info->ok_button);
+	gtk_window_set_default (GTK_WINDOW (dialog), w);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	id = nm_setting_connection_get_id (s_con);
@@ -485,31 +489,28 @@ ask_for_password (NMDevice *device,
 	gtk_box_pack_start (box, gtk_label_new (_("Password:")), FALSE, FALSE, 0);
 
 	w = gtk_entry_new ();
-	info->secret_entry = GTK_ENTRY (w);
+	*out_secret_entry = GTK_ENTRY (w);
 	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
 	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (dialog->vbox);
-
-	g_signal_connect (dialog, "response",
-				   G_CALLBACK (get_cdma_secrets_cb),
-				   info);
-
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (GTK_WIDGET (dialog));
-	gtk_window_present (GTK_WINDOW (dialog));
+	return GTK_WIDGET (dialog);
 }
 
 static gboolean
 cdma_get_secrets (NMDevice *device,
                  NMConnection *connection,
-                 const char *specific_object,
+                 NMActiveConnection *active_connection,
                  const char *setting_name,
                  const char **hints,
                  DBusGMethodInvocation *context,
                  NMApplet *applet,
                  GError **error)
 {
+	NMCdmaInfo *info;
+	GtkWidget *widget;
+	GtkEntry *secret_entry = NULL;
+
 	if (!hints || !g_strv_length ((char **) hints)) {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): missing secrets hints.",
@@ -518,13 +519,40 @@ cdma_get_secrets (NMDevice *device,
 	}
 
 	if (!strcmp (hints[0], NM_SETTING_CDMA_PASSWORD))
-		ask_for_password (device, connection, context, applet);
+		widget = ask_for_password (device, connection, &secret_entry);
 	else {
 		g_set_error (error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): unknown secrets hint '%s'.",
 		             __FILE__, __LINE__, __func__, hints[0]);
 		return FALSE;
 	}
+
+	if (!widget || !secret_entry) {
+		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		             "%s.%d (%s): error asking for CDMA secrets.",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
+
+	info = g_new (NMCdmaInfo, 1);
+	info->context = context;
+	info->applet = applet;
+	info->active_connection = active_connection;
+	info->connection = g_object_ref (connection);
+	info->secret_name = g_strdup (hints[0]);
+	info->dialog = widget;
+	info->secret_entry = secret_entry;
+
+	g_signal_connect (widget, "response", G_CALLBACK (get_cdma_secrets_cb), info);
+
+	/* Attach a destroy notifier to the NMActiveConnection so we can destroy
+	 * the dialog when the active connection goes away.
+	 */
+	g_object_weak_ref (G_OBJECT (active_connection), destroy_cdma_dialog, info);
+
+	gtk_window_set_position (GTK_WINDOW (widget), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (GTK_WIDGET (widget));
+	gtk_window_present (GTK_WINDOW (widget));
 
 	return TRUE;
 }

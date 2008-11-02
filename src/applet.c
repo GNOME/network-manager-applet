@@ -1787,13 +1787,15 @@ applet_schedule_update_icon (NMApplet *applet)
 static NMDevice *
 find_active_device (NMAGConfConnection *exported,
                     NMApplet *applet,
-                    const char **out_specific_object)
+                    NMActiveConnection **out_active_connection)
 {
 	const GPtrArray *active_connections;
 	int i;
 
 	g_return_val_if_fail (exported != NULL, NULL);
 	g_return_val_if_fail (applet != NULL, NULL);
+	g_return_val_if_fail (out_active_connection != NULL, NULL);
+	g_return_val_if_fail (*out_active_connection == NULL, NULL);
 
 	/* Look through the active connection list trying to find the D-Bus
 	 * object path of applet_connection.
@@ -1804,7 +1806,6 @@ find_active_device (NMAGConfConnection *exported,
 		NMConnection *connection;
 		const char *service_name;
 		const char *connection_path;
-		const char *specific_object;
 		const GPtrArray *devices;
 
 		active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_connections, i));
@@ -1813,12 +1814,12 @@ find_active_device (NMAGConfConnection *exported,
 			continue;
 
 		connection_path = nm_active_connection_get_connection (active);
-		specific_object = nm_active_connection_get_specific_object (active);
 
 		connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
 		if (!strcmp (connection_path, nm_connection_get_path (connection))) {
 			devices = nm_active_connection_get_devices (active);
-			*out_specific_object = specific_object;
+			if (devices)
+				*out_active_connection = active;
 			return devices ? NM_DEVICE (g_ptr_array_index (devices, 0)) : NULL;
 		}
 	}
@@ -1836,12 +1837,12 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
                                           gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
+	NMActiveConnection *active_connection = NULL;
 	NMConnection *connection;
 	NMSettingConnection *s_con;
 	NMDevice *device;
 	NMADeviceClass *dclass;
 	GError *error = NULL;
-	const char *specific_object = NULL;
 
 	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (exported));
 	g_return_if_fail (connection != NULL);
@@ -1856,8 +1857,8 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 	}
 
 	/* Find the active device for this connection */
-	device = find_active_device (exported, applet, &specific_object);
-	if (!device) {
+	device = find_active_device (exported, applet, &active_connection);
+	if (!device || !active_connection) {
 		g_set_error (&error, NM_SETTINGS_ERROR, 1,
 		             "%s.%d (%s): couldn't find details for connection",
 		             __FILE__, __LINE__, __func__);
@@ -1880,7 +1881,7 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 	}
 
 	/* Let the device class handle secrets */
-	if (!dclass->get_secrets (device, connection, specific_object, setting_name,
+	if (!dclass->get_secrets (device, connection, active_connection, setting_name,
 	                          hints, context, applet, &error))
 		goto error;
 

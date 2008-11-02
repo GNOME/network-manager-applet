@@ -1,3 +1,20 @@
+2008-11-02  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+	  src/applet.h
+		- (find_active_device): return the active connection object instead of
+			just the active connection's specific object
+		- (applet_settings_new_secrets_requested_cb): pass the active connection
+			to the device subclasses
+
+	* src/applet-device-wired.c
+	  src/applet-device-wifi.c
+	  src/applet-device-gsm.c
+	  src/applet-device-cdma.c
+		- Attach any secrets dialogs to the active connection object, such that
+			when the active connection object goes away the dialog also gets
+			closed
+
 2008-10-31  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/nma-gconf-connection.c
