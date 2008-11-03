@@ -1,8 +1,6 @@
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
- * Dan Williams <dcbw@redhat.com>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -17,13 +15,15 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
+ * Copyright (C) 2004 - 2008 Red Hat, Inc.
+ * Copyright (C) 2005 - 2008 Novell, Inc.
+ *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
  *
  * GNOME Wireless Applet Authors:
  *		Eskil Heyn Olsen <eskil@eskil.dk>
  *		Bastien Nocera <hadess@hadess.net> (Gnome2 port)
  *
- * (C) Copyright 2004-2008 Red Hat, Inc.
  * (C) Copyright 2001, 2002 Free Software Foundation
  */
 

@@ -1,5 +1,4 @@
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
-
 /* ap-menu-item.c - Class to represent a Wifi access point 
  *
  * Jonathan Blandford <jrb@redhat.com>
@@ -19,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * Copyright (C) 2005 - 2008 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
