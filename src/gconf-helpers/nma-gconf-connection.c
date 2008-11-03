@@ -233,7 +233,7 @@ service_get_secrets (NMExportedConnection *exported,
 
 	setting = nm_connection_get_setting_by_name (connection, setting_name);
 	if (!setting) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INVALID_CONNECTION,
 		             "%s.%d - Connection didn't have requested setting '%s'.",
 		             __FILE__, __LINE__, setting_name);
 		secrets_return_error (context, error);
@@ -245,7 +245,7 @@ service_get_secrets (NMExportedConnection *exported,
 	connection_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
 
 	if (!s_con || !connection_id || !strlen (connection_id) || !connection_type) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INVALID_CONNECTION,
 		             "%s.%d - Connection didn't have required '"
 		             NM_SETTING_CONNECTION_SETTING_NAME
 		             "' setting , or the connection name was invalid.",

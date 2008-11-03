@@ -416,7 +416,7 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_gsm_dialog, info);
 
 	if (response != GTK_RESPONSE_OK) {
-		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_REQUEST_CANCELED,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -431,7 +431,7 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 
 	secrets = nm_setting_to_hash (NM_SETTING (setting));
 	if (!secrets) {
-		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 				   "%s.%d (%s): failed to hash setting '%s'.",
 				   __FILE__, __LINE__, __func__, nm_setting_get_name (NM_SETTING (setting)));
 		goto done;
@@ -593,7 +593,7 @@ gsm_get_secrets (NMDevice *device,
 	GtkEntry *secret_entry = NULL;
 
 	if (!hints || !g_strv_length ((char **) hints)) {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): missing secrets hints.",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -605,14 +605,14 @@ gsm_get_secrets (NMDevice *device,
 	else if (!strcmp (hints[0], NM_SETTING_GSM_PASSWORD))
 		widget = ask_for_password (device, connection, &secret_entry);
 	else {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): unknown secrets hint '%s'.",
 		             __FILE__, __LINE__, __func__, hints[0]);
 		return FALSE;
 	}
 
 	if (!widget || !secret_entry) {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): error asking for GSM secrets.",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;

@@ -467,7 +467,7 @@ get_pppoe_secrets_cb (GtkDialog *dialog,
 	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_pppoe_dialog, info);
 
 	if (response != GTK_RESPONSE_OK) {
-		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_REQUEST_CANCELED,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -478,7 +478,7 @@ get_pppoe_secrets_cb (GtkDialog *dialog,
 
 	secrets = nm_setting_to_hash (setting);
 	if (!secrets) {
-		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 					 "%s.%d (%s): failed to hash setting '%s'.",
 					 __FILE__, __LINE__, __func__, nm_setting_get_name (setting));
 		goto done;
@@ -539,7 +539,7 @@ pppoe_get_secrets (NMDevice *device,
 
 	xml = glade_xml_new (GLADEDIR "/ce-page-dsl.glade", "DslPage", NULL);
 	if (!xml) {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 					 "%s.%d (%s): couldn't display secrets UI",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -619,7 +619,7 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_8021x_dialog, info);
 
 	if (response != GTK_RESPONSE_OK) {
-		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_REQUEST_CANCELED,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -627,7 +627,7 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 
 	connection = nma_wired_dialog_get_connection (info->dialog);
 	if (!connection) {
-		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): couldn't get connection from wired dialog.",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -635,7 +635,7 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 
 	setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
 	if (!setting) {
-		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INVALID_CONNECTION,
 					 "%s.%d (%s): requested setting '802-1x' didn't"
 					 " exist in the connection.",
 					 __FILE__, __LINE__, __func__);
@@ -644,7 +644,7 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 
 	secrets = nm_setting_to_hash (setting);
 	if (!secrets) {
-		g_set_error (&err, NM_SETTINGS_ERROR, 1,
+		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 					 "%s.%d (%s): failed to hash setting '%s'.",
 					 __FILE__, __LINE__, __func__, nm_setting_get_name (setting));
 		goto done;
@@ -701,7 +701,7 @@ nm_8021x_get_secrets (NMDevice *device,
 								   g_object_ref (connection),
 								   device);
 	if (!dialog) {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): couldn't display secrets UI",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -743,7 +743,7 @@ wired_get_secrets (NMDevice *device,
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	if (!s_con) {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INVALID_CONNECTION,
 		             "%s.%d (%s): Invalid connection",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;

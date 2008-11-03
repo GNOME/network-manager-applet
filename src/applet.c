@@ -1859,7 +1859,7 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 	/* Find the active device for this connection */
 	device = find_active_device (exported, applet, &active_connection);
 	if (!device || !active_connection) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): couldn't find details for connection",
 		             __FILE__, __LINE__, __func__);
 		goto error;
@@ -1867,14 +1867,14 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 
 	dclass = get_device_class (device, applet);
 	if (!dclass) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): device type unknown",
 		             __FILE__, __LINE__, __func__);
 		goto error;
 	}
 
 	if (!dclass->get_secrets) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_UNAVAILABLE,
 		             "%s.%d (%s): no secrets found",
 		             __FILE__, __LINE__, __func__);
 		goto error;

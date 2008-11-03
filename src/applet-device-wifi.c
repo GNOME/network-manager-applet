@@ -1463,7 +1463,7 @@ add_one_setting (GHashTable *settings,
 	if (secrets) {
 		g_hash_table_insert (settings, g_strdup (nm_setting_get_name (setting)), secrets);
 	} else {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): failed to hash setting '%s'.",
 		             __FILE__, __LINE__, __func__, nm_setting_get_name (setting));
 	}
@@ -1532,7 +1532,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_wifi_dialog, info);
 
 	if (response != GTK_RESPONSE_OK) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_REQUEST_CANCELED,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -1540,7 +1540,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 
 	connection = nma_wireless_dialog_get_connection (dialog, &device, NULL);
 	if (!connection) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): couldn't get connection from wireless dialog.",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -1549,7 +1549,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	/* Second-guess which setting NM wants secrets for. */
 	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
 	if (!s_wireless_sec) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INVALID_CONNECTION,
 		             "%s.%d (%s): requested setting '802-11-wireless-security'"
 		             " didn't exist in the connection.",
 		             __FILE__, __LINE__, __func__);
@@ -1562,7 +1562,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	settings = g_hash_table_new_full (g_str_hash, g_str_equal,
 	                                  g_free, (GDestroyNotify) g_hash_table_destroy);
 	if (!settings) {
-		g_set_error (&error, NM_SETTINGS_ERROR, 1,
+		g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): not enough memory to return secrets.",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -1583,7 +1583,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 
 			s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
 			if (!s_8021x) {
-				g_set_error (&error, NM_SETTINGS_ERROR, 1,
+				g_set_error (&error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INVALID_CONNECTION,
 				             "%s.%d (%s): requested setting '802-1x' didn't"
 				             " exist in the connection.",
 				             __FILE__, __LINE__, __func__);
@@ -1641,7 +1641,7 @@ wireless_get_secrets (NMDevice *device,
 	const char *specific_object;
 
 	if (!setting_name || !active_connection) {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): setting name and active connection object required",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -1649,7 +1649,7 @@ wireless_get_secrets (NMDevice *device,
 
 	specific_object = nm_active_connection_get_specific_object (active_connection);
 	if (!specific_object) {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): could not determine AP for specific object",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -1660,7 +1660,7 @@ wireless_get_secrets (NMDevice *device,
 	ap = nm_device_wifi_get_access_point_by_path (NM_DEVICE_WIFI (device), specific_object);
 	info->dialog = nma_wireless_dialog_new (applet, connection, device, ap);
 	if (!info->dialog) {
-		g_set_error (error, NM_SETTINGS_ERROR, 1,
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): couldn't display secrets UI",
 		             __FILE__, __LINE__, __func__);
 		g_free (info);
