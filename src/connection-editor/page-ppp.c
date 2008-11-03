@@ -89,6 +89,22 @@ ppp_private_init (CEPagePpp *self)
 }
 
 static void
+use_mppe_toggled_cb (GtkToggleButton *widget, CEPagePpp *self)
+{
+	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
+
+	if (gtk_toggle_button_get_active (widget)) {
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->mppe_require_128), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->use_mppe_stateful), TRUE);
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->mppe_require_128), FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->mppe_require_128), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->use_mppe_stateful), FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->use_mppe_stateful), FALSE);
+	}
+}
+
+static void
 set_auth_items_sensitive (CEPagePpp *self, gboolean sensitive)
 {
 	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
@@ -108,6 +124,7 @@ use_auth_toggled_cb (GtkToggleButton *check, gpointer user_data)
 	CEPagePpp *self = CE_PAGE_PPP (user_data);
 
 	set_auth_items_sensitive (self, gtk_toggle_button_get_active (check));
+	ce_page_changed (CE_PAGE (self));
 }
 
 static void
@@ -156,14 +173,24 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 	g_signal_connect (G_OBJECT (priv->use_auth), "toggled", G_CALLBACK (use_auth_toggled_cb), self);
 
 	gtk_toggle_button_set_active (priv->use_mppe, require_mppe);
+	g_signal_connect (priv->use_mppe, "toggled", G_CALLBACK (use_mppe_toggled_cb), self);
+	use_mppe_toggled_cb (priv->use_mppe, self);
+
 	gtk_toggle_button_set_active (priv->mppe_require_128, require_mppe_128);
+	g_signal_connect_swapped (priv->mppe_require_128, "toggled", G_CALLBACK (ce_page_changed), self);
+
 	gtk_toggle_button_set_active (priv->use_mppe_stateful, mppe_stateful);
+	g_signal_connect_swapped (priv->use_mppe_stateful, "toggled", G_CALLBACK (ce_page_changed), self);
 
 	gtk_toggle_button_set_active (priv->allow_bsdcomp, !nobsdcomp);
+	g_signal_connect_swapped (priv->allow_bsdcomp, "toggled", G_CALLBACK (ce_page_changed), self);
 	gtk_toggle_button_set_active (priv->allow_deflate, !nodeflate);
+	g_signal_connect_swapped (priv->allow_deflate, "toggled", G_CALLBACK (ce_page_changed), self);
 	gtk_toggle_button_set_active (priv->use_vj_comp, !no_vj_comp);
+	g_signal_connect_swapped (priv->use_vj_comp, "toggled", G_CALLBACK (ce_page_changed), self);
 
 	gtk_toggle_button_set_active (priv->send_ppp_echo, (lcp_echo_interval > 0) ? TRUE : FALSE);
+	g_signal_connect_swapped (priv->send_ppp_echo, "toggled", G_CALLBACK (ce_page_changed), self);
 }
 
 static void
@@ -185,6 +212,8 @@ check_toggled_cb (GtkCellRendererToggle *cell, gchar *path_str, gpointer user_da
 	gtk_list_store_set (priv->auth_methods_list, &iter, COL_VALUE, toggle_item, -1);
 
 	gtk_tree_path_free (path);
+
+	ce_page_changed (CE_PAGE (self));
 }
 
 CEPagePpp *
