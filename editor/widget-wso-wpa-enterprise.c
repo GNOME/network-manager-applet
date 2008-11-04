@@ -141,7 +141,7 @@ wpa_eap_set_password_cb (GtkButton *button, gpointer data)
 	if (!key)
 		return;
 
-	kresult = set_eap_key_in_keyring (we_data->essid_value, key);
+	kresult = set_key_in_keyring (we_data->essid_value, key);
 	if (kresult != GNOME_KEYRING_RESULT_OK) {
 		GtkWindow *parent;
 		GtkWidget *dialog;
@@ -174,7 +174,7 @@ wpa_eap_set_private_key_password_cb (GtkButton *button, gpointer data)
 	if (!key)
 		return;
 
-	kresult = set_key_in_keyring (we_data->essid_value, key);
+	kresult = set_eap_key_in_keyring (we_data->essid_value, key);
 	if (kresult != GNOME_KEYRING_RESULT_OK) {
 		GtkWindow *parent;
 		GtkWidget *dialog;
@@ -367,7 +367,7 @@ get_wpa_enterprise_widget (WE_DATA *we_data)
 	gtk_widget_show (widget);
 
 	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_passwd_entry");
-	kresult = get_eap_key_from_keyring (we_data->essid_value, &key);
+	kresult = get_key_from_keyring (we_data->essid_value, &key);
 	if (key) {
 		gtk_entry_set_text (GTK_ENTRY (widget), key);
 		g_free (key);
@@ -379,7 +379,7 @@ get_wpa_enterprise_widget (WE_DATA *we_data)
 	gtk_widget_show (widget);
 
 	widget = glade_xml_get_widget (we_data->sub_xml, "wpa_eap_private_key_passwd_entry");
-	kresult = get_key_from_keyring (we_data->essid_value, &key);
+	kresult = get_eap_key_from_keyring (we_data->essid_value, &key);
 	if (key) {
 		gtk_entry_set_text (GTK_ENTRY (widget), key);
 		g_free (key);
