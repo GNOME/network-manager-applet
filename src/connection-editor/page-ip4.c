@@ -299,7 +299,6 @@ populate_ui (CEPageIP4 *self)
 		NMIP4Address *addr = nm_setting_ip4_config_get_address (setting, i);
 		struct in_addr tmp_addr;
 		char buf[INET_ADDRSTRLEN + 1];
-		char *tmp;
 		const char *ignored;
 
 		if (!addr) {
@@ -313,9 +312,9 @@ populate_ui (CEPageIP4 *self)
 		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
 		gtk_list_store_set (store, &model_iter, COL_ADDRESS, buf, -1);
 
-		tmp = g_strdup_printf ("%d", nm_ip4_address_get_prefix (addr));
-		gtk_list_store_set (store, &model_iter, COL_PREFIX, tmp, -1);
-		g_free (tmp);
+		tmp_addr.s_addr = nm_utils_ip4_prefix_to_netmask (nm_ip4_address_get_prefix (addr));
+		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
+		gtk_list_store_set (store, &model_iter, COL_PREFIX, buf, -1);
 
 		tmp_addr.s_addr = nm_ip4_address_get_gateway (addr);
 		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
@@ -635,7 +634,7 @@ ce_page_ip4_new (NMConnection *connection)
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 
-	/* Prefix column */
+	/* Prefix/netmask column */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
@@ -701,14 +700,16 @@ parse_netmask (const char *str, guint32 *prefix)
 	errno = 0;
 
 	/* Is it a prefix? */
-	tmp_prefix = strtol (str, NULL, 10);
-	if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
-		*prefix = tmp_prefix;
-		return TRUE;
+	if (!strchr (str, '.')) {
+		tmp_prefix = strtol (str, NULL, 10);
+		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
+			*prefix = tmp_prefix;
+			return TRUE;
+		}
 	}
 
 	/* Is it a netmask? */
-	if (inet_aton (str, &tmp_addr)) {
+	if (inet_pton (AF_INET, str, &tmp_addr) > 0) {
 		*prefix = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
 		return TRUE;
 	}

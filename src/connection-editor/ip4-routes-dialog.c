@@ -30,6 +30,8 @@
 #include <glade/glade.h>
 #include <glib/gi18n.h>
 
+#include <nm-utils.h>
+
 #include "ip4-routes-dialog.h"
 
 #define COL_ADDRESS 0
@@ -236,17 +238,19 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 		if (inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
 			gtk_list_store_set (store, &model_iter, COL_ADDRESS, ip_string, -1);
 
-		tmp = g_strdup_printf ("%d", nm_ip4_route_get_prefix (route));
-		gtk_list_store_set (store, &model_iter, COL_PREFIX, tmp, -1);
-		g_free (tmp);
+		tmp_addr.s_addr = nm_utils_ip4_prefix_to_netmask (nm_ip4_route_get_prefix (route));
+		if (inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
+			gtk_list_store_set (store, &model_iter, COL_PREFIX, ip_string, -1);
 
 		tmp_addr.s_addr = nm_ip4_route_get_next_hop (route);
-		if (inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
+		if (tmp_addr.s_addr && inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
 			gtk_list_store_set (store, &model_iter, COL_NEXT_HOP, ip_string, -1);
 
-		tmp = g_strdup_printf ("%d", nm_ip4_route_get_metric (route));
-		gtk_list_store_set (store, &model_iter, COL_METRIC, tmp, -1);
-		g_free (tmp);
+		if (nm_ip4_route_get_metric (route)) {
+			tmp = g_strdup_printf ("%d", nm_ip4_route_get_metric (route));
+			gtk_list_store_set (store, &model_iter, COL_METRIC, tmp, -1);
+			g_free (tmp);
+		}
 	}
 
 	widget = glade_xml_get_widget (xml, "ip4_routes");
@@ -276,7 +280,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
-	                                                      -1, _("Prefix"), renderer,
+	                                                      -1, _("Netmask"), renderer,
 	                                                      "text", COL_PREFIX,
 	                                                      NULL);
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), offset - 1);
@@ -341,8 +345,8 @@ static gboolean
 get_one_int (GtkTreeModel *model,
              GtkTreeIter *iter,
              int column,
-             const char *name,
              guint32 max_value,
+             gboolean fail_if_missing,
              guint32 *out)
 {
 	char *item = NULL;
@@ -350,21 +354,59 @@ get_one_int (GtkTreeModel *model,
 	long int tmp_int;
 
 	gtk_tree_model_get (model, iter, column, &item, -1);
-	if (!item) {
-		g_warning ("%s: IPv4 %s '%s' missing!",
-		           __func__, name, item ? item : "<none>");
-		return FALSE;
+	if ((!item || !strlen (item)) && !fail_if_missing) {
+		g_free (item);
+		return TRUE;
 	}
 
 	errno = 0;
 	tmp_int = strtol (item, NULL, 10);
-	if (errno || tmp_int < 0 || tmp_int > max_value) {
-		g_warning ("%s: IPv4 %s '%s' invalid!",
-		           __func__, name, item ? item : "<none>");
+	if (errno || tmp_int < 0 || tmp_int > max_value)
 		goto out;
-	}
+
 	*out = (guint32) tmp_int;
 	success = TRUE;
+
+out:
+	g_free (item);
+	return success;
+}
+
+static gboolean
+get_one_prefix (GtkTreeModel *model,
+                GtkTreeIter *iter,
+                int column,
+                gboolean fail_if_missing,
+                guint32 *out)
+{
+	char *item = NULL;
+	struct in_addr tmp_addr = { 0 };
+	gboolean success = FALSE;
+	glong tmp_prefix;
+
+	gtk_tree_model_get (model, iter, column, &item, -1);
+	if ((!item || !strlen (item)) && !fail_if_missing) {
+		g_free (item);
+		return TRUE;
+	}
+
+	errno = 0;
+
+	/* Is it a prefix? */
+	if (!strchr (item, '.')) {
+		tmp_prefix = strtol (item, NULL, 10);
+		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
+			*out = tmp_prefix;
+			success = TRUE;
+			goto out;
+		}
+	}
+
+	/* Is it a netmask? */
+	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
+		*out = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
+		success = TRUE;
+	}
 
 out:
 	g_free (item);
@@ -375,24 +417,22 @@ static gboolean
 get_one_addr (GtkTreeModel *model,
               GtkTreeIter *iter,
               int column,
-              const char *name,
               gboolean fail_if_missing,
               guint32 *out)
 {
 	char *item = NULL;
-	struct in_addr tmp_addr;
+	struct in_addr tmp_addr = { 0 };
 	gboolean success = FALSE;
 
 	gtk_tree_model_get (model, iter, column, &item, -1);
-	if (!item && !fail_if_missing)
+	if ((!item || !strlen (item)) && !fail_if_missing) {
+		g_free (item);
 		return TRUE;
+	}
 
-	if (item && (inet_pton (AF_INET, item, &tmp_addr) > 0)) {
+	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
 		*out = tmp_addr.s_addr;
 		success = TRUE;
-	} else {
-		g_warning ("%s: IPv4 %s '%s' missing or invalid!",
-	           __func__, name, item ? item : "<none>");
 	}
 
 	g_free (item);
@@ -426,18 +466,28 @@ ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
 		NMIP4Route *route;
 
 		/* Address */
-		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, "address", TRUE, &addr))
+		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr)) {
+			g_warning ("%s: IPv4 address missing or invalid!", __func__);
 			goto next;
+		}
 
 		/* Prefix */
-		if (!get_one_int (model, &tree_iter, COL_PREFIX, "prefix", 32, &prefix))
+		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix)) {
+			g_warning ("%s: IPv4 prefix/netmask missing or invalid!", __func__);
 			goto next;
+		}
 
 		/* Next hop (optional) */
-		get_one_addr (model, &tree_iter, COL_NEXT_HOP, "next hop", TRUE, &next_hop);
+		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop)) {
+			g_warning ("%s: IPv4 next hop invalid!", __func__);
+			goto next;
+		}
 
-		/* Prefix (optional) */
-		get_one_int (model, &tree_iter, COL_METRIC, "metric", G_MAXUINT32, &metric);
+		/* Metric (optional) */
+		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric)) {
+			g_warning ("%s: IPv4 metric invalid!", __func__);
+			goto next;
+		}
 
 		route = nm_ip4_route_new ();
 		nm_ip4_route_set_dest (route, addr);

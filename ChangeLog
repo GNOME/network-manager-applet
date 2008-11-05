@@ -1,3 +1,15 @@
+2008-11-05  Dan Williams  <dcbw@redhat.com>
+
+	Clear up ambiguity reported in bgo #559402
+
+	* src/connection-editor/page-ip4.c
+		- (populate_ui): show netmask, not prefix
+		- (parse_netmask): slightly stricter prefix checking; use inet_pton
+
+	* src/connection-editor/ip4-routes-dialog.c
+		- (ip4_routes_dialog_new): show netmask, not prefix
+		- (ip4_routes_dialog_update_setting): stricter validation of route options
+
 2008-11-03  Dan Williams  <dcbw@redhat.com>
 
 	* src/applet-device-cdma.c
