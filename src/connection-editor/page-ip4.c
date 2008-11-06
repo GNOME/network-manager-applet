@@ -46,6 +46,11 @@ G_DEFINE_TYPE (CEPageIP4, ce_page_ip4, CE_TYPE_PAGE)
 
 #define CE_PAGE_IP4_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_IP4, CEPageIP4Private))
 
+#define COL_ADDRESS 0
+#define COL_PREFIX 1
+#define COL_GATEWAY 2
+#define COL_LAST COL_GATEWAY
+
 typedef struct {
 	NMSettingIP4Config *setting;
 	char *connection_id;
@@ -58,6 +63,7 @@ typedef struct {
 	GtkButton *addr_add;
 	GtkButton *addr_delete;
 	GtkTreeView *addr_list;
+	GtkCellRenderer *addr_cells[COL_LAST];
 
 	/* DNS servers */
 	GtkWidget *dns_servers_label;
@@ -85,10 +91,6 @@ typedef struct {
 #define IP4_METHOD_MANUAL          2
 #define IP4_METHOD_LINK_LOCAL      3
 #define IP4_METHOD_SHARED          4
-
-#define COL_ADDRESS 0
-#define COL_PREFIX 1
-#define COL_GATEWAY 2
 
 static void
 ip4_private_init (CEPageIP4 *self, NMConnection *connection)
@@ -450,12 +452,20 @@ cell_edited (GtkCellRendererText *cell,
 	GtkListStore *store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
 	GtkTreePath *path = gtk_tree_path_new_from_string (path_string);
 	GtkTreeIter iter;
-	guint32 column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (cell), "column"));
+	guint32 column;
+	GtkTreeViewColumn *next_col;
 
+	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (cell), "column"));
 	gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, path);
 	gtk_list_store_set (store, &iter, column, new_text, -1);
-	gtk_tree_path_free (path);
 
+	/* Move focus to the next column */
+	column = (column >= COL_LAST) ? 0 : column + 1;
+	next_col = gtk_tree_view_get_column (priv->addr_list, column);
+	gtk_tree_view_set_cursor_on_cell (priv->addr_list, path, next_col, priv->addr_cells[column], TRUE);
+	gtk_widget_grab_focus (GTK_WIDGET (priv->addr_list));
+
+	gtk_tree_path_free (path);
 	ce_page_changed (CE_PAGE (self));
 }
 
@@ -625,6 +635,7 @@ ce_page_ip4_new (NMConnection *connection)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_ADDRESS));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	priv->addr_cells[COL_ADDRESS] = GTK_CELL_RENDERER (renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
 	                                                      -1, _("Address"), renderer,
@@ -640,6 +651,7 @@ ce_page_ip4_new (NMConnection *connection)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_PREFIX));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	priv->addr_cells[COL_PREFIX] = GTK_CELL_RENDERER (renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
 	                                                      -1, _("Netmask"), renderer,
@@ -655,6 +667,7 @@ ce_page_ip4_new (NMConnection *connection)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_GATEWAY));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	priv->addr_cells[COL_GATEWAY] = GTK_CELL_RENDERER (renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
 	                                                      -1, _("Gateway"), renderer,

@@ -38,6 +38,7 @@
 #define COL_PREFIX  1
 #define COL_NEXT_HOP 2
 #define COL_METRIC  3
+#define COL_LAST COL_METRIC
 
 static void
 route_add_clicked (GtkButton *button, gpointer user_data)
@@ -124,11 +125,13 @@ cell_edited (GtkCellRendererText *cell,
              gpointer user_data)
 {
 	GladeXML *xml = GLADE_XML (user_data);
-	GtkWidget *widget;
+	GtkWidget *widget, *dialog;
 	GtkListStore *store;
 	GtkTreePath *path;
 	GtkTreeIter iter;
 	guint32 column;
+	GtkTreeViewColumn *next_col;
+	GtkCellRenderer *next_cell;
 
 	widget = glade_xml_get_widget (xml, "ip4_routes");
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (widget)));
@@ -137,6 +140,16 @@ cell_edited (GtkCellRendererText *cell,
 
 	gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, path);
 	gtk_list_store_set (store, &iter, column, new_text, -1);
+
+	/* Move focus to the next column */
+	column = (column >= COL_LAST) ? 0 : column + 1;
+	next_col = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), column);
+	dialog = glade_xml_get_widget (xml, "ip4_routes_dialog");
+	next_cell = g_slist_nth_data (g_object_get_data (G_OBJECT (dialog), "renderers"), column);
+
+	gtk_tree_view_set_cursor_on_cell (GTK_TREE_VIEW (widget), path, next_col, next_cell, TRUE);
+	gtk_widget_grab_focus (widget);
+
 	gtk_tree_path_free (path);
 }
 
@@ -199,6 +212,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	int i;
+	GSList *renderers = NULL;
 
 	xml = glade_xml_new (GLADEDIR "/ce-page-ip4.glade", "ip4_routes_dialog", NULL);
 	if (!xml) {
@@ -263,6 +277,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_ADDRESS));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
 	                                                      -1, _("Address"), renderer,
@@ -278,6 +293,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_PREFIX));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
 	                                                      -1, _("Netmask"), renderer,
@@ -293,6 +309,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_NEXT_HOP));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
 	                                                      -1, _("Gateway"), renderer,
@@ -308,6 +325,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_METRIC));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
 	                                                      -1, _("Metric"), renderer,
@@ -317,6 +335,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 
+	g_object_set_data_full (G_OBJECT (dialog), "renderers", renderers, (GDestroyNotify) g_slist_free);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget));
 	g_signal_connect (selection, "changed",
