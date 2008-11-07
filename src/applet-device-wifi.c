@@ -1195,37 +1195,42 @@ wireless_get_icon (NMDevice *device,
                    char **tip,
                    NMApplet *applet)
 {
+	NMSettingConnection *s_con;
 	NMAccessPoint *ap;
 	GdkPixbuf *pixbuf = NULL;
-	const char *iface;
-	char *esc_ssid = NULL;
+	const char *id;
+	char *ssid = NULL;
 
 	ap = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
 	if (ap) {
-		const GByteArray *ssid;
+		const GByteArray *tmp;
 
-		ssid = nm_access_point_get_ssid (ap);
-		if (ssid)
-			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
+		tmp = nm_access_point_get_ssid (ap);
+		if (tmp)
+			ssid = nm_utils_ssid_to_utf8 ((const char *) tmp->data, tmp->len);
 	}
 
-	if (!esc_ssid)
-		esc_ssid = g_strdup (_("(none)"));
+	if (!ssid)
+		ssid = g_strdup (_("(none)"));
 
-	iface = nm_device_get_iface (device);
+	id = nm_device_get_iface (device);
+	if (connection) {
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		id = nm_setting_connection_get_id (s_con);
+	}
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing device %s for the wireless network '%s'..."), iface, esc_ssid);
+		*tip = g_strdup_printf (_("Preparing wireless network connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Attempting to join the wireless network '%s'..."), esc_ssid);
-		break;
-	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting a network address from the wireless network '%s'..."), esc_ssid);
+		*tip = g_strdup_printf (_("Configuring wireless network connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("Waiting for Network Key for the wireless network '%s'..."), esc_ssid);
+		*tip = g_strdup_printf (_("User authentication required for wireless network '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_IP_CONFIG:
+		*tip = g_strdup_printf (_("Requesting a wireless network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		if (ap) {
@@ -1245,18 +1250,18 @@ wireless_get_icon (NMDevice *device,
 			else
 				pixbuf = applet->wireless_00_icon;
 
-			*tip = g_strdup_printf (_("Wireless network connection to '%s' (%d%%)"),
-			                        esc_ssid, strength);
+			*tip = g_strdup_printf (_("Wireless network connection '%s' active: %s (%d%%)"),
+			                        id, ssid, strength);
 		} else {
 			pixbuf = applet->wireless_00_icon;
-			*tip = g_strdup_printf (_("Wireless network connection to '%s'"), esc_ssid);
+			*tip = g_strdup_printf (_("Wireless network connection '%s' active"), id);
 		}
 		break;
 	default:
 		break;
 	}
 
-	g_free (esc_ssid);
+	g_free (ssid);
 	return pixbuf;
 }
 

@@ -279,24 +279,32 @@ wired_get_icon (NMDevice *device,
                 char **tip,
                 NMApplet *applet)
 {
+	NMSettingConnection *s_con;
 	GdkPixbuf *pixbuf = NULL;
-	const char *iface;
+	const char *id;
 
-	iface = nm_device_get_iface (NM_DEVICE (device));
+	id = nm_device_get_iface (NM_DEVICE (device));
+	if (connection) {
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		id = nm_setting_connection_get_id (s_con);
+	}
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing device %s for the wired network..."), iface);
+		*tip = g_strdup_printf (_("Preparing wired network connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring device %s for the wired network..."), iface);
+		*tip = g_strdup_printf (_("Configuring wired network connection '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_NEED_AUTH:
+		*tip = g_strdup_printf (_("User authentication required for wired network connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting a network address from the wired network..."));
+		*tip = g_strdup_printf (_("Requesting a wired network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		pixbuf = applet->wired_icon;
-		*tip = g_strdup (_("Wired network connection"));
+		*tip = g_strdup_printf (_("Wired network connection '%s' active"), id);
 		break;
 	default:
 		break;

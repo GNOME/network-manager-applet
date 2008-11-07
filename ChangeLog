@@ -1,3 +1,25 @@
+2008-11-07  Dan Williams  <dcbw@redhat.com>
+
+	Fix bgo #505211 and harmonize tooltips
+
+	* src/applet.c
+	  src/applet.h
+		- (nma_menu_deactivate_cb): refresh the tooltip when the menu closes,
+			since it was cleared when the menu was shown
+		- (applet_common_get_device_icon): NEED_AUTH state shouldn't just show
+			a disconnected icon; should do better here though in the future
+		- (get_tip_for_device_state): fallback tooltips if the device class
+			didn't set any
+		- (get_tip_for_vpn): VPN tips
+		- (applet_update_icon): show both default device and VPN tips
+
+	* src/applet-device-cdma.c
+	  src/applet-device-gsm.c
+	  src/applet-device-wifi.c
+	  src/applet-device-wired.c
+		- Make tooltips consistent, and emphasize the actual connection which
+			is being activated or is active
+
 2008-11-06  Claude Paroz  <claude@2xlibre.net>
 
 	* src/connection-editor/nm-connection-editor.glade:

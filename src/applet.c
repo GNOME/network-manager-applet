@@ -1170,6 +1170,9 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 	 * fires for an item.
 	 */
 	g_idle_add_full (G_PRIORITY_LOW, (GSourceFunc) nma_menu_clear, applet, NULL);
+
+	/* Re-set the tooltip */
+	gtk_status_icon_set_tooltip (applet->status_icon, applet->tip);
 }
 
 /*
@@ -1653,6 +1656,7 @@ applet_common_get_device_icon (NMDeviceState state, NMApplet *applet)
 		stage = 0;
 		break;
 	case NM_DEVICE_STATE_CONFIG:
+	case NM_DEVICE_STATE_NEED_AUTH:
 		stage = 1;
 		break;
 	case NM_DEVICE_STATE_IP_CONFIG:
@@ -1670,6 +1674,42 @@ applet_common_get_device_icon (NMDeviceState state, NMApplet *applet)
 	}
 
 	return pixbuf;
+}
+
+static char *
+get_tip_for_device_state (NMDevice *device,
+                          NMDeviceState state,
+                          NMConnection *connection)
+{
+	NMSettingConnection *s_con;
+	char *tip = NULL;
+	const char *id = NULL;
+
+	id = nm_device_get_iface (device);
+	if (connection) {
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		id = nm_setting_connection_get_id (s_con);
+	}
+
+	switch (state) {
+	case NM_DEVICE_STATE_PREPARE:
+	case NM_DEVICE_STATE_CONFIG:
+		tip = g_strdup_printf (_("Preparing network connection '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_NEED_AUTH:
+		tip = g_strdup_printf (_("User authentication required for network connection '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_IP_CONFIG:
+		tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_ACTIVATED:
+		tip = g_strdup_printf (_("Network connection '%s' active"), id);
+		break;
+	default:
+		break;
+	}
+
+	return tip;
 }
 
 static GdkPixbuf *
@@ -1702,6 +1742,8 @@ applet_get_device_icon_for_state (NMApplet *applet, char **tip)
 
 		connection = applet_find_active_connection_for_device (device, applet, NULL);
 		pixbuf = dclass->get_icon (device, state, connection, tip, applet);
+		if (!*tip)
+			*tip = get_tip_for_device_state (device, state, connection);
 	}
 
 out:
@@ -1710,15 +1752,67 @@ out:
 	return pixbuf;
 }
 
+static char *
+get_tip_for_vpn (NMActiveConnection *active, NMVPNConnectionState state, NMApplet *applet)
+{
+	NMConnectionScope scope;
+	char *tip = NULL;
+	const char *path, *id = NULL;
+	GSList *iter, *list;
+
+	scope = nm_active_connection_get_scope (active);
+	path = nm_active_connection_get_connection (active);
+	g_return_val_if_fail (path != NULL, NULL);
+
+	list = applet_get_all_connections (applet);
+	for (iter = list; iter; iter = g_slist_next (iter)) {
+		NMConnection *candidate = NM_CONNECTION (iter->data);
+		NMSettingConnection *s_con;
+
+		if (   (nm_connection_get_scope (candidate) == scope)
+		    && !strcmp (nm_connection_get_path (candidate), path)) {
+			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
+			id = nm_setting_connection_get_id (s_con);
+			break;
+		}
+	}
+	g_slist_free (list);
+
+	if (!id)
+		return NULL;
+
+	switch (state) {
+	case NM_VPN_CONNECTION_STATE_CONNECT:
+	case NM_VPN_CONNECTION_STATE_PREPARE:
+		tip = g_strdup_printf (_("Starting VPN connection '%s'..."), id);
+		break;
+	case NM_VPN_CONNECTION_STATE_NEED_AUTH:
+		tip = g_strdup_printf (_("User authentication required for VPN connection '%s'..."), id);
+		break;
+	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
+		tip = g_strdup_printf (_("Requesting a VPN address for '%s'..."), id);
+		break;
+	case NM_VPN_CONNECTION_STATE_ACTIVATED:
+		tip = g_strdup_printf (_("VPN connection '%s' active"), id);
+		break;
+	default:
+		break;
+	}
+
+	return tip;
+}
+
 static gboolean
 applet_update_icon (gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	GdkPixbuf *pixbuf = NULL;
 	NMState state;
-	char *tip = NULL;
+	char *dev_tip = NULL, *vpn_tip = NULL;
+	GString *tip;
 	NMVPNConnectionState vpn_state = NM_VPN_SERVICE_STATE_UNKNOWN;
 	gboolean nm_running;
+	NMActiveConnection *active_vpn = NULL;
 
 	applet->update_icon_id = 0;
 
@@ -1735,26 +1829,23 @@ applet_update_icon (gpointer user_data)
 	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
 		pixbuf = applet->no_connection_icon;
-		tip = g_strdup (_("Networking disabled"));
+		dev_tip = g_strdup (_("Networking disabled"));
 		break;
 	case NM_STATE_DISCONNECTED:
 		pixbuf = applet->no_connection_icon;
-		tip = g_strdup (_("No network connection"));
+		dev_tip = g_strdup (_("No network connection"));
 		break;
 	default:
-		pixbuf = applet_get_device_icon_for_state (applet, &tip);
+		pixbuf = applet_get_device_icon_for_state (applet, &dev_tip);
 		break;
 	}
 
 	foo_set_icon (applet, pixbuf, ICON_LAYER_LINK);
-	if (tip) {
-		gtk_status_icon_set_tooltip (applet->status_icon, tip);
-		g_free (tip);
-	}
 
 	/* VPN state next */
 	pixbuf = NULL;
-	if (applet_get_first_active_vpn_connection (applet, &vpn_state)) {
+	active_vpn = applet_get_first_active_vpn_connection (applet, &vpn_state);
+	if (active_vpn) {
 		switch (vpn_state) {
 		case NM_VPN_CONNECTION_STATE_ACTIVATED:
 			pixbuf = applet->vpn_lock_icon;
@@ -1771,8 +1862,29 @@ applet_update_icon (gpointer user_data)
 		default:
 			break;
 		}
+
+		vpn_tip = get_tip_for_vpn (active_vpn, vpn_state, applet);
 	}
 	foo_set_icon (applet, pixbuf, ICON_LAYER_VPN);
+
+	if (applet->tip) {
+		g_free (applet->tip);
+		applet->tip = NULL;
+	}
+
+	if (dev_tip || vpn_tip) {
+		tip = g_string_new (dev_tip);
+
+		if (vpn_tip)
+			g_string_append_printf (tip, "%s%s", tip->len ? "\n" : "", vpn_tip);
+
+		if (tip->len)
+			applet->tip = tip->str;
+
+		g_string_free (tip, FALSE);
+	}
+
+	gtk_status_icon_set_tooltip (applet->status_icon, applet->tip);
 
 	return FALSE;
 }
@@ -2295,6 +2407,8 @@ static void finalize (GObject *object)
 
 	nma_menu_clear (applet);
 	nma_icons_free (applet);
+
+	g_free (applet->tip);
 
 	if (applet->notification) {
 		notify_notification_close (applet->notification, NULL);

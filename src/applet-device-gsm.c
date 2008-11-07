@@ -316,34 +316,32 @@ gsm_get_icon (NMDevice *device,
               char **tip,
               NMApplet *applet)
 {
+	NMSettingConnection *s_con;
 	GdkPixbuf *pixbuf = NULL;
-	const char *iface;
-	NMSettingConnection *s_con = NULL;
+	const char *id;
 
-	iface = nm_device_get_iface (NM_DEVICE (device));
-	if (connection)
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	id = nm_device_get_iface (NM_DEVICE (device));
+	if (connection) {
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		id = nm_setting_connection_get_id (s_con);
+	}
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Dialing mobile broadband device %s..."), iface);
+		*tip = g_strdup_printf (_("Preparing mobile broadband connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Starting PPP on device %s..."), iface);
+		*tip = g_strdup_printf (_("Configuring mobile broadband connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("Waiting for user authentication on device '%s'..."), iface);
+		*tip = g_strdup_printf (_("User authentication required for mobile broadband connection '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_IP_CONFIG:
+		*tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		if (s_con) {
-			const char *id;
-
-			id = nm_setting_connection_get_id (s_con);
-			if (id)
-				*tip = g_strdup_printf (_("Mobile broadband connection '%s'"), id);
-		} else
-			*tip = g_strdup (_("Mobile broadband connection"));
 		pixbuf = applet->wwan_icon;
+		*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
 		break;
 	default:
 		break;

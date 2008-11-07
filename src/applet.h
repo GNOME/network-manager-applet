@@ -129,6 +129,7 @@ typedef struct
 
 	GtkWidget *		menu;
 	GtkSizeGroup *	encryption_size_group;
+	char *          tip;
 
 	GtkWidget *		context_menu;
 	GtkWidget *		networking_enabled_item;
