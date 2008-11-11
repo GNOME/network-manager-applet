@@ -438,7 +438,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWireless *self = CE_PAGE_WIRELESS (page);
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
-	const char *security;
+	char *security;
 	gboolean success;
 	gboolean invalid = FALSE;
 	GByteArray *ignore;
@@ -454,11 +454,12 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	ui_to_setting (self);
 
 	/* A hack to not check the wireless security here */
-	security = nm_setting_wireless_get_security (priv->setting);
+	security = g_strdup (nm_setting_wireless_get_security (priv->setting));
 	g_object_set (priv->setting, NM_SETTING_WIRELESS_SEC, NULL, NULL);
 
 	success = nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 	g_object_set (priv->setting, NM_SETTING_WIRELESS_SEC, security, NULL);
+	g_free (security);
 
 	return success;
 }

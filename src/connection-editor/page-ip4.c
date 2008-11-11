@@ -63,7 +63,7 @@ typedef struct {
 	GtkButton *addr_add;
 	GtkButton *addr_delete;
 	GtkTreeView *addr_list;
-	GtkCellRenderer *addr_cells[COL_LAST];
+	GtkCellRenderer *addr_cells[COL_LAST + 1];
 
 	/* DNS servers */
 	GtkWidget *dns_servers_label;
