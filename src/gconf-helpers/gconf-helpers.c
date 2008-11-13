@@ -1656,7 +1656,7 @@ get_one_private_key (NMConnection *connection,
 		/* Steal the private key */
 		tmp = nm_setting_802_1x_get_private_key (setting);
 		array = g_byte_array_sized_new (tmp->len);
-		memcpy (array->data, tmp->data, tmp->len);
+		g_byte_array_append (array, tmp->data, tmp->len);
 		g_object_unref (setting);
 	}
 
