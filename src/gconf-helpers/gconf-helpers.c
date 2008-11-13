@@ -1616,6 +1616,7 @@ get_one_private_key (NMConnection *connection,
                      const char *setting_name,
                      const char *tag,
                      const char *password,
+                     gboolean include_password,
                      GHashTable *secrets,
                      GError **error)
 {
@@ -1623,7 +1624,9 @@ get_one_private_key (NMConnection *connection,
 	GByteArray *array = NULL;
 	const char *filename = NULL;
 	const char *secret_name;
+	const char *real_password_secret_name = NULL;
 	gboolean success = FALSE;
+	gboolean add_password = FALSE;
 
 	g_return_val_if_fail (connection != NULL, FALSE);
 	g_return_val_if_fail (tag != NULL, FALSE);
@@ -1636,9 +1639,11 @@ get_one_private_key (NMConnection *connection,
 	if (!strcmp (tag, NMA_PRIVATE_KEY_PASSWORD_TAG)) {
 		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PRIVATE_KEY_TAG);
 		secret_name = NM_SETTING_802_1X_PRIVATE_KEY;
+		real_password_secret_name = NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD;
 	} else if (!strcmp (tag, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG)) {
 		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
 		secret_name = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY;
+		real_password_secret_name = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD;
 	} else {
 		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_UNAVAILABLE,
 		             "%s.%d - %s/%s Unknown private key password type '%s'.",
@@ -1648,15 +1653,23 @@ get_one_private_key (NMConnection *connection,
 
 	if (filename) {
 		NMSetting8021x *setting;
-		const GByteArray *tmp;
+		const GByteArray *tmp = NULL;
+		NMSetting8021xCKType ck_type = NM_SETTING_802_1X_CK_TYPE_UNKNOWN;
 
 		setting = (NMSetting8021x *) nm_setting_802_1x_new ();
-		nm_setting_802_1x_set_private_key_from_file (setting, filename, password, error);
+		if (nm_setting_802_1x_set_private_key_from_file (setting, filename, password, &ck_type, error)) {
+			/* For PKCS#12 files, which don't get decrypted, add the private key
+			 * password to the secrets hash.
+			 */
+			if (ck_type == NM_SETTING_802_1X_CK_TYPE_PKCS12)
+				add_password = TRUE;
 
-		/* Steal the private key */
-		tmp = nm_setting_802_1x_get_private_key (setting);
-		array = g_byte_array_sized_new (tmp->len);
-		g_byte_array_append (array, tmp->data, tmp->len);
+			/* Steal the private key */
+			tmp = nm_setting_802_1x_get_private_key (setting);
+			g_assert (tmp);
+			array = g_byte_array_sized_new (tmp->len);
+			g_byte_array_append (array, tmp->data, tmp->len);
+		}
 		g_object_unref (setting);
 	}
 
@@ -1669,9 +1682,11 @@ get_one_private_key (NMConnection *connection,
 		goto out;
 	}
 
-	g_hash_table_insert (secrets,
-	                     g_strdup (secret_name),
-	                     byte_array_to_gvalue (array));
+	g_hash_table_insert (secrets, g_strdup (secret_name), byte_array_to_gvalue (array));
+
+	if (include_password || add_password)
+		g_hash_table_insert (secrets, g_strdup (real_password_secret_name), string_to_gvalue (password));
+
 	success = TRUE;
 
 out:
@@ -1750,25 +1765,17 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 		if (   !strcmp (setting_name, NM_SETTING_802_1X_SETTING_NAME)
 		    && (   !strcmp (key_name, NMA_PRIVATE_KEY_PASSWORD_TAG)
 		        || !strcmp (key_name, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG))) {
-			/* Private key passwords aren't passed to NM, they are used
-			 * to decrypt the private key and send _that_ to NM.
+			/* Private key passwords aren't passed to NM for "traditional"
+			 * OpenSSL private keys, but are passed to NM for PKCS#12 keys.
 			 */
 			if (!get_one_private_key (connection, setting_name, key_name,
-			                          found->secret, secrets, error)) {
+			                          found->secret, include_private_passwords, secrets, error)) {
 				if (!*error) {
 					g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_UNAVAILABLE,
 					             "%s.%d - %s/%s unknown error from get_one_private_key().",
 					             __FILE__, __LINE__, connection_name, setting_name);
 				}
 				break;
-			} else if (include_private_passwords) {
-				/* If asked, include the actual private key passwords and such
-				 * too.  NOT to be used in response to a GetSecrets call, but
-				 * for displaying the passwords in the UI if required.
-				 */
-				g_hash_table_insert (secrets,
-				                     g_strdup (key_name),
-				                     string_to_gvalue (found->secret));
 			}
 		} else {
 			/* Ignore older obsolete keyring keys that we don't want to leak

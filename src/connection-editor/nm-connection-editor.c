@@ -482,6 +482,13 @@ add_page (NMConnectionEditor *editor, CEPage *page)
 	editor->pages = g_slist_append (editor->pages, page);
 }
 
+static gboolean
+idle_validate (gpointer user_data)
+{
+	connection_editor_validate (NM_CONNECTION_EDITOR (user_data));
+	return FALSE;
+}
+
 static void
 nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection)
 {
@@ -529,7 +536,10 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 	/* set the UI */
 	populate_connection_ui (editor);
 
-	connection_editor_validate (editor);
+	/* Validate the connection from an idle handler to ensure that stuff like
+	 * GtkFileChoosers have had a chance to asynchronously find their files.
+	 */
+	g_idle_add (idle_validate, editor);
 }
 
 void

@@ -52,7 +52,7 @@ validate (EAPMethod *parent)
 	EAPMethod *eap = NULL;
 	gboolean valid = FALSE;
 
-	if (!eap_method_validate_filepicker (parent->xml, "eap_peap_ca_cert_button", TRUE, FALSE, NULL))
+	if (!eap_method_validate_filepicker (parent->xml, "eap_peap_ca_cert_button", TYPE_CA_CERT, NULL, NULL))
 		return FALSE;
 
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_inner_auth_combo");
@@ -392,10 +392,10 @@ eap_method_peap_new (const char *glade_file,
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (widget), TRUE);
 	gtk_file_chooser_button_set_title (GTK_FILE_CHOOSER_BUTTON (widget),
 	                                   _("Choose a Certificate Authority certificate..."));
-	g_signal_connect (G_OBJECT (widget), "selection-changed",
+	g_signal_connect (G_OBJECT (widget), "file-set",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
-	filter = eap_method_default_file_chooser_filter_new ();
+	filter = eap_method_default_file_chooser_filter_new (FALSE);
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (widget), filter);
 	if (connection) {
 		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG);

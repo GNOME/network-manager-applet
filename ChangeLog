@@ -1,3 +1,53 @@
+2008-11-13  Dan Williams  <dcbw@redhat.com>
+
+	Add support for PKCS#12 private keys (bgo #558982)
+
+	* src/utils/utils.c
+		- (utils_fill_connection_certs): report errors
+
+	* src/connection-editor/nm-connection-editor.c
+		- (nm_connection_editor_set_connection): run initial validation from
+			and idle handler to allow file choosers time to asynchronously
+			find their files
+
+	* src/gconf-helpers/gconf-helpers.c
+		- (get_one_private_key): add private key passwords to the secrets hash
+			if the private key is a pkcs#12 private key
+		- (nm_gconf_get_keyring_items): move force-included private key passwords
+			functionality into get_one_private_key()
+
+	* src/wireless-security/eap-method.c
+	  src/wireless-security/eap-method.h
+		- (eap_method_default_file_chooser_filter_new): use differnet filters
+			for private keys versus certificates, since private keys can be
+			pkcs#12 and certificates cannot
+		- (default_filter): split up into file_has_extension(),
+			file_is_der_or_pem(), default_filter_cert(), and
+			default_filter_privkey(); fix a bug where only the first 1K of a 
+			candidate file would be read, missing some certificates with long
+			text descriptions
+		- (eap_method_validate_filepicker): take the private key password for
+			validation purposes; return the certificate/key type
+
+	* src/wireless-security/eap-method-peap.c
+	  src/wireless-security/eap-method-ttls.c
+		- Update for eap_method_validate_filepicker() changes
+
+	* src/wireless-security/eap-method-tls.c
+		- (eap_method_tls_new): handle phase2 secrets too; and do initial
+			validation from and idle handler to allow file choosers time to
+			asynchronously find their file
+		- (setup_filepicker): connect a special handler to the private key
+			chooser so that the client certificate chooser can be disabled when
+			the user picks a pkcs#12 private key; additionally, work around a
+			GTK+ issue where GTK would clear the choosers filter
+		- (private_key_picker_helper): disable the client certificate chooser
+			button when the private key is pkcs#12
+		- (fill_connection): if the private key is pkcs#12, set the client
+			certificate to the the same file as the private key, as NM requires
+		- (validate): ignore the client certificate if the private key is
+			pkcs#12
+
 2008-11-13  Tambet Ingo  <tambet@gmail.com>
 
 	* src/gconf-helpers/gconf-helpers.c (get_one_private_key): Set the

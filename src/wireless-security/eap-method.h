@@ -29,6 +29,7 @@
 #include <gtk/gtkwidget.h>
 
 #include <nm-connection.h>
+#include <nm-setting-8021x.h>
 
 typedef struct _EAPMethod EAPMethod;
 
@@ -85,13 +86,17 @@ void eap_method_init (EAPMethod *method,
                       GladeXML *xml,
                       GtkWidget *ui_widget);
 
-GtkFileFilter * eap_method_default_file_chooser_filter_new (void);
+GtkFileFilter * eap_method_default_file_chooser_filter_new (gboolean privkey);
+
+#define TYPE_CLIENT_CERT 0
+#define TYPE_CA_CERT     1
+#define TYPE_PRIVATE_KEY 2
 
 gboolean eap_method_validate_filepicker (GladeXML *xml,
                                          const char *name,
-                                         gboolean ignore_blank,
-                                         gboolean is_private_key,
-                                         const char *pw_entry_name);
+                                         guint32 item_type,
+                                         const char *password,
+                                         NMSetting8021xCKType *out_ck_type);
 
 #endif /* EAP_METHOD_H */
 

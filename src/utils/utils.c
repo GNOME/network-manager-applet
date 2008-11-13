@@ -219,6 +219,7 @@ utils_fill_connection_certs (NMConnection *connection)
 {
 	NMSetting8021x *s_8021x;
 	const char *filename;
+	GError *error = NULL;
 
 	g_return_if_fail (connection != NULL);
 
@@ -227,20 +228,32 @@ utils_fill_connection_certs (NMConnection *connection)
 		return;
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG);
-	if (filename)
-		nm_setting_802_1x_set_ca_cert_from_file (s_8021x, filename, NULL);
+	if (filename) {
+		if (!nm_setting_802_1x_set_ca_cert_from_file (s_8021x, filename, NULL, &error))
+			g_warning ("%s: couldn't read CA certificate: %d %s", __func__, error->code, error->message);
+		g_clear_error (&error);
+	}
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CLIENT_CERT_TAG);
-	if (filename)
-		nm_setting_802_1x_set_client_cert_from_file (s_8021x, filename, NULL);
+	if (filename) {
+		if (!nm_setting_802_1x_set_client_cert_from_file (s_8021x, filename, NULL, &error))
+			g_warning ("%s: couldn't read client certificate: %d %s", __func__, error->code, error->message);
+		g_clear_error (&error);
+	}
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CA_CERT_TAG);
-	if (filename)
-		nm_setting_802_1x_set_phase2_ca_cert_from_file (s_8021x, filename, NULL);
+	if (filename) {
+		if (!nm_setting_802_1x_set_phase2_ca_cert_from_file (s_8021x, filename, NULL, &error))
+			g_warning ("%s: couldn't read phase2 CA certificate: %d %s", __func__, error->code, error->message);
+		g_clear_error (&error);
+	}
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CLIENT_CERT_TAG);
-	if (filename)
-		nm_setting_802_1x_set_phase2_client_cert_from_file (s_8021x, filename, NULL);
+	if (filename) {
+		if (!nm_setting_802_1x_set_phase2_client_cert_from_file (s_8021x, filename, NULL, &error))
+			g_warning ("%s: couldn't read phase2 client certificate: %d %s", __func__, error->code, error->message);
+		g_clear_error (&error);
+	}
 }
 
 void

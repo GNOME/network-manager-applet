@@ -146,9 +146,9 @@ eap_method_unref (EAPMethod *method)
 gboolean
 eap_method_validate_filepicker (GladeXML *xml,
                                 const char *name,
-                                gboolean ignore_blank,
-                                gboolean is_private_key,
-                                const char *pw_entry_name)
+                                guint32 item_type,
+                                const char *password,
+                                NMSetting8021xCKType *out_ck_type)
 {
 	GtkWidget *widget;
 	char *filename;
@@ -156,42 +156,45 @@ eap_method_validate_filepicker (GladeXML *xml,
 	gboolean success = FALSE;
 	GError *error = NULL;
 
-	if (is_private_key)
-		g_return_val_if_fail (pw_entry_name != NULL, FALSE);
+	if (item_type == TYPE_PRIVATE_KEY) {
+		g_return_val_if_fail (password != NULL, NM_SETTING_802_1X_CK_TYPE_UNKNOWN);
+		g_return_val_if_fail (strlen (password), NM_SETTING_802_1X_CK_TYPE_UNKNOWN);
+	}
 
 	widget = glade_xml_get_widget (xml, name);
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	if (!filename)
-		return ignore_blank ? TRUE : FALSE;
+		return (item_type == TYPE_CA_CERT) ? NM_SETTING_802_1X_CK_TYPE_X509 : NM_SETTING_802_1X_CK_TYPE_UNKNOWN;
 
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
 		goto out;
 
 	setting = (NMSetting8021x *) nm_setting_802_1x_new ();
 
-	if (is_private_key) {
-		const char *pw;
-
-		if (!pw_entry_name)
-			goto out;
-
-		/* Need the private key password to decrypt the private key */
-		widget = glade_xml_get_widget (xml, pw_entry_name);
-		g_assert (widget);
-		pw = gtk_entry_get_text (GTK_ENTRY (widget));
-		if (!pw || !strlen (pw))
-			goto out;
-
-		success = nm_setting_802_1x_set_private_key_from_file (setting, filename, pw, NULL);
-	} else {
-		success = nm_setting_802_1x_set_ca_cert_from_file (setting, filename, &error);
-		if (error) {
-			g_warning ("Error: couldn't verify certificate: %d %s",
-			           error->code, error->message);
+	if (item_type == TYPE_PRIVATE_KEY) {
+		if (!nm_setting_802_1x_set_private_key_from_file (setting, filename, password, out_ck_type, &error)) {
+			g_warning ("Error: couldn't verify private key: %d %s",
+			           error ? error->code : -1, error ? error->message : "(none)");
 			g_clear_error (&error);
-		}
-	}
+		} else
+			success = TRUE;
+	} else if (item_type == TYPE_CLIENT_CERT) {
+		if (!nm_setting_802_1x_set_client_cert_from_file (setting, filename, out_ck_type, &error)) {
+			g_warning ("Error: couldn't verify client certificate: %d %s",
+			           error ? error->code : -1, error ? error->message : "(none)");
+			g_clear_error (&error);
+		} else
+			success = TRUE;
+	} else if (item_type == TYPE_CA_CERT) {
+		if (!nm_setting_802_1x_set_ca_cert_from_file (setting, filename, out_ck_type, &error)) {
+			g_warning ("Error: couldn't verify CA certificate: %d %s",
+			           error ? error->code : -1, error ? error->message : "(none)");
+			g_clear_error (&error);
+		} else
+			success = TRUE;
+	} else
+		g_warning ("%s: invalid item type %d.", __func__, item_type);
 
 	g_object_unref (setting);
 
@@ -221,33 +224,40 @@ static const char *pem_dsa_key_begin = "-----BEGIN DSA PRIVATE KEY-----";
 static const char *pem_cert_begin = "-----BEGIN CERTIFICATE-----";
 
 static gboolean
-default_filter (const GtkFileFilterInfo *filter_info, gpointer data)
+file_has_extension (const char *filename, const char *extensions[])
 {
-	int fd;
-	unsigned char buffer[1024];
-	ssize_t bytes_read;
-	gboolean show = FALSE;
-	guint16 der_tag = 0x8230;
-	char *p;
-	char *ext;
+	char *p, *ext;
+	int i = 0;
+	gboolean found = FALSE;
 
-	if (!filter_info->filename)
-		return FALSE;
-
-	p = strrchr (filter_info->filename, '.');
+	p = strrchr (filename, '.');
 	if (!p)
 		return FALSE;
 
 	ext = g_ascii_strdown (p, -1);
-	if (!ext)
-		return FALSE;
-	if (strcmp (ext, ".der") && strcmp (ext, ".pem") && strcmp (ext, ".crt") && strcmp (ext, ".cer")) {
-		g_free (ext);
-		return FALSE;
+	if (ext) {
+		while (extensions[i]) {
+			if (!strcmp (ext, extensions[i++])) {
+				found = TRUE;
+				break;
+			}
+		}
 	}
 	g_free (ext);
 
-	fd = open (filter_info->filename, O_RDONLY);
+	return found;
+}
+
+static gboolean
+file_is_der_or_pem (const char *filename, gboolean privkey)
+{
+	int fd;
+	unsigned char buffer[8192];
+	ssize_t bytes_read;
+	guint16 der_tag = 0x8230;
+	gboolean success = FALSE;
+
+	fd = open (filename, O_RDONLY);
 	if (fd < 0)
 		return FALSE;
 
@@ -258,39 +268,80 @@ default_filter (const GtkFileFilterInfo *filter_info, gpointer data)
 
 	/* Check for DER signature */
 	if (!memcmp (buffer, &der_tag, 2)) {
-		show = TRUE;
+		success = TRUE;
 		goto out;
 	}
 
 	/* Check for PEM signatures */
-	if (find_tag (pem_rsa_key_begin, (const char *) buffer, bytes_read)) {
-		show = TRUE;
-		goto out;
-	}
+	if (privkey) {
+		if (find_tag (pem_rsa_key_begin, (const char *) buffer, bytes_read)) {
+			success = TRUE;
+			goto out;
+		}
 
-	if (find_tag (pem_dsa_key_begin, (const char *) buffer, bytes_read)) {
-		show = TRUE;
-		goto out;
-	}
-
-	if (find_tag (pem_cert_begin, (const char *) buffer, bytes_read)) {
-		show = TRUE;
-		goto out;
+		if (find_tag (pem_dsa_key_begin, (const char *) buffer, bytes_read)) {
+			success = TRUE;
+			goto out;
+		}
+	} else {
+		if (find_tag (pem_cert_begin, (const char *) buffer, bytes_read)) {
+			success = TRUE;
+			goto out;
+		}
 	}
 
 out:
 	close (fd);
-	return show;
+	return success;
+}
+
+static gboolean
+default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data)
+{
+	const char *extensions[] = { ".der", ".pem", ".p12", NULL };
+
+	if (!filter_info->filename)
+		return FALSE;
+
+	if (!file_has_extension (filter_info->filename, extensions))
+		return FALSE;
+
+	if (!file_is_der_or_pem (filter_info->filename, TRUE))
+		return FALSE;
+
+	return TRUE;
+}
+
+static gboolean
+default_filter_cert (const GtkFileFilterInfo *filter_info, gpointer user_data)
+{
+	const char *extensions[] = { ".der", ".pem", ".crt", ".cer", NULL };
+
+	if (!filter_info->filename)
+		return FALSE;
+
+	if (!file_has_extension (filter_info->filename, extensions))
+		return FALSE;
+
+	if (!file_is_der_or_pem (filter_info->filename, FALSE))
+		return FALSE;
+
+	return TRUE;
 }
 
 GtkFileFilter *
-eap_method_default_file_chooser_filter_new (void)
+eap_method_default_file_chooser_filter_new (gboolean privkey)
 {
 	GtkFileFilter *filter;
 
 	filter = gtk_file_filter_new ();
-	gtk_file_filter_add_custom (filter, GTK_FILE_FILTER_FILENAME, default_filter, NULL, NULL);
-	gtk_file_filter_set_name (filter, _("DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"));
+	if (privkey) {
+		gtk_file_filter_add_custom (filter, GTK_FILE_FILTER_FILENAME, default_filter_privkey, NULL, NULL);
+		gtk_file_filter_set_name (filter, _("DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"));
+	} else {
+		gtk_file_filter_add_custom (filter, GTK_FILE_FILTER_FILENAME, default_filter_cert, NULL, NULL);
+		gtk_file_filter_set_name (filter, _("DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"));
+	}
 	return filter;
 }
 
