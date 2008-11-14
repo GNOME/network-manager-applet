@@ -1444,7 +1444,7 @@ wireless_get_more_info (NMDevice *device,
 	                  applet);
 
 	gtk_widget_realize (dialog);
-	gtk_window_present (GTK_WINDOW (dialog));
+	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
 }
 
 static gboolean
