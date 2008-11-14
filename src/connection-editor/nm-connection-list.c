@@ -970,7 +970,8 @@ add_connection_clicked (GtkButton *button, gpointer user_data)
 		return;
 	}
 
-	editor = nm_connection_editor_new (connection);
+	editor = nm_connection_editor_new (connection,
+	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings));
 	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
 	g_hash_table_insert (info->list->editors, connection, editor);
 
@@ -1055,7 +1056,8 @@ do_edit (ActionInfo *info)
 	}
 
 	connection = nm_gconf_connection_duplicate (nm_exported_connection_get_connection (exported));
-	editor = nm_connection_editor_new (connection);
+	editor = nm_connection_editor_new (connection,
+	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings));
 	g_object_unref (connection);
 
 	edit_info = g_new (EditConnectionInfo, 1);
@@ -1234,7 +1236,8 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 		return;
 	}
 
-	editor = nm_connection_editor_new (connection);
+	editor = nm_connection_editor_new (connection,
+	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings));
 	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
 	g_hash_table_insert (info->list->editors, connection, editor);
 

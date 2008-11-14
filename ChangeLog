@@ -1,5 +1,18 @@
 2008-11-14  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/nm-connection-list.c
+		- Pass system settings 'CanModify' property along to the connection
+			editor window
+
+	* src/connection-editor/nm-connection-editor.c
+	  src/connection-editor/nm-connection-editor.h
+		- (nm_connection_editor_new): track whether system settings can actually
+			add conenctions or not
+		- (populate_connection_ui, set_editor_sensitivity): don't enable the
+			system settings checkbox if system settings can't be modified
+
+2008-11-14  Dan Williams  <dcbw@redhat.com>
+
 	Patch from Kelemen Gábor <kelemeng@gnome.hu>
 
 	* Makefile.am

@@ -215,7 +215,8 @@ set_editor_sensitivity (NMConnectionEditor *editor, gboolean sensitive)
 	widget = glade_xml_get_widget (editor->xml, "connection_name");
 	gtk_widget_set_sensitive (widget, sensitive);
 
-	gtk_widget_set_sensitive (GTK_WIDGET (editor->system_checkbutton), sensitive);
+	if (editor->system_settings_can_modify)
+		gtk_widget_set_sensitive (GTK_WIDGET (editor->system_checkbutton), sensitive);
 
 	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
 		widget = ce_page_get_page (CE_PAGE (iter->data));
@@ -401,13 +402,18 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 }
 
 NMConnectionEditor *
-nm_connection_editor_new (NMConnection *connection)
+nm_connection_editor_new (NMConnection *connection,
+                          gboolean system_settings_can_modify)
 {
 	NMConnectionEditor *editor;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	editor = g_object_new (NM_TYPE_CONNECTION_EDITOR, NULL);
+	if (!editor)
+		return NULL;
+
+	editor->system_settings_can_modify = system_settings_can_modify;
 	nm_connection_editor_set_connection (editor, connection);
 
 	return editor;
@@ -444,6 +450,9 @@ populate_connection_ui (NMConnectionEditor *editor)
 
 	g_signal_connect_swapped (name, "changed", G_CALLBACK (connection_editor_validate), editor);
 	g_signal_connect_swapped (autoconnect, "toggled", G_CALLBACK (connection_editor_validate), editor);
+
+	if (!editor->system_settings_can_modify)
+		gtk_widget_set_sensitive (editor->system_checkbutton, FALSE);
 	g_signal_connect (editor->system_checkbutton, "toggled", G_CALLBACK (system_checkbutton_toggled_cb), editor);
 
 	if (editor->orig_scope == NM_CONNECTION_SCOPE_SYSTEM)

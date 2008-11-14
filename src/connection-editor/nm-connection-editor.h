@@ -47,6 +47,7 @@ typedef struct {
 	PolKitGnomeAction *system_gnome_action;
 
 	GtkWidget *system_checkbutton;
+	gboolean system_settings_can_modify;
 
 	GSList *pages;
 	GladeXML *xml;
@@ -63,7 +64,8 @@ typedef struct {
 } NMConnectionEditorClass;
 
 GType               nm_connection_editor_get_type (void);
-NMConnectionEditor *nm_connection_editor_new (NMConnection *connection);
+NMConnectionEditor *nm_connection_editor_new (NMConnection *connection,
+                                              gboolean system_settings_can_modify);
 
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
