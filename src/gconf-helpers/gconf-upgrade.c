@@ -186,34 +186,17 @@ static const struct flagnames wpa_versions[] = {
 	{ NULL, 0 }
 };
 
-static const struct flagnames wpa_key_mgmt[] = {
-	{ "ieee8021x", IW_AUTH_KEY_MGMT_802_1X },
-	{ "wpa-psk",   IW_AUTH_KEY_MGMT_PSK },
-	{ NULL, 0 }
-};
-
 static NMSettingWirelessSecurity *
 nm_gconf_read_0_6_wpa_settings (GConfClient *client,
 						  const char *path, const char *network)
 {
 	NMSettingWirelessSecurity *s_wireless_sec = NULL;
-	GSList *proto, *iter;
-	char *key_mgmt = NULL;
-
-	if (!get_bitfield_helper (client, path, "wpa_psk_wpa_version", network, wpa_versions, &proto))
-		return NULL;
-	if (!get_enum_helper (client, path, "wpa_psk_key_mgt", network, wpa_key_mgmt, &key_mgmt))
-		goto out;
 
 	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_setting_wireless_security_new ());
-	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, key_mgmt, NULL);
+	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk", NULL);
+	nm_setting_wireless_security_add_proto (s_wireless_sec, "wpa");
+	nm_setting_wireless_security_add_proto (s_wireless_sec, "rsn");
 
-	for (iter = proto; iter; iter = g_slist_next (iter))
-		nm_setting_wireless_security_add_proto (s_wireless_sec, (const char *) iter->data);
-
-out:
-	g_free (key_mgmt);
-	nm_utils_slist_free (proto, g_free);
 	return s_wireless_sec;
 }
 
@@ -237,6 +220,7 @@ static const struct flagnames eap_key_types[] = {
 };
 
 static const struct flagnames eap_phase2_types[] = {
+	{ "none",     NM_PHASE2_AUTH_NONE },
 	{ "pap",      NM_PHASE2_AUTH_PAP },
 	{ "mschap",   NM_PHASE2_AUTH_MSCHAP },
 	{ "mschapv2", NM_PHASE2_AUTH_MSCHAPV2 },
@@ -251,50 +235,70 @@ nm_gconf_read_0_6_eap_settings (GConfClient *client,
                                 NMSetting8021x **s_8021x)
 {
 	NMSettingWirelessSecurity *wsec = NULL;
-	GSList *eap = NULL, *key_type = NULL, *proto = NULL, *iter;
-	char *phase2_type = NULL, *identity = NULL, *anon_identity = NULL;
+	GSList *eaps = NULL, *ciphers = NULL, *iter;
+	char *phase2 = NULL, *identity = NULL, *anon_identity = NULL;
+	const char *eap = NULL;
+	gboolean wep_ciphers = FALSE, wpa_ciphers = FALSE;
 
-	if (!get_bitfield_helper (client, path, "wpa_eap_eap_method", network, eap_methods, &eap))
+	if (!get_bitfield_helper (client, path, "wpa_eap_eap_method", network, eap_methods, &eaps))
 		goto out;
-	if (!get_bitfield_helper (client, path, "wpa_eap_key_type", network, eap_key_types, &key_type))
+	/* Default to TTLS */
+	eap = (eaps && eaps->data) ? (const char *) eaps->data : "ttls";
+
+	if (!get_enum_helper (client, path, "wpa_eap_phase2_type", network, eap_phase2_types, &phase2))
 		goto out;
-	if (!get_enum_helper (client, path, "wpa_eap_phase2_type", network, eap_phase2_types, &phase2_type))
+	/* Default to MSCHAPv2 */
+	phase2 = phase2 ? phase2 : g_strdup ("mschapv2");
+
+	if (!get_bitfield_helper (client, path, "wpa_eap_key_type", network, eap_key_types, &ciphers))
 		goto out;
-	if (!get_bitfield_helper (client, path, "wpa_eap_wpa_version", network, wpa_versions, &proto))
-		goto out;
+	for (iter = ciphers; iter; iter = g_slist_next (iter)) {
+		if (   !strcmp ((const char *) iter->data, "wep104")
+		    || !strcmp ((const char *) iter->data, "wep40"))
+			wep_ciphers = TRUE;
+		if (   !strcmp ((const char *) iter->data, "ccmp")
+		    || !strcmp ((const char *) iter->data, "tkip"))
+			wpa_ciphers = TRUE;
+	}
 
 	if (!get_mandatory_string_helper (client, path, "wpa_eap_identity", network, &identity))
 		goto out;
 	nm_gconf_get_string_helper (client, path, "wpa_eap_anon_identity", network, &anon_identity);
 
 	wsec = NM_SETTING_WIRELESS_SECURITY (nm_setting_wireless_security_new ());
-	/* AFAICT, 0.6 reads this value from gconf, and then ignores it and always uses IW_AUTH_KEY_MGMT_802_1X */
-	g_object_set (wsec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "ieee8021x", NULL);  /* FIXME: wpa-eap? */
-
-	for (iter = proto; iter; iter = g_slist_next (iter))
-		nm_setting_wireless_security_add_proto (wsec, (const char *) iter->data);
-	nm_utils_slist_free (proto, g_free);
-
-	/* FIXME: what's the right mapping here? */
-	for (iter = key_type; iter; iter = g_slist_next (iter))
-		nm_setting_wireless_security_add_group (wsec, (const char *) iter->data);
-	nm_utils_slist_free (key_type, g_free);
-
 	*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
-	g_object_set (s_8021x,
-	              NM_SETTING_802_1X_PHASE2_AUTH, phase2_type,
+
+	/* Dynamic WEP or WPA? */
+	if (wep_ciphers && !wpa_ciphers)
+		g_object_set (wsec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "ieee8021x", NULL);
+	else {
+		g_object_set (wsec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-eap", NULL);
+		nm_setting_wireless_security_add_proto (wsec, "wpa");
+		nm_setting_wireless_security_add_proto (wsec, "rsn");
+	}
+
+	g_object_set (*s_8021x,
 	              NM_SETTING_802_1X_IDENTITY, identity,
 	              NM_SETTING_802_1X_ANONYMOUS_IDENTITY, anon_identity,
 	              NULL);
+	nm_setting_802_1x_add_eap_method (*s_8021x, eap);
 
-	for (iter = eap; iter; iter = g_slist_next (iter))
-		nm_setting_802_1x_add_eap_method (*s_8021x, (const char *) iter->data);
+	/* Add phase2 if the eap method uses inner auth */
+	if (!strcmp (eap, "ttls") || !strcmp (eap, "peap")) {
+		/* If the method is actually unsupported in NM 0.7, default to mschapv2 */
+		if (   strcmp (phase2, "pap")
+		    && strcmp (phase2, "mschap")
+		    && strcmp (phase2, "mschapv2")) {
+			g_free (phase2);
+			phase2 = g_strdup ("mschapv2");
+		}
+		g_object_set (*s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, phase2, NULL);
+	}
 
 out:
-	nm_utils_slist_free (proto, g_free);
-	nm_utils_slist_free (eap, g_free);
-	nm_utils_slist_free (key_type, g_free);
-	g_free (phase2_type);
+	nm_utils_slist_free (eaps, g_free);
+	nm_utils_slist_free (ciphers, g_free);
+	g_free (phase2);
 	g_free (identity);
 	g_free (anon_identity);
 	return wsec;
@@ -302,21 +306,34 @@ out:
 
 static NMSettingWirelessSecurity *
 nm_gconf_read_0_6_leap_settings (GConfClient *client,
-						   const char *path, const char *network)
+                                 const char *path,
+                                 const char *network,
+                                 NMSetting8021x **s_8021x)
 {
 	NMSettingWirelessSecurity *s_wireless_sec = NULL;
 	char *username = NULL, *key_mgmt = NULL;
 
-	if (!get_mandatory_string_helper (client, path, "leap_username", network, &username))
-		goto out;
 	if (!get_mandatory_string_helper (client, path, "leap_key_mgmt", network, &key_mgmt))
+		goto out;
+	if (!get_mandatory_string_helper (client, path, "leap_username", network, &username))
 		goto out;
 
 	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_setting_wireless_security_new ());
-	g_object_set (s_wireless_sec,
-	              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, key_mgmt,
-	              NM_SETTING_WIRELESS_SECURITY_LEAP_USERNAME, username,
-	              NULL);
+
+	if (!strcmp (key_mgmt, "WPA-EAP")) {
+		g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-eap", NULL);
+
+		*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
+		nm_setting_802_1x_add_eap_method (*s_8021x, "leap");
+		g_object_set (*s_8021x, NM_SETTING_802_1X_IDENTITY, username, NULL);
+	} else {
+		/* Traditional LEAP */
+		g_object_set (s_wireless_sec,
+		              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "ieee8021x",
+		              NM_SETTING_WIRELESS_SECURITY_AUTH_ALG, "leap",
+		              NM_SETTING_WIRELESS_SECURITY_LEAP_USERNAME, username,
+		              NULL);
+	}
 
 out:
 	g_free (username);
@@ -360,8 +377,8 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	s_con = (NMSettingConnection *)nm_setting_connection_new ();
 	g_object_set (s_con,
 				  NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRELESS_SETTING_NAME,
-				  NM_SETTING_CONNECTION_AUTOCONNECT, (timestamp != 0),
-				  NM_SETTING_CONNECTION_TIMESTAMP, timestamp,
+				  NM_SETTING_CONNECTION_AUTOCONNECT, (gboolean) (timestamp != 0),
+				  NM_SETTING_CONNECTION_TIMESTAMP, timestamp >= 0 ? (guint64) timestamp : 0,
 				  NULL);
 
 	s = g_strdup_printf ("Auto %s", essid);
@@ -404,7 +421,7 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 			s_wireless_sec = nm_gconf_read_0_6_eap_settings (client, path, network, &s_8021x);
 			break;
 		case NM_AUTH_TYPE_LEAP:
-			s_wireless_sec = nm_gconf_read_0_6_leap_settings (client, path, network);
+			s_wireless_sec = nm_gconf_read_0_6_leap_settings (client, path, network, &s_8021x);
 			break;
 		default:
 			g_warning ("Unknown NM 0.6 auth type %d on connection %s", we_cipher, dir);
