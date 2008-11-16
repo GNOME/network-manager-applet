@@ -63,7 +63,8 @@ nm_connection_editor_LDADD = \
 	$(top_builddir)/src/gconf-helpers/libgconf-helpers.la \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/utils/libutils.la \
-	$(NMA_LIBS)
+	$(NMA_LIBS) \
+	$(POLKIT_LIBS)
 
 if NO_POLKIT_GNOME
 nm_connection_editor_LDADD += \
