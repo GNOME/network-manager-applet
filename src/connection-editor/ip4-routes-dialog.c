@@ -26,6 +26,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <glade/glade.h>
 #include <glib/gi18n.h>
