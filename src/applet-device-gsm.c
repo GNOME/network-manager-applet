@@ -471,7 +471,7 @@ ask_for_pin_puk (NMDevice *device,
                  GtkEntry **out_secret_entry)
 {
 	GtkDialog *dialog;
-	GtkWidget *w, *ok_button;
+	GtkWidget *w = NULL, *ok_button;
 	GtkBox *box;
 	char *dev_str;
 
@@ -493,7 +493,8 @@ ask_for_pin_puk (NMDevice *device,
 		w = gtk_label_new (_("PIN code is needed for the mobile broadband device"));
 	else if (!strcmp (secret_name, NM_SETTING_GSM_PUK))
 		w = gtk_label_new (_("PUK code is needed for the mobile broadband device"));
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
+	if (w)
+		gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
 
 	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
 	w = gtk_label_new (NULL);
