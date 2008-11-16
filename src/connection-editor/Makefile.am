@@ -18,6 +18,11 @@ nm_connection_editor_CPPFLAGS =			\
 	-I${top_srcdir}/src/wireless-security \
 	$(NULL)
 
+if NO_POLKIT_GNOME
+nm_connection_editor_CPPFLAGS += \
+	-I${top_srcdir}/src/polkit-helpers
+endif
+
 nm_connection_editor_SOURCES = \
 	nm-connection-editor.c \
 	nm-connection-editor.h \
@@ -51,12 +56,6 @@ nm_connection_editor_SOURCES = \
 	ip4-routes-dialog.h \
 	ip4-routes-dialog.c
 
-if NO_POLKIT_GNOME
-nm_connection_editor_SOURCES += \
-	polkit-06-helpers.c \
-	polkit-06-helpers.h
-endif
-
 nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-connection-editor-service.xml
 	dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<
 
@@ -64,8 +63,12 @@ nm_connection_editor_LDADD = \
 	$(top_builddir)/src/gconf-helpers/libgconf-helpers.la \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/utils/libutils.la \
-	$(NMA_LIBS) \
-	$(POLKIT_LIBS)
+	$(NMA_LIBS)
+
+if NO_POLKIT_GNOME
+nm_connection_editor_LDADD += \
+	${top_builddir}/src/polkit-helpers/libpolkit-helpers.la
+endif
 
 gladedir = $(datadir)/nm-applet
 glade_DATA = \

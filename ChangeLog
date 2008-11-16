@@ -1,5 +1,30 @@
 2008-11-15  Dan Williams  <dcbw@redhat.com>
 
+	* configure.ac
+	  src/Makefile.am
+	  src/polkit-helpers/Makefile.am
+	  src/polkit-helpers/README
+	  src/polkit-helpers/polkit-gnome-action.c
+	  src/polkit-helpers/polkit-gnome-action.h
+	  src/polkit-helpers/polkit-gnome-auth.c
+	  src/polkit-helpers/polkit-gnome-auth.h
+	  src/polkit-helpers/polkit-gnome-context.c
+	  src/polkit-helpers/polkit-gnome-context.h
+	  src/polkit-helpers/polkit-gnome.h
+		- Partial backport of PolicyKit-gnome 0.8 to PolicyKit 0.6
+
+	* src/connection-editor/Makefile.am
+	  src/connection-editor/nm-connection-editor.c
+	  src/connection-editor/nm-connection-editor.h
+	  src/connection-editor/nm-connection-list.c
+		- Use polkit-helpers
+
+	* src/connection-editor/polkit-06-helpers.c
+	  src/connection-editor/polkit-06-helpers.h
+		- Remove
+
+2008-11-15  Dan Williams  <dcbw@redhat.com>
+
 	* src/gconf-helpers/gconf-upgrade.c
 		- (nm_gconf_read_0_6_wpa_settings, nm_gconf_read_0_6_eap_settings):
 			fix up 0.6 GConf upgrades for WPA and LEAP

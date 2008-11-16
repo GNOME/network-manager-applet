@@ -38,7 +38,7 @@
 #include <glib/gi18n.h>
 
 #ifdef NO_POLKIT_GNOME
-#include "polkit-06-helpers.h"
+#include "polkit-gnome.h"
 #else
 #include <polkit-gnome/polkit-gnome.h>
 #endif

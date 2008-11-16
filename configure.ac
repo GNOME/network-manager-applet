@@ -118,6 +118,7 @@ if test x"$have_polkit_gnome" = "xyes"; then
 	PKG_CHECK_MODULES(POLKIT, polkit-gnome)
 else
 	PKG_CHECK_MODULES(POLKIT, [polkit >= 0.6])
+	PKG_CHECK_MODULES(POLKIT_DBUS, [polkit-dbus >= 0.6])
 	AC_DEFINE([NO_POLKIT_GNOME],[1],[Define if you don't have PolicyKit-gnome 0.7 or later])
 fi
 AM_CONDITIONAL(NO_POLKIT_GNOME, test x"$have_polkit_gnome" = "xno")
@@ -220,6 +221,7 @@ src/marshallers/Makefile
 src/utils/Makefile
 src/gconf-helpers/Makefile
 src/wireless-security/Makefile
+src/polkit-helpers/Makefile
 src/connection-editor/Makefile
 icons/Makefile
 po/Makefile.in

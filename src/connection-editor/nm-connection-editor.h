@@ -23,11 +23,13 @@
 #ifndef NM_CONNECTION_EDITOR_H
 #define NM_CONNECTION_EDITOR_H
 
+#include "config.h"
+
 #include <glib-object.h>
 #include <glade/glade-xml.h>
 #include <nm-settings.h>
 #ifdef NO_POLKIT_GNOME
-#include "polkit-06-helpers.h"
+#include "polkit-gnome.h"
 #else
 #include <polkit-gnome/polkit-gnome.h>
 #endif

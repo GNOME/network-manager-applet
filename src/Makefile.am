@@ -1,4 +1,4 @@
-SUBDIRS = marshallers utils gconf-helpers wireless-security connection-editor
+SUBDIRS = marshallers utils gconf-helpers wireless-security polkit-helpers connection-editor
 
 NULL=
 
