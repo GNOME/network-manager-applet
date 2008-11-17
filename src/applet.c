@@ -2429,7 +2429,8 @@ static void finalize (GObject *object)
 	if (applet->status_icon)
 		g_object_unref (applet->status_icon);
 
-	g_object_unref (applet->nm_client);
+	if (applet->nm_client)
+		g_object_unref (applet->nm_client);
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
