@@ -868,6 +868,16 @@ security_combo_init (NMAWirelessDialog *self)
 }
 
 static gboolean
+revalidate (gpointer user_data)
+{
+	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
+	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+
+	security_combo_changed (priv->sec_combo, self);
+	return FALSE;
+}
+
+static gboolean
 internal_init (NMAWirelessDialog *self,
                NMConnection *specific_connection,
                NMDevice *specific_device,
@@ -998,6 +1008,11 @@ internal_init (NMAWirelessDialog *self,
 	widget = glade_xml_get_widget (priv->xml, "caption_label");
 	gtk_label_set_markup (GTK_LABEL (widget), label);
 	g_free (label);
+
+	/* Re-validate from an idle handler so that widgets like file choosers
+	 * have had time to find their files.
+	 */
+	g_idle_add (revalidate, self);
 
 	return TRUE;
 }

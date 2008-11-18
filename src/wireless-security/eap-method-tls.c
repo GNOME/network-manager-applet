@@ -412,13 +412,6 @@ setup_filepicker (GladeXML *xml,
 		g_signal_connect (G_OBJECT (widget), "notify::filter", (GCallback) reset_filter, filter);
 }
 
-static gboolean
-revalidate (gpointer user_data)
-{
-	wireless_security_changed_cb (NULL, (WirelessSecurity *) user_data);
-	return FALSE;
-}
-
 EAPMethodTLS *
 eap_method_tls_new (const char *glade_file,
                     WirelessSecurity *parent,
@@ -529,11 +522,6 @@ eap_method_tls_new (const char *glade_file,
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  method);
-
-	/* Re-validate from an idle-handler becuase file chooser widgets set their
-	 * file asynchronously, not when gtk_file_chooser_set_filename() is called.
-	 */
-	g_idle_add (revalidate, parent);
 
 	return method;
 }

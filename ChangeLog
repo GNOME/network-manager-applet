@@ -1,3 +1,16 @@
+2008-11-18  Dan Williams  <dcbw@redhat.com>
+
+	* src/wireless-security/eap-method-tls.c
+		- (eap_method_tls_new, revalidate): don't validate here, since the
+			validation would only be for the TLS object, which may not be
+			what's actually selected in the security combo
+
+	* src/wireless-dialog.c
+		- (internal_init, revalidate): instead, validate here from an idle
+			handler to match revalidation done in nm-connection-editor.c.
+			Fixes a bug introduced by the PKCS#12 support where the secrets
+			dialog's OK button wouldn't be initially enabled
+
 2008-11-15  Dan Williams  <dcbw@redhat.com>
 
 	* configure.ac
