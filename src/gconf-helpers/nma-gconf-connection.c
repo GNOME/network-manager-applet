@@ -149,7 +149,7 @@ nma_gconf_connection_changed (NMAGConfConnection *self)
 	utils_clear_filled_connection_certs (gconf_connection);
 
 	/* Ignore the GConf update if nothing changed */
-	if (nm_connection_compare (wrapped_connection, gconf_connection, COMPARE_FLAGS_EXACT))
+	if (nm_connection_compare (wrapped_connection, gconf_connection, NM_SETTING_COMPARE_FLAG_EXACT))
 		return TRUE;
 
 	new_settings = nm_connection_to_hash (gconf_connection);

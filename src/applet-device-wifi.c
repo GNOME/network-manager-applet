@@ -1343,7 +1343,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		for (iter = all; iter; iter = g_slist_next (iter)) {
 			if (nm_connection_compare (connection,
 			                           NM_CONNECTION (iter->data),
-			                           (COMPARE_FLAGS_FUZZY | COMPARE_FLAGS_IGNORE_ID))) {
+			                           (NM_SETTING_COMPARE_FLAG_FUZZY | NM_SETTING_COMPARE_FLAG_IGNORE_ID))) {
 				fuzzy_match = g_object_ref (NM_CONNECTION (iter->data));
 				break;
 			}
