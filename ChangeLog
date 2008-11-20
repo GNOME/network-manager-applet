@@ -1,5 +1,14 @@
 2008-11-20  Dan Williams  <dcbw@redhat.com>
 
+	* src/gconf-helpers/gconf-upgrade.c
+		- (get_06_keyring_secret): get an NM 0.6 secret from the keyring
+		- (nm_gconf_read_0_6_wep_settings, nm_gconf_read_0_6_wpa_settings,
+		   nm_gconf_read_0_6_eap_settings, nm_gconf_read_0_6_leap_settings,
+		   nm_gconf_read_0_6_wireless_connection): attempt to convert NM 0.6
+			secrets to NM 0.7 format
+
+2008-11-20  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet-device-wifi.c
 		- (wireless_get_secrets): really fix focus stealing prevention for real
 
