@@ -952,6 +952,18 @@ nm_gconf_get_all_connections (GConfClient *client)
 	return connections;
 }
 
+static gboolean
+string_in_list (const char *str, const char **valid_strings)
+{
+	int i;
+
+	for (i = 0; valid_strings[i]; i++)
+		if (strcmp (str, valid_strings[i]) == 0)
+			break;
+
+	return valid_strings[i] != NULL;
+}
+
 static void
 free_one_addr (gpointer data)
 {
@@ -997,10 +1009,10 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	 * separately.
 	 */
 	if (NM_IS_SETTING_802_1X (setting)) {
-		if (nm_utils_string_in_list (key, applet_8021x_ignore_keys))
+		if (string_in_list (key, applet_8021x_ignore_keys))
 			return;
 	} else if (NM_IS_SETTING_VPN (setting)) {
-		if (nm_utils_string_in_list (key, vpn_ignore_keys))
+		if (string_in_list (key, vpn_ignore_keys))
 			return;
 	}
 
@@ -1325,10 +1337,10 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	 * separately.
 	 */
 	if (NM_IS_SETTING_802_1X (setting)) {
-		if (nm_utils_string_in_list (key, applet_8021x_ignore_keys))
+		if (string_in_list (key, applet_8021x_ignore_keys))
 			return;
 	} else if (NM_IS_SETTING_VPN (setting)) {
-		if (nm_utils_string_in_list (key, vpn_ignore_keys))
+		if (string_in_list (key, vpn_ignore_keys))
 			return;
 	}
 
