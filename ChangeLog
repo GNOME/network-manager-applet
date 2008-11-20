@@ -1,6 +1,15 @@
 2008-11-20  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/gconf-helpers.c
+		- (read_one_setting_value_from_gconf, write_one_secret_to_keyring,
+		   copy_one_setting_value_to_gconf): update for NMSettingValueIterFn
+			changes	
+		- (copy_one_setting_value_to_gconf): remove bits than set secrets in
+			the keyring which couldn't possibly be called from here
+
+2008-11-20  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.c
 		- (string_in_list): implement locally now that nm_utils_string_in_list
 			was removed from libnm-util
 

@@ -981,7 +981,7 @@ static void
 read_one_setting_value_from_gconf (NMSetting *setting,
                                    const char *key,
                                    const GValue *value,
-                                   gboolean secret,
+                                   GParamFlags flags,
                                    gpointer user_data)
 {
 	ReadFromGConfInfo *info = (ReadFromGConfInfo *) user_data;
@@ -995,7 +995,7 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 		return;
 
 	/* Secrets don't get stored in GConf */
-	if (secret)
+	if (flags & NM_SETTING_PARAM_SECRET)
 		return;
 
 	/* Don't read the NMSettingConnection object's 'read-only' property */
@@ -1286,7 +1286,7 @@ static void
 write_one_secret_to_keyring (NMSetting *setting,
                              const char *key,
                              const GValue *value,
-                             gboolean is_secret,
+                             GParamFlags flags,
                              gpointer user_data)
 {
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
@@ -1294,7 +1294,7 @@ write_one_secret_to_keyring (NMSetting *setting,
 	const char *secret;
 	const char *setting_name;
 
-	if (!is_secret)
+	if (!(flags & NM_SETTING_PARAM_SECRET))
 		return;
 
 	setting_name = nm_setting_get_name (setting);
@@ -1325,7 +1325,7 @@ static void
 copy_one_setting_value_to_gconf (NMSetting *setting,
                                  const char *key,
                                  const GValue *value,
-                                 gboolean secret,
+                                 GParamFlags flags,
                                  gpointer user_data)
 {
 	CopyOneSettingValueInfo *info = (CopyOneSettingValueInfo *) user_data;
@@ -1345,7 +1345,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	}
 
 	/* Secrets don't get stored in GConf */
-	if (secret)
+	if (flags & NM_SETTING_PARAM_SECRET)
 		return;
 
 	/* Don't write the NMSettingConnection object's 'read-only' property */
@@ -1370,17 +1370,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	}
 
 	if (type == G_TYPE_STRING) {
-		const char *str_val = g_value_get_string (value);
-
-		if (secret) {
-			if (str_val && strlen (str_val))
-				nm_gconf_add_keyring_item (info->connection_uuid,
-									  info->connection_name,
-									  setting_name,
-									  key,
-									  str_val);
-		} else
-			nm_gconf_set_string_helper (info->client, info->dir, key, setting_name, str_val);
+		nm_gconf_set_string_helper (info->client, info->dir, key, setting_name, g_value_get_string (value));
 	} else if (type == G_TYPE_UINT) {
 		nm_gconf_set_int_helper (info->client, info->dir,
 							key, setting_name,
