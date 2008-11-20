@@ -569,9 +569,58 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 }
 
 static void
-nm_gconf_0_6_vpnc_settings (NMSettingVPN *s_vpn, GSList *vpn_data)
+keyring_secret_save_cb (GnomeKeyringResult result, guint32 val, gpointer user_data)
+{
+	/* Ignore */
+}
+
+static void
+vpn_helpers_save_secret (const char *vpn_uuid,
+                         const char *vpn_name,
+                         const char *secret_name,
+                         const char *secret,
+                         const char *vpn_service_name)
+{
+	char *display_name;
+	GnomeKeyringAttributeList *attrs = NULL;
+
+	display_name = g_strdup_printf ("VPN %s secret for %s/%s/" NM_SETTING_VPN_SETTING_NAME,
+	                                secret_name, vpn_name, vpn_service_name);
+
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_UUID_TAG,
+	                                            vpn_uuid);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_SN_TAG,
+	                                            NM_SETTING_VPN_SETTING_NAME);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_SK_TAG,
+	                                            secret_name);
+
+	gnome_keyring_item_create (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                           display_name, attrs, secret, TRUE,
+	                           keyring_secret_save_cb, NULL, NULL);
+	gnome_keyring_attribute_list_free (attrs);
+	g_free (display_name);
+}
+
+
+#define NM_VPNC_SERVICE "org.freedesktop.NetworkManager.vpnc"
+#define VPNC_USER_PASSWORD "password"
+#define VPNC_GROUP_PASSWORD "group-password"
+#define VPNC_OLD_USER_PASSWORD "password"
+#define VPNC_OLD_GROUP_PASSWORD "group_password"
+
+static void
+nm_gconf_0_6_vpnc_settings (NMSettingVPN *s_vpn,
+                            GSList *vpn_data,
+                            const char *uuid,
+                            const char *id)
 {
 	GSList *iter;
+	GList *found_list;
+	GnomeKeyringResult result;
 
 	for (iter = vpn_data; iter && iter->next; iter = iter->next->next) {
 		const char *key = iter->data;
@@ -584,6 +633,43 @@ nm_gconf_0_6_vpnc_settings (NMSettingVPN *s_vpn, GSList *vpn_data)
 			/* A boolean; 0.6 treated key-without-value as "true" */
 			nm_setting_vpn_add_data_item (s_vpn, key, "yes");
 		}
+	}
+
+	/* Try to convert secrets */
+	result = gnome_keyring_find_network_password_sync (g_get_user_name (), /* user */
+	                                                   NULL,               /* domain */
+	                                                   id,                 /* server */
+	                                                   NULL,               /* object */
+	                                                   NM_VPNC_SERVICE,    /* protocol */
+	                                                   NULL,               /* authtype */
+	                                                   0,                  /* port */
+	                                                   &found_list);
+	if ((result == GNOME_KEYRING_RESULT_OK) && g_list_length (found_list)) {
+		GnomeKeyringNetworkPasswordData *data1 = found_list->data;
+		GnomeKeyringNetworkPasswordData *data2 = NULL;
+		const char *password = NULL, *group_password = NULL;
+
+		if (g_list_next (found_list))
+			data2 = g_list_next (found_list)->data;
+
+		if (!strcmp (data1->object, VPNC_OLD_GROUP_PASSWORD))
+			group_password = data1->password;
+		else if (!strcmp (data1->object, VPNC_OLD_USER_PASSWORD))
+			password = data1->password;
+
+		if (data2) {
+			if (!strcmp (data2->object, VPNC_OLD_GROUP_PASSWORD))
+				group_password = data2->password;
+			else if (!strcmp (data2->object, VPNC_OLD_USER_PASSWORD))
+				password = data2->password;
+		}
+
+		if (password)
+			vpn_helpers_save_secret (uuid, id, VPNC_USER_PASSWORD, password, NM_VPNC_SERVICE);
+		if (group_password)
+			vpn_helpers_save_secret (uuid, id, VPNC_GROUP_PASSWORD, group_password, NM_VPNC_SERVICE);
+
+		gnome_keyring_network_password_list_free (found_list);
 	}
 }
 
@@ -667,7 +753,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
 	NMSettingIP4Config *s_ip4 = NULL;
-	char *path, *network, *id = NULL, *service_name = NULL;
+	char *path, *network, *id = NULL, *uuid = NULL, *service_name = NULL;
 	GSList *str_routes = NULL, *vpn_data = NULL;
 
 	path = g_path_get_dirname (dir);
@@ -695,17 +781,15 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 				  NM_SETTING_CONNECTION_ID, id,
 				  NM_SETTING_CONNECTION_TYPE, NM_SETTING_VPN_SETTING_NAME,
 				  NULL);
-	g_free (id);
 
-	id = nm_utils_uuid_generate ();
-	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, id, NULL);
-	g_free (id);
+	uuid = nm_utils_uuid_generate ();
+	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, uuid, NULL);
 
 	s_vpn = (NMSettingVPN *)nm_setting_vpn_new ();
 	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service_name, NULL);
 
-	if (!strcmp (service_name, "org.freedesktop.NetworkManager.vpnc"))
-		nm_gconf_0_6_vpnc_settings (s_vpn, vpn_data);
+	if (!strcmp (service_name, NM_VPNC_SERVICE))
+		nm_gconf_0_6_vpnc_settings (s_vpn, vpn_data, uuid, id);
 	else if (!strcmp (service_name, "org.freedesktop.NetworkManager.openvpn"))
 		nm_gconf_0_6_openvpn_settings (s_vpn, vpn_data);
 	else
@@ -726,6 +810,9 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	nm_connection_add_setting (connection, NM_SETTING (s_vpn));
 	if (s_ip4)
 		nm_connection_add_setting (connection, NM_SETTING (s_ip4));
+
+	g_free (id);
+	g_free (uuid);
 
 	return connection;
 }
