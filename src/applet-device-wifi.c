@@ -1687,7 +1687,8 @@ wireless_get_secrets (NMDevice *device,
 	g_object_weak_ref (G_OBJECT (active_connection), destroy_wifi_dialog, info);
 
 	gtk_widget_realize (info->dialog);
-	gtk_window_present (GTK_WINDOW (info->dialog));
+	gtk_window_present_with_time (GTK_WINDOW (info->dialog),
+	                              gdk_x11_get_server_time (info->dialog->window));
 
 	return TRUE;
 }
