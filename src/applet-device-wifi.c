@@ -1363,7 +1363,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
 					NMSetting *dup_setting;
 
 					hash = nm_setting_to_hash (NM_SETTING (s_wireless_sec));
-					dup_setting = nm_setting_from_hash (NM_TYPE_SETTING_WIRELESS_SECURITY, hash);
+					dup_setting = nm_setting_new_from_hash (NM_TYPE_SETTING_WIRELESS_SECURITY, hash);
 					g_hash_table_destroy (hash);
 					nm_connection_add_setting (fuzzy_match, dup_setting);
 				}
