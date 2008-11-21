@@ -802,6 +802,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 
 	if (str_routes) {
 		s_ip4 = NM_SETTING_IP4_CONFIG (nm_setting_ip4_config_new ());
+		g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_METHOD, NM_SETTING_IP4_CONFIG_METHOD_AUTO, NULL);
 		add_routes (s_ip4, str_routes);
 	}
 
