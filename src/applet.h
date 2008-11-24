@@ -64,6 +64,8 @@ typedef struct
 } NMAppletClass; 
 
 #define APPLET_PREFS_PATH "/apps/nm-applet"
+#define PREF_DISABLE_CONNECTED_NOTIFICATIONS	APPLET_PREFS_PATH "/disable-connected-notifications"
+#define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS	APPLET_PREFS_PATH "/disable-disconnected-notifications"
 
 #define ICON_LAYER_LINK 0
 #define ICON_LAYER_VPN 1
@@ -211,6 +213,12 @@ void applet_do_notify (NMApplet *applet,
                        const char *action1_label,
                        NotifyActionCallback action1_cb,
                        gpointer action1_user_data);
+
+void applet_do_notify_with_pref (NMApplet *applet,
+                                 const char *summary,
+                                 const char *message,
+                                 const char *icon,
+                                 const char *pref);
 
 NMConnection * applet_find_active_connection_for_device (NMDevice *device,
                                                          NMApplet *applet,

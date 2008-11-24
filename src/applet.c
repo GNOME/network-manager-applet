@@ -393,6 +393,7 @@ applet_do_notify (NMApplet *applet,
 
 	notify_notification_attach_to_status_icon (notify, applet->status_icon);
 	notify_notification_set_urgency (notify, urgency);
+	notify_notification_set_timeout (notify, NOTIFY_EXPIRES_DEFAULT);
 
 	if (action1) {
 		notify_notification_add_action (notify, action1, action1_label,
@@ -403,6 +404,38 @@ applet_do_notify (NMApplet *applet,
 		g_warning ("Failed to show notification: %s", error->message);
 		g_error_free (error);
 	}
+}
+
+static void
+notify_connected_dont_show_cb (NotifyNotification *notify,
+			                   gchar *id,
+			                   gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+
+	if (!id)
+		return;
+
+	if (   strcmp (id, PREF_DISABLE_CONNECTED_NOTIFICATIONS)
+	    && strcmp (id, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS))
+		return;
+
+	gconf_client_set_bool (applet->gconf_client, id, TRUE, NULL);
+}
+
+void applet_do_notify_with_pref (NMApplet *applet,
+                                 const char *summary,
+                                 const char *message,
+                                 const char *icon,
+                                 const char *pref)
+{
+	if (gconf_client_get_bool (applet->gconf_client, pref, NULL))
+		return;
+	
+	applet_do_notify (applet, NOTIFY_URGENCY_LOW, summary, message, icon, pref,
+	                  _("Don't show this message again"),
+	                  notify_connected_dont_show_cb,
+	                  applet);
 }
 
 static gboolean
@@ -1546,9 +1579,10 @@ foo_client_state_changed_cb (NMClient *client, GParamSpec *pspec, gpointer user_
 
 	switch (nm_client_get_state (client)) {
 	case NM_STATE_DISCONNECTED:
-		applet_do_notify (applet, NOTIFY_URGENCY_NORMAL, _("Disconnected"),
-						  _("The network connection has been disconnected."),
-						  "nm-no-connection", NULL, NULL, NULL, NULL);
+		applet_do_notify_with_pref (applet, _("Disconnected"),
+		                            _("The network connection has been disconnected."),
+		                            "nm-no-connection",
+		                            PREF_DISABLE_DISCONNECTED_NOTIFICATIONS);
 		/* Fall through */
 	default:
 		break;

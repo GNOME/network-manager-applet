@@ -300,10 +300,11 @@ cdma_device_state_changed (NMDevice *device,
 				str = g_strdup_printf (_("You are now connected to '%s'."), id);
 		}
 
-		applet_do_notify (applet, NOTIFY_URGENCY_LOW,
-					      _("Connection Established"),
-						  str ? str : _("You are now connected to the CDMA network."),
-						  "nm-device-wwan", NULL, NULL, NULL, NULL);
+		applet_do_notify_with_pref (applet,
+		                            _("Connection Established"),
+		                            str ? str : _("You are now connected to the CDMA network."),
+		                            "nm-device-wwan",
+		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 		g_free (str);
 	}
 }

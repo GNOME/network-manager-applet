@@ -1182,8 +1182,9 @@ wireless_device_state_changed (NMDevice *device,
 
 	msg = g_strdup_printf (_("You are now connected to the wireless network '%s'."),
 	                       esc_ssid ? esc_ssid : _("(none)"));
-	applet_do_notify (applet, NOTIFY_URGENCY_LOW, _("Connection Established"),
-					  msg, "nm-device-wireless", NULL, NULL, NULL, NULL);
+	applet_do_notify_with_pref (applet, _("Connection Established"),
+	                            msg, "nm-device-wireless",
+	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 	g_free (msg);
 	g_free (esc_ssid);
 }
