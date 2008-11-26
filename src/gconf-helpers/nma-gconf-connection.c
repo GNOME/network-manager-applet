@@ -152,8 +152,14 @@ nma_gconf_connection_changed (NMAGConfConnection *self)
 	if (nm_connection_compare (wrapped_connection, gconf_connection, NM_SETTING_COMPARE_FLAG_EXACT))
 		return TRUE;
 
+	utils_fill_connection_certs (gconf_connection);
 	new_settings = nm_connection_to_hash (gconf_connection);
+	utils_clear_filled_connection_certs (gconf_connection);
+
 	if (!nm_connection_replace_settings (wrapped_connection, new_settings, &error)) {
+		utils_clear_filled_connection_certs (wrapped_connection);
+		g_hash_table_destroy (new_settings);
+
 		g_warning ("%s: '%s' / '%s' invalid: %d",
 		           __func__,
 		           error ? g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)) : "(none)",
@@ -162,10 +168,10 @@ nma_gconf_connection_changed (NMAGConfConnection *self)
 		goto invalid;
 	}
 	g_object_unref (gconf_connection);
+	g_hash_table_destroy (new_settings);
 
 	fill_vpn_user_name (wrapped_connection);
 
-	utils_fill_connection_certs (wrapped_connection);
 	settings = nm_connection_to_hash (wrapped_connection);
 	utils_clear_filled_connection_certs (wrapped_connection);
 

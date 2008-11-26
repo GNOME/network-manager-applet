@@ -1,3 +1,14 @@
+2008-11-25  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/nma-gconf-connection.c
+		- (nma_gconf_connection_changed): fill connection certs before functions
+			that verify them, since pkcs#12 needs special client cert/private key
+			handling; don't leak a connection hash
+
+	* src/utils/utils.c
+		- (utils_fill_connection_certs): handle pkcs#12 private keys and set
+			client cert at the same time
+
 2008-11-24  Dan Williams  <dcbw@redhat.com>
 
 	Patch from Tony Houghton <h@realh.co.uk>  (bgo #455250)

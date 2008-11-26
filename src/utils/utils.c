@@ -214,12 +214,70 @@ utils_get_device_description (NMDevice *device)
 	return description;
 }
 
+static GByteArray *
+file_to_g_byte_array (const char *filename)
+{
+	char *contents = NULL;
+	GByteArray *array = NULL;
+	gsize length = 0;
+
+	if (!g_file_get_contents (filename, &contents, &length, NULL))
+		return NULL;
+
+	array = g_byte_array_sized_new (length);
+	if (!array) {
+		g_free (contents);
+		return NULL;
+	}
+
+	g_byte_array_append (array, (unsigned char *) contents, length);
+	return array;
+}
+
+static gboolean
+fill_one_private_key (NMConnection *connection,
+                      const char *pk_tag,
+                      const char *pk_prop,
+                      const char *cc_prop)
+{
+	const char *filename;
+	NMSetting8021x *tmp;
+	NMSetting8021xCKType pk_type = NM_SETTING_802_1X_CK_TYPE_UNKNOWN;
+	gboolean need_client_cert = TRUE;
+
+	/* If the private key is PKCS#12, don't set the client cert */
+	filename = g_object_get_data (G_OBJECT (connection), pk_tag);
+	if (!filename)
+		return TRUE;
+
+	tmp = NM_SETTING_802_1X (nm_setting_802_1x_new ());
+	nm_setting_802_1x_set_private_key_from_file (tmp, filename, NULL, &pk_type, NULL);
+	if (pk_type == NM_SETTING_802_1X_CK_TYPE_PKCS12) {
+		GByteArray *array;
+
+		array = file_to_g_byte_array (filename);
+		if (array) {
+			NMSetting *s_8021x = nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+
+			g_object_set (s_8021x,
+			              pk_prop, array,
+			              cc_prop, array,
+			              NULL);
+			g_byte_array_free (array, TRUE);
+			need_client_cert = FALSE;
+		}
+	}
+	g_object_unref (tmp);
+	return need_client_cert;
+}
+
 void
 utils_fill_connection_certs (NMConnection *connection)
 {
 	NMSetting8021x *s_8021x;
 	const char *filename;
 	GError *error = NULL;
+	gboolean need_client_cert = TRUE;
 
 	g_return_if_fail (connection != NULL);
 
@@ -234,11 +292,18 @@ utils_fill_connection_certs (NMConnection *connection)
 		g_clear_error (&error);
 	}
 
-	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CLIENT_CERT_TAG);
-	if (filename) {
-		if (!nm_setting_802_1x_set_client_cert_from_file (s_8021x, filename, NULL, &error))
-			g_warning ("%s: couldn't read client certificate: %d %s", __func__, error->code, error->message);
-		g_clear_error (&error);
+	/* If the private key is PKCS#12, don't set the client cert */
+	need_client_cert = fill_one_private_key (connection,
+	                                         NMA_PATH_PRIVATE_KEY_TAG,
+	                                         NM_SETTING_802_1X_PRIVATE_KEY,
+	                                         NM_SETTING_802_1X_CLIENT_CERT);
+	if (need_client_cert) {
+		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CLIENT_CERT_TAG);
+		if (filename) {
+			if (!nm_setting_802_1x_set_client_cert_from_file (s_8021x, filename, NULL, &error))
+				g_warning ("%s: couldn't read client certificate: %d %s", __func__, error->code, error->message);
+			g_clear_error (&error);
+		}
 	}
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CA_CERT_TAG);
@@ -248,11 +313,18 @@ utils_fill_connection_certs (NMConnection *connection)
 		g_clear_error (&error);
 	}
 
-	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CLIENT_CERT_TAG);
-	if (filename) {
-		if (!nm_setting_802_1x_set_phase2_client_cert_from_file (s_8021x, filename, NULL, &error))
-			g_warning ("%s: couldn't read phase2 client certificate: %d %s", __func__, error->code, error->message);
-		g_clear_error (&error);
+	/* If the private key is PKCS#12, don't set the client cert */
+	need_client_cert = fill_one_private_key (connection,
+	                                         NMA_PATH_PHASE2_PRIVATE_KEY_TAG,
+	                                         NM_SETTING_802_1X_PHASE2_PRIVATE_KEY,
+	                                         NM_SETTING_802_1X_PHASE2_CLIENT_CERT);
+	if (need_client_cert) {
+		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CLIENT_CERT_TAG);
+		if (filename) {
+			if (!nm_setting_802_1x_set_phase2_client_cert_from_file (s_8021x, filename, NULL, &error))
+				g_warning ("%s: couldn't read phase2 client certificate: %d %s", __func__, error->code, error->message);
+			g_clear_error (&error);
+		}
 	}
 }
 
