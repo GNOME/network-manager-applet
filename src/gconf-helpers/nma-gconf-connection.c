@@ -359,7 +359,7 @@ update (NMExportedConnection *exported, GHashTable *new_settings, GError **error
 }
 
 static gboolean
-delete (NMExportedConnection *exported, GError **err)
+do_delete (NMExportedConnection *exported, GError **err)
 {
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (exported);
 	gboolean success;
@@ -522,7 +522,7 @@ nma_gconf_connection_class_init (NMAGConfConnectionClass *gconf_connection_class
 	connection_class->get_settings = get_settings;
 	connection_class->service_get_secrets = service_get_secrets;
 	connection_class->update       = update;
-	connection_class->delete       = delete;
+	connection_class->do_delete    = do_delete;
 
 	/* Properties */
 	g_object_class_install_property
