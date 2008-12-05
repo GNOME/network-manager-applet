@@ -29,6 +29,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
+#include <nm-setting-8021x.h>
 #include <nm-utils.h>
 
 #include "wireless-security.h"
@@ -407,6 +408,9 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	} else {
 		/* No security, unencrypted */
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
+		nm_connection_remove_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
+		nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
+		nm_gconf_clear_private_connection_values (connection);
 		valid = TRUE;
 	}
 

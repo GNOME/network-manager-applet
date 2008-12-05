@@ -1830,6 +1830,24 @@ nm_gconf_copy_private_connection_values (NMConnection *dst, NMConnection *src)
 	copy_str_item (dst, src, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
 }
 
+void
+nm_gconf_clear_private_connection_values (NMConnection *connection)
+{
+	g_return_if_fail (NM_IS_CONNECTION (connection));
+
+	g_object_set_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG, NULL);
+	g_object_set_data (G_OBJECT (connection), NMA_PHASE2_CA_CERT_IGNORE_TAG, NULL);
+
+	g_object_set_data (G_OBJECT (connection), NMA_PATH_CLIENT_CERT_TAG, NULL);
+	g_object_set_data (G_OBJECT (connection), NMA_PATH_PHASE2_CLIENT_CERT_TAG, NULL);
+	g_object_set_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG, NULL);
+	g_object_set_data (G_OBJECT (connection), NMA_PATH_PHASE2_CA_CERT_TAG, NULL);
+	g_object_set_data (G_OBJECT (connection), NMA_PATH_PRIVATE_KEY_TAG, NULL);
+	g_object_set_data (G_OBJECT (connection), NMA_PRIVATE_KEY_PASSWORD_TAG, NULL);
+	g_object_set_data (G_OBJECT (connection), NMA_PATH_PHASE2_PRIVATE_KEY_TAG, NULL);
+	g_object_set_data (G_OBJECT (connection), NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG, NULL);
+}
+
 NMConnection *
 nm_gconf_connection_duplicate (NMConnection *connection)
 {
