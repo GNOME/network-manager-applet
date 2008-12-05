@@ -48,6 +48,7 @@
 NMConnection *nm_gconf_connection_duplicate (NMConnection *connection);
 
 void nm_gconf_copy_private_connection_values (NMConnection *dst, NMConnection *src);
+void nm_gconf_clear_private_connection_values (NMConnection *connection);
 
 #define KEYRING_UUID_TAG "connection-uuid"
 #define KEYRING_SN_TAG "setting-name"

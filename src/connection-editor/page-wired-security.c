@@ -93,6 +93,7 @@ ce_page_wired_security_new (NMConnection *connection)
 					  G_CALLBACK (enable_toggled), self);
 
 	gtk_toggle_button_set_active (priv->enabled, setting != NULL);
+	g_signal_connect_swapped (priv->enabled, "toggled", G_CALLBACK (ce_page_changed), self);
 	gtk_widget_set_sensitive (priv->security_widget, setting != NULL);
 
 	gtk_box_pack_start (GTK_BOX (parent->page), GTK_WIDGET (priv->enabled), FALSE, TRUE, 12);
@@ -123,13 +124,15 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 			s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
 			nm_connection_add_setting (connection, NM_SETTING (g_object_ref (s_8021x)));
+			nm_gconf_copy_private_connection_values (connection, tmp_connection);
 
 			g_object_unref (tmp_connection);
 		} else
 			g_set_error (error, 0, 0, "Invalid 802.1x security");
 	} else {
-		valid = TRUE;
 		nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
+		nm_gconf_clear_private_connection_values (connection);
+		valid = TRUE;
 	}
 
 	return valid;
