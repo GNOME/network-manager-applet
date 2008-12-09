@@ -72,4 +72,6 @@ void              nm_connection_list_run (NMConnectionList *list);
 
 void              nm_connection_list_set_type (NMConnectionList *list, const char *type);
 
+void              nm_connection_list_present (NMConnectionList *list);
+
 #endif

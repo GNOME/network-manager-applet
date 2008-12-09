@@ -134,6 +134,7 @@ impl_start (NMCEService *self, GHashTable *table, GError **error)
 	value = g_hash_table_lookup (table, ARG_TYPE);
 	if (value && G_VALUE_HOLDS_STRING (value))
 		nm_connection_list_set_type (self->list, g_value_get_string (value));
+	nm_connection_list_present (self->list);
 
 	return TRUE;
 }
