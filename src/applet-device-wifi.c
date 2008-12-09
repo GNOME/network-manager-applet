@@ -60,6 +60,14 @@ static void wireless_dialog_response_cb (GtkDialog *dialog, gint response, gpoin
 static NMAccessPoint *update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet);
 
 static void
+show_ignore_focus_stealing_prevention (GtkWidget *widget)
+{
+	gtk_widget_realize (widget);
+	gtk_widget_show (widget);
+	gtk_window_present_with_time (GTK_WINDOW (widget), gdk_x11_get_server_time (widget->window));
+}
+
+static void
 other_wireless_activate_cb (GtkWidget *menu_item,
                             NMApplet *applet)
 {
@@ -73,8 +81,7 @@ other_wireless_activate_cb (GtkWidget *menu_item,
 	                  G_CALLBACK (wireless_dialog_response_cb),
 	                  applet);
 
-	gtk_widget_realize (dialog);
-	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
+	show_ignore_focus_stealing_prevention (dialog);
 }
 
 void
@@ -105,8 +112,7 @@ new_network_activate_cb (GtkWidget *menu_item, NMApplet *applet)
 	                  G_CALLBACK (wireless_dialog_response_cb),
 	                  applet);
 
-	gtk_widget_realize (dialog);
-	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
+	show_ignore_focus_stealing_prevention (dialog);
 }
 
 void
@@ -1444,8 +1450,7 @@ wireless_get_more_info (NMDevice *device,
 	                  G_CALLBACK (wireless_dialog_response_cb),
 	                  applet);
 
-	gtk_widget_realize (dialog);
-	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
+	show_ignore_focus_stealing_prevention (dialog);
 }
 
 static gboolean
@@ -1687,10 +1692,7 @@ wireless_get_secrets (NMDevice *device,
 	 */
 	g_object_weak_ref (G_OBJECT (active_connection), destroy_wifi_dialog, info);
 
-	gtk_widget_realize (info->dialog);
-	gtk_window_present_with_time (GTK_WINDOW (info->dialog),
-	                              gdk_x11_get_server_time (info->dialog->window));
-
+	show_ignore_focus_stealing_prevention (info->dialog);
 	return TRUE;
 }
 
