@@ -1700,7 +1700,7 @@ error:
 	return NULL;
 }
 
-static void
+void
 nm_connection_list_present (NMConnectionList *list)
 {
 	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
