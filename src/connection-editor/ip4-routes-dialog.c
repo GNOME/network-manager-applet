@@ -358,6 +358,10 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	                              nm_setting_ip4_config_get_ignore_auto_routes (s_ip4));
 	gtk_widget_set_sensitive (widget, automatic);
 
+	widget = glade_xml_get_widget (xml, "ip4_never_default");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
+	                              nm_setting_ip4_config_get_never_default (s_ip4));
+
 	return dialog;
 }
 
@@ -523,6 +527,11 @@ ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
 
 	widget = glade_xml_get_widget (xml, "ip4_ignore_auto_routes");
 	g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_IGNORE_AUTO_ROUTES,
+	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
+	              NULL);
+
+	widget = glade_xml_get_widget (xml, "ip4_never_default");
+	g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_NEVER_DEFAULT,
 	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
 	              NULL);
 }
