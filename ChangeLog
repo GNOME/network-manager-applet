@@ -1,5 +1,15 @@
 2008-12-11  Dan Williams  <dcbw@redhat.com>
 
+	* src/ap-menu-item.c
+	  src/ap-menu-item.h
+		- (nm_network_menu_item_set_detail): disable the menu item if the device
+			can't even connect to the AP
+
+	* src/applet-device-wifi.c
+		- (add_new_ap_item): send device capabilities to menu item
+
+2008-12-11  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (applet_pre_keyring_callback): handle right-click menu too
 
