@@ -475,6 +475,7 @@ add_new_ap_item (NMDeviceWifi *device,
 	GSList *ap_connections = NULL;
 	const GByteArray *ssid;
 	guint8 strength;
+	guint32 dev_caps;
 
 	ap_connections = filter_connections_for_access_point (connections, device, ap);
 
@@ -488,7 +489,8 @@ add_new_ap_item (NMDeviceWifi *device,
 	strength = nm_access_point_get_strength (ap);
 	nm_network_menu_item_set_strength (item, strength);
 
-	nm_network_menu_item_set_detail (item, ap, applet->adhoc_icon);
+	dev_caps = nm_device_wifi_get_capabilities (device);
+	nm_network_menu_item_set_detail (item, ap, applet->adhoc_icon, dev_caps);
 	nm_network_menu_item_add_dupe (item, ap);
 
 	g_object_set_data (G_OBJECT (item), "device", NM_DEVICE (device));

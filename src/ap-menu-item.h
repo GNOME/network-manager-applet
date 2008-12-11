@@ -75,7 +75,8 @@ const guchar * nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
                                               guint32 * length);
 void       nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
                                             NMAccessPoint * ap,
-                                            GdkPixbuf * adhoc_icon);
+                                            GdkPixbuf * adhoc_icon,
+                                            guint32 dev_caps);
 
 gboolean   nm_network_menu_item_find_dupe (NMNetworkMenuItem *item,
                                            NMAccessPoint *ap);
