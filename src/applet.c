@@ -2328,11 +2328,10 @@ static void
 applet_pre_keyring_callback (gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
+	GdkScreen *screen;
+	GdkDisplay *display;
 
 	if (applet->menu && applet->menu->window) {
-		GdkScreen *screen;
-		GdkDisplay *display;
-
 		screen = gdk_drawable_get_screen (applet->menu->window);
 		display = gdk_screen_get_display (screen);
 		g_object_ref (display);
@@ -2345,6 +2344,22 @@ applet_pre_keyring_callback (gpointer user_data)
 		 * keyring calls happen; if the X events haven't all gone through when
 		 * the keyring dialog comes up, then the menu will actually still have
 		 * the screen grab even after we've called gtk_widget_destroy().
+		 */
+		gdk_display_sync (display);
+		g_object_unref (display);
+	}
+
+	if (applet->context_menu && applet->context_menu->window) {
+		screen = gdk_drawable_get_screen (applet->context_menu->window);
+		display = gdk_screen_get_display (screen);
+		g_object_ref (display);
+
+		gtk_widget_hide (applet->context_menu);
+
+		/* Ensure that the widget really gets hidden before letting the
+		 * keyring calls happen; if the X events haven't all gone through when
+		 * the keyring dialog comes up, then the menu will actually still have
+		 * the screen grab even after we've called gtk_widget_hide().
 		 */
 		gdk_display_sync (display);
 		g_object_unref (display);
