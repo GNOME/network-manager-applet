@@ -70,16 +70,20 @@ dialog_init (GtkWidget *dialog,
 	gtk_widget_hide (glade_xml_get_widget (xml, "security_combo_label"));
 	gtk_widget_hide (glade_xml_get_widget (xml, "security_combo"));
 
+	/* The dialog won't ever get called for more than one connection for wired */
+	gtk_widget_hide (glade_xml_get_widget (xml, "connection_label"));
+	gtk_widget_hide (glade_xml_get_widget (xml, "connection_combo"));
+
 	gtk_window_set_title (GTK_WINDOW (glade_xml_get_widget (xml, "wireless_dialog")),
-						  _("Wired 802.1X authentication"));
+	                      _("Wired 802.1X authentication"));
 
 	dialog_set_network_name (connection, GTK_ENTRY (glade_xml_get_widget (xml, "network_name_entry")));
 	security = dialog_set_security (connection, glade_file, GTK_BOX (glade_xml_get_widget (xml, "security_vbox")));
 	wireless_security_set_changed_notify (security, stuff_changed_cb, glade_xml_get_widget (xml, "ok_button"));
 
 	g_object_set_data_full (G_OBJECT (dialog),
-							"security", security,
-							(GDestroyNotify) wireless_security_unref);
+	                        "security", security,
+	                        (GDestroyNotify) wireless_security_unref);
 
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "dialog-password");
 	widget = glade_xml_get_widget (xml, "image1");
@@ -119,8 +123,8 @@ nma_wired_dialog_new (const char *glade_file,
 	}
 
 	g_object_set_data_full (G_OBJECT (dialog),
-							"connection", g_object_ref (connection),
-							(GDestroyNotify) g_object_unref);
+	                        "connection", g_object_ref (connection),
+	                        (GDestroyNotify) g_object_unref);
 
 	return dialog;
 }
