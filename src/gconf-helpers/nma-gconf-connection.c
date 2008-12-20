@@ -1,4 +1,23 @@
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
+/* NetworkManager Wireless Applet -- Display wireless access points and allow user control
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * (C) Copyright 2008 Novell, Inc.
+ * (C) Copyright 2008 Red Hat, Inc.
+ */
 
 #include <string.h>
 #include <nm-setting-connection.h>
@@ -194,9 +213,12 @@ get_settings (NMExportedConnection *exported)
 
 	connection = nm_exported_connection_get_connection (exported);
 
+g_message ("%s: alkdjfa;ldskfjas;lfdjaslfdkjasdflj******************", __func__);
 	utils_fill_connection_certs (connection);
 	settings = nm_connection_to_hash (connection);
+nm_connection_dump (connection);
 	utils_clear_filled_connection_certs (connection);
+g_message ("%s: -------ldskfjas;lfdjaslfdkjasdflj******************", __func__);
 
 	return settings;
 }
