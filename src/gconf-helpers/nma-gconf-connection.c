@@ -213,12 +213,9 @@ get_settings (NMExportedConnection *exported)
 
 	connection = nm_exported_connection_get_connection (exported);
 
-g_message ("%s: alkdjfa;ldskfjas;lfdjaslfdkjasdflj******************", __func__);
 	utils_fill_connection_certs (connection);
 	settings = nm_connection_to_hash (connection);
-nm_connection_dump (connection);
 	utils_clear_filled_connection_certs (connection);
-g_message ("%s: -------ldskfjas;lfdjaslfdkjasdflj******************", __func__);
 
 	return settings;
 }
