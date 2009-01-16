@@ -37,6 +37,7 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtklabel.h>
+#include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 
 #ifdef NO_POLKIT_GNOME
@@ -617,5 +618,13 @@ nm_connection_editor_save_vpn_secrets (NMConnectionEditor *editor)
 			break;
 		}
 	}
+}
+
+GtkWindow *
+nm_connection_editor_get_window (NMConnectionEditor *editor)
+{
+	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), NULL);
+
+	return GTK_WINDOW (editor->window);
 }
 

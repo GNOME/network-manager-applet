@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Connection editor -- Connection editor for NetworkManager
  *
  * Rodrigo Moya <rodrigo@gnome-db.org>
@@ -35,6 +35,7 @@
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkstock.h>
 #include <gconf/gconf-client.h>
+#include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 
 #ifdef NO_POLKIT_GNOME
@@ -85,7 +86,7 @@ typedef struct {
 } ActionInfo;
 
 static void
-show_error_dialog (const gchar *format, ...)
+show_error_dialog (GtkWindow *parent, const gchar *format, ...)
 {
 	GtkWidget *dialog;
 	va_list args;
@@ -101,6 +102,9 @@ show_error_dialog (const gchar *format, ...)
 							   GTK_BUTTONS_CLOSE,
 							   "%s", msg);
 	g_free (msg);
+
+	if (parent)
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), parent);
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
@@ -294,37 +298,35 @@ is_permission_denied_error (GError *error)
 
 static gboolean
 obtain_auth (GError *pk_error,
-		   PolKitGnomeAuthCB callback,
-		   gpointer user_data)
+             GtkWindow *parent,
+             PolKitGnomeAuthCB callback,
+             gpointer user_data,
+             GError **error)
 {
 	PolKitAction *pk_action;
 	char **tokens;
-	GError *error;
-	guint xid;
-	pid_t pid;
 	gboolean success = FALSE;
+	guint xid = 0;
 
 	tokens = g_strsplit (pk_error->message, " ", 2);
 	if (g_strv_length (tokens) != 2) {
-		g_warning ("helper return string malformed");
-		g_strfreev (tokens);
-		return FALSE;
+		g_set_error (error, 0, 0, "%s", _("PolicyKit authorization was malformed."));
+		goto out;
 	}
 
-	pk_action = polkit_action_new ();
-	polkit_action_set_action_id (pk_action, tokens[0]);
+	pk_action = polkit_action_new_from_string_representation (tokens[0]);
+	if (!pk_action) {
+		g_set_error (error, 0, 0, "%s", _("PolicyKit authorization could not be created."));
+		goto out;
+	}
+
+	if (parent)
+		xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (GTK_WIDGET (parent)->window));
+	success = polkit_gnome_auth_obtain (pk_action, xid, getpid (), callback, user_data, error);
+	polkit_action_unref (pk_action);
+
+out:
 	g_strfreev (tokens);
-
-	xid = 0;
-	pid = getpid ();
-
-	error = NULL;
-	success = polkit_gnome_auth_obtain (pk_action, xid, pid, callback, user_data, &error);
-	if (error) {
-		g_warning ("Could not grant permssion: %s", error->message);
-		g_error_free (error);
-	}
-
 	return success;
 }
 
@@ -337,13 +339,15 @@ typedef void (*ConnectionRemovedFn) (NMExportedConnection *exported,
 
 typedef struct {
 	NMExportedConnection *exported;
+	GtkWindow *parent;
 	ConnectionRemovedFn callback;
 	gpointer user_data;
 } ConnectionRemoveInfo;
 
 static void remove_connection (NMExportedConnection *exported,
-						 ConnectionRemovedFn callback,
-						 gpointer user_data);
+                               GtkWindow *parent,
+                               ConnectionRemovedFn callback,
+                               gpointer user_data);
 
 static void
 remove_connection_cb (PolKitAction *action,
@@ -355,13 +359,13 @@ remove_connection_cb (PolKitAction *action,
 	gboolean done = TRUE;
 
 	if (gained_privilege) {
-		remove_connection (info->exported, info->callback, info->user_data);
+		remove_connection (info->exported, info->parent, info->callback, info->user_data);
 		done = FALSE;
 	} else if (error) {
-		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
+		show_error_dialog (info->parent, _("Could not obtain required privileges: %s."), error->message);
 		g_error_free (error);
 	} else
-		show_error_dialog (_("Could not remove system connection: permission denied."));
+		show_error_dialog (info->parent, _("Could not remove system connection: permission denied."));
 
 	if (done && info->callback)
 		info->callback (info->exported, FALSE, info->user_data);
@@ -372,6 +376,7 @@ remove_connection_cb (PolKitAction *action,
 
 static void
 remove_connection (NMExportedConnection *exported,
+                   GtkWindow *parent,
                    ConnectionRemovedFn callback,
                    gpointer user_data)
 {
@@ -384,20 +389,28 @@ remove_connection (NMExportedConnection *exported,
 
 		if (is_permission_denied_error (error)) {
 			ConnectionRemoveInfo *info;
+			GError *auth_error = NULL;
 
 			info = g_slice_new (ConnectionRemoveInfo);
 			info->exported = g_object_ref (exported);
+			info->parent = parent;
 			info->callback = callback;
 			info->user_data = user_data;
 
-			auth_pending = obtain_auth (error, remove_connection_cb, info);
+			auth_pending = obtain_auth (error, parent, remove_connection_cb, info, &auth_error);
+			if (auth_error) {
+				show_error_dialog (parent,
+				                   _("Removing connection failed: %s."),
+				                   auth_error->message);
+				g_error_free (auth_error);
+			}
 
 			if (!auth_pending) {
 				g_object_unref (info->exported);
 				g_slice_free (ConnectionRemoveInfo, info);
 			}
 		} else
-			show_error_dialog (_("Removing connection failed: %s."), error->message);
+			show_error_dialog (parent, _("Removing connection failed: %s."), error->message);
 
 		g_error_free (error);
 
@@ -444,6 +457,7 @@ typedef void (*ConnectionAddedFn) (NMExportedConnection *exported,
 
 typedef struct {
 	NMConnectionList *list;
+	NMConnectionEditor *editor;
 	NMConnection *connection;
 	ConnectionAddedFn callback;
 	gpointer user_data;
@@ -462,16 +476,17 @@ add_connection_cb (PolKitAction *action,
 			    gpointer user_data)
 {
 	ConnectionAddInfo *info = (ConnectionAddInfo *) user_data;
+	GtkWindow *parent = nm_connection_editor_get_window (info->editor);
 	gboolean done = TRUE;
 
 	if (gained_privilege) {
-		add_connection (info->list, NULL, info->connection, info->callback, info->user_data);
+		add_connection (info->list, info->editor, info->connection, info->callback, info->user_data);
 		done = FALSE;
 	} else if (error) {
-		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
+		show_error_dialog (parent, _("Could not obtain required privileges: %s."), error->message);
 		g_error_free (error);
 	} else
-		show_error_dialog (_("Could not add system connection: permission denied."));
+		show_error_dialog (parent, _("Could not add system connection: permission denied."));
 
 	if (done && info->callback)
 		info->callback (NULL, FALSE, info->user_data);
@@ -501,30 +516,39 @@ add_connection (NMConnectionList *self,
 
 		if (!success) {
 			gboolean pending_auth = FALSE;
+			GtkWindow *parent;
 
+			parent = nm_connection_editor_get_window (editor);
 			if (is_permission_denied_error (error)) {
 				ConnectionAddInfo *info;
+				GError *auth_error = NULL;
 
 				info = g_slice_new (ConnectionAddInfo);
 				info->list = self;
+				info->editor = editor;
 				info->connection = g_object_ref (connection);
 				info->callback = callback;
 				info->user_data = user_data;
 
-				pending_auth = obtain_auth (error, add_connection_cb, info);
+				pending_auth = obtain_auth (error, parent, add_connection_cb, info, &auth_error);
+				if (auth_error) {
+					show_error_dialog (parent,
+					                   _("Adding connection failed: %s."),
+					                   auth_error->message);
+					g_error_free (auth_error);
+				}
 
 				if (!pending_auth) {
 					g_object_unref (info->connection);
 					g_slice_free (ConnectionAddInfo, info);
 				}
 			} else
-				show_error_dialog (_("Adding connection failed: %s."), error->message);
+				show_error_dialog (parent, _("Adding connection failed: %s."), error->message);
 
 			g_error_free (error);
 
 			if (pending_auth)
 				return;
-
 		}
 	} else if (scope == NM_CONNECTION_SCOPE_USER) {
 		exported = (NMExportedConnection *) nma_gconf_settings_add_connection (self->gconf_settings, connection);
@@ -550,6 +574,7 @@ typedef void (*ConnectionUpdatedFn) (NMConnectionList *list,
 
 typedef struct {
 	NMConnectionList *list;
+	NMConnectionEditor *editor;
 	NMExportedConnection *original;
 	NMConnection *modified;
 	ConnectionUpdatedFn callback;
@@ -590,11 +615,12 @@ connection_update_remove_done (NMExportedConnection *exported,
 	if (success)
 		connection_update_done (info, success);
 	else if (info->added_connection) {
+		GtkWindow *parent;
+
 		/* Revert the scope of the original connection and remove the connection we just successfully added */
 		/* FIXME: loops forever on error */
-
-		remove_connection (info->added_connection,
-					    connection_update_remove_done, info);
+		parent = nm_connection_editor_get_window (info->editor);
+		remove_connection (info->added_connection, parent, connection_update_remove_done, info);
 	}
 }
 
@@ -608,10 +634,7 @@ connection_update_add_done (NMExportedConnection *exported,
 	if (success) {
 		/* Adding the connection with different scope succeeded, now try to remove the original */
 		info->added_connection = exported ? g_object_ref (exported) : NULL;
-
-		remove_connection (info->original,
-					    connection_update_remove_done,
-					    info);
+		remove_connection (info->original, GTK_WINDOW (info->editor), connection_update_remove_done, info);
 	} else
 		connection_update_done (info, success);
 }
@@ -624,15 +647,17 @@ update_connection_cb (PolKitAction *action,
 {
 	ConnectionUpdateInfo *info = (ConnectionUpdateInfo *) user_data;
 	gboolean done = TRUE;
+	GtkWindow *parent;
 
+	parent = nm_connection_editor_get_window (info->editor);
 	if (gained_privilege) {
-		update_connection (info->list, NULL, info->original, info->modified, info->callback, info->user_data);
+		update_connection (info->list, info->editor, info->original, info->modified, info->callback, info->user_data);
 		done = FALSE;
 	} else if (error) {
-		show_error_dialog (_("Could not obtain required privileges: %s."), error->message);
+		show_error_dialog (parent, _("Could not obtain required privileges: %s."), error->message);
 		g_error_free (error);
 	} else
-		show_error_dialog (_("Could not update system connection: permission denied."));
+		show_error_dialog (parent, _("Could not update system connection: permission denied."));
 
 	if (done)
 		connection_update_done (info, FALSE);
@@ -656,6 +681,7 @@ update_connection (NMConnectionList *list,
 
 	info = g_slice_new0 (ConnectionUpdateInfo);
 	info->list = list;
+	info->editor = editor;
 	info->original = g_object_ref (original);
 	info->modified = g_object_ref (modified);
 	info->callback = callback;
@@ -668,6 +694,7 @@ update_connection (NMConnectionList *list,
 		GError *error = NULL;
 		gboolean success;
 		gboolean pending_auth = FALSE;
+		GtkWindow *parent;
 
 		utils_fill_connection_certs (modified);
 		new_settings = nm_connection_to_hash (modified);
@@ -680,11 +707,20 @@ update_connection (NMConnectionList *list,
 		g_hash_table_destroy (new_settings);
 		utils_clear_filled_connection_certs (modified);
 
+		parent = nm_connection_editor_get_window (editor);
 		if (!success) {
-			if (is_permission_denied_error (error))
-				pending_auth = obtain_auth (error, update_connection_cb, info);
-			else
-				show_error_dialog (_("Updating connection failed: %s."), error->message);
+			if (is_permission_denied_error (error)) {
+				GError *auth_error = NULL;
+
+				pending_auth = obtain_auth (error, parent, update_connection_cb, info, &auth_error);
+				if (auth_error) {
+					show_error_dialog (parent,
+					                   _("Updating connection failed: %s."),
+					                   auth_error->message);
+					g_error_free (auth_error);
+				}
+			} else
+				show_error_dialog (parent, _("Updating connection failed: %s."), error->message);
 
 			g_error_free (error);
 		} else {
@@ -1119,12 +1155,13 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 	                        GTK_STOCK_DELETE, GTK_RESPONSE_YES,
 	                        NULL);
+	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (info->list->dialog));
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
 	if (result == GTK_RESPONSE_YES)
-		remove_connection (exported, connection_remove_done, info->list);
+		remove_connection (exported, GTK_WINDOW (info->list->dialog), connection_remove_done, info->list);
 }
 
 static void
