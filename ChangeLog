@@ -1,3 +1,15 @@
+2008-01-16  Dan Williams  <dcbw@redhat.com>
+
+	* nm-connection-editor.c
+	  nm-connection-editor.h
+		- (nm_connection_editor_get_window): add accessor to editor GtkWindow
+
+	* nm-connection-list.c
+	  nm-connection-list.h
+		- Pass XID of parent window to PolicyKit to ensure authorization windows
+			are transient for their parent
+		- Make error dialogs transient for the parent window
+
 2008-12-19  Dan Williams  <dcbw@redhat.com>
 
 	Patch from Drew Moseley <dmoseley@mvista.com>

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Connection editor -- Connection editor for NetworkManager
  *
  * Rodrigo Moya <rodrigo@gnome-db.org>
@@ -72,6 +72,7 @@ NMConnectionEditor *nm_connection_editor_new (NMConnection *connection,
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
 void                nm_connection_editor_save_vpn_secrets (NMConnectionEditor *editor);
-NMConnection *nm_connection_editor_get_connection (NMConnectionEditor *editor);
+NMConnection *      nm_connection_editor_get_connection (NMConnectionEditor *editor);
+GtkWindow *         nm_connection_editor_get_window (NMConnectionEditor *editor);
 
 #endif
