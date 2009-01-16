@@ -78,6 +78,15 @@ connection_new_secrets_requested_cb (NMAGConfConnection *connection,
 }
 
 static void
+connection_removed (NMExportedConnection *connection, gpointer user_data)
+{
+	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (user_data);
+
+	priv->connections = g_slist_remove (priv->connections, connection);
+	g_object_unref (connection);
+}
+
+static void
 add_connection_real (NMAGConfSettings *self, NMAGConfConnection *connection)
 {
 	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (self);
@@ -88,6 +97,7 @@ add_connection_real (NMAGConfSettings *self, NMAGConfConnection *connection)
 					   G_CALLBACK (connection_new_secrets_requested_cb),
 					   self);
 
+		g_signal_connect (connection, "removed", G_CALLBACK (connection_removed), self);
 		nm_settings_signal_new_connection (NM_SETTINGS (self),
 									NM_EXPORTED_CONNECTION (connection));
 	}
@@ -281,14 +291,7 @@ connection_changes_done (gpointer data)
 	if (!connection) {
 		/* New connection */
 		connection = nma_gconf_connection_new (priv->client, info->path);
-		if (connection) {
-			g_signal_connect (connection, "new-secrets-requested",
-						   G_CALLBACK (connection_new_secrets_requested_cb),
-						   info->settings);
-			priv->connections = g_slist_append (priv->connections, connection);
-			nm_settings_signal_new_connection (NM_SETTINGS (info->settings),
-										NM_EXPORTED_CONNECTION (connection));
-		}
+		add_connection_real (info->settings, connection);
 	} else {
 		if (gconf_client_dir_exists (priv->client, info->path, NULL)) {
 			/* Updated connection */
