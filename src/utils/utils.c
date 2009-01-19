@@ -246,7 +246,6 @@ fill_one_private_key (NMConnection *connection,
 
 	/* If the private key is PKCS#12, don't set the client cert */
 	filename = g_object_get_data (G_OBJECT (connection), pk_tag);
-g_message ("%s: %s tag is '%s'", __func__, pk_tag, filename);
 	if (!filename)
 		return TRUE;
 
@@ -286,7 +285,6 @@ utils_fill_connection_certs (NMConnection *connection)
 		return;
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG);
-g_message ("%s: ca-cert tag is '%s'", __func__, filename);
 	if (filename) {
 		if (!nm_setting_802_1x_set_ca_cert_from_file (s_8021x, filename, NULL, &error))
 			g_warning ("%s: couldn't read CA certificate: %d %s", __func__, error->code, error->message);
