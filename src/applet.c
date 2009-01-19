@@ -33,6 +33,7 @@
 
 #include <time.h>
 #include <string.h>
+#include <strings.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include "wireless-helper.h"
@@ -561,6 +562,58 @@ make_vpn_disconnection_message (NMVPNConnection *vpn,
 	return g_strdup_printf (_("\nThe VPN connection '%s' disconnected."), nm_setting_connection_get_id (s_con));
 }
 
+typedef struct {
+	const char *tag;
+	const char *replacement;
+} Tag;
+
+static Tag banner_tags[] = {
+	{ "<center>", NULL },
+	{ "</center>", NULL },
+	{ "<p>", "\n" },
+	{ "</p>", NULL },
+	{ "<B>", "<b>" },
+	{ "</B>", "</b>" },
+	{ "<I>", "<i>" },
+	{ "</I>", "</i>" },
+	{ "<u>", "<u>" },
+	{ "</u>", "</u>" },
+	{ NULL, NULL }
+};
+
+static char *
+construct_vpn_banner (const char *src)
+{
+	const char *p = src;
+	GString *banner;
+
+	/* Filter the banner text and get rid of some HTML tags since the
+	 * notification spec only allows a subset of HTML.
+	 */
+
+	banner = g_string_sized_new (strlen (src) + 5);
+	g_string_append_c (banner, '\n');
+	while (*p) {
+		Tag *t = &banner_tags[0];
+		gboolean found = FALSE;
+
+		while (t->tag) {
+			if (strncasecmp (p, t->tag, strlen (t->tag)) == 0) {
+				p += strlen (t->tag);
+				if (t->replacement)
+					g_string_append (banner, t->replacement);
+				found = TRUE;
+				break;
+			}
+			t++;
+		}
+		if (!found)
+			g_string_append_c (banner, *p++);
+	}
+
+	return g_string_free (banner, FALSE);
+}
+
 static void
 vpn_connection_state_changed (NMVPNConnection *vpn,
                               NMVPNConnectionState state,
@@ -585,7 +638,7 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 		banner = nm_vpn_connection_get_banner (vpn);
 		if (banner && strlen (banner)) {
 			title = _("VPN Login Message");
-			msg = g_strdup_printf ("\n%s", banner);
+			msg = construct_vpn_banner (banner);
 			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
 			                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
 			g_free (msg);

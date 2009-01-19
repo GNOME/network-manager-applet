@@ -1,5 +1,12 @@
 2009-01-19  Dan Williams  <dcbw@redhat.com>
 
+	* src/applet.c
+		- (construct_vpn_banner, vpn_connection_state_changed): filter some
+			HTML tags from VPN banners to better conform to the notification
+			daemon specification (bgo #564511)
+
+2009-01-19  Dan Williams  <dcbw@redhat.com>
+
 	* nm-connection-editor.desktop.in
 		- Use a more appropriate icon (preferences-system-network) instead
 			of the wireless icon (bgo #563234)
