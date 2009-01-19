@@ -26,9 +26,7 @@
 #endif
 
 #include <glib/gi18n.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkcheckmenuitem.h>
+#include <gtk/gtk.h>
 
 #include <nm-device.h>
 #include <nm-setting-connection.h>

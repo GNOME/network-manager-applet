@@ -23,8 +23,7 @@
 #define WIRELESS_DIALOG_H
 
 #include <gtk/gtk.h>
-#include <gtk/gtkdialog.h>
-#include <glib/gtypes.h>
+#include <glib.h>
 #include <glib-object.h>
 
 #include <nm-connection.h>

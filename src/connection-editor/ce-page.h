@@ -23,12 +23,10 @@
 #ifndef __CE_PAGE_H__
 #define __CE_PAGE_H__
 
-#include <glib/gtypes.h>
+#include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkspinbutton.h>
+#include <gtk/gtk.h>
 #include <glade/glade.h>
 
 #include <nm-connection.h>

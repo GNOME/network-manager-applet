@@ -44,8 +44,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
-#undef GTK_DISABLE_DEPRECATED
-#include <gtk/gtktooltips.h>
 #define GTK_DISABLE_DEPRECATED
 
 #define DBUS_API_SUBJECT_TO_CHANGE

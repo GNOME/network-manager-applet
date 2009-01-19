@@ -26,9 +26,8 @@
 #include <glib-object.h>
 #include <glade/glade-xml.h>
 #include <gconf/gconf-client.h>
-#include <gdk/gdkpixbuf.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include <gtk/gtkicontheme.h>
 #include <nm-dbus-settings-system.h>
 #include "nma-gconf-settings.h"
 
