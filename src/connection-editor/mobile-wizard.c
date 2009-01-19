@@ -24,10 +24,7 @@
 #include <glib/gi18n.h>
 
 #include <glade/glade.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkradiobutton.h>
-#include <gtk/gtkbox.h>
+#include <gtk/gtk.h>
 
 #include <NetworkManager.h>
 #include <nm-client.h>

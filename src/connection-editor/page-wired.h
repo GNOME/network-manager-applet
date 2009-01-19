@@ -25,7 +25,7 @@
 
 #include <nm-connection.h>
 
-#include <glib/gtypes.h>
+#include <glib.h>
 #include <glib-object.h>
 
 #include "ce-page.h"

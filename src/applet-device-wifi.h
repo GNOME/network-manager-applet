@@ -23,7 +23,7 @@
 #ifndef __APPLET_DEVICE_WIFI_H__
 #define __APPLET_DEVICE_WIFI_H__
 
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 #include "applet.h"
 

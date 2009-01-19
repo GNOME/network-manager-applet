@@ -27,7 +27,6 @@
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtk/gtkcontainer.h>
 #include <glade/glade.h>
 #include <netinet/ether.h>
 

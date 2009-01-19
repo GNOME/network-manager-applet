@@ -26,14 +26,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkstock.h>
+#include <gtk/gtk.h>
 #include <gconf/gconf-client.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>

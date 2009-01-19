@@ -24,7 +24,6 @@
 #define __APPLET_DIALOGS_H__
 
 #include <gtk/gtk.h>
-#include <gtk/gtkmenuitem.h>
 
 #include "applet.h"
 

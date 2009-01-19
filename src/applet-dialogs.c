@@ -38,7 +38,6 @@
 #include <nm-utils.h>
 
 #include <gtk/gtk.h>
-#include <gtk/gtkwidget.h>
 #include <glade/glade.h>
 #include <glib/gi18n.h>
 

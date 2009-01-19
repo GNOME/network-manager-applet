@@ -31,7 +31,7 @@
 #include <dbus/dbus.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
-#include <glib/gtypes.h>
+#include <glib.h>
 #include <glib-object.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>

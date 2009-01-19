@@ -25,7 +25,6 @@
 #define __AP_MENU_ITEM_H__
 
 #include <gtk/gtk.h>
-#include <gtk/gtkcheckmenuitem.h>
 #include "applet.h"
 #include "nm-access-point.h"
 

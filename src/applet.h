@@ -30,7 +30,6 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
-#include <gtk/gtkmenu.h>
 
 #include <gconf/gconf-client.h>
 #include <glade/glade.h>
