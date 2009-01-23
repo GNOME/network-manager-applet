@@ -41,6 +41,151 @@
 #define COL_METRIC  3
 #define COL_LAST COL_METRIC
 
+static gboolean
+get_one_int (GtkTreeModel *model,
+             GtkTreeIter *iter,
+             int column,
+             guint32 max_value,
+             gboolean fail_if_missing,
+             guint32 *out)
+{
+	char *item = NULL;
+	gboolean success = FALSE;
+	long int tmp_int;
+
+	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (!item || !strlen (item)) {
+		g_free (item);
+		return fail_if_missing ? FALSE : TRUE;
+	}
+
+	errno = 0;
+	tmp_int = strtol (item, NULL, 10);
+	if (errno || tmp_int < 0 || tmp_int > max_value)
+		goto out;
+
+	*out = (guint32) tmp_int;
+	success = TRUE;
+
+out:
+	g_free (item);
+	return success;
+}
+
+static gboolean
+get_one_prefix (GtkTreeModel *model,
+                GtkTreeIter *iter,
+                int column,
+                gboolean fail_if_missing,
+                guint32 *out)
+{
+	char *item = NULL;
+	struct in_addr tmp_addr = { 0 };
+	gboolean success = FALSE;
+	glong tmp_prefix;
+
+	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (!item || !strlen (item)) {
+		g_free (item);
+		return fail_if_missing ? FALSE : TRUE;
+	}
+
+	errno = 0;
+
+	/* Is it a prefix? */
+	if (!strchr (item, '.')) {
+		tmp_prefix = strtol (item, NULL, 10);
+		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
+			*out = tmp_prefix;
+			success = TRUE;
+			goto out;
+		}
+	}
+
+	/* Is it a netmask? */
+	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
+		*out = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
+		success = TRUE;
+	}
+
+out:
+	g_free (item);
+	return success;
+}
+
+static gboolean
+get_one_addr (GtkTreeModel *model,
+              GtkTreeIter *iter,
+              int column,
+              gboolean fail_if_missing,
+              guint32 *out)
+{
+	char *item = NULL;
+	struct in_addr tmp_addr = { 0 };
+	gboolean success = FALSE;
+
+	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (!item || !strlen (item)) {
+		g_free (item);
+		return fail_if_missing ? FALSE : TRUE;
+	}
+
+	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
+		*out = tmp_addr.s_addr;
+		success = TRUE;
+	}
+
+	g_free (item);
+	return success;
+}
+
+static void
+validate (GtkWidget *dialog)
+{
+	GladeXML *xml;
+	GtkWidget *widget;
+	GtkTreeModel *model;
+	GtkTreeIter tree_iter;
+	gboolean valid = FALSE, iter_valid = FALSE;
+
+	g_return_if_fail (dialog != NULL);
+
+	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
+	g_return_if_fail (xml != NULL);
+	g_return_if_fail (GLADE_IS_XML (xml));
+
+	widget = glade_xml_get_widget (xml, "ip4_routes");
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
+	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
+
+	while (iter_valid) {
+		guint32 addr = 0, prefix = 0, next_hop = 0, metric = 0;
+
+		/* Address */
+		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr))
+			goto done;
+
+		/* Prefix */
+		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix))
+			goto done;
+
+		/* Next hop (optional) */
+		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop))
+			goto done;
+
+		/* Metric (optional) */
+		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric))
+			goto done;
+
+		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
+	}
+	valid = TRUE;
+
+done:
+	widget = glade_xml_get_widget (xml, "ok_button");
+	gtk_widget_set_sensitive (widget, valid);
+}
+
 static void
 route_add_clicked (GtkButton *button, gpointer user_data)
 {
@@ -73,17 +218,22 @@ route_add_clicked (GtkButton *button, gpointer user_data)
 
 	g_list_free (cells);
 	gtk_tree_path_free (path);
+
+	validate (glade_xml_get_widget (xml, "ip4_routes_dialog"));
 }
 
 static void
 route_delete_clicked (GtkButton *button, gpointer user_data)
 {
-	GtkTreeView *treeview = GTK_TREE_VIEW (user_data);
+	GladeXML *xml = GLADE_XML (user_data);
+	GtkTreeView *treeview;
 	GtkTreeSelection *selection;
 	GList *selected_rows;
 	GtkTreeModel *model = NULL;
 	GtkTreeIter iter;
 	int num_rows;
+
+	treeview = GTK_TREE_VIEW (glade_xml_get_widget (xml, "ip4_routes"));
 
 	selection = gtk_tree_view_get_selection (treeview);
 	if (gtk_tree_selection_count_selected_rows (selection) != 1)
@@ -104,6 +254,8 @@ route_delete_clicked (GtkButton *button, gpointer user_data)
 		selection = gtk_tree_view_get_selection (treeview);
 		gtk_tree_selection_select_iter (selection, &iter);
 	}
+
+	validate (glade_xml_get_widget (xml, "ip4_routes_dialog"));
 }
 
 static void
@@ -152,6 +304,8 @@ cell_edited (GtkCellRendererText *cell,
 	gtk_widget_grab_focus (widget);
 
 	gtk_tree_path_free (path);
+
+	validate (dialog);
 }
 
 static void
@@ -159,8 +313,9 @@ ip_address_filter_cb (GtkEntry *   entry,
                       const gchar *text,
                       gint         length,
                       gint *       position,
-                      gpointer     data)
+                      gpointer     user_data)
 {
+	GtkWidget *ok_button = user_data;
 	GtkEditable *editable = GTK_EDITABLE (entry);
 	int i, count = 0;
 	gchar *result = g_new (gchar, length);
@@ -173,22 +328,28 @@ ip_address_filter_cb (GtkEntry *   entry,
 	if (count > 0) {
 		g_signal_handlers_block_by_func (G_OBJECT (editable),
 		                                 G_CALLBACK (ip_address_filter_cb),
-		                                 data);
+		                                 user_data);
 		gtk_editable_insert_text (editable, result, count, position);
 		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
 		                                   G_CALLBACK (ip_address_filter_cb),
-		                                   data);
+		                                   user_data);
 	}
 
 	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
 	g_free (result);
+
+	/* Desensitize the OK button during input to simplify input validation.
+	 * All routes will be validated on focus-out, which will then re-enable
+	 * the OK button if the routes are valid.
+	 */
+	gtk_widget_set_sensitive (ok_button, FALSE);
 }
 
 static void
-cell_editing_started (GtkCellRenderer *cell,
-                      GtkCellEditable *editable,
-                      const gchar     *path,
-                      gpointer         data)
+ip4_cell_editing_started (GtkCellRenderer *cell,
+                          GtkCellEditable *editable,
+                          const gchar     *path,
+                          gpointer         user_data)
 {
 	if (!GTK_IS_ENTRY (editable)) {
 		g_warning ("%s: Unexpected cell editable type.", __func__);
@@ -198,14 +359,68 @@ cell_editing_started (GtkCellRenderer *cell,
 	/* Set up the entry filter */
 	g_signal_connect (G_OBJECT (editable), "insert-text",
 	                  (GCallback) ip_address_filter_cb,
-	                  data);
+	                  user_data);
+}
+
+static void
+uint_filter_cb (GtkEntry *   entry,
+                const gchar *text,
+                gint         length,
+                gint *       position,
+                gpointer     user_data)
+{
+	GtkWidget *ok_button = user_data;
+	GtkEditable *editable = GTK_EDITABLE (entry);
+	int i, count = 0;
+	gchar *result = g_new (gchar, length);
+
+	for (i = 0; i < length; i++) {
+		if ((text[i] >= '0' && text[i] <= '9'))
+			result[count++] = text[i];
+	}
+
+	if (count > 0) {
+		g_signal_handlers_block_by_func (G_OBJECT (editable),
+		                                 G_CALLBACK (uint_filter_cb),
+		                                 user_data);
+		gtk_editable_insert_text (editable, result, count, position);
+		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
+		                                   G_CALLBACK (uint_filter_cb),
+		                                   user_data);
+	}
+
+	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
+	g_free (result);
+
+	/* Desensitize the OK button during input to simplify input validation.
+	 * All routes will be validated on focus-out, which will then re-enable
+	 * the OK button if the routes are valid.
+	 */
+	gtk_widget_set_sensitive (ok_button, FALSE);
+}
+
+static void
+uint_cell_editing_started (GtkCellRenderer *cell,
+                           GtkCellEditable *editable,
+                           const gchar     *path,
+                           gpointer         user_data)
+{
+	if (!GTK_IS_ENTRY (editable)) {
+		g_warning ("%s: Unexpected cell editable type.", __func__);
+		return;
+	}
+
+	/* Set up the entry filter */
+	g_signal_connect (G_OBJECT (editable), "insert-text",
+	                  (GCallback) uint_filter_cb,
+	                  user_data);
 }
 
 GtkWidget *
 ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 {
 	GladeXML *xml;
-	GtkWidget *dialog, *widget;
+	GtkWidget *dialog, *widget, *ok_button;
 	GtkListStore *store;
 	GtkTreeIter model_iter;
 	GtkTreeSelection *selection;
@@ -232,6 +447,8 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 
 	g_object_set_data_full (G_OBJECT (dialog), "glade-xml",
 	                        xml, (GDestroyNotify) g_object_unref);
+
+	ok_button = glade_xml_get_widget (xml, "ok_button");
 
 	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
@@ -277,7 +494,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_ADDRESS));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -293,7 +510,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_PREFIX));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -309,7 +526,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_NEXT_HOP));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -325,7 +542,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_METRIC));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (uint_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -349,9 +566,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 
 	widget = glade_xml_get_widget (xml, "ip4_route_delete_button");
 	gtk_widget_set_sensitive (widget, FALSE);
-	g_signal_connect (widget, "clicked",
-	                  G_CALLBACK (route_delete_clicked),
-	                  glade_xml_get_widget (xml, "ip4_routes"));
+	g_signal_connect (widget, "clicked", G_CALLBACK (route_delete_clicked), xml);
 
 	widget = glade_xml_get_widget (xml, "ip4_ignore_auto_routes");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
@@ -362,105 +577,10 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
 	                              nm_setting_ip4_config_get_never_default (s_ip4));
 
+	/* Update initial validity */
+	validate (dialog);
+
 	return dialog;
-}
-
-static gboolean
-get_one_int (GtkTreeModel *model,
-             GtkTreeIter *iter,
-             int column,
-             guint32 max_value,
-             gboolean fail_if_missing,
-             guint32 *out)
-{
-	char *item = NULL;
-	gboolean success = FALSE;
-	long int tmp_int;
-
-	gtk_tree_model_get (model, iter, column, &item, -1);
-	if ((!item || !strlen (item)) && !fail_if_missing) {
-		g_free (item);
-		return TRUE;
-	}
-
-	errno = 0;
-	tmp_int = strtol (item, NULL, 10);
-	if (errno || tmp_int < 0 || tmp_int > max_value)
-		goto out;
-
-	*out = (guint32) tmp_int;
-	success = TRUE;
-
-out:
-	g_free (item);
-	return success;
-}
-
-static gboolean
-get_one_prefix (GtkTreeModel *model,
-                GtkTreeIter *iter,
-                int column,
-                gboolean fail_if_missing,
-                guint32 *out)
-{
-	char *item = NULL;
-	struct in_addr tmp_addr = { 0 };
-	gboolean success = FALSE;
-	glong tmp_prefix;
-
-	gtk_tree_model_get (model, iter, column, &item, -1);
-	if ((!item || !strlen (item)) && !fail_if_missing) {
-		g_free (item);
-		return TRUE;
-	}
-
-	errno = 0;
-
-	/* Is it a prefix? */
-	if (!strchr (item, '.')) {
-		tmp_prefix = strtol (item, NULL, 10);
-		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
-			*out = tmp_prefix;
-			success = TRUE;
-			goto out;
-		}
-	}
-
-	/* Is it a netmask? */
-	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
-		*out = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
-		success = TRUE;
-	}
-
-out:
-	g_free (item);
-	return success;
-}
-
-static gboolean
-get_one_addr (GtkTreeModel *model,
-              GtkTreeIter *iter,
-              int column,
-              gboolean fail_if_missing,
-              guint32 *out)
-{
-	char *item = NULL;
-	struct in_addr tmp_addr = { 0 };
-	gboolean success = FALSE;
-
-	gtk_tree_model_get (model, iter, column, &item, -1);
-	if ((!item || !strlen (item)) && !fail_if_missing) {
-		g_free (item);
-		return TRUE;
-	}
-
-	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
-		*out = tmp_addr.s_addr;
-		success = TRUE;
-	}
-
-	g_free (item);
-	return success;
 }
 
 void
