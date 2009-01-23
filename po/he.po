@@ -6,8 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-19 09:28+0000\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=NetworkManager&component=nm-applet\n"
+"POT-Creation-Date: 2009-01-16 21:59+0000\n"
 "PO-Revision-Date: 2008-10-20 02:02+0200\n"
 "Last-Translator: Mark Krapivner <mark125@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -19,128 +20,132 @@ msgstr ""
 "X-Generator: Launchpad (build Unknown)\n"
 "X-Poedit-Language: Hebrew\n"
 
-#: ../src/applet-device-cdma.c:55
-#, fuzzy
-msgid "Auto Mobile Broadband (CDMA) connection"
-msgstr "צור חיבור CDMA"
+#: ../nm-applet.desktop.in.h:1
+#| msgid "No network connection"
+msgid "Control your network connections"
+msgstr "שלוט בחיבורי הרשת שלך"
 
-#: ../src/applet-device-cdma.c:196
-#: ../src/applet-device-gsm.c:197
+#: ../nm-applet.desktop.in.h:2
+#| msgid "NetworkManager Applet"
+msgid "Network Manager"
+msgstr "מנהל הרשתות"
+
+#: ../nm-connection-editor.desktop.in.h:1
+msgid "Manage and change your network connection settings"
+msgstr "נהל ושנה את הכדרות חיבורי הרשת שלך"
+
+#: ../nm-connection-editor.desktop.in.h:2
+#: ../src/connection-editor/nm-connection-editor.glade.h:7
+msgid "Network Connections"
+msgstr "חיבורי רשת"
+
+#: ../src/applet-device-cdma.c:56
+msgid "Auto Mobile Broadband (CDMA) connection"
+msgstr "חיבור נייד (CDMA) אוטומטי"
+
+#: ../src/applet-device-cdma.c:206 ../src/applet-device-gsm.c:207
 msgid "Disconnect"
 msgstr "התנתק"
 
-#: ../src/applet-device-cdma.c:235
-#: ../src/applet-device-gsm.c:236
-#, fuzzy, c-format
+#: ../src/applet-device-cdma.c:245 ../src/applet-device-gsm.c:246
+#, c-format
 msgid "Mobile Broadband (%s)"
-msgstr "פס רחב נייד"
+msgstr ""
+"פס רחב נייד (%s)"
 
-#: ../src/applet-device-cdma.c:237
-#: ../src/applet-device-gsm.c:238
-#: ../src/connection-editor/page-mobile.c:274
+#: ../src/applet-device-cdma.c:247 ../src/applet-device-gsm.c:248
+#: ../src/connection-editor/page-mobile.c:286
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1481
+#: ../src/connection-editor/nm-connection-list.c:1592
 msgid "Mobile Broadband"
 msgstr "פס רחב נייד"
 
-#: ../src/applet-device-cdma.c:255
-#: ../src/applet-device-gsm.c:256
-#: ../src/applet-device-wired.c:224
-#: ../src/applet-device-wifi.c:713
+#: ../src/applet-device-cdma.c:265 ../src/applet-device-gsm.c:266
+#: ../src/applet-device-wired.c:230 ../src/applet-device-wifi.c:725
 msgid "device is unmanaged"
 msgstr "ההתקן לא מנוהל"
 
-#: ../src/applet-device-cdma.c:288
-#: ../src/applet-device-gsm.c:289
-#: ../src/applet-device-wired.c:256
+#: ../src/applet-device-cdma.c:301 ../src/applet-device-gsm.c:302
+#: ../src/applet-device-wired.c:264
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "מחובר כעת אל '%s'."
 
-#: ../src/applet-device-cdma.c:292
-#: ../src/applet-device-gsm.c:293
-#: ../src/applet-device-wired.c:260
-#: ../src/applet-device-wifi.c:1206
+#: ../src/applet-device-cdma.c:305 ../src/applet-device-gsm.c:306
+#: ../src/applet-device-wired.c:268 ../src/applet-device-wifi.c:1195
 msgid "Connection Established"
 msgstr "חיבור נוצר"
 
-#: ../src/applet-device-cdma.c:293
+#: ../src/applet-device-cdma.c:306
 msgid "You are now connected to the CDMA network."
 msgstr "מחובר כעת לרשת CDMA."
 
-#: ../src/applet-device-cdma.c:316
-#: ../src/applet-device-gsm.c:317
+#: ../src/applet-device-cdma.c:332 ../src/applet-device-gsm.c:333
 #, fuzzy, c-format
-msgid "Dialing mobile broadband device %s..."
-msgstr "מחייג מהתקן ‏GSM ‏%s..."
-
-#: ../src/applet-device-cdma.c:319
-#: ../src/applet-device-gsm.c:320
-#, c-format
-msgid "Starting PPP on device %s..."
-msgstr "מתחיל PPP על ההתקן %s..."
-
-#: ../src/applet-device-cdma.c:322
-#: ../src/applet-device-gsm.c:323
-#, c-format
-msgid "Waiting for user authentication on device '%s'..."
-msgstr "ממתין לאימות משתמש על ההתקן '%s'..."
-
-#: ../src/applet-device-cdma.c:326
-#: ../src/applet-device-gsm.c:327
-#, fuzzy, c-format
-msgid "Mobile broadband connection '%s'"
+msgid "Preparing mobile broadband connection '%s'..."
 msgstr "חיבור חוטי %d"
 
-#: ../src/applet-device-cdma.c:328
-#: ../src/applet-device-gsm.c:329
-#, fuzzy
-msgid "Mobile broadband connection"
-msgstr "פס רחב נייד"
+#: ../src/applet-device-cdma.c:335 ../src/applet-device-gsm.c:336
+#, fuzzy, c-format
+msgid "Configuring mobile broadband connection '%s'..."
+msgstr "חיבור חוטי %d"
 
-#: ../src/applet-device-cdma.c:438
-#: ../src/applet-device-gsm.c:541
+#: ../src/applet-device-cdma.c:338 ../src/applet-device-gsm.c:339
+#, fuzzy, c-format
+msgid "User authentication required for mobile broadband connection '%s'..."
+msgstr "חיבור חוטי %d"
+
+#: ../src/applet-device-cdma.c:341 ../src/applet-device-gsm.c:342
+#: ../src/applet.c:1737
+#, fuzzy, c-format
+#| msgid "Requesting a network address from the wireless network '%s'..."
+msgid "Requesting a network address for '%s'..."
+msgstr "מבקש כתובת רשת מהרשת האלחוטית '%s'...."
+
+#: ../src/applet-device-cdma.c:345 ../src/applet-device-gsm.c:346
+#, fuzzy, c-format
+msgid "Mobile broadband connection '%s' active"
+msgstr "חיבור חוטי %d"
+
+#: ../src/applet-device-cdma.c:461 ../src/applet-device-gsm.c:544
 #, fuzzy
 msgid "Mobile broadband network password"
 msgstr "פס רחב נייד"
 
-#: ../src/applet-device-cdma.c:447
-#: ../src/applet-device-gsm.c:550
+#: ../src/applet-device-cdma.c:470 ../src/applet-device-gsm.c:553
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "נדרשת סיסמה כדי להתחבר ל-'%s'."
 
-#: ../src/applet-device-cdma.c:465
-#: ../src/applet-device-gsm.c:568
-#: ../src/applet.glade.h:22
-#: ../src/connection-editor/ce-page-dsl.glade.h:1
+#: ../src/applet-device-cdma.c:488 ../src/applet-device-gsm.c:571
+#: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
 #: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "Password:"
 msgstr "סיסמה:‏"
 
-#: ../src/applet-device-gsm.c:56
+#: ../src/applet-device-gsm.c:57
 #, fuzzy
 msgid "Auto Mobile Broadband (GSM) connection"
 msgstr "חיבור GSM"
 
-#: ../src/applet-device-gsm.c:294
+#: ../src/applet-device-gsm.c:307
 msgid "You are now connected to the GSM network."
 msgstr "אתה מחובר לרשת ה-GSM."
 
-#: ../src/applet-device-gsm.c:467
+#: ../src/applet-device-gsm.c:484
 msgid "PIN code required"
 msgstr "דרוש קוד סודי"
 
-#: ../src/applet-device-gsm.c:469
+#: ../src/applet-device-gsm.c:486
 msgid "PUK code required"
 msgstr "נדרש קוד PUK"
 
-#: ../src/applet-device-gsm.c:479
+#: ../src/applet-device-gsm.c:495
 #, fuzzy
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "דרוש קוד סודי עבור התקן ה-GSM"
 
-#: ../src/applet-device-gsm.c:481
+#: ../src/applet-device-gsm.c:497
 #, fuzzy
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "נדרש קוד PUK עבור התקן ה-GSM"
@@ -149,244 +154,257 @@ msgstr "נדרש קוד PUK עבור התקן ה-GSM"
 msgid "Auto Ethernet"
 msgstr "‏Ethernet אוטומטי"
 
-#: ../src/applet-device-wired.c:193
+#: ../src/applet-device-wired.c:199
 #, c-format
 msgid "Wired Networks (%s)"
 msgstr "רשתות חוטיות (%s)"
 
-#: ../src/applet-device-wired.c:195
+#: ../src/applet-device-wired.c:201
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "רשת חוטית (%s)"
 
-#: ../src/applet-device-wired.c:198
+#: ../src/applet-device-wired.c:204
 msgid "Wired Networks"
 msgstr "רשתות חוטיות"
 
-#: ../src/applet-device-wired.c:200
+#: ../src/applet-device-wired.c:206
 msgid "Wired Network"
 msgstr "רשת חוטיות"
 
-#: ../src/applet-device-wired.c:261
+#: ../src/applet-device-wired.c:269
 msgid "You are now connected to the wired network."
 msgstr "מחובר כעת לרשת החוטית"
 
-#: ../src/applet-device-wired.c:281
-#, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "מכין את ההתקן %s לחיבור הרשת החוטית..."
+#: ../src/applet-device-wired.c:295
+#, fuzzy, c-format
+#| msgid "Wireless network connection to '%s'"
+msgid "Preparing wired network connection '%s'..."
+msgstr "חיבור רשת אלחוטית אל '%s'"
 
-#: ../src/applet-device-wired.c:284
-#, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "מתאים את ההתקן %s לחיבור הרשת החוטית..."
+#: ../src/applet-device-wired.c:298
+#, fuzzy, c-format
+#| msgid "Wireless network connection to '%s'"
+msgid "Configuring wired network connection '%s'..."
+msgstr "חיבור רשת אלחוטית אל '%s'"
 
-#: ../src/applet-device-wired.c:287
-#, c-format
-msgid "Requesting a network address from the wired network..."
-msgstr "מבקש כתובת רשת מהרשת החוטית...."
+#: ../src/applet-device-wired.c:301
+#, fuzzy, c-format
+#| msgid "Authentication required by wireless network"
+msgid "User authentication required for wired network connection '%s'..."
+msgstr "הרשת האלחוטית דורשת אימות"
 
-#: ../src/applet-device-wired.c:291
-msgid "Wired network connection"
+#: ../src/applet-device-wired.c:304
+#, fuzzy, c-format
+#| msgid "Requesting a network address from the wireless network '%s'..."
+msgid "Requesting a wired network address for '%s'..."
+msgstr "מבקש כתובת רשת מהרשת האלחוטית '%s'...."
+
+#: ../src/applet-device-wired.c:308
+#, fuzzy, c-format
+#| msgid "Wired network connection"
+msgid "Wired network connection '%s' active"
 msgstr "חיבור לרשת חוטית"
 
-#: ../src/applet-device-wired.c:522
+#: ../src/applet-device-wired.c:561
 msgid "DSL authentication"
 msgstr "אימות DSL"
 
-#: ../src/applet-device-wifi.c:87
+#: ../src/applet-device-wifi.c:93
 msgid "_Connect to Hidden Wireless Network..."
 msgstr "_התחבר לרשת אלחוטית סמויה..."
 
-#: ../src/applet-device-wifi.c:119
+#: ../src/applet-device-wifi.c:124
 msgid "Create _New Wireless Network..."
 msgstr "צור רשת אלחוטית _חדשה..."
 
-#: ../src/applet-device-wifi.c:683
+#: ../src/applet-device-wifi.c:695
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "רשתות אלחוטיות (%s)"
 
-#: ../src/applet-device-wifi.c:685
+#: ../src/applet-device-wifi.c:697
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "רשת אלחוטית (%s)"
 
-#: ../src/applet-device-wifi.c:687
+#: ../src/applet-device-wifi.c:699
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "רשת אלחוטית"
 msgstr[1] "רשתות אלחוטיות"
 
-#: ../src/applet-device-wifi.c:704
+#: ../src/applet-device-wifi.c:716
 msgid "wireless is disabled"
 msgstr "רשת אלחוטית מכובה"
 
-#: ../src/applet-device-wifi.c:1002
+#: ../src/applet-device-wifi.c:988
 msgid "Wireless Networks Available"
 msgstr "רשתות אלחוטית זמינות"
 
-#: ../src/applet-device-wifi.c:1003
+#: ../src/applet-device-wifi.c:989
 msgid "Click on this icon to connect to a wireless network"
 msgstr "לחץ על האיקון כדי להתחבר לרשת אלחוטית"
 
-#: ../src/applet-device-wifi.c:1006
+#: ../src/applet-device-wifi.c:992 ../src/applet.c:436
 msgid "Don't show this message again"
 msgstr "אל תציג את הודעה זאת שוב"
 
-#: ../src/applet-device-wifi.c:1204
+#: ../src/applet-device-wifi.c:1193
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "מחובר כעת לרשת האלחוטית '%s'."
 
-#: ../src/applet-device-wifi.c:1205
-#: ../src/applet-device-wifi.c:1234
+#: ../src/applet-device-wifi.c:1194 ../src/applet-device-wifi.c:1225
 msgid "(none)"
 msgstr "(ללא)"
 
-#: ../src/applet-device-wifi.c:1240
-#, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "מכין את ההתקן %s לרשת האלחוטית '%s'..."
+#: ../src/applet-device-wifi.c:1235
+#, fuzzy, c-format
+#| msgid "Wireless network connection to '%s'"
+msgid "Preparing wireless network connection '%s'..."
+msgstr "חיבור רשת אלחוטית אל '%s'"
 
-#: ../src/applet-device-wifi.c:1243
-#, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "מבצע נסיון להתחבר לרשת האלחוטית '%s'..."
+#: ../src/applet-device-wifi.c:1238
+#, fuzzy, c-format
+#| msgid "Wireless network connection to '%s'"
+msgid "Configuring wireless network connection '%s'..."
+msgstr "חיבור רשת אלחוטית אל '%s'"
 
-#: ../src/applet-device-wifi.c:1246
-#, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
+#: ../src/applet-device-wifi.c:1241
+#, fuzzy, c-format
+#| msgid "Authentication required by wireless network"
+msgid "User authentication required for wireless network '%s'..."
+msgstr "הרשת האלחוטית דורשת אימות"
+
+#: ../src/applet-device-wifi.c:1244
+#, fuzzy, c-format
+#| msgid "Requesting a network address from the wireless network '%s'..."
+msgid "Requesting a wireless network address for '%s'..."
 msgstr "מבקש כתובת רשת מהרשת האלחוטית '%s'...."
 
-#: ../src/applet-device-wifi.c:1249
-#, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "ממתין למפתח הרשת עבור הרשת האלחוטית '%s'..."
-
-#: ../src/applet-device-wifi.c:1269
-#, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
+#: ../src/applet-device-wifi.c:1264
+#, fuzzy, c-format
+#| msgid "Wireless network connection to '%s' (%d%%)"
+msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "חיבור לרשת אלחוטית '%s' (%d%%)"
 
-#: ../src/applet-device-wifi.c:1273
-#, c-format
-msgid "Wireless network connection to '%s'"
+#: ../src/applet-device-wifi.c:1268
+#, fuzzy, c-format
+#| msgid "Wireless network connection to '%s'"
+msgid "Wireless network connection '%s' active"
 msgstr "חיבור רשת אלחוטית אל '%s'"
 
 #: ../src/applet-dialogs.c:54
 msgid "Error displaying connection information:"
 msgstr "שגיאה בהצגת נתוני החיבור:"
 
-#: ../src/applet-dialogs.c:81
-#: ../src/connection-editor/page-wireless-security.c:277
-#: ../src/wireless-dialog.c:775
-#: ../src/wireless-security/wireless-security.c:334
+#: ../src/applet-dialogs.c:85
+#: ../src/connection-editor/page-wireless-security.c:300
+#: ../src/wireless-dialog.c:816
+#: ../src/wireless-security/wireless-security.c:317
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:83
+#: ../src/applet-dialogs.c:87
 msgid "Dynamic WEP"
 msgstr "‏WEP דינאמי"
 
-#: ../src/applet-dialogs.c:85
-#: ../src/applet-dialogs.c:183
-#: ../src/applet-dialogs.c:185
+#: ../src/applet-dialogs.c:89 ../src/applet-dialogs.c:190
+#: ../src/applet-dialogs.c:192
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:181
+#: ../src/applet-dialogs.c:188
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:189
-#: ../src/applet-dialogs.c:198
-#: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:728
+#: ../src/applet-dialogs.c:196 ../src/applet-dialogs.c:205
+#: ../src/connection-editor/page-wireless-security.c:261
+#: ../src/wireless-dialog.c:769
 msgid "None"
 msgstr "ללא"
 
-#: ../src/applet-dialogs.c:201
-#: ../src/applet-dialogs.c:316
+#: ../src/applet-dialogs.c:208 ../src/applet-dialogs.c:323
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: ../src/applet-dialogs.c:252
+#: ../src/applet-dialogs.c:259
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:254
+#: ../src/applet-dialogs.c:261
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:256
+#: ../src/applet-dialogs.c:263
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:258
+#: ../src/applet-dialogs.c:265
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:263
+#: ../src/applet-dialogs.c:270
 msgid "Interface:"
 msgstr "מנשק:"
 
-#: ../src/applet-dialogs.c:279
+#: ../src/applet-dialogs.c:286
 msgid "Hardware Address:"
 msgstr "כתובת חומרה:"
 
-#: ../src/applet-dialogs.c:289
+#: ../src/applet-dialogs.c:296
 msgid "Driver:"
 msgstr "מנהל התקן:"
 
-#: ../src/applet-dialogs.c:308
+#: ../src/applet-dialogs.c:315
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:313
+#: ../src/applet-dialogs.c:320
 msgid "Speed:"
 msgstr "מהירות:"
 
-#: ../src/applet-dialogs.c:323
+#: ../src/applet-dialogs.c:330
 #: ../src/connection-editor/ce-page-wireless-security.glade.h:1
 msgid "Security:"
 msgstr "אבטחה:"
 
-#: ../src/applet-dialogs.c:343
+#: ../src/applet-dialogs.c:350
 msgid "IP Address:"
 msgstr "כתובת IP:"
 
-#: ../src/applet-dialogs.c:357
+#: ../src/applet-dialogs.c:366
 msgid "Broadcast Address:"
 msgstr "כתובת השידור:"
 
-#: ../src/applet-dialogs.c:366
+#: ../src/applet-dialogs.c:377
 msgid "Subnet Mask:"
 msgstr "מסכת רשת משנה:"
 
-#: ../src/applet-dialogs.c:376
+#: ../src/applet-dialogs.c:389
 msgid "Default Route:"
 msgstr "נתיב ברירת המחדל:"
 
-#: ../src/applet-dialogs.c:389
+#: ../src/applet-dialogs.c:404
 msgid "Primary DNS:"
 msgstr "כתובת DNS ראשית:"
 
-#: ../src/applet-dialogs.c:398
+#: ../src/applet-dialogs.c:415
 msgid "Secondary DNS:"
 msgstr "כתובת DNS משנית:"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:459
+#: ../src/applet-dialogs.c:478
 msgid "No valid active connections found!"
 msgstr "לא נמצאו חיבורים פעילים תקינים!"
 
-#: ../src/applet-dialogs.c:585
+#: ../src/applet-dialogs.c:604
 msgid ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
@@ -394,15 +412,16 @@ msgstr ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
 
-#: ../src/applet-dialogs.c:587
-msgid "Notification area applet for managing your network devices and connections."
+#: ../src/applet-dialogs.c:606
+msgid ""
+"Notification area applet for managing your network devices and connections."
 msgstr "יישומון המנהל את התקני וחיבורי הרשת."
 
-#: ../src/applet-dialogs.c:589
+#: ../src/applet-dialogs.c:608
 msgid "NetworkManager Website"
 msgstr "אתר הבית של מנהל הרשתות"
 
-#: ../src/applet-dialogs.c:592
+#: ../src/applet-dialogs.c:611
 msgid "translator-credits"
 msgstr ""
 "מארק קרפיבנר <mark125@gmail.com>\n"
@@ -410,16 +429,17 @@ msgstr ""
 "פרוייקט תרגום GNOME לעברית:\n"
 "‏http://gnome-il.berlios.de"
 
-#: ../src/applet.c:473
+#: ../src/applet.c:506
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the network connection was interrupted."
+"The VPN connection '%s' failed because the network connection was "
+"interrupted."
 msgstr ""
 "\n"
 "חיבור ה-VPN‏ '%s' נכשל בגלל שחיבור הרשת הופרע."
 
-#: ../src/applet.c:475
+#: ../src/applet.c:509
 #, c-format
 msgid ""
 "\n"
@@ -428,44 +448,45 @@ msgstr ""
 "\n"
 "חיבור ה-VPN‏ '%s' נכשל בגלל ששירות ה-VPN הופסק בפתאומיות."
 
-#: ../src/applet.c:477
+#: ../src/applet.c:512
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the VPN service returned invalid configuration."
+"The VPN connection '%s' failed because the VPN service returned invalid "
+"configuration."
 msgstr ""
 "\n"
 "חיבור ה-VPN‏ '%s' נכשל בגלל ששירות ה-VPN החזיר תצורה לא תקינה."
 
-#: ../src/applet.c:479
+#: ../src/applet.c:515
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the connection attempt timed out."
 msgstr ""
 
-#: ../src/applet.c:481
+#: ../src/applet.c:518
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service did not start in time."
 msgstr ""
 
-#: ../src/applet.c:483
+#: ../src/applet.c:521
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service failed to start."
 msgstr ""
 
-#: ../src/applet.c:485
+#: ../src/applet.c:524
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because there were no valid VPN secrets."
 msgstr ""
 
-#: ../src/applet.c:487
+#: ../src/applet.c:527
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -474,7 +495,7 @@ msgstr ""
 "\n"
 "חיבור ה-VPN‏ '%s' נכשל בגלל ששירות ה-VPN הופסק בפתאומיות."
 
-#: ../src/applet.c:493
+#: ../src/applet.c:534
 #, c-format
 msgid ""
 "\n"
@@ -483,14 +504,15 @@ msgstr ""
 "\n"
 "חיבור ה-VPN‏ '%s' נכשל."
 
-#: ../src/applet.c:511
+#: ../src/applet.c:552
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' disconnected because the network connection was interrupted."
+"The VPN connection '%s' disconnected because the network connection was "
+"interrupted."
 msgstr ""
 
-#: ../src/applet.c:513
+#: ../src/applet.c:555
 #, c-format
 msgid ""
 "\n"
@@ -499,7 +521,7 @@ msgstr ""
 "\n"
 "חיבור ה-VPN‏ '%s' התנתק בגלל ששירות ה-VPN הופסק."
 
-#: ../src/applet.c:518
+#: ../src/applet.c:561
 #, c-format
 msgid ""
 "\n"
@@ -508,17 +530,15 @@ msgstr ""
 "\n"
 "חיבור ה-VPN‏ '%s' נותק."
 
-#: ../src/applet.c:544
+#: ../src/applet.c:587
 msgid "VPN Login Message"
 msgstr "הודעת כניסה ל-VPN"
 
-#: ../src/applet.c:556
-#: ../src/applet.c:564
-#: ../src/applet.c:608
+#: ../src/applet.c:599 ../src/applet.c:607 ../src/applet.c:651
 msgid "VPN Connection Failed"
 msgstr "חיבור VPN נכשל"
 
-#: ../src/applet.c:615
+#: ../src/applet.c:658
 #, c-format
 msgid ""
 "\n"
@@ -527,7 +547,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/applet.c:618
+#: ../src/applet.c:661
 #, c-format
 msgid ""
 "\n"
@@ -540,88 +560,135 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:937
+#: ../src/applet.c:980
 msgid "No network devices available"
 msgstr "לא נמצא התקן רשת זמין"
 
-#: ../src/applet.c:1025
+#: ../src/applet.c:1068
 msgid "_VPN Connections"
 msgstr "_חיבורי VPN"
 
-#: ../src/applet.c:1075
+#: ../src/applet.c:1118
 msgid "_Configure VPN..."
 msgstr "_הגדרת VPN..."
 
-#: ../src/applet.c:1079
+#: ../src/applet.c:1122
 msgid "_Disconnect VPN..."
 msgstr "_ניתוק VPN..."
 
-#: ../src/applet.c:1128
+#: ../src/applet.c:1171
 msgid "NetworkManager is not running..."
 msgstr "מנהל הרשת אינו פועל..."
 
-#: ../src/applet.c:1133
-#: ../src/applet.c:1728
+#: ../src/applet.c:1176 ../src/applet.c:1866
 msgid "Networking disabled"
 msgstr "מנהל-הרשת מכובה"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1310
+#: ../src/applet.c:1356
 msgid "Enable _Networking"
 msgstr "אפשר _חיבורי רשת"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1319
+#: ../src/applet.c:1365
 msgid "Enable _Wireless"
 msgstr "אפשר _חיבורי רשת אלחוטית"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1330
+#: ../src/applet.c:1376
 msgid "Connection _Information"
 msgstr "_פרטי החיבור"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1340
+#: ../src/applet.c:1386
 msgid "Edit Connections..."
 msgstr "ערוך חיבורים..."
 
 #. Help item
-#: ../src/applet.c:1354
+#: ../src/applet.c:1400
 msgid "_Help"
 msgstr "_עזרה"
 
 #. About item
-#: ../src/applet.c:1363
+#: ../src/applet.c:1409
 msgid "_About"
 msgstr "_אודות"
 
-#: ../src/applet.c:1536
+#: ../src/applet.c:1582
 msgid "Disconnected"
 msgstr "נותק"
 
-#: ../src/applet.c:1537
+#: ../src/applet.c:1583
 msgid "The network connection has been disconnected."
 msgstr "חיבור הרשת נותק"
 
-#: ../src/applet.c:1732
+#: ../src/applet.c:1731
+#, fuzzy, c-format
+#| msgid "Wireless network connection to '%s'"
+msgid "Preparing network connection '%s'..."
+msgstr "חיבור רשת אלחוטית אל '%s'"
+
+#: ../src/applet.c:1734
+#, fuzzy, c-format
+#| msgid "Authentication required by wireless network"
+msgid "User authentication required for network connection '%s'..."
+msgstr "הרשת האלחוטית דורשת אימות"
+
+#: ../src/applet.c:1740
+#, c-format
+#| msgid "Network Connections"
+msgid "Network connection '%s' active"
+msgstr "חיבור הרשת '%s' פעיל"
+
+#: ../src/applet.c:1821
+#, c-format
+#| msgid "Cannot start VPN connection '%s'"
+msgid "Starting VPN connection '%s'..."
+msgstr "מתחיל את חיבור ה-VPN '%s'..."
+
+#: ../src/applet.c:1824
+#, fuzzy, c-format
+#| msgid "A password is required to connect to '%s'."
+msgid "User authentication required for VPN connection '%s'..."
+msgstr "נדרשת סיסמה כדי להתחבר ל-'%s'."
+
+#: ../src/applet.c:1827
+#, fuzzy, c-format
+#| msgid "Requesting a network address from the wireless network '%s'..."
+msgid "Requesting a VPN address for '%s'..."
+msgstr "מבקש כתובת רשת מהרשת האלחוטית '%s'...."
+
+#: ../src/applet.c:1830
+#, c-format
+#| msgid ""
+#| "\n"
+#| "The VPN connection '%s' failed."
+msgid "VPN connection '%s' active"
+msgstr ""
+"חיבור ה-VPN‏ '%s' פעיל"
+
+#: ../src/applet.c:1870
 msgid "No network connection"
 msgstr "אין חיבור רשת"
 
-#: ../src/applet.c:2038
-msgid "The NetworkManager applet could not find some required resources.  It cannot continue.\n"
-msgstr "יישומון מנהל הרשת לא מצא חלק מהמשאבים הדרושים, ולכן אינו יכול להמשיך.\n"
+#: ../src/applet.c:2194
+msgid ""
+"The NetworkManager applet could not find some required resources.  It cannot "
+"continue.\n"
+msgstr ""
+"יישומון מנהל הרשת לא מצא חלק מהמשאבים הדרושים, ולכן אינו יכול להמשיך.\n"
 
-#: ../src/applet.c:2181
+#: ../src/applet.c:2379
 msgid "NetworkManager Applet"
 msgstr "יישומון מנהל-הרשתות"
 
-#: ../src/applet.c:2186
-#: ../src/wired-dialog.c:103
-msgid "The NetworkManager Applet could not find some required resources (the glade file was not found)."
+#: ../src/applet.c:2384 ../src/wired-dialog.c:128
+msgid ""
+"The NetworkManager Applet could not find some required resources (the glade "
+"file was not found)."
 msgstr "יישומון מנהל-הרשת לא מצא חלק מהמשאבים הדרושים (קובץ ה-glade לא נמצא)"
 
-#: ../src/applet.glade.h:1
-#: ../src/connection-editor/ce-mobile-wizard.glade.h:1
+#: ../src/applet.glade.h:1 ../src/connection-editor/ce-mobile-wizard.glade.h:1
 #: ../src/connection-editor/ce-vpn-wizard.glade.h:1
 msgid " "
 msgstr " "
@@ -718,13 +785,11 @@ msgstr "בחר קובץ"
 msgid "Show key"
 msgstr "הצג מפתח"
 
-#: ../src/applet.glade.h:27
-#: ../src/connection-editor/ce-page-dsl.glade.h:3
+#: ../src/applet.glade.h:27 ../src/connection-editor/ce-page-dsl.glade.h:3
 msgid "Show password"
 msgstr "הצג סיסמה"
 
-#: ../src/applet.glade.h:28
-#: ../src/connection-editor/ce-page-mobile.glade.h:16
+#: ../src/applet.glade.h:28 ../src/connection-editor/ce-page-mobile.glade.h:16
 msgid "Type:"
 msgstr "סוג:"
 
@@ -770,9 +835,12 @@ msgstr "טקסט התרעה"
 
 #: ../src/connection-editor/ce-mobile-wizard.glade.h:2
 msgid ""
-"<span weight=\"bold\" size=\"larger\">Choose a Mobile Broadband Connection</span>\n"
+"<span weight=\"bold\" size=\"larger\">Choose a Mobile Broadband Connection</"
+"span>\n"
 "\n"
-"Select or connect the mobile broadband device you wish to use for the new connection.  If the device is not available, you may select a generic connection type."
+"Select or connect the mobile broadband device you wish to use for the new "
+"connection.  If the device is not available, you may select a generic "
+"connection type."
 msgstr ""
 
 #: ../src/connection-editor/ce-page.c:52
@@ -814,20 +882,30 @@ msgid "DNS Servers:"
 msgstr "שרתי DNS:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
-msgid "Ignore automatically obtained routes"
+msgid ""
+"If enabled, this connection will never be used as the default network "
+"connection."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:10
+msgid "Ignore automatically obtained routes"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:11
 msgid "Method:"
 msgstr "שיטה:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:11
+#: ../src/connection-editor/ce-page-ip4.glade.h:12
 msgid "Routes..."
 msgstr "נתיבים..."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:12
+#: ../src/connection-editor/ce-page-ip4.glade.h:13
 msgid "Search Domains:"
 msgstr "מתחמי חיפוש:"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:14
+msgid "Use this connection only for resources on its network"
+msgstr ""
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -839,7 +917,7 @@ msgstr "<b>בסיסי</b>"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:3
 msgid "APN:"
-msgstr ""
+msgstr "APN:"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:4
 msgid ""
@@ -952,7 +1030,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-wired.glade.h:12
 msgid "Full duple_x"
-msgstr ""
+msgstr "_דופלקס מלא"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:13
 #: ../src/connection-editor/ce-page-wireless.glade.h:8
@@ -1033,24 +1111,32 @@ msgstr ""
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Choose a VPN Connection Type</span>\n"
 "\n"
-"Select the type of VPN you wish to use for the new connection.  If the type of VPN connection you wish to create does not appear in the list, you may not have the correct VPN plugin installed."
+"Select the type of VPN you wish to use for the new connection.  If the type "
+"of VPN connection you wish to create does not appear in the list, you may "
+"not have the correct VPN plugin installed."
 msgstr ""
 
-#: ../src/connection-editor/ip4-routes-dialog.c:261
-#: ../src/connection-editor/page-ip4.c:618
+#: ../src/connection-editor/ce-vpn-wizard.glade.h:5
+#| msgid "C_reate"
+msgid "Create..."
+msgstr "צור..."
+
+#: ../src/connection-editor/ip4-routes-dialog.c:284
+#: ../src/connection-editor/page-ip4.c:641
 msgid "Address"
 msgstr "כתובת"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:276
-msgid "Prefix"
-msgstr "תחילית"
+#: ../src/connection-editor/ip4-routes-dialog.c:300
+#: ../src/connection-editor/page-ip4.c:657
+msgid "Netmask"
+msgstr "מסיכת רשת"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:291
-#: ../src/connection-editor/page-ip4.c:648
+#: ../src/connection-editor/ip4-routes-dialog.c:316
+#: ../src/connection-editor/page-ip4.c:673
 msgid "Gateway"
 msgstr ""
 
-#: ../src/connection-editor/ip4-routes-dialog.c:306
+#: ../src/connection-editor/ip4-routes-dialog.c:332
 msgid "Metric"
 msgstr ""
 
@@ -1070,107 +1156,103 @@ msgstr "צור חיבור GSM"
 msgid "Create a CDMA connection"
 msgstr "צור חיבור CDMA"
 
-#: ../src/connection-editor/page-dsl.c:140
+#: ../src/connection-editor/page-dsl.c:143
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1487
+#: ../src/connection-editor/nm-connection-list.c:1598
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-ip4.c:108
+#: ../src/connection-editor/page-ip4.c:114
 msgid "Automatic (VPN)"
 msgstr "אוטומטי (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:109
+#: ../src/connection-editor/page-ip4.c:115
 msgid "Automatic (VPN) addresses only"
 msgstr "כתובות אוטומטיות (VPN) בלבד"
 
-#: ../src/connection-editor/page-ip4.c:113
+#: ../src/connection-editor/page-ip4.c:119
 msgid "Automatic (PPP)"
 msgstr "אוטומטי (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:114
+#: ../src/connection-editor/page-ip4.c:120
 msgid "Automatic (PPP) addresses only"
 msgstr "כתובות אוטומטיות (PPP) בלבד"
 
-#: ../src/connection-editor/page-ip4.c:116
+#: ../src/connection-editor/page-ip4.c:122
 msgid "Automatic (PPPoE)"
 msgstr "אוטומטי (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:117
+#: ../src/connection-editor/page-ip4.c:123
 msgid "Automatic (PPPoE) addresses only"
 msgstr "כתובות אוטומטיות (PPPoE) בלבד"
 
-#: ../src/connection-editor/page-ip4.c:119
+#: ../src/connection-editor/page-ip4.c:125
 msgid "Automatic (DHCP)"
 msgstr "אוטומטי (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:120
+#: ../src/connection-editor/page-ip4.c:126
 msgid "Automatic (DHCP) addresses only"
 msgstr "כתובות אוטומטיות (DHCP) בלבד"
 
-#: ../src/connection-editor/page-ip4.c:141
+#: ../src/connection-editor/page-ip4.c:147
 msgid "Manual"
 msgstr "ידני"
 
-#: ../src/connection-editor/page-ip4.c:149
+#: ../src/connection-editor/page-ip4.c:155
 msgid "Link-Local Only"
 msgstr ""
 
-#: ../src/connection-editor/page-ip4.c:155
+#: ../src/connection-editor/page-ip4.c:161
 msgid "Shared to other computers"
 msgstr "משותף למחשבים אחרים"
 
-#: ../src/connection-editor/page-ip4.c:549
+#: ../src/connection-editor/page-ip4.c:569
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "עורך נתיבי IPv4 עבור %s"
 
-#: ../src/connection-editor/page-ip4.c:588
+#: ../src/connection-editor/page-ip4.c:610
 msgid "IPv4 Settings"
 msgstr "הגדרות IPv4"
 
-#: ../src/connection-editor/page-ip4.c:633
-msgid "Netmask"
-msgstr "מסיכת רשת"
-
-#: ../src/connection-editor/page-ppp.c:128
-#: ../src/wireless-security/eap-method-ttls.c:308
+#: ../src/connection-editor/page-ppp.c:164
+#: ../src/wireless-security/eap-method-ttls.c:303
 msgid "PAP"
 msgstr "PAP"
 
-#: ../src/connection-editor/page-ppp.c:129
-#: ../src/wireless-security/eap-method-ttls.c:353
+#: ../src/connection-editor/page-ppp.c:165
+#: ../src/wireless-security/eap-method-ttls.c:348
 msgid "CHAP"
 msgstr "CHAP"
 
-#: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-peap.c:309
-#: ../src/wireless-security/eap-method-ttls.c:338
+#: ../src/connection-editor/page-ppp.c:166
+#: ../src/wireless-security/eap-method-peap.c:304
+#: ../src/wireless-security/eap-method-ttls.c:333
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
-#: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:323
+#: ../src/connection-editor/page-ppp.c:167
+#: ../src/wireless-security/eap-method-ttls.c:318
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
-#: ../src/connection-editor/page-ppp.c:132
+#: ../src/connection-editor/page-ppp.c:168
 msgid "EAP"
 msgstr "EAP"
 
-#: ../src/connection-editor/page-ppp.c:199
+#: ../src/connection-editor/page-ppp.c:247
 msgid "Point-to-Point Protocol (PPP)"
 msgstr "פרוטוקול נקודה לנקודה (PPP)"
 
-#: ../src/connection-editor/page-vpn.c:69
-#: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1484
+#: ../src/connection-editor/page-vpn.c:70
+#: ../src/connection-editor/nm-connection-editor.glade.h:8
+#: ../src/connection-editor/nm-connection-list.c:1595
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-wired.c:175
-#: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1474
+#: ../src/connection-editor/page-wired.c:180
+#: ../src/connection-editor/nm-connection-editor.glade.h:9
+#: ../src/connection-editor/nm-connection-list.c:1585
 msgid "Wired"
 msgstr "חוטי"
 
@@ -1192,65 +1274,89 @@ msgstr "ברירת מחדל"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:317
-#: ../src/connection-editor/nm-connection-editor.glade.h:11
-#: ../src/connection-editor/nm-connection-list.c:1477
+#: ../src/connection-editor/page-wireless.c:326
+#: ../src/connection-editor/nm-connection-editor.glade.h:10
+#: ../src/connection-editor/nm-connection-list.c:1588
 msgid "Wireless"
 msgstr "רשת אלחוטית"
 
-#: ../src/connection-editor/page-wireless-security.c:210
+#: ../src/connection-editor/page-wireless-security.c:230
 msgid "Wireless Security"
 msgstr "אבטחה אלחוטית"
 
-#: ../src/connection-editor/page-wireless-security.c:255
-#: ../src/wireless-dialog.c:749
+#: ../src/connection-editor/page-wireless-security.c:278
+#: ../src/wireless-dialog.c:790
 msgid "WEP 40/128-bit Key"
 msgstr "מפתח WEP ‏bit-‏40/128"
 
-#: ../src/connection-editor/page-wireless-security.c:264
-#: ../src/wireless-dialog.c:758
+#: ../src/connection-editor/page-wireless-security.c:287
+#: ../src/wireless-dialog.c:799
 msgid "WEP 128-bit Passphrase"
 msgstr "סיסמת WEP ‏bit-‏128"
 
-#: ../src/connection-editor/page-wireless-security.c:290
-#: ../src/wireless-dialog.c:788
+#: ../src/connection-editor/page-wireless-security.c:313
+#: ../src/wireless-dialog.c:829
 msgid "Dynamic WEP (802.1x)"
 msgstr "‏WEP דינאמי (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:304
-#: ../src/wireless-dialog.c:802
+#: ../src/connection-editor/page-wireless-security.c:327
+#: ../src/wireless-dialog.c:843
 msgid "WPA & WPA2 Personal"
 msgstr "‏WPA & WPA2 אישי"
 
-#: ../src/connection-editor/page-wireless-security.c:318
-#: ../src/wireless-dialog.c:816
+#: ../src/connection-editor/page-wireless-security.c:341
+#: ../src/wireless-dialog.c:857
 msgid "WPA & WPA2 Enterprise"
 msgstr "‏WPA & WPA2 עסקי"
 
-#: ../src/connection-editor/nm-connection-editor.c:93
+#: ../src/connection-editor/nm-connection-editor.c:101
 #, c-format
 msgid "Editing %s"
 msgstr "עורך %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:97
+#: ../src/connection-editor/nm-connection-editor.c:105
 msgid "Editing un-named connection"
 msgstr "עורך חיבור ללא שם"
 
-#: ../src/connection-editor/nm-connection-editor.c:174
-msgid "The connection editor could not find some required resources (the NetworkManager applet glade file was not found)."
-msgstr "The connection editor could not find some required resources (the NetworkManager applet glade file was not found)."
+#: ../src/connection-editor/nm-connection-editor.c:289
+msgid ""
+"The connection editor could not find some required resources (the "
+"NetworkManager applet glade file was not found)."
+msgstr ""
+"The connection editor could not find some required resources (the "
+"NetworkManager applet glade file was not found)."
 
-#: ../src/connection-editor/nm-connection-editor.c:187
-msgid "The connection editor could not find some required resources (the glade file was not found)."
-msgstr "The connection editor could not find some required resources (the glade file was not found)."
+#: ../src/connection-editor/nm-connection-editor.c:302
+msgid ""
+"The connection editor could not find some required resources (the glade file "
+"was not found)."
+msgstr ""
+"The connection editor could not find some required resources (the glade file "
+"was not found)."
+
+#: ../src/connection-editor/nm-connection-editor.c:318
+msgid "Apply..."
+msgstr "החל..."
+
+#: ../src/connection-editor/nm-connection-editor.c:319
+msgid "Authenticate to save this connection for all users of this machine."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.c:320
+msgid "Apply"
+msgstr "החל"
+
+#: ../src/connection-editor/nm-connection-editor.c:321
+msgid "Save this connection for all users of this machine."
+msgstr ""
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
-msgid "Connect _automatically"
-msgstr "התחבר אוטו_מטית"
+msgid "Available to all users"
+msgstr "זמין לכל המשתמשים"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:2
-msgid "Connection Editor"
-msgstr "עורך החיבורים"
+msgid "Connect _automatically"
+msgstr "התחבר אוטו_מטית"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:3
 msgid "Connection _name:"
@@ -1260,149 +1366,153 @@ msgstr "_שם החיבור:"
 msgid "E_xport"
 msgstr "_יצא"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:7
-msgid "Network Connections"
-msgstr "חיבורי רשת"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:8
-msgid "System setting"
-msgstr "הגדרת מערכת"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:12
+#: ../src/connection-editor/nm-connection-editor.glade.h:11
 msgid "_Import"
 msgstr "_יבא"
 
-#: ../src/connection-editor/nm-connection-list.c:194
+#: ../src/connection-editor/nm-connection-list.c:201
 msgid "never"
 msgstr "אף פעם"
 
-#: ../src/connection-editor/nm-connection-list.c:205
-#: ../src/connection-editor/nm-connection-list.c:216
+#: ../src/connection-editor/nm-connection-list.c:212
+#: ../src/connection-editor/nm-connection-list.c:223
 msgid "now"
 msgstr "עכשיו"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:223
+#: ../src/connection-editor/nm-connection-list.c:230
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "לפני דקה"
 msgstr[1] "לפני %d דקות"
 
-#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:234
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "לפני שעה"
 msgstr[1] "לפני %d שעות"
 
-#: ../src/connection-editor/nm-connection-list.c:239
+#: ../src/connection-editor/nm-connection-list.c:246
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "לפני יום"
 msgstr[1] "לפני %d ימים"
 
-#: ../src/connection-editor/nm-connection-list.c:245
+#: ../src/connection-editor/nm-connection-list.c:252
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "לפני חודש"
 msgstr[1] "לפני %d חודשים"
 
-#: ../src/connection-editor/nm-connection-list.c:249
+#: ../src/connection-editor/nm-connection-list.c:256
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "לפני שנה"
 msgstr[1] "לפני %d שנים"
 
-#: ../src/connection-editor/nm-connection-list.c:358
-#: ../src/connection-editor/nm-connection-list.c:469
-#: ../src/connection-editor/nm-connection-list.c:627
+#: ../src/connection-editor/nm-connection-list.c:313
+msgid "PolicyKit authorization was malformed."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-list.c:319
+msgid "PolicyKit authorization could not be created."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-list.c:365
+#: ../src/connection-editor/nm-connection-list.c:486
+#: ../src/connection-editor/nm-connection-list.c:657
 #, c-format
 msgid "Could not obtain required privileges: %s."
 msgstr "לא ניתן להשיג הרשאות נדרשות: %s."
 
-#: ../src/connection-editor/nm-connection-list.c:361
+#: ../src/connection-editor/nm-connection-list.c:368
 msgid "Could not remove system connection: permission denied."
 msgstr "לא ניתן להסיר חיבור מערכת: אין הרשאות."
 
-#: ../src/connection-editor/nm-connection-list.c:397
+#: ../src/connection-editor/nm-connection-list.c:403
+#: ../src/connection-editor/nm-connection-list.c:413
 #, c-format
 msgid "Removing connection failed: %s."
 msgstr "הסרת חיבור נכשלה: %s."
 
-#: ../src/connection-editor/nm-connection-list.c:472
+#: ../src/connection-editor/nm-connection-list.c:489
 msgid "Could not add system connection: permission denied."
 msgstr "לא ניתן להוסיף חיבור מערכת: אין הרשאות."
 
-#: ../src/connection-editor/nm-connection-list.c:516
+#: ../src/connection-editor/nm-connection-list.c:536
+#: ../src/connection-editor/nm-connection-list.c:546
 #, c-format
 msgid "Adding connection failed: %s."
 msgstr "הוספת חיבור נכשלה: %s."
 
-#: ../src/connection-editor/nm-connection-list.c:630
+#: ../src/connection-editor/nm-connection-list.c:660
 msgid "Could not update system connection: permission denied."
 msgstr "לא ניתן לעדכן חיבור מערכת: אין הרשאות."
 
-#: ../src/connection-editor/nm-connection-list.c:675
+#: ../src/connection-editor/nm-connection-list.c:718
+#: ../src/connection-editor/nm-connection-list.c:723
 #, c-format
 msgid "Updating connection failed: %s."
 msgstr "עדכון חיבור נכשל: %s."
 
-#: ../src/connection-editor/nm-connection-list.c:790
+#: ../src/connection-editor/nm-connection-list.c:847
 #, c-format
 msgid "Wired connection %d"
 msgstr "חיבור חוטי %d"
 
-#: ../src/connection-editor/nm-connection-list.c:798
+#: ../src/connection-editor/nm-connection-list.c:859
 #, c-format
 msgid "Wireless connection %d"
 msgstr "חיבור אלחוטי %d"
 
-#: ../src/connection-editor/nm-connection-list.c:813
+#: ../src/connection-editor/nm-connection-list.c:878
 #, c-format
 msgid "GSM connection %d"
 msgstr "חיבור GSM %d"
 
-#: ../src/connection-editor/nm-connection-list.c:827
+#: ../src/connection-editor/nm-connection-list.c:897
 #, c-format
 msgid "CDMA connection %d"
 msgstr "חיבור CDMA %d"
 
-#: ../src/connection-editor/nm-connection-list.c:848
-#: ../src/connection-editor/nm-connection-list.c:1140
+#: ../src/connection-editor/nm-connection-list.c:924
+#: ../src/connection-editor/nm-connection-list.c:1240
 #, c-format
 msgid "VPN connection %d"
 msgstr "חיבור VPN %d"
 
-#: ../src/connection-editor/nm-connection-list.c:856
+#: ../src/connection-editor/nm-connection-list.c:938
 #, c-format
 msgid "DSL connection %d"
 msgstr "חיבור DSL %d"
 
-#: ../src/connection-editor/nm-connection-list.c:1060
+#: ../src/connection-editor/nm-connection-list.c:1152
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "אתה בטוח שברצונך למחוק את החיבור %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:1156
-#: ../src/connection-editor/vpn-helpers.c:228
+#: ../src/connection-editor/nm-connection-list.c:1266
+#: ../src/connection-editor/vpn-helpers.c:229
 msgid "Cannot import VPN connection"
 msgstr "לא ניתן לייבא חיבור VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:1158
+#: ../src/connection-editor/nm-connection-list.c:1268
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
 "Error: no VPN service type."
 msgstr ""
 
-#: ../src/connection-editor/vpn-helpers.c:230
+#: ../src/connection-editor/vpn-helpers.c:231
 #, c-format
 msgid ""
-"The file '%s' could not be read or does not contain recognized VPN connection information\n"
+"The file '%s' could not be read or does not contain recognized VPN "
+"connection information\n"
 "\n"
 "Error: %s."
 msgstr ""
@@ -1410,29 +1520,29 @@ msgstr ""
 "\n"
 "שגיאה: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:261
+#: ../src/connection-editor/vpn-helpers.c:262
 msgid "Select file to import"
 msgstr "בחר קובץ לייבוא"
 
-#: ../src/connection-editor/vpn-helpers.c:307
+#: ../src/connection-editor/vpn-helpers.c:310
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "קובץ בשם \"%s\" כבר קיים."
 
-#: ../src/connection-editor/vpn-helpers.c:309
+#: ../src/connection-editor/vpn-helpers.c:312
 msgid "_Replace"
 msgstr "_החלף"
 
-#: ../src/connection-editor/vpn-helpers.c:311
+#: ../src/connection-editor/vpn-helpers.c:314
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "האם ברצונך להחליף את %s בחיבור ה-VPN שאתה שומר?"
 
-#: ../src/connection-editor/vpn-helpers.c:345
+#: ../src/connection-editor/vpn-helpers.c:350
 msgid "Cannot export VPN connection"
 msgstr "לא ניתן לייצא חיבור VPN"
 
-#: ../src/connection-editor/vpn-helpers.c:347
+#: ../src/connection-editor/vpn-helpers.c:352
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -1443,172 +1553,247 @@ msgstr ""
 "\n"
 "שגיאה: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:378
+#: ../src/connection-editor/vpn-helpers.c:386
 msgid "Export VPN connection..."
 msgstr "יצא חיבור VPN..."
 
-#: ../src/vpn-password-dialog.c:137
-#: ../src/vpn-password-dialog.c:244
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:253
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "אין אפשרות להתחיל את חיבור ה-VPN '%s'"
 
 #: ../src/vpn-password-dialog.c:140
 #, c-format
-msgid "Could not find the authentication dialog for VPN connection type '%s'. Contact your system administrator."
+msgid ""
+"Could not find the authentication dialog for VPN connection type '%s'. "
+"Contact your system administrator."
 msgstr ""
 
-#: ../src/vpn-password-dialog.c:247
+#: ../src/vpn-password-dialog.c:256
 #, c-format
-msgid "There was a problem launching the authentication dialog for VPN connection type '%s'. Contact your system administrator."
+msgid ""
+"There was a problem launching the authentication dialog for VPN connection "
+"type '%s'. Contact your system administrator."
 msgstr "שגיאה בהפעלת אימות חיבור ה-VPN מסוג '%s'. פנה אל מנהל המערכת שלך."
 
-#: ../src/wired-dialog.c:74
+#: ../src/wired-dialog.c:99
 msgid "Wired 802.1X authentication"
 msgstr "אימות DSL"
 
-#: ../src/wireless-dialog.c:408
+#: ../src/wireless-dialog.c:415
 msgid "New..."
 msgstr "חדש..."
 
-#: ../src/wireless-dialog.c:866
+#: ../src/wireless-dialog.c:917
 msgid "C_reate"
 msgstr "יצ_רה"
 
-#: ../src/wireless-dialog.c:935
+#: ../src/wireless-dialog.c:988
 #, c-format
-msgid "Passwords or encryption keys are required to access the wireless network '%s'."
+msgid ""
+"Passwords or encryption keys are required to access the wireless network '%"
+"s'."
 msgstr "סיסמאות או מפתחות הצפנה נדרשים כדי לגשת לרשת האלחוטית '%s'."
 
-#: ../src/wireless-dialog.c:937
+#: ../src/wireless-dialog.c:990
 msgid "Wireless Network Authentication Required"
 msgstr "נדרש אימות לרשת אלחוטית"
 
-#: ../src/wireless-dialog.c:939
+#: ../src/wireless-dialog.c:992
 msgid "Authentication required by wireless network"
 msgstr "הרשת האלחוטית דורשת אימות"
 
-#: ../src/wireless-dialog.c:944
+#: ../src/wireless-dialog.c:997
 msgid "Create New Wireless Network"
 msgstr "צור רשת אלחוטית חדשה"
 
-#: ../src/wireless-dialog.c:946
+#: ../src/wireless-dialog.c:999
 msgid "New wireless network"
 msgstr "רשת אלחוטית חדשה"
 
-#: ../src/wireless-dialog.c:947
+#: ../src/wireless-dialog.c:1000
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "הכנס שם עבור הרשת האלחוטית שברצונך ליצור."
 
-#: ../src/wireless-dialog.c:949
+#: ../src/wireless-dialog.c:1002
 msgid "Connect to Hidden Wireless Network"
 msgstr "התחבר לרשת אלחוטית סמויה"
 
-#: ../src/wireless-dialog.c:951
+#: ../src/wireless-dialog.c:1004
 msgid "Hidden wireless network"
 msgstr "רשת אלחוטית סמויה"
 
-#: ../src/wireless-dialog.c:952
-msgid "Enter the name and security details of the hidden wireless network you wish to connect to."
+#: ../src/wireless-dialog.c:1005
+msgid ""
+"Enter the name and security details of the hidden wireless network you wish "
+"to connect to."
 msgstr "הקלד את פרטי האבטחה של הרשת האלחוטית הסמויה שברצונך להתחבר אליה"
 
-#: ../src/wireless-security/eap-method.c:293
+#: ../src/wireless-security/eap-method.c:340
+#, fuzzy
+msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
+msgstr "תעודות DER או PEM ‏(pem.*, der.*)"
+
+#: ../src/wireless-security/eap-method.c:343
 #, fuzzy
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "תעודות DER או PEM ‏(pem.*, der.*)"
 
-#: ../src/wireless-security/eap-method-peap.c:234
-#: ../src/wireless-security/eap-method-tls.c:290
-#: ../src/wireless-security/eap-method-ttls.c:221
+#: ../src/wireless-security/eap-method-peap.c:229
+#: ../src/wireless-security/eap-method-tls.c:294
+#: ../src/wireless-security/eap-method-ttls.c:216
 msgid "No Certificate Authority certificate chosen"
 msgstr "לא נבחרה תעודת רשות תעודות"
 
-#: ../src/wireless-security/eap-method-peap.c:235
-#: ../src/wireless-security/eap-method-tls.c:291
-#: ../src/wireless-security/eap-method-ttls.c:222
-msgid "Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue wireless networks.  Would you like to choose a Certificate Authority certificate?"
+#: ../src/wireless-security/eap-method-peap.c:230
+#: ../src/wireless-security/eap-method-tls.c:295
+#: ../src/wireless-security/eap-method-ttls.c:217
+msgid ""
+"Not using a Certificate Authority (CA) certificate can result in connections "
+"to insecure, rogue wireless networks.  Would you like to choose a "
+"Certificate Authority certificate?"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-peap.c:240
-#: ../src/wireless-security/eap-method-tls.c:296
-#: ../src/wireless-security/eap-method-ttls.c:227
+#: ../src/wireless-security/eap-method-peap.c:235
+#: ../src/wireless-security/eap-method-tls.c:300
+#: ../src/wireless-security/eap-method-ttls.c:222
 msgid "Ignore"
 msgstr "התעלם"
 
-#: ../src/wireless-security/eap-method-peap.c:244
-#: ../src/wireless-security/eap-method-tls.c:300
-#: ../src/wireless-security/eap-method-ttls.c:231
+#: ../src/wireless-security/eap-method-peap.c:239
+#: ../src/wireless-security/eap-method-tls.c:304
+#: ../src/wireless-security/eap-method-ttls.c:226
 msgid "Choose CA Certificate"
 msgstr "בחר תעודת CA"
 
-#: ../src/wireless-security/eap-method-peap.c:320
+#: ../src/wireless-security/eap-method-peap.c:315
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:399
-#: ../src/wireless-security/eap-method-tls.c:431
-#: ../src/wireless-security/eap-method-ttls.c:436
+#: ../src/wireless-security/eap-method-peap.c:394
+#: ../src/wireless-security/eap-method-tls.c:511
+#: ../src/wireless-security/eap-method-ttls.c:431
 msgid "Choose a Certificate Authority certificate..."
 msgstr "בחר תעודת רשות תעודות..."
 
-#: ../src/wireless-security/eap-method-tls.c:427
+#: ../src/wireless-security/eap-method-tls.c:507
 msgid "Choose your personal certificate..."
 msgstr "בחר את התעודה האישית שלך..."
 
-#: ../src/wireless-security/eap-method-tls.c:436
+#: ../src/wireless-security/eap-method-tls.c:516
 msgid "Choose your private key..."
 msgstr "בחר את המפתח הפרטי שלך..."
 
-#: ../src/wireless-security/wireless-security.c:322
+#: ../src/wireless-security/wireless-security.c:305
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:346
+#: ../src/wireless-security/wireless-security.c:329
 msgid "Tunneled TLS"
 msgstr "‏TLS ממונהר"
 
-#: ../src/wireless-security/wireless-security.c:357
+#: ../src/wireless-security/wireless-security.c:340
 msgid "Protected EAP (PEAP)"
 msgstr "‏EAP מוגן (PEAP)"
 
+#, fuzzy
+#~ msgid "Dialing mobile broadband device %s..."
+#~ msgstr "מחייג מהתקן ‏GSM ‏%s..."
+
+#~ msgid "Starting PPP on device %s..."
+#~ msgstr "מתחיל PPP על ההתקן %s..."
+
+#~ msgid "Waiting for user authentication on device '%s'..."
+#~ msgstr "ממתין לאימות משתמש על ההתקן '%s'..."
+
+#, fuzzy
+#~ msgid "Mobile broadband connection"
+#~ msgstr "פס רחב נייד"
+
+#~ msgid "Preparing device %s for the wired network..."
+#~ msgstr "מכין את ההתקן %s לחיבור הרשת החוטית..."
+
+#~ msgid "Configuring device %s for the wired network..."
+#~ msgstr "מתאים את ההתקן %s לחיבור הרשת החוטית..."
+
+#~ msgid "Requesting a network address from the wired network..."
+#~ msgstr "מבקש כתובת רשת מהרשת החוטית...."
+
+#~ msgid "Preparing device %s for the wireless network '%s'..."
+#~ msgstr "מכין את ההתקן %s לרשת האלחוטית '%s'..."
+
+#~ msgid "Attempting to join the wireless network '%s'..."
+#~ msgstr "מבצע נסיון להתחבר לרשת האלחוטית '%s'..."
+
+#~ msgid "Waiting for Network Key for the wireless network '%s'..."
+#~ msgstr "ממתין למפתח הרשת עבור הרשת האלחוטית '%s'..."
+
+#~ msgid "Prefix"
+#~ msgstr "תחילית"
+
+#~ msgid "Connection Editor"
+#~ msgstr "עורך החיבורים"
+
+#~ msgid "System setting"
+#~ msgstr "הגדרת מערכת"
+
 #~ msgid "gtk-cancel"
 #~ msgstr "gtk-cancel"
+
 #~ msgid "gtk-ok"
 #~ msgstr "gtk-ok"
+
 #~ msgid "Auto CDMA network connection"
 #~ msgstr "חיבור רשת CDMA אוטומטי"
+
 #~ msgid "CDMA Connections (%s)"
 #~ msgstr "חיבורי CDMA (%s)"
+
 #~ msgid "CDMA Network (%s)"
 #~ msgstr "רשת CDMA (%s)"
+
 #~ msgid "CDMA Connections"
 #~ msgstr "חיבורי CDMA"
+
 #~ msgid "CDMA Network"
 #~ msgstr "רשת CDMA"
+
 #~ msgid "Dialing CDMA device %s..."
 #~ msgstr "מחייג בהתקן CDMA %s..."
+
 #~ msgid "CDMA connection"
 #~ msgstr "חיבור CDMA"
+
 #~ msgid "CDMA Network Password"
 #~ msgstr "סיסמת רשת CDMA"
+
 #~ msgid "A password is required to connect to the CDMA network."
 #~ msgstr "נדרשת סיסמה כדי להתחבר לרשת ה-CDMA."
+
 #~ msgid "Auto GSM network connection"
 #~ msgstr "חיבור רשת GSM אוטומטי"
+
 #~ msgid "GSM Connections (%s)"
 #~ msgstr "חיבורי GSM (%s)"
+
 #~ msgid "GSM Network (%s)"
 #~ msgstr "רשת GSM (%s)"
+
 #~ msgid "GSM Connections"
 #~ msgstr "חיבורי GSM"
+
 #~ msgid "GSM Network"
 #~ msgstr "רשת GSM"
+
 #~ msgid "GSM connection"
 #~ msgstr "חיבור GSM"
+
 #~ msgid "GSM Network Password"
 #~ msgstr "סיסמת רשת GSM"
+
 #~ msgid "Existing wireless network"
 #~ msgstr "רשתות אלחוטיות קיימות"
+
 #~ msgid ""
 #~ "Any\n"
 #~ "GPRS\n"
@@ -1621,16 +1806,22 @@ msgstr "‏EAP מוגן (PEAP)"
 #~ "GSM\n"
 #~ "העדף GPRS\n"
 #~ "העדף GSM"
+
 #~ msgid "<span style=\"italic\">Example: 10.10.10.1, 10.10.10.2</span>"
 #~ msgstr "<span style=\"italic\">דוגמה: 10.10.10.1, 10.10.10.2</span>"
+
 #~ msgid "<span style=\"italic\">Example: lab.gnome.org, gnome.org</span>"
 #~ msgstr "<span style=\"italic\">דוגמה: lab.gnome.org, gnome.org</span>"
+
 #~ msgid "<span style=\"italic\">Example: 00:11:22:33:44:55</span>"
 #~ msgstr "<span style=\"italic\">דוגמה: 00:11:22:33:44:55</span>"
+
 #~ msgid "WEP 40/128-bit Hexadecimal"
 #~ msgstr "סיסמת WEP 40/128-bit Hex"
+
 #~ msgid "Could not find some required resources (the glade file)!"
 #~ msgstr "אין אפשרות למצוא את המשאבים הדרושים (קובץ ה-glade)!"
+
 #~ msgid ""
 #~ "DHCP\n"
 #~ "Auto IP\n"
@@ -1639,60 +1830,87 @@ msgstr "‏EAP מוגן (PEAP)"
 #~ "DHCP\n"
 #~ "IP אוטומטי\n"
 #~ "ידני"
+
 #~ msgid "Doesn't look like a PEM private key file."
 #~ msgstr "לא נראה כמו קובץ מפתח PEM פרטי."
+
 #~ msgid "Delete VPN connection \"%s\"?"
 #~ msgstr "למחוק את חיבור ה-VPN‏ \"%s\"?"
+
 #~ msgid "Unable to load"
 #~ msgstr "לא ניתן לטעון"
+
 #~ msgid "Create VPN Connection"
 #~ msgstr "צור חיבור VPN"
+
 #~ msgid "1 of 2"
 #~ msgstr "1 מתוך 2"
+
 #~ msgid "Choose which type of _VPN connection you wish to create:"
 #~ msgstr "בחר את סוג חיבור ה _VPN שברצונך ליצור:"
+
 #~ msgid "Choose which type of VPN connection you wish to create:"
 #~ msgstr "בחר את סוג חיבור ה VPN שברצונך ליצור:"
+
 #~ msgid "2 of 2"
 #~ msgstr "2 מתוך 2"
+
 #~ msgid "Edit VPN Connection"
 #~ msgstr "ערוך חיבור VPN"
+
 #~ msgid "- NetworkManager VPN properties"
 #~ msgstr "- NetworkManager VPN properties"
+
 #~ msgid "Add a new VPN connection"
 #~ msgstr "הוסף חיבור VPN חדש"
+
 #~ msgid "Delete the selected VPN connection"
 #~ msgstr "מחק את חיבור ה-VPN המסומן"
+
 #~ msgid "Edit the selected VPN connection"
 #~ msgstr "ערוך את חיבור ה-VPN המסומן"
+
 #~ msgid "Export the VPN settings to a file"
 #~ msgstr "יצא את הגדרות ה-VPN לקובץ"
+
 #~ msgid "VPN Connections"
 #~ msgstr "חיבורי VPN"
+
 #~ msgid "Disconnect..."
 #~ msgstr "התנתק..."
+
 #~ msgid "_Manual configuration"
 #~ msgstr "_הגדרה ידנית"
+
 #~ msgid "Passphrase:"
 #~ msgstr "סיסמה:"
+
 #~ msgid "Show passphrase"
 #~ msgstr "הצג סיסמה"
+
 #~ msgid "CDMA Card (%s)"
 #~ msgstr "כרטיס CDMA (%s)"
+
 #~ msgid "_CDMA Card"
 #~ msgstr "_כרטיס CDMA"
+
 #~ msgid "GSM Modem (%s)"
 #~ msgstr "מודם GSM (%s)"
+
 #~ msgid "_GSM Modem"
 #~ msgstr "מודם _GSM"
+
 #~ msgid "_Wired Network"
 #~ msgstr "_רשת חוטית"
+
 #~ msgid "Wireless Ethernet (%s)"
 #~ msgstr "רשת אתרנט אלחוטית (%s)"
+
 #~ msgid "Destination Address:"
 #~ msgstr "כתובת היעד:"
+
 #~ msgid "Orientation"
 #~ msgstr "אוריינטציה"
+
 #~ msgid "The orientation of the tray."
 #~ msgstr "האוריינטציה של המגש"
-
