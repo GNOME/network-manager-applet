@@ -29,6 +29,7 @@
 #include <nm-setting-ppp.h>
 
 #include "page-ppp.h"
+#include "ppp-auth-methods-dialog.h"
 #include "nm-connection-editor.h"
 
 G_DEFINE_TYPE (CEPagePpp, ce_page_ppp, CE_TYPE_PAGE)
@@ -48,11 +49,13 @@ G_DEFINE_TYPE (CEPagePpp, ce_page_ppp, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingPPP *setting;
 
-	GtkToggleButton *use_auth;
-
-	GtkTreeView *auth_methods_view;
-	GtkCellRendererToggle *check_renderer;
-	GtkListStore *auth_methods_list;
+	GtkLabel *auth_methods_label;
+	GtkButton *auth_methods_button;
+	gboolean refuse_eap;
+	gboolean refuse_pap;
+	gboolean refuse_chap;
+	gboolean refuse_mschap;
+	gboolean refuse_mschapv2;
 
 	GtkToggleButton *use_mppe;
 	GtkToggleButton *mppe_require_128;
@@ -63,6 +66,10 @@ typedef struct {
 	GtkToggleButton *use_vj_comp;
 
 	GtkToggleButton *send_ppp_echo;
+
+	GtkWindowGroup *window_group;
+	gboolean window_added;
+	char *connection_id;
 
 	gboolean disposed;
 } CEPagePppPrivate;
@@ -75,10 +82,9 @@ ppp_private_init (CEPagePpp *self)
 
 	xml = CE_PAGE (self)->xml;
 
-	priv->auth_methods_list = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_UINT);
+	priv->auth_methods_label = GTK_LABEL (glade_xml_get_widget (xml, "auth_methods_label"));
+	priv->auth_methods_button = GTK_BUTTON (glade_xml_get_widget (xml, "auth_methods_button"));
 
-	priv->use_auth = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_use_auth"));
-	priv->auth_methods_view = GTK_TREE_VIEW (glade_xml_get_widget (xml, "ppp_auth_methods"));
 	priv->use_mppe = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_use_mppe"));
 	priv->mppe_require_128 = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_require_mppe_128"));
 	priv->use_mppe_stateful = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_use_stateful_mppe"));
@@ -102,38 +108,101 @@ use_mppe_toggled_cb (GtkToggleButton *widget, CEPagePpp *self)
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->use_mppe_stateful), FALSE);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->use_mppe_stateful), FALSE);
 	}
-}
 
-static void
-set_auth_items_sensitive (CEPagePpp *self, gboolean sensitive)
-{
-	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
-
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->auth_methods_view), sensitive);
-	g_object_set (G_OBJECT (priv->check_renderer), "sensitive", sensitive, NULL);
-
-	/* MPPE depends on MSCHAPv2 auth */
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->use_mppe), sensitive);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->mppe_require_128), sensitive);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->use_mppe_stateful), sensitive);
-}
-
-static void
-use_auth_toggled_cb (GtkToggleButton *check, gpointer user_data)
-{
-	CEPagePpp *self = CE_PAGE_PPP (user_data);
-
-	set_auth_items_sensitive (self, gtk_toggle_button_get_active (check));
 	ce_page_changed (CE_PAGE (self));
 }
 
 static void
-add_one_auth_method (GtkListStore *store, const char *name, gboolean allowed, guint32 tag)
+add_one_auth_method (GString *string, const char *name, gboolean allowed)
 {
-	GtkTreeIter iter;
+	if (allowed) {
+		if (string->len)
+			g_string_append (string, ", ");
+		g_string_append (string, name);
+	}
+}
 
-	gtk_list_store_append (store, &iter);
-	gtk_list_store_set (store, &iter, COL_NAME, name, COL_VALUE, allowed, COL_TAG, tag, -1);
+static void
+update_auth_methods_list (CEPagePpp *self)
+{
+	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
+	GString *list;
+
+	list = g_string_new ("");
+	add_one_auth_method (list, _("EAP"), !priv->refuse_eap);
+	add_one_auth_method (list, _("PAP"), !priv->refuse_pap);
+	add_one_auth_method (list, _("CHAP"), !priv->refuse_chap);
+	add_one_auth_method (list, _("MSCHAPv2"), !priv->refuse_mschapv2);
+	add_one_auth_method (list, _("MSCHAP"), !priv->refuse_mschap);
+
+	gtk_label_set_text (priv->auth_methods_label, list->len ? list->str : _("none"));
+	g_string_free (list, TRUE);
+}
+
+static void
+auth_methods_dialog_close_cb (GtkWidget *dialog, gpointer user_data)
+{
+	gtk_widget_hide (dialog);
+	/* gtk_widget_destroy() will remove the window from the window group */
+	gtk_widget_destroy (dialog);
+}
+
+static void
+auth_methods_dialog_response_cb (GtkWidget *dialog, gint response, gpointer user_data)
+{
+	CEPagePpp *self = CE_PAGE_PPP (user_data);
+	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
+
+	if (response == GTK_RESPONSE_OK) {
+		ppp_auth_methods_dialog_get_methods (dialog,
+		                                     &priv->refuse_eap,
+		                                     &priv->refuse_pap,
+		                                     &priv->refuse_chap,
+		                                     &priv->refuse_mschap,
+		                                     &priv->refuse_mschapv2);
+		ce_page_changed (CE_PAGE (self));
+		update_auth_methods_list (self);
+	}
+
+	auth_methods_dialog_close_cb (dialog, NULL);
+}
+
+static void
+auth_methods_button_clicked_cb (GtkWidget *button, gpointer user_data)
+{
+	CEPagePpp *self = CE_PAGE_PPP (user_data);
+	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
+	GtkWidget *dialog, *toplevel;
+	char *tmp;
+
+	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
+	g_return_if_fail (GTK_WIDGET_TOPLEVEL (toplevel));
+
+	dialog = ppp_auth_methods_dialog_new (priv->refuse_eap,
+	                                      priv->refuse_pap,
+	                                      priv->refuse_chap,
+	                                      priv->refuse_mschap,
+	                                      priv->refuse_mschapv2);
+	if (!dialog) {
+		g_warning ("%s: failed to create the PPP authentication methods dialog!", __func__);
+		return;
+	}
+
+	gtk_window_group_add_window (priv->window_group, GTK_WINDOW (dialog));
+	if (!priv->window_added) {
+		gtk_window_group_add_window (priv->window_group, GTK_WINDOW (toplevel));
+		priv->window_added = TRUE;
+	}
+
+	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
+	tmp = g_strdup_printf (_("Editing PPP authentication methods for %s"), priv->connection_id);
+	gtk_window_set_title (GTK_WINDOW (dialog), tmp);
+	g_free (tmp);
+
+	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (auth_methods_dialog_response_cb), self);
+	g_signal_connect (G_OBJECT (dialog), "close", G_CALLBACK (auth_methods_dialog_close_cb), self);
+
+	gtk_widget_show_all (dialog);
 }
 
 static void
@@ -141,36 +210,27 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 {
 	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
 	NMSettingPPP *setting = priv->setting;
-	gboolean refuse_pap, refuse_chap, refuse_mschapv2, refuse_mschap, refuse_eap, noauth,
-		require_mppe, require_mppe_128, mppe_stateful, nobsdcomp, nodeflate, no_vj_comp;
+	gboolean require_mppe, require_mppe_128, mppe_stateful, nobsdcomp, nodeflate, no_vj_comp;
 	guint32 lcp_echo_interval;
 
 	g_object_get (setting,
-				  NM_SETTING_PPP_REFUSE_PAP, &refuse_pap,
-				  NM_SETTING_PPP_REFUSE_CHAP, &refuse_chap,
-				  NM_SETTING_PPP_REFUSE_MSCHAPV2, &refuse_mschapv2,
-				  NM_SETTING_PPP_REFUSE_MSCHAP, &refuse_mschap,
-				  NM_SETTING_PPP_REFUSE_EAP, &refuse_eap,
-				  NM_SETTING_PPP_NOAUTH, &noauth,
-				  NM_SETTING_PPP_REQUIRE_MPPE, &require_mppe,
-				  NM_SETTING_PPP_REQUIRE_MPPE_128, &require_mppe_128,
-				  NM_SETTING_PPP_MPPE_STATEFUL, &mppe_stateful,
-				  NM_SETTING_PPP_NOBSDCOMP, &nobsdcomp,
-				  NM_SETTING_PPP_NODEFLATE, &nodeflate,
-				  NM_SETTING_PPP_NO_VJ_COMP, &no_vj_comp,
-				  NM_SETTING_PPP_LCP_ECHO_INTERVAL, &lcp_echo_interval,
-				  NULL);
+	              NM_SETTING_PPP_REFUSE_PAP, &priv->refuse_pap,
+	              NM_SETTING_PPP_REFUSE_CHAP, &priv->refuse_chap,
+	              NM_SETTING_PPP_REFUSE_MSCHAPV2, &priv->refuse_mschapv2,
+	              NM_SETTING_PPP_REFUSE_MSCHAP, &priv->refuse_mschap,
+	              NM_SETTING_PPP_REFUSE_EAP, &priv->refuse_eap,
+	              NM_SETTING_PPP_REQUIRE_MPPE, &require_mppe,
+	              NM_SETTING_PPP_REQUIRE_MPPE_128, &require_mppe_128,
+	              NM_SETTING_PPP_MPPE_STATEFUL, &mppe_stateful,
+	              NM_SETTING_PPP_NOBSDCOMP, &nobsdcomp,
+	              NM_SETTING_PPP_NODEFLATE, &nodeflate,
+	              NM_SETTING_PPP_NO_VJ_COMP, &no_vj_comp,
+	              NM_SETTING_PPP_LCP_ECHO_INTERVAL, &lcp_echo_interval,
+	              NULL);
 
-	add_one_auth_method (priv->auth_methods_list, _("PAP"), !refuse_pap, TAG_PAP);
-	add_one_auth_method (priv->auth_methods_list, _("CHAP"), !refuse_chap, TAG_CHAP);
-	add_one_auth_method (priv->auth_methods_list, _("MSCHAPv2"), !refuse_mschapv2, TAG_MSCHAPV2);
-	add_one_auth_method (priv->auth_methods_list, _("MSCHAP"), !refuse_mschap, TAG_MSCHAP);
-	add_one_auth_method (priv->auth_methods_list, _("EAP"), !refuse_eap, TAG_EAP);
+	update_auth_methods_list (self);
 
-	gtk_toggle_button_set_active (priv->use_auth, !noauth);
-	if (noauth)
-		set_auth_items_sensitive (self, !noauth);
-	g_signal_connect (G_OBJECT (priv->use_auth), "toggled", G_CALLBACK (use_auth_toggled_cb), self);
+	g_signal_connect (priv->auth_methods_button, "clicked", G_CALLBACK (auth_methods_button_clicked_cb), self);
 
 	gtk_toggle_button_set_active (priv->use_mppe, require_mppe);
 	g_signal_connect (priv->use_mppe, "toggled", G_CALLBACK (use_mppe_toggled_cb), self);
@@ -193,38 +253,13 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 	g_signal_connect_swapped (priv->send_ppp_echo, "toggled", G_CALLBACK (ce_page_changed), self);
 }
 
-static void
-check_toggled_cb (GtkCellRendererToggle *cell, gchar *path_str, gpointer user_data)
-{
-	CEPagePpp *self = CE_PAGE_PPP (user_data);
-	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
-	GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
-	GtkTreeModel *model = GTK_TREE_MODEL (priv->auth_methods_list);
-	GtkTreeIter iter;
-	gboolean toggle_item;
-
-	gtk_tree_model_get_iter (model, &iter, path);
-	gtk_tree_model_get (model, &iter, COL_VALUE, &toggle_item, -1);
-
-	toggle_item ^= 1;
-
-	/* set new value */
-	gtk_list_store_set (priv->auth_methods_list, &iter, COL_VALUE, toggle_item, -1);
-
-	gtk_tree_path_free (path);
-
-	ce_page_changed (CE_PAGE (self));
-}
-
 CEPagePpp *
 ce_page_ppp_new (NMConnection *connection)
 {
 	CEPagePpp *self;
 	CEPagePppPrivate *priv;
 	CEPage *parent;
-	GtkCellRenderer *renderer;
-	gint offset;
-	GtkTreeViewColumn *column;
+	NMSettingConnection *s_con;
 
 	self = CE_PAGE_PPP (g_object_new (CE_TYPE_PAGE_PPP, NULL));
 	parent = CE_PAGE (self);
@@ -255,29 +290,13 @@ ce_page_ppp_new (NMConnection *connection)
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 
+	priv->window_group = gtk_window_group_new ();
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
+	priv->connection_id = g_strdup (nm_setting_connection_get_id (s_con));
+
 	populate_ui (self, connection);
-
-	gtk_tree_view_set_model (priv->auth_methods_view, GTK_TREE_MODEL (priv->auth_methods_list));
-
-	priv->check_renderer = GTK_CELL_RENDERER_TOGGLE (gtk_cell_renderer_toggle_new ());
-	g_signal_connect (priv->check_renderer, "toggled", G_CALLBACK (check_toggled_cb), self);
-
-	offset = gtk_tree_view_insert_column_with_attributes (priv->auth_methods_view,
-	                                                      -1, "", GTK_CELL_RENDERER (priv->check_renderer),
-	                                                      "active", COL_VALUE,
-	                                                      NULL);
-	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->auth_methods_view), offset - 1);
-	gtk_tree_view_column_set_sizing (GTK_TREE_VIEW_COLUMN (column), GTK_TREE_VIEW_COLUMN_FIXED);
-	gtk_tree_view_column_set_fixed_width (GTK_TREE_VIEW_COLUMN (column), 30);
-	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
-
-	renderer = gtk_cell_renderer_text_new ();
-	offset = gtk_tree_view_insert_column_with_attributes (priv->auth_methods_view,
-	                                                      -1, "", renderer,
-	                                                      "text", COL_NAME,
-	                                                      NULL);
-	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->auth_methods_view), offset - 1);
-	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 
 	return self;
 }
@@ -286,12 +305,6 @@ static void
 ui_to_setting (CEPagePpp *self)
 {
 	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
-	gboolean noauth;
-	gboolean refuse_eap = FALSE;
-	gboolean refuse_pap = FALSE;
-	gboolean refuse_chap = FALSE;
-	gboolean refuse_mschap = FALSE;
-	gboolean refuse_mschapv2 = FALSE;
 	gboolean require_mppe;
 	gboolean require_mppe_128;
 	gboolean mppe_stateful;
@@ -300,43 +313,6 @@ ui_to_setting (CEPagePpp *self)
 	gboolean no_vj_comp;
 	guint32 lcp_echo_failure;
 	guint32 lcp_echo_interval;
-	GtkTreeIter iter;
-	gboolean valid;
-
-	noauth = !gtk_toggle_button_get_active (priv->use_auth);
-
-	valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (priv->auth_methods_list), &iter);
-	while (valid) {
-		gboolean allowed;
-		guint32 tag;
-
-		gtk_tree_model_get (GTK_TREE_MODEL (priv->auth_methods_list), &iter,
-		                    COL_VALUE, &allowed,
-		                    COL_TAG, &tag,
-		                    -1);
-
-		switch (tag) {
-		case TAG_EAP:
-			refuse_eap = !allowed;
-			break;
-		case TAG_PAP:
-			refuse_pap = !allowed;
-			break;
-		case TAG_CHAP:
-			refuse_chap = !allowed;
-			break;
-		case TAG_MSCHAP:
-			refuse_mschap = !allowed;
-			break;
-		case TAG_MSCHAPV2:
-			refuse_mschapv2 = !allowed;
-			break;
-		default:
-			break;
-		}
-
-		valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (priv->auth_methods_list), &iter);
-	}
 
 	require_mppe = gtk_toggle_button_get_active (priv->use_mppe);
 	require_mppe_128 = gtk_toggle_button_get_active (priv->mppe_require_128);
@@ -355,21 +331,20 @@ ui_to_setting (CEPagePpp *self)
 	}
 	
 	g_object_set (priv->setting,
-				  NM_SETTING_PPP_NOAUTH, noauth,
-				  NM_SETTING_PPP_REFUSE_EAP, refuse_eap,
-				  NM_SETTING_PPP_REFUSE_PAP, refuse_pap,
-				  NM_SETTING_PPP_REFUSE_CHAP, refuse_chap,
-				  NM_SETTING_PPP_REFUSE_MSCHAP, refuse_mschap,
-				  NM_SETTING_PPP_REFUSE_MSCHAPV2, refuse_mschapv2,
-				  NM_SETTING_PPP_NOBSDCOMP, nobsdcomp,
-				  NM_SETTING_PPP_NODEFLATE, nodeflate,
-				  NM_SETTING_PPP_NO_VJ_COMP, no_vj_comp,
-				  NM_SETTING_PPP_REQUIRE_MPPE, require_mppe,
-				  NM_SETTING_PPP_REQUIRE_MPPE_128, require_mppe_128,
-				  NM_SETTING_PPP_MPPE_STATEFUL, mppe_stateful,
-				  NM_SETTING_PPP_LCP_ECHO_FAILURE, lcp_echo_failure,
-				  NM_SETTING_PPP_LCP_ECHO_INTERVAL, lcp_echo_interval,
-				  NULL);
+	              NM_SETTING_PPP_REFUSE_EAP, priv->refuse_eap,
+	              NM_SETTING_PPP_REFUSE_PAP, priv->refuse_pap,
+	              NM_SETTING_PPP_REFUSE_CHAP, priv->refuse_chap,
+	              NM_SETTING_PPP_REFUSE_MSCHAP, priv->refuse_mschap,
+	              NM_SETTING_PPP_REFUSE_MSCHAPV2, priv->refuse_mschapv2,
+	              NM_SETTING_PPP_NOBSDCOMP, nobsdcomp,
+	              NM_SETTING_PPP_NODEFLATE, nodeflate,
+	              NM_SETTING_PPP_NO_VJ_COMP, no_vj_comp,
+	              NM_SETTING_PPP_REQUIRE_MPPE, require_mppe,
+	              NM_SETTING_PPP_REQUIRE_MPPE_128, require_mppe_128,
+	              NM_SETTING_PPP_MPPE_STATEFUL, mppe_stateful,
+	              NM_SETTING_PPP_LCP_ECHO_FAILURE, lcp_echo_failure,
+	              NM_SETTING_PPP_LCP_ECHO_INTERVAL, lcp_echo_interval,
+	              NULL);
 }
 
 static gboolean
@@ -388,6 +363,20 @@ ce_page_ppp_init (CEPagePpp *self)
 }
 
 static void
+dispose (GObject *object)
+{
+	CEPagePpp *self = CE_PAGE_PPP (object);
+	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
+
+	if (priv->window_group)
+		g_object_unref (priv->window_group);
+
+	g_free (priv->connection_id);
+
+	G_OBJECT_CLASS (ce_page_ppp_parent_class)->dispose (object);
+}
+
+static void
 ce_page_ppp_class_init (CEPagePppClass *ppp_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (ppp_class);
@@ -397,4 +386,5 @@ ce_page_ppp_class_init (CEPagePppClass *ppp_class)
 
 	/* virtual methods */
 	parent_class->validate = validate;
+	object_class->dispose = dispose;
 }

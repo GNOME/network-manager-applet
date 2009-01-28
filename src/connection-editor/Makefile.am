@@ -54,7 +54,9 @@ nm_connection_editor_SOURCES = \
 	vpn-helpers.h \
 	vpn-helpers.c \
 	ip4-routes-dialog.h \
-	ip4-routes-dialog.c
+	ip4-routes-dialog.c \
+	ppp-auth-methods-dialog.c \
+	ppp-auth-methods-dialog.h
 
 nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-connection-editor-service.xml
 	dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<
