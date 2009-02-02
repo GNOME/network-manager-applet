@@ -29,6 +29,13 @@
 
 #define GCONF_PATH_CONNECTIONS "/system/networking/connections"
 
+/* The stamp is a mechanism for determining which applet version last
+ * updated GConf for various GConf update tasks in newer applet versions.
+ */
+#define APPLET_CURRENT_STAMP 1
+#define APPLET_PREFS_STAMP "/apps/nm-applet/stamp"
+
+
 /* 
    ATTENTION: Make sure to update nm_gconf_connection_duplicate() 
    when new connection tag is added! Otherwise duplicating connection
