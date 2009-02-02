@@ -44,5 +44,7 @@ void nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client);
 
 void nm_gconf_migrate_0_7_connection_uuid (GConfClient *client);
 
+void nm_gconf_migrate_0_7_vpn_never_default (GConfClient *client);
+
 #endif	/* GCONF_UPGRADE_H */
 

@@ -1,3 +1,16 @@
+2009-02-01  Dan Williams  <dcbw@redhat.com>
+
+	* src/gconf-helpers/gconf-helpers.c
+	  src/gconf-helpers/gconf-helpers.h
+		- (nm_gconf_get_all_connections): implement applet GConf stamping to help
+			upgrades; upgrade 'never-default' in some cases
+
+	* src/gconf-helpers/gconf-upgrade.c
+	  src/gconf-helpers/gconf-upgrade.h
+		- (nm_gconf_migrate_0_7_vpn_never_default): new function; if there were
+			static routes assigned to the VPN connection, set 'never-default'
+			to TRUE on upgrade to match 0.7.0 behavior
+
 2009-01-28  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/Makefile.am

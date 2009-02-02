@@ -932,6 +932,14 @@ GSList *
 nm_gconf_get_all_connections (GConfClient *client)
 {
 	GSList *connections;
+	guint32 stamp = 0;
+	GError *error = NULL;
+
+	stamp = (guint32) gconf_client_get_int (client, APPLET_PREFS_STAMP, &error);
+	if (error) {
+		g_error_free (error);
+		stamp = 0;
+	}
 
 	nm_gconf_migrate_0_7_connection_uuid (client);
 	nm_gconf_migrate_0_7_keyring_items (client);
@@ -943,11 +951,18 @@ nm_gconf_get_all_connections (GConfClient *client)
 	nm_gconf_migrate_0_7_vpn_properties (client);
 	nm_gconf_migrate_0_7_openvpn_properties (client);
 
+	if (stamp < 1)
+		nm_gconf_migrate_0_7_vpn_never_default (client);
+
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!connections) {
 		nm_gconf_migrate_0_6_connections (client);
 		connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	}
+
+	/* Update the applet GConf stamp */
+	if (stamp != APPLET_CURRENT_STAMP)
+		gconf_client_set_int (client, APPLET_PREFS_STAMP, APPLET_CURRENT_STAMP, NULL);
 
 	return connections;
 }

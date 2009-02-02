@@ -1724,3 +1724,60 @@ nm_gconf_migrate_0_7_keyring_items (GConfClient *client)
 	gconf_client_suggest_sync (client, NULL);
 }
 
+void
+nm_gconf_migrate_0_7_vpn_never_default (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	/* Between 0.7.0 and 0.7.1, the 'never-default' key was added to
+	 * make which connections receive the default route less complicated
+	 * and more reliable.  Previous to 0.7.1, a VPN connection whose
+	 * server returned static routes, or for which the user had entered
+	 * manual static routes, was never chosen as the default connection.
+	 * With 0.7.1, all connections are candidates for the default connection
+	 * unless 'never-default' is TRUE.  For 0.7.0 VPN connections, try to
+	 * set 'never-default' when possible.  This doesn't cover all cases
+	 * since we certainly don't know if the VPN server is returning
+	 * any routes here, but it will work for some.
+	 */
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		char *service = NULL;
+		GArray *array = NULL;
+
+		if (!nm_gconf_get_string_helper (client, (const char *) iter->data,
+		                                 NM_SETTING_VPN_SERVICE_TYPE,
+		                                 NM_SETTING_VPN_SETTING_NAME,
+		                                 &service))
+			continue;
+
+		g_free (service);
+
+		/* If the user entered manual static routes, NetworkManager 0.7.0
+		 * would have never set this VPN connection as the default, so
+		 * set 'never-default' to TRUE.
+		 */
+
+		if (!nm_gconf_get_uint_array_helper (client, iter->data,
+		                                     NM_SETTING_IP4_CONFIG_ROUTES,
+		                                     NM_SETTING_IP4_CONFIG_SETTING_NAME,
+		                                     &array))
+			continue;
+
+		if (!array->len) {
+			g_array_free (array, TRUE);
+			continue;
+		}
+
+		/* Static routes found; set 'never-default' */
+		nm_gconf_set_bool_helper (client, iter->data,
+		                          NM_SETTING_IP4_CONFIG_NEVER_DEFAULT,
+		                          NM_SETTING_IP4_CONFIG_SETTING_NAME,
+		                          TRUE);
+		g_array_free (array, TRUE);
+	}
+	nm_utils_slist_free (connections, g_free);
+	gconf_client_suggest_sync (client, NULL);
+}
+
