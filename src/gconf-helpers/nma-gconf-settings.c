@@ -226,10 +226,8 @@ read_connections (NMAGConfSettings *settings)
 	GSList *iter;
 
 	dir_list = nm_gconf_get_all_connections (priv->client);
-	if (!dir_list) {
-		g_warning ("No connections defined");
+	if (!dir_list)
 		return;
-	}
 
 	for (iter = dir_list; iter; iter = iter->next) {
 		char *dir = (char *) iter->data;
