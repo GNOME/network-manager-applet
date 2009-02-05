@@ -994,6 +994,38 @@ applet_find_active_connection_for_device (NMDevice *device,
 	return connection;
 }
 
+GtkWidget *
+nma_menu_device_check_unusable (NMDevice *device,
+                                const char *unavailable_msg)
+{
+	GtkWidget *item = NULL;
+	gboolean managed = TRUE;
+
+	if (!unavailable_msg)
+		unavailable_msg = _("device not ready");
+
+	switch (nm_device_get_state (device)) {
+	case NM_DEVICE_STATE_UNKNOWN:
+	case NM_DEVICE_STATE_UNAVAILABLE:
+		item = gtk_menu_item_new_with_label (unavailable_msg);
+		break;
+	case NM_DEVICE_STATE_UNMANAGED:
+		managed = FALSE;
+		break;
+	default:
+		managed = nm_device_get_managed (device);
+		break;
+	}
+
+	if (!managed)
+		item = gtk_menu_item_new_with_label (_("device not managed"));
+
+	if (item)
+		gtk_widget_set_sensitive (item, FALSE);
+
+	return item;
+}
+
 static guint32
 nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 {

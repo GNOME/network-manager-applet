@@ -195,6 +195,9 @@ NMSettings *applet_get_settings (NMApplet *applet);
 
 GSList *applet_get_all_connections (NMApplet *applet);
 
+GtkWidget *nma_menu_device_check_unusable (NMDevice *device,
+                                           const char *unavailable_msg);
+
 void applet_menu_item_activate_helper (NMDevice *device,
                                        NMConnection *connection,
                                        const char *specific_object,

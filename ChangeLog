@@ -1,3 +1,16 @@
+2009-02-05  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (nma_menu_device_check_unusable): add common code for checking
+			whether a device is in a usable state and creating the
+			menu item for it
+
+	* src/applet-device-gsm.c
+	  src/applet-device-wifi.c
+	  src/applet-device-cdma.c
+	  src/applet-device-wired.c
+		- (*_add_menu_item): use nma_menu_device_check_unusable()
+
 2009-02-04  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/nma-gconf-settings.c

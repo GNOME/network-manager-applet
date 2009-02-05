@@ -223,10 +223,9 @@ wired_add_menu_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
 
-	/* Notify user of unmanaged device */
-	if (!nm_device_get_managed (device)) {
-		item = gtk_menu_item_new_with_label (_("device is unmanaged"));
-		gtk_widget_set_sensitive (item, FALSE);
+	/* Notify user of unmanaged or unavailable device */
+	item = nma_menu_device_check_unusable (device, carrier ? NULL : _("disconnected"));
+	if (item) {
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show (item);
 		goto out;
