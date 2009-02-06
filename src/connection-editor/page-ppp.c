@@ -279,7 +279,7 @@ ce_page_ppp_new (NMConnection *connection)
 	}
 	g_object_ref_sink (parent->page);
 
-	parent->title = g_strdup (_("Point-to-Point Protocol (PPP)"));
+	parent->title = g_strdup (_("PPP Settings"));
 
 	ppp_private_init (self);
 	priv = CE_PAGE_PPP_GET_PRIVATE (self);
