@@ -54,6 +54,7 @@ G_DEFINE_TYPE (CEPageIP4, ce_page_ip4, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingIP4Config *setting;
 	char *connection_id;
+	gboolean vpn;
 
 	GtkComboBox *method;
 	GtkListStore *method_store;
@@ -101,7 +102,6 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	NMSettingConnection *s_con;
 	const char *connection_type;
 	char *str_auto = NULL, *str_auto_only = NULL;
-	gboolean is_vpn = FALSE;
 
 	xml = CE_PAGE (self)->xml;
 
@@ -113,7 +113,7 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
 		str_auto = _("Automatic (VPN)");
 		str_auto_only = _("Automatic (VPN) addresses only");
-		is_vpn = TRUE;
+		priv->vpn = TRUE;
 	} else if (   !strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME)
 	           || !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
 		str_auto = _("Automatic (PPP)");
@@ -148,7 +148,7 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	                    METHOD_COL_NUM, IP4_METHOD_MANUAL,
 	                    -1);
 
-	if (!is_vpn) {
+	if (!priv->vpn) {
 		/* Link-local is pointless for VPNs */
 		gtk_list_store_append (priv->method_store, &iter);
 		gtk_list_store_set (priv->method_store, &iter,
@@ -212,6 +212,12 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	default:
 		break;
 	}
+
+	/* Disable DHCP stuff for VPNs (though in the future we should support
+	 * DHCP over tap interfaces for OpenVPN and vpnc).
+	 */
+	if (priv->vpn)
+		dhcp_enabled = FALSE;
 
 	gtk_widget_set_sensitive (priv->addr_label, addr_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), addr_enabled);
