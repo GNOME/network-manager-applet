@@ -537,10 +537,12 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 		add_page (editor, CE_PAGE (ce_page_dsl_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_wired_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ppp_new (editor->connection)));
+		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else if (!strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME) || 
 			 !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
 		add_page (editor, CE_PAGE (ce_page_mobile_new (editor->connection)));
 		add_page (editor, CE_PAGE (ce_page_ppp_new (editor->connection)));
+		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
 	} else {
 		g_warning ("Unhandled setting type '%s'", connection_type);
 	}
