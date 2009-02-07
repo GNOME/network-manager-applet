@@ -54,7 +54,7 @@ G_DEFINE_TYPE (CEPageIP4, ce_page_ip4, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingIP4Config *setting;
 	char *connection_id;
-	gboolean vpn;
+	GType connection_type;
 
 	GtkComboBox *method;
 	GtkListStore *method_store;
@@ -110,15 +110,16 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	g_assert (connection_type);
 
-	if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
+	priv->connection_type = nm_connection_lookup_setting_type (connection_type);
+
+	if (priv->connection_type == NM_TYPE_SETTING_VPN) {
 		str_auto = _("Automatic (VPN)");
 		str_auto_only = _("Automatic (VPN) addresses only");
-		priv->vpn = TRUE;
-	} else if (   !strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME)
-	           || !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
+	} else if (   priv->connection_type == NM_TYPE_SETTING_GSM
+	           || priv->connection_type == NM_TYPE_SETTING_CDMA) {
 		str_auto = _("Automatic (PPP)");
 		str_auto_only = _("Automatic (PPP) addresses only");
-	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
+	} else if (priv->connection_type == NM_TYPE_SETTING_PPPOE) {
 		str_auto = _("Automatic (PPPoE)");
 		str_auto_only = _("Automatic (PPPoE) addresses only");
 	} else {
@@ -142,14 +143,22 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	                    METHOD_COL_NUM, IP4_METHOD_AUTO_ADDRESSES,
 	                    -1);
 
-	gtk_list_store_append (priv->method_store, &iter);
-	gtk_list_store_set (priv->method_store, &iter,
-	                    METHOD_COL_NAME, _("Manual"),
-	                    METHOD_COL_NUM, IP4_METHOD_MANUAL,
-	                    -1);
+	/* Manual is pointless for Mobile Broadband */
+	if (   priv->connection_type != NM_TYPE_SETTING_GSM
+	    && priv->connection_type != NM_TYPE_SETTING_CDMA
+	    && priv->connection_type != NM_TYPE_SETTING_VPN) {
+		gtk_list_store_append (priv->method_store, &iter);
+		gtk_list_store_set (priv->method_store, &iter,
+		                    METHOD_COL_NAME, _("Manual"),
+		                    METHOD_COL_NUM, IP4_METHOD_MANUAL,
+		                    -1);
+	}
 
-	if (!priv->vpn) {
-		/* Link-local is pointless for VPNs */
+	/* Link-local is pointless for VPNs, Mobile Broadband, and PPPoE */
+	if (   priv->connection_type != NM_TYPE_SETTING_VPN
+	    && priv->connection_type != NM_TYPE_SETTING_PPPOE
+	    && priv->connection_type != NM_TYPE_SETTING_GSM
+	    && priv->connection_type != NM_TYPE_SETTING_CDMA) {
 		gtk_list_store_append (priv->method_store, &iter);
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Link-Local Only"),
@@ -179,6 +188,15 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	priv->dhcp_client_id_label = glade_xml_get_widget (xml, "ip4_dhcp_client_id_label");
 	priv->dhcp_client_id = GTK_ENTRY (glade_xml_get_widget (xml, "ip4_dhcp_client_id_entry"));
 
+	/* Hide DHCP stuff if it'll never be used for a particular method */
+	if (   priv->connection_type == NM_TYPE_SETTING_VPN
+	    || priv->connection_type == NM_TYPE_SETTING_GSM
+	    || priv->connection_type == NM_TYPE_SETTING_CDMA
+	    || priv->connection_type == NM_TYPE_SETTING_PPPOE) {
+		gtk_widget_hide (GTK_WIDGET (priv->dhcp_client_id_label));
+		gtk_widget_hide (GTK_WIDGET (priv->dhcp_client_id));
+	}
+
 	priv->routes_button = GTK_BUTTON (glade_xml_get_widget (xml, "ip4_routes_button"));
 }
 
@@ -200,6 +218,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 
 	switch (method) {
 	case IP4_METHOD_AUTO:
+		addr_enabled = FALSE;
 		dhcp_enabled = routes_enabled = TRUE;
 		break;
 	case IP4_METHOD_AUTO_ADDRESSES:
@@ -216,7 +235,10 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	/* Disable DHCP stuff for VPNs (though in the future we should support
 	 * DHCP over tap interfaces for OpenVPN and vpnc).
 	 */
-	if (priv->vpn)
+	if (   priv->connection_type == NM_TYPE_SETTING_VPN
+	    || priv->connection_type == NM_TYPE_SETTING_GSM
+	    || priv->connection_type == NM_TYPE_SETTING_CDMA
+	    || priv->connection_type == NM_TYPE_SETTING_PPPOE)
 		dhcp_enabled = FALSE;
 
 	gtk_widget_set_sensitive (priv->addr_label, addr_enabled);
