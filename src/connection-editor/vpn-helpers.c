@@ -326,10 +326,10 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 		goto done;
 	}
 
-	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
+	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
 	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
 
-	if (service_type) {
+	if (!service_type) {
 		g_set_error (&error, 0, 0, "VPN setting invalid");
 		goto done;
 	}
