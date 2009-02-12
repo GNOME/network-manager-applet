@@ -228,6 +228,7 @@ icons/Makefile
 icons/16/Makefile
 icons/22/Makefile
 icons/32/Makefile
+icons/48/Makefile
 icons/scalable/Makefile
 po/Makefile.in
 ])
