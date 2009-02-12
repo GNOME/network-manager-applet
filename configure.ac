@@ -225,5 +225,9 @@ src/wireless-security/Makefile
 src/polkit-helpers/Makefile
 src/connection-editor/Makefile
 icons/Makefile
+icons/16/Makefile
+icons/22/Makefile
+icons/32/Makefile
+icons/scalable/Makefile
 po/Makefile.in
 ])
