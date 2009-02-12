@@ -1,4 +1,4 @@
-icondir=${datadir}/icons/hicolor/16x16/apps
+icondir=${datadir}/icons/hicolor/scalable/apps
 icon_DATA = \
 	nm-device-wired.svg \
 	nm-no-connection.svg
