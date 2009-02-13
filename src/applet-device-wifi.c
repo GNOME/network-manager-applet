@@ -560,7 +560,6 @@ add_one_ap_menu_item (NMDeviceWifi *device,
                       NMApplet *applet)
 {
 	const GByteArray *ssid;
-	gint8 strength;
 	struct dup_data dup_data = { NULL, NULL };
 	NMNetworkMenuItem *item = NULL;
 
@@ -568,8 +567,6 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 	ssid = nm_access_point_get_ssid (ap);
 	if (!ssid || nm_utils_is_empty_ssid (ssid->data, ssid->len))
 		return;
-
-	strength = nm_access_point_get_strength (ap);
 
 	dup_data.found = NULL;
 	dup_data.hash = g_object_get_data (G_OBJECT (ap), "hash");
@@ -581,10 +578,12 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 	                       &dup_data);
 
 	if (dup_data.found) {
+		gint8 strength = nm_access_point_get_strength (ap);
+
 		item = NM_NETWORK_MENU_ITEM (dup_data.found);
 
 		/* Just update strength if greater than what's there */
-		if (nm_network_menu_item_get_strength (item) > strength)
+		if (nm_network_menu_item_get_strength (item) < strength)
 			nm_network_menu_item_set_strength (item, strength);
 
 		nm_network_menu_item_add_dupe (item, ap);
