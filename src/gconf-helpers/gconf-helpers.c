@@ -951,8 +951,10 @@ nm_gconf_get_all_connections (GConfClient *client)
 	nm_gconf_migrate_0_7_vpn_properties (client);
 	nm_gconf_migrate_0_7_openvpn_properties (client);
 
-	if (stamp < 1)
+	if (stamp < 1) {
 		nm_gconf_migrate_0_7_vpn_never_default (client);
+		nm_gconf_migrate_0_7_autoconnect_default (client);
+	}
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!connections) {

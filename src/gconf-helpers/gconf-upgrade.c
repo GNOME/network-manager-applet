@@ -1781,3 +1781,36 @@ nm_gconf_migrate_0_7_vpn_never_default (GConfClient *client)
 	gconf_client_suggest_sync (client, NULL);
 }
 
+void
+nm_gconf_migrate_0_7_autoconnect_default (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	/* Between 0.7.0 and 0.7.1, autoconnect was switched to TRUE by default.
+	 * Since default values aren't saved in GConf to reduce clutter, when NM
+	 * gets the connection from the applet, libnm-util will helpfully fill in
+	 * autoconnect=TRUE, causing existing connections that used to be
+	 * autoconnect=FALSE to be automatically activated.
+	 */
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		gboolean autoconnect = FALSE;
+
+		if (!nm_gconf_get_bool_helper (client, (const char *) iter->data,
+		                               NM_SETTING_CONNECTION_AUTOCONNECT,
+		                               NM_SETTING_CONNECTION_SETTING_NAME,
+		                               &autoconnect)) {
+			/* If the key wasn't present, that used to mean FALSE, but now
+			 * we need to make that explicit.
+			 */
+			nm_gconf_set_bool_helper (client, iter->data,
+			                          NM_SETTING_CONNECTION_AUTOCONNECT,
+			                          NM_SETTING_CONNECTION_SETTING_NAME,
+			                          FALSE);
+		}
+	}
+	nm_utils_slist_free (connections, g_free);
+	gconf_client_suggest_sync (client, NULL);
+}
+
