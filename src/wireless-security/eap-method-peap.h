@@ -29,8 +29,6 @@ typedef struct {
 
 	GtkSizeGroup *size_group;
 	WirelessSecurity *sec_parent;
-	GladeXML *nag_dialog_xml;
-	gboolean ignore_ca_cert;
 } EAPMethodPEAP;
 
 EAPMethodPEAP * eap_method_peap_new (const char *glade_file,

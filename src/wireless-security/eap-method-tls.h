@@ -27,8 +27,6 @@
 typedef struct {
 	struct _EAPMethod parent;
 
-	GladeXML *nag_dialog_xml;
-	gboolean ignore_ca_cert;
 	gboolean phase2;
 } EAPMethodTLS;
 

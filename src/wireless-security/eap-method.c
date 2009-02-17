@@ -33,6 +33,7 @@
 
 #include <nm-setting-8021x.h>
 #include "eap-method.h"
+#include "gconf-helpers.h"
 
 
 GType
@@ -86,14 +87,108 @@ eap_method_fill_connection (EAPMethod *method, NMConnection *connection)
 	return (*(method->fill_connection)) (method, connection);
 }
 
+static void
+nag_dialog_response_cb (GtkDialog *nag_dialog,
+                        gint response,
+                        gpointer user_data)
+{
+	EAPMethod *method = (EAPMethod *) user_data;
+	GtkWidget *widget;
+
+	if (response == GTK_RESPONSE_NO) {
+		/* Grab the value of the "don't bother me" checkbox */
+		widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_checkbox");
+		g_assert (widget);
+
+		method->ignore_ca_cert = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+	}
+
+	gtk_widget_hide (GTK_WIDGET (nag_dialog));
+}
+
 GtkWidget *
 eap_method_nag_user (EAPMethod *method)
 {
+	GtkWidget *widget;
+	char *filename = NULL;
+
 	g_return_val_if_fail (method != NULL, NULL);
 
-	if (method->nag_user)
-		return (*(method->nag_user)) (method);
-	return NULL;
+	if (!method->nag_dialog || method->ignore_ca_cert)
+		return NULL;
+
+	/* Checkbox should be unchecked each time dialog comes up */
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_checkbox");
+	g_assert (widget);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), FALSE);
+
+	/* Nag the user if the CA Cert is blank, since it's a security risk. */
+	widget = glade_xml_get_widget (method->xml, method->ca_cert_chooser);
+	g_assert (widget);
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+	if (filename != NULL) {
+		g_free (filename);
+		return NULL;
+	}
+
+	gtk_window_present (GTK_WINDOW (method->nag_dialog));
+	return method->nag_dialog;
+}
+
+gboolean
+eap_method_nag_init (EAPMethod *method,
+                     const char *glade_file,
+                     const char *ca_cert_chooser,
+                     NMConnection *connection)
+{
+	GtkWidget *dialog, *widget;
+	char *text;
+
+	g_return_val_if_fail (method != NULL, FALSE);
+	g_return_val_if_fail (glade_file != NULL, FALSE);
+	g_return_val_if_fail (ca_cert_chooser != NULL, FALSE);
+
+	method->nag_dialog_xml = glade_xml_new (glade_file, "nag_user_dialog", NULL);
+	if (method->nag_dialog_xml == NULL) {
+		g_warning ("Couldn't get nag_user_dialog from glade xml");
+		return FALSE;
+	}
+
+	method->ca_cert_chooser = g_strdup (ca_cert_chooser);
+	if (connection)
+		method->ignore_ca_cert = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG));
+
+	dialog = glade_xml_get_widget (method->nag_dialog_xml, "nag_user_dialog");
+	g_assert (dialog);
+	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), method);
+
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "content_label");
+	g_assert (widget);
+
+	text = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+	                        _("No Certificate Authority certificate chosen"),
+	                        _("Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue wireless networks.  Would you like to choose a Certificate Authority certificate?"));
+	gtk_label_set_markup (GTK_LABEL (widget), text);
+	g_free (text);
+
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_button");
+	gtk_button_set_label (GTK_BUTTON (widget), _("Ignore"));
+	g_assert (widget);
+
+	widget = glade_xml_get_widget (method->nag_dialog_xml, "change_button");
+	gtk_button_set_label (GTK_BUTTON (widget), _("Choose CA Certificate"));
+	g_assert (widget);
+
+	method->nag_dialog = dialog;
+	return TRUE;
+}
+
+gboolean
+eap_method_get_ignore_ca_cert (EAPMethod *method)
+{
+	g_return_val_if_fail (method != NULL, FALSE);
+
+	return method->ignore_ca_cert;
 }
 
 void
@@ -137,6 +232,11 @@ eap_method_unref (EAPMethod *method)
 
 	method->refcount--;
 	if (method->refcount == 0) {
+		if (method->nag_dialog)
+			gtk_widget_destroy (method->nag_dialog);
+		if (method->nag_dialog_xml)
+			g_object_unref (method->nag_dialog_xml);
+		g_free (method->ca_cert_chooser);
 		g_object_unref (method->xml);
 		g_object_unref (method->ui_widget);
 		(*(method->destroy)) (method);

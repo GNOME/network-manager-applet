@@ -1319,7 +1319,6 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		nag_dialog = nma_wireless_dialog_nag_user (dialog);
 		if (nag_dialog) {
 			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
-			gtk_window_set_destroy_with_parent (GTK_WINDOW (nag_dialog), TRUE);
 			g_signal_connect (nag_dialog, "response",
 			                  G_CALLBACK (nag_dialog_response_cb),
 			                  dialog);
@@ -1522,7 +1521,6 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 		widget = nma_wireless_dialog_nag_user (dialog);
 		if (widget) {
 			gtk_window_set_transient_for (GTK_WINDOW (widget), GTK_WINDOW (dialog));
-			gtk_window_set_destroy_with_parent (GTK_WINDOW (widget), TRUE);
 			g_signal_connect (widget, "response",
 			                  G_CALLBACK (nag_dialog_response_cb),
 			                  dialog);

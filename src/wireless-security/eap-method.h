@@ -33,7 +33,6 @@ typedef struct _EAPMethod EAPMethod;
 
 typedef void        (*EMAddToSizeGroupFunc) (EAPMethod *method, GtkSizeGroup *group);
 typedef void        (*EMFillConnectionFunc) (EAPMethod *method, NMConnection *connection);
-typedef GtkWidget * (*EMNagUserFunc)        (EAPMethod *method);
 typedef void        (*EMDestroyFunc)        (EAPMethod *method);
 typedef gboolean    (*EMValidateFunc)       (EAPMethod *method);
 
@@ -42,9 +41,14 @@ struct _EAPMethod {
 	GladeXML *xml;
 	GtkWidget *ui_widget;
 
+	GladeXML *nag_dialog_xml;
+	char *ca_cert_chooser;
+	GtkWidget *nag_dialog;
+
+	gboolean ignore_ca_cert;
+
 	EMAddToSizeGroupFunc add_to_size_group;
 	EMFillConnectionFunc fill_connection;
-	EMNagUserFunc nag_user;
 	EMValidateFunc validate;
 	EMDestroyFunc destroy;
 };
@@ -95,6 +99,13 @@ gboolean eap_method_validate_filepicker (GladeXML *xml,
                                          guint32 item_type,
                                          const char *password,
                                          NMSetting8021xCKType *out_ck_type);
+
+gboolean eap_method_nag_init (EAPMethod *method,
+                              const char *glade_file,
+                              const char *ca_cert_chooser,
+                              NMConnection *connection);
+
+gboolean eap_method_get_ignore_ca_cert (EAPMethod *method);
 
 #endif /* EAP_METHOD_H */
 
