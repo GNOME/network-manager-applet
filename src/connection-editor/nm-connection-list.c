@@ -419,7 +419,10 @@ remove_connection (NMExportedConnection *exported,
 		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
 		g_assert (s_con);
 
-		/* FIXME: clean up any left-over connection secrets here */
+		if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_USER) {
+			/* Clean up keyring keys */
+			nm_gconf_clear_keyring_items (connection);
+		}
 
 		/* Clean up VPN secrets and any plugin-specific data */
 		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {

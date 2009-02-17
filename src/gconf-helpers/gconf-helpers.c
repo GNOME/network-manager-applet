@@ -1820,6 +1820,50 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 	return secrets;
 }
 
+static void
+delete_done (GnomeKeyringResult result, gpointer user_data)
+{
+}
+
+void
+nm_gconf_clear_keyring_items (NMConnection *connection)
+{
+	NMSettingConnection *s_con;
+	const char *uuid;
+	GList *found_list = NULL;
+	GnomeKeyringResult ret;
+	GList *iter;
+
+	g_return_if_fail (connection != NULL);
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	g_return_if_fail (s_con != NULL);
+
+	uuid = nm_setting_connection_get_uuid (s_con);
+	g_return_if_fail (uuid != NULL);
+
+	pre_keyring_callback ();
+
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      KEYRING_UUID_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      nm_setting_connection_get_uuid (s_con),
+	                                      NULL);
+	if (ret == GNOME_KEYRING_RESULT_OK) {
+		for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
+			GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
+
+			gnome_keyring_item_delete (found->keyring,
+			                           found->item_id,
+			                           delete_done,
+			                           NULL,
+			                           NULL);
+		}
+		gnome_keyring_found_list_free (found_list);
+	}
+}
+
 static inline void
 copy_str_item (NMConnection *dst, NMConnection *src, const char *tag)
 {
