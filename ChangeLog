@@ -1,3 +1,24 @@
+2009-02-17  Dan Williams  <dcbw@redhat.com>
+
+	* src/wireless-security/eap-method.c
+	  src/wireless-security/eap-method.h
+		- Consolidate CA certificate nag dialog handling in the EAP method
+			to get correct dialog destruction and reduce code.  Fixes crash
+			when nag dialog would come up the second time.
+
+	* src/wireless-security/eap-method-peap.c
+	  src/wireless-security/eap-method-peap.h
+	  src/wireless-security/eap-method-tls.c
+	  src/wireless-security/eap-method-tls.h
+	  src/wireless-security/eap-method-ttls.c
+	  src/wireless-security/eap-method-ttls.h
+		- Move CA certificate nag dialog handling to EAPMethod class
+
+	* src/applet-device-wifi.c
+		- (wireless_dialog_response_cb, get_secrets_dialog_response_cb):
+			don't destroy nag dialog with parent; the EAP method object
+			takes care of destruction for us
+
 2009-02-16  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/gconf-upgrade.c

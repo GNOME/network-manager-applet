@@ -29,8 +29,6 @@ typedef struct {
 
 	GtkSizeGroup *size_group;
 	WirelessSecurity *sec_parent;
-	GladeXML *nag_dialog_xml;
-	gboolean ignore_ca_cert;
 } EAPMethodTTLS;
 
 EAPMethodTTLS * eap_method_ttls_new (const char *glade_file,
