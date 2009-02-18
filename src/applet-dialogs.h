@@ -31,7 +31,7 @@ void applet_info_dialog_show (NMApplet *applet);
 
 void applet_about_dialog_show (NMApplet *applet);
 
-gboolean applet_warning_dialog_show (const char *message);
+GtkWidget *applet_warning_dialog_show (const char *message);
 
 
 #endif /* __APPLET_DIALOGS_H__ */

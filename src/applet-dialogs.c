@@ -613,22 +613,24 @@ applet_about_dialog_show (NMApplet *applet)
 }
 
 
-gboolean
+GtkWidget *
 applet_warning_dialog_show (const char *message)
 {
 	GtkWidget *dialog;
 
-	dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, message, NULL);
+	dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, message, NULL);
 
 	/* Bash focus-stealing prevention in the face */
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_window_set_default_icon_name (GTK_STOCK_DIALOG_ERROR);
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Missing resources"));
 	gtk_widget_realize (dialog);
-	gdk_x11_window_set_user_time (dialog->window, gdk_x11_get_server_time (dialog->window));
-	gtk_window_present (GTK_WINDOW (dialog));
+	gtk_widget_show (dialog);
+	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
 
 	g_signal_connect_swapped (dialog, "response",
 	                          G_CALLBACK (gtk_widget_destroy),
 	                          dialog);
-	return FALSE;
+	return dialog;
 }
 

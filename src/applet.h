@@ -80,6 +80,7 @@ typedef struct
 {
 	GObject parent_instance;
 
+	GMainLoop *loop;
 	NMClient *nm_client;
 
 	NMDBusSettings *dbus_settings;
@@ -187,7 +188,7 @@ struct NMADeviceClass {
 
 GType nma_get_type (void);
 
-NMApplet *nm_applet_new (void);
+NMApplet *nm_applet_new (GMainLoop *loop);
 
 void applet_schedule_update_icon (NMApplet *applet);
 
