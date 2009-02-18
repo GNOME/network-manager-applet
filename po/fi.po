@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-15 10:41+0300\n"
-"PO-Revision-Date: 2008-10-15 10:41+0300\n"
+"POT-Creation-Date: 2009-02-18 12:12+0200\n"
+"PO-Revision-Date: 2009-02-18 12:12+0200\n"
 "Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -19,347 +19,373 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/applet-device-cdma.c:55
+#: ../nm-applet.desktop.in.h:1
+msgid "Control your network connections"
+msgstr "Hallitse verkkoyhteyksiä"
+
+#: ../nm-applet.desktop.in.h:2
+msgid "Network Manager"
+msgstr "Verkon hallinta"
+
+#: ../nm-connection-editor.desktop.in.h:1
+msgid "Manage and change your network connection settings"
+msgstr "Hallitse ja muuta verkkoyhteyksien asetuksia"
+
+#: ../nm-connection-editor.desktop.in.h:2
+#: ../src/connection-editor/nm-connection-editor.glade.h:7
+msgid "Network Connections"
+msgstr "Verkkoyhteydet"
+
+#: ../src/applet-device-cdma.c:54
 msgid "Auto Mobile Broadband (CDMA) connection"
 msgstr "Automaattinen mobiililaajakaistayhteys (CDMA)"
 
-#: ../src/applet-device-cdma.c:196 ../src/applet-device-gsm.c:197
+#: ../src/applet-device-cdma.c:204 ../src/applet-device-gsm.c:205
 msgid "Disconnect"
 msgstr "Katkaise yhteys"
 
-#: ../src/applet-device-cdma.c:235 ../src/applet-device-gsm.c:236
+#: ../src/applet-device-cdma.c:243 ../src/applet-device-gsm.c:244
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobiililaajakaista (%s)"
 
-#: ../src/applet-device-cdma.c:237 ../src/applet-device-gsm.c:238
-#: ../src/connection-editor/page-mobile.c:274
+#: ../src/applet-device-cdma.c:245 ../src/applet-device-gsm.c:246
+#: ../src/connection-editor/page-mobile.c:286
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1481
+#: ../src/connection-editor/nm-connection-list.c:1588
 msgid "Mobile Broadband"
 msgstr "Mobiililaajakaista"
 
-#: ../src/applet-device-cdma.c:255 ../src/applet-device-gsm.c:256
-#: ../src/applet-device-wired.c:224 ../src/applet-device-wifi.c:699
-msgid "device is unmanaged"
-msgstr "laiteta ei hallita"
-
-#: ../src/applet-device-cdma.c:288 ../src/applet-device-gsm.c:289
-#: ../src/applet-device-wired.c:256
+#: ../src/applet-device-cdma.c:298 ../src/applet-device-gsm.c:299
+#: ../src/applet-device-wired.c:261
 #, c-format
 msgid "You are now connected to '%s'."
-msgstr "Yhteys verkkoon \"%s\" on nyt muodostettu."
+msgstr "Yhteys verkkoon ”%s” on nyt muodostettu."
 
-#: ../src/applet-device-cdma.c:292 ../src/applet-device-gsm.c:293
-#: ../src/applet-device-wired.c:260 ../src/applet-device-wifi.c:1192
+#: ../src/applet-device-cdma.c:302 ../src/applet-device-gsm.c:303
+#: ../src/applet-device-wired.c:265 ../src/applet-device-wifi.c:1184
 msgid "Connection Established"
 msgstr "Yhteys muodostettu"
 
-#: ../src/applet-device-cdma.c:293
+#: ../src/applet-device-cdma.c:303
 msgid "You are now connected to the CDMA network."
 msgstr "Yhteys CDMA-verkkoon on nyt muodostettu."
 
-#: ../src/applet-device-cdma.c:316 ../src/applet-device-gsm.c:317
+#: ../src/applet-device-cdma.c:329 ../src/applet-device-gsm.c:330
 #, c-format
-msgid "Dialing mobile broadband device %s..."
-msgstr "Soitetaan mobiililaajakaistalaitteella %s..."
+msgid "Preparing mobile broadband connection '%s'..."
+msgstr "Valmistellaan mobiililaajakaistayhteyttä ”%s”..."
 
-#: ../src/applet-device-cdma.c:319 ../src/applet-device-gsm.c:320
+#: ../src/applet-device-cdma.c:332 ../src/applet-device-gsm.c:333
 #, c-format
-msgid "Starting PPP on device %s..."
-msgstr "Käynnistetään PPP laitteella %s..."
+msgid "Configuring mobile broadband connection '%s'..."
+msgstr "Tehdään mobiililaajakaistayhteyden ”%s” asetuksia..."
 
-#: ../src/applet-device-cdma.c:322 ../src/applet-device-gsm.c:323
+#: ../src/applet-device-cdma.c:335 ../src/applet-device-gsm.c:336
 #, c-format
-msgid "Waiting for user authentication on device '%s'..."
-msgstr "Odotetaan käyttäjän tunnistautumista laitteella \"%s\"..."
+msgid "User authentication required for mobile broadband connection '%s'..."
+msgstr ""
+"Käyttäjätunnistautuminen vaaditaan mobiililaajakaistayhteydelle ”%s”..."
 
-#: ../src/applet-device-cdma.c:326 ../src/applet-device-gsm.c:327
+#: ../src/applet-device-cdma.c:338 ../src/applet-device-gsm.c:339
+#: ../src/applet.c:1830
 #, c-format
-msgid "Mobile broadband connection '%s'"
-msgstr "Mobiililaajakaistayhteys \"%s\""
+msgid "Requesting a network address for '%s'..."
+msgstr "Pyydetään verkko-osoitetta verkosta ”%s”..."
 
-#: ../src/applet-device-cdma.c:328 ../src/applet-device-gsm.c:329
-msgid "Mobile broadband connection"
-msgstr "Mobiililaajakaistayhteys"
+#: ../src/applet-device-cdma.c:342 ../src/applet-device-gsm.c:343
+#, c-format
+msgid "Mobile broadband connection '%s' active"
+msgstr "Mobiililaajakaistayhteys ”%s” on aktiivinen"
 
-#: ../src/applet-device-cdma.c:438 ../src/applet-device-gsm.c:541
+#: ../src/applet-device-cdma.c:458 ../src/applet-device-gsm.c:541
 msgid "Mobile broadband network password"
 msgstr "Mobiililaajakaistaverkon salasana"
 
-#: ../src/applet-device-cdma.c:447 ../src/applet-device-gsm.c:550
+#: ../src/applet-device-cdma.c:467 ../src/applet-device-gsm.c:550
 #, c-format
 msgid "A password is required to connect to '%s'."
-msgstr "Yhteys verkkoon \"%s\" vaatii salasanan."
+msgstr "Yhteys verkkoon ”%s” vaatii salasanan."
 
-#: ../src/applet-device-cdma.c:465 ../src/applet-device-gsm.c:568
+#: ../src/applet-device-cdma.c:485 ../src/applet-device-gsm.c:568
 #: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
 #: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "Password:"
 msgstr "Salasana:"
 
-#: ../src/applet-device-gsm.c:56
+#: ../src/applet-device-gsm.c:55
 msgid "Auto Mobile Broadband (GSM) connection"
 msgstr "Automaattinen mobiililaajakaistayhteys (GSM)"
 
-#: ../src/applet-device-gsm.c:294
+#: ../src/applet-device-gsm.c:304
 msgid "You are now connected to the GSM network."
 msgstr "Yhteys GSM-verkkoon on nyt muodostettu."
 
-#: ../src/applet-device-gsm.c:467
+#: ../src/applet-device-gsm.c:481
 msgid "PIN code required"
 msgstr "PIN-koodi vaaditaan"
 
-#: ../src/applet-device-gsm.c:469
+#: ../src/applet-device-gsm.c:483
 msgid "PUK code required"
 msgstr "PUK-koodi vaaditaan"
 
-#: ../src/applet-device-gsm.c:479
+#: ../src/applet-device-gsm.c:492
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Mobiililaajakaistalaite vaatii PIN-koodin"
 
-#: ../src/applet-device-gsm.c:481
+#: ../src/applet-device-gsm.c:494
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "Mobiililaajakaistalaite vaatii PUK-koodin"
 
-#: ../src/applet-device-wired.c:65
+#: ../src/applet-device-wired.c:63
 msgid "Auto Ethernet"
 msgstr "Automaattinen Ethernet"
 
-#: ../src/applet-device-wired.c:193
+#: ../src/applet-device-wired.c:197
 #, c-format
 msgid "Wired Networks (%s)"
 msgstr "Kiinteät verkkoyhteydet (%s)"
 
-#: ../src/applet-device-wired.c:195
+#: ../src/applet-device-wired.c:199
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "Kiinteä verkkoyhteys (%s)"
 
-#: ../src/applet-device-wired.c:198
+#: ../src/applet-device-wired.c:202
 msgid "Wired Networks"
 msgstr "Kiinteät verkkoyhteydet"
 
-#: ../src/applet-device-wired.c:200
+#: ../src/applet-device-wired.c:204
 msgid "Wired Network"
 msgstr "Kiinteä verkkoyhteys"
 
-#: ../src/applet-device-wired.c:261
+#. Notify user of unmanaged or unavailable device
+#: ../src/applet-device-wired.c:227
+msgid "disconnected"
+msgstr "katkaistu"
+
+#: ../src/applet-device-wired.c:266
 msgid "You are now connected to the wired network."
 msgstr "Yhteys kiinteään verkkoon on nyt muodostettu."
 
-#: ../src/applet-device-wired.c:281
+#: ../src/applet-device-wired.c:292
 #, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "Valmistellaan laitetta %s kiinteälle verkkoyhteydelle..."
+msgid "Preparing wired network connection '%s'..."
+msgstr "Valmistellaan kiinteän verkon yhteyttä  ”%s”..."
 
-#: ../src/applet-device-wired.c:284
+#: ../src/applet-device-wired.c:295
 #, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "Määritellään laitetta %s kiinteälle verkkoyhteydelle..."
+msgid "Configuring wired network connection '%s'..."
+msgstr "Tehdään kiinteän verkon ”%s” asetuksia..."
 
-#: ../src/applet-device-wired.c:287
+#: ../src/applet-device-wired.c:298
 #, c-format
-msgid "Requesting a network address from the wired network..."
-msgstr "Pyydetään verkko-osoitetta kiinteästä verkosta..."
+msgid "User authentication required for wired network connection '%s'..."
+msgstr "Käyttäjätunnistautuminen vaaditaan kiinteälle verkolle ”%s”..."
 
-#: ../src/applet-device-wired.c:291
-msgid "Wired network connection"
-msgstr "Kiinteä verkkoyhteys"
+#: ../src/applet-device-wired.c:301
+#, c-format
+msgid "Requesting a wired network address for '%s'..."
+msgstr "Pyydetään verkko-osoitetta kiinteästä verkosta ”%s”..."
 
-#: ../src/applet-device-wired.c:522
+#: ../src/applet-device-wired.c:305
+#, c-format
+msgid "Wired network connection '%s' active"
+msgstr "Kiinteä verkkoyhteys ”%s” on aktiivinen"
+
+#: ../src/applet-device-wired.c:558
 msgid "DSL authentication"
 msgstr "DSL-todentaminen"
 
-#: ../src/applet-device-wifi.c:87
+#: ../src/applet-device-wifi.c:91
 msgid "_Connect to Hidden Wireless Network..."
 msgstr "_Yhdistä piilotettuun langattomaan verkkoon..."
 
-#: ../src/applet-device-wifi.c:119
+#: ../src/applet-device-wifi.c:122
 msgid "Create _New Wireless Network..."
 msgstr "Luo _uusi langaton verkko..."
 
-#: ../src/applet-device-wifi.c:669
+#: ../src/applet-device-wifi.c:693
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Langattomat verkot (%s)"
 
-#: ../src/applet-device-wifi.c:671
+#: ../src/applet-device-wifi.c:695
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Langaton verkko (%s)"
 
-#: ../src/applet-device-wifi.c:673
+#: ../src/applet-device-wifi.c:697
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Langaton verkko"
 msgstr[1] "Langattomat verkot"
 
-#: ../src/applet-device-wifi.c:690
+#: ../src/applet-device-wifi.c:714
 msgid "wireless is disabled"
 msgstr "Langaton verkko ei ole käytössä"
 
-#: ../src/applet-device-wifi.c:988
+#: ../src/applet-device-wifi.c:977
 msgid "Wireless Networks Available"
 msgstr "Langattomia verkkoja saatavilla"
 
-#: ../src/applet-device-wifi.c:989
+#: ../src/applet-device-wifi.c:978
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Yhdistä langattomaan verkkoon napsauttamalla tästä"
 
-#: ../src/applet-device-wifi.c:992
+#: ../src/applet-device-wifi.c:981 ../src/applet.c:437
 msgid "Don't show this message again"
 msgstr "Älä näytä tätä uudestaan"
 
-#: ../src/applet-device-wifi.c:1190
+#: ../src/applet-device-wifi.c:1182
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
-msgstr "Yhteys langattomaan verkkoon \"%s\" on nyt muodostettu."
+msgstr "Yhteys langattomaan verkkoon ”%s” on nyt muodostettu."
 
-#: ../src/applet-device-wifi.c:1191 ../src/applet-device-wifi.c:1220
+#: ../src/applet-device-wifi.c:1183 ../src/applet-device-wifi.c:1214
 msgid "(none)"
 msgstr "(ei mitään)"
 
-#: ../src/applet-device-wifi.c:1226
+#: ../src/applet-device-wifi.c:1224
 #, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "Valmistellaan laitetta %s langattomalle verkolle \"%s\"..."
+msgid "Preparing wireless network connection '%s'..."
+msgstr "Valmistellaan langatonta verkkoyhteyttä ”%s”..."
 
-#: ../src/applet-device-wifi.c:1229
+#: ../src/applet-device-wifi.c:1227
 #, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "Yritetään liittyä langattomaan verkkoon \"%s\"..."
+msgid "Configuring wireless network connection '%s'..."
+msgstr "Tehdään langattoman verkkoyhteyden ”%s” asetuksia..."
 
-#: ../src/applet-device-wifi.c:1232
+#: ../src/applet-device-wifi.c:1230
 #, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Pyydetään verkko-osoitetta langattomasta verkosta \"%s\"..."
+msgid "User authentication required for wireless network '%s'..."
+msgstr "Käyttäjätunnistautuminen vaaditan langattomalle verkolle ”%s”..."
 
-#: ../src/applet-device-wifi.c:1235
+#: ../src/applet-device-wifi.c:1233
 #, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "Odotetaan verkon avainta langattomalle verkolle \"%s\""
+msgid "Requesting a wireless network address for '%s'..."
+msgstr "Pyydetään verkko-osoitetta langattomasta verkosta ”%s”..."
 
-#: ../src/applet-device-wifi.c:1255
+#: ../src/applet-device-wifi.c:1253
 #, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "Langaton verkkoyhteys \"%s\" (%d%%)"
+msgid "Wireless network connection '%s' active: %s (%d%%)"
+msgstr "Langaton verkkoyhteys ”%s” on aktiivinen: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1259
+#: ../src/applet-device-wifi.c:1257
 #, c-format
-msgid "Wireless network connection to '%s'"
-msgstr "Langaton verkkoyhteys  \"%s\""
+msgid "Wireless network connection '%s' active"
+msgstr "Langaton verkkoyhteys ”%s” on aktiivinen"
 
-#: ../src/applet-dialogs.c:54
+#: ../src/applet-dialogs.c:53
 msgid "Error displaying connection information:"
 msgstr "Virhe näytettäessä yhteyden tietoja:"
 
-#: ../src/applet-dialogs.c:81
-#: ../src/connection-editor/page-wireless-security.c:277
-#: ../src/wireless-dialog.c:775
-#: ../src/wireless-security/wireless-security.c:334
+#: ../src/applet-dialogs.c:84
+#: ../src/connection-editor/page-wireless-security.c:300
+#: ../src/wireless-dialog.c:815
+#: ../src/wireless-security/wireless-security.c:317
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:83
+#: ../src/applet-dialogs.c:86
 msgid "Dynamic WEP"
 msgstr "Dynaaminen WEP"
 
-#: ../src/applet-dialogs.c:85 ../src/applet-dialogs.c:183
-#: ../src/applet-dialogs.c:185
+#: ../src/applet-dialogs.c:88 ../src/applet-dialogs.c:189
+#: ../src/applet-dialogs.c:191
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:181
+#: ../src/applet-dialogs.c:187
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:189 ../src/applet-dialogs.c:198
-#: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:728
+#: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
+#: ../src/connection-editor/page-wireless-security.c:261
+#: ../src/wireless-dialog.c:768
 msgid "None"
 msgstr "Ei mitään"
 
-#: ../src/applet-dialogs.c:201 ../src/applet-dialogs.c:316
+#: ../src/applet-dialogs.c:207 ../src/applet-dialogs.c:322
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../src/applet-dialogs.c:252
+#: ../src/applet-dialogs.c:258
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:254
+#: ../src/applet-dialogs.c:260
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:256
+#: ../src/applet-dialogs.c:262
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:258
+#: ../src/applet-dialogs.c:264
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:263
+#: ../src/applet-dialogs.c:269
 msgid "Interface:"
 msgstr "Verkkolaite:"
 
-#: ../src/applet-dialogs.c:279
+#: ../src/applet-dialogs.c:285
 msgid "Hardware Address:"
 msgstr "Laiteosoite:"
 
-#: ../src/applet-dialogs.c:289
+#: ../src/applet-dialogs.c:295
 msgid "Driver:"
 msgstr "Ajuri:"
 
-#: ../src/applet-dialogs.c:308
+#: ../src/applet-dialogs.c:314
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:313
+#: ../src/applet-dialogs.c:319
 msgid "Speed:"
 msgstr "Nopeus:"
 
-#: ../src/applet-dialogs.c:323
+#: ../src/applet-dialogs.c:329
 #: ../src/connection-editor/ce-page-wireless-security.glade.h:1
 msgid "Security:"
 msgstr "Tietoturva:"
 
-#: ../src/applet-dialogs.c:343
+#: ../src/applet-dialogs.c:349
 msgid "IP Address:"
 msgstr "IP-osoite:"
 
-#: ../src/applet-dialogs.c:357
+#: ../src/applet-dialogs.c:365
 msgid "Broadcast Address:"
 msgstr "Broadcast-osoite:"
 
-#: ../src/applet-dialogs.c:366
+#: ../src/applet-dialogs.c:376
 msgid "Subnet Mask:"
 msgstr "Aliverkkopeite:"
 
-#: ../src/applet-dialogs.c:376
+#: ../src/applet-dialogs.c:388
 msgid "Default Route:"
 msgstr "Oletusyhdyskäytävä:"
 
-#: ../src/applet-dialogs.c:389
+#: ../src/applet-dialogs.c:403
 msgid "Primary DNS:"
 msgstr "Ensisijainen DNS:"
 
-#: ../src/applet-dialogs.c:398
+#: ../src/applet-dialogs.c:414
 msgid "Secondary DNS:"
 msgstr "Toissijainen DNS:"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:459
+#: ../src/applet-dialogs.c:477
 msgid "No valid active connections found!"
 msgstr "Toimivia aktiivisia yhteyksiä ei löytynyt!"
 
-#: ../src/applet-dialogs.c:585
+#: ../src/applet-dialogs.c:603
 msgid ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
@@ -367,24 +393,24 @@ msgstr ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
 
-#: ../src/applet-dialogs.c:587
+#: ../src/applet-dialogs.c:605
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Ilmoitusalueen sovelma verkkolaitteiden ja yhteyksien hallintaan."
 
-#: ../src/applet-dialogs.c:589
+#: ../src/applet-dialogs.c:607
 msgid "NetworkManager Website"
 msgstr "NetworkManager-WWW-sivusto"
 
-#: ../src/applet-dialogs.c:592
+#: ../src/applet-dialogs.c:610
 msgid "translator-credits"
 msgstr ""
-"Timo Jyrinki, 2008.\n"
+"Timo Jyrinki, 2008-2009.\n"
 "Ilkka Tuohela, 2005-2008.\n"
 "\n"
 "http://www.gnome.fi/"
 
-#: ../src/applet.c:473
+#: ../src/applet.c:507
 #, c-format
 msgid ""
 "\n"
@@ -392,18 +418,18 @@ msgid ""
 "interrupted."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui, koska verkkoyhteys katkaistiin."
+"VPN-yhteys ”%s” epäonnistui, koska verkkoyhteys katkaistiin."
 
-#: ../src/applet.c:475
+#: ../src/applet.c:510
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service stopped unexpectedly."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui, koska VPN-palvelu pysäytettiin odottamatta."
+"VPN-yhteys ”%s” epäonnistui, koska VPN-palvelu pysäytettiin odottamatta."
 
-#: ../src/applet.c:477
+#: ../src/applet.c:513
 #, c-format
 msgid ""
 "\n"
@@ -411,66 +437,65 @@ msgid ""
 "configuration."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui, koska VPN-palvelulta saatiin virheellinen "
+"VPN-yhteys ”%s” epäonnistui, koska VPN-palvelulta saatiin virheellinen "
 "asetusmäärittely."
 
-#: ../src/applet.c:479
+#: ../src/applet.c:516
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the connection attempt timed out."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui, koska yhteyttä palveluun ei saatu."
+"VPN-yhteys ”%s” epäonnistui, koska yhteyttä palveluun ei saatu."
 
-#: ../src/applet.c:481
+#: ../src/applet.c:519
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service did not start in time."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui, koska VPN-palvelu ei käynnistynyt sallitussa "
+"VPN-yhteys ”%s” epäonnistui, koska VPN-palvelu ei käynnistynyt sallitussa "
 "ajassa."
 
-#: ../src/applet.c:483
+#: ../src/applet.c:522
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service failed to start."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui, koska VPN-palvelua ei voitu käynnistää."
+"VPN-yhteys ”%s” epäonnistui, koska VPN-palvelua ei voitu käynnistää."
 
-#: ../src/applet.c:485
+#: ../src/applet.c:525
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because there were no valid VPN secrets."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui, koska kelvollisia VPN-salaisuuksia ei "
-"löytynyt."
+"VPN-yhteys ”%s” epäonnistui, koska kelvollisia VPN-salaisuuksia ei löytynyt."
 
-#: ../src/applet.c:487
+#: ../src/applet.c:528
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because of invalid VPN secrets."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui virheellisten VPN-salaisuuksien takia."
+"VPN-yhteys ”%s” epäonnistui virheellisten VPN-salaisuuksien takia."
 
-#: ../src/applet.c:493
+#: ../src/applet.c:535
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui."
+"VPN-yhteys ”%s” epäonnistui."
 
-#: ../src/applet.c:511
+#: ../src/applet.c:553
 #, c-format
 msgid ""
 "\n"
@@ -478,35 +503,35 @@ msgid ""
 "interrupted."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" katkesi, koska verkkoyhteys katkaistiin."
+"VPN-yhteys ”%s” katkesi, koska verkkoyhteys katkaistiin."
 
-#: ../src/applet.c:513
+#: ../src/applet.c:556
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' disconnected because the VPN service stopped."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" katkesi, koska VPN-palvelu pysäytettiin."
+"VPN-yhteys ”%s” katkesi, koska VPN-palvelu pysäytettiin."
 
-#: ../src/applet.c:518
+#: ../src/applet.c:562
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' disconnected."
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" katkesi."
+"VPN-yhteys ”%s” katkesi."
 
-#: ../src/applet.c:544
+#: ../src/applet.c:640
 msgid "VPN Login Message"
 msgstr "VPN-yhteyden kirjautumisviesti"
 
-#: ../src/applet.c:556 ../src/applet.c:564 ../src/applet.c:608
+#: ../src/applet.c:652 ../src/applet.c:660 ../src/applet.c:704
 msgid "VPN Connection Failed"
 msgstr "VPN-yhteys epäonnistui"
 
-#: ../src/applet.c:615
+#: ../src/applet.c:711
 #, c-format
 msgid ""
 "\n"
@@ -515,11 +540,11 @@ msgid ""
 "%s"
 msgstr ""
 "\n"
-"VPN-yhteys \"%s\" epäonnistui, koskan VPN-palvelu ei käynnistynyt.\n"
+"VPN-yhteys ”%s” epäonnistui, koskan VPN-palvelu ei käynnistynyt.\n"
 "\n"
 "%s"
 
-#: ../src/applet.c:618
+#: ../src/applet.c:714
 #, c-format
 msgid ""
 "\n"
@@ -528,94 +553,137 @@ msgid ""
 "%s"
 msgstr ""
 "\n"
-"VPN-yhteyden \"%s\" käynnistys epäonnistui.\n"
+"VPN-yhteyden ”%s” käynnistys epäonnistui.\n"
 "\n"
 "%s"
 
-#: ../src/applet.c:937
+#: ../src/applet.c:1005
+msgid "device not ready"
+msgstr "laite ei valmis"
+
+#: ../src/applet.c:1021
+msgid "device not managed"
+msgstr "laitetta ei hallita"
+
+#: ../src/applet.c:1065
 msgid "No network devices available"
 msgstr "Verkkolaitteita ei löytynyt"
 
-#: ../src/applet.c:1025
+#: ../src/applet.c:1153
 msgid "_VPN Connections"
 msgstr "_VPN-yhteydet"
 
-#: ../src/applet.c:1075
+#: ../src/applet.c:1203
 msgid "_Configure VPN..."
 msgstr "_Määrittele VPN-yhteys..."
 
-#: ../src/applet.c:1079
+#: ../src/applet.c:1207
 msgid "_Disconnect VPN..."
 msgstr "_Katkaise VPN-yhteys..."
 
-#: ../src/applet.c:1128
+#: ../src/applet.c:1260
 msgid "NetworkManager is not running..."
-msgstr "NetworkManager ei ole käytössä..."
+msgstr "Verkon hallinta ei ole käytössä..."
 
-#: ../src/applet.c:1133 ../src/applet.c:1728
+#: ../src/applet.c:1265 ../src/applet.c:1959
 msgid "Networking disabled"
 msgstr "Verkko ei ole käytössä"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1310
+#: ../src/applet.c:1449
 msgid "Enable _Networking"
 msgstr "Ota _verkko käyttöön"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1319
+#: ../src/applet.c:1458
 msgid "Enable _Wireless"
 msgstr "Ota _langaton käyttöön"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1330
+#: ../src/applet.c:1469
 msgid "Connection _Information"
 msgstr "Tietoja _yhteydestä"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1340
+#: ../src/applet.c:1479
 msgid "Edit Connections..."
 msgstr "Muokkaa yhteyksiä..."
 
 #. Help item
-#: ../src/applet.c:1354
+#: ../src/applet.c:1493
 msgid "_Help"
 msgstr "O_hje"
 
 #. About item
-#: ../src/applet.c:1363
+#: ../src/applet.c:1502
 msgid "_About"
 msgstr "_Tietoja"
 
-#: ../src/applet.c:1536
+#: ../src/applet.c:1675
 msgid "Disconnected"
 msgstr "Yhteys katkaistu"
 
-#: ../src/applet.c:1537
+#: ../src/applet.c:1676
 msgid "The network connection has been disconnected."
 msgstr "Yhteys verkkoon on katkaistu."
 
-#: ../src/applet.c:1732
+#: ../src/applet.c:1824
+#, c-format
+msgid "Preparing network connection '%s'..."
+msgstr "Valmistellaan verkkoyhteyttä  ”%s”..."
+
+#: ../src/applet.c:1827
+#, c-format
+msgid "User authentication required for network connection '%s'..."
+msgstr "Käyttäjätunnistautuminen vaaditaan verkkoyhteydelle ”%s”..."
+
+#: ../src/applet.c:1833
+#, c-format
+msgid "Network connection '%s' active"
+msgstr "Verkkoyhteys ”%s” on aktiivinen"
+
+#: ../src/applet.c:1914
+#, c-format
+msgid "Starting VPN connection '%s'..."
+msgstr "Käynnistetään VPN-yhteyttä ”%s”..."
+
+#: ../src/applet.c:1917
+#, c-format
+msgid "User authentication required for VPN connection '%s'..."
+msgstr "Käyttäjätunnistautuminen vaaditan VPN-yhteydelle ”%s”..."
+
+#: ../src/applet.c:1920
+#, c-format
+msgid "Requesting a VPN address for '%s'..."
+msgstr "Pyydetään VPN-osoitetta yhteydelle ”%s”..."
+
+#: ../src/applet.c:1923
+#, c-format
+msgid "VPN connection '%s' active"
+msgstr "VPN-yhteys ”%s” on aktiiviinen"
+
+#: ../src/applet.c:1963
 msgid "No network connection"
 msgstr "Ei verkkoyhteyttä"
 
-#: ../src/applet.c:2038
+#: ../src/applet.c:2291
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
 msgstr ""
-"NetworkManager-sovelma ei löytänyt joitain vaadituista resursseista eikä "
+"Verkon hallinta -sovelma ei löytänyt joitain vaadituista resursseista eikä "
 "pysty jatkamaan.\n"
 
-#: ../src/applet.c:2181
+#: ../src/applet.c:2476
 msgid "NetworkManager Applet"
-msgstr "NetworkManager-sovelma"
+msgstr "Verkon hallinta -sovelma"
 
-#: ../src/applet.c:2186 ../src/wired-dialog.c:103
+#: ../src/applet.c:2481 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
 msgstr ""
-"NetworkManager-sovelma ei voinut ladata jotain vaadituista resursseista "
+"Verkon hallinta -sovelma ei voinut ladata jotain vaadituista resursseista "
 "(glade-tiedostoa ei löytynyt)."
 
 #: ../src/applet.glade.h:1 ../src/connection-editor/ce-mobile-wizard.glade.h:1
@@ -630,7 +698,7 @@ msgid ""
 "3\n"
 "4"
 msgstr ""
-"1 (Oletus)\n"
+"1 (oletus)\n"
 "2\n"
 "3\n"
 "4"
@@ -819,28 +887,30 @@ msgid "DNS Servers:"
 msgstr "DNS-palvelimet:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
+msgid ""
+"If enabled, this connection will never be used as the default network "
+"connection."
+msgstr "Jos käytössä, tätä yhteyttä ei koskaan käytetä oletusverkkoyhteytenä."
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:10
 msgid "Ignore automatically obtained routes"
 msgstr "Älä huomioi automaattisesti saatuja reittejä"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:10
+#: ../src/connection-editor/ce-page-ip4.glade.h:11
 msgid "Method:"
 msgstr "Menetelmä:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:11
+#: ../src/connection-editor/ce-page-ip4.glade.h:12
 msgid "Routes..."
 msgstr "Reitit..."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:12
+#: ../src/connection-editor/ce-page-ip4.glade.h:13
 msgid "Search Domains:"
 msgstr "Hakualuenimet:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:13
-msgid "gtk-cancel"
-msgstr "gtk-cancel"
-
 #: ../src/connection-editor/ce-page-ip4.glade.h:14
-msgid "gtk-ok"
-msgstr "gtk-ok"
+msgid "Use this connection only for resources on its network"
+msgstr "Käytä tätä yhteyttä vain sen verkon resursseja varten"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -893,48 +963,120 @@ msgid "Show passwords"
 msgstr "Näytä salasanat"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:1
+msgid "<b>Allowed Authentication Methods</b>"
+msgstr "<b>Sallitut todentamistavat</b>"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:2
 msgid "<b>Authentication</b>"
 msgstr "<b>Todentaminen</b>"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:2
+#: ../src/connection-editor/ce-page-ppp.glade.h:3
 msgid "<b>Compression</b>"
 msgstr "<b>Pakkaus</b>"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:3
+#: ../src/connection-editor/ce-page-ppp.glade.h:4
 msgid "<b>Echo</b>"
 msgstr "<b>Kaiutus</b>"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:4
+#: ../src/connection-editor/ce-page-ppp.glade.h:5
+msgid ""
+"<i>In most cases, the provider's PPP servers will support all authentication "
+"methods.  If connections fail, try disabling support for some methods.</i>"
+msgstr ""
+"<i>Useimmissa tapauksissa palveluntarjoajan PPP-palvelimet tukevat kaikkia "
+"todentamistapoja. Jos yhteys epäonnistuu, kokeile poistaa joidenkin tapojen "
+"tuki pois käytöstä.</i>"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:6
 msgid "Allow BSD data compression"
 msgstr "Salli BSD-pakkaus tiedolle"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:5
+#: ../src/connection-editor/ce-page-ppp.glade.h:7
 msgid "Allow Deflate data compression"
 msgstr "Salli Deflate-pakkaus tiedolle"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:6
+#: ../src/connection-editor/ce-page-ppp.glade.h:8
+msgid "Allowed methods:"
+msgstr "Sallitut tavat"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:9
+#: ../src/connection-editor/page-ppp.c:134
+#: ../src/wireless-security/eap-method-ttls.c:268
+msgid "CHAP"
+msgstr "CHAP"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:10
+msgid "Challenge Handshake Authentication Protocol"
+msgstr "Challenge Handshake Authentication -yhteyskäytäntö"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:11
+msgid "Configure Methods..."
+msgstr "Määrittele tavat..."
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:12
+#: ../src/connection-editor/page-ppp.c:132
+msgid "EAP"
+msgstr "EAP"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:13
+msgid "Extensible Authentication Protocol"
+msgstr "Extensible Authentication -yhteyskäytäntö"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:14
+#: ../src/connection-editor/page-ppp.c:136
+#: ../src/wireless-security/eap-method-ttls.c:238
+msgid "MSCHAP"
+msgstr "MSCHAP"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:15
+msgid "MSCHAP v2"
+msgstr "MSCHAP v2"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:16
+msgid "Microsoft Challenge Handshake Authentication Protocol"
+msgstr "Microsoft Challenge Handshake Authentication -yhteyskäytäntö"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:17
+msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
+msgstr "Microsoft Challenge Handshake Authentication -yhteyskäytäntö versio 2"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:18
+#: ../src/connection-editor/page-ppp.c:133
+#: ../src/wireless-security/eap-method-ttls.c:223
+msgid "PAP"
+msgstr "PAP"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:19
+msgid "Password Authentication Protocol"
+msgstr "Password Authentication -yhteyskäytäntö"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:20
 msgid "Require 128-bit encryption"
 msgstr "Vaadi 128-bittinen salaus"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:7
+#: ../src/connection-editor/ce-page-ppp.glade.h:21
 msgid "Send PPP echo packets"
 msgstr "Lähetä PPP ECHO -paketteja"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:8
-msgid "Use Authentication"
-msgstr "Todenna yhteys"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:9
+#: ../src/connection-editor/ce-page-ppp.glade.h:22
 msgid "Use Point-to-Point Encryption (MPPE)"
 msgstr "Käytä Point-to-point -salausta (MPPE)"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:10
+#: ../src/connection-editor/ce-page-ppp.glade.h:23
 msgid "Use Stateful MPPE"
 msgstr "Käytä tilallista MPPE:tä"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:11
+#: ../src/connection-editor/ce-page-ppp.glade.h:24
 msgid "Use TCP header compression"
 msgstr "Käytä TCP-otsakkeiden pakkausta"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:25
+msgid "gtk-cancel"
+msgstr "gtk-cancel"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:26
+msgid "gtk-ok"
+msgstr "gtk-ok"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:1
 msgid "Aut_onegotiate"
@@ -1063,141 +1205,132 @@ msgstr ""
 "sisällä haluamaasi VPN-yhteyden tyyppiä, voi olla että et ole asentanut "
 "tarvittavaa VPN-liitännäistä."
 
-#: ../src/connection-editor/ip4-routes-dialog.c:261
-#: ../src/connection-editor/page-ip4.c:618
+#: ../src/connection-editor/ce-vpn-wizard.glade.h:5
+msgid "Create..."
+msgstr "Luo..."
+
+#: ../src/connection-editor/ip4-routes-dialog.c:501
+#: ../src/connection-editor/page-ip4.c:669
 msgid "Address"
 msgstr "Osoite"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:276
-msgid "Prefix"
-msgstr "Etuliite"
+#: ../src/connection-editor/ip4-routes-dialog.c:517
+#: ../src/connection-editor/page-ip4.c:685
+msgid "Netmask"
+msgstr "Verkkopeite"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:291
-#: ../src/connection-editor/page-ip4.c:648
+#: ../src/connection-editor/ip4-routes-dialog.c:533
+#: ../src/connection-editor/page-ip4.c:701
 msgid "Gateway"
 msgstr "Yhdyskäytävä"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:306
+#: ../src/connection-editor/ip4-routes-dialog.c:549
 msgid "Metric"
 msgstr "Metric"
 
-#: ../src/connection-editor/mobile-wizard.c:76
+#: ../src/connection-editor/mobile-wizard.c:73
 msgid "Installed GSM device"
 msgstr "Asennettiin GSM-laite"
 
-#: ../src/connection-editor/mobile-wizard.c:87
+#: ../src/connection-editor/mobile-wizard.c:84
 msgid "Installed CDMA device"
 msgstr "Asennettiin CDMA-laite"
 
-#: ../src/connection-editor/mobile-wizard.c:153
+#: ../src/connection-editor/mobile-wizard.c:150
 msgid "Create a GSM connection"
 msgstr "Luo GSM-yhteys"
 
-#: ../src/connection-editor/mobile-wizard.c:154
+#: ../src/connection-editor/mobile-wizard.c:151
 msgid "Create a CDMA connection"
 msgstr "Luo CDMA-yhteys"
 
-#: ../src/connection-editor/page-dsl.c:140
+#: ../src/connection-editor/page-dsl.c:143
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1487
+#: ../src/connection-editor/nm-connection-list.c:1594
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-ip4.c:108
+#: ../src/connection-editor/page-ip4.c:116
 msgid "Automatic (VPN)"
 msgstr "Automaattinen (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:109
+#: ../src/connection-editor/page-ip4.c:117
 msgid "Automatic (VPN) addresses only"
 msgstr "Vain automaattiset osoitteet (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:113
+#: ../src/connection-editor/page-ip4.c:120
 msgid "Automatic (PPP)"
 msgstr "Automaattinen (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:114
+#: ../src/connection-editor/page-ip4.c:121
 msgid "Automatic (PPP) addresses only"
 msgstr "Vain automaattiset osoitteet (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:116
+#: ../src/connection-editor/page-ip4.c:123
 msgid "Automatic (PPPoE)"
 msgstr "Automaattinen (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:117
+#: ../src/connection-editor/page-ip4.c:124
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Vain automaattiset osoitteet (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:119
+#: ../src/connection-editor/page-ip4.c:126
 msgid "Automatic (DHCP)"
 msgstr "Automaattinen (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:120
+#: ../src/connection-editor/page-ip4.c:127
 msgid "Automatic (DHCP) addresses only"
 msgstr "Vain automaattiset osoitteet (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:141
+#: ../src/connection-editor/page-ip4.c:152
 msgid "Manual"
 msgstr "Manuaalinen"
 
-#: ../src/connection-editor/page-ip4.c:149
+#: ../src/connection-editor/page-ip4.c:164
 msgid "Link-Local Only"
 msgstr "Vain linkkiyhteys"
 
-#: ../src/connection-editor/page-ip4.c:155
+#: ../src/connection-editor/page-ip4.c:170
 msgid "Shared to other computers"
 msgstr "Jaettu muille tietokoneille"
 
-#: ../src/connection-editor/page-ip4.c:549
+#: ../src/connection-editor/page-ip4.c:597
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Muokataan yhteyden %s IPv4-reittejä"
 
-#: ../src/connection-editor/page-ip4.c:588
+#: ../src/connection-editor/page-ip4.c:638
 msgid "IPv4 Settings"
 msgstr "IPv4-asetukset"
 
-#: ../src/connection-editor/page-ip4.c:633
-msgid "Netmask"
-msgstr "Verkkopeite"
-
-#: ../src/connection-editor/page-ppp.c:128
-#: ../src/wireless-security/eap-method-ttls.c:308
-msgid "PAP"
-msgstr "PAP"
-
-#: ../src/connection-editor/page-ppp.c:129
-#: ../src/wireless-security/eap-method-ttls.c:353
-msgid "CHAP"
-msgstr "CHAP"
-
-#: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-peap.c:309
-#: ../src/wireless-security/eap-method-ttls.c:338
+#: ../src/connection-editor/page-ppp.c:135
+#: ../src/wireless-security/eap-method-peap.c:223
+#: ../src/wireless-security/eap-method-ttls.c:253
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
-#: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:323
-msgid "MSCHAP"
-msgstr "MSCHAP"
+#: ../src/connection-editor/page-ppp.c:138
+msgid "none"
+msgstr "ei mitään"
 
-#: ../src/connection-editor/page-ppp.c:132
-msgid "EAP"
-msgstr "EAP"
+#: ../src/connection-editor/page-ppp.c:198
+#, c-format
+msgid "Editing PPP authentication methods for %s"
+msgstr "Muokataan PPP-todentamistapoja yhteydelle %s"
 
-#: ../src/connection-editor/page-ppp.c:199
-msgid "Point-to-Point Protocol (PPP)"
-msgstr "Point-to-point-protokolla (PPP)"
+#: ../src/connection-editor/page-ppp.c:282
+msgid "PPP Settings"
+msgstr "PPP-asetukset"
 
-#: ../src/connection-editor/page-vpn.c:69
-#: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1484
+#: ../src/connection-editor/page-vpn.c:70
+#: ../src/connection-editor/nm-connection-editor.glade.h:8
+#: ../src/connection-editor/nm-connection-list.c:1591
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-wired.c:175
-#: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1474
+#: ../src/connection-editor/page-wired.c:180
+#: ../src/connection-editor/nm-connection-editor.glade.h:9
+#: ../src/connection-editor/nm-connection-list.c:1581
 msgid "Wired"
 msgstr "Kiinteä"
 
@@ -1219,59 +1352,59 @@ msgstr "oletus"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:317
-#: ../src/connection-editor/nm-connection-editor.glade.h:11
-#: ../src/connection-editor/nm-connection-list.c:1477
+#: ../src/connection-editor/page-wireless.c:326
+#: ../src/connection-editor/nm-connection-editor.glade.h:10
+#: ../src/connection-editor/nm-connection-list.c:1584
 msgid "Wireless"
 msgstr "Langaton"
 
-#: ../src/connection-editor/page-wireless-security.c:210
+#: ../src/connection-editor/page-wireless-security.c:230
 msgid "Wireless Security"
 msgstr "Langaton tietoturva"
 
-#: ../src/connection-editor/page-wireless-security.c:255
-#: ../src/wireless-dialog.c:749
+#: ../src/connection-editor/page-wireless-security.c:278
+#: ../src/wireless-dialog.c:789
 msgid "WEP 40/128-bit Key"
 msgstr "WEP 40/128-bittinen avain"
 
-#: ../src/connection-editor/page-wireless-security.c:264
-#: ../src/wireless-dialog.c:758
+#: ../src/connection-editor/page-wireless-security.c:287
+#: ../src/wireless-dialog.c:798
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bittinen tunnuslause"
 
-#: ../src/connection-editor/page-wireless-security.c:290
-#: ../src/wireless-dialog.c:788
+#: ../src/connection-editor/page-wireless-security.c:313
+#: ../src/wireless-dialog.c:828
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynaaminen WEP (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:304
-#: ../src/wireless-dialog.c:802
+#: ../src/connection-editor/page-wireless-security.c:327
+#: ../src/wireless-dialog.c:842
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 (henkilökohtainen)"
 
-#: ../src/connection-editor/page-wireless-security.c:318
-#: ../src/wireless-dialog.c:816
+#: ../src/connection-editor/page-wireless-security.c:341
+#: ../src/wireless-dialog.c:856
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA2 Enterprise"
 
-#: ../src/connection-editor/nm-connection-editor.c:93
+#: ../src/connection-editor/nm-connection-editor.c:101
 #, c-format
 msgid "Editing %s"
 msgstr "Muokataan %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:97
+#: ../src/connection-editor/nm-connection-editor.c:105
 msgid "Editing un-named connection"
 msgstr "Nimettöän yhteynden muokkaus"
 
-#: ../src/connection-editor/nm-connection-editor.c:174
+#: ../src/connection-editor/nm-connection-editor.c:289
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
 msgstr ""
-"Yhteyseditori ei voinut ladata jotain vaadituista resursseista "
-"(NetworkManager-sovelman glade-tiedostoa ei löytynyt)."
+"Yhteyseditori ei voinut ladata jotain vaadituista resursseista (Verkon "
+"hallinta -sovelman glade-tiedostoa ei löytynyt)."
 
-#: ../src/connection-editor/nm-connection-editor.c:187
+#: ../src/connection-editor/nm-connection-editor.c:302
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
@@ -1279,13 +1412,30 @@ msgstr ""
 "Yhteyseditori ei voinut ladata jotain vaadituista resursseista (glade-"
 "tiedostoa ei löytynyt)."
 
+#: ../src/connection-editor/nm-connection-editor.c:318
+msgid "Apply..."
+msgstr "Toteuta..."
+
+#: ../src/connection-editor/nm-connection-editor.c:319
+msgid "Authenticate to save this connection for all users of this machine."
+msgstr ""
+"Tunnistaudu tallentaaksesi tämän yhteyden kaikille tämän koneen käyttäjille."
+
+#: ../src/connection-editor/nm-connection-editor.c:320
+msgid "Apply"
+msgstr "Toteuta"
+
+#: ../src/connection-editor/nm-connection-editor.c:321
+msgid "Save this connection for all users of this machine."
+msgstr "Tallenna tämä yhteys kaikille tämän koneen käyttäjille."
+
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
-msgid "Connect _automatically"
-msgstr "Yhdistä _automaattisesti"
+msgid "Available to all users"
+msgstr "Saatavilla kaikille käyttäjille"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:2
-msgid "Connection Editor"
-msgstr "Yhteyseditori"
+msgid "Connect _automatically"
+msgstr "Yhdistä _automaattisesti"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:3
 msgid "Connection _name:"
@@ -1295,15 +1445,7 @@ msgstr "Yhteyden _nimi:"
 msgid "E_xport"
 msgstr "_Vie"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:7
-msgid "Network Connections"
-msgstr "Verkkoyhteydet"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:8
-msgid "System setting"
-msgstr "Järjestelmäasetus"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:12
+#: ../src/connection-editor/nm-connection-editor.glade.h:11
 msgid "_Import"
 msgstr "_Tuo"
 
@@ -1352,9 +1494,17 @@ msgid_plural "%d years ago"
 msgstr[0] "%d vuosi sitten"
 msgstr[1] "%d vuotta sitten"
 
+#: ../src/connection-editor/nm-connection-list.c:306
+msgid "PolicyKit authorization was malformed."
+msgstr "PolicyKit-valtuutus oli väärin muodostunut."
+
+#: ../src/connection-editor/nm-connection-list.c:312
+msgid "PolicyKit authorization could not be created."
+msgstr "PolicyKit-valtuutusta ei voi luoda."
+
 #: ../src/connection-editor/nm-connection-list.c:358
-#: ../src/connection-editor/nm-connection-list.c:469
-#: ../src/connection-editor/nm-connection-list.c:627
+#: ../src/connection-editor/nm-connection-list.c:482
+#: ../src/connection-editor/nm-connection-list.c:653
 #, c-format
 msgid "Could not obtain required privileges: %s."
 msgstr "Vaadittuja oikeuksia ei saatu: %s."
@@ -1363,71 +1513,74 @@ msgstr "Vaadittuja oikeuksia ei saatu: %s."
 msgid "Could not remove system connection: permission denied."
 msgstr "Järjestelmän yhteyttä ei voitu poistaa: lupa evätty."
 
-#: ../src/connection-editor/nm-connection-list.c:397
+#: ../src/connection-editor/nm-connection-list.c:396
+#: ../src/connection-editor/nm-connection-list.c:406
 #, c-format
 msgid "Removing connection failed: %s."
 msgstr "Yhteyden poisto epäonnistui: %s."
 
-#: ../src/connection-editor/nm-connection-list.c:472
+#: ../src/connection-editor/nm-connection-list.c:485
 msgid "Could not add system connection: permission denied."
 msgstr "Järjestelmän yhteyttä ei voitu lisätä: lupa evätty."
 
-#: ../src/connection-editor/nm-connection-list.c:516
+#: ../src/connection-editor/nm-connection-list.c:532
+#: ../src/connection-editor/nm-connection-list.c:542
 #, c-format
 msgid "Adding connection failed: %s."
 msgstr "VPN-yhteyden lisäys epäonnistui: %s"
 
-#: ../src/connection-editor/nm-connection-list.c:630
+#: ../src/connection-editor/nm-connection-list.c:656
 msgid "Could not update system connection: permission denied."
 msgstr "Järjestelmän asetuksia ei voitu päivittää: lupa evätty."
 
-#: ../src/connection-editor/nm-connection-list.c:675
+#: ../src/connection-editor/nm-connection-list.c:714
+#: ../src/connection-editor/nm-connection-list.c:719
 #, c-format
 msgid "Updating connection failed: %s."
 msgstr "VPN-yhteyden päivitys epäonnistui: %s"
 
-#: ../src/connection-editor/nm-connection-list.c:790
+#: ../src/connection-editor/nm-connection-list.c:843
 #, c-format
 msgid "Wired connection %d"
 msgstr "Kiinteä yhteys %d"
 
-#: ../src/connection-editor/nm-connection-list.c:798
+#: ../src/connection-editor/nm-connection-list.c:855
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Langaton yhteys %d"
 
-#: ../src/connection-editor/nm-connection-list.c:813
+#: ../src/connection-editor/nm-connection-list.c:874
 #, c-format
 msgid "GSM connection %d"
 msgstr "GSM-yhteys %d"
 
-#: ../src/connection-editor/nm-connection-list.c:827
+#: ../src/connection-editor/nm-connection-list.c:893
 #, c-format
 msgid "CDMA connection %d"
 msgstr "CDMA-yhteys %d"
 
-#: ../src/connection-editor/nm-connection-list.c:848
-#: ../src/connection-editor/nm-connection-list.c:1140
+#: ../src/connection-editor/nm-connection-list.c:920
+#: ../src/connection-editor/nm-connection-list.c:1236
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN-yhteys %d"
 
-#: ../src/connection-editor/nm-connection-list.c:856
+#: ../src/connection-editor/nm-connection-list.c:934
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL-yhteys %d"
 
-#: ../src/connection-editor/nm-connection-list.c:1060
+#: ../src/connection-editor/nm-connection-list.c:1148
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Haluatko varmasti poistaa yhteyden %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:1156
-#: ../src/connection-editor/vpn-helpers.c:228
+#: ../src/connection-editor/nm-connection-list.c:1262
+#: ../src/connection-editor/vpn-helpers.c:229
 msgid "Cannot import VPN connection"
 msgstr "VPN-yhteyttä ei voi tuoda"
 
-#: ../src/connection-editor/nm-connection-list.c:1158
+#: ../src/connection-editor/nm-connection-list.c:1264
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1437,7 +1590,7 @@ msgstr ""
 "\n"
 "Virhe: VPN-palvelutyyppiä ei määritelty."
 
-#: ../src/connection-editor/vpn-helpers.c:230
+#: ../src/connection-editor/vpn-helpers.c:231
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -1445,53 +1598,53 @@ msgid ""
 "\n"
 "Error: %s."
 msgstr ""
-"Tiedostoa \"%s\" ei voitu lukea tai se ei sisällä tunnistettuja VPN-yhteyden "
+"Tiedostoa ”%s” ei voitu lukea tai se ei sisällä tunnistettuja VPN-yhteyden "
 "tietoja\n"
 "\n"
 "Virhe: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:261
+#: ../src/connection-editor/vpn-helpers.c:262
 msgid "Select file to import"
 msgstr "Valitse tuotava tiedosto"
 
-#: ../src/connection-editor/vpn-helpers.c:307
+#: ../src/connection-editor/vpn-helpers.c:310
 #, c-format
 msgid "A file named \"%s\" already exists."
-msgstr "Tiedosto  \"%s\" on jo olemassa."
+msgstr "Tiedosto ”%s” on jo olemassa."
 
-#: ../src/connection-editor/vpn-helpers.c:309
+#: ../src/connection-editor/vpn-helpers.c:312
 msgid "_Replace"
 msgstr "Ko_rvaa"
 
-#: ../src/connection-editor/vpn-helpers.c:311
+#: ../src/connection-editor/vpn-helpers.c:314
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr ""
 "Haluatko korvata tiedoston %s VPN-asetuksilla joita olet tallentamassa?"
 
-#: ../src/connection-editor/vpn-helpers.c:345
+#: ../src/connection-editor/vpn-helpers.c:350
 msgid "Cannot export VPN connection"
 msgstr "VPN-yhteyden asetuksia ei voi viedä"
 
-#: ../src/connection-editor/vpn-helpers.c:347
+#: ../src/connection-editor/vpn-helpers.c:352
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
 "\n"
 "Error: %s."
 msgstr ""
-"VPN-yhteyttä \"%s\" ei voitu viedä tiedostoon %s.\n"
+"VPN-yhteyttä ”%s” ei voitu viedä tiedostoon %s.\n"
 "\n"
 "Virhe: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:378
+#: ../src/connection-editor/vpn-helpers.c:386
 msgid "Export VPN connection..."
 msgstr "Vie VPN-asetukset..."
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:244
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:253
 #, c-format
 msgid "Cannot start VPN connection '%s'"
-msgstr "VPN-yhteyttä \"%s\" ei voi käynnistää"
+msgstr "VPN-yhteyttä ”%s” ei voi käynnistää"
 
 #: ../src/vpn-password-dialog.c:140
 #, c-format
@@ -1499,87 +1652,79 @@ msgid ""
 "Could not find the authentication dialog for VPN connection type '%s'. "
 "Contact your system administrator."
 msgstr ""
-"Kirjautumisikkunaa VPN-yhteyden tyypille \"%s\" ei löydy. Ota yhteyttä "
+"Kirjautumisikkunaa VPN-yhteyden tyypille ”%s” ei löydy. Ota yhteyttä "
 "järjestelmäsi ylläpitäjään."
 
-#: ../src/vpn-password-dialog.c:247
+#: ../src/vpn-password-dialog.c:256
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
 "type '%s'. Contact your system administrator."
 msgstr ""
-"Virhe käynnistettäessä kirjautumisikkunaa VPN-yhteyden tyypille \"%s\". Ota "
+"Virhe käynnistettäessä kirjautumisikkunaa VPN-yhteyden tyypille ”%s”. Ota "
 "yhteyttä järjestelmäsi ylläpitäjään."
 
-#: ../src/wired-dialog.c:74
+#: ../src/wired-dialog.c:99
 msgid "Wired 802.1X authentication"
 msgstr "Langallisen 802.1x-yhteyden todentaminen"
 
-#: ../src/wireless-dialog.c:408
+#: ../src/wireless-dialog.c:414
 msgid "New..."
 msgstr "Uusi..."
 
-#: ../src/wireless-dialog.c:866
+#: ../src/wireless-dialog.c:916
 msgid "C_reate"
 msgstr "_Luo"
 
-#: ../src/wireless-dialog.c:935
+#: ../src/wireless-dialog.c:987
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
 "s'."
 msgstr ""
-"Salasanoja tai salausavaimia tarvitaan langattomaan verkkoon \"%s\" "
+"Salasanoja tai salausavaimia tarvitaan langattomaan verkkoon ”%s” "
 "pääsemiseksi."
 
-#: ../src/wireless-dialog.c:937
+#: ../src/wireless-dialog.c:989
 msgid "Wireless Network Authentication Required"
 msgstr "Langattoman verkon salaustiedot vaaditaan"
 
-#: ../src/wireless-dialog.c:939
+#: ../src/wireless-dialog.c:991
 msgid "Authentication required by wireless network"
 msgstr "Langaton verkko vaatii salaustietoja"
 
-#: ../src/wireless-dialog.c:944
+#: ../src/wireless-dialog.c:996
 msgid "Create New Wireless Network"
 msgstr "Luo uusi langaton verkko"
 
-#: ../src/wireless-dialog.c:946
+#: ../src/wireless-dialog.c:998
 msgid "New wireless network"
 msgstr "Uusi langaton verkko"
 
-#: ../src/wireless-dialog.c:947
+#: ../src/wireless-dialog.c:999
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Syötä sen langattoman verkon nimi, jonka haluat luoda."
 
-#: ../src/wireless-dialog.c:949
+#: ../src/wireless-dialog.c:1001
 msgid "Connect to Hidden Wireless Network"
 msgstr "Ota yhteys piilotettuun langattomaan verkkoon"
 
-#: ../src/wireless-dialog.c:951
+#: ../src/wireless-dialog.c:1003
 msgid "Hidden wireless network"
 msgstr "Piilotettu langaton verkko"
 
-#: ../src/wireless-dialog.c:952
+#: ../src/wireless-dialog.c:1004
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
 msgstr ""
 "Syötä yhdistettävän piilotetun langattoman verkon nimi ja salaustiedot."
 
-#: ../src/wireless-security/eap-method.c:293
-msgid "DER or PEM certificates (*.der, *.pem)"
-msgstr "DER- tai PEM-varmeneet (*.der, *.pem)"
-
-#: ../src/wireless-security/eap-method-peap.c:234
-#: ../src/wireless-security/eap-method-tls.c:290
-#: ../src/wireless-security/eap-method-ttls.c:221
+#: ../src/wireless-security/eap-method.c:169
 msgid "No Certificate Authority certificate chosen"
 msgstr "Varmentajavarmennetta ei valittu"
 
-#: ../src/wireless-security/eap-method-peap.c:235
-#: ../src/wireless-security/eap-method-tls.c:291
-#: ../src/wireless-security/eap-method-ttls.c:222
+#: ../src/wireless-security/eap-method.c:170
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -1589,47 +1734,93 @@ msgstr ""
 "turvattomiin, epäluotettaviin langattomiin verkkoihin. Haluatko valita "
 "varmentajan varmenteen?"
 
-#: ../src/wireless-security/eap-method-peap.c:240
-#: ../src/wireless-security/eap-method-tls.c:296
-#: ../src/wireless-security/eap-method-ttls.c:227
+#: ../src/wireless-security/eap-method.c:175
 msgid "Ignore"
 msgstr "Ohita"
 
-#: ../src/wireless-security/eap-method-peap.c:244
-#: ../src/wireless-security/eap-method-tls.c:300
-#: ../src/wireless-security/eap-method-ttls.c:231
+#: ../src/wireless-security/eap-method.c:179
 msgid "Choose CA Certificate"
 msgstr "Valitse CA-varmenne"
 
-#: ../src/wireless-security/eap-method-peap.c:320
+#: ../src/wireless-security/eap-method.c:440
+msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
+msgstr "DER-, PEM- tai PKCS#12-yksityisavaimet (*.der, *.pem, *.p12)"
+
+#: ../src/wireless-security/eap-method.c:443
+msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
+msgstr "DER- tai PEM-varmenteet (*.der, *.pem, *.crt, *.cer)"
+
+#: ../src/wireless-security/eap-method-peap.c:234
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:399
-#: ../src/wireless-security/eap-method-tls.c:431
-#: ../src/wireless-security/eap-method-ttls.c:436
+#: ../src/wireless-security/eap-method-peap.c:305
+#: ../src/wireless-security/eap-method-tls.c:423
+#: ../src/wireless-security/eap-method-ttls.c:343
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Valitse varmentajavarmenne..."
 
-#: ../src/wireless-security/eap-method-tls.c:427
+#: ../src/wireless-security/eap-method-tls.c:419
 msgid "Choose your personal certificate..."
 msgstr "Valitse oma varmenne..."
 
-#: ../src/wireless-security/eap-method-tls.c:436
+#: ../src/wireless-security/eap-method-tls.c:428
 msgid "Choose your private key..."
 msgstr "Valitse salainen avain..."
 
-#: ../src/wireless-security/wireless-security.c:322
+#: ../src/wireless-security/wireless-security.c:305
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:346
+#: ../src/wireless-security/wireless-security.c:329
 msgid "Tunneled TLS"
 msgstr "Tunneloitu TLS"
 
-#: ../src/wireless-security/wireless-security.c:357
+#: ../src/wireless-security/wireless-security.c:340
 msgid "Protected EAP (PEAP)"
 msgstr "Suojattu EAP (PEAP)"
+
+#~ msgid "Dialing mobile broadband device %s..."
+#~ msgstr "Soitetaan mobiililaajakaistalaitteella %s..."
+
+#~ msgid "Starting PPP on device %s..."
+#~ msgstr "Käynnistetään PPP laitteella %s..."
+
+#~ msgid "Waiting for user authentication on device '%s'..."
+#~ msgstr "Odotetaan käyttäjän tunnistautumista laitteella \"%s\"..."
+
+#~ msgid "Mobile broadband connection"
+#~ msgstr "Mobiililaajakaistayhteys"
+
+#~ msgid "Preparing device %s for the wired network..."
+#~ msgstr "Valmistellaan laitetta %s kiinteälle verkkoyhteydelle..."
+
+#~ msgid "Configuring device %s for the wired network..."
+#~ msgstr "Määritellään laitetta %s kiinteälle verkkoyhteydelle..."
+
+#~ msgid "Requesting a network address from the wired network..."
+#~ msgstr "Pyydetään verkko-osoitetta kiinteästä verkosta..."
+
+#~ msgid "Preparing device %s for the wireless network '%s'..."
+#~ msgstr "Valmistellaan laitetta %s langattomalle verkolle \"%s\"..."
+
+#~ msgid "Attempting to join the wireless network '%s'..."
+#~ msgstr "Yritetään liittyä langattomaan verkkoon \"%s\"..."
+
+#~ msgid "Waiting for Network Key for the wireless network '%s'..."
+#~ msgstr "Odotetaan verkon avainta langattomalle verkolle \"%s\""
+
+#~ msgid "Prefix"
+#~ msgstr "Etuliite"
+
+#~ msgid "Point-to-Point Protocol (PPP)"
+#~ msgstr "Point-to-point-protokolla (PPP)"
+
+#~ msgid "Connection Editor"
+#~ msgstr "Yhteyseditori"
+
+#~ msgid "System setting"
+#~ msgstr "Järjestelmäasetus"
 
 #~ msgid "Auto CDMA network connection"
 #~ msgstr "Automaattinen CDMA-verkkoyhteys"
@@ -1927,9 +2118,6 @@ msgstr "Suojattu EAP (PEAP)"
 
 #~ msgid "Export the selected VPN connection to a file"
 #~ msgstr "Vie valittu VPN-yhteys tiedostoon"
-
-#~ msgid "Manage Virtual Private Network Connections"
-#~ msgstr "Hallitse VPN-yhteyksiä"
 
 #~ msgid "VPN Connections"
 #~ msgstr "VPN-yhteydet"
