@@ -1,5 +1,14 @@
 2009-02-18  Dan Williams  <dcbw@redhat.com>
 
+	Patch by paolo borelli <pborelli@katamail.com>
+
+	* src/applet.c
+	  src/gconf-helpers/gconf-upgrade.c
+	  src/wireless-dialog.c
+		- Fix some memory leaks (bgo #570869)
+
+2009-02-18  Dan Williams  <dcbw@redhat.com>
+
 	* src/applet.c
 		- (ICON_LOAD): don't segfault if err is NULL (bgo #548062)
 		- (finalize): dispose of the settings proxies after disposing

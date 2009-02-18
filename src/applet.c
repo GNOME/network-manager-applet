@@ -1936,7 +1936,6 @@ applet_update_icon (gpointer user_data)
 	GdkPixbuf *pixbuf = NULL;
 	NMState state;
 	char *dev_tip = NULL, *vpn_tip = NULL;
-	GString *tip;
 	NMVPNConnectionState vpn_state = NM_VPN_SERVICE_STATE_UNKNOWN;
 	gboolean nm_running;
 	NMActiveConnection *active_vpn = NULL;
@@ -2000,6 +1999,8 @@ applet_update_icon (gpointer user_data)
 	}
 
 	if (dev_tip || vpn_tip) {
+		GString *tip;
+
 		tip = g_string_new (dev_tip);
 
 		if (vpn_tip)
@@ -2008,6 +2009,8 @@ applet_update_icon (gpointer user_data)
 		if (tip->len)
 			applet->tip = tip->str;
 
+		g_free (vpn_tip);
+		g_free (dev_tip);
 		g_string_free (tip, FALSE);
 	}
 
@@ -2588,6 +2591,9 @@ static void finalize (GObject *object)
 
 	if (applet->gconf_client)
 		g_object_unref (applet->gconf_client);
+
+	if (applet->encryption_size_group)
+		g_object_unref (applet->encryption_size_group);
 
 	if (applet->status_icon)
 		g_object_unref (applet->status_icon);

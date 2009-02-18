@@ -1191,6 +1191,7 @@ nm_gconf_migrate_0_7_netmask_to_prefix (GConfClient *client)
 			                                NM_SETTING_IP4_CONFIG_SETTING_NAME,
 			                                new);
 		}
+		g_array_free (array, TRUE);
 		g_array_free (new, TRUE);
 
 next:
@@ -1467,6 +1468,7 @@ nm_gconf_migrate_0_7_vpn_properties (GConfClient *client)
 
 		/* delete old vpn-properties dir */
 		gconf_client_recursive_unset (client, path, 0, NULL);
+		g_free (path);
 	}
 	nm_utils_slist_free (connections, g_free);
 
@@ -1540,8 +1542,11 @@ nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client)
 		                                 &service))
 			continue;
 
-		if (!service || strcmp (service, "org.freedesktop.NetworkManager.openvpn"))
+		if (!service || strcmp (service, "org.freedesktop.NetworkManager.openvpn")) {
+			g_free (service);
 			continue;
+		}
+		g_free (service);
 
 		move_one_vpn_string_bool (client, iter->data, "dev", "tap-dev");
 		move_one_vpn_string_bool (client, iter->data, "proto", "proto-tcp");
@@ -1563,6 +1568,7 @@ nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client)
 			new_type = "password";
 		else if (!strcmp (old_type, "3"))
 			new_type = "password-tls";
+		g_free (old_type);
 
 		if (new_type) {
 			nm_gconf_set_string_helper (client, (const char *) iter->data,
