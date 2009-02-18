@@ -1,3 +1,23 @@
+2009-02-18  Dan Williams  <dcbw@redhat.com>
+
+	* src/applet.c
+		- (ICON_LOAD): don't segfault if err is NULL (bgo #548062)
+		- (finalize): dispose of the settings proxies after disposing
+			of the NMClient so that the new-ap-notification stuff
+			in applet-device-wifi.c does log errors when disposing
+			of its data
+		- (constructor): ensure the missing gladefile warning dialog sticks around
+		- (nma_icons_load): ensure the missing icon warning dialog sticks around
+
+	* src/applet-dialogs.c
+	  src/applet-dialogs.h
+		- (applet_warning_dialog_show): return the dialog object so the caller
+			can do something useful with it (like gtk_dialog_run()); fix
+			focus-stealing prevention, and set a title and icon
+
+	* src/main.c
+		- Pass the mainloop to the applet
+
 2009-02-17  Dan Williams  <dcbw@redhat.com>
 
 	* src/gconf-helpers/gconf-helpers.c

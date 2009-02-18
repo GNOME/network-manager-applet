@@ -2233,12 +2233,13 @@ static void nma_icons_free (NMApplet *applet)
 	applet->icons_loaded = FALSE;
 }
 
-#define ICON_LOAD(x, y)	\
+#define ICON_LOAD(icon, name) \
 	{ \
-		x = gtk_icon_theme_load_icon (applet->icon_theme, y, applet->size, 0, &err); \
-		if (x == NULL) { \
-			g_warning ("Icon %s missing: %s", y, err->message); \
-			g_error_free (err); \
+		icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->size, 0, &err); \
+		if (icon == NULL) { \
+			g_warning ("Icon %s missing: %s", name, \
+			           (err && err->message) ? err->message : "unknown"); \
+			g_clear_error (&err); \
 			goto out; \
 		} \
 	}
@@ -2288,8 +2289,11 @@ nma_icons_load (NMApplet *applet)
 
 out:
 	if (!applet->icons_loaded) {
-		applet_warning_dialog_show (_("The NetworkManager applet could not find some required resources.  It cannot continue.\n"));
-		nma_icons_free (applet);
+		GtkWidget *dialog;
+
+		dialog = applet_warning_dialog_show (_("The NetworkManager applet could not find some required resources.  It cannot continue.\n"));
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		g_main_loop_quit (applet->loop);
 	}
 
 	return applet->icons_loaded;
@@ -2469,7 +2473,7 @@ constructor (GType type,
              GObjectConstructParam *construct_props)
 {
 	NMApplet *applet;
-	AppletDBusManager * dbus_mgr;
+	AppletDBusManager *dbus_mgr;
 
 	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
 
@@ -2478,21 +2482,23 @@ constructor (GType type,
 
 	applet->glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
 	if (!applet->glade_file || !g_file_test (applet->glade_file, G_FILE_TEST_IS_REGULAR)) {
-		applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
+		GtkWidget *dialog;
+		dialog = applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
+		gtk_dialog_run (GTK_DIALOG (dialog));
 		goto error;
 	}
 
 	applet->info_dialog_xml = glade_xml_new (applet->glade_file, "info_dialog", NULL);
 	if (!applet->info_dialog_xml)
-        goto error;
+		goto error;
 
 	applet->gconf_client = gconf_client_get_default ();
 	if (!applet->gconf_client)
-	    goto error;
+		goto error;
 
 	/* Load pixmaps and create applet widgets */
 	if (!setup_widgets (applet))
-	    goto error;
+		goto error;
 	nma_icons_init (applet);
 
 	if (!notify_is_initted ())
@@ -2513,14 +2519,14 @@ constructor (GType type,
 	                  applet);
 
 	dbus_g_connection_register_g_object (applet_dbus_manager_get_connection (dbus_mgr),
-										 NM_DBUS_PATH_SETTINGS,
-										 G_OBJECT (applet->gconf_settings));
+	                                     NM_DBUS_PATH_SETTINGS,
+	                                     G_OBJECT (applet->gconf_settings));
 
-    /* Start our DBus service */
-    if (!applet_dbus_manager_start_service (dbus_mgr)) {
-		g_object_unref (applet);
-		return NULL;
-    }
+	/* Start our DBus service */
+	if (!applet_dbus_manager_start_service (dbus_mgr)) {
+			g_object_unref (applet);
+			return NULL;
+	}
 
 	/* Initialize device classes */
 	applet->wired_class = applet_device_wired_get_class (applet);
@@ -2580,18 +2586,23 @@ static void finalize (GObject *object)
 	if (applet->info_dialog_xml)
 		g_object_unref (applet->info_dialog_xml);
 
-	g_object_unref (applet->gconf_settings);
-	applet->gconf_settings = NULL;
-	g_object_unref (applet->dbus_settings);
-	applet->dbus_settings = NULL;
-
-	g_object_unref (applet->gconf_client);
+	if (applet->gconf_client)
+		g_object_unref (applet->gconf_client);
 
 	if (applet->status_icon)
 		g_object_unref (applet->status_icon);
 
 	if (applet->nm_client)
 		g_object_unref (applet->nm_client);
+
+	if (applet->gconf_settings) {
+		g_object_unref (applet->gconf_settings);
+		applet->gconf_settings = NULL;
+	}
+	if (applet->dbus_settings) {
+		g_object_unref (applet->dbus_settings);
+		applet->dbus_settings = NULL;
+	}
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
@@ -2605,17 +2616,44 @@ static void nma_init (NMApplet *applet)
 	applet->size = -1;
 }
 
+enum {
+	PROP_0,
+	PROP_LOOP,
+	LAST_PROP
+};
+
+static void
+set_property (GObject *object, guint prop_id,
+              const GValue *value, GParamSpec *pspec)
+{
+	NMApplet *applet = NM_APPLET (object);
+
+	switch (prop_id) {
+	case PROP_LOOP:
+		applet->loop = g_value_get_pointer (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
 static void nma_class_init (NMAppletClass *klass)
 {
-	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	GObjectClass *oclass = G_OBJECT_CLASS (klass);
+	GParamSpec *pspec;
 
-	gobject_class->constructor = constructor;
-	gobject_class->finalize = finalize;
+	oclass->set_property = set_property;
+	oclass->constructor = constructor;
+	oclass->finalize = finalize;
+
+	pspec = g_param_spec_pointer ("loop", "Loop", "Applet mainloop", G_PARAM_CONSTRUCT | G_PARAM_WRITABLE);
+	g_object_class_install_property (oclass, PROP_LOOP, pspec);
 }
 
 NMApplet *
-nm_applet_new ()
+nm_applet_new (GMainLoop *loop)
 {
-	return g_object_new (NM_TYPE_APPLET, NULL);
+	return g_object_new (NM_TYPE_APPLET, "loop", loop, NULL);
 }
 

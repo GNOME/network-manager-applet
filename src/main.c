@@ -68,11 +68,12 @@ int main (int argc, char *argv[])
 	gtk_init (&argc, &argv);
 	textdomain (GETTEXT_PACKAGE);
 
-	applet = nm_applet_new ();
+	loop = g_main_loop_new (NULL, FALSE);
+
+	applet = nm_applet_new (loop);
 	if (applet == NULL)
 		exit (1);
 
-	loop = g_main_loop_new (NULL, FALSE);
 	setup_signals ();
 	g_main_loop_run (loop);
 
