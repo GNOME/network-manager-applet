@@ -411,7 +411,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 
 		gtk_list_store_append (store, &tree_iter);
 		gtk_list_store_set (store, &tree_iter,
-		                    C_NAME_COLUMN, g_strdup (_("New...")),
+		                    C_NAME_COLUMN, _("New..."),
 		                    C_NEW_COLUMN, TRUE, -1);
 
 		gtk_list_store_append (store, &tree_iter);
@@ -558,7 +558,7 @@ add_device_to_model (GtkListStore *model, NMDevice *device)
 	g_assert (desc);
 
 	gtk_list_store_append (model, &iter);
-	gtk_list_store_set (model, &iter, D_NAME_COLUMN, g_strdup (desc), D_DEV_COLUMN, device, -1);
+	gtk_list_store_set (model, &iter, D_NAME_COLUMN, desc, D_DEV_COLUMN, device, -1);
 }
 
 static gboolean
