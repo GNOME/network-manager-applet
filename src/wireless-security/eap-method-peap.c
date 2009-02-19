@@ -116,8 +116,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	EAPMethod *eap = NULL;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	int int_version = 0;
-	char *version = NULL;
+	int peapver_active = 0;
 
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
@@ -148,11 +147,18 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		g_object_set_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG, NULL);
 
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_version_combo");
-	int_version = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
-	g_assert (int_version == 0 || int_version == 1);
-	version = g_strdup_printf ("%d", int_version);
-	g_object_set (G_OBJECT (s_8021x), "phase1-peapver", version, NULL);
-	g_free (version);
+	peapver_active = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
+	switch (peapver_active) {
+	case 1:  /* PEAP v0 */
+		g_object_set (G_OBJECT (s_8021x), NM_SETTING_802_1X_PHASE1_PEAPVER, "0", NULL);
+		break;
+	case 2:  /* PEAP v1 */
+		g_object_set (G_OBJECT (s_8021x), NM_SETTING_802_1X_PHASE1_PEAPVER, "1", NULL);
+		break;
+	default: /* Automatic */
+		g_object_set (G_OBJECT (s_8021x), NM_SETTING_802_1X_PHASE1_PEAPVER, NULL, NULL);
+		break;
+	}
 
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_inner_auth_combo");
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
@@ -319,16 +325,19 @@ eap_method_peap_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "eap_peap_version_combo");
 	g_assert (widget);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 	if (s_8021x) {
 		const char *peapver;
 
 		peapver = nm_setting_802_1x_get_phase1_peapver (s_8021x);
-		if (peapver && !strcmp (peapver, "0"))
-			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
-		else
-			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
-	} else
-		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
+		if (peapver) {
+			/* Index 0 is "Automatic" */
+			if (!strcmp (peapver, "0"))
+				gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 1);
+			else if (!strcmp (peapver, "1"))
+				gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 2);
+		}
+	}
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
