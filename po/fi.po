@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-18 12:12+0200\n"
-"PO-Revision-Date: 2009-02-18 12:12+0200\n"
+"POT-Creation-Date: 2009-02-22 12:43+0200\n"
+"PO-Revision-Date: 2009-02-22 12:43+0200\n"
 "Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -108,7 +108,7 @@ msgid "A password is required to connect to '%s'."
 msgstr "Yhteys verkkoon ”%s” vaatii salasanan."
 
 #: ../src/applet-device-cdma.c:485 ../src/applet-device-gsm.c:568
-#: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
+#: ../src/applet.glade.h:25 ../src/connection-editor/ce-page-dsl.glade.h:1
 #: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "Password:"
 msgstr "Salasana:"
@@ -410,6 +410,10 @@ msgstr ""
 "\n"
 "http://www.gnome.fi/"
 
+#: ../src/applet-dialogs.c:626
+msgid "Missing resources"
+msgstr "Puuttuvia resursseja"
+
 #: ../src/applet.c:507
 #, c-format
 msgid ""
@@ -585,7 +589,7 @@ msgstr "_Katkaise VPN-yhteys..."
 msgid "NetworkManager is not running..."
 msgstr "Verkon hallinta ei ole käytössä..."
 
-#: ../src/applet.c:1265 ../src/applet.c:1959
+#: ../src/applet.c:1265 ../src/applet.c:1958
 msgid "Networking disabled"
 msgstr "Verkko ei ole käytössä"
 
@@ -662,11 +666,11 @@ msgstr "Pyydetään VPN-osoitetta yhteydelle ”%s”..."
 msgid "VPN connection '%s' active"
 msgstr "VPN-yhteys ”%s” on aktiiviinen"
 
-#: ../src/applet.c:1963
+#: ../src/applet.c:1962
 msgid "No network connection"
 msgstr "Ei verkkoyhteyttä"
 
-#: ../src/applet.c:2291
+#: ../src/applet.c:2297
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -674,11 +678,11 @@ msgstr ""
 "Verkon hallinta -sovelma ei löytänyt joitain vaadituista resursseista eikä "
 "pysty jatkamaan.\n"
 
-#: ../src/applet.c:2476
+#: ../src/applet.c:2483
 msgid "NetworkManager Applet"
 msgstr "Verkon hallinta -sovelma"
 
-#: ../src/applet.c:2481 ../src/wired-dialog.c:128
+#: ../src/applet.c:2489 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -716,42 +720,52 @@ msgid "Authentication:"
 msgstr "Todentaminen:"
 
 #: ../src/applet.glade.h:9
+msgid ""
+"Automatic\n"
+"Version 0\n"
+"Version 1"
+msgstr ""
+"Automaattinen\n"
+"Versio 0\n"
+"Versio 1"
+
+#: ../src/applet.glade.h:12
 msgid "CA Certificate:"
 msgstr "CA-varmenne:"
 
-#: ../src/applet.glade.h:10
+#: ../src/applet.glade.h:13
 msgid "C_onnect"
 msgstr "_Yhdistä"
 
-#: ../src/applet.glade.h:11
+#: ../src/applet.glade.h:14
 msgid "Connection Information"
 msgstr "Tietoja yhteydestä"
 
-#: ../src/applet.glade.h:12
+#: ../src/applet.glade.h:15
 msgid "Connection:"
 msgstr "Yhteys:"
 
-#: ../src/applet.glade.h:13
+#: ../src/applet.glade.h:16
 msgid "Don't warn me again"
 msgstr "Älä huomauta uudestaan"
 
-#: ../src/applet.glade.h:14
+#: ../src/applet.glade.h:17
 msgid "Identity:"
 msgstr "Tunniste:"
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:18
 msgid "Inner Authentication:"
 msgstr "Sisempi todentaminen:"
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:19
 msgid "Key:"
 msgstr "Avain:"
 
-#: ../src/applet.glade.h:17
+#: ../src/applet.glade.h:20
 msgid "No"
 msgstr "Ei"
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:21
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -759,75 +773,67 @@ msgstr ""
 "Avoin järjestelmä\n"
 "Jaettu avain"
 
-#: ../src/applet.glade.h:20
+#: ../src/applet.glade.h:23
 msgid "Other Wireless Network..."
 msgstr "Muu langaton verkko..."
 
-#: ../src/applet.glade.h:21
+#: ../src/applet.glade.h:24
 msgid "PEAP Version:"
 msgstr "PEAP-versio:"
 
-#: ../src/applet.glade.h:23
+#: ../src/applet.glade.h:26
 msgid "Private Key Password:"
 msgstr "Salausavaimen salasana:"
 
-#: ../src/applet.glade.h:24
+#: ../src/applet.glade.h:27
 msgid "Private Key:"
 msgstr "Salainen avain:"
 
-#: ../src/applet.glade.h:25
+#: ../src/applet.glade.h:28
 msgid "Select A File"
 msgstr "Valitse tiedosto"
 
-#: ../src/applet.glade.h:26
+#: ../src/applet.glade.h:29
 msgid "Show key"
 msgstr "Näytä avain"
 
-#: ../src/applet.glade.h:27 ../src/connection-editor/ce-page-dsl.glade.h:3
+#: ../src/applet.glade.h:30 ../src/connection-editor/ce-page-dsl.glade.h:3
 msgid "Show password"
 msgstr "Näytä salasana"
 
-#: ../src/applet.glade.h:28 ../src/connection-editor/ce-page-mobile.glade.h:16
+#: ../src/applet.glade.h:31 ../src/connection-editor/ce-page-mobile.glade.h:16
 msgid "Type:"
 msgstr "Tyyppi:"
 
-#: ../src/applet.glade.h:29
+#: ../src/applet.glade.h:32
 msgid "User Certificate:"
 msgstr "Käyttäjävarmenne:"
 
-#: ../src/applet.glade.h:30
+#: ../src/applet.glade.h:33
 msgid "User Name:"
 msgstr "Käyttäjätunnus:"
 
-#: ../src/applet.glade.h:31
-msgid ""
-"Version 0\n"
-"Version 1"
-msgstr ""
-"Versio 0\n"
-"Versio 1"
-
-#: ../src/applet.glade.h:33
+#: ../src/applet.glade.h:34
 msgid "WEP Index:"
 msgstr "WEP-indeksi:"
 
-#: ../src/applet.glade.h:34
+#: ../src/applet.glade.h:35
 msgid "Wireless _adapter:"
 msgstr "Langaton _verkkolaite:"
 
-#: ../src/applet.glade.h:35
+#: ../src/applet.glade.h:36
 msgid "Yes"
 msgstr "Kyllä"
 
-#: ../src/applet.glade.h:36
+#: ../src/applet.glade.h:37
 msgid "_Network Name:"
 msgstr "_Verkon nimi:"
 
-#: ../src/applet.glade.h:37
+#: ../src/applet.glade.h:38
 msgid "_Wireless Security:"
 msgstr "_Langaton tietoturva:"
 
-#: ../src/applet.glade.h:38
+#: ../src/applet.glade.h:39
 msgid "alert text"
 msgstr "hälytysteksti"
 
@@ -1304,7 +1310,7 @@ msgid "IPv4 Settings"
 msgstr "IPv4-asetukset"
 
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:223
+#: ../src/wireless-security/eap-method-peap.c:229
 #: ../src/wireless-security/eap-method-ttls.c:253
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
@@ -1750,11 +1756,11 @@ msgstr "DER-, PEM- tai PKCS#12-yksityisavaimet (*.der, *.pem, *.p12)"
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER- tai PEM-varmenteet (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:234
+#: ../src/wireless-security/eap-method-peap.c:240
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:305
+#: ../src/wireless-security/eap-method-peap.c:311
 #: ../src/wireless-security/eap-method-tls.c:423
 #: ../src/wireless-security/eap-method-ttls.c:343
 msgid "Choose a Certificate Authority certificate..."
