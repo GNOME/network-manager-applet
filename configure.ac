@@ -1,7 +1,7 @@
 AC_PREREQ(2.52)
 
 AC_INIT(nm-applet, 0.7.0, dcbw@redhat.com, network-manager-applet)
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE([subdir-objects no-dist-gzip dist-bzip2])
 AM_MAINTAINER_MODE
 
 AM_CONFIG_HEADER(config.h)
