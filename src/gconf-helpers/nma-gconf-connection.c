@@ -20,6 +20,11 @@
  */
 
 #include <string.h>
+#include <unistd.h>
+
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
 #include "nma-gconf-connection.h"
@@ -350,11 +355,84 @@ get_secrets:
 }
 
 static gboolean
+is_user_request_authorized (DBusGMethodInvocation *context,
+                            GError **error)
+{
+	DBusGConnection *bus = NULL;
+	DBusConnection *connection = NULL;
+	char *sender = NULL;
+	gulong sender_uid = G_MAXULONG;
+	DBusError dbus_error;
+	gboolean success = FALSE;
+
+	sender = dbus_g_method_get_sender (context);
+	if (!sender) {
+		g_set_error (error, NM_SETTINGS_ERROR,
+		             NM_SETTINGS_ERROR_INTERNAL_ERROR,
+		             "%s", "Could not determine D-Bus requestor");
+		goto out;
+	}
+
+	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
+	if (!bus) {
+		g_set_error (error, NM_SETTINGS_ERROR,
+		             NM_SETTINGS_ERROR_INTERNAL_ERROR,
+		             "%s", "Could not get the system bus");
+		goto out;
+	}
+	connection = dbus_g_connection_get_connection (bus);
+	if (!connection) {
+		g_set_error (error, NM_SETTINGS_ERROR,
+		             NM_SETTINGS_ERROR_INTERNAL_ERROR,
+		             "%s", "Could not get the D-Bus system bus");
+		goto out;
+	}
+
+	dbus_error_init (&dbus_error);
+	/* FIXME: do this async */
+	sender_uid = dbus_bus_get_unix_user (connection, sender, &dbus_error);
+	if (dbus_error_is_set (&dbus_error)) {
+		dbus_error_free (&dbus_error);
+		g_set_error (error, NM_SETTINGS_ERROR,
+		             NM_SETTINGS_ERROR_PERMISSION_DENIED,
+		             "%s", "Could not determine the Unix user ID of the requestor");
+		goto out;
+	}
+
+	/* And finally, the actual UID check */
+	if (sender_uid != geteuid()) {
+		g_set_error (error, NM_SETTINGS_ERROR,
+		             NM_SETTINGS_ERROR_PERMISSION_DENIED,
+		             "%s", "Requestor UID does not match the UID of the user settings service");
+		goto out;
+	}
+
+	success = TRUE;
+
+out:
+	if (bus)
+		dbus_g_connection_unref (bus);
+	g_free (sender);
+	return success;
+}
+
+
+static gboolean
 update (NMExportedConnection *exported, GHashTable *new_settings, GError **error)
 {
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (exported);
 	NMConnection *tmp;
 	gboolean success = FALSE;
+	DBusGMethodInvocation *context;
+
+	context = g_object_get_data (G_OBJECT (exported), NM_EXPORTED_CONNECTION_DBUS_METHOD_INVOCATION);
+
+	/* Restrict Update to execution by the current user only for DBus invocation */
+	if (context && !is_user_request_authorized (context, error)) {
+		nm_warning ("%s.%d - Connection update permission denied: (%d) %s",
+		            __FILE__, __LINE__, (*error)->code, (*error)->message);
+		return FALSE;
+	}
 
 	tmp = nm_connection_new_from_hash (new_settings, error);
 	if (!tmp) {
@@ -378,14 +456,23 @@ update (NMExportedConnection *exported, GHashTable *new_settings, GError **error
 }
 
 static gboolean
-do_delete (NMExportedConnection *exported, GError **err)
+do_delete (NMExportedConnection *exported, GError **error)
 {
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (exported);
 	gboolean success;
+	DBusGMethodInvocation *context;
 
-	success = gconf_client_recursive_unset (priv->client, priv->dir, 0, err);
+	context = g_object_get_data (G_OBJECT (exported), NM_EXPORTED_CONNECTION_DBUS_METHOD_INVOCATION);
+
+	/* Restrict Delete to execution by the current user only for DBus invocation */
+	if (context && !is_user_request_authorized (context, error)) {
+		nm_warning ("%s.%d - Connection delete permission denied: (%d) %s",
+		            __FILE__, __LINE__, (*error)->code, (*error)->message);
+		return FALSE;
+	}
+
+	success = gconf_client_recursive_unset (priv->client, priv->dir, 0, error);
 	gconf_client_suggest_sync (priv->client, NULL);
-
 	return success;
 }
 
