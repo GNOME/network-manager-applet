@@ -135,6 +135,7 @@ update_auth_methods_list (CEPagePpp *self)
 	add_one_auth_method (list, _("MSCHAPv2"), !priv->refuse_mschapv2);
 	add_one_auth_method (list, _("MSCHAP"), !priv->refuse_mschap);
 
+	/* Translators: "none" refers to authentication methods */
 	gtk_label_set_text (priv->auth_methods_label, list->len ? list->str : _("none"));
 	g_string_free (list, TRUE);
 }
