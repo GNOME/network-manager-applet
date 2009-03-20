@@ -87,6 +87,8 @@ static char *ignored_words[] = {
 	"Inc.",
 	"Inc",
 	"Ltd.",
+	"Limited.",
+	"Intel?",
 	"chipset",
 	"adapter",
 	"[hex]",
