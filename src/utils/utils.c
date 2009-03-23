@@ -111,6 +111,9 @@ static char *ignored_phrases[] = {
 	"Wireless cardbus",
 	"Wireless LAN PC Card",
 	"Technology Group Ltd.",
+	"Communication S.p.A.",
+	"Business Mobile Networks BV",
+	"Mobile Broadband Minicard Composite Device",
 	NULL
 };
 
