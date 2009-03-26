@@ -1,3 +1,15 @@
+2009-03-26  Dan Williams  <dcbw@redhat.com>
+
+	* nm-applet.conf
+		- Explicitly allow 'root' to talk to the secrets interface.  Fixes a bug exposed
+			in SUSE ConsoleKit packages that always treated 'root' as at_console when
+			logged in once; when using explicit denials (which we're using here to
+			ensure we don't expose distros shipping older D-Bus packages) and when
+			permissions may overlap, as in the case of root being at_console, there
+			needs to be an explicit allow in the right section too.  Thus when root is
+			'at_console', root will still have access to secrets due to the explicit
+			allow in the user=root section.
+
 2009-03-20  Alexander Sack <asac@ubuntu.com>
 
 	* src/applet.c
