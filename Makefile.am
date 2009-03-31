@@ -9,6 +9,16 @@ EXTRA_DIST =				\
 dbusservicedir = $(DBUS_SYS_DIR)
 dbusservice_DATA = nm-applet.conf
 
+DBUS_126_CONF = nm-applet-dbus-126.conf
+DBUS_PRE_126_CONF = nm-applet-pre-dbus-126.conf
+
+nm-applet.conf:
+if HAVE_DBUS_126
+	cp -f $(DBUS_126_CONF) nm-applet.conf
+else
+	cp -f $(DBUS_PRE_126_CONF) nm-applet.conf
+endif
+
 autostartdir = $(sysconfdir)/xdg/autostart
 autostart_in_files = nm-applet.desktop.in
 autostart_DATA = $(autostart_in_files:.desktop.in=.desktop)
@@ -19,13 +29,15 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
 EXTRA_DIST += \
-	$(dbusservice_DATA) \
 	$(autostart_in_files) \
-	$(desktop_in_files)
+	$(desktop_in_files) \
+	$(DBUS_126_CONF) \
+	$(DBUS_PRE_126_CONF)
 
 CLEANFILES = \
 	$(autostart_DATA) \
-	$(desktop_DATA)
+	$(desktop_DATA) \
+	$(dbusservice_DATA)
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 
