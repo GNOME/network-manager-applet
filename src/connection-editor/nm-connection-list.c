@@ -1174,6 +1174,38 @@ list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 }
 
 static void
+delete_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
+{
+	ActionInfo *info = (ActionInfo *) user_data;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	NMExportedConnection *exported;
+	NMConnection *connection = NULL;
+	NMSettingConnection *s_con;
+	gboolean can_delete = TRUE;
+
+	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
+		goto done;
+
+	exported = get_active_connection (info->treeview);
+	if (exported)
+		connection = nm_exported_connection_get_connection (exported);
+	if (!connection)
+		goto done;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
+
+	if (nm_setting_connection_get_read_only (s_con)) {
+		can_delete = FALSE;
+		goto done;
+	}
+
+done:
+	gtk_widget_set_sensitive (info->button, can_delete);
+}
+
+static void
 vpn_list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
@@ -1495,7 +1527,7 @@ add_connection_buttons (NMConnectionList *self,
 	g_free (name);
 	info = new_action_info (self, treeview, button);
 	g_signal_connect (button, "clicked", G_CALLBACK (delete_connection_cb), info);
-	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed_cb), info);
+	g_signal_connect (selection, "changed", G_CALLBACK (delete_selection_changed_cb), info);
 
 	/* Import */
 	name = g_strdup_printf ("%s_import", prefix);
