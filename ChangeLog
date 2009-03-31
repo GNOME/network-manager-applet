@@ -1,3 +1,22 @@
+2009-03-31  Dan Williams  <dcbw@redhat.com>
+
+	* configure.ac
+	  Makefile.am
+		- Check D-Bus version; use different applet dbus conf files for
+			D-Bus >= 1.2.6 which uses deny-by-default processing.  New
+			conf file fixes issues with 'root' also being at_console,
+			where at_console permissions would deny root access to 
+			applet secrets
+
+	* nm-applet.conf
+		- Remove; now generated
+
+	* nm-applet-pre-dbus-126.conf
+		- D-Bus config for dbus < 1.2.6
+
+	* nm-applet-dbus-126.conf
+		- D-Bus config for dbus >= 1.2.6 (from Tambet)
+
 2009-03-26  Dan Williams  <dcbw@redhat.com>
 
 	* nm-applet.conf

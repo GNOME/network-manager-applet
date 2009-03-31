@@ -112,6 +112,10 @@ else
 fi
 AC_SUBST(DBUS_CFLAGS)
 
+# Check for dbus-1.2.6 or later for deny-by-default rules
+PKG_CHECK_MODULES(DBUS_126, [dbus-1 >= 1.2.6], [have_dbus_126=yes],[have_dbus_126=no])
+AM_CONDITIONAL(HAVE_DBUS_126, test x"$have_dbus_126" = "xyes")
+
 #### PolicyKit checks; need at least 0.6 or later
 PKG_CHECK_EXISTS(polkit-gnome,[have_polkit_gnome=yes],[have_polkit_gnome=no])
 if test x"$have_polkit_gnome" = "xyes"; then
