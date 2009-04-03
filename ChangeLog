@@ -1,3 +1,14 @@
+2009-04-03  Dan Williams  <dcbw@redhat.com>
+
+	* Ensure PolicyKit autorization before editing system connections, and
+		request secrets from the system settings service for system connections.
+		This requires splitting each CEPage subclass's *_new() method into
+		two parts, the first doing minimal setup, and the second filling in
+		the UI with details from the backing NMConnection.  Between the first
+		and second parts, if required, secrets are requested from the system
+		settings service using PolicyKit.  As a bonus, actually handle errors
+		instead of dropping them on the floor.
+
 2009-03-31  Dan Williams  <dcbw@redhat.com>
 
 	* src/connection-editor/nm-connection-list.c

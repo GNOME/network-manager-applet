@@ -47,7 +47,7 @@ typedef struct {
 
 GType ce_page_ip4_get_type (void);
 
-CEPageIP4 *ce_page_ip4_new (NMConnection *connection);
+CEPage *ce_page_ip4_new (NMConnection *connection, GtkWindow *parent, GError **error);
 
 #endif  /* __PAGE_IP4_H__ */
 

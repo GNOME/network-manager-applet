@@ -47,6 +47,6 @@ typedef struct {
 
 GType ce_page_mobile_get_type (void);
 
-CEPageMobile *ce_page_mobile_new (NMConnection *connection);
+CEPage *ce_page_mobile_new (NMConnection *connection, GtkWindow *parent, GError **error);
 
 #endif  /* __PAGE_MOBILE_H__ */

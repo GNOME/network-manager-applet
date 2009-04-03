@@ -136,7 +136,7 @@ populate_ui (CEPageWired *self)
 
 	/* Autonegotiate */
 	gtk_toggle_button_set_active (priv->autonegotiate, 
-								  nm_setting_wired_get_auto_negotiate (setting));
+	                              nm_setting_wired_get_auto_negotiate (setting));
 
 	/* MAC address */
 	ce_page_mac_to_entry (nm_setting_wired_get_mac_address (setting), priv->mac);
@@ -151,42 +151,15 @@ populate_ui (CEPageWired *self)
 	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wired_get_mtu (setting));
 }
 
-CEPageWired *
-ce_page_wired_new (NMConnection *connection)
+static void
+finish_setup (CEPageWired *self, gpointer unused, GError *error, gpointer user_data)
 {
-	CEPageWired *self;
-	CEPageWiredPrivate *priv;
-	CEPage *parent;
+	CEPage *parent = CE_PAGE (self);
+	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 	GtkWidget *widget;
 
-	self = CE_PAGE_WIRED (g_object_new (CE_TYPE_PAGE_WIRED, NULL));
-	parent = CE_PAGE (self);
-
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wired.glade", "WiredPage", NULL);
-	if (!parent->xml) {
-		g_warning ("%s: Couldn't load wired page glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-
-	parent->page = glade_xml_get_widget (parent->xml, "WiredPage");
-	if (!parent->page) {
-		g_warning ("%s: Couldn't load wired page from glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("Wired"));
-
-	wired_private_init (self);
-	priv = CE_PAGE_WIRED_GET_PRIVATE (self);
-
-	priv->setting = (NMSettingWired *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED);
-	if (!priv->setting) {
-		priv->setting = NM_SETTING_WIRED (nm_setting_wired_new ());
-		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
-	}
+	if (error)
+		return;
 
 	populate_ui (self);
 
@@ -211,8 +184,54 @@ ce_page_wired_new (NMConnection *connection)
 	gtk_widget_hide (widget);
 	widget = glade_xml_get_widget (parent->xml, "wired_autonegotiate");
 	gtk_widget_hide (widget);
+}
 
-	return self;
+CEPage *
+ce_page_wired_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+{
+	CEPageWired *self;
+	CEPageWiredPrivate *priv;
+	CEPage *parent;
+
+	self = CE_PAGE_WIRED (g_object_new (CE_TYPE_PAGE_WIRED,
+	                                    CE_PAGE_CONNECTION, connection,
+	                                    CE_PAGE_PARENT_WINDOW, parent_window,
+	                                    NULL));
+	parent = CE_PAGE (self);
+
+	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wired.glade", "WiredPage", NULL);
+	if (!parent->xml) {
+		g_set_error (error, 0, 0, "%s", _("Could not load wired user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+
+	parent->page = glade_xml_get_widget (parent->xml, "WiredPage");
+	if (!parent->page) {
+		g_set_error (error, 0, 0, "%s", _("Could not load wired user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+	g_object_ref_sink (parent->page);
+
+	parent->title = g_strdup (_("Wired"));
+
+	wired_private_init (self);
+	priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+
+	priv->setting = (NMSettingWired *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED);
+	if (!priv->setting) {
+		priv->setting = NM_SETTING_WIRED (nm_setting_wired_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
+	}
+
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	if (!ce_page_initialize (parent, NULL, error)) {
+		g_object_unref (self);
+		return NULL;
+	}
+
+	return CE_PAGE (self);
 }
 
 static void

@@ -115,26 +115,48 @@ show_password (GtkToggleButton *button, gpointer user_data)
 	gtk_entry_set_visibility (priv->password, gtk_toggle_button_get_active (button));
 }
 
-CEPageDsl *
-ce_page_dsl_new (NMConnection *connection)
+static void
+finish_setup (CEPageDsl *self, gpointer unused, GError *error, gpointer user_data)
+{
+	CEPage *parent = CE_PAGE (self);
+	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
+
+	if (error)
+		return;
+
+	populate_ui (self, parent->connection);
+
+	g_signal_connect (priv->username, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->password, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->service, "changed", G_CALLBACK (stuff_changed), self);
+
+	g_signal_connect (glade_xml_get_widget (parent->xml, "dsl_show_password"), "toggled",
+					  G_CALLBACK (show_password), self);
+}
+
+CEPage *
+ce_page_dsl_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
 {
 	CEPageDsl *self;
 	CEPageDslPrivate *priv;
 	CEPage *parent;
 
-	self = CE_PAGE_DSL (g_object_new (CE_TYPE_PAGE_DSL, NULL));
+	self = CE_PAGE_DSL (g_object_new (CE_TYPE_PAGE_DSL,
+	                                  CE_PAGE_CONNECTION, connection,
+	                                  CE_PAGE_PARENT_WINDOW, parent_window,
+	                                  NULL));
 	parent = CE_PAGE (self);
 
 	parent->xml = glade_xml_new (GLADEDIR "/ce-page-dsl.glade", "DslPage", NULL);
 	if (!parent->xml) {
-		g_warning ("%s: Couldn't load dsl page glade file.", __func__);
+		g_set_error (error, 0, 0, "%s", _("Could not load DSL user interface."));
 		g_object_unref (self);
 		return NULL;
 	}
 
 	parent->page = glade_xml_get_widget (parent->xml, "DslPage");
 	if (!parent->page) {
-		g_warning ("%s: Couldn't load dsl page from glade file.", __func__);
+		g_set_error (error, 0, 0, "%s", _("Could not load DSL user interface."));
 		g_object_unref (self);
 		return NULL;
 	}
@@ -151,16 +173,13 @@ ce_page_dsl_new (NMConnection *connection)
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 
-	populate_ui (self, connection);
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	if (!ce_page_initialize (parent, NM_SETTING_PPPOE_SETTING_NAME, error)) {
+		g_object_unref (self);
+		return NULL;
+	}
 
-	g_signal_connect (priv->username, "changed", G_CALLBACK (stuff_changed), self);
-	g_signal_connect (priv->password, "changed", G_CALLBACK (stuff_changed), self);
-	g_signal_connect (priv->service, "changed", G_CALLBACK (stuff_changed), self);
-
-	g_signal_connect (glade_xml_get_widget (parent->xml, "dsl_show_password"), "toggled",
-					  G_CALLBACK (show_password), self);
-
-	return self;
+	return CE_PAGE (self);
 }
 
 static void

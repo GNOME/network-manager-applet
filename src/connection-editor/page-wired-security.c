@@ -47,6 +47,8 @@ typedef struct {
 	GtkWidget *security_widget;
 	WirelessSecurity *security;
 
+	gboolean initial_have_8021x;
+
 	gboolean disposed;
 } CEPageWiredSecurityPrivate;
 
@@ -65,43 +67,67 @@ enable_toggled (GtkToggleButton *button, gpointer user_data)
 	ce_page_changed (CE_PAGE (user_data));
 }
 
-CEPageWiredSecurity *
-ce_page_wired_security_new (NMConnection *connection)
+static void
+finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointer user_data)
+{
+	CEPage *parent = CE_PAGE (self);
+	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (self);
+	const char *glade_file = GLADEDIR "/applet.glade";
+
+	if (error)
+		return;
+
+	priv->security = (WirelessSecurity *) ws_wpa_eap_new (glade_file, parent->connection);
+	if (!priv->security) {
+		g_warning ("Could not load wired 802.1x user interface.");
+		return;
+	}
+
+	wireless_security_set_changed_notify (priv->security, stuff_changed, self);
+	priv->security_widget = wireless_security_get_widget (priv->security);
+
+	gtk_toggle_button_set_active (priv->enabled, priv->initial_have_8021x);
+	g_signal_connect_swapped (priv->enabled, "toggled", G_CALLBACK (ce_page_changed), self);
+	gtk_widget_set_sensitive (priv->security_widget, priv->initial_have_8021x);
+
+	gtk_box_pack_start (GTK_BOX (parent->page), GTK_WIDGET (priv->enabled), FALSE, TRUE, 12);
+	gtk_box_pack_start (GTK_BOX (parent->page), priv->security_widget, TRUE, TRUE, 0);
+	gtk_widget_show_all (parent->page);
+}
+
+CEPage *
+ce_page_wired_security_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
 {
 	CEPageWiredSecurity *self;
 	CEPage *parent;
 	CEPageWiredSecurityPrivate *priv;
-	const char *glade_file = GLADEDIR "/applet.glade";
-	NMSetting *setting;
 
-	self = CE_PAGE_WIRED_SECURITY (g_object_new (CE_TYPE_PAGE_WIRED_SECURITY, NULL));
+	self = CE_PAGE_WIRED_SECURITY (g_object_new (CE_TYPE_PAGE_WIRED_SECURITY,
+	                                             CE_PAGE_CONNECTION, connection,
+	                                             CE_PAGE_PARENT_WINDOW, parent_window,
+	                                             NULL));
 	parent = CE_PAGE (self);
 	priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (self);
 
 	parent->title = g_strdup (_("802.1x Security"));
 	parent->page = gtk_vbox_new (FALSE, 6);
+	g_object_ref_sink (G_OBJECT (parent->page));
 	gtk_container_set_border_width (GTK_CONTAINER (parent->page), 6);
 
-	setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
-
-	priv->security = (WirelessSecurity *) ws_wpa_eap_new (glade_file, connection);
-	wireless_security_set_changed_notify (priv->security, stuff_changed, self);
-	priv->security_widget = wireless_security_get_widget (priv->security);
+	if (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X))
+		priv->initial_have_8021x = TRUE;
 
 	priv->enabled = GTK_TOGGLE_BUTTON (gtk_check_button_new_with_label (_("Use 802.1X security for this connection")));
 	g_signal_connect (priv->enabled, "toggled",
 					  G_CALLBACK (enable_toggled), self);
 
-	gtk_toggle_button_set_active (priv->enabled, setting != NULL);
-	g_signal_connect_swapped (priv->enabled, "toggled", G_CALLBACK (ce_page_changed), self);
-	gtk_widget_set_sensitive (priv->security_widget, setting != NULL);
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	if (!ce_page_initialize (parent, NM_SETTING_802_1X_SETTING_NAME, error)) {
+		g_object_unref (self);
+		return NULL;
+	}
 
-	gtk_box_pack_start (GTK_BOX (parent->page), GTK_WIDGET (priv->enabled), FALSE, TRUE, 12);
-	gtk_box_pack_start (GTK_BOX (parent->page), priv->security_widget, TRUE, TRUE, 0);
-	g_object_ref_sink (parent->page);
-	gtk_widget_show_all (parent->page);
-
-	return self;
+	return CE_PAGE (self);
 }
 
 static gboolean
@@ -152,7 +178,9 @@ dispose (GObject *object)
 		return;
 
 	priv->disposed = TRUE;
-	wireless_security_unref (priv->security);
+
+	if (priv->security)
+		wireless_security_unref (priv->security);
 
 	G_OBJECT_CLASS (ce_page_wired_security_parent_class)->dispose (object);
 }

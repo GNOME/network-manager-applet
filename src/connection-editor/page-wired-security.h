@@ -49,6 +49,6 @@ typedef struct {
 
 GType ce_page_wired_security_get_type (void);
 
-CEPageWiredSecurity *ce_page_wired_security_new (NMConnection *connection);
+CEPage *ce_page_wired_security_new (NMConnection *connection, GtkWindow *parent, GError **error);
 
 #endif  /* __PAGE_WIRED_SECURITY_H__ */

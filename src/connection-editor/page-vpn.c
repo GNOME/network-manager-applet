@@ -42,6 +42,9 @@ G_DEFINE_TYPE (CEPageVpn, ce_page_vpn, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingVPN *setting;
 
+	char *service_type;
+
+	NMVpnPluginUiInterface *plugin;
 	NMVpnPluginUiWidgetInterface *ui;
 
 	gboolean disposed;
@@ -53,17 +56,49 @@ vpn_plugin_changed_cb (NMVpnPluginUiInterface *plugin, CEPageVpn *self)
 	ce_page_changed (CE_PAGE (self));
 }
 
-CEPageVpn *
-ce_page_vpn_new (NMConnection *connection)
+static void
+finish_setup (CEPageVpn *self, gpointer unused, GError *error, gpointer user_data)
+{
+	CEPage *parent = CE_PAGE (self);
+	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (self);
+	GError *vpn_error = NULL;
+
+	if (error)
+		return;
+
+	g_return_if_fail (priv->plugin != NULL);
+
+	priv->ui = nm_vpn_plugin_ui_interface_ui_factory (priv->plugin, parent->connection, &vpn_error);
+	if (!priv->ui) {
+		g_warning ("Could not load VPN user interface for service '%s': %s.",
+		           priv->service_type,
+		           (vpn_error && vpn_error->message) ? vpn_error->message : "(unknown)");
+		g_error_free (vpn_error);
+		return;
+	}
+	g_signal_connect (priv->ui, "changed", G_CALLBACK (vpn_plugin_changed_cb), self);
+
+	parent->page = GTK_WIDGET (nm_vpn_plugin_ui_widget_interface_get_widget (priv->ui));
+	if (!parent->page) {
+		g_warning ("Could not load VPN user interface for service '%s'.", priv->service_type);
+		return;
+	}
+	g_object_ref_sink (parent->page);
+	gtk_widget_show_all (parent->page);
+}
+
+CEPage *
+ce_page_vpn_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
 {
 	CEPageVpn *self;
 	CEPageVpnPrivate *priv;
 	CEPage *parent;
-	GError *error = NULL;
-	NMVpnPluginUiInterface *plugin;
 	const char *service_type;
 
-	self = CE_PAGE_VPN (g_object_new (CE_TYPE_PAGE_VPN, NULL));
+	self = CE_PAGE_VPN (g_object_new (CE_TYPE_PAGE_VPN,
+	                                  CE_PAGE_CONNECTION, connection,
+	                                  CE_PAGE_PARENT_WINDOW, parent_window,
+	                                  NULL));
 	parent = CE_PAGE (self);
 	priv = CE_PAGE_VPN_GET_PRIVATE (self);
 
@@ -74,35 +109,22 @@ ce_page_vpn_new (NMConnection *connection)
 
 	service_type = nm_setting_vpn_get_service_type (priv->setting);
 	g_assert (service_type);
+	priv->service_type = g_strdup (service_type);
 
-	plugin = vpn_get_plugin_by_service (service_type);
-	if (!plugin) {
-		g_warning ("%s: couldn't find VPN plugin for service '%s'!",
-		           __func__, service_type);
+	priv->plugin = vpn_get_plugin_by_service (service_type);
+	if (!priv->plugin) {
+		g_set_error (error, 0, 0, _("Could not find VPN plugin service for '%s'."), service_type);
 		g_object_unref (self);
 		return NULL;
 	}
 
-	priv->ui = nm_vpn_plugin_ui_interface_ui_factory (plugin, connection, &error);
-	if (!priv->ui) {
-		g_warning ("%s: couldn't create VPN UI for service '%s': %s",
-		           __func__, service_type, error->message);
-		g_error_free (error);
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	if (!ce_page_initialize (parent, NM_SETTING_VPN_SETTING_NAME, error)) {
 		g_object_unref (self);
 		return NULL;
 	}
-	g_signal_connect (priv->ui, "changed", G_CALLBACK (vpn_plugin_changed_cb), self);
 
-	parent->page = GTK_WIDGET (nm_vpn_plugin_ui_widget_interface_get_widget (priv->ui));
-	if (!parent->page) {
-		g_warning ("%s: Couldn't load vpn page from the plugin.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-	gtk_widget_show_all (parent->page);
-
-	return self;
+	return CE_PAGE (self);
 }
 
 gboolean
@@ -150,6 +172,8 @@ dispose (GObject *object)
 
 	if (priv->ui)
 		g_object_unref (priv->ui);
+
+	g_free (priv->service_type);
 
 	G_OBJECT_CLASS (ce_page_vpn_parent_class)->dispose (object);
 }

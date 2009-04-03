@@ -183,13 +183,13 @@ add_security_item (CEPageWirelessSecurity *self,
 	wireless_security_unref (sec);
 }
 
-CEPageWirelessSecurity *
-ce_page_wireless_security_new (NMConnection *connection)
+static void
+finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpointer user_data)
 {
-	CEPageWirelessSecurity *self;
-	CEPage *parent;
+	CEPage *parent = CE_PAGE (self);
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
+	NMConnection *connection = parent->connection;
 	gboolean is_adhoc = FALSE;
 	GtkListStore *sec_model;
 	GtkTreeIter iter;
@@ -202,34 +202,11 @@ ce_page_wireless_security_new (NMConnection *connection)
 	const char *glade_file = GLADEDIR "/applet.glade";
 	GtkComboBox *combo;
 
-	self = CE_PAGE_WIRELESS_SECURITY (g_object_new (CE_TYPE_PAGE_WIRELESS_SECURITY, NULL));
-	parent = CE_PAGE (self);
+	if (error)
+		return;
 
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-	if (!s_wireless) {
-		g_warning ("%s: Connection didn't have a wireless setting!", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wireless-security.glade", "WirelessSecurityPage", NULL);
-	if (!parent->xml) {
-		g_warning ("%s: Couldn't load wireless security page glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-
-	parent->page = glade_xml_get_widget (parent->xml, "WirelessSecurityPage");
-	if (!parent->page) {
-		g_warning ("%s: Couldn't load wireless security page from glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("Wireless Security"));
-
-	self->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	g_assert (s_wireless);
 
 	combo = GTK_COMBO_BOX (glade_xml_get_widget (parent->xml, "wireless_security_combo"));
 
@@ -355,8 +332,83 @@ ce_page_wireless_security_new (NMConnection *connection)
 	g_signal_connect (combo, "changed",
 	                  G_CALLBACK (wireless_security_combo_changed),
 	                  self);
+}
 
-	return self;
+CEPage *
+ce_page_wireless_security_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+{
+	CEPageWirelessSecurity *self;
+	CEPage *parent;
+	NMSettingWireless *s_wireless;
+	NMSettingWirelessSecurity *s_wsec = NULL;
+	const char *setting_name = NULL;
+	NMUtilsSecurityType default_type = NMU_SEC_NONE;
+	const char *security;
+
+	self = CE_PAGE_WIRELESS_SECURITY (g_object_new (CE_TYPE_PAGE_WIRELESS_SECURITY,
+	                                                CE_PAGE_CONNECTION, connection,
+	                                                CE_PAGE_PARENT_WINDOW, parent_window,
+	                                                NULL));
+	parent = CE_PAGE (self);
+
+	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	if (!s_wireless) {
+		g_set_error (error, 0, 0, "%s", _("Could not load WiFi security user interface; missing WiFi setting."));
+		g_object_unref (self);
+		return NULL;
+	}
+
+	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wireless-security.glade", "WirelessSecurityPage", NULL);
+	if (!parent->xml) {
+		g_set_error (error, 0, 0, "%s", _("Could not load WiFi security user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+
+	parent->page = glade_xml_get_widget (parent->xml, "WirelessSecurityPage");
+	if (!parent->page) {
+		g_set_error (error, 0, 0, "%s", _("Could not load WiFi security user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+	g_object_ref_sink (parent->page);
+
+	parent->title = g_strdup (_("Wireless Security"));
+
+	self->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+
+	s_wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
+	                                       NM_TYPE_SETTING_WIRELESS_SECURITY));
+
+	security = nm_setting_wireless_get_security (s_wireless);
+	if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
+		s_wsec = NULL;
+	if (s_wsec)
+		default_type = get_default_type_for_security (s_wsec);
+
+	/* Get secrets if the connection is not 802.1x enabled */
+	if (   default_type == NMU_SEC_STATIC_WEP
+	    || default_type == NMU_SEC_LEAP
+	    || default_type == NMU_SEC_WPA_PSK
+	    || default_type == NMU_SEC_WPA2_PSK) {
+		setting_name = NM_SETTING_WIRELESS_SECURITY_SETTING_NAME;
+	}
+
+	/* Or if it is 802.1x enabled */
+	if (   default_type == NMU_SEC_DYNAMIC_WEP
+	    || default_type == NMU_SEC_WPA_ENTERPRISE
+	    || default_type == NMU_SEC_WPA2_ENTERPRISE) {
+		setting_name = NM_SETTING_802_1X_SETTING_NAME;
+	}
+
+	if (!ce_page_initialize (parent, setting_name, error)) {
+		g_object_unref (self);
+		return NULL;
+	}
+
+	return CE_PAGE (self);
 }
 
 static void

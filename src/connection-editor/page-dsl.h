@@ -47,6 +47,6 @@ typedef struct {
 
 GType ce_page_dsl_get_type (void);
 
-CEPageDsl *ce_page_dsl_new (NMConnection *connection);
+CEPage *ce_page_dsl_new (NMConnection *connection, GtkWindow *parent, GError **error);
 
 #endif  /* __PAGE_DSL_H__ */

@@ -604,53 +604,18 @@ routes_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	gtk_widget_show_all (dialog);
 }
 
-CEPageIP4 *
-ce_page_ip4_new (NMConnection *connection)
+static void
+finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_data)
 {
-	CEPageIP4 *self;
-	CEPageIP4Private *priv;
-	CEPage *parent;
-	NMSettingConnection *s_con;
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	GtkTreeSelection *selection;
 	gint offset;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkListStore *store;
 
-	self = CE_PAGE_IP4 (g_object_new (CE_TYPE_PAGE_IP4, NULL));
-	parent = CE_PAGE (self);
-
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-ip4.glade", "IP4Page", NULL);
-	if (!parent->xml) {
-		g_warning ("%s: Couldn't load wired page glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-
-	parent->page = glade_xml_get_widget (parent->xml, "IP4Page");
-	if (!parent->page) {
-		g_warning ("%s: Couldn't load wired page from glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("IPv4 Settings"));
-
-	ip4_private_init (self, connection);
-	priv = CE_PAGE_IP4_GET_PRIVATE (self);
-
-	priv->window_group = gtk_window_group_new ();
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con);
-	priv->connection_id = g_strdup (nm_setting_connection_get_id (s_con));
-
-	priv->setting = (NMSettingIP4Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG);
-	if (!priv->setting) {
-		priv->setting = NM_SETTING_IP4_CONFIG (nm_setting_ip4_config_new ());
-		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
-	}
+	if (error)
+		return;
 
 	populate_ui (self);
 
@@ -722,8 +687,61 @@ ce_page_ip4_new (NMConnection *connection)
 	g_signal_connect_swapped (priv->dhcp_client_id, "changed", G_CALLBACK (ce_page_changed), self);
 
 	g_signal_connect (priv->routes_button, "clicked", G_CALLBACK (routes_button_clicked_cb), self);
+}
 
-	return self;
+CEPage *
+ce_page_ip4_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+{
+	CEPageIP4 *self;
+	CEPageIP4Private *priv;
+	CEPage *parent;
+	NMSettingConnection *s_con;
+
+	self = CE_PAGE_IP4 (g_object_new (CE_TYPE_PAGE_IP4,
+	                                  CE_PAGE_CONNECTION, connection,
+	                                  CE_PAGE_PARENT_WINDOW, parent_window,
+	                                  NULL));
+	parent = CE_PAGE (self);
+
+	parent->xml = glade_xml_new (GLADEDIR "/ce-page-ip4.glade", "IP4Page", NULL);
+	if (!parent->xml) {
+		g_set_error (error, 0, 0, "%s", _("Could not load IPv4 user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+
+	parent->page = glade_xml_get_widget (parent->xml, "IP4Page");
+	if (!parent->page) {
+		g_set_error (error, 0, 0, "%s", _("Could not load IPv4 user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+	g_object_ref_sink (parent->page);
+
+	parent->title = g_strdup (_("IPv4 Settings"));
+
+	ip4_private_init (self, connection);
+	priv = CE_PAGE_IP4_GET_PRIVATE (self);
+
+	priv->window_group = gtk_window_group_new ();
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
+	priv->connection_id = g_strdup (nm_setting_connection_get_id (s_con));
+
+	priv->setting = (NMSettingIP4Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG);
+	if (!priv->setting) {
+		priv->setting = NM_SETTING_IP4_CONFIG (nm_setting_ip4_config_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
+	}
+
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	if (!ce_page_initialize (parent, NULL, error)) {
+		g_object_unref (self);
+		return NULL;
+	}
+
+	return CE_PAGE (self);
 }
 
 static void

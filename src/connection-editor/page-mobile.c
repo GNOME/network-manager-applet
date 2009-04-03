@@ -227,19 +227,6 @@ populate_cdma_ui (CEPageMobile *self, NMConnection *connection)
 }
 
 static void
-populate_ui (CEPageMobile *self, NMConnection *connection)
-{
-	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
-
-	if (NM_IS_SETTING_GSM (priv->setting))
-		populate_gsm_ui (self, connection);
-	else if (NM_IS_SETTING_CDMA (priv->setting))
-		populate_cdma_ui (self, connection);
-	else
-		g_error ("Invalid setting");
-}
-
-static void
 stuff_changed (GtkWidget *w, gpointer user_data)
 {
 	ce_page_changed (CE_PAGE (user_data));
@@ -258,48 +245,21 @@ show_passwords (GtkToggleButton *button, gpointer user_data)
 	gtk_entry_set_visibility (priv->puk, active);
 }
 
-CEPageMobile *
-ce_page_mobile_new (NMConnection *connection)
+static void
+finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_data)
 {
-	CEPageMobile *self;
-	CEPageMobilePrivate *priv;
-	CEPage *parent;
+	CEPage *parent = CE_PAGE (self);
+	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 
-	self = CE_PAGE_MOBILE (g_object_new (CE_TYPE_PAGE_MOBILE, NULL));
-	parent = CE_PAGE (self);
+	if (error)
+		return;
 
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-mobile.glade", "MobilePage", NULL);
-	if (!parent->xml) {
-		g_warning ("%s: Couldn't load mobile page glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-
-	parent->page = glade_xml_get_widget (parent->xml, "MobilePage");
-	if (!parent->page) {
-		g_warning ("%s: Couldn't load mobile page from glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("Mobile Broadband"));
-
-	mobile_private_init (self);
-	priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
-
-	priv->setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_GSM);
-	if (!priv->setting)
-		priv->setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_CDMA);
-
-	if (!priv->setting) {
-		/* FIXME: Support add. */
-		g_warning ("Adding mobile conneciton not supported yet.");
-		g_object_unref (self);
-		return NULL;
-	}
-
-	populate_ui (self, connection);
+	if (NM_IS_SETTING_GSM (priv->setting))
+		populate_gsm_ui (self, parent->connection);
+	else if (NM_IS_SETTING_CDMA (priv->setting))
+		populate_cdma_ui (self, parent->connection);
+	else
+		g_assert_not_reached ();
 
 	g_signal_connect (priv->number, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->username, "changed", G_CALLBACK (stuff_changed), self);
@@ -311,9 +271,64 @@ ce_page_mobile_new (NMConnection *connection)
 	g_signal_connect (priv->puk, "changed", G_CALLBACK (stuff_changed), self);
 
 	g_signal_connect (glade_xml_get_widget (parent->xml, "mobile_show_passwords"),
-					  "toggled", G_CALLBACK (show_passwords), self);
+	                  "toggled",
+	                  G_CALLBACK (show_passwords),
+	                  self);
+}
 
-	return self;
+CEPage *
+ce_page_mobile_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+{
+	CEPageMobile *self;
+	CEPageMobilePrivate *priv;
+	CEPage *parent;
+	const char *setting_name = NM_SETTING_GSM_SETTING_NAME;
+
+	self = CE_PAGE_MOBILE (g_object_new (CE_TYPE_PAGE_MOBILE,
+	                                     CE_PAGE_CONNECTION, connection,
+	                                     CE_PAGE_PARENT_WINDOW, parent_window,
+	                                     NULL));
+	parent = CE_PAGE (self);
+
+	parent->xml = glade_xml_new (GLADEDIR "/ce-page-mobile.glade", "MobilePage", NULL);
+	if (!parent->xml) {
+		g_set_error (error, 0, 0, "%s", _("Could not load mobile broadband user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+
+	parent->page = glade_xml_get_widget (parent->xml, "MobilePage");
+	if (!parent->page) {
+		g_set_error (error, 0, 0, "%s", _("Could not load mobile broadband user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+	g_object_ref_sink (parent->page);
+
+	parent->title = g_strdup (_("Mobile Broadband"));
+
+	mobile_private_init (self);
+	priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
+
+	priv->setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_GSM);
+	if (!priv->setting) {
+		priv->setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_CDMA);
+		setting_name = NM_SETTING_CDMA_SETTING_NAME;
+	}
+
+	if (!priv->setting) {
+		g_set_error (error, 0, 0, "%s", _("Unsupported mobile broadband connection type."));
+		g_object_unref (self);
+		return NULL;
+	}
+
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	if (!ce_page_initialize (parent, setting_name, error)) {
+		g_object_unref (self);
+		return NULL;
+	}
+
+	return CE_PAGE (self);
 }
 
 static const char *

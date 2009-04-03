@@ -29,6 +29,11 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <nm-dbus-settings-system.h>
+#ifdef NO_POLKIT_GNOME
+#include "polkit-gnome.h"
+#else
+#include <polkit-gnome/polkit-gnome.h>
+#endif
 #include "nma-gconf-settings.h"
 
 #define NM_TYPE_CONNECTION_LIST    (nm_connection_list_get_type ())
@@ -48,6 +53,8 @@ typedef struct {
 
 	GladeXML *gui;
 	GtkWidget *dialog;
+
+	PolKitAction *system_action;
 
 	GdkPixbuf *wired_icon;
 	GdkPixbuf *wireless_icon;
