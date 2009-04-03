@@ -14,9 +14,9 @@ DBUS_PRE_126_CONF = nm-applet-pre-dbus-126.conf
 
 nm-applet.conf:
 if HAVE_DBUS_126
-	cp -f $(DBUS_126_CONF) nm-applet.conf
+	cp -f $(top_srcdir)/$(DBUS_126_CONF) nm-applet.conf
 else
-	cp -f $(DBUS_PRE_126_CONF) nm-applet.conf
+	cp -f $(top_srcdir)/$(DBUS_PRE_126_CONF) nm-applet.conf
 endif
 
 autostartdir = $(sysconfdir)/xdg/autostart
