@@ -61,6 +61,7 @@
 
 #include "nm-connection-editor.h"
 #include "gconf-helpers.h"
+#include "nma-marshal.h"
 
 #include "ce-page.h"
 #include "page-wired.h"
@@ -72,6 +73,7 @@
 #include "page-mobile.h"
 #include "page-ppp.h"
 #include "page-vpn.h"
+#include "polkit-helpers.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -82,8 +84,9 @@ enum {
 
 static guint editor_signals[EDITOR_LAST_SIGNAL] = { 0 };
 
-static void nm_connection_editor_set_connection (NMConnectionEditor *editor,
-                                                 NMConnection *connection);
+static gboolean nm_connection_editor_set_connection (NMConnectionEditor *editor,
+                                                     NMConnection *connection,
+                                                     GError **error);
 
 static void
 nm_connection_editor_update_title (NMConnectionEditor *editor)
@@ -396,28 +399,34 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 	/* Signals */
 	editor_signals[EDITOR_DONE] =
 		g_signal_new ("done",
-					  G_OBJECT_CLASS_TYPE (object_class),
-					  G_SIGNAL_RUN_FIRST,
-					  G_STRUCT_OFFSET (NMConnectionEditorClass, done),
-					  NULL, NULL,
-					  g_cclosure_marshal_VOID__INT,
-					  G_TYPE_NONE, 1, G_TYPE_INT);
+		              G_OBJECT_CLASS_TYPE (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              G_STRUCT_OFFSET (NMConnectionEditorClass, done),
+		              NULL, NULL,
+		              nma_marshal_VOID__INT_POINTER,
+		              G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);
 }
 
 NMConnectionEditor *
 nm_connection_editor_new (NMConnection *connection,
-                          gboolean system_settings_can_modify)
+                          gboolean system_settings_can_modify,
+                          GError **error)
 {
 	NMConnectionEditor *editor;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	editor = g_object_new (NM_TYPE_CONNECTION_EDITOR, NULL);
-	if (!editor)
+	if (!editor) {
+		g_set_error (error, 0, 0, "%s", _("Error creating connection editor dialog."));
 		return NULL;
+	}
 
 	editor->system_settings_can_modify = system_settings_can_modify;
-	nm_connection_editor_set_connection (editor, connection);
+	if (!nm_connection_editor_set_connection (editor, connection, error)) {
+		g_object_unref (editor);
+		return NULL;
+	}
 
 	return editor;
 }
@@ -472,28 +481,6 @@ page_changed (CEPage *page, gpointer user_data)
 	connection_editor_validate (editor);
 }
 
-static void
-add_page (NMConnectionEditor *editor, CEPage *page)
-{
-	GtkWidget *widget;
-	GtkWidget *notebook;
-	GtkWidget *label;
-
-	g_return_if_fail (editor != NULL);
-	g_return_if_fail (page != NULL);
-
-	notebook = glade_xml_get_widget (editor->xml, "notebook");
-	label = gtk_label_new (ce_page_get_title (page));
-	widget = ce_page_get_page (page);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
-
-	g_signal_connect (page, "changed",
-				   G_CALLBACK (page_changed),
-				   editor);
-
-	editor->pages = g_slist_append (editor->pages, page);
-}
-
 static gboolean
 idle_validate (gpointer user_data)
 {
@@ -502,13 +489,84 @@ idle_validate (gpointer user_data)
 }
 
 static void
-nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *connection)
+recheck_initialization (NMConnectionEditor *editor)
+{
+	GSList *iter;
+
+	/* Check if all pages are initialized; if not, desensitize the editor */
+	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
+		if (!ce_page_get_initialized (CE_PAGE (iter->data))) {
+			set_editor_sensitivity (editor, FALSE);
+			return;
+		}
+	}
+
+	populate_connection_ui (editor);
+	update_sensitivity (editor, POLKIT_RESULT_UNKNOWN);
+
+	/* Validate the connection from an idle handler to ensure that stuff like
+	 * GtkFileChoosers have had a chance to asynchronously find their files.
+	 */
+	g_idle_add (idle_validate, editor);
+}
+
+static void
+page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+
+	if (error) {
+		gtk_widget_hide (editor->window);
+		g_signal_emit (editor, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_NONE, error);
+		return;
+	}
+
+	recheck_initialization (editor);
+}
+
+static gboolean
+add_page (NMConnectionEditor *editor,
+          CEPageNewFunc func,
+          NMConnection *connection,
+          GError **error)
+{
+	CEPage *page;
+	GtkWidget *widget;
+	GtkWidget *notebook;
+	GtkWidget *label;
+
+	g_return_val_if_fail (editor != NULL, FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+	g_return_val_if_fail (connection != NULL, FALSE);
+
+	page = (*func) (connection, GTK_WINDOW (editor->window), error);
+	if (!page)
+		return FALSE;
+
+	notebook = glade_xml_get_widget (editor->xml, "notebook");
+	label = gtk_label_new (ce_page_get_title (page));
+	widget = ce_page_get_page (page);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
+
+	editor->pages = g_slist_append (editor->pages, page);
+
+	g_signal_connect (page, "changed", G_CALLBACK (page_changed), editor);
+	g_signal_connect (page, "initialized", G_CALLBACK (page_initialized), editor);
+
+	return TRUE;
+}
+
+static gboolean
+nm_connection_editor_set_connection (NMConnectionEditor *editor,
+                                     NMConnection *connection,
+                                     GError **error)
 {
 	NMSettingConnection *s_con;
 	const char *connection_type;
+	gboolean success = FALSE;
 
-	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
-	g_return_if_fail (NM_IS_CONNECTION (connection));
+	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
 	/* clean previous connection */
 	if (editor->connection)
@@ -523,37 +581,51 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor, NMConnection *c
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
-		add_page (editor, CE_PAGE (ce_page_wired_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_wired_security_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
+		if (!add_page (editor, ce_page_wired_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_wired_security_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ip4_new, connection, error))
+			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME)) {
-		add_page (editor, CE_PAGE (ce_page_wireless_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_wireless_security_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
+		if (!add_page (editor, ce_page_wireless_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_wireless_security_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ip4_new, connection, error))
+			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
-		add_page (editor, CE_PAGE (ce_page_vpn_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
+		if (!add_page (editor, ce_page_vpn_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ip4_new, connection, error))
+			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
-		add_page (editor, CE_PAGE (ce_page_dsl_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_wired_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_ppp_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
+		if (!add_page (editor, ce_page_dsl_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_wired_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ppp_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ip4_new, connection, error))
+			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME) || 
-			 !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
-		add_page (editor, CE_PAGE (ce_page_mobile_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_ppp_new (editor->connection)));
-		add_page (editor, CE_PAGE (ce_page_ip4_new (editor->connection)));
+	           !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
+		if (!add_page (editor, ce_page_mobile_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ppp_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ip4_new, connection, error))
+			goto out;
 	} else {
 		g_warning ("Unhandled setting type '%s'", connection_type);
 	}
 
 	/* set the UI */
-	populate_connection_ui (editor);
+	recheck_initialization (editor);
+	success = TRUE;
 
-	/* Validate the connection from an idle handler to ensure that stuff like
-	 * GtkFileChoosers have had a chance to asynchronously find their files.
-	 */
-	g_idle_add (idle_validate, editor);
+out:
+	return success;
 }
 
 void
@@ -570,7 +642,7 @@ cancel_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
 
 	gtk_widget_hide (widget);
-	g_signal_emit (self, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_CANCEL);
+	g_signal_emit (self, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_CANCEL, NULL);
 }
 
 static void
@@ -585,7 +657,7 @@ ok_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
 
 	gtk_widget_hide (widget);
-	g_signal_emit (self, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_OK);
+	g_signal_emit (self, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_OK, NULL);
 }
 
 void

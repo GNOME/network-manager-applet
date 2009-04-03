@@ -54,7 +54,7 @@ typedef struct {
 
 GType ce_page_wireless_security_get_type (void);
 
-CEPageWirelessSecurity *ce_page_wireless_security_new (NMConnection *connection);
+CEPage *ce_page_wireless_security_new (NMConnection *connection, GtkWindow *parent, GError **error);
 
 #endif  /* __PAGE_WIRELESS_SECURITY_H__ */
 

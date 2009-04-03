@@ -254,27 +254,37 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 	g_signal_connect_swapped (priv->send_ppp_echo, "toggled", G_CALLBACK (ce_page_changed), self);
 }
 
-CEPagePpp *
-ce_page_ppp_new (NMConnection *connection)
+static void
+finish_setup (CEPagePpp *self, gpointer unused, GError *error, gpointer user_data)
+{
+	if (!error)
+		populate_ui (self, CE_PAGE (self)->connection);
+}
+
+CEPage *
+ce_page_ppp_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
 {
 	CEPagePpp *self;
 	CEPagePppPrivate *priv;
 	CEPage *parent;
 	NMSettingConnection *s_con;
 
-	self = CE_PAGE_PPP (g_object_new (CE_TYPE_PAGE_PPP, NULL));
+	self = CE_PAGE_PPP (g_object_new (CE_TYPE_PAGE_PPP,
+	                                  CE_PAGE_CONNECTION, connection,
+	                                  CE_PAGE_PARENT_WINDOW, parent_window,
+	                                  NULL));
 	parent = CE_PAGE (self);
 
 	parent->xml = glade_xml_new (GLADEDIR "/ce-page-ppp.glade", "PppPage", NULL);
 	if (!parent->xml) {
-		g_warning ("%s: Couldn't load ppp page glade file.", __func__);
+		g_set_error (error, 0, 0, "%s", _("Could not load PPP user interface."));
 		g_object_unref (self);
 		return NULL;
 	}
 
 	parent->page = glade_xml_get_widget (parent->xml, "PppPage");
 	if (!parent->page) {
-		g_warning ("%s: Couldn't load ppp page from glade file.", __func__);
+		g_set_error (error, 0, 0, "%s", _("Could not load PPP user interface."));
 		g_object_unref (self);
 		return NULL;
 	}
@@ -297,9 +307,13 @@ ce_page_ppp_new (NMConnection *connection)
 	g_assert (s_con);
 	priv->connection_id = g_strdup (nm_setting_connection_get_id (s_con));
 
-	populate_ui (self, connection);
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	if (!ce_page_initialize (parent, NM_SETTING_PPP_SETTING_NAME, error)) {
+		g_object_unref (self);
+		return NULL;
+	}
 
-	return self;
+	return CE_PAGE (self);
 }
 
 static void

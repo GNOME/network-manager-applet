@@ -67,7 +67,8 @@ typedef struct {
 
 GType               nm_connection_editor_get_type (void);
 NMConnectionEditor *nm_connection_editor_new (NMConnection *connection,
-                                              gboolean system_settings_can_modify);
+                                              gboolean system_settings_can_modify,
+                                              GError **error);
 
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);

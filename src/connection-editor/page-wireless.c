@@ -295,44 +295,14 @@ populate_ui (CEPageWireless *self)
 	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wireless_get_mtu (setting));
 }
 
-CEPageWireless *
-ce_page_wireless_new (NMConnection *connection)
+static void
+finish_setup (CEPageWireless *self, gpointer unused, GError *error, gpointer user_data)
 {
-	CEPageWireless *self;
-	CEPageWirelessPrivate *priv;
-	CEPage *parent;
+	CEPage *parent = CE_PAGE (self);
 	GtkWidget *widget;
 
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
-
-	self = CE_PAGE_WIRELESS (g_object_new (CE_TYPE_PAGE_WIRELESS, NULL));
-	parent = CE_PAGE (self);
-
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wireless.glade", "WirelessPage", NULL);
-	if (!parent->xml) {
-		g_warning ("%s: Couldn't load wireless page glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-
-	parent->page = glade_xml_get_widget (parent->xml, "WirelessPage");
-	if (!parent->page) {
-		g_warning ("%s: Couldn't load wireless page from glade file.", __func__);
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("Wireless"));
-
-	wireless_private_init (self);
-	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
-
-	priv->setting = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
-	if (!priv->setting) {
-		priv->setting = NM_SETTING_WIRELESS (nm_setting_wireless_new ());
-		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
-	}
+	if (error)
+		return;
 
 	populate_ui (self);
 
@@ -356,8 +326,56 @@ ce_page_wireless_new (NMConnection *connection)
 	gtk_widget_hide (widget);
 	widget = glade_xml_get_widget (parent->xml, "wireless_rate_hbox");
 	gtk_widget_hide (widget);
+}
 
-	return self;
+CEPage *
+ce_page_wireless_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+{
+	CEPageWireless *self;
+	CEPageWirelessPrivate *priv;
+	CEPage *parent;
+
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
+
+	self = CE_PAGE_WIRELESS (g_object_new (CE_TYPE_PAGE_WIRELESS,
+	                                       CE_PAGE_CONNECTION, connection,
+	                                       CE_PAGE_PARENT_WINDOW, parent_window,
+	                                       NULL));
+	parent = CE_PAGE (self);
+
+	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wireless.glade", "WirelessPage", NULL);
+	if (!parent->xml) {
+		g_set_error (error, 0, 0, "%s", _("Could not load WiFi user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+
+	parent->page = glade_xml_get_widget (parent->xml, "WirelessPage");
+	if (!parent->page) {
+		g_set_error (error, 0, 0, "%s", _("Could not load WiFi user interface."));
+		g_object_unref (self);
+		return NULL;
+	}
+	g_object_ref_sink (parent->page);
+
+	parent->title = g_strdup (_("Wireless"));
+
+	wireless_private_init (self);
+	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+
+	priv->setting = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
+	if (!priv->setting) {
+		priv->setting = NM_SETTING_WIRELESS (nm_setting_wireless_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
+	}
+
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	if (!ce_page_initialize (parent, NULL, error)) {
+		g_object_unref (self);
+		return NULL;
+	}
+
+	return CE_PAGE (self);
 }
 
 GByteArray *

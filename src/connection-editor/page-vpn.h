@@ -47,7 +47,7 @@ typedef struct {
 
 GType ce_page_vpn_get_type (void);
 
-CEPageVpn *ce_page_vpn_new (NMConnection *connection);
+CEPage *ce_page_vpn_new (NMConnection *connection, GtkWindow *parent, GError **error);
 
 gboolean ce_page_vpn_save_secrets (CEPage *page, NMConnection *connection);
 

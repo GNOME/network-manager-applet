@@ -57,6 +57,7 @@
 #include "mobile-wizard.h"
 #include "utils.h"
 #include "vpn-helpers.h"
+#include "polkit-helpers.h"
 
 G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
 
@@ -75,30 +76,34 @@ static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
 typedef struct {
 	NMConnectionList *list;
 	GtkTreeView *treeview;
+	GtkWindow *list_window;
 	GtkWidget *button;
+	PolKitAction *action;
+	PolKitGnomeAction *gnome_action;
 } ActionInfo;
 
 static void
-show_error_dialog (GtkWindow *parent, const gchar *format, ...)
+error_dialog (GtkWindow *parent, const char *heading, const char *format, ...)
 {
 	GtkWidget *dialog;
 	va_list args;
-	char *msg;
+	char *message;
+
+	dialog = gtk_message_dialog_new (parent,
+	                                 GTK_DIALOG_DESTROY_WITH_PARENT,
+	                                 GTK_MESSAGE_ERROR,
+	                                 GTK_BUTTONS_CLOSE,
+	                                 "%s", heading);
 
 	va_start (args, format);
-	msg = g_strdup_vprintf (format, args);
+	message = g_strdup_vprintf (format, args);
 	va_end (args);
 
-	dialog = gtk_message_dialog_new (NULL,
-							   GTK_DIALOG_DESTROY_WITH_PARENT,
-							   GTK_MESSAGE_ERROR,
-							   GTK_BUTTONS_CLOSE,
-							   "%s", msg);
-	g_free (msg);
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), message);
+	g_free (message);
 
-	if (parent)
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), parent);
-
+	gtk_widget_show_all (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 }
@@ -280,50 +285,6 @@ update_connection_row (GtkListStore *store,
 
 
 /**********************************************/
-/* PolKit helpers */
-
-static gboolean
-is_permission_denied_error (GError *error)
-{
-	return dbus_g_error_has_name (error, "org.freedesktop.NetworkManagerSettings.Connection.NotPrivileged") ||
-		dbus_g_error_has_name (error, "org.freedesktop.NetworkManagerSettings.System.NotPrivileged");
-}
-
-static gboolean
-obtain_auth (GError *pk_error,
-             GtkWindow *parent,
-             PolKitGnomeAuthCB callback,
-             gpointer user_data,
-             GError **error)
-{
-	PolKitAction *pk_action;
-	char **tokens;
-	gboolean success = FALSE;
-	guint xid = 0;
-
-	tokens = g_strsplit (pk_error->message, " ", 2);
-	if (g_strv_length (tokens) != 2) {
-		g_set_error (error, 0, 0, "%s", _("PolicyKit authorization was malformed."));
-		goto out;
-	}
-
-	pk_action = polkit_action_new_from_string_representation (tokens[0]);
-	if (!pk_action) {
-		g_set_error (error, 0, 0, "%s", _("PolicyKit authorization could not be created."));
-		goto out;
-	}
-
-	if (parent)
-		xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (GTK_WIDGET (parent)->window));
-	success = polkit_gnome_auth_obtain (pk_action, xid, getpid (), callback, user_data, error);
-	polkit_action_unref (pk_action);
-
-out:
-	g_strfreev (tokens);
-	return success;
-}
-
-/**********************************************/
 /* Connection removing */
 
 typedef void (*ConnectionRemovedFn) (NMExportedConnection *exported,
@@ -355,10 +316,15 @@ remove_connection_cb (PolKitAction *action,
 		remove_connection (info->exported, info->parent, info->callback, info->user_data);
 		done = FALSE;
 	} else if (error) {
-		show_error_dialog (info->parent, _("Could not obtain required privileges: %s."), error->message);
+		error_dialog (info->parent,
+		              _("Could not obtain required privileges"),
+		              "%s", error->message);
 		g_error_free (error);
-	} else
-		show_error_dialog (info->parent, _("Could not remove system connection: permission denied."));
+	} else {
+		error_dialog (info->parent,
+		              _("Could not delete connection"),
+		              "%s", _("The connection could not be deleted due to an unknown error."));
+	}
 
 	if (done && info->callback)
 		info->callback (info->exported, FALSE, info->user_data);
@@ -380,7 +346,7 @@ remove_connection (NMExportedConnection *exported,
 	if (!success) {
 		gboolean auth_pending = FALSE;
 
-		if (is_permission_denied_error (error)) {
+		if (pk_helper_is_permission_denied_error (error)) {
 			ConnectionRemoveInfo *info;
 			GError *auth_error = NULL;
 
@@ -390,11 +356,11 @@ remove_connection (NMExportedConnection *exported,
 			info->callback = callback;
 			info->user_data = user_data;
 
-			auth_pending = obtain_auth (error, parent, remove_connection_cb, info, &auth_error);
+			auth_pending = pk_helper_obtain_auth (error, parent, remove_connection_cb, info, &auth_error);
 			if (auth_error) {
-				show_error_dialog (parent,
-				                   _("Removing connection failed: %s."),
-				                   auth_error->message);
+				error_dialog (parent,
+				              _("Could not move connection"),
+				              "%s", auth_error->message);
 				g_error_free (auth_error);
 			}
 
@@ -402,8 +368,11 @@ remove_connection (NMExportedConnection *exported,
 				g_object_unref (info->exported);
 				g_slice_free (ConnectionRemoveInfo, info);
 			}
-		} else
-			show_error_dialog (parent, _("Removing connection failed: %s."), error->message);
+		} else {
+			error_dialog (parent,
+			              _("Could not move connection"),
+			              "%s", error->message);
+		}
 
 		g_error_free (error);
 
@@ -479,10 +448,15 @@ add_connection_cb (PolKitAction *action,
 		add_connection (info->list, info->editor, info->connection, info->callback, info->user_data);
 		done = FALSE;
 	} else if (error) {
-		show_error_dialog (parent, _("Could not obtain required privileges: %s."), error->message);
+		error_dialog (parent,
+		              _("Could not obtain required privileges"),
+		              "%s", error->message);
 		g_error_free (error);
-	} else
-		show_error_dialog (parent, _("Could not add system connection: permission denied."));
+	} else {
+		error_dialog (parent,
+		              _("Could not add connection"),
+		              "%s", _("The connection could not be added due to an unknown error."));
+	}
 
 	if (done && info->callback)
 		info->callback (NULL, FALSE, info->user_data);
@@ -515,7 +489,7 @@ add_connection (NMConnectionList *self,
 			GtkWindow *parent;
 
 			parent = nm_connection_editor_get_window (editor);
-			if (is_permission_denied_error (error)) {
+			if (pk_helper_is_permission_denied_error (error)) {
 				ConnectionAddInfo *info;
 				GError *auth_error = NULL;
 
@@ -526,11 +500,11 @@ add_connection (NMConnectionList *self,
 				info->callback = callback;
 				info->user_data = user_data;
 
-				pending_auth = obtain_auth (error, parent, add_connection_cb, info, &auth_error);
+				pending_auth = pk_helper_obtain_auth (error, parent, add_connection_cb, info, &auth_error);
 				if (auth_error) {
-					show_error_dialog (parent,
-					                   _("Adding connection failed: %s."),
-					                   auth_error->message);
+					error_dialog (parent,
+					              _("Could not add connection"),
+					              "%s", auth_error->message);
 					g_error_free (auth_error);
 				}
 
@@ -538,8 +512,11 @@ add_connection (NMConnectionList *self,
 					g_object_unref (info->connection);
 					g_slice_free (ConnectionAddInfo, info);
 				}
-			} else
-				show_error_dialog (parent, _("Adding connection failed: %s."), error->message);
+			} else {
+				error_dialog (parent,
+				              _("Could not add connection"),
+				              "%s", error->message);
+			}
 
 			g_error_free (error);
 
@@ -650,10 +627,15 @@ update_connection_cb (PolKitAction *action,
 		update_connection (info->list, info->editor, info->original, info->modified, info->callback, info->user_data);
 		done = FALSE;
 	} else if (error) {
-		show_error_dialog (parent, _("Could not obtain required privileges: %s."), error->message);
+		error_dialog (parent,
+		              _("Could not update connection"),
+		              "%s", error->message);
 		g_error_free (error);
-	} else
-		show_error_dialog (parent, _("Could not update system connection: permission denied."));
+	} else {
+		error_dialog (parent,
+		              _("Could not update connection"),
+		              "%s", _("The connection could not be updated due to an unknown error."));
+	}
 
 	if (done)
 		connection_update_done (info, FALSE);
@@ -705,18 +687,21 @@ update_connection (NMConnectionList *list,
 
 		parent = nm_connection_editor_get_window (editor);
 		if (!success) {
-			if (is_permission_denied_error (error)) {
+			if (pk_helper_is_permission_denied_error (error)) {
 				GError *auth_error = NULL;
 
-				pending_auth = obtain_auth (error, parent, update_connection_cb, info, &auth_error);
+				pending_auth = pk_helper_obtain_auth (error, parent, update_connection_cb, info, &auth_error);
 				if (auth_error) {
-					show_error_dialog (parent,
-					                   _("Updating connection failed: %s."),
-					                   auth_error->message);
+					error_dialog (parent,
+					              _("Could not update connection"),
+					              "%s", auth_error->message);
 					g_error_free (auth_error);
 				}
-			} else
-				show_error_dialog (parent, _("Updating connection failed: %s."), error->message);
+			} else {
+				error_dialog (parent,
+				              _("Could not update connection"),
+				              "%s", error->message);
+			}
 
 			g_error_free (error);
 		} else {
@@ -736,14 +721,29 @@ update_connection (NMConnectionList *list,
 }
 
 static void
-add_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
+add_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
 	NMConnection *connection;
+	const char *message = _("An unknown error ocurred.");
 
 	connection = nm_connection_editor_get_connection (editor);
-	if (response == GTK_RESPONSE_OK)
+
+	switch (response) {
+	case GTK_RESPONSE_NONE:
+		if (error && error->message)
+			message = error->message;
+		error_dialog (GTK_WINDOW (editor->window),
+		              _("Error initializing editor"),
+		              "%s", message);
+		break;
+	case GTK_RESPONSE_OK:
 		add_connection (info->list, editor, connection, NULL, NULL);
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
+	}
 
 	g_hash_table_remove (info->list->editors, connection);
 }
@@ -992,6 +992,8 @@ add_connection_clicked (GtkButton *button, gpointer user_data)
 	const char *connection_type;
 	NMConnection *connection;
 	NMConnectionEditor *editor;
+	GError *error = NULL;
+	const char *message = _("The connection editor dialog could not be initialized due to an unknown error.");
 
 	connection_type = get_connection_type_from_treeview (info->list, info->treeview);
 	g_assert (connection_type);
@@ -1003,7 +1005,16 @@ add_connection_clicked (GtkButton *button, gpointer user_data)
 	}
 
 	editor = nm_connection_editor_new (connection,
-	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings));
+	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings),
+	                                   &error);
+	if (!editor) {
+		error_dialog (info->list_window,
+		              _("Could not edit new connection"),
+		              "%s",
+		              (error && error->message) ? error->message : message);
+		return;
+	}
+
 	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
 	g_hash_table_insert (info->list->editors, connection, editor);
 
@@ -1037,21 +1048,26 @@ connection_updated_cb (NMConnectionList *list,
 }
 
 static void
-edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
+edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer user_data)
 {
 	EditConnectionInfo *info = (EditConnectionInfo *) user_data;
+	const char *message = _("An unknown error ocurred.");
 
 	g_hash_table_remove (info->list->editors, info->original_connection);
 
-	if (response == GTK_RESPONSE_OK) {
+	if (response == GTK_RESPONSE_NONE) {
+		if (error && error->message)
+			message = error->message;
+		error_dialog (GTK_WINDOW (editor->window), _("Error initializing editor"), "%s", message);
+	} else if (response == GTK_RESPONSE_OK) {
 		NMConnection *connection;
-		GError *error = NULL;
+		GError *edit_error = NULL;
 		gboolean success;
 
 		connection = nm_connection_editor_get_connection (editor);
 
 		utils_fill_connection_certs (connection);
-		success = nm_connection_verify (connection, &error);
+		success = nm_connection_verify (connection, &edit_error);
 		utils_clear_filled_connection_certs (connection);
 
 		if (success) {
@@ -1061,9 +1077,9 @@ edit_done_cb (NMConnectionEditor *editor, gint response, gpointer user_data)
 			g_warning ("%s: invalid connection after update: bug in the "
 			           "'%s' / '%s' invalid: %d",
 			           __func__,
-			           g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)),
-			           error->message, error->code);
-			g_error_free (error);
+			           g_type_name (nm_connection_lookup_setting_type_by_quark (edit_error->domain)),
+			           edit_error->message, edit_error->code);
+			g_error_free (edit_error);
 			connection_updated_cb (info->list, FALSE, user_data);
 		}
 	}
@@ -1076,6 +1092,8 @@ do_edit (ActionInfo *info)
 	NMConnection *connection;
 	NMConnectionEditor *editor;
 	EditConnectionInfo *edit_info;
+	GError *error = NULL;
+	const char *message = _("The connection editor dialog could not be initialized due to an unknown error.");
 
 	exported = get_active_connection (info->treeview);
 	g_return_if_fail (exported != NULL);
@@ -1089,8 +1107,17 @@ do_edit (ActionInfo *info)
 
 	connection = nm_gconf_connection_duplicate (nm_exported_connection_get_connection (exported));
 	editor = nm_connection_editor_new (connection,
-	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings));
+	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings),
+	                                   &error);
 	g_object_unref (connection);
+
+	if (!editor) {
+		error_dialog (info->list_window,
+		              _("Could not edit connection"),
+		              "%s",
+		              (error && error->message) ? error->message : message);
+		return;
+	}
 
 	edit_info = g_new (EditConnectionInfo, 1);
 	edit_info->list = info->list;
@@ -1160,21 +1187,41 @@ delete_connection_cb (GtkButton *button, gpointer user_data)
 		remove_connection (exported, GTK_WINDOW (info->list->dialog), connection_remove_done, info->list);
 }
 
-static void
-list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
+static gboolean
+check_sensitivity (ActionInfo *info, PolKitResult pk_result)
 {
-	ActionInfo *info = (ActionInfo *) user_data;
-	GtkTreeIter iter;
-	GtkTreeModel *model;
+	gboolean sensitive = TRUE;
+	NMExportedConnection *exported = NULL;
+	NMConnection *connection = NULL;
 
-	if (gtk_tree_selection_get_selected (selection, &model, &iter))
-		gtk_widget_set_sensitive (info->button, TRUE);
-	else
-		gtk_widget_set_sensitive (info->button, FALSE);
+	exported = get_active_connection (info->treeview);
+	if (exported)
+		connection = nm_exported_connection_get_connection (exported);
+	if (!connection)
+		return FALSE;
+
+	if (nm_connection_get_scope (connection) != NM_CONNECTION_SCOPE_SYSTEM)
+		return TRUE;
+
+	if (pk_result == POLKIT_RESULT_UNKNOWN)
+		pk_result = polkit_gnome_action_get_polkit_result (info->gnome_action);
+
+	if (pk_result == POLKIT_RESULT_NO || pk_result == POLKIT_RESULT_UNKNOWN)
+		sensitive = FALSE;
+
+	return sensitive;
 }
 
 static void
-delete_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
+system_pk_result_changed_cb (PolKitGnomeAction *gnome_action,
+                             PolKitResult result,
+                             ActionInfo *info)
+{
+	gtk_widget_set_sensitive (info->button, check_sensitivity (info, result));
+}
+
+static void
+pk_button_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
 	GtkTreeIter iter;
@@ -1182,7 +1229,8 @@ delete_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 	NMExportedConnection *exported;
 	NMConnection *connection = NULL;
 	NMSettingConnection *s_con;
-	gboolean can_delete = TRUE;
+	gboolean can_do_action = FALSE;
+	gboolean req_privs = FALSE;
 
 	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
 		goto done;
@@ -1196,13 +1244,17 @@ delete_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
-	if (nm_setting_connection_get_read_only (s_con)) {
-		can_delete = FALSE;
-		goto done;
+	if (nm_connection_get_scope (connection) != NM_CONNECTION_SCOPE_SYSTEM)
+		can_do_action = !nm_setting_connection_get_read_only (s_con);
+	else {
+		if (!nm_setting_connection_get_read_only (s_con))
+			can_do_action = check_sensitivity (info, POLKIT_RESULT_UNKNOWN);
+		req_privs = TRUE;
 	}
 
 done:
-	gtk_widget_set_sensitive (info->button, can_delete);
+	g_object_set (info->gnome_action, "polkit-action", req_privs ? info->action : NULL, NULL);
+	g_object_set (info->gnome_action, "master-sensitive", can_do_action, NULL);
 }
 
 static void
@@ -1255,6 +1307,8 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 	NMSettingVPN *s_vpn;
 	const char *service_type;
 	char *s;
+	GError *error = NULL;
+	const char *message = _("The connection editor dialog could not be initialized due to an unknown error.");
 
 	/* Basic sanity checks of the connection */
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
@@ -1294,6 +1348,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 		                                 _("Cannot import VPN connection"));
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 		                                 _("The VPN plugin failed to import the VPN connection correctly\n\nError: no VPN service type."));
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), info->list_window);
 		g_signal_connect (dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 		g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
 		gtk_widget_show_all (dialog);
@@ -1302,7 +1357,16 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 	}
 
 	editor = nm_connection_editor_new (connection,
-	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings));
+	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings),
+	                                   &error);
+	if (!editor) {
+		error_dialog (info->list_window,
+		              _("Could not edit imported connection"),
+		              "%s",
+		              (error && error->message) ? error->message : message);
+		return;
+	}
+
 	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_done_cb), info);
 	g_hash_table_insert (info->list->editors, connection, editor);
 
@@ -1337,7 +1401,10 @@ connection_double_clicked_cb (GtkTreeView *tree_view,
                               GtkTreeViewColumn *column,
                               gpointer user_data)
 {
-	do_edit ((ActionInfo *) user_data);
+	ActionInfo *info = user_data;
+
+	if (GTK_WIDGET_SENSITIVE (info->button))
+		do_edit ((ActionInfo *) user_data);
 }
 
 static void
@@ -1350,6 +1417,9 @@ static void
 nm_connection_list_init (NMConnectionList *list)
 {
 	list->treeviews = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	list->system_action = polkit_action_new ();
+	polkit_action_set_action_id (list->system_action, "org.freedesktop.network-manager-settings.system.modify");
 }
 
 static void
@@ -1373,6 +1443,8 @@ dispose (GObject *object)
 		g_object_unref (list->vpn_icon);
 	if (list->unknown_icon)
 		g_object_unref (list->unknown_icon);
+
+	polkit_action_unref (list->system_action);
 
 	if (list->dialog)
 		gtk_widget_destroy (list->dialog);
@@ -1458,18 +1530,47 @@ add_connection_treeview (NMConnectionList *self, const char *prefix)
 	return treeview;
 }
 
+static void
+action_info_free (ActionInfo *info)
+{
+	g_return_if_fail (info != NULL);
+
+	/* gnome_action should have been destroyed when the dialog got destroyed */
+	polkit_action_unref (info->action);
+	g_free (info);
+}
+
 static ActionInfo *
-new_action_info (NMConnectionList *list, GtkTreeView *treeview, GtkWidget *button)
+action_info_new (NMConnectionList *list,
+                 GtkTreeView *treeview,
+                 GtkWindow *list_window,
+                 GtkWidget *button,
+                 PolKitAction *action)
 {
 	ActionInfo *info;
 
 	info = g_malloc0 (sizeof (ActionInfo));
-	g_object_weak_ref (G_OBJECT (list), (GWeakNotify) g_free, info);
+	g_object_weak_ref (G_OBJECT (list), (GWeakNotify) action_info_free, info);
 
 	info->list = list;
 	info->treeview = treeview;
+	info->list_window = list_window;
 	info->button = button;
+	info->action = polkit_action_ref (action);
 	return info;
+}
+
+static void
+action_info_set_button (ActionInfo *info,
+                        GtkWidget *button,
+                        PolKitGnomeAction *gnome_action)
+{
+	g_return_if_fail (info != NULL);
+
+	info->button = button;
+	if (info->gnome_action)
+		g_object_unref (info->gnome_action);
+	info->gnome_action = gnome_action;
 }
 
 static void
@@ -1485,6 +1586,68 @@ check_vpn_import_supported (gpointer key, gpointer data, gpointer user_data)
 		*import_supported = TRUE;
 }
 
+static GtkWidget *
+create_system_action_button (const char *name,
+                             const char *auth_label,
+                             const char *auth_tooltip,
+                             const char *label,
+                             const char *tooltip,
+                             const char *stock_icon,
+                             const char *auth_icon,
+                             GCallback result_callback,
+                             GtkWidget *hbox,
+                             PolKitGnomeAction **out_action,
+                             gpointer user_data)
+{
+	PolKitGnomeAction *action;
+	GtkWidget *button;
+
+	action = polkit_gnome_action_new (name);
+
+	g_object_set (action,
+	              "polkit-action", NULL,
+
+	              "self-blocked-visible",       TRUE,
+	              "self-blocked-sensitive",     FALSE,
+	              "self-blocked-short-label",   label,
+	              "self-blocked-label",         label,
+	              "self-blocked-tooltip",       tooltip,
+	              "self-blocked-icon-name",     stock_icon,
+
+	              "no-visible",       TRUE,
+	              "no-sensitive",     FALSE,
+	              "no-short-label",   label,
+	              "no-label",         label,
+	              "no-tooltip",       tooltip,
+	              "no-icon-name",     stock_icon,
+
+	              "auth-visible",     TRUE,
+	              "auth-sensitive",   TRUE,
+	              "auth-short-label", auth_label,
+	              "auth-label",       auth_label,
+	              "auth-tooltip",     auth_tooltip,
+	              "auth-icon-name",   auth_icon,
+
+	              "yes-visible",      TRUE,
+	              "yes-sensitive",    TRUE,
+	              "yes-short-label",  label,
+	              "yes-label",        label,
+	              "yes-tooltip",      tooltip,
+	              "yes-icon-name",    stock_icon,
+
+	              "master-visible",   TRUE,
+	              "master-sensitive", TRUE,
+	              NULL);
+	g_signal_connect (action, "polkit-result-changed",
+	                  G_CALLBACK (result_callback), user_data);
+
+	button = polkit_gnome_action_create_button (action);
+	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
+
+	*out_action = action;
+	return button;
+}
+
 static void
 add_connection_buttons (NMConnectionList *self,
                         const char *prefix,
@@ -1492,9 +1655,10 @@ add_connection_buttons (NMConnectionList *self,
                         gboolean is_vpn)
 {
 	char *name;
-	GtkWidget *button;
+	GtkWidget *button, *hbox;
 	ActionInfo *info;
 	GtkTreeSelection *selection;
+	PolKitGnomeAction *action = NULL;
 
 	selection = gtk_tree_view_get_selection (treeview);
 
@@ -1502,7 +1666,7 @@ add_connection_buttons (NMConnectionList *self,
 	name = g_strdup_printf ("%s_add", prefix);
 	button = glade_xml_get_widget (self->gui, name);
 	g_free (name);
-	info = new_action_info (self, treeview, NULL);
+	info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), NULL, self->system_action);
 	g_signal_connect (button, "clicked", G_CALLBACK (add_connection_clicked), info);
 	if (is_vpn) {
 		GHashTable *plugins;
@@ -1512,22 +1676,48 @@ add_connection_buttons (NMConnectionList *self,
 		gtk_widget_set_sensitive (button, (plugins && g_hash_table_size (plugins)));
 	}
 
-	/* Edit */
-	name = g_strdup_printf ("%s_edit", prefix);
-	button = glade_xml_get_widget (self->gui, name);
+	name = g_strdup_printf ("%s_button_box", prefix);
+	hbox = glade_xml_get_widget (self->gui, name);
 	g_free (name);
-	info = new_action_info (self, treeview, button);
+
+	/* Edit */
+	info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), NULL, self->system_action);
+	action = NULL;
+	button = create_system_action_button ("system-edit",
+	                                      _("Edit..."),
+	                                      _("Authenticate to edit the selected connection."),
+	                                      _("Edit"),
+	                                      _("Edit the selected connection."),
+	                                      GTK_STOCK_EDIT,
+	                                      GTK_STOCK_DIALOG_AUTHENTICATION,
+	                                      G_CALLBACK (system_pk_result_changed_cb),
+	                                      hbox,
+	                                      &action,
+	                                      info);
+	action_info_set_button (info, button, action);
 	g_signal_connect (button, "clicked", G_CALLBACK (edit_connection_cb), info);
-	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed_cb), info);
 	g_signal_connect (treeview, "row-activated", G_CALLBACK (connection_double_clicked_cb), info);
+	g_signal_connect (selection, "changed", G_CALLBACK (pk_button_selection_changed_cb), info);
+	pk_button_selection_changed_cb (selection, info);
 
 	/* Delete */
-	name = g_strdup_printf ("%s_delete", prefix);
-	button = glade_xml_get_widget (self->gui, name);
-	g_free (name);
-	info = new_action_info (self, treeview, button);
+	info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), NULL, self->system_action);
+	action = NULL;
+	button = create_system_action_button ("system-delete",
+	                                      _("Delete..."),
+	                                      _("Authenticate to delete the selected connection."),
+	                                      _("Delete"),
+	                                      _("Delete the selected connection."),
+	                                      GTK_STOCK_DELETE,
+	                                      GTK_STOCK_DIALOG_AUTHENTICATION,
+	                                      G_CALLBACK (system_pk_result_changed_cb),
+	                                      hbox,
+	                                      &action,
+	                                      info);
+	action_info_set_button (info, button, action);
 	g_signal_connect (button, "clicked", G_CALLBACK (delete_connection_cb), info);
-	g_signal_connect (selection, "changed", G_CALLBACK (delete_selection_changed_cb), info);
+	g_signal_connect (selection, "changed", G_CALLBACK (pk_button_selection_changed_cb), info);
+	pk_button_selection_changed_cb (selection, info);
 
 	/* Import */
 	name = g_strdup_printf ("%s_import", prefix);
@@ -1536,7 +1726,7 @@ add_connection_buttons (NMConnectionList *self,
 	if (button) {
 		gboolean import_supported = FALSE;
 
-		info = new_action_info (self, treeview, button);
+		info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), button, self->system_action);
 		g_signal_connect (button, "clicked", G_CALLBACK (import_vpn_cb), info);
 
 		g_hash_table_foreach (vpn_get_plugins (NULL), check_vpn_import_supported, &import_supported);
@@ -1548,7 +1738,7 @@ add_connection_buttons (NMConnectionList *self,
 	button = glade_xml_get_widget (self->gui, name);
 	g_free (name);
 	if (button) {
-		info = new_action_info (self, treeview, button);
+		info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), button, self->system_action);
 		g_signal_connect (button, "clicked", G_CALLBACK (export_vpn_cb), info);
 		g_signal_connect (selection, "changed", G_CALLBACK (vpn_list_selection_changed_cb), info);
 		gtk_widget_set_sensitive (button, FALSE);

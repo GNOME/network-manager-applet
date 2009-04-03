@@ -29,6 +29,7 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 
+#include <dbus/dbus-glib.h>
 #include <nm-connection.h>
 
 #define CE_TYPE_PAGE            (ce_page_get_type ())
@@ -38,12 +39,24 @@
 #define CE_IS_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), CE_TYPE_PAGE))
 #define CE_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE, CEPageClass))
 
+#define CE_PAGE_CONNECTION "connection"
+#define CE_PAGE_INITIALIZED "initialized"
+#define CE_PAGE_PARENT_WINDOW "parent-window"
+
 typedef struct {
 	GObject parent;
 
+	gboolean initialized;
 	GladeXML *xml;
 	GtkWidget *page;
 	char *title;
+
+	DBusGProxy *proxy;
+	gulong secrets_done_validate;
+
+	char *setting_name;
+	NMConnection *connection;
+	GtkWindow *parent_window;
 
 	gboolean disposed;
 } CEPage;
@@ -52,11 +65,16 @@ typedef struct {
 	GObjectClass parent;
 
 	/* Virtual functions */
-	gboolean    (*validate)            (CEPage *self, NMConnection *connection, GError **error);
+	gboolean    (*validate)    (CEPage *self, NMConnection *connection, GError **error);
 
 	/* Signals */
-	void        (*changed)             (CEPage *self);
+	void        (*changed)     (CEPage *self);
+	void        (*initialized) (CEPage *self, GHashTable *secrets, GError *error);
 } CEPageClass;
+
+
+typedef CEPage* (*CEPageNewFunc)(NMConnection *connection, GtkWindow *parent, GError **error);
+
 
 GType ce_page_get_type (void);
 
@@ -75,6 +93,12 @@ GByteArray *ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid);
 gint ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
 
 int ce_get_property_default (NMSetting *setting, const char *property_name);
+
+gboolean ce_page_initialize (CEPage *self,
+                             const char *setting_name,
+                             GError **error);
+
+gboolean ce_page_get_initialized (CEPage *self);
 
 #endif  /* __CE_PAGE_H__ */
 
