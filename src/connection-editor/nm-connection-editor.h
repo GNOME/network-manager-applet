@@ -43,6 +43,7 @@ typedef struct {
 
 	/* private data */
 	NMConnection *connection;
+	gboolean initialized;
 
 	NMConnectionScope orig_scope;
 	PolKitAction *system_action;

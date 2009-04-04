@@ -1,5 +1,16 @@
 2009-04-04  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/nm-connection-editor.c
+	  src/connection-editor/nm-connection-editor.h
+		- (connection_editor_validate, system_checkbutton_toggled_cb,
+		   recheck_initialization): don't validate before the editor is
+			all initialized; fixes issues with connection values getting
+			cleared becuase validation updates the connection's settings
+			too, and the UI might not be completely filled in yet until
+			all pages are initialized
+
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/ce-page.c
 		- (get_secrets_cb): don't mix up the PolicyKit error and the error
 			that could be returned from pk_helper_obtain_auth()

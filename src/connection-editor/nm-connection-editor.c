@@ -146,6 +146,9 @@ connection_editor_validate (NMConnectionEditor *editor)
 	gboolean valid = FALSE;
 	GSList *iter;
 
+	if (!editor->initialized)
+		goto done;
+
 	if (!ui_to_setting (editor))
 		goto done;
 
@@ -197,7 +200,8 @@ system_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
 	if (nm_setting_connection_get_read_only (s_con))
 		gtk_widget_set_sensitive (editor->ok_button, FALSE);
 
-	connection_editor_validate (editor);
+	if (editor->initialized)
+		connection_editor_validate (editor);
 }
 
 static void
@@ -503,6 +507,8 @@ recheck_initialization (NMConnectionEditor *editor)
 
 	populate_connection_ui (editor);
 	update_sensitivity (editor, POLKIT_RESULT_UNKNOWN);
+
+	editor->initialized = TRUE;
 
 	/* Validate the connection from an idle handler to ensure that stuff like
 	 * GtkFileChoosers have had a chance to asynchronously find their files.
