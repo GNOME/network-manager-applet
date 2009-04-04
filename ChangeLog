@@ -1,5 +1,11 @@
 2009-04-04  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/ce-page.c
+		- (get_secrets_cb): don't mix up the PolicyKit error and the error
+			that could be returned from pk_helper_obtain_auth()
+
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/polkit-helpers.c
 		- (pk_helper_obtain_auth): handle NULL PolicyKit error
 
