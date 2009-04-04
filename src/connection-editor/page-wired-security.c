@@ -87,7 +87,7 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 	priv->security_widget = wireless_security_get_widget (priv->security);
 
 	gtk_toggle_button_set_active (priv->enabled, priv->initial_have_8021x);
-	g_signal_connect_swapped (priv->enabled, "toggled", G_CALLBACK (ce_page_changed), self);
+	g_signal_connect (priv->enabled, "toggled", G_CALLBACK (enable_toggled), self);
 	gtk_widget_set_sensitive (priv->security_widget, priv->initial_have_8021x);
 
 	gtk_box_pack_start (GTK_BOX (parent->page), GTK_WIDGET (priv->enabled), FALSE, TRUE, 12);
@@ -118,8 +118,6 @@ ce_page_wired_security_new (NMConnection *connection, GtkWindow *parent_window, 
 		priv->initial_have_8021x = TRUE;
 
 	priv->enabled = GTK_TOGGLE_BUTTON (gtk_check_button_new_with_label (_("Use 802.1X security for this connection")));
-	g_signal_connect (priv->enabled, "toggled",
-					  G_CALLBACK (enable_toggled), self);
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 	if (!ce_page_initialize (parent, NM_SETTING_802_1X_SETTING_NAME, error)) {

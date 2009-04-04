@@ -1,5 +1,15 @@
 2009-04-04  Dan Williams  <dcbw@redhat.com>
 
+	* src/connection-editor/page-wired-security.c
+		- (ce_page_wired_security_new): don't connect to the "use 802.1x"
+			checkbox's 'toggled' signal here, do it after setting the
+			checkbox's initial value in finish_setup().  Fixes issue
+			where validation would be triggered prematurely, before the
+			editor was initialized
+		- (finish_setup): enable_toggled() already calls ce_page_changed()
+
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
 	* src/connection-editor/nm-connection-list.c
 		- Send the clicked signal to the button instead of calling do_edit()
 			explicitly so that the PolKitAction's code gets run; ensures
