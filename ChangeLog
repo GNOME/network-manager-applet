@@ -1,3 +1,11 @@
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/nm-connection-list.c
+		- Send the clicked signal to the button instead of calling do_edit()
+			explicitly so that the PolKitAction's code gets run; ensures
+			the same codepath gets taken for double-click as for clicking
+			the edit button
+
 2009-04-03  Dan Williams  <dcbw@redhat.com>
 
 	* Ensure PolicyKit autorization before editing system connections, and
