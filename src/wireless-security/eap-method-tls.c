@@ -31,6 +31,7 @@
 #include "eap-method.h"
 #include "wireless-security.h"
 #include "utils.h"
+#include "helpers.h"
 
 static void
 show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
@@ -390,27 +391,20 @@ eap_method_tls_new (const char *glade_file,
 		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 
 	widget = glade_xml_get_widget (xml, "eap_tls_private_key_password_entry");
+	g_assert (widget);
+
 	/* Fill secrets, if any */
 	if (connection) {
-		GHashTable *secrets;
-		GError *error = NULL;
-		GValue *value;
-		const char *pw_secret_name = phase2 ? NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD :
-		                                      NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD;
-
-		secrets = nm_gconf_get_keyring_items (connection,
-		                                      NM_SETTING_802_1X_SETTING_NAME,
-		                                      TRUE,
-		                                      &error);
-		if (secrets) {
-			value = g_hash_table_lookup (secrets, pw_secret_name);
-			if (value)
-				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
-			g_hash_table_destroy (secrets);
-		}
-		g_clear_error (&error);
+		helper_fill_secret_entry (connection,
+		                          GTK_ENTRY (widget),
+		                          NM_TYPE_SETTING_802_1X,
+		                          phase2 ? (HelperSecretFunc) nm_setting_802_1x_get_phase2_private_key_password :
+		                                   (HelperSecretFunc) nm_setting_802_1x_get_private_key_password,
+		                          NM_SETTING_802_1X_SETTING_NAME,
+		                          phase2 ? NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD :
+		                                   NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD);
 	}
-	g_assert (widget);
+
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);

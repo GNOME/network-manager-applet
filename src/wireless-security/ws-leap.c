@@ -26,6 +26,7 @@
 #include "wireless-security.h"
 #include "utils.h"
 #include "gconf-helpers.h"
+#include "helpers.h"
 
 
 static void
@@ -166,21 +167,12 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
 	if (wsec) {
-		GHashTable *secrets;
-		GError *error = NULL;
-		GValue *value;
-
-		secrets = nm_gconf_get_keyring_items (connection,
-		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-		                                      FALSE,
-		                                      &error);
-		if (secrets) {
-			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD);
-			if (value)
-				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
-			g_hash_table_destroy (secrets);
-		} else if (error)
-			g_error_free (error);
+		helper_fill_secret_entry (connection,
+		                          GTK_ENTRY (widget),
+		                          NM_TYPE_SETTING_WIRELESS_SECURITY,
+		                          (HelperSecretFunc) nm_setting_wireless_security_get_leap_password,
+		                          NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                          NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD);
 	}
 
 	widget = glade_xml_get_widget (xml, "leap_username_entry");
