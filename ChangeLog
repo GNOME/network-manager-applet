@@ -1,3 +1,59 @@
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/helpers.c
+	  src/connection-editor/helpers.h
+		- Small helper to fill UI widgets from connection secrets
+
+	* src/connection-editor/Makefile.am
+	  src/connection-editor/Makefile.am
+	  src/connection-editor/eap-method-leap.c
+	  src/connection-editor/eap-method-simple.c
+	  src/connection-editor/eap-method-tls.c
+	  src/connection-editor/ws-leap.c
+	  src/connection-editor/ws-wep-key.c
+	  src/connection-editor/ws-wpa-psk.c
+		- Handle system connection secrets too
+
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/nm-connection-editor.c
+	  src/connection-editor/nm-connection-editor.h
+		- (connection_editor_validate, system_checkbutton_toggled_cb,
+		   recheck_initialization): don't validate before the editor is
+			all initialized; fixes issues with connection values getting
+			cleared becuase validation updates the connection's settings
+			too, and the UI might not be completely filled in yet until
+			all pages are initialized
+
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/ce-page.c
+		- (get_secrets_cb): don't mix up the PolicyKit error and the error
+			that could be returned from pk_helper_obtain_auth()
+
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/polkit-helpers.c
+		- (pk_helper_obtain_auth): handle NULL PolicyKit error
+
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/page-wired-security.c
+		- (ce_page_wired_security_new): don't connect to the "use 802.1x"
+			checkbox's 'toggled' signal here, do it after setting the
+			checkbox's initial value in finish_setup().  Fixes issue
+			where validation would be triggered prematurely, before the
+			editor was initialized
+		- (finish_setup): enable_toggled() already calls ce_page_changed()
+
+2009-04-04  Dan Williams  <dcbw@redhat.com>
+
+	* src/connection-editor/nm-connection-list.c
+		- Send the clicked signal to the button instead of calling do_edit()
+			explicitly so that the PolKitAction's code gets run; ensures
+			the same codepath gets taken for double-click as for clicking
+			the edit button
+
 2009-04-03  Dan Williams  <dcbw@redhat.com>
 
 	* Ensure PolicyKit autorization before editing system connections, and

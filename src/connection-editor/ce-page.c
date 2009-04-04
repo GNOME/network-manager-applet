@@ -210,17 +210,17 @@ static void
 get_secrets_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 {
 	CEPage *self = user_data;
+	GError *pk_error = NULL;
 	GError *error = NULL;
 	GHashTable *settings = NULL, *setting_hash;
 	gboolean do_signal = TRUE;
 
-	if (!dbus_g_proxy_end_call (proxy, call, &error,
+	if (!dbus_g_proxy_end_call (proxy, call, &pk_error,
 	                            DBUS_TYPE_G_MAP_OF_MAP_OF_VARIANT, &settings,
 	                            G_TYPE_INVALID)) {
-		if (pk_helper_is_permission_denied_error (error)) {
+		if (pk_helper_is_permission_denied_error (pk_error)) {
 			/* If permission was denied, try to authenticate */
-			g_clear_error (&error);
-			if (pk_helper_obtain_auth (error, self->parent_window, try_secrets_again, self, &error))
+			if (pk_helper_obtain_auth (pk_error, self->parent_window, try_secrets_again, self, &error))
 				do_signal = FALSE; /* 'secrets' signal will happen after auth result */
 		}
 	} else {
@@ -242,6 +242,7 @@ get_secrets_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 
 	if (do_signal)
 		emit_initialized (self, error);
+	g_clear_error (&error);
 }
 
 static gboolean

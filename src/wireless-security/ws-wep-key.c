@@ -251,6 +251,57 @@ out:
 	g_free (result);
 }
 
+static void
+fill_secrets (WirelessSecurityWEPKey *sec, NMConnection *connection)
+{
+	NMSettingWirelessSecurity *s_wsec;
+	GHashTable *secrets;
+	GError *error = NULL;
+	GValue *value;
+	const char *tmp;
+	int i;
+
+	g_return_if_fail (sec != NULL);
+	g_return_if_fail (connection != NULL);
+
+	s_wsec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
+
+	if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM) {
+		for (i = 0; s_wsec && i < 4; i++) {
+			tmp = nm_setting_wireless_security_get_wep_key (s_wsec, i);
+			if (tmp)
+				strcpy (sec->keys[i], tmp);
+		}
+	} else {
+		secrets = nm_gconf_get_keyring_items (connection,
+		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                                      FALSE,
+		                                      &error);
+		if (!secrets) {
+			g_clear_error (&error);
+			return;
+		}
+
+		value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY0);
+		if (value)
+			strcpy (sec->keys[0], g_value_get_string (value));
+
+		value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY1);
+		if (value)
+			strcpy (sec->keys[1], g_value_get_string (value));
+
+		value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY2);
+		if (value)
+			strcpy (sec->keys[2], g_value_get_string (value));
+
+		value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY3);
+		if (value)
+			strcpy (sec->keys[3], g_value_get_string (value));
+
+		g_hash_table_destroy (secrets);
+	}
+}
+
 WirelessSecurityWEPKey *
 ws_wep_key_new (const char *glade_file,
                 NMConnection *connection,
@@ -296,41 +347,12 @@ ws_wep_key_new (const char *glade_file,
 	widget = glade_xml_get_widget (xml, "wep_key_entry");
 	g_assert (widget);
 
-	/* Fill secrets, if any */
-	if (connection) {
-		GHashTable *secrets;
-		GError *error = NULL;
-		GValue *value;
-
-		secrets = nm_gconf_get_keyring_items (connection,
-		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-		                                      FALSE,
-		                                      &error);
-		if (secrets) {
-			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY0);
-			if (value)
-				strcpy (sec->keys[0], g_value_get_string (value));
-
-			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY1);
-			if (value)
-				strcpy (sec->keys[1], g_value_get_string (value));
-
-			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY2);
-			if (value)
-				strcpy (sec->keys[2], g_value_get_string (value));
-
-			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY3);
-			if (value)
-				strcpy (sec->keys[3], g_value_get_string (value));
-
-			g_hash_table_destroy (secrets);
-		} else if (error)
-			g_error_free (error);
-	}
-
 	if (connection) {
 		NMSettingWireless *s_wireless;
 		const char *mode, *auth_alg;
+
+		/* Fill secrets, if any */
+		fill_secrets (sec, connection);
 
 		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
 		mode = s_wireless ? nm_setting_wireless_get_mode (s_wireless) : NULL;

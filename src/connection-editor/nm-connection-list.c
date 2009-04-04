@@ -1404,7 +1404,7 @@ connection_double_clicked_cb (GtkTreeView *tree_view,
 	ActionInfo *info = user_data;
 
 	if (GTK_WIDGET_SENSITIVE (info->button))
-		do_edit ((ActionInfo *) user_data);
+		gtk_button_clicked (GTK_BUTTON (info->button));
 }
 
 static void
@@ -1944,7 +1944,7 @@ nm_connection_list_new (const char *def_type)
 	g_signal_connect (G_OBJECT (list->dialog), "response", G_CALLBACK (dialog_response_cb), list);
 
 	if (!vpn_get_plugins (&error)) {
-		g_message ("%s: failed to load VPN plugins: %s", __func__, error->message);
+		g_warning ("%s: failed to load VPN plugins: %s", __func__, error->message);
 		g_error_free (error);
 	}
 

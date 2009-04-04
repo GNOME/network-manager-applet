@@ -28,6 +28,7 @@
 #include "utils.h"
 #include "sha1.h"
 #include "gconf-helpers.h"
+#include "helpers.h"
 
 #define WPA_PMK_LEN 32
 
@@ -200,21 +201,12 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 
 	/* Fill secrets, if any */
 	if (connection) {
-		GHashTable *secrets;
-		GError *error = NULL;
-		GValue *value;
-
-		secrets = nm_gconf_get_keyring_items (connection,
-		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-		                                      FALSE,
-		                                      &error);
-		if (secrets) {
-			value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_PSK);
-			if (value)
-				gtk_entry_set_text (GTK_ENTRY (widget), g_value_get_string (value));
-			g_hash_table_destroy (secrets);
-		} else if (error)
-			g_error_free (error);
+		helper_fill_secret_entry (connection,
+		                          GTK_ENTRY (widget),
+		                          NM_TYPE_SETTING_WIRELESS_SECURITY,
+		                          (HelperSecretFunc) nm_setting_wireless_security_get_psk,
+		                          NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                          NM_SETTING_WIRELESS_SECURITY_PSK);
 	}
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");

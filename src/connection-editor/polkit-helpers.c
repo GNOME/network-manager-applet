@@ -48,9 +48,14 @@ pk_helper_obtain_auth (GError *pk_error,
 	gboolean success = FALSE;
 	guint xid = 0;
 
+	if (!pk_error) {
+		g_set_error (error, 0, 0, "%s", _("PolicyKit authorization request was invalid."));
+		return FALSE;
+	}
+
 	tokens = g_strsplit (pk_error->message, " ", 2);
 	if (g_strv_length (tokens) != 2) {
-		g_set_error (error, 0, 0, "%s", _("PolicyKit authorization was malformed."));
+		g_set_error (error, 0, 0, "%s", _("PolicyKit authorization request was malformed."));
 		goto out;
 	}
 
