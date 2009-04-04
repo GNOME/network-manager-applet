@@ -377,8 +377,6 @@ ce_page_wireless_security_new (NMConnection *connection, GtkWindow *parent_windo
 
 	self->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
-
 	s_wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
 	                                       NM_TYPE_SETTING_WIRELESS_SECURITY));
 
@@ -403,6 +401,7 @@ ce_page_wireless_security_new (NMConnection *connection, GtkWindow *parent_windo
 		setting_name = NM_SETTING_802_1X_SETTING_NAME;
 	}
 
+	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 	if (!ce_page_initialize (parent, setting_name, error)) {
 		g_object_unref (self);
 		return NULL;
