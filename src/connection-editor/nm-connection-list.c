@@ -99,7 +99,7 @@ error_dialog (GtkWindow *parent, const char *heading, const char *format, ...)
 	message = g_strdup_vprintf (format, args);
 	va_end (args);
 
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), message);
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", message);
 	g_free (message);
 
 	gtk_widget_show_all (dialog);
