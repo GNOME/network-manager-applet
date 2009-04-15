@@ -740,6 +740,8 @@ add_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer 
 	case GTK_RESPONSE_OK:
 		add_connection (info->list, editor, connection, NULL, NULL);
 		break;
+	case GTK_RESPONSE_CANCEL:
+		break;
 	default:
 		g_assert_not_reached ();
 		break;
