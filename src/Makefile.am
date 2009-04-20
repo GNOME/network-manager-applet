@@ -14,7 +14,6 @@ nm_applet_CPPFLAGS = \
 	-DLIBEXECDIR=\""$(libexecdir)"\" \
 	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\"			\
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\"	\
-	-DDBUS_API_SUBJECT_TO_CHANGE							\
 	-DNMALOCALEDIR=\"$(datadir)/locale\"					\
 	$(DBUS_CFLAGS)										\
 	$(DISABLE_DEPRECATED)	\
