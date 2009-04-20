@@ -44,7 +44,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
-#define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
