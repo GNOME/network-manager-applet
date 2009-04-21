@@ -114,6 +114,7 @@ static char *ignored_phrases[] = {
 	"Communication S.p.A.",
 	"Business Mobile Networks BV",
 	"Mobile Broadband Minicard Composite Device",
+	"Mobile Communications AB",
 	NULL
 };
 
