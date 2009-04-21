@@ -715,6 +715,7 @@ security_combo_init (NMAWirelessDialog *self)
 	guint32 dev_caps;
 	NMSettingWirelessSecurity *wsec = NULL;
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
+	WEPKeyType default_wep_type = WEP_KEY_TYPE_KEY;
 	int active = -1;
 	int item = 0;
 	NMSettingWireless *s_wireless = NULL;
@@ -756,8 +757,14 @@ security_combo_init (NMAWirelessDialog *self)
 		security = nm_setting_wireless_get_security (s_wireless);
 		if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
 			wsec = NULL;
-		if (wsec)
+		if (wsec) {
 			default_type = get_default_type_for_security (wsec, !!priv->ap, ap_flags, dev_caps);
+			if (default_type == NMU_SEC_STATIC_WEP)
+				default_wep_type = ws_wep_guess_key_type (priv->connection);
+		}
+	} else if (is_adhoc) {
+		default_type = NMU_SEC_STATIC_WEP;
+		default_wep_type = WEP_KEY_TYPE_PASSPHRASE;
 	}
 
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
@@ -778,10 +785,6 @@ security_combo_init (NMAWirelessDialog *self)
 	if (   nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep;
-		WEPKeyType default_wep_type = WEP_KEY_TYPE_KEY;
-
-		if (default_type == NMU_SEC_STATIC_WEP)
-			default_wep_type = ws_wep_guess_key_type (priv->connection);
 
 		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, WEP_KEY_TYPE_KEY, priv->adhoc_create);
 		if (ws_wep) {
