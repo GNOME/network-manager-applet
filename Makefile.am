@@ -41,3 +41,4 @@ CLEANFILES = \
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 
+ACLOCAL_AMFLAGS = -I m4
