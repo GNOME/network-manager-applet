@@ -1,7 +1,5 @@
 SUBDIRS = marshallers utils gconf-helpers wireless-security polkit-helpers connection-editor
 
-NULL=
-
 bin_PROGRAMS = nm-applet
 
 nm_applet_CPPFLAGS = \
@@ -20,8 +18,7 @@ nm_applet_CPPFLAGS = \
 	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/gconf-helpers  \
-	-I${top_srcdir}/src/wireless-security  \
-	$(NULL)
+	-I${top_srcdir}/src/wireless-security
 
 nm_applet_SOURCES =			\
 	main.c				\
@@ -47,8 +44,7 @@ nm_applet_SOURCES =			\
 	applet-device-gsm.h \
 	applet-device-gsm.c \
 	applet-device-cdma.h \
-	applet-device-cdma.c \
-	$(NULL)
+	applet-device-cdma.c
 
 nm_applet_LDADD = \
 	$(NMA_LIBS) \
@@ -64,5 +60,5 @@ glade_DATA = applet.glade keyring.png
 CLEANFILES = *.bak *.gladep
 
 EXTRA_DIST = 				\
-	$(glade_DATA)			\
-	$(NULL)
+	$(glade_DATA)
+

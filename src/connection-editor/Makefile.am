@@ -1,5 +1,3 @@
-NULL=
-
 bin_PROGRAMS = nm-connection-editor
 
 nm_connection_editor_CPPFLAGS = \
@@ -16,8 +14,7 @@ nm_connection_editor_CPPFLAGS = \
 	-I${top_srcdir}/src/gconf-helpers \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
-	-I${top_builddir}/src/marshallers \
-	$(NULL)
+	-I${top_builddir}/src/marshallers
 
 if NO_POLKIT_GNOME
 nm_connection_editor_CPPFLAGS += \
