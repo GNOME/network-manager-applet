@@ -438,7 +438,7 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 		gc_key += prefix_len + 1; /* get rid of the full path */
 
 		add_property (*value, gc_key, gconf_entry_get_value (entry));
-		gconf_entry_free (entry);
+		gconf_entry_unref (entry);
 	}
 
 	g_slist_free (gconf_entries);
@@ -493,7 +493,7 @@ nm_gconf_get_stringhash_helper (GConfClient *client,
 					g_hash_table_insert (*value, gconf_unescape_key (gc_key, -1), g_strdup (gc_str));
 			}
 		}
-		gconf_entry_free (entry);
+		gconf_entry_unref (entry);
 	}
 
 	g_slist_free (gconf_entries);
@@ -866,7 +866,7 @@ nm_gconf_set_stringhash_helper (GConfClient *client,
 		    && strcmp ((char *) basename, NM_SETTING_VPN_SERVICE_TYPE)
 			&& strcmp ((char *) basename, NM_SETTING_VPN_USER_NAME))
 			gconf_client_unset (client, entry->key, NULL);
-		gconf_entry_free (entry);
+		gconf_entry_unref (entry);
 		g_free (basename);
 	}
 	g_slist_free (existing);
