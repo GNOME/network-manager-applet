@@ -1316,17 +1316,17 @@ write_one_secret_to_keyring (NMSetting *setting,
 
 	setting_name = nm_setting_get_name (setting);
 
-	if (type != G_TYPE_STRING) {
-		g_warning ("Unhandled setting secret type (write) '%s/%s' : '%s'", 
-				 setting_name, key, g_type_name (type));
-		return;
-	}
-
 	/* VPN secrets are handled by the VPN plugins */
 	if (   (type == DBUS_TYPE_G_MAP_OF_STRING)
 	    && NM_IS_SETTING_VPN (setting)
 	    && !strcmp (key, NM_SETTING_VPN_SECRETS))
 		return;
+
+	if (type != G_TYPE_STRING) {
+		g_warning ("Unhandled setting secret type (write) '%s/%s' : '%s'", 
+				 setting_name, key, g_type_name (type));
+		return;
+	}
 
 	secret = g_value_get_string (value);
 	if (secret && strlen (secret)) {
