@@ -269,9 +269,9 @@ applet_dbus_manager_init_bus (AppletDBusManager *self)
 	dbus_connection_set_exit_on_disconnect (priv->connection, FALSE);
 
 	priv->proxy = dbus_g_proxy_new_for_name (priv->g_connection,
-											 "org.freedesktop.DBus",
-											 "/org/freedesktop/DBus",
-											 "org.freedesktop.DBus");
+	                                         "org.freedesktop.DBus",
+	                                         "/org/freedesktop/DBus",
+	                                         "org.freedesktop.DBus");
 	if (!priv->proxy) {
 		nm_warning ("Could not get the DBus object!");
 		goto error;
@@ -280,12 +280,12 @@ applet_dbus_manager_init_bus (AppletDBusManager *self)
 	g_signal_connect (priv->proxy, "destroy", G_CALLBACK (destroy_cb), self);
 
 	dbus_g_proxy_add_signal (priv->proxy, "NameOwnerChanged",
-							 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-							 G_TYPE_INVALID);
+	                         G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+	                         G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal (priv->proxy,
-								 "NameOwnerChanged",
-								 G_CALLBACK (proxy_name_owner_changed),
-								 self, NULL);
+	                             "NameOwnerChanged",
+	                             G_CALLBACK (proxy_name_owner_changed),
+	                             self, NULL);
 	return TRUE;
 
 error:
