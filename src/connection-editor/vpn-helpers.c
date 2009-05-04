@@ -211,7 +211,6 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	import_info.connection = NULL;
 	import_info.error = NULL;
 	g_hash_table_foreach (plugins, try_import, (gpointer) &import_info);
-	g_free (import_info.filename);
 
 	connection = import_info.connection;
 	if (connection) {
@@ -239,6 +238,7 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 
 	if (import_info.error)
 		g_error_free (import_info.error);
+	g_free (filename);
 
 out:
 	gtk_widget_hide (dialog);
