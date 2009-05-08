@@ -32,9 +32,9 @@
 enum {
 	DBUS_CONNECTION_CHANGED = 0,
 	NAME_OWNER_CHANGED,
-	NUMBER_OF_SIGNALS
+	NUM_SIGNALS
 };
-static guint applet_dbus_manager_signals[NUMBER_OF_SIGNALS];
+static guint signals[NUM_SIGNALS];
 
 
 G_DEFINE_TYPE(AppletDBusManager, applet_dbus_manager, G_TYPE_OBJECT)
@@ -82,7 +82,7 @@ applet_dbus_manager_init (AppletDBusManager *self)
 static void
 applet_dbus_manager_finalize (GObject *object)
 {
-	AppletDBusManager *	self = APPLET_DBUS_MANAGER (object);
+	AppletDBusManager *self = APPLET_DBUS_MANAGER (object);
 
 	applet_dbus_manager_cleanup (self);
 
@@ -96,7 +96,7 @@ applet_dbus_manager_class_init (AppletDBusManagerClass *klass)
 
 	object_class->finalize = applet_dbus_manager_finalize;
 
-	applet_dbus_manager_signals[DBUS_CONNECTION_CHANGED] =
+	signals[DBUS_CONNECTION_CHANGED] =
 		g_signal_new ("dbus-connection-changed",
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_LAST,
@@ -104,7 +104,7 @@ applet_dbus_manager_class_init (AppletDBusManagerClass *klass)
 		              NULL, NULL, nma_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	applet_dbus_manager_signals[NAME_OWNER_CHANGED] =
+	signals[NAME_OWNER_CHANGED] =
 		g_signal_new ("name-owner-changed",
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_LAST,
@@ -148,9 +148,9 @@ applet_dbus_manager_reconnect (gpointer user_data)
 		if (applet_dbus_manager_start_service (self)) {
 			nm_info ("reconnected to the system bus.");
 			g_signal_emit (self,
-						   applet_dbus_manager_signals[DBUS_CONNECTION_CHANGED],
-						   0,
-						   APPLET_DBUS_MANAGER_GET_PRIVATE (self)->connection);
+			               signals[DBUS_CONNECTION_CHANGED],
+			               0,
+			               APPLET_DBUS_MANAGER_GET_PRIVATE (self)->connection);
 			return TRUE;
 		}
 	}
@@ -177,11 +177,11 @@ applet_dbus_manager_get_name_owner (AppletDBusManager *self,
 	g_return_val_if_fail (name != NULL, NULL);
 
 	if (!dbus_g_proxy_call (APPLET_DBUS_MANAGER_GET_PRIVATE (self)->proxy,
-							"GetNameOwner", &err,
-							G_TYPE_STRING, name,
-							G_TYPE_INVALID,
-							G_TYPE_STRING, &owner,
-							G_TYPE_INVALID)) {
+	                        "GetNameOwner", &err,
+	                        G_TYPE_STRING, name,
+	                        G_TYPE_INVALID,
+	                        G_TYPE_STRING, &owner,
+	                        G_TYPE_INVALID)) {
 		nm_warning ("Error on GetNameOwner DBUS call: %s", err->message);
 		g_error_free (err);
 	}
@@ -200,11 +200,11 @@ applet_dbus_manager_name_has_owner (AppletDBusManager *self,
 	g_return_val_if_fail (name != NULL, FALSE);
 
 	if (!dbus_g_proxy_call (APPLET_DBUS_MANAGER_GET_PRIVATE (self)->proxy,
-							"NameHasOwner", &err,
-							G_TYPE_STRING, name,
-							G_TYPE_INVALID,
-							G_TYPE_BOOLEAN, &has_owner,
-							G_TYPE_INVALID)) {
+	                        "NameHasOwner", &err,
+	                        G_TYPE_STRING, name,
+	                        G_TYPE_INVALID,
+	                        G_TYPE_BOOLEAN, &has_owner,
+	                        G_TYPE_INVALID)) {
 		nm_warning ("Error on NameHasOwner DBUS call: %s", err->message);
 		g_error_free (err);
 	}
@@ -214,17 +214,17 @@ applet_dbus_manager_name_has_owner (AppletDBusManager *self,
 
 static void
 proxy_name_owner_changed (DBusGProxy *proxy,
-						  const char *name,
-						  const char *old_owner,
-						  const char *new_owner,
-						  gpointer user_data)
+                          const char *name,
+                          const char *old_owner,
+                          const char *new_owner,
+                          gpointer user_data)
 {
 	AppletDBusManager *self = APPLET_DBUS_MANAGER (user_data);
 
 	g_signal_emit (self, 
-				   applet_dbus_manager_signals[NAME_OWNER_CHANGED],
-				   0,
-				   name, old_owner, new_owner);
+	               signals[NAME_OWNER_CHANGED],
+	               0,
+	               name, old_owner, new_owner);
 }
 
 static void
@@ -237,8 +237,8 @@ destroy_cb (DBusGProxy *proxy, gpointer user_data)
 	applet_dbus_manager_cleanup (self);
 
 	g_signal_emit (G_OBJECT (self), 
-				   applet_dbus_manager_signals[DBUS_CONNECTION_CHANGED],
-				   0, NULL);
+	               signals[DBUS_CONNECTION_CHANGED],
+	               0, NULL);
 
 	start_reconnection_timeout (self);
 }
@@ -301,7 +301,7 @@ gboolean
 applet_dbus_manager_start_service (AppletDBusManager *self)
 {
 	AppletDBusManagerPrivate *priv;
-	int flags;
+	int flags = DBUS_NAME_FLAG_DO_NOT_QUEUE;
 	int request_name_result;
 	GError *err = NULL;
 
@@ -314,18 +314,12 @@ applet_dbus_manager_start_service (AppletDBusManager *self)
 		return FALSE;
 	}
 
-#if (DBUS_VERSION_MAJOR == 0) && (DBUS_VERSION_MINOR < 60)
-	flags = DBUS_NAME_FLAG_PROHIBIT_REPLACEMENT;
-#else
-	flags = DBUS_NAME_FLAG_DO_NOT_QUEUE;
-#endif
-
 	if (!dbus_g_proxy_call (priv->proxy, "RequestName", &err,
-							G_TYPE_STRING, NM_DBUS_SERVICE_USER_SETTINGS,
-							G_TYPE_UINT, flags,
-							G_TYPE_INVALID,
-							G_TYPE_UINT, &request_name_result,
-							G_TYPE_INVALID)) {
+	                        G_TYPE_STRING, NM_DBUS_SERVICE_USER_SETTINGS,
+	                        G_TYPE_UINT, flags,
+	                        G_TYPE_INVALID,
+	                        G_TYPE_UINT, &request_name_result,
+	                        G_TYPE_INVALID)) {
 		nm_warning ("Could not acquire the NetworkManagerUserSettings service.\n"
 		            "  Message: '%s'", err->message);
 		g_error_free (err);
