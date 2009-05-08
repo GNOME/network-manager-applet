@@ -2478,7 +2478,7 @@ constructor (GType type,
 {
 	NMApplet *applet;
 	AppletDBusManager *dbus_mgr;
-	GList *server_caps;
+	GList *server_caps, *iter;
 
 	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
 
@@ -2510,10 +2510,11 @@ constructor (GType type,
 		notify_init ("NetworkManager");
 
 	server_caps = notify_get_server_caps();
-	if (g_list_find (server_caps, NOTIFY_CAPS_ACTIONS_KEY))
-		applet->notify_with_actions = TRUE;
-	else
-		applet->notify_with_actions = FALSE;
+	applet->notify_with_actions = FALSE;
+	for (iter = server_caps; iter; iter = g_list_next (iter)) {
+		if (!strcmp ((const char *) iter->data, NOTIFY_CAPS_ACTIONS_KEY))
+			applet->notify_with_actions = TRUE;
+	}
 
 	g_list_foreach (server_caps, (GFunc) g_free, NULL);
 	g_list_free (server_caps);
