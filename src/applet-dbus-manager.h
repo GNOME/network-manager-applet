@@ -47,31 +47,34 @@ typedef struct {
 	GObjectClass parent;
 
 	/* Signals */
-	void (*dbus_connection_changed) (AppletDBusManager *mgr,
-	                                 DBusConnection *connection);
+	void (*connection_changed) (AppletDBusManager *mgr,
+	                            DBusConnection *connection);
 
-	void (*name_owner_changed)      (AppletDBusManager *mgr,
-	                                 DBusConnection *connection,
-	                                 const char *name,
-	                                 const char *old_owner,
-	                                 const char *new_owner);
+	void (*name_owner_changed) (AppletDBusManager *mgr,
+	                            DBusConnection *connection,
+	                            const char *name,
+	                            const char *old_owner,
+	                            const char *new_owner);
+
+	void (*exit_now)           (AppletDBusManager *mgr);
 } AppletDBusManagerClass;
 
 GType applet_dbus_manager_get_type (void);
 
-AppletDBusManager * applet_dbus_manager_get       (void);
+AppletDBusManager *applet_dbus_manager_get (void);
 
-char * applet_dbus_manager_get_name_owner     (AppletDBusManager *self,
-                                               const char *name);
+char *applet_dbus_manager_get_name_owner (AppletDBusManager *self,
+                                          const char *name);
 
-gboolean applet_dbus_manager_start_service    (AppletDBusManager *self);
+gboolean applet_dbus_manager_start_service (AppletDBusManager *self);
 
-gboolean applet_dbus_manager_name_has_owner   (AppletDBusManager *self,
-                                               const char *name);
+gboolean applet_dbus_manager_name_has_owner (AppletDBusManager *self,
+                                             const char *name);
 
-DBusConnection * applet_dbus_manager_get_dbus_connection (AppletDBusManager *self);
-DBusGConnection * applet_dbus_manager_get_connection (AppletDBusManager *self);
+DBusConnection *applet_dbus_manager_get_dbus_connection (AppletDBusManager *self);
+DBusGConnection *applet_dbus_manager_get_connection (AppletDBusManager *self);
 
 G_END_DECLS
 
 #endif /* __APPLET_DBUS_MANAGER_H__ */
+

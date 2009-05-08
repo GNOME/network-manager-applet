@@ -2471,6 +2471,14 @@ applet_pre_keyring_callback (gpointer user_data)
 	}
 }
 
+static void
+exit_cb (GObject *ignored, gpointer user_data)
+{
+	NMApplet *applet = user_data;
+
+	g_main_loop_quit (applet->loop);
+}
+
 static GObject *
 constructor (GType type,
              guint n_props,
@@ -2525,6 +2533,7 @@ constructor (GType type,
 		g_object_unref (applet);
 		return NULL;
 	}
+	g_signal_connect (G_OBJECT (dbus_mgr), "exit-now", G_CALLBACK (exit_cb), applet);
 
 	applet->dbus_settings = (NMDBusSettings *) nm_dbus_settings_system_new (applet_dbus_manager_get_connection (dbus_mgr));
 
@@ -2539,8 +2548,8 @@ constructor (GType type,
 
 	/* Start our DBus service */
 	if (!applet_dbus_manager_start_service (dbus_mgr)) {
-			g_object_unref (applet);
-			return NULL;
+		g_object_unref (applet);
+		return NULL;
 	}
 
 	/* Initialize device classes */
