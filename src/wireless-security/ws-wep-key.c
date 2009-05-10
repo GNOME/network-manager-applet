@@ -145,7 +145,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	GtkWidget *widget;
 	gint auth_alg;
 	const char *key;
-	char *hashed = NULL;
 	int i;
 
 	widget = glade_xml_get_widget (parent->xml, "auth_method_combo");
