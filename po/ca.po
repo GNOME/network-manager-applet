@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-23 22:41+0100\n"
-"PO-Revision-Date: 2009-03-09 18:22+0100\n"
+"POT-Creation-Date: 2009-05-10 19:53+0200\n"
+"PO-Revision-Date: 2009-05-10 19:53+0200\n"
 "Last-Translator: David Planella <david.planella@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -49,9 +49,9 @@ msgid "Mobile Broadband (%s)"
 msgstr "Banda ampla mòbil (%s)"
 
 #: ../src/applet-device-cdma.c:245 ../src/applet-device-gsm.c:246
-#: ../src/connection-editor/page-mobile.c:286
+#: ../src/connection-editor/page-mobile.c:308
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1588
+#: ../src/connection-editor/nm-connection-list.c:1812
 msgid "Mobile Broadband"
 msgstr "Banda ampla mòbil"
 
@@ -282,8 +282,8 @@ msgid "Error displaying connection information:"
 msgstr "S'ha produït un error en mostrar la informació de la connexió:"
 
 #: ../src/applet-dialogs.c:84
-#: ../src/connection-editor/page-wireless-security.c:300
-#: ../src/wireless-dialog.c:815
+#: ../src/connection-editor/page-wireless-security.c:284
+#: ../src/wireless-dialog.c:820
 #: ../src/wireless-security/wireless-security.c:317
 msgid "LEAP"
 msgstr "LEAP"
@@ -302,8 +302,8 @@ msgid "WEP"
 msgstr "WEP"
 
 #: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
-#: ../src/connection-editor/page-wireless-security.c:261
-#: ../src/wireless-dialog.c:768
+#: ../src/connection-editor/page-wireless-security.c:238
+#: ../src/wireless-dialog.c:777
 msgid "None"
 msgstr "Cap"
 
@@ -681,11 +681,11 @@ msgstr ""
 "La miniaplicació NetworkManager no ha pogut trobar alguns dels recursos "
 "requerits. No pot continuar.\n"
 
-#: ../src/applet.c:2485
+#: ../src/applet.c:2493
 msgid "NetworkManager Applet"
 msgstr "Miniaplicació NetworkManager"
 
-#: ../src/applet.c:2491 ../src/wired-dialog.c:128
+#: ../src/applet.c:2499 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -858,9 +858,41 @@ msgstr ""
 "utilitzar per a la connexió nova. Si el dispositiu no està disponible, podeu "
 "seleccionar un tipus de connexió genèric."
 
-#: ../src/connection-editor/ce-page.c:52
+#: ../src/connection-editor/ce-page.c:70
 msgid "automatic"
 msgstr "automàtic"
+
+#: ../src/connection-editor/ce-page.c:201
+msgid ""
+"Insufficient privileges or unknown error retrieving system connection "
+"secrets."
+msgstr ""
+"No es tenen prou privilegis o bé s'ha produït un error en recuperar els "
+"secrets de connexió del sistema."
+
+#: ../src/connection-editor/ce-page.c:236
+msgid "Failed to update connection secrets due to an unknown error."
+msgstr ""
+"Ha fallat l'actualització dels secrets de la connexió a causa d'un error "
+"desconegut."
+
+#: ../src/connection-editor/ce-page.c:269
+msgid "Could not request secrets from the system settings service."
+msgstr ""
+"No s'han pogut sol·licitar els secrets del servei dels paràmetres del "
+"sistema."
+
+#: ../src/connection-editor/ce-page.c:299
+msgid "Could not connect to D-Bus to request connection secrets."
+msgstr ""
+"No s'ha pogut connectar al D-Bus per a sol·licitar els secrets de la "
+"connexió."
+
+#: ../src/connection-editor/ce-page.c:312
+msgid "Could not create D-Bus proxy for connection secrets."
+msgstr ""
+"No s'ha pogut crear un servidor intermedi del D-Bus per als secrets de la "
+"connexió."
 
 #: ../src/connection-editor/ce-page-dsl.glade.h:2
 msgid "Service:"
@@ -1220,17 +1252,17 @@ msgid "Create..."
 msgstr "Crea..."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
-#: ../src/connection-editor/page-ip4.c:669
+#: ../src/connection-editor/page-ip4.c:634
 msgid "Address"
 msgstr "Adreça"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:517
-#: ../src/connection-editor/page-ip4.c:685
+#: ../src/connection-editor/page-ip4.c:650
 msgid "Netmask"
 msgstr "Màscara de xarxa"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
-#: ../src/connection-editor/page-ip4.c:701
+#: ../src/connection-editor/page-ip4.c:666
 msgid "Gateway"
 msgstr "Pasarel·la"
 
@@ -1254,9 +1286,14 @@ msgstr "Crea una connexió GSM"
 msgid "Create a CDMA connection"
 msgstr "Crea una connexió CDMA"
 
-#: ../src/connection-editor/page-dsl.c:143
+#: ../src/connection-editor/page-dsl.c:152
+#: ../src/connection-editor/page-dsl.c:159
+msgid "Could not load DSL user interface."
+msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió DSL."
+
+#: ../src/connection-editor/page-dsl.c:165
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1594
+#: ../src/connection-editor/nm-connection-list.c:1818
 msgid "DSL"
 msgstr "DSL"
 
@@ -1310,9 +1347,25 @@ msgstr "Compartit a altres ordinadors"
 msgid "Editing IPv4 routes for %s"
 msgstr "Edició de les rutes IPv4 per a %s"
 
-#: ../src/connection-editor/page-ip4.c:638
+#: ../src/connection-editor/page-ip4.c:708
+#: ../src/connection-editor/page-ip4.c:715
+msgid "Could not load IPv4 user interface."
+msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió IPv4."
+
+#: ../src/connection-editor/page-ip4.c:721
 msgid "IPv4 Settings"
 msgstr "Paràmetres IPv4"
+
+#: ../src/connection-editor/page-mobile.c:295
+#: ../src/connection-editor/page-mobile.c:302
+msgid "Could not load mobile broadband user interface."
+msgstr ""
+"No s'ha pogut carregar la interfície d'usuari per a la connexió de banda "
+"ampla mòbil."
+
+#: ../src/connection-editor/page-mobile.c:320
+msgid "Unsupported mobile broadband connection type."
+msgstr "No s'admet el tipus de connexió de banda ampla mòbil."
 
 #: ../src/connection-editor/page-ppp.c:135
 #: ../src/wireless-security/eap-method-peap.c:229
@@ -1330,27 +1383,43 @@ msgstr "cap"
 msgid "Editing PPP authentication methods for %s"
 msgstr "Edició dels mètodes d'autenticació PPP per a %s"
 
-#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:280
+#: ../src/connection-editor/page-ppp.c:287
+msgid "Could not load PPP user interface."
+msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió PPP."
+
+#: ../src/connection-editor/page-ppp.c:293
 msgid "PPP Settings"
 msgstr "Paràmetres PPP"
 
-#: ../src/connection-editor/page-vpn.c:70
+#: ../src/connection-editor/page-vpn.c:105
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1591
+#: ../src/connection-editor/nm-connection-list.c:1815
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-wired.c:180
+#: ../src/connection-editor/page-vpn.c:116
+#, c-format
+msgid "Could not find VPN plugin service for '%s'."
+msgstr "No s'ha trobat cap servei de connector VPN per a «%s»."
+
+#: ../src/connection-editor/page-wired.c:204
+#: ../src/connection-editor/page-wired.c:211
+msgid "Could not load wired user interface."
+msgstr ""
+"No s'ha pogut carregar la interfície d'usuari per a la connexió amb fil."
+
+#: ../src/connection-editor/page-wired.c:217
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1581
+#: ../src/connection-editor/nm-connection-list.c:1805
 msgid "Wired"
 msgstr "Amb fil"
 
-#: ../src/connection-editor/page-wired-security.c:81
+#: ../src/connection-editor/page-wired-security.c:112
 msgid "802.1x Security"
 msgstr "Seguretat 802.1x:"
 
-#: ../src/connection-editor/page-wired-security.c:91
+#: ../src/connection-editor/page-wired-security.c:120
 msgid "Use 802.1X security for this connection"
 msgstr "Utilitza la seguretat 802.1X per a aquesta connexió"
 
@@ -1364,51 +1433,87 @@ msgstr "predeterminat"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:326
+#: ../src/connection-editor/page-wireless.c:348
+#: ../src/connection-editor/page-wireless.c:355
+msgid "Could not load WiFi user interface."
+msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió WiFi."
+
+#: ../src/connection-editor/page-wireless.c:361
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1584
+#: ../src/connection-editor/nm-connection-list.c:1808
 msgid "Wireless"
 msgstr "Sense fil"
 
-#: ../src/connection-editor/page-wireless-security.c:230
-msgid "Wireless Security"
-msgstr "Seguretat de la xarxa sense fil"
-
-#: ../src/connection-editor/page-wireless-security.c:278
-#: ../src/wireless-dialog.c:789
+#: ../src/connection-editor/page-wireless-security.c:262
+#: ../src/wireless-dialog.c:794
 msgid "WEP 40/128-bit Key"
 msgstr "Clau WEP de 40/128-bits"
 
-#: ../src/connection-editor/page-wireless-security.c:287
-#: ../src/wireless-dialog.c:798
+#: ../src/connection-editor/page-wireless-security.c:271
+#: ../src/wireless-dialog.c:803
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP contrasenya de 128 bits"
 
-#: ../src/connection-editor/page-wireless-security.c:313
-#: ../src/wireless-dialog.c:828
+#: ../src/connection-editor/page-wireless-security.c:297
+#: ../src/wireless-dialog.c:833
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinàmic (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:327
-#: ../src/wireless-dialog.c:842
+#: ../src/connection-editor/page-wireless-security.c:311
+#: ../src/wireless-dialog.c:847
 msgid "WPA & WPA2 Personal"
 msgstr "WPA i WPA2 Personal"
 
-#: ../src/connection-editor/page-wireless-security.c:341
-#: ../src/wireless-dialog.c:856
+#: ../src/connection-editor/page-wireless-security.c:325
+#: ../src/wireless-dialog.c:861
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA i WPA2 Enterprise"
 
-#: ../src/connection-editor/nm-connection-editor.c:101
+#: ../src/connection-editor/page-wireless-security.c:363
+msgid "Could not load WiFi security user interface; missing WiFi setting."
+msgstr ""
+"No s'ha pogut carregar la interfície d'usuari per a la seguretat de la "
+"connexió WiFi. Manca un paràmetre de la connexió WiFi."
+
+#: ../src/connection-editor/page-wireless-security.c:370
+#: ../src/connection-editor/page-wireless-security.c:377
+msgid "Could not load WiFi security user interface."
+msgstr ""
+"No s'ha pogut carregar la interfície d'usuari per a la seguretat de la "
+"connexió WiFi."
+
+#: ../src/connection-editor/page-wireless-security.c:383
+msgid "Wireless Security"
+msgstr "Seguretat de la xarxa sense fil"
+
+#: ../src/connection-editor/polkit-helpers.c:52
+msgid "PolicyKit authorization request was invalid."
+msgstr "La sol·licitud d'autorització del PolicyKit no fou vàlida."
+
+#: ../src/connection-editor/polkit-helpers.c:58
+msgid "PolicyKit authorization request was malformed."
+msgstr "La sol·licitud d'autorització del PolicyKit estava mal formada."
+
+#: ../src/connection-editor/polkit-helpers.c:64
+msgid "PolicyKit authorization could not be created."
+msgstr "No s'ha pogut crear l'autorització del PolicyKit. "
+
+#: ../src/connection-editor/polkit-helpers.c:71
+msgid "PolicyKit authorization could not be created; invalid action ID."
+msgstr ""
+"No s'ha pogut crear l'autorització del PolicyKit. L'identificador d'acció no "
+"fou vàlid."
+
+#: ../src/connection-editor/nm-connection-editor.c:104
 #, c-format
 msgid "Editing %s"
 msgstr "S'està editant %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:105
+#: ../src/connection-editor/nm-connection-editor.c:108
 msgid "Editing un-named connection"
 msgstr "S'està editant la connexió sense nom"
 
-#: ../src/connection-editor/nm-connection-editor.c:289
+#: ../src/connection-editor/nm-connection-editor.c:296
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
@@ -1416,7 +1521,7 @@ msgstr ""
 "L'editor de connexions no ha pogut trobar alguns dels recursos necessaris "
 "(no s'ha trobat el fitxer glade de la miniaplicació del NetworkManager)."
 
-#: ../src/connection-editor/nm-connection-editor.c:302
+#: ../src/connection-editor/nm-connection-editor.c:309
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
@@ -1424,23 +1529,27 @@ msgstr ""
 "L'editor de connexions no ha pogut trobar alguns dels recursos necessaris "
 "(no s'ha trobat el seu fitxer glade)."
 
-#: ../src/connection-editor/nm-connection-editor.c:318
+#: ../src/connection-editor/nm-connection-editor.c:325
 msgid "Apply..."
 msgstr "Aplica..."
 
-#: ../src/connection-editor/nm-connection-editor.c:319
+#: ../src/connection-editor/nm-connection-editor.c:326
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autentiqueu-vos per a desar aquesta connexió per a tots els usuaris d'aquest "
 "ordinador."
 
-#: ../src/connection-editor/nm-connection-editor.c:320
+#: ../src/connection-editor/nm-connection-editor.c:327
 msgid "Apply"
 msgstr "Aplica"
 
-#: ../src/connection-editor/nm-connection-editor.c:321
+#: ../src/connection-editor/nm-connection-editor.c:328
 msgid "Save this connection for all users of this machine."
 msgstr "Desa aquesta connexió per a tots els usuaris d'aquest ordinador."
+
+#: ../src/connection-editor/nm-connection-editor.c:425
+msgid "Error creating connection editor dialog."
+msgstr "S'ha produït un error en crear el diàleg de l'editor de connexions."
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
 msgid "Available to all users"
@@ -1462,140 +1571,160 @@ msgstr "E_xporta"
 msgid "_Import"
 msgstr "_Importa"
 
-#: ../src/connection-editor/nm-connection-list.c:194
+#: ../src/connection-editor/nm-connection-list.c:199
 msgid "never"
 msgstr "mai"
 
-#: ../src/connection-editor/nm-connection-list.c:205
-#: ../src/connection-editor/nm-connection-list.c:216
+#: ../src/connection-editor/nm-connection-list.c:210
+#: ../src/connection-editor/nm-connection-list.c:221
 msgid "now"
 msgstr "ara"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:223
+#: ../src/connection-editor/nm-connection-list.c:228
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "fa %d minut"
 msgstr[1] "fa %d minuts"
 
-#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:232
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "fa %d hora"
 msgstr[1] "fa %d hores"
 
-#: ../src/connection-editor/nm-connection-list.c:239
+#: ../src/connection-editor/nm-connection-list.c:244
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "fa %d dia"
 msgstr[1] "fa %d dies"
 
-#: ../src/connection-editor/nm-connection-list.c:245
+#: ../src/connection-editor/nm-connection-list.c:250
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "fa %d mes"
 msgstr[1] "fa %d mesos"
 
-#: ../src/connection-editor/nm-connection-list.c:249
+#: ../src/connection-editor/nm-connection-list.c:254
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "fa %d any"
 msgstr[1] "fa %d anys"
 
-#: ../src/connection-editor/nm-connection-list.c:306
-msgid "PolicyKit authorization was malformed."
-msgstr "L'autorització del PolicyKit estava mal formada."
+#: ../src/connection-editor/nm-connection-list.c:320
+#: ../src/connection-editor/nm-connection-list.c:452
+msgid "Could not obtain required privileges"
+msgstr "No s'han pogut obtenir els privilegis requerits"
 
-#: ../src/connection-editor/nm-connection-list.c:312
-msgid "PolicyKit authorization could not be created."
-msgstr "No s'ha pogut crear l'autorització del PolicyKit. "
+#: ../src/connection-editor/nm-connection-list.c:325
+msgid "Could not delete connection"
+msgstr "No s'ha pogut suprimir la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:358
-#: ../src/connection-editor/nm-connection-list.c:482
-#: ../src/connection-editor/nm-connection-list.c:653
-#, c-format
-msgid "Could not obtain required privileges: %s."
-msgstr "No s'han pogut obtenir els privilegis requerits: %s."
+#: ../src/connection-editor/nm-connection-list.c:326
+msgid "The connection could not be deleted due to an unknown error."
+msgstr "No s'ha pogut suprimir la connexió a causa d'un error desconegut."
 
-#: ../src/connection-editor/nm-connection-list.c:361
-msgid "Could not remove system connection: permission denied."
-msgstr ""
-"No s'ha pogut suprimir la connexió del sistema: s'ha denegat el permís."
+#: ../src/connection-editor/nm-connection-list.c:362
+#: ../src/connection-editor/nm-connection-list.c:373
+msgid "Could not move connection"
+msgstr "No s'ha pogut moure la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:396
-#: ../src/connection-editor/nm-connection-list.c:406
-#, c-format
-msgid "Removing connection failed: %s."
-msgstr "Ha fallat la supressió de la connexió: %s."
+#: ../src/connection-editor/nm-connection-list.c:457
+#: ../src/connection-editor/nm-connection-list.c:506
+#: ../src/connection-editor/nm-connection-list.c:517
+msgid "Could not add connection"
+msgstr "No s'ha pogut afegir la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:485
-msgid "Could not add system connection: permission denied."
-msgstr "No s'ha pogut afegir la connexió del sistema: s'ha denegat el permís."
+#: ../src/connection-editor/nm-connection-list.c:458
+msgid "The connection could not be added due to an unknown error."
+msgstr "No s'ha pogut afegir la connexió a causa d'un error desconegut."
 
-#: ../src/connection-editor/nm-connection-list.c:532
-#: ../src/connection-editor/nm-connection-list.c:542
-#, c-format
-msgid "Adding connection failed: %s."
-msgstr "Ha fallat l'addició de la connexió: %s."
+#: ../src/connection-editor/nm-connection-list.c:631
+#: ../src/connection-editor/nm-connection-list.c:636
+#: ../src/connection-editor/nm-connection-list.c:696
+#: ../src/connection-editor/nm-connection-list.c:702
+msgid "Could not update connection"
+msgstr "No s'ha pogut actualitzar la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:656
-msgid "Could not update system connection: permission denied."
-msgstr ""
-"No s'ha pogut actualitzar la connexió del sistema: s'ha denegat el permís."
+#: ../src/connection-editor/nm-connection-list.c:637
+msgid "The connection could not be updated due to an unknown error."
+msgstr "No s'ha pogut actualitzar la connexió a causa d'un error desconegut."
 
-#: ../src/connection-editor/nm-connection-list.c:714
-#: ../src/connection-editor/nm-connection-list.c:719
-#, c-format
-msgid "Updating connection failed: %s."
-msgstr "Ha fallat l'actualització de la connexió: %s."
+#: ../src/connection-editor/nm-connection-list.c:728
+#: ../src/connection-editor/nm-connection-list.c:1056
+msgid "An unknown error ocurred."
+msgstr "S'ha produït un error desconegut."
 
-#: ../src/connection-editor/nm-connection-list.c:843
+#: ../src/connection-editor/nm-connection-list.c:737
+#: ../src/connection-editor/nm-connection-list.c:1063
+msgid "Error initializing editor"
+msgstr "S'ha produït un error en inicialitzar l'editor"
+
+#: ../src/connection-editor/nm-connection-list.c:845
 #, c-format
 msgid "Wired connection %d"
 msgstr "Connexió de xarxa amb fil %d"
 
-#: ../src/connection-editor/nm-connection-list.c:855
+#: ../src/connection-editor/nm-connection-list.c:857
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Connexió de xarxa sense fil %d"
 
-#: ../src/connection-editor/nm-connection-list.c:874
+#: ../src/connection-editor/nm-connection-list.c:876
 #, c-format
 msgid "GSM connection %d"
 msgstr "Connexió GSM %d"
 
-#: ../src/connection-editor/nm-connection-list.c:893
+#: ../src/connection-editor/nm-connection-list.c:895
 #, c-format
 msgid "CDMA connection %d"
 msgstr "Connexió CDMA %d"
 
-#: ../src/connection-editor/nm-connection-list.c:920
-#: ../src/connection-editor/nm-connection-list.c:1236
+#: ../src/connection-editor/nm-connection-list.c:922
+#: ../src/connection-editor/nm-connection-list.c:1324
 #, c-format
 msgid "VPN connection %d"
 msgstr "Connexió VPN %d"
 
-#: ../src/connection-editor/nm-connection-list.c:934
+#: ../src/connection-editor/nm-connection-list.c:936
 #, c-format
 msgid "DSL connection %d"
 msgstr "Connexió DSL %d"
 
-#: ../src/connection-editor/nm-connection-list.c:1148
+#: ../src/connection-editor/nm-connection-list.c:998
+#: ../src/connection-editor/nm-connection-list.c:1098
+#: ../src/connection-editor/nm-connection-list.c:1313
+msgid ""
+"The connection editor dialog could not be initialized due to an unknown "
+"error."
+msgstr ""
+"No s'ha pogut inicialitzar el diàleg d'edició de les connexions a causa d'un "
+"error desconegut."
+
+#: ../src/connection-editor/nm-connection-list.c:1014
+msgid "Could not edit new connection"
+msgstr "No s'ha pogut editar la connexió nova"
+
+#: ../src/connection-editor/nm-connection-list.c:1118
+msgid "Could not edit connection"
+msgstr "No s'ha pogut editar la connexió"
+
+#: ../src/connection-editor/nm-connection-list.c:1177
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Segur que voleu suprimir la connexió %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:1262
-#: ../src/connection-editor/vpn-helpers.c:229
+#: ../src/connection-editor/nm-connection-list.c:1350
+#: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
-msgstr "No s'ha pogut importar la connexió VPN"
+msgstr "No es pot importar la connexió VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:1264
+#: ../src/connection-editor/nm-connection-list.c:1352
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1605,7 +1734,43 @@ msgstr ""
 "\n"
 "Error: no hi ha cap tipus de servei VPN."
 
-#: ../src/connection-editor/vpn-helpers.c:231
+#: ../src/connection-editor/nm-connection-list.c:1366
+msgid "Could not edit imported connection"
+msgstr "No s'ha pogut editar la connexió importada"
+
+#: ../src/connection-editor/nm-connection-list.c:1689
+msgid "Edit..."
+msgstr "Edita..."
+
+#: ../src/connection-editor/nm-connection-list.c:1690
+msgid "Authenticate to edit the selected connection."
+msgstr "Autentiqueu-vos per a editar la connexió seleccionada."
+
+#: ../src/connection-editor/nm-connection-list.c:1691
+msgid "Edit"
+msgstr "Edita"
+
+#: ../src/connection-editor/nm-connection-list.c:1692
+msgid "Edit the selected connection."
+msgstr "Edita la connexió seleccionada."
+
+#: ../src/connection-editor/nm-connection-list.c:1709
+msgid "Delete..."
+msgstr "Suprimeix..."
+
+#: ../src/connection-editor/nm-connection-list.c:1710
+msgid "Authenticate to delete the selected connection."
+msgstr "Autentiqueu-vos per a suprimir la connexió seleccionada."
+
+#: ../src/connection-editor/nm-connection-list.c:1711
+msgid "Delete"
+msgstr "Suprimeix"
+
+#: ../src/connection-editor/nm-connection-list.c:1712
+msgid "Delete the selected connection."
+msgstr "Suprimeix la connexió seleccionada."
+
+#: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -1638,7 +1803,7 @@ msgstr "Voleu reemplaçar %s per la connexió VPN que esteu desant?"
 
 #: ../src/connection-editor/vpn-helpers.c:350
 msgid "Cannot export VPN connection"
-msgstr "No s'ha pogut exportar la connexió VPN"
+msgstr "No es pot exportar la connexió VPN"
 
 #: ../src/connection-editor/vpn-helpers.c:352
 #, c-format
@@ -1658,7 +1823,7 @@ msgstr "Exporta una connexió VPN..."
 #: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:253
 #, c-format
 msgid "Cannot start VPN connection '%s'"
-msgstr "No s'ha pogut iniciar la connexió VPN «%s»"
+msgstr "No es pot iniciar la connexió VPN «%s»"
 
 #: ../src/vpn-password-dialog.c:140
 #, c-format
@@ -1686,11 +1851,11 @@ msgstr "Autenticació 802.1X amb fil"
 msgid "New..."
 msgstr "Nova..."
 
-#: ../src/wireless-dialog.c:916
+#: ../src/wireless-dialog.c:921
 msgid "C_reate"
 msgstr "C_rea:"
 
-#: ../src/wireless-dialog.c:987
+#: ../src/wireless-dialog.c:992
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -1699,35 +1864,35 @@ msgstr ""
 "Cal una contrasenya o claus de xifratge per a accedir a la xarxa sense fil «%"
 "s»."
 
-#: ../src/wireless-dialog.c:989
+#: ../src/wireless-dialog.c:994
 msgid "Wireless Network Authentication Required"
 msgstr "Cal autenticació per a la xarxa sense fil"
 
-#: ../src/wireless-dialog.c:991
+#: ../src/wireless-dialog.c:996
 msgid "Authentication required by wireless network"
 msgstr "Cal autenticació per a la xarxa sense fil"
 
-#: ../src/wireless-dialog.c:996
+#: ../src/wireless-dialog.c:1001
 msgid "Create New Wireless Network"
 msgstr "Crea una xarxa sense fil nova"
 
-#: ../src/wireless-dialog.c:998
+#: ../src/wireless-dialog.c:1003
 msgid "New wireless network"
 msgstr "Xarxa sense fil nova"
 
-#: ../src/wireless-dialog.c:999
+#: ../src/wireless-dialog.c:1004
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Introduïu el nom de la xarxa sense fil que voleu crear."
 
-#: ../src/wireless-dialog.c:1001
+#: ../src/wireless-dialog.c:1006
 msgid "Connect to Hidden Wireless Network"
 msgstr "Connecta't a la xarxa sense fil oculta"
 
-#: ../src/wireless-dialog.c:1003
+#: ../src/wireless-dialog.c:1008
 msgid "Hidden wireless network"
 msgstr "Xarxa sense fil oculta"
 
-#: ../src/wireless-dialog.c:1004
+#: ../src/wireless-dialog.c:1009
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -1770,16 +1935,16 @@ msgid "MD5"
 msgstr "MD5"
 
 #: ../src/wireless-security/eap-method-peap.c:311
-#: ../src/wireless-security/eap-method-tls.c:423
+#: ../src/wireless-security/eap-method-tls.c:417
 #: ../src/wireless-security/eap-method-ttls.c:343
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Trieu un certificat d'autoritat de certificació (CA)..."
 
-#: ../src/wireless-security/eap-method-tls.c:419
+#: ../src/wireless-security/eap-method-tls.c:413
 msgid "Choose your personal certificate..."
 msgstr "Trieu el vostre certificat personal..."
 
-#: ../src/wireless-security/eap-method-tls.c:428
+#: ../src/wireless-security/eap-method-tls.c:422
 msgid "Choose your private key..."
 msgstr "Trieu la vostra clau privada..."
 
@@ -1794,6 +1959,19 @@ msgstr "TLS per túnel"
 #: ../src/wireless-security/wireless-security.c:340
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protegit (PEAP)"
+
+#~ msgid "Removing connection failed: %s."
+#~ msgstr "Ha fallat la supressió de la connexió: %s."
+
+#~ msgid "Could not add system connection: permission denied."
+#~ msgstr ""
+#~ "No s'ha pogut afegir la connexió del sistema: s'ha denegat el permís."
+
+#~ msgid "Adding connection failed: %s."
+#~ msgstr "Ha fallat l'addició de la connexió: %s."
+
+#~ msgid "Updating connection failed: %s."
+#~ msgstr "Ha fallat l'actualització de la connexió: %s."
 
 #~ msgid "gtk-cancel"
 #~ msgstr "gtk-cancel"
@@ -1971,9 +2149,6 @@ msgstr "EAP protegit (PEAP)"
 #~ "El format del fitxer PEM és incorrecte: el criptògraf «%s» de clau privada "
 #~ "és desconegut."
 
-#~ msgid "Could not decode private key."
-#~ msgstr "No s'ha pogut descodificar la clau privada."
-
 #~ msgid "PEM certificate '%s' had no end tag '%s'."
 #~ msgstr "No s'ha trobat l'etiqueta de tancament «%s» del certificat PEM «%s»."
 
@@ -2030,9 +2205,6 @@ msgstr "EAP protegit (PEAP)"
 
 #~ msgid "Failed to decrypt the private key: %s / %s."
 #~ msgstr "No s'ha pogut desencriptar la clau privada: %s / %s."
-
-#~ msgid "Error initializing certificate data: %s"
-#~ msgstr "S'ha produït un error en inicialitzar les dades del certificat: %s"
 
 #~ msgid "Couldn't decode certificate: %s"
 #~ msgstr "No s'ha pogut descodificar el certificat: %s"
@@ -2091,9 +2263,6 @@ msgstr "EAP protegit (PEAP)"
 #~ msgstr ""
 #~ "No s'han pogut trobar alguns dels recursos requerits el fitxer glade)."
 
-#~ msgid "Cannot add VPN connection"
-#~ msgstr "No s'ha pogut afegir la connexió VPN"
-
 #~ msgid ""
 #~ "No suitable VPN software was found on your system. Contact your system "
 #~ "administrator."
@@ -2145,12 +2314,6 @@ msgstr "EAP protegit (PEAP)"
 #~ msgid "Add a new VPN connection"
 #~ msgstr "Afegeix una connexió VPN nova"
 
-#~ msgid "Delete the selected VPN connection"
-#~ msgstr "Suprimeix la connexió VPN seleccionada"
-
-#~ msgid "Edit the selected VPN connection"
-#~ msgstr "Edita la connexió VPN seleccionada"
-
 #~ msgid "Export the VPN settings to a file"
 #~ msgstr "Exporta els paràmetres de la VPN a un fitxer"
 
@@ -2199,11 +2362,6 @@ msgstr "EAP protegit (PEAP)"
 #~ msgstr ""
 #~ "No s'ha pogut iniciar la connexió VPN «%s» perquè s'ha produït un error en "
 #~ "llançar la VPN."
-
-#~ msgid "Could not start the VPN connection '%s' due to a connection error."
-#~ msgstr ""
-#~ "No s'ha pogut iniciar la connexió VPN «%s» ja que s'ha produït un error de "
-#~ "connexió."
 
 #~ msgid "VPN Configuration Error"
 #~ msgstr "S'ha produït un error de configuració de la VPN"
