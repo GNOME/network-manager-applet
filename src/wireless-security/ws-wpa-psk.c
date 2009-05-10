@@ -26,7 +26,6 @@
 
 #include "wireless-security.h"
 #include "utils.h"
-#include "sha1.h"
 #include "gconf-helpers.h"
 #include "helpers.h"
 
@@ -99,8 +98,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
 	GtkWidget *widget;
 	const char *key;
-	char *hashed = NULL;
-	guint32 len;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	const char *mode;
@@ -121,23 +118,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	widget = glade_xml_get_widget (parent->xml, "wpa_psk_entry");
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
-
-	len = strlen (key);
-	if (len == 64) {
-		/* Hex key */
-		hashed = g_strdup (key);
-	} else {
-		/* passphrase */
-		const GByteArray *ssid = nm_setting_wireless_get_ssid (s_wireless);
-		unsigned char *buf = g_malloc0 (WPA_PMK_LEN * 2);
-
-		pbkdf2_sha1 (key, (char *) ssid->data, ssid->len, 4096, buf, WPA_PMK_LEN);
-		hashed = utils_bin2hexstr ((const char *) buf, WPA_PMK_LEN, WPA_PMK_LEN * 2);
-		g_free (buf);
-	}
-
-	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_PSK, hashed, NULL);
-	g_free (hashed);
+	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_PSK, key, NULL);
 
 	wireless_security_clear_ciphers (connection);
 	if (is_adhoc) {

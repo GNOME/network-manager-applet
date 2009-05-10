@@ -28,9 +28,7 @@
 #include <net/ethernet.h>
 #include <nm-access-point.h>
 
-char * utils_bin2hexstr (const char *bytes, int len, int final_len);
-
-const char * utils_get_device_description (NMDevice *device);
+const char *utils_get_device_description (NMDevice *device);
 
 void utils_fill_connection_certs (NMConnection *connection);
 

@@ -22,25 +22,20 @@
 #ifndef WS_WEP_KEY_H
 #define WS_WEP_KEY_H
 
-typedef enum {
-	WEP_KEY_TYPE_KEY = 0,
-	WEP_KEY_TYPE_PASSPHRASE = 1,
-} WEPKeyType;
+#include <nm-setting-wireless-security.h>
 
 typedef struct {
 	struct _WirelessSecurity parent;
 
-	WEPKeyType type;
+	NMWepKeyType type;
 	char keys[4][65];
 	guint8 cur_index;
 } WirelessSecurityWEPKey;
 
 WirelessSecurityWEPKey * ws_wep_key_new (const char *glade_file,
                                          NMConnection *connection,
-                                         WEPKeyType type,
+                                         NMWepKeyType type,
                                          gboolean adhoc_create);
-
-WEPKeyType ws_wep_guess_key_type (NMConnection *connection);
 
 #endif /* WS_WEP_KEY_H */
 

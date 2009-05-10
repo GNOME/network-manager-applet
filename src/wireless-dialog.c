@@ -715,7 +715,7 @@ security_combo_init (NMAWirelessDialog *self)
 	guint32 dev_caps;
 	NMSettingWirelessSecurity *wsec = NULL;
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
-	WEPKeyType default_wep_type = WEP_KEY_TYPE_KEY;
+	NMWepKeyType wep_type = NM_WEP_KEY_TYPE_KEY;
 	int active = -1;
 	int item = 0;
 	NMSettingWireless *s_wireless = NULL;
@@ -760,11 +760,13 @@ security_combo_init (NMAWirelessDialog *self)
 		if (wsec) {
 			default_type = get_default_type_for_security (wsec, !!priv->ap, ap_flags, dev_caps);
 			if (default_type == NMU_SEC_STATIC_WEP)
-				default_wep_type = ws_wep_guess_key_type (priv->connection);
+				wep_type = nm_setting_wireless_security_get_wep_key_type (wsec);
+			if (wep_type = NM_WEP_KEY_TYPE_UNKNOWN)
+				wep_type = NM_WEP_KEY_TYPE_KEY;
 		}
 	} else if (is_adhoc) {
 		default_type = NMU_SEC_STATIC_WEP;
-		default_wep_type = WEP_KEY_TYPE_PASSPHRASE;
+		wep_type = NM_WEP_KEY_TYPE_PASSPHRASE;
 	}
 
 	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
@@ -786,20 +788,20 @@ security_combo_init (NMAWirelessDialog *self)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep;
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, WEP_KEY_TYPE_KEY, priv->adhoc_create);
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Key"));
-			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_KEY))
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (wep_type == NM_WEP_KEY_TYPE_KEY))
 				active = item;
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create);
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
-			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (default_wep_type == WEP_KEY_TYPE_PASSPHRASE))
+			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (wep_type == NM_WEP_KEY_TYPE_PASSPHRASE))
 				active = item;
 			item++;
 		}
