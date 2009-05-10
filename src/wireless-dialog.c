@@ -761,7 +761,7 @@ security_combo_init (NMAWirelessDialog *self)
 			default_type = get_default_type_for_security (wsec, !!priv->ap, ap_flags, dev_caps);
 			if (default_type == NMU_SEC_STATIC_WEP)
 				wep_type = nm_setting_wireless_security_get_wep_key_type (wsec);
-			if (wep_type = NM_WEP_KEY_TYPE_UNKNOWN)
+			if (wep_type == NM_WEP_KEY_TYPE_UNKNOWN)
 				wep_type = NM_WEP_KEY_TYPE_KEY;
 		}
 	} else if (is_adhoc) {
