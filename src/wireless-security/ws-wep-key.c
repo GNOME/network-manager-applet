@@ -99,7 +99,7 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 	if (!key)
 		return FALSE;
 
-	if (sec->type == WEP_KEY_TYPE_KEY) {
+	if (sec->type == NM_WEP_KEY_TYPE_KEY) {
 		if ((strlen (key) == 10) || (strlen (key) == 26)) {
 			for (i = 0; i < strlen (key); i++) {
 				if (!isxdigit (key[i]))
@@ -113,7 +113,7 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 		} else {
 			return FALSE;
 		}
-	} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE) {
+	} else if (sec->type == NM_WEP_KEY_TYPE_PASSPHRASE) {
 		if (!strlen (key) || (strlen (key) > 64))
 			return FALSE;
 	}
@@ -136,36 +136,12 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 	gtk_size_group_add_widget (group, widget);
 }
 
-static char *
-wep128_passphrase_hash (const char *input)
-{
-	char md5_data[65];
-	unsigned char digest[16];
-	int input_len;
-	int i;
-
-	g_return_val_if_fail (input != NULL, NULL);
-
-	input_len = strlen (input);
-	if (input_len < 1)
-		return NULL;
-
-	/* Get at least 64 bytes */
-	for (i = 0; i < 64; i++)
-		md5_data [i] = input [i % input_len];
-
-	/* Null terminate md5 seed data and hash it */
-	md5_data[64] = 0;
-	gnome_keyring_md5_string (md5_data, digest);
-	return (utils_bin2hexstr ((const char *) &digest, 16, 26));
-}
-
 static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
 	NMSettingWireless *s_wireless;
-	NMSettingWirelessSecurity *s_wireless_sec;
+	NMSettingWirelessSecurity *s_wsec;
 	GtkWidget *widget;
 	gint auth_alg;
 	const char *key;
@@ -185,31 +161,19 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
 	/* Blow away the old security setting by adding a clear one */
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
-	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
+	s_wsec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
+	nm_connection_add_setting (connection, (NMSetting *) s_wsec);
 
-	g_object_set (s_wireless_sec,
+	g_object_set (s_wsec,
 	              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "none",
 	              NM_SETTING_WIRELESS_SECURITY_WEP_TX_KEYIDX, sec->cur_index,
 	              NM_SETTING_WIRELESS_SECURITY_AUTH_ALG, (auth_alg == 1) ? "shared" : "open",
+	              NM_SETTING_WIRELESS_SECURITY_WEP_KEY_TYPE, sec->type,
 	              NULL);
 
 	for (i = 0; i < 4; i++) {
-		int key_len = strlen (sec->keys[i]);
-
-		if (!key_len)
-			continue;
-
-		if (sec->type == WEP_KEY_TYPE_KEY) {
-			if ((key_len == 10) || (key_len == 26))
-				hashed = g_strdup (sec->keys[i]);
-			else if ((key_len == 5) || (key_len == 13))
-				hashed = utils_bin2hexstr (sec->keys[i], key_len, key_len * 2);
-		} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE)
-			hashed = wep128_passphrase_hash (sec->keys[i]);
-
-		nm_setting_wireless_security_set_wep_key (s_wireless_sec, i, hashed);
-		g_free (hashed);
+		if (strlen (sec->keys[i]))
+			nm_setting_wireless_security_set_wep_key (s_wsec, i, sec->keys[i]);
 	}
 }
 
@@ -225,12 +189,12 @@ wep_entry_filter_cb (GtkEntry *   entry,
 	int i, count = 0;
 	gchar *result = g_new (gchar, length);
 
-	if (sec->type == WEP_KEY_TYPE_KEY) {
+	if (sec->type == NM_WEP_KEY_TYPE_KEY) {
 		for (i = 0; i < length; i++) {
 			if (isxdigit(text[i]) || isascii(text[i]))
 				result[count++] = text[i];
 		}
-	} else if (sec->type == WEP_KEY_TYPE_PASSPHRASE) {
+	} else if (sec->type == NM_WEP_KEY_TYPE_PASSPHRASE) {
 		for (i = 0; i < length; i++)
 			result[count++] = text[i];
 	}
@@ -305,7 +269,7 @@ fill_secrets (WirelessSecurityWEPKey *sec, NMConnection *connection)
 WirelessSecurityWEPKey *
 ws_wep_key_new (const char *glade_file,
                 NMConnection *connection,
-                WEPKeyType type,
+                NMWepKeyType type,
                 gboolean adhoc_create)
 {
 	WirelessSecurityWEPKey *sec;
@@ -373,9 +337,9 @@ ws_wep_key_new (const char *glade_file,
 	g_signal_connect (G_OBJECT (widget), "insert-text",
 	                  (GCallback) wep_entry_filter_cb,
 	                  sec);
-	if (sec->type == WEP_KEY_TYPE_KEY)
+	if (sec->type == NM_WEP_KEY_TYPE_KEY)
 		gtk_entry_set_max_length (GTK_ENTRY (widget), 26);
-	else if (sec->type == WEP_KEY_TYPE_PASSPHRASE)
+	else if (sec->type == NM_WEP_KEY_TYPE_PASSPHRASE)
 		gtk_entry_set_max_length (GTK_ENTRY (widget), 64);
 
 	widget = glade_xml_get_widget (xml, "key_index_combo");
@@ -422,95 +386,5 @@ ws_wep_key_new (const char *glade_file,
 	}
 
 	return sec;
-}
-
-static WEPKeyType
-guess_type_for_key (const char *key)
-{
-	size_t len = key ? strlen (key) : 0;
-	int i;
-
-	if (!key || !len)
-		return WEP_KEY_TYPE_KEY;
-
-	/* Hex key */
-	if ((len == 10) || (len == 26)) {
-		gboolean hex = TRUE;
-
-		for (i = 0; i < len; i++) {
-			if (!isxdigit(key[i])) {
-				hex = FALSE;
-				break;
-			}
-		}
-		if (hex)
-			return WEP_KEY_TYPE_KEY;
-	}
-
-	/* ASCII key */
-	if ((len == 5) || (len == 13)) {
-		gboolean ascii = TRUE;
-
-		for (i = 0; i < len; i++) {
-			if (!isascii (key[i])) {
-				ascii = FALSE;
-				break;
-			}
-		}
-		if (ascii)
-			return WEP_KEY_TYPE_KEY;
-	}
-
-	return WEP_KEY_TYPE_PASSPHRASE;
-}
-
-WEPKeyType
-ws_wep_guess_key_type (NMConnection *connection)
-{
-	GHashTable *secrets;
-	GError *error = NULL;
-	GValue *value;
-	WEPKeyType key_type = WEP_KEY_TYPE_KEY;
-
-	if (!connection)
-		return WEP_KEY_TYPE_KEY;
-
-	secrets = nm_gconf_get_keyring_items (connection,
-	                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-	                                      FALSE,
-	                                      &error);
-	if (!secrets || (g_hash_table_size (secrets) == 0)) {
-		if (error)
-			g_error_free (error);
-		return WEP_KEY_TYPE_KEY;
-	}
-
-	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY0);
-	if (value) {
-		key_type = guess_type_for_key (g_value_get_string (value));
-		goto out;
-	}
-
-	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY1);
-	if (value) {
-		key_type = guess_type_for_key (g_value_get_string (value));
-		goto out;
-	}
-
-	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY2);
-	if (value) {
-		key_type = guess_type_for_key (g_value_get_string (value));
-		goto out;
-	}
-
-	value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY3);
-	if (value) {
-		key_type = guess_type_for_key (g_value_get_string (value));
-		goto out;
-	}
-
-out:
-	g_hash_table_destroy (secrets);
-	return key_type;
 }
 

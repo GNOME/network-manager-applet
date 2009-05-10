@@ -7,8 +7,6 @@ libwireless_security_la_SOURCES = \
 	ws-wep-key.c \
 	ws-wpa-psk.h \
 	ws-wpa-psk.c \
-	sha1.c \
-	sha1.h \
 	ws-leap.h \
 	ws-leap.c \
 	ws-wpa-eap.h \
