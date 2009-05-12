@@ -977,8 +977,12 @@ applet_find_active_connection_for_device (NMDevice *device,
 			NMDBusConnection *tmp;
 
 			tmp = nm_dbus_settings_get_connection_by_path (applet->dbus_settings, connection_path);
-			if (tmp)
+			if (tmp) {
 				connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (tmp));
+				if (out_active)
+					*out_active = active;
+				break;
+			}
 		} else if (!strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS)) {
 			NMAGConfConnection *tmp;
 
