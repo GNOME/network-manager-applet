@@ -21,13 +21,19 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include <errno.h>
+#include <net/ethernet.h>
+#include <netinet/ether.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <glib.h>
 #include <gnome-keyring.h>
 #include <dbus/dbus-glib.h>
+#include <nm-setting-bluetooth.h>
 #include <nm-setting-connection.h>
+#include <nm-setting-wired.h>
+#include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
 #include <nm-setting-8021x.h>
 #include <nm-setting-vpn.h>
@@ -258,6 +264,70 @@ nm_gconf_get_stringlist_helper (GConfClient *client,
 		}
 
 		success = TRUE;
+	}
+
+out:
+	if (gc_value)
+		gconf_value_free (gc_value);
+	g_free (gc_key);
+	return success;
+}
+
+typedef struct {
+	const char *setting_name;
+	const char *key_name;
+} MacAddressKey;
+
+static MacAddressKey mac_keys[] = {
+	{ NM_SETTING_BLUETOOTH_SETTING_NAME, NM_SETTING_BLUETOOTH_BDADDR },
+	{ NM_SETTING_WIRED_SETTING_NAME,     NM_SETTING_WIRED_MAC_ADDRESS },
+	{ NM_SETTING_WIRELESS_SETTING_NAME,  NM_SETTING_WIRELESS_MAC_ADDRESS },
+	{ NULL, NULL }
+};
+
+static gboolean
+nm_gconf_get_mac_address_helper (GConfClient *client,
+                                 const char *path,
+                                 const char *key,
+                                 const char *setting,
+                                 GByteArray **value)
+{
+	char *gc_key;
+	GConfValue *gc_value;
+	gboolean success = FALSE;
+	MacAddressKey *tmp = &mac_keys[0];
+	gboolean found = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	/* Match against know setting/key combos that can be MAC addresses */
+	while (tmp->setting_name) {
+		if (!strcmp (tmp->setting_name, setting) && !strcmp (tmp->key_name, key)) {
+			found = TRUE;
+			break;
+		}
+		tmp++;
+	}
+	if (!found)
+		return FALSE;
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
+		goto out;
+
+	if (gc_value && (gc_value->type == GCONF_VALUE_STRING)) {
+		const char *str;
+		struct ether_addr *addr;
+
+		str = gconf_value_get_string (gc_value);
+		addr = ether_aton (str);
+		if (addr) {
+			*value = g_byte_array_sized_new (ETH_ALEN);
+			g_byte_array_append (*value, (const guint8 *) addr->ether_addr_octet, ETH_ALEN);
+			success = TRUE;
+		}
 	}
 
 out:
@@ -677,6 +747,51 @@ nm_gconf_set_stringlist_helper (GConfClient *client,
 	return TRUE;
 }
 
+static gboolean
+nm_gconf_set_mac_address_helper (GConfClient *client,
+                                 const char *path,
+                                 const char *key,
+                                 const char *setting,
+                                 GByteArray *value)
+{
+	char *gc_key;
+	MacAddressKey *tmp = &mac_keys[0];
+	gboolean found = FALSE;
+	char *str;
+
+	g_return_val_if_fail (path != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+
+	/* Match against know setting/key combos that can be MAC addresses */
+	while (tmp->setting_name) {
+		if (!strcmp (tmp->setting_name, setting) && !strcmp (tmp->key_name, key)) {
+			found = TRUE;
+			break;
+		}
+		tmp++;
+	}
+	if (!found || !value)
+		return FALSE;
+
+	g_return_val_if_fail (value->len != ETH_ALEN, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	str = g_strdup_printf ("%02X:%02X:%02X:%02X:%02X:%02X",
+	                       value->data[0], value->data[1], value->data[2],
+	                       value->data[3], value->data[4], value->data[5]);
+	gconf_client_set_string (client, gc_key, str, NULL);
+	g_free (str);
+
+	g_free (gc_key);
+	return TRUE;
+}
+
 gboolean
 nm_gconf_set_bytearray_helper (GConfClient *client,
                                const char *path,
@@ -1081,8 +1196,13 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 		}
 	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
 		GByteArray *ba_val = NULL;
+		gboolean success = FALSE;
 
-		if (nm_gconf_get_bytearray_helper (info->client, info->dir, key, setting_name, &ba_val)) {
+		success = nm_gconf_get_mac_address_helper (info->client, info->dir, key, setting_name, &ba_val);
+		if (!success)
+			success = nm_gconf_get_bytearray_helper (info->client, info->dir, key, setting_name, &ba_val);
+
+		if (success) {
 			g_object_set (setting, key, ba_val, NULL);
 			g_byte_array_free (ba_val, TRUE);
 		}
@@ -1413,9 +1533,10 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 							key, setting_name,
 							g_value_get_char (value));
 	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
-		nm_gconf_set_bytearray_helper (info->client, info->dir,
-								 key, setting_name,
-								 (GByteArray *) g_value_get_boxed (value));
+		GByteArray *ba_val = (GByteArray *) g_value_get_boxed (value);
+
+		if (!nm_gconf_set_mac_address_helper (info->client, info->dir, key, setting_name, ba_val))
+			nm_gconf_set_bytearray_helper (info->client, info->dir, key, setting_name, ba_val);
 	} else if (type == DBUS_TYPE_G_LIST_OF_STRING) {
 		nm_gconf_set_stringlist_helper (info->client, info->dir,
 								  key, setting_name,
