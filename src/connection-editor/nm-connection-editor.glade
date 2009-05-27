@@ -3,7 +3,7 @@
   <!-- interface-requires gtk+ 2.16 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkDialog" id="NMConnectionList">
-    <property name="border_width">4</property>
+    <property name="border_width">5</property>
     <property name="title" translatable="yes">Network Connections</property>
     <property name="window_position">center</property>
     <property name="default_width">400</property>
@@ -14,12 +14,12 @@
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
-        <property name="spacing">4</property>
+        <property name="spacing">2</property>
         <child>
           <widget class="GtkNotebook" id="list_notebook">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="border_width">6</property>
+            <property name="border_width">5</property>
             <child>
               <widget class="GtkHBox" id="wired_child">
                 <property name="visible">True</property>
@@ -310,7 +310,7 @@
                       <widget class="GtkVButtonBox" id="vpn_ix_button_box">
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
-                        <property name="layout_style">start</property>
+                        <property name="layout_style">end</property>
                         <child>
                           <widget class="GtkButton" id="vpn_import">
                             <property name="label" translatable="yes">_Import</property>
@@ -543,8 +543,6 @@
                 <property name="can_focus">True</property>
               </widget>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
                 <property name="position">2</property>
               </packing>
             </child>
