@@ -8,7 +8,7 @@
       <widget class="GtkVBox" id="PppPage">
         <property name="visible">True</property>
         <property name="border_width">12</property>
-        <property name="spacing">16</property>
+        <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox2">
             <property name="visible">True</property>
@@ -37,7 +37,7 @@
                     <child>
                       <widget class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
-                        <property name="spacing">6</property>
+                        <property name="spacing">12</property>
                         <child>
                           <widget class="GtkLabel" id="label1">
                             <property name="visible">True</property>
@@ -53,6 +53,7 @@
                           <widget class="GtkLabel" id="auth_methods_label">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
+                            <property name="selectable">True</property>
                           </widget>
                           <packing>
                             <property name="position">1</property>
@@ -64,8 +65,9 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHBox" id="hbox1">
+                      <widget class="GtkHButtonBox" id="hbuttonbox1">
                         <property name="visible">True</property>
+                        <property name="layout_style">start</property>
                         <child>
                           <widget class="GtkButton" id="auth_methods_button">
                             <property name="label" translatable="yes">Configure Methods...</property>
