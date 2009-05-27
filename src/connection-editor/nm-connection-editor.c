@@ -374,20 +374,31 @@ dispose (GObject *object)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (object);
 
-	gtk_widget_hide (GTK_WIDGET (editor->window));
-
 	g_slist_foreach (editor->pages, (GFunc) g_object_unref, NULL);
 	g_slist_free (editor->pages);
 	editor->pages = NULL;
 
-	if (editor->connection)
-		g_object_unref (editor->connection);
+	if (editor->connection) {
+                g_object_unref (editor->connection);
+                editor->connection = NULL;
+        }
+        if (editor->window) {
+                gtk_widget_destroy (editor->window);
+                editor->window = NULL;
+        }
+        if (editor->xml) {
+                g_object_unref (editor->xml);
+                editor->xml = NULL;
+        }
 
-	gtk_widget_destroy (editor->window);
-	g_object_unref (editor->xml);
-
-	polkit_action_unref (editor->system_action);
-	g_object_unref (editor->system_gnome_action);
+        if (editor->system_action) {
+                polkit_action_unref (editor->system_action);
+                editor->system_action = NULL;
+        }
+        if (editor->system_gnome_action) {
+                g_object_unref (editor->system_gnome_action);
+                editor->system_gnome_action = NULL;
+        }
 
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);
 }
