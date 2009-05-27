@@ -78,6 +78,7 @@
                           </widget>
                           <packing>
                             <property name="expand">False</property>
+                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -301,10 +302,12 @@
     </child>
   </widget>
   <widget class="GtkDialog" id="auth_methods_dialog">
+    <property name="extension_events">all</property>
     <property name="border_width">5</property>
     <property name="window_position">center-on-parent</property>
     <property name="icon_name">stock-preferences</property>
     <property name="type_hint">dialog</property>
+    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -312,6 +315,7 @@
         <child>
           <widget class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
+            <property name="border_width">5</property>
             <property name="spacing">6</property>
             <child>
               <widget class="GtkLabel" id="label3">
@@ -335,11 +339,12 @@
                     <property name="spacing">6</property>
                     <child>
                       <widget class="GtkCheckButton" id="allow_eap">
-                        <property name="label" translatable="yes">EAP</property>
+                        <property name="label" translatable="yes">_EAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Extensible Authentication Protocol</property>
+                        <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -348,11 +353,12 @@
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="allow_pap">
-                        <property name="label" translatable="yes">PAP</property>
+                        <property name="label" translatable="yes">_PAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Password Authentication Protocol</property>
+                        <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -361,11 +367,12 @@
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="allow_chap">
-                        <property name="label" translatable="yes">CHAP</property>
+                        <property name="label" translatable="yes">C_HAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Challenge Handshake Authentication Protocol</property>
+                        <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -374,11 +381,12 @@
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="allow_mschap">
-                        <property name="label" translatable="yes">MSCHAP</property>
+                        <property name="label" translatable="yes">_MSCHAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Microsoft Challenge Handshake Authentication Protocol</property>
+                        <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -387,11 +395,12 @@
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="allow_mschapv2">
-                        <property name="label" translatable="yes">MSCHAP v2</property>
+                        <property name="label" translatable="yes">MSCHAP v_2</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Microsoft Challenge Handshake Authentication Protocol version 2</property>
+                        <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
