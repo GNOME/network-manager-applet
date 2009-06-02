@@ -471,7 +471,7 @@ error:
 }
 
 char *
-vpn_ask_connection_type (void)
+vpn_ask_connection_type (GtkWindow *parent)
 {
 	GladeXML *xml;
 	GtkWidget *dialog, *combo, *widget;
@@ -521,6 +521,7 @@ vpn_ask_connection_type (void)
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), model);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 
+	gtk_window_set_transient_for (GTK_WINDOW (dialog), parent);
 	gtk_widget_show_all (dialog);
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (response != GTK_RESPONSE_OK)

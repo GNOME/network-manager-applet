@@ -45,7 +45,7 @@ typedef struct {
 
 	/* private data */
 	GHashTable *editors;
-	GHashTable *treeviews;
+	GSList *treeviews;
 
 	GConfClient *client;
 	NMAGConfSettings *gconf_settings;
@@ -72,11 +72,11 @@ typedef struct {
 } NMConnectionListClass;
 
 GType             nm_connection_list_get_type (void);
-NMConnectionList *nm_connection_list_new (const char *def_type);
+NMConnectionList *nm_connection_list_new (GType def_type);
 
 void              nm_connection_list_run (NMConnectionList *list);
 
-void              nm_connection_list_set_type (NMConnectionList *list, const char *type);
+void              nm_connection_list_set_type (NMConnectionList *list, GType ctype);
 
 void              nm_connection_list_present (NMConnectionList *list);
 

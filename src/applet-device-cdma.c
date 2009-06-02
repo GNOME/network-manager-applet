@@ -38,6 +38,7 @@
 #include "applet.h"
 #include "applet-device-cdma.h"
 #include "utils.h"
+#include "mobile-wizard.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -51,53 +52,105 @@ cdma_menu_item_info_destroy (gpointer data)
 	g_slice_free (CdmaMenuItemInfo, data);
 }
 
-#define DEFAULT_CDMA_NAME _("Auto Mobile Broadband (CDMA) connection")
+typedef struct {
+	AppletNewAutoConnectionCallback callback;
+	gpointer callback_data;
+} AutoCdmaWizardInfo;
 
-static NMConnection *
-cdma_new_auto_connection (NMDevice *device,
-                          NMApplet *applet,
-                          gpointer user_data)
+static void
+mobile_wizard_done (MobileWizard *wizard,
+                    gboolean canceled,
+                    MobileWizardAccessMethod *method,
+                    gpointer user_data)
 {
-	NMConnection *connection;
-	NMSettingCdma *s_cdma;
-	NMSettingSerial *s_serial;
-	NMSettingPPP *s_ppp;
-	NMSettingConnection *s_con;
-	char *uuid;
+	AutoCdmaWizardInfo *info = user_data;
+	NMConnection *connection = NULL;
 
-	connection = nm_connection_new ();
+	if (!canceled && method) {
+		NMSetting *setting;
+		char *uuid, *id;
 
-	s_cdma = NM_SETTING_CDMA (nm_setting_cdma_new ());
-	/* De-facto standard for CDMA */
-	g_object_set (s_cdma, NM_SETTING_CDMA_NUMBER, "#777", NULL);
-	nm_connection_add_setting (connection, NM_SETTING (s_cdma));
+		if (method->devtype != NM_DEVICE_TYPE_CDMA) {
+			g_warning ("Unexpected device type (not CDMA).");
+			canceled = TRUE;
+			goto done;
+		}
 
-	/* Serial setting */
-	s_serial = (NMSettingSerial *) nm_setting_serial_new ();
-	g_object_set (s_serial,
-	              NM_SETTING_SERIAL_BAUD, 115200,
-	              NM_SETTING_SERIAL_BITS, 8,
-	              NM_SETTING_SERIAL_PARITY, 'n',
-	              NM_SETTING_SERIAL_STOPBITS, 1,
-	              NULL);
+		connection = nm_connection_new ();
 
-	nm_connection_add_setting (connection, NM_SETTING (s_serial));
+		setting = nm_setting_cdma_new ();
+		g_object_set (setting,
+		              NM_SETTING_CDMA_NUMBER, "#777",
+		              NM_SETTING_CDMA_USERNAME, method->username,
+		              NM_SETTING_CDMA_PASSWORD, method->password,
+		              NULL);
+		nm_connection_add_setting (connection, setting);
 
-	s_ppp = (NMSettingPPP *) nm_setting_ppp_new ();
-	nm_connection_add_setting (connection, NM_SETTING (s_ppp));
+		/* Serial setting */
+		setting = nm_setting_serial_new ();
+		g_object_set (setting,
+		              NM_SETTING_SERIAL_BAUD, 115200,
+		              NM_SETTING_SERIAL_BITS, 8,
+		              NM_SETTING_SERIAL_PARITY, 'n',
+		              NM_SETTING_SERIAL_STOPBITS, 1,
+		              NULL);
+		nm_connection_add_setting (connection, setting);
 
-	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	uuid = nm_utils_uuid_generate ();
-	g_object_set (s_con,
-		      NM_SETTING_CONNECTION_ID, DEFAULT_CDMA_NAME,
-		      NM_SETTING_CONNECTION_TYPE, nm_setting_get_name (NM_SETTING (s_cdma)),
-		      NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
-		      NM_SETTING_CONNECTION_UUID, uuid,
-		      NULL);
-	g_free (uuid);
-	nm_connection_add_setting (connection, NM_SETTING (s_con));
+		nm_connection_add_setting (connection, nm_setting_ppp_new ());
 
-	return connection;
+		setting = nm_setting_connection_new ();
+		if (method->plan_name)
+			id = g_strdup_printf ("%s %s", method->provider_name, method->plan_name);
+		else
+			id = g_strdup_printf ("%s connection", method->provider_name);
+		uuid = nm_utils_uuid_generate ();
+		g_object_set (setting,
+		              NM_SETTING_CONNECTION_ID, id,
+		              NM_SETTING_CONNECTION_TYPE, NM_SETTING_CDMA_SETTING_NAME,
+		              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+		              NM_SETTING_CONNECTION_UUID, uuid,
+		              NULL);
+		g_free (uuid);
+		g_free (id);
+		nm_connection_add_setting (connection, setting);
+	}
+
+done:
+	(*(info->callback)) (connection, TRUE, canceled, info->callback_data);
+
+	if (wizard)
+		mobile_wizard_destroy (wizard);
+	g_free (info);
+}
+
+static gboolean
+cdma_new_auto_connection (NMDevice *device,
+                          gpointer dclass_data,
+                          AppletNewAutoConnectionCallback callback,
+                          gpointer callback_data)
+{
+	MobileWizard *wizard;
+	AutoCdmaWizardInfo *info;
+	MobileWizardAccessMethod *method;
+
+	info = g_malloc0 (sizeof (AutoCdmaWizardInfo));
+	info->callback = callback;
+	info->callback_data = callback_data;
+
+	wizard = mobile_wizard_new (NULL, device, mobile_wizard_done, info);
+	if (wizard) {
+		mobile_wizard_present (wizard);
+		return TRUE;
+	}
+
+	/* Fall back to something */
+	method = g_malloc0 (sizeof (MobileWizardAccessMethod));
+	method->devtype = NM_DEVICE_TYPE_CDMA;
+	method->provider_name = _("CDMA");
+	mobile_wizard_done (NULL, FALSE, method, info);
+	g_free (method);
+
+	return TRUE;
 }
 
 static void
@@ -156,7 +209,7 @@ add_default_connection_item (NMDevice *device,
 	CdmaMenuItemInfo *info;
 	GtkWidget *item;
 	
-	item = gtk_check_menu_item_new_with_label (DEFAULT_CDMA_NAME);
+	item = gtk_check_menu_item_new_with_label (_("New Mobile Broadband (CDMA) connection..."));
 	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 
 	info = g_slice_new0 (CdmaMenuItemInfo);

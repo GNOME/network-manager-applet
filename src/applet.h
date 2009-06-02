@@ -146,11 +146,16 @@ typedef struct
 	gboolean		notify_with_actions;
 } NMApplet;
 
+typedef void (*AppletNewAutoConnectionCallback) (NMConnection *connection,
+                                                 gboolean created,
+                                                 gboolean canceled,
+                                                 gpointer user_data);
 
 struct NMADeviceClass {
-	NMConnection * (*new_auto_connection)  (NMDevice *device,
-	                                        NMApplet *applet,
-	                                        gpointer user_data);
+	gboolean       (*new_auto_connection)  (NMDevice *device,
+	                                        gpointer user_data,
+	                                        AppletNewAutoConnectionCallback callback,
+	                                        gpointer callback_data);
 
 	void           (*add_menu_item)        (NMDevice *device,
 	                                        guint32 num_devices,
@@ -204,7 +209,7 @@ void applet_menu_item_activate_helper (NMDevice *device,
                                        NMConnection *connection,
                                        const char *specific_object,
                                        NMApplet *applet,
-                                       gpointer user_data);
+                                       gpointer dclass_data);
 
 NMAGConfConnection *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 

@@ -28,10 +28,13 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
+#include <nm-setting-serial.h>
+#include <nm-setting-ppp.h>
 
 #include "page-mobile.h"
 #include "nm-connection-editor.h"
 #include "gconf-helpers.h"
+#include "mobile-wizard.h"
 
 G_DEFINE_TYPE (CEPageMobile, ce_page_mobile, CE_TYPE_PAGE)
 
@@ -431,3 +434,178 @@ ce_page_mobile_class_init (CEPageMobileClass *mobile_class)
 	/* virtual methods */
 	parent_class->validate = validate;
 }
+
+static void
+add_default_serial_setting (NMConnection *connection)
+{
+	NMSettingSerial *s_serial;
+
+	s_serial = NM_SETTING_SERIAL (nm_setting_serial_new ());
+	g_object_set (s_serial,
+	              NM_SETTING_SERIAL_BAUD, 115200,
+	              NM_SETTING_SERIAL_BITS, 8,
+	              NM_SETTING_SERIAL_PARITY, 'n',
+	              NM_SETTING_SERIAL_STOPBITS, 1,
+	              NULL);
+
+	nm_connection_add_setting (connection, NM_SETTING (s_serial));
+}
+
+typedef struct {
+    PageNewConnectionResultFunc result_func;
+    PageGetConnectionsFunc get_connections_func;
+    gpointer user_data;
+} WizardInfo;
+
+static void
+mobile_wizard_done (MobileWizard *wizard,
+                    gboolean canceled,
+                    MobileWizardAccessMethod *method,
+                    gpointer user_data)
+{
+	WizardInfo *info = user_data;
+	NMConnection *connection = NULL;
+
+	if (!canceled && method) {
+		NMSetting *type_setting;
+		const char *ctype = NULL;
+		char *detail = NULL;
+
+		switch (method->devtype) {
+		case NM_DEVICE_TYPE_GSM:
+			ctype = NM_SETTING_GSM_SETTING_NAME;
+			type_setting = nm_setting_gsm_new ();
+			/* De-facto standard for GSM */
+			g_object_set (type_setting,
+			              NM_SETTING_GSM_NUMBER, "*99#",
+			              NM_SETTING_GSM_USERNAME, method->username,
+			              NM_SETTING_GSM_PASSWORD, method->password,
+			              NM_SETTING_GSM_APN, method->gsm_apn,
+			              NULL);
+			break;
+		case NM_DEVICE_TYPE_CDMA:
+			ctype = NM_SETTING_CDMA_SETTING_NAME;
+			type_setting = nm_setting_cdma_new ();
+			/* De-facto standard for CDMA */
+			g_object_set (type_setting,
+			              NM_SETTING_CDMA_NUMBER, "#777",
+			              NM_SETTING_GSM_USERNAME, method->username,
+			              NM_SETTING_GSM_PASSWORD, method->password,
+			              NULL);
+			break;
+		default:
+			g_assert_not_reached ();
+			break;
+		}
+
+		if (method->plan_name)
+			detail = g_strdup_printf ("%s %s %%d", method->provider_name, method->plan_name);
+		else
+			detail = g_strdup_printf ("%s connection %%d", method->provider_name);
+		connection = ce_page_new_connection (detail, ctype, FALSE, info->get_connections_func, info->user_data);
+		g_free (detail);
+
+		nm_connection_add_setting (connection, type_setting);
+		add_default_serial_setting (connection);
+		nm_connection_add_setting (connection, nm_setting_ppp_new ());
+	}
+
+	(*info->result_func) (connection, canceled, NULL, info->user_data);
+
+	if (wizard)
+		mobile_wizard_destroy (wizard);
+	g_free (info);
+}
+
+static void
+cancel_dialog (GtkDialog *dialog)
+{
+	gtk_dialog_response (dialog, GTK_RESPONSE_CANCEL);
+}
+
+void
+mobile_connection_new (GtkWindow *parent,
+                       PageNewConnectionResultFunc result_func,
+                       PageGetConnectionsFunc get_connections_func,
+                       gpointer user_data)
+{
+	MobileWizard *wizard;
+	WizardInfo *info;
+	GtkWidget *dialog, *vbox, *gsm_radio, *cdma_radio, *label, *content, *alignment;
+	GtkWidget *hbox, *image;
+	gint response;
+	MobileWizardAccessMethod method;
+
+	info = g_malloc0 (sizeof (WizardInfo));
+	info->result_func = result_func;
+	info->get_connections_func = get_connections_func;
+	info->user_data = user_data;
+
+	wizard = mobile_wizard_new (parent, NULL, mobile_wizard_done, info);
+	if (wizard) {
+		mobile_wizard_present (wizard);
+		return;
+	}
+
+	/* Fall back to just asking for GSM vs. CDMA */
+	dialog = gtk_dialog_new_with_buttons (_("Select Mobile Broadband Provider Type"),
+	                                      parent,
+	                                      GTK_DIALOG_MODAL,
+	                                      GTK_STOCK_CANCEL,
+	                                      GTK_RESPONSE_CANCEL,
+	                                      GTK_STOCK_OK,
+	                                      GTK_RESPONSE_OK,
+	                                      NULL);
+	g_signal_connect (dialog, "delete-event", G_CALLBACK (cancel_dialog), NULL);
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "nm-device-wwan");
+
+	content = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	alignment = gtk_alignment_new (0, 0, 0.5, 0.5);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 12, 12, 12, 12);
+	gtk_box_pack_start (GTK_BOX (content), alignment, TRUE, FALSE, 6);
+
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_container_add (GTK_CONTAINER (alignment), hbox);
+
+	image = gtk_image_new_from_icon_name ("nm-device-wwan", GTK_ICON_SIZE_DIALOG);
+	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0);
+	gtk_misc_set_padding (GTK_MISC (image), 0, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 6);
+
+	vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, FALSE, 0);
+
+	label = gtk_label_new (_("Select the technology your mobile broadband provider uses.  If you are unsure, ask your provider."));
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 12);
+
+	gsm_radio = gtk_radio_button_new_with_mnemonic (NULL, _("My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gsm_radio), TRUE);
+	gtk_box_pack_start (GTK_BOX (vbox), gsm_radio, FALSE, FALSE, 6);
+
+	cdma_radio = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (gsm_radio),
+                                           _("My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"));
+	gtk_box_pack_start (GTK_BOX (vbox), cdma_radio, FALSE, FALSE, 6);
+
+	gtk_widget_show_all (dialog);
+
+	memset (&method, 0, sizeof (method));
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (response == GTK_RESPONSE_OK) {
+		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (cdma_radio))) {
+			method.devtype = NM_DEVICE_TYPE_CDMA;
+			method.provider_name = _("CDMA");
+		} else {
+			method.devtype = NM_DEVICE_TYPE_GSM;
+			method.provider_name = _("GSM");
+		}
+	}
+	gtk_widget_destroy (dialog);
+
+	mobile_wizard_done (NULL,
+	                    (response != GTK_RESPONSE_OK),
+	                    (response == GTK_RESPONSE_OK) ? &method : NULL,
+	                    info);
+}
+

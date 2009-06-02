@@ -327,3 +327,24 @@ ce_page_wired_class_init (CEPageWiredClass *wired_class)
 	/* virtual methods */
 	parent_class->validate = validate;
 }
+
+
+void
+wired_connection_new (GtkWindow *parent,
+                      PageNewConnectionResultFunc result_func,
+                      PageGetConnectionsFunc get_connections_func,
+                      gpointer user_data)
+{
+	NMConnection *connection;
+
+	connection = ce_page_new_connection (_("Wired connection %d"),
+	                                     NM_SETTING_WIRED_SETTING_NAME,
+	                                     TRUE,
+	                                     get_connections_func,
+	                                     user_data);
+	nm_connection_add_setting (connection, nm_setting_wired_new ());
+
+	(*result_func) (connection, FALSE, NULL, user_data);
+}
+
+

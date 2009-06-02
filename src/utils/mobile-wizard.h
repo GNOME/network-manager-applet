@@ -24,8 +24,33 @@
 #define MOBILE_WIZARD_H
 
 #include <glib.h>
+#include <NetworkManager.h>
+#include <nm-device.h>
 
-GType mobile_wizard_ask_connection_type (void);
+typedef struct MobileWizard MobileWizard;
 
+typedef struct {
+	char *provider_name;
+	char *plan_name;
+	NMDeviceType devtype;
+	char *username;
+	char *password;
+	char *gsm_apn;
+} MobileWizardAccessMethod;
+
+typedef void (*MobileWizardCallback) (MobileWizard *self,
+                                      gboolean canceled,
+                                      MobileWizardAccessMethod *method,
+                                      gpointer user_data);
+
+MobileWizard *mobile_wizard_new (GtkWindow *parent,
+                                 NMDevice *device,
+                                 MobileWizardCallback cb,
+                                 gpointer user_data);
+
+void mobile_wizard_present (MobileWizard *wizard);
+
+void mobile_wizard_destroy (MobileWizard *self);
 
 #endif /* MOBILE_WIZARD_H */
+

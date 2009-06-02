@@ -498,3 +498,27 @@ ce_page_wireless_class_init (CEPageWirelessClass *wireless_class)
 	/* virtual methods */
 	parent_class->validate = validate;
 }
+
+
+void
+wifi_connection_new (GtkWindow *parent,
+                     PageNewConnectionResultFunc result_func,
+                     PageGetConnectionsFunc get_connections_func,
+                     gpointer user_data)
+{
+	NMConnection *connection;
+	NMSetting *s_wifi;
+
+	connection = ce_page_new_connection (_("Wireless connection %d"),
+	                                     NM_SETTING_WIRELESS_SETTING_NAME,
+	                                     TRUE,
+	                                     get_connections_func,
+	                                     user_data);
+	s_wifi = nm_setting_wireless_new ();
+	g_object_set (s_wifi, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
+	nm_connection_add_setting (connection, s_wifi);
+
+	(*result_func) (connection, FALSE, NULL, user_data);
+}
+
+

@@ -191,3 +191,35 @@ ce_page_vpn_class_init (CEPageVpnClass *vpn_class)
 
 	parent_class->validate = validate;
 }
+
+
+void
+vpn_connection_new (GtkWindow *parent,
+                    PageNewConnectionResultFunc result_func,
+                    PageGetConnectionsFunc get_connections_func,
+                    gpointer user_data)
+{
+	char *service = NULL;
+	NMConnection *connection;
+	NMSetting *s_vpn;
+
+	service = vpn_ask_connection_type (parent);
+	if (!service) {
+		(*result_func) (NULL, TRUE, NULL, user_data);
+		return;
+	}
+
+	connection = ce_page_new_connection (_("VPN connection %d"),
+	                                     NM_SETTING_VPN_SETTING_NAME,
+	                                     FALSE,
+	                                     get_connections_func,
+	                                     user_data);
+	s_vpn = nm_setting_vpn_new ();
+	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service, NULL);
+	g_free (service);
+	nm_connection_add_setting (connection, s_vpn);
+
+	(*result_func) (connection, FALSE, NULL, user_data);
+}
+
+

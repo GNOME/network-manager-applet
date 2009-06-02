@@ -37,6 +37,8 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include <nm-setting-wired.h>
+#include <nm-setting-gsm.h>
+#include <nm-setting-cdma.h>
 #include "nm-connection-list.h"
 
 static GMainLoop *loop = NULL;
@@ -130,10 +132,19 @@ static gboolean
 impl_start (NMCEService *self, GHashTable *table, GError **error)
 {
 	GValue *value;
+	GType def_type;
+	const char *str_type;
 
 	value = g_hash_table_lookup (table, ARG_TYPE);
-	if (value && G_VALUE_HOLDS_STRING (value))
-		nm_connection_list_set_type (self->list, g_value_get_string (value));
+	if (value && G_VALUE_HOLDS_STRING (value)) {
+		str_type = g_value_get_string (value);
+		g_assert (str_type);
+
+		if (!strcmp (str_type, NM_SETTING_CDMA_SETTING_NAME))
+			str_type = NM_SETTING_GSM_SETTING_NAME;
+		def_type = nm_connection_lookup_setting_type (str_type);
+		nm_connection_list_set_type (self->list, def_type);
+	}
 	nm_connection_list_present (self->list);
 
 	return TRUE;
@@ -213,6 +224,7 @@ main (int argc, char *argv[])
 	NMConnectionList *list;
 	DBusGConnection *bus;
 	char *type = NULL;
+	GType ctype;
 	NMCEService *service = NULL;
 	DBusGProxy *proxy = NULL;
 
@@ -244,9 +256,9 @@ main (int argc, char *argv[])
 	/* Inits the dbus-glib type system too */
 	bus = dbus_g_bus_get (DBUS_BUS_SESSION, NULL);
 	proxy = dbus_g_proxy_new_for_name (bus,
-									 "org.freedesktop.DBus",
-									 "/org/freedesktop/DBus",
-									 "org.freedesktop.DBus");
+	                                   "org.freedesktop.DBus",
+	                                   "/org/freedesktop/DBus",
+	                                   "org.freedesktop.DBus");
 
 	/* Check for an existing instance on the bus */
 	if (proxy) {
@@ -256,7 +268,13 @@ main (int argc, char *argv[])
 
 	loop = g_main_loop_new (NULL, FALSE);
 
-	list = nm_connection_list_new (type);
+	if (!type)
+		type = (char *) NM_SETTING_WIRED_SETTING_NAME;
+	if (!strcmp (type, NM_SETTING_CDMA_SETTING_NAME))
+		type = (char *) NM_SETTING_GSM_SETTING_NAME;
+
+	ctype = nm_connection_lookup_setting_type (type);
+	list = nm_connection_list_new (ctype);
 	if (!list) {
 		g_warning ("Failed to initialize the UI, exiting...");
 		return 1;

@@ -7,6 +7,7 @@ nm_connection_editor_CPPFLAGS = \
 	-DBINDIR=\""$(bindir)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DLIBDIR=\""$(libdir)"\" \
+	-DDATADIR=\""$(datadir)"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
 	$(DBUS_CFLAGS) \
 	$(POLKIT_CFLAGS) \
@@ -43,8 +44,6 @@ nm_connection_editor_SOURCES = \
 	page-dsl.c \
 	page-mobile.h \
 	page-mobile.c \
-	mobile-wizard.h \
-	mobile-wizard.c \
 	page-ppp.h \
 	page-ppp.c \
 	page-vpn.h \

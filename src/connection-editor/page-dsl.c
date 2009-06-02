@@ -28,6 +28,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-pppoe.h>
 #include <nm-setting-ppp.h>
+#include <nm-setting-wired.h>
 
 #include "page-dsl.h"
 #include "nm-connection-editor.h"
@@ -242,3 +243,26 @@ ce_page_dsl_class_init (CEPageDslClass *dsl_class)
 	/* virtual methods */
 	parent_class->validate = validate;
 }
+
+
+void
+dsl_connection_new (GtkWindow *parent,
+                    PageNewConnectionResultFunc result_func,
+                    PageGetConnectionsFunc get_connections_func,
+                    gpointer user_data)
+{
+	NMConnection *connection;
+
+	connection = ce_page_new_connection (_("DSL connection %d"),
+	                                     NM_SETTING_PPPOE_SETTING_NAME,
+	                                     FALSE,
+	                                     get_connections_func,
+	                                     user_data);
+	nm_connection_add_setting (connection, nm_setting_pppoe_new ());
+	nm_connection_add_setting (connection, nm_setting_wired_new ());
+	nm_connection_add_setting (connection, nm_setting_ppp_new ());
+
+	(*result_func) (connection, FALSE, NULL, user_data);
+}
+
+

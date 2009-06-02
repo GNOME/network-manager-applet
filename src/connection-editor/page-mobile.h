@@ -49,4 +49,9 @@ GType ce_page_mobile_get_type (void);
 
 CEPage *ce_page_mobile_new (NMConnection *connection, GtkWindow *parent, GError **error);
 
+void mobile_connection_new (GtkWindow *parent,
+                            PageNewConnectionResultFunc result_func,
+                            PageGetConnectionsFunc get_connections_func,
+                            gpointer user_data);
+
 #endif  /* __PAGE_MOBILE_H__ */
