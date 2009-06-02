@@ -49,5 +49,10 @@ GType ce_page_wired_get_type (void);
 
 CEPage *ce_page_wired_new (NMConnection *connection, GtkWindow *parent, GError **error);
 
+void wired_connection_new (GtkWindow *parent,
+                           PageNewConnectionResultFunc result_func,
+                           PageGetConnectionsFunc get_connections_func,
+                           gpointer user_data);
+
 #endif  /* __PAGE_WIRED_H__ */
 

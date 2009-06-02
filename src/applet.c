@@ -296,44 +296,62 @@ activate_connection_cb (gpointer user_data, const char *path, GError *error)
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }
 
-void
-applet_menu_item_activate_helper (NMDevice *device,
-                                  NMConnection *connection,
-                                  const char *specific_object,
-                                  NMApplet *applet,
-                                  gpointer user_data)
+typedef struct {
+	NMApplet *applet;
+	NMDevice *device;
+	char *specific_object;
+	gpointer dclass_data;
+} AppletItemActivateInfo;
+
+static void
+applet_item_activate_info_destroy (AppletItemActivateInfo *info)
 {
-	NMAGConfConnection *exported;
+	g_return_if_fail (info != NULL);
+
+	if (info->device)
+		g_object_unref (info->device);
+	g_free (info->specific_object);
+	memset (info, 0, sizeof (AppletItemActivateInfo));
+	g_free (info);
+}
+
+static void
+applet_menu_item_activate_helper_part2 (NMConnection *connection,
+                                        gboolean auto_created,
+                                        gboolean canceled,
+                                        gpointer user_data)
+{
+	AppletItemActivateInfo *info = user_data;
 	const char *con_path;
 	gboolean is_system = FALSE;
 
-	g_return_if_fail (NM_IS_DEVICE (device));
+	if (canceled) {
+		applet_item_activate_info_destroy (info);
+		return;
+	}
 
-	if (connection) {
+	g_assert (connection);
+
+	if (!auto_created)
 		is_system = is_system_connection (connection);
-	} else {
-		NMADeviceClass *dclass = get_device_class (device, applet);
+	else {
+		NMAGConfConnection *exported;
 
-		/* If no connection was given, create a new default connection for this
-		 * device type.
-		 */
-		g_assert (dclass);
-		connection = dclass->new_auto_connection (device, applet, user_data);
-		if (!connection) {
-			nm_warning ("Couldn't create default connection.");
-			return;
-		}
-
-		exported = nma_gconf_settings_add_connection (applet->gconf_settings, connection);
+		exported = nma_gconf_settings_add_connection (info->applet->gconf_settings, connection);
 		if (!exported) {
+			NMADeviceClass *dclass = get_device_class (info->device, info->applet);
+
 			/* If the setting isn't valid, because it needs more authentication
 			 * or something, ask the user for it.
 			 */
 
+			g_assert (dclass);
 			nm_warning ("Invalid connection; asking for more information.");
 			if (dclass->get_more_info)
-				dclass->get_more_info (device, connection, applet, user_data);
+				dclass->get_more_info (info->device, connection, info->applet, info->dclass_data);
 			g_object_unref (connection);
+
+			applet_item_activate_info_destroy (info);
 			return;
 		}
 		g_object_unref (connection);
@@ -344,13 +362,52 @@ applet_menu_item_activate_helper (NMDevice *device,
 	g_assert (con_path);
 
 	/* Finally, tell NM to activate the connection */
-	nm_client_activate_connection (applet->nm_client,
+	nm_client_activate_connection (info->applet->nm_client,
 	                               is_system ? NM_DBUS_SERVICE_SYSTEM_SETTINGS : NM_DBUS_SERVICE_USER_SETTINGS,
 	                               con_path,
-	                               device,
-	                               specific_object,
+	                               info->device,
+	                               info->specific_object,
 	                               activate_connection_cb,
-	                               applet);
+	                               info->applet);
+	applet_item_activate_info_destroy (info);
+}
+
+void
+applet_menu_item_activate_helper (NMDevice *device,
+                                  NMConnection *connection,
+                                  const char *specific_object,
+                                  NMApplet *applet,
+                                  gpointer dclass_data)
+{
+	AppletItemActivateInfo *info;
+	NMADeviceClass *dclass;
+
+	g_return_if_fail (NM_IS_DEVICE (device));
+
+	info = g_malloc0 (sizeof (AppletItemActivateInfo));
+	info->applet = applet;
+	info->specific_object = g_strdup (specific_object);
+	info->device = g_object_ref (device);
+	info->dclass_data = dclass_data;
+
+	if (connection) {
+		applet_menu_item_activate_helper_part2 (connection, FALSE, FALSE, info);
+		return;
+	}
+
+	dclass = get_device_class (device, applet);
+
+	/* If no connection was passed in, ask the device class to create a new
+	 * default connection for this device type.  This could be a wizard,
+	 * and thus take a while.
+	 */
+	g_assert (dclass);
+	if (!dclass->new_auto_connection (device, dclass_data,
+	                                  applet_menu_item_activate_helper_part2,
+	                                  info)) {
+		nm_warning ("Couldn't create default connection.");
+		applet_item_activate_info_destroy (info);
+	}
 }
 
 static void

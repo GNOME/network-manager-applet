@@ -49,4 +49,9 @@ GType ce_page_dsl_get_type (void);
 
 CEPage *ce_page_dsl_new (NMConnection *connection, GtkWindow *parent, GError **error);
 
+void dsl_connection_new (GtkWindow *parent,
+                         PageNewConnectionResultFunc callback,
+                         PageGetConnectionsFunc get_connections_func,
+                         gpointer user_data);
+
 #endif  /* __PAGE_DSL_H__ */

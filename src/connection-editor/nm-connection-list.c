@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2008 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -51,10 +51,15 @@
 #include <nm-vpn-plugin-ui-interface.h>
 #include <nm-utils.h>
 
+#include "ce-page.h"
+#include "page-wired.h"
+#include "page-wireless.h"
+#include "page-mobile.h"
+#include "page-dsl.h"
+#include "page-vpn.h"
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
 #include "gconf-helpers.h"
-#include "mobile-wizard.h"
 #include "utils.h"
 #include "vpn-helpers.h"
 #include "polkit-helpers.h"
@@ -80,6 +85,7 @@ typedef struct {
 	GtkWidget *button;
 	PolKitAction *action;
 	PolKitGnomeAction *gnome_action;
+	PageNewConnectionFunc new_func;
 } ActionInfo;
 
 static void
@@ -132,6 +138,25 @@ get_active_connection (GtkTreeView *treeview)
 	return exported;
 }
 
+#define TV_TYPE_TAG "ctype"
+
+static GtkTreeView *
+get_treeview_for_type (NMConnectionList *list, GType ctype)
+{
+	GSList *iter;
+
+	for (iter = list->treeviews; iter; iter = g_slist_next (iter)) {
+		GtkTreeView *candidate = GTK_TREE_VIEW (iter->data);
+		GType candidate_type;
+
+		candidate_type = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (candidate), TV_TYPE_TAG));
+		if (candidate_type == ctype)
+			return candidate;
+	}
+
+	return NULL;
+}
+
 static GtkListStore *
 get_model_for_connection (NMConnectionList *list, NMExportedConnection *exported)
 {
@@ -139,20 +164,23 @@ get_model_for_connection (NMConnectionList *list, NMExportedConnection *exported
 	NMSettingConnection *s_con;
 	GtkTreeView *treeview;
 	GtkTreeModel *model;
-	const char *connection_type;
+	const char *str_type;
 
 	connection = nm_exported_connection_get_connection (exported);
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	connection_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
+	str_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
 
-	if (!connection_type) {
+	if (!str_type) {
 		g_warning ("Ignoring incomplete connection");
 		return NULL;
 	}
 
-	treeview = (GtkTreeView *) g_hash_table_lookup (list->treeviews, connection_type);
+	if (!strcmp (str_type, NM_SETTING_CDMA_SETTING_NAME))
+		str_type = NM_SETTING_GSM_SETTING_NAME;
+
+	treeview = get_treeview_for_type (list, nm_connection_lookup_setting_type (str_type));
 	if (!treeview) {
-		g_warning ("No registered treeview for connection type '%s'", connection_type);
+		g_warning ("No registered treeview for connection type '%s'", str_type);
 		return NULL;
 	}
 
@@ -750,270 +778,44 @@ add_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer 
 	g_hash_table_remove (info->list->editors, connection);
 }
 
-static void
-add_one_name (gpointer data, gpointer user_data)
-{
-	NMExportedConnection *exported = NM_EXPORTED_CONNECTION (data);
-	NMConnection *connection;
-	NMSettingConnection *s_con;
-	const char *id;
-	GSList **list = (GSList **) user_data;
-
-	connection = nm_exported_connection_get_connection (exported);
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	id = nm_setting_connection_get_id (s_con);
-	g_assert (id);
-	*list = g_slist_append (*list, (gpointer) id);
-}
-
-static char *
-get_next_available_name (NMConnectionList *list, const char *format)
-{
-	GSList *connections;
-	GSList *names = NULL, *iter;
-	char *cname = NULL;
-	int i = 0;
-
-	connections = nm_settings_list_connections (NM_SETTINGS (list->system_settings));
-	connections = g_slist_concat (connections, nm_settings_list_connections (NM_SETTINGS (list->gconf_settings)));
-
-	g_slist_foreach (connections, add_one_name, &names);
-	g_slist_free (connections);
-
-	if (g_slist_length (names) == 0)
-		return g_strdup_printf (format, 1);
-
-	/* Find the next available unique connection name */
-	while (!cname && (i++ < 10000)) {
-		char *temp;
-		gboolean found = FALSE;
-
-		temp = g_strdup_printf (format, i);
-		for (iter = names; iter; iter = g_slist_next (iter)) {
-			if (!strcmp (iter->data, temp)) {
-				found = TRUE;
-				break;
-			}
-		}
-		if (!found)
-			cname = temp;
-		else
-			g_free (temp);
-	}
-
-	g_slist_free (names);
-	return cname;
-}
-
-static void
-add_default_serial_setting (NMConnection *connection)
-{
-	NMSettingSerial *s_serial;
-
-	s_serial = NM_SETTING_SERIAL (nm_setting_serial_new ());
-	g_object_set (s_serial,
-	              NM_SETTING_SERIAL_BAUD, 115200,
-	              NM_SETTING_SERIAL_BITS, 8,
-	              NM_SETTING_SERIAL_PARITY, 'n',
-	              NM_SETTING_SERIAL_STOPBITS, 1,
-	              NULL);
-
-	nm_connection_add_setting (connection, NM_SETTING (s_serial));
-}
-
-static NMConnection *
-create_new_connection_for_type (NMConnectionList *list, const char *connection_type)
-{
-	GType ctype;
-	NMConnection *connection = NULL;
-	NMSettingConnection *s_con;
-	NMSetting *type_setting = NULL;
-	char *id, *uuid;
-	GType mb_type;
-
-	ctype = nm_connection_lookup_setting_type (connection_type);
-
-	connection = nm_connection_new ();
-	nm_connection_set_scope (connection, NM_CONNECTION_SCOPE_USER);
-	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	uuid = nm_utils_uuid_generate ();
-	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, uuid, NULL);
-	g_free (uuid);
-	nm_connection_add_setting (connection, NM_SETTING (s_con));
-
-	if (ctype == NM_TYPE_SETTING_WIRED) {
-		id = get_next_available_name (list, _("Wired connection %d"));
-		g_object_set (s_con,
-		              NM_SETTING_CONNECTION_ID, id,
-		              NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRED_SETTING_NAME,
-		              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
-		              NULL);
-		g_free (id);
-
-		type_setting = nm_setting_wired_new ();
-	} else if (ctype == NM_TYPE_SETTING_WIRELESS) {
-		NMSettingWireless *s_wireless;
-
-		id = get_next_available_name (list, _("Wireless connection %d"));
-		g_object_set (s_con,
-		              NM_SETTING_CONNECTION_ID, id,
-		              NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRELESS_SETTING_NAME,
-		              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
-		              NULL);
-		g_free (id);
-
-		type_setting = nm_setting_wireless_new ();
-		s_wireless = NM_SETTING_WIRELESS (type_setting);
-		g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
-	} else if ((ctype == NM_TYPE_SETTING_GSM) || (ctype == NM_TYPE_SETTING_CDMA)) {
-		/* Since GSM is a placeholder for both GSM and CDMA; ask the user which
-		 * one they really want.
-		 */
-		mb_type = mobile_wizard_ask_connection_type ();
-		if (mb_type == NM_TYPE_SETTING_GSM) {
-			NMSettingGsm *s_gsm;
-
-			id = get_next_available_name (list, _("GSM connection %d"));
-			g_object_set (s_con,
-					    NM_SETTING_CONNECTION_ID, id,
-					    NM_SETTING_CONNECTION_TYPE, NM_SETTING_GSM_SETTING_NAME,
-					    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
-					    NULL);
-			g_free (id);
-
-			add_default_serial_setting (connection);
-
-			type_setting = nm_setting_gsm_new ();
-			s_gsm = NM_SETTING_GSM (type_setting);
-			/* De-facto standard for GSM */
-			g_object_set (s_gsm, NM_SETTING_GSM_NUMBER, "*99#", NULL);
-
-			nm_connection_add_setting (connection, nm_setting_ppp_new ());
-		} else if (mb_type == NM_TYPE_SETTING_CDMA) {
-			NMSettingCdma *s_cdma;
-
-			id = get_next_available_name (list, _("CDMA connection %d"));
-			g_object_set (s_con,
-					    NM_SETTING_CONNECTION_ID, id,
-					    NM_SETTING_CONNECTION_TYPE, NM_SETTING_CDMA_SETTING_NAME,
-					    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
-					    NULL);
-			g_free (id);
-
-			add_default_serial_setting (connection);
-
-			type_setting = nm_setting_cdma_new ();
-			s_cdma = NM_SETTING_CDMA (type_setting);
-
-			/* De-facto standard for CDMA */
-			g_object_set (s_cdma, NM_SETTING_CDMA_NUMBER, "#777", NULL);
-
-			nm_connection_add_setting (connection, nm_setting_ppp_new ());
-		} else {
-			/* user canceled; do nothing */
-		}
-	} else if (ctype == NM_TYPE_SETTING_VPN) {
-		char *service = NULL;
-
-		service = vpn_ask_connection_type ();
-		if (service) {
-			NMSettingVPN *s_vpn;
-
-			id = get_next_available_name (list, _("VPN connection %d"));
-			g_object_set (s_con,
-					    NM_SETTING_CONNECTION_ID, id,
-					    NM_SETTING_CONNECTION_TYPE, NM_SETTING_VPN_SETTING_NAME,
-					    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
-					    NULL);
-			g_free (id);
-
-			type_setting = nm_setting_vpn_new ();
-			s_vpn = NM_SETTING_VPN (type_setting);
-			g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service, NULL);
-			g_free (service);
-		}		
-	} else if (ctype == NM_TYPE_SETTING_PPPOE) {
-		id = get_next_available_name (list, _("DSL connection %d"));
-		g_object_set (s_con,
-				    NM_SETTING_CONNECTION_ID, id,
-				    NM_SETTING_CONNECTION_TYPE, NM_SETTING_PPPOE_SETTING_NAME,
-				    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
-				    NULL);
-		g_free (id);
-
-		type_setting = nm_setting_pppoe_new ();
-
-		nm_connection_add_setting (connection, nm_setting_wired_new ());
-		nm_connection_add_setting (connection, nm_setting_ppp_new ());
-	} else {
-		g_warning ("%s: unhandled connection type '%s'", __func__, g_type_name (ctype)); 
-	}
-
-	if (type_setting) {
-		nm_connection_add_setting (connection, type_setting);
-	} else {
-		g_object_unref (connection);
-		connection = NULL;
-	}
-
-	return connection;
-}
-
 typedef struct {
-	const char *type;
-	GtkTreeView *treeview;
-} LookupTreeViewInfo;
+	NMConnection *new;
+	NMConnectionList *list;
+} AddConnectionInfo;
 
 static void
-lookup_treeview (gpointer key, gpointer value, gpointer user_data)
+really_add_connection (NMConnection *connection,
+                       gboolean canceled,
+                       GError *error,
+                       gpointer user_data)
 {
-	LookupTreeViewInfo *info = (LookupTreeViewInfo *) user_data;
-
-	if (!info->type && info->treeview == value)
-		info->type = (const char *) key;
-}
-
-static const char *
-get_connection_type_from_treeview (NMConnectionList *self,
-							GtkTreeView *treeview)
-{
-	LookupTreeViewInfo info;
-
-	info.type = NULL;
-	info.treeview = treeview;
-
-	g_hash_table_foreach (self->treeviews, lookup_treeview, &info);
-
-	return info.type;
-}
-
-static void
-add_connection_clicked (GtkButton *button, gpointer user_data)
-{
-	ActionInfo *info = (ActionInfo *) user_data;
-	const char *connection_type;
-	NMConnection *connection;
+	ActionInfo *info = user_data;
 	NMConnectionEditor *editor;
-	GError *error = NULL;
+	GError *editor_error = NULL;
 	const char *message = _("The connection editor dialog could not be initialized due to an unknown error.");
+	gboolean can_modify;
 
-	connection_type = get_connection_type_from_treeview (info->list, info->treeview);
-	g_assert (connection_type);
+	g_return_if_fail (info != NULL);
 
-	connection = create_new_connection_for_type (info->list, connection_type);
+	if (canceled)
+		return;
+
 	if (!connection) {
-		g_warning ("Can't add new connection of type '%s'", connection_type);
+		error_dialog (info->list_window,
+		              _("Could not create new connection"),
+		              "%s",
+		              (error && error->message) ? error->message : message);
 		return;
 	}
 
-	editor = nm_connection_editor_new (connection,
-	                                   nm_dbus_settings_system_get_can_modify (info->list->system_settings),
-	                                   &error);
+	can_modify = nm_dbus_settings_system_get_can_modify (info->list->system_settings);
+	editor = nm_connection_editor_new (connection, can_modify, &error);
 	if (!editor) {
 		error_dialog (info->list_window,
 		              _("Could not edit new connection"),
 		              "%s",
-		              (error && error->message) ? error->message : message);
+		              (editor_error && editor_error->message) ? editor_error->message : message);
+		g_clear_error (&editor_error);
 		return;
 	}
 
@@ -1021,6 +823,35 @@ add_connection_clicked (GtkButton *button, gpointer user_data)
 	g_hash_table_insert (info->list->editors, connection, editor);
 
 	nm_connection_editor_run (editor);
+}
+
+static GSList *
+page_get_connections (gpointer user_data)
+{
+	ActionInfo *info = (ActionInfo *) user_data;
+
+	return g_slist_concat (nm_settings_list_connections (NM_SETTINGS (info->list->system_settings)),
+	                       nm_settings_list_connections (NM_SETTINGS (info->list->gconf_settings)));
+}
+
+static void
+add_connection_clicked (GtkButton *button, gpointer user_data)
+{
+	ActionInfo *info = (ActionInfo *) user_data;
+	NMConnectionList *list = info->list;
+	GType ctype;
+
+	if (!info->new_func) {
+		ctype = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (info->treeview), TV_TYPE_TAG));
+		g_warning ("No new-connection function registered for type '%s'",
+		           g_type_name (ctype));
+		return;
+	}
+
+	(*(info->new_func)) (GTK_WINDOW (list->dialog),
+	                     really_add_connection,
+	                     page_get_connections,
+	                     info);
 }
 
 typedef struct {
@@ -1321,9 +1152,17 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 
 	s = (char *) nm_setting_connection_get_id (s_con);
 	if (!s) {
-		s = get_next_available_name (info->list, _("VPN connection %d"));
+		GSList *connections;
+
+		connections = nm_settings_list_connections (NM_SETTINGS (info->list->system_settings));
+		connections = g_slist_concat (connections,
+		                              nm_settings_list_connections (NM_SETTINGS (info->list->gconf_settings)));
+
+		s = utils_next_available_name (connections, _("VPN connection %d"));
 		g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
 		g_free (s);
+
+		g_slist_free (connections);
 	}
 
 	s = (char *) nm_setting_connection_get_connection_type (s_con);
@@ -1418,8 +1257,6 @@ dialog_response_cb (GtkDialog *dialog, guint response, gpointer user_data)
 static void
 nm_connection_list_init (NMConnectionList *list)
 {
-	list->treeviews = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-
 	list->system_action = polkit_action_new ();
 	polkit_action_set_action_id (list->system_action, "org.freedesktop.network-manager-settings.system.modify");
 }
@@ -1455,7 +1292,7 @@ dispose (GObject *object)
 	if (list->client)
 		g_object_unref (list->client);
 
-	g_hash_table_destroy (list->treeviews);
+	g_slist_free (list->treeviews);
 
 	if (list->gconf_settings)
 		g_object_unref (list->gconf_settings);
@@ -1576,6 +1413,15 @@ action_info_set_button (ActionInfo *info,
 }
 
 static void
+action_info_set_new_func (ActionInfo *info,
+                          PageNewConnectionFunc func)
+{
+	g_return_if_fail (info != NULL);
+
+	info->new_func = func;
+}
+
+static void
 check_vpn_import_supported (gpointer key, gpointer data, gpointer user_data)
 {
 	NMVpnPluginUiInterface *plugin = NM_VPN_PLUGIN_UI_INTERFACE (data);
@@ -1654,7 +1500,8 @@ static void
 add_connection_buttons (NMConnectionList *self,
                         const char *prefix,
                         GtkTreeView *treeview,
-                        gboolean is_vpn)
+                        GType ctype,
+                        PageNewConnectionFunc new_func)
 {
 	char *name;
 	GtkWidget *button, *hbox;
@@ -1670,13 +1517,15 @@ add_connection_buttons (NMConnectionList *self,
 	g_free (name);
 	info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), NULL, self->system_action);
 	g_signal_connect (button, "clicked", G_CALLBACK (add_connection_clicked), info);
-	if (is_vpn) {
+	if (ctype == NM_TYPE_SETTING_VPN) {
 		GHashTable *plugins;
 
 		/* disable the "Add..." button if there aren't any VPN plugins */
 		plugins = vpn_get_plugins (NULL);
 		gtk_widget_set_sensitive (button, (plugins && g_hash_table_size (plugins)));
 	}
+	if (new_func)
+		action_info_set_new_func (info, new_func);
 
 	name = g_strdup_printf ("%s_button_box", prefix);
 	hbox = glade_xml_get_widget (self->gui, name);
@@ -1749,17 +1598,17 @@ add_connection_buttons (NMConnectionList *self,
 
 static void
 add_connection_tab (NMConnectionList *self,
-                    const char *def_type,
-                    GSList *connection_types,
+                    GType def_type,
+                    GType ctype,
                     GdkPixbuf *pixbuf,
                     const char *prefix,
                     const char *label_text,
-                    gboolean is_vpn)
+                    PageNewConnectionFunc new_func)
 {
 	char *name;
 	GtkWidget *child, *hbox, *notebook;
 	GtkTreeView *treeview;
-	GSList *iter;
+	int pnum;
 
 	name = g_strdup_printf ("%s_child", prefix);
 	child = glade_xml_get_widget (self->gui, name);
@@ -1780,42 +1629,39 @@ add_connection_tab (NMConnectionList *self,
 	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), child, hbox);
 
 	treeview = add_connection_treeview (self, prefix);
-	add_connection_buttons (self, prefix, treeview, is_vpn);
+	add_connection_buttons (self, prefix, treeview, ctype, new_func);
 
-	g_object_set_data_full (G_OBJECT (child), "types",
-	                        connection_types, (GDestroyNotify) g_slist_free);
+	g_object_set_data (G_OBJECT (treeview), TV_TYPE_TAG, GUINT_TO_POINTER (ctype));
+	self->treeviews = g_slist_prepend (self->treeviews, treeview);
 
-	for (iter = connection_types; iter; iter = iter->next) {
-		g_hash_table_insert (self->treeviews, g_strdup ((const char *) iter->data), treeview);
-		if (def_type && !strcmp ((const char *) iter->data, def_type)) {
-			int pnum;
-
-			pnum = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), child);
-			gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), pnum);
-		}
+	if (def_type == ctype) {
+		pnum = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), child);
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), pnum);
 	}
 }
 
 static void
-add_connection_tabs (NMConnectionList *self, const char *def_type)
+add_connection_tabs (NMConnectionList *self, GType def_type)
 {
-	GSList *types;
+	add_connection_tab (self, def_type, NM_TYPE_SETTING_WIRED,
+	                    self->wired_icon, "wired", _("Wired"),
+	                    wired_connection_new);
 
-	types = g_slist_append (NULL, NM_SETTING_WIRED_SETTING_NAME);
-	add_connection_tab (self, def_type, types, self->wired_icon, "wired", _("Wired"), FALSE);
+	add_connection_tab (self, def_type, NM_TYPE_SETTING_WIRELESS,
+	                    self->wireless_icon, "wireless", _("Wireless"),
+	                    wifi_connection_new);
 
-	types = g_slist_append (NULL, NM_SETTING_WIRELESS_SETTING_NAME);
-	add_connection_tab (self, def_type, types, self->wireless_icon, "wireless", _("Wireless"), FALSE);
+	add_connection_tab (self, def_type, NM_TYPE_SETTING_GSM,
+	                    self->wwan_icon, "wwan", _("Mobile Broadband"),
+	                    mobile_connection_new);
 
-	types = g_slist_append (NULL, NM_SETTING_GSM_SETTING_NAME);
-	types = g_slist_append (types, NM_SETTING_CDMA_SETTING_NAME);
-	add_connection_tab (self, def_type, types, self->wwan_icon, "wwan", _("Mobile Broadband"), FALSE);
+	add_connection_tab (self, def_type, NM_TYPE_SETTING_VPN,
+	                    self->vpn_icon, "vpn", _("VPN"),
+	                    vpn_connection_new);
 
-	types = g_slist_append (NULL, NM_SETTING_VPN_SETTING_NAME);
-	add_connection_tab (self, def_type, types, self->vpn_icon, "vpn", _("VPN"), TRUE);
-
-	types = g_slist_append (NULL, NM_SETTING_PPPOE_SETTING_NAME);
-	add_connection_tab (self, def_type, types, self->wired_icon, "dsl", _("DSL"), FALSE);
+	add_connection_tab (self, def_type, NM_TYPE_SETTING_PPPOE,
+	                    self->wired_icon, "dsl", _("DSL"),
+	                    dsl_connection_new);
 }
 
 static void
@@ -1886,7 +1732,7 @@ connection_added (NMSettings *settings,
 	}
 
 NMConnectionList *
-nm_connection_list_new (const char *def_type)
+nm_connection_list_new (GType def_type)
 {
 	NMConnectionList *list;
 	DBusGConnection *dbus_connection;
@@ -1966,31 +1812,26 @@ nm_connection_list_present (NMConnectionList *list)
 }
 
 void
-nm_connection_list_set_type (NMConnectionList *self, const char *type)
+nm_connection_list_set_type (NMConnectionList *self, GType ctype)
 {
-	GtkWidget *notebook;
-	int i, num;
-	gboolean found = FALSE;
+	GtkNotebook *notebook;
+	int i;
 
 	g_return_if_fail (NM_IS_CONNECTION_LIST (self));
 
 	/* If a notebook page is found that owns the requested type, set it
 	 * as the current page.
 	 */
-	notebook = glade_xml_get_widget (self->gui, "list_notebook");
-	num = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-	for (i = 0; i < num && !found; i++) {
+	notebook = GTK_NOTEBOOK (glade_xml_get_widget (self->gui, "list_notebook"));
+	for (i = 0; i < gtk_notebook_get_n_pages (notebook); i++) {
 		GtkWidget *child;
-		GSList *types, *iter;
+		GType child_type;
 
-		child = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), i);
-		types = g_object_get_data (G_OBJECT (child), "types");
-		for (iter = types; iter; iter = g_slist_next (iter)) {
-			if (!strcmp (type, (const char *) iter->data)) {
-				gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), i);
-				found = TRUE;
-				break;
-			}
+		child = gtk_notebook_get_nth_page (notebook, i);
+		child_type = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (child), TV_TYPE_TAG));
+		if (child_type == ctype) {
+			gtk_notebook_set_current_page (notebook, i);
+			break;
 		}
 	}
 

@@ -27,6 +27,9 @@
 
 #include <glib/gi18n.h>
 
+#include <nm-setting-connection.h>
+#include <nm-utils.h>
+
 #include "ce-page.h"
 #include "nma-marshal.h"
 #include "utils.h"
@@ -487,3 +490,42 @@ ce_page_class_init (CEPageClass *page_class)
 	                      nma_marshal_VOID__POINTER_POINTER,
 	                      G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER);
 }
+
+
+NMConnection *
+ce_page_new_connection (const char *format,
+                        const char *ctype,
+                        gboolean autoconnect,
+                        PageGetConnectionsFunc get_connections_func,
+                        gpointer user_data)
+{
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+	char *uuid, *id;
+	GSList *connections;
+
+	connection = nm_connection_new ();
+	nm_connection_set_scope (connection, NM_CONNECTION_SCOPE_USER);
+
+	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
+	nm_connection_add_setting (connection, NM_SETTING (s_con));
+
+	uuid = nm_utils_uuid_generate ();
+
+	connections = (*get_connections_func) (user_data);
+	id = utils_next_available_name (connections, format);
+	g_slist_free (connections);
+
+	g_object_set (s_con,
+	              NM_SETTING_CONNECTION_UUID, uuid,
+	              NM_SETTING_CONNECTION_ID, id,
+	              NM_SETTING_CONNECTION_TYPE, ctype,
+	              NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect,
+	              NULL);
+
+	g_free (uuid);
+	g_free (id);
+
+	return connection;
+}
+

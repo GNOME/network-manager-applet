@@ -50,5 +50,7 @@ char *utils_ether_ntop (const struct ether_addr *mac);
 
 gboolean utils_mac_valid (const struct ether_addr *addr);
 
+char *utils_next_available_name (GSList *connections, const char *format);
+
 #endif /* UTILS_H */
 

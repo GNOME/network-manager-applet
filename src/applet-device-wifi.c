@@ -316,12 +316,13 @@ none:
 	return NULL;
 }
 
-static NMConnection *
+static gboolean
 wireless_new_auto_connection (NMDevice *device,
-                              NMApplet *applet,
-                              gpointer user_data)
+                              gpointer dclass_data,
+                              AppletNewAutoConnectionCallback callback,
+                              gpointer callback_data)
 {
-	WirelessMenuItemInfo *info = (WirelessMenuItemInfo *) user_data;
+	WirelessMenuItemInfo *info = (WirelessMenuItemInfo *) dclass_data;
 	NMConnection *connection = NULL;
 	NMSettingConnection *s_con = NULL;
 	NMSettingWireless *s_wireless = NULL;
@@ -337,7 +338,7 @@ wireless_new_auto_connection (NMDevice *device,
 
 	if (!info->ap) {
 		g_warning ("%s: AP not set", __func__);
-		return NULL;
+		return FALSE;
 	}
 
 	s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
@@ -357,7 +358,7 @@ wireless_new_auto_connection (NMDevice *device,
 	s_wireless_sec = get_security_for_ap (info->ap, dev_caps, &supported, &s_8021x);
 	if (!supported) {
 		g_object_unref (s_wireless);
-		goto out;
+		goto done;
 	} else if (s_wireless_sec)
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
@@ -387,8 +388,9 @@ wireless_new_auto_connection (NMDevice *device,
 
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
-out:
-	return connection;
+done:
+	(*callback) (connection, TRUE, FALSE, callback_data);
+	return TRUE;
 }
 
 static void

@@ -32,6 +32,18 @@
 #include <dbus/dbus-glib.h>
 #include <nm-connection.h>
 
+typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
+                                             gboolean canceled,
+                                             GError *error,
+                                             gpointer user_data);
+
+typedef GSList * (*PageGetConnectionsFunc) (gpointer user_data);
+
+typedef void (*PageNewConnectionFunc) (GtkWindow *parent,
+                                       PageNewConnectionResultFunc result_func,
+                                       PageGetConnectionsFunc get_connections_func,
+                                       gpointer user_data);
+
 #define CE_TYPE_PAGE            (ce_page_get_type ())
 #define CE_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE, CEPage))
 #define CE_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE, CEPageClass))
@@ -99,6 +111,13 @@ gboolean ce_page_initialize (CEPage *self,
                              GError **error);
 
 gboolean ce_page_get_initialized (CEPage *self);
+
+/* Only for subclasses */
+NMConnection *ce_page_new_connection (const char *format,
+                                      const char *ctype,
+                                      gboolean autoconnect,
+                                      PageGetConnectionsFunc get_connections_func,
+                                      gpointer user_data);
 
 #endif  /* __CE_PAGE_H__ */
 

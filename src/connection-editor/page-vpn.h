@@ -51,4 +51,9 @@ CEPage *ce_page_vpn_new (NMConnection *connection, GtkWindow *parent, GError **e
 
 gboolean ce_page_vpn_save_secrets (CEPage *page, NMConnection *connection);
 
+void vpn_connection_new (GtkWindow *parent,
+                         PageNewConnectionResultFunc result_func,
+                         PageGetConnectionsFunc get_connections_func,
+                         gpointer user_data);
+
 #endif  /* __PAGE_VPN_H__ */

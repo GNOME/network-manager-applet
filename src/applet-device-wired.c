@@ -62,10 +62,11 @@ wired_menu_item_info_destroy (gpointer data)
 
 #define DEFAULT_WIRED_NAME _("Auto Ethernet")
 
-static NMConnection *
+static gboolean
 wired_new_auto_connection (NMDevice *device,
-                           NMApplet *applet,
-                           gpointer user_data)
+                           gpointer dclass_data,
+                           AppletNewAutoConnectionCallback callback,
+                           gpointer callback_data)
 {
 	NMConnection *connection;
 	NMSettingWired *s_wired = NULL;
@@ -89,7 +90,8 @@ wired_new_auto_connection (NMDevice *device,
 
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
-	return connection;
+	(*callback) (connection, TRUE, FALSE, callback_data);
+	return TRUE;
 }
 
 static void

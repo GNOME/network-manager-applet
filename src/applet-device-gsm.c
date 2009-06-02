@@ -39,6 +39,7 @@
 #include "applet.h"
 #include "applet-device-gsm.h"
 #include "utils.h"
+#include "mobile-wizard.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -52,53 +53,106 @@ gsm_menu_item_info_destroy (gpointer data)
 	g_slice_free (GSMMenuItemInfo, data);
 }
 
-#define DEFAULT_GSM_NAME _("Auto Mobile Broadband (GSM) connection")
+typedef struct {
+	AppletNewAutoConnectionCallback callback;
+	gpointer callback_data;
+} AutoGsmWizardInfo;
 
-static NMConnection *
-gsm_new_auto_connection (NMDevice *device,
-                         NMApplet *applet,
-                         gpointer user_data)
+static void
+mobile_wizard_done (MobileWizard *wizard,
+                    gboolean canceled,
+                    MobileWizardAccessMethod *method,
+                    gpointer user_data)
 {
-	NMConnection *connection;
-	NMSettingGsm *s_gsm;
-	NMSettingSerial *s_serial;
-	NMSettingPPP *s_ppp;
-	NMSettingConnection *s_con;
-	char *uuid;
+	AutoGsmWizardInfo *info = user_data;
+	NMConnection *connection = NULL;
 
-	connection = nm_connection_new ();
+	if (!canceled && method) {
+		NMSetting *setting;
+		char *uuid, *id;
 
-	s_gsm = NM_SETTING_GSM (nm_setting_gsm_new ());
-	/* This should be a sensible default as it's seems to be quite standard */
-	g_object_set (s_gsm, NM_SETTING_GSM_NUMBER, "*99#", NULL);
-	nm_connection_add_setting (connection, NM_SETTING (s_gsm));
+		if (method->devtype != NM_DEVICE_TYPE_GSM) {
+			g_warning ("Unexpected device type (not GSM).");
+			canceled = TRUE;
+			goto done;
+		}
 
-	/* Serial setting */
-	s_serial = (NMSettingSerial *) nm_setting_serial_new ();
-	g_object_set (s_serial,
-	              NM_SETTING_SERIAL_BAUD, 115200,
-	              NM_SETTING_SERIAL_BITS, 8,
-	              NM_SETTING_SERIAL_PARITY, 'n',
-	              NM_SETTING_SERIAL_STOPBITS, 1,
-	              NULL);
+		connection = nm_connection_new ();
 
-	nm_connection_add_setting (connection, NM_SETTING (s_serial));
+		setting = nm_setting_gsm_new ();
+		g_object_set (setting,
+		              NM_SETTING_GSM_NUMBER, "*99#",
+		              NM_SETTING_GSM_USERNAME, method->username,
+		              NM_SETTING_GSM_PASSWORD, method->password,
+		              NM_SETTING_GSM_APN, method->gsm_apn,
+		              NULL);
+		nm_connection_add_setting (connection, setting);
 
-	s_ppp = (NMSettingPPP *) nm_setting_ppp_new ();
-	nm_connection_add_setting (connection, NM_SETTING (s_ppp));
+		/* Serial setting */
+		setting = nm_setting_serial_new ();
+		g_object_set (setting,
+		              NM_SETTING_SERIAL_BAUD, 115200,
+		              NM_SETTING_SERIAL_BITS, 8,
+		              NM_SETTING_SERIAL_PARITY, 'n',
+		              NM_SETTING_SERIAL_STOPBITS, 1,
+		              NULL);
+		nm_connection_add_setting (connection, setting);
 
-	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	uuid = nm_utils_uuid_generate ();
-	g_object_set (s_con,
-			    NM_SETTING_CONNECTION_ID, DEFAULT_GSM_NAME,
-			    NM_SETTING_CONNECTION_TYPE, nm_setting_get_name (NM_SETTING (s_gsm)),
-			    NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
-			    NM_SETTING_CONNECTION_UUID, uuid,
-			    NULL);
-	g_free (uuid);
-	nm_connection_add_setting (connection, NM_SETTING (s_con));
+		nm_connection_add_setting (connection, nm_setting_ppp_new ());
 
-	return connection;
+		setting = nm_setting_connection_new ();
+		if (method->plan_name)
+			id = g_strdup_printf ("%s %s", method->provider_name, method->plan_name);
+		else
+			id = g_strdup_printf ("%s connection", method->provider_name);
+		uuid = nm_utils_uuid_generate ();
+		g_object_set (setting,
+		              NM_SETTING_CONNECTION_ID, id,
+		              NM_SETTING_CONNECTION_TYPE, NM_SETTING_GSM_SETTING_NAME,
+		              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+		              NM_SETTING_CONNECTION_UUID, uuid,
+		              NULL);
+		g_free (uuid);
+		g_free (id);
+		nm_connection_add_setting (connection, setting);
+	}
+
+done:
+	(*(info->callback)) (connection, TRUE, canceled, info->callback_data);
+
+	if (wizard)
+		mobile_wizard_destroy (wizard);
+	g_free (info);
+}
+
+static gboolean
+gsm_new_auto_connection (NMDevice *device,
+                         gpointer dclass_data,
+                         AppletNewAutoConnectionCallback callback,
+                         gpointer callback_data)
+{
+	MobileWizard *wizard;
+	AutoGsmWizardInfo *info;
+	MobileWizardAccessMethod *method;
+
+	info = g_malloc0 (sizeof (AutoGsmWizardInfo));
+	info->callback = callback;
+	info->callback_data = callback_data;
+
+	wizard = mobile_wizard_new (NULL, device, mobile_wizard_done, info);
+	if (wizard) {
+		mobile_wizard_present (wizard);
+		return TRUE;
+	}
+
+	/* Fall back to something */
+	method = g_malloc0 (sizeof (MobileWizardAccessMethod));
+	method->devtype = NM_DEVICE_TYPE_GSM;
+	method->provider_name = _("GSM");
+	mobile_wizard_done (NULL, FALSE, method, info);
+	g_free (method);
+
+	return TRUE;
 }
 
 static void
@@ -157,7 +211,7 @@ add_default_connection_item (NMDevice *device,
 	GSMMenuItemInfo *info;
 	GtkWidget *item;
 	
-	item = gtk_check_menu_item_new_with_label (DEFAULT_GSM_NAME);
+	item = gtk_check_menu_item_new_with_label (_("New Mobile Broadband (GSM) connection..."));
 	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 
 	info = g_slice_new0 (GSMMenuItemInfo);

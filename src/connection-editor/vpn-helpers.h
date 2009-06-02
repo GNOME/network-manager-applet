@@ -24,6 +24,7 @@
 #define _VPN_HELPERS_H_
 
 #include <glib.h>
+#include <gtk/gtk.h>
 #include <nm-connection.h>
 
 #define NM_VPN_API_SUBJECT_TO_CHANGE
@@ -38,6 +39,6 @@ void vpn_import (VpnImportSuccessCallback callback, gpointer user_data);
 
 void vpn_export (NMConnection *connection);
 
-char *vpn_ask_connection_type (void);
+char *vpn_ask_connection_type (GtkWindow *parent);
 
 #endif  /* _VPN_HELPERS_H_ */
