@@ -49,6 +49,7 @@ static char *ignored_words[] = {
 	"Components",
 	"Corporation",
 	"Communications",
+	"Company",
 	"Corp.",
 	"Corp",
 	"Co.",
@@ -102,12 +103,11 @@ fixup_desc_string (const char *desc)
 
 	/* Attempt to shorten ID by ignoring certain phrases */
 	for (item = ignored_phrases; *item; item++) {
-		guint32 temp_len = strlen (temp);
 		guint32 ignored_len = strlen (*item);
 
 		p = strstr (temp, *item);
 		if (p)
-			memmove (p, p + ignored_len, temp_len - (p - temp));
+			memmove (p, p + ignored_len, strlen (p + ignored_len) + 1); /* +1 for the \0 */
 	}
 
 	/* Attmept to shorten ID by ignoring certain individual words */
