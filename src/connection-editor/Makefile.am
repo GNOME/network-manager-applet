@@ -82,7 +82,6 @@ glade_DATA = \
 	ce-page-ip4.glade \
 	ce-page-dsl.glade \
 	ce-page-mobile.glade \
-	ce-mobile-wizard.glade \
 	ce-page-ppp.glade \
 	ce-vpn-wizard.glade
 
