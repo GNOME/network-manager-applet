@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--*- mode: xml -*-->
+<?xml version="1.0"?>
 <glade-interface>
+  <!-- interface-requires gtk+ 2.16 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="ppp_page_widget">
     <property name="title" translatable="yes">window1</property>
     <child>
@@ -23,6 +23,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -45,6 +46,7 @@
                           </widget>
                           <packing>
                             <property name="expand">False</property>
+                            <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
@@ -57,20 +59,23 @@
                           </packing>
                         </child>
                       </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkButton" id="auth_methods_button">
+                            <property name="label" translatable="yes">Configure Methods...</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <property name="label" translatable="yes">Configure Methods...</property>
-                            <property name="response_id">0</property>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
+                            <property name="position">0</property>
                           </packing>
                         </child>
                       </widget>
@@ -89,6 +94,7 @@
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -105,6 +111,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -119,16 +126,17 @@
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkCheckButton" id="ppp_use_mppe">
+                            <property name="label" translatable="yes">Use Point-to-Point Encryption (MPPE)</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="label" translatable="yes">Use Point-to-Point Encryption (MPPE)</property>
+                            <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
-                            <property name="response_id">0</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
+                            <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
@@ -140,25 +148,26 @@
                                 <property name="visible">True</property>
                                 <child>
                                   <widget class="GtkCheckButton" id="ppp_require_mppe_128">
+                                    <property name="label" translatable="yes">Require 128-bit encryption</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="label" translatable="yes">Require 128-bit encryption</property>
+                                    <property name="receives_default">False</property>
                                     <property name="use_underline">True</property>
-                                    <property name="response_id">0</property>
                                     <property name="draw_indicator">True</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
+                                    <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
                                   <widget class="GtkCheckButton" id="ppp_use_stateful_mppe">
+                                    <property name="label" translatable="yes">Use Stateful MPPE</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="label" translatable="yes">Use Stateful MPPE</property>
+                                    <property name="receives_default">False</property>
                                     <property name="use_underline">True</property>
-                                    <property name="response_id">0</property>
                                     <property name="draw_indicator">True</property>
                                   </widget>
                                   <packing>
@@ -178,15 +187,16 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="ppp_allow_bsdcomp">
+                        <property name="label" translatable="yes">Allow BSD data compression</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Allow BSD data compression</property>
+                        <property name="receives_default">False</property>
                         <property name="use_underline">True</property>
-                        <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -197,11 +207,11 @@
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="ppp_allow_deflate">
+                        <property name="label" translatable="yes">Allow Deflate data compression</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Allow Deflate data compression</property>
+                        <property name="receives_default">False</property>
                         <property name="use_underline">True</property>
-                        <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -212,11 +222,11 @@
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="ppp_usevj">
+                        <property name="label" translatable="yes">Use TCP header compression</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Use TCP header compression</property>
+                        <property name="receives_default">False</property>
                         <property name="use_underline">True</property>
-                        <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -253,6 +263,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -261,11 +272,11 @@
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkCheckButton" id="ppp_send_echo_packets">
+                    <property name="label" translatable="yes">Send PPP echo packets</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="label" translatable="yes">Send PPP echo packets</property>
+                    <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
-                    <property name="response_id">0</property>
                     <property name="draw_indicator">True</property>
                   </widget>
                 </child>
@@ -305,6 +316,7 @@
               </widget>
               <packing>
                 <property name="expand">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -317,21 +329,24 @@
                     <property name="spacing">6</property>
                     <child>
                       <widget class="GtkCheckButton" id="allow_eap">
+                        <property name="label" translatable="yes">EAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Extensible Authentication Protocol</property>
-                        <property name="label" translatable="yes">EAP</property>
-                        <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="allow_pap">
+                        <property name="label" translatable="yes">PAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Password Authentication Protocol</property>
-                        <property name="label" translatable="yes">PAP</property>
-                        <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -340,11 +355,11 @@
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="allow_chap">
+                        <property name="label" translatable="yes">CHAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Challenge Handshake Authentication Protocol</property>
-                        <property name="label" translatable="yes">CHAP</property>
-                        <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -353,11 +368,11 @@
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="allow_mschap">
+                        <property name="label" translatable="yes">MSCHAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Microsoft Challenge Handshake Authentication Protocol</property>
-                        <property name="label" translatable="yes">MSCHAP</property>
-                        <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -366,11 +381,11 @@
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="allow_mschapv2">
+                        <property name="label" translatable="yes">MSCHAP v2</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Microsoft Challenge Handshake Authentication Protocol version 2</property>
-                        <property name="label" translatable="yes">MSCHAP v2</property>
-                        <property name="response_id">0</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -410,24 +425,31 @@
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
               <widget class="GtkButton" id="cancel_button">
+                <property name="label">gtk-cancel</property>
+                <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label">gtk-cancel</property>
                 <property name="use_stock">True</property>
-                <property name="response_id">-6</property>
               </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkButton" id="ok_button">
+                <property name="label">gtk-ok</property>
+                <property name="response_id">-5</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label">gtk-ok</property>
                 <property name="use_stock">True</property>
-                <property name="response_id">-5</property>
               </widget>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -435,6 +457,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="pack_type">GTK_PACK_END</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </widget>
