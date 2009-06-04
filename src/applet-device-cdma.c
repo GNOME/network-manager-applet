@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2009 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -137,7 +137,8 @@ cdma_new_auto_connection (NMDevice *device,
 	info->callback = callback;
 	info->callback_data = callback_data;
 
-	wizard = mobile_wizard_new (NULL, device, mobile_wizard_done, info);
+	wizard = mobile_wizard_new (NULL, NULL, NM_DEVICE_TYPE_CDMA, FALSE,
+	                            mobile_wizard_done, info);
 	if (wizard) {
 		mobile_wizard_present (wizard);
 		return TRUE;
