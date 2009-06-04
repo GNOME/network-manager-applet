@@ -34,7 +34,7 @@ typedef enum {
     NMN_MOBILE_ACCESS_METHOD_TYPE_UNKNOWN = 0,
     NMN_MOBILE_ACCESS_METHOD_TYPE_GSM,
     NMN_MOBILE_ACCESS_METHOD_TYPE_CDMA
-} NmnMobileProviderType;
+} NmnMobileAccessMethodType;
 
 typedef struct {
     char *mcc;
@@ -58,7 +58,7 @@ typedef struct {
     /* Only used with NMN_PROVIDER_TYPE_CDMA */
     GSList *cdma_sid; /* GSList of guint32 */
 
-    NmnMobileProviderType type;
+    NmnMobileAccessMethodType type;
 
     gint refs;
 } NmnMobileAccessMethod;

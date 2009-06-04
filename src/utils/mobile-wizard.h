@@ -44,7 +44,9 @@ typedef void (*MobileWizardCallback) (MobileWizard *self,
                                       gpointer user_data);
 
 MobileWizard *mobile_wizard_new (GtkWindow *parent,
-                                 NMDevice *device,
+                                 GtkWindowGroup *window_group,
+                                 NMDeviceType devtype,
+                                 gboolean will_connect_after,
                                  MobileWizardCallback cb,
                                  gpointer user_data);
 

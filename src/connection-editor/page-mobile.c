@@ -50,11 +50,15 @@ typedef struct {
 
 	/* GSM only */
 	GtkEntry *apn;
+	GtkButton *apn_button;
 	GtkEntry *network_id;
 	GtkComboBox *network_type;
 	GtkComboBox *band;
 	GtkEntry *pin;
 	GtkEntry *puk;
+
+	GtkWindowGroup *window_group;
+	gboolean window_added;
 
 	gboolean disposed;
 } CEPageMobilePrivate;
@@ -78,12 +82,15 @@ mobile_private_init (CEPageMobile *self)
 	priv->password = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_password"));
 
 	priv->apn = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_apn"));
+	priv->apn_button = GTK_BUTTON (glade_xml_get_widget (xml, "mobile_apn_button"));
 	priv->network_id = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_network_id"));
 	priv->network_type = GTK_COMBO_BOX (glade_xml_get_widget (xml, "mobile_network_type"));
 	priv->band = GTK_COMBO_BOX (glade_xml_get_widget (xml, "mobile_band"));
 
 	priv->pin = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_pin"));
 	priv->puk = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_puk"));
+
+	priv->window_group = gtk_window_group_new ();
 }
 
 static GHashTable *
@@ -249,6 +256,65 @@ show_passwords (GtkToggleButton *button, gpointer user_data)
 }
 
 static void
+apn_button_mobile_wizard_done (MobileWizard *wizard,
+                               gboolean canceled,
+                               MobileWizardAccessMethod *method,
+                               gpointer user_data)
+{
+	CEPageMobile *self = CE_PAGE_MOBILE (user_data);
+	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
+
+	if (canceled || !method) {
+		mobile_wizard_destroy (wizard);
+		return;
+	}
+
+	if (!canceled && method) {
+		switch (method->devtype) {
+		case NM_DEVICE_TYPE_GSM:
+			gtk_entry_set_text (GTK_ENTRY (priv->username),
+			                    method->username ? method->username : "");
+			gtk_entry_set_text (GTK_ENTRY (priv->password),
+			                    method->password ? method->password : "");
+			gtk_entry_set_text (GTK_ENTRY (priv->apn),
+			                    method->gsm_apn ? method->gsm_apn : "");
+			break;
+		default:
+			g_assert_not_reached ();
+			break;
+		}
+	}
+
+	mobile_wizard_destroy (wizard);
+}
+
+static void
+apn_button_clicked (GtkButton *button, gpointer user_data)
+{
+	CEPageMobile *self = CE_PAGE_MOBILE (user_data);
+	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
+	MobileWizard *wizard;
+	GtkWidget *toplevel;
+
+	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
+	g_return_if_fail (GTK_WIDGET_TOPLEVEL (toplevel));
+
+	if (!priv->window_added) {
+		gtk_window_group_add_window (priv->window_group, GTK_WINDOW (toplevel));
+		priv->window_added = TRUE;
+	}
+
+	wizard = mobile_wizard_new (GTK_WINDOW (toplevel),
+	                            priv->window_group,
+	                            NM_DEVICE_TYPE_GSM,
+	                            FALSE,
+	                            apn_button_mobile_wizard_done,
+	                            self);
+	if (wizard)
+		mobile_wizard_present (wizard);
+}
+
+static void
 finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
@@ -268,6 +334,7 @@ finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_
 	g_signal_connect (priv->username, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->password, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->apn, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->apn_button, "clicked", G_CALLBACK (apn_button_clicked), self);
 	g_signal_connect (priv->network_id, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->network_type, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->pin, "changed", G_CALLBACK (stuff_changed), self);
@@ -419,6 +486,18 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 }
 
 static void
+dispose (GObject *object)
+{
+	CEPageMobile *self = CE_PAGE_MOBILE (object);
+	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
+
+	if (priv->window_group)
+		g_object_unref (priv->window_group);
+
+	G_OBJECT_CLASS (ce_page_mobile_parent_class)->dispose (object);
+}
+
+static void
 ce_page_mobile_init (CEPageMobile *self)
 {
 }
@@ -433,6 +512,7 @@ ce_page_mobile_class_init (CEPageMobileClass *mobile_class)
 
 	/* virtual methods */
 	parent_class->validate = validate;
+	object_class->dispose = dispose;
 }
 
 static void
@@ -458,10 +538,10 @@ typedef struct {
 } WizardInfo;
 
 static void
-mobile_wizard_done (MobileWizard *wizard,
-                    gboolean canceled,
-                    MobileWizardAccessMethod *method,
-                    gpointer user_data)
+new_connection_mobile_wizard_done (MobileWizard *wizard,
+                                   gboolean canceled,
+                                   MobileWizardAccessMethod *method,
+                                   gpointer user_data)
 {
 	WizardInfo *info = user_data;
 	NMConnection *connection = NULL;
@@ -541,7 +621,8 @@ mobile_connection_new (GtkWindow *parent,
 	info->get_connections_func = get_connections_func;
 	info->user_data = user_data;
 
-	wizard = mobile_wizard_new (parent, NULL, mobile_wizard_done, info);
+	wizard = mobile_wizard_new (parent, NULL, NM_DEVICE_TYPE_UNKNOWN, FALSE,
+	                            new_connection_mobile_wizard_done, info);
 	if (wizard) {
 		mobile_wizard_present (wizard);
 		return;
@@ -603,9 +684,9 @@ mobile_connection_new (GtkWindow *parent,
 	}
 	gtk_widget_destroy (dialog);
 
-	mobile_wizard_done (NULL,
-	                    (response != GTK_RESPONSE_OK),
-	                    (response == GTK_RESPONSE_OK) ? &method : NULL,
-	                    info);
+	new_connection_mobile_wizard_done (NULL,
+	                                   (response != GTK_RESPONSE_OK),
+	                                   (response == GTK_RESPONSE_OK) ? &method : NULL,
+	                                   info);
 }
 
