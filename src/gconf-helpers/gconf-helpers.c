@@ -774,7 +774,7 @@ nm_gconf_set_mac_address_helper (GConfClient *client,
 	if (!found || !value)
 		return FALSE;
 
-	g_return_val_if_fail (value->len != ETH_ALEN, FALSE);
+	g_return_val_if_fail (value->len == ETH_ALEN, FALSE);
 
 	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
