@@ -62,6 +62,7 @@ static char *ignored_words[] = {
 	"adapter",
 	"[hex]",
 	"NDIS",
+	"Module",
 	NULL
 };
 
