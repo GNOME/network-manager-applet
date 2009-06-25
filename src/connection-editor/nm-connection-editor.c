@@ -48,6 +48,7 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-ip4-config.h>
+#include <nm-setting-ip6-config.h>
 #include <nm-setting-wired.h>
 #include <nm-setting-8021x.h>
 #include <nm-setting-wireless.h>
@@ -69,6 +70,7 @@
 #include "page-wireless.h"
 #include "page-wireless-security.h"
 #include "page-ip4.h"
+#include "page-ip6.h"
 #include "page-dsl.h"
 #include "page-mobile.h"
 #include "page-ppp.h"
@@ -604,12 +606,16 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 		if (!add_page (editor, ce_page_ip4_new, connection, error))
 			goto out;
+		if (!add_page (editor, ce_page_ip6_new, connection, error))
+			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_wireless_new, connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_wireless_security_new, connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_ip4_new, connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ip6_new, connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_vpn_new, connection, error))
