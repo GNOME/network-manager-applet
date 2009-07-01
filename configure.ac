@@ -189,6 +189,15 @@ else
 fi
 AC_SUBST(DBUS_SYS_DIR)
 
+dnl Check for gnome-bluetooth
+PKG_CHECK_MODULES(GNOME_BLUETOOTH,
+		  gconf-2.0
+		  gnome-bluetooth-1.0 >= 2.27.6
+		  libnm-util
+		  libnm_glib,
+		  have_gbt=yes, have_gbt=no)
+AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
+
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
 
@@ -203,6 +212,7 @@ src/gconf-helpers/Makefile
 src/wireless-security/Makefile
 src/polkit-helpers/Makefile
 src/connection-editor/Makefile
+src/gnome-bluetooth/Makefile
 icons/Makefile
 icons/16/Makefile
 icons/22/Makefile
