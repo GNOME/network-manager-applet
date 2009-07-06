@@ -400,14 +400,13 @@ is_user_request_authorized (DBusGMethodInvocation *context,
 	}
 
 	/* And finally, the actual UID check */
-	if (sender_uid != geteuid()) {
+	if ((sender_uid == geteuid()) || (sender_uid == 0))
+		success = TRUE;
+	else {
 		g_set_error (error, NM_SETTINGS_ERROR,
 		             NM_SETTINGS_ERROR_PERMISSION_DENIED,
 		             "%s", "Requestor UID does not match the UID of the user settings service");
-		goto out;
 	}
-
-	success = TRUE;
 
 out:
 	if (bus)
@@ -427,7 +426,7 @@ update (NMExportedConnection *exported, GHashTable *new_settings, GError **error
 
 	context = g_object_get_data (G_OBJECT (exported), NM_EXPORTED_CONNECTION_DBUS_METHOD_INVOCATION);
 
-	/* Restrict Update to execution by the current user only for DBus invocation */
+	/* Restrict Update to execution by the current user and root for DBus invocation */
 	if (context && !is_user_request_authorized (context, error)) {
 		nm_warning ("%s.%d - Connection update permission denied: (%d) %s",
 		            __FILE__, __LINE__, (*error)->code, (*error)->message);
@@ -464,7 +463,7 @@ do_delete (NMExportedConnection *exported, GError **error)
 
 	context = g_object_get_data (G_OBJECT (exported), NM_EXPORTED_CONNECTION_DBUS_METHOD_INVOCATION);
 
-	/* Restrict Delete to execution by the current user only for DBus invocation */
+	/* Restrict Delete to execution by the current user and root for DBus invocation */
 	if (context && !is_user_request_authorized (context, error)) {
 		nm_warning ("%s.%d - Connection delete permission denied: (%d) %s",
 		            __FILE__, __LINE__, (*error)->code, (*error)->message);
