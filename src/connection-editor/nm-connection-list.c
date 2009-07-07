@@ -1336,6 +1336,7 @@ add_connection_treeview (NMConnectionList *self, const char *prefix)
 	name = g_strdup_printf ("%s_list", prefix);
 	treeview = GTK_TREE_VIEW (glade_xml_get_widget (self->gui, name));
 	g_free (name);
+	gtk_tree_view_set_headers_visible (treeview, TRUE);
 
 	/* Model */
 	model = GTK_TREE_MODEL (gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT64, G_TYPE_OBJECT));
@@ -1346,7 +1347,7 @@ add_connection_treeview (NMConnectionList *self, const char *prefix)
 
 	/* Name column */
 	gtk_tree_view_insert_column_with_attributes (treeview,
-	                                             -1, "Name", gtk_cell_renderer_text_new (),
+	                                             -1, _("Name"), gtk_cell_renderer_text_new (),
 	                                             "text", COL_ID,
 	                                             NULL);
 	gtk_tree_view_column_set_expand (gtk_tree_view_get_column (treeview, 0), TRUE);
@@ -1358,7 +1359,7 @@ add_connection_treeview (NMConnectionList *self, const char *prefix)
 	g_object_set_property (G_OBJECT (renderer), "foreground", &val);
 
 	gtk_tree_view_insert_column_with_attributes (treeview,
-	                                             -1, "Last Used", renderer,
+	                                             -1, _("Last Used"), renderer,
 	                                             "text", COL_LAST_USED,
 	                                             NULL);
 
