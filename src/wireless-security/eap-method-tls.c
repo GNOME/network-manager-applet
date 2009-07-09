@@ -311,14 +311,14 @@ setup_filepicker (GladeXML *xml,
 	 * and desensitize the user cert button.
 	 */
 	if (privkey) {
-		g_signal_connect (G_OBJECT (widget), "file-set",
+		g_signal_connect (G_OBJECT (widget), "selection-changed",
 		                  (GCallback) private_key_picker_file_set_cb,
 		                  method);
 		if (filename)
 			private_key_picker_helper ((EAPMethod *) method, filename, FALSE);
 	}
 
-	g_signal_connect (G_OBJECT (widget), "file-set",
+	g_signal_connect (G_OBJECT (widget), "selection-changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 
