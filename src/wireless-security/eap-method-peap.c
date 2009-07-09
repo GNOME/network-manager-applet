@@ -309,7 +309,7 @@ eap_method_peap_new (const char *glade_file,
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (widget), TRUE);
 	gtk_file_chooser_button_set_title (GTK_FILE_CHOOSER_BUTTON (widget),
 	                                   _("Choose a Certificate Authority certificate..."));
-	g_signal_connect (G_OBJECT (widget), "file-set",
+	g_signal_connect (G_OBJECT (widget), "selection-changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 	filter = eap_method_default_file_chooser_filter_new (FALSE);
