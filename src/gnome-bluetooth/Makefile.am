@@ -1,12 +1,12 @@
 plugindir = $(libdir)/gnome-bluetooth/plugins/
 
-INCLUDES =                                      \
-        -DDATADIR=\"$(datadir)\"                \
-        -DICONDIR=\"$(icondir)\"                \
+INCLUDES = \
+	-DDATADIR=\"$(datadir)\" \
+	-DICONDIR=\"$(icondir)\" \
 	-DLOCALEDIR="\"$(datadir)/locale\""	\
-        -I$(top_srcdir)/src/gconf-helpers/	\
-        -I$(top_builddir)			\
-	$(GNOME_BLUETOOTH_CFLAGS)		\
+	-I$(top_srcdir)/src/gconf-helpers/ \
+	-I$(top_builddir) \
+	$(GNOME_BLUETOOTH_CFLAGS) \
 	$(WARN_CFLAGS)
 
 if HAVE_GBT
