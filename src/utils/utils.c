@@ -26,6 +26,7 @@
 
 #include <nm-device-ethernet.h>
 #include <nm-device-wifi.h>
+#include <nm-device-bt.h>
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
 #include <nm-access-point.h>
@@ -39,6 +40,7 @@
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
 #include <nm-setting-pppoe.h>
+#include <nm-setting-bluetooth.h>
 #include <nm-utils.h>
 
 #include "utils.h"
@@ -743,6 +745,66 @@ connection_valid_for_cdma (NMConnection *connection,
 	return TRUE;
 }
 
+static guint32
+get_connection_bt_type (NMConnection *connection)
+{
+	NMSettingBluetooth *s_bt;
+	const char *bt_type;
+
+	s_bt = (NMSettingBluetooth *) nm_connection_get_setting (connection, NM_TYPE_SETTING_BLUETOOTH);
+	if (!s_bt)
+		return NM_BT_CAPABILITY_NONE;
+
+	bt_type = nm_setting_bluetooth_get_connection_type (s_bt);
+	g_assert (bt_type);
+
+	if (!strcmp (bt_type, NM_SETTING_BLUETOOTH_TYPE_DUN))
+		return NM_BT_CAPABILITY_DUN;
+	else if (!strcmp (bt_type, NM_SETTING_BLUETOOTH_TYPE_PANU))
+		return NM_BT_CAPABILITY_NAP;
+
+	return NM_BT_CAPABILITY_NONE;
+}
+
+static gboolean
+connection_valid_for_bt (NMConnection *connection,
+                         NMSettingConnection *s_con,
+                         NMDevice *device,
+                         gpointer specific_object)
+{
+	NMSettingBluetooth *s_bt;
+	const GByteArray *array;
+	char *str;
+	const char *hw_addr;
+	int addr_match = FALSE;
+	guint32 bt_type;
+
+	if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_BLUETOOTH_SETTING_NAME))
+		return FALSE;
+
+	s_bt = NM_SETTING_BLUETOOTH (nm_connection_get_setting (connection, NM_TYPE_SETTING_BLUETOOTH));
+	if (!s_bt)
+		return FALSE;
+
+	array = nm_setting_bluetooth_get_bdaddr (s_bt);
+	if (!array || (array->len != ETH_ALEN))
+		return FALSE;
+
+	bt_type = get_connection_bt_type (connection);
+	if (!(bt_type & nm_device_bt_get_capabilities (NM_DEVICE_BT (device))))
+		return FALSE;
+
+	str = g_strdup_printf ("%02X:%02X:%02X:%02X:%02X:%02X",
+	                       array->data[0], array->data[1], array->data[2],
+	                       array->data[3], array->data[4], array->data[5]);
+	hw_addr = nm_device_bt_get_hw_address (NM_DEVICE_BT (device));
+	if (hw_addr)
+		addr_match = !g_ascii_strcasecmp (hw_addr, str);
+	g_free (str);
+
+	return addr_match;
+}
+
 gboolean
 utils_connection_valid_for_device (NMConnection *connection,
                                    NMDevice *device,
@@ -765,6 +827,8 @@ utils_connection_valid_for_device (NMConnection *connection,
 		return connection_valid_for_gsm (connection, s_con, device, specific_object);
 	else if (NM_IS_CDMA_DEVICE (device))
 		return connection_valid_for_cdma (connection, s_con, device, specific_object);
+	else if (NM_IS_DEVICE_BT (device))
+		return connection_valid_for_bt (connection, s_con, device, specific_object);
 	else
 		g_warning ("Unknown device type '%s'", g_type_name (G_OBJECT_TYPE(device)));
 

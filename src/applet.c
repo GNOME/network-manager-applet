@@ -45,6 +45,7 @@
 #include <nm-device-wifi.h>
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
+#include <nm-device-bt.h>
 #include <nm-utils.h>
 #include <nm-connection.h>
 #include <nm-vpn-connection.h>
@@ -64,6 +65,7 @@
 #include "applet-device-wifi.h"
 #include "applet-device-gsm.h"
 #include "applet-device-cdma.h"
+#include "applet-device-bt.h"
 #include "applet-dialogs.h"
 #include "vpn-password-dialog.h"
 #include "applet-dbus-manager.h"
@@ -276,6 +278,8 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->gsm_class;
 	else if (NM_IS_CDMA_DEVICE (device))
 		return applet->cdma_class;
+	else if (NM_IS_DEVICE_BT (device))
+		return applet->bt_class;
 	else
 		g_message ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
 	return NULL;
@@ -977,13 +981,22 @@ sort_devices (gconstpointer a, gconstpointer b)
 		return -1;
 	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_CDMA_DEVICE)
 		return -1;
+	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_DEVICE_BT)
+		return -1;
 
 	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_CDMA_DEVICE)
 		return -1;
 	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
 		return -1;
+	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_BT)
+		return -1;
 
 	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
+		return -1;
+	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_BT)
+		return -1;
+
+	if (aa_type == NM_TYPE_DEVICE_BT && bb_type == NM_TYPE_DEVICE_WIFI)
 		return -1;
 
 	return 1;
@@ -2625,6 +2638,9 @@ constructor (GType type,
 
 	applet->cdma_class = applet_device_cdma_get_class (applet);
 	g_assert (applet->cdma_class);
+
+	applet->bt_class = applet_device_bt_get_class (applet);
+	g_assert (applet->bt_class);
 
 	foo_client_setup (applet);
 

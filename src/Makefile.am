@@ -44,7 +44,9 @@ nm_applet_SOURCES =			\
 	applet-device-gsm.h \
 	applet-device-gsm.c \
 	applet-device-cdma.h \
-	applet-device-cdma.c
+	applet-device-cdma.c \
+	applet-device-bt.h \
+	applet-device-bt.c
 
 nm_applet_LDADD = \
 	$(NMA_LIBS) \

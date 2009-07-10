@@ -96,6 +96,7 @@ typedef struct
 	NMADeviceClass *wifi_class;
 	NMADeviceClass *gsm_class;
 	NMADeviceClass *cdma_class;
+	NMADeviceClass *bt_class;
 
 	/* Data model elements */
 	guint			update_icon_id;
