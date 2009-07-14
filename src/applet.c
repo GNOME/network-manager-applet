@@ -1027,6 +1027,9 @@ applet_find_active_connection_for_device (NMDevice *device,
 		service_name = nm_active_connection_get_service_name (active);
 		connection_path = nm_active_connection_get_connection (active);
 
+		if (!devices || !service_name || !connection_path)
+			continue;
+
 		if (!nm_g_ptr_array_contains (devices, device))
 			continue;
 
