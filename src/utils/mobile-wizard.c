@@ -305,18 +305,23 @@ confirm_prepare (MobileWizard *self)
 		gtk_widget_hide (self->confirm_plan);
 		gtk_widget_hide (self->confirm_apn);
 	} else {
+		const char *apn = NULL;
+
 		/* Plan */
 		gtk_widget_show (self->confirm_plan_label);
 		gtk_widget_show (self->confirm_plan);
 		gtk_widget_show (self->confirm_apn);
 
-		if (method)
+		if (method) {
 			gtk_label_set_text (GTK_LABEL (self->confirm_plan), method->name);
-		else
+			apn = method->gsm_apn;
+		} else {
 			gtk_label_set_text (GTK_LABEL (self->confirm_plan), _("Unlisted"));
+			apn = gtk_entry_get_text (GTK_ENTRY (self->plan_unlisted_entry));
+		}
 
 		str = g_string_new (NULL);
-		g_string_append_printf (str, "<span color=\"#999999\">APN: %s</span>", method->gsm_apn);
+		g_string_append_printf (str, "<span color=\"#999999\">APN: %s</span>", apn);
 		gtk_label_set_markup (GTK_LABEL (self->confirm_apn), str->str);
 		g_string_free (str, TRUE);
 	}
