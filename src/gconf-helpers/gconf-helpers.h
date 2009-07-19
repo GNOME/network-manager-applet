@@ -133,6 +133,27 @@ nm_gconf_get_ip4_helper (GConfClient *client,
 						  guint32 tuple_len,
 						  GPtrArray **value);
 
+gboolean
+nm_gconf_get_ip6dns_array_helper (GConfClient *client,
+								  const char *path,
+								  const char *key,
+								  const char *setting,
+								  GPtrArray **value);
+
+gboolean
+nm_gconf_get_ip6addr_array_helper (GConfClient *client,
+								   const char *path,
+								   const char *key,
+								   const char *setting,
+								   GPtrArray **value);
+
+gboolean
+nm_gconf_get_ip6route_array_helper (GConfClient *client,
+									const char *path,
+									const char *key,
+									const char *setting,
+									GPtrArray **value);
+
 /* Setters */
 
 gboolean
@@ -205,6 +226,27 @@ nm_gconf_set_ip4_helper (GConfClient *client,
 					  const char *setting,
 					  guint32 tuple_len,
 					  GPtrArray *value);
+
+gboolean
+nm_gconf_set_ip6dns_array_helper (GConfClient *client,
+								  const char *path,
+								  const char *key,
+								  const char *setting,
+								  GPtrArray *value);
+
+gboolean
+nm_gconf_set_ip6addr_array_helper (GConfClient *client,
+								   const char *path,
+								   const char *key,
+								   const char *setting,
+								   GPtrArray *value);
+
+gboolean
+nm_gconf_set_ip6route_array_helper (GConfClient *client,
+									const char *path,
+									const char *key,
+									const char *setting,
+									GPtrArray *value);
 
 GSList *
 nm_gconf_get_all_connections (GConfClient *client);
