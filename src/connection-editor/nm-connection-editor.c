@@ -40,12 +40,6 @@
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 
-#ifdef NO_POLKIT_GNOME
-#include "polkit-gnome.h"
-#else
-#include <polkit-gnome/polkit-gnome.h>
-#endif
-
 #include <nm-setting-connection.h>
 #include <nm-setting-ip4-config.h>
 #include <nm-setting-wired.h>
@@ -73,7 +67,6 @@
 #include "page-mobile.h"
 #include "page-ppp.h"
 #include "page-vpn.h"
-#include "polkit-helpers.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -169,7 +162,10 @@ connection_editor_validate (NMConnectionEditor *editor)
 	valid = TRUE;
 
 done:
+	gtk_widget_set_sensitive (editor->system_checkbutton, valid);
+#if 0
 	g_object_set (editor->system_gnome_action, "master-sensitive", valid, NULL);
+#endif
 }
 
 static void
@@ -190,10 +186,12 @@ system_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
 	} else
 		req_privs = TRUE;
 
+#if 0
 	if (req_privs)
 		g_object_set (editor->system_gnome_action, "polkit-action", editor->system_action, NULL);
 	else
 		g_object_set (editor->system_gnome_action, "polkit-action", NULL, NULL);
+#endif
 
 	/* Can't ever modify read-only connections */
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
@@ -234,6 +232,9 @@ set_editor_sensitivity (NMConnectionEditor *editor, gboolean sensitive)
 	}
 }
 
+typedef guint32 PolKitResult;
+#define POLKIT_RESULT_UNKNOWN 0
+
 static void
 update_sensitivity (NMConnectionEditor *editor, PolKitResult pk_result)
 {
@@ -247,11 +248,13 @@ update_sensitivity (NMConnectionEditor *editor, PolKitResult pk_result)
 		return;
 	}
 
+#if 0
 	if (pk_result == POLKIT_RESULT_UNKNOWN)
 		pk_result = polkit_gnome_action_get_polkit_result (editor->system_gnome_action);
 
 	if (pk_result == POLKIT_RESULT_NO || pk_result == POLKIT_RESULT_UNKNOWN)
 		denied = TRUE;
+#endif
 
 	switch (editor->orig_scope) {
 	case NM_CONNECTION_SCOPE_SYSTEM:
@@ -271,6 +274,7 @@ update_sensitivity (NMConnectionEditor *editor, PolKitResult pk_result)
 	}
 }
 
+#if 0
 static void
 system_pk_result_changed_cb (PolKitGnomeAction *gnome_action,
                              PolKitResult result,
@@ -278,13 +282,16 @@ system_pk_result_changed_cb (PolKitGnomeAction *gnome_action,
 {
 	update_sensitivity (editor, result);
 }
+#endif
 
 static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *dialog, *hbox;
+#if 0
 	const char *auth_label, *auth_tooltip;
 	const char *label, *tooltip;
+#endif
 
 	/* Yes, we mean applet.glade, not nm-connection-editor.glade. The wireless security bits
 	   are taken from applet.glade. */
@@ -317,6 +324,7 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	editor->cancel_button = glade_xml_get_widget (editor->xml, "cancel_button");
 	editor->system_checkbutton = glade_xml_get_widget (editor->xml, "system_checkbutton");
 
+#if 0
 	editor->system_action = polkit_action_new ();
 	polkit_action_set_action_id (editor->system_action, "org.freedesktop.network-manager-settings.system.modify");
 
@@ -363,8 +371,10 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	g_signal_connect (editor->system_gnome_action, "polkit-result-changed",
 	                  G_CALLBACK (system_pk_result_changed_cb), editor);
 
-
 	editor->ok_button = polkit_gnome_action_create_button (editor->system_gnome_action);
+#endif
+
+	editor->ok_button = gtk_button_new_from_stock (GTK_STOCK_APPLY);
 	hbox = glade_xml_get_widget (editor->xml, "action_area_hbox");
 	gtk_box_pack_end (GTK_BOX (hbox), editor->ok_button, TRUE, TRUE, 0);
 }
@@ -391,6 +401,7 @@ dispose (GObject *object)
                 editor->xml = NULL;
         }
 
+#if 0
         if (editor->system_action) {
                 polkit_action_unref (editor->system_action);
                 editor->system_action = NULL;
@@ -399,6 +410,7 @@ dispose (GObject *object)
                 g_object_unref (editor->system_gnome_action);
                 editor->system_gnome_action = NULL;
         }
+#endif
 
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);
 }

@@ -67,7 +67,7 @@ get_array_from_bdaddr (const char *str)
 	return NULL;
 }
 
-static NMExportedConnection *
+static NMSettingsConnectionInterface *
 add_setup (const char *bdaddr)
 {
 	NMConnection *connection;
@@ -114,38 +114,48 @@ add_setup (const char *bdaddr)
 	              NULL);
 	nm_connection_add_setting (connection, ip_setting);
 
-	gconf_settings = nma_gconf_settings_new ();
+	gconf_settings = nma_gconf_settings_new (NULL);
 	exported = nma_gconf_settings_add_connection (gconf_settings, connection);
 
 	if (exported != NULL)
-		return NM_EXPORTED_CONNECTION (exported);
+		return NM_SETTINGS_CONNECTION_INTERFACE (exported);
 	return NULL;
+}
+
+static void
+delete_cb (NMSettingsConnectionInterface *connection,
+           GError *error,
+           gpointer user_data)
+{
+	if (error)
+		g_warning ("Error deleting connection: (%d) %s", error->code, error->message);
+	if (user_data)
+		g_object_set_data (G_OBJECT (user_data), "conn", NULL);
 }
 
 static void
 button_toggled (GtkToggleButton *button, gpointer user_data)
 {
-	NMExportedConnection *exported;
+	NMSettingsConnectionInterface *connection;
 	const char *bdaddr;
 
 	bdaddr = g_object_get_data (G_OBJECT (button), "bdaddr");
 	g_assert (bdaddr);
 
 	if (gtk_toggle_button_get_active (button) == FALSE) {
-		exported = g_object_get_data (G_OBJECT (button), "conn");
-		nm_exported_connection_delete (exported, NULL);
-		g_object_set_data (G_OBJECT (button), "conn", NULL);
+		connection = g_object_get_data (G_OBJECT (button), "conn");
+		nm_settings_connection_interface_delete (connection, delete_cb, button);
 	} else {
-		exported = add_setup (bdaddr);
-		g_object_set_data (G_OBJECT (button), "conn", exported);
+		connection = add_setup (bdaddr);
+		g_object_set_data (G_OBJECT (button), "conn", connection);
 	}
 }
 
-static NMExportedConnection *
+static NMSettingsConnectionInterface *
 get_connection_for_bdaddr (const char *bdaddr)
 {
-	NMExportedConnection *result = NULL;
-	NMSettings *settings;
+	NMSettingsConnectionInterface *found = NULL;
+	NMSettingsInterface *settings;
 	GSList *list, *l;
 	GByteArray *array;
 
@@ -153,16 +163,15 @@ get_connection_for_bdaddr (const char *bdaddr)
 	if (array == NULL)
 		return NULL;
 
-	settings = NM_SETTINGS (nma_gconf_settings_new ());
-	list = nm_settings_list_connections (settings);
+	settings = NM_SETTINGS_INTERFACE (nma_gconf_settings_new (NULL));
+	list = nm_settings_interface_list_connections (settings);
 	for (l = list; l != NULL; l = l->next) {
-		NMExportedConnection *exported = l->data;
-		NMConnection *conn = nm_exported_connection_get_connection (exported);
+		NMSettingsConnectionInterface *candidate = l->data;
 		NMSetting *setting;
 		const char *type;
 		const GByteArray *addr;
 
-		setting = nm_connection_get_setting_by_name (conn, NM_SETTING_BLUETOOTH_SETTING_NAME);
+		setting = nm_connection_get_setting_by_name (NM_CONNECTION (candidate), NM_SETTING_BLUETOOTH_SETTING_NAME);
 		if (setting == NULL)
 			continue;
 		type = nm_setting_bluetooth_get_connection_type (NM_SETTING_BLUETOOTH (setting));
@@ -171,27 +180,27 @@ get_connection_for_bdaddr (const char *bdaddr)
 		addr = nm_setting_bluetooth_get_bdaddr (NM_SETTING_BLUETOOTH (setting));
 		if (addr == NULL || memcmp (addr->data, array->data, addr->len) != 0)
 			continue;
-		result = exported;
+		found = candidate;
 		break;
 	}
 	g_slist_free (list);
 
-	return result;
+	return found;
 }
 
 static GtkWidget *
 get_config_widgets (const char *bdaddr, const char **uuids)
 {
 	GtkWidget *button;
-	NMExportedConnection *conn;
+	NMSettingsConnectionInterface *connection;
 
 	button = gtk_check_button_new_with_label (_("Access the Internet using your mobile phone"));
 	g_object_set_data_full (G_OBJECT (button),
 	                        "bdaddr", g_strdup (bdaddr),
 	                        (GDestroyNotify) g_free);
-	conn = get_connection_for_bdaddr (bdaddr);
-	if (conn != NULL) {
-		g_object_set_data (G_OBJECT (button), "conn", conn);
+	connection = get_connection_for_bdaddr (bdaddr);
+	if (connection != NULL) {
+		g_object_set_data (G_OBJECT (button), "conn", connection);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
 	}
 	g_signal_connect (G_OBJECT (button), "toggled", G_CALLBACK (button_toggled), NULL);
@@ -202,15 +211,15 @@ get_config_widgets (const char *bdaddr, const char **uuids)
 static void
 device_removed (const char *bdaddr)
 {
-	NMExportedConnection *exported;
+	NMSettingsConnectionInterface *connection;
 
 	g_message ("Device '%s' got removed", bdaddr);
 
 	// FIXME: don't just delete any random PAN conenction for this
 	// bdaddr, actually delete the one this plugin created
-	exported = get_connection_for_bdaddr (bdaddr);
-	if (exported)
-		nm_exported_connection_delete (exported, NULL);
+	connection = get_connection_for_bdaddr (bdaddr);
+	if (connection)
+		nm_settings_connection_interface_delete (connection, delete_cb, NULL);
 }
 
 static GbtPluginInfo plugin_info = {

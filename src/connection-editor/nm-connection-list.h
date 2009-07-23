@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2004-2005 Red Hat, Inc.
+ * (C) Copyright 2004-2009 Red Hat, Inc.
  */
 
 #ifndef NM_CONNECTION_LIST_H
@@ -28,12 +28,7 @@
 #include <gconf/gconf-client.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include <nm-dbus-settings-system.h>
-#ifdef NO_POLKIT_GNOME
-#include "polkit-gnome.h"
-#else
-#include <polkit-gnome/polkit-gnome.h>
-#endif
+#include <nm-remote-settings-system.h>
 #include "nma-gconf-settings.h"
 
 #define NM_TYPE_CONNECTION_LIST    (nm_connection_list_get_type ())
@@ -49,12 +44,14 @@ typedef struct {
 
 	GConfClient *client;
 	NMAGConfSettings *gconf_settings;
-	NMDBusSettingsSystem *system_settings;
+	NMRemoteSettingsSystem *system_settings;
 
 	GladeXML *gui;
 	GtkWidget *dialog;
 
+#if 0
 	PolKitAction *system_action;
+#endif
 
 	GdkPixbuf *wired_icon;
 	GdkPixbuf *wireless_icon;

@@ -45,7 +45,7 @@
 #include <nm-device.h>
 #include <NetworkManager.h>
 #include <nm-active-connection.h>
-#include <nm-dbus-settings.h>
+#include <nm-remote-settings-system.h>
 
 #include "applet-dbus-manager.h"
 #include "nma-gconf-settings.h"
@@ -83,7 +83,7 @@ typedef struct
 	GMainLoop *loop;
 	NMClient *nm_client;
 
-	NMDBusSettings *dbus_settings;
+	NMRemoteSettingsSystem *system_settings;
 	NMAGConfSettings *gconf_settings;
 
 	GConfClient *	gconf_client;
@@ -184,11 +184,12 @@ struct NMADeviceClass {
 	                                        gpointer user_data);
 
 	gboolean       (*get_secrets)          (NMDevice *device,
-	                                        NMConnection *connection,
+	                                        NMSettingsConnectionInterface *connection,
 	                                        NMActiveConnection *active_connection,
 	                                        const char *setting_name,
 	                                        const char **hints,
-	                                        DBusGMethodInvocation *context,
+	                                        NMANewSecretsRequestedFunc callback,
+	                                        gpointer callback_data,
 	                                        NMApplet *applet,
 	                                        GError **error);
 };
@@ -199,7 +200,7 @@ NMApplet *nm_applet_new (GMainLoop *loop);
 
 void applet_schedule_update_icon (NMApplet *applet);
 
-NMSettings *applet_get_settings (NMApplet *applet);
+NMSettingsInterface *applet_get_settings (NMApplet *applet);
 
 GSList *applet_get_all_connections (NMApplet *applet);
 
@@ -212,7 +213,7 @@ void applet_menu_item_activate_helper (NMDevice *device,
                                        NMApplet *applet,
                                        gpointer dclass_data);
 
-NMAGConfConnection *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
+NMSettingsConnectionInterface *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 
 void applet_do_notify (NMApplet *applet,
                        NotifyUrgency urgency,

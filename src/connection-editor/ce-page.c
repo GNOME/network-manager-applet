@@ -35,7 +35,6 @@
 #include "ce-page.h"
 #include "nma-marshal.h"
 #include "utils.h"
-#include "polkit-helpers.h"
 
 #define DBUS_TYPE_G_ARRAY_OF_STRING         (dbus_g_type_get_collection ("GPtrArray", G_TYPE_STRING))
 #define DBUS_TYPE_G_MAP_OF_VARIANT          (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
@@ -182,53 +181,16 @@ emit_initialized (CEPage *self, GError *error)
 }
 
 static void
-try_secrets_again (PolKitAction *action,
-                   gboolean gained_privilege,
-                   GError *error,
-                   gpointer user_data)
-{
-	CEPage *self = user_data;
-	GError *real_error = NULL;
-
-	if (error) {
-		emit_initialized (self, error);
-		return;
-	}
-
-	if (gained_privilege) {
-		/* Yay! Got privilege, try again */
-		internal_request_secrets (self, &real_error);
-	} else if (!error) {
-		/* Sometimes PK screws up and won't return an error even if
-		 * the operation failed.
-		 */
-		g_set_error (&real_error, 0, 0, "%s",
-		             _("Insufficient privileges or unknown error retrieving system connection secrets."));
-	}
-
-	if (real_error)
-		emit_initialized (self, real_error);
-	g_clear_error (&real_error);
-}
-
-static void
 get_secrets_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 {
 	CEPage *self = user_data;
-	GError *pk_error = NULL;
 	GError *error = NULL;
 	GHashTable *settings = NULL, *setting_hash;
 	gboolean do_signal = TRUE;
 
-	if (!dbus_g_proxy_end_call (proxy, call, &pk_error,
-	                            DBUS_TYPE_G_MAP_OF_MAP_OF_VARIANT, &settings,
-	                            G_TYPE_INVALID)) {
-		if (pk_helper_is_permission_denied_error (pk_error)) {
-			/* If permission was denied, try to authenticate */
-			if (pk_helper_obtain_auth (pk_error, self->parent_window, try_secrets_again, self, &error))
-				do_signal = FALSE; /* 'secrets' signal will happen after auth result */
-		}
-	} else {
+	if (dbus_g_proxy_end_call (proxy, call, &error,
+	                           DBUS_TYPE_G_MAP_OF_MAP_OF_VARIANT, &settings,
+	                           G_TYPE_INVALID)) {
 		/* Update the connection with the new secrets */
 		setting_hash = g_hash_table_lookup (settings, self->setting_name);
 		if (setting_hash) {

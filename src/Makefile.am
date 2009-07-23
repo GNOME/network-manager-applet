@@ -1,4 +1,4 @@
-SUBDIRS = marshallers utils gconf-helpers wireless-security polkit-helpers connection-editor gnome-bluetooth
+SUBDIRS = marshallers utils gconf-helpers wireless-security connection-editor gnome-bluetooth
 
 bin_PROGRAMS = nm-applet
 

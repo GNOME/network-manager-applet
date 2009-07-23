@@ -118,67 +118,8 @@ AC_SUBST(DBUS_CFLAGS)
 PKG_CHECK_MODULES(DBUS_126, [dbus-1 >= 1.2.6], [have_dbus_126=yes],[have_dbus_126=no])
 AM_CONDITIONAL(HAVE_DBUS_126, test x"$have_dbus_126" = "xyes")
 
-#### PolicyKit checks; need at least 0.6 or later
-PKG_CHECK_EXISTS(polkit-gnome,[have_polkit_gnome=yes],[have_polkit_gnome=no])
-if test x"$have_polkit_gnome" = "xyes"; then
-	PKG_CHECK_MODULES(POLKIT, polkit-gnome)
-else
-	PKG_CHECK_MODULES(POLKIT, [polkit >= 0.6])
-	PKG_CHECK_MODULES(POLKIT_DBUS, [polkit-dbus >= 0.6])
-	AC_DEFINE([NO_POLKIT_GNOME],[1],[Define if you don't have PolicyKit-gnome 0.7 or later])
-fi
-AM_CONDITIONAL(NO_POLKIT_GNOME, test x"$have_polkit_gnome" = "xno")
-
-##### Find out the version of PolicyKit we're using
-polkit_version=`pkg-config --modversion polkit`
-POLKIT_VERSION_MAJOR=`echo $polkit_version | awk -F. '{print $1}'`
-POLKIT_VERSION_MINOR=`echo $polkit_version | awk -F. '{print $2}'`
-POLKIT_VERSION_MICRO=`echo $polkit_version | awk -F. '{print $3}'`
-if test "z$POLKIT_VERSION_MAJOR" = "z"; then
-	POLKIT_VERSION_MAJOR="0"
-fi
-if test "z$POLKIT_VERSION_MINOR" = "z"; then
-	POLKIT_VERSION_MINOR="0"
-fi
-if test "z$POLKIT_VERSION_MICRO" = "z"; then
-	POLKIT_VERSION_MICRO="0"
-fi
-
-if test "z$POLKIT_VERSION_MAJOR" = "z0" -a "z$POLKIT_VERSION_MINOR" = "z0" -a "z$POLKIT_VERSION_MICRO" = "z0"; then
-	echo "Error: Couldn't determine the version of your PolicyKit package."
-	echo "  This is probably an error in this script, please report it"
-	echo "  along with the following information:"
-	echo "      Base PolicyKit version ='$polkit_version'"
-	echo "      POLKIT_VERSION_MAJOR='$POLKIT_VERSION_MAJOR'"
-	echo "      POLKIT_VERSION_MINOR='$POLKIT_VERSION_MINOR'"
-	echo "      POLKIT_VERSION_MICRO='$POLKIT_VERSION_MICRO'"
-	exit 1
-else
-	echo "Your PolicyKit version is $POLKIT_VERSION_MAJOR,$POLKIT_VERSION_MINOR,$POLKIT_VERSION_MICRO."
-	POLKIT_CFLAGS="$POLKIT_CFLAGS -DPOLKIT_VERSION_MAJOR=$POLKIT_VERSION_MAJOR"
-	POLKIT_CFLAGS="$POLKIT_CFLAGS -DPOLKIT_VERSION_MINOR=$POLKIT_VERSION_MINOR"
-	POLKIT_CFLAGS="$POLKIT_CFLAGS -DPOLKIT_VERSION_MICRO=$POLKIT_VERSION_MICRO"
-fi
-AC_SUBST(POLKIT_CFLAGS)
-
-AC_MSG_CHECKING([Linux Wireless Extensions >= 18])
-AC_TRY_COMPILE([#ifndef __user
-                #define __user
-                #endif
-                #include <sys/types.h>
-                #include <linux/types.h>
-                #include <sys/socket.h>
-                #include <net/if.h>
-                #include <wireless.h>],
-               [#ifndef IWEVGENIE
-                #error "not found"
-                #endif],
-               [ac_have_iwevgenie=yes],
-               [ac_have_iwevgenie=no])
-AC_MSG_RESULT($ac_have_iwevgenie)
-if test "$ac_have_iwevgenie" = no; then
-	AC_MSG_ERROR(wireless-tools >= 28pre9 not installed or not functional)
-fi
+#### PolicyKit checks; need at least 0.92 or later
+PKG_CHECK_MODULES(POLKIT, [polkit-gobject-1 >= 0.92])
 
 AC_ARG_WITH(dbus-sys, AS_HELP_STRING([--with-dbus-sys=DIR], [where D-BUS system.d directory is]))
 
@@ -210,7 +151,6 @@ src/marshallers/Makefile
 src/utils/Makefile
 src/gconf-helpers/Makefile
 src/wireless-security/Makefile
-src/polkit-helpers/Makefile
 src/connection-editor/Makefile
 src/gnome-bluetooth/Makefile
 icons/Makefile

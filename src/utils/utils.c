@@ -30,7 +30,6 @@
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
 #include <nm-access-point.h>
-#include <nm-settings.h>
 
 #include <nm-setting-connection.h>
 #include <nm-setting-wired.h>
@@ -893,22 +892,6 @@ utils_ether_ntop (const struct ether_addr *mac)
 }
 
 
-static void
-add_one_name (gpointer data, gpointer user_data)
-{
-	NMExportedConnection *exported = NM_EXPORTED_CONNECTION (data);
-	NMConnection *connection;
-	NMSettingConnection *s_con;
-	const char *id;
-	GSList **list = (GSList **) user_data;
-
-	connection = nm_exported_connection_get_connection (exported);
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	id = nm_setting_connection_get_id (s_con);
-	g_assert (id);
-	*list = g_slist_append (*list, (gpointer) id);
-}
-
 char *
 utils_next_available_name (GSList *connections, const char *format)
 {
@@ -916,10 +899,16 @@ utils_next_available_name (GSList *connections, const char *format)
 	char *cname = NULL;
 	int i = 0;
 
-	g_slist_foreach (connections, add_one_name, &names);
+	for (iter = connections; iter; iter = g_slist_next (iter)) {
+		NMConnection *candidate = NM_CONNECTION (iter->data);
+		NMSettingConnection *s_con;
+		const char *id;
 
-	if (g_slist_length (names) == 0)
-		return g_strdup_printf (format, 1);
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
+		id = nm_setting_connection_get_id (s_con);
+		g_assert (id);
+		names = g_slist_append (names, (gpointer) id);
+	}	
 
 	/* Find the next available unique connection name */
 	while (!cname && (i++ < 10000)) {

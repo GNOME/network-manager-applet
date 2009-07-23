@@ -21,9 +21,9 @@
 #ifndef NMA_GCONF_SETTINGS_H
 #define NMA_GCONF_SETTINGS_H
 
-#include <dbus/dbus-glib.h>
 #include <nm-connection.h>
-#include <nm-settings.h>
+#include <nm-settings-service.h>
+
 #include "nma-gconf-connection.h"
 
 G_BEGIN_DECLS
@@ -36,36 +36,28 @@ G_BEGIN_DECLS
 #define NMA_GCONF_SETTINGS_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), NMA_TYPE_GCONF_SETTINGS, NMAGConfSettingsClass))
 
 typedef struct {
-	NMSettings parent;
+	NMSettingsService parent;
 } NMAGConfSettings;
 
 typedef struct {
-	NMSettingsClass parent;
+	NMSettingsServiceClass parent;
 
 	/* Signals */
 	void (*new_secrets_requested) (NMAGConfSettings *self,
-							 NMAGConfConnection *exported,
-							 const char *setting_name,
-							 const char **hints,
-							 gboolean ask_user,
-							 DBusGMethodInvocation *context);
+	                               NMAGConfConnection *exported,
+	                               const char *setting_name,
+	                               const char **hints,
+	                               gboolean ask_user,
+	                               NMANewSecretsRequestedFunc callback,
+	                               gpointer callback_data);
 } NMAGConfSettingsClass;
 
 GType nma_gconf_settings_get_type (void);
 
-NMAGConfSettings *nma_gconf_settings_new (void);
+NMAGConfSettings *nma_gconf_settings_new (DBusGConnection *bus);
 
 NMAGConfConnection *nma_gconf_settings_add_connection (NMAGConfSettings *self,
-											NMConnection *connection);
-
-NMAGConfConnection *nma_gconf_settings_get_by_path (NMAGConfSettings *self,
-										  const char *path);
-
-NMAGConfConnection *nma_gconf_settings_get_by_dbus_path (NMAGConfSettings *self,
-											  const char *path);
-
-NMAGConfConnection *nma_gconf_settings_get_by_connection (NMAGConfSettings *self,
-											   NMConnection *connection);
+                                                       NMConnection *connection);
 
 G_END_DECLS
 

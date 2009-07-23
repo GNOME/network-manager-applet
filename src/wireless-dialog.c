@@ -328,29 +328,11 @@ connection_combo_changed (GtkWidget *combo,
 	gtk_widget_set_sensitive (glade_xml_get_widget (priv->xml, "security_vbox"), is_new);
 }
 
-static void
-exported_connection_to_connection (gpointer data, gpointer user_data)
-{
-	GSList **list = (GSList **) user_data;
-
-	*list = g_slist_prepend (*list, nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (data)));
-}
-
 static GSList *
 get_all_connections (NMApplet *applet)
 {
-	GSList *list;
-	GSList *connections = NULL;
-
-	list = nm_settings_list_connections (NM_SETTINGS (applet->dbus_settings));
-	g_slist_foreach (list, exported_connection_to_connection, &connections);
-	g_slist_free (list);
-
-	list = nm_settings_list_connections (NM_SETTINGS (applet->gconf_settings));
-	g_slist_foreach (list, exported_connection_to_connection, &connections);
-	g_slist_free (list);
-
-	return connections;
+	return g_slist_concat (nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (applet->system_settings)),
+	                       nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (applet->gconf_settings)));
 }
 
 static gboolean
