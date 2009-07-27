@@ -272,7 +272,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 
 	/* Check for defaulting to CHAP */
 	if (phase2_auth && !strcasecmp (phase2_auth, "chap"))
-		active = 4;
+		active = 3;
 
 	combo = glade_xml_get_widget (xml, "eap_ttls_inner_auth_combo");
 	g_assert (combo);
