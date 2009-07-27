@@ -209,7 +209,8 @@ inner_auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 static GtkWidget *
 inner_auth_combo_init (EAPMethodPEAP *method,
                        const char *glade_file,
-                       NMConnection *connection)
+                       NMConnection *connection,
+                       NMSetting8021x *s_8021x)
 {
 	GladeXML *xml = EAP_METHOD (method)->xml;
 	GtkWidget *combo;
@@ -217,8 +218,17 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	GtkTreeIter iter;
 	EAPMethodSimple *em_mschap_v2;
 	EAPMethodSimple *em_md5;
+	guint32 active = 0;
+	const char *phase2_auth = NULL;
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
+
+	if (s_8021x) {
+		if (nm_setting_802_1x_get_phase2_auth (s_8021x))
+			phase2_auth = nm_setting_802_1x_get_phase2_auth (s_8021x);
+		else if (nm_setting_802_1x_get_phase2_autheap (s_8021x))
+			phase2_auth = nm_setting_802_1x_get_phase2_autheap (s_8021x);
+	}
 
 	em_mschap_v2 = eap_method_simple_new (glade_file,
 	                                      method->sec_parent,
@@ -231,6 +241,10 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_mschap_v2));
 
+	/* Check for defaulting to MSCHAPv2 */
+	if (phase2_auth && !strcasecmp (phase2_auth, "mschapv2"))
+		active = 0;
+
 	em_md5 = eap_method_simple_new (glade_file,
 	                                 method->sec_parent,
 	                                 connection,
@@ -242,12 +256,16 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_md5));
 
+	/* Check for defaulting to MD5 */
+	if (phase2_auth && !strcasecmp (phase2_auth, "md5"))
+		active = 1;
+
 	combo = glade_xml_get_widget (xml, "eap_peap_inner_auth_combo");
 	g_assert (combo);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (auth_model));
 	g_object_unref (G_OBJECT (auth_model));
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), active);
 
 	g_signal_connect (G_OBJECT (combo), "changed",
 	                  (GCallback) inner_auth_combo_changed_cb,
@@ -320,7 +338,7 @@ eap_method_peap_new (const char *glade_file,
 			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
 	}
 
-	widget = inner_auth_combo_init (method, glade_file, connection);
+	widget = inner_auth_combo_init (method, glade_file, connection, s_8021x);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);
 
 	widget = glade_xml_get_widget (xml, "eap_peap_version_combo");
