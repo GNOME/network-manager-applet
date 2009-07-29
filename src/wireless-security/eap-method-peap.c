@@ -218,6 +218,7 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	GtkTreeIter iter;
 	EAPMethodSimple *em_mschap_v2;
 	EAPMethodSimple *em_md5;
+	EAPMethodSimple *em_gtc;
 	guint32 active = 0;
 	const char *phase2_auth = NULL;
 
@@ -259,6 +260,21 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	/* Check for defaulting to MD5 */
 	if (phase2_auth && !strcasecmp (phase2_auth, "md5"))
 		active = 1;
+
+	em_gtc = eap_method_simple_new (glade_file,
+	                                method->sec_parent,
+	                                connection,
+	                                EAP_METHOD_SIMPLE_TYPE_GTC);
+	gtk_list_store_append (auth_model, &iter);
+	gtk_list_store_set (auth_model, &iter,
+	                    I_NAME_COLUMN, _("GTC"),
+	                    I_METHOD_COLUMN, em_gtc,
+	                    -1);
+	eap_method_unref (EAP_METHOD (em_gtc));
+
+	/* Check for defaulting to GTC */
+	if (phase2_auth && !strcasecmp (phase2_auth, "gtc"))
+		active = 2;
 
 	combo = glade_xml_get_widget (xml, "eap_peap_inner_auth_combo");
 	g_assert (combo);

@@ -111,6 +111,9 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		case EAP_METHOD_SIMPLE_TYPE_CHAP:
 			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "chap", NULL);
 			break;
+		case EAP_METHOD_SIMPLE_TYPE_GTC:
+			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "gtc", NULL);
+			break;
 		default:
 			g_assert_not_reached ();
 			break;
