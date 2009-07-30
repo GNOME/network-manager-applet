@@ -213,7 +213,7 @@ route_add_clicked (GtkButton *button, gpointer user_data)
 	 * have a way to get a cell renderer from a column based on path or iter
 	 * or whatever.
 	 */
-	cells = gtk_tree_view_column_get_cell_renderers (column);
+	cells = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT (column));
 	gtk_tree_view_set_cursor_on_cell (GTK_TREE_VIEW (widget), path, column, cells->data, TRUE);
 
 	g_list_free (cells);
