@@ -143,14 +143,14 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	gtk_list_store_set (priv->method_store, &iter,
 	                    METHOD_COL_NAME, str_auto,
 	                    METHOD_COL_NUM, IP6_METHOD_AUTO,
-						METHOD_COL_ENABLED, FALSE,
+						METHOD_COL_ENABLED, TRUE,
 	                    -1);
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
 	                    METHOD_COL_NAME, str_auto_only,
 	                    METHOD_COL_NUM, IP6_METHOD_AUTO_ADDRESSES,
-						METHOD_COL_ENABLED, FALSE,
+						METHOD_COL_ENABLED, TRUE,
 	                    -1);
 
 	/* Manual is pointless for Mobile Broadband */
@@ -174,7 +174,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Link-Local Only"),
 		                    METHOD_COL_NUM, IP6_METHOD_LINK_LOCAL,
-							METHOD_COL_ENABLED, FALSE,
+							METHOD_COL_ENABLED, TRUE,
 		                    -1);
 
 		gtk_list_store_append (priv->method_store, &iter);
