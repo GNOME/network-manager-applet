@@ -139,7 +139,8 @@ eap_method_leap_new (const char *glade_file,
 	                 fill_connection,
 	                 destroy,
 	                 xml,
-	                 widget);
+	                 widget,
+	                 "eap_leap_username_entry");
 
 	widget = glade_xml_get_widget (xml, "eap_leap_username_entry");
 	g_assert (widget);

@@ -139,7 +139,8 @@ wireless_security_init (WirelessSecurity *sec,
                         WSFillConnectionFunc fill_connection,
                         WSDestroyFunc destroy,
                         GladeXML *xml,
-                        GtkWidget *ui_widget)
+                        GtkWidget *ui_widget,
+                        const char *default_field)
 {
 	sec->refcount = 1;
 
@@ -150,6 +151,7 @@ wireless_security_init (WirelessSecurity *sec,
 
 	sec->xml = xml;
 	sec->ui_widget = ui_widget;
+	sec->default_field = default_field;
 }
 
 GtkWidget *
@@ -237,6 +239,7 @@ ws_802_1x_auth_combo_changed (GtkWidget *combo,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GtkWidget *eap_widget;
+	GtkWidget *eap_default_widget = NULL;
 
 	vbox = glade_xml_get_widget (sec->xml, vbox_name);
 	g_assert (vbox);
@@ -257,6 +260,13 @@ ws_802_1x_auth_combo_changed (GtkWidget *combo,
 	if (size_group)
 		eap_method_add_to_size_group (eap, size_group);
 	gtk_container_add (GTK_CONTAINER (vbox), eap_widget);
+
+	/* Refocus the EAP method's default widget */
+	if (eap->default_field) {
+		eap_default_widget = glade_xml_get_widget (eap->xml, eap->default_field);
+		if (eap_default_widget)
+			gtk_widget_grab_focus (eap_default_widget);
+	}
 
 	eap_method_unref (eap);
 

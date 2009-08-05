@@ -147,7 +147,8 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        widget);
+	                        widget,
+	                        "leap_username_entry");
 
 	if (connection) {
 		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));

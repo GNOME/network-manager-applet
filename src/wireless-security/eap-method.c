@@ -198,7 +198,8 @@ eap_method_init (EAPMethod *method,
                  EMFillConnectionFunc fill_connection,
                  EMDestroyFunc destroy,
                  GladeXML *xml,
-                 GtkWidget *ui_widget)
+                 GtkWidget *ui_widget,
+                 const char *default_field)
 {                 
 	method->refcount = 1;
 
@@ -209,6 +210,7 @@ eap_method_init (EAPMethod *method,
 
 	method->xml = xml;
 	method->ui_widget = ui_widget;
+	method->default_field = default_field;
 }
 
 

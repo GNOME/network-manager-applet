@@ -370,7 +370,8 @@ eap_method_tls_new (const char *glade_file,
 	                 fill_connection,
 	                 destroy,
 	                 xml,
-	                 widget);
+	                 widget,
+	                 "eap_tls_identity_entry");
 
 	eap_method_nag_init (EAP_METHOD (method),
 	                     glade_file,
