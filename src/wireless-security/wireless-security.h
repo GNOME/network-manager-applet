@@ -44,6 +44,7 @@ struct _WirelessSecurity {
 	GtkWidget *ui_widget;
 	WSChangedFunc changed_notify;
 	gpointer changed_notify_data;
+	const char *default_field;
 
 	WSAddToSizeGroupFunc add_to_size_group;
 	WSFillConnectionFunc fill_connection;
@@ -91,7 +92,8 @@ void wireless_security_init (WirelessSecurity *sec,
                              WSFillConnectionFunc fill_connection,
                              WSDestroyFunc destroy,
                              GladeXML *xml,
-                             GtkWidget *ui_widget);
+                             GtkWidget *ui_widget,
+                             const char *default_field);
 
 void wireless_security_changed_cb (GtkWidget *entry, gpointer user_data);
 

@@ -172,7 +172,8 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        widget);
+	                        widget,
+	                        "wpa_psk_entry");
 
 	widget = glade_xml_get_widget (xml, "wpa_psk_entry");
 	g_assert (widget);

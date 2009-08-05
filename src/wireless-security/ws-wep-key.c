@@ -304,7 +304,8 @@ ws_wep_key_new (const char *glade_file,
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        widget);
+	                        widget,
+	                        "wep_key_entry");
 	sec->type = type;
 
 	widget = glade_xml_get_widget (xml, "wep_key_entry");

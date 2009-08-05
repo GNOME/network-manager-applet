@@ -163,7 +163,8 @@ eap_method_simple_new (const char *glade_file,
 	                 fill_connection,
 	                 destroy,
 	                 xml,
-	                 widget);
+	                 widget,
+	                 "eap_simple_username_entry");
 
 	method->type = type;
 
