@@ -45,7 +45,7 @@ has_config_widget (const char *bdaddr, const char **uuids)
 
 	for (i = 0; uuids && uuids[i] != NULL; i++) {
 		g_message ("has_config_widget %s %s", bdaddr, uuids[i]);
-		if (g_str_equal (uuids[i], "PANU"))
+		if (g_str_equal (uuids[i], "NAP"))
 			return TRUE;
 	}
 	return FALSE;
