@@ -256,7 +256,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 				wep_type = NM_WEP_KEY_TYPE_KEY;
 		}
 
-		ws_wep = ws_wep_key_new (glade_file, connection, NM_WEP_KEY_TYPE_KEY, FALSE);
+		ws_wep = ws_wep_key_new (glade_file, connection, NM_WEP_KEY_TYPE_KEY, FALSE, FALSE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Key"));
@@ -265,7 +265,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (glade_file, connection, NM_WEP_KEY_TYPE_PASSPHRASE, FALSE);
+		ws_wep = ws_wep_key_new (glade_file, connection, NM_WEP_KEY_TYPE_PASSPHRASE, FALSE, FALSE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
