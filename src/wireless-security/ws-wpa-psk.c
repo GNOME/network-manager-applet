@@ -180,6 +180,7 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
+	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
 	/* Fill secrets, if any */
 	if (connection) {
