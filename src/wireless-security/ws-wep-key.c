@@ -269,7 +269,8 @@ WirelessSecurityWEPKey *
 ws_wep_key_new (const char *glade_file,
                 NMConnection *connection,
                 NMWepKeyType type,
-                gboolean adhoc_create)
+                gboolean adhoc_create,
+                gboolean simple)
 {
 	WirelessSecurityWEPKey *sec;
 	GtkWidget *widget;
@@ -353,7 +354,7 @@ ws_wep_key_new (const char *glade_file,
 	                  sec);
 
 	/* Key index is useless with adhoc networks */
-	if (is_adhoc) {
+	if (is_adhoc || simple) {
 		gtk_widget_hide (widget);
 		widget = glade_xml_get_widget (xml, "key_index_label");
 		gtk_widget_hide (widget);
@@ -377,9 +378,13 @@ ws_wep_key_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
 
-	/* Ad-Hoc connections can't use Shared Key auth */
-	if (is_adhoc) {
-		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
+	/* Don't show auth method for adhoc (which always uses open-system) or
+	 * when in "simple" mode.
+	 */
+	if (is_adhoc || simple) {
+		/* Ad-Hoc connections can't use Shared Key auth */
+		if (is_adhoc)
+			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 		gtk_widget_hide (widget);
 		widget = glade_xml_get_widget (xml, "auth_method_label");
 		gtk_widget_hide (widget);
