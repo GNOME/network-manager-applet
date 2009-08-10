@@ -311,6 +311,7 @@ ws_wep_key_new (const char *glade_file,
 
 	widget = glade_xml_get_widget (xml, "wep_key_entry");
 	g_assert (widget);
+	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
 	if (connection) {
 		NMSettingWireless *s_wireless;
