@@ -52,14 +52,10 @@ static guint signals[LAST_SIGNAL] = { 0 };
 NMAGConfSettings *
 nma_gconf_settings_new (DBusGConnection *bus)
 {
-	NMAGConfSettings *self;
-
-	self = (NMAGConfSettings *) g_object_new (NMA_TYPE_GCONF_SETTINGS,
+	return (NMAGConfSettings *) g_object_new (NMA_TYPE_GCONF_SETTINGS,
 	                                          NM_SETTINGS_SERVICE_SCOPE, NM_CONNECTION_SCOPE_USER,
+	                                          NM_SETTINGS_SERVICE_BUS, bus,
 	                                          NULL);
-	if (self && bus)
-		g_object_set (G_OBJECT (self), NM_SETTINGS_SERVICE_BUS, bus, NULL);
-	return self;
 }
 
 static void
