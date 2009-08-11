@@ -1467,6 +1467,7 @@ add_connection_tab (NMConnectionList *self,
 
 	treeview = add_connection_treeview (self, prefix);
 	add_connection_buttons (self, prefix, treeview, ctype, new_func);
+	gtk_widget_show_all (GTK_WIDGET (notebook));
 
 	g_object_set_data (G_OBJECT (treeview), TV_TYPE_TAG, GUINT_TO_POINTER (ctype));
 	self->treeviews = g_slist_prepend (self->treeviews, treeview);

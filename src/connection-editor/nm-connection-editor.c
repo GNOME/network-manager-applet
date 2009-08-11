@@ -163,6 +163,7 @@ connection_editor_validate (NMConnectionEditor *editor)
 
 done:
 	gtk_widget_set_sensitive (editor->system_checkbutton, valid);
+	gtk_widget_set_sensitive (editor->ok_button, valid);
 #if 0
 	g_object_set (editor->system_gnome_action, "master-sensitive", valid, NULL);
 #endif
@@ -287,8 +288,9 @@ system_pk_result_changed_cb (PolKitGnomeAction *gnome_action,
 static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
-	GtkWidget *dialog, *hbox;
+	GtkWidget *dialog;
 #if 0
+	GtkWidget *hbox;
 	const char *auth_label, *auth_tooltip;
 	const char *label, *tooltip;
 #endif
@@ -323,6 +325,7 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	editor->window = glade_xml_get_widget (editor->xml, "nm-connection-editor");
 	editor->cancel_button = glade_xml_get_widget (editor->xml, "cancel_button");
 	editor->system_checkbutton = glade_xml_get_widget (editor->xml, "system_checkbutton");
+	editor->ok_button = glade_xml_get_widget (editor->xml, "apply_button");
 
 #if 0
 	editor->system_action = polkit_action_new ();
@@ -372,11 +375,9 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	                  G_CALLBACK (system_pk_result_changed_cb), editor);
 
 	editor->ok_button = polkit_gnome_action_create_button (editor->system_gnome_action);
-#endif
-
-	editor->ok_button = gtk_button_new_from_stock (GTK_STOCK_APPLY);
 	hbox = glade_xml_get_widget (editor->xml, "action_area_hbox");
 	gtk_box_pack_end (GTK_BOX (hbox), editor->ok_button, TRUE, TRUE, 0);
+#endif
 }
 
 static void
