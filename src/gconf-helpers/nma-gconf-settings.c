@@ -174,6 +174,31 @@ nma_gconf_settings_add_connection (NMAGConfSettings *self, NMConnection *connect
 	return exported;
 }
 
+static void
+add_connection (NMSettingsService *settings,
+                NMConnection *connection,
+                DBusGMethodInvocation *context, /* Only present for D-Bus calls */
+                NMSettingsAddConnectionFunc callback,
+                gpointer user_data)
+{
+	NMAGConfSettings *self = NMA_GCONF_SETTINGS (settings);
+
+	/* For now, we don't support additions via D-Bus until we figure out
+	 * the security implications.
+	 */
+	if (context) {
+		GError *error;
+
+		error = g_error_new (0, 0, "%s: adding connections via D-Bus is not (yet) supported", __func__);
+		callback (NM_SETTINGS_INTERFACE (settings), error, user_data);
+		g_error_free (error);
+		return;
+	}
+
+	nma_gconf_settings_add_connection (self, connection);
+	callback (NM_SETTINGS_INTERFACE (settings), NULL, user_data);
+}
+
 static NMAGConfConnection *
 get_connection_by_gconf_path (NMAGConfSettings *self, const char *path)
 {
@@ -411,6 +436,7 @@ nma_gconf_settings_class_init (NMAGConfSettingsClass *class)
 	object_class->dispose = dispose;
 
 	settings_class->list_connections = list_connections;
+	settings_class->add_connection = add_connection;
 
 	/* Signals */
 	signals[NEW_SECRETS_REQUESTED] =
