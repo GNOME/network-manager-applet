@@ -100,6 +100,7 @@ static void
 internal_add_connection (NMAGConfSettings *self, NMAGConfConnection *connection)
 {
 	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (self);
+	DBusGConnection *bus = NULL;
 
 	g_return_if_fail (connection != NULL);
 
@@ -109,6 +110,14 @@ internal_add_connection (NMAGConfSettings *self, NMAGConfConnection *connection)
 	                  self);
 
 	g_signal_connect (connection, "removed", G_CALLBACK (connection_removed), self);
+
+	g_object_get (G_OBJECT (self), NM_SETTINGS_SERVICE_BUS, &bus, NULL);
+	if (bus) {
+		nm_settings_service_export_connection (NM_SETTINGS_SERVICE (self),
+		                                       NM_SETTINGS_CONNECTION_INTERFACE (connection));
+		dbus_g_connection_unref (bus);
+	}
+
 	g_signal_emit_by_name (self, NM_SETTINGS_INTERFACE_NEW_CONNECTION, NM_CONNECTION (connection));
 }
 
@@ -191,21 +200,6 @@ get_connection_by_gconf_path (NMAGConfSettings *self, const char *path)
 	return NULL;
 }
 
-static NMExportedConnection *
-get_connection_by_path (NMSettingsService *settings, const char *path)
-{
-	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (settings);
-	GSList *iter;
-
-	for (iter = priv->connections; iter; iter = iter->next) {
-		NMConnection *connection = NM_CONNECTION (iter->data);
-
-		if (!strcmp (nm_connection_get_path (connection), path))
-			return NM_EXPORTED_CONNECTION (connection);
-	}
-	return NULL;
-}
-
 static void
 read_connections (NMAGConfSettings *settings)
 {
@@ -219,8 +213,11 @@ read_connections (NMAGConfSettings *settings)
 
 	for (iter = dir_list; iter; iter = iter->next) {
 		char *dir = (char *) iter->data;
+		NMAGConfConnection *connection;
 
-		internal_add_connection (settings, nma_gconf_connection_new (priv->client, dir));
+		connection = nma_gconf_connection_new (priv->client, dir);
+		if (connection)
+			internal_add_connection (settings, connection);
 		g_free (dir);
 	}
 
@@ -277,7 +274,8 @@ connection_changes_done (gpointer data)
 	if (!connection) {
 		/* New connection */
 		connection = nma_gconf_connection_new (priv->client, info->path);
-		internal_add_connection (info->settings, connection);
+		if (connection)
+			internal_add_connection (info->settings, connection);
 	} else {
 		if (gconf_client_dir_exists (priv->client, info->path, NULL)) {
 			/* Updated connection */
@@ -417,7 +415,6 @@ nma_gconf_settings_class_init (NMAGConfSettingsClass *class)
 	object_class->dispose = dispose;
 
 	settings_class->list_connections = list_connections;
-	settings_class->get_connection_by_path = get_connection_by_path;
 
 	/* Signals */
 	signals[NEW_SECRETS_REQUESTED] =

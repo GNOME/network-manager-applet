@@ -112,12 +112,9 @@ nma_gconf_connection_new_from_connection (GConfClient *client,
 {
 	GObject *object;
 	NMAGConfConnection *self;
-	static guint32 ec_counter = 0;
-	DBusGConnection *bus;
 	GError *error = NULL;
 	gboolean success;
 	GHashTable *settings;
-	char *path;
 
 	g_return_val_if_fail (GCONF_IS_CLIENT (client), NULL);
 	g_return_val_if_fail (conf_dir != NULL, NULL);
@@ -155,23 +152,6 @@ nma_gconf_connection_new_from_connection (GConfClient *client,
 	g_assert (success);
 
 	fill_vpn_user_name (NM_CONNECTION (self));
-
-	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (!bus) {
-		nm_warning ("Could not get the system bus: (%d) %s",
-		            error ? error->code : -1,
-		            (error && error->message) ? error->message : "(unknown)");
-		g_error_free (error);
-		g_object_unref (object);
-		return NULL;
-	}
-
-	/* Export the object over D-Bus */
-	path = g_strdup_printf ("%s/%u", NM_DBUS_PATH_SETTINGS, ec_counter++);
-	nm_connection_set_path (NM_CONNECTION (self), path);
-	dbus_g_connection_register_g_object (bus, path, G_OBJECT (self));
-	g_free (path);
-	dbus_g_connection_unref (bus);
 
 	return self;
 }
