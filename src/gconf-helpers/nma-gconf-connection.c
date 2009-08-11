@@ -125,7 +125,8 @@ nma_gconf_connection_new_from_connection (GConfClient *client,
 	success = nm_connection_verify (connection, &error);
 	utils_clear_filled_connection_certs (connection);
 	if (!success) {
-		g_warning ("Invalid connection: '%s' / '%s' invalid: %d",
+		g_warning ("Invalid connection %s: '%s' / '%s' invalid: %d",
+		           conf_dir,
 		           g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)),
 		           (error && error->message) ? error->message : "(unknown)",
 		           error ? error->code : -1);
