@@ -419,7 +419,7 @@ add_connection (NMConnectionList *self,
                 gpointer callback_data)
 {
 	NMSettingsInterface *settings = NULL;
-	NMSettingsConnectionInterface *connection;
+	NMConnection *connection;
 	NMConnectionScope scope;
 	AddInfo *info;
 
@@ -429,9 +429,9 @@ add_connection (NMConnectionList *self,
 	info->callback = callback;
 	info->callback_data = callback_data;
 
-	connection = NM_SETTINGS_CONNECTION_INTERFACE (nm_connection_editor_get_connection (editor));
+	connection = nm_connection_editor_get_connection (editor);
 	g_assert (connection);
-	scope = nm_connection_get_scope (NM_CONNECTION (connection));
+	scope = nm_connection_get_scope (connection);
 	if (scope == NM_CONNECTION_SCOPE_SYSTEM)
 		settings = NM_SETTINGS_INTERFACE (self->system_settings);
 	else if (scope == NM_CONNECTION_SCOPE_USER)
@@ -439,9 +439,9 @@ add_connection (NMConnectionList *self,
 	else
 		g_assert_not_reached ();
 	
-	utils_fill_connection_certs (NM_CONNECTION (connection));
+	utils_fill_connection_certs (connection);
 	nm_settings_interface_add_connection (settings, connection, add_cb, info);
-	utils_clear_filled_connection_certs (NM_CONNECTION (connection));
+	utils_clear_filled_connection_certs (connection);
 }
 
 /**********************************************/
