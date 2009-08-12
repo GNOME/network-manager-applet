@@ -723,6 +723,9 @@ ui_to_setting (CEPageIP6 *self)
 	}
 
 	switch (int_method) {
+	case IP6_METHOD_IGNORE:
+		method = NM_SETTING_IP6_CONFIG_METHOD_IGNORE;
+		break;
 	case IP6_METHOD_LINK_LOCAL:
 		method = NM_SETTING_IP6_CONFIG_METHOD_LINK_LOCAL;
 		break;
