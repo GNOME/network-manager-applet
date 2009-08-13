@@ -1325,7 +1325,7 @@ nm_gconf_set_ip6dns_array_helper (GConfClient *client,
 		GByteArray *ba = g_ptr_array_index (value, i);
 		char addr[INET6_ADDRSTRLEN];
 
-		if (!inet_ntop (AF_INET6, ba->data, addr, ba->len)) {
+		if (!inet_ntop (AF_INET6, ba->data, addr, sizeof (addr))) {
 			g_warning ("%s: invalid IPv6 DNS server address!", __func__);
 			goto out;
 		}
@@ -1391,7 +1391,7 @@ nm_gconf_set_ip6addr_array_helper (GConfClient *client,
 			goto out;
 		}
 
-		if (!inet_ntop (AF_INET6, ba->data, addr, ba->len)) {
+		if (!inet_ntop (AF_INET6, ba->data, addr, sizeof (addr))) {
 			g_warning ("%s: invalid IPv6 address!", __func__);
 			goto out;
 		}
@@ -1453,7 +1453,7 @@ nm_gconf_set_ip6route_array_helper (GConfClient *client,
 
 		tmp = g_value_array_get_nth (elements, 0);
 		ba = g_value_get_boxed (tmp);
-		if (!inet_ntop (AF_INET6, ba->data, dest, ba->len)) {
+		if (!inet_ntop (AF_INET6, ba->data, dest, sizeof (dest))) {
 			g_warning ("%s: invalid IPv6 dest address!", __func__);
 			goto out;
 		}
@@ -1465,7 +1465,7 @@ nm_gconf_set_ip6route_array_helper (GConfClient *client,
 		}
 		tmp = g_value_array_get_nth (elements, 2);
 		ba = g_value_get_boxed (tmp);
-		if (!inet_ntop (AF_INET6, ba->data, next_hop, ba->len)) {
+		if (!inet_ntop (AF_INET6, ba->data, next_hop, sizeof (next_hop))) {
 			g_warning ("%s: invalid IPv6 next_hop address!", __func__);
 			goto out;
 		}
