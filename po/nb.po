@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager 0.9.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-07 16:11+0200\n"
-"PO-Revision-Date: 2009-08-07 16:14+0200\n"
+"POT-Creation-Date: 2009-08-13 19:21+0200\n"
+"PO-Revision-Date: 2009-08-13 19:27+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -294,7 +294,7 @@ msgstr "Feil under visning av tilkoblingsinformasjon:"
 
 #: ../src/applet-dialogs.c:84
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:848
+#: ../src/wireless-dialog.c:850
 #: ../src/wireless-security/wireless-security.c:327
 msgid "LEAP"
 msgstr "LEAP"
@@ -314,7 +314,7 @@ msgstr "WEP"
 
 #: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:805
+#: ../src/wireless-dialog.c:807
 msgid "None"
 msgstr "Ingen"
 
@@ -858,10 +858,12 @@ msgid "_Service:"
 msgstr "Tjene_ste:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:1
+#: ../src/connection-editor/ce-page-ip6.glade.h:1
 msgid "<b>Addresses</b>"
 msgstr "<b>Adresser</b>"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:2
+#: ../src/connection-editor/ce-page-ip6.glade.h:2
 msgid ""
 "Automatic\n"
 "Automatic with manual DNS settings\n"
@@ -880,30 +882,36 @@ msgid "D_HCP client ID:"
 msgstr "Klient-ID for D_HCP:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:8
+#: ../src/connection-editor/ce-page-ip6.glade.h:7
 msgid ""
 "IP addresses identify your computer on the network.  Click the \"Add\" "
 "button to add an IP address."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
+#: ../src/connection-editor/ce-page-ip6.glade.h:8
 msgid ""
 "If enabled, this connection will never be used as the default network "
 "connection."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:10
+#: ../src/connection-editor/ce-page-ip6.glade.h:9
 msgid "Ig_nore automatically obtained routes"
 msgstr "Overse automatisk i_nnhentede ruter"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:11
+#: ../src/connection-editor/ce-page-ip6.glade.h:10
 msgid "Use this c_onnection only for resources on its network"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:12
+#: ../src/connection-editor/ce-page-ip6.glade.h:11
 msgid "_DNS servers:"
 msgstr "_DNS-tjenere"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:13
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
 msgid "_Method:"
 msgstr "_Metode:"
 
@@ -912,8 +920,13 @@ msgid "_Routes…"
 msgstr "_Ruter..."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
 msgid "_Search domains:"
 msgstr "_Søkedomener:"
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
+msgid "_Routes&#x2026;"
+msgstr "_Ruter&#x2026;"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -1032,9 +1045,8 @@ msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:16
-#, fuzzy
 msgid "Password Authentication Protocol"
-msgstr "Bruk autentisering"
+msgstr "Password Authentication Protocol"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:17
 msgid "Send PPP _echo packets"
@@ -1204,7 +1216,9 @@ msgid "Create…"
 msgstr "Lag:"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
+#: ../src/connection-editor/ip6-routes-dialog.c:459
 #: ../src/connection-editor/page-ip4.c:634
+#: ../src/connection-editor/page-ip6.c:611
 msgid "Address"
 msgstr "Adresse"
 
@@ -1214,18 +1228,25 @@ msgid "Netmask"
 msgstr "Nettmaske"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
+#: ../src/connection-editor/ip6-routes-dialog.c:491
 #: ../src/connection-editor/page-ip4.c:666
 msgid "Gateway"
 msgstr "Gateway"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:549
+#: ../src/connection-editor/ip6-routes-dialog.c:507
 msgid "Metric"
 msgstr "Metrisk"
+
+#: ../src/connection-editor/ip6-routes-dialog.c:475
+#: ../src/connection-editor/page-ip6.c:627
+msgid "Prefix"
+msgstr "Prefiks"
 
 #: ../src/connection-editor/page-dsl.c:153
 #: ../src/connection-editor/page-dsl.c:160
 msgid "Could not load DSL user interface."
-msgstr ""
+msgstr "Kunne ikke laste brukergrensesnitt for DSL."
 
 #: ../src/connection-editor/page-dsl.c:166
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
@@ -1239,26 +1260,32 @@ msgid "DSL connection %d"
 msgstr "DSL-tilkobling %d"
 
 #: ../src/connection-editor/page-ip4.c:116
+#: ../src/connection-editor/page-ip6.c:114
 msgid "Automatic (VPN)"
 msgstr "Automatisk (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:117
+#: ../src/connection-editor/page-ip6.c:115
 msgid "Automatic (VPN) addresses only"
 msgstr "Kun automatiske (VPN) adresser"
 
 #: ../src/connection-editor/page-ip4.c:120
+#: ../src/connection-editor/page-ip6.c:118
 msgid "Automatic (PPP)"
 msgstr "Automatisk (PPP)"
 
 #: ../src/connection-editor/page-ip4.c:121
+#: ../src/connection-editor/page-ip6.c:119
 msgid "Automatic (PPP) addresses only"
 msgstr "Kun automatiske (PPP) adresser"
 
 #: ../src/connection-editor/page-ip4.c:123
+#: ../src/connection-editor/page-ip6.c:121
 msgid "Automatic (PPPoE)"
 msgstr "Automatisk (PPPoE)"
 
 #: ../src/connection-editor/page-ip4.c:124
+#: ../src/connection-editor/page-ip6.c:122
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Kunn automatiske (PPPoE) adresser"
 
@@ -1271,14 +1298,17 @@ msgid "Automatic (DHCP) addresses only"
 msgstr "Kun automatiske (DHCP) adresser"
 
 #: ../src/connection-editor/page-ip4.c:152
+#: ../src/connection-editor/page-ip6.c:162
 msgid "Manual"
 msgstr "Manuelt"
 
 #: ../src/connection-editor/page-ip4.c:164
+#: ../src/connection-editor/page-ip6.c:175
 msgid "Link-Local Only"
 msgstr "Kun lokal link"
 
 #: ../src/connection-editor/page-ip4.c:170
+#: ../src/connection-editor/page-ip6.c:182
 msgid "Shared to other computers"
 msgstr "Delt med andre datamaskiner"
 
@@ -1296,6 +1326,33 @@ msgstr "Kunne ikke laste brukergrensesnitt for IPv4"
 msgid "IPv4 Settings"
 msgstr "IPv4-innstillinger"
 
+#: ../src/connection-editor/page-ip6.c:124
+msgid "Automatic"
+msgstr "Automatisk"
+
+#: ../src/connection-editor/page-ip6.c:125
+msgid "Automatic, addresses only"
+msgstr "Automatisk, kun adresser"
+
+#: ../src/connection-editor/page-ip6.c:137
+#: ../src/wireless-security/eap-method.c:175
+msgid "Ignore"
+msgstr "Ignorer"
+
+#: ../src/connection-editor/page-ip6.c:574
+#, c-format
+msgid "Editing IPv6 routes for %s"
+msgstr "Rediger IPv6-ruter for %s"
+
+#: ../src/connection-editor/page-ip6.c:667
+#: ../src/connection-editor/page-ip6.c:674
+msgid "Could not load IPv6 user interface."
+msgstr "Kunne ikke laste brukergrensesnitt for IPv6."
+
+#: ../src/connection-editor/page-ip6.c:680
+msgid "IPv6 Settings"
+msgstr "IPv6-innstillinger"
+
 #: ../src/connection-editor/page-mobile.c:365
 #: ../src/connection-editor/page-mobile.c:372
 msgid "Could not load mobile broadband user interface."
@@ -1308,9 +1365,8 @@ msgstr "Konfigurerer mobil bredbåndsforbindelse «%s»..."
 
 #. Fall back to just asking for GSM vs. CDMA
 #: ../src/connection-editor/page-mobile.c:632
-#, fuzzy
 msgid "Select Mobile Broadband Provider Type"
-msgstr "Mobilt bredbånd"
+msgstr "Velg type tilbyder for mobilt bredbånd"
 
 #: ../src/connection-editor/page-mobile.c:659
 msgid ""
@@ -1357,9 +1413,9 @@ msgid "none"
 msgstr "ingen"
 
 #: ../src/connection-editor/page-ppp.c:199
-#, fuzzy, c-format
+#, c-format
 msgid "Editing PPP authentication methods for %s"
-msgstr "Rediger IPv4-ruter for %s"
+msgstr "Rediger PPP-autentiseringsmetoder for %s"
 
 #: ../src/connection-editor/page-ppp.c:280
 #: ../src/connection-editor/page-ppp.c:287
@@ -1438,27 +1494,27 @@ msgid "Wireless connection %d"
 msgstr "Trådløs nettverksforbindelse %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:822
+#: ../src/wireless-dialog.c:824
 msgid "WEP 40/128-bit Key"
 msgstr "WEP 40/128-bit nøkkel"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:831
+#: ../src/wireless-dialog.c:833
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit passord"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:861
+#: ../src/wireless-dialog.c:863
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamisk WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:875
+#: ../src/wireless-dialog.c:877
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 personlig"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:889
+#: ../src/wireless-dialog.c:891
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA og WPA2 enterprise"
 
@@ -1534,9 +1590,8 @@ msgid "Save this connection for all users of this machine."
 msgstr "Lagre denne tilkoblingen for alle brukere på denne maskinen."
 
 #: ../src/connection-editor/nm-connection-editor.c:438
-#, fuzzy
 msgid "Error creating connection editor dialog."
-msgstr "Feil under visning av tilkoblingsinformasjon:"
+msgstr "Feil under oppretting av dialog for redigering av tilkobling."
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
 msgid "Available to all users"
@@ -1613,12 +1668,8 @@ msgid "Could not delete connection"
 msgstr "Kunne ikke slette tilkobling"
 
 #: ../src/connection-editor/nm-connection-list.c:354
-#, fuzzy
 msgid "The connection could not be deleted due to an unknown error."
-msgstr ""
-"VPN-tilkobling «%s» kunne ikke eksporteres til %s.\n"
-"\n"
-"Feil: %s."
+msgstr "Tilkoblingen kunne ikke slettes på grunn av en ukjent feil."
 
 #: ../src/connection-editor/nm-connection-list.c:390
 #: ../src/connection-editor/nm-connection-list.c:401
@@ -1632,12 +1683,8 @@ msgid "Could not add connection"
 msgstr "Kunne ikke legge til tilkobling"
 
 #: ../src/connection-editor/nm-connection-list.c:486
-#, fuzzy
 msgid "The connection could not be added due to an unknown error."
-msgstr ""
-"VPN-tilkobling «%s» kunne ikke eksporteres til %s.\n"
-"\n"
-"Feil: %s."
+msgstr "Kunne ikke legge til tilkobling på grunn av en ukjent feil."
 
 #: ../src/connection-editor/nm-connection-list.c:659
 #: ../src/connection-editor/nm-connection-list.c:664
@@ -1647,12 +1694,8 @@ msgid "Could not update connection"
 msgstr "Kunne ikke oppdatere tilkobling"
 
 #: ../src/connection-editor/nm-connection-list.c:665
-#, fuzzy
 msgid "The connection could not be updated due to an unknown error."
-msgstr ""
-"VPN-tilkobling «%s» kunne ikke eksporteres til %s.\n"
-"\n"
-"Feil: %s."
+msgstr "Tilkoblingen kunne ikke oppdateres på grunn av en ukjent feil."
 
 #: ../src/connection-editor/nm-connection-list.c:756
 #: ../src/connection-editor/nm-connection-list.c:887
@@ -1662,7 +1705,7 @@ msgstr "En ukjent feil oppsto."
 #: ../src/connection-editor/nm-connection-list.c:765
 #: ../src/connection-editor/nm-connection-list.c:894
 msgid "Error initializing editor"
-msgstr ""
+msgstr "Feil under initiering av redigering"
 
 #: ../src/connection-editor/nm-connection-list.c:795
 #: ../src/connection-editor/nm-connection-list.c:929
@@ -1859,7 +1902,7 @@ msgstr "Min plan er ikke på listen..."
 
 #: ../src/utils/mobile-wizard.c:688
 msgid "Select your provider from a _list:"
-msgstr ""
+msgstr "Velg din tilbyder fra en _liste:"
 
 #: ../src/utils/mobile-wizard.c:701
 msgid "Provider"
@@ -1928,23 +1971,20 @@ msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr ""
 
 #: ../src/utils/mobile-wizard.c:1285
-#, fuzzy
 msgid "Create a connection for _this mobile broadband device:"
-msgstr "PIN-kode kreves for enhet for mobilt bredbånd"
+msgstr "Lag en tilkobling for _denne mobile bredbåndsenheten:"
 
 #: ../src/utils/mobile-wizard.c:1300
 msgid "Any device"
 msgstr "Enhver enhet"
 
 #: ../src/utils/mobile-wizard.c:1313
-#, fuzzy
 msgid "Set up a Mobile Broadband Connection"
-msgstr "Automatisk mobil bredbåndstilkobling (CDMA)"
+msgstr "Sett opp en mobil bredbåndstilkobling"
 
 #: ../src/utils/mobile-wizard.c:1487
-#, fuzzy
 msgid "New Mobile Broadband Connection"
-msgstr "Automatisk mobil bredbåndstilkobling (CDMA)"
+msgstr "Ny mobil bredbåndstilkobling"
 
 #: ../src/utils/nmn-mobile-providers.c:515
 msgid "Default"
@@ -1977,15 +2017,15 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "Kablet 802.1X-autentisering"
 
-#: ../src/wireless-dialog.c:442
+#: ../src/wireless-dialog.c:444
 msgid "New..."
 msgstr "Ny..."
 
-#: ../src/wireless-dialog.c:949
+#: ../src/wireless-dialog.c:952
 msgid "C_reate"
 msgstr "_Lag:"
 
-#: ../src/wireless-dialog.c:1026
+#: ../src/wireless-dialog.c:1029
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -1994,35 +2034,35 @@ msgstr ""
 "Passord eller krypteringsnøkler er nødvendig for å koble til trådløst "
 "nettverk «%s»."
 
-#: ../src/wireless-dialog.c:1028
+#: ../src/wireless-dialog.c:1031
 msgid "Wireless Network Authentication Required"
 msgstr "Autentisering for trådløst nettverk kreves"
 
-#: ../src/wireless-dialog.c:1030
+#: ../src/wireless-dialog.c:1033
 msgid "Authentication required by wireless network"
 msgstr "Autentisering kreves av trådløst nettverk"
 
-#: ../src/wireless-dialog.c:1035
+#: ../src/wireless-dialog.c:1038
 msgid "Create New Wireless Network"
 msgstr "Opprett nytt trådløst nettverk"
 
-#: ../src/wireless-dialog.c:1037
+#: ../src/wireless-dialog.c:1040
 msgid "New wireless network"
 msgstr "Nytt trådløst nettverk"
 
-#: ../src/wireless-dialog.c:1038
+#: ../src/wireless-dialog.c:1041
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Oppgi et navn på det trådløse nettverket du ønsker å opprette."
 
-#: ../src/wireless-dialog.c:1040
+#: ../src/wireless-dialog.c:1043
 msgid "Connect to Hidden Wireless Network"
 msgstr "Koble til skjult trådløst nettverk"
 
-#: ../src/wireless-dialog.c:1042
+#: ../src/wireless-dialog.c:1045
 msgid "Hidden wireless network"
 msgstr "Skjult trådløst nettverk"
 
-#: ../src/wireless-dialog.c:1043
+#: ../src/wireless-dialog.c:1046
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2043,18 +2083,13 @@ msgstr ""
 "tilkoblinger til usikre og villedende trådløse nettverk. Vil du velge et "
 "Certificate Authority-sertifikat?"
 
-#: ../src/wireless-security/eap-method.c:175
-msgid "Ignore"
-msgstr "Ignorer"
-
 #: ../src/wireless-security/eap-method.c:179
 msgid "Choose CA Certificate"
 msgstr "Velg CA-sertifikat"
 
 #: ../src/wireless-security/eap-method.c:442
-#, fuzzy
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
-msgstr "DER eller PEM-sertifikater (*.der, *.pem, *.crt, *.cer)"
+msgstr "DER, PEM eller PKCS#12 private nøkler (*.der, *.pem, *.12)"
 
 #: ../src/wireless-security/eap-method.c:445
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
