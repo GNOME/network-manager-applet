@@ -7,14 +7,14 @@
 # Antonio Ognio <antonio@linux.org.pe>, 2004.
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004, 2005, 2006.
 # Lucas Vieites Fariña <lucas@asixinformatica.com>, 2005, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 200, 2009.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2009-07-30 13:33+0000\n"
-"PO-Revision-Date: 2009-08-04 20:11+0200\n"
+"POT-Creation-Date: 2009-08-13 14:20+0000\n"
+"PO-Revision-Date: 2009-08-14 14:50+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,6 @@ msgid "Connection Established"
 msgstr "Se ha establecido la conexión"
 
 #: ../src/applet-device-bt.c:192
-#| msgid "You are now connected to the wired network."
 msgid "You are now connected to the mobile broadband network."
 msgstr "Ahora está conectado a la red móvil de banda ancha."
 
@@ -303,8 +302,8 @@ msgstr "Ha ocurrido un error al mostrar información de conexión:"
 
 #: ../src/applet-dialogs.c:84
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:820
-#: ../src/wireless-security/wireless-security.c:317
+#: ../src/wireless-dialog.c:850
+#: ../src/wireless-security/wireless-security.c:327
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -323,7 +322,7 @@ msgstr "WEP"
 
 #: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:777
+#: ../src/wireless-dialog.c:807
 msgid "None"
 msgstr "Ninguna"
 
@@ -893,10 +892,12 @@ msgid "_Service:"
 msgstr "_Servicio:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:1
+#: ../src/connection-editor/ce-page-ip6.glade.h:1
 msgid "<b>Addresses</b>"
 msgstr "<b>Direcciones</b>"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:2
+#: ../src/connection-editor/ce-page-ip6.glade.h:2
 msgid ""
 "Automatic\n"
 "Automatic with manual DNS settings\n"
@@ -915,6 +916,7 @@ msgid "D_HCP client ID:"
 msgstr "ID del cliente D_HCP:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:8
+#: ../src/connection-editor/ce-page-ip6.glade.h:7
 msgid ""
 "IP addresses identify your computer on the network.  Click the \"Add\" "
 "button to add an IP address."
@@ -923,6 +925,7 @@ msgstr ""
 "añadir una dirección IP."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
+#: ../src/connection-editor/ce-page-ip6.glade.h:8
 msgid ""
 "If enabled, this connection will never be used as the default network "
 "connection."
@@ -931,18 +934,22 @@ msgstr ""
 "predeterminada."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:10
+#: ../src/connection-editor/ce-page-ip6.glade.h:9
 msgid "Ig_nore automatically obtained routes"
 msgstr "Ig_norar rutas obtenidas automáticamente"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:11
+#: ../src/connection-editor/ce-page-ip6.glade.h:10
 msgid "Use this c_onnection only for resources on its network"
 msgstr "Usar esta c_onexión sólo para los recursos en su red"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:12
+#: ../src/connection-editor/ce-page-ip6.glade.h:11
 msgid "_DNS servers:"
 msgstr "Servidores _DNS:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:13
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
 msgid "_Method:"
 msgstr "_Método:"
 
@@ -951,8 +958,13 @@ msgid "_Routes…"
 msgstr "_Rutas…"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
 msgid "_Search domains:"
 msgstr "Dominios de _búsqueda:"
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
+msgid "_Routes&#x2026;"
+msgstr "_Rutas&#x2026;"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -1245,7 +1257,9 @@ msgid "Create…"
 msgstr "Crear…"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
+#: ../src/connection-editor/ip6-routes-dialog.c:459
 #: ../src/connection-editor/page-ip4.c:634
+#: ../src/connection-editor/page-ip6.c:611
 msgid "Address"
 msgstr "Dirección"
 
@@ -1255,13 +1269,20 @@ msgid "Netmask"
 msgstr "Máscara de red"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
+#: ../src/connection-editor/ip6-routes-dialog.c:491
 #: ../src/connection-editor/page-ip4.c:666
 msgid "Gateway"
 msgstr "Puerta de enlace"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:549
+#: ../src/connection-editor/ip6-routes-dialog.c:507
 msgid "Metric"
 msgstr "Métrica"
+
+#: ../src/connection-editor/ip6-routes-dialog.c:475
+#: ../src/connection-editor/page-ip6.c:627
+msgid "Prefix"
+msgstr "Prefijo"
 
 #: ../src/connection-editor/page-dsl.c:153
 #: ../src/connection-editor/page-dsl.c:160
@@ -1280,26 +1301,32 @@ msgid "DSL connection %d"
 msgstr "Conexión DSL %d"
 
 #: ../src/connection-editor/page-ip4.c:116
+#: ../src/connection-editor/page-ip6.c:114
 msgid "Automatic (VPN)"
 msgstr "Automático (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:117
+#: ../src/connection-editor/page-ip6.c:115
 msgid "Automatic (VPN) addresses only"
 msgstr "Sólo direcciones automáticas (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:120
+#: ../src/connection-editor/page-ip6.c:118
 msgid "Automatic (PPP)"
 msgstr "Automático (PPP)"
 
 #: ../src/connection-editor/page-ip4.c:121
+#: ../src/connection-editor/page-ip6.c:119
 msgid "Automatic (PPP) addresses only"
 msgstr "Sólo direcciones automáticas (PPP)"
 
 #: ../src/connection-editor/page-ip4.c:123
+#: ../src/connection-editor/page-ip6.c:121
 msgid "Automatic (PPPoE)"
 msgstr "Automático (PPPoE)"
 
 #: ../src/connection-editor/page-ip4.c:124
+#: ../src/connection-editor/page-ip6.c:122
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Sólo direcciones automáticas (PPPoE)"
 
@@ -1312,14 +1339,17 @@ msgid "Automatic (DHCP) addresses only"
 msgstr "Sólo direcciones automáticas (DHCP)"
 
 #: ../src/connection-editor/page-ip4.c:152
+#: ../src/connection-editor/page-ip6.c:162
 msgid "Manual"
 msgstr "Manual"
 
 #: ../src/connection-editor/page-ip4.c:164
+#: ../src/connection-editor/page-ip6.c:175
 msgid "Link-Local Only"
 msgstr "Sólo enlace local"
 
 #: ../src/connection-editor/page-ip4.c:170
+#: ../src/connection-editor/page-ip6.c:182
 msgid "Shared to other computers"
 msgstr "Compartida con otros equipos"
 
@@ -1336,6 +1366,38 @@ msgstr "No se pudo cargar la interfaz de usuario para IPv4."
 #: ../src/connection-editor/page-ip4.c:721
 msgid "IPv4 Settings"
 msgstr "Ajustes de IPv4"
+
+#: ../src/connection-editor/page-ip6.c:124
+#| msgid "automatic"
+msgid "Automatic"
+msgstr "Automático"
+
+#: ../src/connection-editor/page-ip6.c:125
+#| msgid "Automatic (VPN) addresses only"
+msgid "Automatic, addresses only"
+msgstr "Automático, sólo direcciones"
+
+#: ../src/connection-editor/page-ip6.c:137
+#: ../src/wireless-security/eap-method.c:175
+msgid "Ignore"
+msgstr "Ignorar"
+
+#: ../src/connection-editor/page-ip6.c:574
+#, c-format
+#| msgid "Editing IPv4 routes for %s"
+msgid "Editing IPv6 routes for %s"
+msgstr "Editando las rutas IPv6 para %s"
+
+#: ../src/connection-editor/page-ip6.c:667
+#: ../src/connection-editor/page-ip6.c:674
+#| msgid "Could not load IPv4 user interface."
+msgid "Could not load IPv6 user interface."
+msgstr "No se pudo cargar la interfaz de usuario para IPv6."
+
+#: ../src/connection-editor/page-ip6.c:680
+#| msgid "IPv4 Settings"
+msgid "IPv6 Settings"
+msgstr "Ajustes de IPv6"
 
 #: ../src/connection-editor/page-mobile.c:365
 #: ../src/connection-editor/page-mobile.c:372
@@ -1480,27 +1542,27 @@ msgid "Wireless connection %d"
 msgstr "Conexión inalámbrica %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:794
+#: ../src/wireless-dialog.c:824
 msgid "WEP 40/128-bit Key"
 msgstr "WEP 40/128-bit Key"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:803
+#: ../src/wireless-dialog.c:833
 msgid "WEP 128-bit Passphrase"
 msgstr "Frase de paso WEP de 128 bits"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:833
+#: ../src/wireless-dialog.c:863
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinámica (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:847
+#: ../src/wireless-dialog.c:877
 msgid "WPA & WPA2 Personal"
 msgstr "WPA y WPA2 personal"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:861
+#: ../src/wireless-dialog.c:891
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA y WPA2 enterprise"
 
@@ -1535,16 +1597,16 @@ msgstr "No se pudo crear la autorización de PolicyKit."
 msgid "PolicyKit authorization could not be created; invalid action ID."
 msgstr "No se pudo crear la autorización de PolicyKit; ID de acción no válido."
 
-#: ../src/connection-editor/nm-connection-editor.c:104
+#: ../src/connection-editor/nm-connection-editor.c:106
 #, c-format
 msgid "Editing %s"
 msgstr "Editando %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:108
+#: ../src/connection-editor/nm-connection-editor.c:110
 msgid "Editing un-named connection"
 msgstr "Editando la conexión sin nombre"
 
-#: ../src/connection-editor/nm-connection-editor.c:296
+#: ../src/connection-editor/nm-connection-editor.c:298
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
@@ -1552,7 +1614,7 @@ msgstr ""
 "El editor de la conexión no pudo encontrar algunos archivos de recursos (no "
 "se encontró el archivo de glade de la miniaplicación Gestor de la red)."
 
-#: ../src/connection-editor/nm-connection-editor.c:309
+#: ../src/connection-editor/nm-connection-editor.c:311
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
@@ -1560,24 +1622,24 @@ msgstr ""
 "El editor de la conexión no pudo encontrar algunos archivos de recursos (no "
 "se encontró el archivo de glade)."
 
-#: ../src/connection-editor/nm-connection-editor.c:325
+#: ../src/connection-editor/nm-connection-editor.c:327
 msgid "Apply..."
 msgstr "Aplicar…"
 
-#: ../src/connection-editor/nm-connection-editor.c:326
+#: ../src/connection-editor/nm-connection-editor.c:328
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autenticar para guardar esta conexión para todos los usuarios en este equipo."
 
-#: ../src/connection-editor/nm-connection-editor.c:327
+#: ../src/connection-editor/nm-connection-editor.c:329
 msgid "Apply"
 msgstr "Aplicar"
 
-#: ../src/connection-editor/nm-connection-editor.c:328
+#: ../src/connection-editor/nm-connection-editor.c:330
 msgid "Save this connection for all users of this machine."
 msgstr "Guardar esta conexión para todos los usuarios en este equipo."
 
-#: ../src/connection-editor/nm-connection-editor.c:436
+#: ../src/connection-editor/nm-connection-editor.c:438
 msgid "Error creating connection editor dialog."
 msgstr "Error al crear el diálogo del editor de conexión."
 
@@ -2026,15 +2088,15 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "Autenticación cableada 802.1x"
 
-#: ../src/wireless-dialog.c:414
+#: ../src/wireless-dialog.c:444
 msgid "New..."
 msgstr "Nueva…"
 
-#: ../src/wireless-dialog.c:921
+#: ../src/wireless-dialog.c:952
 msgid "C_reate"
 msgstr "C_rear"
 
-#: ../src/wireless-dialog.c:992
+#: ../src/wireless-dialog.c:1029
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -2043,35 +2105,35 @@ msgstr ""
 "Se necesitan contraseñas o claves de cifrado para acceder a la red "
 "inalámbrica «%s»."
 
-#: ../src/wireless-dialog.c:994
+#: ../src/wireless-dialog.c:1031
 msgid "Wireless Network Authentication Required"
 msgstr "Autenticación requerida para la red inalámbrica"
 
-#: ../src/wireless-dialog.c:996
+#: ../src/wireless-dialog.c:1033
 msgid "Authentication required by wireless network"
 msgstr "La red inalámbrica necesita autenticación"
 
-#: ../src/wireless-dialog.c:1001
+#: ../src/wireless-dialog.c:1038
 msgid "Create New Wireless Network"
 msgstr "Crear una red inalámbrica nueva"
 
-#: ../src/wireless-dialog.c:1003
+#: ../src/wireless-dialog.c:1040
 msgid "New wireless network"
 msgstr "Red inalámbrica nueva"
 
-#: ../src/wireless-dialog.c:1004
+#: ../src/wireless-dialog.c:1041
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Introduzca un nombre para la red inalámbrica que desea crear."
 
-#: ../src/wireless-dialog.c:1006
+#: ../src/wireless-dialog.c:1043
 msgid "Connect to Hidden Wireless Network"
 msgstr "Conectar con una red inalámbrica oculta"
 
-#: ../src/wireless-dialog.c:1008
+#: ../src/wireless-dialog.c:1045
 msgid "Hidden wireless network"
 msgstr "Red inalámbrica oculta"
 
-#: ../src/wireless-dialog.c:1009
+#: ../src/wireless-dialog.c:1046
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2093,19 +2155,15 @@ msgstr ""
 "conexiones inseguras, redes inalámbricas promiscuas. ¿Quiere elegir un "
 "certificado Certificate Authority?"
 
-#: ../src/wireless-security/eap-method.c:175
-msgid "Ignore"
-msgstr "Ignorar"
-
 #: ../src/wireless-security/eap-method.c:179
 msgid "Choose CA Certificate"
 msgstr "Elija un certificado CA:"
 
-#: ../src/wireless-security/eap-method.c:440
+#: ../src/wireless-security/eap-method.c:442
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "Certificados DER o PEM (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method.c:443
+#: ../src/wireless-security/eap-method.c:445
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Certificados DER o PEM (*.der, *.pem, *.crt, *.cer)"
 
@@ -2117,29 +2175,29 @@ msgstr "MD5"
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-peap.c:345
-#: ../src/wireless-security/eap-method-tls.c:417
-#: ../src/wireless-security/eap-method-ttls.c:343
+#: ../src/wireless-security/eap-method-peap.c:346
+#: ../src/wireless-security/eap-method-tls.c:418
+#: ../src/wireless-security/eap-method-ttls.c:344
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Elija un certificado CA…"
 
-#: ../src/wireless-security/eap-method-tls.c:413
+#: ../src/wireless-security/eap-method-tls.c:414
 msgid "Choose your personal certificate..."
 msgstr "Elija su certificado personal…"
 
-#: ../src/wireless-security/eap-method-tls.c:422
+#: ../src/wireless-security/eap-method-tls.c:423
 msgid "Choose your private key..."
 msgstr "Elija su clave privada…"
 
-#: ../src/wireless-security/wireless-security.c:305
+#: ../src/wireless-security/wireless-security.c:315
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:329
+#: ../src/wireless-security/wireless-security.c:339
 msgid "Tunneled TLS"
 msgstr "TLS a través de túnel"
 
-#: ../src/wireless-security/wireless-security.c:340
+#: ../src/wireless-security/wireless-security.c:350
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protegido (PEAP)"
 
@@ -2223,9 +2281,6 @@ msgstr "EAP protegido (PEAP)"
 
 #~ msgid "Waiting for Network Key for the wireless network '%s'..."
 #~ msgstr "Esperando la contraseña de red para la red inalámbrica «%s»…"
-
-#~ msgid "Prefix"
-#~ msgstr "Prefijo"
 
 #~ msgid "Available to everyone..."
 #~ msgstr "Disponible para todo el mundo..."
