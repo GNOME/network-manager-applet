@@ -1098,7 +1098,8 @@ wireless_device_added (NMDevice *device, NMApplet *applet)
 	 * that might be candididates.  Keep the ID around so we can disconnect
 	 * when the device is destroyed.
 	 */ 
-	id = g_signal_connect (applet_get_settings (applet), "new-connection",
+	id = g_signal_connect (applet_get_settings (applet),
+	                       NM_SETTINGS_INTERFACE_NEW_CONNECTION,
 	                       G_CALLBACK (on_new_connection),
 	                       data);
 	data->new_con_id = id;

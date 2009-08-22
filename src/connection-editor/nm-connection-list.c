@@ -1609,14 +1609,16 @@ nm_connection_list_new (GType def_type)
 
 	list->system_settings = nm_remote_settings_system_new (bus);
 	dbus_g_connection_unref (bus);
-	g_signal_connect (list->system_settings, "new-connection",
-				   G_CALLBACK (connection_added),
-				   list);
+	g_signal_connect (list->system_settings,
+	                  NM_SETTINGS_INTERFACE_NEW_CONNECTION,
+	                  G_CALLBACK (connection_added),
+	                  list);
 
 	list->gconf_settings = nma_gconf_settings_new (NULL);
-	g_signal_connect (list->gconf_settings, "new-connection",
-				   G_CALLBACK (connection_added),
-				   list);
+	g_signal_connect (list->gconf_settings,
+	                  NM_SETTINGS_INTERFACE_NEW_CONNECTION,
+	                  G_CALLBACK (connection_added),
+	                  list);
 
 	add_connection_tabs (list, def_type);
 
