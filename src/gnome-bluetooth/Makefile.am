@@ -1,4 +1,4 @@
-plugindir = $(libdir)/gnome-bluetooth/plugins/
+plugindir = $(libdir)/gnome-bluetooth/plugins
 
 INCLUDES = \
 	-DDATADIR=\"$(datadir)\" \

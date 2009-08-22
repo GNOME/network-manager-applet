@@ -25,6 +25,8 @@
 #include <errno.h>
 #include <net/ethernet.h>
 #include <netinet/ether.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <glib.h>
@@ -54,6 +56,10 @@
 #define DBUS_TYPE_G_MAP_OF_MAP_OF_VARIANT   (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT))
 #define DBUS_TYPE_G_MAP_OF_STRING           (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_STRING))
 #define DBUS_TYPE_G_LIST_OF_STRING          (dbus_g_type_get_collection ("GSList", G_TYPE_STRING))
+#define DBUS_TYPE_G_IP6_ADDRESS             (dbus_g_type_get_struct ("GValueArray", DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, G_TYPE_INVALID))
+#define DBUS_TYPE_G_ARRAY_OF_IP6_ADDRESS    (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ADDRESS))
+#define DBUS_TYPE_G_IP6_ROUTE               (dbus_g_type_get_struct ("GValueArray", DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, G_TYPE_INVALID))
+#define DBUS_TYPE_G_ARRAY_OF_IP6_ROUTE      (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ROUTE))
 
 const char *applet_8021x_ignore_keys[] = {
 	"ca-cert",
@@ -632,6 +638,254 @@ out:
 }
 
 gboolean
+nm_gconf_get_ip6dns_array_helper (GConfClient *client,
+								  const char *path,
+								  const char *key,
+								  const char *setting,
+								  GPtrArray **value)
+{
+	char *gc_key;
+	GConfValue *gc_value = NULL;
+	GPtrArray *array;
+	gboolean success = FALSE;
+	GSList *values, *iter;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
+		goto out;
+
+	if (   (gc_value->type != GCONF_VALUE_LIST)
+	    || (gconf_value_get_list_type (gc_value) != GCONF_VALUE_STRING))
+		goto out;
+
+	values = gconf_value_get_list (gc_value);
+	array = g_ptr_array_sized_new (1);
+	for (iter = values; iter; iter = g_slist_next (iter)) {
+		const char *straddr = gconf_value_get_string ((GConfValue *) iter->data);
+		struct in6_addr rawaddr;
+		GByteArray *ba;
+
+		if (inet_pton (AF_INET6, straddr, &rawaddr) <= 0) {
+			g_warning ("%s: %s contained bad address: %s",
+					   __func__, gc_key, straddr);
+			continue;
+		}
+
+		ba = g_byte_array_new ();
+		g_byte_array_append (ba, (guchar *)&rawaddr, sizeof (rawaddr));
+
+		g_ptr_array_add (array, ba);
+	}
+
+	*value = array;
+	success = TRUE;
+
+out:
+	if (gc_value)
+		gconf_value_free (gc_value);
+	g_free (gc_key);
+	return success;
+}
+
+gboolean
+nm_gconf_get_ip6addr_array_helper (GConfClient *client,
+								   const char *path,
+								   const char *key,
+								   const char *setting,
+								   GPtrArray **value)
+{
+	char *gc_key;
+	GConfValue *gc_value = NULL;
+	GPtrArray *array;
+	gboolean success = FALSE;
+	GSList *values, *iter;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
+		goto out;
+
+	if (   (gc_value->type != GCONF_VALUE_LIST)
+	    || (gconf_value_get_list_type (gc_value) != GCONF_VALUE_STRING))
+		goto out;
+
+	values = gconf_value_get_list (gc_value);
+	array = g_ptr_array_sized_new (1);
+	for (iter = values; iter; iter = g_slist_next (iter)) {
+		const char *addr_prefix = gconf_value_get_string ((GConfValue *) iter->data);
+		char *addr, *p;
+		guint prefix;
+		struct in6_addr rawaddr;
+		GValueArray *valarr;
+		GValue element = {0, };
+		GByteArray *ba;
+
+		addr = g_strdup (addr_prefix);
+		p = strchr (addr, '/');
+		if (!p) {
+			g_warning ("%s: %s contained bad address/prefix: %s",
+					   __func__, gc_key, addr_prefix);
+			g_free (addr);
+			continue;
+		}
+		*p++ = '\0';
+		prefix = strtoul (p, NULL, 10);
+
+		if (inet_pton (AF_INET6, addr, &rawaddr) <= 0 && prefix > 128) {
+			g_warning ("%s: %s contained bad address: %s",
+					   __func__, gc_key, addr_prefix);
+			g_free (addr);
+			continue;
+		}
+		g_free (addr);
+
+		valarr = g_value_array_new (2);
+
+		g_value_init (&element, DBUS_TYPE_G_UCHAR_ARRAY);
+		ba = g_byte_array_new ();
+		g_byte_array_append (ba, (guint8 *) &rawaddr, 16);
+		g_value_take_boxed (&element, ba);
+		g_value_array_append (valarr, &element);
+		g_value_unset (&element);
+
+		g_value_init (&element, G_TYPE_UINT);
+		g_value_set_uint (&element, prefix);
+		g_value_array_append (valarr, &element);
+		g_value_unset (&element);
+
+		g_ptr_array_add (array, valarr);
+	}
+
+	*value = array;
+	success = TRUE;
+
+out:
+	if (gc_value)
+		gconf_value_free (gc_value);
+	g_free (gc_key);
+	return success;
+}
+
+gboolean
+nm_gconf_get_ip6route_array_helper (GConfClient *client,
+									const char *path,
+									const char *key,
+									const char *setting,
+									GPtrArray **value)
+{
+	char *gc_key;
+	GConfValue *gc_value = NULL;
+	GPtrArray *array;
+	gboolean success = FALSE;
+	GSList *values, *iter;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
+		goto out;
+
+	if (   (gc_value->type != GCONF_VALUE_LIST)
+	    || (gconf_value_get_list_type (gc_value) != GCONF_VALUE_STRING))
+		goto out;
+
+	values = gconf_value_get_list (gc_value);
+	array = g_ptr_array_sized_new (1);
+	for (iter = values; iter; iter = g_slist_next (iter)) {
+		const char *route_str = gconf_value_get_string ((GConfValue *) iter->data);
+		char **parts, *addr, *p;
+		guint prefix, metric;
+		struct in6_addr rawaddr;
+		GValueArray *valarr;
+		GValue element = {0, };
+		GByteArray *dest, *next_hop;
+
+		parts = g_strsplit (route_str, ",", -1);
+		if (g_strv_length (parts) != 3) {
+			g_warning ("%s: %s contained bad route: %s",
+					   __func__, gc_key, route_str);
+			g_strfreev (parts);
+			continue;
+		}
+
+		addr = parts[0];
+		p = strchr (addr, '/');
+		if (!p) {
+			g_warning ("%s: %s contained bad address/prefix: %s",
+					   __func__, gc_key, addr);
+			g_strfreev (parts);
+			continue;
+		}
+		*p++ = '\0';
+		prefix = strtoul (p, NULL, 10);
+
+		if (inet_pton (AF_INET6, addr, &rawaddr) <= 0 && prefix > 128) {
+			g_warning ("%s: %s contained bad address: %s",
+					   __func__, gc_key, addr);
+			g_strfreev (parts);
+			continue;
+		}
+		dest = g_byte_array_new ();
+		g_byte_array_append (dest, (guint8 *) &rawaddr, 16);
+
+		if (inet_pton (AF_INET6, parts[1], &rawaddr) <= 0 && prefix > 128) {
+			g_warning ("%s: %s contained bad address: %s",
+					   __func__, gc_key, addr);
+			g_byte_array_free (dest, TRUE);
+			g_strfreev (parts);
+			continue;
+		}
+		next_hop = g_byte_array_new ();
+		g_byte_array_append (next_hop, (guint8 *) &rawaddr, 16);
+
+		metric = strtoul (parts[2], NULL, 10);
+
+		valarr = g_value_array_new (4);
+
+		g_value_init (&element, DBUS_TYPE_G_UCHAR_ARRAY);
+		g_value_take_boxed (&element, dest);
+		g_value_array_append (valarr, &element);
+		g_value_unset (&element);
+
+		g_value_init (&element, G_TYPE_UINT);
+		g_value_set_uint (&element, prefix);
+		g_value_array_append (valarr, &element);
+		g_value_unset (&element);
+
+		g_value_init (&element, DBUS_TYPE_G_UCHAR_ARRAY);
+		g_value_take_boxed (&element, next_hop);
+		g_value_array_append (valarr, &element);
+		g_value_unset (&element);
+
+		g_value_init (&element, G_TYPE_UINT);
+		g_value_set_uint (&element, metric);
+		g_value_array_append (valarr, &element);
+		g_value_unset (&element);
+
+		g_ptr_array_add (array, valarr);
+		g_strfreev (parts);
+	}
+
+	*value = array;
+	success = TRUE;
+
+out:
+	if (gc_value)
+		gconf_value_free (gc_value);
+	g_free (gc_key);
+	return success;
+}
+
+gboolean
 nm_gconf_set_int_helper (GConfClient *client,
                          const char *path,
                          const char *key,
@@ -1043,6 +1297,197 @@ out:
 	return success;
 }
 
+gboolean
+nm_gconf_set_ip6dns_array_helper (GConfClient *client,
+								  const char *path,
+								  const char *key,
+								  const char *setting,
+								  GPtrArray *value)
+{
+	char *gc_key;
+	int i;
+	GSList *list = NULL, *l;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+
+	if (!value)
+		return TRUE;
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	for (i = 0; i < value->len; i++) {
+		GByteArray *ba = g_ptr_array_index (value, i);
+		char addr[INET6_ADDRSTRLEN];
+
+		if (!inet_ntop (AF_INET6, ba->data, addr, sizeof (addr))) {
+			g_warning ("%s: invalid IPv6 DNS server address!", __func__);
+			goto out;
+		}
+
+		list = g_slist_append (list, g_strdup (addr));
+	}
+
+	gconf_client_set_list (client, gc_key, GCONF_VALUE_STRING, list, NULL);
+	success = TRUE;
+
+out:
+	for (l = list; l; l = l->next)
+		g_free (l->data);
+	g_slist_free (list);
+	g_free (gc_key);
+	return success;
+}
+
+gboolean
+nm_gconf_set_ip6addr_array_helper (GConfClient *client,
+								   const char *path,
+								   const char *key,
+								   const char *setting,
+								   GPtrArray *value)
+{
+	char *gc_key;
+	int i;
+	GSList *list = NULL, *l;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+
+	if (!value)
+		return TRUE;
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	for (i = 0; i < value->len; i++) {
+		GValueArray *elements = (GValueArray *) g_ptr_array_index (value, i);
+		GValue *tmp;
+		GByteArray *ba;
+		guint prefix;
+		char addr[INET6_ADDRSTRLEN];
+
+		if (   (elements->n_values != 2)
+		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 0)) != DBUS_TYPE_G_UCHAR_ARRAY)
+		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 1)) != G_TYPE_UINT)) {
+			g_warning ("%s: invalid IPv6 address!", __func__);
+			goto out;
+		}
+
+		tmp = g_value_array_get_nth (elements, 0);
+		ba = g_value_get_boxed (tmp);
+		tmp = g_value_array_get_nth (elements, 1);
+		prefix = g_value_get_uint (tmp);
+		if (prefix > 128) {
+			g_warning ("%s: invalid IPv6 address prefix %u", __func__, prefix);
+			goto out;
+		}
+
+		if (!inet_ntop (AF_INET6, ba->data, addr, sizeof (addr))) {
+			g_warning ("%s: invalid IPv6 address!", __func__);
+			goto out;
+		}
+
+		list = g_slist_append (list, g_strdup_printf ("%s/%u", addr, prefix));
+	}
+
+	gconf_client_set_list (client, gc_key, GCONF_VALUE_STRING, list, NULL);
+	success = TRUE;
+
+out:
+	for (l = list; l; l = l->next)
+		g_free (l->data);
+	g_slist_free (list);
+	g_free (gc_key);
+	return success;
+}
+
+gboolean
+nm_gconf_set_ip6route_array_helper (GConfClient *client,
+									const char *path,
+									const char *key,
+									const char *setting,
+									GPtrArray *value)
+{
+	char *gc_key;
+	int i;
+	GSList *list = NULL, *l;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+
+	if (!value)
+		return TRUE;
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	for (i = 0; i < value->len; i++) {
+		GValueArray *elements = (GValueArray *) g_ptr_array_index (value, i);
+		GValue *tmp;
+		GByteArray *ba;
+		guint prefix, metric;
+		char dest[INET6_ADDRSTRLEN], next_hop[INET6_ADDRSTRLEN];
+
+		if (   (elements->n_values != 4)
+		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 0)) != DBUS_TYPE_G_UCHAR_ARRAY)
+		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 1)) != G_TYPE_UINT)
+		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 2)) != DBUS_TYPE_G_UCHAR_ARRAY)
+		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 3)) != G_TYPE_UINT))
+ {
+			g_warning ("%s: invalid IPv6 route!", __func__);
+			goto out;
+		}
+
+		tmp = g_value_array_get_nth (elements, 0);
+		ba = g_value_get_boxed (tmp);
+		if (!inet_ntop (AF_INET6, ba->data, dest, sizeof (dest))) {
+			g_warning ("%s: invalid IPv6 dest address!", __func__);
+			goto out;
+		}
+		tmp = g_value_array_get_nth (elements, 1);
+		prefix = g_value_get_uint (tmp);
+		if (prefix > 128) {
+			g_warning ("%s: invalid IPv6 dest prefix %u", __func__, prefix);
+			goto out;
+		}
+		tmp = g_value_array_get_nth (elements, 2);
+		ba = g_value_get_boxed (tmp);
+		if (!inet_ntop (AF_INET6, ba->data, next_hop, sizeof (next_hop))) {
+			g_warning ("%s: invalid IPv6 next_hop address!", __func__);
+			goto out;
+		}
+		tmp = g_value_array_get_nth (elements, 3);
+		metric = g_value_get_uint (tmp);
+
+		list = g_slist_append (list,
+							   g_strdup_printf ("%s/%u,%s,%u", dest, prefix,
+												next_hop, metric));
+	}
+
+	gconf_client_set_list (client, gc_key, GCONF_VALUE_STRING, list, NULL);
+	success = TRUE;
+
+out:
+	for (l = list; l; l = l->next)
+		g_free (l->data);
+	g_slist_free (list);
+	g_free (gc_key);
+	return success;
+}
+
 GSList *
 nm_gconf_get_all_connections (GConfClient *client)
 {
@@ -1100,6 +1545,18 @@ static void
 free_one_addr (gpointer data)
 {
 	g_array_free ((GArray *) data, TRUE);
+}
+
+static void
+free_one_bytearray (gpointer data)
+{
+	g_byte_array_free (data, TRUE);
+}
+
+static void
+free_one_struct (gpointer data)
+{
+	g_value_array_free (data);
 }
 
 typedef struct ReadFromGConfInfo {
@@ -1249,6 +1706,30 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 		if (nm_gconf_get_ip4_helper (info->client, info->dir, key, setting_name, tuple_len, &pa_val)) {
 			g_object_set (setting, key, pa_val, NULL);
 			g_ptr_array_foreach (pa_val, (GFunc) free_one_addr, NULL);
+			g_ptr_array_free (pa_val, TRUE);
+		}
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UCHAR) {
+		GPtrArray *pa_val = NULL;
+
+		if (nm_gconf_get_ip6dns_array_helper (info->client, info->dir, key, setting_name, &pa_val)) {
+			g_object_set (setting, key, pa_val, NULL);
+			g_ptr_array_foreach (pa_val, (GFunc) free_one_bytearray, NULL);
+			g_ptr_array_free (pa_val, TRUE);
+		}
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_IP6_ADDRESS) {
+		GPtrArray *pa_val = NULL;
+
+		if (nm_gconf_get_ip6addr_array_helper (info->client, info->dir, key, setting_name, &pa_val)) {
+			g_object_set (setting, key, pa_val, NULL);
+			g_ptr_array_foreach (pa_val, (GFunc) free_one_struct, NULL);
+			g_ptr_array_free (pa_val, TRUE);
+		}
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_IP6_ROUTE) {
+		GPtrArray *pa_val = NULL;
+
+		if (nm_gconf_get_ip6route_array_helper (info->client, info->dir, key, setting_name, &pa_val)) {
+			g_object_set (setting, key, pa_val, NULL);
+			g_ptr_array_foreach (pa_val, (GFunc) free_one_struct, NULL);
 			g_ptr_array_free (pa_val, TRUE);
 		}
 	} else {
@@ -1566,6 +2047,18 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		nm_gconf_set_ip4_helper (info->client, info->dir,
 								  key, setting_name, tuple_len,
 								  (GPtrArray *) g_value_get_boxed (value));
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_ARRAY_OF_UCHAR) {
+		nm_gconf_set_ip6dns_array_helper (info->client, info->dir,
+										  key, setting_name,
+										  (GPtrArray *) g_value_get_boxed (value));
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_IP6_ADDRESS) {
+		nm_gconf_set_ip6addr_array_helper (info->client, info->dir,
+										   key, setting_name,
+										   (GPtrArray *) g_value_get_boxed (value));
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_IP6_ROUTE) {
+		nm_gconf_set_ip6route_array_helper (info->client, info->dir,
+											key, setting_name,
+											(GPtrArray *) g_value_get_boxed (value));
 	} else
 		g_warning ("Unhandled setting property type (write) '%s/%s' : '%s'", 
 				 setting_name, key, g_type_name (type));

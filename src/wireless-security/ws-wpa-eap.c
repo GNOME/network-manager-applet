@@ -124,7 +124,8 @@ ws_wpa_eap_new (const char *glade_file,
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        widget);
+	                        widget,
+	                        NULL);
 
 	WIRELESS_SECURITY (sec)->nag_user = nag_user;
 

@@ -172,13 +172,15 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 	                        fill_connection,
 	                        destroy,
 	                        xml,
-	                        widget);
+	                        widget,
+	                        "wpa_psk_entry");
 
 	widget = glade_xml_get_widget (xml, "wpa_psk_entry");
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
+	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
 	/* Fill secrets, if any */
 	if (connection) {

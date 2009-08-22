@@ -1,4 +1,5 @@
-/* NetworkManager Wireless Applet -- Display wireless access points and allow user control
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
+/* NetworkManager Connection editor -- Connection editor for NetworkManager
  *
  * Dan Williams <dcbw@redhat.com>
  *
@@ -16,27 +17,19 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2008 Red Hat, Inc.
  */
 
-#ifndef WS_WEP_KEY_H
-#define WS_WEP_KEY_H
+#ifndef IP6_ROUTES_DIALOG_H
+#define IP6_ROUTES_DIALOG_H
 
-#include <nm-setting-wireless-security.h>
+#include <glib.h>
+#include <gtk/gtk.h>
 
-typedef struct {
-	struct _WirelessSecurity parent;
+#include "nm-setting-ip6-config.h"
 
-	NMWepKeyType type;
-	char keys[4][65];
-	guint8 cur_index;
-} WirelessSecurityWEPKey;
+GtkWidget *ip6_routes_dialog_new (NMSettingIP6Config *s_ip6, gboolean automatic);
 
-WirelessSecurityWEPKey * ws_wep_key_new (const char *glade_file,
-                                         NMConnection *connection,
-                                         NMWepKeyType type,
-                                         gboolean adhoc_create,
-                                         gboolean simple);
+void ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP6Config *s_ip6);
 
-#endif /* WS_WEP_KEY_H */
-
+#endif /* IP6_ROUTES_DIALOG_H */

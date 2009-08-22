@@ -67,6 +67,9 @@ typedef struct {
 	GtkWidget *sec_combo;
 
 	gboolean nag_ignored;
+	gboolean network_name_focus;
+
+	gboolean auth_only;
 
 	gboolean disposed;
 } NMAWirelessDialogPrivate;
@@ -82,8 +85,7 @@ typedef struct {
 #define C_SEP_COLUMN		2
 #define C_NEW_COLUMN		3
 
-static void security_combo_changed (GtkWidget *combo, gpointer user_data);
-static gboolean security_combo_init (NMAWirelessDialog *self);
+static gboolean security_combo_init (NMAWirelessDialog *self, gboolean auth_only);
 
 void
 nma_wireless_dialog_set_nag_ignored (NMAWirelessDialog *self, gboolean ignored)
@@ -158,12 +160,11 @@ security_combo_changed (GtkWidget *combo,
 {
 	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
 	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
-	GtkWidget *vbox;
+	GtkWidget *vbox, *sec_widget, *def_widget;
 	GList *elt, *children;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	WirelessSecurity *sec = NULL;
-	GtkWidget *sec_widget;
 
 	vbox = glade_xml_get_widget (priv->xml, "security_vbox");
 	g_assert (vbox);
@@ -192,10 +193,34 @@ security_combo_changed (GtkWidget *combo,
 	wireless_security_add_to_size_group (sec, priv->group);
 
 	gtk_container_add (GTK_CONTAINER (vbox), sec_widget);
-	wireless_security_unref (sec);
 
 	/* Re-validate */
 	wireless_security_changed_cb (NULL, sec);
+
+	/* Set focus to the security method's default widget, but only if the
+	 * network name entry should not be focused.
+	 */
+	if (!priv->network_name_focus) {
+		def_widget = glade_xml_get_widget (sec->xml, sec->default_field);
+		if (def_widget)
+			gtk_widget_grab_focus (def_widget);
+	}
+
+	wireless_security_unref (sec);
+}
+
+static void
+security_combo_changed_manually (GtkWidget *combo,
+                                 gpointer user_data)
+{
+	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
+	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+
+	/* Flag that the combo was changed manually to allow focus to move
+	 * to the security method's default widget instead of the network name.
+	 */
+	priv->network_name_focus = FALSE;
+	security_combo_changed (combo, user_data);
 }
 
 static GByteArray *
@@ -260,6 +285,11 @@ ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 	gboolean valid = FALSE;
 	GByteArray *ssid;
 
+	/* If the network name entry was touched at all, allow focus to go to
+	 * the default widget of the security method now.
+	 */
+	priv->network_name_focus = FALSE;
+
 	ssid = validate_dialog_ssid (self);
 	if (!ssid)
 		goto out;
@@ -302,7 +332,7 @@ connection_combo_changed (GtkWidget *combo,
 	                    C_CON_COLUMN, &priv->connection,
 	                    C_NEW_COLUMN, &is_new, -1);
 
-	if (!security_combo_init (self)) {
+	if (!security_combo_init (self, priv->auth_only)) {
 		g_warning ("Couldn't change wireless security combo box.");
 		return;
 	}
@@ -520,7 +550,7 @@ device_combo_changed (GtkWidget *combo,
 		return;
 	}
 
-	if (!security_combo_init (self)) {
+	if (!security_combo_init (self, priv->auth_only)) {
 		g_warning ("Couldn't change wireless security combo box.");
 		return;
 	}
@@ -686,7 +716,7 @@ add_security_item (NMAWirelessDialog *self,
 }
 
 static gboolean
-security_combo_init (NMAWirelessDialog *self)
+security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 {
 	NMAWirelessDialogPrivate *priv;
 	GtkListStore *sec_model;
@@ -770,7 +800,7 @@ security_combo_init (NMAWirelessDialog *self)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep;
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create);
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create, auth_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Key"));
@@ -779,7 +809,7 @@ security_combo_init (NMAWirelessDialog *self)
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create);
+		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create, auth_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -881,6 +911,7 @@ internal_init (NMAWirelessDialog *self,
 	gtk_window_set_resizable (GTK_WINDOW (self), FALSE);
 	gtk_dialog_set_has_separator (GTK_DIALOG (self), FALSE);
 
+	priv->auth_only = auth_only;
 	if (auth_only)
 		icon_name = "dialog-password";
 	else
@@ -931,10 +962,11 @@ internal_init (NMAWirelessDialog *self,
 		gtk_widget_hide (widget);
 
 		security_combo_focus = TRUE;
+		priv->network_name_focus = FALSE;
 	} else {
 		widget = glade_xml_get_widget (priv->xml, "network_name_entry");
 		g_signal_connect (G_OBJECT (widget), "changed", (GCallback) ssid_entry_changed, self);
-		gtk_widget_grab_focus (widget);
+		priv->network_name_focus = TRUE;
 	}
 
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, FALSE);
@@ -949,16 +981,21 @@ internal_init (NMAWirelessDialog *self,
 		return FALSE;
 	}
 
-	if (!security_combo_init (self)) {
+	if (!security_combo_init (self, priv->auth_only)) {
 		g_warning ("Couldn't set up wireless security combo box.");
 		return FALSE;
 	}
 
+	security_combo_changed (priv->sec_combo, self);
+	g_signal_connect (G_OBJECT (priv->sec_combo), "changed",
+	                  G_CALLBACK (security_combo_changed_manually), self);
+
 	if (security_combo_focus)
 		gtk_widget_grab_focus (priv->sec_combo);
-
-	security_combo_changed (priv->sec_combo, self);
-	g_signal_connect (G_OBJECT (priv->sec_combo), "changed", G_CALLBACK (security_combo_changed), self);
+	else if (priv->network_name_focus) {
+		widget = glade_xml_get_widget (priv->xml, "network_name_entry");
+		gtk_widget_grab_focus (widget);
+	}
 
 	if (priv->connection) {
 		char *tmp;

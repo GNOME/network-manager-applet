@@ -33,7 +33,7 @@
 
 #include <nm-utils.h>
 
-#include "ip4-routes-dialog.h"
+#include "ip6-routes-dialog.h"
 
 #define COL_ADDRESS 0
 #define COL_PREFIX  1
@@ -47,7 +47,7 @@ get_one_int (GtkTreeModel *model,
              int column,
              guint32 max_value,
              gboolean fail_if_missing,
-             guint32 *out)
+             guint *out)
 {
 	char *item = NULL;
 	gboolean success = FALSE;
@@ -64,49 +64,8 @@ get_one_int (GtkTreeModel *model,
 	if (errno || tmp_int < 0 || tmp_int > max_value)
 		goto out;
 
-	*out = (guint32) tmp_int;
+	*out = (guint) tmp_int;
 	success = TRUE;
-
-out:
-	g_free (item);
-	return success;
-}
-
-static gboolean
-get_one_prefix (GtkTreeModel *model,
-                GtkTreeIter *iter,
-                int column,
-                gboolean fail_if_missing,
-                guint32 *out)
-{
-	char *item = NULL;
-	struct in_addr tmp_addr = { 0 };
-	gboolean success = FALSE;
-	glong tmp_prefix;
-
-	gtk_tree_model_get (model, iter, column, &item, -1);
-	if (!item || !strlen (item)) {
-		g_free (item);
-		return fail_if_missing ? FALSE : TRUE;
-	}
-
-	errno = 0;
-
-	/* Is it a prefix? */
-	if (!strchr (item, '.')) {
-		tmp_prefix = strtol (item, NULL, 10);
-		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
-			*out = tmp_prefix;
-			success = TRUE;
-			goto out;
-		}
-	}
-
-	/* Is it a netmask? */
-	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
-		*out = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
-		success = TRUE;
-	}
 
 out:
 	g_free (item);
@@ -118,10 +77,9 @@ get_one_addr (GtkTreeModel *model,
               GtkTreeIter *iter,
               int column,
               gboolean fail_if_missing,
-              guint32 *out)
+              struct in6_addr *out)
 {
 	char *item = NULL;
-	struct in_addr tmp_addr = { 0 };
 	gboolean success = FALSE;
 
 	gtk_tree_model_get (model, iter, column, &item, -1);
@@ -130,10 +88,8 @@ get_one_addr (GtkTreeModel *model,
 		return fail_if_missing ? FALSE : TRUE;
 	}
 
-	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
-		*out = tmp_addr.s_addr;
+	if (inet_pton (AF_INET6, item, out) > 0)
 		success = TRUE;
-	}
 
 	g_free (item);
 	return success;
@@ -154,19 +110,20 @@ validate (GtkWidget *dialog)
 	g_return_if_fail (xml != NULL);
 	g_return_if_fail (GLADE_IS_XML (xml));
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = glade_xml_get_widget (xml, "ip6_routes");
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
 	while (iter_valid) {
-		guint32 addr = 0, prefix = 0, next_hop = 0, metric = 0;
+		struct in6_addr dest, next_hop;
+		guint prefix = 0, metric = 0;
 
 		/* Address */
-		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr))
+		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &dest))
 			goto done;
 
 		/* Prefix */
-		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix))
+		if (!get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix))
 			goto done;
 
 		/* Next hop (optional) */
@@ -198,7 +155,7 @@ route_add_clicked (GtkButton *button, gpointer user_data)
 	GtkTreePath *path;
 	GList *cells;
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = glade_xml_get_widget (xml, "ip6_routes");
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (widget)));
 	gtk_list_store_append (store, &iter);
 	gtk_list_store_set (store, &iter, COL_ADDRESS, "", -1);
@@ -219,7 +176,7 @@ route_add_clicked (GtkButton *button, gpointer user_data)
 	g_list_free (cells);
 	gtk_tree_path_free (path);
 
-	validate (glade_xml_get_widget (xml, "ip4_routes_dialog"));
+	validate (glade_xml_get_widget (xml, "ip6_routes_dialog"));
 }
 
 static void
@@ -233,7 +190,7 @@ route_delete_clicked (GtkButton *button, gpointer user_data)
 	GtkTreeIter iter;
 	int num_rows;
 
-	treeview = GTK_TREE_VIEW (glade_xml_get_widget (xml, "ip4_routes"));
+	treeview = GTK_TREE_VIEW (glade_xml_get_widget (xml, "ip6_routes"));
 
 	selection = gtk_tree_view_get_selection (treeview);
 	if (gtk_tree_selection_count_selected_rows (selection) != 1)
@@ -255,7 +212,7 @@ route_delete_clicked (GtkButton *button, gpointer user_data)
 		gtk_tree_selection_select_iter (selection, &iter);
 	}
 
-	validate (glade_xml_get_widget (xml, "ip4_routes_dialog"));
+	validate (glade_xml_get_widget (xml, "ip6_routes_dialog"));
 }
 
 static void
@@ -286,7 +243,7 @@ cell_edited (GtkCellRendererText *cell,
 	GtkTreeViewColumn *next_col;
 	GtkCellRenderer *next_cell;
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = glade_xml_get_widget (xml, "ip6_routes");
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (widget)));
 	path = gtk_tree_path_new_from_string (path_string);
 	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (cell), "column"));
@@ -297,7 +254,7 @@ cell_edited (GtkCellRendererText *cell,
 	/* Move focus to the next column */
 	column = (column >= COL_LAST) ? 0 : column + 1;
 	next_col = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), column);
-	dialog = glade_xml_get_widget (xml, "ip4_routes_dialog");
+	dialog = glade_xml_get_widget (xml, "ip6_routes_dialog");
 	next_cell = g_slist_nth_data (g_object_get_data (G_OBJECT (dialog), "renderers"), column);
 
 	gtk_tree_view_set_cursor_on_cell (GTK_TREE_VIEW (widget), path, next_col, next_cell, TRUE);
@@ -321,7 +278,7 @@ ip_address_filter_cb (GtkEntry *   entry,
 	gchar *result = g_new (gchar, length);
 
 	for (i = 0; i < length; i++) {
-		if ((text[i] >= '0' && text[i] <= '9') || (text[i] == '.'))
+		if (g_ascii_isxdigit(text[i]) || (text[i] == ':'))
 			result[count++] = text[i];
 	}
 
@@ -346,7 +303,7 @@ ip_address_filter_cb (GtkEntry *   entry,
 }
 
 static void
-ip4_cell_editing_started (GtkCellRenderer *cell,
+ip6_cell_editing_started (GtkCellRenderer *cell,
                           GtkCellEditable *editable,
                           const gchar     *path,
                           gpointer         user_data)
@@ -417,7 +374,7 @@ uint_cell_editing_started (GtkCellRenderer *cell,
 }
 
 GtkWidget *
-ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
+ip6_routes_dialog_new (NMSettingIP6Config *s_ip6, gboolean automatic)
 {
 	GladeXML *xml;
 	GtkWidget *dialog, *widget, *ok_button;
@@ -430,15 +387,15 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	int i;
 	GSList *renderers = NULL;
 
-	xml = glade_xml_new (GLADEDIR "/ce-page-ip4.glade", "ip4_routes_dialog", NULL);
+	xml = glade_xml_new (GLADEDIR "/ce-page-ip6.glade", "ip6_routes_dialog", NULL);
 	if (!xml) {
-		g_warning ("%s: Couldn't load ip4 page glade file.", __func__);
+		g_warning ("%s: Couldn't load ip6 page glade file.", __func__);
 		return NULL;
 	}
 
-	dialog = glade_xml_get_widget (xml, "ip4_routes_dialog");
+	dialog = glade_xml_get_widget (xml, "ip6_routes_dialog");
 	if (!dialog) {
-		g_warning ("%s: Couldn't load ip4 routes dialog from glade file.", __func__);
+		g_warning ("%s: Couldn't load ip6 routes dialog from glade file.", __func__);
 		g_object_unref (xml);
 		return NULL;
 	}
@@ -453,39 +410,40 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
 	/* Add existing routes */
-	for (i = 0; i < nm_setting_ip4_config_get_num_routes (s_ip4); i++) {
-		NMIP4Route *route = nm_setting_ip4_config_get_route (s_ip4, i);
-		struct in_addr tmp_addr;
-		char ip_string[INET_ADDRSTRLEN];
+	for (i = 0; i < nm_setting_ip6_config_get_num_routes (s_ip6); i++) {
+		NMIP6Route *route = nm_setting_ip6_config_get_route (s_ip6, i);
+		const struct in6_addr *tmp_addr;
+		char ip_string[INET6_ADDRSTRLEN];
 		char *tmp;
 
 		if (!route) {
-			g_warning ("%s: empty IP4 route structure!", __func__);
+			g_warning ("%s: empty IP6 route structure!", __func__);
 			continue;
 		}
 
 		gtk_list_store_append (store, &model_iter);
 
-		tmp_addr.s_addr = nm_ip4_route_get_dest (route);;
-		if (inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
+		tmp_addr = nm_ip6_route_get_dest (route);
+		if (inet_ntop (AF_INET6, tmp_addr, ip_string, sizeof (ip_string)))
 			gtk_list_store_set (store, &model_iter, COL_ADDRESS, ip_string, -1);
 
-		tmp_addr.s_addr = nm_utils_ip4_prefix_to_netmask (nm_ip4_route_get_prefix (route));
-		if (inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
-			gtk_list_store_set (store, &model_iter, COL_PREFIX, ip_string, -1);
+		tmp = g_strdup_printf ("%u", nm_ip6_route_get_prefix (route));
+		gtk_list_store_set (store, &model_iter, COL_PREFIX, tmp, -1);
+		g_free (tmp);
 
-		tmp_addr.s_addr = nm_ip4_route_get_next_hop (route);
-		if (tmp_addr.s_addr && inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
+		tmp_addr = nm_ip6_route_get_next_hop (route);
+		if (tmp_addr && !IN6_IS_ADDR_UNSPECIFIED (tmp_addr) &&
+			inet_ntop (AF_INET6, tmp_addr, ip_string, sizeof (ip_string)))
 			gtk_list_store_set (store, &model_iter, COL_NEXT_HOP, ip_string, -1);
 
-		if (nm_ip4_route_get_metric (route)) {
-			tmp = g_strdup_printf ("%d", nm_ip4_route_get_metric (route));
+		if (nm_ip6_route_get_metric (route)) {
+			tmp = g_strdup_printf ("%u", nm_ip6_route_get_metric (route));
 			gtk_list_store_set (store, &model_iter, COL_METRIC, tmp, -1);
 			g_free (tmp);
 		}
 	}
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = glade_xml_get_widget (xml, "ip6_routes");
 	gtk_tree_view_set_model (GTK_TREE_VIEW (widget), GTK_TREE_MODEL (store));
 	g_object_unref (store);
 
@@ -494,7 +452,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_ADDRESS));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip6_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -510,11 +468,11 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_PREFIX));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (uint_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
-	                                                      -1, _("Netmask"), renderer,
+	                                                      -1, _("Prefix"), renderer,
 	                                                      "text", COL_PREFIX,
 	                                                      NULL);
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), offset - 1);
@@ -526,7 +484,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_NEXT_HOP));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip6_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -558,24 +516,24 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget));
 	g_signal_connect (selection, "changed",
 	                  G_CALLBACK (list_selection_changed),
-	                  glade_xml_get_widget (xml, "ip4_route_delete_button"));
+	                  glade_xml_get_widget (xml, "ip6_route_delete_button"));
 
-	widget = glade_xml_get_widget (xml, "ip4_route_add_button");
+	widget = glade_xml_get_widget (xml, "ip6_route_add_button");
 	gtk_widget_set_sensitive (widget, TRUE);
 	g_signal_connect (widget, "clicked", G_CALLBACK (route_add_clicked), xml);
 
-	widget = glade_xml_get_widget (xml, "ip4_route_delete_button");
+	widget = glade_xml_get_widget (xml, "ip6_route_delete_button");
 	gtk_widget_set_sensitive (widget, FALSE);
 	g_signal_connect (widget, "clicked", G_CALLBACK (route_delete_clicked), xml);
 
-	widget = glade_xml_get_widget (xml, "ip4_ignore_auto_routes");
+	widget = glade_xml_get_widget (xml, "ip6_ignore_auto_routes");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
-	                              nm_setting_ip4_config_get_ignore_auto_routes (s_ip4));
+	                              nm_setting_ip6_config_get_ignore_auto_routes (s_ip6));
 	gtk_widget_set_sensitive (widget, automatic);
 
-	widget = glade_xml_get_widget (xml, "ip4_never_default");
+	widget = glade_xml_get_widget (xml, "ip6_never_default");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
-	                              nm_setting_ip4_config_get_never_default (s_ip4));
+	                              nm_setting_ip6_config_get_never_default (s_ip6));
 
 	/* Update initial validity */
 	validate (dialog);
@@ -584,7 +542,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 }
 
 void
-ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
+ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP6Config *s_ip6)
 {
 	GladeXML *xml;
 	GtkWidget *widget;
@@ -593,65 +551,66 @@ ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
 	gboolean iter_valid;
 
 	g_return_if_fail (dialog != NULL);
-	g_return_if_fail (s_ip4 != NULL);
+	g_return_if_fail (s_ip6 != NULL);
 
 	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
 	g_return_if_fail (xml != NULL);
 	g_return_if_fail (GLADE_IS_XML (xml));
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = glade_xml_get_widget (xml, "ip6_routes");
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
-	nm_setting_ip4_config_clear_routes (s_ip4);
+	nm_setting_ip6_config_clear_routes (s_ip6);
 
 	while (iter_valid) {
-		guint32 addr = 0, prefix = 0, next_hop = 0, metric = 0;
-		NMIP4Route *route;
+		struct in6_addr dest, next_hop;
+		guint prefix = 0, metric = 0;
+		NMIP6Route *route;
 
 		/* Address */
-		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr)) {
-			g_warning ("%s: IPv4 address missing or invalid!", __func__);
+		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &dest)) {
+			g_warning ("%s: IPv6 address missing or invalid!", __func__);
 			goto next;
 		}
 
 		/* Prefix */
-		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix)) {
-			g_warning ("%s: IPv4 prefix/netmask missing or invalid!", __func__);
+		if (!get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix)) {
+			g_warning ("%s: IPv6 prefix missing or invalid!", __func__);
 			goto next;
 		}
 
 		/* Next hop (optional) */
 		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop)) {
-			g_warning ("%s: IPv4 next hop invalid!", __func__);
+			g_warning ("%s: IPv6 next hop invalid!", __func__);
 			goto next;
 		}
 
 		/* Metric (optional) */
 		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric)) {
-			g_warning ("%s: IPv4 metric invalid!", __func__);
+			g_warning ("%s: IPv6 metric invalid!", __func__);
 			goto next;
 		}
 
-		route = nm_ip4_route_new ();
-		nm_ip4_route_set_dest (route, addr);
-		nm_ip4_route_set_prefix (route, prefix);
-		nm_ip4_route_set_next_hop (route, next_hop);
-		nm_ip4_route_set_metric (route, metric);
-		nm_setting_ip4_config_add_route (s_ip4, route);
-		nm_ip4_route_unref (route);
+		route = nm_ip6_route_new ();
+		nm_ip6_route_set_dest (route, &dest);
+		nm_ip6_route_set_prefix (route, prefix);
+		nm_ip6_route_set_next_hop (route, &next_hop);
+		nm_ip6_route_set_metric (route, metric);
+		nm_setting_ip6_config_add_route (s_ip6, route);
+		nm_ip6_route_unref (route);
 
 	next:
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
 	}
 
-	widget = glade_xml_get_widget (xml, "ip4_ignore_auto_routes");
-	g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_IGNORE_AUTO_ROUTES,
+	widget = glade_xml_get_widget (xml, "ip6_ignore_auto_routes");
+	g_object_set (s_ip6, NM_SETTING_IP6_CONFIG_IGNORE_AUTO_ROUTES,
 	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
 	              NULL);
 
-	widget = glade_xml_get_widget (xml, "ip4_never_default");
-	g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_NEVER_DEFAULT,
+	widget = glade_xml_get_widget (xml, "ip6_never_default");
+	g_object_set (s_ip6, NM_SETTING_IP6_CONFIG_NEVER_DEFAULT,
 	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
 	              NULL);
 }

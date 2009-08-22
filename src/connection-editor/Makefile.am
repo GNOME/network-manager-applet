@@ -34,6 +34,8 @@ nm_connection_editor_SOURCES = \
 	page-wireless-security.c \
 	page-ip4.h \
 	page-ip4.c \
+	page-ip6.h \
+	page-ip6.c \
 	page-dsl.h \
 	page-dsl.c \
 	page-mobile.h \
@@ -46,6 +48,8 @@ nm_connection_editor_SOURCES = \
 	vpn-helpers.c \
 	ip4-routes-dialog.h \
 	ip4-routes-dialog.c \
+	ip6-routes-dialog.h \
+	ip6-routes-dialog.c \
 	ppp-auth-methods-dialog.c \
 	ppp-auth-methods-dialog.h
 
@@ -66,6 +70,7 @@ glade_DATA = \
 	ce-page-wireless.glade \
 	ce-page-wireless-security.glade \
 	ce-page-ip4.glade \
+	ce-page-ip6.glade \
 	ce-page-dsl.glade \
 	ce-page-mobile.glade \
 	ce-page-ppp.glade \

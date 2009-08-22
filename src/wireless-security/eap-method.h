@@ -43,6 +43,7 @@ struct _EAPMethod {
 
 	GladeXML *nag_dialog_xml;
 	char *ca_cert_chooser;
+	const char *default_field;
 	GtkWidget *nag_dialog;
 
 	gboolean ignore_ca_cert;
@@ -86,7 +87,8 @@ void eap_method_init (EAPMethod *method,
                       EMFillConnectionFunc fill_connection,
                       EMDestroyFunc destroy,
                       GladeXML *xml,
-                      GtkWidget *ui_widget);
+                      GtkWidget *ui_widget,
+                      const char *default_field);
 
 GtkFileFilter * eap_method_default_file_chooser_filter_new (gboolean privkey);
 
