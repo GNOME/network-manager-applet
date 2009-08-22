@@ -40,8 +40,6 @@
 #define DBUS_TYPE_G_MAP_OF_VARIANT          (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
 #define DBUS_TYPE_G_MAP_OF_MAP_OF_VARIANT   (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT))
 
-static gboolean internal_request_secrets (CEPage *self, GError **error);
-
 G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 
 enum {
