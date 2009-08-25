@@ -31,14 +31,11 @@
 
 #include <nm-setting-connection.h>
 #include <nm-utils.h>
+#include <nm-settings-connection-interface.h>
 
 #include "ce-page.h"
 #include "nma-marshal.h"
 #include "utils.h"
-
-#define DBUS_TYPE_G_ARRAY_OF_STRING         (dbus_g_type_get_collection ("GPtrArray", G_TYPE_STRING))
-#define DBUS_TYPE_G_MAP_OF_VARIANT          (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
-#define DBUS_TYPE_G_MAP_OF_MAP_OF_VARIANT   (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT))
 
 G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 
@@ -179,63 +176,47 @@ emit_initialized (CEPage *self, GError *error)
 }
 
 static void
-get_secrets_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+get_secrets_cb (NMSettingsConnectionInterface *connection,
+                GHashTable *secrets,
+                GError *error,
+                gpointer user_data)
 {
 	CEPage *self = user_data;
-	GError *error = NULL;
-	GHashTable *settings = NULL, *setting_hash;
-	gboolean do_signal = TRUE;
+	GError *update_error = NULL;
+	GHashTable *setting_hash;
 
-	if (dbus_g_proxy_end_call (proxy, call, &error,
-	                           DBUS_TYPE_G_MAP_OF_MAP_OF_VARIANT, &settings,
-	                           G_TYPE_INVALID)) {
-		/* Update the connection with the new secrets */
-		setting_hash = g_hash_table_lookup (settings, self->setting_name);
-		if (setting_hash) {
-			if (!nm_connection_update_secrets (self->connection,
-			                                   self->setting_name,
-			                                   setting_hash,
-			                                   &error)) {
-				if (!error) {
-					g_set_error (&error, 0, 0, "%s",
-					             _("Failed to update connection secrets due to an unknown error."));
-				}
-			}
-		}
-		g_hash_table_destroy (settings);
-	}
-
-	if (do_signal)
+	if (error) {
 		emit_initialized (self, error);
-	g_clear_error (&error);
-}
-
-static gboolean
-internal_request_secrets (CEPage *self, GError **error)
-{
-	DBusGProxyCall *call;
-	GPtrArray *hints = NULL;
-
-	g_return_val_if_fail (self != NULL, FALSE);
-	g_return_val_if_fail (self->proxy != NULL, FALSE);
-	g_return_val_if_fail (self->setting_name != NULL, FALSE);
-
-	hints = g_ptr_array_new ();
-	call = dbus_g_proxy_begin_call_with_timeout (self->proxy, "GetSecrets",
-	                                             get_secrets_cb, self, NULL,
-	                                             10000,
-	                                             G_TYPE_STRING, self->setting_name,
-	                                             DBUS_TYPE_G_ARRAY_OF_STRING, hints,
-	                                             G_TYPE_BOOLEAN, FALSE,
-	                                             G_TYPE_INVALID);
-	g_ptr_array_free (hints, TRUE);
-
-	if (!call) {
-		g_set_error (error, 0, 0, "%s", _("Could not request secrets from the system settings service."));
-		return FALSE;
+		return;
 	}
 
-	return TRUE;
+	g_assert (secrets);
+
+	/* Update the connection with the new secrets */
+	setting_hash = g_hash_table_lookup (secrets, self->setting_name);
+
+	/* No secrets? */
+	if (!setting_hash) {
+		emit_initialized (self, NULL);
+		return;
+	}
+
+	if (nm_connection_update_secrets (self->connection,
+	                                  self->setting_name,
+	                                  setting_hash,
+	                                  &update_error)) {
+		/* Success */
+		emit_initialized (self, NULL);
+		return;
+	}
+
+	if (!update_error) {
+		g_set_error_literal (&update_error, 0, 0,
+		                     _("Failed to update connection secrets due to an unknown error."));
+	}
+
+	emit_initialized (self, update_error);
+	g_clear_error (&update_error);
 }
 
 gboolean
@@ -243,46 +224,33 @@ ce_page_initialize (CEPage *self,
                     const char *setting_name,
                     GError **error)
 {
-	DBusGConnection *g_connection;
-	gboolean success = FALSE;
-	NMConnectionScope scope;
-
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (self->connection != NULL, FALSE);
 
-	/* Don't need to request secrets from user connections or from
-	 * settings which are known to not require secrets.
-	 */
-	scope = nm_connection_get_scope (self->connection);
-	if (!setting_name || (scope != NM_CONNECTION_SCOPE_SYSTEM)) {
+	/* Don't need to request secrets for settings which are known not to have any */
+	if (!setting_name) {
 		emit_initialized (self, NULL);
 		return TRUE;
 	}
 
-	g_connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, error);
-	if (!g_connection) {
-		g_set_error (error, 0, 0, "%s", _("Could not connect to D-Bus to request connection secrets."));
-		return FALSE;
+	/* Don't request secrets from a plain NMConnection either, since we only
+	 * use those during add/import where the secrets are already filled in.
+	 */
+	if (!NM_IS_SETTINGS_CONNECTION_INTERFACE (self->connection)) {
+		emit_initialized (self, NULL);
+		return TRUE;
 	}
 
 	if (self->setting_name)
 		g_free (self->setting_name);
 	self->setting_name = g_strdup (setting_name);
 
-	self->proxy = dbus_g_proxy_new_for_name (g_connection,
-	                                         NM_DBUS_SERVICE_SYSTEM_SETTINGS,
-	                                         nm_connection_get_path (self->connection),
-	                                         NM_DBUS_IFACE_SETTINGS_CONNECTION_SECRETS);
-	if (!self->proxy) {
-		g_set_error (error, 0, 0, "%s", _("Could not create D-Bus proxy for connection secrets."));
-		goto out;
-	}
-
-	success = internal_request_secrets (self, error);
-
-out:
-	dbus_g_connection_unref (g_connection);
-	return success;
+	return nm_settings_connection_interface_get_secrets (NM_SETTINGS_CONNECTION_INTERFACE (self->connection),
+	                                                     self->setting_name,
+	                                                     NULL,
+	                                                     FALSE,
+	                                                     get_secrets_cb,
+	                                                     self);
 }
 
 static void

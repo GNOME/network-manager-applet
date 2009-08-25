@@ -279,6 +279,7 @@ internal_get_secrets (NMSettingsConnectionInterface *connection,
                       const char *setting_name,
                       const char **hints,
                       gboolean request_new,
+                      gboolean local,
                       NMANewSecretsRequestedFunc callback,
                       gpointer callback_data,
                       GError **error)
@@ -328,7 +329,7 @@ internal_get_secrets (NMSettingsConnectionInterface *connection,
 		goto get_secrets;
 	}
 
-	secrets = nm_gconf_get_keyring_items (NM_CONNECTION (self), setting_name, FALSE, error);
+	secrets = nm_gconf_get_keyring_items (NM_CONNECTION (self), setting_name, local, error);
 	if (!secrets) {
 		if (error)
 			return FALSE;
@@ -431,6 +432,7 @@ get_secrets (NMSettingsConnectionInterface *connection,
 	                           setting_name,
 	                           hints,
 	                           request_new,
+	                           TRUE,
 	                           get_secrets_cb,
 	                           info,
 	                           &error)) {
@@ -620,6 +622,7 @@ dbus_get_secrets (NMExportedConnection *connection,
 	                           setting_name,
 	                           hints,
 	                           request_new,
+	                           FALSE,
 	                           dbus_get_secrets_cb,
 	                           context,
 	                           &error)) {

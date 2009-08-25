@@ -2531,18 +2531,3 @@ nm_gconf_clear_private_connection_values (NMConnection *connection)
 	g_object_set_data (G_OBJECT (connection), NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG, NULL);
 }
 
-NMConnection *
-nm_gconf_connection_duplicate (NMConnection *connection)
-{
-	NMConnection *dup;
-
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
-
-	dup = nm_connection_duplicate (connection);
-	g_return_val_if_fail (NM_IS_CONNECTION (dup), NULL);
-
-	nm_gconf_copy_private_connection_values (dup, connection);
-
-	return dup;
-}
-

@@ -218,9 +218,6 @@ static void
 fill_secrets (WirelessSecurityWEPKey *sec, NMConnection *connection)
 {
 	NMSettingWirelessSecurity *s_wsec;
-	GHashTable *secrets;
-	GError *error = NULL;
-	GValue *value;
 	const char *tmp;
 	int i;
 
@@ -228,40 +225,10 @@ fill_secrets (WirelessSecurityWEPKey *sec, NMConnection *connection)
 	g_return_if_fail (connection != NULL);
 
 	s_wsec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
-
-	if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM) {
-		for (i = 0; s_wsec && i < 4; i++) {
-			tmp = nm_setting_wireless_security_get_wep_key (s_wsec, i);
-			if (tmp)
-				strcpy (sec->keys[i], tmp);
-		}
-	} else {
-		secrets = nm_gconf_get_keyring_items (connection,
-		                                      NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-		                                      FALSE,
-		                                      &error);
-		if (!secrets) {
-			g_clear_error (&error);
-			return;
-		}
-
-		value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY0);
-		if (value)
-			strcpy (sec->keys[0], g_value_get_string (value));
-
-		value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY1);
-		if (value)
-			strcpy (sec->keys[1], g_value_get_string (value));
-
-		value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY2);
-		if (value)
-			strcpy (sec->keys[2], g_value_get_string (value));
-
-		value = g_hash_table_lookup (secrets, NM_SETTING_WIRELESS_SECURITY_WEP_KEY3);
-		if (value)
-			strcpy (sec->keys[3], g_value_get_string (value));
-
-		g_hash_table_destroy (secrets);
+	for (i = 0; s_wsec && i < 4; i++) {
+		tmp = nm_setting_wireless_security_get_wep_key (s_wsec, i);
+		if (tmp)
+			strcpy (sec->keys[i], tmp);
 	}
 }
 

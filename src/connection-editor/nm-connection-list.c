@@ -449,14 +449,14 @@ add_connection (NMConnectionList *self,
 /* Connection updating */
 
 typedef void (*UpdateResultFunc) (NMConnectionList *list,
+                                  NMSettingsConnectionInterface *connection,
                                   GError *error,
                                   gpointer user_data);
 
 typedef struct {
 	NMConnectionList *list;
 	NMConnectionEditor *editor;
-	NMSettingsConnectionInterface *original;
-	NMConnection *modified;
+	NMSettingsConnectionInterface *connection;
 	UpdateResultFunc callback;
 	gpointer callback_data;
 } UpdateInfo;
@@ -464,9 +464,8 @@ typedef struct {
 static void
 update_complete (UpdateInfo *info, GError *error)
 {
-	info->callback (info->list, error, info->callback_data);
-	g_object_unref (info->original);
-	g_object_unref (info->modified);
+	info->callback (info->list, info->connection, error, info->callback_data);
+	g_object_unref (info->connection);
 	g_free (info);
 }
 
@@ -491,7 +490,7 @@ update_add_result_cb (NMConnectionList *list, GError *error, gpointer user_data)
 	}
 
 	/* Now try to remove the original connection */
-	delete_connection (list, info->original, update_remove_result_cb, info);
+	delete_connection (list, info->connection, update_remove_result_cb, info);
 }
 
 static void
@@ -507,48 +506,60 @@ update_cb (NMSettingsConnectionInterface *connection,
 			nm_connection_editor_save_vpn_secrets (info->editor);
 	}
 
+	/* Clear secrets so they don't lay around in memory; they'll get requested
+	 * again anyway next time the connection is edited.
+	 */
+	nm_connection_clear_secrets (NM_CONNECTION (connection));
+
 	update_complete (info, error);
 }
 
 static void
 update_connection (NMConnectionList *list,
                    NMConnectionEditor *editor,
-                   NMSettingsConnectionInterface *original,
+                   NMSettingsConnectionInterface *connection,
+                   NMConnectionScope orig_scope,
                    UpdateResultFunc callback,
                    gpointer user_data)
 {
-	NMConnection *modified = nm_connection_editor_get_connection (editor);
-	NMConnectionScope original_scope;
+	NMConnectionScope new_scope;
 	UpdateInfo *info;
 
 	info = g_malloc0 (sizeof (UpdateInfo));
 	info->list = list;
 	info->editor = editor;
-	info->original = g_object_ref (original);
-	info->modified = g_object_ref (modified);
+	info->connection = g_object_ref (connection);
 	info->callback = callback;
 	info->callback_data = user_data;
 
-	original_scope = nm_connection_get_scope (NM_CONNECTION (original));
-	if (nm_connection_get_scope (modified) == original_scope) {
-		/* The easy part: Connection is updated */
+	new_scope = nm_connection_get_scope (NM_CONNECTION (connection));
+	if (new_scope == orig_scope) {
+		/* The easy part: Connection is just updated and has the same scope */
 		GHashTable *new_settings;
 		GError *error = NULL;
 
-		utils_fill_connection_certs (modified);
-		new_settings = nm_connection_to_hash (modified);
-		utils_clear_filled_connection_certs (modified);
+		/* System connections need the certificates filled because the
+		 * applet private values that we use to store the path to certificates
+		 * and private keys don't go through D-Bus; they are private of course!
+		 */
+		if (new_scope == NM_CONNECTION_SCOPE_SYSTEM) {
+			utils_fill_connection_certs (NM_CONNECTION (connection));
+			new_settings = nm_connection_to_hash (NM_CONNECTION (connection));
+			utils_clear_filled_connection_certs (NM_CONNECTION (connection));
 
-		if (!nm_connection_replace_settings (NM_CONNECTION (original),
-		                                     new_settings,
-		                                     &error)) {
-			callback (list, error, user_data);
-			g_error_free (error);
-		} else {
-			/* Hack; make sure that gconf private values are copied */
-			nm_gconf_copy_private_connection_values (NM_CONNECTION (original), modified);
-			nm_settings_connection_interface_update (original, update_cb, info);
+			if (!nm_connection_replace_settings (NM_CONNECTION (connection),
+			                                     new_settings,
+			                                     &error)) {
+				update_complete (info, error);
+				g_error_free (error);
+				return;
+			}
 		}
+
+		/* Update() actually saves the connection settings to backing storage,
+		 * either GConf or over D-Bus.
+		 */
+		nm_settings_connection_interface_update (connection, update_cb, info);
 	} else {
 		/* The hard part: Connection scope changed:
 		 * Add the modified connection to the new settings service, then delete
@@ -624,6 +635,8 @@ really_add_connection (NMConnection *connection,
 
 	editor = nm_connection_editor_new (connection, info->list->system_settings, &error);
 	if (!editor) {
+		g_object_unref (connection);
+
 		error_dialog (info->list_window,
 		              _("Could not edit new connection"),
 		              "%s",
@@ -670,11 +683,12 @@ add_clicked (GtkButton *button, gpointer user_data)
 typedef struct {
 	NMConnectionList *list;
 	NMConnectionEditor *editor;
-	NMSettingsConnectionInterface *original_connection;
+	NMConnectionScope orig_scope;
 } EditInfo;
 
 static void
 connection_updated_cb (NMConnectionList *list,
+                       NMSettingsConnectionInterface *connection,
                        GError *error,
                        gpointer user_data)
 {
@@ -684,13 +698,11 @@ connection_updated_cb (NMConnectionList *list,
 		GtkListStore *store;
 		GtkTreeIter iter;
 
-		store = get_model_for_connection (list, info->original_connection);
+		store = get_model_for_connection (list, connection);
 		g_assert (store);
-		if (get_iter_for_connection (GTK_TREE_MODEL (store), info->original_connection, &iter))
-			update_connection_row (store, &iter, info->original_connection);
+		if (get_iter_for_connection (GTK_TREE_MODEL (store), connection, &iter))
+			update_connection_row (store, &iter, connection);
 	}
-
-	g_object_unref (info->original_connection);
 	g_free (info);
 }
 
@@ -699,8 +711,11 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 {
 	EditInfo *info = user_data;
 	const char *message = _("An unknown error ocurred.");
+	NMConnection *connection;
 
-	g_hash_table_remove (info->list->editors, info->original_connection);
+	connection = nm_connection_editor_get_connection (editor);
+	g_assert (connection);
+	g_hash_table_remove (info->list->editors, connection);
 
 	if (response == GTK_RESPONSE_NONE) {
 		if (error && error->message)
@@ -711,26 +726,30 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 	}
 
 	if (response == GTK_RESPONSE_OK) {
-		NMConnection *connection;
 		GError *edit_error = NULL;
 		gboolean success;
-
-		connection = nm_connection_editor_get_connection (editor);
 
 		utils_fill_connection_certs (connection);
 		success = nm_connection_verify (connection, &edit_error);
 		utils_clear_filled_connection_certs (connection);
 
 		if (success) {
-			update_connection (info->list, editor, info->original_connection,
-			                   connection_updated_cb, info);
+			update_connection (info->list,
+			                   editor,
+			                   NM_SETTINGS_CONNECTION_INTERFACE (connection),
+			                   info->orig_scope,
+			                   connection_updated_cb,
+			                   info);
 		} else {
 			g_warning ("%s: invalid connection after update: bug in the "
 			           "'%s' / '%s' invalid: %d",
 			           __func__,
 			           g_type_name (nm_connection_lookup_setting_type_by_quark (edit_error->domain)),
 			           edit_error->message, edit_error->code);
-			connection_updated_cb (info->list, edit_error, info);
+			connection_updated_cb (info->list,
+			                       NM_SETTINGS_CONNECTION_INTERFACE (connection),
+			                       edit_error,
+			                       info);
 			g_error_free (edit_error);
 		}
 	}
@@ -740,7 +759,6 @@ static void
 do_edit (ActionInfo *info)
 {
 	NMSettingsConnectionInterface *connection;
-	NMConnection *duplicated;
 	NMConnectionEditor *editor;
 	EditInfo *edit_info;
 	GError *error = NULL;
@@ -756,10 +774,7 @@ do_edit (ActionInfo *info)
 		return;
 	}
 
-	duplicated = nm_gconf_connection_duplicate (NM_CONNECTION (connection));
-	editor = nm_connection_editor_new (duplicated, info->list->system_settings, &error);
-	g_object_unref (duplicated);
-
+	editor = nm_connection_editor_new (NM_CONNECTION (connection), info->list->system_settings, &error);
 	if (!editor) {
 		error_dialog (info->list_window,
 		              _("Could not edit connection"),
@@ -771,18 +786,12 @@ do_edit (ActionInfo *info)
 	edit_info = g_malloc0 (sizeof (EditInfo));
 	edit_info->list = info->list;
 	edit_info->editor = editor;
-	edit_info->original_connection = g_object_ref (connection);
+	edit_info->orig_scope = nm_connection_get_scope (NM_CONNECTION (connection));
 
 	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), edit_info);
 	g_hash_table_insert (info->list->editors, connection, editor);
 
 	nm_connection_editor_run (editor);
-}
-
-static void
-edit_connection_cb (GtkButton *button, gpointer user_data)
-{
-	do_edit ((ActionInfo *) user_data);
 }
 
 static void
@@ -954,6 +963,8 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 	if (!service_type || !strlen (service_type)) {
 		GtkWidget *dialog;
 
+		g_object_unref (connection);
+
 		dialog = gtk_message_dialog_new (NULL,
 		                                 GTK_DIALOG_DESTROY_WITH_PARENT,
 		                                 GTK_MESSAGE_ERROR,
@@ -971,6 +982,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 
 	editor = nm_connection_editor_new (connection, info->list->system_settings, &error);
 	if (!editor) {
+		g_object_unref (connection);
 		error_dialog (info->list_window,
 		              _("Could not edit imported connection"),
 		              "%s",
@@ -1233,7 +1245,7 @@ add_connection_buttons (NMConnectionList *self,
 	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
 	action_info_set_button (info, button);
-	g_signal_connect (button, "clicked", G_CALLBACK (edit_connection_cb), info);
+	g_signal_connect_swapped (button, "clicked", G_CALLBACK (do_edit), info);
 	g_signal_connect (treeview, "row-activated", G_CALLBACK (connection_double_clicked_cb), info);
 	g_signal_connect (selection, "changed", G_CALLBACK (pk_button_selection_changed_cb), info);
 	pk_button_selection_changed_cb (selection, info);
