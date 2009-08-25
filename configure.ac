@@ -16,6 +16,9 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
+AC_PATH_PROG(GCONFTOOL, gconftool-2)
+AM_GCONF_SOURCE_2
+
 dnl ensure that when the Automake generated makefile calls aclocal,
 dnl it honours the $ACLOCAL_FLAGS environment variable
 ACLOCAL_AMFLAGS="\${ACLOCAL_FLAGS}"
