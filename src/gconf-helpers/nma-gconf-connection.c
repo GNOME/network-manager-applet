@@ -144,10 +144,19 @@ nma_gconf_connection_new_from_connection (GConfClient *client,
 
 	self = NMA_GCONF_CONNECTION (object);
 
-	// FIXME: fill certs before hashing?  or copy private values?
+	/* Fill certs so that the nm_connection_replace_settings verification works */
+	utils_fill_connection_certs (connection);
 	settings = nm_connection_to_hash (connection);
+	utils_clear_filled_connection_certs (connection);
+
 	success = nm_connection_replace_settings (NM_CONNECTION (self), settings, NULL);
 	g_hash_table_destroy (settings);
+
+	/* Then clear the filled certs on the replaced settings, and copy over
+	 * applet private values like file locations and such.
+	 */
+	utils_clear_filled_connection_certs (NM_CONNECTION (self));
+	nm_gconf_copy_private_connection_values (NM_CONNECTION (self), connection);
 
 	/* Already verified the settings above, they had better be OK */
 	g_assert (success);
