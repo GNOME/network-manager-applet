@@ -591,7 +591,6 @@ static void
 add_response_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
-	NMConnection *connection;
 	const char *message = _("An unknown error ocurred.");
 
 	if (response == GTK_RESPONSE_OK) {
@@ -605,8 +604,7 @@ add_response_cb (NMConnectionEditor *editor, gint response, GError *error, gpoin
 		              "%s", message);
 	}
 
-	connection = nm_connection_editor_get_connection (editor);
-	g_hash_table_remove (info->list->editors, connection);
+	g_hash_table_remove (info->list->editors, nm_connection_editor_get_connection (editor));
 }
 
 static void
@@ -645,7 +643,7 @@ really_add_connection (NMConnection *connection,
 		return;
 	}
 
-	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_response_cb), info);
+	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), info);
 	g_hash_table_insert (info->list->editors, connection, editor);
 
 	nm_connection_editor_run (editor);
@@ -703,6 +701,8 @@ connection_updated_cb (NMConnectionList *list,
 		if (get_iter_for_connection (GTK_TREE_MODEL (store), connection, &iter))
 			update_connection_row (store, &iter, connection);
 	}
+
+	g_hash_table_remove (list->editors, connection);
 	g_free (info);
 }
 
@@ -712,28 +712,21 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 	EditInfo *info = user_data;
 	const char *message = _("An unknown error ocurred.");
 	NMConnection *connection;
+	GError *edit_error = NULL;
+	gboolean success;
 
 	connection = nm_connection_editor_get_connection (editor);
 	g_assert (connection);
-	g_hash_table_remove (info->list->editors, connection);
 
-	if (response == GTK_RESPONSE_NONE) {
-		if (error && error->message)
-			message = error->message;
-		error_dialog (GTK_WINDOW (editor->window), _("Error initializing editor"), "%s", message);
-		g_free (info);
-		return;
-	}
-
-	if (response == GTK_RESPONSE_OK) {
-		GError *edit_error = NULL;
-		gboolean success;
-
+	switch (response) {
+	case GTK_RESPONSE_OK:
+		/* Make sure the connection is valid */
 		utils_fill_connection_certs (connection);
 		success = nm_connection_verify (connection, &edit_error);
 		utils_clear_filled_connection_certs (connection);
 
 		if (success) {
+			/* Save the connection to backing storage */
 			update_connection (info->list,
 			                   editor,
 			                   NM_SETTINGS_CONNECTION_INTERFACE (connection),
@@ -752,6 +745,19 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 			                       info);
 			g_error_free (edit_error);
 		}
+		break;
+	case GTK_RESPONSE_NONE:
+	case GTK_RESPONSE_CANCEL:
+	default:
+		if (response == GTK_RESPONSE_NONE) {
+			/* Show an error dialog if the editor initialization failed */
+			if (error && error->message)
+				message = error->message;
+			error_dialog (GTK_WINDOW (editor->window), _("Error initializing editor"), "%s", message);
+		}
+		g_hash_table_remove (info->list->editors, connection);
+		g_free (info);
+		break;
 	}
 }
 
@@ -990,7 +996,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 		return;
 	}
 
-	g_signal_connect (G_OBJECT (editor), "done", G_CALLBACK (add_response_cb), info);
+	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), info);
 	g_hash_table_insert (info->list->editors, connection, editor);
 
 	nm_connection_editor_run (editor);
@@ -1481,7 +1487,7 @@ nm_connection_list_new (GType def_type)
 
 	add_connection_tabs (list, def_type);
 
-	list->editors = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, g_object_unref);
+	list->editors = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 
 	list->dialog = glade_xml_get_widget (list->gui, "NMConnectionList");
 	if (!list->dialog)
