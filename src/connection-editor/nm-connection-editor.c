@@ -69,6 +69,7 @@
 #include "page-mobile.h"
 #include "page-ppp.h"
 #include "page-vpn.h"
+#include "ce-polkit-button.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -136,12 +137,75 @@ ui_to_setting (NMConnectionEditor *editor)
 }
 
 static void
+update_sensitivity (NMConnectionEditor *editor)
+{
+	NMSettingConnection *s_con;
+	gboolean actionable = FALSE, authorized = FALSE, sensitive = FALSE;
+	GtkWidget *widget;
+	GSList *iter;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+
+	/* Can't modify read-only connections; can't modify anything before the
+	 * editor is initialized either.
+	 */
+	if (!nm_setting_connection_get_read_only (s_con) && editor->initialized) {
+		if (editor->system_settings_can_modify) {
+			actionable = ce_polkit_button_get_actionable (CE_POLKIT_BUTTON (editor->ok_button));
+			authorized = actionable && ce_polkit_button_get_authorized (CE_POLKIT_BUTTON (editor->ok_button));
+		}
+
+		if (editor->orig_scope == NM_CONNECTION_SCOPE_SYSTEM) {
+			/* If the user cannot ever be authorized to change system connections, and
+			 * the connection is a system connection, we desensitize the entire dialog.
+			 */
+			sensitive = actionable;
+		} else {
+			/* Otherwise, if the connection is originally a user-connection,
+			 * then everything is sensitive except possible the system checkbutton,
+			 * which will be insensitive if the user has no possibility of
+			 * authorizing.
+			 */
+			sensitive = TRUE;
+		}
+	}
+
+	gtk_widget_set_sensitive (GTK_WIDGET (editor->system_checkbutton), authorized);
+
+	/* Cancel button is always sensitive */
+	gtk_widget_set_sensitive (GTK_WIDGET (editor->cancel_button), TRUE);
+
+	widget = glade_xml_get_widget (editor->xml, "connection_name_label");
+	gtk_widget_set_sensitive (widget, sensitive);
+
+	widget = glade_xml_get_widget (editor->xml, "connection_name");
+	gtk_widget_set_sensitive (widget, sensitive);
+
+	widget = glade_xml_get_widget (editor->xml, "connection_autoconnect");
+	gtk_widget_set_sensitive (widget, sensitive);
+
+	widget = glade_xml_get_widget (editor->xml, "connection_name");
+	gtk_widget_set_sensitive (widget, sensitive);
+
+	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
+		widget = ce_page_get_page (CE_PAGE (iter->data));
+		gtk_widget_set_sensitive (widget, sensitive);
+	}
+}
+
+static void
 connection_editor_validate (NMConnectionEditor *editor)
 {
+	NMSettingConnection *s_con;
 	gboolean valid = FALSE;
 	GSList *iter;
 
 	if (!editor->initialized)
+		goto done;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
+	if (nm_setting_connection_get_read_only (s_con))
 		goto done;
 
 	if (!ui_to_setting (editor))
@@ -164,138 +228,43 @@ connection_editor_validate (NMConnectionEditor *editor)
 	valid = TRUE;
 
 done:
-	gtk_widget_set_sensitive (editor->system_checkbutton, valid);
-	gtk_widget_set_sensitive (editor->ok_button, valid);
-#if 0
-	g_object_set (editor->system_gnome_action, "master-sensitive", valid, NULL);
-#endif
+	ce_polkit_button_set_master_sensitive (CE_POLKIT_BUTTON (editor->ok_button), valid);
+	update_sensitivity (editor);
+}
+
+static void
+ok_button_actionable_cb (GtkWidget *button,
+                         gboolean actionable,
+                         NMConnectionEditor *editor)
+{
+	connection_editor_validate (editor);
+}
+
+static void
+can_modify_changed_cb (NMRemoteSettingsSystem *settings,
+                       GParamSpec *pspec,
+                       NMConnectionEditor *editor)
+{
+	connection_editor_validate (editor);
 }
 
 static void
 system_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
 {
-	gboolean req_privs = FALSE;
-	NMSettingConnection *s_con;
-
-	/* If the connection was originally a system connection, obviously
-	 * privileges are required to change it.  If it was originally a user
-	 * connection, but the user requests that it be changed to a system
-	 * connection, privileges are also required.
+	/* Whether the Apply button uses system settings permissions as part of
+	 * it's sensitivity determination depends on whether the system checkbutton
+	 * is toggled or not.
 	 */
+	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (editor->ok_button),
+	                                 gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)));
 
-	if (editor->orig_scope == NM_CONNECTION_SCOPE_USER) {
-		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
-			req_privs = TRUE;
-	} else
-		req_privs = TRUE;
-
-#if 0
-	if (req_privs)
-		g_object_set (editor->system_gnome_action, "polkit-action", editor->system_action, NULL);
-	else
-		g_object_set (editor->system_gnome_action, "polkit-action", NULL, NULL);
-#endif
-
-	/* Can't ever modify read-only connections */
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
-	if (nm_setting_connection_get_read_only (s_con))
-		gtk_widget_set_sensitive (editor->ok_button, FALSE);
-
-	if (editor->initialized)
-		connection_editor_validate (editor);
+	connection_editor_validate (editor);
 }
-
-static void
-set_editor_sensitivity (NMConnectionEditor *editor, gboolean sensitive)
-{
-	GtkWidget *widget;
-	GSList *iter;
-
-	/* Cancel button is always sensitive */
-	gtk_widget_set_sensitive (GTK_WIDGET (editor->cancel_button), TRUE);
-
-	widget = glade_xml_get_widget (editor->xml, "connection_name_label");
-	gtk_widget_set_sensitive (widget, sensitive);
-
-	widget = glade_xml_get_widget (editor->xml, "connection_name");
-	gtk_widget_set_sensitive (widget, sensitive);
-
-	widget = glade_xml_get_widget (editor->xml, "connection_autoconnect");
-	gtk_widget_set_sensitive (widget, sensitive);
-
-	widget = glade_xml_get_widget (editor->xml, "connection_name");
-	gtk_widget_set_sensitive (widget, sensitive);
-
-	if (editor->system_settings_can_modify)
-		gtk_widget_set_sensitive (GTK_WIDGET (editor->system_checkbutton), sensitive);
-
-	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
-		widget = ce_page_get_page (CE_PAGE (iter->data));
-		gtk_widget_set_sensitive (widget, sensitive);
-	}
-}
-
-typedef guint32 PolKitResult;
-#define POLKIT_RESULT_UNKNOWN 0
-
-static void
-update_sensitivity (NMConnectionEditor *editor, PolKitResult pk_result)
-{
-	NMSettingConnection *s_con;
-	gboolean denied = FALSE;
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
-	/* Can't ever modify read-only connections */
-	if (nm_setting_connection_get_read_only (s_con)) {
-		set_editor_sensitivity (editor, FALSE);
-		return;
-	}
-
-#if 0
-	if (pk_result == POLKIT_RESULT_UNKNOWN)
-		pk_result = polkit_gnome_action_get_polkit_result (editor->system_gnome_action);
-
-	if (pk_result == POLKIT_RESULT_NO || pk_result == POLKIT_RESULT_UNKNOWN)
-		denied = TRUE;
-#endif
-
-	switch (editor->orig_scope) {
-	case NM_CONNECTION_SCOPE_SYSTEM:
-		/* If the user cannot ever be authorized to change system connections, and
-		 * the connection is a system connection, we desensitize the entire dialog.
-		 */
-		set_editor_sensitivity (editor, !denied);
-		break;
-	default:
-		/* If the user cannot ever be authorized to change system connections, and
-		 * the connection is a user connection, we desensitize system_checkbutton.
-		 */
-		set_editor_sensitivity (editor, TRUE);
-		if (denied)
-			gtk_widget_set_sensitive (GTK_WIDGET (editor->system_checkbutton), FALSE);
-		break;
-	}
-}
-
-#if 0
-static void
-system_pk_result_changed_cb (PolKitGnomeAction *gnome_action,
-                             PolKitResult result,
-                             NMConnectionEditor *editor)
-{
-	update_sensitivity (editor, result);
-}
-#endif
 
 static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *dialog;
-#if 0
-	GtkWidget *hbox;
-	const char *auth_label, *auth_tooltip;
-	const char *label, *tooltip;
-#endif
 
 	/* Yes, we mean applet.glade, not nm-connection-editor.glade. The wireless security bits
 	   are taken from applet.glade. */
@@ -327,59 +296,6 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	editor->window = glade_xml_get_widget (editor->xml, "nm-connection-editor");
 	editor->cancel_button = glade_xml_get_widget (editor->xml, "cancel_button");
 	editor->system_checkbutton = glade_xml_get_widget (editor->xml, "system_checkbutton");
-	editor->ok_button = glade_xml_get_widget (editor->xml, "apply_button");
-
-#if 0
-	editor->system_action = polkit_action_new ();
-	polkit_action_set_action_id (editor->system_action, "org.freedesktop.network-manager-settings.system.modify");
-
-	editor->system_gnome_action = polkit_gnome_action_new ("system");
-
-	auth_label = _("Apply...");
-	auth_tooltip = _("Authenticate to save this connection for all users of this machine.");
-	label = _("Apply");
-	tooltip = _("Save this connection for all users of this machine.");
-	g_object_set (editor->system_gnome_action,
-	              "polkit-action", NULL,
-
-	              "self-blocked-visible",       TRUE,
-	              "self-blocked-sensitive",     FALSE,
-	              "self-blocked-short-label",   label,
-	              "self-blocked-label",         label,
-	              "self-blocked-tooltip",       tooltip,
-	              "self-blocked-icon-name",     GTK_STOCK_APPLY,
-
-	              "no-visible",       TRUE,
-	              "no-sensitive",     FALSE,
-	              "no-short-label",   label,
-	              "no-label",         label,
-	              "no-tooltip",       tooltip,
-	              "no-icon-name",     GTK_STOCK_APPLY,
-
-	              "auth-visible",     TRUE,
-	              "auth-sensitive",   TRUE,
-	              "auth-short-label", auth_label,
-	              "auth-label",       auth_label,
-	              "auth-tooltip",     auth_tooltip,
-	              "auth-icon-name",   GTK_STOCK_DIALOG_AUTHENTICATION,
-
-	              "yes-visible",      TRUE,
-	              "yes-sensitive",    TRUE,
-	              "yes-short-label",  label,
-	              "yes-label",        label,
-	              "yes-tooltip",      tooltip,
-	              "yes-icon-name",    GTK_STOCK_APPLY,
-
-	              "master-visible",   TRUE,
-	              "master-sensitive", TRUE,
-	              NULL);
-	g_signal_connect (editor->system_gnome_action, "polkit-result-changed",
-	                  G_CALLBACK (system_pk_result_changed_cb), editor);
-
-	editor->ok_button = polkit_gnome_action_create_button (editor->system_gnome_action);
-	hbox = glade_xml_get_widget (editor->xml, "action_area_hbox");
-	gtk_box_pack_end (GTK_BOX (hbox), editor->ok_button, TRUE, TRUE, 0);
-#endif
 }
 
 static void
@@ -392,28 +308,17 @@ dispose (GObject *object)
 	editor->pages = NULL;
 
 	if (editor->connection) {
-                g_object_unref (editor->connection);
-                editor->connection = NULL;
-        }
-        if (editor->window) {
-                gtk_widget_destroy (editor->window);
-                editor->window = NULL;
-        }
-        if (editor->xml) {
-                g_object_unref (editor->xml);
-                editor->xml = NULL;
-        }
-
-#if 0
-        if (editor->system_action) {
-                polkit_action_unref (editor->system_action);
-                editor->system_action = NULL;
-        }
-        if (editor->system_gnome_action) {
-                g_object_unref (editor->system_gnome_action);
-                editor->system_gnome_action = NULL;
-        }
-#endif
+		g_object_unref (editor->connection);
+		editor->connection = NULL;
+	}
+	if (editor->window) {
+		gtk_widget_destroy (editor->window);
+		editor->window = NULL;
+	}
+	if (editor->xml) {
+		g_object_unref (editor->xml);
+		editor->xml = NULL;
+	}
 
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);
 }
@@ -439,10 +344,12 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 
 NMConnectionEditor *
 nm_connection_editor_new (NMConnection *connection,
-                          gboolean system_settings_can_modify,
+                          NMRemoteSettingsSystem *settings,
                           GError **error)
 {
 	NMConnectionEditor *editor;
+	GtkWidget *hbox;
+	gboolean sensitive = TRUE, use_polkit = FALSE;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
@@ -452,7 +359,40 @@ nm_connection_editor_new (NMConnection *connection,
 		return NULL;
 	}
 
-	editor->system_settings_can_modify = system_settings_can_modify;
+	g_object_get (settings,
+	              NM_SETTINGS_SYSTEM_INTERFACE_CAN_MODIFY,
+	              &editor->system_settings_can_modify,
+	              NULL);
+	g_signal_connect (settings,
+	                  "notify::" NM_SETTINGS_SYSTEM_INTERFACE_CAN_MODIFY,
+	                  G_CALLBACK (can_modify_changed_cb),
+	                  editor);
+
+	/* If this is a system connection that we can't ever modify,
+	 * set the editor's Apply button always insensitive.
+	 */
+	if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM) {
+		sensitive = editor->system_settings_can_modify;
+		use_polkit = TRUE;
+	}
+
+	editor->ok_button = ce_polkit_button_new (_("Apply"),
+	                                          _("Save this connection for all users of this machine."),
+	                                          _("Apply..."),
+	                                          _("Authenticate to save this connection for all users of this machine."),
+	                                          GTK_STOCK_APPLY,
+	                                          settings,
+	                                          NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
+	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (editor->ok_button), use_polkit);
+
+	g_signal_connect (editor->ok_button, "actionable",
+	                  G_CALLBACK (ok_button_actionable_cb), editor);
+	g_signal_connect (editor->ok_button, "authorized",
+	                  G_CALLBACK (ok_button_actionable_cb), editor);
+	hbox = glade_xml_get_widget (editor->xml, "action_area_hbox");
+	gtk_box_pack_end (GTK_BOX (hbox), editor->ok_button, TRUE, TRUE, 0);
+	gtk_widget_show_all (editor->ok_button);
+
 	if (!nm_connection_editor_set_connection (editor, connection, error)) {
 		g_object_unref (editor);
 		return NULL;
@@ -493,14 +433,12 @@ populate_connection_ui (NMConnectionEditor *editor)
 	g_signal_connect_swapped (name, "changed", G_CALLBACK (connection_editor_validate), editor);
 	g_signal_connect_swapped (autoconnect, "toggled", G_CALLBACK (connection_editor_validate), editor);
 
-	if (!editor->system_settings_can_modify)
-		gtk_widget_set_sensitive (editor->system_checkbutton, FALSE);
 	g_signal_connect (editor->system_checkbutton, "toggled", G_CALLBACK (system_checkbutton_toggled_cb), editor);
 
 	if (editor->orig_scope == NM_CONNECTION_SCOPE_SYSTEM)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->system_checkbutton), TRUE);
 
-	update_sensitivity (editor, POLKIT_RESULT_UNKNOWN);
+	connection_editor_validate (editor);
 }
 
 static void
@@ -526,15 +464,14 @@ recheck_initialization (NMConnectionEditor *editor)
 	/* Check if all pages are initialized; if not, desensitize the editor */
 	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
 		if (!ce_page_get_initialized (CE_PAGE (iter->data))) {
-			set_editor_sensitivity (editor, FALSE);
+			update_sensitivity (editor);
 			return;
 		}
 	}
 
-	populate_connection_ui (editor);
-	update_sensitivity (editor, POLKIT_RESULT_UNKNOWN);
-
 	editor->initialized = TRUE;
+
+	populate_connection_ui (editor);
 
 	/* Validate the connection from an idle handler to ensure that stuff like
 	 * GtkFileChoosers have had a chance to asynchronously find their files.

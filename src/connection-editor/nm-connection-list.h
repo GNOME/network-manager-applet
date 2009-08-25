@@ -49,10 +49,6 @@ typedef struct {
 	GladeXML *gui;
 	GtkWidget *dialog;
 
-#if 0
-	PolKitAction *system_action;
-#endif
-
 	GdkPixbuf *wired_icon;
 	GdkPixbuf *wireless_icon;
 	GdkPixbuf *wwan_icon;

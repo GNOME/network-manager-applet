@@ -51,7 +51,9 @@ nm_connection_editor_SOURCES = \
 	ip6-routes-dialog.h \
 	ip6-routes-dialog.c \
 	ppp-auth-methods-dialog.c \
-	ppp-auth-methods-dialog.h
+	ppp-auth-methods-dialog.h \
+	ce-polkit-button.c \
+	ce-polkit-button.h
 
 nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-connection-editor-service.xml
 	dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<

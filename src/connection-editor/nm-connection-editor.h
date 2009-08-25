@@ -28,6 +28,8 @@
 #include <glib-object.h>
 #include <glade/glade-xml.h>
 
+#include "nm-remote-settings-system.h"
+
 #define NM_TYPE_CONNECTION_EDITOR    (nm_connection_editor_get_type ())
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))
 #define NM_CONNECTION_EDITOR(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_EDITOR, NMConnectionEditor))
@@ -40,10 +42,6 @@ typedef struct {
 	gboolean initialized;
 
 	NMConnectionScope orig_scope;
-#if 0
-	PolKitAction *system_action;
-	PolKitGnomeAction *system_gnome_action;
-#endif
 
 	GtkWidget *system_checkbutton;
 	gboolean system_settings_can_modify;
@@ -64,7 +62,7 @@ typedef struct {
 
 GType               nm_connection_editor_get_type (void);
 NMConnectionEditor *nm_connection_editor_new (NMConnection *connection,
-                                              gboolean system_settings_can_modify,
+                                              NMRemoteSettingsSystem *settings,
                                               GError **error);
 
 void                nm_connection_editor_present (NMConnectionEditor *editor);
