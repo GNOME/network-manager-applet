@@ -318,8 +318,10 @@ internal_get_secrets (NMSettingsConnectionInterface *connection,
 		return FALSE;
 	}
 
-	/* VPN passwords are handled by the VPN plugin's auth dialog */
-	if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME))
+	/* VPN passwords are handled by the VPN plugin's auth dialog when the
+	 * request comes from D-Bus.
+	 */
+	if (!local && !strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME))
 		goto get_secrets;
 
 	if (request_new) {
