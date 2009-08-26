@@ -318,60 +318,65 @@ internal_get_secrets (NMSettingsConnectionInterface *connection,
 		return FALSE;
 	}
 
-	/* VPN passwords are handled by the VPN plugin's auth dialog when the
-	 * request comes from D-Bus.
-	 */
-	if (!local && !strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME))
-		goto get_secrets;
-
-	if (request_new) {
-		nm_info ("New secrets for %s/%s requested; ask the user",
-		         connection_id, setting_name);
-		nm_connection_clear_secrets (NM_CONNECTION (self));
-		goto get_secrets;
-	}
-
-	secrets = nm_gconf_get_keyring_items (NM_CONNECTION (self), setting_name, local, error);
-	if (!secrets) {
-		if (error)
+	/* Only try to get new secrets for D-Bus requests */
+	if (local) {
+		secrets = nm_gconf_get_keyring_items (NM_CONNECTION (self), setting_name, local, error);
+		if (!secrets && error && *error)
 			return FALSE;
+	} else {
+		/* VPN passwords are handled by the VPN plugin's auth dialog */
+		if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME))
+			goto get_secrets;
 
-		nm_info ("No keyring secrets found for %s/%s; asking user.",
-		         connection_id, setting_name);
-		goto get_secrets;
-	}
-
-	if (g_hash_table_size (secrets) == 0) {
-		g_hash_table_destroy (secrets);
-		nm_warning ("%s.%d - Secrets were found for setting '%s' but none"
-				  " were valid.", __FILE__, __LINE__, setting_name);
-		goto get_secrets;
-	}
-
-	/* If there were hints, and none of the hints were returned by the keyring,
-	 * get some new secrets.
-	 */
-	if (hints && g_strv_length ((char **) hints)) {
-		GHashTableIter iter;
-		gpointer key, value;
-		gboolean found = FALSE;
-
-		g_hash_table_iter_init (&iter, secrets);
-		while (g_hash_table_iter_next (&iter, &key, &value) && !found) {
-			const char **hint = hints;
-
-			while (!found && *hint) {
-				if (!strcmp (*hint, (const char *) key) && value && G_IS_VALUE (value)) {
-					found = TRUE;
-					break;
-				}
-				hint++;
-			}
+		if (request_new) {
+			nm_info ("New secrets for %s/%s requested; ask the user",
+			         connection_id, setting_name);
+			nm_connection_clear_secrets (NM_CONNECTION (self));
+			goto get_secrets;
 		}
 
-		if (!found) {
-			g_hash_table_destroy (secrets);
+		secrets = nm_gconf_get_keyring_items (NM_CONNECTION (self), setting_name, local, error);
+		if (!secrets) {
+			if (error && *error)
+				return FALSE;
+
+			nm_info ("No keyring secrets found for %s/%s; asking user.",
+			         connection_id, setting_name);
 			goto get_secrets;
+		}
+
+		if (g_hash_table_size (secrets) == 0) {
+			g_hash_table_destroy (secrets);
+			nm_warning ("%s.%d - Secrets were found for setting '%s' but none"
+					  " were valid.", __FILE__, __LINE__, setting_name);
+			goto get_secrets;
+		}
+
+		/* If there were hints, and none of the hints were returned by the keyring,
+		 * get some new secrets.
+		 */
+		if (hints && g_strv_length ((char **) hints)) {
+			GHashTableIter iter;
+			gpointer key, value;
+			gboolean found = FALSE;
+
+			g_hash_table_iter_init (&iter, secrets);
+			while (g_hash_table_iter_next (&iter, &key, &value) && !found) {
+				const char **hint = hints;
+
+				while (!found && *hint) {
+					if (!strcmp (*hint, (const char *) key) && value && G_IS_VALUE (value)) {
+						found = TRUE;
+						break;
+					}
+					hint++;
+				}
+			}
+
+			if (!found) {
+				g_hash_table_destroy (secrets);
+				goto get_secrets;
+			}
 		}
 	}
 
@@ -381,7 +386,8 @@ internal_get_secrets (NMSettingsConnectionInterface *connection,
 	settings = g_hash_table_new_full (g_str_hash, g_str_equal,
 	                                  g_free,
 	                                  (GDestroyNotify) g_hash_table_destroy);
-	g_hash_table_insert (settings, g_strdup (setting_name), secrets);
+	if (secrets)
+		g_hash_table_insert (settings, g_strdup (setting_name), secrets);
 	callback (NM_SETTINGS_CONNECTION_INTERFACE (self), settings, NULL, callback_data);
 	g_hash_table_destroy (settings);
 	return TRUE;
