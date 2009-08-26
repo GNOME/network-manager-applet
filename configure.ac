@@ -105,7 +105,7 @@ PKG_CHECK_MODULES(GNOME_BLUETOOTH,
 		  gconf-2.0
 		  gnome-bluetooth-1.0 >= 2.27.6
 		  libnm-util
-		  libnm_glib,
+		  libnm-glib,
 		  have_gbt=yes, have_gbt=no)
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
