@@ -24,7 +24,9 @@
 
 #include <gconf/gconf-client.h>
 #include <dbus/dbus-glib.h>
-#include <nm-settings.h>
+#include <nm-connection.h>
+#include <nm-exported-connection.h>
+#include <nm-settings-connection-interface.h>
 
 G_BEGIN_DECLS
 
@@ -42,6 +44,11 @@ typedef struct {
 	NMExportedConnection parent;
 } NMAGConfConnection;
 
+typedef void (*NMANewSecretsRequestedFunc) (NMSettingsConnectionInterface *connection,
+                                            GHashTable *settings,
+                                            GError *error,
+                                            gpointer user_data);
+
 typedef struct {
 	NMExportedConnectionClass parent;
 
@@ -56,17 +63,15 @@ typedef struct {
 GType nma_gconf_connection_get_type (void);
 
 NMAGConfConnection *nma_gconf_connection_new  (GConfClient *client,
-									  const char *conf_dir);
+                                               const char *conf_dir);
 
 NMAGConfConnection *nma_gconf_connection_new_from_connection (GConfClient *client,
-												  const char *conf_dir,
-												  NMConnection *connection);
+                                                              const char *conf_dir,
+                                                              NMConnection *connection);
 
-const char         *nma_gconf_connection_get_path (NMAGConfConnection *self);
+gboolean nma_gconf_connection_gconf_changed (NMAGConfConnection *self);
 
-void                nma_gconf_connection_save (NMAGConfConnection *self);
-
-gboolean            nma_gconf_connection_changed (NMAGConfConnection *self);
+const char *nma_gconf_connection_get_gconf_path (NMAGConfConnection *self);
 
 G_END_DECLS
 

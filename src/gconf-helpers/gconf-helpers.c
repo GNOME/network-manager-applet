@@ -41,7 +41,7 @@
 #include <nm-setting-vpn.h>
 #include <nm-setting-ip4-config.h>
 #include <nm-utils.h>
-#include <nm-settings.h>
+#include <nm-settings-interface.h>
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
@@ -2278,7 +2278,9 @@ get_one_private_key (NMConnection *connection,
 		secret_name = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY;
 		real_password_secret_name = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD;
 	} else {
-		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_UNAVAILABLE,
+		g_set_error (error,
+		             NM_SETTINGS_INTERFACE_ERROR,
+		             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
 		             "%s.%d - %s/%s Unknown private key password type '%s'.",
 		             __FILE__, __LINE__, nm_setting_connection_get_id (s_con), setting_name, tag);
 		return FALSE;
@@ -2309,7 +2311,9 @@ get_one_private_key (NMConnection *connection,
 	if (*error) {
 		goto out;
 	} else if (!array || !array->len) {
-		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_UNAVAILABLE,
+		g_set_error (error,
+		             NM_SETTINGS_INTERFACE_ERROR,
+		             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
 		             "%s.%d - %s/%s couldn't read private key.",
 		             __FILE__, __LINE__, nm_setting_connection_get_id (s_con), setting_name);
 		goto out;
@@ -2388,7 +2392,9 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 		}
 
 		if (key_name == NULL) {
-			g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_UNAVAILABLE,
+			g_set_error (error,
+			             NM_SETTINGS_INTERFACE_ERROR,
+			             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
 			             "%s.%d - Internal error; keyring item '%s/%s' didn't "
 			             "have a 'setting-key' attribute.",
 			             __FILE__, __LINE__, connection_name, setting_name);
@@ -2404,7 +2410,9 @@ nm_gconf_get_keyring_items (NMConnection *connection,
 			if (!get_one_private_key (connection, setting_name, key_name,
 			                          found->secret, include_private_passwords, secrets, error)) {
 				if (!*error) {
-					g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_UNAVAILABLE,
+					g_set_error (error,
+					             NM_SETTINGS_INTERFACE_ERROR,
+					             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
 					             "%s.%d - %s/%s unknown error from get_one_private_key().",
 					             __FILE__, __LINE__, connection_name, setting_name);
 				}
@@ -2521,20 +2529,5 @@ nm_gconf_clear_private_connection_values (NMConnection *connection)
 	g_object_set_data (G_OBJECT (connection), NMA_PRIVATE_KEY_PASSWORD_TAG, NULL);
 	g_object_set_data (G_OBJECT (connection), NMA_PATH_PHASE2_PRIVATE_KEY_TAG, NULL);
 	g_object_set_data (G_OBJECT (connection), NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG, NULL);
-}
-
-NMConnection *
-nm_gconf_connection_duplicate (NMConnection *connection)
-{
-	NMConnection *dup;
-
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
-
-	dup = nm_connection_duplicate (connection);
-	g_return_val_if_fail (NM_IS_CONNECTION (dup), NULL);
-
-	nm_gconf_copy_private_connection_values (dup, connection);
-
-	return dup;
 }
 

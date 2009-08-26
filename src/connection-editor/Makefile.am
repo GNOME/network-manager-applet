@@ -10,17 +10,11 @@ nm_connection_editor_CPPFLAGS = \
 	-DDATADIR=\""$(datadir)"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
 	$(DBUS_CFLAGS) \
-	$(POLKIT_CFLAGS) \
 	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/gconf-helpers \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
 	-I${top_builddir}/src/marshallers
-
-if NO_POLKIT_GNOME
-nm_connection_editor_CPPFLAGS += \
-	-I${top_srcdir}/src/polkit-helpers
-endif
 
 nm_connection_editor_SOURCES = \
 	nm-connection-editor.c \
@@ -58,8 +52,8 @@ nm_connection_editor_SOURCES = \
 	ip6-routes-dialog.c \
 	ppp-auth-methods-dialog.c \
 	ppp-auth-methods-dialog.h \
-	polkit-helpers.c \
-	polkit-helpers.h
+	ce-polkit-button.c \
+	ce-polkit-button.h
 
 nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-connection-editor-service.xml
 	dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<
@@ -69,13 +63,7 @@ nm_connection_editor_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/marshallers/libmarshallers.la \
-	$(NMA_LIBS) \
-	$(POLKIT_LIBS)
-
-if NO_POLKIT_GNOME
-nm_connection_editor_LDADD += \
-	${top_builddir}/src/polkit-helpers/libpolkit-helpers.la
-endif
+	$(NMA_LIBS)
 
 gladedir = $(datadir)/nm-applet
 glade_DATA = \

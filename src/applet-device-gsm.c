@@ -405,11 +405,12 @@ gsm_get_icon (NMDevice *device,
 }
 
 typedef struct {
-	DBusGMethodInvocation *context;
+	NMANewSecretsRequestedFunc callback;
+	gpointer callback_data;
 	NMApplet *applet;
 	NMActiveConnection *active_connection;
 	GtkWidget *dialog;
-	NMConnection *connection;
+	NMSettingsConnectionInterface *connection;
 	GtkEntry *secret_entry;
 	char *secret_name;
 } NMGsmInfo;
@@ -451,12 +452,22 @@ destroy_gsm_dialog (gpointer user_data, GObject *finalized)
 }
 
 static void
+update_cb (NMSettingsConnectionInterface *connection,
+           GError *error,
+           gpointer user_data)
+{
+	if (error) {
+		g_warning ("%s: failed to update connection: (%d) %s",
+		           __func__, error->code, error->message);
+	}
+}
+
+static void
 get_gsm_secrets_cb (GtkDialog *dialog,
-				gint response,
-				gpointer user_data)
+                    gint response,
+                    gpointer user_data)
 {
 	NMGsmInfo *info = (NMGsmInfo *) user_data;
-	NMAGConfConnection *gconf_connection;
 	NMSettingGsm *setting;
 	GHashTable *settings_hash;
 	GHashTable *secrets;
@@ -468,13 +479,15 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_gsm_dialog, info);
 
 	if (response != GTK_RESPONSE_OK) {
-		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_SECRETS_REQUEST_CANCELED,
+		g_set_error (&err,
+		             NM_SETTINGS_INTERFACE_ERROR,
+		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
 		goto done;
 	}
 
-	setting = NM_SETTING_GSM (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_GSM));
+	setting = NM_SETTING_GSM (nm_connection_get_setting (NM_CONNECTION (info->connection), NM_TYPE_SETTING_GSM));
 
 	if (!strcmp (info->secret_name, NM_SETTING_GSM_PIN) ||
 	    !strcmp (info->secret_name, NM_SETTING_GSM_PUK) ||
@@ -483,9 +496,11 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 
 	secrets = nm_setting_to_hash (NM_SETTING (setting));
 	if (!secrets) {
-		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
-				   "%s.%d (%s): failed to hash setting '%s'.",
-				   __FILE__, __LINE__, __func__, nm_setting_get_name (NM_SETTING (setting)));
+		g_set_error (&err,
+		             NM_SETTINGS_INTERFACE_ERROR,
+		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             "%s.%d (%s): failed to hash setting '%s'.",
+		             __FILE__, __LINE__, __func__, nm_setting_get_name (NM_SETTING (setting)));
 		goto done;
 	}
 
@@ -496,25 +511,24 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 								    g_free, (GDestroyNotify) g_hash_table_destroy);
 
 	g_hash_table_insert (settings_hash, g_strdup (nm_setting_get_name (NM_SETTING (setting))), secrets);
-	dbus_g_method_return (info->context, settings_hash);
+	info->callback (info->connection, settings_hash, NULL, info->callback_data);
 	g_hash_table_destroy (settings_hash);
 
 	/* Save the connection back to GConf _after_ hashing it, because
 	 * saving to GConf might trigger the GConf change notifiers, resulting
 	 * in the connection being read back in from GConf which clears secrets.
 	 */
-	gconf_connection = nma_gconf_settings_get_by_connection (info->applet->gconf_settings, info->connection);
-	if (gconf_connection)
-		nma_gconf_connection_save (gconf_connection);
+	if (NMA_IS_GCONF_CONNECTION (info->connection))
+		nm_settings_connection_interface_update (info->connection, update_cb, NULL);
 
  done:
 	if (err) {
 		g_warning ("%s", err->message);
-		dbus_g_method_return_error (info->context, err);
+		info->callback (info->connection, NULL, err, info->callback_data);
 		g_error_free (err);
 	}
 
-	nm_connection_clear_secrets (info->connection);
+	nm_connection_clear_secrets (NM_CONNECTION (info->connection));
 	destroy_gsm_dialog (info, NULL);
 }
 
@@ -633,11 +647,12 @@ ask_for_password (NMDevice *device,
 
 static gboolean
 gsm_get_secrets (NMDevice *device,
-                 NMConnection *connection,
+                 NMSettingsConnectionInterface *connection,
                  NMActiveConnection *active_connection,
                  const char *setting_name,
                  const char **hints,
-                 DBusGMethodInvocation *context,
+                 NMANewSecretsRequestedFunc callback,
+                 gpointer callback_data,
                  NMApplet *applet,
                  GError **error)
 {
@@ -646,7 +661,9 @@ gsm_get_secrets (NMDevice *device,
 	GtkEntry *secret_entry = NULL;
 
 	if (!hints || !g_strv_length ((char **) hints)) {
-		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
+		g_set_error (error,
+		             NM_SETTINGS_INTERFACE_ERROR,
+		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): missing secrets hints.",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -654,25 +671,30 @@ gsm_get_secrets (NMDevice *device,
 
 	if (   !strcmp (hints[0], NM_SETTING_GSM_PIN)
 	    || !strcmp (hints[0], NM_SETTING_GSM_PUK))
-		widget = ask_for_pin_puk (device, connection, hints[0], &secret_entry);
+		widget = ask_for_pin_puk (device, NM_CONNECTION (connection), hints[0], &secret_entry);
 	else if (!strcmp (hints[0], NM_SETTING_GSM_PASSWORD))
-		widget = ask_for_password (device, connection, &secret_entry);
+		widget = ask_for_password (device, NM_CONNECTION (connection), &secret_entry);
 	else {
-		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
+		g_set_error (error,
+		             NM_SETTINGS_INTERFACE_ERROR,
+		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): unknown secrets hint '%s'.",
 		             __FILE__, __LINE__, __func__, hints[0]);
 		return FALSE;
 	}
 
 	if (!widget || !secret_entry) {
-		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
+		g_set_error (error,
+		             NM_SETTINGS_INTERFACE_ERROR,
+		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): error asking for GSM secrets.",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
 	}
 
-	info = g_new (NMGsmInfo, 1);
-	info->context = context;
+	info = g_malloc0 (sizeof (NMGsmInfo));
+	info->callback = callback;
+	info->callback_data = callback_data;
 	info->applet = applet;
 	info->active_connection = active_connection;
 	info->connection = g_object_ref (connection);

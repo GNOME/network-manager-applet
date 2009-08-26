@@ -20,12 +20,13 @@
 
 #include <string.h>
 #include <stdio.h>
+
 #include "nma-gconf-settings.h"
 #include "gconf-helpers.h"
 #include "nma-marshal.h"
 #include "nm-utils.h"
 
-G_DEFINE_TYPE (NMAGConfSettings, nma_gconf_settings, NM_TYPE_SETTINGS)
+G_DEFINE_TYPE (NMAGConfSettings, nma_gconf_settings, NM_TYPE_SETTINGS_SERVICE)
 
 #define NMA_GCONF_SETTINGS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NMA_TYPE_GCONF_SETTINGS, NMAGConfSettingsPrivate))
 
@@ -49,9 +50,12 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 
 NMAGConfSettings *
-nma_gconf_settings_new (void)
+nma_gconf_settings_new (DBusGConnection *bus)
 {
-	return (NMAGConfSettings *) g_object_new (NMA_TYPE_GCONF_SETTINGS, NULL);
+	return (NMAGConfSettings *) g_object_new (NMA_TYPE_GCONF_SETTINGS,
+	                                          NM_SETTINGS_SERVICE_SCOPE, NM_CONNECTION_SCOPE_USER,
+	                                          NM_SETTINGS_SERVICE_BUS, bus,
+	                                          NULL);
 }
 
 static void
@@ -59,7 +63,8 @@ connection_new_secrets_requested_cb (NMAGConfConnection *connection,
                                      const char *setting_name,
                                      const char **hints,
                                      gboolean ask_user,
-                                     DBusGMethodInvocation *context,
+                                     NMANewSecretsRequestedFunc callback,
+                                     gpointer callback_data,
                                      gpointer user_data)
 {
 	NMAGConfSettings *self = NMA_GCONF_SETTINGS (user_data);
@@ -74,7 +79,8 @@ connection_new_secrets_requested_cb (NMAGConfConnection *connection,
 	               setting_name,
 	               hints,
 	               ask_user,
-	               context);
+	               callback,
+	               callback_data);
 }
 
 static void
@@ -87,19 +93,41 @@ connection_removed (NMExportedConnection *connection, gpointer user_data)
 }
 
 static void
-add_connection_real (NMAGConfSettings *self, NMAGConfConnection *connection)
+internal_add_connection (NMAGConfSettings *self, NMAGConfConnection *connection)
 {
 	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (self);
+	DBusGConnection *bus = NULL;
 
-	if (connection) {
-		priv->connections = g_slist_prepend (priv->connections, connection);
-		g_signal_connect (connection, "new-secrets-requested",
-					   G_CALLBACK (connection_new_secrets_requested_cb),
-					   self);
+	g_return_if_fail (connection != NULL);
 
-		g_signal_connect (connection, "removed", G_CALLBACK (connection_removed), self);
-		nm_settings_signal_new_connection (NM_SETTINGS (self),
-									NM_EXPORTED_CONNECTION (connection));
+	priv->connections = g_slist_prepend (priv->connections, connection);
+	g_signal_connect (connection, "new-secrets-requested",
+	                  G_CALLBACK (connection_new_secrets_requested_cb),
+	                  self);
+
+	g_signal_connect (connection, "removed", G_CALLBACK (connection_removed), self);
+
+	g_object_get (G_OBJECT (self), NM_SETTINGS_SERVICE_BUS, &bus, NULL);
+	if (bus) {
+		nm_settings_service_export_connection (NM_SETTINGS_SERVICE (self),
+		                                       NM_SETTINGS_CONNECTION_INTERFACE (connection));
+		dbus_g_connection_unref (bus);
+	}
+
+	g_signal_emit_by_name (self, NM_SETTINGS_INTERFACE_NEW_CONNECTION, NM_CONNECTION (connection));
+}
+
+static void
+update_cb (NMSettingsConnectionInterface *connection,
+           GError *error,
+           gpointer user_data)
+{
+	if (error) {
+		g_warning ("%s: %s:%d error updating connection %s: (%d) %s",
+		           __func__, __FILE__, __LINE__,
+		           nma_gconf_connection_get_gconf_path (NMA_GCONF_CONNECTION (connection)),
+		           error ? error->code : -1,
+		           (error && error->message) ? error->message : "(unknown)");
 	}
 }
 
@@ -134,21 +162,45 @@ nma_gconf_settings_add_connection (NMAGConfSettings *self, NMConnection *connect
 
 	exported = nma_gconf_connection_new_from_connection (priv->client, path, connection);
 	g_free (path);
-	if (!exported)
-		return NULL;
+	if (exported) {
+		internal_add_connection (self, exported);
 
-	add_connection_real (self, exported);
-
-	/* Must save connection to GConf _after_ adding it to the connections
-	 * list to avoid races with GConf notifications.
-	 */
-	nma_gconf_connection_save (exported);
+		/* Must save connection to GConf _after_ adding it to the connections
+		 * list to avoid races with GConf notifications.
+		 */
+		nm_settings_connection_interface_update (NM_SETTINGS_CONNECTION_INTERFACE (exported), update_cb, NULL);
+	}
 
 	return exported;
 }
 
-NMAGConfConnection *
-nma_gconf_settings_get_by_path (NMAGConfSettings *self, const char *path)
+static void
+add_connection (NMSettingsService *settings,
+                NMConnection *connection,
+                DBusGMethodInvocation *context, /* Only present for D-Bus calls */
+                NMSettingsAddConnectionFunc callback,
+                gpointer user_data)
+{
+	NMAGConfSettings *self = NMA_GCONF_SETTINGS (settings);
+
+	/* For now, we don't support additions via D-Bus until we figure out
+	 * the security implications.
+	 */
+	if (context) {
+		GError *error;
+
+		error = g_error_new (0, 0, "%s: adding connections via D-Bus is not (yet) supported", __func__);
+		callback (NM_SETTINGS_INTERFACE (settings), error, user_data);
+		g_error_free (error);
+		return;
+	}
+
+	nma_gconf_settings_add_connection (self, connection);
+	callback (NM_SETTINGS_INTERFACE (settings), NULL, user_data);
+}
+
+static NMAGConfConnection *
+get_connection_by_gconf_path (NMAGConfSettings *self, const char *path)
 {
 	NMAGConfSettingsPrivate *priv;
 	GSList *iter;
@@ -161,58 +213,9 @@ nma_gconf_settings_get_by_path (NMAGConfSettings *self, const char *path)
 		NMAGConfConnection *connection = NMA_GCONF_CONNECTION (iter->data);
 		const char *gconf_path;
 
-		gconf_path = nma_gconf_connection_get_path (connection);
+		gconf_path = nma_gconf_connection_get_gconf_path (connection);
 		if (gconf_path && !strcmp (gconf_path, path))
 			return connection;
-	}
-
-	return NULL;
-}
-
-NMAGConfConnection *
-nma_gconf_settings_get_by_dbus_path (NMAGConfSettings *self,
-							  const char *path)
-{
-	NMAGConfSettingsPrivate *priv;
-	GSList *iter;
-
-	g_return_val_if_fail (NMA_IS_GCONF_SETTINGS (self), NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-
-	priv = NMA_GCONF_SETTINGS_GET_PRIVATE (self);
-	for (iter = priv->connections; iter; iter = iter->next) {
-		NMAGConfConnection *connection = NMA_GCONF_CONNECTION (iter->data);
-		NMConnection *wrapped;
-		const char *sc_path;
-
-		wrapped = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (connection));
-		sc_path = nm_connection_get_path (wrapped);
-
-		if (sc_path && !strcmp (sc_path, path))
-			return connection;
-	}
-
-	return NULL;
-}
-
-NMAGConfConnection *
-nma_gconf_settings_get_by_connection (NMAGConfSettings *self,
-							   NMConnection *connection)
-{
-	NMAGConfSettingsPrivate *priv;
-	GSList *iter;
-
-	g_return_val_if_fail (NMA_IS_GCONF_SETTINGS (self), NULL);
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
-
-	priv = NMA_GCONF_SETTINGS_GET_PRIVATE (self);
-
-	for (iter = priv->connections; iter; iter = iter->next) {
-		NMConnection *wrapped;
-
-		wrapped = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (iter->data));
-		if (connection == wrapped)
-			return NMA_GCONF_CONNECTION (iter->data);
 	}
 
 	return NULL;
@@ -231,8 +234,11 @@ read_connections (NMAGConfSettings *settings)
 
 	for (iter = dir_list; iter; iter = iter->next) {
 		char *dir = (char *) iter->data;
+		NMAGConfConnection *connection;
 
-		add_connection_real (settings, nma_gconf_connection_new (priv->client, dir));
+		connection = nma_gconf_connection_new (priv->client, dir);
+		if (connection)
+			internal_add_connection (settings, connection);
 		g_free (dir);
 	}
 
@@ -250,7 +256,7 @@ read_connections_cb (gpointer data)
 }
 
 static GSList *
-list_connections (NMSettings *settings)
+list_connections (NMSettingsService *settings)
 {
 	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (settings);
 
@@ -285,15 +291,16 @@ connection_changes_done (gpointer data)
 	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (info->settings);
 	NMAGConfConnection *connection;
 
-	connection = nma_gconf_settings_get_by_path (info->settings, info->path);
+	connection = get_connection_by_gconf_path (info->settings, info->path);
 	if (!connection) {
 		/* New connection */
 		connection = nma_gconf_connection_new (priv->client, info->path);
-		add_connection_real (info->settings, connection);
+		if (connection)
+			internal_add_connection (info->settings, connection);
 	} else {
 		if (gconf_client_dir_exists (priv->client, info->path, NULL)) {
 			/* Updated connection */
-			if (!nma_gconf_connection_changed (connection))
+			if (!nma_gconf_connection_gconf_changed (connection))
 				priv->connections = g_slist_remove (priv->connections, connection);
 		}
 	}
@@ -353,12 +360,12 @@ remove_pending_change (gpointer data)
 	g_source_remove (GPOINTER_TO_UINT (data));
 }
 
-/* GObject */
+/************************************************************/
 
 static void
-nma_gconf_settings_init (NMAGConfSettings *settings)
+nma_gconf_settings_init (NMAGConfSettings *self)
 {
-	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (settings);
+	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (self);
 
 	priv->client = gconf_client_get_default ();
 	priv->pending_changes = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, remove_pending_change);
@@ -369,10 +376,10 @@ nma_gconf_settings_init (NMAGConfSettings *settings)
 	                      NULL);
 
 	priv->conf_notify_id = gconf_client_notify_add (priv->client,
-										   GCONF_PATH_CONNECTIONS,
-										   (GConfClientNotifyFunc) connections_changed_cb,
-										   settings,
-										   NULL, NULL);
+	                                                GCONF_PATH_CONNECTIONS,
+	                                                (GConfClientNotifyFunc) connections_changed_cb,
+	                                                self,
+	                                                NULL, NULL);
 }
 
 static GObject *
@@ -381,17 +388,10 @@ constructor (GType type,
 		   GObjectConstructParam *construct_params)
 {
 	GObject *object;
-	NMAGConfSettingsPrivate *priv;
 
 	object = G_OBJECT_CLASS (nma_gconf_settings_parent_class)->constructor (type, n_construct_params, construct_params);
-
-	if (!object)
-		return NULL;
-
-	priv = NMA_GCONF_SETTINGS_GET_PRIVATE (object);
-
-	priv->read_connections_id = g_idle_add (read_connections_cb, object);
-
+	if (object)
+		NMA_GCONF_SETTINGS_GET_PRIVATE (object)->read_connections_id = g_idle_add (read_connections_cb, object);
 	return object;
 }
 
@@ -424,18 +424,19 @@ dispose (GObject *object)
 }
 
 static void
-nma_gconf_settings_class_init (NMAGConfSettingsClass *gconf_settings_class)
+nma_gconf_settings_class_init (NMAGConfSettingsClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (gconf_settings_class);
-	NMSettingsClass *settings_class = NM_SETTINGS_CLASS (gconf_settings_class);
+	GObjectClass *object_class = G_OBJECT_CLASS (class);
+	NMSettingsServiceClass *settings_class = NM_SETTINGS_SERVICE_CLASS (class);
 
-	g_type_class_add_private (gconf_settings_class, sizeof (NMAGConfSettingsPrivate));
+	g_type_class_add_private (class, sizeof (NMAGConfSettingsPrivate));
 
 	/* Virtual methods */
 	object_class->constructor = constructor;
 	object_class->dispose = dispose;
 
 	settings_class->list_connections = list_connections;
+	settings_class->add_connection = add_connection;
 
 	/* Signals */
 	signals[NEW_SECRETS_REQUESTED] =
@@ -444,7 +445,7 @@ nma_gconf_settings_class_init (NMAGConfSettingsClass *gconf_settings_class)
 				    G_SIGNAL_RUN_FIRST,
 				    G_STRUCT_OFFSET (NMAGConfSettingsClass, new_secrets_requested),
 				    NULL, NULL,
-				    nma_marshal_VOID__OBJECT_STRING_POINTER_BOOLEAN_POINTER,
-				    G_TYPE_NONE, 5,
-				    G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_BOOLEAN, G_TYPE_POINTER);
+				    nma_marshal_VOID__OBJECT_STRING_POINTER_BOOLEAN_POINTER_POINTER,
+				    G_TYPE_NONE, 6,
+				    G_TYPE_OBJECT, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_BOOLEAN, G_TYPE_POINTER, G_TYPE_POINTER);
 }

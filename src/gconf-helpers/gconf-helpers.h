@@ -37,10 +37,10 @@
 
 
 /* 
-   ATTENTION: Make sure to update nm_gconf_connection_duplicate() 
-   when new connection tag is added! Otherwise duplicating connection
-   will not work correctly.
-*/
+ * ATTENTION: Make sure to update nm_gconf_copy_private_connection_values()
+ * and nm_gconf_clear_private_connection_values() when new tag is added!
+ * Otherwise duplicating connection will not work correctly.
+ */
 #define NMA_CA_CERT_IGNORE_TAG  "nma-ca-cert-ignore"
 #define NMA_PHASE2_CA_CERT_IGNORE_TAG  "nma-phase2-ca-cert-ignore"
 #define NMA_PATH_CLIENT_CERT_TAG "nma-path-client-cert"
@@ -51,8 +51,6 @@
 #define NMA_PRIVATE_KEY_PASSWORD_TAG "nma-private-key-password"
 #define NMA_PATH_PHASE2_PRIVATE_KEY_TAG "nma-path-phase2-private-key"
 #define NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG "nma-phase2-private-key-password"
-
-NMConnection *nm_gconf_connection_duplicate (NMConnection *connection);
 
 void nm_gconf_copy_private_connection_values (NMConnection *dst, NMConnection *src);
 void nm_gconf_clear_private_connection_values (NMConnection *connection);

@@ -116,7 +116,7 @@ dialog_init (GtkWidget *dialog,
 GtkWidget *
 nma_wired_dialog_new (const char *glade_file,
 					  NMClient *nm_client,
-					  NMConnection *connection,
+					  NMSettingsConnectionInterface *connection,
 					  NMDevice *device)
 {
 	GladeXML *xml;
@@ -136,7 +136,7 @@ nma_wired_dialog_new (const char *glade_file,
 		return NULL;
 	}
 
-	success = dialog_init (dialog, xml, nm_client, glade_file, connection);
+	success = dialog_init (dialog, xml, nm_client, glade_file, NM_CONNECTION (connection));
 	if (!success) {
 		nm_warning ("Couldn't create wired security dialog.");
 		gtk_widget_destroy (dialog);
@@ -150,10 +150,10 @@ nma_wired_dialog_new (const char *glade_file,
 	return dialog;
 }
 					  
-NMConnection *
+NMSettingsConnectionInterface *
 nma_wired_dialog_get_connection (GtkWidget *dialog)
 {
-	NMConnection *connection;
+	NMSettingsConnectionInterface *connection;
 	WirelessSecurity *security;
 	NMConnection *tmp_connection;
 	NMSetting *s_8021x;
@@ -169,7 +169,7 @@ nma_wired_dialog_get_connection (GtkWidget *dialog)
 	ws_802_1x_fill_connection (security, "wpa_eap_auth_combo", tmp_connection);
 
 	s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
-	nm_connection_add_setting (connection, NM_SETTING (g_object_ref (s_8021x)));
+	nm_connection_add_setting (NM_CONNECTION (connection), NM_SETTING (g_object_ref (s_8021x)));
 
 	g_object_unref (tmp_connection);
 
