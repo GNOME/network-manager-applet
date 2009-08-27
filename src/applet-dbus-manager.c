@@ -139,7 +139,7 @@ static gboolean
 request_name (DBusGProxy *proxy, int flags, const char *detail)
 {
 	int request_name_result;
-	GError *error;
+	GError *error = NULL;
 
 	if (!dbus_g_proxy_call (proxy, "RequestName", &error,
 	                        G_TYPE_STRING, NM_DBUS_SERVICE_USER_SETTINGS,
@@ -148,8 +148,11 @@ request_name (DBusGProxy *proxy, int flags, const char *detail)
 	                        G_TYPE_UINT, &request_name_result,
 	                        G_TYPE_INVALID)) {
 		nm_warning ("Could not acquire the %s service.\n"
-		            "  Message: '%s'", detail, error->message);
-		g_error_free (error);
+		            "  Error: (%d) %s",
+		            detail,
+		            error ? error->code : -1,
+		            error && error->message ? error->message : "(unknown)");
+		g_clear_error (&error);
 		return FALSE;
 	}
 
