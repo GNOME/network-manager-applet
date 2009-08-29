@@ -6,14 +6,14 @@
 # Jakub Friedl <jfriedl@suse.cz>, 2006.
 # Adrian Guniš <andygun696@gmail.com>, 2008, 2009.
 # Petr Kovar <pknbe@volny.cz>, 2008, 2009.
-#
+# Zdeněk Hataš <zdenek.hatas@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-12 23:54+0200\n"
-"PO-Revision-Date: 2009-07-10 22:17+0100\n"
-"Last-Translator: Zdeněk Hataš <zdenek.hatas@gmail.com>\n"
+"POT-Creation-Date: 2009-08-29 03:32+0200\n"
+"PO-Revision-Date: 2009-08-29 03:20+0200\n"
+"Last-Translator: Petr Kovar <pknbe@volny.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,6 +29,43 @@ msgstr "Zkontrolovat svá připojení k síti"
 msgid "Network Manager"
 msgstr "Network Manager"
 
+#: ../nm-applet.schemas.in.h:1
+msgid "Disable connected notifications"
+msgstr "Zakázat upozornění na připojení"
+
+#: ../nm-applet.schemas.in.h:2
+msgid "Disable disconnected notifications"
+msgstr "Zakázat upozornění na odpojení"
+
+#: ../nm-applet.schemas.in.h:3
+msgid "Set this to TRUE to disable notifications when connecting to a network."
+msgstr "Nastavením na TRUE zakážete upozornění na připojení k síti."
+
+#: ../nm-applet.schemas.in.h:4
+msgid ""
+"Set this to TRUE to disable notifications when disconnecting from a network."
+msgstr "Nastavením na TRUE zakážete upozornění na odpojení ze sítě."
+
+#: ../nm-applet.schemas.in.h:5
+msgid ""
+"Set this to TRUE to disable notifications when wireless networks are "
+"available."
+msgstr ""
+"Nastavením na TRUE zakážete upozornění na dostupnost bezdrátových sítí."
+
+#: ../nm-applet.schemas.in.h:6
+msgid "Stamp"
+msgstr "Údaj"
+
+#: ../nm-applet.schemas.in.h:7
+msgid "Suppress networks available notifications"
+msgstr "Potlačit upozornění na dostupné sítě"
+
+#: ../nm-applet.schemas.in.h:8
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr ""
+"Účelem je zjištění, zda by měla být nastavení přenesena na novou verzi."
+
 #: ../nm-connection-editor.desktop.in.h:1
 msgid "Manage and change your network connection settings"
 msgstr "Spravovat a měnit nastavení připojení k síti"
@@ -37,6 +74,53 @@ msgstr "Spravovat a měnit nastavení připojení k síti"
 #: ../src/connection-editor/nm-connection-editor.glade.h:7
 msgid "Network Connections"
 msgstr "Připojení k síti"
+
+#: ../src/applet-device-bt.c:187 ../src/applet-device-cdma.c:352
+#: ../src/applet-device-gsm.c:354 ../src/applet-device-wired.c:263
+#, c-format
+msgid "You are now connected to '%s'."
+msgstr "Jste právě připojeni k '%s'."
+
+#: ../src/applet-device-bt.c:191 ../src/applet-device-cdma.c:356
+#: ../src/applet-device-gsm.c:358 ../src/applet-device-wired.c:267
+#: ../src/applet-device-wifi.c:1192
+msgid "Connection Established"
+msgstr "Spojení navázáno"
+
+#: ../src/applet-device-bt.c:192
+msgid "You are now connected to the mobile broadband network."
+msgstr "Jste právě připojeni k mobilní širokopásmové síti."
+
+#: ../src/applet-device-bt.c:218 ../src/applet-device-cdma.c:383
+#: ../src/applet-device-gsm.c:385
+#, c-format
+msgid "Preparing mobile broadband connection '%s'..."
+msgstr "Připravuje se mobilní širokopásmové připojení '%s'..."
+
+#: ../src/applet-device-bt.c:221 ../src/applet-device-cdma.c:386
+#: ../src/applet-device-gsm.c:388
+#, c-format
+msgid "Configuring mobile broadband connection '%s'..."
+msgstr "Nastavuje se mobilní širokopásmové připojení '%s'..."
+
+#: ../src/applet-device-bt.c:224 ../src/applet-device-cdma.c:389
+#: ../src/applet-device-gsm.c:391
+#, c-format
+msgid "User authentication required for mobile broadband connection '%s'..."
+msgstr ""
+"Je vyžadováno ověření uživatele pro mobilní širokopásmové připojení '%s'..."
+
+#: ../src/applet-device-bt.c:227 ../src/applet-device-cdma.c:392
+#: ../src/applet-device-gsm.c:394 ../src/applet.c:1894
+#, c-format
+msgid "Requesting a network address for '%s'..."
+msgstr "Žádá se o síťovou adresu pro '%s'..."
+
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:396
+#: ../src/applet-device-gsm.c:398
+#, c-format
+msgid "Mobile broadband connection '%s' active"
+msgstr "Mobilní širokopásmové připojení '%s' je aktivní"
 
 #: ../src/applet-device-cdma.c:150 ../src/connection-editor/page-mobile.c:679
 msgid "CDMA"
@@ -58,62 +142,24 @@ msgstr "Mobilní širokopásmová (%s)"
 #: ../src/applet-device-cdma.c:299 ../src/applet-device-gsm.c:301
 #: ../src/connection-editor/page-mobile.c:378
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1656
+#: ../src/connection-editor/nm-connection-list.c:1358
 msgid "Mobile Broadband"
 msgstr "Mobilní širokopásmová"
-
-#: ../src/applet-device-cdma.c:352 ../src/applet-device-gsm.c:354
-#: ../src/applet-device-wired.c:263
-#, c-format
-msgid "You are now connected to '%s'."
-msgstr "Jste právě připojeni k '%s'."
-
-#: ../src/applet-device-cdma.c:356 ../src/applet-device-gsm.c:358
-#: ../src/applet-device-wired.c:267 ../src/applet-device-wifi.c:1186
-msgid "Connection Established"
-msgstr "Spojení navázáno"
 
 #: ../src/applet-device-cdma.c:357
 msgid "You are now connected to the CDMA network."
 msgstr "Jste právě připojeni k síti CDMA."
 
-#: ../src/applet-device-cdma.c:383 ../src/applet-device-gsm.c:385
-#, c-format
-msgid "Preparing mobile broadband connection '%s'..."
-msgstr "Připravuje se mobilní širokopásmové připojení '%s'..."
-
-#: ../src/applet-device-cdma.c:386 ../src/applet-device-gsm.c:388
-#, c-format
-msgid "Configuring mobile broadband connection '%s'..."
-msgstr "Nastavuje se mobilní širokopásmové připojení '%s'..."
-
-#: ../src/applet-device-cdma.c:389 ../src/applet-device-gsm.c:391
-#, c-format
-msgid "User authentication required for mobile broadband connection '%s'..."
-msgstr ""
-"Je vyžadováno ověření uživatele pro mobilní širokopásmové připojení '%s'..."
-
-#: ../src/applet-device-cdma.c:392 ../src/applet-device-gsm.c:394
-#: ../src/applet.c:1905
-#, c-format
-msgid "Requesting a network address for '%s'..."
-msgstr "Žádá se o síťovou adresu pro '%s'..."
-
-#: ../src/applet-device-cdma.c:396 ../src/applet-device-gsm.c:398
-#, c-format
-msgid "Mobile broadband connection '%s' active"
-msgstr "Mobilní širokopásmové připojení '%s' je aktivní"
-
-#: ../src/applet-device-cdma.c:512 ../src/applet-device-gsm.c:596
+#: ../src/applet-device-cdma.c:526 ../src/applet-device-gsm.c:610
 msgid "Mobile broadband network password"
 msgstr "Heslo k mobilní širokopásmové síti"
 
-#: ../src/applet-device-cdma.c:521 ../src/applet-device-gsm.c:605
+#: ../src/applet-device-cdma.c:535 ../src/applet-device-gsm.c:619
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Pro připojení k '%s' je vyžadováno heslo."
 
-#: ../src/applet-device-cdma.c:539 ../src/applet-device-gsm.c:623
+#: ../src/applet-device-cdma.c:553 ../src/applet-device-gsm.c:637
 msgid "Password:"
 msgstr "Heslo:"
 
@@ -129,19 +175,19 @@ msgstr "Nové mobilní širokopásmové připojení (GSM)..."
 msgid "You are now connected to the GSM network."
 msgstr "Jste právě připojeni k síti GSM."
 
-#: ../src/applet-device-gsm.c:536
+#: ../src/applet-device-gsm.c:550
 msgid "PIN code required"
 msgstr "Požadován kód PIN"
 
-#: ../src/applet-device-gsm.c:538
+#: ../src/applet-device-gsm.c:552
 msgid "PUK code required"
 msgstr "Požadován kód PUK"
 
-#: ../src/applet-device-gsm.c:547
+#: ../src/applet-device-gsm.c:561
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Pro mobilní širokopásmové zařízení je vyžadován kód PIN"
 
-#: ../src/applet-device-gsm.c:549
+#: ../src/applet-device-gsm.c:563
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "Pro mobilní širokopásmové zařízení je vyžadován kód PUK"
 
@@ -201,7 +247,7 @@ msgstr "Žádá se o síťovou adresu k drátové síti pro '%s'..."
 msgid "Wired network connection '%s' active"
 msgstr "Drátové připojení k síti '%s' je aktivní"
 
-#: ../src/applet-device-wired.c:560
+#: ../src/applet-device-wired.c:576
 msgid "DSL authentication"
 msgstr "Ověření DSL"
 
@@ -234,53 +280,53 @@ msgstr[2] "Bezdrátové sítě"
 msgid "wireless is disabled"
 msgstr "bezdrátová síť je zakázána"
 
-#: ../src/applet-device-wifi.c:979
+#: ../src/applet-device-wifi.c:982
 msgid "Wireless Networks Available"
 msgstr "Dostupné bezdrátové sítě"
 
-#: ../src/applet-device-wifi.c:980
+#: ../src/applet-device-wifi.c:983
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Klikněte na tuto ikonu pro připojení k bezdrátové síti"
 
-#: ../src/applet-device-wifi.c:983 ../src/applet.c:499
+#: ../src/applet-device-wifi.c:986 ../src/applet.c:480
 msgid "Don't show this message again"
 msgstr "Tuto zprávu již příště nezobrazovat"
 
-#: ../src/applet-device-wifi.c:1184
+#: ../src/applet-device-wifi.c:1190
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Jste právě připojeni k bezdrátové síti '%s'."
 
-#: ../src/applet-device-wifi.c:1185 ../src/applet-device-wifi.c:1216
+#: ../src/applet-device-wifi.c:1191 ../src/applet-device-wifi.c:1222
 msgid "(none)"
 msgstr "(žádné)"
 
-#: ../src/applet-device-wifi.c:1226
+#: ../src/applet-device-wifi.c:1232
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Připravuje se bezdrátové připojení k síti '%s'..."
 
-#: ../src/applet-device-wifi.c:1229
+#: ../src/applet-device-wifi.c:1235
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Nastavuje se bezdrátové připojení k síti '%s'..."
 
-#: ../src/applet-device-wifi.c:1232
+#: ../src/applet-device-wifi.c:1238
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Je vyžadováno ověření uživatele k bezdrátové síti '%s'..."
 
-#: ../src/applet-device-wifi.c:1235
+#: ../src/applet-device-wifi.c:1241
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Žádá se o síťovou adresu k bezdrátové síti pro '%s'..."
 
-#: ../src/applet-device-wifi.c:1255
+#: ../src/applet-device-wifi.c:1261
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Bezdrátové připojení k síti '%s' je aktivní: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1259
+#: ../src/applet-device-wifi.c:1265
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Bezdrátové připojení k síti '%s' je aktivní"
@@ -291,8 +337,8 @@ msgstr "Chyba při zobrazování informací o spojení:"
 
 #: ../src/applet-dialogs.c:84
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:820
-#: ../src/wireless-security/wireless-security.c:317
+#: ../src/wireless-dialog.c:832
+#: ../src/wireless-security/wireless-security.c:327
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -311,7 +357,7 @@ msgstr "WEP"
 
 #: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:777
+#: ../src/wireless-dialog.c:789
 msgid "None"
 msgstr "Žádné"
 
@@ -416,13 +462,14 @@ msgid "translator-credits"
 msgstr ""
 "Miloslav Trmač <mitr@volny.cz>\n"
 "Adrian Guniš <andygun696@gmail.com>\n"
-"Petr Kovář <pknbe@volny.cz>"
+"Petr Kovář <pknbe@volny.cz>\n"
+"Zdeněk Hataš <zdenek.hatas@gmail.com>"
 
 #: ../src/applet-dialogs.c:626
 msgid "Missing resources"
 msgstr "Scházející zdroje"
 
-#: ../src/applet.c:569
+#: ../src/applet.c:562
 #, c-format
 msgid ""
 "\n"
@@ -432,7 +479,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' selhalo, protože bylo přerušeno připojení k síti."
 
-#: ../src/applet.c:572
+#: ../src/applet.c:565
 #, c-format
 msgid ""
 "\n"
@@ -441,7 +488,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' selhalo, protože se služba VPN neočekávaně zastavila."
 
-#: ../src/applet.c:575
+#: ../src/applet.c:568
 #, c-format
 msgid ""
 "\n"
@@ -452,7 +499,7 @@ msgstr ""
 "Připojení k VPN '%s' selhalo, protože služba VPN vrátila neplatnou "
 "konfiguraci."
 
-#: ../src/applet.c:578
+#: ../src/applet.c:571
 #, c-format
 msgid ""
 "\n"
@@ -461,7 +508,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' selhalo, protože vypršel časový limit pro připojení."
 
-#: ../src/applet.c:581
+#: ../src/applet.c:574
 #, c-format
 msgid ""
 "\n"
@@ -470,7 +517,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' selhalo, protože se služba VPN nespustila včas."
 
-#: ../src/applet.c:584
+#: ../src/applet.c:577
 #, c-format
 msgid ""
 "\n"
@@ -479,7 +526,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' selhalo, protože se nezdařilo spuštění služby VPN."
 
-#: ../src/applet.c:587
+#: ../src/applet.c:580
 #, c-format
 msgid ""
 "\n"
@@ -488,7 +535,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' selhalo, protože nebyly zadány platné tajné klíče k VPN."
 
-#: ../src/applet.c:590
+#: ../src/applet.c:583
 #, c-format
 msgid ""
 "\n"
@@ -497,7 +544,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' selhalo kvůli neplatným tajným klíčům k VPN."
 
-#: ../src/applet.c:597
+#: ../src/applet.c:590
 #, c-format
 msgid ""
 "\n"
@@ -506,7 +553,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' selhalo."
 
-#: ../src/applet.c:615
+#: ../src/applet.c:608
 #, c-format
 msgid ""
 "\n"
@@ -516,7 +563,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' bylo odpojeno, protože bylo přerušeno připojení k síti."
 
-#: ../src/applet.c:618
+#: ../src/applet.c:611
 #, c-format
 msgid ""
 "\n"
@@ -525,7 +572,7 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' bylo odpojeno, protože se zastavila služba VPN."
 
-#: ../src/applet.c:624
+#: ../src/applet.c:617
 #, c-format
 msgid ""
 "\n"
@@ -534,15 +581,15 @@ msgstr ""
 "\n"
 "Připojení k VPN '%s' bylo odpojeno."
 
-#: ../src/applet.c:702
+#: ../src/applet.c:695
 msgid "VPN Login Message"
 msgstr "Zpráva po přihlášení VPN"
 
-#: ../src/applet.c:714 ../src/applet.c:722 ../src/applet.c:766
+#: ../src/applet.c:707 ../src/applet.c:715 ../src/applet.c:759
 msgid "VPN Connection Failed"
 msgstr "Připojení k VPN selhalo"
 
-#: ../src/applet.c:773
+#: ../src/applet.c:766
 #, c-format
 msgid ""
 "\n"
@@ -555,7 +602,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:776
+#: ../src/applet.c:769
 #, c-format
 msgid ""
 "\n"
@@ -568,116 +615,116 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1080
+#: ../src/applet.c:1071
 msgid "device not ready"
 msgstr "zařízení není připraveno"
 
-#: ../src/applet.c:1096
+#: ../src/applet.c:1087
 msgid "device not managed"
 msgstr "zařízení není spravováno"
 
-#: ../src/applet.c:1140
+#: ../src/applet.c:1131
 msgid "No network devices available"
 msgstr "Nejsou dostupná žádná síťová zařízení"
 
-#: ../src/applet.c:1228
+#: ../src/applet.c:1219
 msgid "_VPN Connections"
 msgstr "Připojení k _VPN"
 
-#: ../src/applet.c:1278
+#: ../src/applet.c:1269
 msgid "_Configure VPN..."
 msgstr "_Nastavit VPN..."
 
-#: ../src/applet.c:1282
+#: ../src/applet.c:1273
 msgid "_Disconnect VPN..."
 msgstr "_Odpojit VPN..."
 
-#: ../src/applet.c:1335
+#: ../src/applet.c:1326
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager neběží..."
 
-#: ../src/applet.c:1340 ../src/applet.c:2033
+#: ../src/applet.c:1331 ../src/applet.c:2022
 msgid "Networking disabled"
 msgstr "Síť zakázána"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1524
+#: ../src/applet.c:1515
 msgid "Enable _Networking"
 msgstr "Povolit _síť"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1533
+#: ../src/applet.c:1524
 msgid "Enable _Wireless"
 msgstr "Povolit _bezdrátové"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1544
+#: ../src/applet.c:1535
 msgid "Connection _Information"
 msgstr "_Informace o spojení"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1554
+#: ../src/applet.c:1545
 msgid "Edit Connections..."
 msgstr "Upravit připojení..."
 
 #. Help item
-#: ../src/applet.c:1568
+#: ../src/applet.c:1559
 msgid "_Help"
 msgstr "_Nápověda"
 
 #. About item
-#: ../src/applet.c:1577
+#: ../src/applet.c:1568
 msgid "_About"
 msgstr "O _aplikaci"
 
-#: ../src/applet.c:1750
+#: ../src/applet.c:1739
 msgid "Disconnected"
 msgstr "Odpojen"
 
-#: ../src/applet.c:1751
+#: ../src/applet.c:1740
 msgid "The network connection has been disconnected."
 msgstr "Připojení k síti bylo odpojeno."
 
-#: ../src/applet.c:1899
+#: ../src/applet.c:1888
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Připravuje se připojení k síti '%s'..."
 
-#: ../src/applet.c:1902
+#: ../src/applet.c:1891
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Je vyžadováno ověření uživatele k připojení '%s'..."
 
-#: ../src/applet.c:1908
+#: ../src/applet.c:1897
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Připojení k síti '%s' je aktivní"
 
-#: ../src/applet.c:1989
+#: ../src/applet.c:1978
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Spouští se připojení k VPN '%s'..."
 
-#: ../src/applet.c:1992
+#: ../src/applet.c:1981
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Je vyžadováno ověření uživatele pro připojení k VPN '%s'..."
 
-#: ../src/applet.c:1995
+#: ../src/applet.c:1984
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Žádá se o síťovou adresu k VPN pro '%s'..."
 
-#: ../src/applet.c:1998
+#: ../src/applet.c:1987
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "Připojení k VPN '%s' je aktivní"
 
-#: ../src/applet.c:2037
+#: ../src/applet.c:2026
 msgid "No network connection"
 msgstr "Žádné připojení k síti"
 
-#: ../src/applet.c:2372
+#: ../src/applet.c:2359
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -685,11 +732,11 @@ msgstr ""
 "Applet NetworkManager nenalezl některé vyžadované zdroje.  Nelze "
 "pokračovat.\n"
 
-#: ../src/applet.c:2567
+#: ../src/applet.c:2554
 msgid "NetworkManager Applet"
 msgstr "Applet NetworkManager"
 
-#: ../src/applet.c:2573 ../src/wired-dialog.c:128
+#: ../src/applet.c:2560 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -845,43 +892,25 @@ msgstr "_Uživatelské jméno:"
 msgid "_Wireless security:"
 msgstr "_Bezdrátové zabezpečení:"
 
-#: ../src/connection-editor/ce-page.c:75
+#: ../src/connection-editor/ce-page.c:69
 msgid "automatic"
 msgstr "automatické"
 
-#: ../src/connection-editor/ce-page.c:206
-msgid ""
-"Insufficient privileges or unknown error retrieving system connection "
-"secrets."
-msgstr ""
-"Nedostatečná oprávnění nebo neznámá chyba při získávání tajných klíčů "
-"systémového připojení."
-
-#: ../src/connection-editor/ce-page.c:241
+#: ../src/connection-editor/ce-page.c:215
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Aktualizace připojení selhala kvůli neznámé chybě."
-
-#: ../src/connection-editor/ce-page.c:274
-msgid "Could not request secrets from the system settings service."
-msgstr "Nelze požádat o tajné klíče ze zařízení systémových nastavení."
-
-#: ../src/connection-editor/ce-page.c:304
-msgid "Could not connect to D-Bus to request connection secrets."
-msgstr "Připojení k D-Bus pro získání tajných klíčů připojení selhalo."
-
-#: ../src/connection-editor/ce-page.c:317
-msgid "Could not create D-Bus proxy for connection secrets."
-msgstr "Nelze vytvořit D-Bus proxy pro tajné klíče připojení."
 
 #: ../src/connection-editor/ce-page-dsl.glade.h:3
 msgid "_Service:"
 msgstr "_Služba:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:1
+#: ../src/connection-editor/ce-page-ip6.glade.h:1
 msgid "<b>Addresses</b>"
 msgstr "<b>Adresy</b>"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:2
+#: ../src/connection-editor/ce-page-ip6.glade.h:2
 msgid ""
 "Automatic\n"
 "Automatic with manual DNS settings\n"
@@ -900,6 +929,7 @@ msgid "D_HCP client ID:"
 msgstr "ID klienta D_HCP:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:8
+#: ../src/connection-editor/ce-page-ip6.glade.h:7
 msgid ""
 "IP addresses identify your computer on the network.  Click the \"Add\" "
 "button to add an IP address."
@@ -908,6 +938,7 @@ msgstr ""
 "tlačítko \"Přidat\"."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
+#: ../src/connection-editor/ce-page-ip6.glade.h:8
 msgid ""
 "If enabled, this connection will never be used as the default network "
 "connection."
@@ -916,18 +947,22 @@ msgstr ""
 "připojení k síti."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:10
+#: ../src/connection-editor/ce-page-ip6.glade.h:9
 msgid "Ig_nore automatically obtained routes"
 msgstr "Ig_norovat automaticky získané trasy"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:11
+#: ../src/connection-editor/ce-page-ip6.glade.h:10
 msgid "Use this c_onnection only for resources on its network"
 msgstr "P_oužít toto připojení jen pro zdroje ve vlastní síti"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:12
+#: ../src/connection-editor/ce-page-ip6.glade.h:11
 msgid "_DNS servers:"
 msgstr "Servery _DNS:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:13
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
 msgid "_Method:"
 msgstr "_Metoda:"
 
@@ -936,8 +971,13 @@ msgid "_Routes…"
 msgstr "T_rasy..."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
 msgid "_Search domains:"
 msgstr "H_ledat domény:"
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
+msgid "_Routes&#x2026;"
+msgstr "Smě_rovače&#x2026;"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -1233,7 +1273,9 @@ msgid "Create…"
 msgstr "Vytvořit..."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
+#: ../src/connection-editor/ip6-routes-dialog.c:459
 #: ../src/connection-editor/page-ip4.c:634
+#: ../src/connection-editor/page-ip6.c:611
 msgid "Address"
 msgstr "Adresa"
 
@@ -1243,13 +1285,20 @@ msgid "Netmask"
 msgstr "Síťová maska"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
+#: ../src/connection-editor/ip6-routes-dialog.c:491
 #: ../src/connection-editor/page-ip4.c:666
 msgid "Gateway"
 msgstr "Brána"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:549
+#: ../src/connection-editor/ip6-routes-dialog.c:507
 msgid "Metric"
 msgstr "Metrika"
+
+#: ../src/connection-editor/ip6-routes-dialog.c:475
+#: ../src/connection-editor/page-ip6.c:627
+msgid "Prefix"
+msgstr "Předpona"
 
 #: ../src/connection-editor/page-dsl.c:153
 #: ../src/connection-editor/page-dsl.c:160
@@ -1258,7 +1307,7 @@ msgstr "Nelze nahrát uživatelské rozhraní DSL."
 
 #: ../src/connection-editor/page-dsl.c:166
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1664
+#: ../src/connection-editor/nm-connection-list.c:1366
 msgid "DSL"
 msgstr "DSL"
 
@@ -1268,26 +1317,32 @@ msgid "DSL connection %d"
 msgstr "Připojení pomocí DSL %d"
 
 #: ../src/connection-editor/page-ip4.c:116
+#: ../src/connection-editor/page-ip6.c:114
 msgid "Automatic (VPN)"
 msgstr "Automaticky (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:117
+#: ../src/connection-editor/page-ip6.c:115
 msgid "Automatic (VPN) addresses only"
 msgstr "Pouze automatické adresy (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:120
+#: ../src/connection-editor/page-ip6.c:118
 msgid "Automatic (PPP)"
 msgstr "Automaticky (PPP)"
 
 #: ../src/connection-editor/page-ip4.c:121
+#: ../src/connection-editor/page-ip6.c:119
 msgid "Automatic (PPP) addresses only"
 msgstr "Pouze automatické adresy (PPP)"
 
 #: ../src/connection-editor/page-ip4.c:123
+#: ../src/connection-editor/page-ip6.c:121
 msgid "Automatic (PPPoE)"
 msgstr "Automaticky (PPPoE)"
 
 #: ../src/connection-editor/page-ip4.c:124
+#: ../src/connection-editor/page-ip6.c:122
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Pouze automatické adresy (PPPoE)"
 
@@ -1300,14 +1355,17 @@ msgid "Automatic (DHCP) addresses only"
 msgstr "Pouze automatické adresy (DHCP)"
 
 #: ../src/connection-editor/page-ip4.c:152
+#: ../src/connection-editor/page-ip6.c:162
 msgid "Manual"
 msgstr "Ruční"
 
 #: ../src/connection-editor/page-ip4.c:164
+#: ../src/connection-editor/page-ip6.c:175
 msgid "Link-Local Only"
 msgstr "Pouze Link-Local"
 
 #: ../src/connection-editor/page-ip4.c:170
+#: ../src/connection-editor/page-ip6.c:182
 msgid "Shared to other computers"
 msgstr "Sdíleno s jinými počítači"
 
@@ -1324,6 +1382,33 @@ msgstr "Nelze nahrát uživatelské rozhraní IPv4."
 #: ../src/connection-editor/page-ip4.c:721
 msgid "IPv4 Settings"
 msgstr "Nastavení IPv4"
+
+#: ../src/connection-editor/page-ip6.c:124
+msgid "Automatic"
+msgstr "Automaticky"
+
+#: ../src/connection-editor/page-ip6.c:125
+msgid "Automatic, addresses only"
+msgstr "Automaticky, pouze adresy"
+
+#: ../src/connection-editor/page-ip6.c:137
+#: ../src/wireless-security/eap-method.c:175
+msgid "Ignore"
+msgstr "Ignorovat"
+
+#: ../src/connection-editor/page-ip6.c:574
+#, c-format
+msgid "Editing IPv6 routes for %s"
+msgstr "Úprava směrovacích tras IPv6 pro %s"
+
+#: ../src/connection-editor/page-ip6.c:667
+#: ../src/connection-editor/page-ip6.c:674
+msgid "Could not load IPv6 user interface."
+msgstr "Nelze nahrát uživatelské rozhraní IPv6."
+
+#: ../src/connection-editor/page-ip6.c:680
+msgid "IPv6 Settings"
+msgstr "Nastavení IPv6"
 
 #: ../src/connection-editor/page-mobile.c:365
 #: ../src/connection-editor/page-mobile.c:372
@@ -1373,7 +1458,7 @@ msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:229
+#: ../src/wireless-security/eap-method-peap.c:240
 #: ../src/wireless-security/eap-method-ttls.c:253
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
@@ -1404,7 +1489,7 @@ msgstr "Nastavení PPP"
 
 #: ../src/connection-editor/page-vpn.c:105
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1660
+#: ../src/connection-editor/nm-connection-list.c:1362
 msgid "VPN"
 msgstr "VPN"
 
@@ -1414,7 +1499,7 @@ msgid "Could not find VPN plugin service for '%s'."
 msgstr "Nelze nalézt službu zásuvných modulů VPN pro '%s'."
 
 #: ../src/connection-editor/page-vpn.c:212
-#: ../src/connection-editor/nm-connection-list.c:1161
+#: ../src/connection-editor/nm-connection-list.c:948
 #, c-format
 msgid "VPN connection %d"
 msgstr "Připojení k VPN %d"
@@ -1426,7 +1511,7 @@ msgstr "Nelze nahrát uživatelské rozhraní drátové sítě."
 
 #: ../src/connection-editor/page-wired.c:217
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1648
+#: ../src/connection-editor/nm-connection-list.c:1350
 msgid "Wired"
 msgstr "Drátová"
 
@@ -1460,7 +1545,7 @@ msgstr "Nelze nahrát uživatelské rozhraní WiFi."
 
 #: ../src/connection-editor/page-wireless.c:361
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1652
+#: ../src/connection-editor/nm-connection-list.c:1354
 msgid "Wireless"
 msgstr "Bezdrátová"
 
@@ -1470,27 +1555,27 @@ msgid "Wireless connection %d"
 msgstr "Bezdrátové připojení %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:794
+#: ../src/wireless-dialog.c:806
 msgid "WEP 40/128-bit Key"
 msgstr "Klíč WEP 40/128 bitů"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:803
+#: ../src/wireless-dialog.c:815
 msgid "WEP 128-bit Passphrase"
 msgstr "Heslo WEP 128 bitů"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:833
+#: ../src/wireless-dialog.c:845
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamické WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:847
+#: ../src/wireless-dialog.c:859
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 Personal"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:861
+#: ../src/wireless-dialog.c:873
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Enterprise"
 
@@ -1507,33 +1592,16 @@ msgstr "Nelze nahrát uživatelské rozhraní bezpečnosti WiFi."
 msgid "Wireless Security"
 msgstr "Bezdrátové zabezpečení"
 
-#: ../src/connection-editor/polkit-helpers.c:54
-msgid "PolicyKit authorization request was invalid."
-msgstr "Požadavek na ověření přes PolicyKit byl neplatný."
-
-#: ../src/connection-editor/polkit-helpers.c:60
-msgid "PolicyKit authorization request was malformed."
-msgstr "Požadavek na ověření přes PolicyKit byl porušený."
-
-#: ../src/connection-editor/polkit-helpers.c:66
-msgid "PolicyKit authorization could not be created."
-msgstr "Ověření PolicyKit nemohlo být vytvořeno."
-
-#: ../src/connection-editor/polkit-helpers.c:73
-msgid "PolicyKit authorization could not be created; invalid action ID."
-msgstr ""
-"Požadavek na ověření přes PolicyKit nemohl být vytvořen. Neplatné ID operace."
-
-#: ../src/connection-editor/nm-connection-editor.c:104
+#: ../src/connection-editor/nm-connection-editor.c:100
 #, c-format
 msgid "Editing %s"
 msgstr "Úprava %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:108
+#: ../src/connection-editor/nm-connection-editor.c:104
 msgid "Editing un-named connection"
 msgstr "Úprava nepojmenovaného připojení"
 
-#: ../src/connection-editor/nm-connection-editor.c:296
+#: ../src/connection-editor/nm-connection-editor.c:276
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
@@ -1541,7 +1609,7 @@ msgstr ""
 "Editor připojení nenalezl některé vyžadované zdroje (soubor glade appletu "
 "NetworkManager nebyl nalezen)."
 
-#: ../src/connection-editor/nm-connection-editor.c:309
+#: ../src/connection-editor/nm-connection-editor.c:289
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
@@ -1549,28 +1617,28 @@ msgstr ""
 "Editor připojení nenalezl některé vyžadované zdroje (soubor glade nebyl "
 "nalezen)."
 
-#: ../src/connection-editor/nm-connection-editor.c:325
+#: ../src/connection-editor/nm-connection-editor.c:358
+msgid "Error creating connection editor dialog."
+msgstr "Chyba při vytváření rozhraní editoru."
+
+#: ../src/connection-editor/nm-connection-editor.c:379
+msgid "Apply"
+msgstr "Použít"
+
+#: ../src/connection-editor/nm-connection-editor.c:380
+msgid "Save this connection for all users of this machine."
+msgstr "Uložit toto připojení pro všechny uživatele tohoto počítače."
+
+#: ../src/connection-editor/nm-connection-editor.c:381
 msgid "Apply..."
 msgstr "Použít..."
 
 # Ověření k uložení...?
-#: ../src/connection-editor/nm-connection-editor.c:326
+#: ../src/connection-editor/nm-connection-editor.c:382
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Uložení tohoto připojení u všech uživatelů tohoto počítače je možné po "
 "ověření."
-
-#: ../src/connection-editor/nm-connection-editor.c:327
-msgid "Apply"
-msgstr "Použít"
-
-#: ../src/connection-editor/nm-connection-editor.c:328
-msgid "Save this connection for all users of this machine."
-msgstr "Uložit toto připojení pro všechny uživatele tohoto počítače."
-
-#: ../src/connection-editor/nm-connection-editor.c:436
-msgid "Error creating connection editor dialog."
-msgstr "Chyba při vytváření rozhraní editoru."
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
 msgid "Available to all users"
@@ -1592,17 +1660,17 @@ msgstr "E_xportovat"
 msgid "_Import"
 msgstr "_Importovat"
 
-#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:219
 msgid "never"
 msgstr "nikdy"
 
-#: ../src/connection-editor/nm-connection-list.c:238
-#: ../src/connection-editor/nm-connection-list.c:249
+#: ../src/connection-editor/nm-connection-list.c:230
+#: ../src/connection-editor/nm-connection-list.c:241
 msgid "now"
 msgstr "nyní"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:256
+#: ../src/connection-editor/nm-connection-list.c:248
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
@@ -1610,7 +1678,7 @@ msgstr[0] "před %d minutou"
 msgstr[1] "před %d minutami"
 msgstr[2] "před %d minutami"
 
-#: ../src/connection-editor/nm-connection-list.c:260
+#: ../src/connection-editor/nm-connection-list.c:252
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
@@ -1618,7 +1686,7 @@ msgstr[0] "před %d hodinou"
 msgstr[1] "před %d hodinami"
 msgstr[2] "před %d hodinami"
 
-#: ../src/connection-editor/nm-connection-list.c:272
+#: ../src/connection-editor/nm-connection-list.c:264
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -1626,7 +1694,7 @@ msgstr[0] "před %d dnem"
 msgstr[1] "před %d dny"
 msgstr[2] "před %d dny"
 
-#: ../src/connection-editor/nm-connection-list.c:278
+#: ../src/connection-editor/nm-connection-list.c:270
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
@@ -1634,7 +1702,7 @@ msgstr[0] "před %d měsícem"
 msgstr[1] "před %d měsíci"
 msgstr[2] "před %d měsíci"
 
-#: ../src/connection-editor/nm-connection-list.c:282
+#: ../src/connection-editor/nm-connection-list.c:274
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
@@ -1642,87 +1710,56 @@ msgstr[0] "před %d rokem"
 msgstr[1] "před %d roky"
 msgstr[2] "před %d lety"
 
-#: ../src/connection-editor/nm-connection-list.c:348
-#: ../src/connection-editor/nm-connection-list.c:480
-msgid "Could not obtain required privileges"
-msgstr "Nelze získat požadovaná oprávnění"
+#: ../src/connection-editor/nm-connection-list.c:583
+msgid "Connection add failed"
+msgstr "Přidání připojení selhalo"
 
-#: ../src/connection-editor/nm-connection-list.c:353
-msgid "Could not delete connection"
-msgstr "Nelze odstranit připojení"
-
-#: ../src/connection-editor/nm-connection-list.c:354
-msgid "The connection could not be deleted due to an unknown error."
-msgstr "Připojení nemohlo být kvůli neznámé chybě odstraněno."
-
-#: ../src/connection-editor/nm-connection-list.c:390
-#: ../src/connection-editor/nm-connection-list.c:401
-msgid "Could not move connection"
-msgstr "Nelze přesunout připojení"
-
-#: ../src/connection-editor/nm-connection-list.c:485
-#: ../src/connection-editor/nm-connection-list.c:534
-#: ../src/connection-editor/nm-connection-list.c:545
-msgid "Could not add connection"
-msgstr "Nelze přidat připojení"
-
-#: ../src/connection-editor/nm-connection-list.c:486
-msgid "The connection could not be added due to an unknown error."
-msgstr "Připojení nemohlo být kvůli neznámé chybě přidáno."
-
-#: ../src/connection-editor/nm-connection-list.c:659
-#: ../src/connection-editor/nm-connection-list.c:664
-#: ../src/connection-editor/nm-connection-list.c:724
-#: ../src/connection-editor/nm-connection-list.c:730
-msgid "Could not update connection"
-msgstr "Nelze aktualizovat připojení."
-
-#: ../src/connection-editor/nm-connection-list.c:665
-msgid "The connection could not be updated due to an unknown error."
-msgstr "Připojení nemohlo být  kvůli neznámé chybě aktualizováno."
-
-#: ../src/connection-editor/nm-connection-list.c:756
-#: ../src/connection-editor/nm-connection-list.c:887
+#: ../src/connection-editor/nm-connection-list.c:594
+#: ../src/connection-editor/nm-connection-list.c:713
 msgid "An unknown error ocurred."
 msgstr "Došlo k chybě."
 
-#: ../src/connection-editor/nm-connection-list.c:765
-#: ../src/connection-editor/nm-connection-list.c:894
+#: ../src/connection-editor/nm-connection-list.c:603
+#: ../src/connection-editor/nm-connection-list.c:756
 msgid "Error initializing editor"
 msgstr "Chyba při inicializaci editoru"
 
-#: ../src/connection-editor/nm-connection-list.c:795
-#: ../src/connection-editor/nm-connection-list.c:929
-#: ../src/connection-editor/nm-connection-list.c:1144
+#: ../src/connection-editor/nm-connection-list.c:619
+#: ../src/connection-editor/nm-connection-list.c:771
+#: ../src/connection-editor/nm-connection-list.c:931
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr ""
 "Rozhraní editoru připojení nemohlo být kvůli neznámé chybě inicializováno."
 
-#: ../src/connection-editor/nm-connection-list.c:805
+#: ../src/connection-editor/nm-connection-list.c:628
 msgid "Could not create new connection"
 msgstr "Nelze vytvořit nové připojení"
 
-#: ../src/connection-editor/nm-connection-list.c:815
+#: ../src/connection-editor/nm-connection-list.c:639
 msgid "Could not edit new connection"
 msgstr "Nelze upravit nové připojení"
 
-#: ../src/connection-editor/nm-connection-list.c:949
+#: ../src/connection-editor/nm-connection-list.c:786
 msgid "Could not edit connection"
 msgstr "Nelze upravit připojení"
 
-#: ../src/connection-editor/nm-connection-list.c:1008
+#: ../src/connection-editor/nm-connection-list.c:811
+msgid "Connection delete failed"
+msgstr "Smazání připojení selhalo"
+
+#: ../src/connection-editor/nm-connection-list.c:835
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Jste si jisti, že chcete smazat připojení %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:1189
+#: ../src/connection-editor/nm-connection-list.c:978
 #: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "Nelze importovat připojení k VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:1191
+#: ../src/connection-editor/nm-connection-list.c:980
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1732,49 +1769,49 @@ msgstr ""
 "\n"
 "Chyba: žádný typ služby VPN."
 
-#: ../src/connection-editor/nm-connection-list.c:1205
+#: ../src/connection-editor/nm-connection-list.c:993
 msgid "Could not edit imported connection"
 msgstr "Nelze upravit importované připojení"
 
-#: ../src/connection-editor/nm-connection-list.c:1350
+#: ../src/connection-editor/nm-connection-list.c:1129
 msgid "Name"
 msgstr "Název"
 
-#: ../src/connection-editor/nm-connection-list.c:1362
+#: ../src/connection-editor/nm-connection-list.c:1141
 msgid "Last Used"
 msgstr "Poslední použité"
 
-#: ../src/connection-editor/nm-connection-list.c:1539
-msgid "Edit..."
-msgstr "Upravit..."
-
-#: ../src/connection-editor/nm-connection-list.c:1540
-msgid "Authenticate to edit the selected connection."
-msgstr "Před úpravou zvoleného připojení se musíte autentizovat."
-
-#: ../src/connection-editor/nm-connection-list.c:1541
+#: ../src/connection-editor/nm-connection-list.c:1244
 msgid "Edit"
 msgstr "Upravit"
 
-#: ../src/connection-editor/nm-connection-list.c:1542
-msgid "Edit the selected connection."
+#: ../src/connection-editor/nm-connection-list.c:1245
+msgid "Edit the selected connection"
 msgstr "Upravit zvolené připojení"
 
-#: ../src/connection-editor/nm-connection-list.c:1559
-msgid "Delete..."
-msgstr "Odstranit..."
+#: ../src/connection-editor/nm-connection-list.c:1246
+msgid "Edit..."
+msgstr "Upravit..."
 
-#: ../src/connection-editor/nm-connection-list.c:1560
-msgid "Authenticate to delete the selected connection."
-msgstr "Před odstraněním zvoleného připojení se musíte autentizovat."
+#: ../src/connection-editor/nm-connection-list.c:1247
+msgid "Authenticate to edit the selected connection"
+msgstr "Před úpravou zvoleného připojení musíte být ověřeni"
 
-#: ../src/connection-editor/nm-connection-list.c:1561
+#: ../src/connection-editor/nm-connection-list.c:1261
 msgid "Delete"
 msgstr "Odstranit"
 
-#: ../src/connection-editor/nm-connection-list.c:1562
-msgid "Delete the selected connection."
-msgstr "Odstranit zvolené připojení."
+#: ../src/connection-editor/nm-connection-list.c:1262
+msgid "Delete the selected connection"
+msgstr "Odstranit zvolené připojení"
+
+#: ../src/connection-editor/nm-connection-list.c:1263
+msgid "Delete..."
+msgstr "Odstranit..."
+
+#: ../src/connection-editor/nm-connection-list.c:1264
+msgid "Authenticate to delete the selected connection"
+msgstr "Před smazáním zvoleného připojení musíte být ověřeni"
 
 #: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
@@ -1826,7 +1863,7 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "Exportovat připojení k VPN..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:188
+#: ../src/gnome-bluetooth/network-manager-applet.c:197
 msgid "Access the Internet using your mobile phone"
 msgstr "Přístup k Internetu prostřednictvím mobilního telefonu"
 
@@ -1868,19 +1905,19 @@ msgstr ""
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Potvrdit volby širokopásmového připojení"
 
-#: ../src/utils/mobile-wizard.c:316
+#: ../src/utils/mobile-wizard.c:319
 msgid "Unlisted"
 msgstr "Není v seznamu"
 
-#: ../src/utils/mobile-wizard.c:432
+#: ../src/utils/mobile-wizard.c:437
 msgid "_Select your plan:"
 msgstr "_Vybrat tarif:"
 
-#: ../src/utils/mobile-wizard.c:456
+#: ../src/utils/mobile-wizard.c:461
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "Zvolený přístupový bod vašeho tarifu (_APN):"
 
-#: ../src/utils/mobile-wizard.c:475
+#: ../src/utils/mobile-wizard.c:480
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
@@ -1892,63 +1929,63 @@ msgstr ""
 "\n"
 "Nejste-li si jistí přístupovým bodem, obraťte se na svého poskytovatele."
 
-#: ../src/utils/mobile-wizard.c:482
+#: ../src/utils/mobile-wizard.c:487
 msgid "Choose your Billing Plan"
 msgstr "Vyberte svůj tarif"
 
-#: ../src/utils/mobile-wizard.c:530
+#: ../src/utils/mobile-wizard.c:535
 msgid "My plan is not listed..."
 msgstr "Můj plán není v seznamu..."
 
-#: ../src/utils/mobile-wizard.c:683
+#: ../src/utils/mobile-wizard.c:688
 msgid "Select your provider from a _list:"
 msgstr "Vybrat poskytovate_le ze seznamu:"
 
-#: ../src/utils/mobile-wizard.c:696
+#: ../src/utils/mobile-wizard.c:701
 msgid "Provider"
 msgstr "Poskytovatel"
 
-#: ../src/utils/mobile-wizard.c:721
+#: ../src/utils/mobile-wizard.c:726
 msgid "I can't find my provider and I wish to enter it _manually:"
 msgstr "Ne_mohu najít svého poskytovatele, chci jej zadat ručně:"
 
-#: ../src/utils/mobile-wizard.c:732
+#: ../src/utils/mobile-wizard.c:737
 msgid "Provider:"
 msgstr "Poskytovatel:"
 
-#: ../src/utils/mobile-wizard.c:748
+#: ../src/utils/mobile-wizard.c:753
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "Můj poskytovatel používá technologii GSM (GPRS, EDGE, UTMS, HSPA)"
 
-#: ../src/utils/mobile-wizard.c:750
+#: ../src/utils/mobile-wizard.c:755
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "Můj poskytovatel používá technologii CDMA (1xRTT, EVDO)"
 
-#: ../src/utils/mobile-wizard.c:761
+#: ../src/utils/mobile-wizard.c:766
 msgid "Choose your Provider"
 msgstr "Vyberte svého poskytovatele"
 
-#: ../src/utils/mobile-wizard.c:953
+#: ../src/utils/mobile-wizard.c:958
 msgid "Country List:"
 msgstr "Seznam zemí:"
 
-#: ../src/utils/mobile-wizard.c:965
+#: ../src/utils/mobile-wizard.c:970
 msgid "Country"
 msgstr "Země"
 
-#: ../src/utils/mobile-wizard.c:1005
+#: ../src/utils/mobile-wizard.c:1010
 msgid "Choose your Provider's Country"
 msgstr "Zvolte zemi vašeho poskytovatele"
 
-#: ../src/utils/mobile-wizard.c:1054
+#: ../src/utils/mobile-wizard.c:1059
 msgid "Installed GSM device"
 msgstr "Nainstalované zařízení GSM"
 
-#: ../src/utils/mobile-wizard.c:1057
+#: ../src/utils/mobile-wizard.c:1062
 msgid "Installed CDMA device"
 msgstr "Nainstalované zařízení CDMA"
 
-#: ../src/utils/mobile-wizard.c:1225
+#: ../src/utils/mobile-wizard.c:1230
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
@@ -1956,35 +1993,35 @@ msgstr ""
 "Tento pomocník vám pomůže snadno nastavit širokopásmové připojení k mobilní "
 "(3G) síti."
 
-#: ../src/utils/mobile-wizard.c:1230
+#: ../src/utils/mobile-wizard.c:1235
 msgid "You will need the following information:"
 msgstr "Budete potřebovat tyto informace:"
 
-#: ../src/utils/mobile-wizard.c:1241
+#: ../src/utils/mobile-wizard.c:1246
 msgid "Your broadband provider's name"
 msgstr "Název poskytovatele širokopásmového připojení"
 
-#: ../src/utils/mobile-wizard.c:1247
+#: ../src/utils/mobile-wizard.c:1252
 msgid "Your broadband billing plan name"
 msgstr "Název vašeho tarifu"
 
-#: ../src/utils/mobile-wizard.c:1253
+#: ../src/utils/mobile-wizard.c:1258
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr "(v některých případech) Přístupový bod(APN) pro váš tarif"
 
-#: ../src/utils/mobile-wizard.c:1280
+#: ../src/utils/mobile-wizard.c:1285
 msgid "Create a connection for _this mobile broadband device:"
-msgstr "Vytvořit připojení pro _toto mobilní širokopásmové zařízení"
+msgstr "Vytvořit připojení pro _toto mobilní širokopásmové zařízení:"
 
-#: ../src/utils/mobile-wizard.c:1295
+#: ../src/utils/mobile-wizard.c:1300
 msgid "Any device"
 msgstr "Jakékoli zařízení"
 
-#: ../src/utils/mobile-wizard.c:1308
+#: ../src/utils/mobile-wizard.c:1313
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Nastavit mobilní širokopásmové připojení"
 
-#: ../src/utils/mobile-wizard.c:1482
+#: ../src/utils/mobile-wizard.c:1487
 msgid "New Mobile Broadband Connection"
 msgstr "Nové mobilní širokopásmové připojení"
 
@@ -1992,7 +2029,7 @@ msgstr "Nové mobilní širokopásmové připojení"
 msgid "Default"
 msgstr "Výchozí"
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:253
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:255
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "Nelze spustit připojení k VPN '%s'"
@@ -2006,7 +2043,7 @@ msgstr ""
 "Nelze najít ověřovací dialog pro typ připojení k VPN '%s'. Kontaktujte svého "
 "správce systému."
 
-#: ../src/vpn-password-dialog.c:256
+#: ../src/vpn-password-dialog.c:258
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
@@ -2019,15 +2056,15 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "Ověření drátového připojení 802.1X"
 
-#: ../src/wireless-dialog.c:414
+#: ../src/wireless-dialog.c:426
 msgid "New..."
 msgstr "Nový..."
 
-#: ../src/wireless-dialog.c:921
+#: ../src/wireless-dialog.c:934
 msgid "C_reate"
 msgstr "_Vytvořit"
 
-#: ../src/wireless-dialog.c:992
+#: ../src/wireless-dialog.c:1011
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -2036,35 +2073,35 @@ msgstr ""
 "Pro přístup k bezdrátové síti '%s' jsou vyžadována hesla nebo šifrovací "
 "klíče."
 
-#: ../src/wireless-dialog.c:994
+#: ../src/wireless-dialog.c:1013
 msgid "Wireless Network Authentication Required"
 msgstr "K bezdrátové síti je vyžadováno ověření"
 
-#: ../src/wireless-dialog.c:996
+#: ../src/wireless-dialog.c:1015
 msgid "Authentication required by wireless network"
 msgstr "K bezdrátové síti je vyžadováno ověření"
 
-#: ../src/wireless-dialog.c:1001
+#: ../src/wireless-dialog.c:1020
 msgid "Create New Wireless Network"
 msgstr "Vytvořit novou bezdrátovou síť"
 
-#: ../src/wireless-dialog.c:1003
+#: ../src/wireless-dialog.c:1022
 msgid "New wireless network"
 msgstr "Nová bezdrátová síť"
 
-#: ../src/wireless-dialog.c:1004
+#: ../src/wireless-dialog.c:1023
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Zadejte název bezdrátové sítě, kterou chcete vytvořit."
 
-#: ../src/wireless-dialog.c:1006
+#: ../src/wireless-dialog.c:1025
 msgid "Connect to Hidden Wireless Network"
 msgstr "Připojit se ke skryté bezdrátové síti"
 
-#: ../src/wireless-dialog.c:1008
+#: ../src/wireless-dialog.c:1027
 msgid "Hidden wireless network"
 msgstr "Skrytá bezdrátová síť"
 
-#: ../src/wireless-dialog.c:1009
+#: ../src/wireless-dialog.c:1028
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2086,48 +2123,48 @@ msgstr ""
 "nezabezpečenému připojení nebo neoprávněnému přístupu k bezdrátové síti. "
 "Chtěli byste vybrat certifikát certifikační autority?"
 
-#: ../src/wireless-security/eap-method.c:175
-msgid "Ignore"
-msgstr "Ignorovat"
-
 #: ../src/wireless-security/eap-method.c:179
 msgid "Choose CA Certificate"
 msgstr "Vyberte certifikát CA"
 
-#: ../src/wireless-security/eap-method.c:440
+#: ../src/wireless-security/eap-method.c:442
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "Soukromé klíče DER, PEM nebo PKCS#12 (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:443
+#: ../src/wireless-security/eap-method.c:445
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Certifikáty DER nebo PEM (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:240
+#: ../src/wireless-security/eap-method-peap.c:255
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:311
-#: ../src/wireless-security/eap-method-tls.c:417
-#: ../src/wireless-security/eap-method-ttls.c:343
+#: ../src/wireless-security/eap-method-peap.c:270
+msgid "GTC"
+msgstr "GTC"
+
+#: ../src/wireless-security/eap-method-peap.c:346
+#: ../src/wireless-security/eap-method-tls.c:418
+#: ../src/wireless-security/eap-method-ttls.c:344
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Vyberte certifikát certifikační autority..."
 
-#: ../src/wireless-security/eap-method-tls.c:413
+#: ../src/wireless-security/eap-method-tls.c:414
 msgid "Choose your personal certificate..."
 msgstr "Vyberte vlastní certifikát..."
 
-#: ../src/wireless-security/eap-method-tls.c:422
+#: ../src/wireless-security/eap-method-tls.c:423
 msgid "Choose your private key..."
 msgstr "Vyberte soukromý klíč..."
 
-#: ../src/wireless-security/wireless-security.c:305
+#: ../src/wireless-security/wireless-security.c:315
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:329
+#: ../src/wireless-security/wireless-security.c:339
 msgid "Tunneled TLS"
 msgstr "Tunneled TLS"
 
-#: ../src/wireless-security/wireless-security.c:340
+#: ../src/wireless-security/wireless-security.c:350
 msgid "Protected EAP (PEAP)"
 msgstr "Protected EAP (PEAP)"
