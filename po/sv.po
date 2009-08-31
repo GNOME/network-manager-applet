@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManagerApplet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-20 16:50+0200\n"
-"PO-Revision-Date: 2009-08-20 16:51+0100\n"
+"POT-Creation-Date: 2009-09-01 00:22+0200\n"
+"PO-Revision-Date: 2009-09-01 00:27+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -23,6 +23,38 @@ msgstr "Kontrollera dina nätverksanslutningar"
 #: ../nm-applet.desktop.in.h:2
 msgid "Network Manager"
 msgstr "Nätverkshanterare"
+
+#: ../nm-applet.schemas.in.h:1
+msgid "Disable connected notifications"
+msgstr "Inaktivera anslutningsnotifieringar"
+
+#: ../nm-applet.schemas.in.h:2
+msgid "Disable disconnected notifications"
+msgstr "Inaktivera notifieringar om frånkopplingar"
+
+#: ../nm-applet.schemas.in.h:3
+msgid "Set this to TRUE to disable notifications when connecting to a network."
+msgstr "Ställ in detta till TRUE för att inaktivera notifieringar vid anslutning till ett nätverk."
+
+#: ../nm-applet.schemas.in.h:4
+msgid "Set this to TRUE to disable notifications when disconnecting from a network."
+msgstr "Ställ in detta till TRUE för att inaktivera notifieringar vid frånkoppling från ett nätverk."
+
+#: ../nm-applet.schemas.in.h:5
+msgid "Set this to TRUE to disable notifications when wireless networks are available."
+msgstr "Ställ in detta till TRUE för att inaktivera notifieringar när trådlösa nätverk är tillgängliga."
+
+#: ../nm-applet.schemas.in.h:6
+msgid "Stamp"
+msgstr "Stämpel"
+
+#: ../nm-applet.schemas.in.h:7
+msgid "Suppress networks available notifications"
+msgstr "Visa inte notifieringar om tillgängliga nätverk"
+
+#: ../nm-applet.schemas.in.h:8
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr "Används för att fastställa huruvida inställningar ska migreras till en ny version."
 
 #: ../nm-connection-editor.desktop.in.h:1
 msgid "Manage and change your network connection settings"
@@ -45,7 +77,7 @@ msgstr "Du är nu ansluten till \"%s\"."
 #: ../src/applet-device-cdma.c:356
 #: ../src/applet-device-gsm.c:358
 #: ../src/applet-device-wired.c:267
-#: ../src/applet-device-wifi.c:1186
+#: ../src/applet-device-wifi.c:1192
 msgid "Connection Established"
 msgstr "Anslutning etablerad"
 
@@ -77,7 +109,7 @@ msgstr "Användarautentisering krävs för mobila bredbandsanslutningen \"%s\"..
 #: ../src/applet-device-bt.c:227
 #: ../src/applet-device-cdma.c:392
 #: ../src/applet-device-gsm.c:394
-#: ../src/applet.c:1908
+#: ../src/applet.c:1894
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Begär en nätverksadress för \"%s\"..."
@@ -113,7 +145,7 @@ msgstr "Mobilt bredband (%s)"
 #: ../src/applet-device-gsm.c:301
 #: ../src/connection-editor/page-mobile.c:378
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1656
+#: ../src/connection-editor/nm-connection-list.c:1358
 msgid "Mobile Broadband"
 msgstr "Mobilt bredband"
 
@@ -121,19 +153,19 @@ msgstr "Mobilt bredband"
 msgid "You are now connected to the CDMA network."
 msgstr "Du är nu ansluten till CDMA-nätverket."
 
-#: ../src/applet-device-cdma.c:512
-#: ../src/applet-device-gsm.c:596
+#: ../src/applet-device-cdma.c:526
+#: ../src/applet-device-gsm.c:610
 msgid "Mobile broadband network password"
 msgstr "Nätverkslösenord för mobilt bredband"
 
-#: ../src/applet-device-cdma.c:521
-#: ../src/applet-device-gsm.c:605
+#: ../src/applet-device-cdma.c:535
+#: ../src/applet-device-gsm.c:619
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Ett lösenord krävs för att ansluta till \"%s\"."
 
-#: ../src/applet-device-cdma.c:539
-#: ../src/applet-device-gsm.c:623
+#: ../src/applet-device-cdma.c:553
+#: ../src/applet-device-gsm.c:637
 msgid "Password:"
 msgstr "Lösenord:"
 
@@ -150,19 +182,19 @@ msgstr "Ny mobil bredbandsanslutning (GSM)..."
 msgid "You are now connected to the GSM network."
 msgstr "Du är nu ansluten till GSM-nätverket."
 
-#: ../src/applet-device-gsm.c:536
+#: ../src/applet-device-gsm.c:550
 msgid "PIN code required"
 msgstr "PIN-kod krävs"
 
-#: ../src/applet-device-gsm.c:538
+#: ../src/applet-device-gsm.c:552
 msgid "PUK code required"
 msgstr "PUK-kod krävs"
 
-#: ../src/applet-device-gsm.c:547
+#: ../src/applet-device-gsm.c:561
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "PIN-kod behövs för den mobila bredbandsenheten"
 
-#: ../src/applet-device-gsm.c:549
+#: ../src/applet-device-gsm.c:563
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "PUK-kod behövs för den mobila bredbandsenheten"
 
@@ -222,7 +254,7 @@ msgstr "Begär en trådbunden nätverksadress för \"%s\"..."
 msgid "Wired network connection '%s' active"
 msgstr "Trådbundna nätverksanslutningen \"%s\" är aktiv"
 
-#: ../src/applet-device-wired.c:560
+#: ../src/applet-device-wired.c:576
 msgid "DSL authentication"
 msgstr "DSL-autentisering"
 
@@ -254,55 +286,55 @@ msgstr[1] "Trådlösa nätverk"
 msgid "wireless is disabled"
 msgstr "trådlöst läge är inaktiverat"
 
-#: ../src/applet-device-wifi.c:979
+#: ../src/applet-device-wifi.c:982
 msgid "Wireless Networks Available"
 msgstr "Trådlösa nätverk tillgängliga"
 
-#: ../src/applet-device-wifi.c:980
+#: ../src/applet-device-wifi.c:983
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Klicka på denna ikon för att ansluta till ett trådlöst nätverk"
 
-#: ../src/applet-device-wifi.c:983
-#: ../src/applet.c:499
+#: ../src/applet-device-wifi.c:986
+#: ../src/applet.c:480
 msgid "Don't show this message again"
 msgstr "Visa inte detta meddelandet igen"
 
-#: ../src/applet-device-wifi.c:1184
+#: ../src/applet-device-wifi.c:1190
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Du är nu ansluten till det trådlösa nätverket \"%s\"."
 
-#: ../src/applet-device-wifi.c:1185
-#: ../src/applet-device-wifi.c:1216
+#: ../src/applet-device-wifi.c:1191
+#: ../src/applet-device-wifi.c:1222
 msgid "(none)"
 msgstr "(ingen)"
 
-#: ../src/applet-device-wifi.c:1226
+#: ../src/applet-device-wifi.c:1232
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Förbereder trådlösa nätverksanslutningen \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1229
+#: ../src/applet-device-wifi.c:1235
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Konfigurerar trådlösa nätverksanslutningen \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1232
+#: ../src/applet-device-wifi.c:1238
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Användarautentisering krävs för trådlösa nätverket \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1235
+#: ../src/applet-device-wifi.c:1241
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Begär en trådlös nätverksadress för \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1255
+#: ../src/applet-device-wifi.c:1261
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Trådlösa nätverksanslutningen \"%s\" är aktiv: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1259
+#: ../src/applet-device-wifi.c:1265
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Trådlösa nätverksanslutningen \"%s\" är aktiv"
@@ -313,7 +345,7 @@ msgstr "Fel vid visning av anslutningsinformation:"
 
 #: ../src/applet-dialogs.c:84
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:850
+#: ../src/wireless-dialog.c:832
 #: ../src/wireless-security/wireless-security.c:327
 msgid "LEAP"
 msgstr "LEAP"
@@ -335,7 +367,7 @@ msgstr "WEP"
 #: ../src/applet-dialogs.c:195
 #: ../src/applet-dialogs.c:204
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:807
+#: ../src/wireless-dialog.c:789
 msgid "None"
 msgstr "Ingen"
 
@@ -447,7 +479,7 @@ msgstr ""
 msgid "Missing resources"
 msgstr "Saknar resurser"
 
-#: ../src/applet.c:569
+#: ../src/applet.c:562
 #, c-format
 msgid ""
 "\n"
@@ -456,7 +488,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att nätverksanslutningen avbröts."
 
-#: ../src/applet.c:572
+#: ../src/applet.c:565
 #, c-format
 msgid ""
 "\n"
@@ -465,7 +497,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten oväntat stoppades."
 
-#: ../src/applet.c:575
+#: ../src/applet.c:568
 #, c-format
 msgid ""
 "\n"
@@ -474,7 +506,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten svarade med ogiltig konfiguration."
 
-#: ../src/applet.c:578
+#: ../src/applet.c:571
 #, c-format
 msgid ""
 "\n"
@@ -483,7 +515,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att tidsgränsen för anslutningsförsöket överstegs."
 
-#: ../src/applet.c:581
+#: ../src/applet.c:574
 #, c-format
 msgid ""
 "\n"
@@ -492,7 +524,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten inte startade i tid."
 
-#: ../src/applet.c:584
+#: ../src/applet.c:577
 #, c-format
 msgid ""
 "\n"
@@ -501,7 +533,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten misslyckades med att starta."
 
-#: ../src/applet.c:587
+#: ../src/applet.c:580
 #, c-format
 msgid ""
 "\n"
@@ -510,7 +542,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att det inte fanns några giltiga VPN-hemligheter."
 
-#: ../src/applet.c:590
+#: ../src/applet.c:583
 #, c-format
 msgid ""
 "\n"
@@ -519,7 +551,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av ogiltiga VPN-hemligheter."
 
-#: ../src/applet.c:597
+#: ../src/applet.c:590
 #, c-format
 msgid ""
 "\n"
@@ -528,7 +560,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades."
 
-#: ../src/applet.c:615
+#: ../src/applet.c:608
 #, c-format
 msgid ""
 "\n"
@@ -537,7 +569,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" kopplades från på grund av att nätverksanslutningen avbröts."
 
-#: ../src/applet.c:618
+#: ../src/applet.c:611
 #, c-format
 msgid ""
 "\n"
@@ -546,7 +578,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" kopplades från på grund av att VPN-tjänsten stoppades."
 
-#: ../src/applet.c:624
+#: ../src/applet.c:617
 #, c-format
 msgid ""
 "\n"
@@ -555,17 +587,17 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" kopplades från."
 
-#: ../src/applet.c:702
+#: ../src/applet.c:695
 msgid "VPN Login Message"
 msgstr "VPN-inloggningsmeddelande"
 
-#: ../src/applet.c:714
-#: ../src/applet.c:722
-#: ../src/applet.c:766
+#: ../src/applet.c:707
+#: ../src/applet.c:715
+#: ../src/applet.c:759
 msgid "VPN Connection Failed"
 msgstr "VPN-anslutningen misslyckades"
 
-#: ../src/applet.c:773
+#: ../src/applet.c:766
 #, c-format
 msgid ""
 "\n"
@@ -578,7 +610,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:776
+#: ../src/applet.c:769
 #, c-format
 msgid ""
 "\n"
@@ -591,125 +623,125 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1083
+#: ../src/applet.c:1071
 msgid "device not ready"
 msgstr "enheten är inte redo"
 
-#: ../src/applet.c:1099
+#: ../src/applet.c:1087
 msgid "device not managed"
 msgstr "enheten hanteras inte"
 
-#: ../src/applet.c:1143
+#: ../src/applet.c:1131
 msgid "No network devices available"
 msgstr "Inga nätverksenheter finns tillgängliga"
 
-#: ../src/applet.c:1231
+#: ../src/applet.c:1219
 msgid "_VPN Connections"
 msgstr "_VPN-anslutningar"
 
-#: ../src/applet.c:1281
+#: ../src/applet.c:1269
 msgid "_Configure VPN..."
 msgstr "_Konfigurera VPN..."
 
-#: ../src/applet.c:1285
+#: ../src/applet.c:1273
 msgid "_Disconnect VPN..."
 msgstr "Koppla _från VPN..."
 
-#: ../src/applet.c:1338
+#: ../src/applet.c:1326
 msgid "NetworkManager is not running..."
 msgstr "Nätverkshanteraren är inte igång..."
 
-#: ../src/applet.c:1343
-#: ../src/applet.c:2036
+#: ../src/applet.c:1331
+#: ../src/applet.c:2022
 msgid "Networking disabled"
 msgstr "Nätverk inaktiverat"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1527
+#: ../src/applet.c:1515
 msgid "Enable _Networking"
 msgstr "Aktivera _nätverk"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1536
+#: ../src/applet.c:1524
 msgid "Enable _Wireless"
 msgstr "Aktivera _trådlöst"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1547
+#: ../src/applet.c:1535
 msgid "Connection _Information"
 msgstr "Anslutnings_information"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1557
+#: ../src/applet.c:1545
 msgid "Edit Connections..."
 msgstr "Redigera anslutningar..."
 
 #. Help item
-#: ../src/applet.c:1571
+#: ../src/applet.c:1559
 msgid "_Help"
 msgstr "_Hjälp"
 
 #. About item
-#: ../src/applet.c:1580
+#: ../src/applet.c:1568
 msgid "_About"
 msgstr "_Om"
 
-#: ../src/applet.c:1753
+#: ../src/applet.c:1739
 msgid "Disconnected"
 msgstr "Frånkopplad"
 
-#: ../src/applet.c:1754
+#: ../src/applet.c:1740
 msgid "The network connection has been disconnected."
 msgstr "Nätverksanslutningen har kopplats från."
 
-#: ../src/applet.c:1902
+#: ../src/applet.c:1888
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Förbereder nätverksanslutningen \"%s\"..."
 
-#: ../src/applet.c:1905
+#: ../src/applet.c:1891
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Användarautentisering krävs för nätverksanslutningen \"%s\"..."
 
-#: ../src/applet.c:1911
+#: ../src/applet.c:1897
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Nätverksanslutningen \"%s\" är aktiv"
 
-#: ../src/applet.c:1992
+#: ../src/applet.c:1978
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Startar VPN-anslutningen \"%s\"..."
 
-#: ../src/applet.c:1995
+#: ../src/applet.c:1981
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Användarautentisering krävs för VPN-anslutningen \"%s\"..."
 
-#: ../src/applet.c:1998
+#: ../src/applet.c:1984
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Begär en VPN-adress för \"%s\"..."
 
-#: ../src/applet.c:2001
+#: ../src/applet.c:1987
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN-anslutningen \"%s\" är aktiv"
 
-#: ../src/applet.c:2040
+#: ../src/applet.c:2026
 msgid "No network connection"
 msgstr "Ingen nätverksanslutning"
 
-#: ../src/applet.c:2375
+#: ../src/applet.c:2359
 msgid "The NetworkManager applet could not find some required resources.  It cannot continue.\n"
 msgstr "Panelprogrammet för nätverkshantering kunde inte hitta en del nödvändiga resurser. Det kan inte fortsätta.\n"
 
-#: ../src/applet.c:2570
+#: ../src/applet.c:2554
 msgid "NetworkManager Applet"
 msgstr "Panelprogram för nätverkshantering"
 
-#: ../src/applet.c:2576
+#: ../src/applet.c:2560
 #: ../src/wired-dialog.c:128
 msgid "The NetworkManager Applet could not find some required resources (the glade file was not found)."
 msgstr "Panelprogrammet för nätverkshantering kunde inte hitta en del nödvändiga resurser (glade-filen hittades inte)."
@@ -867,29 +899,13 @@ msgstr "An_vändarnamn:"
 msgid "_Wireless security:"
 msgstr "Trå_dlös säkerhet:"
 
-#: ../src/connection-editor/ce-page.c:75
+#: ../src/connection-editor/ce-page.c:69
 msgid "automatic"
 msgstr "automatisk"
 
-#: ../src/connection-editor/ce-page.c:206
-msgid "Insufficient privileges or unknown error retrieving system connection secrets."
-msgstr "Otillräcklig behörighet eller okänt fel vid hämtning av systemets anslutningshemligheter."
-
-#: ../src/connection-editor/ce-page.c:241
+#: ../src/connection-editor/ce-page.c:215
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Misslyckades med att uppdatera anslutningens hemligheter på grund av ett okänt fel."
-
-#: ../src/connection-editor/ce-page.c:274
-msgid "Could not request secrets from the system settings service."
-msgstr "Kunde inte begära hemligheter från systemets inställningstjänst."
-
-#: ../src/connection-editor/ce-page.c:304
-msgid "Could not connect to D-Bus to request connection secrets."
-msgstr "Kunde inte ansluta till D-Bus för att begära hemligheter för anslutningen."
-
-#: ../src/connection-editor/ce-page.c:317
-msgid "Could not create D-Bus proxy for connection secrets."
-msgstr "Kunde inte skapa D-Bus-proxy för anslutningshemligheter."
 
 #: ../src/connection-editor/ce-page-dsl.glade.h:3
 msgid "_Service:"
@@ -1278,7 +1294,7 @@ msgstr "Kunde inte läsa in DSL-användargränssnitt."
 
 #: ../src/connection-editor/page-dsl.c:166
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1664
+#: ../src/connection-editor/nm-connection-list.c:1366
 msgid "DSL"
 msgstr "DSL"
 
@@ -1453,7 +1469,7 @@ msgstr "Inställningar för PPP"
 
 #: ../src/connection-editor/page-vpn.c:105
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1660
+#: ../src/connection-editor/nm-connection-list.c:1362
 msgid "VPN"
 msgstr "VPN"
 
@@ -1463,7 +1479,7 @@ msgid "Could not find VPN plugin service for '%s'."
 msgstr "Kunde inte hitta VPN-instickstjänst för \"%s\"."
 
 #: ../src/connection-editor/page-vpn.c:212
-#: ../src/connection-editor/nm-connection-list.c:1161
+#: ../src/connection-editor/nm-connection-list.c:948
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN-anslutning %d"
@@ -1475,7 +1491,7 @@ msgstr "Kunde inte läsa in användargränssnitt för trådbunden anslutning."
 
 #: ../src/connection-editor/page-wired.c:217
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1648
+#: ../src/connection-editor/nm-connection-list.c:1350
 msgid "Wired"
 msgstr "Trådbundet"
 
@@ -1509,7 +1525,7 @@ msgstr "Kunde inte läsa in WiFi-användargränssnitt."
 
 #: ../src/connection-editor/page-wireless.c:361
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1652
+#: ../src/connection-editor/nm-connection-list.c:1354
 msgid "Wireless"
 msgstr "Trådlöst"
 
@@ -1519,27 +1535,27 @@ msgid "Wireless connection %d"
 msgstr "Trådlös anslutning %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:824
+#: ../src/wireless-dialog.c:806
 msgid "WEP 40/128-bit Key"
 msgstr "WEP 40/128-bitars nyckel"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:833
+#: ../src/wireless-dialog.c:815
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bitars lösenfras"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:863
+#: ../src/wireless-dialog.c:845
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamisk WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:877
+#: ../src/wireless-dialog.c:859
 msgid "WPA & WPA2 Personal"
 msgstr "WPA och WPA2 Personal"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:891
+#: ../src/wireless-dialog.c:873
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA och WPA2 Enterprise"
 
@@ -1556,58 +1572,42 @@ msgstr "Kunde inte läsa in användargränssnitt för WiFi-säkerhet."
 msgid "Wireless Security"
 msgstr "Trådlös säkerhet"
 
-#: ../src/connection-editor/polkit-helpers.c:54
-msgid "PolicyKit authorization request was invalid."
-msgstr "Begäran om PolicyKit-auktorisering var ogiltig."
-
-#: ../src/connection-editor/polkit-helpers.c:60
-msgid "PolicyKit authorization request was malformed."
-msgstr "Begäran om PolicyKit-auktorisering var felformaterad."
-
-#: ../src/connection-editor/polkit-helpers.c:66
-msgid "PolicyKit authorization could not be created."
-msgstr "PolicyKit-auktorisering kunde inte skapas."
-
-#: ../src/connection-editor/polkit-helpers.c:73
-msgid "PolicyKit authorization could not be created; invalid action ID."
-msgstr "PolicyKit-auktorisering kunde inte skapas; ogiltigt åtgärds-id."
-
-#: ../src/connection-editor/nm-connection-editor.c:106
+#: ../src/connection-editor/nm-connection-editor.c:100
 #, c-format
 msgid "Editing %s"
 msgstr "Redigerar %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:110
+#: ../src/connection-editor/nm-connection-editor.c:104
 msgid "Editing un-named connection"
 msgstr "Redigerar namnlös anslutning"
 
-#: ../src/connection-editor/nm-connection-editor.c:298
+#: ../src/connection-editor/nm-connection-editor.c:276
 msgid "The connection editor could not find some required resources (the NetworkManager applet glade file was not found)."
 msgstr "Anslutningsredigeraren kunde inte hitta en del nödvändiga resurser (glade-filen för Nätverkshanterarens panelprogram hittades inte)."
 
-#: ../src/connection-editor/nm-connection-editor.c:311
+#: ../src/connection-editor/nm-connection-editor.c:289
 msgid "The connection editor could not find some required resources (the glade file was not found)."
 msgstr "Anslutningsredigeraren kunde inte hitta en del nödvändiga resurser (glade-filen hittades inte)."
 
-#: ../src/connection-editor/nm-connection-editor.c:327
-msgid "Apply..."
-msgstr "Verkställ..."
+#: ../src/connection-editor/nm-connection-editor.c:358
+msgid "Error creating connection editor dialog."
+msgstr "Fel vid skapande av dialogruta för anslutningsredigerare."
 
-#: ../src/connection-editor/nm-connection-editor.c:328
-msgid "Authenticate to save this connection for all users of this machine."
-msgstr "Autentisera för att spara denna anslutning för alla användare på datorn."
-
-#: ../src/connection-editor/nm-connection-editor.c:329
+#: ../src/connection-editor/nm-connection-editor.c:379
 msgid "Apply"
 msgstr "Verkställ"
 
-#: ../src/connection-editor/nm-connection-editor.c:330
+#: ../src/connection-editor/nm-connection-editor.c:380
 msgid "Save this connection for all users of this machine."
 msgstr "Spara denna anslutning för alla användaren på datorn."
 
-#: ../src/connection-editor/nm-connection-editor.c:438
-msgid "Error creating connection editor dialog."
-msgstr "Fel vid skapande av dialogruta för anslutningsredigerare."
+#: ../src/connection-editor/nm-connection-editor.c:381
+msgid "Apply..."
+msgstr "Verkställ..."
+
+#: ../src/connection-editor/nm-connection-editor.c:382
+msgid "Authenticate to save this connection for all users of this machine."
+msgstr "Autentisera för att spara denna anslutning för alla användare på datorn."
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
 msgid "Available to all users"
@@ -1629,129 +1629,98 @@ msgstr "E_xportera"
 msgid "_Import"
 msgstr "_Importera"
 
-#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:219
 msgid "never"
 msgstr "aldrig"
 
-#: ../src/connection-editor/nm-connection-list.c:238
-#: ../src/connection-editor/nm-connection-list.c:249
+#: ../src/connection-editor/nm-connection-list.c:230
+#: ../src/connection-editor/nm-connection-list.c:241
 msgid "now"
 msgstr "nu"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:256
+#: ../src/connection-editor/nm-connection-list.c:248
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "%d minut sedan"
 msgstr[1] "%d minuter sedan"
 
-#: ../src/connection-editor/nm-connection-list.c:260
+#: ../src/connection-editor/nm-connection-list.c:252
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "%d timme sedan"
 msgstr[1] "%d timmar sedan"
 
-#: ../src/connection-editor/nm-connection-list.c:272
+#: ../src/connection-editor/nm-connection-list.c:264
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d dygn sedan"
 msgstr[1] "%d dygn sedan"
 
-#: ../src/connection-editor/nm-connection-list.c:278
+#: ../src/connection-editor/nm-connection-list.c:270
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d månad sedan"
 msgstr[1] "%d månader sedan"
 
-#: ../src/connection-editor/nm-connection-list.c:282
+#: ../src/connection-editor/nm-connection-list.c:274
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d år sedan"
 msgstr[1] "%d år sedan"
 
-#: ../src/connection-editor/nm-connection-list.c:348
-#: ../src/connection-editor/nm-connection-list.c:480
-msgid "Could not obtain required privileges"
-msgstr "Kunde inte få nödvändig behörighet"
+#: ../src/connection-editor/nm-connection-list.c:583
+msgid "Connection add failed"
+msgstr "Misslyckades med att lägga till anslutning"
 
-#: ../src/connection-editor/nm-connection-list.c:353
-msgid "Could not delete connection"
-msgstr "Kan inte ta bort anslutningen"
-
-#: ../src/connection-editor/nm-connection-list.c:354
-msgid "The connection could not be deleted due to an unknown error."
-msgstr "Anslutningen kunde inte tas bort på grund av ett okänt fel."
-
-#: ../src/connection-editor/nm-connection-list.c:390
-#: ../src/connection-editor/nm-connection-list.c:401
-msgid "Could not move connection"
-msgstr "Kan inte flytta anslutningen"
-
-#: ../src/connection-editor/nm-connection-list.c:485
-#: ../src/connection-editor/nm-connection-list.c:534
-#: ../src/connection-editor/nm-connection-list.c:545
-msgid "Could not add connection"
-msgstr "Kan inte lägga till anslutningen"
-
-#: ../src/connection-editor/nm-connection-list.c:486
-msgid "The connection could not be added due to an unknown error."
-msgstr "Anslutningen kunde inte läggas till på grund av ett okänt fel."
-
-#: ../src/connection-editor/nm-connection-list.c:659
-#: ../src/connection-editor/nm-connection-list.c:664
-#: ../src/connection-editor/nm-connection-list.c:724
-#: ../src/connection-editor/nm-connection-list.c:730
-msgid "Could not update connection"
-msgstr "Kunde inte uppdatera anslutningen"
-
-#: ../src/connection-editor/nm-connection-list.c:665
-msgid "The connection could not be updated due to an unknown error."
-msgstr "Anslutningen kunde inte uppdateras på grund av ett okänt fel."
-
-#: ../src/connection-editor/nm-connection-list.c:756
-#: ../src/connection-editor/nm-connection-list.c:887
+#: ../src/connection-editor/nm-connection-list.c:594
+#: ../src/connection-editor/nm-connection-list.c:713
 msgid "An unknown error ocurred."
 msgstr "Ett okänt fel inträffade."
 
-#: ../src/connection-editor/nm-connection-list.c:765
-#: ../src/connection-editor/nm-connection-list.c:894
+#: ../src/connection-editor/nm-connection-list.c:603
+#: ../src/connection-editor/nm-connection-list.c:756
 msgid "Error initializing editor"
 msgstr "Fel vid initiering av redigerare"
 
-#: ../src/connection-editor/nm-connection-list.c:795
-#: ../src/connection-editor/nm-connection-list.c:929
-#: ../src/connection-editor/nm-connection-list.c:1144
+#: ../src/connection-editor/nm-connection-list.c:619
+#: ../src/connection-editor/nm-connection-list.c:771
+#: ../src/connection-editor/nm-connection-list.c:931
 msgid "The connection editor dialog could not be initialized due to an unknown error."
 msgstr "Anslutningsredigerarens dialogruta kunde inte initieras på grund av ett okänt fel."
 
-#: ../src/connection-editor/nm-connection-list.c:805
+#: ../src/connection-editor/nm-connection-list.c:628
 msgid "Could not create new connection"
 msgstr "Kunde inte skapa ny anslutning"
 
-#: ../src/connection-editor/nm-connection-list.c:815
+#: ../src/connection-editor/nm-connection-list.c:639
 msgid "Could not edit new connection"
 msgstr "Kan inte redigera ny anslutning"
 
-#: ../src/connection-editor/nm-connection-list.c:949
+#: ../src/connection-editor/nm-connection-list.c:786
 msgid "Could not edit connection"
 msgstr "Kunde inte redigera anslutningen"
 
-#: ../src/connection-editor/nm-connection-list.c:1008
+#: ../src/connection-editor/nm-connection-list.c:811
+msgid "Connection delete failed"
+msgstr "Misslyckades med att ta bort anslutning"
+
+#: ../src/connection-editor/nm-connection-list.c:835
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Är du säker på att du vill ta bort anslutningen %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:1189
+#: ../src/connection-editor/nm-connection-list.c:978
 #: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "Kan inte importera VPN-anslutning"
 
-#: ../src/connection-editor/nm-connection-list.c:1191
+#: ../src/connection-editor/nm-connection-list.c:980
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1761,49 +1730,49 @@ msgstr ""
 "\n"
 "Fel: ingen VPN-tjänstetyp."
 
-#: ../src/connection-editor/nm-connection-list.c:1205
+#: ../src/connection-editor/nm-connection-list.c:993
 msgid "Could not edit imported connection"
 msgstr "Kunde inte redigera importerad anslutning"
 
-#: ../src/connection-editor/nm-connection-list.c:1350
+#: ../src/connection-editor/nm-connection-list.c:1129
 msgid "Name"
 msgstr "Namn"
 
-#: ../src/connection-editor/nm-connection-list.c:1362
+#: ../src/connection-editor/nm-connection-list.c:1141
 msgid "Last Used"
 msgstr "Senast använd"
 
-#: ../src/connection-editor/nm-connection-list.c:1539
-msgid "Edit..."
-msgstr "Redigera..."
-
-#: ../src/connection-editor/nm-connection-list.c:1540
-msgid "Authenticate to edit the selected connection."
-msgstr "Autentisera för att redigera den markerade anslutningen."
-
-#: ../src/connection-editor/nm-connection-list.c:1541
+#: ../src/connection-editor/nm-connection-list.c:1244
 msgid "Edit"
 msgstr "Redigera"
 
-#: ../src/connection-editor/nm-connection-list.c:1542
-msgid "Edit the selected connection."
-msgstr "Redigera den markerade anslutningen."
+#: ../src/connection-editor/nm-connection-list.c:1245
+msgid "Edit the selected connection"
+msgstr "Redigera den markerade anslutningen"
 
-#: ../src/connection-editor/nm-connection-list.c:1559
-msgid "Delete..."
-msgstr "Ta bort..."
+#: ../src/connection-editor/nm-connection-list.c:1246
+msgid "Edit..."
+msgstr "Redigera..."
 
-#: ../src/connection-editor/nm-connection-list.c:1560
-msgid "Authenticate to delete the selected connection."
-msgstr "Autentisera för att ta bort den markerade anslutningen."
+#: ../src/connection-editor/nm-connection-list.c:1247
+msgid "Authenticate to edit the selected connection"
+msgstr "Autentisera för att redigera den markerade anslutningen"
 
-#: ../src/connection-editor/nm-connection-list.c:1561
+#: ../src/connection-editor/nm-connection-list.c:1261
 msgid "Delete"
 msgstr "Ta bort"
 
-#: ../src/connection-editor/nm-connection-list.c:1562
-msgid "Delete the selected connection."
-msgstr "Ta bort den markerade anslutningen."
+#: ../src/connection-editor/nm-connection-list.c:1262
+msgid "Delete the selected connection"
+msgstr "Ta bort den markerade anslutningen"
+
+#: ../src/connection-editor/nm-connection-list.c:1263
+msgid "Delete..."
+msgstr "Ta bort..."
+
+#: ../src/connection-editor/nm-connection-list.c:1264
+msgid "Authenticate to delete the selected connection"
+msgstr "Autentisera för att ta bort den markerade anslutningen"
 
 #: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
@@ -1853,7 +1822,7 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "Exportera VPN-anslutning..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:188
+#: ../src/gnome-bluetooth/network-manager-applet.c:197
 msgid "Access the Internet using your mobile phone"
 msgstr "Få åtkomst till Internet med din mobiltelefon"
 
@@ -2003,7 +1972,7 @@ msgid "Default"
 msgstr "Standard"
 
 #: ../src/vpn-password-dialog.c:137
-#: ../src/vpn-password-dialog.c:253
+#: ../src/vpn-password-dialog.c:255
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "Kan inte starta VPN-anslutningen \"%s\""
@@ -2013,7 +1982,7 @@ msgstr "Kan inte starta VPN-anslutningen \"%s\""
 msgid "Could not find the authentication dialog for VPN connection type '%s'. Contact your system administrator."
 msgstr "Kunde inte hitta autentiseringsdialogen för VPN-anslutningstypen \"%s\". Kontakta din systemadministratör."
 
-#: ../src/vpn-password-dialog.c:256
+#: ../src/vpn-password-dialog.c:258
 #, c-format
 msgid "There was a problem launching the authentication dialog for VPN connection type '%s'. Contact your system administrator."
 msgstr "Ett problem inträffade vid start av autentiseringsdialogen för VPN-anslutningstypen \"%s\". Kontakta din systemadministratör."
@@ -2022,48 +1991,48 @@ msgstr "Ett problem inträffade vid start av autentiseringsdialogen för VPN-ans
 msgid "Wired 802.1X authentication"
 msgstr "Trådbunden 802.1X-autentisering"
 
-#: ../src/wireless-dialog.c:444
+#: ../src/wireless-dialog.c:426
 msgid "New..."
 msgstr "Ny..."
 
-#: ../src/wireless-dialog.c:952
+#: ../src/wireless-dialog.c:934
 msgid "C_reate"
 msgstr "S_kapa"
 
-#: ../src/wireless-dialog.c:1029
+#: ../src/wireless-dialog.c:1011
 #, c-format
 msgid "Passwords or encryption keys are required to access the wireless network '%s'."
 msgstr "Lösenord eller krypteringsnycklar krävs för att komma åt det trådlösa nätverket \"%s\"."
 
-#: ../src/wireless-dialog.c:1031
+#: ../src/wireless-dialog.c:1013
 msgid "Wireless Network Authentication Required"
 msgstr "Autentisering krävs för det trådlösa nätverket"
 
-#: ../src/wireless-dialog.c:1033
+#: ../src/wireless-dialog.c:1015
 msgid "Authentication required by wireless network"
 msgstr "Autentisering krävs för det trådlösa nätverket"
 
-#: ../src/wireless-dialog.c:1038
+#: ../src/wireless-dialog.c:1020
 msgid "Create New Wireless Network"
 msgstr "Skapa nytt trådlöst nätverk"
 
-#: ../src/wireless-dialog.c:1040
+#: ../src/wireless-dialog.c:1022
 msgid "New wireless network"
 msgstr "Nytt trådlöst nätverk"
 
-#: ../src/wireless-dialog.c:1041
+#: ../src/wireless-dialog.c:1023
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Ange ett namn för det trådlösa nätverket som du vill skapa."
 
-#: ../src/wireless-dialog.c:1043
+#: ../src/wireless-dialog.c:1025
 msgid "Connect to Hidden Wireless Network"
 msgstr "Anslut till dolt trådlöst nätverk"
 
-#: ../src/wireless-dialog.c:1045
+#: ../src/wireless-dialog.c:1027
 msgid "Hidden wireless network"
 msgstr "Dolt trådlöst nätverk"
 
-#: ../src/wireless-dialog.c:1046
+#: ../src/wireless-dialog.c:1028
 msgid "Enter the name and security details of the hidden wireless network you wish to connect to."
 msgstr "Ange namn och säkerhetsuppgifter för det dolda trådlösa nätverket som du vill ansluta till."
 
@@ -2121,6 +2090,43 @@ msgstr "Tunnlad TLS"
 msgid "Protected EAP (PEAP)"
 msgstr "Protected EAP (PEAP)"
 
+#~ msgid ""
+#~ "Insufficient privileges or unknown error retrieving system connection "
+#~ "secrets."
+#~ msgstr ""
+#~ "Otillräcklig behörighet eller okänt fel vid hämtning av systemets "
+#~ "anslutningshemligheter."
+#~ msgid "Could not request secrets from the system settings service."
+#~ msgstr "Kunde inte begära hemligheter från systemets inställningstjänst."
+#~ msgid "Could not connect to D-Bus to request connection secrets."
+#~ msgstr ""
+#~ "Kunde inte ansluta till D-Bus för att begära hemligheter för anslutningen."
+#~ msgid "Could not create D-Bus proxy for connection secrets."
+#~ msgstr "Kunde inte skapa D-Bus-proxy för anslutningshemligheter."
+#~ msgid "PolicyKit authorization request was invalid."
+#~ msgstr "Begäran om PolicyKit-auktorisering var ogiltig."
+#~ msgid "PolicyKit authorization request was malformed."
+#~ msgstr "Begäran om PolicyKit-auktorisering var felformaterad."
+#~ msgid "PolicyKit authorization could not be created."
+#~ msgstr "PolicyKit-auktorisering kunde inte skapas."
+#~ msgid "PolicyKit authorization could not be created; invalid action ID."
+#~ msgstr "PolicyKit-auktorisering kunde inte skapas; ogiltigt åtgärds-id."
+#~ msgid "Could not obtain required privileges"
+#~ msgstr "Kunde inte få nödvändig behörighet"
+#~ msgid "Could not delete connection"
+#~ msgstr "Kan inte ta bort anslutningen"
+#~ msgid "The connection could not be deleted due to an unknown error."
+#~ msgstr "Anslutningen kunde inte tas bort på grund av ett okänt fel."
+#~ msgid "Could not move connection"
+#~ msgstr "Kan inte flytta anslutningen"
+#~ msgid "Could not add connection"
+#~ msgstr "Kan inte lägga till anslutningen"
+#~ msgid "The connection could not be added due to an unknown error."
+#~ msgstr "Anslutningen kunde inte läggas till på grund av ett okänt fel."
+#~ msgid "Could not update connection"
+#~ msgstr "Kunde inte uppdatera anslutningen"
+#~ msgid "The connection could not be updated due to an unknown error."
+#~ msgstr "Anslutningen kunde inte uppdateras på grund av ett okänt fel."
 #~ msgid "User Name:"
 #~ msgstr "Användarnamn:"
 #~ msgid "alert text"
