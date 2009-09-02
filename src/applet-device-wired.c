@@ -672,7 +672,10 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 		goto done;
 	}
 
+	utils_fill_connection_certs (NM_CONNECTION (connection));
 	secrets = nm_setting_to_hash (setting);
+	utils_clear_filled_connection_certs (NM_CONNECTION (connection));
+
 	if (!secrets) {
 		g_set_error (&error,
 		             NM_SETTINGS_INTERFACE_ERROR,
@@ -681,9 +684,6 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 					 __FILE__, __LINE__, __func__, nm_setting_get_name (setting));
 		goto done;
 	}
-
-	utils_fill_connection_certs (NM_CONNECTION (connection));
-	utils_clear_filled_connection_certs (NM_CONNECTION (connection));
 
 	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
 	 * will contain all the individual settings hashes.
