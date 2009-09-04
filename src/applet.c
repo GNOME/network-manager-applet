@@ -340,6 +340,7 @@ applet_menu_item_activate_helper_part2 (NMConnection *connection,
 			return;
 		}
 		g_object_unref (connection);
+		connection = NM_CONNECTION (exported);
 	}
 
 	g_assert (connection);
