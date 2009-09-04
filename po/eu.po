@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-17 19:43+0100\n"
-"PO-Revision-Date: 2009-03-17 21:03+0100\n"
+"POT-Creation-Date: 2009-09-04 16:24+0200\n"
+"PO-Revision-Date: 2009-09-04 17:48+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../nm-applet.desktop.in.h:1
@@ -25,6 +25,42 @@ msgstr "Kontrolatu zure sareko konexioak"
 msgid "Network Manager"
 msgstr "Sareko kudeatzailea"
 
+#: ../nm-applet.schemas.in.h:1
+msgid "Disable connected notifications"
+msgstr "Desgaitu konektatutako jakinarazpenak"
+
+#: ../nm-applet.schemas.in.h:2
+msgid "Disable disconnected notifications"
+msgstr "Desgaitu deskonektatutako jakinarazpenak"
+
+#: ../nm-applet.schemas.in.h:3
+msgid "Set this to TRUE to disable notifications when connecting to a network."
+msgstr "Ezarri hau TRUE (egia) gisa jakinarazpenak desgaitzeko sare batera konektatzean."
+
+#: ../nm-applet.schemas.in.h:4
+msgid "Set this to TRUE to disable notifications when disconnecting from a network."
+msgstr "Ezarri hau TRUE (egia) gisa jakinarazpenak desgaitzeko sare batetik deskonektatzean."
+
+#: ../nm-applet.schemas.in.h:5
+msgid ""
+"Set this to TRUE to disable notifications when wireless networks are "
+"available."
+msgstr ""
+"Ezarri hau TRUE (egia) gisa jakinarazpenak desgaitzeko haririk gabeko sareak erabilgarri "
+"daudenean."
+
+#: ../nm-applet.schemas.in.h:6
+msgid "Stamp"
+msgstr "Zigilua"
+
+#: ../nm-applet.schemas.in.h:7
+msgid "Suppress networks available notifications"
+msgstr "Ezabatu sare erabilgarrien jakinarazpenak"
+
+#: ../nm-applet.schemas.in.h:8
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr "Ezarpenak bertsio berrira migratuko diren edo ez  ezartzeko erabiltzen da."
+
 #: ../nm-connection-editor.desktop.in.h:1
 msgid "Manage and change your network connection settings"
 msgstr "Kudeatu eta aldatu sareko konexioen ezarpenak"
@@ -34,103 +70,120 @@ msgstr "Kudeatu eta aldatu sareko konexioen ezarpenak"
 msgid "Network Connections"
 msgstr "Sareko konexioak"
 
-#: ../src/applet-device-cdma.c:54
-msgid "Auto Mobile Broadband (CDMA) connection"
-msgstr "Bandazabal mugikor automatiko (CDMA) konexioa"
-
-#: ../src/applet-device-cdma.c:204 ../src/applet-device-gsm.c:205
-msgid "Disconnect"
-msgstr "Deskonektatu"
-
-#: ../src/applet-device-cdma.c:243 ../src/applet-device-gsm.c:244
-#, c-format
-msgid "Mobile Broadband (%s)"
-msgstr "Bandazabal mugikorra (%s)"
-
-#: ../src/applet-device-cdma.c:245 ../src/applet-device-gsm.c:246
-#: ../src/connection-editor/page-mobile.c:286
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1588
-msgid "Mobile Broadband"
-msgstr "Bandazabal mugikorra"
-
-#: ../src/applet-device-cdma.c:298 ../src/applet-device-gsm.c:299
-#: ../src/applet-device-wired.c:261
+#: ../src/applet-device-bt.c:187 ../src/applet-device-cdma.c:352
+#: ../src/applet-device-gsm.c:354 ../src/applet-device-wired.c:263
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Orain '%s' sarera konektatuta zaude."
 
-#: ../src/applet-device-cdma.c:302 ../src/applet-device-gsm.c:303
-#: ../src/applet-device-wired.c:265 ../src/applet-device-wifi.c:1184
+#: ../src/applet-device-bt.c:191 ../src/applet-device-cdma.c:356
+#: ../src/applet-device-gsm.c:358 ../src/applet-device-wired.c:267
+#: ../src/applet-device-wifi.c:1192
 msgid "Connection Established"
 msgstr "Konektatuta"
 
-#: ../src/applet-device-cdma.c:303
-msgid "You are now connected to the CDMA network."
-msgstr "CDMA sarera konektatuta."
+#: ../src/applet-device-bt.c:192
+msgid "You are now connected to the mobile broadband network."
+msgstr "Bandazabal mugikorren sarera konektatuta zaude."
 
-#: ../src/applet-device-cdma.c:329 ../src/applet-device-gsm.c:330
+#: ../src/applet-device-bt.c:218 ../src/applet-device-cdma.c:383
+#: ../src/applet-device-gsm.c:385
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "'%s' bandazabalera mugikorraren konexioa prestatzen..."
 
-#: ../src/applet-device-cdma.c:332 ../src/applet-device-gsm.c:333
+#: ../src/applet-device-bt.c:221 ../src/applet-device-cdma.c:386
+#: ../src/applet-device-gsm.c:388
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "'%s' bandazabalera mugikorraren konexioa konfiguratzen..."
 
-#: ../src/applet-device-cdma.c:335 ../src/applet-device-gsm.c:336
+#: ../src/applet-device-bt.c:224 ../src/applet-device-cdma.c:389
+#: ../src/applet-device-gsm.c:391
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
-msgstr "Erabiltzailearen autentifikazioa behar da '%s' bandazabal mugikorrera konektatzeko..."
+msgstr ""
+"Erabiltzailearen autentifikazioa behar da '%s' bandazabal mugikorrera "
+"konektatzeko..."
 
-#: ../src/applet-device-cdma.c:338 ../src/applet-device-gsm.c:339
-#: ../src/applet.c:1830
+#: ../src/applet-device-bt.c:227 ../src/applet-device-cdma.c:392
+#: ../src/applet-device-gsm.c:394 ../src/applet.c:1894
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Sareko helbide bat eskatzen '%s' sareari..."
 
-#: ../src/applet-device-cdma.c:342 ../src/applet-device-gsm.c:343
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:396
+#: ../src/applet-device-gsm.c:398
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "'%s' bandazabal mugikorraren konexioa aktibo dago"
 
-#: ../src/applet-device-cdma.c:458 ../src/applet-device-gsm.c:541
+#: ../src/applet-device-cdma.c:150 ../src/connection-editor/page-mobile.c:679
+msgid "CDMA"
+msgstr "CDMA"
+
+#: ../src/applet-device-cdma.c:213
+msgid "New Mobile Broadband (CDMA) connection..."
+msgstr "Bandazabal mugikor (CDMA) konexio berria"
+
+#: ../src/applet-device-cdma.c:258 ../src/applet-device-gsm.c:260
+msgid "Disconnect"
+msgstr "Deskonektatu"
+
+#: ../src/applet-device-cdma.c:297 ../src/applet-device-gsm.c:299
+#, c-format
+msgid "Mobile Broadband (%s)"
+msgstr "Bandazabal mugikorra (%s)"
+
+#: ../src/applet-device-cdma.c:299 ../src/applet-device-gsm.c:301
+#: ../src/connection-editor/page-mobile.c:378
+#: ../src/connection-editor/nm-connection-editor.glade.h:6
+#: ../src/connection-editor/nm-connection-list.c:1358
+msgid "Mobile Broadband"
+msgstr "Bandazabal mugikorra"
+
+#: ../src/applet-device-cdma.c:357
+msgid "You are now connected to the CDMA network."
+msgstr "CDMA sarera konektatuta."
+
+#: ../src/applet-device-cdma.c:526 ../src/applet-device-gsm.c:610
 msgid "Mobile broadband network password"
 msgstr "Bandazabal mugikorreko sarearen pasahitza"
 
-#: ../src/applet-device-cdma.c:467 ../src/applet-device-gsm.c:550
+#: ../src/applet-device-cdma.c:535 ../src/applet-device-gsm.c:619
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Pasahitza behar da '%s'(e)ra konektatzeko."
 
-#: ../src/applet-device-cdma.c:485 ../src/applet-device-gsm.c:568
-#: ../src/applet.glade.h:25 ../src/connection-editor/ce-page-dsl.glade.h:1
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
+#: ../src/applet-device-cdma.c:553 ../src/applet-device-gsm.c:637
 msgid "Password:"
 msgstr "Pasahitza:"
 
-#: ../src/applet-device-gsm.c:55
-msgid "Auto Mobile Broadband (GSM) connection"
-msgstr "Bandazabal mugikor automatikoaren (GSM) konexioa"
+#: ../src/applet-device-gsm.c:152 ../src/connection-editor/page-mobile.c:682
+msgid "GSM"
+msgstr "GSM"
 
-#: ../src/applet-device-gsm.c:304
+#: ../src/applet-device-gsm.c:215
+msgid "New Mobile Broadband (GSM) connection..."
+msgstr "Bandazabal mugikorraren  (GSM) konexio berria..."
+
+#: ../src/applet-device-gsm.c:359
 msgid "You are now connected to the GSM network."
 msgstr "Orain GSM sarera konektatuta zaude."
 
-#: ../src/applet-device-gsm.c:481
+#: ../src/applet-device-gsm.c:550
 msgid "PIN code required"
 msgstr "PIN kodea behar da"
 
-#: ../src/applet-device-gsm.c:483
+#: ../src/applet-device-gsm.c:552
 msgid "PUK code required"
 msgstr "PUK kodea behar da"
 
-#: ../src/applet-device-gsm.c:492
+#: ../src/applet-device-gsm.c:561
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "PIN kodea behar da bandazabal mugikorreko gailuarentzako"
 
-#: ../src/applet-device-gsm.c:494
+#: ../src/applet-device-gsm.c:563
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "PUK kodea behar da bandazabal mugikorreko gailuarentzako"
 
@@ -138,59 +191,59 @@ msgstr "PUK kodea behar da bandazabal mugikorreko gailuarentzako"
 msgid "Auto Ethernet"
 msgstr "Ethernet automatikoa"
 
-#: ../src/applet-device-wired.c:197
+#: ../src/applet-device-wired.c:199
 #, c-format
 msgid "Wired Networks (%s)"
 msgstr "Haridun sareak (%s)"
 
-#: ../src/applet-device-wired.c:199
+#: ../src/applet-device-wired.c:201
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "Haridun sarea (%s)"
 
-#: ../src/applet-device-wired.c:202
+#: ../src/applet-device-wired.c:204
 msgid "Wired Networks"
 msgstr "Haridun sareak"
 
-#: ../src/applet-device-wired.c:204
+#: ../src/applet-device-wired.c:206
 msgid "Wired Network"
 msgstr "Haridun sarea"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:227
+#: ../src/applet-device-wired.c:229
 msgid "disconnected"
 msgstr "deskonektatuta"
 
-#: ../src/applet-device-wired.c:266
+#: ../src/applet-device-wired.c:268
 msgid "You are now connected to the wired network."
 msgstr "Haridun sarera konektatuta."
 
-#: ../src/applet-device-wired.c:292
+#: ../src/applet-device-wired.c:294
 #, c-format
 msgid "Preparing wired network connection '%s'..."
 msgstr "Haridun '%s' sareko konexioa prestatzen..."
 
-#: ../src/applet-device-wired.c:295
+#: ../src/applet-device-wired.c:297
 #, c-format
 msgid "Configuring wired network connection '%s'..."
 msgstr "Haridun '%s' sareko konexioa konfiguratzen..."
 
-#: ../src/applet-device-wired.c:298
+#: ../src/applet-device-wired.c:300
 #, c-format
 msgid "User authentication required for wired network connection '%s'..."
 msgstr "Erabiltzailearen autentifikazioa behar da haridun '%s' sareko konexiorako..."
 
-#: ../src/applet-device-wired.c:301
+#: ../src/applet-device-wired.c:303
 #, c-format
 msgid "Requesting a wired network address for '%s'..."
 msgstr "Sareko helbide bat eskatzen haridun '%s' sareari..."
 
-#: ../src/applet-device-wired.c:305
+#: ../src/applet-device-wired.c:307
 #, c-format
 msgid "Wired network connection '%s' active"
 msgstr "Haridun '%s' sareko konexioa aktibo dago"
 
-#: ../src/applet-device-wired.c:558
+#: ../src/applet-device-wired.c:576
 msgid "DSL authentication"
 msgstr "DSL autentifikazioa"
 
@@ -202,73 +255,73 @@ msgstr "_Konektatu ezkutuko haririk gabeko sarera..."
 msgid "Create _New Wireless Network..."
 msgstr "_Sortu haririk gabeko sare berria..."
 
-#: ../src/applet-device-wifi.c:693
+#: ../src/applet-device-wifi.c:695
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Haririk gabeko sareak (%s)"
 
-#: ../src/applet-device-wifi.c:695
+#: ../src/applet-device-wifi.c:697
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Haririk gabeko sarea (%s)"
 
-#: ../src/applet-device-wifi.c:697
+#: ../src/applet-device-wifi.c:699
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Haririk gabeko sarea"
 msgstr[1] "Haririk gabeko sareak"
 
-#: ../src/applet-device-wifi.c:714
+#: ../src/applet-device-wifi.c:716
 msgid "wireless is disabled"
 msgstr "haririk gabeko sarea desgaituta"
 
-#: ../src/applet-device-wifi.c:977
+#: ../src/applet-device-wifi.c:982
 msgid "Wireless Networks Available"
 msgstr "Haririk gabeko sare erabilgarriak"
 
-#: ../src/applet-device-wifi.c:978
+#: ../src/applet-device-wifi.c:983
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Egin klik ikono honetan haririk gabeko sare batera konektatzeko"
 
-#: ../src/applet-device-wifi.c:981 ../src/applet.c:437
+#: ../src/applet-device-wifi.c:986 ../src/applet.c:480
 msgid "Don't show this message again"
 msgstr "Ez erakutsi mezu hau berriro"
 
-#: ../src/applet-device-wifi.c:1182
+#: ../src/applet-device-wifi.c:1190
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Haririk gabeko '%s' sarera konektatuta."
 
-#: ../src/applet-device-wifi.c:1183 ../src/applet-device-wifi.c:1214
+#: ../src/applet-device-wifi.c:1191 ../src/applet-device-wifi.c:1222
 msgid "(none)"
 msgstr "(bat ere ez)"
 
-#: ../src/applet-device-wifi.c:1224
+#: ../src/applet-device-wifi.c:1232
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Haririk gabeko '%s' sareko konexioa prestatzen..."
 
-#: ../src/applet-device-wifi.c:1227
+#: ../src/applet-device-wifi.c:1235
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Haririk gabeko '%s' sareko konexioa konfiguratzen..."
 
-#: ../src/applet-device-wifi.c:1230
+#: ../src/applet-device-wifi.c:1238
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Erabiltzailearen autentifikazioa behar da haririk gabeko '%s' sarerako..."
 
-#: ../src/applet-device-wifi.c:1233
+#: ../src/applet-device-wifi.c:1241
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Sareko helbide bat eskatzen haririk gabeko '%s' sareari..."
 
-#: ../src/applet-device-wifi.c:1253
+#: ../src/applet-device-wifi.c:1261
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "'%s' haririk gabeko sareko konexioa aktiboa: %s (%% %d)"
 
-#: ../src/applet-device-wifi.c:1257
+#: ../src/applet-device-wifi.c:1265
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "'%s' haririk gabeko sareko konexioa aktibo"
@@ -278,9 +331,9 @@ msgid "Error displaying connection information:"
 msgstr "Errorea konexioaren informazioa bistaratzean:"
 
 #: ../src/applet-dialogs.c:84
-#: ../src/connection-editor/page-wireless-security.c:300
-#: ../src/wireless-dialog.c:815
-#: ../src/wireless-security/wireless-security.c:317
+#: ../src/connection-editor/page-wireless-security.c:284
+#: ../src/wireless-dialog.c:832
+#: ../src/wireless-security/wireless-security.c:327
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -298,8 +351,8 @@ msgid "WEP"
 msgstr "WEP"
 
 #: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
-#: ../src/connection-editor/page-wireless-security.c:261
-#: ../src/wireless-dialog.c:768
+#: ../src/connection-editor/page-wireless-security.c:238
+#: ../src/wireless-dialog.c:789
 msgid "None"
 msgstr "Bat ere ez"
 
@@ -349,7 +402,6 @@ msgid "Speed:"
 msgstr "Abiadura:"
 
 #: ../src/applet-dialogs.c:329
-#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
 msgid "Security:"
 msgstr "Segurtasuna:"
 
@@ -406,7 +458,7 @@ msgstr "Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>"
 msgid "Missing resources"
 msgstr "Baliabideak falta dira"
 
-#: ../src/applet.c:507
+#: ../src/applet.c:562
 #, c-format
 msgid ""
 "\n"
@@ -416,7 +468,7 @@ msgstr ""
 "\n"
 "'%s' VPN konexioak huts egin du, sareko konexioa eten egin delako."
 
-#: ../src/applet.c:510
+#: ../src/applet.c:565
 #, c-format
 msgid ""
 "\n"
@@ -425,7 +477,7 @@ msgstr ""
 "\n"
 "'%s' VPN konexioak huts egin du, VPN zerbitzua ustekabean gelditu delako."
 
-#: ../src/applet.c:513
+#: ../src/applet.c:568
 #, c-format
 msgid ""
 "\n"
@@ -436,7 +488,7 @@ msgstr ""
 "'%s' VPN konexioak huts egin du, VPN zerbitzuak konfigurazio baliogabea "
 "itzuli duelako."
 
-#: ../src/applet.c:516
+#: ../src/applet.c:571
 #, c-format
 msgid ""
 "\n"
@@ -445,7 +497,7 @@ msgstr ""
 "\n"
 "'%s' VPN konexioak huts egin du, konexio-saiakeren denbora iraungitu delako."
 
-#: ../src/applet.c:519
+#: ../src/applet.c:574
 #, c-format
 msgid ""
 "\n"
@@ -454,7 +506,7 @@ msgstr ""
 "\n"
 "'%s' VPN konexioak huts egin du, VPN zerbitzua ez delako garaiz hasi."
 
-#: ../src/applet.c:522
+#: ../src/applet.c:577
 #, c-format
 msgid ""
 "\n"
@@ -464,7 +516,7 @@ msgstr ""
 "'%s' VPN konexioak huts egin du, VPN zerbitzuak huts egin duelako "
 "abiaraztean."
 
-#: ../src/applet.c:525
+#: ../src/applet.c:580
 #, c-format
 msgid ""
 "\n"
@@ -473,7 +525,7 @@ msgstr ""
 "\n"
 "'%s' VPN konexioak huts egin du, ez dagoelako baliozko VPN sekreturik."
 
-#: ../src/applet.c:528
+#: ../src/applet.c:583
 #, c-format
 msgid ""
 "\n"
@@ -482,7 +534,7 @@ msgstr ""
 "\n"
 "'%s' VPN konexioak huts egin du, ez dagoelako baliozko VPN sekreturik."
 
-#: ../src/applet.c:535
+#: ../src/applet.c:590
 #, c-format
 msgid ""
 "\n"
@@ -491,7 +543,7 @@ msgstr ""
 "\n"
 "'%s' VPN konexioak huts egin du."
 
-#: ../src/applet.c:553
+#: ../src/applet.c:608
 #, c-format
 msgid ""
 "\n"
@@ -501,7 +553,7 @@ msgstr ""
 "\n"
 "'%s' VPN konexioa deskonektatu egin da, sareko konexioa eten egin delako."
 
-#: ../src/applet.c:556
+#: ../src/applet.c:611
 #, c-format
 msgid ""
 "\n"
@@ -510,7 +562,7 @@ msgstr ""
 "\n"
 "'%s' VPN konexioa deskonektatu egin da, VPN zerbitzua gelditu egin delako."
 
-#: ../src/applet.c:562
+#: ../src/applet.c:617
 #, c-format
 msgid ""
 "\n"
@@ -519,15 +571,15 @@ msgstr ""
 "\n"
 "'%s' VPN konexioa deskonektatu egin da."
 
-#: ../src/applet.c:640
+#: ../src/applet.c:695
 msgid "VPN Login Message"
 msgstr "VPN saio-hasierako mezua"
 
-#: ../src/applet.c:652 ../src/applet.c:660 ../src/applet.c:704
+#: ../src/applet.c:707 ../src/applet.c:715 ../src/applet.c:759
 msgid "VPN Connection Failed"
 msgstr "VPN konexioak huts egin du"
 
-#: ../src/applet.c:711
+#: ../src/applet.c:766
 #, c-format
 msgid ""
 "\n"
@@ -541,7 +593,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:714
+#: ../src/applet.c:769
 #, c-format
 msgid ""
 "\n"
@@ -554,116 +606,116 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1005
+#: ../src/applet.c:1071
 msgid "device not ready"
 msgstr "gailua ez dago prest"
 
-#: ../src/applet.c:1021
+#: ../src/applet.c:1087
 msgid "device not managed"
 msgstr "gailua ez dago kudeatuta"
 
-#: ../src/applet.c:1065
+#: ../src/applet.c:1131
 msgid "No network devices available"
 msgstr "Ez dago sareko gailurik erabilgarri"
 
-#: ../src/applet.c:1153
+#: ../src/applet.c:1219
 msgid "_VPN Connections"
 msgstr "_VPN konexioak"
 
-#: ../src/applet.c:1203
+#: ../src/applet.c:1269
 msgid "_Configure VPN..."
 msgstr "_Konfiguratu VPN..."
 
-#: ../src/applet.c:1207
+#: ../src/applet.c:1273
 msgid "_Disconnect VPN..."
 msgstr "_Deskonektatu VPN..."
 
-#: ../src/applet.c:1260
+#: ../src/applet.c:1326
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager ez da exekutatzen ari..."
 
-#: ../src/applet.c:1265 ../src/applet.c:1958
+#: ../src/applet.c:1331 ../src/applet.c:2022
 msgid "Networking disabled"
 msgstr "Sarea desgaituta"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1449
+#: ../src/applet.c:1515
 msgid "Enable _Networking"
 msgstr "Gaitu _sarea"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1458
+#: ../src/applet.c:1524
 msgid "Enable _Wireless"
 msgstr "Gaitu _haririk gabekoa"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1469
+#: ../src/applet.c:1535
 msgid "Connection _Information"
 msgstr "Konexioaren _informazioa"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1479
+#: ../src/applet.c:1545
 msgid "Edit Connections..."
 msgstr "Editatu konexioak..."
 
 #. Help item
-#: ../src/applet.c:1493
+#: ../src/applet.c:1559
 msgid "_Help"
 msgstr "_Laguntza"
 
 #. About item
-#: ../src/applet.c:1502
+#: ../src/applet.c:1568
 msgid "_About"
 msgstr "Honi _buruz"
 
-#: ../src/applet.c:1675
+#: ../src/applet.c:1739
 msgid "Disconnected"
 msgstr "Deskonektatuta"
 
-#: ../src/applet.c:1676
+#: ../src/applet.c:1740
 msgid "The network connection has been disconnected."
 msgstr "Sareko konexioa deskonektatu egin da."
 
-#: ../src/applet.c:1824
+#: ../src/applet.c:1888
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "'%s' sareko konexioa prestatzen..."
 
-#: ../src/applet.c:1827
+#: ../src/applet.c:1891
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Erabiltzailearen autentifikazioa behar da '%s' sareko konexiorako..."
 
-#: ../src/applet.c:1833
+#: ../src/applet.c:1897
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "'%s' sareko konexioa aktiboa"
 
-#: ../src/applet.c:1914
+#: ../src/applet.c:1978
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "'%s' VPN konexioa haiseratzen..."
 
-#: ../src/applet.c:1917
+#: ../src/applet.c:1981
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Erabiltzailearen autentifikazioa behar da '%s' VPN konexiorako..."
 
-#: ../src/applet.c:1920
+#: ../src/applet.c:1984
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Sareko helbide bat eskatzen VPN '%s' sareari..."
 
-#: ../src/applet.c:1923
+#: ../src/applet.c:1987
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "'%s' VPN konexioa aktiboa"
 
-#: ../src/applet.c:1962
+#: ../src/applet.c:2026
 msgid "No network connection"
 msgstr "Ez dago sareko konexiorik"
 
-#: ../src/applet.c:2297
+#: ../src/applet.c:2359
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
@@ -671,11 +723,11 @@ msgstr ""
 "NetworkManager applet-ak ezin izan du behar diren baliabide batzuk aurkitu. "
 "Ezin du jarraitu.\n"
 
-#: ../src/applet.c:2483
+#: ../src/applet.c:2554
 msgid "NetworkManager Applet"
 msgstr "NetworkManager applet-a"
 
-#: ../src/applet.c:2489 ../src/wired-dialog.c:128
+#: ../src/applet.c:2560 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -683,8 +735,7 @@ msgstr ""
 "NetworkManager applet-ak ezin izan du behar diren baliabide batzuk aurkitu "
 "(galde fitxategia ez da aurkitu)."
 
-#: ../src/applet.glade.h:1 ../src/connection-editor/ce-mobile-wizard.glade.h:1
-#: ../src/connection-editor/ce-vpn-wizard.glade.h:1
+#: ../src/applet.glade.h:1 ../src/connection-editor/ce-vpn-wizard.glade.h:1
 msgid " "
 msgstr " "
 
@@ -705,14 +756,10 @@ msgid "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
 msgstr "<span weight=\"bold\" size=\"larger\">Sareko konexio aktiboak</span>"
 
 #: ../src/applet.glade.h:7
-msgid "Anonymous Identity:"
-msgstr "Nortasun anonimoa:"
+msgid "Anony_mous identity:"
+msgstr "Nortasun _anonimoa:"
 
 #: ../src/applet.glade.h:8
-msgid "Authentication:"
-msgstr "Autentifikazioa:"
-
-#: ../src/applet.glade.h:9
 msgid ""
 "Automatic\n"
 "Version 0\n"
@@ -722,43 +769,39 @@ msgstr ""
 "0 bertsioa\n"
 "1 bertsioa"
 
-#: ../src/applet.glade.h:12
-msgid "CA Certificate:"
-msgstr "ZE ziurtagiria:"
+#: ../src/applet.glade.h:11
+msgid "C_A certificate:"
+msgstr "_ZE ziurtagiria:"
 
-#: ../src/applet.glade.h:13
+#: ../src/applet.glade.h:12
 msgid "C_onnect"
 msgstr "_Konektatu"
+
+#: ../src/applet.glade.h:13
+msgid "Co_nnection:"
+msgstr "_Konexioa:"
 
 #: ../src/applet.glade.h:14
 msgid "Connection Information"
 msgstr "Konexioaren informazioa"
 
 #: ../src/applet.glade.h:15
-msgid "Connection:"
-msgstr "Konexioa:"
+msgid "Don't _warn me again"
+msgstr "_Ez abisatu berriro"
 
 #: ../src/applet.glade.h:16
-msgid "Don't warn me again"
-msgstr "Ez abisatu berriro"
+msgid "I_dentity:"
+msgstr "_Identitatea:"
 
 #: ../src/applet.glade.h:17
-msgid "Identity:"
-msgstr "Identitatea:"
+msgid "I_nner authentication:"
+msgstr "_Barneko autentifikazioa:"
 
 #: ../src/applet.glade.h:18
-msgid "Inner Authentication:"
-msgstr "Barneko autentifikazioa:"
-
-#: ../src/applet.glade.h:19
-msgid "Key:"
-msgstr "Gakoa:"
-
-#: ../src/applet.glade.h:20
 msgid "No"
 msgstr "Ez"
 
-#: ../src/applet.glade.h:21
+#: ../src/applet.glade.h:19
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -766,104 +809,99 @@ msgstr ""
 "Sistema irekia\n"
 "Partekatutako gakoa"
 
-#: ../src/applet.glade.h:23
+#: ../src/applet.glade.h:21
 msgid "Other Wireless Network..."
 msgstr "Beste haririk gabeko sarea..."
 
-#: ../src/applet.glade.h:24
-msgid "PEAP Version:"
-msgstr "PEAP bertsioa:"
+#: ../src/applet.glade.h:22
+msgid "Private _key:"
+msgstr "_Gako pribatua:"
 
-#: ../src/applet.glade.h:26
-msgid "Private Key Password:"
-msgstr "Gako pribatuaren pasahitza:"
-
-#: ../src/applet.glade.h:27
-msgid "Private Key:"
-msgstr "Gako pribatua:"
-
-#: ../src/applet.glade.h:28
+#: ../src/applet.glade.h:23
 msgid "Select A File"
 msgstr "Hautatu fitxategia"
 
-#: ../src/applet.glade.h:29
-msgid "Show key"
-msgstr "Erakutsi gakoa"
+#: ../src/applet.glade.h:24
+msgid "Sho_w key"
+msgstr "E_rakutsi gakoa"
 
-#: ../src/applet.glade.h:30 ../src/connection-editor/ce-page-dsl.glade.h:3
-msgid "Show password"
-msgstr "Erakutsi pasahitza"
+#: ../src/applet.glade.h:25 ../src/connection-editor/ce-page-dsl.glade.h:1
+msgid "Sho_w password"
+msgstr "Erakutsi _pasahitza"
 
-#: ../src/applet.glade.h:31 ../src/connection-editor/ce-page-mobile.glade.h:16
-msgid "Type:"
-msgstr "Mota:"
+#: ../src/applet.glade.h:26
+msgid "WEP inde_x:"
+msgstr "WEP _indizea:"
 
-#: ../src/applet.glade.h:32
-msgid "User Certificate:"
-msgstr "Erabiltzailearen ziurtagiria:"
-
-#: ../src/applet.glade.h:33
-msgid "User Name:"
-msgstr "Erabiltzaile-izena:"
-
-#: ../src/applet.glade.h:34
-msgid "WEP Index:"
-msgstr "WEP indizea:"
-
-#: ../src/applet.glade.h:35
+#: ../src/applet.glade.h:27
 msgid "Wireless _adapter:"
 msgstr "Haririk gabeko _moldagailua:"
 
-#: ../src/applet.glade.h:36
+#: ../src/applet.glade.h:28
 msgid "Yes"
 msgstr "Bai"
 
-#: ../src/applet.glade.h:37
-msgid "_Network Name:"
+#: ../src/applet.glade.h:29
+msgid "_Authentication:"
+msgstr "_Autentifikazioa:"
+
+#: ../src/applet.glade.h:30
+msgid "_Key:"
+msgstr "_Gakoa:"
+
+#: ../src/applet.glade.h:31
+msgid "_Network name:"
 msgstr "_Sarearen izena:"
 
+#: ../src/applet.glade.h:32
+msgid "_PEAP version:"
+msgstr "_PEAP bertsioa:"
+
+#: ../src/applet.glade.h:33 ../src/connection-editor/ce-page-dsl.glade.h:2
+#: ../src/connection-editor/ce-page-mobile.glade.h:16
+msgid "_Password:"
+msgstr "_Pasahitza:"
+
+#: ../src/applet.glade.h:34
+msgid "_Private key password:"
+msgstr "_Gako pribatuaren pasahitza:"
+
+#: ../src/applet.glade.h:35 ../src/connection-editor/ce-page-mobile.glade.h:17
+msgid "_Type:"
+msgstr "_Mota:"
+
+#: ../src/applet.glade.h:36
+msgid "_User certificate:"
+msgstr "Erabiltzailearen _ziurtagiria:"
+
+#: ../src/applet.glade.h:37 ../src/connection-editor/ce-page-dsl.glade.h:4
+#: ../src/connection-editor/ce-page-mobile.glade.h:18
+msgid "_Username:"
+msgstr "Erabiltzaile-_izena:"
+
 #: ../src/applet.glade.h:38
-msgid "_Wireless Security:"
+msgid "_Wireless security:"
 msgstr "_Haririk gabearen segurtasuna:"
 
-#: ../src/applet.glade.h:39
-msgid "alert text"
-msgstr "abisuaren testua"
-
-#: ../src/connection-editor/ce-mobile-wizard.glade.h:2
-msgid ""
-"<span weight=\"bold\" size=\"larger\">Choose a Mobile Broadband Connection</"
-"span>\n"
-"\n"
-"Select or connect the mobile broadband device you wish to use for the new "
-"connection.  If the device is not available, you may select a generic "
-"connection type."
-msgstr ""
-"<span weight=\"bold\" size=\"larger\">Aukeratu bandazabal mugikorraren "
-"konexioa</span>\n"
-"\n"
-"Hautatu edo konektatu konexio berrian erabiltzea nahi duzun bandazabal "
-"mugikorraren gailua. Gailua ez badago erabilgarri, konexio mota orokorra "
-"hauta dezakezu."
-
-#: ../src/connection-editor/ce-page.c:52
+#: ../src/connection-editor/ce-page.c:69
 msgid "automatic"
 msgstr "automatikoa"
 
-#: ../src/connection-editor/ce-page-dsl.glade.h:2
-msgid "Service:"
-msgstr "Zerbitzua:"
+#: ../src/connection-editor/ce-page.c:215
+msgid "Failed to update connection secrets due to an unknown error."
+msgstr "Huts egin du konexioaren sekretua eguneratzean errore ezezagun bat dela eta."
 
-#: ../src/connection-editor/ce-page-dsl.glade.h:4
-#: ../src/connection-editor/ce-page-mobile.glade.h:17
-msgid "Username:"
-msgstr "Erabiltzaile-izena:"
+#: ../src/connection-editor/ce-page-dsl.glade.h:3
+msgid "_Service:"
+msgstr "_Zerbitzua:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:1
+#: ../src/connection-editor/ce-page-ip6.glade.h:1
 msgid "<b>Addresses</b>"
 msgstr "<b>Helbideak</b>"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:2
+#: ../src/connection-editor/ce-page-ip6.glade.h:2
 msgid ""
 "Automatic\n"
 "Automatic with manual DNS settings\n"
@@ -878,40 +916,59 @@ msgstr ""
 "Beste ordenagailuetara partekatua"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:7
-msgid "DHCP Client ID:"
-msgstr "DHCP bezeroaren IDa:"
+msgid "D_HCP client ID:"
+msgstr "D_HCP bezeroaren IDa:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:8
-msgid "DNS Servers:"
-msgstr "DNS zerbitzariak:"
+#: ../src/connection-editor/ce-page-ip6.glade.h:7
+msgid ""
+"IP addresses identify your computer on the network.  Click the \"Add\" "
+"button to add an IP address."
+msgstr ""
+"IP helbideak ordenagailua identifikatzen du sarearen barruan. Egin klik "
+"\"Gehitu\" botoian IP helbide bat gehitzeko."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
+#: ../src/connection-editor/ce-page-ip6.glade.h:8
 msgid ""
 "If enabled, this connection will never be used as the default network "
 "connection."
 msgstr ""
-"Gaituta badago, konexio hau ez da inoiz ere erabiliko sareko "
-"konexio lehenetsi gisa."
+"Gaituta badago, konexio hau ez da inoiz ere erabiliko sareko konexio "
+"lehenetsi gisa."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:10
-msgid "Ignore automatically obtained routes"
-msgstr "Ez ikusi egin automatikoki lortutako bideei"
+#: ../src/connection-editor/ce-page-ip6.glade.h:9
+msgid "Ig_nore automatically obtained routes"
+msgstr "_Ezikusi egin automatikoki lortutako bideei"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:11
-msgid "Method:"
-msgstr "Metodoa:"
+#: ../src/connection-editor/ce-page-ip6.glade.h:10
+msgid "Use this c_onnection only for resources on its network"
+msgstr "Erabili _konexio hau soilik bere sareko baliabideentzako"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:12
-msgid "Routes..."
-msgstr "Bideak..."
+#: ../src/connection-editor/ce-page-ip6.glade.h:11
+msgid "_DNS servers:"
+msgstr "_DNS zerbitzariak:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:13
-msgid "Search Domains:"
-msgstr "Bilaketako domeinuak:"
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
+msgid "_Method:"
+msgstr "_Metodoa:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:14
-msgid "Use this connection only for resources on its network"
-msgstr "Erabili konexio hau soilik bere sareko baliabideentzako"
+msgid "_Routes…"
+msgstr "_Bideak..."
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
+msgid "_Search domains:"
+msgstr "_Bilaketako domeinuak:"
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
+msgid "_Routes&#x2026;"
+msgstr "_Bideak"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -922,10 +979,6 @@ msgid "<b>Basic</b>"
 msgstr "<b>Oinarrizkoa</b>"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:3
-msgid "APN:"
-msgstr "APN:"
-
-#: ../src/connection-editor/ce-page-mobile.glade.h:4
 msgid ""
 "Any\n"
 "3G (UMTS/HSPA)\n"
@@ -939,29 +992,37 @@ msgstr ""
 "3G hobetsia (UMTS/HSPA)\n"
 "2G hobetsia (GPRS/EDGE)"
 
+#: ../src/connection-editor/ce-page-mobile.glade.h:8
+msgid "Change..."
+msgstr "Aldatu..."
+
 #: ../src/connection-editor/ce-page-mobile.glade.h:9
-msgid "Band:"
-msgstr "Banda:"
+msgid "N_etwork:"
+msgstr "_Sarea:"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:10
-msgid "Network:"
-msgstr "Sarea:"
+msgid "Nu_mber:"
+msgstr "_Zenbakia:"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:11
-msgid "Number:"
-msgstr "Zenbakia:"
+msgid "PI_N:"
+msgstr "_PINa:"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:12
-msgid "PIN:"
-msgstr "PIN:"
+msgid "PU_K:"
+msgstr "_PUKa:"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:13
-msgid "PUK:"
-msgstr "PUK:"
+msgid "Sho_w passwords"
+msgstr "Erakutsi _pasahitzak"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:14
+msgid "_APN:"
+msgstr "_APN:"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:15
-msgid "Show passwords"
-msgstr "Erakutsi pasahitzak"
+msgid "_Band:"
+msgstr "_Banda:"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:1
 msgid "<b>Allowed Authentication Methods</b>"
@@ -984,92 +1045,85 @@ msgid ""
 "<i>In most cases, the provider's PPP servers will support all authentication "
 "methods.  If connections fail, try disabling support for some methods.</i>"
 msgstr ""
-"<i>Kasu gehienetan, hornitzailearen PPP zerbitzariek autentifikazio "
-"metodo guztiak onartzen dituzte. Konexioak huts egiten badu, "
-"saiatu metodo batzuentzako euskaria desgaituz.</i>"
+"<i>Kasu gehienetan, hornitzailearen PPP zerbitzariek autentifikazio metodo "
+"guztiak onartzen dituzte. Konexioak huts egiten badu, saiatu metodo "
+"batzuentzako euskaria desgaituz.</i>"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:6
-msgid "Allow BSD data compression"
-msgstr "Baimendu BSD datu-konpresioa"
+msgid "Allow _BSD data compression"
+msgstr "Baimendu _BSD datu-konpresioa"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:7
-msgid "Allow Deflate data compression"
-msgstr "Baimendu Deflate datu-konpresioa"
+msgid "Allow _Deflate data compression"
+msgstr "Baimendu _Deflate datu-konpresioa"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:8
 msgid "Allowed methods:"
 msgstr "Baimendutako metodoak:"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:9
-#: ../src/connection-editor/page-ppp.c:134
-#: ../src/wireless-security/eap-method-ttls.c:268
-msgid "CHAP"
-msgstr "CHAP"
+msgid "C_HAP"
+msgstr "_CHAP"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:10
 msgid "Challenge Handshake Authentication Protocol"
 msgstr "Challenge Handshake Authentication protokoloa"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:11
-msgid "Configure Methods..."
-msgstr "Konfiguratu metodoak..."
+msgid "Configure _Methods…"
+msgstr "Konfiguratu _metodoak..."
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:12
-#: ../src/connection-editor/page-ppp.c:132
-msgid "EAP"
-msgstr "EAP"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:13
 msgid "Extensible Authentication Protocol"
 msgstr "Autentifikazio protokolo hedagarria"
 
+#: ../src/connection-editor/ce-page-ppp.glade.h:13
+msgid "MSCHAP v_2"
+msgstr "MSCHAP v_2"
+
 #: ../src/connection-editor/ce-page-ppp.glade.h:14
-#: ../src/connection-editor/page-ppp.c:136
-#: ../src/wireless-security/eap-method-ttls.c:238
-msgid "MSCHAP"
-msgstr "MSCHAP"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:15
-msgid "MSCHAP v2"
-msgstr "MSCHAP v2"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:16
 msgid "Microsoft Challenge Handshake Authentication Protocol"
 msgstr "Microsoft-en Challenge Handshake Authentication protokoloa"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:17
+#: ../src/connection-editor/ce-page-ppp.glade.h:15
 msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
 msgstr "Microsoft-en Challenge Handshake Authentication protokoloa 2. bertsioa"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:18
-#: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:223
-msgid "PAP"
-msgstr "PAP"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:19
+#: ../src/connection-editor/ce-page-ppp.glade.h:16
 msgid "Password Authentication Protocol"
 msgstr "Pasahitzaren autentifikazioa protokoloa"
 
+#: ../src/connection-editor/ce-page-ppp.glade.h:17
+msgid "Send PPP _echo packets"
+msgstr "Bidali PPP _echo paketeak"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:18
+msgid "Use TCP _header compression"
+msgstr "Erabili TCP _goiburu-konpresioa"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:19
+msgid "Use _stateful MPPE"
+msgstr "Erabili MPPE _egoerarekin"
+
 #: ../src/connection-editor/ce-page-ppp.glade.h:20
-msgid "Require 128-bit encryption"
-msgstr "128 bit-eko enkriptazioa behar da"
+msgid "_EAP"
+msgstr "_EAP"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:21
-msgid "Send PPP echo packets"
-msgstr "Bidali PPP echo paketeak"
+msgid "_MSCHAP"
+msgstr "_MSCHAP"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:22
-msgid "Use Point-to-Point Encryption (MPPE)"
-msgstr "Erabili puntutik punturako enkriptazioa (MPPE)"
+msgid "_PAP"
+msgstr "_PAP"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:23
-msgid "Use Stateful MPPE"
-msgstr "Erabili MPPE egoerarekin"
+msgid "_Require 128-bit encryption"
+msgstr "_128 bit-eko enkriptazioa behar da"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:24
-msgid "Use TCP header compression"
-msgstr "Erabili TCP goiburu-konpresioa"
+msgid "_Use point-to-point encryption (MPPE)"
+msgstr "_Erabili puntutik punturako enkriptazioa (MPPE)"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:1
 msgid "Aut_onegotiate"
@@ -1184,6 +1238,10 @@ msgstr "_SSID:"
 msgid "mW"
 msgstr "mW"
 
+#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
+msgid "_Security:"
+msgstr "_Segurtasuna:"
+
 #: ../src/connection-editor/ce-vpn-wizard.glade.h:2
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Choose a VPN Connection Type</span>\n"
@@ -1199,71 +1257,80 @@ msgstr ""
 "instalatuta ez egotea."
 
 #: ../src/connection-editor/ce-vpn-wizard.glade.h:5
-msgid "Create..."
+msgid "Create…"
 msgstr "Sortu..."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
-#: ../src/connection-editor/page-ip4.c:669
+#: ../src/connection-editor/ip6-routes-dialog.c:459
+#: ../src/connection-editor/page-ip4.c:634
+#: ../src/connection-editor/page-ip6.c:611
 msgid "Address"
 msgstr "Helbidea"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:517
-#: ../src/connection-editor/page-ip4.c:685
+#: ../src/connection-editor/page-ip4.c:650
 msgid "Netmask"
 msgstr "Sare-maskara"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
-#: ../src/connection-editor/page-ip4.c:701
+#: ../src/connection-editor/ip6-routes-dialog.c:491
+#: ../src/connection-editor/page-ip4.c:666
 msgid "Gateway"
 msgstr "Atebidea"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:549
+#: ../src/connection-editor/ip6-routes-dialog.c:507
 msgid "Metric"
 msgstr "Metrika"
 
-#: ../src/connection-editor/mobile-wizard.c:73
-msgid "Installed GSM device"
-msgstr "Instalatutako GSM gailua"
+#: ../src/connection-editor/ip6-routes-dialog.c:475
+#: ../src/connection-editor/page-ip6.c:627
+msgid "Prefix"
+msgstr "Aurrizkia"
 
-#: ../src/connection-editor/mobile-wizard.c:84
-msgid "Installed CDMA device"
-msgstr "Instalatutako CDMA gailua"
+#: ../src/connection-editor/page-dsl.c:153
+#: ../src/connection-editor/page-dsl.c:160
+msgid "Could not load DSL user interface."
+msgstr "Ezin izan da DSLrentzako erabiltzailearen interfazea kargatu."
 
-#: ../src/connection-editor/mobile-wizard.c:150
-msgid "Create a GSM connection"
-msgstr "Sortu GSM konexioa"
-
-#: ../src/connection-editor/mobile-wizard.c:151
-msgid "Create a CDMA connection"
-msgstr "Sortu CDMA konexioa"
-
-#: ../src/connection-editor/page-dsl.c:143
+#: ../src/connection-editor/page-dsl.c:166
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1594
+#: ../src/connection-editor/nm-connection-list.c:1366
 msgid "DSL"
 msgstr "DSL"
 
+#: ../src/connection-editor/page-dsl.c:256
+#, c-format
+msgid "DSL connection %d"
+msgstr "DSL %d. konexioa"
+
 #: ../src/connection-editor/page-ip4.c:116
+#: ../src/connection-editor/page-ip6.c:114
 msgid "Automatic (VPN)"
 msgstr "Automatikoa (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:117
+#: ../src/connection-editor/page-ip6.c:115
 msgid "Automatic (VPN) addresses only"
 msgstr "Helbide automatikoak soilik (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:120
+#: ../src/connection-editor/page-ip6.c:118
 msgid "Automatic (PPP)"
 msgstr "Automatikoa (PPP)"
 
 #: ../src/connection-editor/page-ip4.c:121
+#: ../src/connection-editor/page-ip6.c:119
 msgid "Automatic (PPP) addresses only"
 msgstr "Helbide automatikoak soilik (PPP)"
 
 #: ../src/connection-editor/page-ip4.c:123
+#: ../src/connection-editor/page-ip6.c:121
 msgid "Automatic (PPPoE)"
 msgstr "Automatikoa (PPPoE)"
 
 #: ../src/connection-editor/page-ip4.c:124
+#: ../src/connection-editor/page-ip6.c:122
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Helbide automatikoak soilik (PPPoE)"
 
@@ -1276,14 +1343,17 @@ msgid "Automatic (DHCP) addresses only"
 msgstr "Helbide automatikoak soilik (DHCP)"
 
 #: ../src/connection-editor/page-ip4.c:152
+#: ../src/connection-editor/page-ip6.c:162
 msgid "Manual"
 msgstr "Eskuz"
 
 #: ../src/connection-editor/page-ip4.c:164
+#: ../src/connection-editor/page-ip6.c:175
 msgid "Link-Local Only"
 msgstr "Esteka lokalak soilik"
 
 #: ../src/connection-editor/page-ip4.c:170
+#: ../src/connection-editor/page-ip6.c:182
 msgid "Shared to other computers"
 msgstr "Beste ordenagailuekin partekatua"
 
@@ -1292,15 +1362,96 @@ msgstr "Beste ordenagailuekin partekatua"
 msgid "Editing IPv4 routes for %s"
 msgstr "'%s'(r)en IPv4 bideak editatzea"
 
-#: ../src/connection-editor/page-ip4.c:638
+#: ../src/connection-editor/page-ip4.c:708
+#: ../src/connection-editor/page-ip4.c:715
+msgid "Could not load IPv4 user interface."
+msgstr "Ezin izan da IPv4rentzako erabiltzailearen interfazea kargatu."
+
+#: ../src/connection-editor/page-ip4.c:721
 msgid "IPv4 Settings"
 msgstr "IPv4 ezarpenak"
 
+#: ../src/connection-editor/page-ip6.c:124
+msgid "Automatic"
+msgstr "Automatikoa"
+
+#: ../src/connection-editor/page-ip6.c:125
+msgid "Automatic, addresses only"
+msgstr "Automatikoa, helbideak soilik"
+
+#: ../src/connection-editor/page-ip6.c:137
+#: ../src/wireless-security/eap-method.c:175
+msgid "Ignore"
+msgstr "Ez ikusi egin"
+
+#: ../src/connection-editor/page-ip6.c:574
+#, c-format
+msgid "Editing IPv6 routes for %s"
+msgstr "'%s'(r)en IPv6 bideak editatzea"
+
+#: ../src/connection-editor/page-ip6.c:667
+#: ../src/connection-editor/page-ip6.c:674
+msgid "Could not load IPv6 user interface."
+msgstr "Ezin izan da IPv6rentzako erabiltzailearen interfazea kargatu."
+
+#: ../src/connection-editor/page-ip6.c:680
+msgid "IPv6 Settings"
+msgstr "IPv6 ezarpenak"
+
+#: ../src/connection-editor/page-mobile.c:365
+#: ../src/connection-editor/page-mobile.c:372
+msgid "Could not load mobile broadband user interface."
+msgstr "Ezin izan da bandazabal mugikorrentzako erabiltzailearen interfazea kargatu."
+
+#: ../src/connection-editor/page-mobile.c:390
+msgid "Unsupported mobile broadband connection type."
+msgstr "Bandazabalera mugikorraren konexio mota onartu gabea."
+
+#. Fall back to just asking for GSM vs. CDMA
+#: ../src/connection-editor/page-mobile.c:632
+msgid "Select Mobile Broadband Provider Type"
+msgstr "Hautatu bandazabal mugikorraren hornitzaile mota"
+
+#: ../src/connection-editor/page-mobile.c:659
+msgid ""
+"Select the technology your mobile broadband provider uses.  If you are "
+"unsure, ask your provider."
+msgstr ""
+"Hautatu bandazabal mugikorraren hornitzaileak erabiltzen duen teknologia. "
+"Ez bazaude ziur, galdetu hornitzaileari."
+
+#: ../src/connection-editor/page-mobile.c:664
+msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
+msgstr "Hornitzaileak _GSMen oinarritutako teknologia darabil (adib. GPRS, EDGE, UMTS, HSDPA)"
+
+#: ../src/connection-editor/page-mobile.c:669
+msgid "My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"
+msgstr "Hornitzaileak _CDMAn oinarritutako teknologia darabil (adib. 1xRTT, EVDO)"
+
+#: ../src/connection-editor/page-ppp.c:132
+msgid "EAP"
+msgstr "EAP"
+
+#: ../src/connection-editor/page-ppp.c:133
+#: ../src/wireless-security/eap-method-ttls.c:223
+msgid "PAP"
+msgstr "PAP"
+
+#: ../src/connection-editor/page-ppp.c:134
+#: ../src/wireless-security/eap-method-ttls.c:268
+msgid "CHAP"
+msgstr "CHAP"
+
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:229
+#: ../src/wireless-security/eap-method-peap.c:240
 #: ../src/wireless-security/eap-method-ttls.c:253
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
+
+#: ../src/connection-editor/page-ppp.c:136
+#: ../src/wireless-security/eap-method-ttls.c:238
+msgid "MSCHAP"
+msgstr "MSCHAP"
 
 #. Translators: "none" refers to authentication methods
 #: ../src/connection-editor/page-ppp.c:139
@@ -1312,27 +1463,53 @@ msgstr "bat ere ez"
 msgid "Editing PPP authentication methods for %s"
 msgstr "'%s'(r)en PPP autentifikazio metodoak editatzea"
 
-#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:280
+#: ../src/connection-editor/page-ppp.c:287
+msgid "Could not load PPP user interface."
+msgstr "Ezin izan da PPPrentzako erabiltzailearen interfazea kargatu."
+
+#: ../src/connection-editor/page-ppp.c:293
 msgid "PPP Settings"
 msgstr "PPP ezarpenak"
 
-#: ../src/connection-editor/page-vpn.c:70
+#: ../src/connection-editor/page-vpn.c:105
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1591
+#: ../src/connection-editor/nm-connection-list.c:1362
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-wired.c:180
+#: ../src/connection-editor/page-vpn.c:116
+#, c-format
+msgid "Could not find VPN plugin service for '%s'."
+msgstr "Ezin izan da VPN pluginaren zerbitzurik aurkitu '%s'(r)entzako."
+
+#: ../src/connection-editor/page-vpn.c:212
+#: ../src/connection-editor/nm-connection-list.c:948
+#, c-format
+msgid "VPN connection %d"
+msgstr "VPN %d. konexioa"
+
+#: ../src/connection-editor/page-wired.c:204
+#: ../src/connection-editor/page-wired.c:211
+msgid "Could not load wired user interface."
+msgstr "Ezin izan da kablearentzako erabiltzailearen interfazea kargatu."
+
+#: ../src/connection-editor/page-wired.c:217
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1581
+#: ../src/connection-editor/nm-connection-list.c:1350
 msgid "Wired"
 msgstr "Hariduna"
 
-#: ../src/connection-editor/page-wired-security.c:81
+#: ../src/connection-editor/page-wired.c:340
+#, c-format
+msgid "Wired connection %d"
+msgstr "Haridun %d. konexios"
+
+#: ../src/connection-editor/page-wired-security.c:112
 msgid "802.1x Security"
 msgstr "802.1x segurtasuna"
 
-#: ../src/connection-editor/page-wired-security.c:91
+#: ../src/connection-editor/page-wired-security.c:120
 msgid "Use 802.1X security for this connection"
 msgstr "Erabili 802.1X segurtasuna konexio honetan"
 
@@ -1346,51 +1523,72 @@ msgstr "lehenetsia"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:326
+#: ../src/connection-editor/page-wireless.c:348
+#: ../src/connection-editor/page-wireless.c:355
+msgid "Could not load WiFi user interface."
+msgstr "Ezin izan da WiFiarentzako erabiltzailearen interfazea kargatu."
+
+#: ../src/connection-editor/page-wireless.c:361
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1584
+#: ../src/connection-editor/nm-connection-list.c:1354
 msgid "Wireless"
 msgstr "Haririk gabekoa"
 
-#: ../src/connection-editor/page-wireless-security.c:230
-msgid "Wireless Security"
-msgstr "Haririk gabearen segurtasuna:"
+#: ../src/connection-editor/page-wireless.c:512
+#, c-format
+msgid "Wireless connection %d"
+msgstr "Haririk gabeko %d. konexioa"
 
-#: ../src/connection-editor/page-wireless-security.c:278
-#: ../src/wireless-dialog.c:789
+#: ../src/connection-editor/page-wireless-security.c:262
+#: ../src/wireless-dialog.c:806
 msgid "WEP 40/128-bit Key"
 msgstr "WEP 40/128 bit-eko gakoa"
 
-#: ../src/connection-editor/page-wireless-security.c:287
-#: ../src/wireless-dialog.c:798
+#: ../src/connection-editor/page-wireless-security.c:271
+#: ../src/wireless-dialog.c:815
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128 bit-eko pasaesaldia"
 
-#: ../src/connection-editor/page-wireless-security.c:313
-#: ../src/wireless-dialog.c:828
+#: ../src/connection-editor/page-wireless-security.c:297
+#: ../src/wireless-dialog.c:845
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinamikoa (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:327
-#: ../src/wireless-dialog.c:842
+#: ../src/connection-editor/page-wireless-security.c:311
+#: ../src/wireless-dialog.c:859
 msgid "WPA & WPA2 Personal"
 msgstr "WPA eta WPA2 pertsonala"
 
-#: ../src/connection-editor/page-wireless-security.c:341
-#: ../src/wireless-dialog.c:856
+#: ../src/connection-editor/page-wireless-security.c:325
+#: ../src/wireless-dialog.c:873
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA eta WPA2 enpresa"
 
-#: ../src/connection-editor/nm-connection-editor.c:101
+#: ../src/connection-editor/page-wireless-security.c:363
+msgid "Could not load WiFi security user interface; missing WiFi setting."
+msgstr ""
+"Ezin izan da WiFIaren segurtasunerako erabiltzailearen interfazea kargatu. Haririk "
+"gabekoaren ezarpenak falta dira"
+
+#: ../src/connection-editor/page-wireless-security.c:370
+#: ../src/connection-editor/page-wireless-security.c:377
+msgid "Could not load WiFi security user interface."
+msgstr "Ezin izan da WiFiaren segurtasunerako erabiltzailearen interfazea kargatu."
+
+#: ../src/connection-editor/page-wireless-security.c:383
+msgid "Wireless Security"
+msgstr "Haririk gabearen segurtasuna:"
+
+#: ../src/connection-editor/nm-connection-editor.c:100
 #, c-format
 msgid "Editing %s"
 msgstr "%s editatzen"
 
-#: ../src/connection-editor/nm-connection-editor.c:105
+#: ../src/connection-editor/nm-connection-editor.c:104
 msgid "Editing un-named connection"
 msgstr "Izenik gabeko konexioa editatzea"
 
-#: ../src/connection-editor/nm-connection-editor.c:289
+#: ../src/connection-editor/nm-connection-editor.c:276
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
@@ -1398,7 +1596,7 @@ msgstr ""
 "Konexioen editoreak ezin izan du beharrezko baliabide batzuk aurkitu "
 "(NetworkManager applet-aren glade fitxategia ez da aurkitu)."
 
-#: ../src/connection-editor/nm-connection-editor.c:302
+#: ../src/connection-editor/nm-connection-editor.c:289
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
@@ -1406,21 +1604,25 @@ msgstr ""
 "Konexioen editoreak ezin izan du beharrezko baliabide batzuk aurkitu (galde "
 "fitxategia ez da aurkitu)."
 
-#: ../src/connection-editor/nm-connection-editor.c:318
-msgid "Apply..."
-msgstr "Aplikatu..."
+#: ../src/connection-editor/nm-connection-editor.c:358
+msgid "Error creating connection editor dialog."
+msgstr "Errorea konexioaren editorearen elkarrizketa-koadroa sortzean."
 
-#: ../src/connection-editor/nm-connection-editor.c:319
-msgid "Authenticate to save this connection for all users of this machine."
-msgstr "Autentifikatu konexio hau gordetzeko ordenagailuko erabiltzaile guztientzako."
-
-#: ../src/connection-editor/nm-connection-editor.c:320
+#: ../src/connection-editor/nm-connection-editor.c:379
 msgid "Apply"
 msgstr "Aplikatu"
 
-#: ../src/connection-editor/nm-connection-editor.c:321
+#: ../src/connection-editor/nm-connection-editor.c:380
 msgid "Save this connection for all users of this machine."
 msgstr "Gorde konexio hau ordenagailu honetako erabiltzaile guztientzako."
+
+#: ../src/connection-editor/nm-connection-editor.c:381
+msgid "Apply..."
+msgstr "Aplikatu..."
+
+#: ../src/connection-editor/nm-connection-editor.c:382
+msgid "Authenticate to save this connection for all users of this machine."
+msgstr "Autentifikatu konexio hau gordetzeko ordenagailuko erabiltzaile guztientzako."
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
 msgid "Available to all users"
@@ -1442,138 +1644,102 @@ msgstr "E_sportatu"
 msgid "_Import"
 msgstr "_Inportatu"
 
-#: ../src/connection-editor/nm-connection-list.c:194
+#: ../src/connection-editor/nm-connection-list.c:219
 msgid "never"
 msgstr "inoiz ez"
 
-#: ../src/connection-editor/nm-connection-list.c:205
-#: ../src/connection-editor/nm-connection-list.c:216
+#: ../src/connection-editor/nm-connection-list.c:230
+#: ../src/connection-editor/nm-connection-list.c:241
 msgid "now"
 msgstr "orain"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:223
+#: ../src/connection-editor/nm-connection-list.c:248
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "duela minutu %d"
 msgstr[1] "duela %d minutu"
 
-#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:252
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "duela ordu %d"
 msgstr[1] "duela %d ordu"
 
-#: ../src/connection-editor/nm-connection-list.c:239
+#: ../src/connection-editor/nm-connection-list.c:264
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "duela egun %d"
 msgstr[1] "duela %d egun"
 
-#: ../src/connection-editor/nm-connection-list.c:245
+#: ../src/connection-editor/nm-connection-list.c:270
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "duela hilabete %d"
 msgstr[1] "duela %d hilabete"
 
-#: ../src/connection-editor/nm-connection-list.c:249
+#: ../src/connection-editor/nm-connection-list.c:274
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "duela urte %d"
 msgstr[1] "duela %d urte"
 
-#: ../src/connection-editor/nm-connection-list.c:306
-msgid "PolicyKit authorization was malformed."
-msgstr "PolicyKit autorizazioa gaizki osatuta zegoen."
+#: ../src/connection-editor/nm-connection-list.c:583
+msgid "Connection add failed"
+msgstr "Konexioa gehitzean huts egin du"
 
-#: ../src/connection-editor/nm-connection-list.c:312
-msgid "PolicyKit authorization could not be created."
-msgstr "PolicyKit autorizazioa ezin izan da sortu."
+#: ../src/connection-editor/nm-connection-list.c:594
+#: ../src/connection-editor/nm-connection-list.c:713
+msgid "An unknown error ocurred."
+msgstr "Errore ezezagun bat gertatu da."
 
-#: ../src/connection-editor/nm-connection-list.c:358
-#: ../src/connection-editor/nm-connection-list.c:482
-#: ../src/connection-editor/nm-connection-list.c:653
-#, c-format
-msgid "Could not obtain required privileges: %s."
-msgstr "Ezin izan dira beharrezko pribilegioak lortu: %s."
+#: ../src/connection-editor/nm-connection-list.c:603
+#: ../src/connection-editor/nm-connection-list.c:756
+msgid "Error initializing editor"
+msgstr "Errorea editorea hasieratzean"
 
-#: ../src/connection-editor/nm-connection-list.c:361
-msgid "Could not remove system connection: permission denied."
-msgstr "Ezin izan da sistemako konexioa kendu: baimena ukatuta."
+#: ../src/connection-editor/nm-connection-list.c:619
+#: ../src/connection-editor/nm-connection-list.c:771
+#: ../src/connection-editor/nm-connection-list.c:931
+msgid ""
+"The connection editor dialog could not be initialized due to an unknown "
+"error."
+msgstr ""
+"Ezin izan da konexioaren editorearen elkarrizketa-koadroa hasieratu "
+"errore ezezagun bat gertatu delako."
 
-#: ../src/connection-editor/nm-connection-list.c:396
-#: ../src/connection-editor/nm-connection-list.c:406
-#, c-format
-msgid "Removing connection failed: %s."
-msgstr "Huts egin du konexioa kentzean: %s."
+#: ../src/connection-editor/nm-connection-list.c:628
+msgid "Could not create new connection"
+msgstr "Ezin izan da konexio berria sortu"
 
-#: ../src/connection-editor/nm-connection-list.c:485
-msgid "Could not add system connection: permission denied."
-msgstr "Ezin izan da sistemako konexioa gehitu: baimena ukatuta."
+#: ../src/connection-editor/nm-connection-list.c:639
+msgid "Could not edit new connection"
+msgstr "Ezin izan da konexio berria editatu"
 
-#: ../src/connection-editor/nm-connection-list.c:532
-#: ../src/connection-editor/nm-connection-list.c:542
-#, c-format
-msgid "Adding connection failed: %s."
-msgstr "Huts egin du konexioa gehitzean: %s."
+#: ../src/connection-editor/nm-connection-list.c:786
+msgid "Could not edit connection"
+msgstr "Ezin izan da konexioa editatu"
 
-#: ../src/connection-editor/nm-connection-list.c:656
-msgid "Could not update system connection: permission denied."
-msgstr "Ezin izan da sistemako konexioa eguneratu: baimena ukatuta."
+#: ../src/connection-editor/nm-connection-list.c:811
+msgid "Connection delete failed"
+msgstr "Huts egin du konexioa ezabatzean"
 
-#: ../src/connection-editor/nm-connection-list.c:714
-#: ../src/connection-editor/nm-connection-list.c:719
-#, c-format
-msgid "Updating connection failed: %s."
-msgstr "Huts egin du konexioa eguneratzean: %s."
-
-#: ../src/connection-editor/nm-connection-list.c:843
-#, c-format
-msgid "Wired connection %d"
-msgstr "Haridun %d. konexios"
-
-#: ../src/connection-editor/nm-connection-list.c:855
-#, c-format
-msgid "Wireless connection %d"
-msgstr "Haririk gabeko %d. konexioa"
-
-#: ../src/connection-editor/nm-connection-list.c:874
-#, c-format
-msgid "GSM connection %d"
-msgstr "GSM %d. konexioa"
-
-#: ../src/connection-editor/nm-connection-list.c:893
-#, c-format
-msgid "CDMA connection %d"
-msgstr "CDMA %d. konexioa"
-
-#: ../src/connection-editor/nm-connection-list.c:920
-#: ../src/connection-editor/nm-connection-list.c:1236
-#, c-format
-msgid "VPN connection %d"
-msgstr "VPN %d. konexioa"
-
-#: ../src/connection-editor/nm-connection-list.c:934
-#, c-format
-msgid "DSL connection %d"
-msgstr "DSL %d. konexioa"
-
-#: ../src/connection-editor/nm-connection-list.c:1148
+#: ../src/connection-editor/nm-connection-list.c:835
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Ziur zaude %s konexioa ezabatu nahi duzula?"
 
-#: ../src/connection-editor/nm-connection-list.c:1262
-#: ../src/connection-editor/vpn-helpers.c:229
+#: ../src/connection-editor/nm-connection-list.c:978
+#: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "Ezin da VPN konexioa inportatu"
 
-#: ../src/connection-editor/nm-connection-list.c:1264
+#: ../src/connection-editor/nm-connection-list.c:980
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1583,7 +1749,51 @@ msgstr ""
 "\n"
 "Errorea: ez da VPN zerbitzu mota."
 
-#: ../src/connection-editor/vpn-helpers.c:231
+#: ../src/connection-editor/nm-connection-list.c:993
+msgid "Could not edit imported connection"
+msgstr "Ezin izan da inportatutako konexioa editatu"
+
+#: ../src/connection-editor/nm-connection-list.c:1129
+msgid "Name"
+msgstr "Izena"
+
+#: ../src/connection-editor/nm-connection-list.c:1141
+msgid "Last Used"
+msgstr "Erabilitako azkena"
+
+#: ../src/connection-editor/nm-connection-list.c:1244
+msgid "Edit"
+msgstr "Editatu"
+
+#: ../src/connection-editor/nm-connection-list.c:1245
+msgid "Edit the selected connection"
+msgstr "Editatu hautatutako konexioa"
+
+#: ../src/connection-editor/nm-connection-list.c:1246
+msgid "Edit..."
+msgstr "Editatu..."
+
+#: ../src/connection-editor/nm-connection-list.c:1247
+msgid "Authenticate to edit the selected connection"
+msgstr "Autentifikatu hautatutako konexioa editatzeko"
+
+#: ../src/connection-editor/nm-connection-list.c:1261
+msgid "Delete"
+msgstr "Ezabatu"
+
+#: ../src/connection-editor/nm-connection-list.c:1262
+msgid "Delete the selected connection"
+msgstr "Ezabatu hautatutako konexioa"
+
+#: ../src/connection-editor/nm-connection-list.c:1263
+msgid "Delete..."
+msgstr "Ezabatu..."
+
+#: ../src/connection-editor/nm-connection-list.c:1264
+msgid "Authenticate to delete the selected connection"
+msgstr "Autentifikatu hautatutako konexioa ezabatzeko"
+
+#: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -1633,7 +1843,172 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "Esportatu VPN konexioa..."
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:253
+#: ../src/gnome-bluetooth/network-manager-applet.c:197
+msgid "Access the Internet using your mobile phone"
+msgstr "Sarbidetu internetera telefono mugikorra erabiliz"
+
+#: ../src/utils/mobile-wizard.c:196
+msgid "Your mobile broadband connection is configured with the following settings:"
+msgstr "Bandazabal mugikorraren konexioa honako ezarpenekin konfiguratu da:"
+
+#. Device
+#: ../src/utils/mobile-wizard.c:203
+msgid "Your Device:"
+msgstr "Gailua:"
+
+#. Provider
+#: ../src/utils/mobile-wizard.c:214
+msgid "Your Provider:"
+msgstr "Hornitzailea:"
+
+#. Plan and APN
+#: ../src/utils/mobile-wizard.c:225
+msgid "Your Plan:"
+msgstr "Plana:"
+
+#: ../src/utils/mobile-wizard.c:246
+msgid ""
+"A connection will now be made to your mobile broadband provider using the "
+"settings you selected.  If the connection fails or you cannot access network "
+"resources, double-check your settings.  To modify your mobile broadband "
+"connection settings, choose \"Network Connections\" from the System >> "
+"Preferences menu."
+msgstr ""
+"Hautatutako ezarpenekin bandazabal mugikorraren hornitzailearekin konexioa egin daiteke. "
+"Konexioak huts egiten badu, edo ezin baduzu sareko baliabideetara sarbidetu, "
+"begiratu itzazu ezarpenak. Bandazabal mugikorreko konexioaren ezarpenak "
+"aldatzeko, aukeratu Sistema >> Hobespenak menuko \"Sareko konexioak\" "
+"elementua."
+
+#: ../src/utils/mobile-wizard.c:258
+msgid "Confirm Mobile Broadband Settings"
+msgstr "Berretsi bandazabal mugikorraren ezarpenak"
+
+#: ../src/utils/mobile-wizard.c:319
+msgid "Unlisted"
+msgstr "Zerrendatu gabea"
+
+#: ../src/utils/mobile-wizard.c:437
+msgid "_Select your plan:"
+msgstr "_Hautatu zure plana:"
+
+#: ../src/utils/mobile-wizard.c:461
+msgid "Selected plan _APN (Access Point Name):"
+msgstr "Hautatu _APL (sarbidetzeko puntuaren izena) plana:"
+
+#: ../src/utils/mobile-wizard.c:480
+msgid ""
+"Warning: Selecting an incorrect plan may result in billing issues for your "
+"broadband account or may prevent connectivity.\n"
+"\n"
+"If you are unsure of your plan please ask your provider for your plan's APN."
+msgstr ""
+"Abisua: okerreko plan bat hautatzeak zure bandazabaleraren kontuaren "
+"fakturan arazoak eragin lezake, edo ezin konektatu izatea.\n"
+"\n"
+"Ez bazaude ziur planari buruz, galdetu ezaiozu hornitzaileari planaren APLari buruz."
+
+#: ../src/utils/mobile-wizard.c:487
+msgid "Choose your Billing Plan"
+msgstr "Aukeratu prezioen plana"
+
+#: ../src/utils/mobile-wizard.c:535
+msgid "My plan is not listed..."
+msgstr "Nire plana ez dago zerrendatuta..."
+
+#: ../src/utils/mobile-wizard.c:688
+msgid "Select your provider from a _list:"
+msgstr "Hautatu hornitzailea _zerrendatik:"
+
+#: ../src/utils/mobile-wizard.c:701
+msgid "Provider"
+msgstr "Hornitzailea"
+
+#: ../src/utils/mobile-wizard.c:726
+msgid "I can't find my provider and I wish to enter it _manually:"
+msgstr "Ezin dut hornitzailea aurkitu eta _eskuz sartzea nahiko nuke:"
+
+#: ../src/utils/mobile-wizard.c:737
+msgid "Provider:"
+msgstr "Hornitzailea:"
+
+#: ../src/utils/mobile-wizard.c:753
+msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
+msgstr "Hornitzaileak GSM teknologia darabil (GPRS, EDGE, UMTS, HSPA)"
+
+#: ../src/utils/mobile-wizard.c:755
+msgid "My provider uses CDMA technology (1xRTT, EVDO)"
+msgstr "Hornitzaileak CDMA teknologia darabil (1xRTT, EVDO)"
+
+#: ../src/utils/mobile-wizard.c:766
+msgid "Choose your Provider"
+msgstr "Aukeratu hornitzailea"
+
+#: ../src/utils/mobile-wizard.c:958
+msgid "Country List:"
+msgstr "Herrialdearen zerrenda:"
+
+#: ../src/utils/mobile-wizard.c:970
+msgid "Country"
+msgstr "Herrialdea"
+
+#: ../src/utils/mobile-wizard.c:1010
+msgid "Choose your Provider's Country"
+msgstr "Aukeratu hornitzailearen herrialdea"
+
+#: ../src/utils/mobile-wizard.c:1059
+msgid "Installed GSM device"
+msgstr "Instalatutako GSM gailua"
+
+#: ../src/utils/mobile-wizard.c:1062
+msgid "Installed CDMA device"
+msgstr "Instalatutako CDMA gailua"
+
+#: ../src/utils/mobile-wizard.c:1230
+msgid ""
+"This assistant helps you easily set up a mobile broadband connection to a "
+"cellular (3G) network."
+msgstr ""
+"Morroi honek bandazabal mugikorraren konexioa "
+"mugikorren sarera (3G) konfiguratzen lagunduko dizu."
+
+#: ../src/utils/mobile-wizard.c:1235
+msgid "You will need the following information:"
+msgstr "Honako informazioa beharko duzu:"
+
+#: ../src/utils/mobile-wizard.c:1246
+msgid "Your broadband provider's name"
+msgstr "Bandazabalaren hornitzailearen izena"
+
+#: ../src/utils/mobile-wizard.c:1252
+msgid "Your broadband billing plan name"
+msgstr "Bandazabaleko prezioen planaren izena"
+
+#: ../src/utils/mobile-wizard.c:1258
+msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
+msgstr "(zenbait kasutan) bandazabalaren APN prezioen plana"
+
+#: ../src/utils/mobile-wizard.c:1285
+msgid "Create a connection for _this mobile broadband device:"
+msgstr "Sortu konexio bat bandazabal mugikor gailu _honentzako:"
+
+#: ../src/utils/mobile-wizard.c:1300
+msgid "Any device"
+msgstr "Edozein gailu"
+
+#: ../src/utils/mobile-wizard.c:1313
+msgid "Set up a Mobile Broadband Connection"
+msgstr "Konfiguratu bandazabal mugikorraren konexioa"
+
+#: ../src/utils/mobile-wizard.c:1487
+msgid "New Mobile Broadband Connection"
+msgstr "Bandazabal mugikorraren konexio berria"
+
+#: ../src/utils/nmn-mobile-providers.c:515
+msgid "Default"
+msgstr "Lehenetsia"
+
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:255
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "Ezin da '%s' VPN konexioa hasi"
@@ -1647,7 +2022,7 @@ msgstr ""
 "Ezin izan da '%s' VPN konexio motaren autentifikazioaren elkarrizketa-"
 "koadroa aurkitu. Jar zaitez sistemako administratzailearekin harremanetan."
 
-#: ../src/vpn-password-dialog.c:256
+#: ../src/vpn-password-dialog.c:258
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
@@ -1661,15 +2036,15 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "Hadirun 802.1X autentifikazioa"
 
-#: ../src/wireless-dialog.c:414
+#: ../src/wireless-dialog.c:426
 msgid "New..."
 msgstr "Berria..."
 
-#: ../src/wireless-dialog.c:916
+#: ../src/wireless-dialog.c:934
 msgid "C_reate"
 msgstr "_Sortu"
 
-#: ../src/wireless-dialog.c:987
+#: ../src/wireless-dialog.c:1011
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -1678,39 +2053,41 @@ msgstr ""
 "Pasahitzak edo enkriptatze-gakoak behar dira haririk gabeko '%s' sarera "
 "sarbidetzeko."
 
-#: ../src/wireless-dialog.c:989
+#: ../src/wireless-dialog.c:1013
 msgid "Wireless Network Authentication Required"
 msgstr "Haririk gabeko sarearen autentifikazio beharrezkoa"
 
-#: ../src/wireless-dialog.c:991
+#: ../src/wireless-dialog.c:1015
 msgid "Authentication required by wireless network"
 msgstr "Haririk gabeko sareak autentifikazioa eskatzen du"
 
-#: ../src/wireless-dialog.c:996
+#: ../src/wireless-dialog.c:1020
 msgid "Create New Wireless Network"
 msgstr "Sortu haririk gabeko sare berria"
 
-#: ../src/wireless-dialog.c:998
+#: ../src/wireless-dialog.c:1022
 msgid "New wireless network"
 msgstr "Haririk gabeko sare berria"
 
-#: ../src/wireless-dialog.c:999
+#: ../src/wireless-dialog.c:1023
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Sartu haririk gabeko sarearen izena sortzeko."
 
-#: ../src/wireless-dialog.c:1001
+#: ../src/wireless-dialog.c:1025
 msgid "Connect to Hidden Wireless Network"
 msgstr "Konektatu ezkutuko haririk gabeko sarera"
 
-#: ../src/wireless-dialog.c:1003
+#: ../src/wireless-dialog.c:1027
 msgid "Hidden wireless network"
 msgstr "Ezkutuko haririk gabeko sarea"
 
-#: ../src/wireless-dialog.c:1004
+#: ../src/wireless-dialog.c:1028
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
-msgstr "Sartu konektatzea nahi duzun ezkutuko haririk gabeko sarearen izena eta segurtasuneko xehetasunak."
+msgstr ""
+"Sartu konektatzea nahi duzun ezkutuko haririk gabeko sarearen izena eta "
+"segurtasuneko xehetasunak."
 
 #: ../src/wireless-security/eap-method.c:169
 msgid "No Certificate Authority certificate chosen"
@@ -1726,49 +2103,49 @@ msgstr ""
 "izatea eragin dezake, batiz bat haririk gabeko sare gaizkilea. Nahi duzu "
 "Ziurtagiri-Emailearen ziurtagiria aukeratu?"
 
-#: ../src/wireless-security/eap-method.c:175
-msgid "Ignore"
-msgstr "Ez ikusi egin"
-
 #: ../src/wireless-security/eap-method.c:179
 msgid "Choose CA Certificate"
 msgstr "Aukeratu ZE ziurtagiria"
 
-#: ../src/wireless-security/eap-method.c:440
+#: ../src/wireless-security/eap-method.c:442
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "DER, PEM, edo PKCS#12 gako pribatuak (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:443
+#: ../src/wireless-security/eap-method.c:445
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER edo PEM ziurtagiriak (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:240
+#: ../src/wireless-security/eap-method-peap.c:255
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:311
-#: ../src/wireless-security/eap-method-tls.c:423
-#: ../src/wireless-security/eap-method-ttls.c:343
+#: ../src/wireless-security/eap-method-peap.c:270
+msgid "GTC"
+msgstr "GTC"
+
+#: ../src/wireless-security/eap-method-peap.c:346
+#: ../src/wireless-security/eap-method-tls.c:418
+#: ../src/wireless-security/eap-method-ttls.c:344
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Aukeratu Ziurtagiri-Emailearen ziurtagiria..."
 
-#: ../src/wireless-security/eap-method-tls.c:419
+#: ../src/wireless-security/eap-method-tls.c:414
 msgid "Choose your personal certificate..."
 msgstr "Aukeratu ziurtagiri pertsonala..."
 
-#: ../src/wireless-security/eap-method-tls.c:428
+#: ../src/wireless-security/eap-method-tls.c:423
 msgid "Choose your private key..."
 msgstr "Aukeratu gako pribatua..."
 
-#: ../src/wireless-security/wireless-security.c:305
+#: ../src/wireless-security/wireless-security.c:315
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:329
+#: ../src/wireless-security/wireless-security.c:339
 msgid "Tunneled TLS"
 msgstr "Tuneldun TLS"
 
-#: ../src/wireless-security/wireless-security.c:340
+#: ../src/wireless-security/wireless-security.c:350
 msgid "Protected EAP (PEAP)"
 msgstr "Babestutako EAP (PEAP)"
 
