@@ -120,15 +120,17 @@ add_connection_items (NMDevice *device,
 	for (iter = connections; iter; iter = g_slist_next (iter)) {
 		NMConnection *connection = NM_CONNECTION (iter->data);
 		NMSettingConnection *s_con;
-		GtkWidget *item;
+		GtkWidget *item, *image;
 
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		item = gtk_check_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
+		item = gtk_image_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
+		gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(item), TRUE);
  		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
-		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 
-		if (connection == active)
-			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+		if (connection == active) {
+			image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_MENU);
+			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+		}
 
 		info = g_slice_new0 (WiredMenuItemInfo);
 		info->applet = applet;

@@ -179,14 +179,16 @@ add_connection_items (NMDevice *device,
 	for (iter = connections; iter; iter = g_slist_next (iter)) {
 		NMConnection *connection = NM_CONNECTION (iter->data);
 		NMSettingConnection *s_con;
-		GtkWidget *item;
+		GtkWidget *item, *image;
 
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		item = gtk_check_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
-		gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
+		item = gtk_image_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
+		gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(item), TRUE);
 
-		if (connection == active)
-			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+		if (connection == active) {
+			image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_MENU);
+			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+		}
 
 		info = g_slice_new0 (CdmaMenuItemInfo);
 		info->applet = applet;
@@ -211,7 +213,6 @@ add_default_connection_item (NMDevice *device,
 	GtkWidget *item;
 	
 	item = gtk_check_menu_item_new_with_label (_("New Mobile Broadband (CDMA) connection..."));
-	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 
 	info = g_slice_new0 (CdmaMenuItemInfo);
 	info->applet = applet;

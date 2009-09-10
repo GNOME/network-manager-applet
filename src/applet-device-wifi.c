@@ -480,6 +480,7 @@ add_new_ap_item (NMDeviceWifi *device,
 	foo = nm_network_menu_item_new (applet->encryption_size_group,
 	                                dup_data->hash, AP_HASH_LEN);
 	item = NM_NETWORK_MENU_ITEM (foo);
+	gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(item), TRUE);
 
 	ssid = nm_access_point_get_ssid (ap);
 	nm_network_menu_item_set_ssid (item, (GByteArray *) ssid);
@@ -561,6 +562,7 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 	const GByteArray *ssid;
 	struct dup_data dup_data = { NULL, NULL };
 	NMNetworkMenuItem *item = NULL;
+	GtkWidget *image;
 
 	/* Don't add BSSs that hide their SSID */
 	ssid = nm_access_point_get_ssid (ap);
@@ -597,8 +599,10 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 	g_signal_handlers_block_matched (item, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
 	                                 G_CALLBACK (wireless_menu_item_activate), NULL);
 
-	if (nm_network_menu_item_find_dupe (item, active_ap))
-		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+	if (nm_network_menu_item_find_dupe (item, active_ap)) {
+		image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_MENU);
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+	}
 
 	g_signal_handlers_unblock_matched (item, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
 	                                   G_CALLBACK (wireless_menu_item_activate), NULL);

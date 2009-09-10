@@ -41,7 +41,7 @@ typedef struct _NMNetworkMenuItemClass  NMNetworkMenuItemClass;
 
 struct _NMNetworkMenuItem
 {
-	GtkCheckMenuItem check_item;
+	GtkImageMenuItem image_item;
 
 	/*< private >*/
 	GtkWidget * ssid;
@@ -57,7 +57,7 @@ struct _NMNetworkMenuItem
 
 struct _NMNetworkMenuItemClass
 {
-	GtkCheckMenuItemClass parent_class;
+	GtkImageMenuItemClass parent_class;
 };
 
 

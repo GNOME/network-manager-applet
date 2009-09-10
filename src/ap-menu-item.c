@@ -35,12 +35,11 @@
 #include "utils.h"
 
 
-G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_CHECK_MENU_ITEM);
+G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_IMAGE_MENU_ITEM);
 
 static void
 nm_network_menu_item_init (NMNetworkMenuItem * item)
 {
-	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 	item->hbox = gtk_hbox_new (FALSE, 6);
 	item->ssid = gtk_label_new (NULL);
 	gtk_misc_set_alignment (GTK_MISC (item->ssid), 0.0, 0.5);
