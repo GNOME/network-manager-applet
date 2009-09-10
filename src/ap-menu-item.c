@@ -40,12 +40,6 @@ G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_CHECK_MENU_ITEM
 static void
 nm_network_menu_item_init (NMNetworkMenuItem * item)
 {
-	PangoFontDescription * fontdesc;
-	PangoFontMetrics * metrics;
-	PangoContext * context;
-	PangoLanguage * lang;
-	int ascent;
-
 	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 	item->hbox = gtk_hbox_new (FALSE, 6);
 	item->ssid = gtk_label_new (NULL);
@@ -57,19 +51,7 @@ nm_network_menu_item_init (NMNetworkMenuItem * item)
 	gtk_box_pack_start (GTK_BOX (item->hbox), item->ssid, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (item->hbox), item->detail, FALSE, FALSE, 0);
 
-	item->strength = gtk_progress_bar_new ();
-	
-	/* get the font ascent for the current font and language */
-	context = gtk_widget_get_pango_context (item->strength);
-	fontdesc = pango_context_get_font_description (context);
-	lang = pango_context_get_language (context);
-	metrics = pango_context_get_metrics (context, fontdesc, lang);
-	ascent = pango_font_metrics_get_ascent (metrics) * 1.5 / PANGO_SCALE;
-	pango_font_metrics_unref (metrics);
-
-	/* size our progress bar to be five ascents long */
-	gtk_widget_set_size_request (item->strength, ascent * 5, -1);
-
+	item->strength = gtk_image_new ();
 	gtk_box_pack_end (GTK_BOX (item->hbox), item->strength, FALSE, TRUE, 0);
 
 	gtk_widget_show (item->ssid);
@@ -162,15 +144,48 @@ nm_network_menu_item_get_strength (NMNetworkMenuItem * item)
 }
 
 void
-nm_network_menu_item_set_strength (NMNetworkMenuItem * item, guint32 strength)
+nm_network_menu_item_set_strength (NMNetworkMenuItem * item,
+                                   NMAccessPoint *ap,
+                                   NMApplet *applet)
 {
-	double percent;
+	guint8 strength;
+	GdkPixbuf *pixbuf = NULL;
+	guint32 ap_flags, ap_wpa, ap_rsn;
 
 	g_return_if_fail (item != NULL);
 
-	item->int_strength = CLAMP (strength, 0, 100);
-	percent = (double) item->int_strength / 100.0;
-	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (item->strength), percent);
+	ap_flags = nm_access_point_get_flags (ap);
+	ap_wpa = nm_access_point_get_wpa_flags (ap);
+	ap_rsn = nm_access_point_get_rsn_flags (ap);
+	strength = nm_access_point_get_strength(ap);
+	strength = CLAMP (strength, 0, 100);
+
+	item->int_strength = strength;
+
+	if (strength > 80)
+		pixbuf = gdk_pixbuf_copy (applet->wireless_100_icon);
+	else if (strength > 55)
+		pixbuf = gdk_pixbuf_copy (applet->wireless_75_icon);
+	else if (strength > 30)
+		pixbuf = gdk_pixbuf_copy (applet->wireless_50_icon);
+	else if (strength > 5)
+		pixbuf = gdk_pixbuf_copy (applet->wireless_25_icon);
+	else
+		pixbuf = gdk_pixbuf_copy (applet->wireless_00_icon);
+
+	if ((ap_flags & NM_802_11_AP_FLAGS_PRIVACY)
+		|| (ap_wpa != NM_802_11_AP_SEC_NONE)
+		|| (ap_rsn != NM_802_11_AP_SEC_NONE)) {
+		GdkPixbuf *top = applet->secure_lock_icon;
+
+		gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
+							  gdk_pixbuf_get_height (top),
+							  0, 0, 1.0, 1.0,
+							  GDK_INTERP_NEAREST, 255);
+	}
+
+	gtk_image_set_from_pixbuf (GTK_IMAGE (item->strength), pixbuf);
+	g_object_unref (pixbuf);
 }
 
 const guchar *
@@ -190,28 +205,18 @@ nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
                                  GdkPixbuf * adhoc_icon,
                                  guint32 dev_caps)
 {
-	gboolean encrypted = FALSE, is_adhoc = FALSE;
+	gboolean is_adhoc = FALSE;
 	guint32 ap_flags, ap_wpa, ap_rsn;
 
 	ap_flags = nm_access_point_get_flags (ap);
 	ap_wpa = nm_access_point_get_wpa_flags (ap);
 	ap_rsn = nm_access_point_get_rsn_flags (ap);
 
-	if (   (ap_flags & NM_802_11_AP_FLAGS_PRIVACY)
-	    || (ap_wpa != NM_802_11_AP_SEC_NONE)
-	    || (ap_rsn != NM_802_11_AP_SEC_NONE))
-		encrypted = TRUE;
-
 	if (nm_access_point_get_mode (ap) == NM_802_11_MODE_ADHOC)
 		is_adhoc = TRUE;
 
 	if (is_adhoc) {
 		gtk_image_set_from_pixbuf (GTK_IMAGE (item->detail), adhoc_icon);
-	} else if (encrypted) {
-		if (gtk_icon_theme_has_icon (gtk_icon_theme_get_default (), "network-wireless-encrypted"))
-			gtk_image_set_from_icon_name (GTK_IMAGE (item->detail), "network-wireless-encrypted", GTK_ICON_SIZE_MENU);
-		else
-			gtk_image_set_from_icon_name (GTK_IMAGE (item->detail), "gnome-lockscreen", GTK_ICON_SIZE_MENU);
 	} else {
 		gtk_image_set_from_stock (GTK_IMAGE (item->detail), NULL, GTK_ICON_SIZE_MENU);
 	}

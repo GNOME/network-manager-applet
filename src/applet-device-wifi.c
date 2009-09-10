@@ -473,7 +473,6 @@ add_new_ap_item (NMDeviceWifi *device,
 	NMNetworkMenuItem *item = NULL;
 	GSList *ap_connections = NULL;
 	const GByteArray *ssid;
-	guint8 strength;
 	guint32 dev_caps;
 
 	ap_connections = filter_connections_for_access_point (connections, device, ap);
@@ -485,10 +484,8 @@ add_new_ap_item (NMDeviceWifi *device,
 	ssid = nm_access_point_get_ssid (ap);
 	nm_network_menu_item_set_ssid (item, (GByteArray *) ssid);
 
-	strength = nm_access_point_get_strength (ap);
-	nm_network_menu_item_set_strength (item, strength);
-
 	dev_caps = nm_device_wifi_get_capabilities (device);
+	nm_network_menu_item_set_strength (item, ap, applet);
 	nm_network_menu_item_set_detail (item, ap, applet->adhoc_icon, dev_caps);
 	nm_network_menu_item_add_dupe (item, ap);
 
@@ -585,8 +582,9 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 		item = NM_NETWORK_MENU_ITEM (dup_data.found);
 
 		/* Just update strength if greater than what's there */
-		if (nm_network_menu_item_get_strength (item) < strength)
-			nm_network_menu_item_set_strength (item, strength);
+		if (nm_network_menu_item_get_strength (item) < strength) {
+			nm_network_menu_item_set_strength (item, ap, applet);
+		}
 
 		nm_network_menu_item_add_dupe (item, ap);
 	} else {

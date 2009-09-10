@@ -112,6 +112,7 @@ typedef struct
 	GdkPixbuf *		wireless_50_icon;
 	GdkPixbuf *		wireless_75_icon;
 	GdkPixbuf *		wireless_100_icon;
+	GdkPixbuf *		secure_lock_icon;
 #define NUM_CONNECTING_STAGES 3
 #define NUM_CONNECTING_FRAMES 11
 	GdkPixbuf *		network_connecting_icons[NUM_CONNECTING_STAGES][NUM_CONNECTING_FRAMES];

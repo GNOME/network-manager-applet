@@ -56,7 +56,8 @@ icon_DATA = \
 	nm-vpn-connecting12.png \
 	nm-vpn-connecting13.png \
 	nm-vpn-connecting14.png \
-	nm-vpn-active-lock.png
+	nm-vpn-active-lock.png \
+	nm-secure-lock.png
 
 EXTRA_DIST = $(icon_DATA)
 

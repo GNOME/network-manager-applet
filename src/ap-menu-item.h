@@ -69,7 +69,8 @@ void       nm_network_menu_item_set_ssid (NMNetworkMenuItem * item,
                                           GByteArray * ssid);
 guint32    nm_network_menu_item_get_strength (NMNetworkMenuItem * item);
 void       nm_network_menu_item_set_strength (NMNetworkMenuItem * item,
-                                              guint32 strength);
+                                              NMAccessPoint *ap,
+                                              NMApplet *applet);
 const guchar * nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
                                               guint32 * length);
 void       nm_network_menu_item_set_detail (NMNetworkMenuItem * item,

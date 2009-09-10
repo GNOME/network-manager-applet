@@ -2368,6 +2368,7 @@ static void nma_icons_free (NMApplet *applet)
 	CLEAR_ICON(applet->wireless_50_icon);
 	CLEAR_ICON(applet->wireless_75_icon);
 	CLEAR_ICON(applet->wireless_100_icon);
+	CLEAR_ICON(applet->secure_lock_icon);
 
 	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
 		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
@@ -2416,6 +2417,7 @@ nma_icons_load (NMApplet *applet)
 	ICON_LOAD(applet->wireless_50_icon, "nm-signal-50");
 	ICON_LOAD(applet->wireless_75_icon, "nm-signal-75");
 	ICON_LOAD(applet->wireless_100_icon, "nm-signal-100");
+	ICON_LOAD(applet->secure_lock_icon, "nm-secure-lock");
 
 	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
 		for (j = 0; j < NUM_CONNECTING_FRAMES; j++) {
