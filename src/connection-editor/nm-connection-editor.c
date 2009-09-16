@@ -152,14 +152,14 @@ update_sensitivity (NMConnectionEditor *editor)
 	if (!nm_setting_connection_get_read_only (s_con) && editor->initialized) {
 		if (editor->system_settings_can_modify) {
 			actionable = ce_polkit_button_get_actionable (CE_POLKIT_BUTTON (editor->ok_button));
-			authorized = actionable && ce_polkit_button_get_authorized (CE_POLKIT_BUTTON (editor->ok_button));
+			authorized = ce_polkit_button_get_authorized (CE_POLKIT_BUTTON (editor->ok_button));
 		}
 
 		if (editor->orig_scope == NM_CONNECTION_SCOPE_SYSTEM) {
 			/* If the user cannot ever be authorized to change system connections, and
 			 * the connection is a system connection, we desensitize the entire dialog.
 			 */
-			sensitive = actionable;
+			sensitive = authorized;
 		} else {
 			/* Otherwise, if the connection is originally a user-connection,
 			 * then everything is sensitive except possible the system checkbutton,
@@ -170,7 +170,7 @@ update_sensitivity (NMConnectionEditor *editor)
 		}
 	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (editor->system_checkbutton), authorized);
+	gtk_widget_set_sensitive (GTK_WIDGET (editor->system_checkbutton), actionable && authorized);
 
 	/* Cancel button is always sensitive */
 	gtk_widget_set_sensitive (GTK_WIDGET (editor->cancel_button), TRUE);
