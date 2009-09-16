@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -125,14 +126,15 @@ model_free (GtkTreeModel *model, guint col)
 static void
 size_group_clear (GtkSizeGroup *group)
 {
-	GSList *children;
 	GSList *iter;
 
 	g_return_if_fail (group != NULL);
 
-	children = gtk_size_group_get_widgets (group);
-	for (iter = children; iter; iter = g_slist_next (iter))
+	iter = gtk_size_group_get_widgets (group);
+	while (iter) {
 		gtk_size_group_remove_widget (group, GTK_WIDGET (iter->data));
+		iter = gtk_size_group_get_widgets (group);
+	}
 }
 
 static void
@@ -200,7 +202,7 @@ security_combo_changed (GtkWidget *combo,
 	/* Set focus to the security method's default widget, but only if the
 	 * network name entry should not be focused.
 	 */
-	if (!priv->network_name_focus) {
+	if (!priv->network_name_focus && sec->default_field) {
 		def_widget = glade_xml_get_widget (sec->xml, sec->default_field);
 		if (def_widget)
 			gtk_widget_grab_focus (def_widget);

@@ -70,6 +70,18 @@
 #define NM_PHASE2_AUTH_MSCHAPV2   0x00030000
 #define NM_PHASE2_AUTH_GTC        0x00040000
 
+#define NMA_CA_CERT_IGNORE_TAG  "nma-ca-cert-ignore"
+#define NMA_PHASE2_CA_CERT_IGNORE_TAG  "nma-phase2-ca-cert-ignore"
+#define NMA_PRIVATE_KEY_PASSWORD_TAG "nma-private-key-password"
+#define NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG "nma-phase2-private-key-password"
+#define NMA_PATH_CA_CERT_TAG "nma-path-ca-cert"
+#define NMA_PATH_PHASE2_CA_CERT_TAG "nma-path-phase2-ca-cert"
+#define NMA_PATH_CLIENT_CERT_TAG "nma-path-client-cert"
+#define NMA_PATH_PHASE2_CLIENT_CERT_TAG "nma-path-phase2-client-cert"
+#define NMA_PATH_PRIVATE_KEY_TAG "nma-path-private-key"
+#define NMA_PATH_PHASE2_PRIVATE_KEY_TAG "nma-path-phase2-private-key"
+
+
 struct flagnames {
 	const char * const name;
 	guint value;
@@ -1816,6 +1828,153 @@ nm_gconf_migrate_0_7_autoconnect_default (GConfClient *client)
 			                          FALSE);
 		}
 	}
+	nm_utils_slist_free (connections, g_free);
+	gconf_client_suggest_sync (client, NULL);
+}
+
+void
+nm_gconf_migrate_0_7_ca_cert_ignore (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	/* With 0.8, the applet stores the key that suppresses the nag dialog
+	 * when the user elects to ignore CA certificates in a different place than
+	 * the connection itself.  Move the old location to the new location.
+	 */
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		const char *dir = iter->data;
+		char *uuid = NULL;
+		gboolean ignore_ca_cert = FALSE;
+		gboolean ignore_phase2_ca_cert = FALSE;
+
+		if (!nm_gconf_get_string_helper (client, dir,
+		                                 NM_SETTING_CONNECTION_UUID,
+		                                 NM_SETTING_CONNECTION_SETTING_NAME,
+		                                 &uuid))
+			continue;
+
+		nm_gconf_get_bool_helper (client, dir,
+		                          NMA_CA_CERT_IGNORE_TAG,
+		                          NM_SETTING_802_1X_SETTING_NAME,
+		                          &ignore_ca_cert);
+		if (ignore_ca_cert)
+			nm_gconf_set_ignore_ca_cert (uuid, FALSE, TRUE);
+		/* delete old key */
+		unset_one_setting_property (client, dir,
+		                            NM_SETTING_802_1X_SETTING_NAME,
+		                            NMA_CA_CERT_IGNORE_TAG);
+
+		nm_gconf_get_bool_helper (client, dir,
+		                          NMA_PHASE2_CA_CERT_IGNORE_TAG,
+		                          NM_SETTING_802_1X_SETTING_NAME,
+		                          &ignore_phase2_ca_cert);
+		if (ignore_phase2_ca_cert)
+			nm_gconf_set_ignore_ca_cert (uuid, TRUE, TRUE);
+		unset_one_setting_property (client, dir,
+		                            NM_SETTING_802_1X_SETTING_NAME,
+		                            NMA_PHASE2_CA_CERT_IGNORE_TAG);
+	}
+
+	nm_utils_slist_free (connections, g_free);
+	gconf_client_suggest_sync (client, NULL);
+}
+
+static void
+copy_one_cert_value (GConfClient *client,
+                     const char *dir,
+                     const char *tag,
+                     const char *key)
+{
+	char *path = NULL;
+
+	if (nm_gconf_get_string_helper (client, dir,
+	                                tag,
+	                                NM_SETTING_802_1X_SETTING_NAME,
+	                                &path)) {
+		nm_gconf_set_string_helper (client, dir, key, NM_SETTING_802_1X_SETTING_NAME, path);
+		g_free (path);
+	}
+}
+
+static void
+copy_one_private_key_password (const char *uuid,
+                               const char *id,
+                               const char *old_key,
+                               const char *new_key)
+{
+	GnomeKeyringResult ret;
+	GList *found_list = NULL;
+
+	/* Find the secret */
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      KEYRING_UUID_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+										  uuid,
+	                                      KEYRING_SN_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      NM_SETTING_802_1X_SETTING_NAME,
+	                                      KEYRING_SK_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      old_key,
+	                                      NULL);
+	if ((ret == GNOME_KEYRING_RESULT_OK) && g_list_length (found_list)) {
+		GnomeKeyringFound *found = found_list->data;
+
+		nm_gconf_add_keyring_item (uuid,
+		                           id,
+		                           NM_SETTING_802_1X_SETTING_NAME,
+		                           new_key,
+		                           found->secret);
+		gnome_keyring_item_delete_sync (found->keyring, found->item_id);
+		gnome_keyring_found_list_free (found_list);
+	}
+}
+
+void
+nm_gconf_migrate_0_7_certs (GConfClient *client)
+{
+	GSList *connections, *iter;
+
+	/* With 0.8, the certificate/key path is stored in the value itself, not
+	 * in the lookaside "nma" value.
+	 */
+
+	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	for (iter = connections; iter; iter = iter->next) {
+		const char *dir = iter->data;
+		char *uuid = NULL, *id = NULL;
+
+		if (!nm_gconf_get_string_helper (client, dir,
+		                                 NM_SETTING_CONNECTION_UUID,
+		                                 NM_SETTING_CONNECTION_SETTING_NAME,
+		                                 &uuid))
+			continue;
+
+		if (!nm_gconf_get_string_helper (client, dir,
+		                                 NM_SETTING_CONNECTION_ID,
+		                                 NM_SETTING_CONNECTION_SETTING_NAME,
+		                                 &id)) {
+			g_free (uuid);
+			continue;
+		}
+
+		copy_one_cert_value (client, dir, NMA_PATH_CA_CERT_TAG, NM_SETTING_802_1X_CA_CERT);
+		copy_one_cert_value (client, dir, NMA_PATH_PHASE2_CA_CERT_TAG, NM_SETTING_802_1X_PHASE2_CA_CERT);
+		copy_one_cert_value (client, dir, NMA_PATH_CLIENT_CERT_TAG, NM_SETTING_802_1X_CLIENT_CERT);
+		copy_one_cert_value (client, dir, NMA_PATH_PHASE2_CLIENT_CERT_TAG, NM_SETTING_802_1X_PHASE2_CLIENT_CERT);
+		copy_one_cert_value (client, dir, NMA_PATH_PRIVATE_KEY_TAG, NM_SETTING_802_1X_PRIVATE_KEY);
+		copy_one_cert_value (client, dir, NMA_PATH_PHASE2_PRIVATE_KEY_TAG, NM_SETTING_802_1X_PHASE2_PRIVATE_KEY);
+
+		copy_one_private_key_password (uuid, id, NMA_PRIVATE_KEY_PASSWORD_TAG, NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD);
+		copy_one_private_key_password (uuid, id, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG, NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD);
+
+		g_free (uuid);
+		g_free (id);
+	}
+
 	nm_utils_slist_free (connections, g_free);
 	gconf_client_suggest_sync (client, NULL);
 }

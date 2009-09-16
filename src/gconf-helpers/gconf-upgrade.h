@@ -48,5 +48,9 @@ void nm_gconf_migrate_0_7_vpn_never_default (GConfClient *client);
 
 void nm_gconf_migrate_0_7_autoconnect_default (GConfClient *client);
 
+void nm_gconf_migrate_0_7_ca_cert_ignore (GConfClient *client);
+
+void nm_gconf_migrate_0_7_certs (GConfClient *client);
+
 #endif	/* GCONF_UPGRADE_H */
 

@@ -93,30 +93,12 @@ mobile_private_init (CEPageMobile *self)
 	priv->window_group = gtk_window_group_new ();
 }
 
-static GHashTable *
-get_secrets (NMConnection *connection, const char *setting_name)
-{
-	GError *error = NULL;
-	GHashTable *secrets;
-
-	secrets = nm_gconf_get_keyring_items (connection,
-	                                      setting_name,
-	                                      FALSE,
-	                                      &error);
-	if (!secrets && error)
-		g_error_free (error);
-
-	return secrets;
-}
-
 static void
 populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 {
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 	NMSettingGsm *setting = NM_SETTING_GSM (priv->setting);
 	int type_idx;
-	GHashTable *secrets;
-	GValue *value;
 	GtkWidget *widget;
 	const char *s;
 
@@ -167,37 +149,17 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "band_label");
 	gtk_widget_hide (widget);
 
-	secrets = get_secrets (connection, nm_setting_get_name (priv->setting));
-
 	s = nm_setting_gsm_get_password (setting);
 	if (s)
 		gtk_entry_set_text (priv->password, s);
-	else if (secrets) {
-		value = g_hash_table_lookup (secrets, NM_SETTING_GSM_PASSWORD);
-		if (value)
-			gtk_entry_set_text (priv->password, g_value_get_string (value));
-	}
 
 	s = nm_setting_gsm_get_pin (setting);
 	if (s)
 		gtk_entry_set_text (priv->pin, s);
-	else if (secrets) {
-		value = g_hash_table_lookup (secrets, NM_SETTING_GSM_PIN);
-		if (value)
-			gtk_entry_set_text (priv->pin, g_value_get_string (value));
-	}
 
 	s = nm_setting_gsm_get_puk (setting);
 	if (s)
 		gtk_entry_set_text (priv->pin, s);
-	else if (secrets) {
-		value = g_hash_table_lookup (secrets, NM_SETTING_GSM_PUK);
-		if (value)
-			gtk_entry_set_text (priv->puk, g_value_get_string (value));
-	}
-
-	if (secrets)
-		g_hash_table_destroy (secrets);
 }
 
 static void
@@ -205,8 +167,6 @@ populate_cdma_ui (CEPageMobile *self, NMConnection *connection)
 {
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 	NMSettingCdma *setting = NM_SETTING_CDMA (priv->setting);
-	GHashTable *secrets;
-	GValue *value;
 	const char *s;
 
 	s = nm_setting_cdma_get_number (setting);
@@ -217,19 +177,9 @@ populate_cdma_ui (CEPageMobile *self, NMConnection *connection)
 	if (s)
 		gtk_entry_set_text (priv->username, s);
 
-	secrets = get_secrets (connection, nm_setting_get_name (priv->setting));
-
 	s = nm_setting_cdma_get_password (setting);
 	if (s)
 		gtk_entry_set_text (priv->password, s);
-	else if (secrets) {
-		value = g_hash_table_lookup (secrets, NM_SETTING_CDMA_PASSWORD);
-		if (value)
-			gtk_entry_set_text (priv->password, g_value_get_string (value));
-	}
-
-	if (secrets)
-		g_hash_table_destroy (secrets);
 
 	/* Hide GSM specific widgets */
 	gtk_widget_hide (glade_xml_get_widget (CE_PAGE (self)->xml, "mobile_basic_label"));

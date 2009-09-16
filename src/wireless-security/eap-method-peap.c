@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -23,6 +24,8 @@
 #include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
+
+#include <nm-setting-connection.h>
 #include <nm-setting-8021x.h>
 
 #include "eap-method.h"
@@ -109,7 +112,9 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
+	NMSettingConnection *s_con;
 	NMSetting8021x *s_8021x;
+	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	GtkWidget *widget;
 	const char *text;
 	char *filename;
@@ -117,6 +122,10 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	int peapver_active = 0;
+	GError *error = NULL;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
 
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
@@ -132,19 +141,14 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_ca_cert_button");
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	if (filename) {
-		g_object_set_data_full (G_OBJECT (connection),
-		                        NMA_PATH_CA_CERT_TAG, g_strdup (filename),
-		                        (GDestroyNotify) g_free);
-		g_free (filename);
-	} else {
-		g_object_set_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG, NULL);
+	if (!nm_setting_802_1x_set_ca_cert (s_8021x, filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
+		g_warning ("Couldn't read CA certificate '%s': %s", filename, error ? error->message : "(unknown)");
+		g_clear_error (&error);
 	}
 
-	if (eap_method_get_ignore_ca_cert (parent))
-		g_object_set_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG, GUINT_TO_POINTER (TRUE));
-	else
-		g_object_set_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG, NULL);
+	nm_gconf_set_ignore_ca_cert (nm_setting_connection_get_uuid (s_con),
+	                             FALSE,
+	                             eap_method_get_ignore_ca_cert (parent));
 
 	widget = glade_xml_get_widget (parent->xml, "eap_peap_version_combo");
 	peapver_active = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
@@ -332,7 +336,8 @@ eap_method_peap_new (const char *glade_file,
 	eap_method_nag_init (EAP_METHOD (method),
 	                     glade_file,
 	                     "eap_peap_ca_cert_button",
-	                     connection);
+	                     connection,
+	                     FALSE);
 
 	method->sec_parent = parent;
 
@@ -349,10 +354,12 @@ eap_method_peap_new (const char *glade_file,
 	                  parent);
 	filter = eap_method_default_file_chooser_filter_new (FALSE);
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (widget), filter);
-	if (connection) {
-		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG);
-		if (filename)
-			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
+	if (connection && s_8021x) {
+		if (nm_setting_802_1x_get_ca_cert_scheme (s_8021x) == NM_SETTING_802_1X_CK_SCHEME_PATH) {
+			filename = nm_setting_802_1x_get_ca_cert_path (s_8021x);
+			if (filename)
+				gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
+		}
 	}
 
 	widget = inner_auth_combo_init (method, glade_file, connection, s_8021x);

@@ -1,5 +1,4 @@
-/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
-
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -25,6 +24,8 @@
 #include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
+
+#include <nm-setting-connection.h>
 #include <nm-setting-8021x.h>
 
 #include "gconf-helpers.h"
@@ -57,7 +58,7 @@ destroy (EAPMethod *parent)
 static gboolean
 validate (EAPMethod *parent)
 {
-	NMSetting8021xCKType ck_type = NM_SETTING_802_1X_CK_TYPE_UNKNOWN;
+	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	GtkWidget *widget;
 	const char *password, *identity;
 
@@ -80,10 +81,10 @@ validate (EAPMethod *parent)
 	                                     "eap_tls_private_key_button",
 	                                     TYPE_PRIVATE_KEY,
 	                                     password,
-	                                     &ck_type))
+	                                     &format))
 		return FALSE;
 
-	if (ck_type != NM_SETTING_802_1X_CK_TYPE_PKCS12) {
+	if (format != NM_SETTING_802_1X_CK_FORMAT_PKCS12) {
 		if (!eap_method_validate_filepicker (parent->xml, "eap_tls_user_cert_button", TYPE_CLIENT_CERT, NULL, NULL))
 			return FALSE;
 	}
@@ -118,25 +119,19 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 }
 
 static void
-free_password (gpointer data)
-{
-	g_return_if_fail (data != NULL);
-
-	/* Try not to leave passwords around in memory */
-	memset (data, 0, strlen (data));
-	g_free (data);
-}
-
-static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	EAPMethodTLS *method = (EAPMethodTLS *) parent;
-	NMSetting8021xCKType key_type = NM_SETTING_802_1X_CK_TYPE_UNKNOWN;
+	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	NMSetting8021x *s_8021x;
+	NMSettingConnection *s_con;
 	GtkWidget *widget;
-	char *filename, *pk_filename, *cc_filename;
-	char *password = NULL;
+	char *ca_filename, *pk_filename, *cc_filename;
+	const char *password = NULL;
 	GError *error = NULL;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
 
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
@@ -150,92 +145,83 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_assert (widget);
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 
+	/* TLS private key */
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_password_entry");
 	g_assert (widget);
-	password = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
-	if (method->phase2) {
-		g_object_set_data_full (G_OBJECT (connection),
-		                        NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG,
-		                        password,
-		                        (GDestroyNotify) free_password);
-	} else {
-		g_object_set_data_full (G_OBJECT (connection),
-		                        NMA_PRIVATE_KEY_PASSWORD_TAG,
-		                        password,
-		                        (GDestroyNotify) free_password);
-	}
+	password = gtk_entry_get_text (GTK_ENTRY (widget));
+	g_assert (password);
 
-	/* TLS private key */
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_button");
 	g_assert (widget);
 	pk_filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	g_assert (pk_filename);
-	g_object_set_data_full (G_OBJECT (connection),
-	                        method->phase2 ? NMA_PATH_PHASE2_PRIVATE_KEY_TAG : NMA_PATH_PRIVATE_KEY_TAG,
-	                        g_strdup (pk_filename),
-	                        (GDestroyNotify) g_free);
+
 	if (method->phase2) {
-		if (!nm_setting_802_1x_set_phase2_private_key_from_file (s_8021x, pk_filename, password, &key_type, &error)) {
+		if (!nm_setting_802_1x_set_phase2_private_key (s_8021x, pk_filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 			g_warning ("Couldn't read phase2 private key '%s': %s", pk_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
 		}
 	} else {
-		if (!nm_setting_802_1x_set_private_key_from_file (s_8021x, pk_filename, password, &key_type, &error)) {
+		if (!nm_setting_802_1x_set_private_key (s_8021x, pk_filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 			g_warning ("Couldn't read private key '%s': %s", pk_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
 		}
 	}
+	g_free (pk_filename);
 
 	/* TLS client certificate */
-	if (key_type == NM_SETTING_802_1X_CK_TYPE_PKCS12) {
-		/* if the key is pkcs#12, the cert is filled with the same data */
-		cc_filename = g_strdup (pk_filename);
-	} else {
+	if (format != NM_SETTING_802_1X_CK_FORMAT_PKCS12) {
+		/* If the key is pkcs#12 nm_setting_802_1x_set_private_key() already
+		 * set the client certificate for us.
+		 */
 		widget = glade_xml_get_widget (parent->xml, "eap_tls_user_cert_button");
 		g_assert (widget);
 		cc_filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	}
+		g_assert (cc_filename);
 
-	g_assert (cc_filename);
-	g_object_set_data_full (G_OBJECT (connection),
-	                        method->phase2 ? NMA_PATH_PHASE2_CLIENT_CERT_TAG : NMA_PATH_CLIENT_CERT_TAG,
-	                        g_strdup (cc_filename),
-	                        (GDestroyNotify) g_free);
-	g_free (cc_filename);
-	g_free (pk_filename);
+		format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
+		if (method->phase2) {
+			if (!nm_setting_802_1x_set_phase2_client_cert (s_8021x, cc_filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
+				g_warning ("Couldn't read phase2 client certificate '%s': %s", cc_filename, error ? error->message : "(unknown)");
+				g_clear_error (&error);
+			}
+		} else {
+			if (!nm_setting_802_1x_set_client_cert (s_8021x, cc_filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
+				g_warning ("Couldn't read client certificate '%s': %s", cc_filename, error ? error->message : "(unknown)");
+				g_clear_error (&error);
+			}
+		}
+		g_free (cc_filename);
+	}
 
 	/* TLS CA certificate */
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_ca_cert_button");
 	g_assert (widget);
-	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	if (filename) {
-		g_object_set_data_full (G_OBJECT (connection),
-		                        method->phase2 ? NMA_PATH_PHASE2_CA_CERT_TAG : NMA_PATH_CA_CERT_TAG,
-		                        g_strdup (filename),
-		                        (GDestroyNotify) g_free);
-		g_free (filename);
+	ca_filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+
+	format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
+	if (method->phase2) {
+		if (!nm_setting_802_1x_set_phase2_ca_cert (s_8021x, ca_filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
+			g_warning ("Couldn't read phase2 CA certificate '%s': %s", ca_filename, error ? error->message : "(unknown)");
+			g_clear_error (&error);
+		}
 	} else {
-		g_object_set_data (G_OBJECT (connection),
-		                   method->phase2 ? NMA_PATH_PHASE2_CA_CERT_TAG : NMA_PATH_CA_CERT_TAG,
-		                   NULL);
+		if (!nm_setting_802_1x_set_ca_cert (s_8021x, ca_filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
+			g_warning ("Couldn't read CA certificate '%s': %s", ca_filename, error ? error->message : "(unknown)");
+			g_clear_error (&error);
+		}
 	}
 
-	if (eap_method_get_ignore_ca_cert (parent)) {
-		g_object_set_data (G_OBJECT (connection),
-		                   method->phase2 ? NMA_PHASE2_CA_CERT_IGNORE_TAG : NMA_CA_CERT_IGNORE_TAG,
-		                   GUINT_TO_POINTER (TRUE));
-	} else {
-		g_object_set_data (G_OBJECT (connection),
-		                   method->phase2 ? NMA_PHASE2_CA_CERT_IGNORE_TAG : NMA_CA_CERT_IGNORE_TAG,
-		                   NULL);
-	}
+	nm_gconf_set_ignore_ca_cert (nm_setting_connection_get_uuid (s_con),
+	                             method->phase2,
+	                             eap_method_get_ignore_ca_cert (parent));
 }
 
 static void
 private_key_picker_helper (EAPMethod *parent, const char *filename, gboolean changed)
 {
 	NMSetting8021x *setting;
-	NMSetting8021xCKType cert_type = NM_SETTING_802_1X_CK_TYPE_UNKNOWN;
+	NMSetting8021xCKFormat cert_format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	const char *password;
 	GtkWidget *widget;
 
@@ -244,12 +230,12 @@ private_key_picker_helper (EAPMethod *parent, const char *filename, gboolean cha
 	password = gtk_entry_get_text (GTK_ENTRY (widget));
 
 	setting = (NMSetting8021x *) nm_setting_802_1x_new ();
-	nm_setting_802_1x_set_private_key_from_file (setting, filename, password, &cert_type, NULL);
+	nm_setting_802_1x_set_private_key (setting, filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, &cert_format, NULL);
 	g_object_unref (setting);
 
 	/* With PKCS#12, the client cert must be the same as the private key */
 	widget = glade_xml_get_widget (parent->xml, "eap_tls_user_cert_button");
-	if (cert_type == NM_SETTING_802_1X_CK_TYPE_PKCS12) {
+	if (cert_format == NM_SETTING_802_1X_CK_FORMAT_PKCS12) {
 		gtk_file_chooser_unselect_all (GTK_FILE_CHOOSER (widget));
 		gtk_widget_set_sensitive (widget, FALSE);
 	} else if (changed)
@@ -277,34 +263,36 @@ static void reset_filter (GtkWidget *widget, GParamSpec *spec, gpointer user_dat
 	}
 }
 
+typedef const char * (*PathFunc) (NMSetting8021x *setting);
+typedef NMSetting8021xCKScheme (*SchemeFunc)  (NMSetting8021x *setting);
+
 static void
 setup_filepicker (GladeXML *xml,
                   const char *name,
                   const char *title,
                   WirelessSecurity *parent,
                   EAPMethodTLS *method,
-                  NMConnection *connection,
-                  const char *tag)
+                  NMSetting8021x *s_8021x,
+                  SchemeFunc scheme_func,
+                  PathFunc path_func,
+                  gboolean privkey,
+                  gboolean client_cert)
 {
 	GtkWidget *widget;
 	GtkFileFilter *filter;
 	const char *filename = NULL;
-	gboolean privkey = FALSE, client_cert = FALSE;
-
-	if (!strcmp (tag, NMA_PATH_PHASE2_PRIVATE_KEY_TAG) || !strcmp (tag, NMA_PATH_PRIVATE_KEY_TAG))
-		privkey = TRUE;
-	if (!strcmp (tag, NMA_PATH_PHASE2_CLIENT_CERT_TAG) || !strcmp (tag, NMA_PATH_CLIENT_CERT_TAG))
-		client_cert = TRUE;
 
 	widget = glade_xml_get_widget (xml, name);
 	g_assert (widget);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (widget), TRUE);
 	gtk_file_chooser_button_set_title (GTK_FILE_CHOOSER_BUTTON (widget), title);
 
-	if (connection && tag) {
-		filename = g_object_get_data (G_OBJECT (connection), tag);
-		if (filename)
-			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
+	if (s_8021x && path_func && scheme_func) {
+		if (scheme_func (s_8021x) == NM_SETTING_802_1X_CK_SCHEME_PATH) {
+			filename = path_func (s_8021x);
+			if (filename)
+				gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
+		}
 	}
 
 	/* Connect a special handler for private keys to intercept PKCS#12 key types
@@ -376,7 +364,8 @@ eap_method_tls_new (const char *glade_file,
 	eap_method_nag_init (EAP_METHOD (method),
 	                     glade_file,
 	                     "eap_tls_ca_cert_button",
-	                     connection);
+	                     connection,
+	                     phase2);
 
 	method->phase2 = phase2;
 
@@ -410,19 +399,26 @@ eap_method_tls_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 
+nm_connection_dump (connection);
 	setup_filepicker (xml, "eap_tls_user_cert_button",
 	                  _("Choose your personal certificate..."),
-	                  parent, method, connection,
-	                  phase2 ? NMA_PATH_PHASE2_CLIENT_CERT_TAG : NMA_PATH_CLIENT_CERT_TAG);
+	                  parent, method, s_8021x,
+	                  phase2 ? nm_setting_802_1x_get_phase2_client_cert_scheme : nm_setting_802_1x_get_client_cert_scheme,
+	                  phase2 ? nm_setting_802_1x_get_phase2_client_cert_path : nm_setting_802_1x_get_client_cert_path,
+	                  FALSE, TRUE);
 	setup_filepicker (xml, "eap_tls_ca_cert_button",
 	                  _("Choose a Certificate Authority certificate..."),
-	                  parent, method, connection,
-	                  phase2 ? NMA_PATH_PHASE2_CA_CERT_TAG : NMA_PATH_CA_CERT_TAG);
+	                  parent, method, s_8021x,
+	                  phase2 ? nm_setting_802_1x_get_phase2_ca_cert_scheme : nm_setting_802_1x_get_ca_cert_scheme,
+	                  phase2 ? nm_setting_802_1x_get_phase2_ca_cert_path : nm_setting_802_1x_get_ca_cert_path,
+	                  FALSE, FALSE);
 	setup_filepicker (xml,
 	                  "eap_tls_private_key_button",
 	                  _("Choose your private key..."),
-	                  parent, method, connection,
-	                  phase2 ? NMA_PATH_PHASE2_PRIVATE_KEY_TAG : NMA_PATH_PRIVATE_KEY_TAG);
+	                  parent, method, s_8021x,
+	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_scheme : nm_setting_802_1x_get_private_key_scheme,
+	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_path : nm_setting_802_1x_get_private_key_path,
+	                  TRUE, FALSE);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);

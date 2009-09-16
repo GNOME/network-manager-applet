@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2005 - 2008 Red Hat, Inc.
+ * (C) Copyright 2005 - 2009 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -27,11 +27,15 @@
 #include <netinet/ether.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <glib.h>
 #include <gnome-keyring.h>
 #include <dbus/dbus-glib.h>
+
 #include <nm-setting-bluetooth.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-wired.h>
@@ -46,6 +50,7 @@
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
 #include "utils.h"
+#include "applet.h"
 
 #define DBUS_TYPE_G_ARRAY_OF_OBJECT_PATH    (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH))
 #define DBUS_TYPE_G_ARRAY_OF_STRING         (dbus_g_type_get_collection ("GPtrArray", G_TYPE_STRING))
@@ -61,7 +66,7 @@
 #define DBUS_TYPE_G_IP6_ROUTE               (dbus_g_type_get_struct ("GValueArray", DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, G_TYPE_INVALID))
 #define DBUS_TYPE_G_ARRAY_OF_IP6_ROUTE      (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ROUTE))
 
-const char *applet_8021x_ignore_keys[] = {
+const char *applet_8021x_cert_keys[] = {
 	"ca-cert",
 	"client-cert",
 	"private-key",
@@ -87,7 +92,7 @@ nm_gconf_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data)
 	pre_keyring_user_data = user_data;
 }
 
-static void
+void
 pre_keyring_callback (void)
 {
 	GnomeKeyringInfo *info = NULL;
@@ -1516,6 +1521,9 @@ nm_gconf_get_all_connections (GConfClient *client)
 		nm_gconf_migrate_0_7_autoconnect_default (client);
 	}
 
+	nm_gconf_migrate_0_7_ca_cert_ignore (client);
+	nm_gconf_migrate_0_7_certs (client);
+
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!connections) {
 		nm_gconf_migrate_0_6_connections (client);
@@ -1566,6 +1574,8 @@ typedef struct ReadFromGConfInfo {
 	guint32 dir_len;
 } ReadFromGConfInfo;
 
+#define FILE_TAG "file://"
+
 static void
 read_one_setting_value_from_gconf (NMSetting *setting,
                                    const char *key,
@@ -1584,7 +1594,8 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 		return;
 
 	/* Secrets don't get stored in GConf */
-	if (flags & NM_SETTING_PARAM_SECRET)
+	if (   (flags & NM_SETTING_PARAM_SECRET)
+	    && !(NM_IS_SETTING_802_1X (setting) && string_in_list (key, applet_8021x_cert_keys)))
 		return;
 
 	/* Don't read the NMSettingConnection object's 'read-only' property */
@@ -1597,15 +1608,32 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	/* Some keys (like certs) aren't read directly from GConf but are handled
 	 * separately.
 	 */
-	if (NM_IS_SETTING_802_1X (setting)) {
-		if (string_in_list (key, applet_8021x_ignore_keys))
-			return;
-	} else if (NM_IS_SETTING_VPN (setting)) {
+	/* Some VPN keys are ignored */
+	if (NM_IS_SETTING_VPN (setting)) {
 		if (string_in_list (key, vpn_ignore_keys))
 			return;
 	}
 
-	if (type == G_TYPE_STRING) {
+	if (   NM_IS_SETTING_802_1X (setting)
+	    && string_in_list (key, applet_8021x_cert_keys)
+	    && (type == DBUS_TYPE_G_UCHAR_ARRAY)) {
+	    char *str_val = NULL;
+
+		/* Certificate/key paths are stored as paths in GConf, but we need to
+		 * take that path and use the special functions to set them on the
+		 * setting.
+		 */
+		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting_name, &str_val)) {
+			GByteArray *ba_val;
+
+			ba_val = g_byte_array_sized_new (strlen (FILE_TAG) + strlen (str_val) + 1);
+			g_byte_array_append (ba_val, (const guint8 *) FILE_TAG, strlen (FILE_TAG));
+			g_byte_array_append (ba_val, (const guint8 *) str_val, strlen (str_val) + 1);  /* +1 for the trailing NULL */
+			g_object_set (setting, key, ba_val, NULL);
+			g_byte_array_free (ba_val, TRUE);
+			g_free (str_val);
+		}
+	} else if (type == G_TYPE_STRING) {
 		char *str_val = NULL;
 
 		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting_name, &str_val)) {
@@ -1739,59 +1767,6 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 }
 
 static void
-read_one_cert (ReadFromGConfInfo *info,
-               const char *setting_name,
-               const char *key)
-{
-	char *value = NULL;
-
-	if (!nm_gconf_get_string_helper (info->client, info->dir, key, setting_name, &value))
-		return;
-
-	g_object_set_data_full (G_OBJECT (info->connection),
-	                        key, value,
-	                        (GDestroyNotify) g_free);
-}
-
-static void
-read_applet_private_values_from_gconf (NMSetting *setting,
-                                       ReadFromGConfInfo *info)
-{
-	if (NM_IS_SETTING_802_1X (setting)) {
-		const char *setting_name = nm_setting_get_name (setting);
-		gboolean value;
-
-		if (nm_gconf_get_bool_helper (info->client, info->dir,
-		                              NMA_CA_CERT_IGNORE_TAG,
-		                              setting_name, &value)) {
-			g_object_set_data (G_OBJECT (info->connection),
-			                   NMA_CA_CERT_IGNORE_TAG,
-			                   GUINT_TO_POINTER (value));
-		}
-
-		if (nm_gconf_get_bool_helper (info->client, info->dir,
-		                              NMA_PHASE2_CA_CERT_IGNORE_TAG,
-		                              setting_name, &value)) {
-			g_object_set_data (G_OBJECT (info->connection),
-			                   NMA_PHASE2_CA_CERT_IGNORE_TAG,
-			                   GUINT_TO_POINTER (value));
-		}
-
-		/* Binary certificate and key data doesn't get stored in GConf.  Instead,
-		 * the path to the certificate gets stored in a special key and the
-		 * certificate is read and stuffed into the setting right before
-		 * the connection is sent to NM
-		 */
-		read_one_cert (info, setting_name, NMA_PATH_CA_CERT_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_CLIENT_CERT_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_PRIVATE_KEY_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_PHASE2_CA_CERT_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
-	}
-}
-
-static void
 read_one_setting (gpointer data, gpointer user_data)
 {
 	char *name;
@@ -1806,7 +1781,6 @@ read_one_setting (gpointer data, gpointer user_data)
 		nm_setting_enumerate_values (setting,
 							    read_one_setting_value_from_gconf,
 							    info);
-		read_applet_private_values_from_gconf (setting, info);
 		nm_connection_add_setting (info->connection, setting);
 	}
 
@@ -1912,7 +1886,9 @@ write_one_secret_to_keyring (NMSetting *setting,
 	const char *secret;
 	const char *setting_name;
 
-	if (!(flags & NM_SETTING_PARAM_SECRET))
+	/* non-secrets and private key paths don't get stored in the keyring */
+	if (   !(flags & NM_SETTING_PARAM_SECRET)
+	    || (NM_IS_SETTING_802_1X (setting) && string_in_list (key, applet_8021x_cert_keys)))
 		return;
 
 	setting_name = nm_setting_get_name (setting);
@@ -1939,6 +1915,391 @@ write_one_secret_to_keyring (NMSetting *setting,
 	}
 }
 
+static gboolean
+write_secret_file (const char *path,
+                   const char *data,
+                   gsize len,
+                   GError **error)
+{
+	char *tmppath;
+	int fd = -1, written;
+	gboolean success = FALSE;
+
+	tmppath = g_malloc0 (strlen (path) + 10);
+	if (!tmppath) {
+		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		             "Could not allocate memory for temporary file for '%s'",
+		             path);
+		return FALSE;
+	}
+
+	memcpy (tmppath, path, strlen (path));
+	strcat (tmppath, ".XXXXXX");
+
+	errno = 0;
+	fd = mkstemp (tmppath);
+	if (fd < 0) {
+		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		             "Could not create temporary file for '%s': %d",
+		             path, errno);
+		goto out;
+	}
+
+	/* Only readable by root */
+	errno = 0;
+	if (fchmod (fd, S_IRUSR | S_IWUSR)) {
+		close (fd);
+		unlink (tmppath);
+		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		             "Could not set permissions for temporary file '%s': %d",
+		             path, errno);
+		goto out;
+	}
+
+	errno = 0;
+	written = write (fd, data, len);
+	if (written != len) {
+		close (fd);
+		unlink (tmppath);
+		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		             "Could not write temporary file for '%s': %d",
+		             path, errno);
+		goto out;
+	}
+	close (fd);
+
+	/* Try to rename */
+	errno = 0;
+	if (rename (tmppath, path)) {
+		unlink (tmppath);
+		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		             "Could not rename temporary file to '%s': %d",
+		             path, errno);
+		goto out;
+	}
+	success = TRUE;
+
+out:
+	return success;
+}
+
+typedef NMSetting8021xCKScheme (*SchemeFunc)  (NMSetting8021x *setting);
+typedef const char *           (*PathFunc)    (NMSetting8021x *setting);
+typedef const GByteArray *     (*BlobFunc)    (NMSetting8021x *setting);
+typedef NMSetting8021xCKFormat (*FormatFunc)  (NMSetting8021x *setting);
+typedef const char *           (*PasswordFunc)(NMSetting8021x *setting);
+
+typedef struct ObjectType {
+	const char *setting_key;
+	gboolean p12_type;
+	SchemeFunc scheme_func;
+	PathFunc path_func;
+	BlobFunc blob_func;
+	FormatFunc format_func;
+	PasswordFunc password_func;
+	const char *privkey_password_key;
+	const char *suffix;
+} ObjectType;
+
+static const ObjectType ca_type = {
+	NM_SETTING_802_1X_CA_CERT,
+	FALSE,
+	nm_setting_802_1x_get_ca_cert_scheme,
+	nm_setting_802_1x_get_ca_cert_path,
+	nm_setting_802_1x_get_ca_cert_blob,
+	NULL,
+	NULL,
+	NULL,
+	"ca-cert.der"
+};
+
+static const ObjectType phase2_ca_type = {
+	NM_SETTING_802_1X_PHASE2_CA_CERT,
+	FALSE,
+	nm_setting_802_1x_get_phase2_ca_cert_scheme,
+	nm_setting_802_1x_get_phase2_ca_cert_path,
+	nm_setting_802_1x_get_phase2_ca_cert_blob,
+	NULL,
+	NULL,
+	NULL,
+	"inner-ca-cert.der"
+};
+
+static const ObjectType client_type = {
+	NM_SETTING_802_1X_CLIENT_CERT,
+	FALSE,
+	nm_setting_802_1x_get_client_cert_scheme,
+	nm_setting_802_1x_get_client_cert_path,
+	nm_setting_802_1x_get_client_cert_blob,
+	NULL,
+	NULL,
+	NULL,
+	"client-cert.der"
+};
+
+static const ObjectType phase2_client_type = {
+	NM_SETTING_802_1X_PHASE2_CLIENT_CERT,
+	FALSE,
+	nm_setting_802_1x_get_phase2_client_cert_scheme,
+	nm_setting_802_1x_get_phase2_client_cert_path,
+	nm_setting_802_1x_get_phase2_client_cert_blob,
+	NULL,
+	NULL,
+	NULL,
+	"inner-client-cert.der"
+};
+
+static const ObjectType pk_type = {
+	NM_SETTING_802_1X_PRIVATE_KEY,
+	FALSE,
+	nm_setting_802_1x_get_private_key_scheme,
+	nm_setting_802_1x_get_private_key_path,
+	nm_setting_802_1x_get_private_key_blob,
+	nm_setting_802_1x_get_private_key_format,
+	nm_setting_802_1x_get_private_key_password,
+	NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD,
+	"private-key.pem"
+};
+
+static const ObjectType phase2_pk_type = {
+	NM_SETTING_802_1X_PHASE2_PRIVATE_KEY,
+	FALSE,
+	nm_setting_802_1x_get_phase2_private_key_scheme,
+	nm_setting_802_1x_get_phase2_private_key_path,
+	nm_setting_802_1x_get_phase2_private_key_blob,
+	nm_setting_802_1x_get_phase2_private_key_format,
+	nm_setting_802_1x_get_phase2_private_key_password,
+	NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD,
+	"inner-private-key.pem"
+};
+
+static const ObjectType p12_type = {
+	NM_SETTING_802_1X_PRIVATE_KEY,
+	TRUE,
+	nm_setting_802_1x_get_private_key_scheme,
+	nm_setting_802_1x_get_private_key_path,
+	nm_setting_802_1x_get_private_key_blob,
+	nm_setting_802_1x_get_private_key_format,
+	nm_setting_802_1x_get_private_key_password,
+	NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD,
+	"private-key.p12"
+};
+
+static const ObjectType phase2_p12_type = {
+	NM_SETTING_802_1X_PHASE2_PRIVATE_KEY,
+	TRUE,
+	nm_setting_802_1x_get_phase2_private_key_scheme,
+	nm_setting_802_1x_get_phase2_private_key_path,
+	nm_setting_802_1x_get_phase2_private_key_blob,
+	nm_setting_802_1x_get_phase2_private_key_format,
+	nm_setting_802_1x_get_phase2_private_key_password,
+	NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD,
+	"inner-private-key.p12"
+};
+
+static char *
+generate_cert_path (const char *id, const char *suffix)
+{
+	return g_strdup_printf ("%s/.ssh/%s-%s", g_get_home_dir (), id, suffix);
+}
+
+static gboolean
+write_object (GConfClient *client,
+              const char *dir,
+              const char *id,
+              NMSetting8021x *s_8021x,
+              const GByteArray *override_data,
+              const ObjectType *objtype,
+              GError **error)
+{
+	NMSetting8021xCKScheme scheme;
+	const char *path = NULL;
+	const GByteArray *blob = NULL;
+	const char *setting_name = nm_setting_get_name (NM_SETTING (s_8021x));
+
+	g_return_val_if_fail (objtype != NULL, FALSE);
+
+	if (override_data) {
+		/* if given explicit data to save, always use that instead of asking
+		 * the setting what to do.
+		 */
+		blob = override_data;
+	} else {
+		scheme = (*(objtype->scheme_func))(s_8021x);
+		switch (scheme) {
+		case NM_SETTING_802_1X_CK_SCHEME_BLOB:
+			blob = (*(objtype->blob_func))(s_8021x);
+			break;
+		case NM_SETTING_802_1X_CK_SCHEME_PATH:
+			path = (*(objtype->path_func))(s_8021x);
+			break;
+		default:
+			break;
+		}
+	}
+
+	/* If certificate/private key wasn't sent, the connection may no longer be
+	 * 802.1x and thus we clear out the paths and certs.
+	 */
+	if (!path && !blob) {
+		char *standard_file;
+		int ignored;
+
+		/* Since no cert/private key is now being used, delete any standard file
+		 * that was created for this connection, but leave other files alone.
+		 * Thus, for example, ~/.ssh/My Company Network-ca-cert.der will be
+		 * deleted, but /etc/pki/tls/cert.pem would not.
+		 */
+		standard_file = generate_cert_path (id, objtype->suffix);
+		if (g_file_test (standard_file, G_FILE_TEST_EXISTS))
+			ignored = unlink (standard_file);
+		g_free (standard_file);
+
+		/* Delete the key from GConf */
+		nm_gconf_set_string_helper (client, dir, objtype->setting_key, setting_name, NULL);
+		return TRUE;
+	}
+
+	/* If the object path was specified, prefer that over any raw cert data that
+	 * may have been sent.
+	 */
+	if (path) {
+		nm_gconf_set_string_helper (client, dir, objtype->setting_key, setting_name, path);
+		return TRUE;
+	}
+
+	/* If it's raw certificate data, write the cert data out to the standard file */
+	if (blob) {
+		gboolean success;
+		char *new_file;
+		GError *write_error = NULL;
+
+		new_file = generate_cert_path (id, objtype->suffix);
+		if (!new_file) {
+			g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+			             "Could not create file path for %s / %s",
+			             setting_name, objtype->setting_key);
+			return FALSE;
+		}
+
+		/* Write the raw certificate data out to the standard file so that we
+		 * can use paths from now on instead of pushing around the certificate
+		 * data itself.
+		 */
+		success = write_secret_file (new_file, (const char *) blob->data, blob->len, &write_error);
+		if (success) {
+			nm_gconf_set_string_helper (client, dir, objtype->setting_key, setting_name, new_file);
+			return TRUE;
+		} else {
+			g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+			             "Could not write certificate/key for %s / %s: %s",
+			             setting_name, objtype->setting_key,
+			             (write_error && write_error->message) ? write_error->message : "(unknown)");
+			g_clear_error (&write_error);
+		}
+		g_free (new_file);
+	}
+
+	return FALSE;
+}
+
+static gboolean
+write_one_certificate (GConfClient *client,
+                       const char *dir,
+                       const char *key,
+                       NMSetting8021x *s_8021x,
+                       NMConnection *connection,
+                       GError **error)
+{
+	const char *id;
+	NMSettingConnection *s_con;
+	const ObjectType *cert_objects[] = {
+		&ca_type,
+		&phase2_ca_type,
+		&client_type,
+		&phase2_client_type,
+		&pk_type,
+		&phase2_pk_type,
+		&p12_type,
+		&phase2_p12_type,
+		NULL
+	};
+	const ObjectType **obj = &cert_objects[0];
+	gboolean handled = FALSE, success = FALSE;
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	g_assert (s_con);
+	id = nm_setting_connection_get_id (s_con);
+	g_assert (id);
+
+	while (*obj && !handled) {
+		const GByteArray *blob = NULL;
+		GByteArray *enc_key = NULL;
+
+		if (strcmp (key, (*obj)->setting_key)) {
+			obj++;
+			continue;
+		}
+
+		/* Check for pkcs#12 format private keys; if the current ObjectType
+		 * structure isn't for a pkcs#12 key but the key actually is
+		 * pkcs#12, keep going to get the right pkcs#12 ObjectType.
+		 */
+		if (   (*obj)->format_func
+		    && ((*obj)->format_func (s_8021x) == NM_SETTING_802_1X_CK_FORMAT_PKCS12)
+		    && !(*obj)->p12_type) {
+			obj++;
+			continue;
+		}
+
+		if ((*obj)->scheme_func (s_8021x) == NM_SETTING_802_1X_CK_SCHEME_BLOB)
+			blob = (*obj)->blob_func (s_8021x);
+
+		/* Only do the private key re-encrypt dance if we got the raw key data, which
+		 * by definition will be unencrypted.  If we're given a direct path to the
+		 * private key file, it'll be encrypted, so we don't need to re-encrypt.
+		 */
+		if (blob && !(*obj)->p12_type) {
+			const char *password;
+			char *generated_pw;
+
+			/* If the private key is an unencrypted blob, re-encrypt it with a
+			 * random password since we don't store unencrypted private keys on disk.
+			 */
+			password = (*obj)->password_func (s_8021x);
+
+			/* Encrypt the unencrypted private key */
+			enc_key = nm_utils_rsa_key_encrypt (blob, password, &generated_pw, error);
+			if (!enc_key)
+				goto out;
+
+			/* Save any generated private key back into the 802.1x setting so
+			 * it'll get stored when secrets are written to the keyring.
+			 */
+			if (generated_pw) {
+				g_object_set (G_OBJECT (s_8021x), (*obj)->privkey_password_key, generated_pw, NULL);
+				memset (generated_pw, 0, strlen (generated_pw));
+				g_free (generated_pw);
+			}
+		}
+
+		success = write_object (client, dir, id, s_8021x, enc_key ? enc_key : blob, *obj, error);
+		if (enc_key)
+			g_byte_array_free (enc_key, TRUE);
+
+		handled = TRUE;
+	}
+
+	if (!handled) {
+		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		             "Unhandled certificate/private-key item '%s'",
+		             key);
+	}
+
+out:
+	return success;
+}
+
 static void
 copy_one_setting_value_to_gconf (NMSetting *setting,
                                  const char *key,
@@ -1951,19 +2312,19 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	GType type = G_VALUE_TYPE (value);
 	GParamSpec *pspec;
 
-	/* Some keys (like certs) aren't written directly to GConf but are handled
-	 * separately.
-	 */
-	if (NM_IS_SETTING_802_1X (setting)) {
-		if (string_in_list (key, applet_8021x_ignore_keys))
-			return;
-	} else if (NM_IS_SETTING_VPN (setting)) {
+	/* Some VPN keys are ignored */
+	if (NM_IS_SETTING_VPN (setting)) {
 		if (string_in_list (key, vpn_ignore_keys))
 			return;
 	}
 
-	/* Secrets don't get stored in GConf */
-	if (flags & NM_SETTING_PARAM_SECRET)
+	/* Secrets don't get stored in GConf; but the 802.1x private keys,
+	 * which are marked secret for backwards compat, do get stored in
+	 * GConf because as of NM 0.8, they are just paths and not the decrypted
+	 * private key blobs.
+	 */
+	if (   (flags & NM_SETTING_PARAM_SECRET)
+	    && !(NM_IS_SETTING_802_1X (setting) && string_in_list (key, applet_8021x_cert_keys)))
 		return;
 
 	/* Don't write the NMSettingConnection object's 'read-only' property */
@@ -1987,7 +2348,24 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		}
 	}
 
-	if (type == G_TYPE_STRING) {
+	if (   NM_IS_SETTING_802_1X (setting)
+		&& string_in_list (key, applet_8021x_cert_keys)
+		&& (type == DBUS_TYPE_G_UCHAR_ARRAY)) {
+		GError *error = NULL;
+
+		if (!write_one_certificate (info->client,
+		                            info->dir,
+		                            key,
+		                            NM_SETTING_802_1X (setting),
+		                            info->connection,
+		                            &error)) {
+			g_warning ("%s: error saving certificate/private key '%s': (%d) %s",
+			           __func__,
+			           key,
+			           error ? error->code : -1,
+			           error && error->message ? error->message : "(unknown)");
+		}
+	} else if (type == G_TYPE_STRING) {
 		nm_gconf_set_string_helper (info->client, info->dir, key, setting_name, g_value_get_string (value));
 	} else if (type == G_TYPE_UINT) {
 		nm_gconf_set_int_helper (info->client, info->dir,
@@ -2065,95 +2443,6 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 }
 
 static void
-write_ignore_ca_cert_helper (CopyOneSettingValueInfo *info,
-                             const char *tag,
-                             const GByteArray *cert)
-{
-	g_return_if_fail (info != NULL);
-	g_return_if_fail (tag != NULL);
-
-	if (cert) {
-		char *key;
-
-		key = g_strdup_printf ("%s/%s/%s", info->dir, NM_SETTING_802_1X_SETTING_NAME, tag);
-		gconf_client_unset (info->client, key, NULL);
-		g_free (key);
-	} else {
-		if (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (info->connection), tag)))
-			nm_gconf_set_bool_helper (info->client, info->dir, tag, NM_SETTING_802_1X_SETTING_NAME, TRUE);
-	}
-}
-
-static void
-write_one_private_string_value (CopyOneSettingValueInfo *info, const char *tag)
-{
-	const char *value;
-
-	g_return_if_fail (info != NULL);
-	g_return_if_fail (tag != NULL);
-
-	value = g_object_get_data (G_OBJECT (info->connection), tag);
-	nm_gconf_set_string_helper (info->client, info->dir, tag,
-						   NM_SETTING_802_1X_SETTING_NAME,
-						   value);
-}
-
-static void
-write_one_password (CopyOneSettingValueInfo *info, const char *tag)
-{
-	const char *value;
-
-	g_return_if_fail (info != NULL);
-	g_return_if_fail (tag != NULL);
-
-	value = g_object_get_data (G_OBJECT (info->connection), tag);
-	if (value) {
-		nm_gconf_add_keyring_item (info->connection_uuid,
-		                           info->connection_name,
-		                           NM_SETTING_802_1X_SETTING_NAME,
-		                           tag,
-		                           value);
-
-		/* Try not to leave the password lying around in memory */
-		g_object_set_data (G_OBJECT (info->connection), tag, NULL);
-	}
-}
-
-static void
-write_applet_private_values_to_gconf (CopyOneSettingValueInfo *info)
-{
-	NMSetting8021x *s_8021x;
-
-	g_return_if_fail (info != NULL);
-
-	/* Handle values private to the applet that are not supposed to
-	 * be sent to NetworkManager.
-	 */
-	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (info->connection, NM_TYPE_SETTING_802_1X));
-	if (s_8021x) {
-		write_ignore_ca_cert_helper (info, NMA_CA_CERT_IGNORE_TAG,
-		                             nm_setting_802_1x_get_ca_cert (s_8021x));
-		write_ignore_ca_cert_helper (info, NMA_PHASE2_CA_CERT_IGNORE_TAG,
-		                             nm_setting_802_1x_get_phase2_ca_cert (s_8021x));
-
-		/* Binary certificate and key data doesn't get stored in GConf.  Instead,
-		 * the path to the certificate gets stored in a special key and the
-		 * certificate is read and stuffed into the setting right before
-		 * the connection is sent to NM
-		 */
-		write_one_private_string_value (info, NMA_PATH_CA_CERT_TAG);
-		write_one_private_string_value (info, NMA_PATH_CLIENT_CERT_TAG);
-		write_one_private_string_value (info, NMA_PATH_PRIVATE_KEY_TAG);
-		write_one_private_string_value (info, NMA_PATH_PHASE2_CA_CERT_TAG);
-		write_one_private_string_value (info, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
-		write_one_private_string_value (info, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
-
-		write_one_password (info, NMA_PRIVATE_KEY_PASSWORD_TAG);
-		write_one_password (info, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
-	}
-}
-
-static void
 remove_leftovers (CopyOneSettingValueInfo *info)
 {
 	GSList *dirs;
@@ -2184,6 +2473,7 @@ nm_gconf_write_connection (NMConnection *connection,
 {
 	NMSettingConnection *s_con;
 	CopyOneSettingValueInfo info;
+	gboolean ignore;
 
 	g_return_if_fail (NM_IS_CONNECTION (connection));
 	g_return_if_fail (client != NULL);
@@ -2208,326 +2498,58 @@ nm_gconf_write_connection (NMConnection *connection,
 	                                      write_one_secret_to_keyring,
 	                                      &info);
 
-	write_applet_private_values_to_gconf (&info);
+	/* Update ignore CA cert status */
+	ignore = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), IGNORE_CA_CERT_TAG));
+	nm_gconf_set_ignore_ca_cert (info.connection_uuid, FALSE, ignore);
+
+	ignore = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), IGNORE_PHASE2_CA_CERT_TAG));
+	nm_gconf_set_ignore_ca_cert (info.connection_uuid, TRUE, ignore);
 }
 
-static GValue *
-string_to_gvalue (const char *str)
+static char *
+get_ignore_path (const char *uuid, gboolean phase2)
 {
-	GValue *val;
-
-	val = g_slice_new0 (GValue);
-	g_value_init (val, G_TYPE_STRING);
-	g_value_set_string (val, str);
-
-	return val;
+	return g_strdup_printf (APPLET_PREFS_PATH "/%s/%s",
+	                        phase2 ? "ignore-phase2-ca-cert" : "ignore-ca-cert",
+	                        uuid);
 }
 
-static GValue *
-byte_array_to_gvalue (const GByteArray *array)
+gboolean
+nm_gconf_get_ignore_ca_cert (const char *uuid, gboolean phase2)
 {
-	GValue *val;
+	GConfClient *client;
+	char *key = NULL;
+	gboolean ignore = FALSE;
 
-	val = g_slice_new0 (GValue);
-	g_value_init (val, DBUS_TYPE_G_UCHAR_ARRAY);
-	g_value_set_boxed (val, array);
+	g_return_val_if_fail (uuid != NULL, FALSE);
 
-	return val;
-}
+	client = gconf_client_get_default ();
 
-static void
-destroy_gvalue (gpointer data)
-{
-	GValue *value = (GValue *) data;
+	key = get_ignore_path (uuid, phase2);
+	ignore = gconf_client_get_bool (client, key, NULL);
+	g_free (key);
 
-	g_value_unset (value);
-	g_slice_free (GValue, value);
-}
-
-static gboolean
-get_one_private_key (NMConnection *connection,
-                     const char *setting_name,
-                     const char *tag,
-                     const char *password,
-                     gboolean include_password,
-                     GHashTable *secrets,
-                     GError **error)
-{
-	NMSettingConnection *s_con;
-	GByteArray *array = NULL;
-	const char *filename = NULL;
-	const char *secret_name;
-	const char *real_password_secret_name = NULL;
-	gboolean success = FALSE;
-	gboolean add_password = FALSE;
-
-	g_return_val_if_fail (connection != NULL, FALSE);
-	g_return_val_if_fail (tag != NULL, FALSE);
-	g_return_val_if_fail (password != NULL, FALSE);
-	g_return_val_if_fail (error != NULL, FALSE);
-	g_return_val_if_fail (*error == NULL, FALSE);
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-
-	if (!strcmp (tag, NMA_PRIVATE_KEY_PASSWORD_TAG)) {
-		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PRIVATE_KEY_TAG);
-		secret_name = NM_SETTING_802_1X_PRIVATE_KEY;
-		real_password_secret_name = NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD;
-	} else if (!strcmp (tag, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG)) {
-		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
-		secret_name = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY;
-		real_password_secret_name = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD;
-	} else {
-		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
-		             "%s.%d - %s/%s Unknown private key password type '%s'.",
-		             __FILE__, __LINE__, nm_setting_connection_get_id (s_con), setting_name, tag);
-		return FALSE;
-	}
-
-	if (filename) {
-		NMSetting8021x *setting;
-		const GByteArray *tmp = NULL;
-		NMSetting8021xCKType ck_type = NM_SETTING_802_1X_CK_TYPE_UNKNOWN;
-
-		setting = (NMSetting8021x *) nm_setting_802_1x_new ();
-		if (nm_setting_802_1x_set_private_key_from_file (setting, filename, password, &ck_type, error)) {
-			/* For PKCS#12 files, which don't get decrypted, add the private key
-			 * password to the secrets hash.
-			 */
-			if (ck_type == NM_SETTING_802_1X_CK_TYPE_PKCS12)
-				add_password = TRUE;
-
-			/* Steal the private key */
-			tmp = nm_setting_802_1x_get_private_key (setting);
-			g_assert (tmp);
-			array = g_byte_array_sized_new (tmp->len);
-			g_byte_array_append (array, tmp->data, tmp->len);
-		}
-		g_object_unref (setting);
-	}
-
-	if (*error) {
-		goto out;
-	} else if (!array || !array->len) {
-		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
-		             "%s.%d - %s/%s couldn't read private key.",
-		             __FILE__, __LINE__, nm_setting_connection_get_id (s_con), setting_name);
-		goto out;
-	}
-
-	g_hash_table_insert (secrets, g_strdup (secret_name), byte_array_to_gvalue (array));
-
-	if (include_password || add_password)
-		g_hash_table_insert (secrets, g_strdup (real_password_secret_name), string_to_gvalue (password));
-
-	success = TRUE;
-
-out:
-	if (array) {
-		/* Try not to leave the decrypted private key around in memory */
-		memset (array->data, 0, array->len);
-		g_byte_array_free (array, TRUE);
-	}
-	return success;
-}
-
-GHashTable *
-nm_gconf_get_keyring_items (NMConnection *connection,
-                            const char *setting_name,
-                            gboolean include_private_passwords,
-                            GError **error)
-{
-	NMSettingConnection *s_con;
-	GHashTable *secrets;
-	GList *found_list = NULL;
-	GnomeKeyringResult ret;
-	GList *iter;
-	const char *connection_name;
-
-	g_return_val_if_fail (connection != NULL, NULL);
-	g_return_val_if_fail (setting_name != NULL, NULL);
-	g_return_val_if_fail (error != NULL, NULL);
-	g_return_val_if_fail (*error == NULL, NULL);
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con);
-
-	connection_name = nm_setting_connection_get_id (s_con);
-	g_assert (connection_name);
-
-	pre_keyring_callback ();
-
-	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                                      &found_list,
-	                                      KEYRING_UUID_TAG,
-	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-										  nm_setting_connection_get_uuid (s_con),
-	                                      KEYRING_SN_TAG,
-	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      setting_name,
-	                                      NULL);
-	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0))
-		return NULL;
-
-	secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
-
-	for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
-		GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
-		int i;
-		const char * key_name = NULL;
-
-		for (i = 0; i < found->attributes->len; i++) {
-			GnomeKeyringAttribute *attr;
-
-			attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
-			if (   (strcmp (attr->name, "setting-key") == 0)
-			    && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
-				key_name = attr->value.string;
-				break;
-			}
-		}
-
-		if (key_name == NULL) {
-			g_set_error (error,
-			             NM_SETTINGS_INTERFACE_ERROR,
-			             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
-			             "%s.%d - Internal error; keyring item '%s/%s' didn't "
-			             "have a 'setting-key' attribute.",
-			             __FILE__, __LINE__, connection_name, setting_name);
-			break;
-		}
-
-		if (   !strcmp (setting_name, NM_SETTING_802_1X_SETTING_NAME)
-		    && (   !strcmp (key_name, NMA_PRIVATE_KEY_PASSWORD_TAG)
-		        || !strcmp (key_name, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG))) {
-			/* Private key passwords aren't passed to NM for "traditional"
-			 * OpenSSL private keys, but are passed to NM for PKCS#12 keys.
-			 */
-			if (!get_one_private_key (connection, setting_name, key_name,
-			                          found->secret, include_private_passwords, secrets, error)) {
-				if (!*error) {
-					g_set_error (error,
-					             NM_SETTINGS_INTERFACE_ERROR,
-					             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
-					             "%s.%d - %s/%s unknown error from get_one_private_key().",
-					             __FILE__, __LINE__, connection_name, setting_name);
-				}
-				break;
-			}
-		} else {
-			/* Ignore older obsolete keyring keys that we don't want to leak
-			 * through to NM.
-			 */
-			if (   strcmp (key_name, "private-key-passwd")
-			    && strcmp (key_name, "phase2-private-key-passwd")) {
-				g_hash_table_insert (secrets,
-				                     g_strdup (key_name),
-				                     string_to_gvalue (found->secret));
-			}
-		}
-	}
-
-	if (*error) {
-		nm_warning ("%s: error reading secrets: (%d) %s", __func__,
-		            (*error)->code, (*error)->message);
-		g_hash_table_destroy (secrets);
-		secrets = NULL;
-	}
-
-	gnome_keyring_found_list_free (found_list);
-	return secrets;
-}
-
-static void
-delete_done (GnomeKeyringResult result, gpointer user_data)
-{
+	g_object_unref (client);
+	return ignore;
 }
 
 void
-nm_gconf_clear_keyring_items (NMConnection *connection)
+nm_gconf_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore)
 {
-	NMSettingConnection *s_con;
-	const char *uuid;
-	GList *found_list = NULL;
-	GnomeKeyringResult ret;
-	GList *iter;
+	GConfClient *client;
+	char *key = NULL;
 
-	g_return_if_fail (connection != NULL);
-
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
-	g_return_if_fail (s_con != NULL);
-
-	uuid = nm_setting_connection_get_uuid (s_con);
 	g_return_if_fail (uuid != NULL);
 
-	pre_keyring_callback ();
+	client = gconf_client_get_default ();
 
-	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                                      &found_list,
-	                                      KEYRING_UUID_TAG,
-	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                      nm_setting_connection_get_uuid (s_con),
-	                                      NULL);
-	if (ret == GNOME_KEYRING_RESULT_OK) {
-		for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
-			GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
+	key = get_ignore_path (uuid, phase2);
+	if (ignore)
+		gconf_client_set_bool (client, key, ignore, NULL);
+	else
+		gconf_client_unset (client, key, NULL);
+	g_free (key);
 
-			gnome_keyring_item_delete (found->keyring,
-			                           found->item_id,
-			                           delete_done,
-			                           NULL,
-			                           NULL);
-		}
-		gnome_keyring_found_list_free (found_list);
-	}
-}
-
-static inline void
-copy_str_item (NMConnection *dst, NMConnection *src, const char *tag)
-{
-	g_object_set_data_full (G_OBJECT (dst), tag, g_strdup (g_object_get_data (G_OBJECT (src), tag)), g_free);
-}
-
-void
-nm_gconf_copy_private_connection_values (NMConnection *dst, NMConnection *src)
-{
-	g_return_if_fail (NM_IS_CONNECTION (dst));
-	g_return_if_fail (NM_IS_CONNECTION (src));
-
-	g_object_set_data (G_OBJECT (dst), NMA_CA_CERT_IGNORE_TAG,
-	                   g_object_get_data (G_OBJECT (src), NMA_CA_CERT_IGNORE_TAG));
-	g_object_set_data (G_OBJECT (dst), NMA_PHASE2_CA_CERT_IGNORE_TAG,
-	                   g_object_get_data (G_OBJECT (src), NMA_PHASE2_CA_CERT_IGNORE_TAG));
-
-	copy_str_item (dst, src, NMA_PATH_CLIENT_CERT_TAG);
-	copy_str_item (dst, src, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
-	copy_str_item (dst, src, NMA_PATH_CA_CERT_TAG);
-	copy_str_item (dst, src, NMA_PATH_PHASE2_CA_CERT_TAG);
-	copy_str_item (dst, src, NMA_PATH_PRIVATE_KEY_TAG);
-	copy_str_item (dst, src, NMA_PRIVATE_KEY_PASSWORD_TAG);
-	copy_str_item (dst, src, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
-	copy_str_item (dst, src, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
-}
-
-void
-nm_gconf_clear_private_connection_values (NMConnection *connection)
-{
-	g_return_if_fail (NM_IS_CONNECTION (connection));
-
-	g_object_set_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG, NULL);
-	g_object_set_data (G_OBJECT (connection), NMA_PHASE2_CA_CERT_IGNORE_TAG, NULL);
-
-	g_object_set_data (G_OBJECT (connection), NMA_PATH_CLIENT_CERT_TAG, NULL);
-	g_object_set_data (G_OBJECT (connection), NMA_PATH_PHASE2_CLIENT_CERT_TAG, NULL);
-	g_object_set_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG, NULL);
-	g_object_set_data (G_OBJECT (connection), NMA_PATH_PHASE2_CA_CERT_TAG, NULL);
-	g_object_set_data (G_OBJECT (connection), NMA_PATH_PRIVATE_KEY_TAG, NULL);
-	g_object_set_data (G_OBJECT (connection), NMA_PRIVATE_KEY_PASSWORD_TAG, NULL);
-	g_object_set_data (G_OBJECT (connection), NMA_PATH_PHASE2_PRIVATE_KEY_TAG, NULL);
-	g_object_set_data (G_OBJECT (connection), NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG, NULL);
+	g_object_unref (client);
 }
 

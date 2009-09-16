@@ -25,8 +25,12 @@
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
+#include <gnome-keyring.h>
+
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
+#include <nm-setting-8021x.h>
+
 #include "nma-gconf-connection.h"
 #include "gconf-helpers.h"
 #include "nm-utils.h"
@@ -121,9 +125,7 @@ nma_gconf_connection_new_from_connection (GConfClient *client,
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	/* Ensure the connection is valid first */
-	utils_fill_connection_certs (connection);
 	success = nm_connection_verify (connection, &error);
-	utils_clear_filled_connection_certs (connection);
 	if (!success) {
 		g_warning ("Invalid connection %s: '%s' / '%s' invalid: %d",
 		           conf_dir,
@@ -145,18 +147,9 @@ nma_gconf_connection_new_from_connection (GConfClient *client,
 	self = NMA_GCONF_CONNECTION (object);
 
 	/* Fill certs so that the nm_connection_replace_settings verification works */
-	utils_fill_connection_certs (connection);
 	settings = nm_connection_to_hash (connection);
-	utils_clear_filled_connection_certs (connection);
-
 	success = nm_connection_replace_settings (NM_CONNECTION (self), settings, NULL);
 	g_hash_table_destroy (settings);
-
-	/* Then clear the filled certs on the replaced settings, and copy over
-	 * applet private values like file locations and such.
-	 */
-	utils_clear_filled_connection_certs (NM_CONNECTION (self));
-	nm_gconf_copy_private_connection_values (NM_CONNECTION (self), connection);
 
 	/* Already verified the settings above, they had better be OK */
 	g_assert (success);
@@ -189,9 +182,7 @@ nma_gconf_connection_gconf_changed (NMAGConfConnection *self)
 		goto invalid;
 	}
 
-	utils_fill_connection_certs (new);
 	success = nm_connection_verify (new, &error);
-	utils_clear_filled_connection_certs (new);
 	if (!success) {
 		g_warning ("%s: Invalid connection %s: '%s' / '%s' invalid: %d",
 		           __func__, priv->dir,
@@ -207,14 +198,10 @@ nma_gconf_connection_gconf_changed (NMAGConfConnection *self)
 		return TRUE;
 	}
 
-	utils_fill_connection_certs (new);
 	new_settings = nm_connection_to_hash (new);
-	utils_clear_filled_connection_certs (new);
-	g_object_unref (new);
-
 	success = nm_connection_replace_settings (NM_CONNECTION (self), new_settings, &error);
-	utils_clear_filled_connection_certs (NM_CONNECTION (self));
 	g_hash_table_destroy (new_settings);
+	g_object_unref (new);
 
 	if (!success) {
 		g_warning ("%s: '%s' / '%s' invalid: %d",
@@ -234,6 +221,209 @@ invalid:
 	g_clear_error (&error);
 	g_signal_emit_by_name (self, "removed");
 	return FALSE;
+}
+
+/******************************************************/
+
+static GValue *
+string_to_gvalue (const char *str)
+{
+	GValue *val;
+
+	val = g_slice_new0 (GValue);
+	g_value_init (val, G_TYPE_STRING);
+	g_value_set_string (val, str);
+
+	return val;
+}
+
+#define FILE_TAG "file://"
+
+static GValue *
+path_to_gvalue (const char *path)
+{
+	GValue *val;
+	GByteArray *array;
+
+	array = g_byte_array_sized_new (strlen (FILE_TAG) + strlen (path) + 1);
+	g_byte_array_append (array, (guint8 *) FILE_TAG, strlen (FILE_TAG));
+	g_byte_array_append (array, (guint8 *) path, strlen (path) + 1);  /* +1 for the trailing NULL */
+
+	val = g_slice_new0 (GValue);
+	g_value_init (val, DBUS_TYPE_G_UCHAR_ARRAY);
+	g_value_take_boxed (val, array);
+
+	return val;
+}
+
+static void
+destroy_gvalue (gpointer data)
+{
+	GValue *value = (GValue *) data;
+
+	g_value_unset (value);
+	g_slice_free (GValue, value);
+}
+
+static GHashTable *
+nma_gconf_connection_get_keyring_items (NMAGConfConnection *self,
+                                        const char *setting_name,
+                                        GError **error)
+{
+	NMAGConfConnectionPrivate *priv;
+	NMSettingConnection *s_con;
+	GHashTable *secrets;
+	GList *found_list = NULL;
+	GnomeKeyringResult ret;
+	GList *iter;
+	const char *connection_name;
+	char *path = NULL;
+
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (setting_name != NULL, NULL);
+	g_return_val_if_fail (error != NULL, NULL);
+	g_return_val_if_fail (*error == NULL, NULL);
+
+	priv = NMA_GCONF_CONNECTION_GET_PRIVATE (self);
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (NM_CONNECTION (self), NM_TYPE_SETTING_CONNECTION));
+	g_assert (s_con);
+
+	connection_name = nm_setting_connection_get_id (s_con);
+	g_assert (connection_name);
+
+	pre_keyring_callback ();
+
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      KEYRING_UUID_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+										  nm_setting_connection_get_uuid (s_con),
+	                                      KEYRING_SN_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      setting_name,
+	                                      NULL);
+	if ((ret != GNOME_KEYRING_RESULT_OK) || (g_list_length (found_list) == 0))
+		return NULL;
+
+	secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
+
+	for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
+		GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
+		int i;
+		const char *key_name = NULL;
+
+		for (i = 0; i < found->attributes->len; i++) {
+			GnomeKeyringAttribute *attr;
+
+			attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
+			if (   (strcmp (attr->name, KEYRING_SK_TAG) == 0)
+			    && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
+				key_name = attr->value.string;
+				break;
+			}
+		}
+
+		if (key_name == NULL) {
+			g_set_error (error,
+			             NM_SETTINGS_INTERFACE_ERROR,
+			             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
+			             "%s.%d - Internal error; keyring item '%s/%s' didn't "
+			             "have a 'setting-key' attribute.",
+			             __FILE__, __LINE__, connection_name, setting_name);
+			break;
+		}
+
+		g_hash_table_insert (secrets,
+		                     g_strdup (key_name),
+		                     string_to_gvalue (found->secret));
+	}
+
+	/* The phase1 and phase2 private key are still marked as 'secret' for
+	 * backwards compat, but since they don't get stored in the keyring since
+	 * they aren't really secret (because we now use paths everywhere and not
+	 * the decrypted private key like 0.7.x).  So we need to grab them out of
+	 * GConf and add them to the returned secret hash.
+	 */
+	/* Private key path */
+	path = NULL;
+	if (nm_gconf_get_string_helper (priv->client,
+	                                priv->dir,
+	                                NM_SETTING_802_1X_PRIVATE_KEY,
+	                                NM_SETTING_802_1X_SETTING_NAME,
+	                                &path)) {
+		g_hash_table_insert (secrets,
+		                     g_strdup (NM_SETTING_802_1X_PRIVATE_KEY),
+		                     path_to_gvalue (path));
+		g_free (path);
+	}
+
+	/* Phase2 private key path */
+	path = NULL;
+	if (nm_gconf_get_string_helper (priv->client,
+	                                priv->dir,
+	                                NM_SETTING_802_1X_PHASE2_PRIVATE_KEY,
+	                                NM_SETTING_802_1X_SETTING_NAME,
+	                                &path)) {
+		g_hash_table_insert (secrets,
+		                     g_strdup (NM_SETTING_802_1X_PHASE2_PRIVATE_KEY),
+		                     path_to_gvalue (path));
+		g_free (path);
+	}
+
+	if (*error) {
+		nm_warning ("%s: error reading secrets: (%d) %s", __func__,
+		            (*error)->code, (*error)->message);
+		g_hash_table_destroy (secrets);
+		secrets = NULL;
+	}
+
+	gnome_keyring_found_list_free (found_list);
+	return secrets;
+}
+
+static void
+delete_done (GnomeKeyringResult result, gpointer user_data)
+{
+}
+
+static void
+clear_keyring_items (NMAGConfConnection *self)
+{
+	NMSettingConnection *s_con;
+	const char *uuid;
+	GList *found_list = NULL;
+	GnomeKeyringResult ret;
+	GList *iter;
+
+	g_return_if_fail (self != NULL);
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (NM_CONNECTION (self), NM_TYPE_SETTING_CONNECTION);
+	g_return_if_fail (s_con != NULL);
+
+	uuid = nm_setting_connection_get_uuid (s_con);
+	g_return_if_fail (uuid != NULL);
+
+	pre_keyring_callback ();
+
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      KEYRING_UUID_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      uuid,
+	                                      NULL);
+	if (ret == GNOME_KEYRING_RESULT_OK) {
+		for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
+			GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
+
+			gnome_keyring_item_delete (found->keyring,
+			                           found->item_id,
+			                           delete_done,
+			                           NULL,
+			                           NULL);
+		}
+		gnome_keyring_found_list_free (found_list);
+	}
 }
 
 /******************************************************/
@@ -262,6 +452,9 @@ do_delete (NMSettingsConnectionInterface *connection,
 	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (connection);
 	gboolean success;
 	GError *error = NULL;
+
+	/* Clean up keyring keys */
+	clear_keyring_items (NMA_GCONF_CONNECTION (connection));
 
 	success = gconf_client_recursive_unset (priv->client, priv->dir, 0, &error);
 	if (!success) {
@@ -320,7 +513,7 @@ internal_get_secrets (NMSettingsConnectionInterface *connection,
 
 	/* Only try to get new secrets for D-Bus requests */
 	if (local) {
-		secrets = nm_gconf_get_keyring_items (NM_CONNECTION (self), setting_name, local, error);
+		secrets = nma_gconf_connection_get_keyring_items (self, setting_name, error);
 		if (!secrets && error && *error)
 			return FALSE;
 	} else {
@@ -335,7 +528,7 @@ internal_get_secrets (NMSettingsConnectionInterface *connection,
 			goto get_secrets;
 		}
 
-		secrets = nm_gconf_get_keyring_items (NM_CONNECTION (self), setting_name, local, error);
+		secrets = nma_gconf_connection_get_keyring_items (self, setting_name, error);
 		if (!secrets) {
 			if (error && *error)
 				return FALSE;

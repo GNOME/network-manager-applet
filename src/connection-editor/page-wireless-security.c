@@ -468,7 +468,6 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
 		nm_connection_remove_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
 		nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
-		nm_gconf_clear_private_connection_values (connection);
 		valid = TRUE;
 	}
 

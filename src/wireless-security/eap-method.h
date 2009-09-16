@@ -100,12 +100,13 @@ gboolean eap_method_validate_filepicker (GladeXML *xml,
                                          const char *name,
                                          guint32 item_type,
                                          const char *password,
-                                         NMSetting8021xCKType *out_ck_type);
+                                         NMSetting8021xCKFormat *out_format);
 
 gboolean eap_method_nag_init (EAPMethod *method,
                               const char *glade_file,
                               const char *ca_cert_chooser,
-                              NMConnection *connection);
+                              NMConnection *connection,
+                              gboolean phase2);
 
 gboolean eap_method_get_ignore_ca_cert (EAPMethod *method);
 
