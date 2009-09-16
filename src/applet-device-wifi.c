@@ -1344,6 +1344,9 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		}
 	}
 
+	/* nma_wireless_dialog_get_connection() returns a connection with the
+	 * refcount incremented, so the caller must remember to unref it.
+	 */
 	connection = nma_wireless_dialog_get_connection (dialog, &device, &ap);
 	g_assert (connection);
 	g_assert (device);
@@ -1387,12 +1390,12 @@ wireless_dialog_response_cb (GtkDialog *foo,
 				}
 			}
 
-			/* Balance the caller of wireless_dialog_new () */
+			/* Balance nma_wireless_dialog_get_connection() */
 			g_object_unref (connection);
-
 			connection = g_object_ref (fuzzy_match);
 		} else {
 			/* Entirely new connection */
+			NMAGConfConnection *new_gconf_connection;
 			NMSettingConnection *s_con;
 			char *id;
 
@@ -1420,11 +1423,15 @@ wireless_dialog_response_cb (GtkDialog *foo,
 			}
 
 			/* Export it over D-Bus */
-			connection = NM_CONNECTION (nma_gconf_settings_add_connection (applet->gconf_settings, connection));
-			if (!connection) {
-				nm_warning ("Couldn't create other network connection.");
+			new_gconf_connection = nma_gconf_settings_add_connection (applet->gconf_settings, connection);
+			if (!new_gconf_connection) {
+				nm_warning ("Couldn't create new network connection.");
 				goto done;
 			}
+
+			/* Balance nma_wireless_dialog_get_connection() */
+			g_object_unref (connection);
+			connection = g_object_ref (new_gconf_connection);
 		}
 	}
 
@@ -1437,7 +1444,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
 	                               applet);
 
 done:
-	/* Balance the caller of wireless_dialog_new () */
+	/* Balance nma_wireless_dialog_get_connection() */
 	if (connection)
 		g_object_unref (connection);
 
