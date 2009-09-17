@@ -869,10 +869,16 @@ unset_one_setting_property (GConfClient *client,
                             const char *setting,
                             const char *key)
 {
+	GConfValue *val;
 	char *path;
 
 	path = g_strdup_printf ("%s/%s/%s", dir, setting, key);
-	gconf_client_unset (client, path, NULL);
+	val = gconf_client_get_without_default (client, path, NULL);
+	if (val) {
+		if (val->type != GCONF_VALUE_INVALID)
+			gconf_client_unset (client, path, NULL);
+		gconf_value_free (val);
+	}
 	g_free (path);
 }
 
@@ -1464,10 +1470,16 @@ nm_gconf_migrate_0_7_vpn_properties (GConfClient *client)
 
 		next:
 			g_free (key_name);
+			gconf_entry_unref (entry);
 		}
 
-		/* delete old vpn-properties dir */
-		gconf_client_recursive_unset (client, path, 0, NULL);
+		if (properties) {
+			g_slist_free (properties);
+
+			/* delete old vpn-properties dir */
+			gconf_client_recursive_unset (client, path, 0, NULL);
+		}
+
 		g_free (path);
 	}
 	nm_utils_slist_free (connections, g_free);
