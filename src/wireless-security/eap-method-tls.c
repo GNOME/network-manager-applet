@@ -399,7 +399,6 @@ eap_method_tls_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 
-nm_connection_dump (connection);
 	setup_filepicker (xml, "eap_tls_user_cert_button",
 	                  _("Choose your personal certificate..."),
 	                  parent, method, s_8021x,
