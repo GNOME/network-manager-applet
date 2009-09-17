@@ -67,22 +67,6 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-static void
-fill_vpn_user_name (NMConnection *connection)
-{
-	const char *user_name;
-	NMSettingVPN *s_vpn;
-
-	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
-	if (!s_vpn)
-		return;
-
-	user_name = g_get_user_name ();
-	g_assert (g_utf8_validate (user_name, -1, NULL));
-	g_object_set (s_vpn, NM_SETTING_VPN_USER_NAME, user_name, NULL);
-}
-
-
 NMAGConfConnection *
 nma_gconf_connection_new (GConfClient *client, const char *conf_dir)
 {
@@ -161,8 +145,6 @@ nma_gconf_connection_new_from_connection (GConfClient *client,
 	/* Already verified the settings above, they had better be OK */
 	g_assert (success);
 
-	fill_vpn_user_name (NM_CONNECTION (self));
-
 	return self;
 }
 
@@ -225,14 +207,12 @@ nma_gconf_connection_gconf_changed (NMAGConfConnection *self)
 		goto invalid;
 	}
 
-	fill_vpn_user_name (NM_CONNECTION (self));
-
-	// FIXME: signal update
+	nm_settings_connection_interface_emit_updated (NM_SETTINGS_CONNECTION_INTERFACE (self));
 	return TRUE;
 
 invalid:
 	g_clear_error (&error);
-	g_signal_emit_by_name (self, "removed");
+	g_signal_emit_by_name (self, NM_SETTINGS_CONNECTION_INTERFACE_REMOVED);
 	return FALSE;
 }
 
@@ -639,6 +619,34 @@ dbus_get_secrets (NMExportedConnection *connection,
 	}
 }
 
+static GHashTable *
+dbus_get_settings (NMExportedConnection *connection, GError **error)
+{
+	GHashTable *settings;
+	const char *user_name;
+	NMSettingVPN *s_vpn;
+	gboolean added = FALSE;
+
+	/* Insert the default VPN username when NM gets the connection; it doesn't
+	 * get stored in GConf since it's always available and could change at any
+	 * time, so it's inserted on-the-fly.
+	 */
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_VPN));
+	if (s_vpn) {
+		user_name = g_get_user_name ();
+		g_assert (g_utf8_validate (user_name, -1, NULL));
+		g_object_set (s_vpn, NM_SETTING_VPN_USER_NAME, user_name, NULL);
+		added = TRUE;
+	}
+
+	settings = NM_EXPORTED_CONNECTION_CLASS (nma_gconf_connection_parent_class)->get_settings (connection, error);
+
+	if (added)
+		g_object_set (s_vpn, NM_SETTING_VPN_USER_NAME, NULL, NULL);
+
+	return settings;
+}
+
 /************************************************************/
 
 static void
@@ -768,6 +776,7 @@ nma_gconf_connection_class_init (NMAGConfConnectionClass *class)
 	ec_class->update = dbus_update;
 	ec_class->delete = dbus_delete;
 	ec_class->get_secrets = dbus_get_secrets;
+	ec_class->get_settings = dbus_get_settings;
 
 	/* Properties */
 	g_object_class_install_property
