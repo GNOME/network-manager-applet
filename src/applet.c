@@ -107,20 +107,20 @@ applet_get_best_activating_connection (NMApplet *applet, NMDevice **device)
 		}
 
 		if (NM_IS_DEVICE_WIFI (best_dev)) {
-			if (NM_IS_DEVICE_ETHERNET (candidate)) {
+			if (NM_IS_DEVICE_ETHERNET (candidate_dev)) {
 				best_dev = candidate_dev;
 				best = candidate;
 			}
 		} else if (NM_IS_CDMA_DEVICE (best_dev)) {
-			if (   NM_IS_DEVICE_ETHERNET (candidate)
-			    || NM_IS_DEVICE_WIFI (candidate)) {
+			if (   NM_IS_DEVICE_ETHERNET (candidate_dev)
+			    || NM_IS_DEVICE_WIFI (candidate_dev)) {
 				best_dev = candidate_dev;
 				best = candidate;
 			}
 		} else if (NM_IS_GSM_DEVICE (best_dev)) {
-			if (   NM_IS_DEVICE_ETHERNET (candidate)
-			    || NM_IS_DEVICE_WIFI (candidate)
-			    || NM_IS_CDMA_DEVICE (candidate)) {
+			if (   NM_IS_DEVICE_ETHERNET (candidate_dev)
+			    || NM_IS_DEVICE_WIFI (candidate_dev)
+			    || NM_IS_CDMA_DEVICE (candidate_dev)) {
 				best_dev = candidate_dev;
 				best = candidate;
 			}
