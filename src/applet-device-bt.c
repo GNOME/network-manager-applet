@@ -103,7 +103,7 @@ add_connection_items (NMDevice *device,
  		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
 
 		if (connection == active) {
-			image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_MENU);
+			image = gtk_image_new_from_pixbuf (applet->active_device_icon);
 			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
 		}
 

@@ -600,7 +600,7 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 	                                 G_CALLBACK (wireless_menu_item_activate), NULL);
 
 	if (nm_network_menu_item_find_dupe (item, active_ap)) {
-		image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_MENU);
+		image = gtk_image_new_from_pixbuf (applet->active_device_icon);
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
 	}
 
