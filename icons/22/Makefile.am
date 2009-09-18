@@ -1,5 +1,6 @@
 icondir=${datadir}/icons/hicolor/22x22/apps
 icon_DATA = \
+	nm-active-device.png \
 	nm-no-connection.png \
 	nm-device-wired.png \
 	nm-device-wwan.png \

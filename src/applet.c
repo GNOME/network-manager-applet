@@ -2422,6 +2422,8 @@ nma_icons_load (NMApplet *applet)
 	ICON_LOAD(applet->wireless_100_icon, "nm-signal-100");
 	ICON_LOAD(applet->secure_lock_icon, "nm-secure-lock");
 
+	ICON_LOAD(applet->active_device_icon, "nm-active-device");
+
 	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
 		for (j = 0; j < NUM_CONNECTING_FRAMES; j++) {
 			char *name;
