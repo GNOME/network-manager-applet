@@ -713,6 +713,9 @@ wireless_add_menu_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
 
+	active_ap = nm_device_wifi_get_active_access_point (wdev);
+	add_one_ap_menu_item (wdev, active_ap, connections, active_ap, active, menu, applet);
+
 	/* Notify user of unmanaged or unavailable device */
 	wireless_enabled = nm_client_wireless_get_enabled (applet->nm_client);
 	item = nma_menu_device_get_menu_item (device, applet, wireless_enabled ? NULL : _("wireless is disabled"));
@@ -722,21 +725,21 @@ wireless_add_menu_item (NMDevice *device,
 	}
 
 	if (!nma_menu_device_check_unusable (device)) {
-		active_ap = nm_device_wifi_get_active_access_point (wdev);
-
 		/* Add all networks in our network list to the menu */
 		for (i = 0; aps && (i < aps->len); i++)
 			sorted_aps = g_slist_append (sorted_aps, g_ptr_array_index (aps, i));
 
 		sorted_aps = g_slist_sort (sorted_aps, sort_wireless_networks);
 		for (iter = sorted_aps; iter; iter = g_slist_next (iter)) {
-			add_one_ap_menu_item (wdev,
-			                      NM_ACCESS_POINT (iter->data),
-			                      connections,
-			                      active_ap,
-			                      active,
-			                      menu,
-			                      applet);
+			if (active_ap != NM_ACCESS_POINT (iter->data)) {
+				add_one_ap_menu_item (wdev,
+				                      NM_ACCESS_POINT (iter->data),
+				                      connections,
+				                      active_ap,
+				                      active,
+				                      menu,
+				                      applet);
+			}
 		}
 
 		g_slist_free (sorted_aps);

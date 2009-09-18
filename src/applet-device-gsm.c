@@ -168,10 +168,16 @@ gsm_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 	                                  user_data);
 }
 
+typedef enum {
+	ADD_ACTIVE = 1,
+	ADD_INACTIVE = 2,
+} AddActiveInactiveEnum;
+
 static void
 add_connection_items (NMDevice *device,
                       GSList *connections,
                       NMConnection *active,
+                      AddActiveInactiveEnum flag,
                       GtkWidget *menu,
                       NMApplet *applet)
 {
@@ -182,6 +188,14 @@ add_connection_items (NMDevice *device,
 		NMConnection *connection = NM_CONNECTION (iter->data);
 		NMSettingConnection *s_con;
 		GtkWidget *item, *image;
+
+		if (active == connection) {
+			if ((flag & ADD_ACTIVE) == 0)
+				continue;
+		} else {
+			if ((flag & ADD_INACTIVE) == 0)
+				continue;
+		}
 
 		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 		item = gtk_image_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
@@ -271,6 +285,9 @@ gsm_add_menu_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
 
+	if (g_slist_length (connections))
+		add_connection_items (device, connections, active, ADD_ACTIVE, menu, applet);
+
 	/* Notify user of unmanaged or unavailable device */
 	item = nma_menu_device_get_menu_item (device, applet, NULL);
 	if (item) {
@@ -280,7 +297,7 @@ gsm_add_menu_item (NMDevice *device,
 
 	if (!nma_menu_device_check_unusable (device)) {
 		if (g_slist_length (connections))
-			add_connection_items (device, connections, active, menu, applet);
+			add_connection_items (device, connections, active, ADD_INACTIVE, menu, applet);
 		else
 			add_default_connection_item (device, menu, applet);
 	}
