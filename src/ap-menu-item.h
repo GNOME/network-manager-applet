@@ -84,4 +84,6 @@ gboolean   nm_network_menu_item_find_dupe (NMNetworkMenuItem *item,
 void       nm_network_menu_item_add_dupe (NMNetworkMenuItem *item,
                                           NMAccessPoint *ap);
 
+void       nm_network_menu_item_set_active (NMNetworkMenuItem * item,
+                                            gboolean active);
 #endif /* __AP_MENU_ITEM_H__ */

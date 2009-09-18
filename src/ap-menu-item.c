@@ -251,6 +251,11 @@ nm_network_menu_item_find_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 }
 
 void
+nm_network_menu_item_set_active (NMNetworkMenuItem *item, gboolean active)
+{
+	gtk_widget_set_sensitive (item->strength, active);
+}
+void
 nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 {
 	const char *path;

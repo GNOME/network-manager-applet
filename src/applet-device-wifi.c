@@ -562,7 +562,6 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 	const GByteArray *ssid;
 	struct dup_data dup_data = { NULL, NULL };
 	NMNetworkMenuItem *item = NULL;
-	GtkWidget *image;
 
 	/* Don't add BSSs that hide their SSID */
 	ssid = nm_access_point_get_ssid (ap);
@@ -593,19 +592,13 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 		item = add_new_ap_item (device, ap, &dup_data, active_ap, active, connections, menu, applet);
 	}
 
+	if (!active_ap || active_ap == ap)
+		nm_network_menu_item_set_active (item, TRUE);
+	else
+		nm_network_menu_item_set_active (item, FALSE);
+
 	if (!active_ap)
 		return;
-
-	g_signal_handlers_block_matched (item, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
-	                                 G_CALLBACK (wireless_menu_item_activate), NULL);
-
-	if (nm_network_menu_item_find_dupe (item, active_ap)) {
-		image = gtk_image_new_from_pixbuf (applet->active_device_icon);
-		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
-	}
-
-	g_signal_handlers_unblock_matched (item, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
-	                                   G_CALLBACK (wireless_menu_item_activate), NULL);
 }
 
 static gint
@@ -714,6 +707,8 @@ wireless_add_menu_item (NMDevice *device,
 	gtk_widget_show (item);
 
 	active_ap = nm_device_wifi_get_active_access_point (wdev);
+	if (active_ap)
+		applet_menu_item_add_complex_separator_helper (menu, applet, _("Active"), NULL, -1);
 	add_one_ap_menu_item (wdev, active_ap, connections, active_ap, active, menu, applet);
 
 	/* Notify user of unmanaged or unavailable device */
@@ -725,6 +720,8 @@ wireless_add_menu_item (NMDevice *device,
 	}
 
 	if (!nma_menu_device_check_unusable (device)) {
+		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), NULL, -1);
+
 		/* Add all networks in our network list to the menu */
 		for (i = 0; aps && (i < aps->len); i++)
 			sorted_aps = g_slist_append (sorted_aps, g_ptr_array_index (aps, i));

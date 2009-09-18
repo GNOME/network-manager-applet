@@ -221,6 +221,12 @@ void applet_menu_item_activate_helper (NMDevice *device,
 void applet_menu_item_disconnect_helper (NMDevice *device,
                                          NMApplet *applet);
 
+void applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
+                                                    NMApplet *applet,
+                                                    const gchar* label,
+                                                    GdkPixbuf *favicon,
+                                                    int pos);
+
 NMSettingsConnectionInterface *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 
 void applet_do_notify (NMApplet *applet,

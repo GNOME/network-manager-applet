@@ -417,6 +417,44 @@ applet_menu_item_activate_helper (NMDevice *device,
 	}
 }
 
+void
+applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
+                                               NMApplet *applet,
+                                               const gchar* label,
+                                               GdkPixbuf *favicon,
+                                               int pos)
+{
+	GtkWidget *menu_item = gtk_image_menu_item_new ();
+	GtkWidget *box = gtk_hbox_new (FALSE, 0);
+	GtkWidget *xlabel = NULL;
+	GtkWidget *favimg = NULL;
+	if (favicon)
+		favimg = gtk_image_new_from_pixbuf (favicon);
+	if (label) {
+		xlabel = gtk_label_new ("Favorites");
+		gtk_label_set_markup (GTK_LABEL (xlabel), label);
+	}
+	if (favimg || xlabel)
+		gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 5);
+	if (xlabel)
+		gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
+	if (favimg)
+		gtk_box_pack_start (GTK_BOX (box), favimg, FALSE, FALSE, 2);
+
+	gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 5);
+
+	g_object_set (G_OBJECT (menu_item),
+	              "child", box,
+	              "sensitive", FALSE,
+	              NULL);
+	if (pos < 0)
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	else
+		gtk_menu_shell_insert (GTK_MENU_SHELL (menu), menu_item, pos);
+	return;
+}
+
+
 static void
 applet_clear_notify (NMApplet *applet)
 {

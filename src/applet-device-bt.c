@@ -102,7 +102,7 @@ add_connection_items (NMDevice *device,
 	for (iter = connections; iter; iter = g_slist_next (iter)) {
 		NMConnection *connection = NM_CONNECTION (iter->data);
 		NMSettingConnection *s_con;
-		GtkWidget *item, *image;
+		GtkWidget *item;
 
 		if (active == connection) {
 			if ((flag & ADD_ACTIVE) == 0)
@@ -116,11 +116,6 @@ add_connection_items (NMDevice *device,
 		item = gtk_image_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
 		gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(item), TRUE);
  		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
-
-		if (connection == active) {
-			image = gtk_image_new_from_pixbuf (applet->active_device_icon);
-			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
-		}
 
 		info = g_slice_new0 (BtMenuItemInfo);
 		info->applet = applet;
@@ -170,6 +165,9 @@ bt_add_menu_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
 
+	if (active)
+		applet_menu_item_add_complex_separator_helper (menu, applet, _("Active"), NULL, -1);
+
 	if (g_slist_length (connections))
 		add_connection_items (device, connections, carrier, active, ADD_ACTIVE, menu, applet);
 
@@ -182,8 +180,10 @@ bt_add_menu_item (NMDevice *device,
 
 	if (!nma_menu_device_check_unusable (device)) {
 		/* Add menu items for existing bluetooth connections for this device */
-		if (g_slist_length (connections))
+		if (g_slist_length (connections)) {
+			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), NULL, -1);
 			add_connection_items (device, connections, carrier, active, ADD_INACTIVE, menu, applet);
+		}
 	}
 
 	g_slist_free (connections);
