@@ -204,7 +204,10 @@ NMSettingsInterface *applet_get_settings (NMApplet *applet);
 
 GSList *applet_get_all_connections (NMApplet *applet);
 
-GtkWidget *nma_menu_device_check_unusable (NMDevice *device,
+gboolean nma_menu_device_check_unusable (NMDevice *device);
+
+GtkWidget * nma_menu_device_get_menu_item (NMDevice *device,
+                                           NMApplet *applet,
                                            const char *unavailable_msg);
 
 void applet_menu_item_activate_helper (NMDevice *device,
@@ -212,6 +215,9 @@ void applet_menu_item_activate_helper (NMDevice *device,
                                        const char *specific_object,
                                        NMApplet *applet,
                                        gpointer dclass_data);
+
+void applet_menu_item_disconnect_helper (NMDevice *device,
+                                         NMApplet *applet);
 
 NMSettingsConnectionInterface *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 
