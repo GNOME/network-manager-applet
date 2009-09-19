@@ -39,6 +39,7 @@ typedef struct {
 
 	/* private data */
 	NMConnection *connection;
+	NMConnection *orig_connection;
 	gboolean initialized;
 
 	NMConnectionScope orig_scope;
@@ -69,6 +70,7 @@ void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
 void                nm_connection_editor_save_vpn_secrets (NMConnectionEditor *editor);
 NMConnection *      nm_connection_editor_get_connection (NMConnectionEditor *editor);
+gboolean            nm_connection_editor_update_connection (NMConnectionEditor *editor, GError **error);
 GtkWindow *         nm_connection_editor_get_window (NMConnectionEditor *editor);
 
 #endif
