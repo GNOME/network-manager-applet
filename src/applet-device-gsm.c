@@ -228,50 +228,6 @@ add_default_connection_item (NMDevice *device,
 }
 
 static void
-gsm_menu_item_deactivate (GtkMenuItem *item, gpointer user_data)
-{
-	GSMMenuItemInfo *info = (GSMMenuItemInfo *) user_data;
-	NMActiveConnection *active = NULL;
-
-	applet_find_active_connection_for_device (info->device, info->applet, &active);
-	if (active)
-		nm_client_deactivate_connection (info->applet->nm_client, active);
-	else
-		g_warning ("%s: couldn't find active connection to deactive", __func__);
-}
-
-static void
-add_disconnect_item (NMDevice *device,
-                     GtkWidget *menu,
-                     NMApplet *applet)
-{
-	NMDeviceState state;
-	GtkWidget *item;
-	GSMMenuItemInfo *info;
-
-	state = nm_device_get_state (device);
-	if (   state == NM_DEVICE_STATE_UNKNOWN
-	    || state == NM_DEVICE_STATE_UNMANAGED
-	    || state == NM_DEVICE_STATE_UNAVAILABLE
-	    || state == NM_DEVICE_STATE_DISCONNECTED
-	    || state == NM_DEVICE_STATE_FAILED)
-		return;
-
-	item = gtk_menu_item_new_with_label (_("Disconnect"));
-
-	info = g_slice_new0 (GSMMenuItemInfo);
-	info->applet = applet;
-	info->device = g_object_ref (G_OBJECT (device));
-
-	g_signal_connect_data (item, "activate",
-	                       G_CALLBACK (gsm_menu_item_deactivate),
-	                       info,
-	                       (GClosureNotify) gsm_menu_item_info_destroy, 0);
-
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-}
-
-static void
 gsm_add_menu_item (NMDevice *device,
                    guint32 n_devices,
                    NMConnection *active,
@@ -315,20 +271,19 @@ gsm_add_menu_item (NMDevice *device,
 	gtk_widget_show (item);
 
 	/* Notify user of unmanaged or unavailable device */
-	item = nma_menu_device_check_unusable (device, NULL);
+	item = nma_menu_device_get_menu_item (device, applet, NULL);
 	if (item) {
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show (item);
-		goto out;
 	}
 
-	if (g_slist_length (connections))
-		add_connection_items (device, connections, active, menu, applet);
-	else
-		add_default_connection_item (device, menu, applet);
-	add_disconnect_item (device, menu, applet);
+	if (!nma_menu_device_check_unusable (device)) {
+		if (g_slist_length (connections))
+			add_connection_items (device, connections, active, menu, applet);
+		else
+			add_default_connection_item (device, menu, applet);
+	}
 
-out:
 	g_slist_free (connections);
 }
 

@@ -226,19 +226,19 @@ wired_add_menu_item (NMDevice *device,
 	gtk_widget_show (item);
 
 	/* Notify user of unmanaged or unavailable device */
-	item = nma_menu_device_check_unusable (device, carrier ? NULL : _("disconnected"));
+	item = nma_menu_device_get_menu_item (device, applet, carrier ? NULL : _("disconnected"));
 	if (item) {
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show (item);
-		goto out;
 	}
 
-	if (g_slist_length (connections))
-		add_connection_items (device, connections, carrier, active, menu, applet);
-	else
-		add_default_connection_item (device, carrier, menu, applet);
+	if (!nma_menu_device_check_unusable (device)) {
+		if (g_slist_length (connections))
+			add_connection_items (device, connections, carrier, active, menu, applet);
+		else
+			add_default_connection_item (device, carrier, menu, applet);
+	}
 
-out:
 	g_slist_free (connections);
 }
 

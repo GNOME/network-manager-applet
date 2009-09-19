@@ -358,6 +358,27 @@ applet_menu_item_activate_helper_part2 (NMConnection *connection,
 	applet_item_activate_info_destroy (info);
 }
 
+static void
+disconnect_cb (NMDevice *device, GError *error, gpointer user_data)
+{
+	if (error) {
+		g_warning ("%s: device disconnect failed: (%d) %s",
+		           __func__,
+		           error ? error->code : -1,
+		           error && error->message ? error->message : "(unknown)");
+	}
+}
+
+void
+applet_menu_item_disconnect_helper (NMDevice *device,
+                                    NMApplet *applet)
+{
+	g_return_if_fail (NM_IS_DEVICE (device));
+
+	nm_device_disconnect (device, disconnect_cb, NULL);
+}
+
+
 void
 applet_menu_item_activate_helper (NMDevice *device,
                                   NMConnection *connection,
@@ -1061,9 +1082,50 @@ applet_find_active_connection_for_device (NMDevice *device,
 	return connection;
 }
 
+gboolean
+nma_menu_device_check_unusable (NMDevice *device)
+{
+	switch (nm_device_get_state (device)) {
+	case NM_DEVICE_STATE_UNKNOWN:
+	case NM_DEVICE_STATE_UNAVAILABLE:
+	case NM_DEVICE_STATE_UNMANAGED:
+		return TRUE;
+	default:
+		break;
+	}
+	return FALSE;
+}
+
+
+struct AppletDeviceMenuInfo {
+	NMDevice *device;
+	NMApplet *applet;
+};
+
+static void
+applet_device_info_destroy (struct AppletDeviceMenuInfo *info)
+{
+	g_return_if_fail (info != NULL);
+
+	if (info->device)
+		g_object_unref (info->device);
+	memset (info, 0, sizeof (struct AppletDeviceMenuInfo));
+	g_free (info);
+}
+
+static void
+applet_device_disconnect_db (GtkMenuItem *item, gpointer user_data)
+{
+	struct AppletDeviceMenuInfo *info = user_data;
+
+	applet_menu_item_disconnect_helper (info->device,
+	                                    info->applet);
+}
+
 GtkWidget *
-nma_menu_device_check_unusable (NMDevice *device,
-                                const char *unavailable_msg)
+nma_menu_device_get_menu_item (NMDevice *device,
+                               NMApplet *applet,
+                               const char *unavailable_msg)
 {
 	GtkWidget *item = NULL;
 	gboolean managed = TRUE;
@@ -1075,20 +1137,42 @@ nma_menu_device_check_unusable (NMDevice *device,
 	case NM_DEVICE_STATE_UNKNOWN:
 	case NM_DEVICE_STATE_UNAVAILABLE:
 		item = gtk_menu_item_new_with_label (unavailable_msg);
+		gtk_widget_set_sensitive (item, FALSE);
+		break;
+	case NM_DEVICE_STATE_DISCONNECTED:
+		unavailable_msg = _("disconnected");
+		item = gtk_menu_item_new_with_label (unavailable_msg);
+		gtk_widget_set_sensitive (item, FALSE);
 		break;
 	case NM_DEVICE_STATE_UNMANAGED:
 		managed = FALSE;
 		break;
+	case NM_DEVICE_STATE_PREPARE:
+	case NM_DEVICE_STATE_CONFIG:
+	case NM_DEVICE_STATE_NEED_AUTH:
+	case NM_DEVICE_STATE_IP_CONFIG:
+	case NM_DEVICE_STATE_ACTIVATED:
+	{
+		struct AppletDeviceMenuInfo *info = g_new0 (struct AppletDeviceMenuInfo, 1);
+		info->device = g_object_ref (device);
+		info->applet = applet;
+		item = gtk_menu_item_new_with_label (_("  Disconnect"));
+		g_signal_connect_data (item, "activate",
+		                       G_CALLBACK (applet_device_disconnect_db),
+		                       info,
+		                       (GClosureNotify) applet_device_info_destroy, 0);
+		gtk_widget_set_sensitive (item, TRUE);
+		break;
+	}
 	default:
 		managed = nm_device_get_managed (device);
 		break;
 	}
 
-	if (!managed)
+	if (!managed) {
 		item = gtk_menu_item_new_with_label (_("device not managed"));
-
-	if (item)
 		gtk_widget_set_sensitive (item, FALSE);
+	}
 
 	return item;
 }

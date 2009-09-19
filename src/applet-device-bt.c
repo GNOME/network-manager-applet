@@ -154,11 +154,14 @@ bt_add_menu_item (NMDevice *device,
 	gtk_widget_show (item);
 
 	/* Notify user of unmanaged or unavailable device */
-	item = nma_menu_device_check_unusable (device, NULL);
+	item = nma_menu_device_get_menu_item (device, applet, NULL);
 	if (item) {
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show (item);
-	} else {
+	}
+
+	if (!nma_menu_device_check_unusable (device)) {
+		/* Add menu items for existing bluetooth connections for this device */
 		if (g_slist_length (connections))
 			add_connection_items (device, connections, carrier, active, menu, applet);
 	}

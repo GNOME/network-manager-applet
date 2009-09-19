@@ -583,12 +583,27 @@ static void
 add_response_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
-	const char *message = _("An unknown error ocurred.");
+	GError *add_error = NULL;
 
 	if (response == GTK_RESPONSE_OK) {
-		add_connection (info->list, editor, add_finished_cb, editor);
-		return;
+		/* Verify and commit user changes */
+		if (nm_connection_editor_update_connection (editor, &add_error)) {
+			/* Yay we can try to add the connection; it'll get removed from
+			 * list->editors when the add finishes.
+			 */
+			add_connection (info->list, editor, add_finished_cb, editor);
+			return;
+		} else {
+			error_dialog (GTK_WINDOW (editor->window),
+			              _("Error editing connection: property '%s' / '%s' invalid: %d"),
+			              g_type_name (nm_connection_lookup_setting_type_by_quark (add_error->domain)),
+			              (add_error && add_error->message) ? add_error->message : "(unknown)",
+			              add_error ? add_error->code : -1);
+			g_clear_error (&add_error);
+		}
 	} else if (response == GTK_RESPONSE_NONE) {
+		const char *message = _("An unknown error ocurred.");
+
 		if (error && error->message)
 			message = error->message;
 		error_dialog (GTK_WINDOW (editor->window),
@@ -711,8 +726,8 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 
 	switch (response) {
 	case GTK_RESPONSE_OK:
-		/* Make sure the connection is valid */
-		if (nm_connection_verify (connection, &edit_error)) {
+		/* Verify and commit user changes */
+		if (nm_connection_editor_update_connection (editor, &edit_error)) {
 			/* Save the connection to backing storage */
 			update_connection (info->list,
 			                   editor,

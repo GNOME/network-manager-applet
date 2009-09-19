@@ -311,6 +311,10 @@ dispose (GObject *object)
 		g_object_unref (editor->connection);
 		editor->connection = NULL;
 	}
+	if (editor->orig_connection) {
+		g_object_unref (editor->orig_connection);
+		editor->orig_connection = NULL;
+	}
 	if (editor->window) {
 		gtk_widget_destroy (editor->window);
 		editor->window = NULL;
@@ -406,7 +410,24 @@ nm_connection_editor_get_connection (NMConnectionEditor *editor)
 {
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), NULL);
 
-	return editor->connection;
+	return editor->orig_connection;
+}
+
+gboolean
+nm_connection_editor_update_connection (NMConnectionEditor *editor, GError **error)
+{
+	GHashTable *settings;
+
+	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
+
+	if (!nm_connection_verify (editor->connection, error))
+		return FALSE;
+
+	/* Copy the modified connection to the original connection */
+	settings = nm_connection_to_hash (editor->connection);
+	nm_connection_replace_settings (editor->orig_connection, settings, NULL);
+	g_hash_table_destroy (settings);
+	return TRUE;
 }
 
 static void
@@ -541,8 +562,10 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	if (editor->connection)
 		g_object_unref (editor->connection);
 
-	editor->connection = g_object_ref (connection);
-	editor->orig_scope = nm_connection_get_scope (connection);
+	editor->connection = nm_connection_duplicate (connection);
+
+	editor->orig_connection = g_object_ref (connection);
+	editor->orig_scope = nm_connection_get_scope (editor->connection);
 	nm_connection_editor_update_title (editor);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
