@@ -251,13 +251,17 @@ can_modify_changed_cb (NMRemoteSettingsSystem *settings,
 static void
 system_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
 {
-	/* Whether the Apply button uses system settings permissions as part of
-	 * it's sensitivity determination depends on whether the system checkbutton
-	 * is toggled or not.
-	 */
-	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (editor->ok_button),
-	                                 gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)));
+	gboolean use_polkit = TRUE;
 
+	/* The only time the Apply button does not need to use polkit is when the
+	 * original connection scope was USER and the "system" checkbutton is
+	 * unchecked.
+	 */
+	if (   !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))
+	    && (editor->orig_scope == NM_CONNECTION_SCOPE_USER))
+		use_polkit = FALSE;
+
+	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (editor->ok_button), use_polkit);
 	connection_editor_validate (editor);
 }
 
