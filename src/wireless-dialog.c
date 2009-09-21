@@ -923,7 +923,7 @@ internal_init (NMAWirelessDialog *self,
 	widget = glade_xml_get_widget (priv->xml, "image1");
 	gtk_image_set_from_icon_name (GTK_IMAGE (widget), icon_name, GTK_ICON_SIZE_DIALOG);
 
-	gtk_box_set_spacing (GTK_BOX (gtk_bin_get_child (GTK_BIN (self))), 2);
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))), 2);
 
 	widget = gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_box_set_child_packing (GTK_BOX (GTK_DIALOG (self)->action_area), widget,
@@ -953,7 +953,7 @@ internal_init (NMAWirelessDialog *self,
 		return FALSE;
 	}
 
-	gtk_container_add (GTK_CONTAINER (gtk_bin_get_child (GTK_BIN (self))), widget);
+	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (self))), widget);
 
 	/* If given a valid connection, hide the SSID bits and connection combo */
 	if (specific_connection) {
