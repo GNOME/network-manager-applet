@@ -427,6 +427,9 @@ nm_connection_editor_update_connection (NMConnectionEditor *editor, GError **err
 	settings = nm_connection_to_hash (editor->connection);
 	nm_connection_replace_settings (editor->orig_connection, settings, NULL);
 	g_hash_table_destroy (settings);
+
+	nm_connection_set_scope (editor->orig_connection,
+	                         nm_connection_get_scope (editor->connection));
 	return TRUE;
 }
 
