@@ -392,6 +392,7 @@ nm_connection_editor_new (NMConnection *connection,
 	                                          settings,
 	                                          NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
 	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (editor->ok_button), use_polkit);
+	g_object_ref_sink (editor->ok_button);
 
 	g_signal_connect (editor->ok_button, "actionable",
 	                  G_CALLBACK (ok_button_actionable_cb), editor);

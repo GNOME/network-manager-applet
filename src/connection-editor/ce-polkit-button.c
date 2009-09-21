@@ -32,6 +32,8 @@ G_DEFINE_TYPE (CEPolkitButton, ce_polkit_button, GTK_TYPE_BUTTON)
 #define CE_POLKIT_BUTTON_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_POLKIT_BUTTON, CEPolkitButtonPrivate))
 
 typedef struct {
+	gboolean disposed;
+
 	char *label;
 	char *tooltip;
 	char *auth_label;
@@ -208,6 +210,29 @@ ce_polkit_button_new (const char *label,
 }
 
 static void
+dispose (GObject *object)
+{
+	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (object);
+
+	if (priv->disposed) {
+		g_warning ("%s: CEPolkitButton object %p disposed twice", __func__, object);
+		G_OBJECT_CLASS (ce_polkit_button_parent_class)->dispose (object);
+		return;
+	}
+
+	priv->disposed = TRUE;
+
+	if (priv->check_id)
+		g_signal_handler_disconnect (priv->settings, priv->check_id);
+
+	g_object_unref (priv->settings);
+	g_object_unref (priv->auth);
+	g_object_unref (priv->stock);
+
+	G_OBJECT_CLASS (ce_polkit_button_parent_class)->dispose (object);
+}
+
+static void
 finalize (GObject *object)
 {
 	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (object);
@@ -216,13 +241,6 @@ finalize (GObject *object)
 	g_free (priv->auth_label);
 	g_free (priv->tooltip);
 	g_free (priv->auth_tooltip);
-
-	if (priv->check_id)
-		g_signal_handler_disconnect (priv->settings, priv->check_id);
-
-	g_object_unref (priv->settings);
-	g_object_unref (priv->auth);
-	g_object_unref (priv->stock);
 
 	G_OBJECT_CLASS (ce_polkit_button_parent_class)->finalize (object);
 }
@@ -239,6 +257,7 @@ ce_polkit_button_class_init (CEPolkitButtonClass *pb_class)
 
 	g_type_class_add_private (object_class, sizeof (CEPolkitButtonPrivate));
 
+	object_class->dispose = dispose;
 	object_class->finalize = finalize;
 
 	signals[ACTIONABLE] = g_signal_new ("actionable",

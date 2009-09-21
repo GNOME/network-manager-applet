@@ -55,7 +55,6 @@ typedef struct {
 	GtkComboBox *network_type;
 	GtkComboBox *band;
 	GtkEntry *pin;
-	GtkEntry *puk;
 
 	GtkWindowGroup *window_group;
 	gboolean window_added;
@@ -88,7 +87,6 @@ mobile_private_init (CEPageMobile *self)
 	priv->band = GTK_COMBO_BOX (glade_xml_get_widget (xml, "mobile_band"));
 
 	priv->pin = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_pin"));
-	priv->puk = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_puk"));
 
 	priv->window_group = gtk_window_group_new ();
 }
@@ -202,7 +200,6 @@ show_passwords (GtkToggleButton *button, gpointer user_data)
 
 	gtk_entry_set_visibility (priv->password, active);
 	gtk_entry_set_visibility (priv->pin, active);
-	gtk_entry_set_visibility (priv->puk, active);
 }
 
 static void
@@ -288,7 +285,6 @@ finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_
 	g_signal_connect (priv->network_id, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->network_type, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->pin, "changed", G_CALLBACK (stuff_changed), self);
-	g_signal_connect (priv->puk, "changed", G_CALLBACK (stuff_changed), self);
 
 	g_signal_connect (glade_xml_get_widget (parent->xml, "mobile_show_passwords"),
 	                  "toggled",
@@ -396,7 +392,6 @@ gsm_ui_to_setting (CEPageMobile *self)
 				  NM_SETTING_GSM_NETWORK_ID, nm_entry_get_text (priv->network_id),
 				  NM_SETTING_GSM_NETWORK_TYPE, net_type,
 				  NM_SETTING_GSM_PIN, nm_entry_get_text (priv->pin),
-				  NM_SETTING_GSM_PUK, nm_entry_get_text (priv->puk),
 				  NULL);
 }
 

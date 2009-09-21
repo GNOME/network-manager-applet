@@ -1249,6 +1249,7 @@ add_connection_buttons (NMConnectionList *self,
 	                               GTK_STOCK_EDIT,
 	                               self->system_settings,
 	                               NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
+	g_object_ref_sink (button);
 	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
 	action_info_set_button (info, button);
@@ -1266,6 +1267,7 @@ add_connection_buttons (NMConnectionList *self,
 	                               GTK_STOCK_DELETE,
 	                               self->system_settings,
 	                               NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
+	g_object_ref_sink (button);
 	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
 	action_info_set_button (info, button);
