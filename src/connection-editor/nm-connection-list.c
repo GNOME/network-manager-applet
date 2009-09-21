@@ -762,14 +762,13 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 		}
 		break;
 	case GTK_RESPONSE_NONE:
+		/* Show an error dialog if the editor initialization failed */
+		if (error && error->message)
+			message = error->message;
+		error_dialog (GTK_WINDOW (editor->window), _("Error initializing editor"), "%s", message);
+		/* fall through */
 	case GTK_RESPONSE_CANCEL:
 	default:
-		if (response == GTK_RESPONSE_NONE) {
-			/* Show an error dialog if the editor initialization failed */
-			if (error && error->message)
-				message = error->message;
-			error_dialog (GTK_WINDOW (editor->window), _("Error initializing editor"), "%s", message);
-		}
 		g_hash_table_remove (info->list->editors, connection);
 		g_free (info);
 		break;
