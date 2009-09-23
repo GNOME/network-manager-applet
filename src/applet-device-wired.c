@@ -194,8 +194,6 @@ wired_add_menu_item (NMDevice *device,
 	GtkWidget *item;
 	GSList *connections, *all;
 	gboolean carrier = TRUE;
-	GtkWidget *label;
-	char *bold_text;
 
 	all = applet_get_all_connections (applet);
 	connections = utils_filter_connections_for_device (device, all);
@@ -220,7 +218,7 @@ wired_add_menu_item (NMDevice *device,
 			text = g_strdup (_("Wired Network"));
 	}
 
-	item = gtk_menu_item_new_with_label (text);
+	item = applet_menu_item_create_device_item_helper (device, applet, text);
 	g_free (text);
 
 	/* Only dim the item if the device supports carrier detection AND
@@ -228,12 +226,6 @@ wired_add_menu_item (NMDevice *device,
 	 */
  	if (nm_device_get_capabilities (device) & NM_DEVICE_CAP_CARRIER_DETECT)
 		carrier = nm_device_ethernet_get_carrier (NM_DEVICE_ETHERNET (device));
-
-	label = gtk_bin_get_child (GTK_BIN (item));
-	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
-	                                     gtk_label_get_text (GTK_LABEL (label)));
-	gtk_label_set_markup (GTK_LABEL (label), bold_text);
-	g_free (bold_text);
 
 	gtk_widget_set_sensitive (item, FALSE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);

@@ -144,7 +144,6 @@ bt_add_menu_item (NMDevice *device,
 	GtkWidget *item;
 	GSList *connections, *all;
 	gboolean carrier = TRUE;
-	char *bold_text;
 
 	all = applet_get_all_connections (applet);
 	connections = utils_filter_connections_for_device (device, all);
@@ -158,10 +157,7 @@ bt_add_menu_item (NMDevice *device,
 		g_assert (text);
 	}
 
-	item = gtk_menu_item_new_with_label ("");
-	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>", text);
-	gtk_label_set_markup (GTK_LABEL (gtk_bin_get_child (GTK_BIN (item))), bold_text);
-	g_free (bold_text);
+	item = applet_menu_item_create_device_item_helper (device, applet, text);
 
 	gtk_widget_set_sensitive (item, FALSE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);

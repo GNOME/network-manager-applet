@@ -268,7 +268,7 @@ cdma_add_menu_item (NMDevice *device,
 		text = g_strdup (_("Mobile Broadband"));
 	}
 
-	item = gtk_menu_item_new_with_label (text);
+	item = applet_menu_item_create_device_item_helper (device, applet, text);
 	g_free (text);
 
 	label = gtk_bin_get_child (GTK_BIN (item));

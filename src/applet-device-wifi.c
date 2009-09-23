@@ -718,8 +718,6 @@ wireless_add_menu_item (NMDevice *device,
 	int i;
 	NMAccessPoint *active_ap = NULL;
 	GSList *connections = NULL, *all, *sorted_aps = NULL, *iter;
-	GtkWidget *label;
-	char *bold_text;
 	gboolean wireless_enabled = TRUE;
 	GList *menu_list = NULL;
 	GtkWidget *folded_menu_item;
@@ -747,14 +745,8 @@ wireless_add_menu_item (NMDevice *device,
 	} else
 		text = g_strdup (ngettext ("Wireless Network", "Wireless Networks", aps ? aps->len : 0));
 
-	item = gtk_menu_item_new_with_mnemonic (text);
+	item = applet_menu_item_create_device_item_helper (device, applet, text);
 	g_free (text);
-
-	label = gtk_bin_get_child (GTK_BIN (item));
-	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
-	                                     gtk_label_get_text (GTK_LABEL (label)));
-	gtk_label_set_markup (GTK_LABEL (label), bold_text);
-	g_free (bold_text);
 
 	gtk_widget_set_sensitive (item, FALSE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);

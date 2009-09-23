@@ -480,10 +480,10 @@ applet_menu_item_favorize_helper (GtkBin *binitem,
 		image_width = gdk_pixbuf_get_width (favoritePixbuf);
 		image_height = gdk_pixbuf_get_height (favoritePixbuf);
 		gtk_container_remove (GTK_CONTAINER (binitem), child);
+		gtk_container_add (GTK_CONTAINER (binitem), box);
 		gtk_widget_set_size_request (placeholder, image_width, image_height);
 		gtk_box_pack_start (GTK_BOX (box), placeholder, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (box), child, TRUE, TRUE, 4);
-		gtk_container_add (GTK_CONTAINER (binitem), box);
 		g_object_unref (child);
 		g_object_set_data (G_OBJECT (binitem), "favorite", GINT_TO_POINTER (1));
 	} else {
@@ -491,9 +491,9 @@ applet_menu_item_favorize_helper (GtkBin *binitem,
 		g_assert (image);
 		g_object_ref (child);
 		gtk_container_remove (GTK_CONTAINER (binitem), child);
+		gtk_container_add (GTK_CONTAINER (binitem), box);
 		gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (box), child, TRUE, TRUE, 4);
-		gtk_container_add (GTK_CONTAINER (binitem), box);
 		g_object_unref (child);
 		g_object_set_data (G_OBJECT (binitem), "favorite", GINT_TO_POINTER (2));
 	}
@@ -565,6 +565,150 @@ applet_menu_add_items_top_and_fold_sorted_helper (GtkMenu *menu,
 	g_list_free(clone_folded);
 }
 
+static gboolean
+menu_title_item_expose (GtkWidget      *widget,
+                        GdkEventExpose *event)
+{
+	#define TITLE_TEXT_R ((double) 0x5e / 255.0 )
+	#define TITLE_TEXT_G ((double) 0x5e / 255.0 )
+	#define TITLE_TEXT_B ((double) 0x5e / 255.0 )
+/*	#define TITLE_TEXT_R ((double) style->text[GTK_STATE_NORMAL].red / 65535.0)
+	#define TITLE_TEXT_G ((double) style->text[GTK_STATE_NORMAL].green / 65535.0)
+	#define TITLE_TEXT_B ((double) style->text[GTK_STATE_NORMAL].blue / 65535.0) */
+
+	GtkStyle *style = gtk_widget_get_style (widget);
+	GtkWidget *label = gtk_bin_get_child (GTK_BIN (widget));
+	PangoFontDescription *desc = pango_font_description_copy (style->font_desc);
+	cairo_t *cr = gdk_cairo_create (widget->window);
+	GtkImageMenuItem *image_menu_item = GTK_IS_IMAGE_MENU_ITEM (widget) ? GTK_IMAGE_MENU_ITEM (widget) : NULL;
+	GtkImage *icon = image_menu_item ? GTK_IMAGE (gtk_image_menu_item_get_image (image_menu_item)) : NULL;
+	GdkPixbuf *pixbuf = icon ? gtk_image_get_pixbuf (icon) : NULL;
+	PangoLayout *layout_first = pango_cairo_create_layout (cr);
+	PangoLayout *layout_second = pango_cairo_create_layout (cr);
+	int width = 0, height = 0;
+	int extrawidth = 0;
+	gdouble extraheight = 0;
+	int owidth, oheight;
+	char *first, *second;
+	char *secondtext;
+	gdouble xpadding = 5.0;
+	gdouble ypadding = 5.0;
+	gdouble postpadding = 0.0;
+
+	first = g_strdup (gtk_label_get_text (GTK_LABEL (label)));
+	second = strchr (first, ':');
+	if (second) {
+		*second = 0;
+		second++;
+		second++;
+		secondtext = g_strdup_printf ("%s", second);
+	}
+
+	/* lets put together both layout lines */
+	pango_font_description_set_variant (desc, PANGO_VARIANT_SMALL_CAPS);
+	pango_font_description_set_weight (desc, PANGO_WEIGHT_SEMIBOLD);
+	pango_layout_set_font_description (layout_first, desc);
+	pango_layout_set_text (layout_first, first, -1);
+	pango_cairo_update_layout (cr, layout_first);
+	pango_layout_get_size (layout_first, &owidth, &oheight);
+	width = owidth / PANGO_SCALE;
+	height += oheight / PANGO_SCALE;
+
+	if (second) {
+		pango_font_description_set_weight (desc, PANGO_WEIGHT_NORMAL);
+		pango_layout_set_font_description (layout_second, desc);
+		pango_layout_set_text (layout_second, secondtext, -1);
+		pango_cairo_update_layout (cr, layout_second);
+		pango_layout_get_size (layout_second, &owidth, &oheight);
+		width = width < owidth / PANGO_SCALE ? owidth / PANGO_SCALE : width;
+		height += oheight / PANGO_SCALE;
+	}
+
+	if (pixbuf) {
+		gdouble w = gdk_pixbuf_get_width (pixbuf);
+		gdouble h = gdk_pixbuf_get_height (pixbuf);
+		if (width < w)
+			width = w;
+		if (height < h) {
+			extraheight = (h - height) / 2.0;
+			height = h;
+		}
+		extrawidth = gdk_pixbuf_get_width (pixbuf) + 5.0 + 5.0;
+	}
+	width += extrawidth;
+
+	cairo_save (cr);
+	cairo_translate (cr, ((double) event->area.x) , ((double) event->area.y));
+
+	cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 0.0);
+	cairo_rectangle (cr, 0, 0, ((double) event->area.width), ((double) event->area.height - postpadding));
+	cairo_fill (cr);
+
+/* no border atm 
+	cairo_set_source_rgba (cr, 0.1, 0.1, 0.1, 0.6);
+	cairo_rectangle (cr, 0, 0, ((double) event->area.width), 0.5);
+	cairo_fill (cr);
+	cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, 0.4);
+	cairo_rectangle (cr, 0, ((double) event->area.height - postpadding - 0.5), ((double) event->area.width), 0.5);
+	cairo_fill (cr);
+*/
+
+	/* now the in-padding content */
+	cairo_translate (cr, xpadding , ypadding);
+	if (pixbuf) {
+		gdouble x = 0.0;
+		gdouble y = height / 2.0 - gdk_pixbuf_get_height (pixbuf) / 2.0;
+		gdouble w = gdk_pixbuf_get_width (pixbuf);
+		gdouble h = gdk_pixbuf_get_height (pixbuf);
+		gdk_cairo_set_source_pixbuf (cr, pixbuf, x, y);
+		cairo_rectangle (cr, x, y, w, h);
+		cairo_fill (cr);
+	}
+
+	cairo_set_source_rgb (cr, TITLE_TEXT_R, TITLE_TEXT_G, TITLE_TEXT_B);
+	cairo_move_to (cr, extrawidth, extraheight);
+	pango_cairo_show_layout (cr, layout_first);
+
+	if (second) {
+		cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
+		cairo_move_to (cr, extrawidth, extraheight + oheight / PANGO_SCALE);
+		pango_cairo_show_layout (cr, layout_second);
+	}
+
+	cairo_restore(cr);
+	pango_font_description_free (desc);
+
+	g_free (first);
+	g_object_unref (layout_first);
+	g_object_unref (layout_second);
+	cairo_destroy (cr);
+
+	gtk_widget_set_size_request (widget, width + 2 * xpadding, height + ypadding + postpadding);
+
+	return TRUE;
+
+	#undef TITLE_TEXT_R
+	#undef TITLE_TEXT_G
+	#undef TITLE_TEXT_B
+}
+
+
+GtkWidget*
+applet_menu_item_create_device_item_helper (NMDevice *device,
+                                            NMApplet *applet,
+                                            const gchar *text)
+{
+	GtkWidget *item = gtk_image_menu_item_new_with_mnemonic (text);
+	NMADeviceClass *klass = get_device_class (device, applet);
+	GdkPixbuf *pixbuf = klass->get_device_icon ? klass->get_device_icon (device, applet) : NULL;
+	GtkWidget *image = pixbuf ? gtk_image_new_from_pixbuf (pixbuf) : NULL;
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+
+	gtk_widget_set_sensitive (item, FALSE);
+
+	g_signal_connect (item, "expose-event", G_CALLBACK (menu_title_item_expose), NULL);
+	return item;
+}
 
 static void
 applet_clear_notify (NMApplet *applet)
