@@ -468,7 +468,7 @@ applet_menu_item_favorize_helper (GtkBin *binitem,
 
 	child = gtk_bin_get_child (binitem);
 	box = gtk_hbox_new (FALSE, 0);
-	already_favorized_ptr = g_object_get_data (G_OBJECT (child), "already-favorized");
+	already_favorized_ptr = g_object_get_data (G_OBJECT (binitem), "favorite");
 
 	if (already_favorized_ptr)
 		goto abort;
@@ -485,6 +485,7 @@ applet_menu_item_favorize_helper (GtkBin *binitem,
 		gtk_box_pack_start (GTK_BOX (box), child, TRUE, TRUE, 4);
 		gtk_container_add (GTK_CONTAINER (binitem), box);
 		g_object_unref (child);
+		g_object_set_data (G_OBJECT (binitem), "favorite", GINT_TO_POINTER (1));
 	} else {
 		GtkWidget *image = gtk_image_new_from_pixbuf (favoritePixbuf);
 		g_assert (image);
@@ -494,9 +495,8 @@ applet_menu_item_favorize_helper (GtkBin *binitem,
 		gtk_box_pack_start (GTK_BOX (box), child, TRUE, TRUE, 4);
 		gtk_container_add (GTK_CONTAINER (binitem), box);
 		g_object_unref (child);
+		g_object_set_data (G_OBJECT (binitem), "favorite", GINT_TO_POINTER (2));
 	}
-
-	g_object_set_data (G_OBJECT (child), "already-favorized", GINT_TO_POINTER (1));
 
 	return;
 abort:

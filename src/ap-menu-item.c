@@ -52,6 +52,7 @@ nm_network_menu_item_init (NMNetworkMenuItem * item)
 
 	item->strength = gtk_image_new ();
 	gtk_box_pack_end (GTK_BOX (item->hbox), item->strength, FALSE, TRUE, 0);
+	item->sort_label = g_strdup ("");
 
 	gtk_widget_show (item->ssid);
 	gtk_widget_show (item->strength);
@@ -98,6 +99,8 @@ nm_network_menu_item_class_dispose (GObject *object)
 	gtk_widget_destroy (item->detail);
 	gtk_widget_destroy (item->hbox);
 
+	g_free (item->sort_label);
+
 	item->destroyed = TRUE;
 	g_free (item->hash);
 
@@ -132,6 +135,8 @@ nm_network_menu_item_set_ssid (NMNetworkMenuItem * item, GByteArray * ssid)
 		gtk_label_set_text (GTK_LABEL (item->ssid), display_ssid);
 		g_free (display_ssid);
 	}
+	g_free (item->sort_label);
+	item->sort_label = g_strdup (gtk_label_get_text (GTK_LABEL (item->ssid)));
 }
 
 guint32
@@ -161,16 +166,22 @@ nm_network_menu_item_set_strength (NMNetworkMenuItem * item,
 
 	item->int_strength = strength;
 
-	if (strength > 80)
+	if (strength > 80) {
 		pixbuf = gdk_pixbuf_copy (applet->wireless_100_icon);
-	else if (strength > 55)
+		item->sort_strength = 4;
+	} else if (strength > 55) {
 		pixbuf = gdk_pixbuf_copy (applet->wireless_75_icon);
-	else if (strength > 30)
+		item->sort_strength = 3;
+	} else if (strength > 30) {
 		pixbuf = gdk_pixbuf_copy (applet->wireless_50_icon);
-	else if (strength > 5)
+		item->sort_strength = 2;
+	} else if (strength > 5) {
 		pixbuf = gdk_pixbuf_copy (applet->wireless_25_icon);
-	else
+		item->sort_strength = 1;
+	} else {
 		pixbuf = gdk_pixbuf_copy (applet->wireless_00_icon);
+		item->sort_strength = 0;
+	}
 
 	if ((ap_flags & NM_802_11_AP_FLAGS_PRIVACY)
 		|| (ap_wpa != NM_802_11_AP_SEC_NONE)

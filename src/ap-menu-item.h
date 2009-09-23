@@ -53,6 +53,8 @@ struct _NMNetworkMenuItem
 	guint32     hash_len;
 	gboolean    destroyed;
 	GSList *    dupes;
+	gchar *sort_label;
+	guint32 sort_strength;
 };
 
 struct _NMNetworkMenuItemClass
