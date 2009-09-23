@@ -540,7 +540,6 @@ applet_menu_add_items_top_and_fold_sorted_helper (GtkMenu *menu,
 	iter = clone_top;
 	for (i = 0; !!iter && i < top_count; i++, iter = iter->next) {
 		clone_folded = g_list_remove (clone_folded, iter->data);
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), iter->data);
 		clone_top_filtered = g_list_append (clone_top_filtered, iter->data);
 	}
 
