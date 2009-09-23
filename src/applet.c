@@ -1242,7 +1242,7 @@ nma_menu_device_get_menu_item (NMDevice *device,
 		struct AppletDeviceMenuInfo *info = g_new0 (struct AppletDeviceMenuInfo, 1);
 		info->device = g_object_ref (device);
 		info->applet = applet;
-		item = gtk_menu_item_new_with_label (_("  Disconnect"));
+		item = gtk_menu_item_new_with_label (_("Disconnect"));
 		g_signal_connect_data (item, "activate",
 		                       G_CALLBACK (applet_device_disconnect_db),
 		                       info,
