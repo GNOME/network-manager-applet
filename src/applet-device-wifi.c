@@ -799,6 +799,7 @@ wireless_add_menu_item (NMDevice *device,
 		                                                  GTK_WIDGET (folded_menu_item),
 		                                                  sort_ap_menu_item_by_fav_strength_name0,
        	                                                  sort_ap_menu_item_by_name0);
+		g_list_free (menu_list);
 		g_slist_free (sorted_aps);
 	}
 

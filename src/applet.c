@@ -501,6 +501,7 @@ applet_menu_item_favorize_helper (GtkBin *binitem,
 	return;
 abort:
 	g_object_ref_sink (box);
+	g_object_unref (box);
 }
 
 void
