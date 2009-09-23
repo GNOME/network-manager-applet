@@ -233,6 +233,13 @@ void applet_menu_item_favorize_helper (GtkBin *binitem,
                                        GdkPixbuf *favoritePixbuf,
                                        gboolean is_favorite);
 
+void applet_menu_add_items_top_and_fold_sorted_helper (GtkMenu *menu,
+                                                       GList *items,
+                                                       guint top_count,
+                                                       GtkWidget *submenu_item,
+                                                       GCompareFunc prio_cmp_func,
+                                                       GCompareFunc generic_cmp_func);
+
 NMSettingsConnectionInterface *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 
 void applet_do_notify (NMApplet *applet,

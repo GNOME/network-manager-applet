@@ -503,6 +503,69 @@ abort:
 	g_object_ref_sink (box);
 }
 
+void
+applet_menu_add_items_top_and_fold_sorted_helper (GtkMenu *menu,
+                                                  GList *items,
+                                                  guint top_count,
+                                                  GtkWidget *submenu_item,
+                                                  GCompareFunc prio_cmp_func,
+                                                  GCompareFunc generic_cmp_func)
+{
+	GList *iter = items;
+	GList *clone_top = NULL;
+	GList *clone_top_filtered = NULL;
+	GList *clone_folded = NULL;
+	GtkWidget *submenu;
+	int i;
+
+	g_assert (menu);
+	g_assert (items);
+	g_assert (top_count > 0);
+	g_assert (submenu_item);
+	g_assert (prio_cmp_func);
+	g_assert (generic_cmp_func);
+
+	submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (submenu_item));
+	g_assert (submenu_item);
+
+	while (iter) {
+		clone_top = g_list_append (clone_top, iter->data);
+		clone_folded = g_list_append (clone_folded, iter->data);
+		iter = iter->next;
+	}
+
+	clone_top = g_list_sort (clone_top, prio_cmp_func);
+	clone_folded = g_list_sort (clone_folded, generic_cmp_func);
+
+	iter = clone_top;
+	for (i = 0; !!iter && i < top_count; i++, iter = iter->next) {
+		clone_folded = g_list_remove (clone_folded, iter->data);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), iter->data);
+		clone_top_filtered = g_list_append (clone_top_filtered, iter->data);
+	}
+
+
+	clone_top_filtered = g_list_sort (clone_top_filtered, generic_cmp_func);
+	iter = clone_top_filtered;
+	while (iter) {
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), iter->data);
+		iter = iter->next;
+	}
+
+	iter = clone_folded;
+	if (iter)
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), submenu_item);
+	while (iter) {
+		gtk_menu_shell_append (GTK_MENU_SHELL (submenu), iter->data);
+		iter = iter->next;
+	}
+
+	g_list_free(clone_top);
+	g_list_free(clone_top_filtered);
+	g_list_free(clone_folded);
+}
+
+
 static void
 applet_clear_notify (NMApplet *applet)
 {
