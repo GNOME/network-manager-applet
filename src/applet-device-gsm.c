@@ -211,6 +211,8 @@ add_connection_items (NMDevice *device,
 		                       info,
 		                       (GClosureNotify) gsm_menu_item_info_destroy, 0);
 
+		applet_menu_item_favorize_helper (GTK_BIN (item), applet->favorites_icon, TRUE);
+
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
 }

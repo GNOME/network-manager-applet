@@ -121,6 +121,8 @@ typedef struct
 	GdkPixbuf *		vpn_connecting_icons[NUM_VPN_CONNECTING_FRAMES];
 	GdkPixbuf *		vpn_lock_icon;
 
+	GdkPixbuf *		favorites_icon;
+
 	/* Active status icon pixbufs */
 	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
 
@@ -226,6 +228,10 @@ void applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                     const gchar* label,
                                                     GdkPixbuf *favicon,
                                                     int pos);
+
+void applet_menu_item_favorize_helper (GtkBin *binitem,
+                                       GdkPixbuf *favoritePixbuf,
+                                       gboolean is_favorite);
 
 NMSettingsConnectionInterface *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 

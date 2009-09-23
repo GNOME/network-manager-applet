@@ -474,6 +474,7 @@ add_new_ap_item (NMDeviceWifi *device,
 	GSList *ap_connections = NULL;
 	const GByteArray *ssid;
 	guint32 dev_caps;
+	gboolean is_favorite = FALSE;
 
 	ap_connections = filter_connections_for_access_point (connections, device, ap);
 
@@ -522,6 +523,7 @@ add_new_ap_item (NMDeviceWifi *device,
 			gtk_menu_shell_append (GTK_MENU_SHELL (submenu), GTK_WIDGET (subitem));
 		}
 
+		is_favorite = TRUE;
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), submenu);
 	} else {
 		NMConnection *connection;
@@ -534,6 +536,7 @@ add_new_ap_item (NMDeviceWifi *device,
 		if (g_slist_length (ap_connections) == 1) {
 			connection = NM_CONNECTION (g_slist_nth_data (ap_connections, 0));
 			info->connection = g_object_ref (G_OBJECT (connection));
+			is_favorite = TRUE;
 		}
 
 		g_signal_connect_data (GTK_WIDGET (item),
@@ -543,6 +546,8 @@ add_new_ap_item (NMDeviceWifi *device,
 		                       (GClosureNotify) wireless_menu_item_info_destroy,
 		                       0);
 	}
+
+	applet_menu_item_favorize_helper (GTK_BIN (item), applet->favorites_icon, is_favorite);
 
 	gtk_widget_show_all (GTK_WIDGET (item));
 
