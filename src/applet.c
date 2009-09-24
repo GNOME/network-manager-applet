@@ -2737,7 +2737,7 @@ nma_icons_load (NMApplet *applet)
 		g_free (name);
 	}
 
-	ICON_LOAD(applet->favorites_icon, "favorites");
+	ICON_LOAD(applet->favorites_icon, "emblem-favorite");
 
 	applet->icons_loaded = TRUE;
 
