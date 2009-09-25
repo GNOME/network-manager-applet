@@ -211,8 +211,6 @@ add_connection_items (NMDevice *device,
 		                       info,
 		                       (GClosureNotify) gsm_menu_item_info_destroy, 0);
 
-		applet_menu_item_favorize_helper (GTK_BIN (item), applet->favorites_icon, TRUE);
-
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
 }
@@ -274,9 +272,6 @@ gsm_add_menu_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
 
-	if (active)
-		applet_menu_item_add_complex_separator_helper (menu, applet, _("Active"), NULL, -1);
-
 	if (g_slist_length (connections))
 		add_connection_items (device, connections, active, ADD_ACTIVE, menu, applet);
 
@@ -289,7 +284,7 @@ gsm_add_menu_item (NMDevice *device,
 
 	if (!nma_menu_device_check_unusable (device)) {
 		if ((!active && g_slist_length (connections)) || (active && g_slist_length (connections) > 1))
-			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), NULL, -1);
+			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
 
 		if (g_slist_length (connections))
 			add_connection_items (device, connections, active, ADD_INACTIVE, menu, applet);

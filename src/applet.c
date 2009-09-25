@@ -421,27 +421,21 @@ void
 applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                NMApplet *applet,
                                                const gchar* label,
-                                               GdkPixbuf *favicon,
                                                int pos)
 {
 	GtkWidget *menu_item = gtk_image_menu_item_new ();
 	GtkWidget *box = gtk_hbox_new (FALSE, 0);
 	GtkWidget *xlabel = NULL;
-	GtkWidget *favimg = NULL;
-	if (favicon)
-		favimg = gtk_image_new_from_pixbuf (favicon);
-	if (label) {
-		xlabel = gtk_label_new ("Favorites");
-		gtk_label_set_markup (GTK_LABEL (xlabel), label);
-	}
-	if (favimg || xlabel)
-		gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 5);
-	if (xlabel)
-		gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
-	if (favimg)
-		gtk_box_pack_start (GTK_BOX (box), favimg, FALSE, FALSE, 2);
 
-	gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 5);
+	if (label) {
+		xlabel = gtk_label_new (NULL);
+		gtk_label_set_markup (GTK_LABEL (xlabel), label);
+
+		gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
+	}
+
+	gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 0);
 
 	g_object_set (G_OBJECT (menu_item),
 	              "child", box,
@@ -452,56 +446,6 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 	else
 		gtk_menu_shell_insert (GTK_MENU_SHELL (menu), menu_item, pos);
 	return;
-}
-
-void
-applet_menu_item_favorize_helper (GtkBin *binitem,
-                                  GdkPixbuf *favoritePixbuf,
-                                  gboolean is_favorite)
-{
-	GtkWidget *child;
-	GtkWidget *box;
-	gpointer already_favorized_ptr;
-
-	g_assert (binitem);
-	g_assert (favoritePixbuf);
-
-	child = gtk_bin_get_child (binitem);
-	box = gtk_hbox_new (FALSE, 0);
-	already_favorized_ptr = g_object_get_data (G_OBJECT (binitem), "favorite");
-
-	if (already_favorized_ptr)
-		goto abort;
-
-	if (!is_favorite) {
-		int image_width, image_height;
-		GtkWidget *placeholder = gtk_alignment_new (0,0,0,0);
-		g_object_ref (child);
-		image_width = gdk_pixbuf_get_width (favoritePixbuf);
-		image_height = gdk_pixbuf_get_height (favoritePixbuf);
-		gtk_container_remove (GTK_CONTAINER (binitem), child);
-		gtk_container_add (GTK_CONTAINER (binitem), box);
-		gtk_widget_set_size_request (placeholder, image_width, image_height);
-		gtk_box_pack_start (GTK_BOX (box), placeholder, FALSE, FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (box), child, TRUE, TRUE, 4);
-		g_object_unref (child);
-		g_object_set_data (G_OBJECT (binitem), "favorite", GINT_TO_POINTER (1));
-	} else {
-		GtkWidget *image = gtk_image_new_from_pixbuf (favoritePixbuf);
-		g_assert (image);
-		g_object_ref (child);
-		gtk_container_remove (GTK_CONTAINER (binitem), child);
-		gtk_container_add (GTK_CONTAINER (binitem), box);
-		gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (box), child, TRUE, TRUE, 4);
-		g_object_unref (child);
-		g_object_set_data (G_OBJECT (binitem), "favorite", GINT_TO_POINTER (2));
-	}
-
-	return;
-abort:
-	g_object_ref_sink (box);
-	g_object_unref (box);
 }
 
 void
@@ -1455,7 +1399,6 @@ nma_menu_device_get_menu_item (NMDevice *device,
 		                       info,
 		                       (GClosureNotify) applet_device_info_destroy, 0);
 		gtk_widget_set_sensitive (item, TRUE);
-		applet_menu_item_favorize_helper (GTK_BIN (item), applet->favorites_icon, FALSE);
 		break;
 	}
 	default:
@@ -2666,7 +2609,6 @@ static void nma_icons_free (NMApplet *applet)
 	CLEAR_ICON(applet->wireless_75_icon);
 	CLEAR_ICON(applet->wireless_100_icon);
 	CLEAR_ICON(applet->secure_lock_icon);
-	CLEAR_ICON(applet->favorites_icon);
 
 	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
 		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
@@ -2736,8 +2678,6 @@ nma_icons_load (NMApplet *applet)
 		ICON_LOAD(applet->vpn_connecting_icons[i], name);
 		g_free (name);
 	}
-
-	ICON_LOAD(applet->favorites_icon, "emblem-favorite");
 
 	applet->icons_loaded = TRUE;
 

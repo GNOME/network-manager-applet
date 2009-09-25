@@ -546,8 +546,6 @@ add_new_ap_item (NMDeviceWifi *device,
 		                       0);
 	}
 
-	applet_menu_item_favorize_helper (GTK_BIN (item), applet->favorites_icon, is_favorite);
-
 	g_slist_free (ap_connections);
 	return item;
 }
@@ -586,9 +584,8 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 		item = NM_NETWORK_MENU_ITEM (dup_data.found);
 
 		/* Just update strength if greater than what's there */
-		if (nm_network_menu_item_get_strength (item) < strength) {
+		if (nm_network_menu_item_get_strength (item) < strength)
 			nm_network_menu_item_set_strength (item, ap, applet);
-		}
 
 		nm_network_menu_item_add_dupe (item, ap);
 	} else {
@@ -596,7 +593,7 @@ add_one_ap_menu_item (NMDeviceWifi *device,
 		menu_list = g_list_append (menu_list, item);
 	}
 
-	if (!active_ap || active_ap == ap)
+	if (active_ap == ap)
 		nm_network_menu_item_set_active (item, TRUE);
 	else
 		nm_network_menu_item_set_active (item, FALSE);
@@ -754,7 +751,6 @@ wireless_add_menu_item (NMDevice *device,
 
 	active_ap = nm_device_wifi_get_active_access_point (wdev);
 	if (active_ap) {
-		applet_menu_item_add_complex_separator_helper (menu, applet, _("Active"), NULL, -1);
 		menu_list = add_one_ap_menu_item (wdev, active_ap, connections, active_ap, active, menu_list, applet);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_list->data);
 		g_list_free (menu_list);
@@ -770,7 +766,7 @@ wireless_add_menu_item (NMDevice *device,
 	}
 
 	if (!nma_menu_device_check_unusable (device)) {
-		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), NULL, -1);
+		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
 
 		/* Add all networks in our network list to the menu */
 		for (i = 0; aps && (i < aps->len); i++)
@@ -792,7 +788,6 @@ wireless_add_menu_item (NMDevice *device,
 		folded_menu_item = gtk_menu_item_new_with_mnemonic (_("More networks..."));
 		submenu = gtk_menu_new ();
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (folded_menu_item), submenu);
-		applet_menu_item_favorize_helper (GTK_BIN (folded_menu_item), applet->favorites_icon, FALSE);
 		applet_menu_add_items_top_and_fold_sorted_helper (GTK_MENU (menu),
 		                                                  menu_list,
 		                                                  5,
