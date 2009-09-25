@@ -122,20 +122,19 @@ nm_network_menu_item_class_init (NMNetworkMenuItemClass * klass)
 void
 nm_network_menu_item_set_ssid (NMNetworkMenuItem * item, GByteArray * ssid)
 {
-	char *display_ssid = NULL;
-
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (ssid != NULL);
 
-	display_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
-	if (!display_ssid) {
-		// FIXME: shouldn't happen; always coerce the SSID to _something_
-		gtk_label_set_text (GTK_LABEL (item->ssid), "<unknown>");
-	} else {
-		gtk_label_set_text (GTK_LABEL (item->ssid), display_ssid);
-		g_free (display_ssid);
-	}
+	g_free (item->ssid_string);
 	g_free (item->sort_label);
+
+	item->ssid_string = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
+	if (!item->ssid_string) {
+		// FIXME: shouldn't happen; always coerce the SSID to _something_
+		item->ssid_string = g_strdup ("<unknown>");
+	}
+	gtk_label_set_text (GTK_LABEL (item->ssid), item->ssid_string);
+
 	item->sort_label = g_strdup (gtk_label_get_text (GTK_LABEL (item->ssid)));
 }
 
@@ -264,6 +263,16 @@ nm_network_menu_item_find_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 void
 nm_network_menu_item_set_active (NMNetworkMenuItem *item, gboolean active)
 {
+	char *markup;
+
+	gtk_label_set_use_markup (GTK_LABEL (item->ssid), active);
+	if (active) {
+		markup = g_markup_printf_escaped ("<b>%s</b>", item->ssid_string);
+		gtk_label_set_markup (GTK_LABEL (item->ssid), markup);
+		g_free (markup);
+	} else
+		gtk_label_set_text (GTK_LABEL (item->ssid), item->ssid_string);
+
 	gtk_widget_set_sensitive (item->strength, active);
 }
 void
