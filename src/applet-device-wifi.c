@@ -1551,10 +1551,7 @@ add_one_setting (GHashTable *settings,
 	g_return_val_if_fail (error != NULL, FALSE);
 	g_return_val_if_fail (*error == NULL, FALSE);
 
-	utils_fill_connection_certs (connection);
 	secrets = nm_setting_to_hash (setting);
-	utils_clear_filled_connection_certs (connection);
-
 	if (secrets) {
 		g_hash_table_insert (settings, g_strdup (nm_setting_get_name (setting)), secrets);
 	} else {

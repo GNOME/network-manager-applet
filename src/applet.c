@@ -2516,6 +2516,9 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 		goto error;
 	}
 
+	// FIXME: get secrets locally and populate connection with previous secrets
+	// before asking user for other secrets
+
 	/* Let the device class handle secrets */
 	if (dclass->get_secrets (device, NM_SETTINGS_CONNECTION_INTERFACE (connection),
 	                         active_connection, setting_name, hints, callback,

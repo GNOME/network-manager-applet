@@ -332,9 +332,6 @@ delete_cb (NMSettingsConnectionInterface *connection_iface,
 		NMVpnPluginUiInterface *plugin;
 		GError *vpn_error = NULL;
 
-		/* Clean up keyring keys */
-		nm_gconf_clear_keyring_items (connection);
-
 		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
 		g_assert (s_con);
 
@@ -440,9 +437,7 @@ add_connection (NMConnectionList *self,
 	else
 		g_assert_not_reached ();
 	
-	utils_fill_connection_certs (connection);
 	nm_settings_interface_add_connection (settings, connection, add_cb, info);
-	utils_clear_filled_connection_certs (connection);
 }
 
 /**********************************************/
@@ -543,10 +538,7 @@ update_connection (NMConnectionList *list,
 		 * and private keys don't go through D-Bus; they are private of course!
 		 */
 		if (new_scope == NM_CONNECTION_SCOPE_SYSTEM) {
-			utils_fill_connection_certs (NM_CONNECTION (connection));
 			new_settings = nm_connection_to_hash (NM_CONNECTION (connection));
-			utils_clear_filled_connection_certs (NM_CONNECTION (connection));
-
 			if (!nm_connection_replace_settings (NM_CONNECTION (connection),
 			                                     new_settings,
 			                                     &error)) {
@@ -728,7 +720,6 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 	const char *message = _("An unknown error ocurred.");
 	NMConnection *connection;
 	GError *edit_error = NULL;
-	gboolean success;
 
 	connection = nm_connection_editor_get_connection (editor);
 	g_assert (connection);
@@ -736,11 +727,7 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 	switch (response) {
 	case GTK_RESPONSE_OK:
 		/* Verify and commit user changes */
-		utils_fill_connection_certs (connection);
-		success = nm_connection_editor_update_connection (editor, &edit_error);
-		utils_clear_filled_connection_certs (connection);
-
-		if (success) {
+		if (nm_connection_editor_update_connection (editor, &edit_error)) {
 			/* Save the connection to backing storage */
 			update_connection (info->list,
 			                   editor,

@@ -75,22 +75,6 @@ populate_ui (CEPageDsl *self, NMConnection *connection)
 
 	/* Grab password from keyring if possible */
 	str = nm_setting_pppoe_get_password (setting);
-	if (!str) {
-		GError *error = NULL;
-		GValue *value;
-
-		secrets = nm_gconf_get_keyring_items (connection,
-		                                      nm_setting_get_name (NM_SETTING (setting)),
-		                                      FALSE,
-		                                      &error);
-		if (secrets) {
-			value = g_hash_table_lookup (secrets, NM_SETTING_PPPOE_PASSWORD);
-			if (value)
-				str = g_value_get_string (value);
-		} else if (error)
-			g_error_free (error);
-	}
-
 	if (str)
 		gtk_entry_set_text (priv->password, str);
 

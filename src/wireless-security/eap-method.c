@@ -31,6 +31,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <nm-setting-connection.h>
 #include <nm-setting-8021x.h>
 #include "eap-method.h"
 #include "gconf-helpers.h"
@@ -139,7 +140,8 @@ gboolean
 eap_method_nag_init (EAPMethod *method,
                      const char *glade_file,
                      const char *ca_cert_chooser,
-                     NMConnection *connection)
+                     NMConnection *connection,
+                     gboolean phase2)
 {
 	GtkWidget *dialog, *widget;
 	char *text;
@@ -155,8 +157,17 @@ eap_method_nag_init (EAPMethod *method,
 	}
 
 	method->ca_cert_chooser = g_strdup (ca_cert_chooser);
-	if (connection)
-		method->ignore_ca_cert = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), NMA_CA_CERT_IGNORE_TAG));
+	if (connection) {
+		NMSettingConnection *s_con;
+		const char *uuid;
+
+		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		g_assert (s_con);
+		uuid = nm_setting_connection_get_uuid (s_con);
+		g_assert (uuid);
+
+		method->ignore_ca_cert = nm_gconf_get_ignore_ca_cert (uuid, phase2);
+	}
 
 	dialog = glade_xml_get_widget (method->nag_dialog_xml, "nag_user_dialog");
 	g_assert (dialog);
@@ -250,7 +261,7 @@ eap_method_validate_filepicker (GladeXML *xml,
                                 const char *name,
                                 guint32 item_type,
                                 const char *password,
-                                NMSetting8021xCKType *out_ck_type)
+                                NMSetting8021xCKFormat *out_format)
 {
 	GtkWidget *widget;
 	char *filename;
@@ -259,15 +270,15 @@ eap_method_validate_filepicker (GladeXML *xml,
 	GError *error = NULL;
 
 	if (item_type == TYPE_PRIVATE_KEY) {
-		g_return_val_if_fail (password != NULL, NM_SETTING_802_1X_CK_TYPE_UNKNOWN);
-		g_return_val_if_fail (strlen (password), NM_SETTING_802_1X_CK_TYPE_UNKNOWN);
+		g_return_val_if_fail (password != NULL, FALSE);
+		g_return_val_if_fail (strlen (password), FALSE);
 	}
 
 	widget = glade_xml_get_widget (xml, name);
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	if (!filename)
-		return (item_type == TYPE_CA_CERT) ? NM_SETTING_802_1X_CK_TYPE_X509 : NM_SETTING_802_1X_CK_TYPE_UNKNOWN;
+		return (item_type == TYPE_CA_CERT) ? TRUE : FALSE;
 
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
 		goto out;
@@ -275,21 +286,21 @@ eap_method_validate_filepicker (GladeXML *xml,
 	setting = (NMSetting8021x *) nm_setting_802_1x_new ();
 
 	if (item_type == TYPE_PRIVATE_KEY) {
-		if (!nm_setting_802_1x_set_private_key_from_file (setting, filename, password, out_ck_type, &error)) {
+		if (!nm_setting_802_1x_set_private_key (setting, filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, &error)) {
 			g_warning ("Error: couldn't verify private key: %d %s",
 			           error ? error->code : -1, error ? error->message : "(none)");
 			g_clear_error (&error);
 		} else
 			success = TRUE;
 	} else if (item_type == TYPE_CLIENT_CERT) {
-		if (!nm_setting_802_1x_set_client_cert_from_file (setting, filename, out_ck_type, &error)) {
+		if (!nm_setting_802_1x_set_client_cert (setting, filename, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, &error)) {
 			g_warning ("Error: couldn't verify client certificate: %d %s",
 			           error ? error->code : -1, error ? error->message : "(none)");
 			g_clear_error (&error);
 		} else
 			success = TRUE;
 	} else if (item_type == TYPE_CA_CERT) {
-		if (!nm_setting_802_1x_set_ca_cert_from_file (setting, filename, out_ck_type, &error)) {
+		if (!nm_setting_802_1x_set_ca_cert (setting, filename, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, &error)) {
 			g_warning ("Error: couldn't verify CA certificate: %d %s",
 			           error ? error->code : -1, error ? error->message : "(none)");
 			g_clear_error (&error);

@@ -399,24 +399,6 @@ pppoe_update_ui (NMConnection *connection, NMPppoeInfo *info)
 	s = nm_setting_pppoe_get_password (s_pppoe);
 	if (s)
 		gtk_entry_set_text (info->password_entry, s);
-	else {
-		GHashTable *secrets;
-		GError *error = NULL;
-		GValue *value;
-
-		/* Grab password from keyring if possible */
-		secrets = nm_gconf_get_keyring_items (connection,
-		                                      nm_setting_get_name (NM_SETTING (s_pppoe)),
-		                                      FALSE,
-		                                      &error);
-		if (secrets) {
-			value = g_hash_table_lookup (secrets, NM_SETTING_PPPOE_PASSWORD);
-			if (value)
-				gtk_entry_set_text (info->password_entry, g_value_get_string (value));
-			g_hash_table_destroy (secrets);
-		} else if (error)
-			g_error_free (error);
-	}
 }
 
 static NMPppoeInfo *
@@ -682,10 +664,7 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 		goto done;
 	}
 
-	utils_fill_connection_certs (NM_CONNECTION (connection));
 	secrets = nm_setting_to_hash (setting);
-	utils_clear_filled_connection_certs (NM_CONNECTION (connection));
-
 	if (!secrets) {
 		g_set_error (&error,
 		             NM_SETTINGS_INTERFACE_ERROR,

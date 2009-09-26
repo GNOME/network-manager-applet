@@ -27,6 +27,8 @@
 #include <glib.h>
 #include <nm-connection.h>
 
+#include "nma-gconf-connection.h"
+
 #define GCONF_PATH_CONNECTIONS "/system/networking/connections"
 
 /* The stamp is a mechanism for determining which applet version last
@@ -35,25 +37,8 @@
 #define APPLET_CURRENT_STAMP 1
 #define APPLET_PREFS_STAMP "/apps/nm-applet/stamp"
 
-
-/* 
- * ATTENTION: Make sure to update nm_gconf_copy_private_connection_values()
- * and nm_gconf_clear_private_connection_values() when new tag is added!
- * Otherwise duplicating connection will not work correctly.
- */
-#define NMA_CA_CERT_IGNORE_TAG  "nma-ca-cert-ignore"
-#define NMA_PHASE2_CA_CERT_IGNORE_TAG  "nma-phase2-ca-cert-ignore"
-#define NMA_PATH_CLIENT_CERT_TAG "nma-path-client-cert"
-#define NMA_PATH_PHASE2_CLIENT_CERT_TAG "nma-path-phase2-client-cert"
-#define NMA_PATH_CA_CERT_TAG "nma-path-ca-cert"
-#define NMA_PATH_PHASE2_CA_CERT_TAG "nma-path-phase2-ca-cert"
-#define NMA_PATH_PRIVATE_KEY_TAG "nma-path-private-key"
-#define NMA_PRIVATE_KEY_PASSWORD_TAG "nma-private-key-password"
-#define NMA_PATH_PHASE2_PRIVATE_KEY_TAG "nma-path-phase2-private-key"
-#define NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG "nma-phase2-private-key-password"
-
-void nm_gconf_copy_private_connection_values (NMConnection *dst, NMConnection *src);
-void nm_gconf_clear_private_connection_values (NMConnection *connection);
+#define IGNORE_CA_CERT_TAG "ignore-ca-cert"
+#define IGNORE_PHASE2_CA_CERT_TAG "ignore-phase2-ca-cert"
 
 #define KEYRING_UUID_TAG "connection-uuid"
 #define KEYRING_SN_TAG "setting-name"
@@ -265,17 +250,12 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
                            const char *setting_key,
                            const char *secret);
 
-GHashTable *
-nm_gconf_get_keyring_items (NMConnection *connection,
-                            const char *setting_name,
-                            gboolean include_private_passwords,
-                            GError **error);
-
-void
-nm_gconf_clear_keyring_items (NMConnection *connection);
-
 typedef void (*PreKeyringCallback) (gpointer user_data);
 void nm_gconf_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data);
+void pre_keyring_callback (void);
+
+gboolean nm_gconf_get_ignore_ca_cert (const char *uuid, gboolean phase2);
+void nm_gconf_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore);
 
 #endif	/* GCONF_HELPERS_H */
 

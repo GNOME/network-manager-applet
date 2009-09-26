@@ -99,6 +99,7 @@ internal_add_connection (NMAGConfSettings *self, NMAGConfConnection *connection)
 	DBusGConnection *bus = NULL;
 
 	g_return_if_fail (connection != NULL);
+	g_return_if_fail (NMA_IS_GCONF_CONNECTION (connection));
 
 	priv->connections = g_slist_prepend (priv->connections, connection);
 	g_signal_connect (connection, "new-secrets-requested",
@@ -115,6 +116,7 @@ internal_add_connection (NMAGConfSettings *self, NMAGConfConnection *connection)
 	}
 
 	g_signal_emit_by_name (self, NM_SETTINGS_INTERFACE_NEW_CONNECTION, NM_CONNECTION (connection));
+	g_return_if_fail (NMA_IS_GCONF_CONNECTION (priv->connections->data));
 }
 
 static void
