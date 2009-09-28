@@ -509,68 +509,68 @@ applet_menu_add_items_top_and_fold_sorted_helper (GtkMenu *menu,
 	g_list_free(clone_folded);
 }
 
-static gboolean
-menu_title_item_expose (GtkWidget      *widget,
-                        GdkEventExpose *event)
-{
-	#define TITLE_TEXT_R ((double) 0x5e / 255.0 )
-	#define TITLE_TEXT_G ((double) 0x5e / 255.0 )
-	#define TITLE_TEXT_B ((double) 0x5e / 255.0 )
-/*	#define TITLE_TEXT_R ((double) style->text[GTK_STATE_NORMAL].red / 65535.0)
-	#define TITLE_TEXT_G ((double) style->text[GTK_STATE_NORMAL].green / 65535.0)
-	#define TITLE_TEXT_B ((double) style->text[GTK_STATE_NORMAL].blue / 65535.0) */
+#define TITLE_TEXT_R ((double) 0x5e / 255.0 )
+#define TITLE_TEXT_G ((double) 0x5e / 255.0 )
+#define TITLE_TEXT_B ((double) 0x5e / 255.0 )
 
-	GtkStyle *style = gtk_widget_get_style (widget);
-	GtkWidget *label = gtk_bin_get_child (GTK_BIN (widget));
-	PangoFontDescription *desc = pango_font_description_copy (style->font_desc);
-	cairo_t *cr = gdk_cairo_create (widget->window);
-	GtkImageMenuItem *image_menu_item = GTK_IS_IMAGE_MENU_ITEM (widget) ? GTK_IMAGE_MENU_ITEM (widget) : NULL;
-	GtkImage *icon = image_menu_item ? GTK_IMAGE (gtk_image_menu_item_get_image (image_menu_item)) : NULL;
-	GdkPixbuf *pixbuf = icon ? gtk_image_get_pixbuf (icon) : NULL;
-	PangoLayout *layout_first = pango_cairo_create_layout (cr);
-	PangoLayout *layout_second = pango_cairo_create_layout (cr);
-	int width = 0, height = 0;
-	int extrawidth = 0;
-	gdouble extraheight = 0;
-	int owidth, oheight;
-	char *first, *second;
-	char *secondtext;
+static gboolean
+menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
+{
+	GtkStyle *style;
+	GtkWidget *label;
+	PangoFontDescription *desc;
+	cairo_t *cr;
+	GtkImageMenuItem *image_menu_item;
+	GtkImage *icon;
+	GdkPixbuf *pixbuf;
+	PangoLayout *layout;
+	int width = 0, height = 0, owidth, oheight;
+	gdouble extraheight = 0, extrawidth = 0;
+	const char *text;
 	gdouble xpadding = 5.0;
 	gdouble ypadding = 5.0;
 	gdouble postpadding = 0.0;
 
-	first = g_strdup (gtk_label_get_text (GTK_LABEL (label)));
-	second = strchr (first, ':');
-	if (second) {
-		*second = 0;
-		second++;
-		second++;
-		secondtext = g_strdup_printf ("%s", second);
-	}
+	label = gtk_bin_get_child (GTK_BIN (widget));
 
-	/* lets put together both layout lines */
+	cr = gdk_cairo_create (widget->window);
+
+	/* The drawing area we get is the whole menu; clip the drawing to the
+	 * event area, which should just be our menu item.
+	 */
+	cairo_rectangle (cr,
+	                 event->area.x, event->area.y,
+	                 event->area.width, event->area.height);
+	cairo_clip (cr);
+
+	/* We also need to reposition the cairo context so that (0, 0) is the
+	 * top-left of where we're supposed to start drawing.
+	 */
+	cairo_translate (cr, widget->allocation.x, widget->allocation.y);
+
+	image_menu_item = GTK_IS_IMAGE_MENU_ITEM (widget) ? GTK_IMAGE_MENU_ITEM (widget) : NULL;
+
+	icon = image_menu_item ? GTK_IMAGE (gtk_image_menu_item_get_image (image_menu_item)) : NULL;
+	pixbuf = icon ? gtk_image_get_pixbuf (icon) : NULL;
+
+	text = gtk_label_get_text (GTK_LABEL (label));
+
+	layout = pango_cairo_create_layout (cr);
+	style = gtk_widget_get_style (widget);
+	desc = pango_font_description_copy (style->font_desc);
 	pango_font_description_set_variant (desc, PANGO_VARIANT_SMALL_CAPS);
 	pango_font_description_set_weight (desc, PANGO_WEIGHT_SEMIBOLD);
-	pango_layout_set_font_description (layout_first, desc);
-	pango_layout_set_text (layout_first, first, -1);
-	pango_cairo_update_layout (cr, layout_first);
-	pango_layout_get_size (layout_first, &owidth, &oheight);
+	pango_layout_set_font_description (layout, desc);
+	pango_layout_set_text (layout, text, -1);
+	pango_cairo_update_layout (cr, layout);
+	pango_layout_get_size (layout, &owidth, &oheight);
 	width = owidth / PANGO_SCALE;
 	height += oheight / PANGO_SCALE;
-
-	if (second) {
-		pango_font_description_set_weight (desc, PANGO_WEIGHT_NORMAL);
-		pango_layout_set_font_description (layout_second, desc);
-		pango_layout_set_text (layout_second, secondtext, -1);
-		pango_cairo_update_layout (cr, layout_second);
-		pango_layout_get_size (layout_second, &owidth, &oheight);
-		width = width < owidth / PANGO_SCALE ? owidth / PANGO_SCALE : width;
-		height += oheight / PANGO_SCALE;
-	}
 
 	if (pixbuf) {
 		gdouble w = gdk_pixbuf_get_width (pixbuf);
 		gdouble h = gdk_pixbuf_get_height (pixbuf);
+
 		if (width < w)
 			width = w;
 		if (height < h) {
@@ -582,20 +582,12 @@ menu_title_item_expose (GtkWidget      *widget,
 	width += extrawidth;
 
 	cairo_save (cr);
-	cairo_translate (cr, ((double) event->area.x) , ((double) event->area.y));
 
 	cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 0.0);
-	cairo_rectangle (cr, 0, 0, ((double) event->area.width), ((double) event->area.height - postpadding));
+	cairo_rectangle (cr, 0, 0,
+	                 (double) (width + 2 * xpadding),
+	                 (double) (height + ypadding + postpadding));
 	cairo_fill (cr);
-
-/* no border atm 
-	cairo_set_source_rgba (cr, 0.1, 0.1, 0.1, 0.6);
-	cairo_rectangle (cr, 0, 0, ((double) event->area.width), 0.5);
-	cairo_fill (cr);
-	cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, 0.4);
-	cairo_rectangle (cr, 0, ((double) event->area.height - postpadding - 0.5), ((double) event->area.width), 0.5);
-	cairo_fill (cr);
-*/
 
 	/* now the in-padding content */
 	cairo_translate (cr, xpadding , ypadding);
@@ -604,6 +596,7 @@ menu_title_item_expose (GtkWidget      *widget,
 		gdouble y = height / 2.0 - gdk_pixbuf_get_height (pixbuf) / 2.0;
 		gdouble w = gdk_pixbuf_get_width (pixbuf);
 		gdouble h = gdk_pixbuf_get_height (pixbuf);
+
 		gdk_cairo_set_source_pixbuf (cr, pixbuf, x, y);
 		cairo_rectangle (cr, x, y, w, h);
 		cairo_fill (cr);
@@ -611,29 +604,16 @@ menu_title_item_expose (GtkWidget      *widget,
 
 	cairo_set_source_rgb (cr, TITLE_TEXT_R, TITLE_TEXT_G, TITLE_TEXT_B);
 	cairo_move_to (cr, extrawidth, extraheight);
-	pango_cairo_show_layout (cr, layout_first);
-
-	if (second) {
-		cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
-		cairo_move_to (cr, extrawidth, extraheight + oheight / PANGO_SCALE);
-		pango_cairo_show_layout (cr, layout_second);
-	}
+	pango_cairo_show_layout (cr, layout);
 
 	cairo_restore(cr);
-	pango_font_description_free (desc);
 
-	g_free (first);
-	g_object_unref (layout_first);
-	g_object_unref (layout_second);
+	pango_font_description_free (desc);
+	g_object_unref (layout);
 	cairo_destroy (cr);
 
 	gtk_widget_set_size_request (widget, width + 2 * xpadding, height + ypadding + postpadding);
-
 	return TRUE;
-
-	#undef TITLE_TEXT_R
-	#undef TITLE_TEXT_G
-	#undef TITLE_TEXT_B
 }
 
 
