@@ -436,7 +436,7 @@ add_connection (NMConnectionList *self,
 		settings = NM_SETTINGS_INTERFACE (self->gconf_settings);
 	else
 		g_assert_not_reached ();
-	
+
 	nm_settings_interface_add_connection (settings, connection, add_cb, info);
 }
 

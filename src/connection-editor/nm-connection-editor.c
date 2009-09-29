@@ -555,7 +555,7 @@ add_page (NMConnectionEditor *editor,
 
 static gboolean
 nm_connection_editor_set_connection (NMConnectionEditor *editor,
-                                     NMConnection *connection,
+                                     NMConnection *orig_connection,
                                      GError **error)
 {
 	NMSettingConnection *s_con;
@@ -563,15 +563,15 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+	g_return_val_if_fail (NM_IS_CONNECTION (orig_connection), FALSE);
 
 	/* clean previous connection */
 	if (editor->connection)
 		g_object_unref (editor->connection);
 
-	editor->connection = nm_connection_duplicate (connection);
+	editor->connection = nm_connection_duplicate (orig_connection);
 
-	editor->orig_connection = g_object_ref (connection);
+	editor->orig_connection = g_object_ref (orig_connection);
 	editor->orig_scope = nm_connection_get_scope (editor->connection);
 	nm_connection_editor_update_title (editor);
 
@@ -580,44 +580,44 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
-		if (!add_page (editor, ce_page_wired_new, connection, error))
+		if (!add_page (editor, ce_page_wired_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_wired_security_new, connection, error))
+		if (!add_page (editor, ce_page_wired_security_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, connection, error))
+		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip6_new, connection, error))
+		if (!add_page (editor, ce_page_ip6_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME)) {
-		if (!add_page (editor, ce_page_wireless_new, connection, error))
+		if (!add_page (editor, ce_page_wireless_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_wireless_security_new, connection, error))
+		if (!add_page (editor, ce_page_wireless_security_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, connection, error))
+		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip6_new, connection, error))
+		if (!add_page (editor, ce_page_ip6_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
-		if (!add_page (editor, ce_page_vpn_new, connection, error))
+		if (!add_page (editor, ce_page_vpn_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, connection, error))
+		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
-		if (!add_page (editor, ce_page_dsl_new, connection, error))
+		if (!add_page (editor, ce_page_dsl_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_wired_new, connection, error))
+		if (!add_page (editor, ce_page_wired_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ppp_new, connection, error))
+		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, connection, error))
+		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME) || 
 	           !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
-		if (!add_page (editor, ce_page_mobile_new, connection, error))
+		if (!add_page (editor, ce_page_mobile_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ppp_new, connection, error))
+		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, connection, error))
+		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
 			goto out;
 	} else {
 		g_warning ("Unhandled setting type '%s'", connection_type);
