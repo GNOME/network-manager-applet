@@ -320,7 +320,7 @@ dispose (GObject *object)
 		editor->orig_connection = NULL;
 	}
 	if (editor->window) {
-		gtk_widget_destroy (editor->window);
+		gtk_widget_hide (editor->window);
 		editor->window = NULL;
 	}
 	if (editor->xml) {
@@ -392,7 +392,6 @@ nm_connection_editor_new (NMConnection *connection,
 	                                          settings,
 	                                          NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
 	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (editor->ok_button), use_polkit);
-	g_object_ref_sink (editor->ok_button);
 
 	g_signal_connect (editor->ok_button, "actionable",
 	                  G_CALLBACK (ok_button_actionable_cb), editor);
@@ -645,7 +644,6 @@ cancel_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 {
 	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
 
-	gtk_widget_hide (widget);
 	g_signal_emit (self, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_CANCEL, NULL);
 }
 
@@ -660,7 +658,6 @@ ok_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 {
 	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
 
-	gtk_widget_hide (widget);
 	g_signal_emit (self, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_OK, NULL);
 }
 
