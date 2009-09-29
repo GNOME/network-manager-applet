@@ -555,7 +555,7 @@ add_page (NMConnectionEditor *editor,
 
 static gboolean
 nm_connection_editor_set_connection (NMConnectionEditor *editor,
-                                     NMConnection *connection,
+                                     NMConnection *orig_connection,
                                      GError **error)
 {
 	NMSettingConnection *s_con;
@@ -563,15 +563,15 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+	g_return_val_if_fail (NM_IS_CONNECTION (orig_connection), FALSE);
 
 	/* clean previous connection */
 	if (editor->connection)
 		g_object_unref (editor->connection);
 
-	editor->connection = nm_connection_duplicate (connection);
+	editor->connection = nm_connection_duplicate (orig_connection);
 
-	editor->orig_connection = g_object_ref (connection);
+	editor->orig_connection = g_object_ref (orig_connection);
 	editor->orig_scope = nm_connection_get_scope (editor->connection);
 	nm_connection_editor_update_title (editor);
 
