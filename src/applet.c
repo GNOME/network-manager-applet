@@ -526,7 +526,7 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 	int width = 0, height = 0, owidth, oheight;
 	gdouble extraheight = 0, extrawidth = 0;
 	const char *text;
-	gdouble xpadding = 5.0;
+	gdouble xpadding = 10.0;
 	gdouble ypadding = 5.0;
 	gdouble postpadding = 0.0;
 
