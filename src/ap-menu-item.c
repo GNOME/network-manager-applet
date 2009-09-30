@@ -272,9 +272,8 @@ nm_network_menu_item_set_active (NMNetworkMenuItem *item, gboolean active)
 		g_free (markup);
 	} else
 		gtk_label_set_text (GTK_LABEL (item->ssid), item->ssid_string);
-
-	gtk_widget_set_sensitive (item->strength, active);
 }
+
 void
 nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 {
