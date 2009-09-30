@@ -1277,11 +1277,14 @@ add_connection_buttons (NMConnectionList *self,
 	g_free (name);
 	if (button) {
 		gboolean import_supported = FALSE;
+		GHashTable *plugins;
 
 		info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), button);
 		g_signal_connect (button, "clicked", G_CALLBACK (import_vpn_cb), info);
 
-		g_hash_table_foreach (vpn_get_plugins (NULL), check_vpn_import_supported, &import_supported);
+		plugins = vpn_get_plugins (NULL);
+		if (plugins)
+			g_hash_table_foreach (plugins, check_vpn_import_supported, &import_supported);
 		gtk_widget_set_sensitive (button, import_supported);
 	}
 
