@@ -464,7 +464,6 @@ applet_menu_add_items_top_and_fold_sorted_helper (GtkMenu *menu,
 	int i;
 
 	g_assert (menu);
-	g_assert (items);
 	g_assert (top_count > 0);
 	g_assert (submenu_item);
 	g_assert (prio_cmp_func);
