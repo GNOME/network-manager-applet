@@ -133,7 +133,6 @@ typedef struct
 	int				size;
 
 	GtkWidget *		menu;
-	GtkSizeGroup *	encryption_size_group;
 	char *          tip;
 
 	GtkWidget *		context_menu;
@@ -229,12 +228,6 @@ void applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                     const gchar* label,
                                                     int pos);
 
-void applet_menu_add_items_top_and_fold_sorted_helper (GtkMenu *menu,
-                                                       GList *items,
-                                                       guint top_count,
-                                                       GtkWidget *submenu_item,
-                                                       GCompareFunc prio_cmp_func,
-                                                       GCompareFunc generic_cmp_func);
 GtkWidget*
 applet_menu_item_create_device_item_helper (NMDevice *device,
                                             NMApplet *applet,

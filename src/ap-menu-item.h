@@ -54,8 +54,9 @@ struct _NMNetworkMenuItem
 	guint32     hash_len;
 	gboolean    destroyed;
 	GSList *    dupes;
-	gchar *sort_label;
-	guint32 sort_strength;
+	gboolean    has_connections;
+	gboolean    is_adhoc;
+	gboolean    is_encrypted;
 };
 
 struct _NMNetworkMenuItemClass
@@ -65,15 +66,21 @@ struct _NMNetworkMenuItemClass
 
 
 GType	   nm_network_menu_item_get_type (void) G_GNUC_CONST;
-GtkWidget* nm_network_menu_item_new (GtkSizeGroup * size_group,
-                                     guchar * hash,
-                                     guint32 hash_len);
-void       nm_network_menu_item_set_ssid (NMNetworkMenuItem * item,
-                                          GByteArray * ssid);
-guint32    nm_network_menu_item_get_strength (NMNetworkMenuItem * item);
-void       nm_network_menu_item_set_strength (NMNetworkMenuItem * item,
-                                              NMAccessPoint *ap,
-                                              NMApplet *applet);
+GtkWidget* nm_network_menu_item_new (guchar *hash,
+                                     guint32 hash_len,
+                                     gboolean has_connections);
+
+void       nm_network_menu_item_set_ssid (NMNetworkMenuItem *item,
+                                          GByteArray *ssid);
+const char *nm_network_menu_item_get_ssid (NMNetworkMenuItem *item);
+
+gboolean   nm_network_menu_item_get_is_adhoc (NMNetworkMenuItem *item);
+gboolean   nm_network_menu_item_get_is_encrypted (NMNetworkMenuItem *item);
+
+guint32    nm_network_menu_item_get_strength (NMNetworkMenuItem *item);
+void       nm_network_menu_item_best_strength (NMNetworkMenuItem *item,
+                                               guint8 strength,
+                                               NMApplet *applet);
 const guchar * nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
                                               guint32 * length);
 void       nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
@@ -89,4 +96,8 @@ void       nm_network_menu_item_add_dupe (NMNetworkMenuItem *item,
 
 void       nm_network_menu_item_set_active (NMNetworkMenuItem * item,
                                             gboolean active);
+
+gboolean   nm_network_menu_item_get_has_connections (NMNetworkMenuItem *item);
+
 #endif /* __AP_MENU_ITEM_H__ */
+

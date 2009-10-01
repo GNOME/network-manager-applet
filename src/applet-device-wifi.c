@@ -411,9 +411,9 @@ wireless_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 #define AP_HASH_LEN 16
 
 struct dup_data {
-	NMDevice * device;
-	GtkWidget * found;
-	guchar * hash;
+	NMDevice *device;
+	NMNetworkMenuItem *found;
+	guchar *hash;
 };
 
 static void
@@ -441,7 +441,7 @@ find_duplicate (gpointer d, gpointer user_data)
 		return;
 
 	if (memcmp (hash, data->hash, AP_HASH_LEN) == 0)
-		data->found = widget;
+		data->found = NM_NETWORK_MENU_ITEM (widget);
 }
 
 static GSList *
@@ -460,36 +460,32 @@ filter_connections_for_access_point (GSList *connections, NMDeviceWifi *device, 
 }
 
 static NMNetworkMenuItem *
-add_new_ap_item (NMDeviceWifi *device,
-                 NMAccessPoint *ap,
-                 struct dup_data *dup_data,
-                 NMAccessPoint *active_ap,
-                 NMConnection *active,
-                 GSList *connections,
-                 NMApplet *applet)
+create_new_ap_item (NMDeviceWifi *device,
+                    NMAccessPoint *ap,
+                    struct dup_data *dup_data,
+                    GSList *connections,
+                    NMApplet *applet)
 {
 	WirelessMenuItemInfo *info;
-	GtkWidget *foo;
 	GSList *iter;
 	NMNetworkMenuItem *item = NULL;
 	GSList *ap_connections = NULL;
 	const GByteArray *ssid;
 	guint32 dev_caps;
-	gboolean is_favorite = FALSE;
 
 	ap_connections = filter_connections_for_access_point (connections, device, ap);
 
-	foo = nm_network_menu_item_new (applet->encryption_size_group,
-	                                dup_data->hash, AP_HASH_LEN);
-	item = NM_NETWORK_MENU_ITEM (foo);
-	gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(item), TRUE);
+	item = NM_NETWORK_MENU_ITEM (nm_network_menu_item_new (dup_data->hash,
+	                                                       AP_HASH_LEN,
+	                                                       !!g_slist_length (ap_connections)));
+	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
 
 	ssid = nm_access_point_get_ssid (ap);
 	nm_network_menu_item_set_ssid (item, (GByteArray *) ssid);
 
 	dev_caps = nm_device_wifi_get_capabilities (device);
-	nm_network_menu_item_set_strength (item, ap, applet);
 	nm_network_menu_item_set_detail (item, ap, applet->adhoc_icon, dev_caps);
+	nm_network_menu_item_best_strength (item, nm_access_point_get_strength (ap), applet);
 	nm_network_menu_item_add_dupe (item, ap);
 
 	g_object_set_data (G_OBJECT (item), "device", NM_DEVICE (device));
@@ -522,7 +518,6 @@ add_new_ap_item (NMDeviceWifi *device,
 			gtk_menu_shell_append (GTK_MENU_SHELL (submenu), GTK_WIDGET (subitem));
 		}
 
-		is_favorite = TRUE;
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), submenu);
 	} else {
 		NMConnection *connection;
@@ -535,7 +530,6 @@ add_new_ap_item (NMDeviceWifi *device,
 		if (g_slist_length (ap_connections) == 1) {
 			connection = NM_CONNECTION (g_slist_nth_data (ap_connections, 0));
 			info->connection = g_object_ref (G_OBJECT (connection));
-			is_favorite = TRUE;
 		}
 
 		g_signal_connect_data (GTK_WIDGET (item),
@@ -550,75 +544,62 @@ add_new_ap_item (NMDeviceWifi *device,
 	return item;
 }
 
-
-static GList*
-add_one_ap_menu_item (NMDeviceWifi *device,
+static NMNetworkMenuItem *
+get_menu_item_for_ap (NMDeviceWifi *device,
                       NMAccessPoint *ap,
                       GSList *connections,
-                      NMAccessPoint *active_ap,
-                      NMConnection *active,
-                      GList *menu_list,
+                      GSList *menu_list,
                       NMApplet *applet)
 {
 	const GByteArray *ssid;
 	struct dup_data dup_data = { NULL, NULL };
-	NMNetworkMenuItem *item = NULL;
 
 	/* Don't add BSSs that hide their SSID */
 	ssid = nm_access_point_get_ssid (ap);
 	if (!ssid || nm_utils_is_empty_ssid (ssid->data, ssid->len))
-		return menu_list;
+		return NULL;
 
+	/* Find out if this AP is a member of a larger network that all uses the
+	 * same SSID and security settings.  If so, we'll already have a menu item
+	 * for this SSID, so just update that item's strength and add this AP to
+	 * menu item's duplicate list.
+	 */
 	dup_data.found = NULL;
 	dup_data.hash = g_object_get_data (G_OBJECT (ap), "hash");
 	if (!dup_data.hash)
-		return menu_list;
+		return NULL;
 	dup_data.device = NM_DEVICE (device);
-	g_list_foreach (menu_list,
-	                find_duplicate,
-	                &dup_data);
+	g_slist_foreach (menu_list, find_duplicate, &dup_data);
 
 	if (dup_data.found) {
-		gint8 strength = nm_access_point_get_strength (ap);
-
-		item = NM_NETWORK_MENU_ITEM (dup_data.found);
-
-		/* Just update strength if greater than what's there */
-		if (nm_network_menu_item_get_strength (item) < strength)
-			nm_network_menu_item_set_strength (item, ap, applet);
-
-		nm_network_menu_item_add_dupe (item, ap);
-	} else {
-		item = add_new_ap_item (device, ap, &dup_data, active_ap, active, connections, applet);
-		menu_list = g_list_append (menu_list, item);
+		nm_network_menu_item_best_strength (dup_data.found, nm_access_point_get_strength (ap), applet);
+		nm_network_menu_item_add_dupe (dup_data.found, ap);
+		return NULL;
 	}
 
-	if (active_ap == ap)
-		nm_network_menu_item_set_active (item, TRUE);
-	else
-		nm_network_menu_item_set_active (item, FALSE);
-
-	return menu_list;
+	return create_new_ap_item (device, ap, &dup_data, connections, applet);
 }
 
 static gint
-sort_wireless_networks (gconstpointer tmpa,
-                        gconstpointer tmpb)
+sort_by_name (gconstpointer tmpa, gconstpointer tmpb)
 {
-	NMAccessPoint * a = NM_ACCESS_POINT (tmpa);
-	NMAccessPoint * b = NM_ACCESS_POINT (tmpb);
-	const GByteArray * a_ssid;
-	const GByteArray * b_ssid;
-	NM80211Mode a_mode, b_mode;
+	NMNetworkMenuItem *a = NM_NETWORK_MENU_ITEM (tmpa);
+	NMNetworkMenuItem *b = NM_NETWORK_MENU_ITEM (tmpb);
+	const char *a_ssid, *b_ssid;
+	gboolean a_adhoc, b_adhoc;
 	int i;
 
 	if (a && !b)
 		return 1;
-	if (b && !a)
+	else if (!a && b)
 		return -1;
+	else if (!a && !b)
+		return 0;
+	else if (a == b)
+		return 0;
 
-	a_ssid = nm_access_point_get_ssid (a);
-	b_ssid = nm_access_point_get_ssid (b);
+	a_ssid = nm_network_menu_item_get_ssid (a);
+	b_ssid = nm_network_menu_item_get_ssid (b);
 
 	if (a_ssid && !b_ssid)
 		return 1;
@@ -626,79 +607,67 @@ sort_wireless_networks (gconstpointer tmpa,
 		return -1;
 
 	if (a_ssid && b_ssid) {
-		/* Can't use string compares because SSIDs are byte arrays and
-		 * may legally contain embedded NULLs.
-		 */
-		for (i = 0; i < MIN(a_ssid->len, b_ssid->len); i++) {
-			if (tolower(a_ssid->data[i]) > tolower(b_ssid->data[i]))
-				return 1;
-			else if (tolower(b_ssid->data[i]) > tolower(a_ssid->data[i]))
-				return -1;
-		}
-
-		if (a_ssid->len > b_ssid->len)
-			return 1;
-		if (b_ssid->len > a_ssid->len)
-			return -1;
+		i = g_ascii_strcasecmp (a_ssid, b_ssid);
+		if (i != 0)
+			return i;
 	}
 
-	a_mode = nm_access_point_get_mode (a);
-	b_mode = nm_access_point_get_mode (b);
-	if (a_mode != b_mode) {
-		if (a_mode == NM_802_11_MODE_INFRA)
-			return 1;
+	/* If the names are the same, sort infrastructure APs first */
+	a_adhoc = nm_network_menu_item_get_is_adhoc (a);
+	b_adhoc = nm_network_menu_item_get_is_adhoc (b);
+	if (a_adhoc && !b_adhoc)
+		return 1;
+	else if (!a_adhoc && b_adhoc)
 		return -1;
-	}
 
 	return 0;
 }
 
+/* Sort menu items for the top-level menu:
+ * 1) whether there's a saved connection or not
+ *    a) sort alphabetically within #1
+ * 2) encrypted without a saved connection
+ * 3) unencrypted without a saved connection
+ */
 static gint
-sort_ap_menu_item_by_name0 (gconstpointer a, gconstpointer b)
+sort_toplevel (gconstpointer tmpa, gconstpointer tmpb)
 {
-	if (a == b)
-		return 0;
-	if (!a && b)
-		return -1;
+	NMNetworkMenuItem *a = NM_NETWORK_MENU_ITEM (tmpa);
+	NMNetworkMenuItem *b = NM_NETWORK_MENU_ITEM (tmpb);
+	gboolean a_fave, b_fave;
+
 	if (a && !b)
 		return 1;
-
-	if (!NM_IS_NETWORK_MENU_ITEM (a) || !NM_IS_NETWORK_MENU_ITEM (b)) {
-		return GPOINTER_TO_UINT (a) < GPOINTER_TO_UINT (b) ? -1 : 1;
-	}
-
-	return g_ascii_strcasecmp (NM_NETWORK_MENU_ITEM (a)->sort_label, NM_NETWORK_MENU_ITEM (b)->sort_label);
-}
-
-static gint
-sort_ap_menu_item_by_fav_strength_name0 (gconstpointer a, gconstpointer b)
-{
-	gpointer favorite_a, favorite_b;
-
-	if (a == b)
+	else if (!a && b)
+		return -1;
+	else if (!a && !b)
 		return 0;
-	if (!a && b)
-		return -1;
-	if (a && !b)
-		return 1;
+	else if (a == b)
+		return 0;
 
-	if (!NM_IS_NETWORK_MENU_ITEM (a) || !NM_IS_NETWORK_MENU_ITEM (b)) {
-		return GPOINTER_TO_UINT (a) < GPOINTER_TO_UINT (b) ? -1 : 1;
+	a_fave = nm_network_menu_item_get_has_connections (a);
+	b_fave = nm_network_menu_item_get_has_connections (b);
+
+	/* Items with a saved connection first */
+	if (a_fave && !b_fave)
+		return -1;
+	else if (!a_fave && b_fave)
+		return 1;
+	else if (!a_fave && !b_fave) {
+		gboolean a_enc = nm_network_menu_item_get_is_encrypted (a);
+		gboolean b_enc = nm_network_menu_item_get_is_encrypted (b);
+
+		/* If neither item has a saved connection, sort by encryption */
+		if (a_enc && !b_enc)
+			return -1;
+		else if (!a_enc && b_enc)
+			return 1;
 	}
-	favorite_a = g_object_get_data (G_OBJECT (a), "favorite");
-	favorite_b = g_object_get_data (G_OBJECT (b), "favorite");
 
-	if (GPOINTER_TO_UINT (favorite_a) < GPOINTER_TO_UINT (favorite_b))
-		return 1;
-	if (GPOINTER_TO_UINT (favorite_a) > GPOINTER_TO_UINT (favorite_b))
-		return -1;
-
-	if (NM_NETWORK_MENU_ITEM (a)->sort_strength < NM_NETWORK_MENU_ITEM (b)->sort_strength)
-		return 1;
-	if (NM_NETWORK_MENU_ITEM (a)->sort_strength > NM_NETWORK_MENU_ITEM (b)->sort_strength)
-		return -1;
-
-	return g_ascii_strcasecmp (NM_NETWORK_MENU_ITEM (a)->sort_label, NM_NETWORK_MENU_ITEM (b)->sort_label);
+	/* For all other cases (both have saved connections, both are encrypted, or
+	 * both are unencrypted) just sort by name.
+	 */
+	return sort_by_name (a, b);
 }
 
 static void
@@ -710,22 +679,17 @@ wireless_add_menu_item (NMDevice *device,
 {
 	NMDeviceWifi *wdev;
 	char *text;
-	GtkWidget *item;
 	const GPtrArray *aps;
 	int i;
 	NMAccessPoint *active_ap = NULL;
-	GSList *connections = NULL, *all, *sorted_aps = NULL, *iter;
+	GSList *connections = NULL, *all, *iter;
 	gboolean wireless_enabled = TRUE;
-	GList *menu_list = NULL;
-	GtkWidget *folded_menu_item;
-	GtkWidget *submenu;
+	GSList *menu_items = NULL;  /* All menu items we'll be adding */
+	NMNetworkMenuItem *item, *active_item = NULL;
+	GtkWidget *widget;
 
 	wdev = NM_DEVICE_WIFI (device);
 	aps = nm_device_wifi_get_access_points (wdev);
-
-	all = applet_get_all_connections (applet);
-	connections = utils_filter_connections_for_device (device, all);
-	g_slist_free (all);
 
 	if (n_devices > 1) {
 		char *desc;
@@ -742,62 +706,105 @@ wireless_add_menu_item (NMDevice *device,
 	} else
 		text = g_strdup (ngettext ("Wireless Network", "Wireless Networks", aps ? aps->len : 0));
 
-	item = applet_menu_item_create_device_item_helper (device, applet, text);
+	widget = applet_menu_item_create_device_item_helper (device, applet, text);
 	g_free (text);
 
-	gtk_widget_set_sensitive (item, FALSE);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-	gtk_widget_show (item);
+	gtk_widget_set_sensitive (widget, FALSE);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), widget);
+	gtk_widget_show (widget);
 
-	active_ap = nm_device_wifi_get_active_access_point (wdev);
-	if (active_ap) {
-		menu_list = add_one_ap_menu_item (wdev, active_ap, connections, active_ap, active, menu_list, applet);
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_list->data);
-		g_list_free (menu_list);
-		menu_list = NULL;
+	all = applet_get_all_connections (applet);
+	connections = utils_filter_connections_for_device (device, all);
+	g_slist_free (all);
+
+	/* Add the active AP if we're connected to something and the device is available */
+	if (!nma_menu_device_check_unusable (device)) {
+		active_ap = nm_device_wifi_get_active_access_point (wdev);
+		if (active_ap) {
+			active_item = item = get_menu_item_for_ap (wdev, active_ap, connections, NULL, applet);
+			nm_network_menu_item_set_active (item, TRUE);
+			menu_items = g_slist_append (menu_items, item);
+
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
+			gtk_widget_show_all (GTK_WIDGET (item));
+		}
 	}
 
 	/* Notify user of unmanaged or unavailable device */
 	wireless_enabled = nm_client_wireless_get_enabled (applet->nm_client);
-	item = nma_menu_device_get_menu_item (device, applet, wireless_enabled ? NULL : _("wireless is disabled"));
-	if (item) {
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show (item);
+	widget = nma_menu_device_get_menu_item (device, applet, wireless_enabled ? NULL : _("wireless is disabled"));
+	if (widget) {
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), widget);
+		gtk_widget_show (widget);
 	}
 
-	if (!nma_menu_device_check_unusable (device)) {
+	/* If disabled or rfkilled or whatever, nothing left to do */
+	if (nma_menu_device_check_unusable (device))
+		goto out;
+
+	/* Create menu items for the rest of the APs */
+	for (i = 0; aps && (i < aps->len); i++) {
+		NMAccessPoint *ap = g_ptr_array_index (aps, i);
+
+		item = get_menu_item_for_ap (wdev, ap, connections, menu_items, applet);
+		if (item)
+			menu_items = g_slist_append (menu_items, item);
+	}
+
+	/* Now remove the active AP item from the list, as we've already dealt with
+	 * it.  (Needed it when creating menu items for the rest of the APs though
+	 * to ensure duplicate APs are handled correctly)
+	 */
+	if (active_item)
+		menu_items = g_slist_remove (menu_items, active_item);
+
+	/* Sort all the rest of the menu items for the top-level menu */
+	menu_items = g_slist_sort (menu_items, sort_toplevel);
+
+	if (g_slist_length (menu_items)) {
+		GSList *submenu_items = NULL;
+		guint32 num_for_toplevel = 5;
+
 		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
 
-		/* Add all networks in our network list to the menu */
-		for (i = 0; aps && (i < aps->len); i++)
-			sorted_aps = g_slist_append (sorted_aps, g_ptr_array_index (aps, i));
+		if (g_slist_length (menu_items) == (num_for_toplevel + 1))
+			num_for_toplevel++;
 
-		sorted_aps = g_slist_sort (sorted_aps, sort_wireless_networks);
-		for (iter = sorted_aps; iter; iter = g_slist_next (iter)) {
-			if (active_ap != NM_ACCESS_POINT (iter->data)) {
-				menu_list = add_one_ap_menu_item (wdev,
-				                                  NM_ACCESS_POINT (iter->data),
-				                                  connections,
-				                                  active_ap,
-				                                  active,
-				                                  menu_list,
-				                                  applet);
-			}
+		/* Add the first 5 APs (or 6 if there are only 6 total) from the sorted
+		 * toplevel list.
+		 */
+		for (iter = menu_items; iter && num_for_toplevel; iter = g_slist_next (iter)) {
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (iter->data));
+			gtk_widget_show_all (GTK_WIDGET (iter->data));
+			num_for_toplevel--;
+			submenu_items = iter->next;
 		}
 
-		folded_menu_item = gtk_menu_item_new_with_mnemonic (_("More networks..."));
-		submenu = gtk_menu_new ();
-		gtk_menu_item_set_submenu (GTK_MENU_ITEM (folded_menu_item), submenu);
-		applet_menu_add_items_top_and_fold_sorted_helper (GTK_MENU (menu),
-		                                                  menu_list,
-		                                                  5,
-		                                                  GTK_WIDGET (folded_menu_item),
-		                                                  sort_ap_menu_item_by_fav_strength_name0,
-       	                                                  sort_ap_menu_item_by_name0);
-		g_list_free (menu_list);
-		g_slist_free (sorted_aps);
+		/* If there are any submenu items, make a submenu for those */
+		if (submenu_items) {
+			GtkWidget *subitem, *submenu;
+			GSList *sorted_subitems;
+
+			subitem = gtk_menu_item_new_with_mnemonic (_("More networks..."));
+			submenu = gtk_menu_new ();
+			gtk_menu_item_set_submenu (GTK_MENU_ITEM (subitem), submenu);
+
+			/* Sort the subitems alphabetically */
+			sorted_subitems = g_slist_copy (submenu_items);
+			sorted_subitems = g_slist_sort (sorted_subitems, sort_by_name);
+
+			/* And add the rest to the submenu */
+			for (iter = sorted_subitems; iter; iter = g_slist_next (iter))
+				gtk_menu_shell_append (GTK_MENU_SHELL (submenu), GTK_WIDGET (iter->data));
+			g_slist_free (sorted_subitems);
+
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), subitem);
+			gtk_widget_show_all (subitem);
+		}
 	}
 
+out:
+	g_slist_free (menu_items);
 	g_slist_free (connections);
 }
 

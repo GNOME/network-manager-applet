@@ -52,7 +52,6 @@ nm_network_menu_item_init (NMNetworkMenuItem * item)
 
 	item->strength = gtk_image_new ();
 	gtk_box_pack_end (GTK_BOX (item->hbox), item->strength, FALSE, TRUE, 0);
-	item->sort_label = g_strdup ("");
 
 	gtk_widget_show (item->ssid);
 	gtk_widget_show (item->strength);
@@ -61,9 +60,9 @@ nm_network_menu_item_init (NMNetworkMenuItem * item)
 }
 
 GtkWidget*
-nm_network_menu_item_new (GtkSizeGroup * size_group,
-                          guchar * hash,
-                          guint32 hash_len)
+nm_network_menu_item_new (guchar *hash,
+                          guint32 hash_len,
+                          gboolean has_connections)
 {
 	NMNetworkMenuItem * item;
 
@@ -71,15 +70,13 @@ nm_network_menu_item_new (GtkSizeGroup * size_group,
 	if (item == NULL)
 		return NULL;
 
-	item->destroyed = FALSE;
-	item->int_strength = 0;
+	item->has_connections = has_connections;
+
 	if (hash && hash_len) {
 		item->hash = g_malloc0 (hash_len);
 		memcpy (item->hash, hash, hash_len);
 		item->hash_len = hash_len;
 	}
-	if (size_group)
-		gtk_size_group_add_widget (size_group, item->detail);
 
 	return GTK_WIDGET (item);
 }
@@ -98,8 +95,6 @@ nm_network_menu_item_class_dispose (GObject *object)
 	gtk_widget_destroy (item->strength);
 	gtk_widget_destroy (item->detail);
 	gtk_widget_destroy (item->hbox);
-
-	g_free (item->sort_label);
 
 	item->destroyed = TRUE;
 	g_free (item->hash);
@@ -120,13 +115,12 @@ nm_network_menu_item_class_init (NMNetworkMenuItemClass * klass)
 }
 
 void
-nm_network_menu_item_set_ssid (NMNetworkMenuItem * item, GByteArray * ssid)
+nm_network_menu_item_set_ssid (NMNetworkMenuItem *item, GByteArray *ssid)
 {
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (ssid != NULL);
 
 	g_free (item->ssid_string);
-	g_free (item->sort_label);
 
 	item->ssid_string = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
 	if (!item->ssid_string) {
@@ -134,8 +128,12 @@ nm_network_menu_item_set_ssid (NMNetworkMenuItem * item, GByteArray * ssid)
 		item->ssid_string = g_strdup ("<unknown>");
 	}
 	gtk_label_set_text (GTK_LABEL (item->ssid), item->ssid_string);
+}
 
-	item->sort_label = g_strdup (gtk_label_get_text (GTK_LABEL (item->ssid)));
+const char *
+nm_network_menu_item_get_ssid (NMNetworkMenuItem *item)
+{
+	return item->ssid_string;
 }
 
 guint32
@@ -147,44 +145,34 @@ nm_network_menu_item_get_strength (NMNetworkMenuItem * item)
 }
 
 void
-nm_network_menu_item_set_strength (NMNetworkMenuItem * item,
-                                   NMAccessPoint *ap,
-                                   NMApplet *applet)
+nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
+                                    guint8 strength,
+                                    NMApplet *applet)
 {
-	guint8 strength;
 	GdkPixbuf *pixbuf = NULL;
-	guint32 ap_flags, ap_wpa, ap_rsn;
 
 	g_return_if_fail (item != NULL);
 
-	ap_flags = nm_access_point_get_flags (ap);
-	ap_wpa = nm_access_point_get_wpa_flags (ap);
-	ap_rsn = nm_access_point_get_rsn_flags (ap);
-	strength = nm_access_point_get_strength(ap);
 	strength = CLAMP (strength, 0, 100);
+
+	/* Just do nothing if the new strength is less */
+	if (strength < item->int_strength)
+		return;
 
 	item->int_strength = strength;
 
-	if (strength > 80) {
+	if (strength > 80)
 		pixbuf = gdk_pixbuf_copy (applet->wireless_100_icon);
-		item->sort_strength = 4;
-	} else if (strength > 55) {
+	else if (strength > 55)
 		pixbuf = gdk_pixbuf_copy (applet->wireless_75_icon);
-		item->sort_strength = 3;
-	} else if (strength > 30) {
+	else if (strength > 30)
 		pixbuf = gdk_pixbuf_copy (applet->wireless_50_icon);
-		item->sort_strength = 2;
-	} else if (strength > 5) {
+	else if (strength > 5)
 		pixbuf = gdk_pixbuf_copy (applet->wireless_25_icon);
-		item->sort_strength = 1;
-	} else {
+	else
 		pixbuf = gdk_pixbuf_copy (applet->wireless_00_icon);
-		item->sort_strength = 0;
-	}
 
-	if ((ap_flags & NM_802_11_AP_FLAGS_PRIVACY)
-		|| (ap_wpa != NM_802_11_AP_SEC_NONE)
-		|| (ap_rsn != NM_802_11_AP_SEC_NONE)) {
+	if (item->is_encrypted) {
 		GdkPixbuf *top = applet->secure_lock_icon;
 
 		gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
@@ -209,9 +197,9 @@ nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
 }
 
 void
-nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
-                                 NMAccessPoint * ap,
-                                 GdkPixbuf * adhoc_icon,
+nm_network_menu_item_set_detail (NMNetworkMenuItem *item,
+                                 NMAccessPoint *ap,
+                                 GdkPixbuf *adhoc_icon,
                                  guint32 dev_caps)
 {
 	gboolean is_adhoc = FALSE;
@@ -221,14 +209,14 @@ nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
 	ap_wpa = nm_access_point_get_wpa_flags (ap);
 	ap_rsn = nm_access_point_get_rsn_flags (ap);
 
-	if (nm_access_point_get_mode (ap) == NM_802_11_MODE_ADHOC)
-		is_adhoc = TRUE;
+	if ((ap_flags & NM_802_11_AP_FLAGS_PRIVACY) || ap_wpa || ap_rsn)
+		item->is_encrypted = TRUE;
 
-	if (is_adhoc) {
+	if (nm_access_point_get_mode (ap) == NM_802_11_MODE_ADHOC) {
+		item->is_adhoc = is_adhoc = TRUE;
 		gtk_image_set_from_pixbuf (GTK_IMAGE (item->detail), adhoc_icon);
-	} else {
+	} else
 		gtk_image_set_from_stock (GTK_IMAGE (item->detail), NULL, GTK_ICON_SIZE_MENU);
-	}
 
 	/* Don't enable the menu item the device can't even connect to the AP */
 	if (   !nm_utils_security_valid (NMU_SEC_NONE, dev_caps, TRUE, is_adhoc, ap_flags, ap_wpa, ap_rsn)
@@ -284,5 +272,23 @@ nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 
 	path = nm_object_get_path (NM_OBJECT (ap));
 	item->dupes = g_slist_prepend (item->dupes, g_strdup (path));
+}
+
+gboolean
+nm_network_menu_item_get_has_connections (NMNetworkMenuItem *item)
+{
+	return item->has_connections;
+}
+
+gboolean
+nm_network_menu_item_get_is_adhoc (NMNetworkMenuItem *item)
+{
+	return item->is_adhoc;
+}
+
+gboolean
+nm_network_menu_item_get_is_encrypted (NMNetworkMenuItem *item)
+{
+	return item->is_encrypted;
 }
 

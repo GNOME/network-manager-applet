@@ -448,66 +448,6 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 	return;
 }
 
-void
-applet_menu_add_items_top_and_fold_sorted_helper (GtkMenu *menu,
-                                                  GList *items,
-                                                  guint top_count,
-                                                  GtkWidget *submenu_item,
-                                                  GCompareFunc prio_cmp_func,
-                                                  GCompareFunc generic_cmp_func)
-{
-	GList *iter = items;
-	GList *clone_top = NULL;
-	GList *clone_top_filtered = NULL;
-	GList *clone_folded = NULL;
-	GtkWidget *submenu;
-	int i;
-
-	g_assert (menu);
-	g_assert (top_count > 0);
-	g_assert (submenu_item);
-	g_assert (prio_cmp_func);
-	g_assert (generic_cmp_func);
-
-	submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (submenu_item));
-	g_assert (submenu_item);
-
-	while (iter) {
-		clone_top = g_list_append (clone_top, iter->data);
-		clone_folded = g_list_append (clone_folded, iter->data);
-		iter = iter->next;
-	}
-
-	clone_top = g_list_sort (clone_top, prio_cmp_func);
-	clone_folded = g_list_sort (clone_folded, generic_cmp_func);
-
-	iter = clone_top;
-	for (i = 0; !!iter && i < top_count; i++, iter = iter->next) {
-		clone_folded = g_list_remove (clone_folded, iter->data);
-		clone_top_filtered = g_list_append (clone_top_filtered, iter->data);
-	}
-
-
-	clone_top_filtered = g_list_sort (clone_top_filtered, generic_cmp_func);
-	iter = clone_top_filtered;
-	while (iter) {
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), iter->data);
-		iter = iter->next;
-	}
-
-	iter = clone_folded;
-	if (iter)
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), submenu_item);
-	while (iter) {
-		gtk_menu_shell_append (GTK_MENU_SHELL (submenu), iter->data);
-		iter = iter->next;
-	}
-
-	g_list_free(clone_top);
-	g_list_free(clone_top_filtered);
-	g_list_free(clone_folded);
-}
-
 #define TITLE_TEXT_R ((double) 0x5e / 255.0 )
 #define TITLE_TEXT_G ((double) 0x5e / 255.0 )
 #define TITLE_TEXT_B ((double) 0x5e / 255.0 )
@@ -616,7 +556,7 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 }
 
 
-GtkWidget*
+GtkWidget *
 applet_menu_item_create_device_item_helper (NMDevice *device,
                                             NMApplet *applet,
                                             const gchar *text)
@@ -2794,9 +2734,6 @@ setup_widgets (NMApplet *applet)
 	applet->context_menu = nma_context_menu_create (applet);
 	if (!applet->context_menu)
 		return FALSE;
-	applet->encryption_size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
-	if (!applet->encryption_size_group)
-		return FALSE;
 
 	return TRUE;
 }
@@ -2985,9 +2922,6 @@ static void finalize (GObject *object)
 
 	if (applet->gconf_client)
 		g_object_unref (applet->gconf_client);
-
-	if (applet->encryption_size_group)
-		g_object_unref (applet->encryption_size_group);
 
 	if (applet->status_icon)
 		g_object_unref (applet->status_icon);
