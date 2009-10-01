@@ -126,7 +126,6 @@ add_connection_items (NMDevice *device,
 
 	for (iter = connections; iter; iter = g_slist_next (iter)) {
 		NMConnection *connection = NM_CONNECTION (iter->data);
-		NMSettingConnection *s_con;
 		GtkWidget *item;
 
 		if (active == connection) {
@@ -137,10 +136,8 @@ add_connection_items (NMDevice *device,
 				continue;
 		}
 
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		item = gtk_image_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
-		gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(item), TRUE);
- 		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
+		item = applet_new_menu_item_helper (connection, active, (flag & ADD_ACTIVE));
+		gtk_widget_set_sensitive (item, carrier);
 
 		info = g_slice_new0 (WiredMenuItemInfo);
 		info->applet = applet;

@@ -448,6 +448,32 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 	return;
 }
 
+GtkWidget *
+applet_new_menu_item_helper (NMConnection *connection,
+                             NMConnection *active,
+                             gboolean add_active)
+{
+	GtkWidget *item;
+	NMSettingConnection *s_con;
+	char *markup;
+	GtkWidget *label;
+
+	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	item = gtk_image_menu_item_new_with_label ("");
+	if (add_active && (active == connection)) {
+		/* Pure evil */
+		label = gtk_bin_get_child (GTK_BIN (item));
+		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+		markup = g_markup_printf_escaped ("<b>%s</b>", nm_setting_connection_get_id (s_con));
+		gtk_label_set_markup (GTK_LABEL (label), markup);
+		g_free (markup);
+	} else
+		gtk_menu_item_set_label (GTK_MENU_ITEM (item), nm_setting_connection_get_id (s_con));
+
+	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
+	return item;
+}
+
 #define TITLE_TEXT_R ((double) 0x5e / 255.0 )
 #define TITLE_TEXT_G ((double) 0x5e / 255.0 )
 #define TITLE_TEXT_B ((double) 0x5e / 255.0 )

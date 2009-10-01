@@ -90,7 +90,6 @@ typedef enum {
 static void
 add_connection_items (NMDevice *device,
                       GSList *connections,
-                      gboolean carrier,
                       NMConnection *active,
                       AddActiveInactiveEnum flag,
                       GtkWidget *menu,
@@ -101,7 +100,6 @@ add_connection_items (NMDevice *device,
 
 	for (iter = connections; iter; iter = g_slist_next (iter)) {
 		NMConnection *connection = NM_CONNECTION (iter->data);
-		NMSettingConnection *s_con;
 		GtkWidget *item;
 
 		if (active == connection) {
@@ -112,10 +110,7 @@ add_connection_items (NMDevice *device,
 				continue;
 		}
 
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		item = gtk_image_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
-		gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(item), TRUE);
- 		gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
+		item = applet_new_menu_item_helper (connection, active, (flag & ADD_ACTIVE));
 
 		info = g_slice_new0 (BtMenuItemInfo);
 		info->applet = applet;
@@ -141,7 +136,6 @@ bt_add_menu_item (NMDevice *device,
 	const char *text;
 	GtkWidget *item;
 	GSList *connections, *all;
-	gboolean carrier = TRUE;
 
 	all = applet_get_all_connections (applet);
 	connections = utils_filter_connections_for_device (device, all);
@@ -162,7 +156,7 @@ bt_add_menu_item (NMDevice *device,
 	gtk_widget_show (item);
 
 	if (g_slist_length (connections))
-		add_connection_items (device, connections, carrier, active, ADD_ACTIVE, menu, applet);
+		add_connection_items (device, connections, active, ADD_ACTIVE, menu, applet);
 
 	/* Notify user of unmanaged or unavailable device */
 	item = nma_menu_device_get_menu_item (device, applet, NULL);
@@ -175,7 +169,7 @@ bt_add_menu_item (NMDevice *device,
 		/* Add menu items for existing bluetooth connections for this device */
 		if (g_slist_length (connections)) {
 			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
-			add_connection_items (device, connections, carrier, active, ADD_INACTIVE, menu, applet);
+			add_connection_items (device, connections, active, ADD_INACTIVE, menu, applet);
 		}
 	}
 
