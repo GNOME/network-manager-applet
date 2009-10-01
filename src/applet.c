@@ -1667,6 +1667,10 @@ applet_common_device_state_changed (NMDevice *device,
 	NMConnection *connection;
 	NMActiveConnection *active = NULL;
 
+	connection = applet_find_active_connection_for_device (device, applet, &active);
+	if (!connection)
+		return;
+
 	switch (new_state) {
 	case NM_DEVICE_STATE_PREPARE:
 	case NM_DEVICE_STATE_CONFIG:
@@ -1678,8 +1682,7 @@ applet_common_device_state_changed (NMDevice *device,
 		/* If the device activation was successful, update the corresponding
 		 * connection object with a current timestamp.
 		 */
-		connection = applet_find_active_connection_for_device (device, applet, &active);
-		if (connection && active)
+		if (active)
 			update_connection_timestamp (active, connection, applet);
 		/* Fall through */
 	default:
