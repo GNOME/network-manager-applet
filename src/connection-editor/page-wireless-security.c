@@ -342,13 +342,15 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 }
 
 CEPage *
-ce_page_wireless_security_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+ce_page_wireless_security_new (NMConnection *connection,
+                               GtkWindow *parent_window,
+                               const char **out_secrets_setting_name,
+                               GError **error)
 {
 	CEPageWirelessSecurity *self;
 	CEPage *parent;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wsec = NULL;
-	const char *setting_name = NULL;
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
 	const char *security;
 
@@ -398,21 +400,17 @@ ce_page_wireless_security_new (NMConnection *connection, GtkWindow *parent_windo
 	    || default_type == NMU_SEC_LEAP
 	    || default_type == NMU_SEC_WPA_PSK
 	    || default_type == NMU_SEC_WPA2_PSK) {
-		setting_name = NM_SETTING_WIRELESS_SECURITY_SETTING_NAME;
+		*out_secrets_setting_name = NM_SETTING_WIRELESS_SECURITY_SETTING_NAME;
 	}
 
 	/* Or if it is 802.1x enabled */
 	if (   default_type == NMU_SEC_DYNAMIC_WEP
 	    || default_type == NMU_SEC_WPA_ENTERPRISE
 	    || default_type == NMU_SEC_WPA2_ENTERPRISE) {
-		setting_name = NM_SETTING_802_1X_SETTING_NAME;
+		*out_secrets_setting_name = NM_SETTING_802_1X_SETTING_NAME;
 	}
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
-	if (!ce_page_initialize (parent, setting_name, error)) {
-		g_object_unref (self);
-		return NULL;
-	}
 
 	return CE_PAGE (self);
 }

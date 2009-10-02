@@ -47,7 +47,10 @@ typedef struct {
 
 GType ce_page_wired_get_type (void);
 
-CEPage *ce_page_wired_new (NMConnection *connection, GtkWindow *parent, GError **error);
+CEPage *ce_page_wired_new (NMConnection *connection,
+                           GtkWindow *parent,
+                           const char **out_secrets_setting_name,
+                           GError **error);
 
 void wired_connection_new (GtkWindow *parent,
                            PageNewConnectionResultFunc result_func,

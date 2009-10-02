@@ -120,7 +120,10 @@ finish_setup (CEPageDsl *self, gpointer unused, GError *error, gpointer user_dat
 }
 
 CEPage *
-ce_page_dsl_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+ce_page_dsl_new (NMConnection *connection,
+                 GtkWindow *parent_window,
+                 const char **out_secrets_setting_name,
+                 GError **error)
 {
 	CEPageDsl *self;
 	CEPageDslPrivate *priv;
@@ -159,10 +162,8 @@ ce_page_dsl_new (NMConnection *connection, GtkWindow *parent_window, GError **er
 	}
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
-	if (!ce_page_initialize (parent, NM_SETTING_PPPOE_SETTING_NAME, error)) {
-		g_object_unref (self);
-		return NULL;
-	}
+
+	*out_secrets_setting_name = NM_SETTING_PPPOE_SETTING_NAME;
 
 	return CE_PAGE (self);
 }

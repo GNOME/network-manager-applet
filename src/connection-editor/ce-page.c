@@ -175,34 +175,40 @@ emit_initialized (CEPage *self, GError *error)
 	g_signal_emit (self, signals[INITIALIZED], 0, NULL, error);
 }
 
-static void
-get_secrets_cb (NMSettingsConnectionInterface *connection,
-                GHashTable *secrets,
-                GError *error,
-                gpointer user_data)
+void
+ce_page_complete_init (CEPage *self,
+                       const char *setting_name,
+                       GHashTable *secrets,
+                       GError *error)
 {
-	CEPage *self = user_data;
 	GError *update_error = NULL;
 	GHashTable *setting_hash;
+
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (CE_IS_PAGE (self));
 
 	if (error) {
 		emit_initialized (self, error);
 		return;
+	} else if (!setting_name || !secrets) {
+		/* Success, no secrets */
+		emit_initialized (self, NULL);
+		return;
 	}
 
+	g_assert (setting_name);
 	g_assert (secrets);
 
 	/* Update the connection with the new secrets */
-	setting_hash = g_hash_table_lookup (secrets, self->setting_name);
-
-	/* No secrets? */
+	setting_hash = g_hash_table_lookup (secrets, setting_name);
 	if (!setting_hash) {
+		/* Success, no secrets */
 		emit_initialized (self, NULL);
 		return;
 	}
 
 	if (nm_connection_update_secrets (self->connection,
-	                                  self->setting_name,
+	                                  setting_name,
 	                                  setting_hash,
 	                                  &update_error)) {
 		/* Success */
@@ -217,40 +223,6 @@ get_secrets_cb (NMSettingsConnectionInterface *connection,
 
 	emit_initialized (self, update_error);
 	g_clear_error (&update_error);
-}
-
-gboolean
-ce_page_initialize (CEPage *self,
-                    const char *setting_name,
-                    GError **error)
-{
-	g_return_val_if_fail (self != NULL, FALSE);
-	g_return_val_if_fail (self->connection != NULL, FALSE);
-
-	/* Don't need to request secrets for settings which are known not to have any */
-	if (!setting_name) {
-		emit_initialized (self, NULL);
-		return TRUE;
-	}
-
-	/* Don't request secrets from a plain NMConnection either, since we only
-	 * use those during add/import where the secrets are already filled in.
-	 */
-	if (!NM_IS_SETTINGS_CONNECTION_INTERFACE (self->connection)) {
-		emit_initialized (self, NULL);
-		return TRUE;
-	}
-
-	if (self->setting_name)
-		g_free (self->setting_name);
-	self->setting_name = g_strdup (setting_name);
-
-	return nm_settings_connection_interface_get_secrets (NM_SETTINGS_CONNECTION_INTERFACE (self->connection),
-	                                                     self->setting_name,
-	                                                     NULL,
-	                                                     FALSE,
-	                                                     get_secrets_cb,
-	                                                     self);
 }
 
 static void
@@ -289,7 +261,6 @@ finalize (GObject *object)
 	CEPage *self = CE_PAGE (object);
 
 	g_free (self->title);
-	g_free (self->setting_name);
 
 	G_OBJECT_CLASS (ce_page_parent_class)->finalize (object);
 }

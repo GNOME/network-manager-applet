@@ -511,14 +511,92 @@ static void
 page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	GtkWidget *widget;
+	GtkWidget *notebook;
+	GtkWidget *label;
 
 	if (error) {
+		g_object_unref (page);
 		gtk_widget_hide (editor->window);
 		g_signal_emit (editor, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_NONE, error);
 		return;
 	}
 
+	/* Add the page to the UI */
+	notebook = glade_xml_get_widget (editor->xml, "notebook");
+	label = gtk_label_new (ce_page_get_title (page));
+	widget = ce_page_get_page (page);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
+	editor->pages = g_slist_append (editor->pages, page);
+
 	recheck_initialization (editor);
+}
+
+typedef struct {
+	NMConnectionEditor *self;
+	CEPage *page;
+	char *setting_name;
+} GetSecretsInfo;
+
+static void
+get_secrets_cb (NMSettingsConnectionInterface *connection,
+                GHashTable *secrets,
+                GError *error,
+                gpointer user_data)
+{
+	GetSecretsInfo *info = user_data;
+
+	ce_page_complete_init (info->page, info->setting_name, secrets, error);
+
+	g_free (info->setting_name);
+	g_free (info);
+}
+
+static void
+get_secrets_for_page (NMConnectionEditor *self,
+                      CEPage *page,
+                      const char *setting_name)
+{
+	GetSecretsInfo *info;
+	gboolean success = FALSE;
+
+	if (!setting_name) {
+		/* page doesn't need any secrets */
+		ce_page_complete_init (page, NULL, NULL, NULL);
+		return;
+	}
+
+	/* Try to get secrets from ->orig_connection, because it's the one that
+	 * implements NMSettingsConnectionInterface and can respond to requests for
+	 * its secrets.  ->connection is a plain NMConnection copy of ->orig_connection
+	 * which is the connection that's actually changed when the user clicks stuff.
+	 * When creating importing or creating new connections though, ->orig_connection
+	 * is an NMConnection because it hasn't been exported over D-Bus yet, so we
+	 * can't ask it for secrets, because it doesn't implement NMSettingsConnectionInterface.
+	 */
+	if (!NM_IS_SETTINGS_CONNECTION_INTERFACE (self->orig_connection)) {
+		ce_page_complete_init (page, setting_name, NULL, NULL);
+		return;
+	}
+
+	info = g_malloc0 (sizeof (GetSecretsInfo));
+	info->self = self;
+	info->page = page;
+	info->setting_name = g_strdup (setting_name);
+
+	success = nm_settings_connection_interface_get_secrets (NM_SETTINGS_CONNECTION_INTERFACE (self->orig_connection),
+	                                                        setting_name,
+	                                                        NULL,
+	                                                        FALSE,
+	                                                        get_secrets_cb,
+	                                                        info);
+	if (!success) {
+		GError *error;
+
+		error = g_error_new_literal (0, 0, _("Failed to update connection secrets due to an unknown error."));
+		get_secrets_cb (NM_SETTINGS_CONNECTION_INTERFACE (self->orig_connection), NULL, error, info);
+		g_error_free (error);
+	}
 }
 
 static gboolean
@@ -528,27 +606,23 @@ add_page (NMConnectionEditor *editor,
           GError **error)
 {
 	CEPage *page;
-	GtkWidget *widget;
-	GtkWidget *notebook;
-	GtkWidget *label;
+	const char *secrets_setting_name = NULL;
 
 	g_return_val_if_fail (editor != NULL, FALSE);
 	g_return_val_if_fail (func != NULL, FALSE);
 	g_return_val_if_fail (connection != NULL, FALSE);
 
-	page = (*func) (connection, GTK_WINDOW (editor->window), error);
+	page = (*func) (connection, GTK_WINDOW (editor->window), &secrets_setting_name, error);
 	if (!page)
 		return FALSE;
 
-	notebook = glade_xml_get_widget (editor->xml, "notebook");
-	label = gtk_label_new (ce_page_get_title (page));
-	widget = ce_page_get_page (page);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
-
-	editor->pages = g_slist_append (editor->pages, page);
-
 	g_signal_connect (page, "changed", G_CALLBACK (page_changed), editor);
 	g_signal_connect (page, "initialized", G_CALLBACK (page_initialized), editor);
+
+	/* Request any secrets the page might require; or if it doesn't want any,
+	 * let the page initialize.
+	 */
+	get_secrets_for_page (editor, page, secrets_setting_name);
 
 	return TRUE;
 }

@@ -47,7 +47,10 @@ typedef struct {
 
 GType ce_page_wireless_get_type (void);
 
-CEPage *ce_page_wireless_new (NMConnection *connection, GtkWindow *parent, GError **error);
+CEPage *ce_page_wireless_new (NMConnection *connection,
+                              GtkWindow *parent,
+                              const char **out_secrets_setting_name,
+                              GError **error);
 
 /* Caller must free returned array */
 GByteArray *ce_page_wireless_get_ssid (CEPageWireless *self);

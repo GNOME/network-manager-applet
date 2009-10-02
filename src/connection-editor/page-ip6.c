@@ -649,7 +649,10 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 }
 
 CEPage *
-ce_page_ip6_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+ce_page_ip6_new (NMConnection *connection,
+                 GtkWindow *parent_window,
+                 const char **out_secrets_setting_name,
+                 GError **error)
 {
 	CEPageIP6 *self;
 	CEPageIP6Private *priv;
@@ -695,10 +698,6 @@ ce_page_ip6_new (NMConnection *connection, GtkWindow *parent_window, GError **er
 	}
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
-	if (!ce_page_initialize (parent, NULL, error)) {
-		g_object_unref (self);
-		return NULL;
-	}
 
 	return CE_PAGE (self);
 }

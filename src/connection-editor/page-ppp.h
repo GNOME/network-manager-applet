@@ -47,6 +47,9 @@ typedef struct {
 
 GType ce_page_ppp_get_type (void);
 
-CEPage *ce_page_ppp_new (NMConnection *connection, GtkWindow *parent, GError **error);
+CEPage *ce_page_ppp_new (NMConnection *connection,
+                         GtkWindow *parent,
+                         const char **out_secrets_setting_name,
+                         GError **error);
 
 #endif  /* __PAGE_PPP_H__ */

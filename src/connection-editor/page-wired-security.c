@@ -96,7 +96,10 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 }
 
 CEPage *
-ce_page_wired_security_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+ce_page_wired_security_new (NMConnection *connection,
+                            GtkWindow *parent_window,
+                            const char **out_secrets_setting_name,
+                            GError **error)
 {
 	CEPageWiredSecurity *self;
 	CEPage *parent;
@@ -120,12 +123,9 @@ ce_page_wired_security_new (NMConnection *connection, GtkWindow *parent_window, 
 	priv->enabled = GTK_TOGGLE_BUTTON (gtk_check_button_new_with_label (_("Use 802.1X security for this connection")));
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
-	if (!ce_page_initialize (parent,
-	                         priv->initial_have_8021x ? NM_SETTING_802_1X_SETTING_NAME : NULL,
-	                         error)) {
-		g_object_unref (self);
-		return NULL;
-	}
+
+	if (priv->initial_have_8021x)
+		*out_secrets_setting_name = NM_SETTING_802_1X_SETTING_NAME;
 
 	return CE_PAGE (self);
 }

@@ -66,7 +66,6 @@ typedef struct {
 	DBusGProxy *proxy;
 	gulong secrets_done_validate;
 
-	char *setting_name;
 	NMConnection *connection;
 	GtkWindow *parent_window;
 
@@ -85,7 +84,10 @@ typedef struct {
 } CEPageClass;
 
 
-typedef CEPage* (*CEPageNewFunc)(NMConnection *connection, GtkWindow *parent, GError **error);
+typedef CEPage* (*CEPageNewFunc)(NMConnection *connection,
+                                 GtkWindow *parent,
+                                 const char **out_secrets_setting_name,
+                                 GError **error);
 
 
 GType ce_page_get_type (void);
@@ -106,9 +108,10 @@ gint ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
 
 int ce_get_property_default (NMSetting *setting, const char *property_name);
 
-gboolean ce_page_initialize (CEPage *self,
-                             const char *setting_name,
-                             GError **error);
+void ce_page_complete_init (CEPage *self,
+                            const char *setting_name,
+                            GHashTable *secrets,
+                            GError *error);
 
 gboolean ce_page_get_initialized (CEPage *self);
 

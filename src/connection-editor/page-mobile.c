@@ -293,12 +293,14 @@ finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_
 }
 
 CEPage *
-ce_page_mobile_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+ce_page_mobile_new (NMConnection *connection,
+                    GtkWindow *parent_window,
+                    const char **out_secrets_setting_name,
+                    GError **error)
 {
 	CEPageMobile *self;
 	CEPageMobilePrivate *priv;
 	CEPage *parent;
-	const char *setting_name = NM_SETTING_GSM_SETTING_NAME;
 
 	self = CE_PAGE_MOBILE (g_object_new (CE_TYPE_PAGE_MOBILE,
 	                                     CE_PAGE_CONNECTION, connection,
@@ -327,9 +329,12 @@ ce_page_mobile_new (NMConnection *connection, GtkWindow *parent_window, GError *
 	priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 
 	priv->setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_GSM);
-	if (!priv->setting) {
+	if (priv->setting)
+		*out_secrets_setting_name = NM_SETTING_GSM_SETTING_NAME;
+	else {
 		priv->setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_CDMA);
-		setting_name = NM_SETTING_CDMA_SETTING_NAME;
+		if (priv->setting)
+			*out_secrets_setting_name = NM_SETTING_CDMA_SETTING_NAME;
 	}
 
 	if (!priv->setting) {
@@ -339,10 +344,6 @@ ce_page_mobile_new (NMConnection *connection, GtkWindow *parent_window, GError *
 	}
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
-	if (!ce_page_initialize (parent, setting_name, error)) {
-		g_object_unref (self);
-		return NULL;
-	}
 
 	return CE_PAGE (self);
 }

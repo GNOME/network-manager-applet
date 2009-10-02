@@ -329,7 +329,10 @@ finish_setup (CEPageWireless *self, gpointer unused, GError *error, gpointer use
 }
 
 CEPage *
-ce_page_wireless_new (NMConnection *connection, GtkWindow *parent_window, GError **error)
+ce_page_wireless_new (NMConnection *connection,
+                      GtkWindow *parent_window,
+                      const char **out_secrets_setting_name,
+                      GError **error)
 {
 	CEPageWireless *self;
 	CEPageWirelessPrivate *priv;
@@ -370,10 +373,6 @@ ce_page_wireless_new (NMConnection *connection, GtkWindow *parent_window, GError
 	}
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
-	if (!ce_page_initialize (parent, NULL, error)) {
-		g_object_unref (self);
-		return NULL;
-	}
 
 	return CE_PAGE (self);
 }
