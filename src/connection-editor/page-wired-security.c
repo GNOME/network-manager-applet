@@ -143,9 +143,18 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		/* FIXME: get failed property and error out of wireless security objects */
 		valid = wireless_security_validate (priv->security, NULL);
 		if (valid) {
+			NMSetting *s_con;
+
 			/* Here's a nice hack to work around the fact that ws_802_1x_fill_connection needs wireless setting. */
 			tmp_connection = nm_connection_new ();
 			nm_connection_add_setting (tmp_connection, nm_setting_wireless_new ());
+
+			/* temp connection needs a 'connection' setting too, since most of
+			 * the EAP methods need the UUID for CA cert ignore stuff.
+			 */
+			s_con = nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+			nm_connection_add_setting (tmp_connection, nm_setting_duplicate (s_con));
+
 			ws_802_1x_fill_connection (priv->security, "wpa_eap_auth_combo", tmp_connection);
 
 			s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
