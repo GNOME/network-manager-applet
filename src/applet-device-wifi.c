@@ -593,8 +593,6 @@ sort_by_name (gconstpointer tmpa, gconstpointer tmpb)
 		return 1;
 	else if (!a && b)
 		return -1;
-	else if (!a && !b)
-		return 0;
 	else if (a == b)
 		return 0;
 
@@ -640,8 +638,6 @@ sort_toplevel (gconstpointer tmpa, gconstpointer tmpb)
 		return 1;
 	else if (!a && b)
 		return -1;
-	else if (!a && !b)
-		return 0;
 	else if (a == b)
 		return 0;
 
@@ -763,6 +759,7 @@ wireless_add_menu_item (NMDevice *device,
 
 	if (g_slist_length (menu_items)) {
 		GSList *submenu_items = NULL;
+		GSList *topmenu_items = NULL;
 		guint32 num_for_toplevel = 5;
 
 		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
@@ -774,11 +771,18 @@ wireless_add_menu_item (NMDevice *device,
 		 * toplevel list.
 		 */
 		for (iter = menu_items; iter && num_for_toplevel; iter = g_slist_next (iter)) {
-			gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (iter->data));
-			gtk_widget_show_all (GTK_WIDGET (iter->data));
+			topmenu_items = g_slist_append (topmenu_items, iter->data);
 			num_for_toplevel--;
 			submenu_items = iter->next;
 		}
+		topmenu_items = g_slist_sort (topmenu_items, sort_by_name);
+
+		for (iter = topmenu_items; iter; iter = g_slist_next (iter)) {
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (iter->data));
+			gtk_widget_show_all (GTK_WIDGET (iter->data));
+		}
+		g_slist_free (topmenu_items);
+		topmenu_items = NULL;
 
 		/* If there are any submenu items, make a submenu for those */
 		if (submenu_items) {
