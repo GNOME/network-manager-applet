@@ -319,7 +319,7 @@ dun_new_cdma (MobileWizardAccessMethod *method)
 	uuid = nm_utils_uuid_generate ();
 	g_object_set (setting,
 	              NM_SETTING_CONNECTION_ID, id,
-	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_CDMA_SETTING_NAME,
+	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_BLUETOOTH_SETTING_NAME,
 	              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
 	              NM_SETTING_CONNECTION_UUID, uuid,
 	              NULL);
@@ -368,7 +368,7 @@ dun_new_gsm (MobileWizardAccessMethod *method)
 	uuid = nm_utils_uuid_generate ();
 	g_object_set (setting,
 	              NM_SETTING_CONNECTION_ID, id,
-	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_GSM_SETTING_NAME,
+	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_BLUETOOTH_SETTING_NAME,
 	              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
 	              NM_SETTING_CONNECTION_UUID, uuid,
 	              NULL);
