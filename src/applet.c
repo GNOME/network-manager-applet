@@ -237,9 +237,11 @@ applet_get_active_for_connection (NMApplet *applet, NMConnection *connection)
 	active_list = nm_client_get_active_connections (applet->nm_client);
 	for (i = 0; active_list && (i < active_list->len); i++) {
 		NMActiveConnection *active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_list, i));
+		const char *active_cpath = nm_active_connection_get_connection (active);
 
 		if (   (nm_active_connection_get_scope (active) == scope)
-		    && !strcmp (nm_active_connection_get_connection (active), cpath))
+		    && active_cpath
+		    && !strcmp (active_cpath, cpath))
 			return active;
 	}
 	return NULL;
