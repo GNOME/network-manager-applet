@@ -789,7 +789,7 @@ wireless_add_menu_item (NMDevice *device,
 			GtkWidget *subitem, *submenu;
 			GSList *sorted_subitems;
 
-			subitem = gtk_menu_item_new_with_mnemonic (_("More networks..."));
+			subitem = gtk_menu_item_new_with_mnemonic (_("More networks"));
 			submenu = gtk_menu_new ();
 			gtk_menu_item_set_submenu (GTK_MENU_ITEM (subitem), submenu);
 
