@@ -528,6 +528,22 @@ recheck_initialization (NMConnectionEditor *editor)
 }
 
 static void
+really_add_page (NMConnectionEditor *editor, CEPage *page)
+{
+	GtkWidget *widget;
+	GtkWidget *notebook;
+	GtkWidget *label;
+
+	notebook = glade_xml_get_widget (editor->xml, "notebook");
+	label = gtk_label_new (ce_page_get_title (page));
+	widget = ce_page_get_page (page);
+	if (widget) {
+		gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
+		g_object_set_data (G_OBJECT (page), "widget-added", GUINT_TO_POINTER (1));
+	}
+}
+
+static void
 page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
@@ -537,6 +553,16 @@ page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_da
 		g_signal_emit (editor, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_NONE, error);
 		return;
 	}
+
+	/* If the page didn't get added the first time (because it didn't have secrets
+	 * or the widget couldn't be built until the secrets were requested) then do
+	 * that here.  This mainly happens for VPN system connections where the 
+	 * widget is constructed after the secrets call returns, which could be
+	 * a long time after ce_page_vpn_new() is called.
+	 */
+
+	if (!g_object_get_data (G_OBJECT (page), "widget-added"))
+		really_add_page (editor, page);
 
 	recheck_initialization (editor);
 }
@@ -548,9 +574,6 @@ add_page (NMConnectionEditor *editor,
           GError **error)
 {
 	CEPage *page;
-	GtkWidget *widget;
-	GtkWidget *notebook;
-	GtkWidget *label;
 
 	g_return_val_if_fail (editor != NULL, FALSE);
 	g_return_val_if_fail (func != NULL, FALSE);
@@ -560,10 +583,7 @@ add_page (NMConnectionEditor *editor,
 	if (!page)
 		return FALSE;
 
-	notebook = glade_xml_get_widget (editor->xml, "notebook");
-	label = gtk_label_new (ce_page_get_title (page));
-	widget = ce_page_get_page (page);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
+	really_add_page (editor, page);
 
 	editor->pages = g_slist_append (editor->pages, page);
 
