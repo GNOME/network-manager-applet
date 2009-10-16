@@ -2909,7 +2909,7 @@ constructor (GType type,
 	foo_client_setup (applet);
 
 	/* timeout to update connection timestamps every 5 minutes */
-	applet->update_timestamps_id = g_timeout_add (300000,
+	applet->update_timestamps_id = g_timeout_add_seconds (300,
 			(GSourceFunc) periodic_update_active_connection_timestamps, applet);
 
 	nm_gconf_set_pre_keyring_callback (applet_pre_keyring_callback, applet);

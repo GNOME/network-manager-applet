@@ -309,7 +309,7 @@ start_reconnection_timeout (AppletDBusManager *self)
 
 	/* Schedule timeout for reconnection attempts */
 	if (!priv->recon_id)
-		priv->recon_id = g_timeout_add (3000, reconnect_cb, self);
+		priv->recon_id = g_timeout_add_seconds (3, reconnect_cb, self);
 }
 
 char *

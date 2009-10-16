@@ -1080,7 +1080,7 @@ queue_avail_access_point_notification (NMDevice *device)
 	                           NULL))
 		return;
 
-	data->id = g_timeout_add (3000, idle_check_avail_access_point_notification, data);
+	data->id = g_timeout_add_seconds (3, idle_check_avail_access_point_notification, data);
 }
 
 static void
