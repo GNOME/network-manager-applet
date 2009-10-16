@@ -414,11 +414,16 @@ addr_add_clicked (GtkButton *button, gpointer user_data)
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (store), &iter);
 	column = gtk_tree_view_get_column (priv->addr_list, COL_ADDRESS);
 
+#if GTK_CHECK_VERSION(2,12,0)
+	cells = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT (column));
+#else
+	cells = gtk_tree_view_column_get_cell_renderers (column);
+#endif
+
 	/* FIXME: using cells->data is pretty fragile but GTK apparently doesn't
 	 * have a way to get a cell renderer from a column based on path or iter
 	 * or whatever.
 	 */
-	cells = gtk_tree_view_column_get_cell_renderers (column);
 	gtk_tree_view_set_cursor_on_cell (priv->addr_list, path, column, cells->data, TRUE);
 
 	g_list_free (cells);
