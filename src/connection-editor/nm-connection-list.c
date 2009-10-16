@@ -633,9 +633,12 @@ connection_update_add_done (NMExportedConnection *exported,
 	ConnectionUpdateInfo *info = (ConnectionUpdateInfo *) user_data;
 
 	if (success) {
+		GtkWindow *parent;
+
 		/* Adding the connection with different scope succeeded, now try to remove the original */
 		info->added_connection = exported ? g_object_ref (exported) : NULL;
-		remove_connection (info->original, GTK_WINDOW (info->editor), connection_update_remove_done, info);
+		parent = nm_connection_editor_get_window (info->editor);
+		remove_connection (info->original, parent, connection_update_remove_done, info);
 	} else
 		connection_update_done (info, success);
 }
