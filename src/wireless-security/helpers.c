@@ -51,7 +51,7 @@ helper_fill_secret_entry (NMConnection *connection,
 				gtk_entry_set_text (entry, tmp);
 		}
 	} else {
-		secrets = nm_gconf_get_keyring_items (connection, setting_name, FALSE, &error);
+		secrets = nm_gconf_get_keyring_items (connection, setting_name, TRUE, &error);
 		if (!secrets) {
 			g_clear_error (&error);
 			return;
