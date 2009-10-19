@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -16,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #include <glade/glade.h>
@@ -114,6 +115,16 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	              NULL);
 }
 
+static void
+update_secrets (WirelessSecurity *parent, NMConnection *connection)
+{
+	helper_fill_secret_entry (connection,
+	                          parent->xml,
+	                          "leap_password_entry",
+	                          NM_TYPE_SETTING_WIRELESS_SECURITY,
+	                          (HelperSecretFunc) nm_setting_wireless_security_get_leap_password);
+}
+
 WirelessSecurityLEAP *
 ws_leap_new (const char *glade_file, NMConnection *connection)
 {
@@ -145,6 +156,7 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 	                        validate,
 	                        add_to_size_group,
 	                        fill_connection,
+	                        update_secrets,
 	                        destroy,
 	                        xml,
 	                        widget,
@@ -167,14 +179,8 @@ ws_leap_new (const char *glade_file, NMConnection *connection)
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
-	if (wsec) {
-		helper_fill_secret_entry (connection,
-		                          GTK_ENTRY (widget),
-		                          NM_TYPE_SETTING_WIRELESS_SECURITY,
-		                          (HelperSecretFunc) nm_setting_wireless_security_get_leap_password,
-		                          NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-		                          NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD);
-	}
+	if (wsec)
+		update_secrets (WIRELESS_SECURITY (sec), connection);
 
 	widget = glade_xml_get_widget (xml, "leap_username_entry");
 	g_assert (widget);

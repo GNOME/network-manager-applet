@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #include <glade/glade.h>
@@ -322,6 +322,45 @@ setup_filepicker (GladeXML *xml,
 		g_signal_connect (G_OBJECT (widget), "notify::filter", (GCallback) reset_filter, filter);
 }
 
+static void
+update_secrets (EAPMethod *parent, NMConnection *connection)
+{
+	EAPMethodTLS *method = (EAPMethodTLS *) parent;
+	NMSetting8021x *s_8021x;
+	HelperSecretFunc password_func;
+	SchemeFunc scheme_func;
+	PathFunc path_func;
+	const char *filename;
+	GtkWidget *widget;
+
+	if (method->phase2) {
+		password_func = (HelperSecretFunc) nm_setting_802_1x_get_phase2_private_key_password;
+		scheme_func = nm_setting_802_1x_get_phase2_private_key_scheme;
+		path_func = nm_setting_802_1x_get_phase2_private_key_path;
+	} else {
+		password_func = (HelperSecretFunc) nm_setting_802_1x_get_private_key_password;
+		scheme_func = nm_setting_802_1x_get_private_key_scheme;
+		path_func = nm_setting_802_1x_get_private_key_path;
+	}
+
+	helper_fill_secret_entry (connection,
+	                          parent->xml,
+	                          "eap_tls_private_key_password_entry",
+	                          NM_TYPE_SETTING_802_1X,
+	                          password_func);
+
+	/* Set the private key filepicker button path if we have a private key */
+	s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+	if (s_8021x && (scheme_func (s_8021x) == NM_SETTING_802_1X_CK_SCHEME_PATH)) {
+		filename = path_func (s_8021x);
+		if (filename) {
+			widget = glade_xml_get_widget (parent->xml, "eap_tls_private_key_button");
+			g_assert (widget);
+			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
+		}
+	}
+}
+
 EAPMethodTLS *
 eap_method_tls_new (const char *glade_file,
                     WirelessSecurity *parent,
@@ -356,6 +395,7 @@ eap_method_tls_new (const char *glade_file,
 	                 validate,
 	                 add_to_size_group,
 	                 fill_connection,
+	                 update_secrets,
 	                 destroy,
 	                 xml,
 	                 widget,
@@ -380,25 +420,6 @@ eap_method_tls_new (const char *glade_file,
 	if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
 		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 
-	widget = glade_xml_get_widget (xml, "eap_tls_private_key_password_entry");
-	g_assert (widget);
-
-	/* Fill secrets, if any */
-	if (connection) {
-		helper_fill_secret_entry (connection,
-		                          GTK_ENTRY (widget),
-		                          NM_TYPE_SETTING_802_1X,
-		                          phase2 ? (HelperSecretFunc) nm_setting_802_1x_get_phase2_private_key_password :
-		                                   (HelperSecretFunc) nm_setting_802_1x_get_private_key_password,
-		                          NM_SETTING_802_1X_SETTING_NAME,
-		                          phase2 ? NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD :
-		                                   NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD);
-	}
-
-	g_signal_connect (G_OBJECT (widget), "changed",
-	                  (GCallback) wireless_security_changed_cb,
-	                  parent);
-
 	setup_filepicker (xml, "eap_tls_user_cert_button",
 	                  _("Choose your personal certificate..."),
 	                  parent, method, s_8021x,
@@ -411,13 +432,22 @@ eap_method_tls_new (const char *glade_file,
 	                  phase2 ? nm_setting_802_1x_get_phase2_ca_cert_scheme : nm_setting_802_1x_get_ca_cert_scheme,
 	                  phase2 ? nm_setting_802_1x_get_phase2_ca_cert_path : nm_setting_802_1x_get_ca_cert_path,
 	                  FALSE, FALSE);
-	setup_filepicker (xml,
-	                  "eap_tls_private_key_button",
+	setup_filepicker (xml, "eap_tls_private_key_button",
 	                  _("Choose your private key..."),
 	                  parent, method, s_8021x,
 	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_scheme : nm_setting_802_1x_get_private_key_scheme,
 	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_path : nm_setting_802_1x_get_private_key_path,
 	                  TRUE, FALSE);
+
+	/* Fill secrets, if any */
+	if (connection)
+		update_secrets (EAP_METHOD (method), connection);
+
+	widget = glade_xml_get_widget (xml, "eap_tls_private_key_password_entry");
+	g_assert (widget);
+	g_signal_connect (G_OBJECT (widget), "changed",
+	                  (GCallback) wireless_security_changed_cb,
+	                  parent);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);

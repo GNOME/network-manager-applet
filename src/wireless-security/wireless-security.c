@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -16,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -106,6 +107,16 @@ wireless_security_fill_connection (WirelessSecurity *sec,
 	return (*(sec->fill_connection)) (sec, connection);
 }
 
+void
+wireless_security_update_secrets (WirelessSecurity *sec, NMConnection *connection)
+{
+	g_return_if_fail (sec != NULL);
+	g_return_if_fail (connection != NULL);
+
+	if (sec->update_secrets)
+		sec->update_secrets (sec, connection);
+}
+
 WirelessSecurity *
 wireless_security_ref (WirelessSecurity *sec)
 {
@@ -137,6 +148,7 @@ wireless_security_init (WirelessSecurity *sec,
                         WSValidateFunc validate,
                         WSAddToSizeGroupFunc add_to_size_group,
                         WSFillConnectionFunc fill_connection,
+                        WSUpdateSecretsFunc update_secrets,
                         WSDestroyFunc destroy,
                         GladeXML *xml,
                         GtkWidget *ui_widget,
@@ -147,6 +159,7 @@ wireless_security_init (WirelessSecurity *sec,
 	sec->validate = validate;
 	sec->add_to_size_group = add_to_size_group;
 	sec->fill_connection = fill_connection;
+	sec->update_secrets = update_secrets;
 	sec->destroy = destroy;
 
 	sec->xml = xml;
@@ -401,6 +414,36 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
 
 	eap_method_fill_connection (eap, connection);
 	eap_method_unref (eap);
+}
+
+void
+ws_802_1x_update_secrets (WirelessSecurity *sec,
+                          const char *combo_name,
+                          NMConnection *connection)
+{
+	GtkWidget *widget;
+	EAPMethod *eap = NULL;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	g_return_if_fail (sec != NULL);
+	g_return_if_fail (combo_name != NULL);
+	g_return_if_fail (connection != NULL);
+
+	widget = glade_xml_get_widget (sec->xml, combo_name);
+	g_return_if_fail (widget != NULL);
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
+
+	/* Let each EAP method try to update its secrets */
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		do {
+			gtk_tree_model_get (model, &iter, AUTH_METHOD_COLUMN, &eap, -1);
+			if (eap) {
+				eap_method_update_secrets (eap, connection);
+				eap_method_unref (eap);
+			}
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
 }
 
 GtkWidget *

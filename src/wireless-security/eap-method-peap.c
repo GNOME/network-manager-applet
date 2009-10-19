@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #include <glib/gi18n.h>
@@ -293,6 +293,15 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	return combo;
 }
 
+static void
+update_secrets (EAPMethod *parent, NMConnection *connection)
+{
+	eap_method_phase2_update_secrets_helper (parent,
+	                                         connection,
+	                                         "eap_peap_inner_auth_combo",
+	                                         I_METHOD_COLUMN);
+}
+
 EAPMethodPEAP *
 eap_method_peap_new (const char *glade_file,
                      WirelessSecurity *parent,
@@ -328,6 +337,7 @@ eap_method_peap_new (const char *glade_file,
 	                 validate,
 	                 add_to_size_group,
 	                 fill_connection,
+	                 update_secrets,
 	                 destroy,
 	                 xml,
 	                 widget,

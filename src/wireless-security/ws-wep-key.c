@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -16,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #include <glade/glade.h>
@@ -215,14 +216,13 @@ out:
 }
 
 static void
-fill_secrets (WirelessSecurityWEPKey *sec, NMConnection *connection)
+update_secrets (WirelessSecurity *parent, NMConnection *connection)
 {
+	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
 	NMSettingWirelessSecurity *s_wsec;
+	GtkWidget *widget;
 	const char *tmp;
 	int i;
-
-	g_return_if_fail (sec != NULL);
-	g_return_if_fail (connection != NULL);
 
 	s_wsec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
 	for (i = 0; s_wsec && i < 4; i++) {
@@ -230,6 +230,10 @@ fill_secrets (WirelessSecurityWEPKey *sec, NMConnection *connection)
 		if (tmp)
 			strcpy (sec->keys[i], tmp);
 	}
+
+	widget = glade_xml_get_widget (parent->xml, "wep_key_entry");
+	if (strlen (sec->keys[sec->cur_index]))
+		gtk_entry_set_text (GTK_ENTRY (widget), sec->keys[sec->cur_index]);
 }
 
 WirelessSecurityWEPKey *
@@ -270,6 +274,7 @@ ws_wep_key_new (const char *glade_file,
 	                        validate,
 	                        add_to_size_group,
 	                        fill_connection,
+	                        update_secrets,
 	                        destroy,
 	                        xml,
 	                        widget,
@@ -283,9 +288,6 @@ ws_wep_key_new (const char *glade_file,
 	if (connection) {
 		NMSettingWireless *s_wireless;
 		const char *mode, *auth_alg;
-
-		/* Fill secrets, if any */
-		fill_secrets (sec, connection);
 
 		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
 		mode = s_wireless ? nm_setting_wireless_get_mode (s_wireless) : NULL;
@@ -329,9 +331,8 @@ ws_wep_key_new (const char *glade_file,
 	}
 
 	/* Fill the key entry with the key for that index */
-	widget = glade_xml_get_widget (xml, "wep_key_entry");
-	if (strlen (sec->keys[default_key_idx]))
-		gtk_entry_set_text (GTK_ENTRY (widget), sec->keys[default_key_idx]);
+	if (connection)
+		update_secrets (WIRELESS_SECURITY (sec), connection);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);

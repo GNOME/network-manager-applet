@@ -88,6 +88,16 @@ eap_method_fill_connection (EAPMethod *method, NMConnection *connection)
 	return (*(method->fill_connection)) (method, connection);
 }
 
+void
+eap_method_update_secrets (EAPMethod *method, NMConnection *connection)
+{
+	g_return_if_fail (method != NULL);
+	g_return_if_fail (connection != NULL);
+
+	if (method->update_secrets)
+		method->update_secrets (method, connection);
+}
+
 static void
 nag_dialog_response_cb (GtkDialog *nag_dialog,
                         gint response,
@@ -203,10 +213,43 @@ eap_method_get_ignore_ca_cert (EAPMethod *method)
 }
 
 void
+eap_method_phase2_update_secrets_helper (EAPMethod *method,
+                                         NMConnection *connection,
+                                         const char *combo_name,
+                                         guint32 column)
+{
+	GtkWidget *combo;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+
+	g_return_if_fail (method != NULL);
+	g_return_if_fail (connection != NULL);
+	g_return_if_fail (combo_name != NULL);
+
+	combo = glade_xml_get_widget (method->xml, combo_name);
+	g_assert (combo);
+
+	/* Let each EAP phase2 method try to update its secrets */
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		do {
+			EAPMethod *eap = NULL;
+
+			gtk_tree_model_get (model, &iter, column, &eap, -1);
+			if (eap) {
+				eap_method_update_secrets (eap, connection);
+				eap_method_unref (eap);
+			}
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+}
+
+void
 eap_method_init (EAPMethod *method,
                  EMValidateFunc validate,
                  EMAddToSizeGroupFunc add_to_size_group,
                  EMFillConnectionFunc fill_connection,
+                 EMUpdateSecretsFunc update_secrets,
                  EMDestroyFunc destroy,
                  GladeXML *xml,
                  GtkWidget *ui_widget,
@@ -217,6 +260,7 @@ eap_method_init (EAPMethod *method,
 	method->validate = validate;
 	method->add_to_size_group = add_to_size_group;
 	method->fill_connection = fill_connection;
+	method->update_secrets = update_secrets;
 	method->destroy = destroy;
 
 	method->xml = xml;
