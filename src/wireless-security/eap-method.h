@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -16,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #ifndef EAP_METHOD_H
@@ -33,6 +34,7 @@ typedef struct _EAPMethod EAPMethod;
 
 typedef void        (*EMAddToSizeGroupFunc) (EAPMethod *method, GtkSizeGroup *group);
 typedef void        (*EMFillConnectionFunc) (EAPMethod *method, NMConnection *connection);
+typedef void        (*EMUpdateSecretsFunc)  (EAPMethod *method, NMConnection *connection);
 typedef void        (*EMDestroyFunc)        (EAPMethod *method);
 typedef gboolean    (*EMValidateFunc)       (EAPMethod *method);
 
@@ -50,6 +52,7 @@ struct _EAPMethod {
 
 	EMAddToSizeGroupFunc add_to_size_group;
 	EMFillConnectionFunc fill_connection;
+	EMUpdateSecretsFunc update_secrets;
 	EMValidateFunc validate;
 	EMDestroyFunc destroy;
 };
@@ -64,6 +67,8 @@ gboolean eap_method_validate (EAPMethod *method);
 void eap_method_add_to_size_group (EAPMethod *method, GtkSizeGroup *group);
 
 void eap_method_fill_connection (EAPMethod *method, NMConnection *connection);
+
+void eap_method_update_secrets (EAPMethod *method, NMConnection *connection);
 
 GtkWidget * eap_method_nag_user (EAPMethod *method);
 
@@ -85,6 +90,7 @@ void eap_method_init (EAPMethod *method,
                       EMValidateFunc validate,
                       EMAddToSizeGroupFunc add_to_size_group,
                       EMFillConnectionFunc fill_connection,
+                      EMUpdateSecretsFunc update_secrets,
                       EMDestroyFunc destroy,
                       GladeXML *xml,
                       GtkWidget *ui_widget,
@@ -109,6 +115,11 @@ gboolean eap_method_nag_init (EAPMethod *method,
                               gboolean phase2);
 
 gboolean eap_method_get_ignore_ca_cert (EAPMethod *method);
+
+void eap_method_phase2_update_secrets_helper (EAPMethod *method,
+                                              NMConnection *connection,
+                                              const char *combo_name,
+                                              guint32 column);
 
 #endif /* EAP_METHOD_H */
 

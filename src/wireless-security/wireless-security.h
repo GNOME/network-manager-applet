@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -16,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #ifndef WIRELESS_SECURITY_H
@@ -34,6 +35,7 @@ typedef void (*WSChangedFunc) (WirelessSecurity *sec, gpointer user_data);
 
 typedef void (*WSAddToSizeGroupFunc) (WirelessSecurity *sec, GtkSizeGroup *group);
 typedef void (*WSFillConnectionFunc) (WirelessSecurity *sec, NMConnection *connection);
+typedef void (*WSUpdateSecretsFunc)  (WirelessSecurity *sec, NMConnection *connection);
 typedef void (*WSDestroyFunc)        (WirelessSecurity *sec);
 typedef gboolean (*WSValidateFunc)   (WirelessSecurity *sec, const GByteArray *ssid);
 typedef GtkWidget * (*WSNagUserFunc) (WirelessSecurity *sec);
@@ -48,6 +50,7 @@ struct _WirelessSecurity {
 
 	WSAddToSizeGroupFunc add_to_size_group;
 	WSFillConnectionFunc fill_connection;
+	WSUpdateSecretsFunc update_secrets;
 	WSValidateFunc validate;
 	WSNagUserFunc nag_user;
 	WSDestroyFunc destroy;
@@ -70,6 +73,9 @@ void wireless_security_add_to_size_group (WirelessSecurity *sec,
 void wireless_security_fill_connection (WirelessSecurity *sec,
                                         NMConnection *connection);
 
+void wireless_security_update_secrets (WirelessSecurity *sec,
+                                       NMConnection *connection);
+
 GtkWidget * wireless_security_nag_user (WirelessSecurity *sec);
 
 WirelessSecurity *wireless_security_ref (WirelessSecurity *sec);
@@ -90,6 +96,7 @@ void wireless_security_init (WirelessSecurity *sec,
                              WSValidateFunc validate,
                              WSAddToSizeGroupFunc add_to_size_group,
                              WSFillConnectionFunc fill_connection,
+                             WSUpdateSecretsFunc update_secrets,
                              WSDestroyFunc destroy,
                              GladeXML *xml,
                              GtkWidget *ui_widget,
@@ -123,6 +130,10 @@ void ws_802_1x_add_to_size_group (WirelessSecurity *sec,
 void ws_802_1x_fill_connection (WirelessSecurity *sec,
                                 const char *combo_name,
                                 NMConnection *connection);
+
+void ws_802_1x_update_secrets (WirelessSecurity *sec,
+                               const char *combo_name,
+                               NMConnection *connection);
 
 GtkWidget * ws_802_1x_nag_user (WirelessSecurity *sec,
                                 const char *combo_name);

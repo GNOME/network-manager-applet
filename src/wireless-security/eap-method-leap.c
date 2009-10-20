@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -16,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #include <glade/glade.h>
@@ -105,6 +106,16 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 }
 
+static void
+update_secrets (EAPMethod *parent, NMConnection *connection)
+{
+	helper_fill_secret_entry (connection,
+	                          parent->xml,
+	                          "eap_leap_password_entry",
+	                          NM_TYPE_SETTING_802_1X,
+	                          (HelperSecretFunc) nm_setting_802_1x_get_password);
+}
+
 EAPMethodLEAP *
 eap_method_leap_new (const char *glade_file,
                      WirelessSecurity *parent,
@@ -137,6 +148,7 @@ eap_method_leap_new (const char *glade_file,
 	                 validate,
 	                 add_to_size_group,
 	                 fill_connection,
+	                 update_secrets,
 	                 destroy,
 	                 xml,
 	                 widget,
@@ -162,14 +174,8 @@ eap_method_leap_new (const char *glade_file,
 	                  parent);
 
 	/* Fill secrets, if any */
-	if (connection) {
-		helper_fill_secret_entry (connection,
-		                          GTK_ENTRY (widget),
-		                          NM_TYPE_SETTING_802_1X,
-		                          (HelperSecretFunc) nm_setting_802_1x_get_password,
-		                          NM_SETTING_802_1X_SETTING_NAME,
-		                          NM_SETTING_802_1X_PASSWORD);
-	}
+	if (connection)
+		update_secrets (EAP_METHOD (method), connection);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);

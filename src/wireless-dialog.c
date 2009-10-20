@@ -717,6 +717,79 @@ add_security_item (NMAWirelessDialog *self,
 	wireless_security_unref (sec);
 }
 
+typedef struct {
+	NMAWirelessDialog *self;
+	NMConnection *connection;
+} GetSecretsInfo;
+
+static void
+get_secrets_cb (NMSettingsConnectionInterface *connection,
+                GHashTable *secrets,
+                GError *error,
+                gpointer user_data)
+{
+	GetSecretsInfo *info = user_data;
+	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (info->self);
+	GHashTableIter hash_iter;
+	gpointer key, value;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	if (error) {
+		g_warning ("%s: error getting connection secrets: (%d) %s",
+		           __func__,
+		           error ? error->code : -1,
+		           error && error->message ? error->message : "(unknown)");
+		goto out;
+	}
+
+	/* User might have changed the connection while the secrets call was in
+	 * progress, so don't try to update the wrong connection with the secrets
+	 * we just received.
+	 */
+	if (   (priv->connection != info->connection)
+	    || !secrets
+	    || !g_hash_table_size (secrets))
+		goto out;
+
+	/* Try to update the connection's secrets; log errors but we don't care */
+	g_hash_table_iter_init (&hash_iter, secrets);
+	while (g_hash_table_iter_next (&hash_iter, &key, &value)) {
+		GError *update_error = NULL;
+		const char *setting_name = key;
+		GHashTable *setting_hash = value;
+
+		if (!nm_connection_update_secrets (priv->connection,
+		                                   setting_name,
+		                                   setting_hash,
+		                                   &update_error)) {
+			g_warning ("%s: error updating connection secrets: (%d) %s",
+			           __func__,
+			           update_error ? update_error->code : -1,
+			           update_error && update_error->message ? update_error->message : "(unknown)");
+			g_clear_error (&update_error);
+		}
+	}
+
+	/* Update each security method's UI elements with the new secrets */
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->sec_combo));
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		do {
+			WirelessSecurity *sec = NULL;
+
+			gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+			if (sec) {
+				wireless_security_update_secrets (sec, priv->connection);
+				wireless_security_unref (sec);
+			}
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+
+out:
+	g_object_unref (info->connection);
+	g_free (info);
+}
+
 static gboolean
 security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 {
@@ -882,6 +955,28 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	gtk_combo_box_set_model (GTK_COMBO_BOX (priv->sec_combo), GTK_TREE_MODEL (sec_model));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->sec_combo), active < 0 ? 0 : (guint32) active);
 	g_object_unref (G_OBJECT (sec_model));
+
+	/* Request secrets for the connection if it needs any */
+	if (NM_IS_SETTINGS_CONNECTION_INTERFACE (priv->connection)) {
+		const char *setting_name;
+
+		setting_name = nm_connection_need_secrets (priv->connection, NULL);
+		if (setting_name) {
+			GetSecretsInfo *info;
+
+			info = g_malloc0 (sizeof (GetSecretsInfo));
+			info->self = self;
+			info->connection = g_object_ref (priv->connection);
+
+			nm_settings_connection_interface_get_secrets (NM_SETTINGS_CONNECTION_INTERFACE (priv->connection),
+			                                              setting_name,
+			                                              NULL,
+			                                              FALSE,
+			                                              get_secrets_cb,
+			                                              info);
+		}
+	}
+
 	return TRUE;
 }
 

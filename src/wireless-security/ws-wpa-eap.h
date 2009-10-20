@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -16,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #ifndef WS_WPA_EAP_H

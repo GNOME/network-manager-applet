@@ -237,9 +237,11 @@ applet_get_active_for_connection (NMApplet *applet, NMConnection *connection)
 	active_list = nm_client_get_active_connections (applet->nm_client);
 	for (i = 0; active_list && (i < active_list->len); i++) {
 		NMActiveConnection *active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_list, i));
+		const char *active_cpath = nm_active_connection_get_connection (active);
 
 		if (   (nm_active_connection_get_scope (active) == scope)
-		    && !strcmp (nm_active_connection_get_connection (active), cpath))
+		    && active_cpath
+		    && !strcmp (active_cpath, cpath))
 			return active;
 	}
 	return NULL;
@@ -2610,8 +2612,6 @@ nma_icons_load (NMApplet *applet)
 	ICON_LOAD(applet->wireless_100_icon, "nm-signal-100");
 	ICON_LOAD(applet->secure_lock_icon, "nm-secure-lock");
 
-	ICON_LOAD(applet->active_device_icon, "nm-active-device");
-
 	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
 		for (j = 0; j < NUM_CONNECTING_FRAMES; j++) {
 			char *name;
@@ -2907,7 +2907,7 @@ constructor (GType type,
 	foo_client_setup (applet);
 
 	/* timeout to update connection timestamps every 5 minutes */
-	applet->update_timestamps_id = g_timeout_add (300000,
+	applet->update_timestamps_id = g_timeout_add_seconds (300,
 			(GSourceFunc) periodic_update_active_connection_timestamps, applet);
 
 	nm_gconf_set_pre_keyring_callback (applet_pre_keyring_callback, applet);

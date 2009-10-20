@@ -103,7 +103,6 @@ typedef struct
 	gboolean		icons_loaded;
 
 	GtkIconTheme *	icon_theme;
-	GdkPixbuf *		active_device_icon;
 	GdkPixbuf *		no_connection_icon;
 	GdkPixbuf *		wired_icon;
 	GdkPixbuf *		adhoc_icon;

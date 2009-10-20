@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -16,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #include <glade/glade.h>
@@ -140,6 +141,16 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	}
 }
 
+static void
+update_secrets (WirelessSecurity *parent, NMConnection *connection)
+{
+	helper_fill_secret_entry (connection,
+	                          parent->xml,
+	                          "wpa_psk_entry",
+	                          NM_TYPE_SETTING_WIRELESS_SECURITY,
+	                          (HelperSecretFunc) nm_setting_wireless_security_get_psk);
+}
+
 WirelessSecurityWPAPSK *
 ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 {
@@ -170,6 +181,7 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 	                        validate,
 	                        add_to_size_group,
 	                        fill_connection,
+	                        update_secrets,
 	                        destroy,
 	                        xml,
 	                        widget,
@@ -183,14 +195,8 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
 	/* Fill secrets, if any */
-	if (connection) {
-		helper_fill_secret_entry (connection,
-		                          GTK_ENTRY (widget),
-		                          NM_TYPE_SETTING_WIRELESS_SECURITY,
-		                          (HelperSecretFunc) nm_setting_wireless_security_get_psk,
-		                          NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
-		                          NM_SETTING_WIRELESS_SECURITY_PSK);
-	}
+	if (connection)
+		update_secrets (WIRELESS_SECURITY (sec), connection);
 
 	widget = glade_xml_get_widget (xml, "show_checkbutton");
 	g_assert (widget);

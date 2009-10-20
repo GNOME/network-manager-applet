@@ -789,7 +789,7 @@ wireless_add_menu_item (NMDevice *device,
 			GtkWidget *subitem, *submenu;
 			GSList *sorted_subitems;
 
-			subitem = gtk_menu_item_new_with_mnemonic (_("More networks..."));
+			subitem = gtk_menu_item_new_with_mnemonic (_("More networks"));
 			submenu = gtk_menu_new ();
 			gtk_menu_item_set_submenu (GTK_MENU_ITEM (subitem), submenu);
 
@@ -1080,7 +1080,7 @@ queue_avail_access_point_notification (NMDevice *device)
 	                           NULL))
 		return;
 
-	data->id = g_timeout_add (3000, idle_check_avail_access_point_notification, data);
+	data->id = g_timeout_add_seconds (3, idle_check_avail_access_point_notification, data);
 }
 
 static void

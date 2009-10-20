@@ -231,6 +231,55 @@ create_info_notebook_label (NMConnection *connection, gboolean is_default)
 	return label;
 }
 
+typedef struct {
+	NMDevice *device;
+	GtkWidget *label;
+	guint32 id;
+} SpeedInfo;
+
+static void
+device_destroyed (gpointer data, GObject *device_ptr)
+{
+	SpeedInfo *info = data;
+
+	/* Device is destroyed, notify handler won't fire
+	 * anymore anyway.  Let the label destroy handler
+	 * know it doesn't have to disconnect the callback.
+	 */
+	info->device = NULL;
+	info->id = 0;
+}
+
+static void
+label_destroyed (gpointer data, GObject *label_ptr)
+{
+	SpeedInfo *info = data;
+	/* Remove the notify handler from the device */
+	if (info->device) {
+		if (info->id)
+			g_signal_handler_disconnect (info->device, info->id);
+		/* destroy our info data */
+		g_object_weak_unref (G_OBJECT (info->device), device_destroyed, info);
+		memset (info, 0, sizeof (SpeedInfo));
+		g_free (info);
+	}
+}
+
+static void
+bitrate_changed_cb (GObject *device, GParamSpec *pspec, gpointer user_data)
+{
+	GtkWidget *speed_label = GTK_WIDGET (user_data);
+	guint32 bitrate = 0;
+	char *str = NULL;
+
+	bitrate = nm_device_wifi_get_bitrate (NM_DEVICE_WIFI (device)) / 1000;
+	if (bitrate)
+		str = g_strdup_printf (_("%u Mb/s"), bitrate);
+
+	gtk_label_set_text (GTK_LABEL (speed_label), str ? str : _("Unknown"));
+	g_free (str);
+}
+
 static void
 info_dialog_add_page (GtkNotebook *notebook,
 					  NMConnection *connection,
@@ -238,7 +287,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 					  NMDevice *device)
 {
 	GtkTable *table;
-	guint32 speed;
+	guint32 speed = 0;
 	char *str;
 	const char *iface;
 	NMIP4Config *ip4_config;
@@ -246,6 +295,8 @@ info_dialog_add_page (GtkNotebook *notebook,
 	NMIP4Address *def_addr;
 	guint32 hostmask, network, bcast, netmask;
 	int row = 0;
+	SpeedInfo* info = NULL;
+	GtkWidget* speed_label;
 
 	table = GTK_TABLE (gtk_table_new (12, 2, FALSE));
 	gtk_table_set_col_spacings (table, 12);
@@ -299,29 +350,42 @@ info_dialog_add_page (GtkNotebook *notebook,
 							   1, 2, row, row + 1);
 	row++;
 
+	speed_label = create_info_label ("", TRUE);
+
 	/* Speed */
-	speed = 0;
+	str = NULL;
 	if (NM_IS_DEVICE_ETHERNET (device)) {
 		/* Wired speed in Mb/s */
 		speed = nm_device_ethernet_get_speed (NM_DEVICE_ETHERNET (device));
 	} else if (NM_IS_DEVICE_WIFI (device)) {
 		/* Wireless speed in Kb/s */
-		speed = nm_device_wifi_get_bitrate (NM_DEVICE_WIFI (device));
-		speed /= 1000;
+		speed = nm_device_wifi_get_bitrate (NM_DEVICE_WIFI (device)) / 1000;
+
+		/* Listen for wifi speed changes */
+		info = g_malloc0 (sizeof (SpeedInfo));
+		info->device = device;
+		info->label = speed_label;
+		info->id = g_signal_connect (device,
+		                             "notify::" NM_DEVICE_WIFI_BITRATE,
+		                             G_CALLBACK (bitrate_changed_cb),
+		                             speed_label);
+
+		g_object_weak_ref (G_OBJECT(speed_label), label_destroyed, info);
+		g_object_weak_ref (G_OBJECT(device), device_destroyed, info);
 	}
 
 	if (speed)
 		str = g_strdup_printf (_("%u Mb/s"), speed);
-	else
-		str = NULL;
+
+	gtk_label_set_text (GTK_LABEL(speed_label), str ? str : _("Unknown"));
+	g_free (str);
 
 	gtk_table_attach_defaults (table,
 							   create_info_label (_("Speed:"), FALSE),
 							   0, 1, row, row + 1);
 	gtk_table_attach_defaults (table,
-							   create_info_label (str ? str : _("Unknown"), TRUE),
+							   speed_label,
 							   1, 2, row, row + 1);
-	g_free (str);
 	row++;
 
 	/* Security */

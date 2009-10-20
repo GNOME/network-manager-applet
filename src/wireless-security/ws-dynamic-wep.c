@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -16,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
 #include <glib/gi18n.h>
@@ -96,6 +97,12 @@ nag_user (WirelessSecurity *parent)
 	return ws_802_1x_nag_user (parent, "dynamic_wep_auth_combo");
 }
 
+static void
+update_secrets (WirelessSecurity *parent, NMConnection *connection)
+{
+	ws_802_1x_update_secrets (parent, "dynamic_wep_auth_combo", connection);
+}
+
 WirelessSecurityDynamicWEP *
 ws_dynamic_wep_new (const char *glade_file,
                     NMConnection *connection)
@@ -127,6 +134,7 @@ ws_dynamic_wep_new (const char *glade_file,
 	                        validate,
 	                        add_to_size_group,
 	                        fill_connection,
+	                        update_secrets,
 	                        destroy,
 	                        xml,
 	                        widget,

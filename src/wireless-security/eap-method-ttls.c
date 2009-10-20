@@ -291,6 +291,15 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	return combo;
 }
 
+static void
+update_secrets (EAPMethod *parent, NMConnection *connection)
+{
+	eap_method_phase2_update_secrets_helper (parent,
+	                                         connection,
+	                                         "eap_ttls_inner_auth_combo",
+	                                         I_METHOD_COLUMN);
+}
+
 EAPMethodTTLS *
 eap_method_ttls_new (const char *glade_file,
                      WirelessSecurity *parent,
@@ -326,6 +335,7 @@ eap_method_ttls_new (const char *glade_file,
 	                 validate,
 	                 add_to_size_group,
 	                 fill_connection,
+	                 update_secrets,
 	                 destroy,
 	                 xml,
 	                 widget,

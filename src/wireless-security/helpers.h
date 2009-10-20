@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -24,17 +25,17 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <glade/glade.h>
 #include <nm-connection.h>
 #include <nm-setting.h>
 
 typedef const char * (*HelperSecretFunc)(NMSetting *);
 
 void helper_fill_secret_entry (NMConnection *connection,
-                               GtkEntry *entry,
+                               GladeXML *xml,
+                               const char *entry_name,
                                GType setting_type,
-                               HelperSecretFunc func,
-                               const char *setting_name,
-                               const char *secret_name);
+                               HelperSecretFunc func);
 
 #endif  /* _HELPERS_H_ */
 

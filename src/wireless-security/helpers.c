@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -24,26 +25,28 @@
 
 void
 helper_fill_secret_entry (NMConnection *connection,
-                          GtkEntry *entry,
+                          GladeXML *xml,
+                          const char *entry_name,
                           GType setting_type,
-                          HelperSecretFunc func,
-                          const char *setting_name,
-                          const char *secret_name)
+                          HelperSecretFunc func)
 {
+	GtkWidget *widget;
 	NMSetting *setting;
 	const char *tmp;
 
 	g_return_if_fail (connection != NULL);
-	g_return_if_fail (entry != NULL);
+	g_return_if_fail (xml != NULL);
+	g_return_if_fail (entry_name != NULL);
 	g_return_if_fail (func != NULL);
-	g_return_if_fail (setting_name != NULL);
-	g_return_if_fail (secret_name != NULL);
 
 	setting = nm_connection_get_setting (connection, setting_type);
 	if (setting) {
 		tmp = (*func) (setting);
-		if (tmp)
-			gtk_entry_set_text (entry, tmp);
+		if (tmp) {
+			widget = glade_xml_get_widget (xml, entry_name);
+			g_assert (widget);
+			gtk_entry_set_text (GTK_ENTRY (widget), tmp);
+		}
 	}
 }
 
