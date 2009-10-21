@@ -128,8 +128,8 @@ typedef struct
 	guint			animation_id;
 
 	/* Direct UI elements */
-	GtkStatusIcon *	status_icon;
-	int				size;
+	GtkStatusIcon * status_icon;
+	int             icon_size;
 
 	GtkWidget *		menu;
 	char *          tip;

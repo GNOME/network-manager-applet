@@ -2579,7 +2579,7 @@ static void nma_icons_free (NMApplet *applet)
 
 #define ICON_LOAD(icon, name) \
 	{ \
-		icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->size, 0, &err); \
+		icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, 0, &err); \
 		if (icon == NULL) { \
 			g_warning ("Icon %s missing: %s", name, \
 			           (err && err->message) ? err->message : "unknown"); \
@@ -2595,9 +2595,7 @@ nma_icons_load (NMApplet *applet)
 	GError *err = NULL;
 
 	g_return_val_if_fail (!applet->icons_loaded, FALSE);
-
-	if (applet->size < 0)
-		return FALSE;
+	g_return_val_if_fail (applet->icon_size > 0, FALSE);
 
 	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
 	ICON_LOAD(applet->wired_icon, "nm-device-wired");
@@ -2697,7 +2695,10 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
                              gint size,
                              NMApplet *applet)
 {
-	applet->size = size;
+	/* icon_size may be 0 if for example the panel hasn't given us any space
+	 * yet.  We'll get resized later, but for now just load the 16x16 icons.
+	 */
+	applet->icon_size = MAX (16, size);
 
 	nma_icons_free (applet);
 	nma_icons_load (applet);
@@ -2976,7 +2977,7 @@ static void nma_init (NMApplet *applet)
 	applet->animation_step = 0;
 	applet->icon_theme = NULL;
 	applet->notification = NULL;
-	applet->size = -1;
+	applet->icon_size = 16;
 }
 
 enum {
