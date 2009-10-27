@@ -8,14 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.master.te\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2009-08-13 14:20+0000\n"
-"PO-Revision-Date: 2009-08-20 23:44+0530\n"
+"POT-Creation-Date: 2009-10-15 16:14+0000\n"
+"PO-Revision-Date: 2009-10-27 19:22+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -30,6 +31,43 @@ msgstr "మీ నెట్వర్కు అనుసంధానములన�
 msgid "Network Manager"
 msgstr "నెట్వర్కు నిర్వాహిక"
 
+#: ../nm-applet.schemas.in.h:1
+msgid "Disable connected notifications"
+msgstr "అనుసంధానము నోటీసులను అచేతనముచేయుము"
+
+#: ../nm-applet.schemas.in.h:2
+msgid "Disable disconnected notifications"
+msgstr "అననుసంధానపు నోటీసులను అచేతనముచేయుము"
+
+#: ../nm-applet.schemas.in.h:3
+msgid "Set this to TRUE to disable notifications when connecting to a network."
+msgstr "నెట్వర్కునకు అనుసంధానమవుచున్నప్పుడు నోటీసులను అచేతనము చేయుటకు దీనిని TRUE గా అమర్చండి."
+
+#: ../nm-applet.schemas.in.h:4
+msgid "Set this to TRUE to disable notifications when disconnecting from a network."
+msgstr "నెట్వర్కునుండి అననుసంధానము అవుచున్నప్పుడు నోటీసులను అచేతనము చేయుటకు దీనిని TRUE గా అమర్చుము."
+
+#: ../nm-applet.schemas.in.h:5
+msgid ""
+"Set this to TRUE to disable notifications when wireless networks are "
+"available."
+msgstr ""
+"వైర్‌లెస్ నెట్వర్కులు అందుబాటులో వున్నప్పుడు నోటీసులను అచేతనము చేయుటకు దీనిని TRUE గా "
+"అమర్చండి."
+
+#: ../nm-applet.schemas.in.h:6
+msgid "Stamp"
+msgstr "స్టాంప్"
+
+#: ../nm-applet.schemas.in.h:7
+#| msgid "Wireless Networks Available"
+msgid "Suppress networks available notifications"
+msgstr "నెట్వర్కులు అందుబాటులోవున్నాయి నోటీసు అణిచివేయుము"
+
+#: ../nm-applet.schemas.in.h:8
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr "అమరికలు కొత్త వర్షన్‌కు మైగ్రేట్ కావాలా అనేది నిర్ణయించుటకు వుపయోగించబడుతుంది."
+
 #: ../nm-connection-editor.desktop.in.h:1
 msgid "Manage and change your network connection settings"
 msgstr "మీ నెట్వర్కు అనుసంధానము అమర్పులను నిర్వహించండి మరియు మార్చండి"
@@ -39,119 +77,120 @@ msgstr "మీ నెట్వర్కు అనుసంధానము అమ
 msgid "Network Connections"
 msgstr "నెట్వర్కు అనుసంధానములు"
 
-#: ../src/applet-device-bt.c:187 ../src/applet-device-cdma.c:352
-#: ../src/applet-device-gsm.c:354 ../src/applet-device-wired.c:263
+#: ../src/applet-device-bt.c:171 ../src/applet-device-cdma.c:291
+#: ../src/applet-device-gsm.c:284 ../src/applet-device-wired.c:241
+#: ../src/applet-device-wifi.c:765
+msgid "Available"
+msgstr "అందుబాటులోవున్న"
+
+#: ../src/applet-device-bt.c:197 ../src/applet-device-cdma.c:321
+#: ../src/applet-device-gsm.c:314 ../src/applet-device-wired.c:270
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "మీరు '%s'కు అనుసంధానించబడినారు."
 
-#: ../src/applet-device-bt.c:191 ../src/applet-device-cdma.c:356
-#: ../src/applet-device-gsm.c:358 ../src/applet-device-wired.c:267
-#: ../src/applet-device-wifi.c:1186
+#: ../src/applet-device-bt.c:201 ../src/applet-device-cdma.c:325
+#: ../src/applet-device-gsm.c:318 ../src/applet-device-wired.c:274
+#: ../src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "అనుసంధానము యేర్పరచబడింది"
 
-#: ../src/applet-device-bt.c:192
-#| msgid "You are now connected to the wired network."
+#: ../src/applet-device-bt.c:202
 msgid "You are now connected to the mobile broadband network."
 msgstr "మీరు యిప్పుడు మొబైల్ బ్రాడ్‌బ్యాండ్ నెట్వర్కునకు అనుసంధానించబడి వున్నారు."
 
-#: ../src/applet-device-bt.c:218 ../src/applet-device-cdma.c:383
-#: ../src/applet-device-gsm.c:385
+#: ../src/applet-device-bt.c:228 ../src/applet-device-cdma.c:352
+#: ../src/applet-device-gsm.c:345
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ అనుసంధానము '%s' ప్రిపేర్ చేయబడుతోంది..."
 
-#: ../src/applet-device-bt.c:221 ../src/applet-device-cdma.c:386
-#: ../src/applet-device-gsm.c:388
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:355
+#: ../src/applet-device-gsm.c:348
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ అనుసంధానము '%s' ఆకృతీకరించబడుతోంది..."
 
-#: ../src/applet-device-bt.c:224 ../src/applet-device-cdma.c:389
-#: ../src/applet-device-gsm.c:391
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:358
+#: ../src/applet-device-gsm.c:351
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ అనుసంధానము '%s' కొరకు వినియోగదారి దృవీకరణము అవసరమైంది..."
 
-#: ../src/applet-device-bt.c:227 ../src/applet-device-cdma.c:392
-#: ../src/applet-device-gsm.c:394 ../src/applet.c:1908
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:361
+#: ../src/applet-device-gsm.c:354 ../src/applet.c:2169
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "'%s' కొరకు నెట్వర్కు చిరునామాను అభ్యర్ధిస్తోంది..."
 
-#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:396
-#: ../src/applet-device-gsm.c:398
+#: ../src/applet-device-bt.c:241 ../src/applet-device-cdma.c:365
+#: ../src/applet-device-gsm.c:358
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ అనుసంధానము '%s' క్రియాశీలము"
 
-#: ../src/applet-device-cdma.c:150 ../src/connection-editor/page-mobile.c:679
+#: ../src/applet-device-cdma.c:150 ../src/connection-editor/page-mobile.c:625
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:213
+#: ../src/applet-device-cdma.c:222
 msgid "New Mobile Broadband (CDMA) connection..."
 msgstr "కొత్త మొబైల్ బ్రాడ్‌బాండ్ (CDMA) అనుసంధానము..."
 
-#: ../src/applet-device-cdma.c:258 ../src/applet-device-gsm.c:260
-msgid "Disconnect"
-msgstr "అననుసంధానించుము"
-
-#: ../src/applet-device-cdma.c:297 ../src/applet-device-gsm.c:299
+#: ../src/applet-device-cdma.c:261 ../src/applet-device-gsm.c:260
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ (%s)"
 
-#: ../src/applet-device-cdma.c:299 ../src/applet-device-gsm.c:301
-#: ../src/connection-editor/page-mobile.c:378
+#: ../src/applet-device-cdma.c:263 ../src/applet-device-gsm.c:262
+#: ../src/connection-editor/page-mobile.c:326
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1656
+#: ../src/connection-editor/nm-connection-list.c:1360
 msgid "Mobile Broadband"
 msgstr "మొబైల్ బ్రాడ్‌బాండ్"
 
-#: ../src/applet-device-cdma.c:357
+#: ../src/applet-device-cdma.c:326
 msgid "You are now connected to the CDMA network."
 msgstr "మీరు CDMA నెట్వర్కునకు అనుసంధానించబడినారు."
 
-#: ../src/applet-device-cdma.c:512 ../src/applet-device-gsm.c:596
+#: ../src/applet-device-cdma.c:495 ../src/applet-device-gsm.c:570
 msgid "Mobile broadband network password"
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ నెట్వర్కు సంకేతపదము"
 
-#: ../src/applet-device-cdma.c:521 ../src/applet-device-gsm.c:605
+#: ../src/applet-device-cdma.c:504 ../src/applet-device-gsm.c:579
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "'%s'కు అనుసంధానమగుటకు వొక సంకేతపదము అవసరమైంది."
 
-#: ../src/applet-device-cdma.c:539 ../src/applet-device-gsm.c:623
+#: ../src/applet-device-cdma.c:522 ../src/applet-device-gsm.c:597
 msgid "Password:"
 msgstr "సంకేతపదము:"
 
-#: ../src/applet-device-gsm.c:152 ../src/connection-editor/page-mobile.c:682
+#: ../src/applet-device-gsm.c:152 ../src/connection-editor/page-mobile.c:628
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/applet-device-gsm.c:215
+#: ../src/applet-device-gsm.c:223
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "కొత్త మొబైల్ బ్రాడ్‌బాండ్ (GSM) అనుసంధానము..."
 
-#: ../src/applet-device-gsm.c:359
+#: ../src/applet-device-gsm.c:319
 msgid "You are now connected to the GSM network."
 msgstr "మీరు యిప్పడు GSM నెట్వర్కునకు అనుసంధానించబడినారు."
 
-#: ../src/applet-device-gsm.c:536
+#: ../src/applet-device-gsm.c:510
 msgid "PIN code required"
 msgstr "PIN కోడ్ అవసరమైంది"
 
-#: ../src/applet-device-gsm.c:538
+#: ../src/applet-device-gsm.c:512
 msgid "PUK code required"
 msgstr "PUK కోడ్ అవసరమైంది"
 
-#: ../src/applet-device-gsm.c:547
+#: ../src/applet-device-gsm.c:521
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ పరికరము కొరకు PIN కోడ్ అవసరమైంది"
 
-#: ../src/applet-device-gsm.c:549
+#: ../src/applet-device-gsm.c:523
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ పరికరము కొరకు PUK కోడ్ అవసరమైంది"
 
@@ -159,59 +198,59 @@ msgstr "మొబైల్ బ్రాడ్‌బాండ్ పరికర�
 msgid "Auto Ethernet"
 msgstr "స్వయంచాలక ఈథర్‌నెట్"
 
-#: ../src/applet-device-wired.c:199
+#: ../src/applet-device-wired.c:206
 #, c-format
 msgid "Wired Networks (%s)"
 msgstr "వైర్‌తో నెట్వర్క్సు (%s)"
 
-#: ../src/applet-device-wired.c:201
+#: ../src/applet-device-wired.c:208
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "వైర్‌తో నెట్వర్కు (%s)"
 
-#: ../src/applet-device-wired.c:204
+#: ../src/applet-device-wired.c:211
 msgid "Wired Networks"
 msgstr "వైర్‌తో నెట్వర్క్సు"
 
-#: ../src/applet-device-wired.c:206
+#: ../src/applet-device-wired.c:213
 msgid "Wired Network"
 msgstr "వైర్‌తో నెట్వర్కు"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:229
+#: ../src/applet-device-wired.c:233 ../src/applet.c:1327
 msgid "disconnected"
 msgstr "అననుసంధానించబడింది"
 
-#: ../src/applet-device-wired.c:268
+#: ../src/applet-device-wired.c:275
 msgid "You are now connected to the wired network."
 msgstr "మీరు యిప్పుడు వైర్ నెట్వర్కునకు అనుసంధానించబడినారు."
 
-#: ../src/applet-device-wired.c:294
+#: ../src/applet-device-wired.c:301
 #, c-format
 msgid "Preparing wired network connection '%s'..."
 msgstr "వైర్ నెట్వర్కు అనుసంధానమును సిద్దపరుస్తోంది '%s'..."
 
-#: ../src/applet-device-wired.c:297
+#: ../src/applet-device-wired.c:304
 #, c-format
 msgid "Configuring wired network connection '%s'..."
 msgstr "వైర్ నెట్వర్కు అనుసంధానము '%s'ను ఆకృతీకరిస్తోంది..."
 
-#: ../src/applet-device-wired.c:300
+#: ../src/applet-device-wired.c:307
 #, c-format
 msgid "User authentication required for wired network connection '%s'..."
 msgstr "వైర్ నెట్వర్కు అనుసంధానము '%s' కొరకు వినియోగదారి ధృవీకరణము అవసరమైంది..."
 
-#: ../src/applet-device-wired.c:303
+#: ../src/applet-device-wired.c:310
 #, c-format
 msgid "Requesting a wired network address for '%s'..."
 msgstr "'%s' కొరకు వైర్ నెట్వర్కు చిరునామాను అభ్యర్దిస్తోంది..."
 
-#: ../src/applet-device-wired.c:307
+#: ../src/applet-device-wired.c:314
 #, c-format
 msgid "Wired network connection '%s' active"
 msgstr "వైర్ నెట్వర్కు అనుసంధానము '%s' క్రియాశీలం"
 
-#: ../src/applet-device-wired.c:560
+#: ../src/applet-device-wired.c:565
 msgid "DSL authentication"
 msgstr "DSL దృవీకరణము"
 
@@ -223,73 +262,78 @@ msgstr "మరుగునవున్న వైర్‌లేని నెట�
 msgid "Create _New Wireless Network..."
 msgstr "కొత్త వైర్‌లేని నెట్వర్కును సృష్టించుము... (_N)"
 
-#: ../src/applet-device-wifi.c:695
+#: ../src/applet-device-wifi.c:699
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "వైర్‌లేని నెట్వర్కులు (%s)"
 
-#: ../src/applet-device-wifi.c:697
+#: ../src/applet-device-wifi.c:701
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "వైర్‌లేని నెట్వర్కు (%s)"
 
-#: ../src/applet-device-wifi.c:699
+#: ../src/applet-device-wifi.c:703
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "వైర్‌లేని నెట్వర్కు"
 msgstr[1] "వైర్‌లేని నెట్వర్కులు"
 
-#: ../src/applet-device-wifi.c:716
+#: ../src/applet-device-wifi.c:731
 msgid "wireless is disabled"
 msgstr "వైర్‌లేని విధం అచేతనమైంది"
 
-#: ../src/applet-device-wifi.c:979
+#: ../src/applet-device-wifi.c:792
+#| msgid "Wired Networks"
+msgid "More networks"
+msgstr "మరిన్ని నెట్వర్కులు"
+
+#: ../src/applet-device-wifi.c:1059
 msgid "Wireless Networks Available"
 msgstr "వైర్‌లెస్ నెట్వర్కులు అందుబాటులోవున్నాయి"
 
-#: ../src/applet-device-wifi.c:980
+#: ../src/applet-device-wifi.c:1060
 msgid "Click on this icon to connect to a wireless network"
 msgstr "వైర్‌లెస్ నెట్వర్కునకు అనుసంధానమగుటకు ఈ ప్రతిమపైన నొక్కుము"
 
-#: ../src/applet-device-wifi.c:983 ../src/applet.c:499
+#: ../src/applet-device-wifi.c:1063 ../src/applet.c:686
 msgid "Don't show this message again"
 msgstr "ఈ సందేశమును మరలా చూపవద్దు"
 
-#: ../src/applet-device-wifi.c:1184
+#: ../src/applet-device-wifi.c:1267
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "మీరు యిప్పుడు వైర్‌లేని నెట్వర్కు '%s'కు అనుసంధానించబడినారు."
 
-#: ../src/applet-device-wifi.c:1185 ../src/applet-device-wifi.c:1216
+#: ../src/applet-device-wifi.c:1268 ../src/applet-device-wifi.c:1299
 msgid "(none)"
 msgstr "(ఏదీకాదు)"
 
-#: ../src/applet-device-wifi.c:1226
+#: ../src/applet-device-wifi.c:1309
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "వైర్‌లేని నెట్వర్కు అనుసంధానము '%s'ను సిద్దపరుస్తోంది..."
 
-#: ../src/applet-device-wifi.c:1229
+#: ../src/applet-device-wifi.c:1312
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "వైర్‌లేని నెట్వర్కు అనుసంధానము '%s'ను ఆకృతీకరిస్తోంది..."
 
-#: ../src/applet-device-wifi.c:1232
+#: ../src/applet-device-wifi.c:1315
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "వైర్‌లేని నెట్వర్కు '%s' కొరకు వినియోగదారి దృవీకరణము అవసరమైంది..."
 
-#: ../src/applet-device-wifi.c:1235
+#: ../src/applet-device-wifi.c:1318
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "'%s' కొరకు వైర్‌లేని నెట్వర్కు చిరునామా అభ్యర్ధించుచున్నది..."
 
-#: ../src/applet-device-wifi.c:1255
+#: ../src/applet-device-wifi.c:1338
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "వైర్‌లేని నెట్వర్కు అనుసంధానము '%s' క్రియాశీలము: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1259
+#: ../src/applet-device-wifi.c:1342
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "వైర్‌లేని నెట్వర్కు అనుసంధానము '%s' క్రియాశీలం"
@@ -300,7 +344,7 @@ msgstr "అనుసంధానము సమాచారమును ప్ర�
 
 #: ../src/applet-dialogs.c:84
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:850
+#: ../src/wireless-dialog.c:834
 #: ../src/wireless-security/wireless-security.c:327
 msgid "LEAP"
 msgstr "LEAP"
@@ -320,89 +364,90 @@ msgstr "WEP"
 
 #: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:807
+#: ../src/wireless-dialog.c:791
 msgid "None"
 msgstr "ఏదీకాదు"
 
-#: ../src/applet-dialogs.c:207 ../src/applet-dialogs.c:322
+#: ../src/applet-dialogs.c:207 ../src/applet-dialogs.c:279
+#: ../src/applet-dialogs.c:380
 msgid "Unknown"
 msgstr "తెలియని"
 
-#: ../src/applet-dialogs.c:258
-#, c-format
-msgid "Ethernet (%s)"
-msgstr "ఈథర్‌నెట్ (%s)"
-
-#: ../src/applet-dialogs.c:260
-#, c-format
-msgid "802.11 WiFi (%s)"
-msgstr "802.11 WiFi (%s)"
-
-#: ../src/applet-dialogs.c:262
-#, c-format
-msgid "GSM (%s)"
-msgstr "GSM (%s)"
-
-#: ../src/applet-dialogs.c:264
-#, c-format
-msgid "CDMA (%s)"
-msgstr "CDMA (%s)"
-
-#: ../src/applet-dialogs.c:269
-msgid "Interface:"
-msgstr "ఇంటర్ఫేస్:"
-
-#: ../src/applet-dialogs.c:285
-msgid "Hardware Address:"
-msgstr "హార్డువేర్ చిరునామా:"
-
-#: ../src/applet-dialogs.c:295
-msgid "Driver:"
-msgstr "డ్రైవర్:"
-
-#: ../src/applet-dialogs.c:314
+#: ../src/applet-dialogs.c:277 ../src/applet-dialogs.c:378
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:319
+#: ../src/applet-dialogs.c:309
+#, c-format
+msgid "Ethernet (%s)"
+msgstr "ఈథర్‌నెట్ (%s)"
+
+#: ../src/applet-dialogs.c:311
+#, c-format
+msgid "802.11 WiFi (%s)"
+msgstr "802.11 WiFi (%s)"
+
+#: ../src/applet-dialogs.c:313
+#, c-format
+msgid "GSM (%s)"
+msgstr "GSM (%s)"
+
+#: ../src/applet-dialogs.c:315
+#, c-format
+msgid "CDMA (%s)"
+msgstr "CDMA (%s)"
+
+#: ../src/applet-dialogs.c:320
+msgid "Interface:"
+msgstr "ఇంటర్ఫేస్:"
+
+#: ../src/applet-dialogs.c:336
+msgid "Hardware Address:"
+msgstr "హార్డువేర్ చిరునామా:"
+
+#: ../src/applet-dialogs.c:346
+msgid "Driver:"
+msgstr "డ్రైవర్:"
+
+#: ../src/applet-dialogs.c:384
 msgid "Speed:"
 msgstr "వేగము:"
 
-#: ../src/applet-dialogs.c:329
+#: ../src/applet-dialogs.c:393
 msgid "Security:"
 msgstr "రక్షణ:"
 
-#: ../src/applet-dialogs.c:349
+#: ../src/applet-dialogs.c:413
 msgid "IP Address:"
 msgstr "IP చిరునామా:"
 
-#: ../src/applet-dialogs.c:365
+#: ../src/applet-dialogs.c:429
 msgid "Broadcast Address:"
 msgstr "బ్రాడ్‌కాస్ట్ చిరునామా:"
 
-#: ../src/applet-dialogs.c:376
+#: ../src/applet-dialogs.c:440
 msgid "Subnet Mask:"
 msgstr "సబ్‌నెట్ మాస్క్:"
 
-#: ../src/applet-dialogs.c:388
+#: ../src/applet-dialogs.c:452
 msgid "Default Route:"
 msgstr "అప్రమేయ రూట్:"
 
-#: ../src/applet-dialogs.c:403
+#: ../src/applet-dialogs.c:467
 msgid "Primary DNS:"
 msgstr "ప్రాధమిక DNS:"
 
-#: ../src/applet-dialogs.c:414
+#: ../src/applet-dialogs.c:478
 msgid "Secondary DNS:"
 msgstr "ద్వితీయ DNS:"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:477
+#: ../src/applet-dialogs.c:541
 msgid "No valid active connections found!"
 msgstr "ఎటువంటి చెల్లునటువంటి క్రియాశీల అనుసంధానములు కనబడలేదు!"
 
-#: ../src/applet-dialogs.c:603
+#: ../src/applet-dialogs.c:667
 msgid ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
@@ -410,23 +455,23 @@ msgstr ""
 "కాపీరైట్ © 2004-2008 Red Hat, Inc.\n"
 "కాపీరైట్ © 2005-2008 Novell, Inc."
 
-#: ../src/applet-dialogs.c:605
+#: ../src/applet-dialogs.c:669
 msgid "Notification area applet for managing your network devices and connections."
 msgstr "మీ నెట్వర్కు పరికరములను మరియు అనుసంధానములను నిర్వహించుటకు ప్రకటన ప్రాంత ఆప్లెట్."
 
-#: ../src/applet-dialogs.c:607
+#: ../src/applet-dialogs.c:671
 msgid "NetworkManager Website"
 msgstr "NetworkManager వెబ్‌సైట్"
 
-#: ../src/applet-dialogs.c:610
+#: ../src/applet-dialogs.c:674
 msgid "translator-credits"
 msgstr "కృష్ణబా"
 
-#: ../src/applet-dialogs.c:626
+#: ../src/applet-dialogs.c:690
 msgid "Missing resources"
 msgstr "వనరులు తప్పిపోయినవి"
 
-#: ../src/applet.c:569
+#: ../src/applet.c:768
 #, c-format
 msgid ""
 "\n"
@@ -436,7 +481,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' విఫలమైంది యెంచేతంటే నెట్వర్కు అనుసంధానము ఆటంకపరచబడింది."
 
-#: ../src/applet.c:572
+#: ../src/applet.c:771
 #, c-format
 msgid ""
 "\n"
@@ -445,7 +490,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' విఫలమైంది యెంచేతంటే VPN సేవ అనుకోకుండా ఆపివేయబడింది."
 
-#: ../src/applet.c:575
+#: ../src/applet.c:774
 #, c-format
 msgid ""
 "\n"
@@ -455,7 +500,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' విఫలమైంది యెంచేతంటే VPN సేవ చెల్లని ఆకృతీకరణను తిప్పియిచ్చింది."
 
-#: ../src/applet.c:578
+#: ../src/applet.c:777
 #, c-format
 msgid ""
 "\n"
@@ -464,7 +509,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' విఫలమైంది యెంచేతంటే అనుసంధానపు ప్రయత్నం సమయం ముగిసింది."
 
-#: ../src/applet.c:581
+#: ../src/applet.c:780
 #, c-format
 msgid ""
 "\n"
@@ -473,7 +518,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' విఫలమైంది యెంచేతంటే VPN సేవ సమయం లోపల ప్రారంభంకాలేదు."
 
-#: ../src/applet.c:584
+#: ../src/applet.c:783
 #, c-format
 msgid ""
 "\n"
@@ -482,7 +527,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' విఫలమైంది యెంచేతంటే VPN సేవ ప్రారంభమవుటలో విఫలమైంది."
 
-#: ../src/applet.c:587
+#: ../src/applet.c:786
 #, c-format
 msgid ""
 "\n"
@@ -491,7 +536,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' విఫలమైంది యెంచేతంటే అక్కడ చెల్లునటువంటి VPN రహస్యాలు లేవు."
 
-#: ../src/applet.c:590
+#: ../src/applet.c:789
 #, c-format
 msgid ""
 "\n"
@@ -500,7 +545,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' విఫలమైంది యెంచేతంటే చెల్లని VPN రహస్యాలు."
 
-#: ../src/applet.c:597
+#: ../src/applet.c:796
 #, c-format
 msgid ""
 "\n"
@@ -509,7 +554,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' విఫలమైంది."
 
-#: ../src/applet.c:615
+#: ../src/applet.c:814
 #, c-format
 msgid ""
 "\n"
@@ -519,7 +564,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' అననుసంధానించబడింది యెంచేతంటే నెట్వర్కు అనుసంధానము ఆటంకపరచబడింది."
 
-#: ../src/applet.c:618
+#: ../src/applet.c:817
 #, c-format
 msgid ""
 "\n"
@@ -528,7 +573,7 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' అననుసంధానించబడింది యెంచేతంటే VPN సేవ ఆపివేయబడింది."
 
-#: ../src/applet.c:624
+#: ../src/applet.c:823
 #, c-format
 msgid ""
 "\n"
@@ -537,15 +582,15 @@ msgstr ""
 "\n"
 "VPN అనుసంధానము '%s' అననుసంధానించబడింది."
 
-#: ../src/applet.c:702
+#: ../src/applet.c:901
 msgid "VPN Login Message"
 msgstr "VPN లాగిన్ సందేశము"
 
-#: ../src/applet.c:714 ../src/applet.c:722 ../src/applet.c:766
+#: ../src/applet.c:913 ../src/applet.c:921 ../src/applet.c:965
 msgid "VPN Connection Failed"
 msgstr "VPN అనుసంధానము విఫలమైంది"
 
-#: ../src/applet.c:773
+#: ../src/applet.c:972
 #, c-format
 msgid ""
 "\n"
@@ -558,7 +603,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:776
+#: ../src/applet.c:975
 #, c-format
 msgid ""
 "\n"
@@ -571,126 +616,130 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1083
+#: ../src/applet.c:1318
 msgid "device not ready"
 msgstr "పరికరము సిద్దముకాలేదు"
 
-#: ../src/applet.c:1099
+#: ../src/applet.c:1343
+msgid "Disconnect"
+msgstr "అననుసంధానించుము"
+
+#: ../src/applet.c:1357
 msgid "device not managed"
 msgstr "పరికరము నిర్వహించబడలేదు"
 
-#: ../src/applet.c:1143
+#: ../src/applet.c:1400
 msgid "No network devices available"
 msgstr "ఎటువంటి నెట్వర్కు పరికరములు అందుబాటులోలేవు"
 
-#: ../src/applet.c:1231
+#: ../src/applet.c:1488
 msgid "_VPN Connections"
 msgstr "_VPN అనుసంధానములు"
 
-#: ../src/applet.c:1281
+#: ../src/applet.c:1541
 msgid "_Configure VPN..."
 msgstr "VPN ఆకృతీకరించుము... (_C)"
 
-#: ../src/applet.c:1285
+#: ../src/applet.c:1545
 msgid "_Disconnect VPN..."
 msgstr "VPN అననుసంధానించుము... (_D)"
 
-#: ../src/applet.c:1338
+#: ../src/applet.c:1598
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager నడుచుటలేదు..."
 
-#: ../src/applet.c:1343 ../src/applet.c:2036
+#: ../src/applet.c:1603 ../src/applet.c:2297
 msgid "Networking disabled"
 msgstr "నెట్వర్కింగ్ అచేతనమైంది"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1527
+#: ../src/applet.c:1787
 msgid "Enable _Networking"
 msgstr "నెట్వర్కింగ్ చేతనముచేయుము (_N)"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1536
+#: ../src/applet.c:1796
 msgid "Enable _Wireless"
 msgstr "వైర్‌లేని విధం చేతనముచేయుము (_W)"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1547
+#: ../src/applet.c:1807
 msgid "Connection _Information"
 msgstr "అనుసంధానము సమాచారము (_I)"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1557
+#: ../src/applet.c:1817
 msgid "Edit Connections..."
 msgstr "అనుసంధానములను సరికూర్చుము..."
 
 #. Help item
-#: ../src/applet.c:1571
+#: ../src/applet.c:1831
 msgid "_Help"
 msgstr "సహాయము (_H)"
 
 #. About item
-#: ../src/applet.c:1580
+#: ../src/applet.c:1840
 msgid "_About"
 msgstr "గురించి (_A)"
 
-#: ../src/applet.c:1753
+#: ../src/applet.c:2014
 msgid "Disconnected"
 msgstr "అననుసంధానించబడింది"
 
-#: ../src/applet.c:1754
+#: ../src/applet.c:2015
 msgid "The network connection has been disconnected."
 msgstr "నెట్వర్కు అనుసంధానము అననుసంధానించబడింది."
 
-#: ../src/applet.c:1902
+#: ../src/applet.c:2163
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "నెట్వర్కు అనుసంధానము '%s' సిద్దముచేయుచున్నది..."
 
-#: ../src/applet.c:1905
+#: ../src/applet.c:2166
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "నెట్వర్కు అనుసంధానము '%s' కొరకు వినియోగదారి దృవీకరణము అవసరము..."
 
-#: ../src/applet.c:1911
+#: ../src/applet.c:2172
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "నెట్వర్కు అనుసంధానము '%s' క్రియాశీలము"
 
-#: ../src/applet.c:1992
+#: ../src/applet.c:2253
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "VPN అనుసంధానము '%s'ను ప్రారంభించుచున్నది..."
 
-#: ../src/applet.c:1995
+#: ../src/applet.c:2256
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "VPN అనుసంధానము '%s' కొరకు వినియోగదారి దృవీకరణము అవసరమైంది..."
 
-#: ../src/applet.c:1998
+#: ../src/applet.c:2259
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "'%s' కొరకు VPN చిరునామాను అభ్యర్దించుచున్నది..."
 
-#: ../src/applet.c:2001
+#: ../src/applet.c:2262
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN అనుసంధానము '%s' క్రియాశీలం"
 
-#: ../src/applet.c:2040
+#: ../src/applet.c:2301
 msgid "No network connection"
 msgstr "నెట్వర్కు అనుసంధానము లేదు"
 
-#: ../src/applet.c:2375
+#: ../src/applet.c:2641
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
 msgstr "NetworkManager ఆప్లెట్ కొన్ని అవసరమైన వనరులను కనుగొనలేకపోయింది.  ఇది కొనసాగించబడదు.\n"
 
-#: ../src/applet.c:2570
+#: ../src/applet.c:2833
 msgid "NetworkManager Applet"
 msgstr "NetworkManager ఆప్లెట్"
 
-#: ../src/applet.c:2576 ../src/wired-dialog.c:128
+#: ../src/applet.c:2839 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -819,7 +868,7 @@ msgid "_PEAP version:"
 msgstr "_PEAP వర్షన్:"
 
 #: ../src/applet.glade.h:33 ../src/connection-editor/ce-page-dsl.glade.h:2
-#: ../src/connection-editor/ce-page-mobile.glade.h:16
+#: ../src/connection-editor/ce-page-mobile.glade.h:15
 msgid "_Password:"
 msgstr "సంకేతపదము (_P):"
 
@@ -827,7 +876,7 @@ msgstr "సంకేతపదము (_P):"
 msgid "_Private key password:"
 msgstr "వ్యక్తిగత కీ సంకేతపదము (_P):"
 
-#: ../src/applet.glade.h:35 ../src/connection-editor/ce-page-mobile.glade.h:17
+#: ../src/applet.glade.h:35 ../src/connection-editor/ce-page-mobile.glade.h:16
 msgid "_Type:"
 msgstr "రకము (_T):"
 
@@ -836,7 +885,7 @@ msgid "_User certificate:"
 msgstr "వినియోగదారి దృవీకరణపత్రము (_U):"
 
 #: ../src/applet.glade.h:37 ../src/connection-editor/ce-page-dsl.glade.h:4
-#: ../src/connection-editor/ce-page-mobile.glade.h:18
+#: ../src/connection-editor/ce-page-mobile.glade.h:17
 msgid "_Username:"
 msgstr "వినియోగదారినామము (_U):"
 
@@ -844,31 +893,14 @@ msgstr "వినియోగదారినామము (_U):"
 msgid "_Wireless security:"
 msgstr "వైర్‌లెస్ రక్షణ (_W):"
 
-#: ../src/connection-editor/ce-page.c:75
+#: ../src/connection-editor/ce-page.c:69
 msgid "automatic"
 msgstr "స్వయంచాలక"
 
-#: ../src/connection-editor/ce-page.c:206
-msgid ""
-"Insufficient privileges or unknown error retrieving system connection "
-"secrets."
-msgstr "సిస్టమ్ అనుసంధానం రహస్యాలను పొందుటలో సరిపోని అనుమతులు లేదా తెలియని దోషము."
-
-#: ../src/connection-editor/ce-page.c:241
+#: ../src/connection-editor/ce-page.c:221
+#: ../src/connection-editor/nm-connection-editor.c:596
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "తెలియని దోషము కారణంగా అనుసంధానము రహస్యాలు నవీకరించుటకు విఫలమైంది."
-
-#: ../src/connection-editor/ce-page.c:274
-msgid "Could not request secrets from the system settings service."
-msgstr "సిస్టమ్ అమర్పుల సేవనుండి రహస్యాలను అభ్యర్ధించలేక పోయింది."
-
-#: ../src/connection-editor/ce-page.c:304
-msgid "Could not connect to D-Bus to request connection secrets."
-msgstr "అనుసంధానము రహస్యాలను అభ్యర్దించుటకు D-Busకు అనుసంధానము కాలేకపోయింది."
-
-#: ../src/connection-editor/ce-page.c:317
-msgid "Could not create D-Bus proxy for connection secrets."
-msgstr "అనుసంధానము రహస్యములకొరకు D-Bus ప్రోక్సీను సృష్టించలేక పోయింది."
 
 #: ../src/connection-editor/ce-page-dsl.glade.h:3
 msgid "_Service:"
@@ -986,18 +1018,14 @@ msgid "PI_N:"
 msgstr "పిన్ (_N):"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:12
-msgid "PU_K:"
-msgstr "PU_K:"
-
-#: ../src/connection-editor/ce-page-mobile.glade.h:13
 msgid "Sho_w passwords"
 msgstr "సంకేతపదములను చూపుము (_w)"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
+#: ../src/connection-editor/ce-page-mobile.glade.h:13
 msgid "_APN:"
 msgstr "_APN:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:15
+#: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "_Band:"
 msgstr "బ్రాండ్ (_B):"
 
@@ -1264,18 +1292,18 @@ msgstr "మెట్రిక్"
 msgid "Prefix"
 msgstr "ప్రిఫిక్స్"
 
-#: ../src/connection-editor/page-dsl.c:153
-#: ../src/connection-editor/page-dsl.c:160
+#: ../src/connection-editor/page-dsl.c:140
+#: ../src/connection-editor/page-dsl.c:147
 msgid "Could not load DSL user interface."
 msgstr "DSL వినియోగదారి యింటర్ఫేస్‌ను లోడుచేయలేక పోయింది."
 
-#: ../src/connection-editor/page-dsl.c:166
+#: ../src/connection-editor/page-dsl.c:153
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1664
+#: ../src/connection-editor/nm-connection-list.c:1368
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-dsl.c:256
+#: ../src/connection-editor/page-dsl.c:241
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL అనుసంధానము %d"
@@ -1338,62 +1366,57 @@ msgstr "ఇంతర కంప్యూటర్లకు భాగస్వా�
 msgid "Editing IPv4 routes for %s"
 msgstr "%s కొరకు IPv4 రూట్లు సరికూర్చుచున్నది"
 
-#: ../src/connection-editor/page-ip4.c:708
-#: ../src/connection-editor/page-ip4.c:715
+#: ../src/connection-editor/page-ip4.c:711
+#: ../src/connection-editor/page-ip4.c:718
 msgid "Could not load IPv4 user interface."
 msgstr "IPv4 వినియోగదారి యింటర్ఫేస్ లోడుచేయలేక పోయింది."
 
-#: ../src/connection-editor/page-ip4.c:721
+#: ../src/connection-editor/page-ip4.c:724
 msgid "IPv4 Settings"
 msgstr "IPv4 అమరికలు"
 
 #: ../src/connection-editor/page-ip6.c:124
-#| msgid "automatic"
 msgid "Automatic"
 msgstr "స్వయంచాలకంగా"
 
 #: ../src/connection-editor/page-ip6.c:125
-#| msgid "Automatic (VPN) addresses only"
 msgid "Automatic, addresses only"
 msgstr "స్వయంచాలక, చిరునామాలు మాత్రమే"
 
 #: ../src/connection-editor/page-ip6.c:137
-#: ../src/wireless-security/eap-method.c:175
+#: ../src/wireless-security/eap-method.c:186
 msgid "Ignore"
 msgstr "వదిలివేయి"
 
 #: ../src/connection-editor/page-ip6.c:574
 #, c-format
-#| msgid "Editing IPv4 routes for %s"
 msgid "Editing IPv6 routes for %s"
 msgstr "%s కొరకు IPv6 రూట్లు సరికూర్చుట"
 
-#: ../src/connection-editor/page-ip6.c:667
-#: ../src/connection-editor/page-ip6.c:674
-#| msgid "Could not load IPv4 user interface."
+#: ../src/connection-editor/page-ip6.c:670
+#: ../src/connection-editor/page-ip6.c:677
 msgid "Could not load IPv6 user interface."
 msgstr "IPv6 వినియోగదారి యింటర్ఫేస్‌ను లోడుచేయలేక పోయింది."
 
-#: ../src/connection-editor/page-ip6.c:680
-#| msgid "IPv4 Settings"
+#: ../src/connection-editor/page-ip6.c:683
 msgid "IPv6 Settings"
 msgstr "IPv6 అమరికలు"
 
-#: ../src/connection-editor/page-mobile.c:365
-#: ../src/connection-editor/page-mobile.c:372
+#: ../src/connection-editor/page-mobile.c:313
+#: ../src/connection-editor/page-mobile.c:320
 msgid "Could not load mobile broadband user interface."
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ వినియోగదారి యింటర్ఫేస్ లోడుచేయలేక పోయింది."
 
-#: ../src/connection-editor/page-mobile.c:390
+#: ../src/connection-editor/page-mobile.c:341
 msgid "Unsupported mobile broadband connection type."
 msgstr "మద్దతీయనటువంటి మొబైల్ బ్రాడ్‌బాండ్ అనుసంధానము రకము."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:632
+#: ../src/connection-editor/page-mobile.c:578
 msgid "Select Mobile Broadband Provider Type"
 msgstr "మొబైల్ బ్రాడ్‌బాండ్ ఉత్పాదకుని రకమును యెంపికచేయుము"
 
-#: ../src/connection-editor/page-mobile.c:659
+#: ../src/connection-editor/page-mobile.c:605
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1401,11 +1424,11 @@ msgstr ""
 "మీ మొబైల్ బ్రాడ్‌బాండ్ ఉత్పాదకుడు వుపయోగించు సాంకేతికతను యెంపికచేయుము.  మీకు నిర్ధారణ లేకపోతే, మీ "
 "ఉత్పాదకుడిని అడగండి."
 
-#: ../src/connection-editor/page-mobile.c:664
+#: ../src/connection-editor/page-mobile.c:610
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr "నా ఉత్పాదకుడు _GSM-ఆధారిత సాంకేతికతను వాడుచున్నాడు (అనగా GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:669
+#: ../src/connection-editor/page-mobile.c:615
 msgid "My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "నా ఉత్పాదకుడు _CDMA-ఆధారిత సాంకేతికతను వుపయోగించుచున్నాడు (అనగా 1xRTT, EVDO)"
 
@@ -1414,23 +1437,23 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:223
+#: ../src/wireless-security/eap-method-ttls.c:227
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:134
-#: ../src/wireless-security/eap-method-ttls.c:268
+#: ../src/wireless-security/eap-method-ttls.c:272
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:240
-#: ../src/wireless-security/eap-method-ttls.c:253
+#: ../src/wireless-security/eap-method-peap.c:244
+#: ../src/wireless-security/eap-method-ttls.c:257
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:136
-#: ../src/wireless-security/eap-method-ttls.c:238
+#: ../src/wireless-security/eap-method-ttls.c:242
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -1444,53 +1467,53 @@ msgstr "ఏదీకాదు"
 msgid "Editing PPP authentication methods for %s"
 msgstr "%s కొరకు PPP ధృవీకరణ విధానములను సరికూర్చుచున్నది"
 
-#: ../src/connection-editor/page-ppp.c:280
-#: ../src/connection-editor/page-ppp.c:287
+#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:290
 msgid "Could not load PPP user interface."
 msgstr "PPP వినియోగదారి యింటర్ఫేస్ లోడుచేయలేకపోయింది."
 
-#: ../src/connection-editor/page-ppp.c:293
+#: ../src/connection-editor/page-ppp.c:296
 msgid "PPP Settings"
 msgstr "PPP అమరికలు"
 
-#: ../src/connection-editor/page-vpn.c:105
+#: ../src/connection-editor/page-vpn.c:108
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1660
+#: ../src/connection-editor/nm-connection-list.c:1364
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-vpn.c:116
+#: ../src/connection-editor/page-vpn.c:119
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "'%s' కొరకు VPN ప్లగ్‌యిన్ సేవను కనుగొనలేక పోయింది."
 
-#: ../src/connection-editor/page-vpn.c:212
-#: ../src/connection-editor/nm-connection-list.c:1161
+#: ../src/connection-editor/page-vpn.c:213
+#: ../src/connection-editor/nm-connection-list.c:949
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN అనుసంధానము %d"
 
-#: ../src/connection-editor/page-wired.c:204
-#: ../src/connection-editor/page-wired.c:211
+#: ../src/connection-editor/page-wired.c:207
+#: ../src/connection-editor/page-wired.c:214
 msgid "Could not load wired user interface."
 msgstr "వైరుగల వినియోగదారి యింటర్ఫేస్‌ను లోడుచేయలేకపోయింది."
 
-#: ../src/connection-editor/page-wired.c:217
+#: ../src/connection-editor/page-wired.c:220
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1648
+#: ../src/connection-editor/nm-connection-list.c:1352
 msgid "Wired"
 msgstr "వైరుగలవిధం"
 
-#: ../src/connection-editor/page-wired.c:340
+#: ../src/connection-editor/page-wired.c:339
 #, c-format
 msgid "Wired connection %d"
 msgstr "వైరుగల అనుసంధానము %d"
 
-#: ../src/connection-editor/page-wired-security.c:112
+#: ../src/connection-editor/page-wired-security.c:115
 msgid "802.1x Security"
 msgstr "802.1x రక్షణ"
 
-#: ../src/connection-editor/page-wired-security.c:120
+#: ../src/connection-editor/page-wired-security.c:123
 msgid "Use 802.1X security for this connection"
 msgstr "ఈ అనుసంధానము కొరకు 802.1X రక్షణ వుపయోగించుము"
 
@@ -1504,86 +1527,70 @@ msgstr "అప్రమేయ"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:348
-#: ../src/connection-editor/page-wireless.c:355
+#: ../src/connection-editor/page-wireless.c:351
+#: ../src/connection-editor/page-wireless.c:358
 msgid "Could not load WiFi user interface."
 msgstr "WiFi వినియోగదారి యింటర్ఫేస్‌ను లోడుచేయలేక పోయింది."
 
-#: ../src/connection-editor/page-wireless.c:361
+#: ../src/connection-editor/page-wireless.c:364
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1652
+#: ../src/connection-editor/nm-connection-list.c:1356
 msgid "Wireless"
 msgstr "వైరులేనివిధం"
 
-#: ../src/connection-editor/page-wireless.c:512
+#: ../src/connection-editor/page-wireless.c:511
 #, c-format
 msgid "Wireless connection %d"
 msgstr "వైరులేని అనుసంధానము %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:824
+#: ../src/wireless-dialog.c:808
 msgid "WEP 40/128-bit Key"
 msgstr "WEP 40/128-bit కీ"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:833
+#: ../src/wireless-dialog.c:817
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit సంకేతపదము"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:863
+#: ../src/wireless-dialog.c:847
 msgid "Dynamic WEP (802.1x)"
 msgstr "గతిక(డైనమిక్) WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:877
+#: ../src/wireless-dialog.c:861
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 వ్యక్తిగత"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:891
+#: ../src/wireless-dialog.c:875
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 ఎంటర్‌ప్రైజ్"
 
-#: ../src/connection-editor/page-wireless-security.c:363
+#: ../src/connection-editor/page-wireless-security.c:365
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr "WiFi రక్షణ వినియోగదారి యింటర్ఫేస్‌ను లోడుచేయలేకపోయింది; WiFi అమరిక తప్పిపోయింది."
 
-#: ../src/connection-editor/page-wireless-security.c:370
-#: ../src/connection-editor/page-wireless-security.c:377
+#: ../src/connection-editor/page-wireless-security.c:372
+#: ../src/connection-editor/page-wireless-security.c:379
 msgid "Could not load WiFi security user interface."
 msgstr "WiFi రక్షణ వినియోగదారి యింటర్ఫేస్‌ను లోడుచేయలేకపోయింది."
 
-#: ../src/connection-editor/page-wireless-security.c:383
+#: ../src/connection-editor/page-wireless-security.c:385
 msgid "Wireless Security"
 msgstr "వైర్‌లేనివిధానికి రక్షణ"
 
-#: ../src/connection-editor/polkit-helpers.c:54
-msgid "PolicyKit authorization request was invalid."
-msgstr "పాలసీకిట్ దృవీకరణ అభ్యర్ధన చెల్లనిది."
-
-#: ../src/connection-editor/polkit-helpers.c:60
-msgid "PolicyKit authorization request was malformed."
-msgstr "పాలసీకిట్ దృవీకరణ అభ్యర్ధన తప్పుగారూపొందించబడింది."
-
-#: ../src/connection-editor/polkit-helpers.c:66
-msgid "PolicyKit authorization could not be created."
-msgstr "పాలసీకిట్ దృవీకరణ సృష్టించబడలేక పోయింది."
-
-#: ../src/connection-editor/polkit-helpers.c:73
-msgid "PolicyKit authorization could not be created; invalid action ID."
-msgstr "పాలసీకిట్ దృవీకరణ సృష్టించబడలేకపోయింది; చెల్లని చర్యా ID."
-
-#: ../src/connection-editor/nm-connection-editor.c:106
+#: ../src/connection-editor/nm-connection-editor.c:100
 #, c-format
 msgid "Editing %s"
 msgstr "సరికూర్చుచున్నది %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:110
+#: ../src/connection-editor/nm-connection-editor.c:104
 msgid "Editing un-named connection"
 msgstr "పేరు-లేని అనుసంధానమును సరికూర్చుచున్నది"
 
-#: ../src/connection-editor/nm-connection-editor.c:298
+#: ../src/connection-editor/nm-connection-editor.c:280
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
@@ -1591,31 +1598,31 @@ msgstr ""
 "అనుసంధానము సరికూర్పరి అవసరమైన కొన్ని వనరులను కనుగొనలేక పోయింది (NetworkManager గ్లేడ్ ఫైలు "
 "కనబడలేదు)."
 
-#: ../src/connection-editor/nm-connection-editor.c:311
+#: ../src/connection-editor/nm-connection-editor.c:293
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
 msgstr "అనుసంధానము సరికూర్పరి అవసరమైన కొన్ని వనరులను కనుగొనలేక పోయింది (గ్లేడ్ ఫైలు కనుగొనబడలేదు)."
 
-#: ../src/connection-editor/nm-connection-editor.c:327
-msgid "Apply..."
-msgstr "ఆపాదించు..."
+#: ../src/connection-editor/nm-connection-editor.c:366
+msgid "Error creating connection editor dialog."
+msgstr "అనుసంధానము సరికూర్పరి డైలాగును సృష్టించుటలో దోషము."
 
-#: ../src/connection-editor/nm-connection-editor.c:328
-msgid "Authenticate to save this connection for all users of this machine."
-msgstr "ఈ మిషన్‌యొక్క వినియోగదారులందరికి ఈ అనుసంధానమును దాయుటకు దృవీకరించుము."
-
-#: ../src/connection-editor/nm-connection-editor.c:329
+#: ../src/connection-editor/nm-connection-editor.c:387
 msgid "Apply"
 msgstr "ఆపాదించు"
 
-#: ../src/connection-editor/nm-connection-editor.c:330
+#: ../src/connection-editor/nm-connection-editor.c:388
 msgid "Save this connection for all users of this machine."
 msgstr "ఈ మిషన్‌యొక్క వినియోగదారులందరికి ఈ అనుసంధానమును దాయుము."
 
-#: ../src/connection-editor/nm-connection-editor.c:438
-msgid "Error creating connection editor dialog."
-msgstr "అనుసంధానము సరికూర్పరి డైలాగును సృష్టించుటలో దోషము."
+#: ../src/connection-editor/nm-connection-editor.c:389
+msgid "Apply..."
+msgstr "ఆపాదించు..."
+
+#: ../src/connection-editor/nm-connection-editor.c:390
+msgid "Authenticate to save this connection for all users of this machine."
+msgstr "ఈ మిషన్‌యొక్క వినియోగదారులందరికి ఈ అనుసంధానమును దాయుటకు దృవీకరించుము."
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
 msgid "Available to all users"
@@ -1637,131 +1644,107 @@ msgstr "ఎగుమతి (_x)"
 msgid "_Import"
 msgstr "దిగుమతి (_I)"
 
-#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:219
 msgid "never"
 msgstr "ఎప్పటికికాదు"
 
-#: ../src/connection-editor/nm-connection-list.c:238
-#: ../src/connection-editor/nm-connection-list.c:249
+#: ../src/connection-editor/nm-connection-list.c:230
+#: ../src/connection-editor/nm-connection-list.c:241
 msgid "now"
 msgstr "ఇప్పుడు"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:256
+#: ../src/connection-editor/nm-connection-list.c:248
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "%d నిముషం క్రితం"
 msgstr[1] "%d నిముషాల క్రితం"
 
-#: ../src/connection-editor/nm-connection-list.c:260
+#: ../src/connection-editor/nm-connection-list.c:252
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "%d గంట క్రితం"
 msgstr[1] "%d గంటల క్రితం"
 
-#: ../src/connection-editor/nm-connection-list.c:272
+#: ../src/connection-editor/nm-connection-list.c:264
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d రోజు క్రితం"
 msgstr[1] "%d రోజుల క్రితం"
 
-#: ../src/connection-editor/nm-connection-list.c:278
+#: ../src/connection-editor/nm-connection-list.c:270
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d నెల క్రితం"
 msgstr[1] "%d నెలల క్రితం"
 
-#: ../src/connection-editor/nm-connection-list.c:282
+#: ../src/connection-editor/nm-connection-list.c:274
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d సంవత్సరం క్రితం"
 msgstr[1] "%d సంవత్సరాల క్రితం"
 
-#: ../src/connection-editor/nm-connection-list.c:348
-#: ../src/connection-editor/nm-connection-list.c:480
-msgid "Could not obtain required privileges"
-msgstr "కావలిసిన అనుమతులను పొందలేకపోయింది"
+#: ../src/connection-editor/nm-connection-list.c:575
+#| msgid "VPN Connection Failed"
+msgid "Connection add failed"
+msgstr "అనుసంధానం జతచేయుట విఫలమైంది"
 
-#: ../src/connection-editor/nm-connection-list.c:353
-msgid "Could not delete connection"
-msgstr "అనుసంధానమును తొలగించలేకపోయింది"
+#: ../src/connection-editor/nm-connection-list.c:598
+#, c-format
+msgid "Error editing connection: property '%s' / '%s' invalid: %d"
+msgstr "అనుసంధానమును సరికూర్చుటలో దోషము: లక్షణము '%s' / '%s' చెల్లని: %d"
 
-#: ../src/connection-editor/nm-connection-list.c:354
-msgid "The connection could not be deleted due to an unknown error."
-msgstr "తెలియని దోషము కారణంగా అనుసంధానము తొలగించబడలేక పోయింది."
-
-#: ../src/connection-editor/nm-connection-list.c:390
-#: ../src/connection-editor/nm-connection-list.c:401
-msgid "Could not move connection"
-msgstr "అనుసంధానమును కదల్చలేక పోయింది"
-
-#: ../src/connection-editor/nm-connection-list.c:485
-#: ../src/connection-editor/nm-connection-list.c:534
-#: ../src/connection-editor/nm-connection-list.c:545
-msgid "Could not add connection"
-msgstr "అనుసంధానమును జతచేయలేక పోయింది"
-
-#: ../src/connection-editor/nm-connection-list.c:486
-msgid "The connection could not be added due to an unknown error."
-msgstr "తెలియని దోషము కారణంగా అనుసంధానము జతచేయబడలేక పోయింది."
-
-#: ../src/connection-editor/nm-connection-list.c:659
-#: ../src/connection-editor/nm-connection-list.c:664
-#: ../src/connection-editor/nm-connection-list.c:724
-#: ../src/connection-editor/nm-connection-list.c:730
-msgid "Could not update connection"
-msgstr "అనుసంధానము నవీకరించబడలేక పోయింది"
-
-#: ../src/connection-editor/nm-connection-list.c:665
-msgid "The connection could not be updated due to an unknown error."
-msgstr "తెలియని దోషము కారణంగా అనుసంధానము నవీకరించబడలేక పోయింది."
-
-#: ../src/connection-editor/nm-connection-list.c:756
-#: ../src/connection-editor/nm-connection-list.c:887
+#: ../src/connection-editor/nm-connection-list.c:605
+#: ../src/connection-editor/nm-connection-list.c:720
 msgid "An unknown error ocurred."
 msgstr "ఒక తెలియని దోషము యెదురైంది."
 
-#: ../src/connection-editor/nm-connection-list.c:765
-#: ../src/connection-editor/nm-connection-list.c:894
+#: ../src/connection-editor/nm-connection-list.c:610
+#: ../src/connection-editor/nm-connection-list.c:755
 msgid "Error initializing editor"
 msgstr "సరికూర్పరి సిద్దపరచుటలో దోషము"
 
-#: ../src/connection-editor/nm-connection-list.c:795
-#: ../src/connection-editor/nm-connection-list.c:929
-#: ../src/connection-editor/nm-connection-list.c:1144
+#: ../src/connection-editor/nm-connection-list.c:626
+#: ../src/connection-editor/nm-connection-list.c:772
+#: ../src/connection-editor/nm-connection-list.c:932
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr "తెలియని దోషము కారణంగా అనుసంధానము సరికూర్పరి డైలాగ్ సిద్దపరచబడలేక పోయింది."
 
-#: ../src/connection-editor/nm-connection-list.c:805
+#: ../src/connection-editor/nm-connection-list.c:635
 msgid "Could not create new connection"
 msgstr "కొత్త అనుసంధానమును సృష్టించలేక పోయింది"
 
-#: ../src/connection-editor/nm-connection-list.c:815
+#: ../src/connection-editor/nm-connection-list.c:646
 msgid "Could not edit new connection"
 msgstr "కొత్త అనుసంధానమును సరికూర్చలేకపోయింది"
 
-#: ../src/connection-editor/nm-connection-list.c:949
+#: ../src/connection-editor/nm-connection-list.c:787
 msgid "Could not edit connection"
 msgstr "అనుసంధానమును సరికూర్చలేక పోయింది"
 
-#: ../src/connection-editor/nm-connection-list.c:1008
+#: ../src/connection-editor/nm-connection-list.c:812
+#| msgid "VPN Connection Failed"
+msgid "Connection delete failed"
+msgstr "అనుసంధానము తొలగింపు విఫలమైంది"
+
+#: ../src/connection-editor/nm-connection-list.c:836
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "మీరు ఖచ్చితంగా అనుసంధానము %sను తొలగించుదామని అనుకొనుచున్నారా?"
 
-#: ../src/connection-editor/nm-connection-list.c:1189
+#: ../src/connection-editor/nm-connection-list.c:979
 #: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "VPN అనుసంధానమును దిగుమతి చేయలేకపోయింది"
 
-#: ../src/connection-editor/nm-connection-list.c:1191
+#: ../src/connection-editor/nm-connection-list.c:981
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1771,49 +1754,53 @@ msgstr ""
 "\n"
 "దోషము: VPN సేవా రకములేదు."
 
-#: ../src/connection-editor/nm-connection-list.c:1205
+#: ../src/connection-editor/nm-connection-list.c:994
 msgid "Could not edit imported connection"
 msgstr "దిగుమతిచేసిన అనుసంధానమును సరికూర్చలేకపోయింది"
 
-#: ../src/connection-editor/nm-connection-list.c:1350
+#: ../src/connection-editor/nm-connection-list.c:1128
 msgid "Name"
 msgstr "నామము"
 
-#: ../src/connection-editor/nm-connection-list.c:1362
+#: ../src/connection-editor/nm-connection-list.c:1140
 msgid "Last Used"
 msgstr "చివరిగా వుపయోగించిన"
 
-#: ../src/connection-editor/nm-connection-list.c:1539
-msgid "Edit..."
-msgstr "సరికూర్చు..."
-
-#: ../src/connection-editor/nm-connection-list.c:1540
-msgid "Authenticate to edit the selected connection."
-msgstr "ఎంపికచేసిన అనుసంధానమును సరికూర్చుటకు దృవీకరించుము."
-
-#: ../src/connection-editor/nm-connection-list.c:1541
+#: ../src/connection-editor/nm-connection-list.c:1243
 msgid "Edit"
 msgstr "సరికూర్చుము"
 
-#: ../src/connection-editor/nm-connection-list.c:1542
-msgid "Edit the selected connection."
-msgstr "ఎంపికచేసిన అనుసంధానమును సరికూర్చుము."
+#: ../src/connection-editor/nm-connection-list.c:1244
+#| msgid "Edit the selected connection."
+msgid "Edit the selected connection"
+msgstr "ఎంపికచేసిన అనుసంధానమును సరికూర్చుము"
 
-#: ../src/connection-editor/nm-connection-list.c:1559
-msgid "Delete..."
-msgstr "తొలగించుము..."
+#: ../src/connection-editor/nm-connection-list.c:1245
+msgid "Edit..."
+msgstr "సరికూర్చు..."
 
-#: ../src/connection-editor/nm-connection-list.c:1560
-msgid "Authenticate to delete the selected connection."
-msgstr "ఎంపికచేసిన అనుసంధానమును తొలగించుటకు ధృవీకరించుము."
+#: ../src/connection-editor/nm-connection-list.c:1246
+#| msgid "Authenticate to edit the selected connection."
+msgid "Authenticate to edit the selected connection"
+msgstr "ఎంపికచేసిన అనుసంధానమును సరికూర్చుటకు దృవీకరించుము"
 
-#: ../src/connection-editor/nm-connection-list.c:1561
+#: ../src/connection-editor/nm-connection-list.c:1260
 msgid "Delete"
 msgstr "తొలగించుము"
 
-#: ../src/connection-editor/nm-connection-list.c:1562
-msgid "Delete the selected connection."
-msgstr "ఎంపికచేసిన అనుసంధానమును తొలగించుము."
+#: ../src/connection-editor/nm-connection-list.c:1261
+#| msgid "Delete the selected connection."
+msgid "Delete the selected connection"
+msgstr "ఎంపికచేసిన అనుసంధానమును తొలగించుము"
+
+#: ../src/connection-editor/nm-connection-list.c:1262
+msgid "Delete..."
+msgstr "తొలగించుము..."
+
+#: ../src/connection-editor/nm-connection-list.c:1263
+#| msgid "Authenticate to delete the selected connection."
+msgid "Authenticate to delete the selected connection"
+msgstr "ఎంపికచేసిన అనుసంధానమును తొలగించుటకు ధృవీకరించుము"
 
 #: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
@@ -1864,7 +1851,7 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "VPN అనుసంధానమును ఎగుమతిచేయుము..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:188
+#: ../src/gnome-bluetooth/network-manager-applet.c:197
 msgid "Access the Internet using your mobile phone"
 msgstr "మీ మొబైల్ ఫోనును వుపయోగించి ఇంటర్నెట్‌ను యాక్సిస్ చేయుము"
 
@@ -2028,7 +2015,7 @@ msgstr "కొత్త మొబైల్ బ్రాడ్‌బాండ్ 
 msgid "Default"
 msgstr "అప్రమేయ"
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:253
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:255
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "VPN అనుసంధానము '%s'ను ప్రారంభించలేదు"
@@ -2042,7 +2029,7 @@ msgstr ""
 "VPN అనుసంధానము రకము '%s' కొరకు ధృవీకరణ డైలాగును కనుగొనలేక పోయింది. మీ సిస్టమ్ నిర్వహణాధికారిని "
 "సంప్రదించండి."
 
-#: ../src/vpn-password-dialog.c:256
+#: ../src/vpn-password-dialog.c:258
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
@@ -2055,50 +2042,50 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "వైరు‌గల 802.1X ధృవీకరణము"
 
-#: ../src/wireless-dialog.c:444
+#: ../src/wireless-dialog.c:428
 msgid "New..."
 msgstr "కొత్త..."
 
-#: ../src/wireless-dialog.c:952
+#: ../src/wireless-dialog.c:936
 msgid "C_reate"
 msgstr "సృష్టించుము (_r)"
 
-#: ../src/wireless-dialog.c:1029
+#: ../src/wireless-dialog.c:1013
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
 "s'."
 msgstr "వైరులేని నెట్వర్కు '%s'ను యాక్సిస్ చేసుకొనుటకు సంకేతపదములు లేదా ఎన్క్రిప్షన్ కీలు అవసరము."
 
-#: ../src/wireless-dialog.c:1031
+#: ../src/wireless-dialog.c:1015
 msgid "Wireless Network Authentication Required"
 msgstr "వైరులేని నెట్వర్కు ధృవీకరణము అవసరమైంది"
 
-#: ../src/wireless-dialog.c:1033
+#: ../src/wireless-dialog.c:1017
 msgid "Authentication required by wireless network"
 msgstr "వైరులేని నెట్వర్కుద్వారా ధృవీకరణము అవసరమైంది"
 
-#: ../src/wireless-dialog.c:1038
+#: ../src/wireless-dialog.c:1022
 msgid "Create New Wireless Network"
 msgstr "కొత్త వైరులేని నెట్వర్కు సృష్టించుము"
 
-#: ../src/wireless-dialog.c:1040
+#: ../src/wireless-dialog.c:1024
 msgid "New wireless network"
 msgstr "కొత్త వైరులేని నెట్వర్కు"
 
-#: ../src/wireless-dialog.c:1041
+#: ../src/wireless-dialog.c:1025
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "మీరు సృష్టించాలని అనుకొనుచున్న వైరులేని నెట్వర్కునకు వొక నామమును ప్రవేశపెట్టుము."
 
-#: ../src/wireless-dialog.c:1043
+#: ../src/wireless-dialog.c:1027
 msgid "Connect to Hidden Wireless Network"
 msgstr "మరుగునవున్న వైరులేని నెట్వర్కునకు అనుసంధానించు"
 
-#: ../src/wireless-dialog.c:1045
+#: ../src/wireless-dialog.c:1029
 msgid "Hidden wireless network"
 msgstr "మరుగునవున్న వైరులేని నెట్వర్కు"
 
-#: ../src/wireless-dialog.c:1046
+#: ../src/wireless-dialog.c:1030
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2106,11 +2093,11 @@ msgstr ""
 "మీరు అనుసంధానం కావాలనుకొన్న మరుగునవుండు వైరులేని నెట్వర్కుయొక్క రక్షణ వివరములను మరియు నామమును "
 "ప్రవేశపెట్టుము."
 
-#: ../src/wireless-security/eap-method.c:169
+#: ../src/wireless-security/eap-method.c:180
 msgid "No Certificate Authority certificate chosen"
 msgstr "ఎటువంటి దృవీకరణపత్ర అధికారిక ధృవీకరణపత్రము యెంచుకొనబడలేదు"
 
-#: ../src/wireless-security/eap-method.c:170
+#: ../src/wireless-security/eap-method.c:181
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -2120,37 +2107,37 @@ msgstr ""
 "అవుతాయి, మోసపూరిత వైరులేని నెట్వర్కులు.  మీరు ధృవీకరణపత్ర అధికారికం ధృవీకరణపత్రమును యెంచుకొనుటకు "
 "యిష్టపడతారా?"
 
-#: ../src/wireless-security/eap-method.c:179
+#: ../src/wireless-security/eap-method.c:190
 msgid "Choose CA Certificate"
 msgstr "CA ధృవీకరణపత్రమును యెంచుకొనుము"
 
-#: ../src/wireless-security/eap-method.c:442
+#: ../src/wireless-security/eap-method.c:453
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "DER, PEM, లేదా PKCS#12 వ్యక్తిగత కీలు (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:445
+#: ../src/wireless-security/eap-method.c:456
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER లేదా PEM ధృవీకరణపత్రములు (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:255
+#: ../src/wireless-security/eap-method-peap.c:259
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:270
+#: ../src/wireless-security/eap-method-peap.c:274
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-peap.c:346
-#: ../src/wireless-security/eap-method-tls.c:418
-#: ../src/wireless-security/eap-method-ttls.c:344
+#: ../src/wireless-security/eap-method-peap.c:351
+#: ../src/wireless-security/eap-method-tls.c:409
+#: ../src/wireless-security/eap-method-ttls.c:349
 msgid "Choose a Certificate Authority certificate..."
 msgstr "ధృవీకరణపత్ర అధికారికం ధృవీకరణపత్రమును యెంచుకొనుము..."
 
-#: ../src/wireless-security/eap-method-tls.c:414
+#: ../src/wireless-security/eap-method-tls.c:403
 msgid "Choose your personal certificate..."
 msgstr "మీ వ్యక్తిగత ధృవీకరణపత్రమును యెంచుకొనుము..."
 
-#: ../src/wireless-security/eap-method-tls.c:423
+#: ../src/wireless-security/eap-method-tls.c:416
 msgid "Choose your private key..."
 msgstr "మీ వ్యక్తిగత కీను యెంచుకొనుము..."
 
