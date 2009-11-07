@@ -1420,6 +1420,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	gint n_usable_wifi_devices = 0;
 	gint n_wired_devices = 0;
 	gint n_mb_devices = 0;
+	gint n_bt_devices = 0;
 	int i;
 
 	temp = nm_client_get_devices (applet->nm_client);
@@ -1444,9 +1445,11 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			n_wired_devices++;
 		else if (NM_IS_CDMA_DEVICE (device) || NM_IS_GSM_DEVICE (device))
 			n_mb_devices++;
+		else if (NM_IS_DEVICE_BT (device))
+			n_bt_devices++;
 	}
 
-	if (!n_wired_devices && !n_wifi_devices && !n_mb_devices) {
+	if (!n_wired_devices && !n_wifi_devices && !n_mb_devices && !n_bt_devices) {
 		nma_menu_add_text_item (menu, _("No network devices available"));
 		goto out;
 	}
