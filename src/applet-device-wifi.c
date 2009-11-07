@@ -367,8 +367,15 @@ wireless_new_auto_connection (NMDevice *device,
 	dev_caps = nm_device_wifi_get_capabilities (NM_DEVICE_WIFI (device));
 	s_wireless_sec = get_security_for_ap (info->ap, dev_caps, &supported, &s_8021x);
 	if (!supported) {
+		g_warning ("Unsupported AP configuration: dev_caps 0x%X, ap_flags 0x%X, "
+		           "wpa_flags 0x%X, rsn_flags 0x%x, mode %d",
+		           dev_caps,
+		           nm_access_point_get_flags (info->ap),
+		           nm_access_point_get_wpa_flags (info->ap),
+		           nm_access_point_get_rsn_flags (info->ap),
+		           nm_access_point_get_mode (info->ap));
 		g_object_unref (s_wireless);
-		goto done;
+		return FALSE;
 	} else if (s_wireless_sec)
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
@@ -398,7 +405,6 @@ wireless_new_auto_connection (NMDevice *device,
 
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
-done:
 	(*callback) (connection, TRUE, FALSE, callback_data);
 	return TRUE;
 }

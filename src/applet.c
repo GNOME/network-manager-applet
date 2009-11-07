@@ -317,7 +317,7 @@ applet_menu_item_activate_helper_part2 (NMConnection *connection,
 		return;
 	}
 
-	g_assert (connection);
+	g_return_if_fail (connection != NULL);
 
 	if (!auto_created)
 		is_system = is_system_connection (connection);
