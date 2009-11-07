@@ -63,8 +63,9 @@ typedef struct
 } NMAppletClass; 
 
 #define APPLET_PREFS_PATH "/apps/nm-applet"
-#define PREF_DISABLE_CONNECTED_NOTIFICATIONS	APPLET_PREFS_PATH "/disable-connected-notifications"
-#define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS	APPLET_PREFS_PATH "/disable-disconnected-notifications"
+#define PREF_DISABLE_CONNECTED_NOTIFICATIONS    APPLET_PREFS_PATH "/disable-connected-notifications"
+#define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS APPLET_PREFS_PATH "/disable-disconnected-notifications"
+#define PREF_DISABLE_WIFI_CREATE                APPLET_PREFS_PATH "/disable-wifi-create"
 
 #define ICON_LAYER_LINK 0
 #define ICON_LAYER_VPN 1
