@@ -117,6 +117,8 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 {
 	GtkWidget *menu_item;
 	GtkWidget *label;
+	GError *error = NULL;
+	gboolean disabled;
 
 	menu_item = gtk_menu_item_new ();
 	label = gtk_label_new_with_mnemonic (_("Create _New Wireless Network..."));
@@ -125,6 +127,14 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 	gtk_widget_show_all (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	g_signal_connect (menu_item, "activate", G_CALLBACK (new_network_activate_cb), applet);
+
+	/* FIXME: should really use PolicyKit and NM permissions here instead
+	 * using using GConf mandatory settings.  But this works for now.
+	 */
+	disabled = gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_WIFI_CREATE, &error);
+	if (error || disabled)
+		gtk_widget_set_sensitive (GTK_WIDGET (menu_item), FALSE);
+	g_clear_error (&error);
 }
 
 
