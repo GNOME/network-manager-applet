@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManagerApplet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-27 22:11+0100\n"
-"PO-Revision-Date: 2009-10-27 22:12+0100\n"
+"POT-Creation-Date: 2009-11-08 21:29+0100\n"
+"PO-Revision-Date: 2009-11-08 23:37+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -25,34 +25,42 @@ msgid "Network Manager"
 msgstr "Nätverkshanterare"
 
 #: ../nm-applet.schemas.in.h:1
+msgid "Disable WiFi Create"
+msgstr "Inaktivera skapande av WiFi"
+
+#: ../nm-applet.schemas.in.h:2
 msgid "Disable connected notifications"
 msgstr "Inaktivera anslutningsnotifieringar"
 
-#: ../nm-applet.schemas.in.h:2
+#: ../nm-applet.schemas.in.h:3
 msgid "Disable disconnected notifications"
 msgstr "Inaktivera notifieringar om frånkopplingar"
 
-#: ../nm-applet.schemas.in.h:3
+#: ../nm-applet.schemas.in.h:4
 msgid "Set this to TRUE to disable notifications when connecting to a network."
 msgstr "Ställ in detta till TRUE för att inaktivera notifieringar vid anslutning till ett nätverk."
 
-#: ../nm-applet.schemas.in.h:4
+#: ../nm-applet.schemas.in.h:5
 msgid "Set this to TRUE to disable notifications when disconnecting from a network."
 msgstr "Ställ in detta till TRUE för att inaktivera notifieringar vid frånkoppling från ett nätverk."
 
-#: ../nm-applet.schemas.in.h:5
+#: ../nm-applet.schemas.in.h:6
 msgid "Set this to TRUE to disable notifications when wireless networks are available."
 msgstr "Ställ in detta till TRUE för att inaktivera notifieringar när trådlösa nätverk är tillgängliga."
 
-#: ../nm-applet.schemas.in.h:6
+#: ../nm-applet.schemas.in.h:7
+msgid "Set to TRUE to disable creation of adhoc networks when using the applet."
+msgstr "Ställ in till TRUE för att inaktivera skapandet av adhoc-nätverk när panelprogrammet används."
+
+#: ../nm-applet.schemas.in.h:8
 msgid "Stamp"
 msgstr "Stämpel"
 
-#: ../nm-applet.schemas.in.h:7
+#: ../nm-applet.schemas.in.h:9
 msgid "Suppress networks available notifications"
 msgstr "Visa inte notifieringar om tillgängliga nätverk"
 
-#: ../nm-applet.schemas.in.h:8
+#: ../nm-applet.schemas.in.h:10
 msgid "Used to determine whether settings should be migrated to a new version."
 msgstr "Används för att fastställa huruvida inställningar ska migreras till en ny version."
 
@@ -69,7 +77,7 @@ msgstr "Nätverksanslutningar"
 #: ../src/applet-device-cdma.c:291
 #: ../src/applet-device-gsm.c:284
 #: ../src/applet-device-wired.c:241
-#: ../src/applet-device-wifi.c:765
+#: ../src/applet-device-wifi.c:781
 msgid "Available"
 msgstr "Tillgängliga"
 
@@ -85,7 +93,7 @@ msgstr "Du är nu ansluten till \"%s\"."
 #: ../src/applet-device-cdma.c:325
 #: ../src/applet-device-gsm.c:318
 #: ../src/applet-device-wired.c:274
-#: ../src/applet-device-wifi.c:1269
+#: ../src/applet-device-wifi.c:1285
 msgid "Connection Established"
 msgstr "Anslutning etablerad"
 
@@ -117,7 +125,7 @@ msgstr "Användarautentisering krävs för mobila bredbandsanslutningen \"%s\"..
 #: ../src/applet-device-bt.c:237
 #: ../src/applet-device-cdma.c:361
 #: ../src/applet-device-gsm.c:354
-#: ../src/applet.c:2169
+#: ../src/applet.c:2233
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Begär en nätverksadress för \"%s\"..."
@@ -225,7 +233,7 @@ msgstr "Trådbundet nätverk"
 
 #. Notify user of unmanaged or unavailable device
 #: ../src/applet-device-wired.c:233
-#: ../src/applet.c:1327
+#: ../src/applet.c:1377
 msgid "disconnected"
 msgstr "frånkopplad"
 
@@ -266,83 +274,83 @@ msgstr "DSL-autentisering"
 msgid "_Connect to Hidden Wireless Network..."
 msgstr "_Anslut till dolt trådlöst nätverk..."
 
-#: ../src/applet-device-wifi.c:122
+#: ../src/applet-device-wifi.c:124
 msgid "Create _New Wireless Network..."
 msgstr "Skapa _nytt trådlöst nätverk..."
 
-#: ../src/applet-device-wifi.c:699
+#: ../src/applet-device-wifi.c:715
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Trådlösa nätverk (%s)"
 
-#: ../src/applet-device-wifi.c:701
+#: ../src/applet-device-wifi.c:717
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Trådlösa nätverk (%s)"
 
-#: ../src/applet-device-wifi.c:703
+#: ../src/applet-device-wifi.c:719
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Trådlöst nätverk"
 msgstr[1] "Trådlösa nätverk"
 
-#: ../src/applet-device-wifi.c:731
+#: ../src/applet-device-wifi.c:747
 msgid "wireless is disabled"
 msgstr "trådlöst läge är inaktiverat"
 
-#: ../src/applet-device-wifi.c:792
+#: ../src/applet-device-wifi.c:808
 msgid "More networks"
 msgstr "Fler nätverk"
 
-#: ../src/applet-device-wifi.c:1059
+#: ../src/applet-device-wifi.c:1075
 msgid "Wireless Networks Available"
 msgstr "Trådlösa nätverk tillgängliga"
 
-#: ../src/applet-device-wifi.c:1060
+#: ../src/applet-device-wifi.c:1076
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Klicka på denna ikon för att ansluta till ett trådlöst nätverk"
 
-#: ../src/applet-device-wifi.c:1063
+#: ../src/applet-device-wifi.c:1079
 #: ../src/applet.c:686
 msgid "Don't show this message again"
 msgstr "Visa inte detta meddelandet igen"
 
-#: ../src/applet-device-wifi.c:1267
+#: ../src/applet-device-wifi.c:1283
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Du är nu ansluten till det trådlösa nätverket \"%s\"."
 
-#: ../src/applet-device-wifi.c:1268
-#: ../src/applet-device-wifi.c:1299
+#: ../src/applet-device-wifi.c:1284
+#: ../src/applet-device-wifi.c:1315
 msgid "(none)"
 msgstr "(ingen)"
 
-#: ../src/applet-device-wifi.c:1309
+#: ../src/applet-device-wifi.c:1325
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Förbereder trådlösa nätverksanslutningen \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1312
+#: ../src/applet-device-wifi.c:1328
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Konfigurerar trådlösa nätverksanslutningen \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1315
+#: ../src/applet-device-wifi.c:1331
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Användarautentisering krävs för trådlösa nätverket \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1318
+#: ../src/applet-device-wifi.c:1334
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Begär en trådlös nätverksadress för \"%s\"..."
 
-#: ../src/applet-device-wifi.c:1338
+#: ../src/applet-device-wifi.c:1354
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Trådlösa nätverksanslutningen \"%s\" är aktiv: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1342
+#: ../src/applet-device-wifi.c:1358
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Trådlösa nätverksanslutningen \"%s\" är aktiv"
@@ -489,7 +497,7 @@ msgstr ""
 msgid "Missing resources"
 msgstr "Saknar resurser"
 
-#: ../src/applet.c:768
+#: ../src/applet.c:810
 #, c-format
 msgid ""
 "\n"
@@ -498,7 +506,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att nätverksanslutningen avbröts."
 
-#: ../src/applet.c:771
+#: ../src/applet.c:813
 #, c-format
 msgid ""
 "\n"
@@ -507,7 +515,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten oväntat stoppades."
 
-#: ../src/applet.c:774
+#: ../src/applet.c:816
 #, c-format
 msgid ""
 "\n"
@@ -516,7 +524,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten svarade med ogiltig konfiguration."
 
-#: ../src/applet.c:777
+#: ../src/applet.c:819
 #, c-format
 msgid ""
 "\n"
@@ -525,7 +533,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att tidsgränsen för anslutningsförsöket överstegs."
 
-#: ../src/applet.c:780
+#: ../src/applet.c:822
 #, c-format
 msgid ""
 "\n"
@@ -534,7 +542,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten inte startade i tid."
 
-#: ../src/applet.c:783
+#: ../src/applet.c:825
 #, c-format
 msgid ""
 "\n"
@@ -543,7 +551,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten misslyckades med att starta."
 
-#: ../src/applet.c:786
+#: ../src/applet.c:828
 #, c-format
 msgid ""
 "\n"
@@ -552,7 +560,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att det inte fanns några giltiga VPN-hemligheter."
 
-#: ../src/applet.c:789
+#: ../src/applet.c:831
 #, c-format
 msgid ""
 "\n"
@@ -561,7 +569,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av ogiltiga VPN-hemligheter."
 
-#: ../src/applet.c:796
+#: ../src/applet.c:838
 #, c-format
 msgid ""
 "\n"
@@ -570,7 +578,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades."
 
-#: ../src/applet.c:814
+#: ../src/applet.c:856
 #, c-format
 msgid ""
 "\n"
@@ -579,7 +587,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" kopplades från på grund av att nätverksanslutningen avbröts."
 
-#: ../src/applet.c:817
+#: ../src/applet.c:859
 #, c-format
 msgid ""
 "\n"
@@ -588,7 +596,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" kopplades från på grund av att VPN-tjänsten stoppades."
 
-#: ../src/applet.c:823
+#: ../src/applet.c:865
 #, c-format
 msgid ""
 "\n"
@@ -597,17 +605,17 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" kopplades från."
 
-#: ../src/applet.c:901
+#: ../src/applet.c:948
 msgid "VPN Login Message"
 msgstr "VPN-inloggningsmeddelande"
 
-#: ../src/applet.c:913
-#: ../src/applet.c:921
-#: ../src/applet.c:965
+#: ../src/applet.c:960
+#: ../src/applet.c:968
+#: ../src/applet.c:1015
 msgid "VPN Connection Failed"
 msgstr "VPN-anslutningen misslyckades"
 
-#: ../src/applet.c:972
+#: ../src/applet.c:1022
 #, c-format
 msgid ""
 "\n"
@@ -620,7 +628,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:975
+#: ../src/applet.c:1025
 #, c-format
 msgid ""
 "\n"
@@ -633,129 +641,129 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1318
+#: ../src/applet.c:1368
 msgid "device not ready"
 msgstr "enheten är inte redo"
 
-#: ../src/applet.c:1343
+#: ../src/applet.c:1393
 msgid "Disconnect"
 msgstr "Koppla från"
 
-#: ../src/applet.c:1357
+#: ../src/applet.c:1407
 msgid "device not managed"
 msgstr "enheten hanteras inte"
 
-#: ../src/applet.c:1400
+#: ../src/applet.c:1453
 msgid "No network devices available"
 msgstr "Inga nätverksenheter finns tillgängliga"
 
-#: ../src/applet.c:1488
+#: ../src/applet.c:1541
 msgid "_VPN Connections"
 msgstr "_VPN-anslutningar"
 
-#: ../src/applet.c:1541
+#: ../src/applet.c:1594
 msgid "_Configure VPN..."
 msgstr "_Konfigurera VPN..."
 
-#: ../src/applet.c:1545
+#: ../src/applet.c:1598
 msgid "_Disconnect VPN..."
 msgstr "Koppla _från VPN..."
 
-#: ../src/applet.c:1598
+#: ../src/applet.c:1651
 msgid "NetworkManager is not running..."
 msgstr "Nätverkshanteraren är inte igång..."
 
-#: ../src/applet.c:1603
-#: ../src/applet.c:2297
+#: ../src/applet.c:1656
+#: ../src/applet.c:2361
 msgid "Networking disabled"
 msgstr "Nätverk inaktiverat"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1787
+#: ../src/applet.c:1840
 msgid "Enable _Networking"
 msgstr "Aktivera _nätverk"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1796
+#: ../src/applet.c:1849
 msgid "Enable _Wireless"
 msgstr "Aktivera _trådlöst"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1807
+#: ../src/applet.c:1860
 msgid "Connection _Information"
 msgstr "Anslutnings_information"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1817
+#: ../src/applet.c:1870
 msgid "Edit Connections..."
 msgstr "Redigera anslutningar..."
 
 #. Help item
-#: ../src/applet.c:1831
+#: ../src/applet.c:1884
 msgid "_Help"
 msgstr "_Hjälp"
 
 #. About item
-#: ../src/applet.c:1840
+#: ../src/applet.c:1893
 msgid "_About"
 msgstr "_Om"
 
-#: ../src/applet.c:2014
+#: ../src/applet.c:2078
 msgid "Disconnected"
 msgstr "Frånkopplad"
 
-#: ../src/applet.c:2015
+#: ../src/applet.c:2079
 msgid "The network connection has been disconnected."
 msgstr "Nätverksanslutningen har kopplats från."
 
-#: ../src/applet.c:2163
+#: ../src/applet.c:2227
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Förbereder nätverksanslutningen \"%s\"..."
 
-#: ../src/applet.c:2166
+#: ../src/applet.c:2230
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Användarautentisering krävs för nätverksanslutningen \"%s\"..."
 
-#: ../src/applet.c:2172
+#: ../src/applet.c:2236
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Nätverksanslutningen \"%s\" är aktiv"
 
-#: ../src/applet.c:2253
+#: ../src/applet.c:2317
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Startar VPN-anslutningen \"%s\"..."
 
-#: ../src/applet.c:2256
+#: ../src/applet.c:2320
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Användarautentisering krävs för VPN-anslutningen \"%s\"..."
 
-#: ../src/applet.c:2259
+#: ../src/applet.c:2323
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Begär en VPN-adress för \"%s\"..."
 
-#: ../src/applet.c:2262
+#: ../src/applet.c:2326
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN-anslutningen \"%s\" är aktiv"
 
-#: ../src/applet.c:2301
+#: ../src/applet.c:2365
 msgid "No network connection"
 msgstr "Ingen nätverksanslutning"
 
-#: ../src/applet.c:2637
+#: ../src/applet.c:2701
 msgid "The NetworkManager applet could not find some required resources.  It cannot continue.\n"
 msgstr "Panelprogrammet för nätverkshantering kunde inte hitta en del nödvändiga resurser. Det kan inte fortsätta.\n"
 
-#: ../src/applet.c:2832
+#: ../src/applet.c:2896
 msgid "NetworkManager Applet"
 msgstr "Panelprogram för nätverkshantering"
 
-#: ../src/applet.c:2838
+#: ../src/applet.c:2902
 #: ../src/wired-dialog.c:128
 msgid "The NetworkManager Applet could not find some required resources (the glade file was not found)."
 msgstr "Panelprogrammet för nätverkshantering kunde inte hitta en del nödvändiga resurser (glade-filen hittades inte)."
@@ -952,44 +960,58 @@ msgstr "D_HCP-klient-ID:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:8
 #: ../src/connection-editor/ce-page-ip6.glade.h:7
-msgid "IP addresses identify your computer on the network.  Click the \"Add\" button to add an IP address."
-msgstr "IP-adresser för att identifiera din dator på nätverket.  Klicka på knappen \"Lägg till\" för att lägga till en IP-adress."
+msgid "Domains used when resolving host names. Use commas to separate multiple domains."
+msgstr "Domäner som används för att slå upp värdnamn. Använd kommatecken för att separera flera domäner."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
 #: ../src/connection-editor/ce-page-ip6.glade.h:8
-msgid "If enabled, this connection will never be used as the default network connection."
-msgstr "Om aktiverad så kommer denna anslutning aldrig att användas som standardnätverksanslutning."
+msgid "IP addresses identify your computer on the network.  Click the \"Add\" button to add an IP address."
+msgstr "IP-adresser för att identifiera din dator på nätverket.  Klicka på knappen \"Lägg till\" för att lägga till en IP-adress."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:10
 #: ../src/connection-editor/ce-page-ip6.glade.h:9
-msgid "Ig_nore automatically obtained routes"
-msgstr "I_gnorera automatiskt mottagna rutter"
+msgid "IP addresses of domain name servers used to resolve host names. Use commas to separate multiple domain name server addresses."
+msgstr "IP-adresser för domännamnsservrar som används för att slå upp värdnamn. Använd kommatecken för att separera flera adresser till domännamnsservrar."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:11
 #: ../src/connection-editor/ce-page-ip6.glade.h:10
-msgid "Use this c_onnection only for resources on its network"
-msgstr "Använd endast d_enna anslutning för resurser på dess nätverk"
+msgid "If enabled, this connection will never be used as the default network connection."
+msgstr "Om aktiverad så kommer denna anslutning aldrig att användas som standardnätverksanslutning."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:12
 #: ../src/connection-editor/ce-page-ip6.glade.h:11
+msgid "Ig_nore automatically obtained routes"
+msgstr "I_gnorera automatiskt mottagna rutter"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:13
+msgid "The DHCP client identifier allows the network administrator to customize your computer's configuration.  If you wish to use a DHCP client identifier, enter it here."
+msgstr "DHCP-klientidentifieraren tillåter att nätverksadministratören anpassar din dators konfiguration.  Om du vill använda en DHCP-klientidentifierare så kan du ange den här."
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:14
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
+msgid "Use this c_onnection only for resources on its network"
+msgstr "Använd endast d_enna anslutning för resurser på dess nätverk"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
 msgid "_DNS servers:"
 msgstr "_DNS-servrar:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:13
-#: ../src/connection-editor/ce-page-ip6.glade.h:12
+#: ../src/connection-editor/ce-page-ip4.glade.h:16
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
 msgid "_Method:"
 msgstr "_Metod:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:14
+#: ../src/connection-editor/ce-page-ip4.glade.h:17
 msgid "_Routes…"
 msgstr "_Rutter..."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:15
-#: ../src/connection-editor/ce-page-ip6.glade.h:14
+#: ../src/connection-editor/ce-page-ip4.glade.h:18
+#: ../src/connection-editor/ce-page-ip6.glade.h:16
 msgid "_Search domains:"
 msgstr "_Sökdomäner:"
 
-#: ../src/connection-editor/ce-page-ip6.glade.h:13
+#: ../src/connection-editor/ce-page-ip6.glade.h:15
 msgid "_Routes&#x2026;"
 msgstr "_Rutter&#x2026;"
 
