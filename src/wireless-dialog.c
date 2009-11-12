@@ -225,6 +225,14 @@ security_combo_changed_manually (GtkWidget *combo,
 	security_combo_changed (combo, user_data);
 }
 
+static gboolean
+is_system_connection (NMAWirelessDialog *self)
+{
+	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+
+	return priv->connection && (nm_connection_get_scope (priv->connection) == NM_CONNECTION_SCOPE_SYSTEM);
+}
+
 static GByteArray *
 validate_dialog_ssid (NMAWirelessDialog *self)
 {
@@ -273,6 +281,10 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 			g_byte_array_free (ssid, TRUE);
 	}
 
+	/* Assume system connections are valid so that we don't have to get secrets for them */
+	if (is_system_connection (self))
+		valid = TRUE;
+
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, valid);
 }
 
@@ -308,6 +320,10 @@ ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 	}
 
 out:
+	/* Assume system connections are valid so that we don't have to get secrets for them */
+	if (is_system_connection (self))
+		valid = TRUE;
+
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, valid);
 }
 
@@ -1066,7 +1082,11 @@ internal_init (NMAWirelessDialog *self,
 		priv->network_name_focus = TRUE;
 	}
 
-	gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, FALSE);
+	/* Assume system connections are valid so that we don't have to get secrets for them */
+	if (is_system_connection (self))
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, TRUE);
+	else
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, FALSE);
 
 	if (!device_combo_init (self, specific_device)) {
 		g_warning ("No wireless devices available.");
@@ -1187,6 +1207,7 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 		nm_connection_add_setting (connection, (NMSetting *) s_wireless);
 	} else
 		connection = g_object_ref (priv->connection);
+
 
 	/* Fill security */
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->sec_combo));
