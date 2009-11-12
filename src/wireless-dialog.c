@@ -1139,19 +1139,24 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 	} else
 		connection = g_object_ref (priv->connection);
 
-	/* Fill security */
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->sec_combo));
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->sec_combo), &iter);
-	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
-	if (sec) {
-		wireless_security_fill_connection (sec, connection);
-		wireless_security_unref (sec);
-	} else {
-		/* Unencrypted */
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-		g_assert (s_wireless);
+	/* Only update security information for user connections, as for system
+	 * connections the applet just needs to tell NM to activate it.
+	 */
+	if (!is_system_connection (self)) {
+		/* Fill security */
+		model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->sec_combo));
+		gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->sec_combo), &iter);
+		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+		if (sec) {
+			wireless_security_fill_connection (sec, connection);
+			wireless_security_unref (sec);
+		} else {
+			/* Unencrypted */
+			s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+			g_assert (s_wireless);
 
-		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
+			g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
+		}
 	}
 
 	/* Fill device */

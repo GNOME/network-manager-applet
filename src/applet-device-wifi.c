@@ -1324,6 +1324,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
 	NMDevice *device = NULL;
 	NMAccessPoint *ap = NULL;
 	NMAGConfConnection *gconf_connection;
+	const char *service = NM_DBUS_SERVICE_USER_SETTINGS;
 
 	if (response != GTK_RESPONSE_OK)
 		goto done;
@@ -1347,6 +1348,12 @@ wireless_dialog_response_cb (GtkDialog *foo,
 	connection = nma_wireless_dialog_get_connection (dialog, &device, &ap);
 	g_assert (connection);
 	g_assert (device);
+
+	/* If it's a system connection we just need to tell NM to activate it */
+	if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM) {
+		service = NM_DBUS_SERVICE_SYSTEM_SETTINGS;
+		goto activate;
+	}
 
 	gconf_connection = nma_gconf_settings_get_by_connection (applet->gconf_settings, connection);
 	if (gconf_connection) {
@@ -1427,8 +1434,9 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		}
 	}
 
+activate:
 	nm_client_activate_connection (applet->nm_client,
-	                               NM_DBUS_SERVICE_USER_SETTINGS,
+	                               service,
 	                               nm_connection_get_path (connection),
 	                               device,
 	                               ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
