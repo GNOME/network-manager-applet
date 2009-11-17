@@ -580,7 +580,7 @@ applet_about_dialog_show (NMApplet *applet)
 		"j@bootlab.org",
 		"Peter Jones <pjones@redhat.com>",
 		"Robert Love <rml@novell.com>",
-		"Tim Niemueller <tim@niemueller.de>",
+		"Tim Niemueller (http://www.niemueller.de)",
 		NULL
 	};
 
