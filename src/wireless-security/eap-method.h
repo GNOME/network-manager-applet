@@ -92,6 +92,8 @@ void eap_method_init (EAPMethod *method,
 
 GtkFileFilter * eap_method_default_file_chooser_filter_new (gboolean privkey);
 
+gboolean eap_method_is_encrypted_private_key (const char *path);
+
 #define TYPE_CLIENT_CERT 0
 #define TYPE_CA_CERT     1
 #define TYPE_PRIVATE_KEY 2
