@@ -240,6 +240,29 @@ private_key_picker_helper (EAPMethod *parent, const char *filename, gboolean cha
 		gtk_widget_set_sensitive (widget, FALSE);
 	} else if (changed)
 		gtk_widget_set_sensitive (widget, TRUE);
+
+	/* Warn the user if the private key is unencrypted */
+	if (!eap_method_is_encrypted_private_key (filename)) {
+		GtkWidget *dialog;
+		GtkWidget *toplevel;
+		GtkWindow *parent_window = NULL;
+
+		toplevel = gtk_widget_get_toplevel (parent->ui_widget);
+		if (GTK_WIDGET_TOPLEVEL (toplevel))
+			parent_window = GTK_WINDOW (toplevel);
+
+		dialog = gtk_message_dialog_new (parent_window,
+		                                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		                                 GTK_MESSAGE_WARNING,
+		                                 GTK_BUTTONS_OK,
+		                                 "%s",
+		                                 _("Unencrypted private keys are insecure"));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+		                                          "%s",
+		                                          _("The selected private key does not appear to be protected by a password.  This could allow your security credentials to be compromised.  Please select a password-protected private key.\n\n(You can password-protect your private key with openssl)"));
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
 }
 
 static void
