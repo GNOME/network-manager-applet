@@ -73,10 +73,10 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
 		 glib-2.0 >= 2.10
-		 NetworkManager >= 0.7.1.998
-		 libnm_glib >= 0.7.1.998
-		 libnm-util >= 0.7.1.998
-		 libnm_glib_vpn >= 0.7.1.998
+		 NetworkManager >= 0.7.2
+		 libnm_glib >= 0.7.2
+		 libnm-util >= 0.7.2
+		 libnm_glib_vpn >= 0.7.2
 		 gtk+-2.0 >= 2.14
 		 libglade-2.0
 		 gmodule-export-2.0
