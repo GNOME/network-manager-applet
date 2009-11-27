@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2009-09-04 20:00+0000\n"
-"PO-Revision-Date: 2009-11-27 02:29+0200\n"
+"POT-Creation-Date: 2009-11-17 08:46+0000\n"
+"PO-Revision-Date: 2009-11-27 02:44+0200\n"
 "Last-Translator: Adi Roiban <adi@roiban.ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -27,34 +27,42 @@ msgid "Network Manager"
 msgstr "Administrator rețea"
 
 #: ../nm-applet.schemas.in.h:1
+msgid "Disable WiFi Create"
+msgstr "Dezacticare creare WiFi"
+
+#: ../nm-applet.schemas.in.h:2
 msgid "Disable connected notifications"
 msgstr "Dezactivează notificările de conectare"
 
-#: ../nm-applet.schemas.in.h:2
+#: ../nm-applet.schemas.in.h:3
 msgid "Disable disconnected notifications"
 msgstr "Dezactivează notificările de deconectare"
 
-#: ../nm-applet.schemas.in.h:3
+#: ../nm-applet.schemas.in.h:4
 msgid "Set this to TRUE to disable notifications when connecting to a network."
 msgstr "Definiți ca „TRUE” pentru a dezactiva notificările la conectarea la o rețea."
 
-#: ../nm-applet.schemas.in.h:4
+#: ../nm-applet.schemas.in.h:5
 msgid "Set this to TRUE to disable notifications when disconnecting from a network."
 msgstr "Definiți ca „TRUE” pentru a dezactiva notificările la deconectarea de la o rețea."
 
-#: ../nm-applet.schemas.in.h:5
+#: ../nm-applet.schemas.in.h:6
 msgid "Set this to TRUE to disable notifications when wireless networks are available."
 msgstr "Definiți ca „TRUE” pentru a dezactiva notificările pentru rețelele fără fir disponibile."
 
-#: ../nm-applet.schemas.in.h:6
+#: ../nm-applet.schemas.in.h:7
+msgid "Set to TRUE to disable creation of adhoc networks when using the applet."
+msgstr "Definiți ca „TRUE” pentru a dezactiva crearea de rețele adhoc când se folosește miniaplicația."
+
+#: ../nm-applet.schemas.in.h:8
 msgid "Stamp"
 msgstr "Ștampilă"
 
-#: ../nm-applet.schemas.in.h:7
+#: ../nm-applet.schemas.in.h:9
 msgid "Suppress networks available notifications"
 msgstr "Suprimă notificările pentru rețele disponibile"
 
-#: ../nm-applet.schemas.in.h:8
+#: ../nm-applet.schemas.in.h:10
 msgid "Used to determine whether settings should be migrated to a new version."
 msgstr "Folosit pentru a determina dacă configurările ar trebui migrate la o nouă versiune."
 
@@ -67,136 +75,139 @@ msgstr "Administrați și modificați opțiunile conexiunilor de rețea"
 msgid "Network Connections"
 msgstr "Conexiuni de rețea"
 
-#: ../src/applet-device-bt.c:187
-#: ../src/applet-device-cdma.c:352
-#: ../src/applet-device-gsm.c:354
-#: ../src/applet-device-wired.c:263
+#: ../src/applet-device-bt.c:171
+#: ../src/applet-device-cdma.c:291
+#: ../src/applet-device-gsm.c:284
+#: ../src/applet-device-wired.c:241
+#: ../src/applet-device-wifi.c:781
+msgid "Available"
+msgstr "Disponibile"
+
+#: ../src/applet-device-bt.c:197
+#: ../src/applet-device-cdma.c:321
+#: ../src/applet-device-gsm.c:314
+#: ../src/applet-device-wired.c:270
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "V-ați conectat la „%s”."
 
-#: ../src/applet-device-bt.c:191
-#: ../src/applet-device-cdma.c:356
-#: ../src/applet-device-gsm.c:358
-#: ../src/applet-device-wired.c:267
-#: ../src/applet-device-wifi.c:1192
+#: ../src/applet-device-bt.c:201
+#: ../src/applet-device-cdma.c:325
+#: ../src/applet-device-gsm.c:318
+#: ../src/applet-device-wired.c:274
+#: ../src/applet-device-wifi.c:1285
 msgid "Connection Established"
 msgstr "Conexiune stabilită"
 
-#: ../src/applet-device-bt.c:192
+#: ../src/applet-device-bt.c:202
 msgid "You are now connected to the mobile broadband network."
 msgstr "V-ați conectat la rețeaua mobilă de bandă largă."
 
-#: ../src/applet-device-bt.c:218
-#: ../src/applet-device-cdma.c:383
-#: ../src/applet-device-gsm.c:385
+#: ../src/applet-device-bt.c:228
+#: ../src/applet-device-cdma.c:352
+#: ../src/applet-device-gsm.c:345
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Se pregătește conexiunea la internet mobil de bandă largă „%s”..."
 
-#: ../src/applet-device-bt.c:221
-#: ../src/applet-device-cdma.c:386
-#: ../src/applet-device-gsm.c:388
+#: ../src/applet-device-bt.c:231
+#: ../src/applet-device-cdma.c:355
+#: ../src/applet-device-gsm.c:348
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Se configurează conexiunea la internet mobil de bandă largă „%s”..."
 
-#: ../src/applet-device-bt.c:224
-#: ../src/applet-device-cdma.c:389
-#: ../src/applet-device-gsm.c:391
+#: ../src/applet-device-bt.c:234
+#: ../src/applet-device-cdma.c:358
+#: ../src/applet-device-gsm.c:351
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Este necesară autentificarea utilizatorului pentru conexiunea la internet mobil de bandă largă „%s”..."
 
-#: ../src/applet-device-bt.c:227
-#: ../src/applet-device-cdma.c:392
-#: ../src/applet-device-gsm.c:394
-#: ../src/applet.c:1895
+#: ../src/applet-device-bt.c:237
+#: ../src/applet-device-cdma.c:361
+#: ../src/applet-device-gsm.c:354
+#: ../src/applet.c:2233
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Se cere o adresă de rețea pentru „%s”..."
 
-#: ../src/applet-device-bt.c:231
-#: ../src/applet-device-cdma.c:396
-#: ../src/applet-device-gsm.c:398
+#: ../src/applet-device-bt.c:241
+#: ../src/applet-device-cdma.c:365
+#: ../src/applet-device-gsm.c:358
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Conexiune activă la internet mobil de bandă largă „%s”"
 
 #: ../src/applet-device-cdma.c:150
-#: ../src/connection-editor/page-mobile.c:679
+#: ../src/connection-editor/page-mobile.c:625
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:213
+#: ../src/applet-device-cdma.c:222
 msgid "New Mobile Broadband (CDMA) connection..."
 msgstr "Conexiune nouă către o rețea mobilă de bandă largă (CDMA)..."
 
-#: ../src/applet-device-cdma.c:258
+#: ../src/applet-device-cdma.c:261
 #: ../src/applet-device-gsm.c:260
-msgid "Disconnect"
-msgstr "Deconectează"
-
-#: ../src/applet-device-cdma.c:297
-#: ../src/applet-device-gsm.c:299
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Internet mobil de bandă largă (%s)"
 
-#: ../src/applet-device-cdma.c:299
-#: ../src/applet-device-gsm.c:301
-#: ../src/connection-editor/page-mobile.c:378
+#: ../src/applet-device-cdma.c:263
+#: ../src/applet-device-gsm.c:262
+#: ../src/connection-editor/page-mobile.c:326
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1358
+#: ../src/connection-editor/nm-connection-list.c:1360
 msgid "Mobile Broadband"
 msgstr "Internet mobil de bandă largă"
 
-#: ../src/applet-device-cdma.c:357
+#: ../src/applet-device-cdma.c:326
 msgid "You are now connected to the CDMA network."
 msgstr "V-ați conectat la rețeaua CDMA."
 
-#: ../src/applet-device-cdma.c:526
-#: ../src/applet-device-gsm.c:610
+#: ../src/applet-device-cdma.c:495
+#: ../src/applet-device-gsm.c:570
 msgid "Mobile broadband network password"
 msgstr "Parola pentru internetul mobil de bandă largă"
 
-#: ../src/applet-device-cdma.c:535
-#: ../src/applet-device-gsm.c:619
+#: ../src/applet-device-cdma.c:504
+#: ../src/applet-device-gsm.c:579
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Este necesară o parolă pentru conectarea la „%s”."
 
-#: ../src/applet-device-cdma.c:553
-#: ../src/applet-device-gsm.c:637
+#: ../src/applet-device-cdma.c:522
+#: ../src/applet-device-gsm.c:597
 msgid "Password:"
 msgstr "Parolă:"
 
 #: ../src/applet-device-gsm.c:152
-#: ../src/connection-editor/page-mobile.c:682
+#: ../src/connection-editor/page-mobile.c:628
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/applet-device-gsm.c:215
+#: ../src/applet-device-gsm.c:223
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "Conexiune nouă către o rețea mobilă de bandă largă (GSM)..."
 
-#: ../src/applet-device-gsm.c:359
+#: ../src/applet-device-gsm.c:319
 msgid "You are now connected to the GSM network."
 msgstr "Acum sunteți conectat la rețeaua GSM."
 
-#: ../src/applet-device-gsm.c:550
+#: ../src/applet-device-gsm.c:510
 msgid "PIN code required"
 msgstr "Cod PIN necesar"
 
-#: ../src/applet-device-gsm.c:552
+#: ../src/applet-device-gsm.c:512
 msgid "PUK code required"
 msgstr "Cod PUK necesar"
 
-#: ../src/applet-device-gsm.c:561
+#: ../src/applet-device-gsm.c:521
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Este necesar codul PIN pentru dispozitivul de acces la rețeaua mobilă de bandă largă"
 
-#: ../src/applet-device-gsm.c:563
+#: ../src/applet-device-gsm.c:523
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "Este necesar codul PUK pentru dispozitivul de acces la rețeaua mobilă de bandă largă"
 
@@ -204,59 +215,60 @@ msgstr "Este necesar codul PUK pentru dispozitivul de acces la rețeaua mobilă 
 msgid "Auto Ethernet"
 msgstr "Ethernet automat"
 
-#: ../src/applet-device-wired.c:199
+#: ../src/applet-device-wired.c:206
 #, c-format
 msgid "Wired Networks (%s)"
 msgstr "Rețele cu fir (%s)"
 
-#: ../src/applet-device-wired.c:201
+#: ../src/applet-device-wired.c:208
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "Rețea cu fir (%s)"
 
-#: ../src/applet-device-wired.c:204
+#: ../src/applet-device-wired.c:211
 msgid "Wired Networks"
 msgstr "Rețele cu fir"
 
-#: ../src/applet-device-wired.c:206
+#: ../src/applet-device-wired.c:213
 msgid "Wired Network"
 msgstr "Rețea cu fir"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:229
+#: ../src/applet-device-wired.c:233
+#: ../src/applet.c:1377
 msgid "disconnected"
 msgstr "deconectat"
 
-#: ../src/applet-device-wired.c:268
+#: ../src/applet-device-wired.c:275
 msgid "You are now connected to the wired network."
 msgstr "Acum sunteți conectat la rețeaua cu fir."
 
-#: ../src/applet-device-wired.c:294
+#: ../src/applet-device-wired.c:301
 #, c-format
 msgid "Preparing wired network connection '%s'..."
 msgstr "Se pregătește conexiunea la rețeau cu fir „%s”..."
 
-#: ../src/applet-device-wired.c:297
+#: ../src/applet-device-wired.c:304
 #, c-format
 msgid "Configuring wired network connection '%s'..."
 msgstr "Se configurează conexiunea la rețeaua cu fir „%s”..."
 
-#: ../src/applet-device-wired.c:300
+#: ../src/applet-device-wired.c:307
 #, c-format
 msgid "User authentication required for wired network connection '%s'..."
 msgstr "Este necesară autentificarea utilizatorului pentru conexiunea la rețeaua cu fir „%s”..."
 
-#: ../src/applet-device-wired.c:303
+#: ../src/applet-device-wired.c:310
 #, c-format
 msgid "Requesting a wired network address for '%s'..."
 msgstr "Se cere o adresă de rețea cu fir pentru „%s”..."
 
-#: ../src/applet-device-wired.c:307
+#: ../src/applet-device-wired.c:314
 #, c-format
 msgid "Wired network connection '%s' active"
 msgstr "Conexiune activă la rețeaua cu fir „%s”"
 
-#: ../src/applet-device-wired.c:576
+#: ../src/applet-device-wired.c:565
 msgid "DSL authentication"
 msgstr "Autentificare DSL"
 
@@ -264,80 +276,84 @@ msgstr "Autentificare DSL"
 msgid "_Connect to Hidden Wireless Network..."
 msgstr "_Conectare la o rețea fără fir ascunsă..."
 
-#: ../src/applet-device-wifi.c:122
+#: ../src/applet-device-wifi.c:124
 msgid "Create _New Wireless Network..."
 msgstr "Creează rețea _nouă fără fir..."
 
-#: ../src/applet-device-wifi.c:695
+#: ../src/applet-device-wifi.c:715
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Rețele fără fir (%s)"
 
-#: ../src/applet-device-wifi.c:697
+#: ../src/applet-device-wifi.c:717
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Rețea fără fir (%s)"
 
-#: ../src/applet-device-wifi.c:699
+#: ../src/applet-device-wifi.c:719
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Rețea fără fir"
 msgstr[1] "Rețele fără fir"
 msgstr[2] "Rețele fără fir"
 
-#: ../src/applet-device-wifi.c:716
+#: ../src/applet-device-wifi.c:747
 msgid "wireless is disabled"
 msgstr "conexiune fără fir dezactivată"
 
-#: ../src/applet-device-wifi.c:982
+#: ../src/applet-device-wifi.c:808
+msgid "More networks"
+msgstr "Mai multe rețele"
+
+#: ../src/applet-device-wifi.c:1075
 msgid "Wireless Networks Available"
 msgstr "Rețele fără fir disponibile"
 
-#: ../src/applet-device-wifi.c:983
+#: ../src/applet-device-wifi.c:1076
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Clic pe această iconiță pentru a vă conecta la o rețea fără fir"
 
-#: ../src/applet-device-wifi.c:986
-#: ../src/applet.c:481
+#: ../src/applet-device-wifi.c:1079
+#: ../src/applet.c:686
 msgid "Don't show this message again"
 msgstr "Nu arăta din nou acest mesaj"
 
-#: ../src/applet-device-wifi.c:1190
+#: ../src/applet-device-wifi.c:1283
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Acum sunteți conectat la rețeaua fără fir „%s”."
 
-#: ../src/applet-device-wifi.c:1191
-#: ../src/applet-device-wifi.c:1222
+#: ../src/applet-device-wifi.c:1284
+#: ../src/applet-device-wifi.c:1315
 msgid "(none)"
 msgstr "(nici una)"
 
-#: ../src/applet-device-wifi.c:1232
+#: ../src/applet-device-wifi.c:1325
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Se pregătește conexiunea la rețeaua fără fir „%s”..."
 
-#: ../src/applet-device-wifi.c:1235
+#: ../src/applet-device-wifi.c:1328
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Se configurează conexiunea la rețeaua fără fir „%s”..."
 
-#: ../src/applet-device-wifi.c:1238
+#: ../src/applet-device-wifi.c:1331
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Este necesară autentificarea utilizatorului pentru rețeaua fără fir „%s”..."
 
-#: ../src/applet-device-wifi.c:1241
+#: ../src/applet-device-wifi.c:1334
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Se cere o adresă de rețea fără fir pentru „%s”..."
 
-#: ../src/applet-device-wifi.c:1261
+#: ../src/applet-device-wifi.c:1354
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Conexiune activă la rețeaua fără fir „%s”: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1265
+#: ../src/applet-device-wifi.c:1358
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Conexiune activă la rețeaua fără fir „%s”"
@@ -348,8 +364,8 @@ msgstr "Eroare la afișarea informațiilor despre conexiune:"
 
 #: ../src/applet-dialogs.c:84
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:832
-#: ../src/wireless-security/wireless-security.c:327
+#: ../src/wireless-dialog.c:923
+#: ../src/wireless-security/wireless-security.c:340
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -370,90 +386,92 @@ msgstr "WEP"
 #: ../src/applet-dialogs.c:195
 #: ../src/applet-dialogs.c:204
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:789
+#: ../src/wireless-dialog.c:880
 msgid "None"
 msgstr "Nici una"
 
 #: ../src/applet-dialogs.c:207
-#: ../src/applet-dialogs.c:322
+#: ../src/applet-dialogs.c:279
+#: ../src/applet-dialogs.c:380
 msgid "Unknown"
 msgstr "Nu se știe"
 
-#: ../src/applet-dialogs.c:258
-#, c-format
-msgid "Ethernet (%s)"
-msgstr "Ethernet (%s)"
-
-#: ../src/applet-dialogs.c:260
-#, c-format
-msgid "802.11 WiFi (%s)"
-msgstr "802.11 WiFi (%s)"
-
-#: ../src/applet-dialogs.c:262
-#, c-format
-msgid "GSM (%s)"
-msgstr "GSM (%s)"
-
-#: ../src/applet-dialogs.c:264
-#, c-format
-msgid "CDMA (%s)"
-msgstr "CDMA (%s)"
-
-#: ../src/applet-dialogs.c:269
-msgid "Interface:"
-msgstr "Interfață:"
-
-#: ../src/applet-dialogs.c:285
-msgid "Hardware Address:"
-msgstr "Adresă fizică:"
-
-#: ../src/applet-dialogs.c:295
-msgid "Driver:"
-msgstr "Driver:"
-
-#: ../src/applet-dialogs.c:314
+#: ../src/applet-dialogs.c:277
+#: ../src/applet-dialogs.c:378
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:319
+#: ../src/applet-dialogs.c:309
+#, c-format
+msgid "Ethernet (%s)"
+msgstr "Ethernet (%s)"
+
+#: ../src/applet-dialogs.c:311
+#, c-format
+msgid "802.11 WiFi (%s)"
+msgstr "802.11 WiFi (%s)"
+
+#: ../src/applet-dialogs.c:313
+#, c-format
+msgid "GSM (%s)"
+msgstr "GSM (%s)"
+
+#: ../src/applet-dialogs.c:315
+#, c-format
+msgid "CDMA (%s)"
+msgstr "CDMA (%s)"
+
+#: ../src/applet-dialogs.c:320
+msgid "Interface:"
+msgstr "Interfață:"
+
+#: ../src/applet-dialogs.c:336
+msgid "Hardware Address:"
+msgstr "Adresă fizică:"
+
+#: ../src/applet-dialogs.c:346
+msgid "Driver:"
+msgstr "Driver:"
+
+#: ../src/applet-dialogs.c:384
 msgid "Speed:"
 msgstr "Viteză:"
 
-#: ../src/applet-dialogs.c:329
+#: ../src/applet-dialogs.c:393
 msgid "Security:"
 msgstr "Securitate:"
 
-#: ../src/applet-dialogs.c:349
+#: ../src/applet-dialogs.c:413
 msgid "IP Address:"
 msgstr "Adresă IP:"
 
-#: ../src/applet-dialogs.c:365
+#: ../src/applet-dialogs.c:429
 msgid "Broadcast Address:"
 msgstr "Adresă broadcast:"
 
-#: ../src/applet-dialogs.c:376
+#: ../src/applet-dialogs.c:440
 msgid "Subnet Mask:"
 msgstr "Mască subrețea:"
 
-#: ../src/applet-dialogs.c:388
+#: ../src/applet-dialogs.c:452
 msgid "Default Route:"
 msgstr "Rută implicită:"
 
-#: ../src/applet-dialogs.c:403
+#: ../src/applet-dialogs.c:467
 msgid "Primary DNS:"
 msgstr "DNS primar:"
 
-#: ../src/applet-dialogs.c:414
+#: ../src/applet-dialogs.c:478
 msgid "Secondary DNS:"
 msgstr "DNS secundar:"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:477
+#: ../src/applet-dialogs.c:541
 msgid "No valid active connections found!"
 msgstr "Nu s-au găsit conexiuni active valide!"
 
-#: ../src/applet-dialogs.c:603
+#: ../src/applet-dialogs.c:667
 msgid ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
@@ -461,15 +479,15 @@ msgstr ""
 "Drepturi de autor © 2004-2008 Red Hat, Inc.\n"
 "Drepturi de autor © 2005-2008 Novell, Inc."
 
-#: ../src/applet-dialogs.c:605
+#: ../src/applet-dialogs.c:669
 msgid "Notification area applet for managing your network devices and connections."
 msgstr "Miniaplicație din zona de notificare pentru administrarea dispozitivelor și conexiunilor la rețea."
 
-#: ../src/applet-dialogs.c:607
+#: ../src/applet-dialogs.c:671
 msgid "NetworkManager Website"
 msgstr "Situl web NetworkManager"
 
-#: ../src/applet-dialogs.c:610
+#: ../src/applet-dialogs.c:674
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
@@ -484,11 +502,11 @@ msgstr ""
 "  elzo valugi https://launchpad.net/~valugi\n"
 "  slavic https://launchpad.net/~slavic-oe"
 
-#: ../src/applet-dialogs.c:626
+#: ../src/applet-dialogs.c:690
 msgid "Missing resources"
 msgstr "Resurse lipsă"
 
-#: ../src/applet.c:563
+#: ../src/applet.c:810
 #, c-format
 msgid ""
 "\n"
@@ -497,7 +515,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a eșuat deoarece conexiunea la rețea a fost întreruptă."
 
-#: ../src/applet.c:566
+#: ../src/applet.c:813
 #, c-format
 msgid ""
 "\n"
@@ -506,7 +524,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a eșuat deoarece serviciul VPN s-a oprit brusc."
 
-#: ../src/applet.c:569
+#: ../src/applet.c:816
 #, c-format
 msgid ""
 "\n"
@@ -515,7 +533,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a eșuat deoarece serviciul VPN a returnat o configurare nevalidă."
 
-#: ../src/applet.c:572
+#: ../src/applet.c:819
 #, c-format
 msgid ""
 "\n"
@@ -524,7 +542,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a eșuat deoarece încercarea de conectare a expirat."
 
-#: ../src/applet.c:575
+#: ../src/applet.c:822
 #, c-format
 msgid ""
 "\n"
@@ -533,7 +551,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a eșuat deoarece serviciul VPN nu a pornit în timp util."
 
-#: ../src/applet.c:578
+#: ../src/applet.c:825
 #, c-format
 msgid ""
 "\n"
@@ -542,7 +560,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a eșuat deoarece serviciul VPN a eșuat la pornire."
 
-#: ../src/applet.c:581
+#: ../src/applet.c:828
 #, c-format
 msgid ""
 "\n"
@@ -551,7 +569,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a eșuat deoarece nu există secrete VPN valide."
 
-#: ../src/applet.c:584
+#: ../src/applet.c:831
 #, c-format
 msgid ""
 "\n"
@@ -560,7 +578,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a eșuat datorită unui secret VPN nevalid."
 
-#: ../src/applet.c:591
+#: ../src/applet.c:838
 #, c-format
 msgid ""
 "\n"
@@ -569,7 +587,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a eșuat."
 
-#: ../src/applet.c:609
+#: ../src/applet.c:856
 #, c-format
 msgid ""
 "\n"
@@ -578,7 +596,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a fost deconectată deoarece conexiunea la rețea a fost întreruptă."
 
-#: ../src/applet.c:612
+#: ../src/applet.c:859
 #, c-format
 msgid ""
 "\n"
@@ -587,7 +605,7 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a fost deconectată deoarece serviciul VPN a fost oprit."
 
-#: ../src/applet.c:618
+#: ../src/applet.c:865
 #, c-format
 msgid ""
 "\n"
@@ -596,17 +614,17 @@ msgstr ""
 "\n"
 "Conexiunea VPN „%s” a fost deconectată."
 
-#: ../src/applet.c:696
+#: ../src/applet.c:948
 msgid "VPN Login Message"
 msgstr "Mesaj de autentificare VPN"
 
-#: ../src/applet.c:708
-#: ../src/applet.c:716
-#: ../src/applet.c:760
+#: ../src/applet.c:960
+#: ../src/applet.c:968
+#: ../src/applet.c:1015
 msgid "VPN Connection Failed"
 msgstr "Conexiunea VPN a eșuat"
 
-#: ../src/applet.c:767
+#: ../src/applet.c:1022
 #, c-format
 msgid ""
 "\n"
@@ -619,7 +637,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:770
+#: ../src/applet.c:1025
 #, c-format
 msgid ""
 "\n"
@@ -632,125 +650,129 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1072
+#: ../src/applet.c:1368
 msgid "device not ready"
 msgstr "dispozitiv nepregătit"
 
-#: ../src/applet.c:1088
+#: ../src/applet.c:1393
+msgid "Disconnect"
+msgstr "Deconectează"
+
+#: ../src/applet.c:1407
 msgid "device not managed"
 msgstr "dispozitiv neadministrat"
 
-#: ../src/applet.c:1132
+#: ../src/applet.c:1453
 msgid "No network devices available"
 msgstr "Nu există dipozitive de rețea disponibile"
 
-#: ../src/applet.c:1220
+#: ../src/applet.c:1541
 msgid "_VPN Connections"
 msgstr "Conexiuni _VPN"
 
-#: ../src/applet.c:1270
+#: ../src/applet.c:1594
 msgid "_Configure VPN..."
 msgstr "_Configurare VPN..."
 
-#: ../src/applet.c:1274
+#: ../src/applet.c:1598
 msgid "_Disconnect VPN..."
 msgstr "_Deconectare VPN..."
 
-#: ../src/applet.c:1327
+#: ../src/applet.c:1651
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager nu este pornit..."
 
-#: ../src/applet.c:1332
-#: ../src/applet.c:2023
+#: ../src/applet.c:1656
+#: ../src/applet.c:2361
 msgid "Networking disabled"
 msgstr "Rețea dezactivată"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1516
+#: ../src/applet.c:1840
 msgid "Enable _Networking"
 msgstr "Activează _rețeaua"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1525
+#: ../src/applet.c:1849
 msgid "Enable _Wireless"
 msgstr "Activează rețeaua fără _fir"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1536
+#: ../src/applet.c:1860
 msgid "Connection _Information"
 msgstr "Detal_ii conexiune"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1546
+#: ../src/applet.c:1870
 msgid "Edit Connections..."
 msgstr "Editare conexiuni..."
 
 #. Help item
-#: ../src/applet.c:1560
+#: ../src/applet.c:1884
 msgid "_Help"
 msgstr "_Ajutor"
 
 #. About item
-#: ../src/applet.c:1569
+#: ../src/applet.c:1893
 msgid "_About"
 msgstr "_Despre"
 
-#: ../src/applet.c:1740
+#: ../src/applet.c:2078
 msgid "Disconnected"
 msgstr "Deconectat"
 
-#: ../src/applet.c:1741
+#: ../src/applet.c:2079
 msgid "The network connection has been disconnected."
 msgstr "Conexiunea la rețea a fost deconectată."
 
-#: ../src/applet.c:1889
+#: ../src/applet.c:2227
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Se pregătește conexiunea la rețea „%s”..."
 
-#: ../src/applet.c:1892
+#: ../src/applet.c:2230
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Se cere autentificarea utilizatorului pentru conexiunea la rețeaua „%s”..."
 
-#: ../src/applet.c:1898
+#: ../src/applet.c:2236
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Conexiune activă la rețeaua „%s”"
 
-#: ../src/applet.c:1979
+#: ../src/applet.c:2317
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Se pornește conexiunea VPN „%s”..."
 
-#: ../src/applet.c:1982
+#: ../src/applet.c:2320
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Se cere autentificarea utilizatorului pentru conexiunea VPN „%s”..."
 
-#: ../src/applet.c:1985
+#: ../src/applet.c:2323
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Se cere o adresă VPN pentru „%s”..."
 
-#: ../src/applet.c:1988
+#: ../src/applet.c:2326
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "Conexiune activă la VPN-ul „%s”"
 
-#: ../src/applet.c:2027
+#: ../src/applet.c:2365
 msgid "No network connection"
 msgstr "Nu există conexiuni la rețea"
 
-#: ../src/applet.c:2360
+#: ../src/applet.c:2701
 msgid "The NetworkManager applet could not find some required resources.  It cannot continue.\n"
 msgstr "NetworkManager nu a putut găsi unele resurse necesare. Nu poate continua.\n"
 
-#: ../src/applet.c:2555
+#: ../src/applet.c:2896
 msgid "NetworkManager Applet"
 msgstr "Miniaplicație NetworkManager"
 
-#: ../src/applet.c:2561
+#: ../src/applet.c:2902
 #: ../src/wired-dialog.c:128
 msgid "The NetworkManager Applet could not find some required resources (the glade file was not found)."
 msgstr "Miniaplicația NetworkManager nu a putut găsi unele resurse (nu s-a putut găsi fișierul Glade)."
@@ -881,7 +903,7 @@ msgstr "Versiune _PEAP:"
 
 #: ../src/applet.glade.h:33
 #: ../src/connection-editor/ce-page-dsl.glade.h:2
-#: ../src/connection-editor/ce-page-mobile.glade.h:16
+#: ../src/connection-editor/ce-page-mobile.glade.h:15
 msgid "_Password:"
 msgstr "_Parolă:"
 
@@ -890,7 +912,7 @@ msgid "_Private key password:"
 msgstr "Parola pentru cheia _privată:"
 
 #: ../src/applet.glade.h:35
-#: ../src/connection-editor/ce-page-mobile.glade.h:17
+#: ../src/connection-editor/ce-page-mobile.glade.h:16
 msgid "_Type:"
 msgstr "_Tip:"
 
@@ -900,7 +922,7 @@ msgstr "Certificat _utilizator:"
 
 #: ../src/applet.glade.h:37
 #: ../src/connection-editor/ce-page-dsl.glade.h:4
-#: ../src/connection-editor/ce-page-mobile.glade.h:18
+#: ../src/connection-editor/ce-page-mobile.glade.h:17
 msgid "_Username:"
 msgstr "Nume _utilizator:"
 
@@ -912,7 +934,8 @@ msgstr "Secur_itatea rețelei fără fir:"
 msgid "automatic"
 msgstr "automat"
 
-#: ../src/connection-editor/ce-page.c:215
+#: ../src/connection-editor/ce-page.c:221
+#: ../src/connection-editor/nm-connection-editor.c:596
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Eșec în actualizarea secretelor conexiunii din cauza unei erori necunoscute."
 
@@ -946,44 +969,58 @@ msgstr "ID client D_HCP:"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:8
 #: ../src/connection-editor/ce-page-ip6.glade.h:7
-msgid "IP addresses identify your computer on the network.  Click the \"Add\" button to add an IP address."
-msgstr "Adresele IP identifică calculatorul pe internet. Apăsați pe butonul „Adaugă” pentru a adăuga o nouă adresă IP."
+msgid "Domains used when resolving host names. Use commas to separate multiple domains."
+msgstr "Domenii folosite la rezolvarea numelor calculatoarelor. Folosiți virgule pentru a separa mai multe domenii."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
 #: ../src/connection-editor/ce-page-ip6.glade.h:8
-msgid "If enabled, this connection will never be used as the default network connection."
-msgstr "La activare, această conexiune nu va fi folosită niciodată ca una implicită."
+msgid "IP addresses identify your computer on the network.  Click the \"Add\" button to add an IP address."
+msgstr "Adresele IP identifică calculatorul pe internet. Apăsați pe butonul „Adaugă” pentru a adăuga o nouă adresă IP."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:10
 #: ../src/connection-editor/ce-page-ip6.glade.h:9
-msgid "Ig_nore automatically obtained routes"
-msgstr "Ig_noră rutele obținute automat"
+msgid "IP addresses of domain name servers used to resolve host names. Use commas to separate multiple domain name server addresses."
+msgstr "Adrese IP pentru serverele de domenii folosite la rezolvarea numelor calculatoarelor. Folosiți virgule pentru a separa mai multe servere de domenii."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:11
 #: ../src/connection-editor/ce-page-ip6.glade.h:10
-msgid "Use this c_onnection only for resources on its network"
-msgstr "Folosește c_onexiunea doar pentru resursele din rețeaua acesteia"
+msgid "If enabled, this connection will never be used as the default network connection."
+msgstr "La activare, această conexiune nu va fi folosită niciodată ca una implicită."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:12
 #: ../src/connection-editor/ce-page-ip6.glade.h:11
+msgid "Ig_nore automatically obtained routes"
+msgstr "Ig_noră rutele obținute automat"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:13
+msgid "The DHCP client identifier allows the network administrator to customize your computer's configuration.  If you wish to use a DHCP client identifier, enter it here."
+msgstr "Identificatorul de client DHCP permite administratorului de rețea să personalizeze configurația calculatorului dumneavoastră. Dacă doriți să folosiți un identificator de client DHCP, introduceți-l aici."
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:14
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
+msgid "Use this c_onnection only for resources on its network"
+msgstr "Folosește c_onexiunea doar pentru resursele din rețeaua acesteia"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
 msgid "_DNS servers:"
 msgstr "Servere _DNS:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:13
-#: ../src/connection-editor/ce-page-ip6.glade.h:12
+#: ../src/connection-editor/ce-page-ip4.glade.h:16
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
 msgid "_Method:"
 msgstr "_Metodă:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:14
+#: ../src/connection-editor/ce-page-ip4.glade.h:17
 msgid "_Routes…"
 msgstr "_Rute…"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:15
-#: ../src/connection-editor/ce-page-ip6.glade.h:14
+#: ../src/connection-editor/ce-page-ip4.glade.h:18
+#: ../src/connection-editor/ce-page-ip6.glade.h:16
 msgid "_Search domains:"
 msgstr "Domenii de cău_tare:"
 
-#: ../src/connection-editor/ce-page-ip6.glade.h:13
+#: ../src/connection-editor/ce-page-ip6.glade.h:15
 msgid "_Routes&#x2026;"
 msgstr "_Rute&#x2026;"
 
@@ -1026,18 +1063,14 @@ msgid "PI_N:"
 msgstr "PI_N:"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:12
-msgid "PU_K:"
-msgstr "PU_K:"
-
-#: ../src/connection-editor/ce-page-mobile.glade.h:13
 msgid "Sho_w passwords"
 msgstr "Afișea_ză parolele"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
+#: ../src/connection-editor/ce-page-mobile.glade.h:13
 msgid "_APN:"
 msgstr "_APN:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:15
+#: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "_Band:"
 msgstr "_Banda:"
 
@@ -1296,18 +1329,18 @@ msgstr "Metrică"
 msgid "Prefix"
 msgstr "Prefix"
 
-#: ../src/connection-editor/page-dsl.c:153
-#: ../src/connection-editor/page-dsl.c:160
+#: ../src/connection-editor/page-dsl.c:140
+#: ../src/connection-editor/page-dsl.c:147
 msgid "Could not load DSL user interface."
 msgstr "Nu s-a putut încărca interfața de utilizator DSL."
 
-#: ../src/connection-editor/page-dsl.c:166
+#: ../src/connection-editor/page-dsl.c:153
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1366
+#: ../src/connection-editor/nm-connection-list.c:1368
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-dsl.c:256
+#: ../src/connection-editor/page-dsl.c:241
 #, c-format
 msgid "DSL connection %d"
 msgstr "Conexiune DSL %d"
@@ -1370,12 +1403,12 @@ msgstr "Partajată cu alte calculatoare"
 msgid "Editing IPv4 routes for %s"
 msgstr "Modificare rute IPV4 pentru %s"
 
-#: ../src/connection-editor/page-ip4.c:708
-#: ../src/connection-editor/page-ip4.c:715
+#: ../src/connection-editor/page-ip4.c:711
+#: ../src/connection-editor/page-ip4.c:718
 msgid "Could not load IPv4 user interface."
 msgstr "Nu s-a putut încărca interfața de utilizator IPv4."
 
-#: ../src/connection-editor/page-ip4.c:721
+#: ../src/connection-editor/page-ip4.c:724
 msgid "IPv4 Settings"
 msgstr "Opțiuni IPv4"
 
@@ -1388,7 +1421,7 @@ msgid "Automatic, addresses only"
 msgstr "Automat, doar adresele"
 
 #: ../src/connection-editor/page-ip6.c:137
-#: ../src/wireless-security/eap-method.c:175
+#: ../src/wireless-security/eap-method.c:196
 msgid "Ignore"
 msgstr "Ignoră"
 
@@ -1397,38 +1430,38 @@ msgstr "Ignoră"
 msgid "Editing IPv6 routes for %s"
 msgstr "Editarea rutelor IPv6 pentru %s"
 
-#: ../src/connection-editor/page-ip6.c:667
-#: ../src/connection-editor/page-ip6.c:674
+#: ../src/connection-editor/page-ip6.c:670
+#: ../src/connection-editor/page-ip6.c:677
 msgid "Could not load IPv6 user interface."
 msgstr "Nu s-a putut încărca interfața utilizator IPv6"
 
-#: ../src/connection-editor/page-ip6.c:680
+#: ../src/connection-editor/page-ip6.c:683
 msgid "IPv6 Settings"
 msgstr "Configurări IPv6"
 
-#: ../src/connection-editor/page-mobile.c:365
-#: ../src/connection-editor/page-mobile.c:372
+#: ../src/connection-editor/page-mobile.c:313
+#: ../src/connection-editor/page-mobile.c:320
 msgid "Could not load mobile broadband user interface."
 msgstr "Nu s-a putut încărca interfața de utilizator pentru rețele mobile de bandă largă."
 
-#: ../src/connection-editor/page-mobile.c:390
+#: ../src/connection-editor/page-mobile.c:341
 msgid "Unsupported mobile broadband connection type."
 msgstr "Tip conexiune către o rețea mobilă de bandă largă nesuportat."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:632
+#: ../src/connection-editor/page-mobile.c:578
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Selectați tipul furnizorului de rețea mobilă de bandă largă"
 
-#: ../src/connection-editor/page-mobile.c:659
+#: ../src/connection-editor/page-mobile.c:605
 msgid "Select the technology your mobile broadband provider uses.  If you are unsure, ask your provider."
 msgstr "Selectați tehnologia folosită de furnizorul dumneavoastră de rețea mobilă de bandă largă. Dacă nu știți ce să alegeți, întrebați furnizorul."
 
-#: ../src/connection-editor/page-mobile.c:664
+#: ../src/connection-editor/page-mobile.c:610
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr "Furnizorul folosește tehnologie bazată pe _GSM (de ex. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:669
+#: ../src/connection-editor/page-mobile.c:615
 msgid "My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Furnizorul folosește tehnologie bazată pe _CDMA (de ex. 1xRTT, EVDO)"
 
@@ -1437,23 +1470,23 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:223
+#: ../src/wireless-security/eap-method-ttls.c:227
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:134
-#: ../src/wireless-security/eap-method-ttls.c:268
+#: ../src/wireless-security/eap-method-ttls.c:272
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:240
-#: ../src/wireless-security/eap-method-ttls.c:253
+#: ../src/wireless-security/eap-method-peap.c:244
+#: ../src/wireless-security/eap-method-ttls.c:257
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:136
-#: ../src/wireless-security/eap-method-ttls.c:238
+#: ../src/wireless-security/eap-method-ttls.c:242
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -1467,53 +1500,53 @@ msgstr "nimic"
 msgid "Editing PPP authentication methods for %s"
 msgstr "Editare metode autentificare PPP pentru %s"
 
-#: ../src/connection-editor/page-ppp.c:280
-#: ../src/connection-editor/page-ppp.c:287
+#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:290
 msgid "Could not load PPP user interface."
 msgstr "Nu s-a putut încărca interfața de utilizator PPP."
 
-#: ../src/connection-editor/page-ppp.c:293
+#: ../src/connection-editor/page-ppp.c:296
 msgid "PPP Settings"
 msgstr "Configurări PPP"
 
-#: ../src/connection-editor/page-vpn.c:105
+#: ../src/connection-editor/page-vpn.c:108
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1362
+#: ../src/connection-editor/nm-connection-list.c:1364
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-vpn.c:116
+#: ../src/connection-editor/page-vpn.c:119
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "Nu s-a găsit un modul VPN pentru serviciul „%s”."
 
-#: ../src/connection-editor/page-vpn.c:212
-#: ../src/connection-editor/nm-connection-list.c:948
+#: ../src/connection-editor/page-vpn.c:213
+#: ../src/connection-editor/nm-connection-list.c:949
 #, c-format
 msgid "VPN connection %d"
 msgstr "Conexiune VPN %d"
 
-#: ../src/connection-editor/page-wired.c:204
-#: ../src/connection-editor/page-wired.c:211
+#: ../src/connection-editor/page-wired.c:207
+#: ../src/connection-editor/page-wired.c:214
 msgid "Could not load wired user interface."
 msgstr "Nu s-a putut încărca interfața de utilizator pentru conexiunile cu fir."
 
-#: ../src/connection-editor/page-wired.c:217
+#: ../src/connection-editor/page-wired.c:220
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1350
+#: ../src/connection-editor/nm-connection-list.c:1352
 msgid "Wired"
 msgstr "Cu fir"
 
-#: ../src/connection-editor/page-wired.c:340
+#: ../src/connection-editor/page-wired.c:339
 #, c-format
 msgid "Wired connection %d"
 msgstr "Conexiune cu fir %d"
 
-#: ../src/connection-editor/page-wired-security.c:112
+#: ../src/connection-editor/page-wired-security.c:115
 msgid "802.1x Security"
 msgstr "Securitate 802.1x"
 
-#: ../src/connection-editor/page-wired-security.c:120
+#: ../src/connection-editor/page-wired-security.c:123
 msgid "Use 802.1X security for this connection"
 msgstr "Folosește securitatea 802.1X pentru această conexiune"
 
@@ -1527,57 +1560,57 @@ msgstr "implicit"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:348
-#: ../src/connection-editor/page-wireless.c:355
+#: ../src/connection-editor/page-wireless.c:351
+#: ../src/connection-editor/page-wireless.c:358
 msgid "Could not load WiFi user interface."
 msgstr "Nu s-a putut încărca interfața de utilizator pentru conexiunile WiFi."
 
-#: ../src/connection-editor/page-wireless.c:361
+#: ../src/connection-editor/page-wireless.c:364
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1354
+#: ../src/connection-editor/nm-connection-list.c:1356
 msgid "Wireless"
 msgstr "Fără fir"
 
-#: ../src/connection-editor/page-wireless.c:512
+#: ../src/connection-editor/page-wireless.c:511
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Conexiune fără fir %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:806
+#: ../src/wireless-dialog.c:897
 msgid "WEP 40/128-bit Key"
 msgstr "WEP cheie de 40/128-bit"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:815
+#: ../src/wireless-dialog.c:906
 msgid "WEP 128-bit Passphrase"
 msgstr "Parolă WEP 128-bit"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:845
+#: ../src/wireless-dialog.c:936
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinamic (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:859
+#: ../src/wireless-dialog.c:950
 msgid "WPA & WPA2 Personal"
 msgstr "WPA și WPA2 personal"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:873
+#: ../src/wireless-dialog.c:964
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA și WPA2"
 
-#: ../src/connection-editor/page-wireless-security.c:363
+#: ../src/connection-editor/page-wireless-security.c:365
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr "Nu s-a putut încărca interfața de utilizator pentru securitate WiFi; lipsesc configurări WiFi."
 
-#: ../src/connection-editor/page-wireless-security.c:370
-#: ../src/connection-editor/page-wireless-security.c:377
+#: ../src/connection-editor/page-wireless-security.c:372
+#: ../src/connection-editor/page-wireless-security.c:379
 msgid "Could not load WiFi security user interface."
 msgstr "Nu s-a putut încărca interfața de utilizator pentru securitate WiFi."
 
-#: ../src/connection-editor/page-wireless-security.c:383
+#: ../src/connection-editor/page-wireless-security.c:385
 msgid "Wireless Security"
 msgstr "Securitate fără  fir"
 
@@ -1590,31 +1623,31 @@ msgstr "Editare %s"
 msgid "Editing un-named connection"
 msgstr "Editare conexiune fără nume"
 
-#: ../src/connection-editor/nm-connection-editor.c:276
+#: ../src/connection-editor/nm-connection-editor.c:280
 msgid "The connection editor could not find some required resources (the NetworkManager applet glade file was not found)."
 msgstr "Editorul de conexiuni nu găsește resurse necesare (nu s-a găsit fișierul glade al miniaplicației NetworkManager)"
 
-#: ../src/connection-editor/nm-connection-editor.c:289
+#: ../src/connection-editor/nm-connection-editor.c:293
 msgid "The connection editor could not find some required resources (the glade file was not found)."
 msgstr "Editorul de conexiuni nu găsește niște resurse necesare (nu s-a găsit fișierul glade)."
 
-#: ../src/connection-editor/nm-connection-editor.c:358
+#: ../src/connection-editor/nm-connection-editor.c:366
 msgid "Error creating connection editor dialog."
 msgstr "Eroare la crearea dialogului editorului de conexiuni."
 
-#: ../src/connection-editor/nm-connection-editor.c:379
+#: ../src/connection-editor/nm-connection-editor.c:387
 msgid "Apply"
 msgstr "Aplică"
 
-#: ../src/connection-editor/nm-connection-editor.c:380
+#: ../src/connection-editor/nm-connection-editor.c:388
 msgid "Save this connection for all users of this machine."
 msgstr "Salvează această conexiune pentru toți utilizatorii acestui calculator."
 
-#: ../src/connection-editor/nm-connection-editor.c:381
+#: ../src/connection-editor/nm-connection-editor.c:389
 msgid "Apply..."
 msgstr "Aplică..."
 
-#: ../src/connection-editor/nm-connection-editor.c:382
+#: ../src/connection-editor/nm-connection-editor.c:390
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr "Autentificați-vă pentru a salva această conexiunea pentru toți utilizatorii acestui calculator."
 
@@ -1688,53 +1721,58 @@ msgstr[0] "acum un an"
 msgstr[1] "acum %d ani"
 msgstr[2] "acum %d de ani"
 
-#: ../src/connection-editor/nm-connection-list.c:583
+#: ../src/connection-editor/nm-connection-list.c:575
 msgid "Connection add failed"
 msgstr "Adăugarea conexiunii a eșuat"
 
-#: ../src/connection-editor/nm-connection-list.c:594
-#: ../src/connection-editor/nm-connection-list.c:713
+#: ../src/connection-editor/nm-connection-list.c:598
+#, c-format
+msgid "Error editing connection: property '%s' / '%s' invalid: %d"
+msgstr "Eroare la editarea proprietății: proprietate „%s” / „%s” nevalid: %d"
+
+#: ../src/connection-editor/nm-connection-list.c:605
+#: ../src/connection-editor/nm-connection-list.c:720
 msgid "An unknown error ocurred."
 msgstr "S-a produs o eroare necunoscută."
 
-#: ../src/connection-editor/nm-connection-list.c:603
-#: ../src/connection-editor/nm-connection-list.c:756
+#: ../src/connection-editor/nm-connection-list.c:610
+#: ../src/connection-editor/nm-connection-list.c:755
 msgid "Error initializing editor"
 msgstr "Eroare la inițializarea editorului"
 
-#: ../src/connection-editor/nm-connection-list.c:619
-#: ../src/connection-editor/nm-connection-list.c:771
-#: ../src/connection-editor/nm-connection-list.c:931
+#: ../src/connection-editor/nm-connection-list.c:626
+#: ../src/connection-editor/nm-connection-list.c:772
+#: ../src/connection-editor/nm-connection-list.c:932
 msgid "The connection editor dialog could not be initialized due to an unknown error."
 msgstr "Fereastra de dialog a editorului de conexiuni nu a putut fi inițializată din cauza unei erori necunoscute."
 
-#: ../src/connection-editor/nm-connection-list.c:628
+#: ../src/connection-editor/nm-connection-list.c:635
 msgid "Could not create new connection"
 msgstr "Nu s-a putut crea noua conexiune"
 
-#: ../src/connection-editor/nm-connection-list.c:639
+#: ../src/connection-editor/nm-connection-list.c:646
 msgid "Could not edit new connection"
 msgstr "Nu s-a putut edita conexiunea nouă"
 
-#: ../src/connection-editor/nm-connection-list.c:786
+#: ../src/connection-editor/nm-connection-list.c:787
 msgid "Could not edit connection"
 msgstr "Nu s-a putut edita conexiunea"
 
-#: ../src/connection-editor/nm-connection-list.c:811
+#: ../src/connection-editor/nm-connection-list.c:812
 msgid "Connection delete failed"
 msgstr "Ștergerea conexiunii a eșuat"
 
-#: ../src/connection-editor/nm-connection-list.c:835
+#: ../src/connection-editor/nm-connection-list.c:836
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Sigur doriți să ștergeți conexiunea %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:978
+#: ../src/connection-editor/nm-connection-list.c:979
 #: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "Nu s-a putut importa conexiunea VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:980
+#: ../src/connection-editor/nm-connection-list.c:981
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1744,47 +1782,47 @@ msgstr ""
 "\n"
 "Eroare: no există tip serviciul VPN."
 
-#: ../src/connection-editor/nm-connection-list.c:993
+#: ../src/connection-editor/nm-connection-list.c:994
 msgid "Could not edit imported connection"
 msgstr "Nu s-a putut edita conexiunea importată"
 
-#: ../src/connection-editor/nm-connection-list.c:1129
+#: ../src/connection-editor/nm-connection-list.c:1128
 msgid "Name"
 msgstr "Nume"
 
-#: ../src/connection-editor/nm-connection-list.c:1141
+#: ../src/connection-editor/nm-connection-list.c:1140
 msgid "Last Used"
 msgstr "Ultima folosită"
 
-#: ../src/connection-editor/nm-connection-list.c:1244
+#: ../src/connection-editor/nm-connection-list.c:1243
 msgid "Edit"
 msgstr "Editează"
 
-#: ../src/connection-editor/nm-connection-list.c:1245
+#: ../src/connection-editor/nm-connection-list.c:1244
 msgid "Edit the selected connection"
 msgstr "Modifică conexiunea selectată"
 
-#: ../src/connection-editor/nm-connection-list.c:1246
+#: ../src/connection-editor/nm-connection-list.c:1245
 msgid "Edit..."
 msgstr "Editare..."
 
-#: ../src/connection-editor/nm-connection-list.c:1247
+#: ../src/connection-editor/nm-connection-list.c:1246
 msgid "Authenticate to edit the selected connection"
 msgstr "Autentificare pentru a modifica conexiunea selectată"
 
-#: ../src/connection-editor/nm-connection-list.c:1261
+#: ../src/connection-editor/nm-connection-list.c:1260
 msgid "Delete"
 msgstr "Șterge"
 
-#: ../src/connection-editor/nm-connection-list.c:1262
+#: ../src/connection-editor/nm-connection-list.c:1261
 msgid "Delete the selected connection"
 msgstr "Șterge conexiunea selectată"
 
-#: ../src/connection-editor/nm-connection-list.c:1263
+#: ../src/connection-editor/nm-connection-list.c:1262
 msgid "Delete..."
 msgstr "Șterge..."
 
-#: ../src/connection-editor/nm-connection-list.c:1264
+#: ../src/connection-editor/nm-connection-list.c:1263
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentificare pentru a șterge conexiunea selectată"
 
@@ -1925,59 +1963,63 @@ msgstr "Furnizorul meu folosește tehnologie CDMA (1xRTT, EVDO)"
 msgid "Choose your Provider"
 msgstr "Alegeți furnizorul"
 
-#: ../src/utils/mobile-wizard.c:958
+#: ../src/utils/mobile-wizard.c:1012
 msgid "Country List:"
 msgstr "Lista țărilor:"
 
-#: ../src/utils/mobile-wizard.c:970
+#: ../src/utils/mobile-wizard.c:1024
 msgid "Country"
 msgstr "Țară"
 
-#: ../src/utils/mobile-wizard.c:1010
+#: ../src/utils/mobile-wizard.c:1031
+msgid "My country is not listed"
+msgstr "Țara mea nu este în listă"
+
+#: ../src/utils/mobile-wizard.c:1077
 msgid "Choose your Provider's Country"
 msgstr "Alegeți țara furnizorului"
 
-#: ../src/utils/mobile-wizard.c:1059
+#: ../src/utils/mobile-wizard.c:1126
 msgid "Installed GSM device"
 msgstr "Dispozitive GSM instalate"
 
-#: ../src/utils/mobile-wizard.c:1062
+#: ../src/utils/mobile-wizard.c:1129
 msgid "Installed CDMA device"
 msgstr "Dispozitive CDMA instalate"
 
-#: ../src/utils/mobile-wizard.c:1230
+#: ../src/utils/mobile-wizard.c:1297
 msgid "This assistant helps you easily set up a mobile broadband connection to a cellular (3G) network."
 msgstr "Acest asistent vă ajută să configurați o conexiune mobilă de bandă largă către o rețea celulară (3G)."
 
-#: ../src/utils/mobile-wizard.c:1235
+#: ../src/utils/mobile-wizard.c:1302
 msgid "You will need the following information:"
 msgstr "Aveți nevoie de următoarele informații:"
 
-#: ../src/utils/mobile-wizard.c:1246
+#: ../src/utils/mobile-wizard.c:1313
 msgid "Your broadband provider's name"
 msgstr "Numele furnizorului"
 
-#: ../src/utils/mobile-wizard.c:1252
+#: ../src/utils/mobile-wizard.c:1319
 msgid "Your broadband billing plan name"
 msgstr "Numele planului de facturare"
 
-#: ../src/utils/mobile-wizard.c:1258
+#: ../src/utils/mobile-wizard.c:1325
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr "(în unele cazuri) APN-ul (Numele punctului de acces) al planului de factuare"
 
-#: ../src/utils/mobile-wizard.c:1285
+#: ../src/utils/mobile-wizard.c:1352
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Creează o conexiune pentru aces_t dispozitiv mobil de bandă largă:"
 
-#: ../src/utils/mobile-wizard.c:1300
+#: ../src/utils/mobile-wizard.c:1367
 msgid "Any device"
 msgstr "Orice dispozitiv"
 
-#: ../src/utils/mobile-wizard.c:1313
+#: ../src/utils/mobile-wizard.c:1380
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Configurează o conexiune către o rețea mobilă de bandă largă"
 
-#: ../src/utils/mobile-wizard.c:1487
+#: ../src/utils/mobile-wizard.c:1554
 msgid "New Mobile Broadband Connection"
 msgstr "Conexiune nouă de Internet mobil de bandă largă"
 
@@ -2005,105 +2047,121 @@ msgstr "A apărut o problemă la lansarea dialogului de autentificare pentru con
 msgid "Wired 802.1X authentication"
 msgstr "Autentificare 802.1X cu fir"
 
-#: ../src/wireless-dialog.c:426
+#: ../src/wireless-dialog.c:444
 msgid "New..."
 msgstr "Nouă..."
 
-#: ../src/wireless-dialog.c:934
+#: ../src/wireless-dialog.c:1047
 msgid "C_reate"
 msgstr "Creea_ză"
 
-#: ../src/wireless-dialog.c:1011
+#: ../src/wireless-dialog.c:1128
 #, c-format
 msgid "Passwords or encryption keys are required to access the wireless network '%s'."
 msgstr "Este necesară parola sau cheia de criptare pentru a acesa rețeaua fără fir „%s”."
 
-#: ../src/wireless-dialog.c:1013
+#: ../src/wireless-dialog.c:1130
 msgid "Wireless Network Authentication Required"
 msgstr "Se cere autentificarea în rețeaua fără fir"
 
-#: ../src/wireless-dialog.c:1015
+#: ../src/wireless-dialog.c:1132
 msgid "Authentication required by wireless network"
 msgstr "Autentificarea este necesară pentru rețeaua fără fir"
 
-#: ../src/wireless-dialog.c:1020
+#: ../src/wireless-dialog.c:1137
 msgid "Create New Wireless Network"
 msgstr "Creează rețea fără fir nouă"
 
-#: ../src/wireless-dialog.c:1022
+#: ../src/wireless-dialog.c:1139
 msgid "New wireless network"
 msgstr "Rețea fără fir nouă"
 
-#: ../src/wireless-dialog.c:1023
+#: ../src/wireless-dialog.c:1140
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Introduceți un nume pentru rețeaua fără fir pe care doriți să o creați."
 
-#: ../src/wireless-dialog.c:1025
+#: ../src/wireless-dialog.c:1142
 msgid "Connect to Hidden Wireless Network"
 msgstr "Conectare la rețea fără fir ascunsă"
 
-#: ../src/wireless-dialog.c:1027
+#: ../src/wireless-dialog.c:1144
 msgid "Hidden wireless network"
 msgstr "Rețea fără fir ascunsă"
 
-#: ../src/wireless-dialog.c:1028
+#: ../src/wireless-dialog.c:1145
 msgid "Enter the name and security details of the hidden wireless network you wish to connect to."
 msgstr "Introduceți numele și detaliile de securitate pentru rețeaua fără fir ascunsă la care doriți să vă conectați."
 
-#: ../src/wireless-security/eap-method.c:169
+#: ../src/wireless-security/eap-method.c:190
 msgid "No Certificate Authority certificate chosen"
 msgstr "Nu s-a ales un certificat al Autorității de Certificare"
 
-#: ../src/wireless-security/eap-method.c:170
+#: ../src/wireless-security/eap-method.c:191
 msgid "Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue wireless networks.  Would you like to choose a Certificate Authority certificate?"
 msgstr "Nefolosirea unui certificat al Autorității de certificare (CA) duce la conexiuni către rețele nesigure și rețele controlate de răufăcători. Doriți să alegeți un certificat pentru Autoritatea de Certificare?"
 
-#: ../src/wireless-security/eap-method.c:179
+#: ../src/wireless-security/eap-method.c:200
 msgid "Choose CA Certificate"
 msgstr "Alegere certificat CA"
 
-#: ../src/wireless-security/eap-method.c:442
+#: ../src/wireless-security/eap-method.c:515
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "DER, PEM, sau PKCS#12 chei private (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:445
+#: ../src/wireless-security/eap-method.c:518
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Certificate DER sau PEM (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:255
+#: ../src/wireless-security/eap-method-peap.c:259
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:270
+#: ../src/wireless-security/eap-method-peap.c:274
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-peap.c:346
-#: ../src/wireless-security/eap-method-tls.c:418
-#: ../src/wireless-security/eap-method-ttls.c:344
+#: ../src/wireless-security/eap-method-peap.c:361
+#: ../src/wireless-security/eap-method-tls.c:453
+#: ../src/wireless-security/eap-method-ttls.c:359
 msgid "Choose a Certificate Authority certificate..."
-msgstr "Selectați certificatul autorității de certificare..."
+msgstr "Alegeți certificatul autorității de certificare..."
 
-#: ../src/wireless-security/eap-method-tls.c:414
+#: ../src/wireless-security/eap-method-tls.c:259
+msgid "Unencrypted private keys are insecure"
+msgstr "Cheile private necriptate sunt nesigure"
+
+#: ../src/wireless-security/eap-method-tls.c:262
+msgid ""
+"The selected private key does not appear to be protected by a password.  This could allow your security credentials to be compromised.  Please select a password-protected private key.\n"
+"\n"
+"(You can password-protect your private key with openssl)"
+msgstr ""
+"Cheia privată aleasă nu pare a fi protejată de o parolă. Acest lucru poate compromite securitatea datelor de autentificare. Alegeți o cheie privată protejată de parolă.\n"
+"\n"
+"(Puteți proteja prin parolă cheia privată folosind openssl)"
+
+#: ../src/wireless-security/eap-method-tls.c:447
 msgid "Choose your personal certificate..."
 msgstr "Selectați certificatul personal..."
 
-#: ../src/wireless-security/eap-method-tls.c:423
+#: ../src/wireless-security/eap-method-tls.c:459
 msgid "Choose your private key..."
 msgstr "Selectați cheia privată..."
 
-#: ../src/wireless-security/wireless-security.c:315
+#: ../src/wireless-security/wireless-security.c:328
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:339
+#: ../src/wireless-security/wireless-security.c:352
 msgid "Tunneled TLS"
 msgstr "TLS tunelat"
 
-#: ../src/wireless-security/wireless-security.c:350
+#: ../src/wireless-security/wireless-security.c:363
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protejat (PEAP)"
 
+#~ msgid "PU_K:"
+#~ msgstr "PU_K:"
 #~ msgid ""
 #~ "Insufficient privileges or unknown error retrieving system connection "
 #~ "secrets."
@@ -2146,8 +2204,6 @@ msgstr "EAP protejat (PEAP)"
 #~ msgstr "Nu s-a putut actualiza conexiunea din cauza unei erori necunoscute."
 #~ msgid "GSM network."
 #~ msgstr "Rețea GSM."
-#~ msgid "Wired network"
-#~ msgstr "Rețea cu fir"
 #~ msgid "Network"
 #~ msgstr "Rețea"
 #~ msgid "Disconnected - you are now offline"
@@ -2276,11 +2332,6 @@ msgstr "EAP protejat (PEAP)"
 #~ msgstr "Creează o conexiune CDMA"
 #~ msgid "PolicyKit authorization was malformed."
 #~ msgstr "Autorizarea PolicyKit a fost malformată."
-#~ msgid "Available"
-#~ msgstr "Disponibile"
-#~ msgid "More networks..."
-#~ msgstr "Mai multe rețele..."
-#~ msgid "Error editing connection: property '%s' / '%s' invalid: %d"
-#~ msgstr ""
-#~ "Eroare la editarea proprietății: proprietate „%s” / „%s” nevalid: %d"
+#~ msgid "Wired network"
+#~ msgstr "Rețea cu fir"
 
