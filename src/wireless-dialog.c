@@ -72,6 +72,8 @@ typedef struct {
 
 	gboolean auth_only;
 
+	guint revalidate_id;
+
 	gboolean disposed;
 } NMAWirelessDialogPrivate;
 
@@ -1002,6 +1004,7 @@ revalidate (gpointer user_data)
 	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
 	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 
+	priv->revalidate_id = 0;
 	security_combo_changed (priv->sec_combo, self);
 	return FALSE;
 }
@@ -1152,7 +1155,7 @@ internal_init (NMAWirelessDialog *self,
 	/* Re-validate from an idle handler so that widgets like file choosers
 	 * have had time to find their files.
 	 */
-	g_idle_add (revalidate, self);
+	priv->revalidate_id = g_idle_add (revalidate, self);
 
 	return TRUE;
 }
@@ -1386,6 +1389,9 @@ dispose (GObject *object)
 
 	if (priv->ap)
 		g_object_unref (priv->ap);
+
+	if (priv->revalidate_id)
+		g_source_remove (priv->revalidate_id);
 
 	G_OBJECT_CLASS (nma_wireless_dialog_parent_class)->dispose (object);
 }
