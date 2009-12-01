@@ -42,7 +42,7 @@
 #define DEVICE_TAG "device"
 #define TYPE_TAG "setting-type"
 
-static char *get_selected_country (MobileWizard *self);
+static char *get_selected_country (MobileWizard *self, gboolean *unlisted);
 static NmnMobileProvider *get_selected_provider (MobileWizard *self);
 static NmnMobileAccessMethodType get_provider_unlisted_type (MobileWizard *self);
 static NmnMobileAccessMethod *get_selected_method (MobileWizard *self, gboolean *manual);
@@ -272,7 +272,7 @@ confirm_prepare (MobileWizard *self)
 	gboolean manual = FALSE;
 	GString *str;
 
-	country = get_selected_country (self);
+	country = get_selected_country (self, NULL);
 	provider = get_selected_provider (self);
 	if (provider)
 		method = get_selected_method (self, &manual);
@@ -779,7 +779,14 @@ providers_prepare (MobileWizard *self)
 
 	gtk_tree_store_clear (self->providers_store);
 
-	country = get_selected_country (self);
+	country = get_selected_country (self, NULL);
+	if (!country) {
+		/* Unlisted country */
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->provider_unlisted_radio), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (self->providers_view_radio), FALSE);
+		goto done;
+	}
+
 	providers = g_hash_table_lookup (self->providers, country);
 	g_free (country);
 
@@ -837,6 +844,7 @@ providers_prepare (MobileWizard *self)
 		}
 	}
 
+done:
 	providers_radio_toggled (NULL, self);
 
 	/* Initial completeness state */
@@ -914,12 +922,13 @@ add_one_country (gpointer key, gpointer value, gpointer user_data)
 }
 
 static char *
-get_selected_country (MobileWizard *self)
+get_selected_country (MobileWizard *self, gboolean *out_unlisted)
 {
 	GtkTreeSelection *selection;
 	GtkTreeModel *model = NULL;
 	GtkTreeIter iter;
 	char *country = NULL;
+	gboolean unlisted = FALSE;
 
 	if (!self->country_codes)
 		return NULL;
@@ -927,8 +936,15 @@ get_selected_country (MobileWizard *self)
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->country_view));
 	g_assert (selection);
 
-	if (gtk_tree_selection_get_selected (GTK_TREE_SELECTION (selection), &model, &iter))
-		gtk_tree_model_get (model, &iter, 0, &country, -1);
+	if (gtk_tree_selection_get_selected (GTK_TREE_SELECTION (selection), &model, &iter)) {
+		gtk_tree_model_get (model, &iter, 0, &country, 1, &unlisted, -1);
+		if (unlisted) {
+			g_free (country);
+			country = NULL;
+			if (out_unlisted)
+				*out_unlisted = unlisted;
+		}
+	}
 
 	return country;
 }
@@ -937,12 +953,49 @@ static void
 country_update_complete (MobileWizard *self)
 {
 	char *country = NULL;
+	gboolean unlisted = FALSE;
 
-	country = get_selected_country (self);
+	country = get_selected_country (self, &unlisted);
 	gtk_assistant_set_page_complete (GTK_ASSISTANT (self->assistant),
 	                                 self->country_page,
-	                                 !!country);
+	                                 (!!country || unlisted));
 	g_free (country);
+}
+
+static gint
+country_sort_func (GtkTreeModel *model,
+                   GtkTreeIter *a,
+                   GtkTreeIter *b,
+                   gpointer user_data)
+{
+	char *a_str = NULL, *b_str = NULL;
+	gboolean a_def = FALSE, b_def = FALSE;
+	gint ret = 0;
+
+	gtk_tree_model_get (model, a, 0, &a_str, 1, &a_def, -1);
+	gtk_tree_model_get (model, b, 0, &b_str, 1, &b_def, -1);
+
+	if (a_def) {
+		ret = -1;
+		goto out;
+	} else if (b_def) {
+		ret = 1;
+		goto out;
+	}
+
+	if (a_str && !b_str)
+		ret = -1;
+	else if (!a_str && b_str)
+		ret = 1;
+	else if (!a_str && !b_str)
+		ret = 0;
+	else
+		ret = g_utf8_collate (a_str, b_str);
+
+out:
+	g_free (a_str);
+	g_free (b_str);
+	return ret;
 }
 
 static void
@@ -952,6 +1005,7 @@ country_setup (MobileWizard *self)
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
+	GtkTreeIter unlisted_iter;
 
 	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
@@ -959,7 +1013,7 @@ country_setup (MobileWizard *self)
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
 
-	self->country_store = gtk_tree_store_new (1, G_TYPE_STRING);
+	self->country_store = gtk_tree_store_new (2, G_TYPE_STRING, G_TYPE_BOOLEAN);
 
 	self->country_sort = GTK_TREE_MODEL_SORT (gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (self->country_store)));
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (self->country_sort), 0, GTK_SORT_ASCENDING);
@@ -971,6 +1025,19 @@ country_setup (MobileWizard *self)
 	gtk_tree_view_append_column (GTK_TREE_VIEW (self->country_view), column);
 	gtk_tree_view_column_set_clickable (column, TRUE);
 
+	/* My country is not listed... */
+	gtk_tree_store_append (GTK_TREE_STORE (self->country_store), &unlisted_iter, NULL);
+	gtk_tree_store_set (GTK_TREE_STORE (self->country_store), &unlisted_iter,
+	                    0, _("My country is not listed"),
+	                    1, TRUE,
+	                    -1);
+	gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (self->country_sort),
+	                                 0,
+	                                 country_sort_func,
+	                                 NULL,
+	                                 NULL);
+
+	/* Add the rest of the providers */
 	if (self->providers)
 		g_hash_table_foreach (self->providers, add_one_country, self);
 	g_object_set (G_OBJECT (self->country_view), "enable-search", TRUE, NULL);

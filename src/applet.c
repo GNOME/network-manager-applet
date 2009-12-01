@@ -317,7 +317,7 @@ applet_menu_item_activate_helper_part2 (NMConnection *connection,
 		return;
 	}
 
-	g_assert (connection);
+	g_return_if_fail (connection != NULL);
 
 	if (!auto_created)
 		is_system = is_system_connection (connection);
@@ -714,6 +714,48 @@ clear_animation_timeout (NMApplet *applet)
 	}
 }
 
+static gboolean
+applet_is_any_device_activating (NMApplet *applet)
+{
+	const GPtrArray *devices;
+	int i;
+
+	/* Check for activating devices */
+	devices = nm_client_get_devices (applet->nm_client);
+	for (i = 0; devices && (i < devices->len); i++) {
+		NMDevice *candidate = NM_DEVICE (g_ptr_array_index (devices, i));
+		NMDeviceState state;
+
+		state = nm_device_get_state (candidate);
+		if (state > NM_DEVICE_STATE_DISCONNECTED && state < NM_DEVICE_STATE_ACTIVATED)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+static gboolean
+applet_is_any_vpn_activating (NMApplet *applet)
+{
+	const GPtrArray *connections;
+	int i;
+
+	connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; connections && (i < connections->len); i++) {
+		NMActiveConnection *candidate = NM_ACTIVE_CONNECTION (g_ptr_array_index (connections, i));
+		NMVPNConnectionState vpn_state;
+
+		if (NM_IS_VPN_CONNECTION (candidate)) {
+			vpn_state = nm_vpn_connection_get_vpn_state (NM_VPN_CONNECTION (candidate));
+			if (   vpn_state == NM_VPN_CONNECTION_STATE_PREPARE
+			    || vpn_state == NM_VPN_CONNECTION_STATE_NEED_AUTH
+			    || vpn_state == NM_VPN_CONNECTION_STATE_CONNECT
+			    || vpn_state == NM_VPN_CONNECTION_STATE_IP_CONFIG_GET) {
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
 static void
 save_timestamp_cb (NMSettingsConnectionInterface *connection,
                    GError *error,
@@ -885,15 +927,20 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 	NMConnection *connection;
 	const char *banner;
 	char *title = NULL, *msg = NULL;
-	gboolean clear_timeout = TRUE;
+	gboolean device_activating, vpn_activating;
+
+	device_activating = applet_is_any_device_activating (applet);
+	vpn_activating = applet_is_any_vpn_activating (applet);
 
 	switch (state) {
 	case NM_VPN_CONNECTION_STATE_PREPARE:
 	case NM_VPN_CONNECTION_STATE_NEED_AUTH:
 	case NM_VPN_CONNECTION_STATE_CONNECT:
 	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-		start_animation_timeout (applet);
-		clear_timeout = FALSE;
+		/* Be sure to turn animation timeout on here since the dbus signals
+		 * for new active connections might not have come through yet.
+		 */
+		vpn_activating = TRUE;
 		break;
 	case NM_VPN_CONNECTION_STATE_ACTIVATED:
 		banner = nm_vpn_connection_get_banner (vpn);
@@ -929,8 +976,11 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 		break;
 	}
 
-	if (clear_timeout)
+	if (device_activating || vpn_activating)
+		start_animation_timeout (applet);
+	else
 		clear_animation_timeout (applet);
+
 	applet_schedule_update_icon (applet);
 }
 
@@ -1370,6 +1420,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	gint n_usable_wifi_devices = 0;
 	gint n_wired_devices = 0;
 	gint n_mb_devices = 0;
+	gint n_bt_devices = 0;
 	int i;
 
 	temp = nm_client_get_devices (applet->nm_client);
@@ -1394,9 +1445,11 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			n_wired_devices++;
 		else if (NM_IS_CDMA_DEVICE (device) || NM_IS_GSM_DEVICE (device))
 			n_mb_devices++;
+		else if (NM_IS_DEVICE_BT (device))
+			n_bt_devices++;
 	}
 
-	if (!n_wired_devices && !n_wifi_devices && !n_mb_devices) {
+	if (!n_wired_devices && !n_wifi_devices && !n_mb_devices && !n_bt_devices) {
 		nma_menu_add_text_item (menu, _("No network devices available"));
 		goto out;
 	}
@@ -1935,31 +1988,42 @@ applet_common_device_state_changed (NMDevice *device,
                                     NMDeviceStateReason reason,
                                     NMApplet *applet)
 {
+	gboolean device_activating = FALSE, vpn_activating = FALSE;
 	NMConnection *connection;
 	NMActiveConnection *active = NULL;
 
-	connection = applet_find_active_connection_for_device (device, applet, &active);
-	if (!connection)
-		return;
+	device_activating = applet_is_any_device_activating (applet);
+	vpn_activating = applet_is_any_vpn_activating (applet);
 
 	switch (new_state) {
 	case NM_DEVICE_STATE_PREPARE:
 	case NM_DEVICE_STATE_CONFIG:
 	case NM_DEVICE_STATE_NEED_AUTH:
 	case NM_DEVICE_STATE_IP_CONFIG:
-		start_animation_timeout (applet);
+		/* Be sure to turn animation timeout on here since the dbus signals
+		 * for new active connections or devices might not have come through yet.
+		 */
+		device_activating = TRUE;
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		/* If the device activation was successful, update the corresponding
 		 * connection object with a current timestamp.
 		 */
-		if (active)
+		connection = applet_find_active_connection_for_device (device, applet, &active);
+		if (connection && (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_USER))
 			update_connection_timestamp (active, connection, applet);
-		/* Fall through */
+		break;
 	default:
-		clear_animation_timeout (applet);
 		break;
 	}
+
+	/* If there's an activating device but we're not animating, start animation.
+	 * If we're animating, but there's no activating device or VPN, stop animating.
+	 */
+	if (device_activating || vpn_activating)
+		start_animation_timeout (applet);
+	else
+		clear_animation_timeout (applet);
 }
 
 static void
@@ -2579,7 +2643,7 @@ static void nma_icons_free (NMApplet *applet)
 
 #define ICON_LOAD(icon, name) \
 	{ \
-		icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->size, 0, &err); \
+		icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, 0, &err); \
 		if (icon == NULL) { \
 			g_warning ("Icon %s missing: %s", name, \
 			           (err && err->message) ? err->message : "unknown"); \
@@ -2595,9 +2659,7 @@ nma_icons_load (NMApplet *applet)
 	GError *err = NULL;
 
 	g_return_val_if_fail (!applet->icons_loaded, FALSE);
-
-	if (applet->size < 0)
-		return FALSE;
+	g_return_val_if_fail (applet->icon_size > 0, FALSE);
 
 	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
 	ICON_LOAD(applet->wired_icon, "nm-device-wired");
@@ -2697,7 +2759,10 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
                              gint size,
                              NMApplet *applet)
 {
-	applet->size = size;
+	/* icon_size may be 0 if for example the panel hasn't given us any space
+	 * yet.  We'll get resized later, but for now just load the 16x16 icons.
+	 */
+	applet->icon_size = MAX (16, size);
 
 	nma_icons_free (applet);
 	nma_icons_load (applet);
@@ -2976,7 +3041,7 @@ static void nma_init (NMApplet *applet)
 	applet->animation_step = 0;
 	applet->icon_theme = NULL;
 	applet->notification = NULL;
-	applet->size = -1;
+	applet->icon_size = 16;
 }
 
 enum {

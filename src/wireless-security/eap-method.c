@@ -369,7 +369,7 @@ find_tag (const char *tag, const char *buf, gsize len)
 	if (len < taglen)
 		return NULL;
 
-	for (i = 0; i < len - taglen; i++) {
+	for (i = 0; i < len - taglen + 1; i++) {
 		if (memcmp (buf + i, tag, taglen) == 0)
 			return buf + i;
 	}
@@ -379,6 +379,8 @@ find_tag (const char *tag, const char *buf, gsize len)
 static const char *pem_rsa_key_begin = "-----BEGIN RSA PRIVATE KEY-----";
 static const char *pem_dsa_key_begin = "-----BEGIN DSA PRIVATE KEY-----";
 static const char *pem_cert_begin = "-----BEGIN CERTIFICATE-----";
+static const char *proc_type_tag = "Proc-Type: 4,ENCRYPTED";
+static const char *dek_info_tag = "DEK-Info:";
 
 static gboolean
 file_has_extension (const char *filename, const char *extensions[])
@@ -406,13 +408,16 @@ file_has_extension (const char *filename, const char *extensions[])
 }
 
 static gboolean
-file_is_der_or_pem (const char *filename, gboolean privkey)
+file_is_der_or_pem (const char *filename,
+                    gboolean privkey,
+                    gboolean *out_privkey_encrypted)
 {
 	int fd;
 	unsigned char buffer[8192];
 	ssize_t bytes_read;
 	guint16 der_tag = 0x8230;
 	gboolean success = FALSE;
+	gboolean encrypted = FALSE;
 
 	fd = open (filename, O_RDONLY);
 	if (fd < 0)
@@ -440,6 +445,17 @@ file_is_der_or_pem (const char *filename, gboolean privkey)
 			success = TRUE;
 			goto out;
 		}
+
+		/* Check if the private key is encrypted or not by looking for the
+		 * old OpenSSL-style proc-type and dec-info tags.
+		 */
+		if (out_privkey_encrypted) {
+			if (find_tag (proc_type_tag, (const char *) buffer, bytes_read)) {
+				if (find_tag (dek_info_tag, (const char *) buffer, bytes_read))
+					encrypted = TRUE;
+			}
+			*out_privkey_encrypted = encrypted;
+		}
 	} else {
 		if (find_tag (pem_cert_begin, (const char *) buffer, bytes_read)) {
 			success = TRUE;
@@ -456,6 +472,8 @@ static gboolean
 default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data)
 {
 	const char *extensions[] = { ".der", ".pem", ".p12", NULL };
+	gboolean require_encrypted = !!user_data;
+	gboolean is_encrypted = TRUE;
 
 	if (!filter_info->filename)
 		return FALSE;
@@ -463,10 +481,10 @@ default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data
 	if (!file_has_extension (filter_info->filename, extensions))
 		return FALSE;
 
-	if (!file_is_der_or_pem (filter_info->filename, TRUE))
+	if (!file_is_der_or_pem (filter_info->filename, TRUE, &is_encrypted))
 		return FALSE;
 
-	return TRUE;
+	return require_encrypted ? is_encrypted : TRUE;
 }
 
 static gboolean
@@ -480,7 +498,7 @@ default_filter_cert (const GtkFileFilterInfo *filter_info, gpointer user_data)
 	if (!file_has_extension (filter_info->filename, extensions))
 		return FALSE;
 
-	if (!file_is_der_or_pem (filter_info->filename, FALSE))
+	if (!file_is_der_or_pem (filter_info->filename, FALSE, NULL))
 		return FALSE;
 
 	return TRUE;
@@ -500,5 +518,13 @@ eap_method_default_file_chooser_filter_new (gboolean privkey)
 		gtk_file_filter_set_name (filter, _("DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"));
 	}
 	return filter;
+}
+
+gboolean
+eap_method_is_encrypted_private_key (const char *path)
+{
+	GtkFileFilterInfo info = { .filename = path };
+
+	return default_filter_privkey (&info, (gpointer) TRUE);
 }
 

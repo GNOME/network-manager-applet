@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.master.gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2009-06-18 09:27+0000\n"
-"PO-Revision-Date: 2009-06-18 15:33+0530\n"
+"POT-Creation-Date: 2009-10-27 21:36+0000\n"
+"PO-Revision-Date: 2009-10-28 15:52+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -27,6 +27,41 @@ msgstr "તમારા નેટવર્ક જોડાણોને નિય
 msgid "Network Manager"
 msgstr "નેટવર્ક વ્યવસ્થાપક"
 
+#: ../nm-applet.schemas.in.h:1
+msgid "Disable connected notifications"
+msgstr "જોડાયેલ સૂચનાઓને નિષ્ક્રિય કરો"
+
+#: ../nm-applet.schemas.in.h:2
+msgid "Disable disconnected notifications"
+msgstr "જોડાયેલ નહિં હોય તેવી સૂચનાઓને નિષ્ક્રિય કરો"
+
+#: ../nm-applet.schemas.in.h:3
+msgid "Set this to TRUE to disable notifications when connecting to a network."
+msgstr "જ્યારે નેટવર્ક ને જોડી રહ્યા હોય ત્યારે સૂચનાઓને નિષ્ક્રિય કરવા માટે આને TRUE તરીકે સુયોજિત કરો."
+
+#: ../nm-applet.schemas.in.h:4
+msgid "Set this to TRUE to disable notifications when disconnecting from a network."
+msgstr "જ્યારે નેટવર્ક માંથી જોડાણને તોડી રહ્યા હોય ત્યારે સૂચનાઓને નિષ્ક્રિય કરવા માટે આને TRUE તરીકે સુયોજિત કરો."
+
+#: ../nm-applet.schemas.in.h:5
+msgid ""
+"Set this to TRUE to disable notifications when wireless networks are "
+"available."
+msgstr "જ્યારે નેટવર્કો ઉપલ્બધ હોય ત્યારે સૂચનાઓને નિષ્ક્રિય કરવા માટે આને TRUE તરીકે સુયોજિત કરો."
+
+#: ../nm-applet.schemas.in.h:6
+msgid "Stamp"
+msgstr "સ્ટૅમ્પ"
+
+#: ../nm-applet.schemas.in.h:7
+#| msgid "Wireless Networks Available"
+msgid "Suppress networks available notifications"
+msgstr ""
+
+#: ../nm-applet.schemas.in.h:8
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr ""
+
 #: ../nm-connection-editor.desktop.in.h:1
 msgid "Manage and change your network connection settings"
 msgstr "તમારા નેટવર્ક જોડાણ સુયોજનોને બદલો અને સંચાલિત કરો"
@@ -36,112 +71,121 @@ msgstr "તમારા નેટવર્ક જોડાણ સુયોજન
 msgid "Network Connections"
 msgstr "નેટવર્ક જોડાણો"
 
-#: ../src/applet-device-cdma.c:150 ../src/connection-editor/page-mobile.c:679
-#| msgid "CDMA (%s)"
-msgid "CDMA"
-msgstr "CDMA"
+#: ../src/applet-device-bt.c:171 ../src/applet-device-cdma.c:291
+#: ../src/applet-device-gsm.c:284 ../src/applet-device-wired.c:241
+#: ../src/applet-device-wifi.c:765
+msgid "Available"
+msgstr "ઉપલ્બધ"
 
-#: ../src/applet-device-cdma.c:213
-#| msgid "Auto Mobile Broadband (CDMA) connection"
-msgid "New Mobile Broadband (CDMA) connection..."
-msgstr "નવું મોબાઇલ બ્રોડબેન્ડ (CDMA) જોડાણ..."
-
-#: ../src/applet-device-cdma.c:258 ../src/applet-device-gsm.c:260
-msgid "Disconnect"
-msgstr "તોડી નાંખો"
-
-#: ../src/applet-device-cdma.c:297 ../src/applet-device-gsm.c:299
-#, c-format
-msgid "Mobile Broadband (%s)"
-msgstr "મોબાઇલ બ્રોડબેન્ડ (%s)"
-
-#: ../src/applet-device-cdma.c:299 ../src/applet-device-gsm.c:301
-#: ../src/connection-editor/page-mobile.c:378
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1655
-msgid "Mobile Broadband"
-msgstr "મોબાઇલ બ્રોડબેન્ડ"
-
-#: ../src/applet-device-cdma.c:352 ../src/applet-device-gsm.c:354
-#: ../src/applet-device-wired.c:263
+#: ../src/applet-device-bt.c:197 ../src/applet-device-cdma.c:321
+#: ../src/applet-device-gsm.c:314 ../src/applet-device-wired.c:270
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "તમે હવે '%s' માં જોડાયેલ છો."
 
-#: ../src/applet-device-cdma.c:356 ../src/applet-device-gsm.c:358
-#: ../src/applet-device-wired.c:267 ../src/applet-device-wifi.c:1186
+#: ../src/applet-device-bt.c:201 ../src/applet-device-cdma.c:325
+#: ../src/applet-device-gsm.c:318 ../src/applet-device-wired.c:274
+#: ../src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "જોડાણ સ્થાપિત થયેલ છે"
 
-#: ../src/applet-device-cdma.c:357
-msgid "You are now connected to the CDMA network."
-msgstr "તમે હવે CDMA નેટવર્ક સાથે જોડાયેલ છો."
+#: ../src/applet-device-bt.c:202
+#| msgid "You are now connected to the wired network."
+msgid "You are now connected to the mobile broadband network."
+msgstr "તમે હવે મોબાઇલ બ્રોડબૅન્ડ  નેટવર્ક સાથે જોડાયેલ છો."
 
-#: ../src/applet-device-cdma.c:383 ../src/applet-device-gsm.c:385
+#: ../src/applet-device-bt.c:228 ../src/applet-device-cdma.c:352
+#: ../src/applet-device-gsm.c:345
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "મોબાઇલ બ્રોડબેન્ડ જોડાણ '%s' ની તૈયારી કરી રહ્યા છે..."
 
-#: ../src/applet-device-cdma.c:386 ../src/applet-device-gsm.c:388
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:355
+#: ../src/applet-device-gsm.c:348
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "મોબાઇલ બ્રોડબેન્ડ જોડાણ '%s' ને રૂપરેખાંકિત કરી રહ્યા છે..."
 
-#: ../src/applet-device-cdma.c:389 ../src/applet-device-gsm.c:391
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:358
+#: ../src/applet-device-gsm.c:351
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "મોબાઇલ બ્રોડબેન્ડ જોડાણ '%s' માટે વપરાશકર્તા સત્તાધિકરણ જરૂરી..."
 
-#: ../src/applet-device-cdma.c:392 ../src/applet-device-gsm.c:394
-#: ../src/applet.c:1892
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:361
+#: ../src/applet-device-gsm.c:354 ../src/applet.c:2169
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "'%s' માટે નેટવર્ક સરનામાંની માંગણી કરી રહ્યા છે..."
 
-#: ../src/applet-device-cdma.c:396 ../src/applet-device-gsm.c:398
+#: ../src/applet-device-bt.c:241 ../src/applet-device-cdma.c:365
+#: ../src/applet-device-gsm.c:358
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "મોબાઇલ બ્રોડબેન્ડ જોડાણ '%s' સક્રિય"
 
-#: ../src/applet-device-cdma.c:512 ../src/applet-device-gsm.c:596
+#: ../src/applet-device-cdma.c:150 ../src/connection-editor/page-mobile.c:625
+msgid "CDMA"
+msgstr "CDMA"
+
+#: ../src/applet-device-cdma.c:222
+msgid "New Mobile Broadband (CDMA) connection..."
+msgstr "નવું મોબાઇલ બ્રોડબેન્ડ (CDMA) જોડાણ..."
+
+#: ../src/applet-device-cdma.c:261 ../src/applet-device-gsm.c:260
+#, c-format
+msgid "Mobile Broadband (%s)"
+msgstr "મોબાઇલ બ્રોડબેન્ડ (%s)"
+
+#: ../src/applet-device-cdma.c:263 ../src/applet-device-gsm.c:262
+#: ../src/connection-editor/page-mobile.c:326
+#: ../src/connection-editor/nm-connection-editor.glade.h:6
+#: ../src/connection-editor/nm-connection-list.c:1360
+msgid "Mobile Broadband"
+msgstr "મોબાઇલ બ્રોડબેન્ડ"
+
+#: ../src/applet-device-cdma.c:326
+msgid "You are now connected to the CDMA network."
+msgstr "તમે હવે CDMA નેટવર્ક સાથે જોડાયેલ છો."
+
+#: ../src/applet-device-cdma.c:495 ../src/applet-device-gsm.c:570
 msgid "Mobile broadband network password"
 msgstr "મોબાઇલ બ્રોડબેન્ડ નેટવર્ક પાસવર્ડ"
 
-#: ../src/applet-device-cdma.c:521 ../src/applet-device-gsm.c:605
+#: ../src/applet-device-cdma.c:504 ../src/applet-device-gsm.c:579
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "પાસવર્ડ ને '%s' માં જોડાવાની જરૂરિયાત છે."
 
-#: ../src/applet-device-cdma.c:539 ../src/applet-device-gsm.c:623
+#: ../src/applet-device-cdma.c:522 ../src/applet-device-gsm.c:597
 msgid "Password:"
 msgstr "પાસવર્ડ:"
 
-#: ../src/applet-device-gsm.c:152 ../src/connection-editor/page-mobile.c:682
+#: ../src/applet-device-gsm.c:152 ../src/connection-editor/page-mobile.c:628
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/applet-device-gsm.c:215
-#| msgid "Auto Mobile Broadband (GSM) connection"
+#: ../src/applet-device-gsm.c:223
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "નવું મોબાઇલ બ્રોડબેન્ડ (GSM) જોડાણ..."
 
-#: ../src/applet-device-gsm.c:359
+#: ../src/applet-device-gsm.c:319
 msgid "You are now connected to the GSM network."
 msgstr "તમે હવે GSM નેટવર્ક સાથે જોડાયેલ છો."
 
-#: ../src/applet-device-gsm.c:536
+#: ../src/applet-device-gsm.c:510
 msgid "PIN code required"
 msgstr "PIN કોડની જરૂરિયાત છે"
 
-#: ../src/applet-device-gsm.c:538
+#: ../src/applet-device-gsm.c:512
 msgid "PUK code required"
 msgstr "PUK કોડની જરૂરિયાત છે"
 
-#: ../src/applet-device-gsm.c:547
+#: ../src/applet-device-gsm.c:521
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "મોબાઇલ બ્રોડબેન્ડ ઉપકરણ માટે PIN કોડની જરૂર છે"
 
-#: ../src/applet-device-gsm.c:549
+#: ../src/applet-device-gsm.c:523
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "મોબાઇલ બ્રોડબેન્ડ ઉપકરણ માટે PUK કોડની જરૂર છે"
 
@@ -149,59 +193,59 @@ msgstr "મોબાઇલ બ્રોડબેન્ડ ઉપકરણ મા
 msgid "Auto Ethernet"
 msgstr "સ્વયં ઇથરનેટ"
 
-#: ../src/applet-device-wired.c:199
+#: ../src/applet-device-wired.c:206
 #, c-format
 msgid "Wired Networks (%s)"
 msgstr "વાયરલેસ નેટવર્કો (%s)"
 
-#: ../src/applet-device-wired.c:201
+#: ../src/applet-device-wired.c:208
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "વાયર વાળા નેટવર્ક (%s)"
 
-#: ../src/applet-device-wired.c:204
+#: ../src/applet-device-wired.c:211
 msgid "Wired Networks"
 msgstr "વાયર વાળા નેટવર્કો"
 
-#: ../src/applet-device-wired.c:206
+#: ../src/applet-device-wired.c:213
 msgid "Wired Network"
 msgstr "વાયર વાળો નેટવર્કો"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:229
+#: ../src/applet-device-wired.c:233 ../src/applet.c:1327
 msgid "disconnected"
 msgstr "જોડાયેલ નથી"
 
-#: ../src/applet-device-wired.c:268
+#: ../src/applet-device-wired.c:275
 msgid "You are now connected to the wired network."
 msgstr "તમે હવે વાયર થયેલ નેટવર્ક સાથે જોડાયેલ છો."
 
-#: ../src/applet-device-wired.c:294
+#: ../src/applet-device-wired.c:301
 #, c-format
 msgid "Preparing wired network connection '%s'..."
 msgstr "વાયરવાળું નેટવર્ક જોડાણ '%s' ની તૈયારી કરી રહ્યા છે..."
 
-#: ../src/applet-device-wired.c:297
+#: ../src/applet-device-wired.c:304
 #, c-format
 msgid "Configuring wired network connection '%s'..."
 msgstr "વાયરવાળું નેટવર્ક જોડાણ '%s' ને રૂપરેખાંકિત કરી રહ્યા છે..."
 
-#: ../src/applet-device-wired.c:300
+#: ../src/applet-device-wired.c:307
 #, c-format
 msgid "User authentication required for wired network connection '%s'..."
 msgstr "વાયર વાળું નેટવર્ક જોડાણ '%s' માટે વપરાશકર્તા સત્તાધિકરણની જરૂર છે..."
 
-#: ../src/applet-device-wired.c:303
+#: ../src/applet-device-wired.c:310
 #, c-format
 msgid "Requesting a wired network address for '%s'..."
 msgstr "'%s' માટે વાયર વાળું નેટવર્ક સરનામું સૂચન કરી રહ્યુ છે..."
 
-#: ../src/applet-device-wired.c:307
+#: ../src/applet-device-wired.c:314
 #, c-format
 msgid "Wired network connection '%s' active"
 msgstr "વાયરવાળું નેટવર્ક જોડાણ '%s' સક્રિય છે"
 
-#: ../src/applet-device-wired.c:560
+#: ../src/applet-device-wired.c:565
 msgid "DSL authentication"
 msgstr "DSL સત્તાધિકરણ"
 
@@ -213,73 +257,78 @@ msgstr "છુપાયેલ વાયરલેસ નેટવર્કમા�
 msgid "Create _New Wireless Network..."
 msgstr "નવાં વાયરલેસ નેટવર્કને બનાવો (_N)..."
 
-#: ../src/applet-device-wifi.c:695
+#: ../src/applet-device-wifi.c:699
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "વાયરલેસ નેટવર્કો (%s)"
 
-#: ../src/applet-device-wifi.c:697
+#: ../src/applet-device-wifi.c:701
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "વાયરલેસ નેટવર્ક (%s)"
 
-#: ../src/applet-device-wifi.c:699
+#: ../src/applet-device-wifi.c:703
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "વાયરલેસ નેટવર્ક"
 msgstr[1] "વાયરલેસ નેટવર્કો"
 
-#: ../src/applet-device-wifi.c:716
+#: ../src/applet-device-wifi.c:731
 msgid "wireless is disabled"
 msgstr "વાયરલેસ નિષ્ક્રિય થયેલ છે"
 
-#: ../src/applet-device-wifi.c:979
+#: ../src/applet-device-wifi.c:792
+#| msgid "Wired Networks"
+msgid "More networks"
+msgstr "વધારે નેટવર્કો"
+
+#: ../src/applet-device-wifi.c:1059
 msgid "Wireless Networks Available"
 msgstr "વાયરલેસ નેટવર્કો ઉપલ્બધ છે"
 
-#: ../src/applet-device-wifi.c:980
+#: ../src/applet-device-wifi.c:1060
 msgid "Click on this icon to connect to a wireless network"
 msgstr "વાયરલેસને નેટવર્કને જોડવા માટે આ આઇકોન પર ક્લિક કરો"
 
-#: ../src/applet-device-wifi.c:983 ../src/applet.c:495
+#: ../src/applet-device-wifi.c:1063 ../src/applet.c:686
 msgid "Don't show this message again"
 msgstr "ફરીથા આ સંદેશને બતાવો નહિં"
 
-#: ../src/applet-device-wifi.c:1184
+#: ../src/applet-device-wifi.c:1267
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "તમે હવે વાયરલેસ નેટવર્ક '%s' સાથે જોડાયેલ છો."
 
-#: ../src/applet-device-wifi.c:1185 ../src/applet-device-wifi.c:1216
+#: ../src/applet-device-wifi.c:1268 ../src/applet-device-wifi.c:1299
 msgid "(none)"
 msgstr "(કંઇ નહિં)"
 
-#: ../src/applet-device-wifi.c:1226
+#: ../src/applet-device-wifi.c:1309
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "વાયરલેસ નેટવર્ક જોડાણ '%s' ની તૈયારી કરી રહ્યા છે..."
 
-#: ../src/applet-device-wifi.c:1229
+#: ../src/applet-device-wifi.c:1312
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "વાયરલેસ નેટવર્ક જોડાણ '%s' ને રૂપરેખાંકિત કરી રહ્યા છે..."
 
-#: ../src/applet-device-wifi.c:1232
+#: ../src/applet-device-wifi.c:1315
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "વાયરલેસ નેટવર્ક '%s' માટે વપરાશકર્તા સત્તાધિકરણ જરૂરી..."
 
-#: ../src/applet-device-wifi.c:1235
+#: ../src/applet-device-wifi.c:1318
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "'%s' માટે વાયરલેસ નેટવર્ક સરનામાંને સૂચન કરી રહ્યા છે..."
 
-#: ../src/applet-device-wifi.c:1255
+#: ../src/applet-device-wifi.c:1338
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "વાયરલેસ નેટવર્ક જોડાણ '%s' સક્રિય છે: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1259
+#: ../src/applet-device-wifi.c:1342
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "વાયરલેસ નેટવર્ક જોડાણ '%s' સક્રિય છે"
@@ -290,8 +339,8 @@ msgstr "જોડાણ જાણકારીને દેખાડવામા�
 
 #: ../src/applet-dialogs.c:84
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:820
-#: ../src/wireless-security/wireless-security.c:317
+#: ../src/wireless-dialog.c:907
+#: ../src/wireless-security/wireless-security.c:340
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -310,89 +359,90 @@ msgstr "WEP"
 
 #: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:777
+#: ../src/wireless-dialog.c:864
 msgid "None"
 msgstr "કંઇ નહિં"
 
-#: ../src/applet-dialogs.c:207 ../src/applet-dialogs.c:322
+#: ../src/applet-dialogs.c:207 ../src/applet-dialogs.c:279
+#: ../src/applet-dialogs.c:380
 msgid "Unknown"
 msgstr "અજ્ઞાત"
 
-#: ../src/applet-dialogs.c:258
-#, c-format
-msgid "Ethernet (%s)"
-msgstr "ઇથરનેટ (%s)"
-
-#: ../src/applet-dialogs.c:260
-#, c-format
-msgid "802.11 WiFi (%s)"
-msgstr "802.11 WiFi (%s)"
-
-#: ../src/applet-dialogs.c:262
-#, c-format
-msgid "GSM (%s)"
-msgstr "GSM (%s)"
-
-#: ../src/applet-dialogs.c:264
-#, c-format
-msgid "CDMA (%s)"
-msgstr "CDMA (%s)"
-
-#: ../src/applet-dialogs.c:269
-msgid "Interface:"
-msgstr "ઇન્ટરફેસ:"
-
-#: ../src/applet-dialogs.c:285
-msgid "Hardware Address:"
-msgstr "હાર્ડવેર સરનામું:"
-
-#: ../src/applet-dialogs.c:295
-msgid "Driver:"
-msgstr "ડ્રાઇવર:"
-
-#: ../src/applet-dialogs.c:314
+#: ../src/applet-dialogs.c:277 ../src/applet-dialogs.c:378
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:319
+#: ../src/applet-dialogs.c:309
+#, c-format
+msgid "Ethernet (%s)"
+msgstr "ઇથરનેટ (%s)"
+
+#: ../src/applet-dialogs.c:311
+#, c-format
+msgid "802.11 WiFi (%s)"
+msgstr "802.11 WiFi (%s)"
+
+#: ../src/applet-dialogs.c:313
+#, c-format
+msgid "GSM (%s)"
+msgstr "GSM (%s)"
+
+#: ../src/applet-dialogs.c:315
+#, c-format
+msgid "CDMA (%s)"
+msgstr "CDMA (%s)"
+
+#: ../src/applet-dialogs.c:320
+msgid "Interface:"
+msgstr "ઇન્ટરફેસ:"
+
+#: ../src/applet-dialogs.c:336
+msgid "Hardware Address:"
+msgstr "હાર્ડવેર સરનામું:"
+
+#: ../src/applet-dialogs.c:346
+msgid "Driver:"
+msgstr "ડ્રાઇવર:"
+
+#: ../src/applet-dialogs.c:384
 msgid "Speed:"
 msgstr "ઝડપ:"
 
-#: ../src/applet-dialogs.c:329
+#: ../src/applet-dialogs.c:393
 msgid "Security:"
 msgstr "સુરક્ષા:"
 
-#: ../src/applet-dialogs.c:349
+#: ../src/applet-dialogs.c:413
 msgid "IP Address:"
 msgstr "IP સરનામું:"
 
-#: ../src/applet-dialogs.c:365
+#: ../src/applet-dialogs.c:429
 msgid "Broadcast Address:"
 msgstr "બ્રોડકાસ્ટ સરનામું:"
 
-#: ../src/applet-dialogs.c:376
+#: ../src/applet-dialogs.c:440
 msgid "Subnet Mask:"
 msgstr "સબનેટ માસ્ક:"
 
-#: ../src/applet-dialogs.c:388
+#: ../src/applet-dialogs.c:452
 msgid "Default Route:"
 msgstr "મૂળભૂત માર્ગ:"
 
-#: ../src/applet-dialogs.c:403
+#: ../src/applet-dialogs.c:467
 msgid "Primary DNS:"
 msgstr "પ્રાથમિક DNS:"
 
-#: ../src/applet-dialogs.c:414
+#: ../src/applet-dialogs.c:478
 msgid "Secondary DNS:"
 msgstr "ગૌણ DNS:"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:477
+#: ../src/applet-dialogs.c:541
 msgid "No valid active connections found!"
 msgstr "યોગ્ય સક્રિય જોડાણ શોધાયુ નથી!"
 
-#: ../src/applet-dialogs.c:603
+#: ../src/applet-dialogs.c:667
 msgid ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
@@ -400,23 +450,23 @@ msgstr ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
 
-#: ../src/applet-dialogs.c:605
+#: ../src/applet-dialogs.c:669
 msgid "Notification area applet for managing your network devices and connections."
 msgstr "તમારા નેટવર્ક ઉપકરણો અને જોડાણો ને સંચાલિત કરવા માટે સૂચના વિસ્તાર એપલેટ."
 
-#: ../src/applet-dialogs.c:607
+#: ../src/applet-dialogs.c:671
 msgid "NetworkManager Website"
 msgstr "નેટવર્ક વ્યવસ્થાપક વેબસાઇટ"
 
-#: ../src/applet-dialogs.c:610
+#: ../src/applet-dialogs.c:674
 msgid "translator-credits"
 msgstr "શ્ર્વેતા કોઠારી <swkothar@redhat.com>"
 
-#: ../src/applet-dialogs.c:626
+#: ../src/applet-dialogs.c:690
 msgid "Missing resources"
 msgstr "ગુમ થયેલ સ્ત્રોતો"
 
-#: ../src/applet.c:565
+#: ../src/applet.c:768
 #, c-format
 msgid ""
 "\n"
@@ -426,7 +476,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' નિષ્ફળ કારણ કે નેટવર્ક જોડાણ એ અટકેલ હતા."
 
-#: ../src/applet.c:568
+#: ../src/applet.c:771
 #, c-format
 msgid ""
 "\n"
@@ -435,7 +485,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' નિષ્ફળ કારણ કે VPN સેવા અનિચ્છનીય રીતે અટકેલ છે."
 
-#: ../src/applet.c:571
+#: ../src/applet.c:774
 #, c-format
 msgid ""
 "\n"
@@ -445,7 +495,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' નિષ્ફળ કારણ કે VPN સેવા એ અયોગ્ય રૂપરેખાંકન પાછુ લાવેલ છે."
 
-#: ../src/applet.c:574
+#: ../src/applet.c:777
 #, c-format
 msgid ""
 "\n"
@@ -454,7 +504,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' નિષ્ફળ કારણ કે જોડાણ પ્રયત્ન કરવાનો સમય સમાપ્ત થયેલ છે."
 
-#: ../src/applet.c:577
+#: ../src/applet.c:780
 #, c-format
 msgid ""
 "\n"
@@ -463,7 +513,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' નિષ્ફળ કારણ કે VPN સેવા સમય પર શરૂ થઇ ન હતી."
 
-#: ../src/applet.c:580
+#: ../src/applet.c:783
 #, c-format
 msgid ""
 "\n"
@@ -472,7 +522,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' નિષ્ફળ કારણ કે VPN સેવા શરૂ કરતી વખતે નિષ્ફળ."
 
-#: ../src/applet.c:583
+#: ../src/applet.c:786
 #, c-format
 msgid ""
 "\n"
@@ -481,7 +531,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' નિષ્ફળ કારણ કે VPN ગુપ્તતાઓ યોગ્ય ન હતી."
 
-#: ../src/applet.c:586
+#: ../src/applet.c:789
 #, c-format
 msgid ""
 "\n"
@@ -490,7 +540,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' નિષ્ફળ અયોગ્ય ગુપ્તતાઓને કારણે."
 
-#: ../src/applet.c:593
+#: ../src/applet.c:796
 #, c-format
 msgid ""
 "\n"
@@ -499,7 +549,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' નિષ્ફળ."
 
-#: ../src/applet.c:611
+#: ../src/applet.c:814
 #, c-format
 msgid ""
 "\n"
@@ -509,7 +559,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' જોડાયેલ નથી કારણ કે નેટવર્ક જોડાણ અટકેલ હતુ."
 
-#: ../src/applet.c:614
+#: ../src/applet.c:817
 #, c-format
 msgid ""
 "\n"
@@ -518,7 +568,7 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' જોડાયેલ નથી કારણ કે VPN સેવા અટકેલ છે."
 
-#: ../src/applet.c:620
+#: ../src/applet.c:823
 #, c-format
 msgid ""
 "\n"
@@ -527,15 +577,15 @@ msgstr ""
 "\n"
 "VPN જોડાણ '%s' જોડાયેલ નથી."
 
-#: ../src/applet.c:698
+#: ../src/applet.c:901
 msgid "VPN Login Message"
 msgstr "VPN પ્રવેશ સંદેશ"
 
-#: ../src/applet.c:710 ../src/applet.c:718 ../src/applet.c:762
+#: ../src/applet.c:913 ../src/applet.c:921 ../src/applet.c:965
 msgid "VPN Connection Failed"
 msgstr "VPN જોડાણ નિષ્ફળ"
 
-#: ../src/applet.c:769
+#: ../src/applet.c:972
 #, c-format
 msgid ""
 "\n"
@@ -548,7 +598,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:772
+#: ../src/applet.c:975
 #, c-format
 msgid ""
 "\n"
@@ -561,126 +611,130 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1067
+#: ../src/applet.c:1318
 msgid "device not ready"
 msgstr "ઉપકરણ તૈયાર નથી"
 
-#: ../src/applet.c:1083
+#: ../src/applet.c:1343
+msgid "Disconnect"
+msgstr "તોડી નાંખો"
+
+#: ../src/applet.c:1357
 msgid "device not managed"
 msgstr "ઉપકરણ સંચાલિત નથી"
 
-#: ../src/applet.c:1127
+#: ../src/applet.c:1400
 msgid "No network devices available"
 msgstr "નેટવર્ક ઉપકરણો ઉપલ્બધ નથી"
 
-#: ../src/applet.c:1215
+#: ../src/applet.c:1488
 msgid "_VPN Connections"
 msgstr "VPN જોડાણો (_V)"
 
-#: ../src/applet.c:1265
+#: ../src/applet.c:1541
 msgid "_Configure VPN..."
 msgstr "VPN ને રૂપરેખાંકિત કરો (_C)..."
 
-#: ../src/applet.c:1269
+#: ../src/applet.c:1545
 msgid "_Disconnect VPN..."
 msgstr "VPN ને તોડી નાંખો (_D)..."
 
-#: ../src/applet.c:1322
+#: ../src/applet.c:1598
 msgid "NetworkManager is not running..."
 msgstr "નેટવર્ક વ્યવસ્થાપક ચાલતું નથી..."
 
-#: ../src/applet.c:1327 ../src/applet.c:2020
+#: ../src/applet.c:1603 ../src/applet.c:2297
 msgid "Networking disabled"
 msgstr "નેટવર્કીંગ નિષ્ક્રિય થયેલ છે"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1511
+#: ../src/applet.c:1787
 msgid "Enable _Networking"
 msgstr "નેટવર્કીંગને સક્રિય કરો (_N)"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1520
+#: ../src/applet.c:1796
 msgid "Enable _Wireless"
 msgstr "વાયરલેસ ને સક્રિય કરો (_W)"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1531
+#: ../src/applet.c:1807
 msgid "Connection _Information"
 msgstr "જોડાણ જાણકારી (_I)"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1541
+#: ../src/applet.c:1817
 msgid "Edit Connections..."
 msgstr "જોડાણોમાં ફેરફાર કરો..."
 
 #. Help item
-#: ../src/applet.c:1555
+#: ../src/applet.c:1831
 msgid "_Help"
 msgstr "મદદ (_H)"
 
 #. About item
-#: ../src/applet.c:1564
+#: ../src/applet.c:1840
 msgid "_About"
 msgstr "વિશે (_A)"
 
-#: ../src/applet.c:1737
+#: ../src/applet.c:2014
 msgid "Disconnected"
 msgstr "જોડાયેલ નથી"
 
-#: ../src/applet.c:1738
+#: ../src/applet.c:2015
 msgid "The network connection has been disconnected."
 msgstr "નેટવર્ક જોડાણ ને બિનજોડાણ કરી દેવામાં આવ્યુ છે."
 
-#: ../src/applet.c:1886
+#: ../src/applet.c:2163
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "નેટવર્ક જોડાણ '%s' ને તૈયાર કરી રહ્યા છે..."
 
-#: ../src/applet.c:1889
+#: ../src/applet.c:2166
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "નેટવર્ક જોડાણ '%s' માટે વપરાશકર્તા સત્તાધિકરણની જરૂર છે..."
 
-#: ../src/applet.c:1895
+#: ../src/applet.c:2172
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "નેટવર્ક જોડાણ '%s' સક્રિય છે"
 
-#: ../src/applet.c:1976
+#: ../src/applet.c:2253
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "VPN જોડાણ '%s' ને શરૂ કરી રહ્યા છે..."
 
-#: ../src/applet.c:1979
+#: ../src/applet.c:2256
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "VPN જોડાણ '%s' માટે વપરાશકર્તા સત્તાધિકરણની જરૂર છે..."
 
-#: ../src/applet.c:1982
+#: ../src/applet.c:2259
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "'%s' માટે VPN સરનામાંનું સૂચન કરી રહ્યા છે..."
 
-#: ../src/applet.c:1985
+#: ../src/applet.c:2262
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN જોડાણ '%s' સક્રિય છે"
 
-#: ../src/applet.c:2024
+#: ../src/applet.c:2301
 msgid "No network connection"
 msgstr "નેટવર્ક જોડાણ નથી"
 
-#: ../src/applet.c:2359
+#: ../src/applet.c:2637
 msgid ""
 "The NetworkManager applet could not find some required resources.  It cannot "
 "continue.\n"
 msgstr "NetworkManager એપ્લેટ અમુક જરૂરી સ્રોતો શોધી શકી નહિં. તેને ચાલુ રાખી શકાતી નથી.\n"
 
-#: ../src/applet.c:2554
+#: ../src/applet.c:2832
 msgid "NetworkManager Applet"
 msgstr "NetworkManager એપ્લેટ"
 
-#: ../src/applet.c:2560 ../src/wired-dialog.c:128
+#: ../src/applet.c:2838 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -707,7 +761,6 @@ msgid "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
 msgstr "<span size=\"larger\" weight=\"bold\">નેટવર્ક જોડાણોને સક્રિય કરો</span>"
 
 #: ../src/applet.glade.h:7
-#| msgid "Anonymous Identity:"
 msgid "Anony_mous identity:"
 msgstr "અવ્યવસ્થિત રીતે ઓળખો (_m):"
 
@@ -722,7 +775,6 @@ msgstr ""
 "આવૃત્તિ 1"
 
 #: ../src/applet.glade.h:11
-#| msgid "CA Certificate:"
 msgid "C_A certificate:"
 msgstr "CA પ્રમાણપત્ર (_A):"
 
@@ -731,7 +783,6 @@ msgid "C_onnect"
 msgstr "જોડાવો (_o)"
 
 #: ../src/applet.glade.h:13
-#| msgid "Connection:"
 msgid "Co_nnection:"
 msgstr "જોડાણ (_n):"
 
@@ -740,17 +791,14 @@ msgid "Connection Information"
 msgstr "જોડાણ જાણકારી"
 
 #: ../src/applet.glade.h:15
-#| msgid "Don't warn me again"
 msgid "Don't _warn me again"
 msgstr "ફરીથી મને ચેતવો નહિં (_w)"
 
 #: ../src/applet.glade.h:16
-#| msgid "Identity:"
 msgid "I_dentity:"
 msgstr "ઓળખાણપત્ર (_d):"
 
 #: ../src/applet.glade.h:17
-#| msgid "Inner Authentication:"
 msgid "I_nner authentication:"
 msgstr "આંતરિક સત્તાધિકરણ (_n):"
 
@@ -771,7 +819,6 @@ msgid "Other Wireless Network..."
 msgstr "બીજી વાયરલેસ નેટવર્ક..."
 
 #: ../src/applet.glade.h:22
-#| msgid "Private Key:"
 msgid "Private _key:"
 msgstr "ખાનગી કી (_k):"
 
@@ -780,17 +827,14 @@ msgid "Select A File"
 msgstr "ફાઇલને પસંદ કરો"
 
 #: ../src/applet.glade.h:24
-#| msgid "Show key"
 msgid "Sho_w key"
 msgstr "કીને બતાવો (_w)"
 
 #: ../src/applet.glade.h:25 ../src/connection-editor/ce-page-dsl.glade.h:1
-#| msgid "Show password"
 msgid "Sho_w password"
 msgstr "પાસવર્ડને બતાવો (_w)"
 
 #: ../src/applet.glade.h:26
-#| msgid "WEP Index:"
 msgid "WEP inde_x:"
 msgstr "WEP અનુક્રમણિકા (_x):"
 
@@ -803,93 +847,67 @@ msgid "Yes"
 msgstr "હા"
 
 #: ../src/applet.glade.h:29
-#| msgid "Authentication:"
 msgid "_Authentication:"
 msgstr "સત્તાધિકરણ (_A):"
 
 #: ../src/applet.glade.h:30
-#| msgid "Key:"
 msgid "_Key:"
 msgstr "કી (_K):"
 
 #: ../src/applet.glade.h:31
-#| msgid "_Network Name:"
 msgid "_Network name:"
 msgstr "નેટવર્ક નામ (_N):"
 
 #: ../src/applet.glade.h:32
-#| msgid "PEAP Version:"
 msgid "_PEAP version:"
 msgstr "PEAP આવૃત્તિ (_P):"
 
 #: ../src/applet.glade.h:33 ../src/connection-editor/ce-page-dsl.glade.h:2
-#: ../src/connection-editor/ce-page-mobile.glade.h:16
-#| msgid "Password:"
+#: ../src/connection-editor/ce-page-mobile.glade.h:15
 msgid "_Password:"
 msgstr "પાસવર્ડ (_P):"
 
 #: ../src/applet.glade.h:34
-#| msgid "Private Key Password:"
 msgid "_Private key password:"
 msgstr "ખાનગી કી પાસવર્ડ (_P):"
 
-#: ../src/applet.glade.h:35 ../src/connection-editor/ce-page-mobile.glade.h:17
-#| msgid "Type:"
+#: ../src/applet.glade.h:35 ../src/connection-editor/ce-page-mobile.glade.h:16
 msgid "_Type:"
 msgstr "પ્રકાર (_T):"
 
 #: ../src/applet.glade.h:36
-#| msgid "User Certificate:"
 msgid "_User certificate:"
 msgstr "વપરાશકર્તા પ્રમાણપત્ર (_U):"
 
 #: ../src/applet.glade.h:37 ../src/connection-editor/ce-page-dsl.glade.h:4
-#: ../src/connection-editor/ce-page-mobile.glade.h:18
-#| msgid "Username:"
+#: ../src/connection-editor/ce-page-mobile.glade.h:17
 msgid "_Username:"
 msgstr "વપરાશકર્તા નામ (_U):"
 
 #: ../src/applet.glade.h:38
-#| msgid "_Wireless Security:"
 msgid "_Wireless security:"
 msgstr "વાયરલેસ સુરક્ષા (_W):"
 
-#: ../src/connection-editor/ce-page.c:73
+#: ../src/connection-editor/ce-page.c:69
 msgid "automatic"
 msgstr "આપોઆપ"
 
-#: ../src/connection-editor/ce-page.c:204
-msgid ""
-"Insufficient privileges or unknown error retrieving system connection "
-"secrets."
-msgstr "અપૂરતા અધિકારો અથવા અજ્ઞાત ભૂલ એ સિસ્ટમ જોડાણ ગુપ્તતાઓને મેળવી રહ્યા છે."
-
-#: ../src/connection-editor/ce-page.c:239
+#: ../src/connection-editor/ce-page.c:221
+#: ../src/connection-editor/nm-connection-editor.c:596
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "અજ્ઞાત ભૂલ દરમ્યાન જોડાણ ગુપ્તતાઓને સુધારવા માટે નિષ્ફળ."
 
-#: ../src/connection-editor/ce-page.c:272
-msgid "Could not request secrets from the system settings service."
-msgstr "સિસ્ટમ સુયોજનો સેવા માંથી ગુપ્તતાઓને સૂચન કરી શક્યા નહિં."
-
-#: ../src/connection-editor/ce-page.c:302
-msgid "Could not connect to D-Bus to request connection secrets."
-msgstr "જોડાણ ગુપ્તતાઓને સૂચન કરવા માટે D-Bus માં જોડાણ કરી શક્યા નહિં."
-
-#: ../src/connection-editor/ce-page.c:315
-msgid "Could not create D-Bus proxy for connection secrets."
-msgstr "જોડાણ ગુપ્તતાઓ માટે D-Bus પ્રોક્સીને બનાવી શક્યા નહિં."
-
 #: ../src/connection-editor/ce-page-dsl.glade.h:3
-#| msgid "Service:"
 msgid "_Service:"
 msgstr "સેવા (_S):"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:1
+#: ../src/connection-editor/ce-page-ip6.glade.h:1
 msgid "<b>Addresses</b>"
 msgstr "<b>સરનામાંઓ</b>"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:2
+#: ../src/connection-editor/ce-page-ip6.glade.h:2
 msgid ""
 "Automatic\n"
 "Automatic with manual DNS settings\n"
@@ -904,53 +922,57 @@ msgstr ""
 "બીજા કૉમ્પ્યુટરો સાથે વહેંચાયેલ છે"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:7
-#| msgid "DHCP Client ID:"
 msgid "D_HCP client ID:"
 msgstr "DHCP ક્લાઇન્ટ ID (_H):"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:8
+#: ../src/connection-editor/ce-page-ip6.glade.h:7
 msgid ""
 "IP addresses identify your computer on the network.  Click the \"Add\" "
 "button to add an IP address."
 msgstr ""
-"IP સરનામાંઓ નેટવર્ક પર તમારા કૉમ્પ્યુટરને ઓળખે છે.  IP સરનામાંને ઉમેરવા માટે \"Add\" બટન પર"
-"ક્લિક કરો."
+"IP સરનામાંઓ નેટવર્ક પર તમારા કૉમ્પ્યુટરને ઓળખે છે.  IP સરનામાંને ઉમેરવા માટે \"Add\" બટન "
+"પરક્લિક કરો."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
+#: ../src/connection-editor/ce-page-ip6.glade.h:8
 msgid ""
 "If enabled, this connection will never be used as the default network "
 "connection."
 msgstr "જો સક્રિય થયેલ હોય તો, આ જોડાણ એ મૂળભૂત નેટવર્ક જોડાણ તરીકે કદી વપરાશે નહિં."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:10
-#| msgid "Ignore automatically obtained routes"
+#: ../src/connection-editor/ce-page-ip6.glade.h:9
 msgid "Ig_nore automatically obtained routes"
 msgstr "આપમેળે મેળવેલ માર્ગોને અવગણો (_n)"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:11
-#| msgid "Use this connection only for resources on its network"
+#: ../src/connection-editor/ce-page-ip6.glade.h:10
 msgid "Use this c_onnection only for resources on its network"
 msgstr "તેનાં નેટવર્ક પર સ્ત્રોતો માટે ફક્ત આ જોડાણને વાપરો (_o)"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:12
-#| msgid "DNS Servers:"
+#: ../src/connection-editor/ce-page-ip6.glade.h:11
 msgid "_DNS servers:"
 msgstr "DNS સર્વરો (_D):"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:13
-#| msgid "Method:"
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
 msgid "_Method:"
 msgstr "પદ્દતિ (_M):"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:14
-#| msgid "Routes..."
 msgid "_Routes…"
 msgstr "માર્ગો (_R)..."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:15
-#| msgid "Search Domains:"
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
 msgid "_Search domains:"
 msgstr "ડોમેઇનોને શોધો (_S):"
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
+msgid "_Routes&#x2026;"
+msgstr "Routes&#x2026 (_R);"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -975,42 +997,30 @@ msgstr ""
 "2G (GPRS/EDGE) ને પસંદ કરો"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:8
-#| msgid "Create..."
 msgid "Change..."
 msgstr "બદલો..."
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:9
-#| msgid "Network:"
 msgid "N_etwork:"
 msgstr "નેટવર્ક (_e):"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:10
-#| msgid "Number:"
 msgid "Nu_mber:"
 msgstr "નંબર (_m):"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:11
-#| msgid "PIN:"
 msgid "PI_N:"
 msgstr "PIN (_N):"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:12
-#| msgid "PUK:"
-msgid "PU_K:"
-msgstr "PUK (_K):"
-
-#: ../src/connection-editor/ce-page-mobile.glade.h:13
-#| msgid "Show passwords"
 msgid "Sho_w passwords"
 msgstr "પાસવર્ડોને બતાવો (_w)"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
-#| msgid "APN:"
+#: ../src/connection-editor/ce-page-mobile.glade.h:13
 msgid "_APN:"
 msgstr "APN (_A):"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:15
-#| msgid "Band:"
+#: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "_Band:"
 msgstr "Band (_B):"
 
@@ -1040,12 +1050,10 @@ msgstr ""
 "i>"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:6
-#| msgid "Allow BSD data compression"
 msgid "Allow _BSD data compression"
 msgstr "BSD માહિતી સંકોચનને પરવાનગી આપો (_B)"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:7
-#| msgid "Allow Deflate data compression"
 msgid "Allow _Deflate data compression"
 msgstr "Deflate માહિતા સંકોચનને પરવાનગી આપો (_D)"
 
@@ -1054,7 +1062,6 @@ msgid "Allowed methods:"
 msgstr "પરવાનગી મળેલ પદ્દતિઓ:"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:9
-#| msgid "CHAP"
 msgid "C_HAP"
 msgstr "CHAP (_H)"
 
@@ -1063,7 +1070,6 @@ msgid "Challenge Handshake Authentication Protocol"
 msgstr "Challenge Handshake Authentication Protocol"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:11
-#| msgid "Configure Methods..."
 msgid "Configure _Methods…"
 msgstr "પદ્દતિઓને રૂપરેખાંકિત કરો (_M)..."
 
@@ -1072,7 +1078,6 @@ msgid "Extensible Authentication Protocol"
 msgstr "Extensible Authentication Protocol"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:13
-#| msgid "MSCHAP v2"
 msgid "MSCHAP v_2"
 msgstr "MSCHAP v2 (_2)"
 
@@ -1089,42 +1094,34 @@ msgid "Password Authentication Protocol"
 msgstr "Password Authentication Protocol"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:17
-#| msgid "Send PPP echo packets"
 msgid "Send PPP _echo packets"
 msgstr "PPP ઇકો પેકેટોને મોકલો (_e)"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:18
-#| msgid "Use TCP header compression"
 msgid "Use TCP _header compression"
 msgstr "TCP હેડર સંકોચનને વાપરો (_h)"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:19
-#| msgid "Use Stateful MPPE"
 msgid "Use _stateful MPPE"
 msgstr "Stateful MPPE ને વાપરો (_s)"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:20
-#| msgid "EAP"
 msgid "_EAP"
 msgstr "EAP (_E)"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:21
-#| msgid "MSCHAP"
 msgid "_MSCHAP"
 msgstr "MSCHAP (_M)"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:22
-#| msgid "PAP"
 msgid "_PAP"
 msgstr "PAP (_P)"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:23
-#| msgid "Require 128-bit encryption"
 msgid "_Require 128-bit encryption"
 msgstr "128-bit એનક્રિપ્શનની જરૂર છે (_R)"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:24
-#| msgid "Use Point-to-Point Encryption (MPPE)"
 msgid "_Use point-to-point encryption (MPPE)"
 msgstr "Point-to-Point Encryption (MPPE) ને વાપરો (_U)"
 
@@ -1242,7 +1239,6 @@ msgid "mW"
 msgstr "mW"
 
 #: ../src/connection-editor/ce-page-wireless-security.glade.h:1
-#| msgid "Security:"
 msgid "_Security:"
 msgstr "સુરક્ષા (_S):"
 
@@ -1261,12 +1257,13 @@ msgstr ""
 "સ્થાપિત થયેલ નથી."
 
 #: ../src/connection-editor/ce-vpn-wizard.glade.h:5
-#| msgid "C_reate"
 msgid "Create…"
 msgstr "બનાવો..."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
+#: ../src/connection-editor/ip6-routes-dialog.c:459
 #: ../src/connection-editor/page-ip4.c:634
+#: ../src/connection-editor/page-ip6.c:611
 msgid "Address"
 msgstr "સરનામું"
 
@@ -1276,51 +1273,64 @@ msgid "Netmask"
 msgstr "નેટમાસ્ક"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
+#: ../src/connection-editor/ip6-routes-dialog.c:491
 #: ../src/connection-editor/page-ip4.c:666
 msgid "Gateway"
 msgstr "ગેટવે"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:549
+#: ../src/connection-editor/ip6-routes-dialog.c:507
 msgid "Metric"
 msgstr "મેટ્રીક"
 
-#: ../src/connection-editor/page-dsl.c:153
-#: ../src/connection-editor/page-dsl.c:160
+#: ../src/connection-editor/ip6-routes-dialog.c:475
+#: ../src/connection-editor/page-ip6.c:627
+msgid "Prefix"
+msgstr ""
+
+#: ../src/connection-editor/page-dsl.c:140
+#: ../src/connection-editor/page-dsl.c:147
 msgid "Could not load DSL user interface."
 msgstr "DSL વપરાશકર્તા ઇન્ટરફેસને લોડ કરી શકાયુ નહિં."
 
-#: ../src/connection-editor/page-dsl.c:166
+#: ../src/connection-editor/page-dsl.c:153
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1663
+#: ../src/connection-editor/nm-connection-list.c:1368
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-dsl.c:256
+#: ../src/connection-editor/page-dsl.c:241
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL જોડાણ %d"
 
 #: ../src/connection-editor/page-ip4.c:116
+#: ../src/connection-editor/page-ip6.c:114
 msgid "Automatic (VPN)"
 msgstr "સ્વયં (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:117
+#: ../src/connection-editor/page-ip6.c:115
 msgid "Automatic (VPN) addresses only"
 msgstr "ફક્ત સ્વયં (VPN) સરનામાંઓ"
 
 #: ../src/connection-editor/page-ip4.c:120
+#: ../src/connection-editor/page-ip6.c:118
 msgid "Automatic (PPP)"
 msgstr "સ્વયં (PPP)"
 
 #: ../src/connection-editor/page-ip4.c:121
+#: ../src/connection-editor/page-ip6.c:119
 msgid "Automatic (PPP) addresses only"
 msgstr "ફક્ત સ્વયં (PPP) સરનામાંઓ"
 
 #: ../src/connection-editor/page-ip4.c:123
+#: ../src/connection-editor/page-ip6.c:121
 msgid "Automatic (PPPoE)"
 msgstr "સ્વયં (PPPoE)"
 
 #: ../src/connection-editor/page-ip4.c:124
+#: ../src/connection-editor/page-ip6.c:122
 msgid "Automatic (PPPoE) addresses only"
 msgstr "ફક્ત સ્વયં (PPPoE) સરનામાંઓ"
 
@@ -1333,14 +1343,17 @@ msgid "Automatic (DHCP) addresses only"
 msgstr "ફક્ત સ્વયં (DHCP) સરનામાંઓ"
 
 #: ../src/connection-editor/page-ip4.c:152
+#: ../src/connection-editor/page-ip6.c:162
 msgid "Manual"
 msgstr "જાતે"
 
 #: ../src/connection-editor/page-ip4.c:164
+#: ../src/connection-editor/page-ip6.c:175
 msgid "Link-Local Only"
 msgstr "ફક્ત સ્થાનીય કડી કરો"
 
 #: ../src/connection-editor/page-ip4.c:170
+#: ../src/connection-editor/page-ip6.c:182
 msgid "Shared to other computers"
 msgstr "બીજા કૉમ્પ્યુટરો સાથે વહેંચાયેલ છે"
 
@@ -1349,31 +1362,62 @@ msgstr "બીજા કૉમ્પ્યુટરો સાથે વહેં
 msgid "Editing IPv4 routes for %s"
 msgstr "%s માટે IPv4 માર્ગોને ફેરફાર કરી રહ્યા છે"
 
-#: ../src/connection-editor/page-ip4.c:708
-#: ../src/connection-editor/page-ip4.c:715
+#: ../src/connection-editor/page-ip4.c:711
+#: ../src/connection-editor/page-ip4.c:718
 msgid "Could not load IPv4 user interface."
 msgstr "IPv4 વપરાશકર્તા ઇન્ટરફેલને લોડ કરી શકાયુ નહિં."
 
-#: ../src/connection-editor/page-ip4.c:721
+#: ../src/connection-editor/page-ip4.c:724
 msgid "IPv4 Settings"
 msgstr "IPv4 સુયોજનો"
 
-#: ../src/connection-editor/page-mobile.c:365
-#: ../src/connection-editor/page-mobile.c:372
+#: ../src/connection-editor/page-ip6.c:124
+#| msgid "automatic"
+msgid "Automatic"
+msgstr "આપોઆપ"
+
+#: ../src/connection-editor/page-ip6.c:125
+#| msgid "Automatic (VPN) addresses only"
+msgid "Automatic, addresses only"
+msgstr "ફક્ત સ્વયં સરનામાંઓ"
+
+#: ../src/connection-editor/page-ip6.c:137
+#: ../src/wireless-security/eap-method.c:196
+msgid "Ignore"
+msgstr "અવગણો"
+
+#: ../src/connection-editor/page-ip6.c:574
+#, c-format
+#| msgid "Editing IPv4 routes for %s"
+msgid "Editing IPv6 routes for %s"
+msgstr "%s માટે IPv6 માર્ગોને ફેરફાર કરી રહ્યા છે"
+
+#: ../src/connection-editor/page-ip6.c:670
+#: ../src/connection-editor/page-ip6.c:677
+#| msgid "Could not load IPv4 user interface."
+msgid "Could not load IPv6 user interface."
+msgstr "IPv6 વપરાશકર્તા ઇન્ટરફેસને લોડ કરી શકાયુ નહિં."
+
+#: ../src/connection-editor/page-ip6.c:683
+#| msgid "IPv4 Settings"
+msgid "IPv6 Settings"
+msgstr "IPv6 સુયોજનો"
+
+#: ../src/connection-editor/page-mobile.c:313
+#: ../src/connection-editor/page-mobile.c:320
 msgid "Could not load mobile broadband user interface."
 msgstr "મોબાઇલ બ્રોડબેન્ડ વપરાશકર્તા ઇન્ટરફેસને લોડ કરી શકાયુ નહિં."
 
-#: ../src/connection-editor/page-mobile.c:390
+#: ../src/connection-editor/page-mobile.c:341
 msgid "Unsupported mobile broadband connection type."
 msgstr "બિનઆધારભૂત મોબાઇલ બ્રોડબેન્ડ જોડાણ પ્રકાર."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:632
-#| msgid "Mobile Broadband"
+#: ../src/connection-editor/page-mobile.c:578
 msgid "Select Mobile Broadband Provider Type"
 msgstr "મોબાઇલ બ્રોડબેન્ડ પોષણકર્તા પ્રકારને પસંદ કરો"
 
-#: ../src/connection-editor/page-mobile.c:659
+#: ../src/connection-editor/page-mobile.c:605
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1381,11 +1425,13 @@ msgstr ""
 "તમારા મોબાઇલ બ્રોડબેન્ડ પોષણકર્તા વાપરે છે તેને પસંદ કરો.  જો તમે ચોક્કસ ન હોય તો, "
 "તમારા પોષણકર્તાને પૂછો."
 
-#: ../src/connection-editor/page-mobile.c:664
+#: ../src/connection-editor/page-mobile.c:610
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
-msgstr "મારો પોષણકર્તા એ GSM-આધારિત ટેકનોલોજી ને વાપરે છે (_G) (એટલે કે. GPRS, EDGE, UMTS, HSDPA)"
+msgstr ""
+"મારો પોષણકર્તા એ GSM-આધારિત ટેકનોલોજી ને વાપરે છે (_G) (એટલે કે. GPRS, EDGE, UMTS, "
+"HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:669
+#: ../src/connection-editor/page-mobile.c:615
 msgid "My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "મારો પોષણકર્તા એ CDMA-આધારિત ટેકનોલોજી ને વાપરે છે (_C) (એટલે કે. 1xRTT, EVDO)"
 
@@ -1394,23 +1440,23 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:223
+#: ../src/wireless-security/eap-method-ttls.c:227
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:134
-#: ../src/wireless-security/eap-method-ttls.c:268
+#: ../src/wireless-security/eap-method-ttls.c:272
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:229
-#: ../src/wireless-security/eap-method-ttls.c:253
+#: ../src/wireless-security/eap-method-peap.c:244
+#: ../src/wireless-security/eap-method-ttls.c:257
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:136
-#: ../src/wireless-security/eap-method-ttls.c:238
+#: ../src/wireless-security/eap-method-ttls.c:242
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -1424,53 +1470,53 @@ msgstr "કંઇ નહિં"
 msgid "Editing PPP authentication methods for %s"
 msgstr "%s માટે PPP સત્તાધિકરણ પદ્દતિઓમાં ફેરફાર કરી રહ્યા છે"
 
-#: ../src/connection-editor/page-ppp.c:280
-#: ../src/connection-editor/page-ppp.c:287
+#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:290
 msgid "Could not load PPP user interface."
 msgstr "PPP વપરાશકર્તા ઇન્ટરફેસને લોડ કરી શકાયુ નહિં."
 
-#: ../src/connection-editor/page-ppp.c:293
+#: ../src/connection-editor/page-ppp.c:296
 msgid "PPP Settings"
 msgstr "PPP સુયોજનો"
 
-#: ../src/connection-editor/page-vpn.c:105
+#: ../src/connection-editor/page-vpn.c:108
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1659
+#: ../src/connection-editor/nm-connection-list.c:1364
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-vpn.c:116
+#: ../src/connection-editor/page-vpn.c:119
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "'%s' માટે VPN પ્લગઇન સેવાને શોધી શકાયુ નહિં."
 
-#: ../src/connection-editor/page-vpn.c:212
-#: ../src/connection-editor/nm-connection-list.c:1161
+#: ../src/connection-editor/page-vpn.c:213
+#: ../src/connection-editor/nm-connection-list.c:949
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN જોડાણ %d"
 
-#: ../src/connection-editor/page-wired.c:204
-#: ../src/connection-editor/page-wired.c:211
+#: ../src/connection-editor/page-wired.c:207
+#: ../src/connection-editor/page-wired.c:214
 msgid "Could not load wired user interface."
 msgstr "વાયર વાળો વપરાશકર્તા ઇન્ટરફેસને લોડ કરી શકાયુ નહિં."
 
-#: ../src/connection-editor/page-wired.c:217
+#: ../src/connection-editor/page-wired.c:220
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1647
+#: ../src/connection-editor/nm-connection-list.c:1352
 msgid "Wired"
 msgstr "વાયર વાળુ"
 
-#: ../src/connection-editor/page-wired.c:340
+#: ../src/connection-editor/page-wired.c:339
 #, c-format
 msgid "Wired connection %d"
 msgstr "વાયર વાળુ જોડાણ %d"
 
-#: ../src/connection-editor/page-wired-security.c:112
+#: ../src/connection-editor/page-wired-security.c:115
 msgid "802.1x Security"
 msgstr "802.1x સુરક્ષા"
 
-#: ../src/connection-editor/page-wired-security.c:120
+#: ../src/connection-editor/page-wired-security.c:123
 msgid "Use 802.1X security for this connection"
 msgstr "આ જોડાણ માટે 802.1X સુરક્ષાને વાપરો"
 
@@ -1484,86 +1530,70 @@ msgstr "મૂળભૂત"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:348
-#: ../src/connection-editor/page-wireless.c:355
+#: ../src/connection-editor/page-wireless.c:351
+#: ../src/connection-editor/page-wireless.c:358
 msgid "Could not load WiFi user interface."
 msgstr "WiFi વપરાશકર્તા ઇન્ટરફેસને લોડ કરી શકાયુ નહિં."
 
-#: ../src/connection-editor/page-wireless.c:361
+#: ../src/connection-editor/page-wireless.c:364
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1651
+#: ../src/connection-editor/nm-connection-list.c:1356
 msgid "Wireless"
 msgstr "વાયરલેસ"
 
-#: ../src/connection-editor/page-wireless.c:512
+#: ../src/connection-editor/page-wireless.c:511
 #, c-format
 msgid "Wireless connection %d"
 msgstr "વાયરલેસ જોડાણ %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:794
+#: ../src/wireless-dialog.c:881
 msgid "WEP 40/128-bit Key"
 msgstr "WEP 40/128-bit કી"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:803
+#: ../src/wireless-dialog.c:890
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-બીટ પાસફ્રેઝ"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:833
+#: ../src/wireless-dialog.c:920
 msgid "Dynamic WEP (802.1x)"
 msgstr "ગતિક WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:847
+#: ../src/wireless-dialog.c:934
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 વ્યક્તિગત"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:861
+#: ../src/wireless-dialog.c:948
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 એન્ટરપ્રાઇઝ"
 
-#: ../src/connection-editor/page-wireless-security.c:363
+#: ../src/connection-editor/page-wireless-security.c:365
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr "WiFi સુરક્ષા વપરાશકર્તા ઇન્ટરફેસને લોડ કરી શકાયુ નહિં; ગુમ થયેલ WiFi સુયોજન."
 
-#: ../src/connection-editor/page-wireless-security.c:370
-#: ../src/connection-editor/page-wireless-security.c:377
+#: ../src/connection-editor/page-wireless-security.c:372
+#: ../src/connection-editor/page-wireless-security.c:379
 msgid "Could not load WiFi security user interface."
 msgstr "WiFi સુરક્ષા વપરાશકર્તા ઇન્ટરફેસને લોડ કરી શકાયુ નહિં."
 
-#: ../src/connection-editor/page-wireless-security.c:383
+#: ../src/connection-editor/page-wireless-security.c:385
 msgid "Wireless Security"
 msgstr "વાયરલેસ સુરક્ષા"
 
-#: ../src/connection-editor/polkit-helpers.c:52
-msgid "PolicyKit authorization request was invalid."
-msgstr "PolicyKit સત્તાધિકરણ સૂચના અયોગ્ય હતી."
-
-#: ../src/connection-editor/polkit-helpers.c:58
-msgid "PolicyKit authorization request was malformed."
-msgstr "PolicyKit સત્તાધિકરણ સૂચના મેલફોર્મ થયેલ હતી."
-
-#: ../src/connection-editor/polkit-helpers.c:64
-msgid "PolicyKit authorization could not be created."
-msgstr "PolicyKit સત્તાધિકરણને બનાવી શકાયુ નહિં."
-
-#: ../src/connection-editor/polkit-helpers.c:71
-msgid "PolicyKit authorization could not be created; invalid action ID."
-msgstr "PolicyKit સત્તાધિકરણ ને બનાવી શકાયુ નહિં; અયોગ્ય ક્રિયા ID."
-
-#: ../src/connection-editor/nm-connection-editor.c:104
+#: ../src/connection-editor/nm-connection-editor.c:100
 #, c-format
 msgid "Editing %s"
 msgstr "%s માં ફેરફાર કરી રહ્યા છે"
 
-#: ../src/connection-editor/nm-connection-editor.c:108
+#: ../src/connection-editor/nm-connection-editor.c:104
 msgid "Editing un-named connection"
 msgstr "નામ વગરનાં જોડાણમાં ફેરફાર કરી રહ્યા છે"
 
-#: ../src/connection-editor/nm-connection-editor.c:296
+#: ../src/connection-editor/nm-connection-editor.c:280
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
@@ -1571,31 +1601,31 @@ msgstr ""
 "જોડાણ સંપાદક અમુક જરૂરી સ્રોતો શોધી શકી નહિં (NetworkManager એપ્લેટ glade ફાઈલ મળી "
 "નથી)."
 
-#: ../src/connection-editor/nm-connection-editor.c:309
+#: ../src/connection-editor/nm-connection-editor.c:293
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
 msgstr "જોડાણ સંપાદક અમુક જરૂરી સ્રોતો શોધી શકી નહિં (glade ફાઈલ મળી નથી)."
 
-#: ../src/connection-editor/nm-connection-editor.c:325
-msgid "Apply..."
-msgstr "લાગુ કરો..."
+#: ../src/connection-editor/nm-connection-editor.c:366
+msgid "Error creating connection editor dialog."
+msgstr "જોડાણ સંપાદક સંવાદને બનાવતી વખતે ભૂલ."
 
-#: ../src/connection-editor/nm-connection-editor.c:326
-msgid "Authenticate to save this connection for all users of this machine."
-msgstr "આ મશીન નાં બધા વપરાશકર્તાઓ માટે આ જોડાણને સંગ્રહ કરવા માટે સત્તાધિકરણ કરો."
-
-#: ../src/connection-editor/nm-connection-editor.c:327
+#: ../src/connection-editor/nm-connection-editor.c:387
 msgid "Apply"
 msgstr "લાગુ કરો"
 
-#: ../src/connection-editor/nm-connection-editor.c:328
+#: ../src/connection-editor/nm-connection-editor.c:388
 msgid "Save this connection for all users of this machine."
 msgstr "આ મશીનનાં બધા વપરાશકર્તાઓ માટે આ જોડાણને સંગ્રહો."
 
-#: ../src/connection-editor/nm-connection-editor.c:436
-msgid "Error creating connection editor dialog."
-msgstr "જોડાણ સંપાદક સંવાદને બનાવતી વખતે ભૂલ."
+#: ../src/connection-editor/nm-connection-editor.c:389
+msgid "Apply..."
+msgstr "લાગુ કરો..."
+
+#: ../src/connection-editor/nm-connection-editor.c:390
+msgid "Authenticate to save this connection for all users of this machine."
+msgstr "આ મશીન નાં બધા વપરાશકર્તાઓ માટે આ જોડાણને સંગ્રહ કરવા માટે સત્તાધિકરણ કરો."
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
 msgid "Available to all users"
@@ -1617,132 +1647,107 @@ msgstr "નિકાસ કરો (_x)"
 msgid "_Import"
 msgstr "નિયાત કરો (_I)"
 
-#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:219
 msgid "never"
 msgstr "કદી નહિં"
 
-#: ../src/connection-editor/nm-connection-list.c:238
-#: ../src/connection-editor/nm-connection-list.c:249
+#: ../src/connection-editor/nm-connection-list.c:230
+#: ../src/connection-editor/nm-connection-list.c:241
 msgid "now"
 msgstr "હવે"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:256
+#: ../src/connection-editor/nm-connection-list.c:248
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "%d મિનિટ પહેલા"
 msgstr[1] "%d મિનિટો પહેલા"
 
-#: ../src/connection-editor/nm-connection-list.c:260
+#: ../src/connection-editor/nm-connection-list.c:252
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "%d કલાક અગાઉ"
 msgstr[1] "%d કલાકો અગાઉ"
 
-#: ../src/connection-editor/nm-connection-list.c:272
+#: ../src/connection-editor/nm-connection-list.c:264
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d day અગાઉ"
 msgstr[1] "%d દિવસો અગાઉ"
 
-#: ../src/connection-editor/nm-connection-list.c:278
+#: ../src/connection-editor/nm-connection-list.c:270
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d મહિનાં અગાઉ"
 msgstr[1] "%d મહિનાઓ અગાઉ"
 
-#: ../src/connection-editor/nm-connection-list.c:282
+#: ../src/connection-editor/nm-connection-list.c:274
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d વર્ષ અગાઉ"
 msgstr[1] "%d વર્ષો અગાઉ"
 
-#: ../src/connection-editor/nm-connection-list.c:348
-#: ../src/connection-editor/nm-connection-list.c:480
-msgid "Could not obtain required privileges"
-msgstr "જરૂરી અધિકારો ને મેળવી શકાયા નહિં"
+#: ../src/connection-editor/nm-connection-list.c:575
+#| msgid "VPN Connection Failed"
+msgid "Connection add failed"
+msgstr "જોડાણ ઉમેરવાનું નિષ્ફળ"
 
-#: ../src/connection-editor/nm-connection-list.c:353
-msgid "Could not delete connection"
-msgstr "જોડાણને કાઢી શકાયુ નહિં"
+#: ../src/connection-editor/nm-connection-list.c:598
+#, c-format
+msgid "Error editing connection: property '%s' / '%s' invalid: %d"
+msgstr ""
 
-#: ../src/connection-editor/nm-connection-list.c:354
-msgid "The connection could not be deleted due to an unknown error."
-msgstr "અજ્ઞાત ભૂલ દરમ્યાન જોડાણને કાઢી શકાયુ નહિં."
-
-#: ../src/connection-editor/nm-connection-list.c:390
-#: ../src/connection-editor/nm-connection-list.c:401
-msgid "Could not move connection"
-msgstr "જોડાણને ખસેડી શકાયુ નહિં"
-
-#: ../src/connection-editor/nm-connection-list.c:485
-#: ../src/connection-editor/nm-connection-list.c:534
-#: ../src/connection-editor/nm-connection-list.c:545
-msgid "Could not add connection"
-msgstr "જોડાણને ઉમેરાઇ શકાયુ નહિં"
-
-#: ../src/connection-editor/nm-connection-list.c:486
-msgid "The connection could not be added due to an unknown error."
-msgstr "અજ્ઞાત ભૂલ દરમ્યાન જોડાણને ઉમેરી શકાયુ નહિં."
-
-#: ../src/connection-editor/nm-connection-list.c:659
-#: ../src/connection-editor/nm-connection-list.c:664
-#: ../src/connection-editor/nm-connection-list.c:724
-#: ../src/connection-editor/nm-connection-list.c:730
-msgid "Could not update connection"
-msgstr "જોડાણને સુધારી શકાયુ નહિં"
-
-#: ../src/connection-editor/nm-connection-list.c:665
-msgid "The connection could not be updated due to an unknown error."
-msgstr "અજ્ઞાત ભૂલ દરમ્યાન જોડાણને સુધારી શકાયુ નહિં."
-
-#: ../src/connection-editor/nm-connection-list.c:756
-#: ../src/connection-editor/nm-connection-list.c:887
+#: ../src/connection-editor/nm-connection-list.c:605
+#: ../src/connection-editor/nm-connection-list.c:720
 msgid "An unknown error ocurred."
 msgstr "અજ્ઞાત ભૂલ ઉદ્ભવી."
 
-#: ../src/connection-editor/nm-connection-list.c:765
-#: ../src/connection-editor/nm-connection-list.c:894
+#: ../src/connection-editor/nm-connection-list.c:610
+#: ../src/connection-editor/nm-connection-list.c:755
 msgid "Error initializing editor"
 msgstr "સંપાદકને પ્રારંભ કરતી વખતે ભૂલ"
 
-#: ../src/connection-editor/nm-connection-list.c:795
-#: ../src/connection-editor/nm-connection-list.c:929
-#: ../src/connection-editor/nm-connection-list.c:1144
+#: ../src/connection-editor/nm-connection-list.c:626
+#: ../src/connection-editor/nm-connection-list.c:772
+#: ../src/connection-editor/nm-connection-list.c:932
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr "અજ્ઞાત ભૂલ દરમ્યાન જોડાણ સંપાદક સંવાદને પ્રારંભ કરી શકાયુ નહિં."
 
-#: ../src/connection-editor/nm-connection-list.c:805
-#| msgid "Could not edit new connection"
+#: ../src/connection-editor/nm-connection-list.c:635
 msgid "Could not create new connection"
 msgstr "નવા જોડાણમાં બનાવી શકાયુ નહિં"
 
-#: ../src/connection-editor/nm-connection-list.c:815
+#: ../src/connection-editor/nm-connection-list.c:646
 msgid "Could not edit new connection"
 msgstr "નવા જોડાણમાં ફેરફાર કરી શકાયુ નહિં"
 
-#: ../src/connection-editor/nm-connection-list.c:949
+#: ../src/connection-editor/nm-connection-list.c:787
 msgid "Could not edit connection"
 msgstr "જોડાણમાં ફેરફાર કરી શકાયુ નહિં"
 
-#: ../src/connection-editor/nm-connection-list.c:1008
+#: ../src/connection-editor/nm-connection-list.c:812
+#| msgid "VPN Connection Failed"
+msgid "Connection delete failed"
+msgstr "જોડાણ કાઢી નાખવાનું નિષ્ફળ"
+
+#: ../src/connection-editor/nm-connection-list.c:836
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "તમે ખરેખર જોડાણ %s ને કાઢી નાંખવાની ઇચ્છા રાખો છો?"
 
-#: ../src/connection-editor/nm-connection-list.c:1189
+#: ../src/connection-editor/nm-connection-list.c:979
 #: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "VPN જોડાણને આયાત કરી શકાતુ નથી"
 
-#: ../src/connection-editor/nm-connection-list.c:1191
+#: ../src/connection-editor/nm-connection-list.c:981
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1752,41 +1757,53 @@ msgstr ""
 "\n"
 "Error: VPN સેવા પ્રકાર નથી."
 
-#: ../src/connection-editor/nm-connection-list.c:1205
+#: ../src/connection-editor/nm-connection-list.c:994
 msgid "Could not edit imported connection"
 msgstr "આયાત થયેલ જોડાણમાં ફેરફાર કરી શકાયુ નહિં"
 
-#: ../src/connection-editor/nm-connection-list.c:1538
-msgid "Edit..."
-msgstr "ફેરફાર કરો..."
+#: ../src/connection-editor/nm-connection-list.c:1128
+msgid "Name"
+msgstr "નામ"
 
-#: ../src/connection-editor/nm-connection-list.c:1539
-msgid "Authenticate to edit the selected connection."
-msgstr "પસંદ થયેલ જોડાણમાં ફેરફાર કરવા માટે સત્તાધિકરણ કરો."
+#: ../src/connection-editor/nm-connection-list.c:1140
+msgid "Last Used"
+msgstr "છેલ્લે વપરાયેલ"
 
-#: ../src/connection-editor/nm-connection-list.c:1540
+#: ../src/connection-editor/nm-connection-list.c:1243
 msgid "Edit"
 msgstr "ફેરફાર કરો"
 
-#: ../src/connection-editor/nm-connection-list.c:1541
-msgid "Edit the selected connection."
-msgstr "પસંદ થયેલ જોડાણમાં ફેરફાર કરો."
+#: ../src/connection-editor/nm-connection-list.c:1244
+#| msgid "Edit the selected connection."
+msgid "Edit the selected connection"
+msgstr "પસંદ થયેલ જોડાણમાં ફેરફાર કરો"
 
-#: ../src/connection-editor/nm-connection-list.c:1558
-msgid "Delete..."
-msgstr "કાઢી નાંખો..."
+#: ../src/connection-editor/nm-connection-list.c:1245
+msgid "Edit..."
+msgstr "ફેરફાર કરો..."
 
-#: ../src/connection-editor/nm-connection-list.c:1559
-msgid "Authenticate to delete the selected connection."
-msgstr "પસંદ થયેલ જોડાણને કાઢી નાંખવા માટે સત્તાધિકરણ કરો."
+#: ../src/connection-editor/nm-connection-list.c:1246
+#| msgid "Authenticate to edit the selected connection."
+msgid "Authenticate to edit the selected connection"
+msgstr "પસંદ થયેલ જોડાણમાં ફેરફાર કરવા માટે સત્તાધિકરણ કરો"
 
-#: ../src/connection-editor/nm-connection-list.c:1560
+#: ../src/connection-editor/nm-connection-list.c:1260
 msgid "Delete"
 msgstr "કાઢી નાંખો"
 
-#: ../src/connection-editor/nm-connection-list.c:1561
-msgid "Delete the selected connection."
-msgstr "પસંદ થયેલ જોડાણને કાઢી નાંખો."
+#: ../src/connection-editor/nm-connection-list.c:1261
+#| msgid "Delete the selected connection."
+msgid "Delete the selected connection"
+msgstr "પસંદ થયેલ જોડાણને કાઢી નાંખો"
+
+#: ../src/connection-editor/nm-connection-list.c:1262
+msgid "Delete..."
+msgstr "કાઢી નાંખો..."
+
+#: ../src/connection-editor/nm-connection-list.c:1263
+#| msgid "Authenticate to delete the selected connection."
+msgid "Authenticate to delete the selected connection"
+msgstr "પસંદ થયેલ જોડાણને કાઢી નાંખવા માટે સત્તાધિકરણ કરો"
 
 #: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
@@ -1837,13 +1854,16 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "VPN જોડાણની નિકાસ કરો..."
 
+#: ../src/gnome-bluetooth/network-manager-applet.c:197
+msgid "Access the Internet using your mobile phone"
+msgstr ""
+
 #: ../src/utils/mobile-wizard.c:196
 msgid "Your mobile broadband connection is configured with the following settings:"
 msgstr "તમારુ મોબાઇલ બ્રોડબેન્ડ જોડાણ એ નીચેનાં સુયોજનો સાથે રૂપરેખાંકિત થયેલ છે:"
 
 #. Device
 #: ../src/utils/mobile-wizard.c:203
-#| msgid "Service:"
 msgid "Your Device:"
 msgstr "તમારુ ઉપકરણ:"
 
@@ -1865,149 +1885,146 @@ msgid ""
 "connection settings, choose \"Network Connections\" from the System >> "
 "Preferences menu."
 msgstr ""
-"જોડાણ એ તમે પસંદ કરેલ છે તે સુયોજનોની મદદથી તમારા મોબાઇલ બ્રોડબેન્ડ પોષણકર્તા માટે "
-"હવે બનાવેલ હશે.  જો જોડાણ નિષ્ફળ થાય તો અથવા તમે નેટવર્ક સ્ત્રોતોને દાખલ કરી શકતા ન હોય તો, "
-"તમારા સુયોજનોને બે વાર ચકાસો.  તમારા મોબાઇલ બ્રોડબેન્ડ જોડાણ સુયોજનોને બદલવા માટે, "
-"સિસ્ટમ >> પસંદગીઓ મેનુ માંથી \"Network Connections\" ને પસંદ કરો."
+"જોડાણ એ તમે પસંદ કરેલ છે તે સુયોજનોની મદદથી તમારા મોબાઇલ બ્રોડબેન્ડ પોષણકર્તા માટે હવે "
+"બનાવેલ હશે.  જો જોડાણ નિષ્ફળ થાય તો અથવા તમે નેટવર્ક સ્ત્રોતોને દાખલ કરી શકતા ન હોય "
+"તો, તમારા સુયોજનોને બે વાર ચકાસો.  તમારા મોબાઇલ બ્રોડબેન્ડ જોડાણ સુયોજનોને બદલવા "
+"માટે, સિસ્ટમ >> પસંદગીઓ મેનુ માંથી \"Network Connections\" ને પસંદ કરો."
 
 #: ../src/utils/mobile-wizard.c:258
-#| msgid "Auto Mobile Broadband (GSM) connection"
 msgid "Confirm Mobile Broadband Settings"
 msgstr "મોબાઇલ બ્રોડબેન્ડ સુયોજનોની ખાતરી કરો"
 
-#: ../src/utils/mobile-wizard.c:316
+#: ../src/utils/mobile-wizard.c:319
 msgid "Unlisted"
 msgstr "યાદી ન થયેલ"
 
-#: ../src/utils/mobile-wizard.c:432
+#: ../src/utils/mobile-wizard.c:437
 msgid "_Select your plan:"
 msgstr "તમારા પ્લાનને પસંદ કરો (_S):"
 
-#: ../src/utils/mobile-wizard.c:456
+#: ../src/utils/mobile-wizard.c:461
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "પસંદ થયેલ પ્લાન APN (Access Point Name) (_A):"
 
-#: ../src/utils/mobile-wizard.c:475
+#: ../src/utils/mobile-wizard.c:480
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
 "\n"
 "If you are unsure of your plan please ask your provider for your plan's APN."
 msgstr ""
-"ચેતવણી: અયોગ્ય પ્લાન પસંગ કરવા દરમ્યાન તમારા બ્રોડબેન્ડ ખાતા માટે બિલીંગ "
-"મુદ્દાઓને પરિણમી શકે છે અથવા જોડાણને અટકાવી શકે છે.\n"
+"ચેતવણી: અયોગ્ય પ્લાન પસંગ કરવા દરમ્યાન તમારા બ્રોડબેન્ડ ખાતા માટે બિલીંગ મુદ્દાઓને પરિણમી "
+"શકે છે અથવા જોડાણને અટકાવી શકે છે.\n"
 "\n"
-"જો તમારા પ્લાનની ખાતરી ન હોય તો મહેરબાની કરીને તમારા પ્લાનનાં APN માટે તમારા પોષણકર્તાને "
-"પૂછો."
+"જો તમારા પ્લાનની ખાતરી ન હોય તો મહેરબાની કરીને તમારા પ્લાનનાં APN માટે તમારા "
+"પોષણકર્તાને પૂછો."
 
-#: ../src/utils/mobile-wizard.c:482
+#: ../src/utils/mobile-wizard.c:487
 msgid "Choose your Billing Plan"
 msgstr "તમારા બિલીંગ પ્લાનને પસંદ કરો"
 
-#: ../src/utils/mobile-wizard.c:530
+#: ../src/utils/mobile-wizard.c:535
 msgid "My plan is not listed..."
 msgstr "મારો પ્લાન યાદી થયેલ નથી..."
 
-#: ../src/utils/mobile-wizard.c:683
+#: ../src/utils/mobile-wizard.c:688
 msgid "Select your provider from a _list:"
 msgstr "યાદી માંથી તમારા પોષણકર્તાને પસંદ કરો (_l):"
 
-#: ../src/utils/mobile-wizard.c:696
+#: ../src/utils/mobile-wizard.c:701
 msgid "Provider"
 msgstr "પોષણકર્તા"
 
-#: ../src/utils/mobile-wizard.c:721
+#: ../src/utils/mobile-wizard.c:726
 msgid "I can't find my provider and I wish to enter it _manually:"
 msgstr "હું મારા પોષણકર્તાને શોધી શકતો નથી અને હું તેને જાતે જ દાખલ કરવા ઇચ્છા રાખુ છુ (_m):"
 
-#: ../src/utils/mobile-wizard.c:732
-#| msgid "Driver:"
+#: ../src/utils/mobile-wizard.c:737
 msgid "Provider:"
 msgstr "પોષણકર્તા:"
 
-#: ../src/utils/mobile-wizard.c:748
+#: ../src/utils/mobile-wizard.c:753
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "મારો પોષણકર્તા એ GSM ટેકનોલોજી ને વાપરે છે (GPRS, EDGE, UMTS, HSPA)"
 
-#: ../src/utils/mobile-wizard.c:750
+#: ../src/utils/mobile-wizard.c:755
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "મારો પોષણકર્તા એ CDMA ટેકનોલોજીને વાપરે છે (1xRTT, EVDO)"
 
-#: ../src/utils/mobile-wizard.c:761
-#| msgid "Choose your private key..."
+#: ../src/utils/mobile-wizard.c:766
 msgid "Choose your Provider"
 msgstr "તમારા પોષણકર્તાને પસંદ કરો"
 
-#: ../src/utils/mobile-wizard.c:953
+#: ../src/utils/mobile-wizard.c:1012
 msgid "Country List:"
 msgstr "દેશની યાદી:"
 
-#: ../src/utils/mobile-wizard.c:965
+#: ../src/utils/mobile-wizard.c:1024
 msgid "Country"
 msgstr "દેશ"
 
-#: ../src/utils/mobile-wizard.c:1005
-#| msgid "Choose your private key..."
+#: ../src/utils/mobile-wizard.c:1031
+#| msgid "My plan is not listed..."
+msgid "My country is not listed"
+msgstr "મારો દેશ યાદી થયેલ નથી"
+
+#: ../src/utils/mobile-wizard.c:1077
 msgid "Choose your Provider's Country"
 msgstr "તમારા પોષણકર્તાનાં દેશને પસંદ કરો"
 
-#: ../src/utils/mobile-wizard.c:1054
+#: ../src/utils/mobile-wizard.c:1126
 msgid "Installed GSM device"
 msgstr "સ્થાપિત થયેલ GSM ઉપકરણ"
 
-#: ../src/utils/mobile-wizard.c:1057
+#: ../src/utils/mobile-wizard.c:1129
 msgid "Installed CDMA device"
 msgstr "સ્થાપિત થયેલ CDMA ઉપકરણ"
 
-#: ../src/utils/mobile-wizard.c:1225
+#: ../src/utils/mobile-wizard.c:1297
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
 msgstr ""
-"આ મદદકર્તા એ તમને સેલ્યુલર (3G) નેટવર્કમાં મોબાઇલ બ્રોડબેન્ડ જોડાણને સુયોજન કરવાનું સરળ બનાવવા માટે "
-"મદદ કરે છે."
+"આ મદદકર્તા એ તમને સેલ્યુલર (3G) નેટવર્કમાં મોબાઇલ બ્રોડબેન્ડ જોડાણને સુયોજન કરવાનું સરળ "
+"બનાવવા માટે મદદ કરે છે."
 
-#: ../src/utils/mobile-wizard.c:1230
+#: ../src/utils/mobile-wizard.c:1302
 msgid "You will need the following information:"
 msgstr "તમારે નીચેની જાણકારીની જરૂર પડશે:"
 
-#: ../src/utils/mobile-wizard.c:1241
+#: ../src/utils/mobile-wizard.c:1313
 msgid "Your broadband provider's name"
 msgstr "તમારુ બ્રોડબેન્ડ પોષણકર્તાનું નામ"
 
-#: ../src/utils/mobile-wizard.c:1247
+#: ../src/utils/mobile-wizard.c:1319
 msgid "Your broadband billing plan name"
 msgstr "તમારુ બ્રોડબેન્ડ બિલીંગ પ્લાન નામ"
 
-#: ../src/utils/mobile-wizard.c:1253
+#: ../src/utils/mobile-wizard.c:1325
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr "(અમુક સ્થિતિઓમાં) તમારુ બ્રોડબેન્ડ બિલીંગ પ્લાન APN (Access Point Name)"
 
-#: ../src/utils/mobile-wizard.c:1280
-#| msgid "PIN code is needed for the mobile broadband device"
+#: ../src/utils/mobile-wizard.c:1352
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "આ મોબાઇલ બ્રોડબેન્ડ ઉપકરણ માટે જોડાણને બનાવો (_t):"
 
-#: ../src/utils/mobile-wizard.c:1295
+#: ../src/utils/mobile-wizard.c:1367
 msgid "Any device"
 msgstr "કોઇપણ ઉપકરણ"
 
-#: ../src/utils/mobile-wizard.c:1308
-#| msgid "Auto Mobile Broadband (CDMA) connection"
+#: ../src/utils/mobile-wizard.c:1380
 msgid "Set up a Mobile Broadband Connection"
 msgstr "મોબાઇલ બ્રોડબેન્ડ (CDMA) જોડાણ ને સુયોજિત કરો"
 
-#: ../src/utils/mobile-wizard.c:1482
-#| msgid "Auto Mobile Broadband (CDMA) connection"
+#: ../src/utils/mobile-wizard.c:1554
 msgid "New Mobile Broadband Connection"
 msgstr "નવું મોબાઇલ બ્રોડબેન્ડ જોડાણ"
 
 #: ../src/utils/nmn-mobile-providers.c:515
-#| msgid "default"
 msgid "Default"
 msgstr "મૂળભૂત"
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:253
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:255
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "VPN જોડાણ '%s' ને શરૂ કરી શકાતુ નથી"
@@ -2021,7 +2038,7 @@ msgstr ""
 "VPN જોડાણ પ્રકાર '%s' માટે સત્તાધિકરણ સંવાદને શોધી શકાયુ નહિં. તમારા સિસ્ટમ "
 "વહીવટકર્તાનો સંપર્ક કરો."
 
-#: ../src/vpn-password-dialog.c:256
+#: ../src/vpn-password-dialog.c:258
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
@@ -2034,60 +2051,60 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "વાયર વાળું 802.1X સત્તાધિકરણ"
 
-#: ../src/wireless-dialog.c:414
+#: ../src/wireless-dialog.c:428
 msgid "New..."
 msgstr "નવું..."
 
-#: ../src/wireless-dialog.c:921
+#: ../src/wireless-dialog.c:1031
 msgid "C_reate"
 msgstr "બનાવો (_r)"
 
-#: ../src/wireless-dialog.c:992
+#: ../src/wireless-dialog.c:1108
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
 "s'."
 msgstr "પાસવર્ડો અને એનક્રિપ્શન કીઓ એ વાયરલેસ નેટવર્કને '%s' ને દાખલ કરવા માટે જરૂરી છે."
 
-#: ../src/wireless-dialog.c:994
+#: ../src/wireless-dialog.c:1110
 msgid "Wireless Network Authentication Required"
 msgstr "વાયરલેસ નેટવર્ક સત્તાધિકરણ જરૂરી છે"
 
-#: ../src/wireless-dialog.c:996
+#: ../src/wireless-dialog.c:1112
 msgid "Authentication required by wireless network"
 msgstr "વાયરલેસ નેટવર્ક દ્દારા સત્તાધિકરણની જરૂર છે"
 
-#: ../src/wireless-dialog.c:1001
+#: ../src/wireless-dialog.c:1117
 msgid "Create New Wireless Network"
 msgstr "નવા વાયરલેસ નેટવર્ક ને બનાવો"
 
-#: ../src/wireless-dialog.c:1003
+#: ../src/wireless-dialog.c:1119
 msgid "New wireless network"
 msgstr "નવું વાયરલેસ નેટવર્ક"
 
-#: ../src/wireless-dialog.c:1004
+#: ../src/wireless-dialog.c:1120
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "તમે બનાવવા માંગો છો તે વાયરલેસ નેટવર્ક માટે નામને દાખલ કરો."
 
-#: ../src/wireless-dialog.c:1006
+#: ../src/wireless-dialog.c:1122
 msgid "Connect to Hidden Wireless Network"
 msgstr "છુપાયેલ વાયરલેસ નેટવર્ક ને જોડો"
 
-#: ../src/wireless-dialog.c:1008
+#: ../src/wireless-dialog.c:1124
 msgid "Hidden wireless network"
 msgstr "છુપાયેલ વાયરલેસ નેટવર્ક"
 
-#: ../src/wireless-dialog.c:1009
+#: ../src/wireless-dialog.c:1125
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
 msgstr "તમે તેમાં જોડાવવા માંગો છો તે છુપાયેલ વાયરલેસ નેટવર્કનાં નામ અને સુરક્ષા વિગતોને દાખલ કરો."
 
-#: ../src/wireless-security/eap-method.c:169
+#: ../src/wireless-security/eap-method.c:190
 msgid "No Certificate Authority certificate chosen"
 msgstr "પસંદ થયેલ Certificate Authority પ્રમાણપત્ર નથી"
 
-#: ../src/wireless-security/eap-method.c:170
+#: ../src/wireless-security/eap-method.c:191
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -2096,49 +2113,49 @@ msgstr ""
 "Certificate Authority (CA) પ્રમાણપત્ર વાપર્યા વગર અસુરક્ષિત, ઠગ વાયરલેસ નેટવર્કો "
 "જોડાણોમાં પરિણમી શકે છે. શું તમે Certificate Authority પ્રમાણપત્રને પસંદ કરવા માંગો છો?"
 
-#: ../src/wireless-security/eap-method.c:175
-msgid "Ignore"
-msgstr "અવગણો"
-
-#: ../src/wireless-security/eap-method.c:179
+#: ../src/wireless-security/eap-method.c:200
 msgid "Choose CA Certificate"
 msgstr "CA પ્રમાણપત્રને પસંદ કરો"
 
-#: ../src/wireless-security/eap-method.c:440
+#: ../src/wireless-security/eap-method.c:497
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "DER, PEM, અથવા PKCS#12 ખાનગી કીઓ (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:443
+#: ../src/wireless-security/eap-method.c:500
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER અથવા PEM પ્રમાણપત્રો (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:240
+#: ../src/wireless-security/eap-method-peap.c:259
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:311
-#: ../src/wireless-security/eap-method-tls.c:417
-#: ../src/wireless-security/eap-method-ttls.c:343
+#: ../src/wireless-security/eap-method-peap.c:274
+msgid "GTC"
+msgstr "GTC"
+
+#: ../src/wireless-security/eap-method-peap.c:361
+#: ../src/wireless-security/eap-method-tls.c:430
+#: ../src/wireless-security/eap-method-ttls.c:359
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Certificate Authority પ્રમાણપત્ર ને પસંદ કરો..."
 
-#: ../src/wireless-security/eap-method-tls.c:413
+#: ../src/wireless-security/eap-method-tls.c:424
 msgid "Choose your personal certificate..."
 msgstr "તમારુ વ્યક્તિગત પ્રમાણપત્રને પસંદ કરો..."
 
-#: ../src/wireless-security/eap-method-tls.c:422
+#: ../src/wireless-security/eap-method-tls.c:436
 msgid "Choose your private key..."
 msgstr "તમારી ખાનગી કીને પસંદ કરો..."
 
-#: ../src/wireless-security/wireless-security.c:305
+#: ../src/wireless-security/wireless-security.c:328
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:329
+#: ../src/wireless-security/wireless-security.c:352
 msgid "Tunneled TLS"
 msgstr "Tunneled TLS"
 
-#: ../src/wireless-security/wireless-security.c:340
+#: ../src/wireless-security/wireless-security.c:363
 msgid "Protected EAP (PEAP)"
 msgstr "Protected EAP (PEAP)"
 

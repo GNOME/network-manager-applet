@@ -117,6 +117,8 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 {
 	GtkWidget *menu_item;
 	GtkWidget *label;
+	GError *error = NULL;
+	gboolean disabled;
 
 	menu_item = gtk_menu_item_new ();
 	label = gtk_label_new_with_mnemonic (_("Create _New Wireless Network..."));
@@ -125,6 +127,14 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 	gtk_widget_show_all (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 	g_signal_connect (menu_item, "activate", G_CALLBACK (new_network_activate_cb), applet);
+
+	/* FIXME: should really use PolicyKit and NM permissions here instead
+	 * using using GConf mandatory settings.  But this works for now.
+	 */
+	disabled = gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_WIFI_CREATE, &error);
+	if (error || disabled)
+		gtk_widget_set_sensitive (GTK_WIDGET (menu_item), FALSE);
+	g_clear_error (&error);
 }
 
 
@@ -357,8 +367,15 @@ wireless_new_auto_connection (NMDevice *device,
 	dev_caps = nm_device_wifi_get_capabilities (NM_DEVICE_WIFI (device));
 	s_wireless_sec = get_security_for_ap (info->ap, dev_caps, &supported, &s_8021x);
 	if (!supported) {
+		g_warning ("Unsupported AP configuration: dev_caps 0x%X, ap_flags 0x%X, "
+		           "wpa_flags 0x%X, rsn_flags 0x%x, mode %d",
+		           dev_caps,
+		           nm_access_point_get_flags (info->ap),
+		           nm_access_point_get_wpa_flags (info->ap),
+		           nm_access_point_get_rsn_flags (info->ap),
+		           nm_access_point_get_mode (info->ap));
 		g_object_unref (s_wireless);
-		goto done;
+		return FALSE;
 	} else if (s_wireless_sec)
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
@@ -388,7 +405,6 @@ wireless_new_auto_connection (NMDevice *device,
 
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
 
-done:
 	(*callback) (connection, TRUE, FALSE, callback_data);
 	return TRUE;
 }
@@ -1401,6 +1417,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
 	NMConnection *connection = NULL, *fuzzy_match = NULL;
 	NMDevice *device = NULL;
 	NMAccessPoint *ap = NULL;
+	const char *service = NM_DBUS_SERVICE_USER_SETTINGS;
 
 	if (response != GTK_RESPONSE_OK)
 		goto done;
@@ -1427,6 +1444,12 @@ wireless_dialog_response_cb (GtkDialog *foo,
 	connection = nma_wireless_dialog_get_connection (dialog, &device, &ap);
 	g_assert (connection);
 	g_assert (device);
+
+	/* If it's a system connection we just need to tell NM to activate it */
+	if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM) {
+		service = NM_DBUS_SERVICE_SYSTEM_SETTINGS;
+		goto activate;
+	}
 
 	if (NMA_IS_GCONF_CONNECTION (connection)) {
 		/* Not a new or system connection, save the updated settings to GConf */
@@ -1512,8 +1535,9 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		}
 	}
 
+activate:
 	nm_client_activate_connection (applet->nm_client,
-	                               NM_DBUS_SERVICE_USER_SETTINGS,
+	                               service,
 	                               nm_connection_get_path (connection),
 	                               device,
 	                               ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,

@@ -149,6 +149,24 @@ nma_gconf_connection_get_gconf_path (NMAGConfConnection *self)
 	return NMA_GCONF_CONNECTION_GET_PRIVATE (self)->dir;
 }
 
+static void
+add_vpn_user_name (NMConnection *connection)
+{
+	NMSettingVPN *s_vpn;
+	const char *user_name;
+
+	/* Insert the default VPN username when NM gets the connection; it doesn't
+	 * get stored in GConf since it's always available and could change at any
+	 * time, so it's inserted on-the-fly.
+	 */
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
+	if (s_vpn) {
+		user_name = g_get_user_name ();
+		g_assert (g_utf8_validate (user_name, -1, NULL));
+		g_object_set (s_vpn, NM_SETTING_VPN_USER_NAME, user_name, NULL);
+	}
+}
+
 gboolean
 nma_gconf_connection_gconf_changed (NMAGConfConnection *self)
 {
@@ -193,6 +211,8 @@ nma_gconf_connection_gconf_changed (NMAGConfConnection *self)
 		           error ? error->code : -1);
 		goto invalid;
 	}
+
+	add_vpn_user_name (NM_CONNECTION (self));
 
 	nm_settings_connection_interface_emit_updated (NM_SETTINGS_CONNECTION_INTERFACE (self));
 	return TRUE;
@@ -815,29 +835,9 @@ dbus_get_secrets (NMExportedConnection *connection,
 static GHashTable *
 dbus_get_settings (NMExportedConnection *connection, GError **error)
 {
-	GHashTable *settings;
-	const char *user_name;
-	NMSettingVPN *s_vpn;
-	gboolean added = FALSE;
+	add_vpn_user_name (NM_CONNECTION (connection));
 
-	/* Insert the default VPN username when NM gets the connection; it doesn't
-	 * get stored in GConf since it's always available and could change at any
-	 * time, so it's inserted on-the-fly.
-	 */
-	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_VPN));
-	if (s_vpn) {
-		user_name = g_get_user_name ();
-		g_assert (g_utf8_validate (user_name, -1, NULL));
-		g_object_set (s_vpn, NM_SETTING_VPN_USER_NAME, user_name, NULL);
-		added = TRUE;
-	}
-
-	settings = NM_EXPORTED_CONNECTION_CLASS (nma_gconf_connection_parent_class)->get_settings (connection, error);
-
-	if (added)
-		g_object_set (s_vpn, NM_SETTING_VPN_USER_NAME, NULL, NULL);
-
-	return settings;
+	return NM_EXPORTED_CONNECTION_CLASS (nma_gconf_connection_parent_class)->get_settings (connection, error);
 }
 
 /************************************************************/
