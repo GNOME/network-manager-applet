@@ -50,8 +50,7 @@ struct _NMNetworkMenuItem
 	guint32     int_strength;
 	GtkWidget * detail;
 	GtkWidget * hbox;
-	guchar *    hash;
-	guint32     hash_len;
+	gchar *     hash;
 	gboolean    destroyed;
 	GSList *    dupes;
 	gboolean    has_connections;
@@ -66,9 +65,7 @@ struct _NMNetworkMenuItemClass
 
 
 GType	   nm_network_menu_item_get_type (void) G_GNUC_CONST;
-GtkWidget* nm_network_menu_item_new (guchar *hash,
-                                     guint32 hash_len,
-                                     gboolean has_connections);
+GtkWidget* nm_network_menu_item_new (const char *hash, gboolean has_connections);
 
 void       nm_network_menu_item_set_ssid (NMNetworkMenuItem *item,
                                           GByteArray *ssid);
@@ -81,8 +78,7 @@ guint32    nm_network_menu_item_get_strength (NMNetworkMenuItem *item);
 void       nm_network_menu_item_best_strength (NMNetworkMenuItem *item,
                                                guint8 strength,
                                                NMApplet *applet);
-const guchar * nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
-                                              guint32 * length);
+const char *nm_network_menu_item_get_hash (NMNetworkMenuItem * item);
 void       nm_network_menu_item_set_detail (NMNetworkMenuItem * item,
                                             NMAccessPoint * ap,
                                             GdkPixbuf * adhoc_icon,

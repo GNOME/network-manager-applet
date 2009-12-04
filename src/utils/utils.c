@@ -796,3 +796,45 @@ utils_next_available_name (GSList *connections, const char *format)
 	return cname;
 }
 
+char *
+utils_hash_ap (const GByteArray *ssid,
+               NM80211Mode mode,
+               guint32 flags,
+               guint32 wpa_flags,
+               guint32 rsn_flags)
+{
+	unsigned char input[66];
+
+	memset (&input[0], 0, sizeof (input));
+
+	if (ssid)
+		memcpy (input, ssid->data, ssid->len);
+
+	if (mode == NM_802_11_MODE_INFRA)
+		input[32] |= (1 << 0);
+	else if (mode == NM_802_11_MODE_ADHOC)
+		input[32] |= (1 << 1);
+	else
+		input[32] |= (1 << 2);
+
+	/* Separate out no encryption, WEP-only, and WPA-capable */
+	if (  !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	    && (rsn_flags == NM_802_11_AP_SEC_NONE))
+		input[32] |= (1 << 3);
+	else if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
+	         && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	         && (rsn_flags == NM_802_11_AP_SEC_NONE))
+		input[32] |= (1 << 4);
+	else if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+	         &&  (wpa_flags != NM_802_11_AP_SEC_NONE)
+	         &&  (rsn_flags != NM_802_11_AP_SEC_NONE))
+		input[32] |= (1 << 5);
+	else
+		input[32] |= (1 << 6);
+
+	/* duplicate it */
+	memcpy (&input[33], &input[0], 32);
+	return g_compute_checksum_for_data (G_CHECKSUM_MD5, input, sizeof (input));
+}
+

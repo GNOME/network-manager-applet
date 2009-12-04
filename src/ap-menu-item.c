@@ -60,9 +60,7 @@ nm_network_menu_item_init (NMNetworkMenuItem * item)
 }
 
 GtkWidget*
-nm_network_menu_item_new (guchar *hash,
-                          guint32 hash_len,
-                          gboolean has_connections)
+nm_network_menu_item_new (const char *hash, gboolean has_connections)
 {
 	NMNetworkMenuItem * item;
 
@@ -71,13 +69,7 @@ nm_network_menu_item_new (guchar *hash,
 		return NULL;
 
 	item->has_connections = has_connections;
-
-	if (hash && hash_len) {
-		item->hash = g_malloc0 (hash_len);
-		memcpy (item->hash, hash, hash_len);
-		item->hash_len = hash_len;
-	}
-
+	item->hash = g_strdup (hash);
 	return GTK_WIDGET (item);
 }
 
@@ -185,14 +177,11 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
 	g_object_unref (pixbuf);
 }
 
-const guchar *
-nm_network_menu_item_get_hash (NMNetworkMenuItem * item,
-                               guint32 * length)
+const const char *
+nm_network_menu_item_get_hash (NMNetworkMenuItem * item)
 {
 	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (length != NULL, NULL);
 
-	*length = item->hash_len;
 	return item->hash;
 }
 

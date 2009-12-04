@@ -1,8 +1,8 @@
+SUBDIRS=. tests
+
 noinst_LTLIBRARIES = libutils.la
 
 libutils_la_SOURCES = \
-	gnome-keyring-md5.h \
-	gnome-keyring-md5.c \
 	utils.c \
 	utils.h \
 	nmn-mobile-providers.h \

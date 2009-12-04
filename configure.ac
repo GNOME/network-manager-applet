@@ -119,6 +119,7 @@ Makefile
 src/Makefile
 src/marshallers/Makefile
 src/utils/Makefile
+src/utils/tests/Makefile
 src/gconf-helpers/Makefile
 src/wireless-security/Makefile
 src/connection-editor/Makefile

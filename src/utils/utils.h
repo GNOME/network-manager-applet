@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -47,6 +48,12 @@ char *utils_ether_ntop (const struct ether_addr *mac);
 gboolean utils_mac_valid (const struct ether_addr *addr);
 
 char *utils_next_available_name (GSList *connections, const char *format);
+
+char *utils_hash_ap (const GByteArray *ssid,
+                     NM80211Mode mode,
+                     guint32 flags,
+                     guint32 wpa_flags,
+                     guint32 rsn_flags);
 
 #endif /* UTILS_H */
 
