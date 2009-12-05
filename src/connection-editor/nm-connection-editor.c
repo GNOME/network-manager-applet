@@ -665,6 +665,9 @@ get_secrets_for_page (NMConnectionEditor *self,
 	 * But it since it doesn't do that, we have to serialize the authorization
 	 * requests ourselves to get the right authorization result.
 	 */
+	/* NOTE: PolicyKit-gnome 0.95 now serializes auth requests as of this commit:
+	 * http://git.gnome.org/cgit/PolicyKit-gnome/commit/?id=f32cb7faa7197b9db55b569677732742c3c7fdc1
+	 */
 
 	/* If there's already an in-progress call, queue up the new one */
 	if (self->secrets_call)
