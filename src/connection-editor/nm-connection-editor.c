@@ -84,6 +84,14 @@ static gboolean nm_connection_editor_set_connection (NMConnectionEditor *editor,
                                                      NMConnection *connection,
                                                      GError **error);
 
+typedef struct {
+	NMConnectionEditor *self;
+	CEPage *page;
+	char *setting_name;
+	gboolean canceled;
+} GetSecretsInfo;
+
+
 static void
 nm_connection_editor_update_title (NMConnectionEditor *editor)
 {
@@ -306,10 +314,20 @@ static void
 dispose (GObject *object)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (object);
+	GSList *iter;
 
 	g_slist_foreach (editor->pages, (GFunc) g_object_unref, NULL);
 	g_slist_free (editor->pages);
 	editor->pages = NULL;
+
+	/* Mark any in-progress secrets calls as canceled; they will clean up
+	 * after themselves.
+	 */
+	for (iter = editor->secrets_calls; iter; iter = g_slist_next (iter)) {
+		GetSecretsInfo *info = iter->data;
+		info->canceled = TRUE;
+	}
+	g_slist_free (editor->secrets_calls);
 
 	if (editor->connection) {
 		g_object_unref (editor->connection);
@@ -532,12 +550,6 @@ page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_da
 	recheck_initialization (editor);
 }
 
-typedef struct {
-	NMConnectionEditor *self;
-	CEPage *page;
-	char *setting_name;
-} GetSecretsInfo;
-
 static void
 get_secrets_cb (NMSettingsConnectionInterface *connection,
                 GHashTable *secrets,
@@ -546,7 +558,10 @@ get_secrets_cb (NMSettingsConnectionInterface *connection,
 {
 	GetSecretsInfo *info = user_data;
 
-	ce_page_complete_init (info->page, info->setting_name, secrets, error);
+	if (!info->canceled) {
+		info->self->secrets_calls = g_slist_remove (info->self->secrets_calls, info);
+		ce_page_complete_init (info->page, info->setting_name, secrets, error);
+	}
 
 	g_free (info->setting_name);
 	g_free (info);
@@ -590,12 +605,18 @@ get_secrets_for_page (NMConnectionEditor *self,
 	                                                        FALSE,
 	                                                        get_secrets_cb,
 	                                                        info);
-	if (!success) {
+	if (success) {
+		self->secrets_calls = g_slist_prepend (self->secrets_calls, info);
+	} else {
 		GError *error;
 
 		error = g_error_new_literal (0, 0, _("Failed to update connection secrets due to an unknown error."));
 		get_secrets_cb (NM_SETTINGS_CONNECTION_INTERFACE (self->orig_connection), NULL, error, info);
 		g_error_free (error);
+
+		/* Free the secrets info */
+		g_free (info->setting_name);
+		g_free (info);
 	}
 }
 

@@ -44,6 +44,8 @@ typedef struct {
 
 	NMConnectionScope orig_scope;
 
+	GSList *secrets_calls;
+
 	GtkWidget *system_checkbutton;
 	gboolean system_settings_can_modify;
 
