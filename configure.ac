@@ -1,6 +1,6 @@
 AC_PREREQ(2.52)
 
-AC_INIT(nm-applet, 0.7.996, dcbw@redhat.com, network-manager-applet)
+AC_INIT(nm-applet, 0.7.997, dcbw@redhat.com, network-manager-applet)
 AM_INIT_AUTOMAKE([subdir-objects no-dist-gzip dist-bzip2])
 AM_MAINTAINER_MODE
 
@@ -73,10 +73,10 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
 		 glib-2.0 >= 2.16
-		 NetworkManager >= 0.7.996
-		 libnm-glib >= 0.7.996
-		 libnm-util >= 0.7.996
-		 libnm-glib-vpn >= 0.7.996
+		 NetworkManager >= 0.7.997
+		 libnm-glib >= 0.7.997
+		 libnm-util >= 0.7.997
+		 libnm-glib-vpn >= 0.7.997
 		 gtk+-2.0 >= 2.14
 		 libglade-2.0
 		 gmodule-export-2.0
