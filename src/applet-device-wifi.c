@@ -47,8 +47,6 @@
 #include "utils.h"
 #include "wireless-dialog.h"
 
-#define PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE    APPLET_PREFS_PATH "/suppress-wireless-networks-available"
-
 #define ACTIVE_AP_TAG "active-ap"
 
 static void wireless_dialog_response_cb (GtkDialog *dialog, gint response, gpointer user_data);
@@ -924,7 +922,7 @@ wifi_available_dont_show_cb (NotifyNotification *notify,
 		return;
 
 	gconf_client_set_bool (applet->gconf_client,
-	                       PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE,
+	                       PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
 	                       TRUE,
 	                       NULL);
 }
@@ -1027,7 +1025,7 @@ queue_avail_access_point_notification (NMDevice *device)
 		return;
 
 	if (gconf_client_get_bool (data->applet->gconf_client,
-	                           PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE,
+	                           PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
 	                           NULL))
 		return;
 

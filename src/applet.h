@@ -63,9 +63,10 @@ typedef struct
 } NMAppletClass; 
 
 #define APPLET_PREFS_PATH "/apps/nm-applet"
-#define PREF_DISABLE_CONNECTED_NOTIFICATIONS    APPLET_PREFS_PATH "/disable-connected-notifications"
-#define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS APPLET_PREFS_PATH "/disable-disconnected-notifications"
-#define PREF_DISABLE_WIFI_CREATE                APPLET_PREFS_PATH "/disable-wifi-create"
+#define PREF_DISABLE_CONNECTED_NOTIFICATIONS      APPLET_PREFS_PATH "/disable-connected-notifications"
+#define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS   APPLET_PREFS_PATH "/disable-disconnected-notifications"
+#define PREF_DISABLE_WIFI_CREATE                  APPLET_PREFS_PATH "/disable-wifi-create"
+#define PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE APPLET_PREFS_PATH "/suppress-wireless-networks-available"
 
 #define ICON_LAYER_LINK 0
 #define ICON_LAYER_VPN 1
@@ -140,6 +141,10 @@ typedef struct
 	guint           networking_enabled_toggled_id;
 	GtkWidget *		wifi_enabled_item;
 	guint           wifi_enabled_toggled_id;
+
+	GtkWidget *     notifications_enabled_item;
+	guint           notifications_enabled_toggled_id;
+
 	GtkWidget *		info_menu_item;
 	GtkWidget *		connections_menu_item;
 

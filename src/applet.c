@@ -1628,6 +1628,30 @@ nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	nm_client_sleep (applet->nm_client, !state);
 }
 
+
+static void
+nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
+{
+	gboolean state;
+
+	g_return_if_fail (applet != NULL);
+
+	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
+
+	gconf_client_set_bool (applet->gconf_client,
+	                       PREF_DISABLE_CONNECTED_NOTIFICATIONS,
+	                       !state,
+	                       NULL);
+	gconf_client_set_bool (applet->gconf_client,
+	                       PREF_DISABLE_DISCONNECTED_NOTIFICATIONS,
+	                       !state,
+	                       NULL);
+	gconf_client_set_bool (applet->gconf_client,
+	                       PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
+	                       !state,
+	                       NULL);
+}
+
 /*
  * nma_menu_show_cb
  *
@@ -1739,6 +1763,7 @@ nma_context_menu_update (NMApplet *applet)
 	NMState state;
 	gboolean have_wireless = FALSE;
 	gboolean wireless_hw_enabled;
+	gboolean notifications_enabled = TRUE;
 
 	state = nm_client_get_state (applet->nm_client);
 
@@ -1767,6 +1792,17 @@ nma_context_menu_update (NMApplet *applet)
 	wireless_hw_enabled = nm_client_wireless_hardware_get_enabled (applet->nm_client);
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wifi_enabled_item),
 	                          wireless_hw_enabled);
+
+	/* Enabled notifications */
+	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
+	                        applet->notifications_enabled_toggled_id);
+	if (   gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_CONNECTED_NOTIFICATIONS, NULL)
+	    && gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS, NULL)
+	    && gconf_client_get_bool (applet->gconf_client, PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE, NULL))
+		notifications_enabled = FALSE;
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
+	g_signal_handler_unblock (G_OBJECT (applet->notifications_enabled_item),
+	                          applet->notifications_enabled_toggled_id);
 
 	/* Don't show wifi-specific stuff if wireless is off */
 	if (state != NM_STATE_ASLEEP) {
@@ -1853,6 +1889,17 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                       applet);
 	applet->wifi_enabled_toggled_id = id;
 	gtk_menu_shell_append (menu, applet->wifi_enabled_item);
+
+	nma_menu_add_separator_item (GTK_WIDGET (menu));
+
+	/* Toggle notifications item */
+	applet->notifications_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable N_otifications"));
+	id = g_signal_connect (applet->notifications_enabled_item,
+	                       "toggled",
+	                       G_CALLBACK (nma_set_notifications_enabled_cb),
+	                       applet);
+	applet->notifications_enabled_toggled_id = id;
+	gtk_menu_shell_append (menu, applet->notifications_enabled_item);
 
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
