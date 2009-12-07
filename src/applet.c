@@ -2458,10 +2458,21 @@ find_active_device (NMAGConfConnection *connection,
 
 		active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_connections, i));
 		service_name = nm_active_connection_get_service_name (active);
+		if (!service_name) {
+			/* Shouldn't happen; but we shouldn't crash either */
+			g_warning ("%s: couldn't get service name for active connection!", __func__);
+			continue;
+		}
+
 		if (strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS))
 			continue;
 
 		connection_path = nm_active_connection_get_connection (active);
+		if (!connection_path) {
+			/* Shouldn't happen; but we shouldn't crash either */
+			g_warning ("%s: couldn't get connection path for active connection!", __func__);
+			continue;
+		}
 
 		if (!strcmp (connection_path, nm_connection_get_path (NM_CONNECTION (connection)))) {
 			devices = nm_active_connection_get_devices (active);
