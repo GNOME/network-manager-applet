@@ -52,5 +52,7 @@ gboolean utils_mac_valid (const struct ether_addr *addr);
 
 char *utils_next_available_name (GSList *connections, const char *format);
 
+char *utils_escape_notify_message (const char *src);
+
 #endif /* UTILS_H */
 
