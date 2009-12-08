@@ -55,5 +55,7 @@ char *utils_hash_ap (const GByteArray *ssid,
                      guint32 wpa_flags,
                      guint32 rsn_flags);
 
+char *utils_escape_notify_message (const char *src);
+
 #endif /* UTILS_H */
 

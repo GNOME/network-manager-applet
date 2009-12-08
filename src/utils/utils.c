@@ -838,3 +838,56 @@ utils_hash_ap (const GByteArray *ssid,
 	return g_compute_checksum_for_data (G_CHECKSUM_MD5, input, sizeof (input));
 }
 
+typedef struct {
+	const char *tag;
+	const char *replacement;
+} Tag;
+
+static Tag escaped_tags[] = {
+	{ "<center>", NULL },
+	{ "</center>", NULL },
+	{ "<p>", "\n" },
+	{ "</p>", NULL },
+	{ "<B>", "<b>" },
+	{ "</B>", "</b>" },
+	{ "<I>", "<i>" },
+	{ "</I>", "</i>" },
+	{ "<u>", "<u>" },
+	{ "</u>", "</u>" },
+	{ "&", "&amp;" },
+	{ NULL, NULL }
+};
+
+char *
+utils_escape_notify_message (const char *src)
+{
+	const char *p = src;
+	GString *escaped;
+
+	/* Filter the source text and get rid of some HTML tags since the
+	 * notification spec only allows a subset of HTML.  Substitute
+	 * HTML code for characters like & that are invalid in HTML.
+	 */
+
+	escaped = g_string_sized_new (strlen (src) + 5);
+	while (*p) {
+		Tag *t = &escaped_tags[0];
+		gboolean found = FALSE;
+
+		while (t->tag) {
+			if (strncasecmp (p, t->tag, strlen (t->tag)) == 0) {
+				p += strlen (t->tag);
+				if (t->replacement)
+					g_string_append (escaped, t->replacement);
+				found = TRUE;
+				break;
+			}
+			t++;
+		}
+		if (!found)
+			g_string_append_c (escaped, *p++);
+	}
+
+	return g_string_free (escaped, FALSE);
+}
+
