@@ -173,8 +173,12 @@ nma_gconf_connection_changed (NMAGConfConnection *self)
 	utils_clear_filled_connection_certs (gconf_connection);
 
 	/* Ignore the GConf update if nothing changed */
-	if (nm_connection_compare (wrapped_connection, gconf_connection, NM_SETTING_COMPARE_FLAG_EXACT))
+	if (   nm_connection_compare (wrapped_connection, gconf_connection, NM_SETTING_COMPARE_FLAG_EXACT)
+	    && nm_gconf_compare_private_connection_values (wrapped_connection, gconf_connection))
 		return TRUE;
+
+	/* Update private values to catch any certificate path changes */
+	nm_gconf_copy_private_connection_values (wrapped_connection, gconf_connection);
 
 	utils_fill_connection_certs (gconf_connection);
 	new_settings = nm_connection_to_hash (gconf_connection);

@@ -1909,6 +1909,62 @@ nm_gconf_clear_private_connection_values (NMConnection *connection)
 	g_object_set_data (G_OBJECT (connection), NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG, NULL);
 }
 
+static gboolean
+string_compare (NMConnection *dst, NMConnection *src, const char *tag)
+{
+	const char *s1, *s2;
+
+	s1 = (const char *) g_object_get_data (G_OBJECT (src), tag);
+	s2 = (const char *) g_object_get_data (G_OBJECT (dst), tag);
+
+	if (s1 && !s2)
+		return FALSE;
+	if (!s1 && s2)
+		return FALSE;
+	if (!s1 && !s2)
+		return TRUE;
+	g_assert (s1 && s2);
+	return !strcmp (s1, s2);
+}
+
+gboolean
+nm_gconf_compare_private_connection_values (NMConnection *dst, NMConnection *src)
+{
+	gboolean val1, val2;
+
+	g_return_val_if_fail (NM_IS_CONNECTION (dst), FALSE);
+	g_return_val_if_fail (NM_IS_CONNECTION (src), FALSE);
+
+	val1 = !!GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (src), NMA_CA_CERT_IGNORE_TAG));
+	val2 = !!GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (dst), NMA_CA_CERT_IGNORE_TAG));
+	if (val1 != val2)
+		return FALSE;
+
+	val1 = !!GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (src), NMA_PHASE2_CA_CERT_IGNORE_TAG));
+	val2 = !!GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (dst), NMA_PHASE2_CA_CERT_IGNORE_TAG));
+	if (val1 != val2)
+		return FALSE;
+
+	if (!string_compare (src, dst, NMA_PATH_CLIENT_CERT_TAG))
+		return FALSE;
+	if (!string_compare (src, dst, NMA_PATH_PHASE2_CLIENT_CERT_TAG))
+		return FALSE;
+	if (!string_compare (src, dst, NMA_PATH_CA_CERT_TAG))
+		return FALSE;
+	if (!string_compare (src, dst, NMA_PATH_PHASE2_CA_CERT_TAG))
+		return FALSE;
+	if (!string_compare (src, dst, NMA_PATH_PRIVATE_KEY_TAG))
+		return FALSE;
+	if (!string_compare (src, dst, NMA_PRIVATE_KEY_PASSWORD_TAG))
+		return FALSE;
+	if (!string_compare (src, dst, NMA_PATH_PHASE2_PRIVATE_KEY_TAG))
+		return FALSE;
+	if (!string_compare (src, dst, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG))
+		return FALSE;
+
+	return TRUE;
+}
+
 NMConnection *
 nm_gconf_connection_duplicate (NMConnection *connection)
 {
