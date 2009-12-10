@@ -24,6 +24,7 @@
 #include "gconf-helpers.h"
 #include "nma-marshal.h"
 #include "nm-utils.h"
+#include <NetworkManager.h>
 
 G_DEFINE_TYPE (NMAGConfSettings, nma_gconf_settings, NM_TYPE_SETTINGS)
 
@@ -35,6 +36,8 @@ typedef struct {
 	GSList *connections;
 	guint read_connections_id;
 	GHashTable *pending_changes;
+
+	DBusGConnection *bus;
 
 	gboolean disposed;
 } NMAGConfSettingsPrivate;
@@ -49,9 +52,22 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 
 NMAGConfSettings *
-nma_gconf_settings_new (void)
+nma_gconf_settings_new (DBusGConnection *bus)
 {
-	return (NMAGConfSettings *) g_object_new (NMA_TYPE_GCONF_SETTINGS, NULL);
+	NMAGConfSettings *self;
+	NMAGConfSettingsPrivate *priv;
+
+	self = (NMAGConfSettings *) g_object_new (NMA_TYPE_GCONF_SETTINGS, NULL);
+	if (!self)
+		return NULL;
+
+	priv = NMA_GCONF_SETTINGS_GET_PRIVATE (self);
+	if (bus) {
+		priv->bus = dbus_g_connection_ref (bus);
+		dbus_g_connection_register_g_object (bus, NM_DBUS_PATH_SETTINGS, G_OBJECT (self));
+	}
+
+	return self;
 }
 
 static void
@@ -91,16 +107,24 @@ add_connection_real (NMAGConfSettings *self, NMAGConfConnection *connection)
 {
 	NMAGConfSettingsPrivate *priv = NMA_GCONF_SETTINGS_GET_PRIVATE (self);
 
-	if (connection) {
-		priv->connections = g_slist_prepend (priv->connections, connection);
-		g_signal_connect (connection, "new-secrets-requested",
-					   G_CALLBACK (connection_new_secrets_requested_cb),
-					   self);
+	g_return_if_fail (connection != NULL);
 
-		g_signal_connect (connection, "removed", G_CALLBACK (connection_removed), self);
-		nm_settings_signal_new_connection (NM_SETTINGS (self),
-									NM_EXPORTED_CONNECTION (connection));
+	priv->connections = g_slist_prepend (priv->connections, connection);
+	g_signal_connect (connection, "new-secrets-requested",
+				   G_CALLBACK (connection_new_secrets_requested_cb),
+				   self);
+
+	g_signal_connect (connection, "removed", G_CALLBACK (connection_removed), self);
+
+	/* Export the connection over dbus if requested */
+	if (priv->bus) {
+		nm_exported_connection_register_object (NM_EXPORTED_CONNECTION (connection),
+		                                        NM_CONNECTION_SCOPE_USER,
+		                                        priv->bus);
+		dbus_g_connection_unref (priv->bus);
 	}
+
+	nm_settings_signal_new_connection (NM_SETTINGS (self), NM_EXPORTED_CONNECTION (connection));
 }
 
 NMAGConfConnection *
@@ -231,8 +255,11 @@ read_connections (NMAGConfSettings *settings)
 
 	for (iter = dir_list; iter; iter = iter->next) {
 		char *dir = (char *) iter->data;
+		NMAGConfConnection *connection;
 
-		add_connection_real (settings, nma_gconf_connection_new (priv->client, dir));
+		connection = nma_gconf_connection_new (priv->client, dir);
+		if (connection)
+			add_connection_real (settings, connection);
 		g_free (dir);
 	}
 
@@ -289,7 +316,8 @@ connection_changes_done (gpointer data)
 	if (!connection) {
 		/* New connection */
 		connection = nma_gconf_connection_new (priv->client, info->path);
-		add_connection_real (info->settings, connection);
+		if (connection)
+			add_connection_real (info->settings, connection);
 	} else {
 		if (gconf_client_dir_exists (priv->client, info->path, NULL)) {
 			/* Updated connection */

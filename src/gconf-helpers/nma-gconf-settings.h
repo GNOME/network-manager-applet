@@ -53,7 +53,7 @@ typedef struct {
 
 GType nma_gconf_settings_get_type (void);
 
-NMAGConfSettings *nma_gconf_settings_new (void);
+NMAGConfSettings *nma_gconf_settings_new (DBusGConnection *bus);
 
 NMAGConfConnection *nma_gconf_settings_add_connection (NMAGConfSettings *self,
 											NMConnection *connection);

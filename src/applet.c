@@ -2666,14 +2666,10 @@ constructor (GType type,
 
 	applet->dbus_settings = (NMDBusSettings *) nm_dbus_settings_system_new (applet_dbus_manager_get_connection (dbus_mgr));
 
-	applet->gconf_settings = nma_gconf_settings_new ();
+	applet->gconf_settings = nma_gconf_settings_new (applet_dbus_manager_get_connection (dbus_mgr));
 	g_signal_connect (applet->gconf_settings, "new-secrets-requested",
 	                  G_CALLBACK (applet_settings_new_secrets_requested_cb),
 	                  applet);
-
-	dbus_g_connection_register_g_object (applet_dbus_manager_get_connection (dbus_mgr),
-	                                     NM_DBUS_PATH_SETTINGS,
-	                                     G_OBJECT (applet->gconf_settings));
 
 	/* Start our DBus service */
 	if (!applet_dbus_manager_start_service (dbus_mgr)) {

@@ -1781,7 +1781,7 @@ nm_connection_list_new (GType def_type)
 				   G_CALLBACK (connection_added),
 				   list);
 
-	list->gconf_settings = nma_gconf_settings_new ();
+	list->gconf_settings = nma_gconf_settings_new (NULL);
 	g_signal_connect (list->gconf_settings, "new-connection",
 				   G_CALLBACK (connection_added),
 				   list);

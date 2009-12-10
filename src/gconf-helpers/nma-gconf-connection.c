@@ -494,7 +494,6 @@ constructor (GType type,
 	GObject *object;
 	NMAGConfConnectionPrivate *priv;
 	NMConnection *connection;
-	DBusGConnection *bus;
 	GError *error = NULL;
 
 	object = G_OBJECT_CLASS (nma_gconf_connection_parent_class)->constructor (type, n_construct_params, construct_params);
@@ -528,18 +527,6 @@ constructor (GType type,
 	utils_clear_filled_connection_certs (connection);
 
 	fill_vpn_user_name (connection);
-
-	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (!bus) {
-		nm_warning ("Could not get the system bus: %s", error->message);
-		g_error_free (error);
-		goto err;
-	}
-
-	nm_exported_connection_register_object (NM_EXPORTED_CONNECTION (object),
-	                                        NM_CONNECTION_SCOPE_USER,
-	                                        bus);
-	dbus_g_connection_unref (bus);
 
 	return object;
 
