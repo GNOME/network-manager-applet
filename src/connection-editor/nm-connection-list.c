@@ -503,14 +503,15 @@ add_connection (NMConnectionList *self,
 	NMExportedConnection *exported = NULL;
 	NMConnectionScope scope;
 	gboolean success = FALSE;
+	GError *error = NULL;
 
 	scope = nm_connection_get_scope (connection);
 	if (scope == NM_CONNECTION_SCOPE_SYSTEM) {
-		GError *error = NULL;
-
-		utils_fill_connection_certs (connection);
-		success = nm_dbus_settings_system_add_connection (self->system_settings, connection, &error);
-		utils_clear_filled_connection_certs (connection);
+		success = utils_fill_connection_certs (connection, &error);
+		if (success) {
+			success = nm_dbus_settings_system_add_connection (self->system_settings, connection, &error);
+			utils_clear_filled_connection_certs (connection);
+		}
 
 		if (!success) {
 			gboolean pending_auth = FALSE;
@@ -705,18 +706,21 @@ update_connection (NMConnectionList *list,
 		gboolean pending_auth = FALSE;
 		GtkWindow *parent;
 
-		utils_fill_connection_certs (modified);
-		new_settings = nm_connection_to_hash (modified);
-
-		/* Hack; make sure that gconf private values are copied */
-		nm_gconf_copy_private_connection_values (nm_exported_connection_get_connection (original),
-		                                         modified);
-
-		success = nm_exported_connection_update (original, new_settings, &error);
-		g_hash_table_destroy (new_settings);
-		utils_clear_filled_connection_certs (modified);
-
 		parent = nm_connection_editor_get_window (editor);
+
+		success = utils_fill_connection_certs (modified, &error);
+		if (success) {
+			new_settings = nm_connection_to_hash (modified);
+
+			/* Hack; make sure that gconf private values are copied */
+			nm_gconf_copy_private_connection_values (nm_exported_connection_get_connection (original),
+			                                         modified);
+
+			success = nm_exported_connection_update (original, new_settings, &error);
+			g_hash_table_destroy (new_settings);
+			utils_clear_filled_connection_certs (modified);
+		}
+
 		if (!success) {
 			if (pk_helper_is_permission_denied_error (error)) {
 				GError *auth_error = NULL;
@@ -902,19 +906,28 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 
 		connection = nm_connection_editor_get_connection (editor);
 
-		utils_fill_connection_certs (connection);
-		success = nm_connection_verify (connection, &edit_error);
-		utils_clear_filled_connection_certs (connection);
-
-		if (success) {
-			update_connection (info->list, editor, info->original_connection,
-			                   connection, connection_updated_cb, info);
-		} else {
-			g_warning ("%s: invalid connection after update: bug in the "
-			           "'%s' / '%s' invalid: %d",
+		success = utils_fill_connection_certs (connection, &edit_error);
+		if (!success) {
+			g_warning ("%s: error completing connection edit: (%d) %s",
 			           __func__,
-			           g_type_name (nm_connection_lookup_setting_type_by_quark (edit_error->domain)),
-			           edit_error->message, edit_error->code);
+			           edit_error ? edit_error->code : -1,
+			           edit_error && edit_error->message ? edit_error->message : "(unknown)");
+		} else {
+			success = nm_connection_verify (connection, &edit_error);
+			utils_clear_filled_connection_certs (connection);
+			if (success) {
+				update_connection (info->list, editor, info->original_connection,
+				                   connection, connection_updated_cb, info);
+			} else {
+				g_warning ("%s: invalid connection after update: property "
+				           "'%s' / '%s' invalid: %d",
+				           __func__,
+				           g_type_name (nm_connection_lookup_setting_type_by_quark (edit_error->domain)),
+				           edit_error->message, edit_error->code);
+			}
+		}
+
+		if (!success) {
 			g_error_free (edit_error);
 			connection_updated_cb (info->list, FALSE, user_data);
 		}

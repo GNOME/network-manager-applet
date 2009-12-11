@@ -25,6 +25,7 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gnome-keyring.h>
 #include <dbus/dbus-glib.h>
 #include <nm-setting-connection.h>
@@ -992,6 +993,7 @@ typedef struct ReadFromGConfInfo {
 	GConfClient *client;
 	const char *dir;
 	guint32 dir_len;
+	GError *error;
 } ReadFromGConfInfo;
 
 static void
@@ -1137,57 +1139,81 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	}
 }
 
-static void
+static gboolean
 read_one_cert (ReadFromGConfInfo *info,
                const char *setting_name,
-               const char *key)
+               const char *key,
+               gboolean fail_if_missing,
+               GError **error)
 {
 	char *value = NULL;
 
-	if (!nm_gconf_get_string_helper (info->client, info->dir, key, setting_name, &value))
-		return;
+	if (nm_gconf_get_string_helper (info->client, info->dir, key, setting_name, &value)) {
+		if (fail_if_missing && !g_file_test (value, G_FILE_TEST_EXISTS)) {
+			g_set_error (error, 0, 0, _("Certificate %s not found or not accessible."), value);
+			return FALSE;
+		}
 
-	g_object_set_data_full (G_OBJECT (info->connection),
-	                        key, value,
-	                        (GDestroyNotify) g_free);
+		g_object_set_data_full (G_OBJECT (info->connection), key, value, (GDestroyNotify) g_free);
+	}
+	return TRUE;
 }
 
 static void
 read_applet_private_values_from_gconf (NMSetting *setting,
                                        ReadFromGConfInfo *info)
 {
-	if (NM_IS_SETTING_802_1X (setting)) {
-		const char *setting_name = nm_setting_get_name (setting);
-		gboolean value;
+	const char *setting_name = nm_setting_get_name (setting);
+	gboolean value;
+	GError *error = NULL;
 
-		if (nm_gconf_get_bool_helper (info->client, info->dir,
-		                              NMA_CA_CERT_IGNORE_TAG,
-		                              setting_name, &value)) {
-			g_object_set_data (G_OBJECT (info->connection),
-			                   NMA_CA_CERT_IGNORE_TAG,
-			                   GUINT_TO_POINTER (value));
-		}
+	if (!NM_IS_SETTING_802_1X (setting))
+		return;
 
-		if (nm_gconf_get_bool_helper (info->client, info->dir,
-		                              NMA_PHASE2_CA_CERT_IGNORE_TAG,
-		                              setting_name, &value)) {
-			g_object_set_data (G_OBJECT (info->connection),
-			                   NMA_PHASE2_CA_CERT_IGNORE_TAG,
-			                   GUINT_TO_POINTER (value));
-		}
-
-		/* Binary certificate and key data doesn't get stored in GConf.  Instead,
-		 * the path to the certificate gets stored in a special key and the
-		 * certificate is read and stuffed into the setting right before
-		 * the connection is sent to NM
-		 */
-		read_one_cert (info, setting_name, NMA_PATH_CA_CERT_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_CLIENT_CERT_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_PRIVATE_KEY_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_PHASE2_CA_CERT_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_PHASE2_CLIENT_CERT_TAG);
-		read_one_cert (info, setting_name, NMA_PATH_PHASE2_PRIVATE_KEY_TAG);
+	if (nm_gconf_get_bool_helper (info->client, info->dir,
+	                              NMA_CA_CERT_IGNORE_TAG,
+	                              setting_name, &value)) {
+		g_object_set_data (G_OBJECT (info->connection),
+		                   NMA_CA_CERT_IGNORE_TAG,
+		                   GUINT_TO_POINTER (value));
 	}
+
+	if (nm_gconf_get_bool_helper (info->client, info->dir,
+	                              NMA_PHASE2_CA_CERT_IGNORE_TAG,
+	                              setting_name, &value)) {
+		g_object_set_data (G_OBJECT (info->connection),
+		                   NMA_PHASE2_CA_CERT_IGNORE_TAG,
+		                   GUINT_TO_POINTER (value));
+	}
+
+	/* Binary certificate and key data doesn't get stored in GConf.  Instead,
+	 * the path to the certificate gets stored in a special key and the
+	 * certificate is read and stuffed into the setting right before
+	 * the connection is sent to NM
+	 */
+
+	if (!read_one_cert (info, setting_name, NMA_PATH_CA_CERT_TAG, TRUE, &error)) {
+		/* Save the first error reading a certificate */
+		if (!info->error) {
+			info->error = error;
+			error = NULL;
+		}
+		g_clear_error (&error);
+	}
+
+	if (!read_one_cert (info, setting_name, NMA_PATH_PHASE2_CA_CERT_TAG, TRUE, &error)) {
+		/* Save the first error reading a certificate */
+		if (!info->error) {
+			info->error = error;
+			error = NULL;
+		}
+		g_clear_error (&error);
+	}
+
+	read_one_cert (info, setting_name, NMA_PATH_CLIENT_CERT_TAG, FALSE, NULL);
+	read_one_cert (info, setting_name, NMA_PATH_PRIVATE_KEY_TAG, FALSE, NULL);
+	read_one_cert (info, setting_name, NMA_PATH_PHASE2_CLIENT_CERT_TAG, FALSE, NULL);
+	read_one_cert (info, setting_name, NMA_PATH_PHASE2_PRIVATE_KEY_TAG, FALSE, NULL);
 }
 
 static void
@@ -1214,24 +1240,17 @@ read_one_setting (gpointer data, gpointer user_data)
 
 NMConnection *
 nm_gconf_read_connection (GConfClient *client,
-                          const char *dir)
+                          const char *dir,
+                          GError **error)
 {
 	ReadFromGConfInfo info;
 	GSList *list;
-	GError *err = NULL;
 
-	list = gconf_client_all_dirs (client, dir, &err);
-	if (err) {
-		g_warning ("Error while reading connection: %s", err->message);
-		g_error_free (err);
+	list = gconf_client_all_dirs (client, dir, error);
+	if (!list)
 		return NULL;
-	}
 
-	if (!list) {
-		g_warning ("Invalid connection (empty)");
-		return NULL;
-	}
-
+	memset (&info, 0, sizeof (info));
 	info.connection = nm_connection_new ();
 	info.client = client;
 	info.dir = dir;
@@ -1239,6 +1258,21 @@ nm_gconf_read_connection (GConfClient *client,
 
 	g_slist_foreach (list, read_one_setting, &info);
 	g_slist_free (list);
+
+	if (info.error) {
+		if (error)
+			*error = info.error;
+		else {
+			g_warning ("%s: (%s) error reading connection: (%d) %s",
+			           __func__, info.dir, info.error->code, info.error->message);
+			g_clear_error (&info.error);
+		}
+
+		if (info.connection) {
+			g_object_unref (info.connection);
+			info.connection = NULL;
+		}
+	}
 
 	return info.connection;
 }

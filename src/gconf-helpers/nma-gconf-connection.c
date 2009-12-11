@@ -64,19 +64,23 @@ NMAGConfConnection *
 nma_gconf_connection_new (GConfClient *client, const char *conf_dir)
 {
 	NMConnection *connection;
-	NMAGConfConnection *gconf_connection;
+	NMAGConfConnection *gconf_connection = NULL;
+	GError *error;
 
 	g_return_val_if_fail (GCONF_IS_CLIENT (client), NULL);
 	g_return_val_if_fail (conf_dir != NULL, NULL);
 
 	/* retrieve GConf data */
-	connection = nm_gconf_read_connection (client, conf_dir);
+	connection = nm_gconf_read_connection (client, conf_dir, &error);
 	if (connection) {
 		gconf_connection = nma_gconf_connection_new_from_connection (client, conf_dir, connection);
 		g_object_unref (connection);
 	} else {
-		nm_warning ("No connection read from GConf at %s.", conf_dir);
-		gconf_connection = NULL;
+		g_warning ("%s: (%s) error reading connection: (%d) %s",
+		           __func__, conf_dir,
+		           error ? error->code : -1,
+		           error && error->message ? error->message : "(unknown)");
+		g_clear_error (&error);
 	}
 	
 	return gconf_connection;
@@ -155,13 +159,23 @@ nma_gconf_connection_changed (NMAGConfConnection *self)
 	priv = NMA_GCONF_CONNECTION_GET_PRIVATE (self);
 	wrapped_connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (self));
 
-	gconf_connection = nm_gconf_read_connection (priv->client, priv->dir);
+	gconf_connection = nm_gconf_read_connection (priv->client, priv->dir, &error);
 	if (!gconf_connection) {
-		g_warning ("No connection read from GConf at %s.", priv->dir);
+		g_warning ("%s: (%s) error reading connection: (%d) %s",
+		           __func__, priv->dir,
+		           error ? error->code : -1,
+		           error && error->message ? error->message : "(unknown)");
 		goto invalid;
 	}
 
-	utils_fill_connection_certs (gconf_connection);
+	if (!utils_fill_connection_certs (gconf_connection, &error)) {
+		g_warning ("%s: Invalid connection %s: failed to load connection certificates: (%d) %s",
+		           __func__, priv->dir,
+		           error ? error->code : -1,
+		           error && error->message ? error->message : "(unknown)");
+		goto invalid;
+	}
+
 	if (!nm_connection_verify (gconf_connection, &error)) {
 		utils_clear_filled_connection_certs (gconf_connection);
 		g_warning ("%s: Invalid connection %s: '%s' / '%s' invalid: %d",
@@ -180,7 +194,14 @@ nma_gconf_connection_changed (NMAGConfConnection *self)
 	/* Update private values to catch any certificate path changes */
 	nm_gconf_copy_private_connection_values (wrapped_connection, gconf_connection);
 
-	utils_fill_connection_certs (gconf_connection);
+	if (!utils_fill_connection_certs (gconf_connection, &error)) {
+		g_warning ("%s: Invalid connection %s: failed to load connection certificates: (%d) %s",
+		           __func__, priv->dir,
+		           error ? error->code : -1,
+		           error && error->message ? error->message : "(unknown)");
+		goto invalid;
+	}
+
 	new_settings = nm_connection_to_hash (gconf_connection);
 	utils_clear_filled_connection_certs (gconf_connection);
 
@@ -217,12 +238,23 @@ invalid:
 static GHashTable *
 get_settings (NMExportedConnection *exported)
 {
+	NMAGConfConnection *self = NMA_GCONF_CONNECTION (exported);
+	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (self);
 	NMConnection *connection;
 	GHashTable *settings;
+	GError *error = NULL;
 
 	connection = nm_exported_connection_get_connection (exported);
 
-	utils_fill_connection_certs (connection);
+	if (!utils_fill_connection_certs (connection, &error)) {
+		g_warning ("%s: Invalid connection %s: failed to load connection certificates: (%d) %s",
+		           __func__, priv->dir,
+		           error ? error->code : -1,
+		           error && error->message ? error->message : "(unknown)");
+		g_clear_error (&error);
+		return NULL;
+	}
+
 	settings = nm_connection_to_hash (connection);
 	utils_clear_filled_connection_certs (connection);
 
@@ -515,7 +547,15 @@ constructor (GType type,
 
 	connection = nm_exported_connection_get_connection (NM_EXPORTED_CONNECTION (object));
 
-	utils_fill_connection_certs (connection);
+	if (!utils_fill_connection_certs (connection, &error)) {
+		g_warning ("%s: Invalid connection %s: failed to load connection certificates: (%d) %s",
+		           __func__, priv->dir,
+		           error ? error->code : -1,
+		           error && error->message ? error->message : "(unknown)");
+		g_clear_error (&error);
+		goto err;
+	}
+
 	if (!nm_connection_verify (connection, &error)) {
 		utils_clear_filled_connection_certs (connection);
 		g_warning ("Invalid connection: '%s' / '%s' invalid: %d",

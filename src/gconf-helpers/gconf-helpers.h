@@ -212,7 +212,8 @@ nm_gconf_get_all_connections (GConfClient *client);
 
 NMConnection *
 nm_gconf_read_connection (GConfClient *client,
-                          const char *dir);
+                          const char *dir,
+                          GError **error);
 
 void
 nm_gconf_write_connection (NMConnection *connection,

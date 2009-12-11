@@ -30,7 +30,7 @@
 
 const char *utils_get_device_description (NMDevice *device);
 
-void utils_fill_connection_certs (NMConnection *connection);
+gboolean utils_fill_connection_certs (NMConnection *connection, GError **error);
 
 void utils_clear_filled_connection_certs (NMConnection *connection);
 

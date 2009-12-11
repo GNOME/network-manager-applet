@@ -23,6 +23,7 @@
 #include <string.h>
 #include <netinet/ether.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #include <nm-device-ethernet.h>
 #include <nm-device-wifi.h>
@@ -244,25 +245,28 @@ fill_one_private_key (NMConnection *connection,
 	return need_client_cert;
 }
 
-void
-utils_fill_connection_certs (NMConnection *connection)
+gboolean
+utils_fill_connection_certs (NMConnection *connection, GError **error)
 {
 	NMSetting8021x *s_8021x;
 	const char *filename;
-	GError *error = NULL;
+	GError *tmp_error = NULL;
 	gboolean need_client_cert = TRUE;
 
-	g_return_if_fail (connection != NULL);
+	g_return_val_if_fail (connection != NULL, FALSE);
 
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	if (!s_8021x)
-		return;
+		return TRUE;
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CA_CERT_TAG);
 	if (filename) {
-		if (!nm_setting_802_1x_set_ca_cert_from_file (s_8021x, filename, NULL, &error))
-			g_warning ("%s: couldn't read CA certificate: %d %s", __func__, error->code, error->message);
-		g_clear_error (&error);
+		if (!nm_setting_802_1x_set_ca_cert_from_file (s_8021x, filename, NULL, &tmp_error)) {
+			g_set_error (error, tmp_error->domain, tmp_error->code,
+			             _("Could not read CA certificate: %s"), tmp_error->message);
+			g_clear_error (&tmp_error);
+			return FALSE;
+		}
 	}
 
 	/* If the private key is PKCS#12, don't set the client cert */
@@ -273,17 +277,23 @@ utils_fill_connection_certs (NMConnection *connection)
 	if (need_client_cert) {
 		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_CLIENT_CERT_TAG);
 		if (filename) {
-			if (!nm_setting_802_1x_set_client_cert_from_file (s_8021x, filename, NULL, &error))
-				g_warning ("%s: couldn't read client certificate: %d %s", __func__, error->code, error->message);
-			g_clear_error (&error);
+			if (!nm_setting_802_1x_set_client_cert_from_file (s_8021x, filename, NULL, &tmp_error)) {
+				g_set_error (error, tmp_error->domain, tmp_error->code,
+				             _("Could not read client certificate: %s"), tmp_error->message);
+				g_clear_error (&tmp_error);
+				return FALSE;
+			}
 		}
 	}
 
 	filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CA_CERT_TAG);
 	if (filename) {
-		if (!nm_setting_802_1x_set_phase2_ca_cert_from_file (s_8021x, filename, NULL, &error))
-			g_warning ("%s: couldn't read phase2 CA certificate: %d %s", __func__, error->code, error->message);
-		g_clear_error (&error);
+		if (!nm_setting_802_1x_set_phase2_ca_cert_from_file (s_8021x, filename, NULL, &tmp_error)) {
+			g_set_error (error, tmp_error->domain, tmp_error->code,
+			             _("Could not read inner CA certificate: %s"), tmp_error->message);
+			g_clear_error (&tmp_error);
+			return FALSE;
+		}
 	}
 
 	/* If the private key is PKCS#12, don't set the client cert */
@@ -294,11 +304,16 @@ utils_fill_connection_certs (NMConnection *connection)
 	if (need_client_cert) {
 		filename = g_object_get_data (G_OBJECT (connection), NMA_PATH_PHASE2_CLIENT_CERT_TAG);
 		if (filename) {
-			if (!nm_setting_802_1x_set_phase2_client_cert_from_file (s_8021x, filename, NULL, &error))
-				g_warning ("%s: couldn't read phase2 client certificate: %d %s", __func__, error->code, error->message);
-			g_clear_error (&error);
+			if (!nm_setting_802_1x_set_phase2_client_cert_from_file (s_8021x, filename, NULL, &tmp_error)) {
+				g_set_error (error, tmp_error->domain, tmp_error->code,
+				             _("Could not read inner client certificate: %s"), tmp_error->message);
+				g_clear_error (&tmp_error);
+				return FALSE;
+			}
 		}
 	}
+
+	return TRUE;
 }
 
 void

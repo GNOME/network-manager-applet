@@ -1476,6 +1476,7 @@ add_one_setting (GHashTable *settings,
                  GError **error)
 {
 	GHashTable *secrets;
+	GError *tmp_error = NULL;
 
 	g_return_val_if_fail (settings != NULL, FALSE);
 	g_return_val_if_fail (connection != NULL, FALSE);
@@ -1483,7 +1484,15 @@ add_one_setting (GHashTable *settings,
 	g_return_val_if_fail (error != NULL, FALSE);
 	g_return_val_if_fail (*error == NULL, FALSE);
 
-	utils_fill_connection_certs (connection);
+	if (!utils_fill_connection_certs (NM_CONNECTION (connection), &tmp_error)) {
+		g_set_error (error, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
+					 "%s.%d (%s): failed to read connection certificates: (%d) %s.",
+					 __FILE__, __LINE__, __func__,
+					 tmp_error ? tmp_error->code : -1,
+					 tmp_error && tmp_error->message ? tmp_error->message : "(unknown)");
+		return FALSE;
+	}
+
 	secrets = nm_setting_to_hash (setting);
 	utils_clear_filled_connection_certs (connection);
 

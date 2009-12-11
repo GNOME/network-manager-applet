@@ -650,7 +650,15 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 		goto done;
 	}
 
-	utils_fill_connection_certs (NM_CONNECTION (connection));
+	if (!utils_fill_connection_certs (NM_CONNECTION (connection), &err)) {
+		g_set_error (&err, NM_SETTINGS_ERROR, NM_SETTINGS_ERROR_INTERNAL_ERROR,
+					 "%s.%d (%s): failed to read connection certificates: (%d) %s.",
+					 __FILE__, __LINE__, __func__,
+					 err ? err->code : -1,
+					 err && err->message ? err->message : "(unknown)");
+		goto done;
+	}
+
 	secrets = nm_setting_to_hash (setting);
 	utils_clear_filled_connection_certs (NM_CONNECTION (connection));
 
