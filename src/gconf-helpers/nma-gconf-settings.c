@@ -121,7 +121,6 @@ add_connection_real (NMAGConfSettings *self, NMAGConfConnection *connection)
 		nm_exported_connection_register_object (NM_EXPORTED_CONNECTION (connection),
 		                                        NM_CONNECTION_SCOPE_USER,
 		                                        priv->bus);
-		dbus_g_connection_unref (priv->bus);
 	}
 
 	nm_settings_signal_new_connection (NM_SETTINGS (self), NM_EXPORTED_CONNECTION (connection));
@@ -432,6 +431,9 @@ dispose (GObject *object)
 		return;
 
 	priv->disposed = TRUE;
+
+	if (priv->bus)
+		dbus_g_connection_unref (priv->bus);
 
 	g_hash_table_destroy (priv->pending_changes);
 
