@@ -95,6 +95,11 @@ nma_gconf_connection_new_from_connection (GConfClient *client,
 	g_return_val_if_fail (conf_dir != NULL, NULL);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
+	/* Ensure the connection is user-scope since only user-scope connections
+	 * will be wrapped by an NMAGConfConnection.
+	 */
+	nm_connection_set_scope (connection, NM_CONNECTION_SCOPE_USER);
+
 	return (NMAGConfConnection *) g_object_new (NMA_TYPE_GCONF_CONNECTION,
 									    NMA_GCONF_CONNECTION_CLIENT, client,
 									    NMA_GCONF_CONNECTION_DIR, conf_dir,
