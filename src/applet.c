@@ -1570,6 +1570,16 @@ nma_set_wireless_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	nm_client_wireless_set_enabled (applet->nm_client, state);
 }
 
+static void
+nma_set_wwan_enabled_cb (GtkWidget *widget, NMApplet *applet)
+{
+	gboolean state;
+
+	g_return_if_fail (applet != NULL);
+
+	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
+	nm_client_wwan_set_enabled (applet->nm_client, state);
+}
 
 static void
 nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
@@ -1716,7 +1726,9 @@ nma_context_menu_update (NMApplet *applet)
 {
 	NMState state;
 	gboolean have_wireless = FALSE;
+	gboolean have_wwan = FALSE;
 	gboolean wireless_hw_enabled;
+	gboolean wwan_hw_enabled;
 	gboolean notifications_enabled = TRUE;
 
 	state = nm_client_get_state (applet->nm_client);
@@ -1747,6 +1759,18 @@ nma_context_menu_update (NMApplet *applet)
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wifi_enabled_item),
 	                          wireless_hw_enabled);
 
+	/* Enabled Mobile Broadband */
+	g_signal_handler_block (G_OBJECT (applet->wwan_enabled_item),
+	                        applet->wwan_enabled_toggled_id);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->wwan_enabled_item),
+	                                nm_client_wwan_get_enabled (applet->nm_client));
+	g_signal_handler_unblock (G_OBJECT (applet->wwan_enabled_item),
+	                          applet->wwan_enabled_toggled_id);
+
+	wwan_hw_enabled = nm_client_wwan_hardware_get_enabled (applet->nm_client);
+	gtk_widget_set_sensitive (GTK_WIDGET (applet->wwan_enabled_item),
+	                          wwan_hw_enabled);
+
 	/* Enabled notifications */
 	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
 	                        applet->notifications_enabled_toggled_id);
@@ -1765,10 +1789,12 @@ nma_context_menu_update (NMApplet *applet)
 
 		devices = nm_client_get_devices (applet->nm_client);
 		for (i = 0; devices && (i < devices->len); i++) {
-			if (NM_IS_DEVICE_WIFI (g_ptr_array_index (devices, i))) {
+			NMDevice *candidate = g_ptr_array_index (devices, i);
+
+			if (NM_IS_DEVICE_WIFI (candidate))
 				have_wireless = TRUE;
-				break;
-			}
+			else if (NM_IS_SERIAL_DEVICE (candidate))
+				have_wwan = TRUE;
 		}
 	}
 
@@ -1776,6 +1802,11 @@ nma_context_menu_update (NMApplet *applet)
 		gtk_widget_show_all (applet->wifi_enabled_item);
 	else
 		gtk_widget_hide (applet->wifi_enabled_item);
+
+	if (have_wwan)
+		gtk_widget_show_all (applet->wwan_enabled_item);
+	else
+		gtk_widget_hide (applet->wwan_enabled_item);
 }
 
 static void
@@ -1843,6 +1874,15 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                       applet);
 	applet->wifi_enabled_toggled_id = id;
 	gtk_menu_shell_append (menu, applet->wifi_enabled_item);
+
+	/* 'Enable Mobile Broadband' item */
+	applet->wwan_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Mobile Broadband"));
+	id = g_signal_connect (applet->wwan_enabled_item,
+	                       "toggled",
+	                       G_CALLBACK (nma_set_wwan_enabled_cb),
+	                       applet);
+	applet->wwan_enabled_toggled_id = id;
+	gtk_menu_shell_append (menu, applet->wwan_enabled_item);
 
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 

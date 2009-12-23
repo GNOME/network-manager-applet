@@ -141,6 +141,8 @@ typedef struct
 	guint           networking_enabled_toggled_id;
 	GtkWidget *		wifi_enabled_item;
 	guint           wifi_enabled_toggled_id;
+	GtkWidget *		wwan_enabled_item;
+	guint           wwan_enabled_toggled_id;
 
 	GtkWidget *     notifications_enabled_item;
 	guint           notifications_enabled_toggled_id;
