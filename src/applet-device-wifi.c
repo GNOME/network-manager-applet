@@ -724,11 +724,13 @@ wireless_add_menu_item (NMDevice *device,
 		active_ap = nm_device_wifi_get_active_access_point (wdev);
 		if (active_ap) {
 			active_item = item = get_menu_item_for_ap (wdev, active_ap, connections, NULL, applet);
-			nm_network_menu_item_set_active (item, TRUE);
-			menu_items = g_slist_append (menu_items, item);
+			if (item) {
+				nm_network_menu_item_set_active (item, TRUE);
+				menu_items = g_slist_append (menu_items, item);
 
-			gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
-			gtk_widget_show_all (GTK_WIDGET (item));
+				gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
+				gtk_widget_show_all (GTK_WIDGET (item));
+			}
 		}
 	}
 
