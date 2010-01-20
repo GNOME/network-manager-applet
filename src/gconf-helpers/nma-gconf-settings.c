@@ -190,8 +190,9 @@ add_connection (NMSettingsService *settings,
 	 */
 	if (context) {
 		GError *error;
+		GQuark domain = g_quark_from_string("org.freedesktop.NetworkManagerSettings.AddFailed");
 
-		error = g_error_new (0, 0, "%s: adding connections via D-Bus is not (yet) supported", __func__);
+		error = g_error_new (domain, 0, "%s: adding connections via D-Bus is not (yet) supported", __func__);
 		callback (NM_SETTINGS_INTERFACE (settings), error, user_data);
 		g_error_free (error);
 		return;
