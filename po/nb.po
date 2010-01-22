@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager 0.9.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-13 18:40+0100\n"
-"PO-Revision-Date: 2010-01-13 18:48+0100\n"
+"POT-Creation-Date: 2010-01-22 14:54+0100\n"
+"PO-Revision-Date: 2010-01-22 14:54+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -77,6 +77,16 @@ msgstr "Håndter og endre innstillinger for nettverksforbindelser"
 #: ../src/connection-editor/nm-connection-editor.glade.h:7
 msgid "Network Connections"
 msgstr "Nettverkstilkoblinger"
+
+#: ../src/applet-dbus-manager.c:165
+#, c-format
+msgid "An instance of nm-applet is already running.\n"
+msgstr ""
+
+#: ../src/applet-dbus-manager.c:167
+#, c-format
+msgid "Could not acquire the %s service. (%d)\n"
+msgstr ""
 
 #: ../src/applet-device-bt.c:171 ../src/applet-device-cdma.c:291
 #: ../src/applet-device-gsm.c:284 ../src/applet-device-wired.c:241
@@ -499,35 +509,46 @@ msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service returned invalid "
 "configuration."
-msgstr "\nVPN-tilkobling «%s» feilet fordi VPN-tjenesten returnerte ugyldig konfigurasjon."
+msgstr ""
+"\n"
+"VPN-tilkobling «%s» feilet fordi VPN-tjenesten returnerte ugyldig "
+"konfigurasjon."
 
 #: ../src/applet.c:825
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the connection attempt timed out."
-msgstr "\nVPN-tilkobling «%s» feilet pga tidsavbrudd for tilkoblingsforsøket."
+msgstr ""
+"\n"
+"VPN-tilkobling «%s» feilet pga tidsavbrudd for tilkoblingsforsøket."
 
 #: ../src/applet.c:828
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service did not start in time."
-msgstr "\nVPN-tilkobling «%s» feilet fordi VPN-tjenesten ikke startet i tide."
+msgstr ""
+"\n"
+"VPN-tilkobling «%s» feilet fordi VPN-tjenesten ikke startet i tide."
 
 #: ../src/applet.c:831
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because the VPN service failed to start."
-msgstr "\nVPN-tilkobling «%s» feilet fordi VPN-tjenesten ikke klarte å starte opp."
+msgstr ""
+"\n"
+"VPN-tilkobling «%s» feilet fordi VPN-tjenesten ikke klarte å starte opp."
 
 #: ../src/applet.c:834
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' failed because there were no valid VPN secrets."
-msgstr "\nVPN-tilkobling «%s» feilet fordi det ikke finnes gyldige VPN-passord."
+msgstr ""
+"\n"
+"VPN-tilkobling «%s» feilet fordi det ikke finnes gyldige VPN-passord."
 
 #: ../src/applet.c:837
 #, c-format
@@ -553,14 +574,18 @@ msgid ""
 "\n"
 "The VPN connection '%s' disconnected because the network connection was "
 "interrupted."
-msgstr "\nVPN-tilkobling «%s» ble koblet fra fordi nettverkstilkoblingen ble avbrutt."
+msgstr ""
+"\n"
+"VPN-tilkobling «%s» ble koblet fra fordi nettverkstilkoblingen ble avbrutt."
 
 #: ../src/applet.c:865
 #, c-format
 msgid ""
 "\n"
 "The VPN connection '%s' disconnected because the VPN service stopped."
-msgstr "\nVPN-tilkobling «%s» koblet fra fordi VPN-tjenesten stoppet."
+msgstr ""
+"\n"
+"VPN-tilkobling «%s» koblet fra fordi VPN-tjenesten stoppet."
 
 #: ../src/applet.c:871
 #, c-format
@@ -940,7 +965,9 @@ msgstr "Klient-ID for D_HCP:"
 msgid ""
 "Domains used when resolving host names. Use commas to separate multiple "
 "domains."
-msgstr "Domener som brukes ved oppslag av vertsnavn. Bruk komma for å skille flere domener."
+msgstr ""
+"Domener som brukes ved oppslag av vertsnavn. Bruk komma for å skille flere "
+"domener."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
 #: ../src/connection-editor/ce-page-ip6.glade.h:8
@@ -956,7 +983,9 @@ msgstr ""
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses."
-msgstr "IP-adresse for navnetjenere som brukes for å slå opp vertsnavn. Bruk komma for å skille flere navnetjenere."
+msgstr ""
+"IP-adresse for navnetjenere som brukes for å slå opp vertsnavn. Bruk komma "
+"for å skille flere navnetjenere."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:11
 #: ../src/connection-editor/ce-page-ip6.glade.h:10
@@ -1875,6 +1904,22 @@ msgstr "Eksporter VPN-tilkobling..."
 msgid "Access the Internet using your mobile phone"
 msgstr "Koble til internett med din mobiltelefon"
 
+#: ../src/main.c:70
+msgid "Usage:"
+msgstr "Bruk:"
+
+#: ../src/main.c:72
+msgid ""
+"This program is a component of NetworkManager (http://projects.gnome.org/"
+"NetworkManager)."
+msgstr ""
+
+#: ../src/main.c:73
+msgid ""
+"It is not intended for command-line interaction but instead runs in the "
+"GNOME desktop environment."
+msgstr ""
+
 #: ../src/utils/mobile-wizard.c:196
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
@@ -2011,7 +2056,9 @@ msgstr "Navn på betalingsplan for bredbånd"
 
 #: ../src/utils/mobile-wizard.c:1325
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-msgstr "(i enkelte tilfeller) APN (navn på aksesspunkt) for din betalingsplan for bredbånd"
+msgstr ""
+"(i enkelte tilfeller) APN (navn på aksesspunkt) for din betalingsplan for "
+"bredbånd"
 
 #: ../src/utils/mobile-wizard.c:1352
 msgid "Create a connection for _this mobile broadband device:"
