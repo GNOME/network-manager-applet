@@ -25,6 +25,9 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <string.h>
+
+#include <glib/gi18n.h>
+
 #include "nm-utils.h"
 #include "applet.h"
 #include "nma-marshal.h"
@@ -158,9 +161,13 @@ request_name (DBusGProxy *proxy, int flags, const char *detail)
 	}
 
 	if (request_name_result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-		nm_warning ("Could not acquire the %s service as it is already "
-		            "taken.  Return: %d",
-		            detail, request_name_result);
+		if (request_name_result == DBUS_REQUEST_NAME_REPLY_EXISTS)
+			fprintf (stdout, _("An instance of nm-applet is already running.\n"));
+		else {
+			fprintf (stdout, _("Could not acquire the %s service. (%d)\n"),
+			         detail,
+			         request_name_result);
+		}
 		return FALSE;
 	}
 

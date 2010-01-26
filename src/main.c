@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Wireless Applet -- Display wireless access points and allow user control
  *
  * Dan Williams <dcbw@redhat.com>
@@ -30,7 +31,7 @@
 #include <signal.h>
 
 #include <gtk/gtk.h>
-#include <glib/gi18n-lib.h>
+#include <glib/gi18n.h>
 
 #include "applet.h"
 
@@ -59,9 +60,31 @@ setup_signals (void)
 	sigaction (SIGINT,  &action, NULL);
 }
 
+static void
+usage (const char *progname)
+{
+	char *foo;
+
+	foo = g_path_get_basename (progname);
+	fprintf (stdout, "%s %s\n\n%s\n%s\n\n",
+	                 _("Usage:"),
+	                 foo,
+	                 _("This program is a component of NetworkManager (http://projects.gnome.org/NetworkManager)."),
+	                 _("It is not intended for command-line interaction but instead runs in the GNOME desktop environment."));
+	g_free (foo);
+}
+
 int main (int argc, char *argv[])
 {
-	NMApplet * applet;
+	NMApplet *applet;
+	guint32 i;
+
+	for (i = 1; i < argc; i++) {
+		if (!strcmp (argv[i], "--help")) {
+			usage (argv[0]);
+			exit (0);
+		}
+	}
 
 	bindtextdomain (GETTEXT_PACKAGE, NMALOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");

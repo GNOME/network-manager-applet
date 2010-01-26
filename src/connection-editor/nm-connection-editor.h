@@ -34,19 +34,25 @@
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))
 #define NM_CONNECTION_EDITOR(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_EDITOR, NMConnectionEditor))
 
+typedef struct GetSecretsInfo GetSecretsInfo;
+
 typedef struct {
 	GObject parent;
+	gboolean disposed;
 
 	/* private data */
 	NMConnection *connection;
 	NMConnection *orig_connection;
-	gboolean initialized;
 
 	NMConnectionScope orig_scope;
+
+	GetSecretsInfo *secrets_call;
+	GSList *pending_secrets_calls;
 
 	GtkWidget *system_checkbutton;
 	gboolean system_settings_can_modify;
 
+	GSList *initializing_pages;
 	GSList *pages;
 	GladeXML *xml;
 	GtkWidget *window;

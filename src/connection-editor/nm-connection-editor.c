@@ -84,6 +84,13 @@ static gboolean nm_connection_editor_set_connection (NMConnectionEditor *editor,
                                                      NMConnection *connection,
                                                      GError **error);
 
+struct GetSecretsInfo {
+	NMConnectionEditor *self;
+	CEPage *page;
+	char *setting_name;
+	gboolean canceled;
+};
+
 static void
 nm_connection_editor_update_title (NMConnectionEditor *editor)
 {
@@ -136,6 +143,12 @@ ui_to_setting (NMConnectionEditor *editor)
 	return TRUE;
 }
 
+static gboolean
+editor_is_initialized (NMConnectionEditor *editor)
+{
+	return (g_slist_length (editor->initializing_pages) == 0);
+}
+
 static void
 update_sensitivity (NMConnectionEditor *editor)
 {
@@ -149,7 +162,8 @@ update_sensitivity (NMConnectionEditor *editor)
 	/* Can't modify read-only connections; can't modify anything before the
 	 * editor is initialized either.
 	 */
-	if (!nm_setting_connection_get_read_only (s_con) && editor->initialized) {
+	if (   !nm_setting_connection_get_read_only (s_con)
+	    && editor_is_initialized (editor)) {
 		if (editor->system_settings_can_modify) {
 			actionable = ce_polkit_button_get_actionable (CE_POLKIT_BUTTON (editor->ok_button));
 			authorized = ce_polkit_button_get_authorized (CE_POLKIT_BUTTON (editor->ok_button));
@@ -200,7 +214,7 @@ connection_editor_validate (NMConnectionEditor *editor)
 	gboolean valid = FALSE;
 	GSList *iter;
 
-	if (!editor->initialized)
+	if (!editor_is_initialized (editor))
 		goto done;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
@@ -303,13 +317,38 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 }
 
 static void
+get_secrets_info_free (GetSecretsInfo *info)
+{
+	g_free (info->setting_name);
+	g_free (info);
+}
+
+static void
 dispose (GObject *object)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (object);
+	GSList *iter;
+
+	editor->disposed = TRUE;
+
+	g_slist_foreach (editor->initializing_pages, (GFunc) g_object_unref, NULL);
+	g_slist_free (editor->initializing_pages);
+	editor->initializing_pages = NULL;
 
 	g_slist_foreach (editor->pages, (GFunc) g_object_unref, NULL);
 	g_slist_free (editor->pages);
 	editor->pages = NULL;
+
+	/* Mark any in-progress secrets call as canceled; it will clean up after itself. */
+	if (editor->secrets_call)
+		editor->secrets_call->canceled = TRUE;
+
+	/* Kill any pending secrets calls */
+	for (iter = editor->pending_secrets_calls; iter; iter = g_slist_next (iter)) {
+		get_secrets_info_free ((GetSecretsInfo *) iter->data);
+	}
+	g_slist_free (editor->pending_secrets_calls);
+	editor->pending_secrets_calls = NULL;
 
 	if (editor->connection) {
 		g_object_unref (editor->connection);
@@ -487,19 +526,13 @@ idle_validate (gpointer user_data)
 static void
 recheck_initialization (NMConnectionEditor *editor)
 {
-	GSList *iter;
-
-	/* Check if all pages are initialized; if not, desensitize the editor */
-	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
-		if (!ce_page_get_initialized (CE_PAGE (iter->data))) {
-			update_sensitivity (editor);
-			return;
-		}
-	}
-
-	editor->initialized = TRUE;
+	if (!editor_is_initialized (editor))
+		return;
 
 	populate_connection_ui (editor);
+
+	/* When everything is initialized, re-present the window to ensure it's on top */
+	nm_connection_editor_present (editor);
 
 	/* Validate the connection from an idle handler to ensure that stuff like
 	 * GtkFileChoosers have had a chance to asynchronously find their files.
@@ -516,7 +549,6 @@ page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_da
 	GtkWidget *label;
 
 	if (error) {
-		g_object_unref (page);
 		gtk_widget_hide (editor->window);
 		g_signal_emit (editor, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_NONE, error);
 		return;
@@ -527,16 +559,15 @@ page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_da
 	label = gtk_label_new (ce_page_get_title (page));
 	widget = ce_page_get_page (page);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
+
+	/* Move the page from the initializing list to the main page list */
+	editor->initializing_pages = g_slist_remove (editor->initializing_pages, page);
 	editor->pages = g_slist_append (editor->pages, page);
 
 	recheck_initialization (editor);
 }
 
-typedef struct {
-	NMConnectionEditor *self;
-	CEPage *page;
-	char *setting_name;
-} GetSecretsInfo;
+static void request_secrets (GetSecretsInfo *info);
 
 static void
 get_secrets_cb (NMSettingsConnectionInterface *connection,
@@ -545,11 +576,54 @@ get_secrets_cb (NMSettingsConnectionInterface *connection,
                 gpointer user_data)
 {
 	GetSecretsInfo *info = user_data;
+	NMConnectionEditor *self;
 
+	if (info->canceled) {
+		get_secrets_info_free (info);
+		return;
+	}
+
+	self = info->self;
+
+	/* Complete this secrets request; completion can actually dispose of the
+	 * dialog if there was an error.
+	 */
+	self->secrets_call = NULL;
 	ce_page_complete_init (info->page, info->setting_name, secrets, error);
+	get_secrets_info_free (info);
 
-	g_free (info->setting_name);
-	g_free (info);
+	/* Kick off the next secrets request if there is one queued; if the dialog
+	 * was disposed of by the completion above we don't need to do anything.
+	 */
+	if (!self->disposed && self->pending_secrets_calls) {
+		self->secrets_call = g_slist_nth_data (self->pending_secrets_calls, 0);
+		self->pending_secrets_calls = g_slist_remove (self->pending_secrets_calls, self->secrets_call);
+
+		request_secrets (self->secrets_call);
+	}
+}
+
+static void
+request_secrets (GetSecretsInfo *info)
+{
+	NMSettingsConnectionInterface *connection;
+	gboolean success;
+	GError *error;
+
+	g_return_if_fail (info != NULL);
+
+	connection = NM_SETTINGS_CONNECTION_INTERFACE (info->self->orig_connection);
+	success = nm_settings_connection_interface_get_secrets (connection,
+	                                                        info->setting_name,
+	                                                        NULL,
+	                                                        FALSE,
+	                                                        get_secrets_cb,
+	                                                        info);
+	if (!success) {
+		error = g_error_new_literal (0, 0, _("Failed to update connection secrets due to an unknown error."));
+		get_secrets_cb (connection, NULL, error, info);
+		g_error_free (error);
+	}
 }
 
 static void
@@ -558,7 +632,6 @@ get_secrets_for_page (NMConnectionEditor *self,
                       const char *setting_name)
 {
 	GetSecretsInfo *info;
-	gboolean success = FALSE;
 
 	if (!setting_name) {
 		/* page doesn't need any secrets */
@@ -584,18 +657,25 @@ get_secrets_for_page (NMConnectionEditor *self,
 	info->page = page;
 	info->setting_name = g_strdup (setting_name);
 
-	success = nm_settings_connection_interface_get_secrets (NM_SETTINGS_CONNECTION_INTERFACE (self->orig_connection),
-	                                                        setting_name,
-	                                                        NULL,
-	                                                        FALSE,
-	                                                        get_secrets_cb,
-	                                                        info);
-	if (!success) {
-		GError *error;
+	/* PolicyKit doesn't queue up authorization requests internally.  Instead,
+	 * if there's a pending authorization request, subsequent requests for that
+	 * same authorization will return NotAuthorized+Challenge.  That's pretty
+	 * inconvenient and it would be a lot nicer if PK just queued up subsequent
+	 * authorization requests and executed them when the first one was finished.
+	 * But it since it doesn't do that, we have to serialize the authorization
+	 * requests ourselves to get the right authorization result.
+	 */
+	/* NOTE: PolicyKit-gnome 0.95 now serializes auth requests as of this commit:
+	 * http://git.gnome.org/cgit/PolicyKit-gnome/commit/?id=f32cb7faa7197b9db55b569677732742c3c7fdc1
+	 */
 
-		error = g_error_new_literal (0, 0, _("Failed to update connection secrets due to an unknown error."));
-		get_secrets_cb (NM_SETTINGS_CONNECTION_INTERFACE (self->orig_connection), NULL, error, info);
-		g_error_free (error);
+	/* If there's already an in-progress call, queue up the new one */
+	if (self->secrets_call)
+		self->pending_secrets_calls = g_slist_append (self->pending_secrets_calls, info);
+	else {
+		/* Request secrets for this page */
+		self->secrets_call = info;
+		request_secrets (info);
 	}
 }
 
@@ -616,6 +696,7 @@ add_page (NMConnectionEditor *editor,
 	if (!page)
 		return FALSE;
 
+	editor->initializing_pages = g_slist_prepend (editor->initializing_pages, page);
 	g_signal_connect (page, "changed", G_CALLBACK (page_changed), editor);
 	g_signal_connect (page, "initialized", G_CALLBACK (page_initialized), editor);
 

@@ -95,29 +95,38 @@ update_and_emit (CEPolkitButton *self, gboolean old_actionable)
 void
 ce_polkit_button_set_use_polkit (CEPolkitButton *self, gboolean use_polkit)
 {
-	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
 	gboolean old_actionable;
 
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (CE_IS_POLKIT_BUTTON (self));
+
 	old_actionable = ce_polkit_button_get_actionable (self);
-	priv->use_polkit = use_polkit;
+	CE_POLKIT_BUTTON_GET_PRIVATE (self)->use_polkit = use_polkit;
 	update_and_emit (self, old_actionable);
 }
 
 void
 ce_polkit_button_set_master_sensitive (CEPolkitButton *self, gboolean sensitive)
 {
-	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
 	gboolean old_actionable;
 
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (CE_IS_POLKIT_BUTTON (self));
+
 	old_actionable = ce_polkit_button_get_actionable (self);
-	priv->master_sensitive = sensitive;
+	CE_POLKIT_BUTTON_GET_PRIVATE (self)->master_sensitive = sensitive;
 	update_and_emit (self, old_actionable);
 }
 
 gboolean
 ce_polkit_button_get_actionable (CEPolkitButton *self)
 {
-	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
+	CEPolkitButtonPrivate *priv;
+
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (CE_IS_POLKIT_BUTTON (self), FALSE);
+
+	priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
 
 	if (!priv->master_sensitive)
 		return FALSE;
@@ -132,6 +141,9 @@ ce_polkit_button_get_actionable (CEPolkitButton *self)
 gboolean
 ce_polkit_button_get_authorized (CEPolkitButton *self)
 {
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (CE_IS_POLKIT_BUTTON (self), FALSE);
+
 	return CE_POLKIT_BUTTON_GET_PRIVATE (self)->authorized;
 }
 

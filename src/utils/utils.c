@@ -796,3 +796,98 @@ utils_next_available_name (GSList *connections, const char *format)
 	return cname;
 }
 
+char *
+utils_hash_ap (const GByteArray *ssid,
+               NM80211Mode mode,
+               guint32 flags,
+               guint32 wpa_flags,
+               guint32 rsn_flags)
+{
+	unsigned char input[66];
+
+	memset (&input[0], 0, sizeof (input));
+
+	if (ssid)
+		memcpy (input, ssid->data, ssid->len);
+
+	if (mode == NM_802_11_MODE_INFRA)
+		input[32] |= (1 << 0);
+	else if (mode == NM_802_11_MODE_ADHOC)
+		input[32] |= (1 << 1);
+	else
+		input[32] |= (1 << 2);
+
+	/* Separate out no encryption, WEP-only, and WPA-capable */
+	if (  !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	    && (rsn_flags == NM_802_11_AP_SEC_NONE))
+		input[32] |= (1 << 3);
+	else if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
+	         && (wpa_flags == NM_802_11_AP_SEC_NONE)
+	         && (rsn_flags == NM_802_11_AP_SEC_NONE))
+		input[32] |= (1 << 4);
+	else if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
+	         &&  (wpa_flags != NM_802_11_AP_SEC_NONE)
+	         &&  (rsn_flags != NM_802_11_AP_SEC_NONE))
+		input[32] |= (1 << 5);
+	else
+		input[32] |= (1 << 6);
+
+	/* duplicate it */
+	memcpy (&input[33], &input[0], 32);
+	return g_compute_checksum_for_data (G_CHECKSUM_MD5, input, sizeof (input));
+}
+
+typedef struct {
+	const char *tag;
+	const char *replacement;
+} Tag;
+
+static Tag escaped_tags[] = {
+	{ "<center>", NULL },
+	{ "</center>", NULL },
+	{ "<p>", "\n" },
+	{ "</p>", NULL },
+	{ "<B>", "<b>" },
+	{ "</B>", "</b>" },
+	{ "<I>", "<i>" },
+	{ "</I>", "</i>" },
+	{ "<u>", "<u>" },
+	{ "</u>", "</u>" },
+	{ "&", "&amp;" },
+	{ NULL, NULL }
+};
+
+char *
+utils_escape_notify_message (const char *src)
+{
+	const char *p = src;
+	GString *escaped;
+
+	/* Filter the source text and get rid of some HTML tags since the
+	 * notification spec only allows a subset of HTML.  Substitute
+	 * HTML code for characters like & that are invalid in HTML.
+	 */
+
+	escaped = g_string_sized_new (strlen (src) + 5);
+	while (*p) {
+		Tag *t = &escaped_tags[0];
+		gboolean found = FALSE;
+
+		while (t->tag) {
+			if (strncasecmp (p, t->tag, strlen (t->tag)) == 0) {
+				p += strlen (t->tag);
+				if (t->replacement)
+					g_string_append (escaped, t->replacement);
+				found = TRUE;
+				break;
+			}
+			t++;
+		}
+		if (!found)
+			g_string_append_c (escaped, *p++);
+	}
+
+	return g_string_free (escaped, FALSE);
+}
+

@@ -625,6 +625,7 @@ applet_do_notify (NMApplet *applet,
 {
 	NotifyNotification *notify;
 	GError *error = NULL;
+	char *escaped;
 
 	g_return_if_fail (applet != NULL);
 	g_return_if_fail (summary != NULL);
@@ -637,8 +638,12 @@ applet_do_notify (NMApplet *applet,
 
 	applet_clear_notify (applet);
 
-	notify = notify_notification_new (summary, message,
-	                                  icon ? icon : GTK_STOCK_NETWORK, NULL);
+	escaped = utils_escape_notify_message (message);
+	notify = notify_notification_new (summary,
+	                                  escaped,
+	                                  icon ? icon : GTK_STOCK_NETWORK,
+	                                  NULL);
+	g_free (escaped);
 	applet->notification = notify;
 
 	notify_notification_attach_to_status_icon (notify, applet->status_icon);
@@ -651,8 +656,9 @@ applet_do_notify (NMApplet *applet,
 	}
 
 	if (!notify_notification_show (notify, &error)) {
-		g_warning ("Failed to show notification: %s", error->message);
-		g_error_free (error);
+		g_warning ("Failed to show notification: %s",
+		           error && error->message ? error->message : "(unknown)");
+		g_clear_error (&error);
 	}
 }
 
@@ -865,58 +871,6 @@ make_vpn_disconnection_message (NMVPNConnection *vpn,
 	return g_strdup_printf (_("\nThe VPN connection '%s' disconnected."), nm_setting_connection_get_id (s_con));
 }
 
-typedef struct {
-	const char *tag;
-	const char *replacement;
-} Tag;
-
-static Tag banner_tags[] = {
-	{ "<center>", NULL },
-	{ "</center>", NULL },
-	{ "<p>", "\n" },
-	{ "</p>", NULL },
-	{ "<B>", "<b>" },
-	{ "</B>", "</b>" },
-	{ "<I>", "<i>" },
-	{ "</I>", "</i>" },
-	{ "<u>", "<u>" },
-	{ "</u>", "</u>" },
-	{ NULL, NULL }
-};
-
-static char *
-construct_vpn_banner (const char *src)
-{
-	const char *p = src;
-	GString *banner;
-
-	/* Filter the banner text and get rid of some HTML tags since the
-	 * notification spec only allows a subset of HTML.
-	 */
-
-	banner = g_string_sized_new (strlen (src) + 5);
-	g_string_append_c (banner, '\n');
-	while (*p) {
-		Tag *t = &banner_tags[0];
-		gboolean found = FALSE;
-
-		while (t->tag) {
-			if (strncasecmp (p, t->tag, strlen (t->tag)) == 0) {
-				p += strlen (t->tag);
-				if (t->replacement)
-					g_string_append (banner, t->replacement);
-				found = TRUE;
-				break;
-			}
-			t++;
-		}
-		if (!found)
-			g_string_append_c (banner, *p++);
-	}
-
-	return g_string_free (banner, FALSE);
-}
-
 static void
 vpn_connection_state_changed (NMVPNConnection *vpn,
                               NMVPNConnectionState state,
@@ -926,7 +880,7 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 	NMApplet *applet = NM_APPLET (user_data);
 	NMConnection *connection;
 	const char *banner;
-	char *title = NULL, *msg = NULL;
+	char *title = NULL, *msg;
 	gboolean device_activating, vpn_activating;
 
 	device_activating = applet_is_any_device_activating (applet);
@@ -946,7 +900,7 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 		banner = nm_vpn_connection_get_banner (vpn);
 		if (banner && strlen (banner)) {
 			title = _("VPN Login Message");
-			msg = construct_vpn_banner (banner);
+			msg = g_strdup_printf ("%s\n", banner);
 			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
 			                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
 			g_free (msg);
@@ -1616,6 +1570,16 @@ nma_set_wireless_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	nm_client_wireless_set_enabled (applet->nm_client, state);
 }
 
+static void
+nma_set_wwan_enabled_cb (GtkWidget *widget, NMApplet *applet)
+{
+	gboolean state;
+
+	g_return_if_fail (applet != NULL);
+
+	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
+	nm_client_wwan_set_enabled (applet->nm_client, state);
+}
 
 static void
 nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
@@ -1626,6 +1590,30 @@ nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 
 	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
 	nm_client_sleep (applet->nm_client, !state);
+}
+
+
+static void
+nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
+{
+	gboolean state;
+
+	g_return_if_fail (applet != NULL);
+
+	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
+
+	gconf_client_set_bool (applet->gconf_client,
+	                       PREF_DISABLE_CONNECTED_NOTIFICATIONS,
+	                       !state,
+	                       NULL);
+	gconf_client_set_bool (applet->gconf_client,
+	                       PREF_DISABLE_DISCONNECTED_NOTIFICATIONS,
+	                       !state,
+	                       NULL);
+	gconf_client_set_bool (applet->gconf_client,
+	                       PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
+	                       !state,
+	                       NULL);
 }
 
 /*
@@ -1738,7 +1726,10 @@ nma_context_menu_update (NMApplet *applet)
 {
 	NMState state;
 	gboolean have_wireless = FALSE;
+	gboolean have_wwan = FALSE;
 	gboolean wireless_hw_enabled;
+	gboolean wwan_hw_enabled;
+	gboolean notifications_enabled = TRUE;
 
 	state = nm_client_get_state (applet->nm_client);
 
@@ -1768,6 +1759,29 @@ nma_context_menu_update (NMApplet *applet)
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wifi_enabled_item),
 	                          wireless_hw_enabled);
 
+	/* Enabled Mobile Broadband */
+	g_signal_handler_block (G_OBJECT (applet->wwan_enabled_item),
+	                        applet->wwan_enabled_toggled_id);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->wwan_enabled_item),
+	                                nm_client_wwan_get_enabled (applet->nm_client));
+	g_signal_handler_unblock (G_OBJECT (applet->wwan_enabled_item),
+	                          applet->wwan_enabled_toggled_id);
+
+	wwan_hw_enabled = nm_client_wwan_hardware_get_enabled (applet->nm_client);
+	gtk_widget_set_sensitive (GTK_WIDGET (applet->wwan_enabled_item),
+	                          wwan_hw_enabled);
+
+	/* Enabled notifications */
+	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
+	                        applet->notifications_enabled_toggled_id);
+	if (   gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_CONNECTED_NOTIFICATIONS, NULL)
+	    && gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS, NULL)
+	    && gconf_client_get_bool (applet->gconf_client, PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE, NULL))
+		notifications_enabled = FALSE;
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
+	g_signal_handler_unblock (G_OBJECT (applet->notifications_enabled_item),
+	                          applet->notifications_enabled_toggled_id);
+
 	/* Don't show wifi-specific stuff if wireless is off */
 	if (state != NM_STATE_ASLEEP) {
 		const GPtrArray *devices;
@@ -1775,10 +1789,12 @@ nma_context_menu_update (NMApplet *applet)
 
 		devices = nm_client_get_devices (applet->nm_client);
 		for (i = 0; devices && (i < devices->len); i++) {
-			if (NM_IS_DEVICE_WIFI (g_ptr_array_index (devices, i))) {
+			NMDevice *candidate = g_ptr_array_index (devices, i);
+
+			if (NM_IS_DEVICE_WIFI (candidate))
 				have_wireless = TRUE;
-				break;
-			}
+			else if (NM_IS_SERIAL_DEVICE (candidate))
+				have_wwan = TRUE;
 		}
 	}
 
@@ -1786,6 +1802,11 @@ nma_context_menu_update (NMApplet *applet)
 		gtk_widget_show_all (applet->wifi_enabled_item);
 	else
 		gtk_widget_hide (applet->wifi_enabled_item);
+
+	if (have_wwan)
+		gtk_widget_show_all (applet->wwan_enabled_item);
+	else
+		gtk_widget_hide (applet->wwan_enabled_item);
 }
 
 static void
@@ -1853,6 +1874,26 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                       applet);
 	applet->wifi_enabled_toggled_id = id;
 	gtk_menu_shell_append (menu, applet->wifi_enabled_item);
+
+	/* 'Enable Mobile Broadband' item */
+	applet->wwan_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Mobile Broadband"));
+	id = g_signal_connect (applet->wwan_enabled_item,
+	                       "toggled",
+	                       G_CALLBACK (nma_set_wwan_enabled_cb),
+	                       applet);
+	applet->wwan_enabled_toggled_id = id;
+	gtk_menu_shell_append (menu, applet->wwan_enabled_item);
+
+	nma_menu_add_separator_item (GTK_WIDGET (menu));
+
+	/* Toggle notifications item */
+	applet->notifications_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable N_otifications"));
+	id = g_signal_connect (applet->notifications_enabled_item,
+	                       "toggled",
+	                       G_CALLBACK (nma_set_notifications_enabled_cb),
+	                       applet);
+	applet->notifications_enabled_toggled_id = id;
+	gtk_menu_shell_append (menu, applet->notifications_enabled_item);
 
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
@@ -2458,10 +2499,21 @@ find_active_device (NMAGConfConnection *connection,
 
 		active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_connections, i));
 		service_name = nm_active_connection_get_service_name (active);
+		if (!service_name) {
+			/* Shouldn't happen; but we shouldn't crash either */
+			g_warning ("%s: couldn't get service name for active connection!", __func__);
+			continue;
+		}
+
 		if (strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS))
 			continue;
 
 		connection_path = nm_active_connection_get_connection (active);
+		if (!connection_path) {
+			/* Shouldn't happen; but we shouldn't crash either */
+			g_warning ("%s: couldn't get connection path for active connection!", __func__);
+			continue;
+		}
 
 		if (!strcmp (connection_path, nm_connection_get_path (NM_CONNECTION (connection)))) {
 			devices = nm_active_connection_get_devices (active);

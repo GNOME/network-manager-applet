@@ -29,7 +29,6 @@
 
 #include "wireless-security.h"
 #include "utils.h"
-#include "gnome-keyring-md5.h"
 #include "gconf-helpers.h"
 
 

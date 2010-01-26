@@ -45,10 +45,7 @@
 #include "applet-device-wifi.h"
 #include "ap-menu-item.h"
 #include "utils.h"
-#include "gnome-keyring-md5.h"
 #include "wireless-dialog.h"
-
-#define PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE    APPLET_PREFS_PATH "/suppress-wireless-networks-available"
 
 #define ACTIVE_AP_TAG "active-ap"
 
@@ -424,12 +421,10 @@ wireless_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 	                                  user_data);
 }
 
-#define AP_HASH_LEN 16
-
 struct dup_data {
 	NMDevice *device;
 	NMNetworkMenuItem *found;
-	guchar *hash;
+	char *hash;
 };
 
 static void
@@ -437,8 +432,7 @@ find_duplicate (gpointer d, gpointer user_data)
 {
 	struct dup_data * data = (struct dup_data *) user_data;
 	NMDevice *device;
-	const guchar * hash;
-	guint32 hash_len = 0;
+	const char *hash;
 	GtkWidget *widget = GTK_WIDGET (d);
 
 	g_assert (d && widget);
@@ -452,11 +446,8 @@ find_duplicate (gpointer d, gpointer user_data)
 	if (NM_DEVICE (device) != data->device)
 		return;
 
-	hash = nm_network_menu_item_get_hash (NM_NETWORK_MENU_ITEM (widget), &hash_len);
-	if (hash == NULL || hash_len != AP_HASH_LEN)
-		return;
-
-	if (memcmp (hash, data->hash, AP_HASH_LEN) == 0)
+	hash = nm_network_menu_item_get_hash (NM_NETWORK_MENU_ITEM (widget));
+	if (hash && (strcmp (hash, data->hash) == 0))
 		data->found = NM_NETWORK_MENU_ITEM (widget);
 }
 
@@ -492,7 +483,6 @@ create_new_ap_item (NMDeviceWifi *device,
 	ap_connections = filter_connections_for_access_point (connections, device, ap);
 
 	item = NM_NETWORK_MENU_ITEM (nm_network_menu_item_new (dup_data->hash,
-	                                                       AP_HASH_LEN,
 	                                                       !!g_slist_length (ap_connections)));
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
 
@@ -582,8 +572,8 @@ get_menu_item_for_ap (NMDeviceWifi *device,
 	 */
 	dup_data.found = NULL;
 	dup_data.hash = g_object_get_data (G_OBJECT (ap), "hash");
-	if (!dup_data.hash)
-		return NULL;
+	g_return_val_if_fail (dup_data.hash != NULL, NULL);
+
 	dup_data.device = NM_DEVICE (device);
 	g_slist_foreach (menu_list, find_duplicate, &dup_data);
 
@@ -734,11 +724,13 @@ wireless_add_menu_item (NMDevice *device,
 		active_ap = nm_device_wifi_get_active_access_point (wdev);
 		if (active_ap) {
 			active_item = item = get_menu_item_for_ap (wdev, active_ap, connections, NULL, applet);
-			nm_network_menu_item_set_active (item, TRUE);
-			menu_items = g_slist_append (menu_items, item);
+			if (item) {
+				nm_network_menu_item_set_active (item, TRUE);
+				menu_items = g_slist_append (menu_items, item);
 
-			gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
-			gtk_widget_show_all (GTK_WIDGET (item));
+				gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
+				gtk_widget_show_all (GTK_WIDGET (item));
+			}
 		}
 	}
 
@@ -891,74 +883,17 @@ notify_active_ap_changed_cb (NMDeviceWifi *device,
 	applet_schedule_update_icon (applet);
 }
 
-static guchar *
-ap_hash (NMAccessPoint * ap)
-{
-	struct GnomeKeyringMD5Context ctx;
-	unsigned char * digest = NULL;
-	unsigned char md5_data[66];
-	unsigned char input[33];
-	const GByteArray * ssid;
-	NM80211Mode mode;
-	guint32 flags, wpa_flags, rsn_flags;
-
-	g_return_val_if_fail (ap, NULL);
-
-	mode = nm_access_point_get_mode (ap);
-	flags = nm_access_point_get_flags (ap);
-	wpa_flags = nm_access_point_get_wpa_flags (ap);
-	rsn_flags = nm_access_point_get_rsn_flags (ap);
-
-	memset (&input[0], 0, sizeof (input));
-
-	ssid = nm_access_point_get_ssid (ap);
-	if (ssid)
-		memcpy (input, ssid->data, ssid->len);
-
-	if (mode == NM_802_11_MODE_INFRA)
-		input[32] |= (1 << 0);
-	else if (mode == NM_802_11_MODE_ADHOC)
-		input[32] |= (1 << 1);
-	else
-		input[32] |= (1 << 2);
-
-	/* Separate out no encryption, WEP-only, and WPA-capable */
-	if (  !(flags & NM_802_11_AP_FLAGS_PRIVACY)
-	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
-	    && (rsn_flags == NM_802_11_AP_SEC_NONE))
-		input[32] |= (1 << 3);
-	else if (   (flags & NM_802_11_AP_FLAGS_PRIVACY)
-	         && (wpa_flags == NM_802_11_AP_SEC_NONE)
-	         && (rsn_flags == NM_802_11_AP_SEC_NONE))
-		input[32] |= (1 << 4);
-	else if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
-	         &&  (wpa_flags != NM_802_11_AP_SEC_NONE)
-	         &&  (rsn_flags != NM_802_11_AP_SEC_NONE))
-		input[32] |= (1 << 5);
-	else
-		input[32] |= (1 << 6);
-
-	digest = g_malloc (sizeof (unsigned char) * AP_HASH_LEN);
-	if (digest == NULL)
-		goto out;
-
-	gnome_keyring_md5_init (&ctx);
-	memcpy (md5_data, input, sizeof (input));
-	memcpy (&md5_data[33], input, sizeof (input));
-	gnome_keyring_md5_update (&ctx, md5_data, sizeof (md5_data));
-	gnome_keyring_md5_final (digest, &ctx);
-
-out:
-	return digest;
-}
-
 static void
 add_hash_to_ap (NMAccessPoint *ap)
 {
-	guchar *hash = ap_hash (ap);
-	g_object_set_data_full (G_OBJECT (ap),
-	                        "hash", hash,
-	                        (GDestroyNotify) g_free);
+	char *hash;
+
+	hash = utils_hash_ap (nm_access_point_get_ssid (ap),
+	                      nm_access_point_get_mode (ap),
+	                      nm_access_point_get_flags (ap),
+	                      nm_access_point_get_wpa_flags (ap),
+	                      nm_access_point_get_rsn_flags (ap));
+	g_object_set_data_full (G_OBJECT (ap), "hash", hash, (GDestroyNotify) g_free);
 }
 
 static void
@@ -989,7 +924,7 @@ wifi_available_dont_show_cb (NotifyNotification *notify,
 		return;
 
 	gconf_client_set_bool (applet->gconf_client,
-	                       PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE,
+	                       PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
 	                       TRUE,
 	                       NULL);
 }
@@ -1092,7 +1027,7 @@ queue_avail_access_point_notification (NMDevice *device)
 		return;
 
 	if (gconf_client_get_bool (data->applet->gconf_client,
-	                           PREF_SUPPRESS_WIRELESS_NEWORKS_AVAILABLE,
+	                           PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
 	                           NULL))
 		return;
 

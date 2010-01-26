@@ -385,7 +385,7 @@ populate_ui (CEPageIP4 *self)
 	gtk_entry_set_text (priv->dns_searches, string->str);
 	g_string_free (string, TRUE);
 
-	if ((method == IP4_METHOD_AUTO) || (method = IP4_METHOD_AUTO_ADDRESSES)) {
+	if ((method == IP4_METHOD_AUTO) || (method == IP4_METHOD_AUTO_ADDRESSES)) {
 		if (nm_setting_ip4_config_get_dhcp_client_id (setting)) {
 			gtk_entry_set_text (priv->dhcp_client_id,
 			                    nm_setting_ip4_config_get_dhcp_client_id (setting));
