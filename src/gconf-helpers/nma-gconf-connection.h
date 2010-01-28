@@ -57,7 +57,8 @@ typedef struct {
 	                                const char *setting_name,
 	                                const char **hints,
 	                                gboolean ask_user,
-	                                DBusGMethodInvocation *context);
+	                                NMANewSecretsRequestedFunc callback,
+	                                gpointer callback_data);
 } NMAGConfConnectionClass;
 
 GType nma_gconf_connection_get_type (void);
