@@ -156,18 +156,30 @@ nma_wired_dialog_get_connection (GtkWidget *dialog)
 	NMSettingsConnectionInterface *connection;
 	WirelessSecurity *security;
 	NMConnection *tmp_connection;
-	NMSetting *s_8021x;
+	NMSetting *s_8021x, *s_con;
 
 	g_return_val_if_fail (dialog != NULL, NULL);
 
 	connection = g_object_get_data (G_OBJECT (dialog), "connection");
 	security = g_object_get_data (G_OBJECT (dialog), "security");
 
-	/* Here's a nice hack to work around the fact that ws_802_1x_fill_connection needs wireless setting. */
+	/* Here's a nice hack to work around the fact that ws_802_1x_fill_connection()
+	 * needs a wireless setting and a connection setting for various things.
+	 */
 	tmp_connection = nm_connection_new ();
+
+	/* Add the fake connection setting (mainly for the UUID for cert ignore checking) */
+	s_con = nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION);
+	g_assert (s_con);
+	nm_connection_add_setting (tmp_connection, NM_SETTING (g_object_ref (s_con)));
+
+	/* And the fake wireless setting */
 	nm_connection_add_setting (tmp_connection, nm_setting_wireless_new ());
+
+	/* Fill up the 802.1x setting */
 	ws_802_1x_fill_connection (security, "wpa_eap_auth_combo", tmp_connection);
 
+	/* Grab it and add it to our original connection */
 	s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
 	nm_connection_add_setting (NM_CONNECTION (connection), NM_SETTING (g_object_ref (s_8021x)));
 
