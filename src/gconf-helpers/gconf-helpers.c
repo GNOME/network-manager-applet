@@ -1866,6 +1866,48 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	g_free (display_name);
 }
 
+static void
+delete_done (GnomeKeyringResult result, gpointer user_data)
+{
+}
+
+static void
+keyring_delete_item (const char *connection_uuid,
+                     const char *setting_name,
+                     const char *setting_key)
+{
+	GList *found_list = NULL;
+	GnomeKeyringResult ret;
+	GList *iter;
+
+	pre_keyring_callback ();
+
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      KEYRING_UUID_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      connection_uuid,
+	                                      KEYRING_SN_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      setting_name,
+	                                      KEYRING_SK_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      setting_key,
+	                                      NULL);
+	if (ret == GNOME_KEYRING_RESULT_OK) {
+		for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
+			GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
+
+			gnome_keyring_item_delete (found->keyring,
+			                           found->item_id,
+			                           delete_done,
+			                           NULL,
+			                           NULL);
+		}
+		gnome_keyring_found_list_free (found_list);
+	}
+}
+
 typedef struct CopyOneSettingValueInfo {
 	NMConnection *connection;
 	GConfClient *client;
@@ -1912,6 +1954,14 @@ write_one_secret_to_keyring (NMSetting *setting,
 		                           setting_name,
 		                           key,
 		                           secret);
+	} else {
+		/* We have to be careful about this, since if the connection we're
+		 * given doesn't include secrets we'll blow anything in the keyring
+		 * away here.  We rely on the caller knowing whether or not to do this.
+		 */
+		keyring_delete_item (info->connection_uuid,
+		                     setting_name,
+		                     key);
 	}
 }
 
@@ -2469,7 +2519,8 @@ remove_leftovers (CopyOneSettingValueInfo *info)
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir)
+                           const char *dir,
+                           gboolean ignore_secrets)
 {
 	NMSettingConnection *s_con;
 	CopyOneSettingValueInfo info;
@@ -2488,15 +2539,24 @@ nm_gconf_write_connection (NMConnection *connection,
 	info.dir = dir;
 	info.connection_uuid = nm_setting_connection_get_uuid (s_con);
 	info.connection_name = nm_setting_connection_get_id (s_con);
+
 	nm_connection_for_each_setting_value (connection,
 	                                      copy_one_setting_value_to_gconf,
 	                                      &info);
 	remove_leftovers (&info);
 
-	/* write secrets */
-	nm_connection_for_each_setting_value (connection,
-	                                      write_one_secret_to_keyring,
-	                                      &info);
+	/* Write/clear secrets; the caller must know whether or not to do this
+	 * based on how the connection was updated; if only something like the
+	 * BSSID or timestamp is getting updated, then you want to ignore
+	 * secrets, since the secrets could not possibly have changed.  On the
+	 * other hand, if the user cleared out a secret in the connection editor,
+	 * you want to ensure that secret gets deleted from the keyring.
+	 */
+	if (ignore_secrets == FALSE) {
+		nm_connection_for_each_setting_value (connection,
+		                                      write_one_secret_to_keyring,
+		                                      &info);
+	}
 
 	/* Update ignore CA cert status */
 	ignore = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), IGNORE_CA_CERT_TAG));

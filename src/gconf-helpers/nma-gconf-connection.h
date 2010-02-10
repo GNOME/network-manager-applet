@@ -74,6 +74,9 @@ gboolean nma_gconf_connection_gconf_changed (NMAGConfConnection *self);
 
 const char *nma_gconf_connection_get_gconf_path (NMAGConfConnection *self);
 
+void nma_gconf_connection_update (NMAGConfConnection *self,
+                                  gboolean ignore_secrets);
+
 G_END_DECLS
 
 #endif /* NMA_GCONF_CONNECTION_H */
