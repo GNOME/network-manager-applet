@@ -423,73 +423,144 @@ update_cb (NMSettingsConnectionInterface *connection,
 }
 
 static void
+get_existing_secrets_cb (NMSettingsConnectionInterface *connection,
+                         GHashTable *existing_secrets,
+                         GError *secrets_error,
+                         gpointer user_data)
+{
+	NMGsmInfo *info = (NMGsmInfo *) user_data;
+	GHashTable *settings;
+	GError *error = NULL;
+	gboolean save_secret = FALSE;
+	const char *new_secret = NULL;
+
+	if (secrets_error) {
+		error = g_error_copy (secrets_error);
+		goto done;
+	}
+
+	/* Be a bit paranoid */
+	if (connection != info->connection) {
+		g_set_error (&error,
+		             NM_SETTINGS_INTERFACE_ERROR,
+		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             "%s.%d (%s): unexpected reply for wrong connection.",
+		             __FILE__, __LINE__, __func__);
+		goto done;
+	}
+
+	/* Update connection's secrets so we can hash them for sending back to
+	 * NM, and so we can save them all back out to GConf if needed.
+	 */
+	if (existing_secrets) {
+		GHashTableIter iter;
+		gpointer key, value;
+
+		g_hash_table_iter_init (&iter, existing_secrets);
+		while (g_hash_table_iter_next (&iter, &key, &value)) {
+			GError *update_error = NULL;
+			const char *setting_name = key;
+			GHashTable *setting_hash = value;
+
+			/* Keep track of whether or not the user originall saved the secret */
+			if (!strcmp (setting_name, NM_SETTING_GSM_SETTING_NAME)) {
+				if (g_hash_table_lookup (setting_hash, info->secret_name))
+					save_secret = TRUE;
+			}
+
+			if (!nm_connection_update_secrets (NM_CONNECTION (info->connection),
+			                                   setting_name,
+			                                   setting_hash,
+			                                   &update_error)) {
+				g_warning ("%s: error updating connection secrets: (%d) %s",
+				           __func__,
+				           update_error ? update_error->code : -1,
+				           update_error && update_error->message ? update_error->message : "(unknown)");
+				g_clear_error (&update_error);
+			}
+		}
+	}
+
+	/* Now update the secret the user just entered */
+	if (   !strcmp (info->secret_name, NM_SETTING_GSM_PIN)
+	    || !strcmp (info->secret_name, NM_SETTING_GSM_PASSWORD)) {
+		NMSetting *s_gsm;
+
+		s_gsm = (NMSetting *) nm_connection_get_setting (NM_CONNECTION (info->connection),
+		                                                 NM_TYPE_SETTING_GSM);
+		if (s_gsm) {
+			new_secret = gtk_entry_get_text (info->secret_entry);
+			g_object_set (G_OBJECT (s_gsm), info->secret_name, new_secret, NULL);
+		}
+	}
+
+	settings = nm_connection_to_hash (NM_CONNECTION (info->connection));
+	info->callback (info->connection, settings, NULL, info->callback_data);
+	g_hash_table_destroy (settings);
+
+	/* Save secrets back to GConf if the user had entered them into the
+	 * connection originally.  This lets users enter their secret every time if
+	 * they want.
+	 */
+	if (new_secret && save_secret)
+		nm_settings_connection_interface_update (info->connection, update_cb, NULL);
+
+ done:
+	if (error) {
+		g_warning ("%s", error->message);
+		info->callback (info->connection, NULL, error, info->callback_data);
+		g_clear_error (&error);
+	}
+
+	nm_connection_clear_secrets (NM_CONNECTION (info->connection));
+	destroy_gsm_dialog (info, NULL);
+}
+
+static void
 get_gsm_secrets_cb (GtkDialog *dialog,
                     gint response,
                     gpointer user_data)
 {
 	NMGsmInfo *info = (NMGsmInfo *) user_data;
-	NMSettingGsm *setting;
-	GHashTable *settings_hash;
-	GHashTable *secrets;
-	GError *err = NULL;
+	GError *error = NULL;
 
 	/* Got a user response, clear the NMActiveConnection destroy handler for
 	 * this dialog since this function will now take over dialog destruction.
 	 */
 	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_gsm_dialog, info);
 
-	if (response != GTK_RESPONSE_OK) {
-		g_set_error (&err,
+	if (response == GTK_RESPONSE_OK) {
+		const char *hints[2] = { info->secret_name, NULL };
+
+		/* Get existing connection secrets since NM will want those too */
+		if (!nm_settings_connection_interface_get_secrets (info->connection,
+		                                                   NM_SETTING_GSM_SETTING_NAME,
+		                                                   (const char **) &hints,
+		                                                   FALSE,
+		                                                   get_existing_secrets_cb,
+		                                                   info)) {
+			g_set_error (&error,
+			             NM_SETTINGS_INTERFACE_ERROR,
+			             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+			             "%s.%d (%s): failed to get existing connection secrets",
+			             __FILE__, __LINE__, __func__);
+		}
+	} else {
+		g_set_error (&error,
 		             NM_SETTINGS_INTERFACE_ERROR,
 		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
-		goto done;
 	}
 
-	setting = NM_SETTING_GSM (nm_connection_get_setting (NM_CONNECTION (info->connection), NM_TYPE_SETTING_GSM));
+	if (error) {
+		g_warning ("%s", error->message);
+		info->callback (info->connection, NULL, error, info->callback_data);
+		g_error_free (error);
 
-	if (!strcmp (info->secret_name, NM_SETTING_GSM_PIN) ||
-	    !strcmp (info->secret_name, NM_SETTING_GSM_PUK) ||
-	    !strcmp (info->secret_name, NM_SETTING_GSM_PASSWORD))
-		g_object_set (setting, info->secret_name, gtk_entry_get_text (info->secret_entry), NULL);
-
-	secrets = nm_setting_to_hash (NM_SETTING (setting));
-	if (!secrets) {
-		g_set_error (&err,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): failed to hash setting '%s'.",
-		             __FILE__, __LINE__, __func__, nm_setting_get_name (NM_SETTING (setting)));
-		goto done;
+		nm_connection_clear_secrets (NM_CONNECTION (info->connection));
+		destroy_gsm_dialog (info, NULL);
 	}
-
-	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
-	 * will contain all the individual settings hashes.
-	 */
-	settings_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
-								    g_free, (GDestroyNotify) g_hash_table_destroy);
-
-	g_hash_table_insert (settings_hash, g_strdup (nm_setting_get_name (NM_SETTING (setting))), secrets);
-	info->callback (info->connection, settings_hash, NULL, info->callback_data);
-	g_hash_table_destroy (settings_hash);
-
-	/* Save the connection back to GConf _after_ hashing it, because
-	 * saving to GConf might trigger the GConf change notifiers, resulting
-	 * in the connection being read back in from GConf which clears secrets.
-	 */
-	if (NMA_IS_GCONF_CONNECTION (info->connection))
-		nm_settings_connection_interface_update (info->connection, update_cb, NULL);
-
- done:
-	if (err) {
-		g_warning ("%s", err->message);
-		info->callback (info->connection, NULL, err, info->callback_data);
-		g_error_free (err);
-	}
-
-	nm_connection_clear_secrets (NM_CONNECTION (info->connection));
-	destroy_gsm_dialog (info, NULL);
 }
 
 static GtkWidget *
