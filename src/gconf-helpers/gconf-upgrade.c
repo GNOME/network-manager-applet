@@ -836,7 +836,7 @@ nm_gconf_write_0_6_connection (NMConnection *connection, GConfClient *client, in
 	char *dir;
 
 	dir = g_strdup_printf ("%s/%d", GCONF_PATH_CONNECTIONS, n);
-	nm_gconf_write_connection (connection, client, dir);
+	nm_gconf_write_connection (connection, client, dir, FALSE);
 	g_free (dir);
 }
 

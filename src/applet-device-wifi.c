@@ -820,31 +820,26 @@ out:
 	g_slist_free (connections);
 }
 
-static gboolean
+static void
 add_seen_bssid (NMSettingsConnectionInterface *connection, NMAccessPoint *ap)
 {
 	NMSettingWireless *s_wireless;
 	const char *bssid;
 
+	if (!NMA_GCONF_CONNECTION (connection))
+		return;
+
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_WIRELESS));
 	if (!s_wireless)
-		return FALSE;
+		return;
 
 	bssid = nm_access_point_get_hw_address (ap);
 	if (!bssid || !utils_ether_addr_valid (ether_aton (bssid)))
-		return FALSE;
+		return;
 
-	return nm_setting_wireless_add_seen_bssid (s_wireless, bssid);
-}
-
-static void
-bssid_update_cb (NMSettingsConnectionInterface *connection,
-                 GError *error,
-                 gpointer user_data)
-{
-	if (error) {
-		g_warning ("%s: failed to update connection seen BSSIDs: (%d) %s",
-		           __func__, error->code, error->message);
+	if (nm_setting_wireless_add_seen_bssid (s_wireless, bssid)) {
+		/* Ignore secrets since we don't have any here and we're just adding a BSSID */
+		nma_gconf_connection_update (NMA_GCONF_CONNECTION (connection), TRUE);
 	}
 }
 
@@ -877,8 +872,7 @@ notify_active_ap_changed_cb (NMDeviceWifi *device,
 	if (!ssid || !nm_utils_same_ssid (nm_setting_wireless_get_ssid (s_wireless), ssid, TRUE))
 		return;
 
-	if (add_seen_bssid (connection, new))
-		nm_settings_connection_interface_update (connection, bssid_update_cb, NULL);
+	add_seen_bssid (connection, new);
 
 	applet_schedule_update_icon (applet);
 }
@@ -1211,8 +1205,8 @@ wireless_device_state_changed (NMDevice *device,
 
 		/* Save this BSSID to seen-bssids list */
 		connection = applet_get_exported_connection_for_device (device, applet);
-		if (connection && add_seen_bssid (connection, new))
-			nm_settings_connection_interface_update (connection, bssid_update_cb, NULL);
+		if (connection)
+			add_seen_bssid (connection, new);
 	}
 
 	msg = g_strdup_printf (_("You are now connected to the wireless network '%s'."),

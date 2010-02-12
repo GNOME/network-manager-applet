@@ -241,7 +241,8 @@ nm_gconf_read_connection (GConfClient *client,
 void
 nm_gconf_write_connection (NMConnection *connection,
                            GConfClient *client,
-                           const char *dir);
+                           const char *dir,
+                           gboolean ignore_secrets);
 
 void
 nm_gconf_add_keyring_item (const char *connection_uuid,

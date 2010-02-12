@@ -426,6 +426,20 @@ clear_keyring_items (NMAGConfConnection *self)
 	}
 }
 
+void
+nma_gconf_connection_update (NMAGConfConnection *self,
+                             gboolean ignore_secrets)
+{
+	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (self);
+
+	nm_gconf_write_connection (NM_CONNECTION (self),
+	                           priv->client,
+	                           priv->dir,
+	                           ignore_secrets);
+	gconf_client_notify (priv->client, priv->dir);
+	gconf_client_suggest_sync (priv->client, NULL);
+}
+
 /******************************************************/
 
 static gboolean
@@ -433,13 +447,10 @@ update (NMSettingsConnectionInterface *connection,
 	    NMSettingsConnectionInterfaceUpdateFunc callback,
 	    gpointer user_data)
 {
-	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (connection);
-
-	nm_gconf_write_connection (NM_CONNECTION (connection),
-	                           priv->client,
-	                           priv->dir);
-	gconf_client_notify (priv->client, priv->dir);
-	gconf_client_suggest_sync (priv->client, NULL);
+	/* Always update secrets since it's assumed that secrets are included in
+	 * the new connection data.
+	 */
+	nma_gconf_connection_update (NMA_GCONF_CONNECTION (connection), FALSE);
 
 	return parent_settings_connection_iface->update (connection, callback, user_data);
 }

@@ -63,7 +63,8 @@ nm_connection_editor_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/marshallers/libmarshallers.la \
-	$(NMA_LIBS)
+	$(NMA_LIBS) \
+	-lm
 
 gladedir = $(datadir)/nm-applet
 glade_DATA = \

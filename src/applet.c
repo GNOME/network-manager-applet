@@ -762,18 +762,6 @@ applet_is_any_vpn_activating (NMApplet *applet)
 	}
 	return FALSE;
 }
-static void
-save_timestamp_cb (NMSettingsConnectionInterface *connection,
-                   GError *error,
-                   gpointer user_data)
-{
-	if (error) {
-		g_warning ("Error saving connection %s timestamp: (%d) %s",
-		           nm_connection_get_path (NM_CONNECTION (connection)),
-		           error->code,
-		           error->message);
-	}
-}
 
 static void
 update_connection_timestamp (NMActiveConnection *active,
@@ -788,14 +776,15 @@ update_connection_timestamp (NMActiveConnection *active,
 
 	gconf_connection = nm_settings_interface_get_connection_by_path (NM_SETTINGS_INTERFACE (applet->gconf_settings),
 	                                                                 nm_connection_get_path (connection));
-	if (!gconf_connection)
+	if (!gconf_connection || !NMA_IS_GCONF_CONNECTION (gconf_connection))
 		return;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
 	g_object_set (s_con, NM_SETTING_CONNECTION_TIMESTAMP, (guint64) time (NULL), NULL);
-	nm_settings_connection_interface_update (gconf_connection, save_timestamp_cb, NULL);
+	/* Ignore secrets since we're just updating the timestamp */
+	nma_gconf_connection_update (NMA_GCONF_CONNECTION (gconf_connection), TRUE);
 }
 
 static char *
@@ -2620,7 +2609,7 @@ periodic_update_active_connection_timestamps (gpointer user_data)
 
 		path = nm_active_connection_get_connection (active);
 		connection = nm_settings_interface_get_connection_by_path (NM_SETTINGS_INTERFACE (applet->gconf_settings), path);
-		if (!connection)
+		if (!connection || !NMA_IS_GCONF_CONNECTION (connection))
 			continue;
 
 		devices = nm_active_connection_get_devices (active);
@@ -2640,7 +2629,8 @@ periodic_update_active_connection_timestamps (gpointer user_data)
 				g_assert (s_con);
 
 				g_object_set (s_con, NM_SETTING_CONNECTION_TIMESTAMP, (guint64) time (NULL), NULL);
-				nm_settings_connection_interface_update (connection, save_timestamp_cb, NULL);
+				/* Ignore secrets since we're just updating the timestamp */
+				nma_gconf_connection_update (NMA_GCONF_CONNECTION (connection), TRUE);
 				break;
 			}
 		}
