@@ -47,7 +47,7 @@
 #include <dbus/dbus-glib.h>
 
 #include "nma-marshal.h"
-#include "bling-spinner.h"
+#include "nma-bling-spinner.h"
 #include "mobile-wizard.h"
 
 #define DBUS_TYPE_G_MAP_OF_VARIANT (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
@@ -302,7 +302,7 @@ dun_cleanup (PluginInfo *info, const char *message, gboolean uncheck)
 	}
 
 	if (info->spinner) {
-		bling_spinner_stop (BLING_SPINNER (info->spinner));
+		nma_bling_spinner_stop (NMA_BLING_SPINNER (info->spinner));
 		gtk_widget_hide (info->spinner);
 	}
 	gtk_label_set_text (GTK_LABEL (info->label), message);
@@ -717,10 +717,10 @@ dun_start (PluginInfo *info)
 
 	/* Start the spinner */
 	if (!info->spinner) {
-		info->spinner = bling_spinner_new ();
+		info->spinner = nma_bling_spinner_new ();
 		gtk_box_pack_start (GTK_BOX (info->hbox), info->spinner, FALSE, FALSE, 6);
 	}
-	bling_spinner_start (BLING_SPINNER (info->spinner));
+	nma_bling_spinner_start (NMA_BLING_SPINNER (info->spinner));
 	gtk_widget_show_all (info->hbox);
 
 	gtk_widget_set_sensitive (info->dun_button, FALSE);
@@ -880,7 +880,7 @@ plugin_info_destroy (gpointer data)
 	if (info->dun_connection)
 		g_object_unref (info->dun_connection);
 	if (info->spinner)
-		bling_spinner_stop (BLING_SPINNER (info->spinner));
+		nma_bling_spinner_stop (NMA_BLING_SPINNER (info->spinner));
 	g_object_unref (info->settings);
 	g_object_unref (info->btmodel);
 	g_object_unref (info->btclient);

@@ -16,8 +16,8 @@ plugin_LTLIBRARIES = libnma.la
 
 libnma_la_SOURCES = \
 	network-manager-applet.c \
-	bling-spinner.c \
-	bling-spinner.h
+	nma-bling-spinner.c \
+	nma-bling-spinner.h
 
 libnma_la_LDFLAGS = -module -avoid-version
 
@@ -28,5 +28,5 @@ endif
 
 EXTRA_DIST = \
 	network-manager-applet.c \
-	bling-spinner.c \
-	bling-spinner.h
+	nma-bling-spinner.c \
+	nma-bling-spinner.h

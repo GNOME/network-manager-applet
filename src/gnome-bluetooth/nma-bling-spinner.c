@@ -30,11 +30,11 @@
 #include <gtk/gtk.h>
 #include <math.h>
 
-#include "bling-spinner.h"
+#include "nma-bling-spinner.h"
 
-#define BLING_SPINNER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), BLING_TYPE_SPINNER, BlingSpinnerPrivate))
+#define NMA_BLING_SPINNER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), NMA_TYPE_BLING_SPINNER, NmaBlingSpinnerPrivate))
 
-G_DEFINE_TYPE (BlingSpinner, bling_spinner, GTK_TYPE_DRAWING_AREA);
+G_DEFINE_TYPE (NmaBlingSpinner, nma_bling_spinner, GTK_TYPE_DRAWING_AREA);
 
 enum
 {
@@ -43,7 +43,7 @@ enum
 };
 
 /* STRUCTS & ENUMS */
-struct _BlingSpinnerPrivate
+struct _NmaBlingSpinnerPrivate
 {
 	/* state */
 	guint current;
@@ -54,12 +54,12 @@ struct _BlingSpinnerPrivate
 };
 
 /* FORWARDS */
-static void bling_spinner_class_init(BlingSpinnerClass *klass);
-static void bling_spinner_init(BlingSpinner *spinner);
-static void bling_spinner_finalize (GObject *gobject);
-static void bling_spinner_set_property(GObject *gobject, guint prop_id, const GValue *value, GParamSpec *pspec);
-static gboolean bling_spinner_expose(GtkWidget *widget, GdkEventExpose *event);
-static void bling_spinner_screen_changed (GtkWidget* widget, GdkScreen* old_screen);
+static void nma_bling_spinner_class_init(NmaBlingSpinnerClass *klass);
+static void nma_bling_spinner_init(NmaBlingSpinner *spinner);
+static void nma_bling_spinner_finalize (GObject *gobject);
+static void nma_bling_spinner_set_property(GObject *gobject, guint prop_id, const GValue *value, GParamSpec *pspec);
+static gboolean nma_bling_spinner_expose(GtkWidget *widget, GdkEventExpose *event);
+static void nma_bling_spinner_screen_changed (GtkWidget* widget, GdkScreen* old_screen);
 
 static GtkDrawingAreaClass *parent_class;
 
@@ -73,9 +73,9 @@ draw (GtkWidget *widget, cairo_t *cr)
 	int i;
 	int width, height;
 
-	BlingSpinnerPrivate *priv;
+	NmaBlingSpinnerPrivate *priv;
 
-	priv = BLING_SPINNER_GET_PRIVATE (widget);
+	priv = NMA_BLING_SPINNER_GET_PRIVATE (widget);
 
 	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
 
@@ -121,7 +121,7 @@ draw (GtkWidget *widget, cairo_t *cr)
 
 /*	GOBJECT INIT CODE */
 static void
-bling_spinner_class_init(BlingSpinnerClass *klass)
+nma_bling_spinner_class_init(NmaBlingSpinnerClass *klass)
 {
 	GObjectClass *gobject_class;
 	GtkWidgetClass *widget_class;
@@ -129,13 +129,13 @@ bling_spinner_class_init(BlingSpinnerClass *klass)
 	parent_class = g_type_class_peek_parent(klass);
 
 	gobject_class = G_OBJECT_CLASS(klass);
-	g_type_class_add_private (gobject_class, sizeof (BlingSpinnerPrivate));
-	gobject_class->set_property = bling_spinner_set_property;
-	gobject_class->finalize = bling_spinner_finalize;
+	g_type_class_add_private (gobject_class, sizeof (NmaBlingSpinnerPrivate));
+	gobject_class->set_property = nma_bling_spinner_set_property;
+	gobject_class->finalize = nma_bling_spinner_finalize;
 
 	widget_class = GTK_WIDGET_CLASS(klass);
-	widget_class->expose_event = bling_spinner_expose;
-	widget_class->screen_changed = bling_spinner_screen_changed;
+	widget_class->expose_event = nma_bling_spinner_expose;
+	widget_class->screen_changed = nma_bling_spinner_screen_changed;
 
 	g_object_class_install_property(gobject_class, PROP_NUM_LINES,
 		g_param_spec_uint("lines", "Num Lines",
@@ -146,11 +146,11 @@ bling_spinner_class_init(BlingSpinnerClass *klass)
 }
 
 static void
-bling_spinner_init (BlingSpinner *spinner)
+nma_bling_spinner_init (NmaBlingSpinner *spinner)
 {
-	BlingSpinnerPrivate *priv;
+	NmaBlingSpinnerPrivate *priv;
 
-	priv = BLING_SPINNER_GET_PRIVATE (spinner);
+	priv = NMA_BLING_SPINNER_GET_PRIVATE (spinner);
 	priv->current = 0;
 	priv->timeout = 0;
 
@@ -158,7 +158,7 @@ bling_spinner_init (BlingSpinner *spinner)
 }
 
 static gboolean
-bling_spinner_expose (GtkWidget *widget, GdkEventExpose *event)
+nma_bling_spinner_expose (GtkWidget *widget, GdkEventExpose *event)
 {
 	cairo_t *cr;
 
@@ -183,13 +183,13 @@ bling_spinner_expose (GtkWidget *widget, GdkEventExpose *event)
 }
 
 static void
-bling_spinner_screen_changed (GtkWidget* widget, GdkScreen* old_screen)
+nma_bling_spinner_screen_changed (GtkWidget* widget, GdkScreen* old_screen)
 {
-	BlingSpinner *spinner;
+	NmaBlingSpinner *spinner;
 	GdkScreen* new_screen;
 	GdkColormap* colormap;
 
-	spinner = BLING_SPINNER(widget);
+	spinner = NMA_BLING_SPINNER(widget);
 
 	new_screen = gtk_widget_get_screen (widget);
 	colormap = gdk_screen_get_rgba_colormap (new_screen);
@@ -201,13 +201,13 @@ bling_spinner_screen_changed (GtkWidget* widget, GdkScreen* old_screen)
 }
 
 static gboolean
-bling_spinner_timeout (gpointer data)
+nma_bling_spinner_timeout (gpointer data)
 {
-	BlingSpinner *spinner;
-	BlingSpinnerPrivate *priv;
+	NmaBlingSpinner *spinner;
+	NmaBlingSpinnerPrivate *priv;
 
-	spinner = BLING_SPINNER (data);
-	priv = BLING_SPINNER_GET_PRIVATE (spinner);
+	spinner = NMA_BLING_SPINNER (data);
+	priv = NMA_BLING_SPINNER_GET_PRIVATE (spinner);
 
 	if (priv->current + 1 >= priv->lines) {
 		priv->current = 0;
@@ -221,14 +221,14 @@ bling_spinner_timeout (gpointer data)
 }
 
 static void
-bling_spinner_set_property(GObject *gobject, guint prop_id,
+nma_bling_spinner_set_property(GObject *gobject, guint prop_id,
 					const GValue *value, GParamSpec *pspec)
 {
-	BlingSpinner *spinner;
-	BlingSpinnerPrivate *priv;
+	NmaBlingSpinner *spinner;
+	NmaBlingSpinnerPrivate *priv;
 
-	spinner = BLING_SPINNER(gobject);
-	priv = BLING_SPINNER_GET_PRIVATE (spinner);
+	spinner = NMA_BLING_SPINNER(gobject);
+	priv = NMA_BLING_SPINNER_GET_PRIVATE (spinner);
 
 	switch (prop_id)
 	{
@@ -242,13 +242,13 @@ bling_spinner_set_property(GObject *gobject, guint prop_id,
 }
 
 static void
-bling_spinner_finalize (GObject *gobject)
+nma_bling_spinner_finalize (GObject *gobject)
 {
-	BlingSpinner *spinner;
-	BlingSpinnerPrivate *priv;
+	NmaBlingSpinner *spinner;
+	NmaBlingSpinnerPrivate *priv;
 
-	spinner = BLING_SPINNER(gobject);
-	priv = BLING_SPINNER_GET_PRIVATE (spinner);
+	spinner = NMA_BLING_SPINNER(gobject);
+	priv = NMA_BLING_SPINNER_GET_PRIVATE (spinner);
 
 	if (priv->timeout != 0) {
 		g_source_remove (priv->timeout);
@@ -257,49 +257,49 @@ bling_spinner_finalize (GObject *gobject)
 }
 
 /**
- * bling_spinner_new
+ * nma_bling_spinner_new
  *
  * Returns a default spinner. Not yet started.
  *
- * Returns: a new #BlingSpinner
+ * Returns: a new #NmaBlingSpinner
  */
 GtkWidget *
-bling_spinner_new (void)
+nma_bling_spinner_new (void)
 {
-	return g_object_new (BLING_TYPE_SPINNER, NULL);
+	return g_object_new (NMA_TYPE_BLING_SPINNER, NULL);
 }
 
 /**
- * bling_spinner_start
+ * nma_bling_spinner_start
  *
  * Starts the animation
  */
 void
-bling_spinner_start (BlingSpinner *spinner)
+nma_bling_spinner_start (NmaBlingSpinner *spinner)
 {
-	BlingSpinnerPrivate *priv;
+	NmaBlingSpinnerPrivate *priv;
 
-	g_return_if_fail (BLING_IS_SPINNER (spinner));
+	g_return_if_fail (NMA_IS_BLING_SPINNER (spinner));
 
-	priv = BLING_SPINNER_GET_PRIVATE (spinner);
+	priv = NMA_BLING_SPINNER_GET_PRIVATE (spinner);
 	if (priv->timeout != 0)
 		return;
-	priv->timeout = g_timeout_add (80, bling_spinner_timeout, spinner);
+	priv->timeout = g_timeout_add (80, nma_bling_spinner_timeout, spinner);
 }
 
 /**
- * bling_spinner_stop
+ * nma_bling_spinner_stop
  *
  * Stops the animation
  */
 void
-bling_spinner_stop (BlingSpinner *spinner)
+nma_bling_spinner_stop (NmaBlingSpinner *spinner)
 {
-	BlingSpinnerPrivate *priv;
+	NmaBlingSpinnerPrivate *priv;
 
-	g_return_if_fail (BLING_IS_SPINNER (spinner));
+	g_return_if_fail (NMA_IS_BLING_SPINNER (spinner));
 
-	priv = BLING_SPINNER_GET_PRIVATE (spinner);
+	priv = NMA_BLING_SPINNER_GET_PRIVATE (spinner);
 	if (priv->timeout == 0)
 		return;
 	g_source_remove (priv->timeout);
