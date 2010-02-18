@@ -32,23 +32,104 @@
 
 #include <gtk/gtk.h>
 #include <bluetooth-plugin.h>
+#include <bluetooth-client.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-bluetooth.h>
 #include <nm-setting-ip4-config.h>
+#include <nm-setting-cdma.h>
+#include <nm-setting-gsm.h>
+#include <nm-setting-serial.h>
+#include <nm-setting-ppp.h>
 #include <nm-utils.h>
 #include <nma-gconf-settings.h>
 
-static gboolean
-has_config_widget (const char *bdaddr, const char **uuids)
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib.h>
+
+#include "nma-marshal.h"
+#include "bling-spinner.h"
+#include "mobile-wizard.h"
+
+#define DBUS_TYPE_G_MAP_OF_VARIANT (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
+
+#define BLUEZ_SERVICE           "org.bluez"
+#define BLUEZ_MANAGER_PATH      "/"
+#define BLUEZ_MANAGER_INTERFACE "org.bluez.Manager"
+#define BLUEZ_ADAPTER_INTERFACE "org.bluez.Adapter"
+#define BLUEZ_DEVICE_INTERFACE  "org.bluez.Device"
+#define BLUEZ_SERIAL_INTERFACE  "org.bluez.Serial"
+#define BLUEZ_NETWORK_INTERFACE "org.bluez.Network"
+
+#define MM_SERVICE         "org.freedesktop.ModemManager"
+#define MM_PATH            "/org/freedesktop/ModemManager"
+#define MM_INTERFACE       "org.freedesktop.ModemManager"
+#define MM_MODEM_INTERFACE "org.freedesktop.ModemManager.Modem"
+
+typedef struct {
+	NMSettingsInterface *settings;
+	char *bdaddr;
+	BluetoothClient *btclient;
+	GtkTreeModel *btmodel;
+
+	gboolean pan;
+	GtkWidget *pan_button;
+	guint pan_toggled_id;
+	NMSettingsConnectionInterface *pan_connection;
+
+	gboolean dun;
+	GtkWidget *dun_button;
+	guint dun_toggled_id;
+	NMSettingsConnectionInterface *dun_connection;
+
+	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *spinner;
+
+	/* DUN stuff */
+	DBusGConnection *bus;
+	DBusGProxy *dun_proxy;
+
+	DBusGProxy *mm_proxy;
+	GSList *modem_proxies;
+
+	char *rfcomm_iface;
+	guint dun_timeout_id;
+
+	MobileWizard *wizard;
+	GtkWindowGroup *window_group;
+} PluginInfo;
+
+static void
+get_capabilities (const char *bdaddr,
+                  const char **uuids,
+                  gboolean *pan,
+                  gboolean *dun)
 {
 	guint i;
+
+	g_return_if_fail (bdaddr != NULL);
+	g_return_if_fail (uuids != NULL);
+	g_return_if_fail (pan != NULL);
+	g_return_if_fail (*pan == FALSE);
+	g_return_if_fail (dun != NULL);
+	g_return_if_fail (*dun == FALSE);
 
 	for (i = 0; uuids && uuids[i] != NULL; i++) {
 		g_message ("has_config_widget %s %s", bdaddr, uuids[i]);
 		if (g_str_equal (uuids[i], "NAP"))
-			return TRUE;
+			*pan = TRUE;
+		if (g_str_equal (uuids[i], "DialupNetworking"))
+			*dun = TRUE;
 	}
-	return FALSE;
+}
+
+static gboolean
+has_config_widget (const char *bdaddr, const char **uuids)
+{
+	gboolean pan = FALSE, dun = FALSE;
+
+	get_capabilities (bdaddr, uuids, &pan, &dun);
+	return pan || dun;
 }
 
 static GByteArray *
@@ -67,26 +148,70 @@ get_array_from_bdaddr (const char *str)
 	return NULL;
 }
 
+static gboolean
+get_device_iter (GtkTreeModel *model, const char *bdaddr, GtkTreeIter *out_iter)
+{
+	GtkTreeIter iter;
+	gboolean valid, child_valid;
+
+	g_return_val_if_fail (model != NULL, FALSE);
+	g_return_val_if_fail (GTK_IS_TREE_MODEL (model), FALSE);
+	g_return_val_if_fail (bdaddr != NULL, FALSE);
+	g_return_val_if_fail (out_iter != NULL, FALSE);
+
+	/* Loop over adapters */
+	valid = gtk_tree_model_get_iter_first (model, &iter);
+	while (valid) {
+		/* Loop over devices */
+		if (gtk_tree_model_iter_n_children (model, &iter)) {
+			child_valid = gtk_tree_model_iter_children (model, out_iter, &iter);
+			while (child_valid) {
+				char *addr = NULL;
+				gboolean good;
+
+				gtk_tree_model_get (model, out_iter, BLUETOOTH_COLUMN_ADDRESS, &addr, -1);
+				good = (addr && !strcasecmp (addr, bdaddr));
+				g_free (addr);
+
+				if (good)
+					return TRUE;  /* found */
+
+				child_valid = gtk_tree_model_iter_next (model, out_iter);
+			}
+		}
+
+		valid = gtk_tree_model_iter_next (model, &iter);
+	}
+
+	return FALSE;
+}
+
+/*******************************************************************/
+
 static NMSettingsConnectionInterface *
-add_setup (const char *bdaddr)
+add_pan_connection (PluginInfo *info)
 {
 	NMConnection *connection;
 	NMSetting *setting, *bt_setting, *ip_setting;
 	NMAGConfSettings *gconf_settings;
-	NMAGConfConnection *exported;
+	NMAGConfConnection *exported = NULL;
 	GByteArray *mac;
-	char *id, *uuid;
+	char *id, *uuid, *alias = NULL;
+	GtkTreeIter iter;
 
-	mac = get_array_from_bdaddr (bdaddr);
+	if (get_device_iter (info->btmodel, info->bdaddr, &iter))
+		gtk_tree_model_get (info->btmodel, &iter, BLUETOOTH_COLUMN_ALIAS, &alias, -1);
+
+	mac = get_array_from_bdaddr (info->bdaddr);
 	if (mac == NULL)
-		return NULL;
+		goto out;
 
 	/* The connection */
 	connection = nm_connection_new ();
 
 	/* The connection settings */
 	setting = nm_setting_connection_new ();
-	id = g_strdup_printf ("%s %s", bdaddr, "PANU");
+	id = g_strdup_printf (_("%s Network"), alias ? alias : info->bdaddr);
 	uuid = nm_utils_uuid_generate ();
 	g_object_set (G_OBJECT (setting),
 	              NM_SETTING_CONNECTION_ID, id,
@@ -104,7 +229,6 @@ add_setup (const char *bdaddr)
 	              NM_SETTING_BLUETOOTH_BDADDR, mac,
 	              NM_SETTING_BLUETOOTH_TYPE, NM_SETTING_BLUETOOTH_TYPE_PANU,
 	              NULL);
-	g_byte_array_free (mac, TRUE);
 	nm_connection_add_setting (connection, bt_setting);
 
 	/* The IPv4 settings */
@@ -117,45 +241,594 @@ add_setup (const char *bdaddr)
 	gconf_settings = nma_gconf_settings_new (NULL);
 	exported = nma_gconf_settings_add_connection (gconf_settings, connection);
 
-	if (exported != NULL)
-		return NM_SETTINGS_CONNECTION_INTERFACE (exported);
-	return NULL;
+out:
+	g_byte_array_free (mac, TRUE);
+	g_free (alias);
+	return exported ? NM_SETTINGS_CONNECTION_INTERFACE (exported) : NULL;
 }
+
+/*******************************************************************/
+
+static void dun_property_changed (DBusGProxy *proxy,
+                                  const char *property,
+                                  GValue *value,
+                                  gpointer user_data);
+
+static void
+dun_cleanup (PluginInfo *info, const char *message, gboolean uncheck)
+{
+	GSList *iter;
+
+	for (iter = info->modem_proxies; iter; iter = g_slist_next (iter))
+		g_object_unref (DBUS_G_PROXY (iter->data));
+	g_slist_free (info->modem_proxies);
+	info->modem_proxies = NULL;
+
+	if (info->dun_proxy) {
+		if (info->rfcomm_iface) {
+			dbus_g_proxy_call_no_reply (info->dun_proxy, "Disconnect",
+			                            G_TYPE_STRING, info->rfcomm_iface,
+			                            G_TYPE_INVALID);
+		}
+
+		dbus_g_proxy_disconnect_signal (info->dun_proxy, "PropertyChanged",
+		                                G_CALLBACK (dun_property_changed), info);
+
+		g_object_unref (info->dun_proxy);
+		info->dun_proxy = NULL;
+	}
+
+	g_free (info->rfcomm_iface);
+	info->rfcomm_iface = NULL;
+
+	if (info->bus) {
+		dbus_g_connection_unref (info->bus);
+		info->bus = NULL;
+	}
+
+	if (info->dun_timeout_id) {
+		g_source_remove (info->dun_timeout_id);
+		info->dun_timeout_id = 0;
+	}
+
+	if (info->window_group) {
+		g_object_unref (info->window_group);
+		info->window_group = NULL;
+	}
+
+	if (info->wizard) {
+		mobile_wizard_destroy (info->wizard);
+		info->wizard = NULL;
+	}
+
+	if (info->spinner) {
+		bling_spinner_stop (BLING_SPINNER (info->spinner));
+		gtk_widget_hide (info->spinner);
+	}
+	gtk_label_set_text (GTK_LABEL (info->label), message);
+	gtk_widget_set_sensitive (info->dun_button, TRUE);
+
+	if (uncheck) {
+		g_signal_handler_block (info->dun_button, info->dun_toggled_id);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (info->dun_button), FALSE);
+		g_signal_handler_unblock (info->dun_button, info->dun_toggled_id);
+	}
+}
+
+static void
+dun_error (PluginInfo *info, const char *func, GError *error, const char *fallback)
+{
+	char *message;
+
+	message = g_strdup_printf (_("Error: %s"), (error && error->message) ? error->message : fallback);
+	g_warning ("%s: %s", func, message);
+	dun_cleanup (info, message, TRUE);
+	g_free (message);
+}
+
+static NMConnection *
+dun_new_cdma (MobileWizardAccessMethod *method)
+{
+	NMConnection *connection;
+	NMSetting *setting;
+	char *uuid, *id;
+
+	connection = nm_connection_new ();
+
+	setting = nm_setting_cdma_new ();
+	g_object_set (setting,
+	              NM_SETTING_CDMA_NUMBER, "#777",
+	              NM_SETTING_CDMA_USERNAME, method->username,
+	              NM_SETTING_CDMA_PASSWORD, method->password,
+	              NULL);
+	nm_connection_add_setting (connection, setting);
+
+	/* Serial setting */
+	setting = nm_setting_serial_new ();
+	g_object_set (setting,
+	              NM_SETTING_SERIAL_BAUD, 115200,
+	              NM_SETTING_SERIAL_BITS, 8,
+	              NM_SETTING_SERIAL_PARITY, 'n',
+	              NM_SETTING_SERIAL_STOPBITS, 1,
+	              NULL);
+	nm_connection_add_setting (connection, setting);
+
+	nm_connection_add_setting (connection, nm_setting_ppp_new ());
+
+	setting = nm_setting_connection_new ();
+	if (method->plan_name)
+		id = g_strdup_printf ("%s %s", method->provider_name, method->plan_name);
+	else
+		id = g_strdup_printf ("%s connection", method->provider_name);
+	uuid = nm_utils_uuid_generate ();
+	g_object_set (setting,
+	              NM_SETTING_CONNECTION_ID, id,
+	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_BLUETOOTH_SETTING_NAME,
+	              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+	              NM_SETTING_CONNECTION_UUID, uuid,
+	              NULL);
+	g_free (uuid);
+	g_free (id);
+	nm_connection_add_setting (connection, setting);
+
+	return connection;
+}
+
+static NMConnection *
+dun_new_gsm (MobileWizardAccessMethod *method)
+{
+	NMConnection *connection;
+	NMSetting *setting;
+	char *uuid, *id;
+
+	connection = nm_connection_new ();
+
+	setting = nm_setting_gsm_new ();
+	g_object_set (setting,
+	              NM_SETTING_GSM_NUMBER, "*99#",
+	              NM_SETTING_GSM_USERNAME, method->username,
+	              NM_SETTING_GSM_PASSWORD, method->password,
+	              NM_SETTING_GSM_APN, method->gsm_apn,
+	              NULL);
+	nm_connection_add_setting (connection, setting);
+
+	/* Serial setting */
+	setting = nm_setting_serial_new ();
+	g_object_set (setting,
+	              NM_SETTING_SERIAL_BAUD, 115200,
+	              NM_SETTING_SERIAL_BITS, 8,
+	              NM_SETTING_SERIAL_PARITY, 'n',
+	              NM_SETTING_SERIAL_STOPBITS, 1,
+	              NULL);
+	nm_connection_add_setting (connection, setting);
+
+	nm_connection_add_setting (connection, nm_setting_ppp_new ());
+
+	setting = nm_setting_connection_new ();
+	if (method->plan_name)
+		id = g_strdup_printf ("%s %s", method->provider_name, method->plan_name);
+	else
+		id = g_strdup_printf ("%s connection", method->provider_name);
+	uuid = nm_utils_uuid_generate ();
+	g_object_set (setting,
+	              NM_SETTING_CONNECTION_ID, id,
+	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_BLUETOOTH_SETTING_NAME,
+	              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+	              NM_SETTING_CONNECTION_UUID, uuid,
+	              NULL);
+	g_free (uuid);
+	g_free (id);
+	nm_connection_add_setting (connection, setting);
+
+	return connection;
+}
+
+static void
+wizard_done_cb (MobileWizard *self,
+                gboolean canceled,
+                MobileWizardAccessMethod *method,
+                gpointer user_data)
+{
+	PluginInfo *info = user_data;
+	NMConnection *connection = NULL;
+	NMAGConfSettings *gconf_settings;
+	NMAGConfConnection *exported;
+	GByteArray *mac;
+	NMSetting *s_bt;
+
+	g_message ("%s: mobile wizard done", __func__);
+
+	if (canceled || !method) {
+		dun_error (info, __func__, NULL, _("Mobile wizard was canceled"));
+		return;
+	}
+
+	if (method->devtype == NM_DEVICE_TYPE_CDMA)
+		connection = dun_new_cdma (method);
+	else if (method->devtype == NM_DEVICE_TYPE_GSM)
+		connection = dun_new_gsm (method);
+	else {
+		dun_error (info, __func__, NULL, _("Unknown phone device type (not GSM or CDMA)"));
+		return;
+	}
+
+	mobile_wizard_destroy (info->wizard);
+	info->wizard = NULL;
+
+	g_assert (connection);
+
+	/* The Bluetooth settings */
+	mac = get_array_from_bdaddr (info->bdaddr);
+	g_assert (mac);
+	s_bt = nm_setting_bluetooth_new ();
+	g_object_set (G_OBJECT (s_bt),
+	              NM_SETTING_BLUETOOTH_BDADDR, mac,
+	              NM_SETTING_BLUETOOTH_TYPE, NM_SETTING_BLUETOOTH_TYPE_DUN,
+	              NULL);
+	g_byte_array_free (mac, TRUE);
+	nm_connection_add_setting (connection, s_bt);
+
+	g_message ("%s: adding new setting to GConf", __func__);
+
+	gconf_settings = nma_gconf_settings_new (NULL);
+	exported = nma_gconf_settings_add_connection (gconf_settings, connection);
+	if (exported)
+		info->dun_connection = NM_SETTINGS_CONNECTION_INTERFACE (exported);
+
+	g_message ("%s: success!", __func__);
+	dun_cleanup (info, _("Your phone is now ready to use!"), FALSE);
+}
+
+static void
+modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	PluginInfo *info = user_data;
+	const char *path;
+	GHashTable *properties = NULL;
+	GError *error = NULL;
+	GValue *value;
+	NMDeviceType devtype = NM_DEVICE_TYPE_UNKNOWN;
+
+	path = dbus_g_proxy_get_path (proxy);
+	g_message ("%s: (%s) processing GetAll reply", __func__, path);
+
+	if (!dbus_g_proxy_end_call (proxy, call, &error,
+	                            DBUS_TYPE_G_MAP_OF_VARIANT, &properties,
+	                            G_TYPE_INVALID)) {
+		g_warning ("%s: (%s) Error getting modem properties: (%d) %s",
+		           __func__,
+		           path,
+		           error ? error->code : -1,
+		           (error && error->message) ? error->message : "(unknown)");
+		g_error_free (error);
+		goto out;
+	}
+
+	/* check whether this is the device we care about */
+	value = g_hash_table_lookup (properties, "Device");
+	if (value && G_VALUE_HOLDS_STRING (value) && g_value_get_string (value)) {
+		char *basename = g_path_get_basename (info->rfcomm_iface);
+		const char *modem_iface = g_value_get_string (value);
+
+		if (!strcmp (basename, modem_iface)) {
+			/* yay, found it! */
+
+			value = g_hash_table_lookup (properties, "Type");
+			if (value && G_VALUE_HOLDS_UINT (value)) {
+				switch (g_value_get_uint (value)) {
+				case 1:
+					devtype = NM_DEVICE_TYPE_GSM;
+					break;
+				case 2:
+					devtype = NM_DEVICE_TYPE_CDMA;
+					break;
+				default:
+					g_message ("%s: (%s) unknown modem type", __func__, path);
+					break;
+				}
+			}
+		} else {
+			g_message ("%s: (%s) (%s) not the modem we're looking for (%s)",
+			           __func__,
+			           path,
+			           modem_iface,
+			           basename);
+		}
+
+		g_free (basename);
+	} else
+		g_message ("%s: (%s) modem had no 'Device' property", __func__, path);
+
+	g_hash_table_unref (properties);
+
+	if (devtype != NM_DEVICE_TYPE_UNKNOWN) {
+		GtkWidget *parent;
+
+		if (info->wizard) {
+			g_message ("%s: (%s) oops! not starting Wizard as one is already in progress", __func__, path);
+			goto out;
+		}
+
+		g_message ("%s: (%s) starting the mobile wizard", __func__, path);
+
+		g_source_remove (info->dun_timeout_id);
+		info->dun_timeout_id = 0;
+
+		parent = gtk_widget_get_toplevel (info->hbox);
+		if (GTK_WIDGET_TOPLEVEL (parent)) {
+			info->window_group = gtk_window_group_new ();
+			gtk_window_group_add_window (info->window_group, GTK_WINDOW (parent));
+		} else {
+			parent = NULL;
+			info->window_group = NULL;
+		}
+
+		/* Start the mobile wizard */
+		info->wizard = mobile_wizard_new (parent ? GTK_WINDOW (parent) : NULL,
+		                                  info->window_group,
+		                                  devtype,
+		                                  FALSE,
+		                                  wizard_done_cb,
+		                                  info);
+		mobile_wizard_present (info->wizard);
+	}
+
+out:
+	g_message ("%s: finished", __func__);
+}
+
+static void
+modem_added (DBusGProxy *proxy, const char *path, gpointer user_data)
+{
+	PluginInfo *info = user_data;
+	DBusGProxy *props_proxy;
+
+	g_return_if_fail (path != NULL);
+
+	g_message ("%s: (%s) modem found", __func__, path);
+
+	/* Create a proxy for the modem and get its properties */
+	props_proxy = dbus_g_proxy_new_for_name (info->bus,
+	                                         MM_SERVICE,
+	                                         path,
+	                                         "org.freedesktop.DBus.Properties");
+	g_assert (proxy);
+	info->modem_proxies = g_slist_append (info->modem_proxies, props_proxy);
+
+	g_message ("%s: (%s) calling GetAll...", __func__, path);
+
+	dbus_g_proxy_begin_call (props_proxy, "GetAll",
+	                         modem_get_all_cb,
+	                         info,
+	                         NULL,
+	                         G_TYPE_STRING, MM_MODEM_INTERFACE,
+	                         G_TYPE_INVALID);
+}
+
+static void
+modem_removed (DBusGProxy *proxy, const char *path, gpointer user_data)
+{
+	PluginInfo *info = user_data;
+	GSList *iter;
+	DBusGProxy *found = NULL;
+
+	g_return_if_fail (path != NULL);
+
+	g_message ("%s: (%s) modem removed", __func__, path);
+
+	/* Clean up if a modem gets removed */
+
+	for (iter = info->modem_proxies; iter; iter = g_slist_next (iter)) {
+		if (!strcmp (path, dbus_g_proxy_get_path (DBUS_G_PROXY (iter->data)))) {
+			found = iter->data;
+			break;
+		}
+	}
+
+	if (found) {
+		info->modem_proxies = g_slist_remove (info->modem_proxies, found);
+		g_object_unref (found);
+	}
+}
+
+static void
+dun_connect_cb (DBusGProxy *proxy,
+                DBusGProxyCall *call,
+                void *user_data)
+{
+	PluginInfo *info = user_data;
+	GError *error = NULL;
+	char *device;
+
+	g_message ("%s: processing Connect reply", __func__);
+
+	if (!dbus_g_proxy_end_call (proxy, call, &error,
+	                            G_TYPE_STRING, &device,
+	                            G_TYPE_INVALID)) {
+		dun_error (info, __func__, error, _("failed to connect to the phone."));
+		g_clear_error (&error);
+		goto out;
+	}
+
+	if (!device || !strlen (device)) {
+		dun_error (info, __func__, NULL, _("failed to connect to the phone."));
+		g_free (device);
+		goto out;
+	}
+
+	info->rfcomm_iface = device;
+	g_message ("%s: new rfcomm interface '%s'", __func__, device);
+
+out:
+	g_message ("%s: finished", __func__);
+}
+
+static void
+dun_property_changed (DBusGProxy *proxy,
+                      const char *property,
+                      GValue *value,
+                      gpointer user_data)
+{
+	PluginInfo *info = user_data;
+	gboolean connected;
+
+	if (strcmp (property, "Connected"))
+		return;
+
+	connected = g_value_get_boolean (value);
+
+	g_message ("%s: device property Connected changed to %s",
+	           __func__,
+	           connected ? "TRUE" : "FALSE");
+
+	if (connected) {
+		/* Wait for MM here ? */
+	} else
+		dun_error (info, __func__, NULL, _("unexpectedly disconnected from the phone."));
+}
+
+static gboolean
+dun_timeout_cb (gpointer user_data)
+{
+	PluginInfo *info = user_data;
+
+	info->dun_timeout_id = 0;
+	dun_error (info, __func__, NULL, _("timed out detecting phone details."));
+	return FALSE;
+}
+
+static void
+dun_start (PluginInfo *info)
+{
+	GError *error = NULL;
+	GtkTreeIter iter;
+
+	g_message ("%s: starting DUN device discovery...", __func__);
+
+	/* Set up dbus */
+	info->bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (error || !info->bus) {
+		dun_error (info, __func__, error, _("could not connect to the system bus."));
+		g_clear_error (&error);
+		goto out;
+	}
+
+	gtk_label_set_text (GTK_LABEL (info->label), _("Detecting phone configuration..."));
+
+	/* Start the spinner */
+	if (!info->spinner) {
+		info->spinner = bling_spinner_new ();
+		gtk_box_pack_start (GTK_BOX (info->hbox), info->spinner, FALSE, FALSE, 6);
+	}
+	bling_spinner_start (BLING_SPINNER (info->spinner));
+	gtk_widget_show_all (info->hbox);
+
+	gtk_widget_set_sensitive (info->dun_button, FALSE);
+
+	/* ModemManager stuff */
+	info->mm_proxy = dbus_g_proxy_new_for_name (info->bus,
+	                                            MM_SERVICE,
+	                                            MM_PATH,
+	                                            MM_INTERFACE);
+	g_assert (info->mm_proxy);
+
+	dbus_g_object_register_marshaller (g_cclosure_marshal_VOID__BOXED,
+	                                   G_TYPE_NONE,
+	                                   G_TYPE_BOXED,
+	                                   G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (info->mm_proxy, "DeviceAdded",
+	                         DBUS_TYPE_G_OBJECT_PATH, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (info->mm_proxy, "DeviceAdded",
+								 G_CALLBACK (modem_added), info,
+								 NULL);
+
+	dbus_g_proxy_add_signal (info->mm_proxy, "DeviceRemoved",
+	                         DBUS_TYPE_G_OBJECT_PATH, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (info->mm_proxy, "DeviceRemoved",
+								 G_CALLBACK (modem_removed), info,
+								 NULL);
+
+	/* Get the device we're looking for */
+	info->dun_proxy = NULL;
+	if (get_device_iter (info->btmodel, info->bdaddr, &iter))
+		gtk_tree_model_get (info->btmodel, &iter, BLUETOOTH_COLUMN_PROXY, &info->dun_proxy, -1);
+
+	if (info->dun_proxy) {
+		info->dun_timeout_id = g_timeout_add_seconds (45, dun_timeout_cb, info);
+
+		dbus_g_proxy_set_interface (info->dun_proxy, BLUEZ_SERIAL_INTERFACE);
+
+		g_message ("%s: calling Connect...", __func__);
+
+		/* Watch for BT device property changes */
+		dbus_g_object_register_marshaller (nma_marshal_VOID__STRING_BOXED,
+		                                   G_TYPE_NONE,
+		                                   G_TYPE_STRING, G_TYPE_VALUE,
+		                                   G_TYPE_INVALID);
+		dbus_g_proxy_add_signal (info->dun_proxy, "PropertyChanged",
+		                         G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal (info->dun_proxy, "PropertyChanged",
+		                             G_CALLBACK (dun_property_changed), info, NULL);
+
+		/* Request a connection to the device and get the port */
+		dbus_g_proxy_begin_call_with_timeout (info->dun_proxy, "Connect",
+		                                      dun_connect_cb,
+		                                      info,
+		                                      NULL,
+		                                      20000,
+		                                      G_TYPE_STRING, "dun",
+		                                      G_TYPE_INVALID);
+	} else
+		dun_error (info, __func__, error, _("could not find the Bluetooth device."));
+
+out:
+	g_message ("%s: finished", __func__);
+}
+
+/*******************************************************************/
 
 static void
 delete_cb (NMSettingsConnectionInterface *connection,
            GError *error,
            gpointer user_data)
 {
-	if (error)
-		g_warning ("Error deleting connection: (%d) %s", error->code, error->message);
-	if (user_data)
-		g_object_set_data (G_OBJECT (user_data), "conn", NULL);
-}
-
-static void
-button_toggled (GtkToggleButton *button, gpointer user_data)
-{
-	NMSettingsConnectionInterface *connection;
-	const char *bdaddr;
-
-	bdaddr = g_object_get_data (G_OBJECT (button), "bdaddr");
-	g_assert (bdaddr);
-
-	if (gtk_toggle_button_get_active (button) == FALSE) {
-		connection = g_object_get_data (G_OBJECT (button), "conn");
-		nm_settings_connection_interface_delete (connection, delete_cb, button);
-	} else {
-		connection = add_setup (bdaddr);
-		g_object_set_data (G_OBJECT (button), "conn", connection);
+	if (error) {
+		g_warning ("Error deleting connection: (%d) %s",
+		           error ? error->code : -1,
+		           error && error->message ? error->message : "(unknown)");
 	}
 }
 
+static void
+pan_button_toggled (GtkToggleButton *button, gpointer user_data)
+{
+	PluginInfo *info = user_data;
+
+	if (gtk_toggle_button_get_active (button) == FALSE) {
+		nm_settings_connection_interface_delete (info->pan_connection, delete_cb, NULL);
+		info->pan_connection = NULL;
+	} else
+		info->pan_connection = add_pan_connection (info);
+}
+
+static void
+dun_button_toggled (GtkToggleButton *button, gpointer user_data)
+{
+	PluginInfo *info = user_data;
+
+	if (gtk_toggle_button_get_active (button) == FALSE) {
+		nm_settings_connection_interface_delete (info->dun_connection, delete_cb, NULL);
+		info->dun_connection = NULL;
+	} else
+		dun_start (info);
+}
+
 static NMSettingsConnectionInterface *
-get_connection_for_bdaddr (const char *bdaddr)
+get_connection_for_bdaddr (NMSettingsInterface *settings,
+                           const char *bdaddr,
+                           gboolean pan)
 {
 	NMSettingsConnectionInterface *found = NULL;
-	NMSettingsInterface *settings;
 	GSList *list, *l;
 	GByteArray *array;
 
@@ -163,7 +836,6 @@ get_connection_for_bdaddr (const char *bdaddr)
 	if (array == NULL)
 		return NULL;
 
-	settings = NM_SETTINGS_INTERFACE (nma_gconf_settings_new (NULL));
 	list = nm_settings_interface_list_connections (settings);
 	for (l = list; l != NULL; l = l->next) {
 		NMSettingsConnectionInterface *candidate = l->data;
@@ -174,9 +846,16 @@ get_connection_for_bdaddr (const char *bdaddr)
 		setting = nm_connection_get_setting_by_name (NM_CONNECTION (candidate), NM_SETTING_BLUETOOTH_SETTING_NAME);
 		if (setting == NULL)
 			continue;
+
 		type = nm_setting_bluetooth_get_connection_type (NM_SETTING_BLUETOOTH (setting));
-		if (g_strcmp0 (type, NM_SETTING_BLUETOOTH_TYPE_PANU) != 0)
-			continue;
+		if (pan) {
+			if (g_strcmp0 (type, NM_SETTING_BLUETOOTH_TYPE_PANU) != 0)
+				continue;
+		} else {
+			if (g_strcmp0 (type, NM_SETTING_BLUETOOTH_TYPE_DUN) != 0)
+				continue;
+		}
+
 		addr = nm_setting_bluetooth_get_bdaddr (NM_SETTING_BLUETOOTH (setting));
 		if (addr == NULL || memcmp (addr->data, array->data, addr->len) != 0)
 			continue;
@@ -185,41 +864,162 @@ get_connection_for_bdaddr (const char *bdaddr)
 	}
 	g_slist_free (list);
 
+	g_byte_array_free (array, TRUE);
 	return found;
+}
+
+static void
+plugin_info_destroy (gpointer data)
+{
+	PluginInfo *info = data;
+
+	g_free (info->bdaddr);
+	g_free (info->rfcomm_iface);
+	if (info->pan_connection)
+		g_object_unref (info->pan_connection);
+	if (info->dun_connection)
+		g_object_unref (info->dun_connection);
+	if (info->spinner)
+		bling_spinner_stop (BLING_SPINNER (info->spinner));
+	g_object_unref (info->settings);
+	g_object_unref (info->btmodel);
+	g_object_unref (info->btclient);
+	memset (info, 0, sizeof (PluginInfo));
+	g_free (info);
+}
+
+static void
+default_adapter_powered_changed (GObject *object,
+                                 GParamSpec *pspec,
+                                 gpointer user_data)
+{
+	PluginInfo *info = user_data;
+	gboolean powered = TRUE;
+
+	g_object_get (G_OBJECT (info->btclient), "default-adapter-powered", &powered, NULL);
+	g_message ("Default Bluetooth adapter is %s", powered ? "powered" : "switched off");
+
+	/* If the default adapter isn't powered we can't inspect the device
+	 * and create a connection for it.
+	 */
+	if (powered) {
+		gtk_label_set_text (GTK_LABEL (info->label), NULL); 
+		if (info->dun)
+			gtk_widget_set_sensitive (info->dun_button, TRUE);
+	} else {
+		/* powered only matters for DUN */
+		if (info->dun) {
+			dun_cleanup (info, _("The default Bluetooth adapter must be enabled before setting up a Dial-Up-Networking connection."), TRUE);
+			/* Can't toggle the DUN button unless the adapter is powered */
+			gtk_widget_set_sensitive (info->dun_button, FALSE);
+		}
+	}
+}
+
+static void
+default_adapter_changed (GObject *gobject,
+                         GParamSpec *pspec,
+                         gpointer user_data)
+{
+	PluginInfo *info = user_data;
+	char *adapter;
+
+	g_object_get (G_OBJECT (gobject), "default-adapter", &adapter, NULL);
+	g_message ("Default Bluetooth adapter changed: %s", adapter ? adapter : "(none)");
+	g_free (adapter);
+
+	default_adapter_powered_changed (G_OBJECT (info->btclient), NULL, info);
 }
 
 static GtkWidget *
 get_config_widgets (const char *bdaddr, const char **uuids)
 {
-	GtkWidget *button;
-	NMSettingsConnectionInterface *connection;
+	PluginInfo *info;
+	GtkWidget *vbox, *hbox;
+	gboolean pan = FALSE, dun = FALSE;
 
-	button = gtk_check_button_new_with_label (_("Access the Internet using your mobile phone"));
-	g_object_set_data_full (G_OBJECT (button),
-	                        "bdaddr", g_strdup (bdaddr),
-	                        (GDestroyNotify) g_free);
-	connection = get_connection_for_bdaddr (bdaddr);
-	if (connection != NULL) {
-		g_object_set_data (G_OBJECT (button), "conn", connection);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+	get_capabilities (bdaddr, uuids, &pan, &dun);
+	if (!pan && !dun)
+		return NULL;
+
+	info = g_malloc0 (sizeof (PluginInfo));
+	info->settings = NM_SETTINGS_INTERFACE (nma_gconf_settings_new (NULL));
+	info->bdaddr = g_strdup (bdaddr);
+	info->pan = pan;
+	info->dun = dun;
+	
+	/* BluetoothClient setup */
+	info->btclient = bluetooth_client_new ();
+	info->btmodel = bluetooth_client_get_model (info->btclient);
+	g_signal_connect (G_OBJECT (info->btclient), "notify::default-adapter",
+			  G_CALLBACK (default_adapter_changed), info);
+	g_signal_connect (G_OBJECT (info->btclient), "notify::default-adapter-powered",
+			  G_CALLBACK (default_adapter_powered_changed), info);
+
+	/* UI setup */
+	vbox = gtk_vbox_new (FALSE, 6);
+	g_object_set_data_full (G_OBJECT (vbox), "info", info, plugin_info_destroy);
+
+	if (pan) {
+		info->pan_connection = get_connection_for_bdaddr (info->settings, bdaddr, TRUE);
+		info->pan_button = gtk_check_button_new_with_label (_("Use your mobile phone as a network device (PAN/NAP)"));
+		if (info->pan_connection)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (info->pan_button), TRUE);
+		info->pan_toggled_id = g_signal_connect (G_OBJECT (info->pan_button), "toggled", G_CALLBACK (pan_button_toggled), info);
+		gtk_box_pack_start (GTK_BOX (vbox), info->pan_button, FALSE, TRUE, 6);
 	}
-	g_signal_connect (G_OBJECT (button), "toggled", G_CALLBACK (button_toggled), NULL);
 
-	return button;
+	if (dun) {
+		info->dun_connection = get_connection_for_bdaddr (info->settings, bdaddr, FALSE);
+		info->dun_button = gtk_check_button_new_with_label (_("Access the Internet using your mobile phone (DUN)"));
+		if (info->dun_connection)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (info->dun_button), TRUE);
+		info->dun_toggled_id = g_signal_connect (G_OBJECT (info->dun_button), "toggled", G_CALLBACK (dun_button_toggled), info);
+		gtk_box_pack_start (GTK_BOX (vbox), info->dun_button, FALSE, TRUE, 6);
+	}
+
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 6);
+
+	/* Spinner's hbox */
+	info->hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), info->hbox, FALSE, FALSE, 0);
+
+	info->label = gtk_label_new ("");
+	gtk_box_pack_start (GTK_BOX (hbox), info->label, FALSE, TRUE, 6);
+
+	default_adapter_powered_changed (G_OBJECT (info->btclient), NULL, info);
+
+	return vbox;
 }
 
 static void
 device_removed (const char *bdaddr)
 {
 	NMSettingsConnectionInterface *connection;
+	NMSettingsInterface *settings;
 
-	g_message ("Device '%s' got removed", bdaddr);
+	g_message ("Device '%s' was removed; deleting connections", bdaddr);
 
-	// FIXME: don't just delete any random PAN conenction for this
-	// bdaddr, actually delete the one this plugin created
-	connection = get_connection_for_bdaddr (bdaddr);
-	if (connection)
-		nm_settings_connection_interface_delete (connection, delete_cb, NULL);
+	/* Remove any connections associated with the deleted device */
+
+	settings = NM_SETTINGS_INTERFACE (nma_gconf_settings_new (NULL));
+
+	/* First PAN */
+	do {
+		connection = get_connection_for_bdaddr (settings, bdaddr, TRUE);
+		if (connection)
+			nm_settings_connection_interface_delete (connection, delete_cb, NULL);
+	} while (connection);
+
+	/* Now DUN */
+	do {
+		connection = get_connection_for_bdaddr (settings, bdaddr, FALSE);
+		if (connection)
+			nm_settings_connection_interface_delete (connection, delete_cb, NULL);
+	} while (connection);
+
+	g_object_unref (settings);
 }
 
 static GbtPluginInfo plugin_info = {
