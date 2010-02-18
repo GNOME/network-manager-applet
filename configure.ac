@@ -1,6 +1,6 @@
 AC_PREREQ(2.52)
 
-AC_INIT(nm-applet, 0.7.999, dcbw@redhat.com, network-manager-applet)
+AC_INIT(nm-applet, 0.8, dcbw@redhat.com, network-manager-applet)
 AM_INIT_AUTOMAKE([subdir-objects no-dist-gzip dist-bzip2])
 AM_MAINTAINER_MODE
 
@@ -73,10 +73,10 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
 		 glib-2.0 >= 2.16
-		 NetworkManager >= 0.7.999
-		 libnm-glib >= 0.7.999
-		 libnm-util >= 0.7.999
-		 libnm-glib-vpn >= 0.7.999
+		 NetworkManager >= 0.8
+		 libnm-glib >= 0.8
+		 libnm-util >= 0.8
+		 libnm-glib-vpn >= 0.8
 		 gtk+-2.0 >= 2.14
 		 libglade-2.0
 		 gmodule-export-2.0
@@ -104,8 +104,8 @@ dnl Check for gnome-bluetooth
 PKG_CHECK_MODULES(GNOME_BLUETOOTH,
 		  gconf-2.0
 		  gnome-bluetooth-1.0 >= 2.27.6
-		  libnm-util
-		  libnm-glib,
+		  libnm-util >= 0.8
+		  libnm-glib >= 0.8,
 		  have_gbt=yes, have_gbt=no)
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
