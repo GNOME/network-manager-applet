@@ -33,5 +33,8 @@ void applet_about_dialog_show (NMApplet *applet);
 
 GtkWidget *applet_warning_dialog_show (const char *message);
 
+GtkWidget *applet_mobile_password_dialog_new (NMDevice *device,
+                                              NMConnection *connection,
+                                              GtkEntry **out_secret_entry);
 
 #endif /* __APPLET_DIALOGS_H__ */

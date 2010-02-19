@@ -40,6 +40,7 @@
 #include "applet-device-gsm.h"
 #include "utils.h"
 #include "mobile-wizard.h"
+#include "applet-dialogs.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -623,59 +624,6 @@ ask_for_pin_puk (NMDevice *device,
 	return GTK_WIDGET (dialog);
 }
 
-static GtkWidget *
-ask_for_password (NMDevice *device,
-                  NMConnection *connection,
-                  GtkEntry **out_secret_entry)
-{
-	GtkDialog *dialog;
-	GtkWidget *w;
-	GtkBox *box;
-	char *dev_str;
-	NMSettingConnection *s_con;
-	char *tmp;
-	const char *id;
-
-	dialog = GTK_DIALOG (gtk_dialog_new ());
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Mobile broadband network password"));
-
-	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
-	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
-	gtk_window_set_default (GTK_WINDOW (dialog), w);
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	id = nm_setting_connection_get_id (s_con);
-	g_assert (id);
-	tmp = g_strdup_printf (_("A password is required to connect to '%s'."), id);
-	w = gtk_label_new (tmp);
-	g_free (tmp);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
-
-	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
-	w = gtk_label_new (NULL);
-	gtk_label_set_markup (GTK_LABEL (w), dev_str);
-	g_free (dev_str);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
-
-	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
-
-	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
-	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
-	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (box));
-
-	gtk_box_pack_start (box, gtk_label_new (_("Password:")), FALSE, FALSE, 0);
-
-	w = gtk_entry_new ();
-	*out_secret_entry = GTK_ENTRY (w);
-	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
-	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
-
-	gtk_widget_show_all (dialog->vbox);
-	return GTK_WIDGET (dialog);
-}
-
 static gboolean
 gsm_get_secrets (NMDevice *device,
                  NMSettingsConnectionInterface *connection,
@@ -704,7 +652,7 @@ gsm_get_secrets (NMDevice *device,
 	    || !strcmp (hints[0], NM_SETTING_GSM_PUK))
 		widget = ask_for_pin_puk (device, NM_CONNECTION (connection), hints[0], &secret_entry);
 	else if (!strcmp (hints[0], NM_SETTING_GSM_PASSWORD))
-		widget = ask_for_password (device, NM_CONNECTION (connection), &secret_entry);
+		widget = applet_mobile_password_dialog_new (device, NM_CONNECTION (connection), &secret_entry);
 	else {
 		g_set_error (error,
 		             NM_SETTINGS_INTERFACE_ERROR,
