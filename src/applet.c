@@ -631,10 +631,8 @@ applet_do_notify (NMApplet *applet,
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (message != NULL);
 
-#if GTK_CHECK_VERSION(2, 11, 0)
 	if (!gtk_status_icon_is_embedded (applet->status_icon))
 		return;
-#endif
 
 	applet_clear_notify (applet);
 
@@ -2766,12 +2764,8 @@ static void nma_icons_init (NMApplet *applet)
 		g_object_unref (G_OBJECT (applet->icon_theme));
 	}
 
-#if GTK_CHECK_VERSION(2, 11, 0)
 	screen = gtk_status_icon_get_screen (applet->status_icon);
-#else
-	screen = gdk_screen_get_default ();
-#endif /* gtk 2.11.0 */
-	
+	g_assert (screen);
 	applet->icon_theme = gtk_icon_theme_get_for_screen (screen);
 
 	/* If not done yet, append our search path */
