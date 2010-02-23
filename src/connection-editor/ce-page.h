@@ -32,6 +32,10 @@
 #include <dbus/dbus-glib.h>
 #include <nm-connection.h>
 
+#if !GTK_CHECK_VERSION(2,18,0)
+#define gtk_widget_is_toplevel GTK_WIDGET_TOPLEVEL
+#endif
+
 typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
                                              gboolean canceled,
                                              GError *error,

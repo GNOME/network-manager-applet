@@ -177,7 +177,7 @@ auth_methods_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	char *tmp;
 
 	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
-	g_return_if_fail (GTK_WIDGET_TOPLEVEL (toplevel));
+	g_return_if_fail (gtk_widget_is_toplevel (toplevel));
 
 	dialog = ppp_auth_methods_dialog_new (priv->refuse_eap,
 	                                      priv->refuse_pap,

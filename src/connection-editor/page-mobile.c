@@ -244,7 +244,7 @@ apn_button_clicked (GtkButton *button, gpointer user_data)
 	GtkWidget *toplevel;
 
 	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
-	g_return_if_fail (GTK_WIDGET_TOPLEVEL (toplevel));
+	g_return_if_fail (gtk_widget_is_toplevel (toplevel));
 
 	if (!priv->window_added) {
 		gtk_window_group_add_window (priv->window_group, GTK_WINDOW (toplevel));

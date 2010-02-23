@@ -575,7 +575,7 @@ routes_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	char *tmp;
 
 	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
-	g_return_if_fail (GTK_WIDGET_TOPLEVEL (toplevel));
+	g_return_if_fail (gtk_widget_is_toplevel (toplevel));
 
 	method = nm_setting_ip4_config_get_method (priv->setting);
 	if (!method || !strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_AUTO))

@@ -248,7 +248,11 @@ private_key_picker_helper (EAPMethod *parent, const char *filename, gboolean cha
 		GtkWindow *parent_window = NULL;
 
 		toplevel = gtk_widget_get_toplevel (parent->ui_widget);
+#if GTK_CHECK_VERSION(2,18,0)
+		if (gtk_widget_is_toplevel (toplevel))
+#else
 		if (GTK_WIDGET_TOPLEVEL (toplevel))
+#endif
 			parent_window = GTK_WINDOW (toplevel);
 
 		dialog = gtk_message_dialog_new (parent_window,
