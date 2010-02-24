@@ -490,6 +490,7 @@ create_new_ap_item (NMDeviceWifi *device,
 	nm_network_menu_item_set_ssid (item, (GByteArray *) ssid);
 
 	dev_caps = nm_device_wifi_get_capabilities (device);
+	nma_icon_check_and_load ("nm-adhoc", &applet->adhoc_icon, applet);
 	nm_network_menu_item_set_detail (item, ap, applet->adhoc_icon, dev_caps);
 	nm_network_menu_item_best_strength (item, nm_access_point_get_strength (ap), applet);
 	nm_network_menu_item_add_dupe (item, ap);
@@ -1270,15 +1271,15 @@ wireless_get_icon (NMDevice *device,
 			strength = CLAMP (strength, 0, 100);
 
 			if (strength > 80)
-				pixbuf = applet->wireless_100_icon;
+				pixbuf = nma_icon_check_and_load ("nm-signal-100", &applet->wireless_100_icon, applet);
 			else if (strength > 55)
-				pixbuf = applet->wireless_75_icon;
+				pixbuf = nma_icon_check_and_load ("nm-signal-75", &applet->wireless_75_icon, applet);
 			else if (strength > 30)
-				pixbuf = applet->wireless_50_icon;
+				pixbuf = nma_icon_check_and_load ("nm-signal-50", &applet->wireless_50_icon, applet);
 			else if (strength > 5)
-				pixbuf = applet->wireless_25_icon;
+				pixbuf = nma_icon_check_and_load ("nm-signal-25", &applet->wireless_25_icon, applet);
 			else
-				pixbuf = applet->wireless_00_icon;
+				pixbuf = nma_icon_check_and_load ("nm-signal-00", &applet->wireless_00_icon, applet);
 
 			*tip = g_strdup_printf (_("Wireless network connection '%s' active: %s (%d%%)"),
 			                        id, ssid, strength);

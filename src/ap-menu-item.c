@@ -146,7 +146,7 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
                                     guint8 strength,
                                     NMApplet *applet)
 {
-	GdkPixbuf *pixbuf = NULL;
+	GdkPixbuf *icon = NULL, *pixbuf, *top;
 
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
@@ -160,19 +160,21 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
 	item->int_strength = strength;
 
 	if (strength > 80)
-		pixbuf = gdk_pixbuf_copy (applet->wireless_100_icon);
+		icon = nma_icon_check_and_load ("nm-signal-100", &applet->wireless_100_icon, applet);
 	else if (strength > 55)
-		pixbuf = gdk_pixbuf_copy (applet->wireless_75_icon);
+		icon = nma_icon_check_and_load ("nm-signal-75", &applet->wireless_75_icon, applet);
 	else if (strength > 30)
-		pixbuf = gdk_pixbuf_copy (applet->wireless_50_icon);
+		icon = nma_icon_check_and_load ("nm-signal-50", &applet->wireless_50_icon, applet);
 	else if (strength > 5)
-		pixbuf = gdk_pixbuf_copy (applet->wireless_25_icon);
+		icon = nma_icon_check_and_load ("nm-signal-25", &applet->wireless_25_icon, applet);
 	else
-		pixbuf = gdk_pixbuf_copy (applet->wireless_00_icon);
+		icon = nma_icon_check_and_load ("nm-signal-00", &applet->wireless_00_icon, applet);
 
+	pixbuf = gdk_pixbuf_copy (icon);
+
+	/* If the AP is "secure", composite the lock icon on top of the signal bars */
 	if (item->is_encrypted) {
-		GdkPixbuf *top = applet->secure_lock_icon;
-
+		top = nma_icon_check_and_load ("nm-secure-lock", &applet->secure_lock_icon, applet);
 		gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
 							  gdk_pixbuf_get_height (top),
 							  0, 0, 1.0, 1.0,

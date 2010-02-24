@@ -310,7 +310,7 @@ wired_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting a wired network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		pixbuf = applet->wired_icon;
+		pixbuf = nma_icon_check_and_load ("nm-device-wired", &applet->wired_icon, applet);
 		*tip = g_strdup_printf (_("Wired network connection '%s' active"), id);
 		break;
 	default:

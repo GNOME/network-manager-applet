@@ -1980,6 +1980,7 @@ foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
 		applet->icon_layers[layer] = g_object_ref (pixbuf);
 
 	if (!applet->icon_layers[0]) {
+		nma_icon_check_and_load ("nm-no-connection", &applet->no_connection_icon, applet);
 		pixbuf = g_object_ref (applet->no_connection_icon);
 	} else {
 		pixbuf = gdk_pixbuf_copy (applet->icon_layers[0]);
@@ -2250,6 +2251,18 @@ applet_common_get_device_icon (NMDeviceState state, NMApplet *applet)
 	}
 
 	if (stage >= 0) {
+		int i, j;
+
+		for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
+			for (j = 0; j < NUM_CONNECTING_FRAMES; j++) {
+				char *name;
+
+				name = g_strdup_printf ("nm-stage%02d-connecting%02d", i+1, j+1);
+				nma_icon_check_and_load (name, &applet->network_connecting_icons[i][j], applet);
+				g_free (name);
+			}
+		}
+
 		pixbuf = applet->network_connecting_icons[stage][applet->animation_step];
 		applet->animation_step++;
 		if (applet->animation_step >= NUM_CONNECTING_FRAMES)
@@ -2410,11 +2423,11 @@ applet_update_icon (gpointer user_data)
 	switch (state) {
 	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
-		pixbuf = applet->no_connection_icon;
+		pixbuf = nma_icon_check_and_load ("nm-no-connection", &applet->no_connection_icon, applet);
 		dev_tip = g_strdup (_("Networking disabled"));
 		break;
 	case NM_STATE_DISCONNECTED:
-		pixbuf = applet->no_connection_icon;
+		pixbuf = nma_icon_check_and_load ("nm-no-connection", &applet->no_connection_icon, applet);
 		dev_tip = g_strdup (_("No network connection"));
 		break;
 	default:
@@ -2428,14 +2441,24 @@ applet_update_icon (gpointer user_data)
 	pixbuf = NULL;
 	active_vpn = applet_get_first_active_vpn_connection (applet, &vpn_state);
 	if (active_vpn) {
+		int i;
+
 		switch (vpn_state) {
 		case NM_VPN_CONNECTION_STATE_ACTIVATED:
-			pixbuf = applet->vpn_lock_icon;
+			pixbuf = nma_icon_check_and_load ("nm-vpn-active-lock", &applet->vpn_lock_icon, applet);
 			break;
 		case NM_VPN_CONNECTION_STATE_PREPARE:
 		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
 		case NM_VPN_CONNECTION_STATE_CONNECT:
 		case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
+			for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++) {
+				char *name;
+
+				name = g_strdup_printf ("nm-vpn-connecting%02d", i+1);
+				nma_icon_check_and_load (name, &applet->vpn_connecting_icons[i], applet);
+				g_free (name);
+			}
+
 			pixbuf = applet->vpn_connecting_icons[applet->animation_step];
 			applet->animation_step++;
 			if (applet->animation_step >= NUM_VPN_CONNECTING_FRAMES)
@@ -2664,117 +2687,110 @@ periodic_update_active_connection_timestamps (gpointer user_data)
 
 /*****************************************************************************/
 
-#define CLEAR_ICON(x) \
-	if (x) { \
-		g_object_unref (x); \
-		x = NULL; \
+static void
+nma_clear_icon (GdkPixbuf **icon, NMApplet *applet)
+{
+	g_return_if_fail (icon != NULL);
+	g_return_if_fail (applet != NULL);
+
+	if (*icon && (*icon != applet->fallback_icon)) {
+		g_object_unref (*icon);
+		*icon = NULL;
 	}
+}
 
 static void nma_icons_free (NMApplet *applet)
 {
 	int i, j;
 
-	if (!applet->icons_loaded)
-		return;
-
 	for (i = 0; i <= ICON_LAYER_MAX; i++)
-		CLEAR_ICON(applet->icon_layers[i]);
+		nma_clear_icon (&applet->icon_layers[i], applet);
 
-	CLEAR_ICON(applet->no_connection_icon);
-	CLEAR_ICON(applet->wired_icon);
-	CLEAR_ICON(applet->adhoc_icon);
-	CLEAR_ICON(applet->wwan_icon);
-	CLEAR_ICON(applet->vpn_lock_icon);
-	CLEAR_ICON(applet->wireless_00_icon);
-	CLEAR_ICON(applet->wireless_25_icon);
-	CLEAR_ICON(applet->wireless_50_icon);
-	CLEAR_ICON(applet->wireless_75_icon);
-	CLEAR_ICON(applet->wireless_100_icon);
-	CLEAR_ICON(applet->secure_lock_icon);
+	nma_clear_icon (&applet->no_connection_icon, applet);
+	nma_clear_icon (&applet->wired_icon, applet);
+	nma_clear_icon (&applet->adhoc_icon, applet);
+	nma_clear_icon (&applet->wwan_icon, applet);
+	nma_clear_icon (&applet->vpn_lock_icon, applet);
+	nma_clear_icon (&applet->wireless_00_icon, applet);
+	nma_clear_icon (&applet->wireless_25_icon, applet);
+	nma_clear_icon (&applet->wireless_50_icon, applet);
+	nma_clear_icon (&applet->wireless_75_icon, applet);
+	nma_clear_icon (&applet->wireless_100_icon, applet);
+	nma_clear_icon (&applet->secure_lock_icon, applet);
 
 	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
 		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
-			CLEAR_ICON(applet->network_connecting_icons[i][j]);
+			nma_clear_icon (&applet->network_connecting_icons[i][j], applet);
 	}
 
 	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
-		CLEAR_ICON(applet->vpn_connecting_icons[i]);
+		nma_clear_icon (&applet->vpn_connecting_icons[i], applet);
 
 	for (i = 0; i <= ICON_LAYER_MAX; i++)
-		CLEAR_ICON(applet->icon_layers[i]);
-
-	applet->icons_loaded = FALSE;
+		nma_clear_icon (&applet->icon_layers[i], applet);
 }
 
-#define ICON_LOAD(icon, name) \
-	{ \
-		icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, 0, &err); \
-		if (icon == NULL) { \
-			g_warning ("Icon %s missing: %s", name, \
-			           (err && err->message) ? err->message : "unknown"); \
-			g_clear_error (&err); \
-			goto out; \
-		} \
+GdkPixbuf *
+nma_icon_check_and_load (const char *name, GdkPixbuf **icon, NMApplet *applet)
+{
+	GError *error = NULL;
+
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (icon != NULL, NULL);
+	g_return_val_if_fail (applet != NULL, NULL);
+
+	/* icon already loaded successfully */
+	if (*icon && (*icon != applet->fallback_icon))
+		return *icon;
+
+	/* Try to load the icon; if the load fails, log the problem, and set
+	 * the icon to the fallback icon if requested.
+	 */
+	*icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, 0, &error);
+	if (!*icon) {
+		g_warning ("Icon %s missing: (%d) %s",
+		           name,
+		           error ? error->code : -1,
+			       (error && error->message) ? error->message : "(unknown)");
+		g_clear_error (&error);
+
+		*icon = applet->fallback_icon;
 	}
+	return *icon;
+}
+
+#define FALLBACK_ICON_NAME "gtk-dialog-error"
 
 static gboolean
-nma_icons_load (NMApplet *applet)
+nma_icons_reload (NMApplet *applet)
 {
-	int i, j;
-	GError *err = NULL;
+	GError *error = NULL;
 
-	g_return_val_if_fail (!applet->icons_loaded, FALSE);
 	g_return_val_if_fail (applet->icon_size > 0, FALSE);
 
-	ICON_LOAD(applet->no_connection_icon, "nm-no-connection");
-	ICON_LOAD(applet->wired_icon, "nm-device-wired");
-	ICON_LOAD(applet->adhoc_icon, "nm-adhoc");
-	ICON_LOAD(applet->wwan_icon, "nm-device-wwan");
-	ICON_LOAD(applet->vpn_lock_icon, "nm-vpn-active-lock");
+	nma_icons_free (applet);
 
-	ICON_LOAD(applet->wireless_00_icon, "nm-signal-00");
-	ICON_LOAD(applet->wireless_25_icon, "nm-signal-25");
-	ICON_LOAD(applet->wireless_50_icon, "nm-signal-50");
-	ICON_LOAD(applet->wireless_75_icon, "nm-signal-75");
-	ICON_LOAD(applet->wireless_100_icon, "nm-signal-100");
-	ICON_LOAD(applet->secure_lock_icon, "nm-secure-lock");
 
-	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
-		for (j = 0; j < NUM_CONNECTING_FRAMES; j++) {
-			char *name;
-
-			name = g_strdup_printf ("nm-stage%02d-connecting%02d", i+1, j+1);
-			ICON_LOAD(applet->network_connecting_icons[i][j], name);
-			g_free (name);
-		}
+	applet->fallback_icon = gtk_icon_theme_load_icon (applet->icon_theme,
+	                                                  FALLBACK_ICON_NAME,
+	                                                  applet->icon_size, 0,
+	                                                  &error);
+	if (!applet->fallback_icon) {
+		g_warning ("Fallback icon '%s' missing: (%d) %s",
+		           FALLBACK_ICON_NAME,
+		           error ? error->code : -1,
+			       (error && error->message) ? error->message : "(unknown)");
+		g_clear_error (&error);
+		/* Die if we can't get even a fallback icon */
+		g_assert (applet->fallback_icon);
 	}
 
-	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++) {
-		char *name;
-
-		name = g_strdup_printf ("nm-vpn-connecting%02d", i+1);
-		ICON_LOAD(applet->vpn_connecting_icons[i], name);
-		g_free (name);
-	}
-
-	applet->icons_loaded = TRUE;
-
-out:
-	if (!applet->icons_loaded) {
-		GtkWidget *dialog;
-
-		dialog = applet_warning_dialog_show (_("The NetworkManager applet could not find some required resources.  It cannot continue.\n"));
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		g_main_loop_quit (applet->loop);
-	}
-
-	return applet->icons_loaded;
+	return TRUE;
 }
 
 static void nma_icon_theme_changed (GtkIconTheme *icon_theme, NMApplet *applet)
 {
-	nma_icons_free (applet);
-	nma_icons_load (applet);
+	nma_icons_reload (applet);
 }
 
 static void nma_icons_init (NMApplet *applet)
@@ -2825,8 +2841,7 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
 	 */
 	applet->icon_size = MAX (16, size);
 
-	nma_icons_free (applet);
-	nma_icons_load (applet);
+	nma_icons_reload (applet);
 
 	applet_schedule_update_icon (applet);
 
@@ -3072,6 +3087,9 @@ static void finalize (GObject *object)
 
 	if (applet->nm_client)
 		g_object_unref (applet->nm_client);
+
+	if (applet->fallback_icon)
+		g_object_unref (applet->fallback_icon);
 
 	if (applet->gconf_settings) {
 		g_object_unref (applet->gconf_settings);

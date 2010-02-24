@@ -102,7 +102,6 @@ typedef struct
 
 	/* Data model elements */
 	guint			update_icon_id;
-	gboolean		icons_loaded;
 
 	GtkIconTheme *	icon_theme;
 	GdkPixbuf *		no_connection_icon;
@@ -121,6 +120,7 @@ typedef struct
 #define NUM_VPN_CONNECTING_FRAMES 14
 	GdkPixbuf *		vpn_connecting_icons[NUM_VPN_CONNECTING_FRAMES];
 	GdkPixbuf *		vpn_lock_icon;
+	GdkPixbuf *		fallback_icon;
 
 	/* Active status icon pixbufs */
 	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
@@ -264,5 +264,9 @@ NMConnection * applet_find_active_connection_for_device (NMDevice *device,
 GtkWidget * applet_new_menu_item_helper (NMConnection *connection,
                                          NMConnection *active,
                                          gboolean add_active);
+
+GdkPixbuf * nma_icon_check_and_load (const char *name,
+                                     GdkPixbuf **icon,
+                                     NMApplet *applet);
 
 #endif
