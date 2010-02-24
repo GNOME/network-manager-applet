@@ -612,6 +612,31 @@ applet_clear_notify (NMApplet *applet)
 	applet->notification = NULL;
 }
 
+static gboolean
+applet_notify_server_has_actions ()
+{
+	static gboolean queried = FALSE;
+	static gboolean has_actions = FALSE;
+	GList *server_caps, *iter;
+
+	if (queried)
+		return has_actions;
+
+	server_caps = notify_get_server_caps();
+	for (iter = server_caps; iter; iter = g_list_next (iter)) {
+		if (!strcmp ((const char *) iter->data, NOTIFY_CAPS_ACTIONS_KEY)) {
+			has_actions = TRUE;
+			break;
+		}
+	}
+
+	g_list_foreach (server_caps, (GFunc) g_free, NULL);
+	g_list_free (server_caps);
+	queried = TRUE;
+
+	return has_actions;
+}
+
 void
 applet_do_notify (NMApplet *applet,
                   NotifyUrgency urgency,
@@ -648,7 +673,7 @@ applet_do_notify (NMApplet *applet,
 	notify_notification_set_urgency (notify, urgency);
 	notify_notification_set_timeout (notify, NOTIFY_EXPIRES_DEFAULT);
 
-	if (applet->notify_with_actions && action1) {
+	if (applet_notify_server_has_actions () && action1) {
 		notify_notification_add_action (notify, action1, action1_label,
 		                                action1_cb, action1_user_data, NULL);
 	}
@@ -2925,7 +2950,6 @@ constructor (GType type,
 {
 	NMApplet *applet;
 	AppletDBusManager *dbus_mgr;
-	GList *server_caps, *iter;
 
 	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
 
@@ -2955,16 +2979,6 @@ constructor (GType type,
 
 	if (!notify_is_initted ())
 		notify_init ("NetworkManager");
-
-	server_caps = notify_get_server_caps();
-	applet->notify_with_actions = FALSE;
-	for (iter = server_caps; iter; iter = g_list_next (iter)) {
-		if (!strcmp ((const char *) iter->data, NOTIFY_CAPS_ACTIONS_KEY))
-			applet->notify_with_actions = TRUE;
-	}
-
-	g_list_foreach (server_caps, (GFunc) g_free, NULL);
-	g_list_free (server_caps);
 
 	dbus_mgr = applet_dbus_manager_get ();
 	if (dbus_mgr == NULL) {
