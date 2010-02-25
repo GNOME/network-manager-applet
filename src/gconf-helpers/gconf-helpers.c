@@ -2613,3 +2613,48 @@ nm_gconf_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore)
 	g_object_unref (client);
 }
 
+static char *
+get_always_ask_path (const char *uuid)
+{
+	return g_strdup_printf (APPLET_PREFS_PATH "/8021x-password-always-ask/%s", uuid);
+}
+
+gboolean
+nm_gconf_get_8021x_password_always_ask (const char *uuid)
+{
+	GConfClient *client;
+	char *key = NULL;
+	gboolean ask = FALSE;
+
+	g_return_val_if_fail (uuid != NULL, FALSE);
+
+	client = gconf_client_get_default ();
+
+	key = get_always_ask_path (uuid);
+	ask = gconf_client_get_bool (client, key, NULL);
+	g_free (key);
+
+	g_object_unref (client);
+	return ask;
+}
+
+void
+nm_gconf_set_8021x_password_always_ask (const char *uuid, gboolean ask)
+{
+	GConfClient *client;
+	char *key = NULL;
+
+	g_return_if_fail (uuid != NULL);
+
+	client = gconf_client_get_default ();
+
+	key = get_always_ask_path (uuid);
+	if (ask)
+		gconf_client_set_bool (client, key, TRUE, NULL);
+	else
+		gconf_client_unset (client, key, NULL);
+	g_free (key);
+
+	g_object_unref (client);
+}
+

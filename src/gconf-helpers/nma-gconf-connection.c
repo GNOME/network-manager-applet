@@ -479,6 +479,43 @@ do_delete (NMSettingsConnectionInterface *connection,
 }
 
 static gboolean
+is_otp_always_ask (NMConnection *connection)
+{
+	NMSetting8021x *s_8021x;
+	NMSettingConnection *s_con;
+	const char *uuid, *eap_method, *phase2;
+
+	s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+	if (s_8021x) {
+		gboolean can_always_ask = FALSE;
+
+		/* Check if PEAP or TTLS is used */
+		eap_method = nm_setting_802_1x_get_eap_method (s_8021x, 0);
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		if (!strcmp (eap_method, "peap"))
+			can_always_ask = TRUE;
+		else if (!strcmp (eap_method, "ttls")) {
+			/* Now make sure the phase2 method isn't TLS */
+			phase2 = nm_setting_802_1x_get_phase2_auth (s_8021x);
+			if (phase2 && strcmp (phase2, "tls"))
+				can_always_ask = TRUE;
+			else {
+				phase2 = nm_setting_802_1x_get_phase2_autheap (s_8021x);
+				if (phase2 && strcmp (phase2, "tls"))
+					can_always_ask = TRUE;
+			}
+		}
+
+		if (can_always_ask) {
+			uuid = nm_setting_connection_get_uuid (s_con);
+			if (nm_gconf_get_8021x_password_always_ask (uuid))
+				return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+static gboolean
 internal_get_secrets (NMSettingsConnectionInterface *connection,
                       const char *setting_name,
                       const char **hints,
@@ -538,6 +575,10 @@ internal_get_secrets (NMSettingsConnectionInterface *connection,
 			nm_connection_clear_secrets (NM_CONNECTION (self));
 			goto get_secrets;
 		}
+
+		/* OTP connections marked as always ask */
+		if (is_otp_always_ask (NM_CONNECTION (self)))
+			goto get_secrets;
 
 		secrets = nma_gconf_connection_get_keyring_items (self, setting_name, error);
 		if (!secrets) {

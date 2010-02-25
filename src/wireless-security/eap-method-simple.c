@@ -24,6 +24,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <nm-setting-8021x.h>
+#include <nm-setting-connection.h>
 
 #include "eap-method.h"
 #include "wireless-security.h"
@@ -63,6 +64,12 @@ validate (EAPMethod *parent)
 	if (!text || !strlen (text))
 		return FALSE;
 
+	/* Check if the password should always be requested */
+	widget = glade_xml_get_widget (parent->xml, "eap_password_always_ask");
+	g_assert (widget);
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
+		return TRUE;
+
 	widget = glade_xml_get_widget (parent->xml, "eap_simple_password_entry");
 	g_assert (widget);
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
@@ -92,6 +99,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	EAPMethodSimple *method = (EAPMethodSimple *) parent;
 	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
+	NMSettingConnection *s_con;
+	gboolean always_ask;
 
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
@@ -124,9 +133,19 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_assert (widget);
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_simple_password_entry");
+	widget = glade_xml_get_widget (parent->xml, "eap_password_always_ask");
 	g_assert (widget);
-	g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
+	always_ask = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+	if (always_ask) {
+		widget = glade_xml_get_widget (parent->xml, "eap_simple_password_entry");
+		g_assert (widget);
+		g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
+	}
+
+	/* Save the password always ask setting */
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	g_assert (s_con);
+	nm_gconf_set_8021x_password_always_ask (nm_setting_connection_get_uuid (s_con), always_ask);
 }
 
 static void
@@ -139,6 +158,32 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 	                          (HelperSecretFunc) nm_setting_802_1x_get_password);
 }
 
+static void
+password_always_ask_changed (GtkButton *button, EAPMethodSimple *method)
+{
+	EAPMethod *parent = (EAPMethod *) method;
+	GtkWidget *password_entry;
+	GtkWidget *show_checkbox;
+	gboolean always_ask;
+
+	always_ask = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+
+	password_entry = glade_xml_get_widget (parent->xml, "eap_simple_password_entry");
+	g_assert (password_entry);
+
+	show_checkbox = glade_xml_get_widget (parent->xml, "show_checkbutton");
+	g_assert (show_checkbox);
+
+	if (always_ask) {
+		gtk_entry_set_text (GTK_ENTRY (password_entry), "");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (show_checkbox), FALSE);
+	}
+
+	gtk_widget_set_sensitive (password_entry, !always_ask);
+	gtk_widget_set_sensitive (show_checkbox, !always_ask);
+}
+
+
 EAPMethodSimple *
 eap_method_simple_new (const char *glade_file,
                        WirelessSecurity *parent,
@@ -148,6 +193,7 @@ eap_method_simple_new (const char *glade_file,
 	EAPMethodSimple *method;
 	GtkWidget *widget;
 	GladeXML *xml;
+	gboolean always_ask = FALSE;
 
 	g_return_val_if_fail (glade_file != NULL, NULL);
 
@@ -208,6 +254,31 @@ eap_method_simple_new (const char *glade_file,
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  method);
+
+	/* Sensitize/desensitize the password entry based on whether it should
+	 * always be asked for when connecting or not.
+	 */
+	widget = glade_xml_get_widget (xml, "eap_password_always_ask");
+	g_assert (widget);
+	g_signal_connect (G_OBJECT (widget), "toggled",
+	                  (GCallback) wireless_security_changed_cb,
+	                  parent);
+	g_signal_connect (G_OBJECT (widget), "toggled",
+	                  G_CALLBACK (password_always_ask_changed),
+	                  method);
+
+	if (connection) {
+		NMSettingConnection *s_con;
+		const char *uuid;
+
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		g_assert (s_con);
+
+		uuid = nm_setting_connection_get_uuid (s_con);
+		always_ask = nm_gconf_get_8021x_password_always_ask (uuid);
+	}
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), always_ask);
 
 	return method;
 }
