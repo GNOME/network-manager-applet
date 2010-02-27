@@ -40,6 +40,7 @@
 #include "utils.h"
 #include "mobile-wizard.h"
 #include "applet-dialogs.h"
+#include "nma-marshal.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -234,6 +235,19 @@ add_default_connection_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
 
+typedef struct {
+	DBusGProxy *props_proxy;
+	DBusGProxy *cdma_proxy;
+	gboolean quality_valid;
+	guint32 quality;
+	guint32 cdma1x_state;
+	guint32 evdo_state;
+	gboolean evdo_capable;
+
+	gboolean nopoll;
+	guint32 poll_id;
+} CdmaDeviceInfo;
+
 static void
 cdma_add_menu_item (NMDevice *device,
                     guint32 n_devices,
@@ -241,11 +255,14 @@ cdma_add_menu_item (NMDevice *device,
                     GtkWidget *menu,
                     NMApplet *applet)
 {
+	CdmaDeviceInfo *info;
 	char *text;
 	GtkWidget *item;
 	GSList *connections, *all;
 	GtkWidget *label;
 	char *bold_text;
+
+	info = g_object_get_data (G_OBJECT (device), "devinfo");
 
 	all = applet_get_all_connections (applet);
 	connections = utils_filter_connections_for_device (device, all);
@@ -263,6 +280,20 @@ cdma_add_menu_item (NMDevice *device,
 	} else {
 		text = g_strdup (_("Mobile Broadband"));
 	}
+
+#if 0
+	/* Show signal strength next to the device text, and show registration
+	 * status underneath where the active connection would go.
+	 */
+	if (info->quality_valid) {
+	    gboolean registered = (info->cdma1x_state || info->evdo_state);
+		if (registered) {
+			/* show quality and reg info */
+		} else {
+			/* no network */
+		}
+	}
+#endif
 
 	item = applet_menu_item_create_device_item_helper (device, applet, text);
 	g_free (text);
@@ -307,6 +338,13 @@ cdma_device_state_changed (NMDevice *device,
                            NMDeviceStateReason reason,
                            NMApplet *applet)
 {
+	CdmaDeviceInfo *info = g_object_get_data (G_OBJECT (device), "devinfo");
+
+	if (info) {
+		/* Don't poll for signal/registration if device isn't usable */
+		info->nopoll = (new_state <= NM_DEVICE_STATE_UNAVAILABLE);
+	}
+
 	if (new_state == NM_DEVICE_STATE_ACTIVATED) {
 		NMConnection *connection;
 		NMSettingConnection *s_con = NULL;
@@ -546,6 +584,170 @@ cdma_get_secrets (NMDevice *device,
 	return TRUE;
 }
 
+static void
+cdma_device_info_free (gpointer data)
+{
+	CdmaDeviceInfo *info = data;
+
+	if (info->props_proxy)
+		g_object_unref (info->props_proxy);
+	if (info->cdma_proxy)
+		g_object_unref (info->cdma_proxy);
+	if (info->poll_id)
+		g_source_remove (info->poll_id);
+	memset (info, 0, sizeof (CdmaDeviceInfo));
+	g_free (info);
+}
+
+static void
+reg_state_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	CdmaDeviceInfo *info = user_data;
+	GError *error = NULL;
+	guint32 cdma1x_state = 0, evdo_state = 0;
+
+	if (dbus_g_proxy_end_call (proxy, call, &error,
+	                           G_TYPE_UINT, &cdma1x_state,
+	                           G_TYPE_UINT, &evdo_state,
+	                           G_TYPE_INVALID)) {
+		info->cdma1x_state = cdma1x_state;
+		info->evdo_state = evdo_state;
+	}
+
+	g_clear_error (&error);
+}
+
+static void
+signal_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	CdmaDeviceInfo *info = user_data;
+	GError *error = NULL;
+	guint32 quality = 0;
+
+	if (dbus_g_proxy_end_call (proxy, call, &error,
+	                           G_TYPE_UINT, &quality,
+	                           G_TYPE_INVALID)) {
+		info->quality = quality;
+		info->quality_valid = TRUE;
+	}
+
+	g_clear_error (&error);
+}
+
+static gboolean
+cdma_poll_cb (gpointer user_data)
+{
+	CdmaDeviceInfo *info = user_data;
+
+	if (info->nopoll)
+		return TRUE;
+
+	/* Kick off calls to get registration state and signal quality */
+	dbus_g_proxy_begin_call (info->cdma_proxy, "GetRegistrationState",
+	                         reg_state_reply, info, NULL,
+	                         G_TYPE_INVALID);
+
+	dbus_g_proxy_begin_call (info->cdma_proxy, "GetSignalQuality",
+	                         signal_reply, info, NULL,
+	                         G_TYPE_INVALID);
+
+	return TRUE;
+}
+
+static void
+reg_state_changed_cb (DBusGProxy *proxy,
+                      guint32 cdma1x_state,
+                      guint32 evdo_state,
+                      gpointer user_data)
+{
+	CdmaDeviceInfo *info = user_data;
+
+	info->cdma1x_state = cdma1x_state;
+	info->evdo_state = evdo_state;
+}
+
+static void
+signal_quality_changed_cb (DBusGProxy *proxy,
+                           guint32 quality,
+                           gpointer user_data)
+{
+	CdmaDeviceInfo *info = user_data;
+
+	info->quality = quality;
+	info->quality_valid = TRUE;
+}
+
+static void
+cdma_device_added (NMDevice *device, NMApplet *applet)
+{
+	NMCdmaDevice *cdma = NM_CDMA_DEVICE (device);
+	AppletDBusManager *dbus_mgr = applet_dbus_manager_get ();
+	DBusGConnection *bus = applet_dbus_manager_get_connection (dbus_mgr);
+	CdmaDeviceInfo *info;
+	const char *udi;
+	NMDeviceState state;
+
+	udi = nm_device_get_udi (device);
+	if (!udi)
+		return;
+
+	info = g_malloc0 (sizeof (CdmaDeviceInfo));
+	info->quality_valid = FALSE;
+
+	/* Don't bother polling if the device isn't usable */
+	state = nm_device_get_state (device);
+	if (state <= NM_DEVICE_STATE_UNAVAILABLE)
+		info->nopoll = TRUE;
+
+	info->props_proxy = dbus_g_proxy_new_for_name (bus,
+	                                               "org.freedesktop.ModemManager",
+	                                               udi,
+	                                               "org.freedesktop.DBus.Properties");
+	if (!info->props_proxy) {
+		g_message ("%s: failed to create D-Bus properties proxy.", __func__);
+		cdma_device_info_free (info);
+		return;
+	}
+
+	info->cdma_proxy = dbus_g_proxy_new_for_name (bus,
+	                                              "org.freedesktop.ModemManager",
+	                                              udi,
+	                                              "org.freedesktop.ModemManager.Modem.Cdma");
+	if (!info->cdma_proxy) {
+		g_message ("%s: failed to create CDMA proxy.", __func__);
+		cdma_device_info_free (info);
+		return;
+	}
+
+	g_object_set_data_full (G_OBJECT (cdma), "devinfo", info, cdma_device_info_free);
+
+	/* Fire off calls to get current device status */
+	dbus_g_proxy_begin_call (info->cdma_proxy, "GetRegistrationState",
+	                         reg_state_reply, info, NULL,
+	                         G_TYPE_INVALID);
+
+	/* Registration state change signal */
+	dbus_g_object_register_marshaller (nma_marshal_VOID__UINT_UINT,
+	                                   G_TYPE_NONE,
+	                                   G_TYPE_UINT, G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (info->cdma_proxy, "RegistrationStateChanged",
+	                         G_TYPE_UINT, G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (info->cdma_proxy, "RegistrationStateChanged",
+	                             G_CALLBACK (reg_state_changed_cb), info, NULL);
+
+	/* Signal quality change signal */
+	dbus_g_object_register_marshaller (g_cclosure_marshal_VOID__UINT,
+	                                   G_TYPE_NONE, G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (info->cdma_proxy, "SignalQuality", G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (info->cdma_proxy, "SignalQuality",
+	                             G_CALLBACK (signal_quality_changed_cb), info, NULL);
+
+	/* periodically poll for signal quality and registration state */
+	info->poll_id = g_timeout_add_seconds (5, cdma_poll_cb, info);
+
+	g_object_unref (dbus_mgr);
+}
+
 NMADeviceClass *
 applet_device_cdma_get_class (NMApplet *applet)
 {
@@ -560,6 +762,7 @@ applet_device_cdma_get_class (NMApplet *applet)
 	dclass->device_state_changed = cdma_device_state_changed;
 	dclass->get_icon = cdma_get_icon;
 	dclass->get_secrets = cdma_get_secrets;
+	dclass->device_added = cdma_device_added;
 
 	return dclass;
 }
