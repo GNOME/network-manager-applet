@@ -379,6 +379,10 @@ cdma_get_icon (NMDevice *device,
 	NMSettingConnection *s_con;
 	GdkPixbuf *pixbuf = NULL;
 	const char *id;
+	CdmaDeviceInfo *info;
+
+	info = g_object_get_data (G_OBJECT (device), "devinfo");
+	g_assert (info);
 
 	id = nm_device_get_iface (NM_DEVICE (device));
 	if (connection) {
@@ -401,7 +405,11 @@ cdma_get_icon (NMDevice *device,
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		pixbuf = nma_icon_check_and_load ("nm-device-wwan", &applet->wwan_icon, applet);
-		*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
+		if ((info->cdma1x_state || info->evdo_state) && info->quality_valid) {
+			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active: (%d%%)"),
+			                        id, info->quality);
+		} else
+			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
 		break;
 	default:
 		break;
