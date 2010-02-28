@@ -487,9 +487,6 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 	GtkWidget *label;
 	PangoFontDescription *desc;
 	cairo_t *cr;
-	GtkImageMenuItem *image_menu_item;
-	GtkImage *icon;
-	GdkPixbuf *pixbuf;
 	PangoLayout *layout;
 	int width = 0, height = 0, owidth, oheight;
 	gdouble extraheight = 0, extrawidth = 0;
@@ -515,11 +512,6 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 	 */
 	cairo_translate (cr, widget->allocation.x, widget->allocation.y);
 
-	image_menu_item = GTK_IS_IMAGE_MENU_ITEM (widget) ? GTK_IMAGE_MENU_ITEM (widget) : NULL;
-
-	icon = image_menu_item ? GTK_IMAGE (gtk_image_menu_item_get_image (image_menu_item)) : NULL;
-	pixbuf = icon ? gtk_image_get_pixbuf (icon) : NULL;
-
 	text = gtk_label_get_text (GTK_LABEL (label));
 
 	layout = pango_cairo_create_layout (cr);
@@ -534,20 +526,6 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 	width = owidth / PANGO_SCALE;
 	height += oheight / PANGO_SCALE;
 
-	if (pixbuf) {
-		gdouble w = gdk_pixbuf_get_width (pixbuf);
-		gdouble h = gdk_pixbuf_get_height (pixbuf);
-
-		if (width < w)
-			width = w;
-		if (height < h) {
-			extraheight = (h - height) / 2.0;
-			height = h;
-		}
-		extrawidth = gdk_pixbuf_get_width (pixbuf) + 5.0 + 5.0;
-	}
-	width += extrawidth;
-
 	cairo_save (cr);
 
 	cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 0.0);
@@ -558,17 +536,6 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	/* now the in-padding content */
 	cairo_translate (cr, xpadding , ypadding);
-	if (pixbuf) {
-		gdouble x = 0.0;
-		gdouble y = height / 2.0 - gdk_pixbuf_get_height (pixbuf) / 2.0;
-		gdouble w = gdk_pixbuf_get_width (pixbuf);
-		gdouble h = gdk_pixbuf_get_height (pixbuf);
-
-		gdk_cairo_set_source_pixbuf (cr, pixbuf, x, y);
-		cairo_rectangle (cr, x, y, w, h);
-		cairo_fill (cr);
-	}
-
 	cairo_set_source_rgb (cr, TITLE_TEXT_R, TITLE_TEXT_G, TITLE_TEXT_B);
 	cairo_move_to (cr, extrawidth, extraheight);
 	pango_cairo_show_layout (cr, layout);
@@ -589,14 +556,10 @@ applet_menu_item_create_device_item_helper (NMDevice *device,
                                             NMApplet *applet,
                                             const gchar *text)
 {
-	GtkWidget *item = gtk_image_menu_item_new_with_mnemonic (text);
-	NMADeviceClass *klass = get_device_class (device, applet);
-	GdkPixbuf *pixbuf = klass->get_device_icon ? klass->get_device_icon (device, applet) : NULL;
-	GtkWidget *image = pixbuf ? gtk_image_new_from_pixbuf (pixbuf) : NULL;
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+	GtkWidget *item;
 
+	item = gtk_menu_item_new_with_mnemonic (text);
 	gtk_widget_set_sensitive (item, FALSE);
-
 	g_signal_connect (item, "expose-event", G_CALLBACK (menu_title_item_expose), NULL);
 	return item;
 }

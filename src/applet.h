@@ -185,9 +185,6 @@ struct NMADeviceClass {
 	                                        char **tip,
 	                                        NMApplet *applet);
 
-	GdkPixbuf *    (*get_device_icon)      (NMDevice *device,
-	                                        NMApplet *applet);
-
 	void           (*get_more_info)        (NMDevice *device,
 	                                        NMConnection *connection,
 	                                        NMApplet *applet,
