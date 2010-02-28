@@ -42,6 +42,7 @@
 #include "applet-dialogs.h"
 #include "nma-marshal.h"
 #include "nmn-mobile-providers.h"
+#include "mb-menu-item.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -253,61 +254,27 @@ typedef struct {
 	guint32 poll_id;
 } CdmaDeviceInfo;
 
-static char *
-get_cdma_desc (NMDevice *device, CdmaDeviceInfo *info)
+static guint32
+state_for_info (CdmaDeviceInfo *info, guint32 *out_tech)
 {
-	NMDeviceState state;
-	char *desc = NULL;
-
-	state = nm_device_get_state (device);
-	if (state <= NM_DEVICE_STATE_UNAVAILABLE)
-		return NULL;
+	guint32 state = MB_STATE_UNKNOWN;
 
 	if (info->evdo_state) {
-		switch (info->evdo_state) {
-		default:
-		case 1: /* REGISTERED */
-		case 2: /* HOME */
-			if (info->provider_name)
-				desc = g_strdup_printf (_("%s EVDO"), info->provider_name);
-			else {
-				if (info->evdo_state == 2)
-					desc = g_strdup (_("Home Network (EVDO)"));
-				else
-					desc = g_strdup (_("Registered (EVDO)"));
-			}
-			break;
-		case 3: /* ROAMING */
-			if (info->provider_name)
-				desc = g_strdup_printf (_("%s (EVDO roaming)"), info->provider_name);
-			else
-				desc = g_strdup (_("Roaming Network (EVDO)"));
-			break;
-		}
+		*out_tech = MB_TECH_EVDO_REVA;
+		if (info->evdo_state == 1 || info->evdo_state == 2)
+			state = MB_STATE_HOME;
+		else if (info->evdo_state == 3)
+			state = MB_STATE_ROAMING;
 	} else if (info->cdma1x_state) {
-		switch (info->cdma1x_state) {
-		default:
-		case 1: /* REGISTERED */
-		case 2: /* HOME */
-			if (info->provider_name)
-				desc = g_strdup_printf (_("%s CDMA"), info->provider_name);
-			else {
-				if (info->evdo_state == 2)
-					desc = g_strdup (_("Home Network (CDMA)"));
-				else
-					desc = g_strdup (_("Registered (CDMA)"));
-			}
-			break;
-		case 3: /* ROAMING */
-			if (info->provider_name)
-				desc = g_strdup_printf (_("%s (CDMA roaming)"), info->provider_name);
-			else
-				desc = g_strdup (_("Roaming Network (CDMA)"));
-			break;
-		}
+		*out_tech = MB_TECH_1XRTT;
+		if (info->cdma1x_state == 1 || info->cdma1x_state == 2)
+			state = MB_STATE_HOME;
+		else if (info->cdma1x_state == 3)
+			state = MB_STATE_ROAMING;
+	} else {
+		*out_tech = MB_TECH_1XRTT;
 	}
-
-	return desc;
+	return state;
 }
 
 static void
@@ -320,7 +287,7 @@ cdma_add_menu_item (NMDevice *device,
 	CdmaDeviceInfo *info;
 	char *text;
 	GtkWidget *item;
-	GSList *connections, *all;
+	GSList *connections, *all, *iter;
 	GtkWidget *label;
 	char *bold_text;
 
@@ -356,18 +323,62 @@ cdma_add_menu_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
 
-	if (g_slist_length (connections))
-		add_connection_items (device, connections, active, ADD_ACTIVE, menu, applet);
+	/* Add the active connection */
+	item = NULL;
+	for (iter = connections; iter; iter = g_slist_next (iter)) {
+		NMConnection *connection = NM_CONNECTION (iter->data);
+		NMSettingConnection *s_con;
+		guint32 tech = MB_TECH_1XRTT;
+		guint32 mb_state;
+		CdmaMenuItemInfo *menu_info;
+
+		if (connection != active)
+			continue;
+
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		g_assert (s_con);
+
+		mb_state = state_for_info (info, &tech);
+
+		item = nm_mb_menu_item_new (nm_setting_connection_get_id (s_con),
+		                            info->quality_valid ? info->quality : 0,
+		                            info->provider_name,
+		                            tech,
+		                            mb_state,
+		                            applet);
+
+		menu_info = g_slice_new0 (CdmaMenuItemInfo);
+		menu_info->applet = applet;
+		menu_info->device = g_object_ref (G_OBJECT (device));
+		menu_info->connection = g_object_ref (connection);
+
+		g_signal_connect_data (item, "activate",
+		                       G_CALLBACK (cdma_menu_item_activate),
+		                       menu_info,
+		                       (GClosureNotify) cdma_menu_item_info_destroy, 0);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		break;
+	}
 
 	/* Notify user of unmanaged or unavailable device */
-	item = nma_menu_device_get_menu_item (device, applet, NULL);
-	if (item) {
-		text = get_cdma_desc (device, info);
-		if (text)
-			gtk_menu_item_set_label (GTK_MENU_ITEM (item), text);
-		g_free (text);
+	if (nm_device_get_state (device) > NM_DEVICE_STATE_DISCONNECTED) {
+		item = nma_menu_device_get_menu_item (device, applet, NULL);
+		if (item) {
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+			gtk_widget_show (item);
+		}
+	} else {
+		guint32 tech = MB_TECH_1XRTT;
+		guint32 mb_state;
+
+		mb_state = state_for_info (info, &tech);
+		item = nm_mb_menu_item_new (NULL,
+		                            info->quality_valid ? info->quality : 0,
+		                            info->provider_name,
+		                            tech,
+		                            mb_state,
+		                            applet);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show (item);
 	}
 
 	if (!nma_menu_device_check_unusable (device)) {
@@ -893,7 +904,7 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	                             G_CALLBACK (signal_quality_changed_cb), info, NULL);
 
 	/* periodically poll for signal quality and registration state */
-	info->poll_id = g_timeout_add_seconds (5, cdma_poll_cb, info);
+	info->poll_id = g_timeout_add_seconds (10, cdma_poll_cb, info);
 	if (!info->nopoll)
 		cdma_poll_cb (info);
 

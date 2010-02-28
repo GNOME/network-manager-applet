@@ -41,6 +41,8 @@ nm_applet_SOURCES =			\
 	applet-device-wifi.c \
 	ap-menu-item.h \
 	ap-menu-item.c \
+	mb-menu-item.h \
+	mb-menu-item.c \
 	applet-device-gsm.h \
 	applet-device-gsm.c \
 	applet-device-cdma.h \
