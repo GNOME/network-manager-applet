@@ -458,8 +458,17 @@ cdma_get_icon (NMDevice *device,
 	case NM_DEVICE_STATE_ACTIVATED:
 		pixbuf = nma_icon_check_and_load ("nm-device-wwan", &applet->wwan_icon, applet);
 		if ((info->cdma1x_state || info->evdo_state) && info->quality_valid) {
-			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active: (%d%%)"),
-			                        id, info->quality);
+			gboolean roaming = FALSE;
+
+			if (info->evdo_state == 3)
+				roaming = TRUE;
+			else if (info->cdma1x_state == 3)
+				roaming = TRUE;
+
+			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active: (%d%%%s%s)"),
+			                        id, info->quality,
+			                        roaming ? ", " : "",
+			                        roaming ? _("roaming") : "");
 		} else
 			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
 		break;
