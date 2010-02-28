@@ -41,6 +41,7 @@
 #include "mobile-wizard.h"
 #include "applet-dialogs.h"
 #include "nma-marshal.h"
+#include "nmn-mobile-providers.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -243,10 +244,71 @@ typedef struct {
 	guint32 cdma1x_state;
 	guint32 evdo_state;
 	gboolean evdo_capable;
+	guint32 sid;
+
+	GHashTable *providers;
+	char *provider_name;
 
 	gboolean nopoll;
 	guint32 poll_id;
 } CdmaDeviceInfo;
+
+static char *
+get_cdma_desc (NMDevice *device, CdmaDeviceInfo *info)
+{
+	NMDeviceState state;
+	char *desc = NULL;
+
+	state = nm_device_get_state (device);
+	if (state <= NM_DEVICE_STATE_UNAVAILABLE)
+		return NULL;
+
+	if (info->evdo_state) {
+		switch (info->evdo_state) {
+		default:
+		case 1: /* REGISTERED */
+		case 2: /* HOME */
+			if (info->provider_name)
+				desc = g_strdup_printf (_("%s EVDO"), info->provider_name);
+			else {
+				if (info->evdo_state == 2)
+					desc = g_strdup (_("Home Network (EVDO)"));
+				else
+					desc = g_strdup (_("Registered (EVDO)"));
+			}
+			break;
+		case 3: /* ROAMING */
+			if (info->provider_name)
+				desc = g_strdup_printf (_("%s (EVDO roaming)"), info->provider_name);
+			else
+				desc = g_strdup (_("Roaming Network (EVDO)"));
+			break;
+		}
+	} else if (info->cdma1x_state) {
+		switch (info->cdma1x_state) {
+		default:
+		case 1: /* REGISTERED */
+		case 2: /* HOME */
+			if (info->provider_name)
+				desc = g_strdup_printf (_("%s CDMA"), info->provider_name);
+			else {
+				if (info->evdo_state == 2)
+					desc = g_strdup (_("Home Network (CDMA)"));
+				else
+					desc = g_strdup (_("Registered (CDMA)"));
+			}
+			break;
+		case 3: /* ROAMING */
+			if (info->provider_name)
+				desc = g_strdup_printf (_("%s (CDMA roaming)"), info->provider_name);
+			else
+				desc = g_strdup (_("Roaming Network (CDMA)"));
+			break;
+		}
+	}
+
+	return desc;
+}
 
 static void
 cdma_add_menu_item (NMDevice *device,
@@ -281,20 +343,6 @@ cdma_add_menu_item (NMDevice *device,
 		text = g_strdup (_("Mobile Broadband"));
 	}
 
-#if 0
-	/* Show signal strength next to the device text, and show registration
-	 * status underneath where the active connection would go.
-	 */
-	if (info->quality_valid) {
-	    gboolean registered = (info->cdma1x_state || info->evdo_state);
-		if (registered) {
-			/* show quality and reg info */
-		} else {
-			/* no network */
-		}
-	}
-#endif
-
 	item = applet_menu_item_create_device_item_helper (device, applet, text);
 	g_free (text);
 
@@ -314,6 +362,10 @@ cdma_add_menu_item (NMDevice *device,
 	/* Notify user of unmanaged or unavailable device */
 	item = nma_menu_device_get_menu_item (device, applet, NULL);
 	if (item) {
+		text = get_cdma_desc (device, info);
+		if (text)
+			gtk_menu_item_set_label (GTK_MENU_ITEM (item), text);
+		g_free (text);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show (item);
 	}
@@ -603,6 +655,9 @@ cdma_device_info_free (gpointer data)
 		g_object_unref (info->cdma_proxy);
 	if (info->poll_id)
 		g_source_remove (info->poll_id);
+	if (info->providers)
+		g_hash_table_destroy (info->providers);
+	g_free (info->provider_name);
 	memset (info, 0, sizeof (CdmaDeviceInfo));
 	g_free (info);
 }
@@ -642,6 +697,83 @@ signal_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	g_clear_error (&error);
 }
 
+#define SERVING_SYSTEM_TYPE (dbus_g_type_get_struct ("GValueArray", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_UINT, G_TYPE_INVALID))
+
+static char *
+find_provider_for_sid (GHashTable *table, guint32 sid)
+{
+	GHashTableIter iter;
+	gpointer value;
+	GSList *miter, *piter, *siter;
+	char *name = NULL;
+
+	if (sid == 0)
+		return NULL;
+
+	g_hash_table_iter_init (&iter, table);
+	/* Search through each country */
+	while (g_hash_table_iter_next (&iter, NULL, &value) && !name) {
+		GSList *providers = value;
+
+		/* Search through each country's providers */
+		for (piter = providers; piter && !name; piter = g_slist_next (piter)) {
+			NmnMobileProvider *provider = piter->data;
+
+			/* Search through each provider's access methods */
+			for (miter = provider->methods; miter && !name; miter = g_slist_next (miter)) {
+				NmnMobileAccessMethod *method = miter->data;
+
+				/* Search through CDMA SID list */
+				for (siter = method->cdma_sid; siter; siter = g_slist_next (siter)) {
+					if (GPOINTER_TO_UINT (siter->data) == sid) {
+						name = g_strdup (provider->name);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	return name;
+}
+
+static void
+serving_system_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	CdmaDeviceInfo *info = user_data;
+	GError *error = NULL;
+	GValueArray *array = NULL;
+	guint32 new_sid = 0;
+	GValue *value;
+
+	if (dbus_g_proxy_end_call (proxy, call, &error,
+	                           SERVING_SYSTEM_TYPE, &array,
+	                           G_TYPE_INVALID)) {
+		if (array->n_values == 3) {
+			value = g_value_array_get_nth (array, 2);
+			if (G_VALUE_HOLDS_UINT (value))
+				new_sid = g_value_get_uint (value);
+		}
+
+		g_value_array_free (array);
+	}
+
+	if (new_sid && (new_sid != info->sid)) {
+		info->sid = new_sid;
+		if (info->providers) {
+			g_free (info->provider_name);
+			info->provider_name = NULL;
+			info->provider_name = find_provider_for_sid (info->providers, new_sid);
+		}
+	} else if (!new_sid) {
+		info->sid = 0;
+		g_free (info->provider_name);
+		info->provider_name = NULL;
+	}
+
+	g_clear_error (&error);
+}
+
 static gboolean
 cdma_poll_cb (gpointer user_data)
 {
@@ -657,6 +789,10 @@ cdma_poll_cb (gpointer user_data)
 
 	dbus_g_proxy_begin_call (info->cdma_proxy, "GetSignalQuality",
 	                         signal_reply, info, NULL,
+	                         G_TYPE_INVALID);
+
+	dbus_g_proxy_begin_call (info->cdma_proxy, "GetServingSystem",
+	                         serving_system_reply, info, NULL,
 	                         G_TYPE_INVALID);
 
 	return TRUE;
@@ -702,6 +838,8 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	info = g_malloc0 (sizeof (CdmaDeviceInfo));
 	info->quality_valid = FALSE;
 
+	info->providers = nmn_mobile_providers_parse (NULL);
+
 	/* Don't bother polling if the device isn't usable */
 	state = nm_device_get_state (device);
 	if (state <= NM_DEVICE_STATE_UNAVAILABLE)
@@ -729,11 +867,6 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 
 	g_object_set_data_full (G_OBJECT (cdma), "devinfo", info, cdma_device_info_free);
 
-	/* Fire off calls to get current device status */
-	dbus_g_proxy_begin_call (info->cdma_proxy, "GetRegistrationState",
-	                         reg_state_reply, info, NULL,
-	                         G_TYPE_INVALID);
-
 	/* Registration state change signal */
 	dbus_g_object_register_marshaller (nma_marshal_VOID__UINT_UINT,
 	                                   G_TYPE_NONE,
@@ -752,6 +885,8 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 
 	/* periodically poll for signal quality and registration state */
 	info->poll_id = g_timeout_add_seconds (5, cdma_poll_cb, info);
+	if (!info->nopoll)
+		cdma_poll_cb (info);
 
 	g_object_unref (dbus_mgr);
 }
