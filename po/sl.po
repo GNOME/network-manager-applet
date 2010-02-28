@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-02-19 11:44+0000\n"
-"PO-Revision-Date: 2010-02-20 21:27+0100\n"
+"POT-Creation-Date: 2010-02-28 07:12+0000\n"
+"PO-Revision-Date: 2010-02-28 14:22+0100\n"
 "Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -90,15 +90,15 @@ msgid "Could not acquire the %s service. (%d)\n"
 msgstr "Storitve %s ni mogoče pridobiti. (%d)\n"
 
 #: ../src/applet-device-bt.c:174
-#: ../src/applet-device-cdma.c:292
+#: ../src/applet-device-cdma.c:375
 #: ../src/applet-device-gsm.c:285
 #: ../src/applet-device-wired.c:241
-#: ../src/applet-device-wifi.c:773
+#: ../src/applet-device-wifi.c:774
 msgid "Available"
 msgstr "Razpoložljivo"
 
 #: ../src/applet-device-bt.c:200
-#: ../src/applet-device-cdma.c:322
+#: ../src/applet-device-cdma.c:412
 #: ../src/applet-device-gsm.c:315
 #: ../src/applet-device-wired.c:270
 #, c-format
@@ -106,10 +106,10 @@ msgid "You are now connected to '%s'."
 msgstr "Uspešna povezava z '%s'."
 
 #: ../src/applet-device-bt.c:204
-#: ../src/applet-device-cdma.c:326
+#: ../src/applet-device-cdma.c:416
 #: ../src/applet-device-gsm.c:319
 #: ../src/applet-device-wired.c:274
-#: ../src/applet-device-wifi.c:1214
+#: ../src/applet-device-wifi.c:1215
 msgid "Connection Established"
 msgstr "Povezava je vzpostavljena"
 
@@ -118,57 +118,101 @@ msgid "You are now connected to the mobile broadband network."
 msgstr "Uspešna povezava z mobilnim širokopasovnim omrežjem."
 
 #: ../src/applet-device-bt.c:231
-#: ../src/applet-device-cdma.c:353
+#: ../src/applet-device-cdma.c:447
 #: ../src/applet-device-gsm.c:346
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Pripravljanje mobilne širokopasovne povezave '%s' ..."
 
 #: ../src/applet-device-bt.c:234
-#: ../src/applet-device-cdma.c:356
+#: ../src/applet-device-cdma.c:450
 #: ../src/applet-device-gsm.c:349
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Nastavljanje mobilne širokopasovne povezave '%s' ..."
 
 #: ../src/applet-device-bt.c:237
-#: ../src/applet-device-cdma.c:359
+#: ../src/applet-device-cdma.c:453
 #: ../src/applet-device-gsm.c:352
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Za mobilno širokopasovno povezavo '%s' je zahtevana overitev uporabnika ... "
 
 #: ../src/applet-device-bt.c:240
-#: ../src/applet-device-cdma.c:362
+#: ../src/applet-device-cdma.c:456
 #: ../src/applet-device-gsm.c:355
-#: ../src/applet.c:2263
+#: ../src/applet.c:2262
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Poteka zahteva za pridobitev omrežnega naslova za '%s' ..."
 
 #: ../src/applet-device-bt.c:244
-#: ../src/applet-device-cdma.c:366
+#: ../src/applet-device-cdma.c:473
 #: ../src/applet-device-gsm.c:359
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Mobilna širokopasovna povezava '%s' je dejavna"
 
-#: ../src/applet-device-cdma.c:151
+#: ../src/applet-device-cdma.c:153
 #: ../src/connection-editor/page-mobile.c:625
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:223
+#: ../src/applet-device-cdma.c:225
 msgid "New Mobile Broadband (CDMA) connection..."
 msgstr "Nova mobilna širokopasovna (CDMA) povezava ..."
 
-#: ../src/applet-device-cdma.c:262
+#: ../src/applet-device-cdma.c:272
+#, c-format
+msgid "%s EVDO"
+msgstr "%s EVDO"
+
+#: ../src/applet-device-cdma.c:275
+msgid "Home Network (EVDO)"
+msgstr "Domače omrežje (EVDO)"
+
+#: ../src/applet-device-cdma.c:277
+msgid "Registered (EVDO)"
+msgstr "Vpisano (EVDO)"
+
+#: ../src/applet-device-cdma.c:282
+#, c-format
+msgid "%s (EVDO roaming)"
+msgstr "%s (EVDO prehajajoči način)"
+
+#: ../src/applet-device-cdma.c:284
+msgid "Roaming Network (EVDO)"
+msgstr "Prehajajoče omrežje (EVDO)"
+
+#: ../src/applet-device-cdma.c:293
+#, c-format
+msgid "%s CDMA"
+msgstr "%s CDMA"
+
+#: ../src/applet-device-cdma.c:296
+msgid "Home Network (CDMA)"
+msgstr "Domače omrežje (CDMA)"
+
+#: ../src/applet-device-cdma.c:298
+msgid "Registered (CDMA)"
+msgstr "Vpisano (CDMA)"
+
+#: ../src/applet-device-cdma.c:303
+#, c-format
+msgid "%s (CDMA roaming)"
+msgstr "%s (CDMA prehajajoči način)"
+
+#: ../src/applet-device-cdma.c:305
+msgid "Roaming Network (CDMA)"
+msgstr "Prehajajoče omrežje (CDMA)"
+
+#: ../src/applet-device-cdma.c:341
 #: ../src/applet-device-gsm.c:261
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobilni širokopasovni dostop (%s)"
 
-#: ../src/applet-device-cdma.c:264
+#: ../src/applet-device-cdma.c:343
 #: ../src/applet-device-gsm.c:263
 #: ../src/connection-editor/page-mobile.c:326
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
@@ -176,9 +220,18 @@ msgstr "Mobilni širokopasovni dostop (%s)"
 msgid "Mobile Broadband"
 msgstr "Mobilni širokopasovni dostop"
 
-#: ../src/applet-device-cdma.c:327
+#: ../src/applet-device-cdma.c:417
 msgid "You are now connected to the CDMA network."
 msgstr "Uspešna povezava s CDMA omrežjem."
+
+#: ../src/applet-device-cdma.c:468
+#, c-format
+msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
+msgstr "Mobilna širokopasovna povezava '%s' je dejavna: (%d%%%s%s)"
+
+#: ../src/applet-device-cdma.c:471
+msgid "roaming"
+msgstr "prehajajoči način"
 
 #: ../src/applet-device-gsm.c:153
 #: ../src/connection-editor/page-mobile.c:628
@@ -233,7 +286,7 @@ msgstr "Žično omrežje"
 
 #. Notify user of unmanaged or unavailable device
 #: ../src/applet-device-wired.c:233
-#: ../src/applet.c:1320
+#: ../src/applet.c:1306
 msgid "disconnected"
 msgstr "prekinjena povezava"
 
@@ -278,17 +331,17 @@ msgstr "Po_veži se s skritim brezžičnim omrežjem ..."
 msgid "Create _New Wireless Network..."
 msgstr "_Ustvari novo brezžično omrežje ..."
 
-#: ../src/applet-device-wifi.c:705
+#: ../src/applet-device-wifi.c:706
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Brezžična omrežja (%s)"
 
-#: ../src/applet-device-wifi.c:707
+#: ../src/applet-device-wifi.c:708
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Brezžično omrežje (%s)"
 
-#: ../src/applet-device-wifi.c:709
+#: ../src/applet-device-wifi.c:710
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Brezžično omrežje"
@@ -296,63 +349,63 @@ msgstr[1] "Brezžični omrežji"
 msgstr[2] "Brezžična omrežja"
 msgstr[3] "Brezžična omrežja"
 
-#: ../src/applet-device-wifi.c:739
+#: ../src/applet-device-wifi.c:740
 msgid "wireless is disabled"
 msgstr "brezžični dostop je onemogočen"
 
-#: ../src/applet-device-wifi.c:800
+#: ../src/applet-device-wifi.c:801
 msgid "More networks"
 msgstr "Več omrežij"
 
-#: ../src/applet-device-wifi.c:1004
+#: ../src/applet-device-wifi.c:1005
 msgid "Wireless Networks Available"
 msgstr "Razpoložljiva brezžična omrežja"
 
-#: ../src/applet-device-wifi.c:1005
+#: ../src/applet-device-wifi.c:1006
 msgid "Click on this icon to connect to a wireless network"
 msgstr "S klikom na ikono se vzpostavi povezava z brezžičnim omrežjem"
 
-#: ../src/applet-device-wifi.c:1008
-#: ../src/applet.c:692
+#: ../src/applet-device-wifi.c:1009
+#: ../src/applet.c:678
 msgid "Don't show this message again"
 msgstr "Sporočila ne pokaži več"
 
-#: ../src/applet-device-wifi.c:1212
+#: ../src/applet-device-wifi.c:1213
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Uspešna povezava z brezžičnim omrežjem '%s'."
 
-#: ../src/applet-device-wifi.c:1213
-#: ../src/applet-device-wifi.c:1244
+#: ../src/applet-device-wifi.c:1214
+#: ../src/applet-device-wifi.c:1245
 msgid "(none)"
 msgstr "(brez)"
 
-#: ../src/applet-device-wifi.c:1254
+#: ../src/applet-device-wifi.c:1255
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Pripravljanje brezžične omrežne povezave '%s' ..."
 
-#: ../src/applet-device-wifi.c:1257
+#: ../src/applet-device-wifi.c:1258
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Prilagajanje nastavitev brezžične omrežne povezave '%s' ..."
 
-#: ../src/applet-device-wifi.c:1260
+#: ../src/applet-device-wifi.c:1261
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Zahtevana je overitev uporabnika za povezavo v brezžično omrežje '%s' ..."
 
-#: ../src/applet-device-wifi.c:1263
+#: ../src/applet-device-wifi.c:1264
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Pošiljanje zahteve za pridobitev brezžičnega omrežnega naslova '%s' ..."
 
-#: ../src/applet-device-wifi.c:1283
+#: ../src/applet-device-wifi.c:1284
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Dejavna brezžična omrežna povezava '%s': %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1287
+#: ../src/applet-device-wifi.c:1288
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Dejavna brezžična omrežna povezava '%s'"
@@ -512,7 +565,7 @@ msgstr "Za povezavo z '%s' je potrebno geslo."
 msgid "Password:"
 msgstr "Geslo:"
 
-#: ../src/applet.c:805
+#: ../src/applet.c:791
 #, c-format
 msgid ""
 "\n"
@@ -521,7 +574,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je spodletela zaradi prekinitve omrežne povezave."
 
-#: ../src/applet.c:808
+#: ../src/applet.c:794
 #, c-format
 msgid ""
 "\n"
@@ -530,7 +583,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je spodletela zaradi nepričakovane zaustavitve VPN storitve."
 
-#: ../src/applet.c:811
+#: ../src/applet.c:797
 #, c-format
 msgid ""
 "\n"
@@ -539,7 +592,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je spodletela, ker je storitev VPN vrnila neveljavno nastavitev. "
 
-#: ../src/applet.c:814
+#: ../src/applet.c:800
 #, c-format
 msgid ""
 "\n"
@@ -548,7 +601,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je spodletela zaradi iztečenega poskusa povezave. "
 
-#: ../src/applet.c:817
+#: ../src/applet.c:803
 #, c-format
 msgid ""
 "\n"
@@ -557,7 +610,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je spodletela, zaradi nepravočasnega zagona VPN storitve."
 
-#: ../src/applet.c:820
+#: ../src/applet.c:806
 #, c-format
 msgid ""
 "\n"
@@ -566,7 +619,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je spodletela zaradi spodletelega zagona VPN storitve."
 
-#: ../src/applet.c:823
+#: ../src/applet.c:809
 #, c-format
 msgid ""
 "\n"
@@ -575,7 +628,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je spodletela zaradi neveljavnih varovanih podatkov VPN."
 
-#: ../src/applet.c:826
+#: ../src/applet.c:812
 #, c-format
 msgid ""
 "\n"
@@ -584,7 +637,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je spodletela zaradi neveljavnih varovanih podatkov VPN ."
 
-#: ../src/applet.c:833
+#: ../src/applet.c:819
 #, c-format
 msgid ""
 "\n"
@@ -593,7 +646,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je spodletela."
 
-#: ../src/applet.c:851
+#: ../src/applet.c:837
 #, c-format
 msgid ""
 "\n"
@@ -602,7 +655,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je bila prekinjena zaradi prekinitve omrežne povezave."
 
-#: ../src/applet.c:854
+#: ../src/applet.c:840
 #, c-format
 msgid ""
 "\n"
@@ -611,7 +664,7 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je bila prekinjena zaradi zaustavitve VPN storitve ."
 
-#: ../src/applet.c:860
+#: ../src/applet.c:846
 #, c-format
 msgid ""
 "\n"
@@ -620,17 +673,17 @@ msgstr ""
 "\n"
 "VPN povezava '%s' je bila prekinjena."
 
-#: ../src/applet.c:891
+#: ../src/applet.c:877
 msgid "VPN Login Message"
 msgstr "Prijavno sporočilo VPN"
 
-#: ../src/applet.c:903
-#: ../src/applet.c:911
-#: ../src/applet.c:958
+#: ../src/applet.c:889
+#: ../src/applet.c:897
+#: ../src/applet.c:944
 msgid "VPN Connection Failed"
 msgstr "Neuspela VPN povezava "
 
-#: ../src/applet.c:965
+#: ../src/applet.c:951
 #, c-format
 msgid ""
 "\n"
@@ -643,7 +696,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:968
+#: ../src/applet.c:954
 #, c-format
 msgid ""
 "\n"
@@ -656,139 +709,135 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1311
+#: ../src/applet.c:1297
 msgid "device not ready"
 msgstr "naprava ni pripravljena"
 
-#: ../src/applet.c:1336
+#: ../src/applet.c:1322
 msgid "Disconnect"
 msgstr "Prekini povezavo"
 
-#: ../src/applet.c:1350
+#: ../src/applet.c:1336
 msgid "device not managed"
 msgstr "naprava ni upravljana"
 
-#: ../src/applet.c:1396
+#: ../src/applet.c:1382
 msgid "No network devices available"
 msgstr "Ni razpoložljivih omrežnih naprav"
 
-#: ../src/applet.c:1484
+#: ../src/applet.c:1470
 msgid "_VPN Connections"
 msgstr "_Povezave VPN"
 
-#: ../src/applet.c:1537
+#: ../src/applet.c:1523
 msgid "_Configure VPN..."
 msgstr "_Nastavi VPN ..."
 
-#: ../src/applet.c:1541
+#: ../src/applet.c:1527
 msgid "_Disconnect VPN..."
 msgstr "_Prekini povezavo z VPN ..."
 
-#: ../src/applet.c:1628
+#: ../src/applet.c:1614
 msgid "NetworkManager is not running..."
 msgstr "Upravljalnik omrežja ni zagnan ..."
 
-#: ../src/applet.c:1633
-#: ../src/applet.c:2391
+#: ../src/applet.c:1619
+#: ../src/applet.c:2390
 msgid "Networking disabled"
 msgstr "Omrežje onemogočeno"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1850
+#: ../src/applet.c:1836
 msgid "Enable _Networking"
 msgstr "Omogoči _omrežje"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1859
+#: ../src/applet.c:1845
 msgid "Enable _Wireless"
 msgstr "Omogoči _brezžično omrežje"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1868
+#: ../src/applet.c:1854
 msgid "Enable _Mobile Broadband"
 msgstr "Omogoči _mobilno širokopasovno omrežje"
 
 #. Toggle notifications item
-#: ../src/applet.c:1879
+#: ../src/applet.c:1865
 msgid "Enable N_otifications"
 msgstr "Omogoči _obvestila"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1890
+#: ../src/applet.c:1876
 msgid "Connection _Information"
 msgstr "_Podrobnosti povezave"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1900
+#: ../src/applet.c:1886
 msgid "Edit Connections..."
 msgstr "Urejanje povezav ..."
 
 #. Help item
-#: ../src/applet.c:1914
+#: ../src/applet.c:1900
 msgid "_Help"
 msgstr "_Pomoč"
 
 #. About item
-#: ../src/applet.c:1923
+#: ../src/applet.c:1909
 msgid "_About"
 msgstr "_O Programu"
 
-#: ../src/applet.c:2108
+#: ../src/applet.c:2095
 msgid "Disconnected"
 msgstr "Prekinjena povezava"
 
-#: ../src/applet.c:2109
+#: ../src/applet.c:2096
 msgid "The network connection has been disconnected."
 msgstr "Omrežna povezava je bila prekinjena."
 
-#: ../src/applet.c:2257
+#: ../src/applet.c:2256
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Pripravljanje omrežne povezave '%s' ..."
 
-#: ../src/applet.c:2260
+#: ../src/applet.c:2259
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Za omrežno povezavo '%s' je potrebna overitev uporabnika ..."
 
-#: ../src/applet.c:2266
+#: ../src/applet.c:2265
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Omrežna povezava '%s' je dejavna"
 
-#: ../src/applet.c:2347
+#: ../src/applet.c:2346
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Zaganjanje VPN povezave '%s' ..."
 
-#: ../src/applet.c:2350
+#: ../src/applet.c:2349
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Za VPN povezavo '%s' je potrebna overitev uporabnika ..."
 
-#: ../src/applet.c:2353
+#: ../src/applet.c:2352
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Poteka zahteva VPN naslova za '%s' ..."
 
-#: ../src/applet.c:2356
+#: ../src/applet.c:2355
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN povezava '%s' je dejavna"
 
-#: ../src/applet.c:2395
+#: ../src/applet.c:2394
 msgid "No network connection"
 msgstr "Nobene omrežne povezave"
 
-#: ../src/applet.c:2743
-msgid "The NetworkManager applet could not find some required resources.  It cannot continue.\n"
-msgstr "Aplet upravljalnika omrežja ne najde nekaterih zahtevanih virov.  Nadljevanje izvajanja ni mogoče.\n"
-
-#: ../src/applet.c:2938
+#: ../src/applet.c:2934
 msgid "NetworkManager Applet"
 msgstr "Aplet Upravljalnik omrežja"
 
-#: ../src/applet.c:2944
+#: ../src/applet.c:2940
 #: ../src/wired-dialog.c:128
 msgid "The NetworkManager Applet could not find some required resources (the glade file was not found)."
 msgstr "Aplet upravljalnika omrežja ne najde nekaterih zahtevanih virov (datoteke glade ni mogoče najti)."
@@ -819,6 +868,10 @@ msgid "Anony_mous identity:"
 msgstr "_Brezimna istovetnost:"
 
 #: ../src/applet.glade.h:8
+msgid "As_k for this password every time"
+msgstr "Vsakokrat _vprašaj za to geslo"
+
+#: ../src/applet.glade.h:9
 msgid ""
 "Automatic\n"
 "Version 0\n"
@@ -828,39 +881,39 @@ msgstr ""
 "Različica 0\n"
 "Različica 1"
 
-#: ../src/applet.glade.h:11
+#: ../src/applet.glade.h:12
 msgid "C_A certificate:"
 msgstr "Potrdilo _CA:"
 
-#: ../src/applet.glade.h:12
+#: ../src/applet.glade.h:13
 msgid "C_onnect"
 msgstr "Po_veži se"
 
-#: ../src/applet.glade.h:13
+#: ../src/applet.glade.h:14
 msgid "Co_nnection:"
 msgstr "_Povezava:"
 
-#: ../src/applet.glade.h:14
+#: ../src/applet.glade.h:15
 msgid "Connection Information"
 msgstr "Podrobnosti povezave"
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:16
 msgid "Don't _warn me again"
 msgstr "_Ne opozori več"
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:17
 msgid "I_dentity:"
 msgstr "_Istovetnost:"
 
-#: ../src/applet.glade.h:17
+#: ../src/applet.glade.h:18
 msgid "I_nner authentication:"
 msgstr "_Notranja overitev:"
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:19
 msgid "No"
 msgstr "Ne"
 
-#: ../src/applet.glade.h:19
+#: ../src/applet.glade.h:20
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -868,17 +921,13 @@ msgstr ""
 "Odprti sistem\n"
 "Deljeni ključ"
 
-#: ../src/applet.glade.h:21
+#: ../src/applet.glade.h:22
 msgid "Other Wireless Network..."
 msgstr "Drugo brezžično omrežje ..."
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:23
 msgid "Private _key:"
 msgstr "Osebni _ključ:"
-
-#: ../src/applet.glade.h:23
-msgid "Select A File"
-msgstr "Izbor datoteke"
 
 #: ../src/applet.glade.h:24
 msgid "Sho_w key"
@@ -1917,40 +1966,40 @@ msgstr "Neznana vrsta naprave telefona (ni GSM ali CDMA)"
 msgid "Your phone is now ready to use!"
 msgstr "Vaš telefon je sedaj pripravljen za uporabo!"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:648
-#: ../src/gnome-bluetooth/network-manager-applet.c:654
+#: ../src/gnome-bluetooth/network-manager-applet.c:652
+#: ../src/gnome-bluetooth/network-manager-applet.c:658
 msgid "failed to connect to the phone."
 msgstr "povezava s telefonom je spodletela."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:687
+#: ../src/gnome-bluetooth/network-manager-applet.c:691
 msgid "unexpectedly disconnected from the phone."
 msgstr "nepričakovana prekinitev povezave s telefonom."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:696
+#: ../src/gnome-bluetooth/network-manager-applet.c:700
 msgid "timed out detecting phone details."
 msgstr "zaznavanje podrobnosti telefona je poteklo."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:711
+#: ../src/gnome-bluetooth/network-manager-applet.c:715
 msgid "could not connect to the system bus."
 msgstr "Ni se mogoče povezati s sistemskim vodilom."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:716
+#: ../src/gnome-bluetooth/network-manager-applet.c:720
 msgid "Detecting phone configuration..."
 msgstr "Zaznavanje nastavitev telefona ..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:782
+#: ../src/gnome-bluetooth/network-manager-applet.c:786
 msgid "could not find the Bluetooth device."
 msgstr "Bluetooth naprave ni mogoče najti."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:912
+#: ../src/gnome-bluetooth/network-manager-applet.c:916
 msgid "The default Bluetooth adapter must be enabled before setting up a Dial-Up-Networking connection."
 msgstr "Privzeti Bluetooth vmesnik mora biti omogočen pred nastavljanjem povezave klicnega omrežja."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:965
+#: ../src/gnome-bluetooth/network-manager-applet.c:969
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Uporaba mobilnega telefona kot omrežna naprava (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:974
+#: ../src/gnome-bluetooth/network-manager-applet.c:978
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Dostop do spleta z uporabo mobilnega telefona (DUN)"
 
@@ -2209,16 +2258,16 @@ msgid "GTC"
 msgstr "GTC"
 
 #: ../src/wireless-security/eap-method-peap.c:361
-#: ../src/wireless-security/eap-method-tls.c:453
+#: ../src/wireless-security/eap-method-tls.c:457
 #: ../src/wireless-security/eap-method-ttls.c:359
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Izbor pooblastitelja potrdila ..."
 
-#: ../src/wireless-security/eap-method-tls.c:259
+#: ../src/wireless-security/eap-method-tls.c:263
 msgid "Unencrypted private keys are insecure"
 msgstr "Nešifrirani zasebni ključi niso varni"
 
-#: ../src/wireless-security/eap-method-tls.c:262
+#: ../src/wireless-security/eap-method-tls.c:266
 msgid ""
 "The selected private key does not appear to be protected by a password.  This could allow your security credentials to be compromised.  Please select a password-protected private key.\n"
 "\n"
@@ -2228,11 +2277,11 @@ msgstr ""
 "\n"
 "(Zasebne ključe lahko zaščitite z geslom z openssl)"
 
-#: ../src/wireless-security/eap-method-tls.c:447
+#: ../src/wireless-security/eap-method-tls.c:451
 msgid "Choose your personal certificate..."
 msgstr "Izbor osebnega potrdila ..."
 
-#: ../src/wireless-security/eap-method-tls.c:459
+#: ../src/wireless-security/eap-method-tls.c:463
 msgid "Choose your private key..."
 msgstr "Izbor osebnega ključa ..."
 
@@ -2248,6 +2297,14 @@ msgstr "Tuneliran TLS"
 msgid "Protected EAP (PEAP)"
 msgstr "Varovani EAP (PEAP)"
 
+#~ msgid ""
+#~ "The NetworkManager applet could not find some required resources.  It "
+#~ "cannot continue.\n"
+#~ msgstr ""
+#~ "Aplet upravljalnika omrežja ne najde nekaterih zahtevanih virov.  "
+#~ "Nadljevanje izvajanja ni mogoče.\n"
+#~ msgid "Select A File"
+#~ msgstr "Izbor datoteke"
 #~ msgid "Passphrase for wireless network %s"
 #~ msgstr "Šifrirno geslo za brezžično omrežje %s"
 #~ msgid "Connection to the wireless network '%s' failed."
