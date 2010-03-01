@@ -87,6 +87,7 @@ typedef struct {
 #define C_NEW_COLUMN		3
 
 static gboolean security_combo_init (NMAWirelessDialog *self, gboolean auth_only);
+static void ssid_entry_changed (GtkWidget *entry, gpointer user_data);
 
 void
 nma_wireless_dialog_set_nag_ignored (NMAWirelessDialog *self, gboolean ignored)
@@ -185,8 +186,13 @@ security_combo_changed (GtkWidget *combo,
 	}
 
 	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
-	if (!sec)
+	if (!sec) {
+		/* Revalidate dialog if the user picked "None" so the OK button
+		 * gets enabled if there's already a valid SSID.
+		 */
+		ssid_entry_changed (NULL, self);
 		return;
+	}
 
 	sec_widget = wireless_security_get_widget (sec);
 	g_assert (sec_widget);
