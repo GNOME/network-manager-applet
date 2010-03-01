@@ -141,7 +141,7 @@ nm_mb_menu_item_new (const char *connection_name,
 		break;
 	case MB_STATE_ROAMING:
 		if (connection_name)
-			priv->desc_string = g_strdup_printf (_("%s (roaming %s)"), connection_name, tech_name);
+			priv->desc_string = g_strdup_printf (_("%s (%s roaming)"), connection_name, tech_name);
 		else {
 			if (provider)
 				priv->desc_string = g_strdup_printf (_("%s (%s roaming)"), provider, tech_name);
