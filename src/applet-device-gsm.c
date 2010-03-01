@@ -820,13 +820,10 @@ reg_info_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 
 		g_value_array_free (array);
 	}
-else
-g_message ("%s: error %s", __func__, error->message);
 
 	info->reg_state = new_state + 1;
 	info->op_code = new_op_code;
 	info->op_name = new_op_name;
-g_message ("%s: reg info '%d' '%s' '%s'", __func__, info->reg_state - 1, info->op_code, info->op_name);
 
 	g_clear_error (&error);
 }
