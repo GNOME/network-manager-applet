@@ -428,15 +428,16 @@ gsm_get_icon (NMDevice *device,
 }
 
 typedef struct {
-	NMANewSecretsRequestedFunc callback;
-	gpointer callback_data;
-	NMApplet *applet;
-	NMActiveConnection *active_connection;
+	/* General stuff */
 	GtkWidget *dialog;
-	NMSettingsConnectionInterface *connection;
 	GtkEntry *secret_entry;
 	char *secret_name;
-} NMGsmInfo;
+	NMApplet *applet;
+	NMANewSecretsRequestedFunc callback;
+	gpointer callback_data;
+	NMActiveConnection *active_connection;
+	NMSettingsConnectionInterface *connection;
+} NMGsmSecretsInfo;
 
 
 static void
@@ -468,7 +469,7 @@ pin_entry_changed (GtkEditable *editable, gpointer user_data)
 static void
 destroy_gsm_dialog (gpointer user_data, GObject *finalized)
 {
-	NMGsmInfo *info = user_data;
+	NMGsmSecretsInfo *info = user_data;
 
 	gtk_widget_hide (info->dialog);
 	gtk_widget_destroy (info->dialog);
@@ -495,7 +496,7 @@ get_existing_secrets_cb (NMSettingsConnectionInterface *connection,
                          GError *secrets_error,
                          gpointer user_data)
 {
-	NMGsmInfo *info = (NMGsmInfo *) user_data;
+	NMGsmSecretsInfo *info = (NMGsmSecretsInfo *) user_data;
 	GHashTable *settings;
 	GError *error = NULL;
 	gboolean save_secret = FALSE;
@@ -588,7 +589,7 @@ get_gsm_secrets_cb (GtkDialog *dialog,
                     gint response,
                     gpointer user_data)
 {
-	NMGsmInfo *info = (NMGsmInfo *) user_data;
+	NMGsmSecretsInfo *info = (NMGsmSecretsInfo *) user_data;
 	GError *error = NULL;
 
 	/* Got a user response, clear the NMActiveConnection destroy handler for
@@ -701,7 +702,7 @@ gsm_get_secrets (NMDevice *device,
                  NMApplet *applet,
                  GError **error)
 {
-	NMGsmInfo *info;
+	NMGsmSecretsInfo *info;
 	GtkWidget *widget;
 	GtkEntry *secret_entry = NULL;
 
@@ -737,7 +738,7 @@ gsm_get_secrets (NMDevice *device,
 		return FALSE;
 	}
 
-	info = g_malloc0 (sizeof (NMGsmInfo));
+	info = g_malloc0 (sizeof (NMGsmSecretsInfo));
 	info->callback = callback;
 	info->callback_data = callback_data;
 	info->applet = applet;
