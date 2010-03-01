@@ -50,6 +50,12 @@ typedef struct {
 static void
 gsm_menu_item_info_destroy (gpointer data)
 {
+	GSMMenuItemInfo *info = data;
+
+	g_object_unref (G_OBJECT (info->device));
+	if (info->connection)
+		g_object_unref (info->connection);
+
 	g_slice_free (GSMMenuItemInfo, data);
 }
 
