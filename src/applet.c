@@ -1065,7 +1065,7 @@ applet_get_first_active_vpn_connection (NMApplet *applet,
 /*
  * nma_menu_disconnect_vpn_item_activate
  *
- * Signal function called when user clicks "Disconnect VPN..."
+ * Signal function called when user clicks "Disconnect VPN"
  *
  */
 static void
@@ -1524,7 +1524,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 	g_signal_connect (item, "activate", G_CALLBACK (nma_menu_configure_vpn_item_activate), applet);
 	gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
 
-	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Disconnect VPN...")));
+	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Disconnect VPN")));
 	g_signal_connect (item, "activate", G_CALLBACK (nma_menu_disconnect_vpn_item_activate), applet);
 	gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
 	if (num_vpn_active == 0)
