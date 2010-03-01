@@ -41,6 +41,8 @@
 #include "utils.h"
 #include "mobile-wizard.h"
 #include "applet-dialogs.h"
+#include "mb-menu-item.h"
+#include "nma-marshal.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -169,63 +171,19 @@ gsm_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 	                                  user_data);
 }
 
-typedef enum {
-	ADD_ACTIVE = 1,
-	ADD_INACTIVE = 2,
-} AddActiveInactiveEnum;
-
 static void
-add_connection_items (NMDevice *device,
-                      GSList *connections,
-                      NMConnection *active,
-                      AddActiveInactiveEnum flag,
-                      GtkWidget *menu,
-                      NMApplet *applet)
-{
-	GSList *iter;
-	GSMMenuItemInfo *info;
-
-	for (iter = connections; iter; iter = g_slist_next (iter)) {
-		NMConnection *connection = NM_CONNECTION (iter->data);
-		GtkWidget *item;
-
-		if (active == connection) {
-			if ((flag & ADD_ACTIVE) == 0)
-				continue;
-		} else {
-			if ((flag & ADD_INACTIVE) == 0)
-				continue;
-		}
-
-		item = applet_new_menu_item_helper (connection, active, (flag & ADD_ACTIVE));
-
-		info = g_slice_new0 (GSMMenuItemInfo);
-		info->applet = applet;
-		info->device = g_object_ref (G_OBJECT (device));
-		info->connection = g_object_ref (connection);
-
-		g_signal_connect_data (item, "activate",
-		                       G_CALLBACK (gsm_menu_item_activate),
-		                       info,
-		                       (GClosureNotify) gsm_menu_item_info_destroy, 0);
-
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-	}
-}
-
-static void
-add_default_connection_item (NMDevice *device,
-                             GtkWidget *menu,
-                             NMApplet *applet)
+add_connection_item (NMDevice *device,
+                     NMConnection *connection,
+                     GtkWidget *item,
+                     GtkWidget *menu,
+                     NMApplet *applet)
 {
 	GSMMenuItemInfo *info;
-	GtkWidget *item;
-	
-	item = gtk_check_menu_item_new_with_label (_("New Mobile Broadband (GSM) connection..."));
 
 	info = g_slice_new0 (GSMMenuItemInfo);
 	info->applet = applet;
 	info->device = g_object_ref (G_OBJECT (device));
+	info->connection = connection ? g_object_ref (connection) : NULL;
 
 	g_signal_connect_data (item, "activate",
 	                       G_CALLBACK (gsm_menu_item_activate),
@@ -235,6 +193,49 @@ add_default_connection_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
 
+typedef struct {
+	DBusGProxy *props_proxy;
+	DBusGProxy *card_proxy;
+	DBusGProxy *net_proxy;
+
+	gboolean quality_valid;
+	guint32 quality;
+
+	char *unlock_required;
+
+	/* reg_state is (1 + MM reg state) so that 0 means we haven't gotten a
+	 * value from MM yet.  0 is a valid MM GSM reg state.
+	 */
+	guint reg_state;
+	char *op_code;
+	char *op_name;
+
+	gboolean nopoll;
+	guint32 poll_id;
+} GsmDeviceInfo;
+
+static guint32
+state_for_info (GsmDeviceInfo *info)
+{
+	switch (info->reg_state) {
+	case 1:  /* IDLE */
+		return MB_STATE_IDLE;
+	case 2:  /* HOME */
+		return MB_STATE_HOME;
+	case 3:  /* SEARCHING */
+		return MB_STATE_SEARCHING;
+	case 4:  /* DENIED */
+		return MB_STATE_DENIED;
+	case 6:  /* ROAMING */
+		return MB_STATE_ROAMING;
+	case 5:  /* UNKNOWN */
+	default:
+		break;
+	}
+
+	return MB_STATE_UNKNOWN;
+}
+
 static void
 gsm_add_menu_item (NMDevice *device,
                    guint32 n_devices,
@@ -242,9 +243,12 @@ gsm_add_menu_item (NMDevice *device,
                    GtkWidget *menu,
                    NMApplet *applet)
 {
+	GsmDeviceInfo *info;
 	char *text;
 	GtkWidget *item;
-	GSList *connections, *all;
+	GSList *connections, *all, *iter;
+
+	info = g_object_get_data (G_OBJECT (device), "devinfo");
 
 	all = applet_get_all_connections (applet);
 	connections = utils_filter_connections_for_device (device, all);
@@ -264,30 +268,70 @@ gsm_add_menu_item (NMDevice *device,
 	}
 
 	item = applet_menu_item_create_device_item_helper (device, applet, text);
-	g_free (text);
-
 	gtk_widget_set_sensitive (item, FALSE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
+	g_free (text);
 
-	if (g_slist_length (connections))
-		add_connection_items (device, connections, active, ADD_ACTIVE, menu, applet);
+	/* Add the active connection */
+	if (active) {
+		NMSettingConnection *s_con;
+		guint32 mb_state;
 
-	/* Notify user of unmanaged or unavailable device */
-	item = nma_menu_device_get_menu_item (device, applet, NULL);
-	if (item) {
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show (item);
+		s_con = (NMSettingConnection *) nm_connection_get_setting (active, NM_TYPE_SETTING_CONNECTION);
+		g_assert (s_con);
+
+		mb_state = state_for_info (info);
+
+		item = nm_mb_menu_item_new (nm_setting_connection_get_id (s_con),
+		                            info->quality_valid ? info->quality : 0,
+		                            info->op_name,
+		                            MB_TECH_GSM,
+		                            mb_state,
+		                            applet);
+
+		add_connection_item (device, active, item, menu, applet);
 	}
 
+	/* Notify user of unmanaged or unavailable device */
+	if (nm_device_get_state (device) > NM_DEVICE_STATE_DISCONNECTED) {
+		item = nma_menu_device_get_menu_item (device, applet, NULL);
+		if (item) {
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+			gtk_widget_show (item);
+		}
+	} else {
+		guint32 mb_state;
+
+		mb_state = state_for_info (info);
+		item = nm_mb_menu_item_new (NULL,
+		                            info->quality_valid ? info->quality : 0,
+		                            info->op_name,
+		                            MB_TECH_GSM,
+		                            mb_state,
+		                            applet);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	}
+
+	/* Add the default / inactive connection items */
 	if (!nma_menu_device_check_unusable (device)) {
 		if ((!active && g_slist_length (connections)) || (active && g_slist_length (connections) > 1))
 			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
 
-		if (g_slist_length (connections))
-			add_connection_items (device, connections, active, ADD_INACTIVE, menu, applet);
-		else
-			add_default_connection_item (device, menu, applet);
+		if (g_slist_length (connections)) {
+			for (iter = connections; iter; iter = g_slist_next (iter)) {
+				NMConnection *connection = NM_CONNECTION (iter->data);
+
+				if (connection != active) {
+					item = applet_new_menu_item_helper (connection, NULL, FALSE);
+					add_connection_item (device, connection, item, menu, applet);
+				}
+			}
+		} else {
+			/* Default connection item */
+			item = gtk_check_menu_item_new_with_label (_("New Mobile Broadband (GSM) connection..."));
+			add_connection_item (device, NULL, item, menu, applet);
+		}
 	}
 
 	g_slist_free (connections);
@@ -334,6 +378,10 @@ gsm_get_icon (NMDevice *device,
 	NMSettingConnection *s_con;
 	GdkPixbuf *pixbuf = NULL;
 	const char *id;
+	GsmDeviceInfo *info;
+
+	info = g_object_get_data (G_OBJECT (device), "devinfo");
+	g_assert (info);
 
 	id = nm_device_get_iface (NM_DEVICE (device));
 	if (connection) {
@@ -356,7 +404,15 @@ gsm_get_icon (NMDevice *device,
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		pixbuf = nma_icon_check_and_load ("nm-device-wwan", &applet->wwan_icon, applet);
-		*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
+		if (info->reg_state && info->quality_valid) {
+			gboolean roaming = (info->reg_state == 6);
+
+			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active: (%d%%%s%s)"),
+			                        id, info->quality,
+			                        roaming ? ", " : "",
+			                        roaming ? _("roaming") : "");
+		} else
+			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
 		break;
 	default:
 		break;
@@ -695,6 +751,270 @@ gsm_get_secrets (NMDevice *device,
 	return TRUE;
 }
 
+static void
+gsm_device_info_free (gpointer data)
+{
+	GsmDeviceInfo *info = data;
+
+	if (info->props_proxy)
+		g_object_unref (info->props_proxy);
+	if (info->card_proxy)
+		g_object_unref (info->card_proxy);
+	if (info->net_proxy)
+		g_object_unref (info->net_proxy);
+
+	if (info->poll_id)
+		g_source_remove (info->poll_id);
+
+	g_free (info->op_code);
+	g_free (info->op_name);
+	memset (info, 0, sizeof (GsmDeviceInfo));
+	g_free (info);
+}
+
+static void
+signal_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+	GError *error = NULL;
+	guint32 quality = 0;
+
+	if (dbus_g_proxy_end_call (proxy, call, &error,
+	                           G_TYPE_UINT, &quality,
+	                           G_TYPE_INVALID)) {
+		info->quality = quality;
+		info->quality_valid = TRUE;
+	}
+
+	g_clear_error (&error);
+}
+
+#define REG_INFO_TYPE (dbus_g_type_get_struct ("GValueArray", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID))
+#define DBUS_TYPE_G_MAP_OF_VARIANT (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
+
+static void
+reg_info_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+	GError *error = NULL;
+	GValueArray *array = NULL;
+	guint32 new_state = 0;
+	char *new_op_code = NULL;
+	char *new_op_name = NULL;
+	GValue *value;
+
+	if (dbus_g_proxy_end_call (proxy, call, &error, REG_INFO_TYPE, &array, G_TYPE_INVALID)) {
+		if (array->n_values == 3) {
+			value = g_value_array_get_nth (array, 0);
+			if (G_VALUE_HOLDS_UINT (value))
+				new_state = g_value_get_uint (value);
+
+			value = g_value_array_get_nth (array, 1);
+			if (G_VALUE_HOLDS_STRING (value))
+				new_op_code = g_value_dup_string (value);
+
+			value = g_value_array_get_nth (array, 2);
+			if (G_VALUE_HOLDS_STRING (value))
+				new_op_name = g_value_dup_string (value);
+		}
+
+		g_value_array_free (array);
+	}
+else
+g_message ("%s: error %s", __func__, error->message);
+
+	info->reg_state = new_state + 1;
+	info->op_code = new_op_code;
+	info->op_name = new_op_name;
+g_message ("%s: reg info '%d' '%s' '%s'", __func__, info->reg_state - 1, info->op_code, info->op_name);
+
+	g_clear_error (&error);
+}
+
+static void
+unlock_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+	GError *error = NULL;
+	char *unlock = NULL;
+
+	if (dbus_g_proxy_end_call (proxy, call, &error,
+	                           G_TYPE_STRING, &unlock,
+	                           G_TYPE_INVALID)) {
+		g_free (info->unlock_required);
+		info->unlock_required = unlock;
+
+		if (info->unlock_required) {
+			/* Handle unlock */
+		}
+	}
+
+	g_clear_error (&error);
+}
+
+static gboolean
+gsm_poll_cb (gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+
+	if (info->nopoll)
+		return TRUE;
+
+	dbus_g_proxy_begin_call (info->net_proxy, "GetRegistrationInfo",
+	                         reg_info_reply, info, NULL,
+	                         G_TYPE_INVALID);
+
+	dbus_g_proxy_begin_call (info->net_proxy, "GetSignalQuality",
+	                         signal_reply, info, NULL,
+	                         G_TYPE_INVALID);
+
+	return TRUE;
+}
+
+static void
+reg_info_changed_cb (DBusGProxy *proxy,
+                     guint32 reg_state,
+                     const char *op_code,
+                     const char *op_name,
+                     gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+
+	info->reg_state = reg_state + 1;
+	info->op_code = g_strdup (op_code);
+	info->op_name = g_strdup (op_name);
+}
+
+static void
+signal_quality_changed_cb (DBusGProxy *proxy,
+                           guint32 quality,
+                           gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+
+	info->quality = quality;
+	info->quality_valid = TRUE;
+}
+
+#define MM_DBUS_INTERFACE_MODEM "org.freedesktop.ModemManager.Modem"
+
+static void
+modem_properties_changed (DBusGProxy *proxy,
+                          const char *interface,
+                          GHashTable *props,
+                          gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+	GValue *value;
+
+	if (strcmp (interface, MM_DBUS_INTERFACE_MODEM))
+		return;
+
+	value = g_hash_table_lookup (props, "UnlockRequired");
+	if (value && G_VALUE_HOLDS_STRING (value)) {
+		g_free (info->unlock_required);
+		info->unlock_required = g_value_dup_string (value);
+
+		if (info->unlock_required) {
+			/* Handle unlock */
+		}
+	}
+}
+
+static void
+gsm_device_added (NMDevice *device, NMApplet *applet)
+{
+	NMGsmDevice *gsm = NM_GSM_DEVICE (device);
+	AppletDBusManager *dbus_mgr = applet_dbus_manager_get ();
+	DBusGConnection *bus = applet_dbus_manager_get_connection (dbus_mgr);
+	GsmDeviceInfo *info;
+	const char *udi;
+	NMDeviceState state;
+
+	udi = nm_device_get_udi (device);
+	if (!udi)
+		return;
+
+	info = g_malloc0 (sizeof (GsmDeviceInfo));
+
+	/* Don't bother polling if the device isn't usable */
+	state = nm_device_get_state (device);
+	if (state <= NM_DEVICE_STATE_UNAVAILABLE)
+		info->nopoll = TRUE;
+
+	info->props_proxy = dbus_g_proxy_new_for_name (bus,
+	                                               "org.freedesktop.ModemManager",
+	                                               udi,
+	                                               "org.freedesktop.DBus.Properties");
+	if (!info->props_proxy) {
+		g_message ("%s: failed to create D-Bus properties proxy.", __func__);
+		gsm_device_info_free (info);
+		return;
+	}
+
+	info->card_proxy = dbus_g_proxy_new_for_name (bus,
+	                                              "org.freedesktop.ModemManager",
+	                                              udi,
+	                                              "org.freedesktop.ModemManager.Modem.Gsm.Card");
+	if (!info->card_proxy) {
+		g_message ("%s: failed to create GSM Card proxy.", __func__);
+		gsm_device_info_free (info);
+		return;
+	}
+
+	info->net_proxy = dbus_g_proxy_new_for_name (bus,
+	                                             "org.freedesktop.ModemManager",
+	                                             udi,
+	                                             "org.freedesktop.ModemManager.Modem.Gsm.Network");
+	if (!info->net_proxy) {
+		g_message ("%s: failed to create GSM Network proxy.", __func__);
+		gsm_device_info_free (info);
+		return;
+	}
+
+	g_object_set_data_full (G_OBJECT (gsm), "devinfo", info, gsm_device_info_free);
+
+	/* Registration info signal */
+	dbus_g_object_register_marshaller (nma_marshal_VOID__UINT_STRING_STRING,
+	                                   G_TYPE_NONE,
+	                                   G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (info->net_proxy, "RegistrationInfo",
+	                         G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (info->net_proxy, "RegistrationInfo",
+	                             G_CALLBACK (reg_info_changed_cb), info, NULL);
+
+	/* Signal quality change signal */
+	dbus_g_object_register_marshaller (g_cclosure_marshal_VOID__UINT,
+	                                   G_TYPE_NONE, G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (info->net_proxy, "SignalQuality", G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (info->net_proxy, "SignalQuality",
+	                             G_CALLBACK (signal_quality_changed_cb), info, NULL);
+
+	/* Modem property change signal */
+	dbus_g_object_register_marshaller (nma_marshal_VOID__STRING_BOXED,
+	                                   G_TYPE_NONE, G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT,
+	                                   G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (info->props_proxy, "MmPropertiesChanged",
+	                         G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (info->props_proxy, "MmPropertiesChanged",
+	                             G_CALLBACK (modem_properties_changed),
+	                             info, NULL);
+
+	/* Ask whether the device needs to be unlocked */
+	dbus_g_proxy_begin_call (info->props_proxy, "Get",
+	                         unlock_reply, info, NULL,
+	                         G_TYPE_STRING, "org.freedesktop.ModemManager.Modem",
+	                         G_TYPE_STRING, "UnlockRequired",
+	                         G_TYPE_INVALID);
+
+	/* periodically poll for signal quality and registration state */
+	info->poll_id = g_timeout_add_seconds (10, gsm_poll_cb, info);
+	if (!info->nopoll)
+		gsm_poll_cb (info);
+
+	g_object_unref (dbus_mgr);
+}
+
 NMADeviceClass *
 applet_device_gsm_get_class (NMApplet *applet)
 {
@@ -709,6 +1029,7 @@ applet_device_gsm_get_class (NMApplet *applet)
 	dclass->device_state_changed = gsm_device_state_changed;
 	dclass->get_icon = gsm_get_icon;
 	dclass->get_secrets = gsm_get_secrets;
+	dclass->device_added = gsm_device_added;
 
 	return dclass;
 }
