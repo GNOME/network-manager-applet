@@ -446,14 +446,18 @@ pin_entry_changed (GtkEditable *editable, gpointer user_data)
 	const char *s;
 	int i;
 	gboolean valid = FALSE;
+	guint32 len;
 
 	s = gtk_entry_get_text (GTK_ENTRY (editable));
-	if (s && strlen (s) == 4) {
-		valid = TRUE;
-		for (i = 0; i < 4; i++) {
-			if (!g_ascii_isdigit (s[i])) {
-				valid = FALSE;
-				break;
+	if (s) {
+		len = strlen (s);
+		if ((len >= 4) && (len <= 8)) {
+			valid = TRUE;
+			for (i = 0; i < len; i++) {
+				if (!g_ascii_isdigit (s[i])) {
+					valid = FALSE;
+					break;
+				}
 			}
 		}
 	}
@@ -675,8 +679,8 @@ ask_for_pin_puk (NMDevice *device,
 
 	w = gtk_entry_new ();
 	*out_secret_entry = GTK_ENTRY (w);
-	gtk_entry_set_max_length (GTK_ENTRY (w), 4);
-	gtk_entry_set_width_chars (GTK_ENTRY (w), 4);
+	gtk_entry_set_max_length (GTK_ENTRY (w), 8);
+	gtk_entry_set_width_chars (GTK_ENTRY (w), 8);
 	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
 	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
 	g_signal_connect (w, "changed", G_CALLBACK (pin_entry_changed), ok_button);
