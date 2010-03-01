@@ -170,64 +170,19 @@ cdma_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 	                                  user_data);
 }
 
-
-typedef enum {
-	ADD_ACTIVE = 1,
-	ADD_INACTIVE = 2,
-} AddActiveInactiveEnum;
-
 static void
-add_connection_items (NMDevice *device,
-                      GSList *connections,
-                      NMConnection *active,
-                      AddActiveInactiveEnum flag,
-                      GtkWidget *menu,
-                      NMApplet *applet)
-{
-	GSList *iter;
-	CdmaMenuItemInfo *info;
-
-	for (iter = connections; iter; iter = g_slist_next (iter)) {
-		NMConnection *connection = NM_CONNECTION (iter->data);
-		GtkWidget *item;
-
-		if (active == connection) {
-			if ((flag & ADD_ACTIVE) == 0)
-				continue;
-		} else {
-			if ((flag & ADD_INACTIVE) == 0)
-				continue;
-		}
-
-		item = applet_new_menu_item_helper (connection, active, (flag & ADD_ACTIVE));
-
-		info = g_slice_new0 (CdmaMenuItemInfo);
-		info->applet = applet;
-		info->device = g_object_ref (G_OBJECT (device));
-		info->connection = g_object_ref (connection);
-
-		g_signal_connect_data (item, "activate",
-		                       G_CALLBACK (cdma_menu_item_activate),
-		                       info,
-		                       (GClosureNotify) cdma_menu_item_info_destroy, 0);
-
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-	}
-}
-
-static void
-add_default_connection_item (NMDevice *device,
-                             GtkWidget *menu,
-                             NMApplet *applet)
+add_connection_item (NMDevice *device,
+                     NMConnection *connection,
+                     GtkWidget *item,
+                     GtkWidget *menu,
+                     NMApplet *applet)
 {
 	CdmaMenuItemInfo *info;
-	GtkWidget *item;
-	
-	item = gtk_check_menu_item_new_with_label (_("New Mobile Broadband (CDMA) connection..."));
 
 	info = g_slice_new0 (CdmaMenuItemInfo);
 	info->applet = applet;
 	info->device = g_object_ref (G_OBJECT (device));
+	info->connection = connection ? g_object_ref (connection) : NULL;
 
 	g_signal_connect_data (item, "activate",
 	                       G_CALLBACK (cdma_menu_item_activate),
@@ -288,8 +243,6 @@ cdma_add_menu_item (NMDevice *device,
 	char *text;
 	GtkWidget *item;
 	GSList *connections, *all, *iter;
-	GtkWidget *label;
-	char *bold_text;
 
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
 
@@ -311,31 +264,18 @@ cdma_add_menu_item (NMDevice *device,
 	}
 
 	item = applet_menu_item_create_device_item_helper (device, applet, text);
-	g_free (text);
-
-	label = gtk_bin_get_child (GTK_BIN (item));
-	bold_text = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
-	                                     gtk_label_get_text (GTK_LABEL (label)));
-	gtk_label_set_markup (GTK_LABEL (label), bold_text);
-	g_free (bold_text);
-
 	gtk_widget_set_sensitive (item, FALSE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
+	g_free (text);
 
 	/* Add the active connection */
-	item = NULL;
-	for (iter = connections; iter; iter = g_slist_next (iter)) {
-		NMConnection *connection = NM_CONNECTION (iter->data);
+	if (active) {
 		NMSettingConnection *s_con;
 		guint32 tech = MB_TECH_1XRTT;
 		guint32 mb_state;
-		CdmaMenuItemInfo *menu_info;
 
-		if (connection != active)
-			continue;
-
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		s_con = (NMSettingConnection *) nm_connection_get_setting (active, NM_TYPE_SETTING_CONNECTION);
 		g_assert (s_con);
 
 		mb_state = state_for_info (info, &tech);
@@ -347,17 +287,7 @@ cdma_add_menu_item (NMDevice *device,
 		                            mb_state,
 		                            applet);
 
-		menu_info = g_slice_new0 (CdmaMenuItemInfo);
-		menu_info->applet = applet;
-		menu_info->device = g_object_ref (G_OBJECT (device));
-		menu_info->connection = g_object_ref (connection);
-
-		g_signal_connect_data (item, "activate",
-		                       G_CALLBACK (cdma_menu_item_activate),
-		                       menu_info,
-		                       (GClosureNotify) cdma_menu_item_info_destroy, 0);
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		break;
+		add_connection_item (device, active, item, menu, applet);
 	}
 
 	/* Notify user of unmanaged or unavailable device */
@@ -381,14 +311,25 @@ cdma_add_menu_item (NMDevice *device,
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
 
+	/* Add the default / inactive connection items */
 	if (!nma_menu_device_check_unusable (device)) {
 		if ((!active && g_slist_length (connections)) || (active && g_slist_length (connections) > 1))
 			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
 
-		if (g_slist_length (connections))
-			add_connection_items (device, connections, active, ADD_INACTIVE, menu, applet);
-		else
-			add_default_connection_item (device, menu, applet);
+		if (g_slist_length (connections)) {
+			for (iter = connections; iter; iter = g_slist_next (iter)) {
+				NMConnection *connection = NM_CONNECTION (iter->data);
+
+				if (connection != active) {
+					item = applet_new_menu_item_helper (connection, NULL, FALSE);
+					add_connection_item (device, connection, item, menu, applet);
+				}
+			}
+		} else {
+			/* Default connection item */
+			item = gtk_check_menu_item_new_with_label (_("New Mobile Broadband (CDMA) connection..."));
+			add_connection_item (device, NULL, item, menu, applet);
+		}
 	}
 
 	g_slist_free (connections);
