@@ -15,9 +15,7 @@ if HAVE_GBT
 plugin_LTLIBRARIES = libnma.la
 
 libnma_la_SOURCES = \
-	network-manager-applet.c \
-	nma-bling-spinner.c \
-	nma-bling-spinner.h
+	network-manager-applet.c
 
 libnma_la_LDFLAGS = -module -avoid-version
 
@@ -26,7 +24,4 @@ libnma_la_LIBADD = \
 	$(GNOME_BLUETOOTH_LIBS)
 endif
 
-EXTRA_DIST = \
-	network-manager-applet.c \
-	nma-bling-spinner.c \
-	nma-bling-spinner.h
+EXTRA_DIST = network-manager-applet.c

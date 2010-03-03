@@ -8,7 +8,9 @@ libutils_la_SOURCES = \
 	nmn-mobile-providers.h \
 	nmn-mobile-providers.c \
 	mobile-wizard.h \
-	mobile-wizard.c
+	mobile-wizard.c \
+	nma-bling-spinner.h \
+	nma-bling-spinner.c
 
 libutils_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \
