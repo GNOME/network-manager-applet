@@ -24,6 +24,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include <ctype.h>
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -43,6 +44,7 @@
 #include "applet-dialogs.h"
 #include "mb-menu-item.h"
 #include "nma-marshal.h"
+#include "nmn-mobile-providers.h"
 
 
 typedef struct {
@@ -63,6 +65,7 @@ typedef struct {
 	guint reg_state;
 	char *op_code;
 	char *op_name;
+	GHashTable *providers;
 
 	guint32 poll_id;
 	gboolean skip_reg_poll;
@@ -964,6 +967,9 @@ gsm_device_info_free (gpointer data)
 	if (info->net_proxy)
 		g_object_unref (info->net_proxy);
 
+	if (info->providers)
+		g_hash_table_destroy (info->providers);
+
 	if (info->poll_id)
 		g_source_remove (info->poll_id);
 
@@ -993,6 +999,96 @@ signal_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	g_clear_error (&error);
 }
 
+static char *
+find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
+{
+	GHashTableIter iter;
+	gpointer value;
+	GSList *miter, *piter, *siter;
+	const char *name2 = NULL, *name3 = NULL;
+	gboolean done = FALSE;
+
+	if (!mccmnc)
+		return NULL;
+
+	g_hash_table_iter_init (&iter, table);
+	/* Search through each country */
+	while (g_hash_table_iter_next (&iter, NULL, &value) && !done) {
+		GSList *providers = value;
+
+		/* Search through each country's providers */
+		for (piter = providers; piter && !done; piter = g_slist_next (piter)) {
+			NmnMobileProvider *provider = piter->data;
+
+			/* Search through each provider's access methods */
+			for (miter = provider->methods; miter && !done; miter = g_slist_next (miter)) {
+				NmnMobileAccessMethod *method = miter->data;
+
+				if (method->type != NMN_MOBILE_ACCESS_METHOD_TYPE_GSM)
+					continue;
+
+				/* Search through MCC/MNC list */
+				for (siter = method->gsm_mcc_mnc; siter; siter = g_slist_next (siter)) {
+					NmnGsmMccMnc *mcc = siter->data;
+
+					/* Match both 2-digit and 3-digit MNC; prefer a
+					 * 3-digit match if found, otherwise a 2-digit one.
+					 */
+					if (strncmp (mcc->mcc, mccmnc, 3))
+						continue;  /* MCC was wrong */
+
+					if (   !name3
+					    && (strlen (mccmnc) == 6)
+					    && !strncmp (mccmnc + 3, mcc->mnc, 3))
+						name3 = provider->name;
+
+					if (   !name2
+					    && !strncmp (mccmnc + 3, mcc->mnc, 2))
+						name2 = provider->name;
+
+					if (name2 && name3) {
+						done = TRUE;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	if (name3)
+		return g_strdup (name3);
+	return name2 ? g_strdup (name2) : NULL;
+}
+
+static char *
+parse_op_name (GsmDeviceInfo *info, const char *orig)
+{
+	guint i, orig_len;
+
+	orig_len = orig ? strlen (orig) : 0;
+	if (!orig || orig_len < 5 || orig_len > 6)
+		return g_strdup (orig);
+
+	/* Some devices return the MCC/MNC if they haven't fully initialized
+	 * or gotten all the info from the network yet.  Handle that.
+	 */
+	for (i = 0; i < orig_len; i++) {
+		if (!isdigit (orig[i]))
+			return strdup (orig);
+	}
+
+	/* At this point we have a 5 or 6 character all-digit string; that's
+	 * probably an MCC/MNC.  Look that up.
+	 */
+
+	if (!info->providers)
+		info->providers = nmn_mobile_providers_parse (NULL);
+	if (!info->providers)
+		return strdup (orig);
+
+	return find_provider_for_mcc_mnc (info->providers, orig);
+}
+
 #define REG_INFO_TYPE (dbus_g_type_get_struct ("GValueArray", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID))
 #define DBUS_TYPE_G_MAP_OF_VARIANT (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
 
@@ -1019,7 +1115,7 @@ reg_info_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 
 			value = g_value_array_get_nth (array, 2);
 			if (G_VALUE_HOLDS_STRING (value))
-				new_op_name = g_value_dup_string (value);
+				new_op_name = parse_op_name (info, g_value_get_string (value));
 		}
 
 		g_value_array_free (array);
@@ -1166,7 +1262,7 @@ reg_info_changed_cb (DBusGProxy *proxy,
 
 	info->reg_state = reg_state + 1;
 	info->op_code = g_strdup (op_code);
-	info->op_name = g_strdup (op_name);
+	info->op_name = parse_op_name (info, op_name);
 	info->skip_reg_poll = TRUE;
 }
 
