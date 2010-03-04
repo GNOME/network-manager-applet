@@ -23,6 +23,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <ctype.h>
 
 #include <nm-device-ethernet.h>
 #include <nm-device-wifi.h>
@@ -43,6 +44,7 @@
 
 #include "applet-dialogs.h"
 #include "utils.h"
+#include "nma-bling-spinner.h"
 
 
 static void
@@ -754,5 +756,376 @@ applet_mobile_password_dialog_new (NMDevice *device,
 
 	gtk_widget_show_all (dialog->vbox);
 	return GTK_WIDGET (dialog);
+}
+
+/**********************************************************************/
+
+static void
+mpd_entry_changed (GtkWidget *widget, gpointer user_data)
+{
+	GtkWidget *dialog = GTK_WIDGET (user_data);
+	GladeXML *xml = g_object_get_data (G_OBJECT (dialog), "xml");
+	GtkWidget *entry;
+	guint32 minlen;
+	gboolean valid = FALSE;
+	const char *text, *text2 = NULL, *text3 = NULL;
+	gboolean match23;
+
+	g_return_if_fail (xml != NULL);
+
+	entry = glade_xml_get_widget (xml, "code1_entry");
+	if (g_object_get_data (G_OBJECT (entry), "active")) {
+		minlen = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (entry), "minlen"));
+		text = gtk_entry_get_text (GTK_ENTRY (entry));
+		if (text && (strlen (text) < minlen))
+			goto done;
+	}
+
+	entry = glade_xml_get_widget (xml, "code2_entry");
+	if (g_object_get_data (G_OBJECT (entry), "active")) {
+		minlen = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (entry), "minlen"));
+		text2 = gtk_entry_get_text (GTK_ENTRY (entry));
+		if (text2 && (strlen (text2) < minlen))
+			goto done;
+	}
+
+	entry = glade_xml_get_widget (xml, "code3_entry");
+	if (g_object_get_data (G_OBJECT (entry), "active")) {
+		minlen = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (entry), "minlen"));
+		text3 = gtk_entry_get_text (GTK_ENTRY (entry));
+		if (text3 && (strlen (text3) < minlen))
+			goto done;
+	}
+
+	/* Validate 2 & 3 if they are supposed to be the same */
+	match23 = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (dialog), "match23"));
+	if (match23) {
+		if (!text2 || !text3 || strcmp (text2, text3))
+			goto done;
+	}
+
+	valid = TRUE;
+
+done:
+	widget = glade_xml_get_widget (xml, "unlock_button");
+	g_warn_if_fail (widget != NULL);
+	gtk_widget_set_sensitive (widget, valid);
+	if (valid)
+		gtk_widget_grab_default (widget);
+}
+
+void
+applet_mobile_pin_dialog_destroy (GtkWidget *widget)
+{
+	gtk_widget_hide (widget);
+	gtk_widget_destroy (widget);
+}
+
+static void
+mpd_cancel_dialog (GtkDialog *dialog)
+{
+	gtk_dialog_response (dialog, GTK_RESPONSE_CANCEL);
+}
+
+GtkWidget *
+applet_mobile_pin_dialog_new (const char *title,
+                              const char *header,
+                              const char *desc)
+{
+	char *glade_file, *str;
+	GladeXML *xml;
+	GtkWidget *dialog;
+	GtkWidget *widget;
+
+	g_return_val_if_fail (title != NULL, NULL);
+	g_return_val_if_fail (header != NULL, NULL);
+	g_return_val_if_fail (desc != NULL, NULL);
+
+	glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
+	g_return_val_if_fail (glade_file != NULL, NULL);
+	xml = glade_xml_new (glade_file, "unlock_dialog", NULL);
+	g_free (glade_file);
+	g_return_val_if_fail (xml != NULL, NULL);
+
+	dialog = glade_xml_get_widget (xml, "unlock_dialog");
+	if (!dialog) {
+		g_object_unref (xml);
+		g_return_val_if_fail (dialog != NULL, NULL);
+	}
+
+	g_object_set_data_full (G_OBJECT (dialog), "xml", xml, (GDestroyNotify) g_object_unref);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), title);
+
+	widget = glade_xml_get_widget (xml, "header_label");
+	str = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>", header);
+	gtk_label_set_use_markup (GTK_LABEL (widget), TRUE);
+	gtk_label_set_markup (GTK_LABEL (widget), str);
+	g_free (str);
+
+	widget = glade_xml_get_widget (xml, "desc_label");
+	gtk_label_set_text (GTK_LABEL (widget), desc);
+
+	g_signal_connect (dialog, "delete-event", G_CALLBACK (mpd_cancel_dialog), NULL);
+
+	mpd_entry_changed (NULL, dialog);
+
+	return dialog;
+}
+
+void
+applet_mobile_pin_dialog_present (GtkWidget *dialog, gboolean now)
+{
+	GladeXML *xml;
+	GtkWidget *widget;
+
+	g_return_if_fail (dialog != NULL);
+	xml = g_object_get_data (G_OBJECT (dialog), "xml");
+	g_return_if_fail (xml != NULL);
+
+	gtk_widget_show_all (dialog);
+
+	widget = glade_xml_get_widget (xml, "progress_hbox");
+	gtk_widget_hide (widget);
+
+	/* Hide inactive entries */
+
+	widget = glade_xml_get_widget (xml, "code2_entry");
+	if (!g_object_get_data (G_OBJECT (widget), "active")) {
+		gtk_widget_hide (widget);
+		widget = glade_xml_get_widget (xml, "code2_label");
+		gtk_widget_hide (widget);
+	}
+
+	widget = glade_xml_get_widget (xml, "code3_entry");
+	if (!g_object_get_data (G_OBJECT (widget), "active")) {
+		gtk_widget_hide (widget);
+		widget = glade_xml_get_widget (xml, "code3_label");
+		gtk_widget_hide (widget);
+	}
+
+	/* Need to resize the dialog after hiding widgets */
+	gtk_window_resize (GTK_WINDOW (dialog), 400, 100);
+
+	/* Show the dialog */
+	gtk_widget_realize (dialog);
+	if (now)
+		gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
+	else
+		gtk_window_present (GTK_WINDOW (dialog));
+}
+
+static void
+mpd_entry_filter (GtkEntry *entry,
+                  const char *text,
+                  gint length,
+                  gint *position,
+                  gpointer user_data)
+{
+	GtkEditable *editable = GTK_EDITABLE (entry);
+	int i, count = 0;
+	gchar *result = g_malloc0 (length);
+
+	/* Digits only */
+	for (i = 0; i < length; i++) {
+		if (isdigit (text[i]))
+			result[count++] = text[i];
+	}
+
+	if (count > 0) {
+		g_signal_handlers_block_by_func (G_OBJECT (editable),
+		                                 G_CALLBACK (mpd_entry_filter),
+		                                 user_data);
+		gtk_editable_insert_text (editable, result, count, position);
+		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
+		                                   G_CALLBACK (mpd_entry_filter),
+		                                   user_data);
+	}
+	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
+	g_free (result);
+}
+
+static void
+mpd_set_entry (GtkWidget *dialog,
+               const char *entry_name,
+               const char *label_name,
+               const char *label,
+               guint32 minlen,
+               guint32 maxlen)
+{
+	GladeXML *xml;
+	GtkWidget *widget;
+	gboolean entry2_active = FALSE;
+	gboolean entry3_active = FALSE;
+
+	g_return_if_fail (dialog != NULL);
+	xml = g_object_get_data (G_OBJECT (dialog), "xml");
+	g_return_if_fail (xml != NULL);
+
+	widget = glade_xml_get_widget (xml, label_name);
+	gtk_label_set_text (GTK_LABEL (widget), label);
+
+	widget = glade_xml_get_widget (xml, entry_name);
+	g_signal_connect (widget, "changed", G_CALLBACK (mpd_entry_changed), dialog);
+	g_signal_connect (widget, "insert-text", G_CALLBACK (mpd_entry_filter), NULL);
+
+	if (maxlen)
+		gtk_entry_set_max_length (GTK_ENTRY (widget), maxlen);
+	g_object_set_data (G_OBJECT (widget), "minlen", GUINT_TO_POINTER (minlen));
+
+	/* Tag it so we know it's active */
+	g_object_set_data (G_OBJECT (widget), "active", GUINT_TO_POINTER (1));
+
+	/* Make a single-entry dialog look better */
+	widget = glade_xml_get_widget (xml, "code2_entry");
+	entry2_active = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget), "active"));
+	widget = glade_xml_get_widget (xml, "code3_entry");
+	entry3_active = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget), "active"));
+
+	widget = glade_xml_get_widget (xml, "table1");
+	if (entry2_active || entry3_active)
+		gtk_table_set_row_spacings (GTK_TABLE (widget), 6);
+	else
+		gtk_table_set_row_spacings (GTK_TABLE (widget), 0);
+
+	mpd_entry_changed (NULL, dialog);
+}
+
+void
+applet_mobile_pin_dialog_set_entry1 (GtkWidget *dialog,
+                                     const char *label,
+                                     guint32 minlen,
+                                     guint32 maxlen)
+{
+	mpd_set_entry (dialog, "code1_entry", "code1_label", label, minlen, maxlen);
+}
+
+void
+applet_mobile_pin_dialog_set_entry2 (GtkWidget *dialog,
+                                     const char *label,
+                                     guint32 minlen,
+                                     guint32 maxlen)
+{
+	mpd_set_entry (dialog, "code2_entry", "code2_label", label, minlen, maxlen);
+}
+
+void
+applet_mobile_pin_dialog_set_entry3 (GtkWidget *dialog,
+                                     const char *label,
+                                     guint32 minlen,
+                                     guint32 maxlen)
+{
+	mpd_set_entry (dialog, "code3_entry", "code3_label", label, minlen, maxlen);
+}
+
+void applet_mobile_pin_dialog_match_23 (GtkWidget *dialog, gboolean match)
+{
+	g_return_if_fail (dialog != NULL);
+
+	g_object_set_data (G_OBJECT (dialog), "match23", GUINT_TO_POINTER (match));
+}
+
+static const char *
+mpd_get_entry (GtkWidget *dialog, const char *entry_name)
+{
+	GladeXML *xml;
+	GtkWidget *widget;
+
+	g_return_val_if_fail (dialog != NULL, NULL);
+	xml = g_object_get_data (G_OBJECT (dialog), "xml");
+	g_return_val_if_fail (xml != NULL, NULL);
+
+	widget = glade_xml_get_widget (xml, entry_name);
+	return gtk_entry_get_text (GTK_ENTRY (widget));
+}
+
+const char *
+applet_mobile_pin_dialog_get_entry1 (GtkWidget *dialog)
+{
+	return mpd_get_entry (dialog, "code1_entry");
+}
+
+const char *
+applet_mobile_pin_dialog_get_entry2 (GtkWidget *dialog)
+{
+	return mpd_get_entry (dialog, "code2_entry");
+}
+
+const char *
+applet_mobile_pin_dialog_get_entry3 (GtkWidget *dialog)
+{
+	return mpd_get_entry (dialog, "code3_entry");
+}
+
+void
+applet_mobile_pin_dialog_start_spinner (GtkWidget *dialog, const char *text)
+{
+	GladeXML *xml;
+	GtkWidget *spinner, *widget, *hbox, *align;
+
+	g_return_if_fail (dialog != NULL);
+	g_return_if_fail (text != NULL);
+
+	xml = g_object_get_data (G_OBJECT (dialog), "xml");
+	g_return_if_fail (xml != NULL);
+
+	spinner = nma_bling_spinner_new ();
+	g_return_if_fail (spinner != NULL);
+	g_object_set_data (G_OBJECT (dialog), "spinner", spinner);
+
+	align = glade_xml_get_widget (xml, "spinner_alignment");
+	gtk_container_add (GTK_CONTAINER (align), spinner);
+	nma_bling_spinner_start (NMA_BLING_SPINNER (spinner));
+
+	widget = glade_xml_get_widget (xml, "progress_label");
+	gtk_label_set_text (GTK_LABEL (widget), text);
+	gtk_widget_show (widget);
+
+	hbox = glade_xml_get_widget (xml, "progress_hbox");
+	gtk_widget_show_all (hbox);
+
+	/* Desensitize everything while spinning */
+	widget = glade_xml_get_widget (xml, "code1_entry");
+	gtk_widget_set_sensitive (widget, FALSE);
+	widget = glade_xml_get_widget (xml, "code2_entry");
+	gtk_widget_set_sensitive (widget, FALSE);
+	widget = glade_xml_get_widget (xml, "code3_entry");
+	gtk_widget_set_sensitive (widget, FALSE);
+	widget = glade_xml_get_widget (xml, "unlock_button");
+	gtk_widget_set_sensitive (widget, FALSE);
+	widget = glade_xml_get_widget (xml, "cancel_button");
+	gtk_widget_set_sensitive (widget, FALSE);
+}
+
+void
+applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog)
+{
+	GladeXML *xml;
+	GtkWidget *spinner, *widget;
+
+	g_return_if_fail (dialog != NULL);
+
+	xml = g_object_get_data (G_OBJECT (dialog), "xml");
+	g_return_if_fail (xml != NULL);
+
+	spinner = g_object_get_data (G_OBJECT (dialog), "spinner");
+	g_return_if_fail (spinner != NULL);
+	nma_bling_spinner_stop (NMA_BLING_SPINNER (spinner));
+	gtk_widget_hide (spinner);
+
+	widget = glade_xml_get_widget (xml, "progress_label");
+	gtk_widget_hide (widget);
+
+	/* Resensitize stuff */
+	widget = glade_xml_get_widget (xml, "code1_entry");
+	gtk_widget_set_sensitive (widget, TRUE);
+	widget = glade_xml_get_widget (xml, "code2_entry");
+	gtk_widget_set_sensitive (widget, TRUE);
+	widget = glade_xml_get_widget (xml, "code3_entry");
+	gtk_widget_set_sensitive (widget, TRUE);
+	widget = glade_xml_get_widget (xml, "unlock_button");
+	gtk_widget_set_sensitive (widget, TRUE);
+	widget = glade_xml_get_widget (xml, "cancel_button");
+	gtk_widget_set_sensitive (widget, TRUE);
 }
 

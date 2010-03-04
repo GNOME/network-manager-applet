@@ -44,6 +44,36 @@
 #include "mb-menu-item.h"
 #include "nma-marshal.h"
 
+
+typedef struct {
+	NMDevice *device;
+
+	DBusGProxy *props_proxy;
+	DBusGProxy *card_proxy;
+	DBusGProxy *net_proxy;
+
+	gboolean quality_valid;
+	guint32 quality;
+
+	char *unlock_required;
+
+	/* reg_state is (1 + MM reg state) so that 0 means we haven't gotten a
+	 * value from MM yet.  0 is a valid MM GSM reg state.
+	 */
+	guint reg_state;
+	char *op_code;
+	char *op_name;
+
+	gboolean nopoll;
+	guint32 poll_id;
+
+	/* Unlock dialog stuff */
+	GtkWidget *dialog;
+} GsmDeviceInfo;
+
+static void unlock_dialog_destroy (GsmDeviceInfo *info);
+
+
 typedef struct {
 	NMApplet *applet;
 	NMDevice *device;
@@ -198,27 +228,6 @@ add_connection_item (NMDevice *device,
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
-
-typedef struct {
-	DBusGProxy *props_proxy;
-	DBusGProxy *card_proxy;
-	DBusGProxy *net_proxy;
-
-	gboolean quality_valid;
-	guint32 quality;
-
-	char *unlock_required;
-
-	/* reg_state is (1 + MM reg state) so that 0 means we haven't gotten a
-	 * value from MM yet.  0 is a valid MM GSM reg state.
-	 */
-	guint reg_state;
-	char *op_code;
-	char *op_name;
-
-	gboolean nopoll;
-	guint32 poll_id;
-} GsmDeviceInfo;
 
 static guint32
 state_for_info (GsmDeviceInfo *info)
@@ -467,7 +476,7 @@ pin_entry_changed (GtkEditable *editable, gpointer user_data)
 }
 
 static void
-destroy_gsm_dialog (gpointer user_data, GObject *finalized)
+secrets_dialog_destroy (gpointer user_data, GObject *finalized)
 {
 	NMGsmSecretsInfo *info = user_data;
 
@@ -581,7 +590,7 @@ get_existing_secrets_cb (NMSettingsConnectionInterface *connection,
 	}
 
 	nm_connection_clear_secrets (NM_CONNECTION (info->connection));
-	destroy_gsm_dialog (info, NULL);
+	secrets_dialog_destroy (info, NULL);
 }
 
 static void
@@ -595,7 +604,7 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 	/* Got a user response, clear the NMActiveConnection destroy handler for
 	 * this dialog since this function will now take over dialog destruction.
 	 */
-	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_gsm_dialog, info);
+	g_object_weak_unref (G_OBJECT (info->active_connection), secrets_dialog_destroy, info);
 
 	if (response == GTK_RESPONSE_OK) {
 		const char *hints[2] = { info->secret_name, NULL };
@@ -627,13 +636,12 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 		g_error_free (error);
 
 		nm_connection_clear_secrets (NM_CONNECTION (info->connection));
-		destroy_gsm_dialog (info, NULL);
+		secrets_dialog_destroy (info, NULL);
 	}
 }
 
 static GtkWidget *
 ask_for_pin_puk (NMDevice *device,
-                 NMConnection *connection,
                  const char *secret_name,
                  GtkEntry **out_secret_entry)
 {
@@ -702,7 +710,7 @@ gsm_get_secrets (NMDevice *device,
                  NMApplet *applet,
                  GError **error)
 {
-	NMGsmSecretsInfo *info;
+	NMGsmSecretsInfo *secrets_info;
 	GtkWidget *widget;
 	GtkEntry *secret_entry = NULL;
 
@@ -716,9 +724,16 @@ gsm_get_secrets (NMDevice *device,
 	}
 
 	if (   !strcmp (hints[0], NM_SETTING_GSM_PIN)
-	    || !strcmp (hints[0], NM_SETTING_GSM_PUK))
-		widget = ask_for_pin_puk (device, NM_CONNECTION (connection), hints[0], &secret_entry);
-	else if (!strcmp (hints[0], NM_SETTING_GSM_PASSWORD))
+	    || !strcmp (hints[0], NM_SETTING_GSM_PUK)) {
+		GsmDeviceInfo *info = g_object_get_data (G_OBJECT (device), "devinfo");
+
+		g_assert (info);
+		/* A GetSecrets PIN dialog overrides the initial unlock dialog */
+		if (info->dialog)
+			unlock_dialog_destroy (info);
+
+		widget = ask_for_pin_puk (device, hints[0], &secret_entry);
+	} else if (!strcmp (hints[0], NM_SETTING_GSM_PASSWORD))
 		widget = applet_mobile_password_dialog_new (device, NM_CONNECTION (connection), &secret_entry);
 	else {
 		g_set_error (error,
@@ -738,22 +753,22 @@ gsm_get_secrets (NMDevice *device,
 		return FALSE;
 	}
 
-	info = g_malloc0 (sizeof (NMGsmSecretsInfo));
-	info->callback = callback;
-	info->callback_data = callback_data;
-	info->applet = applet;
-	info->active_connection = active_connection;
-	info->connection = g_object_ref (connection);
-	info->secret_name = g_strdup (hints[0]);
-	info->dialog = widget;
-	info->secret_entry = secret_entry;
+	secrets_info = g_malloc0 (sizeof (NMGsmSecretsInfo));
+	secrets_info->callback = callback;
+	secrets_info->callback_data = callback_data;
+	secrets_info->applet = applet;
+	secrets_info->active_connection = active_connection;
+	secrets_info->connection = g_object_ref (connection);
+	secrets_info->secret_name = g_strdup (hints[0]);
+	secrets_info->dialog = widget;
+	secrets_info->secret_entry = secret_entry;
 
-	g_signal_connect (widget, "response", G_CALLBACK (get_gsm_secrets_cb), info);
+	g_signal_connect (widget, "response", G_CALLBACK (get_gsm_secrets_cb), secrets_info);
 
 	/* Attach a destroy notifier to the NMActiveConnection so we can destroy
 	 * the dialog when the active connection goes away.
 	 */
-	g_object_weak_ref (G_OBJECT (active_connection), destroy_gsm_dialog, info);
+	g_object_weak_ref (G_OBJECT (active_connection), secrets_dialog_destroy, secrets_info);
 
 	gtk_window_set_position (GTK_WINDOW (widget), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (GTK_WIDGET (widget));
@@ -761,6 +776,174 @@ gsm_get_secrets (NMDevice *device,
 
 	return TRUE;
 }
+
+/********************************************************************/
+
+static void
+unlock_dialog_destroy (GsmDeviceInfo *info)
+{
+	applet_mobile_pin_dialog_destroy (info->dialog);
+	info->dialog = NULL;
+}
+
+static void
+unlock_pin_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+	GError *error = NULL;
+
+	if (dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID)) {
+		unlock_dialog_destroy (info);
+		return;
+	}
+
+	/* FIXME: show the error in the dialog or something */
+
+	applet_mobile_pin_dialog_stop_spinner (info->dialog);
+	g_warning ("%s: error unlocking with PIN: %s", __func__, error->message);
+	g_clear_error (&error);
+}
+
+static void
+unlock_puk_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+	GError *error = NULL;
+
+	if (dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID)) {
+		unlock_dialog_destroy (info);
+		return;
+	}
+
+	/* FIXME: show the error in the dialog or something */
+
+	applet_mobile_pin_dialog_stop_spinner (info->dialog);
+	g_warning ("%s: error unlocking with PIN: %s", __func__, error->message);
+	g_clear_error (&error);
+}
+
+#define UNLOCK_CODE_PIN 1
+#define UNLOCK_CODE_PUK 2
+
+static void
+unlock_dialog_response (GtkDialog *dialog,
+                        gint response,
+                        gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+	const char *code1, *code2;
+	guint32 unlock_code;
+
+	if (response == GTK_RESPONSE_CANCEL || response == GTK_RESPONSE_DELETE_EVENT) {
+		unlock_dialog_destroy (info);
+		return;
+	}
+
+	/* Start the spinner to show the progress of the unlock */
+	applet_mobile_pin_dialog_start_spinner (info->dialog, _("Sending unlock code..."));
+
+	unlock_code = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (info->dialog), "unlock-code"));
+	if (!unlock_code) {
+		g_warn_if_fail (unlock_code != 0);
+		unlock_dialog_destroy (info);
+		return;
+	}
+
+	code1 = applet_mobile_pin_dialog_get_entry1 (info->dialog);
+	if (!code1 || !strlen (code1)) {
+		g_warn_if_fail (code1 != NULL);
+		g_warn_if_fail (strlen (code1));
+		unlock_dialog_destroy (info);
+		return;
+	}
+
+	/* Send the code to ModemManager */
+	if (unlock_code == UNLOCK_CODE_PIN) {
+		dbus_g_proxy_begin_call (info->card_proxy, "SendPin",
+		                         unlock_pin_reply, info, NULL,
+		                         G_TYPE_STRING, code1, G_TYPE_INVALID);
+	} else if (unlock_code == UNLOCK_CODE_PUK) {
+		code2 = applet_mobile_pin_dialog_get_entry2 (info->dialog);
+		if (!code2) {
+			g_warn_if_fail (code2 != NULL);
+			unlock_dialog_destroy (info);
+			return;
+		}
+
+		dbus_g_proxy_begin_call (info->card_proxy, "SendPuk",
+		                         unlock_puk_reply, info, NULL,
+		                         G_TYPE_STRING, code1,
+		                         G_TYPE_STRING, code2,
+		                         G_TYPE_INVALID);
+	}
+}
+
+static void
+unlock_dialog_new (NMDevice *device, GsmDeviceInfo *info)
+{
+	const char *header = NULL;
+	const char *title = NULL;
+	char *desc = NULL;
+	const char *label1 = NULL, *label2 = NULL, *label3 = NULL;
+	const char *device_desc;
+	gboolean match23 = FALSE;
+	guint32 label1_min = 0, label2_min = 0, label3_min = 0;
+	guint32 label1_max = 0, label2_max = 0, label3_max = 0;
+	guint32 unlock_code = 0;
+
+	g_return_if_fail (info->unlock_required != NULL);
+
+	if (info->dialog)
+		return;
+
+	/* Figure out the dialog text based on the required unlock code */
+	device_desc = utils_get_device_description (device);
+	if (!strcmp (info->unlock_required, "sim-pin")) {
+		title = _("SIM PIN unlock required");
+		header = _("SIM PIN Unlock Required");
+		/* FIXME: some warning about # of times you can enter incorrect PIN */
+		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PIN code before it can be used."), device_desc);
+		label1 = _("PIN code:");
+		label1_min = 4;
+		label1_max = 8;
+		unlock_code = UNLOCK_CODE_PIN;
+	} else if (!strcmp (info->unlock_required, "sim-puk")) {
+		title = _("SIM PUK unlock required");
+		header = _("SIM PUK Unlock Required");
+		/* FIXME: some warning about # of times you can enter incorrect PUK */
+		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PUK code before it can be used."), device_desc);
+		label1 = _("PUK code:");
+		label1_min = label1_max = 8;
+		label2 = _("New PIN code:");
+		label3 = _("Re-enter new PIN code:");
+		label2_min = label3_min = 4;
+		label2_max = label3_max = 8;
+		match23 = TRUE;
+		unlock_code = UNLOCK_CODE_PUK;
+	} else {
+		g_warning ("Unhandled unlock request for '%s'", info->unlock_required);
+		return;
+	}
+
+	/* Construct and run the dialog */
+	info->dialog = applet_mobile_pin_dialog_new (title, header, desc);
+	g_free (desc);
+	g_return_if_fail (info->dialog != NULL);
+
+	g_object_set_data (G_OBJECT (info->dialog), "unlock-code", GUINT_TO_POINTER (unlock_code));
+	applet_mobile_pin_dialog_match_23 (info->dialog, match23);
+
+	applet_mobile_pin_dialog_set_entry1 (info->dialog, label1, label1_min, label1_max);
+	if (label2)
+		applet_mobile_pin_dialog_set_entry2 (info->dialog, label2, label2_min, label2_max);
+	if (label3)
+		applet_mobile_pin_dialog_set_entry3 (info->dialog, label3, label3_min, label3_max);
+
+	g_signal_connect (info->dialog, "response", G_CALLBACK (unlock_dialog_response), info);
+	applet_mobile_pin_dialog_present (info->dialog, FALSE);
+}
+
+/********************************************************************/
 
 static void
 gsm_device_info_free (gpointer data)
@@ -776,6 +959,9 @@ gsm_device_info_free (gpointer data)
 
 	if (info->poll_id)
 		g_source_remove (info->poll_id);
+
+	if (info->dialog)
+		unlock_dialog_destroy (info);
 
 	g_free (info->op_code);
 	g_free (info->op_name);
@@ -844,17 +1030,19 @@ unlock_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 {
 	GsmDeviceInfo *info = user_data;
 	GError *error = NULL;
-	char *unlock = NULL;
+	GValue value = { 0 };
 
 	if (dbus_g_proxy_end_call (proxy, call, &error,
-	                           G_TYPE_STRING, &unlock,
+	                           G_TYPE_VALUE, &value,
 	                           G_TYPE_INVALID)) {
-		g_free (info->unlock_required);
-		info->unlock_required = unlock;
+		if (G_VALUE_HOLDS_STRING (&value)) {
+			g_free (info->unlock_required);
+			info->unlock_required = g_value_dup_string (&value);
 
-		if (info->unlock_required) {
-			/* Handle unlock */
+			if (info->unlock_required)
+				unlock_dialog_new (info->device, info);
 		}
+		g_value_unset (&value);
 	}
 
 	g_clear_error (&error);
@@ -924,7 +1112,10 @@ modem_properties_changed (DBusGProxy *proxy,
 		info->unlock_required = g_value_dup_string (value);
 
 		if (info->unlock_required) {
-			/* Handle unlock */
+			/* FIXME: handle unlock changes; like if the user enters the wrong
+			 * pin too many times we want to show the PUK dialog instead of the
+			 * pin dialog.
+			 */
 		}
 	}
 }
@@ -944,6 +1135,7 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 		return;
 
 	info = g_malloc0 (sizeof (GsmDeviceInfo));
+	info->device = device;
 
 	/* Don't bother polling if the device isn't usable */
 	state = nm_device_get_state (device);

@@ -37,4 +37,37 @@ GtkWidget *applet_mobile_password_dialog_new (NMDevice *device,
                                               NMConnection *connection,
                                               GtkEntry **out_secret_entry);
 
+/******** Mobile PIN dialog ********/
+
+GtkWidget *applet_mobile_pin_dialog_new (const char *title,
+                                         const char *header,
+                                         const char *desc);
+
+void applet_mobile_pin_dialog_present (GtkWidget *dialog, gboolean now);
+
+void applet_mobile_pin_dialog_destroy (GtkWidget *dialog);
+
+void applet_mobile_pin_dialog_set_entry1 (GtkWidget *dialog,
+                                          const char *label,
+                                          guint32 minlen,
+                                          guint32 maxlen);
+const char *applet_mobile_pin_dialog_get_entry1 (GtkWidget *dialog);
+
+void applet_mobile_pin_dialog_set_entry2 (GtkWidget *dialog,
+                                          const char *label,
+                                          guint32 minlen,
+                                          guint32 maxlen);
+const char *applet_mobile_pin_dialog_get_entry2 (GtkWidget *dialog);
+
+void applet_mobile_pin_dialog_set_entry3 (GtkWidget *dialog,
+                                          const char *label,
+                                          guint32 minlen,
+                                          guint32 maxlen);
+const char *applet_mobile_pin_dialog_get_entry3 (GtkWidget *dialog);
+
+void applet_mobile_pin_dialog_match_23 (GtkWidget *dialog, gboolean match);
+
+void applet_mobile_pin_dialog_start_spinner (GtkWidget *dialog, const char *text);
+void applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog);
+
 #endif /* __APPLET_DIALOGS_H__ */
