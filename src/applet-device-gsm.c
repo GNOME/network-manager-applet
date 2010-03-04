@@ -54,8 +54,8 @@ typedef struct {
 
 	gboolean quality_valid;
 	guint32 quality;
-
 	char *unlock_required;
+	gboolean modem_enabled;
 
 	/* reg_state is (1 + MM reg state) so that 0 means we haven't gotten a
 	 * value from MM yet.  0 is a valid MM GSM reg state.
@@ -64,15 +64,16 @@ typedef struct {
 	char *op_code;
 	char *op_name;
 
-	gboolean nopoll;
 	guint32 poll_id;
+	gboolean skip_reg_poll;
+	gboolean skip_signal_poll;
 
 	/* Unlock dialog stuff */
 	GtkWidget *dialog;
 } GsmDeviceInfo;
 
 static void unlock_dialog_destroy (GsmDeviceInfo *info);
-
+static void check_start_polling (GsmDeviceInfo *info);
 
 typedef struct {
 	NMApplet *applet;
@@ -359,6 +360,8 @@ gsm_device_state_changed (NMDevice *device,
                           NMDeviceStateReason reason,
                           NMApplet *applet)
 {
+	GsmDeviceInfo *info;
+
 	if (new_state == NM_DEVICE_STATE_ACTIVATED) {
 		NMConnection *connection;
 		NMSettingConnection *s_con = NULL;
@@ -381,6 +384,10 @@ gsm_device_state_changed (NMDevice *device,
 		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 		g_free (str);
 	}
+
+	/* Start/stop polling of quality and registration when device state changes */
+	info = g_object_get_data (G_OBJECT (device), "devinfo");
+	check_start_polling (info);
 }
 
 static GdkPixbuf *
@@ -1026,6 +1033,38 @@ reg_info_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 }
 
 static void
+enabled_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+	GError *error = NULL;
+	GValue value = { 0 };
+
+	if (dbus_g_proxy_end_call (proxy, call, &error,
+	                           G_TYPE_VALUE, &value,
+	                           G_TYPE_INVALID)) {
+		if (G_VALUE_HOLDS_BOOLEAN (&value))
+			info->modem_enabled = g_value_get_boolean (&value);
+		g_value_unset (&value);
+	}
+
+	g_clear_error (&error);
+	check_start_polling (info);
+}
+
+static char *
+parse_unlock_required (GValue *value)
+{
+	const char *new_val;
+
+	/* Empty string means NULL */
+	new_val = g_value_get_string (value);
+	if (new_val && strlen (new_val))
+		return g_strdup (new_val);
+
+	return NULL;
+}
+
+static void
 unlock_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 {
 	GsmDeviceInfo *info = user_data;
@@ -1036,15 +1075,8 @@ unlock_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	                           G_TYPE_VALUE, &value,
 	                           G_TYPE_INVALID)) {
 		if (G_VALUE_HOLDS_STRING (&value)) {
-			const char *new_val;
-
 			g_free (info->unlock_required);
-			info->unlock_required = NULL;
-
-			/* Empty string means NULL */
-			new_val = g_value_get_string (&value);
-			if (new_val && strlen (new_val))
-				info->unlock_required = g_strdup (new_val);
+			info->unlock_required = parse_unlock_required (&value);
 
 			/* Show the unlock dialog if an unlock is now required */
 			if (info->unlock_required)
@@ -1054,6 +1086,7 @@ unlock_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	}
 
 	g_clear_error (&error);
+	check_start_polling (info);
 }
 
 static gboolean
@@ -1061,18 +1094,65 @@ gsm_poll_cb (gpointer user_data)
 {
 	GsmDeviceInfo *info = user_data;
 
-	if (info->nopoll)
-		return TRUE;
+	/* MM might have just sent an unsolicited update, in which case we just
+	 * skip this poll and wait till the next one.
+	 */
 
-	dbus_g_proxy_begin_call (info->net_proxy, "GetRegistrationInfo",
-	                         reg_info_reply, info, NULL,
-	                         G_TYPE_INVALID);
+	if (!info->skip_reg_poll) {
+		dbus_g_proxy_begin_call (info->net_proxy, "GetRegistrationInfo",
+		                         reg_info_reply, info, NULL,
+		                         G_TYPE_INVALID);
+	}
 
-	dbus_g_proxy_begin_call (info->net_proxy, "GetSignalQuality",
-	                         signal_reply, info, NULL,
-	                         G_TYPE_INVALID);
+	if (!info->skip_signal_poll) {
+		dbus_g_proxy_begin_call (info->net_proxy, "GetSignalQuality",
+		                         signal_reply, info, NULL,
+		                         G_TYPE_INVALID);
+	}
 
-	return TRUE;
+	info->skip_reg_poll = FALSE;
+	info->skip_signal_poll = FALSE;
+
+	return TRUE;  /* keep running until we're told to stop */
+}
+
+static void
+check_start_polling (GsmDeviceInfo *info)
+{
+	NMDeviceState state;
+	gboolean poll = TRUE;
+
+	g_return_if_fail (info != NULL);
+
+	/* Don't poll if any of the following are true:
+	 *
+	 * 1) NM says the device is not available
+	 * 2) the modem requires an unlock code
+	 * 3) the modem isn't enabled
+	 */
+
+	state = nm_device_get_state (info->device);
+	if (   (state <= NM_DEVICE_STATE_UNAVAILABLE)
+	    || info->unlock_required
+	    || (info->modem_enabled == FALSE))
+		poll = FALSE;
+
+	if (poll) {
+		if (!info->poll_id) {
+			/* 33 seconds to be just a bit more than MM's poll interval, so
+			 * that if we get an unsolicited update from MM between polls we'll
+			 * skip the next poll.
+			 */
+	        info->poll_id = g_timeout_add_seconds (33, gsm_poll_cb, info);
+		}
+		gsm_poll_cb (info);
+	} else {
+		if (info->poll_id)
+			g_source_remove (info->poll_id);
+		info->poll_id = 0;
+		info->skip_reg_poll = FALSE;
+		info->skip_signal_poll = FALSE;
+	}
 }
 
 static void
@@ -1087,6 +1167,7 @@ reg_info_changed_cb (DBusGProxy *proxy,
 	info->reg_state = reg_state + 1;
 	info->op_code = g_strdup (op_code);
 	info->op_name = g_strdup (op_name);
+	info->skip_reg_poll = TRUE;
 }
 
 static void
@@ -1098,6 +1179,7 @@ signal_quality_changed_cb (DBusGProxy *proxy,
 
 	info->quality = quality;
 	info->quality_valid = TRUE;
+	info->skip_signal_poll = TRUE;
 }
 
 #define MM_DBUS_INTERFACE_MODEM "org.freedesktop.ModemManager.Modem"
@@ -1117,14 +1199,14 @@ modem_properties_changed (DBusGProxy *proxy,
 	value = g_hash_table_lookup (props, "UnlockRequired");
 	if (value && G_VALUE_HOLDS_STRING (value)) {
 		g_free (info->unlock_required);
-		info->unlock_required = g_value_dup_string (value);
+		info->unlock_required = parse_unlock_required (value);
+		check_start_polling (info);
+	}
 
-		if (info->unlock_required) {
-			/* FIXME: handle unlock changes; like if the user enters the wrong
-			 * pin too many times we want to show the PUK dialog instead of the
-			 * pin dialog.
-			 */
-		}
+	value = g_hash_table_lookup (props, "Enabled");
+	if (value && G_VALUE_HOLDS_BOOLEAN (value)) {
+		info->modem_enabled = g_value_get_boolean (value);
+		check_start_polling (info);
 	}
 }
 
@@ -1136,7 +1218,6 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 	DBusGConnection *bus = applet_dbus_manager_get_connection (dbus_mgr);
 	GsmDeviceInfo *info;
 	const char *udi;
-	NMDeviceState state;
 
 	udi = nm_device_get_udi (device);
 	if (!udi)
@@ -1144,11 +1225,6 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 
 	info = g_malloc0 (sizeof (GsmDeviceInfo));
 	info->device = device;
-
-	/* Don't bother polling if the device isn't usable */
-	state = nm_device_get_state (device);
-	if (state <= NM_DEVICE_STATE_UNAVAILABLE)
-		info->nopoll = TRUE;
 
 	info->props_proxy = dbus_g_proxy_new_for_name (bus,
 	                                               "org.freedesktop.ModemManager",
@@ -1215,10 +1291,12 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 	                         G_TYPE_STRING, "UnlockRequired",
 	                         G_TYPE_INVALID);
 
-	/* periodically poll for signal quality and registration state */
-	info->poll_id = g_timeout_add_seconds (10, gsm_poll_cb, info);
-	if (!info->nopoll)
-		gsm_poll_cb (info);
+	/* Ask whether the device needs to be unlocked */
+	dbus_g_proxy_begin_call (info->props_proxy, "Get",
+	                         enabled_reply, info, NULL,
+	                         G_TYPE_STRING, "org.freedesktop.ModemManager.Modem",
+	                         G_TYPE_STRING, "Enabled",
+	                         G_TYPE_INVALID);
 
 	g_object_unref (dbus_mgr);
 }
