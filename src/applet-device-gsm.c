@@ -1036,9 +1036,17 @@ unlock_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	                           G_TYPE_VALUE, &value,
 	                           G_TYPE_INVALID)) {
 		if (G_VALUE_HOLDS_STRING (&value)) {
-			g_free (info->unlock_required);
-			info->unlock_required = g_value_dup_string (&value);
+			const char *new_val;
 
+			g_free (info->unlock_required);
+			info->unlock_required = NULL;
+
+			/* Empty string means NULL */
+			new_val = g_value_get_string (&value);
+			if (new_val && strlen (new_val))
+				info->unlock_required = g_strdup (new_val);
+
+			/* Show the unlock dialog if an unlock is now required */
 			if (info->unlock_required)
 				unlock_dialog_new (info->device, info);
 		}
