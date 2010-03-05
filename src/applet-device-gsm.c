@@ -1061,17 +1061,27 @@ find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
 }
 
 static char *
-parse_op_name (GsmDeviceInfo *info, const char *orig)
+parse_op_name (GsmDeviceInfo *info, const char *orig, const char *op_code)
 {
 	guint i, orig_len;
-
-	orig_len = orig ? strlen (orig) : 0;
-	if (!orig || orig_len < 5 || orig_len > 6)
-		return g_strdup (orig);
 
 	/* Some devices return the MCC/MNC if they haven't fully initialized
 	 * or gotten all the info from the network yet.  Handle that.
 	 */
+
+	orig_len = orig ? strlen (orig) : 0;
+	if (orig_len == 0) {
+		/* If the operator name isn't valid, maybe we can look up the MCC/MNC
+		 * from the operator code instead.
+		 */
+		if (op_code && strlen (op_code)) {
+			orig = op_code;
+			orig_len = strlen (orig);
+		} else
+			return NULL;
+	} else if (orig_len < 5 || orig_len > 6)
+		return g_strdup (orig);  /* not an MCC/MNC */
+
 	for (i = 0; i < orig_len; i++) {
 		if (!isdigit (orig[i]))
 			return strdup (orig);
@@ -1110,12 +1120,17 @@ reg_info_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 				new_state = g_value_get_uint (value);
 
 			value = g_value_array_get_nth (array, 1);
-			if (G_VALUE_HOLDS_STRING (value))
+			if (G_VALUE_HOLDS_STRING (value)) {
 				new_op_code = g_value_dup_string (value);
+				if (new_op_code && !strlen (new_op_code)) {
+					g_free (new_op_code);
+					new_op_code = NULL;
+				}
+			}
 
 			value = g_value_array_get_nth (array, 2);
 			if (G_VALUE_HOLDS_STRING (value))
-				new_op_name = parse_op_name (info, g_value_get_string (value));
+				new_op_name = parse_op_name (info, g_value_get_string (value), new_op_code);
 		}
 
 		g_value_array_free (array);
@@ -1261,8 +1276,10 @@ reg_info_changed_cb (DBusGProxy *proxy,
 	GsmDeviceInfo *info = user_data;
 
 	info->reg_state = reg_state + 1;
-	info->op_code = g_strdup (op_code);
-	info->op_name = parse_op_name (info, op_name);
+	g_free (info->op_code);
+	info->op_code = strlen (op_code) ? g_strdup (op_code) : NULL;
+	g_free (info->op_name);
+	info->op_name = parse_op_name (info, op_name, info->op_code);
 	info->skip_reg_poll = TRUE;
 }
 
