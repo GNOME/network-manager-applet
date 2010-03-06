@@ -56,6 +56,7 @@ static char *ignored_words[] = {
 	"Co.",
 	"Inc.",
 	"Inc",
+	"Incorporated",
 	"Ltd.",
 	"Limited.",
 	"Intel?",
