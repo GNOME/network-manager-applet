@@ -46,6 +46,19 @@
 #include "nma-marshal.h"
 #include "nmn-mobile-providers.h"
 
+typedef enum {
+    MM_MODEM_GSM_ACCESS_TECH_UNKNOWN     = 0,
+    MM_MODEM_GSM_ACCESS_TECH_GSM         = 1,
+    MM_MODEM_GSM_ACCESS_TECH_GSM_COMPACT = 2,
+    MM_MODEM_GSM_ACCESS_TECH_GPRS        = 3,
+    MM_MODEM_GSM_ACCESS_TECH_EDGE        = 4,  /* GSM w/EGPRS */
+    MM_MODEM_GSM_ACCESS_TECH_UMTS        = 5,  /* UTRAN */
+    MM_MODEM_GSM_ACCESS_TECH_HSDPA       = 6,  /* UTRAN w/HSDPA */
+    MM_MODEM_GSM_ACCESS_TECH_HSUPA       = 7,  /* UTRAN w/HSUPA */
+    MM_MODEM_GSM_ACCESS_TECH_HSPA        = 8,  /* UTRAN w/HSDPA and HSUPA */
+
+    MM_MODEM_GSM_ACCESS_TECH_LAST = MM_MODEM_GSM_ACCESS_TECH_HSPA
+} MMModemGsmAccessTech;
 
 typedef struct {
 	NMDevice *device;
@@ -58,6 +71,7 @@ typedef struct {
 	guint32 quality;
 	char *unlock_required;
 	gboolean modem_enabled;
+	MMModemGsmAccessTech act;
 
 	/* reg_state is (1 + MM reg state) so that 0 means we haven't gotten a
 	 * value from MM yet.  0 is a valid MM GSM reg state.
@@ -255,6 +269,29 @@ state_for_info (GsmDeviceInfo *info)
 	return MB_STATE_UNKNOWN;
 }
 
+static guint32
+tech_for_info (GsmDeviceInfo *info)
+{
+	switch (info->act) {
+	case MM_MODEM_GSM_ACCESS_TECH_GPRS:
+		return MB_TECH_GPRS;
+	case MM_MODEM_GSM_ACCESS_TECH_EDGE:
+		return MB_TECH_EDGE;
+	case MM_MODEM_GSM_ACCESS_TECH_UMTS:
+		return MB_TECH_UMTS;
+	case MM_MODEM_GSM_ACCESS_TECH_HSDPA:
+		return MB_TECH_HSDPA;
+	case MM_MODEM_GSM_ACCESS_TECH_HSUPA:
+		return MB_TECH_HSUPA;
+	case MM_MODEM_GSM_ACCESS_TECH_HSPA:
+		return MB_TECH_HSPA;
+	default:
+		break;
+	}
+
+	return MB_TECH_GSM;
+}
+
 static void
 gsm_add_menu_item (NMDevice *device,
                    guint32 n_devices,
@@ -295,17 +332,17 @@ gsm_add_menu_item (NMDevice *device,
 	/* Add the active connection */
 	if (active) {
 		NMSettingConnection *s_con;
-		guint32 mb_state;
+		guint32 mb_state, mb_tech;
 
 		s_con = (NMSettingConnection *) nm_connection_get_setting (active, NM_TYPE_SETTING_CONNECTION);
 		g_assert (s_con);
 
 		mb_state = state_for_info (info);
-
+		mb_tech = tech_for_info (info);
 		item = nm_mb_menu_item_new (nm_setting_connection_get_id (s_con),
 		                            info->quality_valid ? info->quality : 0,
 		                            info->op_name,
-		                            MB_TECH_GSM,
+		                            mb_tech,
 		                            mb_state,
 		                            applet);
 
@@ -320,13 +357,14 @@ gsm_add_menu_item (NMDevice *device,
 			gtk_widget_show (item);
 		}
 	} else {
-		guint32 mb_state;
+		guint32 mb_state, mb_tech;
 
 		mb_state = state_for_info (info);
+		mb_tech = tech_for_info (info);
 		item = nm_mb_menu_item_new (NULL,
 		                            info->quality_valid ? info->quality : 0,
 		                            info->op_name,
-		                            MB_TECH_GSM,
+		                            mb_tech,
 		                            mb_state,
 		                            applet);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -1200,6 +1238,23 @@ unlock_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	check_start_polling (info);
 }
 
+static void
+access_tech_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	GsmDeviceInfo *info = user_data;
+	GError *error = NULL;
+	GValue value = { 0 };
+
+	if (dbus_g_proxy_end_call (proxy, call, &error,
+	                           G_TYPE_VALUE, &value,
+	                           G_TYPE_INVALID)) {
+		if (G_VALUE_HOLDS_UINT (&value))
+			info->act = g_value_get_uint (&value);
+		g_value_unset (&value);
+	}
+	g_clear_error (&error);
+}
+
 static gboolean
 gsm_poll_cb (gpointer user_data)
 {
@@ -1296,6 +1351,7 @@ signal_quality_changed_cb (DBusGProxy *proxy,
 }
 
 #define MM_DBUS_INTERFACE_MODEM "org.freedesktop.ModemManager.Modem"
+#define MM_DBUS_INTERFACE_MODEM_GSM_NETWORK "org.freedesktop.ModemManager.Modem.Gsm.Network"
 
 static void
 modem_properties_changed (DBusGProxy *proxy,
@@ -1306,20 +1362,25 @@ modem_properties_changed (DBusGProxy *proxy,
 	GsmDeviceInfo *info = user_data;
 	GValue *value;
 
-	if (strcmp (interface, MM_DBUS_INTERFACE_MODEM))
-		return;
+	if (!strcmp (interface, MM_DBUS_INTERFACE_MODEM)) {
+		value = g_hash_table_lookup (props, "UnlockRequired");
+		if (value && G_VALUE_HOLDS_STRING (value)) {
+			g_free (info->unlock_required);
+			info->unlock_required = parse_unlock_required (value);
+			check_start_polling (info);
+		}
 
-	value = g_hash_table_lookup (props, "UnlockRequired");
-	if (value && G_VALUE_HOLDS_STRING (value)) {
-		g_free (info->unlock_required);
-		info->unlock_required = parse_unlock_required (value);
-		check_start_polling (info);
-	}
-
-	value = g_hash_table_lookup (props, "Enabled");
-	if (value && G_VALUE_HOLDS_BOOLEAN (value)) {
-		info->modem_enabled = g_value_get_boolean (value);
-		check_start_polling (info);
+		value = g_hash_table_lookup (props, "Enabled");
+		if (value && G_VALUE_HOLDS_BOOLEAN (value)) {
+			info->modem_enabled = g_value_get_boolean (value);
+			check_start_polling (info);
+		}
+	} else if (!strcmp (interface, MM_DBUS_INTERFACE_MODEM_GSM_NETWORK)) {
+		value = g_hash_table_lookup (props, "AccessTechnology");
+		if (value && G_VALUE_HOLDS_UINT (value)) {
+			info->act = g_value_get_uint (value);
+			/* FIXME: update main icon if needed */
+		}
 	}
 }
 
@@ -1362,7 +1423,7 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 	info->net_proxy = dbus_g_proxy_new_for_name (bus,
 	                                             "org.freedesktop.ModemManager",
 	                                             udi,
-	                                             "org.freedesktop.ModemManager.Modem.Gsm.Network");
+	                                             MM_DBUS_INTERFACE_MODEM_GSM_NETWORK);
 	if (!info->net_proxy) {
 		g_message ("%s: failed to create GSM Network proxy.", __func__);
 		gsm_device_info_free (info);
@@ -1400,15 +1461,21 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 	/* Ask whether the device needs to be unlocked */
 	dbus_g_proxy_begin_call (info->props_proxy, "Get",
 	                         unlock_reply, info, NULL,
-	                         G_TYPE_STRING, "org.freedesktop.ModemManager.Modem",
+	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM,
 	                         G_TYPE_STRING, "UnlockRequired",
 	                         G_TYPE_INVALID);
 
 	/* Ask whether the device needs to be unlocked */
 	dbus_g_proxy_begin_call (info->props_proxy, "Get",
 	                         enabled_reply, info, NULL,
-	                         G_TYPE_STRING, "org.freedesktop.ModemManager.Modem",
+	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM,
 	                         G_TYPE_STRING, "Enabled",
+	                         G_TYPE_INVALID);
+
+	dbus_g_proxy_begin_call (info->props_proxy, "Get",
+	                         access_tech_reply, info, NULL,
+	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM_GSM_NETWORK,
+	                         G_TYPE_STRING, "AccessTechnology",
 	                         G_TYPE_INVALID);
 
 	g_object_unref (dbus_mgr);
