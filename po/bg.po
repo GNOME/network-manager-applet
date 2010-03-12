@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-08 07:26+0200\n"
-"PO-Revision-Date: 2010-03-08 07:26+0200\n"
+"POT-Creation-Date: 2010-03-12 07:03+0200\n"
+"PO-Revision-Date: 2010-03-12 07:02+0200\n"
 "Last-Translator: Krasimir Chonov <mk2616@abv.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -90,27 +90,27 @@ msgstr "Мрежови връзки"
 #: ../src/applet-dbus-manager.c:165
 #, c-format
 msgid "An instance of nm-applet is already running.\n"
-msgstr ""
+msgstr "nm-applet вече е стартиран.\n"
 
 #: ../src/applet-dbus-manager.c:167
 #, c-format
 msgid "Could not acquire the %s service. (%d)\n"
-msgstr ""
+msgstr "Услугата „%s“ не може да се достигне. (%d)\n"
 
 #: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:323
-#: ../src/applet-device-gsm.c:338 ../src/applet-device-wired.c:241
+#: ../src/applet-device-gsm.c:376 ../src/applet-device-wired.c:241
 #: ../src/applet-device-wifi.c:774
 msgid "Available"
 msgstr "Наличен"
 
 #: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:370
-#: ../src/applet-device-gsm.c:380 ../src/applet-device-wired.c:270
+#: ../src/applet-device-gsm.c:418 ../src/applet-device-wired.c:270
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Свързани сте към „%s“."
 
 #: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:374
-#: ../src/applet-device-gsm.c:384 ../src/applet-device-wired.c:274
+#: ../src/applet-device-gsm.c:422 ../src/applet-device-wired.c:274
 #: ../src/applet-device-wifi.c:1215
 msgid "Connection Established"
 msgstr "Връзката е осъществена"
@@ -120,31 +120,31 @@ msgid "You are now connected to the mobile broadband network."
 msgstr "Свързани сте към мобилна мрежа."
 
 #: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:405
-#: ../src/applet-device-gsm.c:419
+#: ../src/applet-device-gsm.c:457
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Подготовка на мобилна връзка „%s“…"
 
 #: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:408
-#: ../src/applet-device-gsm.c:422
+#: ../src/applet-device-gsm.c:460
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Настройване на мобилна връзка „%s“…"
 
 #: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:411
-#: ../src/applet-device-gsm.c:425
+#: ../src/applet-device-gsm.c:463
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Необходима е идентификация на потребител за мобилна връзка „%s“…"
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:414
-#: ../src/applet-device-gsm.c:428 ../src/applet.c:2262
+#: ../src/applet-device-gsm.c:466 ../src/applet.c:2262
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Заявка за мрежов адрес за „%s“…"
 
 #: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:431
-#: ../src/applet-device-gsm.c:440
+#: ../src/applet-device-gsm.c:478
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Мобилната връзка „%s“ е активна"
@@ -154,12 +154,12 @@ msgstr "Мобилната връзка „%s“ е активна"
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:267 ../src/applet-device-gsm.c:284
+#: ../src/applet-device-cdma.c:267 ../src/applet-device-gsm.c:321
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Мобилна връзка (%s)"
 
-#: ../src/applet-device-cdma.c:269 ../src/applet-device-gsm.c:286
+#: ../src/applet-device-cdma.c:269 ../src/applet-device-gsm.c:323
 #: ../src/connection-editor/page-mobile.c:326
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
 #: ../src/connection-editor/nm-connection-list.c:1360
@@ -175,103 +175,100 @@ msgstr "Нова мобилна връзка (CDMA)…"
 msgid "You are now connected to the CDMA network."
 msgstr "Свързани сте към мрежа CDMA."
 
-#: ../src/applet-device-cdma.c:426 ../src/applet-device-gsm.c:435
-#, fuzzy, c-format
+#: ../src/applet-device-cdma.c:426 ../src/applet-device-gsm.c:473
+#, c-format
 msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
-msgstr "Мобилната връзка „%s“ е активна"
+msgstr "Мобилната връзка „%s“ е активна: (%d%%%s%s)"
 
-#: ../src/applet-device-cdma.c:429 ../src/applet-device-gsm.c:438
+#: ../src/applet-device-cdma.c:429 ../src/applet-device-gsm.c:476
 msgid "roaming"
-msgstr ""
+msgstr "роуминг"
 
-#: ../src/applet-device-gsm.c:195 ../src/connection-editor/page-mobile.c:628
+#: ../src/applet-device-gsm.c:209 ../src/connection-editor/page-mobile.c:628
 #: ../src/mb-menu-item.c:62
 msgid "GSM"
 msgstr "GSM"
 
 #. Default connection item
-#: ../src/applet-device-gsm.c:351
+#: ../src/applet-device-gsm.c:389
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "Нова мобилна връзка (GSM)…"
 
-#: ../src/applet-device-gsm.c:385
+#: ../src/applet-device-gsm.c:423
 msgid "You are now connected to the GSM network."
 msgstr "Свързани сте към GSM мрежа."
 
-#: ../src/applet-device-gsm.c:667
+#: ../src/applet-device-gsm.c:705
 msgid "PIN code required"
 msgstr "Необходим е PIN"
 
-#: ../src/applet-device-gsm.c:669
+#: ../src/applet-device-gsm.c:707
 msgid "PUK code required"
 msgstr "Необходим е PUK"
 
-#: ../src/applet-device-gsm.c:678
+#: ../src/applet-device-gsm.c:716
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Мобилното устройство изисква PIN"
 
-#: ../src/applet-device-gsm.c:680
+#: ../src/applet-device-gsm.c:718
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "Мобилното устройство изисква PUK"
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-gsm.c:853
+#: ../src/applet-device-gsm.c:891
 msgid "Sending unlock code..."
-msgstr ""
+msgstr "Изпращане на отключващия код…"
 
-#: ../src/applet-device-gsm.c:912
-#, fuzzy
+#: ../src/applet-device-gsm.c:950
 msgid "SIM PIN unlock required"
 msgstr "Необходим е PIN"
 
-#: ../src/applet-device-gsm.c:913
-#, fuzzy
+#: ../src/applet-device-gsm.c:951
 msgid "SIM PIN Unlock Required"
 msgstr "Необходим е PIN"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-device-gsm.c:915
+#: ../src/applet-device-gsm.c:953
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
 "used."
 msgstr ""
+"Мобилното широколентово устройство „%s“ изисква SIM PIN, преди да се свърже."
 
-#: ../src/applet-device-gsm.c:916
-#, fuzzy
+#: ../src/applet-device-gsm.c:954
 msgid "PIN code:"
-msgstr "Необходим е PIN"
+msgstr "PIN:"
 
-#: ../src/applet-device-gsm.c:921
-#, fuzzy
+#: ../src/applet-device-gsm.c:959
 msgid "SIM PUK unlock required"
-msgstr "Необходим е PUK"
+msgstr "Необходим е PUK за SIM"
 
-#: ../src/applet-device-gsm.c:922
-#, fuzzy
+#: ../src/applet-device-gsm.c:960
 msgid "SIM PUK Unlock Required"
-msgstr "Необходим е PUK"
+msgstr "Необходим е PUK за отключване на SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-device-gsm.c:924
+#: ../src/applet-device-gsm.c:962
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
 "used."
 msgstr ""
+"Мобилното широколентово устройство „%s“ изисква SIM PUK, преди да се "
+"използва."
 
-#: ../src/applet-device-gsm.c:925
-#, fuzzy
+#: ../src/applet-device-gsm.c:963
 msgid "PUK code:"
-msgstr "Необходим е PUK"
+msgstr "PUK:"
 
-#: ../src/applet-device-gsm.c:927
+#: ../src/applet-device-gsm.c:965
 msgid "New PIN code:"
-msgstr ""
+msgstr "Нов PIN:"
 
-#: ../src/applet-device-gsm.c:928
+#: ../src/applet-device-gsm.c:966
 msgid "Re-enter new PIN code:"
-msgstr ""
+msgstr "Повторете PIN:"
 
 #: ../src/applet-device-wired.c:63
 msgid "Auto Ethernet"
@@ -746,9 +743,8 @@ msgid "_Configure VPN..."
 msgstr "_Настройване на ВЧМ…"
 
 #: ../src/applet.c:1527
-#, fuzzy
 msgid "_Disconnect VPN"
-msgstr "_Прекъсване на ВЧМ…"
+msgstr "_Прекъсване на ВЧМ"
 
 #: ../src/applet.c:1614
 msgid "NetworkManager is not running..."
@@ -883,7 +879,7 @@ msgstr "Анони_мна идентичност:"
 
 #: ../src/applet.glade.h:8
 msgid "As_k for this password every time"
-msgstr ""
+msgstr "П_итане всеки път за паролата"
 
 #: ../src/applet.glade.h:9
 msgid ""
@@ -994,7 +990,7 @@ msgstr "_Вид:"
 
 #: ../src/applet.glade.h:36
 msgid "_Unlock"
-msgstr ""
+msgstr "_Отключване"
 
 #: ../src/applet.glade.h:37
 msgid "_User certificate:"
@@ -1011,7 +1007,7 @@ msgstr "_Защита на безжична мрежа:"
 
 #: ../src/applet.glade.h:40
 msgid "label"
-msgstr ""
+msgstr "етикет"
 
 #: ../src/connection-editor/ce-page.c:69
 msgid "automatic"
@@ -2009,161 +2005,162 @@ msgid "Export VPN connection..."
 msgstr "Изнасяне на връзка към ВЧМ…"
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:214
-#, fuzzy, c-format
+#, c-format
 msgid "%s Network"
-msgstr "М_режа:"
+msgstr "Мрежа „%s“"
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:323
 #, c-format
 msgid "Error: %s"
-msgstr ""
+msgstr "Грешка: %s"
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:442
 msgid "Mobile wizard was canceled"
-msgstr ""
+msgstr "Съветникът беше отказан"
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:451
 msgid "Unknown phone device type (not GSM or CDMA)"
-msgstr ""
+msgstr "Неизвестен вид устройство (не е GSM или CDMA)"
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:479
 msgid "Your phone is now ready to use!"
-msgstr ""
+msgstr "Телефонът ви е готов за работа!"
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:652
 #: ../src/gnome-bluetooth/network-manager-applet.c:658
-#, fuzzy
 msgid "failed to connect to the phone."
-msgstr "Свързани сте към GSM мрежа."
+msgstr "неуспешна връзка с телефона."
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:691
 msgid "unexpectedly disconnected from the phone."
-msgstr ""
+msgstr "връзката с телефона неочаквано прекъсна."
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:700
 msgid "timed out detecting phone details."
-msgstr ""
+msgstr "времето за откриване на телефон изтече."
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:715
-#, fuzzy
 msgid "could not connect to the system bus."
-msgstr "Свързани сте към безжичната мрежа „%s“."
+msgstr "неуспешна връзка със системната шина."
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:720
 msgid "Detecting phone configuration..."
-msgstr ""
+msgstr "Разпознаване на настройките за телефона…"
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:786
-#, fuzzy
 msgid "could not find the Bluetooth device."
-msgstr "Не може да се намери приставка за ВЧМ за „%s“."
+msgstr "устройството за Bluetooth не може да се открие."
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:916
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
 msgstr ""
+"Подразбиращия се адаптер за Bluetooth трябва да е активиран, преди да "
+"създадете връзка през телефон."
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:969
 msgid "Use your mobile phone as a network device (PAN/NAP)"
-msgstr ""
+msgstr "Използване на телефон като мрежово устройство (PAN/NAP)"
 
 #: ../src/gnome-bluetooth/network-manager-applet.c:978
-#, fuzzy
 msgid "Access the Internet using your mobile phone (DUN)"
-msgstr "Достъп до Интернет през вашия мобилен телефон"
+msgstr "Достъп до Интернет през мобилния ви телефон (DUN)"
 
 #: ../src/main.c:70
-#, fuzzy
 msgid "Usage:"
-msgstr "_Потребител:"
+msgstr "Употреба:"
 
 #: ../src/main.c:72
 msgid ""
 "This program is a component of NetworkManager (http://projects.gnome.org/"
 "NetworkManager)."
 msgstr ""
+"Тази програма е компонент на NetworkManager (http://projects.gnome.org/"
+"NetworkManager)."
 
 #: ../src/main.c:73
 msgid ""
 "It is not intended for command-line interaction but instead runs in the "
 "GNOME desktop environment."
 msgstr ""
+"Не е предназначена за работа през конзолата, а се изпълнява в графичната "
+"среда GNOME."
 
 #: ../src/mb-menu-item.c:59
 msgid "EVDO"
-msgstr ""
+msgstr "EVDO"
 
 #: ../src/mb-menu-item.c:65
 msgid "GPRS"
-msgstr ""
+msgstr "GPRS"
 
 #: ../src/mb-menu-item.c:68
 msgid "EDGE"
-msgstr ""
+msgstr "EDGE"
 
 #: ../src/mb-menu-item.c:71
 msgid "UMTS"
-msgstr ""
+msgstr "UMTS"
 
 #: ../src/mb-menu-item.c:74
 msgid "HSDPA"
-msgstr ""
+msgstr "HSDPA"
 
 #: ../src/mb-menu-item.c:77
 msgid "HSUPA"
-msgstr ""
+msgstr "HSUPA"
 
 #: ../src/mb-menu-item.c:80
 msgid "HSPA"
-msgstr ""
+msgstr "HSPA"
 
 #: ../src/mb-menu-item.c:118
 msgid "not registered"
-msgstr ""
+msgstr "не е регистрирана"
 
 #: ../src/mb-menu-item.c:130
-#, fuzzy, c-format
+#, c-format
 msgid "Home network (%s)"
-msgstr "Жична мрежа (%s)"
+msgstr "Домашна мрежа (%s)"
 
 #: ../src/mb-menu-item.c:137
 msgid "searching"
-msgstr ""
+msgstr "търсене"
 
 #: ../src/mb-menu-item.c:140
 msgid "registration denied"
-msgstr ""
+msgstr "регистрацията е отхвърлена"
 
 #: ../src/mb-menu-item.c:144 ../src/mb-menu-item.c:147
 #, c-format
 msgid "%s (%s roaming)"
-msgstr ""
+msgstr "%s (роуминг към %s)"
 
 #: ../src/mb-menu-item.c:149
-#, fuzzy, c-format
+#, c-format
 msgid "Roaming network (%s)"
-msgstr "Жична мрежа (%s)"
+msgstr "Мрежа с роуминг (%s)"
 
 #: ../src/utils/mobile-wizard.c:196
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
-msgstr "Вашата мобилна връзка е настроена по следния начин:"
+msgstr "Мобилната ви връзка е настроена по следния начин:"
 
 #. Device
 #: ../src/utils/mobile-wizard.c:203
 msgid "Your Device:"
-msgstr "Вашето устройство:"
+msgstr "Устройството ви:"
 
 #. Provider
 #: ../src/utils/mobile-wizard.c:214
 msgid "Your Provider:"
-msgstr "Вашият доставчик:"
+msgstr "Доставчикът ви:"
 
 #. Plan and APN
 #: ../src/utils/mobile-wizard.c:225
 msgid "Your Plan:"
-msgstr "Вашият план:"
+msgstr "Планът ви:"
 
 #: ../src/utils/mobile-wizard.c:246
 msgid ""
@@ -2469,13 +2466,3 @@ msgstr "Тунелен TLS"
 #: ../src/wireless-security/wireless-security.c:363
 msgid "Protected EAP (PEAP)"
 msgstr "Защитен EAP (PEAP)"
-
-#~ msgid ""
-#~ "The NetworkManager applet could not find some required resources.  It "
-#~ "cannot continue.\n"
-#~ msgstr ""
-#~ "Аплетът NetworkManager не може да открие необходим ресурс. Програмата не "
-#~ "може да продължи работа.\n"
-
-#~ msgid "Select A File"
-#~ msgstr "Избор на файл"
