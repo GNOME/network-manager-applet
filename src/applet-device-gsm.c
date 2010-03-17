@@ -1207,8 +1207,13 @@ parse_unlock_required (GValue *value)
 
 	/* Empty string means NULL */
 	new_val = g_value_get_string (value);
-	if (new_val && strlen (new_val))
-		return g_strdup (new_val);
+	if (new_val && strlen (new_val)) {
+		/* PUK2 only required for various dialing things that we don't care
+		 * about; it doesn't inhibit normal operation.
+		 */
+		if (strcmp (new_val, "sim-puk2") != 0)
+			return g_strdup (new_val);
+	}
 
 	return NULL;
 }
