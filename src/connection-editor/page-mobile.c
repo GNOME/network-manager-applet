@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -53,7 +53,7 @@ typedef struct {
 	GtkButton *apn_button;
 	GtkEntry *network_id;
 	GtkComboBox *network_type;
-	GtkComboBox *band;
+	GtkToggleButton *roaming_allowed;
 	GtkEntry *pin;
 
 	GtkWindowGroup *window_group;
@@ -84,7 +84,7 @@ mobile_private_init (CEPageMobile *self)
 	priv->apn_button = GTK_BUTTON (glade_xml_get_widget (xml, "mobile_apn_button"));
 	priv->network_id = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_network_id"));
 	priv->network_type = GTK_COMBO_BOX (glade_xml_get_widget (xml, "mobile_network_type"));
-	priv->band = GTK_COMBO_BOX (glade_xml_get_widget (xml, "mobile_band"));
+	priv->roaming_allowed = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "mobile_roaming_allowed"));
 
 	priv->pin = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_pin"));
 
@@ -97,7 +97,6 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 	NMSettingGsm *setting = NM_SETTING_GSM (priv->setting);
 	int type_idx;
-	GtkWidget *widget;
 	const char *s;
 
 	s = nm_setting_gsm_get_number (setting);
@@ -136,16 +135,8 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 	}
 	gtk_combo_box_set_active (priv->network_type, type_idx);
 
-	/* Hide network type widgets; not supported yet */
-	gtk_widget_hide (GTK_WIDGET (priv->network_type));
-	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "type_label");
-	gtk_widget_hide (widget);
-
-	/* Hide Band widgets; not supported yet */
-	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "mobile_band");
-	gtk_widget_hide (widget);
-	widget = glade_xml_get_widget (CE_PAGE (self)->xml, "band_label");
-	gtk_widget_hide (widget);
+	gtk_toggle_button_set_active (priv->roaming_allowed,
+	                              !nm_setting_gsm_get_home_only (setting));
 
 	s = nm_setting_gsm_get_password (setting);
 	if (s)
@@ -285,6 +276,7 @@ finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_
 	g_signal_connect (priv->network_id, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->network_type, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->pin, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->roaming_allowed, "toggled", G_CALLBACK (stuff_changed), self);
 
 	g_signal_connect (glade_xml_get_widget (parent->xml, "mobile_show_passwords"),
 	                  "toggled",
@@ -365,6 +357,7 @@ gsm_ui_to_setting (CEPageMobile *self)
 {
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 	int net_type;
+	gboolean roaming_allowed;
 
 	switch (gtk_combo_box_get_active (priv->network_type)) {
 	case NET_TYPE_3G:
@@ -385,14 +378,17 @@ gsm_ui_to_setting (CEPageMobile *self)
 		break;
 	}
 
+	roaming_allowed = gtk_toggle_button_get_active (priv->roaming_allowed);
+
 	g_object_set (priv->setting,
-				  NM_SETTING_GSM_NUMBER,   nm_entry_get_text (priv->number),
-				  NM_SETTING_GSM_USERNAME, nm_entry_get_text (priv->username),
-				  NM_SETTING_GSM_PASSWORD, nm_entry_get_text (priv->password),
-				  NM_SETTING_GSM_APN, nm_entry_get_text (priv->apn),
-				  NM_SETTING_GSM_NETWORK_ID, nm_entry_get_text (priv->network_id),
+				  NM_SETTING_GSM_NUMBER,       nm_entry_get_text (priv->number),
+				  NM_SETTING_GSM_USERNAME,     nm_entry_get_text (priv->username),
+				  NM_SETTING_GSM_PASSWORD,     nm_entry_get_text (priv->password),
+				  NM_SETTING_GSM_APN,          nm_entry_get_text (priv->apn),
+				  NM_SETTING_GSM_NETWORK_ID,   nm_entry_get_text (priv->network_id),
 				  NM_SETTING_GSM_NETWORK_TYPE, net_type,
-				  NM_SETTING_GSM_PIN, nm_entry_get_text (priv->pin),
+				  NM_SETTING_GSM_PIN,          nm_entry_get_text (priv->pin),
+				  NM_SETTING_GSM_HOME_ONLY,    !roaming_allowed,
 				  NULL);
 }
 
