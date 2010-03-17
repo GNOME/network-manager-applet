@@ -51,6 +51,7 @@ nm_applet_SOURCES =			\
 	applet-device-bt.c
 
 nm_applet_LDADD = \
+	-lm \
 	$(NMA_LIBS) \
 	$(NOTIFY_LIBS) \
 	${top_builddir}/src/marshallers/libmarshallers.la \
