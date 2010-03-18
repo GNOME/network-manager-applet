@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-12 07:03+0200\n"
-"PO-Revision-Date: 2010-03-12 07:02+0200\n"
+"POT-Creation-Date: 2010-03-18 13:14+0200\n"
+"PO-Revision-Date: 2010-03-18 13:14+0200\n"
 "Last-Translator: Krasimir Chonov <mk2616@abv.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -149,7 +149,7 @@ msgstr "Заявка за мрежов адрес за „%s“…"
 msgid "Mobile broadband connection '%s' active"
 msgstr "Мобилната връзка „%s“ е активна"
 
-#: ../src/applet-device-cdma.c:160 ../src/connection-editor/page-mobile.c:625
+#: ../src/applet-device-cdma.c:160 ../src/connection-editor/page-mobile.c:621
 #: ../src/mb-menu-item.c:55
 msgid "CDMA"
 msgstr "CDMA"
@@ -160,7 +160,7 @@ msgid "Mobile Broadband (%s)"
 msgstr "Мобилна връзка (%s)"
 
 #: ../src/applet-device-cdma.c:269 ../src/applet-device-gsm.c:323
-#: ../src/connection-editor/page-mobile.c:326
+#: ../src/connection-editor/page-mobile.c:318
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
 #: ../src/connection-editor/nm-connection-list.c:1360
 msgid "Mobile Broadband"
@@ -184,7 +184,7 @@ msgstr "Мобилната връзка „%s“ е активна: (%d%%%s%s)"
 msgid "roaming"
 msgstr "роуминг"
 
-#: ../src/applet-device-gsm.c:209 ../src/connection-editor/page-mobile.c:628
+#: ../src/applet-device-gsm.c:209 ../src/connection-editor/page-mobile.c:624
 #: ../src/mb-menu-item.c:62
 msgid "GSM"
 msgstr "GSM"
@@ -214,21 +214,29 @@ msgstr "Мобилното устройство изисква PIN"
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "Мобилното устройство изисква PUK"
 
+#: ../src/applet-device-gsm.c:851
+msgid "Wrong PIN code; please contact your provider."
+msgstr "PIN-ът е грешен. Свържете се с доставчика на услугата."
+
+#: ../src/applet-device-gsm.c:874
+msgid "Wrong PUK code; please contact your provider."
+msgstr "PUK-ът е грешен. Свържете се с доставчика на услугата.<"
+
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-gsm.c:891
+#: ../src/applet-device-gsm.c:901
 msgid "Sending unlock code..."
 msgstr "Изпращане на отключващия код…"
 
-#: ../src/applet-device-gsm.c:950
+#: ../src/applet-device-gsm.c:960
 msgid "SIM PIN unlock required"
 msgstr "Необходим е PIN"
 
-#: ../src/applet-device-gsm.c:951
+#: ../src/applet-device-gsm.c:961
 msgid "SIM PIN Unlock Required"
 msgstr "Необходим е PIN"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-device-gsm.c:953
+#: ../src/applet-device-gsm.c:963
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -236,20 +244,20 @@ msgid ""
 msgstr ""
 "Мобилното широколентово устройство „%s“ изисква SIM PIN, преди да се свърже."
 
-#: ../src/applet-device-gsm.c:954
+#: ../src/applet-device-gsm.c:964
 msgid "PIN code:"
 msgstr "PIN:"
 
-#: ../src/applet-device-gsm.c:959
+#: ../src/applet-device-gsm.c:969
 msgid "SIM PUK unlock required"
 msgstr "Необходим е PUK за SIM"
 
-#: ../src/applet-device-gsm.c:960
+#: ../src/applet-device-gsm.c:970
 msgid "SIM PUK Unlock Required"
 msgstr "Необходим е PUK за отключване на SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-device-gsm.c:962
+#: ../src/applet-device-gsm.c:972
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -258,15 +266,15 @@ msgstr ""
 "Мобилното широколентово устройство „%s“ изисква SIM PUK, преди да се "
 "използва."
 
-#: ../src/applet-device-gsm.c:963
+#: ../src/applet-device-gsm.c:973
 msgid "PUK code:"
 msgstr "PUK:"
 
-#: ../src/applet-device-gsm.c:965
+#: ../src/applet-device-gsm.c:975
 msgid "New PIN code:"
 msgstr "Нов PIN:"
 
-#: ../src/applet-device-gsm.c:966
+#: ../src/applet-device-gsm.c:976
 msgid "Re-enter new PIN code:"
 msgstr "Повторете PIN:"
 
@@ -1135,6 +1143,10 @@ msgid "<b>Basic</b>"
 msgstr "<b>Прости</b>"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:3
+msgid "Allow roaming if home network is not available"
+msgstr "Позволяване на роуминг, когато домашната мрежа не е налична"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:4
 msgid ""
 "Any\n"
 "3G (UMTS/HSPA)\n"
@@ -1148,33 +1160,29 @@ msgstr ""
 "Предпочитане на 3G (UMTS/HSPA)\n"
 "Предпочитане на 2G (GPRS/EDGE)"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:8
+#: ../src/connection-editor/ce-page-mobile.glade.h:9
 msgid "Change..."
 msgstr "Промяна…"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:9
-msgid "N_etwork:"
-msgstr "М_режа:"
-
 #: ../src/connection-editor/ce-page-mobile.glade.h:10
+msgid "N_etwork ID:"
+msgstr "М_режа (ид.):"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:11
 msgid "Nu_mber:"
 msgstr "Но_мер:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:11
+#: ../src/connection-editor/ce-page-mobile.glade.h:12
 msgid "PI_N:"
 msgstr "PI_N:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:12
+#: ../src/connection-editor/ce-page-mobile.glade.h:13
 msgid "Sho_w passwords"
 msgstr "Пока_зване на паролите"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:13
+#: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "_APN:"
 msgstr "_APN:"
-
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
-msgid "_Band:"
-msgstr "_Честота:"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:1
 msgid "<b>Allowed Authentication Methods</b>"
@@ -1552,21 +1560,21 @@ msgstr "Потребителският интерфейс на IPv6 не мож�
 msgid "IPv6 Settings"
 msgstr "Настройки на IPv6"
 
-#: ../src/connection-editor/page-mobile.c:313
-#: ../src/connection-editor/page-mobile.c:320
+#: ../src/connection-editor/page-mobile.c:305
+#: ../src/connection-editor/page-mobile.c:312
 msgid "Could not load mobile broadband user interface."
 msgstr "Потребителският интерфейс за мобилна връзка не може да се зареди."
 
-#: ../src/connection-editor/page-mobile.c:341
+#: ../src/connection-editor/page-mobile.c:333
 msgid "Unsupported mobile broadband connection type."
 msgstr "Неподдържан вид мобилна връзка."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:578
+#: ../src/connection-editor/page-mobile.c:574
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Изберете вида на доставчика на мобилен Интернет"
 
-#: ../src/connection-editor/page-mobile.c:605
+#: ../src/connection-editor/page-mobile.c:601
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1574,12 +1582,12 @@ msgstr ""
 "Изберете технологията, която се използва от вашия мобилен доставчик. Ако не "
 "сте сигурни, го попитайте."
 
-#: ../src/connection-editor/page-mobile.c:610
+#: ../src/connection-editor/page-mobile.c:606
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "_Доставчикът използва технология чрез GSM (като GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:615
+#: ../src/connection-editor/page-mobile.c:611
 msgid "My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Доставчикът използва _технология чрез CDMA (като 1xRTT, EVDO)"
 
