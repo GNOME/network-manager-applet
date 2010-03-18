@@ -807,6 +807,10 @@ mpd_entry_changed (GtkWidget *widget, gpointer user_data)
 	valid = TRUE;
 
 done:
+	/* Clear any error text in the progress label now that the user has changed something */
+	widget = glade_xml_get_widget (xml, "progress_label");
+	gtk_label_set_text (GTK_LABEL (widget), "");
+
 	widget = glade_xml_get_widget (xml, "unlock_button");
 	g_warn_if_fail (widget != NULL);
 	gtk_widget_set_sensitive (widget, valid);
@@ -1098,10 +1102,10 @@ applet_mobile_pin_dialog_start_spinner (GtkWidget *dialog, const char *text)
 }
 
 void
-applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog)
+applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog, const char *text)
 {
 	GladeXML *xml;
-	GtkWidget *spinner, *widget;
+	GtkWidget *spinner, *widget, *align;
 
 	g_return_if_fail (dialog != NULL);
 
@@ -1111,10 +1115,18 @@ applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog)
 	spinner = g_object_get_data (G_OBJECT (dialog), "spinner");
 	g_return_if_fail (spinner != NULL);
 	nma_bling_spinner_stop (NMA_BLING_SPINNER (spinner));
-	gtk_widget_hide (spinner);
+	g_object_set_data (G_OBJECT (dialog), "spinner", NULL);
+
+	/* Remove it from the alignment */
+	align = glade_xml_get_widget (xml, "spinner_alignment");
+	gtk_container_remove (GTK_CONTAINER (align), spinner);
 
 	widget = glade_xml_get_widget (xml, "progress_label");
-	gtk_widget_hide (widget);
+	if (text) {
+		gtk_label_set_text (GTK_LABEL (widget), text);
+		gtk_widget_show (widget);
+	} else
+		gtk_widget_hide (widget);
 
 	/* Resensitize stuff */
 	widget = glade_xml_get_widget (xml, "code1_entry");

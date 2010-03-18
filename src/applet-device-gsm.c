@@ -839,15 +839,20 @@ unlock_pin_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 {
 	GsmDeviceInfo *info = user_data;
 	GError *error = NULL;
+	const char *dbus_error, *msg = NULL;
 
 	if (dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID)) {
 		unlock_dialog_destroy (info);
 		return;
 	}
 
-	/* FIXME: show the error in the dialog or something */
+	dbus_error = dbus_g_error_get_name (error);
+	if (dbus_error && !strcmp (dbus_error, "org.freedesktop.ModemManager.Modem.Gsm.IncorrectPassword"))
+		msg = _("Wrong PIN code; please contact your provider.");
+	else
+		msg = error ? error->message : NULL;
 
-	applet_mobile_pin_dialog_stop_spinner (info->dialog);
+	applet_mobile_pin_dialog_stop_spinner (info->dialog, msg);
 	g_warning ("%s: error unlocking with PIN: %s", __func__, error->message);
 	g_clear_error (&error);
 }
@@ -857,15 +862,20 @@ unlock_puk_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 {
 	GsmDeviceInfo *info = user_data;
 	GError *error = NULL;
+	const char *dbus_error, *msg = NULL;
 
 	if (dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID)) {
 		unlock_dialog_destroy (info);
 		return;
 	}
 
-	/* FIXME: show the error in the dialog or something */
+	dbus_error = dbus_g_error_get_name (error);
+	if (dbus_error && !strcmp (dbus_error, "org.freedesktop.ModemManager.Modem.Gsm.IncorrectPassword"))
+		msg = _("Wrong PUK code; please contact your provider.");
+	else
+		msg = error ? error->message : NULL;
 
-	applet_mobile_pin_dialog_stop_spinner (info->dialog);
+	applet_mobile_pin_dialog_stop_spinner (info->dialog, msg);
 	g_warning ("%s: error unlocking with PIN: %s", __func__, error->message);
 	g_clear_error (&error);
 }

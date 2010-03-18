@@ -68,6 +68,6 @@ const char *applet_mobile_pin_dialog_get_entry3 (GtkWidget *dialog);
 void applet_mobile_pin_dialog_match_23 (GtkWidget *dialog, gboolean match);
 
 void applet_mobile_pin_dialog_start_spinner (GtkWidget *dialog, const char *text);
-void applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog);
+void applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog, const char *text);
 
 #endif /* __APPLET_DIALOGS_H__ */
