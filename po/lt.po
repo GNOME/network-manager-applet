@@ -2,7 +2,7 @@
 # Lithuanian translation of NetworkManager.
 # Copyright (C) 2005-2006, 2008, 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the NetworkManager package.
-# Žygimantas Beručka <zygis@gnome.org>, 2005-2006, 2008, 2009.
+# Žygimantas Beručka <zygis@gnome.org>, 2005-2006, 2008, 2009, 2010.
 # Gintautas Miliauskas <gintas@akl.lt>, 2008.
 msgid ""
 msgstr ""
@@ -10,17 +10,17 @@ msgstr ""
 "Report-Msgid-Bugs-To: "
 "http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&component=nm-"
 "applet\n"
-"POT-Creation-Date: 2009-11-17 08:46+0000\n"
-"PO-Revision-Date: 2009-11-19 21:07+0300\n"
+"POT-Creation-Date: 2010-03-18 07:09+0000\n"
+"PO-Revision-Date: 2010-03-21 02:22+0300\n"
 "Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
-"Language-Team: Lithuanian\n"
+"Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
 "100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.4.0\n"
+"X-Generator: Virtaal 0.5.2\n"
 
 #: ../nm-applet.desktop.in.h:1
 msgid "Control your network connections"
@@ -92,122 +92,204 @@ msgstr "Tvarkykite ir keiskite savo tinklo ryšių parametrus"
 msgid "Network Connections"
 msgstr "Tinklo ryšiai"
 
-#: ../src/applet-device-bt.c:171 ../src/applet-device-cdma.c:291
-#: ../src/applet-device-gsm.c:284 ../src/applet-device-wired.c:241
-#: ../src/applet-device-wifi.c:781
+#: ../src/applet-dbus-manager.c:165
+#, c-format
+msgid "An instance of nm-applet is already running.\n"
+msgstr "Nm-applet egzempliorius jau veikia.\n"
+
+#: ../src/applet-dbus-manager.c:167
+#, c-format
+msgid "Could not acquire the %s service. (%d)\n"
+msgstr "Nepavyko gauti %s paslaugos. (%d)\n"
+
+#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:323
+#: ../src/applet-device-gsm.c:376 ../src/applet-device-wired.c:241
+#: ../src/applet-device-wifi.c:774
 msgid "Available"
 msgstr "Prieinama"
 
-#: ../src/applet-device-bt.c:197 ../src/applet-device-cdma.c:321
-#: ../src/applet-device-gsm.c:314 ../src/applet-device-wired.c:270
+#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:370
+#: ../src/applet-device-gsm.c:418 ../src/applet-device-wired.c:270
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Esate prisijungę prie „%s“."
 
-#: ../src/applet-device-bt.c:201 ../src/applet-device-cdma.c:325
-#: ../src/applet-device-gsm.c:318 ../src/applet-device-wired.c:274
-#: ../src/applet-device-wifi.c:1285
+#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:374
+#: ../src/applet-device-gsm.c:422 ../src/applet-device-wired.c:274
+#: ../src/applet-device-wifi.c:1215
 msgid "Connection Established"
 msgstr "Prisijungta"
 
-#: ../src/applet-device-bt.c:202
+#: ../src/applet-device-bt.c:205
 msgid "You are now connected to the mobile broadband network."
 msgstr "Prisijungėte prie mobilaus plačiajuosčio ryšio."
 
-#: ../src/applet-device-bt.c:228 ../src/applet-device-cdma.c:352
-#: ../src/applet-device-gsm.c:345
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:405
+#: ../src/applet-device-gsm.c:457
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Ruošiamas mobilusis plačiajuostis ryšys „%s“..."
 
-#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:355
-#: ../src/applet-device-gsm.c:348
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:408
+#: ../src/applet-device-gsm.c:460
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Konfigūruojamas mobilusis plačiajuostis ryšys „%s“..."
 
-#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:358
-#: ../src/applet-device-gsm.c:351
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:411
+#: ../src/applet-device-gsm.c:463
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Mobilusis plačiajuostis ryšys „%s“ reikalauja nustatyti tapatybę..."
 
-#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:361
-#: ../src/applet-device-gsm.c:354 ../src/applet.c:2233
+#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:414
+#: ../src/applet-device-gsm.c:466 ../src/applet.c:2262
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "„%s“ prašoma tinklo adreso..."
 
-#: ../src/applet-device-bt.c:241 ../src/applet-device-cdma.c:365
-#: ../src/applet-device-gsm.c:358
+#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:431
+#: ../src/applet-device-gsm.c:478
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Mobilusis plačiajuostis ryšys „%s“ aktyvus"
 
-#: ../src/applet-device-cdma.c:150 ../src/connection-editor/page-mobile.c:625
+#: ../src/applet-device-cdma.c:160 ../src/connection-editor/page-mobile.c:621
+#: ../src/mb-menu-item.c:55
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:222
-msgid "New Mobile Broadband (CDMA) connection..."
-msgstr "Naujas mobilusis plačiajuostis (CDMA) ryšys..."
-
-#: ../src/applet-device-cdma.c:261 ../src/applet-device-gsm.c:260
+#: ../src/applet-device-cdma.c:267 ../src/applet-device-gsm.c:321
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobilusis plačiajuostis ryšys (%s)"
 
-#: ../src/applet-device-cdma.c:263 ../src/applet-device-gsm.c:262
-#: ../src/connection-editor/page-mobile.c:326
+#: ../src/applet-device-cdma.c:269 ../src/applet-device-gsm.c:323
+#: ../src/connection-editor/page-mobile.c:318
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
 #: ../src/connection-editor/nm-connection-list.c:1360
 msgid "Mobile Broadband"
 msgstr "Mobilusis plačiajuostis ryšys"
 
-#: ../src/applet-device-cdma.c:326
+#. Default connection item
+#: ../src/applet-device-cdma.c:336
+msgid "New Mobile Broadband (CDMA) connection..."
+msgstr "Naujas mobilusis plačiajuostis (CDMA) ryšys..."
+
+#: ../src/applet-device-cdma.c:375
 msgid "You are now connected to the CDMA network."
 msgstr "Esate prisijungę prie CDMA tinklo."
 
-#: ../src/applet-device-cdma.c:495 ../src/applet-device-gsm.c:570
-msgid "Mobile broadband network password"
-msgstr "Mobiliojo plačiajuosčio tinklo slaptažodis"
-
-#: ../src/applet-device-cdma.c:504 ../src/applet-device-gsm.c:579
+#: ../src/applet-device-cdma.c:426 ../src/applet-device-gsm.c:473
 #, c-format
-msgid "A password is required to connect to '%s'."
-msgstr "Norint prisijungti prie „%s“ reikalingas slaptažodis."
+#| msgid "Mobile broadband connection '%s' active"
+msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
+msgstr "Mobilusis plačiajuostis ryšys „%s“ aktyvus: (%d%%%s%s)"
 
-#: ../src/applet-device-cdma.c:522 ../src/applet-device-gsm.c:597
-msgid "Password:"
-msgstr "Slaptažodis:"
+#: ../src/applet-device-cdma.c:429 ../src/applet-device-gsm.c:476
+msgid "roaming"
+msgstr "tarptinklinis ryšys"
 
-#: ../src/applet-device-gsm.c:152 ../src/connection-editor/page-mobile.c:628
+#: ../src/applet-device-gsm.c:209 ../src/connection-editor/page-mobile.c:624
+#: ../src/mb-menu-item.c:62
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/applet-device-gsm.c:223
+#. Default connection item
+#: ../src/applet-device-gsm.c:389
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "Naujas mobilusis plačiajuostis (GSM) ryšys..."
 
-#: ../src/applet-device-gsm.c:319
+#: ../src/applet-device-gsm.c:423
 msgid "You are now connected to the GSM network."
 msgstr "Prisijungėte prie GSM tinklo."
 
-#: ../src/applet-device-gsm.c:510
+#: ../src/applet-device-gsm.c:705
 msgid "PIN code required"
 msgstr "Reikalingas PIN kodas"
 
-#: ../src/applet-device-gsm.c:512
+#: ../src/applet-device-gsm.c:707
 msgid "PUK code required"
 msgstr "Reikalingas PUK kodas"
 
-#: ../src/applet-device-gsm.c:521
+#: ../src/applet-device-gsm.c:716
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Mobiliojo plačiajuosčio ryšio įrenginiui reikia PIN kodo"
 
-#: ../src/applet-device-gsm.c:523
+#: ../src/applet-device-gsm.c:718
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "Mobiliojo plačiajuosčio ryšio įrenginiui reikia PUK kodo"
+
+#: ../src/applet-device-gsm.c:851
+msgid "Wrong PIN code; please contact your provider."
+msgstr "Neteisingas PIN kodas, susisiekite su savo paslaugų tiekėju."
+
+#: ../src/applet-device-gsm.c:874
+msgid "Wrong PUK code; please contact your provider."
+msgstr "Neteisingas PUK kodas, susisiekite su savo paslaugų tiekėju."
+
+#. Start the spinner to show the progress of the unlock
+#: ../src/applet-device-gsm.c:901
+msgid "Sending unlock code..."
+msgstr "Siunčiamas atrakinimo kodas..."
+
+#: ../src/applet-device-gsm.c:960
+#| msgid "PIN code required"
+msgid "SIM PIN unlock required"
+msgstr "Reikalingas SIM PIN atrakinimas"
+
+#: ../src/applet-device-gsm.c:961
+#| msgid "PIN code required"
+msgid "SIM PIN Unlock Required"
+msgstr "Reikalingas SIM PIN atrakinimas"
+
+#. FIXME: some warning about # of times you can enter incorrect PIN
+#: ../src/applet-device-gsm.c:963
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PIN code before it can be "
+"used."
+msgstr ""
+"Mobiliojo plačiajuosčio ryšio įrenginys „%s“ reikalauja SIM PIN kodo, prieš "
+"pradedant jį naudoti."
+
+#: ../src/applet-device-gsm.c:964
+#| msgid "PIN code required"
+msgid "PIN code:"
+msgstr "PIN kodas:"
+
+#: ../src/applet-device-gsm.c:969
+#| msgid "PUK code required"
+msgid "SIM PUK unlock required"
+msgstr "Reikalingas SIM PUK atrakinimas"
+
+#: ../src/applet-device-gsm.c:970
+#| msgid "PUK code required"
+msgid "SIM PUK Unlock Required"
+msgstr "Reikalingas SIM PUK atrakinimas"
+
+#. FIXME: some warning about # of times you can enter incorrect PUK
+#: ../src/applet-device-gsm.c:972
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PUK code before it can be "
+"used."
+msgstr ""
+"Mobiliojo plačiajuosčio ryšio įrenginys „%s“ reikalauja SIM PUK kodo, prieš "
+"pradedant jį naudoti."
+
+#: ../src/applet-device-gsm.c:973
+#| msgid "PUK code required"
+msgid "PUK code:"
+msgstr "PUK kodas:"
+
+#: ../src/applet-device-gsm.c:975
+msgid "New PIN code:"
+msgstr "Naujas PIN kodas:"
+
+#: ../src/applet-device-gsm.c:976
+msgid "Re-enter new PIN code:"
+msgstr "Dar kartą įveskite naują PIN kodą:"
 
 #: ../src/applet-device-wired.c:63
 msgid "Auto Ethernet"
@@ -232,7 +314,7 @@ msgid "Wired Network"
 msgstr "Laidinis tinklas"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:233 ../src/applet.c:1377
+#: ../src/applet-device-wired.c:233 ../src/applet.c:1306
 msgid "disconnected"
 msgstr "atjungta"
 
@@ -269,202 +351,202 @@ msgstr "Laidinis tinklo ryšys „%s“ aktyvus"
 msgid "DSL authentication"
 msgstr "DSL tapatybės nustatymas"
 
-#: ../src/applet-device-wifi.c:91
+#: ../src/applet-device-wifi.c:88
 msgid "_Connect to Hidden Wireless Network..."
 msgstr "_Prisijungti prie paslėpto belaidžio tinklo..."
 
-#: ../src/applet-device-wifi.c:124
+#: ../src/applet-device-wifi.c:121
 msgid "Create _New Wireless Network..."
 msgstr "Sukurti _naują belaidį tinklą..."
 
-#: ../src/applet-device-wifi.c:715
+#: ../src/applet-device-wifi.c:706
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Belaidžiai tinklai (%s)"
 
-#: ../src/applet-device-wifi.c:717
+#: ../src/applet-device-wifi.c:708
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Belaidis tinklas (%s)"
 
-#: ../src/applet-device-wifi.c:719
+#: ../src/applet-device-wifi.c:710
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Belaidis tinklas"
 msgstr[1] "Belaidžiai tinklai"
 msgstr[2] "Belaidžių tinklų"
 
-#: ../src/applet-device-wifi.c:747
+#: ../src/applet-device-wifi.c:740
 msgid "wireless is disabled"
 msgstr "belaidis tinklas išjungtas"
 
-#: ../src/applet-device-wifi.c:808
-#| msgid "Wired Networks"
+#: ../src/applet-device-wifi.c:801
 msgid "More networks"
 msgstr "Daugiau tinklų"
 
-#: ../src/applet-device-wifi.c:1075
+#: ../src/applet-device-wifi.c:1005
 msgid "Wireless Networks Available"
 msgstr "Yra belaidžių tinklų"
 
-#: ../src/applet-device-wifi.c:1076
+#: ../src/applet-device-wifi.c:1006
 msgid "Click on this icon to connect to a wireless network"
 msgstr ""
 "Norėdami prisijungti prie belaidžio tinklo, spustelėkite šią piktogramą"
 
-#: ../src/applet-device-wifi.c:1079 ../src/applet.c:686
+#: ../src/applet-device-wifi.c:1009 ../src/applet.c:678
 msgid "Don't show this message again"
 msgstr "Daugiau nerodyti šio pranešimo"
 
-#: ../src/applet-device-wifi.c:1283
+#: ../src/applet-device-wifi.c:1213
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Prisijungėte prie belaidžio tinklo „%s“."
 
-#: ../src/applet-device-wifi.c:1284 ../src/applet-device-wifi.c:1315
+#: ../src/applet-device-wifi.c:1214 ../src/applet-device-wifi.c:1245
 msgid "(none)"
 msgstr "(nėra)"
 
-#: ../src/applet-device-wifi.c:1325
+#: ../src/applet-device-wifi.c:1255
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Ruošiamas belaidis tinklo ryšys „%s“..."
 
-#: ../src/applet-device-wifi.c:1328
+#: ../src/applet-device-wifi.c:1258
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Konfigūruojamas belaidis tinklo ryšys „%s“..."
 
-#: ../src/applet-device-wifi.c:1331
+#: ../src/applet-device-wifi.c:1261
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Belaidis tinklas „%s“ reikalauja nustatyti jūsų tapatybę..."
 
-#: ../src/applet-device-wifi.c:1334
+#: ../src/applet-device-wifi.c:1264
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "„%s“ prašoma belaidžio tinklo adreso..."
 
-#: ../src/applet-device-wifi.c:1354
+#: ../src/applet-device-wifi.c:1284
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Belaidžio tinklo ryšys „%s“ aktyvus: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1358
+#: ../src/applet-device-wifi.c:1288
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Belaidžio tinklo ryšys „%s“ aktyvus"
 
-#: ../src/applet-dialogs.c:53
+#: ../src/applet-dialogs.c:56
 msgid "Error displaying connection information:"
 msgstr "Klaida rodant ryšio informaciją:"
 
-#: ../src/applet-dialogs.c:84
+#: ../src/applet-dialogs.c:87
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:923
+#: ../src/wireless-dialog.c:931
 #: ../src/wireless-security/wireless-security.c:340
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:86
+#: ../src/applet-dialogs.c:89
 msgid "Dynamic WEP"
 msgstr "Dinaminis WEP"
 
-#: ../src/applet-dialogs.c:88 ../src/applet-dialogs.c:189
-#: ../src/applet-dialogs.c:191
+#: ../src/applet-dialogs.c:91 ../src/applet-dialogs.c:192
+#: ../src/applet-dialogs.c:194
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:187
+#: ../src/applet-dialogs.c:190
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
+#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:207
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:880
+#: ../src/wireless-dialog.c:888
 msgid "None"
 msgstr "Nėra"
 
-#: ../src/applet-dialogs.c:207 ../src/applet-dialogs.c:279
-#: ../src/applet-dialogs.c:380
+#: ../src/applet-dialogs.c:210 ../src/applet-dialogs.c:282
+#: ../src/applet-dialogs.c:384 ../src/applet-dialogs.c:421
+#: ../src/applet-dialogs.c:439 ../src/applet-dialogs.c:450
 msgid "Unknown"
 msgstr "nežinoma"
 
-#: ../src/applet-dialogs.c:277 ../src/applet-dialogs.c:378
+#: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:309
+#: ../src/applet-dialogs.c:313
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Laidinis tinklas (%s)"
 
-#: ../src/applet-dialogs.c:311
+#: ../src/applet-dialogs.c:315
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:313
+#: ../src/applet-dialogs.c:317
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:315
+#: ../src/applet-dialogs.c:319
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:320
+#: ../src/applet-dialogs.c:324
 msgid "Interface:"
 msgstr "Sąsaja:"
 
-#: ../src/applet-dialogs.c:336
+#: ../src/applet-dialogs.c:340
 msgid "Hardware Address:"
 msgstr "Aparatinis adresas:"
 
-#: ../src/applet-dialogs.c:346
+#: ../src/applet-dialogs.c:350
 msgid "Driver:"
 msgstr "Tvarkyklė:"
 
-#: ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:388
 msgid "Speed:"
 msgstr "Greitis:"
 
-#: ../src/applet-dialogs.c:393
+#: ../src/applet-dialogs.c:397
 msgid "Security:"
 msgstr "Saugumas:"
 
-#: ../src/applet-dialogs.c:413
+#: ../src/applet-dialogs.c:419
 msgid "IP Address:"
 msgstr "IP adresas:"
 
-#: ../src/applet-dialogs.c:429
+#: ../src/applet-dialogs.c:437
 msgid "Broadcast Address:"
 msgstr "Transliacijos adresas:"
 
-#: ../src/applet-dialogs.c:440
+#: ../src/applet-dialogs.c:448
 msgid "Subnet Mask:"
 msgstr "Potinklio kaukė:"
 
-#: ../src/applet-dialogs.c:452
+#: ../src/applet-dialogs.c:460
 msgid "Default Route:"
 msgstr "Numatytasis maršrutas:"
 
-#: ../src/applet-dialogs.c:467
+#: ../src/applet-dialogs.c:474
 msgid "Primary DNS:"
 msgstr "Pirminis DNS:"
 
-#: ../src/applet-dialogs.c:478
+#: ../src/applet-dialogs.c:485
 msgid "Secondary DNS:"
 msgstr "Antrinis DNS:"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:541
+#: ../src/applet-dialogs.c:548
 msgid "No valid active connections found!"
 msgstr "Nerasta tinkamų aktyvių ryšių!"
 
-#: ../src/applet-dialogs.c:667
+#: ../src/applet-dialogs.c:674
 msgid ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
@@ -472,26 +554,39 @@ msgstr ""
 "Autorinės teisės © 2004-2008 Red Hat, Inc.\n"
 "Autorinės teisės © 2005-2008 Novell, Inc."
 
-#: ../src/applet-dialogs.c:669
+#: ../src/applet-dialogs.c:676
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Pranešimų vietos įtaisas jūsų tinklo įrenginių ir ryšių valdymui."
 
-#: ../src/applet-dialogs.c:671
+#: ../src/applet-dialogs.c:678
 msgid "NetworkManager Website"
 msgstr "NetworkManager tinklalapis"
 
-#: ../src/applet-dialogs.c:674
+#: ../src/applet-dialogs.c:681
 msgid "translator-credits"
 msgstr ""
 "Žygimantas Beručka <zygis@gnome.org>\n"
 "Gintautas Miliauskas <gintautas@miliauskas.lt>"
 
-#: ../src/applet-dialogs.c:690
+#: ../src/applet-dialogs.c:697
 msgid "Missing resources"
 msgstr "Trūkstami resursai"
 
-#: ../src/applet.c:810
+#: ../src/applet-dialogs.c:723
+msgid "Mobile broadband network password"
+msgstr "Mobiliojo plačiajuosčio tinklo slaptažodis"
+
+#: ../src/applet-dialogs.c:732
+#, c-format
+msgid "A password is required to connect to '%s'."
+msgstr "Norint prisijungti prie „%s“ reikalingas slaptažodis."
+
+#: ../src/applet-dialogs.c:750
+msgid "Password:"
+msgstr "Slaptažodis:"
+
+#: ../src/applet.c:791
 #, c-format
 msgid ""
 "\n"
@@ -501,7 +596,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, buvo nutrauktas tinklo ryšys."
 
-#: ../src/applet.c:813
+#: ../src/applet.c:794
 #, c-format
 msgid ""
 "\n"
@@ -510,7 +605,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, kadangi VPN tarnyba netikėtai sustojo."
 
-#: ../src/applet.c:816
+#: ../src/applet.c:797
 #, c-format
 msgid ""
 "\n"
@@ -520,7 +615,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, VPN tarnyba grąžino netinkamą konfigūraciją."
 
-#: ../src/applet.c:819
+#: ../src/applet.c:800
 #, c-format
 msgid ""
 "\n"
@@ -529,7 +624,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, baigėsi bandymo prisijungti laiko limitas."
 
-#: ../src/applet.c:822
+#: ../src/applet.c:803
 #, c-format
 msgid ""
 "\n"
@@ -538,7 +633,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, VPN tarnyba nebuvo paleista laiku."
 
-#: ../src/applet.c:825
+#: ../src/applet.c:806
 #, c-format
 msgid ""
 "\n"
@@ -547,7 +642,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, VPN tarnyba nebuvo paleista."
 
-#: ../src/applet.c:828
+#: ../src/applet.c:809
 #, c-format
 msgid ""
 "\n"
@@ -556,7 +651,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, nebuvo tinkamų VPN paslapčių."
 
-#: ../src/applet.c:831
+#: ../src/applet.c:812
 #, c-format
 msgid ""
 "\n"
@@ -565,7 +660,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, kadangi buvo netinkamų VPN paslapčių."
 
-#: ../src/applet.c:838
+#: ../src/applet.c:819
 #, c-format
 msgid ""
 "\n"
@@ -574,7 +669,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida."
 
-#: ../src/applet.c:856
+#: ../src/applet.c:837
 #, c-format
 msgid ""
 "\n"
@@ -584,7 +679,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, kadangi nutrūko tinklo ryšys."
 
-#: ../src/applet.c:859
+#: ../src/applet.c:840
 #, c-format
 msgid ""
 "\n"
@@ -593,7 +688,7 @@ msgstr ""
 "\n"
 "VPN ryšio „%s“ klaida, kadangi buvo sustabdyta VPN tarnyba."
 
-#: ../src/applet.c:865
+#: ../src/applet.c:846
 #, c-format
 msgid ""
 "\n"
@@ -602,15 +697,15 @@ msgstr ""
 "\n"
 "VPN ryšis „%s“ nutrauktas."
 
-#: ../src/applet.c:948
+#: ../src/applet.c:877
 msgid "VPN Login Message"
 msgstr "VPN ryšio pranešimas"
 
-#: ../src/applet.c:960 ../src/applet.c:968 ../src/applet.c:1015
+#: ../src/applet.c:889 ../src/applet.c:897 ../src/applet.c:944
 msgid "VPN Connection Failed"
 msgstr "VPN ryšio klaida"
 
-#: ../src/applet.c:1022
+#: ../src/applet.c:951
 #, c-format
 msgid ""
 "\n"
@@ -623,7 +718,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1025
+#: ../src/applet.c:954
 #, c-format
 msgid ""
 "\n"
@@ -636,132 +731,137 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1368
+#: ../src/applet.c:1297
 msgid "device not ready"
 msgstr "įrenginys nepasiruošęs"
 
-#: ../src/applet.c:1393
+#: ../src/applet.c:1322
 msgid "Disconnect"
 msgstr "Atsijungti"
 
-#: ../src/applet.c:1407
+#: ../src/applet.c:1336
 msgid "device not managed"
 msgstr "įrenginys nevaldomas"
 
-#: ../src/applet.c:1453
+#: ../src/applet.c:1382
 msgid "No network devices available"
 msgstr "Tinklo įrenginių nerasta"
 
-#: ../src/applet.c:1541
+#: ../src/applet.c:1470
 msgid "_VPN Connections"
 msgstr "_VPN ryšiai"
 
-#: ../src/applet.c:1594
+#: ../src/applet.c:1523
 msgid "_Configure VPN..."
 msgstr "_Konfigūruoti VPN..."
 
-#: ../src/applet.c:1598
-msgid "_Disconnect VPN..."
-msgstr "_Atjungti VPN..."
+#: ../src/applet.c:1527
+#| msgid "_Disconnect VPN..."
+msgid "_Disconnect VPN"
+msgstr "_Atjungti VPN"
 
-#: ../src/applet.c:1651
+#: ../src/applet.c:1614
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager nepaleistas..."
 
-#: ../src/applet.c:1656 ../src/applet.c:2361
+#: ../src/applet.c:1619 ../src/applet.c:2390
 msgid "Networking disabled"
 msgstr "Tinklo sąsajos atjungtos"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1840
+#: ../src/applet.c:1836
 msgid "Enable _Networking"
 msgstr "Įjungti _tinklą"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1849
+#: ../src/applet.c:1845
 msgid "Enable _Wireless"
 msgstr "Įjungti _belaidį"
 
+#. 'Enable Mobile Broadband' item
+#: ../src/applet.c:1854
+#| msgid "Mobile Broadband"
+msgid "Enable _Mobile Broadband"
+msgstr "Įjungti _mobilųjį plačiajuostį ryšį"
+
+#. Toggle notifications item
+#: ../src/applet.c:1865
+#| msgid "Disable connected notifications"
+msgid "Enable N_otifications"
+msgstr "Įjungti p_ranešimus"
+
 #. 'Connection Information' item
-#: ../src/applet.c:1860
+#: ../src/applet.c:1876
 msgid "Connection _Information"
 msgstr "Ryšio _informacija"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1870
+#: ../src/applet.c:1886
 msgid "Edit Connections..."
 msgstr "Taisyti ryšius..."
 
 #. Help item
-#: ../src/applet.c:1884
+#: ../src/applet.c:1900
 msgid "_Help"
 msgstr "_Žinynas"
 
 #. About item
-#: ../src/applet.c:1893
+#: ../src/applet.c:1909
 msgid "_About"
 msgstr "_Apie"
 
-#: ../src/applet.c:2078
+#: ../src/applet.c:2095
 msgid "Disconnected"
 msgstr "Atjungta"
 
-#: ../src/applet.c:2079
+#: ../src/applet.c:2096
 msgid "The network connection has been disconnected."
 msgstr "Atsijungta nuo tinklo."
 
-#: ../src/applet.c:2227
+#: ../src/applet.c:2256
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Ruošiamas tinklo ryšys „%s“..."
 
-#: ../src/applet.c:2230
+#: ../src/applet.c:2259
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Tinklo ryšys „%s“ reikalauja nustatyti jūsų tapatybę..."
 
-#: ../src/applet.c:2236
+#: ../src/applet.c:2265
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Tinklo ryšys „%s“ aktyvus"
 
-#: ../src/applet.c:2317
+#: ../src/applet.c:2346
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Pradedamas VPN ryšys „%s“..."
 
-#: ../src/applet.c:2320
+#: ../src/applet.c:2349
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "VPN ryšys „%s“ reikalauja nustatyti jūsų tapatybę..."
 
-#: ../src/applet.c:2323
+#: ../src/applet.c:2352
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "„%s“ prašoma VPN adreso..."
 
-#: ../src/applet.c:2326
+#: ../src/applet.c:2355
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN ryšys „%s“ aktyvus."
 
-#: ../src/applet.c:2365
+#: ../src/applet.c:2394
 msgid "No network connection"
 msgstr "Nėra tinklo ryšio"
 
-#: ../src/applet.c:2701
-msgid ""
-"The NetworkManager applet could not find some required resources.  It cannot "
-"continue.\n"
-msgstr ""
-"NetworkManager įtaisas nerado kai kurių reikiamų išteklių. Toliau tęsti "
-"nebegalima.\n"
-
-#: ../src/applet.c:2896
+#: ../src/applet.c:2934
 msgid "NetworkManager Applet"
 msgstr "NetworkManager įtaisas"
 
-#: ../src/applet.c:2902 ../src/wired-dialog.c:128
+#: ../src/applet.c:2940 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -794,6 +894,10 @@ msgid "Anony_mous identity:"
 msgstr "Anoni_minė tapatybė:"
 
 #: ../src/applet.glade.h:8
+msgid "As_k for this password every time"
+msgstr "_Klausti šio slaptažodžio kiekvieną kartą"
+
+#: ../src/applet.glade.h:9
 msgid ""
 "Automatic\n"
 "Version 0\n"
@@ -803,39 +907,39 @@ msgstr ""
 "Versija 0\n"
 "Versija 1"
 
-#: ../src/applet.glade.h:11
+#: ../src/applet.glade.h:12
 msgid "C_A certificate:"
 msgstr "_LĮ liudijimas:"
 
-#: ../src/applet.glade.h:12
+#: ../src/applet.glade.h:13
 msgid "C_onnect"
 msgstr "Prisi_jungti"
 
-#: ../src/applet.glade.h:13
+#: ../src/applet.glade.h:14
 msgid "Co_nnection:"
 msgstr "_Ryšys:"
 
-#: ../src/applet.glade.h:14
+#: ../src/applet.glade.h:15
 msgid "Connection Information"
 msgstr "Ryšio informacija"
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:16
 msgid "Don't _warn me again"
 msgstr "Daugiau _neperspėti"
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:17
 msgid "I_dentity:"
 msgstr "_Tapatybė:"
 
-#: ../src/applet.glade.h:17
+#: ../src/applet.glade.h:18
 msgid "I_nner authentication:"
 msgstr "_Vidinis tapatybės nustatymas:"
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:19
 msgid "No"
 msgstr "Ne"
 
-#: ../src/applet.glade.h:19
+#: ../src/applet.glade.h:20
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -843,17 +947,13 @@ msgstr ""
 "Atvira sistema\n"
 "Viešas raktas"
 
-#: ../src/applet.glade.h:21
+#: ../src/applet.glade.h:22
 msgid "Other Wireless Network..."
 msgstr "Kitas belaidis tinklas..."
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:23
 msgid "Private _key:"
 msgstr "Asmeninis _raktas:"
-
-#: ../src/applet.glade.h:23
-msgid "Select A File"
-msgstr "Pasirinkite failą"
 
 #: ../src/applet.glade.h:24
 msgid "Sho_w key"
@@ -905,24 +1005,32 @@ msgid "_Type:"
 msgstr "_Tipas:"
 
 #: ../src/applet.glade.h:36
+msgid "_Unlock"
+msgstr "_Atrakinti"
+
+#: ../src/applet.glade.h:37
 msgid "_User certificate:"
 msgstr "_Naudotojo liudijimas:"
 
-#: ../src/applet.glade.h:37 ../src/connection-editor/ce-page-dsl.glade.h:4
+#: ../src/applet.glade.h:38 ../src/connection-editor/ce-page-dsl.glade.h:4
 #: ../src/connection-editor/ce-page-mobile.glade.h:17
 msgid "_Username:"
 msgstr "_Naudotojo vardas:"
 
-#: ../src/applet.glade.h:38
+#: ../src/applet.glade.h:39
 msgid "_Wireless security:"
 msgstr "_Belaidis saugumas:"
+
+#: ../src/applet.glade.h:40
+msgid "label"
+msgstr "etiketė"
 
 #: ../src/connection-editor/ce-page.c:69
 msgid "automatic"
 msgstr "automatinis"
 
 #: ../src/connection-editor/ce-page.c:221
-#: ../src/connection-editor/nm-connection-editor.c:596
+#: ../src/connection-editor/nm-connection-editor.c:623
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Nepavyko atnaujinti ryšio paslapčių dėl nežinomos klaidos."
 
@@ -966,8 +1074,8 @@ msgstr ""
 #: ../src/connection-editor/ce-page-ip4.glade.h:9
 #: ../src/connection-editor/ce-page-ip6.glade.h:8
 msgid ""
-"IP addresses identify your computer on the network.  Click the \"Add\" button "
-"to add an IP address."
+"IP addresses identify your computer on the network.  Click the \"Add\" "
+"button to add an IP address."
 msgstr ""
 "IP adresai nurodo jūsų kompiuterio tapatybę tinkle. Norėdami pridėti IP "
 "adresą, spustelėkite mygtuką „Pridėti“."
@@ -1042,6 +1150,10 @@ msgid "<b>Basic</b>"
 msgstr "<b>Pagrindiniai</b>"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:3
+msgid "Allow roaming if home network is not available"
+msgstr "Leisti tarptinklinį ryšį, jei neprieinamas namų tinklas"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:4
 msgid ""
 "Any\n"
 "3G (UMTS/HSPA)\n"
@@ -1055,33 +1167,30 @@ msgstr ""
 "Pirmenybė 3G (UMTS/HSPA)\n"
 "Pirmenybė 2G (GPRS/EDGE)"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:8
+#: ../src/connection-editor/ce-page-mobile.glade.h:9
 msgid "Change..."
 msgstr "Pakeisti..."
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:9
-msgid "N_etwork:"
-msgstr "_Tinklas:"
-
 #: ../src/connection-editor/ce-page-mobile.glade.h:10
+#| msgid "N_etwork:"
+msgid "N_etwork ID:"
+msgstr "_Tinklo ID:"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:11
 msgid "Nu_mber:"
 msgstr "Nu_meris:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:11
+#: ../src/connection-editor/ce-page-mobile.glade.h:12
 msgid "PI_N:"
 msgstr "PI_N:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:12
+#: ../src/connection-editor/ce-page-mobile.glade.h:13
 msgid "Sho_w passwords"
 msgstr "R_odyti slaptažodžius"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:13
+#: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "_APN:"
 msgstr "_APN:"
-
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
-msgid "_Band:"
-msgstr "_Juosta:"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:1
 msgid "<b>Allowed Authentication Methods</b>"
@@ -1456,21 +1565,21 @@ msgstr "Nepavyko įkelti IPv6 naudotojo sąsajos."
 msgid "IPv6 Settings"
 msgstr "IPv6 parametrai"
 
-#: ../src/connection-editor/page-mobile.c:313
-#: ../src/connection-editor/page-mobile.c:320
+#: ../src/connection-editor/page-mobile.c:305
+#: ../src/connection-editor/page-mobile.c:312
 msgid "Could not load mobile broadband user interface."
 msgstr "Nepavyko įkelti mobiliojo plačiajuosčio ryšio naudotojo sąsajos."
 
-#: ../src/connection-editor/page-mobile.c:341
+#: ../src/connection-editor/page-mobile.c:333
 msgid "Unsupported mobile broadband connection type."
 msgstr "Nepalaikomas mobiliojo plačiajuosčio ryšio tipas."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:578
+#: ../src/connection-editor/page-mobile.c:574
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Pasirinkite mobiliojo plačiajuosčio ryšio tiekėjo tipą"
 
-#: ../src/connection-editor/page-mobile.c:605
+#: ../src/connection-editor/page-mobile.c:601
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1478,13 +1587,13 @@ msgstr ""
 "Pasirinkite technologiją, naudojamą jūsų mobiliojo plačiajuosčio ryšio "
 "tiekėjo. Jei abejojate, klauskite tiekėjo."
 
-#: ../src/connection-editor/page-mobile.c:610
+#: ../src/connection-editor/page-mobile.c:606
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Mano tiekėjas naudoja _GSM paremtą technologiją (t. y. GPRS, EDGE, UMTS, "
 "HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:615
+#: ../src/connection-editor/page-mobile.c:611
 msgid "My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Mano tiekėjas naudoja _CDMA paremtą technologiją (t. y. 1xRTT, EVDO)"
 
@@ -1600,27 +1709,27 @@ msgid "Wireless connection %d"
 msgstr "Belaidis ryšys %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:897
+#: ../src/wireless-dialog.c:905
 msgid "WEP 40/128-bit Key"
 msgstr "WEP 40/128 bitų raktas"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:906
+#: ../src/wireless-dialog.c:914
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128 bitų slaptažodis"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:936
+#: ../src/wireless-dialog.c:944
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dinaminis WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:950
+#: ../src/wireless-dialog.c:958
 msgid "WPA & WPA2 Personal"
 msgstr "WPA ir WPA2 asmeninis"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:964
+#: ../src/wireless-dialog.c:972
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA ir WPA2 industrinis"
 
@@ -1637,46 +1746,46 @@ msgstr "Nepavyko įkelti WiFi saugos naudotojo sąsajos."
 msgid "Wireless Security"
 msgstr "Belaidis saugumas"
 
-#: ../src/connection-editor/nm-connection-editor.c:100
+#: ../src/connection-editor/nm-connection-editor.c:107
 #, c-format
 msgid "Editing %s"
 msgstr "Taisomas %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:104
+#: ../src/connection-editor/nm-connection-editor.c:111
 msgid "Editing un-named connection"
 msgstr "Taisomas nepavadintas ryšys"
 
-#: ../src/connection-editor/nm-connection-editor.c:280
+#: ../src/connection-editor/nm-connection-editor.c:294
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
 msgstr ""
 "Ryšių rengyklė nerado kai kurių reikalingų išteklių (nerastas glade failas)."
 
-#: ../src/connection-editor/nm-connection-editor.c:293
+#: ../src/connection-editor/nm-connection-editor.c:307
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
 msgstr ""
 "Ryšių rengyklė nerado kai kurių reikalingų išteklių (nerastas glade failas)."
 
-#: ../src/connection-editor/nm-connection-editor.c:366
+#: ../src/connection-editor/nm-connection-editor.c:405
 msgid "Error creating connection editor dialog."
 msgstr "Klaida kuriant ryšio rengyklės dialogą."
 
-#: ../src/connection-editor/nm-connection-editor.c:387
+#: ../src/connection-editor/nm-connection-editor.c:426
 msgid "Apply"
 msgstr "Pritaikyti"
 
-#: ../src/connection-editor/nm-connection-editor.c:388
+#: ../src/connection-editor/nm-connection-editor.c:427
 msgid "Save this connection for all users of this machine."
 msgstr "Išsaugoti šį ryšį visiems šio kompiuterio naudotojams."
 
-#: ../src/connection-editor/nm-connection-editor.c:389
+#: ../src/connection-editor/nm-connection-editor.c:428
 msgid "Apply..."
 msgstr "Pritaikyti..."
 
-#: ../src/connection-editor/nm-connection-editor.c:390
+#: ../src/connection-editor/nm-connection-editor.c:429
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Nustatykite tapatybę, jei pageidaujate išsaugoti šį ryšį visiems šio "
@@ -1909,9 +2018,151 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "Eksportuoti VPN ryšį..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:197
-msgid "Access the Internet using your mobile phone"
-msgstr "Prisijunkite prie interneto naudodami savo mobilujį telefoną"
+#: ../src/gnome-bluetooth/network-manager-applet.c:214
+#, c-format
+#| msgid "N_etwork:"
+msgid "%s Network"
+msgstr "%s tinklas"
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:323
+#, c-format
+msgid "Error: %s"
+msgstr "Klaida: %s"
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:442
+msgid "Mobile wizard was canceled"
+msgstr "Mobiliojo ryšio vediklis buvo atšauktas"
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:451
+msgid "Unknown phone device type (not GSM or CDMA)"
+msgstr "Nežinomas telefono įrenginio tipas (ne GSM ar CDMA)"
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:479
+msgid "Your phone is now ready to use!"
+msgstr "Jūsų telefonas paruoštas naudoti!"
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:652
+#: ../src/gnome-bluetooth/network-manager-applet.c:658
+#| msgid "You are now connected to the GSM network."
+msgid "failed to connect to the phone."
+msgstr "nepavyko prisijungti prie telefono."
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:691
+msgid "unexpectedly disconnected from the phone."
+msgstr "netikėtai atsijungta nuo telefono."
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:700
+msgid "timed out detecting phone details."
+msgstr "nustatant telefono informaciją baigėsi skirtasis laikas."
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:715
+#| msgid "You are now connected to the wireless network '%s'."
+msgid "could not connect to the system bus."
+msgstr "nepavyko prisijungti prie sisteminės magistralės."
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:720
+msgid "Detecting phone configuration..."
+msgstr "Nustatoma telefono konfigūracija..."
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:786
+#| msgid "Could not find VPN plugin service for '%s'."
+msgid "could not find the Bluetooth device."
+msgstr "nepavyko rasti Bluetooth įrenginio."
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:916
+msgid ""
+"The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
+"Networking connection."
+msgstr ""
+"Norėdami nustatyti telefoninio ryšio tinklo ryšį, pirma turite įjungti "
+"numatytąjį Bluetooth adapterį."
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:969
+msgid "Use your mobile phone as a network device (PAN/NAP)"
+msgstr "Naudokite savo mobilųjį telefoną kaip tinklo įrenginy (PAN/NAP)"
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:978
+#| msgid "Access the Internet using your mobile phone"
+msgid "Access the Internet using your mobile phone (DUN)"
+msgstr "Prisijunkite prie interneto naudodami savo mobilųjį telefoną (DUN)"
+
+#: ../src/main.c:70
+#| msgid "_Username:"
+msgid "Usage:"
+msgstr "Naudojimas:"
+
+#: ../src/main.c:72
+msgid ""
+"This program is a component of NetworkManager "
+"(http://projects.gnome.org/NetworkManager)."
+msgstr ""
+"Ši programa yra NetworkManager (http://projects.gnome.org/NetworkManager) "
+"dalis."
+
+#: ../src/main.c:73
+msgid ""
+"It is not intended for command-line interaction but instead runs in the "
+"GNOME desktop environment."
+msgstr ""
+"Ji neskirta būti naudojama komandų eilutėje, ji veikia GNOME darbo "
+"aplinkoje."
+
+#: ../src/mb-menu-item.c:59
+msgid "EVDO"
+msgstr "EVDO"
+
+#: ../src/mb-menu-item.c:65
+msgid "GPRS"
+msgstr "GPRS"
+
+#: ../src/mb-menu-item.c:68
+msgid "EDGE"
+msgstr "EDGE"
+
+#: ../src/mb-menu-item.c:71
+msgid "UMTS"
+msgstr "UMTS"
+
+#: ../src/mb-menu-item.c:74
+msgid "HSDPA"
+msgstr "HSDPA"
+
+#: ../src/mb-menu-item.c:77
+msgid "HSUPA"
+msgstr "HSUPA"
+
+#: ../src/mb-menu-item.c:80
+msgid "HSPA"
+msgstr "HSPA"
+
+#: ../src/mb-menu-item.c:118
+msgid "not registered"
+msgstr "neregistruotas"
+
+#: ../src/mb-menu-item.c:130
+#, c-format
+#| msgid "Wired Network (%s)"
+msgid "Home network (%s)"
+msgstr "Namų tinklas (%s)"
+
+#: ../src/mb-menu-item.c:137
+msgid "searching"
+msgstr "ieškoma"
+
+#: ../src/mb-menu-item.c:140
+msgid "registration denied"
+msgstr "registracija atmesta"
+
+#: ../src/mb-menu-item.c:144 ../src/mb-menu-item.c:147
+#, c-format
+msgid "%s (%s roaming)"
+msgstr "%s (%s tarptinklinis ryšys)"
+
+#: ../src/mb-menu-item.c:149
+#, c-format
+#| msgid "Wired Network (%s)"
+msgid "Roaming network (%s)"
+msgstr "Tarptinklinio ryšio tinklas (%s)"
 
 #: ../src/utils/mobile-wizard.c:196
 msgid ""
@@ -2022,7 +2273,6 @@ msgid "Country"
 msgstr "Valstybė"
 
 #: ../src/utils/mobile-wizard.c:1031
-#| msgid "My plan is not listed..."
 msgid "My country is not listed"
 msgstr "Mano šalies nėra sąraše"
 
@@ -2111,15 +2361,15 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "Laidinis 802.1X tapatybės nustatymas"
 
-#: ../src/wireless-dialog.c:444
+#: ../src/wireless-dialog.c:452
 msgid "New..."
 msgstr "Naujas..."
 
-#: ../src/wireless-dialog.c:1047
+#: ../src/wireless-dialog.c:1056
 msgid "C_reate"
 msgstr "Suku_rti"
 
-#: ../src/wireless-dialog.c:1128
+#: ../src/wireless-dialog.c:1137
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -2128,35 +2378,35 @@ msgstr ""
 "Norint prisijungti prie belaidžio tinklo „%s“ reikalingi slaptažodžiai ar "
 "šifravimo raktai."
 
-#: ../src/wireless-dialog.c:1130
+#: ../src/wireless-dialog.c:1139
 msgid "Wireless Network Authentication Required"
 msgstr "Reikia nustatyti jūsų tapatybę belaidžiame tinkle"
 
-#: ../src/wireless-dialog.c:1132
+#: ../src/wireless-dialog.c:1141
 msgid "Authentication required by wireless network"
 msgstr "Belaidis tinklas prašo nurodyti jūsų tapatybę"
 
-#: ../src/wireless-dialog.c:1137
+#: ../src/wireless-dialog.c:1146
 msgid "Create New Wireless Network"
 msgstr "Sukurti naują belaidį tinklą"
 
-#: ../src/wireless-dialog.c:1139
+#: ../src/wireless-dialog.c:1148
 msgid "New wireless network"
 msgstr "Naujas belaidis tinklas"
 
-#: ../src/wireless-dialog.c:1140
+#: ../src/wireless-dialog.c:1149
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Įveskite pageidaujamo sukurti belaidžio tinklo pavadinimą."
 
-#: ../src/wireless-dialog.c:1142
+#: ../src/wireless-dialog.c:1151
 msgid "Connect to Hidden Wireless Network"
 msgstr "Prisijungti prie paslėpto belaidžio tinklo"
 
-#: ../src/wireless-dialog.c:1144
+#: ../src/wireless-dialog.c:1153
 msgid "Hidden wireless network"
 msgstr "Paslėptas belaidis tinklas"
 
-#: ../src/wireless-dialog.c:1145
+#: ../src/wireless-dialog.c:1154
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2199,16 +2449,16 @@ msgid "GTC"
 msgstr "GTC"
 
 #: ../src/wireless-security/eap-method-peap.c:361
-#: ../src/wireless-security/eap-method-tls.c:453
+#: ../src/wireless-security/eap-method-tls.c:457
 #: ../src/wireless-security/eap-method-ttls.c:359
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Pasirinkite liudijimų įstaigos liudijimą..."
 
-#: ../src/wireless-security/eap-method-tls.c:259
+#: ../src/wireless-security/eap-method-tls.c:263
 msgid "Unencrypted private keys are insecure"
 msgstr "Nešifruoti asmeniniai raktai yra nesaugūs"
 
-#: ../src/wireless-security/eap-method-tls.c:262
+#: ../src/wireless-security/eap-method-tls.c:266
 msgid ""
 "The selected private key does not appear to be protected by a password.  "
 "This could allow your security credentials to be compromised.  Please select "
@@ -2222,11 +2472,11 @@ msgstr ""
 "\n"
 "(Galite slaptažodžiu apsaugoti savo asmeninį raktą su openssl)"
 
-#: ../src/wireless-security/eap-method-tls.c:447
+#: ../src/wireless-security/eap-method-tls.c:451
 msgid "Choose your personal certificate..."
 msgstr "Pasirinkite savo asmeninį liudijimą..."
 
-#: ../src/wireless-security/eap-method-tls.c:459
+#: ../src/wireless-security/eap-method-tls.c:463
 msgid "Choose your private key..."
 msgstr "Pasirinkite savo asmeninį raktą..."
 
@@ -2241,6 +2491,19 @@ msgstr "Tuneliuojamas TLS"
 #: ../src/wireless-security/wireless-security.c:363
 msgid "Protected EAP (PEAP)"
 msgstr "Apsaugotas EAP (PEAP)"
+
+#~ msgid ""
+#~ "The NetworkManager applet could not find some required resources.  It "
+#~ "cannot continue.\n"
+#~ msgstr ""
+#~ "NetworkManager įtaisas nerado kai kurių reikiamų išteklių. Toliau tęsti "
+#~ "nebegalima.\n"
+
+#~ msgid "Select A File"
+#~ msgstr "Pasirinkite failą"
+
+#~ msgid "_Band:"
+#~ msgstr "_Juosta:"
 
 #~ msgid "PU_K:"
 #~ msgstr "PU_K:"
