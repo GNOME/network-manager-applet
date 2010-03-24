@@ -602,7 +602,7 @@ add_response_cb (NMConnectionEditor *editor, gint response, GError *error, gpoin
 			g_clear_error (&add_error);
 		}
 	} else if (response == GTK_RESPONSE_NONE) {
-		const char *message = _("An unknown error ocurred.");
+		const char *message = _("An unknown error occurred.");
 
 		if (error && error->message)
 			message = error->message;
@@ -717,7 +717,7 @@ static void
 edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer user_data)
 {
 	EditInfo *info = user_data;
-	const char *message = _("An unknown error ocurred.");
+	const char *message = _("An unknown error occurred.");
 	NMConnection *connection;
 	GError *edit_error = NULL;
 
