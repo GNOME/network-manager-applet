@@ -760,7 +760,7 @@ add_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer 
 {
 	ActionInfo *info = (ActionInfo *) user_data;
 	NMConnection *connection;
-	const char *message = _("An unknown error ocurred.");
+	const char *message = _("An unknown error occurred.");
 
 	connection = nm_connection_editor_get_connection (editor);
 
@@ -891,7 +891,7 @@ static void
 edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer user_data)
 {
 	EditConnectionInfo *info = (EditConnectionInfo *) user_data;
-	const char *message = _("An unknown error ocurred.");
+	const char *message = _("An unknown error occurred.");
 
 	g_hash_table_remove (info->list->editors, info->original_connection);
 
