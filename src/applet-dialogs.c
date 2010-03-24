@@ -986,7 +986,7 @@ mpd_set_entry (GtkWidget *dialog,
 	widget = glade_xml_get_widget (xml, "code3_entry");
 	entry3_active = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget), "active"));
 
-	widget = glade_xml_get_widget (xml, "table1");
+	widget = glade_xml_get_widget (xml, "table14");
 	if (entry2_active || entry3_active)
 		gtk_table_set_row_spacings (GTK_TABLE (widget), 6);
 	else
@@ -1097,7 +1097,7 @@ applet_mobile_pin_dialog_start_spinner (GtkWidget *dialog, const char *text)
 	gtk_widget_set_sensitive (widget, FALSE);
 	widget = glade_xml_get_widget (xml, "unlock_button");
 	gtk_widget_set_sensitive (widget, FALSE);
-	widget = glade_xml_get_widget (xml, "cancel_button");
+	widget = glade_xml_get_widget (xml, "unlock_cancel_button");
 	gtk_widget_set_sensitive (widget, FALSE);
 }
 
@@ -1137,7 +1137,7 @@ applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog, const char *text)
 	gtk_widget_set_sensitive (widget, TRUE);
 	widget = glade_xml_get_widget (xml, "unlock_button");
 	gtk_widget_set_sensitive (widget, TRUE);
-	widget = glade_xml_get_widget (xml, "cancel_button");
+	widget = glade_xml_get_widget (xml, "unlock_cancel_button");
 	gtk_widget_set_sensitive (widget, TRUE);
 }
 
