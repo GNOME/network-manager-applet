@@ -96,7 +96,6 @@ nm_mb_menu_item_new (const char *connection_name,
 	NMMbMenuItem *item;
 	NMMbMenuItemPrivate *priv;
 	const char *tech_name;
-	GdkPixbuf *icon = NULL, *pixbuf;
 
 	g_return_val_if_fail (technology != MB_TECH_UNKNOWN, NULL);
 
@@ -166,34 +165,10 @@ nm_mb_menu_item_new (const char *connection_name,
 		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 	}
 
-	/* And the strength icon, if applicable */
+	/* And the strength icon, if we have strength information at all */
 	if (strength) {
-		if (strength > 80)
-			icon = nma_icon_check_and_load ("nm-signal-100", &applet->wireless_100_icon, applet);
-		else if (strength > 55)
-			icon = nma_icon_check_and_load ("nm-signal-75", &applet->wireless_75_icon, applet);
-		else if (strength > 30)
-			icon = nma_icon_check_and_load ("nm-signal-50", &applet->wireless_50_icon, applet);
-		else if (strength > 5)
-			icon = nma_icon_check_and_load ("nm-signal-25", &applet->wireless_25_icon, applet);
-		else
-			icon = nma_icon_check_and_load ("nm-signal-00", &applet->wireless_00_icon, applet);
-
-		pixbuf = gdk_pixbuf_copy (icon);
-
-#if 0
-		/* Composite technology icon here */
-		if (item->is_encrypted) {
-			top = nma_icon_check_and_load ("nm-secure-lock", &applet->secure_lock_icon, applet);
-			gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
-								  gdk_pixbuf_get_height (top),
-								  0, 0, 1.0, 1.0,
-								  GDK_INTERP_NEAREST, 255);
-		}
-#endif
-
-		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), pixbuf);
-		g_object_unref (pixbuf);
+		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength),
+		                           mobile_helper_get_quality_icon (strength, applet));
 	}
 
 	return GTK_WIDGET (item);

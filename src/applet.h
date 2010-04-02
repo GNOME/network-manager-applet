@@ -122,6 +122,17 @@ typedef struct
 	GdkPixbuf *		vpn_lock_icon;
 	GdkPixbuf *		fallback_icon;
 
+	/* Mobiel Broadband icons */
+	GdkPixbuf *		wwan_tower_icon;
+	GdkPixbuf *		mb_tech_1x_icon;
+	GdkPixbuf *		mb_tech_evdo_icon;
+	GdkPixbuf *		mb_tech_gprs_icon;
+	GdkPixbuf *		mb_tech_edge_icon;
+	GdkPixbuf *		mb_tech_umts_icon;
+	GdkPixbuf *		mb_tech_hspa_icon;
+	GdkPixbuf *		mb_roaming_icon;
+	GdkPixbuf *		mb_tech_3g_icon;
+
 	/* Active status icon pixbufs */
 	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
 

@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 #include "applet.h"
+#include "mobile-helpers.h"
 
 #define NM_TYPE_MB_MENU_ITEM            (nm_mb_menu_item_get_type ())
 #define NM_MB_MENU_ITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_MB_MENU_ITEM, NMMbMenuItem))
@@ -33,29 +34,6 @@
 #define NM_IS_MB_MENU_ITEM(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_MB_MENU_ITEM))
 #define NM_IS_MB_MENU_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NM_TYPE_MB_MENU_ITEM))
 #define NM_MB_MENU_ITEM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), NM_TYPE_MB_MENU_ITEM, NMMbMenuItemClass))
-
-enum {
-	MB_STATE_UNKNOWN = 0,
-	MB_STATE_IDLE,
-	MB_STATE_HOME,
-	MB_STATE_SEARCHING,
-	MB_STATE_DENIED,
-	MB_STATE_ROAMING
-};
-
-enum {
-	MB_TECH_UNKNOWN = 0,
-	MB_TECH_1XRTT,
-	MB_TECH_EVDO_REV0,
-	MB_TECH_EVDO_REVA,
-	MB_TECH_GSM,
-	MB_TECH_GPRS,
-	MB_TECH_EDGE,
-	MB_TECH_UMTS,
-	MB_TECH_HSDPA,
-	MB_TECH_HSUPA,
-	MB_TECH_HSPA,
-};
 
 typedef struct {
 	GtkImageMenuItem image_item;

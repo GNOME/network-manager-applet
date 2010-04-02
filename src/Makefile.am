@@ -47,6 +47,8 @@ nm_applet_SOURCES =			\
 	applet-device-gsm.c \
 	applet-device-cdma.h \
 	applet-device-cdma.c \
+	mobile-helpers.c \
+	mobile-helpers.h \
 	applet-device-bt.h \
 	applet-device-bt.c
 

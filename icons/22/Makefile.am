@@ -3,6 +3,7 @@ icon_DATA = \
 	nm-no-connection.png \
 	nm-device-wired.png \
 	nm-device-wwan.png \
+	nm-wwan-tower.png \
 	nm-adhoc.png \
 	nm-stage01-connecting01.png \
 	nm-stage01-connecting02.png \
@@ -57,7 +58,15 @@ icon_DATA = \
 	nm-vpn-connecting13.png \
 	nm-vpn-connecting14.png \
 	nm-vpn-active-lock.png \
-	nm-secure-lock.png
+	nm-secure-lock.png \
+	nm-tech-cdma-1x.png \
+	nm-tech-evdo.png \
+	nm-tech-gprs.png \
+	nm-tech-edge.png \
+	nm-tech-umts.png \
+	nm-tech-hspa.png \
+	nm-mb-roam.png \
+	nm-tech-3g.png
 
 EXTRA_DIST = $(icon_DATA)
 

@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2009 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  * (C) Copyright 2008 Novell, Inc.
  */
 
@@ -61,6 +61,7 @@ typedef enum {
 } MMModemGsmAccessTech;
 
 typedef struct {
+	NMApplet *applet;
 	NMDevice *device;
 
 	DBusGProxy *props_proxy;
@@ -248,7 +249,7 @@ add_connection_item (NMDevice *device,
 }
 
 static guint32
-state_for_info (GsmDeviceInfo *info)
+gsm_state_to_mb_state (GsmDeviceInfo *info)
 {
 	switch (info->reg_state) {
 	case 1:  /* IDLE */
@@ -270,7 +271,7 @@ state_for_info (GsmDeviceInfo *info)
 }
 
 static guint32
-tech_for_info (GsmDeviceInfo *info)
+gsm_act_to_mb_act (GsmDeviceInfo *info)
 {
 	switch (info->act) {
 	case MM_MODEM_GSM_ACCESS_TECH_GPRS:
@@ -332,18 +333,15 @@ gsm_add_menu_item (NMDevice *device,
 	/* Add the active connection */
 	if (active) {
 		NMSettingConnection *s_con;
-		guint32 mb_state, mb_tech;
 
 		s_con = (NMSettingConnection *) nm_connection_get_setting (active, NM_TYPE_SETTING_CONNECTION);
 		g_assert (s_con);
 
-		mb_state = state_for_info (info);
-		mb_tech = tech_for_info (info);
 		item = nm_mb_menu_item_new (nm_setting_connection_get_id (s_con),
 		                            info->quality_valid ? info->quality : 0,
 		                            info->op_name,
-		                            mb_tech,
-		                            mb_state,
+		                            gsm_act_to_mb_act (info),
+		                            gsm_state_to_mb_state (info),
 		                            applet);
 
 		add_connection_item (device, active, item, menu, applet);
@@ -357,15 +355,11 @@ gsm_add_menu_item (NMDevice *device,
 			gtk_widget_show (item);
 		}
 	} else {
-		guint32 mb_state, mb_tech;
-
-		mb_state = state_for_info (info);
-		mb_tech = tech_for_info (info);
 		item = nm_mb_menu_item_new (NULL,
 		                            info->quality_valid ? info->quality : 0,
 		                            info->op_name,
-		                            mb_tech,
-		                            mb_state,
+		                            gsm_act_to_mb_act (info),
+		                            gsm_state_to_mb_state (info),
 		                            applet);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
@@ -442,6 +436,7 @@ gsm_get_icon (NMDevice *device,
 	GdkPixbuf *pixbuf = NULL;
 	const char *id;
 	GsmDeviceInfo *info;
+	guint32 mb_state;
 
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
 	g_assert (info);
@@ -466,9 +461,15 @@ gsm_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		pixbuf = nma_icon_check_and_load ("nm-device-wwan", &applet->wwan_icon, applet);
-		if (info->reg_state && info->quality_valid) {
-			gboolean roaming = (info->reg_state == 6);
+		mb_state = gsm_state_to_mb_state (info);
+		pixbuf = mobile_helper_get_status_pixbuf (info->quality,
+		                                          info->quality_valid,
+		                                          mb_state,
+		                                          gsm_act_to_mb_act (info),
+		                                          applet);
+
+		if ((mb_state != MB_STATE_UNKNOWN) && info->quality_valid) {
+			gboolean roaming = (mb_state == MB_STATE_ROAMING);
 
 			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active: (%d%%%s%s)"),
 			                        id, info->quality,
@@ -1042,6 +1043,7 @@ signal_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	                           G_TYPE_INVALID)) {
 		info->quality = quality;
 		info->quality_valid = TRUE;
+		applet_schedule_update_icon (info->applet);
 	}
 
 	g_clear_error (&error);
@@ -1263,8 +1265,10 @@ access_tech_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	if (dbus_g_proxy_end_call (proxy, call, &error,
 	                           G_TYPE_VALUE, &value,
 	                           G_TYPE_INVALID)) {
-		if (G_VALUE_HOLDS_UINT (&value))
+		if (G_VALUE_HOLDS_UINT (&value)) {
 			info->act = g_value_get_uint (&value);
+			applet_schedule_update_icon (info->applet);
+		}
 		g_value_unset (&value);
 	}
 	g_clear_error (&error);
@@ -1363,6 +1367,8 @@ signal_quality_changed_cb (DBusGProxy *proxy,
 	info->quality = quality;
 	info->quality_valid = TRUE;
 	info->skip_signal_poll = TRUE;
+
+	applet_schedule_update_icon (info->applet);
 }
 
 #define MM_DBUS_INTERFACE_MODEM "org.freedesktop.ModemManager.Modem"
@@ -1394,7 +1400,7 @@ modem_properties_changed (DBusGProxy *proxy,
 		value = g_hash_table_lookup (props, "AccessTechnology");
 		if (value && G_VALUE_HOLDS_UINT (value)) {
 			info->act = g_value_get_uint (value);
-			/* FIXME: update main icon if needed */
+			applet_schedule_update_icon (info->applet);
 		}
 	}
 }
@@ -1413,6 +1419,7 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 		return;
 
 	info = g_malloc0 (sizeof (GsmDeviceInfo));
+	info->applet = applet;
 	info->device = device;
 
 	info->props_proxy = dbus_g_proxy_new_for_name (bus,

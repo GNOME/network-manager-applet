@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2008 Red Hat, Inc.
+ * Copyright (C) 2004 - 2010 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
@@ -2673,6 +2673,7 @@ static void nma_icons_free (NMApplet *applet)
 	nma_clear_icon (&applet->wired_icon, applet);
 	nma_clear_icon (&applet->adhoc_icon, applet);
 	nma_clear_icon (&applet->wwan_icon, applet);
+	nma_clear_icon (&applet->wwan_tower_icon, applet);
 	nma_clear_icon (&applet->vpn_lock_icon, applet);
 	nma_clear_icon (&applet->wireless_00_icon, applet);
 	nma_clear_icon (&applet->wireless_25_icon, applet);
@@ -2680,6 +2681,15 @@ static void nma_icons_free (NMApplet *applet)
 	nma_clear_icon (&applet->wireless_75_icon, applet);
 	nma_clear_icon (&applet->wireless_100_icon, applet);
 	nma_clear_icon (&applet->secure_lock_icon, applet);
+
+	nma_clear_icon (&applet->mb_tech_1x_icon, applet);
+	nma_clear_icon (&applet->mb_tech_evdo_icon, applet);
+	nma_clear_icon (&applet->mb_tech_gprs_icon, applet);
+	nma_clear_icon (&applet->mb_tech_edge_icon, applet);
+	nma_clear_icon (&applet->mb_tech_umts_icon, applet);
+	nma_clear_icon (&applet->mb_tech_hspa_icon, applet);
+	nma_clear_icon (&applet->mb_roaming_icon, applet);
+	nma_clear_icon (&applet->mb_tech_3g_icon, applet);
 
 	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
 		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
@@ -2732,7 +2742,6 @@ nma_icons_reload (NMApplet *applet)
 	g_return_val_if_fail (applet->icon_size > 0, FALSE);
 
 	nma_icons_free (applet);
-
 
 	applet->fallback_icon = gtk_icon_theme_load_icon (applet->icon_theme,
 	                                                  FALLBACK_ICON_NAME,

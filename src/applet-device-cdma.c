@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2009 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -199,6 +199,8 @@ add_connection_item (NMDevice *device,
 }
 
 typedef struct {
+	NMApplet *applet;
+
 	DBusGProxy *props_proxy;
 	DBusGProxy *cdma_proxy;
 	gboolean quality_valid;
@@ -216,26 +218,30 @@ typedef struct {
 } CdmaDeviceInfo;
 
 static guint32
-state_for_info (CdmaDeviceInfo *info, guint32 *out_tech)
+cdma_state_to_mb_state (CdmaDeviceInfo *info)
 {
-	guint32 state = MB_STATE_UNKNOWN;
-
+	/* EVDO state overrides 1X state for now */
 	if (info->evdo_state) {
-		*out_tech = MB_TECH_EVDO_REVA;
-		if (info->evdo_state == 1 || info->evdo_state == 2)
-			state = MB_STATE_HOME;
-		else if (info->evdo_state == 3)
-			state = MB_STATE_ROAMING;
+		if (info->evdo_state == 3)
+			return MB_STATE_ROAMING;
+		return MB_STATE_HOME;
 	} else if (info->cdma1x_state) {
-		*out_tech = MB_TECH_1XRTT;
-		if (info->cdma1x_state == 1 || info->cdma1x_state == 2)
-			state = MB_STATE_HOME;
-		else if (info->cdma1x_state == 3)
-			state = MB_STATE_ROAMING;
-	} else {
-		*out_tech = MB_TECH_1XRTT;
+		if (info->cdma1x_state == 3)
+			return MB_STATE_ROAMING;
+		return MB_STATE_HOME;
 	}
-	return state;
+
+	return MB_STATE_UNKNOWN;
+}
+
+static guint32
+cdma_act_to_mb_act (CdmaDeviceInfo *info)
+{
+	if (info->evdo_state)
+		return MB_TECH_EVDO_REVA; /* Always rA until we get CDMA AcT from MM */
+	else if (info->cdma1x_state)
+		return MB_TECH_1XRTT;
+	return MB_TECH_UNKNOWN;
 }
 
 static void
@@ -278,19 +284,15 @@ cdma_add_menu_item (NMDevice *device,
 	/* Add the active connection */
 	if (active) {
 		NMSettingConnection *s_con;
-		guint32 tech = MB_TECH_1XRTT;
-		guint32 mb_state;
 
 		s_con = (NMSettingConnection *) nm_connection_get_setting (active, NM_TYPE_SETTING_CONNECTION);
 		g_assert (s_con);
 
-		mb_state = state_for_info (info, &tech);
-
 		item = nm_mb_menu_item_new (nm_setting_connection_get_id (s_con),
 		                            info->quality_valid ? info->quality : 0,
 		                            info->provider_name,
-		                            tech,
-		                            mb_state,
+		                            cdma_act_to_mb_act (info),
+		                            cdma_state_to_mb_state (info),
 		                            applet);
 
 		add_connection_item (device, active, item, menu, applet);
@@ -304,15 +306,11 @@ cdma_add_menu_item (NMDevice *device,
 			gtk_widget_show (item);
 		}
 	} else {
-		guint32 tech = MB_TECH_1XRTT;
-		guint32 mb_state;
-
-		mb_state = state_for_info (info, &tech);
 		item = nm_mb_menu_item_new (NULL,
 		                            info->quality_valid ? info->quality : 0,
 		                            info->provider_name,
-		                            tech,
-		                            mb_state,
+		                            cdma_act_to_mb_act (info),
+		                            cdma_state_to_mb_state (info),
 		                            applet);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
@@ -390,6 +388,7 @@ cdma_get_icon (NMDevice *device,
 	GdkPixbuf *pixbuf = NULL;
 	const char *id;
 	CdmaDeviceInfo *info;
+	gboolean mb_state;
 
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
 	g_assert (info);
@@ -414,14 +413,15 @@ cdma_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		pixbuf = nma_icon_check_and_load ("nm-device-wwan", &applet->wwan_icon, applet);
-		if ((info->cdma1x_state || info->evdo_state) && info->quality_valid) {
-			gboolean roaming = FALSE;
+		mb_state = cdma_state_to_mb_state (info);
+		pixbuf = mobile_helper_get_status_pixbuf (info->quality,
+		                                          info->quality_valid,
+		                                          mb_state,
+		                                          cdma_act_to_mb_act (info),
+		                                          applet);
 
-			if (info->evdo_state == 3)
-				roaming = TRUE;
-			else if (info->cdma1x_state == 3)
-				roaming = TRUE;
+		if ((mb_state != MB_STATE_UNKNOWN) && info->quality_valid) {
+			gboolean roaming = (mb_state == MB_STATE_ROAMING);
 
 			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active: (%d%%%s%s)"),
 			                        id, info->quality,
@@ -642,6 +642,7 @@ reg_state_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	                           G_TYPE_INVALID)) {
 		info->cdma1x_state = cdma1x_state;
 		info->evdo_state = evdo_state;
+		applet_schedule_update_icon (info->applet);
 	}
 
 	g_clear_error (&error);
@@ -659,6 +660,7 @@ signal_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	                           G_TYPE_INVALID)) {
 		info->quality = quality;
 		info->quality_valid = TRUE;
+		applet_schedule_update_icon (info->applet);
 	}
 
 	g_clear_error (&error);
@@ -775,6 +777,8 @@ reg_state_changed_cb (DBusGProxy *proxy,
 
 	info->cdma1x_state = cdma1x_state;
 	info->evdo_state = evdo_state;
+
+	applet_schedule_update_icon (info->applet);
 }
 
 static void
@@ -786,6 +790,8 @@ signal_quality_changed_cb (DBusGProxy *proxy,
 
 	info->quality = quality;
 	info->quality_valid = TRUE;
+
+	applet_schedule_update_icon (info->applet);
 }
 
 static void
@@ -803,6 +809,7 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 		return;
 
 	info = g_malloc0 (sizeof (CdmaDeviceInfo));
+	info->applet = applet;
 	info->quality_valid = FALSE;
 
 	info->providers = nmn_mobile_providers_parse (NULL);
