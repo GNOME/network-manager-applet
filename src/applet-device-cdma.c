@@ -47,6 +47,30 @@
 typedef struct {
 	NMApplet *applet;
 	NMDevice *device;
+
+	DBusGProxy *props_proxy;
+	DBusGProxy *cdma_proxy;
+	gboolean quality_valid;
+	guint32 quality;
+	guint32 cdma1x_state;
+	guint32 evdo_state;
+	gboolean evdo_capable;
+	guint32 sid;
+	gboolean modem_enabled;
+
+	GHashTable *providers;
+	char *provider_name;
+
+	guint32 poll_id;
+	gboolean skip_reg_poll;
+	gboolean skip_signal_poll;
+} CdmaDeviceInfo;
+
+static void check_start_polling (CdmaDeviceInfo *info);
+
+typedef struct {
+	NMApplet *applet;
+	NMDevice *device;
 	NMConnection *connection;
 } CdmaMenuItemInfo;
 
@@ -198,28 +222,12 @@ add_connection_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
 
-typedef struct {
-	NMApplet *applet;
-
-	DBusGProxy *props_proxy;
-	DBusGProxy *cdma_proxy;
-	gboolean quality_valid;
-	guint32 quality;
-	guint32 cdma1x_state;
-	guint32 evdo_state;
-	gboolean evdo_capable;
-	guint32 sid;
-
-	GHashTable *providers;
-	char *provider_name;
-
-	gboolean nopoll;
-	guint32 poll_id;
-} CdmaDeviceInfo;
-
 static guint32
 cdma_state_to_mb_state (CdmaDeviceInfo *info)
 {
+	if (!info->modem_enabled)
+		return MB_STATE_UNKNOWN;
+
 	/* EVDO state overrides 1X state for now */
 	if (info->evdo_state) {
 		if (info->evdo_state == 3)
@@ -293,12 +301,13 @@ cdma_add_menu_item (NMDevice *device,
 		                            info->provider_name,
 		                            cdma_act_to_mb_act (info),
 		                            cdma_state_to_mb_state (info),
+		                            info->modem_enabled,
 		                            applet);
 
 		add_connection_item (device, active, item, menu, applet);
 	}
 
-	/* Notify user of unmanaged or unavailable device */
+	/* Get the "disconnect" item if connected */
 	if (nm_device_get_state (device) > NM_DEVICE_STATE_DISCONNECTED) {
 		item = nma_menu_device_get_menu_item (device, applet, NULL);
 		if (item) {
@@ -306,11 +315,13 @@ cdma_add_menu_item (NMDevice *device,
 			gtk_widget_show (item);
 		}
 	} else {
+		/* Otherwise show idle registration state or disabled */
 		item = nm_mb_menu_item_new (NULL,
 		                            info->quality_valid ? info->quality : 0,
 		                            info->provider_name,
 		                            cdma_act_to_mb_act (info),
 		                            cdma_state_to_mb_state (info),
+		                            info->modem_enabled,
 		                            applet);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
@@ -346,12 +357,7 @@ cdma_device_state_changed (NMDevice *device,
                            NMDeviceStateReason reason,
                            NMApplet *applet)
 {
-	CdmaDeviceInfo *info = g_object_get_data (G_OBJECT (device), "devinfo");
-
-	if (info) {
-		/* Don't poll for signal/registration if device isn't usable */
-		info->nopoll = (new_state <= NM_DEVICE_STATE_UNAVAILABLE);
-	}
+	CdmaDeviceInfo *info;
 
 	if (new_state == NM_DEVICE_STATE_ACTIVATED) {
 		NMConnection *connection;
@@ -375,6 +381,10 @@ cdma_device_state_changed (NMDevice *device,
 		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 		g_free (str);
 	}
+
+	/* Start/stop polling of quality and registration when device state changes */
+	info = g_object_get_data (G_OBJECT (device), "devinfo");
+	check_start_polling (info);
 }
 
 static GdkPixbuf *
@@ -743,28 +753,87 @@ serving_system_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_dat
 	g_clear_error (&error);
 }
 
+static void
+enabled_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	CdmaDeviceInfo *info = user_data;
+	GError *error = NULL;
+	GValue value = { 0 };
+
+	if (dbus_g_proxy_end_call (proxy, call, &error,
+	                           G_TYPE_VALUE, &value,
+	                           G_TYPE_INVALID)) {
+		if (G_VALUE_HOLDS_BOOLEAN (&value))
+			info->modem_enabled = g_value_get_boolean (&value);
+		g_value_unset (&value);
+	}
+
+	g_clear_error (&error);
+	check_start_polling (info);
+}
+
 static gboolean
 cdma_poll_cb (gpointer user_data)
 {
 	CdmaDeviceInfo *info = user_data;
 
-	if (info->nopoll)
-		return TRUE;
-
 	/* Kick off calls to get registration state and signal quality */
-	dbus_g_proxy_begin_call (info->cdma_proxy, "GetRegistrationState",
-	                         reg_state_reply, info, NULL,
-	                         G_TYPE_INVALID);
+	if (!info->skip_reg_poll) {
+		dbus_g_proxy_begin_call (info->cdma_proxy, "GetRegistrationState",
+		                         reg_state_reply, info, NULL,
+		                         G_TYPE_INVALID);
+		info->skip_reg_poll = FALSE;
+	}
 
-	dbus_g_proxy_begin_call (info->cdma_proxy, "GetSignalQuality",
-	                         signal_reply, info, NULL,
-	                         G_TYPE_INVALID);
+	if (!info->skip_signal_poll) {
+		dbus_g_proxy_begin_call (info->cdma_proxy, "GetSignalQuality",
+		                         signal_reply, info, NULL,
+		                         G_TYPE_INVALID);
+		info->skip_signal_poll = FALSE;
+	}
 
 	dbus_g_proxy_begin_call (info->cdma_proxy, "GetServingSystem",
 	                         serving_system_reply, info, NULL,
 	                         G_TYPE_INVALID);
 
-	return TRUE;
+	return TRUE;  /* keep running until we're told to stop */
+}
+
+static void
+check_start_polling (CdmaDeviceInfo *info)
+{
+	NMDeviceState state;
+	gboolean poll = TRUE;
+
+	g_return_if_fail (info != NULL);
+
+	/* Don't poll if any of the following are true:
+	 *
+	 * 1) NM says the device is not available
+	 * 3) the modem isn't enabled
+	 */
+
+	state = nm_device_get_state (info->device);
+	if (   (state <= NM_DEVICE_STATE_UNAVAILABLE)
+	    || (info->modem_enabled == FALSE))
+		poll = FALSE;
+
+	if (poll) {
+		if (!info->poll_id) {
+			/* 33 seconds to be just a bit more than MM's poll interval, so
+			 * that if we get an unsolicited update from MM between polls we'll
+			 * skip the next poll.
+			 */
+	        info->poll_id = g_timeout_add_seconds (33, cdma_poll_cb, info);
+		}
+		cdma_poll_cb (info);
+	} else {
+		if (info->poll_id)
+			g_source_remove (info->poll_id);
+		info->poll_id = 0;
+		info->skip_reg_poll = FALSE;
+		info->skip_signal_poll = FALSE;
+	}
 }
 
 static void
@@ -777,6 +846,7 @@ reg_state_changed_cb (DBusGProxy *proxy,
 
 	info->cdma1x_state = cdma1x_state;
 	info->evdo_state = evdo_state;
+	info->skip_reg_poll = TRUE;
 
 	applet_schedule_update_icon (info->applet);
 }
@@ -790,8 +860,39 @@ signal_quality_changed_cb (DBusGProxy *proxy,
 
 	info->quality = quality;
 	info->quality_valid = TRUE;
+	info->skip_signal_poll = TRUE;
 
 	applet_schedule_update_icon (info->applet);
+}
+
+#define MM_DBUS_INTERFACE_MODEM "org.freedesktop.ModemManager.Modem"
+#define DBUS_TYPE_G_MAP_OF_VARIANT (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
+
+static void
+modem_properties_changed (DBusGProxy *proxy,
+                          const char *interface,
+                          GHashTable *props,
+                          gpointer user_data)
+{
+	CdmaDeviceInfo *info = user_data;
+	GValue *value;
+
+	if (!strcmp (interface, MM_DBUS_INTERFACE_MODEM)) {
+		value = g_hash_table_lookup (props, "Enabled");
+		if (value && G_VALUE_HOLDS_BOOLEAN (value)) {
+			info->modem_enabled = g_value_get_boolean (value);
+			if (!info->modem_enabled) {
+				info->quality = 0;
+				info->quality_valid = 0;
+				info->cdma1x_state = 0;
+				info->evdo_state = 0;
+				info->sid = 0;
+				g_free (info->provider_name);
+				info->provider_name = NULL;
+			}
+			check_start_polling (info);
+		}
+	}
 }
 
 static void
@@ -802,7 +903,6 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	DBusGConnection *bus = applet_dbus_manager_get_connection (dbus_mgr);
 	CdmaDeviceInfo *info;
 	const char *udi;
-	NMDeviceState state;
 
 	udi = nm_device_get_udi (device);
 	if (!udi)
@@ -810,14 +910,10 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 
 	info = g_malloc0 (sizeof (CdmaDeviceInfo));
 	info->applet = applet;
+	info->device = device;
 	info->quality_valid = FALSE;
 
 	info->providers = nmn_mobile_providers_parse (NULL);
-
-	/* Don't bother polling if the device isn't usable */
-	state = nm_device_get_state (device);
-	if (state <= NM_DEVICE_STATE_UNAVAILABLE)
-		info->nopoll = TRUE;
 
 	info->props_proxy = dbus_g_proxy_new_for_name (bus,
 	                                               "org.freedesktop.ModemManager",
@@ -857,10 +953,22 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	dbus_g_proxy_connect_signal (info->cdma_proxy, "SignalQuality",
 	                             G_CALLBACK (signal_quality_changed_cb), info, NULL);
 
-	/* periodically poll for signal quality and registration state */
-	info->poll_id = g_timeout_add_seconds (10, cdma_poll_cb, info);
-	if (!info->nopoll)
-		cdma_poll_cb (info);
+	/* Modem property change signal */
+	dbus_g_object_register_marshaller (nma_marshal_VOID__STRING_BOXED,
+	                                   G_TYPE_NONE, G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT,
+	                                   G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (info->props_proxy, "MmPropertiesChanged",
+	                         G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (info->props_proxy, "MmPropertiesChanged",
+	                             G_CALLBACK (modem_properties_changed),
+	                             info, NULL);
+
+	/* Ask whether the device is enabled */
+	dbus_g_proxy_begin_call (info->props_proxy, "Get",
+	                         enabled_reply, info, NULL,
+	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM,
+	                         G_TYPE_STRING, "Enabled",
+	                         G_TYPE_INVALID);
 
 	g_object_unref (dbus_mgr);
 }

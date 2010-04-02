@@ -251,6 +251,9 @@ add_connection_item (NMDevice *device,
 static guint32
 gsm_state_to_mb_state (GsmDeviceInfo *info)
 {
+	if (!info->modem_enabled)
+		return MB_STATE_UNKNOWN;
+
 	switch (info->reg_state) {
 	case 1:  /* IDLE */
 		return MB_STATE_IDLE;
@@ -342,6 +345,7 @@ gsm_add_menu_item (NMDevice *device,
 		                            info->op_name,
 		                            gsm_act_to_mb_act (info),
 		                            gsm_state_to_mb_state (info),
+		                            info->modem_enabled,
 		                            applet);
 
 		add_connection_item (device, active, item, menu, applet);
@@ -360,6 +364,7 @@ gsm_add_menu_item (NMDevice *device,
 		                            info->op_name,
 		                            gsm_act_to_mb_act (info),
 		                            gsm_state_to_mb_state (info),
+		                            info->modem_enabled,
 		                            applet);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
@@ -1287,16 +1292,15 @@ gsm_poll_cb (gpointer user_data)
 		dbus_g_proxy_begin_call (info->net_proxy, "GetRegistrationInfo",
 		                         reg_info_reply, info, NULL,
 		                         G_TYPE_INVALID);
+		info->skip_reg_poll = FALSE;
 	}
 
 	if (!info->skip_signal_poll) {
 		dbus_g_proxy_begin_call (info->net_proxy, "GetSignalQuality",
 		                         signal_reply, info, NULL,
 		                         G_TYPE_INVALID);
+		info->skip_signal_poll = FALSE;
 	}
-
-	info->skip_reg_poll = FALSE;
-	info->skip_signal_poll = FALSE;
 
 	return TRUE;  /* keep running until we're told to stop */
 }
@@ -1394,6 +1398,16 @@ modem_properties_changed (DBusGProxy *proxy,
 		value = g_hash_table_lookup (props, "Enabled");
 		if (value && G_VALUE_HOLDS_BOOLEAN (value)) {
 			info->modem_enabled = g_value_get_boolean (value);
+			if (!info->modem_enabled) {
+				info->quality = 0;
+				info->quality_valid = 0;
+				info->reg_state = 0;
+				info->act = 0;
+				g_free (info->op_code);
+				info->op_code = NULL;
+				g_free (info->op_name);
+				info->op_name = NULL;
+			}
 			check_start_polling (info);
 		}
 	} else if (!strcmp (interface, MM_DBUS_INTERFACE_MODEM_GSM_NETWORK)) {
@@ -1487,7 +1501,7 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 	                         G_TYPE_STRING, "UnlockRequired",
 	                         G_TYPE_INVALID);
 
-	/* Ask whether the device needs to be unlocked */
+	/* Ask whether the device is enabled */
 	dbus_g_proxy_begin_call (info->props_proxy, "Get",
 	                         enabled_reply, info, NULL,
 	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM,

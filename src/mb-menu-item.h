@@ -51,6 +51,7 @@ GtkWidget *nm_mb_menu_item_new (const char *connection_name,
                                 const char *provider,
                                 guint32 technology,
                                 guint32 state,
+                                gboolean enabled,
                                 NMApplet *applet);
 
 #endif /* _MB_MENU_ITEM_H_ */

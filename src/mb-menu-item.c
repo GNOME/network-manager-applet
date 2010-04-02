@@ -53,34 +53,25 @@ get_tech_name (guint32 tech)
 	switch (tech) {
 	case MB_TECH_1XRTT:
 		return _("CDMA");
-		break;
 	case MB_TECH_EVDO_REV0:
 	case MB_TECH_EVDO_REVA:
 		return _("EVDO");
-		break;
 	case MB_TECH_GSM:
 		return _("GSM");
-		break;
 	case MB_TECH_GPRS:
 		return _("GPRS");
-		break;
 	case MB_TECH_EDGE:
 		return _("EDGE");
-		break;
 	case MB_TECH_UMTS:
 		return _("UMTS");
-		break;
 	case MB_TECH_HSDPA:
 		return _("HSDPA");
-		break;
 	case MB_TECH_HSUPA:
 		return _("HSUPA");
-		break;
 	case MB_TECH_HSPA:
 		return _("HSPA");
-		break;
 	default:
-		g_assert_not_reached ();
+		break;
 	}
 	return NULL;
 }
@@ -91,13 +82,12 @@ nm_mb_menu_item_new (const char *connection_name,
                      const char *provider,
                      guint32 technology,
                      guint32 state,
+                     gboolean enabled,
                      NMApplet *applet)
 {
 	NMMbMenuItem *item;
 	NMMbMenuItemPrivate *priv;
 	const char *tech_name;
-
-	g_return_val_if_fail (technology != MB_TECH_UNKNOWN, NULL);
 
 	item = g_object_new (NM_TYPE_MB_MENU_ITEM, NULL);
 	if (!item)
@@ -110,6 +100,9 @@ nm_mb_menu_item_new (const char *connection_name,
 	tech_name = get_tech_name (technology);
 	switch (state) {
 	default:
+	case MB_STATE_UNKNOWN:
+		priv->desc_string = g_strdup (_("not enabled"));
+		break;
 	case MB_STATE_IDLE:
 		if (connection_name)
 			priv->desc_string = g_strdup (connection_name);
@@ -118,15 +111,24 @@ nm_mb_menu_item_new (const char *connection_name,
 		break;
 	case MB_STATE_HOME:
 		if (connection_name) {
-			if (provider)
+			if (provider && tech_name)
 				priv->desc_string = g_strdup_printf ("%s (%s %s)", connection_name, provider, tech_name);
+			else if (provider || tech_name)
+				priv->desc_string = g_strdup_printf ("%s (%s)", connection_name, provider ? provider : tech_name);
 			else
-				priv->desc_string = g_strdup_printf ("%s (%s)", connection_name, tech_name);
+				priv->desc_string = g_strdup_printf ("%s", connection_name);
 		} else {
-			if (provider)
-				priv->desc_string = g_strdup_printf ("%s %s", provider, tech_name);
-			else
-				priv->desc_string = g_strdup_printf (_("Home network (%s)"), tech_name);
+			if (provider) {
+				if (tech_name)
+					priv->desc_string = g_strdup_printf ("%s %s", provider, tech_name);
+				else
+					priv->desc_string = g_strdup_printf ("%s", provider);
+			} else {
+				if (tech_name)
+					priv->desc_string = g_strdup_printf (_("Home network (%s)"), tech_name);
+				else
+					priv->desc_string = g_strdup_printf (_("Home network"));
+			}
 		}
 		break;
 	case MB_STATE_SEARCHING:
@@ -139,36 +141,48 @@ nm_mb_menu_item_new (const char *connection_name,
 		priv->desc_string = g_strdup (_("registration denied"));
 		break;
 	case MB_STATE_ROAMING:
-		if (connection_name)
-			priv->desc_string = g_strdup_printf (_("%s (%s roaming)"), connection_name, tech_name);
-		else {
-			if (provider)
-				priv->desc_string = g_strdup_printf (_("%s (%s roaming)"), provider, tech_name);
+		if (connection_name) {
+			if (tech_name)
+				priv->desc_string = g_strdup_printf (_("%s (%s roaming)"), connection_name, tech_name);
 			else
-				priv->desc_string = g_strdup_printf (_("Roaming network (%s)"), tech_name);
+				priv->desc_string = g_strdup_printf (_("%s (roaming)"), connection_name);
+		} else {
+			if (provider) {
+				if (tech_name)
+					priv->desc_string = g_strdup_printf (_("%s (%s roaming)"), provider, tech_name);
+				else
+					priv->desc_string = g_strdup_printf (_("%s (roaming)"), provider);
+			} else {
+				if (tech_name)
+					priv->desc_string = g_strdup_printf (_("Roaming network (%s)"), tech_name);
+				else
+					priv->desc_string = g_strdup_printf (_("Roaming network"));
+			}
 		}
 		break;
 	}
 
-	/* Assume a connection name means the label should be active */
-	if (connection_name) {
-		char *markup;
+	if (enabled) {
+		/* Assume a connection name means the label should be active */
+		if (connection_name) {
+			char *markup;
 
-		gtk_label_set_use_markup (GTK_LABEL (priv->desc), TRUE);
-		markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
-		gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
-		g_free (markup);
-		gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
-	} else {
-		gtk_label_set_use_markup (GTK_LABEL (priv->desc), FALSE);
-		gtk_label_set_text (GTK_LABEL (priv->desc), priv->desc_string);
-		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
-	}
+			gtk_label_set_use_markup (GTK_LABEL (priv->desc), TRUE);
+			markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
+			gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
+			g_free (markup);
+			gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
+		} else {
+			gtk_label_set_use_markup (GTK_LABEL (priv->desc), FALSE);
+			gtk_label_set_text (GTK_LABEL (priv->desc), priv->desc_string);
+			gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
+		}
 
-	/* And the strength icon, if we have strength information at all */
-	if (strength) {
-		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength),
-		                           mobile_helper_get_quality_icon (strength, applet));
+		/* And the strength icon, if we have strength information at all */
+		if (strength) {
+			gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength),
+			                           mobile_helper_get_quality_icon (strength, applet));
+		}
 	}
 
 	return GTK_WIDGET (item);
