@@ -30,11 +30,13 @@ typedef struct {
 
 	GtkSizeGroup *size_group;
 	WirelessSecurity *sec_parent;
+	gboolean is_editor;
 } EAPMethodTTLS;
 
 EAPMethodTTLS * eap_method_ttls_new (const char *glade_file,
                                      WirelessSecurity *parent,
-                                     NMConnection *connection);
+                                     NMConnection *connection,
+                                     gboolean is_editor);
 
 #endif /* EAP_METHOD_TLS_H */
 

@@ -105,7 +105,8 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 
 WirelessSecurityDynamicWEP *
 ws_dynamic_wep_new (const char *glade_file,
-                    NMConnection *connection)
+                    NMConnection *connection,
+                    gboolean is_editor)
 {
 	WirelessSecurityDynamicWEP *sec;
 	GtkWidget *widget;
@@ -146,7 +147,8 @@ ws_dynamic_wep_new (const char *glade_file,
 	                                    glade_file,
 	                                    "dynamic_wep_auth_combo",
 	                                    (GCallback) auth_combo_changed_cb,
-	                                    connection);
+	                                    connection,
+	                                    is_editor);
 	auth_combo_changed_cb (widget, (gpointer) sec);
 
 	return sec;

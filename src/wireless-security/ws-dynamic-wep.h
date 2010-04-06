@@ -30,7 +30,8 @@ typedef struct {
 } WirelessSecurityDynamicWEP;
 
 WirelessSecurityDynamicWEP * ws_dynamic_wep_new (const char *glade_file,
-                                                 NMConnection *connection);
+                                                 NMConnection *connection,
+                                                 gboolean is_editor);
 
 #endif /* WS_DYNAMIC_WEP_H */
 

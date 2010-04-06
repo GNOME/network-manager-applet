@@ -38,12 +38,14 @@ typedef struct {
 	struct _EAPMethod parent;
 
 	EAPMethodSimpleType type;
+	gboolean is_editor;
 } EAPMethodSimple;
 
 EAPMethodSimple * eap_method_simple_new (const char *glade_file,
                                          WirelessSecurity *parent,
                                          NMConnection *connection,
-                                         EAPMethodSimpleType type);
+                                         EAPMethodSimpleType type,
+                                         gboolean is_editor);
 
 #endif /* EAP_METHOD_SIMPLE_H */
 

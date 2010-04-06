@@ -100,7 +100,8 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 
 WirelessSecurityWPAEAP *
 ws_wpa_eap_new (const char *glade_file,
-                NMConnection *connection)
+                NMConnection *connection,
+                gboolean is_editor)
 {
 	WirelessSecurityWPAEAP *sec;
 	GtkWidget *widget;
@@ -141,7 +142,8 @@ ws_wpa_eap_new (const char *glade_file,
 	                                    glade_file,
 	                                    "wpa_eap_auth_combo",
 	                                    (GCallback) auth_combo_changed_cb,
-	                                    connection);
+	                                    connection,
+	                                    is_editor);
 	auth_combo_changed_cb (widget, (gpointer) sec);
 
 	return sec;

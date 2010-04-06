@@ -291,7 +291,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                            const char *glade_file,
                            const char *combo_name,
                            GCallback auth_combo_changed_cb,
-                           NMConnection *connection)
+                           NMConnection *connection,
+                           gboolean is_editor)
 {
 	GtkWidget *combo;
 	GtkListStore *auth_model;
@@ -346,7 +347,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		item++;
 	}
 
-	em_ttls = eap_method_ttls_new (glade_file, sec, connection);
+	em_ttls = eap_method_ttls_new (glade_file, sec, connection, is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Tunneled TLS"),
@@ -357,7 +358,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		active = item;
 	item++;
 
-	em_peap = eap_method_peap_new (glade_file, sec, connection);
+	em_peap = eap_method_peap_new (glade_file, sec, connection, is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Protected EAP (PEAP)"),

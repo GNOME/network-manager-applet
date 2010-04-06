@@ -63,7 +63,7 @@ dialog_set_security (NMConnection *connection,
 	GList *iter;
 	WirelessSecurity *security;
 
-	security = (WirelessSecurity *) ws_wpa_eap_new (glade_file, connection);
+	security = (WirelessSecurity *) ws_wpa_eap_new (glade_file, connection, FALSE);
 
 	/* Remove any previous wireless security widgets */
 	children = gtk_container_get_children (GTK_CONTAINER (box));

@@ -221,7 +221,8 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_pap = eap_method_simple_new (glade_file,
 	                                method->sec_parent,
 	                                connection,
-	                                EAP_METHOD_SIMPLE_TYPE_PAP);
+	                                EAP_METHOD_SIMPLE_TYPE_PAP,
+	                                method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("PAP"),
@@ -236,7 +237,8 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_mschap = eap_method_simple_new (glade_file,
 	                                   method->sec_parent,
 	                                   connection,
-	                                   EAP_METHOD_SIMPLE_TYPE_MSCHAP);
+	                                   EAP_METHOD_SIMPLE_TYPE_MSCHAP,
+	                                   method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAP"),
@@ -251,7 +253,8 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_mschap_v2 = eap_method_simple_new (glade_file,
 	                                      method->sec_parent,
 	                                      connection,
-	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2);
+	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2,
+	                                      method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAPv2"),
@@ -266,7 +269,8 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_chap = eap_method_simple_new (glade_file,
 	                                 method->sec_parent,
 	                                 connection,
-	                                 EAP_METHOD_SIMPLE_TYPE_CHAP);
+	                                 EAP_METHOD_SIMPLE_TYPE_CHAP,
+	                                 method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("CHAP"),
@@ -303,7 +307,8 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 EAPMethodTTLS *
 eap_method_ttls_new (const char *glade_file,
                      WirelessSecurity *parent,
-                     NMConnection *connection)
+                     NMConnection *connection,
+                     gboolean is_editor)
 {
 	EAPMethodTTLS *method;
 	GtkWidget *widget;
@@ -348,6 +353,7 @@ eap_method_ttls_new (const char *glade_file,
 	                     FALSE);
 
 	method->sec_parent = parent;
+	method->is_editor = is_editor;
 
 	if (connection)
 		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));

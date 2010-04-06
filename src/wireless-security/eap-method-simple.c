@@ -133,19 +133,25 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_assert (widget);
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 
+	/* Save the password always ask setting */
 	widget = glade_xml_get_widget (parent->xml, "eap_password_always_ask");
 	g_assert (widget);
 	always_ask = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
-	if (always_ask) {
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	g_assert (s_con);
+	nm_gconf_set_8021x_password_always_ask (nm_setting_connection_get_uuid (s_con), always_ask);
+
+	/* Fill the connection's password if we're in the applet so that it'll get
+	 * back to NM.  From the editor though, since the connection isn't going
+	 * back to NM in response to a GetSecrets() call, we don't save it if the
+	 * user checked "Always Ask".
+	 */
+	if (method->is_editor == FALSE || always_ask == FALSE) {
 		widget = glade_xml_get_widget (parent->xml, "eap_simple_password_entry");
 		g_assert (widget);
 		g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 	}
-
-	/* Save the password always ask setting */
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
-	g_assert (s_con);
-	nm_gconf_set_8021x_password_always_ask (nm_setting_connection_get_uuid (s_con), always_ask);
 }
 
 static void
@@ -183,12 +189,12 @@ password_always_ask_changed (GtkButton *button, EAPMethodSimple *method)
 	gtk_widget_set_sensitive (show_checkbox, !always_ask);
 }
 
-
 EAPMethodSimple *
 eap_method_simple_new (const char *glade_file,
                        WirelessSecurity *parent,
                        NMConnection *connection,
-                       EAPMethodSimpleType type)
+                       EAPMethodSimpleType type,
+                       gboolean is_editor)
 {
 	EAPMethodSimple *method;
 	GtkWidget *widget;
@@ -225,6 +231,7 @@ eap_method_simple_new (const char *glade_file,
 	                 "eap_simple_username_entry");
 
 	method->type = type;
+	method->is_editor = is_editor;
 
 	widget = glade_xml_get_widget (xml, "eap_simple_username_entry");
 	g_assert (widget);
@@ -245,27 +252,22 @@ eap_method_simple_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 
-	/* Fill secrets, if any */
-	if (connection)
-		update_secrets (EAP_METHOD (method), connection);
-
-	widget = glade_xml_get_widget (xml, "show_checkbutton");
-	g_assert (widget);
-	g_signal_connect (G_OBJECT (widget), "toggled",
-	                  (GCallback) show_toggled_cb,
-	                  method);
-
-	/* Sensitize/desensitize the password entry based on whether it should
-	 * always be asked for when connecting or not.
-	 */
 	widget = glade_xml_get_widget (xml, "eap_password_always_ask");
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
-	g_signal_connect (G_OBJECT (widget), "toggled",
-	                  G_CALLBACK (password_always_ask_changed),
-	                  method);
+	if (is_editor) {
+		/* We only desensitize the password entry from the editor, because
+		 * from nm-applet if the entry was desensitized, there'd be no way to
+		 * get the password back to NetworkManager when NM asked for it.  Since
+		 * the editor only sets up the initial connection though, it's safe to
+		 * do there.
+		 */
+		g_signal_connect (G_OBJECT (widget), "toggled",
+		                  G_CALLBACK (password_always_ask_changed),
+		                  method);
+	}
 
 	if (connection) {
 		NMSettingConnection *s_con;
@@ -279,6 +281,16 @@ eap_method_simple_new (const char *glade_file,
 	}
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), always_ask);
+
+	/* Fill secrets if there's a static (ie, not OTP) password */
+	if (connection && !always_ask)
+		update_secrets (EAP_METHOD (method), connection);
+
+	widget = glade_xml_get_widget (xml, "show_checkbutton");
+	g_assert (widget);
+	g_signal_connect (G_OBJECT (widget), "toggled",
+	                  (GCallback) show_toggled_cb,
+	                  method);
 
 	return method;
 }

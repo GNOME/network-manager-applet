@@ -238,7 +238,8 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	em_mschap_v2 = eap_method_simple_new (glade_file,
 	                                      method->sec_parent,
 	                                      connection,
-	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2);
+	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2,
+	                                      method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAPv2"),
@@ -253,7 +254,8 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	em_md5 = eap_method_simple_new (glade_file,
 	                                 method->sec_parent,
 	                                 connection,
-	                                 EAP_METHOD_SIMPLE_TYPE_MD5);
+	                                 EAP_METHOD_SIMPLE_TYPE_MD5,
+	                                 method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MD5"),
@@ -268,7 +270,8 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	em_gtc = eap_method_simple_new (glade_file,
 	                                method->sec_parent,
 	                                connection,
-	                                EAP_METHOD_SIMPLE_TYPE_GTC);
+	                                EAP_METHOD_SIMPLE_TYPE_GTC,
+	                                method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("GTC"),
@@ -305,7 +308,8 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 EAPMethodPEAP *
 eap_method_peap_new (const char *glade_file,
                      WirelessSecurity *parent,
-                     NMConnection *connection)
+                     NMConnection *connection,
+                     gboolean is_editor)
 {
 	EAPMethodPEAP *method;
 	GtkWidget *widget;
@@ -350,6 +354,7 @@ eap_method_peap_new (const char *glade_file,
 	                     FALSE);
 
 	method->sec_parent = parent;
+	method->is_editor = is_editor;
 
 	if (connection)
 		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));

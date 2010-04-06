@@ -113,7 +113,8 @@ GtkWidget *ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                                       const char *glade_file,
                                       const char *combo_name,
                                       GCallback auth_combo_changed_cb,
-                                      NMConnection *connection);
+                                      NMConnection *connection,
+                                      gboolean is_editor);
 
 void ws_802_1x_auth_combo_changed (GtkWidget *combo,
                                    WirelessSecurity *sec,
