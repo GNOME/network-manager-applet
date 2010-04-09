@@ -1332,7 +1332,7 @@ check_start_polling (GsmDeviceInfo *info)
 			 * that if we get an unsolicited update from MM between polls we'll
 			 * skip the next poll.
 			 */
-	        info->poll_id = g_timeout_add_seconds (33, gsm_poll_cb, info);
+			info->poll_id = g_timeout_add_seconds (33, gsm_poll_cb, info);
 		}
 		gsm_poll_cb (info);
 	} else {
