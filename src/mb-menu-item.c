@@ -162,27 +162,26 @@ nm_mb_menu_item_new (const char *connection_name,
 		break;
 	}
 
-	if (enabled) {
-		/* Assume a connection name means the label should be active */
-		if (connection_name) {
-			char *markup;
+	/* Assume a connection name means the label should be active */
+	if (enabled && connection_name) {
+		char *markup;
 
-			gtk_label_set_use_markup (GTK_LABEL (priv->desc), TRUE);
-			markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
-			gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
-			g_free (markup);
-			gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
-		} else {
-			gtk_label_set_use_markup (GTK_LABEL (priv->desc), FALSE);
-			gtk_label_set_text (GTK_LABEL (priv->desc), priv->desc_string);
-			gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
-		}
+		gtk_label_set_use_markup (GTK_LABEL (priv->desc), TRUE);
+		markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
+		gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
+		g_free (markup);
+		gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
+	} else {
+		/* Disconnected and disabled states */
+		gtk_label_set_use_markup (GTK_LABEL (priv->desc), FALSE);
+		gtk_label_set_text (GTK_LABEL (priv->desc), priv->desc_string);
+		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
+	}
 
-		/* And the strength icon, if we have strength information at all */
-		if (strength) {
-			gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength),
-			                           mobile_helper_get_quality_icon (strength, applet));
-		}
+	/* And the strength icon, if we have strength information at all */
+	if (enabled && strength) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength),
+		                           mobile_helper_get_quality_icon (strength, applet));
 	}
 
 	return GTK_WIDGET (item);
