@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -33,6 +33,8 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-ip4-config.h>
+#include <nm-setting-wired.h>
+#include <nm-setting-wireless.h>
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
 #include <nm-setting-pppoe.h>
@@ -92,6 +94,7 @@ typedef struct {
 #define IP4_METHOD_MANUAL          2
 #define IP4_METHOD_LINK_LOCAL      3
 #define IP4_METHOD_SHARED          4
+#define IP4_METHOD_DISABLED        5
 
 static void
 ip4_private_init (CEPageIP4 *self, NMConnection *connection)
@@ -172,6 +175,15 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 		                    -1);
 	}
 
+	/* At the moment, Disabled is only supported for Wired & WiFi */
+	if (   priv->connection_type == NM_TYPE_SETTING_WIRED
+	    || priv->connection_type == NM_TYPE_SETTING_WIRELESS) {
+		gtk_list_store_append (priv->method_store, &iter);
+		gtk_list_store_set (priv->method_store, &iter,
+		                    METHOD_COL_NAME, _("Disabled"),
+		                    METHOD_COL_NUM, IP4_METHOD_DISABLED,
+		                    -1);
+	}
 	gtk_combo_box_set_model (priv->method, GTK_TREE_MODEL (priv->method_store));
 
 	priv->addr_label = glade_xml_get_widget (xml, "ip4_addr_label");
@@ -228,6 +240,8 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	case IP4_METHOD_MANUAL:
 		addr_enabled = dns_enabled = routes_enabled = TRUE;
 		break;
+	case IP4_METHOD_DISABLED:
+		addr_enabled = dns_enabled = dhcp_enabled = routes_enabled = FALSE;
 	default:
 		break;
 	}
@@ -314,6 +328,8 @@ populate_ui (CEPageIP4 *self)
 			method = IP4_METHOD_MANUAL;
 		else if (!strcmp (str_method, NM_SETTING_IP4_CONFIG_METHOD_SHARED))
 			method = IP4_METHOD_SHARED;
+		else if (!strcmp (str_method, NM_SETTING_IP4_CONFIG_METHOD_DISABLED))
+			method = IP4_METHOD_DISABLED;
 	}
 
 	if (method == IP4_METHOD_AUTO && nm_setting_ip4_config_get_ignore_auto_dns (setting))
@@ -807,6 +823,9 @@ ui_to_setting (CEPageIP4 *self)
 		break;
 	case IP4_METHOD_SHARED:
 		method = NM_SETTING_IP4_CONFIG_METHOD_SHARED;
+		break;
+	case IP4_METHOD_DISABLED:
+		method = NM_SETTING_IP4_CONFIG_METHOD_DISABLED;
 		break;
 	case IP4_METHOD_AUTO_ADDRESSES:
 		ignore_auto_dns = TRUE;
