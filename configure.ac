@@ -1,12 +1,19 @@
-AC_PREREQ(2.52)
-
-AC_INIT(nm-applet, 0.8, dcbw@redhat.com, network-manager-applet)
-AM_INIT_AUTOMAKE([subdir-objects no-dist-gzip dist-bzip2])
-AM_MAINTAINER_MODE
-
-AC_CONFIG_MACRO_DIR([m4])
+AC_PREREQ([2.63])
+AC_INIT([nm-applet],
+        [0.8],
+        [https://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager],
+        [network-manager-applet])
 
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
+
+AM_INIT_AUTOMAKE([1.10 subdir-objects no-dist-gzip dist-bzip2])
+AM_MAINTAINER_MODE([enable])
+
+# Support silent build rules, requires at least automake-1.11. Disable
+# by either passing --disable-silent-rules to configure or passing V=1
+# to make
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
 
 dnl
 dnl Require programs
@@ -14,30 +21,14 @@ dnl
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
-AC_PROG_LIBTOOL
 
-AC_PATH_PROG(GCONFTOOL, gconftool-2)
-AM_GCONF_SOURCE_2
-
-dnl ensure that when the Automake generated makefile calls aclocal,
-dnl it honours the $ACLOCAL_FLAGS environment variable
-ACLOCAL_AMFLAGS="\${ACLOCAL_FLAGS}"
-if test -n "$ac_macro_dir"; then
-    ACLOCAL_AMFLAGS="-I $ac_macro_dir $ACLOCAL_AMFLAGS"
-fi
-AC_SUBST([ACLOCAL_AMFLAGS])
-
-if test $USE_MAINTAINER_MODE = yes; then
-	DISABLE_DEPRECATED="-DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DPANGO_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DGCONF_DISABLE_DEPRECATED -DLIBGLADE_DISABLE_DEPRECATED"
-else
-	DISABLE_DEPRECATED=""
-fi
-AC_SUBST(DISABLE_DEPRECATED)
+dnl Initialize libtool
+LT_PREREQ([2.2.6])
+LT_INIT
 
 dnl
 dnl Required headers
 dnl
-AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h paths.h sys/ioctl.h sys/time.h syslog.h unistd.h)
 
 dnl
@@ -57,10 +48,11 @@ AC_CHECK_FUNCS(select socket uname)
 dnl
 dnl translation support
 dnl
+IT_PROG_INTLTOOL([0.40.0])
+
 GETTEXT_PACKAGE=nm-applet
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
-IT_PROG_INTLTOOL([0.35.0])
 AM_GLIB_GNU_GETTEXT
 
 dnl
@@ -109,10 +101,19 @@ PKG_CHECK_MODULES(GNOME_BLUETOOTH,
 		  have_gbt=yes, have_gbt=no)
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
-GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
-AC_SUBST(GLIB_GENMARSHAL)
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
+dnl GConf stuff
+AC_PATH_PROG(GCONFTOOL, gconftool-2)
+AM_GCONF_SOURCE_2
+
+dnl
+dnl Compiler flags
+dnl
 NM_COMPILER_WARNINGS
+# Use --enable-maintainer-mode to disabled deprecated symbols
+GNOME_MAINTAINER_MODE_DEFINES
+
 
 AC_CONFIG_FILES([
 Makefile
