@@ -25,7 +25,6 @@
 #endif
 
 #include <string.h>
-#include "wireless-helper.h"
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <errno.h>
@@ -44,6 +43,22 @@
 #include "gconf-helpers.h"
 
 #include "nm-connection.h"
+
+/* Old wireless.h defs */
+
+/* IW_AUTH_80211_AUTH_ALG values (bit field) */
+#define IW_AUTH_ALG_OPEN_SYSTEM 0x00000001
+#define IW_AUTH_ALG_SHARED_KEY  0x00000002
+
+/* IW_AUTH_WPA_VERSION values (bit field) */
+#define IW_AUTH_WPA_VERSION_WPA  0x00000002
+#define IW_AUTH_WPA_VERSION_WPA2 0x00000004
+
+/* IW_AUTH_PAIRWISE_CIPHER and IW_AUTH_GROUP_CIPHER values (bit field) */
+#define IW_AUTH_CIPHER_WEP40  0x00000002
+#define IW_AUTH_CIPHER_TKIP   0x00000004
+#define IW_AUTH_CIPHER_CCMP   0x00000008
+#define IW_AUTH_CIPHER_WEP104 0x00000010
 
 /* NM 0.6 compat defines */
 
