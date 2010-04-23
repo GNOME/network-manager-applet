@@ -12,6 +12,7 @@ libgconf_helpers_la_SOURCES =	\
 
 libgconf_helpers_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \
+	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src \
 	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils
