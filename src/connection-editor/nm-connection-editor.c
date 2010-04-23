@@ -30,13 +30,6 @@
 #include <unistd.h>
 
 #include <gtk/gtk.h>
-#include <gtk/gtkcombobox.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkspinbutton.h>
-#include <gtk/gtktogglebutton.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtklabel.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 
