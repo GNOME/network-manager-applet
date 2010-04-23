@@ -27,7 +27,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netinet/ether.h>
-#include "wireless-helper.h"
 #include <ctype.h>
 
 #include <glib/gi18n.h>

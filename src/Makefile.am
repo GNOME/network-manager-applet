@@ -22,7 +22,6 @@ nm_applet_CPPFLAGS = \
 
 nm_applet_SOURCES =			\
 	main.c				\
-	wireless-helper.h \
 	applet.c				\
 	applet.h				\
 	applet-dbus-manager.c	\

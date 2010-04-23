@@ -36,7 +36,6 @@
 #include <strings.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include "wireless-helper.h"
 #include <unistd.h>
 #include <sys/socket.h>
 
