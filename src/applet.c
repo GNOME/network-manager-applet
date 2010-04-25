@@ -1689,9 +1689,14 @@ applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 		const GPtrArray *devices;
 
 		active = g_ptr_array_index (active_connections, i);
+		if (!active)
+			continue;
+
 		devices = nm_active_connection_get_devices (active);
 		service_name = nm_active_connection_get_service_name (active);
 		connection_path = nm_active_connection_get_connection (active);
+		if (!devices || !service_name || !connection_path)
+			continue;
 
 		if (strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS) != 0)
 			continue;
