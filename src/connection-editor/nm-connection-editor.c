@@ -19,7 +19,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2008 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  * (C) Copyright 2007 - 2008 Novell, Inc.
  */
 
@@ -849,5 +849,24 @@ nm_connection_editor_get_window (NMConnectionEditor *editor)
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), NULL);
 
 	return GTK_WINDOW (editor->window);
+}
+
+gboolean
+nm_connection_editor_get_busy (NMConnectionEditor *editor)
+{
+	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
+
+	return editor->busy;
+}
+
+void
+nm_connection_editor_set_busy (NMConnectionEditor *editor, gboolean busy)
+{
+	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
+
+	if (busy != editor->busy) {
+		editor->busy = busy;
+		gtk_widget_set_sensitive (editor->window, !busy);
+	}
 }
 

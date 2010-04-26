@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -312,6 +312,7 @@ typedef void (*DeleteResultFunc) (NMConnectionList *list,
 typedef struct {
 	NMConnectionList *list;
 	NMSettingsConnectionInterface *original;
+	NMConnectionEditor *editor;
 	DeleteResultFunc callback;
 	gpointer callback_data;
 } DeleteInfo;
@@ -324,6 +325,9 @@ delete_cb (NMSettingsConnectionInterface *connection_iface,
 	DeleteInfo *info = user_data;
 	NMConnection *connection = NM_CONNECTION (connection_iface);
 	NMConnectionScope scope;
+
+	if (info->editor)
+		nm_connection_editor_set_busy (info->editor, FALSE);
 
 	scope = nm_connection_get_scope (connection);
 	if (!error && (scope == NM_CONNECTION_SCOPE_USER)) {
@@ -368,11 +372,18 @@ delete_connection (NMConnectionList *list,
                    gpointer user_data)
 {
 	DeleteInfo *info;
+	NMConnectionEditor *editor;
+
+	editor = g_hash_table_lookup (list->editors, connection);
 
 	info = g_malloc0 (sizeof (DeleteInfo));
 	info->list = list;
 	info->callback = callback;
 	info->callback_data = user_data;
+	info->editor = editor;
+
+	if (editor)
+		nm_connection_editor_set_busy (editor, TRUE);
 
 	nm_settings_connection_interface_delete (connection, delete_cb, info);
 }
@@ -398,6 +409,8 @@ add_cb (NMSettingsInterface *settings,
 {
 	AddInfo *info = user_data;
 	NMConnection *connection;
+
+	nm_connection_editor_set_busy (info->editor, FALSE);
 
 	if (!error) {
 		/* Let the VPN plugin save its secrets */
@@ -437,6 +450,7 @@ add_connection (NMConnectionList *self,
 	else
 		g_assert_not_reached ();
 
+	nm_connection_editor_set_busy (editor, TRUE);
 	nm_settings_interface_add_connection (settings, connection, add_cb, info);
 }
 
@@ -452,6 +466,7 @@ typedef struct {
 	NMConnectionList *list;
 	NMConnectionEditor *editor;
 	NMSettingsConnectionInterface *connection;
+	NMConnectionScope orig_scope;
 	UpdateResultFunc callback;
 	gpointer callback_data;
 } UpdateInfo;
@@ -480,6 +495,8 @@ update_add_result_cb (NMConnectionList *list, GError *error, gpointer user_data)
 	UpdateInfo *info = user_data;
 
 	if (error) {
+		/* set the old scope back on the connection */
+		nm_connection_set_scope (NM_CONNECTION (info->connection), info->orig_scope);
 		update_complete (info, error);
 		return;
 	}
@@ -494,6 +511,8 @@ update_cb (NMSettingsConnectionInterface *connection,
            gpointer user_data)
 {
 	UpdateInfo *info = user_data;
+
+	nm_connection_editor_set_busy (info->editor, FALSE);
 
 	if (!error) {
 		/* Save user-connection vpn secrets */
@@ -524,6 +543,7 @@ update_connection (NMConnectionList *list,
 	info->list = list;
 	info->editor = editor;
 	info->connection = g_object_ref (connection);
+	info->orig_scope = orig_scope;
 	info->callback = callback;
 	info->callback_data = user_data;
 
@@ -551,6 +571,7 @@ update_connection (NMConnectionList *list,
 		/* Update() actually saves the connection settings to backing storage,
 		 * either GConf or over D-Bus.
 		 */
+		nm_connection_editor_set_busy (editor, TRUE);
 		nm_settings_connection_interface_update (connection, update_cb, info);
 	} else {
 		/* The hard part: Connection scope changed:
@@ -584,6 +605,12 @@ add_response_cb (NMConnectionEditor *editor, gint response, GError *error, gpoin
 {
 	ActionInfo *info = (ActionInfo *) user_data;
 	GError *add_error = NULL;
+
+	/* if the dialog is busy waiting for authorization or something,
+	 * don't destroy it until authorization returns.
+	 */
+	if (nm_connection_editor_get_busy (editor))
+		return;
 
 	if (response == GTK_RESPONSE_OK) {
 		/* Verify and commit user changes */
@@ -721,6 +748,12 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 	NMConnection *connection;
 	GError *edit_error = NULL;
 
+	/* if the dialog is busy waiting for authorization or something,
+	 * don't destroy it until authorization returns.
+	 */
+	if (nm_connection_editor_get_busy (editor))
+		return;
+
 	connection = nm_connection_editor_get_connection (editor);
 	g_assert (connection);
 
@@ -817,6 +850,7 @@ delete_clicked (GtkButton *button, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
 	NMSettingsConnectionInterface *connection;
+	NMConnectionEditor *editor;
 	NMSettingConnection *s_con;
 	GtkWidget *dialog;
 	const char *id;
@@ -824,6 +858,13 @@ delete_clicked (GtkButton *button, gpointer user_data)
 
 	connection = get_active_connection (info->treeview);
 	g_return_if_fail (connection != NULL);
+
+	editor = g_hash_table_lookup (info->list->editors, connection);
+	if (editor && nm_connection_editor_get_busy (editor)) {
+		/* Editor already has an operation in progress, raise it */
+		nm_connection_editor_present (editor);
+		return;
+	}
 
 	s_con = (NMSettingConnection *) nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION);
 	g_assert (s_con);
