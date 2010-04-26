@@ -52,6 +52,12 @@ G_DEFINE_TYPE (NMAWirelessDialog, nma_wireless_dialog, GTK_TYPE_DIALOG)
                                             NMAWirelessDialogPrivate))
 
 typedef struct {
+	NMAWirelessDialog *self;
+	NMConnection *connection;
+	gboolean canceled;
+} GetSecretsInfo;
+
+typedef struct {
 	NMApplet *applet;
 
 	char *glade_file;
@@ -73,6 +79,8 @@ typedef struct {
 	gboolean auth_only;
 
 	guint revalidate_id;
+
+	GetSecretsInfo *secrets_info;
 
 	gboolean disposed;
 } NMAWirelessDialogPrivate;
@@ -293,6 +301,13 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	if (is_system_connection (self))
 		valid = TRUE;
 
+	/* But if there's an in-progress secrets call (which might require authorization)
+	 * then we don't want to enable the OK button because we don't have all the
+	 * connection details yet.
+	 */
+	if (priv->secrets_info)
+		valid = FALSE;
+
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, valid);
 }
 
@@ -331,6 +346,13 @@ out:
 	/* Assume system connections are valid so that we don't have to get secrets for them */
 	if (is_system_connection (self))
 		valid = TRUE;
+
+	/* But if there's an in-progress secrets call (which might require authorization)
+	 * then we don't want to enable the OK button because we don't have all the
+	 * connection details yet.
+	 */
+	if (priv->secrets_info)
+		valid = FALSE;
 
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, valid);
 }
@@ -741,11 +763,6 @@ add_security_item (NMAWirelessDialog *self,
 	wireless_security_unref (sec);
 }
 
-typedef struct {
-	NMAWirelessDialog *self;
-	NMConnection *connection;
-} GetSecretsInfo;
-
 static void
 get_secrets_cb (NMSettingsConnectionInterface *connection,
                 GHashTable *secrets,
@@ -753,11 +770,25 @@ get_secrets_cb (NMSettingsConnectionInterface *connection,
                 gpointer user_data)
 {
 	GetSecretsInfo *info = user_data;
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (info->self);
+	NMAWirelessDialogPrivate *priv;
 	GHashTableIter hash_iter;
 	gpointer key, value;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
+
+	if (info->canceled)
+		goto out;
+
+	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (info->self);
+	if (priv->secrets_info == info) {
+		priv->secrets_info = NULL;
+
+		/* Buttons should only be re-enabled if this secrets response is the
+		 * in-progress one.
+		 */
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (info->self), GTK_RESPONSE_CANCEL, TRUE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (info->self), GTK_RESPONSE_OK, TRUE);
+	}
 
 	if (error) {
 		g_warning ("%s: error getting connection secrets: (%d) %s",
@@ -988,9 +1019,16 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 		if (setting_name) {
 			GetSecretsInfo *info;
 
+			/* Desensitize the dialog's buttons while we wait for the secrets
+			 * operation to complete.
+			 */
+			gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, FALSE);
+			gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_CANCEL, FALSE);
+
 			info = g_malloc0 (sizeof (GetSecretsInfo));
 			info->self = self;
 			info->connection = g_object_ref (priv->connection);
+			priv->secrets_info = info;
 
 			nm_settings_connection_interface_get_secrets (NM_SETTINGS_CONNECTION_INTERFACE (priv->connection),
 			                                              setting_name,
@@ -1376,6 +1414,9 @@ dispose (GObject *object)
 	}
 
 	priv->disposed = TRUE;
+
+	if (priv->secrets_info)
+		priv->secrets_info->canceled = TRUE;
 
 	g_free (priv->glade_file);
 
