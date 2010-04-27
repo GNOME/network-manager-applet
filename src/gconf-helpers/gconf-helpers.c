@@ -61,7 +61,7 @@
 #define DBUS_TYPE_G_MAP_OF_MAP_OF_VARIANT   (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT))
 #define DBUS_TYPE_G_MAP_OF_STRING           (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_STRING))
 #define DBUS_TYPE_G_LIST_OF_STRING          (dbus_g_type_get_collection ("GSList", G_TYPE_STRING))
-#define DBUS_TYPE_G_IP6_ADDRESS             (dbus_g_type_get_struct ("GValueArray", DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, G_TYPE_INVALID))
+#define DBUS_TYPE_G_IP6_ADDRESS             (dbus_g_type_get_struct ("GValueArray", DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_INVALID))
 #define DBUS_TYPE_G_ARRAY_OF_IP6_ADDRESS    (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ADDRESS))
 #define DBUS_TYPE_G_IP6_ROUTE               (dbus_g_type_get_struct ("GValueArray", DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, G_TYPE_INVALID))
 #define DBUS_TYPE_G_ARRAY_OF_IP6_ROUTE      (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ROUTE))
@@ -725,9 +725,9 @@ nm_gconf_get_ip6addr_array_helper (GConfClient *client,
 	array = g_ptr_array_sized_new (1);
 	for (iter = values; iter; iter = g_slist_next (iter)) {
 		const char *addr_prefix = gconf_value_get_string ((GConfValue *) iter->data);
-		char *addr, *p;
+		char *addr, *gw = NULL, *p;
 		guint prefix;
-		struct in6_addr rawaddr;
+		struct in6_addr rawaddr, rawgw;
 		GValueArray *valarr;
 		GValue element = {0, };
 		GByteArray *ba;
@@ -743,6 +743,11 @@ nm_gconf_get_ip6addr_array_helper (GConfClient *client,
 		*p++ = '\0';
 		prefix = strtoul (p, NULL, 10);
 
+		/* Gateway */
+		p = strchr (p, ',');
+		if (p)
+			gw = p + 1;
+
 		if (inet_pton (AF_INET6, addr, &rawaddr) <= 0 && prefix > 128) {
 			g_warning ("%s: %s contained bad address: %s",
 					   __func__, gc_key, addr_prefix);
@@ -751,7 +756,16 @@ nm_gconf_get_ip6addr_array_helper (GConfClient *client,
 		}
 		g_free (addr);
 
-		valarr = g_value_array_new (2);
+		memset (&rawgw, 0, sizeof (rawgw));
+		if (gw) {
+			if (inet_pton (AF_INET6, gw, &rawgw) <= 0) {
+				g_warning ("%s: %s contained bad gateway address: %s",
+						   __func__, gc_key, gw);
+				continue;
+			}
+		}
+
+		valarr = g_value_array_new (3);
 
 		g_value_init (&element, DBUS_TYPE_G_UCHAR_ARRAY);
 		ba = g_byte_array_new ();
@@ -762,6 +776,13 @@ nm_gconf_get_ip6addr_array_helper (GConfClient *client,
 
 		g_value_init (&element, G_TYPE_UINT);
 		g_value_set_uint (&element, prefix);
+		g_value_array_append (valarr, &element);
+		g_value_unset (&element);
+
+		g_value_init (&element, DBUS_TYPE_G_UCHAR_ARRAY);
+		ba = g_byte_array_new ();
+		g_byte_array_append (ba, (guint8 *) &rawgw, 16);
+		g_value_take_boxed (&element, ba);
 		g_value_array_append (valarr, &element);
 		g_value_unset (&element);
 
@@ -1379,11 +1400,22 @@ nm_gconf_set_ip6addr_array_helper (GConfClient *client,
 		GByteArray *ba;
 		guint prefix;
 		char addr[INET6_ADDRSTRLEN];
+		char gw[INET6_ADDRSTRLEN];
 
-		if (   (elements->n_values != 2)
-		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 0)) != DBUS_TYPE_G_UCHAR_ARRAY)
+		if (elements->n_values < 1 || elements->n_values > 3) {
+			g_warning ("%s: invalid IPv6 address!", __func__);
+			goto out;
+		}
+
+		if (   (G_VALUE_TYPE (g_value_array_get_nth (elements, 0)) != DBUS_TYPE_G_UCHAR_ARRAY)
 		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 1)) != G_TYPE_UINT)) {
 			g_warning ("%s: invalid IPv6 address!", __func__);
+			goto out;
+		}
+
+		if (   (elements->n_values == 3)
+		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 2)) != DBUS_TYPE_G_UCHAR_ARRAY)) {
+			g_warning ("%s: invalid IPv6 gateway!", __func__);
 			goto out;
 		}
 
@@ -1401,7 +1433,17 @@ nm_gconf_set_ip6addr_array_helper (GConfClient *client,
 			goto out;
 		}
 
-		list = g_slist_append (list, g_strdup_printf ("%s/%u", addr, prefix));
+		if (elements->n_values == 2) {
+			list = g_slist_append (list, g_strdup_printf ("%s/%u", addr, prefix));
+		} else {
+			tmp = g_value_array_get_nth (elements, 2);
+			ba = g_value_get_boxed (tmp);
+			if (!inet_ntop (AF_INET6, ba->data, gw, sizeof (gw))) {
+				g_warning ("%s: invalid IPv6 gateway!", __func__);
+				goto out;
+			}
+			list = g_slist_append (list, g_strdup_printf ("%s/%u,%s", addr, prefix, gw));
+		}
 	}
 
 	gconf_client_set_list (client, gc_key, GCONF_VALUE_STRING, list, NULL);
