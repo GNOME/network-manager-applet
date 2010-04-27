@@ -30,6 +30,7 @@ libwireless_security_la_SOURCES = \
 
 libwireless_security_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \
+	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/gconf-helpers
 

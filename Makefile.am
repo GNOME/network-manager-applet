@@ -51,8 +51,6 @@ CLEANFILES = \
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 
-ACLOCAL_AMFLAGS = -I m4
-
 install-data-local:
 if GCONF_SCHEMAS_INSTALL
 	if test -z "$(DESTDIR)" ; then \

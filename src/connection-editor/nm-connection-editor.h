@@ -1,8 +1,6 @@
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Connection editor -- Connection editor for NetworkManager
  *
- * Rodrigo Moya <rodrigo@gnome-db.org>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -17,7 +15,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2004-2005 Red Hat, Inc.
+ * (C) Copyright 2007 Rodrigo Moya <rodrigo@gnome-db.org>
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef NM_CONNECTION_EDITOR_H
@@ -58,6 +57,8 @@ typedef struct {
 	GtkWidget *window;
 	GtkWidget *ok_button;
 	GtkWidget *cancel_button;
+
+	gboolean busy;
 } NMConnectionEditor;
 
 typedef struct {
@@ -78,5 +79,7 @@ void                nm_connection_editor_save_vpn_secrets (NMConnectionEditor *e
 NMConnection *      nm_connection_editor_get_connection (NMConnectionEditor *editor);
 gboolean            nm_connection_editor_update_connection (NMConnectionEditor *editor, GError **error);
 GtkWindow *         nm_connection_editor_get_window (NMConnectionEditor *editor);
+gboolean            nm_connection_editor_get_busy (NMConnectionEditor *editor);
+void                nm_connection_editor_set_busy (NMConnectionEditor *editor, gboolean busy);
 
 #endif

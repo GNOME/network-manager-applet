@@ -9,6 +9,7 @@ INCLUDES = \
 	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils \
 	$(GNOME_BLUETOOTH_CFLAGS) \
+	$(DISABLE_DEPRECATED) \
 	$(WARN_CFLAGS)
 
 if HAVE_GBT
