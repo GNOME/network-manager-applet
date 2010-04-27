@@ -82,6 +82,9 @@ typedef struct {
 
 	GtkWindowGroup *window_group;
 	gboolean window_added;
+
+	/* Cached tree view entry for editing-canceled */
+	char *last_edited;
 } CEPageIP4Private;
 
 #define METHOD_COL_NAME 0
@@ -475,6 +478,30 @@ list_selection_changed (GtkTreeSelection *selection, gpointer user_data)
 }
 
 static void
+cell_editing_canceled (GtkCellRenderer *renderer, gpointer user_data)
+{
+	CEPageIP4 *self = CE_PAGE_IP4 (user_data);
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
+	GtkTreeModel *model = NULL;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	guint32 column;
+
+	if (priv->last_edited) {
+		selection = gtk_tree_view_get_selection (priv->addr_list);
+		if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+			column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (renderer), "column"));
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter, column, priv->last_edited, -1);
+		}
+
+		g_free (priv->last_edited);
+		priv->last_edited = NULL;
+
+		ce_page_changed (CE_PAGE (self));
+	}
+}
+
+static void
 cell_edited (GtkCellRendererText *cell,
              const gchar *path_string,
              const gchar *new_text,
@@ -487,6 +514,9 @@ cell_edited (GtkCellRendererText *cell,
 	GtkTreeIter iter;
 	guint32 column;
 	GtkTreeViewColumn *next_col;
+
+	g_free (priv->last_edited);
+	priv->last_edited = NULL;
 
 	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (cell), "column"));
 	gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, path);
@@ -507,11 +537,13 @@ ip_address_filter_cb (GtkEntry *   entry,
                       const gchar *text,
                       gint         length,
                       gint *       position,
-                      gpointer     data)
+                      gpointer     user_data)
 {
+	CEPageIP4 *self = CE_PAGE_IP4 (user_data);
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	GtkEditable *editable = GTK_EDITABLE (entry);
 	int i, count = 0;
-	gchar *result = g_new (gchar, length);
+	gchar *result = g_new0 (gchar, length);
 
 	for (i = 0; i < length; i++) {
 		if ((text[i] >= '0' && text[i] <= '9') || (text[i] == '.'))
@@ -521,11 +553,13 @@ ip_address_filter_cb (GtkEntry *   entry,
 	if (count > 0) {
 		g_signal_handlers_block_by_func (G_OBJECT (editable),
 		                                 G_CALLBACK (ip_address_filter_cb),
-		                                 data);
+		                                 user_data);
 		gtk_editable_insert_text (editable, result, count, position);
+		g_free (priv->last_edited);
+		priv->last_edited = g_strdup (gtk_editable_get_chars (editable, 0, -1));
 		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
 		                                   G_CALLBACK (ip_address_filter_cb),
-		                                   data);
+		                                   user_data);
 	}
 
 	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
@@ -536,17 +570,23 @@ static void
 cell_editing_started (GtkCellRenderer *cell,
                       GtkCellEditable *editable,
                       const gchar     *path,
-                      gpointer         data)
+                      gpointer         user_data)
 {
+	CEPageIP4 *self = CE_PAGE_IP4 (user_data);
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
+
 	if (!GTK_IS_ENTRY (editable)) {
 		g_warning ("%s: Unexpected cell editable type.", __func__);
 		return;
 	}
 
+	g_free (priv->last_edited);
+	priv->last_edited = NULL;
+
 	/* Set up the entry filter */
 	g_signal_connect (G_OBJECT (editable), "insert-text",
 	                  (GCallback) ip_address_filter_cb,
-	                  data);
+	                  user_data);
 }
 
 static void
@@ -632,7 +672,8 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_ADDRESS));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), self);
+	g_signal_connect (renderer, "editing-canceled", G_CALLBACK (cell_editing_canceled), self);
 	priv->addr_cells[COL_ADDRESS] = GTK_CELL_RENDERER (renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
@@ -648,7 +689,8 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_PREFIX));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), self);
+	g_signal_connect (renderer, "editing-canceled", G_CALLBACK (cell_editing_canceled), self);
 	priv->addr_cells[COL_PREFIX] = GTK_CELL_RENDERER (renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
@@ -664,7 +706,8 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 	g_object_set (renderer, "editable", TRUE, NULL);
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_GATEWAY));
-	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), store);
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), self);
+	g_signal_connect (renderer, "editing-canceled", G_CALLBACK (cell_editing_canceled), self);
 	priv->addr_cells[COL_GATEWAY] = GTK_CELL_RENDERER (renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
