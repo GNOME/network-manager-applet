@@ -522,6 +522,27 @@ cell_edited (GtkCellRendererText *cell,
 	gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, path);
 	gtk_list_store_set (store, &iter, column, new_text, -1);
 
+	/* Try to autodetect the prefix from the given address if we can */
+	if (column == COL_ADDRESS && new_text && strlen (new_text)) {
+		char *prefix = NULL;
+		const char *guess_prefix = NULL;
+
+		gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (store), &iter, path_string);
+		gtk_tree_model_get (GTK_TREE_MODEL (store), &iter, COL_PREFIX, &prefix, -1);
+		if (!prefix || !strlen (prefix)) {
+			if (!strncmp ("10.", new_text, 3))
+				guess_prefix = "8";
+			else if (!strncmp ("172.16.", new_text, 7))
+				guess_prefix = "16";
+			else if (!strncmp ("192.168.", new_text, 8))
+				guess_prefix = "24";
+
+			if (guess_prefix)
+				gtk_list_store_set (store, &iter, COL_PREFIX, guess_prefix, -1);
+		}
+		g_free (prefix);
+	}
+
 	/* Move focus to the next column */
 	column = (column >= COL_LAST) ? 0 : column + 1;
 	next_col = gtk_tree_view_get_column (priv->addr_list, column);
