@@ -68,7 +68,15 @@ read_country_codes (void)
                 char **pieces;
 
                 pieces = g_strsplit (buffer->str, "\t", 2);
-                g_hash_table_insert (table, pieces[0], g_strchomp (pieces[1]));
+
+                /* Hack for rh#556292; iso3166.tab is just wrong */
+                pieces[1] = pieces[1] ? g_strchomp (pieces[1]) : NULL;
+                if (pieces[1] && !strcmp (pieces[1], "Britain (UK)")) {
+                    g_free (pieces[1]);
+                    pieces[1] = g_strdup (_("United Kingdom"));
+                }
+
+                g_hash_table_insert (table, pieces[0], pieces[1]);
                 g_free (pieces);
             }
 
