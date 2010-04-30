@@ -17,9 +17,10 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
+#include <config.h>
 #include <string.h>
 #include <netinet/ether.h>
 #include <glib.h>
@@ -173,12 +174,17 @@ utils_get_device_description (NMDevice *device)
 
 	str = g_string_new_len (NULL, strlen (vendor) + strlen (product) + 1);
 
-	g_string_append (str, vendor);
-	g_free (vendor);
+	/* Another quick hack; if all of the fixed up vendor string
+	 * is found in product, ignore the vendor.
+	 */
+	if (!strcasestr (product, vendor)) {
+		g_string_append (str, vendor);
+		g_string_append_c (str, ' ');
+	}
 
-	g_string_append_c (str, ' ');
 	g_string_append (str, product);
 	g_free (product);
+	g_free (vendor);
 
 	description = str->str;
 	g_string_free (str, FALSE);
