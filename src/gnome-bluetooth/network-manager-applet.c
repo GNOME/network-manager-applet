@@ -507,10 +507,10 @@ modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	/* check whether this is the device we care about */
 	value = g_hash_table_lookup (properties, "Device");
 	if (value && G_VALUE_HOLDS_STRING (value) && g_value_get_string (value)) {
-		char *basename = g_path_get_basename (info->rfcomm_iface);
+		char *iface_basename = g_path_get_basename (info->rfcomm_iface);
 		const char *modem_iface = g_value_get_string (value);
 
-		if (!strcmp (basename, modem_iface)) {
+		if (!strcmp (iface_basename, modem_iface)) {
 			/* yay, found it! */
 
 			value = g_hash_table_lookup (properties, "Type");
@@ -529,10 +529,7 @@ modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 			}
 		} else {
 			g_message ("%s: (%s) (%s) not the modem we're looking for (%s)",
-			           __func__,
-			           path,
-			           modem_iface,
-			           basename);
+			           __func__, path, modem_iface, iface_basename);
 		}
 
 		g_free (basename);

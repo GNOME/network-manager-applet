@@ -142,15 +142,15 @@ out:
 		gtk_window_present (GTK_WINDOW (dialog));
 		g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
 	} else {
-		char *basename;
+		char *prog_basename;
 
 		/* Remove any path component, then reconstruct path to the auth
 		 * dialog in LIBEXECDIR.
 		 */
-		basename = g_path_get_basename (prog);
+		prog_basename = g_path_get_basename (prog);
 		g_free (prog);
-		prog = g_strdup_printf ("%s/%s", LIBEXECDIR, basename);
-		g_free (basename);
+		prog = g_strdup_printf ("%s/%s", LIBEXECDIR, prog_basename);
+		g_free (prog_basename);
 	}
 
 	return prog;
