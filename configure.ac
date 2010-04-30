@@ -16,6 +16,9 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
+dnl Define _GNU_SOURCE for various things like strcasestr()
+AC_GNU_SOURCE
+
 AC_PATH_PROG(GCONFTOOL, gconftool-2)
 AM_GCONF_SOURCE_2
 
