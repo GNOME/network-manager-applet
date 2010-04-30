@@ -1414,7 +1414,7 @@ nm_gconf_set_ip6addr_array_helper (GConfClient *client,
 		}
 
 		if (   (elements->n_values == 3)
-		    || (G_VALUE_TYPE (g_value_array_get_nth (elements, 2)) != DBUS_TYPE_G_UCHAR_ARRAY)) {
+		    && (G_VALUE_TYPE (g_value_array_get_nth (elements, 2)) != DBUS_TYPE_G_UCHAR_ARRAY)) {
 			g_warning ("%s: invalid IPv6 gateway!", __func__);
 			goto out;
 		}
