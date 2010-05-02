@@ -1401,6 +1401,8 @@ nm_gconf_set_ip6addr_array_helper (GConfClient *client,
 		guint prefix;
 		char addr[INET6_ADDRSTRLEN];
 		char gw[INET6_ADDRSTRLEN];
+		gboolean have_gw = FALSE;
+		char *gconf_str;
 
 		if (elements->n_values < 1 || elements->n_values > 3) {
 			g_warning ("%s: invalid IPv6 address!", __func__);
@@ -1433,17 +1435,24 @@ nm_gconf_set_ip6addr_array_helper (GConfClient *client,
 			goto out;
 		}
 
-		if (elements->n_values == 2) {
-			list = g_slist_append (list, g_strdup_printf ("%s/%u", addr, prefix));
-		} else {
+		if (elements->n_values == 3) {
 			tmp = g_value_array_get_nth (elements, 2);
 			ba = g_value_get_boxed (tmp);
-			if (!inet_ntop (AF_INET6, ba->data, gw, sizeof (gw))) {
-				g_warning ("%s: invalid IPv6 gateway!", __func__);
-				goto out;
+			if (ba && !IN6_IS_ADDR_UNSPECIFIED (ba->data)) {
+				if (!inet_ntop (AF_INET6, ba->data, gw, sizeof (gw))) {
+					g_warning ("%s: invalid IPv6 gateway!", __func__);
+					goto out;
+				}
+				have_gw = TRUE;
 			}
-			list = g_slist_append (list, g_strdup_printf ("%s/%u,%s", addr, prefix, gw));
 		}
+
+		gconf_str = g_strdup_printf ("%s/%u%s%s",
+		                             addr,
+		                             prefix,
+		                             have_gw ? "," : "",
+		                             have_gw ? gw : "");
+		list = g_slist_append (list, gconf_str);
 	}
 
 	gconf_client_set_list (client, gc_key, GCONF_VALUE_STRING, list, NULL);
