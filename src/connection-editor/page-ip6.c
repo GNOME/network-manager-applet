@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -76,7 +76,11 @@ typedef struct {
 	GtkWidget *dns_searches_label;
 	GtkEntry *dns_searches;
 
+	/* Routes */
 	GtkButton *routes_button;
+
+	/* IPv6 required */
+	GtkCheckButton *ip6_required;
 
 	GtkWindowGroup *window_group;
 	gboolean window_added;
@@ -215,6 +219,14 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 
 	priv->dns_searches_label = glade_xml_get_widget (xml, "ip6_dns_searches_label");
 	priv->dns_searches = GTK_ENTRY (glade_xml_get_widget (xml, "ip6_dns_searches_entry"));
+
+	priv->ip6_required = GTK_CHECK_BUTTON (glade_xml_get_widget (xml, "ip6_required_checkbutton"));
+	/* Hide IP6-require button if it'll never be used for a particular method */
+	if (   priv->connection_type == NM_TYPE_SETTING_VPN
+	    || priv->connection_type == NM_TYPE_SETTING_GSM
+	    || priv->connection_type == NM_TYPE_SETTING_CDMA
+	    || priv->connection_type == NM_TYPE_SETTING_PPPOE)
+		gtk_widget_hide (GTK_WIDGET (priv->ip6_required));
 
 	priv->routes_button = GTK_BUTTON (glade_xml_get_widget (xml, "ip6_routes_button"));
 }
@@ -400,6 +412,10 @@ populate_ui (CEPageIP6 *self)
 	}
 	gtk_entry_set_text (priv->dns_searches, string->str);
 	g_string_free (string, TRUE);
+
+	/* IPv6 required */
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->ip6_required),
+	                              !nm_setting_ip6_config_get_may_fail (setting));
 }
 
 static void
@@ -746,6 +762,8 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 	method_changed (priv->method, self);
 	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
 
+	g_signal_connect_swapped (priv->ip6_required, "toggled", G_CALLBACK (ce_page_changed), self);
+
 	g_signal_connect (priv->routes_button, "clicked", G_CALLBACK (routes_button_clicked_cb), self);
 }
 
@@ -815,6 +833,7 @@ ui_to_setting (CEPageIP6 *self)
 	const char *text;
 	gboolean ignore_auto_dns = FALSE;
 	char **items = NULL, **iter;
+	gboolean may_fail;
 
 	/* Method */
 	if (gtk_combo_box_get_active_iter (priv->method, &tree_iter)) {
@@ -952,6 +971,11 @@ ui_to_setting (CEPageIP6 *self)
 		if (items)
 			g_strfreev (items);
 	}
+
+	may_fail = !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->ip6_required));
+	g_object_set (G_OBJECT (priv->setting),
+	              NM_SETTING_IP6_CONFIG_MAY_FAIL, may_fail,
+	              NULL);
 
 	valid = TRUE;
 

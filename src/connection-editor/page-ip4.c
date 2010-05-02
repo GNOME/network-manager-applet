@@ -80,7 +80,11 @@ typedef struct {
 	GtkWidget *dhcp_client_id_label;
 	GtkEntry *dhcp_client_id;
 
+	/* Routes */
 	GtkButton *routes_button;
+
+	/* IPv4 required */
+	GtkCheckButton *ip4_required;
 
 	GtkWindowGroup *window_group;
 	gboolean window_added;
@@ -211,6 +215,14 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 		gtk_widget_hide (GTK_WIDGET (priv->dhcp_client_id_label));
 		gtk_widget_hide (GTK_WIDGET (priv->dhcp_client_id));
 	}
+
+	priv->ip4_required = GTK_CHECK_BUTTON (glade_xml_get_widget (xml, "ip4_required_checkbutton"));
+	/* Hide IP4-require button if it'll never be used for a particular method */
+	if (   priv->connection_type == NM_TYPE_SETTING_VPN
+	    || priv->connection_type == NM_TYPE_SETTING_GSM
+	    || priv->connection_type == NM_TYPE_SETTING_CDMA
+	    || priv->connection_type == NM_TYPE_SETTING_PPPOE)
+		gtk_widget_hide (GTK_WIDGET (priv->ip4_required));
 
 	priv->routes_button = GTK_BUTTON (glade_xml_get_widget (xml, "ip4_routes_button"));
 }
@@ -410,6 +422,10 @@ populate_ui (CEPageIP4 *self)
 			                    nm_setting_ip4_config_get_dhcp_client_id (setting));
 		}
 	}
+
+	/* IPv4 required */
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->ip4_required),
+	                              !nm_setting_ip4_config_get_may_fail (setting));
 }
 
 static void
@@ -766,6 +782,8 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 
 	g_signal_connect_swapped (priv->dhcp_client_id, "changed", G_CALLBACK (ce_page_changed), self);
 
+	g_signal_connect_swapped (priv->ip4_required, "toggled", G_CALLBACK (ce_page_changed), self);
+
 	g_signal_connect (priv->routes_button, "clicked", G_CALLBACK (routes_button_clicked_cb), self);
 }
 
@@ -871,6 +889,7 @@ ui_to_setting (CEPageIP4 *self)
 	gboolean ignore_auto_dns = FALSE;
 	const char *dhcp_client_id = NULL;
 	char **items = NULL, **iter;
+	gboolean may_fail = FALSE;
 
 	/* Method */
 	if (gtk_combo_box_get_active_iter (priv->method, &tree_iter)) {
@@ -1009,6 +1028,8 @@ ui_to_setting (CEPageIP4 *self)
 			dhcp_client_id = NULL;
 	}
 
+	may_fail = !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->ip4_required));
+
 	/* Update setting */
 	g_object_set (priv->setting,
 				  NM_SETTING_IP4_CONFIG_METHOD, method,
@@ -1017,6 +1038,7 @@ ui_to_setting (CEPageIP4 *self)
 				  NM_SETTING_IP4_CONFIG_DNS_SEARCH, search_domains,
 				  NM_SETTING_IP4_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
 				  NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
+				  NM_SETTING_IP4_CONFIG_MAY_FAIL, may_fail,
 				  NULL);
 	valid = TRUE;
 

@@ -249,6 +249,20 @@ Shared to other computers</property>
                       </packing>
                     </child>
                     <child>
+                      <widget class="GtkCheckButton" id="ip4_required_checkbutton">
+                        <property name="label" translatable="yes">Require IPv4 addressing for this connection to complete</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="tooltip" translatable="yes">When connecting to IPv6-capable networks, allows the connection to complete if IPv4 configuration fails but IPv6 configuration succeeds.</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="GtkHButtonBox" id="hbuttonbox1">
                         <property name="visible">True</property>
                         <property name="layout_style">end</property>
@@ -273,7 +287,7 @@ Shared to other computers</property>
                                 <child>
                                   <widget class="GtkLabel" id="label1">
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">_Routes…</property>
+                                    <property name="label" translatable="yes">_Routes&#x2026;</property>
                                     <property name="use_underline">True</property>
                                   </widget>
                                   <packing>
@@ -296,7 +310,7 @@ Shared to other computers</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">2</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </widget>
