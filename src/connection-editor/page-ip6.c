@@ -50,7 +50,8 @@ G_DEFINE_TYPE (CEPageIP6, ce_page_ip6, CE_TYPE_PAGE)
 
 #define COL_ADDRESS 0
 #define COL_PREFIX 1
-#define COL_LAST COL_PREFIX
+#define COL_GATEWAY 2
+#define COL_LAST COL_GATEWAY
 
 typedef struct {
 	NMSettingIP6Config *setting;
@@ -335,7 +336,7 @@ populate_ui (CEPageIP6 *self)
 	gtk_tree_model_foreach (GTK_TREE_MODEL (priv->method_store), set_method, &info);
 
 	/* Addresses */
-	store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING);
+	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 	for (i = 0; i < nm_setting_ip6_config_get_num_addresses (setting); i++) {
 		NMIP6Address *addr = nm_setting_ip6_config_get_address (setting, i);
 		const struct in6_addr *tmp_addr;
@@ -349,11 +350,21 @@ populate_ui (CEPageIP6 *self)
 
 		gtk_list_store_append (store, &model_iter);
 
+		/* Address */
 		tmp_addr = nm_ip6_address_get_address (addr);
 		ignored = inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
 		gtk_list_store_set (store, &model_iter, COL_ADDRESS, buf, -1);
+
+		/* Prefix */
 		snprintf (buf, sizeof (buf), "%u", nm_ip6_address_get_prefix (addr));
 		gtk_list_store_set (store, &model_iter, COL_PREFIX, buf, -1);
+
+		/* Gateway */
+		tmp_addr = nm_ip6_address_get_gateway (addr);
+		if (tmp_addr && !IN6_IS_ADDR_UNSPECIFIED (tmp_addr)) {
+			ignored = inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
+			gtk_list_store_set (store, &model_iter, COL_GATEWAY, buf, -1);
+		}
 	}
 
 	gtk_tree_view_set_model (priv->addr_list, GTK_TREE_MODEL (store));
@@ -704,6 +715,23 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 
+	/* Gateway column */
+	renderer = gtk_cell_renderer_text_new ();
+	g_object_set (renderer, "editable", TRUE, NULL);
+	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), self);
+	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_GATEWAY));
+	g_signal_connect (renderer, "editing-started", G_CALLBACK (cell_editing_started), self);
+	g_signal_connect (renderer, "editing-canceled", G_CALLBACK (cell_editing_canceled), self);
+	priv->addr_cells[COL_GATEWAY] = GTK_CELL_RENDERER (renderer);
+
+	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
+	                                                      -1, _("Gateway"), renderer,
+	                                                      "text", COL_GATEWAY,
+	                                                      NULL);
+	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
+	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), TRUE);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), FALSE);
 
@@ -830,10 +858,12 @@ ui_to_setting (CEPageIP6 *self)
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 	while (iter_valid) {
 		char *item = NULL, *end;
-		struct in6_addr tmp_addr;
+		struct in6_addr tmp_addr, tmp_gw;
+		gboolean have_gw = FALSE;
 		NMIP6Address *addr;
 		guint32 prefix;
 
+		/* IP address */
 		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &item, -1);
 		if (!item || !inet_pton (AF_INET6, item, &tmp_addr)) {
 			g_warning ("%s: IPv6 address '%s' missing or invalid!",
@@ -843,6 +873,7 @@ ui_to_setting (CEPageIP6 *self)
 		}
 		g_free (item);
 
+		/* Prefix */
 		gtk_tree_model_get (model, &tree_iter, COL_PREFIX, &item, -1);
 		if (!item) {
 			g_warning ("%s: IPv6 prefix '%s' missing!",
@@ -859,9 +890,25 @@ ui_to_setting (CEPageIP6 *self)
 		}
 		g_free (item);
 
+		/* Gateway */
+		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &item, -1);
+		if (item && strlen (item)) {
+			if (!inet_pton (AF_INET6, item, &tmp_gw)) {
+				g_warning ("%s: IPv6 gateway '%s' missing or invalid!",
+				           __func__, item ? item : "<none>");
+				g_free (item);
+				goto out;
+			}
+			if (!IN6_IS_ADDR_UNSPECIFIED (&tmp_gw))
+				have_gw = TRUE;
+		}
+		g_free (item);
+
 		addr = nm_ip6_address_new ();
 		nm_ip6_address_set_address (addr, &tmp_addr);
 		nm_ip6_address_set_prefix (addr, prefix);
+		if (have_gw)
+			nm_ip6_address_set_gateway (addr, &tmp_gw);
 		nm_setting_ip6_config_add_address (priv->setting, addr);
 		nm_ip6_address_unref (addr);
 
