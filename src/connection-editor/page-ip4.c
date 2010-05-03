@@ -236,6 +236,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gboolean dns_enabled = FALSE;
 	gboolean dhcp_enabled = FALSE;
 	gboolean routes_enabled = FALSE;
+	gboolean ip4_required_enabled = TRUE;
 	GtkTreeIter iter;
 
 	if (gtk_combo_box_get_active_iter (priv->method, &iter)) {
@@ -256,7 +257,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 		addr_enabled = dns_enabled = routes_enabled = TRUE;
 		break;
 	case IP4_METHOD_DISABLED:
-		addr_enabled = dns_enabled = dhcp_enabled = routes_enabled = FALSE;
+		addr_enabled = dns_enabled = dhcp_enabled = routes_enabled = ip4_required_enabled = FALSE;
 	default:
 		break;
 	}
@@ -295,6 +296,8 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->dhcp_client_id), dhcp_enabled);
 	if (!dhcp_enabled)
 		gtk_entry_set_text (priv->dhcp_client_id, "");
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->ip4_required), ip4_required_enabled);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->routes_button), routes_enabled);
 

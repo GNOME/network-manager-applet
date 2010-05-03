@@ -239,6 +239,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gboolean addr_enabled = FALSE;
 	gboolean dns_enabled = FALSE;
 	gboolean routes_enabled = FALSE;
+	gboolean ip6_required_enabled = TRUE;
 	GtkTreeIter iter;
 
 	if (gtk_combo_box_get_active_iter (priv->method, &iter)) {
@@ -261,6 +262,9 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 		break;
 	case IP6_METHOD_MANUAL:
 		addr_enabled = dns_enabled = routes_enabled = TRUE;
+		break;
+	case IP6_METHOD_IGNORE:
+		ip6_required_enabled = FALSE;
 		break;
 	default:
 		break;
@@ -286,6 +290,8 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_searches), dns_enabled);
 	if (!dns_enabled)
 		gtk_entry_set_text (priv->dns_searches, "");
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->ip6_required), ip6_required_enabled);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->routes_button), routes_enabled);
 
