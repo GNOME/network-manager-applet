@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-04-29 23:40+0000\n"
-"PO-Revision-Date: 2010-04-30 07:58+0200\n"
+"POT-Creation-Date: 2010-05-02 23:58+0000\n"
+"PO-Revision-Date: 2010-05-04 23:20+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1103,6 +1103,10 @@ msgid "Ig_nore automatically obtained routes"
 msgstr "Ig_norar rutas obtenidas automáticamente"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:13
+msgid "Require IPv4 addressing for this connection to complete"
+msgstr "Requerir direccionamiento IPv4 para completar esta conexión"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:14
 msgid ""
 "The DHCP client identifier allows the network administrator to customize "
 "your computer's configuration.  If you wish to use a DHCP client identifier, "
@@ -1112,33 +1116,52 @@ msgstr ""
 "personalizar la configuración de su equipo. Si quiere usar un identificador "
 "de cliente DHCP introdúzcalo aquí."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:14
-#: ../src/connection-editor/ce-page-ip6.glade.h:12
+#: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
 msgid "Use this c_onnection only for resources on its network"
 msgstr "Usar esta c_onexión sólo para los recursos en su red"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:15
-#: ../src/connection-editor/ce-page-ip6.glade.h:13
+#: ../src/connection-editor/ce-page-ip4.glade.h:16
+msgid ""
+"When connecting to IPv6-capable networks, allows the connection to complete "
+"if IPv4 configuration fails but IPv6 configuration succeeds."
+msgstr ""
+"Al conectar con redes capaces de usar IPv6, permite que se complete la "
+"conexión si la configuración IPv4 falla pero la configuración IPv6 tiene "
+"éxito."
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:17
+#: ../src/connection-editor/ce-page-ip6.glade.h:15
 msgid "_DNS servers:"
 msgstr "Servidores _DNS:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:16
-#: ../src/connection-editor/ce-page-ip6.glade.h:14
+#: ../src/connection-editor/ce-page-ip4.glade.h:18
+#: ../src/connection-editor/ce-page-ip6.glade.h:16
 msgid "_Method:"
 msgstr "_Método:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:17
-msgid "_Routes…"
-msgstr "_Rutas…"
+#: ../src/connection-editor/ce-page-ip4.glade.h:19
+#: ../src/connection-editor/ce-page-ip6.glade.h:17
+msgid "_Routes&#x2026;"
+msgstr "_Rutas&#x2026;"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:18
-#: ../src/connection-editor/ce-page-ip6.glade.h:16
+#: ../src/connection-editor/ce-page-ip4.glade.h:20
+#: ../src/connection-editor/ce-page-ip6.glade.h:18
 msgid "_Search domains:"
 msgstr "Dominios de _búsqueda:"
 
-#: ../src/connection-editor/ce-page-ip6.glade.h:15
-msgid "_Routes&#x2026;"
-msgstr "_Rutas&#x2026;"
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
+msgid "Require IPv6 addressing for this connection to complete"
+msgstr "Requerir direccionamiento IPv6 para completar esta conexión"
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
+msgid ""
+"When connecting to IPv4-capable networks, allows the connection to complete "
+"if IPv6 configuration fails but IPv4 configuration succeeds."
+msgstr ""
+"Al conectar con redes capaces de usar IPv4, permite que se complete la "
+"conexión si la configuración IPv6 falla pero la configuración IPv4 tiene "
+"éxito."
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -1444,19 +1467,20 @@ msgstr "Crear..."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
 #: ../src/connection-editor/ip6-routes-dialog.c:459
-#: ../src/connection-editor/page-ip4.c:712
-#: ../src/connection-editor/page-ip6.c:683
+#: ../src/connection-editor/page-ip4.c:728
+#: ../src/connection-editor/page-ip6.c:710
 msgid "Address"
 msgstr "Dirección"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:517
-#: ../src/connection-editor/page-ip4.c:729
+#: ../src/connection-editor/page-ip4.c:745
 msgid "Netmask"
 msgstr "Máscara de red"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
 #: ../src/connection-editor/ip6-routes-dialog.c:491
-#: ../src/connection-editor/page-ip4.c:746
+#: ../src/connection-editor/page-ip4.c:762
+#: ../src/connection-editor/page-ip6.c:744
 msgid "Gateway"
 msgstr "Puerta de enlace"
 
@@ -1466,7 +1490,7 @@ msgid "Metric"
 msgstr "Métrica"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:475
-#: ../src/connection-editor/page-ip6.c:700
+#: ../src/connection-editor/page-ip6.c:727
 msgid "Prefix"
 msgstr "Prefijo"
 
@@ -1486,105 +1510,105 @@ msgstr "DSL"
 msgid "DSL connection %d"
 msgstr "Conexión DSL %d"
 
-#: ../src/connection-editor/page-ip4.c:122
-#: ../src/connection-editor/page-ip6.c:120
+#: ../src/connection-editor/page-ip4.c:126
+#: ../src/connection-editor/page-ip6.c:125
 msgid "Automatic (VPN)"
 msgstr "Automático (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:123
-#: ../src/connection-editor/page-ip6.c:121
+#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip6.c:126
 msgid "Automatic (VPN) addresses only"
 msgstr "Sólo direcciones automáticas (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:126
-#: ../src/connection-editor/page-ip6.c:124
+#: ../src/connection-editor/page-ip4.c:130
+#: ../src/connection-editor/page-ip6.c:129
 msgid "Automatic (PPP)"
 msgstr "Automático (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:127
-#: ../src/connection-editor/page-ip6.c:125
+#: ../src/connection-editor/page-ip4.c:131
+#: ../src/connection-editor/page-ip6.c:130
 msgid "Automatic (PPP) addresses only"
 msgstr "Sólo direcciones automáticas (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:129
-#: ../src/connection-editor/page-ip6.c:127
+#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip6.c:132
 msgid "Automatic (PPPoE)"
 msgstr "Automático (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:130
-#: ../src/connection-editor/page-ip6.c:128
+#: ../src/connection-editor/page-ip4.c:134
+#: ../src/connection-editor/page-ip6.c:133
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Sólo direcciones automáticas (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:132
+#: ../src/connection-editor/page-ip4.c:136
 msgid "Automatic (DHCP)"
 msgstr "Automático (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip4.c:137
 msgid "Automatic (DHCP) addresses only"
 msgstr "Sólo direcciones automáticas (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:158
-#: ../src/connection-editor/page-ip6.c:179
+#: ../src/connection-editor/page-ip4.c:162
+#: ../src/connection-editor/page-ip6.c:184
 msgid "Manual"
 msgstr "Manual"
 
-#: ../src/connection-editor/page-ip4.c:170
-#: ../src/connection-editor/page-ip6.c:192
+#: ../src/connection-editor/page-ip4.c:174
+#: ../src/connection-editor/page-ip6.c:197
 msgid "Link-Local Only"
 msgstr "Sólo enlace local"
 
-#: ../src/connection-editor/page-ip4.c:176
-#: ../src/connection-editor/page-ip6.c:199
+#: ../src/connection-editor/page-ip4.c:180
+#: ../src/connection-editor/page-ip6.c:204
 msgid "Shared to other computers"
 msgstr "Compartida con otros equipos"
 
-#: ../src/connection-editor/page-ip4.c:186
+#: ../src/connection-editor/page-ip4.c:190
 msgid "Disabled"
 msgstr "Desactivado"
 
-#: ../src/connection-editor/page-ip4.c:674
+#: ../src/connection-editor/page-ip4.c:690
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Editando las rutas IPv4 para %s"
 
-#: ../src/connection-editor/page-ip4.c:791
-#: ../src/connection-editor/page-ip4.c:798
+#: ../src/connection-editor/page-ip4.c:809
+#: ../src/connection-editor/page-ip4.c:816
 msgid "Could not load IPv4 user interface."
 msgstr "No se pudo cargar la interfaz de usuario para IPv4."
 
-#: ../src/connection-editor/page-ip4.c:804
+#: ../src/connection-editor/page-ip4.c:822
 msgid "IPv4 Settings"
 msgstr "Ajustes de IPv4"
 
-#: ../src/connection-editor/page-ip6.c:130
+#: ../src/connection-editor/page-ip6.c:135
 msgid "Automatic"
 msgstr "Automático"
 
-#: ../src/connection-editor/page-ip6.c:131
+#: ../src/connection-editor/page-ip6.c:136
 msgid "Automatic, addresses only"
 msgstr "Automático, sólo direcciones"
 
-#: ../src/connection-editor/page-ip6.c:143
+#: ../src/connection-editor/page-ip6.c:148
 #: ../src/wireless-security/eap-method.c:196
 msgid "Ignore"
 msgstr "Ignorar"
 
-#: ../src/connection-editor/page-ip6.c:167
+#: ../src/connection-editor/page-ip6.c:172
 msgid "Automatic, DHCP only"
 msgstr "Automático, sólo DHCP"
 
-#: ../src/connection-editor/page-ip6.c:645
+#: ../src/connection-editor/page-ip6.c:672
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Editando las rutas IPv6 para %s"
 
-#: ../src/connection-editor/page-ip6.c:743
-#: ../src/connection-editor/page-ip6.c:750
+#: ../src/connection-editor/page-ip6.c:789
+#: ../src/connection-editor/page-ip6.c:796
 msgid "Could not load IPv6 user interface."
 msgstr "No se pudo cargar la interfaz de usuario para IPv6."
 
-#: ../src/connection-editor/page-ip6.c:756
+#: ../src/connection-editor/page-ip6.c:802
 msgid "IPv6 Settings"
 msgstr "Ajustes de IPv6"
 
@@ -2061,32 +2085,32 @@ msgstr "Tipo de dispositivo de teléfono desconocido (no es GSM ni CDMA)"
 msgid "Your phone is now ready to use!"
 msgstr "Su teléfono está listo para usarse"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:652
-#: ../src/gnome-bluetooth/network-manager-applet.c:658
+#: ../src/gnome-bluetooth/network-manager-applet.c:649
+#: ../src/gnome-bluetooth/network-manager-applet.c:655
 msgid "failed to connect to the phone."
 msgstr "falló al conectar con el teléfono."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:691
+#: ../src/gnome-bluetooth/network-manager-applet.c:688
 msgid "unexpectedly disconnected from the phone."
 msgstr "el teléfono se desconectó de forma inesperada."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:700
+#: ../src/gnome-bluetooth/network-manager-applet.c:697
 msgid "timed out detecting phone details."
 msgstr "expiró el tiempo al detectar los detalles del teléfono."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:715
+#: ../src/gnome-bluetooth/network-manager-applet.c:712
 msgid "could not connect to the system bus."
 msgstr "no se pudo conectar con el bus del sistema."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:720
+#: ../src/gnome-bluetooth/network-manager-applet.c:717
 msgid "Detecting phone configuration..."
 msgstr "Detectando la configuración del teléfono…"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:786
+#: ../src/gnome-bluetooth/network-manager-applet.c:783
 msgid "could not find the Bluetooth device."
 msgstr "no se pudo encontrar el dispositivo Bluetooth."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:916
+#: ../src/gnome-bluetooth/network-manager-applet.c:913
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2094,11 +2118,11 @@ msgstr ""
 "El adaptador de Bluetooth predeterminado debe estar activado antes de "
 "configurar una conexión de red de marcado telefónico."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:969
+#: ../src/gnome-bluetooth/network-manager-applet.c:966
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Usar su teléfono móvil como un dispositivo de red (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:978
+#: ../src/gnome-bluetooth/network-manager-applet.c:975
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Acceder a Internet usando su teléfono móvil (DUN)"
 
@@ -2524,6 +2548,9 @@ msgstr "TLS a través de túnel"
 #: ../src/wireless-security/wireless-security.c:364
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protegido (PEAP)"
+
+#~ msgid "_Routes…"
+#~ msgstr "_Rutas…"
 
 #~ msgid "_Band:"
 #~ msgstr "_Banda:"
