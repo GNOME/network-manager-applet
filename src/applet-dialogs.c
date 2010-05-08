@@ -195,7 +195,7 @@ create_info_label_security (NMConnection *connection)
 			else
 				label = get_eap_label (s_wireless_sec, s_8021x);
 		} else {
-			label = g_strdup (_("None"));
+			label = g_strdup (C_("No wifi security used", "None"));
 		}
 	} else if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
 		NMSetting8021x *s_8021x;
@@ -204,10 +204,10 @@ create_info_label_security (NMConnection *connection)
 		if (s_8021x)
 			label = get_eap_label (NULL, s_8021x);
 		else
-			label = g_strdup (_("None"));
+			label = g_strdup (C_("No wired security used", "None"));
 	}
 
-	w = create_info_label (label ? label : _("Unknown"), TRUE);
+	w = create_info_label (label ? label : C_("Unknown/unrecognized wired or wifi security", "Unknown"), TRUE);
 	g_free (label);
 
 	return w;
