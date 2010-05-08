@@ -1,10 +1,9 @@
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
- *
- *  BlueZ - Bluetooth protocol stack for Linux
+ *  NetworkManager Applet
  *
  *  Copyright (C) 2009  Bastien Nocera <hadess@hadess.net>
- *
+ *  Copyright (C) 2009 - 2010  Dan Williams <dcbw@redhat.com>
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -932,12 +931,61 @@ default_adapter_changed (GObject *gobject,
 	default_adapter_powered_changed (G_OBJECT (info->btclient), NULL, info);
 }
 
+static gboolean
+nm_is_running (void)
+{
+	DBusGConnection *bus;
+	DBusGProxy *proxy = NULL;
+	GError *error = NULL;
+	gboolean running = FALSE;
+
+	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (error || !bus) {
+		g_message (_("Bluetooth configuration not possible (failed to connect to D-Bus: %s)."),
+		           (error && error->message) ? error->message : "unknown");
+		goto out;
+	}
+
+	proxy = dbus_g_proxy_new_for_name (bus,
+	                                   "org.freedesktop.DBus",
+	                                   "/org/freedesktop/DBus",
+	                                   "org.freedesktop.DBus");
+	if (!proxy) {
+		g_message (_("Bluetooth configuration not possible (failed to create D-Bus proxy)."));
+		goto out;
+	}
+
+	if (!dbus_g_proxy_call (proxy, "NameHasOwner", &error,
+	                        G_TYPE_STRING, NM_DBUS_SERVICE,
+	                        G_TYPE_INVALID,
+	                        G_TYPE_BOOLEAN, &running,
+	                        G_TYPE_INVALID)) {
+		g_message (_("Bluetooth configuration not possible (error finding NetworkManager: %s)."),
+		           error && error->message ? error->message : "unknown");
+	}
+
+out:
+	g_clear_error (&error);
+	if (proxy)
+		g_object_unref (proxy);
+	if (bus)
+		dbus_g_connection_unref (bus);
+	return running;
+}
+
 static GtkWidget *
 get_config_widgets (const char *bdaddr, const char **uuids)
 {
 	PluginInfo *info;
 	GtkWidget *vbox, *hbox;
 	gboolean pan = FALSE, dun = FALSE;
+
+	/* Don't allow configuration if NM isn't running; it just confuses people
+	 * if they see the checkboxes but the configuration doesn't seem to have
+	 * any visible effect since they aren't running NM/nm-applet.
+	 */
+	if (!nm_is_running ())
+		return NULL;
 
 	get_capabilities (bdaddr, uuids, &pan, &dun);
 	if (!pan && !dun)
