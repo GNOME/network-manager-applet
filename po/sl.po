@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-04-30 05:59+0000\n"
-"PO-Revision-Date: 2010-05-01 09:45+0100\n"
+"POT-Creation-Date: 2010-05-07 05:21+0000\n"
+"PO-Revision-Date: 2010-05-08 09:47+0100\n"
 "Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1085,36 +1085,49 @@ msgid "Ig_nore automatically obtained routes"
 msgstr "_Prezri samodejno pridobljene smeri"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:13
+msgid "Require IPv4 addressing for this connection to complete"
+msgstr "Zahtevaj IPv4 naslov za dokončanje te povezave"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:14
 msgid "The DHCP client identifier allows the network administrator to customize your computer's configuration.  If you wish to use a DHCP client identifier, enter it here."
 msgstr "Določilnik odjemalca DHCP skrbniku omrežja dovoli nastavitev vašega računalnika po meri. V primeru da želite uporabiti določilnik odjemalca DHCP, ga vnesite sem."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:14
-#: ../src/connection-editor/ce-page-ip6.glade.h:12
+#: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
 msgid "Use this c_onnection only for resources on its network"
 msgstr "Uporabi _povezavo le za sredstva na tem omrežju"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:15
-#: ../src/connection-editor/ce-page-ip6.glade.h:13
+#: ../src/connection-editor/ce-page-ip4.glade.h:16
+msgid "When connecting to IPv6-capable networks, allows the connection to complete if IPv4 configuration fails but IPv6 configuration succeeds."
+msgstr "Pri povezovanju z IPv6 zmožnimi omrežji omogoča dokončanje povezave, če nastavitev IPv4 spodleti in je nastavitev IPv6 uspešna."
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:17
+#: ../src/connection-editor/ce-page-ip6.glade.h:15
 msgid "_DNS servers:"
 msgstr "_Strežniki DNS:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:16
-#: ../src/connection-editor/ce-page-ip6.glade.h:14
+#: ../src/connection-editor/ce-page-ip4.glade.h:18
+#: ../src/connection-editor/ce-page-ip6.glade.h:16
 msgid "_Method:"
 msgstr "_Način:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:17
-msgid "_Routes…"
-msgstr "_Smeri ..."
+#: ../src/connection-editor/ce-page-ip4.glade.h:19
+#: ../src/connection-editor/ce-page-ip6.glade.h:17
+msgid "_Routes&#x2026;"
+msgstr "_Smeri&#x2026;"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:18
-#: ../src/connection-editor/ce-page-ip6.glade.h:16
+#: ../src/connection-editor/ce-page-ip4.glade.h:20
+#: ../src/connection-editor/ce-page-ip6.glade.h:18
 msgid "_Search domains:"
 msgstr "_Iskalne domene:"
 
-#: ../src/connection-editor/ce-page-ip6.glade.h:15
-msgid "_Routes&#x2026;"
-msgstr "_Smeri&#x2026;"
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
+msgid "Require IPv6 addressing for this connection to complete"
+msgstr "Zahtevaj IPv6 naslov za dokončanje te povezave"
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
+msgid "When connecting to IPv4-capable networks, allows the connection to complete if IPv6 configuration fails but IPv4 configuration succeeds."
+msgstr "Pri povezovanju na IPv4 zmožna omrežja omogoča dokončanje povezave, če nastavitev IPv6 spodleti in je nastavitev IPv4 uspešna. "
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -1403,19 +1416,20 @@ msgstr "Ustvari ..."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
 #: ../src/connection-editor/ip6-routes-dialog.c:459
-#: ../src/connection-editor/page-ip4.c:712
-#: ../src/connection-editor/page-ip6.c:683
+#: ../src/connection-editor/page-ip4.c:731
+#: ../src/connection-editor/page-ip6.c:716
 msgid "Address"
 msgstr "Naslov"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:517
-#: ../src/connection-editor/page-ip4.c:729
+#: ../src/connection-editor/page-ip4.c:748
 msgid "Netmask"
 msgstr "Omrežna maska"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
 #: ../src/connection-editor/ip6-routes-dialog.c:491
-#: ../src/connection-editor/page-ip4.c:746
+#: ../src/connection-editor/page-ip4.c:765
+#: ../src/connection-editor/page-ip6.c:750
 msgid "Gateway"
 msgstr "Prehod"
 
@@ -1425,7 +1439,7 @@ msgid "Metric"
 msgstr "Merilo"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:475
-#: ../src/connection-editor/page-ip6.c:700
+#: ../src/connection-editor/page-ip6.c:733
 msgid "Prefix"
 msgstr "Predpona"
 
@@ -1445,105 +1459,105 @@ msgstr "DSL"
 msgid "DSL connection %d"
 msgstr "Povezava DSL %d"
 
-#: ../src/connection-editor/page-ip4.c:122
-#: ../src/connection-editor/page-ip6.c:120
+#: ../src/connection-editor/page-ip4.c:126
+#: ../src/connection-editor/page-ip6.c:125
 msgid "Automatic (VPN)"
 msgstr "Samodejno (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:123
-#: ../src/connection-editor/page-ip6.c:121
+#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip6.c:126
 msgid "Automatic (VPN) addresses only"
 msgstr "Samo samodejni (VON) naslovi"
 
-#: ../src/connection-editor/page-ip4.c:126
-#: ../src/connection-editor/page-ip6.c:124
+#: ../src/connection-editor/page-ip4.c:130
+#: ../src/connection-editor/page-ip6.c:129
 msgid "Automatic (PPP)"
 msgstr "Samodejno (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:127
-#: ../src/connection-editor/page-ip6.c:125
+#: ../src/connection-editor/page-ip4.c:131
+#: ../src/connection-editor/page-ip6.c:130
 msgid "Automatic (PPP) addresses only"
 msgstr "Samo samodejni (PPP) naslovi"
 
-#: ../src/connection-editor/page-ip4.c:129
-#: ../src/connection-editor/page-ip6.c:127
+#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip6.c:132
 msgid "Automatic (PPPoE)"
 msgstr "Samodejno (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:130
-#: ../src/connection-editor/page-ip6.c:128
+#: ../src/connection-editor/page-ip4.c:134
+#: ../src/connection-editor/page-ip6.c:133
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Samo samodejni (PPPoE) naslovi"
 
-#: ../src/connection-editor/page-ip4.c:132
+#: ../src/connection-editor/page-ip4.c:136
 msgid "Automatic (DHCP)"
 msgstr "Samodejno (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip4.c:137
 msgid "Automatic (DHCP) addresses only"
 msgstr "Samo samodejni (DHCP) naslovi"
 
-#: ../src/connection-editor/page-ip4.c:158
-#: ../src/connection-editor/page-ip6.c:179
+#: ../src/connection-editor/page-ip4.c:162
+#: ../src/connection-editor/page-ip6.c:184
 msgid "Manual"
 msgstr "Ročno"
 
-#: ../src/connection-editor/page-ip4.c:170
-#: ../src/connection-editor/page-ip6.c:192
+#: ../src/connection-editor/page-ip4.c:174
+#: ../src/connection-editor/page-ip6.c:197
 msgid "Link-Local Only"
 msgstr "Poveži le krajevno"
 
-#: ../src/connection-editor/page-ip4.c:176
-#: ../src/connection-editor/page-ip6.c:199
+#: ../src/connection-editor/page-ip4.c:180
+#: ../src/connection-editor/page-ip6.c:204
 msgid "Shared to other computers"
 msgstr "Souporaba z ostalimi računalniki"
 
-#: ../src/connection-editor/page-ip4.c:186
+#: ../src/connection-editor/page-ip4.c:190
 msgid "Disabled"
 msgstr "Onemogočeno"
 
-#: ../src/connection-editor/page-ip4.c:674
+#: ../src/connection-editor/page-ip4.c:693
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Urejanje IPv4 smeri za %s"
 
-#: ../src/connection-editor/page-ip4.c:791
-#: ../src/connection-editor/page-ip4.c:798
+#: ../src/connection-editor/page-ip4.c:812
+#: ../src/connection-editor/page-ip4.c:819
 msgid "Could not load IPv4 user interface."
 msgstr "Uporabniškega vmesnika IPv4 ni mogoče naložiti."
 
-#: ../src/connection-editor/page-ip4.c:804
+#: ../src/connection-editor/page-ip4.c:825
 msgid "IPv4 Settings"
 msgstr "Nastavitve IPv4"
 
-#: ../src/connection-editor/page-ip6.c:130
+#: ../src/connection-editor/page-ip6.c:135
 msgid "Automatic"
 msgstr "Samodejno"
 
-#: ../src/connection-editor/page-ip6.c:131
+#: ../src/connection-editor/page-ip6.c:136
 msgid "Automatic, addresses only"
 msgstr "Samodejno, le naslovi"
 
-#: ../src/connection-editor/page-ip6.c:143
+#: ../src/connection-editor/page-ip6.c:148
 #: ../src/wireless-security/eap-method.c:196
 msgid "Ignore"
 msgstr "Prezri"
 
-#: ../src/connection-editor/page-ip6.c:167
+#: ../src/connection-editor/page-ip6.c:172
 msgid "Automatic, DHCP only"
 msgstr "Samodejno, le DHCP"
 
-#: ../src/connection-editor/page-ip6.c:645
+#: ../src/connection-editor/page-ip6.c:678
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Urejanje poti  IPv6 za %s"
 
-#: ../src/connection-editor/page-ip6.c:743
-#: ../src/connection-editor/page-ip6.c:750
+#: ../src/connection-editor/page-ip6.c:795
+#: ../src/connection-editor/page-ip6.c:802
 msgid "Could not load IPv6 user interface."
 msgstr "Uporabniškega vmesnika IPv6 ni mogoče naložiti."
 
-#: ../src/connection-editor/page-ip6.c:756
+#: ../src/connection-editor/page-ip6.c:808
 msgid "IPv6 Settings"
 msgstr "Nastavitve IPv6"
 
@@ -2420,6 +2434,8 @@ msgstr "Tuneliran TLS"
 msgid "Protected EAP (PEAP)"
 msgstr "Varovani EAP (PEAP)"
 
+#~ msgid "_Routes…"
+#~ msgstr "_Smeri ..."
 #~ msgid "_Band:"
 #~ msgstr "_Pas:"
 #~ msgid "Registered (EVDO)"
