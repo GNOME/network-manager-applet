@@ -531,7 +531,7 @@ modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 			           __func__, path, modem_iface, iface_basename);
 		}
 
-		g_free (basename);
+		g_free (iface_basename);
 	} else
 		g_message ("%s: (%s) modem had no 'Device' property", __func__, path);
 
