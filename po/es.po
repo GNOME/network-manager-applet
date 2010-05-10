@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-05-02 23:58+0000\n"
-"PO-Revision-Date: 2010-05-04 23:20+0200\n"
+"POT-Creation-Date: 2010-05-08 17:36+0000\n"
+"PO-Revision-Date: 2010-05-10 23:08+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -455,22 +455,36 @@ msgstr "WPA/WPA2"
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:207
+#: ../src/applet-dialogs.c:198
 #: ../src/connection-editor/page-wireless-security.c:238
 #: ../src/wireless-dialog.c:919
+#| msgid "None"
+msgctxt "No wifi security used"
 msgid "None"
 msgstr "Ninguna"
 
-#: ../src/applet-dialogs.c:210 ../src/applet-dialogs.c:282
-#: ../src/applet-dialogs.c:384 ../src/applet-dialogs.c:421
-#: ../src/applet-dialogs.c:439 ../src/applet-dialogs.c:450
+#: ../src/applet-dialogs.c:207
+#| msgid "None"
+msgctxt "No wired security used"
+msgid "None"
+msgstr "Ninguna"
+
+#: ../src/applet-dialogs.c:210
+#| msgid "Unknown"
+msgctxt "Unknown/unrecognized wired or wifi security"
 msgid "Unknown"
-msgstr "Desconocido"
+msgstr "Desconocida"
 
 #: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
+
+#: ../src/applet-dialogs.c:282 ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
+#: ../src/applet-dialogs.c:450
+msgid "Unknown"
+msgstr "Desconocido"
 
 #: ../src/applet-dialogs.c:313
 #, c-format
@@ -1467,20 +1481,20 @@ msgstr "Crear..."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
 #: ../src/connection-editor/ip6-routes-dialog.c:459
-#: ../src/connection-editor/page-ip4.c:728
-#: ../src/connection-editor/page-ip6.c:710
+#: ../src/connection-editor/page-ip4.c:731
+#: ../src/connection-editor/page-ip6.c:716
 msgid "Address"
 msgstr "Dirección"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:517
-#: ../src/connection-editor/page-ip4.c:745
+#: ../src/connection-editor/page-ip4.c:748
 msgid "Netmask"
 msgstr "Máscara de red"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
 #: ../src/connection-editor/ip6-routes-dialog.c:491
-#: ../src/connection-editor/page-ip4.c:762
-#: ../src/connection-editor/page-ip6.c:744
+#: ../src/connection-editor/page-ip4.c:765
+#: ../src/connection-editor/page-ip6.c:750
 msgid "Gateway"
 msgstr "Puerta de enlace"
 
@@ -1490,7 +1504,7 @@ msgid "Metric"
 msgstr "Métrica"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:475
-#: ../src/connection-editor/page-ip6.c:727
+#: ../src/connection-editor/page-ip6.c:733
 msgid "Prefix"
 msgstr "Prefijo"
 
@@ -1567,17 +1581,17 @@ msgstr "Compartida con otros equipos"
 msgid "Disabled"
 msgstr "Desactivado"
 
-#: ../src/connection-editor/page-ip4.c:690
+#: ../src/connection-editor/page-ip4.c:693
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Editando las rutas IPv4 para %s"
 
-#: ../src/connection-editor/page-ip4.c:809
-#: ../src/connection-editor/page-ip4.c:816
+#: ../src/connection-editor/page-ip4.c:812
+#: ../src/connection-editor/page-ip4.c:819
 msgid "Could not load IPv4 user interface."
 msgstr "No se pudo cargar la interfaz de usuario para IPv4."
 
-#: ../src/connection-editor/page-ip4.c:822
+#: ../src/connection-editor/page-ip4.c:825
 msgid "IPv4 Settings"
 msgstr "Ajustes de IPv4"
 
@@ -1598,17 +1612,17 @@ msgstr "Ignorar"
 msgid "Automatic, DHCP only"
 msgstr "Automático, sólo DHCP"
 
-#: ../src/connection-editor/page-ip6.c:672
+#: ../src/connection-editor/page-ip6.c:678
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Editando las rutas IPv6 para %s"
 
-#: ../src/connection-editor/page-ip6.c:789
-#: ../src/connection-editor/page-ip6.c:796
+#: ../src/connection-editor/page-ip6.c:795
+#: ../src/connection-editor/page-ip6.c:802
 msgid "Could not load IPv6 user interface."
 msgstr "No se pudo cargar la interfaz de usuario para IPv6."
 
-#: ../src/connection-editor/page-ip6.c:802
+#: ../src/connection-editor/page-ip6.c:808
 msgid "IPv6 Settings"
 msgstr "Ajustes de IPv6"
 
@@ -2063,54 +2077,54 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "Exportar conexión VPN…"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:214
+#: ../src/gnome-bluetooth/network-manager-applet.c:213
 #, c-format
 msgid "%s Network"
 msgstr "Red %s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:323
+#: ../src/gnome-bluetooth/network-manager-applet.c:322
 #, c-format
 msgid "Error: %s"
 msgstr "Error: %s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:442
+#: ../src/gnome-bluetooth/network-manager-applet.c:441
 msgid "Mobile wizard was canceled"
 msgstr "Se canceló el asistente móvil"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:451
+#: ../src/gnome-bluetooth/network-manager-applet.c:450
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "Tipo de dispositivo de teléfono desconocido (no es GSM ni CDMA)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:479
+#: ../src/gnome-bluetooth/network-manager-applet.c:478
 msgid "Your phone is now ready to use!"
 msgstr "Su teléfono está listo para usarse"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:649
-#: ../src/gnome-bluetooth/network-manager-applet.c:655
+#: ../src/gnome-bluetooth/network-manager-applet.c:648
+#: ../src/gnome-bluetooth/network-manager-applet.c:654
 msgid "failed to connect to the phone."
 msgstr "falló al conectar con el teléfono."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:688
+#: ../src/gnome-bluetooth/network-manager-applet.c:687
 msgid "unexpectedly disconnected from the phone."
 msgstr "el teléfono se desconectó de forma inesperada."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:697
+#: ../src/gnome-bluetooth/network-manager-applet.c:696
 msgid "timed out detecting phone details."
 msgstr "expiró el tiempo al detectar los detalles del teléfono."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:712
+#: ../src/gnome-bluetooth/network-manager-applet.c:711
 msgid "could not connect to the system bus."
 msgstr "no se pudo conectar con el bus del sistema."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:717
+#: ../src/gnome-bluetooth/network-manager-applet.c:716
 msgid "Detecting phone configuration..."
 msgstr "Detectando la configuración del teléfono…"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:783
+#: ../src/gnome-bluetooth/network-manager-applet.c:782
 msgid "could not find the Bluetooth device."
 msgstr "no se pudo encontrar el dispositivo Bluetooth."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:913
+#: ../src/gnome-bluetooth/network-manager-applet.c:912
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2118,11 +2132,27 @@ msgstr ""
 "El adaptador de Bluetooth predeterminado debe estar activado antes de "
 "configurar una conexión de red de marcado telefónico."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:966
+#: ../src/gnome-bluetooth/network-manager-applet.c:944
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr "No se puede configurar el Bluetooth (falló al conectar con D-Bus: %s)."
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:954
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr "No se puede configurar el Bluetooth (falló al crear proxy de D-Bus)."
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:963
+#, c-format
+msgid ""
+"Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgstr ""
+"No se puede configurar el Bluetooth (error al buscar NetworkManager: %s)"
+
+#: ../src/gnome-bluetooth/network-manager-applet.c:1014
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Usar su teléfono móvil como un dispositivo de red (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:975
+#: ../src/gnome-bluetooth/network-manager-applet.c:1023
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Acceder a Internet usando su teléfono móvil (DUN)"
 
