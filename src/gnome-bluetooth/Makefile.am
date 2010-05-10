@@ -12,11 +12,12 @@ INCLUDES = \
 	$(DISABLE_DEPRECATED) \
 	$(WARN_CFLAGS)
 
+BT_WIDGET_SOURCES = bt-widget.c
+
 if HAVE_GBT
 plugin_LTLIBRARIES = libnma.la
 
-libnma_la_SOURCES = \
-	network-manager-applet.c
+libnma_la_SOURCES = $(BT_WIDGET_SOURCES)
 
 libnma_la_LDFLAGS = -module -avoid-version
 
@@ -25,4 +26,4 @@ libnma_la_LIBADD = \
 	$(GNOME_BLUETOOTH_LIBS)
 endif
 
-EXTRA_DIST = network-manager-applet.c
+EXTRA_DIST = $(BT_WIDGET_SOURCES)
