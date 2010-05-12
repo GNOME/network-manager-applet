@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -323,6 +323,47 @@ none:
 	return NULL;
 }
 
+static void
+check_common_ssid (NMAccessPoint *ap, NMSettingWireless *s_wifi)
+{
+	const char *str_bssid;
+	struct ether_addr *eth_addr;
+	const GByteArray *ssid;
+	GByteArray *bssid;
+	const char *known[] = { "linksys", "O2DSL", "NETGEAR" };
+	guint i;
+
+	/* For a certain list of known ESSIDs which are commonly preset by ISPs
+	 * and manufacturers and often unchanged by users, lock the connection
+	 * to the BSSID so that we don't try to auto-connect to your grandma's
+	 * neighbor's WiFi.
+	 *
+	 * NOTE: this list should *not* contain networks that you would like to
+	 * automatically roam to like "Starbucks" or "AT&T" or "T-Mobile HotSpot".
+	 */
+	ssid = nm_access_point_get_ssid (ap);
+	for (i = 0; i < G_N_ELEMENTS (known); i++) {
+		if (   ssid->len == strlen (known[i])
+		    && memcmp (ssid->data, known[i], ssid->len) == 0)
+			break;
+	}
+	if (i == G_N_ELEMENTS (known))
+		return;
+
+	str_bssid = nm_access_point_get_hw_address (ap);
+	if (str_bssid) {
+		eth_addr = ether_aton (str_bssid);
+		if (eth_addr) {
+			bssid = g_byte_array_sized_new (ETH_ALEN);
+			g_byte_array_append (bssid, eth_addr->ether_addr_octet, ETH_ALEN);
+			g_object_set (G_OBJECT (s_wifi),
+			              NM_SETTING_WIRELESS_BSSID, bssid,
+			              NULL);
+			g_byte_array_free (bssid, TRUE);
+		}
+	}
+}
+
 static gboolean
 wireless_new_auto_connection (NMDevice *device,
                               gpointer dclass_data,
@@ -356,9 +397,11 @@ wireless_new_auto_connection (NMDevice *device,
 	mode = nm_access_point_get_mode (info->ap);
 	if (mode == NM_802_11_MODE_ADHOC)
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "adhoc", NULL);
-	else if (mode == NM_802_11_MODE_INFRA)
+	else if (mode == NM_802_11_MODE_INFRA) {
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
-	else
+		/* Lock connection to this AP if it's a manufacturer-default SSID */
+		check_common_ssid (info->ap, s_wireless);
+	} else
 		g_assert_not_reached ();
 
 	dev_caps = nm_device_wifi_get_capabilities (NM_DEVICE_WIFI (device));
