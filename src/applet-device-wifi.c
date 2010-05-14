@@ -329,7 +329,7 @@ check_common_ssid (NMAccessPoint *ap, NMSettingWireless *s_wifi)
 	struct ether_addr *eth_addr;
 	const GByteArray *ssid;
 	GByteArray *bssid;
-	const char *known[] = { "linksys", "O2DSL", "NETGEAR" };
+	const char *known[] = { "linksys", "o2DSL", "NETGEAR", "WLAN", "ALICE-WLAN" };
 	guint i;
 
 	/* For a certain list of known ESSIDs which are commonly preset by ISPs
