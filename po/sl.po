@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-05-07 05:21+0000\n"
-"PO-Revision-Date: 2010-05-08 09:47+0100\n"
+"POT-Creation-Date: 2010-05-14 11:23+0000\n"
+"PO-Revision-Date: 2010-05-14 19:43+0100\n"
 "Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -93,7 +93,7 @@ msgstr "Storitve %s ni mogoče pridobiti. (%d)\n"
 #: ../src/applet-device-cdma.c:332
 #: ../src/applet-device-gsm.c:375
 #: ../src/applet-device-wired.c:241
-#: ../src/applet-device-wifi.c:773
+#: ../src/applet-device-wifi.c:816
 msgid "Available"
 msgstr "Razpoložljivo"
 
@@ -109,7 +109,7 @@ msgstr "Uspešna povezava z '%s'."
 #: ../src/applet-device-cdma.c:378
 #: ../src/applet-device-gsm.c:421
 #: ../src/applet-device-wired.c:274
-#: ../src/applet-device-wifi.c:1214
+#: ../src/applet-device-wifi.c:1257
 msgid "Connection Established"
 msgstr "Povezava je vzpostavljena"
 
@@ -350,17 +350,17 @@ msgstr "Po_veži se s skritim brezžičnim omrežjem ..."
 msgid "Create _New Wireless Network..."
 msgstr "_Ustvari novo brezžično omrežje ..."
 
-#: ../src/applet-device-wifi.c:705
+#: ../src/applet-device-wifi.c:748
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Brezžična omrežja (%s)"
 
-#: ../src/applet-device-wifi.c:707
+#: ../src/applet-device-wifi.c:750
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Brezžično omrežje (%s)"
 
-#: ../src/applet-device-wifi.c:709
+#: ../src/applet-device-wifi.c:752
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Brezžično omrežje"
@@ -368,63 +368,63 @@ msgstr[1] "Brezžični omrežji"
 msgstr[2] "Brezžična omrežja"
 msgstr[3] "Brezžična omrežja"
 
-#: ../src/applet-device-wifi.c:739
+#: ../src/applet-device-wifi.c:782
 msgid "wireless is disabled"
 msgstr "brezžični dostop je onemogočen"
 
-#: ../src/applet-device-wifi.c:800
+#: ../src/applet-device-wifi.c:843
 msgid "More networks"
 msgstr "Več omrežij"
 
-#: ../src/applet-device-wifi.c:1004
+#: ../src/applet-device-wifi.c:1047
 msgid "Wireless Networks Available"
 msgstr "Razpoložljiva brezžična omrežja"
 
-#: ../src/applet-device-wifi.c:1005
+#: ../src/applet-device-wifi.c:1048
 msgid "Click on this icon to connect to a wireless network"
 msgstr "S klikom na ikono se vzpostavi povezava z brezžičnim omrežjem"
 
-#: ../src/applet-device-wifi.c:1008
+#: ../src/applet-device-wifi.c:1051
 #: ../src/applet.c:677
 msgid "Don't show this message again"
 msgstr "Sporočila ne pokaži več"
 
-#: ../src/applet-device-wifi.c:1212
+#: ../src/applet-device-wifi.c:1255
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Uspešna povezava z brezžičnim omrežjem '%s'."
 
-#: ../src/applet-device-wifi.c:1213
-#: ../src/applet-device-wifi.c:1244
+#: ../src/applet-device-wifi.c:1256
+#: ../src/applet-device-wifi.c:1287
 msgid "(none)"
 msgstr "(brez)"
 
-#: ../src/applet-device-wifi.c:1254
+#: ../src/applet-device-wifi.c:1297
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Pripravljanje brezžične omrežne povezave '%s' ..."
 
-#: ../src/applet-device-wifi.c:1257
+#: ../src/applet-device-wifi.c:1300
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Prilagajanje nastavitev brezžične omrežne povezave '%s' ..."
 
-#: ../src/applet-device-wifi.c:1260
+#: ../src/applet-device-wifi.c:1303
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Zahtevana je overitev uporabnika za povezavo v brezžično omrežje '%s' ..."
 
-#: ../src/applet-device-wifi.c:1263
+#: ../src/applet-device-wifi.c:1306
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Pošiljanje zahteve za pridobitev brezžičnega omrežnega naslova '%s' ..."
 
-#: ../src/applet-device-wifi.c:1283
+#: ../src/applet-device-wifi.c:1326
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Dejavna brezžična omrežna povezava '%s': %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1287
+#: ../src/applet-device-wifi.c:1330
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Dejavna brezžična omrežna povezava '%s'"
@@ -455,18 +455,19 @@ msgid "WEP"
 msgstr "WEP"
 
 #: ../src/applet-dialogs.c:198
-#: ../src/applet-dialogs.c:207
 #: ../src/connection-editor/page-wireless-security.c:238
 #: ../src/wireless-dialog.c:919
+msgctxt "No wifi security used"
+msgid "None"
+msgstr "Brez"
+
+#: ../src/applet-dialogs.c:207
+msgctxt "No wired security used"
 msgid "None"
 msgstr "Brez"
 
 #: ../src/applet-dialogs.c:210
-#: ../src/applet-dialogs.c:282
-#: ../src/applet-dialogs.c:384
-#: ../src/applet-dialogs.c:421
-#: ../src/applet-dialogs.c:439
-#: ../src/applet-dialogs.c:450
+msgctxt "Unknown/unrecognized wired or wifi security"
 msgid "Unknown"
 msgstr "Neznano"
 
@@ -475,6 +476,14 @@ msgstr "Neznano"
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
+
+#: ../src/applet-dialogs.c:282
+#: ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:421
+#: ../src/applet-dialogs.c:439
+#: ../src/applet-dialogs.c:450
+msgid "Unknown"
+msgstr "Neznano"
 
 #: ../src/applet-dialogs.c:313
 #, c-format
@@ -2001,62 +2010,76 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "Izvoz VPN povezave ..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:214
+#: ../src/gnome-bluetooth/bt-widget.c:213
 #, c-format
 msgid "%s Network"
 msgstr "Omrežje %s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:323
+#: ../src/gnome-bluetooth/bt-widget.c:322
 #, c-format
 msgid "Error: %s"
 msgstr "Napaka: %s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:442
+#: ../src/gnome-bluetooth/bt-widget.c:441
 msgid "Mobile wizard was canceled"
 msgstr "Mobilni čarovnik je bil preklican"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:451
+#: ../src/gnome-bluetooth/bt-widget.c:450
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "Neznana vrsta naprave telefona (ni GSM ali CDMA)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:479
+#: ../src/gnome-bluetooth/bt-widget.c:478
 msgid "Your phone is now ready to use!"
 msgstr "Vaš telefon je sedaj pripravljen za uporabo!"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:649
-#: ../src/gnome-bluetooth/network-manager-applet.c:655
+#: ../src/gnome-bluetooth/bt-widget.c:648
+#: ../src/gnome-bluetooth/bt-widget.c:654
 msgid "failed to connect to the phone."
 msgstr "povezava s telefonom je spodletela."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:688
+#: ../src/gnome-bluetooth/bt-widget.c:687
 msgid "unexpectedly disconnected from the phone."
 msgstr "nepričakovana prekinitev povezave s telefonom."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:697
+#: ../src/gnome-bluetooth/bt-widget.c:696
 msgid "timed out detecting phone details."
 msgstr "zaznavanje podrobnosti telefona je poteklo."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:712
+#: ../src/gnome-bluetooth/bt-widget.c:711
 msgid "could not connect to the system bus."
 msgstr "Ni se mogoče povezati s sistemskim vodilom."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:717
+#: ../src/gnome-bluetooth/bt-widget.c:716
 msgid "Detecting phone configuration..."
 msgstr "Zaznavanje nastavitev telefona ..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:783
+#: ../src/gnome-bluetooth/bt-widget.c:782
 msgid "could not find the Bluetooth device."
 msgstr "Bluetooth naprave ni mogoče najti."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:913
+#: ../src/gnome-bluetooth/bt-widget.c:912
 msgid "The default Bluetooth adapter must be enabled before setting up a Dial-Up-Networking connection."
 msgstr "Privzeti Bluetooth vmesnik mora biti omogočen pred nastavljanjem povezave klicnega omrežja."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:966
+#: ../src/gnome-bluetooth/bt-widget.c:944
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr "Nastavitev Bluetooth ni mogoča (povezav z D-Bus je spodletela: %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:954
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr "Nastavitev Bluetooth ni mogoča (ustvarjanje posredniškega strežnika D-Bus je spodletelo)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:963
+#, c-format
+msgid "Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgstr "Nastavitev Bluetooth ni mogoče (napaka med iskanjem NetworkManager: %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:1014
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Uporaba mobilnega telefona kot omrežna naprava (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:975
+#: ../src/gnome-bluetooth/bt-widget.c:1023
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Dostop do spleta z uporabo mobilnega telefona (DUN)"
 
