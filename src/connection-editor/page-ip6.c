@@ -33,8 +33,6 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-ip6-config.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-wireless.h>
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
 #include <nm-setting-pppoe.h>
@@ -96,10 +94,9 @@ typedef struct {
 #define IP6_METHOD_IGNORE          0
 #define IP6_METHOD_AUTO            1
 #define IP6_METHOD_AUTO_ADDRESSES  2
-#define IP6_METHOD_AUTO_DHCP_ONLY  3
-#define IP6_METHOD_MANUAL          4
-#define IP6_METHOD_LINK_LOCAL      5
-#define IP6_METHOD_SHARED          6
+#define IP6_METHOD_MANUAL          3
+#define IP6_METHOD_LINK_LOCAL      4
+#define IP6_METHOD_SHARED          5
 
 static void
 ip6_private_init (CEPageIP6 *self, NMConnection *connection)
@@ -163,17 +160,6 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	                    METHOD_COL_NUM, IP6_METHOD_AUTO_ADDRESSES,
 						METHOD_COL_ENABLED, TRUE,
 	                    -1);
-
-	/* DHCP only used on wifi and wired for now */
-	if (   priv->connection_type == NM_TYPE_SETTING_WIRED
-	    || priv->connection_type == NM_TYPE_SETTING_WIRELESS) {
-		gtk_list_store_append (priv->method_store, &iter);
-		gtk_list_store_set (priv->method_store, &iter,
-		                    METHOD_COL_NAME, _("Automatic, DHCP only"),
-		                    METHOD_COL_NUM, IP6_METHOD_AUTO_DHCP_ONLY,
-							METHOD_COL_ENABLED, TRUE,
-		                    -1);
-	}
 
 	/* Manual is pointless for Mobile Broadband */
 	if (   priv->connection_type != NM_TYPE_SETTING_GSM
@@ -256,10 +242,6 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 		addr_enabled = FALSE;
 		dns_enabled = routes_enabled = TRUE;
 		break;
-	case IP6_METHOD_AUTO_DHCP_ONLY:
-		addr_enabled = FALSE;
-		routes_enabled = TRUE;
-		break;
 	case IP6_METHOD_MANUAL:
 		addr_enabled = dns_enabled = routes_enabled = TRUE;
 		break;
@@ -336,8 +318,6 @@ populate_ui (CEPageIP6 *self)
 	if (str_method) {
 		if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_AUTO))
 			method = IP6_METHOD_AUTO;
-		if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_DHCP))
-			method = IP6_METHOD_AUTO_DHCP_ONLY;
 		else if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_LINK_LOCAL))
 			method = IP6_METHOD_LINK_LOCAL;
 		else if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_MANUAL))
@@ -859,9 +839,6 @@ ui_to_setting (CEPageIP6 *self)
 		break;
 	case IP6_METHOD_SHARED:
 		method = NM_SETTING_IP6_CONFIG_METHOD_SHARED;
-		break;
-	case IP6_METHOD_AUTO_DHCP_ONLY:
-		method = NM_SETTING_IP6_CONFIG_METHOD_DHCP;
 		break;
 	case IP6_METHOD_AUTO_ADDRESSES:
 		ignore_auto_dns = TRUE;
