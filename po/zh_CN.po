@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zh_CN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-06 14:35+0530\n"
-"PO-Revision-Date: 2010-05-07 10:29+1000\n"
+"POT-Creation-Date: 2010-05-18 18:03+0530\n"
+"PO-Revision-Date: 2010-05-18 23:50+1000\n"
 "Last-Translator: Leah Liu <lliu@redhat.com>\n"
 "Language-Team: Wei Liu\n"
 "MIME-Version: 1.0\n"
@@ -433,22 +433,36 @@ msgstr "WPA/WPA2"
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:207
+#: ../src/applet-dialogs.c:198
 #: ../src/connection-editor/page-wireless-security.c:238
 #: ../src/wireless-dialog.c:919
+msgctxt "No wifi security used"
 msgid "None"
-msgstr "无"
+msgstr ""
+"无"
 
-#: ../src/applet-dialogs.c:210 ../src/applet-dialogs.c:282
-#: ../src/applet-dialogs.c:384 ../src/applet-dialogs.c:421
-#: ../src/applet-dialogs.c:439 ../src/applet-dialogs.c:450
+#: ../src/applet-dialogs.c:207
+msgctxt "No wired security used"
+msgid "None"
+msgstr ""
+"无"
+
+#: ../src/applet-dialogs.c:210
+msgctxt "Unknown/unrecognized wired or wifi security"
 msgid "Unknown"
-msgstr "未知"
+msgstr ""
+"未知"
 
 #: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/秒"
+
+#: ../src/applet-dialogs.c:282 ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
+#: ../src/applet-dialogs.c:450
+msgid "Unknown"
+msgstr "未知"
 
 #: ../src/applet-dialogs.c:313
 #, c-format
@@ -1084,7 +1098,9 @@ msgstr "仅将此连接用于相对应的网络上的资源(_O)"
 msgid ""
 "When connecting to IPv6-capable networks, allows the connection to complete "
 "if IPv4 configuration fails but IPv6 configuration succeeds."
-msgstr "当连接到兼容 IPv6 的网络时，如果 IPv4 配置失败而 IPv6 配置成功，则允许连接完成。"
+msgstr ""
+"当连接到兼容 IPv6 的网络时，如果 IPv4 配置失败而 IPv6 配置成功，则允许连接完"
+"成。"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:17
 #: ../src/connection-editor/ce-page-ip6.glade.h:15
@@ -1114,7 +1130,9 @@ msgstr "需要 IPv6 地址完成这个连接"
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
-msgstr "当连接到兼容 IPv4 的网络时，如果 IPv6 配置失败而 IPv4 配置成功，则允许连接完成。"
+msgstr ""
+"当连接到兼容 IPv4 的网络时，如果 IPv6 配置失败而 IPv4 配置成功，则允许连接完"
+"成。"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -1363,13 +1381,17 @@ msgstr "Mb/秒"
 msgid ""
 "This option locks this connection to the network device specified by the MAC "
 "address entered here.  Example: 00:11:22:33:44:55"
-msgstr "这个选项将这个连接锁定到这里输入的 MAC 地址指定的网络设备。例如：00:11:22:33:44:55"
+msgstr ""
+"这个选项将这个连接锁定到这里输入的 MAC 地址指定的网络设备。例如："
+"00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wireless.glade.h:12
 msgid ""
 "This option locks this connection to the wireless access point (AP) "
 "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
-msgstr "这个选项将这个连接锁定到这里输入的 BSSID 指定的无线访问点（AP）。例如：00:11:22:33:44:55"
+msgstr ""
+"这个选项将这个连接锁定到这里输入的 BSSID 指定的无线访问点（AP）。例如："
+"00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wireless.glade.h:13
 msgid "Transmission po_wer:"
@@ -1993,64 +2015,78 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "导出 VPN 连接"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:214
+#: ../src/gnome-bluetooth/bt-widget.c:213
 #, c-format
 msgid "%s Network"
 msgstr "%s 网络"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:323
+#: ../src/gnome-bluetooth/bt-widget.c:322
 #, c-format
 msgid "Error: %s"
 msgstr "错误：%s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:442
+#: ../src/gnome-bluetooth/bt-widget.c:441
 msgid "Mobile wizard was canceled"
 msgstr "取消移动向导"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:451
+#: ../src/gnome-bluetooth/bt-widget.c:450
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "未知电话设备类型（不是 GSM 或者 CDMA）"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:479
+#: ../src/gnome-bluetooth/bt-widget.c:478
 msgid "Your phone is now ready to use!"
 msgstr "您的电话已经可以使用！"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:649
-#: ../src/gnome-bluetooth/network-manager-applet.c:655
+#: ../src/gnome-bluetooth/bt-widget.c:648
+#: ../src/gnome-bluetooth/bt-widget.c:654
 msgid "failed to connect to the phone."
 msgstr "连接到电话失败。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:688
+#: ../src/gnome-bluetooth/bt-widget.c:687
 msgid "unexpectedly disconnected from the phone."
 msgstr "意外断开与电话的连接。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:697
+#: ../src/gnome-bluetooth/bt-widget.c:696
 msgid "timed out detecting phone details."
 msgstr "侦测电话详情超时。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:712
+#: ../src/gnome-bluetooth/bt-widget.c:711
 msgid "could not connect to the system bus."
 msgstr "无法连接到系统总线。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:717
+#: ../src/gnome-bluetooth/bt-widget.c:716
 msgid "Detecting phone configuration..."
 msgstr "侦测电话配置......"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:783
+#: ../src/gnome-bluetooth/bt-widget.c:782
 msgid "could not find the Bluetooth device."
 msgstr "无法找到蓝牙设备。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:913
+#: ../src/gnome-bluetooth/bt-widget.c:912
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
 msgstr "在设置拨号网络连接前必须启用默认蓝牙适配器。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:966
+#: ../src/gnome-bluetooth/bt-widget.c:944
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr "不可能配置蓝牙（连接到 D-Bus 失败：%s）。"
+
+#: ../src/gnome-bluetooth/bt-widget.c:954
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr "不可能配置蓝牙（创建 D-Bus 代理服务器失败）。"
+
+#: ../src/gnome-bluetooth/bt-widget.c:963
+#, c-format
+msgid "Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgstr "不可能配置蓝牙（查找 NetworkManager 出错：%s）。"
+
+#: ../src/gnome-bluetooth/bt-widget.c:1014
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "使用您的移动电话作为网络设备（PAN/NAP）"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:975
+#: ../src/gnome-bluetooth/bt-widget.c:1023
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "使用您的手机访问互联网（DUN）"
 
