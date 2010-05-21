@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-06 14:35+0530\n"
-"PO-Revision-Date: 2010-05-10 13:36+0530\n"
+"POT-Creation-Date: 2010-05-18 18:03+0530\n"
+"PO-Revision-Date: 2010-05-19 13:08+0530\n"
 "Last-Translator: I Felix <ifelix@redhat.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -450,15 +450,20 @@ msgstr "WPA/WPA2"
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:207
+#: ../src/applet-dialogs.c:198
 #: ../src/connection-editor/page-wireless-security.c:238
 #: ../src/wireless-dialog.c:919
+msgctxt "No wifi security used"
 msgid "None"
 msgstr "ஒன்றுமில்லை"
 
-#: ../src/applet-dialogs.c:210 ../src/applet-dialogs.c:282
-#: ../src/applet-dialogs.c:384 ../src/applet-dialogs.c:421
-#: ../src/applet-dialogs.c:439 ../src/applet-dialogs.c:450
+#: ../src/applet-dialogs.c:207
+msgctxt "No wired security used"
+msgid "None"
+msgstr "ஒன்றுமில்லை"
+
+#: ../src/applet-dialogs.c:210
+msgctxt "Unknown/unrecognized wired or wifi security"
 msgid "Unknown"
 msgstr "தெரியாத"
 
@@ -466,6 +471,12 @@ msgstr "தெரியாத"
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
+
+#: ../src/applet-dialogs.c:282 ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
+#: ../src/applet-dialogs.c:450
+msgid "Unknown"
+msgstr "தெரியாத"
 
 #: ../src/applet-dialogs.c:313
 #, c-format
@@ -2040,54 +2051,54 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "VPN இணைப்பை ஏற்றவும்..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:214
+#: ../src/gnome-bluetooth/bt-widget.c:213
 #, c-format
 msgid "%s Network"
 msgstr "%s பிணையம்"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:323
+#: ../src/gnome-bluetooth/bt-widget.c:322
 #, c-format
 msgid "Error: %s"
 msgstr "பிழை: %s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:442
+#: ../src/gnome-bluetooth/bt-widget.c:441
 msgid "Mobile wizard was canceled"
 msgstr "மொபைல் பார்வை ரத்துசெய்யப்பட்டது"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:451
+#: ../src/gnome-bluetooth/bt-widget.c:450
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "தெரியாத ஃபோன் சாதன வகை ( GSM இல்லை அல்லது CDMA)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:479
+#: ../src/gnome-bluetooth/bt-widget.c:478
 msgid "Your phone is now ready to use!"
 msgstr "உங்கள் ஃபோன் இப்போது பயன்படுத்துவதற்கு தயாராக உள்ளது!"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:649
-#: ../src/gnome-bluetooth/network-manager-applet.c:655
+#: ../src/gnome-bluetooth/bt-widget.c:648
+#: ../src/gnome-bluetooth/bt-widget.c:654
 msgid "failed to connect to the phone."
 msgstr "ஃபோனுக்கு இணைக்க முடியவில்லை."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:688
+#: ../src/gnome-bluetooth/bt-widget.c:687
 msgid "unexpectedly disconnected from the phone."
 msgstr "எதிர்பாராமல் ஃபோனிலிருந்து துண்டிக்கப்பட்டது."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:697
+#: ../src/gnome-bluetooth/bt-widget.c:696
 msgid "timed out detecting phone details."
 msgstr "ஃபோன் விவரங்களை தேடுவதற்கு நேரம் முடிந்தது."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:712
+#: ../src/gnome-bluetooth/bt-widget.c:711
 msgid "could not connect to the system bus."
 msgstr "கணினி பஸ்க்கு இணைக்க முடியவில்லை."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:717
+#: ../src/gnome-bluetooth/bt-widget.c:716
 msgid "Detecting phone configuration..."
 msgstr "ஃபோன் கட்டமைப்பை தேடுகிறது..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:783
+#: ../src/gnome-bluetooth/bt-widget.c:782
 msgid "could not find the Bluetooth device."
 msgstr "ஃப்ளூடூத் சாதனத்தை தேட முடியவில்லை."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:913
+#: ../src/gnome-bluetooth/bt-widget.c:912
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2095,11 +2106,25 @@ msgstr ""
 "டயல்-அப்-பிணைய இணைப்பு அமைவிற்கு முன் முன்னிருப்பு ஃப்ளூடூத் அடாப்படர் செயல்படுதப்பட "
 "வேண்டும்."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:966
+#: ../src/gnome-bluetooth/bt-widget.c:944
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr "ப்ளூடூத் கட்டமைப்பு சாத்தியமில்லை (D-Busஉடன் இணைக்க முடியவில்லை: %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:954
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr "ப்ளூடூத் கட்டமைப்பு சாத்தியமில்லை (D-Bus ப்ராக்ஸியை உருவாக்க முடியவில்லை)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:963
+#, c-format
+msgid "Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgstr "ப்ளூடூத் கட்டமைப்பு சாத்தியமில்லை (NetworkManagerஐ கண்டுபிடிப்பதில் பிழை: %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:1014
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "ஒரு பிணைய சாதனமாக உங்கள் மொபைல் ஃபோனை பயன்படுத்தவும் (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:975
+#: ../src/gnome-bluetooth/bt-widget.c:1023
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "உங்களது மொபைல் போனுக்கு பயன்படுத்துகிற இணையத்தை அணுகுகிறது (DUN)"
 
