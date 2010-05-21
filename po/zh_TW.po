@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zh_TW\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-06 14:35+0530\n"
-"PO-Revision-Date: 2010-05-07 10:39+1000\n"
+"POT-Creation-Date: 2010-05-18 18:03+0530\n"
+"PO-Revision-Date: 2010-05-19 13:53+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -434,22 +434,33 @@ msgstr "WPA/WPA2"
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:207
+#: ../src/applet-dialogs.c:198
 #: ../src/connection-editor/page-wireless-security.c:238
 #: ../src/wireless-dialog.c:919
+msgctxt "No wifi security used"
 msgid "None"
 msgstr "無"
 
-#: ../src/applet-dialogs.c:210 ../src/applet-dialogs.c:282
-#: ../src/applet-dialogs.c:384 ../src/applet-dialogs.c:421
-#: ../src/applet-dialogs.c:439 ../src/applet-dialogs.c:450
+#: ../src/applet-dialogs.c:207
+msgctxt "No wired security used"
+msgid "None"
+msgstr "無"
+
+#: ../src/applet-dialogs.c:210
+msgctxt "Unknown/unrecognized wired or wifi security"
 msgid "Unknown"
-msgstr "未知"
+msgstr "不明"
 
 #: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
+
+#: ../src/applet-dialogs.c:282 ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
+#: ../src/applet-dialogs.c:450
+msgid "Unknown"
+msgstr "不明"
 
 #: ../src/applet-dialogs.c:313
 #, c-format
@@ -1090,7 +1101,9 @@ msgstr "只在使用這個連線的網路資源時，才使用此連線(_o)"
 msgid ""
 "When connecting to IPv6-capable networks, allows the connection to complete "
 "if IPv4 configuration fails but IPv6 configuration succeeds."
-msgstr "當連至可使用 IPv6 的網路時，若 IPv4 配置失敗，不過 IPv6 配置卻成功的話，請允許連線完成。"
+msgstr ""
+"當連至可使用 IPv6 的網路時，若 IPv4 配置失敗，不過 IPv6 配置卻成功的話，請允"
+"許連線完成。"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:17
 #: ../src/connection-editor/ce-page-ip6.glade.h:15
@@ -1120,7 +1133,9 @@ msgstr "需要 IPv6 addressing 才可完成此連線"
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
-msgstr "當連至可使用 IPv4 的網路時，若 IPv6 配置失敗，不過 IPv4 配置卻成功的話，請允許連線完成。"
+msgstr ""
+"當連至可使用 IPv4 的網路時，若 IPv6 配置失敗，不過 IPv4 配置卻成功的話，請允"
+"許連線完成。"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -1369,13 +1384,17 @@ msgstr "Mb/s"
 msgid ""
 "This option locks this connection to the network device specified by the MAC "
 "address entered here.  Example: 00:11:22:33:44:55"
-msgstr "此選項會將此連線鎖定至在此所輸入的 MAC 位址所指定的網路裝置。例如：00:11:22:33:44:55"
+msgstr ""
+"此選項會將此連線鎖定至在此所輸入的 MAC 位址所指定的網路裝置。例如："
+"00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wireless.glade.h:12
 msgid ""
 "This option locks this connection to the wireless access point (AP) "
 "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
-msgstr "此選項會將此連線鎖定至在此所輸入的 BSSID 所指定的無限存取點（AP）。例如：00:11:22:33:44:55"
+msgstr ""
+"此選項會將此連線鎖定至在此所輸入的 BSSID 所指定的無限存取點（AP）。例如："
+"00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wireless.glade.h:13
 msgid "Transmission po_wer:"
@@ -1854,7 +1873,7 @@ msgstr "編輯連線錯誤：屬性 '%s' / '%s' 錯誤：%d"
 #: ../src/connection-editor/nm-connection-list.c:632
 #: ../src/connection-editor/nm-connection-list.c:747
 msgid "An unknown error occurred."
-msgstr "發生未知的錯誤。"
+msgstr "發生不明的錯誤。"
 
 #: ../src/connection-editor/nm-connection-list.c:637
 #: ../src/connection-editor/nm-connection-list.c:788
@@ -1998,64 +2017,78 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "匯出 VPN 連線..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:214
+#: ../src/gnome-bluetooth/bt-widget.c:213
 #, c-format
 msgid "%s Network"
 msgstr "%s 網路"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:323
+#: ../src/gnome-bluetooth/bt-widget.c:322
 #, c-format
 msgid "Error: %s"
 msgstr "錯誤：%s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:442
+#: ../src/gnome-bluetooth/bt-widget.c:441
 msgid "Mobile wizard was canceled"
 msgstr "行動精靈已經取消"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:451
+#: ../src/gnome-bluetooth/bt-widget.c:450
 msgid "Unknown phone device type (not GSM or CDMA)"
-msgstr "未知的電話裝置類型（非 GSM 或 CDMA）"
+msgstr "不明的電話裝置類型（非 GSM 或 CDMA）"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:479
+#: ../src/gnome-bluetooth/bt-widget.c:478
 msgid "Your phone is now ready to use!"
 msgstr "您的電話現在已經可以使用！"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:649
-#: ../src/gnome-bluetooth/network-manager-applet.c:655
+#: ../src/gnome-bluetooth/bt-widget.c:648
+#: ../src/gnome-bluetooth/bt-widget.c:654
 msgid "failed to connect to the phone."
 msgstr "無法連線至電話。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:688
+#: ../src/gnome-bluetooth/bt-widget.c:687
 msgid "unexpectedly disconnected from the phone."
 msgstr "電話無預期離線。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:697
+#: ../src/gnome-bluetooth/bt-widget.c:696
 msgid "timed out detecting phone details."
 msgstr "在時間內偵測不到電話的詳細資料。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:712
+#: ../src/gnome-bluetooth/bt-widget.c:711
 msgid "could not connect to the system bus."
 msgstr "無法連線至系統匯流排。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:717
+#: ../src/gnome-bluetooth/bt-widget.c:716
 msgid "Detecting phone configuration..."
 msgstr "偵測電話的配置..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:783
+#: ../src/gnome-bluetooth/bt-widget.c:782
 msgid "could not find the Bluetooth device."
 msgstr "找不到藍牙裝置。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:913
+#: ../src/gnome-bluetooth/bt-widget.c:912
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
 msgstr "預設的藍牙配接卡必須在設定撥接網路連線前啟用。"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:966
+#: ../src/gnome-bluetooth/bt-widget.c:944
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr "無法進行藍牙的配置（無法連至 D-Bus：%s）。"
+
+#: ../src/gnome-bluetooth/bt-widget.c:954
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr "無法進行藍牙的配置（無法連至 D-Bus proxy）。"
+
+#: ../src/gnome-bluetooth/bt-widget.c:963
+#, c-format
+msgid "Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgstr "無法進行藍牙的配置（找不到 NetworkManager：%s）。"
+
+#: ../src/gnome-bluetooth/bt-widget.c:1014
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "使用手機作為網路裝置（PAN/NAP）"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:975
+#: ../src/gnome-bluetooth/bt-widget.c:1023
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "使用手機存取網際網路（DUN）"
 
