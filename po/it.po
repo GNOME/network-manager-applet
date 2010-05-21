@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-06 14:35+0530\n"
-"PO-Revision-Date: 2010-05-07 11:05+1000\n"
+"POT-Creation-Date: 2010-05-18 18:03+0530\n"
+"PO-Revision-Date: 2010-05-19 09:10+1000\n"
 "Last-Translator: \n"
 "Language-Team:  <it@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -458,22 +458,37 @@ msgid "WEP"
 msgstr "WEP"
 
 # Dovrebbe riferirsi a "sicurezza"
-#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:207
+#: ../src/applet-dialogs.c:198
 #: ../src/connection-editor/page-wireless-security.c:238
 #: ../src/wireless-dialog.c:919
+msgctxt "No wifi security used"
 msgid "None"
-msgstr "Nessuna"
+msgstr ""
+"Nessuna"
 
-#: ../src/applet-dialogs.c:210 ../src/applet-dialogs.c:282
-#: ../src/applet-dialogs.c:384 ../src/applet-dialogs.c:421
-#: ../src/applet-dialogs.c:439 ../src/applet-dialogs.c:450
+# Dovrebbe riferirsi a "sicurezza"
+#: ../src/applet-dialogs.c:207
+msgctxt "No wired security used"
+msgid "None"
+msgstr ""
+"Nessuna"
+
+#: ../src/applet-dialogs.c:210
+msgctxt "Unknown/unrecognized wired or wifi security"
 msgid "Unknown"
-msgstr "Sconosciuta"
+msgstr ""
+"Sconosciuta"
 
 #: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
+
+#: ../src/applet-dialogs.c:282 ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
+#: ../src/applet-dialogs.c:450
+msgid "Unknown"
+msgstr "Sconosciuta"
 
 #: ../src/applet-dialogs.c:313
 #, c-format
@@ -1139,7 +1154,10 @@ msgstr "Usare questa c_onnessione solo per risorse sulla sua rete"
 msgid ""
 "When connecting to IPv6-capable networks, allows the connection to complete "
 "if IPv4 configuration fails but IPv6 configuration succeeds."
-msgstr "Durante il collegamento con reti abilitate-IPv6, permette il completamento di un collegamento se la configurazione IPv4 fallisce ma la configurazione IPv6 ha successo."
+msgstr ""
+"Durante il collegamento con reti abilitate-IPv6, permette il completamento "
+"di un collegamento se la configurazione IPv4 fallisce ma la configurazione "
+"IPv6 ha successo."
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:17
 #: ../src/connection-editor/ce-page-ip6.glade.h:15
@@ -1169,7 +1187,10 @@ msgstr "Per completare questa connessione è necessario un IPv6 addressing"
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
-msgstr "Durante il collegamento con reti abilitate-IPv4, permette il completamento di un collegamento se la configurazione IPv6 fallisce ma la configurazione IPv4 ha successo."
+msgstr ""
+"Durante il collegamento con reti abilitate-IPv4, permette il completamento "
+"di un collegamento se la configurazione IPv6 fallisce ma la configurazione "
+"IPv4 ha successo."
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -1425,13 +1446,17 @@ msgstr "Mb/s"
 msgid ""
 "This option locks this connection to the network device specified by the MAC "
 "address entered here.  Example: 00:11:22:33:44:55"
-msgstr "Questa opzione blocca la connessione per il dispositivo di rete specificato dall'indirizzo MAC inserito qui. Esempio: 00:11:22:33:44:55"
+msgstr ""
+"Questa opzione blocca la connessione per il dispositivo di rete specificato "
+"dall'indirizzo MAC inserito qui. Esempio: 00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wireless.glade.h:12
 msgid ""
 "This option locks this connection to the wireless access point (AP) "
 "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
-msgstr "Questa opzione blocca la connessione per il punto di accesso (AP) wireless specificato dal BSSID inserito qui. Esempio: 00:11:22:33:44:55"
+msgstr ""
+"Questa opzione blocca la connessione per il punto di accesso (AP) wireless "
+"specificato dal BSSID inserito qui. Esempio: 00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wireless.glade.h:13
 msgid "Transmission po_wer:"
@@ -2086,54 +2111,54 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "Esporta connessione VPN..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:214
+#: ../src/gnome-bluetooth/bt-widget.c:213
 #, c-format
 msgid "%s Network"
 msgstr "Rete %s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:323
+#: ../src/gnome-bluetooth/bt-widget.c:322
 #, c-format
 msgid "Error: %s"
 msgstr "Errore: %s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:442
+#: ../src/gnome-bluetooth/bt-widget.c:441
 msgid "Mobile wizard was canceled"
 msgstr "L'assistente alla connessione mobile è stato annullato"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:451
+#: ../src/gnome-bluetooth/bt-widget.c:450
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "Tipo di telefono sconosciuto (né GSM né CDMA)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:479
+#: ../src/gnome-bluetooth/bt-widget.c:478
 msgid "Your phone is now ready to use!"
 msgstr "Il telefono è pronto all'uso."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:649
-#: ../src/gnome-bluetooth/network-manager-applet.c:655
+#: ../src/gnome-bluetooth/bt-widget.c:648
+#: ../src/gnome-bluetooth/bt-widget.c:654
 msgid "failed to connect to the phone."
 msgstr "connessione al telefono fallita."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:688
+#: ../src/gnome-bluetooth/bt-widget.c:687
 msgid "unexpectedly disconnected from the phone."
 msgstr "disconnessione inattesa dal telefono."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:697
+#: ../src/gnome-bluetooth/bt-widget.c:696
 msgid "timed out detecting phone details."
 msgstr "tempo esaurito nel rilevare i dettagli del telefono."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:712
+#: ../src/gnome-bluetooth/bt-widget.c:711
 msgid "could not connect to the system bus."
 msgstr "impossibile connettersi al bus di sistema."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:717
+#: ../src/gnome-bluetooth/bt-widget.c:716
 msgid "Detecting phone configuration..."
 msgstr "Rilevazione configurazione telefono..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:783
+#: ../src/gnome-bluetooth/bt-widget.c:782
 msgid "could not find the Bluetooth device."
 msgstr "impossibile trovare il dispositivo Bluetooth."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:913
+#: ../src/gnome-bluetooth/bt-widget.c:912
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2141,11 +2166,25 @@ msgstr ""
 "L'adattatore Bluetooth predefinito deve essere abilitato prima di poter "
 "impostare una connessione Dial-Up-Networking."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:966
+#: ../src/gnome-bluetooth/bt-widget.c:944
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr "Impossibile eseguire una configurazione del Bluetooth (connessione a D-Bus fallita: %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:954
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr "Impossibile eseguire una configurazione del Bluetooth (creazione proxy D-Bus fallita)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:963
+#, c-format
+msgid "Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgstr "Impossibile eseguire una configurazione del Bluetooth (errore durante la ricerca del NetworkManager: %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:1014
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Usa il telefono mobile come dispositivo di rete (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:975
+#: ../src/gnome-bluetooth/bt-widget.c:1023
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Accesso a Internet usando il telefono mobile (DUN)"
 
