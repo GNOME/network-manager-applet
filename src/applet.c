@@ -1563,7 +1563,7 @@ nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	g_return_if_fail (applet != NULL);
 
 	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
-	nm_client_sleep (applet->nm_client, !state);
+	nm_client_networking_set_enabled (applet->nm_client, state);
 }
 
 
@@ -1699,6 +1699,7 @@ static void
 nma_context_menu_update (NMApplet *applet)
 {
 	NMState state;
+	gboolean net_enabled = TRUE;
 	gboolean have_wireless = FALSE;
 	gboolean have_wwan = FALSE;
 	gboolean wireless_hw_enabled;
@@ -1716,8 +1717,9 @@ nma_context_menu_update (NMApplet *applet)
 	/* Enabled Networking */
 	g_signal_handler_block (G_OBJECT (applet->networking_enabled_item),
 	                        applet->networking_enabled_toggled_id);
+	net_enabled = nm_client_networking_get_enabled (applet->nm_client);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->networking_enabled_item),
-	                                state != NM_STATE_ASLEEP);
+	                                net_enabled && (state != NM_STATE_ASLEEP));
 	g_signal_handler_unblock (G_OBJECT (applet->networking_enabled_item),
 	                          applet->networking_enabled_toggled_id);
 
