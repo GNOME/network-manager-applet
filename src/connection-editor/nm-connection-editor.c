@@ -417,7 +417,7 @@ nm_connection_editor_new (NMConnection *connection,
 	}
 
 	editor->ok_button = ce_polkit_button_new (_("Apply"),
-	                                          _("Save this connection for all users of this machine."),
+	                                          _("Save any changes made to this connection."),
 	                                          _("Apply..."),
 	                                          _("Authenticate to save this connection for all users of this machine."),
 	                                          GTK_STOCK_APPLY,
