@@ -325,7 +325,7 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	auth_label = _("Apply...");
 	auth_tooltip = _("Authenticate to save this connection for all users of this machine.");
 	label = _("Apply");
-	tooltip = _("Save this connection for all users of this machine.");
+	tooltip = _("Save any changes made to this connection.");
 	g_object_set (editor->system_gnome_action,
 	              "polkit-action", NULL,
 
