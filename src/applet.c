@@ -1292,8 +1292,12 @@ nma_menu_device_get_menu_item (NMDevice *device,
 	GtkWidget *item = NULL;
 	gboolean managed = TRUE;
 
-	if (!unavailable_msg)
-		unavailable_msg = _("device not ready");
+	if (!unavailable_msg) {
+		if (nm_device_get_firmware_missing (device))
+			unavailable_msg = _("device not ready (firmware missing)");
+		else
+			unavailable_msg = _("device not ready");
+	}
 
 	switch (nm_device_get_state (device)) {
 	case NM_DEVICE_STATE_UNKNOWN:
