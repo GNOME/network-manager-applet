@@ -1326,7 +1326,7 @@ wireless_get_icon (NMDevice *device,
 			*tip = g_strdup_printf (_("Wireless network connection '%s' active: %s (%d%%)"),
 			                        id, ssid, strength);
 		} else {
-			pixbuf = applet->wireless_00_icon;
+			pixbuf = nma_icon_check_and_load ("nm-signal-00", &applet->wireless_00_icon, applet);
 			*tip = g_strdup_printf (_("Wireless network connection '%s' active"), id);
 		}
 		break;
