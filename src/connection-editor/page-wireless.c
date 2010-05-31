@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -122,11 +122,11 @@ channel_spin_input_cb (GtkSpinButton *spin, gdouble *new_val, gpointer user_data
 	else
 		int_channel = ceil (channel);
 
-	if (utils_channel_to_freq (int_channel, aband ? "a" : "bg") == -1)
+	if (nm_utils_wifi_channel_to_freq (int_channel, aband ? "a" : "bg") == -1)
 		return GTK_INPUT_ERROR;
 
 	*new_val = channel;
-	return TRUE;
+	return 1;
 }
 
 static gint
@@ -147,23 +147,30 @@ channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
 		if (channel == 0)
 			buf = g_strdup (_("default"));
 		else {
-			freq = utils_channel_to_freq (channel, aband ? "a" : "bg");
+			int direction = 0;
+			freq = nm_utils_wifi_channel_to_freq (channel, aband ? "a" : "bg");
 			if (freq == -1) {
-				int direction = 0;
-
 				if (priv->last_channel < channel)
 					direction = 1;
 				else if (priv->last_channel > channel)
 					direction = -1;
-				channel = utils_find_next_channel (channel, direction, aband ? "a" : "bg");
-				freq = utils_channel_to_freq (channel, aband ? "a" : "bg");
+				channel = nm_utils_wifi_find_next_channel (channel, direction, aband ? "a" : "bg");
+				gtk_spin_button_set_value (spin, channel);
+				freq = nm_utils_wifi_channel_to_freq (channel, aband ? "a" : "bg");
 				if (freq == -1) {
 					g_warning ("%s: invalid channel %d!", __func__, channel);
 					gtk_spin_button_set_value (spin, 0);
 					goto out;
 				}
+
 			}
-			buf = g_strdup_printf (_("%u (%u MHz)"), channel, freq);
+			/* Set spin button to zero to go to "default" from the lowest channel */
+			if (direction == -1 && priv->last_channel == channel) {
+				buf = g_strdup_printf (_("default"));
+				gtk_spin_button_set_value (spin, 0);
+				channel = 0;
+			} else
+				buf = g_strdup_printf (_("%u (%u MHz)"), channel, freq);
 		}
 		priv->last_channel = channel;
 	}
@@ -173,7 +180,7 @@ channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
 
 out:
 	g_free (buf);
-	return TRUE;
+	return 1;
 }
 
 static void
@@ -195,8 +202,53 @@ band_value_changed_cb (GtkComboBox *box, gpointer user_data)
 		sensitive = FALSE;
  		break;
  	}
-	
+
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), sensitive);
+
+	ce_page_changed (CE_PAGE (self));
+}
+
+static void
+mode_combo_changed_cb (GtkComboBox *combo,
+                       gpointer user_data)
+{
+	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
+	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	CEPage *parent = CE_PAGE (self);
+	GtkWidget *widget;
+	gboolean show;
+
+ 	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (combo))) {
+ 	case 1: /* adhoc */
+		show = TRUE;
+ 		break;
+ 	default: /* infrastructure */
+		show = FALSE;
+ 		break;
+ 	}
+
+	if (show) {
+		widget = glade_xml_get_widget (parent->xml, "wireless_band_label");
+		gtk_widget_show (widget);
+		gtk_widget_show (GTK_WIDGET (priv->band));
+		widget = glade_xml_get_widget (parent->xml, "wireless_channel_label");
+		gtk_widget_show (widget);
+		gtk_widget_show (GTK_WIDGET (priv->channel));
+	} else {
+		widget = glade_xml_get_widget (parent->xml, "wireless_band_label");
+		gtk_widget_hide (widget);
+		gtk_widget_hide (GTK_WIDGET (priv->band));
+		widget = glade_xml_get_widget (parent->xml, "wireless_channel_label");
+		gtk_widget_hide (widget);
+		gtk_widget_hide (GTK_WIDGET (priv->channel));
+	}
+
+	widget = glade_xml_get_widget (parent->xml, "wireless_band_label");
+	gtk_widget_set_sensitive (GTK_WIDGET (widget), show);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->band), show);
+	widget = glade_xml_get_widget (parent->xml, "wireless_channel_label");
+	gtk_widget_set_sensitive (GTK_WIDGET (widget), show);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), show);
 
 	ce_page_changed (CE_PAGE (self));
 }
@@ -251,7 +303,8 @@ populate_ui (CEPageWireless *self)
 	gtk_combo_box_set_active (priv->mode, 0);
 	if (mode && !strcmp (mode, "adhoc"))
 		gtk_combo_box_set_active (priv->mode, 1);
-	g_signal_connect_swapped (priv->mode, "changed", G_CALLBACK (ce_page_changed), self);
+	mode_combo_changed_cb (priv->mode, self);
+	g_signal_connect (priv->mode, "changed", G_CALLBACK (mode_combo_changed_cb), self);
 
 	g_signal_connect (priv->channel, "output",
 	                  G_CALLBACK (channel_spin_output_cb),
@@ -305,17 +358,6 @@ finish_setup (CEPageWireless *self, gpointer unused, GError *error, gpointer use
 		return;
 
 	populate_ui (self);
-
-	/* Hide widgets we don't yet support */
-	widget = glade_xml_get_widget (parent->xml, "wireless_band_label");
-	gtk_widget_hide (widget);
-	widget = glade_xml_get_widget (parent->xml, "wireless_band");
-	gtk_widget_hide (widget);
-
-	widget = glade_xml_get_widget (parent->xml, "wireless_channel_label");
-	gtk_widget_hide (widget);
-	widget = glade_xml_get_widget (parent->xml, "wireless_channel");
-	gtk_widget_hide (widget);
 
 	widget = glade_xml_get_widget (parent->xml, "wireless_tx_power_label");
 	gtk_widget_hide (widget);
