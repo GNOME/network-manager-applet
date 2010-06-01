@@ -301,11 +301,9 @@ connection_changes_done (gpointer data)
 		if (connection)
 			internal_add_connection (info->settings, connection);
 	} else {
-		if (gconf_client_dir_exists (priv->client, info->path, NULL)) {
-			/* Updated connection */
-			if (!nma_gconf_connection_gconf_changed (connection))
-				priv->connections = g_slist_remove (priv->connections, connection);
-		}
+		/* Updated or removed/invalid connection */
+		if (!nma_gconf_connection_gconf_changed (connection))
+			priv->connections = g_slist_remove (priv->connections, connection);
 	}
 
 	g_hash_table_remove (priv->pending_changes, info->path);
