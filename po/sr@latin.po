@@ -4,14 +4,15 @@
 # This file is distributed under the same license as the totem package.
 #
 # Maintainer: Filip Miletic
+# Miloš Popović <gpopac@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2009-11-07 05:36+0000\n"
-"PO-Revision-Date: 2009-11-16 09:43+0000\n"
+"POT-Creation-Date: 2010-06-02 19:43+0000\n"
+"PO-Revision-Date: 2010-06-03 21:52+0200\n"
 "Last-Translator: Miloš Popović <gpopac@gmail.com>\n"
 "Language-Team: Serbian <gnome@prevod.org>\n"
 "MIME-Version: 1.0\n"
@@ -61,8 +62,6 @@ msgstr ""
 "mreža."
 
 #: ../nm-applet.schemas.in.h:7
-#| msgid ""
-#| "Set this to TRUE to disable notifications when connecting to a network."
 msgid ""
 "Set to TRUE to disable creation of adhoc networks when using the applet."
 msgstr ""
@@ -90,122 +89,200 @@ msgstr "Upravljajte i izmenite podešavanja vaših mrežnih veza"
 msgid "Network Connections"
 msgstr "Veze sa mrežom"
 
-#: ../src/applet-device-bt.c:171 ../src/applet-device-cdma.c:291
-#: ../src/applet-device-gsm.c:284 ../src/applet-device-wired.c:241
-#: ../src/applet-device-wifi.c:781
+#: ../src/applet-dbus-manager.c:165
+#, c-format
+msgid "An instance of nm-applet is already running.\n"
+msgstr "Već je pokrenuto programče Upravnika mreže.\n"
+
+#: ../src/applet-dbus-manager.c:167
+#, c-format
+msgid "Could not acquire the %s service. (%d)\n"
+msgstr "Ne mogu da dobijem %s servis. (%d)\n"
+
+#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:332
+#: ../src/applet-device-gsm.c:375 ../src/applet-device-wired.c:241
+#: ../src/applet-device-wifi.c:816
 msgid "Available"
 msgstr "Dostupno"
 
-#: ../src/applet-device-bt.c:197 ../src/applet-device-cdma.c:321
-#: ../src/applet-device-gsm.c:314 ../src/applet-device-wired.c:270
+#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:374
+#: ../src/applet-device-gsm.c:417 ../src/applet-device-wired.c:270
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Povezani ste na „%s“."
 
-#: ../src/applet-device-bt.c:201 ../src/applet-device-cdma.c:325
-#: ../src/applet-device-gsm.c:318 ../src/applet-device-wired.c:274
-#: ../src/applet-device-wifi.c:1285
+#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:378
+#: ../src/applet-device-gsm.c:421 ../src/applet-device-wired.c:274
+#: ../src/applet-device-wifi.c:1257
 msgid "Connection Established"
 msgstr "Veza uspostavljena"
 
-#: ../src/applet-device-bt.c:202
+#: ../src/applet-device-bt.c:205
 msgid "You are now connected to the mobile broadband network."
 msgstr "Povezani ste mobilnom širokopojasnom mrežom."
 
-#: ../src/applet-device-bt.c:228 ../src/applet-device-cdma.c:352
-#: ../src/applet-device-gsm.c:345
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:414
+#: ../src/applet-device-gsm.c:457
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Pripremam mobilnu, širokopojasnu vezu „%s“..."
 
-#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:355
-#: ../src/applet-device-gsm.c:348
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:417
+#: ../src/applet-device-gsm.c:460
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Podešavam mobilnu, širokopojasnu vezu „%s“..."
 
-#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:358
-#: ../src/applet-device-gsm.c:351
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:420
+#: ../src/applet-device-gsm.c:463
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Potrebna je prijava korisnika za povezivanje u mobilnoj mreži „%s“..."
 
-#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:361
-#: ../src/applet-device-gsm.c:354 ../src/applet.c:2233
+#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:423
+#: ../src/applet-device-gsm.c:466 ../src/applet.c:2272
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Zahtevam mrežnu adresu za „%s“..."
 
-#: ../src/applet-device-bt.c:241 ../src/applet-device-cdma.c:365
-#: ../src/applet-device-gsm.c:358
+#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:441
+#: ../src/applet-device-gsm.c:484
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Povezani ste preko mobilne širokopojasne veze „%s“"
 
-#: ../src/applet-device-cdma.c:150 ../src/connection-editor/page-mobile.c:625
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:621
+#: ../src/mb-menu-item.c:55
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:222
-msgid "New Mobile Broadband (CDMA) connection..."
-msgstr "Nova mobilna, širokopojasna veza (CDMA)..."
-
-#: ../src/applet-device-cdma.c:261 ../src/applet-device-gsm.c:260
+#: ../src/applet-device-cdma.c:281 ../src/applet-device-gsm.c:325
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobilna veza (%s)"
 
-#: ../src/applet-device-cdma.c:263 ../src/applet-device-gsm.c:262
-#: ../src/connection-editor/page-mobile.c:326
+#: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
+#: ../src/connection-editor/page-mobile.c:318
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1360
+#: ../src/connection-editor/nm-connection-list.c:1401
 msgid "Mobile Broadband"
 msgstr "Mobilna"
 
-#: ../src/applet-device-cdma.c:326
+#. Default connection item
+#: ../src/applet-device-cdma.c:345
+msgid "New Mobile Broadband (CDMA) connection..."
+msgstr "Nova mobilna, širokopojasna veza (CDMA)..."
+
+#: ../src/applet-device-cdma.c:379
 msgid "You are now connected to the CDMA network."
 msgstr "Sada ste povezani na CDMA mrežu."
 
-#: ../src/applet-device-cdma.c:495 ../src/applet-device-gsm.c:570
-msgid "Mobile broadband network password"
-msgstr "Lozinka mobilne, širokopojasne mreže"
-
-#: ../src/applet-device-cdma.c:504 ../src/applet-device-gsm.c:579
+#: ../src/applet-device-cdma.c:436 ../src/applet-device-gsm.c:479
 #, c-format
-msgid "A password is required to connect to '%s'."
-msgstr "Potrebna je lozinka za povezivanje na „%s“."
+#| msgid "Mobile broadband connection '%s' active"
+msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
+msgstr "Povezani ste na mobilnu širokopojasnu vezu „%s“: (%d%%%s%s)"
 
-#: ../src/applet-device-cdma.c:522 ../src/applet-device-gsm.c:597
-msgid "Password:"
-msgstr "Lozinka:"
+#: ../src/applet-device-cdma.c:439 ../src/applet-device-gsm.c:482
+msgid "roaming"
+msgstr "roming"
 
-#: ../src/applet-device-gsm.c:152 ../src/connection-editor/page-mobile.c:628
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:624
+#: ../src/mb-menu-item.c:60
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/applet-device-gsm.c:223
+#. Default connection item
+#: ../src/applet-device-gsm.c:388
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "Nova mobilna, širokopojasna mreža..."
 
-#: ../src/applet-device-gsm.c:319
+#: ../src/applet-device-gsm.c:422
 msgid "You are now connected to the GSM network."
 msgstr "Povezani ste na GSM mrežu."
 
-#: ../src/applet-device-gsm.c:510
+#: ../src/applet-device-gsm.c:711
 msgid "PIN code required"
 msgstr "Potreban je PIN kod"
 
-#: ../src/applet-device-gsm.c:512
+#: ../src/applet-device-gsm.c:713
 msgid "PUK code required"
 msgstr "Potreban je PUK kod"
 
-#: ../src/applet-device-gsm.c:521
+#: ../src/applet-device-gsm.c:722
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Potreban je PIN kod za povezivanje mobilnog, širokopojasnog uređaja"
 
-#: ../src/applet-device-gsm.c:523
+#: ../src/applet-device-gsm.c:724
 msgid "PUK code is needed for the mobile broadband device"
 msgstr "Potreban je PUK kod za povezivanje mobilnog, širokopojasnog uređaja"
+
+#: ../src/applet-device-gsm.c:857
+msgid "Wrong PIN code; please contact your provider."
+msgstr "Pogrešan PIN kod, kontaktirajte vašeg provajdera."
+
+#: ../src/applet-device-gsm.c:880
+msgid "Wrong PUK code; please contact your provider."
+msgstr "Pogrešan PUK kod, kontaktirajte vašeg provajdera."
+
+#. Start the spinner to show the progress of the unlock
+#: ../src/applet-device-gsm.c:907
+msgid "Sending unlock code..."
+msgstr "Šaljem kod za otključavanje."
+
+#: ../src/applet-device-gsm.c:966
+#| msgid "PIN code required"
+msgid "SIM PIN unlock required"
+msgstr "Potrebno je otključati SIM PIN"
+
+#: ../src/applet-device-gsm.c:967
+#| msgid "PIN code required"
+msgid "SIM PIN Unlock Required"
+msgstr "Potrebno je otključati SIM PIN"
+
+#. FIXME: some warning about # of times you can enter incorrect PIN
+#: ../src/applet-device-gsm.c:969
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PIN code before it can be "
+"used."
+msgstr "Mobilni širokopojasni uređaj „%s“ zahteva SIM PIN kod."
+
+#: ../src/applet-device-gsm.c:970
+#| msgid "PIN code required"
+msgid "PIN code:"
+msgstr "PIN kod:"
+
+#: ../src/applet-device-gsm.c:975
+#| msgid "PUK code required"
+msgid "SIM PUK unlock required"
+msgstr "Potrebno je otključati SIM PUK"
+
+#: ../src/applet-device-gsm.c:976
+#| msgid "PUK code required"
+msgid "SIM PUK Unlock Required"
+msgstr "Potrebno je otključati SIM PUK"
+
+#. FIXME: some warning about # of times you can enter incorrect PUK
+#: ../src/applet-device-gsm.c:978
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PUK code before it can be "
+"used."
+msgstr "Mobilni širokopojasni uređaj „%s“ zahteva SIM PUK kod."
+
+#: ../src/applet-device-gsm.c:979
+#| msgid "PUK code required"
+msgid "PUK code:"
+msgstr "PUK kod:"
+
+#: ../src/applet-device-gsm.c:981
+msgid "New PIN code:"
+msgstr "Novi PIN kod:"
+
+#: ../src/applet-device-gsm.c:982
+msgid "Re-enter new PIN code:"
+msgstr "Ponovo unesite PIN kod:"
 
 #: ../src/applet-device-wired.c:63
 msgid "Auto Ethernet"
@@ -230,7 +307,7 @@ msgid "Wired Network"
 msgstr "Žičana mreža"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:233 ../src/applet.c:1377
+#: ../src/applet-device-wired.c:233 ../src/applet.c:1309
 msgid "disconnected"
 msgstr "veza je prekinuta"
 
@@ -267,205 +344,219 @@ msgstr "Povezani ste preko žičane veze „%s“"
 msgid "DSL authentication"
 msgstr "DSL prijava"
 
-#: ../src/applet-device-wifi.c:91
+#: ../src/applet-device-wifi.c:87
 msgid "_Connect to Hidden Wireless Network..."
 msgstr "Po_veži se na skrivene bežične mreže..."
 
-#: ../src/applet-device-wifi.c:124
+#: ../src/applet-device-wifi.c:120
 msgid "Create _New Wireless Network..."
 msgstr "Napravi _novu bežičnu mrežu..."
 
 # bug: no plural forms
-#: ../src/applet-device-wifi.c:715
+#: ../src/applet-device-wifi.c:748
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Bežične mreže (%s)"
 
 # bug: no plural forms
-#: ../src/applet-device-wifi.c:717
+#: ../src/applet-device-wifi.c:750
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Bežična mreža (%s)"
 
 # bug: no plural forms
-#: ../src/applet-device-wifi.c:719
+#: ../src/applet-device-wifi.c:752
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Bežična mreža"
 msgstr[1] "Bežične mreže"
 msgstr[2] "Bežične mreže"
 
-#: ../src/applet-device-wifi.c:747
+#: ../src/applet-device-wifi.c:782
 msgid "wireless is disabled"
 msgstr "Bežična mreža je onemogućena"
 
-#: ../src/applet-device-wifi.c:808
-#| msgid "Wired Networks"
+#: ../src/applet-device-wifi.c:843
 msgid "More networks"
 msgstr "Još mreža"
 
 # bug: no plural forms
-#: ../src/applet-device-wifi.c:1075
+#: ../src/applet-device-wifi.c:1047
 msgid "Wireless Networks Available"
 msgstr "Dostupne bežične mreže"
 
-#: ../src/applet-device-wifi.c:1076
+#: ../src/applet-device-wifi.c:1048
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Kliknite na ovu ikonicu radi povezivanja na bežičnu mrežu"
 
-#: ../src/applet-device-wifi.c:1079 ../src/applet.c:686
+#: ../src/applet-device-wifi.c:1051 ../src/applet.c:677
 msgid "Don't show this message again"
 msgstr "Ne prikazuj više ovo prozorče"
 
-#: ../src/applet-device-wifi.c:1283
+#: ../src/applet-device-wifi.c:1255
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Povezani ste sa bežičnom mrežom „%s“."
 
-#: ../src/applet-device-wifi.c:1284 ../src/applet-device-wifi.c:1315
+#: ../src/applet-device-wifi.c:1256 ../src/applet-device-wifi.c:1287
 msgid "(none)"
 msgstr "(ništa)"
 
-#: ../src/applet-device-wifi.c:1325
+#: ../src/applet-device-wifi.c:1297
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Pripremam vezu preko bežične mreže „%s“..."
 
-#: ../src/applet-device-wifi.c:1328
+#: ../src/applet-device-wifi.c:1300
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Podešavam vezu preko bežične mreže „%s“..."
 
-#: ../src/applet-device-wifi.c:1331
+#: ../src/applet-device-wifi.c:1303
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Potrebna je prijava korisnika za uspostavljanje bežične veze „%s“..."
 
-#: ../src/applet-device-wifi.c:1334
+#: ../src/applet-device-wifi.c:1306
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Zahtevam adresu za bežičnu mrežu „%s“..."
 
-#: ../src/applet-device-wifi.c:1354
+#: ../src/applet-device-wifi.c:1326
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Povezani ste preko bežične veze „%s“ : %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1358
+#: ../src/applet-device-wifi.c:1330
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Povezani ste preko bežične veze „%s“"
 
-#: ../src/applet-dialogs.c:53
+#: ../src/applet-dialogs.c:56
 msgid "Error displaying connection information:"
 msgstr "Greška pri prikazivanju podataka o vezi:"
 
-#: ../src/applet-dialogs.c:84
+#: ../src/applet-dialogs.c:87
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:907
-#: ../src/wireless-security/wireless-security.c:340
+#: ../src/wireless-dialog.c:962
+#: ../src/wireless-security/wireless-security.c:341
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:86
+#: ../src/applet-dialogs.c:89
 msgid "Dynamic WEP"
 msgstr "Dinamički WEP"
 
-#: ../src/applet-dialogs.c:88 ../src/applet-dialogs.c:189
-#: ../src/applet-dialogs.c:191
+#: ../src/applet-dialogs.c:91 ../src/applet-dialogs.c:192
+#: ../src/applet-dialogs.c:194
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:187
+#: ../src/applet-dialogs.c:190
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:195 ../src/applet-dialogs.c:204
+#: ../src/applet-dialogs.c:198
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:864
+#: ../src/wireless-dialog.c:919
+#| msgid "None"
+msgctxt "No wifi security used"
 msgid "None"
 msgstr "Ništa"
 
-#: ../src/applet-dialogs.c:207 ../src/applet-dialogs.c:279
-#: ../src/applet-dialogs.c:380
+#: ../src/applet-dialogs.c:207
+#| msgid "None"
+msgctxt "No wired security used"
+msgid "None"
+msgstr "Ništa"
+
+#: ../src/applet-dialogs.c:210
+#| msgid "Unknown"
+msgctxt "Unknown/unrecognized wired or wifi security"
 msgid "Unknown"
 msgstr "Nepoznato"
 
-#: ../src/applet-dialogs.c:277 ../src/applet-dialogs.c:378
+#: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:309
+#: ../src/applet-dialogs.c:282 ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
+#: ../src/applet-dialogs.c:450
+msgid "Unknown"
+msgstr "Nepoznato"
+
+#: ../src/applet-dialogs.c:313
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Žičana mreža (%s)"
 
-#: ../src/applet-dialogs.c:311
+#: ../src/applet-dialogs.c:315
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:313
+#: ../src/applet-dialogs.c:317
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:315
+#: ../src/applet-dialogs.c:319
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:320
+#: ../src/applet-dialogs.c:324
 msgid "Interface:"
 msgstr "Uređaj:"
 
-#: ../src/applet-dialogs.c:336
+#: ../src/applet-dialogs.c:340
 msgid "Hardware Address:"
 msgstr "Hardverska adresa:"
 
-#: ../src/applet-dialogs.c:346
+#: ../src/applet-dialogs.c:350
 msgid "Driver:"
 msgstr "Drajver"
 
-#: ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:388
 msgid "Speed:"
 msgstr "Brzina:"
 
-#: ../src/applet-dialogs.c:393
+#: ../src/applet-dialogs.c:397
 msgid "Security:"
 msgstr "Bezbednost:"
 
-#: ../src/applet-dialogs.c:413
+#: ../src/applet-dialogs.c:419
 msgid "IP Address:"
 msgstr "IP adresa:"
 
-#: ../src/applet-dialogs.c:429
+#: ../src/applet-dialogs.c:437
 msgid "Broadcast Address:"
 msgstr "Adresa za emitovanje:"
 
-#: ../src/applet-dialogs.c:440
+#: ../src/applet-dialogs.c:448
 msgid "Subnet Mask:"
 msgstr "Mrežna maska:"
 
-#: ../src/applet-dialogs.c:452
+#: ../src/applet-dialogs.c:460
 msgid "Default Route:"
 msgstr "Podrazumevana ruta:"
 
-#: ../src/applet-dialogs.c:467
+#: ../src/applet-dialogs.c:474
 msgid "Primary DNS:"
 msgstr "Primarni DNS:"
 
-#: ../src/applet-dialogs.c:478
+#: ../src/applet-dialogs.c:485
 msgid "Secondary DNS:"
 msgstr "Sekundarni DNS:"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:541
+#: ../src/applet-dialogs.c:548
 msgid "No valid active connections found!"
 msgstr "Nema ispravnih, pokrenutih veza!"
 
-#: ../src/applet-dialogs.c:667
+#: ../src/applet-dialogs.c:674
 msgid ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc."
@@ -473,16 +564,16 @@ msgstr ""
 "Sva prava zadržana © 2004–2008 Red Hat, Inc.\n"
 "Sva prava zadržana © 2005–2008 Novell, Inc."
 
-#: ../src/applet-dialogs.c:669
+#: ../src/applet-dialogs.c:676
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Programče za obaveštajnu zonu za upravljanje mrežnim uređajima i vezama."
 
-#: ../src/applet-dialogs.c:671
+#: ../src/applet-dialogs.c:678
 msgid "NetworkManager Website"
 msgstr "Veb stranica Upravnika mrežom"
 
-#: ../src/applet-dialogs.c:674
+#: ../src/applet-dialogs.c:681
 msgid "translator-credits"
 msgstr ""
 "Filip Miletić\n"
@@ -490,11 +581,24 @@ msgstr ""
 "Miloš Popović <gpopac@gmail.com>\n"
 "Prevod.org — prevod na srpski jezik."
 
-#: ../src/applet-dialogs.c:690
+#: ../src/applet-dialogs.c:697
 msgid "Missing resources"
 msgstr "Nedostaju resursi"
 
-#: ../src/applet.c:810
+#: ../src/applet-dialogs.c:723
+msgid "Mobile broadband network password"
+msgstr "Lozinka mobilne, širokopojasne mreže"
+
+#: ../src/applet-dialogs.c:732
+#, c-format
+msgid "A password is required to connect to '%s'."
+msgstr "Potrebna je lozinka za povezivanje na „%s“."
+
+#: ../src/applet-dialogs.c:750
+msgid "Password:"
+msgstr "Lozinka:"
+
+#: ../src/applet.c:790
 #, c-format
 msgid ""
 "\n"
@@ -504,7 +608,7 @@ msgstr ""
 "\n"
 "Ne mogu da uspostavim VPN vezu „%s“ zbog prekida veze u mreži."
 
-#: ../src/applet.c:813
+#: ../src/applet.c:793
 #, c-format
 msgid ""
 "\n"
@@ -513,7 +617,7 @@ msgstr ""
 "\n"
 "Ne mogu da uspostavim VPN vezu „%s“ zbog neočekivanog isključenja VPN servisa."
 
-#: ../src/applet.c:816
+#: ../src/applet.c:796
 #, c-format
 msgid ""
 "\n"
@@ -524,7 +628,7 @@ msgstr ""
 "Ne mogu da uspostavim VPN vezu „%s“ jer je VPN servis poslao neodgovarajuća "
 "podešavanja."
 
-#: ../src/applet.c:819
+#: ../src/applet.c:799
 #, c-format
 msgid ""
 "\n"
@@ -533,7 +637,7 @@ msgstr ""
 "\n"
 "Ne mogu da uspostavim VPN vezu „%s“ jer je isteklo vreme za povezivanje."
 
-#: ../src/applet.c:822
+#: ../src/applet.c:802
 #, c-format
 msgid ""
 "\n"
@@ -542,7 +646,7 @@ msgstr ""
 "\n"
 "Ne mogu da uspostavim VPN vezu „%s“ jer VPN servis nije pokrenut na vreme."
 
-#: ../src/applet.c:825
+#: ../src/applet.c:805
 #, c-format
 msgid ""
 "\n"
@@ -551,7 +655,7 @@ msgstr ""
 "\n"
 "Ne mogu da uspostavim VPN vezu „%s“ zato što ne mogu da pokrenem VPN servis."
 
-#: ../src/applet.c:828
+#: ../src/applet.c:808
 #, c-format
 msgid ""
 "\n"
@@ -560,7 +664,7 @@ msgstr ""
 "\n"
 "Ne mogu da uspostavim VPN vezu „%s“ jer ne postoje ispravne VPN lozinke."
 
-#: ../src/applet.c:831
+#: ../src/applet.c:811
 #, c-format
 msgid ""
 "\n"
@@ -569,7 +673,7 @@ msgstr ""
 "\n"
 "Ne mogu da uspostavim VPN vezu „%s“ zbog neispravnih VPN lozinki."
 
-#: ../src/applet.c:838
+#: ../src/applet.c:818
 #, c-format
 msgid ""
 "\n"
@@ -578,7 +682,7 @@ msgstr ""
 "\n"
 "Ne mogu da uspostavim VPN vezu „%s“"
 
-#: ../src/applet.c:856
+#: ../src/applet.c:836
 #, c-format
 msgid ""
 "\n"
@@ -588,7 +692,7 @@ msgstr ""
 "\n"
 "Prekinuta je VPN veza „%s“ zbog prekida veze u mreži."
 
-#: ../src/applet.c:859
+#: ../src/applet.c:839
 #, c-format
 msgid ""
 "\n"
@@ -597,7 +701,7 @@ msgstr ""
 "\n"
 "Prekinuta je VPN veza „%s“ zbog isključivanja VPN servisa."
 
-#: ../src/applet.c:865
+#: ../src/applet.c:845
 #, c-format
 msgid ""
 "\n"
@@ -606,15 +710,15 @@ msgstr ""
 "\n"
 "VPN veza „%s“ je prekinuta."
 
-#: ../src/applet.c:948
+#: ../src/applet.c:876
 msgid "VPN Login Message"
 msgstr "Poruka za VPN prijavu"
 
-#: ../src/applet.c:960 ../src/applet.c:968 ../src/applet.c:1015
+#: ../src/applet.c:888 ../src/applet.c:896 ../src/applet.c:943
 msgid "VPN Connection Failed"
 msgstr "Nije uspelo povezivanje na VPN"
 
-#: ../src/applet.c:1022
+#: ../src/applet.c:950
 #, c-format
 msgid ""
 "\n"
@@ -628,7 +732,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1025
+#: ../src/applet.c:953
 #, c-format
 msgid ""
 "\n"
@@ -641,132 +745,142 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1368
+#: ../src/applet.c:1297
+#| msgid "device not ready"
+msgid "device not ready (firmware missing)"
+msgstr "uređaj nije spreman (nedostaje firmver)"
+
+#: ../src/applet.c:1299
 msgid "device not ready"
 msgstr "uređaj nije spreman"
 
-#: ../src/applet.c:1393
+#: ../src/applet.c:1325
 msgid "Disconnect"
 msgstr "Prekini vezu"
 
-#: ../src/applet.c:1407
+#: ../src/applet.c:1339
 msgid "device not managed"
 msgstr "ne mogu da upravljam uređajem"
 
-#: ../src/applet.c:1453
+#: ../src/applet.c:1385
 msgid "No network devices available"
 msgstr "Nije pronađen nijedan mrežni uređaj"
 
-#: ../src/applet.c:1541
+#: ../src/applet.c:1473
 msgid "_VPN Connections"
-msgstr "V_PN veze"
+msgstr "_VPN veze"
 
-#: ../src/applet.c:1594
+#: ../src/applet.c:1526
 msgid "_Configure VPN..."
 msgstr "Po_desi VPN..."
 
-#: ../src/applet.c:1598
-msgid "_Disconnect VPN..."
-msgstr "_Prekini VPN vezu..."
+#: ../src/applet.c:1530
+#| msgid "_Disconnect VPN..."
+msgid "_Disconnect VPN"
+msgstr "_Prekini VPN vezu"
 
-#: ../src/applet.c:1651
+#: ../src/applet.c:1617
 msgid "NetworkManager is not running..."
 msgstr "Upravljač mrežom nije pokrenut..."
 
-#: ../src/applet.c:1656 ../src/applet.c:2361
+#: ../src/applet.c:1622 ../src/applet.c:2400
 msgid "Networking disabled"
 msgstr "Umrežavanje isključeno"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1840
+#: ../src/applet.c:1841
 msgid "Enable _Networking"
 msgstr "Uključi _mrežne usluge"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1849
+#: ../src/applet.c:1850
 msgid "Enable _Wireless"
 msgstr "Uključi _bežično mreženje"
 
+#. 'Enable Mobile Broadband' item
+#: ../src/applet.c:1859
+#| msgid "Mobile Broadband"
+msgid "Enable _Mobile Broadband"
+msgstr "Omogući _mobilne veze"
+
+#. Toggle notifications item
+#: ../src/applet.c:1870
+#| msgid "Disable connected notifications"
+msgid "Enable N_otifications"
+msgstr "_Prikaži obaveštenja"
+
 #. 'Connection Information' item
-#: ../src/applet.c:1860
+#: ../src/applet.c:1881
 msgid "Connection _Information"
 msgstr "Poda_ci o vezi"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1870
+#: ../src/applet.c:1891
 msgid "Edit Connections..."
 msgstr "Uredi veze..."
 
 #. Help item
-#: ../src/applet.c:1884
+#: ../src/applet.c:1905
 msgid "_Help"
 msgstr "_Pomoć"
 
 #. About item
-#: ../src/applet.c:1893
+#: ../src/applet.c:1914
 msgid "_About"
 msgstr "_O programu"
 
-#: ../src/applet.c:2078
+#: ../src/applet.c:2105
 msgid "Disconnected"
 msgstr "Veza je prekinuta"
 
-#: ../src/applet.c:2079
+#: ../src/applet.c:2106
 msgid "The network connection has been disconnected."
 msgstr "Mrežna veza je prekinuta."
 
-#: ../src/applet.c:2227
+#: ../src/applet.c:2266
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Pripremam mrežnu vezu „%s“..."
 
-#: ../src/applet.c:2230
+#: ../src/applet.c:2269
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Potrebna je prijava korisnika za uspostavljanje veze „%s“..."
 
-#: ../src/applet.c:2236
+#: ../src/applet.c:2275
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Povezani ste preko veze „%s“"
 
-#: ../src/applet.c:2317
+#: ../src/applet.c:2356
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Uspostavljam VPN vezu „%s“..."
 
-#: ../src/applet.c:2320
+#: ../src/applet.c:2359
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Potrebna je prijava korisnika za uspostavljanje VPN veze „%s“..."
 
-#: ../src/applet.c:2323
+#: ../src/applet.c:2362
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Zahtevam VPN mrežnu adresu za „%s“..."
 
-#: ../src/applet.c:2326
+#: ../src/applet.c:2365
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "Povezani ste preko VPN veze „%s“"
 
-#: ../src/applet.c:2365
+#: ../src/applet.c:2404
 msgid "No network connection"
 msgstr "Nema mrežnih veza"
 
-#: ../src/applet.c:2701
-msgid ""
-"The NetworkManager applet could not find some required resources.  It cannot "
-"continue.\n"
-msgstr ""
-"Upravljač mrežom nije uspeo da pronađe neophodne resurse i ne može da nastavi "
-"rad.\n"
-
-#: ../src/applet.c:2896
+#: ../src/applet.c:2953
 msgid "NetworkManager Applet"
 msgstr "Programče Upravnik mreže"
 
-#: ../src/applet.c:2902 ../src/wired-dialog.c:128
+#: ../src/applet.c:2959 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -800,6 +914,10 @@ msgid "Anony_mous identity:"
 msgstr "Anonimni _identitet:"
 
 #: ../src/applet.glade.h:8
+msgid "As_k for this password every time"
+msgstr "Uvek mi zatraži _lozinku"
+
+#: ../src/applet.glade.h:9
 msgid ""
 "Automatic\n"
 "Version 0\n"
@@ -809,42 +927,41 @@ msgstr ""
 "Izdanje 0\n"
 "Izdanje 1"
 
-#: ../src/applet.glade.h:11
+#: ../src/applet.glade.h:12
 msgid "C_A certificate:"
 msgstr "CA _sertifikat:"
 
-#: ../src/applet.glade.h:12
+#: ../src/applet.glade.h:13
 msgid "C_onnect"
 msgstr "P_oveži se"
 
-#: ../src/applet.glade.h:13
+#: ../src/applet.glade.h:14
 msgid "Co_nnection:"
 msgstr "_Veza:"
 
-#: ../src/applet.glade.h:14
+#: ../src/applet.glade.h:15
 msgid "Connection Information"
 msgstr "Podaci o vezi"
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.glade.h:16
 msgid "Don't _warn me again"
 msgstr "Ne _upozoravaj me više"
 
-#: ../src/applet.glade.h:16
+#: ../src/applet.glade.h:17
 msgid "I_dentity:"
 msgstr "_Identitet:"
 
 # ~Miloš
-#: ../src/applet.glade.h:17
-#, fuzzy
+#: ../src/applet.glade.h:18
 #| msgid "Authentication:"
 msgid "I_nner authentication:"
 msgstr "_Unutrašnja prijava:"
 
-#: ../src/applet.glade.h:18
+#: ../src/applet.glade.h:19
 msgid "No"
 msgstr "Ne"
 
-#: ../src/applet.glade.h:19
+#: ../src/applet.glade.h:20
 msgid ""
 "Open System\n"
 "Shared Key"
@@ -852,17 +969,13 @@ msgstr ""
 "Otvoreni sistem\n"
 "Deljeni ključ"
 
-#: ../src/applet.glade.h:21
+#: ../src/applet.glade.h:22
 msgid "Other Wireless Network..."
 msgstr "Ostale bežične mreže..."
 
-#: ../src/applet.glade.h:22
+#: ../src/applet.glade.h:23
 msgid "Private _key:"
 msgstr "Privatni _ključ:"
-
-#: ../src/applet.glade.h:23
-msgid "Select A File"
-msgstr "Izaberite datoteku"
 
 #: ../src/applet.glade.h:24
 msgid "Sho_w key"
@@ -914,24 +1027,32 @@ msgid "_Type:"
 msgstr "_Vrsta:"
 
 #: ../src/applet.glade.h:36
+msgid "_Unlock"
+msgstr "_Otključaj"
+
+#: ../src/applet.glade.h:37
 msgid "_User certificate:"
 msgstr "Ko_risnikov sertifikat:"
 
-#: ../src/applet.glade.h:37 ../src/connection-editor/ce-page-dsl.glade.h:4
+#: ../src/applet.glade.h:38 ../src/connection-editor/ce-page-dsl.glade.h:4
 #: ../src/connection-editor/ce-page-mobile.glade.h:17
 msgid "_Username:"
 msgstr "Kori_sničko ime:"
 
-#: ../src/applet.glade.h:38
+#: ../src/applet.glade.h:39
 msgid "_Wireless security:"
 msgstr "_Bežična bezbednost:"
+
+#: ../src/applet.glade.h:40
+msgid "label"
+msgstr "natpis"
 
 #: ../src/connection-editor/ce-page.c:69
 msgid "automatic"
 msgstr "automatski"
 
 #: ../src/connection-editor/ce-page.c:221
-#: ../src/connection-editor/nm-connection-editor.c:596
+#: ../src/connection-editor/nm-connection-editor.c:616
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Ne mogu da ažururam lozinke veze zbog nepoznate greške."
 
@@ -1004,6 +1125,10 @@ msgid "Ig_nore automatically obtained routes"
 msgstr "_Zanemari automatski dobijene rute"
 
 #: ../src/connection-editor/ce-page-ip4.glade.h:13
+msgid "Require IPv4 addressing for this connection to complete"
+msgstr "Zahteva IPv4 adresiranje za uspostavljanje veze"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:14
 msgid ""
 "The DHCP client identifier allows the network administrator to customize "
 "your computer's configuration.  If you wish to use a DHCP client identifier, "
@@ -1013,33 +1138,50 @@ msgstr ""
 "podešavanja vašeg računara.  Ukoliko želite da koristite ovu mogućnost, "
 "unesite ime DHCP programa."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:14
-#: ../src/connection-editor/ce-page-ip6.glade.h:12
+#: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
 msgid "Use this c_onnection only for resources on its network"
 msgstr "Koristi ovu vezu samo za izvore u sopstvenoj mreži"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:15
-#: ../src/connection-editor/ce-page-ip6.glade.h:13
+#: ../src/connection-editor/ce-page-ip4.glade.h:16
+msgid ""
+"When connecting to IPv6-capable networks, allows the connection to complete "
+"if IPv4 configuration fails but IPv6 configuration succeeds."
+msgstr ""
+"Pri povezivanju na IPv6 kablovske mreže dozvoljava uspostavljanje veze ukoliko "
+"ne rade IPv4 podešavanja, a rade IPv6 podešavanja."
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:17
+#: ../src/connection-editor/ce-page-ip6.glade.h:15
 msgid "_DNS servers:"
 msgstr "_DNS serveri:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:16
-#: ../src/connection-editor/ce-page-ip6.glade.h:14
+#: ../src/connection-editor/ce-page-ip4.glade.h:18
+#: ../src/connection-editor/ce-page-ip6.glade.h:16
 msgid "_Method:"
 msgstr "_Mrtod:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:17
-msgid "_Routes…"
-msgstr "_Rute…"
+#: ../src/connection-editor/ce-page-ip4.glade.h:19
+#: ../src/connection-editor/ce-page-ip6.glade.h:17
+msgid "_Routes&#x2026;"
+msgstr "_Rute&#x2026;"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:18
-#: ../src/connection-editor/ce-page-ip6.glade.h:16
+#: ../src/connection-editor/ce-page-ip4.glade.h:20
+#: ../src/connection-editor/ce-page-ip6.glade.h:18
 msgid "_Search domains:"
 msgstr "Domeni _za traženje:"
 
-#: ../src/connection-editor/ce-page-ip6.glade.h:15
-msgid "_Routes&#x2026;"
-msgstr "_Rute&#x2026;"
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
+msgid "Require IPv6 addressing for this connection to complete"
+msgstr "Zahteva IPv6 adresiranje za uspostavljanje veze"
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
+msgid ""
+"When connecting to IPv4-capable networks, allows the connection to complete "
+"if IPv6 configuration fails but IPv4 configuration succeeds."
+msgstr ""
+"Pri povezivanju na IPv4 kablovske mreže dozvoljava uspostavljanje veze ukoliko "
+"ne rade IPv6 podešavanja, a rade IPv4 podešavanja."
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:1
 msgid "<b>Advanced</b>"
@@ -1050,6 +1192,10 @@ msgid "<b>Basic</b>"
 msgstr "<b>Osnovno</b>"
 
 #: ../src/connection-editor/ce-page-mobile.glade.h:3
+msgid "Allow roaming if home network is not available"
+msgstr "Dozvoli roming ukoliko nema domaće mreže"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:4
 msgid ""
 "Any\n"
 "3G (UMTS/HSPA)\n"
@@ -1063,35 +1209,30 @@ msgstr ""
 "Najpre 3G (UMTS/HSPA)\n"
 "Najpre 2G (GPRS/EDGE)"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:8
+#: ../src/connection-editor/ce-page-mobile.glade.h:9
 msgid "Change..."
 msgstr "Izmeni..."
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:9
-msgid "N_etwork:"
-msgstr "_Mreža..."
-
 #: ../src/connection-editor/ce-page-mobile.glade.h:10
+#| msgid "N_etwork:"
+msgid "N_etwork ID:"
+msgstr "_Mrežni IB:"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:11
 msgid "Nu_mber:"
 msgstr "_Broj:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:11
+#: ../src/connection-editor/ce-page-mobile.glade.h:12
 msgid "PI_N:"
 msgstr "_PIN:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:12
+#: ../src/connection-editor/ce-page-mobile.glade.h:13
 msgid "Sho_w passwords"
 msgstr "Prika_ži lozinke"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:13
+#: ../src/connection-editor/ce-page-mobile.glade.h:14
 msgid "_APN:"
 msgstr "_APN:"
-
-# Ne znam na šta se odnosi
-# ~Miloš
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
-msgid "_Band:"
-msgstr "_Opseg:"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:1
 msgid "<b>Allowed Authentication Methods</b>"
@@ -1238,7 +1379,7 @@ msgid "MT_U:"
 msgstr "MT_U:"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:14
-#: ../src/connection-editor/ce-page-wireless.glade.h:13
+#: ../src/connection-editor/ce-page-wireless.glade.h:15
 msgid "_MAC address:"
 msgstr "_MAK adresa:"
 
@@ -1251,7 +1392,7 @@ msgid "_Speed:"
 msgstr "_Brzina:"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:17
-#: ../src/connection-editor/ce-page-wireless.glade.h:16
+#: ../src/connection-editor/ce-page-wireless.glade.h:18
 msgid "bytes"
 msgstr "bajtova"
 
@@ -1292,22 +1433,38 @@ msgid "Mb/s"
 msgstr "Mb/s"
 
 #: ../src/connection-editor/ce-page-wireless.glade.h:11
+msgid ""
+"This option locks this connection to the network device specified by the MAC "
+"address entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Ova opcija dodeljuje vezu mrežnom uređaju koji je određen MAK adresom. Npr: "
+"00:11:22:33:44:55"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:12
+msgid ""
+"This option locks this connection to the wireless access point (AP) "
+"specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Ova opcija dodeljuje vezu bežičnoj pristupnoj tački (AP) koja je određen "
+"BSSID-om. Npr: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:13
 msgid "Transmission po_wer:"
 msgstr "_Jačina prenosa:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:12
+#: ../src/connection-editor/ce-page-wireless.glade.h:14
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:14
+#: ../src/connection-editor/ce-page-wireless.glade.h:16
 msgid "_Rate:"
 msgstr "_Protok:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:15
+#: ../src/connection-editor/ce-page-wireless.glade.h:17
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:17
+#: ../src/connection-editor/ce-page-wireless.glade.h:19
 msgid "mW"
 msgstr "mW"
 
@@ -1335,19 +1492,20 @@ msgstr "Napravi…"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:501
 #: ../src/connection-editor/ip6-routes-dialog.c:459
-#: ../src/connection-editor/page-ip4.c:634
-#: ../src/connection-editor/page-ip6.c:611
+#: ../src/connection-editor/page-ip4.c:731
+#: ../src/connection-editor/page-ip6.c:696
 msgid "Address"
 msgstr "Adresa"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:517
-#: ../src/connection-editor/page-ip4.c:650
+#: ../src/connection-editor/page-ip4.c:748
 msgid "Netmask"
 msgstr "Mrežna maska"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:533
 #: ../src/connection-editor/ip6-routes-dialog.c:491
-#: ../src/connection-editor/page-ip4.c:666
+#: ../src/connection-editor/page-ip4.c:765
+#: ../src/connection-editor/page-ip6.c:730
 msgid "Gateway"
 msgstr "Mrežni izlaz"
 
@@ -1357,7 +1515,7 @@ msgid "Metric"
 msgstr "Metrički"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:475
-#: ../src/connection-editor/page-ip6.c:627
+#: ../src/connection-editor/page-ip6.c:713
 msgid "Prefix"
 msgstr "Prefiks"
 
@@ -1368,7 +1526,7 @@ msgstr "Ne mogu da učitam korisničko sučelje za DSL."
 
 #: ../src/connection-editor/page-dsl.c:153
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1368
+#: ../src/connection-editor/nm-connection-list.c:1409
 msgid "DSL"
 msgstr "DSL"
 
@@ -1377,115 +1535,119 @@ msgstr "DSL"
 msgid "DSL connection %d"
 msgstr "DSL veza „%d“"
 
-#: ../src/connection-editor/page-ip4.c:116
-#: ../src/connection-editor/page-ip6.c:114
+#: ../src/connection-editor/page-ip4.c:126
+#: ../src/connection-editor/page-ip6.c:122
 msgid "Automatic (VPN)"
 msgstr "Automatski (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:117
-#: ../src/connection-editor/page-ip6.c:115
+#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip6.c:123
 msgid "Automatic (VPN) addresses only"
 msgstr "Automatska adresa (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:120
-#: ../src/connection-editor/page-ip6.c:118
+#: ../src/connection-editor/page-ip4.c:130
+#: ../src/connection-editor/page-ip6.c:126
 msgid "Automatic (PPP)"
 msgstr "Automatski (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:121
-#: ../src/connection-editor/page-ip6.c:119
+#: ../src/connection-editor/page-ip4.c:131
+#: ../src/connection-editor/page-ip6.c:127
 msgid "Automatic (PPP) addresses only"
 msgstr "Automatska adresa (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:123
-#: ../src/connection-editor/page-ip6.c:121
+#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip6.c:129
 msgid "Automatic (PPPoE)"
 msgstr "Automatski (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:124
-#: ../src/connection-editor/page-ip6.c:122
+#: ../src/connection-editor/page-ip4.c:134
+#: ../src/connection-editor/page-ip6.c:130
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Automatska adresa (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:126
+#: ../src/connection-editor/page-ip4.c:136
 msgid "Automatic (DHCP)"
 msgstr "Automatski (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip4.c:137
 msgid "Automatic (DHCP) addresses only"
 msgstr "Automatska adresa (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:152
-#: ../src/connection-editor/page-ip6.c:162
+#: ../src/connection-editor/page-ip4.c:162
+#: ../src/connection-editor/page-ip6.c:170
 msgid "Manual"
 msgstr "Ručno"
 
-#: ../src/connection-editor/page-ip4.c:164
-#: ../src/connection-editor/page-ip6.c:175
+#: ../src/connection-editor/page-ip4.c:174
+#: ../src/connection-editor/page-ip6.c:183
 msgid "Link-Local Only"
 msgstr "Samo veži-lokalno"
 
-#: ../src/connection-editor/page-ip4.c:170
-#: ../src/connection-editor/page-ip6.c:182
+#: ../src/connection-editor/page-ip4.c:180
+#: ../src/connection-editor/page-ip6.c:190
 msgid "Shared to other computers"
 msgstr "Podeljeno sa ostalim računarima"
 
-#: ../src/connection-editor/page-ip4.c:597
+#: ../src/connection-editor/page-ip4.c:190
+msgid "Disabled"
+msgstr "Onemogućeno"
+
+#: ../src/connection-editor/page-ip4.c:693
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Uređujem IPv4 rute za %s"
 
-#: ../src/connection-editor/page-ip4.c:711
-#: ../src/connection-editor/page-ip4.c:718
+#: ../src/connection-editor/page-ip4.c:812
+#: ../src/connection-editor/page-ip4.c:819
 msgid "Could not load IPv4 user interface."
 msgstr "Ne mogu da učitam IPv4 korisničko sučelje."
 
-#: ../src/connection-editor/page-ip4.c:724
+#: ../src/connection-editor/page-ip4.c:825
 msgid "IPv4 Settings"
 msgstr "Podešavanja za IPv4"
 
-#: ../src/connection-editor/page-ip6.c:124
+#: ../src/connection-editor/page-ip6.c:132
 msgid "Automatic"
 msgstr "Automatski"
 
-#: ../src/connection-editor/page-ip6.c:125
+#: ../src/connection-editor/page-ip6.c:133
 msgid "Automatic, addresses only"
 msgstr "Automatski, samo adrese"
 
-#: ../src/connection-editor/page-ip6.c:137
+#: ../src/connection-editor/page-ip6.c:145
 #: ../src/wireless-security/eap-method.c:196
 msgid "Ignore"
 msgstr "Zanemari"
 
-#: ../src/connection-editor/page-ip6.c:574
+#: ../src/connection-editor/page-ip6.c:658
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Uređujem IPv6 rute za %s"
 
-#: ../src/connection-editor/page-ip6.c:670
-#: ../src/connection-editor/page-ip6.c:677
+#: ../src/connection-editor/page-ip6.c:775
+#: ../src/connection-editor/page-ip6.c:782
 msgid "Could not load IPv6 user interface."
 msgstr "Ne mogu da učitam IPv6 korisničko sučelje."
 
-#: ../src/connection-editor/page-ip6.c:683
+#: ../src/connection-editor/page-ip6.c:788
 msgid "IPv6 Settings"
 msgstr "IPv6 podešavanja"
 
-#: ../src/connection-editor/page-mobile.c:313
-#: ../src/connection-editor/page-mobile.c:320
+#: ../src/connection-editor/page-mobile.c:305
+#: ../src/connection-editor/page-mobile.c:312
 msgid "Could not load mobile broadband user interface."
 msgstr "Ne mogu da učitam korisničko sučelje za mobilnu, širokopojasnu mrežu."
 
-#: ../src/connection-editor/page-mobile.c:341
+#: ../src/connection-editor/page-mobile.c:333
 msgid "Unsupported mobile broadband connection type."
 msgstr "Nije podržana ova vrsta mobilne, širokopojasne mreže."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:578
+#: ../src/connection-editor/page-mobile.c:574
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Izaberite vrstu mobilnog širokopojasnog izdavača"
 
-#: ../src/connection-editor/page-mobile.c:605
+#: ../src/connection-editor/page-mobile.c:601
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1493,11 +1655,11 @@ msgstr ""
 "Izaberite tehnologiju koju koristi vaš izdavač mobilnih širokopojasnih "
 "usluga.  Ukoliko niste sigurni, pitajte izdavača."
 
-#: ../src/connection-editor/page-mobile.c:610
+#: ../src/connection-editor/page-mobile.c:606
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr "Moj izdavač koristi _GSM tehnologije (npr. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:615
+#: ../src/connection-editor/page-mobile.c:611
 msgid "My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Moj izdavač koristi _CDMA tehnologije (npr. 1xRTT, EVDO)"
 
@@ -1506,23 +1668,23 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:227
+#: ../src/wireless-security/eap-method-ttls.c:228
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:134
-#: ../src/wireless-security/eap-method-ttls.c:272
+#: ../src/wireless-security/eap-method-ttls.c:276
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:244
-#: ../src/wireless-security/eap-method-ttls.c:257
+#: ../src/wireless-security/eap-method-peap.c:245
+#: ../src/wireless-security/eap-method-ttls.c:260
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:136
-#: ../src/wireless-security/eap-method-ttls.c:242
+#: ../src/wireless-security/eap-method-ttls.c:244
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -1547,7 +1709,7 @@ msgstr "PPP podešavanja"
 
 #: ../src/connection-editor/page-vpn.c:108
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1364
+#: ../src/connection-editor/nm-connection-list.c:1405
 msgid "VPN"
 msgstr "VPN"
 
@@ -1557,7 +1719,7 @@ msgid "Could not find VPN plugin service for '%s'."
 msgstr "Ne mogu da nađem uslugu VPN dodatka za „%s“."
 
 #: ../src/connection-editor/page-vpn.c:213
-#: ../src/connection-editor/nm-connection-list.c:949
+#: ../src/connection-editor/nm-connection-list.c:990
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN veza %d"
@@ -1569,7 +1731,7 @@ msgstr "Ne mogu da učitam korisničko sučelje za žičanu mrežu."
 
 #: ../src/connection-editor/page-wired.c:220
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1352
+#: ../src/connection-editor/nm-connection-list.c:1393
 msgid "Wired"
 msgstr "Žičana"
 
@@ -1588,52 +1750,54 @@ msgstr "Koristi 802.1X sigurnost za ovu vezu"
 
 #: ../src/connection-editor/page-wireless.c:144
 #: ../src/connection-editor/page-wireless.c:148
+#: ../src/connection-editor/page-wireless.c:169
+#, c-format
 msgid "default"
 msgstr "podrazumevano"
 
-#: ../src/connection-editor/page-wireless.c:166
+#: ../src/connection-editor/page-wireless.c:173
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:351
-#: ../src/connection-editor/page-wireless.c:358
+#: ../src/connection-editor/page-wireless.c:393
+#: ../src/connection-editor/page-wireless.c:400
 msgid "Could not load WiFi user interface."
 msgstr "Ne mogu da učitam korisničko sučelje za bežičnu mrežu."
 
-#: ../src/connection-editor/page-wireless.c:364
+#: ../src/connection-editor/page-wireless.c:406
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1356
+#: ../src/connection-editor/nm-connection-list.c:1397
 msgid "Wireless"
 msgstr "Bežična"
 
-#: ../src/connection-editor/page-wireless.c:511
+#: ../src/connection-editor/page-wireless.c:553
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Bežična veza %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:881
+#: ../src/wireless-dialog.c:936
 msgid "WEP 40/128-bit Key"
 msgstr "WEP 40/128-bitni ključ"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:890
+#: ../src/wireless-dialog.c:945
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bitna lozinka"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:920
+#: ../src/wireless-dialog.c:975
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dinamički WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:934
+#: ../src/wireless-dialog.c:989
 msgid "WPA & WPA2 Personal"
 msgstr "Lični WPA & WPA2"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:948
+#: ../src/wireless-dialog.c:1003
 msgid "WPA & WPA2 Enterprise"
 msgstr "Poslovni WPA & WPA2"
 
@@ -1661,7 +1825,7 @@ msgstr "Uređujem %s"
 msgid "Editing un-named connection"
 msgstr "Uređujem neimenovanu vezu"
 
-#: ../src/connection-editor/nm-connection-editor.c:280
+#: ../src/connection-editor/nm-connection-editor.c:287
 msgid ""
 "The connection editor could not find some required resources (the "
 "NetworkManager applet glade file was not found)."
@@ -1669,7 +1833,7 @@ msgstr ""
 "Program za uređivanje veza ne može da pronađe neke od potrebnih resursa (nije "
 "nađena glejd datoteka programčeta „Upravnik veze“)."
 
-#: ../src/connection-editor/nm-connection-editor.c:293
+#: ../src/connection-editor/nm-connection-editor.c:300
 msgid ""
 "The connection editor could not find some required resources (the glade file "
 "was not found)."
@@ -1677,23 +1841,23 @@ msgstr ""
 "Program za uređivanje veza ne može da pronađe neke od potrebnih resursa (nije "
 "nađena glejd datoteka)."
 
-#: ../src/connection-editor/nm-connection-editor.c:366
+#: ../src/connection-editor/nm-connection-editor.c:398
 msgid "Error creating connection editor dialog."
 msgstr "Greška u obrazovanju prozorčeta za uređivanje veza."
 
-#: ../src/connection-editor/nm-connection-editor.c:387
+#: ../src/connection-editor/nm-connection-editor.c:419
 msgid "Apply"
 msgstr "Primeni"
 
-#: ../src/connection-editor/nm-connection-editor.c:388
-msgid "Save this connection for all users of this machine."
-msgstr "Postavlja podešavanja trenutne veze za sve korisnike ovog računara."
+#: ../src/connection-editor/nm-connection-editor.c:420
+msgid "Save any changes made to this connection."
+msgstr "Sačuvaj sve promene u ovoj vezi."
 
-#: ../src/connection-editor/nm-connection-editor.c:389
+#: ../src/connection-editor/nm-connection-editor.c:421
 msgid "Apply..."
 msgstr "Primeni..."
 
-#: ../src/connection-editor/nm-connection-editor.c:390
+#: ../src/connection-editor/nm-connection-editor.c:422
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr "Prijavite se kako bi sačuvali ovu vezu za sve korisnike računara."
 
@@ -1767,60 +1931,61 @@ msgstr[0] "pre %d godine"
 msgstr[1] "pre %d godine"
 msgstr[2] "pre %d godina"
 
-#: ../src/connection-editor/nm-connection-list.c:575
+#: ../src/connection-editor/nm-connection-list.c:596
 msgid "Connection add failed"
 msgstr "Nije uspelo dodavanje veze"
 
-#: ../src/connection-editor/nm-connection-list.c:598
+#: ../src/connection-editor/nm-connection-list.c:625
 #, c-format
 msgid "Error editing connection: property '%s' / '%s' invalid: %d"
 msgstr "Greška prilikom izmene veze: osobina „%s“ / „%s“ je neispravna: %d"
 
-#: ../src/connection-editor/nm-connection-list.c:605
-#: ../src/connection-editor/nm-connection-list.c:720
-msgid "An unknown error ocurred."
+#: ../src/connection-editor/nm-connection-list.c:632
+#: ../src/connection-editor/nm-connection-list.c:747
+#| msgid "An unknown error ocurred."
+msgid "An unknown error occurred."
 msgstr "Došlo je do nepoznate greške."
 
-#: ../src/connection-editor/nm-connection-list.c:610
-#: ../src/connection-editor/nm-connection-list.c:755
+#: ../src/connection-editor/nm-connection-list.c:637
+#: ../src/connection-editor/nm-connection-list.c:788
 msgid "Error initializing editor"
 msgstr "Greška u pokretanju uređivača"
 
-#: ../src/connection-editor/nm-connection-list.c:626
-#: ../src/connection-editor/nm-connection-list.c:772
-#: ../src/connection-editor/nm-connection-list.c:932
+#: ../src/connection-editor/nm-connection-list.c:653
+#: ../src/connection-editor/nm-connection-list.c:805
+#: ../src/connection-editor/nm-connection-list.c:973
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr "Ne mogu da pokrenem prozorče za izmenu veze zbog nepoznate greške."
 
-#: ../src/connection-editor/nm-connection-list.c:635
+#: ../src/connection-editor/nm-connection-list.c:662
 msgid "Could not create new connection"
 msgstr "Ne mogu da napravim novu vezu"
 
-#: ../src/connection-editor/nm-connection-list.c:646
+#: ../src/connection-editor/nm-connection-list.c:673
 msgid "Could not edit new connection"
 msgstr "Ne mogu da uredim novu vezu"
 
-#: ../src/connection-editor/nm-connection-list.c:787
+#: ../src/connection-editor/nm-connection-list.c:820
 msgid "Could not edit connection"
 msgstr "Ne mogu da uredim vezu"
 
-#: ../src/connection-editor/nm-connection-list.c:812
+#: ../src/connection-editor/nm-connection-list.c:845
 msgid "Connection delete failed"
 msgstr "Ne mogu da obrišem vezu"
 
-#: ../src/connection-editor/nm-connection-list.c:836
+#: ../src/connection-editor/nm-connection-list.c:877
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Da li da zaista obrišem vezu %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:979
+#: ../src/connection-editor/nm-connection-list.c:1020
 #: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "Ne mogu da uvezem VPN vezu"
 
-#: ../src/connection-editor/nm-connection-list.c:981
+#: ../src/connection-editor/nm-connection-list.c:1022
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1830,47 +1995,47 @@ msgstr ""
 "\n"
 "Greška: nije izabrana vrsta VPN servisa."
 
-#: ../src/connection-editor/nm-connection-list.c:994
+#: ../src/connection-editor/nm-connection-list.c:1035
 msgid "Could not edit imported connection"
 msgstr "Ne mogu da izmenim uvezene veze"
 
-#: ../src/connection-editor/nm-connection-list.c:1128
+#: ../src/connection-editor/nm-connection-list.c:1169
 msgid "Name"
 msgstr "Naziv"
 
-#: ../src/connection-editor/nm-connection-list.c:1140
+#: ../src/connection-editor/nm-connection-list.c:1181
 msgid "Last Used"
 msgstr "Upotrbljena"
 
-#: ../src/connection-editor/nm-connection-list.c:1243
+#: ../src/connection-editor/nm-connection-list.c:1284
 msgid "Edit"
 msgstr "Izmeni"
 
-#: ../src/connection-editor/nm-connection-list.c:1244
+#: ../src/connection-editor/nm-connection-list.c:1285
 msgid "Edit the selected connection"
 msgstr "Uređuje podatke za izabranu vezu"
 
-#: ../src/connection-editor/nm-connection-list.c:1245
+#: ../src/connection-editor/nm-connection-list.c:1286
 msgid "Edit..."
 msgstr "Izmeni..."
 
-#: ../src/connection-editor/nm-connection-list.c:1246
+#: ../src/connection-editor/nm-connection-list.c:1287
 msgid "Authenticate to edit the selected connection"
 msgstr "Prijavite se kako bi izmenili izabranu vezu"
 
-#: ../src/connection-editor/nm-connection-list.c:1260
+#: ../src/connection-editor/nm-connection-list.c:1301
 msgid "Delete"
 msgstr "Obriši"
 
-#: ../src/connection-editor/nm-connection-list.c:1261
+#: ../src/connection-editor/nm-connection-list.c:1302
 msgid "Delete the selected connection"
 msgstr "Briše izabranu vezu"
 
-#: ../src/connection-editor/nm-connection-list.c:1262
+#: ../src/connection-editor/nm-connection-list.c:1303
 msgid "Delete..."
 msgstr "Obriši..."
 
-#: ../src/connection-editor/nm-connection-list.c:1263
+#: ../src/connection-editor/nm-connection-list.c:1304
 msgid "Authenticate to delete the selected connection"
 msgstr "Prijavite se kako bi obrisali izabranu vezu"
 
@@ -1924,9 +2089,186 @@ msgstr ""
 msgid "Export VPN connection..."
 msgstr "Izvezi VPN vezu..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:197
-msgid "Access the Internet using your mobile phone"
-msgstr "Pristupite Internetu preko mobilnog telefona"
+#: ../src/gnome-bluetooth/bt-widget.c:213
+#, c-format
+#| msgid "N_etwork:"
+msgid "%s Network"
+msgstr "%s mreža"
+
+#: ../src/gnome-bluetooth/bt-widget.c:322
+#, c-format
+msgid "Error: %s"
+msgstr "Greška: %s"
+
+#: ../src/gnome-bluetooth/bt-widget.c:441
+msgid "Mobile wizard was canceled"
+msgstr "Čarobnjak za mobilne uređaje je otkazan"
+
+#: ../src/gnome-bluetooth/bt-widget.c:450
+msgid "Unknown phone device type (not GSM or CDMA)"
+msgstr "Nepoznat tip telefona (nije GSM ni CDMA)"
+
+#: ../src/gnome-bluetooth/bt-widget.c:478
+msgid "Your phone is now ready to use!"
+msgstr "Vaš telefon je spreman za upotrebu!"
+
+#: ../src/gnome-bluetooth/bt-widget.c:648
+#: ../src/gnome-bluetooth/bt-widget.c:654
+#| msgid "You are now connected to the GSM network."
+msgid "failed to connect to the phone."
+msgstr "ne mogu da se povežem na telefon."
+
+#: ../src/gnome-bluetooth/bt-widget.c:687
+msgid "unexpectedly disconnected from the phone."
+msgstr "neočekivan prekid veze sa telefonom."
+
+#: ../src/gnome-bluetooth/bt-widget.c:696
+msgid "timed out detecting phone details."
+msgstr "isteklo je vreme za nalaženje podataka o telefonu."
+
+#: ../src/gnome-bluetooth/bt-widget.c:711
+#| msgid "You are now connected to the wireless network '%s'."
+msgid "could not connect to the system bus."
+msgstr "ne mogu da se povežem na sistemsku magistralu."
+
+#: ../src/gnome-bluetooth/bt-widget.c:716
+msgid "Detecting phone configuration..."
+msgstr "Tražim podatke o telefonu..."
+
+#: ../src/gnome-bluetooth/bt-widget.c:782
+#| msgid "Could not find VPN plugin service for '%s'."
+msgid "could not find the Bluetooth device."
+msgstr "ne mogu da nađem Blutut uređaj."
+
+#: ../src/gnome-bluetooth/bt-widget.c:912
+msgid ""
+"The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
+"Networking connection."
+msgstr ""
+"Morate da omogućite podrazumevani Blutut uređaj pre podešavanja Dajl-ap veze."
+
+#: ../src/gnome-bluetooth/bt-widget.c:944
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr "Nije moguće Blutut podešavanje (ne mogu da se povežem na D-Bas: %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:954
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr "Nije moguće Blutut podešavanje (ne mogu da obrazujem D-Bas posrednika)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:963
+#, c-format
+msgid ""
+"Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgstr "Nije moguće Blutut podešavanje (ne mogu da nađem Upravnika mreže: %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:1014
+msgid "Use your mobile phone as a network device (PAN/NAP)"
+msgstr "Upotrebite mobilni telefon kao mrežni uređaj (PAN/NAP)"
+
+#: ../src/gnome-bluetooth/bt-widget.c:1023
+#| msgid "Access the Internet using your mobile phone"
+msgid "Access the Internet using your mobile phone (DUN)"
+msgstr "Pristupite Internetu preko mobilnog telefona (DUN)"
+
+#: ../src/main.c:70
+#| msgid "_Username:"
+msgid "Usage:"
+msgstr "Upotreba:"
+
+#: ../src/main.c:72
+msgid ""
+"This program is a component of NetworkManager (http://projects.gnome.org/"
+"NetworkManager)."
+msgstr ""
+"Ovaj program je deo Upravnika mreže (http://projects.gnome.org/"
+"NetworkManager)."
+
+#: ../src/main.c:73
+msgid ""
+"It is not intended for command-line interaction but instead runs in the "
+"GNOME desktop environment."
+msgstr ""
+"Ovaj program nije namenjen za rad u komandnoj liniji, već je deo Gnom radnog "
+"okruženja."
+
+#: ../src/mb-menu-item.c:58
+msgid "EVDO"
+msgstr "EVDO"
+
+#: ../src/mb-menu-item.c:62
+msgid "GPRS"
+msgstr "GPRS"
+
+#: ../src/mb-menu-item.c:64
+msgid "EDGE"
+msgstr "EDGE"
+
+#: ../src/mb-menu-item.c:66
+msgid "UMTS"
+msgstr "UMTS"
+
+#: ../src/mb-menu-item.c:68
+msgid "HSDPA"
+msgstr "HSDPA"
+
+#: ../src/mb-menu-item.c:70
+msgid "HSUPA"
+msgstr "HSUPA"
+
+#: ../src/mb-menu-item.c:72
+msgid "HSPA"
+msgstr "HSPA"
+
+#: ../src/mb-menu-item.c:104
+msgid "not enabled"
+msgstr "nije omogućeno"
+
+#: ../src/mb-menu-item.c:110
+msgid "not registered"
+msgstr "nije registrovan"
+
+#: ../src/mb-menu-item.c:128
+#, c-format
+#| msgid "Wired Network (%s)"
+msgid "Home network (%s)"
+msgstr "Kućna mreža (%s)"
+
+#: ../src/mb-menu-item.c:130
+#, c-format
+#| msgid "More networks"
+msgid "Home network"
+msgstr "Kućna mreža"
+
+#: ../src/mb-menu-item.c:138
+msgid "searching"
+msgstr "pretražujem"
+
+#: ../src/mb-menu-item.c:141
+msgid "registration denied"
+msgstr "registracija je odbijena"
+
+#: ../src/mb-menu-item.c:146 ../src/mb-menu-item.c:152
+#, c-format
+msgid "%s (%s roaming)"
+msgstr "%s (%s roming)"
+
+#: ../src/mb-menu-item.c:148 ../src/mb-menu-item.c:154
+#, c-format
+msgid "%s (roaming)"
+msgstr "%s (roming)"
+
+#: ../src/mb-menu-item.c:157
+#, c-format
+#| msgid "Wired Network (%s)"
+msgid "Roaming network (%s)"
+msgstr "Mreža u romingu (%s)"
+
+#: ../src/mb-menu-item.c:159
+#, c-format
+#| msgid "More networks"
+msgid "Roaming network"
+msgstr "Mreža u romingu"
 
 #: ../src/utils/mobile-wizard.c:196
 msgid ""
@@ -2035,7 +2377,6 @@ msgid "Country"
 msgstr "Zemlja"
 
 #: ../src/utils/mobile-wizard.c:1031
-#| msgid "My plan is not listed..."
 msgid "My country is not listed"
 msgstr "Moja zemlja nije na spisku"
 
@@ -2049,7 +2390,7 @@ msgstr "Instaliran GSM uređaj"
 
 #: ../src/utils/mobile-wizard.c:1129
 msgid "Installed CDMA device"
-msgstr "Instaliran CDMA uređaj"
+msgstr "Instaliran CDMS uređaj"
 
 #: ../src/utils/mobile-wizard.c:1297
 msgid ""
@@ -2093,7 +2434,11 @@ msgstr "Podesi mobilnu, širokopojasnu vezu"
 msgid "New Mobile Broadband Connection"
 msgstr "Nova mobilna, širokopojasna veza"
 
-#: ../src/utils/nmn-mobile-providers.c:515
+#: ../src/utils/nmn-mobile-providers.c:76
+msgid "United Kingdom"
+msgstr "Ujedinjeno Kraljevstvo"
+
+#: ../src/utils/nmn-mobile-providers.c:523
 msgid "Default"
 msgstr "Podrazumevana"
 
@@ -2124,52 +2469,52 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "Žičana 802.1X prijava"
 
-#: ../src/wireless-dialog.c:428
+#: ../src/wireless-dialog.c:474
 msgid "New..."
 msgstr "Nova..."
 
-#: ../src/wireless-dialog.c:1031
+#: ../src/wireless-dialog.c:1094
 msgid "C_reate"
 msgstr "_Napravi"
 
-#: ../src/wireless-dialog.c:1108
+#: ../src/wireless-dialog.c:1175
 #, c-format
 msgid ""
-"Passwords or encryption keys are required to access the wireless network '%"
-"s'."
+"Passwords or encryption keys are required to access the wireless network "
+"'%s'."
 msgstr ""
 "Potrebni su ključevi za lozinke ili šifrovanje kako bi pristupili bežičnoj "
 "mreži „%s“."
 
-#: ../src/wireless-dialog.c:1110
+#: ../src/wireless-dialog.c:1177
 msgid "Wireless Network Authentication Required"
 msgstr "Potrebna je prijava na bežičnu mrežu"
 
-#: ../src/wireless-dialog.c:1112
+#: ../src/wireless-dialog.c:1179
 msgid "Authentication required by wireless network"
 msgstr "Bežičnu mrežu zahteva prijavu"
 
-#: ../src/wireless-dialog.c:1117
+#: ../src/wireless-dialog.c:1184
 msgid "Create New Wireless Network"
 msgstr "Napravi novu bežičnu mrežu"
 
-#: ../src/wireless-dialog.c:1119
+#: ../src/wireless-dialog.c:1186
 msgid "New wireless network"
 msgstr "Nova bežična mreža"
 
-#: ../src/wireless-dialog.c:1120
+#: ../src/wireless-dialog.c:1187
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Unesite naziv za novu bežičnu mrežu."
 
-#: ../src/wireless-dialog.c:1122
+#: ../src/wireless-dialog.c:1189
 msgid "Connect to Hidden Wireless Network"
 msgstr "Poveži se sa skrivenim bežičnim mrežama"
 
-#: ../src/wireless-dialog.c:1124
+#: ../src/wireless-dialog.c:1191
 msgid "Hidden wireless network"
 msgstr "Skrivena bežična mreža"
 
-#: ../src/wireless-dialog.c:1125
+#: ../src/wireless-dialog.c:1192
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2194,47 +2539,86 @@ msgstr ""
 msgid "Choose CA Certificate"
 msgstr "Izaberite CA sertifikat"
 
-#: ../src/wireless-security/eap-method.c:497
+#: ../src/wireless-security/eap-method.c:515
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "DER, PEM, ili PKCS#12 lični ključevi (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:500
+#: ../src/wireless-security/eap-method.c:518
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER ili PEM sertifikati (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:259
+#: ../src/wireless-security/eap-method-peap.c:261
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:274
+#: ../src/wireless-security/eap-method-peap.c:277
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-peap.c:361
-#: ../src/wireless-security/eap-method-tls.c:430
-#: ../src/wireless-security/eap-method-ttls.c:359
+#: ../src/wireless-security/eap-method-peap.c:366
+#: ../src/wireless-security/eap-method-tls.c:457
+#: ../src/wireless-security/eap-method-ttls.c:365
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Izaberite sertifikat ovlašćenja (CA)..."
 
-#: ../src/wireless-security/eap-method-tls.c:424
+#: ../src/wireless-security/eap-method-tls.c:263
+msgid "Unencrypted private keys are insecure"
+msgstr "Nešifrovani privatni ključevi nisu sigurni"
+
+#: ../src/wireless-security/eap-method-tls.c:266
+msgid ""
+"The selected private key does not appear to be protected by a password.  "
+"This could allow your security credentials to be compromised.  Please select "
+"a password-protected private key.\n"
+"\n"
+"(You can password-protect your private key with openssl)"
+msgstr ""
+"Izgleda da izabrani privatni ključ nije zaštićen lozinkom.  Ovo može ugroziti "
+"vaše sigurnosne podatke.  Izaberite privatni ključ koji ze zaštićen "
+"lozinkom.\n"
+"\n"
+"(Možete zaštititi privatne ključeve koristeći openssl)"
+
+#: ../src/wireless-security/eap-method-tls.c:451
 msgid "Choose your personal certificate..."
 msgstr "Izaberite lični sertifikat..."
 
-#: ../src/wireless-security/eap-method-tls.c:436
+#: ../src/wireless-security/eap-method-tls.c:463
 msgid "Choose your private key..."
 msgstr "Izaberite lični ključ..."
 
-#: ../src/wireless-security/wireless-security.c:328
+#: ../src/wireless-security/wireless-security.c:329
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:352
+#: ../src/wireless-security/wireless-security.c:353
 msgid "Tunneled TLS"
 msgstr "TLS kroz tunel"
 
-#: ../src/wireless-security/wireless-security.c:363
+#: ../src/wireless-security/wireless-security.c:364
 msgid "Protected EAP (PEAP)"
 msgstr "Zaštićeni EAP (PEAP)"
+
+#~ msgid ""
+#~ "The NetworkManager applet could not find some required resources.  It "
+#~ "cannot continue.\n"
+#~ msgstr ""
+#~ "Upravljač mrežom nije uspeo da pronađe neophodne resurse i ne može da "
+#~ "nastavi rad.\n"
+
+#~ msgid "Select A File"
+#~ msgstr "Izaberite datoteku"
+
+#~ msgid "_Routes…"
+#~ msgstr "_Rute…"
+
+# Ne znam na šta se odnosi
+# ~Miloš
+#~ msgid "_Band:"
+#~ msgstr "_Opseg:"
+
+#~ msgid "Save this connection for all users of this machine."
+#~ msgstr "Postavlja podešavanja trenutne veze za sve korisnike ovog računara."
 
 #~ msgid "PU_K:"
 #~ msgstr "P_UK:"
