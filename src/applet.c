@@ -1694,6 +1694,14 @@ static gboolean nma_menu_clear (NMApplet *applet)
 	return FALSE;
 }
 
+static gboolean
+is_permission_yes (NMApplet *applet, NMClientPermission perm)
+{
+	if (   applet->permissions[perm] == NM_CLIENT_PERMISSION_RESULT_YES
+	    || applet->permissions[perm] == NM_CLIENT_PERMISSION_RESULT_AUTH)
+		return TRUE;
+	return FALSE;
+}
 
 /*
  * nma_context_menu_update
@@ -1726,6 +1734,8 @@ nma_context_menu_update (NMApplet *applet)
 	                                net_enabled && (state != NM_STATE_ASLEEP));
 	g_signal_handler_unblock (G_OBJECT (applet->networking_enabled_item),
 	                          applet->networking_enabled_toggled_id);
+	gtk_widget_set_sensitive (applet->networking_enabled_item,
+	                          is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK));
 
 	/* Enabled Wireless */
 	g_signal_handler_block (G_OBJECT (applet->wifi_enabled_item),
@@ -1737,7 +1747,7 @@ nma_context_menu_update (NMApplet *applet)
 
 	wireless_hw_enabled = nm_client_wireless_hardware_get_enabled (applet->nm_client);
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wifi_enabled_item),
-	                          wireless_hw_enabled);
+	                          wireless_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI));
 
 	/* Enabled Mobile Broadband */
 	g_signal_handler_block (G_OBJECT (applet->wwan_enabled_item),
@@ -1749,7 +1759,7 @@ nma_context_menu_update (NMApplet *applet)
 
 	wwan_hw_enabled = nm_client_wwan_hardware_get_enabled (applet->nm_client);
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wwan_enabled_item),
-	                          wwan_hw_enabled);
+	                          wwan_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN));
 
 	/* Enabled notifications */
 	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
@@ -2160,6 +2170,18 @@ foo_active_connections_changed_cb (NMClient *client,
 	applet_schedule_update_icon (applet);
 }
 
+static void
+foo_manager_permission_changed (NMClient *client,
+                                NMClientPermission permission,
+                                NMClientPermissionResult result,
+                                gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+
+	if (permission <= NM_CLIENT_PERMISSION_LAST)
+		applet->permissions[permission] = result;
+}
+
 static gboolean
 foo_set_initial_state (gpointer data)
 {
@@ -2196,6 +2218,10 @@ foo_client_setup (NMApplet *applet)
 	                  applet);
 	g_signal_connect (applet->nm_client, "notify::manager-running",
 	                  G_CALLBACK (foo_manager_running_cb),
+	                  applet);
+
+	g_signal_connect (applet->nm_client, "permission-changed",
+	                  G_CALLBACK (foo_manager_permission_changed),
 	                  applet);
 
 	if (nm_client_get_manager_running (applet->nm_client))

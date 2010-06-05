@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2008 Red Hat, Inc.
+ * Copyright (C) 2004 - 2010 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  */
 
@@ -92,6 +92,9 @@ typedef struct
 	char	*		glade_file;
 
 	guint update_timestamps_id;
+
+	/* Permissions */
+	NMClientPermissionResult permissions[NM_CLIENT_PERMISSION_LAST + 1];
 
 	/* Device classes */
 	NMADeviceClass *wired_class;
