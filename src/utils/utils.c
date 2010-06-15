@@ -402,8 +402,10 @@ utils_check_ap_compatible (NMAccessPoint *ap,
 	setting_bssid = nm_setting_wireless_get_bssid (s_wireless);
 	if (setting_bssid) {
 		struct ether_addr ap_addr;
+		const char *hw_addr;
 
-		if (ether_aton_r (nm_access_point_get_hw_address (ap), &ap_addr)) {
+		hw_addr = nm_access_point_get_hw_address (ap);
+		if (hw_addr && ether_aton_r (hw_addr, &ap_addr)) {
 			if (memcmp (setting_bssid->data, &ap_addr, ETH_ALEN))
 				return FALSE;
 		}
