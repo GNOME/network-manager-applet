@@ -933,7 +933,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create, auth_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
-			                   &iter, _("WEP 40/128-bit Key"));
+			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"));
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (wep_type == NM_WEP_KEY_TYPE_KEY))
 				active = item;
 			item++;

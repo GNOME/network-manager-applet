@@ -259,7 +259,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 		ws_wep = ws_wep_key_new (glade_file, connection, NM_WEP_KEY_TYPE_KEY, FALSE, FALSE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
-			                   &iter, _("WEP 40/128-bit Key"));
+			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"));
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (wep_type == NM_WEP_KEY_TYPE_KEY))
 				active = item;
 			item++;
