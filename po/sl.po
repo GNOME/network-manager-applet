@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-05-28 14:18+0000\n"
-"PO-Revision-Date: 2010-05-28 19:53+0100\n"
+"POT-Creation-Date: 2010-06-18 10:30+0000\n"
+"PO-Revision-Date: 2010-06-19 10:37+0100\n"
 "Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -141,7 +141,7 @@ msgstr "Za mobilno širokopasovno povezavo '%s' je zahtevana overitev uporabnika
 #: ../src/applet-device-bt.c:240
 #: ../src/applet-device-cdma.c:423
 #: ../src/applet-device-gsm.c:466
-#: ../src/applet.c:2272
+#: ../src/applet.c:2298
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Poteka zahteva za pridobitev omrežnega naslova za '%s' ..."
@@ -774,102 +774,102 @@ msgid "NetworkManager is not running..."
 msgstr "Upravljalnik omrežja ni zagnan ..."
 
 #: ../src/applet.c:1622
-#: ../src/applet.c:2400
+#: ../src/applet.c:2426
 msgid "Networking disabled"
 msgstr "Omrežje onemogočeno"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1841
+#: ../src/applet.c:1851
 msgid "Enable _Networking"
 msgstr "Omogoči _omrežje"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1850
+#: ../src/applet.c:1860
 msgid "Enable _Wireless"
 msgstr "Omogoči _brezžično omrežje"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1859
+#: ../src/applet.c:1869
 msgid "Enable _Mobile Broadband"
 msgstr "Omogoči _mobilno širokopasovno omrežje"
 
 #. Toggle notifications item
-#: ../src/applet.c:1870
+#: ../src/applet.c:1880
 msgid "Enable N_otifications"
 msgstr "Omogoči _obvestila"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1881
+#: ../src/applet.c:1891
 msgid "Connection _Information"
 msgstr "_Podrobnosti povezave"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1891
+#: ../src/applet.c:1901
 msgid "Edit Connections..."
 msgstr "Urejanje povezav ..."
 
 #. Help item
-#: ../src/applet.c:1905
+#: ../src/applet.c:1915
 msgid "_Help"
 msgstr "_Pomoč"
 
 #. About item
-#: ../src/applet.c:1914
+#: ../src/applet.c:1924
 msgid "_About"
 msgstr "_O Programu"
 
-#: ../src/applet.c:2105
+#: ../src/applet.c:2115
 msgid "Disconnected"
 msgstr "Prekinjena povezava"
 
-#: ../src/applet.c:2106
+#: ../src/applet.c:2116
 msgid "The network connection has been disconnected."
 msgstr "Omrežna povezava je bila prekinjena."
 
-#: ../src/applet.c:2266
+#: ../src/applet.c:2292
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Pripravljanje omrežne povezave '%s' ..."
 
-#: ../src/applet.c:2269
+#: ../src/applet.c:2295
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Za omrežno povezavo '%s' je zahtevana overitev uporabnika ..."
 
-#: ../src/applet.c:2275
+#: ../src/applet.c:2301
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Omrežna povezava '%s' je dejavna"
 
-#: ../src/applet.c:2356
+#: ../src/applet.c:2382
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Zaganjanje VPN povezave '%s' ..."
 
-#: ../src/applet.c:2359
+#: ../src/applet.c:2385
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Za povezavo VPN  '%s' je zahtevana overitev uporabnika ..."
 
-#: ../src/applet.c:2362
+#: ../src/applet.c:2388
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Poteka zahteva naslova VPN za '%s' ..."
 
-#: ../src/applet.c:2365
+#: ../src/applet.c:2391
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "Povezava VPN '%s' je dejavna"
 
-#: ../src/applet.c:2404
+#: ../src/applet.c:2430
 msgid "No network connection"
 msgstr "Nobene omrežne povezave"
 
-#: ../src/applet.c:2953
+#: ../src/applet.c:2979
 msgid "NetworkManager Applet"
 msgstr "Aplet Upravljalnik omrežja"
 
-#: ../src/applet.c:2959
+#: ../src/applet.c:2985
 #: ../src/wired-dialog.c:128
 msgid "The NetworkManager Applet could not find some required resources (the glade file was not found)."
 msgstr "Aplet upravljalnika omrežja ne najde nekaterih zahtevanih virov (datoteke glade ni mogoče najti)."
@@ -1683,34 +1683,36 @@ msgstr "Za povezavo uporabi varnost 802.1X"
 
 #: ../src/connection-editor/page-wireless.c:144
 #: ../src/connection-editor/page-wireless.c:148
+#: ../src/connection-editor/page-wireless.c:169
+#, c-format
 msgid "default"
 msgstr "privzeto"
 
-#: ../src/connection-editor/page-wireless.c:166
+#: ../src/connection-editor/page-wireless.c:173
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:351
-#: ../src/connection-editor/page-wireless.c:358
+#: ../src/connection-editor/page-wireless.c:393
+#: ../src/connection-editor/page-wireless.c:400
 msgid "Could not load WiFi user interface."
 msgstr "Uporabniškega vmesnika WiFi ni mogoče naložiti."
 
-#: ../src/connection-editor/page-wireless.c:364
+#: ../src/connection-editor/page-wireless.c:406
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
 #: ../src/connection-editor/nm-connection-list.c:1397
 msgid "Wireless"
 msgstr "Brezžično"
 
-#: ../src/connection-editor/page-wireless.c:511
+#: ../src/connection-editor/page-wireless.c:553
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Brezžična povezava %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
 #: ../src/wireless-dialog.c:936
-msgid "WEP 40/128-bit Key"
-msgstr "WEP 40/128-bitni ključ"
+msgid "WEP 40/128-bit Key (Hex or ASCII)"
+msgstr "Ključ WEP 40/128-bit  (Hex ali ASCII)"
 
 #: ../src/connection-editor/page-wireless-security.c:271
 #: ../src/wireless-dialog.c:945
@@ -2458,273 +2460,4 @@ msgstr "Tuneliran TLS"
 #: ../src/wireless-security/wireless-security.c:364
 msgid "Protected EAP (PEAP)"
 msgstr "Varovani EAP (PEAP)"
-
-#~ msgid "Automatic, DHCP only"
-#~ msgstr "Samodejno, le DHCP"
-#~ msgid "Save this connection for all users of this machine."
-#~ msgstr "Shrani povezavo za vse uporabnike računalnika."
-#~ msgid "_Routes…"
-#~ msgstr "_Smeri ..."
-#~ msgid "_Band:"
-#~ msgstr "_Pas:"
-#~ msgid "Registered (EVDO)"
-#~ msgstr "Vpisano (EVDO)"
-#~ msgid "%s CDMA"
-#~ msgstr "%s CDMA"
-#~ msgid "Home Network (CDMA)"
-#~ msgstr "Domače omrežje (CDMA)"
-#~ msgid "Registered (CDMA)"
-#~ msgstr "Vpisano (CDMA)"
-#~ msgid "%s (CDMA roaming)"
-#~ msgstr "%s (CDMA prehajajoči način)"
-#~ msgid "Roaming Network (CDMA)"
-#~ msgstr "Prehajajoče omrežje (CDMA)"
-#~ msgid ""
-#~ "The NetworkManager applet could not find some required resources.  It "
-#~ "cannot continue.\n"
-#~ msgstr ""
-#~ "Aplet upravljalnika omrežja ne najde nekaterih zahtevanih virov.  "
-#~ "Nadljevanje izvajanja ni mogoče.\n"
-#~ msgid "Select A File"
-#~ msgstr "Izbor datoteke"
-#~ msgid "Passphrase for wireless network %s"
-#~ msgstr "Šifrirno geslo za brezžično omrežje %s"
-#~ msgid "Connection to the wireless network '%s' failed."
-#~ msgstr "Povezava z brezžičnim omrežjem %s ni uspela"
-#~ msgid "Connection to the wired network failed."
-#~ msgstr "Povezava z žičnim omrežjem ni uspela."
-#~ msgid "Could not find some required resources (the glade file)!"
-#~ msgstr "Ni mogoče najti nekaterih zahtevanih virov (datoteke glade)!"
-#~ msgid "Wireless Ethernet (%s)"
-#~ msgstr "Brezžični eternet (%s)"
-#~ msgid ""
-#~ "Copyright © 2004-2005 Red Hat, Inc.\n"
-#~ "Copyright © 2005-2006 Novell, Inc."
-#~ msgstr ""
-#~ "Copyright © 2004-2005 Red Hat, Inc.\n"
-#~ "Copyright © 2005-2006 Novell, Inc."
-#~ msgid "VPN Login Failure"
-#~ msgstr "Neuspela prijava VPN"
-#~ msgid "Could not start the VPN connection '%s' due to a login failure."
-#~ msgstr "Ni mogoče začeti povezave VPN '%s' zaradi neuspele prijave."
-#~ msgid "VPN Start Failure"
-#~ msgstr "Neuspel zagon VPN"
-#~ msgid ""
-#~ "Could not start the VPN connection '%s' due to a failure launching the "
-#~ "VPN program."
-#~ msgstr ""
-#~ "Ni mogoče začeti povezave VPN '%s' zaradi neuspelega zagona programa VPN."
-#~ msgid "VPN Configuration Error"
-#~ msgstr "Napaka nastavitev VPN"
-#~ msgid "The network device \"%s (%s)\" does not support wireless scanning."
-#~ msgstr ""
-#~ "Omrežna naprava \"%s (%s)\" ne podpira skeniranja brezžičnih omrežij."
-#~ msgid "The network device \"%s (%s)\" does not support link detection."
-#~ msgstr "Omrežna naprava \"%s (%s)\" ne podpira odkrivanja povezav."
-#~ msgid "(unknown)"
-#~ msgstr "(neznano)"
-#~ msgid "Preparing device %s for the wired network..."
-#~ msgstr "Pripravljanje naprave %s na žično omrežje ..."
-#~ msgid "Configuring device %s for the wired network..."
-#~ msgstr "Nastavljanje naprave %s za žično omrežje ..."
-#~ msgid "Attempting to join the wireless network '%s'..."
-#~ msgstr "Poskus pridruževanja brezžičnemu omrežju '%s' ..."
-#~ msgid "Waiting for Network Key for the wireless network '%s'..."
-#~ msgstr "Čakanje na omrežni ključ za brezžično omrežje '%s' ..."
-#~ msgid "Requesting a network address from the wired network..."
-#~ msgstr "Zahtevanje omrežnega naslova iz žičnega omrežja ..."
-#~ msgid "Finishing connection to the wired network..."
-#~ msgstr "Zaključevanje povezave v žično omrežje ..."
-#~ msgid "NetworkManager is not running"
-#~ msgstr "NetworkManager ni zagnan"
-#~ msgid "Connected to an Ad-Hoc wireless network"
-#~ msgstr "Povezan v ad-hoc brezžično omrežje"
-#~ msgid "VPN connecting to '%s'"
-#~ msgstr "Povezovanje VPN z '%s'"
-#~ msgid "_Dial Up Connections"
-#~ msgstr "_Klicna povezava"
-#~ msgid "Connect to %s..."
-#~ msgstr "Poveži se v %s ..."
-#~ msgid "Disconnect from %s..."
-#~ msgstr "Prekini povezavo z %s ..."
-#~ msgid "Open System"
-#~ msgstr "Odprti sistem"
-#~ msgid "Shared Key"
-#~ msgstr "Deljeni ključ"
-#~ msgid "AES-CCMP"
-#~ msgstr "AES-CCMP"
-#~ msgid "TKIP"
-#~ msgstr "TKIP"
-#~ msgid "WEP 64/128-bit ASCII"
-#~ msgstr "WEP 64/128-bit ASCII"
-#~ msgid "TTLS"
-#~ msgstr "TTLS"
-#~ msgid "WPA Enterprise"
-#~ msgstr "Podjetniški WPA"
-#~ msgid "Orientation"
-#~ msgstr "Usmerjenost"
-#~ msgid "The orientation of the tray."
-#~ msgstr "Usmeritev pladnja."
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (neveljaven Unicode)"
-#~ msgid ""
-#~ "By default, the wireless network's name is set to your computer's name, %"
-#~ "s, with no encryption enabled"
-#~ msgstr ""
-#~ "Privzeto je ime brezžičnega omrežja nastavljeno na ime vašega "
-#~ "računalnika, %s, brez omogočenega šifriranja"
-#~ msgid "Error connecting to wireless network"
-#~ msgstr "Napaka pri povezovanju z brezžičnim omrežjem"
-#~ msgid ""
-#~ "The requested wireless network requires security capabilities unsupported "
-#~ "by your hardware."
-#~ msgstr ""
-#~ "Zahtevano brezžično omrežje zahteva varnostne zmožnosti, ki so nepodprte "
-#~ "z vašo strojno opremo."
-#~ msgid ""
-#~ "<span weight=\"bold\" size=\"larger\">Passphrase Required by Wireless "
-#~ "Network</span>\n"
-#~ "\n"
-#~ "A passphrase or encryption key is required to access the wireless network "
-#~ "'%s'."
-#~ msgstr ""
-#~ "<span weight=\"bold\" size=\"larger\">Šifrirno geslo, ki ga zahteva "
-#~ "brezžično omrežje</span>\n"
-#~ "\n"
-#~ "Za dostop do brezžičnega omrežja '%s' je zahtevano šifrirno geslo ali "
-#~ "šifrirni ključ."
-#~ msgid ""
-#~ "<span weight=\"bold\" size=\"larger\">Reduced Network Functionality</"
-#~ "span>\n"
-#~ "\n"
-#~ "%s  It will not be completely functional."
-#~ msgstr ""
-#~ "<span weight=\"bold\" size=\"larger\">Zmanjšana uporabnost omrežja</"
-#~ "span>\n"
-#~ "\n"
-#~ "%s  ne bo popolnoma uporaben."
-#~ msgid ""
-#~ "<span weight=\"bold\" size=\"larger\">Wireless Network Login "
-#~ "Confirmation</span>\n"
-#~ "\n"
-#~ "You have chosen to log in to the wireless network '%s'.  If you are sure "
-#~ "that this wireless network is secure, click the checkbox below and "
-#~ "NetworkManager will not require confirmation on subsequent log ins."
-#~ msgstr ""
-#~ "<span weight=\"bold\" size=\"larger\">Potrditev prijave v brezžično "
-#~ "omrežje</span>\n"
-#~ "\n"
-#~ "Izbrali ste prijavo v brezžično omrežje '%s'. Če ste prepričani, da je to "
-#~ "brezžično omrežje varno, kliknite potrditveno polje spodaj in "
-#~ "NetworkManager ne bo več zahteval potrditve za nadaljnje prijave."
-#~ msgid "Client Certificate File:"
-#~ msgstr "Datoteka odjemalčevega potrdila:"
-#~ msgid "Destination Address:"
-#~ msgstr "Ciljni naslov:"
-#~ msgid "Key Type:"
-#~ msgstr "Vrsta ključa:"
-#~ msgid "Key management:"
-#~ msgstr "Upravljanje s ključi:"
-#~ msgid ""
-#~ "None\n"
-#~ "WEP 128-bit Passphrase\n"
-#~ "WEP 64/128-bit Hex\n"
-#~ "WEP 64/128-bit ASCII\n"
-#~ msgstr ""
-#~ "Brez\n"
-#~ "WEP 128-bitno šifrirno geslo\n"
-#~ "WEP 64/128-bit Hex\n"
-#~ "WEP 64/128-bit ASCII\n"
-#~ msgid "Passphrase:"
-#~ msgstr "Šifrirno geslo:"
-#~ msgid "Select the Client Certificate File"
-#~ msgstr "Izberite datoteko odjemalčevega potrdila"
-#~ msgid "Select the Private Key File"
-#~ msgstr "Izberite datoteko zasebnega ključa"
-#~ msgid "Show passphrase"
-#~ msgstr "Pokaži šifrirno geslo"
-#~ msgid "_Always Trust this Wireless Network"
-#~ msgstr "Vedno _zaupaj temu brezžičnemu omrežju"
-#~ msgid "_Login to Network"
-#~ msgstr "_Prijava v omrežje"
-#~ msgid "Cannot add VPN connection"
-#~ msgstr "Ni mogoče dodati povezave VPN"
-#~ msgid ""
-#~ "No suitable VPN software was found on your system. Contact your system "
-#~ "administrator."
-#~ msgstr ""
-#~ "Ustrezna programska oprema za VPN ni bila najdena na vašem sistemu. "
-#~ "Stopite v stik z vašim sistemskim skrbnikom."
-#~ msgid ""
-#~ "Cannot find suitable software for VPN connection type '%s' to import the "
-#~ "file '%s'. Contact your system administrator."
-#~ msgstr ""
-#~ "Ni mogoče najti ustrezne programske opreme za povezavo VPN vrste '%s' za "
-#~ "uvoz datoteke '%s'. Stopite v stik z vašim sistemskim skrbnikom."
-#~ msgid "Error retrieving VPN connection '%s'"
-#~ msgstr "Napaka pri pridobivanju povezave VPN '%s'"
-#~ msgid ""
-#~ "Could not find the UI files for VPN connection type '%s'. Contact your "
-#~ "system administrator."
-#~ msgstr ""
-#~ "Ni mogoče najti datotek uporabniškega vmesnika za povezavo VPN vrste \"%s"
-#~ "\". Stopite v stik z vašim sistemskim skrbnikom."
-#~ msgid "Delete VPN connection \"%s\"?"
-#~ msgstr "Ali želite izbrisati povezavo VPN \"%s\"?"
-#~ msgid ""
-#~ "All information about the VPN connection \"%s\" will be lost and you may "
-#~ "need your system administrator to provide information to create a new "
-#~ "connection."
-#~ msgstr ""
-#~ "Vse informacije o povezavi VPN \"%s\" bodo izgubljene in mogoče boste "
-#~ "potrebovali pomoč sistemskega skrbnika, da vam priskrbi informacije za "
-#~ "ustvarjanje nove povezave."
-#~ msgid "Unable to load"
-#~ msgstr "Ni mogoče naložiti"
-#~ msgid "Cannot find some needed resources (the glade file)!"
-#~ msgstr "Ni mogoče najti nekaterih zahtevanih virov (datoteke glade)!"
-#~ msgid "Create VPN Connection"
-#~ msgstr "Ustvari povezavo VPN"
-#~ msgid "Export the VPN settings to a file"
-#~ msgstr "Izvozi nastavitve VPN v datoteko"
-#~ msgid "Export the selected VPN connection to a file"
-#~ msgstr "Izvozi izbrano povezavo VPN v datoteko"
-#~ msgid "40-bit WEP"
-#~ msgstr "40-bitni WEP"
-#~ msgid "104-bit WEP"
-#~ msgstr "104-bitni WEP"
-#~ msgid "WPA TKIP"
-#~ msgstr "WPA TKIP"
-#~ msgid "WPA CCMP"
-#~ msgstr "WPA CCMP"
-#~ msgid "WPA2 TKIP"
-#~ msgstr "WPA2 TKIP"
-#~ msgid "WPA2 CCMP"
-#~ msgstr "WPA2 CCMP"
-#~ msgid "WPA2 Automatic"
-#~ msgstr "Samodejni WPA2"
-#~ msgid ""
-#~ "unable to create netlink socket for monitoring wired ethernet devices - %s"
-#~ msgstr ""
-#~ "ni mogoče ustvariti netlink vtiča (netlink socket) za nadzor žičnih "
-#~ "eternet naprav - %s"
-#~ msgid ""
-#~ "unable to bind to netlink socket for monitoring wired ethernet devices - %"
-#~ "s"
-#~ msgstr ""
-#~ "ni mogoče vzpostaviti vezi z netlink vtičem (netlink socket) za nadzor "
-#~ "žičnih eternet naprav - %s"
-#~ msgid "operation took too long"
-#~ msgstr "ooravilo je trajalo predolgo"
-#~ msgid "received data from wrong type of sender"
-#~ msgstr "prejeti podatki od pošiljatelja napačne vrste"
-#~ msgid "received data from unexpected sender"
-#~ msgstr "prejeti podatki od nepričakovanega pošiljatelja"
-#~ msgid "too much data was sent over socket and some of it was lost"
-#~ msgstr ""
-#~ "preveč podatkov je bilo poslano preko vtiča in nekaj se jih je izgubilo"
-#~ msgid "error occurred while waiting for data on socket"
-#~ msgstr "med čakanjem na podatke na vtiču je prišlo do napake"
-#~ msgid "You are now connected to the Ad-Hoc wireless network '%s'."
-#~ msgstr "Zdaj ste povezani v ad-hoc brezžično omrežje '%s'."
 
