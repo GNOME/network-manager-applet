@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -38,7 +38,8 @@ G_DEFINE_TYPE (CEPageWired, ce_page_wired, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingWired *setting;
 
-	GtkEntry *mac;
+	GtkEntry *device_mac;  /* Permanent MAC of the device */
+	GtkEntry *cloned_mac;  /* Cloned MAC - used for MAC spoofing */
 	GtkComboBox *port;
 	GtkComboBox *speed;
 	GtkToggleButton *duplex;
@@ -68,7 +69,8 @@ wired_private_init (CEPageWired *self)
 
 	xml = CE_PAGE (self)->xml;
 
-	priv->mac = GTK_ENTRY (glade_xml_get_widget (xml, "wired_mac"));
+	priv->device_mac = GTK_ENTRY (glade_xml_get_widget (xml, "wired_device_mac"));
+	priv->cloned_mac = GTK_ENTRY (glade_xml_get_widget (xml, "wired_cloned_mac"));
 	priv->port = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wired_port"));
 	priv->speed = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wired_speed"));
 	priv->duplex = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "wired_duplex"));
@@ -138,9 +140,13 @@ populate_ui (CEPageWired *self)
 	gtk_toggle_button_set_active (priv->autonegotiate, 
 	                              nm_setting_wired_get_auto_negotiate (setting));
 
-	/* MAC address */
-	ce_page_mac_to_entry (nm_setting_wired_get_mac_address (setting), priv->mac);
-	g_signal_connect (priv->mac, "changed", G_CALLBACK (stuff_changed), self);
+	/* Device MAC address */
+	ce_page_mac_to_entry (nm_setting_wired_get_mac_address (setting), priv->device_mac);
+	g_signal_connect (priv->device_mac, "changed", G_CALLBACK (stuff_changed), self);
+
+	/* Cloned MAC address */
+	ce_page_mac_to_entry (nm_setting_wired_get_cloned_mac_address (setting), priv->cloned_mac);
+	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */
 	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRED_MTU);
@@ -239,7 +245,8 @@ ui_to_setting (CEPageWired *self)
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 	const char *port;
 	guint32 speed;
-	GByteArray *mac = NULL;
+	GByteArray *device_mac = NULL;
+	GByteArray *cloned_mac = NULL;
 
 	/* Port */
 	switch (gtk_combo_box_get_active (priv->port)) {
@@ -279,10 +286,12 @@ ui_to_setting (CEPageWired *self)
 		break;
 	}
 
-	mac = ce_page_entry_to_mac (priv->mac, NULL);
+	device_mac = ce_page_entry_to_mac (priv->device_mac, NULL);
+	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, NULL);
 
 	g_object_set (priv->setting,
-				  NM_SETTING_WIRED_MAC_ADDRESS, mac,
+				  NM_SETTING_WIRED_MAC_ADDRESS, device_mac,
+				  NM_SETTING_WIRED_CLONED_MAC_ADDRESS, cloned_mac,
 				  NM_SETTING_WIRED_PORT, port,
 				  NM_SETTING_WIRED_SPEED, speed,
 				  NM_SETTING_WIRED_DUPLEX, gtk_toggle_button_get_active (priv->duplex) ? "full" : "half",
@@ -290,8 +299,11 @@ ui_to_setting (CEPageWired *self)
 				  NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
 				  NULL);
 
-	if (mac)
-		g_byte_array_free (mac, TRUE);
+	if (device_mac)
+		g_byte_array_free (device_mac, TRUE);
+	if (cloned_mac)
+		g_byte_array_free (cloned_mac, TRUE);
+
 }
 
 static gboolean
@@ -302,9 +314,17 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	gboolean invalid = FALSE;
 	GByteArray *ignore;
 
-	ignore = ce_page_entry_to_mac (priv->mac, &invalid);
+	ignore = ce_page_entry_to_mac (priv->device_mac, &invalid);
 	if (invalid)
 		return FALSE;
+	if (ignore)
+		g_byte_array_free (ignore, TRUE);
+
+	ignore = ce_page_entry_to_mac (priv->cloned_mac, &invalid);
+	if (invalid)
+		return FALSE;
+	if (ignore)
+		g_byte_array_free (ignore, TRUE);
 
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);

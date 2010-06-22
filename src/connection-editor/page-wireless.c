@@ -42,7 +42,8 @@ typedef struct {
 
 	GtkEntry *ssid;
 	GtkEntry *bssid;
-	GtkEntry *mac;
+	GtkEntry *device_mac;    /* Permanent MAC of the device */
+	GtkEntry *cloned_mac;    /* Cloned MAC - used for MAC spoofing */
 	GtkComboBox *mode;
 	GtkComboBox *band;
 	GtkSpinButton *channel;
@@ -69,7 +70,8 @@ wireless_private_init (CEPageWireless *self)
 
 	priv->ssid     = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_ssid"));
 	priv->bssid    = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_bssid"));
-	priv->mac      = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_mac"));
+	priv->device_mac = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_device_mac"));
+	priv->cloned_mac = GTK_ENTRY (glade_xml_get_widget (xml, "wireless_cloned_mac"));
 	priv->mode     = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wireless_mode"));
 	priv->band     = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wireless_band"));
 	priv->channel  = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wireless_channel"));
@@ -339,9 +341,13 @@ populate_ui (CEPageWireless *self)
 	ce_page_mac_to_entry (nm_setting_wireless_get_bssid (setting), priv->bssid);
 	g_signal_connect_swapped (priv->bssid, "changed", G_CALLBACK (ce_page_changed), self);
 
-	/* MAC address */
-	ce_page_mac_to_entry (nm_setting_wireless_get_mac_address (setting), priv->mac);
-	g_signal_connect_swapped (priv->mac, "changed", G_CALLBACK (ce_page_changed), self);
+	/* Device MAC address */
+	ce_page_mac_to_entry (nm_setting_wireless_get_mac_address (setting), priv->device_mac);
+	g_signal_connect_swapped (priv->device_mac, "changed", G_CALLBACK (ce_page_changed), self);
+
+	/* Cloned MAC address */
+	ce_page_mac_to_entry (nm_setting_wireless_get_cloned_mac_address (setting), priv->cloned_mac);
+	g_signal_connect_swapped (priv->cloned_mac, "changed", G_CALLBACK (ce_page_changed), self);
 
 	gtk_spin_button_set_value (priv->rate, (gdouble) nm_setting_wireless_get_rate (setting));
 	gtk_spin_button_set_value (priv->tx_power, (gdouble) nm_setting_wireless_get_tx_power (setting));
@@ -445,7 +451,8 @@ ui_to_setting (CEPageWireless *self)
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 	GByteArray *ssid;
 	GByteArray *bssid = NULL;
-	GByteArray *mac = NULL;
+	GByteArray *device_mac = NULL;
+	GByteArray *cloned_mac = NULL;
 	const char *mode;
 	const char *band;
 
@@ -470,12 +477,14 @@ ui_to_setting (CEPageWireless *self)
 	}
 
 	bssid = ce_page_entry_to_mac (priv->bssid, NULL);
-	mac = ce_page_entry_to_mac (priv->mac, NULL);
+	device_mac = ce_page_entry_to_mac (priv->device_mac, NULL);
+	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, NULL);
 
 	g_object_set (priv->setting,
 				  NM_SETTING_WIRELESS_SSID, ssid,
 				  NM_SETTING_WIRELESS_BSSID, bssid,
-				  NM_SETTING_WIRELESS_MAC_ADDRESS, mac,
+				  NM_SETTING_WIRELESS_MAC_ADDRESS, device_mac,
+				  NM_SETTING_WIRELESS_CLONED_MAC_ADDRESS, cloned_mac,
 				  NM_SETTING_WIRELESS_MODE, mode,
 				  NM_SETTING_WIRELESS_BAND, band,
 				  NM_SETTING_WIRELESS_CHANNEL, gtk_spin_button_get_value_as_int (priv->channel),
@@ -486,8 +495,10 @@ ui_to_setting (CEPageWireless *self)
 
 	if (ssid)
 		g_byte_array_free (ssid, TRUE);
-	if (mac)
-		g_byte_array_free (mac, TRUE);
+	if (device_mac)
+		g_byte_array_free (device_mac, TRUE);
+	if (cloned_mac)
+		g_byte_array_free (cloned_mac, TRUE);
 	if (bssid)
 		g_byte_array_free (bssid, TRUE);
 }
@@ -505,10 +516,20 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	ignore = ce_page_entry_to_mac (priv->bssid, &invalid);
 	if (invalid)
 		return FALSE;
+	if (ignore)
+		g_byte_array_free (ignore, TRUE);
 
-	ignore = ce_page_entry_to_mac (priv->mac, &invalid);
+	ignore = ce_page_entry_to_mac (priv->device_mac, &invalid);
 	if (invalid)
 		return FALSE;
+	if (ignore)
+		g_byte_array_free (ignore, TRUE);
+
+	ignore = ce_page_entry_to_mac (priv->cloned_mac, &invalid);
+	if (invalid)
+		return FALSE;
+	if (ignore)
+		g_byte_array_free (ignore, TRUE);
 
 	ui_to_setting (self);
 

@@ -338,7 +338,7 @@ connection_valid_for_wired (NMConnection *connection,
 		if (!setting_mac)
 			return TRUE;
 
-		str_mac = nm_device_ethernet_get_hw_address (ethdev);
+		str_mac = nm_device_ethernet_get_permanent_hw_address (ethdev);
 		g_return_val_if_fail (str_mac != NULL, FALSE);
 
 		bin_mac = ether_aton (str_mac);
@@ -377,7 +377,7 @@ connection_valid_for_wireless (NMConnection *connection,
 		const char *str_mac;
 		struct ether_addr *bin_mac;
 
-		str_mac = nm_device_wifi_get_hw_address (wdev);
+		str_mac = nm_device_wifi_get_permanent_hw_address (wdev);
 		g_return_val_if_fail (str_mac != NULL, FALSE);
 
 		bin_mac = ether_aton (str_mac);
