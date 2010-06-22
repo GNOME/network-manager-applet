@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-05-25 21:00+0000\n"
-"PO-Revision-Date: 2010-05-25 23:03+0200\n"
+"POT-Creation-Date: 2010-06-22 12:54+0000\n"
+"PO-Revision-Date: 2010-06-22 23:22+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -148,7 +148,7 @@ msgstr ""
 "s»…"
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:423
-#: ../src/applet-device-gsm.c:466 ../src/applet.c:2272
+#: ../src/applet-device-gsm.c:466 ../src/applet.c:2298
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Solicitando una dirección de red para «%s»…"
@@ -743,7 +743,6 @@ msgstr ""
 "%s"
 
 #: ../src/applet.c:1297
-#| msgid "device not ready"
 msgid "device not ready (firmware missing)"
 msgstr "el dispositivo no está listo (falta el firmware)"
 
@@ -779,102 +778,102 @@ msgstr "_Desconectar VPN"
 msgid "NetworkManager is not running..."
 msgstr "El Gestor de la red no se está ejecutando…"
 
-#: ../src/applet.c:1622 ../src/applet.c:2400
+#: ../src/applet.c:1622 ../src/applet.c:2426
 msgid "Networking disabled"
 msgstr "Red desactivada"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1841
+#: ../src/applet.c:1851
 msgid "Enable _Networking"
 msgstr "Activar _red"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1850
+#: ../src/applet.c:1860
 msgid "Enable _Wireless"
 msgstr "Activar _inalámbrico"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1859
+#: ../src/applet.c:1869
 msgid "Enable _Mobile Broadband"
 msgstr "Activar la banda ancha _móvil"
 
 #. Toggle notifications item
-#: ../src/applet.c:1870
+#: ../src/applet.c:1880
 msgid "Enable N_otifications"
 msgstr "Activar n_otificaciones"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1881
+#: ../src/applet.c:1891
 msgid "Connection _Information"
 msgstr "_Información de la conexión"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1891
+#: ../src/applet.c:1901
 msgid "Edit Connections..."
 msgstr "Editar las conexiones…"
 
 #. Help item
-#: ../src/applet.c:1905
+#: ../src/applet.c:1915
 msgid "_Help"
 msgstr "Ay_uda"
 
 #. About item
-#: ../src/applet.c:1914
+#: ../src/applet.c:1924
 msgid "_About"
 msgstr "_Acerca de"
 
-#: ../src/applet.c:2105
+#: ../src/applet.c:2115
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../src/applet.c:2106
+#: ../src/applet.c:2116
 msgid "The network connection has been disconnected."
 msgstr "La conexión de red se ha desconectado."
 
-#: ../src/applet.c:2266
+#: ../src/applet.c:2292
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Preparando la conexión de red «%s»…"
 
-#: ../src/applet.c:2269
+#: ../src/applet.c:2295
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Se necesita autenticación de usuario para la conexión de red «%s»…"
 
-#: ../src/applet.c:2275
+#: ../src/applet.c:2301
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Conexión de red «%s» activa"
 
-#: ../src/applet.c:2356
+#: ../src/applet.c:2382
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Iniciando conexión VPN «%s»…"
 
-#: ../src/applet.c:2359
+#: ../src/applet.c:2385
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Se necesita autenticación de usuario para la conexión VPN «%s»…"
 
-#: ../src/applet.c:2362
+#: ../src/applet.c:2388
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Solicitando una dirección VPN para «%s»…"
 
-#: ../src/applet.c:2365
+#: ../src/applet.c:2391
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "Conexión VPN «%s» activa"
 
-#: ../src/applet.c:2404
+#: ../src/applet.c:2430
 msgid "No network connection"
 msgstr "Sin conexión de red"
 
-#: ../src/applet.c:2953
+#: ../src/applet.c:2979
 msgid "NetworkManager Applet"
 msgstr "Miniaplicación Gestor de la red"
 
-#: ../src/applet.c:2959 ../src/wired-dialog.c:128
+#: ../src/applet.c:2985 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -1372,20 +1371,50 @@ msgid "MT_U:"
 msgstr "MT_U:"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:14
-#: ../src/connection-editor/ce-page-wireless.glade.h:15
-msgid "_MAC address:"
-msgstr "Dirección _MAC:"
+#: ../src/connection-editor/ce-page-wireless.glade.h:11
+msgid ""
+"The MAC address entered here will be used as hardware address for the "
+"network device this connection is activated on.  This feature is known as "
+"MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
+msgstr ""
+"La dirección MAC aquí introducida se usará como dirección de hardware para "
+"el dispositivo de red en el que se activa esta conexión. Esta característica "
+"se conoce como clonado MAC o «spoofing». Ejemplo: 00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:15
+#: ../src/connection-editor/ce-page-wireless.glade.h:12
+#| msgid ""
+#| "This option locks this connection to the network device specified by the "
+#| "MAC address entered here.  Example: 00:11:22:33:44:55"
+msgid ""
+"This option locks this connection to the network device specified by its "
+"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Esta opción bloquea esta conexión al dispositivo de red especificado por su "
+"dirección permanente MAC aquí introducida. Por ejemplo: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:16
+#: ../src/connection-editor/ce-page-wireless.glade.h:16
+#| msgid "_MAC address:"
+msgid "_Cloned MAC address:"
+msgstr "Dirección MAC _clonada:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:17
+#: ../src/connection-editor/ce-page-wireless.glade.h:17
+#| msgid "_MAC address:"
+msgid "_Device MAC address:"
+msgstr "Dirección MAC del _dispositivo:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:18
 msgid "_Port:"
 msgstr "_Puerto:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:16
+#: ../src/connection-editor/ce-page-wired.glade.h:19
 msgid "_Speed:"
 msgstr "_Velocidad:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:17
-#: ../src/connection-editor/ce-page-wireless.glade.h:18
+#: ../src/connection-editor/ce-page-wired.glade.h:20
+#: ../src/connection-editor/ce-page-wireless.glade.h:20
 msgid "bytes"
 msgstr "bytes"
 
@@ -1423,15 +1452,7 @@ msgstr "M_odo:"
 msgid "Mb/s"
 msgstr "Mb/s"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:11
-msgid ""
-"This option locks this connection to the network device specified by the MAC "
-"address entered here.  Example: 00:11:22:33:44:55"
-msgstr ""
-"Esta opción bloquea esta conexión al dispositivo de red especificado por la "
-"dirección MAC ingresada aquí. Por ejemplo: 00:11:22:33:44:55"
-
-#: ../src/connection-editor/ce-page-wireless.glade.h:12
+#: ../src/connection-editor/ce-page-wireless.glade.h:13
 msgid ""
 "This option locks this connection to the wireless access point (AP) "
 "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
@@ -1439,23 +1460,23 @@ msgstr ""
 "Esta opción bloquea esta conexión al punto de acceso inalámbrico (AP) "
 "especificado por el BSSID ingresado aquí. Por ejemplo "
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:13
+#: ../src/connection-editor/ce-page-wireless.glade.h:14
 msgid "Transmission po_wer:"
 msgstr "_Potencia de la transmisión:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:14
+#: ../src/connection-editor/ce-page-wireless.glade.h:15
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:16
+#: ../src/connection-editor/ce-page-wireless.glade.h:18
 msgid "_Rate:"
 msgstr "_Tasa:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:17
+#: ../src/connection-editor/ce-page-wireless.glade.h:19
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:19
+#: ../src/connection-editor/ce-page-wireless.glade.h:21
 msgid "mW"
 msgstr "mW"
 
@@ -1716,18 +1737,18 @@ msgstr "No se pudo encontrar el complemento de servicio VPN para «%s»."
 msgid "VPN connection %d"
 msgstr "Conexión VPN %d"
 
-#: ../src/connection-editor/page-wired.c:207
-#: ../src/connection-editor/page-wired.c:214
+#: ../src/connection-editor/page-wired.c:213
+#: ../src/connection-editor/page-wired.c:220
 msgid "Could not load wired user interface."
 msgstr "No se pudo cargar la interfaz de usuario cableada."
 
-#: ../src/connection-editor/page-wired.c:220
+#: ../src/connection-editor/page-wired.c:226
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
 #: ../src/connection-editor/nm-connection-list.c:1393
 msgid "Wired"
 msgstr "Cableado"
 
-#: ../src/connection-editor/page-wired.c:339
+#: ../src/connection-editor/page-wired.c:359
 #, c-format
 msgid "Wired connection %d"
 msgstr "Conexión cableada %d"
@@ -1740,36 +1761,39 @@ msgstr "Seguridad 802.1x"
 msgid "Use 802.1X security for this connection"
 msgstr "Usar seguridad 802.1x para esta conexión"
 
-#: ../src/connection-editor/page-wireless.c:144
-#: ../src/connection-editor/page-wireless.c:148
+#: ../src/connection-editor/page-wireless.c:146
+#: ../src/connection-editor/page-wireless.c:150
+#: ../src/connection-editor/page-wireless.c:171
+#, c-format
 msgid "default"
 msgstr "predeterminado"
 
-#: ../src/connection-editor/page-wireless.c:166
+#: ../src/connection-editor/page-wireless.c:175
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:351
-#: ../src/connection-editor/page-wireless.c:358
+#: ../src/connection-editor/page-wireless.c:399
+#: ../src/connection-editor/page-wireless.c:406
 msgid "Could not load WiFi user interface."
 msgstr "No se pudo cargar la interfaz de usuario inalámbrica."
 
-#: ../src/connection-editor/page-wireless.c:364
+#: ../src/connection-editor/page-wireless.c:412
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
 #: ../src/connection-editor/nm-connection-list.c:1397
 msgid "Wireless"
 msgstr "Inalámbrico"
 
-#: ../src/connection-editor/page-wireless.c:511
+#: ../src/connection-editor/page-wireless.c:574
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Conexión inalámbrica %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
 #: ../src/wireless-dialog.c:936
-msgid "WEP 40/128-bit Key"
-msgstr "WEP 40/128-bit Key"
+#| msgid "WEP 40/128-bit Key"
+msgid "WEP 40/128-bit Key (Hex or ASCII)"
+msgstr "Clave WEP 40/128-bit (Hexadecimal o ASCII)"
 
 #: ../src/connection-editor/page-wireless-security.c:271
 #: ../src/wireless-dialog.c:945
