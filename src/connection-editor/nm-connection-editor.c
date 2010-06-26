@@ -352,7 +352,7 @@ dispose (GObject *object)
 		editor->orig_connection = NULL;
 	}
 	if (editor->window) {
-		gtk_widget_hide (editor->window);
+		gtk_widget_destroy (editor->window);
 		editor->window = NULL;
 	}
 	if (editor->xml) {
