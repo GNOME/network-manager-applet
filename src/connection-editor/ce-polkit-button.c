@@ -46,6 +46,7 @@ typedef struct {
 	NMRemoteSettingsSystem *settings;
 	NMSettingsSystemPermissions permission;
 	gboolean use_polkit;
+	GSList *perm_calls;
 	/* authorized = TRUE if either explicitly authorized or if the action
 	 * could be performed if the user successfully authenticated to gain the
 	 * authorization.
@@ -147,15 +148,29 @@ ce_polkit_button_get_authorized (CEPolkitButton *self)
 	return CE_POLKIT_BUTTON_GET_PRIVATE (self)->authorized;
 }
 
+typedef struct {
+	CEPolkitButton *self;
+	gboolean disposed;
+} PermInfo;
+
 static void
 get_permissions_cb (NMSettingsSystemInterface *settings,
                     NMSettingsSystemPermissions permissions,
                     GError *error,
                     gpointer user_data)
 {
-	CEPolkitButton *self = CE_POLKIT_BUTTON (user_data);
-	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
+	PermInfo *info = user_data;
+	CEPolkitButton *self = info->self;
+	CEPolkitButtonPrivate *priv;
 	gboolean old_actionable, old_authorized;
+
+	/* Response might come when button is already disposed */
+	if (info->disposed)
+		goto out;
+
+	priv = CE_POLKIT_BUTTON_GET_PRIVATE (info->self);
+
+	priv->perm_calls = g_slist_remove (priv->perm_calls, info);
 
 	old_actionable = ce_polkit_button_get_actionable (self);
 	old_authorized = priv->authorized;
@@ -166,15 +181,23 @@ get_permissions_cb (NMSettingsSystemInterface *settings,
 
 	if (priv->authorized != old_authorized)
 		g_signal_emit (self, signals[AUTHORIZED], 0, priv->authorized);
+
+out:
+	g_free (info);
 }
 
 static void
 check_permissions_cb (NMRemoteSettingsSystem *settings, CEPolkitButton *self)
 {
+	PermInfo *info;
+
+	info = g_malloc0 (sizeof (PermInfo));
+	info->self = self;
+
 	/* recheck permissions */
 	nm_settings_system_interface_get_permissions (NM_SETTINGS_SYSTEM_INTERFACE (settings),
 	                                              get_permissions_cb,
-	                                              self);
+	                                              info);
 }
 
 GtkWidget *
@@ -225,6 +248,7 @@ static void
 dispose (GObject *object)
 {
 	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (object);
+	GSList *iter;
 
 	if (priv->disposed) {
 		g_warning ("%s: CEPolkitButton object %p disposed twice", __func__, object);
@@ -233,6 +257,11 @@ dispose (GObject *object)
 	}
 
 	priv->disposed = TRUE;
+
+	/* Mark any ongoing permissions calls as disposed */
+	for (iter = priv->perm_calls; iter; iter = g_slist_next (iter))
+		((PermInfo *) iter->data)->disposed = TRUE;
+	g_slist_free (priv->perm_calls);
 
 	if (priv->check_id)
 		g_signal_handler_disconnect (priv->settings, priv->check_id);
