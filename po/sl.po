@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-06-18 10:30+0000\n"
-"PO-Revision-Date: 2010-06-19 10:37+0100\n"
+"POT-Creation-Date: 2010-06-27 16:02+0000\n"
+"PO-Revision-Date: 2010-06-27 19:38+0100\n"
 "Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1330,20 +1330,35 @@ msgid "MT_U:"
 msgstr "MT_U:"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:14
-#: ../src/connection-editor/ce-page-wireless.glade.h:15
-msgid "_MAC address:"
-msgstr "_MAC naslov:"
+#: ../src/connection-editor/ce-page-wireless.glade.h:11
+msgid "The MAC address entered here will be used as hardware address for the network device this connection is activated on.  This feature is known as MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
+msgstr "Sem vnesen naslov MAC bo bil uporabljen kot strojni naslov za omrežno napravo na kateri je ta povezava omogočena. Ta zmožnost je poznana kot kloniranje MAC ali lažno predstavljanje: Primer: 00:11:22:33:44:55 "
 
 #: ../src/connection-editor/ce-page-wired.glade.h:15
+#: ../src/connection-editor/ce-page-wireless.glade.h:12
+msgid "This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"
+msgstr "Ta možnost zaklene to povezavo na omrežno napravo navedeno s svojim trajnim naslovom MAC, vnesenim tukaj. Primer: 00:11:22:33:44:55 "
+
+#: ../src/connection-editor/ce-page-wired.glade.h:16
+#: ../src/connection-editor/ce-page-wireless.glade.h:16
+msgid "_Cloned MAC address:"
+msgstr "_Kloniran naslov MAC:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:17
+#: ../src/connection-editor/ce-page-wireless.glade.h:17
+msgid "_Device MAC address:"
+msgstr "MAC naslov _naprave:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:18
 msgid "_Port:"
 msgstr "_Vrata:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:16
+#: ../src/connection-editor/ce-page-wired.glade.h:19
 msgid "_Speed:"
 msgstr "_Hitrost:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:17
-#: ../src/connection-editor/ce-page-wireless.glade.h:18
+#: ../src/connection-editor/ce-page-wired.glade.h:20
+#: ../src/connection-editor/ce-page-wireless.glade.h:20
 msgid "bytes"
 msgstr "bajti"
 
@@ -1381,31 +1396,27 @@ msgstr "_Način:"
 msgid "Mb/s"
 msgstr "Mb/s"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:11
-msgid "This option locks this connection to the network device specified by the MAC address entered here.  Example: 00:11:22:33:44:55"
-msgstr "Ta možnost zaklene to povezavo na omrežno napravo navedeno s tukaj vnesenim naslovom MAC. Primer: 00:11:22:33:44:55 "
-
-#: ../src/connection-editor/ce-page-wireless.glade.h:12
+#: ../src/connection-editor/ce-page-wireless.glade.h:13
 msgid "This option locks this connection to the wireless access point (AP) specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
 msgstr "Ta možnost zaklene to povezavo na brezžično priklopno točko navedeno s tukaj vnesenim BSSID. Primer: 00:11:22:33:44:55 "
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:13
+#: ../src/connection-editor/ce-page-wireless.glade.h:14
 msgid "Transmission po_wer:"
 msgstr "Prenosna _moč:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:14
+#: ../src/connection-editor/ce-page-wireless.glade.h:15
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:16
+#: ../src/connection-editor/ce-page-wireless.glade.h:18
 msgid "_Rate:"
 msgstr "_Hitrost:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:17
+#: ../src/connection-editor/ce-page-wireless.glade.h:19
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:19
+#: ../src/connection-editor/ce-page-wireless.glade.h:21
 msgid "mW"
 msgstr "mW"
 
@@ -1657,18 +1668,18 @@ msgstr "Vstavka storitve VPN za '%s' ni mogoče najti."
 msgid "VPN connection %d"
 msgstr "Povezava VPN %d"
 
-#: ../src/connection-editor/page-wired.c:207
-#: ../src/connection-editor/page-wired.c:214
+#: ../src/connection-editor/page-wired.c:213
+#: ../src/connection-editor/page-wired.c:220
 msgid "Could not load wired user interface."
 msgstr "Žičnega uporabniškega vmesnika ni mogoče naložiti."
 
-#: ../src/connection-editor/page-wired.c:220
+#: ../src/connection-editor/page-wired.c:226
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
 #: ../src/connection-editor/nm-connection-list.c:1393
 msgid "Wired"
 msgstr "Žično"
 
-#: ../src/connection-editor/page-wired.c:339
+#: ../src/connection-editor/page-wired.c:359
 #, c-format
 msgid "Wired connection %d"
 msgstr "Žična povezava %d"
@@ -1681,30 +1692,30 @@ msgstr "Varnost 802.1x"
 msgid "Use 802.1X security for this connection"
 msgstr "Za povezavo uporabi varnost 802.1X"
 
-#: ../src/connection-editor/page-wireless.c:144
-#: ../src/connection-editor/page-wireless.c:148
-#: ../src/connection-editor/page-wireless.c:169
+#: ../src/connection-editor/page-wireless.c:146
+#: ../src/connection-editor/page-wireless.c:150
+#: ../src/connection-editor/page-wireless.c:171
 #, c-format
 msgid "default"
 msgstr "privzeto"
 
-#: ../src/connection-editor/page-wireless.c:173
+#: ../src/connection-editor/page-wireless.c:175
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:393
-#: ../src/connection-editor/page-wireless.c:400
+#: ../src/connection-editor/page-wireless.c:399
+#: ../src/connection-editor/page-wireless.c:406
 msgid "Could not load WiFi user interface."
 msgstr "Uporabniškega vmesnika WiFi ni mogoče naložiti."
 
-#: ../src/connection-editor/page-wireless.c:406
+#: ../src/connection-editor/page-wireless.c:412
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
 #: ../src/connection-editor/nm-connection-list.c:1397
 msgid "Wireless"
 msgstr "Brezžično"
 
-#: ../src/connection-editor/page-wireless.c:553
+#: ../src/connection-editor/page-wireless.c:574
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Brezžična povezava %d"
