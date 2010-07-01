@@ -142,7 +142,7 @@ get_treeview_for_type (NMConnectionList *list, GType ctype)
 		GtkTreeView *candidate = GTK_TREE_VIEW (iter->data);
 		GType candidate_type;
 
-		candidate_type = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (candidate), TV_TYPE_TAG));
+		candidate_type = GPOINTER_TO_SIZE (g_object_get_data (G_OBJECT (candidate), TV_TYPE_TAG));
 		if (candidate_type == ctype)
 			return candidate;
 	}
@@ -700,7 +700,7 @@ add_clicked (GtkButton *button, gpointer user_data)
 	GType ctype;
 
 	if (!info->new_func) {
-		ctype = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (info->treeview), TV_TYPE_TAG));
+		ctype = GPOINTER_TO_SIZE (g_object_get_data (G_OBJECT (info->treeview), TV_TYPE_TAG));
 		g_warning ("No new-connection function registered for type '%s'",
 		           g_type_name (ctype));
 		return;
@@ -1377,7 +1377,7 @@ add_connection_tab (NMConnectionList *self,
 	add_connection_buttons (self, prefix, treeview, ctype, new_func);
 	gtk_widget_show_all (GTK_WIDGET (notebook));
 
-	g_object_set_data (G_OBJECT (treeview), TV_TYPE_TAG, GUINT_TO_POINTER (ctype));
+	g_object_set_data (G_OBJECT (treeview), TV_TYPE_TAG, GSIZE_TO_POINTER (ctype));
 	self->treeviews = g_slist_prepend (self->treeviews, treeview);
 
 	if (def_type == ctype) {
@@ -1574,7 +1574,7 @@ nm_connection_list_set_type (NMConnectionList *self, GType ctype)
 		GType child_type;
 
 		child = gtk_notebook_get_nth_page (notebook, i);
-		child_type = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (child), TV_TYPE_TAG));
+		child_type = GPOINTER_TO_SIZE (g_object_get_data (G_OBJECT (child), TV_TYPE_TAG));
 		if (child_type == ctype) {
 			gtk_notebook_set_current_page (notebook, i);
 			break;
