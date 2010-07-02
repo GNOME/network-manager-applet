@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 
@@ -98,12 +98,19 @@ eap_method_update_secrets (EAPMethod *method, NMConnection *connection)
 		method->update_secrets (method, connection);
 }
 
+typedef struct {
+	EAPMethod *method;
+	NMConnection *connection;
+} NagDialogResponseInfo;
+
 static void
 nag_dialog_response_cb (GtkDialog *nag_dialog,
                         gint response,
                         gpointer user_data)
 {
-	EAPMethod *method = (EAPMethod *) user_data;
+	NagDialogResponseInfo *info = (NagDialogResponseInfo *) user_data;
+	EAPMethod *method = (EAPMethod *) info->method;
+	NMConnection *connection = (NMConnection *) info->connection;
 	GtkWidget *widget;
 
 	if (response == GTK_RESPONSE_NO) {
@@ -112,9 +119,13 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 		g_assert (widget);
 
 		method->ignore_ca_cert = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+		/* Set the value to connection. It will be stored when connection is written (in nm_gconf_write_connection()) */
+		g_object_set_data (G_OBJECT (connection), IGNORE_CA_CERT_TAG, GUINT_TO_POINTER (method->ignore_ca_cert));
 	}
 
 	gtk_widget_hide (GTK_WIDGET (nag_dialog));
+	g_free (info);
 }
 
 GtkWidget *
@@ -155,6 +166,7 @@ eap_method_nag_init (EAPMethod *method,
 {
 	GtkWidget *dialog, *widget;
 	char *text;
+	NagDialogResponseInfo *info;
 
 	g_return_val_if_fail (method != NULL, FALSE);
 	g_return_val_if_fail (glade_file != NULL, FALSE);
@@ -179,9 +191,13 @@ eap_method_nag_init (EAPMethod *method,
 		method->ignore_ca_cert = nm_gconf_get_ignore_ca_cert (uuid, phase2);
 	}
 
+	info = g_malloc0 (sizeof (NagDialogResponseInfo));
+	info->method = method;
+	info->connection = connection;
+
 	dialog = glade_xml_get_widget (method->nag_dialog_xml, "nag_user_dialog");
 	g_assert (dialog);
-	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), method);
+	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), info);
 
 	widget = glade_xml_get_widget (method->nag_dialog_xml, "content_label");
 	g_assert (widget);
