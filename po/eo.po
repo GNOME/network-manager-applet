@@ -1,0 +1,2532 @@
+# Esperanto translation for network-manager-applet
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the network-manager-applet package.
+# M. <>, 2009.
+# kitzOgen <kitzogen@gmail.com>, 2009.
+# Michael MORONI, <haikara90@gmail.com>, 2009.
+# Patrick OUDEJANS <>, 2009.
+# Aisano <>, 2010.
+# Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: network-manager-applet\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=NetworkManager&component=nm-applet\n"
+"POT-Creation-Date: 2010-07-03 01:05+0000\n"
+"PO-Revision-Date: 2010-07-06 17:53+0200\n"
+"Last-Translator: Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>\n"
+"Language-Team: Esperanto <ubuntu-l10n-eo@lists.launchpad.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Launchpad-Export-Date: 2010-07-06 15:40+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../nm-applet.desktop.in.h:1
+msgid "Control your network connections"
+msgstr "Kontroli viajn retkonektojn"
+
+#: ../nm-applet.desktop.in.h:2
+msgid "Network Manager"
+msgstr "Reta mastrumilo"
+
+#: ../nm-applet.schemas.in.h:1
+msgid "Disable WiFi Create"
+msgstr "Malebligi kreadon de sen-drataj konektoj"
+
+#: ../nm-applet.schemas.in.h:2
+msgid "Disable connected notifications"
+msgstr "Malaktivigi atentigojn pri konektoj"
+
+#: ../nm-applet.schemas.in.h:3
+msgid "Disable disconnected notifications"
+msgstr "Malaktivigi atentigojn pri malkonektoj"
+
+#: ../nm-applet.schemas.in.h:4
+msgid "Set this to TRUE to disable notifications when connecting to a network."
+msgstr ""
+"Agordi ĉi tiun al 'vera' por malaktivigi atentigojn kiam konektanta al la "
+"reto."
+
+#: ../nm-applet.schemas.in.h:5
+msgid ""
+"Set this to TRUE to disable notifications when disconnecting from a network."
+msgstr ""
+"Agordi ĉi tiun al 'vera' por malaktivigi atentigojn kiam malkonektanta al la "
+"reto."
+
+#: ../nm-applet.schemas.in.h:6
+msgid ""
+"Set this to TRUE to disable notifications when wireless networks are "
+"available."
+msgstr ""
+"Agordi ĉi tiun al 'vera' por malaktivigi atentigojn kiam sendrataj retoj "
+"disponeblas."
+
+#: ../nm-applet.schemas.in.h:7
+msgid ""
+"Set to TRUE to disable creation of adhoc networks when using the applet."
+msgstr ""
+"Igu tion ĉi \"vera\", se vi volas malebligi la kreadon de por-okazaj retoj "
+"per la aplikaĵeto"
+
+#: ../nm-applet.schemas.in.h:8
+msgid "Stamp"
+msgstr "Stampo"
+
+#: ../nm-applet.schemas.in.h:9
+msgid "Suppress networks available notifications"
+msgstr "Nuligu atentigon pri disponeblaj retoj"
+
+#: ../nm-applet.schemas.in.h:10
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr "Uzita por determini ĉu agordoj devus esti migrigita al nova versio."
+
+#: ../nm-connection-editor.desktop.in.h:1
+msgid "Manage and change your network connection settings"
+msgstr "Administri kaj ŝanĝi viajn retkonektajn agordojn"
+
+#: ../nm-connection-editor.desktop.in.h:2
+#: ../src/connection-editor/nm-connection-editor.glade.h:7
+msgid "Network Connections"
+msgstr "Retkonektoj"
+
+#: ../src/applet-dbus-manager.c:165
+#, c-format
+msgid "An instance of nm-applet is already running.\n"
+msgstr "Jam ruliĝas ekzemplero de nm-applet.\n"
+
+#: ../src/applet-dbus-manager.c:167
+#, c-format
+msgid "Could not acquire the %s service. (%d)\n"
+msgstr "Ne eblas atingi la servon %s. (%d)\n"
+
+#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:332
+#: ../src/applet-device-gsm.c:375 ../src/applet-device-wired.c:241
+#: ../src/applet-device-wifi.c:816
+msgid "Available"
+msgstr "Disponebla"
+
+#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:374
+#: ../src/applet-device-gsm.c:417 ../src/applet-device-wired.c:270
+#, c-format
+msgid "You are now connected to '%s'."
+msgstr "Vi estas konektita al '%s'."
+
+#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:378
+#: ../src/applet-device-gsm.c:421 ../src/applet-device-wired.c:274
+#: ../src/applet-device-wifi.c:1257
+msgid "Connection Established"
+msgstr "Konekto Establita"
+
+#: ../src/applet-device-bt.c:205
+msgid "You are now connected to the mobile broadband network."
+msgstr "Vi estas konektita al portebla larĝkapacita reto"
+
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:414
+#: ../src/applet-device-gsm.c:457
+#, c-format
+msgid "Preparing mobile broadband connection '%s'..."
+msgstr "Pretiganta porteblan larĝkapacitan konekton '%s'..."
+
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:417
+#: ../src/applet-device-gsm.c:460
+#, c-format
+msgid "Configuring mobile broadband connection '%s'..."
+msgstr "Agordanta porteblan larĝkapacitan konekton '%s'..."
+
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:420
+#: ../src/applet-device-gsm.c:463
+#, c-format
+msgid "User authentication required for mobile broadband connection '%s'..."
+msgstr "Movebla larĝkapacita konekto «%s» necesas aŭtentigon de uzanto..."
+
+#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:423
+#: ../src/applet-device-gsm.c:466 ../src/applet.c:2298
+#, c-format
+msgid "Requesting a network address for '%s'..."
+msgstr "Petanta retan adreson por '%s'..."
+
+#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:441
+#: ../src/applet-device-gsm.c:484
+#, c-format
+msgid "Mobile broadband connection '%s' active"
+msgstr "Portebla larĝkapacita konekto '%s' estas aktiva"
+
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:621
+#: ../src/mb-menu-item.c:55
+msgid "CDMA"
+msgstr "CDMA"
+
+#: ../src/applet-device-cdma.c:281 ../src/applet-device-gsm.c:325
+#, c-format
+msgid "Mobile Broadband (%s)"
+msgstr "Portebla larĝkapacita (%s)"
+
+#: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
+#: ../src/connection-editor/page-mobile.c:318
+#: ../src/connection-editor/nm-connection-editor.glade.h:6
+#: ../src/connection-editor/nm-connection-list.c:1401
+msgid "Mobile Broadband"
+msgstr "Portebla larĝkapacita"
+
+#. Default connection item
+#: ../src/applet-device-cdma.c:345
+msgid "New Mobile Broadband (CDMA) connection..."
+msgstr "Nova portebla larĝkapacita (CDMA) konekto..."
+
+#: ../src/applet-device-cdma.c:379
+msgid "You are now connected to the CDMA network."
+msgstr "Vi estas konektita al la CDMA-reto."
+
+#: ../src/applet-device-cdma.c:436 ../src/applet-device-gsm.c:479
+#, c-format
+msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
+msgstr "Portebla larĝkapacita konekto '%s' estas aktiva: (%d%%%s%s)"
+
+#: ../src/applet-device-cdma.c:439 ../src/applet-device-gsm.c:482
+msgid "roaming"
+msgstr ""
+
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:624
+#: ../src/mb-menu-item.c:60
+msgid "GSM"
+msgstr "GSM"
+
+#. Default connection item
+#: ../src/applet-device-gsm.c:388
+msgid "New Mobile Broadband (GSM) connection..."
+msgstr "Nova port-larĝkapacita (GSM) konekto..."
+
+#: ../src/applet-device-gsm.c:422
+msgid "You are now connected to the GSM network."
+msgstr "Vi estas nun konektite al la GSM-reto."
+
+#: ../src/applet-device-gsm.c:711
+msgid "PIN code required"
+msgstr "PIN-kodo bezonatas"
+
+#: ../src/applet-device-gsm.c:713
+msgid "PUK code required"
+msgstr "PUK-kodo necesa"
+
+#: ../src/applet-device-gsm.c:722
+msgid "PIN code is needed for the mobile broadband device"
+msgstr "Port-larĝkapacita aparato bezonas PIN-kodon"
+
+#: ../src/applet-device-gsm.c:724
+msgid "PUK code is needed for the mobile broadband device"
+msgstr "Port-larĝkapacita aparato bezonas PUK-kodon"
+
+#: ../src/applet-device-gsm.c:857
+msgid "Wrong PIN code; please contact your provider."
+msgstr ""
+
+#: ../src/applet-device-gsm.c:880
+msgid "Wrong PUK code; please contact your provider."
+msgstr ""
+
+#. Start the spinner to show the progress of the unlock
+#: ../src/applet-device-gsm.c:907
+msgid "Sending unlock code..."
+msgstr ""
+
+#: ../src/applet-device-gsm.c:966
+msgid "SIM PIN unlock required"
+msgstr ""
+
+#: ../src/applet-device-gsm.c:967
+msgid "SIM PIN Unlock Required"
+msgstr ""
+
+#. FIXME: some warning about # of times you can enter incorrect PIN
+#: ../src/applet-device-gsm.c:969
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PIN code before it can be "
+"used."
+msgstr ""
+
+#: ../src/applet-device-gsm.c:970
+msgid "PIN code:"
+msgstr ""
+
+#: ../src/applet-device-gsm.c:975
+msgid "SIM PUK unlock required"
+msgstr ""
+
+#: ../src/applet-device-gsm.c:976
+msgid "SIM PUK Unlock Required"
+msgstr ""
+
+#. FIXME: some warning about # of times you can enter incorrect PUK
+#: ../src/applet-device-gsm.c:978
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PUK code before it can be "
+"used."
+msgstr ""
+
+#: ../src/applet-device-gsm.c:979
+msgid "PUK code:"
+msgstr ""
+
+#: ../src/applet-device-gsm.c:981
+msgid "New PIN code:"
+msgstr ""
+
+#: ../src/applet-device-gsm.c:982
+msgid "Re-enter new PIN code:"
+msgstr ""
+
+#: ../src/applet-device-wired.c:63
+msgid "Auto Ethernet"
+msgstr "Aŭtomata eterreto"
+
+#: ../src/applet-device-wired.c:206
+#, c-format
+msgid "Wired Networks (%s)"
+msgstr "Drata reto (%s)"
+
+#: ../src/applet-device-wired.c:208
+#, c-format
+msgid "Wired Network (%s)"
+msgstr "Drata reto (%s)"
+
+#: ../src/applet-device-wired.c:211
+msgid "Wired Networks"
+msgstr "Drataj retoj"
+
+#: ../src/applet-device-wired.c:213
+msgid "Wired Network"
+msgstr "Drata reto"
+
+#. Notify user of unmanaged or unavailable device
+#: ../src/applet-device-wired.c:233 ../src/applet.c:1309
+msgid "disconnected"
+msgstr "ne konektita"
+
+#: ../src/applet-device-wired.c:275
+msgid "You are now connected to the wired network."
+msgstr "Vi estas nun konektite al la drata reto."
+
+#: ../src/applet-device-wired.c:301
+#, c-format
+msgid "Preparing wired network connection '%s'..."
+msgstr "Preparanta drat-retan konekton '%s'…"
+
+#: ../src/applet-device-wired.c:304
+#, c-format
+msgid "Configuring wired network connection '%s'..."
+msgstr "Agordanta drat-retan konekton '%s'…"
+
+#: ../src/applet-device-wired.c:307
+#, c-format
+msgid "User authentication required for wired network connection '%s'..."
+msgstr "Drat-reta konekto '%s' bezonas aŭtentigon de la uzanto..."
+
+#: ../src/applet-device-wired.c:310
+#, c-format
+msgid "Requesting a wired network address for '%s'..."
+msgstr "Petanta drat-retan adreson por '%s'..."
+
+#: ../src/applet-device-wired.c:314
+#, c-format
+msgid "Wired network connection '%s' active"
+msgstr "Drat-reta konekto '%s' aktiva"
+
+#: ../src/applet-device-wired.c:565
+msgid "DSL authentication"
+msgstr "DSL-aŭtentigo"
+
+#: ../src/applet-device-wifi.c:87
+msgid "_Connect to Hidden Wireless Network..."
+msgstr "Konektiĝi al kaŝita sendrata reto…"
+
+#: ../src/applet-device-wifi.c:120
+msgid "Create _New Wireless Network..."
+msgstr "Krei _novan sendratan reton…"
+
+#: ../src/applet-device-wifi.c:748
+#, c-format
+msgid "Wireless Networks (%s)"
+msgstr "Sendrataj retoj (%s)"
+
+#: ../src/applet-device-wifi.c:750
+#, c-format
+msgid "Wireless Network (%s)"
+msgstr "Sendrata reto (%s)"
+
+#: ../src/applet-device-wifi.c:752
+msgid "Wireless Network"
+msgid_plural "Wireless Networks"
+msgstr[0] "Sendrata reto"
+msgstr[1] "Sendrataj retoj"
+
+#: ../src/applet-device-wifi.c:782
+msgid "wireless is disabled"
+msgstr "Sendrata ret-konektilo estas malaktiva"
+
+#: ../src/applet-device-wifi.c:843
+msgid "More networks"
+msgstr "Pliaj retoj"
+
+#: ../src/applet-device-wifi.c:1047
+msgid "Wireless Networks Available"
+msgstr "Sendrataj retoj estas disponeblaj"
+
+#: ../src/applet-device-wifi.c:1048
+msgid "Click on this icon to connect to a wireless network"
+msgstr "Alklaki sur ĉi tiu simbolo por konektiĝi al sendrata reto"
+
+#: ../src/applet-device-wifi.c:1051 ../src/applet.c:677
+msgid "Don't show this message again"
+msgstr "Ne remontri tiun mesaĝon"
+
+#: ../src/applet-device-wifi.c:1255
+#, c-format
+msgid "You are now connected to the wireless network '%s'."
+msgstr "Vi estas nun konektite al la sendrata reto '%s'."
+
+#: ../src/applet-device-wifi.c:1256 ../src/applet-device-wifi.c:1287
+msgid "(none)"
+msgstr "(neniu)"
+
+#: ../src/applet-device-wifi.c:1297
+#, c-format
+msgid "Preparing wireless network connection '%s'..."
+msgstr "Preparanta sendrat-retan konekton '%s'…"
+
+#: ../src/applet-device-wifi.c:1300
+#, c-format
+msgid "Configuring wireless network connection '%s'..."
+msgstr "Agordanta sendrat-retan konekton '%s'…"
+
+#: ../src/applet-device-wifi.c:1303
+#, c-format
+msgid "User authentication required for wireless network '%s'..."
+msgstr "Sendrata reto '%s' necesas legitimadon de la uzanto..."
+
+#: ../src/applet-device-wifi.c:1306
+#, c-format
+msgid "Requesting a wireless network address for '%s'..."
+msgstr "Petanta sendrat-retan adreson por '%s'..."
+
+#: ../src/applet-device-wifi.c:1326
+#, c-format
+msgid "Wireless network connection '%s' active: %s (%d%%)"
+msgstr "Sendrat-reta konekto '%s' aktiva: %s (%d%%)"
+
+#: ../src/applet-device-wifi.c:1330
+#, c-format
+msgid "Wireless network connection '%s' active"
+msgstr "Sendrat-reta konekto '%s' aktiva"
+
+#: ../src/applet-dialogs.c:56
+msgid "Error displaying connection information:"
+msgstr "Eraro montrante konekt-informojn:"
+
+#: ../src/applet-dialogs.c:87
+#: ../src/connection-editor/page-wireless-security.c:284
+#: ../src/wireless-dialog.c:962
+#: ../src/wireless-security/wireless-security.c:341
+msgid "LEAP"
+msgstr "LEAP"
+
+#: ../src/applet-dialogs.c:89
+msgid "Dynamic WEP"
+msgstr "Dinamika WEP"
+
+#: ../src/applet-dialogs.c:91 ../src/applet-dialogs.c:192
+#: ../src/applet-dialogs.c:194
+msgid "WPA/WPA2"
+msgstr "WPA/WPA2"
+
+#: ../src/applet-dialogs.c:190
+msgid "WEP"
+msgstr "WEP"
+
+#: ../src/applet-dialogs.c:198
+#: ../src/connection-editor/page-wireless-security.c:238
+#: ../src/wireless-dialog.c:919
+msgctxt "No wifi security used"
+msgid "None"
+msgstr "Nenio"
+
+#: ../src/applet-dialogs.c:207
+msgctxt "No wired security used"
+msgid "None"
+msgstr "Nenio"
+
+#: ../src/applet-dialogs.c:210
+msgctxt "Unknown/unrecognized wired or wifi security"
+msgid "Unknown"
+msgstr "Nekonate"
+
+#: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
+#, c-format
+msgid "%u Mb/s"
+msgstr "%u Mb/s"
+
+#: ../src/applet-dialogs.c:282 ../src/applet-dialogs.c:384
+#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
+#: ../src/applet-dialogs.c:450
+msgid "Unknown"
+msgstr "Nekonata"
+
+#: ../src/applet-dialogs.c:313
+#, c-format
+msgid "Ethernet (%s)"
+msgstr "Eterreto (%s)"
+
+#: ../src/applet-dialogs.c:315
+#, c-format
+msgid "802.11 WiFi (%s)"
+msgstr "Sendrata reto laŭ 802.11 (%s)"
+
+#: ../src/applet-dialogs.c:317
+#, c-format
+msgid "GSM (%s)"
+msgstr "GSM (%s)"
+
+#: ../src/applet-dialogs.c:319
+#, c-format
+msgid "CDMA (%s)"
+msgstr "CDMA (%s)"
+
+#: ../src/applet-dialogs.c:324
+msgid "Interface:"
+msgstr "Interfaco:"
+
+#: ../src/applet-dialogs.c:340
+msgid "Hardware Address:"
+msgstr "Aparatara adreso:"
+
+#: ../src/applet-dialogs.c:350
+msgid "Driver:"
+msgstr "Pelilo:"
+
+#: ../src/applet-dialogs.c:388
+msgid "Speed:"
+msgstr "Rapideco:"
+
+#: ../src/applet-dialogs.c:397
+msgid "Security:"
+msgstr "Sekureco:"
+
+#: ../src/applet-dialogs.c:419
+msgid "IP Address:"
+msgstr "IP-adreso:"
+
+#: ../src/applet-dialogs.c:437
+msgid "Broadcast Address:"
+msgstr "Elsenda adreso:"
+
+#: ../src/applet-dialogs.c:448
+msgid "Subnet Mask:"
+msgstr "Subreta masko:"
+
+#: ../src/applet-dialogs.c:460
+msgid "Default Route:"
+msgstr "Defaŭlta kurso:"
+
+#: ../src/applet-dialogs.c:474
+msgid "Primary DNS:"
+msgstr "Unuaranga DNS:"
+
+#: ../src/applet-dialogs.c:485
+msgid "Secondary DNS:"
+msgstr "Duaranga DNS:"
+
+#. Shouldn't really happen but ...
+#: ../src/applet-dialogs.c:548
+msgid "No valid active connections found!"
+msgstr "Ne validaj aktiv-konektoj trovitaj"
+
+#: ../src/applet-dialogs.c:674
+msgid ""
+"Copyright © 2004-2008 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc."
+msgstr ""
+"Kopirajto © 2004-2008 Red Hat, Entrepreno.\n"
+"Kopirajto © 2005-2008 Novell, Entrepreno."
+
+#: ../src/applet-dialogs.c:676
+msgid ""
+"Notification area applet for managing your network devices and connections."
+msgstr ""
+"Apleto en atentiga zono por administri viajn retajn aparatojn kaj konektojn."
+
+#: ../src/applet-dialogs.c:678
+msgid "NetworkManager Website"
+msgstr "Retpaĝaro de NetworkManager"
+
+#: ../src/applet-dialogs.c:681
+msgid "translator-credits"
+msgstr ""
+"Launchpad Contributions:\n"
+"  Aisano https://launchpad.net/~info-ais-sanmarino\n"
+"  Kristjan SCHMIDT https://launchpad.net/~kristjan-eo\n"
+"  Michael MORONI https://launchpad.net/~haikara90\n"
+"  Neil Shepperd https://launchpad.net/~nshepperd\n"
+"  Patrick (Petriko) Oudejans https://launchpad.net/~patrickoudejans\n"
+"  kitzOgen https://launchpad.net/~kitzogen"
+
+#: ../src/applet-dialogs.c:697
+msgid "Missing resources"
+msgstr "Mankantaj risurcoj"
+
+#: ../src/applet-dialogs.c:723
+msgid "Mobile broadband network password"
+msgstr "Pasvorto de la movebla larĝkapacita konekto"
+
+#: ../src/applet-dialogs.c:732
+#, c-format
+msgid "A password is required to connect to '%s'."
+msgstr "Pasvorto bezonatas por konektiĝi al '%s'."
+
+#: ../src/applet-dialogs.c:750
+msgid "Password:"
+msgstr "Pasvorto:"
+
+#: ../src/applet.c:790
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ĉar retkonekto estis interrompita."
+
+#: ../src/applet.c:793
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service stopped unexpectedly."
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ĉar VPN-servo haltigis neatendite."
+
+#: ../src/applet.c:796
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service returned invalid "
+"configuration."
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ĉar VPN-servo revenigis nevalidan agordon."
+
+#: ../src/applet.c:799
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the connection attempt timed out."
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ĉar la konekta provo eltempiĝis."
+
+#: ../src/applet.c:802
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service did not start in time."
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ĉar la VPN-servo ne komencis tempe."
+
+#: ../src/applet.c:805
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service failed to start."
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ĉar la VPN-servo fiaskis je la komenco."
+
+#: ../src/applet.c:808
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because there were no valid VPN secrets."
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ĉar ne estis validaj VPN-sekretaĵoj."
+
+#: ../src/applet.c:811
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because of invalid VPN secrets."
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ĉar estis nevalidaj VPN-sekretaĵoj."
+
+#: ../src/applet.c:818
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed."
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ."
+
+#: ../src/applet.c:836
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' disconnected because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"Malkonektiĝis VPN-konekto '%s' ĉar retkonekto estis interrompita."
+
+#: ../src/applet.c:839
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' disconnected because the VPN service stopped."
+msgstr ""
+"\n"
+"Malkonektiĝis VPN-konekto '%s' ĉar la VPN-servo haltigis."
+
+#: ../src/applet.c:845
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' disconnected."
+msgstr ""
+"\n"
+"Malkonektiĝis VPN-konekto '%s' ."
+
+#: ../src/applet.c:876
+msgid "VPN Login Message"
+msgstr "VPN-ensalutmesaĝo"
+
+#: ../src/applet.c:888 ../src/applet.c:896 ../src/applet.c:943
+msgid "VPN Connection Failed"
+msgstr "Fiaskis VPN-konekto"
+
+#: ../src/applet.c:950
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because the VPN service failed to start.\n"
+"\n"
+"%s"
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' ĉar la VPN-servo fiaskis je la komenco.\n"
+"\n"
+"%s"
+
+#: ../src/applet.c:953
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed to start.\n"
+"\n"
+"%s"
+msgstr ""
+"\n"
+"Fiaskis VPN-konekto '%s' je la komenco.\n"
+"\n"
+"%s"
+
+#: ../src/applet.c:1297
+msgid "device not ready (firmware missing)"
+msgstr "aparato ne pretas (mikroprogramaro mankas)"
+
+#: ../src/applet.c:1299
+msgid "device not ready"
+msgstr "Aparato ne preta"
+
+#: ../src/applet.c:1325
+msgid "Disconnect"
+msgstr "Malkonekti"
+
+#: ../src/applet.c:1339
+msgid "device not managed"
+msgstr "Aparato ne administrita"
+
+#: ../src/applet.c:1385
+msgid "No network devices available"
+msgstr "Neniuj retaparatoj disponeblaj"
+
+#: ../src/applet.c:1473
+msgid "_VPN Connections"
+msgstr "_VPN-konektoj"
+
+#: ../src/applet.c:1526
+msgid "_Configure VPN..."
+msgstr "Agordi VPN..."
+
+#: ../src/applet.c:1530
+#, fuzzy
+msgid "_Disconnect VPN"
+msgstr "_Malkonektiĝi VPN"
+
+#: ../src/applet.c:1617
+msgid "NetworkManager is not running..."
+msgstr "NetworkManager ne estas rulanta..."
+
+#: ../src/applet.c:1622 ../src/applet.c:2426
+msgid "Networking disabled"
+msgstr "Retkonektado malaktiva"
+
+#. 'Enable Networking' item
+#: ../src/applet.c:1851
+msgid "Enable _Networking"
+msgstr "Ŝalti _Reton"
+
+#. 'Enable Wireless' item
+#: ../src/applet.c:1860
+msgid "Enable _Wireless"
+msgstr "Ŝalti _Sendratan reton"
+
+#. 'Enable Mobile Broadband' item
+#: ../src/applet.c:1869
+msgid "Enable _Mobile Broadband"
+msgstr "Aktivigi _moveblan larĝkapacitan konekton"
+
+#. Toggle notifications item
+#: ../src/applet.c:1880
+msgid "Enable N_otifications"
+msgstr "Aktivigi atentig_ojn"
+
+#. 'Connection Information' item
+#: ../src/applet.c:1891
+msgid "Connection _Information"
+msgstr "Konektaj _informoj"
+
+#. 'Edit Connections...' item
+#: ../src/applet.c:1901
+msgid "Edit Connections..."
+msgstr "Redakti konektojn..."
+
+#. Help item
+#: ../src/applet.c:1915
+msgid "_Help"
+msgstr "_Helpo"
+
+#. About item
+#: ../src/applet.c:1924
+msgid "_About"
+msgstr "_Pri"
+
+#: ../src/applet.c:2115
+msgid "Disconnected"
+msgstr "Malkonektita"
+
+#: ../src/applet.c:2116
+msgid "The network connection has been disconnected."
+msgstr ""
+
+#: ../src/applet.c:2292
+#, c-format
+msgid "Preparing network connection '%s'..."
+msgstr "Agordanta retkonekton '%s'..."
+
+#: ../src/applet.c:2295
+#, c-format
+msgid "User authentication required for network connection '%s'..."
+msgstr "Retkonekto '%s' necesas uzantan aŭtentigon..."
+
+#: ../src/applet.c:2301
+#, c-format
+msgid "Network connection '%s' active"
+msgstr "Retkonekto '%s' aktiva"
+
+#: ../src/applet.c:2382
+#, c-format
+msgid "Starting VPN connection '%s'..."
+msgstr "Komencanta VPN-konekton '%s'..."
+
+#: ../src/applet.c:2385
+#, c-format
+msgid "User authentication required for VPN connection '%s'..."
+msgstr "VPN-retkonekto '%s' necesas uzantan aŭtentigon..."
+
+#: ../src/applet.c:2388
+#, c-format
+msgid "Requesting a VPN address for '%s'..."
+msgstr "Petanta VPN-adreson por '%s'..."
+
+#: ../src/applet.c:2391
+#, c-format
+msgid "VPN connection '%s' active"
+msgstr "VPN-konekto '%s' aktiva"
+
+#: ../src/applet.c:2430
+msgid "No network connection"
+msgstr "Neniu retkonekto"
+
+#: ../src/applet.c:2979
+msgid "NetworkManager Applet"
+msgstr "Apleto por NetworkManager"
+
+#: ../src/applet.c:2985 ../src/wired-dialog.c:128
+msgid ""
+"The NetworkManager Applet could not find some required resources (the glade "
+"file was not found)."
+msgstr ""
+"Apleto de NetworkManager ne povis serĉi kelkajn neprajn risurcojn (glade-"
+"dosiero ne estis  trovita)."
+
+#: ../src/applet.glade.h:1 ../src/connection-editor/ce-vpn-wizard.glade.h:1
+msgid " "
+msgstr " "
+
+#: ../src/applet.glade.h:2
+msgid ""
+"1 (Default)\n"
+"2\n"
+"3\n"
+"4"
+msgstr ""
+"1 (defaŭlte)\n"
+"2\n"
+"3\n"
+"4"
+
+#: ../src/applet.glade.h:6
+msgid "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
+msgstr "<span size=\"larger\" weight=\"bold\">Aktivaj retkonektoj</span>"
+
+#: ../src/applet.glade.h:7
+msgid "Anony_mous identity:"
+msgstr "Senno_ma idento:"
+
+#: ../src/applet.glade.h:8
+msgid "As_k for this password every time"
+msgstr ""
+
+#: ../src/applet.glade.h:9
+msgid ""
+"Automatic\n"
+"Version 0\n"
+"Version 1"
+msgstr ""
+"Aŭtomata\n"
+"0-versio\n"
+"1-versio"
+
+#: ../src/applet.glade.h:12
+msgid "C_A certificate:"
+msgstr "C_A-atestilo:"
+
+#: ../src/applet.glade.h:13
+msgid "C_onnect"
+msgstr "K_onekti"
+
+#: ../src/applet.glade.h:14
+msgid "Co_nnection:"
+msgstr "Ko_nekto:"
+
+#: ../src/applet.glade.h:15
+msgid "Connection Information"
+msgstr "Konektinformoj"
+
+#: ../src/applet.glade.h:16
+msgid "Don't _warn me again"
+msgstr "Ne reaverti min"
+
+#: ../src/applet.glade.h:17
+msgid "I_dentity:"
+msgstr "I_dento:"
+
+#: ../src/applet.glade.h:18
+msgid "I_nner authentication:"
+msgstr "E_na aŭtentigo:"
+
+#: ../src/applet.glade.h:19
+msgid "No"
+msgstr "Ne"
+
+#: ../src/applet.glade.h:20
+msgid ""
+"Open System\n"
+"Shared Key"
+msgstr ""
+"Malfermita sistemo\n"
+"Kunhavita ŝlosilo"
+
+#: ../src/applet.glade.h:22
+msgid "Other Wireless Network..."
+msgstr "Alia sendrata reto..."
+
+#: ../src/applet.glade.h:23
+msgid "Private _key:"
+msgstr "Privata ŝlosilo:"
+
+#: ../src/applet.glade.h:24
+msgid "Sho_w key"
+msgstr "Montri ŝlosilon"
+
+#: ../src/applet.glade.h:25 ../src/connection-editor/ce-page-dsl.glade.h:1
+msgid "Sho_w password"
+msgstr "Montri pasvorton"
+
+#: ../src/applet.glade.h:26
+msgid "WEP inde_x:"
+msgstr "WEP-indekso:"
+
+#: ../src/applet.glade.h:27
+msgid "Wireless _adapter:"
+msgstr "Sendrata _adaptilo:"
+
+#: ../src/applet.glade.h:28
+msgid "Yes"
+msgstr "Jes"
+
+#: ../src/applet.glade.h:29
+msgid "_Authentication:"
+msgstr "_Aŭtentigo:"
+
+#: ../src/applet.glade.h:30
+msgid "_Key:"
+msgstr "Ŝlosilo:"
+
+#: ../src/applet.glade.h:31
+msgid "_Network name:"
+msgstr "Ret_nomo:"
+
+#: ../src/applet.glade.h:32
+msgid "_PEAP version:"
+msgstr "Versio de _PEAP:"
+
+#: ../src/applet.glade.h:33 ../src/connection-editor/ce-page-dsl.glade.h:2
+#: ../src/connection-editor/ce-page-mobile.glade.h:15
+msgid "_Password:"
+msgstr "_Pasvorto:"
+
+#: ../src/applet.glade.h:34
+msgid "_Private key password:"
+msgstr "_Pasvorto por privata ŝlosilo:"
+
+#: ../src/applet.glade.h:35 ../src/connection-editor/ce-page-mobile.glade.h:16
+msgid "_Type:"
+msgstr "_Tipo:"
+
+#: ../src/applet.glade.h:36
+msgid "_Unlock"
+msgstr "_Malŝlosi"
+
+#: ../src/applet.glade.h:37
+msgid "_User certificate:"
+msgstr "_Uzanta atestilo:"
+
+#: ../src/applet.glade.h:38 ../src/connection-editor/ce-page-dsl.glade.h:4
+#: ../src/connection-editor/ce-page-mobile.glade.h:17
+msgid "_Username:"
+msgstr "_Uzantnomo:"
+
+#: ../src/applet.glade.h:39
+msgid "_Wireless security:"
+msgstr "Sendrata sekureco"
+
+#: ../src/applet.glade.h:40
+msgid "label"
+msgstr "etikedo"
+
+#: ../src/connection-editor/ce-page.c:69
+msgid "automatic"
+msgstr "Aŭtomata"
+
+#: ../src/connection-editor/ce-page.c:221
+#: ../src/connection-editor/nm-connection-editor.c:616
+msgid "Failed to update connection secrets due to an unknown error."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.glade.h:3
+msgid "_Service:"
+msgstr "_Servo:"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:1
+#: ../src/connection-editor/ce-page-ip6.glade.h:1
+msgid "<b>Addresses</b>"
+msgstr "<b>Addresoj</b>"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:2
+#: ../src/connection-editor/ce-page-ip6.glade.h:2
+msgid ""
+"Automatic\n"
+"Automatic with manual DNS settings\n"
+"Manual\n"
+"Link-Local\n"
+"Shared to other computers"
+msgstr ""
+"Aŭtomata\n"
+"Aŭtomata kun mana DNS-agordoj\n"
+"Mane\n"
+"Link-Local\n"
+"Kunhavita kun aliaj komputiloj"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:7
+msgid "D_HCP client ID:"
+msgstr "D_HCP-klientidentigilo:"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:8
+#: ../src/connection-editor/ce-page-ip6.glade.h:7
+msgid ""
+"Domains used when resolving host names. Use commas to separate multiple "
+"domains."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:9
+#: ../src/connection-editor/ce-page-ip6.glade.h:8
+msgid ""
+"IP addresses identify your computer on the network.  Click the \"Add\" "
+"button to add an IP address."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:10
+#: ../src/connection-editor/ce-page-ip6.glade.h:9
+msgid ""
+"IP addresses of domain name servers used to resolve host names. Use commas "
+"to separate multiple domain name server addresses."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:11
+#: ../src/connection-editor/ce-page-ip6.glade.h:10
+msgid ""
+"If enabled, this connection will never be used as the default network "
+"connection."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:12
+#: ../src/connection-editor/ce-page-ip6.glade.h:11
+msgid "Ig_nore automatically obtained routes"
+msgstr "Ig_nori aŭtomate ricevitajn itinerojn"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:13
+msgid "Require IPv4 addressing for this connection to complete"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:14
+msgid ""
+"The DHCP client identifier allows the network administrator to customize "
+"your computer's configuration.  If you wish to use a DHCP client identifier, "
+"enter it here."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:15
+#: ../src/connection-editor/ce-page-ip6.glade.h:13
+msgid "Use this c_onnection only for resources on its network"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:16
+msgid ""
+"When connecting to IPv6-capable networks, allows the connection to complete "
+"if IPv4 configuration fails but IPv6 configuration succeeds."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:17
+#: ../src/connection-editor/ce-page-ip6.glade.h:15
+msgid "_DNS servers:"
+msgstr "_DNS-serviloj:"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:18
+#: ../src/connection-editor/ce-page-ip6.glade.h:16
+msgid "_Method:"
+msgstr "_Metodo:"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:19
+#: ../src/connection-editor/ce-page-ip6.glade.h:17
+msgid "_Routes&#x2026;"
+msgstr "Ku_rsoj&#x2026;"
+
+#: ../src/connection-editor/ce-page-ip4.glade.h:20
+#: ../src/connection-editor/ce-page-ip6.glade.h:18
+msgid "_Search domains:"
+msgstr "_Serĉi domajnojn:"
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:12
+msgid "Require IPv6 addressing for this connection to complete"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip6.glade.h:14
+msgid ""
+"When connecting to IPv4-capable networks, allows the connection to complete "
+"if IPv6 configuration fails but IPv4 configuration succeeds."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:1
+msgid "<b>Advanced</b>"
+msgstr "<b>Progresinta</b>"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:2
+msgid "<b>Basic</b>"
+msgstr "<b>Baze</b>"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:3
+msgid "Allow roaming if home network is not available"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:4
+msgid ""
+"Any\n"
+"3G (UMTS/HSPA)\n"
+"2G (GPRS/EDGE)\n"
+"Prefer 3G (UMTS/HSPA)\n"
+"Prefer 2G (GPRS/EDGE)"
+msgstr ""
+"Iu ajn\n"
+"3G (UMTS/HSPA)\n"
+"2G (GPRS/EDGE)\n"
+"Preferita 3G (UMTS/HSPA)\n"
+"Preferita 2G (GPRS/EDGE)"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:9
+msgid "Change..."
+msgstr "Ŝanĝi..."
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:10
+#, fuzzy
+msgid "N_etwork ID:"
+msgstr "R_et-ID:"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:11
+msgid "Nu_mber:"
+msgstr "Nu_mero:"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:12
+msgid "PI_N:"
+msgstr "PI_N:"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:13
+msgid "Sho_w passwords"
+msgstr "Montri pasvortojn"
+
+#: ../src/connection-editor/ce-page-mobile.glade.h:14
+msgid "_APN:"
+msgstr "_APN:"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:1
+msgid "<b>Allowed Authentication Methods</b>"
+msgstr "<b>Permesitaj metodoj de aŭtentigo</b>"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:2
+msgid "<b>Authentication</b>"
+msgstr "<b>Aŭtentigo</b>"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:3
+msgid "<b>Compression</b>"
+msgstr "<b>Kompaktigo</b>"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:4
+msgid "<b>Echo</b>"
+msgstr "<b>Eĥo</b>"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:5
+msgid ""
+"<i>In most cases, the provider's PPP servers will support all authentication "
+"methods.  If connections fail, try disabling support for some methods.</i>"
+msgstr ""
+"<i>En multaj kazoj, La PPP-serviloj de provizantoj subtenos ĉiujn metodojn "
+"de aŭtentigo. Se konektoj fiaskas, klopodi, malaktivigante la subtenon por "
+"kelkaj metodoj.</i>"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:6
+msgid "Allow _BSD data compression"
+msgstr "Permesi kompaktigon de _BSD-datumoj"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:7
+msgid "Allow _Deflate data compression"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:8
+msgid "Allowed methods:"
+msgstr "Permesitaj metodoj:"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:9
+msgid "C_HAP"
+msgstr "C_HAP"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:10
+msgid "Challenge Handshake Authentication Protocol"
+msgstr "Challenge Handshake Authentication Protocol"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:11
+msgid "Configure _Methods…"
+msgstr "Agordi _metodoj…"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:12
+msgid "Extensible Authentication Protocol"
+msgstr "Extensible Authentication Protocol"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:13
+msgid "MSCHAP v_2"
+msgstr "MSCHAP v_2"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:14
+msgid "Microsoft Challenge Handshake Authentication Protocol"
+msgstr "Microsoft Challenge Handshake Authentication Protocol"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:15
+msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
+msgstr "Microsoft Challenge Handshake Authentication Protocol versio 2"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:16
+msgid "Password Authentication Protocol"
+msgstr "Protokolo de aŭtentigo de pasvorto"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:17
+msgid "Send PPP _echo packets"
+msgstr "Sendi eĥajn PPP-pakaĵojn"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:18
+msgid "Use TCP _header compression"
+msgstr "Apliku densigon de TCP-kapoj"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:19
+msgid "Use _stateful MPPE"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:20
+msgid "_EAP"
+msgstr "_EAP"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:21
+msgid "_MSCHAP"
+msgstr "_MSCHAP"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:22
+msgid "_PAP"
+msgstr "_PAP"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:23
+msgid "_Require 128-bit encryption"
+msgstr "_Necesas ĉifradon da 128-bajtoj"
+
+#: ../src/connection-editor/ce-page-ppp.glade.h:24
+msgid "_Use point-to-point encryption (MPPE)"
+msgstr "_Uzu punkt-al-punktan ĉifradon"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:1
+msgid "Aut_onegotiate"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wired.glade.h:2
+msgid ""
+"Automatic\n"
+"10 Mb/s\n"
+"100 Mb/s\n"
+"1 Gb/s\n"
+"10 Gb/s"
+msgstr ""
+"Aŭtomata\n"
+"10 Mb/s\n"
+"100 Mb/s\n"
+"1 Gb/s\n"
+"10 Gb/s"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:7
+msgid ""
+"Automatic\n"
+"Twisted Pair (TP)\n"
+"Attachment Unit Interface (AUI)\n"
+"BNC\n"
+"Media Independent Interface (MII)"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wired.glade.h:12
+msgid "Full duple_x"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wired.glade.h:13
+#: ../src/connection-editor/ce-page-wireless.glade.h:8
+msgid "MT_U:"
+msgstr "MT_U:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:14
+#: ../src/connection-editor/ce-page-wireless.glade.h:11
+msgid ""
+"The MAC address entered here will be used as hardware address for the "
+"network device this connection is activated on.  This feature is known as "
+"MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wired.glade.h:15
+#: ../src/connection-editor/ce-page-wireless.glade.h:12
+msgid ""
+"This option locks this connection to the network device specified by its "
+"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wired.glade.h:16
+#: ../src/connection-editor/ce-page-wireless.glade.h:16
+msgid "_Cloned MAC address:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wired.glade.h:17
+#: ../src/connection-editor/ce-page-wireless.glade.h:17
+msgid "_Device MAC address:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wired.glade.h:18
+msgid "_Port:"
+msgstr "_Pordo:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:19
+msgid "_Speed:"
+msgstr "Rapideco:"
+
+#: ../src/connection-editor/ce-page-wired.glade.h:20
+#: ../src/connection-editor/ce-page-wireless.glade.h:20
+msgid "bytes"
+msgstr "bajtoj"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:1
+msgid ""
+"Automatic\n"
+"A (5 GHz)\n"
+"B/G (2.4 GHz)"
+msgstr ""
+"Aŭtomata\n"
+"A (5 GHz)\n"
+"B/G (2.4 GHz)"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:4
+msgid "Ban_d:"
+msgstr "Ben_do:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:5
+msgid "C_hannel:"
+msgstr "Kanalo:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:6
+msgid ""
+"Infrastructure\n"
+"Ad-hoc"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:9
+msgid "M_ode:"
+msgstr "Reĝim_o:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:10
+msgid "Mb/s"
+msgstr "Mb/s"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:13
+msgid ""
+"This option locks this connection to the wireless access point (AP) "
+"specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:14
+msgid "Transmission po_wer:"
+msgstr "Senda povumo"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:15
+msgid "_BSSID:"
+msgstr "_BSSID:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:18
+msgid "_Rate:"
+msgstr "_Rapido:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:19
+msgid "_SSID:"
+msgstr "_SSID:"
+
+#: ../src/connection-editor/ce-page-wireless.glade.h:21
+msgid "mW"
+msgstr "mW"
+
+#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
+msgid "_Security:"
+msgstr "_Sekureco:"
+
+#: ../src/connection-editor/ce-vpn-wizard.glade.h:2
+msgid ""
+"<span weight=\"bold\" size=\"larger\">Choose a VPN Connection Type</span>\n"
+"\n"
+"Select the type of VPN you wish to use for the new connection.  If the type "
+"of VPN connection you wish to create does not appear in the list, you may "
+"not have the correct VPN plugin installed."
+msgstr ""
+
+#: ../src/connection-editor/ce-vpn-wizard.glade.h:5
+msgid "Create…"
+msgstr "Krei..."
+
+#: ../src/connection-editor/ip4-routes-dialog.c:501
+#: ../src/connection-editor/ip6-routes-dialog.c:459
+#: ../src/connection-editor/page-ip4.c:731
+#: ../src/connection-editor/page-ip6.c:696
+msgid "Address"
+msgstr "Adreso"
+
+#: ../src/connection-editor/ip4-routes-dialog.c:517
+#: ../src/connection-editor/page-ip4.c:748
+msgid "Netmask"
+msgstr "Retmasko"
+
+#: ../src/connection-editor/ip4-routes-dialog.c:533
+#: ../src/connection-editor/ip6-routes-dialog.c:491
+#: ../src/connection-editor/page-ip4.c:765
+#: ../src/connection-editor/page-ip6.c:730
+msgid "Gateway"
+msgstr "Kluzo"
+
+#: ../src/connection-editor/ip4-routes-dialog.c:549
+#: ../src/connection-editor/ip6-routes-dialog.c:507
+msgid "Metric"
+msgstr "Metra"
+
+#: ../src/connection-editor/ip6-routes-dialog.c:475
+#: ../src/connection-editor/page-ip6.c:713
+msgid "Prefix"
+msgstr "Prefikso"
+
+#: ../src/connection-editor/page-dsl.c:140
+#: ../src/connection-editor/page-dsl.c:147
+msgid "Could not load DSL user interface."
+msgstr "Ne povas ŝargi uzantinterfacon de DSL"
+
+#: ../src/connection-editor/page-dsl.c:153
+#: ../src/connection-editor/nm-connection-editor.glade.h:4
+#: ../src/connection-editor/nm-connection-list.c:1409
+msgid "DSL"
+msgstr "DSL"
+
+#: ../src/connection-editor/page-dsl.c:241
+#, c-format
+msgid "DSL connection %d"
+msgstr "DSL-konekto «%d»"
+
+#: ../src/connection-editor/page-ip4.c:126
+#: ../src/connection-editor/page-ip6.c:122
+msgid "Automatic (VPN)"
+msgstr "Aŭtomata (VPN)"
+
+#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip6.c:123
+msgid "Automatic (VPN) addresses only"
+msgstr "Nur aŭtomataj adresoj (VPN)"
+
+#: ../src/connection-editor/page-ip4.c:130
+#: ../src/connection-editor/page-ip6.c:126
+msgid "Automatic (PPP)"
+msgstr "Aŭtomata (PPP)"
+
+#: ../src/connection-editor/page-ip4.c:131
+#: ../src/connection-editor/page-ip6.c:127
+msgid "Automatic (PPP) addresses only"
+msgstr "Nur aŭtomataj adresoj (PPP)"
+
+#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip6.c:129
+msgid "Automatic (PPPoE)"
+msgstr "Aŭtomata (PPPoE)"
+
+#: ../src/connection-editor/page-ip4.c:134
+#: ../src/connection-editor/page-ip6.c:130
+msgid "Automatic (PPPoE) addresses only"
+msgstr "Nur aŭtomataj adresoj (PPPoE)"
+
+#: ../src/connection-editor/page-ip4.c:136
+msgid "Automatic (DHCP)"
+msgstr "Aŭtomata (DHCP)"
+
+#: ../src/connection-editor/page-ip4.c:137
+msgid "Automatic (DHCP) addresses only"
+msgstr "Nur aŭtomataj adresoj (DHCP)"
+
+#: ../src/connection-editor/page-ip4.c:162
+#: ../src/connection-editor/page-ip6.c:170
+msgid "Manual"
+msgstr "Mane"
+
+#: ../src/connection-editor/page-ip4.c:174
+#: ../src/connection-editor/page-ip6.c:183
+msgid "Link-Local Only"
+msgstr ""
+
+#: ../src/connection-editor/page-ip4.c:180
+#: ../src/connection-editor/page-ip6.c:190
+msgid "Shared to other computers"
+msgstr "Kunhavita kun aliaj komputiloj"
+
+#: ../src/connection-editor/page-ip4.c:190
+msgid "Disabled"
+msgstr "Malebligite"
+
+#: ../src/connection-editor/page-ip4.c:693
+#, c-format
+msgid "Editing IPv4 routes for %s"
+msgstr "Redaktanta IPv4-kurson por %s"
+
+#: ../src/connection-editor/page-ip4.c:812
+#: ../src/connection-editor/page-ip4.c:819
+msgid "Could not load IPv4 user interface."
+msgstr "Ne povas ŝargi IPv4-uzantinterfacon."
+
+#: ../src/connection-editor/page-ip4.c:825
+msgid "IPv4 Settings"
+msgstr "Agordoj por IPv4"
+
+#: ../src/connection-editor/page-ip6.c:132
+msgid "Automatic"
+msgstr "Aŭtomata"
+
+#: ../src/connection-editor/page-ip6.c:133
+msgid "Automatic, addresses only"
+msgstr "Aŭtomata, nur adresoj"
+
+#: ../src/connection-editor/page-ip6.c:145
+#: ../src/wireless-security/eap-method.c:212
+msgid "Ignore"
+msgstr "Ignori"
+
+#: ../src/connection-editor/page-ip6.c:658
+#, c-format
+msgid "Editing IPv6 routes for %s"
+msgstr "Redaktanta IPv6-kursoj por %s"
+
+#: ../src/connection-editor/page-ip6.c:775
+#: ../src/connection-editor/page-ip6.c:782
+msgid "Could not load IPv6 user interface."
+msgstr "Ne povas ŝargi IPv6-uzantinterfacon."
+
+#: ../src/connection-editor/page-ip6.c:788
+msgid "IPv6 Settings"
+msgstr "Agordoj por IPv6"
+
+#: ../src/connection-editor/page-mobile.c:305
+#: ../src/connection-editor/page-mobile.c:312
+msgid "Could not load mobile broadband user interface."
+msgstr ""
+
+#: ../src/connection-editor/page-mobile.c:333
+msgid "Unsupported mobile broadband connection type."
+msgstr ""
+
+#. Fall back to just asking for GSM vs. CDMA
+#: ../src/connection-editor/page-mobile.c:574
+msgid "Select Mobile Broadband Provider Type"
+msgstr ""
+
+#: ../src/connection-editor/page-mobile.c:601
+msgid ""
+"Select the technology your mobile broadband provider uses.  If you are "
+"unsure, ask your provider."
+msgstr ""
+
+#: ../src/connection-editor/page-mobile.c:606
+msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
+msgstr ""
+
+#: ../src/connection-editor/page-mobile.c:611
+msgid "My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"
+msgstr ""
+
+#: ../src/connection-editor/page-ppp.c:132
+msgid "EAP"
+msgstr "EAP"
+
+#: ../src/connection-editor/page-ppp.c:133
+#: ../src/wireless-security/eap-method-ttls.c:228
+msgid "PAP"
+msgstr "PAP"
+
+#: ../src/connection-editor/page-ppp.c:134
+#: ../src/wireless-security/eap-method-ttls.c:276
+msgid "CHAP"
+msgstr "CHAP"
+
+#: ../src/connection-editor/page-ppp.c:135
+#: ../src/wireless-security/eap-method-peap.c:245
+#: ../src/wireless-security/eap-method-ttls.c:260
+msgid "MSCHAPv2"
+msgstr "MSCHAPv2"
+
+#: ../src/connection-editor/page-ppp.c:136
+#: ../src/wireless-security/eap-method-ttls.c:244
+msgid "MSCHAP"
+msgstr "MSCHAP"
+
+#. Translators: "none" refers to authentication methods
+#: ../src/connection-editor/page-ppp.c:139
+msgid "none"
+msgstr "neniu"
+
+#: ../src/connection-editor/page-ppp.c:199
+#, c-format
+msgid "Editing PPP authentication methods for %s"
+msgstr "Redaktanta PPP-metodojn de aŭtentigo por %s"
+
+#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:290
+msgid "Could not load PPP user interface."
+msgstr "Ne povas ŝargi PPP-uzantinterfacon."
+
+#: ../src/connection-editor/page-ppp.c:296
+msgid "PPP Settings"
+msgstr "Agordoj por PPP"
+
+#: ../src/connection-editor/page-vpn.c:108
+#: ../src/connection-editor/nm-connection-editor.glade.h:8
+#: ../src/connection-editor/nm-connection-list.c:1405
+msgid "VPN"
+msgstr "VPN"
+
+#: ../src/connection-editor/page-vpn.c:119
+#, c-format
+msgid "Could not find VPN plugin service for '%s'."
+msgstr ""
+
+#: ../src/connection-editor/page-vpn.c:213
+#: ../src/connection-editor/nm-connection-list.c:990
+#, c-format
+msgid "VPN connection %d"
+msgstr "VPN-konekto %d"
+
+#: ../src/connection-editor/page-wired.c:213
+#: ../src/connection-editor/page-wired.c:220
+msgid "Could not load wired user interface."
+msgstr "Ne povas ŝargi uzantinterfacon por drataj konektoj"
+
+#: ../src/connection-editor/page-wired.c:226
+#: ../src/connection-editor/nm-connection-editor.glade.h:9
+#: ../src/connection-editor/nm-connection-list.c:1393
+msgid "Wired"
+msgstr "Drata"
+
+#: ../src/connection-editor/page-wired.c:359
+#, c-format
+msgid "Wired connection %d"
+msgstr "Drata konekto %d"
+
+#: ../src/connection-editor/page-wired-security.c:115
+msgid "802.1x Security"
+msgstr "802.1x-sekureco"
+
+#: ../src/connection-editor/page-wired-security.c:123
+msgid "Use 802.1X security for this connection"
+msgstr "Uzi 802.1X-sekurecon por ĉi tiu konekto"
+
+#: ../src/connection-editor/page-wireless.c:146
+#: ../src/connection-editor/page-wireless.c:150
+#: ../src/connection-editor/page-wireless.c:171
+#, c-format
+msgid "default"
+msgstr "defaŭlte"
+
+#: ../src/connection-editor/page-wireless.c:175
+#, c-format
+msgid "%u (%u MHz)"
+msgstr "%u (%u MHz)"
+
+#: ../src/connection-editor/page-wireless.c:399
+#: ../src/connection-editor/page-wireless.c:406
+msgid "Could not load WiFi user interface."
+msgstr "Ne povas ŝargi uzantinterfacon por sendrataj konektoj"
+
+#: ../src/connection-editor/page-wireless.c:412
+#: ../src/connection-editor/nm-connection-editor.glade.h:10
+#: ../src/connection-editor/nm-connection-list.c:1397
+msgid "Wireless"
+msgstr "Sendrata"
+
+#: ../src/connection-editor/page-wireless.c:574
+#, c-format
+msgid "Wireless connection %d"
+msgstr "Sendrata konekto %d"
+
+#: ../src/connection-editor/page-wireless-security.c:262
+#: ../src/wireless-dialog.c:936
+#, fuzzy
+msgid "WEP 40/128-bit Key (Hex or ASCII)"
+msgstr "Ŝlosilo de WEP 40/128-bajtoj"
+
+#: ../src/connection-editor/page-wireless-security.c:271
+#: ../src/wireless-dialog.c:945
+msgid "WEP 128-bit Passphrase"
+msgstr "128-bita WEP-pasfrazo"
+
+#: ../src/connection-editor/page-wireless-security.c:297
+#: ../src/wireless-dialog.c:975
+msgid "Dynamic WEP (802.1x)"
+msgstr "Dinamika WEP (802.1x)"
+
+#: ../src/connection-editor/page-wireless-security.c:311
+#: ../src/wireless-dialog.c:989
+msgid "WPA & WPA2 Personal"
+msgstr "WPA kaj WPA2 por personoj"
+
+#: ../src/connection-editor/page-wireless-security.c:325
+#: ../src/wireless-dialog.c:1003
+msgid "WPA & WPA2 Enterprise"
+msgstr "WPA kaj WPA2 por enterprenoj"
+
+#: ../src/connection-editor/page-wireless-security.c:365
+msgid "Could not load WiFi security user interface; missing WiFi setting."
+msgstr ""
+"Ne povis ŝargi uzantinterfacon por la sekureco de sendrataj konektoj ĉar "
+"mankas agordojn por sendrataj konektoj."
+
+#: ../src/connection-editor/page-wireless-security.c:372
+#: ../src/connection-editor/page-wireless-security.c:379
+msgid "Could not load WiFi security user interface."
+msgstr "Ne povis ŝargi uzantinterfacon por la sekureco de sendrataj konektoj."
+
+#: ../src/connection-editor/page-wireless-security.c:385
+msgid "Wireless Security"
+msgstr "Sekureco de sendrataj konektoj"
+
+#: ../src/connection-editor/nm-connection-editor.c:100
+#, c-format
+msgid "Editing %s"
+msgstr "Redaktanta %s"
+
+#: ../src/connection-editor/nm-connection-editor.c:104
+msgid "Editing un-named connection"
+msgstr "Redaktanta sennoman konekton"
+
+#: ../src/connection-editor/nm-connection-editor.c:287
+msgid ""
+"The connection editor could not find some required resources (the "
+"NetworkManager applet glade file was not found)."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.c:300
+msgid ""
+"The connection editor could not find some required resources (the glade file "
+"was not found)."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.c:398
+msgid "Error creating connection editor dialog."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.c:419
+msgid "Apply"
+msgstr "Apliki"
+
+#: ../src/connection-editor/nm-connection-editor.c:420
+msgid "Save any changes made to this connection."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.c:421
+msgid "Apply..."
+msgstr "Apliki..."
+
+#: ../src/connection-editor/nm-connection-editor.c:422
+msgid "Authenticate to save this connection for all users of this machine."
+msgstr ""
+"Aŭtentigi por konservi ĉi tiun konekton por ĉiuj uzantoj de ĉi tiu komputilo."
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:1
+msgid "Available to all users"
+msgstr "Disponebla al ĉiuj uzantoj"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:2
+msgid "Connect _automatically"
+msgstr "Konekti _aŭtomate"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:3
+msgid "Connection _name:"
+msgstr "_Nomo de konekto:"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:5
+msgid "E_xport"
+msgstr "Eksporti"
+
+#: ../src/connection-editor/nm-connection-editor.glade.h:11
+msgid "_Import"
+msgstr "_Importi"
+
+#: ../src/connection-editor/nm-connection-list.c:219
+msgid "never"
+msgstr "neniam"
+
+#: ../src/connection-editor/nm-connection-list.c:230
+#: ../src/connection-editor/nm-connection-list.c:241
+msgid "now"
+msgstr "nun"
+
+#. less than an hour ago
+#: ../src/connection-editor/nm-connection-list.c:248
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "Antaŭ %d minuto"
+msgstr[1] "Antaŭ %d minutoj"
+
+#: ../src/connection-editor/nm-connection-list.c:252
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "Antaŭ %d horo"
+msgstr[1] "Antaŭ %d horoj"
+
+#: ../src/connection-editor/nm-connection-list.c:264
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "Antaŭ %d tago"
+msgstr[1] "Antaŭ %d tagoj"
+
+#: ../src/connection-editor/nm-connection-list.c:270
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "Antaŭ %d monato"
+msgstr[1] "Antaŭ %d monatoj"
+
+#: ../src/connection-editor/nm-connection-list.c:274
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "antaŭ %d jaro"
+msgstr[1] "antaŭ %d jaroj"
+
+#: ../src/connection-editor/nm-connection-list.c:596
+msgid "Connection add failed"
+msgstr "Aldono de konekto fiaskis"
+
+#: ../src/connection-editor/nm-connection-list.c:625
+#, c-format
+msgid "Error editing connection: property '%s' / '%s' invalid: %d"
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-list.c:632
+#: ../src/connection-editor/nm-connection-list.c:747
+msgid "An unknown error occurred."
+msgstr "Okazis nekonata eraro."
+
+#: ../src/connection-editor/nm-connection-list.c:637
+#: ../src/connection-editor/nm-connection-list.c:788
+msgid "Error initializing editor"
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-list.c:653
+#: ../src/connection-editor/nm-connection-list.c:805
+#: ../src/connection-editor/nm-connection-list.c:973
+msgid ""
+"The connection editor dialog could not be initialized due to an unknown "
+"error."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-list.c:662
+msgid "Could not create new connection"
+msgstr "Ne eblis krei novan konekton."
+
+#: ../src/connection-editor/nm-connection-list.c:673
+msgid "Could not edit new connection"
+msgstr "Ne eblis agordi novan konekton."
+
+#: ../src/connection-editor/nm-connection-list.c:820
+msgid "Could not edit connection"
+msgstr "Ne eblis agordi konekton."
+
+#: ../src/connection-editor/nm-connection-list.c:845
+msgid "Connection delete failed"
+msgstr "Forigo de konekto malsukcesis."
+
+#: ../src/connection-editor/nm-connection-list.c:877
+#, c-format
+msgid "Are you sure you wish to delete the connection %s?"
+msgstr "Ĉu vi certe volas forigi la konekton %s?"
+
+#: ../src/connection-editor/nm-connection-list.c:1020
+#: ../src/connection-editor/vpn-helpers.c:228
+msgid "Cannot import VPN connection"
+msgstr "Ne povas importi VPN-konekton"
+
+#: ../src/connection-editor/nm-connection-list.c:1022
+msgid ""
+"The VPN plugin failed to import the VPN connection correctly\n"
+"\n"
+"Error: no VPN service type."
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-list.c:1035
+msgid "Could not edit imported connection"
+msgstr "Ne povas redakti importitan konekton"
+
+#: ../src/connection-editor/nm-connection-list.c:1169
+msgid "Name"
+msgstr "Nomo"
+
+#: ../src/connection-editor/nm-connection-list.c:1181
+msgid "Last Used"
+msgstr "Laste uzita"
+
+#: ../src/connection-editor/nm-connection-list.c:1284
+msgid "Edit"
+msgstr "Redakti"
+
+#: ../src/connection-editor/nm-connection-list.c:1285
+msgid "Edit the selected connection"
+msgstr "Redaki elektitan konekton"
+
+#: ../src/connection-editor/nm-connection-list.c:1286
+msgid "Edit..."
+msgstr "Redakti..."
+
+#: ../src/connection-editor/nm-connection-list.c:1287
+msgid "Authenticate to edit the selected connection"
+msgstr "Aŭtentigi por redakti la elektitan konekton"
+
+#: ../src/connection-editor/nm-connection-list.c:1301
+msgid "Delete"
+msgstr "Forigi"
+
+#: ../src/connection-editor/nm-connection-list.c:1302
+msgid "Delete the selected connection"
+msgstr "Forigi la elektitan konekton"
+
+#: ../src/connection-editor/nm-connection-list.c:1303
+msgid "Delete..."
+msgstr "Forigi..."
+
+#: ../src/connection-editor/nm-connection-list.c:1304
+msgid "Authenticate to delete the selected connection"
+msgstr "Vi devas aŭtentigi por forigi la elektitan konekton"
+
+#: ../src/connection-editor/vpn-helpers.c:230
+#, c-format
+msgid ""
+"The file '%s' could not be read or does not contain recognized VPN "
+"connection information\n"
+"\n"
+"Error: %s."
+msgstr ""
+
+#: ../src/connection-editor/vpn-helpers.c:262
+msgid "Select file to import"
+msgstr "Elektu importendan dosieron"
+
+#: ../src/connection-editor/vpn-helpers.c:310
+#, c-format
+msgid "A file named \"%s\" already exists."
+msgstr "Dosiero nomita «%s» jam ekzistas."
+
+#: ../src/connection-editor/vpn-helpers.c:312
+msgid "_Replace"
+msgstr "Anstataŭigi"
+
+#: ../src/connection-editor/vpn-helpers.c:314
+#, c-format
+msgid "Do you want to replace %s with the VPN connection you are saving?"
+msgstr "Ĉu vi volas anstataŭigi %s per la VPN-konekto vi estas konservanta?"
+
+#: ../src/connection-editor/vpn-helpers.c:350
+msgid "Cannot export VPN connection"
+msgstr "Ne povas eksporti VPN-konekton"
+
+#: ../src/connection-editor/vpn-helpers.c:352
+#, c-format
+msgid ""
+"The VPN connection '%s' could not be exported to %s.\n"
+"\n"
+"Error: %s."
+msgstr ""
+"La VPN-konekto «%s» ne povas esti eksportita al %s.\n"
+"\n"
+"Eraro: %s."
+
+#: ../src/connection-editor/vpn-helpers.c:386
+msgid "Export VPN connection..."
+msgstr "Eksporti VPN-konekton..."
+
+#: ../src/gnome-bluetooth/bt-widget.c:213
+#, c-format
+msgid "%s Network"
+msgstr "%s Reto"
+
+#: ../src/gnome-bluetooth/bt-widget.c:322
+#, c-format
+msgid "Error: %s"
+msgstr "Eraro: %s"
+
+#: ../src/gnome-bluetooth/bt-widget.c:441
+msgid "Mobile wizard was canceled"
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:450
+msgid "Unknown phone device type (not GSM or CDMA)"
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:478
+msgid "Your phone is now ready to use!"
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:648
+#: ../src/gnome-bluetooth/bt-widget.c:654
+msgid "failed to connect to the phone."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:687
+msgid "unexpectedly disconnected from the phone."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:696
+msgid "timed out detecting phone details."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:711
+msgid "could not connect to the system bus."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:716
+msgid "Detecting phone configuration..."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:782
+msgid "could not find the Bluetooth device."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:912
+msgid ""
+"The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
+"Networking connection."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:944
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:954
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:963
+#, c-format
+msgid ""
+"Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:1014
+msgid "Use your mobile phone as a network device (PAN/NAP)"
+msgstr ""
+
+#: ../src/gnome-bluetooth/bt-widget.c:1023
+#, fuzzy
+msgid "Access the Internet using your mobile phone (DUN)"
+msgstr "Aliro al Interreto uzante vian poŝ-telefonon (DUN)"
+
+#: ../src/main.c:70
+msgid "Usage:"
+msgstr "Uzo:"
+
+#: ../src/main.c:72
+msgid ""
+"This program is a component of NetworkManager (http://projects.gnome.org/"
+"NetworkManager)."
+msgstr ""
+"Tiu ĉi programo estas parto de NetworkManager (http://projects.gnome.org/"
+"NetworkManager)."
+
+#: ../src/main.c:73
+msgid ""
+"It is not intended for command-line interaction but instead runs in the "
+"GNOME desktop environment."
+msgstr ""
+
+#: ../src/mb-menu-item.c:58
+msgid "EVDO"
+msgstr ""
+
+#: ../src/mb-menu-item.c:62
+msgid "GPRS"
+msgstr ""
+
+#: ../src/mb-menu-item.c:64
+msgid "EDGE"
+msgstr ""
+
+#: ../src/mb-menu-item.c:66
+msgid "UMTS"
+msgstr ""
+
+#: ../src/mb-menu-item.c:68
+msgid "HSDPA"
+msgstr ""
+
+#: ../src/mb-menu-item.c:70
+msgid "HSUPA"
+msgstr ""
+
+#: ../src/mb-menu-item.c:72
+msgid "HSPA"
+msgstr ""
+
+#: ../src/mb-menu-item.c:104
+msgid "not enabled"
+msgstr "ne ebligite"
+
+#: ../src/mb-menu-item.c:110
+msgid "not registered"
+msgstr ""
+
+#: ../src/mb-menu-item.c:128
+#, c-format
+msgid "Home network (%s)"
+msgstr "Hejmreto (%s)"
+
+#: ../src/mb-menu-item.c:130
+#, c-format
+msgid "Home network"
+msgstr "Hejmreto"
+
+#: ../src/mb-menu-item.c:138
+msgid "searching"
+msgstr "serĉante"
+
+#: ../src/mb-menu-item.c:141
+msgid "registration denied"
+msgstr ""
+
+#: ../src/mb-menu-item.c:146 ../src/mb-menu-item.c:152
+#, c-format
+msgid "%s (%s roaming)"
+msgstr ""
+
+#: ../src/mb-menu-item.c:148 ../src/mb-menu-item.c:154
+#, c-format
+msgid "%s (roaming)"
+msgstr ""
+
+#: ../src/mb-menu-item.c:157
+#, c-format
+msgid "Roaming network (%s)"
+msgstr ""
+
+#: ../src/mb-menu-item.c:159
+#, c-format
+msgid "Roaming network"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:196
+msgid ""
+"Your mobile broadband connection is configured with the following settings:"
+msgstr ""
+
+#. Device
+#: ../src/utils/mobile-wizard.c:203
+msgid "Your Device:"
+msgstr "Via aparato:"
+
+#. Provider
+#: ../src/utils/mobile-wizard.c:214
+msgid "Your Provider:"
+msgstr "Via provizanto:"
+
+#. Plan and APN
+#: ../src/utils/mobile-wizard.c:225
+msgid "Your Plan:"
+msgstr "Via faktura reĝimo:"
+
+#: ../src/utils/mobile-wizard.c:246
+msgid ""
+"A connection will now be made to your mobile broadband provider using the "
+"settings you selected.  If the connection fails or you cannot access network "
+"resources, double-check your settings.  To modify your mobile broadband "
+"connection settings, choose \"Network Connections\" from the System >> "
+"Preferences menu."
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:258
+msgid "Confirm Mobile Broadband Settings"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:319
+msgid "Unlisted"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:437
+msgid "_Select your plan:"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:461
+msgid "Selected plan _APN (Access Point Name):"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:480
+msgid ""
+"Warning: Selecting an incorrect plan may result in billing issues for your "
+"broadband account or may prevent connectivity.\n"
+"\n"
+"If you are unsure of your plan please ask your provider for your plan's APN."
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:487
+msgid "Choose your Billing Plan"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:535
+msgid "My plan is not listed..."
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:688
+msgid "Select your provider from a _list:"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:701
+msgid "Provider"
+msgstr "Provizanto"
+
+#: ../src/utils/mobile-wizard.c:726
+msgid "I can't find my provider and I wish to enter it _manually:"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:737
+msgid "Provider:"
+msgstr "Provizanto:"
+
+#: ../src/utils/mobile-wizard.c:753
+msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:755
+msgid "My provider uses CDMA technology (1xRTT, EVDO)"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:766
+msgid "Choose your Provider"
+msgstr "Elekti vian provizanton"
+
+#: ../src/utils/mobile-wizard.c:1012
+msgid "Country List:"
+msgstr "Land-listo:"
+
+#: ../src/utils/mobile-wizard.c:1024
+msgid "Country"
+msgstr "Lando"
+
+#: ../src/utils/mobile-wizard.c:1031
+msgid "My country is not listed"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1077
+msgid "Choose your Provider's Country"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1126
+msgid "Installed GSM device"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1129
+msgid "Installed CDMA device"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1297
+msgid ""
+"This assistant helps you easily set up a mobile broadband connection to a "
+"cellular (3G) network."
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1302
+msgid "You will need the following information:"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1313
+msgid "Your broadband provider's name"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1319
+msgid "Your broadband billing plan name"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1325
+msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1352
+msgid "Create a connection for _this mobile broadband device:"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1367
+msgid "Any device"
+msgstr "Iu aparato"
+
+#: ../src/utils/mobile-wizard.c:1380
+msgid "Set up a Mobile Broadband Connection"
+msgstr ""
+
+#: ../src/utils/mobile-wizard.c:1554
+msgid "New Mobile Broadband Connection"
+msgstr ""
+
+#: ../src/utils/nmn-mobile-providers.c:76
+msgid "United Kingdom"
+msgstr "Unuiĝinta Reĝlando"
+
+#: ../src/utils/nmn-mobile-providers.c:523
+msgid "Default"
+msgstr "Defaŭlte"
+
+#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:255
+#, c-format
+msgid "Cannot start VPN connection '%s'"
+msgstr ""
+
+#: ../src/vpn-password-dialog.c:140
+#, c-format
+msgid ""
+"Could not find the authentication dialog for VPN connection type '%s'. "
+"Contact your system administrator."
+msgstr ""
+
+#: ../src/vpn-password-dialog.c:258
+#, c-format
+msgid ""
+"There was a problem launching the authentication dialog for VPN connection "
+"type '%s'. Contact your system administrator."
+msgstr ""
+
+#: ../src/wired-dialog.c:99
+msgid "Wired 802.1X authentication"
+msgstr ""
+
+#: ../src/wireless-dialog.c:474
+msgid "New..."
+msgstr "Nova..."
+
+#: ../src/wireless-dialog.c:1094
+msgid "C_reate"
+msgstr "K_rei"
+
+#: ../src/wireless-dialog.c:1175
+#, c-format
+msgid ""
+"Passwords or encryption keys are required to access the wireless network '%"
+"s'."
+msgstr ""
+
+#: ../src/wireless-dialog.c:1177
+msgid "Wireless Network Authentication Required"
+msgstr ""
+
+#: ../src/wireless-dialog.c:1179
+msgid "Authentication required by wireless network"
+msgstr ""
+
+#: ../src/wireless-dialog.c:1184
+msgid "Create New Wireless Network"
+msgstr "Krei novan sendratan reton"
+
+#: ../src/wireless-dialog.c:1186
+msgid "New wireless network"
+msgstr "Nova sendrata reto"
+
+#: ../src/wireless-dialog.c:1187
+msgid "Enter a name for the wireless network you wish to create."
+msgstr ""
+
+#: ../src/wireless-dialog.c:1189
+msgid "Connect to Hidden Wireless Network"
+msgstr ""
+
+#: ../src/wireless-dialog.c:1191
+msgid "Hidden wireless network"
+msgstr "Kaŝi sendratan reton"
+
+#: ../src/wireless-dialog.c:1192
+msgid ""
+"Enter the name and security details of the hidden wireless network you wish "
+"to connect to."
+msgstr ""
+
+#: ../src/wireless-security/eap-method.c:206
+msgid "No Certificate Authority certificate chosen"
+msgstr ""
+
+#: ../src/wireless-security/eap-method.c:207
+msgid ""
+"Not using a Certificate Authority (CA) certificate can result in connections "
+"to insecure, rogue wireless networks.  Would you like to choose a "
+"Certificate Authority certificate?"
+msgstr ""
+
+#: ../src/wireless-security/eap-method.c:216
+msgid "Choose CA Certificate"
+msgstr ""
+
+#: ../src/wireless-security/eap-method.c:531
+msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
+msgstr ""
+
+#: ../src/wireless-security/eap-method.c:534
+msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
+msgstr ""
+
+#: ../src/wireless-security/eap-method-peap.c:261
+msgid "MD5"
+msgstr ""
+
+#: ../src/wireless-security/eap-method-peap.c:277
+msgid "GTC"
+msgstr ""
+
+#: ../src/wireless-security/eap-method-peap.c:366
+#: ../src/wireless-security/eap-method-tls.c:457
+#: ../src/wireless-security/eap-method-ttls.c:365
+msgid "Choose a Certificate Authority certificate..."
+msgstr ""
+
+#: ../src/wireless-security/eap-method-tls.c:263
+msgid "Unencrypted private keys are insecure"
+msgstr ""
+
+#: ../src/wireless-security/eap-method-tls.c:266
+msgid ""
+"The selected private key does not appear to be protected by a password.  "
+"This could allow your security credentials to be compromised.  Please select "
+"a password-protected private key.\n"
+"\n"
+"(You can password-protect your private key with openssl)"
+msgstr ""
+
+#: ../src/wireless-security/eap-method-tls.c:451
+msgid "Choose your personal certificate..."
+msgstr ""
+
+#: ../src/wireless-security/eap-method-tls.c:463
+msgid "Choose your private key..."
+msgstr ""
+
+#: ../src/wireless-security/wireless-security.c:329
+msgid "TLS"
+msgstr ""
+
+#: ../src/wireless-security/wireless-security.c:353
+msgid "Tunneled TLS"
+msgstr ""
+
+#: ../src/wireless-security/wireless-security.c:364
+msgid "Protected EAP (PEAP)"
+msgstr ""
+
+#~ msgid "GSM network."
+#~ msgstr "GSM/reto."
+
+#~ msgid "Disconnected - you are now offline"
+#~ msgstr "Malkonektita - vi estas nun nekonektita"
+
+#~ msgid "Wireless network"
+#~ msgstr "Sendrata reto"
+
+#~ msgid "GSM network"
+#~ msgstr "GSM-reto"
+
+#~ msgid "Select A File"
+#~ msgstr "Elekti dosieron"
+
+#~ msgid "_Routes…"
+#~ msgstr "Alidirektoj..."
+
+#~ msgid "_Band:"
+#~ msgstr "_Bendo:"
+
+#~ msgid "Save this connection for all users of this machine."
+#~ msgstr "Konservi ĉi tiun konekton por ĉiuj uzantoj de ĉi tiu komputilo."
