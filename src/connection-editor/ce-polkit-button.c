@@ -190,9 +190,13 @@ static void
 check_permissions_cb (NMRemoteSettingsSystem *settings, CEPolkitButton *self)
 {
 	PermInfo *info;
+	CEPolkitButtonPrivate *priv;
 
 	info = g_malloc0 (sizeof (PermInfo));
 	info->self = self;
+
+	priv = CE_POLKIT_BUTTON_GET_PRIVATE (info->self);
+	priv->perm_calls = g_slist_append (priv->perm_calls, info);
 
 	/* recheck permissions */
 	nm_settings_system_interface_get_permissions (NM_SETTINGS_SYSTEM_INTERFACE (settings),
@@ -261,7 +265,6 @@ dispose (GObject *object)
 	/* Mark any ongoing permissions calls as disposed */
 	for (iter = priv->perm_calls; iter; iter = g_slist_next (iter))
 		((PermInfo *) iter->data)->disposed = TRUE;
-	g_slist_free (priv->perm_calls);
 
 	if (priv->check_id)
 		g_signal_handler_disconnect (priv->settings, priv->check_id);
@@ -282,6 +285,7 @@ finalize (GObject *object)
 	g_free (priv->auth_label);
 	g_free (priv->tooltip);
 	g_free (priv->auth_tooltip);
+	g_slist_free (priv->perm_calls);
 
 	G_OBJECT_CLASS (ce_polkit_button_parent_class)->finalize (object);
 }
