@@ -12,10 +12,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-06-27 16:02+0000\n"
-"PO-Revision-Date: 2010-06-28 15:09+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-07-11 17:58+0200\n"
+"PO-Revision-Date: 2010-07-09 22:58+0100\n"
 "Last-Translator: Zdeněk Hataš <zdenek.hatas@gmail.com>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -735,10 +734,8 @@ msgstr ""
 "%s"
 
 #: ../src/applet.c:1297
-#, fuzzy
-#| msgid "device not ready"
 msgid "device not ready (firmware missing)"
-msgstr "zařízení není připraveno"
+msgstr "zařízení není připraveno (chybí firmware)"
 
 #: ../src/applet.c:1299
 msgid "device not ready"
@@ -1364,33 +1361,28 @@ msgid ""
 "network device this connection is activated on.  This feature is known as "
 "MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
 msgstr ""
+"Adresa MAC sem vložená bude použita jako hardwarová adresa síťového "
+"zařízení, na němž je toto připojení aktivováno. Tato vlastnost je známá jako "
+"klonování nebo podvržení MAC. Např.  00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:15
 #: ../src/connection-editor/ce-page-wireless.glade.h:12
-#, fuzzy
-#| msgid ""
-#| "This option locks this connection to the network device specified by the "
-#| "MAC address entered here.  Example: 00:11:22:33:44:55"
 msgid ""
 "This option locks this connection to the network device specified by its "
 "permanent MAC address entered here.  Example: 00:11:22:33:44:55"
 msgstr ""
-"Tato volba umožní připojení pouze prostřednictvím zařízení se specifickou "
-"zde uvedenou adresou MAC. Např. 00:11:22:33:44:55"
+"Tato volba umožní připojení pouze prostřednictvím zařízení s pevnou zde "
+"uvedenou adresou MAC. Např. 00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:16
 #: ../src/connection-editor/ce-page-wireless.glade.h:16
-#, fuzzy
-#| msgid "_MAC address:"
 msgid "_Cloned MAC address:"
-msgstr "Adresa _MAC:"
+msgstr "Klonovaná adresa MA_C:"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:17
 #: ../src/connection-editor/ce-page-wireless.glade.h:17
-#, fuzzy
-#| msgid "_MAC address:"
 msgid "_Device MAC address:"
-msgstr "Adresa _MAC:"
+msgstr "A_dresa MAC zařízení:"
 
 #: ../src/connection-editor/ce-page-wired.glade.h:18
 msgid "_Port:"
@@ -1616,7 +1608,7 @@ msgid "Automatic, addresses only"
 msgstr "Automaticky, pouze adresy"
 
 #: ../src/connection-editor/page-ip6.c:145
-#: ../src/wireless-security/eap-method.c:196
+#: ../src/wireless-security/eap-method.c:212
 msgid "Ignore"
 msgstr "Ignorovat"
 
@@ -1782,10 +1774,8 @@ msgstr "Bezdrátové připojení %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
 #: ../src/wireless-dialog.c:936
-#, fuzzy
-#| msgid "WEP 40/128-bit Key"
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
-msgstr "Klíč WEP 40/128 bitů"
+msgstr "Klíč WEP 40/128 bitů (Hex nebo ASCII)"
 
 #: ../src/connection-editor/page-wireless-security.c:271
 #: ../src/wireless-dialog.c:945
@@ -1855,7 +1845,7 @@ msgstr "Použít"
 
 #: ../src/connection-editor/nm-connection-editor.c:420
 msgid "Save any changes made to this connection."
-msgstr ""
+msgstr "Uložit změny provedené v tomto připojení."
 
 #: ../src/connection-editor/nm-connection-editor.c:421
 msgid "Apply..."
@@ -2517,11 +2507,11 @@ msgstr ""
 "Zadejte název a podrobnosti o zabezpečení skryté bezdrátové sítě, ke které "
 "se chcete připojit."
 
-#: ../src/wireless-security/eap-method.c:190
+#: ../src/wireless-security/eap-method.c:206
 msgid "No Certificate Authority certificate chosen"
 msgstr "Nevybrán žádný certifikát certifikační autority"
 
-#: ../src/wireless-security/eap-method.c:191
+#: ../src/wireless-security/eap-method.c:207
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -2531,15 +2521,15 @@ msgstr ""
 "nezabezpečenému připojení nebo neoprávněnému přístupu k bezdrátové síti. "
 "Chtěli byste vybrat certifikát certifikační autority?"
 
-#: ../src/wireless-security/eap-method.c:200
+#: ../src/wireless-security/eap-method.c:216
 msgid "Choose CA Certificate"
 msgstr "Vyberte certifikát CA"
 
-#: ../src/wireless-security/eap-method.c:515
+#: ../src/wireless-security/eap-method.c:531
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "Soukromé klíče DER, PEM nebo PKCS#12 (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:518
+#: ../src/wireless-security/eap-method.c:534
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Certifikáty DER nebo PEM (*.der, *.pem, *.crt, *.cer)"
 
@@ -2594,4 +2584,3 @@ msgstr "Tunneled TLS"
 #: ../src/wireless-security/wireless-security.c:364
 msgid "Protected EAP (PEAP)"
 msgstr "Protected EAP (PEAP)"
-
