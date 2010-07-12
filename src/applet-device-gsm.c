@@ -1059,7 +1059,7 @@ find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
 {
 	GHashTableIter iter;
 	gpointer value;
-	GSList *miter, *piter, *siter;
+	GSList *piter, *siter;
 	const char *name2 = NULL, *name3 = NULL;
 	gboolean done = FALSE;
 
@@ -1075,36 +1075,28 @@ find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
 		for (piter = providers; piter && !done; piter = g_slist_next (piter)) {
 			NmnMobileProvider *provider = piter->data;
 
-			/* Search through each provider's access methods */
-			for (miter = provider->methods; miter && !done; miter = g_slist_next (miter)) {
-				NmnMobileAccessMethod *method = miter->data;
+			/* Search through MCC/MNC list */
+			for (siter = provider->gsm_mcc_mnc; siter; siter = g_slist_next (siter)) {
+				NmnGsmMccMnc *mcc = siter->data;
 
-				if (method->type != NMN_MOBILE_ACCESS_METHOD_TYPE_GSM)
-					continue;
+				/* Match both 2-digit and 3-digit MNC; prefer a
+				 * 3-digit match if found, otherwise a 2-digit one.
+				 */
+				if (strncmp (mcc->mcc, mccmnc, 3))
+					continue;  /* MCC was wrong */
 
-				/* Search through MCC/MNC list */
-				for (siter = method->gsm_mcc_mnc; siter; siter = g_slist_next (siter)) {
-					NmnGsmMccMnc *mcc = siter->data;
+				if (   !name3
+				    && (strlen (mccmnc) == 6)
+				    && !strncmp (mccmnc + 3, mcc->mnc, 3))
+					name3 = provider->name;
 
-					/* Match both 2-digit and 3-digit MNC; prefer a
-					 * 3-digit match if found, otherwise a 2-digit one.
-					 */
-					if (strncmp (mcc->mcc, mccmnc, 3))
-						continue;  /* MCC was wrong */
+				if (   !name2
+				    && !strncmp (mccmnc + 3, mcc->mnc, 2))
+					name2 = provider->name;
 
-					if (   !name3
-					    && (strlen (mccmnc) == 6)
-					    && !strncmp (mccmnc + 3, mcc->mnc, 3))
-						name3 = provider->name;
-
-					if (   !name2
-					    && !strncmp (mccmnc + 3, mcc->mnc, 2))
-						name2 = provider->name;
-
-					if (name2 && name3) {
-						done = TRUE;
-						break;
-					}
+				if (name2 && name3) {
+					done = TRUE;
+					break;
 				}
 			}
 		}

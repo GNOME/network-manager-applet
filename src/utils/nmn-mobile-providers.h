@@ -18,7 +18,7 @@
  * Copyright (C) 2009 Novell, Inc.
  * Author: Tambet Ingo (tambet@gmail.com).
  *
- * Copyright (C) 2009 Red Hat, Inc.
+ * Copyright (C) 2009 - 2010 Red Hat, Inc.
  */
 
 #ifndef NMN_MOBILE_PROVIDERS_H
@@ -53,10 +53,6 @@ typedef struct {
 
     /* Only used with NMN_PROVIDER_TYPE_GSM */
     char *gsm_apn;
-    GSList *gsm_mcc_mnc; /* GSList of NmnGsmMccMnc */
-
-    /* Only used with NMN_PROVIDER_TYPE_CDMA */
-    GSList *cdma_sid; /* GSList of guint32 */
 
     NmnMobileAccessMethodType type;
 
@@ -69,6 +65,9 @@ typedef struct {
     GHashTable *lcl_names;
 
     GSList *methods; /* GSList of NmnMobileAccessMethod */
+
+    GSList *gsm_mcc_mnc; /* GSList of NmnGsmMccMnc */
+    GSList *cdma_sid; /* GSList of guint32 */
 
     gint refs;
 } NmnMobileProvider;

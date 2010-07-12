@@ -683,7 +683,7 @@ find_provider_for_sid (GHashTable *table, guint32 sid)
 {
 	GHashTableIter iter;
 	gpointer value;
-	GSList *miter, *piter, *siter;
+	GSList *piter, *siter;
 	char *name = NULL;
 
 	if (sid == 0)
@@ -698,16 +698,11 @@ find_provider_for_sid (GHashTable *table, guint32 sid)
 		for (piter = providers; piter && !name; piter = g_slist_next (piter)) {
 			NmnMobileProvider *provider = piter->data;
 
-			/* Search through each provider's access methods */
-			for (miter = provider->methods; miter && !name; miter = g_slist_next (miter)) {
-				NmnMobileAccessMethod *method = miter->data;
-
-				/* Search through CDMA SID list */
-				for (siter = method->cdma_sid; siter; siter = g_slist_next (siter)) {
-					if (GPOINTER_TO_UINT (siter->data) == sid) {
-						name = g_strdup (provider->name);
-						break;
-					}
+			/* Search through CDMA SID list */
+			for (siter = provider->cdma_sid; siter; siter = g_slist_next (siter)) {
+				if (GPOINTER_TO_UINT (siter->data) == sid) {
+					name = g_strdup (provider->name);
+					break;
 				}
 			}
 		}
