@@ -18,7 +18,7 @@
  * Copyright (C) 2009 Novell, Inc.
  * Author: Tambet Ingo (tambet@gmail.com).
  *
- * Copyright (C) 2009 Red Hat, Inc.
+ * Copyright (C) 2009 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -120,7 +120,6 @@ typedef struct {
     GSList *current_providers;
     NmnMobileProvider *current_provider;
     NmnMobileAccessMethod *current_method;
-    GSList *mcc_mncs;
 
     char *text_buffer;
     MobileContextState state;
@@ -144,20 +143,6 @@ mcc_mnc_free (NmnGsmMccMnc *m)
     g_free (m->mcc);
     g_free (m->mnc);
     g_slice_free (NmnGsmMccMnc, m);
-}
-
-static GSList *
-mcc_mnc_list_copy (GSList *list)
-{
-    GSList *iter, *ret = NULL;
-
-    for (iter = list; iter; iter = g_slist_next (iter)) {
-        NmnGsmMccMnc *m = iter->data;
-
-        ret = g_slist_prepend (ret, mcc_mnc_new (m->mcc, m->mnc));
-    }
-
-    return g_slist_reverse (ret);
 }
 
 static NmnMobileAccessMethod *
@@ -200,11 +185,6 @@ nmn_mobile_access_method_unref (NmnMobileAccessMethod *method)
         g_free (method->gsm_apn);
         g_slist_foreach (method->dns, (GFunc) g_free, NULL);
         g_slist_free (method->dns);
-
-        g_slist_foreach (method->gsm_mcc_mnc, (GFunc) mcc_mnc_free, NULL);
-        g_slist_free (method->gsm_mcc_mnc);
-
-        g_slist_free (method->cdma_sid);
 
         g_slice_free (NmnMobileAccessMethod, method);
     }
@@ -255,6 +235,11 @@ nmn_mobile_provider_unref (NmnMobileProvider *provider)
 
         g_slist_foreach (provider->methods, (GFunc) nmn_mobile_access_method_unref, NULL);
         g_slist_free (provider->methods);
+
+        g_slist_foreach (provider->gsm_mcc_mnc, (GFunc) mcc_mnc_free, NULL);
+        g_slist_free (provider->gsm_mcc_mnc);
+
+        g_slist_free (provider->cdma_sid);
 
         g_slice_free (NmnMobileProvider, provider);
     }
@@ -352,9 +337,9 @@ parser_provider_start (MobileParser *parser,
 
 static void
 parser_gsm_start (MobileParser *parser,
-                       const char *name,
-                       const char **attribute_names,
-                       const char **attribute_values)
+                  const char *name,
+                  const char **attribute_names,
+                  const char **attribute_values)
 {
     if (!strcmp (name, "network-id")) {
         const char *mcc = NULL, *mnc = NULL;
@@ -367,7 +352,8 @@ parser_gsm_start (MobileParser *parser,
                 mnc = attribute_values[i];
 
             if (mcc && strlen (mcc) && mnc && strlen (mnc)) {
-                parser->mcc_mncs = g_slist_append (parser->mcc_mncs, mcc_mnc_new (mcc, mnc));
+                parser->current_provider->gsm_mcc_mnc = g_slist_prepend (parser->current_provider->gsm_mcc_mnc,
+                                                                         mcc_mnc_new (mcc, mnc));
                 break;
             }
         }
@@ -402,8 +388,8 @@ parser_cdma_start (MobileParser *parser,
                 errno = 0;
                 tmp = strtoul (attribute_values[i], NULL, 10);
                 if (errno == 0 && tmp > 0)
-                    parser->current_method->cdma_sid = g_slist_prepend (parser->current_method->cdma_sid,
-                                                                        GUINT_TO_POINTER ((guint32) tmp));
+                    parser->current_provider->cdma_sid = g_slist_prepend (parser->current_provider->cdma_sid,
+                                                                          GUINT_TO_POINTER ((guint32) tmp));
                 break;
             }
         }
@@ -472,6 +458,9 @@ parser_provider_end (MobileParser *parser,
     } else if (!strcmp (name, "provider")) {
         parser->current_provider->methods = g_slist_reverse (parser->current_provider->methods);
 
+        parser->current_provider->gsm_mcc_mnc = g_slist_reverse (parser->current_provider->gsm_mcc_mnc);
+        parser->current_provider->cdma_sid = g_slist_reverse (parser->current_provider->cdma_sid);
+
         parser->current_providers = g_slist_prepend (parser->current_providers, parser->current_provider);
         parser->current_provider = NULL;
         parser->text_buffer = NULL;
@@ -484,9 +473,6 @@ parser_gsm_end (MobileParser *parser,
                  const char *name)
 {
     if (!strcmp (name, "gsm")) {
-        g_slist_foreach (parser->mcc_mncs, (GFunc) mcc_mnc_free, NULL);
-        g_slist_free (parser->mcc_mncs);
-        parser->mcc_mncs = NULL;
         parser->text_buffer = NULL;
         parser->state = PARSER_PROVIDER;
     }
@@ -517,7 +503,6 @@ parser_gsm_apn_end (MobileParser *parser,
     } else if (!strcmp (name, "apn")) {
         parser->current_method->type = NMN_MOBILE_ACCESS_METHOD_TYPE_GSM;
         parser->current_method->dns = g_slist_reverse (parser->current_method->dns);
-        parser->current_method->gsm_mcc_mnc = mcc_mnc_list_copy (parser->mcc_mncs);
 
         if (!parser->current_method->name)
             parser->current_method->name = g_strdup (_("Default"));
@@ -549,7 +534,6 @@ parser_cdma_end (MobileParser *parser,
     } else if (!strcmp (name, "cdma")) {
         parser->current_method->type = NMN_MOBILE_ACCESS_METHOD_TYPE_CDMA;
         parser->current_method->dns = g_slist_reverse (parser->current_method->dns);
-        parser->current_method->cdma_sid = g_slist_reverse (parser->current_method->cdma_sid);
 
         if (!parser->current_method->name)
             parser->current_method->name = g_strdup (parser->current_provider->name);
@@ -717,29 +701,17 @@ dump_generic (NmnMobileAccessMethod *method)
 static void
 dump_cdma (NmnMobileAccessMethod *method)
 {
-    GSList *iter;
-
     g_print ("     CDMA: %s\n", method->name);
 
     dump_generic (method);
-
-    for (iter = method->cdma_sid; iter; iter = g_slist_next (iter))
-        g_print ("        SID: %d\n", GPOINTER_TO_UINT (iter->data));
 }
 
 static void
 dump_gsm (NmnMobileAccessMethod *method)
 {
-    GSList *iter;
-
     g_print ("     APN: %s (%s)\n", method->name, method->gsm_apn);
 
     dump_generic (method);
-
-    for (iter = method->gsm_mcc_mnc; iter; iter = g_slist_next (iter)) {
-        NmnGsmMccMnc *m = iter->data;
-        g_print ("        MCC/MNC: %s-%s\n", m->mcc, m->mnc);
-    }
 }
 
 static void
@@ -753,6 +725,16 @@ dump_country (gpointer key, gpointer value, gpointer user_data)
         g_print ("Provider: %s (%s)\n", provider->name, (const char *) key);
         for (miter = provider->methods; miter; miter = g_slist_next (miter)) {
             NmnMobileAccessMethod *method = miter->data;
+            GSList *liter;
+
+
+            for (liter = provider->gsm_mcc_mnc; liter; liter = g_slist_next (liter)) {
+                NmnGsmMccMnc *m = liter->data;
+                g_print ("        MCC/MNC: %s-%s\n", m->mcc, m->mnc);
+            }
+
+            for (liter = provider->cdma_sid; liter; liter = g_slist_next (liter))
+                g_print ("        SID: %d\n", GPOINTER_TO_UINT (liter->data));
 
             switch (method->type) {
             case NMN_MOBILE_ACCESS_METHOD_TYPE_CDMA:
