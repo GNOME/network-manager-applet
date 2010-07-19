@@ -65,7 +65,7 @@ nma_gconf_connection_new (GConfClient *client, const char *conf_dir)
 {
 	NMConnection *connection;
 	NMAGConfConnection *gconf_connection = NULL;
-	GError *error;
+	GError *error = NULL;
 
 	g_return_val_if_fail (GCONF_IS_CLIENT (client), NULL);
 	g_return_val_if_fail (conf_dir != NULL, NULL);
