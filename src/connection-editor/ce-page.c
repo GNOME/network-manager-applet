@@ -187,7 +187,8 @@ ce_page_complete_init (CEPage *self,
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (CE_IS_PAGE (self));
 
-	if (error) {
+	/* Ignore missing settings errors */
+	if (error && !dbus_g_error_has_name (error, "org.freedesktop.NetworkManagerSettings.InvalidSetting")) {
 		emit_initialized (self, error);
 		return;
 	} else if (!setting_name || !secrets) {
