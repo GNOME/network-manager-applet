@@ -503,12 +503,19 @@ list_selection_changed (GtkTreeSelection *selection, gpointer user_data)
 static void
 cell_editing_canceled (GtkCellRenderer *renderer, gpointer user_data)
 {
-	CEPageIP6 *self = CE_PAGE_IP6 (user_data);
-	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
+	CEPageIP6 *self;
+	CEPageIP6Private *priv;
 	GtkTreeModel *model = NULL;
 	GtkTreeSelection *selection;
 	GtkTreeIter iter;
 	guint32 column;
+
+	/* user_data disposed? */
+	if (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (renderer), "ce-page-not-valid")))
+		return;
+
+	self = CE_PAGE_IP6 (user_data);
+	priv = CE_PAGE_IP6_GET_PRIVATE (self);
 
 	if (priv->last_edited) {
 		selection = gtk_tree_view_get_selection (priv->addr_list);
@@ -1012,9 +1019,14 @@ dispose (GObject *object)
 {
 	CEPageIP6 *self = CE_PAGE_IP6 (object);
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
+	int i;
 
 	if (priv->window_group)
 		g_object_unref (priv->window_group);
+
+	/* Mark CEPageIP6 object as invalid; store this indication to cells to be usable in callbacks */
+	for (i = 0; i <= COL_LAST; i++)
+		g_object_set_data (G_OBJECT (priv->addr_cells[i]), "ce-page-not-valid", GUINT_TO_POINTER (1));
 
 	g_free (priv->connection_id);
 
