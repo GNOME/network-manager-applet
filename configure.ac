@@ -99,8 +99,8 @@ dnl Check for gnome-bluetooth
 PKG_CHECK_MODULES(GNOME_BLUETOOTH,
 		  gconf-2.0
 		  gnome-bluetooth-1.0 >= 2.27.6
-		  libnm-util >= 0.8
-		  libnm-glib >= 0.8,
+		  libnm-util >= 0.8.1
+		  libnm-glib >= 0.8.1,
 		  have_gbt=yes, have_gbt=no)
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
