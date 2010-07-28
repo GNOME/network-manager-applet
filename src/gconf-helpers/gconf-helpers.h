@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2005 Red Hat, Inc.
+ * (C) Copyright 2005 - 2010 Red Hat, Inc.
  */
 
 #ifndef GCONF_HELPERS_H
@@ -78,6 +78,13 @@ nm_gconf_get_stringlist_helper (GConfClient *client,
 				const char *key,
 				const char *setting,
 				GSList **value);
+
+gboolean
+nm_gconf_get_stringarray_helper (GConfClient *client,
+                                 const char *path,
+                                 const char *key,
+                                 const char *setting,
+                                 GPtrArray **value);
 
 gboolean
 nm_gconf_get_bytearray_helper (GConfClient *client,
@@ -174,6 +181,13 @@ nm_gconf_set_stringlist_helper (GConfClient *client,
                                 const char *key,
                                 const char *setting,
                                 GSList *value);
+
+gboolean
+nm_gconf_set_stringarray_helper (GConfClient *client,
+                                 const char *path,
+                                 const char *key,
+                                 const char *setting,
+                                 GPtrArray *value);
 
 gboolean
 nm_gconf_set_bytearray_helper (GConfClient *client,
