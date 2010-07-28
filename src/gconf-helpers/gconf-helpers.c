@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2005 - 2009 Red Hat, Inc.
+ * (C) Copyright 2005 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -272,6 +272,50 @@ nm_gconf_get_stringlist_helper (GConfClient *client,
 			const char *string = gconf_value_get_string ((GConfValue *) elt->data);
 
 			*value = g_slist_append (*value, g_strdup (string));
+		}
+
+		success = TRUE;
+	}
+
+out:
+	if (gc_value)
+		gconf_value_free (gc_value);
+	g_free (gc_key);
+	return success;
+}
+
+gboolean
+nm_gconf_get_stringarray_helper (GConfClient *client,
+                                 const char *path,
+                                 const char *key,
+                                 const char *setting,
+                                 GPtrArray **value)
+{
+	char *gc_key;
+	GConfValue *gc_value;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+	g_return_val_if_fail (*value == NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!(gc_value = gconf_client_get (client, gc_key, NULL)))
+		goto out;
+
+	if (gc_value->type == GCONF_VALUE_LIST
+	    && gconf_value_get_list_type (gc_value) == GCONF_VALUE_STRING)
+	{
+		GSList *iter, *list;
+		const char *string;
+
+		*value = g_ptr_array_sized_new (3);
+
+		list = gconf_value_get_list (gc_value);
+		for (iter = list; iter != NULL; iter = g_slist_next (iter)) {
+			string = gconf_value_get_string ((GConfValue *) iter->data);
+			g_ptr_array_add (*value, g_strdup (string));
 		}
 
 		success = TRUE;
@@ -1023,6 +1067,35 @@ nm_gconf_set_stringlist_helper (GConfClient *client,
 	}
 
 	gconf_client_set_list (client, gc_key, GCONF_VALUE_STRING, value, NULL);
+	g_free (gc_key);
+	return TRUE;
+}
+
+gboolean
+nm_gconf_set_stringarray_helper (GConfClient *client,
+                                 const char *path,
+                                 const char *key,
+                                 const char *setting,
+                                 GPtrArray *value)
+{
+	char *gc_key;
+	GSList *list = NULL;
+	int i;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	if (!gc_key) {
+		g_warning ("Not enough memory to create gconf path");
+		return FALSE;
+	}
+
+	for (i = 0; i < value->len; i++)
+		list = g_slist_append (list, g_ptr_array_index (value, i));
+
+	gconf_client_set_list (client, gc_key, GCONF_VALUE_STRING, list, NULL);
+	g_slist_free (list);
 	g_free (gc_key);
 	return TRUE;
 }
