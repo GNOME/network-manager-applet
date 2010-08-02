@@ -72,7 +72,7 @@ PKG_CHECK_MODULES(NMA,
 		 libnm-glib >= 0.8.1
 		 libnm-util >= 0.8.1
 		 libnm-glib-vpn >= 0.8.1
-		 gtk+-2.0 >= 2.14
+		 gtk+-2.0 >= 2.18
 		 libglade-2.0
 		 gmodule-export-2.0
 		 gconf-2.0
