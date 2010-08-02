@@ -67,30 +67,30 @@ static GtkDrawingAreaClass *parent_class;
 static void
 draw (GtkWidget *widget, cairo_t *cr)
 {
+	NmaBlingSpinnerPrivate *priv;
+	GtkAllocation allocation;
 	double x, y;
 	double radius;
 	double half;
 	int i;
-	int width, height;
-
-	NmaBlingSpinnerPrivate *priv;
 
 	priv = NMA_BLING_SPINNER_GET_PRIVATE (widget);
 
 	cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
 
-	width = widget->allocation.width;
-	height = widget->allocation.height;
-
-	if ( (width < 12) || (height <12) )
+#if GTK_CHECK_VERSION(2,18,0)
+	gtk_widget_get_allocation (widget, &allocation);
+#else
+	allocation = widget->allocation;
+#endif
+	if ((allocation.width < 12) || (allocation.height < 12))
 		gtk_widget_set_size_request(widget, 12, 12);
 
-	//x = widget->allocation.x + widget->allocation.width / 2;
-	//y = widget->allocation.y + widget->allocation.height / 2;
-	x = widget->allocation.width / 2;
-	y = widget->allocation.height / 2;
-	radius = MIN (widget->allocation.width	/ 2,
-				  widget->allocation.height / 2);
+	//x = allocation.x + allocation.width / 2;
+	//y = allocation.y + allocation.height / 2;
+	x = allocation.width / 2;
+	y = allocation.height / 2;
+	radius = MIN (allocation.width / 2, allocation.height / 2);
 	half = priv->lines / 2;
 
 	/*FIXME: render in B&W for non transparency */
@@ -154,7 +154,11 @@ nma_bling_spinner_init (NmaBlingSpinner *spinner)
 	priv->current = 0;
 	priv->timeout = 0;
 
+#if GTK_CHECK_VERSION(2,18,0)
+	gtk_widget_set_has_window (GTK_WIDGET (spinner), FALSE);
+#else
 	GTK_WIDGET_SET_FLAGS (GTK_WIDGET (spinner), GTK_NO_WINDOW);
+#endif
 }
 
 static gboolean

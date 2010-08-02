@@ -482,6 +482,7 @@ applet_new_menu_item_helper (NMConnection *connection,
 static gboolean
 menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 {
+	GtkAllocation allocation;
 	GtkStyle *style;
 	GtkWidget *label;
 	PangoFontDescription *desc;
@@ -509,6 +510,11 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 	/* We also need to reposition the cairo context so that (0, 0) is the
 	 * top-left of where we're supposed to start drawing.
 	 */
+#if GTK_CHECK_VERSION(2,18,0)
+	gtk_widget_get_allocation (widget, &allocation);
+#else
+	allocation = widget->allocation;
+#endif
 	cairo_translate (cr, widget->allocation.x, widget->allocation.y);
 
 	text = gtk_label_get_text (GTK_LABEL (label));
