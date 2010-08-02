@@ -57,7 +57,8 @@ show_ignore_focus_stealing_prevention (GtkWidget *widget)
 {
 	gtk_widget_realize (widget);
 	gtk_widget_show (widget);
-	gtk_window_present_with_time (GTK_WINDOW (widget), gdk_x11_get_server_time (widget->window));
+	gtk_window_present_with_time (GTK_WINDOW (widget),
+		gdk_x11_get_server_time (gtk_widget_get_window (widget)));
 }
 
 static void

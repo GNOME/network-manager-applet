@@ -496,7 +496,7 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	label = gtk_bin_get_child (GTK_BIN (widget));
 
-	cr = gdk_cairo_create (widget->window);
+	cr = gdk_cairo_create (gtk_widget_get_window (widget));
 
 	/* The drawing area we get is the whole menu; clip the drawing to the
 	 * event area, which should just be our menu item.
@@ -2922,9 +2922,12 @@ applet_pre_keyring_callback (gpointer user_data)
 	NMApplet *applet = NM_APPLET (user_data);
 	GdkScreen *screen;
 	GdkDisplay *display;
+	GdkWindow *window = NULL;
 
-	if (applet->menu && applet->menu->window) {
-		screen = gdk_drawable_get_screen (applet->menu->window);
+	if (applet->menu)
+		window = gtk_widget_get_window (applet->menu);
+	if (window) {
+		screen = gdk_drawable_get_screen (window);
 		display = gdk_screen_get_display (screen);
 		g_object_ref (display);
 
@@ -2941,8 +2944,11 @@ applet_pre_keyring_callback (gpointer user_data)
 		g_object_unref (display);
 	}
 
-	if (applet->context_menu && applet->context_menu->window) {
-		screen = gdk_drawable_get_screen (applet->context_menu->window);
+	window = NULL;
+	if (applet->context_menu)
+		window = gtk_widget_get_window (applet->context_menu);
+	if (window) {
+		screen = gdk_drawable_get_screen (window);
 		display = gdk_screen_get_display (screen);
 		g_object_ref (display);
 
