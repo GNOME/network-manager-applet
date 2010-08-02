@@ -1084,7 +1084,7 @@ internal_init (NMAWirelessDialog *self,
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))), 2);
 
 	widget = gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-	gtk_box_set_child_packing (GTK_BOX (GTK_DIALOG (self)->action_area), widget,
+	gtk_box_set_child_packing (GTK_BOX (gtk_dialog_get_action_area (GTK_DIALOG (self))), widget,
 	                           FALSE, TRUE, 0, GTK_PACK_END);
 
 	/* Connect/Create button */
@@ -1100,7 +1100,7 @@ internal_init (NMAWirelessDialog *self,
 	} else
 		widget = gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CONNECT, GTK_RESPONSE_OK);
 
-	gtk_box_set_child_packing (GTK_BOX (GTK_DIALOG (self)->action_area), widget,
+	gtk_box_set_child_packing (GTK_BOX (gtk_dialog_get_action_area (GTK_DIALOG (self))), widget,
 	                           FALSE, TRUE, 0, GTK_PACK_END);
 	g_object_set (G_OBJECT (widget), "can-default", TRUE, NULL);
 	gtk_widget_grab_default (widget);

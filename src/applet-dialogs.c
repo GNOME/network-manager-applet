@@ -564,7 +564,8 @@ applet_info_dialog_show (NMApplet *applet)
 	g_signal_connect (dialog, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), dialog);
 	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_hide), dialog);
 	gtk_widget_realize (dialog);
-	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
+	gtk_window_present_with_time (GTK_WINDOW (dialog),
+		gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
 }
 
 static void 
@@ -697,7 +698,8 @@ applet_warning_dialog_show (const char *message)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Missing resources"));
 	gtk_widget_realize (dialog);
 	gtk_widget_show (dialog);
-	gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
+	gtk_window_present_with_time (GTK_WINDOW (dialog),
+		gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
 
 	g_signal_connect_swapped (dialog, "response",
 	                          G_CALLBACK (gtk_widget_destroy),
@@ -712,7 +714,7 @@ applet_mobile_password_dialog_new (NMDevice *device,
 {
 	GtkDialog *dialog;
 	GtkWidget *w;
-	GtkBox *box;
+	GtkBox *box = NULL, *vbox = NULL;
 	char *dev_str;
 	NMSettingConnection *s_con;
 	char *tmp;
@@ -732,16 +734,19 @@ applet_mobile_password_dialog_new (NMDevice *device,
 	tmp = g_strdup_printf (_("A password is required to connect to '%s'."), id);
 	w = gtk_label_new (tmp);
 	g_free (tmp);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
+
+	vbox = GTK_BOX (gtk_dialog_get_content_area (dialog));
+
+	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
 	w = gtk_label_new (NULL);
 	gtk_label_set_markup (GTK_LABEL (w), dev_str);
 	g_free (dev_str);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
+	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
+	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
 	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
@@ -754,7 +759,7 @@ applet_mobile_password_dialog_new (NMDevice *device,
 	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
 	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
 
-	gtk_widget_show_all (dialog->vbox);
+	gtk_widget_show_all (GTK_WIDGET (vbox));
 	return GTK_WIDGET (dialog);
 }
 
@@ -914,7 +919,8 @@ applet_mobile_pin_dialog_present (GtkWidget *dialog, gboolean now)
 	/* Show the dialog */
 	gtk_widget_realize (dialog);
 	if (now)
-		gtk_window_present_with_time (GTK_WINDOW (dialog), gdk_x11_get_server_time (dialog->window));
+		gtk_window_present_with_time (GTK_WINDOW (dialog),
+			gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
 	else
 		gtk_window_present (GTK_WINDOW (dialog));
 }

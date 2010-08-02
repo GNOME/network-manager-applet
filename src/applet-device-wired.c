@@ -569,7 +569,7 @@ pppoe_get_secrets (NMDevice *device,
 	w = gtk_dialog_add_button (GTK_DIALOG (info->dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
 	info->ok_button = w;
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (info->dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (info->dialog))),
 	                    glade_xml_get_widget (xml, "DslPage"),
 	                    TRUE, TRUE, 0);
 

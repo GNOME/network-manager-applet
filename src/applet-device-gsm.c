@@ -700,8 +700,8 @@ ask_for_pin_puk (NMDevice *device,
                  GtkEntry **out_secret_entry)
 {
 	GtkDialog *dialog;
-	GtkWidget *w = NULL, *ok_button;
-	GtkBox *box;
+	GtkWidget *w = NULL, *ok_button = NULL;
+	GtkBox *box = NULL, *vbox = NULL;
 	char *dev_str;
 
 	dialog = GTK_DIALOG (gtk_dialog_new ());
@@ -718,21 +718,23 @@ ask_for_pin_puk (NMDevice *device,
 	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
 	gtk_window_set_default (GTK_WINDOW (dialog), ok_button);
 
+	vbox = GTK_BOX (gtk_dialog_get_content_area (dialog));
+
 	if (!strcmp (secret_name, NM_SETTING_GSM_PIN))
 		w = gtk_label_new (_("PIN code is needed for the mobile broadband device"));
 	else if (!strcmp (secret_name, NM_SETTING_GSM_PUK))
 		w = gtk_label_new (_("PUK code is needed for the mobile broadband device"));
 	if (w)
-		gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
+		gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
 	w = gtk_label_new (NULL);
 	gtk_label_set_markup (GTK_LABEL (w), dev_str);
 	g_free (dev_str);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
+	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
-	gtk_box_pack_start (GTK_BOX (dialog->vbox), w, TRUE, TRUE, 0);
+	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
 	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
@@ -749,7 +751,7 @@ ask_for_pin_puk (NMDevice *device,
 	g_signal_connect (w, "changed", G_CALLBACK (pin_entry_changed), ok_button);
 	pin_entry_changed (GTK_EDITABLE (w), ok_button);
 
-	gtk_widget_show_all (dialog->vbox);
+	gtk_widget_show_all (GTK_WIDGET (vbox));
 	return GTK_WIDGET (dialog);
 }
 
