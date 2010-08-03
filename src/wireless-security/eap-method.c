@@ -104,6 +104,15 @@ typedef struct {
 } NagDialogResponseInfo;
 
 static void
+nag_dialog_destroyed (gpointer data, GObject *dialog_ptr)
+{
+	NagDialogResponseInfo *info = (NagDialogResponseInfo *) data;
+
+	memset (info, '\0', sizeof (NagDialogResponseInfo));
+	g_free (info);
+}
+
+static void
 nag_dialog_response_cb (GtkDialog *nag_dialog,
                         gint response,
                         gpointer user_data)
@@ -125,7 +134,6 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 	}
 
 	gtk_widget_hide (GTK_WIDGET (nag_dialog));
-	g_free (info);
 }
 
 GtkWidget *
@@ -198,6 +206,7 @@ eap_method_nag_init (EAPMethod *method,
 	dialog = glade_xml_get_widget (method->nag_dialog_xml, "nag_user_dialog");
 	g_assert (dialog);
 	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), info);
+	g_object_weak_ref (G_OBJECT (dialog), nag_dialog_destroyed, info);
 
 	widget = glade_xml_get_widget (method->nag_dialog_xml, "content_label");
 	g_assert (widget);
