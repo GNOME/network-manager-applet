@@ -171,10 +171,8 @@ get_model_for_connection (NMConnectionList *list, NMSettingsConnectionInterface 
 		str_type = NM_SETTING_GSM_SETTING_NAME;
 
 	treeview = get_treeview_for_type (list, nm_connection_lookup_setting_type (str_type));
-	if (!treeview) {
-		g_warning ("No registered treeview for connection type '%s'", str_type);
+	if (!treeview)
 		return NULL;
-	}
 
 	model = gtk_tree_view_get_model (treeview);
 	if (GTK_IS_TREE_MODEL_SORT (model))
