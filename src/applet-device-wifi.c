@@ -1357,6 +1357,13 @@ wireless_dialog_close (gpointer user_data)
 }
 
 static void
+wireless_dialog_destroyed (gpointer data, GObject *dialog_ptr)
+{
+	/* remove the idle function; for not to call wireless_dialog_close() on invalid pointer */
+	g_idle_remove_by_data (dialog_ptr);
+}
+
+static void
 nag_dialog_response_cb (GtkDialog *nag_dialog,
                         gint response,
                         gpointer user_data)
@@ -1366,6 +1373,7 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 	if (response == GTK_RESPONSE_NO) {  /* user opted not to correct the warning */
 		nma_wireless_dialog_set_nag_ignored (wireless_dialog, TRUE);
 		g_idle_add (wireless_dialog_close, wireless_dialog);
+		g_object_weak_ref (G_OBJECT (wireless_dialog), wireless_dialog_destroyed, NULL);
 	}
 }
 
