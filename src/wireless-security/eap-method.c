@@ -136,6 +136,17 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 	gtk_widget_hide (GTK_WIDGET (nag_dialog));
 }
 
+static gboolean 
+nag_dialog_delete_event_cb (GtkDialog *nag_dialog, GdkEvent *e, gpointer user_data) 
+{ 
+	// FIXME?: By emitting response signal, dismissing nag dialog with upper right "x" icon,
+	// Alt-F4, or Esc would have the same behaviour as clicking "Ignore" button.
+	//g_signal_emit_by_name (nag_dialog, "response", GTK_RESPONSE_NO, user_data);
+	return TRUE;  /* do not destroy */
+} 
+ 
+
+
 GtkWidget *
 eap_method_nag_user (EAPMethod *method)
 {
@@ -206,6 +217,7 @@ eap_method_nag_init (EAPMethod *method,
 	dialog = glade_xml_get_widget (method->nag_dialog_xml, "nag_user_dialog");
 	g_assert (dialog);
 	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), info);
+	g_signal_connect (dialog, "delete-event", G_CALLBACK (nag_dialog_delete_event_cb), info);
 	g_object_weak_ref (G_OBJECT (dialog), nag_dialog_destroyed, info);
 
 	widget = glade_xml_get_widget (method->nag_dialog_xml, "content_label");
