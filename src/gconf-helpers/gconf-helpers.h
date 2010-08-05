@@ -105,6 +105,7 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 gboolean
 nm_gconf_get_stringhash_helper (GConfClient *client,
                                 const char *path,
+                                const char *key,
                                 const char *setting,
                                 GHashTable **value);
 
@@ -199,6 +200,7 @@ nm_gconf_set_valuehash_helper (GConfClient *client,
 gboolean
 nm_gconf_set_stringhash_helper (GConfClient *client,
                                 const char *path,
+                                const char *key,
                                 const char *setting,
                                 GHashTable *value);
 
