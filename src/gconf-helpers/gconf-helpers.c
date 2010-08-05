@@ -574,6 +574,7 @@ nm_gconf_get_valuehash_helper (GConfClient *client,
 gboolean
 nm_gconf_get_stringhash_helper (GConfClient *client,
                                 const char *path,
+                                const char *key,
                                 const char *setting,
                                 GHashTable **value)
 {
@@ -585,7 +586,7 @@ nm_gconf_get_stringhash_helper (GConfClient *client,
 	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s", path, setting);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	prefix_len = strlen (gc_key);
 	gconf_entries = gconf_client_all_entries (client, gc_key, NULL);
 	g_free (gc_key);
@@ -1305,6 +1306,7 @@ find_gconf_key (gpointer key, gpointer value, gpointer user_data)
 gboolean
 nm_gconf_set_stringhash_helper (GConfClient *client,
                                 const char *path,
+                                const char *key,
                                 const char *setting,
                                 GHashTable *value)
 {
@@ -1315,7 +1317,7 @@ nm_gconf_set_stringhash_helper (GConfClient *client,
 	g_return_val_if_fail (setting != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	gc_key = g_strdup_printf ("%s/%s", path, setting);
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
 	if (!gc_key) {
 		g_warning ("Not enough memory to create gconf path");
 		return FALSE;
@@ -1835,9 +1837,17 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
 		GHashTable *sh_val = NULL;
 
-		if (nm_gconf_get_stringhash_helper (info->client, info->dir, setting_name, &sh_val)) {
+		if (nm_gconf_get_stringhash_helper (info->client, info->dir, key, setting_name, &sh_val)) {
 			g_object_set (setting, key, sh_val, NULL);
 			g_hash_table_destroy (sh_val);
+		}
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_STRING) {
+		GPtrArray *pa_val = NULL;
+
+		if (nm_gconf_get_stringarray_helper (info->client, info->dir, key, setting_name, &pa_val)) {
+			g_object_set (setting, key, pa_val, NULL);
+			g_ptr_array_foreach (pa_val, (GFunc) free_one_struct, NULL);
+			g_ptr_array_free (pa_val, TRUE);
 		}
 	} else if (type == DBUS_TYPE_G_UINT_ARRAY) {
 		GArray *a_val = NULL;
@@ -2581,9 +2591,13 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 								 (GHashTable *) g_value_get_boxed (value));
 #endif
 	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
-		nm_gconf_set_stringhash_helper (info->client, info->dir,
+		nm_gconf_set_stringhash_helper (info->client, info->dir, key,
 		                                setting_name,
 		                                (GHashTable *) g_value_get_boxed (value));
+	} else if (type == DBUS_TYPE_G_ARRAY_OF_STRING) {
+		nm_gconf_set_stringarray_helper (info->client, info->dir, key,
+		                                setting_name,
+		                                (GPtrArray *) g_value_get_boxed (value));
 	} else if (type == DBUS_TYPE_G_UINT_ARRAY) {
 		nm_gconf_set_uint_array_helper (info->client, info->dir,
 								  key, setting_name,
