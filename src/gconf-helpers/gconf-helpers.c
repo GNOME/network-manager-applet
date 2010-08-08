@@ -1773,7 +1773,7 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 
 		if (nm_gconf_get_stringarray_helper (info->client, info->dir, key, setting_name, &pa_val)) {
 			g_object_set (setting, key, pa_val, NULL);
-			g_ptr_array_foreach (pa_val, (GFunc) free_one_struct, NULL);
+			g_ptr_array_foreach (pa_val, (GFunc) g_free, NULL);
 			g_ptr_array_free (pa_val, TRUE);
 		}
 	} else if (type == DBUS_TYPE_G_UINT_ARRAY) {
