@@ -2978,6 +2978,15 @@ exit_cb (GObject *ignored, gpointer user_data)
 	g_main_loop_quit (applet->loop);
 }
 
+static void
+applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
+{
+	gboolean embedded = gtk_status_icon_is_embedded (GTK_STATUS_ICON (object));
+
+	g_message ("applet now %s the notification area",
+	           embedded ? "embedded in" : "removed from");
+}
+
 static GObject *
 constructor (GType type,
              guint n_props,
@@ -3061,6 +3070,13 @@ constructor (GType type,
 			(GSourceFunc) periodic_update_active_connection_timestamps, applet);
 
 	nm_gconf_set_pre_keyring_callback (applet_pre_keyring_callback, applet);
+
+	/* Track embedding to help debug issues where user has removed the
+	 * notification area applet from the panel, and thus nm-applet too.
+	 */
+	g_signal_connect (applet->status_icon, "notify::embedded",
+	                  G_CALLBACK (applet_embedded_cb), NULL);
+	applet_embedded_cb (G_OBJECT (applet->status_icon), NULL, NULL);
 
 	return G_OBJECT (applet);
 
