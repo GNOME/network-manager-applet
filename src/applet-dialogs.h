@@ -41,7 +41,8 @@ GtkWidget *applet_mobile_password_dialog_new (NMDevice *device,
 
 GtkWidget *applet_mobile_pin_dialog_new (const char *title,
                                          const char *header,
-                                         const char *desc);
+                                         const char *desc,
+                                         const char *show_password_label);
 
 void applet_mobile_pin_dialog_present (GtkWidget *dialog, gboolean now);
 

@@ -836,10 +836,32 @@ mpd_cancel_dialog (GtkDialog *dialog)
 	gtk_dialog_response (dialog, GTK_RESPONSE_CANCEL);
 }
 
+static void
+show_toggled_cb (GtkWidget *button, gpointer user_data)
+{
+	GtkWidget *dialog = GTK_WIDGET (user_data);
+	gboolean show;
+	GtkWidget *widget;
+	GladeXML *xml;
+
+	xml = g_object_get_data (G_OBJECT (dialog), "xml");
+	g_return_if_fail (xml != NULL);
+
+	show = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+
+	widget = glade_xml_get_widget (xml, "code1_entry");
+	gtk_entry_set_visibility (GTK_ENTRY (widget), show);
+	widget = glade_xml_get_widget (xml, "code2_entry");
+	gtk_entry_set_visibility (GTK_ENTRY (widget), show);
+	widget = glade_xml_get_widget (xml, "code3_entry");
+	gtk_entry_set_visibility (GTK_ENTRY (widget), show);
+}
+
 GtkWidget *
 applet_mobile_pin_dialog_new (const char *title,
                               const char *header,
-                              const char *desc)
+                              const char *desc,
+                              const char *show_password_label)
 {
 	char *glade_file, *str;
 	GladeXML *xml;
@@ -849,6 +871,7 @@ applet_mobile_pin_dialog_new (const char *title,
 	g_return_val_if_fail (title != NULL, NULL);
 	g_return_val_if_fail (header != NULL, NULL);
 	g_return_val_if_fail (desc != NULL, NULL);
+	g_return_val_if_fail (show_password_label != NULL, NULL);
 
 	glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
 	g_return_val_if_fail (glade_file != NULL, NULL);
@@ -874,6 +897,12 @@ applet_mobile_pin_dialog_new (const char *title,
 
 	widget = glade_xml_get_widget (xml, "desc_label");
 	gtk_label_set_text (GTK_LABEL (widget), desc);
+
+	widget = glade_xml_get_widget (xml, "show_password_checkbutton");
+	gtk_button_set_label (GTK_BUTTON (widget), show_password_label);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), FALSE);
+	g_signal_connect (widget, "toggled", G_CALLBACK (show_toggled_cb), dialog);
+	show_toggled_cb (widget, dialog);
 
 	g_signal_connect (dialog, "delete-event", G_CALLBACK (mpd_cancel_dialog), NULL);
 
@@ -1105,6 +1134,9 @@ applet_mobile_pin_dialog_start_spinner (GtkWidget *dialog, const char *text)
 	gtk_widget_set_sensitive (widget, FALSE);
 	widget = glade_xml_get_widget (xml, "unlock_cancel_button");
 	gtk_widget_set_sensitive (widget, FALSE);
+
+	widget = glade_xml_get_widget (xml, "show_password_checkbutton");
+	gtk_widget_set_sensitive (widget, FALSE);
 }
 
 void
@@ -1144,6 +1176,9 @@ applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog, const char *text)
 	widget = glade_xml_get_widget (xml, "unlock_button");
 	gtk_widget_set_sensitive (widget, TRUE);
 	widget = glade_xml_get_widget (xml, "unlock_cancel_button");
+	gtk_widget_set_sensitive (widget, TRUE);
+
+	widget = glade_xml_get_widget (xml, "show_password_checkbutton");
 	gtk_widget_set_sensitive (widget, TRUE);
 }
 
