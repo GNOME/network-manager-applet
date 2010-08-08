@@ -949,6 +949,7 @@ unlock_dialog_new (NMDevice *device, GsmDeviceInfo *info)
 {
 	const char *header = NULL;
 	const char *title = NULL;
+	const char *show_pass_label = NULL;
 	char *desc = NULL;
 	const char *label1 = NULL, *label2 = NULL, *label3 = NULL;
 	const char *device_desc;
@@ -972,6 +973,7 @@ unlock_dialog_new (NMDevice *device, GsmDeviceInfo *info)
 		label1 = _("PIN code:");
 		label1_min = 4;
 		label1_max = 8;
+		show_pass_label = _("Show PIN code");
 		unlock_code = UNLOCK_CODE_PIN;
 	} else if (!strcmp (info->unlock_required, "sim-puk")) {
 		title = _("SIM PUK unlock required");
@@ -985,6 +987,7 @@ unlock_dialog_new (NMDevice *device, GsmDeviceInfo *info)
 		label2_min = label3_min = 4;
 		label2_max = label3_max = 8;
 		match23 = TRUE;
+		show_pass_label = _("Show PIN/PUK codes");
 		unlock_code = UNLOCK_CODE_PUK;
 	} else {
 		g_warning ("Unhandled unlock request for '%s'", info->unlock_required);
@@ -992,7 +995,7 @@ unlock_dialog_new (NMDevice *device, GsmDeviceInfo *info)
 	}
 
 	/* Construct and run the dialog */
-	info->dialog = applet_mobile_pin_dialog_new (title, header, desc);
+	info->dialog = applet_mobile_pin_dialog_new (title, header, desc, show_pass_label);
 	g_free (desc);
 	g_return_if_fail (info->dialog != NULL);
 
