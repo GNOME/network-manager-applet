@@ -413,7 +413,11 @@ test_ap_hash_foobar_asdf11_adhoc_wpa_rsn (void *f, TestData *d)
 	g_assert (strcmp (d->foobar_adhoc_wpa_rsn, d->asdf11_adhoc_wpa_rsn));
 }
 
+#if GLIB_CHECK_VERSION(2,25,12)
+typedef GTestFixtureFunc TCFunc;
+#else
 typedef void (*TCFunc)(void);
+#endif
 
 #define TESTCASE(t, d) g_test_create_case (#t, 0, d, NULL, (TCFunc) t, NULL)
 
