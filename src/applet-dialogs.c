@@ -195,7 +195,7 @@ create_info_label_security (NMConnection *connection)
 			else
 				label = get_eap_label (s_wireless_sec, s_8021x);
 		} else {
-			label = g_strdup (C_("No wifi security used", "None"));
+			label = g_strdup (C_("Wifi/wired security", "None"));
 		}
 	} else if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
 		NMSetting8021x *s_8021x;
@@ -204,10 +204,10 @@ create_info_label_security (NMConnection *connection)
 		if (s_8021x)
 			label = get_eap_label (NULL, s_8021x);
 		else
-			label = g_strdup (C_("No wired security used", "None"));
+			label = g_strdup (C_("Wifi/wired security", "None"));
 	}
 
-	w = create_info_label (label ? label : C_("Unknown/unrecognized wired or wifi security", "Unknown"), TRUE);
+	w = create_info_label (label ? label : C_("Wifi/wired security", "Unknown"), TRUE);
 	g_free (label);
 
 	return w;
@@ -279,7 +279,7 @@ bitrate_changed_cb (GObject *device, GParamSpec *pspec, gpointer user_data)
 	if (bitrate)
 		str = g_strdup_printf (_("%u Mb/s"), bitrate);
 
-	gtk_label_set_text (GTK_LABEL (speed_label), str ? str : _("Unknown"));
+	gtk_label_set_text (GTK_LABEL (speed_label), str ? str : C_("Speed", "Unknown"));
 	g_free (str);
 }
 
@@ -381,7 +381,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	if (speed)
 		str = g_strdup_printf (_("%u Mb/s"), speed);
 
-	gtk_label_set_text (GTK_LABEL(speed_label), str ? str : _("Unknown"));
+	gtk_label_set_text (GTK_LABEL(speed_label), str ? str : C_("Speed", "Unknown"));
 	g_free (str);
 
 	gtk_table_attach_defaults (table,
@@ -418,7 +418,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	gtk_table_attach_defaults (table,
 							   create_info_label (_("IP Address:"), FALSE),
 							   0, 1, row, row + 1);
-	str = def_addr ? ip4_address_as_string (nm_ip4_address_get_address (def_addr)) : g_strdup (_("Unknown"));
+	str = def_addr ? ip4_address_as_string (nm_ip4_address_get_address (def_addr)) : g_strdup (C_("Address", "Unknown"));
 	gtk_table_attach_defaults (table,
 							   create_info_label (str, TRUE),
 							   1, 2, row, row + 1);
@@ -436,7 +436,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	gtk_table_attach_defaults (table,
 							   create_info_label (_("Broadcast Address:"), FALSE),
 							   0, 1, row, row + 1);
-	str = def_addr ? ip4_address_as_string (bcast) : g_strdup (_("Unknown"));
+	str = def_addr ? ip4_address_as_string (bcast) : g_strdup (C_("Address", "Unknown"));
 	gtk_table_attach_defaults (table,
 							   create_info_label (str, TRUE),
 							   1, 2, row, row + 1);
@@ -447,7 +447,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	gtk_table_attach_defaults (table,
 							   create_info_label (_("Subnet Mask:"), FALSE),
 							   0, 1, row, row + 1);
-	str = def_addr ? ip4_address_as_string (netmask) : g_strdup (_("Unknown"));
+	str = def_addr ? ip4_address_as_string (netmask) : g_strdup (C_("Subnet Mask", "Unknown"));
 	gtk_table_attach_defaults (table,
 							   create_info_label (str, TRUE),
 							   1, 2, row, row + 1);

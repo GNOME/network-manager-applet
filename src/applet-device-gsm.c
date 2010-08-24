@@ -970,24 +970,30 @@ unlock_dialog_new (NMDevice *device, GsmDeviceInfo *info)
 		header = _("SIM PIN Unlock Required");
 		/* FIXME: some warning about # of times you can enter incorrect PIN */
 		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PIN code before it can be used."), device_desc);
-		label1 = C_("PIN code entry label", "PIN code:");
+		/* Translators: PIN code entry label */
+		label1 = _("PIN code:");
 		label1_min = 4;
 		label1_max = 8;
-		show_pass_label = C_("Show/obscure PIN checkbox label", "Show PIN code");
+		/* Translators: Show/obscure PIN checkbox label */
+		show_pass_label = _("Show PIN code");
 		unlock_code = UNLOCK_CODE_PIN;
 	} else if (!strcmp (info->unlock_required, "sim-puk")) {
 		title = _("SIM PUK unlock required");
 		header = _("SIM PUK Unlock Required");
 		/* FIXME: some warning about # of times you can enter incorrect PUK */
 		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PUK code before it can be used."), device_desc);
-		label1 = C_("PUK code entry label", "PUK code:");
+		/* Translators: PUK code entry label */
+		label1 = _("PUK code:");
 		label1_min = label1_max = 8;
-		label2 = C_("New PIN entry label", "New PIN code:");
-		label3 = C_("New PIN verification entry label", "Re-enter new PIN code:");
+		/* Translators: New PIN entry label */
+		label2 = _("New PIN code:");
+		/* Translators: New PIN verification entry label */
+		label3 = _("Re-enter new PIN code:");
 		label2_min = label3_min = 4;
 		label2_max = label3_max = 8;
 		match23 = TRUE;
-		show_pass_label = C_("Show/obscure PIN/PUK checkbox label", "Show PIN/PUK codes");
+		/* Translators: Show/obscure PIN/PUK checkbox label */
+		show_pass_label = _("Show PIN/PUK codes");
 		unlock_code = UNLOCK_CODE_PUK;
 	} else {
 		g_warning ("Unhandled unlock request for '%s'", info->unlock_required);
