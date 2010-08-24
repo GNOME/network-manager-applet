@@ -97,12 +97,24 @@ fi
 AC_SUBST(DBUS_SYS_DIR)
 
 dnl Check for gnome-bluetooth
-PKG_CHECK_MODULES(GNOME_BLUETOOTH,
-		  gconf-2.0
-		  gnome-bluetooth-1.0 >= 2.27.6
-		  libnm-util >= 0.8.1
-		  libnm-glib >= 0.8.1,
-		  have_gbt=yes, have_gbt=no)
+AC_ARG_WITH([bluetooth],
+	    AS_HELP_STRING([--with-bluetooth|--without-bluetooth], [Enable Bluetooth support]),
+	    with_bluetooth="$withval",with_bluetooth=yes)
+have_gbt=no
+case "${with_bluetooth}" in
+	no)	AC_MSG_NOTICE(Bluetooth support disabled)
+		;;
+	*)
+		AC_MSG_CHECKING(for gnome-bluetooth)
+		PKG_CHECK_MODULES(GNOME_BLUETOOTH,
+				  gconf-2.0
+				  gnome-bluetooth-1.0 >= 2.27.6
+				  libnm-util >= 0.8.1
+				  libnm-glib >= 0.8.1,
+				  have_gbt=yes, have_gbt=no)
+		;;
+esac
+
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
