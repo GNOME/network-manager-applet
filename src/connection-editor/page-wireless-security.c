@@ -235,7 +235,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		gtk_list_store_append (sec_model, &iter);
 		gtk_list_store_set (sec_model, &iter,
-		                    S_NAME_COLUMN, C_("No wifi security used", "None"),
+		                    S_NAME_COLUMN, C_("Wifi/wired security", "None"),
 		                    -1);
 		if (default_type == NMU_SEC_NONE)
 			active = item;
