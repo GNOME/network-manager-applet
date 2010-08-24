@@ -145,10 +145,6 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 	s = nm_setting_gsm_get_pin (setting);
 	if (s)
 		gtk_entry_set_text (priv->pin, s);
-
-	s = nm_setting_gsm_get_puk (setting);
-	if (s)
-		gtk_entry_set_text (priv->pin, s);
 }
 
 static void
