@@ -504,32 +504,6 @@ typedef struct {
 
 
 static void
-pin_entry_changed (GtkEditable *editable, gpointer user_data)
-{
-	GtkWidget *ok_button = GTK_WIDGET (user_data);
-	const char *s;
-	int i;
-	gboolean valid = FALSE;
-	guint32 len;
-
-	s = gtk_entry_get_text (GTK_ENTRY (editable));
-	if (s) {
-		len = strlen (s);
-		if ((len >= 4) && (len <= 8)) {
-			valid = TRUE;
-			for (i = 0; i < len; i++) {
-				if (!g_ascii_isdigit (s[i])) {
-					valid = FALSE;
-					break;
-				}
-			}
-		}
-	}
-
-	gtk_widget_set_sensitive (ok_button, valid);
-}
-
-static void
 secrets_dialog_destroy (gpointer user_data, GObject *finalized)
 {
 	NMGsmSecretsInfo *info = user_data;
@@ -694,10 +668,34 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 	}
 }
 
+static void
+pin_entry_changed (GtkEditable *editable, gpointer user_data)
+{
+	GtkWidget *ok_button = GTK_WIDGET (user_data);
+	const char *s;
+	int i;
+	gboolean valid = FALSE;
+	guint32 len;
+
+	s = gtk_entry_get_text (GTK_ENTRY (editable));
+	if (s) {
+		len = strlen (s);
+		if ((len >= 4) && (len <= 8)) {
+			valid = TRUE;
+			for (i = 0; i < len; i++) {
+				if (!g_ascii_isdigit (s[i])) {
+					valid = FALSE;
+					break;
+				}
+			}
+		}
+	}
+
+	gtk_widget_set_sensitive (ok_button, valid);
+}
+
 static GtkWidget *
-ask_for_pin_puk (NMDevice *device,
-                 const char *secret_name,
-                 GtkEntry **out_secret_entry)
+ask_for_pin (NMDevice *device, GtkEntry **out_secret_entry)
 {
 	GtkDialog *dialog;
 	GtkWidget *w = NULL, *ok_button = NULL;
@@ -706,13 +704,7 @@ ask_for_pin_puk (NMDevice *device,
 
 	dialog = GTK_DIALOG (gtk_dialog_new ());
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-
-	if (!strcmp (secret_name, NM_SETTING_GSM_PIN))
-		gtk_window_set_title (GTK_WINDOW (dialog), _("PIN code required"));
-	else if (!strcmp (secret_name, NM_SETTING_GSM_PUK))
-		gtk_window_set_title (GTK_WINDOW (dialog), _("PUK code required"));
-	else
-		g_assert_not_reached ();
+	gtk_window_set_title (GTK_WINDOW (dialog), _("PIN code required"));
 
 	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
 	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
@@ -720,12 +712,8 @@ ask_for_pin_puk (NMDevice *device,
 
 	vbox = GTK_BOX (gtk_dialog_get_content_area (dialog));
 
-	if (!strcmp (secret_name, NM_SETTING_GSM_PIN))
-		w = gtk_label_new (_("PIN code is needed for the mobile broadband device"));
-	else if (!strcmp (secret_name, NM_SETTING_GSM_PUK))
-		w = gtk_label_new (_("PUK code is needed for the mobile broadband device"));
-	if (w)
-		gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
+	w = gtk_label_new (_("PIN code is needed for the mobile broadband device"));
+	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
 	w = gtk_label_new (NULL);
@@ -747,6 +735,7 @@ ask_for_pin_puk (NMDevice *device,
 	gtk_entry_set_max_length (GTK_ENTRY (w), 8);
 	gtk_entry_set_width_chars (GTK_ENTRY (w), 8);
 	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
+	gtk_entry_set_visibility (GTK_ENTRY (w), FALSE);
 	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
 	g_signal_connect (w, "changed", G_CALLBACK (pin_entry_changed), ok_button);
 	pin_entry_changed (GTK_EDITABLE (w), ok_button);
@@ -779,8 +768,7 @@ gsm_get_secrets (NMDevice *device,
 		return FALSE;
 	}
 
-	if (   !strcmp (hints[0], NM_SETTING_GSM_PIN)
-	    || !strcmp (hints[0], NM_SETTING_GSM_PUK)) {
+	if (!strcmp (hints[0], NM_SETTING_GSM_PIN)) {
 		GsmDeviceInfo *info = g_object_get_data (G_OBJECT (device), "devinfo");
 
 		g_assert (info);
@@ -788,7 +776,7 @@ gsm_get_secrets (NMDevice *device,
 		if (info->dialog)
 			unlock_dialog_destroy (info);
 
-		widget = ask_for_pin_puk (device, hints[0], &secret_entry);
+		widget = ask_for_pin (device, &secret_entry);
 	} else if (!strcmp (hints[0], NM_SETTING_GSM_PASSWORD))
 		widget = applet_mobile_password_dialog_new (device, NM_CONNECTION (connection), &secret_entry);
 	else {
