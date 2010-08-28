@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: NetworkManager.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-08-20 13:56+0000\n"
-"PO-Revision-Date: 2010-08-21 12:14+0200\n"
+"POT-Creation-Date: 2010-08-25 17:38+0000\n"
+"PO-Revision-Date: 2010-08-28 10:03+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -158,7 +158,7 @@ msgstr "Solicitando una dirección de red para «%s»…"
 msgid "Mobile broadband connection '%s' active"
 msgstr "La conexión de banda ancha móvil «%s» está activa"
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:621
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:617
 #: ../src/mb-menu-item.c:55
 msgid "CDMA"
 msgstr "CDMA"
@@ -169,7 +169,7 @@ msgid "Mobile Broadband (%s)"
 msgstr "Banda ancha móvil (%s)"
 
 #: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
-#: ../src/connection-editor/page-mobile.c:318
+#: ../src/connection-editor/page-mobile.c:314
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
 #: ../src/connection-editor/nm-connection-list.c:1399
 msgid "Mobile Broadband"
@@ -193,7 +193,7 @@ msgstr "La conexión de banda ancha móvil «%s» está activa: (%d%%%s%s)"
 msgid "roaming"
 msgstr "roaming"
 
-#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:624
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:620
 #: ../src/mb-menu-item.c:60
 msgid "GSM"
 msgstr "GSM"
@@ -207,45 +207,37 @@ msgstr "Conexión de banda ancha móvil (GSM) nueva…"
 msgid "You are now connected to the GSM network."
 msgstr "Ahora está conectado a la red GSM."
 
-#: ../src/applet-device-gsm.c:711
+#: ../src/applet-device-gsm.c:707
 msgid "PIN code required"
 msgstr "Se necesita un código PIN"
 
-#: ../src/applet-device-gsm.c:713
-msgid "PUK code required"
-msgstr "Se necesita un código PUK"
-
-#: ../src/applet-device-gsm.c:724
+#: ../src/applet-device-gsm.c:715
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Se necesita un código PIN para el dispositivo de banda ancha móvil"
 
-#: ../src/applet-device-gsm.c:726
-msgid "PUK code is needed for the mobile broadband device"
-msgstr "Se necesita un código PUK para el dispositivo de banda ancha móvil"
-
-#: ../src/applet-device-gsm.c:859
+#: ../src/applet-device-gsm.c:847
 msgid "Wrong PIN code; please contact your provider."
 msgstr "Código PIN erróneo; contacte con el proveedor de su servicio."
 
-#: ../src/applet-device-gsm.c:882
+#: ../src/applet-device-gsm.c:870
 msgid "Wrong PUK code; please contact your provider."
 msgstr "Código PUK erróneo; contacte con el proveedor de su servicio."
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-gsm.c:909
+#: ../src/applet-device-gsm.c:897
 msgid "Sending unlock code..."
 msgstr "Enviando código de desbloqueo…"
 
-#: ../src/applet-device-gsm.c:969
+#: ../src/applet-device-gsm.c:957
 msgid "SIM PIN unlock required"
 msgstr "Se necesita un código PIN de desbloqueo"
 
-#: ../src/applet-device-gsm.c:970
+#: ../src/applet-device-gsm.c:958
 msgid "SIM PIN Unlock Required"
 msgstr "Se necesita un código PIN de desbloqueo"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-device-gsm.c:972
+#: ../src/applet-device-gsm.c:960
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -254,26 +246,30 @@ msgstr ""
 "El dispositivo de banda ancha «%s» necesita un código SIM PIN antes de poder "
 "usarlo."
 
-#: ../src/applet-device-gsm.c:973
-msgctxt "PIN code entry label"
+#. Translators: PIN code entry label
+#: ../src/applet-device-gsm.c:962
+#| msgctxt "PIN code entry label"
+#| msgid "PIN code:"
 msgid "PIN code:"
 msgstr "Código PIN:"
 
-#: ../src/applet-device-gsm.c:976
-msgctxt "Show/obscure PIN checkbox label"
+#. Translators: Show/obscure PIN checkbox label
+#: ../src/applet-device-gsm.c:966
+#| msgctxt "Show/obscure PIN checkbox label"
+#| msgid "Show PIN code"
 msgid "Show PIN code"
 msgstr "Mostrar el código PIN"
 
-#: ../src/applet-device-gsm.c:979
+#: ../src/applet-device-gsm.c:969
 msgid "SIM PUK unlock required"
 msgstr "Se necesita un código PUK"
 
-#: ../src/applet-device-gsm.c:980
+#: ../src/applet-device-gsm.c:970
 msgid "SIM PUK Unlock Required"
 msgstr "Se necesita un código PUK"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-device-gsm.c:982
+#: ../src/applet-device-gsm.c:972
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -282,23 +278,31 @@ msgstr ""
 "El dispositivo de banda ancha «%s» necesita un código SIM PUK antes de poder "
 "usarlo."
 
-#: ../src/applet-device-gsm.c:983
-msgctxt "PUK code entry label"
+#. Translators: PUK code entry label
+#: ../src/applet-device-gsm.c:974
+#| msgctxt "PUK code entry label"
+#| msgid "PUK code:"
 msgid "PUK code:"
 msgstr "Código PUK:"
 
-#: ../src/applet-device-gsm.c:985
-msgctxt "New PIN entry label"
+#. Translators: New PIN entry label
+#: ../src/applet-device-gsm.c:977
+#| msgctxt "New PIN entry label"
+#| msgid "New PIN code:"
 msgid "New PIN code:"
 msgstr "Código PIN nuevo:"
 
-#: ../src/applet-device-gsm.c:986
-msgctxt "New PIN verification entry label"
+#. Translators: New PIN verification entry label
+#: ../src/applet-device-gsm.c:979
+#| msgctxt "New PIN verification entry label"
+#| msgid "Re-enter new PIN code:"
 msgid "Re-enter new PIN code:"
 msgstr "Introducir de nuevo el código PIN nuevo:"
 
-#: ../src/applet-device-gsm.c:990
-msgctxt "Show/obscure PIN/PUK checkbox label"
+#. Translators: Show/obscure PIN/PUK checkbox label
+#: ../src/applet-device-gsm.c:984
+#| msgctxt "Show/obscure PIN/PUK checkbox label"
+#| msgid "Show PIN/PUK codes"
 msgid "Show PIN/PUK codes"
 msgstr "Mostrar códigos PIN/PUK"
 
@@ -469,22 +473,20 @@ msgstr "WPA/WPA2"
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:198
+#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:207
 #: ../src/connection-editor/page-wireless-security.c:238
 #: ../src/wireless-dialog.c:919
-msgctxt "No wifi security used"
-msgid "None"
-msgstr "Ninguna"
-
-#: ../src/applet-dialogs.c:207
-msgctxt "No wired security used"
+#| msgctxt "No wifi security used"
+#| msgid "None"
+msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Ninguna"
 
 #: ../src/applet-dialogs.c:210
-msgctxt "Unknown/unrecognized wired or wifi security"
+#| msgid "Unknown"
+msgctxt "Wifi/wired security"
 msgid "Unknown"
-msgstr "Desconocido"
+msgstr "Desconocida"
 
 #: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
 #, c-format
@@ -492,10 +494,10 @@ msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
 #: ../src/applet-dialogs.c:282 ../src/applet-dialogs.c:384
-#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
-#: ../src/applet-dialogs.c:450
+#| msgid "Unknown"
+msgctxt "Speed"
 msgid "Unknown"
-msgstr "Desconocido"
+msgstr "Desconocida"
 
 #: ../src/applet-dialogs.c:313
 #, c-format
@@ -541,6 +543,12 @@ msgstr "Seguridad:"
 msgid "IP Address:"
 msgstr "Dirección IP:"
 
+#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
+#| msgid "Unknown"
+msgctxt "Address"
+msgid "Unknown"
+msgstr "Desconocida"
+
 #: ../src/applet-dialogs.c:437
 msgid "Broadcast Address:"
 msgstr "Dirección de difusión:"
@@ -548,6 +556,12 @@ msgstr "Dirección de difusión:"
 #: ../src/applet-dialogs.c:448
 msgid "Subnet Mask:"
 msgstr "Máscara de subred:"
+
+#: ../src/applet-dialogs.c:450
+#| msgid "Unknown"
+msgctxt "Subnet Mask"
+msgid "Unknown"
+msgstr "Desconocida"
 
 #: ../src/applet-dialogs.c:460
 msgid "Default Route:"
@@ -1657,21 +1671,21 @@ msgstr "No se pudo cargar la interfaz de usuario para IPv6."
 msgid "IPv6 Settings"
 msgstr "Ajustes de IPv6"
 
-#: ../src/connection-editor/page-mobile.c:305
-#: ../src/connection-editor/page-mobile.c:312
+#: ../src/connection-editor/page-mobile.c:301
+#: ../src/connection-editor/page-mobile.c:308
 msgid "Could not load mobile broadband user interface."
 msgstr "No se pudo cargar la interfaz de usuario de banda ancha móvil."
 
-#: ../src/connection-editor/page-mobile.c:333
+#: ../src/connection-editor/page-mobile.c:329
 msgid "Unsupported mobile broadband connection type."
 msgstr "El tipo de conexión de banda ancha móvil no está soportado."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:574
+#: ../src/connection-editor/page-mobile.c:570
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Seleccionar el tipo de proveedor de banda ancha móvil"
 
-#: ../src/connection-editor/page-mobile.c:601
+#: ../src/connection-editor/page-mobile.c:597
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1679,12 +1693,12 @@ msgstr ""
 "Seleccionar la tecnología que el proveedor de su banda ancha móvil usa. Si "
 "no está seguro pregúntele a su proveedor."
 
-#: ../src/connection-editor/page-mobile.c:606
+#: ../src/connection-editor/page-mobile.c:602
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Mi proveedor usa tecnología basada en _GSM (ej. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:611
+#: ../src/connection-editor/page-mobile.c:607
 msgid "My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Mi proveedor usa tecnología basada en _CDMA (ej. 1xRTT, EVDO)"
 
@@ -2615,6 +2629,20 @@ msgstr "TLS a través de túnel"
 #: ../src/wireless-security/wireless-security.c:364
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protegido (PEAP)"
+
+#~ msgid "PUK code required"
+#~ msgstr "Se necesita un código PUK"
+
+#~ msgid "PUK code is needed for the mobile broadband device"
+#~ msgstr "Se necesita un código PUK para el dispositivo de banda ancha móvil"
+
+#~ msgctxt "No wired security used"
+#~ msgid "None"
+#~ msgstr "Ninguna"
+
+#~ msgctxt "Unknown/unrecognized wired or wifi security"
+#~ msgid "Unknown"
+#~ msgstr "Desconocido"
 
 #~| msgid "Sho_w key"
 #~ msgid "Show it"
