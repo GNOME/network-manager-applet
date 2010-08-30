@@ -2229,6 +2229,11 @@ foo_client_setup (NMApplet *applet)
 	g_signal_connect (applet->nm_client, "permission-changed",
 	                  G_CALLBACK (foo_manager_permission_changed),
 	                  applet);
+	/* Initialize permissions - the initial 'permission-changed' signal is emitted from NMClient constructor, and thus not caught */
+	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK);
+	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI);
+	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN);
+	applet->permissions[NM_CLIENT_PERMISSION_USE_USER_CONNECTIONS] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_USE_USER_CONNECTIONS);
 
 	if (nm_client_get_manager_running (applet->nm_client))
 		g_idle_add (foo_set_initial_state, applet);
