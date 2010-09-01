@@ -255,15 +255,16 @@ main (int argc, char *argv[])
 
 	/* Inits the dbus-glib type system too */
 	bus = dbus_g_bus_get (DBUS_BUS_SESSION, NULL);
-	proxy = dbus_g_proxy_new_for_name (bus,
-	                                   "org.freedesktop.DBus",
-	                                   "/org/freedesktop/DBus",
-	                                   "org.freedesktop.DBus");
-
-	/* Check for an existing instance on the bus */
-	if (proxy) {
-		if (try_existing_instance (bus, proxy, type))
-			goto exit;
+	if (bus) {
+		proxy = dbus_g_proxy_new_for_name (bus,
+		                                   "org.freedesktop.DBus",
+		                                   "/org/freedesktop/DBus",
+		                                   "org.freedesktop.DBus");
+		/* Check for an existing instance on the bus */
+		if (proxy) {
+			if (try_existing_instance (bus, proxy, type))
+				goto exit;
+		}
 	}
 
 	loop = g_main_loop_new (NULL, FALSE);
@@ -297,7 +298,8 @@ main (int argc, char *argv[])
 exit:
 	if (proxy)
 		g_object_unref (proxy);
-	dbus_g_connection_unref (bus);
+	if (bus)
+		dbus_g_connection_unref (bus);
 	return 0;
 }
 
