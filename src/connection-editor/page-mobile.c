@@ -603,8 +603,10 @@ mobile_connection_new (GtkWindow *parent,
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gsm_radio), TRUE);
 	gtk_box_pack_start (GTK_BOX (vbox), gsm_radio, FALSE, FALSE, 6);
 
+	/* Translators: CDMA has 'D' accelerator key; 'C' collides with 'Cancel' button.
+	                You may need to change it according to your language. */
 	cdma_radio = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (gsm_radio),
-                                           _("My provider uses _CDMA-based technology (i.e. 1xRTT, EVDO)"));
+                                           _("My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"));
 	gtk_box_pack_start (GTK_BOX (vbox), cdma_radio, FALSE, FALSE, 6);
 
 	gtk_widget_show_all (dialog);
