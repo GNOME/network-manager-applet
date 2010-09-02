@@ -88,6 +88,7 @@ static char *ignored_phrases[] = {
 	"Business Mobile Networks BV",
 	"Mobile Broadband Minicard Composite Device",
 	"Mobile Communications AB",
+	"(PC-Suite Mode)",
 	NULL
 };
 
