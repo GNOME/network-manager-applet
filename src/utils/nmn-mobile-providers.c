@@ -131,8 +131,8 @@ mcc_mnc_new (const char *mcc, const char *mnc)
     NmnGsmMccMnc *m;
 
     m = g_slice_new0 (NmnGsmMccMnc);
-    m->mcc = g_strdup (mcc);
-    m->mnc = g_strdup (mnc);
+    m->mcc = g_strstrip (g_strdup (mcc));
+    m->mnc = g_strstrip (g_strdup (mnc));
     return m;
 }
 
@@ -365,7 +365,7 @@ parser_gsm_start (MobileParser *parser,
 
                 parser->state = PARSER_METHOD_GSM_APN;
                 parser->current_method = access_method_new ();
-                parser->current_method->gsm_apn = g_strdup (attribute_values[i]);
+                parser->current_method->gsm_apn = g_strstrip (g_strdup (attribute_values[i]));
                 break;
             }
         }
