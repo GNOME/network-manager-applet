@@ -3017,6 +3017,12 @@ constructor (GType type,
 	if (!applet->gconf_client)
 		goto error;
 
+	/* Note that we don't care about change notifications for prefs values... */
+	gconf_client_add_dir (applet->gconf_client,
+	                      APPLET_PREFS_PATH,
+	                      GCONF_CLIENT_PRELOAD_ONELEVEL,
+	                      NULL);
+
 	/* Load pixmaps and create applet widgets */
 	if (!setup_widgets (applet))
 		goto error;
@@ -3116,8 +3122,12 @@ static void finalize (GObject *object)
 	if (applet->info_dialog_xml)
 		g_object_unref (applet->info_dialog_xml);
 
-	if (applet->gconf_client)
+	if (applet->gconf_client) {
+		gconf_client_remove_dir (applet->gconf_client,
+		                         APPLET_PREFS_PATH,
+		                         NULL);
 		g_object_unref (applet->gconf_client);
+	}
 
 	if (applet->status_icon)
 		g_object_unref (applet->status_icon);
