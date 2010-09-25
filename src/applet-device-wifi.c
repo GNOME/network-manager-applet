@@ -1046,7 +1046,9 @@ idle_check_avail_access_point_notification (gpointer datap)
 	applet_do_notify (applet,
 	                  NOTIFY_URGENCY_LOW,
 	                  _("Wireless Networks Available"),
-	                  _("Click on this icon to connect to a wireless network"),
+	                  applet->notify_actions ?
+	                        _("Click on this icon to connect to a wireless network") :
+	                        _("Use the network menu to connect to a wireless network"),
 	                  "nm-device-wireless",
 	                  "dont-show",
 	                  _("Don't show this message again"),

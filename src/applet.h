@@ -166,6 +166,7 @@ typedef struct
 
 	GladeXML *		info_dialog_xml;
 	NotifyNotification*	notification;
+	gboolean        notify_actions;
 } NMApplet;
 
 typedef void (*AppletNewAutoConnectionCallback) (NMConnection *connection,
