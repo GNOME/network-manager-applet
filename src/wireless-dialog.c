@@ -1069,7 +1069,6 @@ internal_init (NMAWirelessDialog *self,
 	gtk_container_set_border_width (GTK_CONTAINER (self), 6);
 	gtk_window_set_default_size (GTK_WINDOW (self), 488, -1);
 	gtk_window_set_resizable (GTK_WINDOW (self), FALSE);
-	gtk_dialog_set_has_separator (GTK_DIALOG (self), FALSE);
 
 	priv->auth_only = auth_only;
 	if (auth_only)
