@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-08-24 20:45+0200\n"
+"POT-Creation-Date: 2010-09-27 06:42+0000\n"
 "PO-Revision-Date: 2010-08-24 20:47+0200\n"
 "Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
 "Language-Team: GNOME French TEAM <gnomefr@traduc.org>\n"
@@ -120,7 +120,7 @@ msgstr "Vous êtes maintenant connecté à « %s »."
 
 #: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:378
 #: ../src/applet-device-gsm.c:421 ../src/applet-device-wired.c:274
-#: ../src/applet-device-wifi.c:1258
+#: ../src/applet-device-wifi.c:1260
 msgid "Connection Established"
 msgstr "Connexion établie"
 
@@ -149,7 +149,7 @@ msgstr ""
 "large bande « %s »..."
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:423
-#: ../src/applet-device-gsm.c:466 ../src/applet.c:2300
+#: ../src/applet-device-gsm.c:466 ../src/applet.c:2299
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Obtention d'une adresse réseau pour « %s »..."
@@ -160,7 +160,7 @@ msgstr "Obtention d'une adresse réseau pour « %s »..."
 msgid "Mobile broadband connection '%s' active"
 msgstr "Connexion téléphone mobile à large bande « %s » active"
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:617
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:687
 #: ../src/mb-menu-item.c:55
 msgid "CDMA"
 msgstr "CDMA"
@@ -171,7 +171,7 @@ msgid "Mobile Broadband (%s)"
 msgstr "Connexion mobile à large bande (%s)"
 
 #: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
-#: ../src/connection-editor/page-mobile.c:314
+#: ../src/connection-editor/page-mobile.c:382
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
 #: ../src/connection-editor/nm-connection-list.c:1399
 msgid "Mobile Broadband"
@@ -195,7 +195,7 @@ msgstr "Connexion mobile à large bande « %s » active : (%d %%%s%s)"
 msgid "roaming"
 msgstr "itinérance"
 
-#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:620
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:690
 #: ../src/mb-menu-item.c:60
 msgid "GSM"
 msgstr "GSM"
@@ -209,45 +209,37 @@ msgstr "Nouvelle connexion mobile à large bande (GSM)..."
 msgid "You are now connected to the GSM network."
 msgstr "Vous êtes maintenant connecté au réseau GSM."
 
-#: ../src/applet-device-gsm.c:711
+#: ../src/applet-device-gsm.c:707
 msgid "PIN code required"
 msgstr "Code PIN requis"
 
-#: ../src/applet-device-gsm.c:713
-msgid "PUK code required"
-msgstr "Code PUK requis"
-
-#: ../src/applet-device-gsm.c:724
+#: ../src/applet-device-gsm.c:715
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Le code PIN est nécessaire pour le téléphone mobile à large bande"
 
-#: ../src/applet-device-gsm.c:726
-msgid "PUK code is needed for the mobile broadband device"
-msgstr "Le code PUK est nécessaire pour le téléphone mobile à large bande"
-
-#: ../src/applet-device-gsm.c:859
+#: ../src/applet-device-gsm.c:847
 msgid "Wrong PIN code; please contact your provider."
 msgstr "Code PIN erroné ; contactez votre fournisseur."
 
-#: ../src/applet-device-gsm.c:882
+#: ../src/applet-device-gsm.c:870
 msgid "Wrong PUK code; please contact your provider."
 msgstr "Code PUK erroné ; contactez votre fournisseur."
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-gsm.c:909
+#: ../src/applet-device-gsm.c:897
 msgid "Sending unlock code..."
 msgstr "Envoi du code de déverrouillage..."
 
-#: ../src/applet-device-gsm.c:969
+#: ../src/applet-device-gsm.c:960
 msgid "SIM PIN unlock required"
 msgstr "Déverrouillage SIM PIN requis"
 
-#: ../src/applet-device-gsm.c:970
+#: ../src/applet-device-gsm.c:961
 msgid "SIM PIN Unlock Required"
 msgstr "Déverrouillage SIM PIN requis"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-device-gsm.c:972
+#: ../src/applet-device-gsm.c:963
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -257,25 +249,25 @@ msgstr ""
 "pouvoir être utilisé."
 
 #. Translators: PIN code entry label
-#: ../src/applet-device-gsm.c:974
+#: ../src/applet-device-gsm.c:965
 msgid "PIN code:"
 msgstr "Code PIN :"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-device-gsm.c:978
+#: ../src/applet-device-gsm.c:969
 msgid "Show PIN code"
 msgstr "Afficher le code PIN"
 
-#: ../src/applet-device-gsm.c:981
+#: ../src/applet-device-gsm.c:972
 msgid "SIM PUK unlock required"
 msgstr "Déverrouillage SIM PUK requis"
 
-#: ../src/applet-device-gsm.c:982
+#: ../src/applet-device-gsm.c:973
 msgid "SIM PUK Unlock Required"
 msgstr "Déverrouillage SIM PUK requis"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-device-gsm.c:984
+#: ../src/applet-device-gsm.c:975
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -285,22 +277,22 @@ msgstr ""
 "pouvoir être utilisé."
 
 #. Translators: PUK code entry label
-#: ../src/applet-device-gsm.c:986
+#: ../src/applet-device-gsm.c:977
 msgid "PUK code:"
 msgstr "Code PUK :"
 
 #. Translators: New PIN entry label
-#: ../src/applet-device-gsm.c:989
+#: ../src/applet-device-gsm.c:980
 msgid "New PIN code:"
 msgstr "Nouveau code PIN :"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-device-gsm.c:991
+#: ../src/applet-device-gsm.c:982
 msgid "Re-enter new PIN code:"
 msgstr "Resaisissez le nouveau code PIN :"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-device-gsm.c:996
+#: ../src/applet-device-gsm.c:987
 msgid "Show PIN/PUK codes"
 msgstr "Afficher les codes PIN/PUK"
 
@@ -327,7 +319,7 @@ msgid "Wired Network"
 msgstr "Réseau filaire"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:233 ../src/applet.c:1311
+#: ../src/applet-device-wired.c:233 ../src/applet.c:1305
 msgid "disconnected"
 msgstr "déconnecté"
 
@@ -401,49 +393,53 @@ msgstr "Plus de réseaux"
 msgid "Wireless Networks Available"
 msgstr "Réseaux sans fil disponibles"
 
-#: ../src/applet-device-wifi.c:1049
+#: ../src/applet-device-wifi.c:1050
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Cliquez sur cette icône pour vous connecter à un réseau sans fil"
 
-#: ../src/applet-device-wifi.c:1052 ../src/applet.c:679
+#: ../src/applet-device-wifi.c:1051
+msgid "Use the network menu to connect to a wireless network"
+msgstr "Utilisez le menu réseau pour vous connecter à un réseau sans fil"
+
+#: ../src/applet-device-wifi.c:1054 ../src/applet.c:673
 msgid "Don't show this message again"
 msgstr "Ne plus m'avertir"
 
-#: ../src/applet-device-wifi.c:1256
+#: ../src/applet-device-wifi.c:1258
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Vous êtes maintenant connecté au réseau sans fil « %s »."
 
-#: ../src/applet-device-wifi.c:1257 ../src/applet-device-wifi.c:1288
+#: ../src/applet-device-wifi.c:1259 ../src/applet-device-wifi.c:1290
 msgid "(none)"
 msgstr "(aucun)"
 
-#: ../src/applet-device-wifi.c:1298
+#: ../src/applet-device-wifi.c:1300
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Préparation de la connexion au réseau sans fil « %s »..."
 
-#: ../src/applet-device-wifi.c:1301
+#: ../src/applet-device-wifi.c:1303
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Configuration de la connexion au réseau sans fil « %s »..."
 
-#: ../src/applet-device-wifi.c:1304
+#: ../src/applet-device-wifi.c:1306
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Authentification nécessaire pour le réseau sans fil « %s »..."
 
-#: ../src/applet-device-wifi.c:1307
+#: ../src/applet-device-wifi.c:1309
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Obtention d'une adresse pour le réseau sans fil « %s »..."
 
-#: ../src/applet-device-wifi.c:1327
+#: ../src/applet-device-wifi.c:1329
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Connexion au réseau sans fil « %s » active : %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1331
+#: ../src/applet-device-wifi.c:1333
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Connexion au réseau sans fil « %s » active"
@@ -618,7 +614,7 @@ msgstr "Un mot de passe est requis pour vous connecter à « %s »."
 msgid "Password:"
 msgstr "Mot de passe :"
 
-#: ../src/applet.c:792
+#: ../src/applet.c:786
 #, c-format
 msgid ""
 "\n"
@@ -628,7 +624,7 @@ msgstr ""
 "\n"
 "La connexion VPN « %s » a échoué car la connexion réseau a été interrompue."
 
-#: ../src/applet.c:795
+#: ../src/applet.c:789
 #, c-format
 msgid ""
 "\n"
@@ -638,7 +634,7 @@ msgstr ""
 "La connexion VPN « %s » a échoué car le service VPN a été arrêté de manière "
 "inattendue."
 
-#: ../src/applet.c:798
+#: ../src/applet.c:792
 #, c-format
 msgid ""
 "\n"
@@ -649,7 +645,7 @@ msgstr ""
 "La connexion VPN « %s » a échoué car le service VPN a renvoyé une "
 "configuration invalide."
 
-#: ../src/applet.c:801
+#: ../src/applet.c:795
 #, c-format
 msgid ""
 "\n"
@@ -658,7 +654,7 @@ msgstr ""
 "\n"
 "La connexion VPN « %s » a échoué car le délai de connexion est dépassé."
 
-#: ../src/applet.c:804
+#: ../src/applet.c:798
 #, c-format
 msgid ""
 "\n"
@@ -667,7 +663,7 @@ msgstr ""
 "\n"
 "La connexion VPN « %s » a échoué car le service VPN n'a pas démarré à temps."
 
-#: ../src/applet.c:807
+#: ../src/applet.c:801
 #, c-format
 msgid ""
 "\n"
@@ -676,7 +672,7 @@ msgstr ""
 "\n"
 "La connexion VPN « %s » a échoué car le démarrage du service VPN a échoué."
 
-#: ../src/applet.c:810
+#: ../src/applet.c:804
 #, c-format
 msgid ""
 "\n"
@@ -685,7 +681,7 @@ msgstr ""
 "\n"
 "La connexion VPN « %s » a échoué car il n'y avait pas de secrets VPN valides."
 
-#: ../src/applet.c:813
+#: ../src/applet.c:807
 #, c-format
 msgid ""
 "\n"
@@ -694,7 +690,7 @@ msgstr ""
 "\n"
 "La connexion VPN « %s » a échoué en raison de secrets VPN non valides."
 
-#: ../src/applet.c:820
+#: ../src/applet.c:814
 #, c-format
 msgid ""
 "\n"
@@ -703,7 +699,7 @@ msgstr ""
 "\n"
 "La connexion VPN « %s » a échoué."
 
-#: ../src/applet.c:838
+#: ../src/applet.c:832
 #, c-format
 msgid ""
 "\n"
@@ -714,7 +710,7 @@ msgstr ""
 "La connexion VPN « %s » a été déconnectée car la connexion réseau a été "
 "interrompue."
 
-#: ../src/applet.c:841
+#: ../src/applet.c:835
 #, c-format
 msgid ""
 "\n"
@@ -723,7 +719,7 @@ msgstr ""
 "\n"
 "La connexion VPN « %s » a été déconnectée car le service VPN a été arrêté."
 
-#: ../src/applet.c:847
+#: ../src/applet.c:841
 #, c-format
 msgid ""
 "\n"
@@ -732,15 +728,15 @@ msgstr ""
 "\n"
 "La connexion VPN « %s » a été déconnectée."
 
-#: ../src/applet.c:878
+#: ../src/applet.c:872
 msgid "VPN Login Message"
 msgstr "Message d'identification VPN"
 
-#: ../src/applet.c:890 ../src/applet.c:898 ../src/applet.c:945
+#: ../src/applet.c:884 ../src/applet.c:892 ../src/applet.c:939
 msgid "VPN Connection Failed"
 msgstr "La connexion au VPN a échoué"
 
-#: ../src/applet.c:952
+#: ../src/applet.c:946
 #, c-format
 msgid ""
 "\n"
@@ -753,7 +749,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:955
+#: ../src/applet.c:949
 #, c-format
 msgid ""
 "\n"
@@ -766,138 +762,138 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1299
+#: ../src/applet.c:1293
 msgid "device not ready (firmware missing)"
 msgstr "périphérique non prêt (micrologiciel manquant)"
 
-#: ../src/applet.c:1301
+#: ../src/applet.c:1295
 msgid "device not ready"
 msgstr "périphérique non prêt"
 
-#: ../src/applet.c:1327
+#: ../src/applet.c:1321
 msgid "Disconnect"
 msgstr "Se déconnecter"
 
-#: ../src/applet.c:1341
+#: ../src/applet.c:1335
 msgid "device not managed"
 msgstr "périphérique non géré"
 
-#: ../src/applet.c:1387
+#: ../src/applet.c:1381
 msgid "No network devices available"
 msgstr "Aucun périphérique réseau disponible"
 
-#: ../src/applet.c:1475
+#: ../src/applet.c:1469
 msgid "_VPN Connections"
 msgstr "_Connexions VPN"
 
-#: ../src/applet.c:1528
+#: ../src/applet.c:1522
 msgid "_Configure VPN..."
 msgstr "_Configurer le VPN..."
 
-#: ../src/applet.c:1532
+#: ../src/applet.c:1526
 msgid "_Disconnect VPN"
 msgstr "_Déconnecter le VPN"
 
-#: ../src/applet.c:1619
+#: ../src/applet.c:1613
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager n'est pas lancé..."
 
-#: ../src/applet.c:1624 ../src/applet.c:2428
+#: ../src/applet.c:1618 ../src/applet.c:2427
 msgid "Networking disabled"
 msgstr "Réseau désactivé"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1853
+#: ../src/applet.c:1847
 msgid "Enable _Networking"
 msgstr "Activer le _réseau"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1862
+#: ../src/applet.c:1856
 msgid "Enable _Wireless"
 msgstr "Activer le réseau _sans fil"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1871
+#: ../src/applet.c:1865
 msgid "Enable _Mobile Broadband"
 msgstr "Activer la connexion _mobile à large bande"
 
 #. Toggle notifications item
-#: ../src/applet.c:1882
+#: ../src/applet.c:1876
 msgid "Enable N_otifications"
 msgstr "Activer les _notifications"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1893
+#: ../src/applet.c:1887
 msgid "Connection _Information"
 msgstr "_Informations de connexion"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1903
+#: ../src/applet.c:1897
 msgid "Edit Connections..."
 msgstr "Modification des connexions..."
 
 #. Help item
-#: ../src/applet.c:1917
+#: ../src/applet.c:1911
 msgid "_Help"
 msgstr "_Aide"
 
 #. About item
-#: ../src/applet.c:1926
+#: ../src/applet.c:1920
 msgid "_About"
 msgstr "À _propos"
 
-#: ../src/applet.c:2117
+#: ../src/applet.c:2111
 msgid "Disconnected"
 msgstr "Déconnecté"
 
-#: ../src/applet.c:2118
+#: ../src/applet.c:2112
 msgid "The network connection has been disconnected."
 msgstr "La connexion réseau a été déconnectée."
 
-#: ../src/applet.c:2294
+#: ../src/applet.c:2293
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Préparation de la connexion réseau « %s »..."
 
-#: ../src/applet.c:2297
+#: ../src/applet.c:2296
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Authentification nécessaire pour la connexion réseau « %s »..."
 
-#: ../src/applet.c:2303
+#: ../src/applet.c:2302
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Connexion réseau « %s » active"
 
-#: ../src/applet.c:2384
+#: ../src/applet.c:2383
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Démarrage de la connexion VPN « %s »..."
 
-#: ../src/applet.c:2387
+#: ../src/applet.c:2386
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Authentification nécessaire pour la connexion VPN « %s »..."
 
-#: ../src/applet.c:2390
+#: ../src/applet.c:2389
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Obtention d'une adresse VPN pour « %s »..."
 
-#: ../src/applet.c:2393
+#: ../src/applet.c:2392
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "Connexion VPN « %s » active"
 
-#: ../src/applet.c:2432
+#: ../src/applet.c:2431
 msgid "No network connection"
 msgstr "Aucune connexion réseau"
 
-#: ../src/applet.c:2996
+#: ../src/applet.c:2995
 msgid "NetworkManager Applet"
 msgstr "Applet NetworkManager"
 
-#: ../src/applet.c:3002 ../src/wired-dialog.c:128
+#: ../src/applet.c:3001 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -1672,21 +1668,21 @@ msgstr "Impossible de charger l'interface utilisateur IPv6."
 msgid "IPv6 Settings"
 msgstr "Paramètres IPv6"
 
-#: ../src/connection-editor/page-mobile.c:301
-#: ../src/connection-editor/page-mobile.c:308
+#: ../src/connection-editor/page-mobile.c:369
+#: ../src/connection-editor/page-mobile.c:376
 msgid "Could not load mobile broadband user interface."
 msgstr "Impossible de charger l'interface utilisateur de la connexion mobile."
 
-#: ../src/connection-editor/page-mobile.c:329
+#: ../src/connection-editor/page-mobile.c:397
 msgid "Unsupported mobile broadband connection type."
 msgstr "Type de connexion mobile à large bande non pris en charge."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:570
+#: ../src/connection-editor/page-mobile.c:638
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Sélection du type de fournisseur de connexion mobile à large bande"
 
-#: ../src/connection-editor/page-mobile.c:597
+#: ../src/connection-editor/page-mobile.c:665
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1694,13 +1690,13 @@ msgstr ""
 "Sélectionnez la technologie utilisée par votre fournisseur de connexion "
 "mobile à large bande. En cas de doute, interrogez votre fournisseur."
 
-#: ../src/connection-editor/page-mobile.c:602
+#: ../src/connection-editor/page-mobile.c:670
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Mon fournisseur utilise une technologie de type _GSM (GPRS, EDGE, UMTS, "
 "HSDPA, etc.)"
 
-#: ../src/connection-editor/page-mobile.c:607
+#: ../src/connection-editor/page-mobile.c:677
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr ""
 "Mon fournisseur utilise une technologie de type C_DMA (1xRTT, EVOD, etc.)"
@@ -2641,3 +2637,4 @@ msgstr "Tunneled TLS"
 #: ../src/wireless-security/wireless-security.c:364
 msgid "Protected EAP (PEAP)"
 msgstr "Protected EAP (PEAP)"
+
