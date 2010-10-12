@@ -1279,13 +1279,14 @@ add_connection_buttons (NMConnectionList *self,
 
 	/* Edit */
 	info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), NULL);
-	button = ce_polkit_button_new (_("Edit"),
+	button = ce_polkit_button_new (_("_Edit"),
 	                               _("Edit the selected connection"),
-	                               _("Edit..."),
+	                               _("_Edit..."),
 	                               _("Authenticate to edit the selected connection"),
 	                               GTK_STOCK_EDIT,
 	                               self->system_settings,
 	                               NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
+	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
 	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
 	action_info_set_button (info, button);
@@ -1296,13 +1297,14 @@ add_connection_buttons (NMConnectionList *self,
 
 	/* Delete */
 	info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), NULL);
-	button = ce_polkit_button_new (_("Delete"),
+	button = ce_polkit_button_new (_("_Delete"),
 	                               _("Delete the selected connection"),
-	                               _("Delete..."),
+	                               _("_Delete..."),
 	                               _("Authenticate to delete the selected connection"),
 	                               GTK_STOCK_DELETE,
 	                               self->system_settings,
 	                               NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
+	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
 	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
 	action_info_set_button (info, button);

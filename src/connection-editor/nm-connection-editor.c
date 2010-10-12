@@ -416,13 +416,14 @@ nm_connection_editor_new (NMConnection *connection,
 		use_polkit = TRUE;
 	}
 
-	editor->ok_button = ce_polkit_button_new (_("Save"),
+	editor->ok_button = ce_polkit_button_new (_("_Save"),
 	                                          _("Save any changes made to this connection."),
-	                                          _("Save..."),
+	                                          _("_Save..."),
 	                                          _("Authenticate to save this connection for all users of this machine."),
 	                                          GTK_STOCK_APPLY,
 	                                          settings,
 	                                          NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
+	gtk_button_set_use_underline (GTK_BUTTON (editor->ok_button), TRUE);
 	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (editor->ok_button), use_polkit);
 
 	g_signal_connect (editor->ok_button, "actionable",
