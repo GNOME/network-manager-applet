@@ -872,13 +872,15 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 		break;
 	case NM_VPN_CONNECTION_STATE_ACTIVATED:
 		banner = nm_vpn_connection_get_banner (vpn);
-		if (banner && strlen (banner)) {
-			title = _("VPN Login Message");
-			msg = g_strdup_printf ("%s\n", banner);
-			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
-			                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
-			g_free (msg);
-		}
+		if (banner && strlen (banner))
+			msg = g_strdup_printf ("VPN connection has been successfully established.\n\n%s\n", banner);
+		else
+			msg = g_strdup ("VPN connection has been successfully established.\n");
+
+		title = _("VPN Login Message");
+		applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
+		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
+		g_free (msg);
 
 		connection = applet_get_connection_for_active (applet, NM_ACTIVE_CONNECTION (vpn));
 		if (connection)
