@@ -310,6 +310,7 @@ typedef void (*DeleteResultFunc) (NMConnectionList *list,
 typedef struct {
 	NMConnectionList *list;
 	NMSettingsConnectionInterface *original;
+	NMConnectionScope orig_scope;
 	NMConnectionEditor *editor;
 	DeleteResultFunc callback;
 	gpointer callback_data;
@@ -322,13 +323,11 @@ delete_cb (NMSettingsConnectionInterface *connection_iface,
 {
 	DeleteInfo *info = user_data;
 	NMConnection *connection = NM_CONNECTION (connection_iface);
-	NMConnectionScope scope;
 
 	if (info->editor)
 		nm_connection_editor_set_busy (info->editor, FALSE);
 
-	scope = nm_connection_get_scope (connection);
-	if (!error && (scope == NM_CONNECTION_SCOPE_USER)) {
+	if (!error && (info->orig_scope == NM_CONNECTION_SCOPE_USER)) {
 		NMSettingConnection *s_con;
 		NMSettingVPN *s_vpn;
 		NMVpnPluginUiInterface *plugin;
@@ -366,6 +365,7 @@ done:
 static void
 delete_connection (NMConnectionList *list,
                    NMSettingsConnectionInterface *connection,
+                   NMConnectionScope orig_scope,
                    DeleteResultFunc callback,
                    gpointer user_data)
 {
@@ -376,6 +376,7 @@ delete_connection (NMConnectionList *list,
 
 	info = g_malloc0 (sizeof (DeleteInfo));
 	info->list = list;
+	info->orig_scope = orig_scope;
 	info->callback = callback;
 	info->callback_data = user_data;
 	info->editor = editor;
@@ -500,7 +501,7 @@ update_add_result_cb (NMConnectionList *list, GError *error, gpointer user_data)
 	}
 
 	/* Now try to remove the original connection */
-	delete_connection (list, info->connection, update_remove_result_cb, info);
+	delete_connection (list, info->connection, info->orig_scope, update_remove_result_cb, info);
 }
 
 static void
@@ -883,8 +884,13 @@ delete_clicked (GtkButton *button, gpointer user_data)
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	if (result == GTK_RESPONSE_YES)
-		delete_connection (info->list, connection, delete_result_cb, GTK_WINDOW (info->list->dialog));
+	if (result == GTK_RESPONSE_YES) {
+		delete_connection (info->list,
+		                   connection,
+		                   nm_connection_get_scope (NM_CONNECTION (connection)),
+		                   delete_result_cb,
+		                   GTK_WINDOW (info->list->dialog));
+	}
 }
 
 static void
