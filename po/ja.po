@@ -13,13 +13,14 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-09-04 14:49+0000\n"
-"PO-Revision-Date: 2010-09-05 15:36+0900\n"
+"POT-Creation-Date: 2010-10-17 17:23+0000\n"
+"PO-Revision-Date: 2010-10-19 20:13+0900\n"
 "Last-Translator: KURASAWA Nozomu <nabetaro@caldron.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../nm-applet.desktop.in.h:1
@@ -113,7 +114,7 @@ msgstr "現在'%s' に接続しています。"
 
 #: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:378
 #: ../src/applet-device-gsm.c:421 ../src/applet-device-wired.c:274
-#: ../src/applet-device-wifi.c:1258
+#: ../src/applet-device-wifi.c:1260
 msgid "Connection Established"
 msgstr "接続を確立しました"
 
@@ -140,7 +141,7 @@ msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "モバイルブロードバンド接続 '%s' にはユーザー認証が必要です..."
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:423
-#: ../src/applet-device-gsm.c:466 ../src/applet.c:2305
+#: ../src/applet-device-gsm.c:466 ../src/applet.c:2301
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "'%s' のネットワークアドレスを要求しています..."
@@ -151,7 +152,7 @@ msgstr "'%s' のネットワークアドレスを要求しています..."
 msgid "Mobile broadband connection '%s' active"
 msgstr "モバイルブロードバンド接続 '%s' はアクティブです。"
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:619
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:687
 #: ../src/mb-menu-item.c:55
 msgid "CDMA"
 msgstr "CDMA"
@@ -162,9 +163,9 @@ msgid "Mobile Broadband (%s)"
 msgstr "モバイルブロードバンド (%s)"
 
 #: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
-#: ../src/connection-editor/page-mobile.c:314
+#: ../src/connection-editor/page-mobile.c:382
 #: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1399
+#: ../src/connection-editor/nm-connection-list.c:1401
 msgid "Mobile Broadband"
 msgstr "モバイルブロードバンド"
 
@@ -186,7 +187,7 @@ msgstr "モバイルブロードバンド接続 '%s' アクティブです: (%d%
 msgid "roaming"
 msgstr "ローミング"
 
-#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:622
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:690
 #: ../src/mb-menu-item.c:60
 msgid "GSM"
 msgstr "GSM"
@@ -309,7 +310,7 @@ msgid "Wired Network"
 msgstr "有線ネットワーク"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:233 ../src/applet.c:1311
+#: ../src/applet-device-wired.c:233 ../src/applet.c:1307
 msgid "disconnected"
 msgstr "切断されています"
 
@@ -381,49 +382,53 @@ msgstr "その他のネットワーク"
 msgid "Wireless Networks Available"
 msgstr "無線ネットワークは利用可能です"
 
-#: ../src/applet-device-wifi.c:1049
+#: ../src/applet-device-wifi.c:1050
 msgid "Click on this icon to connect to a wireless network"
 msgstr "無線ネットワークに接続するにはこのアイコンをクリックします。"
 
-#: ../src/applet-device-wifi.c:1052 ../src/applet.c:679
+#: ../src/applet-device-wifi.c:1051
+msgid "Use the network menu to connect to a wireless network"
+msgstr "無線ネットワークに接続するにはネットワークメニューを使用します。"
+
+#: ../src/applet-device-wifi.c:1054 ../src/applet.c:673
 msgid "Don't show this message again"
 msgstr "二度とこのメッセージを表示しない"
 
-#: ../src/applet-device-wifi.c:1256
+#: ../src/applet-device-wifi.c:1258
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "無線ネットワーク '%s' に接続しました。"
 
-#: ../src/applet-device-wifi.c:1257 ../src/applet-device-wifi.c:1288
+#: ../src/applet-device-wifi.c:1259 ../src/applet-device-wifi.c:1290
 msgid "(none)"
 msgstr "(なし)"
 
-#: ../src/applet-device-wifi.c:1298
+#: ../src/applet-device-wifi.c:1300
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "無線ネットワーク接続 '%s' の準備中..."
 
-#: ../src/applet-device-wifi.c:1301
+#: ../src/applet-device-wifi.c:1303
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "無線ネットワーク接続 '%s' を設定中..."
 
-#: ../src/applet-device-wifi.c:1304
+#: ../src/applet-device-wifi.c:1306
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "無線ネットワーク '%s' にはユーザー認証が必要です..."
 
-#: ../src/applet-device-wifi.c:1307
+#: ../src/applet-device-wifi.c:1309
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "'%s' 用の無線ネットワークアドレスを要求しています..."
 
-#: ../src/applet-device-wifi.c:1327
+#: ../src/applet-device-wifi.c:1329
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "無線ネットワーク接続 '%s' アクティブです: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1331
+#: ../src/applet-device-wifi.c:1333
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "無線ネットワーク接続 '%s' アクティブです"
@@ -564,7 +569,7 @@ msgstr ""
 #: ../src/applet-dialogs.c:677
 msgid ""
 "Notification area applet for managing your network devices and connections."
-msgstr "ネットワークデバイスと接続を管理するための通知エリア アプレット"
+msgstr "ネットワークデバイスと接続を管理するための通知領域 アプレット"
 
 #: ../src/applet-dialogs.c:679
 msgid "NetworkManager Website"
@@ -597,7 +602,7 @@ msgstr "'%s' への接続にパスワードが必要です。"
 msgid "Password:"
 msgstr "パスワード:"
 
-#: ../src/applet.c:792
+#: ../src/applet.c:786
 #, c-format
 msgid ""
 "\n"
@@ -607,7 +612,7 @@ msgstr ""
 "\n"
 "ネットワーク接続が割り込みされた為、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:795
+#: ../src/applet.c:789
 #, c-format
 msgid ""
 "\n"
@@ -616,7 +621,7 @@ msgstr ""
 "\n"
 "VPN サービスが不意に停止した為、VPN 接続 '%s' が失敗しました."
 
-#: ../src/applet.c:798
+#: ../src/applet.c:792
 #, c-format
 msgid ""
 "\n"
@@ -626,7 +631,7 @@ msgstr ""
 "\n"
 "VPN サービスが無効な設定を返したため、VPN 接続 '%s'失敗しました。"
 
-#: ../src/applet.c:801
+#: ../src/applet.c:795
 #, c-format
 msgid ""
 "\n"
@@ -635,7 +640,7 @@ msgstr ""
 "\n"
 "接続試行がタイムアウトしたため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:804
+#: ../src/applet.c:798
 #, c-format
 msgid ""
 "\n"
@@ -644,7 +649,7 @@ msgstr ""
 "\n"
 "VPN サービスが時間内に開始しなかったため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:807
+#: ../src/applet.c:801
 #, c-format
 msgid ""
 "\n"
@@ -653,7 +658,7 @@ msgstr ""
 "\n"
 "VPN サービスが開始に失敗したため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:810
+#: ../src/applet.c:804
 #, c-format
 msgid ""
 "\n"
@@ -662,7 +667,7 @@ msgstr ""
 "\n"
 "有効な VPN secret がないため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:813
+#: ../src/applet.c:807
 #, c-format
 msgid ""
 "\n"
@@ -671,7 +676,7 @@ msgstr ""
 "\n"
 "VPN secret が無効なため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:820
+#: ../src/applet.c:814
 #, c-format
 msgid ""
 "\n"
@@ -680,7 +685,7 @@ msgstr ""
 "\n"
 "VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:838
+#: ../src/applet.c:832
 #, c-format
 msgid ""
 "\n"
@@ -690,7 +695,7 @@ msgstr ""
 "\n"
 "ネットワーク接続が割り込みされたため、VPN 接続 '%s' は切断されました。"
 
-#: ../src/applet.c:841
+#: ../src/applet.c:835
 #, c-format
 msgid ""
 "\n"
@@ -699,7 +704,7 @@ msgstr ""
 "\n"
 "VPN サービスが停止したため、VPN 接続 '%s' は切断されました。"
 
-#: ../src/applet.c:847
+#: ../src/applet.c:841
 #, c-format
 msgid ""
 "\n"
@@ -708,15 +713,15 @@ msgstr ""
 "\n"
 "VPN 接続 '%s' が切断されました。"
 
-#: ../src/applet.c:878
+#: ../src/applet.c:876
 msgid "VPN Login Message"
 msgstr "VPN ログインメッセージ"
 
-#: ../src/applet.c:890 ../src/applet.c:898 ../src/applet.c:945
+#: ../src/applet.c:886 ../src/applet.c:894 ../src/applet.c:941
 msgid "VPN Connection Failed"
 msgstr "VPN 接続は失敗しました"
 
-#: ../src/applet.c:952
+#: ../src/applet.c:948
 #, c-format
 msgid ""
 "\n"
@@ -728,7 +733,7 @@ msgstr ""
 "VPN サービスが開始に失敗したため、VPN 接続 '%s' は失敗しました。n\n"
 "%s"
 
-#: ../src/applet.c:955
+#: ../src/applet.c:951
 #, c-format
 msgid ""
 "\n"
@@ -741,138 +746,138 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1299
+#: ../src/applet.c:1295
 msgid "device not ready (firmware missing)"
 msgstr "デバイスの準備ができていません (ファームウェアが存在しません)"
 
-#: ../src/applet.c:1301
+#: ../src/applet.c:1297
 msgid "device not ready"
 msgstr "デバイスの準備ができていません"
 
-#: ../src/applet.c:1327
+#: ../src/applet.c:1323
 msgid "Disconnect"
 msgstr "切断する"
 
-#: ../src/applet.c:1341
+#: ../src/applet.c:1337
 msgid "device not managed"
 msgstr "デバイスは管理されていません"
 
-#: ../src/applet.c:1387
+#: ../src/applet.c:1383
 msgid "No network devices available"
 msgstr "ネットワークデバイスがありません"
 
-#: ../src/applet.c:1475
+#: ../src/applet.c:1471
 msgid "_VPN Connections"
 msgstr "VPN 接続(_V)"
 
-#: ../src/applet.c:1528
+#: ../src/applet.c:1524
 msgid "_Configure VPN..."
 msgstr "VPN を設定(_C)..."
 
-#: ../src/applet.c:1532
+#: ../src/applet.c:1528
 msgid "_Disconnect VPN"
 msgstr "VPN を切断する(_D)"
 
-#: ../src/applet.c:1619
+#: ../src/applet.c:1615
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager は実行されていません..."
 
-#: ../src/applet.c:1624 ../src/applet.c:2433
+#: ../src/applet.c:1620 ../src/applet.c:2429
 msgid "Networking disabled"
 msgstr "ネットワークは無効になっています"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1853
+#: ../src/applet.c:1849
 msgid "Enable _Networking"
 msgstr "ネットワークを有効にする(_N)"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1862
+#: ../src/applet.c:1858
 msgid "Enable _Wireless"
 msgstr "無線を有効にする(_W)"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1871
+#: ../src/applet.c:1867
 msgid "Enable _Mobile Broadband"
 msgstr "モバイルブロードバンドを有効にする(_M)"
 
 #. Toggle notifications item
-#: ../src/applet.c:1882
+#: ../src/applet.c:1878
 msgid "Enable N_otifications"
 msgstr "通知を有効にする(_O)"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1893
+#: ../src/applet.c:1889
 msgid "Connection _Information"
 msgstr "接続情報(_I)"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1903
+#: ../src/applet.c:1899
 msgid "Edit Connections..."
 msgstr "接続を編集する..."
 
 #. Help item
-#: ../src/applet.c:1917
+#: ../src/applet.c:1913
 msgid "_Help"
 msgstr "ヘルプ(_H)"
 
 #. About item
-#: ../src/applet.c:1926
+#: ../src/applet.c:1922
 msgid "_About"
 msgstr "情報(_A)"
 
-#: ../src/applet.c:2117
+#: ../src/applet.c:2113
 msgid "Disconnected"
 msgstr "切断されました"
 
-#: ../src/applet.c:2118
+#: ../src/applet.c:2114
 msgid "The network connection has been disconnected."
 msgstr "ネットワーク接続が切断されました。"
 
-#: ../src/applet.c:2299
+#: ../src/applet.c:2295
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "ネットワーク接続 '%s' を準備中..."
 
-#: ../src/applet.c:2302
+#: ../src/applet.c:2298
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "ネットワーク接続 '%s' にユーザー認証が必要です..."
 
-#: ../src/applet.c:2308
+#: ../src/applet.c:2304
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "ネットワーク接続 '%s' はアクティブです。"
 
-#: ../src/applet.c:2389
+#: ../src/applet.c:2385
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "VPN 接続 '%s' を開始しています..."
 
-#: ../src/applet.c:2392
+#: ../src/applet.c:2388
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "VPN 接続 '%s' にユーザー認証が必要です..."
 
-#: ../src/applet.c:2395
+#: ../src/applet.c:2391
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "'%s' の VPN アドレスを要求しています..."
 
-#: ../src/applet.c:2398
+#: ../src/applet.c:2394
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN 接続 '%s' はアクティブです"
 
-#: ../src/applet.c:2437
+#: ../src/applet.c:2433
 msgid "No network connection"
 msgstr "ネットワーク接続がありません"
 
-#: ../src/applet.c:3001
+#: ../src/applet.c:2997
 msgid "NetworkManager Applet"
 msgstr "NetworkManager アプレット"
 
-#: ../src/applet.c:3007 ../src/wired-dialog.c:128
+#: ../src/applet.c:3003 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -1044,7 +1049,7 @@ msgid "automatic"
 msgstr "自動"
 
 #: ../src/connection-editor/ce-page.c:222
-#: ../src/connection-editor/nm-connection-editor.c:616
+#: ../src/connection-editor/nm-connection-editor.c:617
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "不明なエラーのため接続 secret を更新できませんでした"
 
@@ -1247,9 +1252,9 @@ msgid ""
 "<i>In most cases, the provider's PPP servers will support all authentication "
 "methods.  If connections fail, try disabling support for some methods.</i>"
 msgstr ""
-"<i>ほとんどのケースでプロバイダの PPP サーバーは全ての認証法をサポートしてい"
-"ます。 接続が失敗する場合は、一部の認証法へのサポートを無効にすることを試して"
-"下さい。</i>"
+"<i>ほとんどのケースでプロバイダの PPP サーバーはすべての認証法をサポートして"
+"います。 接続が失敗する場合は、一部の認証法へのサポートを無効にすることを試し"
+"てください。</i>"
 
 #: ../src/connection-editor/ce-page-ppp.glade.h:6
 msgid "Allow _BSD data compression"
@@ -1536,7 +1541,7 @@ msgstr "DSL ユーザーインターフェイスをロードできませんで�
 
 #: ../src/connection-editor/page-dsl.c:153
 #: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1407
+#: ../src/connection-editor/nm-connection-list.c:1409
 msgid "DSL"
 msgstr "DSL"
 
@@ -1647,36 +1652,36 @@ msgstr "IPv6 ユーザーインターフェイスをロードできませんで�
 msgid "IPv6 Settings"
 msgstr "IPv6 のセッティング"
 
-#: ../src/connection-editor/page-mobile.c:301
-#: ../src/connection-editor/page-mobile.c:308
+#: ../src/connection-editor/page-mobile.c:369
+#: ../src/connection-editor/page-mobile.c:376
 msgid "Could not load mobile broadband user interface."
 msgstr ""
 "モバイルブロードバンドのユーザーインターフェイスをロードできませんでした"
 
-#: ../src/connection-editor/page-mobile.c:329
+#: ../src/connection-editor/page-mobile.c:397
 msgid "Unsupported mobile broadband connection type."
 msgstr "サポートされていないモバイルブロードバンドの接続タイプ"
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:570
+#: ../src/connection-editor/page-mobile.c:638
 msgid "Select Mobile Broadband Provider Type"
 msgstr "モバイルブロードバンドプロバイダのタイプを選択"
 
-#: ../src/connection-editor/page-mobile.c:597
+#: ../src/connection-editor/page-mobile.c:665
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
 msgstr ""
-"モバイルブロードバンドのプロバイダが使用する技術を選択して下さい。 不明な場合"
-"は、プロバイダに尋ねて下さい。"
+"モバイルブロードバンドのプロバイダが使用する技術を選択してください。 不明な場"
+"合は、プロバイダに尋ねてください。"
 
-#: ../src/connection-editor/page-mobile.c:602
+#: ../src/connection-editor/page-mobile.c:670
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "私のプロバイダは GSM ベースの技術 (例えば、 GPRS, EDGE, UMTS, HSDPA) を使用し"
 "ます(_G)"
 
-#: ../src/connection-editor/page-mobile.c:609
+#: ../src/connection-editor/page-mobile.c:677
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr ""
 "私のプロバイダは CDMA ベースの技術 (例えば、1xRTT, EVDO)を使用します(_D)"
@@ -1727,7 +1732,7 @@ msgstr "PPP のセッティング"
 
 #: ../src/connection-editor/page-vpn.c:108
 #: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1403
+#: ../src/connection-editor/nm-connection-list.c:1405
 msgid "VPN"
 msgstr "VPN"
 
@@ -1749,7 +1754,7 @@ msgstr "有線のユーザーインターフェイスをロードできません
 
 #: ../src/connection-editor/page-wired.c:226
 #: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1391
+#: ../src/connection-editor/nm-connection-list.c:1393
 msgid "Wired"
 msgstr "有線"
 
@@ -1785,7 +1790,7 @@ msgstr "WiFi ユーザーインターフェイスをロード出来ませんで�
 
 #: ../src/connection-editor/page-wireless.c:412
 #: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1395
+#: ../src/connection-editor/nm-connection-list.c:1397
 msgid "Wireless"
 msgstr "無線"
 
@@ -1865,24 +1870,24 @@ msgid "Error creating connection editor dialog."
 msgstr "接続エディタダイアログの作成中にエラーです。"
 
 #: ../src/connection-editor/nm-connection-editor.c:419
-msgid "Apply"
-msgstr "適用"
+msgid "_Save"
+msgstr "保存(_S)"
 
 #: ../src/connection-editor/nm-connection-editor.c:420
 msgid "Save any changes made to this connection."
 msgstr "この接続に対しての変更をすべて保存します。"
 
 #: ../src/connection-editor/nm-connection-editor.c:421
-msgid "Apply..."
-msgstr "適用..."
+msgid "_Save..."
+msgstr "保存(_S)..."
 
 #: ../src/connection-editor/nm-connection-editor.c:422
 msgid "Authenticate to save this connection for all users of this machine."
-msgstr "このマシンの全てのユーザー用接続の保存を認証する"
+msgstr "このマシンのすべてのユーザー用接続の保存を認証する"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:1
 msgid "Available to all users"
-msgstr "全てのユーザーに利用可能"
+msgstr "すべてのユーザーに利用可能"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:2
 msgid "Connect _automatically"
@@ -1898,7 +1903,7 @@ msgstr "エクスポート(_X)"
 
 #: ../src/connection-editor/nm-connection-editor.glade.h:11
 msgid "_Import"
-msgstr "インポート(_)"
+msgstr "インポート(_I)"
 
 #: ../src/connection-editor/nm-connection-list.c:217
 msgid "never"
@@ -2015,34 +2020,34 @@ msgid "Last Used"
 msgstr "前回の使用"
 
 #: ../src/connection-editor/nm-connection-list.c:1282
-msgid "Edit"
-msgstr "編集"
+msgid "_Edit"
+msgstr "編集(_E)"
 
 #: ../src/connection-editor/nm-connection-list.c:1283
 msgid "Edit the selected connection"
 msgstr "選択した接続を編集する"
 
 #: ../src/connection-editor/nm-connection-list.c:1284
-msgid "Edit..."
-msgstr "編集..."
+msgid "_Edit..."
+msgstr "編集(_E)..."
 
 #: ../src/connection-editor/nm-connection-list.c:1285
 msgid "Authenticate to edit the selected connection"
 msgstr "選択した接続の編集を認証する"
 
-#: ../src/connection-editor/nm-connection-list.c:1299
-msgid "Delete"
-msgstr "削除"
-
 #: ../src/connection-editor/nm-connection-list.c:1300
+msgid "_Delete"
+msgstr "削除(_D)"
+
+#: ../src/connection-editor/nm-connection-list.c:1301
 msgid "Delete the selected connection"
 msgstr "選択した接続を削除する"
 
-#: ../src/connection-editor/nm-connection-list.c:1301
-msgid "Delete..."
-msgstr "削除..."
-
 #: ../src/connection-editor/nm-connection-list.c:1302
+msgid "_Delete..."
+msgstr "削除(_D)..."
+
+#: ../src/connection-editor/nm-connection-list.c:1303
 msgid "Authenticate to delete the selected connection"
 msgstr "選択した接続の削除を認証する"
 
@@ -2079,7 +2084,7 @@ msgstr "%s を、保存している VPN 接続に入れ替えたいですか ?"
 
 #: ../src/connection-editor/vpn-helpers.c:350
 msgid "Cannot export VPN connection"
-msgstr "VPN 接続をエキスポートできません"
+msgstr "VPN 接続をエクスポートできません"
 
 #: ../src/connection-editor/vpn-helpers.c:352
 #, c-format
@@ -2088,13 +2093,13 @@ msgid ""
 "\n"
 "Error: %s."
 msgstr ""
-"VPN 接続 '%s' は %s にエキスポートできませんでした。.\n"
+"VPN 接続 '%s' は %s にエクスポートできませんでした。.\n"
 "\n"
 "エラー: %s."
 
 #: ../src/connection-editor/vpn-helpers.c:386
 msgid "Export VPN connection..."
-msgstr "VPN 接続をエキスポートする..."
+msgstr "VPN 接続をエクスポートする..."
 
 #: ../src/gnome-bluetooth/bt-widget.c:213
 #, c-format
@@ -2149,7 +2154,7 @@ msgid ""
 "Networking connection."
 msgstr ""
 "デフォルトの Bluetooth アダプタを有効にしてから後に、ダイアルアップネットワー"
-"キング 接続をセットアップして下さい。"
+"キング 接続をセットアップしてください。"
 
 #: ../src/gnome-bluetooth/bt-widget.c:944
 #, c-format
@@ -2299,8 +2304,8 @@ msgid ""
 msgstr ""
 "選択したセッティングを使用してご使用のモバイルブロードバンドプロバイダへ 接続"
 "を今することができます。接続が失敗したり、ネットワークリソースにアクセスが で"
-"きない場合は、そのセッティングをダブルクリックして下さい。モバイルブロードバ"
-"ンド セッティングを変更するには、システム >> 個人設定メニューから \"ネット"
+"きない場合は、そのセッティングをダブルクリックしてください。モバイルブロード"
+"バンド セッティングを変更するには、システム >> 個人設定メニューから \"ネット"
 "ワーク接続\"を 選択します。"
 
 #: ../src/utils/mobile-wizard.c:258
@@ -2329,8 +2334,8 @@ msgstr ""
 "警告: 間違えたプランを選択すると、ブロードバンドアカウントの請求書問題の 原因"
 "になったり、接続を阻止したりする可能性があります。\n"
 "\n"
-"ご自分のプランが不明な場合は、そのプランの APN についてプロバイダにお尋ね下さ"
-"い。"
+"ご自分のプランが不明な場合は、そのプランの APN についてプロバイダにお尋ねくだ"
+"さい。"
 
 #: ../src/utils/mobile-wizard.c:487
 msgid "Choose your Billing Plan"
@@ -2350,7 +2355,7 @@ msgstr "プロバイダ"
 
 #: ../src/utils/mobile-wizard.c:726
 msgid "I can't find my provider and I wish to enter it _manually:"
-msgstr "プロバイダを見つけることができないので手動で入力します:"
+msgstr "プロバイダを見つけることができないので手動で入力します(_M):"
 
 #: ../src/utils/mobile-wizard.c:737
 msgid "Provider:"
@@ -2418,11 +2423,11 @@ msgstr "(一部のケースで) ブロードバンド請求書プラン APN (Acc
 
 #: ../src/utils/mobile-wizard.c:1352
 msgid "Create a connection for _this mobile broadband device:"
-msgstr "このモバイルブロードバンドデバイス用の接続を作成:"
+msgstr "このモバイルブロードバンドデバイス用の接続を作成(_T):"
 
 #: ../src/utils/mobile-wizard.c:1367
 msgid "Any device"
-msgstr "全てのデバイス"
+msgstr "すべてのデバイス"
 
 #: ../src/utils/mobile-wizard.c:1380
 msgid "Set up a Mobile Broadband Connection"
@@ -2452,7 +2457,7 @@ msgid ""
 "Contact your system administrator."
 msgstr ""
 "VPN 接続タイプ '%s' の認証ダイアログをみつけられませんでした。システム管理者"
-"に連絡して下さい。"
+"に連絡してください。"
 
 #: ../src/vpn-password-dialog.c:258
 #, c-format
@@ -2461,7 +2466,7 @@ msgid ""
 "type '%s'. Contact your system administrator."
 msgstr ""
 "VPN 接続タイプ '%s' の認証ダイアログを起動中に問題が生じました。システム管理"
-"者に連絡して下さい。"
+"者に連絡してください。"
 
 #: ../src/wired-dialog.c:99
 msgid "Wired 802.1X authentication"
@@ -2471,11 +2476,11 @@ msgstr "有線 802.1X の認証"
 msgid "New..."
 msgstr "新規..."
 
-#: ../src/wireless-dialog.c:1094
+#: ../src/wireless-dialog.c:1093
 msgid "C_reate"
 msgstr "作成(_R)"
 
-#: ../src/wireless-dialog.c:1175
+#: ../src/wireless-dialog.c:1174
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -2484,39 +2489,39 @@ msgstr ""
 "無線ネットワーク '%s' にアクセスするにはパスワードか、又は暗号化キーが必要で"
 "す。"
 
-#: ../src/wireless-dialog.c:1177
+#: ../src/wireless-dialog.c:1176
 msgid "Wireless Network Authentication Required"
 msgstr "無線ネットワークの認証が必要です"
 
-#: ../src/wireless-dialog.c:1179
+#: ../src/wireless-dialog.c:1178
 msgid "Authentication required by wireless network"
 msgstr "無線ネットワークでは認証が要求されます"
 
-#: ../src/wireless-dialog.c:1184
+#: ../src/wireless-dialog.c:1183
 msgid "Create New Wireless Network"
 msgstr "新しい無線ネットワークを作成"
 
-#: ../src/wireless-dialog.c:1186
+#: ../src/wireless-dialog.c:1185
 msgid "New wireless network"
 msgstr "新規無線ネットワーク"
 
-#: ../src/wireless-dialog.c:1187
+#: ../src/wireless-dialog.c:1186
 msgid "Enter a name for the wireless network you wish to create."
-msgstr "作成したい無線ネットワークの名前を入力して下さい。"
+msgstr "作成したい無線ネットワークの名前を入力してください。"
 
-#: ../src/wireless-dialog.c:1189
+#: ../src/wireless-dialog.c:1188
 msgid "Connect to Hidden Wireless Network"
 msgstr "非表示無線ネットワークに接続する"
 
-#: ../src/wireless-dialog.c:1191
+#: ../src/wireless-dialog.c:1190
 msgid "Hidden wireless network"
 msgstr "非表示無線ネットワーク"
 
-#: ../src/wireless-dialog.c:1192
+#: ../src/wireless-dialog.c:1191
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
-msgstr "接続したい無線ネットワークの名前とセキュリティ詳細を入力して下さい。"
+msgstr "接続したい無線ネットワークの名前とセキュリティ詳細を入力してください。"
 
 #: ../src/wireless-security/eap-method.c:227
 msgid "No Certificate Authority certificate chosen"
@@ -2571,7 +2576,7 @@ msgid ""
 msgstr ""
 "選択したプライベートキーはパスワードで保護されていないようです。この状態は 信"
 "用情報の侵害を許してしまいます。パスワード保護のあるプライベートキーを 選択し"
-"て下さい。\n"
+"てください。\n"
 "\n"
 "(プライベートキーは openssl を使用してパスワード保護ができます)"
 
@@ -2595,6 +2600,12 @@ msgstr "トンネル化 TLS"
 msgid "Protected EAP (PEAP)"
 msgstr "保護つき EAP (PEAP)"
 
+#~ msgid "Apply"
+#~ msgstr "適用"
+
+#~ msgid "Apply..."
+#~ msgstr "適用..."
+
 #~ msgid "PUK code required"
 #~ msgstr "PUK コードが必要です"
 
@@ -2613,4 +2624,4 @@ msgstr "保護つき EAP (PEAP)"
 #~ msgstr "ルート &#x2026;(_R)"
 
 #~ msgid "Save this connection for all users of this machine."
-#~ msgstr "このマシンの全てのユーザー用にこの接続を保存"
+#~ msgstr "このマシンのすべてのユーザー用にこの接続を保存"
