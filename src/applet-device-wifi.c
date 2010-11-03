@@ -785,7 +785,7 @@ wireless_add_menu_item (NMDevice *device,
 	widget = nma_menu_device_get_menu_item (device, applet,
 	                                        wireless_hw_enabled ?
 	                                            (wireless_enabled ? NULL : _("wireless is disabled")) :
-	                                            _("wireless is disabled by hardware radio switch"));
+	                                            _("wireless is disabled by hardware switch"));
 	if (widget) {
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), widget);
 		gtk_widget_show (widget);
