@@ -730,6 +730,7 @@ wireless_add_menu_item (NMDevice *device,
 	NMAccessPoint *active_ap = NULL;
 	GSList *connections = NULL, *all, *iter;
 	gboolean wireless_enabled = TRUE;
+	gboolean wireless_hw_enabled = TRUE;
 	GSList *menu_items = NULL;  /* All menu items we'll be adding */
 	NMNetworkMenuItem *item, *active_item = NULL;
 	GtkWidget *widget;
@@ -780,7 +781,11 @@ wireless_add_menu_item (NMDevice *device,
 
 	/* Notify user of unmanaged or unavailable device */
 	wireless_enabled = nm_client_wireless_get_enabled (applet->nm_client);
-	widget = nma_menu_device_get_menu_item (device, applet, wireless_enabled ? NULL : _("wireless is disabled"));
+	wireless_hw_enabled = nm_client_wireless_hardware_get_enabled (applet->nm_client);
+	widget = nma_menu_device_get_menu_item (device, applet,
+	                                        wireless_hw_enabled ?
+	                                            (wireless_enabled ? NULL : _("wireless is disabled")) :
+	                                            _("wireless is disabled by hardware radio switch"));
 	if (widget) {
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), widget);
 		gtk_widget_show (widget);
