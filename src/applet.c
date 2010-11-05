@@ -2939,7 +2939,11 @@ applet_pre_keyring_callback (gpointer user_data)
 	if (applet->menu)
 		window = gtk_widget_get_window (applet->menu);
 	if (window) {
+#if GTK_CHECK_VERSION(2,23,0)
+		screen = gdk_window_get_screen (window);
+#else
 		screen = gdk_drawable_get_screen (window);
+#endif
 		display = gdk_screen_get_display (screen);
 		g_object_ref (display);
 
@@ -2960,7 +2964,11 @@ applet_pre_keyring_callback (gpointer user_data)
 	if (applet->context_menu)
 		window = gtk_widget_get_window (applet->context_menu);
 	if (window) {
+#if GTK_CHECK_VERSION(2,23,0)
+		screen = gdk_window_get_screen (window);
+#else
 		screen = gdk_drawable_get_screen (window);
+#endif
 		display = gdk_screen_get_display (screen);
 		g_object_ref (display);
 
