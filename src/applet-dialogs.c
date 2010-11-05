@@ -567,122 +567,45 @@ applet_info_dialog_show (NMApplet *applet)
 		gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
 }
 
+#if !GTK_CHECK_VERSION(2,23,0)
 static void 
 about_dialog_handle_url_cb (GtkAboutDialog *about, const gchar *url, gpointer data)
 {
-	GError *error = NULL;
 	gboolean ret;
 	char *cmdline;
-	GdkScreen *gscreen;
-	GtkWidget *error_dialog;
+	GdkScreen *screen;
 
-	gscreen = gtk_window_get_screen (GTK_WINDOW (about));
+	screen = gtk_window_get_screen (GTK_WINDOW (about));
 
 	cmdline = g_strconcat ("gnome-open ", url, NULL);
-	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
+	ret = gdk_spawn_command_line_on_screen (screen, cmdline, NULL);
 	g_free (cmdline);
 
-	if (ret == TRUE)
-		return;
-
-	g_error_free (error);
-	error = NULL;
-
-	cmdline = g_strconcat ("xdg-open ", url, NULL);
-	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
-	g_free (cmdline);
-	
 	if (ret == FALSE) {
-		error_dialog = gtk_message_dialog_new ( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "Failed to show url %s", error->message); 
-		gtk_dialog_run (GTK_DIALOG (error_dialog));
-		g_error_free (error);
-	}
-
-}
-
-/* Make email in about dialog clickable */
-static void 
-about_dialog_handle_email_cb (GtkAboutDialog *about, const char *email_address, gpointer data)
-{
-	GError *error = NULL;
-	gboolean ret;
-	char *cmdline;
-	GdkScreen *gscreen;
-	GtkWidget *error_dialog;
-
-	gscreen = gtk_window_get_screen (GTK_WINDOW (about));
-
-	cmdline = g_strconcat ("gnome-open mailto:", email_address, NULL);
-	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
-	g_free (cmdline);
-
-	if (ret == TRUE)
-		return;
-
-	g_error_free (error);
-	error = NULL;
-
-	cmdline = g_strconcat ("xdg-open mailto:", email_address, NULL);
-	ret = gdk_spawn_command_line_on_screen (gscreen, cmdline, &error);
-	g_free (cmdline);
-	
-	if (ret == FALSE) {
-		error_dialog = gtk_message_dialog_new ( NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "Failed to show url %s", error->message); 
-		gtk_dialog_run (GTK_DIALOG (error_dialog));
-		g_error_free (error);
+		cmdline = g_strconcat ("xdg-open ", url, NULL);
+		ret = gdk_spawn_command_line_on_screen (screen, cmdline, NULL);
+		g_free (cmdline);
 	}
 }
+#endif
 
 void
 applet_about_dialog_show (NMApplet *applet)
 {
-	static const gchar *authors[] = {
-		"The Red Hat Desktop Team, including:\n",
-		"Christopher Aillon <caillon@redhat.com>",
-		"Jonathan Blandford <jrb@redhat.com>",
-		"John Palmieri <johnp@redhat.com>",
-		"Ray Strode <rstrode@redhat.com>",
-		"Colin Walters <walters@redhat.com>",
-		"Dan Williams <dcbw@redhat.com>",
-		"David Zeuthen <davidz@redhat.com>",
-		"\nAnd others, including:\n",
-		"Bill Moss <bmoss@clemson.edu>",
-		"Tom Parker",
-		"j@bootlab.org",
-		"Peter Jones <pjones@redhat.com>",
-		"Robert Love <rml@novell.com>",
-		"Tim Niemueller (http://www.niemueller.de)",
-		NULL
-	};
-
-	static const gchar *artists[] = {
-		"Diana Fong <dfong@redhat.com>",
-		NULL
-	};
-
-
-	/* FIXME: unnecessary with libgnomeui >= 2.16.0 */
-	static gboolean been_here = FALSE;
-	if (!been_here) {
-		been_here = TRUE;
-		gtk_about_dialog_set_url_hook (about_dialog_handle_url_cb, NULL, NULL);
-		gtk_about_dialog_set_email_hook (about_dialog_handle_email_cb, NULL, NULL);
-	}
-
+#if !GTK_CHECK_VERSION(2,23,0)
+	gtk_about_dialog_set_url_hook (about_dialog_handle_url_cb, NULL, NULL);
+#endif
 	gtk_show_about_dialog (NULL,
 	                       "version", VERSION,
-	                       "copyright", _("Copyright \xc2\xa9 2004-2008 Red Hat, Inc.\n"
-					                  "Copyright \xc2\xa9 2005-2008 Novell, Inc."),
+	                       "copyright", _("Copyright \xc2\xa9 2004-2010 Red Hat, Inc.\n"
+	                                      "Copyright \xc2\xa9 2005-2008 Novell, Inc.\n"
+	                                      "and many other community contributors and translators"),
 	                       "comments", _("Notification area applet for managing your network devices and connections."),
 	                       "website", "http://www.gnome.org/projects/NetworkManager/",
 	                       "website-label", _("NetworkManager Website"),
-	                       "authors", authors,
-	                       "artists", artists,
-	                       "translator-credits", _("translator-credits"),
 	                       "logo-icon-name", GTK_STOCK_NETWORK,
 	                       NULL);
 }
-
 
 GtkWidget *
 applet_warning_dialog_show (const char *message)
