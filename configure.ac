@@ -116,6 +116,12 @@ esac
 
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
+# Check for libnotify >= 0.7
+PKG_CHECK_MODULES(LIBNOTIFY_07, [libnotify >= 0.7], [have_libnotify_07=yes],[have_libnotify_07=no])
+if test x"$have_libnotify_07" = "xyes"; then
+	AC_DEFINE(HAVE_LIBNOTIFY_07, 1, [Define if you have libnotify 0.7 or later])
+fi
+
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
 dnl GConf stuff

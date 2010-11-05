@@ -625,12 +625,18 @@ applet_do_notify (NMApplet *applet,
 	escaped = utils_escape_notify_message (message);
 	notify = notify_notification_new (summary,
 	                                  escaped,
-	                                  icon ? icon : GTK_STOCK_NETWORK,
-	                                  NULL);
+	                                  icon ? icon : GTK_STOCK_NETWORK
+#if HAVE_LIBNOTIFY_07
+	                                  );
+#else
+	                                  , NULL);
+#endif
 	g_free (escaped);
 	applet->notification = notify;
 
+#if !HAVE_LIBNOTIFY_07
 	notify_notification_attach_to_status_icon (notify, applet->status_icon);
+#endif
 	notify_notification_set_urgency (notify, urgency);
 	notify_notification_set_timeout (notify, NOTIFY_EXPIRES_DEFAULT);
 
