@@ -2777,7 +2777,7 @@ nma_icon_check_and_load (const char *name, GdkPixbuf **icon, NMApplet *applet)
 	return *icon;
 }
 
-#define FALLBACK_ICON_NAME "gtk-dialog-error"
+#define FALLBACK_ICON_NAME "dialog-error"
 
 static gboolean
 nma_icons_reload (NMApplet *applet)
