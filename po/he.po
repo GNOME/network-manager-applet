@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-04 09:45+0200\n"
-"PO-Revision-Date: 2010-11-04 09:56+0200\n"
+"POT-Creation-Date: 2010-11-06 10:32+0200\n"
+"PO-Revision-Date: 2010-11-06 10:33+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Gezer (Hebrew)\n"
 "MIME-Version: 1.0\n"
@@ -138,7 +138,7 @@ msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "נדרש אימות מהמשתמש עבור חיבור הפס הרחב הנייד '%s'..."
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:423
-#: ../src/applet-device-gsm.c:466 ../src/applet.c:2301
+#: ../src/applet-device-gsm.c:466 ../src/applet.c:2307
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "מתבקשת כתובת רשת עבור '%s'...."
@@ -308,7 +308,7 @@ msgid "Wired Network"
 msgstr "רשת קווית"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:233 ../src/applet.c:1307
+#: ../src/applet-device-wired.c:233 ../src/applet.c:1313
 msgid "disconnected"
 msgstr "מנותק"
 
@@ -394,7 +394,7 @@ msgstr "יש ללחוץ על הסמל כדי להתחבר לרשת אלחוטי�
 msgid "Use the network menu to connect to a wireless network"
 msgstr "ניתן להשתמש בתפריט הרשתות כדי להתחבר לרשת אלחוטית"
 
-#: ../src/applet-device-wifi.c:1059 ../src/applet.c:673
+#: ../src/applet-device-wifi.c:1059 ../src/applet.c:679
 msgid "Don't show this message again"
 msgstr "אין להציג הודעה זאת שוב"
 
@@ -562,58 +562,43 @@ msgstr "כתובת DNS משנית:"
 msgid "No valid active connections found!"
 msgstr "לא נמצאו חיבורים פעילים תקינים!"
 
-#: ../src/applet-dialogs.c:675
+#: ../src/applet-dialogs.c:601
 msgid ""
-"Copyright © 2004-2008 Red Hat, Inc.\n"
-"Copyright © 2005-2008 Novell, Inc."
+"Copyright © 2004-2010 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc.\n"
+"and many other community contributors and translators"
 msgstr ""
 "כל הזכויות שמורות © 2008-2004 Red Hat בע״מ\n"
-"כל הזכויות שמורות © 2008-2005 Novell בע״מ."
+"כל הזכויות שמורות © 2008-2005 Novell בע״מ.\n"
+"ותורמים ומתרגמים רבים ומגוונים מהקהילה"
 
-#: ../src/applet-dialogs.c:677
+#: ../src/applet-dialogs.c:604
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "יישומון המנהל את התקני וחיבורי הרשת."
 
-#: ../src/applet-dialogs.c:679
+#: ../src/applet-dialogs.c:606
 msgid "NetworkManager Website"
 msgstr "אתר הבית של מנהל הרשתות"
 
-#: ../src/applet-dialogs.c:682
-msgid "translator-credits"
-msgstr ""
-"מארק קרפיבנר <mark125@gmail.com>\n"
-"Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"\n"
-"פרויקט תרגום GNOME לעברית:\n"
-"‏http://gnome-il.berlios.de\n"
-"\n"
-"Launchpad Contributions:\n"
-"  Ddorda https://launchpad.net/~ddorda\n"
-"  Michael Gefen https://launchpad.net/~gefenm11\n"
-"  Shlomil https://launchpad.net/~shlomister\n"
-"  Yaron https://launchpad.net/~sh-yaron\n"
-"  itai_lahat https://launchpad.net/~itailahat\n"
-"  kulight https://launchpad.net/~kulight"
-
-#: ../src/applet-dialogs.c:698
+#: ../src/applet-dialogs.c:621
 msgid "Missing resources"
 msgstr "משאבים חסרים"
 
-#: ../src/applet-dialogs.c:725
+#: ../src/applet-dialogs.c:648
 msgid "Mobile broadband network password"
 msgstr "ססמת רשת פס רחב נייד"
 
-#: ../src/applet-dialogs.c:734
+#: ../src/applet-dialogs.c:657
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "נדרשת ססמה כדי להתחבר ל־'%s'."
 
-#: ../src/applet-dialogs.c:755
+#: ../src/applet-dialogs.c:678
 msgid "Password:"
 msgstr "ססמה:‏"
 
-#: ../src/applet.c:786
+#: ../src/applet.c:792
 #, c-format
 msgid ""
 "\n"
@@ -623,7 +608,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל בגלל שחיבור הרשת נקטע."
 
-#: ../src/applet.c:789
+#: ../src/applet.c:795
 #, c-format
 msgid ""
 "\n"
@@ -632,7 +617,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל בגלל ששירות ה־VPN הופסק בפתאומיות."
 
-#: ../src/applet.c:792
+#: ../src/applet.c:798
 #, c-format
 msgid ""
 "\n"
@@ -642,7 +627,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל בגלל ששירות ה־VPN החזיר תצורה לא תקינה."
 
-#: ../src/applet.c:795
+#: ../src/applet.c:801
 #, c-format
 msgid ""
 "\n"
@@ -651,7 +636,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל משום שתם הזמן המוקצב לחיבור."
 
-#: ../src/applet.c:798
+#: ../src/applet.c:804
 #, c-format
 msgid ""
 "\n"
@@ -660,7 +645,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל מכיוון ששירות ה־VPN לא התחיל בזמן."
 
-#: ../src/applet.c:801
+#: ../src/applet.c:807
 #, c-format
 msgid ""
 "\n"
@@ -669,7 +654,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל מכיוון שהפעלת שירות ה־VPN נכשלה."
 
-#: ../src/applet.c:804
+#: ../src/applet.c:810
 #, c-format
 msgid ""
 "\n"
@@ -678,7 +663,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל עקב העדר סודות VPN תקפים."
 
-#: ../src/applet.c:807
+#: ../src/applet.c:813
 #, c-format
 msgid ""
 "\n"
@@ -687,7 +672,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל בגלל סודות VPN שגויים."
 
-#: ../src/applet.c:814
+#: ../src/applet.c:820
 #, c-format
 msgid ""
 "\n"
@@ -696,7 +681,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל."
 
-#: ../src/applet.c:832
+#: ../src/applet.c:838
 #, c-format
 msgid ""
 "\n"
@@ -706,7 +691,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' התנתק מכיוון שחיבור הרשת הופרע."
 
-#: ../src/applet.c:835
+#: ../src/applet.c:841
 #, c-format
 msgid ""
 "\n"
@@ -715,7 +700,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' התנתק בגלל ששירות ה־VPN הופסק."
 
-#: ../src/applet.c:841
+#: ../src/applet.c:847
 #, c-format
 msgid ""
 "\n"
@@ -724,15 +709,15 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נותק."
 
-#: ../src/applet.c:876
+#: ../src/applet.c:882
 msgid "VPN Login Message"
 msgstr "הודעת כניסה ל־VPN"
 
-#: ../src/applet.c:886 ../src/applet.c:894 ../src/applet.c:941
+#: ../src/applet.c:892 ../src/applet.c:900 ../src/applet.c:947
 msgid "VPN Connection Failed"
 msgstr "חיבור VPN נכשל"
 
-#: ../src/applet.c:948
+#: ../src/applet.c:954
 #, c-format
 msgid ""
 "\n"
@@ -745,7 +730,7 @@ msgstr ""
 "\n"
 "'%s'"
 
-#: ../src/applet.c:951
+#: ../src/applet.c:957
 #, c-format
 msgid ""
 "\n"
@@ -758,138 +743,138 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1295
+#: ../src/applet.c:1301
 msgid "device not ready (firmware missing)"
 msgstr "ההתקן אינו מוכן (חסרה קושחה)"
 
-#: ../src/applet.c:1297
+#: ../src/applet.c:1303
 msgid "device not ready"
 msgstr "ההתקן אינו מוכן"
 
-#: ../src/applet.c:1323
+#: ../src/applet.c:1329
 msgid "Disconnect"
 msgstr "הנתקות"
 
-#: ../src/applet.c:1337
+#: ../src/applet.c:1343
 msgid "device not managed"
 msgstr "ההתקן לא מנוהל"
 
-#: ../src/applet.c:1383
+#: ../src/applet.c:1389
 msgid "No network devices available"
 msgstr "לא נמצא התקן רשת זמין"
 
-#: ../src/applet.c:1471
+#: ../src/applet.c:1477
 msgid "_VPN Connections"
 msgstr "_חיבורי VPN"
 
-#: ../src/applet.c:1524
+#: ../src/applet.c:1530
 msgid "_Configure VPN..."
 msgstr "ה_גדרת VPN..."
 
-#: ../src/applet.c:1528
+#: ../src/applet.c:1534
 msgid "_Disconnect VPN"
 msgstr "_ניתוק VPN"
 
-#: ../src/applet.c:1615
+#: ../src/applet.c:1621
 msgid "NetworkManager is not running..."
 msgstr "מנהל הרשתות אינו פעיל..."
 
-#: ../src/applet.c:1620 ../src/applet.c:2429
+#: ../src/applet.c:1626 ../src/applet.c:2435
 msgid "Networking disabled"
 msgstr "מנהל הרשתות כבוי"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1849
+#: ../src/applet.c:1855
 msgid "Enable _Networking"
 msgstr "הפעלת _חיבורי רשת"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1858
+#: ../src/applet.c:1864
 msgid "Enable _Wireless"
 msgstr "הפעלת _חיבורי רשת אלחוטית"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1867
+#: ../src/applet.c:1873
 msgid "Enable _Mobile Broadband"
 msgstr "הפעלת פס _רחב נייד"
 
 #. Toggle notifications item
-#: ../src/applet.c:1878
+#: ../src/applet.c:1884
 msgid "Enable N_otifications"
 msgstr "הפעלת הה_תרעות"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1889
+#: ../src/applet.c:1895
 msgid "Connection _Information"
 msgstr "_פרטי החיבור"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1899
+#: ../src/applet.c:1905
 msgid "Edit Connections..."
 msgstr "עריכת חיבורים..."
 
 #. Help item
-#: ../src/applet.c:1913
+#: ../src/applet.c:1919
 msgid "_Help"
 msgstr "ע_זרה"
 
 #. About item
-#: ../src/applet.c:1922
+#: ../src/applet.c:1928
 msgid "_About"
 msgstr "על _אודות"
 
-#: ../src/applet.c:2113
+#: ../src/applet.c:2119
 msgid "Disconnected"
 msgstr "נותק"
 
-#: ../src/applet.c:2114
+#: ../src/applet.c:2120
 msgid "The network connection has been disconnected."
 msgstr "חיבור הרשת נותק."
 
-#: ../src/applet.c:2295
+#: ../src/applet.c:2301
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "חיבור הרשת '%s' בהכנות..."
 
-#: ../src/applet.c:2298
+#: ../src/applet.c:2304
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "נדרש אימות משתמש עבור חיבור הרשת ‏'%s'..."
 
-#: ../src/applet.c:2304
+#: ../src/applet.c:2310
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "חיבור הרשת '%s' פעיל"
 
-#: ../src/applet.c:2385
+#: ../src/applet.c:2391
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "חיבור ה־VPN ‏'%s' מופעל..."
 
-#: ../src/applet.c:2388
+#: ../src/applet.c:2394
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "נדרש אימות משתמש עבור חיבור ה־VPN ‏'%s'..."
 
-#: ../src/applet.c:2391
+#: ../src/applet.c:2397
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "מתבקשת כתובת VPN עבור ‏'%s'..."
 
-#: ../src/applet.c:2394
+#: ../src/applet.c:2400
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "חיבור ה־VPN‏ '%s' פעיל"
 
-#: ../src/applet.c:2433
+#: ../src/applet.c:2439
 msgid "No network connection"
 msgstr "אין חיבור רשת"
 
-#: ../src/applet.c:2997
+#: ../src/applet.c:3011
 msgid "NetworkManager Applet"
 msgstr "יישומון מנהל הרשתות"
 
-#: ../src/applet.c:3003 ../src/wired-dialog.c:128
+#: ../src/applet.c:3017 ../src/wired-dialog.c:128
 msgid ""
 "The NetworkManager Applet could not find some required resources (the glade "
 "file was not found)."
@@ -2584,6 +2569,22 @@ msgstr "‏TLS ממונהר"
 #: ../src/wireless-security/wireless-security.c:364
 msgid "Protected EAP (PEAP)"
 msgstr "‏EAP מוגן (PEAP)"
+
+#~ msgid "translator-credits"
+#~ msgstr ""
+#~ "מארק קרפיבנר <mark125@gmail.com>\n"
+#~ "Yaron Shahrabani <sh.yaron@gmail.com>\n"
+#~ "\n"
+#~ "פרויקט תרגום GNOME לעברית:\n"
+#~ "‏http://gnome-il.berlios.de\n"
+#~ "\n"
+#~ "Launchpad Contributions:\n"
+#~ "  Ddorda https://launchpad.net/~ddorda\n"
+#~ "  Michael Gefen https://launchpad.net/~gefenm11\n"
+#~ "  Shlomil https://launchpad.net/~shlomister\n"
+#~ "  Yaron https://launchpad.net/~sh-yaron\n"
+#~ "  itai_lahat https://launchpad.net/~itailahat\n"
+#~ "  kulight https://launchpad.net/~kulight"
 
 #~ msgid "GSM network."
 #~ msgstr "רשת GSM."
