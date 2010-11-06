@@ -73,12 +73,23 @@ PKG_CHECK_MODULES(NMA,
 		 libnm-glib >= 0.8.1
 		 libnm-util >= 0.8.1
 		 libnm-glib-vpn >= 0.8.1
-		 gtk+-2.0 >= 2.18
 		 libglade-2.0
 		 gmodule-export-2.0
 		 gconf-2.0
 		 gnome-keyring-1
 		 libnotify >= 0.4.3])
+
+AC_ARG_WITH([gtk2], AS_HELP_STRING([--with-gtk2], [Use GTK+ 2.x instead of GTK+ 3.x]),
+            with_gtk2="$withval",with_gtk2=no)
+gtkver=3
+case "${with_gtk2}" in
+	yes)	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.18)
+		gtkver=2
+		;;
+	*)	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.90)
+		;;
+esac
+AM_CONDITIONAL(USE_GTK2, test x"$gtkver" = "x2")
 
 # Check for dbus-1.2.6 or later for deny-by-default rules
 PKG_CHECK_MODULES(DBUS_126, [dbus-1 >= 1.2.6], [have_dbus_126=yes],[have_dbus_126=no])
@@ -156,3 +167,6 @@ icons/scalable/Makefile
 po/Makefile.in
 ])
 AC_OUTPUT
+
+echo Building for GTK+ version: ${gtkver}
+

@@ -29,12 +29,14 @@ libwireless_security_la_SOURCES = \
 	helpers.c
 
 libwireless_security_la_CPPFLAGS = \
+	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/gconf-helpers
 
 libwireless_security_la_LIBADD = \
+	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/gconf-helpers/libgconf-helpers.la

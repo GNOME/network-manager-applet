@@ -11,6 +11,7 @@ libgconf_helpers_la_SOURCES =	\
 	nma-gconf-settings.c
 
 libgconf_helpers_la_CPPFLAGS = \
+	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src \
@@ -18,6 +19,7 @@ libgconf_helpers_la_CPPFLAGS = \
 	-I${top_srcdir}/src/utils
 
 libgconf_helpers_la_LIBADD = \
+	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	${top_builddir}/src/marshallers/libmarshallers.la \
 	${top_builddir}/src/utils/libutils.la

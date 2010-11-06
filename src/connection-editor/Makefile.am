@@ -1,6 +1,7 @@
 bin_PROGRAMS = nm-connection-editor
 
 nm_connection_editor_CPPFLAGS = \
+	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DGLADEDIR=\""$(gladedir)"\" \
@@ -63,6 +64,7 @@ nm_connection_editor_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/marshallers/libmarshallers.la \
+	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	-lm
 

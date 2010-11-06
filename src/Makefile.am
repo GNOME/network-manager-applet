@@ -3,6 +3,7 @@ SUBDIRS = marshallers utils gconf-helpers wireless-security connection-editor gn
 bin_PROGRAMS = nm-applet
 
 nm_applet_CPPFLAGS = \
+	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	$(NOTIFY_CFLAGS) \
 	-DICONDIR=\""$(datadir)/icons"\"						\
@@ -53,6 +54,7 @@ nm_applet_SOURCES =			\
 
 nm_applet_LDADD = \
 	-lm \
+	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	$(NOTIFY_LIBS) \
 	${top_builddir}/src/marshallers/libmarshallers.la \
