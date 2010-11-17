@@ -82,7 +82,7 @@ AC_ARG_WITH([gtk2], AS_HELP_STRING([--with-gtk2], [Use GTK+ 2.x instead of GTK+ 
             with_gtk2="$withval",with_gtk2=no)
 gtkver=3
 case "${with_gtk2}" in
-	yes)	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.18)
+	yes)	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.20)
 		gtkver=2
 		;;
 	*)	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.90)

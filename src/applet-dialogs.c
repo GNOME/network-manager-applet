@@ -44,7 +44,6 @@
 
 #include "applet-dialogs.h"
 #include "utils.h"
-#include "nma-bling-spinner.h"
 
 
 static void
@@ -1031,21 +1030,13 @@ applet_mobile_pin_dialog_start_spinner (GtkWidget *dialog, const char *text)
 	xml = g_object_get_data (G_OBJECT (dialog), "xml");
 	g_return_if_fail (xml != NULL);
 
-#if GTK_CHECK_VERSION(2,90,0)
 	spinner = gtk_spinner_new ();
-#else
-	spinner = nma_bling_spinner_new ();
-#endif
 	g_return_if_fail (spinner != NULL);
 	g_object_set_data (G_OBJECT (dialog), "spinner", spinner);
 
 	align = glade_xml_get_widget (xml, "spinner_alignment");
 	gtk_container_add (GTK_CONTAINER (align), spinner);
-#if GTK_CHECK_VERSION(2,90,0)
 	gtk_spinner_start (GTK_SPINNER (spinner));
-#else
-	nma_bling_spinner_start (NMA_BLING_SPINNER (spinner));
-#endif
 
 	widget = glade_xml_get_widget (xml, "progress_label");
 	gtk_label_set_text (GTK_LABEL (widget), text);
@@ -1083,11 +1074,7 @@ applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog, const char *text)
 
 	spinner = g_object_get_data (G_OBJECT (dialog), "spinner");
 	g_return_if_fail (spinner != NULL);
-#if GTK_CHECK_VERSION(2,90,0)
 	gtk_spinner_stop (GTK_SPINNER (spinner));
-#else
-	nma_bling_spinner_stop (NMA_BLING_SPINNER (spinner));
-#endif
 	g_object_set_data (G_OBJECT (dialog), "spinner", NULL);
 
 	/* Remove it from the alignment */
