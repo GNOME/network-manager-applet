@@ -567,7 +567,7 @@ applet_info_dialog_show (NMApplet *applet)
 		gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
 }
 
-#if !GTK_CHECK_VERSION(2,90,0)
+#if !GTK_CHECK_VERSION(2,23,0)
 static void 
 about_dialog_handle_url_cb (GtkAboutDialog *about, const gchar *url, gpointer data)
 {
@@ -592,7 +592,7 @@ about_dialog_handle_url_cb (GtkAboutDialog *about, const gchar *url, gpointer da
 void
 applet_about_dialog_show (NMApplet *applet)
 {
-#if !GTK_CHECK_VERSION(2,90,0)
+#if !GTK_CHECK_VERSION(2,23,0)
 	gtk_about_dialog_set_url_hook (about_dialog_handle_url_cb, NULL, NULL);
 #endif
 	gtk_show_about_dialog (NULL,

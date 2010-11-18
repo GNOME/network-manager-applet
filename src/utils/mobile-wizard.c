@@ -747,19 +747,19 @@ providers_setup (MobileWizard *self)
 	gtk_table_attach (GTK_TABLE (unlisted_table), alignment,
 	                  1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 6, 6);
 
-#if GTK_CHECK_VERSION(2,90,0)
+#if GTK_CHECK_VERSION(2,23,0)
 	self->provider_unlisted_type_combo = gtk_combo_box_text_new ();
 #else
 	self->provider_unlisted_type_combo = gtk_combo_box_new_text ();
 #endif
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), self->provider_unlisted_type_combo);
-#if GTK_CHECK_VERSION(2,90,0)
+#if GTK_CHECK_VERSION(2,23,0)
 	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (self->provider_unlisted_type_combo),
 #else
 	gtk_combo_box_append_text (GTK_COMBO_BOX (self->provider_unlisted_type_combo),
 #endif
 	                           _("My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"));
-#if GTK_CHECK_VERSION(2,90,0)
+#if GTK_CHECK_VERSION(2,23,0)
 	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (self->provider_unlisted_type_combo),
 #else
 	gtk_combo_box_append_text (GTK_COMBO_BOX (self->provider_unlisted_type_combo),
