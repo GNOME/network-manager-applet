@@ -399,7 +399,7 @@ pppoe_update_ui (NMConnection *connection, NMPppoeInfo *info)
 }
 
 static NMPppoeInfo *
-pppoe_info_new (GladeXML *xml,
+pppoe_info_new (GtkBuilder *builder,
                 NMApplet *applet,
 				NMANewSecretsRequestedFunc callback,
 				gpointer callback_data,
@@ -410,12 +410,12 @@ pppoe_info_new (GladeXML *xml,
 
 	info = g_new0 (NMPppoeInfo, 1);
 	
-	info->username_entry = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_username"));
+	info->username_entry = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "dsl_username")));
 	g_signal_connect (info->username_entry, "changed", G_CALLBACK (pppoe_verify), info);
 
-	info->service_entry = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_service"));
+	info->service_entry = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "dsl_service")));
 
-	info->password_entry = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_password"));
+	info->password_entry = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "dsl_password")));
 	g_signal_connect (info->password_entry, "changed", G_CALLBACK (pppoe_verify), info);
 
 	info->applet = applet;
@@ -544,12 +544,15 @@ pppoe_get_secrets (NMDevice *device,
 				   NMApplet *applet,
 				   GError **error)
 {
-	GladeXML *xml;
 	NMPppoeInfo *info;
 	GtkWidget *w;
+	GtkBuilder* builder;
 
-	xml = glade_xml_new (GLADEDIR "/ce-page-dsl.glade", "DslPage", NULL);
-	if (!xml) {
+	builder = gtk_builder_new ();
+
+	if (!gtk_builder_add_from_file (builder, UIDIR "/ce-page-dsl.ui", error))
+	{
+		g_warning ("Couldn't load builder file: %s", (*error)->message);
 		g_set_error (error,
 		             NM_SETTINGS_INTERFACE_ERROR,
 		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
@@ -558,7 +561,7 @@ pppoe_get_secrets (NMDevice *device,
 		return FALSE;
 	}
 
-	info = pppoe_info_new (xml, applet, callback, callback_data, connection, active_connection);
+	info = pppoe_info_new (builder, applet, callback, callback_data, connection, active_connection);
 
 	/* Create the dialog */
 	info->dialog = gtk_dialog_new ();
@@ -570,12 +573,12 @@ pppoe_get_secrets (NMDevice *device,
 	info->ok_button = w;
 
 	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (info->dialog))),
-	                    glade_xml_get_widget (xml, "DslPage"),
+	                    GTK_WIDGET (gtk_builder_get_object (builder, "DslPage")),
 	                    TRUE, TRUE, 0);
 
 	pppoe_update_ui (NM_CONNECTION (connection), info);
 
-	w = glade_xml_get_widget (xml, "dsl_show_password");
+	w = GTK_WIDGET (gtk_builder_get_object (builder, "dsl_show_password"));
 	g_signal_connect (G_OBJECT (w), "toggled", G_CALLBACK (show_password_toggled), info);
 
 	g_signal_connect (info->dialog, "response",
@@ -713,7 +716,7 @@ nm_8021x_get_secrets (NMDevice *device,
 	GtkWidget *dialog;
 	NM8021xInfo *info;
 
-	dialog = nma_wired_dialog_new (applet->glade_file,
+	dialog = nma_wired_dialog_new (applet->ui_file,
 								   applet->nm_client,
 								   g_object_ref (connection),
 								   device);

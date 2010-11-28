@@ -53,7 +53,6 @@
 #include <nm-active-connection.h>
 #include <nm-setting-wireless.h>
 
-#include <glade/glade.h>
 #include <gconf/gconf-client.h>
 #include <gnome-keyring.h>
 #include <libnotify/notify.h>
@@ -2995,23 +2994,29 @@ constructor (GType type,
 {
 	NMApplet *applet;
 	AppletDBusManager *dbus_mgr;
+	GError* error = NULL;
 
 	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
 
 	g_set_application_name (_("NetworkManager Applet"));
 	gtk_window_set_default_icon_name (GTK_STOCK_NETWORK);
 
-	applet->glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
-	if (!applet->glade_file || !g_file_test (applet->glade_file, G_FILE_TEST_IS_REGULAR)) {
+	applet->ui_file = g_build_filename (UIDIR, "applet.ui", NULL);
+	if (!applet->ui_file || !g_file_test (applet->ui_file, G_FILE_TEST_IS_REGULAR)) {
 		GtkWidget *dialog;
-		dialog = applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the glade file was not found)."));
+		dialog = applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the .ui file was not found)."));
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		goto error;
 	}
 
-	applet->info_dialog_xml = glade_xml_new (applet->glade_file, "info_dialog", NULL);
-	if (!applet->info_dialog_xml)
+	applet->info_dialog_ui = gtk_builder_new ();
+
+	if (!gtk_builder_add_from_file (applet->info_dialog_ui, applet->ui_file, &error))
+	{
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
 		goto error;
+	}
 
 	applet->gconf_client = gconf_client_get_default ();
 	if (!applet->gconf_client)
@@ -3120,9 +3125,9 @@ static void finalize (GObject *object)
 		g_object_unref (applet->notification);
 	}
 
-	g_free (applet->glade_file);
-	if (applet->info_dialog_xml)
-		g_object_unref (applet->info_dialog_xml);
+	g_free (applet->ui_file);
+	if (applet->info_dialog_ui)
+		g_object_unref (applet->info_dialog_ui);
 
 	if (applet->gconf_client) {
 		gconf_client_remove_dir (applet->gconf_client,

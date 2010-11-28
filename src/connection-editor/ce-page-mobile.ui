@@ -1,27 +1,50 @@
 <?xml version="1.0"?>
-<glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+<interface>
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <widget class="GtkWindow" id="mobile_page_widget">
+  <object class="GtkListStore" id="model1">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Any</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">3G (UMTS/HSPA)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">2G (GPRS/EDGE)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Prefer 3G (UMTS/HSPA)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Prefer 2G (GPRS/EDGE)</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkWindow" id="mobile_page_widget">
     <property name="title" translatable="yes">window1</property>
     <child>
-      <widget class="GtkVBox" id="MobilePage">
+      <object class="GtkVBox" id="MobilePage">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <widget class="GtkVBox" id="mobile_basic_vbox">
+          <object class="GtkVBox" id="mobile_basic_vbox">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkLabel" id="mobile_basic_label">
+              <object class="GtkLabel" id="mobile_basic_label">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Basic&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -29,37 +52,37 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkAlignment" id="alignment1">
+              <object class="GtkAlignment" id="alignment1">
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <widget class="GtkTable" id="table1">
+                  <object class="GtkTable" id="table1">
                     <property name="visible">True</property>
                     <property name="n_rows">3</property>
                     <property name="n_columns">2</property>
                     <property name="column_spacing">12</property>
                     <property name="row_spacing">6</property>
                     <child>
-                      <widget class="GtkLabel" id="label28">
+                      <object class="GtkLabel" id="label28">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Nu_mber:</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">mobile_number</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label24">
+                      <object class="GtkLabel" id="label24">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Username:</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">mobile_username</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
@@ -68,13 +91,13 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label25">
+                      <object class="GtkLabel" id="label25">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Password:</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">mobile_password</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
@@ -83,10 +106,10 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="mobile_number">
+                      <object class="GtkEntry" id="mobile_number">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
@@ -94,10 +117,10 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="mobile_username">
+                      <object class="GtkEntry" id="mobile_username">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
@@ -107,11 +130,11 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="mobile_password">
+                      <object class="GtkEntry" id="mobile_password">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="visibility">False</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
@@ -120,16 +143,16 @@
                         <property name="y_options"></property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
@@ -137,17 +160,17 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkVBox" id="mobile_advanced_vbox">
+          <object class="GtkVBox" id="mobile_advanced_vbox">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkLabel" id="mobile_advanced_label">
+              <object class="GtkLabel" id="mobile_advanced_label">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Advanced&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -155,37 +178,37 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkAlignment" id="alignment2">
+              <object class="GtkAlignment" id="alignment2">
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <widget class="GtkTable" id="table2">
+                  <object class="GtkTable" id="table2">
                     <property name="visible">True</property>
                     <property name="n_rows">6</property>
                     <property name="n_columns">2</property>
                     <property name="column_spacing">12</property>
                     <property name="row_spacing">6</property>
                     <child>
-                      <widget class="GtkLabel" id="label29">
+                      <object class="GtkLabel" id="label29">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">_APN:</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">mobile_apn</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label30">
+                      <object class="GtkLabel" id="label30">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">N_etwork ID:</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">mobile_network_id</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
@@ -194,10 +217,10 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="mobile_network_id">
+                      <object class="GtkEntry" id="mobile_network_id">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
@@ -207,13 +230,13 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="type_label">
+                      <object class="GtkLabel" id="type_label">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Type:</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">mobile_network_type</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
@@ -222,14 +245,16 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkComboBox" id="mobile_network_type">
+                      <object class="GtkComboBox" id="mobile_network_type">
                         <property name="visible">True</property>
-                        <property name="items" translatable="yes">Any
-3G (UMTS/HSPA)
-2G (GPRS/EDGE)
-Prefer 3G (UMTS/HSPA)
-Prefer 2G (GPRS/EDGE)</property>
-                      </widget>
+                        <property name="model">model1</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="renderer1"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
@@ -239,31 +264,31 @@ Prefer 2G (GPRS/EDGE)</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHBox" id="hbox2">
+                      <object class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>
-                          <widget class="GtkEntry" id="mobile_apn">
+                          <object class="GtkEntry" id="mobile_apn">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkButton" id="mobile_apn_button">
+                          <object class="GtkButton" id="mobile_apn_button">
                             <property name="label" translatable="yes">Change...</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="position">1</property>
                           </packing>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
@@ -271,13 +296,13 @@ Prefer 2G (GPRS/EDGE)</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label33">
+                      <object class="GtkLabel" id="label33">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">PI_N:</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">mobile_pin</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="top_attach">4</property>
                         <property name="bottom_attach">5</property>
@@ -286,21 +311,12 @@ Prefer 2G (GPRS/EDGE)</property>
                       </packing>
                     </child>
                     <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <widget class="GtkEntry" id="mobile_pin">
+                      <object class="GtkEntry" id="mobile_pin">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="visibility">False</property>
                         <property name="invisible_char">&#x25CF;</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
@@ -310,14 +326,14 @@ Prefer 2G (GPRS/EDGE)</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="mobile_roaming_allowed">
+                      <object class="GtkCheckButton" id="mobile_roaming_allowed">
                         <property name="label" translatable="yes">Allow roaming if home network is not available</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
@@ -325,16 +341,25 @@ Prefer 2G (GPRS/EDGE)</property>
                         <property name="bottom_attach">4</property>
                       </packing>
                     </child>
-                  </widget>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
@@ -342,10 +367,10 @@ Prefer 2G (GPRS/EDGE)</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="hbox1">
+          <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkCheckButton" id="mobile_show_passwords">
+              <object class="GtkCheckButton" id="mobile_show_passwords">
                 <property name="label" translatable="yes">Sho_w passwords</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -354,7 +379,7 @@ Prefer 2G (GPRS/EDGE)</property>
                 <property name="xalign">0</property>
                 <property name="image_position">top</property>
                 <property name="draw_indicator">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -362,12 +387,12 @@ Prefer 2G (GPRS/EDGE)</property>
                 <property name="position">0</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="position">2</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-</glade-interface>
+  </object>
+</interface>

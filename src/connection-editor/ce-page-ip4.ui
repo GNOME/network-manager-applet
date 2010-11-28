@@ -1,26 +1,49 @@
 <?xml version="1.0"?>
-<glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+<interface>
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <widget class="GtkWindow" id="ip4_page_widget">
+  <object class="GtkListStore" id="model1">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Automatic</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Automatic with manual DNS settings</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Manual</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Link-Local</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Shared to other computers</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkWindow" id="ip4_page_widget">
     <property name="title" translatable="yes">window3</property>
     <child>
-      <widget class="GtkVBox" id="IP4Page">
+      <object class="GtkVBox" id="IP4Page">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <widget class="GtkHBox" id="hbox1">
+          <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
             <property name="spacing">12</property>
             <child>
-              <widget class="GtkLabel" id="label38">
+              <object class="GtkLabel" id="label38">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Method:</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">ip4_method</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -28,20 +51,22 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkComboBox" id="ip4_method">
+              <object class="GtkComboBox" id="ip4_method">
                 <property name="visible">True</property>
-                <property name="items" translatable="yes">Automatic
-Automatic with manual DNS settings
-Manual
-Link-Local
-Shared to other computers</property>
-              </widget>
+                <property name="model">model1</property>
+                <child>
+                  <object class="GtkCellRendererText" id="renderer1"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
               <packing>
                 <property name="pack_type">end</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
@@ -49,17 +74,17 @@ Shared to other computers</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkVBox" id="ip4_addresses_box">
+          <object class="GtkVBox" id="ip4_addresses_box">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkLabel" id="ip4_addr_label">
+              <object class="GtkLabel" id="ip4_addr_label">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Addresses&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -67,54 +92,54 @@ Shared to other computers</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkAlignment" id="alignment2">
+              <object class="GtkAlignment" id="alignment2">
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <widget class="GtkVBox" id="vbox1">
+                  <object class="GtkVBox" id="vbox1">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <widget class="GtkHBox" id="hbox2">
+                      <object class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>
-                          <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                          <object class="GtkScrolledWindow" id="scrolledwindow1">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">never</property>
                             <property name="vscrollbar_policy">automatic</property>
                             <property name="shadow_type">in</property>
                             <child>
-                              <widget class="GtkTreeView" id="ip4_addresses">
+                              <object class="GtkTreeView" id="ip4_addresses">
                                 <property name="height_request">100</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="has_tooltip">True</property>
-                                <property name="tooltip" translatable="yes">IP addresses identify your computer on the network.  Click the "Add" button to add an IP address.</property>
+                                <property name="tooltip_text" translatable="yes">IP addresses identify your computer on the network.  Click the "Add" button to add an IP address.</property>
                                 <property name="rules_hint">True</property>
-                              </widget>
+                              </object>
                             </child>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkVButtonBox" id="vbuttonbox1">
+                          <object class="GtkVButtonBox" id="vbuttonbox1">
                             <property name="visible">True</property>
                             <property name="spacing">6</property>
                             <property name="layout_style">start</property>
                             <child>
-                              <widget class="GtkButton" id="ip4_addr_add_button">
+                              <object class="GtkButton" id="ip4_addr_add_button">
                                 <property name="label">gtk-add</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="can_default">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="use_stock">True</property>
-                              </widget>
+                              </object>
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
@@ -122,46 +147,46 @@ Shared to other computers</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkButton" id="ip4_addr_delete_button">
+                              <object class="GtkButton" id="ip4_addr_delete_button">
                                 <property name="label">gtk-delete</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="can_default">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="use_stock">True</property>
-                              </widget>
+                              </object>
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkTable" id="table8">
+                      <object class="GtkTable" id="table8">
                         <property name="visible">True</property>
                         <property name="n_rows">3</property>
                         <property name="n_columns">2</property>
                         <property name="column_spacing">12</property>
                         <property name="row_spacing">6</property>
                         <child>
-                          <widget class="GtkEntry" id="ip4_dhcp_client_id_entry">
+                          <object class="GtkEntry" id="ip4_dhcp_client_id_entry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="tooltip" translatable="yes">The DHCP client identifier allows the network administrator to customize your computer's configuration.  If you wish to use a DHCP client identifier, enter it here.</property>
+                            <property name="tooltip_text" translatable="yes">The DHCP client identifier allows the network administrator to customize your computer's configuration.  If you wish to use a DHCP client identifier, enter it here.</property>
                             <property name="invisible_char">&#x25CF;</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="right_attach">2</property>
@@ -171,12 +196,12 @@ Shared to other computers</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkEntry" id="ip4_dns_searches_entry">
+                          <object class="GtkEntry" id="ip4_dns_searches_entry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="tooltip" translatable="yes">Domains used when resolving host names. Use commas to separate multiple domains.</property>
+                            <property name="tooltip_text" translatable="yes">Domains used when resolving host names. Use commas to separate multiple domains.</property>
                             <property name="invisible_char">&#x25CF;</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="right_attach">2</property>
@@ -186,13 +211,13 @@ Shared to other computers</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="ip4_dhcp_client_id_label">
+                          <object class="GtkLabel" id="ip4_dhcp_client_id_label">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">D_HCP client ID:</property>
                             <property name="use_underline">True</property>
                             <property name="mnemonic_widget">ip4_dhcp_client_id_entry</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="top_attach">2</property>
                             <property name="bottom_attach">3</property>
@@ -201,13 +226,13 @@ Shared to other computers</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="ip4_dns_searches_label">
+                          <object class="GtkLabel" id="ip4_dns_searches_label">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">_Search domains:</property>
                             <property name="use_underline">True</property>
                             <property name="mnemonic_widget">ip4_dns_searches_entry</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
@@ -216,32 +241,32 @@ Shared to other computers</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="ip4_dns_servers_label">
+                          <object class="GtkLabel" id="ip4_dns_servers_label">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">_DNS servers:</property>
                             <property name="use_underline">True</property>
                             <property name="mnemonic_widget">ip4_dns_servers_entry</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="x_options">GTK_FILL</property>
                             <property name="y_options"></property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkEntry" id="ip4_dns_servers_entry">
+                          <object class="GtkEntry" id="ip4_dns_servers_entry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="tooltip" translatable="yes">IP addresses of domain name servers used to resolve host names. Use commas to separate multiple domain name server addresses.</property>
+                            <property name="tooltip_text" translatable="yes">IP addresses of domain name servers used to resolve host names. Use commas to separate multiple domain name server addresses.</property>
                             <property name="invisible_char">&#x25CF;</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="right_attach">2</property>
                             <property name="y_options"></property>
                           </packing>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
@@ -249,55 +274,55 @@ Shared to other computers</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="ip4_required_checkbutton">
+                      <object class="GtkCheckButton" id="ip4_required_checkbutton">
                         <property name="label" translatable="yes">Require IPv4 addressing for this connection to complete</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip" translatable="yes">When connecting to IPv6-capable networks, allows the connection to complete if IPv4 configuration fails but IPv6 configuration succeeds.</property>
+                        <property name="tooltip_text" translatable="yes">When connecting to IPv6-capable networks, allows the connection to complete if IPv4 configuration fails but IPv6 configuration succeeds.</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHButtonBox" id="hbuttonbox1">
+                      <object class="GtkHButtonBox" id="hbuttonbox1">
                         <property name="visible">True</property>
                         <property name="layout_style">end</property>
                         <child>
-                          <widget class="GtkButton" id="ip4_routes_button">
+                          <object class="GtkButton" id="ip4_routes_button">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <child>
-                              <widget class="GtkHBox" id="hbox4">
+                              <object class="GtkHBox" id="hbox4">
                                 <property name="visible">True</property>
                                 <property name="spacing">3</property>
                                 <child>
-                                  <widget class="GtkImage" id="image1">
+                                  <object class="GtkImage" id="image1">
                                     <property name="visible">True</property>
-                                  </widget>
+                                  </object>
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkLabel" id="label1">
+                                  <object class="GtkLabel" id="label1">
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">_Routes…</property>
                                     <property name="use_underline">True</property>
-                                  </widget>
+                                  </object>
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
-                              </widget>
+                              </object>
                             </child>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
@@ -306,29 +331,29 @@ Shared to other computers</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="position">3</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="position">1</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-  <widget class="GtkDialog" id="ip4_routes_dialog">
+  </object>
+  <object class="GtkDialog" id="ip4_routes_dialog">
     <property name="width_request">450</property>
     <property name="height_request">250</property>
     <property name="border_width">5</property>
@@ -338,56 +363,56 @@ Shared to other computers</property>
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <widget class="GtkVBox" id="dialog-vbox1">
+      <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkVBox" id="vbox2">
+          <object class="GtkVBox" id="vbox2">
             <property name="visible">True</property>
             <property name="border_width">5</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkHBox" id="hbox5">
+              <object class="GtkHBox" id="hbox5">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <child>
-                  <widget class="GtkScrolledWindow" id="scrolledwindow2">
+                  <object class="GtkScrolledWindow" id="scrolledwindow2">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">never</property>
                     <property name="vscrollbar_policy">automatic</property>
                     <property name="shadow_type">in</property>
                     <child>
-                      <widget class="GtkTreeView" id="ip4_routes">
+                      <object class="GtkTreeView" id="ip4_routes">
                         <property name="height_request">100</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="has_tooltip">True</property>
-                        <property name="tooltip" translatable="yes">IP addresses identify your computer on the network.  Click the "Add" button to add an IP address.</property>
+                        <property name="tooltip_text" translatable="yes">IP addresses identify your computer on the network.  Click the "Add" button to add an IP address.</property>
                         <property name="rules_hint">True</property>
-                      </widget>
+                      </object>
                     </child>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkVButtonBox" id="vbuttonbox2">
+                  <object class="GtkVButtonBox" id="vbuttonbox2">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <property name="layout_style">start</property>
                     <child>
-                      <widget class="GtkButton" id="ip4_route_add_button">
+                      <object class="GtkButton" id="ip4_route_add_button">
                         <property name="label">gtk-add</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="can_default">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_stock">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
@@ -395,80 +420,79 @@ Shared to other computers</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="ip4_route_delete_button">
+                      <object class="GtkButton" id="ip4_route_delete_button">
                         <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="can_default">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_stock">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkCheckButton" id="ip4_ignore_auto_routes">
+              <object class="GtkCheckButton" id="ip4_ignore_auto_routes">
                 <property name="label" translatable="yes">Ig_nore automatically obtained routes</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_underline">True</property>
                 <property name="draw_indicator">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkCheckButton" id="ip4_never_default">
+              <object class="GtkCheckButton" id="ip4_never_default">
                 <property name="label" translatable="yes">Use this c_onnection only for resources on its network</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="has_tooltip">True</property>
-                <property name="tooltip" translatable="yes">If enabled, this connection will never be used as the default network connection.</property>
+                <property name="tooltip_text" translatable="yes">If enabled, this connection will never be used as the default network connection.</property>
                 <property name="use_underline">True</property>
                 <property name="draw_indicator">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">2</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="position">1</property>
           </packing>
         </child>
         <child internal-child="action_area">
-          <widget class="GtkHButtonBox" id="dialog-action_area1">
+          <object class="GtkHButtonBox" id="dialog-action_area1">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkButton" id="cancel_button">
+              <object class="GtkButton" id="cancel_button">
                 <property name="label">gtk-cancel</property>
-                <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -476,28 +500,31 @@ Shared to other computers</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="ok_button">
+              <object class="GtkButton" id="ok_button">
                 <property name="label">gtk-ok</property>
-                <property name="response_id">-5</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-</glade-interface>
+    <action-widgets>
+      <action-widget response="-6">cancel_button</action-widget>
+      <action-widget response="-5">ok_button</action-widget>
+    </action-widgets>
+  </object>
+</interface>

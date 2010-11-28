@@ -25,14 +25,13 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <glade/glade.h>
 #include <nm-connection.h>
 #include <nm-setting.h>
 
 typedef const char * (*HelperSecretFunc)(NMSetting *);
 
 void helper_fill_secret_entry (NMConnection *connection,
-                               GladeXML *xml,
+                               GtkBuilder *builder,
                                const char *entry_name,
                                GType setting_type,
                                HelperSecretFunc func);

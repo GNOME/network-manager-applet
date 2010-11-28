@@ -137,7 +137,7 @@ wireless_security_unref (WirelessSecurity *sec)
 
 	sec->refcount--;
 	if (sec->refcount == 0) {
-		g_object_unref (sec->xml);
+		g_object_unref (sec->builder);
 		g_object_unref (sec->ui_widget);
 		(*(sec->destroy)) (sec);
 	}
@@ -150,7 +150,7 @@ wireless_security_init (WirelessSecurity *sec,
                         WSFillConnectionFunc fill_connection,
                         WSUpdateSecretsFunc update_secrets,
                         WSDestroyFunc destroy,
-                        GladeXML *xml,
+                        GtkBuilder *builder,
                         GtkWidget *ui_widget,
                         const char *default_field)
 {
@@ -162,7 +162,7 @@ wireless_security_init (WirelessSecurity *sec,
 	sec->update_secrets = update_secrets;
 	sec->destroy = destroy;
 
-	sec->xml = xml;
+	sec->builder = builder;
 	sec->ui_widget = ui_widget;
 	sec->default_field = default_field;
 }
@@ -204,11 +204,11 @@ ws_802_1x_add_to_size_group (WirelessSecurity *sec,
 	GtkTreeIter iter;
 	EAPMethod *eap;
 
-	widget = glade_xml_get_widget (sec->xml, label_name);
+	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, label_name));
 	g_assert (widget);
 	gtk_size_group_add_widget (size_group, widget);
 
-	widget = glade_xml_get_widget (sec->xml, combo_name);
+	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
 	g_assert (widget);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
@@ -228,7 +228,7 @@ ws_802_1x_validate (WirelessSecurity *sec, const char *combo_name)
 	EAPMethod *eap = NULL;
 	gboolean valid = FALSE;
 
-	widget = glade_xml_get_widget (sec->xml, combo_name);
+	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
 	g_assert (widget);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
@@ -254,7 +254,7 @@ ws_802_1x_auth_combo_changed (GtkWidget *combo,
 	GtkWidget *eap_widget;
 	GtkWidget *eap_default_widget = NULL;
 
-	vbox = glade_xml_get_widget (sec->xml, vbox_name);
+	vbox = GTK_WIDGET (gtk_builder_get_object (sec->builder, vbox_name));
 	g_assert (vbox);
 
 	/* Remove any previous wireless security widgets */
@@ -269,6 +269,7 @@ ws_802_1x_auth_combo_changed (GtkWidget *combo,
 
 	eap_widget = eap_method_get_widget (eap);
 	g_assert (eap_widget);
+	gtk_widget_unparent (eap_widget);
 
 	if (size_group)
 		eap_method_add_to_size_group (eap, size_group);
@@ -276,7 +277,7 @@ ws_802_1x_auth_combo_changed (GtkWidget *combo,
 
 	/* Refocus the EAP method's default widget */
 	if (eap->default_field) {
-		eap_default_widget = glade_xml_get_widget (eap->xml, eap->default_field);
+		eap_default_widget = GTK_WIDGET (gtk_builder_get_object (eap->builder, eap->default_field));
 		if (eap_default_widget)
 			gtk_widget_grab_focus (eap_default_widget);
 	}
@@ -288,7 +289,7 @@ ws_802_1x_auth_combo_changed (GtkWidget *combo,
 
 GtkWidget *
 ws_802_1x_auth_combo_init (WirelessSecurity *sec,
-                           const char *glade_file,
+                           const char *ui_file,
                            const char *combo_name,
                            GCallback auth_combo_changed_cb,
                            NMConnection *connection,
@@ -323,7 +324,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
-	em_tls = eap_method_tls_new (glade_file, sec, connection, FALSE);
+	em_tls = eap_method_tls_new (ui_file, sec, connection, FALSE);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("TLS"),
@@ -335,7 +336,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	item++;
 
 	if (!wired) {
-		em_leap = eap_method_leap_new (glade_file, sec, connection);
+		em_leap = eap_method_leap_new (ui_file, sec, connection);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
 		                    AUTH_NAME_COLUMN, _("LEAP"),
@@ -347,7 +348,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		item++;
 	}
 
-	em_ttls = eap_method_ttls_new (glade_file, sec, connection, is_editor);
+	em_ttls = eap_method_ttls_new (ui_file, sec, connection, is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Tunneled TLS"),
@@ -358,7 +359,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		active = item;
 	item++;
 
-	em_peap = eap_method_peap_new (glade_file, sec, connection, is_editor);
+	em_peap = eap_method_peap_new (ui_file, sec, connection, is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Protected EAP (PEAP)"),
@@ -369,7 +370,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		active = item;
 	item++;
 
-	combo = glade_xml_get_widget (sec->xml, combo_name);
+	combo = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
 	g_assert (combo);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (auth_model));
@@ -407,7 +408,7 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
 	s_8021x = (NMSetting8021x *) nm_setting_802_1x_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_8021x);
 
-	widget = glade_xml_get_widget (sec->xml, combo_name);
+	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
 	gtk_tree_model_get (model, &iter, AUTH_METHOD_COLUMN, &eap, -1);
@@ -431,7 +432,7 @@ ws_802_1x_update_secrets (WirelessSecurity *sec,
 	g_return_if_fail (combo_name != NULL);
 	g_return_if_fail (connection != NULL);
 
-	widget = glade_xml_get_widget (sec->xml, combo_name);
+	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
 	g_return_if_fail (widget != NULL);
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
 
@@ -456,7 +457,7 @@ ws_802_1x_nag_user (WirelessSecurity *sec,
 	EAPMethod *eap = NULL;
 	GtkWidget *widget;	
 
-	widget = glade_xml_get_widget (sec->xml, combo_name);
+	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
 	gtk_tree_model_get (model, &iter, AUTH_METHOD_COLUMN, &eap, -1);

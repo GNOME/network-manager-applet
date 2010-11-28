@@ -24,7 +24,6 @@
 #include <glib.h>
 #include <gmodule.h>
 #include <gtk/gtk.h>
-#include <glade/glade.h>
 #include <glib/gi18n.h>
 
 #include <nm-connection.h>
@@ -473,30 +472,32 @@ error:
 char *
 vpn_ask_connection_type (GtkWindow *parent)
 {
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkWidget *dialog, *combo, *widget;
 	GtkTreeModel *model;
 	GSList *plugin_list = NULL, *iter;
 	gint response;
 	GtkTreeIter tree_iter;
 	char *service_type = NULL;
+	GError *error = NULL;
 
 	if (!plugins || !g_hash_table_size (plugins)) {
 		g_warning ("%s: no VPN plugins could be found!", __func__);
 		return NULL;
 	}
 
-	xml = glade_xml_new (GLADEDIR "/ce-vpn-wizard.glade", "vpn_type_dialog", NULL);
-	if (!xml) {
-		g_warning ("%s: couldn't load VPN wizard glade file '%s'!",
-		           __func__, GLADEDIR "/ce-vpn-wizard.glade");
+	builder = gtk_builder_new();
+
+	if (!gtk_builder_add_from_file (builder, UIDIR "/ce-vpn-wizard.ui", &error)) {
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
-	dialog = glade_xml_get_widget (xml, "vpn_type_dialog");
+	dialog = GTK_WIDGET (gtk_builder_get_object (builder, "vpn_type_dialog"));
 	if (!dialog) {
 		g_warning ("%s: couldn't load VPN wizard dialog!", __func__);
-		g_object_unref (xml);
+		g_object_unref (builder);
 		return NULL;
 	}
 
@@ -515,8 +516,8 @@ vpn_ask_connection_type (GtkWindow *parent)
 		                    COL_PLUGIN_OBJ, plugin, -1);
 	}
 
-	combo = glade_xml_get_widget (xml, "vpn_type_combo");
-	widget = glade_xml_get_widget (xml, "vpn_desc_label");
+	combo = GTK_WIDGET (gtk_builder_get_object (builder, "vpn_type_combo"));
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "vpn_desc_label"));
 	g_signal_connect (G_OBJECT (combo), "changed", G_CALLBACK (combo_changed_cb), widget);
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), model);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
@@ -537,7 +538,7 @@ vpn_ask_connection_type (GtkWindow *parent)
 
 out:
 	gtk_widget_destroy (dialog);
-	g_object_unref (xml);
+	g_object_unref (builder);
 	if (service_type)
 		return g_strdup (service_type);
 	return NULL;

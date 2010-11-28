@@ -65,17 +65,17 @@ static void
 wired_private_init (CEPageWired *self)
 {
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
-	GladeXML *xml;
+	GtkBuilder *builder;
 
-	xml = CE_PAGE (self)->xml;
+	builder = CE_PAGE (self)->builder;
 
-	priv->device_mac = GTK_ENTRY (glade_xml_get_widget (xml, "wired_device_mac"));
-	priv->cloned_mac = GTK_ENTRY (glade_xml_get_widget (xml, "wired_cloned_mac"));
-	priv->port = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wired_port"));
-	priv->speed = GTK_COMBO_BOX (glade_xml_get_widget (xml, "wired_speed"));
-	priv->duplex = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "wired_duplex"));
-	priv->autonegotiate = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "wired_autonegotiate"));
-	priv->mtu = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "wired_mtu"));
+	priv->device_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wired_device_mac")));
+	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wired_cloned_mac")));
+	priv->port = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wired_port")));
+	priv->speed = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wired_speed")));
+	priv->duplex = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wired_duplex")));
+	priv->autonegotiate = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wired_autonegotiate")));
+	priv->mtu = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wired_mtu")));
 }
 
 static void
@@ -176,19 +176,19 @@ finish_setup (CEPageWired *self, gpointer unused, GError *error, gpointer user_d
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
 	/* Hide widgets we don't yet support */
-	widget = glade_xml_get_widget (parent->xml, "wired_port_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_port_label"));
 	gtk_widget_hide (widget);
-	widget = glade_xml_get_widget (parent->xml, "wired_port");
-	gtk_widget_hide (widget);
-
-	widget = glade_xml_get_widget (parent->xml, "wired_speed_label");
-	gtk_widget_hide (widget);
-	widget = glade_xml_get_widget (parent->xml, "wired_speed");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_port"));
 	gtk_widget_hide (widget);
 
-	widget = glade_xml_get_widget (parent->xml, "wired_duplex");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_speed_label"));
 	gtk_widget_hide (widget);
-	widget = glade_xml_get_widget (parent->xml, "wired_autonegotiate");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_speed"));
+	gtk_widget_hide (widget);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_duplex"));
+	gtk_widget_hide (widget);
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_autonegotiate"));
 	gtk_widget_hide (widget);
 }
 
@@ -208,14 +208,16 @@ ce_page_wired_new (NMConnection *connection,
 	                                    NULL));
 	parent = CE_PAGE (self);
 
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-wired.glade", "WiredPage", NULL);
-	if (!parent->xml) {
+	parent->builder = gtk_builder_new ();
+
+	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-wired.ui", error)) {
+		g_warning ("Couldn't load builder file: %s", (*error)->message);
 		g_set_error (error, 0, 0, "%s", _("Could not load wired user interface."));
 		g_object_unref (self);
 		return NULL;
 	}
 
-	parent->page = glade_xml_get_widget (parent->xml, "WiredPage");
+	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "WiredPage"));
 	if (!parent->page) {
 		g_set_error (error, 0, 0, "%s", _("Could not load wired user interface."));
 		g_object_unref (self);

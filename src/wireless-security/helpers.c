@@ -25,7 +25,7 @@
 
 void
 helper_fill_secret_entry (NMConnection *connection,
-                          GladeXML *xml,
+                          GtkBuilder *builder,
                           const char *entry_name,
                           GType setting_type,
                           HelperSecretFunc func)
@@ -35,7 +35,7 @@ helper_fill_secret_entry (NMConnection *connection,
 	const char *tmp;
 
 	g_return_if_fail (connection != NULL);
-	g_return_if_fail (xml != NULL);
+	g_return_if_fail (builder != NULL);
 	g_return_if_fail (entry_name != NULL);
 	g_return_if_fail (func != NULL);
 
@@ -43,7 +43,7 @@ helper_fill_secret_entry (NMConnection *connection,
 	if (setting) {
 		tmp = (*func) (setting);
 		if (tmp) {
-			widget = glade_xml_get_widget (xml, entry_name);
+			widget = GTK_WIDGET (gtk_builder_get_object (builder, entry_name));
 			g_assert (widget);
 			gtk_entry_set_text (GTK_ENTRY (widget), tmp);
 		}

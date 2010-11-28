@@ -25,7 +25,6 @@
 #include "config.h"
 
 #include <glib-object.h>
-#include <glade/glade-xml.h>
 
 #include "nm-remote-settings-system.h"
 
@@ -53,7 +52,7 @@ typedef struct {
 
 	GSList *initializing_pages;
 	GSList *pages;
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkWidget *window;
 	GtkWidget *ok_button;
 	GtkWidget *cancel_button;

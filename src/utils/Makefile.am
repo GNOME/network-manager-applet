@@ -14,7 +14,7 @@ libutils_la_SOURCES = \
 
 libutils_la_CPPFLAGS = \
 	$(NMA_CFLAGS) \
-	-DGLADEDIR=\""$(gladedir)"\" \
+	-DUIDIR=\""$(uidir)"\" \
 	-DDATADIR=\""$(datadir)"\" \
 	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/gconf-helpers \

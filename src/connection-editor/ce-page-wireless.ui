@@ -1,11 +1,66 @@
 <?xml version="1.0"?>
-<glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+<interface>
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <widget class="GtkWindow" id="wireless_page_widget">
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">10000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">500</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment3">
+    <property name="upper">500</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment4">
+    <property name="upper">196</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">0</property>
+  </object>
+  <object class="GtkListStore" id="model1">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Automatic</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">A (5 GHz)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">B/G (2.4 GHz)</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model2">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Infrastructure</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Ad-hoc</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkWindow" id="wireless_page_widget">
     <property name="title" translatable="yes">window2</property>
     <child>
-      <widget class="GtkTable" id="WirelessPage">
+      <object class="GtkTable" id="WirelessPage">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="n_rows">9</property>
@@ -13,33 +68,33 @@
         <property name="column_spacing">12</property>
         <property name="row_spacing">6</property>
         <child>
-          <widget class="GtkHBox" id="wireless_mtu_hbox">
+          <object class="GtkHBox" id="wireless_mtu_hbox">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkSpinButton" id="wireless_mtu">
+              <object class="GtkSpinButton" id="wireless_mtu">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="adjustment">0 0 10000 1 10 10</property>
+                <property name="adjustment">adjustment1</property>
                 <property name="climb_rate">1</property>
-              </widget>
+              </object>
               <packing>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="mtu_units">
+              <object class="GtkLabel" id="mtu_units">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">bytes</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -50,13 +105,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_mtu_label">
+          <object class="GtkLabel" id="wireless_mtu_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">MT_U:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_mtu</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">9</property>
             <property name="bottom_attach">10</property>
@@ -65,11 +120,11 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkEntry" id="wireless_device_mac">
+          <object class="GtkEntry" id="wireless_device_mac">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="tooltip" translatable="yes">This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55</property>
-          </widget>
+            <property name="tooltip_text" translatable="yes">This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55</property>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -79,13 +134,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_device_mac_label">
+          <object class="GtkLabel" id="wireless_device_mac_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Device MAC address:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_device_mac</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">7</property>
             <property name="bottom_attach">8</property>
@@ -94,11 +149,11 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkEntry" id="wireless_cloned_mac">
+          <object class="GtkEntry" id="wireless_cloned_mac">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="tooltip" translatable="yes">The MAC address entered here will be used as hardware address for the network device this connection is activated on.  This feature is known as MAC cloning or spoofing.  Example: 00:11:22:33:44:55</property>
-          </widget>
+            <property name="tooltip_text" translatable="yes">The MAC address entered here will be used as hardware address for the network device this connection is activated on.  This feature is known as MAC cloning or spoofing.  Example: 00:11:22:33:44:55</property>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -108,13 +163,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_cloned_mac_label">
+          <object class="GtkLabel" id="wireless_cloned_mac_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Cloned MAC address:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_cloned_mac</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">8</property>
             <property name="bottom_attach">9</property>
@@ -123,33 +178,33 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="wireless_tx_power_hbox">
+          <object class="GtkHBox" id="wireless_tx_power_hbox">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkSpinButton" id="wireless_tx_power">
+              <object class="GtkSpinButton" id="wireless_tx_power">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="adjustment">0 0 500 1 10 10</property>
+                <property name="adjustment">adjustment2</property>
                 <property name="climb_rate">1</property>
-              </widget>
+              </object>
               <packing>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="tx_power_units">
+              <object class="GtkLabel" id="tx_power_units">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">mW</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -160,13 +215,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_tx_power_label">
+          <object class="GtkLabel" id="wireless_tx_power_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Transmission po_wer:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_tx_power</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">6</property>
             <property name="bottom_attach">7</property>
@@ -175,33 +230,33 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="wireless_rate_hbox">
+          <object class="GtkHBox" id="wireless_rate_hbox">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkSpinButton" id="wireless_rate">
+              <object class="GtkSpinButton" id="wireless_rate">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="adjustment">0 0 500 1 10 10</property>
+                <property name="adjustment">adjustment3</property>
                 <property name="climb_rate">1</property>
-              </widget>
+              </object>
               <packing>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="rate_units">
+              <object class="GtkLabel" id="rate_units">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">Mb/s</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -212,13 +267,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_rate_label">
+          <object class="GtkLabel" id="wireless_rate_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Rate:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_rate</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">5</property>
             <property name="bottom_attach">6</property>
@@ -227,11 +282,11 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkEntry" id="wireless_bssid">
+          <object class="GtkEntry" id="wireless_bssid">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="tooltip" translatable="yes">This option locks this connection to the wireless access point (AP) specified by the BSSID entered here.  Example: 00:11:22:33:44:55</property>
-          </widget>
+            <property name="tooltip_text" translatable="yes">This option locks this connection to the wireless access point (AP) specified by the BSSID entered here.  Example: 00:11:22:33:44:55</property>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -241,10 +296,10 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkEntry" id="wireless_ssid">
+          <object class="GtkEntry" id="wireless_ssid">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-          </widget>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -252,13 +307,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_bssid_label">
+          <object class="GtkLabel" id="wireless_bssid_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_BSSID:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_bssid</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">4</property>
             <property name="bottom_attach">5</property>
@@ -267,12 +322,12 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkSpinButton" id="wireless_channel">
+          <object class="GtkSpinButton" id="wireless_channel">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="adjustment">0 0 196 1 10 10</property>
+            <property name="adjustment">adjustment4</property>
             <property name="climb_rate">1</property>
-          </widget>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -282,13 +337,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_channel_label">
+          <object class="GtkLabel" id="wireless_channel_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">C_hannel:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_channel</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">3</property>
             <property name="bottom_attach">4</property>
@@ -297,12 +352,16 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkComboBox" id="wireless_band">
+          <object class="GtkComboBox" id="wireless_band">
             <property name="visible">True</property>
-            <property name="items" translatable="yes">Automatic
-A (5 GHz)
-B/G (2.4 GHz)</property>
-          </widget>
+            <property name="model">model1</property>
+            <child>
+              <object class="GtkCellRendererText" id="renderer1"/>
+              <attributes>
+                <attribute name="text">0</attribute>
+              </attributes>
+            </child>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -313,13 +372,13 @@ B/G (2.4 GHz)</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_band_label">
+          <object class="GtkLabel" id="wireless_band_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Ban_d:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_band</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">2</property>
             <property name="bottom_attach">3</property>
@@ -328,11 +387,16 @@ B/G (2.4 GHz)</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkComboBox" id="wireless_mode">
+          <object class="GtkComboBox" id="wireless_mode">
             <property name="visible">True</property>
-            <property name="items" translatable="yes">Infrastructure
-Ad-hoc</property>
-          </widget>
+            <property name="model">model2</property>
+            <child>
+              <object class="GtkCellRendererText" id="renderer2"/>
+              <attributes>
+                <attribute name="text">0</attribute>
+              </attributes>
+            </child>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -343,13 +407,13 @@ Ad-hoc</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_mode_label">
+          <object class="GtkLabel" id="wireless_mode_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">M_ode:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_mode</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
@@ -358,19 +422,19 @@ Ad-hoc</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="wireless_ssid_label">
+          <object class="GtkLabel" id="wireless_ssid_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_SSID:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_ssid</property>
-          </widget>
+          </object>
           <packing>
             <property name="x_options">GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-</glade-interface>
+  </object>
+</interface>

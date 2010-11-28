@@ -244,8 +244,8 @@ dispose (GObject *object)
 	if (self->page)
 		g_object_unref (self->page);
 
-	if (self->xml)
-		g_object_unref (self->xml);
+	if (self->builder)
+		g_object_unref (self->builder);
 
 	if (self->proxy)
 		g_object_unref (self->proxy);

@@ -124,7 +124,7 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 
 	if (response == GTK_RESPONSE_NO) {
 		/* Grab the value of the "don't bother me" checkbox */
-		widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_checkbox");
+		widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "ignore_checkbox"));
 		g_assert (widget);
 
 		method->ignore_ca_cert = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
@@ -159,12 +159,12 @@ eap_method_nag_user (EAPMethod *method)
 		return NULL;
 
 	/* Checkbox should be unchecked each time dialog comes up */
-	widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_checkbox");
+	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "ignore_checkbox"));
 	g_assert (widget);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), FALSE);
 
 	/* Nag the user if the CA Cert is blank, since it's a security risk. */
-	widget = glade_xml_get_widget (method->xml, method->ca_cert_chooser);
+	widget = GTK_WIDGET (gtk_builder_get_object (method->builder, method->ca_cert_chooser));
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	if (filename != NULL) {
@@ -178,7 +178,7 @@ eap_method_nag_user (EAPMethod *method)
 
 gboolean
 eap_method_nag_init (EAPMethod *method,
-                     const char *glade_file,
+                     const char *ui_file,
                      const char *ca_cert_chooser,
                      NMConnection *connection,
                      gboolean phase2)
@@ -186,14 +186,17 @@ eap_method_nag_init (EAPMethod *method,
 	GtkWidget *dialog, *widget;
 	char *text;
 	NagDialogResponseInfo *info;
+	GError *error = NULL;
 
 	g_return_val_if_fail (method != NULL, FALSE);
-	g_return_val_if_fail (glade_file != NULL, FALSE);
+	g_return_val_if_fail (ui_file != NULL, FALSE);
 	g_return_val_if_fail (ca_cert_chooser != NULL, FALSE);
 
-	method->nag_dialog_xml = glade_xml_new (glade_file, "nag_user_dialog", NULL);
-	if (method->nag_dialog_xml == NULL) {
-		g_warning ("Couldn't get nag_user_dialog from glade xml");
+	method->nag_dialog_ui = gtk_builder_new ();
+	if (!gtk_builder_add_from_file (method->nag_dialog_ui, ui_file, &error))
+	{
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
 		return FALSE;
 	}
 
@@ -214,13 +217,13 @@ eap_method_nag_init (EAPMethod *method,
 	info->method = method;
 	info->connection = connection;
 
-	dialog = glade_xml_get_widget (method->nag_dialog_xml, "nag_user_dialog");
+	dialog = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "nag_user_dialog"));
 	g_assert (dialog);
 	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), info);
 	g_signal_connect (dialog, "delete-event", G_CALLBACK (nag_dialog_delete_event_cb), info);
 	g_object_weak_ref (G_OBJECT (dialog), nag_dialog_destroyed, info);
 
-	widget = glade_xml_get_widget (method->nag_dialog_xml, "content_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "content_label"));
 	g_assert (widget);
 
 	text = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
@@ -229,11 +232,11 @@ eap_method_nag_init (EAPMethod *method,
 	gtk_label_set_markup (GTK_LABEL (widget), text);
 	g_free (text);
 
-	widget = glade_xml_get_widget (method->nag_dialog_xml, "ignore_button");
+	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "ignore_button"));
 	gtk_button_set_label (GTK_BUTTON (widget), _("Ignore"));
 	g_assert (widget);
 
-	widget = glade_xml_get_widget (method->nag_dialog_xml, "change_button");
+	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "change_button"));
 	gtk_button_set_label (GTK_BUTTON (widget), _("Choose CA Certificate"));
 	g_assert (widget);
 
@@ -263,7 +266,7 @@ eap_method_phase2_update_secrets_helper (EAPMethod *method,
 	g_return_if_fail (connection != NULL);
 	g_return_if_fail (combo_name != NULL);
 
-	combo = glade_xml_get_widget (method->xml, combo_name);
+	combo = GTK_WIDGET (gtk_builder_get_object (method->builder, combo_name));
 	g_assert (combo);
 
 	/* Let each EAP phase2 method try to update its secrets */
@@ -288,7 +291,7 @@ eap_method_init (EAPMethod *method,
                  EMFillConnectionFunc fill_connection,
                  EMUpdateSecretsFunc update_secrets,
                  EMDestroyFunc destroy,
-                 GladeXML *xml,
+                 GtkBuilder *builder,
                  GtkWidget *ui_widget,
                  const char *default_field)
 {                 
@@ -300,7 +303,7 @@ eap_method_init (EAPMethod *method,
 	method->update_secrets = update_secrets;
 	method->destroy = destroy;
 
-	method->xml = xml;
+	method->builder = builder;
 	method->ui_widget = ui_widget;
 	method->default_field = default_field;
 }
@@ -328,17 +331,17 @@ eap_method_unref (EAPMethod *method)
 	if (method->refcount == 0) {
 		if (method->nag_dialog)
 			gtk_widget_destroy (method->nag_dialog);
-		if (method->nag_dialog_xml)
-			g_object_unref (method->nag_dialog_xml);
+		if (method->nag_dialog_ui)
+			g_object_unref (method->nag_dialog_ui);
 		g_free (method->ca_cert_chooser);
-		g_object_unref (method->xml);
+		g_object_unref (method->builder);
 		g_object_unref (method->ui_widget);
 		(*(method->destroy)) (method);
 	}
 }
 
 gboolean
-eap_method_validate_filepicker (GladeXML *xml,
+eap_method_validate_filepicker (GtkBuilder *builder,
                                 const char *name,
                                 guint32 item_type,
                                 const char *password,
@@ -355,7 +358,7 @@ eap_method_validate_filepicker (GladeXML *xml,
 		g_return_val_if_fail (strlen (password), FALSE);
 	}
 
-	widget = glade_xml_get_widget (xml, name);
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, name));
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	if (!filename)

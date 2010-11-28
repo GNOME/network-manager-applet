@@ -115,7 +115,7 @@ ui_to_setting (NMConnectionEditor *editor)
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
 
-	widget = glade_xml_get_widget (editor->xml, "connection_name");
+	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
 	name = gtk_entry_get_text (GTK_ENTRY (widget));
 
 	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_ID, name, NULL);
@@ -124,7 +124,7 @@ ui_to_setting (NMConnectionEditor *editor)
 	if (!name || !strlen (name))
 		return FALSE;
 
-	widget = glade_xml_get_widget (editor->xml, "connection_autoconnect");
+	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_autoconnect"));
 	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect, NULL);
 
@@ -182,16 +182,16 @@ update_sensitivity (NMConnectionEditor *editor)
 	/* Cancel button is always sensitive */
 	gtk_widget_set_sensitive (GTK_WIDGET (editor->cancel_button), TRUE);
 
-	widget = glade_xml_get_widget (editor->xml, "connection_name_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name_label"));
 	gtk_widget_set_sensitive (widget, sensitive);
 
-	widget = glade_xml_get_widget (editor->xml, "connection_name");
+	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
 	gtk_widget_set_sensitive (widget, sensitive);
 
-	widget = glade_xml_get_widget (editor->xml, "connection_autoconnect");
+	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_autoconnect"));
 	gtk_widget_set_sensitive (widget, sensitive);
 
-	widget = glade_xml_get_widget (editor->xml, "connection_name");
+	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
 	gtk_widget_set_sensitive (widget, sensitive);
 
 	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
@@ -276,37 +276,43 @@ static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *dialog;
+	GError *error = NULL;
 
-	/* Yes, we mean applet.glade, not nm-connection-editor.glade. The wireless security bits
-	   are taken from applet.glade. */
-	if (!g_file_test (GLADEDIR "/applet.glade", G_FILE_TEST_EXISTS)) {
+	/* Yes, we mean applet.ui, not nm-connection-editor.ui. The wireless security bits
+	   are taken from applet.ui. */
+	if (!g_file_test (UIDIR "/applet.ui", G_FILE_TEST_EXISTS)) {
 		dialog = gtk_message_dialog_new (NULL, 0,
 		                                 GTK_MESSAGE_ERROR,
 		                                 GTK_BUTTONS_OK,
 		                                 "%s",
-		                                 _("The connection editor could not find some required resources (the NetworkManager applet glade file was not found)."));
+		                                 _("The connection editor could not find some required resources (the NetworkManager applet .ui file was not found)."));
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 		gtk_main_quit ();
 		return;
 	}
 
-	editor->xml = glade_xml_new (GLADEDIR "/nm-connection-editor.glade", "nm-connection-editor", NULL);
-	if (!editor->xml) {
+	editor->builder = gtk_builder_new();
+
+	if (!gtk_builder_add_from_file (editor->builder, UIDIR "/nm-connection-editor.ui", &error))
+	{
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
+
 		dialog = gtk_message_dialog_new (NULL, 0,
 		                                 GTK_MESSAGE_ERROR,
 		                                 GTK_BUTTONS_OK,
 		                                 "%s",
-		                                 _("The connection editor could not find some required resources (the glade file was not found)."));
+		                                 _("The connection editor could not find some required resources (the .ui file was not found)."));
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 		gtk_main_quit ();
 		return;
 	}
 
-	editor->window = glade_xml_get_widget (editor->xml, "nm-connection-editor");
-	editor->cancel_button = glade_xml_get_widget (editor->xml, "cancel_button");
-	editor->system_checkbutton = glade_xml_get_widget (editor->xml, "system_checkbutton");
+	editor->window = GTK_WIDGET (gtk_builder_get_object (editor->builder, "nm-connection-editor"));
+	editor->cancel_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "cancel_button"));
+	editor->system_checkbutton = GTK_WIDGET (gtk_builder_get_object (editor->builder, "system_checkbutton"));
 }
 
 static void
@@ -355,9 +361,9 @@ dispose (GObject *object)
 		gtk_widget_destroy (editor->window);
 		editor->window = NULL;
 	}
-	if (editor->xml) {
-		g_object_unref (editor->xml);
-		editor->xml = NULL;
+	if (editor->builder) {
+		g_object_unref (editor->builder);
+		editor->builder = NULL;
 	}
 
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);
@@ -430,7 +436,7 @@ nm_connection_editor_new (NMConnection *connection,
 	                  G_CALLBACK (ok_button_actionable_cb), editor);
 	g_signal_connect (editor->ok_button, "authorized",
 	                  G_CALLBACK (ok_button_actionable_cb), editor);
-	hbox = glade_xml_get_widget (editor->xml, "action_area_hbox");
+	hbox = GTK_WIDGET (gtk_builder_get_object (editor->builder, "action_area_hbox"));
 	gtk_box_pack_end (GTK_BOX (hbox), editor->ok_button, TRUE, TRUE, 0);
 	gtk_widget_show_all (editor->ok_button);
 
@@ -477,8 +483,8 @@ populate_connection_ui (NMConnectionEditor *editor)
 	GtkWidget *name;
 	GtkWidget *autoconnect;
 
-	name = glade_xml_get_widget (editor->xml, "connection_name");
-	autoconnect = glade_xml_get_widget (editor->xml, "connection_autoconnect");
+	name = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
+	autoconnect = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_autoconnect"));
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
 	if (s_con) {
@@ -539,7 +545,7 @@ page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_da
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
 	GtkWidget *widget;
-	GtkWidget *notebook;
+	GtkNotebook *notebook;
 	GtkWidget *label;
 
 	if (error) {
@@ -549,10 +555,11 @@ page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_da
 	}
 
 	/* Add the page to the UI */
-	notebook = glade_xml_get_widget (editor->xml, "notebook");
+	notebook = GTK_NOTEBOOK (gtk_builder_get_object (editor->builder, "notebook"));
 	label = gtk_label_new (ce_page_get_title (page));
 	widget = ce_page_get_page (page);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), widget, label);
+	gtk_widget_unparent (widget);
+	gtk_notebook_append_page (notebook, widget, label);
 
 	/* Move the page from the initializing list to the main page list */
 	editor->initializing_pages = g_slist_remove (editor->initializing_pages, page);

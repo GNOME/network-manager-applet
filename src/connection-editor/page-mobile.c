@@ -73,21 +73,21 @@ static void
 mobile_private_init (CEPageMobile *self)
 {
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
-	GladeXML *xml;
+	GtkBuilder *builder;
 
-	xml = CE_PAGE (self)->xml;
+	builder = CE_PAGE (self)->builder;
 
-	priv->number = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_number"));
-	priv->username = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_username"));
-	priv->password = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_password"));
+	priv->number = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_number")));
+	priv->username = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_username")));
+	priv->password = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_password")));
 
-	priv->apn = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_apn"));
-	priv->apn_button = GTK_BUTTON (glade_xml_get_widget (xml, "mobile_apn_button"));
-	priv->network_id = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_network_id"));
-	priv->network_type = GTK_COMBO_BOX (glade_xml_get_widget (xml, "mobile_network_type"));
-	priv->roaming_allowed = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "mobile_roaming_allowed"));
+	priv->apn = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_apn")));
+	priv->apn_button = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_apn_button")));
+	priv->network_id = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_network_id")));
+	priv->network_type = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_network_type")));
+	priv->roaming_allowed = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_roaming_allowed")));
 
-	priv->pin = GTK_ENTRY (glade_xml_get_widget (xml, "mobile_pin"));
+	priv->pin = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_pin")));
 
 	priv->window_group = gtk_window_group_new ();
 }
@@ -168,8 +168,8 @@ populate_cdma_ui (CEPageMobile *self, NMConnection *connection)
 		gtk_entry_set_text (priv->password, s);
 
 	/* Hide GSM specific widgets */
-	gtk_widget_hide (glade_xml_get_widget (CE_PAGE (self)->xml, "mobile_basic_label"));
-	gtk_widget_hide (glade_xml_get_widget (CE_PAGE (self)->xml, "mobile_advanced_vbox"));
+	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (CE_PAGE (self)->builder, "mobile_basic_label")));
+	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (CE_PAGE (self)->builder, "mobile_advanced_vbox")));
 }
 
 static void
@@ -342,7 +342,7 @@ finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_
 	g_signal_connect (priv->pin, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->roaming_allowed, "toggled", G_CALLBACK (stuff_changed), self);
 
-	g_signal_connect (glade_xml_get_widget (parent->xml, "mobile_show_passwords"),
+	g_signal_connect (GTK_WIDGET (gtk_builder_get_object (parent->builder, "mobile_show_passwords")),
 	                  "toggled",
 	                  G_CALLBACK (show_passwords),
 	                  self);
@@ -364,14 +364,16 @@ ce_page_mobile_new (NMConnection *connection,
 	                                     NULL));
 	parent = CE_PAGE (self);
 
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-mobile.glade", "MobilePage", NULL);
-	if (!parent->xml) {
+	parent->builder = gtk_builder_new();
+
+	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-mobile.ui", error)) {
+		g_warning ("Couldn't load builder file: %s", (*error)->message);
 		g_set_error (error, 0, 0, "%s", _("Could not load mobile broadband user interface."));
 		g_object_unref (self);
 		return NULL;
 	}
 
-	parent->page = glade_xml_get_widget (parent->xml, "MobilePage");
+	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "MobilePage"));
 	if (!parent->page) {
 		g_set_error (error, 0, 0, "%s", _("Could not load mobile broadband user interface."));
 		g_object_unref (self);

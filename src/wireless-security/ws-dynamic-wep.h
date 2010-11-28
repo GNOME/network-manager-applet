@@ -29,7 +29,7 @@ typedef struct {
 	GtkSizeGroup *size_group;
 } WirelessSecurityDynamicWEP;
 
-WirelessSecurityDynamicWEP * ws_dynamic_wep_new (const char *glade_file,
+WirelessSecurityDynamicWEP * ws_dynamic_wep_new (const char *ui_file,
                                                  NMConnection *connection,
                                                  gboolean is_editor);
 

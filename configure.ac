@@ -74,7 +74,6 @@ PKG_CHECK_MODULES(NMA,
 		 libnm-util >= 0.8.3
 		 libnm-glib-vpn >= 0.8.3
 		 gtk+-2.0 >= 2.14
-		 libglade-2.0
 		 gmodule-export-2.0
 		 gconf-2.0
 		 gnome-keyring-1

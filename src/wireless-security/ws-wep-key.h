@@ -33,7 +33,7 @@ typedef struct {
 	guint8 cur_index;
 } WirelessSecurityWEPKey;
 
-WirelessSecurityWEPKey * ws_wep_key_new (const char *glade_file,
+WirelessSecurityWEPKey * ws_wep_key_new (const char *ui_file,
                                          NMConnection *connection,
                                          NMWepKeyType type,
                                          gboolean adhoc_create,

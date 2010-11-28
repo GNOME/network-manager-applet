@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+<interface>
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <widget class="GtkWindow" id="dsl_page_widget">
+  <object class="GtkWindow" id="dsl_page_widget">
     <property name="title" translatable="yes">window1</property>
     <child>
-      <widget class="GtkTable" id="DslPage">
+      <object class="GtkTable" id="DslPage">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="n_rows">4</property>
@@ -13,23 +13,23 @@
         <property name="column_spacing">12</property>
         <property name="row_spacing">6</property>
         <child>
-          <widget class="GtkLabel" id="label24">
+          <object class="GtkLabel" id="label24">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Username:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">dsl_username</property>
-          </widget>
+          </object>
           <packing>
             <property name="x_options">GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
         <child>
-          <widget class="GtkEntry" id="dsl_username">
+          <object class="GtkEntry" id="dsl_username">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-          </widget>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -37,10 +37,10 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkEntry" id="dsl_service">
+          <object class="GtkEntry" id="dsl_service">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-          </widget>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -50,13 +50,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="label26">
+          <object class="GtkLabel" id="label26">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Service:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">dsl_service</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
@@ -65,14 +65,14 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkCheckButton" id="dsl_show_password">
+          <object class="GtkCheckButton" id="dsl_show_password">
             <property name="label" translatable="yes">Sho_w password</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="use_underline">True</property>
             <property name="draw_indicator">True</property>
-          </widget>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -83,11 +83,11 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkEntry" id="dsl_password">
+          <object class="GtkEntry" id="dsl_password">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="visibility">False</property>
-          </widget>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -97,13 +97,13 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="label25">
+          <object class="GtkLabel" id="label25">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Password:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">dsl_password</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">2</property>
             <property name="bottom_attach">3</property>
@@ -112,10 +112,10 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="label27">
+          <object class="GtkLabel" id="label27">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-          </widget>
+          </object>
           <packing>
             <property name="top_attach">3</property>
             <property name="bottom_attach">4</property>
@@ -123,7 +123,7 @@
             <property name="y_options"></property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-</glade-interface>
+  </object>
+</interface>

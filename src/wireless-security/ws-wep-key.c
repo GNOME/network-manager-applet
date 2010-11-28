@@ -20,7 +20,6 @@
  * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
-#include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
 
@@ -38,7 +37,7 @@ show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
 	GtkWidget *widget;
 	gboolean visible;
 
-	widget = glade_xml_get_widget (sec->xml, "wep_key_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, "wep_key_entry"));
 	g_assert (widget);
 
 	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
@@ -54,7 +53,7 @@ key_index_combo_changed_cb (GtkWidget *combo, WirelessSecurity *parent)
 	int key_index;
 
 	/* Save WEP key for old key index */
-	entry = glade_xml_get_widget (parent->xml, "wep_key_entry");
+	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
 	if (key)
 		strcpy (sec->keys[sec->cur_index], key);
@@ -92,7 +91,7 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 	const char *key;
 	int i;
 
-	entry = glade_xml_get_widget (parent->xml, "wep_key_entry");
+	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	g_assert (entry);
 
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
@@ -126,13 +125,13 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 {
 	GtkWidget *widget;
 
-	widget = glade_xml_get_widget (parent->xml, "auth_method_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "auth_method_label"));
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (parent->xml, "wep_key_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_label"));
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (parent->xml, "key_index_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "key_index_label"));
 	gtk_size_group_add_widget (group, widget);
 }
 
@@ -147,10 +146,10 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	const char *key;
 	int i;
 
-	widget = glade_xml_get_widget (parent->xml, "auth_method_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "auth_method_combo"));
 	auth_alg = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
-	widget = glade_xml_get_widget (parent->xml, "wep_key_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 	strcpy (sec->keys[sec->cur_index], key);
 
@@ -230,13 +229,13 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 			strcpy (sec->keys[i], tmp);
 	}
 
-	widget = glade_xml_get_widget (parent->xml, "wep_key_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	if (strlen (sec->keys[sec->cur_index]))
 		gtk_entry_set_text (GTK_ENTRY (widget), sec->keys[sec->cur_index]);
 }
 
 WirelessSecurityWEPKey *
-ws_wep_key_new (const char *glade_file,
+ws_wep_key_new (const char *ui_file,
                 NMConnection *connection,
                 NMWepKeyType type,
                 gboolean adhoc_create,
@@ -244,27 +243,30 @@ ws_wep_key_new (const char *glade_file,
 {
 	WirelessSecurityWEPKey *sec;
 	GtkWidget *widget;
-	GladeXML *xml;
+	GtkBuilder *builder;
 	NMSettingWirelessSecurity *s_wsec = NULL;
 	guint8 default_key_idx = 0;
 	gboolean is_adhoc = adhoc_create;
 	gboolean is_shared_key = FALSE;
+	GError *error = NULL;
 
-	g_return_val_if_fail (glade_file != NULL, NULL);
+	g_return_val_if_fail (ui_file != NULL, NULL);
 
-	xml = glade_xml_new (glade_file, "wep_key_notebook", NULL);
-	if (xml == NULL) {
-		g_warning ("Couldn't get wep_key_widget from glade xml");
+	builder = gtk_builder_new ();
+	if (!gtk_builder_add_from_file (builder, ui_file, &error))
+	{
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
-	widget = glade_xml_get_widget (xml, "wep_key_notebook");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wep_key_notebook"));
 	g_assert (widget);
 	g_object_ref_sink (widget);
 
 	sec = g_slice_new0 (WirelessSecurityWEPKey);
 	if (!sec) {
-		g_object_unref (xml);
+		g_object_unref (builder);
 		g_object_unref (widget);
 		return NULL;
 	}
@@ -275,12 +277,12 @@ ws_wep_key_new (const char *glade_file,
 	                        fill_connection,
 	                        update_secrets,
 	                        destroy,
-	                        xml,
+	                        builder,
 	                        widget,
 	                        "wep_key_entry");
 	sec->type = type;
 
-	widget = glade_xml_get_widget (xml, "wep_key_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wep_key_entry"));
 	g_assert (widget);
 	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
@@ -312,7 +314,7 @@ ws_wep_key_new (const char *glade_file,
 	else if (sec->type == NM_WEP_KEY_TYPE_PASSPHRASE)
 		gtk_entry_set_max_length (GTK_ENTRY (widget), 64);
 
-	widget = glade_xml_get_widget (xml, "key_index_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "key_index_combo"));
 	if (connection && s_wsec)
 		default_key_idx = nm_setting_wireless_security_get_wep_tx_keyidx (s_wsec);
 
@@ -325,7 +327,7 @@ ws_wep_key_new (const char *glade_file,
 	/* Key index is useless with adhoc networks */
 	if (is_adhoc || simple) {
 		gtk_widget_hide (widget);
-		widget = glade_xml_get_widget (xml, "key_index_label");
+		widget = GTK_WIDGET (gtk_builder_get_object (builder, "key_index_label"));
 		gtk_widget_hide (widget);
 	}
 
@@ -333,13 +335,13 @@ ws_wep_key_new (const char *glade_file,
 	if (connection)
 		update_secrets (WIRELESS_SECURITY (sec), connection);
 
-	widget = glade_xml_get_widget (xml, "show_checkbutton");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_checkbutton_wep"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  sec);
 
-	widget = glade_xml_get_widget (xml, "auth_method_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "auth_method_combo"));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), is_shared_key ? 1 : 0);
 
 	g_signal_connect (G_OBJECT (widget), "changed",
@@ -354,7 +356,7 @@ ws_wep_key_new (const char *glade_file,
 		if (is_adhoc)
 			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 		gtk_widget_hide (widget);
-		widget = glade_xml_get_widget (xml, "auth_method_label");
+		widget = GTK_WIDGET (gtk_builder_get_object (builder, "auth_method_label"));
 		gtk_widget_hide (widget);
 	}
 

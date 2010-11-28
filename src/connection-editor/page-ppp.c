@@ -78,20 +78,20 @@ static void
 ppp_private_init (CEPagePpp *self)
 {
 	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
-	GladeXML *xml;
+	GtkBuilder *builder;
 
-	xml = CE_PAGE (self)->xml;
+	builder = CE_PAGE (self)->builder;
 
-	priv->auth_methods_label = GTK_LABEL (glade_xml_get_widget (xml, "auth_methods_label"));
-	priv->auth_methods_button = GTK_BUTTON (glade_xml_get_widget (xml, "auth_methods_button"));
+	priv->auth_methods_label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "auth_methods_label")));
+	priv->auth_methods_button = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "auth_methods_button")));
 
-	priv->use_mppe = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_use_mppe"));
-	priv->mppe_require_128 = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_require_mppe_128"));
-	priv->use_mppe_stateful = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_use_stateful_mppe"));
-	priv->allow_bsdcomp = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_allow_bsdcomp"));
-	priv->allow_deflate = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_allow_deflate"));
-	priv->use_vj_comp = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_usevj"));
-	priv->send_ppp_echo = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "ppp_send_echo_packets"));
+	priv->use_mppe = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_use_mppe")));
+	priv->mppe_require_128 = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_require_mppe_128")));
+	priv->use_mppe_stateful = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_use_stateful_mppe")));
+	priv->allow_bsdcomp = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_allow_bsdcomp")));
+	priv->allow_deflate = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_allow_deflate")));
+	priv->use_vj_comp = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_usevj")));
+	priv->send_ppp_echo = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_send_echo_packets")));
 }
 
 static void
@@ -278,14 +278,16 @@ ce_page_ppp_new (NMConnection *connection,
 	                                  NULL));
 	parent = CE_PAGE (self);
 
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-ppp.glade", "PppPage", NULL);
-	if (!parent->xml) {
+	parent->builder = gtk_builder_new();
+
+	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-ppp.ui", error)) {
+		g_warning ("Couldn't load builder file: %s", (*error)->message);
 		g_set_error (error, 0, 0, "%s", _("Could not load PPP user interface."));
 		g_object_unref (self);
 		return NULL;
 	}
 
-	parent->page = glade_xml_get_widget (parent->xml, "PppPage");
+	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "PppPage"));
 	if (!parent->page) {
 		g_set_error (error, 0, 0, "%s", _("Could not load PPP user interface."));
 		g_object_unref (self);

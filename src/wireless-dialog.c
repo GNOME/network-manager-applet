@@ -28,7 +28,6 @@
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <glade/glade.h>
 #include <netinet/ether.h>
 
 #include <nm-client.h>
@@ -60,8 +59,8 @@ typedef struct {
 typedef struct {
 	NMApplet *applet;
 
-	char *glade_file;
-	GladeXML *xml;
+	char *ui_file;
+	GtkBuilder *builder;
 
 	NMConnection *connection;
 	NMDevice *device;
@@ -150,20 +149,20 @@ size_group_clear (GtkSizeGroup *group)
 
 static void
 size_group_add_permanent (GtkSizeGroup *group,
-                          GladeXML *xml)
+                          GtkBuilder *builder)
 {
 	GtkWidget *widget;
 
 	g_return_if_fail (group != NULL);
-	g_return_if_fail (xml != NULL);
+	g_return_if_fail (builder != NULL);
 
-	widget = glade_xml_get_widget (xml, "network_name_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "network_name_label"));
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (xml, "security_combo_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "security_combo_label"));
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (xml, "device_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "device_label"));
 	gtk_size_group_add_widget (group, widget);
 }
 
@@ -179,7 +178,7 @@ security_combo_changed (GtkWidget *combo,
 	GtkTreeModel *model;
 	WirelessSecurity *sec = NULL;
 
-	vbox = glade_xml_get_widget (priv->xml, "security_vbox");
+	vbox = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_vbox"));
 	g_assert (vbox);
 
 	size_group_clear (priv->group);
@@ -206,8 +205,9 @@ security_combo_changed (GtkWidget *combo,
 
 	sec_widget = wireless_security_get_widget (sec);
 	g_assert (sec_widget);
+	gtk_widget_unparent (sec_widget);
 
-	size_group_add_permanent (priv->group, priv->xml);
+	size_group_add_permanent (priv->group, priv->builder);
 	wireless_security_add_to_size_group (sec, priv->group);
 
 	gtk_container_add (GTK_CONTAINER (vbox), sec_widget);
@@ -219,7 +219,7 @@ security_combo_changed (GtkWidget *combo,
 	 * network name entry should not be focused.
 	 */
 	if (!priv->network_name_focus && sec->default_field) {
-		def_widget = glade_xml_get_widget (sec->xml, sec->default_field);
+		def_widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, sec->default_field));
 		if (def_widget)
 			gtk_widget_grab_focus (def_widget);
 	}
@@ -258,7 +258,7 @@ validate_dialog_ssid (NMAWirelessDialog *self)
 	guint32 ssid_len;
 	GByteArray *ssid_ba;
 
-	widget = glade_xml_get_widget (priv->xml, "network_name_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 
 	ssid = gtk_entry_get_text (GTK_ENTRY (widget));
 	ssid_len = strlen (ssid);
@@ -386,7 +386,7 @@ connection_combo_changed (GtkWidget *combo,
 	}
 	security_combo_changed (priv->sec_combo, self);
 
-	widget = glade_xml_get_widget (priv->xml, "network_name_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 	if (priv->connection) {
 		const GByteArray *ssid;
 
@@ -399,11 +399,11 @@ connection_combo_changed (GtkWidget *combo,
 		gtk_entry_set_text (GTK_ENTRY (widget), "");
 	}
 
-	gtk_widget_set_sensitive (glade_xml_get_widget (priv->xml, "network_name_entry"), is_new);
-	gtk_widget_set_sensitive (glade_xml_get_widget (priv->xml, "network_name_label"), is_new);
-	gtk_widget_set_sensitive (glade_xml_get_widget (priv->xml, "security_combo"), is_new);
-	gtk_widget_set_sensitive (glade_xml_get_widget (priv->xml, "security_combo_label"), is_new);
-	gtk_widget_set_sensitive (glade_xml_get_widget (priv->xml, "security_vbox"), is_new);
+	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry")), is_new);
+	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_label")), is_new);
+	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo")), is_new);
+	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo_label")), is_new);
+	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_vbox")), is_new);
 }
 
 static GSList *
@@ -549,7 +549,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 		g_slist_free (to_add);
 	}
 
-	widget = glade_xml_get_widget (priv->xml, "connection_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "connection_combo"));
 
 	gtk_cell_layout_clear (GTK_CELL_LAYOUT (widget));
 	renderer = gtk_cell_renderer_text_new ();
@@ -569,7 +569,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  G_CALLBACK (connection_combo_changed), self);
 	if (connection || !num_added) {
-		gtk_widget_hide (glade_xml_get_widget (priv->xml, "connection_label"));
+		gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (priv->builder, "connection_label")));
 		gtk_widget_hide (widget);
 	}
 	gtk_tree_model_get_iter_first (priv->connection_model, &tree_iter);
@@ -673,13 +673,13 @@ device_combo_init (NMAWirelessDialog *self, NMDevice *device)
 		GtkWidget *widget;
 		GtkTreeIter iter;
 
-		widget = glade_xml_get_widget (priv->xml, "device_combo");
+		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_combo"));
 		gtk_combo_box_set_model (GTK_COMBO_BOX (widget), priv->device_model);
 		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 		g_signal_connect (G_OBJECT (widget), "changed",
 		                  G_CALLBACK (device_combo_changed), self);
 		if (num_added == 1) {
-			gtk_widget_hide (glade_xml_get_widget (priv->xml, "device_label"));
+			gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_label")));
 			gtk_widget_hide (widget);
 		}
 		gtk_tree_model_get_iter_first (priv->device_model, &iter);
@@ -930,7 +930,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep;
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create, auth_only);
+		ws_wep = ws_wep_key_new (priv->ui_file, priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create, auth_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"));
@@ -939,7 +939,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (priv->glade_file, priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create, auth_only);
+		ws_wep = ws_wep_key_new (priv->ui_file, priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create, auth_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -956,7 +956,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityLEAP *ws_leap;
 
-		ws_leap = ws_leap_new (priv->glade_file, priv->connection);
+		ws_leap = ws_leap_new (priv->ui_file, priv->connection);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
@@ -969,7 +969,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (priv->glade_file, priv->connection, FALSE);
+		ws_dynamic_wep = ws_dynamic_wep_new (priv->ui_file, priv->connection, FALSE);
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
@@ -983,7 +983,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;
 
-		ws_wpa_psk = ws_wpa_psk_new (priv->glade_file, priv->connection);
+		ws_wpa_psk = ws_wpa_psk_new (priv->ui_file, priv->connection);
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
@@ -997,7 +997,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (priv->glade_file, priv->connection, FALSE);
+		ws_wpa_eap = ws_wpa_eap_new (priv->ui_file, priv->connection, FALSE);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
@@ -1077,7 +1077,7 @@ internal_init (NMAWirelessDialog *self,
 		icon_name = "network-wireless";
 
 	gtk_window_set_icon_name (GTK_WINDOW (self), icon_name);
-	widget = glade_xml_get_widget (priv->xml, "image1");
+	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "image1"));
 	gtk_image_set_from_icon_name (GTK_IMAGE (widget), icon_name, GTK_ICON_SIZE_DIALOG);
 
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))), 2);
@@ -1104,26 +1104,27 @@ internal_init (NMAWirelessDialog *self,
 	g_object_set (G_OBJECT (widget), "can-default", TRUE, NULL);
 	gtk_widget_grab_default (widget);
 
-	widget = glade_xml_get_widget (priv->xml, "hbox1");
+	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "hbox1"));
 	if (!widget) {
-		nm_warning ("Couldn't find glade wireless_dialog widget.");
+		nm_warning ("Couldn't find wireless_dialog widget.");
 		return FALSE;
 	}
+	gtk_widget_unparent (widget);
 
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (self))), widget);
 
 	/* If given a valid connection, hide the SSID bits and connection combo */
 	if (specific_connection) {
-		widget = glade_xml_get_widget (priv->xml, "network_name_label");
+		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_label"));
 		gtk_widget_hide (widget);
 
-		widget = glade_xml_get_widget (priv->xml, "network_name_entry");
+		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 		gtk_widget_hide (widget);
 
 		security_combo_focus = TRUE;
 		priv->network_name_focus = FALSE;
 	} else {
-		widget = glade_xml_get_widget (priv->xml, "network_name_entry");
+		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 		g_signal_connect (G_OBJECT (widget), "changed", (GCallback) ssid_entry_changed, self);
 		priv->network_name_focus = TRUE;
 	}
@@ -1156,7 +1157,7 @@ internal_init (NMAWirelessDialog *self,
 	if (security_combo_focus)
 		gtk_widget_grab_focus (priv->sec_combo);
 	else if (priv->network_name_focus) {
-		widget = glade_xml_get_widget (priv->xml, "network_name_entry");
+		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 		gtk_widget_grab_focus (widget);
 	}
 
@@ -1191,7 +1192,7 @@ internal_init (NMAWirelessDialog *self,
 		                         _("Enter the name and security details of the hidden wireless network you wish to connect to."));
 	}
 
-	widget = glade_xml_get_widget (priv->xml, "caption_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "caption_label"));
 	gtk_label_set_markup (GTK_LABEL (widget), label);
 	g_free (label);
 
@@ -1275,7 +1276,7 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 	}
 
 	/* Fill device */
-	combo = glade_xml_get_widget (priv->xml, "device_combo");
+	combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_combo"));
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
 	gtk_tree_model_get (priv->device_model, &iter, D_DEV_COLUMN, device, -1);
 	g_object_unref (*device);
@@ -1315,7 +1316,7 @@ nma_wireless_dialog_new (NMApplet *applet,
 	priv->applet = applet;
 	priv->ap = g_object_ref (ap);
 
-	priv->sec_combo = glade_xml_get_widget (priv->xml, "security_combo");
+	priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	if (!internal_init (self, connection, device, TRUE, FALSE)) {
@@ -1342,7 +1343,7 @@ internal_new_other (NMApplet *applet, gboolean create)
 	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 
 	priv->applet = applet;
-	priv->sec_combo = glade_xml_get_widget (priv->xml, "security_combo");
+	priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	priv->adhoc_create = create;
 
@@ -1380,7 +1381,7 @@ nma_wireless_dialog_nag_user (NMAWirelessDialog *self)
 
 	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 
-	combo = glade_xml_get_widget (priv->xml, "security_combo");
+	combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
 	g_return_val_if_fail (combo != NULL, NULL);
 
 	/* Ask the security method if it wants to nag the user. */
@@ -1397,9 +1398,15 @@ static void
 nma_wireless_dialog_init (NMAWirelessDialog *self)
 {
 	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	GError *error = NULL;
 
-	priv->glade_file = g_build_filename (GLADEDIR, "applet.glade", NULL);
-	priv->xml = glade_xml_new (priv->glade_file, "hbox1", NULL);
+	priv->ui_file = g_build_filename (UIDIR, "applet.ui", NULL);
+	priv->builder = gtk_builder_new();
+
+	if (!gtk_builder_add_from_file (priv->builder, priv->ui_file, &error)) {
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
+	}
 }
 
 static void
@@ -1417,9 +1424,9 @@ dispose (GObject *object)
 	if (priv->secrets_info)
 		priv->secrets_info->canceled = TRUE;
 
-	g_free (priv->glade_file);
+	g_free (priv->ui_file);
 
-	g_object_unref (priv->xml);
+	g_object_unref (priv->builder);
 
 	model_free (priv->device_model, D_NAME_COLUMN);
 	model_free (priv->connection_model, C_NAME_COLUMN);

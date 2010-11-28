@@ -30,7 +30,7 @@ typedef struct {
 
 } EAPMethodLEAP;
 
-EAPMethodLEAP * eap_method_leap_new (const char *glade_file,
+EAPMethodLEAP * eap_method_leap_new (const char *ui_file,
                                      WirelessSecurity *parent,
                                      NMConnection *connection);
 

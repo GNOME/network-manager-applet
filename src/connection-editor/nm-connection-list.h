@@ -24,7 +24,6 @@
 #define NM_CONNECTION_LIST_H
 
 #include <glib-object.h>
-#include <glade/glade-xml.h>
 #include <gconf/gconf-client.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
@@ -46,7 +45,7 @@ typedef struct {
 	NMAGConfSettings *gconf_settings;
 	NMRemoteSettingsSystem *system_settings;
 
-	GladeXML *gui;
+	GtkBuilder *gui;
 	GtkWidget *dialog;
 
 	GdkPixbuf *wired_icon;

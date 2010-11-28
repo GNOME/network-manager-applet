@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
-<glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+<interface>
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <widget class="GtkWindow" id="ppp_page_widget">
+  <object class="GtkWindow" id="ppp_page_widget">
     <property name="title" translatable="yes">window1</property>
     <child>
-      <widget class="GtkVBox" id="PppPage">
+      <object class="GtkVBox" id="PppPage">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
-          <widget class="GtkVBox" id="vbox2">
+          <object class="GtkVBox" id="vbox2">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkLabel" id="label28">
+              <object class="GtkLabel" id="label28">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Authentication&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -27,91 +27,91 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkAlignment" id="alignment1">
+              <object class="GtkAlignment" id="alignment1">
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <widget class="GtkVBox" id="vbox4">
+                  <object class="GtkVBox" id="vbox4">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
-                      <widget class="GtkHBox" id="hbox2">
+                      <object class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
                         <property name="spacing">12</property>
                         <child>
-                          <widget class="GtkLabel" id="label1">
+                          <object class="GtkLabel" id="label1">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">Allowed methods:</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="auth_methods_label">
+                          <object class="GtkLabel" id="auth_methods_label">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
                             <property name="selectable">True</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="position">1</property>
                           </packing>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHButtonBox" id="hbuttonbox1">
+                      <object class="GtkHButtonBox" id="hbuttonbox1">
                         <property name="visible">True</property>
                         <property name="layout_style">start</property>
                         <child>
-                          <widget class="GtkButton" id="auth_methods_button">
-                            <property name="label" translatable="yes">Configure _Methods…</property>
+                          <object class="GtkButton" id="auth_methods_button">
+                            <property name="label" translatable="yes">Configure _Methods&#x2026;</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_underline">True</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkVBox" id="vbox5">
+          <object class="GtkVBox" id="vbox5">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkLabel" id="label29">
+              <object class="GtkLabel" id="label29">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Compression&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -119,26 +119,26 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkAlignment" id="alignment3">
+              <object class="GtkAlignment" id="alignment3">
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <widget class="GtkVBox" id="vbox6">
+                  <object class="GtkVBox" id="vbox6">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
-                      <widget class="GtkVBox" id="vbox7">
+                      <object class="GtkVBox" id="vbox7">
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>
-                          <widget class="GtkCheckButton" id="ppp_use_mppe">
+                          <object class="GtkCheckButton" id="ppp_use_mppe">
                             <property name="label" translatable="yes">_Use point-to-point encryption (MPPE)</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
@@ -146,22 +146,22 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkAlignment" id="alignment4">
+                          <object class="GtkAlignment" id="alignment4">
                             <property name="visible">True</property>
                             <property name="left_padding">12</property>
                             <child>
-                              <widget class="GtkVBox" id="vbox8">
+                              <object class="GtkVBox" id="vbox8">
                                 <property name="visible">True</property>
                                 <property name="spacing">6</property>
                                 <child>
-                                  <widget class="GtkCheckButton" id="ppp_require_mppe_128">
+                                  <object class="GtkCheckButton" id="ppp_require_mppe_128">
                                     <property name="label" translatable="yes">_Require 128-bit encryption</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="draw_indicator">True</property>
-                                  </widget>
+                                  </object>
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
@@ -169,28 +169,28 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkCheckButton" id="ppp_use_stateful_mppe">
+                                  <object class="GtkCheckButton" id="ppp_use_stateful_mppe">
                                     <property name="label" translatable="yes">Use _stateful MPPE</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="use_underline">True</property>
                                     <property name="draw_indicator">True</property>
-                                  </widget>
+                                  </object>
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
-                              </widget>
+                              </object>
                             </child>
-                          </widget>
+                          </object>
                           <packing>
                             <property name="position">1</property>
                           </packing>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
@@ -198,14 +198,14 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="ppp_allow_bsdcomp">
+                      <object class="GtkCheckButton" id="ppp_allow_bsdcomp">
                         <property name="label" translatable="yes">Allow _BSD data compression</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
@@ -213,14 +213,14 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="ppp_allow_deflate">
+                      <object class="GtkCheckButton" id="ppp_allow_deflate">
                         <property name="label" translatable="yes">Allow _Deflate data compression</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
@@ -228,45 +228,45 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="ppp_usevj">
+                      <object class="GtkCheckButton" id="ppp_usevj">
                         <property name="label" translatable="yes">Use TCP _header compression</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="position">3</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkVBox" id="vbox9">
+          <object class="GtkVBox" id="vbox9">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkLabel" id="label31">
+              <object class="GtkLabel" id="label31">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Echo&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -274,34 +274,34 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkAlignment" id="alignment5">
+              <object class="GtkAlignment" id="alignment5">
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <widget class="GtkCheckButton" id="ppp_send_echo_packets">
+                  <object class="GtkCheckButton" id="ppp_send_echo_packets">
                     <property name="label" translatable="yes">Send PPP _echo packets</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="position">2</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-  <widget class="GtkDialog" id="auth_methods_dialog">
+  </object>
+  <object class="GtkDialog" id="auth_methods_dialog">
     <property name="extension_events">all</property>
     <property name="border_width">5</property>
     <property name="window_position">center-on-parent</property>
@@ -309,125 +309,125 @@
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <widget class="GtkVBox" id="dialog-vbox1">
+      <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkVBox" id="vbox1">
+          <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
             <property name="border_width">5</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkLabel" id="label3">
+              <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Allowed Authentication Methods&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkAlignment" id="alignment2">
+              <object class="GtkAlignment" id="alignment2">
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <widget class="GtkVBox" id="vbox3">
+                  <object class="GtkVBox" id="vbox3">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
-                      <widget class="GtkCheckButton" id="allow_eap">
+                      <object class="GtkCheckButton" id="allow_eap">
                         <property name="label" translatable="yes">_EAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip" translatable="yes">Extensible Authentication Protocol</property>
+                        <property name="tooltip_text" translatable="yes">Extensible Authentication Protocol</property>
                         <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="allow_pap">
+                      <object class="GtkCheckButton" id="allow_pap">
                         <property name="label" translatable="yes">_PAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip" translatable="yes">Password Authentication Protocol</property>
+                        <property name="tooltip_text" translatable="yes">Password Authentication Protocol</property>
                         <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="allow_chap">
+                      <object class="GtkCheckButton" id="allow_chap">
                         <property name="label" translatable="yes">C_HAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip" translatable="yes">Challenge Handshake Authentication Protocol</property>
+                        <property name="tooltip_text" translatable="yes">Challenge Handshake Authentication Protocol</property>
                         <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">2</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="allow_mschap">
+                      <object class="GtkCheckButton" id="allow_mschap">
                         <property name="label" translatable="yes">_MSCHAP</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip" translatable="yes">Microsoft Challenge Handshake Authentication Protocol</property>
+                        <property name="tooltip_text" translatable="yes">Microsoft Challenge Handshake Authentication Protocol</property>
                         <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">3</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="allow_mschapv2">
+                      <object class="GtkCheckButton" id="allow_mschapv2">
                         <property name="label" translatable="yes">MSCHAP v_2</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip" translatable="yes">Microsoft Challenge Handshake Authentication Protocol version 2</property>
+                        <property name="tooltip_text" translatable="yes">Microsoft Challenge Handshake Authentication Protocol version 2</property>
                         <property name="use_underline">True</property>
                         <property name="draw_indicator">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">4</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label2">
+                      <object class="GtkLabel" id="label2">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">&lt;i&gt;In most cases, the provider's PPP servers will support all authentication methods.  If connections fail, try disabling support for some methods.&lt;/i&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="wrap">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">5</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
@@ -435,18 +435,17 @@
           </packing>
         </child>
         <child internal-child="action_area">
-          <widget class="GtkHButtonBox" id="dialog-action_area1">
+          <object class="GtkHButtonBox" id="dialog-action_area1">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkButton" id="cancel_button">
+              <object class="GtkButton" id="cancel_button">
                 <property name="label">gtk-cancel</property>
-                <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -454,28 +453,31 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="ok_button">
+              <object class="GtkButton" id="ok_button">
                 <property name="label">gtk-ok</property>
-                <property name="response_id">-5</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-</glade-interface>
+    <action-widgets>
+      <action-widget response="-6">cancel_button</action-widget>
+      <action-widget response="-5">ok_button</action-widget>
+    </action-widgets>
+  </object>
+</interface>

@@ -52,13 +52,13 @@ static void
 dsl_private_init (CEPageDsl *self)
 {
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
-	GladeXML *xml;
+	GtkBuilder *builder;
 
-	xml = CE_PAGE (self)->xml;
+	builder = CE_PAGE (self)->builder;
 
-	priv->username = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_username"));
-	priv->password = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_password"));
-	priv->service = GTK_ENTRY (glade_xml_get_widget (xml, "dsl_service"));
+	priv->username = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "dsl_username")));
+	priv->password = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "dsl_password")));
+	priv->service = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "dsl_service")));
 }
 
 static void
@@ -115,7 +115,7 @@ finish_setup (CEPageDsl *self, gpointer unused, GError *error, gpointer user_dat
 	g_signal_connect (priv->password, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->service, "changed", G_CALLBACK (stuff_changed), self);
 
-	g_signal_connect (glade_xml_get_widget (parent->xml, "dsl_show_password"), "toggled",
+	g_signal_connect (GTK_WIDGET (gtk_builder_get_object (parent->builder, "dsl_show_password")), "toggled",
 					  G_CALLBACK (show_password), self);
 }
 
@@ -135,14 +135,16 @@ ce_page_dsl_new (NMConnection *connection,
 	                                  NULL));
 	parent = CE_PAGE (self);
 
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-dsl.glade", "DslPage", NULL);
-	if (!parent->xml) {
+	parent->builder = gtk_builder_new();
+
+	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-dsl.ui", error)) {
+		g_warning ("Couldn't load builder file: %s", (*error)->message);
 		g_set_error (error, 0, 0, "%s", _("Could not load DSL user interface."));
 		g_object_unref (self);
 		return NULL;
 	}
 
-	parent->page = glade_xml_get_widget (parent->xml, "DslPage");
+	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "DslPage"));
 	if (!parent->page) {
 		g_set_error (error, 0, 0, "%s", _("Could not load DSL user interface."));
 		g_object_unref (self);

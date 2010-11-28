@@ -30,7 +30,7 @@
 #include <nm-device.h>
 #include <nm-settings-connection-interface.h>
 
-GtkWidget *nma_wired_dialog_new (const char *glade_file,
+GtkWidget *nma_wired_dialog_new (const char *ui_file,
 								 NMClient *nm_client,
 								 NMSettingsConnectionInterface *connection,
 								 NMDevice *device);
