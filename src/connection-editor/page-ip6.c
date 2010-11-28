@@ -105,14 +105,14 @@ static void
 ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 {
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkTreeIter iter;
 	NMSettingConnection *s_con;
 	const char *connection_type;
 	char *str_auto = NULL, *str_auto_only = NULL;
 	GList *cells;
 
-	xml = CE_PAGE (self)->xml;
+	builder = CE_PAGE (self)->builder;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
 	g_assert (s_con);
@@ -136,7 +136,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 		str_auto_only = _("Automatic, addresses only");
 	}
 
-	priv->method = GTK_COMBO_BOX (glade_xml_get_widget (xml, "ip6_method"));
+	priv->method = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_method")));
 	cells = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT (priv->method));
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (priv->method), cells->data,
 								   "sensitive", METHOD_COL_ENABLED);
@@ -209,18 +209,18 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 
 	gtk_combo_box_set_model (priv->method, GTK_TREE_MODEL (priv->method_store));
 
-	priv->addr_label = glade_xml_get_widget (xml, "ip6_addr_label");
-	priv->addr_add = GTK_BUTTON (glade_xml_get_widget (xml, "ip6_addr_add_button"));
-	priv->addr_delete = GTK_BUTTON (glade_xml_get_widget (xml, "ip6_addr_delete_button"));
-	priv->addr_list = GTK_TREE_VIEW (glade_xml_get_widget (xml, "ip6_addresses"));
+	priv->addr_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_addr_label"));
+	priv->addr_add = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_addr_add_button")));
+	priv->addr_delete = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_addr_delete_button")));
+	priv->addr_list = GTK_TREE_VIEW (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_addresses")));
 
-	priv->dns_servers_label = glade_xml_get_widget (xml, "ip6_dns_servers_label");
-	priv->dns_servers = GTK_ENTRY (glade_xml_get_widget (xml, "ip6_dns_servers_entry"));
+	priv->dns_servers_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_dns_servers_label"));
+	priv->dns_servers = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_dns_servers_entry")));
 
-	priv->dns_searches_label = glade_xml_get_widget (xml, "ip6_dns_searches_label");
-	priv->dns_searches = GTK_ENTRY (glade_xml_get_widget (xml, "ip6_dns_searches_entry"));
+	priv->dns_searches_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_dns_searches_label"));
+	priv->dns_searches = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_dns_searches_entry")));
 
-	priv->ip6_required = GTK_CHECK_BUTTON (glade_xml_get_widget (xml, "ip6_required_checkbutton"));
+	priv->ip6_required = GTK_CHECK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_required_checkbutton")));
 	/* Hide IP6-require button if it'll never be used for a particular method */
 	if (   priv->connection_type == NM_TYPE_SETTING_VPN
 	    || priv->connection_type == NM_TYPE_SETTING_GSM
@@ -228,7 +228,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	    || priv->connection_type == NM_TYPE_SETTING_PPPOE)
 		gtk_widget_hide (GTK_WIDGET (priv->ip6_required));
 
-	priv->routes_button = GTK_BUTTON (glade_xml_get_widget (xml, "ip6_routes_button"));
+	priv->routes_button = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_routes_button")));
 }
 
 static void
@@ -797,14 +797,16 @@ ce_page_ip6_new (NMConnection *connection,
 	                                  NULL));
 	parent = CE_PAGE (self);
 
-	parent->xml = glade_xml_new (GLADEDIR "/ce-page-ip6.glade", "IP6Page", NULL);
-	if (!parent->xml) {
+	parent->builder = gtk_builder_new();
+
+	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-ip6.ui", error)) {
+		g_warning ("Couldn't load builder file: %s", (*error)->message);
 		g_set_error (error, 0, 0, "%s", _("Could not load IPv6 user interface."));
 		g_object_unref (self);
 		return NULL;
 	}
 
-	parent->page = glade_xml_get_widget (parent->xml, "IP6Page");
+	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "IP6Page"));
 	if (!parent->page) {
 		g_set_error (error, 0, 0, "%s", _("Could not load IPv6 user interface."));
 		g_object_unref (self);

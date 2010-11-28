@@ -28,7 +28,7 @@ typedef struct {
 
 } WirelessSecurityWPAPSK;
 
-WirelessSecurityWPAPSK * ws_wpa_psk_new (const char *glade_file,
+WirelessSecurityWPAPSK * ws_wpa_psk_new (const char *ui_file,
                                          NMConnection *connection);
 
 #endif /* WS_WEP_KEY_H */

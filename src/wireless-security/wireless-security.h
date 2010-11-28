@@ -25,7 +25,6 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <glade/glade.h>
 
 #include <nm-connection.h>
 
@@ -42,7 +41,7 @@ typedef GtkWidget * (*WSNagUserFunc) (WirelessSecurity *sec);
 
 struct _WirelessSecurity {
 	guint32 refcount;
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkWidget *ui_widget;
 	WSChangedFunc changed_notify;
 	gpointer changed_notify_data;
@@ -98,7 +97,7 @@ void wireless_security_init (WirelessSecurity *sec,
                              WSFillConnectionFunc fill_connection,
                              WSUpdateSecretsFunc update_secrets,
                              WSDestroyFunc destroy,
-                             GladeXML *xml,
+                             GtkBuilder *builder,
                              GtkWidget *ui_widget,
                              const char *default_field);
 
@@ -110,7 +109,7 @@ void wireless_security_clear_ciphers (NMConnection *connection);
 #define AUTH_METHOD_COLUMN 1
 
 GtkWidget *ws_802_1x_auth_combo_init (WirelessSecurity *sec,
-                                      const char *glade_file,
+                                      const char *ui_file,
                                       const char *combo_name,
                                       GCallback auth_combo_changed_cb,
                                       NMConnection *connection,

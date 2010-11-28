@@ -33,7 +33,7 @@ typedef struct {
 	gboolean is_editor;
 } EAPMethodTTLS;
 
-EAPMethodTTLS * eap_method_ttls_new (const char *glade_file,
+EAPMethodTTLS * eap_method_ttls_new (const char *ui_file,
                                      WirelessSecurity *parent,
                                      NMConnection *connection,
                                      gboolean is_editor);

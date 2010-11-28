@@ -20,7 +20,6 @@
  * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
-#include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
 #include <nm-setting-8021x.h>
@@ -36,7 +35,7 @@ show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
 	GtkWidget *widget;
 	gboolean visible;
 
-	widget = glade_xml_get_widget (method->xml, "eap_leap_password_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (method->builder, "eap_leap_password_entry"));
 	g_assert (widget);
 
 	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
@@ -57,13 +56,13 @@ validate (EAPMethod *parent)
 	GtkWidget *widget;
 	const char *text;
 
-	widget = glade_xml_get_widget (parent->xml, "eap_leap_username_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_username_entry"));
 	g_assert (widget);
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (!text || !strlen (text))
 		return FALSE;
 
-	widget = glade_xml_get_widget (parent->xml, "eap_leap_password_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
 	g_assert (widget);
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (!text || !strlen (text))
@@ -77,11 +76,11 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 {
 	GtkWidget *widget;
 
-	widget = glade_xml_get_widget (parent->xml, "eap_leap_username_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_username_label"));
 	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_leap_password_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_label"));
 	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 }
@@ -97,11 +96,11 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	nm_setting_802_1x_add_eap_method (s_8021x, "leap");
 
-	widget = glade_xml_get_widget (parent->xml, "eap_leap_username_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_username_entry"));
 	g_assert (widget);
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_leap_password_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
 	g_assert (widget);
 	g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 }
@@ -110,36 +109,40 @@ static void
 update_secrets (EAPMethod *parent, NMConnection *connection)
 {
 	helper_fill_secret_entry (connection,
-	                          parent->xml,
+	                          parent->builder,
 	                          "eap_leap_password_entry",
 	                          NM_TYPE_SETTING_802_1X,
 	                          (HelperSecretFunc) nm_setting_802_1x_get_password);
 }
 
 EAPMethodLEAP *
-eap_method_leap_new (const char *glade_file,
+eap_method_leap_new (const char *ui_file,
                      WirelessSecurity *parent,
                      NMConnection *connection)
 {
 	EAPMethodLEAP *method;
 	GtkWidget *widget;
-	GladeXML *xml;
+	GtkBuilder *builder;
+	GError *error = NULL;
 
-	g_return_val_if_fail (glade_file != NULL, NULL);
+	g_return_val_if_fail (ui_file != NULL, NULL);
 
-	xml = glade_xml_new (glade_file, "eap_leap_notebook", NULL);
-	if (xml == NULL) {
-		g_warning ("Couldn't get eap_leap_widget from glade xml");
+	builder = gtk_builder_new ();
+
+	if (!gtk_builder_add_from_file (builder, ui_file, &error))
+	{
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
-	widget = glade_xml_get_widget (xml, "eap_leap_notebook");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_leap_notebook"));
 	g_assert (widget);
 	g_object_ref_sink (widget);
 
 	method = g_slice_new0 (EAPMethodLEAP);
 	if (!method) {
-		g_object_unref (xml);
+		g_object_unref (builder);
 		g_object_unref (widget);
 		return NULL;
 	}
@@ -150,11 +153,11 @@ eap_method_leap_new (const char *glade_file,
 	                 fill_connection,
 	                 update_secrets,
 	                 destroy,
-	                 xml,
+	                 builder,
 	                 widget,
 	                 "eap_leap_username_entry");
 
-	widget = glade_xml_get_widget (xml, "eap_leap_username_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_leap_username_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
@@ -167,7 +170,7 @@ eap_method_leap_new (const char *glade_file,
 			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 	}
 
-	widget = glade_xml_get_widget (xml, "eap_leap_password_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_leap_password_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
@@ -177,7 +180,7 @@ eap_method_leap_new (const char *glade_file,
 	if (connection)
 		update_secrets (EAP_METHOD (method), connection);
 
-	widget = glade_xml_get_widget (xml, "show_checkbutton");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_checkbutton_eapleap"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,

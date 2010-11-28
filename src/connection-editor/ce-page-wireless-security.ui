@@ -1,11 +1,22 @@
 <?xml version="1.0"?>
-<glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+<interface>
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <widget class="GtkWindow" id="wireless_security_page_widget">
+  <object class="GtkListStore" id="model1">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">Foo</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkWindow" id="wireless_security_page_widget">
     <property name="title" translatable="yes">window2</property>
     <child>
-      <widget class="GtkTable" id="WirelessSecurityPage">
+      <object class="GtkTable" id="WirelessSecurityPage">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="n_rows">2</property>
@@ -13,23 +24,29 @@
         <property name="column_spacing">12</property>
         <property name="row_spacing">6</property>
         <child>
-          <widget class="GtkLabel" id="wireless_security_combo_label">
+          <object class="GtkLabel" id="wireless_security_combo_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Security:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">wireless_security_combo</property>
-          </widget>
+          </object>
           <packing>
             <property name="x_options">GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
         <child>
-          <widget class="GtkComboBox" id="wireless_security_combo">
+          <object class="GtkComboBox" id="wireless_security_combo">
             <property name="visible">True</property>
-            <property name="items">Foo</property>
-          </widget>
+            <property name="model">model1</property>
+            <child>
+              <object class="GtkCellRendererText" id="renderer1"/>
+              <attributes>
+                <attribute name="text">0</attribute>
+              </attributes>
+            </child>
+          </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
@@ -37,19 +54,19 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkVBox" id="wireless_security_vbox">
+          <object class="GtkVBox" id="wireless_security_vbox">
             <property name="visible">True</property>
             <child>
               <placeholder/>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="right_attach">2</property>
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-</glade-interface>
+  </object>
+</interface>

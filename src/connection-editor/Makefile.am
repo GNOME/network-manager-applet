@@ -4,7 +4,7 @@ nm_connection_editor_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	-DICONDIR=\""$(datadir)/icons"\" \
-	-DGLADEDIR=\""$(gladedir)"\" \
+	-DUIDIR=\""$(uidir)"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DLIBDIR=\""$(libdir)"\" \
@@ -68,22 +68,22 @@ nm_connection_editor_LDADD = \
 	$(NMA_LIBS) \
 	-lm
 
-gladedir = $(datadir)/nm-applet
-glade_DATA = \
-	nm-connection-editor.glade \
-	ce-page-wired.glade \
-	ce-page-wireless.glade \
-	ce-page-wireless-security.glade \
-	ce-page-ip4.glade \
-	ce-page-ip6.glade \
-	ce-page-dsl.glade \
-	ce-page-mobile.glade \
-	ce-page-ppp.glade \
-	ce-vpn-wizard.glade
+uidir = $(datadir)/nm-applet
+ui_DATA = \
+	nm-connection-editor.ui \
+	ce-page-wired.ui \
+	ce-page-wireless.ui \
+	ce-page-wireless-security.ui \
+	ce-page-ip4.ui \
+	ce-page-ip6.ui \
+	ce-page-dsl.ui \
+	ce-page-mobile.ui \
+	ce-page-ppp.ui \
+	ce-vpn-wizard.ui
 
 BUILT_SOURCES = nm-connection-editor-service-glue.h
 
-CLEANFILES = *.bak *.gladep $(BUILT_SOURCES)
+CLEANFILES = *.bak $(BUILT_SOURCES)
 
-EXTRA_DIST = $(glade_DATA) nm-connection-editor-service.xml
+EXTRA_DIST = $(ui_DATA) nm-connection-editor-service.xml
 

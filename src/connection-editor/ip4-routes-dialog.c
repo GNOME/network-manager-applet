@@ -28,7 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <glade/glade.h>
 #include <glib/gi18n.h>
 
 #include <nm-utils.h>
@@ -142,7 +141,7 @@ get_one_addr (GtkTreeModel *model,
 static void
 validate (GtkWidget *dialog)
 {
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkWidget *widget;
 	GtkTreeModel *model;
 	GtkTreeIter tree_iter;
@@ -150,11 +149,11 @@ validate (GtkWidget *dialog)
 
 	g_return_if_fail (dialog != NULL);
 
-	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
-	g_return_if_fail (xml != NULL);
-	g_return_if_fail (GLADE_IS_XML (xml));
+	builder = g_object_get_data (G_OBJECT (dialog), "builder");
+	g_return_if_fail (builder != NULL);
+	g_return_if_fail (GTK_IS_BUILDER (builder));
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes"));
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
@@ -182,14 +181,14 @@ validate (GtkWidget *dialog)
 	valid = TRUE;
 
 done:
-	widget = glade_xml_get_widget (xml, "ok_button");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ok_button"));
 	gtk_widget_set_sensitive (widget, valid);
 }
 
 static void
 route_add_clicked (GtkButton *button, gpointer user_data)
 {
-	GladeXML *xml = GLADE_XML (user_data);
+	GtkBuilder *builder = GTK_BUILDER (user_data);
 	GtkWidget *widget;
 	GtkListStore *store;
 	GtkTreeIter iter;
@@ -198,7 +197,7 @@ route_add_clicked (GtkButton *button, gpointer user_data)
 	GtkTreePath *path;
 	GList *cells;
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes"));
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (widget)));
 	gtk_list_store_append (store, &iter);
 	gtk_list_store_set (store, &iter, COL_ADDRESS, "", -1);
@@ -219,13 +218,13 @@ route_add_clicked (GtkButton *button, gpointer user_data)
 	g_list_free (cells);
 	gtk_tree_path_free (path);
 
-	validate (glade_xml_get_widget (xml, "ip4_routes_dialog"));
+	validate (GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes_dialog")));
 }
 
 static void
 route_delete_clicked (GtkButton *button, gpointer user_data)
 {
-	GladeXML *xml = GLADE_XML (user_data);
+	GtkBuilder *builder = GTK_BUILDER (user_data);
 	GtkTreeView *treeview;
 	GtkTreeSelection *selection;
 	GList *selected_rows;
@@ -233,7 +232,7 @@ route_delete_clicked (GtkButton *button, gpointer user_data)
 	GtkTreeIter iter;
 	int num_rows;
 
-	treeview = GTK_TREE_VIEW (glade_xml_get_widget (xml, "ip4_routes"));
+	treeview = GTK_TREE_VIEW (GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes")));
 
 	selection = gtk_tree_view_get_selection (treeview);
 	if (gtk_tree_selection_count_selected_rows (selection) != 1)
@@ -255,7 +254,7 @@ route_delete_clicked (GtkButton *button, gpointer user_data)
 		gtk_tree_selection_select_iter (selection, &iter);
 	}
 
-	validate (glade_xml_get_widget (xml, "ip4_routes_dialog"));
+	validate (GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes_dialog")));
 }
 
 static void
@@ -277,7 +276,7 @@ cell_edited (GtkCellRendererText *cell,
              const gchar *new_text,
              gpointer user_data)
 {
-	GladeXML *xml = GLADE_XML (user_data);
+	GtkBuilder *builder = GTK_BUILDER (user_data);
 	GtkWidget *widget, *dialog;
 	GtkListStore *store;
 	GtkTreePath *path;
@@ -286,7 +285,7 @@ cell_edited (GtkCellRendererText *cell,
 	GtkTreeViewColumn *next_col;
 	GtkCellRenderer *next_cell;
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes"));
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (widget)));
 	path = gtk_tree_path_new_from_string (path_string);
 	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (cell), "column"));
@@ -297,7 +296,7 @@ cell_edited (GtkCellRendererText *cell,
 	/* Move focus to the next column */
 	column = (column >= COL_LAST) ? 0 : column + 1;
 	next_col = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), column);
-	dialog = glade_xml_get_widget (xml, "ip4_routes_dialog");
+	dialog = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes_dialog"));
 	next_cell = g_slist_nth_data (g_object_get_data (G_OBJECT (dialog), "renderers"), column);
 
 	gtk_tree_view_set_cursor_on_cell (GTK_TREE_VIEW (widget), path, next_col, next_cell, TRUE);
@@ -419,7 +418,7 @@ uint_cell_editing_started (GtkCellRenderer *cell,
 GtkWidget *
 ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 {
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkWidget *dialog, *widget, *ok_button;
 	GtkListStore *store;
 	GtkTreeIter model_iter;
@@ -429,26 +428,30 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	GtkCellRenderer *renderer;
 	int i;
 	GSList *renderers = NULL;
+	GError* error = NULL;
 
-	xml = glade_xml_new (GLADEDIR "/ce-page-ip4.glade", "ip4_routes_dialog", NULL);
-	if (!xml) {
-		g_warning ("%s: Couldn't load ip4 page glade file.", __func__);
+	builder = gtk_builder_new ();
+
+	if (!gtk_builder_add_from_file (builder, UIDIR "/ce-page-ip4.ui", &error))
+	{
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
-	dialog = glade_xml_get_widget (xml, "ip4_routes_dialog");
+	dialog = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes_dialog"));
 	if (!dialog) {
-		g_warning ("%s: Couldn't load ip4 routes dialog from glade file.", __func__);
-		g_object_unref (xml);
+		g_warning ("%s: Couldn't load ip4 routes dialog from .ui file.", __func__);
+		g_object_unref (builder);
 		return NULL;
 	}
 
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-	g_object_set_data_full (G_OBJECT (dialog), "glade-xml",
-	                        xml, (GDestroyNotify) g_object_unref);
+	g_object_set_data_full (G_OBJECT (dialog), "builder",
+	                        builder, (GDestroyNotify) g_object_unref);
 
-	ok_button = glade_xml_get_widget (xml, "ok_button");
+	ok_button = GTK_WIDGET (gtk_builder_get_object (builder, "ok_button"));
 
 	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
@@ -485,14 +488,14 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 		}
 	}
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes"));
 	gtk_tree_view_set_model (GTK_TREE_VIEW (widget), GTK_TREE_MODEL (store));
 	g_object_unref (store);
 
 	/* IP Address column */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
-	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
+	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), builder);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_ADDRESS));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
@@ -508,7 +511,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	/* Prefix column */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
-	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
+	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), builder);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_PREFIX));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
@@ -524,7 +527,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	/* Gateway column */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
-	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
+	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), builder);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_NEXT_HOP));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
@@ -540,7 +543,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	/* Metric column */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "editable", TRUE, NULL);
-	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), xml);
+	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), builder);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_METRIC));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (uint_cell_editing_started), ok_button);
 	renderers = g_slist_append (renderers, renderer);
@@ -558,22 +561,22 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget));
 	g_signal_connect (selection, "changed",
 	                  G_CALLBACK (list_selection_changed),
-	                  glade_xml_get_widget (xml, "ip4_route_delete_button"));
+	                  GTK_WIDGET (gtk_builder_get_object (builder, "ip4_route_delete_button")));
 
-	widget = glade_xml_get_widget (xml, "ip4_route_add_button");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_route_add_button"));
 	gtk_widget_set_sensitive (widget, TRUE);
-	g_signal_connect (widget, "clicked", G_CALLBACK (route_add_clicked), xml);
+	g_signal_connect (widget, "clicked", G_CALLBACK (route_add_clicked), builder);
 
-	widget = glade_xml_get_widget (xml, "ip4_route_delete_button");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_route_delete_button"));
 	gtk_widget_set_sensitive (widget, FALSE);
-	g_signal_connect (widget, "clicked", G_CALLBACK (route_delete_clicked), xml);
+	g_signal_connect (widget, "clicked", G_CALLBACK (route_delete_clicked), builder);
 
-	widget = glade_xml_get_widget (xml, "ip4_ignore_auto_routes");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_ignore_auto_routes"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
 	                              nm_setting_ip4_config_get_ignore_auto_routes (s_ip4));
 	gtk_widget_set_sensitive (widget, automatic);
 
-	widget = glade_xml_get_widget (xml, "ip4_never_default");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_never_default"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
 	                              nm_setting_ip4_config_get_never_default (s_ip4));
 
@@ -586,7 +589,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 void
 ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
 {
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkWidget *widget;
 	GtkTreeModel *model;
 	GtkTreeIter tree_iter;
@@ -595,11 +598,11 @@ ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
 	g_return_if_fail (dialog != NULL);
 	g_return_if_fail (s_ip4 != NULL);
 
-	xml = g_object_get_data (G_OBJECT (dialog), "glade-xml");
-	g_return_if_fail (xml != NULL);
-	g_return_if_fail (GLADE_IS_XML (xml));
+	builder = g_object_get_data (G_OBJECT (dialog), "builder");
+	g_return_if_fail (builder != NULL);
+	g_return_if_fail (GTK_IS_BUILDER (builder));
 
-	widget = glade_xml_get_widget (xml, "ip4_routes");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes"));
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
@@ -645,12 +648,12 @@ ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
 	}
 
-	widget = glade_xml_get_widget (xml, "ip4_ignore_auto_routes");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_ignore_auto_routes"));
 	g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_IGNORE_AUTO_ROUTES,
 	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
 	              NULL);
 
-	widget = glade_xml_get_widget (xml, "ip4_never_default");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_never_default"));
 	g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_NEVER_DEFAULT,
 	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
 	              NULL);

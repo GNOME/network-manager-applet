@@ -27,7 +27,6 @@
 #include <glib-object.h>
 
 #include <gtk/gtk.h>
-#include <glade/glade.h>
 
 #include <dbus/dbus-glib.h>
 #include <nm-connection.h>
@@ -63,7 +62,7 @@ typedef struct {
 	GObject parent;
 
 	gboolean initialized;
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkWidget *page;
 	char *title;
 

@@ -72,12 +72,12 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (self);
-	const char *glade_file = GLADEDIR "/applet.glade";
+	const char *ui_file = UIDIR "/applet.ui";
 
 	if (error)
 		return;
 
-	priv->security = (WirelessSecurity *) ws_wpa_eap_new (glade_file, parent->connection, TRUE);
+	priv->security = (WirelessSecurity *) ws_wpa_eap_new (ui_file, parent->connection, TRUE);
 	if (!priv->security) {
 		g_warning ("Could not load wired 802.1x user interface.");
 		return;
@@ -85,6 +85,7 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 
 	wireless_security_set_changed_notify (priv->security, stuff_changed, self);
 	priv->security_widget = wireless_security_get_widget (priv->security);
+	gtk_widget_unparent (priv->security_widget);
 
 	gtk_toggle_button_set_active (priv->enabled, priv->initial_have_8021x);
 	g_signal_connect (priv->enabled, "toggled", G_CALLBACK (enable_toggled), self);

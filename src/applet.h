@@ -32,7 +32,6 @@
 #include <gdk/gdkx.h>
 
 #include <gconf/gconf-client.h>
-#include <glade/glade.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <net/ethernet.h>
@@ -89,7 +88,7 @@ typedef struct
 	NMAGConfSettings *gconf_settings;
 
 	GConfClient *	gconf_client;
-	char	*		glade_file;
+	char	*		ui_file;
 
 	guint update_timestamps_id;
 
@@ -164,7 +163,7 @@ typedef struct
 	GtkWidget *		info_menu_item;
 	GtkWidget *		connections_menu_item;
 
-	GladeXML *		info_dialog_xml;
+	GtkBuilder *	info_dialog_ui;
 	NotifyNotification*	notification;
 	gboolean        notify_actions;
 } NMApplet;

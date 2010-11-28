@@ -31,7 +31,7 @@ typedef struct {
 	gboolean phase2;
 } EAPMethodTLS;
 
-EAPMethodTLS * eap_method_tls_new (const char *glade_file,
+EAPMethodTLS * eap_method_tls_new (const char *ui_file,
                                    WirelessSecurity *parent,
                                    NMConnection *connection,
                                    gboolean phase2);

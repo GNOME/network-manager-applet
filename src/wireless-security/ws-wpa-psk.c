@@ -20,7 +20,6 @@
  * (C) Copyright 2007 - 2009 Red Hat, Inc.
  */
 
-#include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
 #include <nm-setting-wireless.h>
@@ -38,7 +37,7 @@ show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
 	GtkWidget *widget;
 	gboolean visible;
 
-	widget = glade_xml_get_widget (sec->xml, "wpa_psk_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, "wpa_psk_entry"));
 	g_assert (widget);
 
 	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
@@ -61,7 +60,7 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 	guint32 len;
 	int i;
 
-	entry = glade_xml_get_widget (parent->xml, "wpa_psk_entry");
+	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_entry"));
 	g_assert (entry);
 
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
@@ -87,10 +86,10 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 {
 	GtkWidget *widget;
 
-	widget = glade_xml_get_widget (parent->xml, "wpa_psk_type_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_type_label"));
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (parent->xml, "wpa_psk_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_label"));
 	gtk_size_group_add_widget (group, widget);
 }
 
@@ -117,7 +116,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
 
-	widget = glade_xml_get_widget (parent->xml, "wpa_psk_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_entry"));
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_PSK, key, NULL);
 
@@ -145,34 +144,37 @@ static void
 update_secrets (WirelessSecurity *parent, NMConnection *connection)
 {
 	helper_fill_secret_entry (connection,
-	                          parent->xml,
+	                          parent->builder,
 	                          "wpa_psk_entry",
 	                          NM_TYPE_SETTING_WIRELESS_SECURITY,
 	                          (HelperSecretFunc) nm_setting_wireless_security_get_psk);
 }
 
 WirelessSecurityWPAPSK *
-ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
+ws_wpa_psk_new (const char *ui_file, NMConnection *connection)
 {
 	WirelessSecurityWPAPSK *sec;
 	GtkWidget *widget;
-	GladeXML *xml;
+	GtkBuilder *builder;
+	GError *error = NULL;
 
-	g_return_val_if_fail (glade_file != NULL, NULL);
+	g_return_val_if_fail (ui_file != NULL, NULL);
 
-	xml = glade_xml_new (glade_file, "wpa_psk_notebook", NULL);
-	if (xml == NULL) {
-		g_warning ("Couldn't get wpa_psk_widget from glade xml");
+	builder = gtk_builder_new ();
+	if (!gtk_builder_add_from_file (builder, ui_file, &error))
+	{
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
-	widget = glade_xml_get_widget (xml, "wpa_psk_notebook");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wpa_psk_notebook"));
 	g_assert (widget);
 	g_object_ref_sink (widget);
 
 	sec = g_slice_new0 (WirelessSecurityWPAPSK);
 	if (!sec) {
-		g_object_unref (xml);
+		g_object_unref (builder);
 		g_object_unref (widget);
 		return NULL;
 	}
@@ -183,11 +185,11 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 	                        fill_connection,
 	                        update_secrets,
 	                        destroy,
-	                        xml,
+	                        builder,
 	                        widget,
 	                        "wpa_psk_entry");
 
-	widget = glade_xml_get_widget (xml, "wpa_psk_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wpa_psk_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
@@ -198,17 +200,17 @@ ws_wpa_psk_new (const char *glade_file, NMConnection *connection)
 	if (connection)
 		update_secrets (WIRELESS_SECURITY (sec), connection);
 
-	widget = glade_xml_get_widget (xml, "show_checkbutton");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_checkbutton_wpa"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  sec);
 
-	widget = glade_xml_get_widget (xml, "wpa_psk_type_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wpa_psk_type_combo"));
 	g_assert (widget);
 	gtk_widget_hide (widget);
 
-	widget = glade_xml_get_widget (xml, "wpa_psk_type_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wpa_psk_type_label"));
 	g_assert (widget);
 	gtk_widget_hide (widget);
 

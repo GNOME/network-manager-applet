@@ -25,7 +25,6 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <glade/glade.h>
 
 #include <nm-connection.h>
 #include <nm-setting-8021x.h>
@@ -40,10 +39,10 @@ typedef gboolean    (*EMValidateFunc)       (EAPMethod *method);
 
 struct _EAPMethod {
 	guint32 refcount;
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkWidget *ui_widget;
 
-	GladeXML *nag_dialog_xml;
+	GtkBuilder *nag_dialog_ui;
 	char *ca_cert_chooser;
 	const char *default_field;
 	GtkWidget *nag_dialog;
@@ -92,7 +91,7 @@ void eap_method_init (EAPMethod *method,
                       EMFillConnectionFunc fill_connection,
                       EMUpdateSecretsFunc update_secrets,
                       EMDestroyFunc destroy,
-                      GladeXML *xml,
+                      GtkBuilder *builder,
                       GtkWidget *ui_widget,
                       const char *default_field);
 
@@ -104,14 +103,14 @@ gboolean eap_method_is_encrypted_private_key (const char *path);
 #define TYPE_CA_CERT     1
 #define TYPE_PRIVATE_KEY 2
 
-gboolean eap_method_validate_filepicker (GladeXML *xml,
+gboolean eap_method_validate_filepicker (GtkBuilder *builder,
                                          const char *name,
                                          guint32 item_type,
                                          const char *password,
                                          NMSetting8021xCKFormat *out_format);
 
 gboolean eap_method_nag_init (EAPMethod *method,
-                              const char *glade_file,
+                              const char *ui_file,
                               const char *ca_cert_chooser,
                               NMConnection *connection,
                               gboolean phase2);

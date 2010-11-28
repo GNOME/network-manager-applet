@@ -719,7 +719,7 @@ dun_start (PluginInfo *info)
 		info->spinner = gtk_spinner_new ();
 		gtk_box_pack_start (GTK_BOX (info->hbox), info->spinner, FALSE, FALSE, 6);
 	}
-	gtk_spinner_start (GTK_SPINNER (info->spinner))
+	gtk_spinner_start (GTK_SPINNER (info->spinner));
 	gtk_widget_show_all (info->hbox);
 
 	gtk_widget_set_sensitive (info->dun_button, FALSE);

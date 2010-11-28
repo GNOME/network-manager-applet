@@ -21,7 +21,6 @@
  */
 
 #include <glib/gi18n.h>
-#include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
 #include <nm-setting-wireless.h>
@@ -104,29 +103,32 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityDynamicWEP *
-ws_dynamic_wep_new (const char *glade_file,
+ws_dynamic_wep_new (const char *ui_file,
                     NMConnection *connection,
                     gboolean is_editor)
 {
 	WirelessSecurityDynamicWEP *sec;
 	GtkWidget *widget;
-	GladeXML *xml;
+	GtkBuilder *builder;
+	GError *error = NULL;
 
-	g_return_val_if_fail (glade_file != NULL, NULL);
+	g_return_val_if_fail (ui_file != NULL, NULL);
 
-	xml = glade_xml_new (glade_file, "dynamic_wep_notebook", NULL);
-	if (xml == NULL) {
-		g_warning ("Couldn't get dynamic_wep_widget from glade xml");
+	builder = gtk_builder_new();
+	if (!gtk_builder_add_from_file (builder, ui_file, &error))
+	{
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
-	widget = glade_xml_get_widget (xml, "dynamic_wep_notebook");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "dynamic_wep_notebook"));
 	g_assert (widget);
 	g_object_ref_sink (widget);
 
 	sec = g_slice_new0 (WirelessSecurityDynamicWEP);
 	if (!sec) {
-		g_object_unref (xml);
+		g_object_unref (builder);
 		g_object_unref (widget);
 		return NULL;
 	}
@@ -137,14 +139,14 @@ ws_dynamic_wep_new (const char *glade_file,
 	                        fill_connection,
 	                        update_secrets,
 	                        destroy,
-	                        xml,
+	                        builder,
 	                        widget,
 	                        NULL);
 
 	WIRELESS_SECURITY (sec)->nag_user = nag_user;
 
 	widget = ws_802_1x_auth_combo_init (WIRELESS_SECURITY (sec),
-	                                    glade_file,
+	                                    ui_file,
 	                                    "dynamic_wep_auth_combo",
 	                                    (GCallback) auth_combo_changed_cb,
 	                                    connection,

@@ -41,7 +41,7 @@ typedef struct {
 	gboolean is_editor;
 } EAPMethodSimple;
 
-EAPMethodSimple * eap_method_simple_new (const char *glade_file,
+EAPMethodSimple * eap_method_simple_new (const char *ui_file,
                                          WirelessSecurity *parent,
                                          NMConnection *connection,
                                          EAPMethodSimpleType type,

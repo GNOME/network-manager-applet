@@ -21,7 +21,6 @@
  */
 
 #include <glib/gi18n.h>
-#include <glade/glade.h>
 #include <ctype.h>
 #include <string.h>
 
@@ -54,10 +53,10 @@ validate (EAPMethod *parent)
 	EAPMethod *eap = NULL;
 	gboolean valid = FALSE;
 
-	if (!eap_method_validate_filepicker (parent->xml, "eap_peap_ca_cert_button", TYPE_CA_CERT, NULL, NULL))
+	if (!eap_method_validate_filepicker (parent->builder, "eap_peap_ca_cert_button", TYPE_CA_CERT, NULL, NULL))
 		return FALSE;
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_inner_auth_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_inner_auth_combo"));
 	g_assert (widget);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
@@ -82,23 +81,23 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 		g_object_unref (method->size_group);
 	method->size_group = g_object_ref (group);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_anon_identity_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_label"));
 	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_ca_cert_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_label"));
 	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_version_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_version_label"));
 	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_inner_auth_label");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_inner_auth_label"));
 	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_inner_auth_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_inner_auth_combo"));
 	g_assert (widget);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
@@ -132,13 +131,13 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	nm_setting_802_1x_add_eap_method (s_8021x, "peap");
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_anon_identity_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_entry"));
 	g_assert (widget);
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (text && strlen (text))
 		g_object_set (s_8021x, NM_SETTING_802_1X_ANONYMOUS_IDENTITY, text, NULL);
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_ca_cert_button");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_button"));
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	if (!nm_setting_802_1x_set_ca_cert (s_8021x, filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
@@ -150,7 +149,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	                             FALSE,
 	                             eap_method_get_ignore_ca_cert (parent));
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_version_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_version_combo"));
 	peapver_active = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 	switch (peapver_active) {
 	case 1:  /* PEAP v0 */
@@ -164,7 +163,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		break;
 	}
 
-	widget = glade_xml_get_widget (parent->xml, "eap_peap_inner_auth_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_inner_auth_combo"));
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
 	gtk_tree_model_get (model, &iter, I_METHOD_COLUMN, &eap, -1);
@@ -185,7 +184,7 @@ inner_auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 	GtkTreeIter iter;
 	GtkWidget *eap_widget;
 
-	vbox = glade_xml_get_widget (parent->xml, "eap_peap_inner_auth_vbox");
+	vbox = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_inner_auth_vbox"));
 	g_assert (vbox);
 
 	/* Remove any previous wireless security widgets */
@@ -200,6 +199,7 @@ inner_auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 
 	eap_widget = eap_method_get_widget (eap);
 	g_assert (eap_widget);
+	gtk_widget_unparent (eap_widget);
 
 	if (method->size_group)
 		eap_method_add_to_size_group (eap, method->size_group);
@@ -212,11 +212,11 @@ inner_auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 
 static GtkWidget *
 inner_auth_combo_init (EAPMethodPEAP *method,
-                       const char *glade_file,
+                       const char *ui_file,
                        NMConnection *connection,
                        NMSetting8021x *s_8021x)
 {
-	GladeXML *xml = EAP_METHOD (method)->xml;
+	GtkBuilder *builder = EAP_METHOD (method)->builder;
 	GtkWidget *combo;
 	GtkListStore *auth_model;
 	GtkTreeIter iter;
@@ -235,7 +235,7 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 			phase2_auth = nm_setting_802_1x_get_phase2_autheap (s_8021x);
 	}
 
-	em_mschap_v2 = eap_method_simple_new (glade_file,
+	em_mschap_v2 = eap_method_simple_new (ui_file,
 	                                      method->sec_parent,
 	                                      connection,
 	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2,
@@ -251,7 +251,7 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	if (phase2_auth && !strcasecmp (phase2_auth, "mschapv2"))
 		active = 0;
 
-	em_md5 = eap_method_simple_new (glade_file,
+	em_md5 = eap_method_simple_new (ui_file,
 	                                 method->sec_parent,
 	                                 connection,
 	                                 EAP_METHOD_SIMPLE_TYPE_MD5,
@@ -267,7 +267,7 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	if (phase2_auth && !strcasecmp (phase2_auth, "md5"))
 		active = 1;
 
-	em_gtc = eap_method_simple_new (glade_file,
+	em_gtc = eap_method_simple_new (ui_file,
 	                                method->sec_parent,
 	                                connection,
 	                                EAP_METHOD_SIMPLE_TYPE_GTC,
@@ -283,7 +283,7 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	if (phase2_auth && !strcasecmp (phase2_auth, "gtc"))
 		active = 2;
 
-	combo = glade_xml_get_widget (xml, "eap_peap_inner_auth_combo");
+	combo = GTK_WIDGET (gtk_builder_get_object (builder, "eap_peap_inner_auth_combo"));
 	g_assert (combo);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (combo), GTK_TREE_MODEL (auth_model));
@@ -306,33 +306,36 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 }
 
 EAPMethodPEAP *
-eap_method_peap_new (const char *glade_file,
+eap_method_peap_new (const char *ui_file,
                      WirelessSecurity *parent,
                      NMConnection *connection,
                      gboolean is_editor)
 {
 	EAPMethodPEAP *method;
 	GtkWidget *widget;
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkFileFilter *filter;
 	NMSetting8021x *s_8021x = NULL;
 	const char *filename;
+	GError *error = NULL;
 
-	g_return_val_if_fail (glade_file != NULL, NULL);
+	g_return_val_if_fail (ui_file != NULL, NULL);
 
-	xml = glade_xml_new (glade_file, "eap_peap_notebook", NULL);
-	if (xml == NULL) {
-		g_warning ("Couldn't get eap_peap_widget from glade xml");
+	builder = gtk_builder_new ();
+	if (!gtk_builder_add_from_file (builder, ui_file, &error))
+	{
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
-	widget = glade_xml_get_widget (xml, "eap_peap_notebook");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_peap_notebook"));
 	g_assert (widget);
 	g_object_ref_sink (widget);
 
 	method = g_slice_new0 (EAPMethodPEAP);
 	if (!method) {
-		g_object_unref (xml);
+		g_object_unref (builder);
 		g_object_unref (widget);
 		return NULL;
 	}
@@ -343,12 +346,12 @@ eap_method_peap_new (const char *glade_file,
 	                 fill_connection,
 	                 update_secrets,
 	                 destroy,
-	                 xml,
+	                 builder,
 	                 widget,
 	                 "eap_peap_anon_identity_entry");
 
 	eap_method_nag_init (EAP_METHOD (method),
-	                     glade_file,
+	                     ui_file,
 	                     "eap_peap_ca_cert_button",
 	                     connection,
 	                     FALSE);
@@ -359,7 +362,7 @@ eap_method_peap_new (const char *glade_file,
 	if (connection)
 		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 
-	widget = glade_xml_get_widget (xml, "eap_peap_ca_cert_button");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_peap_ca_cert_button"));
 	g_assert (widget);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (widget), TRUE);
 	gtk_file_chooser_button_set_title (GTK_FILE_CHOOSER_BUTTON (widget),
@@ -377,10 +380,10 @@ eap_method_peap_new (const char *glade_file,
 		}
 	}
 
-	widget = inner_auth_combo_init (method, glade_file, connection, s_8021x);
+	widget = inner_auth_combo_init (method, ui_file, connection, s_8021x);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);
 
-	widget = glade_xml_get_widget (xml, "eap_peap_version_combo");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_peap_version_combo"));
 	g_assert (widget);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 	if (s_8021x) {
@@ -399,7 +402,7 @@ eap_method_peap_new (const char *glade_file,
 	                  (GCallback) wireless_security_changed_cb,
 	                  parent);
 
-	widget = glade_xml_get_widget (xml, "eap_peap_anon_identity_entry");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_peap_anon_identity_entry"));
 	if (s_8021x && nm_setting_802_1x_get_anonymous_identity (s_8021x))
 		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_anonymous_identity (s_8021x));
 	g_signal_connect (G_OBJECT (widget), "changed",
