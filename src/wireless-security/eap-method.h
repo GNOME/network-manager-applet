@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef EAP_METHOD_H
@@ -39,10 +39,12 @@ typedef gboolean    (*EMValidateFunc)       (EAPMethod *method);
 
 struct _EAPMethod {
 	guint32 refcount;
+	gsize obj_size;
+
 	GtkBuilder *builder;
 	GtkWidget *ui_widget;
 
-	GtkBuilder *nag_dialog_ui;
+	GtkBuilder *nag_builder;
 	char *ca_cert_chooser;
 	const char *default_field;
 	GtkWidget *nag_dialog;
@@ -85,15 +87,15 @@ GType eap_method_get_g_type (void);
 #include "eap-method-peap.h"
 #include "eap-method-simple.h"
 
-void eap_method_init (EAPMethod *method,
-                      EMValidateFunc validate,
-                      EMAddToSizeGroupFunc add_to_size_group,
-                      EMFillConnectionFunc fill_connection,
-                      EMUpdateSecretsFunc update_secrets,
-                      EMDestroyFunc destroy,
-                      GtkBuilder *builder,
-                      GtkWidget *ui_widget,
-                      const char *default_field);
+EAPMethod *eap_method_init (gsize obj_size,
+                            EMValidateFunc validate,
+                            EMAddToSizeGroupFunc add_to_size_group,
+                            EMFillConnectionFunc fill_connection,
+                            EMUpdateSecretsFunc update_secrets,
+                            EMDestroyFunc destroy,
+                            const char *ui_file,
+                            const char *ui_widget_name,
+                            const char *default_field);
 
 GtkFileFilter * eap_method_default_file_chooser_filter_new (gboolean privkey);
 
@@ -110,7 +112,6 @@ gboolean eap_method_validate_filepicker (GtkBuilder *builder,
                                          NMSetting8021xCKFormat *out_format);
 
 gboolean eap_method_nag_init (EAPMethod *method,
-                              const char *ui_file,
                               const char *ca_cert_chooser,
                               NMConnection *connection,
                               gboolean phase2);

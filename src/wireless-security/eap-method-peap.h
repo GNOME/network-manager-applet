@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef EAP_METHOD_PEAP_H
@@ -25,18 +25,11 @@
 
 #include "wireless-security.h"
 
-typedef struct {
-	struct _EAPMethod parent;
+typedef struct _EAPMethodPEAP EAPMethodPEAP;
 
-	GtkSizeGroup *size_group;
-	WirelessSecurity *sec_parent;
-	gboolean is_editor;
-} EAPMethodPEAP;
-
-EAPMethodPEAP * eap_method_peap_new (const char *ui_file,
-                                     WirelessSecurity *parent,
-                                     NMConnection *connection,
-                                     gboolean is_editor);
+EAPMethodPEAP *eap_method_peap_new (WirelessSecurity *ws_parent,
+                                    NMConnection *connection,
+                                    gboolean is_editor);
 
 #endif /* EAP_METHOD_PEAP_H */
 

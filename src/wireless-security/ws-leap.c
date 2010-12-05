@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -28,6 +28,9 @@
 #include "gconf-helpers.h"
 #include "helpers.h"
 
+struct _WirelessSecurityLEAP {
+	WirelessSecurity parent;
+};
 
 static void
 show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
@@ -40,14 +43,6 @@ show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
 
 	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
-}
-
-static void
-destroy (WirelessSecurity *parent)
-{
-	WirelessSecurityLEAP *sec = (WirelessSecurityLEAP *) parent;
-
-	g_slice_free (WirelessSecurityLEAP, sec);
 }
 
 static gboolean
@@ -125,44 +120,24 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityLEAP *
-ws_leap_new (const char *ui_file, NMConnection *connection)
+ws_leap_new (NMConnection *connection)
 {
+	WirelessSecurity *parent;
 	WirelessSecurityLEAP *sec;
 	GtkWidget *widget;
-	GtkBuilder *builder;
 	NMSettingWirelessSecurity *wsec = NULL;
-	GError *error = NULL;
 
-	g_return_val_if_fail (ui_file != NULL, NULL);
-
-	builder = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (builder, ui_file, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
-		g_error_free (error);
+	parent = wireless_security_init (sizeof (WirelessSecurityLEAP),
+	                                 validate,
+	                                 add_to_size_group,
+	                                 fill_connection,
+	                                 update_secrets,
+	                                 NULL,
+	                                 UIDIR "/ws-leap.ui",
+	                                 "leap_notebook",
+	                                 "leap_username_entry");
+	if (!parent)
 		return NULL;
-	}
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "leap_notebook"));
-	g_assert (widget);
-	g_object_ref_sink (widget);
-
-	sec = g_slice_new0 (WirelessSecurityLEAP);
-	if (!sec) {
-		g_object_unref (builder);
-		g_object_unref (widget);
-		return NULL;
-	}
-
-	wireless_security_init (WIRELESS_SECURITY (sec),
-	                        validate,
-	                        add_to_size_group,
-	                        fill_connection,
-	                        update_secrets,
-	                        destroy,
-	                        builder,
-	                        widget,
-	                        "leap_username_entry");
 
 	if (connection) {
 		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
@@ -176,7 +151,9 @@ ws_leap_new (const char *ui_file, NMConnection *connection)
 		}
 	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "leap_password_entry"));
+	sec = (WirelessSecurityLEAP *) parent;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_password_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
@@ -184,7 +161,7 @@ ws_leap_new (const char *ui_file, NMConnection *connection)
 	if (wsec)
 		update_secrets (WIRELESS_SECURITY (sec), connection);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "leap_username_entry"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_username_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
@@ -192,7 +169,7 @@ ws_leap_new (const char *ui_file, NMConnection *connection)
 	if (wsec)
 		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_wireless_security_get_leap_username (wsec));
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_checkbutton_leap"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_leap"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,

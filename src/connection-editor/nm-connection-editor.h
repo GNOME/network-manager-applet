@@ -58,6 +58,7 @@ typedef struct {
 	GtkWidget *cancel_button;
 
 	gboolean busy;
+	gboolean init_run;
 } NMConnectionEditor;
 
 typedef struct {

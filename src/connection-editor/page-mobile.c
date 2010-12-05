@@ -356,32 +356,17 @@ ce_page_mobile_new (NMConnection *connection,
 {
 	CEPageMobile *self;
 	CEPageMobilePrivate *priv;
-	CEPage *parent;
 
-	self = CE_PAGE_MOBILE (g_object_new (CE_TYPE_PAGE_MOBILE,
-	                                     CE_PAGE_CONNECTION, connection,
-	                                     CE_PAGE_PARENT_WINDOW, parent_window,
-	                                     NULL));
-	parent = CE_PAGE (self);
-
-	parent->builder = gtk_builder_new();
-
-	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-mobile.ui", error)) {
-		g_warning ("Couldn't load builder file: %s", (*error)->message);
-		g_set_error (error, 0, 0, "%s", _("Could not load mobile broadband user interface."));
-		g_object_unref (self);
+	self = CE_PAGE_MOBILE (ce_page_new (CE_TYPE_PAGE_MOBILE,
+	                                    connection,
+	                                    parent_window,
+	                                    UIDIR "/ce-page-mobile.ui",
+	                                    "MobilePage",
+	                                    _("Mobile Broadband")));
+	if (!self) {
+		g_set_error_literal (error, 0, 0, _("Could not load mobile broadband user interface."));
 		return NULL;
 	}
-
-	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "MobilePage"));
-	if (!parent->page) {
-		g_set_error (error, 0, 0, "%s", _("Could not load mobile broadband user interface."));
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("Mobile Broadband"));
 
 	mobile_private_init (self);
 	priv = CE_PAGE_MOBILE_GET_PRIVATE (self);

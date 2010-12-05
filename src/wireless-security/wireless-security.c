@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -133,38 +133,69 @@ wireless_security_unref (WirelessSecurity *sec)
 	g_return_if_fail (sec != NULL);
 	g_return_if_fail (sec->refcount > 0);
 
-	g_assert (sec->destroy);
-
 	sec->refcount--;
 	if (sec->refcount == 0) {
-		g_object_unref (sec->builder);
-		g_object_unref (sec->ui_widget);
-		(*(sec->destroy)) (sec);
+		if (sec->destroy)
+			sec->destroy (sec);
+
+		if (sec->builder)
+			g_object_unref (sec->builder);
+		if (sec->ui_widget)
+			g_object_unref (sec->ui_widget);
+		g_slice_free1 (sec->obj_size, sec);
 	}
 }
 
-void
-wireless_security_init (WirelessSecurity *sec,
+WirelessSecurity *
+wireless_security_init (gsize obj_size,
                         WSValidateFunc validate,
                         WSAddToSizeGroupFunc add_to_size_group,
                         WSFillConnectionFunc fill_connection,
                         WSUpdateSecretsFunc update_secrets,
                         WSDestroyFunc destroy,
-                        GtkBuilder *builder,
-                        GtkWidget *ui_widget,
+                        const char *ui_file,
+                        const char *ui_widget_name,
                         const char *default_field)
 {
+	WirelessSecurity *sec;
+	GError *error = NULL;
+
+	g_return_val_if_fail (obj_size > 0, NULL);
+	g_return_val_if_fail (ui_file != NULL, NULL);
+	g_return_val_if_fail (ui_widget_name != NULL, NULL);
+
+	sec = g_slice_alloc0 (obj_size);
+	g_assert (sec);
+
 	sec->refcount = 1;
+	sec->obj_size = obj_size;
 
 	sec->validate = validate;
 	sec->add_to_size_group = add_to_size_group;
 	sec->fill_connection = fill_connection;
 	sec->update_secrets = update_secrets;
 	sec->destroy = destroy;
-
-	sec->builder = builder;
-	sec->ui_widget = ui_widget;
 	sec->default_field = default_field;
+
+	sec->builder = gtk_builder_new ();
+	if (!gtk_builder_add_from_file (sec->builder, ui_file, &error)) {
+		g_warning ("Couldn't load UI builder file %s: %s",
+		           ui_file, error->message);
+		g_error_free (error);
+		wireless_security_unref (sec);
+		return NULL;
+	}
+
+	sec->ui_widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, ui_widget_name));
+	if (!sec->ui_widget) {
+		g_warning ("Couldn't load UI widget '%s' from UI file %s",
+		           ui_widget_name, ui_file);
+		wireless_security_unref (sec);
+		return NULL;
+	}
+	g_object_ref_sink (sec->ui_widget);
+
+	return sec;
 }
 
 GtkWidget *
@@ -289,7 +320,6 @@ ws_802_1x_auth_combo_changed (GtkWidget *combo,
 
 GtkWidget *
 ws_802_1x_auth_combo_init (WirelessSecurity *sec,
-                           const char *ui_file,
                            const char *combo_name,
                            GCallback auth_combo_changed_cb,
                            NMConnection *connection,
@@ -324,7 +354,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 
-	em_tls = eap_method_tls_new (ui_file, sec, connection, FALSE);
+	em_tls = eap_method_tls_new (sec, connection, FALSE);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("TLS"),
@@ -336,7 +366,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	item++;
 
 	if (!wired) {
-		em_leap = eap_method_leap_new (ui_file, sec, connection);
+		em_leap = eap_method_leap_new (sec, connection);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
 		                    AUTH_NAME_COLUMN, _("LEAP"),
@@ -348,7 +378,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		item++;
 	}
 
-	em_ttls = eap_method_ttls_new (ui_file, sec, connection, is_editor);
+	em_ttls = eap_method_ttls_new (sec, connection, is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Tunneled TLS"),
@@ -359,7 +389,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		active = item;
 	item++;
 
-	em_peap = eap_method_peap_new (ui_file, sec, connection, is_editor);
+	em_peap = eap_method_peap_new (sec, connection, is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Protected EAP (PEAP)"),

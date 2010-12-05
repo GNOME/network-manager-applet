@@ -17,19 +17,15 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef WS_WPA_PSK_H
 #define WS_WPA_PSK_H
 
-typedef struct {
-	struct _WirelessSecurity parent;
+typedef struct _WirelessSecurityWPAPSK WirelessSecurityWPAPSK;
 
-} WirelessSecurityWPAPSK;
-
-WirelessSecurityWPAPSK * ws_wpa_psk_new (const char *ui_file,
-                                         NMConnection *connection);
+WirelessSecurityWPAPSK * ws_wpa_psk_new (NMConnection *connection);
 
 #endif /* WS_WEP_KEY_H */
 

@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef WIRELESS_SECURITY_H
@@ -41,6 +41,7 @@ typedef GtkWidget * (*WSNagUserFunc) (WirelessSecurity *sec);
 
 struct _WirelessSecurity {
 	guint32 refcount;
+	gsize obj_size;
 	GtkBuilder *builder;
 	GtkWidget *ui_widget;
 	WSChangedFunc changed_notify;
@@ -91,15 +92,15 @@ GType wireless_security_get_g_type (void);
 #include "ws-wpa-eap.h"
 #include "ws-dynamic-wep.h"
 
-void wireless_security_init (WirelessSecurity *sec,
-                             WSValidateFunc validate,
-                             WSAddToSizeGroupFunc add_to_size_group,
-                             WSFillConnectionFunc fill_connection,
-                             WSUpdateSecretsFunc update_secrets,
-                             WSDestroyFunc destroy,
-                             GtkBuilder *builder,
-                             GtkWidget *ui_widget,
-                             const char *default_field);
+WirelessSecurity *wireless_security_init (gsize obj_size,
+                                          WSValidateFunc validate,
+                                          WSAddToSizeGroupFunc add_to_size_group,
+                                          WSFillConnectionFunc fill_connection,
+                                          WSUpdateSecretsFunc update_secrets,
+                                          WSDestroyFunc destroy,
+                                          const char *ui_file,
+                                          const char *ui_widget_name,
+                                          const char *default_field);
 
 void wireless_security_changed_cb (GtkWidget *entry, gpointer user_data);
 
@@ -109,7 +110,6 @@ void wireless_security_clear_ciphers (NMConnection *connection);
 #define AUTH_METHOD_COLUMN 1
 
 GtkWidget *ws_802_1x_auth_combo_init (WirelessSecurity *sec,
-                                      const char *ui_file,
                                       const char *combo_name,
                                       GCallback auth_combo_changed_cb,
                                       NMConnection *connection,

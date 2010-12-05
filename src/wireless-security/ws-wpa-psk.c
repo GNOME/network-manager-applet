@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #include <ctype.h>
@@ -31,6 +31,10 @@
 
 #define WPA_PMK_LEN 32
 
+struct _WirelessSecurityWPAPSK {
+	WirelessSecurity parent;
+};
+
 static void
 show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
 {
@@ -42,14 +46,6 @@ show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
 
 	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
-}
-
-static void
-destroy (WirelessSecurity *parent)
-{
-	WirelessSecurityWPAPSK *sec = (WirelessSecurityWPAPSK *) parent;
-
-	g_slice_free (WirelessSecurityWPAPSK, sec);
 }
 
 static gboolean
@@ -151,45 +147,27 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityWPAPSK *
-ws_wpa_psk_new (const char *ui_file, NMConnection *connection)
+ws_wpa_psk_new (NMConnection *connection)
 {
+	WirelessSecurity *parent;
 	WirelessSecurityWPAPSK *sec;
 	GtkWidget *widget;
-	GtkBuilder *builder;
-	GError *error = NULL;
 
-	g_return_val_if_fail (ui_file != NULL, NULL);
-
-	builder = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (builder, ui_file, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
-		g_error_free (error);
+	parent = wireless_security_init (sizeof (WirelessSecurityWPAPSK),
+	                                 validate,
+	                                 add_to_size_group,
+	                                 fill_connection,
+	                                 update_secrets,
+	                                 NULL,
+	                                 UIDIR "/ws-wpa-psk.ui",
+	                                 "wpa_psk_notebook",
+	                                 "wpa_psk_entry");
+	if (!parent)
 		return NULL;
-	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wpa_psk_notebook"));
-	g_assert (widget);
-	g_object_ref_sink (widget);
+	sec = (WirelessSecurityWPAPSK *) parent;
 
-	sec = g_slice_new0 (WirelessSecurityWPAPSK);
-	if (!sec) {
-		g_object_unref (builder);
-		g_object_unref (widget);
-		return NULL;
-	}
-
-	wireless_security_init (WIRELESS_SECURITY (sec),
-	                        validate,
-	                        add_to_size_group,
-	                        fill_connection,
-	                        update_secrets,
-	                        destroy,
-	                        builder,
-	                        widget,
-	                        "wpa_psk_entry");
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wpa_psk_entry"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
@@ -200,17 +178,17 @@ ws_wpa_psk_new (const char *ui_file, NMConnection *connection)
 	if (connection)
 		update_secrets (WIRELESS_SECURITY (sec), connection);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_checkbutton_wpa"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_wpa"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  sec);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wpa_psk_type_combo"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_type_combo"));
 	g_assert (widget);
 	gtk_widget_hide (widget);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wpa_psk_type_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_type_label"));
 	g_assert (widget);
 	gtk_widget_hide (widget);
 

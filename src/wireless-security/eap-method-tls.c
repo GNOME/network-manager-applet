@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #include <glib/gi18n.h>
@@ -33,6 +33,13 @@
 #include "utils.h"
 #include "helpers.h"
 
+struct _EAPMethodTLS {
+	EAPMethod parent;
+
+	gboolean phase2;
+};
+
+
 static void
 show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
 {
@@ -44,14 +51,6 @@ show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
 
 	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
-}
-
-static void
-destroy (EAPMethod *parent)
-{
-	EAPMethodTLS *method = (EAPMethodTLS *) parent;
-
-	g_slice_free (EAPMethodTLS, method);
 }
 
 static gboolean
@@ -296,7 +295,7 @@ static void
 setup_filepicker (GtkBuilder *builder,
                   const char *name,
                   const char *title,
-                  WirelessSecurity *parent,
+                  WirelessSecurity *ws_parent,
                   EAPMethodTLS *method,
                   NMSetting8021x *s_8021x,
                   SchemeFunc scheme_func,
@@ -334,7 +333,7 @@ setup_filepicker (GtkBuilder *builder,
 
 	g_signal_connect (G_OBJECT (widget), "selection-changed",
 	                  (GCallback) wireless_security_changed_cb,
-	                  parent);
+	                  ws_parent);
 
 	filter = eap_method_default_file_chooser_filter_new (privkey);
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (widget), filter);
@@ -388,82 +387,61 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 }
 
 EAPMethodTLS *
-eap_method_tls_new (const char *ui_file,
-                    WirelessSecurity *parent,
+eap_method_tls_new (WirelessSecurity *ws_parent,
                     NMConnection *connection,
                     gboolean phase2)
 {
+	EAPMethod *parent;
 	EAPMethodTLS *method;
 	GtkWidget *widget;
-	GtkBuilder *builder;
 	NMSetting8021x *s_8021x = NULL;
-    GError *error = NULL;
 
-	g_return_val_if_fail (ui_file != NULL, NULL);
-
-	builder = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (builder, ui_file, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
-		g_error_free (error);
+	parent = eap_method_init (sizeof (EAPMethodTLS),
+	                          validate,
+	                          add_to_size_group,
+	                          fill_connection,
+	                          update_secrets,
+	                          NULL,
+	                          UIDIR "/eap-method-tls.ui",
+	                          "eap_tls_notebook",
+	                          "eap_tls_identity_entry");
+	if (!parent)
 		return NULL;
-	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_tls_notebook"));
-	g_assert (widget);
-	g_object_ref_sink (widget);
-
-	method = g_slice_new0 (EAPMethodTLS);
-	if (!method) {
-		g_object_unref (builder);
-		g_object_unref (widget);
-		return NULL;
-	}
-
-	eap_method_init (EAP_METHOD (method),
-	                 validate,
-	                 add_to_size_group,
-	                 fill_connection,
-	                 update_secrets,
-	                 destroy,
-	                 builder,
-	                 widget,
-	                 "eap_tls_identity_entry");
-
-	eap_method_nag_init (EAP_METHOD (method),
-	                     ui_file,
+	eap_method_nag_init (parent,
 	                     "eap_tls_ca_cert_button",
 	                     connection,
 	                     phase2);
 
+	method = (EAPMethodTLS *) parent;
 	method->phase2 = phase2;
 
 	if (connection)
 		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_tls_identity_entry"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_identity_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
-	                  parent);
+	                  ws_parent);
 	if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
 		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 
-	setup_filepicker (builder, "eap_tls_user_cert_button",
+	setup_filepicker (parent->builder, "eap_tls_user_cert_button",
 	                  _("Choose your personal certificate..."),
-	                  parent, method, s_8021x,
+	                  ws_parent, method, s_8021x,
 	                  phase2 ? nm_setting_802_1x_get_phase2_client_cert_scheme : nm_setting_802_1x_get_client_cert_scheme,
 	                  phase2 ? nm_setting_802_1x_get_phase2_client_cert_path : nm_setting_802_1x_get_client_cert_path,
 	                  FALSE, TRUE);
-	setup_filepicker (builder, "eap_tls_ca_cert_button",
+	setup_filepicker (parent->builder, "eap_tls_ca_cert_button",
 	                  _("Choose a Certificate Authority certificate..."),
-	                  parent, method, s_8021x,
+	                  ws_parent, method, s_8021x,
 	                  phase2 ? nm_setting_802_1x_get_phase2_ca_cert_scheme : nm_setting_802_1x_get_ca_cert_scheme,
 	                  phase2 ? nm_setting_802_1x_get_phase2_ca_cert_path : nm_setting_802_1x_get_ca_cert_path,
 	                  FALSE, FALSE);
-	setup_filepicker (builder, "eap_tls_private_key_button",
+	setup_filepicker (parent->builder, "eap_tls_private_key_button",
 	                  _("Choose your private key..."),
-	                  parent, method, s_8021x,
+	                  ws_parent, method, s_8021x,
 	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_scheme : nm_setting_802_1x_get_private_key_scheme,
 	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_path : nm_setting_802_1x_get_private_key_path,
 	                  TRUE, FALSE);
@@ -472,13 +450,13 @@ eap_method_tls_new (const char *ui_file,
 	if (connection)
 		update_secrets (EAP_METHOD (method), connection);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_tls_private_key_password_entry"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_private_key_password_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
-	                  parent);
+	                  ws_parent);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_checkbutton_eaptls"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eaptls"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,

@@ -200,7 +200,6 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
 	int active = -1;
 	int item = 0;
-	const char *ui_file = UIDIR "/applet.ui";
 	GtkComboBox *combo;
 
 	if (error)
@@ -257,7 +256,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 				wep_type = NM_WEP_KEY_TYPE_KEY;
 		}
 
-		ws_wep = ws_wep_key_new (ui_file, connection, NM_WEP_KEY_TYPE_KEY, FALSE, FALSE);
+		ws_wep = ws_wep_key_new (connection, NM_WEP_KEY_TYPE_KEY, FALSE, FALSE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"));
@@ -266,7 +265,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (ui_file, connection, NM_WEP_KEY_TYPE_PASSPHRASE, FALSE, FALSE);
+		ws_wep = ws_wep_key_new (connection, NM_WEP_KEY_TYPE_PASSPHRASE, FALSE, FALSE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -279,7 +278,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	if (nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityLEAP *ws_leap;
 
-		ws_leap = ws_leap_new (ui_file, connection);
+		ws_leap = ws_leap_new (connection);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
@@ -292,7 +291,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (ui_file, connection, TRUE);
+		ws_dynamic_wep = ws_dynamic_wep_new (connection, TRUE);
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
@@ -306,7 +305,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;
 
-		ws_wpa_psk = ws_wpa_psk_new (ui_file, connection);
+		ws_wpa_psk = ws_wpa_psk_new (connection);
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
@@ -320,7 +319,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (ui_file, connection, TRUE);
+		ws_wpa_eap = ws_wpa_eap_new (connection, TRUE);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
@@ -349,43 +348,27 @@ ce_page_wireless_security_new (NMConnection *connection,
                                GError **error)
 {
 	CEPageWirelessSecurity *self;
-	CEPage *parent;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wsec = NULL;
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
 	const char *security;
 
-	self = CE_PAGE_WIRELESS_SECURITY (g_object_new (CE_TYPE_PAGE_WIRELESS_SECURITY,
-	                                                CE_PAGE_CONNECTION, connection,
-	                                                CE_PAGE_PARENT_WINDOW, parent_window,
-	                                                NULL));
-	parent = CE_PAGE (self);
-
 	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
 	if (!s_wireless) {
-		g_set_error (error, 0, 0, "%s", _("Could not load WiFi security user interface; missing WiFi setting."));
-		g_object_unref (self);
+		g_set_error_literal (error, 0, 0, _("Could not load WiFi security user interface; missing WiFi setting."));
 		return NULL;
 	}
 
-	parent->builder = gtk_builder_new();
-
-	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-wireless-security.ui", error)) {
-		g_warning ("Couldn't load builder file: %s", (*error)->message);
-		g_set_error (error, 0, 0, "%s", _("Could not load WiFi security user interface."));
-		g_object_unref (self);
+	self = CE_PAGE_WIRELESS_SECURITY (ce_page_new (CE_TYPE_PAGE_WIRELESS_SECURITY,
+	                                               connection,
+	                                               parent_window,
+	                                               UIDIR "/ce-page-wireless-security.ui",
+	                                               "WirelessSecurityPage",
+	                                               _("Wireless Security")));
+	if (!self) {
+		g_set_error_literal (error, 0, 0, _("Could not load WiFi security user interface."));
 		return NULL;
 	}
-
-	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "WirelessSecurityPage"));
-	if (!parent->page) {
-		g_set_error (error, 0, 0, "%s", _("Could not load WiFi security user interface."));
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("Wireless Security"));
 
 	self->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 

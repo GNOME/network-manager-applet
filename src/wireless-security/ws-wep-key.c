@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #include <ctype.h>
@@ -30,6 +30,13 @@
 #include "utils.h"
 #include "gconf-helpers.h"
 
+struct _WirelessSecurityWEPKey {
+	WirelessSecurity parent;
+
+	NMWepKeyType type;
+	char keys[4][65];
+	guint8 cur_index;
+};
 
 static void
 show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
@@ -79,8 +86,6 @@ destroy (WirelessSecurity *parent)
 
 	for (i = 0; i < 4; i++)
 		memset (sec->keys[i], 0, sizeof (sec->keys[i]));
-
-	g_slice_free (WirelessSecurityWEPKey, sec);
 }
 
 static gboolean
@@ -235,54 +240,35 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityWEPKey *
-ws_wep_key_new (const char *ui_file,
-                NMConnection *connection,
+ws_wep_key_new (NMConnection *connection,
                 NMWepKeyType type,
                 gboolean adhoc_create,
                 gboolean simple)
 {
+	WirelessSecurity *parent;
 	WirelessSecurityWEPKey *sec;
 	GtkWidget *widget;
-	GtkBuilder *builder;
 	NMSettingWirelessSecurity *s_wsec = NULL;
 	guint8 default_key_idx = 0;
 	gboolean is_adhoc = adhoc_create;
 	gboolean is_shared_key = FALSE;
-	GError *error = NULL;
 
-	g_return_val_if_fail (ui_file != NULL, NULL);
-
-	builder = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (builder, ui_file, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
-		g_error_free (error);
+	parent = wireless_security_init (sizeof (WirelessSecurityWEPKey),
+	                                 validate,
+	                                 add_to_size_group,
+	                                 fill_connection,
+	                                 update_secrets,
+	                                 destroy,
+	                                 UIDIR "/ws-wep-key.ui",
+	                                 "wep_key_notebook",
+	                                 "wep_key_entry");
+	if (!parent)
 		return NULL;
-	}
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wep_key_notebook"));
-	g_assert (widget);
-	g_object_ref_sink (widget);
-
-	sec = g_slice_new0 (WirelessSecurityWEPKey);
-	if (!sec) {
-		g_object_unref (builder);
-		g_object_unref (widget);
-		return NULL;
-	}
-
-	wireless_security_init (WIRELESS_SECURITY (sec),
-	                        validate,
-	                        add_to_size_group,
-	                        fill_connection,
-	                        update_secrets,
-	                        destroy,
-	                        builder,
-	                        widget,
-	                        "wep_key_entry");
+	
+	sec = (WirelessSecurityWEPKey *) parent;
 	sec->type = type;
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wep_key_entry"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	g_assert (widget);
 	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
@@ -314,7 +300,7 @@ ws_wep_key_new (const char *ui_file,
 	else if (sec->type == NM_WEP_KEY_TYPE_PASSPHRASE)
 		gtk_entry_set_max_length (GTK_ENTRY (widget), 64);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "key_index_combo"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "key_index_combo"));
 	if (connection && s_wsec)
 		default_key_idx = nm_setting_wireless_security_get_wep_tx_keyidx (s_wsec);
 
@@ -327,7 +313,7 @@ ws_wep_key_new (const char *ui_file,
 	/* Key index is useless with adhoc networks */
 	if (is_adhoc || simple) {
 		gtk_widget_hide (widget);
-		widget = GTK_WIDGET (gtk_builder_get_object (builder, "key_index_label"));
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "key_index_label"));
 		gtk_widget_hide (widget);
 	}
 
@@ -335,13 +321,13 @@ ws_wep_key_new (const char *ui_file,
 	if (connection)
 		update_secrets (WIRELESS_SECURITY (sec), connection);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_checkbutton_wep"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_wep"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  sec);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "auth_method_combo"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "auth_method_combo"));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), is_shared_key ? 1 : 0);
 
 	g_signal_connect (G_OBJECT (widget), "changed",
@@ -356,7 +342,7 @@ ws_wep_key_new (const char *ui_file,
 		if (is_adhoc)
 			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 		gtk_widget_hide (widget);
-		widget = GTK_WIDGET (gtk_builder_get_object (builder, "auth_method_label"));
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "auth_method_label"));
 		gtk_widget_hide (widget);
 	}
 

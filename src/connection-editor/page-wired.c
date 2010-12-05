@@ -200,32 +200,17 @@ ce_page_wired_new (NMConnection *connection,
 {
 	CEPageWired *self;
 	CEPageWiredPrivate *priv;
-	CEPage *parent;
 
-	self = CE_PAGE_WIRED (g_object_new (CE_TYPE_PAGE_WIRED,
-	                                    CE_PAGE_CONNECTION, connection,
-	                                    CE_PAGE_PARENT_WINDOW, parent_window,
-	                                    NULL));
-	parent = CE_PAGE (self);
-
-	parent->builder = gtk_builder_new ();
-
-	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-wired.ui", error)) {
-		g_warning ("Couldn't load builder file: %s", (*error)->message);
-		g_set_error (error, 0, 0, "%s", _("Could not load wired user interface."));
-		g_object_unref (self);
+	self = CE_PAGE_WIRED (ce_page_new (CE_TYPE_PAGE_WIRED,
+	                                   connection,
+	                                   parent_window,
+	                                   UIDIR "/ce-page-wired.ui",
+	                                   "WiredPage",
+	                                   _("Wired")));
+	if (!self) {
+		g_set_error_literal (error, 0, 0, _("Could not load wired user interface."));
 		return NULL;
 	}
-
-	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "WiredPage"));
-	if (!parent->page) {
-		g_set_error (error, 0, 0, "%s", _("Could not load wired user interface."));
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("Wired"));
 
 	wired_private_init (self);
 	priv = CE_PAGE_WIRED_GET_PRIVATE (self);
@@ -367,5 +352,4 @@ wired_connection_new (GtkWindow *parent,
 
 	(*result_func) (connection, FALSE, NULL, user_data);
 }
-
 

@@ -17,21 +17,18 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef WS_DYNAMIC_WEP_H
 #define WS_DYNAMIC_WEP_H
 
-typedef struct {
-	struct _WirelessSecurity parent;
+#include <nm-connection.h>
 
-	GtkSizeGroup *size_group;
-} WirelessSecurityDynamicWEP;
+typedef struct _WirelessSecurityDynamicWEP WirelessSecurityDynamicWEP;
 
-WirelessSecurityDynamicWEP * ws_dynamic_wep_new (const char *ui_file,
-                                                 NMConnection *connection,
-                                                 gboolean is_editor);
+WirelessSecurityDynamicWEP *ws_dynamic_wep_new (NMConnection *connection,
+                                                gboolean is_editor);
 
 #endif /* WS_DYNAMIC_WEP_H */
 

@@ -788,33 +788,18 @@ ce_page_ip6_new (NMConnection *connection,
 {
 	CEPageIP6 *self;
 	CEPageIP6Private *priv;
-	CEPage *parent;
 	NMSettingConnection *s_con;
 
-	self = CE_PAGE_IP6 (g_object_new (CE_TYPE_PAGE_IP6,
-	                                  CE_PAGE_CONNECTION, connection,
-	                                  CE_PAGE_PARENT_WINDOW, parent_window,
-	                                  NULL));
-	parent = CE_PAGE (self);
-
-	parent->builder = gtk_builder_new();
-
-	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-ip6.ui", error)) {
-		g_warning ("Couldn't load builder file: %s", (*error)->message);
-		g_set_error (error, 0, 0, "%s", _("Could not load IPv6 user interface."));
-		g_object_unref (self);
+	self = CE_PAGE_IP6 (ce_page_new (CE_TYPE_PAGE_IP6,
+	                                 connection,
+	                                 parent_window,
+	                                 UIDIR "/ce-page-ip6.ui",
+	                                 "IP6Page",
+	                                 _("IPv6 Settings")));
+	if (!self) {
+		g_set_error_literal (error, 0, 0, _("Could not load IPv6 user interface."));
 		return NULL;
 	}
-
-	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "IP6Page"));
-	if (!parent->page) {
-		g_set_error (error, 0, 0, "%s", _("Could not load IPv6 user interface."));
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("IPv6 Settings"));
 
 	ip6_private_init (self, connection);
 	priv = CE_PAGE_IP6_GET_PRIVATE (self);
