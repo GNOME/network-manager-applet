@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -72,12 +72,11 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (self);
-	const char *ui_file = UIDIR "/applet.ui";
 
 	if (error)
 		return;
 
-	priv->security = (WirelessSecurity *) ws_wpa_eap_new (ui_file, parent->connection, TRUE);
+	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE);
 	if (!priv->security) {
 		g_warning ("Could not load wired 802.1x user interface.");
 		return;
@@ -103,17 +102,23 @@ ce_page_wired_security_new (NMConnection *connection,
                             GError **error)
 {
 	CEPageWiredSecurity *self;
-	CEPage *parent;
 	CEPageWiredSecurityPrivate *priv;
+	CEPage *parent;
 
-	self = CE_PAGE_WIRED_SECURITY (g_object_new (CE_TYPE_PAGE_WIRED_SECURITY,
-	                                             CE_PAGE_CONNECTION, connection,
-	                                             CE_PAGE_PARENT_WINDOW, parent_window,
-	                                             NULL));
+	self = CE_PAGE_WIRED_SECURITY (ce_page_new (CE_TYPE_PAGE_WIRED_SECURITY,
+	                                            connection,
+	                                            parent_window,
+	                                            NULL,
+	                                            NULL,
+	                                            _("802.1x Security")));
+	if (!self) {
+		g_set_error_literal (error, 0, 0, _("Could not load Wired Security security user interface."));
+		return NULL;
+	}
+
 	parent = CE_PAGE (self);
 	priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (self);
 
-	parent->title = g_strdup (_("802.1x Security"));
 	parent->page = gtk_vbox_new (FALSE, 6);
 	g_object_ref_sink (G_OBJECT (parent->page));
 	gtk_container_set_border_width (GTK_CONTAINER (parent->page), 6);

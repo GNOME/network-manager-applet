@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #include <ctype.h>
@@ -30,6 +30,13 @@
 #include "gconf-helpers.h"
 #include "helpers.h"
 
+struct _EAPMethodSimple {
+	EAPMethod parent;
+
+	EAPMethodSimpleType type;
+	gboolean is_editor;
+};
+
 static void
 show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
 {
@@ -41,14 +48,6 @@ show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
 
 	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
-}
-
-static void
-destroy (EAPMethod *parent)
-{
-	EAPMethodSimple *method = (EAPMethodSimple *) parent;
-
-	g_slice_free (EAPMethodSimple, method);
 }
 
 static gboolean
@@ -189,57 +188,37 @@ password_always_ask_changed (GtkButton *button, EAPMethodSimple *method)
 }
 
 EAPMethodSimple *
-eap_method_simple_new (const char *ui_file,
-                       WirelessSecurity *parent,
+eap_method_simple_new (WirelessSecurity *ws_parent,
                        NMConnection *connection,
                        EAPMethodSimpleType type,
                        gboolean is_editor)
 {
+	EAPMethod *parent;
 	EAPMethodSimple *method;
 	GtkWidget *widget;
-	GtkBuilder *builder;
 	gboolean always_ask = FALSE;
-	GError *error = NULL;
 
-	g_return_val_if_fail (ui_file != NULL, NULL);
-
-	builder = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (builder, ui_file, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
-		g_error_free (error);
+	parent = eap_method_init (sizeof (EAPMethodSimple),
+	                          validate,
+	                          add_to_size_group,
+	                          fill_connection,
+	                          update_secrets,
+	                          NULL,
+	                          UIDIR "/eap-method-simple.ui",
+	                          "eap_simple_notebook",
+	                          "eap_simple_username_entry");
+	if (!parent)
 		return NULL;
-	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_simple_notebook"));
-	g_assert (widget);
-	g_object_ref_sink (widget);
-
-	method = g_slice_new0 (EAPMethodSimple);
-	if (!method) {
-		g_object_unref (builder);
-		g_object_unref (widget);
-		return NULL;
-	}
-
-	eap_method_init (EAP_METHOD (method),
-	                 validate,
-	                 add_to_size_group,
-	                 fill_connection,
-	                 update_secrets,
-	                 destroy,
-	                 builder,
-	                 widget,
-	                 "eap_simple_username_entry");
-
+	method = (EAPMethodSimple *) parent;
 	method->type = type;
 	method->is_editor = is_editor;
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_simple_username_entry"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_username_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
-	                  parent);
+	                  ws_parent);
 	if (connection) {
 		NMSetting8021x *s_8021x;
 
@@ -248,17 +227,17 @@ eap_method_simple_new (const char *ui_file,
 			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_simple_password_entry"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
-	                  parent);
+	                  ws_parent);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_password_always_ask"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_password_always_ask"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) wireless_security_changed_cb,
-	                  parent);
+	                  ws_parent);
 	if (is_editor) {
 		/* We only desensitize the password entry from the editor, because
 		 * from nm-applet if the entry was desensitized, there'd be no way to
@@ -288,7 +267,7 @@ eap_method_simple_new (const char *ui_file,
 	if (connection && !always_ask)
 		update_secrets (EAP_METHOD (method), connection);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_checkbutton_eapsimple"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapsimple"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,

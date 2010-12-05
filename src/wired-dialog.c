@@ -18,7 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * (C) Copyright 2008 Novell, Inc.
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -56,19 +56,20 @@ dialog_set_network_name (NMConnection *connection, GtkEntry *entry)
 
 static WirelessSecurity *
 dialog_set_security (NMConnection *connection,
-					 const char *ui_file,
-					 GtkBox *box)
+                     GtkBuilder *builder,
+                     GtkBox *box)
 {
 	GList *children;
 	GList *iter;
 	WirelessSecurity *security;
 
-	security = (WirelessSecurity *) ws_wpa_eap_new (ui_file, connection, FALSE);
+	security = (WirelessSecurity *) ws_wpa_eap_new (connection, FALSE);
 
 	/* Remove any previous wireless security widgets */
 	children = gtk_container_get_children (GTK_CONTAINER (box));
 	for (iter = children; iter; iter = iter->next)
 		gtk_container_remove (GTK_CONTAINER (box), GTK_WIDGET (iter->data));
+	g_list_free (children);
 
 	gtk_box_pack_start (box, wireless_security_get_widget (security), TRUE, TRUE, 0);
 
@@ -77,10 +78,9 @@ dialog_set_security (NMConnection *connection,
 
 static gboolean
 dialog_init (GtkWidget *dialog,
-			 GtkBuilder *builder,
-			 NMClient *nm_client,
-			 const char *ui_file,
-			 NMConnection *connection)
+             GtkBuilder *builder,
+             NMClient *nm_client,
+             NMConnection *connection)
 {
 	WirelessSecurity *security;
 	GtkWidget *widget;
@@ -99,7 +99,7 @@ dialog_init (GtkWidget *dialog,
 	                      _("Wired 802.1X authentication"));
 
 	dialog_set_network_name (connection, GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "network_name_entry"))));
-	security = dialog_set_security (connection, ui_file, GTK_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "security_vbox"))));
+	security = dialog_set_security (connection, builder, GTK_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "security_vbox"))));
 	wireless_security_set_changed_notify (security, stuff_changed_cb, GTK_WIDGET (gtk_builder_get_object (builder, "ok_button")));
 
 	g_object_set_data_full (G_OBJECT (dialog),
@@ -130,6 +130,7 @@ nma_wired_dialog_new (const char *ui_file,
 		g_warning ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
 		applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the .ui file was not found)."));
+		g_object_unref (builder);
 		return NULL;
 	}
 
@@ -140,15 +141,21 @@ nma_wired_dialog_new (const char *ui_file,
 		return NULL;
 	}
 
-	success = dialog_init (dialog, builder, nm_client, ui_file, NM_CONNECTION (connection));
+	success = dialog_init (dialog, builder, nm_client, NM_CONNECTION (connection));
 	if (!success) {
 		nm_warning ("Couldn't create wired security dialog.");
 		gtk_widget_destroy (dialog);
+		g_object_unref (builder);
 		return NULL;
 	}
 
 	g_object_set_data_full (G_OBJECT (dialog),
 	                        "connection", g_object_ref (connection),
+	                        (GDestroyNotify) g_object_unref);
+
+	/* Ensure the builder gets destroyed when the dialog goes away */
+	g_object_set_data_full (G_OBJECT (dialog),
+	                        "builder", builder,
 	                        (GDestroyNotify) g_object_unref);
 
 	return dialog;

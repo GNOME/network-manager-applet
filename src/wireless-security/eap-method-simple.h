@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef EAP_METHOD_SIMPLE_H
@@ -34,18 +34,12 @@ typedef enum {
 	EAP_METHOD_SIMPLE_TYPE_GTC
 } EAPMethodSimpleType;
 
-typedef struct {
-	struct _EAPMethod parent;
+typedef struct _EAPMethodSimple EAPMethodSimple;
 
-	EAPMethodSimpleType type;
-	gboolean is_editor;
-} EAPMethodSimple;
-
-EAPMethodSimple * eap_method_simple_new (const char *ui_file,
-                                         WirelessSecurity *parent,
-                                         NMConnection *connection,
-                                         EAPMethodSimpleType type,
-                                         gboolean is_editor);
+EAPMethodSimple *eap_method_simple_new (WirelessSecurity *ws_parent,
+                                        NMConnection *connection,
+                                        EAPMethodSimpleType type,
+                                        gboolean is_editor);
 
 #endif /* EAP_METHOD_SIMPLE_H */
 

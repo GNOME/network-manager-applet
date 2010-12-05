@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2009 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -229,6 +229,7 @@ ce_page_complete_init (CEPage *self,
 static void
 ce_page_init (CEPage *self)
 {
+	self->builder = gtk_builder_new ();
 }
 
 static void
@@ -429,5 +430,44 @@ ce_page_new_connection (const char *format,
 	g_free (id);
 
 	return connection;
+}
+
+CEPage *
+ce_page_new (GType page_type,
+             NMConnection *connection,
+             GtkWindow *parent_window,
+             const char *ui_file,
+             const char *widget_name,
+             const char *title)
+{
+	CEPage *self;
+	GError *error = NULL;
+
+	g_return_val_if_fail (title != NULL, NULL);
+	if (ui_file)
+		g_return_val_if_fail (widget_name != NULL, NULL);
+
+	self = CE_PAGE (g_object_new (page_type,
+	                              CE_PAGE_CONNECTION, connection,
+	                              CE_PAGE_PARENT_WINDOW, parent_window,
+	                              NULL));
+	self->title = g_strdup (title);
+	if (ui_file) {
+		if (!gtk_builder_add_from_file (self->builder, ui_file, &error)) {
+			g_warning ("Couldn't load builder file: %s", error->message);
+			g_error_free (error);
+			g_object_unref (self);
+			return NULL;
+		}
+
+		self->page = GTK_WIDGET (gtk_builder_get_object (self->builder, widget_name));
+		if (!self->page) {
+			g_warning ("Couldn't load page widget '%s' from %s", widget_name, ui_file);
+			g_object_unref (self);
+			return NULL;
+		}
+		g_object_ref_sink (self->page);
+	}
+	return self;
 }
 

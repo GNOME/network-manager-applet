@@ -59,7 +59,6 @@ typedef struct {
 typedef struct {
 	NMApplet *applet;
 
-	char *ui_file;
 	GtkBuilder *builder;
 
 	NMConnection *connection;
@@ -187,6 +186,7 @@ security_combo_changed (GtkWidget *combo,
 	children = gtk_container_get_children (GTK_CONTAINER (vbox));
 	for (elt = children; elt; elt = g_list_next (elt))
 		gtk_container_remove (GTK_CONTAINER (vbox), GTK_WIDGET (elt->data));
+	g_list_free (children);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
 	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter)) {
@@ -930,7 +930,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep;
 
-		ws_wep = ws_wep_key_new (priv->ui_file, priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create, auth_only);
+		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create, auth_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"));
@@ -939,7 +939,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (priv->ui_file, priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create, auth_only);
+		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create, auth_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -956,7 +956,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityLEAP *ws_leap;
 
-		ws_leap = ws_leap_new (priv->ui_file, priv->connection);
+		ws_leap = ws_leap_new (priv->connection);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
@@ -969,7 +969,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (priv->ui_file, priv->connection, FALSE);
+		ws_dynamic_wep = ws_dynamic_wep_new (priv->connection, FALSE);
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
@@ -983,7 +983,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;
 
-		ws_wpa_psk = ws_wpa_psk_new (priv->ui_file, priv->connection);
+		ws_wpa_psk = ws_wpa_psk_new (priv->connection);
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
@@ -997,7 +997,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (priv->ui_file, priv->connection, FALSE);
+		ws_wpa_eap = ws_wpa_eap_new (priv->connection, FALSE);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
@@ -1400,10 +1400,9 @@ nma_wireless_dialog_init (NMAWirelessDialog *self)
 	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 	GError *error = NULL;
 
-	priv->ui_file = g_build_filename (UIDIR, "applet.ui", NULL);
 	priv->builder = gtk_builder_new();
 
-	if (!gtk_builder_add_from_file (priv->builder, priv->ui_file, &error)) {
+	if (!gtk_builder_add_from_file (priv->builder, UIDIR "/applet.ui", &error)) {
 		g_warning ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
 	}
@@ -1423,8 +1422,6 @@ dispose (GObject *object)
 
 	if (priv->secrets_info)
 		priv->secrets_info->canceled = TRUE;
-
-	g_free (priv->ui_file);
 
 	g_object_unref (priv->builder);
 

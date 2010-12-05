@@ -1493,7 +1493,7 @@ nm_connection_list_new (GType def_type)
 		return NULL;
 
 	/* load GUI */
-	list->gui = gtk_builder_new();
+	list->gui = gtk_builder_new ();
 
 	if (!gtk_builder_add_from_file (list->gui, UIDIR "/nm-connection-editor.ui", &error)) {
 		g_warning ("Couldn't load builder file: %s", error->message);

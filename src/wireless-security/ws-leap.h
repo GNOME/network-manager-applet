@@ -17,19 +17,17 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef WS_LEAP_H
 #define WS_LEAP_H
 
-typedef struct {
-	struct _WirelessSecurity parent;
+#include <nm-connection.h>
 
-} WirelessSecurityLEAP;
+typedef struct _WirelessSecurityLEAP WirelessSecurityLEAP;
 
-WirelessSecurityLEAP * ws_leap_new (const char *ui_file,
-                                    NMConnection *connection);
+WirelessSecurityLEAP * ws_leap_new (NMConnection *connection);
 
 #endif /* WS_LEAP_H */
 

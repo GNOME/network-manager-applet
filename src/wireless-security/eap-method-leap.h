@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef EAP_METHOD_LEAP_H
@@ -25,14 +25,10 @@
 
 #include "wireless-security.h"
 
-typedef struct {
-	struct _EAPMethod parent;
+typedef struct _EAPMethodLEAP EAPMethodLEAP;
 
-} EAPMethodLEAP;
-
-EAPMethodLEAP * eap_method_leap_new (const char *ui_file,
-                                     WirelessSecurity *parent,
-                                     NMConnection *connection);
+EAPMethodLEAP *eap_method_leap_new (WirelessSecurity *ws_parent,
+                                    NMConnection *connection);
 
 #endif /* EAP_METHOD_LEAP_H */
 

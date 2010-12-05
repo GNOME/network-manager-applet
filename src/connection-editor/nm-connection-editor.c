@@ -272,31 +272,18 @@ system_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
 	connection_editor_validate (editor);
 }
 
+#define NMCE_UI UIDIR "/nm-connection-editor.ui"
+
 static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *dialog;
 	GError *error = NULL;
 
-	/* Yes, we mean applet.ui, not nm-connection-editor.ui. The wireless security bits
-	   are taken from applet.ui. */
-	if (!g_file_test (UIDIR "/applet.ui", G_FILE_TEST_EXISTS)) {
-		dialog = gtk_message_dialog_new (NULL, 0,
-		                                 GTK_MESSAGE_ERROR,
-		                                 GTK_BUTTONS_OK,
-		                                 "%s",
-		                                 _("The connection editor could not find some required resources (the NetworkManager applet .ui file was not found)."));
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
-		gtk_main_quit ();
-		return;
-	}
+	editor->builder = gtk_builder_new ();
 
-	editor->builder = gtk_builder_new();
-
-	if (!gtk_builder_add_from_file (editor->builder, UIDIR "/nm-connection-editor.ui", &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
+	if (!gtk_builder_add_from_file (editor->builder, NMCE_UI, &error)) {
+		g_warning ("Couldn't load builder file " NMCE_UI ": %s", error->message);
 		g_error_free (error);
 
 		dialog = gtk_message_dialog_new (NULL, 0,
@@ -526,8 +513,10 @@ idle_validate (gpointer user_data)
 static void
 recheck_initialization (NMConnectionEditor *editor)
 {
-	if (!editor_is_initialized (editor))
+	if (!editor_is_initialized (editor) || editor->init_run)
 		return;
+
+	editor->init_run = TRUE;
 
 	populate_connection_ui (editor);
 

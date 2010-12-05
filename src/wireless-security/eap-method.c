@@ -124,7 +124,7 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 
 	if (response == GTK_RESPONSE_NO) {
 		/* Grab the value of the "don't bother me" checkbox */
-		widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "ignore_checkbox"));
+		widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "ignore_checkbox"));
 		g_assert (widget);
 
 		method->ignore_ca_cert = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
@@ -144,8 +144,6 @@ nag_dialog_delete_event_cb (GtkDialog *nag_dialog, GdkEvent *e, gpointer user_da
 	//g_signal_emit_by_name (nag_dialog, "response", GTK_RESPONSE_NO, user_data);
 	return TRUE;  /* do not destroy */
 } 
- 
-
 
 GtkWidget *
 eap_method_nag_user (EAPMethod *method)
@@ -159,7 +157,7 @@ eap_method_nag_user (EAPMethod *method)
 		return NULL;
 
 	/* Checkbox should be unchecked each time dialog comes up */
-	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "ignore_checkbox"));
+	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "ignore_checkbox"));
 	g_assert (widget);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), FALSE);
 
@@ -176,26 +174,26 @@ eap_method_nag_user (EAPMethod *method)
 	return method->nag_dialog;
 }
 
+#define NAG_DIALOG_UI UIDIR "/nag-user-dialog.ui"
+
 gboolean
 eap_method_nag_init (EAPMethod *method,
-                     const char *ui_file,
                      const char *ca_cert_chooser,
                      NMConnection *connection,
                      gboolean phase2)
 {
 	GtkWidget *dialog, *widget;
-	char *text;
 	NagDialogResponseInfo *info;
 	GError *error = NULL;
+	char *text;
 
 	g_return_val_if_fail (method != NULL, FALSE);
-	g_return_val_if_fail (ui_file != NULL, FALSE);
 	g_return_val_if_fail (ca_cert_chooser != NULL, FALSE);
 
-	method->nag_dialog_ui = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (method->nag_dialog_ui, ui_file, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
+	method->nag_builder = gtk_builder_new ();
+	if (!gtk_builder_add_from_file (method->nag_builder, NAG_DIALOG_UI, &error)) {
+		g_warning ("Couldn't load UI builder file " NAG_DIALOG_UI ": %s",
+		           error->message);
 		g_error_free (error);
 		return FALSE;
 	}
@@ -217,13 +215,13 @@ eap_method_nag_init (EAPMethod *method,
 	info->method = method;
 	info->connection = connection;
 
-	dialog = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "nag_user_dialog"));
+	dialog = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "nag_user_dialog"));
 	g_assert (dialog);
 	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), info);
 	g_signal_connect (dialog, "delete-event", G_CALLBACK (nag_dialog_delete_event_cb), info);
 	g_object_weak_ref (G_OBJECT (dialog), nag_dialog_destroyed, info);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "content_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "content_label"));
 	g_assert (widget);
 
 	text = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
@@ -232,11 +230,11 @@ eap_method_nag_init (EAPMethod *method,
 	gtk_label_set_markup (GTK_LABEL (widget), text);
 	g_free (text);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "ignore_button"));
+	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "ignore_button"));
 	gtk_button_set_label (GTK_BUTTON (widget), _("Ignore"));
 	g_assert (widget);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_dialog_ui, "change_button"));
+	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "change_button"));
 	gtk_button_set_label (GTK_BUTTON (widget), _("Choose CA Certificate"));
 	g_assert (widget);
 
@@ -284,28 +282,54 @@ eap_method_phase2_update_secrets_helper (EAPMethod *method,
 	}
 }
 
-void
-eap_method_init (EAPMethod *method,
+EAPMethod *
+eap_method_init (gsize obj_size,
                  EMValidateFunc validate,
                  EMAddToSizeGroupFunc add_to_size_group,
                  EMFillConnectionFunc fill_connection,
                  EMUpdateSecretsFunc update_secrets,
                  EMDestroyFunc destroy,
-                 GtkBuilder *builder,
-                 GtkWidget *ui_widget,
+                 const char *ui_file,
+                 const char *ui_widget_name,
                  const char *default_field)
 {                 
-	method->refcount = 1;
+	EAPMethod *method;
+	GError *error = NULL;
 
+	g_return_val_if_fail (obj_size > 0, NULL);
+	g_return_val_if_fail (ui_file != NULL, NULL);
+	g_return_val_if_fail (ui_widget_name != NULL, NULL);
+
+	method = g_slice_alloc0 (obj_size);
+	g_assert (method);
+
+	method->refcount = 1;
+	method->obj_size = obj_size;
 	method->validate = validate;
 	method->add_to_size_group = add_to_size_group;
 	method->fill_connection = fill_connection;
 	method->update_secrets = update_secrets;
 	method->destroy = destroy;
-
-	method->builder = builder;
-	method->ui_widget = ui_widget;
 	method->default_field = default_field;
+
+	method->builder = gtk_builder_new ();
+	if (!gtk_builder_add_from_file (method->builder, ui_file, &error)) {
+		g_warning ("Couldn't load UI builder file %s: %s",
+		           ui_file, error->message);
+		eap_method_unref (method);
+		return NULL;
+	}
+
+	method->ui_widget = GTK_WIDGET (gtk_builder_get_object (method->builder, ui_widget_name));
+	if (!method->ui_widget) {
+		g_warning ("Couldn't load UI widget '%s' from UI file %s",
+		           ui_widget_name, ui_file);
+		eap_method_unref (method);
+		return NULL;
+	}
+	g_object_ref_sink (method->ui_widget);
+
+	return method;
 }
 
 
@@ -325,18 +349,22 @@ eap_method_unref (EAPMethod *method)
 	g_return_if_fail (method != NULL);
 	g_return_if_fail (method->refcount > 0);
 
-	g_assert (method->destroy);
-
 	method->refcount--;
 	if (method->refcount == 0) {
+		if (method->destroy)
+			method->destroy (method);
+
 		if (method->nag_dialog)
 			gtk_widget_destroy (method->nag_dialog);
-		if (method->nag_dialog_ui)
-			g_object_unref (method->nag_dialog_ui);
+		if (method->nag_builder)
+			g_object_unref (method->nag_builder);
 		g_free (method->ca_cert_chooser);
-		g_object_unref (method->builder);
-		g_object_unref (method->ui_widget);
-		(*(method->destroy)) (method);
+		if (method->builder)
+			g_object_unref (method->builder);
+		if (method->ui_widget)
+			g_object_unref (method->ui_widget);
+
+		g_slice_free1 (method->obj_size, method);
 	}
 }
 

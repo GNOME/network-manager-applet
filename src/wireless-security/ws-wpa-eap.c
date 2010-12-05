@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #include <glib/gi18n.h>
@@ -28,6 +28,13 @@
 #include "wireless-security.h"
 #include "eap-method.h"
 
+struct _WirelessSecurityWPAEAP {
+	WirelessSecurity parent;
+
+	GtkSizeGroup *size_group;
+};
+
+
 static void
 destroy (WirelessSecurity *parent)
 {
@@ -35,7 +42,6 @@ destroy (WirelessSecurity *parent)
 
 	if (sec->size_group)
 		g_object_unref (sec->size_group);
-	g_slice_free (WirelessSecurityWPAEAP, sec);
 }
 
 static gboolean
@@ -98,56 +104,33 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityWPAEAP *
-ws_wpa_eap_new (const char *ui_file,
-                NMConnection *connection,
+ws_wpa_eap_new (NMConnection *connection,
                 gboolean is_editor)
 {
-	WirelessSecurityWPAEAP *sec;
+	WirelessSecurity *parent;
 	GtkWidget *widget;
-	GtkBuilder *builder;
-	GError *error = NULL;
 
-	g_return_val_if_fail (ui_file != NULL, NULL);
-
-	builder = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (builder, ui_file, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
-		g_error_free (error);
+	parent = wireless_security_init (sizeof (WirelessSecurityWPAEAP),
+	                                 validate,
+	                                 add_to_size_group,
+	                                 fill_connection,
+	                                 update_secrets,
+	                                 destroy,
+	                                 UIDIR "/ws-wpa-eap.ui",
+	                                 "wpa_eap_notebook",
+	                                 NULL);
+	if (!parent)
 		return NULL;
-	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "wpa_eap_notebook"));
-	g_assert (widget);
-	g_object_ref_sink (widget);
+	parent->nag_user = nag_user;
 
-	sec = g_slice_new0 (WirelessSecurityWPAEAP);
-	if (!sec) {
-		g_object_unref (builder);
-		g_object_unref (widget);
-		return NULL;
-	}
-
-	wireless_security_init (WIRELESS_SECURITY (sec),
-	                        validate,
-	                        add_to_size_group,
-	                        fill_connection,
-	                        update_secrets,
-	                        destroy,
-	                        builder,
-	                        widget,
-	                        NULL);
-
-	WIRELESS_SECURITY (sec)->nag_user = nag_user;
-
-	widget = ws_802_1x_auth_combo_init (WIRELESS_SECURITY (sec),
-	                                    ui_file,
+	widget = ws_802_1x_auth_combo_init (parent,
 	                                    "wpa_eap_auth_combo",
 	                                    (GCallback) auth_combo_changed_cb,
 	                                    connection,
 	                                    is_editor);
-	auth_combo_changed_cb (widget, (gpointer) sec);
+	auth_combo_changed_cb (widget, parent);
 
-	return sec;
+	return (WirelessSecurityWPAEAP *) parent;
 }
 

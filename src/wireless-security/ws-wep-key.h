@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #ifndef WS_WEP_KEY_H
@@ -25,19 +25,12 @@
 
 #include <nm-setting-wireless-security.h>
 
-typedef struct {
-	struct _WirelessSecurity parent;
+typedef struct _WirelessSecurityWEPKey WirelessSecurityWEPKey;
 
-	NMWepKeyType type;
-	char keys[4][65];
-	guint8 cur_index;
-} WirelessSecurityWEPKey;
-
-WirelessSecurityWEPKey * ws_wep_key_new (const char *ui_file,
-                                         NMConnection *connection,
-                                         NMWepKeyType type,
-                                         gboolean adhoc_create,
-                                         gboolean simple);
+WirelessSecurityWEPKey *ws_wep_key_new (NMConnection *connection,
+                                        NMWepKeyType type,
+                                        gboolean adhoc_create,
+                                        gboolean simple);
 
 #endif /* WS_WEP_KEY_H */
 

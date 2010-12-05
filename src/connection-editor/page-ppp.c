@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -269,33 +269,18 @@ ce_page_ppp_new (NMConnection *connection,
 {
 	CEPagePpp *self;
 	CEPagePppPrivate *priv;
-	CEPage *parent;
 	NMSettingConnection *s_con;
 
-	self = CE_PAGE_PPP (g_object_new (CE_TYPE_PAGE_PPP,
-	                                  CE_PAGE_CONNECTION, connection,
-	                                  CE_PAGE_PARENT_WINDOW, parent_window,
-	                                  NULL));
-	parent = CE_PAGE (self);
-
-	parent->builder = gtk_builder_new();
-
-	if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-ppp.ui", error)) {
-		g_warning ("Couldn't load builder file: %s", (*error)->message);
-		g_set_error (error, 0, 0, "%s", _("Could not load PPP user interface."));
-		g_object_unref (self);
+	self = CE_PAGE_PPP (ce_page_new (CE_TYPE_PAGE_PPP,
+	                                 connection,
+	                                 parent_window,
+	                                 UIDIR "/ce-page-ppp.ui",
+	                                 "PppPage",
+	                                 _("PPP Settings")));
+	if (!self) {
+		g_set_error_literal (error, 0, 0, _("Could not load PPP user interface."));
 		return NULL;
 	}
-
-	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "PppPage"));
-	if (!parent->page) {
-		g_set_error (error, 0, 0, "%s", _("Could not load PPP user interface."));
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("PPP Settings"));
 
 	ppp_private_init (self);
 	priv = CE_PAGE_PPP_GET_PRIVATE (self);

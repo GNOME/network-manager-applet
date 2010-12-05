@@ -384,34 +384,19 @@ ce_page_wireless_new (NMConnection *connection,
 {
 	CEPageWireless *self;
 	CEPageWirelessPrivate *priv;
-	CEPage *parent;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
-	self = CE_PAGE_WIRELESS (g_object_new (CE_TYPE_PAGE_WIRELESS,
-	                                       CE_PAGE_CONNECTION, connection,
-	                                       CE_PAGE_PARENT_WINDOW, parent_window,
-	                                       NULL));
-	parent = CE_PAGE (self);
-
-    parent->builder = gtk_builder_new();
-
-    if (!gtk_builder_add_from_file (parent->builder, UIDIR "/ce-page-wireless.ui", error)) {
-        g_warning ("Couldn't load builder file: %s", (*error)->message);
-		g_set_error (error, 0, 0, "%s", _("Could not load WiFi user interface."));
-		g_object_unref (self);
+	self = CE_PAGE_WIRELESS (ce_page_new (CE_TYPE_PAGE_WIRELESS,
+	                                      connection,
+	                                      parent_window,
+	                                      UIDIR "/ce-page-wireless.ui",
+	                                      "WirelessPage",
+	                                      _("Wireless")));
+	if (!self) {
+		g_set_error_literal (error, 0, 0, _("Could not load WiFi user interface."));
 		return NULL;
 	}
-
-	parent->page = GTK_WIDGET (gtk_builder_get_object (parent->builder, "WirelessPage"));
-	if (!parent->page) {
-		g_set_error (error, 0, 0, "%s", _("Could not load WiFi user interface."));
-		g_object_unref (self);
-		return NULL;
-	}
-	g_object_ref_sink (parent->page);
-
-	parent->title = g_strdup (_("Wireless"));
 
 	wireless_private_init (self);
 	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);

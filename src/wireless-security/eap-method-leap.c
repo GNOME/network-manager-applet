@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2009 Red Hat, Inc.
+ * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
 #include <ctype.h>
@@ -28,6 +28,10 @@
 #include "wireless-security.h"
 #include "gconf-helpers.h"
 #include "helpers.h"
+
+struct _EAPMethodLEAP {
+	EAPMethod parent;
+};
 
 static void
 show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
@@ -40,14 +44,6 @@ show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
 
 	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
-}
-
-static void
-destroy (EAPMethod *parent)
-{
-	EAPMethodLEAP *method = (EAPMethodLEAP *) parent;
-
-	g_slice_free (EAPMethodLEAP, method);
 }
 
 static gboolean
@@ -116,52 +112,29 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 }
 
 EAPMethodLEAP *
-eap_method_leap_new (const char *ui_file,
-                     WirelessSecurity *parent,
+eap_method_leap_new (WirelessSecurity *ws_parent,
                      NMConnection *connection)
 {
-	EAPMethodLEAP *method;
+	EAPMethod *parent;
 	GtkWidget *widget;
-	GtkBuilder *builder;
-	GError *error = NULL;
 
-	g_return_val_if_fail (ui_file != NULL, NULL);
-
-	builder = gtk_builder_new ();
-
-	if (!gtk_builder_add_from_file (builder, ui_file, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
-		g_error_free (error);
+	parent = eap_method_init (sizeof (EAPMethodLEAP),
+	                          validate,
+	                          add_to_size_group,
+	                          fill_connection,
+	                          update_secrets,
+	                          NULL,
+	                          UIDIR "/eap-method-leap.ui",
+	                          "eap_leap_notebook",
+	                          "eap_leap_username_entry");
+	if (!parent)
 		return NULL;
-	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_leap_notebook"));
-	g_assert (widget);
-	g_object_ref_sink (widget);
-
-	method = g_slice_new0 (EAPMethodLEAP);
-	if (!method) {
-		g_object_unref (builder);
-		g_object_unref (widget);
-		return NULL;
-	}
-
-	eap_method_init (EAP_METHOD (method),
-	                 validate,
-	                 add_to_size_group,
-	                 fill_connection,
-	                 update_secrets,
-	                 destroy,
-	                 builder,
-	                 widget,
-	                 "eap_leap_username_entry");
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_leap_username_entry"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_username_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
-	                  parent);
+	                  ws_parent);
 	if (connection) {
 		NMSetting8021x *s_8021x;
 
@@ -170,22 +143,22 @@ eap_method_leap_new (const char *ui_file,
 			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "eap_leap_password_entry"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
-	                  parent);
+	                  ws_parent);
 
 	/* Fill secrets, if any */
 	if (connection)
-		update_secrets (EAP_METHOD (method), connection);
+		update_secrets (parent, connection);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_checkbutton_eapleap"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapleap"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
-	                  method);
+	                  parent);
 
-	return method;
+	return (EAPMethodLEAP *) parent;
 }
 

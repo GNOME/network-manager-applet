@@ -30,6 +30,7 @@ libwireless_security_la_SOURCES = \
 
 libwireless_security_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
+	-DUIDIR=\""$(uidir)"\" \
 	$(NMA_CFLAGS) \
 	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/utils \
@@ -40,4 +41,21 @@ libwireless_security_la_LIBADD = \
 	$(NMA_LIBS) \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
+
+uidir = $(datadir)/nm-applet
+ui_DATA = \
+	eap-method-leap.ui \
+	eap-method-peap.ui \
+	eap-method-simple.ui \
+	eap-method-tls.ui \
+	eap-method-ttls.ui \
+	nag-user-dialog.ui \
+	ws-dynamic-wep.ui \
+	ws-leap.ui \
+	ws-wep-key.ui \
+	ws-wpa-eap.ui \
+	ws-wpa-psk.ui
+
+EXTRA_DIST = \
+	$(ui_DATA)
 

@@ -3011,7 +3011,7 @@ constructor (GType type,
 	g_set_application_name (_("NetworkManager Applet"));
 	gtk_window_set_default_icon_name (GTK_STOCK_NETWORK);
 
-	applet->ui_file = g_build_filename (UIDIR, "applet.ui", NULL);
+	applet->ui_file = g_build_filename (UIDIR, "/applet.ui", NULL);
 	if (!applet->ui_file || !g_file_test (applet->ui_file, G_FILE_TEST_IS_REGULAR)) {
 		GtkWidget *dialog;
 		dialog = applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the .ui file was not found)."));

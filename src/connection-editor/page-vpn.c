@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -95,17 +95,20 @@ ce_page_vpn_new (NMConnection *connection,
 {
 	CEPageVpn *self;
 	CEPageVpnPrivate *priv;
-	CEPage *parent;
 	const char *service_type;
 
-	self = CE_PAGE_VPN (g_object_new (CE_TYPE_PAGE_VPN,
-	                                  CE_PAGE_CONNECTION, connection,
-	                                  CE_PAGE_PARENT_WINDOW, parent_window,
-	                                  NULL));
-	parent = CE_PAGE (self);
-	priv = CE_PAGE_VPN_GET_PRIVATE (self);
+	self = CE_PAGE_VPN (ce_page_new (CE_TYPE_PAGE_VPN,
+	                                 connection,
+	                                 parent_window,
+	                                 NULL,
+	                                 NULL,
+	                                 _("VPN")));
+	if (!self) {
+		g_set_error_literal (error, 0, 0, _("Could not load VPN user interface."));
+		return NULL;
+	}
 
-	parent->title = g_strdup (_("VPN"));
+	priv = CE_PAGE_VPN_GET_PRIVATE (self);
 
 	priv->setting = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
 	g_assert (priv->setting);
