@@ -621,7 +621,8 @@ add_response_cb (NMConnectionEditor *editor, gint response, GError *error, gpoin
 			return;
 		} else {
 			error_dialog (GTK_WINDOW (editor->window),
-			              _("Error editing connection: property '%s' / '%s' invalid: %d"),
+			              _("Error saving connection"),
+			              _("The property '%s' / '%s' is invalid: %d"),
 			              g_type_name (nm_connection_lookup_setting_type_by_quark (add_error->domain)),
 			              (add_error && add_error->message) ? add_error->message : "(unknown)",
 			              add_error ? add_error->code : -1);
