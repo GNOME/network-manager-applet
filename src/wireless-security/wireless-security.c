@@ -328,6 +328,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	GtkWidget *combo;
 	GtkListStore *auth_model;
 	GtkTreeIter iter;
+	EAPMethodSimple *em_md5;
 	EAPMethodTLS *em_tls;
 	EAPMethodLEAP *em_leap;
 	EAPMethodTTLS *em_ttls;
@@ -353,6 +354,23 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	}
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
+
+	if (wired) {
+		em_md5 = eap_method_simple_new (sec,
+		                                connection,
+		                                EAP_METHOD_SIMPLE_TYPE_MD5,
+		                                FALSE,
+		                                is_editor);
+		gtk_list_store_append (auth_model, &iter);
+		gtk_list_store_set (auth_model, &iter,
+			                AUTH_NAME_COLUMN, _("MD5"),
+			                AUTH_METHOD_COLUMN, em_md5,
+			                -1);
+		eap_method_unref (EAP_METHOD (em_md5));
+		if (default_method && (active < 0) && !strcmp (default_method, "md5"))
+			active = item;
+		item++;
+	}
 
 	em_tls = eap_method_tls_new (sec, connection, FALSE);
 	gtk_list_store_append (auth_model, &iter);

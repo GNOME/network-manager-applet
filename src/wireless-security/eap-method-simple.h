@@ -39,6 +39,7 @@ typedef struct _EAPMethodSimple EAPMethodSimple;
 EAPMethodSimple *eap_method_simple_new (WirelessSecurity *ws_parent,
                                         NMConnection *connection,
                                         EAPMethodSimpleType type,
+                                        gboolean phase2,
                                         gboolean is_editor);
 
 #endif /* EAP_METHOD_SIMPLE_H */

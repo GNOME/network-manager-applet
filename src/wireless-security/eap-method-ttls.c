@@ -228,6 +228,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_pap = eap_method_simple_new (method->sec_parent,
 	                                connection,
 	                                EAP_METHOD_SIMPLE_TYPE_PAP,
+	                                TRUE,
 	                                method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
@@ -243,6 +244,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_mschap = eap_method_simple_new (method->sec_parent,
 	                                   connection,
 	                                   EAP_METHOD_SIMPLE_TYPE_MSCHAP,
+	                                   TRUE,
 	                                   method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
@@ -258,6 +260,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_mschap_v2 = eap_method_simple_new (method->sec_parent,
 	                                      connection,
 	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2,
+	                                      TRUE,
 	                                      method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
@@ -273,6 +276,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_chap = eap_method_simple_new (method->sec_parent,
 	                                 connection,
 	                                 EAP_METHOD_SIMPLE_TYPE_CHAP,
+	                                 TRUE,
 	                                 method->is_editor);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
