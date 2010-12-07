@@ -35,6 +35,7 @@ struct _EAPMethodSimple {
 
 	EAPMethodSimpleType type;
 	gboolean is_editor;
+	gboolean phase2;
 };
 
 static void
@@ -99,33 +100,45 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	GtkWidget *widget;
 	NMSettingConnection *s_con;
 	gboolean always_ask;
+	const char *eap = NULL;
 
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
 
+	/* If this is the main EAP method, clear any existing methods because the
+	 * user-selected on will replace it.
+	 */
+	if (method->phase2 == FALSE)
+		nm_setting_802_1x_clear_eap_methods (s_8021x);
+
 	switch (method->type) {
 		case EAP_METHOD_SIMPLE_TYPE_PAP:
-			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "pap", NULL);
+			eap = "pap";
 			break;
 		case EAP_METHOD_SIMPLE_TYPE_MSCHAP:
-			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "mschap", NULL);
+			eap = "mschap";
 			break;
 		case EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2:
-			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "mschapv2", NULL);
+			eap = "mschapv2";
 			break;
 		case EAP_METHOD_SIMPLE_TYPE_MD5:
-			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "md5", NULL);
+			eap = "md5";
 			break;
 		case EAP_METHOD_SIMPLE_TYPE_CHAP:
-			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "chap", NULL);
+			eap = "chap";
 			break;
 		case EAP_METHOD_SIMPLE_TYPE_GTC:
-			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "gtc", NULL);
+			eap = "gtc";
 			break;
 		default:
 			g_assert_not_reached ();
 			break;
 	}
+
+	if (method->phase2)
+		g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, eap, NULL);
+	else
+		nm_setting_802_1x_add_eap_method (s_8021x, eap);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_username_entry"));
 	g_assert (widget);
@@ -191,6 +204,7 @@ EAPMethodSimple *
 eap_method_simple_new (WirelessSecurity *ws_parent,
                        NMConnection *connection,
                        EAPMethodSimpleType type,
+                       gboolean phase2,
                        gboolean is_editor)
 {
 	EAPMethod *parent;
@@ -213,6 +227,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	method = (EAPMethodSimple *) parent;
 	method->type = type;
 	method->is_editor = is_editor;
+	method->phase2 = phase2;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_username_entry"));
 	g_assert (widget);
