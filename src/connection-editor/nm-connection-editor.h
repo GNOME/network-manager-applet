@@ -65,7 +65,7 @@ typedef struct {
 	GObjectClass parent_class;
 
 	/* Signals */
-	void (*done)  (NMConnectionEditor *editor, gint result);
+	void (*done)  (NMConnectionEditor *editor, gint result, GError *error);
 } NMConnectionEditorClass;
 
 GType               nm_connection_editor_get_type (void);
