@@ -482,7 +482,6 @@ static gboolean
 menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 {
 	GtkAllocation allocation;
-	GtkStyle *style;
 	GtkWidget *label;
 	PangoFontDescription *desc;
 	cairo_t *cr;
@@ -515,8 +514,21 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 	text = gtk_label_get_text (GTK_LABEL (label));
 
 	layout = pango_cairo_create_layout (cr);
-	style = gtk_widget_get_style (widget);
-	desc = pango_font_description_copy (style->font_desc);
+#if GTK_CHECK_VERSION(2,20,0) && !GTK_CHECK_VERSION(2,91,6)
+        {
+                GtkStyle *style;
+                style = gtk_widget_get_style (widget);
+                desc = pango_font_description_copy (style->font_desc);
+        }
+#else
+        {
+                GtkStyleContext *style;
+                style = gtk_widget_get_style_context (widget);
+                gtk_style_context_get (style, gtk_style_context_get_state (style),
+                                       "font", &desc,
+                                       NULL);
+        }
+#endif
 	pango_font_description_set_variant (desc, PANGO_VARIANT_SMALL_CAPS);
 	pango_font_description_set_weight (desc, PANGO_WEIGHT_SEMIBOLD);
 	pango_layout_set_font_description (layout, desc);
