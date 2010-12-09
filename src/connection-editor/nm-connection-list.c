@@ -1272,10 +1272,14 @@ add_connection_buttons (NMConnectionList *self,
 	g_signal_connect (button, "clicked", G_CALLBACK (add_clicked), info);
 	if (ctype == NM_TYPE_SETTING_VPN) {
 		GHashTable *plugins;
+		gboolean have_plugins;
 
 		/* disable the "Add..." button if there aren't any VPN plugins */
 		plugins = vpn_get_plugins (NULL);
-		gtk_widget_set_sensitive (button, (plugins && g_hash_table_size (plugins)));
+		have_plugins = plugins && g_hash_table_size (plugins);
+		gtk_widget_set_sensitive (button, have_plugins);
+		if (!have_plugins)
+			gtk_widget_set_tooltip_text (button, _("No VPN plugin available. Please install one to enable this button."));
 	}
 	if (new_func)
 		action_info_set_new_func (info, new_func);
