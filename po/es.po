@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: networkmanager-applet.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-11-29 08:54+0000\n"
-"PO-Revision-Date: 2010-12-05 18:37+0100\n"
+"POT-Creation-Date: 2010-12-09 08:30+0000\n"
+"PO-Revision-Date: 2010-12-11 18:22+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -158,7 +158,7 @@ msgstr "Solicitando una dirección de red para «%s»…"
 msgid "Mobile broadband connection '%s' active"
 msgstr "La conexión de banda ancha móvil «%s» está activa"
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:689
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:674
 #: ../src/mb-menu-item.c:55
 msgid "CDMA"
 msgstr "CDMA"
@@ -169,9 +169,9 @@ msgid "Mobile Broadband (%s)"
 msgstr "Banda ancha móvil (%s)"
 
 #: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
-#: ../src/connection-editor/page-mobile.c:384
+#: ../src/connection-editor/page-mobile.c:365
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
-#: ../src/connection-editor/nm-connection-list.c:1407
+#: ../src/connection-editor/nm-connection-list.c:1412
 msgid "Mobile Broadband"
 msgstr "Banda ancha móvil"
 
@@ -193,7 +193,7 @@ msgstr "La conexión de banda ancha móvil «%s» está activa: (%d%%%s%s)"
 msgid "roaming"
 msgstr "roaming"
 
-#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:692
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:677
 #: ../src/mb-menu-item.c:60
 msgid "GSM"
 msgstr "GSM"
@@ -450,9 +450,9 @@ msgid "Error displaying connection information:"
 msgstr "Ha ocurrido un error al mostrar información de conexión:"
 
 #: ../src/applet-dialogs.c:85
-#: ../src/connection-editor/page-wireless-security.c:285
+#: ../src/connection-editor/page-wireless-security.c:284
 #: ../src/wireless-dialog.c:962
-#: ../src/wireless-security/wireless-security.c:342
+#: ../src/wireless-security/wireless-security.c:390
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -470,7 +470,7 @@ msgid "WEP"
 msgstr "WEP"
 
 #: ../src/applet-dialogs.c:196 ../src/applet-dialogs.c:205
-#: ../src/connection-editor/page-wireless-security.c:239
+#: ../src/connection-editor/page-wireless-security.c:238
 #: ../src/wireless-dialog.c:919
 msgctxt "Wifi/wired security"
 msgid "None"
@@ -887,9 +887,6 @@ msgid "NetworkManager Applet"
 msgstr "Miniaplicación Gestor de la red"
 
 #: ../src/applet.c:3017 ../src/wired-dialog.c:132
-#| msgid ""
-#| "The NetworkManager Applet could not find some required resources (the "
-#| "glade file was not found)."
 msgid ""
 "The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
@@ -898,180 +895,50 @@ msgstr ""
 "recursos (no se encontró el archivo .ui)."
 
 #: ../src/applet.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
+#: ../src/wireless-security/eap-method-peap.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:1
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:1
+#: ../src/wireless-security/ws-wpa-eap.ui.h:1
 msgid " "
 msgstr " "
 
 #: ../src/applet.ui.h:2
-#| msgid ""
-#| "1 (Default)\n"
-#| "2\n"
-#| "3\n"
-#| "4"
-msgid "1 (Default)"
-msgstr "1 (predeterminado)"
-
-#: ../src/applet.ui.h:3
-msgid "2"
-msgstr "2"
-
-#: ../src/applet.ui.h:4
-msgid "3"
-msgstr "3"
-
-#: ../src/applet.ui.h:5
-msgid "4"
-msgstr "4"
-
-#: ../src/applet.ui.h:6
-#| msgid "Network Connections"
 msgid "Active Network Connections"
 msgstr "Conexiones de red activas"
 
-#: ../src/applet.ui.h:7
-msgid "Anony_mous identity:"
-msgstr "Identidad anóni_ma:"
-
-#: ../src/applet.ui.h:8
-msgid "As_k for this password every time"
-msgstr "_Preguntar esta contraseña cada vez"
-
-#: ../src/applet.ui.h:9 ../src/connection-editor/ce-page-ip4.ui.h:2
-#: ../src/connection-editor/ce-page-ip6.ui.h:2
-#: ../src/connection-editor/ce-page-wired.ui.h:7
-#: ../src/connection-editor/ce-page-wireless.ui.h:3
-#: ../src/connection-editor/page-ip6.c:135
-msgid "Automatic"
-msgstr "Automático"
-
-#: ../src/applet.ui.h:10
-msgid "C_A certificate:"
-msgstr "Certificado C_A:"
-
-#: ../src/applet.ui.h:11
+#: ../src/applet.ui.h:3
 msgid "C_onnect"
 msgstr "C_onectar"
 
-#: ../src/applet.ui.h:12
+#: ../src/applet.ui.h:4
 msgid "Co_nnection:"
 msgstr "Co_nexión:"
 
-#: ../src/applet.ui.h:13
+#: ../src/applet.ui.h:5
 msgid "Connection Information"
 msgstr "Información de la conexión"
 
-#: ../src/applet.ui.h:14
-msgid "Don't _warn me again"
-msgstr "No a_visarme de nuevo"
-
-#: ../src/applet.ui.h:15
-msgid "I_dentity:"
-msgstr "I_dentidad:"
-
-#: ../src/applet.ui.h:16
-msgid "I_nner authentication:"
-msgstr "Autenticación i_nterna:"
-
-#: ../src/applet.ui.h:17
-msgid "No"
-msgstr "No"
-
-#: ../src/applet.ui.h:18
-#| msgid ""
-#| "Open System\n"
-#| "Shared Key"
-msgid "Open System"
-msgstr "Sistema abierto"
-
-#: ../src/applet.ui.h:19
+#: ../src/applet.ui.h:6
 msgid "Other Wireless Network..."
 msgstr "Otras redes inalámbricas…"
 
-#: ../src/applet.ui.h:20
-msgid "Private _key:"
-msgstr "Clave pri_vada:"
-
-#: ../src/applet.ui.h:21
-#| msgid ""
-#| "Open System\n"
-#| "Shared Key"
-msgid "Shared Key"
-msgstr "Clave compartida"
-
-#: ../src/applet.ui.h:22
-msgid "Sho_w key"
-msgstr "_Mostrar la clave"
-
-#: ../src/applet.ui.h:23 ../src/connection-editor/ce-page-dsl.ui.h:1
-msgid "Sho_w password"
-msgstr "_Mostrar la contraseña"
-
-#: ../src/applet.ui.h:24
-msgid "Version 0"
-msgstr "Versión 0"
-
-#: ../src/applet.ui.h:25
-msgid "Version 1"
-msgstr "Versión 1"
-
-#: ../src/applet.ui.h:26
-msgid "WEP inde_x:"
-msgstr "Ín_dice WEP:"
-
-#: ../src/applet.ui.h:27
+#: ../src/applet.ui.h:7
 msgid "Wireless _adapter:"
 msgstr "_Adaptador inalámbrico:"
 
-#: ../src/applet.ui.h:28
-msgid "Yes"
-msgstr "Sí"
-
-#: ../src/applet.ui.h:29
-msgid "_Authentication:"
-msgstr "_Autenticación:"
-
-#: ../src/applet.ui.h:30
-msgid "_Key:"
-msgstr "_Clave:"
-
-#: ../src/applet.ui.h:31
+#: ../src/applet.ui.h:8
 msgid "_Network name:"
 msgstr "_Nombre de red:"
 
-#: ../src/applet.ui.h:32
-msgid "_PEAP version:"
-msgstr "Versión _PEAP:"
-
-#: ../src/applet.ui.h:33 ../src/connection-editor/ce-page-dsl.ui.h:2
-#: ../src/connection-editor/ce-page-mobile.ui.h:15
-msgid "_Password:"
-msgstr "Contrase_ña:"
-
-#: ../src/applet.ui.h:34
-msgid "_Private key password:"
-msgstr "Contraseña de clave _privada:"
-
-#: ../src/applet.ui.h:35 ../src/connection-editor/ce-page-mobile.ui.h:16
-msgid "_Type:"
-msgstr "_Tipo:"
-
-#: ../src/applet.ui.h:36
+#: ../src/applet.ui.h:9
 msgid "_Unlock"
 msgstr "Desbloq_uear"
 
-#: ../src/applet.ui.h:37
-msgid "_User certificate:"
-msgstr "Certificado del _usuario:"
-
-#: ../src/applet.ui.h:38 ../src/connection-editor/ce-page-dsl.ui.h:4
-#: ../src/connection-editor/ce-page-mobile.ui.h:17
-msgid "_Username:"
-msgstr "Nombre de _usuario:"
-
-#: ../src/applet.ui.h:39
+#: ../src/applet.ui.h:10
 msgid "_Wireless security:"
 msgstr "_Seguridad inalámbrica:"
 
-#: ../src/applet.ui.h:40
+#: ../src/applet.ui.h:11
 msgid "label"
 msgstr "etiqueta"
 
@@ -1080,21 +947,55 @@ msgid "automatic"
 msgstr "automático"
 
 #: ../src/connection-editor/ce-page.c:222
-#: ../src/connection-editor/nm-connection-editor.c:624
+#: ../src/connection-editor/nm-connection-editor.c:613
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Falló al actualizar los secretos de la conexión debido a un error "
 "desconocido."
 
+#: ../src/connection-editor/ce-page-dsl.ui.h:1
+#: ../src/wireless-security/eap-method-leap.ui.h:1
+#: ../src/wireless-security/eap-method-simple.ui.h:2
+#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/ws-leap.ui.h:1
+#: ../src/wireless-security/ws-wpa-psk.ui.h:1
+msgid "Sho_w password"
+msgstr "_Mostrar la contraseña"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:2
+#: ../src/connection-editor/ce-page-mobile.ui.h:15
+#: ../src/wireless-security/eap-method-leap.ui.h:2
+#: ../src/wireless-security/eap-method-simple.ui.h:3
+#: ../src/wireless-security/ws-leap.ui.h:2
+#: ../src/wireless-security/ws-wpa-psk.ui.h:2
+msgid "_Password:"
+msgstr "Contrase_ña:"
+
 #: ../src/connection-editor/ce-page-dsl.ui.h:3
 msgid "_Service:"
 msgstr "_Servicio:"
 
+#: ../src/connection-editor/ce-page-dsl.ui.h:4
+#: ../src/connection-editor/ce-page-mobile.ui.h:17
+#: ../src/wireless-security/eap-method-leap.ui.h:3
+#: ../src/wireless-security/eap-method-simple.ui.h:4
+#: ../src/wireless-security/ws-leap.ui.h:3
+msgid "_Username:"
+msgstr "Nombre de _usuario:"
+
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
-#| msgid "Address"
 msgid "Addresses"
 msgstr "Dirección"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:2
+#: ../src/connection-editor/ce-page-ip6.ui.h:2
+#: ../src/connection-editor/ce-page-wired.ui.h:7
+#: ../src/connection-editor/ce-page-wireless.ui.h:3
+#: ../src/connection-editor/page-ip6.c:135
+#: ../src/wireless-security/eap-method-peap.ui.h:3
+msgid "Automatic"
+msgstr "Automático"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:3
 #: ../src/connection-editor/ce-page-ip6.ui.h:3
@@ -1149,7 +1050,6 @@ msgstr "Ig_norar rutas obtenidas automáticamente"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:10
 #: ../src/connection-editor/ce-page-ip6.ui.h:9
-#| msgid "Link-Local Only"
 msgid "Link-Local"
 msgstr "Enlace local"
 
@@ -1235,7 +1135,6 @@ msgid "3G (UMTS/HSPA)"
 msgstr "3G (UMTS/HSPA)"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:3
-#| msgid "<b>Advanced</b>"
 msgid "Advanced"
 msgstr "Avanzada"
 
@@ -1283,6 +1182,11 @@ msgstr "_Mostrar las contraseñas"
 msgid "_APN:"
 msgstr "Nombre del _AP:"
 
+#: ../src/connection-editor/ce-page-mobile.ui.h:16
+#: ../src/wireless-security/ws-wpa-psk.ui.h:3
+msgid "_Type:"
+msgstr "_Tipo:"
+
 #: ../src/connection-editor/ce-page-ppp.ui.h:1
 msgid "Allow _BSD data compression"
 msgstr "Permitir compresión de datos _BSD"
@@ -1292,7 +1196,6 @@ msgid "Allow _Deflate data compression"
 msgstr "Permitir compresión de datos _deflate"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:3
-#| msgid "<b>Allowed Authentication Methods</b>"
 msgid "Allowed Authentication Methods"
 msgstr "Métodos de autenticación permitidos"
 
@@ -1301,7 +1204,6 @@ msgid "Allowed methods:"
 msgstr "Métodos permitidos:"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:5
-#| msgid "_Authentication:"
 msgid "Authentication"
 msgstr "Autenticación"
 
@@ -1314,12 +1216,10 @@ msgid "Challenge Handshake Authentication Protocol"
 msgstr "Protocolo de autenticación de intercambio de señales "
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:8
-#| msgid "<b>Compression</b>"
 msgid "Compression"
 msgstr "Compresión"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:9
-#| msgid "Configure _Methods…"
 msgid "Configure _Methods&#x2026;"
 msgstr "Configurar _métodos&#x2026;"
 
@@ -1332,10 +1232,6 @@ msgid "Extensible Authentication Protocol"
 msgstr "Protocolo de autenticación extensible"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:12
-#| msgid ""
-#| "<i>In most cases, the provider's PPP servers will support all "
-#| "authentication methods.  If connections fail, try disabling support for "
-#| "some methods.</i>"
 msgid ""
 "In most cases, the provider's PPP servers will support all authentication "
 "methods.  If connections fail, try disabling support for some methods."
@@ -1394,7 +1290,6 @@ msgid "_Use point-to-point encryption (MPPE)"
 msgstr "_Usar cifrado punto-a-punto (MPPE)"
 
 #: ../src/connection-editor/ce-page-wired.ui.h:1
-#| msgid "%u Mb/s"
 msgid "1 Gb/s"
 msgstr "1 Gb/s"
 
@@ -1403,12 +1298,10 @@ msgid "10 Gb/s"
 msgstr "10 Gb/s"
 
 #: ../src/connection-editor/ce-page-wired.ui.h:3
-#| msgid "Mb/s"
 msgid "10 Mb/s"
 msgstr "10 Mb/s"
 
 #: ../src/connection-editor/ce-page-wired.ui.h:4
-#| msgid "%u Mb/s"
 msgid "100 Mb/s"
 msgstr "100 Mb/s"
 
@@ -1485,7 +1378,6 @@ msgid "bytes"
 msgstr "bytes"
 
 #: ../src/connection-editor/ce-page-wireless.ui.h:1
-#| msgid "%u (%u MHz)"
 msgid "A (5 GHz)"
 msgstr "A (5 GHz)"
 
@@ -1506,9 +1398,6 @@ msgid "C_hannel:"
 msgstr "_Canal:"
 
 #: ../src/connection-editor/ce-page-wireless.ui.h:7
-#| msgid ""
-#| "Infrastructure\n"
-#| "Ad-hoc"
 msgid "Infrastructure"
 msgstr "Infraestructura"
 
@@ -1553,23 +1442,14 @@ msgid "_Security:"
 msgstr "_Seguridad:"
 
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:2
-#| msgid "VPN Connection Failed"
 msgid "Choose a VPN Connection Type"
 msgstr "Elegir un tipo de conexión VPN"
 
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:3
-#| msgid "_Routes&#x2026;"
 msgid "Create&#x2026;"
 msgstr "Crear&#x2026;"
 
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:4
-#| msgid ""
-#| "<span weight=\"bold\" size=\"larger\">Choose a VPN Connection Type</"
-#| "span>\n"
-#| "\n"
-#| "Select the type of VPN you wish to use for the new connection.  If the "
-#| "type of VPN connection you wish to create does not appear in the list, "
-#| "you may not have the correct VPN plugin installed."
 msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -1608,18 +1488,17 @@ msgstr "Métrica"
 msgid "Prefix"
 msgstr "Prefijo"
 
-#: ../src/connection-editor/page-dsl.c:142
-#: ../src/connection-editor/page-dsl.c:149
-msgid "Could not load DSL user interface."
-msgstr "No se pudo cargar la interfaz de usuario para DSL."
-
-#: ../src/connection-editor/page-dsl.c:155
+#: ../src/connection-editor/page-dsl.c:136
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
-#: ../src/connection-editor/nm-connection-list.c:1415
+#: ../src/connection-editor/nm-connection-list.c:1420
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-dsl.c:243
+#: ../src/connection-editor/page-dsl.c:138
+msgid "Could not load DSL user interface."
+msgstr "No se pudo cargar la interfaz de usuario para DSL."
+
+#: ../src/connection-editor/page-dsl.c:228
 #, c-format
 msgid "DSL connection %d"
 msgstr "Conexión DSL %d"
@@ -1676,21 +1555,20 @@ msgstr "Inhabilitado"
 msgid "Editing IPv4 routes for %s"
 msgstr "Editando las rutas IPv4 para %s"
 
-#: ../src/connection-editor/page-ip4.c:821
-#: ../src/connection-editor/page-ip4.c:828
-msgid "Could not load IPv4 user interface."
-msgstr "No se pudo cargar la interfaz de usuario para IPv4."
-
-#: ../src/connection-editor/page-ip4.c:834
+#: ../src/connection-editor/page-ip4.c:815
 msgid "IPv4 Settings"
 msgstr "Ajustes de IPv4"
+
+#: ../src/connection-editor/page-ip4.c:817
+msgid "Could not load IPv4 user interface."
+msgstr "No se pudo cargar la interfaz de usuario para IPv4."
 
 #: ../src/connection-editor/page-ip6.c:136
 msgid "Automatic, addresses only"
 msgstr "Automático, sólo direcciones"
 
 #: ../src/connection-editor/page-ip6.c:148
-#: ../src/wireless-security/eap-method.c:236
+#: ../src/wireless-security/eap-method.c:234
 msgid "Ignore"
 msgstr "Ignorar"
 
@@ -1703,30 +1581,28 @@ msgstr "Automático, DHCP únicamente"
 msgid "Editing IPv6 routes for %s"
 msgstr "Editando las rutas IPv6 para %s"
 
-#: ../src/connection-editor/page-ip6.c:804
-#: ../src/connection-editor/page-ip6.c:811
-msgid "Could not load IPv6 user interface."
-msgstr "No se pudo cargar la interfaz de usuario para IPv6."
-
-#: ../src/connection-editor/page-ip6.c:817
+#: ../src/connection-editor/page-ip6.c:798
 msgid "IPv6 Settings"
 msgstr "Ajustes de IPv6"
 
-#: ../src/connection-editor/page-mobile.c:371
-#: ../src/connection-editor/page-mobile.c:378
+#: ../src/connection-editor/page-ip6.c:800
+msgid "Could not load IPv6 user interface."
+msgstr "No se pudo cargar la interfaz de usuario para IPv6."
+
+#: ../src/connection-editor/page-mobile.c:367
 msgid "Could not load mobile broadband user interface."
 msgstr "No se pudo cargar la interfaz de usuario de banda ancha móvil."
 
-#: ../src/connection-editor/page-mobile.c:399
+#: ../src/connection-editor/page-mobile.c:384
 msgid "Unsupported mobile broadband connection type."
 msgstr "El tipo de conexión de banda ancha móvil no está soportado."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:640
+#: ../src/connection-editor/page-mobile.c:625
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Seleccionar el tipo de proveedor de banda ancha móvil"
 
-#: ../src/connection-editor/page-mobile.c:667
+#: ../src/connection-editor/page-mobile.c:652
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1734,12 +1610,12 @@ msgstr ""
 "Seleccionar la tecnología que el proveedor de su banda ancha móvil usa. Si "
 "no está seguro pregúntele a su proveedor."
 
-#: ../src/connection-editor/page-mobile.c:672
+#: ../src/connection-editor/page-mobile.c:657
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Mi proveedor usa tecnología basada en _GSM (ej. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:679
+#: ../src/connection-editor/page-mobile.c:664
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Mi proveedor usa tecnología basada en C_DMA (ej. 1xRTT, EVDO)"
 
@@ -1748,23 +1624,23 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:228
+#: ../src/wireless-security/eap-method-ttls.c:235
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:134
-#: ../src/wireless-security/eap-method-ttls.c:276
+#: ../src/wireless-security/eap-method-ttls.c:283
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:245
-#: ../src/wireless-security/eap-method-ttls.c:260
+#: ../src/wireless-security/eap-method-peap.c:251
+#: ../src/wireless-security/eap-method-ttls.c:267
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:136
-#: ../src/wireless-security/eap-method-ttls.c:244
+#: ../src/wireless-security/eap-method-ttls.c:251
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -1778,53 +1654,61 @@ msgstr "ninguno"
 msgid "Editing PPP authentication methods for %s"
 msgstr "Editando los métodos de autenticación PPP para %s"
 
-#: ../src/connection-editor/page-ppp.c:285
-#: ../src/connection-editor/page-ppp.c:292
-msgid "Could not load PPP user interface."
-msgstr "No se pudo cargar la interfaz de usuario para PPP."
-
-#: ../src/connection-editor/page-ppp.c:298
+#: ../src/connection-editor/page-ppp.c:279
 msgid "PPP Settings"
 msgstr "Ajustes de PPP"
 
-#: ../src/connection-editor/page-vpn.c:108
+#: ../src/connection-editor/page-ppp.c:281
+msgid "Could not load PPP user interface."
+msgstr "No se pudo cargar la interfaz de usuario para PPP."
+
+#: ../src/connection-editor/page-vpn.c:105
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/connection-editor/nm-connection-list.c:1411
+#: ../src/connection-editor/nm-connection-list.c:1416
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-vpn.c:119
+#: ../src/connection-editor/page-vpn.c:107
+#| msgid "Could not load PPP user interface."
+msgid "Could not load VPN user interface."
+msgstr "No se pudo cargar la interfaz de usuario para la VPN."
+
+#: ../src/connection-editor/page-vpn.c:122
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "No se pudo encontrar el complemento de servicio VPN para «%s»."
 
-#: ../src/connection-editor/page-vpn.c:213
-#: ../src/connection-editor/nm-connection-list.c:994
+#: ../src/connection-editor/page-vpn.c:216
+#: ../src/connection-editor/nm-connection-list.c:995
 #, c-format
 msgid "VPN connection %d"
 msgstr "Conexión VPN %d"
 
-#: ../src/connection-editor/page-wired.c:215
-#: ../src/connection-editor/page-wired.c:222
-msgid "Could not load wired user interface."
-msgstr "No se pudo cargar la interfaz de usuario cableada."
-
-#: ../src/connection-editor/page-wired.c:228
+#: ../src/connection-editor/page-wired.c:209
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
-#: ../src/connection-editor/nm-connection-list.c:1399
+#: ../src/connection-editor/nm-connection-list.c:1404
 msgid "Wired"
 msgstr "Cableado"
 
-#: ../src/connection-editor/page-wired.c:361
+#: ../src/connection-editor/page-wired.c:211
+msgid "Could not load wired user interface."
+msgstr "No se pudo cargar la interfaz de usuario cableada."
+
+#: ../src/connection-editor/page-wired.c:346
 #, c-format
 msgid "Wired connection %d"
 msgstr "Conexión cableada %d"
 
-#: ../src/connection-editor/page-wired-security.c:116
+#: ../src/connection-editor/page-wired-security.c:113
 msgid "802.1x Security"
 msgstr "Seguridad 802.1x"
 
-#: ../src/connection-editor/page-wired-security.c:124
+#: ../src/connection-editor/page-wired-security.c:115
+#| msgid "Could not load WiFi security user interface."
+msgid "Could not load Wired Security security user interface."
+msgstr "No se pudo cargar la interfaz de usuario de seguridad cableada."
+
+#: ../src/connection-editor/page-wired-security.c:129
 msgid "Use 802.1X security for this connection"
 msgstr "Usar seguridad 802.1x para esta conexión"
 
@@ -1840,61 +1724,59 @@ msgstr "predeterminado"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:401
-#: ../src/connection-editor/page-wireless.c:408
-msgid "Could not load WiFi user interface."
-msgstr "No se pudo cargar la interfaz de usuario inalámbrica."
-
-#: ../src/connection-editor/page-wireless.c:414
+#: ../src/connection-editor/page-wireless.c:395
 #: ../src/connection-editor/nm-connection-editor.ui.h:10
-#: ../src/connection-editor/nm-connection-list.c:1403
+#: ../src/connection-editor/nm-connection-list.c:1408
 msgid "Wireless"
 msgstr "Inalámbrico"
 
-#: ../src/connection-editor/page-wireless.c:576
+#: ../src/connection-editor/page-wireless.c:397
+msgid "Could not load WiFi user interface."
+msgstr "No se pudo cargar la interfaz de usuario inalámbrica."
+
+#: ../src/connection-editor/page-wireless.c:561
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Conexión inalámbrica %d"
 
-#: ../src/connection-editor/page-wireless-security.c:263
+#: ../src/connection-editor/page-wireless-security.c:262
 #: ../src/wireless-dialog.c:936
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "Clave WEP 40/128-bit (Hexadecimal o ASCII)"
 
-#: ../src/connection-editor/page-wireless-security.c:272
+#: ../src/connection-editor/page-wireless-security.c:271
 #: ../src/wireless-dialog.c:945
 msgid "WEP 128-bit Passphrase"
 msgstr "Frase de paso WEP de 128 bits"
 
-#: ../src/connection-editor/page-wireless-security.c:298
+#: ../src/connection-editor/page-wireless-security.c:297
 #: ../src/wireless-dialog.c:975
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinámica (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:312
+#: ../src/connection-editor/page-wireless-security.c:311
 #: ../src/wireless-dialog.c:989
 msgid "WPA & WPA2 Personal"
 msgstr "WPA y WPA2 personal"
 
-#: ../src/connection-editor/page-wireless-security.c:326
+#: ../src/connection-editor/page-wireless-security.c:325
 #: ../src/wireless-dialog.c:1003
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA y WPA2 enterprise"
 
-#: ../src/connection-editor/page-wireless-security.c:366
+#: ../src/connection-editor/page-wireless-security.c:358
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr ""
 "No se pudo cargar la interfaz de usuario de seguridad inalámbrica; faltan "
 "los ajustes inalámbricos."
 
-#: ../src/connection-editor/page-wireless-security.c:375
-#: ../src/connection-editor/page-wireless-security.c:382
-msgid "Could not load WiFi security user interface."
-msgstr "No se pudo cargar la interfaz de usuario de seguridad inalámbrica."
-
-#: ../src/connection-editor/page-wireless-security.c:388
+#: ../src/connection-editor/page-wireless-security.c:367
 msgid "Wireless Security"
 msgstr "Seguridad inalámbrica"
+
+#: ../src/connection-editor/page-wireless-security.c:369
+msgid "Could not load WiFi security user interface."
+msgstr "No se pudo cargar la interfaz de usuario de seguridad inalámbrica."
 
 #: ../src/connection-editor/nm-connection-editor.c:100
 #, c-format
@@ -1905,21 +1787,7 @@ msgstr "Editando %s"
 msgid "Editing un-named connection"
 msgstr "Editando la conexión sin nombre"
 
-#: ../src/connection-editor/nm-connection-editor.c:288
-#| msgid ""
-#| "The connection editor could not find some required resources (the "
-#| "NetworkManager applet glade file was not found)."
-msgid ""
-"The connection editor could not find some required resources (the "
-"NetworkManager applet .ui file was not found)."
-msgstr ""
-"El editor de la conexión no pudo encontrar algunos archivos de recursos (no "
-"se encontró el archivo .iu de la miniaplicación Gestor de red)."
-
-#: ../src/connection-editor/nm-connection-editor.c:306
-#| msgid ""
-#| "The connection editor could not find some required resources (the glade "
-#| "file was not found)."
+#: ../src/connection-editor/nm-connection-editor.c:293
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -1927,23 +1795,23 @@ msgstr ""
 "El editor de la conexión no pudo encontrar algunos archivos de recursos (no "
 "se encontró el archivo .iu)."
 
-#: ../src/connection-editor/nm-connection-editor.c:404
+#: ../src/connection-editor/nm-connection-editor.c:391
 msgid "Error creating connection editor dialog."
 msgstr "Error al crear el diálogo del editor de conexión."
 
-#: ../src/connection-editor/nm-connection-editor.c:425
+#: ../src/connection-editor/nm-connection-editor.c:412
 msgid "_Save"
 msgstr "_Guardar"
 
-#: ../src/connection-editor/nm-connection-editor.c:426
+#: ../src/connection-editor/nm-connection-editor.c:413
 msgid "Save any changes made to this connection."
 msgstr "Guardar cualquier cambio realizado en esta conexión."
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:414
 msgid "_Save..."
 msgstr "_Guardar…"
 
-#: ../src/connection-editor/nm-connection-editor.c:428
+#: ../src/connection-editor/nm-connection-editor.c:415
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autenticar para guardar esta conexión para todos los usuarios en este equipo."
@@ -2018,56 +1886,62 @@ msgid "Connection add failed"
 msgstr "Falló al añadir la conexión"
 
 #: ../src/connection-editor/nm-connection-list.c:624
-#, c-format
-msgid "Error editing connection: property '%s' / '%s' invalid: %d"
-msgstr "Error al editar la conexión: la propiedad «%s» / «%s» es inválida: %d"
+#| msgid "Error displaying connection information:"
+msgid "Error saving connection"
+msgstr "Error al guardar la conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:631
-#: ../src/connection-editor/nm-connection-list.c:746
+#: ../src/connection-editor/nm-connection-list.c:625
+#, c-format
+#| msgid "Error editing connection: property '%s' / '%s' invalid: %d"
+msgid "The property '%s' / '%s' is invalid: %d"
+msgstr "La propiedad «%s» / «%s» es inválida: %d"
+
+#: ../src/connection-editor/nm-connection-list.c:632
+#: ../src/connection-editor/nm-connection-list.c:747
 msgid "An unknown error occurred."
 msgstr "Ocurrió un error desconocido."
 
-#: ../src/connection-editor/nm-connection-list.c:636
-#: ../src/connection-editor/nm-connection-list.c:787
+#: ../src/connection-editor/nm-connection-list.c:637
+#: ../src/connection-editor/nm-connection-list.c:788
 msgid "Error initializing editor"
 msgstr "Error al inicializar el editor"
 
-#: ../src/connection-editor/nm-connection-list.c:652
-#: ../src/connection-editor/nm-connection-list.c:804
-#: ../src/connection-editor/nm-connection-list.c:977
+#: ../src/connection-editor/nm-connection-list.c:653
+#: ../src/connection-editor/nm-connection-list.c:805
+#: ../src/connection-editor/nm-connection-list.c:978
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr ""
 "El editor de la conexión no se pudo iniciar debido a un error desconocido."
 
-#: ../src/connection-editor/nm-connection-list.c:661
+#: ../src/connection-editor/nm-connection-list.c:662
 msgid "Could not create new connection"
 msgstr "No se pudo crear la nueva conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:672
+#: ../src/connection-editor/nm-connection-list.c:673
 msgid "Could not edit new connection"
 msgstr "No se pudo editar la conexión nueva"
 
-#: ../src/connection-editor/nm-connection-list.c:819
+#: ../src/connection-editor/nm-connection-list.c:820
 msgid "Could not edit connection"
 msgstr "No se pudo editar la conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:844
+#: ../src/connection-editor/nm-connection-list.c:845
 msgid "Connection delete failed"
 msgstr "Falló al eliminar la conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:876
+#: ../src/connection-editor/nm-connection-list.c:877
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "¿Está seguro de que quiere eliminar la conexión %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:1024
+#: ../src/connection-editor/nm-connection-list.c:1025
 #: ../src/connection-editor/vpn-helpers.c:227
 msgid "Cannot import VPN connection"
 msgstr "No se puede importar la conexión VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:1026
+#: ../src/connection-editor/nm-connection-list.c:1027
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2077,47 +1951,53 @@ msgstr ""
 "\n"
 "Error: no existe el tipo de servicio VPN."
 
-#: ../src/connection-editor/nm-connection-list.c:1039
+#: ../src/connection-editor/nm-connection-list.c:1040
 msgid "Could not edit imported connection"
 msgstr "No se pudo editar la conexión importada"
 
-#: ../src/connection-editor/nm-connection-list.c:1173
+#: ../src/connection-editor/nm-connection-list.c:1174
 msgid "Name"
 msgstr "Nombre"
 
-#: ../src/connection-editor/nm-connection-list.c:1185
+#: ../src/connection-editor/nm-connection-list.c:1186
 msgid "Last Used"
 msgstr "Usada por última vez"
 
-#: ../src/connection-editor/nm-connection-list.c:1288
+#: ../src/connection-editor/nm-connection-list.c:1282
+msgid "No VPN plugin available. Please install one to enable this button."
+msgstr ""
+"No existe un complemento de VPN disponible. Instale uno para activar este "
+"botón."
+
+#: ../src/connection-editor/nm-connection-list.c:1293
 msgid "_Edit"
 msgstr "_Editar"
 
-#: ../src/connection-editor/nm-connection-list.c:1289
+#: ../src/connection-editor/nm-connection-list.c:1294
 msgid "Edit the selected connection"
 msgstr "Editar la conexión seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:1290
+#: ../src/connection-editor/nm-connection-list.c:1295
 msgid "_Edit..."
 msgstr "_Editar…"
 
-#: ../src/connection-editor/nm-connection-list.c:1291
+#: ../src/connection-editor/nm-connection-list.c:1296
 msgid "Authenticate to edit the selected connection"
 msgstr "Autentíquese para editar la conexión seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:1306
+#: ../src/connection-editor/nm-connection-list.c:1311
 msgid "_Delete"
 msgstr "_Eliminar"
 
-#: ../src/connection-editor/nm-connection-list.c:1307
+#: ../src/connection-editor/nm-connection-list.c:1312
 msgid "Delete the selected connection"
 msgstr "Eliminar la conexión seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:1308
+#: ../src/connection-editor/nm-connection-list.c:1313
 msgid "_Delete..."
 msgstr "_Eliminar…"
 
-#: ../src/connection-editor/nm-connection-list.c:1309
+#: ../src/connection-editor/nm-connection-list.c:1314
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentíquese para eliminar la conexión seleccionada"
 
@@ -2599,11 +2479,11 @@ msgstr ""
 "Introduzca el nombre y los detalles de seguridad de la red inalámbrica "
 "oculta a la que quiere conectarse."
 
-#: ../src/wireless-security/eap-method.c:230
+#: ../src/wireless-security/eap-method.c:228
 msgid "No Certificate Authority certificate chosen"
 msgstr "No se ha elegido ningún certificado CA"
 
-#: ../src/wireless-security/eap-method.c:231
+#: ../src/wireless-security/eap-method.c:229
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -2613,37 +2493,70 @@ msgstr ""
 "conexiones inseguras, redes inalámbricas promiscuas. ¿Quiere elegir un "
 "certificado Certificate Authority?"
 
-#: ../src/wireless-security/eap-method.c:240
+#: ../src/wireless-security/eap-method.c:238
 msgid "Choose CA Certificate"
 msgstr "Elija un certificado CA:"
 
-#: ../src/wireless-security/eap-method.c:555
+#: ../src/wireless-security/eap-method.c:583
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "Certificados DER o PEM (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method.c:558
+#: ../src/wireless-security/eap-method.c:586
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Certificados DER o PEM (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:261
+#: ../src/wireless-security/eap-method-peap.c:267
+#: ../src/wireless-security/wireless-security.c:366
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:277
+#: ../src/wireless-security/eap-method-peap.c:283
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-peap.c:369
-#: ../src/wireless-security/eap-method-tls.c:459
-#: ../src/wireless-security/eap-method-ttls.c:368
+#: ../src/wireless-security/eap-method-peap.c:354
+#: ../src/wireless-security/eap-method-tls.c:437
+#: ../src/wireless-security/eap-method-ttls.c:354
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Elija un certificado CA…"
 
-#: ../src/wireless-security/eap-method-tls.c:262
+#: ../src/wireless-security/eap-method-peap.ui.h:2
+#: ../src/wireless-security/eap-method-ttls.ui.h:2
+msgid "Anony_mous identity:"
+msgstr "Identidad anóni_ma:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:4
+#: ../src/wireless-security/eap-method-tls.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:3
+msgid "C_A certificate:"
+msgstr "Certificado C_A:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:5
+#: ../src/wireless-security/eap-method-ttls.ui.h:4
+msgid "I_nner authentication:"
+msgstr "Autenticación i_nterna:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:6
+msgid "Version 0"
+msgstr "Versión 0"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:7
+msgid "Version 1"
+msgstr "Versión 1"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:8
+msgid "_PEAP version:"
+msgstr "Versión _PEAP:"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:1
+msgid "As_k for this password every time"
+msgstr "_Preguntar esta contraseña cada vez"
+
+#: ../src/wireless-security/eap-method-tls.c:261
 msgid "Unencrypted private keys are insecure"
 msgstr "Las claves privadas sin cifrar son inseguras"
 
-#: ../src/wireless-security/eap-method-tls.c:265
+#: ../src/wireless-security/eap-method-tls.c:264
 msgid ""
 "The selected private key does not appear to be protected by a password.  "
 "This could allow your security credentials to be compromised.  Please select "
@@ -2657,25 +2570,105 @@ msgstr ""
 "\n"
 "(Puede proteger su clave privada con una contraseña con openssl)"
 
-#: ../src/wireless-security/eap-method-tls.c:453
+#: ../src/wireless-security/eap-method-tls.c:431
 msgid "Choose your personal certificate..."
 msgstr "Elija su certificado personal…"
 
-#: ../src/wireless-security/eap-method-tls.c:465
+#: ../src/wireless-security/eap-method-tls.c:443
 msgid "Choose your private key..."
 msgstr "Elija su clave privada…"
 
-#: ../src/wireless-security/wireless-security.c:330
+#: ../src/wireless-security/eap-method-tls.ui.h:2
+msgid "I_dentity:"
+msgstr "I_dentidad:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:3
+msgid "Private _key:"
+msgstr "Clave pri_vada:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:5
+msgid "_Private key password:"
+msgstr "Contraseña de clave _privada:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:6
+msgid "_User certificate:"
+msgstr "Certificado del _usuario:"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:1
+msgid "Don't _warn me again"
+msgstr "No a_visarme de nuevo"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:2
+msgid "No"
+msgstr "No"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:3
+msgid "Yes"
+msgstr "Sí"
+
+#: ../src/wireless-security/wireless-security.c:378
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:354
+#: ../src/wireless-security/wireless-security.c:402
 msgid "Tunneled TLS"
 msgstr "TLS a través de túnel"
 
-#: ../src/wireless-security/wireless-security.c:365
+#: ../src/wireless-security/wireless-security.c:413
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protegido (PEAP)"
+
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:2
+#: ../src/wireless-security/ws-wep-key.ui.h:9
+#: ../src/wireless-security/ws-wpa-eap.ui.h:2
+msgid "_Authentication:"
+msgstr "_Autenticación:"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:1
+msgid "1 (Default)"
+msgstr "1 (predeterminado)"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:2
+msgid "2"
+msgstr "2"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "3"
+msgstr "3"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:4
+msgid "4"
+msgstr "4"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:5
+msgid "Open System"
+msgstr "Sistema abierto"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:6
+msgid "Shared Key"
+msgstr "Clave compartida"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:7
+msgid "Sho_w key"
+msgstr "_Mostrar la clave"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:8
+msgid "WEP inde_x:"
+msgstr "Ín_dice WEP:"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:10
+msgid "_Key:"
+msgstr "_Clave:"
+
+#~| msgid ""
+#~| "The connection editor could not find some required resources (the "
+#~| "NetworkManager applet glade file was not found)."
+#~ msgid ""
+#~ "The connection editor could not find some required resources (the "
+#~ "NetworkManager applet .ui file was not found)."
+#~ msgstr ""
+#~ "El editor de la conexión no pudo encontrar algunos archivos de recursos "
+#~ "(no se encontró el archivo .iu de la miniaplicación Gestor de red)."
 
 #~ msgid ""
 #~ "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
