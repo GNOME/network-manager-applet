@@ -370,7 +370,11 @@ connection_combo_changed (GtkWidget *combo,
 	char *utf8_ssid;
 	GtkWidget *widget;
 
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter)) {
+		g_warning ("%s: no active connection combo box item.", __func__);
+		return;
+	}
+
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
 
 	if (priv->connection)
@@ -587,7 +591,10 @@ device_combo_changed (GtkWidget *combo,
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter)) {
+		g_warning ("%s: no active device combo box item.", __func__);
+		return;
+	}
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
 
 	g_object_unref (priv->device);
@@ -1261,8 +1268,8 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 	if (!is_system_connection (self)) {
 		/* Fill security */
 		model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->sec_combo));
-		gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->sec_combo), &iter);
-		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+		if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->sec_combo), &iter))
+			gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
 		if (sec) {
 			wireless_security_fill_connection (sec, connection);
 			wireless_security_unref (sec);
@@ -1386,7 +1393,11 @@ nma_wireless_dialog_nag_user (NMAWirelessDialog *self)
 
 	/* Ask the security method if it wants to nag the user. */
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter)) {
+		g_warning ("%s: no active security combo box item.", __func__);
+		return NULL;
+	}
+
 	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
 	if (sec)
 		return wireless_security_nag_user (sec);
