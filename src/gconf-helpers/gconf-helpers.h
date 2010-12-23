@@ -27,8 +27,6 @@
 #include <glib.h>
 #include <nm-connection.h>
 
-#include "nma-gconf-connection.h"
-
 #define GCONF_PATH_CONNECTIONS "/system/networking/connections"
 
 /* The stamp is a mechanism for determining which applet version last

@@ -21,6 +21,7 @@
  */
 
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <net/ethernet.h>
@@ -45,12 +46,10 @@
 #include <nm-setting-vpn.h>
 #include <nm-setting-ip4-config.h>
 #include <nm-utils.h>
-#include <nm-settings-interface.h>
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
 #include "utils.h"
-#include "applet.h"
 
 #define S390_OPT_KEY_PREFIX "s390-opt-"
 
@@ -67,6 +66,8 @@
 #define DBUS_TYPE_G_ARRAY_OF_IP6_ADDRESS    (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ADDRESS))
 #define DBUS_TYPE_G_IP6_ROUTE               (dbus_g_type_get_struct ("GValueArray", DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, G_TYPE_INVALID))
 #define DBUS_TYPE_G_ARRAY_OF_IP6_ROUTE      (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ROUTE))
+
+#define APPLET_PREFS_PATH "/apps/nm-applet"
 
 const char *applet_8021x_cert_keys[] = {
 	"ca-cert",
@@ -2129,7 +2130,7 @@ write_secret_file (const char *path,
 
 	tmppath = g_malloc0 (strlen (path) + 10);
 	if (!tmppath) {
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not allocate memory for temporary file for '%s'",
 		             path);
 		return FALSE;
@@ -2141,7 +2142,7 @@ write_secret_file (const char *path,
 	errno = 0;
 	fd = mkstemp (tmppath);
 	if (fd < 0) {
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not create temporary file for '%s': %d",
 		             path, errno);
 		goto out;
@@ -2152,7 +2153,7 @@ write_secret_file (const char *path,
 	if (fchmod (fd, S_IRUSR | S_IWUSR)) {
 		close (fd);
 		unlink (tmppath);
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not set permissions for temporary file '%s': %d",
 		             path, errno);
 		goto out;
@@ -2163,7 +2164,7 @@ write_secret_file (const char *path,
 	if (written != len) {
 		close (fd);
 		unlink (tmppath);
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not write temporary file for '%s': %d",
 		             path, errno);
 		goto out;
@@ -2174,7 +2175,7 @@ write_secret_file (const char *path,
 	errno = 0;
 	if (rename (tmppath, path)) {
 		unlink (tmppath);
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not rename temporary file to '%s': %d",
 		             path, errno);
 		goto out;
@@ -2378,7 +2379,7 @@ write_object (GConfClient *client,
 
 		new_file = generate_cert_path (id, objtype->suffix);
 		if (!new_file) {
-			g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+			g_set_error (error, 0, 0,
 			             "Could not create file path for %s / %s",
 			             setting_name, objtype->setting_key);
 			return FALSE;
@@ -2393,7 +2394,7 @@ write_object (GConfClient *client,
 			nm_gconf_set_string_helper (client, dir, objtype->setting_key, setting_name, new_file);
 			return TRUE;
 		} else {
-			g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+			g_set_error (error, 0, 0,
 			             "Could not write certificate/key for %s / %s: %s",
 			             setting_name, objtype->setting_key,
 			             (write_error && write_error->message) ? write_error->message : "(unknown)");
@@ -2493,7 +2494,7 @@ write_one_certificate (GConfClient *client,
 	}
 
 	if (!handled) {
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Unhandled certificate/private-key item '%s'",
 		             key);
 	}
