@@ -31,7 +31,6 @@
 
 #include <nm-setting-connection.h>
 #include <nm-utils.h>
-#include <nm-settings-connection-interface.h>
 
 #include "ce-page.h"
 #include "nma-marshal.h"
@@ -408,7 +407,6 @@ ce_page_new_connection (const char *format,
 	GSList *connections;
 
 	connection = nm_connection_new ();
-	nm_connection_set_scope (connection, NM_CONNECTION_SCOPE_USER);
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 	nm_connection_add_setting (connection, NM_SETTING (s_con));

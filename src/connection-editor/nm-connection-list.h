@@ -24,11 +24,10 @@
 #define NM_CONNECTION_LIST_H
 
 #include <glib-object.h>
-#include <gconf/gconf-client.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include <nm-remote-settings-system.h>
-#include "nma-gconf-settings.h"
+#include <nm-client.h>
+#include <nm-remote-settings.h>
 
 #define NM_TYPE_CONNECTION_LIST    (nm_connection_list_get_type ())
 #define NM_IS_CONNECTION_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_LIST))
@@ -41,9 +40,8 @@ typedef struct {
 	GHashTable *editors;
 	GSList *treeviews;
 
-	GConfClient *client;
-	NMAGConfSettings *gconf_settings;
-	NMRemoteSettingsSystem *system_settings;
+	NMClient *nm_client;
+	NMRemoteSettings *settings;
 
 	GtkBuilder *gui;
 	GtkWidget *dialog;

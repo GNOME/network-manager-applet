@@ -25,7 +25,7 @@
 
 #include <gtk/gtk.h>
 
-#include "nm-remote-settings-system.h"
+#include <nm-client.h>
 
 #define CE_TYPE_POLKIT_BUTTON            (ce_polkit_button_get_type ())
 #define CE_POLKIT_BUTTON(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_POLKIT_BUTTON, CEPolkitButton))
@@ -54,10 +54,8 @@ GtkWidget *ce_polkit_button_new (const char *label,
                                  const char *auth_label,
                                  const char *auth_tooltip,
                                  const char *stock_icon,
-                                 NMRemoteSettingsSystem *settings,
-                                 NMSettingsSystemPermissions permission);
-
-void ce_polkit_button_set_use_polkit (CEPolkitButton *button, gboolean use_polkit);
+                                 NMClient *client,
+                                 NMClientPermission permission);
 
 void ce_polkit_button_set_master_sensitive (CEPolkitButton *button, gboolean sensitive);
 

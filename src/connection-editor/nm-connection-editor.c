@@ -47,8 +47,9 @@
 #include <nm-setting-cdma.h>
 #include <nm-utils.h>
 
+#include <nm-remote-connection.h>
+
 #include "nm-connection-editor.h"
-#include "gconf-helpers.h"
 #include "nma-marshal.h"
 
 #include "ce-page.h"
@@ -128,10 +129,19 @@ ui_to_setting (NMConnectionEditor *editor)
 	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect, NULL);
 
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (editor->system_checkbutton)))
-		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_SYSTEM);
-	else
-		nm_connection_set_scope (editor->connection, NM_CONNECTION_SCOPE_USER);
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton))) {
+		/* Visible to everyone */
+		g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_PERMISSIONS, NULL, NULL);
+	} else {
+		GSList *users = NULL;
+		char buf[75] = "user:";
+
+		/* Visible only to this user */
+		strcat (buf, g_get_user_name ());
+		users = g_slist_append (users, buf);
+		g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_PERMISSIONS, users, NULL);
+		g_slist_free (users);
+	}
 
 	return TRUE;
 }
@@ -157,27 +167,18 @@ update_sensitivity (NMConnectionEditor *editor)
 	 */
 	if (   !nm_setting_connection_get_read_only (s_con)
 	    && editor_is_initialized (editor)) {
-		if (editor->system_settings_can_modify) {
+		if (editor->can_modify) {
 			actionable = ce_polkit_button_get_actionable (CE_POLKIT_BUTTON (editor->ok_button));
 			authorized = ce_polkit_button_get_authorized (CE_POLKIT_BUTTON (editor->ok_button));
 		}
 
-		if (editor->orig_scope == NM_CONNECTION_SCOPE_SYSTEM) {
-			/* If the user cannot ever be authorized to change system connections, and
-			 * the connection is a system connection, we desensitize the entire dialog.
-			 */
-			sensitive = authorized;
-		} else {
-			/* Otherwise, if the connection is originally a user-connection,
-			 * then everything is sensitive except possible the system checkbutton,
-			 * which will be insensitive if the user has no possibility of
-			 * authorizing.
-			 */
-			sensitive = TRUE;
-		}
+		/* If the user cannot ever be authorized to change system connections,
+		 * we desensitize the entire dialog.
+		 */
+		sensitive = authorized;
 	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (editor->system_checkbutton), actionable && authorized);
+	gtk_widget_set_sensitive (GTK_WIDGET (editor->all_checkbutton), actionable && authorized);
 
 	/* Cancel button is always sensitive */
 	gtk_widget_set_sensitive (GTK_WIDGET (editor->cancel_button), TRUE);
@@ -248,27 +249,25 @@ ok_button_actionable_cb (GtkWidget *button,
 }
 
 static void
-can_modify_changed_cb (NMRemoteSettingsSystem *settings,
-                       GParamSpec *pspec,
-                       NMConnectionEditor *editor)
+permissions_changed_cb (NMClient *client,
+	                    NMClientPermission permission,
+	                    NMClientPermissionResult result,                       
+                        NMConnectionEditor *editor)
 {
+	if (permission != NM_CLIENT_PERMISSION_SETTINGS_CONNECTION_MODIFY)
+		return;
+
+	if (result == NM_CLIENT_PERMISSION_RESULT_YES || result == NM_CLIENT_PERMISSION_RESULT_AUTH)
+		editor->can_modify = TRUE;
+	else
+		editor->can_modify = FALSE;
+
 	connection_editor_validate (editor);
 }
 
 static void
-system_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
+all_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
 {
-	gboolean use_polkit = TRUE;
-
-	/* The only time the Save button does not need to use polkit is when the
-	 * original connection scope was USER and the "system" checkbutton is
-	 * unchecked.
-	 */
-	if (   !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))
-	    && (editor->orig_scope == NM_CONNECTION_SCOPE_USER))
-		use_polkit = FALSE;
-
-	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (editor->ok_button), use_polkit);
 	connection_editor_validate (editor);
 }
 
@@ -299,7 +298,7 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 
 	editor->window = GTK_WIDGET (gtk_builder_get_object (editor->builder, "nm-connection-editor"));
 	editor->cancel_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "cancel_button"));
-	editor->system_checkbutton = GTK_WIDGET (gtk_builder_get_object (editor->builder, "system_checkbutton"));
+	editor->all_checkbutton = GTK_WIDGET (gtk_builder_get_object (editor->builder, "system_checkbutton"));
 }
 
 static void
@@ -377,12 +376,11 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 
 NMConnectionEditor *
 nm_connection_editor_new (NMConnection *connection,
-                          NMRemoteSettingsSystem *settings,
+                          NMClient *client,
                           GError **error)
 {
 	NMConnectionEditor *editor;
 	GtkWidget *hbox;
-	gboolean sensitive = TRUE, use_polkit = FALSE;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
@@ -392,32 +390,20 @@ nm_connection_editor_new (NMConnection *connection,
 		return NULL;
 	}
 
-	g_object_get (settings,
-	              NM_SETTINGS_SYSTEM_INTERFACE_CAN_MODIFY,
-	              &editor->system_settings_can_modify,
-	              NULL);
-	g_signal_connect (settings,
-	                  "notify::" NM_SETTINGS_SYSTEM_INTERFACE_CAN_MODIFY,
-	                  G_CALLBACK (can_modify_changed_cb),
+	editor->can_modify = nm_client_get_permission_result (client, NM_CLIENT_PERMISSION_SETTINGS_CONNECTION_MODIFY);
+	g_signal_connect (client,
+	                  "permission-changed",
+	                  G_CALLBACK (permissions_changed_cb),
 	                  editor);
-
-	/* If this is a system connection that we can't ever modify,
-	 * set the editor's Save button always insensitive.
-	 */
-	if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM) {
-		sensitive = editor->system_settings_can_modify;
-		use_polkit = TRUE;
-	}
 
 	editor->ok_button = ce_polkit_button_new (_("_Save"),
 	                                          _("Save any changes made to this connection."),
 	                                          _("_Save..."),
 	                                          _("Authenticate to save this connection for all users of this machine."),
 	                                          GTK_STOCK_APPLY,
-	                                          settings,
-	                                          NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
+	                                          client,
+	                                          NM_CLIENT_PERMISSION_SETTINGS_CONNECTION_MODIFY);
 	gtk_button_set_use_underline (GTK_BUTTON (editor->ok_button), TRUE);
-	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (editor->ok_button), use_polkit);
 
 	g_signal_connect (editor->ok_button, "actionable",
 	                  G_CALLBACK (ok_button_actionable_cb), editor);
@@ -458,8 +444,6 @@ nm_connection_editor_update_connection (NMConnectionEditor *editor, GError **err
 	nm_connection_replace_settings (editor->orig_connection, settings, NULL);
 	g_hash_table_destroy (settings);
 
-	nm_connection_set_scope (editor->orig_connection,
-	                         nm_connection_get_scope (editor->connection));
 	return TRUE;
 }
 
@@ -487,10 +471,9 @@ populate_connection_ui (NMConnectionEditor *editor)
 	g_signal_connect_swapped (name, "changed", G_CALLBACK (connection_editor_validate), editor);
 	g_signal_connect_swapped (autoconnect, "toggled", G_CALLBACK (connection_editor_validate), editor);
 
-	g_signal_connect (editor->system_checkbutton, "toggled", G_CALLBACK (system_checkbutton_toggled_cb), editor);
+	g_signal_connect (editor->all_checkbutton, "toggled", G_CALLBACK (all_checkbutton_toggled_cb), editor);
 
-	if (editor->orig_scope == NM_CONNECTION_SCOPE_SYSTEM)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->system_checkbutton), TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton), TRUE);
 
 	connection_editor_validate (editor);
 }
@@ -560,7 +543,7 @@ page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_da
 static void request_secrets (GetSecretsInfo *info);
 
 static void
-get_secrets_cb (NMSettingsConnectionInterface *connection,
+get_secrets_cb (NMRemoteConnection *connection,
                 GHashTable *secrets,
                 GError *error,
                 gpointer user_data)
@@ -596,24 +579,14 @@ get_secrets_cb (NMSettingsConnectionInterface *connection,
 static void
 request_secrets (GetSecretsInfo *info)
 {
-	NMSettingsConnectionInterface *connection;
-	gboolean success;
-	GError *error;
-
 	g_return_if_fail (info != NULL);
 
-	connection = NM_SETTINGS_CONNECTION_INTERFACE (info->self->orig_connection);
-	success = nm_settings_connection_interface_get_secrets (connection,
-	                                                        info->setting_name,
-	                                                        NULL,
-	                                                        FALSE,
-	                                                        get_secrets_cb,
-	                                                        info);
-	if (!success) {
-		error = g_error_new_literal (0, 0, _("Failed to update connection secrets due to an unknown error."));
-		get_secrets_cb (connection, NULL, error, info);
-		g_error_free (error);
-	}
+	nm_remote_connection_get_secrets (NM_REMOTE_CONNECTION (info->self->orig_connection),
+	                                  info->setting_name,
+	                                  NULL,
+	                                  FALSE,
+	                                  get_secrets_cb,
+	                                  info);
 }
 
 static void
@@ -637,7 +610,7 @@ get_secrets_for_page (NMConnectionEditor *self,
 	 * is an NMConnection because it hasn't been exported over D-Bus yet, so we
 	 * can't ask it for secrets, because it doesn't implement NMSettingsConnectionInterface.
 	 */
-	if (!NM_IS_SETTINGS_CONNECTION_INTERFACE (self->orig_connection)) {
+	if (!NM_IS_REMOTE_CONNECTION (self->orig_connection)) {
 		ce_page_complete_init (page, setting_name, NULL, NULL);
 		return;
 	}
@@ -717,7 +690,6 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	editor->connection = nm_connection_duplicate (orig_connection);
 
 	editor->orig_connection = g_object_ref (orig_connection);
-	editor->orig_scope = nm_connection_get_scope (editor->connection);
 	nm_connection_editor_update_title (editor);
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
@@ -820,24 +792,6 @@ nm_connection_editor_run (NMConnectionEditor *self)
 	                  G_CALLBACK (cancel_button_clicked_cb), self);
 
 	nm_connection_editor_present (self);
-}
-
-void
-nm_connection_editor_save_vpn_secrets (NMConnectionEditor *editor)
-{
-	GSList *iter;
-
-	g_return_if_fail (NM_IS_CONNECTION_EDITOR (editor));
-	g_return_if_fail (nm_connection_get_scope (editor->connection) == NM_CONNECTION_SCOPE_USER);
-
-	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
-		CEPage *page = CE_PAGE (iter->data);
-
-		if (CE_IS_PAGE_VPN (page)) {
-			ce_page_vpn_save_secrets (page, editor->connection);
-			break;
-		}
-	}
 }
 
 GtkWindow *

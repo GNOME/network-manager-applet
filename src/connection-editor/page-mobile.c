@@ -34,7 +34,6 @@
 
 #include "page-mobile.h"
 #include "nm-connection-editor.h"
-#include "gconf-helpers.h"
 #include "mobile-wizard.h"
 
 G_DEFINE_TYPE (CEPageMobile, ce_page_mobile, CE_TYPE_PAGE)
