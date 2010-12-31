@@ -49,7 +49,8 @@ nm_applet_SOURCES =			\
 	mobile-helpers.c \
 	mobile-helpers.h \
 	applet-device-bt.h \
-	applet-device-bt.c
+	applet-device-bt.c \
+	fallback-icon.h
 
 nm_applet_LDADD = \
 	-lm \

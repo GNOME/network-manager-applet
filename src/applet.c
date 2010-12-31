@@ -2780,32 +2780,46 @@ nma_icon_check_and_load (const char *name, GdkPixbuf **icon, NMApplet *applet)
 	return *icon;
 }
 
-#define FALLBACK_ICON_NAME "gtk-dialog-error"
+#include "fallback-icon.h"
 
 static gboolean
 nma_icons_reload (NMApplet *applet)
 {
 	GError *error = NULL;
+	GdkPixbufLoader *loader;
 
 	g_return_val_if_fail (applet->icon_size > 0, FALSE);
 
 	nma_icons_free (applet);
 
-	applet->fallback_icon = gtk_icon_theme_load_icon (applet->icon_theme,
-	                                                  FALLBACK_ICON_NAME,
-	                                                  applet->icon_size, 0,
-	                                                  &error);
-	if (!applet->fallback_icon) {
-		g_warning ("Fallback icon '%s' missing: (%d) %s",
-		           FALLBACK_ICON_NAME,
-		           error ? error->code : -1,
-			       (error && error->message) ? error->message : "(unknown)");
-		g_clear_error (&error);
-		/* Die if we can't get even a fallback icon */
-		g_assert (applet->fallback_icon);
-	}
+	loader = gdk_pixbuf_loader_new_with_type ("image/png", &error);
+	if (!loader)
+		goto error;
+
+	if (!gdk_pixbuf_loader_write (loader,
+	                              fallback_icon_data,
+	                              sizeof (fallback_icon_data),
+	                              &error))
+		goto error;
+
+	if (!gdk_pixbuf_loader_close (loader, &error))
+		goto error;
+
+	applet->fallback_icon = gdk_pixbuf_loader_get_pixbuf (loader);
+	g_object_ref (applet->fallback_icon);
+	g_assert (applet->fallback_icon);
+	g_object_unref (loader);
 
 	return TRUE;
+
+error:
+	g_warning ("Could not load fallback icon: (%d) %s",
+	           error ? error->code : -1,
+		       (error && error->message) ? error->message : "(unknown)");
+	g_clear_error (&error);
+	/* Die if we can't get a fallback icon */
+	g_assert (FALSE);
+	return FALSE;
 }
 
 static void nma_icon_theme_changed (GtkIconTheme *icon_theme, NMApplet *applet)
