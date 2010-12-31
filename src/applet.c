@@ -2792,7 +2792,7 @@ nma_icons_reload (NMApplet *applet)
 
 	nma_icons_free (applet);
 
-	loader = gdk_pixbuf_loader_new_with_type ("image/png", &error);
+	loader = gdk_pixbuf_loader_new_with_type ("png", &error);
 	if (!loader)
 		goto error;
 
