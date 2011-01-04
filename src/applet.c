@@ -1673,7 +1673,12 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
-static gboolean nma_menu_clear (NMApplet *applet);
+static gboolean
+destroy_old_menu (gpointer user_data)
+{
+	g_object_unref (user_data);
+	return FALSE;
+}
 
 static void
 nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
@@ -1682,7 +1687,9 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 	 * the menu items don't get destroyed before any 'activate' signal
 	 * fires for an item.
 	 */
-	g_idle_add_full (G_PRIORITY_LOW, (GSourceFunc) nma_menu_clear, applet, NULL);
+	g_signal_handlers_disconnect_by_func (applet->menu, G_CALLBACK (nma_menu_deactivate_cb), applet);
+	g_idle_add_full (G_PRIORITY_LOW, destroy_old_menu, applet->menu, NULL);
+	applet->menu = NULL;
 
 	/* Re-set the tooltip */
 #if GTK_CHECK_VERSION(2, 15, 0)
@@ -1690,42 +1697,6 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 #else
 	gtk_status_icon_set_tooltip (applet->status_icon, applet->tip);
 #endif
-}
-
-/*
- * nma_menu_create
- *
- * Create the applet's dropdown menu
- *
- */
-static GtkWidget *
-nma_menu_create (NMApplet *applet)
-{
-	GtkWidget	*menu;
-
-	g_return_val_if_fail (applet != NULL, NULL);
-
-	menu = gtk_menu_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (menu), 0);
-	g_signal_connect (menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
-	g_signal_connect (menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
-	return menu;
-}
-
-/*
- * nma_menu_clear
- *
- * Destroy the menu and each of its items data tags
- *
- */
-static gboolean nma_menu_clear (NMApplet *applet)
-{
-	g_return_val_if_fail (applet != NULL, FALSE);
-
-	if (applet->menu)
-		gtk_widget_destroy (applet->menu);
-	applet->menu = nma_menu_create (applet);
-	return FALSE;
 }
 
 static gboolean
@@ -2917,10 +2888,23 @@ status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
 	 */
 	applet_clear_notify (applet);
 
-	nma_menu_clear (applet);
+	/* Kill any old menu */
+	if (applet->menu)
+		g_object_unref (applet->menu);
+
+	/* And make a fresh new one */
+	applet->menu = gtk_menu_new ();
+	/* Sink the ref so we can explicitly destroy the menu later */
+	g_object_ref_sink (G_OBJECT (applet->menu));
+
+	gtk_container_set_border_width (GTK_CONTAINER (applet->menu), 0);
+	g_signal_connect (applet->menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
+	g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
+
+	/* Display the new menu */
 	gtk_menu_popup (GTK_MENU (applet->menu), NULL, NULL,
-			gtk_status_icon_position_menu, icon,
-			1, gtk_get_current_event_time ());
+	                gtk_status_icon_position_menu, icon,
+	                1, gtk_get_current_event_time ());
 }
 
 static void
@@ -2958,10 +2942,6 @@ setup_widgets (NMApplet *applet)
 	g_signal_connect (applet->status_icon, "popup-menu",
 			  G_CALLBACK (status_icon_popup_menu_cb), applet);
 
-	applet->menu = nma_menu_create (applet);
-	if (!applet->menu)
-		return FALSE;
-
 	applet->context_menu = nma_context_menu_create (applet);
 	if (!applet->context_menu)
 		return FALSE;
@@ -2990,6 +2970,7 @@ applet_pre_keyring_callback (gpointer user_data)
 
 		gtk_widget_hide (applet->menu);
 		gtk_widget_destroy (applet->menu);
+		g_object_unref (applet->menu);
 		applet->menu = NULL;
 
 		/* Ensure that the widget really gets destroyed before letting the
@@ -3170,7 +3151,8 @@ static void finalize (GObject *object)
 	if (applet->update_icon_id)
 		g_source_remove (applet->update_icon_id);
 
-	nma_menu_clear (applet);
+	if (applet->menu)
+		g_object_unref (applet->menu);
 	nma_icons_free (applet);
 
 	g_free (applet->tip);
