@@ -482,13 +482,11 @@ applet_new_menu_item_helper (NMConnection *connection,
 #define TITLE_TEXT_G ((double) 0x5e / 255.0 )
 #define TITLE_TEXT_B ((double) 0x5e / 255.0 )
 
-static gboolean
-menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
+static void
+menu_item_draw_generic (GtkWidget *widget, cairo_t *cr)
 {
-	GtkAllocation allocation;
 	GtkWidget *label;
 	PangoFontDescription *desc;
-	cairo_t *cr;
 	PangoLayout *layout;
 	int width = 0, height = 0, owidth, oheight;
 	gdouble extraheight = 0, extrawidth = 0;
@@ -498,23 +496,6 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 	gdouble postpadding = 0.0;
 
 	label = gtk_bin_get_child (GTK_BIN (widget));
-
-	cr = gdk_cairo_create (gtk_widget_get_window (widget));
-
-	/* The drawing area we get is the whole menu; clip the drawing to the
-	 * event area, which should just be our menu item.
-	 */
-	cairo_rectangle (cr,
-	                 event->area.x, event->area.y,
-	                 event->area.width, event->area.height);
-	cairo_clip (cr);
-
-	/* We also need to reposition the cairo context so that (0, 0) is the
-	 * top-left of where we're supposed to start drawing.
-	 */
-	gtk_widget_get_allocation (widget, &allocation);
-	cairo_translate (cr, allocation.x, allocation.y);
-
 	text = gtk_label_get_text (GTK_LABEL (label));
 
 	layout = pango_cairo_create_layout (cr);
@@ -560,12 +541,46 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	pango_font_description_free (desc);
 	g_object_unref (layout);
-	cairo_destroy (cr);
 
 	gtk_widget_set_size_request (widget, width + 2 * xpadding, height + ypadding + postpadding);
-	return TRUE;
 }
 
+#if GTK_CHECK_VERSION(2,90,7)
+static gboolean
+menu_title_item_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data)
+{
+	menu_item_draw_generic (widget, cr);
+	return TRUE;
+}
+#else
+static gboolean
+menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
+{
+	GtkAllocation allocation;
+	cairo_t *cr;
+
+	cr = gdk_cairo_create (gtk_widget_get_window (widget));
+
+	/* The drawing area we get is the whole menu; clip the drawing to the
+	 * event area, which should just be our menu item.
+	 */
+	cairo_rectangle (cr,
+	                 event->area.x, event->area.y,
+	                 event->area.width, event->area.height);
+	cairo_clip (cr);
+
+	/* We also need to reposition the cairo context so that (0, 0) is the
+	 * top-left of where we're supposed to start drawing.
+	 */
+	gtk_widget_get_allocation (widget, &allocation);
+	cairo_translate (cr, allocation.x, allocation.y);
+
+	menu_item_draw_generic (widget, cr);
+
+	cairo_destroy (cr);
+	return TRUE;
+}
+#endif
 
 GtkWidget *
 applet_menu_item_create_device_item_helper (NMDevice *device,
@@ -576,7 +591,11 @@ applet_menu_item_create_device_item_helper (NMDevice *device,
 
 	item = gtk_menu_item_new_with_mnemonic (text);
 	gtk_widget_set_sensitive (item, FALSE);
+#if GTK_CHECK_VERSION(2,90,7)
+	g_signal_connect (item, "draw", G_CALLBACK (menu_title_item_draw), NULL);
+#else
 	g_signal_connect (item, "expose-event", G_CALLBACK (menu_title_item_expose), NULL);
+#endif
 	return item;
 }
 
@@ -1658,7 +1677,12 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
-static gboolean nma_menu_clear (NMApplet *applet);
+static gboolean
+destroy_old_menu (gpointer user_data)
+{
+	g_object_unref (user_data);
+	return FALSE;
+}
 
 static void
 nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
@@ -1667,7 +1691,9 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 	 * the menu items don't get destroyed before any 'activate' signal
 	 * fires for an item.
 	 */
-	g_idle_add_full (G_PRIORITY_LOW, (GSourceFunc) nma_menu_clear, applet, NULL);
+	g_signal_handlers_disconnect_by_func (applet->menu, G_CALLBACK (nma_menu_deactivate_cb), applet);
+	g_idle_add_full (G_PRIORITY_LOW, destroy_old_menu, applet->menu, NULL);
+	applet->menu = NULL;
 
 	/* Re-set the tooltip */
 #if GTK_CHECK_VERSION(2, 15, 0)
@@ -1675,42 +1701,6 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 #else
 	gtk_status_icon_set_tooltip (applet->status_icon, applet->tip);
 #endif
-}
-
-/*
- * nma_menu_create
- *
- * Create the applet's dropdown menu
- *
- */
-static GtkWidget *
-nma_menu_create (NMApplet *applet)
-{
-	GtkWidget	*menu;
-
-	g_return_val_if_fail (applet != NULL, NULL);
-
-	menu = gtk_menu_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (menu), 0);
-	g_signal_connect (menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
-	g_signal_connect (menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
-	return menu;
-}
-
-/*
- * nma_menu_clear
- *
- * Destroy the menu and each of its items data tags
- *
- */
-static gboolean nma_menu_clear (NMApplet *applet)
-{
-	g_return_val_if_fail (applet != NULL, FALSE);
-
-	if (applet->menu)
-		gtk_widget_destroy (applet->menu);
-	applet->menu = nma_menu_create (applet);
-	return FALSE;
 }
 
 static gboolean
@@ -2902,10 +2892,23 @@ status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
 	 */
 	applet_clear_notify (applet);
 
-	nma_menu_clear (applet);
+	/* Kill any old menu */
+	if (applet->menu)
+		g_object_unref (applet->menu);
+
+	/* And make a fresh new one */
+	applet->menu = gtk_menu_new ();
+	/* Sink the ref so we can explicitly destroy the menu later */
+	g_object_ref_sink (G_OBJECT (applet->menu));
+
+	gtk_container_set_border_width (GTK_CONTAINER (applet->menu), 0);
+	g_signal_connect (applet->menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
+	g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
+
+	/* Display the new menu */
 	gtk_menu_popup (GTK_MENU (applet->menu), NULL, NULL,
-			gtk_status_icon_position_menu, icon,
-			1, gtk_get_current_event_time ());
+	                gtk_status_icon_position_menu, icon,
+	                1, gtk_get_current_event_time ());
 }
 
 static void
@@ -2943,10 +2946,6 @@ setup_widgets (NMApplet *applet)
 	g_signal_connect (applet->status_icon, "popup-menu",
 			  G_CALLBACK (status_icon_popup_menu_cb), applet);
 
-	applet->menu = nma_menu_create (applet);
-	if (!applet->menu)
-		return FALSE;
-
 	applet->context_menu = nma_context_menu_create (applet);
 	if (!applet->context_menu)
 		return FALSE;
@@ -2975,6 +2974,7 @@ applet_pre_keyring_callback (gpointer user_data)
 
 		gtk_widget_hide (applet->menu);
 		gtk_widget_destroy (applet->menu);
+		g_object_unref (applet->menu);
 		applet->menu = NULL;
 
 		/* Ensure that the widget really gets destroyed before letting the
@@ -3161,7 +3161,8 @@ static void finalize (GObject *object)
 	if (applet->update_icon_id)
 		g_source_remove (applet->update_icon_id);
 
-	nma_menu_clear (applet);
+	if (applet->menu)
+		g_object_unref (applet->menu);
 	nma_icons_free (applet);
 
 	g_free (applet->tip);
