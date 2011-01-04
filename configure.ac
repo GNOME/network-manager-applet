@@ -84,7 +84,7 @@ case "${with_gtk2}" in
 	yes)	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.20)
 		gtkver=2
 		;;
-	*)	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.6)
+	*)	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.4)
 		;;
 esac
 AM_CONDITIONAL(USE_GTK2, test x"$gtkver" = "x2")
