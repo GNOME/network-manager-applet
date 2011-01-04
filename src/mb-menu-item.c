@@ -70,6 +70,8 @@ get_tech_name (guint32 tech)
 		return _("HSUPA");
 	case MB_TECH_HSPA:
 		return _("HSPA");
+	case MB_TECH_WIMAX:
+		return _("WiMAX");
 	default:
 		break;
 	}

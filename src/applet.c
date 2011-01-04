@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2010 Red Hat, Inc.
+ * Copyright (C) 2004 - 2011 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
@@ -45,6 +45,7 @@
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
 #include <nm-device-bt.h>
+#include <nm-device-wimax.h>
 #include <nm-utils.h>
 #include <nm-connection.h>
 #include <nm-vpn-connection.h>
@@ -63,6 +64,7 @@
 #include "applet-device-gsm.h"
 #include "applet-device-cdma.h"
 #include "applet-device-bt.h"
+#include "applet-device-wimax.h"
 #include "applet-dialogs.h"
 #include "vpn-password-dialog.h"
 #include "applet-dbus-manager.h"
@@ -261,6 +263,8 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->cdma_class;
 	else if (NM_IS_DEVICE_BT (device))
 		return applet->bt_class;
+	else if (NM_IS_DEVICE_WIMAX (device))
+		return applet->wimax_class;
 	else
 		g_message ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
 	return NULL;
@@ -3111,6 +3115,9 @@ constructor (GType type,
 	applet->bt_class = applet_device_bt_get_class (applet);
 	g_assert (applet->bt_class);
 
+	applet->wimax_class = applet_device_wimax_get_class (applet);
+	g_assert (applet->wimax_class);
+
 	foo_client_setup (applet);
 
 	/* timeout to update connection timestamps every 5 minutes */
@@ -3147,6 +3154,9 @@ static void finalize (GObject *object)
 	g_slice_free (NMADeviceClass, applet->wired_class);
 	g_slice_free (NMADeviceClass, applet->wifi_class);
 	g_slice_free (NMADeviceClass, applet->gsm_class);
+	g_slice_free (NMADeviceClass, applet->cdma_class);
+	g_slice_free (NMADeviceClass, applet->bt_class);
+	g_slice_free (NMADeviceClass, applet->wimax_class);
 
 	if (applet->update_icon_id)
 		g_source_remove (applet->update_icon_id);

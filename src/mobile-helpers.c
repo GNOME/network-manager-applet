@@ -70,11 +70,13 @@ mobile_helper_get_status_pixbuf (guint32 quality,
 							  GDK_INTERP_BILINEAR, 255);
 	} else {
 		tmp = mobile_helper_get_tech_icon (access_tech, applet);
-		gdk_pixbuf_composite (tmp, pixbuf, 0, 0,
-		                      gdk_pixbuf_get_width (tmp),
-							  gdk_pixbuf_get_height (tmp),
-							  0, 0, 1.0, 1.0,
-							  GDK_INTERP_BILINEAR, 255);
+		if (tmp) {
+			gdk_pixbuf_composite (tmp, pixbuf, 0, 0,
+				                  gdk_pixbuf_get_width (tmp),
+								  gdk_pixbuf_get_height (tmp),
+								  0, 0, 1.0, 1.0,
+								  GDK_INTERP_BILINEAR, 255);
+		}
 	}
 
 	return pixbuf;
@@ -115,6 +117,7 @@ mobile_helper_get_tech_icon (guint32 tech, NMApplet *applet)
 	case MB_TECH_HSUPA:
 	case MB_TECH_HSPA:
 		return nma_icon_check_and_load ("nm-tech-hspa", &applet->mb_tech_hspa_icon, applet);
+	case MB_TECH_WIMAX:
 	default:
 		return NULL;
 	}
