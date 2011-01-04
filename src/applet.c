@@ -1160,11 +1160,8 @@ sort_devices (gconstpointer a, gconstpointer b)
 {
 	NMDevice *aa = NM_DEVICE (a);
 	NMDevice *bb = NM_DEVICE (b);
-	GType aa_type;
-	GType bb_type;
-
-	aa_type = G_OBJECT_TYPE (G_OBJECT (aa));
-	bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
+	GType aa_type = G_OBJECT_TYPE (G_OBJECT (aa));
+	GType bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
 
 	if (aa_type == bb_type) {
 		char *aa_desc = NULL;
@@ -1178,42 +1175,40 @@ sort_devices (gconstpointer a, gconstpointer b)
 		if (!bb_desc)
 			bb_desc = (char *) nm_device_get_iface (bb);
 
-		if (!aa_desc && bb_desc)
-			return -1;
-		else if (aa_desc && !bb_desc)
-			return 1;
-		else if (!aa_desc && !bb_desc)
-			return 0;
-
-		g_assert (aa_desc);
-		g_assert (bb_desc);
-		return strcmp (aa_desc, bb_desc);
+		return g_strcmp0 (aa_desc, bb_desc);
 	}
 
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_DEVICE_WIFI)
+	/* Ethernet always first */
+	if (aa_type == NM_TYPE_DEVICE_ETHERNET)
 		return -1;
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_GSM_DEVICE)
-		return -1;
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_CDMA_DEVICE)
-		return -1;
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_DEVICE_BT)
-		return -1;
+	if (bb_type == NM_TYPE_DEVICE_ETHERNET)
+		return 1;
 
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_CDMA_DEVICE)
+	/* GSM next */
+	if (aa_type == NM_TYPE_GSM_DEVICE)
 		return -1;
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
-		return -1;
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_BT)
-		return -1;
+	if (bb_type == NM_TYPE_GSM_DEVICE)
+		return 1;
 
-	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
+	/* CDMA next */
+	if (aa_type == NM_TYPE_CDMA_DEVICE)
 		return -1;
-	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_BT)
-		return -1;
+	if (bb_type == NM_TYPE_CDMA_DEVICE)
+		return 1;
 
-	if (aa_type == NM_TYPE_DEVICE_BT && bb_type == NM_TYPE_DEVICE_WIFI)
+	/* Bluetooth next */
+	if (aa_type == NM_TYPE_DEVICE_BT)
 		return -1;
+	if (bb_type == NM_TYPE_DEVICE_BT)
+		return 1;
 
+	/* WiMAX next */
+	if (aa_type == NM_TYPE_DEVICE_WIMAX)
+		return -1;
+	if (bb_type == NM_TYPE_DEVICE_WIMAX)
+		return 1;
+
+	/* WiFi last because it has many menu items */
 	return 1;
 }
 
@@ -1395,9 +1390,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 
 	temp = nm_client_get_devices (applet->nm_client);
 	for (i = 0; temp && (i < temp->len); i++)
-		devices = g_slist_append (devices, g_ptr_array_index (temp, i));
-	if (devices)
-		devices = g_slist_sort (devices, sort_devices);
+		devices = g_slist_insert_sorted (devices, g_ptr_array_index (temp, i), sort_devices);
 
 	for (iter = devices; iter; iter = iter->next) {
 		NMDevice *device = NM_DEVICE (iter->data);
