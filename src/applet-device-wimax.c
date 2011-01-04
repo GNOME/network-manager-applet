@@ -235,9 +235,9 @@ wimax_add_menu_item (NMDevice *device,
 			desc = (char *) nm_device_get_iface (device);
 		g_assert (desc);
 
-		text = g_strdup_printf (_("Mobile Broadband WiMAX (%s)"), desc);
+		text = g_strdup_printf (_("WiMAX Mobile Broadband (%s)"), desc);
 	} else {
-		text = g_strdup (_("Mobile Broadband WiMAX"));
+		text = g_strdup (_("WiMAX Mobile Broadband"));
 	}
 
 	item = applet_menu_item_create_device_item_helper (device, applet, text);
