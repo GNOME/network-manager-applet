@@ -89,7 +89,7 @@ nm_mb_menu_item_new (const char *connection_name,
 {
 	NMMbMenuItem *item;
 	NMMbMenuItemPrivate *priv;
-	const char *tech_name;
+	const char *tech_name = NULL;
 
 	item = g_object_new (NM_TYPE_MB_MENU_ITEM, NULL);
 	if (!item)
@@ -98,8 +98,11 @@ nm_mb_menu_item_new (const char *connection_name,
 	priv = NM_MB_MENU_ITEM_GET_PRIVATE (item);
 	priv->int_strength = strength;
 
+	/* WiMAX doesn't show tech name */
+	if (technology != MB_TECH_WIMAX)
+		tech_name = get_tech_name (technology);
+
 	/* Construct the description string */
-	tech_name = get_tech_name (technology);
 	switch (state) {
 	default:
 	case MB_STATE_UNKNOWN:
@@ -168,10 +171,16 @@ nm_mb_menu_item_new (const char *connection_name,
 	if (enabled && connection_name) {
 		char *markup;
 
-		gtk_label_set_use_markup (GTK_LABEL (priv->desc), TRUE);
-		markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
-		gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
-		g_free (markup);
+		if (technology == MB_TECH_WIMAX) {
+			/* WiMAX NSPs aren't shown in bold */
+			gtk_label_set_use_markup (GTK_LABEL (priv->desc), FALSE);
+			gtk_label_set_text (GTK_LABEL (priv->desc), priv->desc_string);
+		} else {
+			gtk_label_set_use_markup (GTK_LABEL (priv->desc), TRUE);
+			markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
+			gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
+			g_free (markup);
+		}
 		gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
 	} else {
 		/* Disconnected and disabled states */

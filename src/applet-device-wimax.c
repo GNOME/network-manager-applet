@@ -139,23 +139,13 @@ new_nsp_menu_item (NMDeviceWimax *device,
                    NMApplet *applet)
 {
 	GtkWidget *item;
-	const char *cname;
-	NMSettingConnection *s_con;
 	WimaxMenuItemInfo *info;
 
 	g_return_val_if_fail (nsp != NULL, NULL);
 
-	if (connection) {
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
-		g_assert (s_con);
-
-		cname = nm_setting_connection_get_id (s_con);
-	} else
-		cname = nm_wimax_nsp_get_name (nsp);
-
-	item = nm_mb_menu_item_new (cname,
+	item = nm_mb_menu_item_new (nm_wimax_nsp_get_name (nsp),
 		                        nm_wimax_nsp_get_signal_quality (nsp),
-		                        nm_wimax_nsp_get_name (nsp),
+		                        NULL,
 		                        MB_TECH_WIMAX,
 		                        nsp_type_to_mb_state (nm_wimax_nsp_get_network_type (nsp)),
 		                        TRUE,
