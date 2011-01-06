@@ -549,9 +549,11 @@ info_dialog_add_page (GtkNotebook *notebook,
 	}
 
 	ip6_config = nm_device_get_ip6_config (device);
-	addresses = nm_ip6_config_get_addresses (ip6_config);
-	if (g_slist_length ((GSList *) addresses))
-		def6_addr = addresses->data;
+	if (ip6_config) {
+		addresses = nm_ip6_config_get_addresses (ip6_config);
+		if (g_slist_length ((GSList *) addresses))
+			def6_addr = addresses->data;
+	}
 
 	/* Address */
 	if (def6_addr) {
