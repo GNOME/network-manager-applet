@@ -29,6 +29,7 @@
 #include <nm-device-wifi.h>
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
+#include <nm-device-wimax.h>
 
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
@@ -360,6 +361,8 @@ info_dialog_add_page (GtkNotebook *notebook,
 		str = g_strdup_printf (_("GSM (%s)"), iface);
 	else if (NM_IS_CDMA_DEVICE (device))
 		str = g_strdup_printf (_("CDMA (%s)"), iface);
+	else if (NM_IS_DEVICE_WIMAX (device))
+		str = g_strdup_printf (_("WiMAX (%s)"), iface);
 	else
 		str = g_strdup (iface);
 
@@ -382,6 +385,8 @@ info_dialog_add_page (GtkNotebook *notebook,
 		str = g_strdup (nm_device_ethernet_get_hw_address (NM_DEVICE_ETHERNET (device)));
 	else if (NM_IS_DEVICE_WIFI (device))
 		str = g_strdup (nm_device_wifi_get_hw_address (NM_DEVICE_WIFI (device)));
+	else if (NM_IS_DEVICE_WIMAX (device))
+		str = g_strdup (nm_device_wimax_get_hw_address (NM_DEVICE_WIMAX (device)));
 
 	gtk_table_attach (table, create_info_label (_("Hardware Address:"), FALSE),
 	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
