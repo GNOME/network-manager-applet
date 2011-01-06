@@ -338,6 +338,33 @@ bitrate_changed_cb (GObject *device, GParamSpec *pspec, gpointer user_data)
 }
 
 static void
+wimax_cinr_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
+{
+	GtkWidget *label = GTK_WIDGET (user_data);
+	gint cinr;
+	char *str = NULL;
+
+	cinr = nm_device_wimax_get_cinr (NM_DEVICE_WIMAX (device));
+	if (cinr)
+		str = g_strdup_printf (_("%d dB"), cinr);
+
+	gtk_label_set_text (GTK_LABEL (label), str ? str : C_("WiMAX CINR", "unknown"));
+	g_free (str);
+}
+
+static void
+wimax_bsid_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
+{
+	GtkWidget *label = GTK_WIDGET (user_data);
+	const char *str = NULL;
+
+	str = nm_device_wimax_get_bsid (NM_DEVICE_WIMAX (device));
+	if (!str)
+		str = C_("WiMAX Base Station ID", "unknown");
+	gtk_label_set_text (GTK_LABEL (label), str);
+}
+
+static void
 info_dialog_add_page (GtkNotebook *notebook,
                       NMConnection *connection,
                       gboolean is_default,
@@ -457,6 +484,36 @@ info_dialog_add_page (GtkNotebook *notebook,
 				              1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
 			row++;
 		}
+	}
+
+	if (NM_IS_DEVICE_WIMAX (device)) {
+		GtkWidget *bsid_label, *cinr_label;
+
+		/* CINR */
+		cinr_label = create_info_label ("", TRUE);
+		gtk_table_attach (table, create_info_label (_("CINR:"), FALSE),
+			              0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+		gtk_table_attach (table, cinr_label,
+			              1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+		label_info_new (device,
+		                cinr_label,
+		                "notify::" NM_DEVICE_WIMAX_CINR,
+		                G_CALLBACK (wimax_cinr_changed_cb));
+		wimax_cinr_changed_cb (device, NULL, cinr_label);
+		row++;
+
+		/* Base Station ID */
+		bsid_label = create_info_label ("", TRUE);
+		gtk_table_attach (table, create_info_label (_("BSID:"), FALSE),
+			              0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+		gtk_table_attach (table, bsid_label,
+			              1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+		label_info_new (device,
+		                bsid_label,
+		                "notify::" NM_DEVICE_WIMAX_BSID,
+		                G_CALLBACK (wimax_bsid_changed_cb));
+		wimax_bsid_changed_cb (device, NULL, bsid_label);
+		row++;
 	}
 
 	/* Empty line */
