@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2010 Red Hat, Inc.
+ * Copyright (C) 2004 - 2011 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
@@ -45,6 +45,7 @@
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
 #include <nm-device-bt.h>
+#include <nm-device-wimax.h>
 #include <nm-utils.h>
 #include <nm-connection.h>
 #include <nm-vpn-connection.h>
@@ -63,6 +64,7 @@
 #include "applet-device-gsm.h"
 #include "applet-device-cdma.h"
 #include "applet-device-bt.h"
+#include "applet-device-wimax.h"
 #include "applet-dialogs.h"
 #include "vpn-password-dialog.h"
 #include "applet-dbus-manager.h"
@@ -261,6 +263,8 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->cdma_class;
 	else if (NM_IS_DEVICE_BT (device))
 		return applet->bt_class;
+	else if (NM_IS_DEVICE_WIMAX (device))
+		return applet->wimax_class;
 	else
 		g_message ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
 	return NULL;
@@ -1156,11 +1160,8 @@ sort_devices (gconstpointer a, gconstpointer b)
 {
 	NMDevice *aa = NM_DEVICE (a);
 	NMDevice *bb = NM_DEVICE (b);
-	GType aa_type;
-	GType bb_type;
-
-	aa_type = G_OBJECT_TYPE (G_OBJECT (aa));
-	bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
+	GType aa_type = G_OBJECT_TYPE (G_OBJECT (aa));
+	GType bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
 
 	if (aa_type == bb_type) {
 		char *aa_desc = NULL;
@@ -1174,42 +1175,40 @@ sort_devices (gconstpointer a, gconstpointer b)
 		if (!bb_desc)
 			bb_desc = (char *) nm_device_get_iface (bb);
 
-		if (!aa_desc && bb_desc)
-			return -1;
-		else if (aa_desc && !bb_desc)
-			return 1;
-		else if (!aa_desc && !bb_desc)
-			return 0;
-
-		g_assert (aa_desc);
-		g_assert (bb_desc);
-		return strcmp (aa_desc, bb_desc);
+		return g_strcmp0 (aa_desc, bb_desc);
 	}
 
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_DEVICE_WIFI)
+	/* Ethernet always first */
+	if (aa_type == NM_TYPE_DEVICE_ETHERNET)
 		return -1;
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_GSM_DEVICE)
-		return -1;
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_CDMA_DEVICE)
-		return -1;
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_DEVICE_BT)
-		return -1;
+	if (bb_type == NM_TYPE_DEVICE_ETHERNET)
+		return 1;
 
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_CDMA_DEVICE)
+	/* GSM next */
+	if (aa_type == NM_TYPE_GSM_DEVICE)
 		return -1;
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
-		return -1;
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_BT)
-		return -1;
+	if (bb_type == NM_TYPE_GSM_DEVICE)
+		return 1;
 
-	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
+	/* CDMA next */
+	if (aa_type == NM_TYPE_CDMA_DEVICE)
 		return -1;
-	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_BT)
-		return -1;
+	if (bb_type == NM_TYPE_CDMA_DEVICE)
+		return 1;
 
-	if (aa_type == NM_TYPE_DEVICE_BT && bb_type == NM_TYPE_DEVICE_WIFI)
+	/* Bluetooth next */
+	if (aa_type == NM_TYPE_DEVICE_BT)
 		return -1;
+	if (bb_type == NM_TYPE_DEVICE_BT)
+		return 1;
 
+	/* WiMAX next */
+	if (aa_type == NM_TYPE_DEVICE_WIMAX)
+		return -1;
+	if (bb_type == NM_TYPE_DEVICE_WIMAX)
+		return 1;
+
+	/* WiFi last because it has many menu items */
 	return 1;
 }
 
@@ -1391,9 +1390,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 
 	temp = nm_client_get_devices (applet->nm_client);
 	for (i = 0; temp && (i < temp->len); i++)
-		devices = g_slist_append (devices, g_ptr_array_index (temp, i));
-	if (devices)
-		devices = g_slist_sort (devices, sort_devices);
+		devices = g_slist_insert_sorted (devices, g_ptr_array_index (temp, i), sort_devices);
 
 	for (iter = devices; iter; iter = iter->next) {
 		NMDevice *device = NM_DEVICE (iter->data);
@@ -1594,6 +1591,17 @@ nma_set_wwan_enabled_cb (GtkWidget *widget, NMApplet *applet)
 }
 
 static void
+nma_set_wimax_enabled_cb (GtkWidget *widget, NMApplet *applet)
+{
+	gboolean state;
+
+	g_return_if_fail (applet != NULL);
+
+	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
+	nm_client_wimax_set_enabled (applet->nm_client, state);
+}
+
+static void
 nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 {
 	gboolean state;
@@ -1719,8 +1727,10 @@ nma_context_menu_update (NMApplet *applet)
 	gboolean net_enabled = TRUE;
 	gboolean have_wireless = FALSE;
 	gboolean have_wwan = FALSE;
+	gboolean have_wimax = FALSE;
 	gboolean wireless_hw_enabled;
 	gboolean wwan_hw_enabled;
+	gboolean wimax_hw_enabled;
 	gboolean notifications_enabled = TRUE;
 
 	state = nm_client_get_state (applet->nm_client);
@@ -1766,6 +1776,18 @@ nma_context_menu_update (NMApplet *applet)
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wwan_enabled_item),
 	                          wwan_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN));
 
+	/* Enable WiMAX */
+	g_signal_handler_block (G_OBJECT (applet->wimax_enabled_item),
+	                        applet->wimax_enabled_toggled_id);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->wimax_enabled_item),
+	                                nm_client_wimax_get_enabled (applet->nm_client));
+	g_signal_handler_unblock (G_OBJECT (applet->wimax_enabled_item),
+	                          applet->wimax_enabled_toggled_id);
+
+	wimax_hw_enabled = nm_client_wimax_hardware_get_enabled (applet->nm_client);
+	gtk_widget_set_sensitive (GTK_WIDGET (applet->wimax_enabled_item),
+	                          wimax_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIMAX));
+
 	/* Enabled notifications */
 	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
 	                        applet->notifications_enabled_toggled_id);
@@ -1790,6 +1812,8 @@ nma_context_menu_update (NMApplet *applet)
 				have_wireless = TRUE;
 			else if (NM_IS_SERIAL_DEVICE (candidate))
 				have_wwan = TRUE;
+			else if (NM_IS_DEVICE_WIMAX (candidate))
+				have_wimax = TRUE;
 		}
 	}
 
@@ -1802,6 +1826,11 @@ nma_context_menu_update (NMApplet *applet)
 		gtk_widget_show_all (applet->wwan_enabled_item);
 	else
 		gtk_widget_hide (applet->wwan_enabled_item);
+
+	if (have_wimax)
+		gtk_widget_show_all (applet->wimax_enabled_item);
+	else
+		gtk_widget_hide (applet->wimax_enabled_item);
 }
 
 static void
@@ -1878,6 +1907,15 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                       applet);
 	applet->wwan_enabled_toggled_id = id;
 	gtk_menu_shell_append (menu, applet->wwan_enabled_item);
+
+	/* 'Enable WiMAX Mobile Broadband' item */
+	applet->wimax_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable WiMA_X Mobile Broadband"));
+	id = g_signal_connect (applet->wimax_enabled_item,
+	                       "toggled",
+	                       G_CALLBACK (nma_set_wimax_enabled_cb),
+	                       applet);
+	applet->wimax_enabled_toggled_id = id;
+	gtk_menu_shell_append (menu, applet->wimax_enabled_item);
 
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
@@ -2232,6 +2270,7 @@ foo_client_setup (NMApplet *applet)
 	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK);
 	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI);
 	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN);
+	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIMAX] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIMAX);
 	applet->permissions[NM_CLIENT_PERMISSION_USE_USER_CONNECTIONS] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_USE_USER_CONNECTIONS);
 
 	if (nm_client_get_manager_running (applet->nm_client))
@@ -3111,6 +3150,9 @@ constructor (GType type,
 	applet->bt_class = applet_device_bt_get_class (applet);
 	g_assert (applet->bt_class);
 
+	applet->wimax_class = applet_device_wimax_get_class (applet);
+	g_assert (applet->wimax_class);
+
 	foo_client_setup (applet);
 
 	/* timeout to update connection timestamps every 5 minutes */
@@ -3147,6 +3189,9 @@ static void finalize (GObject *object)
 	g_slice_free (NMADeviceClass, applet->wired_class);
 	g_slice_free (NMADeviceClass, applet->wifi_class);
 	g_slice_free (NMADeviceClass, applet->gsm_class);
+	g_slice_free (NMADeviceClass, applet->cdma_class);
+	g_slice_free (NMADeviceClass, applet->bt_class);
+	g_slice_free (NMADeviceClass, applet->wimax_class);
 
 	if (applet->update_icon_id)
 		g_source_remove (applet->update_icon_id);

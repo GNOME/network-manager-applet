@@ -30,6 +30,7 @@
 #include <nm-device-bt.h>
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
+#include <nm-device-wimax.h>
 #include <nm-access-point.h>
 
 #include <nm-setting-connection.h>
@@ -41,6 +42,7 @@
 #include <nm-setting-cdma.h>
 #include <nm-setting-pppoe.h>
 #include <nm-setting-bluetooth.h>
+#include <nm-setting-wimax.h>
 #include <nm-utils.h>
 
 #include "utils.h"
@@ -538,6 +540,46 @@ connection_valid_for_bt (NMConnection *connection,
 	return addr_match;
 }
 
+static gboolean
+connection_valid_for_wimax (NMConnection *connection,
+                            NMSettingConnection *s_con,
+                            NMDevice *device,
+                            gpointer specific_object)
+{
+	NMDeviceWimax *wimax = NM_DEVICE_WIMAX (device);
+	NMSettingWimax *s_wimax;
+	const char *str_mac;
+	struct ether_addr *bin_mac;
+	const char *connection_type;
+	const GByteArray *setting_mac;
+
+	connection_type = nm_setting_connection_get_connection_type (s_con);
+	if (strcmp (connection_type, NM_SETTING_WIMAX_SETTING_NAME))
+		return FALSE;
+
+	s_wimax = (NMSettingWimax *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIMAX);
+	if (!s_wimax)
+		return FALSE;
+
+	if (s_wimax) {
+		/* Match MAC address */
+		setting_mac = nm_setting_wimax_get_mac_address (s_wimax);
+		if (!setting_mac)
+			return TRUE;
+
+		str_mac = nm_device_wimax_get_hw_address (wimax);
+		g_return_val_if_fail (str_mac != NULL, FALSE);
+
+		bin_mac = ether_aton (str_mac);
+		g_return_val_if_fail (bin_mac != NULL, FALSE);
+
+		if (memcmp (bin_mac->ether_addr_octet, setting_mac->data, ETH_ALEN))
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
 gboolean
 utils_connection_valid_for_device (NMConnection *connection,
                                    NMDevice *device,
@@ -562,6 +604,8 @@ utils_connection_valid_for_device (NMConnection *connection,
 		return connection_valid_for_cdma (connection, s_con, device, specific_object);
 	else if (NM_IS_DEVICE_BT (device))
 		return connection_valid_for_bt (connection, s_con, device, specific_object);
+	else if (NM_IS_DEVICE_WIMAX (device))
+		return connection_valid_for_wimax (connection, s_con, device, specific_object);
 	else
 		g_warning ("Unknown device type '%s'", g_type_name (G_OBJECT_TYPE(device)));
 

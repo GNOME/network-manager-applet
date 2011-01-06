@@ -47,6 +47,7 @@ enum {
 	MB_TECH_HSDPA,
 	MB_TECH_HSUPA,
 	MB_TECH_HSPA,
+	MB_TECH_WIMAX,
 };
 
 GdkPixbuf *mobile_helper_get_status_pixbuf (guint32 quality,

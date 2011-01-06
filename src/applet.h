@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2010 Red Hat, Inc.
+ * Copyright (C) 2004 - 2011 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  */
 
@@ -101,6 +101,7 @@ typedef struct
 	NMADeviceClass *gsm_class;
 	NMADeviceClass *cdma_class;
 	NMADeviceClass *bt_class;
+	NMADeviceClass *wimax_class;
 
 	/* Data model elements */
 	guint			update_icon_id;
@@ -156,6 +157,8 @@ typedef struct
 	guint           wifi_enabled_toggled_id;
 	GtkWidget *		wwan_enabled_item;
 	guint           wwan_enabled_toggled_id;
+	GtkWidget *		wimax_enabled_item;
+	guint           wimax_enabled_toggled_id;
 
 	GtkWidget *     notifications_enabled_item;
 	guint           notifications_enabled_toggled_id;

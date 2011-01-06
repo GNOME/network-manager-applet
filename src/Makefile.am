@@ -51,6 +51,8 @@ nm_applet_SOURCES =			\
 	mobile-helpers.h \
 	applet-device-bt.h \
 	applet-device-bt.c \
+	applet-device-wimax.h \
+	applet-device-wimax.c \
 	fallback-icon.h
 
 nm_applet_LDADD = \
