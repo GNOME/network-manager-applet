@@ -199,7 +199,7 @@ create_info_label_security (NMConnection *connection)
 {
 	NMSettingConnection *s_con;
 	char *label = NULL;
-	GtkWidget *w;
+	GtkWidget *w = NULL;
 	const char *connection_type;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
@@ -242,7 +242,8 @@ create_info_label_security (NMConnection *connection)
 			label = g_strdup (C_("Wifi/wired security", "None"));
 	}
 
-	w = create_info_label (label ? label : C_("Wifi/wired security", "Unknown"), TRUE);
+	if (label)
+		w = create_info_label (label, TRUE);
 	g_free (label);
 
 	return w;
@@ -338,8 +339,9 @@ info_dialog_add_page (GtkNotebook *notebook,
 	guint32 hostmask, network, bcast, netmask;
 	int i, row = 0;
 	SpeedInfo* info = NULL;
-	GtkWidget* speed_label;
+	GtkWidget* speed_label, *sec_label = NULL;
 	const GSList *addresses;
+	gboolean show_security = FALSE;
 
 	table = GTK_TABLE (gtk_table_new (12, 2, FALSE));
 	gtk_table_set_col_spacings (table, 12);
@@ -348,11 +350,13 @@ info_dialog_add_page (GtkNotebook *notebook,
 
 	/* Interface */
 	iface = nm_device_get_iface (device);
-	if (NM_IS_DEVICE_ETHERNET (device))
+	if (NM_IS_DEVICE_ETHERNET (device)) {
 		str = g_strdup_printf (_("Ethernet (%s)"), iface);
-	else if (NM_IS_DEVICE_WIFI (device))
+		show_security = TRUE;
+	} else if (NM_IS_DEVICE_WIFI (device)) {
 		str = g_strdup_printf (_("802.11 WiFi (%s)"), iface);
-	else if (NM_IS_GSM_DEVICE (device))
+		show_security = TRUE;
+	} else if (NM_IS_GSM_DEVICE (device))
 		str = g_strdup_printf (_("GSM (%s)"), iface);
 	else if (NM_IS_CDMA_DEVICE (device))
 		str = g_strdup_printf (_("CDMA (%s)"), iface);
@@ -430,11 +434,16 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	/* Security */
-	gtk_table_attach (table, create_info_label (_("Security:"), FALSE),
-	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_table_attach (table, create_info_label_security (connection),
-	                  1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
-	row++;
+	if (show_security) {
+		sec_label = create_info_label_security (connection);
+		if (sec_label) {
+			gtk_table_attach (table, create_info_label (_("Security:"), FALSE),
+				              0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+			gtk_table_attach (table, sec_label,
+				              1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+			row++;
+		}
+	}
 
 	/* Empty line */
 	gtk_table_attach (table, gtk_label_new (""), 0, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
