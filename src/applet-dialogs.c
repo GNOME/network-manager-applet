@@ -275,12 +275,12 @@ typedef struct {
 	NMDevice *device;
 	GtkWidget *label;
 	guint32 id;
-} SpeedInfo;
+} LabelInfo;
 
 static void
 device_destroyed (gpointer data, GObject *device_ptr)
 {
-	SpeedInfo *info = data;
+	LabelInfo *info = data;
 
 	/* Device is destroyed, notify handler won't fire
 	 * anymore anyway.  Let the label destroy handler
@@ -293,16 +293,33 @@ device_destroyed (gpointer data, GObject *device_ptr)
 static void
 label_destroyed (gpointer data, GObject *label_ptr)
 {
-	SpeedInfo *info = data;
+	LabelInfo *info = data;
+
 	/* Remove the notify handler from the device */
 	if (info->device) {
 		if (info->id)
 			g_signal_handler_disconnect (info->device, info->id);
 		/* destroy our info data */
 		g_object_weak_unref (G_OBJECT (info->device), device_destroyed, info);
-		memset (info, 0, sizeof (SpeedInfo));
+		memset (info, 0, sizeof (LabelInfo));
 		g_free (info);
 	}
+}
+
+static void
+label_info_new (NMDevice *device,
+                GtkWidget *label,
+                const char *notify_prop,
+                GCallback callback)
+{
+	LabelInfo *info;
+
+	info = g_malloc0 (sizeof (LabelInfo));
+	info->device = device;
+	info->label = label;
+	info->id = g_signal_connect (device, notify_prop, callback, label);
+	g_object_weak_ref (G_OBJECT (label), label_destroyed, info);
+	g_object_weak_ref (G_OBJECT (device), device_destroyed, info);
 }
 
 static void
@@ -339,7 +356,6 @@ info_dialog_add_page (GtkNotebook *notebook,
 	NMSettingIP6Config *s_ip6;
 	guint32 hostmask, network, bcast, netmask;
 	int i, row = 0;
-	SpeedInfo* info = NULL;
 	GtkWidget* speed_label, *sec_label = NULL;
 	const GSList *addresses;
 	gboolean show_security = FALSE;
@@ -413,17 +429,10 @@ info_dialog_add_page (GtkNotebook *notebook,
 		/* Wireless speed in Kb/s */
 		speed = nm_device_wifi_get_bitrate (NM_DEVICE_WIFI (device)) / 1000;
 
-		/* Listen for wifi speed changes */
-		info = g_malloc0 (sizeof (SpeedInfo));
-		info->device = device;
-		info->label = speed_label;
-		info->id = g_signal_connect (device,
-		                             "notify::" NM_DEVICE_WIFI_BITRATE,
-		                             G_CALLBACK (bitrate_changed_cb),
-		                             speed_label);
-
-		g_object_weak_ref (G_OBJECT(speed_label), label_destroyed, info);
-		g_object_weak_ref (G_OBJECT(device), device_destroyed, info);
+		label_info_new (device,
+		                speed_label,
+		                "notify::" NM_DEVICE_WIFI_BITRATE,
+		                G_CALLBACK (bitrate_changed_cb));
 	}
 
 	if (speed)
