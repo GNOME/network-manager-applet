@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2010 Red Hat, Inc.
+ * Copyright (C) 2004 - 2011 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
@@ -38,6 +38,9 @@
 #include <glib/gi18n.h>
 #include <unistd.h>
 #include <sys/socket.h>
+
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
 
 #include <NetworkManagerVPN.h>
 #include <nm-device-ethernet.h>
@@ -65,7 +68,6 @@
 #include "applet-device-bt.h"
 #include "applet-dialogs.h"
 #include "vpn-password-dialog.h"
-#include "applet-dbus-manager.h"
 #include "utils.h"
 #include "gconf-helpers.h"
 
@@ -175,17 +177,16 @@ applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
 	return default_ac;
 }
 
-NMSettingsInterface *
+NMRemoteSettings *
 applet_get_settings (NMApplet *applet)
 {
-	return NM_SETTINGS_INTERFACE (applet->gconf_settings);
+	return applet->settings;
 }
 
 GSList *
 applet_get_all_connections (NMApplet *applet)
 {
-	return g_slist_concat (nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (applet->system_settings)),
-	                       nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (applet->gconf_settings)));
+	return nm_remote_settings_list_connections (applet->settings);
 }
 
 static NMConnection *
@@ -193,11 +194,7 @@ applet_get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
 {
 	GSList *list, *iter;
 	NMConnection *connection = NULL;
-	NMConnectionScope scope;
 	const char *path;
-
-	scope = nm_active_connection_get_scope (active);
-	g_return_val_if_fail (scope != NM_CONNECTION_SCOPE_UNKNOWN, NULL);
 
 	path = nm_active_connection_get_connection (active);
 	g_return_val_if_fail (path != NULL, NULL);
@@ -206,13 +203,11 @@ applet_get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
 	for (iter = list; iter; iter = g_slist_next (iter)) {
 		NMConnection *candidate = NM_CONNECTION (iter->data);
 
-		if (   (nm_connection_get_scope (candidate) == scope)
-			   && !strcmp (nm_connection_get_path (candidate), path)) {
+		if (!strcmp (nm_connection_get_path (candidate), path)) {
 			connection = candidate;
 			break;
 		}
 	}
-
 	g_slist_free (list);
 
 	return connection;
@@ -224,10 +219,6 @@ applet_get_active_for_connection (NMApplet *applet, NMConnection *connection)
 	const GPtrArray *active_list;
 	int i;
 	const char *cpath;
-	NMConnectionScope scope;
-
-	scope = nm_connection_get_scope (connection);
-	g_return_val_if_fail (scope != NM_CONNECTION_SCOPE_UNKNOWN, NULL);
 
 	cpath = nm_connection_get_path (connection);
 	g_return_val_if_fail (cpath != NULL, NULL);
@@ -237,9 +228,7 @@ applet_get_active_for_connection (NMApplet *applet, NMConnection *connection)
 		NMActiveConnection *active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_list, i));
 		const char *active_cpath = nm_active_connection_get_connection (active);
 
-		if (   (nm_active_connection_get_scope (active) == scope)
-		    && active_cpath
-		    && !strcmp (active_cpath, cpath))
+		if (active_cpath && !strcmp (active_cpath, cpath))
 			return active;
 	}
 	return NULL;
@@ -266,26 +255,11 @@ get_device_class (NMDevice *device, NMApplet *applet)
 	return NULL;
 }
 
-static gboolean
-is_system_connection (NMConnection *connection)
-{
-	return (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_SYSTEM) ? TRUE : FALSE;
-}
-
-static void
-activate_connection_cb (gpointer user_data, const char *path, GError *error)
-{
-	if (error)
-		nm_warning ("Connection activation failed: %s", error->message);
-
-	applet_schedule_update_icon (NM_APPLET (user_data));
-}
-
 typedef struct {
 	NMApplet *applet;
 	NMDevice *device;
 	char *specific_object;
-	gpointer dclass_data;
+	NMConnection *connection;
 } AppletItemActivateInfo;
 
 static void
@@ -296,19 +270,32 @@ applet_item_activate_info_destroy (AppletItemActivateInfo *info)
 	if (info->device)
 		g_object_unref (info->device);
 	g_free (info->specific_object);
+	if (info->connection)
+		g_object_unref (info->connection);
 	memset (info, 0, sizeof (AppletItemActivateInfo));
 	g_free (info);
 }
 
 static void
-applet_menu_item_activate_helper_part2 (NMConnection *connection,
-                                        gboolean auto_created,
-                                        gboolean canceled,
-                                        gpointer user_data)
+add_and_activate_cb (NMClient *client,
+                     const char *connection_path,
+                     const char *active_path,
+                     GError *error,
+                     gpointer user_data)
+{
+	if (error)
+		nm_warning ("Failed to add/activate connection: (%d) %s", error->code, error->message);
+
+	applet_schedule_update_icon (NM_APPLET (user_data));
+}
+
+static void
+applet_menu_item_activate_helper_new_connection (NMConnection *connection,
+                                                 gboolean auto_created,
+                                                 gboolean canceled,
+                                                 gpointer user_data)
 {
 	AppletItemActivateInfo *info = user_data;
-	const char *con_path;
-	gboolean is_system = FALSE;
 
 	if (canceled) {
 		applet_item_activate_info_destroy (info);
@@ -317,44 +304,16 @@ applet_menu_item_activate_helper_part2 (NMConnection *connection,
 
 	g_return_if_fail (connection != NULL);
 
-	if (!auto_created)
-		is_system = is_system_connection (connection);
-	else {
-		NMAGConfConnection *exported;
+	/* Ask NM to add the new connection and activate it; NM will fill in the
+	 * missing details based on the specific object and the device.
+	 */
+	nm_client_add_and_activate_connection (info->applet->nm_client,
+	                                       connection,
+	                                       info->device,
+	                                       info->specific_object,
+	                                       add_and_activate_cb,
+	                                       info->applet);
 
-		exported = nma_gconf_settings_add_connection (info->applet->gconf_settings, connection);
-		if (!exported) {
-			NMADeviceClass *dclass = get_device_class (info->device, info->applet);
-
-			/* If the setting isn't valid, because it needs more authentication
-			 * or something, ask the user for it.
-			 */
-
-			g_assert (dclass);
-			nm_warning ("Invalid connection; asking for more information.");
-			if (dclass->get_more_info)
-				dclass->get_more_info (info->device, connection, info->applet, info->dclass_data);
-			g_object_unref (connection);
-
-			applet_item_activate_info_destroy (info);
-			return;
-		}
-		g_object_unref (connection);
-		connection = NM_CONNECTION (exported);
-	}
-
-	g_assert (connection);
-	con_path = nm_connection_get_path (connection);
-	g_assert (con_path);
-
-	/* Finally, tell NM to activate the connection */
-	nm_client_activate_connection (info->applet->nm_client,
-	                               is_system ? NM_DBUS_SERVICE_SYSTEM_SETTINGS : NM_DBUS_SERVICE_USER_SETTINGS,
-	                               con_path,
-	                               info->device,
-	                               info->specific_object,
-	                               activate_connection_cb,
-	                               info->applet);
 	applet_item_activate_info_destroy (info);
 }
 
@@ -378,6 +337,17 @@ applet_menu_item_disconnect_helper (NMDevice *device,
 	nm_device_disconnect (device, disconnect_cb, NULL);
 }
 
+static void
+activate_connection_cb (NMClient *client,
+                        const char *path,
+                        GError *error,
+                        gpointer user_data)
+{
+	if (error)
+		nm_warning ("Connection activation failed: %s", error->message);
+
+	applet_schedule_update_icon (NM_APPLET (user_data));
+}
 
 void
 applet_menu_item_activate_helper (NMDevice *device,
@@ -391,26 +361,33 @@ applet_menu_item_activate_helper (NMDevice *device,
 
 	g_return_if_fail (NM_IS_DEVICE (device));
 
+	if (connection) {
+		/* If the menu item had an associated connection already, just tell
+		 * NM to activate that connection.
+		 */
+		nm_client_activate_connection (applet->nm_client,
+			                           nm_connection_get_path (connection),
+			                           device,
+			                           specific_object,
+			                           activate_connection_cb,
+			                           applet);
+		return;
+	}
+
+	/* If no connection was given, ask the device class to create a new
+	 * default connection for this device type.  This could be a wizard,
+	 * and thus take a while.
+	 */
+
 	info = g_malloc0 (sizeof (AppletItemActivateInfo));
 	info->applet = applet;
 	info->specific_object = g_strdup (specific_object);
 	info->device = g_object_ref (device);
-	info->dclass_data = dclass_data;
-
-	if (connection) {
-		applet_menu_item_activate_helper_part2 (connection, FALSE, FALSE, info);
-		return;
-	}
 
 	dclass = get_device_class (device, applet);
-
-	/* If no connection was passed in, ask the device class to create a new
-	 * default connection for this device type.  This could be a wizard,
-	 * and thus take a while.
-	 */
 	g_assert (dclass);
 	if (!dclass->new_auto_connection (device, dclass_data,
-	                                  applet_menu_item_activate_helper_part2,
+	                                  applet_menu_item_activate_helper_new_connection,
 	                                  info)) {
 		nm_warning ("Couldn't create default connection.");
 		applet_item_activate_info_destroy (info);
@@ -761,30 +738,6 @@ applet_is_any_vpn_activating (NMApplet *applet)
 	return FALSE;
 }
 
-static void
-update_connection_timestamp (NMActiveConnection *active,
-                             NMConnection *connection,
-                             NMApplet *applet)
-{
-	NMSettingsConnectionInterface *gconf_connection;
-	NMSettingConnection *s_con;
-
-	if (nm_active_connection_get_scope (active) != NM_CONNECTION_SCOPE_USER)
-		return;
-
-	gconf_connection = nm_settings_interface_get_connection_by_path (NM_SETTINGS_INTERFACE (applet->gconf_settings),
-	                                                                 nm_connection_get_path (connection));
-	if (!gconf_connection || !NMA_IS_GCONF_CONNECTION (gconf_connection))
-		return;
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con);
-
-	g_object_set (s_con, NM_SETTING_CONNECTION_TIMESTAMP, (guint64) time (NULL), NULL);
-	/* Ignore secrets since we're just updating the timestamp */
-	nma_gconf_connection_update (NMA_GCONF_CONNECTION (gconf_connection), TRUE);
-}
-
 static char *
 make_vpn_failure_message (NMVPNConnection *vpn,
                           NMVPNConnectionStateReason reason,
@@ -865,7 +818,6 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
                               gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	NMConnection *connection;
 	const char *banner;
 	char *title = NULL, *msg;
 	gboolean device_activating, vpn_activating;
@@ -894,10 +846,6 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 		applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
 		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
 		g_free (msg);
-
-		connection = applet_get_connection_for_active (applet, NM_ACTIVE_CONNECTION (vpn));
-		if (connection)
-			update_connection_timestamp (NM_ACTIVE_CONNECTION (vpn), connection, applet);
 		break;
 	case NM_VPN_CONNECTION_STATE_FAILED:
 		title = _("VPN Connection Failed");
@@ -947,7 +895,10 @@ typedef struct {
 } VPNActivateInfo;
 
 static void
-activate_vpn_cb (gpointer user_data, const char *path, GError *error)
+activate_vpn_cb (NMClient *client,
+                 const char *path,
+                 GError *error,
+                 gpointer user_data)
 {
 	VPNActivateInfo *info = (VPNActivateInfo *) user_data;
 	char *title, *msg, *name;
@@ -990,7 +941,6 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	NMSettingConnection *s_con;
 	NMActiveConnection *active;
 	NMDevice *device = NULL;
-	gboolean is_system;
 
 	active = applet_get_default_active_connection (applet, &device);
 	if (!active || !device) {
@@ -1014,9 +964,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	info->vpn_name = g_strdup (nm_setting_connection_get_id (s_con));
 
 	/* Connection inactive, activate */
-	is_system = is_system_connection (connection);
 	nm_client_activate_connection (applet->nm_client,
-	                               is_system ? NM_DBUS_SERVICE_SYSTEM_SETTINGS : NM_DBUS_SERVICE_USER_SETTINGS,
 	                               nm_connection_get_path (connection),
 	                               device,
 	                               nm_object_get_path (NM_OBJECT (active)),
@@ -1222,32 +1170,22 @@ applet_find_active_connection_for_device (NMDevice *device,
 
 	active_connections = nm_client_get_active_connections (applet->nm_client);
 	for (i = 0; active_connections && (i < active_connections->len); i++) {
-		NMSettingsConnectionInterface *tmp;
-		NMSettingsInterface *settings = NULL;
+		NMRemoteConnection *tmp;
 		NMActiveConnection *active;
-		const char *service_name;
 		const char *connection_path;
 		const GPtrArray *devices;
 
 		active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_connections, i));
 		devices = nm_active_connection_get_devices (active);
-		service_name = nm_active_connection_get_service_name (active);
 		connection_path = nm_active_connection_get_connection (active);
 
-		if (!devices || !service_name || !connection_path)
+		if (!devices || !connection_path)
 			continue;
 
 		if (!nm_g_ptr_array_contains (devices, device))
 			continue;
 
-		if (!strcmp (service_name, NM_DBUS_SERVICE_SYSTEM_SETTINGS))
-			settings = NM_SETTINGS_INTERFACE (applet->system_settings);
-		else if (!strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS))
-			settings = NM_SETTINGS_INTERFACE (applet->gconf_settings);
-		else
-			g_assert_not_reached ();
-
-		tmp = nm_settings_interface_get_connection_by_path (settings, connection_path);
+		tmp = nm_remote_settings_get_connection_by_path (applet->settings, connection_path);
 		if (tmp) {
 			connection = NM_CONNECTION (tmp);
 			if (out_active)
@@ -1996,7 +1934,7 @@ foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
 }
 
 
-NMSettingsConnectionInterface *
+NMRemoteConnection *
 applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 {
 	const GPtrArray *active_connections;
@@ -2005,8 +1943,7 @@ applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 	active_connections = nm_client_get_active_connections (applet->nm_client);
 	for (i = 0; active_connections && (i < active_connections->len); i++) {
 		NMActiveConnection *active;
-		NMSettingsConnectionInterface *connection;
-		const char *service_name;
+		NMRemoteConnection *connection;
 		const char *connection_path;
 		const GPtrArray *devices;
 
@@ -2015,18 +1952,14 @@ applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 			continue;
 
 		devices = nm_active_connection_get_devices (active);
-		service_name = nm_active_connection_get_service_name (active);
 		connection_path = nm_active_connection_get_connection (active);
-		if (!devices || !service_name || !connection_path)
-			continue;
-
-		if (strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS) != 0)
+		if (!devices || !connection_path)
 			continue;
 
 		if (!nm_g_ptr_array_contains (devices, device))
 			continue;
 
-		connection = nm_settings_interface_get_connection_by_path (NM_SETTINGS_INTERFACE (applet->gconf_settings), connection_path);
+		connection = nm_remote_settings_get_connection_by_path (applet->settings, connection_path);
 		if (connection)
 			return connection;
 	}
@@ -2041,8 +1974,6 @@ applet_common_device_state_changed (NMDevice *device,
                                     NMApplet *applet)
 {
 	gboolean device_activating = FALSE, vpn_activating = FALSE;
-	NMConnection *connection;
-	NMActiveConnection *active = NULL;
 
 	device_activating = applet_is_any_device_activating (applet);
 	vpn_activating = applet_is_any_vpn_activating (applet);
@@ -2058,13 +1989,6 @@ applet_common_device_state_changed (NMDevice *device,
 		device_activating = TRUE;
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		/* If the device activation was successful, update the corresponding
-		 * connection object with a current timestamp.
-		 */
-		connection = applet_find_active_connection_for_device (device, applet, &active);
-		if (connection && (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_USER))
-			update_connection_timestamp (active, connection, applet);
-		break;
 	default:
 		break;
 	}
@@ -2242,7 +2166,6 @@ foo_client_setup (NMApplet *applet)
 	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK);
 	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI);
 	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN);
-	applet->permissions[NM_CLIENT_PERMISSION_USE_USER_CONNECTIONS] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_USE_USER_CONNECTIONS);
 
 	if (nm_client_get_manager_running (applet->nm_client))
 		g_idle_add (foo_set_initial_state, applet);
@@ -2370,12 +2293,10 @@ out:
 static char *
 get_tip_for_vpn (NMActiveConnection *active, NMVPNConnectionState state, NMApplet *applet)
 {
-	NMConnectionScope scope;
 	char *tip = NULL;
 	const char *path, *id = NULL;
 	GSList *iter, *list;
 
-	scope = nm_active_connection_get_scope (active);
 	path = nm_active_connection_get_connection (active);
 	g_return_val_if_fail (path != NULL, NULL);
 
@@ -2384,8 +2305,7 @@ get_tip_for_vpn (NMActiveConnection *active, NMVPNConnectionState state, NMApple
 		NMConnection *candidate = NM_CONNECTION (iter->data);
 		NMSettingConnection *s_con;
 
-		if (   (nm_connection_get_scope (candidate) == scope)
-		    && !strcmp (nm_connection_get_path (candidate), path)) {
+		if (!strcmp (nm_connection_get_path (candidate), path)) {
 			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
 			id = nm_setting_connection_get_id (s_con);
 			break;
@@ -2528,8 +2448,9 @@ applet_schedule_update_icon (NMApplet *applet)
 		applet->update_icon_id = g_idle_add (applet_update_icon, applet);
 }
 
+#if 0
 static NMDevice *
-find_active_device (NMAGConfConnection *connection,
+find_active_device (NMRemoteConnection *connection,
                     NMApplet *applet,
                     NMActiveConnection **out_active_connection)
 {
@@ -2547,20 +2468,10 @@ find_active_device (NMAGConfConnection *connection,
 	active_connections = nm_client_get_active_connections (applet->nm_client);
 	for (i = 0; active_connections && (i < active_connections->len); i++) {
 		NMActiveConnection *active;
-		const char *service_name;
 		const char *connection_path;
 		const GPtrArray *devices;
 
 		active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_connections, i));
-		service_name = nm_active_connection_get_service_name (active);
-		if (!service_name) {
-			/* Shouldn't happen; but we shouldn't crash either */
-			g_warning ("%s: couldn't get service name for active connection!", __func__);
-			continue;
-		}
-
-		if (strcmp (service_name, NM_DBUS_SERVICE_USER_SETTINGS))
-			continue;
 
 		connection_path = nm_active_connection_get_connection (active);
 		if (!connection_path) {
@@ -2581,8 +2492,8 @@ find_active_device (NMAGConfConnection *connection,
 }
 
 static void
-applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
-                                          NMAGConfConnection *connection,
+applet_settings_new_secrets_requested_cb (NMRemoteSettings *settings,
+                                          NMRemoteConnection *connection,
                                           const char *setting_name,
                                           const char **hints,
                                           gboolean ask_user,
@@ -2602,7 +2513,7 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 
 	/* VPN secrets get handled a bit differently */
 	if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
-		nma_vpn_request_password (NM_SETTINGS_CONNECTION_INTERFACE (connection), ask_user, callback, callback_data);
+		nma_vpn_request_password (connection, ask_user, callback, callback_data);
 		return;
 	}
 
@@ -2610,8 +2521,8 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 	device = find_active_device (connection, applet, &active_connection);
 	if (!device || !active_connection) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             0,
+		             0,
 		             "%s.%d (%s): couldn't find details for connection",
 		             __FILE__, __LINE__, __func__);
 		goto error;
@@ -2620,8 +2531,8 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 	dclass = get_device_class (device, applet);
 	if (!dclass) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             0,
+		             0,
 		             "%s.%d (%s): device type unknown",
 		             __FILE__, __LINE__, __func__);
 		goto error;
@@ -2629,8 +2540,8 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 
 	if (!dclass->get_secrets) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_SECRETS_UNAVAILABLE,
+		             0,
+		             0,
 		             "%s.%d (%s): no secrets found",
 		             __FILE__, __LINE__, __func__);
 		goto error;
@@ -2640,69 +2551,17 @@ applet_settings_new_secrets_requested_cb (NMAGConfSettings *settings,
 	// before asking user for other secrets
 
 	/* Let the device class handle secrets */
-	if (dclass->get_secrets (device, NM_SETTINGS_CONNECTION_INTERFACE (connection),
+	if (dclass->get_secrets (device, connection,
 	                         active_connection, setting_name, hints, callback,
 	                         callback_data, applet, &error))
 		return;  /* success */
 
 error:
 	g_warning ("%s", error->message);
-	callback (NM_SETTINGS_CONNECTION_INTERFACE (connection), NULL, error, callback_data);
+	callback (connection, NULL, error, callback_data);
 	g_error_free (error);
 }
-
-static gboolean
-periodic_update_active_connection_timestamps (gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-	const GPtrArray *connections;
-	int i;
-
-	if (!applet->nm_client || !nm_client_get_manager_running (applet->nm_client))
-		return TRUE;
-
-	connections = nm_client_get_active_connections (applet->nm_client);
-	for (i = 0; connections && (i < connections->len); i++) {
-		NMActiveConnection *active = NM_ACTIVE_CONNECTION (g_ptr_array_index (connections, i));
-		const char *path;
-		NMSettingsConnectionInterface *connection;
-		const GPtrArray *devices;
-		int k;
-
-		if (nm_active_connection_get_scope (active) == NM_CONNECTION_SCOPE_SYSTEM)
-			continue;
-
-		path = nm_active_connection_get_connection (active);
-		connection = nm_settings_interface_get_connection_by_path (NM_SETTINGS_INTERFACE (applet->gconf_settings), path);
-		if (!connection || !NMA_IS_GCONF_CONNECTION (connection))
-			continue;
-
-		devices = nm_active_connection_get_devices (active);
-		if (!devices || !devices->len)
-			continue;
-
-		/* Check if a device owned by the active connection is completely
-		 * activated before updating timestamp.
-		 */
-		for (k = 0; devices && (k < devices->len); k++) {
-			NMDevice *device = NM_DEVICE (g_ptr_array_index (devices, k));
-
-			if (nm_device_get_state (device) == NM_DEVICE_STATE_ACTIVATED) {
-				NMSettingConnection *s_con;
-
-				s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION));
-				g_assert (s_con);
-
-				g_object_set (s_con, NM_SETTING_CONNECTION_TIMESTAMP, (guint64) time (NULL), NULL);
-				/* Ignore secrets since we're just updating the timestamp */
-				nma_gconf_connection_update (NMA_GCONF_CONNECTION (connection), TRUE);
-				break;
-			}
-		}
-	}
-
-	return TRUE;
-}
+#endif
 
 /*****************************************************************************/
 
@@ -2993,14 +2852,6 @@ applet_pre_keyring_callback (gpointer user_data)
 }
 
 static void
-exit_cb (GObject *ignored, gpointer user_data)
-{
-	NMApplet *applet = user_data;
-
-	g_main_loop_quit (applet->loop);
-}
-
-static void
 applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
 	gboolean embedded = gtk_status_icon_is_embedded (GTK_STATUS_ICON (object));
@@ -3015,8 +2866,8 @@ constructor (GType type,
              GObjectConstructParam *construct_props)
 {
 	NMApplet *applet;
-	AppletDBusManager *dbus_mgr;
 	GError* error = NULL;
+	DBusConnection *connection;
 
 	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
 
@@ -3058,28 +2909,19 @@ constructor (GType type,
 	if (!notify_is_initted ())
 		notify_init ("NetworkManager");
 
-	dbus_mgr = applet_dbus_manager_get ();
-	if (dbus_mgr == NULL) {
-		nm_warning ("Couldn't initialize the D-Bus manager.");
-		g_object_unref (applet);
-		return NULL;
+	applet->bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (!applet->bus) {
+		g_warning ("Could not get the system bus.  Make sure the message "
+		           "bus daemon is running!  Message: %s",
+		           error->message);
+		g_error_free (error);
+		goto error;
 	}
-	g_signal_connect (G_OBJECT (dbus_mgr), "exit-now", G_CALLBACK (exit_cb), applet);
 
-	applet->system_settings = nm_remote_settings_system_new (applet_dbus_manager_get_connection (dbus_mgr));
+	connection = dbus_g_connection_get_connection (applet->bus);
+	dbus_connection_set_exit_on_disconnect (connection, FALSE);
 
-	applet->gconf_settings = nma_gconf_settings_new (applet_dbus_manager_get_connection (dbus_mgr));
-	g_signal_connect (applet->gconf_settings, "new-secrets-requested",
-	                  G_CALLBACK (applet_settings_new_secrets_requested_cb),
-	                  applet);
-
-	nm_settings_service_export (NM_SETTINGS_SERVICE (applet->gconf_settings));
-
-	/* Start our DBus service */
-	if (!applet_dbus_manager_start_service (dbus_mgr)) {
-		g_object_unref (applet);
-		return NULL;
-	}
+	applet->settings = nm_remote_settings_new (applet->bus);
 
 	/* Initialize device classes */
 	applet->wired_class = applet_device_wired_get_class (applet);
@@ -3098,10 +2940,6 @@ constructor (GType type,
 	g_assert (applet->bt_class);
 
 	foo_client_setup (applet);
-
-	/* timeout to update connection timestamps every 5 minutes */
-	applet->update_timestamps_id = g_timeout_add_seconds (300,
-			(GSourceFunc) periodic_update_active_connection_timestamps, applet);
 
 	nm_gconf_set_pre_keyring_callback (applet_pre_keyring_callback, applet);
 
@@ -3126,9 +2964,6 @@ static void finalize (GObject *object)
 	NMApplet *applet = NM_APPLET (object);
 
 	nm_gconf_set_pre_keyring_callback (NULL, NULL);
-
-	if (applet->update_timestamps_id)
-		g_source_remove (applet->update_timestamps_id);
 
 	g_slice_free (NMADeviceClass, applet->wired_class);
 	g_slice_free (NMADeviceClass, applet->wifi_class);
@@ -3167,13 +3002,14 @@ static void finalize (GObject *object)
 	if (applet->fallback_icon)
 		g_object_unref (applet->fallback_icon);
 
-	if (applet->gconf_settings) {
-		g_object_unref (applet->gconf_settings);
-		applet->gconf_settings = NULL;
+	if (applet->settings) {
+		g_object_unref (applet->settings);
+		applet->settings = NULL;
 	}
-	if (applet->system_settings) {
-		g_object_unref (applet->system_settings);
-		applet->system_settings = NULL;
+
+	if (applet->bus) {
+		dbus_g_connection_unref (applet->bus);
+		applet->bus = NULL;
 	}
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);

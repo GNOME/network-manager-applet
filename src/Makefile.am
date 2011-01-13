@@ -25,8 +25,6 @@ nm_applet_SOURCES =			\
 	main.c				\
 	applet.c				\
 	applet.h				\
-	applet-dbus-manager.c	\
-	applet-dbus-manager.h	\
 	vpn-password-dialog.c	\
 	vpn-password-dialog.h	\
 	wired-dialog.h \

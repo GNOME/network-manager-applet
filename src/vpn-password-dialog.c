@@ -36,7 +36,6 @@
 #include <nm-connection.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
-#include <nm-settings-interface.h>
 
 
 typedef struct {
@@ -165,7 +164,7 @@ destroy_gvalue (gpointer data)
 }
 
 gboolean
-nma_vpn_request_password (NMSettingsConnectionInterface *connection_iface,
+nma_vpn_request_password (NMRemoteConnection *remote,
                           gboolean retry,
                           NMANewSecretsRequestedFunc callback,
                           gpointer callback_data)
@@ -185,7 +184,7 @@ nma_vpn_request_password (NMSettingsConnectionInterface *connection_iface,
 	guint       child_stdout_channel_eventid;
 	char       *auth_dialog_binary = NULL;
 	IOUserData io_user_data;
-	NMConnection *connection = NM_CONNECTION (connection_iface);
+	NMConnection *connection = NM_CONNECTION (remote);
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
 	gboolean success = FALSE;
@@ -193,8 +192,6 @@ nma_vpn_request_password (NMSettingsConnectionInterface *connection_iface,
 	const char *id;
 	const char *connection_type;
 	const char *service_type;
-
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
 	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
 	g_return_val_if_fail (s_con != NULL, FALSE);
@@ -216,8 +213,8 @@ nma_vpn_request_password (NMSettingsConnectionInterface *connection_iface,
 	auth_dialog_binary = find_auth_dialog_binary (service_type, id);
 	if (!auth_dialog_binary) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             0,
+		             0,
 		             "%s.%d (%s): couldn't find VPN auth dialog helper program '%s'.",
 		             __FILE__, __LINE__, __func__, service_type);
 		goto out;
@@ -259,8 +256,8 @@ nma_vpn_request_password (NMSettingsConnectionInterface *connection_iface,
 		gtk_window_present (GTK_WINDOW (dialog));
 		g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             0,
+		             0,
 		             "%s.%d (%s): couldn't run VPN auth dialog.",
 		             __FILE__, __LINE__, __func__);
 		goto out;
@@ -312,13 +309,13 @@ nma_vpn_request_password (NMSettingsConnectionInterface *connection_iface,
 			iter = iter->next;
 		}
 		g_hash_table_insert (settings, g_strdup (NM_SETTING_VPN_SETTING_NAME), secrets);
-		callback (connection_iface, settings, NULL, callback_data);
+		callback (remote, settings, NULL, callback_data);
 		g_hash_table_destroy (settings);
 		success = TRUE;
 	} else {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_SECRETS_REQUEST_CANCELED,
+		             0,
+		             0,
 		             "%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
 	}
 
@@ -329,7 +326,7 @@ nma_vpn_request_password (NMSettingsConnectionInterface *connection_iface,
 	g_free (auth_dialog_binary);
 
 	if (error) {
-		callback (NM_SETTINGS_CONNECTION_INTERFACE (connection), NULL, error, callback_data);
+		callback (remote, NULL, error, callback_data);
 		g_error_free (error);
 	}
 

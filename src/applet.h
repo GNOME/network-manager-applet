@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2010 Red Hat, Inc.
+ * Copyright (C) 2004 - 2011 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  */
 
@@ -44,10 +44,8 @@
 #include <nm-device.h>
 #include <NetworkManager.h>
 #include <nm-active-connection.h>
-#include <nm-remote-settings-system.h>
-
-#include "applet-dbus-manager.h"
-#include "nma-gconf-settings.h"
+#include <nm-remote-settings.h>
+#include <nm-secret-agent.h>
 
 #define NM_TYPE_APPLET			(nma_get_type())
 #define NM_APPLET(object)		(G_TYPE_CHECK_INSTANCE_CAST((object), NM_TYPE_APPLET, NMApplet))
@@ -82,15 +80,14 @@ typedef struct
 	GObject parent_instance;
 
 	GMainLoop *loop;
-	NMClient *nm_client;
+	DBusGConnection *bus;
 
-	NMRemoteSettingsSystem *system_settings;
-	NMAGConfSettings *gconf_settings;
+	NMClient *nm_client;
+	NMRemoteSettings *settings;
+	NMSecretAgent *agent;
 
 	GConfClient *	gconf_client;
 	char	*		ui_file;
-
-	guint update_timestamps_id;
 
 	/* Permissions */
 	NMClientPermissionResult permissions[NM_CLIENT_PERMISSION_LAST + 1];
@@ -173,6 +170,11 @@ typedef void (*AppletNewAutoConnectionCallback) (NMConnection *connection,
                                                  gboolean canceled,
                                                  gpointer user_data);
 
+typedef void (*NMANewSecretsRequestedFunc) (NMRemoteConnection *connection,
+                                            GHashTable *settings,
+                                            GError *error,
+                                            gpointer user_data);
+
 struct NMADeviceClass {
 	gboolean       (*new_auto_connection)  (NMDevice *device,
 	                                        gpointer user_data,
@@ -205,7 +207,7 @@ struct NMADeviceClass {
 	                                        gpointer user_data);
 
 	gboolean       (*get_secrets)          (NMDevice *device,
-	                                        NMSettingsConnectionInterface *connection,
+	                                        NMRemoteConnection *connection,
 	                                        NMActiveConnection *active_connection,
 	                                        const char *setting_name,
 	                                        const char **hints,
@@ -221,7 +223,7 @@ NMApplet *nm_applet_new (GMainLoop *loop);
 
 void applet_schedule_update_icon (NMApplet *applet);
 
-NMSettingsInterface *applet_get_settings (NMApplet *applet);
+NMRemoteSettings *applet_get_settings (NMApplet *applet);
 
 GSList *applet_get_all_connections (NMApplet *applet);
 
@@ -250,7 +252,7 @@ applet_menu_item_create_device_item_helper (NMDevice *device,
                                             NMApplet *applet,
                                             const gchar *text);
 
-NMSettingsConnectionInterface *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
+NMRemoteConnection *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
 
 void applet_do_notify (NMApplet *applet,
                        NotifyUrgency urgency,

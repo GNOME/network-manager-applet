@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2010 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  * (C) Copyright 2008 Novell, Inc.
  */
 
@@ -36,6 +36,7 @@
 #include <nm-setting-ppp.h>
 #include <nm-gsm-device.h>
 #include <nm-utils.h>
+#include <nm-secret-agent.h>
 
 #include "applet.h"
 #include "applet-device-gsm.h"
@@ -64,6 +65,7 @@ typedef struct {
 	NMApplet *applet;
 	NMDevice *device;
 
+	DBusGConnection *bus;
 	DBusGProxy *props_proxy;
 	DBusGProxy *card_proxy;
 	DBusGProxy *net_proxy;
@@ -499,7 +501,7 @@ typedef struct {
 	NMANewSecretsRequestedFunc callback;
 	gpointer callback_data;
 	NMActiveConnection *active_connection;
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 } NMGsmSecretsInfo;
 
 
@@ -517,24 +519,14 @@ secrets_dialog_destroy (gpointer user_data, GObject *finalized)
 }
 
 static void
-update_cb (NMSettingsConnectionInterface *connection,
-           GError *error,
-           gpointer user_data)
-{
-	if (error) {
-		g_warning ("%s: failed to update connection: (%d) %s",
-		           __func__, error->code, error->message);
-	}
-}
-
-static void
-get_existing_secrets_cb (NMSettingsConnectionInterface *connection,
+get_existing_secrets_cb (NMSecretAgent *agent,
+                         NMConnection *connection,
                          GHashTable *existing_secrets,
                          GError *secrets_error,
                          gpointer user_data)
 {
 	NMGsmSecretsInfo *info = (NMGsmSecretsInfo *) user_data;
-	GHashTable *settings;
+	GHashTable *settings_hash = NULL;
 	GError *error = NULL;
 	gboolean save_secret = FALSE;
 	const char *new_secret = NULL;
@@ -545,10 +537,10 @@ get_existing_secrets_cb (NMSettingsConnectionInterface *connection,
 	}
 
 	/* Be a bit paranoid */
-	if (connection != info->connection) {
+	if (NM_REMOTE_CONNECTION (connection) != info->connection) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): unexpected reply for wrong connection.",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -567,7 +559,7 @@ get_existing_secrets_cb (NMSettingsConnectionInterface *connection,
 			const char *setting_name = key;
 			GHashTable *setting_hash = value;
 
-			/* Keep track of whether or not the user originall saved the secret */
+			/* Keep track of whether or not the user originally saved the secret */
 			if (!strcmp (setting_name, NM_SETTING_GSM_SETTING_NAME)) {
 				if (g_hash_table_lookup (setting_hash, info->secret_name))
 					save_secret = TRUE;
@@ -599,22 +591,20 @@ get_existing_secrets_cb (NMSettingsConnectionInterface *connection,
 		}
 	}
 
-	settings = nm_connection_to_hash (NM_CONNECTION (info->connection));
-	info->callback (info->connection, settings, NULL, info->callback_data);
-	g_hash_table_destroy (settings);
+	settings_hash = nm_connection_to_hash (NM_CONNECTION (info->connection));
+
+ done:
+	info->callback (info->connection, settings_hash, error, info->callback_data);
+	if (settings_hash)
+		g_hash_table_destroy (settings_hash);
+	g_clear_error (&error);
 
 	/* Save secrets back to GConf if the user had entered them into the
 	 * connection originally.  This lets users enter their secret every time if
 	 * they want.
 	 */
-	if (new_secret && save_secret)
-		nm_settings_connection_interface_update (info->connection, update_cb, NULL);
-
- done:
-	if (error) {
-		g_warning ("%s", error->message);
-		info->callback (info->connection, NULL, error, info->callback_data);
-		g_clear_error (&error);
+	if (new_secret && save_secret) {
+		/* FIXME: save secret back to the keyring */
 	}
 
 	nm_connection_clear_secrets (NM_CONNECTION (info->connection));
@@ -628,44 +618,37 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 {
 	NMGsmSecretsInfo *info = (NMGsmSecretsInfo *) user_data;
 	GError *error = NULL;
+	const char *hints[2] = { info->secret_name, NULL };
 
 	/* Got a user response, clear the NMActiveConnection destroy handler for
 	 * this dialog since this function will now take over dialog destruction.
 	 */
 	g_object_weak_unref (G_OBJECT (info->active_connection), secrets_dialog_destroy, info);
 
-	if (response == GTK_RESPONSE_OK) {
-		const char *hints[2] = { info->secret_name, NULL };
-
-		/* Get existing connection secrets since NM will want those too */
-		if (!nm_settings_connection_interface_get_secrets (info->connection,
-		                                                   NM_SETTING_GSM_SETTING_NAME,
-		                                                   (const char **) &hints,
-		                                                   FALSE,
-		                                                   get_existing_secrets_cb,
-		                                                   info)) {
-			g_set_error (&error,
-			             NM_SETTINGS_INTERFACE_ERROR,
-			             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
-			             "%s.%d (%s): failed to get existing connection secrets",
-			             __FILE__, __LINE__, __func__);
-		}
-	} else {
+	if (response != GTK_RESPONSE_OK) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
-	}
 
-	if (error) {
 		g_warning ("%s", error->message);
 		info->callback (info->connection, NULL, error, info->callback_data);
 		g_error_free (error);
 
 		nm_connection_clear_secrets (NM_CONNECTION (info->connection));
 		secrets_dialog_destroy (info, NULL);
+		return;
 	}
+
+	/* Get existing connection secrets since NM will want those too */
+	nm_secret_agent_get_secrets (info->applet->agent,
+	                             NM_CONNECTION (info->connection),
+	                             NM_SETTING_GSM_SETTING_NAME,
+	                             (const char **) &hints,
+	                             FALSE,
+	                             get_existing_secrets_cb,
+	                             info);
 }
 
 static void
@@ -746,7 +729,7 @@ ask_for_pin (NMDevice *device, GtkEntry **out_secret_entry)
 
 static gboolean
 gsm_get_secrets (NMDevice *device,
-                 NMSettingsConnectionInterface *connection,
+                 NMRemoteConnection *connection,
                  NMActiveConnection *active_connection,
                  const char *setting_name,
                  const char **hints,
@@ -761,8 +744,8 @@ gsm_get_secrets (NMDevice *device,
 
 	if (!hints || !g_strv_length ((char **) hints)) {
 		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): missing secrets hints.",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -781,8 +764,8 @@ gsm_get_secrets (NMDevice *device,
 		widget = applet_mobile_password_dialog_new (device, NM_CONNECTION (connection), &secret_entry);
 	else {
 		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): unknown secrets hint '%s'.",
 		             __FILE__, __LINE__, __func__, hints[0]);
 		return FALSE;
@@ -790,8 +773,8 @@ gsm_get_secrets (NMDevice *device,
 
 	if (!widget || !secret_entry) {
 		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): error asking for GSM secrets.",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -1022,6 +1005,8 @@ gsm_device_info_free (gpointer data)
 		g_object_unref (info->card_proxy);
 	if (info->net_proxy)
 		g_object_unref (info->net_proxy);
+	if (info->bus)
+		dbus_g_connection_unref (info->bus);
 
 	if (info->providers)
 		g_hash_table_destroy (info->providers);
@@ -1417,20 +1402,28 @@ static void
 gsm_device_added (NMDevice *device, NMApplet *applet)
 {
 	NMGsmDevice *gsm = NM_GSM_DEVICE (device);
-	AppletDBusManager *dbus_mgr = applet_dbus_manager_get ();
-	DBusGConnection *bus = applet_dbus_manager_get_connection (dbus_mgr);
 	GsmDeviceInfo *info;
 	const char *udi;
+	DBusGConnection *bus;
+	GError *error = NULL;
 
 	udi = nm_device_get_udi (device);
 	if (!udi)
 		return;
 
+	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (!bus) {
+		g_warning ("%s: failed to connect to D-Bus: (%d) %s", __func__, error->code, error->message);
+		g_clear_error (&error);
+		return;
+	}
+
 	info = g_malloc0 (sizeof (GsmDeviceInfo));
 	info->applet = applet;
 	info->device = device;
+	info->bus = bus;
 
-	info->props_proxy = dbus_g_proxy_new_for_name (bus,
+	info->props_proxy = dbus_g_proxy_new_for_name (info->bus,
 	                                               "org.freedesktop.ModemManager",
 	                                               udi,
 	                                               "org.freedesktop.DBus.Properties");
@@ -1440,7 +1433,7 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 		return;
 	}
 
-	info->card_proxy = dbus_g_proxy_new_for_name (bus,
+	info->card_proxy = dbus_g_proxy_new_for_name (info->bus,
 	                                              "org.freedesktop.ModemManager",
 	                                              udi,
 	                                              "org.freedesktop.ModemManager.Modem.Gsm.Card");
@@ -1450,7 +1443,7 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 		return;
 	}
 
-	info->net_proxy = dbus_g_proxy_new_for_name (bus,
+	info->net_proxy = dbus_g_proxy_new_for_name (info->bus,
 	                                             "org.freedesktop.ModemManager",
 	                                             udi,
 	                                             MM_DBUS_INTERFACE_MODEM_GSM_NETWORK);
@@ -1507,8 +1500,6 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM_GSM_NETWORK,
 	                         G_TYPE_STRING, "AccessTechnology",
 	                         G_TYPE_INVALID);
-
-	g_object_unref (dbus_mgr);
 }
 
 NMADeviceClass *

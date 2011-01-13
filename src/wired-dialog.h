@@ -28,13 +28,13 @@
 #include <nm-client.h>
 #include <nm-connection.h>
 #include <nm-device.h>
-#include <nm-settings-connection-interface.h>
+#include <nm-remote-connection.h>
 
 GtkWidget *nma_wired_dialog_new (const char *ui_file,
 								 NMClient *nm_client,
-								 NMSettingsConnectionInterface *connection,
+								 NMRemoteConnection *connection,
 								 NMDevice *device);
 
-NMSettingsConnectionInterface *nma_wired_dialog_get_connection (GtkWidget *dialog);
+NMRemoteConnection *nma_wired_dialog_get_connection (GtkWidget *dialog);
 
 #endif /* WIRED_DIALOG_H */

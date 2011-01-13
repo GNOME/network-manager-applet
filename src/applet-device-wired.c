@@ -329,7 +329,7 @@ typedef struct {
 	GtkWidget *ok_button;
 
 	NMApplet *applet;
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 	NMANewSecretsRequestedFunc callback;
 	gpointer callback_data;
 
@@ -403,7 +403,7 @@ pppoe_info_new (GtkBuilder *builder,
                 NMApplet *applet,
 				NMANewSecretsRequestedFunc callback,
 				gpointer callback_data,
-                NMSettingsConnectionInterface *connection,
+                NMRemoteConnection *connection,
                 NMActiveConnection *active_connection)
 {
 	NMPppoeInfo *info;
@@ -450,7 +450,7 @@ destroy_pppoe_dialog (gpointer data, GObject *finalized)
 }
 
 static void
-update_cb (NMSettingsConnectionInterface *connection,
+update_cb (NMRemoteConnection *connection,
            GError *error,
            gpointer user_data)
 {
@@ -476,8 +476,8 @@ get_pppoe_secrets_cb (GtkDialog *dialog,
 
 	if (response != GTK_RESPONSE_OK) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_SECRETS_REQUEST_CANCELED,
+		             0,
+		             0,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -489,8 +489,8 @@ get_pppoe_secrets_cb (GtkDialog *dialog,
 	secrets = nm_setting_to_hash (setting);
 	if (!secrets) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             0,
+		             0,
 					 "%s.%d (%s): failed to hash setting '%s'.",
 					 __FILE__, __LINE__, __func__, nm_setting_get_name (setting));
 		goto done;
@@ -510,7 +510,7 @@ get_pppoe_secrets_cb (GtkDialog *dialog,
 	 * saving to GConf might trigger the GConf change notifiers, resulting
 	 * in the connection being read back in from GConf which clears secrets.
 	 */
-	nm_settings_connection_interface_update (info->connection, update_cb, NULL);
+	nm_remote_connection_commit_changes (info->connection, update_cb, NULL);
 
 done:
 	if (error) {
@@ -536,7 +536,7 @@ show_password_toggled (GtkToggleButton *button, gpointer user_data)
 
 static gboolean
 pppoe_get_secrets (NMDevice *device,
-				   NMSettingsConnectionInterface *connection,
+				   NMRemoteConnection *connection,
 				   NMActiveConnection *active_connection,
 				   const char *setting_name,
 				   NMANewSecretsRequestedFunc callback,
@@ -554,8 +554,8 @@ pppoe_get_secrets (NMDevice *device,
 	{
 		g_warning ("Couldn't load builder file: %s", (*error)->message);
 		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             0,
+		             0,
 					 "%s.%d (%s): couldn't display secrets UI",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -623,7 +623,7 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 					  gpointer user_data)
 {
 	NM8021xInfo *info = user_data;
-	NMSettingsConnectionInterface *connection = NULL;
+	NMRemoteConnection *connection = NULL;
 	NMSetting *setting;
 	GHashTable *settings_hash;
 	GHashTable *secrets;
@@ -636,8 +636,8 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 
 	if (response != GTK_RESPONSE_OK) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_SECRETS_REQUEST_CANCELED,
+		             0,
+		             0,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -646,8 +646,8 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 	connection = nma_wired_dialog_get_connection (info->dialog);
 	if (!connection) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             0,
+		             0,
 		             "%s.%d (%s): couldn't get connection from wired dialog.",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -656,8 +656,8 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 	setting = nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_802_1X);
 	if (!setting) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INVALID_CONNECTION,
+		             0,
+		             0,
 					 "%s.%d (%s): requested setting '802-1x' didn't"
 					 " exist in the connection.",
 					 __FILE__, __LINE__, __func__);
@@ -667,8 +667,8 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 	secrets = nm_setting_to_hash (setting);
 	if (!secrets) {
 		g_set_error (&error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             0,
+		             0,
 					 "%s.%d (%s): failed to hash setting '%s'.",
 					 __FILE__, __LINE__, __func__, nm_setting_get_name (setting));
 		goto done;
@@ -688,7 +688,7 @@ get_8021x_secrets_cb (GtkDialog *dialog,
 	 * saving to GConf might trigger the GConf change notifiers, resulting
 	 * in the connection being read back in from GConf which clears secrets.
 	 */
-	nm_settings_connection_interface_update (connection, update_cb, NULL);
+	nm_remote_connection_commit_changes (connection, update_cb, NULL);
 
 done:
 	if (error) {
@@ -705,7 +705,7 @@ done:
 
 static gboolean
 nm_8021x_get_secrets (NMDevice *device,
-					  NMSettingsConnectionInterface *connection,
+					  NMRemoteConnection *connection,
 					  NMActiveConnection *active_connection,
 					  const char *setting_name,
 					  NMANewSecretsRequestedFunc callback,
@@ -722,8 +722,8 @@ nm_8021x_get_secrets (NMDevice *device,
 								   device);
 	if (!dialog) {
 		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             0,
+		             0,
 		             "%s.%d (%s): couldn't display secrets UI",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -752,7 +752,7 @@ nm_8021x_get_secrets (NMDevice *device,
 
 static gboolean
 wired_get_secrets (NMDevice *device,
-				   NMSettingsConnectionInterface *connection,
+				   NMRemoteConnection *connection,
 				   NMActiveConnection *active_connection,
 				   const char *setting_name,
 				   const char **hints,
@@ -768,8 +768,8 @@ wired_get_secrets (NMDevice *device,
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION));
 	if (!s_con) {
 		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INVALID_CONNECTION,
+		             0,
+		             0,
 		             "%s.%d (%s): Invalid connection",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;

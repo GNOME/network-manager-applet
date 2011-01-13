@@ -23,9 +23,11 @@
 #define VPN_PASSWORD_DIALOG_H
 
 #include <glib.h>
-#include <nma-gconf-connection.h>
 
-gboolean nma_vpn_request_password (NMSettingsConnectionInterface *connection,
+#include <nm-remote-connection.h>
+#include "applet.h"
+
+gboolean nma_vpn_request_password (NMRemoteConnection *remote,
                                    gboolean retry,
                                    NMANewSecretsRequestedFunc callback,
                                    gpointer callback_data);

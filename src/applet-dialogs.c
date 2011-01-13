@@ -144,11 +144,7 @@ get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
 {
 	GSList *list, *iter;
 	NMConnection *connection = NULL;
-	NMConnectionScope scope;
 	const char *path;
-
-	scope = nm_active_connection_get_scope (active);
-	g_return_val_if_fail (scope != NM_CONNECTION_SCOPE_UNKNOWN, NULL);
 
 	path = nm_active_connection_get_connection (active);
 	g_return_val_if_fail (path != NULL, NULL);
@@ -157,13 +153,11 @@ get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
 	for (iter = list; iter; iter = g_slist_next (iter)) {
 		NMConnection *candidate = NM_CONNECTION (iter->data);
 
-		if (   (nm_connection_get_scope (candidate) == scope)
-			   && !strcmp (nm_connection_get_path (candidate), path)) {
+		if (!strcmp (nm_connection_get_path (candidate), path)) {
 			connection = candidate;
 			break;
 		}
 	}
-
 	g_slist_free (list);
 
 	return connection;

@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  * (C) Copyright 2008 Novell, Inc.
  */
 
@@ -35,6 +35,7 @@
 #include <nm-setting-gsm.h>
 #include <nm-device-bt.h>
 #include <nm-utils.h>
+#include <nm-secret-agent.h>
 
 #include "applet.h"
 #include "applet-device-bt.h"
@@ -254,7 +255,7 @@ typedef struct {
 	NMANewSecretsRequestedFunc callback;
 	gpointer callback_data;
 	NMApplet *applet;
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 	NMActiveConnection *active_connection;
 	GtkWidget *dialog;
 	GtkEntry *secret_entry;
@@ -277,26 +278,15 @@ destroy_secrets_dialog (gpointer user_data, GObject *finalized)
 }
 
 static void
-update_cb (NMSettingsConnectionInterface *connection,
-           GError *error,
-           gpointer user_data)
-{
-	if (error) {
-		g_warning ("%s: failed to update connection: (%d) %s",
-		           __func__, error->code, error->message);
-	}
-}
-
-static void
 get_bt_secrets_cb (GtkDialog *dialog,
                    gint response,
                    gpointer user_data)
 {
 	NMBtSecretsInfo *info = user_data;
 	NMSetting *setting;
-	GHashTable *settings_hash;
+	GHashTable *settings_hash = NULL;
 	GHashTable *secrets;
-	GError *err = NULL;
+	GError *error = NULL;
 
 	/* Got a user response, clear the NMActiveConnection destroy handler for
 	 * this dialog since this function will now take over dialog destruction.
@@ -304,9 +294,9 @@ get_bt_secrets_cb (GtkDialog *dialog,
 	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_secrets_dialog, info);
 
 	if (response != GTK_RESPONSE_OK) {
-		g_set_error (&err,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		g_set_error (&error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): canceled",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -314,9 +304,9 @@ get_bt_secrets_cb (GtkDialog *dialog,
 
 	setting = nm_connection_get_setting_by_name (NM_CONNECTION (info->connection), info->setting_name);
 	if (!setting) {
-		g_set_error (&err,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		g_set_error (&error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): unhandled setting '%s'",
 		             __FILE__, __LINE__, __func__, info->setting_name);
 		goto done;
@@ -336,9 +326,9 @@ get_bt_secrets_cb (GtkDialog *dialog,
 
 	secrets = nm_setting_to_hash (NM_SETTING (setting));
 	if (!secrets) {
-		g_set_error (&err,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		g_set_error (&error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): failed to hash setting '%s'.",
 		             __FILE__, __LINE__, __func__,
 		             nm_setting_get_name (NM_SETTING (setting)));
@@ -350,24 +340,13 @@ get_bt_secrets_cb (GtkDialog *dialog,
 	 */
 	settings_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
 	                                       g_free, (GDestroyNotify) g_hash_table_destroy);
-
 	g_hash_table_insert (settings_hash, g_strdup (nm_setting_get_name (NM_SETTING (setting))), secrets);
-	info->callback (info->connection, settings_hash, NULL, info->callback_data);
-	g_hash_table_destroy (settings_hash);
-
-	/* Save the connection back to GConf _after_ hashing it, because
-	 * saving to GConf might trigger the GConf change notifiers, resulting
-	 * in the connection being read back in from GConf which clears secrets.
-	 */
-	if (NMA_IS_GCONF_CONNECTION (info->connection))
-		nm_settings_connection_interface_update (info->connection, update_cb, NULL);
 
  done:
-	if (err) {
-		g_warning ("%s", err->message);
-		info->callback (info->connection, NULL, err, info->callback_data);
-		g_error_free (err);
-	}
+	info->callback (info->connection, settings_hash, error, info->callback_data);
+	if (settings_hash)
+		g_hash_table_destroy (settings_hash);
+	g_clear_error (&error);
 
 	nm_connection_clear_secrets (NM_CONNECTION (info->connection));
 	destroy_secrets_dialog (info, NULL);
@@ -375,7 +354,7 @@ get_bt_secrets_cb (GtkDialog *dialog,
 
 static gboolean
 bt_get_secrets (NMDevice *device,
-                NMSettingsConnectionInterface *connection,
+                NMRemoteConnection *connection,
                 NMActiveConnection *active_connection,
                 const char *setting_name,
                 const char **hints,
@@ -390,8 +369,8 @@ bt_get_secrets (NMDevice *device,
 
 	if (!hints || !g_strv_length ((char **) hints)) {
 		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): missing secrets hints.",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
@@ -402,8 +381,8 @@ bt_get_secrets (NMDevice *device,
 		widget = applet_mobile_password_dialog_new (device, NM_CONNECTION (connection), &secret_entry);
 	else {
 		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): unknown secrets hint '%s'.",
 		             __FILE__, __LINE__, __func__, hints[0]);
 		return FALSE;
@@ -411,8 +390,8 @@ bt_get_secrets (NMDevice *device,
 
 	if (!widget || !secret_entry) {
 		g_set_error (error,
-		             NM_SETTINGS_INTERFACE_ERROR,
-		             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): error asking for CDMA secrets.",
 		             __FILE__, __LINE__, __func__);
 		return FALSE;

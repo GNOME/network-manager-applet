@@ -116,7 +116,7 @@ dialog_init (GtkWidget *dialog,
 GtkWidget *
 nma_wired_dialog_new (const char *ui_file,
 					  NMClient *nm_client,
-					  NMSettingsConnectionInterface *connection,
+					  NMRemoteConnection *connection,
 					  NMDevice *device)
 {
 	GtkBuilder *builder;
@@ -161,10 +161,10 @@ nma_wired_dialog_new (const char *ui_file,
 	return dialog;
 }
 					  
-NMSettingsConnectionInterface *
+NMRemoteConnection *
 nma_wired_dialog_get_connection (GtkWidget *dialog)
 {
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 	WirelessSecurity *security;
 	NMConnection *tmp_connection;
 	NMSetting *s_8021x, *s_con;
