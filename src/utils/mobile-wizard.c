@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2009 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #include <stdlib.h>
@@ -1020,7 +1020,7 @@ country_setup (MobileWizard *self)
 
 	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
-	label = gtk_label_new (_("Country List:"));
+	label = gtk_label_new (_("Country or Region List:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
 
@@ -1032,7 +1032,7 @@ country_setup (MobileWizard *self)
 	self->country_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (self->country_sort));
 
 	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Country"), renderer, "text", 0, NULL);
+	column = gtk_tree_view_column_new_with_attributes (_("Country or region"), renderer, "text", 0, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (self->country_view), column);
 	gtk_tree_view_column_set_clickable (column, TRUE);
 
@@ -1085,7 +1085,7 @@ country_setup (MobileWizard *self)
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, TRUE, TRUE, 6);
 
 	self->country_idx = gtk_assistant_append_page (GTK_ASSISTANT (self->assistant), vbox);
-	gtk_assistant_set_page_title (GTK_ASSISTANT (self->assistant), vbox, _("Choose your Provider's Country"));
+	gtk_assistant_set_page_title (GTK_ASSISTANT (self->assistant), vbox, _("Choose your Provider's Country or Region"));
 	gtk_assistant_set_page_type (GTK_ASSISTANT (self->assistant), vbox, GTK_ASSISTANT_PAGE_CONTENT);
 	gtk_assistant_set_page_complete (GTK_ASSISTANT (self->assistant), vbox, TRUE);
 	gtk_widget_show_all (vbox);
