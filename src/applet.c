@@ -2945,7 +2945,7 @@ constructor (GType type,
 
 	foo_client_setup (applet);
 
-	nm_gconf_set_pre_keyring_callback (applet_pre_keyring_callback, applet);
+	applet_set_pre_keyring_callback (applet_pre_keyring_callback, applet);
 
 	/* Track embedding to help debug issues where user has removed the
 	 * notification area applet from the panel, and thus nm-applet too.
@@ -2967,7 +2967,7 @@ static void finalize (GObject *object)
 {
 	NMApplet *applet = NM_APPLET (object);
 
-	nm_gconf_set_pre_keyring_callback (NULL, NULL);
+	applet_set_pre_keyring_callback (NULL, NULL);
 
 	g_slice_free (NMADeviceClass, applet->wired_class);
 	g_slice_free (NMADeviceClass, applet->wifi_class);

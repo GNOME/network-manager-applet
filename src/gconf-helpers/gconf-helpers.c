@@ -89,13 +89,13 @@ static gpointer pre_keyring_user_data = NULL;
 
 /* Sets a function to be called before each keyring access */
 void
-nm_gconf_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data)
+applet_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data)
 {
 	pre_keyring_cb = func;
 	pre_keyring_user_data = user_data;
 }
 
-void
+static void
 pre_keyring_callback (void)
 {
 	GnomeKeyringInfo *info = NULL;
