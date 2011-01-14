@@ -642,7 +642,7 @@ get_gsm_secrets_cb (GtkDialog *dialog,
 	}
 
 	/* Get existing connection secrets since NM will want those too */
-	nm_secret_agent_get_secrets (info->applet->agent,
+	nm_secret_agent_get_secrets (NM_SECRET_AGENT (info->applet->agent),
 	                             NM_CONNECTION (info->connection),
 	                             NM_SETTING_GSM_SETTING_NAME,
 	                             (const char **) &hints,

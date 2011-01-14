@@ -21,12 +21,14 @@ nm_applet_CPPFLAGS = \
 	-I${top_srcdir}/src/gconf-helpers  \
 	-I${top_srcdir}/src/wireless-security
 
-nm_applet_SOURCES =			\
-	main.c				\
-	applet.c				\
-	applet.h				\
-	vpn-password-dialog.c	\
-	vpn-password-dialog.h	\
+nm_applet_SOURCES = \
+	main.c \
+	applet.c \
+	applet.h \
+	applet-agent.c \
+	applet-agent.h \
+	vpn-password-dialog.c \
+	vpn-password-dialog.h \
 	wired-dialog.h \
 	wired-dialog.c \
 	wireless-dialog.h \

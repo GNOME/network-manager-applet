@@ -45,7 +45,7 @@
 #include <NetworkManager.h>
 #include <nm-active-connection.h>
 #include <nm-remote-settings.h>
-#include <nm-secret-agent.h>
+#include "applet-agent.h"
 
 #define NM_TYPE_APPLET			(nma_get_type())
 #define NM_APPLET(object)		(G_TYPE_CHECK_INSTANCE_CAST((object), NM_TYPE_APPLET, NMApplet))
@@ -84,7 +84,7 @@ typedef struct
 
 	NMClient *nm_client;
 	NMRemoteSettings *settings;
-	NMSecretAgent *agent;
+	AppletAgent *agent;
 
 	GConfClient *	gconf_client;
 	char	*		ui_file;

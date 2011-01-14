@@ -55,6 +55,7 @@
 #include <nm-setting-vpn.h>
 #include <nm-active-connection.h>
 #include <nm-setting-wireless.h>
+#include <nm-secret-agent.h>
 
 #include <gconf/gconf-client.h>
 #include <gnome-keyring.h>
@@ -2923,6 +2924,9 @@ constructor (GType type,
 
 	applet->settings = nm_remote_settings_new (applet->bus);
 
+	applet->agent = applet_agent_new ();
+	g_assert (applet->agent);
+
 	/* Initialize device classes */
 	applet->wired_class = applet_device_wired_get_class (applet);
 	g_assert (applet->wired_class);
@@ -3002,15 +3006,14 @@ static void finalize (GObject *object)
 	if (applet->fallback_icon)
 		g_object_unref (applet->fallback_icon);
 
-	if (applet->settings) {
-		g_object_unref (applet->settings);
-		applet->settings = NULL;
-	}
+	if (applet->agent)
+		g_object_unref (applet->agent);
 
-	if (applet->bus) {
+	if (applet->settings)
+		g_object_unref (applet->settings);
+
+	if (applet->bus)
 		dbus_g_connection_unref (applet->bus);
-		applet->bus = NULL;
-	}
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
