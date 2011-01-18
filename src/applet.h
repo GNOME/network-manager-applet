@@ -64,6 +64,7 @@ typedef struct
 #define APPLET_PREFS_PATH "/apps/nm-applet"
 #define PREF_DISABLE_CONNECTED_NOTIFICATIONS      APPLET_PREFS_PATH "/disable-connected-notifications"
 #define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS   APPLET_PREFS_PATH "/disable-disconnected-notifications"
+#define PREF_DISABLE_VPN_NOTIFICATIONS            APPLET_PREFS_PATH "/disable-vpn-notifications"
 #define PREF_DISABLE_WIFI_CREATE                  APPLET_PREFS_PATH "/disable-wifi-create"
 #define PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE APPLET_PREFS_PATH "/suppress-wireless-networks-available"
 

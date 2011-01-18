@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2010 Red Hat, Inc.
+ * Copyright (C) 2004 - 2011 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
@@ -653,9 +653,9 @@ applet_do_notify (NMApplet *applet,
 }
 
 static void
-notify_connected_dont_show_cb (NotifyNotification *notify,
-			                   gchar *id,
-			                   gpointer user_data)
+notify_dont_show_cb (NotifyNotification *notify,
+                     gchar *id,
+                     gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
@@ -663,7 +663,8 @@ notify_connected_dont_show_cb (NotifyNotification *notify,
 		return;
 
 	if (   strcmp (id, PREF_DISABLE_CONNECTED_NOTIFICATIONS)
-	    && strcmp (id, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS))
+	    && strcmp (id, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS)
+	    && strcmp (id, PREF_DISABLE_VPN_NOTIFICATIONS))
 		return;
 
 	gconf_client_set_bool (applet->gconf_client, id, TRUE, NULL);
@@ -680,7 +681,7 @@ void applet_do_notify_with_pref (NMApplet *applet,
 	
 	applet_do_notify (applet, NOTIFY_URGENCY_LOW, summary, message, icon, pref,
 	                  _("Don't show this message again"),
-	                  notify_connected_dont_show_cb,
+	                  notify_dont_show_cb,
 	                  applet);
 }
 
@@ -883,8 +884,8 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 			msg = g_strdup ("VPN connection has been successfully established.\n");
 
 		title = _("VPN Login Message");
-		applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
-		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
+		applet_do_notify_with_pref (applet, title, msg, "gnome-lockscreen",
+		                            PREF_DISABLE_VPN_NOTIFICATIONS);
 		g_free (msg);
 
 		connection = applet_get_connection_for_active (applet, NM_ACTIVE_CONNECTION (vpn));
@@ -894,16 +895,16 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 	case NM_VPN_CONNECTION_STATE_FAILED:
 		title = _("VPN Connection Failed");
 		msg = make_vpn_failure_message (vpn, reason, applet);
-		applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
-		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
+		applet_do_notify_with_pref (applet, title, msg, "gnome-lockscreen",
+		                            PREF_DISABLE_VPN_NOTIFICATIONS);
 		g_free (msg);
 		break;
 	case NM_VPN_CONNECTION_STATE_DISCONNECTED:
 		if (reason != NM_VPN_CONNECTION_STATE_REASON_USER_DISCONNECTED) {
 			title = _("VPN Connection Failed");
 			msg = make_vpn_disconnection_message (vpn, reason, applet);
-			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
-			                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
+			applet_do_notify_with_pref (applet, title, msg, "gnome-lockscreen",
+			                            PREF_DISABLE_VPN_NOTIFICATIONS);
 			g_free (msg);
 		}
 		break;
@@ -961,8 +962,8 @@ activate_vpn_cb (gpointer user_data, const char *path, GError *error)
 			                       info->vpn_name, error->message);
 		}
 
-		applet_do_notify (info->applet, NOTIFY_URGENCY_LOW, title, msg,
-		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
+		applet_do_notify_with_pref (info->applet, title, msg, "gnome-lockscreen",
+		                            PREF_DISABLE_VPN_NOTIFICATIONS);
 		g_free (msg);
 
 		nm_warning ("VPN Connection activation failed: (%s) %s", name, error->message);
@@ -1596,6 +1597,10 @@ nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	                       !state,
 	                       NULL);
 	gconf_client_set_bool (applet->gconf_client,
+	                       PREF_DISABLE_VPN_NOTIFICATIONS,
+	                       !state,
+	                       NULL);
+	gconf_client_set_bool (applet->gconf_client,
 	                       PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
 	                       !state,
 	                       NULL);
@@ -1773,6 +1778,7 @@ nma_context_menu_update (NMApplet *applet)
 	                        applet->notifications_enabled_toggled_id);
 	if (   gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_CONNECTED_NOTIFICATIONS, NULL)
 	    && gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS, NULL)
+	    && gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_VPN_NOTIFICATIONS, NULL)
 	    && gconf_client_get_bool (applet->gconf_client, PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE, NULL))
 		notifications_enabled = FALSE;
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
