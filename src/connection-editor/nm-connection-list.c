@@ -789,7 +789,7 @@ pk_button_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 	NMSettingConnection *s_con;
 	gboolean sensitive = FALSE;
 
-	if (!gtk_tree_selection_get_selected (selection, &model, &iter)) {
+	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
 		connection = get_active_connection (info->treeview);
 		if (connection) {
 			s_con = (NMSettingConnection *) nm_connection_get_setting (NM_CONNECTION (connection),
