@@ -163,6 +163,9 @@ typedef struct
 	GtkBuilder *	info_dialog_ui;
 	NotifyNotification*	notification;
 	gboolean        notify_actions;
+
+	/* Tracker objects for secrets requests */
+	GSList *        secrets_reqs;
 } NMApplet;
 
 typedef void (*AppletNewAutoConnectionCallback) (NMConnection *connection,
@@ -170,10 +173,33 @@ typedef void (*AppletNewAutoConnectionCallback) (NMConnection *connection,
                                                  gboolean canceled,
                                                  gpointer user_data);
 
-typedef void (*NMANewSecretsRequestedFunc) (NMRemoteConnection *connection,
-                                            GHashTable *settings,
-                                            GError *error,
-                                            gpointer user_data);
+typedef struct _SecretsRequest SecretsRequest;
+typedef void (*SecretsRequestFreeFunc) (SecretsRequest *req);
+
+struct _SecretsRequest {
+	size_t totsize;
+	gpointer reqid;
+	char *setting_name;
+	char **hints;
+	NMApplet *applet;
+	AppletAgentSecretsCallback callback;
+	gpointer callback_data;
+
+	NMConnection *connection;
+
+	/* Class-specific stuff */
+	SecretsRequestFreeFunc free_func;
+};
+
+void applet_secrets_request_set_free_func (SecretsRequest *req,
+                                           SecretsRequestFreeFunc free_func);
+void applet_secrets_request_complete (SecretsRequest *req,
+                                      GHashTable *settings,
+                                      GError *error);
+void applet_secrets_request_complete_setting (SecretsRequest *req,
+                                              const char *setting_name,
+                                              GError *error);
+void applet_secrets_request_free (SecretsRequest *req);
 
 struct NMADeviceClass {
 	gboolean       (*new_auto_connection)  (NMDevice *device,
@@ -206,14 +232,8 @@ struct NMADeviceClass {
 	                                        NMApplet *applet,
 	                                        gpointer user_data);
 
-	gboolean       (*get_secrets)          (NMDevice *device,
-	                                        NMRemoteConnection *connection,
-	                                        NMActiveConnection *active_connection,
-	                                        const char *setting_name,
-	                                        const char **hints,
-	                                        NMANewSecretsRequestedFunc callback,
-	                                        gpointer callback_data,
-	                                        NMApplet *applet,
+	size_t         secrets_request_size;
+	gboolean       (*get_secrets)          (SecretsRequest *req,
 	                                        GError **error);
 };
 
@@ -253,6 +273,8 @@ applet_menu_item_create_device_item_helper (NMDevice *device,
                                             const gchar *text);
 
 NMRemoteConnection *applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet);
+
+NMDevice *applet_get_device_for_connection (NMApplet *applet, NMConnection *connection);
 
 void applet_do_notify (NMApplet *applet,
                        NotifyUrgency urgency,

@@ -18,7 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * (C) Copyright 2008 Novell, Inc.
- * (C) Copyright 2008 - 2010 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -79,7 +79,6 @@ dialog_set_security (NMConnection *connection,
 static gboolean
 dialog_init (GtkWidget *dialog,
              GtkBuilder *builder,
-             NMClient *nm_client,
              NMConnection *connection)
 {
 	WirelessSecurity *security;
@@ -114,10 +113,7 @@ dialog_init (GtkWidget *dialog,
 }
 
 GtkWidget *
-nma_wired_dialog_new (const char *ui_file,
-					  NMClient *nm_client,
-					  NMRemoteConnection *connection,
-					  NMDevice *device)
+nma_wired_dialog_new (const char *ui_file, NMConnection *connection)
 {
 	GtkBuilder *builder;
 	GtkWidget *dialog;
@@ -141,7 +137,7 @@ nma_wired_dialog_new (const char *ui_file,
 		return NULL;
 	}
 
-	success = dialog_init (dialog, builder, nm_client, NM_CONNECTION (connection));
+	success = dialog_init (dialog, builder, connection);
 	if (!success) {
 		nm_warning ("Couldn't create wired security dialog.");
 		gtk_widget_destroy (dialog);
@@ -161,12 +157,11 @@ nma_wired_dialog_new (const char *ui_file,
 	return dialog;
 }
 					  
-NMRemoteConnection *
+NMConnection *
 nma_wired_dialog_get_connection (GtkWidget *dialog)
 {
-	NMRemoteConnection *connection;
+	NMConnection *connection, *tmp_connection;
 	WirelessSecurity *security;
-	NMConnection *tmp_connection;
 	NMSetting *s_8021x, *s_con;
 
 	g_return_val_if_fail (dialog != NULL, NULL);
@@ -180,7 +175,7 @@ nma_wired_dialog_get_connection (GtkWidget *dialog)
 	tmp_connection = nm_connection_new ();
 
 	/* Add the fake connection setting (mainly for the UUID for cert ignore checking) */
-	s_con = nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION);
+	s_con = nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
 	g_assert (s_con);
 	nm_connection_add_setting (tmp_connection, NM_SETTING (g_object_ref (s_con)));
 
@@ -192,7 +187,7 @@ nma_wired_dialog_get_connection (GtkWidget *dialog)
 
 	/* Grab it and add it to our original connection */
 	s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
-	nm_connection_add_setting (NM_CONNECTION (connection), NM_SETTING (g_object_ref (s_8021x)));
+	nm_connection_add_setting (connection, NM_SETTING (g_object_ref (s_8021x)));
 
 	g_object_unref (tmp_connection);
 

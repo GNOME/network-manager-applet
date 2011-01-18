@@ -31,12 +31,32 @@
 #define APPLET_IS_AGENT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), APPLET_TYPE_AGENT))
 #define APPLET_AGENT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), APPLET_TYPE_AGENT, AppletAgentClass))
 
+#define APPLET_AGENT_GET_SECRETS "get-secrets"
+#define APPLET_AGENT_CANCEL_SECRETS "cancel-secrets"
+
 typedef struct {
 	NMSecretAgent parent;
 } AppletAgent;
 
+typedef void (*AppletAgentSecretsCallback) (AppletAgent *self,
+                                            GHashTable *secrets,
+                                            GError *error,
+                                            gpointer user_data);
+
 typedef struct {
 	NMSecretAgentClass parent_class;
+
+	void (*get_secrets)        (AppletAgent *self,
+	                            void *request_id,
+	                            NMConnection *connection,
+	                            const char *setting_name,
+	                            const char **hints,
+	                            guint32 flags,
+	                            AppletAgentSecretsCallback callback,
+	                            gpointer callback_data);
+
+	void (*cancel_secrets)     (AppletAgent *self,
+	                            void *request_id);
 } AppletAgentClass;
 
 

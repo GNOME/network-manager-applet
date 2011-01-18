@@ -1989,24 +1989,15 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	g_return_if_fail (setting_key != NULL);
 	g_return_if_fail (secret != NULL);
 
-	display_name = g_strdup_printf ("Network secret for %s/%s/%s",
-	                                connection_name,
-	                                setting_name,
-	                                setting_key);
-
-	attrs = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attrs,
-	                                            KEYRING_UUID_TAG,
-	                                            connection_uuid);
-	gnome_keyring_attribute_list_append_string (attrs,
-	                                            KEYRING_SN_TAG,
-	                                            setting_name);
-	gnome_keyring_attribute_list_append_string (attrs,
-	                                            KEYRING_SK_TAG,
-	                                            setting_key);
-
 	pre_keyring_callback ();
 
+	attrs = utils_create_keyring_add_attr_list (NULL,
+	                                            connection_uuid,
+	                                            connection_name,
+	                                            setting_name,
+	                                            setting_key,
+	                                            &display_name);
+	g_assert (attrs);
 	ret = gnome_keyring_item_create_sync (NULL,
 	                                      GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      display_name,
@@ -2014,7 +2005,6 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	                                      secret,
 	                                      TRUE,
 	                                      &id);
-
 	gnome_keyring_attribute_list_free (attrs);
 	g_free (display_name);
 }

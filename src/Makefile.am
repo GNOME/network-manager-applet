@@ -27,8 +27,8 @@ nm_applet_SOURCES = \
 	applet.h \
 	applet-agent.c \
 	applet-agent.h \
-	vpn-password-dialog.c \
-	vpn-password-dialog.h \
+	applet-vpn-request.c \
+	applet-vpn-request.h \
 	wired-dialog.h \
 	wired-dialog.c \
 	wireless-dialog.h \

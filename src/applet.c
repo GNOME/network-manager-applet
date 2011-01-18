@@ -52,6 +52,12 @@
 #include <nm-connection.h>
 #include <nm-vpn-connection.h>
 #include <nm-setting-connection.h>
+#include <nm-setting-wired.h>
+#include <nm-setting-wireless.h>
+#include <nm-setting-pppoe.h>
+#include <nm-setting-gsm.h>
+#include <nm-setting-cdma.h>
+#include <nm-setting-bluetooth.h>
 #include <nm-setting-vpn.h>
 #include <nm-active-connection.h>
 #include <nm-setting-wireless.h>
@@ -68,7 +74,7 @@
 #include "applet-device-cdma.h"
 #include "applet-device-bt.h"
 #include "applet-dialogs.h"
-#include "vpn-password-dialog.h"
+#include "applet-vpn-request.h"
 #include "utils.h"
 #include "gconf-helpers.h"
 
@@ -235,6 +241,26 @@ applet_get_active_for_connection (NMApplet *applet, NMConnection *connection)
 	return NULL;
 }
 
+NMDevice *
+applet_get_device_for_connection (NMApplet *applet, NMConnection *connection)
+{
+	const GPtrArray *active_list;
+	const char *cpath;
+	int i;
+
+	cpath = nm_connection_get_path (connection);
+	g_return_val_if_fail (cpath != NULL, NULL);
+
+	active_list = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; active_list && (i < active_list->len); i++) {
+		NMActiveConnection *active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_list, i));
+
+		if (!g_strcmp0 (nm_active_connection_get_connection (active), cpath))
+			return g_ptr_array_index (nm_active_connection_get_devices (active), 0);
+	}
+	return NULL;
+}
+
 static inline NMADeviceClass *
 get_device_class (NMDevice *device, NMApplet *applet)
 {
@@ -253,6 +279,36 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->bt_class;
 	else
 		g_message ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
+	return NULL;
+}
+
+static inline NMADeviceClass *
+get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
+{
+	NMSettingConnection *s_con;
+	const char *ctype;
+
+	g_return_val_if_fail (connection != NULL, NULL);
+	g_return_val_if_fail (applet != NULL, NULL);
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	g_return_val_if_fail (s_con != NULL, NULL);
+
+	ctype = nm_setting_connection_get_connection_type (s_con);
+	g_return_val_if_fail (ctype != NULL, NULL);
+
+	if (!strcmp (ctype, NM_SETTING_WIRED_SETTING_NAME) || !strcmp (ctype, NM_SETTING_PPPOE_SETTING_NAME))
+		return applet->wired_class;
+	else if (!strcmp (ctype, NM_SETTING_WIRELESS_SETTING_NAME))
+		return applet->wifi_class;
+	else if (!strcmp (ctype, NM_SETTING_GSM_SETTING_NAME))
+		return applet->gsm_class;
+	else if (!strcmp (ctype, NM_SETTING_CDMA_SETTING_NAME))
+		return applet->cdma_class;
+	else if (!strcmp (ctype, NM_SETTING_BLUETOOTH_SETTING_NAME))
+		return applet->bt_class;
+	else
+		g_warning ("%s: unhandled connection type '%s'", __func__, ctype);
 	return NULL;
 }
 
@@ -2449,120 +2505,271 @@ applet_schedule_update_icon (NMApplet *applet)
 		applet->update_icon_id = g_idle_add (applet_update_icon, applet);
 }
 
-#if 0
-static NMDevice *
-find_active_device (NMRemoteConnection *connection,
-                    NMApplet *applet,
-                    NMActiveConnection **out_active_connection)
+/*****************************************************************************/
+
+static SecretsRequest *
+applet_secrets_request_new (size_t totsize,
+                            NMConnection *connection,
+                            gpointer request_id,
+                            const char *setting_name,
+                            const char **hints,
+                            AppletAgentSecretsCallback callback,
+                            gpointer callback_data,
+                            NMApplet *applet)
 {
-	const GPtrArray *active_connections;
-	int i;
+	SecretsRequest *req;
 
+	g_return_val_if_fail (totsize >= sizeof (SecretsRequest), NULL);
 	g_return_val_if_fail (connection != NULL, NULL);
-	g_return_val_if_fail (applet != NULL, NULL);
-	g_return_val_if_fail (out_active_connection != NULL, NULL);
-	g_return_val_if_fail (*out_active_connection == NULL, NULL);
 
-	/* Look through the active connection list trying to find the D-Bus
-	 * object path of applet_connection.
-	 */
-	active_connections = nm_client_get_active_connections (applet->nm_client);
-	for (i = 0; active_connections && (i < active_connections->len); i++) {
-		NMActiveConnection *active;
-		const char *connection_path;
-		const GPtrArray *devices;
+	req = g_malloc0 (totsize);
+	req->totsize = totsize;
+	req->connection = g_object_ref (connection);
+	req->reqid = request_id;
+	req->setting_name = g_strdup (setting_name);
+	req->hints = g_strdupv ((char **) hints);
+	req->callback = callback;
+	req->callback_data = callback_data;
+	req->applet = applet;
+	return req;
+}
 
-		active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_connections, i));
+void
+applet_secrets_request_set_free_func (SecretsRequest *req,
+                                      SecretsRequestFreeFunc free_func)
+{
+	req->free_func = free_func;
+}
 
-		connection_path = nm_active_connection_get_connection (active);
-		if (!connection_path) {
-			/* Shouldn't happen; but we shouldn't crash either */
-			g_warning ("%s: couldn't get connection path for active connection!", __func__);
-			continue;
-		}
+void
+applet_secrets_request_complete (SecretsRequest *req,
+                                 GHashTable *settings,
+                                 GError *error)
+{
+	req->callback (req->applet->agent, error ? NULL : settings, error, req->callback_data);
+}
 
-		if (!strcmp (connection_path, nm_connection_get_path (NM_CONNECTION (connection)))) {
-			devices = nm_active_connection_get_devices (active);
-			if (devices)
-				*out_active_connection = active;
-			return devices ? NM_DEVICE (g_ptr_array_index (devices, 0)) : NULL;
+void
+applet_secrets_request_complete_setting (SecretsRequest *req,
+                                         const char *setting_name,
+                                         GError *error)
+{
+	NMSetting *setting;
+	GHashTable *settings = NULL, *secrets;
+
+	if (setting_name && !error) {
+		setting = nm_connection_get_setting_by_name (req->connection, setting_name);
+		if (setting) {
+			secrets = nm_setting_to_hash (NM_SETTING (setting));
+			if (secrets) {
+				/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
+				 * will contain all the individual settings hashes.
+				 */
+				settings = g_hash_table_new_full (g_str_hash,
+				                                  g_str_equal,
+				                                  g_free,
+				                                  (GDestroyNotify) g_hash_table_destroy);
+				g_hash_table_insert (settings, g_strdup (setting_name), secrets);
+			} else {
+				g_set_error (&error,
+						     NM_SECRET_AGENT_ERROR,
+						     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+						     "%s.%d (%s): failed to hash setting '%s'.",
+						     __FILE__, __LINE__, __func__, setting_name);
+			}
+		} else {
+			g_set_error (&error,
+				         NM_SECRET_AGENT_ERROR,
+				         NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+				         "%s.%d (%s): unhandled setting '%s'",
+				         __FILE__, __LINE__, __func__, setting_name);
 		}
 	}
 
-	return NULL;
+	req->callback (req->applet->agent, settings, error, req->callback_data);
+}
+
+void
+applet_secrets_request_free (SecretsRequest *req)
+{
+	g_return_if_fail (req != NULL);
+
+	if (req->free_func)
+		req->free_func (req);
+
+	req->applet->secrets_reqs = g_slist_remove (req->applet->secrets_reqs, req);
+
+	g_object_unref (req->connection);
+	g_free (req->setting_name);
+	g_strfreev (req->hints);
+	memset (req, 0, req->totsize);
+	g_free (req);
+}
+
+typedef struct {
+	SecretsRequest req;
+	AppletVpnRequest *vpn;
+} VpnSecretsRequest;
+
+static void
+vpn_request_done_cb (AppletVpnRequest *foo,
+                     GHashTable *settings,
+                     GError *error,
+                     gpointer user_data)
+{
+	SecretsRequest *req = user_data;
+
+	applet_secrets_request_complete (req, settings, error);
+	applet_secrets_request_free (req);
 }
 
 static void
-applet_settings_new_secrets_requested_cb (NMRemoteSettings *settings,
-                                          NMRemoteConnection *connection,
-                                          const char *setting_name,
-                                          const char **hints,
-                                          gboolean ask_user,
-                                          NMANewSecretsRequestedFunc callback,
-                                          gpointer callback_data,
-                                          gpointer user_data)
+vpn_request_free_cb (SecretsRequest *req)
 {
-	NMApplet *applet = NM_APPLET (user_data);
-	NMActiveConnection *active_connection = NULL;
-	NMSettingConnection *s_con;
-	NMDevice *device;
+	VpnSecretsRequest *vpn_req = (VpnSecretsRequest *) req;
+
+	if (vpn_req->vpn)
+		g_object_unref (vpn_req->vpn);
+}
+
+static void
+get_existing_secrets_cb (NMSecretAgent *agent,
+                         NMConnection *connection,
+                         GHashTable *secrets,
+                         GError *secrets_error,
+                         gpointer user_data)
+{
+	SecretsRequest *req = user_data;
 	NMADeviceClass *dclass;
 	GError *error = NULL;
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION);
+	/* Merge existing secrets into connection; ignore errors */
+	nm_connection_update_secrets (connection, req->setting_name, secrets, NULL);
+
+	dclass = get_device_class_from_connection (connection, req->applet);
+	g_assert (dclass);
+
+	/* Let the device class handle secrets */
+	if (!dclass->get_secrets (req, &error)) {
+		g_warning ("%s:%d - %s", __func__, __LINE__, error ? error->message : "(unknown)");
+		applet_secrets_request_complete (req, NULL, error);
+		applet_secrets_request_free (req);
+		g_error_free (error);
+	}
+	/* Otherwise success; wait for the secrets callback */
+}
+
+static void
+applet_agent_get_secrets_cb (AppletAgent *agent,
+                             void *request_id,
+                             NMConnection *connection,
+                             const char *setting_name,
+                             const char **hints,
+                             guint32 flags,
+                             AppletAgentSecretsCallback callback,
+                             gpointer callback_data,
+                             gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+	NMSettingConnection *s_con;
+	NMADeviceClass *dclass;
+	GError *error = NULL;
+	SecretsRequest *req = NULL;
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
 	g_return_if_fail (s_con != NULL);
 
 	/* VPN secrets get handled a bit differently */
 	if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
-		nma_vpn_request_password (connection, ask_user, callback, callback_data);
+		VpnSecretsRequest *vpnreq;
+
+		req = applet_secrets_request_new (sizeof (VpnSecretsRequest),
+		                                  connection,
+		                                  request_id,
+		                                  setting_name,
+		                                  hints,
+		                                  callback,
+		                                  callback_data,
+		                                  applet);
+		applet_secrets_request_set_free_func (req, vpn_request_free_cb);
+
+		vpnreq = (VpnSecretsRequest *) req;
+		vpnreq->vpn = applet_vpn_request_new (connection, &error);
+		if (!vpnreq->vpn)
+			goto error;
+		if (!applet_vpn_request_get_secrets (vpnreq->vpn, !!flags, &error))
+			goto error;
+
+		/* Track this VPN password request */
+		g_signal_connect (vpnreq->vpn, "done", G_CALLBACK (vpn_request_done_cb), vpnreq);
+		applet->secrets_reqs = g_slist_prepend (applet->secrets_reqs, vpnreq);
 		return;
 	}
 
-	/* Find the active device for this connection */
-	device = find_active_device (connection, applet, &active_connection);
-	if (!device || !active_connection) {
-		g_set_error (&error,
-		             0,
-		             0,
-		             "%s.%d (%s): couldn't find details for connection",
-		             __FILE__, __LINE__, __func__);
-		goto error;
-	}
-
-	dclass = get_device_class (device, applet);
+	dclass = get_device_class_from_connection (connection, applet);
 	if (!dclass) {
-		g_set_error (&error,
-		             0,
-		             0,
-		             "%s.%d (%s): device type unknown",
-		             __FILE__, __LINE__, __func__);
+		error = g_error_new (NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "%s.%d (%s): device type unknown",
+		                     __FILE__, __LINE__, __func__);
 		goto error;
 	}
 
 	if (!dclass->get_secrets) {
-		g_set_error (&error,
-		             0,
-		             0,
-		             "%s.%d (%s): no secrets found",
-		             __FILE__, __LINE__, __func__);
+		error = g_error_new (NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_NO_SECRETS,
+		                     "%s.%d (%s): no secrets found",
+		                     __FILE__, __LINE__, __func__);
 		goto error;
 	}
 
-	// FIXME: get secrets locally and populate connection with previous secrets
-	// before asking user for other secrets
+	g_assert (dclass->secrets_request_size);
+	req = applet_secrets_request_new (dclass->secrets_request_size,
+	                                  connection,
+	                                  request_id,
+	                                  setting_name,
+	                                  hints,
+	                                  callback,
+	                                  callback_data,
+	                                  applet);
+	applet->secrets_reqs = g_slist_prepend (applet->secrets_reqs, req);
 
-	/* Let the device class handle secrets */
-	if (dclass->get_secrets (device, connection,
-	                         active_connection, setting_name, hints, callback,
-	                         callback_data, applet, &error))
-		return;  /* success */
+	/* Get existing secrets, if any */
+	nm_secret_agent_get_secrets (NM_SECRET_AGENT (applet->agent),
+			                     connection,
+			                     setting_name,
+			                     hints,
+			                     FALSE,
+			                     get_existing_secrets_cb,
+			                     req);
+	return;
 
 error:
 	g_warning ("%s", error->message);
-	callback (connection, NULL, error, callback_data);
+	callback (agent, NULL, error, callback_data);
 	g_error_free (error);
+
+	if (req)
+		applet_secrets_request_free (req);
 }
-#endif
+
+static void
+applet_agent_cancel_secrets_cb (AppletAgent *agent,
+                                void *request_id,
+                                gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+	GSList *iter;
+
+	for (iter = applet->secrets_reqs; iter; iter = g_slist_next (iter)) {
+		SecretsRequest *req = iter->data;
+
+		if (req->reqid == request_id) {
+			/* cancel and free this password request */
+			applet_secrets_request_free (req);
+		}
+	}
+}
 
 /*****************************************************************************/
 
@@ -2926,6 +3133,10 @@ constructor (GType type,
 
 	applet->agent = applet_agent_new ();
 	g_assert (applet->agent);
+	g_signal_connect (applet->agent, APPLET_AGENT_GET_SECRETS,
+	                  G_CALLBACK (applet_agent_get_secrets_cb), applet);
+	g_signal_connect (applet->agent, APPLET_AGENT_CANCEL_SECRETS,
+	                  G_CALLBACK (applet_agent_cancel_secrets_cb), applet);
 
 	/* Initialize device classes */
 	applet->wired_class = applet_device_wired_get_class (applet);
@@ -2980,6 +3191,9 @@ static void finalize (GObject *object)
 	nma_icons_free (applet);
 
 	g_free (applet->tip);
+
+	g_slist_foreach (applet->secrets_reqs, (GFunc) g_object_unref, NULL);
+	g_slist_free (applet->secrets_reqs);
 
 	if (applet->notification) {
 		notify_notification_close (applet->notification, NULL);

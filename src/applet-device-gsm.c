@@ -493,122 +493,24 @@ gsm_get_icon (NMDevice *device,
 }
 
 typedef struct {
-	/* General stuff */
+	SecretsRequest req;
+
 	GtkWidget *dialog;
 	GtkEntry *secret_entry;
 	char *secret_name;
-	NMApplet *applet;
-	NMANewSecretsRequestedFunc callback;
-	gpointer callback_data;
-	NMActiveConnection *active_connection;
-	NMRemoteConnection *connection;
 } NMGsmSecretsInfo;
 
-
 static void
-secrets_dialog_destroy (gpointer user_data, GObject *finalized)
+free_gsm_secrets_info (SecretsRequest *req)
 {
-	NMGsmSecretsInfo *info = user_data;
+	NMGsmSecretsInfo *info = (NMGsmSecretsInfo *) req;
 
-	gtk_widget_hide (info->dialog);
-	gtk_widget_destroy (info->dialog);
+	if (info->dialog) {
+		gtk_widget_hide (info->dialog);
+		gtk_widget_destroy (info->dialog);
+	}
 
-	g_object_unref (info->connection);
 	g_free (info->secret_name);
-	g_free (info);
-}
-
-static void
-get_existing_secrets_cb (NMSecretAgent *agent,
-                         NMConnection *connection,
-                         GHashTable *existing_secrets,
-                         GError *secrets_error,
-                         gpointer user_data)
-{
-	NMGsmSecretsInfo *info = (NMGsmSecretsInfo *) user_data;
-	GHashTable *settings_hash = NULL;
-	GError *error = NULL;
-	gboolean save_secret = FALSE;
-	const char *new_secret = NULL;
-
-	if (secrets_error) {
-		error = g_error_copy (secrets_error);
-		goto done;
-	}
-
-	/* Be a bit paranoid */
-	if (NM_REMOTE_CONNECTION (connection) != info->connection) {
-		g_set_error (&error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): unexpected reply for wrong connection.",
-		             __FILE__, __LINE__, __func__);
-		goto done;
-	}
-
-	/* Update connection's secrets so we can hash them for sending back to
-	 * NM, and so we can save them all back out to GConf if needed.
-	 */
-	if (existing_secrets) {
-		GHashTableIter iter;
-		gpointer key, value;
-
-		g_hash_table_iter_init (&iter, existing_secrets);
-		while (g_hash_table_iter_next (&iter, &key, &value)) {
-			GError *update_error = NULL;
-			const char *setting_name = key;
-			GHashTable *setting_hash = value;
-
-			/* Keep track of whether or not the user originally saved the secret */
-			if (!strcmp (setting_name, NM_SETTING_GSM_SETTING_NAME)) {
-				if (g_hash_table_lookup (setting_hash, info->secret_name))
-					save_secret = TRUE;
-			}
-
-			if (!nm_connection_update_secrets (NM_CONNECTION (info->connection),
-			                                   setting_name,
-			                                   setting_hash,
-			                                   &update_error)) {
-				g_warning ("%s: error updating connection secrets: (%d) %s",
-				           __func__,
-				           update_error ? update_error->code : -1,
-				           update_error && update_error->message ? update_error->message : "(unknown)");
-				g_clear_error (&update_error);
-			}
-		}
-	}
-
-	/* Now update the secret the user just entered */
-	if (   !strcmp (info->secret_name, NM_SETTING_GSM_PIN)
-	    || !strcmp (info->secret_name, NM_SETTING_GSM_PASSWORD)) {
-		NMSetting *s_gsm;
-
-		s_gsm = (NMSetting *) nm_connection_get_setting (NM_CONNECTION (info->connection),
-		                                                 NM_TYPE_SETTING_GSM);
-		if (s_gsm) {
-			new_secret = gtk_entry_get_text (info->secret_entry);
-			g_object_set (G_OBJECT (s_gsm), info->secret_name, new_secret, NULL);
-		}
-	}
-
-	settings_hash = nm_connection_to_hash (NM_CONNECTION (info->connection));
-
- done:
-	info->callback (info->connection, settings_hash, error, info->callback_data);
-	if (settings_hash)
-		g_hash_table_destroy (settings_hash);
-	g_clear_error (&error);
-
-	/* Save secrets back to GConf if the user had entered them into the
-	 * connection originally.  This lets users enter their secret every time if
-	 * they want.
-	 */
-	if (new_secret && save_secret) {
-		/* FIXME: save secret back to the keyring */
-	}
-
-	nm_connection_clear_secrets (NM_CONNECTION (info->connection));
-	secrets_dialog_destroy (info, NULL);
 }
 
 static void
@@ -616,39 +518,33 @@ get_gsm_secrets_cb (GtkDialog *dialog,
                     gint response,
                     gpointer user_data)
 {
-	NMGsmSecretsInfo *info = (NMGsmSecretsInfo *) user_data;
+	SecretsRequest *req = user_data;
+	NMGsmSecretsInfo *info = (NMGsmSecretsInfo *) req;
+	NMSetting *setting;
 	GError *error = NULL;
-	const char *hints[2] = { info->secret_name, NULL };
 
-	/* Got a user response, clear the NMActiveConnection destroy handler for
-	 * this dialog since this function will now take over dialog destruction.
-	 */
-	g_object_weak_unref (G_OBJECT (info->active_connection), secrets_dialog_destroy, info);
-
-	if (response != GTK_RESPONSE_OK) {
-		g_set_error (&error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): canceled",
-		             __FILE__, __LINE__, __func__);
-
-		g_warning ("%s", error->message);
-		info->callback (info->connection, NULL, error, info->callback_data);
-		g_error_free (error);
-
-		nm_connection_clear_secrets (NM_CONNECTION (info->connection));
-		secrets_dialog_destroy (info, NULL);
-		return;
+	if (response == GTK_RESPONSE_OK) {
+		setting = nm_connection_get_setting (req->connection, NM_TYPE_SETTING_GSM);
+		if (setting) {
+			g_object_set (G_OBJECT (setting),
+				          info->secret_name, gtk_entry_get_text (info->secret_entry),
+				          NULL);
+		} else {
+			error = g_error_new (NM_SECRET_AGENT_ERROR,
+				                 NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+				                 "%s.%d (%s): no GSM setting",
+				                 __FILE__, __LINE__, __func__);
+		}
+	} else {
+		error = g_error_new (NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_USER_CANCELED,
+		                     "%s.%d (%s): canceled",
+		                     __FILE__, __LINE__, __func__);
 	}
 
-	/* Get existing connection secrets since NM will want those too */
-	nm_secret_agent_get_secrets (NM_SECRET_AGENT (info->applet->agent),
-	                             NM_CONNECTION (info->connection),
-	                             NM_SETTING_GSM_SETTING_NAME,
-	                             (const char **) &hints,
-	                             FALSE,
-	                             get_existing_secrets_cb,
-	                             info);
+	applet_secrets_request_complete_setting (req, NM_SETTING_GSM_SETTING_NAME, error);
+	applet_secrets_request_free (req);
+	g_clear_error (&error);
 }
 
 static void
@@ -678,12 +574,11 @@ pin_entry_changed (GtkEditable *editable, gpointer user_data)
 }
 
 static GtkWidget *
-ask_for_pin (NMDevice *device, GtkEntry **out_secret_entry)
+ask_for_pin (GtkEntry **out_secret_entry)
 {
 	GtkDialog *dialog;
 	GtkWidget *w = NULL, *ok_button = NULL;
 	GtkBox *box = NULL, *vbox = NULL;
-	char *dev_str;
 
 	dialog = GTK_DIALOG (gtk_dialog_new ());
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -696,12 +591,6 @@ ask_for_pin (NMDevice *device, GtkEntry **out_secret_entry)
 	vbox = GTK_BOX (gtk_dialog_get_content_area (dialog));
 
 	w = gtk_label_new (_("PIN code is needed for the mobile broadband device"));
-	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
-
-	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
-	w = gtk_label_new (NULL);
-	gtk_label_set_markup (GTK_LABEL (w), dev_str);
-	g_free (dev_str);
 	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
@@ -728,21 +617,15 @@ ask_for_pin (NMDevice *device, GtkEntry **out_secret_entry)
 }
 
 static gboolean
-gsm_get_secrets (NMDevice *device,
-                 NMRemoteConnection *connection,
-                 NMActiveConnection *active_connection,
-                 const char *setting_name,
-                 const char **hints,
-                 NMANewSecretsRequestedFunc callback,
-                 gpointer callback_data,
-                 NMApplet *applet,
-                 GError **error)
+gsm_get_secrets (SecretsRequest *req, GError **error)
 {
-	NMGsmSecretsInfo *secrets_info;
+	NMGsmSecretsInfo *info = (NMGsmSecretsInfo *) req;
 	GtkWidget *widget;
 	GtkEntry *secret_entry = NULL;
 
-	if (!hints || !g_strv_length ((char **) hints)) {
+	applet_secrets_request_set_free_func (req, free_gsm_secrets_info);
+
+	if (!req->hints || !g_strv_length (req->hints)) {
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
 		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
@@ -750,26 +633,42 @@ gsm_get_secrets (NMDevice *device,
 		             __FILE__, __LINE__, __func__);
 		return FALSE;
 	}
+	info->secret_name = g_strdup (req->hints[0]);
 
-	if (!strcmp (hints[0], NM_SETTING_GSM_PIN)) {
-		GsmDeviceInfo *info = g_object_get_data (G_OBJECT (device), "devinfo");
+	if (!strcmp (info->secret_name, NM_SETTING_GSM_PIN)) {
+		NMDevice *device;
+		GsmDeviceInfo *devinfo;
 
-		g_assert (info);
+		device = applet_get_device_for_connection (req->applet, req->connection);
+		if (!device) {
+			g_set_error (error,
+				         NM_SECRET_AGENT_ERROR,
+				         NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+				         "%s.%d (%s): failed to find device for active connection.",
+				         __FILE__, __LINE__, __func__);
+			return FALSE;
+		}
+
+		devinfo = g_object_get_data (G_OBJECT (device), "devinfo");
+		g_assert (devinfo);
+
 		/* A GetSecrets PIN dialog overrides the initial unlock dialog */
-		if (info->dialog)
-			unlock_dialog_destroy (info);
+		if (devinfo->dialog)
+			unlock_dialog_destroy (devinfo);
 
-		widget = ask_for_pin (device, &secret_entry);
-	} else if (!strcmp (hints[0], NM_SETTING_GSM_PASSWORD))
-		widget = applet_mobile_password_dialog_new (device, NM_CONNECTION (connection), &secret_entry);
+		widget = ask_for_pin (&secret_entry);
+	} else if (!strcmp (info->secret_name, NM_SETTING_GSM_PASSWORD))
+		widget = applet_mobile_password_dialog_new (req->connection, &secret_entry);
 	else {
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
 		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): unknown secrets hint '%s'.",
-		             __FILE__, __LINE__, __func__, hints[0]);
+		             __FILE__, __LINE__, __func__, info->secret_name);
 		return FALSE;
 	}
+	info->dialog = widget;
+	info->secret_entry = secret_entry;
 
 	if (!widget || !secret_entry) {
 		g_set_error (error,
@@ -780,22 +679,7 @@ gsm_get_secrets (NMDevice *device,
 		return FALSE;
 	}
 
-	secrets_info = g_malloc0 (sizeof (NMGsmSecretsInfo));
-	secrets_info->callback = callback;
-	secrets_info->callback_data = callback_data;
-	secrets_info->applet = applet;
-	secrets_info->active_connection = active_connection;
-	secrets_info->connection = g_object_ref (connection);
-	secrets_info->secret_name = g_strdup (hints[0]);
-	secrets_info->dialog = widget;
-	secrets_info->secret_entry = secret_entry;
-
-	g_signal_connect (widget, "response", G_CALLBACK (get_gsm_secrets_cb), secrets_info);
-
-	/* Attach a destroy notifier to the NMActiveConnection so we can destroy
-	 * the dialog when the active connection goes away.
-	 */
-	g_object_weak_ref (G_OBJECT (active_connection), secrets_dialog_destroy, secrets_info);
+	g_signal_connect (widget, "response", G_CALLBACK (get_gsm_secrets_cb), info);
 
 	gtk_window_set_position (GTK_WINDOW (widget), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_widget_realize (GTK_WIDGET (widget));
@@ -1516,6 +1400,7 @@ applet_device_gsm_get_class (NMApplet *applet)
 	dclass->device_state_changed = gsm_device_state_changed;
 	dclass->get_icon = gsm_get_icon;
 	dclass->get_secrets = gsm_get_secrets;
+	dclass->secrets_request_size = sizeof (NMGsmSecretsInfo);
 	dclass->device_added = gsm_device_added;
 
 	return dclass;

@@ -728,14 +728,12 @@ applet_warning_dialog_show (const char *message)
 }
 
 GtkWidget *
-applet_mobile_password_dialog_new (NMDevice *device,
-                                   NMConnection *connection,
+applet_mobile_password_dialog_new (NMConnection *connection,
                                    GtkEntry **out_secret_entry)
 {
 	GtkDialog *dialog;
 	GtkWidget *w;
 	GtkBox *box = NULL, *vbox = NULL;
-	char *dev_str;
 	NMSettingConnection *s_con;
 	char *tmp;
 	const char *id;
@@ -757,12 +755,6 @@ applet_mobile_password_dialog_new (NMDevice *device,
 
 	vbox = GTK_BOX (gtk_dialog_get_content_area (dialog));
 
-	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
-
-	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
-	w = gtk_label_new (NULL);
-	gtk_label_set_markup (GTK_LABEL (w), dev_str);
-	g_free (dev_str);
 	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);

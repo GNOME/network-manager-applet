@@ -1504,24 +1504,21 @@ add_one_setting (GHashTable *settings,
 }
 
 typedef struct {
-	NMApplet *applet;
-	NMActiveConnection *active_connection;
+	SecretsRequest req;
+
 	GtkWidget *dialog;
 	GtkWidget *nag_dialog;
-	NMANewSecretsRequestedFunc callback;
-	gpointer callback_data;
-	char *setting_name;
 } NMWifiInfo;
 
 static void
-destroy_wifi_dialog (gpointer user_data, GObject *finalized)
+free_wifi_info (SecretsRequest *req)
 {
-	NMWifiInfo *info = user_data;
+	NMWifiInfo *info = (NMWifiInfo *) req;
 
-	gtk_widget_hide (info->dialog);
-	gtk_widget_destroy (info->dialog);
-	g_free (info->setting_name);
-	g_free (info);
+	if (info->dialog) {
+		gtk_widget_hide (info->dialog);
+		gtk_widget_destroy (info->dialog);
+	}
 }
 
 static void
@@ -1529,11 +1526,11 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
                                 gint response,
                                 gpointer user_data)
 {
-	NMWifiInfo *info = user_data;
+	SecretsRequest *req = user_data;
+	NMWifiInfo *info = (NMWifiInfo *) req;
 	NMAWirelessDialog *dialog = NMA_WIRELESS_DIALOG (info->dialog);
 	NMConnection *connection = NULL;
 	NMSettingWirelessSecurity *s_wireless_sec;
-	NMDevice *device = NULL;
 	GHashTable *settings = NULL;
 	const char *key_mgmt, *auth_alg;
 	GError *error = NULL;
@@ -1557,11 +1554,6 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 		}
 	}
 
-	/* Got a user response, clear the NMActiveConnection destroy handler for
-	 * this dialog since this function will now take over dialog destruction.
-	 */
-	g_object_weak_unref (G_OBJECT (info->active_connection), destroy_wifi_dialog, info);
-
 	if (response != GTK_RESPONSE_OK) {
 		g_set_error (&error,
 		             NM_SECRET_AGENT_ERROR,
@@ -1571,7 +1563,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 		goto done;
 	}
 
-	connection = nma_wireless_dialog_get_connection (dialog, &device, NULL);
+	connection = nma_wireless_dialog_get_connection (dialog, NULL, NULL);
 	if (!connection) {
 		g_set_error (&error,
 		             NM_SECRET_AGENT_ERROR,
@@ -1638,91 +1630,38 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	}
 
 	/* Add the 802-11-wireless-security setting no matter what */
-	if (!add_one_setting (settings, connection, NM_SETTING (s_wireless_sec), &error))
-		goto done;
-
-	info->callback (NM_REMOTE_CONNECTION (connection), settings, NULL, info->callback_data);
+	add_one_setting (settings, connection, NM_SETTING (s_wireless_sec), &error);
 
 done:
+	applet_secrets_request_complete (req, settings, error);
+	applet_secrets_request_free (req);
+
 	if (settings)
 		g_hash_table_destroy (settings);
-
-	if (error) {
-		g_warning ("%s", error->message);
-		info->callback (NM_REMOTE_CONNECTION (connection), NULL, error, info->callback_data);
-		g_error_free (error);
-	}
-
 	if (connection)
 		nm_connection_clear_secrets (connection);
-
-	destroy_wifi_dialog (info, NULL);
 }
 
 static gboolean
-wireless_get_secrets (NMDevice *device,
-                      NMRemoteConnection *connection,
-                      NMActiveConnection *active_connection,
-                      const char *setting_name,
-                      const char **hints,
-                      NMANewSecretsRequestedFunc callback,
-                      gpointer callback_data,
-                      NMApplet *applet,
-                      GError **error)
+wireless_get_secrets (SecretsRequest *req, GError **error)
 {
-	NMWifiInfo *info;
-	NMAccessPoint *ap;
-	const char *specific_object;
+	NMWifiInfo *info = (NMWifiInfo *) req;
 
-	if (!setting_name || !active_connection) {
-		g_set_error (error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): setting name and active connection object required",
-		             __FILE__, __LINE__, __func__);
-		return FALSE;
-	}
+	applet_secrets_request_set_free_func (req, free_wifi_info);
 
-	specific_object = nm_active_connection_get_specific_object (active_connection);
-	if (!specific_object) {
-		g_set_error (error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): could not determine AP for specific object",
-		             __FILE__, __LINE__, __func__);
-		return FALSE;
-	}
-
-	info = g_malloc0 (sizeof (NMWifiInfo));
-
-	ap = nm_device_wifi_get_access_point_by_path (NM_DEVICE_WIFI (device), specific_object);
-	info->dialog = nma_wireless_dialog_new (applet, NM_CONNECTION (connection), device, ap);
+	info->dialog = nma_wireless_dialog_new (req->applet, req->connection, NULL, NULL);
 	if (!info->dialog) {
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
 		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): couldn't display secrets UI",
 		             __FILE__, __LINE__, __func__);
-		g_free (info);
 		return FALSE;
 	}
 
-	info->applet = applet;
-	info->active_connection = active_connection;
-	info->callback = callback;
-	info->callback_data = callback_data;
-	info->setting_name = g_strdup (setting_name);
-
-	g_signal_connect (info->dialog, "response",
-	                  G_CALLBACK (get_secrets_dialog_response_cb),
-	                  info);
-
-	/* Attach a destroy notifier to the NMActiveConnection so we can destroy
-	 * the dialog when the active connection goes away.
-	 */
-	g_object_weak_ref (G_OBJECT (active_connection), destroy_wifi_dialog, info);
-
+	g_signal_connect (info->dialog, "response", G_CALLBACK (get_secrets_dialog_response_cb), info);
 	show_ignore_focus_stealing_prevention (info->dialog);
+
 	return TRUE;
 }
 
@@ -1742,6 +1681,7 @@ applet_device_wifi_get_class (NMApplet *applet)
 	dclass->get_icon = wireless_get_icon;
 	dclass->get_more_info = wireless_get_more_info;
 	dclass->get_secrets = wireless_get_secrets;
+	dclass->secrets_request_size = sizeof (NMWifiInfo);
 
 	return dclass;
 }

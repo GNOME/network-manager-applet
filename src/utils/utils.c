@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * (C) Copyright 2007 - 2011 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -759,5 +759,48 @@ utils_escape_notify_message (const char *src)
 	}
 
 	return g_string_free (escaped, FALSE);
+}
+
+GnomeKeyringAttributeList *
+utils_create_keyring_add_attr_list (NMConnection *connection,
+                                    const char *connection_uuid,
+                                    const char *connection_id,
+                                    const char *setting_name,
+                                    const char *setting_key,
+                                    char **out_display_name)
+{
+	GnomeKeyringAttributeList *attrs = NULL;
+	NMSettingConnection *s_con;
+
+	if (connection) {
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		g_return_val_if_fail (s_con != NULL, NULL);
+		connection_uuid = nm_setting_connection_get_uuid (s_con);
+		connection_id = nm_setting_connection_get_id (s_con);
+	}
+
+	g_return_val_if_fail (connection_uuid != NULL, NULL);
+	g_return_val_if_fail (connection_id != NULL, NULL);
+	g_return_val_if_fail (setting_name != NULL, NULL);
+	g_return_val_if_fail (setting_key != NULL, NULL);
+
+	if (out_display_name) {
+		*out_display_name = g_strdup_printf ("Network secret for %s/%s/%s",
+		                                     connection_id,
+		                                     setting_name,
+		                                     setting_key);
+	}
+
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_UUID_TAG,
+	                                            connection_uuid);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_SN_TAG,
+	                                            setting_name);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_SK_TAG,
+	                                            setting_key);
+	return attrs;
 }
 
