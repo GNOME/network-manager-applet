@@ -2707,7 +2707,7 @@ applet_agent_get_secrets_cb (AppletAgent *agent,
 			                     connection,
 			                     setting_name,
 			                     hints,
-			                     FALSE,
+			                     NM_SECRET_AGENT_GET_SECRETS_FLAG_NONE,
 			                     get_existing_secrets_cb,
 			                     req);
 	return;
