@@ -612,11 +612,21 @@ applet_agent_new (void)
 }
 
 static void
+agent_registration_result_cb (NMSecretAgent *agent, GError *error, gpointer user_data)
+{
+	if (error)
+		g_warning ("Failed to register as an agent: (%d) %s", error->code, error->message);
+}
+
+static void
 applet_agent_init (AppletAgent *self)
 {
 	AppletAgentPrivate *priv = APPLET_AGENT_GET_PRIVATE (self);
 
 	priv->requests = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	g_signal_connect (self, NM_SECRET_AGENT_REGISTRATION_RESULT,
+	                  G_CALLBACK (agent_registration_result_cb), NULL);
 }
 
 static void
