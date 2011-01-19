@@ -2513,6 +2513,7 @@ applet_secrets_request_new (size_t totsize,
                             gpointer request_id,
                             const char *setting_name,
                             const char **hints,
+                            guint32 flags,
                             AppletAgentSecretsCallback callback,
                             gpointer callback_data,
                             NMApplet *applet)
@@ -2528,6 +2529,7 @@ applet_secrets_request_new (size_t totsize,
 	req->reqid = request_id;
 	req->setting_name = g_strdup (setting_name);
 	req->hints = g_strdupv ((char **) hints);
+	req->flags = flags;
 	req->callback = callback;
 	req->callback_data = callback_data;
 	req->applet = applet;
@@ -2606,32 +2608,6 @@ applet_secrets_request_free (SecretsRequest *req)
 	g_free (req);
 }
 
-typedef struct {
-	SecretsRequest req;
-	AppletVpnRequest *vpn;
-} VpnSecretsRequest;
-
-static void
-vpn_request_done_cb (AppletVpnRequest *foo,
-                     GHashTable *settings,
-                     GError *error,
-                     gpointer user_data)
-{
-	SecretsRequest *req = user_data;
-
-	applet_secrets_request_complete (req, settings, error);
-	applet_secrets_request_free (req);
-}
-
-static void
-vpn_request_free_cb (SecretsRequest *req)
-{
-	VpnSecretsRequest *vpn_req = (VpnSecretsRequest *) req;
-
-	if (vpn_req->vpn)
-		g_object_unref (vpn_req->vpn);
-}
-
 static void
 get_existing_secrets_cb (NMSecretAgent *agent,
                          NMConnection *connection,
@@ -2681,28 +2657,19 @@ applet_agent_get_secrets_cb (AppletAgent *agent,
 
 	/* VPN secrets get handled a bit differently */
 	if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
-		VpnSecretsRequest *vpnreq;
-
-		req = applet_secrets_request_new (sizeof (VpnSecretsRequest),
+		req = applet_secrets_request_new (applet_vpn_request_get_secrets_size (),
 		                                  connection,
 		                                  request_id,
 		                                  setting_name,
 		                                  hints,
+		                                  flags,
 		                                  callback,
 		                                  callback_data,
 		                                  applet);
-		applet_secrets_request_set_free_func (req, vpn_request_free_cb);
-
-		vpnreq = (VpnSecretsRequest *) req;
-		vpnreq->vpn = applet_vpn_request_new (connection, &error);
-		if (!vpnreq->vpn)
-			goto error;
-		if (!applet_vpn_request_get_secrets (vpnreq->vpn, !!flags, &error))
+		if (!applet_vpn_request_get_secrets (req, &error))
 			goto error;
 
-		/* Track this VPN password request */
-		g_signal_connect (vpnreq->vpn, "done", G_CALLBACK (vpn_request_done_cb), vpnreq);
-		applet->secrets_reqs = g_slist_prepend (applet->secrets_reqs, vpnreq);
+		applet->secrets_reqs = g_slist_prepend (applet->secrets_reqs, req);
 		return;
 	}
 
@@ -2729,6 +2696,7 @@ applet_agent_get_secrets_cb (AppletAgent *agent,
 	                                  request_id,
 	                                  setting_name,
 	                                  hints,
+	                                  flags,
 	                                  callback,
 	                                  callback_data,
 	                                  applet);

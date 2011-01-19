@@ -29,12 +29,31 @@
 #include <glib.h>
 #include <unistd.h>
 
+#include <glib-object.h>
+
 #include "applet-vpn-request.h"
 #include "nma-marshal.h"
 #include <nm-connection.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
 #include <nm-secret-agent.h>
+
+#define APPLET_TYPE_VPN_REQUEST            (applet_vpn_request_get_type ())
+#define APPLET_VPN_REQUEST(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), APPLET_TYPE_VPN_REQUEST, AppletVpnRequest))
+#define APPLET_VPN_REQUEST_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), APPLET_TYPE_VPN_REQUEST, AppletVpnRequestClass))
+#define APPLET_IS_VPN_REQUEST(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLET_TYPE_VPN_REQUEST))
+#define APPLET_IS_VPN_REQUEST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), APPLET_TYPE_VPN_REQUEST))
+#define APPLET_VPN_REQUEST_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), APPLET_TYPE_VPN_REQUEST, AppletVpnRequestClass))
+
+typedef struct {
+	GObject parent;
+} AppletVpnRequest;
+
+typedef struct {
+	GObjectClass parent;
+} AppletVpnRequestClass;
+
+GType applet_vpn_request_get_type (void);
 
 G_DEFINE_TYPE (AppletVpnRequest, applet_vpn_request, G_TYPE_OBJECT)
 
@@ -45,7 +64,6 @@ G_DEFINE_TYPE (AppletVpnRequest, applet_vpn_request, G_TYPE_OBJECT)
 typedef struct {
 	gboolean disposed;
 
-	char *bin_path;
 	char *uuid;
 	char *id;
 	char *service_type;
@@ -61,13 +79,12 @@ typedef struct {
 	guint channel_eventid;
 } AppletVpnRequestPrivate;
 
-enum {
-	DONE,
-	LAST_SIGNAL
-};
-static guint signals[LAST_SIGNAL] = { 0 };
-
 /****************************************************************/
+
+typedef struct {
+	SecretsRequest req;
+	AppletVpnRequest *vpn;
+} VpnSecretsInfo;
 
 static void
 destroy_gvalue (gpointer data)
@@ -81,7 +98,9 @@ destroy_gvalue (gpointer data)
 static void 
 child_finished_cb (GPid pid, gint status, gpointer user_data)
 {
-	AppletVpnRequest *self = APPLET_VPN_REQUEST (user_data);
+	SecretsRequest *req = user_data;
+	VpnSecretsInfo *info = (VpnSecretsInfo *) req;
+	AppletVpnRequest *self = info->vpn;
 	AppletVpnRequestPrivate *priv = APPLET_VPN_REQUEST_GET_PRIVATE (self);
 	GError *error = NULL;
 	GHashTable *settings = NULL;
@@ -118,17 +137,20 @@ child_finished_cb (GPid pid, gint status, gpointer user_data)
 		                     "%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
 	}
 
-	/* Send secrets back to listeners */
-	g_signal_emit (self, signals[DONE], 0, error ? NULL : settings, error);
+	/* Complete the secrets request */
+	applet_secrets_request_complete (req, settings, error);
+	applet_secrets_request_free (req);
 
 	if (settings)
 		g_hash_table_destroy (settings);
+	g_clear_error (&error);
 }
 
 static gboolean 
 child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_data)
 {
-	AppletVpnRequest *self = APPLET_VPN_REQUEST (user_data);
+	VpnSecretsInfo *info = user_data;
+	AppletVpnRequest *self = info->vpn;
 	AppletVpnRequestPrivate *priv = APPLET_VPN_REQUEST_GET_PRIVATE (self);
 	const char buf[1] = { 0x01 };
 	char *str;
@@ -215,25 +237,44 @@ find_auth_dialog_binary (const char *service, GError **error)
 	return prog;
 }
 
-AppletVpnRequest *
-applet_vpn_request_new (NMConnection *connection, GError **error)
+static void
+free_vpn_secrets_info (SecretsRequest *req)
 {
-	AppletVpnRequest *self;
+	VpnSecretsInfo *info = (VpnSecretsInfo *) req;
+
+	if (info->vpn)
+		g_object_unref (info->vpn);
+}
+
+size_t
+applet_vpn_request_get_secrets_size (void)
+{
+	return sizeof (VpnSecretsInfo);
+}
+
+gboolean
+applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
+{
+	VpnSecretsInfo *info = (VpnSecretsInfo *) req;
 	AppletVpnRequestPrivate *priv;
 	NMSettingConnection *s_con;
 	NMSettingVPN *s_vpn;
 	const char *connection_type;
 	const char *service_type;
 	char *bin_path;
+	const char *argv[9] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+	gboolean success = FALSE;
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	applet_secrets_request_set_free_func (req, free_vpn_secrets_info);
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (req->connection, NM_TYPE_SETTING_CONNECTION);
 	g_return_val_if_fail (s_con != NULL, FALSE);
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	g_return_val_if_fail (connection_type != NULL, FALSE);
 	g_return_val_if_fail (strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME) == 0, FALSE);
 
-	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
+	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (req->connection, NM_TYPE_SETTING_VPN));
 	g_return_val_if_fail (s_vpn != NULL, FALSE);
 
 	service_type = nm_setting_vpn_get_service_type (s_vpn);
@@ -242,39 +283,29 @@ applet_vpn_request_new (NMConnection *connection, GError **error)
 	/* find the auth-dialog binary */
 	bin_path = find_auth_dialog_binary (service_type, error);
 	if (!bin_path)
-		return NULL;
+		return FALSE;
 
-	self = (AppletVpnRequest *) g_object_new (APPLET_TYPE_VPN_REQUEST, NULL);
-	if (self) {
-		priv = APPLET_VPN_REQUEST_GET_PRIVATE (self);
-		priv->bin_path = g_strdup (bin_path);
-		priv->uuid = g_strdup (nm_setting_connection_get_uuid (s_con));
-		priv->id = g_strdup (nm_setting_connection_get_id (s_con));
-		priv->service_type = g_strdup (service_type);
+	info->vpn = (AppletVpnRequest *) g_object_new (APPLET_TYPE_VPN_REQUEST, NULL);
+	if (!info->vpn) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "Could not create VPN secrets request object");
+		g_free (bin_path);
+		return FALSE;
 	}
-	g_free (bin_path);
 
-	return self;
-}
+	priv = APPLET_VPN_REQUEST_GET_PRIVATE (info->vpn);
 
-gboolean
-applet_vpn_request_get_secrets (AppletVpnRequest *self,
-                                gboolean retry,
-                                GError **error)
-{
-	AppletVpnRequestPrivate *priv = APPLET_VPN_REQUEST_GET_PRIVATE (self);
-	gboolean success;
-	const char *argv[] =
-		{ priv->bin_path            /*"/usr/libexec/nm-vpnc-auth-dialog"*/, 
-		  "-u", priv->uuid          /*"2a5d52b5-95b4-4431-b96e-3dd46128f9a7"*/, 
-		  "-n", priv->id            /*"davidznet42"*/,
-		  "-s", priv->service_type  /*"org.freedesktop.vpnc"*/, 
-		  "-r",
-		  NULL
-		};
-
-	if (!retry)
-		argv[7] = NULL;
+	argv[0] = bin_path;
+	argv[1] = "-u";
+	argv[2] = nm_setting_connection_get_uuid (s_con);
+	argv[3] = "-n";
+	argv[4] = nm_setting_connection_get_id (s_con);
+	argv[5] = "-s";
+	argv[6] = service_type;
+	if (req->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW)
+		argv[7] = "-r";
 
 	success = g_spawn_async_with_pipes (NULL,                       /* working_directory */
 	                                    (gchar **) argv,            /* argv */
@@ -289,13 +320,14 @@ applet_vpn_request_get_secrets (AppletVpnRequest *self,
 	                                    error);                     /* error */
 	if (success) {
 		/* catch when child is reaped */
-		priv->watch_id = g_child_watch_add (priv->pid, child_finished_cb, self);
+		priv->watch_id = g_child_watch_add (priv->pid, child_finished_cb, info);
 
 		/* listen to what child has to say */
 		priv->channel = g_io_channel_unix_new (priv->child_stdout);
-		priv->channel_eventid = g_io_add_watch (priv->channel, G_IO_IN, child_stdout_data_cb, self);
+		priv->channel_eventid = g_io_add_watch (priv->channel, G_IO_IN, child_stdout_data_cb, info);
 		g_io_channel_set_encoding (priv->channel, NULL, NULL);
 	}
+	g_free (bin_path);
 
 	return success;
 }
@@ -323,37 +355,38 @@ dispose (GObject *object)
 	AppletVpnRequest *self = APPLET_VPN_REQUEST (object);
 	AppletVpnRequestPrivate *priv = APPLET_VPN_REQUEST_GET_PRIVATE (self);
 
-	if (!priv->disposed) {
-		priv->disposed = TRUE;
+	if (priv->disposed)
+		goto done;
 
-		g_free (priv->bin_path);
-		g_free (priv->uuid);
-		g_free (priv->id);
-		g_free (priv->service_type);
+	priv->disposed = TRUE;
 
-		if (priv->watch_id)
-			g_source_remove (priv->watch_id);
+	g_free (priv->uuid);
+	g_free (priv->id);
+	g_free (priv->service_type);
 
-		if (priv->channel_eventid)
-			g_source_remove (priv->channel_eventid);
-		if (priv->channel)
-			g_io_channel_unref (priv->channel);
+	if (priv->watch_id)
+		g_source_remove (priv->watch_id);
 
-		if (priv->pid) {
-			g_spawn_close_pid (priv->pid);
-			if (kill (priv->pid, SIGTERM) == 0)
-				g_timeout_add_seconds (2, ensure_killed, GINT_TO_POINTER (priv->pid));
-			else {
-				kill (priv->pid, SIGKILL);
-				/* ensure the child is reaped */
-				waitpid (priv->pid, NULL, 0);
-			}
+	if (priv->channel_eventid)
+		g_source_remove (priv->channel_eventid);
+	if (priv->channel)
+		g_io_channel_unref (priv->channel);
+
+	if (priv->pid) {
+		g_spawn_close_pid (priv->pid);
+		if (kill (priv->pid, SIGTERM) == 0)
+			g_timeout_add_seconds (2, ensure_killed, GINT_TO_POINTER (priv->pid));
+		else {
+			kill (priv->pid, SIGKILL);
+			/* ensure the child is reaped */
+			waitpid (priv->pid, NULL, 0);
 		}
-
-		g_slist_foreach (priv->lines, (GFunc) g_free, NULL);
-		g_slist_free (priv->lines);
 	}
 
+	g_slist_foreach (priv->lines, (GFunc) g_free, NULL);
+	g_slist_free (priv->lines);
+
+done:
 	G_OBJECT_CLASS (applet_vpn_request_parent_class)->dispose (object);
 }
 
@@ -366,12 +399,5 @@ applet_vpn_request_class_init (AppletVpnRequestClass *req_class)
 
 	/* virtual methods */
 	object_class->dispose = dispose;
-
-	signals[DONE] =
-		g_signal_new ("done",
-					  G_OBJECT_CLASS_TYPE (req_class),
-					  G_SIGNAL_RUN_FIRST, 0, NULL, NULL,
-					  nma_marshal_VOID__POINTER_POINTER,
-					  G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER);
 }
 

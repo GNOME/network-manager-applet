@@ -181,6 +181,7 @@ struct _SecretsRequest {
 	gpointer reqid;
 	char *setting_name;
 	char **hints;
+	guint32 flags;
 	NMApplet *applet;
 	AppletAgentSecretsCallback callback;
 	gpointer callback_data;
