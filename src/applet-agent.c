@@ -441,6 +441,7 @@ cancel_get_secrets (NMSecretAgent *agent,
 			}
 			r->get_callback (NM_SECRET_AGENT (r->agent), r->connection, NULL, error, r->callback_data);
 			g_hash_table_remove (priv->requests, GUINT_TO_POINTER (r->id));
+			g_signal_emit (r->agent, signals[CANCEL_SECRETS], 0, GUINT_TO_POINTER (r->id));
 		}
 	}
 
