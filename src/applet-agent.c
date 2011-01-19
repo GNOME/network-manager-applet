@@ -262,7 +262,8 @@ keyring_find_secrets_cb (GnomeKeyringResult result,
 		                             NM_SECRET_AGENT_ERROR_USER_CANCELED,
 		                             "The secrets request was canceled by the user");
 		goto done;
-	} else if (result != GNOME_KEYRING_RESULT_OK) {
+	} else if (   result != GNOME_KEYRING_RESULT_OK
+	           && result != GNOME_KEYRING_RESULT_NO_MATCH) {
 		error = g_error_new (NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		                     "%s.%d - failed to read secrets from keyring (result %d)",
@@ -555,7 +556,7 @@ delete_find_items_cb (GnomeKeyringResult result, GList *list, gpointer data)
 	GList *iter;
 	GError *error = NULL;
 
-	if (result == GNOME_KEYRING_RESULT_OK) {
+	if ((result == GNOME_KEYRING_RESULT_OK) || (result == GNOME_KEYRING_RESULT_NO_MATCH)) {
 		for (iter = list; iter != NULL; iter = g_list_next (iter)) {
 			GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
 
