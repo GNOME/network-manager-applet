@@ -2637,7 +2637,7 @@ get_existing_secrets_cb (NMSecretAgent *agent,
 
 static void
 applet_agent_get_secrets_cb (AppletAgent *agent,
-                             void *request_id,
+                             gpointer request_id,
                              NMConnection *connection,
                              const char *setting_name,
                              const char **hints,
@@ -2723,7 +2723,7 @@ error:
 
 static void
 applet_agent_cancel_secrets_cb (AppletAgent *agent,
-                                void *request_id,
+                                gpointer request_id,
                                 gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
