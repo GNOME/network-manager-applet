@@ -118,6 +118,7 @@ request_new (NMSecretAgent *agent,
 
 	r = g_slice_new0 (Request);
 	r->id = counter++;
+	r->agent = agent;
 	r->connection = g_object_ref (connection);
 	r->path = g_strdup (connection_path);
 	r->setting_name = g_strdup (setting_name);
