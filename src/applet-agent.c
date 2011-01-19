@@ -171,6 +171,7 @@ ask_for_secrets (Request *r)
 	g_signal_emit (r->agent,
 	               signals[GET_SECRETS],
 	               0,
+	               GUINT_TO_POINTER (r->id),
 	               r->connection,
 	               r->setting_name,
 	               r->hints,
