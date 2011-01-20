@@ -1266,39 +1266,39 @@ nma_wireless_dialog_new (NMApplet *applet,
                          NMDevice *device,
                          NMAccessPoint *ap)
 {
-	NMAWirelessDialog *self;
+	GObject *obj;
 	NMAWirelessDialogPrivate *priv;
 	guint32 dev_caps;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 	g_return_val_if_fail (connection != NULL, NULL);
-	g_return_val_if_fail (device != NULL, NULL);
-	g_return_val_if_fail (ap != NULL, NULL);
 
 	/* Ensure device validity */
-	dev_caps = nm_device_get_capabilities (device);
-	g_return_val_if_fail (dev_caps & NM_DEVICE_CAP_NM_SUPPORTED, NULL);
-	g_return_val_if_fail (NM_IS_DEVICE_WIFI (device), NULL);
-
-	self = NMA_WIRELESS_DIALOG (g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL));
-	if (!self)
-		return NULL;
-
-	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
-
-	priv->applet = applet;
-	priv->ap = g_object_ref (ap);
-
-	priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
-	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-
-	if (!internal_init (self, connection, device, TRUE, FALSE)) {
-		nm_warning ("Couldn't create wireless security dialog.");
-		g_object_unref (self);
-		return NULL;
+	if (device) {
+		dev_caps = nm_device_get_capabilities (device);
+		g_return_val_if_fail (dev_caps & NM_DEVICE_CAP_NM_SUPPORTED, NULL);
+		g_return_val_if_fail (NM_IS_DEVICE_WIFI (device), NULL);
 	}
 
-	return GTK_WIDGET (self);
+	obj = g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL);
+	if (obj) {
+		priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (obj);
+
+		priv->applet = applet;
+		if (ap)
+			priv->ap = g_object_ref (ap);
+
+		priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
+		priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+
+		if (!internal_init (NMA_WIRELESS_DIALOG (obj), connection, device, TRUE, FALSE)) {
+			g_warning ("Couldn't create wireless security dialog.");
+			g_object_unref (obj);
+			obj = NULL;
+		}
+	}
+
+	return (GtkWidget *) obj;
 }
 
 static GtkWidget *
