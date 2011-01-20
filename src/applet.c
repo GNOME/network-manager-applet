@@ -3160,8 +3160,8 @@ static void finalize (GObject *object)
 
 	g_free (applet->tip);
 
-	g_slist_foreach (applet->secrets_reqs, (GFunc) g_object_unref, NULL);
-	g_slist_free (applet->secrets_reqs);
+	while (g_slist_length (applet->secrets_reqs))
+		applet_secrets_request_free ((SecretsRequest *) applet->secrets_reqs->data);
 
 	if (applet->notification) {
 		notify_notification_close (applet->notification, NULL);
