@@ -308,7 +308,8 @@ keyring_find_secrets_cb (GnomeKeyringResult result,
 		goto done;
 	}
 
-	if (g_list_length (list) == 0) {
+	/* Only ask if we're allowed to, ie if flags != NM_SECRET_AGENT_GET_SECRETS_FLAG_NONE */
+	if (r->flags && g_list_length (list) == 0) {
 		g_message ("No keyring secrets found for %s/%s; asking user.", connection_id, r->setting_name);
 		ask_for_secrets (r);
 		return;
@@ -344,7 +345,7 @@ keyring_find_secrets_cb (GnomeKeyringResult result,
 	/* If there were hints, and none of the hints were returned by the keyring,
 	 * get some new secrets.
 	 */
-	if (r->hints && r->hints[0] && !hint_found) {
+	if (r->flags && r->hints && r->hints[0] && !hint_found) {
 		g_hash_table_destroy (secrets);
 		ask_for_secrets (r);
 		return;
