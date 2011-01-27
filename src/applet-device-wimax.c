@@ -345,7 +345,7 @@ active_nsp_changed_cb (NMDeviceWimax *device,
                        GParamSpec *pspec,
                        NMApplet *applet)
 {
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 	NMSettingWimax *s_wimax;
 	NMWimaxNsp *new;
 	NMDeviceState state;
@@ -489,19 +489,11 @@ wimax_get_icon (NMDevice *device,
 }
 
 static gboolean
-wimax_get_secrets (NMDevice *device,
-                   NMSettingsConnectionInterface *connection,
-                   NMActiveConnection *active_connection,
-                   const char *setting_name,
-                   const char **hints,
-                   NMANewSecretsRequestedFunc callback,
-                   gpointer callback_data,
-                   NMApplet *applet,
-                   GError **error)
+wimax_get_secrets (SecretsRequest *req, GError **error)
 {
 	g_set_error (error,
-	             NM_SETTINGS_INTERFACE_ERROR,
-	             NM_SETTINGS_INTERFACE_ERROR_INTERNAL_ERROR,
+	             NM_SECRET_AGENT_ERROR,
+	             NM_SECRET_AGENT_ERROR_NO_SECRETS,
 	             "%s.%d (%s): no WiMAX secrets available.",
 	             __FILE__, __LINE__, __func__);
 	return FALSE;
