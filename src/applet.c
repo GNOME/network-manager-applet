@@ -2562,7 +2562,7 @@ applet_secrets_request_complete_setting (SecretsRequest *req,
 	if (setting_name && !error) {
 		setting = nm_connection_get_setting_by_name (req->connection, setting_name);
 		if (setting) {
-			secrets = nm_setting_to_hash (NM_SETTING (setting));
+			secrets = nm_setting_to_hash (NM_SETTING (setting), NM_SETTING_HASH_FLAG_ALL);
 			if (secrets) {
 				/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
 				 * will contain all the individual settings hashes.

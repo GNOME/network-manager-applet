@@ -1015,8 +1015,6 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 
 		nm_remote_connection_get_secrets (NM_REMOTE_CONNECTION (priv->connection),
 		                                  setting_name,
-		                                  NULL,
-		                                  FALSE,
 		                                  get_secrets_cb,
 		                                  info);
 	}
