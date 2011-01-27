@@ -29,6 +29,7 @@
 #include <nm-device-wifi.h>
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
+#include <nm-device-wimax.h>
 
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
@@ -193,7 +194,7 @@ create_info_label_security (NMConnection *connection)
 {
 	NMSettingConnection *s_con;
 	char *label = NULL;
-	GtkWidget *w;
+	GtkWidget *w = NULL;
 	const char *connection_type;
 
 	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
@@ -236,7 +237,8 @@ create_info_label_security (NMConnection *connection)
 			label = g_strdup (C_("Wifi/wired security", "None"));
 	}
 
-	w = create_info_label (label ? label : C_("Wifi/wired security", "Unknown"), TRUE);
+	if (label)
+		w = create_info_label (label, TRUE);
 	g_free (label);
 
 	return w;
@@ -267,12 +269,12 @@ typedef struct {
 	NMDevice *device;
 	GtkWidget *label;
 	guint32 id;
-} SpeedInfo;
+} LabelInfo;
 
 static void
 device_destroyed (gpointer data, GObject *device_ptr)
 {
-	SpeedInfo *info = data;
+	LabelInfo *info = data;
 
 	/* Device is destroyed, notify handler won't fire
 	 * anymore anyway.  Let the label destroy handler
@@ -285,16 +287,33 @@ device_destroyed (gpointer data, GObject *device_ptr)
 static void
 label_destroyed (gpointer data, GObject *label_ptr)
 {
-	SpeedInfo *info = data;
+	LabelInfo *info = data;
+
 	/* Remove the notify handler from the device */
 	if (info->device) {
 		if (info->id)
 			g_signal_handler_disconnect (info->device, info->id);
 		/* destroy our info data */
 		g_object_weak_unref (G_OBJECT (info->device), device_destroyed, info);
-		memset (info, 0, sizeof (SpeedInfo));
+		memset (info, 0, sizeof (LabelInfo));
 		g_free (info);
 	}
+}
+
+static void
+label_info_new (NMDevice *device,
+                GtkWidget *label,
+                const char *notify_prop,
+                GCallback callback)
+{
+	LabelInfo *info;
+
+	info = g_malloc0 (sizeof (LabelInfo));
+	info->device = device;
+	info->label = label;
+	info->id = g_signal_connect (device, notify_prop, callback, label);
+	g_object_weak_ref (G_OBJECT (label), label_destroyed, info);
+	g_object_weak_ref (G_OBJECT (device), device_destroyed, info);
 }
 
 static void
@@ -310,6 +329,33 @@ bitrate_changed_cb (GObject *device, GParamSpec *pspec, gpointer user_data)
 
 	gtk_label_set_text (GTK_LABEL (speed_label), str ? str : C_("Speed", "Unknown"));
 	g_free (str);
+}
+
+static void
+wimax_cinr_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
+{
+	GtkWidget *label = GTK_WIDGET (user_data);
+	gint cinr;
+	char *str = NULL;
+
+	cinr = nm_device_wimax_get_cinr (NM_DEVICE_WIMAX (device));
+	if (cinr)
+		str = g_strdup_printf (_("%d dB"), cinr);
+
+	gtk_label_set_text (GTK_LABEL (label), str ? str : C_("WiMAX CINR", "unknown"));
+	g_free (str);
+}
+
+static void
+wimax_bsid_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
+{
+	GtkWidget *label = GTK_WIDGET (user_data);
+	const char *str = NULL;
+
+	str = nm_device_wimax_get_bsid (NM_DEVICE_WIMAX (device));
+	if (!str)
+		str = C_("WiMAX Base Station ID", "unknown");
+	gtk_label_set_text (GTK_LABEL (label), str);
 }
 
 static void
@@ -331,9 +377,9 @@ info_dialog_add_page (GtkNotebook *notebook,
 	NMSettingIP6Config *s_ip6;
 	guint32 hostmask, network, bcast, netmask;
 	int i, row = 0;
-	SpeedInfo* info = NULL;
-	GtkWidget* speed_label;
+	GtkWidget* speed_label, *sec_label = NULL;
 	const GSList *addresses;
+	gboolean show_security = FALSE;
 
 	table = GTK_TABLE (gtk_table_new (12, 2, FALSE));
 	gtk_table_set_col_spacings (table, 12);
@@ -342,14 +388,18 @@ info_dialog_add_page (GtkNotebook *notebook,
 
 	/* Interface */
 	iface = nm_device_get_iface (device);
-	if (NM_IS_DEVICE_ETHERNET (device))
+	if (NM_IS_DEVICE_ETHERNET (device)) {
 		str = g_strdup_printf (_("Ethernet (%s)"), iface);
-	else if (NM_IS_DEVICE_WIFI (device))
+		show_security = TRUE;
+	} else if (NM_IS_DEVICE_WIFI (device)) {
 		str = g_strdup_printf (_("802.11 WiFi (%s)"), iface);
-	else if (NM_IS_GSM_DEVICE (device))
+		show_security = TRUE;
+	} else if (NM_IS_GSM_DEVICE (device))
 		str = g_strdup_printf (_("GSM (%s)"), iface);
 	else if (NM_IS_CDMA_DEVICE (device))
 		str = g_strdup_printf (_("CDMA (%s)"), iface);
+	else if (NM_IS_DEVICE_WIMAX (device))
+		str = g_strdup_printf (_("WiMAX (%s)"), iface);
 	else
 		str = g_strdup (iface);
 
@@ -372,6 +422,8 @@ info_dialog_add_page (GtkNotebook *notebook,
 		str = g_strdup (nm_device_ethernet_get_hw_address (NM_DEVICE_ETHERNET (device)));
 	else if (NM_IS_DEVICE_WIFI (device))
 		str = g_strdup (nm_device_wifi_get_hw_address (NM_DEVICE_WIFI (device)));
+	else if (NM_IS_DEVICE_WIMAX (device))
+		str = g_strdup (nm_device_wimax_get_hw_address (NM_DEVICE_WIMAX (device)));
 
 	gtk_table_attach (table, create_info_label (_("Hardware Address:"), FALSE),
 	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
@@ -398,17 +450,10 @@ info_dialog_add_page (GtkNotebook *notebook,
 		/* Wireless speed in Kb/s */
 		speed = nm_device_wifi_get_bitrate (NM_DEVICE_WIFI (device)) / 1000;
 
-		/* Listen for wifi speed changes */
-		info = g_malloc0 (sizeof (SpeedInfo));
-		info->device = device;
-		info->label = speed_label;
-		info->id = g_signal_connect (device,
-		                             "notify::" NM_DEVICE_WIFI_BITRATE,
-		                             G_CALLBACK (bitrate_changed_cb),
-		                             speed_label);
-
-		g_object_weak_ref (G_OBJECT(speed_label), label_destroyed, info);
-		g_object_weak_ref (G_OBJECT(device), device_destroyed, info);
+		label_info_new (device,
+		                speed_label,
+		                "notify::" NM_DEVICE_WIFI_BITRATE,
+		                G_CALLBACK (bitrate_changed_cb));
 	}
 
 	if (speed)
@@ -424,11 +469,46 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	/* Security */
-	gtk_table_attach (table, create_info_label (_("Security:"), FALSE),
-	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_table_attach (table, create_info_label_security (connection),
-	                  1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
-	row++;
+	if (show_security) {
+		sec_label = create_info_label_security (connection);
+		if (sec_label) {
+			gtk_table_attach (table, create_info_label (_("Security:"), FALSE),
+				              0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+			gtk_table_attach (table, sec_label,
+				              1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+			row++;
+		}
+	}
+
+	if (NM_IS_DEVICE_WIMAX (device)) {
+		GtkWidget *bsid_label, *cinr_label;
+
+		/* CINR */
+		cinr_label = create_info_label ("", TRUE);
+		gtk_table_attach (table, create_info_label (_("CINR:"), FALSE),
+			              0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+		gtk_table_attach (table, cinr_label,
+			              1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+		label_info_new (device,
+		                cinr_label,
+		                "notify::" NM_DEVICE_WIMAX_CINR,
+		                G_CALLBACK (wimax_cinr_changed_cb));
+		wimax_cinr_changed_cb (device, NULL, cinr_label);
+		row++;
+
+		/* Base Station ID */
+		bsid_label = create_info_label ("", TRUE);
+		gtk_table_attach (table, create_info_label (_("BSID:"), FALSE),
+			              0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+		gtk_table_attach (table, bsid_label,
+			              1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+		label_info_new (device,
+		                bsid_label,
+		                "notify::" NM_DEVICE_WIMAX_BSID,
+		                G_CALLBACK (wimax_bsid_changed_cb));
+		wimax_bsid_changed_cb (device, NULL, bsid_label);
+		row++;
+	}
 
 	/* Empty line */
 	gtk_table_attach (table, gtk_label_new (""), 0, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
@@ -542,9 +622,11 @@ info_dialog_add_page (GtkNotebook *notebook,
 	}
 
 	ip6_config = nm_device_get_ip6_config (device);
-	addresses = nm_ip6_config_get_addresses (ip6_config);
-	if (g_slist_length ((GSList *) addresses))
-		def6_addr = addresses->data;
+	if (ip6_config) {
+		addresses = nm_ip6_config_get_addresses (ip6_config);
+		if (g_slist_length ((GSList *) addresses))
+			def6_addr = addresses->data;
+	}
 
 	/* Address */
 	if (def6_addr) {

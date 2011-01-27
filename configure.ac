@@ -1,6 +1,6 @@
 AC_PREREQ([2.63])
 AC_INIT([nm-applet],
-        [0.8.990],
+        [0.8.991],
         [https://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager],
         [network-manager-applet])
 
@@ -68,10 +68,10 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
 		 glib-2.0 >= 2.16
-		 NetworkManager >= 0.8.990
-		 libnm-glib >= 0.8.990
-		 libnm-util >= 0.8.990
-		 libnm-glib-vpn >= 0.8.990
+		 NetworkManager >= 0.8.991
+		 libnm-glib >= 0.8.991
+		 libnm-util >= 0.8.991
+		 libnm-glib-vpn >= 0.8.991
 		 gmodule-export-2.0
 		 gconf-2.0
 		 gnome-keyring-1
@@ -84,7 +84,7 @@ case "${with_gtk2}" in
 	yes)	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.20)
 		gtkver=2
 		;;
-	*)	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.6)
+	*)	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.4)
 		;;
 esac
 AM_CONDITIONAL(USE_GTK2, test x"$gtkver" = "x2")

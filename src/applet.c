@@ -48,6 +48,7 @@
 #include <nm-gsm-device.h>
 #include <nm-cdma-device.h>
 #include <nm-device-bt.h>
+#include <nm-device-wimax.h>
 #include <nm-utils.h>
 #include <nm-connection.h>
 #include <nm-vpn-connection.h>
@@ -73,6 +74,7 @@
 #include "applet-device-gsm.h"
 #include "applet-device-cdma.h"
 #include "applet-device-bt.h"
+#include "applet-device-wimax.h"
 #include "applet-dialogs.h"
 #include "applet-vpn-request.h"
 #include "utils.h"
@@ -277,6 +279,8 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->cdma_class;
 	else if (NM_IS_DEVICE_BT (device))
 		return applet->bt_class;
+	else if (NM_IS_DEVICE_WIMAX (device))
+		return applet->wimax_class;
 	else
 		g_message ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
 	return NULL;
@@ -512,13 +516,11 @@ applet_new_menu_item_helper (NMConnection *connection,
 #define TITLE_TEXT_G ((double) 0x5e / 255.0 )
 #define TITLE_TEXT_B ((double) 0x5e / 255.0 )
 
-static gboolean
-menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
+static void
+menu_item_draw_generic (GtkWidget *widget, cairo_t *cr)
 {
-	GtkAllocation allocation;
 	GtkWidget *label;
 	PangoFontDescription *desc;
-	cairo_t *cr;
 	PangoLayout *layout;
 	int width = 0, height = 0, owidth, oheight;
 	gdouble extraheight = 0, extrawidth = 0;
@@ -528,23 +530,6 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 	gdouble postpadding = 0.0;
 
 	label = gtk_bin_get_child (GTK_BIN (widget));
-
-	cr = gdk_cairo_create (gtk_widget_get_window (widget));
-
-	/* The drawing area we get is the whole menu; clip the drawing to the
-	 * event area, which should just be our menu item.
-	 */
-	cairo_rectangle (cr,
-	                 event->area.x, event->area.y,
-	                 event->area.width, event->area.height);
-	cairo_clip (cr);
-
-	/* We also need to reposition the cairo context so that (0, 0) is the
-	 * top-left of where we're supposed to start drawing.
-	 */
-	gtk_widget_get_allocation (widget, &allocation);
-	cairo_translate (cr, allocation.x, allocation.y);
-
 	text = gtk_label_get_text (GTK_LABEL (label));
 
 	layout = pango_cairo_create_layout (cr);
@@ -590,12 +575,46 @@ menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	pango_font_description_free (desc);
 	g_object_unref (layout);
-	cairo_destroy (cr);
 
 	gtk_widget_set_size_request (widget, width + 2 * xpadding, height + ypadding + postpadding);
-	return TRUE;
 }
 
+#if GTK_CHECK_VERSION(2,90,7)
+static gboolean
+menu_title_item_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data)
+{
+	menu_item_draw_generic (widget, cr);
+	return TRUE;
+}
+#else
+static gboolean
+menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
+{
+	GtkAllocation allocation;
+	cairo_t *cr;
+
+	cr = gdk_cairo_create (gtk_widget_get_window (widget));
+
+	/* The drawing area we get is the whole menu; clip the drawing to the
+	 * event area, which should just be our menu item.
+	 */
+	cairo_rectangle (cr,
+	                 event->area.x, event->area.y,
+	                 event->area.width, event->area.height);
+	cairo_clip (cr);
+
+	/* We also need to reposition the cairo context so that (0, 0) is the
+	 * top-left of where we're supposed to start drawing.
+	 */
+	gtk_widget_get_allocation (widget, &allocation);
+	cairo_translate (cr, allocation.x, allocation.y);
+
+	menu_item_draw_generic (widget, cr);
+
+	cairo_destroy (cr);
+	return TRUE;
+}
+#endif
 
 GtkWidget *
 applet_menu_item_create_device_item_helper (NMDevice *device,
@@ -606,7 +625,11 @@ applet_menu_item_create_device_item_helper (NMDevice *device,
 
 	item = gtk_menu_item_new_with_mnemonic (text);
 	gtk_widget_set_sensitive (item, FALSE);
+#if GTK_CHECK_VERSION(2,90,7)
+	g_signal_connect (item, "draw", G_CALLBACK (menu_title_item_draw), NULL);
+#else
 	g_signal_connect (item, "expose-event", G_CALLBACK (menu_title_item_expose), NULL);
+#endif
 	return item;
 }
 
@@ -695,9 +718,9 @@ applet_do_notify (NMApplet *applet,
 }
 
 static void
-notify_connected_dont_show_cb (NotifyNotification *notify,
-			                   gchar *id,
-			                   gpointer user_data)
+notify_dont_show_cb (NotifyNotification *notify,
+                     gchar *id,
+                     gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
@@ -705,7 +728,8 @@ notify_connected_dont_show_cb (NotifyNotification *notify,
 		return;
 
 	if (   strcmp (id, PREF_DISABLE_CONNECTED_NOTIFICATIONS)
-	    && strcmp (id, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS))
+	    && strcmp (id, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS)
+	    && strcmp (id, PREF_DISABLE_VPN_NOTIFICATIONS))
 		return;
 
 	gconf_client_set_bool (applet->gconf_client, id, TRUE, NULL);
@@ -722,7 +746,7 @@ void applet_do_notify_with_pref (NMApplet *applet,
 	
 	applet_do_notify (applet, NOTIFY_URGENCY_LOW, summary, message, icon, pref,
 	                  _("Don't show this message again"),
-	                  notify_connected_dont_show_cb,
+	                  notify_dont_show_cb,
 	                  applet);
 }
 
@@ -900,23 +924,23 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 			msg = g_strdup ("VPN connection has been successfully established.\n");
 
 		title = _("VPN Login Message");
-		applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
-		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
+		applet_do_notify_with_pref (applet, title, msg, "gnome-lockscreen",
+		                            PREF_DISABLE_VPN_NOTIFICATIONS);
 		g_free (msg);
 		break;
 	case NM_VPN_CONNECTION_STATE_FAILED:
 		title = _("VPN Connection Failed");
 		msg = make_vpn_failure_message (vpn, reason, applet);
-		applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
-		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
+		applet_do_notify_with_pref (applet, title, msg, "gnome-lockscreen",
+		                            PREF_DISABLE_VPN_NOTIFICATIONS);
 		g_free (msg);
 		break;
 	case NM_VPN_CONNECTION_STATE_DISCONNECTED:
 		if (reason != NM_VPN_CONNECTION_STATE_REASON_USER_DISCONNECTED) {
 			title = _("VPN Connection Failed");
 			msg = make_vpn_disconnection_message (vpn, reason, applet);
-			applet_do_notify (applet, NOTIFY_URGENCY_LOW, title, msg,
-			                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
+			applet_do_notify_with_pref (applet, title, msg, "gnome-lockscreen",
+			                            PREF_DISABLE_VPN_NOTIFICATIONS);
 			g_free (msg);
 		}
 		break;
@@ -977,8 +1001,8 @@ activate_vpn_cb (NMClient *client,
 			                       info->vpn_name, error->message);
 		}
 
-		applet_do_notify (info->applet, NOTIFY_URGENCY_LOW, title, msg,
-		                  "gnome-lockscreen", NULL, NULL, NULL, NULL);
+		applet_do_notify_with_pref (info->applet, title, msg, "gnome-lockscreen",
+		                            PREF_DISABLE_VPN_NOTIFICATIONS);
 		g_free (msg);
 
 		nm_warning ("VPN Connection activation failed: (%s) %s", name, error->message);
@@ -1142,11 +1166,8 @@ sort_devices (gconstpointer a, gconstpointer b)
 {
 	NMDevice *aa = NM_DEVICE (a);
 	NMDevice *bb = NM_DEVICE (b);
-	GType aa_type;
-	GType bb_type;
-
-	aa_type = G_OBJECT_TYPE (G_OBJECT (aa));
-	bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
+	GType aa_type = G_OBJECT_TYPE (G_OBJECT (aa));
+	GType bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
 
 	if (aa_type == bb_type) {
 		char *aa_desc = NULL;
@@ -1160,42 +1181,40 @@ sort_devices (gconstpointer a, gconstpointer b)
 		if (!bb_desc)
 			bb_desc = (char *) nm_device_get_iface (bb);
 
-		if (!aa_desc && bb_desc)
-			return -1;
-		else if (aa_desc && !bb_desc)
-			return 1;
-		else if (!aa_desc && !bb_desc)
-			return 0;
-
-		g_assert (aa_desc);
-		g_assert (bb_desc);
-		return strcmp (aa_desc, bb_desc);
+		return g_strcmp0 (aa_desc, bb_desc);
 	}
 
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_DEVICE_WIFI)
+	/* Ethernet always first */
+	if (aa_type == NM_TYPE_DEVICE_ETHERNET)
 		return -1;
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_GSM_DEVICE)
-		return -1;
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_CDMA_DEVICE)
-		return -1;
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET && bb_type == NM_TYPE_DEVICE_BT)
-		return -1;
+	if (bb_type == NM_TYPE_DEVICE_ETHERNET)
+		return 1;
 
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_CDMA_DEVICE)
+	/* GSM next */
+	if (aa_type == NM_TYPE_GSM_DEVICE)
 		return -1;
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
-		return -1;
-	if (aa_type == NM_TYPE_GSM_DEVICE && bb_type == NM_TYPE_DEVICE_BT)
-		return -1;
+	if (bb_type == NM_TYPE_GSM_DEVICE)
+		return 1;
 
-	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_WIFI)
+	/* CDMA next */
+	if (aa_type == NM_TYPE_CDMA_DEVICE)
 		return -1;
-	if (aa_type == NM_TYPE_CDMA_DEVICE && bb_type == NM_TYPE_DEVICE_BT)
-		return -1;
+	if (bb_type == NM_TYPE_CDMA_DEVICE)
+		return 1;
 
-	if (aa_type == NM_TYPE_DEVICE_BT && bb_type == NM_TYPE_DEVICE_WIFI)
+	/* Bluetooth next */
+	if (aa_type == NM_TYPE_DEVICE_BT)
 		return -1;
+	if (bb_type == NM_TYPE_DEVICE_BT)
+		return 1;
 
+	/* WiMAX next */
+	if (aa_type == NM_TYPE_DEVICE_WIMAX)
+		return -1;
+	if (bb_type == NM_TYPE_DEVICE_WIMAX)
+		return 1;
+
+	/* WiFi last because it has many menu items */
 	return 1;
 }
 
@@ -1367,9 +1386,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 
 	temp = nm_client_get_devices (applet->nm_client);
 	for (i = 0; temp && (i < temp->len); i++)
-		devices = g_slist_append (devices, g_ptr_array_index (temp, i));
-	if (devices)
-		devices = g_slist_sort (devices, sort_devices);
+		devices = g_slist_insert_sorted (devices, g_ptr_array_index (temp, i), sort_devices);
 
 	for (iter = devices; iter; iter = iter->next) {
 		NMDevice *device = NM_DEVICE (iter->data);
@@ -1570,6 +1587,17 @@ nma_set_wwan_enabled_cb (GtkWidget *widget, NMApplet *applet)
 }
 
 static void
+nma_set_wimax_enabled_cb (GtkWidget *widget, NMApplet *applet)
+{
+	gboolean state;
+
+	g_return_if_fail (applet != NULL);
+
+	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
+	nm_client_wimax_set_enabled (applet->nm_client, state);
+}
+
+static void
 nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 {
 	gboolean state;
@@ -1596,6 +1624,10 @@ nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	                       NULL);
 	gconf_client_set_bool (applet->gconf_client,
 	                       PREF_DISABLE_DISCONNECTED_NOTIFICATIONS,
+	                       !state,
+	                       NULL);
+	gconf_client_set_bool (applet->gconf_client,
+	                       PREF_DISABLE_VPN_NOTIFICATIONS,
 	                       !state,
 	                       NULL);
 	gconf_client_set_bool (applet->gconf_client,
@@ -1649,7 +1681,12 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
-static gboolean nma_menu_clear (NMApplet *applet);
+static gboolean
+destroy_old_menu (gpointer user_data)
+{
+	g_object_unref (user_data);
+	return FALSE;
+}
 
 static void
 nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
@@ -1658,7 +1695,9 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 	 * the menu items don't get destroyed before any 'activate' signal
 	 * fires for an item.
 	 */
-	g_idle_add_full (G_PRIORITY_LOW, (GSourceFunc) nma_menu_clear, applet, NULL);
+	g_signal_handlers_disconnect_by_func (applet->menu, G_CALLBACK (nma_menu_deactivate_cb), applet);
+	g_idle_add_full (G_PRIORITY_LOW, destroy_old_menu, applet->menu, NULL);
+	applet->menu = NULL;
 
 	/* Re-set the tooltip */
 #if GTK_CHECK_VERSION(2, 15, 0)
@@ -1666,42 +1705,6 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 #else
 	gtk_status_icon_set_tooltip (applet->status_icon, applet->tip);
 #endif
-}
-
-/*
- * nma_menu_create
- *
- * Create the applet's dropdown menu
- *
- */
-static GtkWidget *
-nma_menu_create (NMApplet *applet)
-{
-	GtkWidget	*menu;
-
-	g_return_val_if_fail (applet != NULL, NULL);
-
-	menu = gtk_menu_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (menu), 0);
-	g_signal_connect (menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
-	g_signal_connect (menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
-	return menu;
-}
-
-/*
- * nma_menu_clear
- *
- * Destroy the menu and each of its items data tags
- *
- */
-static gboolean nma_menu_clear (NMApplet *applet)
-{
-	g_return_val_if_fail (applet != NULL, FALSE);
-
-	if (applet->menu)
-		gtk_widget_destroy (applet->menu);
-	applet->menu = nma_menu_create (applet);
-	return FALSE;
 }
 
 static gboolean
@@ -1724,8 +1727,10 @@ nma_context_menu_update (NMApplet *applet)
 	gboolean net_enabled = TRUE;
 	gboolean have_wireless = FALSE;
 	gboolean have_wwan = FALSE;
+	gboolean have_wimax = FALSE;
 	gboolean wireless_hw_enabled;
 	gboolean wwan_hw_enabled;
+	gboolean wimax_hw_enabled;
 	gboolean notifications_enabled = TRUE;
 
 	state = nm_client_get_state (applet->nm_client);
@@ -1771,11 +1776,24 @@ nma_context_menu_update (NMApplet *applet)
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wwan_enabled_item),
 	                          wwan_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN));
 
+	/* Enable WiMAX */
+	g_signal_handler_block (G_OBJECT (applet->wimax_enabled_item),
+	                        applet->wimax_enabled_toggled_id);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->wimax_enabled_item),
+	                                nm_client_wimax_get_enabled (applet->nm_client));
+	g_signal_handler_unblock (G_OBJECT (applet->wimax_enabled_item),
+	                          applet->wimax_enabled_toggled_id);
+
+	wimax_hw_enabled = nm_client_wimax_hardware_get_enabled (applet->nm_client);
+	gtk_widget_set_sensitive (GTK_WIDGET (applet->wimax_enabled_item),
+	                          wimax_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIMAX));
+
 	/* Enabled notifications */
 	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
 	                        applet->notifications_enabled_toggled_id);
 	if (   gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_CONNECTED_NOTIFICATIONS, NULL)
 	    && gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS, NULL)
+	    && gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_VPN_NOTIFICATIONS, NULL)
 	    && gconf_client_get_bool (applet->gconf_client, PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE, NULL))
 		notifications_enabled = FALSE;
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
@@ -1795,6 +1813,8 @@ nma_context_menu_update (NMApplet *applet)
 				have_wireless = TRUE;
 			else if (NM_IS_SERIAL_DEVICE (candidate))
 				have_wwan = TRUE;
+			else if (NM_IS_DEVICE_WIMAX (candidate))
+				have_wimax = TRUE;
 		}
 	}
 
@@ -1807,6 +1827,11 @@ nma_context_menu_update (NMApplet *applet)
 		gtk_widget_show_all (applet->wwan_enabled_item);
 	else
 		gtk_widget_hide (applet->wwan_enabled_item);
+
+	if (have_wimax)
+		gtk_widget_show_all (applet->wimax_enabled_item);
+	else
+		gtk_widget_hide (applet->wimax_enabled_item);
 }
 
 static void
@@ -1883,6 +1908,15 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                       applet);
 	applet->wwan_enabled_toggled_id = id;
 	gtk_menu_shell_append (menu, applet->wwan_enabled_item);
+
+	/* 'Enable WiMAX Mobile Broadband' item */
+	applet->wimax_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable WiMA_X Mobile Broadband"));
+	id = g_signal_connect (applet->wimax_enabled_item,
+	                       "toggled",
+	                       G_CALLBACK (nma_set_wimax_enabled_cb),
+	                       applet);
+	applet->wimax_enabled_toggled_id = id;
+	gtk_menu_shell_append (menu, applet->wimax_enabled_item);
 
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
@@ -2223,6 +2257,7 @@ foo_client_setup (NMApplet *applet)
 	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK);
 	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI);
 	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN);
+	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIMAX] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIMAX);
 
 	if (nm_client_get_manager_running (applet->nm_client))
 		g_idle_add (foo_set_initial_state, applet);
@@ -2823,32 +2858,46 @@ nma_icon_check_and_load (const char *name, GdkPixbuf **icon, NMApplet *applet)
 	return *icon;
 }
 
-#define FALLBACK_ICON_NAME "dialog-error"
+#include "fallback-icon.h"
 
 static gboolean
 nma_icons_reload (NMApplet *applet)
 {
 	GError *error = NULL;
+	GdkPixbufLoader *loader;
 
 	g_return_val_if_fail (applet->icon_size > 0, FALSE);
 
 	nma_icons_free (applet);
 
-	applet->fallback_icon = gtk_icon_theme_load_icon (applet->icon_theme,
-	                                                  FALLBACK_ICON_NAME,
-	                                                  applet->icon_size, 0,
-	                                                  &error);
-	if (!applet->fallback_icon) {
-		g_warning ("Fallback icon '%s' missing: (%d) %s",
-		           FALLBACK_ICON_NAME,
-		           error ? error->code : -1,
-			       (error && error->message) ? error->message : "(unknown)");
-		g_clear_error (&error);
-		/* Die if we can't get even a fallback icon */
-		g_assert (applet->fallback_icon);
-	}
+	loader = gdk_pixbuf_loader_new_with_type ("png", &error);
+	if (!loader)
+		goto error;
+
+	if (!gdk_pixbuf_loader_write (loader,
+	                              fallback_icon_data,
+	                              sizeof (fallback_icon_data),
+	                              &error))
+		goto error;
+
+	if (!gdk_pixbuf_loader_close (loader, &error))
+		goto error;
+
+	applet->fallback_icon = gdk_pixbuf_loader_get_pixbuf (loader);
+	g_object_ref (applet->fallback_icon);
+	g_assert (applet->fallback_icon);
+	g_object_unref (loader);
 
 	return TRUE;
+
+error:
+	g_warning ("Could not load fallback icon: (%d) %s",
+	           error ? error->code : -1,
+		       (error && error->message) ? error->message : "(unknown)");
+	g_clear_error (&error);
+	/* Die if we can't get a fallback icon */
+	g_assert (FALSE);
+	return FALSE;
 }
 
 static void nma_icon_theme_changed (GtkIconTheme *icon_theme, NMApplet *applet)
@@ -2919,10 +2968,23 @@ status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
 	 */
 	applet_clear_notify (applet);
 
-	nma_menu_clear (applet);
+	/* Kill any old menu */
+	if (applet->menu)
+		g_object_unref (applet->menu);
+
+	/* And make a fresh new one */
+	applet->menu = gtk_menu_new ();
+	/* Sink the ref so we can explicitly destroy the menu later */
+	g_object_ref_sink (G_OBJECT (applet->menu));
+
+	gtk_container_set_border_width (GTK_CONTAINER (applet->menu), 0);
+	g_signal_connect (applet->menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
+	g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
+
+	/* Display the new menu */
 	gtk_menu_popup (GTK_MENU (applet->menu), NULL, NULL,
-			gtk_status_icon_position_menu, icon,
-			1, gtk_get_current_event_time ());
+	                gtk_status_icon_position_menu, icon,
+	                1, gtk_get_current_event_time ());
 }
 
 static void
@@ -2960,10 +3022,6 @@ setup_widgets (NMApplet *applet)
 	g_signal_connect (applet->status_icon, "popup-menu",
 			  G_CALLBACK (status_icon_popup_menu_cb), applet);
 
-	applet->menu = nma_menu_create (applet);
-	if (!applet->menu)
-		return FALSE;
-
 	applet->context_menu = nma_context_menu_create (applet);
 	if (!applet->context_menu)
 		return FALSE;
@@ -2992,6 +3050,7 @@ applet_pre_keyring_callback (gpointer user_data)
 
 		gtk_widget_hide (applet->menu);
 		gtk_widget_destroy (applet->menu);
+		g_object_unref (applet->menu);
 		applet->menu = NULL;
 
 		/* Ensure that the widget really gets destroyed before letting the
@@ -3122,6 +3181,9 @@ constructor (GType type,
 	applet->bt_class = applet_device_bt_get_class (applet);
 	g_assert (applet->bt_class);
 
+	applet->wimax_class = applet_device_wimax_get_class (applet);
+	g_assert (applet->wimax_class);
+
 	foo_client_setup (applet);
 
 	applet_set_pre_keyring_callback (applet_pre_keyring_callback, applet);
@@ -3151,11 +3213,15 @@ static void finalize (GObject *object)
 	g_slice_free (NMADeviceClass, applet->wired_class);
 	g_slice_free (NMADeviceClass, applet->wifi_class);
 	g_slice_free (NMADeviceClass, applet->gsm_class);
+	g_slice_free (NMADeviceClass, applet->cdma_class);
+	g_slice_free (NMADeviceClass, applet->bt_class);
+	g_slice_free (NMADeviceClass, applet->wimax_class);
 
 	if (applet->update_icon_id)
 		g_source_remove (applet->update_icon_id);
 
-	nma_menu_clear (applet);
+	if (applet->menu)
+		g_object_unref (applet->menu);
 	nma_icons_free (applet);
 
 	g_free (applet->tip);
