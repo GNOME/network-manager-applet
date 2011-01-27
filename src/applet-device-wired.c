@@ -426,7 +426,7 @@ get_pppoe_secrets_cb (GtkDialog *dialog, gint response, gpointer user_data)
 	setting = nm_connection_get_setting (req->connection, NM_TYPE_SETTING_PPPOE);
 	pppoe_update_setting (NM_SETTING_PPPOE (setting), info);
 
-	secrets = nm_setting_to_hash (setting);
+	secrets = nm_setting_to_hash (setting, NM_SETTING_HASH_FLAG_ONLY_SECRETS);
 	if (!secrets) {
 		g_set_error (&error,
 		             NM_SECRET_AGENT_ERROR,

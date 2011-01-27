@@ -1211,11 +1211,10 @@ wireless_device_state_changed (NMDevice *device,
                                NMDeviceStateReason reason,
                                NMApplet *applet)
 {
-	NMAccessPoint *new = NULL;
 	char *msg;
 	char *esc_ssid = NULL;
 
-	new = update_active_ap (device, new_state, applet);
+	update_active_ap (device, new_state, applet);
 
 	if (new_state == NM_DEVICE_STATE_DISCONNECTED)
 		queue_avail_access_point_notification (device);
@@ -1489,7 +1488,7 @@ add_one_setting (GHashTable *settings,
 	g_return_val_if_fail (error != NULL, FALSE);
 	g_return_val_if_fail (*error == NULL, FALSE);
 
-	secrets = nm_setting_to_hash (setting);
+	secrets = nm_setting_to_hash (setting, NM_SETTING_HASH_FLAG_ALL);
 	if (secrets) {
 		g_hash_table_insert (settings, g_strdup (nm_setting_get_name (setting)), secrets);
 	} else {
