@@ -363,7 +363,6 @@ populate_ui (CEPageIP4 *self)
 		NMIP4Address *addr = nm_setting_ip4_config_get_address (setting, i);
 		struct in_addr tmp_addr;
 		char buf[INET_ADDRSTRLEN + 1];
-		const char *ignored;
 
 		if (!addr) {
 			g_warning ("%s: empty IP4 Address structure!", __func__);
@@ -373,15 +372,15 @@ populate_ui (CEPageIP4 *self)
 		gtk_list_store_append (store, &model_iter);
 
 		tmp_addr.s_addr = nm_ip4_address_get_address (addr);
-		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
+		(void) inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
 		gtk_list_store_set (store, &model_iter, COL_ADDRESS, buf, -1);
 
 		tmp_addr.s_addr = nm_utils_ip4_prefix_to_netmask (nm_ip4_address_get_prefix (addr));
-		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
+		(void) inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
 		gtk_list_store_set (store, &model_iter, COL_PREFIX, buf, -1);
 
 		tmp_addr.s_addr = nm_ip4_address_get_gateway (addr);
-		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
+		(void) inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
 		gtk_list_store_set (store, &model_iter, COL_GATEWAY, buf, -1);
 	}
 
@@ -395,13 +394,12 @@ populate_ui (CEPageIP4 *self)
 	for (i = 0; i < nm_setting_ip4_config_get_num_dns (setting); i++) {
 		struct in_addr tmp_addr;
 		char buf[INET_ADDRSTRLEN + 1];
-		const char *ignored;
 
 		tmp_addr.s_addr = nm_setting_ip4_config_get_dns (setting, i);
 		if (!tmp_addr.s_addr)
 			continue;
 
-		ignored = inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
+		(void) inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
 		if (string->len)
 			g_string_append (string, ", ");
 		g_string_append (string, buf);
@@ -715,15 +713,11 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 	gint offset;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
-	GtkListStore *store;
 
 	if (error)
 		return;
 
 	populate_ui (self);
-
-	/* Address column */
-	store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
 
 	/* IP Address column */
 	renderer = gtk_cell_renderer_text_new ();

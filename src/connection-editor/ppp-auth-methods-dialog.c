@@ -63,12 +63,12 @@ validate (GtkWidget *dialog)
 	allow_mschapv2 = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ok_button"));
-#if 0
-/* Ignore for now until we know whether any PPP servers simply don't request
- * authentication at all.
- */
-	gtk_widget_set_sensitive (widget, (allow_eap || allow_pap || allow_chap || allow_mschap || allow_mschapv2));
-#endif
+
+	/* Ignore for now until we know whether any PPP servers simply don't request
+	 * authentication at all.
+	 */
+	if (0)
+		gtk_widget_set_sensitive (widget, (allow_eap || allow_pap || allow_chap || allow_mschap || allow_mschapv2));
 }
 
 GtkWidget *
