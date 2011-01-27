@@ -460,7 +460,7 @@ update_connection (NMConnectionList *list,
 	 * applet private values that we use to store the path to certificates
 	 * and private keys don't go through D-Bus; they are private of course!
 	 */
-	new_settings = nm_connection_to_hash (NM_CONNECTION (connection));
+	new_settings = nm_connection_to_hash (NM_CONNECTION (connection), NM_SETTING_HASH_FLAG_ALL);
 	if (!nm_connection_replace_settings (NM_CONNECTION (connection), new_settings, &error)) {
 		update_complete (info, error);
 		g_error_free (error);
