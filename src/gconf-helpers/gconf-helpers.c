@@ -2005,6 +2005,10 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	                                      secret,
 	                                      TRUE,
 	                                      &id);
+	if (ret != GNOME_KEYRING_RESULT_OK) {
+		g_warning ("Failed to add keyring item (%s/%s/%s/%s): %d",
+		           connection_uuid, connection_name, setting_name, setting_key, ret);
+	}
 	gnome_keyring_attribute_list_free (attrs);
 	g_free (display_name);
 }
@@ -2344,8 +2348,10 @@ write_object (GConfClient *client,
 		 * deleted, but /etc/pki/tls/cert.pem would not.
 		 */
 		standard_file = generate_cert_path (id, objtype->suffix);
-		if (g_file_test (standard_file, G_FILE_TEST_EXISTS))
+		if (g_file_test (standard_file, G_FILE_TEST_EXISTS)) {
 			ignored = unlink (standard_file);
+			if (ignored) {};  /* shut gcc up */
+		}
 		g_free (standard_file);
 
 		/* Delete the key from GConf */
