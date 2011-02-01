@@ -56,30 +56,6 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 /*******************************************************/
 
-static const char *applet_8021x_cert_keys[] = {
-	"ca-cert",
-	"client-cert",
-	"private-key",
-	"phase2-ca-cert",
-	"phase2-client-cert",
-	"phase2-private-key",
-	NULL
-};
-
-static gboolean
-string_in_list (const char *str, const char **valid_strings)
-{
-	int i;
-
-	for (i = 0; valid_strings[i]; i++) {
-		if (!g_strcmp0 (str, valid_strings[i]))
-			return TRUE;
-	}
-	return FALSE;
-}
-
-/*******************************************************/
-
 #define DBUS_TYPE_G_MAP_OF_STRING (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_STRING))
 
 typedef struct {
@@ -527,9 +503,8 @@ write_one_secret_to_keyring (NMSetting *setting,
 	KeyringCall *call;
 	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_SYSTEM_OWNED;
 
-	/* non-secrets and private key paths don't get stored in the keyring */
-	if (   !(flags & NM_SETTING_PARAM_SECRET)
-	    || (NM_IS_SETTING_802_1X (setting) && string_in_list (key, applet_8021x_cert_keys)))
+	/* Non-secrets obviously don't get saved in the keyring */
+	if (!(flags & NM_SETTING_PARAM_SECRET))
 		return;
 
 	/* Don't system-owned or always-ask secrets */
