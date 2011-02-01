@@ -525,10 +525,17 @@ write_one_secret_to_keyring (NMSetting *setting,
 	GnomeKeyringAttributeList *attrs;
 	char *display_name = NULL;
 	KeyringCall *call;
+	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_SYSTEM_OWNED;
 
 	/* non-secrets and private key paths don't get stored in the keyring */
 	if (   !(flags & NM_SETTING_PARAM_SECRET)
 	    || (NM_IS_SETTING_802_1X (setting) && string_in_list (key, applet_8021x_cert_keys)))
+		return;
+
+	/* Don't system-owned or always-ask secrets */
+	if (!nm_setting_get_secret_flags (setting, key, &secret_flags, NULL))
+		return;
+	if (secret_flags != NM_SETTING_SECRET_FLAG_AGENT_OWNED)
 		return;
 
 	/* VPN secrets are handled by the VPN plugins */
