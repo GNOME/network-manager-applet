@@ -193,122 +193,6 @@ ask_for_secrets (Request *r)
 	               r);
 }
 
-static GValue *
-string_to_gvalue (const char *str)
-{
-	GValue *val;
-
-	val = g_slice_new0 (GValue);
-	g_value_init (val, G_TYPE_STRING);
-	g_value_set_string (val, str);
-	return val;
-}
-
-static void
-destroy_gvalue (gpointer data)
-{
-	g_value_unset ((GValue *) data);
-	g_slice_free (GValue, data);
-}
-
-static void
-keyring_find_secrets_cb (GnomeKeyringResult result,
-                         GList *list,
-                         gpointer user_data)
-{
-	KeyringCall *call = user_data;
-	Request *r = call->r;
-	GError *error = NULL;
-	NMSettingConnection *s_con;
-	const char *connection_id = NULL;
-	GHashTable *secrets = NULL, *settings = NULL;
-	GList *iter;
-	gboolean hint_found = FALSE;
-
-	r->keyring_ids = g_slist_remove (r->keyring_ids, call->keyring_id);
-
-	if (r->canceled) {
-		/* Callback already called by cancelation handler */
-		request_free (r);
-		return;
-	}
-
-	s_con = (NMSettingConnection *) nm_connection_get_setting (r->connection, NM_TYPE_SETTING_CONNECTION);
-	g_assert (s_con);
-	connection_id = nm_setting_connection_get_id (s_con);
-
-	if (result == GNOME_KEYRING_RESULT_CANCELLED) {
-		error = g_error_new_literal (NM_SECRET_AGENT_ERROR,
-		                             NM_SECRET_AGENT_ERROR_USER_CANCELED,
-		                             "The secrets request was canceled by the user");
-		goto done;
-	} else if (   result != GNOME_KEYRING_RESULT_OK
-	           && result != GNOME_KEYRING_RESULT_NO_MATCH) {
-		error = g_error_new (NM_SECRET_AGENT_ERROR,
-		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		                     "%s.%d - failed to read secrets from keyring (result %d)",
-		                     __FILE__, __LINE__, result);
-		goto done;
-	}
-
-	/* Only ask if we're allowed to, ie if flags != NM_SECRET_AGENT_GET_SECRETS_FLAG_NONE */
-	if (r->flags && g_list_length (list) == 0) {
-		g_message ("No keyring secrets found for %s/%s; asking user.", connection_id, r->setting_name);
-		ask_for_secrets (r);
-		return;
-	}
-
-	secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
-
-	/* Extract the secrets from the list of matching keyring items */
-	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
-		GnomeKeyringFound *found = iter->data;
-		GnomeKeyringAttribute *attr;
-		const char *key_name = NULL;
-		int i;
-
-		for (i = 0; i < found->attributes->len; i++) {
-			attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
-			if (   (strcmp (attr->name, KEYRING_SK_TAG) == 0)
-			    && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
-
-				key_name = attr->value.string;
-				g_hash_table_insert (secrets, g_strdup (key_name), string_to_gvalue (found->secret));
-
-				/* See if this property matches a given hint */
-				if (r->hints && r->hints[0]) {
-					if (!g_strcmp0 (r->hints[0], key_name) || !g_strcmp0 (r->hints[1], key_name))
-						hint_found = TRUE;
-				}
-				break;
-			}
-		}
-	}
-
-	/* If there were hints, and none of the hints were returned by the keyring,
-	 * get some new secrets.
-	 */
-	if (r->flags && r->hints && r->hints[0] && !hint_found) {
-		g_hash_table_destroy (secrets);
-		ask_for_secrets (r);
-		return;
-	}
-
-	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
-	 * will contain all the individual settings hashes.
-	 */
-	settings = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_hash_table_destroy);
-	g_hash_table_insert (settings, g_strdup (r->setting_name), secrets);
-
-done:
-	r->get_callback (NM_SECRET_AGENT (r->agent), r->connection, error ? NULL : settings, error, r->callback_data);
-	request_free (r);
-
-	if (settings)
-		g_hash_table_destroy (settings);
-	g_clear_error (&error);
-}
-
 static void
 check_always_ask_cb (NMSetting *setting,
                      const char *key,
@@ -378,6 +262,147 @@ is_connection_always_ask (NMConnection *connection)
 	return FALSE;
 }
 
+static GValue *
+string_to_gvalue (const char *str)
+{
+	GValue *val;
+
+	val = g_slice_new0 (GValue);
+	g_value_init (val, G_TYPE_STRING);
+	g_value_set_string (val, str);
+	return val;
+}
+
+static void
+destroy_gvalue (gpointer data)
+{
+	g_value_unset ((GValue *) data);
+	g_slice_free (GValue, data);
+}
+
+static void
+keyring_find_secrets_cb (GnomeKeyringResult result,
+                         GList *list,
+                         gpointer user_data)
+{
+	KeyringCall *call = user_data;
+	Request *r = call->r;
+	GError *error = NULL;
+	NMSettingConnection *s_con;
+	const char *connection_id = NULL;
+	GHashTable *secrets = NULL, *settings = NULL;
+	GList *iter;
+	gboolean hint_found = FALSE, ask = FALSE;
+
+	r->keyring_ids = g_slist_remove (r->keyring_ids, call->keyring_id);
+
+	if (r->canceled) {
+		/* Callback already called by cancelation handler */
+		request_free (r);
+		return;
+	}
+
+	s_con = (NMSettingConnection *) nm_connection_get_setting (r->connection, NM_TYPE_SETTING_CONNECTION);
+	g_assert (s_con);
+	connection_id = nm_setting_connection_get_id (s_con);
+
+	if (result == GNOME_KEYRING_RESULT_CANCELLED) {
+		error = g_error_new_literal (NM_SECRET_AGENT_ERROR,
+		                             NM_SECRET_AGENT_ERROR_USER_CANCELED,
+		                             "The secrets request was canceled by the user");
+		goto done;
+	} else if (   result != GNOME_KEYRING_RESULT_OK
+	           && result != GNOME_KEYRING_RESULT_NO_MATCH) {
+		error = g_error_new (NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "%s.%d - failed to read secrets from keyring (result %d)",
+		                     __FILE__, __LINE__, result);
+		goto done;
+	}
+
+	/* Only ask if we're allowed to, ie if flags != NM_SECRET_AGENT_GET_SECRETS_FLAG_NONE */
+	if (r->flags && g_list_length (list) == 0) {
+		g_message ("No keyring secrets found for %s/%s; asking user.", connection_id, r->setting_name);
+		ask_for_secrets (r);
+		return;
+	}
+
+	secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
+
+	/* Extract the secrets from the list of matching keyring items */
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		GnomeKeyringFound *found = iter->data;
+		GnomeKeyringAttribute *attr;
+		const char *key_name = NULL;
+		int i;
+
+		for (i = 0; i < found->attributes->len; i++) {
+			attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
+			if (   (strcmp (attr->name, KEYRING_SK_TAG) == 0)
+			    && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
+
+				key_name = attr->value.string;
+				g_hash_table_insert (secrets, g_strdup (key_name), string_to_gvalue (found->secret));
+
+				/* See if this property matches a given hint */
+				if (r->hints && r->hints[0]) {
+					if (!g_strcmp0 (r->hints[0], key_name) || !g_strcmp0 (r->hints[1], key_name))
+						hint_found = TRUE;
+				}
+				break;
+			}
+		}
+	}
+
+	/* If there were hints, and none of the hints were returned by the keyring,
+	 * get some new secrets.
+	 */
+	if (r->flags) {
+		if (r->hints && r->hints[0] && !hint_found)
+			ask = TRUE;
+		else if (r->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW) {
+			g_message ("New secrets for %s/%s requested; ask the user", connection_id, r->setting_name);
+			ask = TRUE;
+		} else if (   (r->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
+			       && is_connection_always_ask (r->connection))
+			ask = TRUE;
+	}
+
+	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
+	 * will contain all the individual settings hashes.
+	 */
+	settings = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_hash_table_destroy);
+	g_hash_table_insert (settings, g_strdup (r->setting_name), secrets);
+
+done:
+	if (ask) {
+		GHashTableIter hash_iter;
+		const char *setting_name;
+		GHashTable *setting_hash;
+
+		/* Stuff all the found secrets into the connection for the UI to use */
+		g_hash_table_iter_init (&hash_iter, settings);
+		while (g_hash_table_iter_next (&hash_iter,
+		                               (gpointer *) &setting_name,
+		                               (gpointer *) &setting_hash)) {
+			nm_connection_update_secrets (r->connection,
+				                          setting_name,
+				                          setting_hash,
+				                          NULL);
+		}
+
+		ask_for_secrets (r);
+	} else {
+		/* Otherwise send the secrets back to NetworkManager */
+		r->get_callback (NM_SECRET_AGENT (r->agent), r->connection, error ? NULL : settings, error, r->callback_data);
+		request_free (r);
+	}
+
+	if (settings)
+		g_hash_table_destroy (settings);
+	g_clear_error (&error);
+}
+
 static void
 get_secrets (NMSecretAgent *agent,
              NMConnection *connection,
@@ -395,7 +420,6 @@ get_secrets (NMSecretAgent *agent,
 	NMSetting *setting;
 	const char *id;
 	const char *ctype;
-	gboolean ask = FALSE;
 	KeyringCall *call;
 
 	setting = nm_connection_get_setting_by_name (connection, setting_name);
@@ -431,34 +455,26 @@ get_secrets (NMSecretAgent *agent,
 	g_hash_table_insert (priv->requests, GUINT_TO_POINTER (r->id), r);
 
 	/* VPN passwords are handled by the VPN plugin's auth dialog */
-	if (!strcmp (ctype, NM_SETTING_VPN_SETTING_NAME))
-		ask = TRUE;
-	else if (flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW) {
-		ask = TRUE;
-		g_message ("New secrets for %s/%s requested; ask the user", id, setting_name);
-	} else if (   (flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
-	           && is_connection_always_ask (connection))
-		ask = TRUE;
-
-	/* VPN passwords are handled by the VPN plugin's auth dialog; and we always
-	 * get secrets for OTP connections marked as 'always ask'.
-	 */
-	if (ask)
+	if (!strcmp (ctype, NM_SETTING_VPN_SETTING_NAME)) {
 		ask_for_secrets (r);
-	else {
-		call = keyring_call_new (r);
-		call->keyring_id = gnome_keyring_find_itemsv (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-		                                              keyring_find_secrets_cb,
-		                                              call,
-		                                              keyring_call_free,
-		                                              KEYRING_UUID_TAG,
-		                                              GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-		                                              nm_setting_connection_get_uuid (s_con),
-		                                              KEYRING_SN_TAG,
-		                                              GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-		                                              setting_name,
-		                                              NULL);
+		return;
 	}
+
+	/* For everything else we scrape the keyring for secrets first, and ask
+	 * later if required.
+	 */
+	call = keyring_call_new (r);
+	call->keyring_id = gnome_keyring_find_itemsv (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                              keyring_find_secrets_cb,
+	                                              call,
+	                                              keyring_call_free,
+	                                              KEYRING_UUID_TAG,
+	                                              GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                              nm_setting_connection_get_uuid (s_con),
+	                                              KEYRING_SN_TAG,
+	                                              GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                              setting_name,
+	                                              NULL);
 }
 
 /*******************************************************/
