@@ -30,6 +30,10 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-8021x.h>
 #include <nm-setting-vpn.h>
+#include <nm-setting-wireless.h>
+#include <nm-setting-wireless-security.h>
+#include <nm-setting-wired.h>
+#include <nm-setting-pppoe.h>
 
 #include "applet-agent.h"
 #include "utils.h"
@@ -189,43 +193,6 @@ ask_for_secrets (Request *r)
 	               r);
 }
 
-static gboolean
-is_otp_always_ask (NMConnection *connection)
-{
-	NMSetting8021x *s_8021x;
-	NMSettingConnection *s_con;
-	const char *uuid, *eap_method, *phase2;
-
-	s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
-	if (s_8021x) {
-		gboolean can_always_ask = FALSE;
-
-		/* Check if PEAP or TTLS is used */
-		eap_method = nm_setting_802_1x_get_eap_method (s_8021x, 0);
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
-		if (!strcmp (eap_method, "peap"))
-			can_always_ask = TRUE;
-		else if (!strcmp (eap_method, "ttls")) {
-			/* Now make sure the phase2 method isn't TLS */
-			phase2 = nm_setting_802_1x_get_phase2_auth (s_8021x);
-			if (phase2 && strcmp (phase2, "tls"))
-				can_always_ask = TRUE;
-			else {
-				phase2 = nm_setting_802_1x_get_phase2_autheap (s_8021x);
-				if (phase2 && strcmp (phase2, "tls"))
-					can_always_ask = TRUE;
-			}
-		}
-
-		if (can_always_ask) {
-			uuid = nm_setting_connection_get_uuid (s_con);
-			if (nm_gconf_get_8021x_password_always_ask (uuid))
-				return TRUE;
-		}
-	}
-	return FALSE;
-}
-
 static GValue *
 string_to_gvalue (const char *str)
 {
@@ -343,6 +310,75 @@ done:
 }
 
 static void
+check_always_ask_cb (NMSetting *setting,
+                     const char *key,
+                     const GValue *value,
+                     GParamFlags flags,
+                     gpointer user_data)
+{
+	gboolean *always_ask = user_data;
+	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_SYSTEM_OWNED;
+
+	if (flags & NM_SETTING_PARAM_SECRET) {
+		if (nm_setting_get_secret_flags (setting, key, &secret_flags, NULL)) {
+			if (secret_flags & NM_SETTING_SECRET_FLAG_NOT_SAVED)
+				*always_ask = TRUE;
+		}
+	}
+}
+
+static gboolean
+has_always_ask (NMSetting *setting)
+{
+	gboolean always_ask = FALSE;
+
+	nm_setting_enumerate_values (setting, check_always_ask_cb, &always_ask);
+	return always_ask;
+}
+
+static gboolean
+is_connection_always_ask (NMConnection *connection)
+{
+	NMSettingConnection *s_con;
+	const char *ctype;
+	NMSetting *setting;
+
+	/* For the given connection type, check if the secrets for that connection
+	 * are always-ask or not.
+	 */
+	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	g_assert (s_con);
+	ctype = nm_setting_connection_get_connection_type (s_con);
+
+	setting = nm_connection_get_setting_by_name (connection, ctype);
+	g_return_val_if_fail (setting != NULL, FALSE);
+
+	if (has_always_ask (setting))
+		return TRUE;
+
+	/* Try type-specific settings too; be a bit paranoid and only consider
+	 * secrets from settings relevant to the connection type.
+	 */
+	if (NM_IS_SETTING_WIRELESS (setting)) {
+		setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
+		if (setting && has_always_ask (setting))
+			return TRUE;
+		setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+		if (setting && has_always_ask (setting))
+			return TRUE;
+	} else if (NM_IS_SETTING_WIRED (setting)) {
+		setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE);
+		if (setting && has_always_ask (setting))
+			return TRUE;
+		setting = nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+		if (setting && has_always_ask (setting))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void
 get_secrets (NMSecretAgent *agent,
              NMConnection *connection,
              const char *connection_path,
@@ -400,7 +436,8 @@ get_secrets (NMSecretAgent *agent,
 	else if (flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW) {
 		ask = TRUE;
 		g_message ("New secrets for %s/%s requested; ask the user", id, setting_name);
-	} else if ((flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION) && is_otp_always_ask (connection))
+	} else if (   (flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
+	           && is_connection_always_ask (connection))
 		ask = TRUE;
 
 	/* VPN passwords are handled by the VPN plugin's auth dialog; and we always
