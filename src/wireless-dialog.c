@@ -996,10 +996,12 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->sec_combo), active < 0 ? 0 : (guint32) active);
 	g_object_unref (G_OBJECT (sec_model));
 
-	/* Request secrets for the connection if it needs any */
-
+	/* If the dialog was given a connection when it was created, that connection
+	 * will already be populated with secrets.  If no connection was given,
+	 * then we need to get any existing secrets to populate the dialog with.
+	 */
 	setting_name = nm_connection_need_secrets (priv->connection, NULL);
-	if (setting_name) {
+	if (setting_name && NM_IS_REMOTE_CONNECTION (priv->connection)) {
 		GetSecretsInfo *info;
 
 		/* Desensitize the dialog's buttons while we wait for the secrets
@@ -1182,7 +1184,7 @@ internal_init (NMAWirelessDialog *self,
 
 NMConnection *
 nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
-                                    NMDevice **device,
+                                    NMDevice **out_device,
                                     NMAccessPoint **ap)
 {
 	NMAWirelessDialogPrivate *priv;
@@ -1194,8 +1196,6 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 	NMSettingWireless *s_wireless;
 
 	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (device != NULL, NULL);
-	g_return_val_if_fail (*device == NULL, NULL);
 
 	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 
@@ -1247,10 +1247,12 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 	}
 
 	/* Fill device */
-	combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_combo"));
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
-	gtk_tree_model_get (priv->device_model, &iter, D_DEV_COLUMN, device, -1);
-	g_object_unref (*device);
+	if (out_device) {
+		combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_combo"));
+		gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+		gtk_tree_model_get (priv->device_model, &iter, D_DEV_COLUMN, out_device, -1);
+		g_object_unref (*out_device);
+	}
 
 	if (ap)
 		*ap = priv->ap;
