@@ -187,10 +187,12 @@ ce_page_complete_init (CEPage *self,
 	g_return_if_fail (CE_IS_PAGE (self));
 
 	/* Ignore missing settings errors */
-	if (error && !dbus_g_error_has_name (error, "org.freedesktop.NetworkManagerSettings.InvalidSetting")) {
+	if (   error
+	    && !dbus_g_error_has_name (error, "org.freedesktop.NetworkManager.Settings.InvalidSetting")
+	    && !dbus_g_error_has_name (error, "org.freedesktop.NetworkManager.AgentManager.NoSecrets")) {
 		emit_initialized (self, error);
 		return;
-	} else if (!setting_name || !secrets) {
+	} else if (!setting_name || !secrets || !g_hash_table_size (secrets)) {
 		/* Success, no secrets */
 		emit_initialized (self, NULL);
 		return;
