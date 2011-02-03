@@ -314,6 +314,8 @@ dispose (GObject *object)
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (object);
 	GSList *iter;
 
+	if (editor->disposed)
+		goto out;
 	editor->disposed = TRUE;
 
 	g_slist_foreach (editor->initializing_pages, (GFunc) g_object_unref, NULL);
@@ -352,6 +354,10 @@ dispose (GObject *object)
 		editor->builder = NULL;
 	}
 
+	g_signal_handler_disconnect (editor->client, editor->permission_id);
+	g_object_unref (editor->client);
+
+out:
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);
 }
 
@@ -390,11 +396,13 @@ nm_connection_editor_new (NMConnection *connection,
 		return NULL;
 	}
 
+	editor->client = g_object_ref (client);
+
 	editor->can_modify = nm_client_get_permission_result (client, NM_CLIENT_PERMISSION_SETTINGS_CONNECTION_MODIFY);
-	g_signal_connect (client,
-	                  "permission-changed",
-	                  G_CALLBACK (permissions_changed_cb),
-	                  editor);
+	editor->permission_id = g_signal_connect (editor->client,
+	                                          "permission-changed",
+	                                          G_CALLBACK (permissions_changed_cb),
+	                                          editor);
 
 	editor->ok_button = ce_polkit_button_new (_("_Save"),
 	                                          _("Save any changes made to this connection."),

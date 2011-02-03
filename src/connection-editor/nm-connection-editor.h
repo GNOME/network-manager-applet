@@ -38,6 +38,9 @@ typedef struct {
 	GObject parent;
 	gboolean disposed;
 
+	NMClient *client;
+	guint permission_id;
+
 	/* private data */
 	NMConnection *connection;
 	NMConnection *orig_connection;
