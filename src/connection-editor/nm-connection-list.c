@@ -1302,9 +1302,7 @@ connection_removed (NMRemoteConnection *connection, gpointer user_data)
 }
 
 static void
-connection_updated (NMRemoteConnection *connection,
-                    GHashTable *settings,
-                    gpointer user_data)
+connection_updated (NMRemoteConnection *connection, gpointer user_data)
 {
 	GtkListStore *store = GTK_LIST_STORE (user_data);
 	GtkTreeIter iter;
@@ -1342,8 +1340,8 @@ connection_added (NMRemoteSettings *settings,
 
 	g_free (last_used);
 
-	g_signal_connect (connection, "removed", G_CALLBACK (connection_removed), store);
-	g_signal_connect (connection, "updated", G_CALLBACK (connection_updated), store);
+	g_signal_connect (connection, NM_REMOTE_CONNECTION_REMOVED, G_CALLBACK (connection_removed), store);
+	g_signal_connect (connection, NM_REMOTE_CONNECTION_UPDATED, G_CALLBACK (connection_updated), store);
 }
 
 #define ICON_LOAD(x, y)	\
