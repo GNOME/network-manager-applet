@@ -200,7 +200,6 @@ ce_page_complete_init (CEPage *self,
 	g_assert (setting_name);
 	g_assert (secrets);
 
-	/* Update the connection with the new secrets */
 	setting_hash = g_hash_table_lookup (secrets, setting_name);
 	if (!setting_hash) {
 		/* Success, no secrets */
@@ -208,9 +207,10 @@ ce_page_complete_init (CEPage *self,
 		return;
 	}
 
+	/* Update the connection with the new secrets */
 	if (nm_connection_update_secrets (self->connection,
 	                                  setting_name,
-	                                  setting_hash,
+	                                  secrets,
 	                                  &update_error)) {
 		/* Success */
 		emit_initialized (self, NULL);
