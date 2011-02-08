@@ -201,7 +201,7 @@ check_always_ask_cb (NMSetting *setting,
                      gpointer user_data)
 {
 	gboolean *always_ask = user_data;
-	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_SYSTEM_OWNED;
+	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
 
 	if (flags & NM_SETTING_PARAM_SECRET) {
 		if (nm_setting_get_secret_flags (setting, key, &secret_flags, NULL)) {
@@ -554,7 +554,7 @@ write_one_secret_to_keyring (NMSetting *setting,
 	GnomeKeyringAttributeList *attrs;
 	char *display_name = NULL;
 	KeyringCall *call;
-	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_SYSTEM_OWNED;
+	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
 
 	/* Non-secrets obviously don't get saved in the keyring */
 	if (!(flags & NM_SETTING_PARAM_SECRET))
