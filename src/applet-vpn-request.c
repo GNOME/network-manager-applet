@@ -28,6 +28,7 @@
 #include <sys/wait.h>
 #include <glib.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include <glib-object.h>
 
@@ -86,14 +87,7 @@ typedef struct {
 	AppletVpnRequest *vpn;
 } VpnSecretsInfo;
 
-static void
-destroy_gvalue (gpointer data)
-{
-	GValue *value = (GValue *) data;
-
-	g_value_unset (value);
-	g_slice_free (GValue, value);
-}
+#define DBUS_TYPE_G_MAP_OF_STRING (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_STRING))
 
 static void 
 child_finished_cb (GPid pid, gint status, gpointer user_data)
@@ -106,31 +100,30 @@ child_finished_cb (GPid pid, gint status, gpointer user_data)
 	GHashTable *settings = NULL;
 
 	if (status == 0) {
-		GHashTable *secrets;
+		GHashTable *vpn, *secrets;
+		GValue val = { 0 };
 		GSList *iter;
 
-		secrets = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, destroy_gvalue);
+		settings = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_hash_table_destroy);
+
+		vpn = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_value_unset);
+		g_hash_table_insert (settings, NM_SETTING_VPN_SETTING_NAME, vpn);
+
+		secrets = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, NULL);
+		g_value_init (&val, DBUS_TYPE_G_MAP_OF_STRING);
+		g_value_take_boxed (&val, secrets);
+		g_hash_table_insert (vpn, NM_SETTING_VPN_SECRETS, &val);
 
 		/* The length of 'lines' must be divisible by 2 since it must contain
 		 * key:secret pairs with the key on one line and the associated secret
 		 * on the next line.
 		 */
 		for (iter = priv->lines; iter; iter = g_slist_next (iter)) {
-			GValue *val;
-
 			if (!iter->next)
 				break;
-
-			val = g_slice_new0 (GValue);
-			g_value_init (val, G_TYPE_STRING);
-			g_value_set_string (val, iter->next->data);
-
-			g_hash_table_insert (secrets, g_strdup (iter->data), val);
+			g_hash_table_insert (secrets, (char *) iter->data, (char *) iter->next->data);
 			iter = iter->next;
 		}
-
-		settings = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_hash_table_destroy);
-		g_hash_table_insert (settings, NM_SETTING_VPN_SETTING_NAME, secrets);
 	} else {
 		error = g_error_new (NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_USER_CANCELED,
@@ -152,7 +145,7 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_
 	VpnSecretsInfo *info = user_data;
 	AppletVpnRequest *self = info->vpn;
 	AppletVpnRequestPrivate *priv = APPLET_VPN_REQUEST_GET_PRIVATE (self);
-	const char buf[1] = { 0x01 };
+	const char *buf = "QUIT\n\n";
 	char *str;
 	int len;
 
@@ -165,7 +158,7 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_
 			/* on second line with a newline newline */
 			if (++priv->num_newlines == 2) {
 				/* terminate the child */
-				if (write (priv->child_stdin, buf, sizeof (buf)) == -1)
+				if (write (priv->child_stdin, buf, strlen (buf)) == -1)
 					return TRUE;
 			}
 		} else if (len > 0) {
@@ -252,6 +245,91 @@ applet_vpn_request_get_secrets_size (void)
 	return sizeof (VpnSecretsInfo);
 }
 
+typedef struct {
+	int fd;
+	gboolean secret;
+	GError **error;
+} WriteItemInfo;
+
+static const char *data_key_tag = "DATA_KEY=";
+static const char *data_val_tag = "DATA_VAL=";
+static const char *secret_key_tag = "SECRET_KEY=";
+static const char *secret_val_tag = "SECRET_VAL=";
+
+static gboolean
+write_item (int fd, const char *item, GError **error)
+{
+	size_t item_len = strlen (item);
+
+	errno = 0;
+	if (write (fd, item, item_len) != item_len) {
+		g_set_error (error,
+			         NM_SECRET_AGENT_ERROR,
+			         NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+			         "Failed to write connection to VPN UI: errno %d", errno);
+		return FALSE;
+	}
+	return TRUE;
+}
+
+static void
+write_one_key_val (const char *key, const char *value, gpointer user_data)
+{
+	WriteItemInfo *info = user_data;
+	const char *tag;
+
+	if (info->error && *(info->error))
+		return;
+
+	/* Write the key name */
+	tag = info->secret ? secret_key_tag : data_key_tag;
+	if (!write_item (info->fd, tag, info->error))
+		return;
+	if (!write_item (info->fd, key, info->error))
+		return;
+	if (!write_item (info->fd, "\n", info->error))
+		return;
+
+	/* Write the key value */
+	tag = info->secret ? secret_val_tag : data_val_tag;
+	if (!write_item (info->fd, tag, info->error))
+		return;
+	if (!write_item (info->fd, value ? value : "", info->error))
+		return;
+	if (!write_item (info->fd, "\n\n", info->error))
+		return;
+}
+
+static gboolean
+write_connection_to_child (int fd, NMConnection *connection, GError **error)
+{
+	NMSettingVPN *s_vpn;
+	WriteItemInfo info = { .fd = fd, .secret = FALSE, .error = error };
+
+	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	if (!s_vpn) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "Connection had no VPN setting");
+		return FALSE;
+	}
+
+	nm_setting_vpn_foreach_data_item (s_vpn, write_one_key_val, &info);
+	if (error && *error)
+		return FALSE;
+
+	info.secret = TRUE;
+	nm_setting_vpn_foreach_secret (s_vpn, write_one_key_val, &info);
+	if (error && *error)
+		return FALSE;
+
+	if (!write_item (fd, "DONE\n\n", error))
+		return FALSE;
+
+	return TRUE;
+}
+
 gboolean
 applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 {
@@ -291,8 +369,7 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 		                     NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		                     "Could not create VPN secrets request object");
-		g_free (bin_path);
-		return FALSE;
+		goto out;
 	}
 
 	priv = APPLET_VPN_REQUEST_GET_PRIVATE (info->vpn);
@@ -307,28 +384,32 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	if (req->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW)
 		argv[7] = "-r";
 
-	success = g_spawn_async_with_pipes (NULL,                       /* working_directory */
-	                                    (gchar **) argv,            /* argv */
-	                                    NULL,                       /* envp */
-	                                    G_SPAWN_DO_NOT_REAP_CHILD,  /* flags */
-	                                    NULL,                       /* child_setup */
-	                                    NULL,                       /* user_data */
-	                                    &priv->pid,                 /* child_pid */
-	                                    &priv->child_stdin,         /* standard_input */
-	                                    &priv->child_stdout,        /* standard_output */
-	                                    NULL,                       /* standard_error */
-	                                    error);                     /* error */
-	if (success) {
-		/* catch when child is reaped */
-		priv->watch_id = g_child_watch_add (priv->pid, child_finished_cb, info);
+	if (!g_spawn_async_with_pipes (NULL,                       /* working_directory */
+	                               (gchar **) argv,            /* argv */
+	                               NULL,                       /* envp */
+	                               G_SPAWN_DO_NOT_REAP_CHILD,  /* flags */
+	                               NULL,                       /* child_setup */
+	                               NULL,                       /* user_data */
+	                               &priv->pid,                 /* child_pid */
+	                               &priv->child_stdin,         /* standard_input */
+	                               &priv->child_stdout,        /* standard_output */
+	                               NULL,                       /* standard_error */
+	                               error))                     /* error */
+		goto out;
 
-		/* listen to what child has to say */
-		priv->channel = g_io_channel_unix_new (priv->child_stdout);
-		priv->channel_eventid = g_io_add_watch (priv->channel, G_IO_IN, child_stdout_data_cb, info);
-		g_io_channel_set_encoding (priv->channel, NULL, NULL);
-	}
+	/* catch when child is reaped */
+	priv->watch_id = g_child_watch_add (priv->pid, child_finished_cb, info);
+
+	/* listen to what child has to say */
+	priv->channel = g_io_channel_unix_new (priv->child_stdout);
+	priv->channel_eventid = g_io_add_watch (priv->channel, G_IO_IN, child_stdout_data_cb, info);
+	g_io_channel_set_encoding (priv->channel, NULL, NULL);
+
+	/* Dump parts of the connection to the child */
+	success = write_connection_to_child (priv->child_stdin, req->connection, error);
+
+out:
 	g_free (bin_path);
-
 	return success;
 }
 
