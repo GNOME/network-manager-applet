@@ -2766,6 +2766,7 @@ nm_gconf_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore)
 	g_object_unref (client);
 }
 
+#if 0
 static char *
 get_always_ask_path (const char *uuid)
 {
@@ -2811,3 +2812,4 @@ nm_gconf_set_8021x_password_always_ask (const char *uuid, gboolean ask)
 	g_object_unref (client);
 }
 
+#endif

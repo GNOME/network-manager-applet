@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * (C) Copyright 2007 - 2011 Red Hat, Inc.
  */
 
 #include <ctype.h>
@@ -27,7 +27,6 @@
 
 #include "eap-method.h"
 #include "wireless-security.h"
-#include "gconf-helpers.h"
 #include "helpers.h"
 
 struct _EAPMethodSimple {
@@ -98,9 +97,9 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	EAPMethodSimple *method = (EAPMethodSimple *) parent;
 	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
-	NMSettingConnection *s_con;
-	gboolean always_ask;
+	gboolean not_saved = FALSE;
 	const char *eap = NULL;
+	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
 
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
@@ -147,18 +146,20 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	/* Save the password always ask setting */
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_password_always_ask"));
 	g_assert (widget);
-	always_ask = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+	not_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
-	g_assert (s_con);
-	nm_gconf_set_8021x_password_always_ask (nm_setting_connection_get_uuid (s_con), always_ask);
+	nm_setting_get_secret_flags (NM_SETTING (s_8021x), NM_SETTING_802_1X_PASSWORD, &flags, NULL);
+	flags &= ~(NM_SETTING_SECRET_FLAG_NOT_SAVED);
+	if (not_saved)
+		flags |= NM_SETTING_SECRET_FLAG_NOT_SAVED;
+	nm_setting_set_secret_flags (NM_SETTING (s_8021x), NM_SETTING_802_1X_PASSWORD, flags, NULL);
 
 	/* Fill the connection's password if we're in the applet so that it'll get
 	 * back to NM.  From the editor though, since the connection isn't going
 	 * back to NM in response to a GetSecrets() call, we don't save it if the
 	 * user checked "Always Ask".
 	 */
-	if (method->is_editor == FALSE || always_ask == FALSE) {
+	if (method->is_editor == FALSE || not_saved == FALSE) {
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
 		g_assert (widget);
 		g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
@@ -210,7 +211,8 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	EAPMethod *parent;
 	EAPMethodSimple *method;
 	GtkWidget *widget;
-	gboolean always_ask = FALSE;
+	gboolean not_saved = FALSE;
+	NMSetting8021x *s_8021x = NULL;
 
 	parent = eap_method_init (sizeof (EAPMethodSimple),
 	                          validate,
@@ -235,8 +237,6 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
 	if (connection) {
-		NMSetting8021x *s_8021x;
-
 		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 		if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
 			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
@@ -265,21 +265,17 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 		                  method);
 	}
 
-	if (connection) {
-		NMSettingConnection *s_con;
-		const char *uuid;
+	if (s_8021x) {
+		NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
 
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
-		g_assert (s_con);
-
-		uuid = nm_setting_connection_get_uuid (s_con);
-		always_ask = nm_gconf_get_8021x_password_always_ask (uuid);
+		nm_setting_get_secret_flags (NM_SETTING (s_8021x), NM_SETTING_802_1X_PASSWORD, &flags, NULL);
+		not_saved = (flags & NM_SETTING_SECRET_FLAG_NOT_SAVED);
 	}
 
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), always_ask);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), not_saved);
 
 	/* Fill secrets if there's a static (ie, not OTP) password */
-	if (connection && !always_ask)
+	if (connection && (not_saved == FALSE))
 		update_secrets (EAP_METHOD (method), connection);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapsimple"));
