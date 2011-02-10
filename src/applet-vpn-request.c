@@ -340,8 +340,9 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	const char *connection_type;
 	const char *service_type;
 	char *bin_path;
-	const char *argv[9] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+	const char *argv[10];
 	gboolean success = FALSE;
+	guint i = 0;
 
 	applet_secrets_request_set_free_func (req, free_vpn_secrets_info);
 
@@ -374,15 +375,18 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 
 	priv = APPLET_VPN_REQUEST_GET_PRIVATE (info->vpn);
 
-	argv[0] = bin_path;
-	argv[1] = "-u";
-	argv[2] = nm_setting_connection_get_uuid (s_con);
-	argv[3] = "-n";
-	argv[4] = nm_setting_connection_get_id (s_con);
-	argv[5] = "-s";
-	argv[6] = service_type;
+	memset (argv, 0, sizeof (argv));
+	argv[i++] = bin_path;
+	argv[i++] = "-u";
+	argv[i++] = nm_setting_connection_get_uuid (s_con);
+	argv[i++] = "-n";
+	argv[i++] = nm_setting_connection_get_id (s_con);
+	argv[i++] = "-s";
+	argv[i++] = service_type;
+	if (req->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
+		argv[i++] = "-i";
 	if (req->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW)
-		argv[7] = "-r";
+		argv[i++] = "-r";
 
 	if (!g_spawn_async_with_pipes (NULL,                       /* working_directory */
 	                               (gchar **) argv,            /* argv */
