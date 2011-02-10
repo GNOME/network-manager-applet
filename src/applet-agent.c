@@ -177,9 +177,6 @@ get_secrets_cb (AppletAgent *self,
 static void
 ask_for_secrets (Request *r)
 {
-	/* FIXME: clear the actual NMRemoteConnection matching the requests' NMConnection */
-	nm_connection_clear_secrets (r->connection);
-
 	/* Ask the applet to get some secrets for us */
 	g_signal_emit (r->agent,
 	               signals[GET_SECRETS],
