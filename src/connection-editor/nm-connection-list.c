@@ -27,7 +27,6 @@
 #include <unistd.h>
 
 #include <gtk/gtk.h>
-#include <gconf/gconf-client.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 
@@ -44,7 +43,7 @@
 #include <nm-setting-serial.h>
 #include <nm-vpn-plugin-ui-interface.h>
 #include <nm-utils.h>
-#include <nm-settings-system-interface.h>
+#include <nm-remote-settings.h>
 
 #include "ce-page.h"
 #include "page-wired.h"
@@ -54,7 +53,6 @@
 #include "page-vpn.h"
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
-#include "gconf-helpers.h"
 #include "utils.h"
 #include "vpn-helpers.h"
 #include "ce-polkit-button.h"
@@ -107,14 +105,14 @@ error_dialog (GtkWindow *parent, const char *heading, const char *format, ...)
 	gtk_widget_destroy (dialog);
 }
 
-static NMSettingsConnectionInterface *
+static NMRemoteConnection *
 get_active_connection (GtkTreeView *treeview)
 {
 	GtkTreeSelection *selection;
 	GList *selected_rows;
 	GtkTreeModel *model = NULL;
 	GtkTreeIter iter;
-	NMSettingsConnectionInterface *connection = NULL;
+	NMRemoteConnection *connection = NULL;
 
 	selection = gtk_tree_view_get_selection (treeview);
 	selected_rows = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -151,7 +149,7 @@ get_treeview_for_type (NMConnectionList *list, GType ctype)
 }
 
 static GtkListStore *
-get_model_for_connection (NMConnectionList *list, NMSettingsConnectionInterface *connection)
+get_model_for_connection (NMConnectionList *list, NMRemoteConnection *connection)
 {
 	NMSettingConnection *s_con;
 	GtkTreeView *treeview;
@@ -183,7 +181,7 @@ get_model_for_connection (NMConnectionList *list, NMSettingsConnectionInterface 
 
 static gboolean
 get_iter_for_connection (GtkTreeModel *model,
-                         NMSettingsConnectionInterface *connection,
+                         NMRemoteConnection *connection,
                          GtkTreeIter *iter)
 {
 	GtkTreeIter temp_iter;
@@ -193,7 +191,7 @@ get_iter_for_connection (GtkTreeModel *model,
 		return FALSE;
 
 	do {
-		NMSettingsConnectionInterface *candidate = NULL;
+		NMRemoteConnection *candidate = NULL;
 
 		gtk_tree_model_get (model, &temp_iter, COL_CONNECTION, &candidate, -1);
 		if (candidate && (candidate == connection)) {
@@ -281,7 +279,7 @@ out:
 static void
 update_connection_row (GtkListStore *store,
                        GtkTreeIter *iter,
-                       NMSettingsConnectionInterface *connection)
+                       NMRemoteConnection *connection)
 {
 	NMSettingConnection *s_con;
 	char *last_used;
@@ -309,63 +307,29 @@ typedef void (*DeleteResultFunc) (NMConnectionList *list,
 
 typedef struct {
 	NMConnectionList *list;
-	NMSettingsConnectionInterface *original;
-	NMConnectionScope orig_scope;
+	NMRemoteConnection *original;
 	NMConnectionEditor *editor;
 	DeleteResultFunc callback;
 	gpointer callback_data;
 } DeleteInfo;
 
 static void
-delete_cb (NMSettingsConnectionInterface *connection_iface,
+delete_cb (NMRemoteConnection *remote,
            GError *error,
            gpointer user_data)
 {
 	DeleteInfo *info = user_data;
-	NMConnection *connection = NM_CONNECTION (connection_iface);
 
 	if (info->editor)
 		nm_connection_editor_set_busy (info->editor, FALSE);
 
-	if (!error && (info->orig_scope == NM_CONNECTION_SCOPE_USER)) {
-		NMSettingConnection *s_con;
-		NMSettingVPN *s_vpn;
-		NMVpnPluginUiInterface *plugin;
-		GError *vpn_error = NULL;
-
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
-		g_assert (s_con);
-
-		/* Clean up VPN secrets and any plugin-specific data */
-		if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME))
-			goto done;
-
-		s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
-		if (!s_vpn)
-			goto done;
-
-		plugin = vpn_get_plugin_by_service (nm_setting_vpn_get_service_type (s_vpn));
-		if (!plugin)
-			goto done;
-
-		if (!nm_vpn_plugin_ui_interface_delete_connection (plugin, connection, &vpn_error)) {
-			g_warning ("%s: couldn't clean up VPN connection on delete: (%d) %s",
-			           __func__,
-			           vpn_error ? vpn_error->code : -1,
-			           (vpn_error && vpn_error->message) ? vpn_error->message : "unknown");
-			g_clear_error (&vpn_error);
-		}
-	}
-
-done:
 	info->callback (info->list, error, info->callback_data);
 	g_free (info);
 }
 
 static void
 delete_connection (NMConnectionList *list,
-                   NMSettingsConnectionInterface *connection,
-                   NMConnectionScope orig_scope,
+                   NMRemoteConnection *connection,
                    DeleteResultFunc callback,
                    gpointer user_data)
 {
@@ -376,7 +340,6 @@ delete_connection (NMConnectionList *list,
 
 	info = g_malloc0 (sizeof (DeleteInfo));
 	info->list = list;
-	info->orig_scope = orig_scope;
 	info->callback = callback;
 	info->callback_data = user_data;
 	info->editor = editor;
@@ -384,7 +347,7 @@ delete_connection (NMConnectionList *list,
 	if (editor)
 		nm_connection_editor_set_busy (editor, TRUE);
 
-	nm_settings_connection_interface_delete (connection, delete_cb, info);
+	nm_remote_connection_delete (connection, delete_cb, info);
 }
 
 /**********************************************/
@@ -402,22 +365,14 @@ typedef struct {
 } AddInfo;
 
 static void
-add_cb (NMSettingsInterface *settings,
+add_cb (NMRemoteSettings *settings,
+        NMRemoteConnection *connection,
         GError *error,
         gpointer user_data)
 {
 	AddInfo *info = user_data;
-	NMConnection *connection;
 
 	nm_connection_editor_set_busy (info->editor, FALSE);
-
-	if (!error) {
-		/* Let the VPN plugin save its secrets */
-		connection = nm_connection_editor_get_connection (info->editor);
-		if (nm_connection_get_scope (connection) == NM_CONNECTION_SCOPE_USER)
-			nm_connection_editor_save_vpn_secrets (info->editor);
-	}
-
 	info->callback (info->list, error, info->callback_data);
 	g_free (info);
 }
@@ -428,9 +383,6 @@ add_connection (NMConnectionList *self,
                 AddResultFunc callback,
                 gpointer callback_data)
 {
-	NMSettingsInterface *settings = NULL;
-	NMConnection *connection;
-	NMConnectionScope scope;
 	AddInfo *info;
 
 	info = g_malloc0 (sizeof (AddInfo));
@@ -439,33 +391,26 @@ add_connection (NMConnectionList *self,
 	info->callback = callback;
 	info->callback_data = callback_data;
 
-	connection = nm_connection_editor_get_connection (editor);
-	g_assert (connection);
-	scope = nm_connection_get_scope (connection);
-	if (scope == NM_CONNECTION_SCOPE_SYSTEM)
-		settings = NM_SETTINGS_INTERFACE (self->system_settings);
-	else if (scope == NM_CONNECTION_SCOPE_USER)
-		settings = NM_SETTINGS_INTERFACE (self->gconf_settings);
-	else
-		g_assert_not_reached ();
-
 	nm_connection_editor_set_busy (editor, TRUE);
-	nm_settings_interface_add_connection (settings, connection, add_cb, info);
+
+	nm_remote_settings_add_connection (self->settings,
+	                                   nm_connection_editor_get_connection (editor),
+	                                   add_cb,
+	                                   info);
 }
 
 /**********************************************/
 /* Connection updating */
 
 typedef void (*UpdateResultFunc) (NMConnectionList *list,
-                                  NMSettingsConnectionInterface *connection,
+                                  NMRemoteConnection *connection,
                                   GError *error,
                                   gpointer user_data);
 
 typedef struct {
 	NMConnectionList *list;
 	NMConnectionEditor *editor;
-	NMSettingsConnectionInterface *connection;
-	NMConnectionScope orig_scope;
+	NMRemoteConnection *connection;
 	UpdateResultFunc callback;
 	gpointer callback_data;
 } UpdateInfo;
@@ -479,45 +424,11 @@ update_complete (UpdateInfo *info, GError *error)
 }
 
 static void
-update_remove_result_cb (NMConnectionList *list,
-                         GError *error,
-                         gpointer user_data)
-{
-	UpdateInfo *info = user_data;
-
-	update_complete (info, error);
-}
-
-static void
-update_add_result_cb (NMConnectionList *list, GError *error, gpointer user_data)
-{
-	UpdateInfo *info = user_data;
-
-	if (error) {
-		/* set the old scope back on the connection */
-		nm_connection_set_scope (NM_CONNECTION (info->connection), info->orig_scope);
-		update_complete (info, error);
-		return;
-	}
-
-	/* Now try to remove the original connection */
-	delete_connection (list, info->connection, info->orig_scope, update_remove_result_cb, info);
-}
-
-static void
-update_cb (NMSettingsConnectionInterface *connection,
-           GError *error,
-           gpointer user_data)
+update_cb (NMRemoteConnection *connection, GError *error, gpointer user_data)
 {
 	UpdateInfo *info = user_data;
 
 	nm_connection_editor_set_busy (info->editor, FALSE);
-
-	if (!error) {
-		/* Save user-connection vpn secrets */
-		if (nm_connection_get_scope (NM_CONNECTION (connection)) == NM_CONNECTION_SCOPE_USER)
-			nm_connection_editor_save_vpn_secrets (info->editor);
-	}
 
 	/* Clear secrets so they don't lay around in memory; they'll get requested
 	 * again anyway next time the connection is edited.
@@ -530,55 +441,34 @@ update_cb (NMSettingsConnectionInterface *connection,
 static void
 update_connection (NMConnectionList *list,
                    NMConnectionEditor *editor,
-                   NMSettingsConnectionInterface *connection,
-                   NMConnectionScope orig_scope,
+                   NMRemoteConnection *connection,
                    UpdateResultFunc callback,
                    gpointer user_data)
 {
-	NMConnectionScope new_scope;
 	UpdateInfo *info;
+	GHashTable *new_settings;
+	GError *error = NULL;
 
 	info = g_malloc0 (sizeof (UpdateInfo));
 	info->list = list;
 	info->editor = editor;
 	info->connection = g_object_ref (connection);
-	info->orig_scope = orig_scope;
 	info->callback = callback;
 	info->callback_data = user_data;
 
-	new_scope = nm_connection_get_scope (NM_CONNECTION (connection));
-	if (new_scope == orig_scope) {
-		/* The easy part: Connection is just updated and has the same scope */
-		GHashTable *new_settings;
-		GError *error = NULL;
-
-		/* System connections need the certificates filled because the
-		 * applet private values that we use to store the path to certificates
-		 * and private keys don't go through D-Bus; they are private of course!
-		 */
-		if (new_scope == NM_CONNECTION_SCOPE_SYSTEM) {
-			new_settings = nm_connection_to_hash (NM_CONNECTION (connection));
-			if (!nm_connection_replace_settings (NM_CONNECTION (connection),
-			                                     new_settings,
-			                                     &error)) {
-				update_complete (info, error);
-				g_error_free (error);
-				return;
-			}
-		}
-
-		/* Update() actually saves the connection settings to backing storage,
-		 * either GConf or over D-Bus.
-		 */
-		nm_connection_editor_set_busy (editor, TRUE);
-		nm_settings_connection_interface_update (connection, update_cb, info);
-	} else {
-		/* The hard part: Connection scope changed:
-		 * Add the modified connection to the new settings service, then delete
-		 * the original connection from the old settings service.
-		 */
-		add_connection (list, editor, update_add_result_cb, info);
+	/* Connections need the certificates filled because the
+	 * applet private values that we use to store the path to certificates
+	 * and private keys don't go through D-Bus; they are private of course!
+	 */
+	new_settings = nm_connection_to_hash (NM_CONNECTION (connection), NM_SETTING_HASH_FLAG_ALL);
+	if (!nm_connection_replace_settings (NM_CONNECTION (connection), new_settings, &error)) {
+		update_complete (info, error);
+		g_error_free (error);
+		return;
 	}
+
+	nm_connection_editor_set_busy (editor, TRUE);
+	nm_remote_connection_commit_changes (connection, update_cb, info);
 }
 
 /**********************************************/
@@ -665,7 +555,7 @@ really_add_connection (NMConnection *connection,
 		return;
 	}
 
-	editor = nm_connection_editor_new (connection, info->list->system_settings, &error);
+	editor = nm_connection_editor_new (connection, info->list->nm_client, &error);
 	if (!editor) {
 		g_object_unref (connection);
 
@@ -688,8 +578,7 @@ page_get_connections (gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
 
-	return g_slist_concat (nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (info->list->system_settings)),
-	                       nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (info->list->gconf_settings)));
+	return nm_remote_settings_list_connections (info->list->settings);
 }
 
 static void
@@ -715,12 +604,11 @@ add_clicked (GtkButton *button, gpointer user_data)
 typedef struct {
 	NMConnectionList *list;
 	NMConnectionEditor *editor;
-	NMConnectionScope orig_scope;
 } EditInfo;
 
 static void
 connection_updated_cb (NMConnectionList *list,
-                       NMSettingsConnectionInterface *connection,
+                       NMRemoteConnection *connection,
                        GError *error,
                        gpointer user_data)
 {
@@ -764,8 +652,7 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 			/* Save the connection to backing storage */
 			update_connection (info->list,
 			                   editor,
-			                   NM_SETTINGS_CONNECTION_INTERFACE (connection),
-			                   info->orig_scope,
+			                   NM_REMOTE_CONNECTION (connection),
 			                   connection_updated_cb,
 			                   info);
 		} else {
@@ -775,7 +662,7 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 			           g_type_name (nm_connection_lookup_setting_type_by_quark (edit_error->domain)),
 			           edit_error->message, edit_error->code);
 			connection_updated_cb (info->list,
-			                       NM_SETTINGS_CONNECTION_INTERFACE (connection),
+			                       NM_REMOTE_CONNECTION (connection),
 			                       edit_error,
 			                       info);
 			g_error_free (edit_error);
@@ -798,7 +685,7 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 static void
 do_edit (ActionInfo *info)
 {
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 	NMConnectionEditor *editor;
 	EditInfo *edit_info;
 	GError *error = NULL;
@@ -814,7 +701,7 @@ do_edit (ActionInfo *info)
 		return;
 	}
 
-	editor = nm_connection_editor_new (NM_CONNECTION (connection), info->list->system_settings, &error);
+	editor = nm_connection_editor_new (NM_CONNECTION (connection), info->list->nm_client, &error);
 	if (!editor) {
 		error_dialog (info->list_window,
 		              _("Could not edit connection"),
@@ -826,7 +713,6 @@ do_edit (ActionInfo *info)
 	edit_info = g_malloc0 (sizeof (EditInfo));
 	edit_info->list = info->list;
 	edit_info->editor = editor;
-	edit_info->orig_scope = nm_connection_get_scope (NM_CONNECTION (connection));
 
 	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), edit_info);
 	g_hash_table_insert (info->list->editors, connection, editor);
@@ -849,7 +735,7 @@ static void
 delete_clicked (GtkButton *button, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 	NMConnectionEditor *editor;
 	NMSettingConnection *s_con;
 	GtkWidget *dialog;
@@ -888,7 +774,6 @@ delete_clicked (GtkButton *button, gpointer user_data)
 	if (result == GTK_RESPONSE_YES) {
 		delete_connection (info->list,
 		                   connection,
-		                   nm_connection_get_scope (NM_CONNECTION (connection)),
 		                   delete_result_cb,
 		                   GTK_WINDOW (info->list->dialog));
 	}
@@ -900,30 +785,21 @@ pk_button_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 	ActionInfo *info = (ActionInfo *) user_data;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 	NMSettingConnection *s_con;
-	NMConnectionScope scope;
 	gboolean sensitive = FALSE;
-	gboolean use_polkit = FALSE;
 
-	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
-		goto done;
+	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+		connection = get_active_connection (info->treeview);
+		if (connection) {
+			s_con = (NMSettingConnection *) nm_connection_get_setting (NM_CONNECTION (connection),
+			                                                           NM_TYPE_SETTING_CONNECTION);
+			g_assert (s_con);
+	
+			sensitive = !nm_setting_connection_get_read_only (s_con);
+		}
+	}
 
-	connection = get_active_connection (info->treeview);
-	if (!connection)
-		goto done;
-
-	scope = nm_connection_get_scope (NM_CONNECTION (connection));
-	use_polkit = (scope == NM_CONNECTION_SCOPE_SYSTEM);
-
-	s_con = (NMSettingConnection *) nm_connection_get_setting (NM_CONNECTION (connection),
-	                                                           NM_TYPE_SETTING_CONNECTION);
-	g_assert (s_con);
-
-	sensitive = !nm_setting_connection_get_read_only (s_con);
-
-done:
-	ce_polkit_button_set_use_polkit (CE_POLKIT_BUTTON (info->button), use_polkit);
 	ce_polkit_button_set_master_sensitive (CE_POLKIT_BUTTON (info->button), sensitive);
 }
 
@@ -932,7 +808,7 @@ vpn_list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
 	NMVpnPluginUiInterface *plugin;
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 	NMSettingVPN *s_vpn;
 	const char *service_type;
 	GtkTreeIter iter;
@@ -988,10 +864,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 	if (!s) {
 		GSList *connections;
 
-		connections = nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (info->list->system_settings));
-		connections = g_slist_concat (connections,
-		                              nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (info->list->gconf_settings)));
-
+		connections = nm_remote_settings_list_connections (info->list->settings);
 		s = utils_next_available_name (connections, _("VPN connection %d"));
 		g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
 		g_free (s);
@@ -1033,7 +906,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 		return;
 	}
 
-	editor = nm_connection_editor_new (connection, info->list->system_settings, &error);
+	editor = nm_connection_editor_new (connection, info->list->nm_client, &error);
 	if (!editor) {
 		g_object_unref (connection);
 		error_dialog (info->list_window,
@@ -1059,7 +932,7 @@ static void
 export_vpn_cb (GtkButton *button, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
-	NMSettingsConnectionInterface *connection;
+	NMRemoteConnection *connection;
 
 	connection = get_active_connection (info->treeview);
 	if (connection)
@@ -1113,16 +986,13 @@ dispose (GObject *object)
 
 	if (list->gui)
 		g_object_unref (list->gui);
-	if (list->client)
-		g_object_unref (list->client);
+	if (list->nm_client)
+		g_object_unref (list->nm_client);
 
 	g_slist_free (list->treeviews);
 
-	if (list->gconf_settings)
-		g_object_unref (list->gconf_settings);
-
-	if (list->system_settings)
-		g_object_unref (list->system_settings);
+	if (list->settings)
+		g_object_unref (list->settings);
 
 	G_OBJECT_CLASS (nm_connection_list_parent_class)->dispose (object);
 }
@@ -1295,8 +1165,8 @@ add_connection_buttons (NMConnectionList *self,
 	                               _("_Edit..."),
 	                               _("Authenticate to edit the selected connection"),
 	                               GTK_STOCK_EDIT,
-	                               self->system_settings,
-	                               NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
+	                               self->nm_client,
+	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
 	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
@@ -1313,8 +1183,8 @@ add_connection_buttons (NMConnectionList *self,
 	                               _("_Delete..."),
 	                               _("Authenticate to delete the selected connection"),
 	                               GTK_STOCK_DELETE,
-	                               self->system_settings,
-	                               NM_SETTINGS_SYSTEM_PERMISSION_CONNECTION_MODIFY);
+	                               self->nm_client,
+	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
 	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
@@ -1422,7 +1292,7 @@ add_connection_tabs (NMConnectionList *self, GType def_type)
 }
 
 static void
-connection_removed (NMSettingsConnectionInterface *connection, gpointer user_data)
+connection_removed (NMRemoteConnection *connection, gpointer user_data)
 {
 	GtkListStore *store = GTK_LIST_STORE (user_data);
 	GtkTreeIter iter;
@@ -1432,9 +1302,7 @@ connection_removed (NMSettingsConnectionInterface *connection, gpointer user_dat
 }
 
 static void
-connection_updated (NMSettingsConnectionInterface *connection,
-                    GHashTable *settings,
-                    gpointer user_data)
+connection_updated (NMRemoteConnection *connection, gpointer user_data)
 {
 	GtkListStore *store = GTK_LIST_STORE (user_data);
 	GtkTreeIter iter;
@@ -1444,8 +1312,8 @@ connection_updated (NMSettingsConnectionInterface *connection,
 }
 
 static void
-connection_added (NMSettingsInterface *settings,
-                  NMSettingsConnectionInterface *connection,
+connection_added (NMRemoteSettings *settings,
+                  NMRemoteConnection *connection,
                   gpointer user_data)
 {
 	NMConnectionList *self = NM_CONNECTION_LIST (user_data);
@@ -1472,8 +1340,8 @@ connection_added (NMSettingsInterface *settings,
 
 	g_free (last_used);
 
-	g_signal_connect (connection, "removed", G_CALLBACK (connection_removed), store);
-	g_signal_connect (connection, "updated", G_CALLBACK (connection_updated), store);
+	g_signal_connect (connection, NM_REMOTE_CONNECTION_REMOVED, G_CALLBACK (connection_removed), store);
+	g_signal_connect (connection, NM_REMOTE_CONNECTION_UPDATED, G_CALLBACK (connection_updated), store);
 }
 
 #define ICON_LOAD(x, y)	\
@@ -1517,8 +1385,8 @@ nm_connection_list_new (GType def_type)
 	ICON_LOAD(list->vpn_icon, "nm-vpn-standalone-lock");
 	ICON_LOAD(list->unknown_icon, "nm-no-connection");
 
-	list->client = gconf_client_get_default ();
-	if (!list->client)
+	list->nm_client = nm_client_new ();
+	if (!list->nm_client)
 		goto error;
 
 	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
@@ -1528,16 +1396,10 @@ nm_connection_list_new (GType def_type)
 		goto error;
 	}
 
-	list->system_settings = nm_remote_settings_system_new (bus);
+	list->settings = nm_remote_settings_new (bus);
 	dbus_g_connection_unref (bus);
-	g_signal_connect (list->system_settings,
-	                  NM_SETTINGS_INTERFACE_NEW_CONNECTION,
-	                  G_CALLBACK (connection_added),
-	                  list);
-
-	list->gconf_settings = nma_gconf_settings_new (NULL);
-	g_signal_connect (list->gconf_settings,
-	                  NM_SETTINGS_INTERFACE_NEW_CONNECTION,
+	g_signal_connect (list->settings,
+	                  NM_REMOTE_SETTINGS_NEW_CONNECTION,
 	                  G_CALLBACK (connection_added),
 	                  list);
 

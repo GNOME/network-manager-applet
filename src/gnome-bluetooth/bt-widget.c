@@ -40,7 +40,8 @@
 #include <nm-setting-serial.h>
 #include <nm-setting-ppp.h>
 #include <nm-utils.h>
-#include <nma-gconf-settings.h>
+#include <nm-remote-settings.h>
+#include <nm-remote-connection.h>
 
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
@@ -64,7 +65,7 @@
 #define MM_MODEM_INTERFACE "org.freedesktop.ModemManager.Modem"
 
 typedef struct {
-	NMSettingsInterface *settings;
+	NMRemoteSettings *settings;
 	char *bdaddr;
 	BluetoothClient *btclient;
 	GtkTreeModel *btmodel;
@@ -72,12 +73,12 @@ typedef struct {
 	gboolean pan;
 	GtkWidget *pan_button;
 	guint pan_toggled_id;
-	NMSettingsConnectionInterface *pan_connection;
+	NMRemoteConnection *pan_connection;
 
 	gboolean dun;
 	GtkWidget *dun_button;
 	guint dun_toggled_id;
-	NMSettingsConnectionInterface *dun_connection;
+	NMRemoteConnection *dun_connection;
 
 	GtkWidget *hbox;
 	GtkWidget *label;
@@ -186,23 +187,57 @@ get_device_iter (GtkTreeModel *model, const char *bdaddr, GtkTreeIter *out_iter)
 
 /*******************************************************************/
 
-static NMSettingsConnectionInterface *
+static void
+pan_cleanup (PluginInfo *info, const char *message, gboolean uncheck)
+{
+	if (info->spinner) {
+		gtk_spinner_stop (GTK_SPINNER (info->spinner));
+		gtk_widget_hide (info->spinner);
+	}
+
+	gtk_label_set_text (GTK_LABEL (info->label), message);
+	gtk_widget_set_sensitive (info->pan_button, TRUE);
+
+	if (uncheck) {
+		g_signal_handler_block (info->pan_button, info->pan_toggled_id);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (info->pan_button), FALSE);
+		g_signal_handler_unblock (info->pan_button, info->pan_toggled_id);
+	}
+}
+
+static void
+pan_add_cb (NMRemoteSettings *settings,
+            NMRemoteConnection *connection,
+            GError *error,
+            gpointer user_data)
+{
+	PluginInfo *info = user_data;
+	char *message;
+
+	if (error) {
+		message = g_strdup_printf (_("Failed to create PAN connection: %s"), error->message);
+		pan_cleanup (info, message, TRUE);
+		g_free (message);
+	} else {
+		info->pan_connection = connection;
+		pan_cleanup (info, _("Your phone is now ready to use!"), FALSE);
+	}
+}
+
+static void
 add_pan_connection (PluginInfo *info)
 {
 	NMConnection *connection;
 	NMSetting *setting, *bt_setting, *ip_setting;
-	NMAGConfSettings *gconf_settings;
-	NMAGConfConnection *exported = NULL;
 	GByteArray *mac;
 	char *id, *uuid, *alias = NULL;
 	GtkTreeIter iter;
 
+	mac = get_array_from_bdaddr (info->bdaddr);
+	g_assert (mac);
+
 	if (get_device_iter (info->btmodel, info->bdaddr, &iter))
 		gtk_tree_model_get (info->btmodel, &iter, BLUETOOTH_COLUMN_ALIAS, &alias, -1);
-
-	mac = get_array_from_bdaddr (info->bdaddr);
-	if (mac == NULL)
-		goto out;
 
 	/* The connection */
 	connection = nm_connection_new ();
@@ -236,13 +271,30 @@ add_pan_connection (PluginInfo *info)
 	              NULL);
 	nm_connection_add_setting (connection, ip_setting);
 
-	gconf_settings = nma_gconf_settings_new (NULL);
-	exported = nma_gconf_settings_add_connection (gconf_settings, connection);
+	/* Add the connection to the settings service */
+	nm_remote_settings_add_connection (info->settings,
+	                                   connection,
+	                                   pan_add_cb,
+	                                   info);
 
-out:
 	g_byte_array_free (mac, TRUE);
 	g_free (alias);
-	return exported ? NM_SETTINGS_CONNECTION_INTERFACE (exported) : NULL;
+}
+
+static void
+pan_start (PluginInfo *info)
+{
+	/* Start the spinner */
+	if (!info->spinner) {
+		info->spinner = gtk_spinner_new ();
+		gtk_box_pack_start (GTK_BOX (info->hbox), info->spinner, FALSE, FALSE, 6);
+	}
+	gtk_spinner_start (GTK_SPINNER (info->spinner));
+	gtk_widget_show_all (info->hbox);
+
+	gtk_widget_set_sensitive (info->pan_button, FALSE);
+
+	add_pan_connection (info);
 }
 
 /*******************************************************************/
@@ -422,6 +474,25 @@ dun_new_gsm (MobileWizardAccessMethod *method)
 }
 
 static void
+dun_add_cb (NMRemoteSettings *settings,
+            NMRemoteConnection *connection,
+            GError *error,
+            gpointer user_data)
+{
+	PluginInfo *info = user_data;
+	char *message;
+
+	if (error) {
+		message = g_strdup_printf (_("Failed to create DUN connection: %s"), error->message);
+		dun_cleanup (info, message, TRUE);
+		g_free (message);
+	} else {
+		info->dun_connection = connection;
+		dun_cleanup (info, _("Your phone is now ready to use!"), FALSE);
+	}
+}
+
+static void
 wizard_done_cb (MobileWizard *self,
                 gboolean canceled,
                 MobileWizardAccessMethod *method,
@@ -429,8 +500,6 @@ wizard_done_cb (MobileWizard *self,
 {
 	PluginInfo *info = user_data;
 	NMConnection *connection = NULL;
-	NMAGConfSettings *gconf_settings;
-	NMAGConfConnection *exported;
 	GByteArray *mac;
 	NMSetting *s_bt;
 
@@ -466,15 +535,15 @@ wizard_done_cb (MobileWizard *self,
 	g_byte_array_free (mac, TRUE);
 	nm_connection_add_setting (connection, s_bt);
 
-	g_message ("%s: adding new setting to GConf", __func__);
+	g_message ("%s: adding new setting", __func__);
 
-	gconf_settings = nma_gconf_settings_new (NULL);
-	exported = nma_gconf_settings_add_connection (gconf_settings, connection);
-	if (exported)
-		info->dun_connection = NM_SETTINGS_CONNECTION_INTERFACE (exported);
+	/* Add the connection to the settings service */
+	nm_remote_settings_add_connection (info->settings,
+	                                   connection,
+	                                   dun_add_cb,
+	                                   info);
 
-	g_message ("%s: success!", __func__);
-	dun_cleanup (info, _("Your phone is now ready to use!"), FALSE);
+	g_message ("%s: waiting for add connection result...", __func__);
 }
 
 static void
@@ -704,14 +773,6 @@ dun_start (PluginInfo *info)
 
 	g_message ("%s: starting DUN device discovery...", __func__);
 
-	/* Set up dbus */
-	info->bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (error || !info->bus) {
-		dun_error (info, __func__, error, _("could not connect to the system bus."));
-		g_clear_error (&error);
-		goto out;
-	}
-
 	gtk_label_set_text (GTK_LABEL (info->label), _("Detecting phone configuration..."));
 
 	/* Start the spinner */
@@ -780,16 +841,13 @@ dun_start (PluginInfo *info)
 	} else
 		dun_error (info, __func__, error, _("could not find the Bluetooth device."));
 
-out:
 	g_message ("%s: finished", __func__);
 }
 
 /*******************************************************************/
 
 static void
-delete_cb (NMSettingsConnectionInterface *connection,
-           GError *error,
-           gpointer user_data)
+delete_cb (NMRemoteConnection *connection, GError *error, gpointer user_data)
 {
 	if (error) {
 		g_warning ("Error deleting connection: (%d) %s",
@@ -804,10 +862,10 @@ pan_button_toggled (GtkToggleButton *button, gpointer user_data)
 	PluginInfo *info = user_data;
 
 	if (gtk_toggle_button_get_active (button) == FALSE) {
-		nm_settings_connection_interface_delete (info->pan_connection, delete_cb, NULL);
+		nm_remote_connection_delete (info->pan_connection, delete_cb, NULL);
 		info->pan_connection = NULL;
 	} else
-		info->pan_connection = add_pan_connection (info);
+		pan_start (info);
 }
 
 static void
@@ -816,54 +874,60 @@ dun_button_toggled (GtkToggleButton *button, gpointer user_data)
 	PluginInfo *info = user_data;
 
 	if (gtk_toggle_button_get_active (button) == FALSE) {
-		nm_settings_connection_interface_delete (info->dun_connection, delete_cb, NULL);
+		nm_remote_connection_delete (info->dun_connection, delete_cb, NULL);
 		info->dun_connection = NULL;
 	} else
 		dun_start (info);
 }
 
-static NMSettingsConnectionInterface *
-get_connection_for_bdaddr (NMSettingsInterface *settings,
+static gboolean
+match_connection (NMConnection *connection, GByteArray *bdaddr, gboolean pan)
+{
+	NMSetting *setting;
+	const char *type;
+	const GByteArray *tmp;
+
+	setting = nm_connection_get_setting_by_name (connection, NM_SETTING_BLUETOOTH_SETTING_NAME);
+	if (setting == NULL)
+		return FALSE;
+
+	type = nm_setting_bluetooth_get_connection_type (NM_SETTING_BLUETOOTH (setting));
+	if (pan) {
+		if (g_strcmp0 (type, NM_SETTING_BLUETOOTH_TYPE_PANU) != 0)
+			return FALSE;
+	} else {
+		if (g_strcmp0 (type, NM_SETTING_BLUETOOTH_TYPE_DUN) != 0)
+			return FALSE;
+	}
+
+	tmp = nm_setting_bluetooth_get_bdaddr (NM_SETTING_BLUETOOTH (setting));
+	if (tmp == NULL || memcmp (tmp->data, bdaddr->data, tmp->len) != 0)
+		return FALSE;
+
+	return TRUE;
+}
+
+static NMRemoteConnection *
+get_connection_for_bdaddr (NMRemoteSettings *settings,
                            const char *bdaddr,
                            gboolean pan)
 {
-	NMSettingsConnectionInterface *found = NULL;
-	GSList *list, *l;
+	NMRemoteConnection *found = NULL;
+	GSList *list, *iter;
 	GByteArray *array;
 
 	array = get_array_from_bdaddr (bdaddr);
-	if (array == NULL)
-		return NULL;
-
-	list = nm_settings_interface_list_connections (settings);
-	for (l = list; l != NULL; l = l->next) {
-		NMSettingsConnectionInterface *candidate = l->data;
-		NMSetting *setting;
-		const char *type;
-		const GByteArray *addr;
-
-		setting = nm_connection_get_setting_by_name (NM_CONNECTION (candidate), NM_SETTING_BLUETOOTH_SETTING_NAME);
-		if (setting == NULL)
-			continue;
-
-		type = nm_setting_bluetooth_get_connection_type (NM_SETTING_BLUETOOTH (setting));
-		if (pan) {
-			if (g_strcmp0 (type, NM_SETTING_BLUETOOTH_TYPE_PANU) != 0)
-				continue;
-		} else {
-			if (g_strcmp0 (type, NM_SETTING_BLUETOOTH_TYPE_DUN) != 0)
-				continue;
+	if (array) {
+		list = nm_remote_settings_list_connections (settings);
+		for (iter = list; iter != NULL; iter = g_slist_next (iter)) {
+			if (match_connection (NM_CONNECTION (iter->data), array, pan)) {
+				found = iter->data;
+				break;
+			}
 		}
-
-		addr = nm_setting_bluetooth_get_bdaddr (NM_SETTING_BLUETOOTH (setting));
-		if (addr == NULL || memcmp (addr->data, array->data, addr->len) != 0)
-			continue;
-		found = candidate;
-		break;
+		g_slist_free (list);
+		g_byte_array_free (array, TRUE);
 	}
-	g_slist_free (list);
-
-	g_byte_array_free (array, TRUE);
 	return found;
 }
 
@@ -978,6 +1042,8 @@ get_config_widgets (const char *bdaddr, const char **uuids)
 	PluginInfo *info;
 	GtkWidget *vbox, *hbox;
 	gboolean pan = FALSE, dun = FALSE;
+	DBusGConnection *bus;
+	GError *error = NULL;
 
 	/* Don't allow configuration if NM isn't running; it just confuses people
 	 * if they see the checkboxes but the configuration doesn't seem to have
@@ -990,8 +1056,18 @@ get_config_widgets (const char *bdaddr, const char **uuids)
 	if (!pan && !dun)
 		return NULL;
 
+	/* Set up dbus */
+	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (error || !bus) {
+		g_warning ("%s: failed to get a connection to D-Bus! %s", __func__,
+		           error ? error->message : "(unknown)");
+		g_clear_error (&error);
+		return NULL;
+	}
+
 	info = g_malloc0 (sizeof (PluginInfo));
-	info->settings = NM_SETTINGS_INTERFACE (nma_gconf_settings_new (NULL));
+	info->bus = bus;
+	info->settings = nm_remote_settings_new (bus);
 	info->bdaddr = g_strdup (bdaddr);
 	info->pan = pan;
 	info->dun = dun;
@@ -1041,33 +1117,111 @@ get_config_widgets (const char *bdaddr, const char **uuids)
 	return vbox;
 }
 
+typedef struct {
+	NMRemoteSettings *settings;
+	GByteArray *bdaddr;
+	char *str_bdaddr;
+	guint timeout_id;
+} RemoveInfo;
+
+static void
+remove_cleanup (RemoveInfo *info)
+{
+	g_object_unref (info->settings);
+	g_byte_array_free (info->bdaddr, TRUE);
+	g_free (info->str_bdaddr);
+	memset (info, 0, sizeof (RemoveInfo));
+	g_free (info);
+}
+
+static GSList *
+list_connections_for_bdaddr (NMRemoteSettings *settings, GByteArray *bdaddr, gboolean pan)
+{
+	GSList *list, *iter, *ret = NULL;
+
+	list = nm_remote_settings_list_connections (settings);
+	for (iter = list; iter != NULL; iter = g_slist_next (iter)) {
+		if (match_connection (NM_CONNECTION (iter->data), bdaddr, pan))
+			ret = g_slist_prepend (ret, iter->data);
+	}
+	g_slist_free (list);
+	return ret;
+}
+
+static void
+remove_connections_read (NMRemoteSettings *settings, gpointer user_data)
+{
+	RemoveInfo *info = user_data;
+	GSList *list, *iter;
+
+	g_source_remove (info->timeout_id);
+
+	g_message ("Removing Bluetooth connections for %s", info->str_bdaddr);
+
+	/* First PAN */
+	list = list_connections_for_bdaddr (info->settings, info->bdaddr, TRUE);
+	for (iter = list; iter; iter = g_slist_next (iter))
+			nm_remote_connection_delete (NM_REMOTE_CONNECTION (iter->data), delete_cb, NULL);
+	g_slist_free (list);
+
+	/* Now DUN */
+	list = list_connections_for_bdaddr (info->settings, info->bdaddr, FALSE);
+	for (iter = list; iter; iter = g_slist_next (iter))
+			nm_remote_connection_delete (NM_REMOTE_CONNECTION (iter->data), delete_cb, NULL);
+	g_slist_free (list);
+
+	remove_cleanup (info);
+}
+
+static gboolean
+remove_timeout (gpointer user_data)
+{
+	RemoveInfo *info = user_data;
+
+	g_message ("Timed out removing Bluetooth connections for %s", info->str_bdaddr);
+	remove_cleanup (info);
+	return FALSE;
+}
+
 static void
 device_removed (const char *bdaddr)
 {
-	NMSettingsConnectionInterface *connection;
-	NMSettingsInterface *settings;
+	GError *error = NULL;
+	DBusGConnection *bus;
+	RemoveInfo *info;
+	GByteArray *array;
 
 	g_message ("Device '%s' was removed; deleting connections", bdaddr);
 
 	/* Remove any connections associated with the deleted device */
 
-	settings = NM_SETTINGS_INTERFACE (nma_gconf_settings_new (NULL));
+	array = get_array_from_bdaddr (bdaddr);
+	if (!array) {
+		g_warning ("Failed to convert Bluetooth address '%s'", bdaddr);
+		return;
+	}
 
-	/* First PAN */
-	do {
-		connection = get_connection_for_bdaddr (settings, bdaddr, TRUE);
-		if (connection)
-			nm_settings_connection_interface_delete (connection, delete_cb, NULL);
-	} while (connection);
+	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+	if (error || !bus) {
+		g_warning ("%s: failed to get a connection to D-Bus! %s", __func__,
+		           error ? error->message : "(unknown)");
+		g_clear_error (&error);
+		g_byte_array_free (array, TRUE);
+		return;
+	}
 
-	/* Now DUN */
-	do {
-		connection = get_connection_for_bdaddr (settings, bdaddr, FALSE);
-		if (connection)
-			nm_settings_connection_interface_delete (connection, delete_cb, NULL);
-	} while (connection);
+	info = g_malloc0 (sizeof (RemoveInfo));
+	info->settings = nm_remote_settings_new (bus);
+	info->bdaddr = array;
+	info->str_bdaddr = g_strdup (bdaddr);
+	info->timeout_id = g_timeout_add_seconds (15, remove_timeout, info);
 
-	g_object_unref (settings);
+	g_signal_connect (info->settings,
+	                  NM_REMOTE_SETTINGS_CONNECTIONS_READ,
+	                  G_CALLBACK (remove_connections_read),
+	                  info);
+
+	dbus_g_connection_unref (bus);
 }
 
 static GbtPluginInfo plugin_info = {

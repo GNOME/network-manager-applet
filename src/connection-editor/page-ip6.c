@@ -359,7 +359,6 @@ populate_ui (CEPageIP6 *self)
 		NMIP6Address *addr = nm_setting_ip6_config_get_address (setting, i);
 		const struct in6_addr *tmp_addr;
 		char buf[INET6_ADDRSTRLEN + 1];
-		const char *ignored;
 
 		if (!addr) {
 			g_warning ("%s: empty IP6 Address structure!", __func__);
@@ -370,7 +369,7 @@ populate_ui (CEPageIP6 *self)
 
 		/* Address */
 		tmp_addr = nm_ip6_address_get_address (addr);
-		ignored = inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
+		(void) inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
 		gtk_list_store_set (store, &model_iter, COL_ADDRESS, buf, -1);
 
 		/* Prefix */
@@ -380,7 +379,7 @@ populate_ui (CEPageIP6 *self)
 		/* Gateway */
 		tmp_addr = nm_ip6_address_get_gateway (addr);
 		if (tmp_addr && !IN6_IS_ADDR_UNSPECIFIED (tmp_addr)) {
-			ignored = inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
+			(void) inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
 			gtk_list_store_set (store, &model_iter, COL_GATEWAY, buf, -1);
 		}
 	}
@@ -395,13 +394,12 @@ populate_ui (CEPageIP6 *self)
 	for (i = 0; i < nm_setting_ip6_config_get_num_dns (setting); i++) {
 		const struct in6_addr *tmp_addr;
 		char buf[INET6_ADDRSTRLEN + 1];
-		const char *ignored;
 
 		tmp_addr = nm_setting_ip6_config_get_dns (setting, i);
 		if (!tmp_addr)
 			continue;
 
-		ignored = inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
+		(void) inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
 		if (string->len)
 			g_string_append (string, ", ");
 		g_string_append (string, buf);
@@ -700,15 +698,11 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 	gint offset;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
-	GtkListStore *store;
 
 	if (error)
 		return;
 
 	populate_ui (self);
-
-	/* Address column */
-	store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
 
 	/* IP Address column */
 	renderer = gtk_cell_renderer_text_new ();

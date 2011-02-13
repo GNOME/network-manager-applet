@@ -27,8 +27,6 @@
 #include <glib.h>
 #include <nm-connection.h>
 
-#include "nma-gconf-connection.h"
-
 #define GCONF_PATH_CONNECTIONS "/system/networking/connections"
 
 /* The stamp is a mechanism for determining which applet version last
@@ -268,14 +266,10 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
                            const char *secret);
 
 typedef void (*PreKeyringCallback) (gpointer user_data);
-void nm_gconf_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data);
-void pre_keyring_callback (void);
+void applet_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data);
 
 gboolean nm_gconf_get_ignore_ca_cert (const char *uuid, gboolean phase2);
 void nm_gconf_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore);
-
-gboolean nm_gconf_get_8021x_password_always_ask (const char *uuid);
-void nm_gconf_set_8021x_password_always_ask (const char *uuid, gboolean always_ask);
 
 #endif	/* GCONF_HELPERS_H */
 

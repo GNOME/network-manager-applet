@@ -26,7 +26,7 @@
 
 #include <glib-object.h>
 
-#include "nm-remote-settings-system.h"
+#include <nm-client.h>
 
 #define NM_TYPE_CONNECTION_EDITOR    (nm_connection_editor_get_type ())
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))
@@ -38,17 +38,18 @@ typedef struct {
 	GObject parent;
 	gboolean disposed;
 
+	NMClient *client;
+	guint permission_id;
+
 	/* private data */
 	NMConnection *connection;
 	NMConnection *orig_connection;
 
-	NMConnectionScope orig_scope;
-
 	GetSecretsInfo *secrets_call;
 	GSList *pending_secrets_calls;
 
-	GtkWidget *system_checkbutton;
-	gboolean system_settings_can_modify;
+	GtkWidget *all_checkbutton;
+	NMClientPermissionResult can_modify;
 
 	GSList *initializing_pages;
 	GSList *pages;
@@ -70,12 +71,11 @@ typedef struct {
 
 GType               nm_connection_editor_get_type (void);
 NMConnectionEditor *nm_connection_editor_new (NMConnection *connection,
-                                              NMRemoteSettingsSystem *settings,
+                                              NMClient *client,
                                               GError **error);
 
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
-void                nm_connection_editor_save_vpn_secrets (NMConnectionEditor *editor);
 NMConnection *      nm_connection_editor_get_connection (NMConnectionEditor *editor);
 gboolean            nm_connection_editor_update_connection (NMConnectionEditor *editor, GError **error);
 GtkWindow *         nm_connection_editor_get_window (NMConnectionEditor *editor);

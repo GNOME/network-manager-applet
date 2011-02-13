@@ -21,6 +21,7 @@
  */
 
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <net/ethernet.h>
@@ -45,12 +46,10 @@
 #include <nm-setting-vpn.h>
 #include <nm-setting-ip4-config.h>
 #include <nm-utils.h>
-#include <nm-settings-interface.h>
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
 #include "utils.h"
-#include "applet.h"
 
 #define S390_OPT_KEY_PREFIX "s390-opt-"
 
@@ -67,6 +66,8 @@
 #define DBUS_TYPE_G_ARRAY_OF_IP6_ADDRESS    (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ADDRESS))
 #define DBUS_TYPE_G_IP6_ROUTE               (dbus_g_type_get_struct ("GValueArray", DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, G_TYPE_INVALID))
 #define DBUS_TYPE_G_ARRAY_OF_IP6_ROUTE      (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ROUTE))
+
+#define APPLET_PREFS_PATH "/apps/nm-applet"
 
 const char *applet_8021x_cert_keys[] = {
 	"ca-cert",
@@ -88,13 +89,13 @@ static gpointer pre_keyring_user_data = NULL;
 
 /* Sets a function to be called before each keyring access */
 void
-nm_gconf_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data)
+applet_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data)
 {
 	pre_keyring_cb = func;
 	pre_keyring_user_data = user_data;
 }
 
-void
+static void
 pre_keyring_callback (void)
 {
 	GnomeKeyringInfo *info = NULL;
@@ -1988,24 +1989,15 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	g_return_if_fail (setting_key != NULL);
 	g_return_if_fail (secret != NULL);
 
-	display_name = g_strdup_printf ("Network secret for %s/%s/%s",
-	                                connection_name,
-	                                setting_name,
-	                                setting_key);
-
-	attrs = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attrs,
-	                                            KEYRING_UUID_TAG,
-	                                            connection_uuid);
-	gnome_keyring_attribute_list_append_string (attrs,
-	                                            KEYRING_SN_TAG,
-	                                            setting_name);
-	gnome_keyring_attribute_list_append_string (attrs,
-	                                            KEYRING_SK_TAG,
-	                                            setting_key);
-
 	pre_keyring_callback ();
 
+	attrs = utils_create_keyring_add_attr_list (NULL,
+	                                            connection_uuid,
+	                                            connection_name,
+	                                            setting_name,
+	                                            setting_key,
+	                                            &display_name);
+	g_assert (attrs);
 	ret = gnome_keyring_item_create_sync (NULL,
 	                                      GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      display_name,
@@ -2013,7 +2005,10 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	                                      secret,
 	                                      TRUE,
 	                                      &id);
-
+	if (ret != GNOME_KEYRING_RESULT_OK) {
+		g_warning ("Failed to add keyring item (%s/%s/%s/%s): %d",
+		           connection_uuid, connection_name, setting_name, setting_key, ret);
+	}
 	gnome_keyring_attribute_list_free (attrs);
 	g_free (display_name);
 }
@@ -2129,7 +2124,7 @@ write_secret_file (const char *path,
 
 	tmppath = g_malloc0 (strlen (path) + 10);
 	if (!tmppath) {
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not allocate memory for temporary file for '%s'",
 		             path);
 		return FALSE;
@@ -2141,7 +2136,7 @@ write_secret_file (const char *path,
 	errno = 0;
 	fd = mkstemp (tmppath);
 	if (fd < 0) {
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not create temporary file for '%s': %d",
 		             path, errno);
 		goto out;
@@ -2152,7 +2147,7 @@ write_secret_file (const char *path,
 	if (fchmod (fd, S_IRUSR | S_IWUSR)) {
 		close (fd);
 		unlink (tmppath);
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not set permissions for temporary file '%s': %d",
 		             path, errno);
 		goto out;
@@ -2163,7 +2158,7 @@ write_secret_file (const char *path,
 	if (written != len) {
 		close (fd);
 		unlink (tmppath);
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not write temporary file for '%s': %d",
 		             path, errno);
 		goto out;
@@ -2174,7 +2169,7 @@ write_secret_file (const char *path,
 	errno = 0;
 	if (rename (tmppath, path)) {
 		unlink (tmppath);
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Could not rename temporary file to '%s': %d",
 		             path, errno);
 		goto out;
@@ -2353,8 +2348,10 @@ write_object (GConfClient *client,
 		 * deleted, but /etc/pki/tls/cert.pem would not.
 		 */
 		standard_file = generate_cert_path (id, objtype->suffix);
-		if (g_file_test (standard_file, G_FILE_TEST_EXISTS))
+		if (g_file_test (standard_file, G_FILE_TEST_EXISTS)) {
 			ignored = unlink (standard_file);
+			if (ignored) {};  /* shut gcc up */
+		}
 		g_free (standard_file);
 
 		/* Delete the key from GConf */
@@ -2378,7 +2375,7 @@ write_object (GConfClient *client,
 
 		new_file = generate_cert_path (id, objtype->suffix);
 		if (!new_file) {
-			g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+			g_set_error (error, 0, 0,
 			             "Could not create file path for %s / %s",
 			             setting_name, objtype->setting_key);
 			return FALSE;
@@ -2393,7 +2390,7 @@ write_object (GConfClient *client,
 			nm_gconf_set_string_helper (client, dir, objtype->setting_key, setting_name, new_file);
 			return TRUE;
 		} else {
-			g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+			g_set_error (error, 0, 0,
 			             "Could not write certificate/key for %s / %s: %s",
 			             setting_name, objtype->setting_key,
 			             (write_error && write_error->message) ? write_error->message : "(unknown)");
@@ -2493,7 +2490,7 @@ write_one_certificate (GConfClient *client,
 	}
 
 	if (!handled) {
-		g_set_error (error, NM_SETTINGS_INTERFACE_ERROR, 0,
+		g_set_error (error, 0, 0,
 		             "Unhandled certificate/private-key item '%s'",
 		             key);
 	}
@@ -2769,6 +2766,7 @@ nm_gconf_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore)
 	g_object_unref (client);
 }
 
+#if 0
 static char *
 get_always_ask_path (const char *uuid)
 {
@@ -2814,3 +2812,4 @@ nm_gconf_set_8021x_password_always_ask (const char *uuid, gboolean ask)
 	g_object_unref (client);
 }
 
+#endif

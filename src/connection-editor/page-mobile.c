@@ -34,7 +34,6 @@
 
 #include "page-mobile.h"
 #include "nm-connection-editor.h"
-#include "gconf-helpers.h"
 #include "mobile-wizard.h"
 
 G_DEFINE_TYPE (CEPageMobile, ce_page_mobile, CE_TYPE_PAGE)
@@ -117,19 +116,19 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 		gtk_entry_set_text (priv->network_id, s);
 
 	switch (nm_setting_gsm_get_network_type (setting)) {
-	case NM_GSM_NETWORK_UMTS_HSPA:
+	case NM_SETTING_GSM_NETWORK_TYPE_UMTS_HSPA:
 		type_idx = NET_TYPE_3G;
 		break;
-	case NM_GSM_NETWORK_GPRS_EDGE:
+	case NM_SETTING_GSM_NETWORK_TYPE_GPRS_EDGE:
 		type_idx = NET_TYPE_2G;
 		break;
-	case NM_GSM_NETWORK_PREFER_UMTS_HSPA:
+	case NM_SETTING_GSM_NETWORK_TYPE_PREFER_UMTS_HSPA:
 		type_idx = NET_TYPE_PREFER_3G;
 		break;
-	case NM_GSM_NETWORK_PREFER_GPRS_EDGE:
+	case NM_SETTING_GSM_NETWORK_TYPE_PREFER_GPRS_EDGE:
 		type_idx = NET_TYPE_PREFER_2G;
 		break;
-	case NM_GSM_NETWORK_ANY:
+	case NM_SETTING_GSM_NETWORK_TYPE_ANY:
 	default:
 		type_idx = NET_TYPE_ANY;
 		break;
@@ -412,20 +411,20 @@ gsm_ui_to_setting (CEPageMobile *self)
 
 	switch (gtk_combo_box_get_active (priv->network_type)) {
 	case NET_TYPE_3G:
-		net_type = NM_GSM_NETWORK_UMTS_HSPA;
+		net_type = NM_SETTING_GSM_NETWORK_TYPE_UMTS_HSPA;
 		break;
 	case NET_TYPE_2G:
-		net_type = NM_GSM_NETWORK_GPRS_EDGE;
+		net_type = NM_SETTING_GSM_NETWORK_TYPE_GPRS_EDGE;
 		break;
 	case NET_TYPE_PREFER_3G:
-		net_type = NM_GSM_NETWORK_PREFER_UMTS_HSPA;
+		net_type = NM_SETTING_GSM_NETWORK_TYPE_PREFER_UMTS_HSPA;
 		break;
 	case NET_TYPE_PREFER_2G:
-		net_type = NM_GSM_NETWORK_PREFER_GPRS_EDGE;
+		net_type = NM_SETTING_GSM_NETWORK_TYPE_PREFER_GPRS_EDGE;
 		break;
 	case NET_TYPE_ANY:
 	default:
-		net_type = NM_GSM_NETWORK_ANY;
+		net_type = NM_SETTING_GSM_NETWORK_TYPE_ANY;
 		break;
 	}
 

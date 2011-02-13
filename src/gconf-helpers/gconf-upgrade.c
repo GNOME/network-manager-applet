@@ -1164,7 +1164,6 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 
 		copy_keyring_to_8021x (client, iter->data, uuid, NM_SETTING_802_1X_PASSWORD);
 		copy_keyring_to_8021x (client, iter->data, uuid, NM_SETTING_802_1X_PIN);
-		copy_keyring_to_8021x (client, iter->data, uuid, NM_SETTING_802_1X_PSK);
 		copy_keyring_to_8021x (client, iter->data, uuid, NMA_PRIVATE_KEY_PASSWORD_TAG);
 		copy_keyring_to_8021x (client, iter->data, uuid, NMA_PHASE2_PRIVATE_KEY_PASSWORD_TAG);
 

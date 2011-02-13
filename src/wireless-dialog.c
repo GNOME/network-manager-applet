@@ -241,14 +241,6 @@ security_combo_changed_manually (GtkWidget *combo,
 	security_combo_changed (combo, user_data);
 }
 
-static gboolean
-is_system_connection (NMAWirelessDialog *self)
-{
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
-
-	return priv->connection && (nm_connection_get_scope (priv->connection) == NM_CONNECTION_SCOPE_SYSTEM);
-}
-
 static GByteArray *
 validate_dialog_ssid (NMAWirelessDialog *self)
 {
@@ -297,10 +289,6 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 			g_byte_array_free (ssid, TRUE);
 	}
 
-	/* Assume system connections are valid so that we don't have to get secrets for them */
-	if (is_system_connection (self))
-		valid = TRUE;
-
 	/* But if there's an in-progress secrets call (which might require authorization)
 	 * then we don't want to enable the OK button because we don't have all the
 	 * connection details yet.
@@ -343,10 +331,6 @@ ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 	}
 
 out:
-	/* Assume system connections are valid so that we don't have to get secrets for them */
-	if (is_system_connection (self))
-		valid = TRUE;
-
 	/* But if there's an in-progress secrets call (which might require authorization)
 	 * then we don't want to enable the OK button because we don't have all the
 	 * connection details yet.
@@ -408,13 +392,6 @@ connection_combo_changed (GtkWidget *combo,
 	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo")), is_new);
 	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo_label")), is_new);
 	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_vbox")), is_new);
-}
-
-static GSList *
-get_all_connections (NMApplet *applet)
-{
-	return g_slist_concat (nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (applet->system_settings)),
-	                       nm_settings_interface_list_connections (NM_SETTINGS_INTERFACE (applet->gconf_settings)));
 }
 
 static gboolean
@@ -481,7 +458,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 		gtk_list_store_append (store, &tree_iter);
 		gtk_list_store_set (store, &tree_iter, C_SEP_COLUMN, TRUE, -1);
 
-		connections = get_all_connections (priv->applet);
+		connections = applet_get_all_connections (priv->applet);
 		for (iter = connections; iter; iter = g_slist_next (iter)) {
 			NMConnection *candidate = NM_CONNECTION (iter->data);
 			NMSettingWireless *s_wireless;
@@ -771,7 +748,7 @@ add_security_item (NMAWirelessDialog *self,
 }
 
 static void
-get_secrets_cb (NMSettingsConnectionInterface *connection,
+get_secrets_cb (NMRemoteConnection *connection,
                 GHashTable *secrets,
                 GError *error,
                 gpointer user_data)
@@ -869,6 +846,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	int item = 0;
 	NMSettingWireless *s_wireless = NULL;
 	gboolean is_adhoc;
+	const char *setting_name;
 
 	g_return_val_if_fail (self != NULL, FALSE);
 
@@ -1018,32 +996,29 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->sec_combo), active < 0 ? 0 : (guint32) active);
 	g_object_unref (G_OBJECT (sec_model));
 
-	/* Request secrets for the connection if it needs any */
-	if (NM_IS_SETTINGS_CONNECTION_INTERFACE (priv->connection)) {
-		const char *setting_name;
+	/* If the dialog was given a connection when it was created, that connection
+	 * will already be populated with secrets.  If no connection was given,
+	 * then we need to get any existing secrets to populate the dialog with.
+	 */
+	setting_name = nm_connection_need_secrets (priv->connection, NULL);
+	if (setting_name && NM_IS_REMOTE_CONNECTION (priv->connection)) {
+		GetSecretsInfo *info;
 
-		setting_name = nm_connection_need_secrets (priv->connection, NULL);
-		if (setting_name) {
-			GetSecretsInfo *info;
+		/* Desensitize the dialog's buttons while we wait for the secrets
+		 * operation to complete.
+		 */
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, FALSE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_CANCEL, FALSE);
 
-			/* Desensitize the dialog's buttons while we wait for the secrets
-			 * operation to complete.
-			 */
-			gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, FALSE);
-			gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_CANCEL, FALSE);
+		info = g_malloc0 (sizeof (GetSecretsInfo));
+		info->self = self;
+		info->connection = g_object_ref (priv->connection);
+		priv->secrets_info = info;
 
-			info = g_malloc0 (sizeof (GetSecretsInfo));
-			info->self = self;
-			info->connection = g_object_ref (priv->connection);
-			priv->secrets_info = info;
-
-			nm_settings_connection_interface_get_secrets (NM_SETTINGS_CONNECTION_INTERFACE (priv->connection),
-			                                              setting_name,
-			                                              NULL,
-			                                              FALSE,
-			                                              get_secrets_cb,
-			                                              info);
-		}
+		nm_remote_connection_get_secrets (NM_REMOTE_CONNECTION (priv->connection),
+		                                  setting_name,
+		                                  get_secrets_cb,
+		                                  info);
 	}
 
 	return TRUE;
@@ -1136,11 +1111,7 @@ internal_init (NMAWirelessDialog *self,
 		priv->network_name_focus = TRUE;
 	}
 
-	/* Assume system connections are valid so that we don't have to get secrets for them */
-	if (is_system_connection (self))
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, TRUE);
-	else
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, FALSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, FALSE);
 
 	if (!device_combo_init (self, specific_device)) {
 		g_warning ("No wireless devices available.");
@@ -1213,7 +1184,7 @@ internal_init (NMAWirelessDialog *self,
 
 NMConnection *
 nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
-                                    NMDevice **device,
+                                    NMDevice **out_device,
                                     NMAccessPoint **ap)
 {
 	NMAWirelessDialogPrivate *priv;
@@ -1225,8 +1196,6 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 	NMSettingWireless *s_wireless;
 
 	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (device != NULL, NULL);
-	g_return_val_if_fail (*device == NULL, NULL);
 
 	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 
@@ -1262,31 +1231,28 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 	} else
 		connection = g_object_ref (priv->connection);
 
-	/* Only update security information for user connections, as for system
-	 * connections the applet just needs to tell NM to activate it.
-	 */
-	if (!is_system_connection (self)) {
-		/* Fill security */
-		model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->sec_combo));
-		if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->sec_combo), &iter))
-			gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
-		if (sec) {
-			wireless_security_fill_connection (sec, connection);
-			wireless_security_unref (sec);
-		} else {
-			/* Unencrypted */
-			s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-			g_assert (s_wireless);
+	/* Fill security */
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->sec_combo));
+	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->sec_combo), &iter))
+		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
+	if (sec) {
+		wireless_security_fill_connection (sec, connection);
+		wireless_security_unref (sec);
+	} else {
+		/* Unencrypted */
+		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+		g_assert (s_wireless);
 
-			g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
-		}
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
 	}
 
 	/* Fill device */
-	combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_combo"));
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
-	gtk_tree_model_get (priv->device_model, &iter, D_DEV_COLUMN, device, -1);
-	g_object_unref (*device);
+	if (out_device) {
+		combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_combo"));
+		gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
+		gtk_tree_model_get (priv->device_model, &iter, D_DEV_COLUMN, out_device, -1);
+		g_object_unref (*out_device);
+	}
 
 	if (ap)
 		*ap = priv->ap;
@@ -1300,39 +1266,39 @@ nma_wireless_dialog_new (NMApplet *applet,
                          NMDevice *device,
                          NMAccessPoint *ap)
 {
-	NMAWirelessDialog *self;
+	GObject *obj;
 	NMAWirelessDialogPrivate *priv;
 	guint32 dev_caps;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 	g_return_val_if_fail (connection != NULL, NULL);
-	g_return_val_if_fail (device != NULL, NULL);
-	g_return_val_if_fail (ap != NULL, NULL);
 
 	/* Ensure device validity */
-	dev_caps = nm_device_get_capabilities (device);
-	g_return_val_if_fail (dev_caps & NM_DEVICE_CAP_NM_SUPPORTED, NULL);
-	g_return_val_if_fail (NM_IS_DEVICE_WIFI (device), NULL);
-
-	self = NMA_WIRELESS_DIALOG (g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL));
-	if (!self)
-		return NULL;
-
-	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
-
-	priv->applet = applet;
-	priv->ap = g_object_ref (ap);
-
-	priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
-	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-
-	if (!internal_init (self, connection, device, TRUE, FALSE)) {
-		nm_warning ("Couldn't create wireless security dialog.");
-		g_object_unref (self);
-		return NULL;
+	if (device) {
+		dev_caps = nm_device_get_capabilities (device);
+		g_return_val_if_fail (dev_caps & NM_DEVICE_CAP_NM_SUPPORTED, NULL);
+		g_return_val_if_fail (NM_IS_DEVICE_WIFI (device), NULL);
 	}
 
-	return GTK_WIDGET (self);
+	obj = g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL);
+	if (obj) {
+		priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (obj);
+
+		priv->applet = applet;
+		if (ap)
+			priv->ap = g_object_ref (ap);
+
+		priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
+		priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+
+		if (!internal_init (NMA_WIRELESS_DIALOG (obj), connection, device, TRUE, FALSE)) {
+			g_warning ("Couldn't create wireless security dialog.");
+			g_object_unref (obj);
+			obj = NULL;
+		}
+	}
+
+	return (GtkWidget *) obj;
 }
 
 static GtkWidget *

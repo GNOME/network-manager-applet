@@ -18,23 +18,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * (C) Copyright 2008 Novell, Inc.
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #ifndef WIRED_DIALOG_H
 #define WIRED_DIALOG_H
 
 #include <gtk/gtk.h>
-#include <nm-client.h>
 #include <nm-connection.h>
-#include <nm-device.h>
-#include <nm-settings-connection-interface.h>
 
-GtkWidget *nma_wired_dialog_new (const char *ui_file,
-								 NMClient *nm_client,
-								 NMSettingsConnectionInterface *connection,
-								 NMDevice *device);
+GtkWidget *nma_wired_dialog_new (const char *ui_file, NMConnection *connection);
 
-NMSettingsConnectionInterface *nma_wired_dialog_get_connection (GtkWidget *dialog);
+NMConnection *nma_wired_dialog_get_connection (GtkWidget *dialog);
 
 #endif /* WIRED_DIALOG_H */

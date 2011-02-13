@@ -145,11 +145,7 @@ get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
 {
 	GSList *list, *iter;
 	NMConnection *connection = NULL;
-	NMConnectionScope scope;
 	const char *path;
-
-	scope = nm_active_connection_get_scope (active);
-	g_return_val_if_fail (scope != NM_CONNECTION_SCOPE_UNKNOWN, NULL);
 
 	path = nm_active_connection_get_connection (active);
 	g_return_val_if_fail (path != NULL, NULL);
@@ -158,13 +154,11 @@ get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
 	for (iter = list; iter; iter = g_slist_next (iter)) {
 		NMConnection *candidate = NM_CONNECTION (iter->data);
 
-		if (   (nm_connection_get_scope (candidate) == scope)
-			   && !strcmp (nm_connection_get_path (candidate), path)) {
+		if (!strcmp (nm_connection_get_path (candidate), path)) {
 			connection = candidate;
 			break;
 		}
 	}
-
 	g_slist_free (list);
 
 	return connection;
@@ -373,7 +367,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	GtkTable *table;
 	guint32 speed = 0;
 	char *str;
-	const char *iface, *method;
+	const char *iface, *method = NULL;
 	NMIP4Config *ip4_config;
 	NMIP6Config *ip6_config;
 	const GArray *dns;
@@ -816,14 +810,12 @@ applet_warning_dialog_show (const char *message)
 }
 
 GtkWidget *
-applet_mobile_password_dialog_new (NMDevice *device,
-                                   NMConnection *connection,
+applet_mobile_password_dialog_new (NMConnection *connection,
                                    GtkEntry **out_secret_entry)
 {
 	GtkDialog *dialog;
 	GtkWidget *w;
 	GtkBox *box = NULL, *vbox = NULL;
-	char *dev_str;
 	NMSettingConnection *s_con;
 	char *tmp;
 	const char *id;
@@ -845,12 +837,6 @@ applet_mobile_password_dialog_new (NMDevice *device,
 
 	vbox = GTK_BOX (gtk_dialog_get_content_area (dialog));
 
-	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
-
-	dev_str = g_strdup_printf ("<b>%s</b>", utils_get_device_description (device));
-	w = gtk_label_new (NULL);
-	gtk_label_set_markup (GTK_LABEL (w), dev_str);
-	g_free (dev_str);
 	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
 	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);

@@ -36,7 +36,6 @@
 #include "page-wireless.h"
 #include "page-wireless-security.h"
 #include "nm-connection-editor.h"
-#include "gconf-helpers.h"
 
 
 G_DEFINE_TYPE (CEPageWirelessSecurity, ce_page_wireless_security, CE_TYPE_PAGE)

@@ -33,8 +33,7 @@ void applet_about_dialog_show (NMApplet *applet);
 
 GtkWidget *applet_warning_dialog_show (const char *message);
 
-GtkWidget *applet_mobile_password_dialog_new (NMDevice *device,
-                                              NMConnection *connection,
+GtkWidget *applet_mobile_password_dialog_new (NMConnection *connection,
                                               GtkEntry **out_secret_entry);
 
 /******** Mobile PIN dialog ********/

@@ -31,7 +31,6 @@
 
 #include <nm-setting-connection.h>
 #include <nm-utils.h>
-#include <nm-settings-connection-interface.h>
 
 #include "ce-page.h"
 #include "nma-marshal.h"
@@ -188,10 +187,12 @@ ce_page_complete_init (CEPage *self,
 	g_return_if_fail (CE_IS_PAGE (self));
 
 	/* Ignore missing settings errors */
-	if (error && !dbus_g_error_has_name (error, "org.freedesktop.NetworkManagerSettings.InvalidSetting")) {
+	if (   error
+	    && !dbus_g_error_has_name (error, "org.freedesktop.NetworkManager.Settings.InvalidSetting")
+	    && !dbus_g_error_has_name (error, "org.freedesktop.NetworkManager.AgentManager.NoSecrets")) {
 		emit_initialized (self, error);
 		return;
-	} else if (!setting_name || !secrets) {
+	} else if (!setting_name || !secrets || !g_hash_table_size (secrets)) {
 		/* Success, no secrets */
 		emit_initialized (self, NULL);
 		return;
@@ -200,7 +201,6 @@ ce_page_complete_init (CEPage *self,
 	g_assert (setting_name);
 	g_assert (secrets);
 
-	/* Update the connection with the new secrets */
 	setting_hash = g_hash_table_lookup (secrets, setting_name);
 	if (!setting_hash) {
 		/* Success, no secrets */
@@ -208,9 +208,10 @@ ce_page_complete_init (CEPage *self,
 		return;
 	}
 
+	/* Update the connection with the new secrets */
 	if (nm_connection_update_secrets (self->connection,
 	                                  setting_name,
-	                                  setting_hash,
+	                                  secrets,
 	                                  &update_error)) {
 		/* Success */
 		emit_initialized (self, NULL);
@@ -408,7 +409,6 @@ ce_page_new_connection (const char *format,
 	GSList *connections;
 
 	connection = nm_connection_new ();
-	nm_connection_set_scope (connection, NM_CONNECTION_SCOPE_USER);
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
