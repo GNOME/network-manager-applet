@@ -1166,7 +1166,7 @@ add_connection_buttons (NMConnectionList *self,
 	                               _("Authenticate to edit the selected connection"),
 	                               GTK_STOCK_EDIT,
 	                               self->nm_client,
-	                               NM_CLIENT_PERMISSION_SETTINGS_CONNECTION_MODIFY);
+	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
 	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
@@ -1184,7 +1184,7 @@ add_connection_buttons (NMConnectionList *self,
 	                               _("Authenticate to delete the selected connection"),
 	                               GTK_STOCK_DELETE,
 	                               self->nm_client,
-	                               NM_CLIENT_PERMISSION_SETTINGS_CONNECTION_MODIFY);
+	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
 	gtk_box_pack_end (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 

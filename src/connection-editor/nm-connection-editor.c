@@ -254,7 +254,7 @@ permissions_changed_cb (NMClient *client,
 	                    NMClientPermissionResult result,                       
                         NMConnectionEditor *editor)
 {
-	if (permission != NM_CLIENT_PERMISSION_SETTINGS_CONNECTION_MODIFY)
+	if (permission != NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM)
 		return;
 
 	if (result == NM_CLIENT_PERMISSION_RESULT_YES || result == NM_CLIENT_PERMISSION_RESULT_AUTH)
@@ -398,7 +398,7 @@ nm_connection_editor_new (NMConnection *connection,
 
 	editor->client = g_object_ref (client);
 
-	editor->can_modify = nm_client_get_permission_result (client, NM_CLIENT_PERMISSION_SETTINGS_CONNECTION_MODIFY);
+	editor->can_modify = nm_client_get_permission_result (client, NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	editor->permission_id = g_signal_connect (editor->client,
 	                                          "permission-changed",
 	                                          G_CALLBACK (permissions_changed_cb),
@@ -410,7 +410,7 @@ nm_connection_editor_new (NMConnection *connection,
 	                                          _("Authenticate to save this connection for all users of this machine."),
 	                                          GTK_STOCK_APPLY,
 	                                          client,
-	                                          NM_CLIENT_PERMISSION_SETTINGS_CONNECTION_MODIFY);
+	                                          NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	gtk_button_set_use_underline (GTK_BUTTON (editor->ok_button), TRUE);
 
 	g_signal_connect (editor->ok_button, "actionable",
