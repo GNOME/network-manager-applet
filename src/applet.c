@@ -1514,6 +1514,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 		NMActiveConnection *active;
 		const char *name;
 		GtkWidget *image;
+		NMState state;
 
 		name = get_connection_id (connection);
 
@@ -1526,7 +1527,10 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 		 */
 		active = applet_get_active_for_connection (applet, connection);
 
-		if (nm_client_get_state (applet->nm_client) != NM_STATE_CONNECTED)
+		state = nm_client_get_state (applet->nm_client);
+		if (   state != NM_STATE_CONNECTED_LOCAL
+		    && state != NM_STATE_CONNECTED_SITE
+		    && state != NM_STATE_CONNECTED_GLOBAL)
 			gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 		else if ((num_vpn_active == 0) || active)
 			gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
@@ -1732,10 +1736,13 @@ nma_context_menu_update (NMApplet *applet)
 	gboolean wwan_hw_enabled;
 	gboolean wimax_hw_enabled;
 	gboolean notifications_enabled = TRUE;
+	gboolean sensitive = FALSE;
 
 	state = nm_client_get_state (applet->nm_client);
-
-	gtk_widget_set_sensitive (applet->info_menu_item, state == NM_STATE_CONNECTED);
+	sensitive = (   state == NM_STATE_CONNECTED_LOCAL
+	             || state == NM_STATE_CONNECTED_SITE
+	             || state == NM_STATE_CONNECTED_GLOBAL);
+	gtk_widget_set_sensitive (applet->info_menu_item, sensitive);
 
 	/* Update checkboxes, and block 'toggled' signal when updating so that the
 	 * callback doesn't get triggered.
