@@ -77,17 +77,18 @@ PKG_CHECK_MODULES(NMA,
 		 gnome-keyring-1
 		 libnotify >= 0.4.3])
 
-AC_ARG_WITH([gtk2], AS_HELP_STRING([--with-gtk2], [Use GTK+ 2.x instead of GTK+ 3.x]),
-            with_gtk2="$withval",with_gtk2=no)
-gtkver=3
-case "${with_gtk2}" in
-	yes)	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.20)
-		gtkver=2
-		;;
-	*)	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.4)
-		;;
+AC_ARG_WITH([gtkver], AS_HELP_STRING([--with-gtkver], [The major version of GTK+ to build with]),
+            with_gtkver="$withval",with_gtkver=3)
+case "${with_gtkver}" in
+       2) PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.20)
+          gtkver=2
+          ;;
+       *) PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.4)
+          gtkver=3
+          ;;
 esac
-AM_CONDITIONAL(USE_GTK2, test x"$gtkver" = "x2")
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_LIBS)
 
 # Check for dbus-1.2.6 or later for deny-by-default rules
 PKG_CHECK_MODULES(DBUS_126, [dbus-1 >= 1.2.6], [have_dbus_126=yes],[have_dbus_126=no])
