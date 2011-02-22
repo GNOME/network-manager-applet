@@ -1,5 +1,3 @@
-plugindir = $(libdir)/gnome-bluetooth/plugins
-
 INCLUDES = \
 	-DDATADIR=\"$(datadir)\" \
 	-DICONDIR=\"$(icondir)\" \
@@ -15,6 +13,8 @@ INCLUDES = \
 BT_WIDGET_SOURCES = bt-widget.c
 
 if HAVE_GBT
+plugindir = $(libdir)/gnome-bluetooth/plugins
+
 plugin_LTLIBRARIES = libnma.la
 
 libnma_la_SOURCES = $(BT_WIDGET_SOURCES)
