@@ -157,29 +157,40 @@ wireless_menu_item_info_destroy (gpointer data)
 	g_slice_free (WirelessMenuItemInfo, data);
 }
 
-static const char * default_ssid_list[] = {
+/*
+ * NOTE: this list should *not* contain networks that you would like to
+ * automatically roam to like "Starbucks" or "AT&T" or "T-Mobile HotSpot".
+ */
+static const char *manf_default_ssids[] = {
 	"linksys",
 	"linksys-a",
 	"linksys-g",
 	"default",
 	"belkin54g",
 	"NETGEAR",
+	"o2DSL",
+	"WLAN",
+	"ALICE-WLAN",
 	NULL
 };
 
 static gboolean
-is_manufacturer_default_ssid (const GByteArray *ssid)
+is_ssid_in_list (const GByteArray *ssid, const char **list)
 {
-	const char **default_ssid = default_ssid_list;
-
-	while (*default_ssid) {
-		if (ssid->len == strlen (*default_ssid)) {
-			if (!memcmp (*default_ssid, ssid->data, ssid->len))
+	while (*list) {
+		if (ssid->len == strlen (*list)) {
+			if (!memcmp (*list, ssid->data, ssid->len))
 				return TRUE;
 		}
-		default_ssid++;
+		list++;
 	}
 	return FALSE;
+}
+
+static gboolean
+is_manufacturer_default_ssid (const GByteArray *ssid)
+{
+	return is_ssid_in_list (ssid, manf_default_ssids);
 }
 
 static void
@@ -324,31 +335,17 @@ none:
 }
 
 static void
-check_common_ssid (NMAccessPoint *ap, NMSettingWireless *s_wifi)
+clamp_ap_to_bssid (NMAccessPoint *ap, NMSettingWireless *s_wifi)
 {
 	const char *str_bssid;
 	struct ether_addr *eth_addr;
-	const GByteArray *ssid;
 	GByteArray *bssid;
-	const char *known[] = { "linksys", "o2DSL", "NETGEAR", "WLAN", "ALICE-WLAN" };
-	guint i;
 
 	/* For a certain list of known ESSIDs which are commonly preset by ISPs
 	 * and manufacturers and often unchanged by users, lock the connection
 	 * to the BSSID so that we don't try to auto-connect to your grandma's
 	 * neighbor's WiFi.
-	 *
-	 * NOTE: this list should *not* contain networks that you would like to
-	 * automatically roam to like "Starbucks" or "AT&T" or "T-Mobile HotSpot".
 	 */
-	ssid = nm_access_point_get_ssid (ap);
-	for (i = 0; i < G_N_ELEMENTS (known); i++) {
-		if (   ssid->len == strlen (known[i])
-		    && memcmp (ssid->data, known[i], ssid->len) == 0)
-			break;
-	}
-	if (i == G_N_ELEMENTS (known))
-		return;
 
 	str_bssid = nm_access_point_get_hw_address (ap);
 	if (str_bssid) {
@@ -400,7 +397,8 @@ wireless_new_auto_connection (NMDevice *device,
 	else if (mode == NM_802_11_MODE_INFRA) {
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
 		/* Lock connection to this AP if it's a manufacturer-default SSID */
-		check_common_ssid (info->ap, s_wireless);
+		if (is_manufacturer_default_ssid (ap_ssid))
+			clamp_ap_to_bssid (info->ap, s_wireless);
 	} else
 		g_assert_not_reached ();
 
