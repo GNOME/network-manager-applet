@@ -345,7 +345,7 @@ add_and_activate_cb (NMClient *client,
                      gpointer user_data)
 {
 	if (error)
-		nm_warning ("Failed to add/activate connection: (%d) %s", error->code, error->message);
+		g_warning ("Failed to add/activate connection: (%d) %s", error->code, error->message);
 
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }
@@ -405,7 +405,7 @@ activate_connection_cb (NMClient *client,
                         gpointer user_data)
 {
 	if (error)
-		nm_warning ("Connection activation failed: %s", error->message);
+		g_warning ("Connection activation failed: %s", error->message);
 
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }
@@ -450,7 +450,7 @@ applet_menu_item_activate_helper (NMDevice *device,
 	if (!dclass->new_auto_connection (device, dclass_data,
 	                                  applet_menu_item_activate_helper_new_connection,
 	                                  info)) {
-		nm_warning ("Couldn't create default connection.");
+		g_warning ("Couldn't create default connection.");
 		applet_item_activate_info_destroy (info);
 	}
 }
@@ -1005,7 +1005,7 @@ activate_vpn_cb (NMClient *client,
 		                            PREF_DISABLE_VPN_NOTIFICATIONS);
 		g_free (msg);
 
-		nm_warning ("VPN Connection activation failed: (%s) %s", name, error->message);
+		g_warning ("VPN Connection activation failed: (%s) %s", name, error->message);
 	}
 
 	applet_schedule_update_icon (info->applet);

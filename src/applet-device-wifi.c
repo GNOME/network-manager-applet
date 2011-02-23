@@ -378,9 +378,7 @@ wireless_new_auto_connection (NMDevice *device,
 	NMSettingWirelessSecurity *s_wireless_sec = NULL;
 	NMSetting8021x *s_8021x = NULL;
 	const GByteArray *ap_ssid;
-	char *id;
-	char buf[33];
-	int buf_len;
+	char *id, *utf8_ssid;
 	NM80211Mode mode;
 	guint32 dev_caps;
 	gboolean supported = TRUE;
@@ -433,12 +431,11 @@ wireless_new_auto_connection (NMDevice *device,
 			    NM_SETTING_CONNECTION_AUTOCONNECT, !is_manufacturer_default_ssid (ap_ssid),
 			    NULL);
 
-	memset (buf, 0, sizeof (buf));
-	buf_len = MIN(ap_ssid->len, sizeof (buf) - 1);
-	memcpy (buf, ap_ssid->data, buf_len);
-	id = g_strdup_printf ("Auto %s", nm_utils_ssid_to_utf8 (buf, buf_len));
+	utf8_ssid = nm_utils_ssid_to_utf8 (ap_ssid);
+	id = g_strdup_printf ("Auto %s", utf8_ssid);
 	g_object_set (s_con, NM_SETTING_CONNECTION_ID, id, NULL);
 	g_free (id);
+	g_free (utf8_ssid);
 
 	id = nm_utils_uuid_generate ();
 	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, id, NULL);
@@ -1250,7 +1247,7 @@ wireless_get_icon (NMDevice *device,
 
 		tmp = nm_access_point_get_ssid (ap);
 		if (tmp)
-			ssid = nm_utils_ssid_to_utf8 ((const char *) tmp->data, tmp->len);
+			ssid = nm_utils_ssid_to_utf8 (tmp);
 	}
 
 	if (!ssid)

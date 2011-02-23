@@ -294,7 +294,7 @@ populate_ui (CEPageWireless *self)
 				  NULL);
 
 	if (ssid)
-		utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
+		utf8_ssid = nm_utils_ssid_to_utf8 (ssid);
 	else
 		utf8_ssid = g_strdup ("");
 	gtk_entry_set_text (priv->ssid, utf8_ssid);

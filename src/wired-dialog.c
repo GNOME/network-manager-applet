@@ -132,14 +132,14 @@ nma_wired_dialog_new (const char *ui_file, NMConnection *connection)
 
 	dialog = GTK_WIDGET (gtk_builder_get_object (builder, "wireless_dialog"));
 	if (!dialog) {
-		nm_warning ("Couldn't find wireless_dialog widget.");
+		g_warning ("Couldn't find wireless_dialog widget.");
 		g_object_unref (builder);
 		return NULL;
 	}
 
 	success = dialog_init (dialog, builder, connection);
 	if (!success) {
-		nm_warning ("Couldn't create wired security dialog.");
+		g_warning ("Couldn't create wired security dialog.");
 		gtk_widget_destroy (dialog);
 		g_object_unref (builder);
 		return NULL;

@@ -380,7 +380,7 @@ connection_combo_changed (GtkWidget *combo,
 
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
 		ssid = nm_setting_wireless_get_ssid (s_wireless);
-		utf8_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
+		utf8_ssid = nm_utils_ssid_to_utf8 (ssid);
 		gtk_entry_set_text (GTK_ENTRY (widget), utf8_ssid);
 		g_free (utf8_ssid);
 	} else {
@@ -1088,7 +1088,7 @@ internal_init (NMAWirelessDialog *self,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "hbox1"));
 	if (!widget) {
-		nm_warning ("Couldn't find wireless_dialog widget.");
+		g_warning ("Couldn't find wireless_dialog widget.");
 		return FALSE;
 	}
 	gtk_widget_unparent (widget);
@@ -1148,7 +1148,7 @@ internal_init (NMAWirelessDialog *self,
 		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
 		ssid = s_wireless ? nm_setting_wireless_get_ssid (s_wireless) : NULL;
 		if (ssid)
-			esc_ssid = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
+			esc_ssid = nm_utils_ssid_to_utf8 (ssid);
 
 		tmp = g_strdup_printf (_("Passwords or encryption keys are required to access the wireless network '%s'."),
 		                       esc_ssid ? esc_ssid : "<unknown>");
@@ -1321,7 +1321,7 @@ internal_new_other (NMApplet *applet, gboolean create)
 	priv->adhoc_create = create;
 
 	if (!internal_init (self, NULL, NULL, FALSE, create)) {
-		nm_warning ("Couldn't create wireless security dialog.");
+		g_warning ("Couldn't create wireless security dialog.");
 		g_object_unref (self);
 		return NULL;
 	}

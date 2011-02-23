@@ -116,7 +116,7 @@ nm_network_menu_item_set_ssid (NMNetworkMenuItem *item, GByteArray *ssid)
 
 	g_free (item->ssid_string);
 
-	item->ssid_string = nm_utils_ssid_to_utf8 ((const char *) ssid->data, ssid->len);
+	item->ssid_string = nm_utils_ssid_to_utf8 (ssid);
 	if (!item->ssid_string) {
 		// FIXME: shouldn't happen; always coerce the SSID to _something_
 		item->ssid_string = g_strdup ("<unknown>");
