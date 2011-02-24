@@ -172,7 +172,7 @@ static void
 emit_initialized (CEPage *self, GError *error)
 {
 	self->initialized = TRUE;
-	g_signal_emit (self, signals[INITIALIZED], 0, NULL, error);
+	g_signal_emit (self, signals[INITIALIZED], 0, error);
 }
 
 void
@@ -390,8 +390,8 @@ ce_page_class_init (CEPageClass *page_class)
 	                      G_SIGNAL_RUN_FIRST,
 	                      G_STRUCT_OFFSET (CEPageClass, initialized),
 	                      NULL, NULL,
-	                      nma_marshal_VOID__POINTER_POINTER,
-	                      G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER);
+	                      g_cclosure_marshal_VOID__POINTER,
+	                      G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 
 

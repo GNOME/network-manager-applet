@@ -83,7 +83,7 @@ typedef struct {
 
 	/* Signals */
 	void        (*changed)     (CEPage *self);
-	void        (*initialized) (CEPage *self, GHashTable *secrets, GError *error);
+	void        (*initialized) (CEPage *self, GError *error);
 } CEPageClass;
 
 
