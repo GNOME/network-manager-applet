@@ -1653,11 +1653,7 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
 
-#if GTK_CHECK_VERSION(2, 15, 0)
 	gtk_status_icon_set_tooltip_text (applet->status_icon, NULL);
-#else
-	gtk_status_icon_set_tooltip (applet->status_icon, NULL);
-#endif
 
 	if (!nm_client_get_manager_running (applet->nm_client)) {
 		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
@@ -1704,11 +1700,7 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 	applet->menu = NULL;
 
 	/* Re-set the tooltip */
-#if GTK_CHECK_VERSION(2, 15, 0)
 	gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
-#else
-	gtk_status_icon_set_tooltip (applet->status_icon, applet->tip);
-#endif
 }
 
 static gboolean
@@ -2531,11 +2523,7 @@ applet_update_icon (gpointer user_data)
 		g_string_free (tip, FALSE);
 	}
 
-#if GTK_CHECK_VERSION(2, 15, 0)
 	gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
-#else
-	gtk_status_icon_set_tooltip (applet->status_icon, applet->tip);
-#endif
 
 	return FALSE;
 }

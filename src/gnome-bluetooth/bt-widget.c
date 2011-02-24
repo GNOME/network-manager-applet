@@ -619,11 +619,7 @@ modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 		info->dun_timeout_id = 0;
 
 		parent = gtk_widget_get_toplevel (info->hbox);
-#if GTK_CHECK_VERSION(2,18,0)
 		if (gtk_widget_is_toplevel (parent)) {
-#else
-		if (GTK_WIDGET_TOPLEVEL (parent)) {
-#endif
 			info->window_group = gtk_window_group_new ();
 			gtk_window_group_add_window (info->window_group, GTK_WINDOW (parent));
 		} else {
