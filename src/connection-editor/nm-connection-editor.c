@@ -521,7 +521,7 @@ recheck_initialization (NMConnectionEditor *editor)
 }
 
 static void
-page_initialized (CEPage *page, gpointer unused, GError *error, gpointer user_data)
+page_initialized (CEPage *page, GError *error, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
 	GtkWidget *widget;
