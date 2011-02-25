@@ -1550,8 +1550,8 @@ mobile_wizard_new (GtkWindow *parent,
 		self->method_type = NMN_MOBILE_ACCESS_METHOD_TYPE_GSM;
 	else if (modem_caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
 		self->method_type = NMN_MOBILE_ACCESS_METHOD_TYPE_CDMA;
-	else
-		self->initial_method_type = TRUE;
+	if (self->method_type)
+		self->initial_method_type = TRUE;  /* Skip device selection */
 
 	self->assistant = gtk_assistant_new ();
 	gtk_assistant_set_forward_page_func (GTK_ASSISTANT (self->assistant),
