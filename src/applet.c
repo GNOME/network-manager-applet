@@ -45,8 +45,7 @@
 #include <NetworkManagerVPN.h>
 #include <nm-device-ethernet.h>
 #include <nm-device-wifi.h>
-#include <nm-gsm-device.h>
-#include <nm-cdma-device.h>
+#include <nm-device-modem.h>
 #include <nm-device-bt.h>
 #include <nm-device-wimax.h>
 #include <nm-utils.h>
@@ -121,18 +120,27 @@ applet_get_best_activating_connection (NMApplet *applet, NMDevice **device)
 				best_dev = candidate_dev;
 				best = candidate;
 			}
-		} else if (NM_IS_CDMA_DEVICE (best_dev)) {
-			if (   NM_IS_DEVICE_ETHERNET (candidate_dev)
-			    || NM_IS_DEVICE_WIFI (candidate_dev)) {
-				best_dev = candidate_dev;
-				best = candidate;
-			}
-		} else if (NM_IS_GSM_DEVICE (best_dev)) {
-			if (   NM_IS_DEVICE_ETHERNET (candidate_dev)
-			    || NM_IS_DEVICE_WIFI (candidate_dev)
-			    || NM_IS_CDMA_DEVICE (candidate_dev)) {
-				best_dev = candidate_dev;
-				best = candidate;
+		} else if (NM_IS_DEVICE_MODEM (best_dev)) {
+			NMDeviceModemCapabilities best_caps;
+			NMDeviceModemCapabilities candidate_caps = NM_DEVICE_MODEM_CAPABILITY_NONE;
+
+			best_caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (best_dev));
+			if (NM_IS_DEVICE_MODEM (candidate_dev))
+				candidate_caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (candidate_dev));
+
+			if (best_caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO) {
+				if (   NM_IS_DEVICE_ETHERNET (candidate_dev)
+				    || NM_IS_DEVICE_WIFI (candidate_dev)) {
+					best_dev = candidate_dev;
+					best = candidate;
+				}
+			} else if (best_caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
+				if (   NM_IS_DEVICE_ETHERNET (candidate_dev)
+					|| NM_IS_DEVICE_WIFI (candidate_dev)
+					|| (candidate_caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)) {
+					best_dev = candidate_dev;
+					best = candidate;
+				}
 			}
 		}
 	}
@@ -273,11 +281,17 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->wired_class;
 	else if (NM_IS_DEVICE_WIFI (device))
 		return applet->wifi_class;
-	else if (NM_IS_GSM_DEVICE (device))
-		return applet->gsm_class;
-	else if (NM_IS_CDMA_DEVICE (device))
-		return applet->cdma_class;
-	else if (NM_IS_DEVICE_BT (device))
+	else if (NM_IS_DEVICE_MODEM (device)) {
+		NMDeviceModemCapabilities caps;
+
+		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
+		if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
+			return applet->gsm_class;
+		else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
+			return applet->cdma_class;
+		else
+			g_message ("%s: unhandled modem capabilities 0x%X", __func__, caps);
+	} else if (NM_IS_DEVICE_BT (device))
 		return applet->bt_class;
 	else if (NM_IS_DEVICE_WIMAX (device))
 		return applet->wimax_class;
@@ -1190,16 +1204,10 @@ sort_devices (gconstpointer a, gconstpointer b)
 	if (bb_type == NM_TYPE_DEVICE_ETHERNET)
 		return 1;
 
-	/* GSM next */
-	if (aa_type == NM_TYPE_GSM_DEVICE)
+	/* Modems next */
+	if (aa_type == NM_TYPE_DEVICE_MODEM)
 		return -1;
-	if (bb_type == NM_TYPE_GSM_DEVICE)
-		return 1;
-
-	/* CDMA next */
-	if (aa_type == NM_TYPE_CDMA_DEVICE)
-		return -1;
-	if (bb_type == NM_TYPE_CDMA_DEVICE)
+	if (bb_type == NM_TYPE_DEVICE_MODEM)
 		return 1;
 
 	/* Bluetooth next */
@@ -1402,7 +1410,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 				n_usable_wifi_devices++;
 		} else if (NM_IS_DEVICE_ETHERNET (device))
 			n_wired_devices++;
-		else if (NM_IS_CDMA_DEVICE (device) || NM_IS_GSM_DEVICE (device))
+		else if (NM_IS_DEVICE_MODEM (device))
 			n_mb_devices++;
 		else if (NM_IS_DEVICE_BT (device))
 			n_bt_devices++;
@@ -1428,7 +1436,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			n_devices = n_wifi_devices;
 		else if (NM_IS_DEVICE_ETHERNET (device))
 			n_devices = n_wired_devices;
-		else if (NM_IS_CDMA_DEVICE (device) || NM_IS_GSM_DEVICE (device))
+		else if (NM_IS_DEVICE_MODEM (device))
 			n_devices = n_mb_devices;
 
 		active = applet_find_active_connection_for_device (device, applet, NULL);
@@ -1810,7 +1818,7 @@ nma_context_menu_update (NMApplet *applet)
 
 			if (NM_IS_DEVICE_WIFI (candidate))
 				have_wireless = TRUE;
-			else if (NM_IS_SERIAL_DEVICE (candidate))
+			else if (NM_IS_DEVICE_MODEM (candidate))
 				have_wwan = TRUE;
 			else if (NM_IS_DEVICE_WIMAX (candidate))
 				have_wimax = TRUE;

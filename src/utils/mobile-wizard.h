@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #ifndef MOBILE_WIZARD_H
@@ -32,7 +32,7 @@ typedef struct MobileWizard MobileWizard;
 typedef struct {
 	char *provider_name;
 	char *plan_name;
-	NMDeviceType devtype;
+	NMDeviceModemCapabilities devtype;
 	char *username;
 	char *password;
 	char *gsm_apn;
@@ -45,7 +45,7 @@ typedef void (*MobileWizardCallback) (MobileWizard *self,
 
 MobileWizard *mobile_wizard_new (GtkWindow *parent,
                                  GtkWindowGroup *window_group,
-                                 NMDeviceType devtype,
+                                 NMDeviceModemCapabilities modem_caps,
                                  gboolean will_connect_after,
                                  MobileWizardCallback cb,
                                  gpointer user_data);

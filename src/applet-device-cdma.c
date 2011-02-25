@@ -32,7 +32,7 @@
 #include <nm-setting-cdma.h>
 #include <nm-setting-serial.h>
 #include <nm-setting-ppp.h>
-#include <nm-cdma-device.h>
+#include <nm-device-modem.h>
 #include <nm-utils.h>
 #include <nm-secret-agent.h>
 
@@ -106,7 +106,7 @@ mobile_wizard_done (MobileWizard *wizard,
 		NMSetting *setting;
 		char *uuid, *id;
 
-		if (method->devtype != NM_DEVICE_TYPE_CDMA) {
+		if (method->devtype != NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO) {
 			g_warning ("Unexpected device type (not CDMA).");
 			canceled = TRUE;
 			goto done;
@@ -173,7 +173,7 @@ cdma_new_auto_connection (NMDevice *device,
 	info->callback = callback;
 	info->callback_data = callback_data;
 
-	wizard = mobile_wizard_new (NULL, NULL, NM_DEVICE_TYPE_CDMA, FALSE,
+	wizard = mobile_wizard_new (NULL, NULL, NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO, FALSE,
 	                            mobile_wizard_done, info);
 	if (wizard) {
 		mobile_wizard_present (wizard);
@@ -182,7 +182,7 @@ cdma_new_auto_connection (NMDevice *device,
 
 	/* Fall back to something */
 	method = g_malloc0 (sizeof (MobileWizardAccessMethod));
-	method->devtype = NM_DEVICE_TYPE_CDMA;
+	method->devtype = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
 	method->provider_name = _("CDMA");
 	mobile_wizard_done (NULL, FALSE, method, info);
 	g_free (method);
@@ -826,7 +826,7 @@ modem_properties_changed (DBusGProxy *proxy,
 static void
 cdma_device_added (NMDevice *device, NMApplet *applet)
 {
-	NMCdmaDevice *cdma = NM_CDMA_DEVICE (device);
+	NMDeviceModem *modem = NM_DEVICE_MODEM (device);
 	CdmaDeviceInfo *info;
 	DBusGConnection *bus;
 	const char *udi;
@@ -871,7 +871,7 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 		return;
 	}
 
-	g_object_set_data_full (G_OBJECT (cdma), "devinfo", info, cdma_device_info_free);
+	g_object_set_data_full (G_OBJECT (modem), "devinfo", info, cdma_device_info_free);
 
 	/* Registration state change signal */
 	dbus_g_object_register_marshaller (nma_marshal_VOID__UINT_UINT,

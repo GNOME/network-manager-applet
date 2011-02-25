@@ -28,8 +28,7 @@
 #include <nm-device-ethernet.h>
 #include <nm-device-wifi.h>
 #include <nm-device-bt.h>
-#include <nm-gsm-device.h>
-#include <nm-cdma-device.h>
+#include <nm-device-modem.h>
 #include <nm-device-wimax.h>
 #include <nm-access-point.h>
 
@@ -598,11 +597,17 @@ utils_connection_valid_for_device (NMConnection *connection,
 		return connection_valid_for_wired (connection, s_con, device, specific_object);
 	else if (NM_IS_DEVICE_WIFI (device))
 		return connection_valid_for_wireless (connection, s_con, device, specific_object);
-	else if (NM_IS_GSM_DEVICE (device))
-		return connection_valid_for_gsm (connection, s_con, device, specific_object);
-	else if (NM_IS_CDMA_DEVICE (device))
-		return connection_valid_for_cdma (connection, s_con, device, specific_object);
-	else if (NM_IS_DEVICE_BT (device))
+	else if (NM_IS_DEVICE_MODEM (device)) {
+		NMDeviceModemCapabilities caps;
+
+		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
+		if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
+			return connection_valid_for_gsm (connection, s_con, device, specific_object);
+		else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
+			return connection_valid_for_cdma (connection, s_con, device, specific_object);
+		else
+			g_warning ("Unhandled modem capabilities 0x%X", caps);
+	} else if (NM_IS_DEVICE_BT (device))
 		return connection_valid_for_bt (connection, s_con, device, specific_object);
 	else if (NM_IS_DEVICE_WIMAX (device))
 		return connection_valid_for_wimax (connection, s_con, device, specific_object);

@@ -510,9 +510,9 @@ wizard_done_cb (MobileWizard *self,
 		return;
 	}
 
-	if (method->devtype == NM_DEVICE_TYPE_CDMA)
+	if (method->devtype == NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
 		connection = dun_new_cdma (method);
-	else if (method->devtype == NM_DEVICE_TYPE_GSM)
+	else if (method->devtype == NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
 		connection = dun_new_gsm (method);
 	else {
 		dun_error (info, __func__, NULL, _("Unknown phone device type (not GSM or CDMA)"));
@@ -584,10 +584,10 @@ modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 			if (value && G_VALUE_HOLDS_UINT (value)) {
 				switch (g_value_get_uint (value)) {
 				case 1:
-					devtype = NM_DEVICE_TYPE_GSM;
+					devtype = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
 					break;
 				case 2:
-					devtype = NM_DEVICE_TYPE_CDMA;
+					devtype = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
 					break;
 				default:
 					g_message ("%s: (%s) unknown modem type", __func__, path);

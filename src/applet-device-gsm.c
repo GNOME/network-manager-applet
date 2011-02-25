@@ -34,7 +34,7 @@
 #include <nm-setting-gsm.h>
 #include <nm-setting-serial.h>
 #include <nm-setting-ppp.h>
-#include <nm-gsm-device.h>
+#include <nm-device-modem.h>
 #include <nm-utils.h>
 #include <nm-secret-agent.h>
 
@@ -131,7 +131,7 @@ mobile_wizard_done (MobileWizard *wizard,
 		NMSetting *setting;
 		char *uuid, *id;
 
-		if (method->devtype != NM_DEVICE_TYPE_GSM) {
+		if (method->devtype != NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
 			g_warning ("Unexpected device type (not GSM).");
 			canceled = TRUE;
 			goto done;
@@ -199,7 +199,7 @@ gsm_new_auto_connection (NMDevice *device,
 	info->callback = callback;
 	info->callback_data = callback_data;
 
-	wizard = mobile_wizard_new (NULL, NULL, NM_DEVICE_TYPE_GSM, FALSE,
+	wizard = mobile_wizard_new (NULL, NULL, NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS, FALSE,
 	                            mobile_wizard_done, info);
 	if (wizard) {
 		mobile_wizard_present (wizard);
@@ -208,7 +208,7 @@ gsm_new_auto_connection (NMDevice *device,
 
 	/* Fall back to something */
 	method = g_malloc0 (sizeof (MobileWizardAccessMethod));
-	method->devtype = NM_DEVICE_TYPE_GSM;
+	method->devtype = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
 	method->provider_name = _("GSM");
 	mobile_wizard_done (NULL, FALSE, method, info);
 	g_free (method);
@@ -1285,7 +1285,7 @@ modem_properties_changed (DBusGProxy *proxy,
 static void
 gsm_device_added (NMDevice *device, NMApplet *applet)
 {
-	NMGsmDevice *gsm = NM_GSM_DEVICE (device);
+	NMDeviceModem *modem = NM_DEVICE_MODEM (device);
 	GsmDeviceInfo *info;
 	const char *udi;
 	DBusGConnection *bus;
@@ -1337,7 +1337,7 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 		return;
 	}
 
-	g_object_set_data_full (G_OBJECT (gsm), "devinfo", info, gsm_device_info_free);
+	g_object_set_data_full (G_OBJECT (modem), "devinfo", info, gsm_device_info_free);
 
 	/* Registration info signal */
 	dbus_g_object_register_marshaller (nma_marshal_VOID__UINT_STRING_STRING,

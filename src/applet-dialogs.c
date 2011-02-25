@@ -27,8 +27,7 @@
 
 #include <nm-device-ethernet.h>
 #include <nm-device-wifi.h>
-#include <nm-gsm-device.h>
-#include <nm-cdma-device.h>
+#include <nm-device-modem.h>
 #include <nm-device-wimax.h>
 
 #include <nm-setting-connection.h>
@@ -393,11 +392,17 @@ info_dialog_add_page (GtkNotebook *notebook,
 	} else if (NM_IS_DEVICE_WIFI (device)) {
 		str = g_strdup_printf (_("802.11 WiFi (%s)"), iface);
 		show_security = TRUE;
-	} else if (NM_IS_GSM_DEVICE (device))
-		str = g_strdup_printf (_("GSM (%s)"), iface);
-	else if (NM_IS_CDMA_DEVICE (device))
-		str = g_strdup_printf (_("CDMA (%s)"), iface);
-	else if (NM_IS_DEVICE_WIMAX (device))
+	} else if (NM_IS_DEVICE_MODEM (device)) {
+		NMDeviceModemCapabilities caps;
+
+		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
+		if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
+			str = g_strdup_printf (_("GSM (%s)"), iface);
+		else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
+			str = g_strdup_printf (_("CDMA (%s)"), iface);
+		else
+			str = g_strdup_printf (_("Mobile Broadband (%s)"), iface);
+	} else if (NM_IS_DEVICE_WIMAX (device))
 		str = g_strdup_printf (_("WiMAX (%s)"), iface);
 	else
 		str = g_strdup (iface);

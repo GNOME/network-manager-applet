@@ -31,8 +31,7 @@
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
 #include <nm-client.h>
-#include <nm-gsm-device.h>
-#include <nm-cdma-device.h>
+#include <nm-device-modem.h>
 
 #include "mobile-wizard.h"
 #include "nmn-mobile-providers.h"
@@ -150,10 +149,10 @@ assistant_closed (GtkButton *button, gpointer user_data)
 
 	switch (method_type) {
 	case NMN_MOBILE_ACCESS_METHOD_TYPE_GSM:
-		wiz_method->devtype = NM_DEVICE_TYPE_GSM;
+		wiz_method->devtype = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
 		break;
 	case NMN_MOBILE_ACCESS_METHOD_TYPE_CDMA:
-		wiz_method->devtype = NM_DEVICE_TYPE_CDMA;
+		wiz_method->devtype = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
 		break;
 	default:
 		g_assert_not_reached ();
@@ -1131,11 +1130,16 @@ __intro_device_added (MobileWizard *self, NMDevice *device, gboolean select_it)
 {
 	GtkTreeIter iter;
 	const char *desc = utils_get_device_description (device);
+	NMDeviceModemCapabilities caps;
 
-	if (NM_IS_GSM_DEVICE (device)) {
+	if (!NM_IS_DEVICE_MODEM (device))
+		return FALSE;
+
+	caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
+	if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
 		if (!desc)
 			desc = _("Installed GSM device");
-	} else if (NM_IS_CDMA_DEVICE (device)) {
+	} else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO) {
 		if (!desc)
 			desc = _("Installed CDMA device");
 	} else
@@ -1271,6 +1275,7 @@ intro_combo_changed (MobileWizard *self)
 {
 	GtkTreeIter iter;
 	NMDevice *selected = NULL;
+	NMDeviceModemCapabilities caps;
 
 	g_free (self->dev_desc);
 	self->dev_desc = NULL;
@@ -1282,14 +1287,13 @@ intro_combo_changed (MobileWizard *self)
 	                    INTRO_COL_DEVICE, &selected, -1);
 	if (selected) {
 		self->dev_desc = g_strdup (utils_get_device_description (selected));
-		if (NM_IS_GSM_DEVICE (selected))
+		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (selected));
+		if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
 			self->method_type = NMN_MOBILE_ACCESS_METHOD_TYPE_GSM;
-		else if (NM_IS_CDMA_DEVICE (selected))
+		else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
 			self->method_type = NMN_MOBILE_ACCESS_METHOD_TYPE_CDMA;
-		else {
-			g_warning ("%s: unknown device type '%s'", __func__,
-			           G_OBJECT_TYPE_NAME (selected));
-		}
+		else
+			g_warning ("%s: unknown modem capabilities 0x%X", __func__, caps);
 
 		g_object_unref (selected);
 	}
@@ -1517,7 +1521,7 @@ get_country_from_locale (void)
 MobileWizard *
 mobile_wizard_new (GtkWindow *parent,
                    GtkWindowGroup *window_group,
-                   NMDeviceType devtype,
+                   NMDeviceModemCapabilities modem_caps,
                    gboolean will_connect_after,
                    MobileWizardCallback cb,
                    gpointer user_data)
@@ -1542,22 +1546,12 @@ mobile_wizard_new (GtkWindow *parent,
 	self->will_connect_after = will_connect_after;
 	self->callback = cb;
 	self->user_data = user_data;
-	if (devtype != NM_DEVICE_TYPE_UNKNOWN)
-		self->initial_method_type = TRUE;
-	switch (devtype) {
-	case NM_DEVICE_TYPE_UNKNOWN:
-		break;
-	case NM_DEVICE_TYPE_GSM:
+	if (modem_caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
 		self->method_type = NMN_MOBILE_ACCESS_METHOD_TYPE_GSM;
-		break;
-	case NM_DEVICE_TYPE_CDMA:
+	else if (modem_caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
 		self->method_type = NMN_MOBILE_ACCESS_METHOD_TYPE_CDMA;
-		break;
-	default:
-		g_warning ("%s: invalid device type %d", __func__, devtype);
-		mobile_wizard_destroy (self);
-		return NULL;
-	}
+	else
+		self->initial_method_type = TRUE;
 
 	self->assistant = gtk_assistant_new ();
 	gtk_assistant_set_forward_page_func (GTK_ASSISTANT (self->assistant),

@@ -205,13 +205,19 @@ apn_button_mobile_wizard_done (MobileWizard *wizard,
 
 	if (!canceled && method) {
 		switch (method->devtype) {
-		case NM_DEVICE_TYPE_GSM:
+		case NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS:
 			gtk_entry_set_text (GTK_ENTRY (priv->username),
 			                    method->username ? method->username : "");
 			gtk_entry_set_text (GTK_ENTRY (priv->password),
 			                    method->password ? method->password : "");
 			gtk_entry_set_text (GTK_ENTRY (priv->apn),
 			                    method->gsm_apn ? method->gsm_apn : "");
+			break;
+		case NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO:
+			gtk_entry_set_text (GTK_ENTRY (priv->username),
+			                    method->username ? method->username : "");
+			gtk_entry_set_text (GTK_ENTRY (priv->password),
+			                    method->password ? method->password : "");
 			break;
 		default:
 			g_assert_not_reached ();
@@ -240,7 +246,7 @@ apn_button_clicked (GtkButton *button, gpointer user_data)
 
 	wizard = mobile_wizard_new (GTK_WINDOW (toplevel),
 	                            priv->window_group,
-	                            NM_DEVICE_TYPE_GSM,
+	                            NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS,
 	                            FALSE,
 	                            apn_button_mobile_wizard_done,
 	                            self);
@@ -544,7 +550,7 @@ new_connection_mobile_wizard_done (MobileWizard *wizard,
 		char *detail = NULL;
 
 		switch (method->devtype) {
-		case NM_DEVICE_TYPE_GSM:
+		case NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS:
 			ctype = NM_SETTING_GSM_SETTING_NAME;
 			type_setting = nm_setting_gsm_new ();
 			/* De-facto standard for GSM */
@@ -555,7 +561,7 @@ new_connection_mobile_wizard_done (MobileWizard *wizard,
 			              NM_SETTING_GSM_APN, method->gsm_apn,
 			              NULL);
 			break;
-		case NM_DEVICE_TYPE_CDMA:
+		case NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO:
 			ctype = NM_SETTING_CDMA_SETTING_NAME;
 			type_setting = nm_setting_cdma_new ();
 			/* De-facto standard for CDMA */
@@ -613,7 +619,7 @@ mobile_connection_new (GtkWindow *parent,
 	info->get_connections_func = get_connections_func;
 	info->user_data = user_data;
 
-	wizard = mobile_wizard_new (parent, NULL, NM_DEVICE_TYPE_UNKNOWN, FALSE,
+	wizard = mobile_wizard_new (parent, NULL, NM_DEVICE_MODEM_CAPABILITY_NONE, FALSE,
 	                            new_connection_mobile_wizard_done, info);
 	if (wizard) {
 		mobile_wizard_present (wizard);
@@ -669,10 +675,10 @@ mobile_connection_new (GtkWindow *parent,
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (response == GTK_RESPONSE_OK) {
 		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (cdma_radio))) {
-			method.devtype = NM_DEVICE_TYPE_CDMA;
+			method.devtype = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
 			method.provider_name = _("CDMA");
 		} else {
-			method.devtype = NM_DEVICE_TYPE_GSM;
+			method.devtype = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
 			method.provider_name = _("GSM");
 		}
 	}
