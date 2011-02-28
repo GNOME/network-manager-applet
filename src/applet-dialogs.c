@@ -781,7 +781,7 @@ applet_about_dialog_show (NMApplet *applet)
 #endif
 	gtk_show_about_dialog (NULL,
 	                       "version", VERSION,
-	                       "copyright", _("Copyright \xc2\xa9 2004-2010 Red Hat, Inc.\n"
+	                       "copyright", _("Copyright \xc2\xa9 2004-2011 Red Hat, Inc.\n"
 	                                      "Copyright \xc2\xa9 2005-2008 Novell, Inc.\n"
 	                                      "and many other community contributors and translators"),
 	                       "comments", _("Notification area applet for managing your network devices and connections."),
