@@ -210,7 +210,7 @@ ce_page_complete_init (CEPage *self,
 	/* Update the connection with the new secrets */
 	if (nm_connection_update_secrets (self->connection,
 	                                  setting_name,
-	                                  secrets,
+	                                  setting_hash,
 	                                  &update_error)) {
 		/* Success */
 		emit_initialized (self, NULL);
