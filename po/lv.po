@@ -5,21 +5,22 @@
 # Raivis Dejus <orvils@gmail.com>, 2006.
 # Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2010.
 # Peteris Krisjanis <pecisk@gmail.com>, 2010.
+# Rudolfs <rudolfs.mazurs@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager.HEAD2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=NetworkManager&component=nm-applet\n"
-"POT-Creation-Date: 2010-03-27 21:05+0000\n"
-"PO-Revision-Date: 2010-03-28 12:16+0300\n"
-"Last-Translator: Peteris Krisjanis <pecisk@gmail.com>\n"
-"Language-Team: Latviešu <lata-l10n@googlegroups.com>\n"
+"POT-Creation-Date: 2011-01-14 13:18+0000\n"
+"PO-Revision-Date: 2011-02-07 02:37+0200\n"
+"Last-Translator: Rudolfs <rudolfs.mazurs@gmail.com>\n"
+"Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
 "2);\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.1\n"
 
 #: ../nm-applet.desktop.in.h:1
 msgid "Control your network connections"
@@ -85,7 +86,7 @@ msgid "Manage and change your network connection settings"
 msgstr "Pārvaldiet un mainiet tīkla savienojumu iestatījumus"
 
 #: ../nm-connection-editor.desktop.in.h:2
-#: ../src/connection-editor/nm-connection-editor.glade.h:7
+#: ../src/connection-editor/nm-connection-editor.ui.h:7
 msgid "Network Connections"
 msgstr "Tīkla savienojumi"
 
@@ -99,21 +100,22 @@ msgstr "Jau ir palaista nm-applet instance.\n"
 msgid "Could not acquire the %s service. (%d)\n"
 msgstr "Nevarēja saņemt %s servisu. (%d)\n"
 
-#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:323
-#: ../src/applet-device-gsm.c:376 ../src/applet-device-wired.c:241
-#: ../src/applet-device-wifi.c:774
+#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:332
+#: ../src/applet-device-gsm.c:375 ../src/applet-device-wired.c:241
+#: ../src/applet-device-wifi.c:822 ../src/applet-device-wimax.c:276
 msgid "Available"
 msgstr "Pieejams"
 
-#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:370
-#: ../src/applet-device-gsm.c:418 ../src/applet-device-wired.c:270
+#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:374
+#: ../src/applet-device-gsm.c:417 ../src/applet-device-wired.c:270
+#: ../src/applet-device-wimax.c:420
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Ir savienojums ar '%s'."
 
-#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:374
-#: ../src/applet-device-gsm.c:422 ../src/applet-device-wired.c:274
-#: ../src/applet-device-wifi.c:1215
+#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:378
+#: ../src/applet-device-gsm.c:421 ../src/applet-device-wired.c:274
+#: ../src/applet-device-wifi.c:1265 ../src/applet-device-wimax.c:424
 msgid "Connection Established"
 msgstr "Savienojums ir izveidots"
 
@@ -121,113 +123,108 @@ msgstr "Savienojums ir izveidots"
 msgid "You are now connected to the mobile broadband network."
 msgstr "Ir savienojums ar mobilo platjoslas tīklu."
 
-#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:405
-#: ../src/applet-device-gsm.c:457
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:414
+#: ../src/applet-device-gsm.c:457 ../src/applet-device-wimax.c:461
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Gatavo mobilā platjoslas savienojumu '%s'..."
 
-#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:408
-#: ../src/applet-device-gsm.c:460
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:417
+#: ../src/applet-device-gsm.c:460 ../src/applet-device-wimax.c:464
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Konfigurē mobilā platjoslas savienojumu '%s'..."
 
-#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:411
-#: ../src/applet-device-gsm.c:463
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:420
+#: ../src/applet-device-gsm.c:463 ../src/applet-device-wimax.c:467
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr ""
 "Mobilā platjoslas savienojumam '%s' ir nepieciešama lietotāja "
 "autentifikācija..."
 
-#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:414
-#: ../src/applet-device-gsm.c:466 ../src/applet.c:2262
+#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:423
+#: ../src/applet-device-gsm.c:466 ../src/applet-device-wimax.c:470
+#: ../src/applet.c:2347
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Tiek pieprasīta '%s' tīkla adrese..."
 
-#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:431
-#: ../src/applet-device-gsm.c:478
+#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:441
+#: ../src/applet-device-gsm.c:484
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Mobilais platjoslas savienojums '%s' ir aktīvs"
 
-#: ../src/applet-device-cdma.c:160 ../src/connection-editor/page-mobile.c:621
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:674
 #: ../src/mb-menu-item.c:55
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:267 ../src/applet-device-gsm.c:321
+#: ../src/applet-device-cdma.c:281 ../src/applet-device-gsm.c:325
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobilais platjoslas tīkls (%s)"
 
-#: ../src/applet-device-cdma.c:269 ../src/applet-device-gsm.c:323
-#: ../src/connection-editor/page-mobile.c:318
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1360
+#: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
+#: ../src/connection-editor/page-mobile.c:365
+#: ../src/connection-editor/nm-connection-editor.ui.h:6
+#: ../src/connection-editor/nm-connection-list.c:1412
 msgid "Mobile Broadband"
 msgstr "Mobilais platjoslas tīkls"
 
 #. Default connection item
-#: ../src/applet-device-cdma.c:336
+#: ../src/applet-device-cdma.c:345
 msgid "New Mobile Broadband (CDMA) connection..."
 msgstr "Jauns mobilā platjoslas tīkla (CDMA) savienojums..."
 
-#: ../src/applet-device-cdma.c:375
+#: ../src/applet-device-cdma.c:379
 msgid "You are now connected to the CDMA network."
 msgstr "Ir savienojums ar CDMA tīklu."
 
-#: ../src/applet-device-cdma.c:426 ../src/applet-device-gsm.c:473
+#: ../src/applet-device-cdma.c:436 ../src/applet-device-gsm.c:479
+#: ../src/applet-device-wimax.c:479
 #, c-format
 msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
 msgstr "Mobilā platjoslas tīkla savienojums '%s' ir aktīvs: (%d%%%s%s)"
 
-#: ../src/applet-device-cdma.c:429 ../src/applet-device-gsm.c:476
+#: ../src/applet-device-cdma.c:439 ../src/applet-device-gsm.c:482
+#: ../src/applet-device-wimax.c:482
 msgid "roaming"
 msgstr "viesabonēšana"
 
-#: ../src/applet-device-gsm.c:209 ../src/connection-editor/page-mobile.c:624
-#: ../src/mb-menu-item.c:62
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:677
+#: ../src/mb-menu-item.c:60
 msgid "GSM"
 msgstr "GSM"
 
 #. Default connection item
-#: ../src/applet-device-gsm.c:389
+#: ../src/applet-device-gsm.c:388
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "Jauns mobilā platjoslas tīkla (GSM) savienojums..."
 
-#: ../src/applet-device-gsm.c:423
+#: ../src/applet-device-gsm.c:422
 msgid "You are now connected to the GSM network."
 msgstr "Ir savienojums ar GSM tīklu."
 
-#: ../src/applet-device-gsm.c:705
+#: ../src/applet-device-gsm.c:707
 msgid "PIN code required"
 msgstr "Ir nepieciešams PIN kods"
 
-#: ../src/applet-device-gsm.c:707
-msgid "PUK code required"
-msgstr "Ir nepieciešams PUK kods"
-
-#: ../src/applet-device-gsm.c:716
+#: ../src/applet-device-gsm.c:715
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Mobilā platjoslas tīkla ierīcei ir vajadzīgs PIN kods"
 
-#: ../src/applet-device-gsm.c:718
-msgid "PUK code is needed for the mobile broadband device"
-msgstr "Mobilā platjoslas tīkla ierīcei ir vajadzīgs PUK kods"
-
-#: ../src/applet-device-gsm.c:851
+#: ../src/applet-device-gsm.c:847
 msgid "Wrong PIN code; please contact your provider."
 msgstr "Nepareizs PIN kods. Lūdzu, sazinieties ar operatoru."
 
-#: ../src/applet-device-gsm.c:874
+#: ../src/applet-device-gsm.c:870
 msgid "Wrong PUK code; please contact your provider."
 msgstr "Nepareizs PUK kods. Lūdzu, sazinieties ar operatoru."
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-gsm.c:901
+#: ../src/applet-device-gsm.c:897
 msgid "Sending unlock code..."
 msgstr "Sūta atbloķēšanas kodu..."
 
@@ -249,20 +246,27 @@ msgstr ""
 "Lai varētu izmantot mobilās platjoslas tīkla iekārtu '%s', ir vajadzīgs SIM "
 "PIN kods."
 
-#: ../src/applet-device-gsm.c:964
+#. Translators: PIN code entry label
+#: ../src/applet-device-gsm.c:965
 msgid "PIN code:"
 msgstr "PIN kods:"
 
+#. Translators: Show/obscure PIN checkbox label
 #: ../src/applet-device-gsm.c:969
+#| msgid "New PIN code:"
+msgid "Show PIN code"
+msgstr "Rādīt PIN kodu"
+
+#: ../src/applet-device-gsm.c:972
 msgid "SIM PUK unlock required"
 msgstr "Ir nepieciešama SIM PUK atbloķēšana"
 
-#: ../src/applet-device-gsm.c:970
+#: ../src/applet-device-gsm.c:973
 msgid "SIM PUK Unlock Required"
 msgstr "Ir nepieciešama SIM PUK atbloķēšana"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-device-gsm.c:972
+#: ../src/applet-device-gsm.c:975
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -271,17 +275,26 @@ msgstr ""
 "Lai varētu izmantot mobilās platjoslas tīkla iekārtu '%s', ir vajadzīgs SIM "
 "PUK kods."
 
-#: ../src/applet-device-gsm.c:973
+#. Translators: PUK code entry label
+#: ../src/applet-device-gsm.c:977
 msgid "PUK code:"
 msgstr "PUK kods:"
 
-#: ../src/applet-device-gsm.c:975
+#. Translators: New PIN entry label
+#: ../src/applet-device-gsm.c:980
 msgid "New PIN code:"
 msgstr "Jauns PIN kods:"
 
-#: ../src/applet-device-gsm.c:976
+#. Translators: New PIN verification entry label
+#: ../src/applet-device-gsm.c:982
 msgid "Re-enter new PIN code:"
 msgstr "Atkal ievadiet jauno PIN kodu:"
+
+#. Translators: Show/obscure PIN/PUK checkbox label
+#: ../src/applet-device-gsm.c:987
+#| msgid "New PIN code:"
+msgid "Show PIN/PUK codes"
+msgstr "Rādīt PIN/PUK kodus"
 
 #: ../src/applet-device-wired.c:63
 msgid "Auto Ethernet"
@@ -306,7 +319,7 @@ msgid "Wired Network"
 msgstr "Vadu tīkls"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:233 ../src/applet.c:1306
+#: ../src/applet-device-wired.c:233 ../src/applet.c:1342
 msgid "disconnected"
 msgstr "atvienots"
 
@@ -340,7 +353,7 @@ msgstr "Tiek pieprasīta '%s' vadu tīkla adrese..."
 msgid "Wired network connection '%s' active"
 msgstr "Vadu tīkla savienojums '%s' ir aktīvs"
 
-#: ../src/applet-device-wired.c:565
+#: ../src/applet-device-wired.c:568
 msgid "DSL authentication"
 msgstr "DSL autentifikācija"
 
@@ -352,233 +365,344 @@ msgstr "_Savienoties ar slēptu bezvadu tīklu..."
 msgid "Create _New Wireless Network..."
 msgstr "Izveidot jau_nu bezvadu tīklu..."
 
-#: ../src/applet-device-wifi.c:706
+#: ../src/applet-device-wifi.c:750
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Bezvadu tīkli (%s)"
 
-#: ../src/applet-device-wifi.c:708
+#: ../src/applet-device-wifi.c:752
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Bezvadu tīkls (%s)"
 
-#: ../src/applet-device-wifi.c:710
+#: ../src/applet-device-wifi.c:754
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Bezvadu tīkls"
 msgstr[1] "Bezvadu tīkli"
 msgstr[2] "Bezvadu tīklu"
 
-#: ../src/applet-device-wifi.c:740
+#: ../src/applet-device-wifi.c:787
 msgid "wireless is disabled"
 msgstr "bezvadu tīklošana ir atslēgta"
 
-#: ../src/applet-device-wifi.c:801
+#: ../src/applet-device-wifi.c:788
+#| msgid "wireless is disabled"
+msgid "wireless is disabled by hardware switch"
+msgstr "bezvadu tīklošana ir atslēgta ar slēdzi datorā"
+
+#: ../src/applet-device-wifi.c:849
 msgid "More networks"
 msgstr "Vairāk tīklu"
 
-#: ../src/applet-device-wifi.c:1005
+#: ../src/applet-device-wifi.c:1053
 msgid "Wireless Networks Available"
 msgstr "Pieejamie bezvadu tīkli"
 
-#: ../src/applet-device-wifi.c:1006
+#: ../src/applet-device-wifi.c:1055
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Spiediet uz šo ikonu, lai pieslēgtos bezvadu tīklam"
 
-#: ../src/applet-device-wifi.c:1009 ../src/applet.c:678
+#: ../src/applet-device-wifi.c:1056
+#| msgid "Click on this icon to connect to a wireless network"
+msgid "Use the network menu to connect to a wireless network"
+msgstr "Izmantojiet tīkla izvēlni, lai savienotos ar bezvadu tīklu"
+
+#: ../src/applet-device-wifi.c:1059 ../src/applet.c:713
 msgid "Don't show this message again"
 msgstr "Vairs nerādīt šo ziņojumu"
 
-#: ../src/applet-device-wifi.c:1213
+#: ../src/applet-device-wifi.c:1263
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Ir savienojums ar bezvadu tīklu '%s'."
 
-#: ../src/applet-device-wifi.c:1214 ../src/applet-device-wifi.c:1245
+#: ../src/applet-device-wifi.c:1264 ../src/applet-device-wifi.c:1295
 msgid "(none)"
 msgstr "(nav)"
 
-#: ../src/applet-device-wifi.c:1255
+#: ../src/applet-device-wifi.c:1305
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Gatavo bezvadu tīkla savienojumu '%s'..."
 
-#: ../src/applet-device-wifi.c:1258
+#: ../src/applet-device-wifi.c:1308
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Konfigurē bezvadu tīkla savienojumu '%s'..."
 
-#: ../src/applet-device-wifi.c:1261
+#: ../src/applet-device-wifi.c:1311
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr ""
 "Bezvadu tīkla savienojumam '%s' ir nepieciešama lietotāja autentifikācija..."
 
-#: ../src/applet-device-wifi.c:1264
+#: ../src/applet-device-wifi.c:1314
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Tiek pieprasīta '%s' bezvadu tīkla adrese..."
 
-#: ../src/applet-device-wifi.c:1284
+#: ../src/applet-device-wifi.c:1334
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Bezvadu tīkla savienojums '%s' ir aktīvs: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1288
+#: ../src/applet-device-wifi.c:1338
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Bezvadu tīkla savienojums '%s' ir aktīvs"
+
+#: ../src/applet-device-wimax.c:228
+#, c-format
+#| msgid "Mobile Broadband (%s)"
+msgid "WiMAX Mobile Broadband (%s)"
+msgstr "WiMAX mobilais platjoslas tīkls (%s)"
+
+#: ../src/applet-device-wimax.c:230
+#| msgid "Mobile Broadband"
+msgid "WiMAX Mobile Broadband"
+msgstr "WiMAX mobilais platjoslas tīkls"
+
+#: ../src/applet-device-wimax.c:256
+#| msgid "wireless is disabled"
+msgid "WiMAX is disabled"
+msgstr "WiMAX ir atslēgts"
+
+#: ../src/applet-device-wimax.c:257
+msgid "WiMAX is disabled by hardware switch"
+msgstr "WiMAX ir atslēgts ar slēdzi datorā"
+
+#: ../src/applet-device-wimax.c:425
+#| msgid "You are now connected to the CDMA network."
+msgid "You are now connected to the WiMAX network."
+msgstr "Jūs esat savienojies ar WiMAX tīklu."
 
 #: ../src/applet-dialogs.c:56
 msgid "Error displaying connection information:"
 msgstr "Kļūda, rādot informāciju par savienojumu:"
 
-#: ../src/applet-dialogs.c:87
+#: ../src/applet-dialogs.c:109
 #: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:931
-#: ../src/wireless-security/wireless-security.c:340
+#: ../src/wireless-dialog.c:969
+#: ../src/wireless-security/wireless-security.c:390
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:89
+#: ../src/applet-dialogs.c:111
 msgid "Dynamic WEP"
 msgstr "Dinamiskais WEP"
 
-#: ../src/applet-dialogs.c:91 ../src/applet-dialogs.c:192
-#: ../src/applet-dialogs.c:194
+#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:228
+#: ../src/applet-dialogs.c:230
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:190
+#: ../src/applet-dialogs.c:226
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:207
+#: ../src/applet-dialogs.c:234 ../src/applet-dialogs.c:243
 #: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:888
+#: ../src/wireless-dialog.c:926
+#| msgid "None"
+msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Nav"
 
-#: ../src/applet-dialogs.c:210 ../src/applet-dialogs.c:282
-#: ../src/applet-dialogs.c:384 ../src/applet-dialogs.c:421
-#: ../src/applet-dialogs.c:439 ../src/applet-dialogs.c:450
-msgid "Unknown"
-msgstr "Nezināms"
-
-#: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
+#: ../src/applet-dialogs.c:334 ../src/applet-dialogs.c:466
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:313
+#: ../src/applet-dialogs.c:336 ../src/applet-dialogs.c:468
+#| msgid "Unknown"
+msgctxt "Speed"
+msgid "Unknown"
+msgstr "Nezināms"
+
+#: ../src/applet-dialogs.c:349
+#, c-format
+msgid "%d dB"
+msgstr "%d dB"
+
+#: ../src/applet-dialogs.c:351
+#| msgid "Unknown"
+msgctxt "WiMAX CINR"
+msgid "unknown"
+msgstr "nezināms"
+
+#: ../src/applet-dialogs.c:363
+#| msgid "Unknown"
+msgctxt "WiMAX Base Station ID"
+msgid "unknown"
+msgstr "nezināms"
+
+#: ../src/applet-dialogs.c:398
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:315
+#: ../src/applet-dialogs.c:401
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:317
+#: ../src/applet-dialogs.c:404
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:319
+#: ../src/applet-dialogs.c:406
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:324
+#: ../src/applet-dialogs.c:408
+#, c-format
+#| msgid "CDMA (%s)"
+msgid "WiMAX (%s)"
+msgstr "WiMAX (%s)"
+
+#. --- General ---
+#: ../src/applet-dialogs.c:414
+msgid "General"
+msgstr "Vispārējs"
+
+#: ../src/applet-dialogs.c:418
 msgid "Interface:"
 msgstr "Saskarne:"
 
-#: ../src/applet-dialogs.c:340
+#: ../src/applet-dialogs.c:434
 msgid "Hardware Address:"
 msgstr "Aparatūras adrese:"
 
-#: ../src/applet-dialogs.c:350
+#. Driver
+#: ../src/applet-dialogs.c:442
 msgid "Driver:"
 msgstr "Draiveris:"
 
-#: ../src/applet-dialogs.c:388
+#: ../src/applet-dialogs.c:471
 msgid "Speed:"
 msgstr "Ātrums:"
 
-#: ../src/applet-dialogs.c:397
+#: ../src/applet-dialogs.c:481
 msgid "Security:"
 msgstr "Drošība:"
 
-#: ../src/applet-dialogs.c:419
+#: ../src/applet-dialogs.c:494
+#| msgid "PI_N:"
+msgid "CINR:"
+msgstr "CINR:"
+
+#: ../src/applet-dialogs.c:507
+#| msgid "_BSSID:"
+msgid "BSID:"
+msgstr "BSID:"
+
+#. --- IPv4 ---
+#: ../src/applet-dialogs.c:524
+msgid "IPv4"
+msgstr "IPv4"
+
+#. Address
+#: ../src/applet-dialogs.c:535 ../src/applet-dialogs.c:642
 msgid "IP Address:"
 msgstr "IP adrese:"
 
-#: ../src/applet-dialogs.c:437
+#: ../src/applet-dialogs.c:537 ../src/applet-dialogs.c:553
+#| msgid "Unknown"
+msgctxt "Address"
+msgid "Unknown"
+msgstr "Nezināma"
+
+#: ../src/applet-dialogs.c:551
 msgid "Broadcast Address:"
 msgstr "Apraides adrese:"
 
-#: ../src/applet-dialogs.c:448
+#. Prefix
+#: ../src/applet-dialogs.c:560
 msgid "Subnet Mask:"
 msgstr "Apakštīkla maska:"
 
-#: ../src/applet-dialogs.c:460
+#: ../src/applet-dialogs.c:562
+#| msgid "Unknown"
+msgctxt "Subnet Mask"
+msgid "Unknown"
+msgstr "Nezināma"
+
+#: ../src/applet-dialogs.c:570 ../src/applet-dialogs.c:657
 msgid "Default Route:"
 msgstr "Noklusētais maršruts:"
 
-#: ../src/applet-dialogs.c:474
+#: ../src/applet-dialogs.c:582
 msgid "Primary DNS:"
 msgstr "Primārais DNS:"
 
-#: ../src/applet-dialogs.c:485
+#: ../src/applet-dialogs.c:591
 msgid "Secondary DNS:"
 msgstr "Sekundārais DNS:"
 
+#: ../src/applet-dialogs.c:601
+#| msgid "Secondary DNS:"
+msgid "Ternary DNS:"
+msgstr "Tercārais DNS:"
+
+#. --- IPv6 ---
+#: ../src/applet-dialogs.c:616
+msgid "IPv6"
+msgstr "IPv6"
+
+#: ../src/applet-dialogs.c:625
+#| msgid "Ignore"
+msgid "Ignored"
+msgstr "Ignorēts"
+
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:548
+#: ../src/applet-dialogs.c:733
 msgid "No valid active connections found!"
 msgstr "Nav atrastu aktīvu savienojumu!"
 
-#: ../src/applet-dialogs.c:674
+#: ../src/applet-dialogs.c:786
+#| msgid ""
+#| "Copyright © 2004-2008 Red Hat, Inc.\n"
+#| "Copyright © 2005-2008 Novell, Inc."
 msgid ""
-"Copyright © 2004-2008 Red Hat, Inc.\n"
-"Copyright © 2005-2008 Novell, Inc."
+"Copyright © 2004-2010 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc.\n"
+"and many other community contributors and translators"
 msgstr ""
 "Copyright © 2004-2008 Red Hat, Inc.\n"
-"Copyright © 2005-2008 Novell, Inc."
+"Copyright © 2005-2008 Novell, Inc.\n"
+"un daudzi citu kopienas izstrādātāji un tulkotāji"
 
-#: ../src/applet-dialogs.c:676
+#: ../src/applet-dialogs.c:789
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Paziņojumu lauka sīklietotne tīkla ierīču un savienojumu pārvaldīšanai."
 
-#: ../src/applet-dialogs.c:678
+#: ../src/applet-dialogs.c:791
 msgid "NetworkManager Website"
 msgstr "NetworkManager tīmekļa vietne"
 
-#: ../src/applet-dialogs.c:681
-msgid "translator-credits"
-msgstr "Rūdolfs Mazurs Raivis Dejus Andris Zāģeris Ivars Strazdiņš"
-
-#: ../src/applet-dialogs.c:697
+#: ../src/applet-dialogs.c:806
 msgid "Missing resources"
 msgstr "Trūkstošie resursi"
 
-#: ../src/applet-dialogs.c:723
+#: ../src/applet-dialogs.c:833
 msgid "Mobile broadband network password"
 msgstr "Mobilā platjosla tīkla parole"
 
-#: ../src/applet-dialogs.c:732
+#: ../src/applet-dialogs.c:842
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Lai savienotos ar '%s', ir nepieciešama parole."
 
-#: ../src/applet-dialogs.c:750
+#: ../src/applet-dialogs.c:863
 msgid "Password:"
 msgstr "Parole:"
 
-#: ../src/applet.c:791
+#: ../src/applet.c:826
 #, c-format
 msgid ""
 "\n"
@@ -588,7 +712,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' neizdevās, jo tika pārtraukts tīkla savienojums."
 
-#: ../src/applet.c:794
+#: ../src/applet.c:829
 #, c-format
 msgid ""
 "\n"
@@ -597,7 +721,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' neizdevās, jo VPN serviss negaidīti apstājās."
 
-#: ../src/applet.c:797
+#: ../src/applet.c:832
 #, c-format
 msgid ""
 "\n"
@@ -608,7 +732,7 @@ msgstr ""
 "VPN savienojums '%s' neizdevās, jo VPN serviss atgrieza nederīgu "
 "konfigurāciju."
 
-#: ../src/applet.c:800
+#: ../src/applet.c:835
 #, c-format
 msgid ""
 "\n"
@@ -617,7 +741,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' neizdevās, jo savienošanās mēģinājumam iestājās noildze."
 
-#: ../src/applet.c:803
+#: ../src/applet.c:838
 #, c-format
 msgid ""
 "\n"
@@ -626,7 +750,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' neizdevās, jo VPN serviss laicīgi nepalaidās."
 
-#: ../src/applet.c:806
+#: ../src/applet.c:841
 #, c-format
 msgid ""
 "\n"
@@ -635,7 +759,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' neizdevās, jo VPN servisam neizdevās palaisties."
 
-#: ../src/applet.c:809
+#: ../src/applet.c:844
 #, c-format
 msgid ""
 "\n"
@@ -644,7 +768,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' neizdevās, jo nebija derīgu VPN noslēpumu (secrets)."
 
-#: ../src/applet.c:812
+#: ../src/applet.c:847
 #, c-format
 msgid ""
 "\n"
@@ -653,7 +777,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' neizdevās nederīgu VPN noslēpumu (secrets) dēļ."
 
-#: ../src/applet.c:819
+#: ../src/applet.c:854
 #, c-format
 msgid ""
 "\n"
@@ -662,7 +786,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' neizdevās."
 
-#: ../src/applet.c:837
+#: ../src/applet.c:872
 #, c-format
 msgid ""
 "\n"
@@ -672,7 +796,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' atvienojās, jo tika pārtraukts tīkla savienojums."
 
-#: ../src/applet.c:840
+#: ../src/applet.c:875
 #, c-format
 msgid ""
 "\n"
@@ -681,7 +805,7 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' atvienojās, jo VPN serviss apstājās."
 
-#: ../src/applet.c:846
+#: ../src/applet.c:881
 #, c-format
 msgid ""
 "\n"
@@ -690,15 +814,15 @@ msgstr ""
 "\n"
 "VPN savienojums '%s' atvienojās."
 
-#: ../src/applet.c:877
+#: ../src/applet.c:916
 msgid "VPN Login Message"
 msgstr "VPN pieteikšanās ziņojums"
 
-#: ../src/applet.c:889 ../src/applet.c:897 ../src/applet.c:944
+#: ../src/applet.c:926 ../src/applet.c:934 ../src/applet.c:981
 msgid "VPN Connection Failed"
 msgstr "VPN savienojums neizdevās"
 
-#: ../src/applet.c:951
+#: ../src/applet.c:988
 #, c-format
 msgid ""
 "\n"
@@ -711,7 +835,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:954
+#: ../src/applet.c:991
 #, c-format
 msgid ""
 "\n"
@@ -724,295 +848,201 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1297
+#: ../src/applet.c:1330
+#| msgid "device not ready"
+msgid "device not ready (firmware missing)"
+msgstr "iekārta nav gatava (trūkst aparātprogrammatūras)"
+
+#: ../src/applet.c:1332
 msgid "device not ready"
 msgstr "iekārta nav gatava"
 
-#: ../src/applet.c:1322
+#: ../src/applet.c:1358
 msgid "Disconnect"
 msgstr "Atvienots"
 
-#: ../src/applet.c:1336
+#: ../src/applet.c:1372
 msgid "device not managed"
 msgstr "iekārta netiek pārvaldīta"
 
-#: ../src/applet.c:1382
+#: ../src/applet.c:1416
 msgid "No network devices available"
 msgstr "Nav pieejamu tīkla ierīču"
 
-#: ../src/applet.c:1470
+#: ../src/applet.c:1504
 msgid "_VPN Connections"
 msgstr "_VPN savienojumi"
 
-#: ../src/applet.c:1523
+#: ../src/applet.c:1557
 msgid "_Configure VPN..."
 msgstr "_Konfigurēt VPN..."
 
-#: ../src/applet.c:1527
+#: ../src/applet.c:1561
 msgid "_Disconnect VPN"
 msgstr "_Atvienot VPN..."
 
-#: ../src/applet.c:1614
+#: ../src/applet.c:1659
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager nav palaists..."
 
-#: ../src/applet.c:1619 ../src/applet.c:2390
+#: ../src/applet.c:1664 ../src/applet.c:2475
 msgid "Networking disabled"
 msgstr "Tīklošana atslēgta"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1836
+#: ../src/applet.c:1885
 msgid "Enable _Networking"
 msgstr "Ieslēgt tīkloša_nu"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1845
+#: ../src/applet.c:1894
 msgid "Enable _Wireless"
 msgstr "Ieslēgt bez_vadu tīklošana"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1854
+#: ../src/applet.c:1903
 msgid "Enable _Mobile Broadband"
 msgstr "Ieslēgt _mobilo platjoslas tīklu"
 
+#. 'Enable WiMAX Mobile Broadband' item
+#: ../src/applet.c:1912
+#| msgid "Enable _Mobile Broadband"
+msgid "Enable WiMA_X Mobile Broadband"
+msgstr "Ieslēgt WiMA_X mobilo platjoslas tīklu"
+
 #. Toggle notifications item
-#: ../src/applet.c:1865
+#: ../src/applet.c:1923
 msgid "Enable N_otifications"
 msgstr "Ieslēgt paziņ_ojumus"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1876
+#: ../src/applet.c:1934
 msgid "Connection _Information"
 msgstr "Savienojuma _informācija"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1886
+#: ../src/applet.c:1944
 msgid "Edit Connections..."
 msgstr "Rediģēt savienojumu..."
 
 #. Help item
-#: ../src/applet.c:1900
+#: ../src/applet.c:1958
 msgid "_Help"
 msgstr "_Palīdzība"
 
 #. About item
-#: ../src/applet.c:1909
+#: ../src/applet.c:1967
 msgid "_About"
 msgstr "P_ar"
 
-#: ../src/applet.c:2095
+#: ../src/applet.c:2158
 msgid "Disconnected"
 msgstr "Atvienots"
 
-#: ../src/applet.c:2096
+#: ../src/applet.c:2159
 msgid "The network connection has been disconnected."
 msgstr "Tīkla savienojums tika atvienots."
 
-#: ../src/applet.c:2256
+#: ../src/applet.c:2341
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Gatavo tīkla savienojumu '%s'..."
 
-#: ../src/applet.c:2259
+#: ../src/applet.c:2344
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Tīkla savienojumam '%s' ir nepieciešama lietotāja autentifikācija..."
 
-#: ../src/applet.c:2265
+#: ../src/applet.c:2350
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Tīkla savienojums '%s' ir aktīvs"
 
-#: ../src/applet.c:2346
+#: ../src/applet.c:2431
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Startē VPN savienojumu '%s'..."
 
-#: ../src/applet.c:2349
+#: ../src/applet.c:2434
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "VPN savienojumam '%s' ir nepieciešama lietotāja autentifikācija..."
 
-#: ../src/applet.c:2352
+#: ../src/applet.c:2437
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Tiek pieprasīta '%s' VPN adrese..."
 
-#: ../src/applet.c:2355
+#: ../src/applet.c:2440
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN savienojums '%s' ir aktīvs"
 
-#: ../src/applet.c:2394
+#: ../src/applet.c:2479
 msgid "No network connection"
 msgstr "Nav tīkla savienojuma"
 
-#: ../src/applet.c:2934
+#: ../src/applet.c:3076
 msgid "NetworkManager Applet"
 msgstr "NetworkManager sīklietotne"
 
-#: ../src/applet.c:2940 ../src/wired-dialog.c:128
+#: ../src/applet.c:3082 ../src/wired-dialog.c:132
+#| msgid ""
+#| "The NetworkManager Applet could not find some required resources (the "
+#| "glade file was not found)."
 msgid ""
-"The NetworkManager Applet could not find some required resources (the glade "
+"The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
 msgstr ""
 "Tīkla NetworkManager sīklietotne nevarēja atrast dažus pieprasītos resursus "
-"(noras fails netika atrasts)."
+"(.ui fails netika atrasts)."
 
-#: ../src/applet.glade.h:1 ../src/connection-editor/ce-vpn-wizard.glade.h:1
+#: ../src/applet.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
+#: ../src/wireless-security/eap-method-peap.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:1
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:1
+#: ../src/wireless-security/ws-wpa-eap.ui.h:1
 msgid " "
 msgstr " "
 
-#: ../src/applet.glade.h:2
-msgid ""
-"1 (Default)\n"
-"2\n"
-"3\n"
-"4"
-msgstr ""
-"1 (Noklusētais)\n"
-"2\n"
-"3\n"
-"4"
+#: ../src/applet.ui.h:2
+#| msgid "Network Connections"
+msgid "Active Network Connections"
+msgstr "Aktīvi tīkla savienojumi"
 
-#: ../src/applet.glade.h:6
-msgid "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
-msgstr ""
-"<span size=\"larger\" weight=\"bold\">Aktīvā savienojuma informācija</span>"
-
-#: ../src/applet.glade.h:7
-msgid "Anony_mous identity:"
-msgstr "Anonī_ma identitāte:"
-
-#: ../src/applet.glade.h:8
-msgid "As_k for this password every time"
-msgstr "_Katru reizi prasīt paroli"
-
-#: ../src/applet.glade.h:9
-msgid ""
-"Automatic\n"
-"Version 0\n"
-"Version 1"
-msgstr ""
-"Automātiski\n"
-"Versija 0\n"
-"Versija 1"
-
-#: ../src/applet.glade.h:12
-msgid "C_A certificate:"
-msgstr "C_A sertifikāts:"
-
-#: ../src/applet.glade.h:13
+#: ../src/applet.ui.h:3
 msgid "C_onnect"
 msgstr "Savien_oties"
 
-#: ../src/applet.glade.h:14
+#: ../src/applet.ui.h:4
 msgid "Co_nnection:"
 msgstr "Savie_nojums:"
 
-#: ../src/applet.glade.h:15
+#: ../src/applet.ui.h:5
 msgid "Connection Information"
 msgstr "Savienojuma informācija"
 
-#: ../src/applet.glade.h:16
-msgid "Don't _warn me again"
-msgstr "_Vairs nebrīdināt"
-
-#: ../src/applet.glade.h:17
-msgid "I_dentity:"
-msgstr "I_dentitāte:"
-
-#: ../src/applet.glade.h:18
-msgid "I_nner authentication:"
-msgstr "Iekšējā aute_ntifikācija:"
-
-#: ../src/applet.glade.h:19
-msgid "No"
-msgstr "Nē"
-
-#: ../src/applet.glade.h:20
-msgid ""
-"Open System\n"
-"Shared Key"
-msgstr ""
-"Atvērta sistēma\n"
-"Koplietošanas atslēga"
-
-#: ../src/applet.glade.h:22
+#: ../src/applet.ui.h:6
 msgid "Other Wireless Network..."
 msgstr "Cits bezvadu tīkls..."
 
-#: ../src/applet.glade.h:23
-msgid "Private _key:"
-msgstr "Privātā _atslēga:"
-
-#: ../src/applet.glade.h:24
-msgid "Sho_w key"
-msgstr "_Rādīt atslēgu"
-
-#: ../src/applet.glade.h:25 ../src/connection-editor/ce-page-dsl.glade.h:1
-msgid "Sho_w password"
-msgstr "_Rādīt paroli"
-
-#: ../src/applet.glade.h:26
-msgid "WEP inde_x:"
-msgstr "WEP inde_x:"
-
-#: ../src/applet.glade.h:27
+#: ../src/applet.ui.h:7
 msgid "Wireless _adapter:"
 msgstr "Bezvadu tīkla _iekārta:"
 
-#: ../src/applet.glade.h:28
-msgid "Yes"
-msgstr "Jā"
-
-#: ../src/applet.glade.h:29
-msgid "_Authentication:"
-msgstr "_Autentifikācija:"
-
-#: ../src/applet.glade.h:30
-msgid "_Key:"
-msgstr "_Atslēga:"
-
-#: ../src/applet.glade.h:31
+#: ../src/applet.ui.h:8
 msgid "_Network name:"
 msgstr "Tīkla _nosaukums:"
 
-#: ../src/applet.glade.h:32
-msgid "_PEAP version:"
-msgstr "_PEAP versija:"
-
-#: ../src/applet.glade.h:33 ../src/connection-editor/ce-page-dsl.glade.h:2
-#: ../src/connection-editor/ce-page-mobile.glade.h:15
-msgid "_Password:"
-msgstr "_Parole:"
-
-#: ../src/applet.glade.h:34
-msgid "_Private key password:"
-msgstr "_Privātās atslēgas parole:"
-
-#: ../src/applet.glade.h:35 ../src/connection-editor/ce-page-mobile.glade.h:16
-msgid "_Type:"
-msgstr "_Tips:"
-
-#: ../src/applet.glade.h:36
+#: ../src/applet.ui.h:9
 msgid "_Unlock"
 msgstr "_Atbloķēt"
 
-#: ../src/applet.glade.h:37
-msgid "_User certificate:"
-msgstr "_Lietotāja sertifikāts:"
-
-#: ../src/applet.glade.h:38 ../src/connection-editor/ce-page-dsl.glade.h:4
-#: ../src/connection-editor/ce-page-mobile.glade.h:17
-msgid "_Username:"
-msgstr "_Lietotāja vārds:"
-
-#: ../src/applet.glade.h:39
+#: ../src/applet.ui.h:10
 msgid "_Wireless security:"
 msgstr "Bez_vadu drošība:"
 
-#: ../src/applet.glade.h:40
+#: ../src/applet.ui.h:11
 msgid "label"
 msgstr "etiķete"
 
@@ -1020,42 +1050,68 @@ msgstr "etiķete"
 msgid "automatic"
 msgstr "automātiski"
 
-#: ../src/connection-editor/ce-page.c:221
-#: ../src/connection-editor/nm-connection-editor.c:623
+#: ../src/connection-editor/ce-page.c:222
+#: ../src/connection-editor/nm-connection-editor.c:613
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Nezināmas kļūdas dēļ, neizdevās atjaunināt savienojuma noslēpumus (secrets)."
 
-#: ../src/connection-editor/ce-page-dsl.glade.h:3
+#: ../src/connection-editor/ce-page-dsl.ui.h:1
+#: ../src/wireless-security/eap-method-leap.ui.h:1
+#: ../src/wireless-security/eap-method-simple.ui.h:2
+#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/ws-leap.ui.h:1
+#: ../src/wireless-security/ws-wpa-psk.ui.h:1
+msgid "Sho_w password"
+msgstr "_Rādīt paroli"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:2
+#: ../src/connection-editor/ce-page-mobile.ui.h:15
+#: ../src/wireless-security/eap-method-leap.ui.h:2
+#: ../src/wireless-security/eap-method-simple.ui.h:3
+#: ../src/wireless-security/ws-leap.ui.h:2
+#: ../src/wireless-security/ws-wpa-psk.ui.h:2
+msgid "_Password:"
+msgstr "_Parole:"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:3
 msgid "_Service:"
 msgstr "_Serviss:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:1
-#: ../src/connection-editor/ce-page-ip6.glade.h:1
-msgid "<b>Addresses</b>"
-msgstr "<b>Adreses</b>"
+#: ../src/connection-editor/ce-page-dsl.ui.h:4
+#: ../src/connection-editor/ce-page-mobile.ui.h:17
+#: ../src/wireless-security/eap-method-leap.ui.h:3
+#: ../src/wireless-security/eap-method-simple.ui.h:4
+#: ../src/wireless-security/ws-leap.ui.h:3
+msgid "_Username:"
+msgstr "_Lietotāja vārds:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:2
-#: ../src/connection-editor/ce-page-ip6.glade.h:2
-msgid ""
-"Automatic\n"
-"Automatic with manual DNS settings\n"
-"Manual\n"
-"Link-Local\n"
-"Shared to other computers"
-msgstr ""
-"Automātisks\n"
-"Automātisks ar pašrocīgiem DNS iestatījumiem\n"
-"Pašrocīgs\n"
-"Lokālais savienojums\n"
-"Koplietots ar citiem datoriem"
+#: ../src/connection-editor/ce-page-ip4.ui.h:1
+#: ../src/connection-editor/ce-page-ip6.ui.h:1
+#| msgid "Address"
+msgid "Addresses"
+msgstr "Adreses"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:7
+#: ../src/connection-editor/ce-page-ip4.ui.h:2
+#: ../src/connection-editor/ce-page-ip6.ui.h:2
+#: ../src/connection-editor/ce-page-wired.ui.h:7
+#: ../src/connection-editor/ce-page-wireless.ui.h:3
+#: ../src/connection-editor/page-ip6.c:135
+#: ../src/wireless-security/eap-method-peap.ui.h:3
+msgid "Automatic"
+msgstr "Automātiski"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:3
+#: ../src/connection-editor/ce-page-ip6.ui.h:3
+msgid "Automatic with manual DNS settings"
+msgstr "Automātiski ar pašrocīgiem DNS iestatījumiem"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:4
 msgid "D_HCP client ID:"
 msgstr "D_HCP klienta ID:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:8
-#: ../src/connection-editor/ce-page-ip6.glade.h:7
+#: ../src/connection-editor/ce-page-ip4.ui.h:5
+#: ../src/connection-editor/ce-page-ip6.ui.h:4
 msgid ""
 "Domains used when resolving host names. Use commas to separate multiple "
 "domains."
@@ -1063,8 +1119,8 @@ msgstr ""
 "Domēni, kurus izmantot, meklējot datoru vārdus. Vairākus domēnus atdaliet ar "
 "komatu."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:9
-#: ../src/connection-editor/ce-page-ip6.glade.h:8
+#: ../src/connection-editor/ce-page-ip4.ui.h:6
+#: ../src/connection-editor/ce-page-ip6.ui.h:5
 msgid ""
 "IP addresses identify your computer on the network.  Click the \"Add\" "
 "button to add an IP address."
@@ -1072,8 +1128,8 @@ msgstr ""
 "IP adrese identificē datoru tīklā. Spiediet \"Pievienot\", lai pievienotu IP "
 "adresi."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:10
-#: ../src/connection-editor/ce-page-ip6.glade.h:9
+#: ../src/connection-editor/ce-page-ip4.ui.h:7
+#: ../src/connection-editor/ce-page-ip6.ui.h:6
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses."
@@ -1081,8 +1137,8 @@ msgstr ""
 "DNS (domēnu vārdu serveru) adreses, kuras izmantot, meklējot datoru vārdus. "
 "Vairākas DNS adreses atdaliet ar komatu."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:11
-#: ../src/connection-editor/ce-page-ip6.glade.h:10
+#: ../src/connection-editor/ce-page-ip4.ui.h:8
+#: ../src/connection-editor/ce-page-ip6.ui.h:7
 msgid ""
 "If enabled, this connection will never be used as the default network "
 "connection."
@@ -1090,12 +1146,36 @@ msgstr ""
 "Ja ieslēgts, šis savienojums nekad netiks izmantots kā noklusētais tīkla "
 "savienojums."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:12
-#: ../src/connection-editor/ce-page-ip6.glade.h:11
+#: ../src/connection-editor/ce-page-ip4.ui.h:9
+#: ../src/connection-editor/ce-page-ip6.ui.h:8
 msgid "Ig_nore automatically obtained routes"
 msgstr "Ig_norēt automātiski saņemtos maršrutus"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:13
+#: ../src/connection-editor/ce-page-ip4.ui.h:10
+#: ../src/connection-editor/ce-page-ip6.ui.h:9
+#| msgid "Link-Local Only"
+msgid "Link-Local"
+msgstr "Lokālais tīkls"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#: ../src/connection-editor/page-ip4.c:162
+#: ../src/connection-editor/page-ip6.c:184
+msgid "Manual"
+msgstr "Pašrocīgs"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:12
+msgid "Require IPv4 addressing for this connection to complete"
+msgstr "Šī savienojuma pabeigšanai nepieciešama IPv4 adresācija"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:13
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
+#: ../src/connection-editor/page-ip4.c:180
+#: ../src/connection-editor/page-ip6.c:204
+msgid "Shared to other computers"
+msgstr "Koplietots ar citiem datoriem"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:14
 msgid ""
 "The DHCP client identifier allows the network administrator to customize "
 "your computer's configuration.  If you wish to use a DHCP client identifier, "
@@ -1105,474 +1185,556 @@ msgstr ""
 "konfigurāciju. Ja vēlaties izmantot DHCP klienta identifikatoru, ievadiet to "
 "šeit."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:14
-#: ../src/connection-editor/ce-page-ip6.glade.h:12
+#: ../src/connection-editor/ce-page-ip4.ui.h:15
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
 msgid "Use this c_onnection only for resources on its network"
 msgstr "Izmant_ot šo savienojumu tikai šī tīkla resursiem"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:15
-#: ../src/connection-editor/ce-page-ip6.glade.h:13
+#: ../src/connection-editor/ce-page-ip4.ui.h:16
+msgid ""
+"When connecting to IPv6-capable networks, allows the connection to complete "
+"if IPv4 configuration fails but IPv6 configuration succeeds."
+msgstr ""
+"Kad savienojas ar IPv6 spējīgiem tīkliem, ļauj savienojumam izveidoties arī "
+"tad, ja "
+"neizdodas izveidot IPv4 konfigurāciju, bet IPv6 konfigurācija izdodas."
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
 msgid "_DNS servers:"
 msgstr "_DNS serveri:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:16
-#: ../src/connection-editor/ce-page-ip6.glade.h:14
+#: ../src/connection-editor/ce-page-ip4.ui.h:18
+#: ../src/connection-editor/ce-page-ip6.ui.h:16
 msgid "_Method:"
 msgstr "_Metode:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:17
+#: ../src/connection-editor/ce-page-ip4.ui.h:19
+#: ../src/connection-editor/ce-page-ip6.ui.h:17
 msgid "_Routes…"
 msgstr "Marš_ruti…"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:18
-#: ../src/connection-editor/ce-page-ip6.glade.h:16
+#: ../src/connection-editor/ce-page-ip4.ui.h:20
+#: ../src/connection-editor/ce-page-ip6.ui.h:18
 msgid "_Search domains:"
 msgstr "_Meklēšanas domēni:"
 
-#: ../src/connection-editor/ce-page-ip6.glade.h:15
-msgid "_Routes&#x2026;"
-msgstr "Marš_ruti&#x2026;"
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
+msgid "Require IPv6 addressing for this connection to complete"
+msgstr "Šī savienojuma pabeigšanai nepieciešama IPv6 adresācija"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:1
-msgid "<b>Advanced</b>"
-msgstr "<b>Paplašināts</b>"
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
+msgid ""
+"When connecting to IPv4-capable networks, allows the connection to complete "
+"if IPv6 configuration fails but IPv4 configuration succeeds."
+msgstr ""
+"Kad savienojas ar IPv4 spējīgiem tīkliem, ļauj savienojumam izveidoties arī "
+"tad, ja "
+"neizdodas izveidot IPv6 konfigurāciju, bet IPv4 konfigurācija izdodas."
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:2
-msgid "<b>Basic</b>"
-msgstr "<b>Vienkāršs</b>"
+#: ../src/connection-editor/ce-page-mobile.ui.h:1
+msgid "2G (GPRS/EDGE)"
+msgstr "2G (GPRS/EDGE)"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:3
+#: ../src/connection-editor/ce-page-mobile.ui.h:2
+msgid "3G (UMTS/HSPA)"
+msgstr "3G (UMTS/HSPA)"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:3
+#| msgid "<b>Advanced</b>"
+msgid "Advanced"
+msgstr "Paplašināti"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:4
 msgid "Allow roaming if home network is not available"
 msgstr "Atļaut viesabonēšanu, ja mājas tīkls nav pieejams"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:4
-msgid ""
-"Any\n"
-"3G (UMTS/HSPA)\n"
-"2G (GPRS/EDGE)\n"
-"Prefer 3G (UMTS/HSPA)\n"
-"Prefer 2G (GPRS/EDGE)"
-msgstr ""
-"Jebkurš\n"
-"3G (UMTS/HSPA)\n"
-"2G (GPRS/EDGE)\n"
-"Dot priekšroku 3G (UMTS/HSPA)\n"
-"Dot priekšroku 2G (GPRS/EDGE)"
+#: ../src/connection-editor/ce-page-mobile.ui.h:5
+msgid "Any"
+msgstr "Jebkurš"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:9
+#: ../src/connection-editor/ce-page-mobile.ui.h:6
+msgid "Basic"
+msgstr "Vienkāršs"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:7
 msgid "Change..."
 msgstr "Mainīt..."
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:10
+#: ../src/connection-editor/ce-page-mobile.ui.h:8
 msgid "N_etwork ID:"
 msgstr "_Tīkla ID:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:11
+#: ../src/connection-editor/ce-page-mobile.ui.h:9
 msgid "Nu_mber:"
 msgstr "Nu_murs:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:12
+#: ../src/connection-editor/ce-page-mobile.ui.h:10
 msgid "PI_N:"
 msgstr "PI_N:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:13
+#: ../src/connection-editor/ce-page-mobile.ui.h:11
+msgid "Prefer 2G (GPRS/EDGE)"
+msgstr "Dot priekšroku 2G (GPRS/EDGE)"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:12
+msgid "Prefer 3G (UMTS/HSPA)"
+msgstr "Dot priekšroku 3G (UMTS/HSPA)"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:13
 msgid "Sho_w passwords"
 msgstr "_Rādīt paroles"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
+#: ../src/connection-editor/ce-page-mobile.ui.h:14
 msgid "_APN:"
 msgstr "_APN:"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:1
-msgid "<b>Allowed Authentication Methods</b>"
-msgstr "<b>Atļautās autentifikācijas metodes</b>"
+#: ../src/connection-editor/ce-page-mobile.ui.h:16
+#: ../src/wireless-security/ws-wpa-psk.ui.h:3
+msgid "_Type:"
+msgstr "_Tips:"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:2
-msgid "<b>Authentication</b>"
-msgstr "<b>Autentifikācija</b>"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:3
-msgid "<b>Compression</b>"
-msgstr "<b>Kompresija</b>"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:4
-msgid "<b>Echo</b>"
-msgstr "<b>Atbalss</b>"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:5
-msgid ""
-"<i>In most cases, the provider's PPP servers will support all authentication "
-"methods.  If connections fail, try disabling support for some methods.</i>"
-msgstr ""
-"<i>Vairumā gadījumu PPP serveru pakalpojuma sniedzējs atbalstīs visas "
-"autentifikācijas metodes. Ja neizdodas savienoties, pamēģiniet atslēgt dažu "
-"metožu atbalstu.</i>"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:6
+#: ../src/connection-editor/ce-page-ppp.ui.h:1
 msgid "Allow _BSD data compression"
 msgstr "Atļaut _BSD datu kompresiju"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:7
+#: ../src/connection-editor/ce-page-ppp.ui.h:2
 msgid "Allow _Deflate data compression"
 msgstr "Atļaut _Deflate datu kompresiju"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:8
+#: ../src/connection-editor/ce-page-ppp.ui.h:3
+#| msgid "<b>Allowed Authentication Methods</b>"
+msgid "Allowed Authentication Methods"
+msgstr "Atļautās autentificēšanas metodes"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:4
 msgid "Allowed methods:"
 msgstr "Atļautās metodes:"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:9
+#: ../src/connection-editor/ce-page-ppp.ui.h:5
+#| msgid "_Authentication:"
+msgid "Authentication"
+msgstr "Autentifikācija"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:6
 msgid "C_HAP"
 msgstr "C_HAP"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:10
+#: ../src/connection-editor/ce-page-ppp.ui.h:7
 msgid "Challenge Handshake Authentication Protocol"
 msgstr "Challenge Handshake Authentication Protocol"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:11
+#: ../src/connection-editor/ce-page-ppp.ui.h:8
+#| msgid "<b>Compression</b>"
+msgid "Compression"
+msgstr "Saspiešana"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:9
 msgid "Configure _Methods…"
 msgstr "Konfigurēt _metodes…"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:12
+#: ../src/connection-editor/ce-page-ppp.ui.h:10
+msgid "Echo"
+msgstr "Atbalss"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:11
 msgid "Extensible Authentication Protocol"
 msgstr "Extensible Authentication Protocol"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:13
+#: ../src/connection-editor/ce-page-ppp.ui.h:12
+#| msgid ""
+#| "<i>In most cases, the provider's PPP servers will support all "
+#| "authentication methods.  If connections fail, try disabling support for "
+#| "some methods.</i>"
+msgid ""
+"In most cases, the provider's PPP servers will support all authentication "
+"methods.  If connections fail, try disabling support for some methods."
+msgstr ""
+"Vairumā gadījumu PPP serveru pakalpojuma sniedzējs atbalstīs visas "
+"autentifikācijas metodes. Ja neizdodas savienoties, pamēģiniet atslēgt dažu "
+"metožu atbalstu."
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:13
 msgid "MSCHAP v_2"
 msgstr "MSCHAP v_2"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:14
+#: ../src/connection-editor/ce-page-ppp.ui.h:14
 msgid "Microsoft Challenge Handshake Authentication Protocol"
 msgstr "Microsoft Challenge Handshake Authentication Protocol"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:15
+#: ../src/connection-editor/ce-page-ppp.ui.h:15
 msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
 msgstr "Microsoft Challenge Handshake Authentication Protocol versija 2"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:16
+#: ../src/connection-editor/ce-page-ppp.ui.h:16
 msgid "Password Authentication Protocol"
 msgstr "Password Authentication Protocol"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:17
+#: ../src/connection-editor/ce-page-ppp.ui.h:17
 msgid "Send PPP _echo packets"
 msgstr "Sūtīt PPP atbalss pak_eti"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:18
+#: ../src/connection-editor/ce-page-ppp.ui.h:18
 msgid "Use TCP _header compression"
 msgstr "Izmantot TCP _galvenes kompresiju"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:19
+#: ../src/connection-editor/ce-page-ppp.ui.h:19
 msgid "Use _stateful MPPE"
 msgstr "Izmantot _stateful MPPE"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:20
+#: ../src/connection-editor/ce-page-ppp.ui.h:20
 msgid "_EAP"
 msgstr "_EAP"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:21
+#: ../src/connection-editor/ce-page-ppp.ui.h:21
 msgid "_MSCHAP"
 msgstr "_MSCHAP"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:22
+#: ../src/connection-editor/ce-page-ppp.ui.h:22
 msgid "_PAP"
 msgstr "_PAP"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:23
+#: ../src/connection-editor/ce-page-ppp.ui.h:23
 msgid "_Require 128-bit encryption"
 msgstr "Piep_rasīt 128-bit šifrēšanu"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:24
+#: ../src/connection-editor/ce-page-ppp.ui.h:24
 msgid "_Use point-to-point encryption (MPPE)"
 msgstr "Izmantot divp_unktu šifrēšanu (MPPE)"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:1
+#: ../src/connection-editor/ce-page-wired.ui.h:1
+#| msgid "%u Mb/s"
+msgid "1 Gb/s"
+msgstr "1 Gb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:2
+msgid "10 Gb/s"
+msgstr "10 Gb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:3
+#| msgid "Mb/s"
+msgid "10 Mb/s"
+msgstr "10 Mb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:4
+#| msgid "%u Mb/s"
+msgid "100 Mb/s"
+msgstr "100 Mb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:5
+msgid "Attachment Unit Interface (AUI)"
+msgstr "Piesaistes bloka saskarne (AUI)"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:6
 msgid "Aut_onegotiate"
 msgstr "Aut_omātiski vienoties"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:2
-msgid ""
-"Automatic\n"
-"10 Mb/s\n"
-"100 Mb/s\n"
-"1 Gb/s\n"
-"10 Gb/s"
-msgstr ""
-"Automātiski\n"
-"10 Mb/s\n"
-"100 Mb/s\n"
-"1 Gb/s\n"
-"10 Gb/s"
+#: ../src/connection-editor/ce-page-wired.ui.h:8
+msgid "BNC"
+msgstr "BNC"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:7
-msgid ""
-"Automatic\n"
-"Twisted Pair (TP)\n"
-"Attachment Unit Interface (AUI)\n"
-"BNC\n"
-"Media Independent Interface (MII)"
-msgstr ""
-"Automātiski\n"
-"Vītais pāris (TP)\n"
-"Piesaistes bloka saskarne (AUI)\n"
-"BNC\n"
-"No medija neatkarīga saskarne (MII)"
-
-#: ../src/connection-editor/ce-page-wired.glade.h:12
+#: ../src/connection-editor/ce-page-wired.ui.h:9
 msgid "Full duple_x"
 msgstr "Pilns duple_ks"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:13
-#: ../src/connection-editor/ce-page-wireless.glade.h:8
+#: ../src/connection-editor/ce-page-wired.ui.h:10
+#: ../src/connection-editor/ce-page-wireless.ui.h:8
 msgid "MT_U:"
 msgstr "MT_U:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:14
-#: ../src/connection-editor/ce-page-wireless.glade.h:13
-msgid "_MAC address:"
-msgstr "_MAC adrese:"
+#: ../src/connection-editor/ce-page-wired.ui.h:11
+msgid "Media Independent Interface (MII)"
+msgstr "No vides neatkarīga saskarne (MII)"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:15
+#: ../src/connection-editor/ce-page-wired.ui.h:12
+#: ../src/connection-editor/ce-page-wireless.ui.h:11
+msgid ""
+"The MAC address entered here will be used as hardware address for the "
+"network device this connection is activated on.  This feature is known as "
+"MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Šeit ievadītās MAC adreses tiks izmantotas kā aparatūras adreses tīkla "
+"ierīcei, uz kuras ir aktīvs šis savienojums. Šī iespēja ir pazīstama kā MAC "
+"klonēšana jeb viltošana. Piemērs: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:13
+#: ../src/connection-editor/ce-page-wireless.ui.h:12
+msgid ""
+"This option locks this connection to the network device specified by its "
+"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Šī opcija piesaista savienojumu noteiktai tīkla ierīcei, kuru raksturo "
+"pastāvīga MAC adrese, kuru ievada šeit. Piemērs: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:14
+msgid "Twisted Pair (TP)"
+msgstr "Vītais pāris (TP)"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:16
+#| msgid "_MAC address:"
+msgid "_Cloned MAC address:"
+msgstr "Klonēta MA_C adrese:"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:16
+#: ../src/connection-editor/ce-page-wireless.ui.h:17
+#| msgid "_MAC address:"
+msgid "_Device MAC address:"
+msgstr "Ierīces _MAC adrese:"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:17
 msgid "_Port:"
 msgstr "_Ports:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:16
+#: ../src/connection-editor/ce-page-wired.ui.h:18
 msgid "_Speed:"
 msgstr "Ātrum_s:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:17
-#: ../src/connection-editor/ce-page-wireless.glade.h:16
+#: ../src/connection-editor/ce-page-wired.ui.h:19
+#: ../src/connection-editor/ce-page-wireless.ui.h:20
 msgid "bytes"
 msgstr "baiti"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:1
-msgid ""
-"Automatic\n"
-"A (5 GHz)\n"
-"B/G (2.4 GHz)"
-msgstr ""
-"Automātiski\n"
-"A (5 GHz)\n"
-"B/G (2.4 GHz)"
+#: ../src/connection-editor/ce-page-wireless.ui.h:1
+#| msgid "%u (%u MHz)"
+msgid "A (5 GHz)"
+msgstr "A (5 GHz)"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:4
+#: ../src/connection-editor/ce-page-wireless.ui.h:2
+msgid "Ad-hoc"
+msgstr "Ekspromta"
+
+#: ../src/connection-editor/ce-page-wireless.ui.h:4
+msgid "B/G (2.4 GHz)"
+msgstr "B/G (2.4 GHz)"
+
+#: ../src/connection-editor/ce-page-wireless.ui.h:5
 msgid "Ban_d:"
 msgstr "_Josla:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:5
+#: ../src/connection-editor/ce-page-wireless.ui.h:6
 msgid "C_hannel:"
 msgstr "_Kanāls:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:6
-msgid ""
-"Infrastructure\n"
-"Ad-hoc"
-msgstr ""
-"Infrastruktūra\n"
-"Ekspromta"
+#: ../src/connection-editor/ce-page-wireless.ui.h:7
+#| msgid ""
+#| "Infrastructure\n"
+#| "Ad-hoc"
+msgid "Infrastructure"
+msgstr "Infrastruktūra"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:9
+#: ../src/connection-editor/ce-page-wireless.ui.h:9
 msgid "M_ode:"
 msgstr "R_ežīms:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:10
+#: ../src/connection-editor/ce-page-wireless.ui.h:10
 msgid "Mb/s"
 msgstr "Mb/s"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:11
+#: ../src/connection-editor/ce-page-wireless.ui.h:13
+msgid ""
+"This option locks this connection to the wireless access point (AP) "
+"specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Šī opcija piesaista savienojumu noteiktam bezvadu tīklam pieejas "
+"punktam (AP), kuru raksturo BSSID, kuru ievada šeit. "
+"Piemērs: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/ce-page-wireless.ui.h:14
 msgid "Transmission po_wer:"
 msgstr "Pārraides ja_uda:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:12
+#: ../src/connection-editor/ce-page-wireless.ui.h:15
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:14
+#: ../src/connection-editor/ce-page-wireless.ui.h:18
 msgid "_Rate:"
 msgstr "Āt_rums:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:19
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:17
+#: ../src/connection-editor/ce-page-wireless.ui.h:21
 msgid "mW"
 msgstr "mW"
 
-#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
+#: ../src/connection-editor/ce-page-wireless-security.ui.h:1
 msgid "_Security:"
 msgstr "_Drošība:"
 
-#: ../src/connection-editor/ce-vpn-wizard.glade.h:2
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:2
+#| msgid "Create VPN Connection"
+msgid "Choose a VPN Connection Type"
+msgstr "Izvēlieties VPN savienojumu veidu"
+
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:3
+msgid "Create…"
+msgstr "Izveidot…"
+
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:4
+#| msgid ""
+#| "<span weight=\"bold\" size=\"larger\">Choose a VPN Connection Type</"
+#| "span>\n"
+#| "\n"
+#| "Select the type of VPN you wish to use for the new connection.  If the "
+#| "type of VPN connection you wish to create does not appear in the list, "
+#| "you may not have the correct VPN plugin installed."
 msgid ""
-"<span weight=\"bold\" size=\"larger\">Choose a VPN Connection Type</span>\n"
-"\n"
 "Select the type of VPN you wish to use for the new connection.  If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
 "not have the correct VPN plugin installed."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">Izvēlieties VPN savienojuma veidu</"
-"span>\n"
-"\n"
 "Izvēlieties jaunā VPN savienojuma veidu. Ja sarakstā nav pieejams jums VPN "
 "vajadzīgais VPN savienojuma veids, iespējams, ka nav uzstādīts vajadzīgais "
 "VPN spraudnis."
 
-#: ../src/connection-editor/ce-vpn-wizard.glade.h:5
-msgid "Create…"
-msgstr "Izveidot…"
-
-#: ../src/connection-editor/ip4-routes-dialog.c:501
-#: ../src/connection-editor/ip6-routes-dialog.c:459
-#: ../src/connection-editor/page-ip4.c:634
-#: ../src/connection-editor/page-ip6.c:611
+#: ../src/connection-editor/ip4-routes-dialog.c:504
+#: ../src/connection-editor/ip6-routes-dialog.c:462
+#: ../src/connection-editor/page-ip4.c:738
+#: ../src/connection-editor/page-ip6.c:723
 msgid "Address"
 msgstr "Adrese"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:517
-#: ../src/connection-editor/page-ip4.c:650
+#: ../src/connection-editor/ip4-routes-dialog.c:520
+#: ../src/connection-editor/page-ip4.c:755
 msgid "Netmask"
 msgstr "Tīkla maska"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:533
-#: ../src/connection-editor/ip6-routes-dialog.c:491
-#: ../src/connection-editor/page-ip4.c:666
+#: ../src/connection-editor/ip4-routes-dialog.c:536
+#: ../src/connection-editor/ip6-routes-dialog.c:494
+#: ../src/connection-editor/page-ip4.c:772
+#: ../src/connection-editor/page-ip6.c:757
 msgid "Gateway"
 msgstr "Vārteja"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:549
-#: ../src/connection-editor/ip6-routes-dialog.c:507
+#: ../src/connection-editor/ip4-routes-dialog.c:552
+#: ../src/connection-editor/ip6-routes-dialog.c:510
 msgid "Metric"
 msgstr "Metrika"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:475
-#: ../src/connection-editor/page-ip6.c:627
+#: ../src/connection-editor/ip6-routes-dialog.c:478
+#: ../src/connection-editor/page-ip6.c:740
 msgid "Prefix"
 msgstr "Prefikss"
 
-#: ../src/connection-editor/page-dsl.c:140
-#: ../src/connection-editor/page-dsl.c:147
-msgid "Could not load DSL user interface."
-msgstr "Nevarēja ielādēt DSL lietotāja saskarni."
-
-#: ../src/connection-editor/page-dsl.c:153
-#: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1368
+#: ../src/connection-editor/page-dsl.c:136
+#: ../src/connection-editor/nm-connection-editor.ui.h:4
+#: ../src/connection-editor/nm-connection-list.c:1420
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-dsl.c:241
+#: ../src/connection-editor/page-dsl.c:138
+msgid "Could not load DSL user interface."
+msgstr "Nevarēja ielādēt DSL lietotāja saskarni."
+
+#: ../src/connection-editor/page-dsl.c:228
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL savienojums %d"
 
-#: ../src/connection-editor/page-ip4.c:116
-#: ../src/connection-editor/page-ip6.c:114
+#: ../src/connection-editor/page-ip4.c:126
+#: ../src/connection-editor/page-ip6.c:125
 msgid "Automatic (VPN)"
 msgstr "Automātiski (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:117
-#: ../src/connection-editor/page-ip6.c:115
+#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip6.c:126
 msgid "Automatic (VPN) addresses only"
 msgstr "Automātiski (VPN) tikai adreses"
 
-#: ../src/connection-editor/page-ip4.c:120
-#: ../src/connection-editor/page-ip6.c:118
+#: ../src/connection-editor/page-ip4.c:130
+#: ../src/connection-editor/page-ip6.c:129
 msgid "Automatic (PPP)"
 msgstr "Automātiski (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:121
-#: ../src/connection-editor/page-ip6.c:119
+#: ../src/connection-editor/page-ip4.c:131
+#: ../src/connection-editor/page-ip6.c:130
 msgid "Automatic (PPP) addresses only"
 msgstr "Automātiski (PPP) tikai adreses"
 
-#: ../src/connection-editor/page-ip4.c:123
-#: ../src/connection-editor/page-ip6.c:121
+#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip6.c:132
 msgid "Automatic (PPPoE)"
 msgstr "Automātiski (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:124
-#: ../src/connection-editor/page-ip6.c:122
+#: ../src/connection-editor/page-ip4.c:134
+#: ../src/connection-editor/page-ip6.c:133
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Automātiski (PPPoE) tikai adreses"
 
-#: ../src/connection-editor/page-ip4.c:126
+#: ../src/connection-editor/page-ip4.c:136
 msgid "Automatic (DHCP)"
 msgstr "Automātiski (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip4.c:137
 msgid "Automatic (DHCP) addresses only"
 msgstr "Automātiski (DHCP) tikai adreses"
 
-#: ../src/connection-editor/page-ip4.c:152
-#: ../src/connection-editor/page-ip6.c:162
-msgid "Manual"
-msgstr "Pašrocīgs"
-
-#: ../src/connection-editor/page-ip4.c:164
-#: ../src/connection-editor/page-ip6.c:175
+#: ../src/connection-editor/page-ip4.c:174
+#: ../src/connection-editor/page-ip6.c:197
 msgid "Link-Local Only"
 msgstr "Tikai lokālais tīkls"
 
-#: ../src/connection-editor/page-ip4.c:170
-#: ../src/connection-editor/page-ip6.c:182
-msgid "Shared to other computers"
-msgstr "Koplietots ar citiem datoriem"
+#: ../src/connection-editor/page-ip4.c:190
+msgid "Disabled"
+msgstr "Atslēgts"
 
-#: ../src/connection-editor/page-ip4.c:597
+#: ../src/connection-editor/page-ip4.c:700
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Rediģē %s IPv4 maršrutus"
 
-#: ../src/connection-editor/page-ip4.c:711
-#: ../src/connection-editor/page-ip4.c:718
-msgid "Could not load IPv4 user interface."
-msgstr "Nevarēja ielādēt IPv4 lietotāja saskarni."
-
-#: ../src/connection-editor/page-ip4.c:724
+#: ../src/connection-editor/page-ip4.c:815
 msgid "IPv4 Settings"
 msgstr "IPv4 iestatījumi"
 
-#: ../src/connection-editor/page-ip6.c:124
-msgid "Automatic"
-msgstr "Automātiski"
+#: ../src/connection-editor/page-ip4.c:817
+msgid "Could not load IPv4 user interface."
+msgstr "Nevarēja ielādēt IPv4 lietotāja saskarni."
 
-#: ../src/connection-editor/page-ip6.c:125
+#: ../src/connection-editor/page-ip6.c:136
 msgid "Automatic, addresses only"
 msgstr "Automātiski, tikai adreses"
 
-#: ../src/connection-editor/page-ip6.c:137
-#: ../src/wireless-security/eap-method.c:196
+#: ../src/connection-editor/page-ip6.c:148
+#: ../src/wireless-security/eap-method.c:234
 msgid "Ignore"
 msgstr "Ignorēt"
 
-#: ../src/connection-editor/page-ip6.c:574
+#: ../src/connection-editor/page-ip6.c:172
+#| msgid "Automatic (DHCP)"
+msgid "Automatic, DHCP only"
+msgstr "Automātiski, tikai DHCP"
+
+#: ../src/connection-editor/page-ip6.c:685
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Rediģē %s IPv6 maršrutus"
 
-#: ../src/connection-editor/page-ip6.c:670
-#: ../src/connection-editor/page-ip6.c:677
-msgid "Could not load IPv6 user interface."
-msgstr "Nevarēja ielādēt IPv6 lietotāja saskarni."
-
-#: ../src/connection-editor/page-ip6.c:683
+#: ../src/connection-editor/page-ip6.c:798
 msgid "IPv6 Settings"
 msgstr "IPv6 iestatījumi"
 
-#: ../src/connection-editor/page-mobile.c:305
-#: ../src/connection-editor/page-mobile.c:312
+#: ../src/connection-editor/page-ip6.c:800
+msgid "Could not load IPv6 user interface."
+msgstr "Nevarēja ielādēt IPv6 lietotāja saskarni."
+
+#: ../src/connection-editor/page-mobile.c:367
 msgid "Could not load mobile broadband user interface."
 msgstr "Nevarēja ielādēt mobilā platjoslas tīkla lietotāja saskarni."
 
-#: ../src/connection-editor/page-mobile.c:333
+#: ../src/connection-editor/page-mobile.c:384
 msgid "Unsupported mobile broadband connection type."
 msgstr "Neatbalstīts mobilā platjoslas tīkla savienojuma veids."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:574
+#: ../src/connection-editor/page-mobile.c:625
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Izvēlieties mobilā savienojuma piegādātāja veids"
 
-#: ../src/connection-editor/page-mobile.c:601
+#: ../src/connection-editor/page-mobile.c:652
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1580,12 +1742,12 @@ msgstr ""
 "Izvēlieties tehnoloģiju, kuru izmanto jūsu mobilā platjoslas tīkla "
 "piegādātājs. Ja neesat pārliecināts, jautājiet piegādātājam."
 
-#: ../src/connection-editor/page-mobile.c:606
+#: ../src/connection-editor/page-mobile.c:657
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Mans operators izmanto _GSM tehnoloģiju (piem. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:611
+#: ../src/connection-editor/page-mobile.c:664
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Mans operators izmanto C_DMA tehnoloģiju (piem., 1xRTT, EVDO)"
 
@@ -1594,23 +1756,23 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:227
+#: ../src/wireless-security/eap-method-ttls.c:235
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:134
-#: ../src/wireless-security/eap-method-ttls.c:272
+#: ../src/wireless-security/eap-method-ttls.c:283
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:244
-#: ../src/wireless-security/eap-method-ttls.c:257
+#: ../src/wireless-security/eap-method-peap.c:251
+#: ../src/wireless-security/eap-method-ttls.c:267
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:136
-#: ../src/wireless-security/eap-method-ttls.c:242
+#: ../src/wireless-security/eap-method-ttls.c:251
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -1624,200 +1786,204 @@ msgstr "neviens"
 msgid "Editing PPP authentication methods for %s"
 msgstr "Rediģē PPP autentifikācijas metodes %s"
 
-#: ../src/connection-editor/page-ppp.c:283
-#: ../src/connection-editor/page-ppp.c:290
-msgid "Could not load PPP user interface."
-msgstr "Nevarēja ielādēt PPP lietotāja saskarni."
-
-#: ../src/connection-editor/page-ppp.c:296
+#: ../src/connection-editor/page-ppp.c:279
 msgid "PPP Settings"
 msgstr "PPP iestatījumi"
 
-#: ../src/connection-editor/page-vpn.c:108
-#: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1364
+#: ../src/connection-editor/page-ppp.c:281
+msgid "Could not load PPP user interface."
+msgstr "Nevarēja ielādēt PPP lietotāja saskarni."
+
+#: ../src/connection-editor/page-vpn.c:105
+#: ../src/connection-editor/nm-connection-editor.ui.h:8
+#: ../src/connection-editor/nm-connection-list.c:1416
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-vpn.c:119
+#: ../src/connection-editor/page-vpn.c:107
+#| msgid "Could not load PPP user interface."
+msgid "Could not load VPN user interface."
+msgstr "Nevarēja ielādēt VPN lietotāja saskarni."
+
+#: ../src/connection-editor/page-vpn.c:122
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "Nevarēja atrast VPN spraudņa servisu '%s'"
 
-#: ../src/connection-editor/page-vpn.c:213
-#: ../src/connection-editor/nm-connection-list.c:949
+#: ../src/connection-editor/page-vpn.c:216
+#: ../src/connection-editor/nm-connection-list.c:995
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN savienojums %d"
 
-#: ../src/connection-editor/page-wired.c:207
-#: ../src/connection-editor/page-wired.c:214
-msgid "Could not load wired user interface."
-msgstr "Nevarēja ielādēt vadu tīkla lietotāja saskarni."
-
-#: ../src/connection-editor/page-wired.c:220
-#: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1352
+#: ../src/connection-editor/page-wired.c:209
+#: ../src/connection-editor/nm-connection-editor.ui.h:9
+#: ../src/connection-editor/nm-connection-list.c:1404
 msgid "Wired"
 msgstr "Vadu tīkls"
 
-#: ../src/connection-editor/page-wired.c:339
+#: ../src/connection-editor/page-wired.c:211
+msgid "Could not load wired user interface."
+msgstr "Nevarēja ielādēt vadu tīkla lietotāja saskarni."
+
+#: ../src/connection-editor/page-wired.c:346
 #, c-format
 msgid "Wired connection %d"
 msgstr "Vadu tīkla savienojums %d"
 
-#: ../src/connection-editor/page-wired-security.c:115
+#: ../src/connection-editor/page-wired-security.c:113
 msgid "802.1x Security"
 msgstr "802.1x drošība"
 
-#: ../src/connection-editor/page-wired-security.c:123
+#: ../src/connection-editor/page-wired-security.c:115
+#| msgid "Could not load WiFi security user interface."
+msgid "Could not load Wired Security security user interface."
+msgstr "Nevarēja ielādēt WiFi drošības lietotāja saskarni."
+
+#: ../src/connection-editor/page-wired-security.c:129
 msgid "Use 802.1X security for this connection"
 msgstr "Šim savienojumam izmantot 802.1X drošību"
 
-#: ../src/connection-editor/page-wireless.c:144
-#: ../src/connection-editor/page-wireless.c:148
+#: ../src/connection-editor/page-wireless.c:146
+#: ../src/connection-editor/page-wireless.c:150
+#: ../src/connection-editor/page-wireless.c:171
+#, c-format
 msgid "default"
 msgstr "noklusētais"
 
-#: ../src/connection-editor/page-wireless.c:166
+#: ../src/connection-editor/page-wireless.c:175
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:351
-#: ../src/connection-editor/page-wireless.c:358
-msgid "Could not load WiFi user interface."
-msgstr "Nevarēja ielādēt WiFi lietotāja saskarni."
-
-#: ../src/connection-editor/page-wireless.c:364
-#: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1356
+#: ../src/connection-editor/page-wireless.c:395
+#: ../src/connection-editor/nm-connection-editor.ui.h:10
+#: ../src/connection-editor/nm-connection-list.c:1408
 msgid "Wireless"
 msgstr "Bezvadu tīkls"
 
-#: ../src/connection-editor/page-wireless.c:511
+#: ../src/connection-editor/page-wireless.c:397
+msgid "Could not load WiFi user interface."
+msgstr "Nevarēja ielādēt WiFi lietotāja saskarni."
+
+#: ../src/connection-editor/page-wireless.c:561
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Bezvadu tīkla savienojums %d"
 
 #: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:905
-msgid "WEP 40/128-bit Key"
-msgstr "WEP 40/128-bitu atslēga"
+#: ../src/wireless-dialog.c:943
+#| msgid "WEP 64/128-bit ASCII"
+msgid "WEP 40/128-bit Key (Hex or ASCII)"
+msgstr "WEP 40/128-bitu atslēga (Hex vai ASCII)"
 
 #: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:914
+#: ../src/wireless-dialog.c:952
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bitu parole"
 
 #: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:944
+#: ../src/wireless-dialog.c:982
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dinamiskais WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:958
+#: ../src/wireless-dialog.c:996
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 Personal"
 
 #: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:972
+#: ../src/wireless-dialog.c:1010
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Enterprise"
 
-#: ../src/connection-editor/page-wireless-security.c:365
+#: ../src/connection-editor/page-wireless-security.c:358
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr ""
 "Nevarēja ielādēt WiFi drošības lietotāja saskarni - pietrūkst WiFi "
 "iestatījumu."
 
-#: ../src/connection-editor/page-wireless-security.c:372
-#: ../src/connection-editor/page-wireless-security.c:379
-msgid "Could not load WiFi security user interface."
-msgstr "Nevarēja ielādēt WiFi drošības lietotāja saskarni."
-
-#: ../src/connection-editor/page-wireless-security.c:385
+#: ../src/connection-editor/page-wireless-security.c:367
 msgid "Wireless Security"
 msgstr "Bezvadu tīkla drošība"
 
-#: ../src/connection-editor/nm-connection-editor.c:107
+#: ../src/connection-editor/page-wireless-security.c:369
+msgid "Could not load WiFi security user interface."
+msgstr "Nevarēja ielādēt WiFi drošības lietotāja saskarni."
+
+#: ../src/connection-editor/nm-connection-editor.c:100
 #, c-format
 msgid "Editing %s"
 msgstr "Rediģēt %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:111
+#: ../src/connection-editor/nm-connection-editor.c:104
 msgid "Editing un-named connection"
 msgstr "Rediģēt nenosauktus savienojumus"
 
-#: ../src/connection-editor/nm-connection-editor.c:294
+#: ../src/connection-editor/nm-connection-editor.c:293
+#| msgid ""
+#| "The connection editor could not find some required resources (the glade "
+#| "file was not found)."
 msgid ""
-"The connection editor could not find some required resources (the "
-"NetworkManager applet glade file was not found)."
-msgstr ""
-"Savienojumu redaktors nevarēja atrast dažus vajadzīgos resursus "
-"(NetworkManager sīklietotnes noras fails netika atrasts)."
-
-#: ../src/connection-editor/nm-connection-editor.c:307
-msgid ""
-"The connection editor could not find some required resources (the glade file "
+"The connection editor could not find some required resources (the .ui file "
 "was not found)."
 msgstr ""
-"Savienojumu redaktors nevarēja atrast dažus vajadzīgos resursus (noras fails "
+"Savienojumu redaktors nevarēja atrast dažus vajadzīgos resursus (.ui fails "
 "netika atrasts)."
 
-#: ../src/connection-editor/nm-connection-editor.c:405
+#: ../src/connection-editor/nm-connection-editor.c:391
 msgid "Error creating connection editor dialog."
 msgstr "Kļūda, veidojot savienojuma redaktora dialogu."
 
-#: ../src/connection-editor/nm-connection-editor.c:426
-msgid "Apply"
-msgstr "Pielietot"
+#: ../src/connection-editor/nm-connection-editor.c:412
+msgid "_Save"
+msgstr "_Saglabāt"
 
-#: ../src/connection-editor/nm-connection-editor.c:427
-msgid "Save this connection for all users of this machine."
-msgstr "Saglabāt šo savienojumu viesiem šī datora lietotājiem"
+#: ../src/connection-editor/nm-connection-editor.c:413
+msgid "Save any changes made to this connection."
+msgstr "Saglabāt jebkuras izmaiņas, kas veiktas ar šo savienojumu."
 
-#: ../src/connection-editor/nm-connection-editor.c:428
-msgid "Apply..."
-msgstr "Pielietot..."
+#: ../src/connection-editor/nm-connection-editor.c:414
+msgid "_Save..."
+msgstr "_Saglabāt..."
 
-#: ../src/connection-editor/nm-connection-editor.c:429
+#: ../src/connection-editor/nm-connection-editor.c:415
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autentificējieties, lai saglabātu šo savienojumu viesiem šī datora "
 "lietotājiem."
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:1
+#: ../src/connection-editor/nm-connection-editor.ui.h:1
 msgid "Available to all users"
 msgstr "Pieejams visiem lietotajiem"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:2
+#: ../src/connection-editor/nm-connection-editor.ui.h:2
 msgid "Connect _automatically"
 msgstr "Savienoties _automātiski"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:3
+#: ../src/connection-editor/nm-connection-editor.ui.h:3
 msgid "Connection _name:"
 msgstr "Savienojuma _nosaukums:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:5
+#: ../src/connection-editor/nm-connection-editor.ui.h:5
 msgid "E_xport"
 msgstr "E_ksportēt"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:11
+#: ../src/connection-editor/nm-connection-editor.ui.h:11
 msgid "_Import"
 msgstr "_Importēt"
 
-#: ../src/connection-editor/nm-connection-list.c:219
+#: ../src/connection-editor/nm-connection-list.c:217
 msgid "never"
 msgstr "nekad"
 
-#: ../src/connection-editor/nm-connection-list.c:230
-#: ../src/connection-editor/nm-connection-list.c:241
+#: ../src/connection-editor/nm-connection-list.c:228
+#: ../src/connection-editor/nm-connection-list.c:239
 msgid "now"
 msgstr "tagad"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:248
+#: ../src/connection-editor/nm-connection-list.c:246
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
@@ -1825,7 +1991,7 @@ msgstr[0] "Pirms %d minūtes"
 msgstr[1] "Pirms %d minūtēm"
 msgstr[2] "Pirms %d minūtēm"
 
-#: ../src/connection-editor/nm-connection-list.c:252
+#: ../src/connection-editor/nm-connection-list.c:250
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
@@ -1833,7 +1999,7 @@ msgstr[0] "Pirms %d stundas"
 msgstr[1] "Pirms %d stundām"
 msgstr[2] "Pirms %d stundām"
 
-#: ../src/connection-editor/nm-connection-list.c:264
+#: ../src/connection-editor/nm-connection-list.c:262
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -1841,7 +2007,7 @@ msgstr[0] "Pirms %d dienas"
 msgstr[1] "Pirms %d dienām"
 msgstr[2] "Pirms %d dienām"
 
-#: ../src/connection-editor/nm-connection-list.c:270
+#: ../src/connection-editor/nm-connection-list.c:268
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
@@ -1849,7 +2015,7 @@ msgstr[0] "Pirms %d mēneša"
 msgstr[1] "Pirms %d mēnešiem"
 msgstr[2] "Pirms %d mēnešiem"
 
-#: ../src/connection-editor/nm-connection-list.c:274
+#: ../src/connection-editor/nm-connection-list.c:272
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
@@ -1857,29 +2023,34 @@ msgstr[0] "Pirms %d gada"
 msgstr[1] "Pirms %d gadiem"
 msgstr[2] "Pirms %d gadiem"
 
-#: ../src/connection-editor/nm-connection-list.c:575
+#: ../src/connection-editor/nm-connection-list.c:595
 msgid "Connection add failed"
 msgstr "Neizdevās pievienot savienojumu"
 
-#: ../src/connection-editor/nm-connection-list.c:598
-#, c-format
-msgid "Error editing connection: property '%s' / '%s' invalid: %d"
-msgstr "Kļūda, rediģējot savienojumu: īpašība '%s' / '%s' nederīga: %d"
+#: ../src/connection-editor/nm-connection-list.c:624
+#| msgid "Error retrieving VPN connection '%s'"
+msgid "Error saving connection"
+msgstr "Kļūda, saglabājot savienojumu"
 
-#: ../src/connection-editor/nm-connection-list.c:605
-#: ../src/connection-editor/nm-connection-list.c:720
-#| msgid "An unknown error ocurred."
+#: ../src/connection-editor/nm-connection-list.c:625
+#, c-format
+#| msgid "Error editing connection: property '%s' / '%s' invalid: %d"
+msgid "The property '%s' / '%s' is invalid: %d"
+msgstr "Rekvizīts '%s' / '%s' ir nederīgs: %d"
+
+#: ../src/connection-editor/nm-connection-list.c:632
+#: ../src/connection-editor/nm-connection-list.c:747
 msgid "An unknown error occurred."
 msgstr "Gadījās nezināma kļūda."
 
-#: ../src/connection-editor/nm-connection-list.c:610
-#: ../src/connection-editor/nm-connection-list.c:755
+#: ../src/connection-editor/nm-connection-list.c:637
+#: ../src/connection-editor/nm-connection-list.c:788
 msgid "Error initializing editor"
 msgstr "Kļūda, inicializējot redaktoru"
 
-#: ../src/connection-editor/nm-connection-list.c:626
-#: ../src/connection-editor/nm-connection-list.c:772
-#: ../src/connection-editor/nm-connection-list.c:932
+#: ../src/connection-editor/nm-connection-list.c:653
+#: ../src/connection-editor/nm-connection-list.c:805
+#: ../src/connection-editor/nm-connection-list.c:978
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -1887,33 +2058,33 @@ msgstr ""
 "Nevarēja inicializēt savienojumu redaktora dialogu, jo gadījās nezināma "
 "kļūda."
 
-#: ../src/connection-editor/nm-connection-list.c:635
+#: ../src/connection-editor/nm-connection-list.c:662
 msgid "Could not create new connection"
 msgstr "Nevarēja izveidot jaunu savienojumu"
 
-#: ../src/connection-editor/nm-connection-list.c:646
+#: ../src/connection-editor/nm-connection-list.c:673
 msgid "Could not edit new connection"
 msgstr "Nevarēja rediģēt jaunu savienojumu"
 
-#: ../src/connection-editor/nm-connection-list.c:787
+#: ../src/connection-editor/nm-connection-list.c:820
 msgid "Could not edit connection"
 msgstr "Nevarēja rediģēt savienojumu"
 
-#: ../src/connection-editor/nm-connection-list.c:812
+#: ../src/connection-editor/nm-connection-list.c:845
 msgid "Connection delete failed"
 msgstr "Neizdevās izdzēst savienojumu"
 
-#: ../src/connection-editor/nm-connection-list.c:836
+#: ../src/connection-editor/nm-connection-list.c:877
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Vai tiešām vēlaties dzēst savienojumu %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:979
-#: ../src/connection-editor/vpn-helpers.c:228
+#: ../src/connection-editor/nm-connection-list.c:1025
+#: ../src/connection-editor/vpn-helpers.c:227
 msgid "Cannot import VPN connection"
 msgstr "Nevar importēt VPN savienojumu"
 
-#: ../src/connection-editor/nm-connection-list.c:981
+#: ../src/connection-editor/nm-connection-list.c:1027
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1923,51 +2094,61 @@ msgstr ""
 "\n"
 "Kļūda: nav VPN servisa tips."
 
-#: ../src/connection-editor/nm-connection-list.c:994
+#: ../src/connection-editor/nm-connection-list.c:1040
 msgid "Could not edit imported connection"
 msgstr "Nevar rediģēt importētos savienojumus"
 
-#: ../src/connection-editor/nm-connection-list.c:1128
+#: ../src/connection-editor/nm-connection-list.c:1174
 msgid "Name"
 msgstr "Nosaukums"
 
-#: ../src/connection-editor/nm-connection-list.c:1140
+#: ../src/connection-editor/nm-connection-list.c:1186
 msgid "Last Used"
 msgstr "Iepriekš lietotās"
 
-#: ../src/connection-editor/nm-connection-list.c:1243
-msgid "Edit"
-msgstr "Rediģēt"
+#: ../src/connection-editor/nm-connection-list.c:1282
+msgid "No VPN plugin available. Please install one to enable this button."
+msgstr ""
+"Nav pieejams neviens VPN spraudnis. Lūdzu, uzinstalējiet to, lai aktivētu šo "
+"pogu."
 
-#: ../src/connection-editor/nm-connection-list.c:1244
+#: ../src/connection-editor/nm-connection-list.c:1293
+#| msgid "Edit"
+msgid "_Edit"
+msgstr "R_ediģēt"
+
+#: ../src/connection-editor/nm-connection-list.c:1294
 msgid "Edit the selected connection"
 msgstr "Rediģēt izvēlētos savienojumus"
 
-#: ../src/connection-editor/nm-connection-list.c:1245
-msgid "Edit..."
-msgstr "Rediģēt..."
+#: ../src/connection-editor/nm-connection-list.c:1295
+#| msgid "Edit..."
+msgid "_Edit..."
+msgstr "R_ediģēt..."
 
-#: ../src/connection-editor/nm-connection-list.c:1246
+#: ../src/connection-editor/nm-connection-list.c:1296
 msgid "Authenticate to edit the selected connection"
 msgstr "Autentificējieties, lai rediģētu izvēlētos savienojumus"
 
-#: ../src/connection-editor/nm-connection-list.c:1260
-msgid "Delete"
-msgstr "Dzēst"
+#: ../src/connection-editor/nm-connection-list.c:1311
+#| msgid "Delete"
+msgid "_Delete"
+msgstr "_Dzēst"
 
-#: ../src/connection-editor/nm-connection-list.c:1261
+#: ../src/connection-editor/nm-connection-list.c:1312
 msgid "Delete the selected connection"
 msgstr "Dzēst izvēlētos savienojumus"
 
-#: ../src/connection-editor/nm-connection-list.c:1262
-msgid "Delete..."
-msgstr "Dzēst..."
+#: ../src/connection-editor/nm-connection-list.c:1313
+#| msgid "Delete..."
+msgid "_Delete..."
+msgstr "_Dzēst..."
 
-#: ../src/connection-editor/nm-connection-list.c:1263
+#: ../src/connection-editor/nm-connection-list.c:1314
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentificējieties, lai dzēstu izvēlētos savienojumus"
 
-#: ../src/connection-editor/vpn-helpers.c:230
+#: ../src/connection-editor/vpn-helpers.c:229
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -1980,29 +2161,29 @@ msgstr ""
 "\n"
 "Kļūda: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:262
+#: ../src/connection-editor/vpn-helpers.c:261
 msgid "Select file to import"
 msgstr "Izvēlieties failu, kuru importēt"
 
-#: ../src/connection-editor/vpn-helpers.c:310
+#: ../src/connection-editor/vpn-helpers.c:309
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "Fails \"%s\" jau eksistē."
 
-#: ../src/connection-editor/vpn-helpers.c:312
+#: ../src/connection-editor/vpn-helpers.c:311
 msgid "_Replace"
 msgstr "_Aizvietot"
 
-#: ../src/connection-editor/vpn-helpers.c:314
+#: ../src/connection-editor/vpn-helpers.c:313
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "Vai vēlaties aizvietot %s ar saglabājamo VPN savienojumu?"
 
-#: ../src/connection-editor/vpn-helpers.c:350
+#: ../src/connection-editor/vpn-helpers.c:349
 msgid "Cannot export VPN connection"
 msgstr "Nevar eksportēt VPN savienojumu"
 
-#: ../src/connection-editor/vpn-helpers.c:352
+#: ../src/connection-editor/vpn-helpers.c:351
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -2013,58 +2194,58 @@ msgstr ""
 "\n"
 "Kļūda: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:386
+#: ../src/connection-editor/vpn-helpers.c:385
 msgid "Export VPN connection..."
 msgstr "Eksportē VPN savienojumu..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:214
+#: ../src/gnome-bluetooth/bt-widget.c:212
 #, c-format
 msgid "%s Network"
 msgstr "%s tīkls"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:323
+#: ../src/gnome-bluetooth/bt-widget.c:321
 #, c-format
 msgid "Error: %s"
 msgstr "Kļūda: %s"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:442
+#: ../src/gnome-bluetooth/bt-widget.c:440
 msgid "Mobile wizard was canceled"
 msgstr "Mobilā vednis tika atcelts"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:451
+#: ../src/gnome-bluetooth/bt-widget.c:449
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "Nezināms tālruņa ierīces veids (nav GSM vai CDMA)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:479
+#: ../src/gnome-bluetooth/bt-widget.c:477
 msgid "Your phone is now ready to use!"
 msgstr "Jūsu tālrunis ir gatavs lietošanai!"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:652
-#: ../src/gnome-bluetooth/network-manager-applet.c:658
+#: ../src/gnome-bluetooth/bt-widget.c:647
+#: ../src/gnome-bluetooth/bt-widget.c:653
 msgid "failed to connect to the phone."
 msgstr "neizdevās savienoties ar tālruni."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:691
+#: ../src/gnome-bluetooth/bt-widget.c:686
 msgid "unexpectedly disconnected from the phone."
 msgstr "negaidīti atvienojies no tālruņa."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:700
+#: ../src/gnome-bluetooth/bt-widget.c:695
 msgid "timed out detecting phone details."
 msgstr "iestājās noildze, nosakot tālruņa detaļas."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:715
+#: ../src/gnome-bluetooth/bt-widget.c:710
 msgid "could not connect to the system bus."
 msgstr "neizdevās savienoties ar sistēmas kopni."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:720
+#: ../src/gnome-bluetooth/bt-widget.c:715
 msgid "Detecting phone configuration..."
 msgstr "Nosaka tālruņa konfigurāciju..."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:786
+#: ../src/gnome-bluetooth/bt-widget.c:781
 msgid "could not find the Bluetooth device."
 msgstr "neizdevās atrast Bluetooth ierīci."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:916
+#: ../src/gnome-bluetooth/bt-widget.c:911
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2072,11 +2253,28 @@ msgstr ""
 "Noklusētajai Bluetooth iekārtai ir jābūt ieslēgtai, pirms Dial-Up-Networking "
 "savienojuma iestatīšanas."
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:969
+#: ../src/gnome-bluetooth/bt-widget.c:943
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr "Neizdevās Bluetooth konfigurācija (neizdevās savienoties ar D-Bus:%s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:953
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr ""
+"Neizdevās Bluetooth konfigurācija (neizdevās izveidot D-Bus starpnieku)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:962
+#, c-format
+msgid ""
+"Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgstr ""
+"Neizdevās Bluetooth konfigurācija (kļūda, meklējot NetworkManager: %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:1013
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Izmantojiet savu mobilo tālruni kā tīkla ierīci (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/network-manager-applet.c:978
+#: ../src/gnome-bluetooth/bt-widget.c:1022
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Piekļūstiet Internetam, izmantojot savu mobilo tālruni (DUN)"
 
@@ -2098,62 +2296,88 @@ msgid ""
 "GNOME desktop environment."
 msgstr "To nav paredzēts darbināt komandrindā, bet gan GNOME darbvirsmas vidē."
 
-#: ../src/mb-menu-item.c:59
+#: ../src/mb-menu-item.c:58
 msgid "EVDO"
 msgstr "EVDO"
 
-#: ../src/mb-menu-item.c:65
+#: ../src/mb-menu-item.c:62
 msgid "GPRS"
 msgstr "GPRS"
 
-#: ../src/mb-menu-item.c:68
+#: ../src/mb-menu-item.c:64
 msgid "EDGE"
 msgstr "EDGE"
 
-#: ../src/mb-menu-item.c:71
+#: ../src/mb-menu-item.c:66
 msgid "UMTS"
 msgstr "UMTS"
 
-#: ../src/mb-menu-item.c:74
+#: ../src/mb-menu-item.c:68
 msgid "HSDPA"
 msgstr "HSDPA"
 
-#: ../src/mb-menu-item.c:77
+#: ../src/mb-menu-item.c:70
 msgid "HSUPA"
 msgstr "HSUPA"
 
-#: ../src/mb-menu-item.c:80
+#: ../src/mb-menu-item.c:72
 msgid "HSPA"
 msgstr "HSPA"
 
-#: ../src/mb-menu-item.c:118
+#: ../src/mb-menu-item.c:74
+msgid "WiMAX"
+msgstr "WiMAX"
+
+#: ../src/mb-menu-item.c:109
+msgid "not enabled"
+msgstr "nav aktivēts"
+
+#: ../src/mb-menu-item.c:115
 msgid "not registered"
 msgstr "nav reģistrēts"
 
-#: ../src/mb-menu-item.c:130
+#: ../src/mb-menu-item.c:133
 #, c-format
 msgid "Home network (%s)"
 msgstr "Mājas tīkls (%s)"
 
-#: ../src/mb-menu-item.c:137
+#: ../src/mb-menu-item.c:135
+#, c-format
+#| msgid "Home network (%s)"
+msgid "Home network"
+msgstr "Mājas tīkls"
+
+#: ../src/mb-menu-item.c:143
 msgid "searching"
 msgstr "meklē"
 
-#: ../src/mb-menu-item.c:140
+#: ../src/mb-menu-item.c:146
 msgid "registration denied"
 msgstr "reģistrācija ir liegta"
 
-#: ../src/mb-menu-item.c:144 ../src/mb-menu-item.c:147
+#: ../src/mb-menu-item.c:151 ../src/mb-menu-item.c:157
 #, c-format
 msgid "%s (%s roaming)"
 msgstr "%s (%s viesabonēšana)"
 
-#: ../src/mb-menu-item.c:149
+#: ../src/mb-menu-item.c:153 ../src/mb-menu-item.c:159
+#, c-format
+#| msgid "%s (%s roaming)"
+msgid "%s (roaming)"
+msgstr "%s (viesabonēšana)"
+
+#: ../src/mb-menu-item.c:162
 #, c-format
 msgid "Roaming network (%s)"
 msgstr "Viesabonēšanas tīkls (%s)"
 
-#: ../src/utils/mobile-wizard.c:196
+#: ../src/mb-menu-item.c:164
+#, c-format
+#| msgid "Roaming network (%s)"
+msgid "Roaming network"
+msgstr "Viesabonēšanas tīkls"
+
+#: ../src/utils/mobile-wizard.c:195
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
 msgstr ""
@@ -2161,21 +2385,21 @@ msgstr ""
 "iestatījumiem:"
 
 #. Device
-#: ../src/utils/mobile-wizard.c:203
+#: ../src/utils/mobile-wizard.c:202
 msgid "Your Device:"
 msgstr "Jūsu ierīce:"
 
 #. Provider
-#: ../src/utils/mobile-wizard.c:214
+#: ../src/utils/mobile-wizard.c:213
 msgid "Your Provider:"
 msgstr "Jūsu operators:"
 
 #. Plan and APN
-#: ../src/utils/mobile-wizard.c:225
+#: ../src/utils/mobile-wizard.c:224
 msgid "Your Plan:"
 msgstr "Jūsu plāns:"
 
-#: ../src/utils/mobile-wizard.c:246
+#: ../src/utils/mobile-wizard.c:245
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
 "settings you selected.  If the connection fails or you cannot access network "
@@ -2189,23 +2413,23 @@ msgstr ""
 "mobilā platjoslas tīkla iestatījumus, izvēlieties \"Tīkla savienojumi\" no "
 "Sistēma >> Iestatījumi izvēlnes."
 
-#: ../src/utils/mobile-wizard.c:258
+#: ../src/utils/mobile-wizard.c:257
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Apstiprināt mobilā platjoslas tīkla iestatījumus"
 
-#: ../src/utils/mobile-wizard.c:319
+#: ../src/utils/mobile-wizard.c:318
 msgid "Unlisted"
 msgstr "Nav sarakstā"
 
-#: ../src/utils/mobile-wizard.c:437
+#: ../src/utils/mobile-wizard.c:436
 msgid "_Select your plan:"
 msgstr "Izvēlietie_s plānu:"
 
-#: ../src/utils/mobile-wizard.c:461
+#: ../src/utils/mobile-wizard.c:460
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "Izvēlēts plāns _APN (Access Point Name):"
 
-#: ../src/utils/mobile-wizard.c:480
+#: ../src/utils/mobile-wizard.c:479
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
@@ -2217,67 +2441,70 @@ msgstr ""
 "\n"
 "Ja nezināt, kāds jums ir plāns, jautājiet sava plāna APN."
 
-#: ../src/utils/mobile-wizard.c:487
+#: ../src/utils/mobile-wizard.c:486
 msgid "Choose your Billing Plan"
 msgstr "Izvēlieties rēķina plānu"
 
-#: ../src/utils/mobile-wizard.c:535
+#: ../src/utils/mobile-wizard.c:534
 msgid "My plan is not listed..."
 msgstr "Mans plāns nav sarakstā..."
 
-#: ../src/utils/mobile-wizard.c:688
+#: ../src/utils/mobile-wizard.c:687
 msgid "Select your provider from a _list:"
 msgstr "Izvē_lieties operatoru no saraksta:"
 
-#: ../src/utils/mobile-wizard.c:701
+#: ../src/utils/mobile-wizard.c:700
 msgid "Provider"
 msgstr "Operators"
 
-#: ../src/utils/mobile-wizard.c:726
+#: ../src/utils/mobile-wizard.c:725
 msgid "I can't find my provider and I wish to enter it _manually:"
 msgstr "Es nevaru atrast savu operatoru un vēlos to ievadīt _pašrocīgi:"
 
-#: ../src/utils/mobile-wizard.c:737
+#: ../src/utils/mobile-wizard.c:736
 msgid "Provider:"
 msgstr "Operators:"
 
-#: ../src/utils/mobile-wizard.c:753
+#: ../src/utils/mobile-wizard.c:760
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "Mans operators izmanto GSM tehnoloģiju (GPRS, EDGE, UMTS, HSPA)"
 
-#: ../src/utils/mobile-wizard.c:755
+#: ../src/utils/mobile-wizard.c:766
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "Mans operators izmanto CDMA tehnoloģiju (1xRTT, EVDO)"
 
-#: ../src/utils/mobile-wizard.c:766
+#: ../src/utils/mobile-wizard.c:777
 msgid "Choose your Provider"
 msgstr "Izvēlieties savu operatoru"
 
-#: ../src/utils/mobile-wizard.c:1012
-msgid "Country List:"
-msgstr "Valstu saraksts:"
+#: ../src/utils/mobile-wizard.c:1023
+#| msgid "Country List:"
+msgid "Country or Region List:"
+msgstr "Valstu vai reģionu saraksts:"
 
-#: ../src/utils/mobile-wizard.c:1024
-msgid "Country"
-msgstr "Valsts"
+#: ../src/utils/mobile-wizard.c:1035
+#| msgid "Country List:"
+msgid "Country or region"
+msgstr "Valsts vai reģions"
 
-#: ../src/utils/mobile-wizard.c:1031
+#: ../src/utils/mobile-wizard.c:1042
 msgid "My country is not listed"
 msgstr "Mana valsts nav sarakstā"
 
-#: ../src/utils/mobile-wizard.c:1077
-msgid "Choose your Provider's Country"
-msgstr "Izvēlieties operatora valsti"
+#: ../src/utils/mobile-wizard.c:1088
+#| msgid "Choose your Provider's Country"
+msgid "Choose your Provider's Country or Region"
+msgstr "Izvēlieties operatora valsti vai reģionu"
 
-#: ../src/utils/mobile-wizard.c:1126
+#: ../src/utils/mobile-wizard.c:1137
 msgid "Installed GSM device"
 msgstr "Uzstādītā GSM ierīce"
 
-#: ../src/utils/mobile-wizard.c:1129
+#: ../src/utils/mobile-wizard.c:1140
 msgid "Installed CDMA device"
 msgstr "Uzstādītā CDMA ierīce"
 
-#: ../src/utils/mobile-wizard.c:1297
+#: ../src/utils/mobile-wizard.c:1308
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
@@ -2285,49 +2512,53 @@ msgstr ""
 "Šis asistents palīdzēs jums ērti uzstādīt mobilā platjoslas tīkla "
 "savienojumu ar mobilo (3G) tīklu."
 
-#: ../src/utils/mobile-wizard.c:1302
+#: ../src/utils/mobile-wizard.c:1313
 msgid "You will need the following information:"
 msgstr "Jums vajadzēs sekojošo informāciju:"
 
-#: ../src/utils/mobile-wizard.c:1313
+#: ../src/utils/mobile-wizard.c:1324
 msgid "Your broadband provider's name"
 msgstr "Jūsu platjoslas operatora nosaukums"
 
-#: ../src/utils/mobile-wizard.c:1319
+#: ../src/utils/mobile-wizard.c:1330
 msgid "Your broadband billing plan name"
 msgstr "Jūsu platjoslas rēķinu plāna nosaukums"
 
-#: ../src/utils/mobile-wizard.c:1325
+#: ../src/utils/mobile-wizard.c:1336
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr ""
 "(dažos gadījumos) Jūsu platjoslas rēķinu plāna APN (pieejas punkta nosaukums)"
 
-#: ../src/utils/mobile-wizard.c:1352
+#: ../src/utils/mobile-wizard.c:1363
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Izveidot savienojumu šai mobilā pla_tjoslas tīkla ierīcei:"
 
-#: ../src/utils/mobile-wizard.c:1367
+#: ../src/utils/mobile-wizard.c:1378
 msgid "Any device"
 msgstr "Jebkura ierīce"
 
-#: ../src/utils/mobile-wizard.c:1380
+#: ../src/utils/mobile-wizard.c:1391
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Uzstādīt mobilā platjoslas tīkla savienojumu"
 
-#: ../src/utils/mobile-wizard.c:1554
+#: ../src/utils/mobile-wizard.c:1565
 msgid "New Mobile Broadband Connection"
 msgstr "Jauns mobilā platjoslas tīkla savienojums"
 
-#: ../src/utils/nmn-mobile-providers.c:515
+#: ../src/utils/nmn-mobile-providers.c:76
+msgid "United Kingdom"
+msgstr "Apvienotās Karaliste"
+
+#: ../src/utils/nmn-mobile-providers.c:508
 msgid "Default"
 msgstr "Noklusētais"
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:255
+#: ../src/vpn-password-dialog.c:136 ../src/vpn-password-dialog.c:254
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "Nevar sākt VPN savienojumu '%s'"
 
-#: ../src/vpn-password-dialog.c:140
+#: ../src/vpn-password-dialog.c:139
 #, c-format
 msgid ""
 "Could not find the authentication dialog for VPN connection type '%s'. "
@@ -2336,7 +2567,7 @@ msgstr ""
 "Nevar atrast autentifikācijas dialogu VPN savienojuma veidam '%s'. "
 "Sazinieties ar savu sistēmas administratoru."
 
-#: ../src/vpn-password-dialog.c:258
+#: ../src/vpn-password-dialog.c:257
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
@@ -2349,15 +2580,15 @@ msgstr ""
 msgid "Wired 802.1X authentication"
 msgstr "Vadu 802.1X autentifikācija"
 
-#: ../src/wireless-dialog.c:452
+#: ../src/wireless-dialog.c:478
 msgid "New..."
 msgstr "Jauns..."
 
-#: ../src/wireless-dialog.c:1056
+#: ../src/wireless-dialog.c:1100
 msgid "C_reate"
 msgstr "Iz_veidot"
 
-#: ../src/wireless-dialog.c:1137
+#: ../src/wireless-dialog.c:1182
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network '%"
@@ -2366,35 +2597,35 @@ msgstr ""
 "Lai piekļūtu bezvadu tīklam '%s', ir nepieciešamas paroles vai šifrēšanas "
 "atslēgas."
 
-#: ../src/wireless-dialog.c:1139
+#: ../src/wireless-dialog.c:1184
 msgid "Wireless Network Authentication Required"
 msgstr "Nepieciešama bezvadu tīkla autentifikācija"
 
-#: ../src/wireless-dialog.c:1141
+#: ../src/wireless-dialog.c:1186
 msgid "Authentication required by wireless network"
 msgstr "Bezvadu tīklam ir nepieciešama autentifikācija"
 
-#: ../src/wireless-dialog.c:1146
+#: ../src/wireless-dialog.c:1191
 msgid "Create New Wireless Network"
 msgstr "Izveidot jaunu bezvadu tīklu"
 
-#: ../src/wireless-dialog.c:1148
+#: ../src/wireless-dialog.c:1193
 msgid "New wireless network"
 msgstr "Jauns bezvadu tīklu"
 
-#: ../src/wireless-dialog.c:1149
+#: ../src/wireless-dialog.c:1194
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Ievadiet izveidojamā bezvadu tīkla nosaukumu."
 
-#: ../src/wireless-dialog.c:1151
+#: ../src/wireless-dialog.c:1196
 msgid "Connect to Hidden Wireless Network"
 msgstr "Savienoties ar slēptu bezvadu tīklu"
 
-#: ../src/wireless-dialog.c:1153
+#: ../src/wireless-dialog.c:1198
 msgid "Hidden wireless network"
 msgstr "Slēpts bezvadu tīkls"
 
-#: ../src/wireless-dialog.c:1154
+#: ../src/wireless-dialog.c:1199
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2402,11 +2633,11 @@ msgstr ""
 "Ievadiet nosaukumu un drošības iestatījums bezvadu tīklam, ar kuru vēlaties "
 "savienoties."
 
-#: ../src/wireless-security/eap-method.c:190
+#: ../src/wireless-security/eap-method.c:228
 msgid "No Certificate Authority certificate chosen"
 msgstr "Nav izvēlēts sertificēšanas institūcijas (CA) sertifikāts"
 
-#: ../src/wireless-security/eap-method.c:191
+#: ../src/wireless-security/eap-method.c:229
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -2416,37 +2647,70 @@ msgstr ""
 "savienoties ar nedrošiem vai blēžu bezvadu tīkliem. Vai vēlaties izvēlieties "
 "sertificēšanas institūcijas sertifikātu?"
 
-#: ../src/wireless-security/eap-method.c:200
+#: ../src/wireless-security/eap-method.c:238
 msgid "Choose CA Certificate"
 msgstr "Izvēlieties CA sertifikātu"
 
-#: ../src/wireless-security/eap-method.c:515
+#: ../src/wireless-security/eap-method.c:583
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "DER, PEM vai PKCS#12 privātās atslēgas (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:518
+#: ../src/wireless-security/eap-method.c:586
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER vai PEM sertifikāti (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:259
+#: ../src/wireless-security/eap-method-peap.c:267
+#: ../src/wireless-security/wireless-security.c:366
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:274
+#: ../src/wireless-security/eap-method-peap.c:283
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-peap.c:361
-#: ../src/wireless-security/eap-method-tls.c:457
-#: ../src/wireless-security/eap-method-ttls.c:359
+#: ../src/wireless-security/eap-method-peap.c:354
+#: ../src/wireless-security/eap-method-tls.c:437
+#: ../src/wireless-security/eap-method-ttls.c:354
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Izvēlieties sertificēšanas institūcijas sertifikātu..."
 
-#: ../src/wireless-security/eap-method-tls.c:263
+#: ../src/wireless-security/eap-method-peap.ui.h:2
+#: ../src/wireless-security/eap-method-ttls.ui.h:2
+msgid "Anony_mous identity:"
+msgstr "Anonī_ma identitāte:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:4
+#: ../src/wireless-security/eap-method-tls.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:3
+msgid "C_A certificate:"
+msgstr "C_A sertifikāts:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:5
+#: ../src/wireless-security/eap-method-ttls.ui.h:4
+msgid "I_nner authentication:"
+msgstr "Iekšējā aute_ntifikācija:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:6
+msgid "Version 0"
+msgstr "Versija 0"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:7
+msgid "Version 1"
+msgstr "Versija 1"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:8
+msgid "_PEAP version:"
+msgstr "_PEAP versija:"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:1
+msgid "As_k for this password every time"
+msgstr "_Katru reizi prasīt paroli"
+
+#: ../src/wireless-security/eap-method-tls.c:261
 msgid "Unencrypted private keys are insecure"
 msgstr "Nešifrētas privātās atslēgas nav drošas"
 
-#: ../src/wireless-security/eap-method-tls.c:266
+#: ../src/wireless-security/eap-method-tls.c:264
 msgid ""
 "The selected private key does not appear to be protected by a password.  "
 "This could allow your security credentials to be compromised.  Please select "
@@ -2460,25 +2724,229 @@ msgstr ""
 "\n"
 "(Jūs varat aizsargāt ar paroli savu privāto atslēgu ar openssl)"
 
-#: ../src/wireless-security/eap-method-tls.c:451
+#: ../src/wireless-security/eap-method-tls.c:431
 msgid "Choose your personal certificate..."
 msgstr "Izvelieties personīgo sertifikātu..."
 
-#: ../src/wireless-security/eap-method-tls.c:463
+#: ../src/wireless-security/eap-method-tls.c:443
 msgid "Choose your private key..."
 msgstr "Izvēlieties privāto atslēgu..."
 
-#: ../src/wireless-security/wireless-security.c:328
+#: ../src/wireless-security/eap-method-tls.ui.h:2
+msgid "I_dentity:"
+msgstr "I_dentitāte:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:3
+msgid "Private _key:"
+msgstr "Privātā _atslēga:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:5
+msgid "_Private key password:"
+msgstr "_Privātās atslēgas parole:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:6
+msgid "_User certificate:"
+msgstr "_Lietotāja sertifikāts:"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:1
+msgid "Don't _warn me again"
+msgstr "_Vairs nebrīdināt"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:2
+msgid "No"
+msgstr "Nē"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:3
+msgid "Yes"
+msgstr "Jā"
+
+#: ../src/wireless-security/wireless-security.c:378
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:352
+#: ../src/wireless-security/wireless-security.c:402
 msgid "Tunneled TLS"
 msgstr "Tunneled TLS"
 
-#: ../src/wireless-security/wireless-security.c:363
+#: ../src/wireless-security/wireless-security.c:413
 msgid "Protected EAP (PEAP)"
 msgstr "Protected EAP (PEAP)"
+
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:2
+#: ../src/wireless-security/ws-wep-key.ui.h:9
+#: ../src/wireless-security/ws-wpa-eap.ui.h:2
+msgid "_Authentication:"
+msgstr "_Autentifikācija:"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:1
+#| msgid ""
+#| "1 (Default)\n"
+#| "2\n"
+#| "3\n"
+#| "4"
+msgid "1 (Default)"
+msgstr "1 (noklusētais)"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:2
+msgid "2"
+msgstr "2"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "3"
+msgstr "3"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:4
+msgid "4"
+msgstr "4"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:5
+msgid "Open System"
+msgstr "Atvērt sistēmu"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:6
+msgid "Shared Key"
+msgstr "Koplietošanas atslēga"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:7
+msgid "Sho_w key"
+msgstr "_Rādīt atslēgu"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:8
+msgid "WEP inde_x:"
+msgstr "WEP inde_x:"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:10
+msgid "_Key:"
+msgstr "_Atslēga:"
+
+#~ msgid "PUK code required"
+#~ msgstr "Ir nepieciešams PUK kods"
+
+#~ msgid "PUK code is needed for the mobile broadband device"
+#~ msgstr "Mobilā platjoslas tīkla ierīcei ir vajadzīgs PUK kods"
+
+#~ msgid "translator-credits"
+#~ msgstr "Rūdolfs Mazurs Raivis Dejus Andris Zāģeris Ivars Strazdiņš"
+
+#~ msgid ""
+#~ "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
+#~ msgstr ""
+#~ "<span size=\"larger\" weight=\"bold\">Aktīvā savienojuma informācija</"
+#~ "span>"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "Version 0\n"
+#~ "Version 1"
+#~ msgstr ""
+#~ "Automātiski\n"
+#~ "Versija 0\n"
+#~ "Versija 1"
+
+#~ msgid ""
+#~ "Open System\n"
+#~ "Shared Key"
+#~ msgstr ""
+#~ "Atvērta sistēma\n"
+#~ "Koplietošanas atslēga"
+
+#~ msgid "<b>Addresses</b>"
+#~ msgstr "<b>Adreses</b>"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "Automatic with manual DNS settings\n"
+#~ "Manual\n"
+#~ "Link-Local\n"
+#~ "Shared to other computers"
+#~ msgstr ""
+#~ "Automātisks\n"
+#~ "Automātisks ar pašrocīgiem DNS iestatījumiem\n"
+#~ "Pašrocīgs\n"
+#~ "Lokālais savienojums\n"
+#~ "Koplietots ar citiem datoriem"
+
+#~ msgid "_Routes&#x2026;"
+#~ msgstr "Marš_ruti&#x2026;"
+
+#~ msgid "<b>Basic</b>"
+#~ msgstr "<b>Vienkāršs</b>"
+
+#~ msgid ""
+#~ "Any\n"
+#~ "3G (UMTS/HSPA)\n"
+#~ "2G (GPRS/EDGE)\n"
+#~ "Prefer 3G (UMTS/HSPA)\n"
+#~ "Prefer 2G (GPRS/EDGE)"
+#~ msgstr ""
+#~ "Jebkurš\n"
+#~ "3G (UMTS/HSPA)\n"
+#~ "2G (GPRS/EDGE)\n"
+#~ "Dot priekšroku 3G (UMTS/HSPA)\n"
+#~ "Dot priekšroku 2G (GPRS/EDGE)"
+
+#~ msgid "<b>Authentication</b>"
+#~ msgstr "<b>Autentifikācija</b>"
+
+#~ msgid "<b>Echo</b>"
+#~ msgstr "<b>Atbalss</b>"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "10 Mb/s\n"
+#~ "100 Mb/s\n"
+#~ "1 Gb/s\n"
+#~ "10 Gb/s"
+#~ msgstr ""
+#~ "Automātiski\n"
+#~ "10 Mb/s\n"
+#~ "100 Mb/s\n"
+#~ "1 Gb/s\n"
+#~ "10 Gb/s"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "Twisted Pair (TP)\n"
+#~ "Attachment Unit Interface (AUI)\n"
+#~ "BNC\n"
+#~ "Media Independent Interface (MII)"
+#~ msgstr ""
+#~ "Automātiski\n"
+#~ "Vītais pāris (TP)\n"
+#~ "Piesaistes bloka saskarne (AUI)\n"
+#~ "BNC\n"
+#~ "No medija neatkarīga saskarne (MII)"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "A (5 GHz)\n"
+#~ "B/G (2.4 GHz)"
+#~ msgstr ""
+#~ "Automātiski\n"
+#~ "A (5 GHz)\n"
+#~ "B/G (2.4 GHz)"
+
+#~ msgid "WEP 40/128-bit Key"
+#~ msgstr "WEP 40/128-bitu atslēga"
+
+#~ msgid ""
+#~ "The connection editor could not find some required resources (the "
+#~ "NetworkManager applet glade file was not found)."
+#~ msgstr ""
+#~ "Savienojumu redaktors nevarēja atrast dažus vajadzīgos resursus "
+#~ "(NetworkManager sīklietotnes noras fails netika atrasts)."
+
+#~ msgid "Apply"
+#~ msgstr "Pielietot"
+
+#~ msgid "Save this connection for all users of this machine."
+#~ msgstr "Saglabāt šo savienojumu viesiem šī datora lietotājiem"
+
+#~ msgid "Apply..."
+#~ msgstr "Pielietot..."
+
+#~ msgid "Country"
+#~ msgstr "Valsts"
 
 #~ msgid "Passphrase for wireless network %s"
 #~ msgstr "Parole priekš bezvadu tīkla %s"
@@ -2568,20 +3036,11 @@ msgstr "Protected EAP (PEAP)"
 #~ "Tīkla administratora aplets nevarēja atrast dažus pieprasītos resursus. "
 #~ "Tas nevar turpinat.\n"
 
-#~ msgid "Open System"
-#~ msgstr "Atvērt sistēmu"
-
-#~ msgid "Shared Key"
-#~ msgstr "Koplietošanas atslēga"
-
 #~ msgid "AES-CCMP"
 #~ msgstr "AES-CCMP"
 
 #~ msgid "TKIP"
 #~ msgstr "TKIP"
-
-#~ msgid "WEP 64/128-bit ASCII"
-#~ msgstr "WEP 64/128-bit ASCII"
 
 #~ msgid "TTLS"
 #~ msgstr "TTLS"
@@ -2715,9 +3174,6 @@ msgstr "Protected EAP (PEAP)"
 #~ "Nevar atrast piemērotu programmatūru priekš VPN savienojuma tipa'%s'lai "
 #~ "importētu failu '%s'. sazinieties ar savu sistēmadministratoru."
 
-#~ msgid "Error retrieving VPN connection '%s'"
-#~ msgstr "Kļūda atgūstot VPN savienojumu '%s'"
-
 #~ msgid ""
 #~ "Could not find the UI files for VPN connection type '%s'. Contact your "
 #~ "system administrator."
@@ -2745,9 +3201,6 @@ msgstr "Protected EAP (PEAP)"
 
 #~ msgid "Choose which type of VPN connection you wish to create."
 #~ msgstr "Izvēlieties kuru VPN savienojuma tipu jūs vēlaties radīt."
-
-#~ msgid "Create VPN Connection"
-#~ msgstr "Izveidot VPN savienojumu"
 
 #~ msgid "Create VPN Connection - 1 of 2"
 #~ msgstr "Izveidot VPN savienojumu -1 no 2"
