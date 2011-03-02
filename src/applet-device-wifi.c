@@ -56,27 +56,27 @@ static NMAccessPoint *update_active_ap (NMDevice *device, NMDeviceState state, N
 static void
 show_ignore_focus_stealing_prevention (GtkWidget *widget)
 {
+	GdkWindow *window;
+
 	gtk_widget_realize (widget);
 	gtk_widget_show (widget);
-	gtk_window_present_with_time (GTK_WINDOW (widget),
-		gdk_x11_get_server_time (gtk_widget_get_window (widget)));
+	window = gtk_widget_get_window (widget);
+	gtk_window_present_with_time (GTK_WINDOW (widget), gdk_x11_get_server_time (window));
 }
 
-static void
-other_wireless_activate_cb (GtkWidget *menu_item,
-                            NMApplet *applet)
+gboolean
+applet_wifi_connect_to_hidden_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
 	dialog = nma_wireless_dialog_new_for_other (applet);
-	if (!dialog)
-		return;
-
-	g_signal_connect (dialog, "response",
-	                  G_CALLBACK (wireless_dialog_response_cb),
-	                  applet);
-
-	show_ignore_focus_stealing_prevention (dialog);
+	if (dialog) {
+		g_signal_connect (dialog, "response",
+		                  G_CALLBACK (wireless_dialog_response_cb),
+		                  applet);
+		show_ignore_focus_stealing_prevention (dialog);
+	}
+	return !!dialog;
 }
 
 void
@@ -91,23 +91,45 @@ nma_menu_add_hidden_network_item (GtkWidget *menu, NMApplet *applet)
 	gtk_container_add (GTK_CONTAINER (menu_item), label);
 	gtk_widget_show_all (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	g_signal_connect (menu_item, "activate", G_CALLBACK (other_wireless_activate_cb), applet);
+	g_signal_connect_swapped (menu_item, "activate",
+	                          G_CALLBACK (applet_wifi_connect_to_hidden_network),
+	                          applet);
 }
 
-static void
-new_network_activate_cb (GtkWidget *menu_item, NMApplet *applet)
+gboolean
+applet_wifi_can_create_wifi_network (NMApplet *applet)
+{
+	gboolean disabled, allowed = FALSE;
+	NMClientPermissionResult perm;
+	GError *error = NULL;
+
+	/* FIXME: check WIFI_SHARE_PROTECTED too, and make the wireless dialog
+	 * handle the permissions as well so that admins can restrict open network
+	 * creation separately from protected network creation.
+	 */
+	perm = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_WIFI_SHARE_OPEN);
+	if (perm == NM_CLIENT_PERMISSION_RESULT_YES || perm == NM_CLIENT_PERMISSION_RESULT_AUTH) {
+		disabled = gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_WIFI_CREATE, &error);
+		if (!disabled && !error)
+			allowed = TRUE;
+		g_clear_error (&error);
+	}
+	return allowed;
+}
+
+gboolean
+applet_wifi_create_wifi_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new_for_create (applet);
-	if (!dialog)
-		return;
-
-	g_signal_connect (dialog, "response",
-	                  G_CALLBACK (wireless_dialog_response_cb),
-	                  applet);
-
-	show_ignore_focus_stealing_prevention (dialog);
+	dialog = nma_wireless_dialog_new_for_other (applet);
+	if (dialog) {
+		g_signal_connect (dialog, "response",
+		                  G_CALLBACK (wireless_dialog_response_cb),
+		                  applet);
+		show_ignore_focus_stealing_prevention (dialog);
+	}
+	return !!dialog;
 }
 
 void
@@ -115,8 +137,6 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 {
 	GtkWidget *menu_item;
 	GtkWidget *label;
-	GError *error = NULL;
-	gboolean disabled;
 
 	menu_item = gtk_menu_item_new ();
 	label = gtk_label_new_with_mnemonic (_("Create _New Wireless Network..."));
@@ -124,15 +144,12 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 	gtk_container_add (GTK_CONTAINER (menu_item), label);
 	gtk_widget_show_all (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	g_signal_connect (menu_item, "activate", G_CALLBACK (new_network_activate_cb), applet);
+	g_signal_connect_swapped (menu_item, "activate",
+	                          G_CALLBACK (applet_wifi_create_wifi_network),
+	                          applet);
 
-	/* FIXME: should really use PolicyKit and NM permissions here instead
-	 * using using GConf mandatory settings.  But this works for now.
-	 */
-	disabled = gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_WIFI_CREATE, &error);
-	if (error || disabled)
+	if (!applet_wifi_can_create_wifi_network (applet))
 		gtk_widget_set_sensitive (GTK_WIDGET (menu_item), FALSE);
-	g_clear_error (&error);
 }
 
 
@@ -1475,13 +1492,12 @@ wireless_get_more_info (NMDevice *device,
 	GtkWidget *dialog;
 
 	dialog = nma_wireless_dialog_new (applet, connection, device, info->ap);
-	g_return_if_fail (dialog != NULL);
-
-	g_signal_connect (dialog, "response",
-	                  G_CALLBACK (wireless_dialog_response_cb),
-	                  applet);
-
-	show_ignore_focus_stealing_prevention (dialog);
+	if (dialog) {
+		g_signal_connect (dialog, "response",
+			              G_CALLBACK (wireless_dialog_response_cb),
+			              applet);
+		show_ignore_focus_stealing_prevention (dialog);
+	}
 }
 
 static gboolean
@@ -1659,19 +1675,19 @@ wireless_get_secrets (SecretsRequest *req, GError **error)
 	applet_secrets_request_set_free_func (req, free_wifi_info);
 
 	info->dialog = nma_wireless_dialog_new (req->applet, req->connection, NULL, NULL);
-	if (!info->dialog) {
+	if (info->dialog) {
+		g_signal_connect (info->dialog, "response",
+		                  G_CALLBACK (get_secrets_dialog_response_cb),
+		                  info);
+		show_ignore_focus_stealing_prevention (info->dialog);
+	} else {
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
 		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "%s.%d (%s): couldn't display secrets UI",
 		             __FILE__, __LINE__, __func__);
-		return FALSE;
 	}
-
-	g_signal_connect (info->dialog, "response", G_CALLBACK (get_secrets_dialog_response_cb), info);
-	show_ignore_focus_stealing_prevention (info->dialog);
-
-	return TRUE;
+	return !!info->dialog;
 }
 
 NMADeviceClass *

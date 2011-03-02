@@ -82,6 +82,7 @@ typedef struct
 
 	GMainLoop *loop;
 	DBusGConnection *bus;
+	DBusGConnection *session_bus;
 
 	NMClient *nm_client;
 	NMRemoteSettings *settings;
@@ -308,5 +309,9 @@ GtkWidget * applet_new_menu_item_helper (NMConnection *connection,
 GdkPixbuf * nma_icon_check_and_load (const char *name,
                                      GdkPixbuf **icon,
                                      NMApplet *applet);
+
+gboolean applet_wifi_connect_to_hidden_network (NMApplet *applet);
+gboolean applet_wifi_create_wifi_network (NMApplet *applet);
+gboolean applet_wifi_can_create_wifi_network (NMApplet *applet);
 
 #endif

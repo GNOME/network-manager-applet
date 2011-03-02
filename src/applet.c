@@ -75,6 +75,7 @@
 #include "applet-device-bt.h"
 #include "applet-device-wimax.h"
 #include "applet-dialogs.h"
+#include "wireless-dialog.h"
 #include "applet-vpn-request.h"
 #include "utils.h"
 #include "gconf-helpers.h"
@@ -82,6 +83,49 @@
 #define NOTIFY_CAPS_ACTIONS_KEY "actions"
 
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
+
+/********************************************************************/
+/* Temporary dbus interface stuff */
+
+static gboolean
+impl_dbus_connect_to_hidden_network (NMApplet *applet, GError **error)
+{
+	if (!applet_wifi_connect_to_hidden_network (applet)) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "Failed to create wireless dialog");
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+impl_dbus_create_wifi_network (NMApplet *applet, GError **error)
+{
+	if (!applet_wifi_can_create_wifi_network (applet)) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_NOT_AUTHORIZED,
+		                     "Creation of wifi networks has been disabled by system policy.");
+		return FALSE;
+	}
+
+	if (!applet_wifi_create_wifi_network (applet)) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "Failed to create wireless dialog");
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+#include "applet-dbus-bindings.h"
+
+/********************************************************************/
 
 static NMActiveConnection *
 applet_get_best_activating_connection (NMApplet *applet, NMDevice **device)
@@ -3098,6 +3142,44 @@ applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 	           embedded ? "embedded in" : "removed from");
 }
 
+static gboolean
+dbus_setup (NMApplet *applet, GError **error)
+{
+	DBusConnection *connection;
+	DBusGProxy *proxy;
+	guint result;
+	gboolean success;
+
+	applet->bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, error);
+	if (!applet->bus)
+		return FALSE;
+
+	connection = dbus_g_connection_get_connection (applet->bus);
+	dbus_connection_set_exit_on_disconnect (connection, FALSE);
+
+	applet->session_bus = dbus_g_bus_get (DBUS_BUS_SESSION, error);
+	if (!applet->session_bus)
+		return FALSE;
+
+	dbus_g_connection_register_g_object (applet->session_bus,
+	                                     "/org/gnome/network-manager-applet",
+	                                     G_OBJECT (applet));
+
+	proxy = dbus_g_proxy_new_for_name (applet->session_bus,
+	                                   DBUS_SERVICE_DBUS,
+	                                   DBUS_PATH_DBUS,
+	                                   DBUS_INTERFACE_DBUS);
+	success = dbus_g_proxy_call (proxy, "RequestName", error,
+	                             G_TYPE_STRING, "org.gnome.network-manager-applet",
+	                             G_TYPE_UINT, DBUS_NAME_FLAG_DO_NOT_QUEUE,
+	                             G_TYPE_INVALID,
+	                             G_TYPE_UINT, &result,
+	                             G_TYPE_INVALID);
+	g_object_unref (proxy);
+
+	return success;
+}
+
 static GObject *
 constructor (GType type,
              guint n_props,
@@ -3105,7 +3187,6 @@ constructor (GType type,
 {
 	NMApplet *applet;
 	GError* error = NULL;
-	DBusConnection *connection;
 
 	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
 
@@ -3147,18 +3228,11 @@ constructor (GType type,
 	if (!notify_is_initted ())
 		notify_init ("NetworkManager");
 
-	applet->bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (!applet->bus) {
-		g_warning ("Could not get the system bus.  Make sure the message "
-		           "bus daemon is running!  Message: %s",
-		           error->message);
+	if (!dbus_setup (applet, &error)) {
+		g_warning ("Failed to initialize D-Bus: %s", error->message);
 		g_error_free (error);
 		goto error;
 	}
-
-	connection = dbus_g_connection_get_connection (applet->bus);
-	dbus_connection_set_exit_on_disconnect (connection, FALSE);
-
 	applet->settings = nm_remote_settings_new (applet->bus);
 
 	applet->agent = applet_agent_new ();
@@ -3266,6 +3340,9 @@ static void finalize (GObject *object)
 	if (applet->bus)
 		dbus_g_connection_unref (applet->bus);
 
+	if (applet->session_bus)
+		dbus_g_connection_unref (applet->session_bus);
+
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
 
@@ -3311,6 +3388,8 @@ static void nma_class_init (NMAppletClass *klass)
 
 	pspec = g_param_spec_pointer ("loop", "Loop", "Applet mainloop", G_PARAM_CONSTRUCT | G_PARAM_WRITABLE);
 	g_object_class_install_property (oclass, PROP_LOOP, pspec);
+
+	dbus_g_object_type_install_info (NM_TYPE_APPLET, &dbus_glib_nma_object_info);
 }
 
 NMApplet *

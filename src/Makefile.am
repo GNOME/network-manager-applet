@@ -21,6 +21,11 @@ nm_applet_CPPFLAGS = \
 	-I${top_srcdir}/src/gconf-helpers  \
 	-I${top_srcdir}/src/wireless-security
 
+BUILT_SOURCES = applet-dbus-bindings.h
+
+applet-dbus-bindings.h: nm-applet-introspection.xml
+	$(AM_V_GEN) dbus-binding-tool --mode=glib-server --prefix=nma --output=$@ $<
+
 nm_applet_SOURCES = \
 	main.c \
 	applet.c \
@@ -68,7 +73,7 @@ nm_applet_LDADD = \
 uidir = $(datadir)/nm-applet
 ui_DATA = applet.ui keyring.png
 
-CLEANFILES = *.bak
+CLEANFILES = *.bak $(BUILT_SOURCES)
 
 EXTRA_DIST = 				\
 	$(ui_DATA)
