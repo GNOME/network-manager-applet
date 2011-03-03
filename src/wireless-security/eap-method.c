@@ -483,7 +483,6 @@ file_is_der_or_pem (const char *filename,
 	int fd;
 	unsigned char buffer[8192];
 	ssize_t bytes_read;
-	guint16 der_tag = 0x8230;
 	gboolean success = FALSE;
 	gboolean encrypted = FALSE;
 
@@ -497,7 +496,7 @@ file_is_der_or_pem (const char *filename,
 	buffer[bytes_read] = '\0';
 
 	/* Check for DER signature */
-	if (!memcmp (buffer, &der_tag, 2)) {
+	if (bytes_read > 2 && buffer[0] == 0x30 && buffer[1] == 0x82) {
 		success = TRUE;
 		goto out;
 	}
