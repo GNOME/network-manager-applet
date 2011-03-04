@@ -27,8 +27,6 @@
 #include <nm-setting-wireless-security.h>
 
 #include "wireless-security.h"
-#include "utils.h"
-#include "gconf-helpers.h"
 
 struct _WirelessSecurityWEPKey {
 	WirelessSecurity parent;

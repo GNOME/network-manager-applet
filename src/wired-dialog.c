@@ -33,7 +33,6 @@
 #include "wired-dialog.h"
 #include "wireless-security.h"
 #include "applet-dialogs.h"
-#include "gconf-helpers.h"
 
 static void
 stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)

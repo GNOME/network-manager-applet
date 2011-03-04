@@ -84,36 +84,6 @@ const char *vpn_ignore_keys[] = {
 	NULL
 };
 
-static PreKeyringCallback pre_keyring_cb = NULL;
-static gpointer pre_keyring_user_data = NULL;
-
-/* Sets a function to be called before each keyring access */
-void
-applet_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data)
-{
-	pre_keyring_cb = func;
-	pre_keyring_user_data = user_data;
-}
-
-static void
-pre_keyring_callback (void)
-{
-	GnomeKeyringInfo *info = NULL;
-
-	if (!pre_keyring_cb)
-		return;
-
-	/* Call the pre keyring callback if the keyring is locked or if there
-	 * was an error talking to the keyring.
-	 */
-	if (gnome_keyring_get_info_sync (NULL, &info) == GNOME_KEYRING_RESULT_OK) {
-		if (gnome_keyring_info_get_is_locked (info))
-			(*pre_keyring_cb) (pre_keyring_user_data);
-		gnome_keyring_info_free (info);
-	} else
-		(*pre_keyring_cb) (pre_keyring_user_data);
-}
-
 
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,
@@ -1989,8 +1959,6 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	g_return_if_fail (setting_key != NULL);
 	g_return_if_fail (secret != NULL);
 
-	pre_keyring_callback ();
-
 	attrs = utils_create_keyring_add_attr_list (NULL,
 	                                            connection_uuid,
 	                                            connection_name,
@@ -2026,8 +1994,6 @@ keyring_delete_item (const char *connection_uuid,
 	GList *found_list = NULL;
 	GnomeKeyringResult ret;
 	GList *iter;
-
-	pre_keyring_callback ();
 
 	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	                                      &found_list,

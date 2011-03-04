@@ -78,7 +78,6 @@
 #include "wireless-dialog.h"
 #include "applet-vpn-request.h"
 #include "utils.h"
-#include "gconf-helpers.h"
 
 #define NOTIFY_CAPS_ACTIONS_KEY "actions"
 
@@ -3077,63 +3076,6 @@ setup_widgets (NMApplet *applet)
 }
 
 static void
-applet_pre_keyring_callback (gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-	GdkScreen *screen;
-	GdkDisplay *display;
-	GdkWindow *window = NULL;
-
-	if (applet->menu)
-		window = gtk_widget_get_window (applet->menu);
-	if (window) {
-#if GTK_CHECK_VERSION(2,23,0)
-		screen = gdk_window_get_screen (window);
-#else
-		screen = gdk_drawable_get_screen (window);
-#endif
-		display = gdk_screen_get_display (screen);
-		g_object_ref (display);
-
-		gtk_widget_hide (applet->menu);
-		gtk_widget_destroy (applet->menu);
-		g_object_unref (applet->menu);
-		applet->menu = NULL;
-
-		/* Ensure that the widget really gets destroyed before letting the
-		 * keyring calls happen; if the X events haven't all gone through when
-		 * the keyring dialog comes up, then the menu will actually still have
-		 * the screen grab even after we've called gtk_widget_destroy().
-		 */
-		gdk_display_sync (display);
-		g_object_unref (display);
-	}
-
-	window = NULL;
-	if (applet->context_menu)
-		window = gtk_widget_get_window (applet->context_menu);
-	if (window) {
-#if GTK_CHECK_VERSION(2,23,0)
-		screen = gdk_window_get_screen (window);
-#else
-		screen = gdk_drawable_get_screen (window);
-#endif
-		display = gdk_screen_get_display (screen);
-		g_object_ref (display);
-
-		gtk_widget_hide (applet->context_menu);
-
-		/* Ensure that the widget really gets hidden before letting the
-		 * keyring calls happen; if the X events haven't all gone through when
-		 * the keyring dialog comes up, then the menu will actually still have
-		 * the screen grab even after we've called gtk_widget_hide().
-		 */
-		gdk_display_sync (display);
-		g_object_unref (display);
-	}
-}
-
-static void
 applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
 	gboolean embedded = gtk_status_icon_is_embedded (GTK_STATUS_ICON (object));
@@ -3263,8 +3205,6 @@ constructor (GType type,
 
 	foo_client_setup (applet);
 
-	applet_set_pre_keyring_callback (applet_pre_keyring_callback, applet);
-
 	/* Track embedding to help debug issues where user has removed the
 	 * notification area applet from the panel, and thus nm-applet too.
 	 */
@@ -3284,8 +3224,6 @@ error:
 static void finalize (GObject *object)
 {
 	NMApplet *applet = NM_APPLET (object);
-
-	applet_set_pre_keyring_callback (NULL, NULL);
 
 	g_slice_free (NMADeviceClass, applet->wired_class);
 	g_slice_free (NMADeviceClass, applet->wifi_class);

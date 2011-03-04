@@ -45,7 +45,6 @@
 #include <nm-utils.h>
 
 #include "utils.h"
-#include "gconf-helpers.h"
 
 static char *ignored_words[] = {
 	"Semiconductor",

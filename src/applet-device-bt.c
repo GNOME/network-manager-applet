@@ -41,7 +41,6 @@
 #include "applet-device-bt.h"
 #include "wired-dialog.h"
 #include "utils.h"
-#include "gconf-helpers.h"
 #include "applet-dialogs.h"
 
 typedef struct {

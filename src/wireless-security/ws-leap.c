@@ -24,8 +24,6 @@
 #include <nm-setting-wireless.h>
 
 #include "wireless-security.h"
-#include "utils.h"
-#include "gconf-helpers.h"
 #include "helpers.h"
 
 struct _WirelessSecurityLEAP {

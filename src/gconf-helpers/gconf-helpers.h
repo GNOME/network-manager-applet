@@ -265,9 +265,6 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
                            const char *setting_key,
                            const char *secret);
 
-typedef void (*PreKeyringCallback) (gpointer user_data);
-void applet_set_pre_keyring_callback (PreKeyringCallback func, gpointer user_data);
-
 gboolean nm_gconf_get_ignore_ca_cert (const char *uuid, gboolean phase2);
 void nm_gconf_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore);
 

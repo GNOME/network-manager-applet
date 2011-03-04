@@ -40,7 +40,6 @@
 #include "applet-device-wired.h"
 #include "wired-dialog.h"
 #include "utils.h"
-#include "gconf-helpers.h"
 
 typedef struct {
 	NMApplet *applet;

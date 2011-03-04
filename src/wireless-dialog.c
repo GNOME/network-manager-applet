@@ -42,7 +42,6 @@
 #include "wireless-dialog.h"
 #include "wireless-security.h"
 #include "utils.h"
-#include "gconf-helpers.h"
 
 G_DEFINE_TYPE (NMAWirelessDialog, nma_wireless_dialog, GTK_TYPE_DIALOG)
 

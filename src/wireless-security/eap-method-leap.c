@@ -26,7 +26,6 @@
 
 #include "eap-method.h"
 #include "wireless-security.h"
-#include "gconf-helpers.h"
 #include "helpers.h"
 
 struct _EAPMethodLEAP {
