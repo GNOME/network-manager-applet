@@ -30,7 +30,6 @@
 #include <string.h>
 
 #include "mb-menu-item.h"
-#include "utils.h"
 
 G_DEFINE_TYPE (NMMbMenuItem, nm_mb_menu_item, GTK_TYPE_IMAGE_MENU_ITEM);
 

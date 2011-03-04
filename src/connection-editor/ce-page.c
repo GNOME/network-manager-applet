@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2010 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -34,7 +34,6 @@
 
 #include "ce-page.h"
 #include "nma-marshal.h"
-#include "utils.h"
 
 G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 
@@ -133,9 +132,44 @@ ce_page_mac_to_entry (const GByteArray *mac, GtkEntry *entry)
 		return;
 
 	memcpy (addr.ether_addr_octet, mac->data, ETH_ALEN);
-	str_addr = utils_ether_ntop (&addr);
+	/* we like leading zeros and all-caps, instead
+	 * of what glibc's ether_ntop() gives us
+	 */
+	str_addr = g_strdup_printf ("%02X:%02X:%02X:%02X:%02X:%02X",
+	                            addr.ether_addr_octet[0], addr.ether_addr_octet[1],
+	                            addr.ether_addr_octet[2], addr.ether_addr_octet[3],
+	                            addr.ether_addr_octet[4], addr.ether_addr_octet[5]);
 	gtk_entry_set_text (entry, str_addr);
 	g_free (str_addr);
+}
+
+static gboolean
+is_mac_valid (const struct ether_addr *addr)
+{
+	guint8 invalid1[ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+	guint8 invalid2[ETH_ALEN] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	guint8 invalid3[ETH_ALEN] = {0x44, 0x44, 0x44, 0x44, 0x44, 0x44};
+	guint8 invalid4[ETH_ALEN] = {0x00, 0x30, 0xb4, 0x00, 0x00, 0x00}; /* prism54 dummy MAC */
+
+	g_return_val_if_fail (addr != NULL, FALSE);
+
+	/* Compare the AP address the card has with invalid ethernet MAC addresses. */
+	if (!memcmp (addr->ether_addr_octet, &invalid1, ETH_ALEN))
+		return FALSE;
+
+	if (!memcmp (addr->ether_addr_octet, &invalid2, ETH_ALEN))
+		return FALSE;
+
+	if (!memcmp (addr->ether_addr_octet, &invalid3, ETH_ALEN))
+		return FALSE;
+
+	if (!memcmp (addr->ether_addr_octet, &invalid4, ETH_ALEN))
+		return FALSE;
+
+	if (addr->ether_addr_octet[0] & 1) /* Multicast addresses */
+		return FALSE;
+
+	return TRUE;
 }
 
 GByteArray *
@@ -156,7 +190,7 @@ ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid)
 		return NULL;
 
 	ether = ether_aton (temp);
-	if (!ether || !utils_mac_valid (ether)) {
+	if (!ether || !is_mac_valid (ether)) {
 		if (invalid)
 			*invalid = TRUE;
 		return NULL;
@@ -165,6 +199,43 @@ ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid)
 	mac = g_byte_array_sized_new (ETH_ALEN);
 	g_byte_array_append (mac, (const guint8 *) ether->ether_addr_octet, ETH_ALEN);
 	return mac;
+}
+
+char *
+ce_page_get_next_available_name (GSList *connections, const char *format)
+{
+	GSList *names = NULL, *iter;
+	char *cname = NULL;
+	int i = 0;
+
+	for (iter = connections; iter; iter = g_slist_next (iter)) {
+		const char *id;
+
+		id = nm_connection_get_id (NM_CONNECTION (iter->data));
+		g_assert (id);
+		names = g_slist_append (names, (gpointer) id);
+	}
+
+	/* Find the next available unique connection name */
+	while (!cname && (i++ < 10000)) {
+		char *temp;
+		gboolean found = FALSE;
+
+		temp = g_strdup_printf (format, i);
+		for (iter = names; iter; iter = g_slist_next (iter)) {
+			if (!strcmp (iter->data, temp)) {
+				found = TRUE;
+				break;
+			}
+		}
+		if (!found)
+			cname = temp;
+		else
+			g_free (temp);
+	}
+
+	g_slist_free (names);
+	return cname;
 }
 
 static void
@@ -416,7 +487,7 @@ ce_page_new_connection (const char *format,
 	uuid = nm_utils_uuid_generate ();
 
 	connections = (*get_connections_func) (user_data);
-	id = utils_next_available_name (connections, format);
+	id = ce_page_get_next_available_name (connections, format);
 	g_slist_free (connections);
 
 	g_object_set (s_con,

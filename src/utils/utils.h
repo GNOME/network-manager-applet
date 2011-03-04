@@ -44,12 +44,6 @@ gboolean utils_connection_valid_for_device (NMConnection *connection,
 
 GSList *utils_filter_connections_for_device (NMDevice *device, GSList *connections);
 
-char *utils_ether_ntop (const struct ether_addr *mac);
-
-gboolean utils_mac_valid (const struct ether_addr *addr);
-
-char *utils_next_available_name (GSList *connections, const char *format);
-
 char *utils_hash_ap (const GByteArray *ssid,
                      NM80211Mode mode,
                      guint32 flags,

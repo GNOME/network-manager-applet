@@ -53,7 +53,6 @@
 #include "page-vpn.h"
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
-#include "utils.h"
 #include "vpn-helpers.h"
 #include "ce-polkit-button.h"
 
@@ -865,7 +864,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 		GSList *connections;
 
 		connections = nm_remote_settings_list_connections (info->list->settings);
-		s = utils_next_available_name (connections, _("VPN connection %d"));
+		s = ce_page_get_next_available_name (connections, _("VPN connection %d"));
 		g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
 		g_free (s);
 

@@ -31,7 +31,6 @@
 #include <nm-utils.h>
 
 #include "page-wireless.h"
-#include "utils.h"
 
 G_DEFINE_TYPE (CEPageWireless, ce_page_wireless, CE_TYPE_PAGE)
 

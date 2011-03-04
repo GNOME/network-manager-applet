@@ -30,7 +30,6 @@
 #include "gconf-helpers.h"
 #include "eap-method.h"
 #include "wireless-security.h"
-#include "utils.h"
 #include "helpers.h"
 
 struct _EAPMethodTLS {

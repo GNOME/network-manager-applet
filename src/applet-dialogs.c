@@ -43,7 +43,6 @@
 #include <glib/gi18n.h>
 
 #include "applet-dialogs.h"
-#include "utils.h"
 
 
 static void
