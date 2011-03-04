@@ -75,6 +75,7 @@ ui_DATA = applet.ui keyring.png
 
 CLEANFILES = *.bak $(BUILT_SOURCES)
 
-EXTRA_DIST = 				\
-	$(ui_DATA)
+EXTRA_DIST = \
+	$(ui_DATA) \
+	nm-applet-introspection.xml
 
