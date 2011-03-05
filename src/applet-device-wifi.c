@@ -211,6 +211,23 @@ is_manufacturer_default_ssid (const GByteArray *ssid)
 	return is_ssid_in_list (ssid, manf_default_ssids);
 }
 
+static char *
+get_ssid_utf8 (NMAccessPoint *ap)
+{
+	char *ssid_utf8 = NULL;
+	const GByteArray *ssid;
+
+	if (ap) {
+		ssid = nm_access_point_get_ssid (ap);
+		if (ssid)
+			ssid_utf8 = nm_utils_ssid_to_utf8 (ssid);
+	}
+	if (!ssid_utf8)
+		ssid_utf8 = g_strdup (_("(none)"));
+
+	return ssid_utf8;
+}
+
 /* List known trojan networks that should never be shown to the user */
 static const char *blacklisted_ssids[] = {
 	/* http://www.npr.org/templates/story/story.php?storyId=130451369 */
@@ -1238,10 +1255,11 @@ wireless_device_state_changed (NMDevice *device,
                                NMDeviceStateReason reason,
                                NMApplet *applet)
 {
+	NMAccessPoint *new = NULL;
 	char *msg;
 	char *esc_ssid = NULL;
 
-	update_active_ap (device, new_state, applet);
+	new = update_active_ap (device, new_state, applet);
 
 	if (new_state == NM_DEVICE_STATE_DISCONNECTED)
 		queue_avail_access_point_notification (device);
@@ -1249,8 +1267,8 @@ wireless_device_state_changed (NMDevice *device,
 	if (new_state != NM_DEVICE_STATE_ACTIVATED)
 		return;
 
-	msg = g_strdup_printf (_("You are now connected to the wireless network '%s'."),
-	                       esc_ssid ? esc_ssid : _("(none)"));
+	esc_ssid = get_ssid_utf8 (new);
+	msg = g_strdup_printf (_("You are now connected to the wireless network '%s'."), esc_ssid);
 	applet_do_notify_with_pref (applet, _("Connection Established"),
 	                            msg, "nm-device-wireless",
 	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
@@ -1272,16 +1290,6 @@ wireless_get_icon (NMDevice *device,
 	char *ssid = NULL;
 
 	ap = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
-	if (ap) {
-		const GByteArray *tmp;
-
-		tmp = nm_access_point_get_ssid (ap);
-		if (tmp)
-			ssid = nm_utils_ssid_to_utf8 (tmp);
-	}
-
-	if (!ssid)
-		ssid = g_strdup (_("(none)"));
 
 	id = nm_device_get_iface (device);
 	if (connection) {
@@ -1320,8 +1328,10 @@ wireless_get_icon (NMDevice *device,
 			else
 				pixbuf = nma_icon_check_and_load ("nm-signal-00", &applet->wireless_00_icon, applet);
 
+			ssid = get_ssid_utf8 (ap);
 			*tip = g_strdup_printf (_("Wireless network connection '%s' active: %s (%d%%)"),
 			                        id, ssid, strength);
+			g_free (ssid);
 		} else {
 			pixbuf = nma_icon_check_and_load ("nm-signal-00", &applet->wireless_00_icon, applet);
 			*tip = g_strdup_printf (_("Wireless network connection '%s' active"), id);
@@ -1331,7 +1341,6 @@ wireless_get_icon (NMDevice *device,
 		break;
 	}
 
-	g_free (ssid);
 	return pixbuf;
 }
 
