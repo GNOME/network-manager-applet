@@ -21,6 +21,8 @@ libnma_la_SOURCES = $(BT_WIDGET_SOURCES)
 libnma_la_LDFLAGS = -module -avoid-version
 
 libnma_la_LIBADD = \
+	$(top_builddir)/src/marshallers/libmarshallers.la \
+	$(top_builddir)/src/utils/libutils.la \
 	$(GNOME_BLUETOOTH_LIBS)
 endif
 
