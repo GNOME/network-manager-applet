@@ -1916,6 +1916,10 @@ copy_one_cert_value (GConfClient *client,
 {
 	char *path = NULL;
 
+	/* Do nothing if already migrated */
+	if (nm_gconf_key_is_set (client, dir, key, NM_SETTING_802_1X_SETTING_NAME))
+		return;
+
 	if (nm_gconf_get_string_helper (client, dir,
 	                                tag,
 	                                NM_SETTING_802_1X_SETTING_NAME,

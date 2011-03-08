@@ -1637,6 +1637,31 @@ out:
 	return success;
 }
 
+
+gboolean
+nm_gconf_key_is_set (GConfClient *client,
+                     const char *path,
+                     const char *key,
+                     const char *setting)
+{
+	char *gc_key;
+	GConfValue *gc_value;
+	gboolean exists = FALSE;
+
+	g_return_val_if_fail (path != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (setting != NULL, FALSE);
+
+	gc_key = g_strdup_printf ("%s/%s/%s", path, setting, key);
+	gc_value = gconf_client_get (client, gc_key, NULL);
+	if (gc_value) {
+		exists = TRUE;
+		gconf_value_free (gc_value);
+	}
+	g_free (gc_key);
+	return exists;
+}
+
 GSList *
 nm_gconf_get_all_connections (GConfClient *client)
 {

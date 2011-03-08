@@ -247,6 +247,12 @@ nm_gconf_set_ip6route_array_helper (GConfClient *client,
 									const char *setting,
 									GPtrArray *value);
 
+gboolean
+nm_gconf_key_is_set (GConfClient *client,
+                     const char *path,
+                     const char *key,
+                     const char *setting);
+
 GSList *
 nm_gconf_get_all_connections (GConfClient *client);
 
