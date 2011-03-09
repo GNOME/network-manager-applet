@@ -38,7 +38,6 @@
 #include "applet-agent.h"
 #include "utils.h"
 #include "nma-marshal.h"
-#include "gconf-helpers.h"
 
 G_DEFINE_TYPE (AppletAgent, applet_agent, NM_TYPE_SECRET_AGENT);
 
