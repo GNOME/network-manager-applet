@@ -125,7 +125,8 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 	                          NULL,
 	                          UIDIR "/eap-method-leap.ui",
 	                          "eap_leap_notebook",
-	                          "eap_leap_username_entry");
+	                          "eap_leap_username_entry",
+	                          FALSE);
 	if (!parent)
 		return NULL;
 

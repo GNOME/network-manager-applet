@@ -34,7 +34,6 @@ struct _EAPMethodSimple {
 
 	EAPMethodSimpleType type;
 	gboolean is_editor;
-	gboolean phase2;
 };
 
 static void
@@ -107,7 +106,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	/* If this is the main EAP method, clear any existing methods because the
 	 * user-selected on will replace it.
 	 */
-	if (method->phase2 == FALSE)
+	if (parent->phase2 == FALSE)
 		nm_setting_802_1x_clear_eap_methods (s_8021x);
 
 	switch (method->type) {
@@ -134,7 +133,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 			break;
 	}
 
-	if (method->phase2)
+	if (parent->phase2)
 		g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, eap, NULL);
 	else
 		nm_setting_802_1x_add_eap_method (s_8021x, eap);
@@ -222,14 +221,14 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	                          NULL,
 	                          UIDIR "/eap-method-simple.ui",
 	                          "eap_simple_notebook",
-	                          "eap_simple_username_entry");
+	                          "eap_simple_username_entry",
+	                          phase2);
 	if (!parent)
 		return NULL;
 
 	method = (EAPMethodSimple *) parent;
 	method->type = type;
 	method->is_editor = is_editor;
-	method->phase2 = phase2;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_username_entry"));
 	g_assert (widget);

@@ -27,15 +27,12 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-8021x.h>
 
-#include "gconf-helpers.h"
 #include "eap-method.h"
 #include "wireless-security.h"
 #include "helpers.h"
 
 struct _EAPMethodTLS {
 	EAPMethod parent;
-
-	gboolean phase2;
 };
 
 
@@ -118,7 +115,6 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
-	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	NMSetting8021x *s_8021x;
 	NMSettingConnection *s_con;
@@ -133,7 +129,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
 
-	if (method->phase2)
+	if (parent->phase2)
 		g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "tls", NULL);
 	else
 		nm_setting_802_1x_add_eap_method (s_8021x, "tls");
@@ -153,7 +149,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	pk_filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	g_assert (pk_filename);
 
-	if (method->phase2) {
+	if (parent->phase2) {
 		if (!nm_setting_802_1x_set_phase2_private_key (s_8021x, pk_filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 			g_warning ("Couldn't read phase2 private key '%s': %s", pk_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
@@ -177,7 +173,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		g_assert (cc_filename);
 
 		format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
-		if (method->phase2) {
+		if (parent->phase2) {
 			if (!nm_setting_802_1x_set_phase2_client_cert (s_8021x, cc_filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 				g_warning ("Couldn't read phase2 client certificate '%s': %s", cc_filename, error ? error->message : "(unknown)");
 				g_clear_error (&error);
@@ -197,7 +193,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	ca_filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 
 	format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
-	if (method->phase2) {
+	if (parent->phase2) {
 		if (!nm_setting_802_1x_set_phase2_ca_cert (s_8021x, ca_filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 			g_warning ("Couldn't read phase2 CA certificate '%s': %s", ca_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
@@ -208,10 +204,6 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 			g_clear_error (&error);
 		}
 	}
-
-	nm_gconf_set_ignore_ca_cert (nm_setting_connection_get_uuid (s_con),
-	                             method->phase2,
-	                             eap_method_get_ignore_ca_cert (parent));
 }
 
 static void
@@ -291,7 +283,7 @@ setup_filepicker (GtkBuilder *builder,
                   const char *name,
                   const char *title,
                   WirelessSecurity *ws_parent,
-                  EAPMethodTLS *method,
+                  EAPMethod *parent,
                   NMSetting8021x *s_8021x,
                   SchemeFunc scheme_func,
                   PathFunc path_func,
@@ -321,9 +313,9 @@ setup_filepicker (GtkBuilder *builder,
 	if (privkey) {
 		g_signal_connect (G_OBJECT (widget), "selection-changed",
 		                  (GCallback) private_key_picker_file_set_cb,
-		                  method);
+		                  parent);
 		if (filename)
-			private_key_picker_helper ((EAPMethod *) method, filename, FALSE);
+			private_key_picker_helper (parent, filename, FALSE);
 	}
 
 	g_signal_connect (G_OBJECT (widget), "selection-changed",
@@ -345,7 +337,6 @@ setup_filepicker (GtkBuilder *builder,
 static void
 update_secrets (EAPMethod *parent, NMConnection *connection)
 {
-	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 	NMSetting8021x *s_8021x;
 	HelperSecretFunc password_func;
 	SchemeFunc scheme_func;
@@ -353,7 +344,7 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 	const char *filename;
 	GtkWidget *widget;
 
-	if (method->phase2) {
+	if (parent->phase2) {
 		password_func = (HelperSecretFunc) nm_setting_802_1x_get_phase2_private_key_password;
 		scheme_func = nm_setting_802_1x_get_phase2_private_key_scheme;
 		path_func = nm_setting_802_1x_get_phase2_private_key_path;
@@ -387,7 +378,6 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
                     gboolean phase2)
 {
 	EAPMethod *parent;
-	EAPMethodTLS *method;
 	GtkWidget *widget;
 	NMSetting8021x *s_8021x = NULL;
 
@@ -399,17 +389,12 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	                          NULL,
 	                          UIDIR "/eap-method-tls.ui",
 	                          "eap_tls_notebook",
-	                          "eap_tls_identity_entry");
+	                          "eap_tls_identity_entry",
+	                          phase2);
 	if (!parent)
 		return NULL;
 
-	eap_method_nag_init (parent,
-	                     "eap_tls_ca_cert_button",
-	                     connection,
-	                     phase2);
-
-	method = (EAPMethodTLS *) parent;
-	method->phase2 = phase2;
+	eap_method_nag_init (parent, "eap_tls_ca_cert_button", connection);
 
 	if (connection)
 		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
@@ -424,26 +409,26 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 
 	setup_filepicker (parent->builder, "eap_tls_user_cert_button",
 	                  _("Choose your personal certificate..."),
-	                  ws_parent, method, s_8021x,
+	                  ws_parent, parent, s_8021x,
 	                  phase2 ? nm_setting_802_1x_get_phase2_client_cert_scheme : nm_setting_802_1x_get_client_cert_scheme,
 	                  phase2 ? nm_setting_802_1x_get_phase2_client_cert_path : nm_setting_802_1x_get_client_cert_path,
 	                  FALSE, TRUE);
 	setup_filepicker (parent->builder, "eap_tls_ca_cert_button",
 	                  _("Choose a Certificate Authority certificate..."),
-	                  ws_parent, method, s_8021x,
+	                  ws_parent, parent, s_8021x,
 	                  phase2 ? nm_setting_802_1x_get_phase2_ca_cert_scheme : nm_setting_802_1x_get_ca_cert_scheme,
 	                  phase2 ? nm_setting_802_1x_get_phase2_ca_cert_path : nm_setting_802_1x_get_ca_cert_path,
 	                  FALSE, FALSE);
 	setup_filepicker (parent->builder, "eap_tls_private_key_button",
 	                  _("Choose your private key..."),
-	                  ws_parent, method, s_8021x,
+	                  ws_parent, parent, s_8021x,
 	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_scheme : nm_setting_802_1x_get_private_key_scheme,
 	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_path : nm_setting_802_1x_get_private_key_path,
 	                  TRUE, FALSE);
 
 	/* Fill secrets, if any */
 	if (connection)
-		update_secrets (EAP_METHOD (method), connection);
+		update_secrets (parent, connection);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_private_key_password_entry"));
 	g_assert (widget);
@@ -455,8 +440,8 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
-	                  method);
+	                  parent);
 
-	return method;
+	return (EAPMethodTLS *) parent;
 }
 

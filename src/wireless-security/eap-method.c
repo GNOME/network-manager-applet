@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * (C) Copyright 2007 - 2011 Red Hat, Inc.
  */
 
 
@@ -31,11 +31,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
+
 #include <nm-setting-connection.h>
 #include <nm-setting-8021x.h>
 #include "eap-method.h"
-#include "gconf-helpers.h"
-
 
 GType
 eap_method_get_g_type (void)
@@ -112,6 +113,34 @@ nag_dialog_destroyed (gpointer data, GObject *dialog_ptr)
 	g_free (info);
 }
 
+static char *
+_get_ca_ignore_path (const char *uuid, gboolean phase2)
+{
+	return g_strdup_printf ("/apps/nm-applet/%s/%s",
+	                        phase2 ? "ignore-phase2-ca-cert" : "ignore-ca-cert",
+	                        uuid);
+}
+
+static void
+_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore)
+{
+	GConfClient *client;
+	char *key = NULL;
+
+	g_return_if_fail (uuid != NULL);
+
+	client = gconf_client_get_default ();
+
+	key = _get_ca_ignore_path (uuid, phase2);
+	if (ignore)
+		gconf_client_set_bool (client, key, ignore, NULL);
+	else
+		gconf_client_unset (client, key, NULL);
+	g_free (key);
+
+	g_object_unref (client);
+}
+
 static void
 nag_dialog_response_cb (GtkDialog *nag_dialog,
                         gint response,
@@ -129,8 +158,10 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 
 		method->ignore_ca_cert = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
-		/* Set the value to connection. It will be stored when connection is written (in nm_gconf_write_connection()) */
-		g_object_set_data (G_OBJECT (connection), IGNORE_CA_CERT_TAG, GUINT_TO_POINTER (method->ignore_ca_cert));
+		/* And save it */
+		_set_ignore_ca_cert (nm_connection_get_uuid (connection),
+		                     method->phase2,
+		                     method->ignore_ca_cert);
 	}
 
 	gtk_widget_hide (GTK_WIDGET (nag_dialog));
@@ -176,11 +207,29 @@ eap_method_nag_user (EAPMethod *method)
 
 #define NAG_DIALOG_UI UIDIR "/nag-user-dialog.ui"
 
+static gboolean
+_get_ignore_ca_cert (const char *uuid, gboolean phase2)
+{
+	GConfClient *client;
+	char *key = NULL;
+	gboolean ignore = FALSE;
+
+	g_return_val_if_fail (uuid != NULL, FALSE);
+
+	client = gconf_client_get_default ();
+
+	key = _get_ca_ignore_path (uuid, phase2);
+	ignore = gconf_client_get_bool (client, key, NULL);
+	g_free (key);
+
+	g_object_unref (client);
+	return ignore;
+}
+
 gboolean
 eap_method_nag_init (EAPMethod *method,
                      const char *ca_cert_chooser,
-                     NMConnection *connection,
-                     gboolean phase2)
+                     NMConnection *connection)
 {
 	GtkWidget *dialog, *widget;
 	NagDialogResponseInfo *info;
@@ -208,7 +257,8 @@ eap_method_nag_init (EAPMethod *method,
 		uuid = nm_setting_connection_get_uuid (s_con);
 		g_assert (uuid);
 
-		method->ignore_ca_cert = nm_gconf_get_ignore_ca_cert (uuid, phase2);
+		/* Figure out if the user wants to ignore missing CA cert */
+		method->ignore_ca_cert = _get_ignore_ca_cert (uuid, method->phase2);
 	}
 
 	info = g_malloc0 (sizeof (NagDialogResponseInfo));
@@ -240,14 +290,6 @@ eap_method_nag_init (EAPMethod *method,
 
 	method->nag_dialog = dialog;
 	return TRUE;
-}
-
-gboolean
-eap_method_get_ignore_ca_cert (EAPMethod *method)
-{
-	g_return_val_if_fail (method != NULL, FALSE);
-
-	return method->ignore_ca_cert;
 }
 
 void
@@ -291,8 +333,9 @@ eap_method_init (gsize obj_size,
                  EMDestroyFunc destroy,
                  const char *ui_file,
                  const char *ui_widget_name,
-                 const char *default_field)
-{                 
+                 const char *default_field,
+                 gboolean phase2)
+{
 	EAPMethod *method;
 	GError *error = NULL;
 
@@ -311,6 +354,7 @@ eap_method_init (gsize obj_size,
 	method->update_secrets = update_secrets;
 	method->destroy = destroy;
 	method->default_field = default_field;
+	method->phase2 = phase2;
 
 	method->builder = gtk_builder_new ();
 	if (!gtk_builder_add_from_file (method->builder, ui_file, &error)) {
