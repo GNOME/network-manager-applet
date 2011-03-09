@@ -73,9 +73,15 @@ PKG_CHECK_MODULES(NMA,
 		 libnm-util >= 0.8.995
 		 libnm-glib-vpn >= 0.8.995
 		 gmodule-export-2.0
-		 gconf-2.0
-		 gnome-keyring-1
 		 libnotify >= 0.4.3])
+
+PKG_CHECK_MODULES(GCONF, [gconf-2.0])
+AC_SUBST(GCONF_CFLAGS)
+AC_SUBST(GCONF_LIBS)
+
+PKG_CHECK_MODULES(GNOME_KEYRING, [gnome-keyring-1])
+AC_SUBST(GNOME_KEYRING_CFLAGS)
+AC_SUBST(GNOME_KEYRING_LIBS)
 
 AC_ARG_WITH([gtkver], AS_HELP_STRING([--with-gtkver], [The major version of GTK+ to build with]),
             with_gtkver="$withval",with_gtkver=3)
@@ -117,7 +123,6 @@ case "${with_bluetooth}" in
 	*)
 		AC_MSG_CHECKING(for gnome-bluetooth)
 		PKG_CHECK_MODULES(GNOME_BLUETOOTH,
-				  gconf-2.0
 				  gnome-bluetooth-1.0 >= 2.27.6
 				  libnm-util >= 0.8.995
 				  libnm-glib >= 0.8.995,

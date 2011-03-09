@@ -5,6 +5,8 @@ bin_PROGRAMS = nm-applet
 nm_applet_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
+	$(GCONF_CFLAGS) \
+	$(GNOME_KEYRING_CFLAGS) \
 	$(NOTIFY_CFLAGS) \
 	-DICONDIR=\""$(datadir)/icons"\"						\
 	-DUIDIR=\""$(uidir)"\"							\
@@ -64,6 +66,8 @@ nm_applet_LDADD = \
 	-lm \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
+	$(GCONF_LIBS) \
+	$(GNOME_KEYRING_LIBS) \
 	$(NOTIFY_LIBS) \
 	${top_builddir}/src/marshallers/libmarshallers.la \
 	${top_builddir}/src/utils/libutils.la \

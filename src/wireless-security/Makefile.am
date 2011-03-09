@@ -32,12 +32,14 @@ libwireless_security_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	-DUIDIR=\""$(uidir)"\" \
 	$(NMA_CFLAGS) \
+	$(GCONF_CFLAGS) \
 	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/utils
 
 libwireless_security_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
+	$(GCONF_LIBS) \
 	${top_builddir}/src/utils/libutils.la
 
 uidir = $(datadir)/nm-applet
