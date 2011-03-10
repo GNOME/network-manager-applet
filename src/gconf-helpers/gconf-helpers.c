@@ -45,11 +45,14 @@
 #include <nm-setting-8021x.h>
 #include <nm-setting-vpn.h>
 #include <nm-setting-ip4-config.h>
+#include <nm-setting-cdma.h>
+#include <nm-setting-gsm.h>
+#include <nm-setting-ppp.h>
+#include <nm-setting-pppoe.h>
 #include <nm-utils.h>
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
-#include "utils.h"
 
 #define S390_OPT_KEY_PREFIX "s390-opt-"
 
@@ -69,6 +72,12 @@
 
 #define APPLET_PREFS_PATH "/apps/nm-applet"
 
+/* The stamp is a mechanism for determining which applet version last
+ * updated GConf for various GConf update tasks in newer applet versions.
+ */
+#define APPLET_CURRENT_STAMP 3
+#define APPLET_PREFS_STAMP "/apps/nm-applet/stamp"
+
 const char *applet_8021x_cert_keys[] = {
 	"ca-cert",
 	"client-cert",
@@ -84,6 +93,39 @@ const char *vpn_ignore_keys[] = {
 	NULL
 };
 
+static GnomeKeyringAttributeList *
+_create_keyring_add_attr_list (const char *connection_uuid,
+                               const char *connection_id,
+                               const char *setting_name,
+                               const char *setting_key,
+                               char **out_display_name)
+{
+	GnomeKeyringAttributeList *attrs = NULL;
+
+	g_return_val_if_fail (connection_uuid != NULL, NULL);
+	g_return_val_if_fail (connection_id != NULL, NULL);
+	g_return_val_if_fail (setting_name != NULL, NULL);
+	g_return_val_if_fail (setting_key != NULL, NULL);
+
+	if (out_display_name) {
+		*out_display_name = g_strdup_printf ("Network secret for %s/%s/%s",
+		                                     connection_id,
+		                                     setting_name,
+		                                     setting_key);
+	}
+
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_UUID_TAG,
+	                                            connection_uuid);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_SN_TAG,
+	                                            setting_name);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_SK_TAG,
+	                                            setting_key);
+	return attrs;
+}
 
 gboolean
 nm_gconf_get_int_helper (GConfClient *client,
@@ -1633,12 +1675,52 @@ nm_gconf_key_is_set (GConfClient *client,
 	return exists;
 }
 
-GSList *
-nm_gconf_get_all_connections (GConfClient *client)
+static void
+move_to_system (GConfClient *client,
+                GSList *connections,
+                AddToSettingsFunc add_func,
+                gpointer user_data)
 {
+	GSList *iter;
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+
+	for (iter = connections; iter; iter = iter->next) {
+		connection = nm_gconf_read_connection (client, (const char *) iter->data);
+		if (!connection)
+			continue;
+
+		/* Set this connection visible only to this user */
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		g_assert (s_con);
+		nm_setting_connection_add_permission (s_con, "user", g_get_user_name (), NULL);
+
+		/* Next, any secrets for the connection need to be marked user-owned */
+		nm_gconf_migrate_09_secret_flags (client, connection, NM_SETTING_802_1X_SETTING_NAME);
+		nm_gconf_migrate_09_secret_flags (client, connection, NM_SETTING_CDMA_SETTING_NAME);
+		nm_gconf_migrate_09_secret_flags (client, connection, NM_SETTING_GSM_SETTING_NAME);
+		nm_gconf_migrate_09_secret_flags (client, connection, NM_SETTING_PPP_SETTING_NAME);
+		nm_gconf_migrate_09_secret_flags (client, connection, NM_SETTING_PPPOE_SETTING_NAME);
+		nm_gconf_migrate_09_secret_flags (client, connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME);
+		nm_gconf_migrate_09_secret_flags (client, connection, NM_SETTING_VPN_SETTING_NAME);
+
+		/* Now add the connection to the system settings service */
+		if (add_func)
+			add_func (connection, user_data);
+	}
+}
+
+void
+nm_gconf_move_connections_to_system (AddToSettingsFunc add_func, gpointer user_data)
+{
+	GConfClient *client;
 	GSList *connections;
 	guint32 stamp = 0;
 	GError *error = NULL;
+
+	client = gconf_client_get_default ();
+	if (!client)
+		return;
 
 	stamp = (guint32) gconf_client_get_int (client, APPLET_PREFS_STAMP, &error);
 	if (error) {
@@ -1667,14 +1749,21 @@ nm_gconf_get_all_connections (GConfClient *client)
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
 	if (!connections) {
 		nm_gconf_migrate_0_6_connections (client);
+		/* Try again */
 		connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
+	}
+
+	if (connections) {
+		/* Move to system connections for 0.9 */
+		if (stamp < 3)
+			move_to_system (client, connections, add_func, user_data);
+		g_slist_foreach (connections, (GFunc) g_free, NULL);
+		g_slist_free (connections);
 	}
 
 	/* Update the applet GConf stamp */
 	if (stamp != APPLET_CURRENT_STAMP)
 		gconf_client_set_int (client, APPLET_PREFS_STAMP, APPLET_CURRENT_STAMP, NULL);
-
-	return connections;
 }
 
 static gboolean
@@ -1984,12 +2073,11 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	g_return_if_fail (setting_key != NULL);
 	g_return_if_fail (secret != NULL);
 
-	attrs = utils_create_keyring_add_attr_list (NULL,
-	                                            connection_uuid,
-	                                            connection_name,
-	                                            setting_name,
-	                                            setting_key,
-	                                            &display_name);
+	attrs = _create_keyring_add_attr_list (connection_uuid,
+	                                       connection_name,
+	                                       setting_name,
+	                                       setting_key,
+	                                       &display_name);
 	g_assert (attrs);
 	ret = gnome_keyring_item_create_sync (NULL,
 	                                      GNOME_KEYRING_ITEM_GENERIC_SECRET,
@@ -2004,11 +2092,6 @@ nm_gconf_add_keyring_item (const char *connection_uuid,
 	}
 	gnome_keyring_attribute_list_free (attrs);
 	g_free (display_name);
-}
-
-static void
-delete_done (GnomeKeyringResult result, gpointer user_data)
-{
 }
 
 static void
@@ -2036,11 +2119,7 @@ keyring_delete_item (const char *connection_uuid,
 		for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
 			GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
 
-			gnome_keyring_item_delete (found->keyring,
-			                           found->item_id,
-			                           delete_done,
-			                           NULL,
-			                           NULL);
+			gnome_keyring_item_delete_sync (found->keyring, found->item_id);
 		}
 		gnome_keyring_found_list_free (found_list);
 	}
@@ -2668,7 +2747,10 @@ nm_gconf_write_connection (NMConnection *connection,
 {
 	NMSettingConnection *s_con;
 	CopyOneSettingValueInfo info;
-	gboolean ignore;
+
+	/* NOTE: as of 0.9, this method should only be called during upgrade of
+	 * NM 0.6 connections.
+	 */
 
 	g_return_if_fail (NM_IS_CONNECTION (connection));
 	g_return_if_fail (client != NULL);
@@ -2701,106 +2783,5 @@ nm_gconf_write_connection (NMConnection *connection,
 		                                      write_one_secret_to_keyring,
 		                                      &info);
 	}
-
-	/* Update ignore CA cert status */
-	ignore = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), IGNORE_CA_CERT_TAG));
-	nm_gconf_set_ignore_ca_cert (info.connection_uuid, FALSE, ignore);
-
-	ignore = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (connection), IGNORE_PHASE2_CA_CERT_TAG));
-	nm_gconf_set_ignore_ca_cert (info.connection_uuid, TRUE, ignore);
 }
 
-static char *
-get_ignore_path (const char *uuid, gboolean phase2)
-{
-	return g_strdup_printf (APPLET_PREFS_PATH "/%s/%s",
-	                        phase2 ? "ignore-phase2-ca-cert" : "ignore-ca-cert",
-	                        uuid);
-}
-
-gboolean
-nm_gconf_get_ignore_ca_cert (const char *uuid, gboolean phase2)
-{
-	GConfClient *client;
-	char *key = NULL;
-	gboolean ignore = FALSE;
-
-	g_return_val_if_fail (uuid != NULL, FALSE);
-
-	client = gconf_client_get_default ();
-
-	key = get_ignore_path (uuid, phase2);
-	ignore = gconf_client_get_bool (client, key, NULL);
-	g_free (key);
-
-	g_object_unref (client);
-	return ignore;
-}
-
-void
-nm_gconf_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore)
-{
-	GConfClient *client;
-	char *key = NULL;
-
-	g_return_if_fail (uuid != NULL);
-
-	client = gconf_client_get_default ();
-
-	key = get_ignore_path (uuid, phase2);
-	if (ignore)
-		gconf_client_set_bool (client, key, ignore, NULL);
-	else
-		gconf_client_unset (client, key, NULL);
-	g_free (key);
-
-	g_object_unref (client);
-}
-
-#if 0
-static char *
-get_always_ask_path (const char *uuid)
-{
-	return g_strdup_printf (APPLET_PREFS_PATH "/8021x-password-always-ask/%s", uuid);
-}
-
-gboolean
-nm_gconf_get_8021x_password_always_ask (const char *uuid)
-{
-	GConfClient *client;
-	char *key = NULL;
-	gboolean ask = FALSE;
-
-	g_return_val_if_fail (uuid != NULL, FALSE);
-
-	client = gconf_client_get_default ();
-
-	key = get_always_ask_path (uuid);
-	ask = gconf_client_get_bool (client, key, NULL);
-	g_free (key);
-
-	g_object_unref (client);
-	return ask;
-}
-
-void
-nm_gconf_set_8021x_password_always_ask (const char *uuid, gboolean ask)
-{
-	GConfClient *client;
-	char *key = NULL;
-
-	g_return_if_fail (uuid != NULL);
-
-	client = gconf_client_get_default ();
-
-	key = get_always_ask_path (uuid);
-	if (ask)
-		gconf_client_set_bool (client, key, TRUE, NULL);
-	else
-		gconf_client_unset (client, key, NULL);
-	g_free (key);
-
-	g_object_unref (client);
-}
-
-#endif

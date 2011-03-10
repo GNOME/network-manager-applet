@@ -78,6 +78,7 @@
 #include "wireless-dialog.h"
 #include "applet-vpn-request.h"
 #include "utils.h"
+#include "gconf-helpers.h"
 
 #define NOTIFY_CAPS_ACTIONS_KEY "actions"
 
@@ -3122,6 +3123,31 @@ dbus_setup (NMApplet *applet, GError **error)
 	return success;
 }
 
+static void
+add_cb (NMRemoteSettings *settings,
+        NMRemoteConnection *connection,
+        GError *error,
+        gpointer user_data)
+{
+	if (error) {
+		g_warning ("Failed to move connection '%s' to NetworkManager system settings: %s",
+		           nm_connection_get_id (NM_CONNECTION (connection)),
+		           error->message);
+	}
+}
+
+static void
+import_cb (NMConnection *connection, gpointer user_data)
+{
+	NMApplet *applet = user_data;
+
+	nm_connection_clear_secrets (connection);
+	if (!nm_remote_settings_add_connection (applet->settings, connection, add_cb, NULL)) {
+		g_warning ("Failed to move connection '%s' to NetworkManager system settings.",
+		           nm_connection_get_id (connection));
+	}
+}
+
 static GObject *
 constructor (GType type,
              guint n_props,
@@ -3176,6 +3202,9 @@ constructor (GType type,
 		goto error;
 	}
 	applet->settings = nm_remote_settings_new (applet->bus);
+
+	/* Move user connections to the system */
+	nm_gconf_move_connections_to_system (import_cb, applet);
 
 	applet->agent = applet_agent_new ();
 	g_assert (applet->agent);

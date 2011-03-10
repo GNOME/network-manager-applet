@@ -72,8 +72,7 @@ PKG_CHECK_MODULES(NMA,
 		 libnm-glib >= 0.8.995
 		 libnm-util >= 0.8.995
 		 libnm-glib-vpn >= 0.8.995
-		 gmodule-export-2.0
-		 libnotify >= 0.4.3])
+		 gmodule-export-2.0])
 
 PKG_CHECK_MODULES(GCONF, [gconf-2.0])
 AC_SUBST(GCONF_CFLAGS)
@@ -82,6 +81,15 @@ AC_SUBST(GCONF_LIBS)
 PKG_CHECK_MODULES(GNOME_KEYRING, [gnome-keyring-1])
 AC_SUBST(GNOME_KEYRING_CFLAGS)
 AC_SUBST(GNOME_KEYRING_LIBS)
+
+# Check for libnotify >= 0.7
+PKG_CHECK_MODULES(LIBNOTIFY_07, [libnotify >= 0.7], [have_libnotify_07=yes],[have_libnotify_07=no])
+if test x"$have_libnotify_07" = "xyes"; then
+	AC_DEFINE(HAVE_LIBNOTIFY_07, 1, [Define if you have libnotify 0.7 or later])
+fi
+PKG_CHECK_MODULES(NOTIFY, [libnotify >= 0.4.3])
+AC_SUBST(NOTIFY_CFLAGS)
+AC_SUBST(NOTIFY_LIBS)
 
 AC_ARG_WITH([gtkver], AS_HELP_STRING([--with-gtkver], [The major version of GTK+ to build with]),
             with_gtkver="$withval",with_gtkver=3)
@@ -132,12 +140,6 @@ esac
 
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
-# Check for libnotify >= 0.7
-PKG_CHECK_MODULES(LIBNOTIFY_07, [libnotify >= 0.7], [have_libnotify_07=yes],[have_libnotify_07=no])
-if test x"$have_libnotify_07" = "xyes"; then
-	AC_DEFINE(HAVE_LIBNOTIFY_07, 1, [Define if you have libnotify 0.7 or later])
-fi
-
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
 dnl GConf stuff
@@ -159,6 +161,7 @@ src/marshallers/Makefile
 src/utils/Makefile
 src/utils/tests/Makefile
 src/gconf-helpers/Makefile
+src/gconf-helpers/tests/Makefile
 src/wireless-security/Makefile
 src/connection-editor/Makefile
 src/gnome-bluetooth/Makefile

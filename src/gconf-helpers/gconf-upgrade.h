@@ -52,5 +52,9 @@ void nm_gconf_migrate_0_7_ca_cert_ignore (GConfClient *client);
 
 void nm_gconf_migrate_0_7_certs (GConfClient *client);
 
+void nm_gconf_migrate_09_secret_flags (GConfClient *client,
+                                       NMConnection *connection,
+                                       const char *setting_name);
+
 #endif	/* GCONF_UPGRADE_H */
 

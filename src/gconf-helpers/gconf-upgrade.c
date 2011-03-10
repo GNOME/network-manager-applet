@@ -42,7 +42,9 @@
 #include "gconf-upgrade.h"
 #include "gconf-helpers.h"
 
-#include "nm-connection.h"
+#include <nm-connection.h>
+
+#define APPLET_PREFS_PATH "/apps/nm-applet"
 
 /* Old wireless.h defs */
 
@@ -596,12 +598,6 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 }
 
 static void
-keyring_secret_save_cb (GnomeKeyringResult result, guint32 val, gpointer user_data)
-{
-	/* Ignore */
-}
-
-static void
 vpn_helpers_save_secret (const char *vpn_uuid,
                          const char *vpn_name,
                          const char *secret_name,
@@ -610,6 +606,7 @@ vpn_helpers_save_secret (const char *vpn_uuid,
 {
 	char *display_name;
 	GnomeKeyringAttributeList *attrs = NULL;
+	guint id;
 
 	display_name = g_strdup_printf ("VPN %s secret for %s/%s/" NM_SETTING_VPN_SETTING_NAME,
 	                                secret_name, vpn_name, vpn_service_name);
@@ -625,9 +622,8 @@ vpn_helpers_save_secret (const char *vpn_uuid,
 	                                            KEYRING_SK_TAG,
 	                                            secret_name);
 
-	gnome_keyring_item_create (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                           display_name, attrs, secret, TRUE,
-	                           keyring_secret_save_cb, NULL, NULL);
+	gnome_keyring_item_create_sync (NULL, GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                display_name, attrs, secret, TRUE, &id);
 	gnome_keyring_attribute_list_free (attrs);
 	g_free (display_name);
 }
@@ -1858,6 +1854,20 @@ nm_gconf_migrate_0_7_autoconnect_default (GConfClient *client)
 	gconf_client_suggest_sync (client, NULL);
 }
 
+static void
+_set_ignore_ca_cert (GConfClient *client, const char *uuid, gboolean phase2)
+{
+	char *key = NULL;
+
+	g_return_if_fail (uuid != NULL);
+
+	key = g_strdup_printf (APPLET_PREFS_PATH "/%s/%s",
+	                       phase2 ? "ignore-phase2-ca-cert" : "ignore-ca-cert",
+	                       uuid);
+	gconf_client_set_bool (client, key, TRUE, NULL);
+	g_free (key);
+}
+
 void
 nm_gconf_migrate_0_7_ca_cert_ignore (GConfClient *client)
 {
@@ -1886,7 +1896,7 @@ nm_gconf_migrate_0_7_ca_cert_ignore (GConfClient *client)
 		                          NM_SETTING_802_1X_SETTING_NAME,
 		                          &ignore_ca_cert);
 		if (ignore_ca_cert)
-			nm_gconf_set_ignore_ca_cert (uuid, FALSE, TRUE);
+			_set_ignore_ca_cert (client, uuid, FALSE);
 		/* delete old key */
 		unset_one_setting_property (client, dir,
 		                            NM_SETTING_802_1X_SETTING_NAME,
@@ -1897,7 +1907,7 @@ nm_gconf_migrate_0_7_ca_cert_ignore (GConfClient *client)
 		                          NM_SETTING_802_1X_SETTING_NAME,
 		                          &ignore_phase2_ca_cert);
 		if (ignore_phase2_ca_cert)
-			nm_gconf_set_ignore_ca_cert (uuid, TRUE, TRUE);
+			_set_ignore_ca_cert (client, uuid, TRUE);
 		unset_one_setting_property (client, dir,
 		                            NM_SETTING_802_1X_SETTING_NAME,
 		                            NMA_PHASE2_CA_CERT_IGNORE_TAG);
@@ -2007,5 +2017,137 @@ nm_gconf_migrate_0_7_certs (GConfClient *client)
 
 	nm_utils_slist_free (connections, g_free);
 	gconf_client_suggest_sync (client, NULL);
+}
+
+#define NM_VPNC_PW_TYPE_SAVE   "save"
+#define NM_VPNC_PW_TYPE_ASK    "ask"
+#define NM_VPNC_PW_TYPE_UNUSED "unused"
+
+static NMSettingSecretFlags
+vpnc_type_to_flag (const char *vpnc_type)
+{
+	if (g_strcmp0 (vpnc_type, NM_VPNC_PW_TYPE_SAVE))
+		return NM_SETTING_SECRET_FLAG_NONE;
+	if (g_strcmp0 (vpnc_type, NM_VPNC_PW_TYPE_ASK))
+		return NM_SETTING_SECRET_FLAG_NOT_SAVED;
+	if (g_strcmp0 (vpnc_type, NM_VPNC_PW_TYPE_UNUSED))
+		return NM_SETTING_SECRET_FLAG_NOT_REQUIRED;
+	return NM_SETTING_SECRET_FLAG_NONE;
+}
+
+#define NM_VPNC_KEY_SECRET "IPSec secret"
+#define NM_VPNC_KEY_SECRET_TYPE "ipsec-secret-type"
+#define NM_VPNC_KEY_XAUTH_PASSWORD "Xauth password"
+#define NM_VPNC_KEY_XAUTH_PASSWORD_TYPE "xauth-password-type"
+
+void
+nm_gconf_migrate_09_secret_flags (GConfClient *client,
+                                  NMConnection *connection,
+                                  const char *setting_name)
+{
+	GList *found_list = NULL, *iter;
+	GnomeKeyringResult ret;
+	GError *error = NULL;
+	NMSetting *setting;
+	const char *uuid = nm_connection_get_uuid (connection);
+	const char *id = nm_connection_get_id (connection);
+	gboolean pk_pw_handled = FALSE;
+
+	setting = nm_connection_get_setting_by_name (connection, setting_name);
+	if (!setting)
+		return;
+
+	/* Migrate vpnc secret flags */
+	if (NM_IS_SETTING_VPN (setting)) {
+		NMSettingSecretFlags flags;
+		NMSettingVPN *s_vpn = NM_SETTING_VPN (setting);
+		const char *tmp;
+
+		/* vpnc stuff */
+		tmp = nm_setting_vpn_get_data_item (s_vpn, NM_VPNC_KEY_SECRET_TYPE);
+		if (tmp) {
+			flags = vpnc_type_to_flag (tmp) | NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+			nm_setting_set_secret_flags (setting, NM_VPNC_KEY_SECRET, flags, NULL);
+		}
+
+		tmp = nm_setting_vpn_get_data_item (s_vpn, NM_VPNC_KEY_XAUTH_PASSWORD_TYPE);
+		if (tmp) {
+			flags = vpnc_type_to_flag (tmp) | NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+			nm_setting_set_secret_flags (setting, NM_VPNC_KEY_XAUTH_PASSWORD, flags, NULL);
+		}
+	}
+
+	/* 802.1x connections might be 'always-ask' */
+	if (NM_IS_SETTING_802_1X (setting)) {
+		char *path;
+		gboolean ask;
+
+		path = g_strdup_printf (APPLET_PREFS_PATH "/8021x-password-always-ask/%s", uuid);
+		ask = gconf_client_get_bool (client, path, NULL);
+		g_free (path);
+
+		if (ask) {
+			nm_setting_set_secret_flags (setting,
+			                             NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD,
+			                             NM_SETTING_SECRET_FLAG_NOT_SAVED,
+			                             NULL);
+			nm_setting_set_secret_flags (setting,
+			                             NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD,
+			                             NM_SETTING_SECRET_FLAG_NOT_SAVED,
+			                             NULL);
+			pk_pw_handled = TRUE;
+		}
+	}
+
+	/* Find all secrets in the keyring */
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      &found_list,
+	                                      KEYRING_UUID_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+										  uuid,
+	                                      KEYRING_SN_TAG,
+	                                      GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                                      setting_name,
+	                                      NULL);
+	if (ret != GNOME_KEYRING_RESULT_OK)
+		return;
+	if (g_list_length (found_list) == 0)
+		return;
+
+	/* For each secret found in the keyring, stuff it into the hash table
+	 * so we can update the connection's secrets.
+	 */
+	for (iter = found_list; iter != NULL; iter = g_list_next (iter)) {
+		GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
+		GnomeKeyringAttribute *attr;
+		int i;
+
+		for (i = 0; i < found->attributes->len; i++) {
+			attr = &(gnome_keyring_attribute_list_index (found->attributes, i));
+			if (   (strcmp (attr->name, KEYRING_SK_TAG) == 0)
+			    && (attr->type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING)) {
+				const char *key = attr->value.string;
+
+				/* Ignore handling of private key passwords if it was handled above */
+				if (   NM_IS_SETTING_802_1X (setting)
+				    && pk_pw_handled
+				    && (   g_strcmp0 (key, NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD) == 0
+				        || g_strcmp0 (key, NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD) == 0))
+					continue;
+
+				if (!nm_setting_set_secret_flags (setting,
+				                                  key,
+				                                  NM_SETTING_SECRET_FLAG_AGENT_OWNED,
+				                                  &error)) {
+					g_warning ("%s: failed to set secret flags for %s/%s",
+							   id, setting_name, attr->value.string);
+					g_clear_error (&error);
+				}
+				break;
+			}
+		}
+	}
+
+	gnome_keyring_found_list_free (found_list);
 }
 
