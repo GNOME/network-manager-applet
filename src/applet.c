@@ -3129,11 +3129,14 @@ add_cb (NMRemoteSettings *settings,
         GError *error,
         gpointer user_data)
 {
+	NMConnection *c = user_data;
+
 	if (error) {
 		g_warning ("Failed to move connection '%s' to NetworkManager system settings: %s",
-		           nm_connection_get_id (NM_CONNECTION (connection)),
+		           nm_connection_get_id (c),
 		           error->message);
 	}
+	g_object_unref (c);
 }
 
 static void
@@ -3142,7 +3145,7 @@ import_cb (NMConnection *connection, gpointer user_data)
 	NMApplet *applet = user_data;
 
 	nm_connection_clear_secrets (connection);
-	if (!nm_remote_settings_add_connection (applet->settings, connection, add_cb, NULL)) {
+	if (!nm_remote_settings_add_connection (applet->settings, connection, add_cb, g_object_ref (connection))) {
 		g_warning ("Failed to move connection '%s' to NetworkManager system settings.",
 		           nm_connection_get_id (connection));
 	}
