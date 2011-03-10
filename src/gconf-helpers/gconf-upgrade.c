@@ -2026,11 +2026,11 @@ nm_gconf_migrate_0_7_certs (GConfClient *client)
 static NMSettingSecretFlags
 vpnc_type_to_flag (const char *vpnc_type)
 {
-	if (g_strcmp0 (vpnc_type, NM_VPNC_PW_TYPE_SAVE))
+	if (g_strcmp0 (vpnc_type, NM_VPNC_PW_TYPE_SAVE) == 0)
 		return NM_SETTING_SECRET_FLAG_NONE;
-	if (g_strcmp0 (vpnc_type, NM_VPNC_PW_TYPE_ASK))
+	if (g_strcmp0 (vpnc_type, NM_VPNC_PW_TYPE_ASK) == 0)
 		return NM_SETTING_SECRET_FLAG_NOT_SAVED;
-	if (g_strcmp0 (vpnc_type, NM_VPNC_PW_TYPE_UNUSED))
+	if (g_strcmp0 (vpnc_type, NM_VPNC_PW_TYPE_UNUSED) == 0)
 		return NM_SETTING_SECRET_FLAG_NOT_REQUIRED;
 	return NM_SETTING_SECRET_FLAG_NONE;
 }
