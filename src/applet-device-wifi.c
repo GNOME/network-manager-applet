@@ -122,7 +122,7 @@ applet_wifi_create_wifi_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new_for_other (applet);
+	dialog = nma_wireless_dialog_new_for_create (applet);
 	if (dialog) {
 		g_signal_connect (dialog, "response",
 		                  G_CALLBACK (wireless_dialog_response_cb),
