@@ -631,6 +631,12 @@ save_secrets (NMSecretAgent *agent,
 /*******************************************************/
 
 static void
+keyring_delete_cb (GnomeKeyringResult result, gpointer user_data)
+{
+	/* Ignored */
+}
+
+static void
 delete_find_items_cb (GnomeKeyringResult result, GList *list, gpointer user_data)
 {
 	KeyringCall *call = user_data;
@@ -644,7 +650,7 @@ delete_find_items_cb (GnomeKeyringResult result, GList *list, gpointer user_data
 		for (iter = list; iter != NULL; iter = g_list_next (iter)) {
 			GnomeKeyringFound *found = (GnomeKeyringFound *) iter->data;
 
-			gnome_keyring_item_delete (found->keyring, found->item_id, NULL, NULL, NULL);
+			gnome_keyring_item_delete (found->keyring, found->item_id, keyring_delete_cb, NULL, NULL);
 		}
 	} else {
 		error = g_error_new (NM_SECRET_AGENT_ERROR,
