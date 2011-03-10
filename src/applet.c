@@ -3105,7 +3105,7 @@ dbus_setup (NMApplet *applet, GError **error)
 		return FALSE;
 
 	dbus_g_connection_register_g_object (applet->session_bus,
-	                                     "/org/gnome/network-manager-applet",
+	                                     "/org/gnome/network_manager_applet",
 	                                     G_OBJECT (applet));
 
 	proxy = dbus_g_proxy_new_for_name (applet->session_bus,
@@ -3113,7 +3113,7 @@ dbus_setup (NMApplet *applet, GError **error)
 	                                   DBUS_PATH_DBUS,
 	                                   DBUS_INTERFACE_DBUS);
 	success = dbus_g_proxy_call (proxy, "RequestName", error,
-	                             G_TYPE_STRING, "org.gnome.network-manager-applet",
+	                             G_TYPE_STRING, "org.gnome.network_manager_applet",
 	                             G_TYPE_UINT, DBUS_NAME_FLAG_DO_NOT_QUEUE,
 	                             G_TYPE_INVALID,
 	                             G_TYPE_UINT, &result,
