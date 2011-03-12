@@ -461,6 +461,7 @@ populate_connection_ui (NMConnectionEditor *editor)
 	NMSettingConnection *s_con;
 	GtkWidget *name;
 	GtkWidget *autoconnect;
+	gboolean system_connection = TRUE;
 
 	name = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
 	autoconnect = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_autoconnect"));
@@ -472,6 +473,9 @@ populate_connection_ui (NMConnectionEditor *editor)
 		gtk_entry_set_text (GTK_ENTRY (name), id);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoconnect),
 		                              nm_setting_connection_get_autoconnect (s_con));
+
+		if (nm_setting_connection_get_num_permissions (s_con))
+			system_connection = FALSE;
 	} else {
 		gtk_entry_set_text (GTK_ENTRY (name), NULL);
 	}
@@ -481,7 +485,7 @@ populate_connection_ui (NMConnectionEditor *editor)
 
 	g_signal_connect (editor->all_checkbutton, "toggled", G_CALLBACK (all_checkbutton_toggled_cb), editor);
 
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton), TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton), system_connection);
 
 	connection_editor_validate (editor);
 }
