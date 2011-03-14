@@ -20,6 +20,8 @@
  * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
+#include "config.h"
+
 #include <stdlib.h>
 
 #include <glib.h>

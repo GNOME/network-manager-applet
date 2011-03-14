@@ -22,8 +22,6 @@
 #ifndef NM_CONNECTION_EDITOR_H
 #define NM_CONNECTION_EDITOR_H
 
-#include "config.h"
-
 #include <glib-object.h>
 
 #include <nm-client.h>

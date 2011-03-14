@@ -20,6 +20,8 @@
  * (C) Copyright 2008 - 2010 Red Hat, Inc.
  */
 
+#include "config.h"
+
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
