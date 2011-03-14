@@ -216,7 +216,7 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 		info->callback (connection, info->user_data);
 	else {
 		GtkWidget *err_dialog;
-		char *basename = g_path_get_basename (filename);
+		char *bname = g_path_get_basename (filename);
 
 		err_dialog = gtk_message_dialog_new (NULL,
 		                                     GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -225,8 +225,8 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 		                                     _("Cannot import VPN connection"));
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (err_dialog),
 		                                 _("The file '%s' could not be read or does not contain recognized VPN connection information\n\nError: %s."),
-		                                 basename, import_info.error ? import_info.error->message : "unknown error");
-		g_free (basename);
+		                                 bname, import_info.error ? import_info.error->message : "unknown error");
+		g_free (bname);
 		g_signal_connect (err_dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 		g_signal_connect (err_dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
 		gtk_widget_show_all (err_dialog);
@@ -297,19 +297,19 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
 		int replace_response;
 		GtkWidget *replace_dialog;
-		char *basename;
+		char *bname;
 
-		basename = g_path_get_basename (filename);
+		bname = g_path_get_basename (filename);
 		replace_dialog = gtk_message_dialog_new (NULL,
 		                                         GTK_DIALOG_DESTROY_WITH_PARENT,
 		                                         GTK_MESSAGE_QUESTION,
 		                                         GTK_BUTTONS_CANCEL,
 		                                         _("A file named \"%s\" already exists."),
-		                                         basename);
+		                                         bname);
 		gtk_dialog_add_buttons (GTK_DIALOG (replace_dialog), _("_Replace"), GTK_RESPONSE_OK, NULL);
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (replace_dialog),
-							  _("Do you want to replace %s with the VPN connection you are saving?"), basename);
-		g_free (basename);
+							  _("Do you want to replace %s with the VPN connection you are saving?"), bname);
+		g_free (bname);
 		replace_response = gtk_dialog_run (GTK_DIALOG (replace_dialog));
 		gtk_widget_destroy (replace_dialog);
 		if (replace_response != GTK_RESPONSE_OK)
@@ -338,7 +338,7 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 done:
 	if (!success) {
 		GtkWidget *err_dialog;
-		char *basename = filename ? g_path_get_basename (filename) : g_strdup ("(none)");
+		char *bname = filename ? g_path_get_basename (filename) : g_strdup ("(none)");
 
 		err_dialog = gtk_message_dialog_new (NULL,
 		                                     GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -347,8 +347,8 @@ done:
 		                                     _("Cannot export VPN connection"));
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (err_dialog),
 		                                 _("The VPN connection '%s' could not be exported to %s.\n\nError: %s."),
-		                                 id ? id : "(unknown)", basename, error ? error->message : "unknown error");
-		g_free (basename);
+		                                 id ? id : "(unknown)", bname, error ? error->message : "unknown error");
+		g_free (bname);
 		g_signal_connect (err_dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 		g_signal_connect (err_dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
 		gtk_widget_show_all (err_dialog);
