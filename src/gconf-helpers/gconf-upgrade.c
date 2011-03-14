@@ -2061,7 +2061,7 @@ nm_gconf_migrate_09_secret_flags (GConfClient *client,
 	if (!setting)
 		return;
 
-	/* Migrate vpnc secret flags */
+	/* Migrate various VPN secret flags */
 	if (NM_IS_SETTING_VPN (setting)) {
 		NMSettingSecretFlags flags;
 		NMSettingVPN *s_vpn = NM_SETTING_VPN (setting);
@@ -2081,10 +2081,16 @@ nm_gconf_migrate_09_secret_flags (GConfClient *client,
 				flags = vpnc_type_to_flag (tmp) | NM_SETTING_SECRET_FLAG_AGENT_OWNED;
 				nm_setting_set_secret_flags (setting, NM_VPNC_KEY_XAUTH_PASSWORD, flags, NULL);
 			}
+			return;
 		} else if (g_strcmp0 (service, NM_DBUS_SERVICE_PPTP) == 0) {
 			/* Mark the password as agent-owned */
 			nm_setting_set_secret_flags (setting, NM_PPTP_KEY_PASSWORD, NM_SETTING_SECRET_FLAG_AGENT_OWNED, NULL);
+			return;
 		}
+
+		/* Other VPNs not handled specially here just go through the
+		 * generic secrets flags stuff below.
+		 */
 	}
 
 	/* 802.1x connections might be 'always-ask' */
