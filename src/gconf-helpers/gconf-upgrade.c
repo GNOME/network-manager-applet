@@ -2035,10 +2035,14 @@ vpnc_type_to_flag (const char *vpnc_type)
 	return NM_SETTING_SECRET_FLAG_NONE;
 }
 
+#define NM_DBUS_SERVICE_VPNC "org.freedesktop.NetworkManager.vpnc"
 #define NM_VPNC_KEY_SECRET "IPSec secret"
 #define NM_VPNC_KEY_SECRET_TYPE "ipsec-secret-type"
 #define NM_VPNC_KEY_XAUTH_PASSWORD "Xauth password"
 #define NM_VPNC_KEY_XAUTH_PASSWORD_TYPE "xauth-password-type"
+
+#define NM_DBUS_SERVICE_PPTP "org.freedesktop.NetworkManager.pptp"
+#define NM_PPTP_KEY_PASSWORD "password"
 
 void
 nm_gconf_migrate_09_secret_flags (GConfClient *client,
@@ -2061,19 +2065,25 @@ nm_gconf_migrate_09_secret_flags (GConfClient *client,
 	if (NM_IS_SETTING_VPN (setting)) {
 		NMSettingSecretFlags flags;
 		NMSettingVPN *s_vpn = NM_SETTING_VPN (setting);
-		const char *tmp;
+		const char *tmp, *service;
 
-		/* vpnc stuff */
-		tmp = nm_setting_vpn_get_data_item (s_vpn, NM_VPNC_KEY_SECRET_TYPE);
-		if (tmp) {
-			flags = vpnc_type_to_flag (tmp) | NM_SETTING_SECRET_FLAG_AGENT_OWNED;
-			nm_setting_set_secret_flags (setting, NM_VPNC_KEY_SECRET, flags, NULL);
-		}
+		service = nm_setting_vpn_get_service_type (s_vpn);
+		if (g_strcmp0 (service, NM_DBUS_SERVICE_VPNC) == 0) {
+			/* vpnc stuff */
+			tmp = nm_setting_vpn_get_data_item (s_vpn, NM_VPNC_KEY_SECRET_TYPE);
+			if (tmp) {
+				flags = vpnc_type_to_flag (tmp) | NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+				nm_setting_set_secret_flags (setting, NM_VPNC_KEY_SECRET, flags, NULL);
+			}
 
-		tmp = nm_setting_vpn_get_data_item (s_vpn, NM_VPNC_KEY_XAUTH_PASSWORD_TYPE);
-		if (tmp) {
-			flags = vpnc_type_to_flag (tmp) | NM_SETTING_SECRET_FLAG_AGENT_OWNED;
-			nm_setting_set_secret_flags (setting, NM_VPNC_KEY_XAUTH_PASSWORD, flags, NULL);
+			tmp = nm_setting_vpn_get_data_item (s_vpn, NM_VPNC_KEY_XAUTH_PASSWORD_TYPE);
+			if (tmp) {
+				flags = vpnc_type_to_flag (tmp) | NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+				nm_setting_set_secret_flags (setting, NM_VPNC_KEY_XAUTH_PASSWORD, flags, NULL);
+			}
+		} else if (g_strcmp0 (service, NM_DBUS_SERVICE_PPTP) == 0) {
+			/* Mark the password as agent-owned */
+			nm_setting_set_secret_flags (setting, NM_PPTP_KEY_PASSWORD, NM_SETTING_SECRET_FLAG_AGENT_OWNED, NULL);
 		}
 	}
 
