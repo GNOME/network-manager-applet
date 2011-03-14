@@ -279,11 +279,11 @@ gconf_client_get_int (GConfClient *client, const gchar* key, GError **error)
 {
 	Value *v;
 
-	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (client != NULL, 0);
 
 	v = g_hash_table_lookup (GCONF_CLIENT_GET_PRIVATE (client)->keys, key);
 	if (v) {
-		g_return_val_if_fail (v->type == GCONF_VALUE_INT, FALSE);
+		g_return_val_if_fail (v->type == GCONF_VALUE_INT, 0);
 		return v->v_int;
 	}
 	return 0;
