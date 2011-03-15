@@ -975,7 +975,7 @@ find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
 
 	if (name3)
 		return g_strdup (name3);
-	return name2 ? g_strdup (name2) : NULL;
+	return g_strdup (name2);
 }
 
 static char *

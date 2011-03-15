@@ -60,7 +60,6 @@
 #include <nm-setting-bluetooth.h>
 #include <nm-setting-vpn.h>
 #include <nm-active-connection.h>
-#include <nm-setting-wireless.h>
 #include <nm-secret-agent.h>
 
 #include <gconf/gconf-client.h>
@@ -2554,10 +2553,8 @@ applet_update_icon (gpointer user_data)
 	}
 	foo_set_icon (applet, pixbuf, ICON_LAYER_VPN);
 
-	if (applet->tip) {
-		g_free (applet->tip);
-		applet->tip = NULL;
-	}
+	g_free (applet->tip);
+	applet->tip = NULL;
 
 	if (dev_tip || vpn_tip) {
 		GString *tip;

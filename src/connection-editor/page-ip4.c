@@ -25,7 +25,6 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <arpa/inet.h>
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
