@@ -81,6 +81,7 @@ GtkWidget *
 nm_mb_menu_item_new (const char *connection_name,
                      guint32 strength,
                      const char *provider,
+                     gboolean active,
                      guint32 technology,
                      guint32 state,
                      gboolean enabled,
@@ -166,26 +167,17 @@ nm_mb_menu_item_new (const char *connection_name,
 		break;
 	}
 
-	/* Assume a connection name means the label should be active */
-	if (enabled && connection_name) {
+	if (enabled && connection_name && active) {
 		char *markup;
 
-		if (technology == MB_TECH_WIMAX) {
-			/* WiMAX NSPs aren't shown in bold */
-			gtk_label_set_use_markup (GTK_LABEL (priv->desc), FALSE);
-			gtk_label_set_text (GTK_LABEL (priv->desc), priv->desc_string);
-		} else {
-			gtk_label_set_use_markup (GTK_LABEL (priv->desc), TRUE);
-			markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
-			gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
-			g_free (markup);
-		}
-		gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
+		gtk_label_set_use_markup (GTK_LABEL (priv->desc), TRUE);
+		markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
+		gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
+		g_free (markup);
 	} else {
 		/* Disconnected and disabled states */
 		gtk_label_set_use_markup (GTK_LABEL (priv->desc), FALSE);
 		gtk_label_set_text (GTK_LABEL (priv->desc), priv->desc_string);
-		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 	}
 
 	/* And the strength icon, if we have strength information at all */

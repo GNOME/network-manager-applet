@@ -345,11 +345,12 @@ gsm_add_menu_item (NMDevice *device,
 		item = nm_mb_menu_item_new (nm_setting_connection_get_id (s_con),
 		                            info->quality_valid ? info->quality : 0,
 		                            info->op_name,
+		                            TRUE,
 		                            gsm_act_to_mb_act (info),
 		                            gsm_state_to_mb_state (info),
 		                            info->modem_enabled,
 		                            applet);
-
+		gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
 		add_connection_item (device, active, item, menu, applet);
 	}
 
@@ -361,13 +362,16 @@ gsm_add_menu_item (NMDevice *device,
 			gtk_widget_show (item);
 		}
 	} else {
+		/* Otherwise show idle registration state or disabled */
 		item = nm_mb_menu_item_new (NULL,
 		                            info->quality_valid ? info->quality : 0,
 		                            info->op_name,
+		                            FALSE,
 		                            gsm_act_to_mb_act (info),
 		                            gsm_state_to_mb_state (info),
 		                            info->modem_enabled,
 		                            applet);
+		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
 

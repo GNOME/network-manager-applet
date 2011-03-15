@@ -301,11 +301,12 @@ cdma_add_menu_item (NMDevice *device,
 		item = nm_mb_menu_item_new (nm_setting_connection_get_id (s_con),
 		                            info->quality_valid ? info->quality : 0,
 		                            info->provider_name,
+		                            TRUE,
 		                            cdma_act_to_mb_act (info),
 		                            cdma_state_to_mb_state (info),
 		                            info->modem_enabled,
 		                            applet);
-
+		gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
 		add_connection_item (device, active, item, menu, applet);
 	}
 
@@ -321,10 +322,12 @@ cdma_add_menu_item (NMDevice *device,
 		item = nm_mb_menu_item_new (NULL,
 		                            info->quality_valid ? info->quality : 0,
 		                            info->provider_name,
+		                            FALSE,
 		                            cdma_act_to_mb_act (info),
 		                            cdma_state_to_mb_state (info),
 		                            info->modem_enabled,
 		                            applet);
+		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
 

@@ -135,6 +135,7 @@ nsp_type_to_mb_state (NMWimaxNspNetworkType nsp_type)
 static GtkWidget *
 new_nsp_menu_item (NMDeviceWimax *device,
                    NMConnection *connection,
+                   gboolean active,
                    NMWimaxNsp *nsp,
                    NMApplet *applet)
 {
@@ -146,10 +147,12 @@ new_nsp_menu_item (NMDeviceWimax *device,
 	item = nm_mb_menu_item_new (nm_wimax_nsp_get_name (nsp),
 		                        nm_wimax_nsp_get_signal_quality (nsp),
 		                        NULL,
+		                        active,
 		                        MB_TECH_WIMAX,
 		                        nsp_type_to_mb_state (nm_wimax_nsp_get_network_type (nsp)),
 		                        TRUE,
 		                        applet);
+	gtk_widget_set_sensitive (GTK_WIDGET (item), TRUE);
 
 	info = g_slice_new0 (WimaxMenuItemInfo);
 	info->applet = applet;
@@ -240,7 +243,7 @@ wimax_add_menu_item (NMDevice *device,
 	if (!nma_menu_device_check_unusable (device)) {
 		active_nsp = nm_device_wimax_get_active_nsp (wimax);
 		if (active_nsp) {
-			item = new_nsp_menu_item (wimax, active, active_nsp, applet);
+			item = new_nsp_menu_item (wimax, active, TRUE, active_nsp, applet);
 			if (item) {
 				gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 				gtk_widget_show (item);
@@ -285,7 +288,7 @@ wimax_add_menu_item (NMDevice *device,
 			NMConnection *connection = NULL;
 
 			connection = get_connection_for_nsp (connections, nsp);
-			item = new_nsp_menu_item (wimax, connection, nsp, applet);
+			item = new_nsp_menu_item (wimax, connection, FALSE, nsp, applet);
 			if (item) {
 				gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 				gtk_widget_show (item);
