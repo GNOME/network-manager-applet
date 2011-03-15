@@ -33,6 +33,7 @@
 #include <nm-setting-connection.h>
 #include <nm-connection.h>
 #include <nm-setting.h>
+#include <nm-setting-connection.h>
 #include <nm-setting-wired.h>
 #include <nm-setting-wireless.h>
 #include <nm-setting-vpn.h>
@@ -60,6 +61,7 @@ G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
 
 enum {
 	LIST_DONE,
+	EDITING_DONE,
 	LIST_LAST_SIGNAL
 };
 
@@ -528,7 +530,9 @@ add_response_cb (NMConnectionEditor *editor, gint response, GError *error, gpoin
 	}
 
 	g_hash_table_remove (info->list->editors, nm_connection_editor_get_connection (editor));
+	g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 }
+
 
 static void
 really_add_connection (NMConnection *connection,
@@ -543,14 +547,17 @@ really_add_connection (NMConnection *connection,
 
 	g_return_if_fail (info != NULL);
 
-	if (canceled)
+	if (canceled) {
+		g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 		return;
+	}
 
 	if (!connection) {
 		error_dialog (info->list_window,
 		              _("Could not create new connection"),
 		              "%s",
 		              (error && error->message) ? error->message : message);
+		g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 		return;
 	}
 
@@ -563,6 +570,7 @@ really_add_connection (NMConnection *connection,
 		              "%s",
 		              (editor_error && editor_error->message) ? editor_error->message : message);
 		g_clear_error (&editor_error);
+		g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 		return;
 	}
 
@@ -594,10 +602,10 @@ add_clicked (GtkButton *button, gpointer user_data)
 		return;
 	}
 
-	(*(info->new_func)) (GTK_WINDOW (list->dialog),
-	                     really_add_connection,
-	                     page_get_connections,
-	                     info);
+	info->new_func (GTK_WINDOW (list->dialog),
+	                really_add_connection,
+	                page_get_connections,
+	                info);
 }
 
 typedef struct {
@@ -666,6 +674,7 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 			                       info);
 			g_error_free (edit_error);
 		}
+		g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 		break;
 	case GTK_RESPONSE_NONE:
 		/* Show an error dialog if the editor initialization failed */
@@ -676,21 +685,20 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 	case GTK_RESPONSE_CANCEL:
 	default:
 		g_hash_table_remove (info->list->editors, connection);
+		g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 		g_free (info);
 		break;
 	}
 }
 
 static void
-do_edit (ActionInfo *info)
+edit_connection (ActionInfo *info, NMConnection *connection)
 {
-	NMRemoteConnection *connection;
 	NMConnectionEditor *editor;
 	EditInfo *edit_info;
 	GError *error = NULL;
 	const char *message = _("The connection editor dialog could not be initialized due to an unknown error.");
 
-	connection = get_active_connection (info->treeview);
 	g_return_if_fail (connection != NULL);
 
 	/* Don't allow two editors for the same connection */
@@ -717,6 +725,12 @@ do_edit (ActionInfo *info)
 	g_hash_table_insert (info->list->editors, connection, editor);
 
 	nm_connection_editor_run (editor);
+}
+
+static void
+do_edit (ActionInfo *info)
+{
+	edit_connection (info, NM_CONNECTION (get_active_connection (info->treeview)));
 }
 
 static void
@@ -972,6 +986,9 @@ dispose (GObject *object)
 	if (list->editors)
 		g_hash_table_destroy (list->editors);
 
+	if (list->actions)
+		g_hash_table_destroy (list->actions);
+
 	if (list->wired_icon)
 		g_object_unref (list->wired_icon);
 	if (list->wireless_icon)
@@ -1013,6 +1030,15 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 					  NULL, NULL,
 					  g_cclosure_marshal_VOID__INT,
 					  G_TYPE_NONE, 1, G_TYPE_INT);
+
+	list_signals[EDITING_DONE] =
+		g_signal_new ("editing-done",
+		              G_OBJECT_CLASS_TYPE (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              G_STRUCT_OFFSET (NMConnectionListClass, done),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__INT,
+		              G_TYPE_NONE, 1, G_TYPE_INT);
 }
 
 static GtkTreeView *
@@ -1070,8 +1096,28 @@ action_info_free (ActionInfo *info)
 	g_free (info);
 }
 
+static char *
+get_action_name (GType ctype, const char *action)
+{
+	return g_strdup_printf ("%s_%s", g_type_name (ctype), action);
+}
+
+static ActionInfo *
+find_action_info (NMConnectionList *list, GType ctype, const char *action)
+{
+	ActionInfo *ret;
+	char *name;
+
+	name = get_action_name (ctype, action);
+	ret = g_hash_table_lookup (list->actions, name);
+	g_free (name);
+	return ret;
+}
+
 static ActionInfo *
 action_info_new (NMConnectionList *list,
+                 gchar *action,
+                 GType ctype,
                  GtkTreeView *treeview,
                  GtkWindow *list_window,
                  GtkWidget *button)
@@ -1079,7 +1125,7 @@ action_info_new (NMConnectionList *list,
 	ActionInfo *info;
 
 	info = g_malloc0 (sizeof (ActionInfo));
-	g_object_weak_ref (G_OBJECT (list), (GWeakNotify) action_info_free, info);
+	g_hash_table_insert (list->actions, get_action_name (ctype, action), info);
 
 	info->list = list;
 	info->treeview = treeview;
@@ -1137,7 +1183,7 @@ add_connection_buttons (NMConnectionList *self,
 	name = g_strdup_printf ("%s_add", prefix);
 	button = GTK_WIDGET (gtk_builder_get_object (self->gui, name));
 	g_free (name);
-	info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), NULL);
+	info = action_info_new (self, "add", ctype, treeview, GTK_WINDOW (self->dialog), NULL);
 	g_signal_connect (button, "clicked", G_CALLBACK (add_clicked), info);
 	if (ctype == NM_TYPE_SETTING_VPN) {
 		GHashTable *plugins;
@@ -1158,7 +1204,7 @@ add_connection_buttons (NMConnectionList *self,
 	g_free (name);
 
 	/* Edit */
-	info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), NULL);
+	info = action_info_new (self, "edit", ctype, treeview, GTK_WINDOW (self->dialog), NULL);
 	button = ce_polkit_button_new (_("_Edit"),
 	                               _("Edit the selected connection"),
 	                               _("_Edit..."),
@@ -1176,7 +1222,7 @@ add_connection_buttons (NMConnectionList *self,
 	pk_button_selection_changed_cb (selection, info);
 
 	/* Delete */
-	info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), NULL);
+	info = action_info_new (self, "delete", ctype, treeview, GTK_WINDOW (self->dialog), NULL);
 	button = ce_polkit_button_new (_("_Delete"),
 	                               _("Delete the selected connection"),
 	                               _("_Delete..."),
@@ -1200,7 +1246,7 @@ add_connection_buttons (NMConnectionList *self,
 		gboolean import_supported = FALSE;
 		GHashTable *plugins;
 
-		info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), button);
+		info = action_info_new (self, "import", ctype, treeview, GTK_WINDOW (self->dialog), button);
 		g_signal_connect (button, "clicked", G_CALLBACK (import_vpn_cb), info);
 
 		plugins = vpn_get_plugins (NULL);
@@ -1214,7 +1260,7 @@ add_connection_buttons (NMConnectionList *self,
 	button = GTK_WIDGET (gtk_builder_get_object (self->gui, name));
 	g_free (name);
 	if (button) {
-		info = action_info_new (self, treeview, GTK_WINDOW (self->dialog), button);
+		info = action_info_new (self, "export", ctype, treeview, GTK_WINDOW (self->dialog), button);
 		g_signal_connect (button, "clicked", G_CALLBACK (export_vpn_cb), info);
 		g_signal_connect (selection, "changed", G_CALLBACK (vpn_list_selection_changed_cb), info);
 		gtk_widget_set_sensitive (button, FALSE);
@@ -1223,7 +1269,6 @@ add_connection_buttons (NMConnectionList *self,
 
 static void
 add_connection_tab (NMConnectionList *self,
-                    GType def_type,
                     GType ctype,
                     GdkPixbuf *pixbuf,
                     const char *prefix,
@@ -1233,7 +1278,6 @@ add_connection_tab (NMConnectionList *self,
 	char *name;
 	GtkWidget *child, *hbox, *notebook;
 	GtkTreeView *treeview;
-	int pnum;
 
 	name = g_strdup_printf ("%s_child", prefix);
 	child = GTK_WIDGET (gtk_builder_get_object (self->gui, name));
@@ -1257,37 +1301,11 @@ add_connection_tab (NMConnectionList *self,
 	add_connection_buttons (self, prefix, treeview, ctype, new_func);
 	gtk_widget_show_all (GTK_WIDGET (notebook));
 
-	g_object_set_data (G_OBJECT (treeview), TV_TYPE_TAG, GSIZE_TO_POINTER (ctype));
 	self->treeviews = g_slist_prepend (self->treeviews, treeview);
 
-	if (def_type == ctype) {
-		pnum = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), child);
-		gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), pnum);
-	}
-}
-
-static void
-add_connection_tabs (NMConnectionList *self, GType def_type)
-{
-	add_connection_tab (self, def_type, NM_TYPE_SETTING_WIRED,
-	                    self->wired_icon, "wired", _("Wired"),
-	                    wired_connection_new);
-
-	add_connection_tab (self, def_type, NM_TYPE_SETTING_WIRELESS,
-	                    self->wireless_icon, "wireless", _("Wireless"),
-	                    wifi_connection_new);
-
-	add_connection_tab (self, def_type, NM_TYPE_SETTING_GSM,
-	                    self->wwan_icon, "wwan", _("Mobile Broadband"),
-	                    mobile_connection_new);
-
-	add_connection_tab (self, def_type, NM_TYPE_SETTING_VPN,
-	                    self->vpn_icon, "vpn", _("VPN"),
-	                    vpn_connection_new);
-
-	add_connection_tab (self, def_type, NM_TYPE_SETTING_PPPOE,
-	                    self->wired_icon, "dsl", _("DSL"),
-	                    dsl_connection_new);
+	/* Tag the notebook child and the treeview with the type of connection they contain */
+	g_object_set_data (G_OBJECT (child), TV_TYPE_TAG, GSIZE_TO_POINTER (ctype));
+	g_object_set_data (G_OBJECT (treeview), TV_TYPE_TAG, GSIZE_TO_POINTER (ctype));
 }
 
 static void
@@ -1354,7 +1372,7 @@ connection_added (NMRemoteSettings *settings,
 	}
 
 NMConnectionList *
-nm_connection_list_new (GType def_type)
+nm_connection_list_new (void)
 {
 	NMConnectionList *list;
 	DBusGConnection *bus;
@@ -1402,10 +1420,31 @@ nm_connection_list_new (GType def_type)
 	                  G_CALLBACK (connection_added),
 	                  list);
 
-	add_connection_tabs (list, def_type);
-
 	list->editors = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
+	list->actions = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) action_info_free);
 
+	/* Add each connection type tab */
+	add_connection_tab (list, NM_TYPE_SETTING_WIRED,
+	                    list->wired_icon, "wired", _("Wired"),
+	                    wired_connection_new);
+
+	add_connection_tab (list, NM_TYPE_SETTING_WIRELESS,
+	                    list->wireless_icon, "wireless", _("Wireless"),
+	                    wifi_connection_new);
+
+	add_connection_tab (list, NM_TYPE_SETTING_GSM,
+	                    list->wwan_icon, "wwan", _("Mobile Broadband"),
+	                    mobile_connection_new);
+
+	add_connection_tab (list, NM_TYPE_SETTING_VPN,
+	                    list->vpn_icon, "vpn", _("VPN"),
+	                    vpn_connection_new);
+
+	add_connection_tab (list, NM_TYPE_SETTING_PPPOE,
+	                    list->wired_icon, "dsl", _("DSL"),
+	                    dsl_connection_new);
+
+	/* Connect to the main dialog's response handler */
 	list->dialog = GTK_WIDGET (gtk_builder_get_object (list->gui, "NMConnectionList"));
 	if (!list->dialog)
 		goto error;
@@ -1421,14 +1460,6 @@ nm_connection_list_new (GType def_type)
 error:
 	g_object_unref (list);
 	return NULL;
-}
-
-void
-nm_connection_list_present (NMConnectionList *list)
-{
-	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
-
-	gtk_window_present (GTK_WINDOW (list->dialog));
 }
 
 void
@@ -1454,9 +1485,105 @@ nm_connection_list_set_type (NMConnectionList *self, GType ctype)
 			break;
 		}
 	}
+}
 
-	/* Bring the connection list to the front */
-	nm_connection_list_present (self);
+void
+nm_connection_list_create (NMConnectionList *self, GType ctype)
+{
+	ActionInfo *info;
+
+	g_return_if_fail (NM_IS_CONNECTION_LIST (self));
+
+	info = find_action_info (self, ctype, "add");
+	if (info == NULL) {
+		error_dialog (NULL,
+		              _("Error creating connection"),
+		              _("Don't know how to create '%s' connections"), g_type_name (ctype));
+	} else {
+		info->new_func (GTK_WINDOW (info->list->dialog),
+		                really_add_connection,
+		                page_get_connections,
+		                info);
+	}
+}
+
+static NMConnection *
+get_connection (NMRemoteSettings *settings, const gchar *id)
+{
+	const gchar *uuid;
+	NMConnection *connection = NULL;
+	GSList *list, *l;
+
+	list = nm_remote_settings_list_connections (settings);
+	for (l = list; l; l = l->next) {
+		connection = l->data;
+		uuid = nm_connection_get_uuid (connection);
+		if (g_strcmp0 (uuid, id) == 0) {
+			g_slist_free (list);
+			return connection;
+		}
+	}
+
+	g_slist_free (list);
+	return NULL;
+}
+
+typedef struct {
+	NMConnectionList *self;
+	const gchar *uuid;
+	gboolean wait;
+} EditData;
+
+static void
+connections_read (NMRemoteSettings *settings, EditData *data)
+{
+	NMConnection *connection;
+
+	connection = get_connection (data->self->settings, data->uuid);
+	if (connection) {
+		NMSettingConnection *s_con;
+		const char *type;
+		ActionInfo *info;
+
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		type = nm_setting_connection_get_connection_type (s_con);
+		info = find_action_info (data->self, nm_connection_lookup_setting_type (type), "edit");
+		if (info != NULL)
+			edit_connection (info, connection);
+		else {
+			error_dialog (NULL,
+			              _("Error editing connection"),
+			              _("Don't know how to edit '%s' connections"), type);
+		}
+
+		g_object_unref (connection);
+	} else if (data->wait) {
+		data->wait = FALSE;
+		g_signal_connect (data->self->settings, "connections-read",
+		                  G_CALLBACK (connections_read), data);
+		return;
+	} else {
+		error_dialog (NULL,
+		              _("Error editing connection"),
+		              _("Did not find a connection with UUID '%s'"), data->uuid);
+	}
+
+	g_free (data);
+}
+
+void
+nm_connection_list_edit (NMConnectionList *self, const gchar *uuid)
+{
+	EditData *data;
+
+	g_return_if_fail (NM_IS_CONNECTION_LIST (self));
+
+	data =  g_new0 (EditData, 1);
+	data->self = self;
+	data->uuid = uuid;
+	data->wait = TRUE;
+
+	connections_read (self->settings, data);
 }
 
 static void
@@ -1472,15 +1599,18 @@ list_close_cb (GtkDialog *dialog, gpointer user_data)
 }
 
 void
-nm_connection_list_run (NMConnectionList *list)
+nm_connection_list_present (NMConnectionList *list)
 {
 	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
 
-	g_signal_connect (G_OBJECT (list->dialog), "response",
-	                  G_CALLBACK (list_response_cb), list);
-	g_signal_connect (G_OBJECT (list->dialog), "close",
-	                  G_CALLBACK (list_close_cb), list);
+	if (!list->signals_connected) {
+		g_signal_connect (G_OBJECT (list->dialog), "response",
+			              G_CALLBACK (list_response_cb), list);
+		g_signal_connect (G_OBJECT (list->dialog), "close",
+			              G_CALLBACK (list_close_cb), list);
+		list->signals_connected = TRUE;
+	}
 
-	nm_connection_list_present (list);
+	gtk_window_present (GTK_WINDOW (list->dialog));
 }
 
