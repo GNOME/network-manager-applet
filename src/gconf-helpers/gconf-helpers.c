@@ -762,10 +762,10 @@ out:
 
 gboolean
 nm_gconf_get_ip6addr_array_helper (GConfClient *client,
-								   const char *path,
-								   const char *key,
-								   const char *setting,
-								   GPtrArray **value)
+                                   const char *path,
+                                   const char *key,
+                                   const char *setting,
+                                   GPtrArray **value)
 {
 	char *gc_key;
 	GConfValue *gc_value = NULL;
@@ -818,16 +818,17 @@ nm_gconf_get_ip6addr_array_helper (GConfClient *client,
 			g_free (addr);
 			continue;
 		}
-		g_free (addr);
 
 		memset (&rawgw, 0, sizeof (rawgw));
 		if (gw) {
 			if (inet_pton (AF_INET6, gw, &rawgw) <= 0) {
 				g_warning ("%s: %s contained bad gateway address: %s",
 						   __func__, gc_key, gw);
+				g_free (addr);
 				continue;
 			}
 		}
+		g_free (addr);
 
 		valarr = g_value_array_new (3);
 
