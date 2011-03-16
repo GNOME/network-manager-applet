@@ -396,8 +396,8 @@ applet_item_activate_info_destroy (AppletItemActivateInfo *info)
 
 static void
 add_and_activate_cb (NMClient *client,
+                     NMActiveConnection *active,
                      const char *connection_path,
-                     const char *active_path,
                      GError *error,
                      gpointer user_data)
 {
@@ -457,7 +457,7 @@ applet_menu_item_disconnect_helper (NMDevice *device,
 
 static void
 activate_connection_cb (NMClient *client,
-                        const char *path,
+                        NMActiveConnection *active,
                         GError *error,
                         gpointer user_data)
 {
@@ -484,7 +484,7 @@ applet_menu_item_activate_helper (NMDevice *device,
 		 * NM to activate that connection.
 		 */
 		nm_client_activate_connection (applet->nm_client,
-			                           nm_connection_get_path (connection),
+			                           connection,
 			                           device,
 			                           specific_object,
 			                           activate_connection_cb,
@@ -1034,7 +1034,7 @@ typedef struct {
 
 static void
 activate_vpn_cb (NMClient *client,
-                 const char *path,
+                 NMActiveConnection *active,
                  GError *error,
                  gpointer user_data)
 {
@@ -1103,7 +1103,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 
 	/* Connection inactive, activate */
 	nm_client_activate_connection (applet->nm_client,
-	                               nm_connection_get_path (connection),
+	                               connection,
 	                               device,
 	                               nm_object_get_path (NM_OBJECT (active)),
 	                               activate_vpn_cb,

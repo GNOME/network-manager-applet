@@ -1377,7 +1377,7 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
 
 static void
 activate_existing_cb (NMClient *client,
-                      const char *active_path,
+                      NMActiveConnection *active,
                       GError *error,
                       gpointer user_data)
 {
@@ -1388,8 +1388,8 @@ activate_existing_cb (NMClient *client,
 
 static void
 activate_new_cb (NMClient *client,
+                 NMActiveConnection *active,
                  const char *connection_path,
-                 const char *active_path,
                  GError *error,
                  gpointer user_data)
 {
@@ -1450,7 +1450,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
 
 	if (fuzzy_match) {
 		nm_client_activate_connection (applet->nm_client,
-		                               nm_connection_get_path (fuzzy_match),
+		                               fuzzy_match,
 		                               device,
 		                               ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
 		                               activate_existing_cb,
