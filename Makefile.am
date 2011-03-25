@@ -12,6 +12,9 @@ autostartdir = $(sysconfdir)/xdg/autostart
 autostart_in_files = nm-applet.desktop.in
 autostart_DATA = $(autostart_in_files:.desktop.in=.desktop)
 
+applicationsdir = $(datadir)/applications
+applications_DATA = $(autostart_DATA)
+
 desktopdir = $(datadir)/applications
 desktop_in_files = nm-connection-editor.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
