@@ -623,25 +623,6 @@ get_secrets_for_page (NMConnectionEditor *self,
 {
 	GetSecretsInfo *info;
 
-	if (!setting_name) {
-		/* page doesn't need any secrets */
-		ce_page_complete_init (page, NULL, NULL, NULL);
-		return;
-	}
-
-	/* Try to get secrets from ->orig_connection, because it's the one that
-	 * implements NMSettingsConnectionInterface and can respond to requests for
-	 * its secrets.  ->connection is a plain NMConnection copy of ->orig_connection
-	 * which is the connection that's actually changed when the user clicks stuff.
-	 * When creating importing or creating new connections though, ->orig_connection
-	 * is an NMConnection because it hasn't been exported over D-Bus yet, so we
-	 * can't ask it for secrets, because it doesn't implement NMSettingsConnectionInterface.
-	 */
-	if (!NM_IS_SETTINGS_CONNECTION_INTERFACE (self->orig_connection)) {
-		ce_page_complete_init (page, setting_name, NULL, NULL);
-		return;
-	}
-
 	info = g_malloc0 (sizeof (GetSecretsInfo));
 	info->self = self;
 	info->page = page;
@@ -669,6 +650,8 @@ get_secrets_for_page (NMConnectionEditor *self,
 	}
 }
 
+#define SECRETS_TAG "secrets-setting-name"
+
 static gboolean
 add_page (NMConnectionEditor *editor,
           CEPageNewFunc func,
@@ -683,19 +666,17 @@ add_page (NMConnectionEditor *editor,
 	g_return_val_if_fail (connection != NULL, FALSE);
 
 	page = (*func) (connection, GTK_WINDOW (editor->window), &secrets_setting_name, error);
-	if (!page)
-		return FALSE;
+	if (page) {
+		g_object_set_data_full (G_OBJECT (page),
+			                    SECRETS_TAG,
+			                    g_strdup (secrets_setting_name),
+			                    g_free);
 
-	editor->initializing_pages = g_slist_prepend (editor->initializing_pages, page);
-	g_signal_connect (page, "changed", G_CALLBACK (page_changed), editor);
-	g_signal_connect (page, "initialized", G_CALLBACK (page_initialized), editor);
-
-	/* Request any secrets the page might require; or if it doesn't want any,
-	 * let the page initialize.
-	 */
-	get_secrets_for_page (editor, page, secrets_setting_name);
-
-	return TRUE;
+		editor->initializing_pages = g_slist_append (editor->initializing_pages, page);
+		g_signal_connect (page, "changed", G_CALLBACK (page_changed), editor);
+		g_signal_connect (page, "initialized", G_CALLBACK (page_initialized), editor);
+	}
+	return !!page;
 }
 
 static gboolean
@@ -706,6 +687,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	NMSettingConnection *s_con;
 	const char *connection_type;
 	gboolean success = FALSE;
+	GSList *iter, *copy;
 
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
 	g_return_val_if_fail (NM_IS_CONNECTION (orig_connection), FALSE);
@@ -767,6 +749,38 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	} else {
 		g_warning ("Unhandled setting type '%s'", connection_type);
 	}
+
+	/* After all pages are created, then kick off secrets requests that any
+	 * the pages may need to make; if they don't need any secrets, then let
+	 * them finish initialization.  The list might get modified during the loop
+	 * which is why copy the list here.
+	 */
+	copy = g_slist_copy (editor->initializing_pages);
+	for (iter = copy; iter; iter = g_slist_next (iter)) {
+		CEPage *page = CE_PAGE (iter->data);
+		const char *setting_name = g_object_get_data (G_OBJECT (page), SECRETS_TAG);
+
+		if (!setting_name) {
+			/* page doesn't need any secrets */
+			ce_page_complete_init (page, NULL, NULL, NULL);
+		} else if (!NM_IS_SETTINGS_CONNECTION_INTERFACE (editor->orig_connection)) {
+			/* We want to get secrets using ->orig_connection, since that's the one
+			 * that implements NMSettingsConnectionInterface and thus can actually
+			 * handle secrets requests.  ->connection is a plain NMConnection copy
+			 * of ->orig_connection which is the thing that gets changed when users
+			 * modify anything.  But when creating or importing, ->orig_connection
+			 * will be an NMConnection since the new connection hasn't been added to
+			 * any settings service yet.  So basically, skip requesting secrets if
+			 * the connection can't handle a secrets request.
+			 */
+			ce_page_complete_init (page, setting_name, NULL, NULL);
+		} else {
+			/* Page wants secrets, get them */
+			get_secrets_for_page (editor, page, setting_name);
+		}
+		g_object_set_data (G_OBJECT (page), SECRETS_TAG, NULL);
+	}
+	g_slist_free (copy);
 
 	/* set the UI */
 	recheck_initialization (editor);
