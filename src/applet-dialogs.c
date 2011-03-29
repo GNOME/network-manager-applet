@@ -905,7 +905,7 @@ applet_mobile_pin_dialog_new (const char *title,
 
 	builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (builder, UIDIR "/applet.ui", &error)) {
+	if (!gtk_builder_add_from_file (builder, UIDIR "/gsm-unlock.ui", &error)) {
 		g_warning ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
 		g_object_unref (builder);

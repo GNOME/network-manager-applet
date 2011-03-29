@@ -89,7 +89,6 @@ typedef struct
 	NMAGConfSettings *gconf_settings;
 
 	GConfClient *	gconf_client;
-	char	*		ui_file;
 
 	guint update_timestamps_id;
 

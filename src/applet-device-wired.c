@@ -716,10 +716,7 @@ nm_8021x_get_secrets (NMDevice *device,
 	GtkWidget *dialog;
 	NM8021xInfo *info;
 
-	dialog = nma_wired_dialog_new (applet->ui_file,
-								   applet->nm_client,
-								   g_object_ref (connection),
-								   device);
+	dialog = nma_wired_dialog_new (applet->nm_client, g_object_ref (connection), device);
 	if (!dialog) {
 		g_set_error (error,
 		             NM_SETTINGS_INTERFACE_ERROR,

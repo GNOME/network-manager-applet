@@ -76,57 +76,19 @@ dialog_set_security (NMConnection *connection,
 	return security;
 }
 
-static gboolean
-dialog_init (GtkWidget *dialog,
-             GtkBuilder *builder,
-             NMClient *nm_client,
-             NMConnection *connection)
-{
-	WirelessSecurity *security;
-	GtkWidget *widget;
-
-	/* Hide bunch of wireless specific widgets */
-	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (builder, "device_label")));
-	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (builder, "device_combo")));
-	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (builder, "security_combo_label")));
-	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (builder, "security_combo")));
-
-	/* The dialog won't ever get called for more than one connection for wired */
-	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (builder, "connection_label")));
-	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (builder, "connection_combo")));
-
-	gtk_window_set_title (GTK_WINDOW (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_dialog"))),
-	                      _("Wired 802.1X authentication"));
-
-	dialog_set_network_name (connection, GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "network_name_entry"))));
-	security = dialog_set_security (connection, builder, GTK_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "security_vbox"))));
-	wireless_security_set_changed_notify (security, stuff_changed_cb, GTK_WIDGET (gtk_builder_get_object (builder, "ok_button")));
-
-	g_object_set_data_full (G_OBJECT (dialog),
-	                        "security", security,
-	                        (GDestroyNotify) wireless_security_unref);
-
-	gtk_window_set_icon_name (GTK_WINDOW (dialog), "dialog-password");
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "image1"));
-	gtk_image_set_from_icon_name (GTK_IMAGE (widget), "dialog-password", GTK_ICON_SIZE_DIALOG);
-
-	return TRUE;
-}
-
 GtkWidget *
-nma_wired_dialog_new (const char *ui_file,
-					  NMClient *nm_client,
-					  NMSettingsConnectionInterface *connection,
-					  NMDevice *device)
+nma_wired_dialog_new (NMClient *nm_client,
+                      NMSettingsConnectionInterface *connection,
+                      NMDevice *device)
 {
 	GtkBuilder *builder;
 	GtkWidget *dialog;
-	gboolean success;
 	GError *error = NULL;
+	WirelessSecurity *security;
 
 	builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (builder, ui_file, &error)) {
+	if (!gtk_builder_add_from_file (builder, UIDIR "/wired-8021x.ui", &error)) {
 		g_warning ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
 		applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the .ui file was not found)."));
@@ -134,20 +96,23 @@ nma_wired_dialog_new (const char *ui_file,
 		return NULL;
 	}
 
-	dialog = GTK_WIDGET (gtk_builder_get_object (builder, "wireless_dialog"));
+	dialog = (GtkWidget *) gtk_builder_get_object (builder, "wired_8021x_dialog");
 	if (!dialog) {
-		nm_warning ("Couldn't find wireless_dialog widget.");
+		nm_warning ("Couldn't find wired_8021x_dialog widget.");
+		applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the .ui file was not found)."));
 		g_object_unref (builder);
 		return NULL;
 	}
 
-	success = dialog_init (dialog, builder, nm_client, NM_CONNECTION (connection));
-	if (!success) {
-		nm_warning ("Couldn't create wired security dialog.");
-		gtk_widget_destroy (dialog);
-		g_object_unref (builder);
-		return NULL;
-	}
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Wired 802.1X authentication"));
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "dialog-password");
+	dialog_set_network_name (NM_CONNECTION (connection), GTK_ENTRY (gtk_builder_get_object (builder, "network_name_entry")));
+
+	security = dialog_set_security (NM_CONNECTION (connection), builder, GTK_BOX (gtk_builder_get_object (builder, "security_vbox")));
+	wireless_security_set_changed_notify (security, stuff_changed_cb, GTK_WIDGET (gtk_builder_get_object (builder, "ok_button")));
+	g_object_set_data_full (G_OBJECT (dialog),
+	                        "security", security,
+	                        (GDestroyNotify) wireless_security_unref);
 
 	g_object_set_data_full (G_OBJECT (dialog),
 	                        "connection", g_object_ref (connection),

@@ -3035,19 +3035,10 @@ constructor (GType type,
 	g_set_application_name (_("NetworkManager Applet"));
 	gtk_window_set_default_icon_name (GTK_STOCK_NETWORK);
 
-	applet->ui_file = g_build_filename (UIDIR, "/applet.ui", NULL);
-	if (!applet->ui_file || !g_file_test (applet->ui_file, G_FILE_TEST_IS_REGULAR)) {
-		GtkWidget *dialog;
-		dialog = applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the .ui file was not found)."));
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		goto error;
-	}
-
 	applet->info_dialog_ui = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (applet->info_dialog_ui, applet->ui_file, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
+	if (!gtk_builder_add_from_file (applet->info_dialog_ui, UIDIR "/info.ui", &error)) {
+		g_warning ("Couldn't load info dialog ui file: %s", error->message);
 		g_error_free (error);
 		goto error;
 	}
@@ -3159,7 +3150,6 @@ static void finalize (GObject *object)
 		g_object_unref (applet->notification);
 	}
 
-	g_free (applet->ui_file);
 	if (applet->info_dialog_ui)
 		g_object_unref (applet->info_dialog_ui);
 

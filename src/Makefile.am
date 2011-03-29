@@ -62,7 +62,7 @@ nm_applet_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security.la
 
 uidir = $(datadir)/nm-applet
-ui_DATA = applet.ui keyring.png
+ui_DATA = gsm-unlock.ui info.ui wired-8021x.ui wifi.ui keyring.png
 
 CLEANFILES = *.bak
 
