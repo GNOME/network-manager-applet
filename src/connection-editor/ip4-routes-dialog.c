@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -434,8 +434,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 
 	builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (builder, UIDIR "/ce-page-ip4.ui", &error))
-	{
+	if (!gtk_builder_add_from_file (builder, UIDIR "/ce-ip4-routes.ui", &error)) {
 		g_warning ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
 		return NULL;

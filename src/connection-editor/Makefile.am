@@ -73,10 +73,13 @@ ui_DATA = \
 	ce-page-wireless.ui \
 	ce-page-wireless-security.ui \
 	ce-page-ip4.ui \
+	ce-ip4-routes.ui \
 	ce-page-ip6.ui \
+	ce-ip6-routes.ui \
 	ce-page-dsl.ui \
 	ce-page-mobile.ui \
 	ce-page-ppp.ui \
+	ce-ppp-auth-methods.ui \
 	ce-vpn-wizard.ui
 
 BUILT_SOURCES = nm-connection-editor-service-glue.h

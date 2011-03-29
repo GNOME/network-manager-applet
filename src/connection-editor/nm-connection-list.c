@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * (C) Copyright 2007 - 2011 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -1377,6 +1377,7 @@ nm_connection_list_new (void)
 	NMConnectionList *list;
 	DBusGConnection *bus;
 	GError *error = NULL;
+	const char *objects[] = { "NMConnectionList", NULL };
 
 	list = g_object_new (NM_TYPE_CONNECTION_LIST, NULL);
 	if (!list)
@@ -1385,7 +1386,10 @@ nm_connection_list_new (void)
 	/* load GUI */
 	list->gui = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (list->gui, UIDIR "/nm-connection-editor.ui", &error)) {
+	if (!gtk_builder_add_objects_from_file (list->gui,
+	                                        UIDIR "/nm-connection-editor.ui",
+	                                        (char **) objects,
+	                                        &error)) {
 		g_warning ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
 		goto error;
