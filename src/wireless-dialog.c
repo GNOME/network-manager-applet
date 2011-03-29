@@ -1376,9 +1376,9 @@ nma_wireless_dialog_init (NMAWirelessDialog *self)
 	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 	GError *error = NULL;
 
-	priv->builder = gtk_builder_new();
+	priv->builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (priv->builder, UIDIR "/applet.ui", &error)) {
+	if (!gtk_builder_add_from_file (priv->builder, UIDIR "/wifi.ui", &error)) {
 		g_warning ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
 	}

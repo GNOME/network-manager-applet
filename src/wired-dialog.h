@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 #include <nm-connection.h>
 
-GtkWidget *nma_wired_dialog_new (const char *ui_file, NMConnection *connection);
+GtkWidget *nma_wired_dialog_new (NMConnection *connection);
 
 NMConnection *nma_wired_dialog_get_connection (GtkWidget *dialog);
 

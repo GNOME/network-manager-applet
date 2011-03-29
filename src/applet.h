@@ -89,7 +89,6 @@ typedef struct
 	AppletAgent *agent;
 
 	GConfClient *	gconf_client;
-	char	*		ui_file;
 
 	/* Permissions */
 	NMClientPermissionResult permissions[NM_CLIENT_PERMISSION_LAST + 1];

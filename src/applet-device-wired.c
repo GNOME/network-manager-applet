@@ -581,13 +581,13 @@ done:
 }
 
 static gboolean
-nm_8021x_get_secrets (SecretsRequest *req, const char *ui_file, GError **error)
+nm_8021x_get_secrets (SecretsRequest *req, GError **error)
 {
 	NM8021xInfo *info = (NM8021xInfo *) req;
 
 	applet_secrets_request_set_free_func (req, free_8021x_info);
 
-	info->dialog = nma_wired_dialog_new (ui_file, g_object_ref (req->connection));
+	info->dialog = nma_wired_dialog_new (g_object_ref (req->connection));
 	if (!info->dialog) {
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
@@ -624,7 +624,7 @@ wired_get_secrets (SecretsRequest *req, GError **error)
 
 	ctype = nm_setting_connection_get_connection_type (s_con);
 	if (!strcmp (ctype, NM_SETTING_WIRED_SETTING_NAME))
-		return nm_8021x_get_secrets (req, req->applet->ui_file, error);
+		return nm_8021x_get_secrets (req, error);
 	else if (!strcmp (ctype, NM_SETTING_PPPOE_SETTING_NAME))
 		return pppoe_get_secrets (req, error);
 	else {
