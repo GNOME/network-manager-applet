@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #include <netinet/in.h>
@@ -389,8 +389,7 @@ ip6_routes_dialog_new (NMSettingIP6Config *s_ip6, gboolean automatic)
 
 	builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (builder, UIDIR "/ce-page-ip6.ui", &error))
-	{
+	if (!gtk_builder_add_from_file (builder, UIDIR "/ce-ip6-routes.ui", &error)) {
 		g_warning ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
 		return NULL;

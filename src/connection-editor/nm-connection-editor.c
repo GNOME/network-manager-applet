@@ -19,7 +19,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * (C) Copyright 2007 - 2011 Red Hat, Inc.
  * (C) Copyright 2007 - 2008 Novell, Inc.
  */
 
@@ -272,18 +272,20 @@ system_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
 	connection_editor_validate (editor);
 }
 
-#define NMCE_UI UIDIR "/nm-connection-editor.ui"
-
 static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *dialog;
 	GError *error = NULL;
+	const char *objects[] = { "nm-connection-editor", NULL };
 
 	editor->builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (editor->builder, NMCE_UI, &error)) {
-		g_warning ("Couldn't load builder file " NMCE_UI ": %s", error->message);
+	if (!gtk_builder_add_objects_from_file (editor->builder,
+	                                        UIDIR "/nm-connection-editor.ui",
+	                                        (char **) objects,
+	                                        &error)) {
+		g_warning ("Couldn't load builder file " UIDIR "/nm-connection-editor.ui: %s", error->message);
 		g_error_free (error);
 
 		dialog = gtk_message_dialog_new (NULL, 0,
