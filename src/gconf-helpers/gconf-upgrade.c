@@ -1897,6 +1897,8 @@ nm_gconf_migrate_0_7_ca_cert_ignore (GConfClient *client)
 		                          &ignore_ca_cert);
 		if (ignore_ca_cert)
 			_set_ignore_ca_cert (client, uuid, FALSE);
+		g_free (uuid);
+
 		/* delete old key */
 		unset_one_setting_property (client, dir,
 		                            NM_SETTING_802_1X_SETTING_NAME,
