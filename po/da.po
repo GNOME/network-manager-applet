@@ -6,28 +6,31 @@
 # Lasse Bang Mikkelsen <lbm@fatalerror.dk>, 2005, 06.
 # Peter Bach <bach.peter@gmail.com>, 2007.
 # Mads Bille Lundby <lundbymads@gmail.com>, 2009.
-#
 # Kim Iskov <kimiskov@gmail.com>, 2010, 2010.
+# Anders Jenbo <anders@jenbo.dk>, 2011.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-27 00:28+0200\n"
-"PO-Revision-Date: 2010-07-15 22:49+0200\n"
-"Last-Translator: Kim Iskov <kimiskov@gmail.com>\n"
+"POT-Creation-Date: 2011-04-03 18:25+0200\n"
+"PO-Revision-Date: 2011-04-03 18:24+0200\n"
+"Last-Translator: Anders Jenbo <anders@jenbo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Language: Danish\n"
 
 #: ../nm-applet.desktop.in.h:1
-msgid "Control your network connections"
-msgstr "Administrér dine netværksforbindelser"
+msgid "Manage your network connections"
+msgstr "Håndter dine netværksforbindelser"
 
 #: ../nm-applet.desktop.in.h:2
-msgid "Network Manager"
-msgstr "Netværkshåndtering"
+msgid "Network"
+msgstr "Netværk"
 
 #: ../nm-applet.schemas.in.h:1
 msgid "Disable WiFi Create"
@@ -88,36 +91,26 @@ msgid "Manage and change your network connection settings"
 msgstr "Rediger og ændr dine indstillinger til netværksforbindelser"
 
 #: ../nm-connection-editor.desktop.in.h:2
-#: ../src/connection-editor/nm-connection-editor.glade.h:7
+#: ../src/connection-editor/nm-connection-editor.ui.h:7
 msgid "Network Connections"
 msgstr "Netværksforbindelser"
 
-#: ../src/applet-dbus-manager.c:165
-#, c-format
-msgid "An instance of nm-applet is already running.\n"
-msgstr ""
-"Et eksemplar af panelprogrammet til netværkshåndtering kører allerede.\n"
-
-#: ../src/applet-dbus-manager.c:167
-#, c-format
-msgid "Could not acquire the %s service. (%d)\n"
-msgstr "Kunne ikke tilgå %s-tjenesten. (%d)\n"
-
-#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:332
-#: ../src/applet-device-gsm.c:375 ../src/applet-device-wired.c:241
-#: ../src/applet-device-wifi.c:817
+#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:337
+#: ../src/applet-device-gsm.c:381 ../src/applet-device-wired.c:240
+#: ../src/applet-device-wifi.c:867 ../src/applet-device-wimax.c:279
 msgid "Available"
 msgstr "Tilgængelig"
 
-#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:374
-#: ../src/applet-device-gsm.c:417 ../src/applet-device-wired.c:270
+#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:379
+#: ../src/applet-device-gsm.c:423 ../src/applet-device-wired.c:269
+#: ../src/applet-device-wimax.c:423
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Du er nu tilsluttet \"%s\"."
 
-#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:378
-#: ../src/applet-device-gsm.c:421 ../src/applet-device-wired.c:274
-#: ../src/applet-device-wifi.c:1260
+#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:383
+#: ../src/applet-device-gsm.c:427 ../src/applet-device-wired.c:273
+#: ../src/applet-device-wifi.c:1272 ../src/applet-device-wimax.c:427
 msgid "Connection Established"
 msgstr "Forbindelse oprettet"
 
@@ -125,116 +118,120 @@ msgstr "Forbindelse oprettet"
 msgid "You are now connected to the mobile broadband network."
 msgstr "Du er nu forbundet til det mobile bredbåndsnetværk."
 
-#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:414
-#: ../src/applet-device-gsm.c:457
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:419
+#: ../src/applet-device-gsm.c:463 ../src/applet-device-wimax.c:464
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Forbereder mobil bredbåndsforbindelse \"%s\"…"
 
-#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:417
-#: ../src/applet-device-gsm.c:460
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:422
+#: ../src/applet-device-gsm.c:466 ../src/applet-device-wimax.c:467
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Konfigurerer mobil bredbåndsforbindelse \"%s\"…"
 
-#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:420
-#: ../src/applet-device-gsm.c:463
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:425
+#: ../src/applet-device-gsm.c:469 ../src/applet-device-wimax.c:470
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Der kræves brugergodkendelse for mobil bredbåndsforbindelse \"%s\"…"
 
-#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:423
-#: ../src/applet-device-gsm.c:466 ../src/applet.c:2299
+#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:428
+#: ../src/applet-device-gsm.c:472 ../src/applet-device-wimax.c:473
+#: ../src/applet.c:2383
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Anmoder om en netværksadresse for \"%s\"…"
 
-#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:441
-#: ../src/applet-device-gsm.c:484
+#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:446
+#: ../src/applet-device-gsm.c:490
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Mobil bredbåndsforbindelse \"%s\" er aktiv"
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:687
-#: ../src/mb-menu-item.c:55
+#: ../src/applet-device-cdma.c:186 ../src/connection-editor/page-mobile.c:681
+#: ../src/mb-menu-item.c:54
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:281 ../src/applet-device-gsm.c:325
+#: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
+#: ../src/applet-dialogs.c:405
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobilt bredbånd (%s)"
 
-#: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
-#: ../src/connection-editor/page-mobile.c:382
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1399
+#: ../src/applet-device-cdma.c:285 ../src/applet-device-gsm.c:329
+#: ../src/connection-editor/page-mobile.c:372
+#: ../src/connection-editor/nm-connection-editor.ui.h:6
+#: ../src/connection-editor/nm-connection-list.c:1440
 msgid "Mobile Broadband"
 msgstr "Mobilt bredbånd"
 
 #. Default connection item
-#: ../src/applet-device-cdma.c:345
+#: ../src/applet-device-cdma.c:350
 msgid "New Mobile Broadband (CDMA) connection..."
 msgstr "Ny mobil bredbåndsforbindelse (CDMA)..."
 
-#: ../src/applet-device-cdma.c:379
+#: ../src/applet-device-cdma.c:384
 msgid "You are now connected to the CDMA network."
 msgstr "Du er nu tilsluttet CDMA-netværket."
 
-#: ../src/applet-device-cdma.c:436 ../src/applet-device-gsm.c:479
+#: ../src/applet-device-cdma.c:441 ../src/applet-device-gsm.c:485
+#: ../src/applet-device-wimax.c:482
 #, c-format
 msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
 msgstr "Mobil bredbåndsforbindelsen \"%s\" er aktiv: (%d%%%s%s)"
 
-#: ../src/applet-device-cdma.c:439 ../src/applet-device-gsm.c:482
+#: ../src/applet-device-cdma.c:444 ../src/applet-device-gsm.c:488
+#: ../src/applet-device-wimax.c:485
 msgid "roaming"
 msgstr "roaming"
 
-#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:690
-#: ../src/mb-menu-item.c:60
+#: ../src/applet-device-gsm.c:212 ../src/connection-editor/page-mobile.c:684
+#: ../src/mb-menu-item.c:59
 msgid "GSM"
 msgstr "GSM"
 
 #. Default connection item
-#: ../src/applet-device-gsm.c:388
+#: ../src/applet-device-gsm.c:394
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "Ny mobil bredbåndsforbindelse (GSM)..."
 
-#: ../src/applet-device-gsm.c:422
+#: ../src/applet-device-gsm.c:428
 msgid "You are now connected to the GSM network."
 msgstr "Du er nu tilsluttet GSM-netværket."
 
-#: ../src/applet-device-gsm.c:707
+#: ../src/applet-device-gsm.c:589
 msgid "PIN code required"
 msgstr "PIN-kode kræves"
 
-#: ../src/applet-device-gsm.c:715
+#: ../src/applet-device-gsm.c:597
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Der skal bruges en PIN-kode til den mobile bredbåndsenhed"
 
-#: ../src/applet-device-gsm.c:847
+#: ../src/applet-device-gsm.c:718
 msgid "Wrong PIN code; please contact your provider."
 msgstr "Forkert PIN-kode; kontakt venligst din udbyder."
 
-#: ../src/applet-device-gsm.c:870
+#: ../src/applet-device-gsm.c:741
 msgid "Wrong PUK code; please contact your provider."
 msgstr "Forkert PUK-kode; kontakt venligst din udbyder."
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-gsm.c:897
+#: ../src/applet-device-gsm.c:768
 msgid "Sending unlock code..."
 msgstr "Sender oplåsnings-kode..."
 
-#: ../src/applet-device-gsm.c:960
+#: ../src/applet-device-gsm.c:831
 msgid "SIM PIN unlock required"
 msgstr "SIM PIN-oplåsning kræves"
 
-#: ../src/applet-device-gsm.c:961
+#: ../src/applet-device-gsm.c:832
 msgid "SIM PIN Unlock Required"
 msgstr "SIM PIN-oplåsning kræves"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-device-gsm.c:963
+#: ../src/applet-device-gsm.c:834
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -242,26 +239,25 @@ msgid ""
 msgstr "Mobil bredbåndsenhed \"%s\" kræver en SIM PIN-kode før den kan bruges."
 
 #. Translators: PIN code entry label
-#: ../src/applet-device-gsm.c:965
+#: ../src/applet-device-gsm.c:836
 msgid "PIN code:"
 msgstr "PIN-kode:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-device-gsm.c:969
-#, fuzzy
+#: ../src/applet-device-gsm.c:840
 msgid "Show PIN code"
-msgstr "Ny PIN-kode:"
+msgstr "Vis PIN-kode"
 
-#: ../src/applet-device-gsm.c:972
+#: ../src/applet-device-gsm.c:843
 msgid "SIM PUK unlock required"
 msgstr "SIM PUK oplåsning kræves"
 
-#: ../src/applet-device-gsm.c:973
+#: ../src/applet-device-gsm.c:844
 msgid "SIM PUK Unlock Required"
 msgstr "SIM PUK oplåsning kræves"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-device-gsm.c:975
+#: ../src/applet-device-gsm.c:846
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -269,354 +265,410 @@ msgid ""
 msgstr "Mobil bredbåndsenhed \"%s\" kræver en SIM PUK-kode før den kan bruges."
 
 #. Translators: PUK code entry label
-#: ../src/applet-device-gsm.c:977
+#: ../src/applet-device-gsm.c:848
 msgid "PUK code:"
 msgstr "PUK-kode:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-device-gsm.c:980
+#: ../src/applet-device-gsm.c:851
 msgid "New PIN code:"
 msgstr "Ny PIN-kode:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-device-gsm.c:982
+#: ../src/applet-device-gsm.c:853
 msgid "Re-enter new PIN code:"
 msgstr "Gentag ny PIN-kode:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-device-gsm.c:987
-#, fuzzy
+#: ../src/applet-device-gsm.c:858
 msgid "Show PIN/PUK codes"
-msgstr "Ny PIN-kode:"
+msgstr "Vis PIN-/PUK-koder"
 
-#: ../src/applet-device-wired.c:63
+#: ../src/applet-device-wired.c:62
 msgid "Auto Ethernet"
 msgstr "Automatisk ethernet"
 
-#: ../src/applet-device-wired.c:206
+#: ../src/applet-device-wired.c:205
 #, c-format
 msgid "Wired Networks (%s)"
 msgstr "Kablede netværk (%s)"
 
-#: ../src/applet-device-wired.c:208
+#: ../src/applet-device-wired.c:207
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "Kablet netværk (%s)"
 
-#: ../src/applet-device-wired.c:211
+#: ../src/applet-device-wired.c:210
 msgid "Wired Networks"
 msgstr "Kablede netværk"
 
-#: ../src/applet-device-wired.c:213
+#: ../src/applet-device-wired.c:212
 msgid "Wired Network"
 msgstr "Kablet netværk"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:233 ../src/applet.c:1305
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1389
 msgid "disconnected"
 msgstr "ikke tilsluttet"
 
-#: ../src/applet-device-wired.c:275
+#: ../src/applet-device-wired.c:274
 msgid "You are now connected to the wired network."
 msgstr "Du er nu tilsluttet kablet netværk."
 
-#: ../src/applet-device-wired.c:301
+#: ../src/applet-device-wired.c:300
 #, c-format
 msgid "Preparing wired network connection '%s'..."
 msgstr "Forbereder kablet netværksforbindelse \"%s\"…"
 
-#: ../src/applet-device-wired.c:304
+#: ../src/applet-device-wired.c:303
 #, c-format
 msgid "Configuring wired network connection '%s'..."
 msgstr "Konfigurerer kablet netværksforbindelse \"%s\"…"
 
-#: ../src/applet-device-wired.c:307
+#: ../src/applet-device-wired.c:306
 #, c-format
 msgid "User authentication required for wired network connection '%s'..."
 msgstr "Der kræves brugergodkendelse til kablet netværksforbindelse \"%s\"…"
 
-#: ../src/applet-device-wired.c:310
+#: ../src/applet-device-wired.c:309
 #, c-format
 msgid "Requesting a wired network address for '%s'..."
 msgstr "Anmoder om en kablet netværksadresse for \"%s\"…"
 
-#: ../src/applet-device-wired.c:314
+#: ../src/applet-device-wired.c:313
 #, c-format
 msgid "Wired network connection '%s' active"
 msgstr "Kablet netværksforbindelse \"%s\" er aktiv"
 
-#: ../src/applet-device-wired.c:565
+#: ../src/applet-device-wired.c:494
 msgid "DSL authentication"
 msgstr "DSL-godkendelse"
 
-#: ../src/applet-device-wifi.c:88
+#: ../src/applet-device-wifi.c:89
 msgid "_Connect to Hidden Wireless Network..."
 msgstr "_Forbind til skjult trådløs netværk..."
 
-#: ../src/applet-device-wifi.c:121
+#: ../src/applet-device-wifi.c:142
 msgid "Create _New Wireless Network..."
 msgstr "Opret _nyt trådløst netværk..."
 
-#: ../src/applet-device-wifi.c:749
+#: ../src/applet-device-wifi.c:226
+msgid "(none)"
+msgstr "(ingen)"
+
+#: ../src/applet-device-wifi.c:795
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Trådløse netværk (%s)"
 
-#: ../src/applet-device-wifi.c:751
+#: ../src/applet-device-wifi.c:797
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Trådløst netværk (%s)"
 
-#: ../src/applet-device-wifi.c:753
+#: ../src/applet-device-wifi.c:799
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Trådløst netværk"
 msgstr[1] "Trådløse netværk"
 
-#: ../src/applet-device-wifi.c:783
+#: ../src/applet-device-wifi.c:832
 msgid "wireless is disabled"
 msgstr "trådløs er deaktiveret"
 
-#: ../src/applet-device-wifi.c:844
+#: ../src/applet-device-wifi.c:833
+msgid "wireless is disabled by hardware switch"
+msgstr "trådløst er deaktiveret af hardwareknap"
+
+#: ../src/applet-device-wifi.c:894
 msgid "More networks"
 msgstr "Flere netværk"
 
-#: ../src/applet-device-wifi.c:1048
+#: ../src/applet-device-wifi.c:1073
 msgid "Wireless Networks Available"
 msgstr "Trådløse netværk tilgængelige"
 
-#: ../src/applet-device-wifi.c:1050
+#: ../src/applet-device-wifi.c:1075
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Klik på dette ikon for at forbinde til et trådløst netværk"
 
-#: ../src/applet-device-wifi.c:1051
-#, fuzzy
+#: ../src/applet-device-wifi.c:1076
 msgid "Use the network menu to connect to a wireless network"
-msgstr "Klik på dette ikon for at forbinde til et trådløst netværk"
+msgstr "Brug netværksmenuen til at forbinde til et trådløst netværk"
 
-#: ../src/applet-device-wifi.c:1054 ../src/applet.c:673
+#: ../src/applet-device-wifi.c:1079 ../src/applet.c:805
 msgid "Don't show this message again"
 msgstr "Vis ikke denne besked igen"
 
-#: ../src/applet-device-wifi.c:1258
+#: ../src/applet-device-wifi.c:1271
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Du er nu tilsluttet det trådløse netværk \"%s\"."
 
-#: ../src/applet-device-wifi.c:1259 ../src/applet-device-wifi.c:1290
-msgid "(none)"
-msgstr "(ingen)"
-
-#: ../src/applet-device-wifi.c:1300
+#: ../src/applet-device-wifi.c:1302
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Forbereder trådløs netværksforbindelse \"%s\"…"
 
-#: ../src/applet-device-wifi.c:1303
+#: ../src/applet-device-wifi.c:1305
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Konfigurerer trådløs netværksforbindelse \"%s\"…"
 
-#: ../src/applet-device-wifi.c:1306
+#: ../src/applet-device-wifi.c:1308
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Der kræves brugergodkendelse til trådløst netværk \"%s\"…"
 
-#: ../src/applet-device-wifi.c:1309
+#: ../src/applet-device-wifi.c:1311
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Anmoder om en trådløs netværksadresse for \"%s\"…"
 
-#: ../src/applet-device-wifi.c:1329
+#: ../src/applet-device-wifi.c:1332
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Trådløs netværksforbindelse \"%s\" er aktiv: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1333
+#: ../src/applet-device-wifi.c:1337
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Trådløs netværksforbindelse \"%s\" er aktiv"
+
+#: ../src/applet-device-wimax.c:231
+#, c-format
+msgid "WiMAX Mobile Broadband (%s)"
+msgstr "WiMAX mobilt bredbånd (%s)"
+
+#: ../src/applet-device-wimax.c:233
+msgid "WiMAX Mobile Broadband"
+msgstr "WiMAX mobilt bredbånd"
+
+#: ../src/applet-device-wimax.c:259
+msgid "WiMAX is disabled"
+msgstr "WiMAX er deaktiveret"
+
+#: ../src/applet-device-wimax.c:260
+msgid "WiMAX is disabled by hardware switch"
+msgstr "WiMAX er deaktiveret af hardwareknap"
+
+#: ../src/applet-device-wimax.c:428
+msgid "You are now connected to the WiMAX network."
+msgstr "Du er nu tilsluttet WiMAX-netværket."
 
 #: ../src/applet-dialogs.c:56
 msgid "Error displaying connection information:"
 msgstr "Fejl ved visning af forbindelsesinformation:"
 
-#: ../src/applet-dialogs.c:87
-#: ../src/connection-editor/page-wireless-security.c:284
-#: ../src/wireless-dialog.c:962
-#: ../src/wireless-security/wireless-security.c:341
+#: ../src/applet-dialogs.c:108
+#: ../src/connection-editor/page-wireless-security.c:285
+#: ../src/wireless-dialog.c:946
+#: ../src/wireless-security/wireless-security.c:392
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:89
+#: ../src/applet-dialogs.c:110
 msgid "Dynamic WEP"
 msgstr "Dynamisk WEP"
 
-#: ../src/applet-dialogs.c:91 ../src/applet-dialogs.c:192
-#: ../src/applet-dialogs.c:194
+#: ../src/applet-dialogs.c:112 ../src/applet-dialogs.c:221
+#: ../src/applet-dialogs.c:223
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:190
+#: ../src/applet-dialogs.c:219
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:198 ../src/applet-dialogs.c:207
-#: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:919
-#, fuzzy
+#: ../src/applet-dialogs.c:227 ../src/applet-dialogs.c:236
+#: ../src/connection-editor/page-wireless-security.c:239
+#: ../src/wireless-dialog.c:903
 msgctxt "Wifi/wired security"
 msgid "None"
-msgstr "ingen"
+msgstr "Ingen"
 
-#: ../src/applet-dialogs.c:210
-#, fuzzy
-msgctxt "Wifi/wired security"
-msgid "Unknown"
-msgstr "Ukendt"
-
-#: ../src/applet-dialogs.c:280 ../src/applet-dialogs.c:382
+#: ../src/applet-dialogs.c:327 ../src/applet-dialogs.c:465
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:282 ../src/applet-dialogs.c:384
-#, fuzzy
+#: ../src/applet-dialogs.c:329 ../src/applet-dialogs.c:467
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Ukendt"
 
-#: ../src/applet-dialogs.c:313
+#: ../src/applet-dialogs.c:342
+#, c-format
+msgid "%d dB"
+msgstr "%d dB"
+
+#: ../src/applet-dialogs.c:344
+msgctxt "WiMAX CINR"
+msgid "unknown"
+msgstr "ukendt"
+
+#: ../src/applet-dialogs.c:356
+msgctxt "WiMAX Base Station ID"
+msgid "unknown"
+msgstr "ukendt"
+
+#: ../src/applet-dialogs.c:391
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:315
+#: ../src/applet-dialogs.c:394
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:317
+#: ../src/applet-dialogs.c:401
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:319
+#: ../src/applet-dialogs.c:403
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:324
+#: ../src/applet-dialogs.c:407
+#, c-format
+msgid "WiMAX (%s)"
+msgstr "WiMAX (%s)"
+
+#. --- General ---
+#: ../src/applet-dialogs.c:413
+msgid "General"
+msgstr "Generelt"
+
+#: ../src/applet-dialogs.c:417
 msgid "Interface:"
 msgstr "Grænseflade:"
 
-#: ../src/applet-dialogs.c:340
+#: ../src/applet-dialogs.c:433
 msgid "Hardware Address:"
 msgstr "Hardwareadresse:"
 
-#: ../src/applet-dialogs.c:350
+#. Driver
+#: ../src/applet-dialogs.c:441
 msgid "Driver:"
 msgstr "Driver:"
 
-#: ../src/applet-dialogs.c:388
+#: ../src/applet-dialogs.c:470
 msgid "Speed:"
 msgstr "Hastighed:"
 
-#: ../src/applet-dialogs.c:397
+#: ../src/applet-dialogs.c:480
 msgid "Security:"
 msgstr "Sikkerhed:"
 
-#: ../src/applet-dialogs.c:419
+#: ../src/applet-dialogs.c:493
+msgid "CINR:"
+msgstr "CINR:"
+
+#: ../src/applet-dialogs.c:506
+msgid "BSID:"
+msgstr "BSID:"
+
+#. --- IPv4 ---
+#: ../src/applet-dialogs.c:523
+msgid "IPv4"
+msgstr "IPv4"
+
+#. Address
+#: ../src/applet-dialogs.c:534 ../src/applet-dialogs.c:641
 msgid "IP Address:"
 msgstr "IP-adresse:"
 
-#: ../src/applet-dialogs.c:421 ../src/applet-dialogs.c:439
-#, fuzzy
+#: ../src/applet-dialogs.c:536 ../src/applet-dialogs.c:552
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Ukendt"
 
-#: ../src/applet-dialogs.c:437
+#: ../src/applet-dialogs.c:550
 msgid "Broadcast Address:"
 msgstr "Rundsendings-adresse:"
 
-#: ../src/applet-dialogs.c:448
+#. Prefix
+#: ../src/applet-dialogs.c:559
 msgid "Subnet Mask:"
 msgstr "Undernetmaske:"
 
-#: ../src/applet-dialogs.c:450
-#, fuzzy
+#: ../src/applet-dialogs.c:561
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Ukendt"
 
-#: ../src/applet-dialogs.c:460
+#: ../src/applet-dialogs.c:569 ../src/applet-dialogs.c:656
 msgid "Default Route:"
 msgstr "Standard rute:"
 
-#: ../src/applet-dialogs.c:474
+#: ../src/applet-dialogs.c:581
 msgid "Primary DNS:"
 msgstr "Primær DNS:"
 
-#: ../src/applet-dialogs.c:485
+#: ../src/applet-dialogs.c:590
 msgid "Secondary DNS:"
 msgstr "Sekundær DNS:"
 
+#: ../src/applet-dialogs.c:600
+msgid "Ternary DNS:"
+msgstr "Ternær DNS:"
+
+#. --- IPv6 ---
+#: ../src/applet-dialogs.c:615
+msgid "IPv6"
+msgstr "IPv6"
+
+#: ../src/applet-dialogs.c:624
+msgid "Ignored"
+msgstr "Ignoreres"
+
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:548
+#: ../src/applet-dialogs.c:732
 msgid "No valid active connections found!"
 msgstr "Ingen gyldige aktive forbindelser fundet!"
 
-#: ../src/applet-dialogs.c:675
+#: ../src/applet-dialogs.c:785
 msgid ""
-"Copyright © 2004-2008 Red Hat, Inc.\n"
-"Copyright © 2005-2008 Novell, Inc."
+"Copyright © 2004-2011 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc.\n"
+"and many other community contributors and translators"
 msgstr ""
 "Ophavsret © 2004-2008 Red Hat, Inc.\n"
-"Ophavsret © 2005-2008 Novell, Inc."
+"Ophavsret © 2005-2008 Novell, Inc.\n"
+"og mange andre bidragydere fra fællesskabet samt oversættere"
 
-#: ../src/applet-dialogs.c:677
+#: ../src/applet-dialogs.c:788
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Statusfelt-panelprogram til håndtering af dine netværksenheder og -"
 "forbindelser."
 
-#: ../src/applet-dialogs.c:679
+#: ../src/applet-dialogs.c:790
 msgid "NetworkManager Website"
 msgstr "NetworkManager websted"
 
-#: ../src/applet-dialogs.c:682
-msgid "translator-credits"
-msgstr ""
-"David Nielsen\n"
-"Martin Willemoes Hansen\n"
-"Lasse Bang Mikkelsen\n"
-"Peter Bach\n"
-"Mads Bille Lundby\n"
-"Kim Iskov\n"
-"\n"
-"Dansk-gruppen <dansk@dansk-gruppen.dk>\n"
-"Mere info: http://www.dansk-gruppen.dk"
-
-#: ../src/applet-dialogs.c:698
+#: ../src/applet-dialogs.c:805
 msgid "Missing resources"
 msgstr "Manglende ressourcer"
 
-#: ../src/applet-dialogs.c:725
+#: ../src/applet-dialogs.c:830
 msgid "Mobile broadband network password"
 msgstr "Adgangskode til mobilt bredbåndsnetværk"
 
-#: ../src/applet-dialogs.c:734
+#: ../src/applet-dialogs.c:839
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Adgangskode kræves for at forbinde til \"%s\"."
 
-#: ../src/applet-dialogs.c:755
+#: ../src/applet-dialogs.c:854
 msgid "Password:"
 msgstr "Adgangskode:"
 
-#: ../src/applet.c:786
+#: ../src/applet.c:894
 #, c-format
 msgid ""
 "\n"
@@ -626,7 +678,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen \"%s\" fejlede, fordi netværksforbindelsen blev afbrudt."
 
-#: ../src/applet.c:789
+#: ../src/applet.c:897
 #, c-format
 msgid ""
 "\n"
@@ -635,7 +687,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen \"%s\"  fejlede, fordi VPN-tjenesten stoppede uventet."
 
-#: ../src/applet.c:792
+#: ../src/applet.c:900
 #, c-format
 msgid ""
 "\n"
@@ -646,7 +698,7 @@ msgstr ""
 "VPN-forbindelsen \"%s\" fejlede, fordi VPN-tjenesten returnerede ugyldig "
 "konfiguration."
 
-#: ../src/applet.c:795
+#: ../src/applet.c:903
 #, c-format
 msgid ""
 "\n"
@@ -656,7 +708,7 @@ msgstr ""
 "VPN-forbindelsen \"%s\" fejlede, fordi forsøget på at forbinde overskred "
 "tidsgrænsen."
 
-#: ../src/applet.c:798
+#: ../src/applet.c:906
 #, c-format
 msgid ""
 "\n"
@@ -665,7 +717,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen \"%s\" fejlede, fordi VPN-tjenesten ikke startede i tide."
 
-#: ../src/applet.c:801
+#: ../src/applet.c:909
 #, c-format
 msgid ""
 "\n"
@@ -674,7 +726,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen \"%s\"  fejlede, fordi VPN-tjenestens opstart fejlede."
 
-#: ../src/applet.c:804
+#: ../src/applet.c:912
 #, c-format
 msgid ""
 "\n"
@@ -684,7 +736,7 @@ msgstr ""
 "VPN-forbindelsen \"%s\"  fejlede, fordi der ikke fandtes nogen gyldige VPN-"
 "koder."
 
-#: ../src/applet.c:807
+#: ../src/applet.c:915
 #, c-format
 msgid ""
 "\n"
@@ -693,7 +745,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen \"%s\" fejlede på grund af ugyldige VPN-koder."
 
-#: ../src/applet.c:814
+#: ../src/applet.c:922
 #, c-format
 msgid ""
 "\n"
@@ -702,7 +754,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen \"%s\" fejlede."
 
-#: ../src/applet.c:832
+#: ../src/applet.c:940
 #, c-format
 msgid ""
 "\n"
@@ -713,7 +765,7 @@ msgstr ""
 "VPN-forbindelsen \"%s\" blev afbrudt, fordi netværksforbindelsen blev "
 "afbrudt."
 
-#: ../src/applet.c:835
+#: ../src/applet.c:943
 #, c-format
 msgid ""
 "\n"
@@ -722,7 +774,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen \"%s\" blev afbrudt, fordi VPN-tjenesten stoppede."
 
-#: ../src/applet.c:841
+#: ../src/applet.c:949
 #, c-format
 msgid ""
 "\n"
@@ -731,15 +783,15 @@ msgstr ""
 "\n"
 "VPN-forbindelsen \"%s\" blev afbrudt."
 
-#: ../src/applet.c:872
+#: ../src/applet.c:983
 msgid "VPN Login Message"
 msgstr "Log ind-meddelelse for VPN"
 
-#: ../src/applet.c:884 ../src/applet.c:892 ../src/applet.c:939
+#: ../src/applet.c:989 ../src/applet.c:997 ../src/applet.c:1047
 msgid "VPN Connection Failed"
 msgstr "VPN-forbindelse fejlede"
 
-#: ../src/applet.c:946
+#: ../src/applet.c:1054
 #, c-format
 msgid ""
 "\n"
@@ -752,7 +804,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:949
+#: ../src/applet.c:1057
 #, c-format
 msgid ""
 "\n"
@@ -765,350 +817,198 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1293
+#: ../src/applet.c:1377
 msgid "device not ready (firmware missing)"
 msgstr "enheden er ikke klar (firmware mangler)"
 
-#: ../src/applet.c:1295
+#: ../src/applet.c:1379
 msgid "device not ready"
 msgstr "enhed er ikke klar"
 
-#: ../src/applet.c:1321
+#: ../src/applet.c:1405
 msgid "Disconnect"
 msgstr "Afbryd"
 
-#: ../src/applet.c:1335
+#: ../src/applet.c:1419
 msgid "device not managed"
 msgstr "enhed er ikke redigeret"
 
-#: ../src/applet.c:1381
+#: ../src/applet.c:1463
 msgid "No network devices available"
 msgstr "Ingen tilgængelige netværksenheder"
 
-#: ../src/applet.c:1469
+#: ../src/applet.c:1551
 msgid "_VPN Connections"
 msgstr "_VPN-forbindelser"
 
-#: ../src/applet.c:1522
+#: ../src/applet.c:1608
 msgid "_Configure VPN..."
 msgstr "_Konfigurér VPN..."
 
-#: ../src/applet.c:1526
+#: ../src/applet.c:1612
 msgid "_Disconnect VPN"
 msgstr "_Afbryd VPN"
 
-#: ../src/applet.c:1613
+#: ../src/applet.c:1710
 msgid "NetworkManager is not running..."
 msgstr "Netværkshåndtering kører ikke..."
 
-#: ../src/applet.c:1618 ../src/applet.c:2427
+#: ../src/applet.c:1715 ../src/applet.c:2508
 msgid "Networking disabled"
 msgstr "Netværk deaktiveret"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1847
+#: ../src/applet.c:1936
 msgid "Enable _Networking"
 msgstr "Aktivér _netværk"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:1856
+#: ../src/applet.c:1945
 msgid "Enable _Wireless"
 msgstr "Aktivér _trådløst netværk"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1865
+#: ../src/applet.c:1954
 msgid "Enable _Mobile Broadband"
 msgstr "Aktiver _mobilt bredbånd"
 
+#. 'Enable WiMAX Mobile Broadband' item
+#: ../src/applet.c:1963
+msgid "Enable WiMA_X Mobile Broadband"
+msgstr "Aktiver WiMA_X mobilt bredbånd"
+
 #. Toggle notifications item
-#: ../src/applet.c:1876
+#: ../src/applet.c:1974
 msgid "Enable N_otifications"
 msgstr "Aktivér _påmindelser"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1887
+#: ../src/applet.c:1985
 msgid "Connection _Information"
 msgstr "Forbindelses_information"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1897
+#: ../src/applet.c:1995
 msgid "Edit Connections..."
 msgstr "Håndter forbindelser..."
 
 #. Help item
-#: ../src/applet.c:1911
+#: ../src/applet.c:2009
 msgid "_Help"
 msgstr "_Hjælp"
 
 #. About item
-#: ../src/applet.c:1920
+#: ../src/applet.c:2018
 msgid "_About"
 msgstr "_Om"
 
-#: ../src/applet.c:2111
+#: ../src/applet.c:2195
 msgid "Disconnected"
 msgstr "Afbrudt"
 
-#: ../src/applet.c:2112
+#: ../src/applet.c:2196
 msgid "The network connection has been disconnected."
 msgstr "Netværksforbindelsen er blevet afbrudt."
 
-#: ../src/applet.c:2293
+#: ../src/applet.c:2377
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Forbereder netværksforbindelse \"%s\"…"
 
-#: ../src/applet.c:2296
+#: ../src/applet.c:2380
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Der kræves brugergodkendelse til netværksforbindelse \"%s\"…"
 
-#: ../src/applet.c:2302
+#: ../src/applet.c:2386
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Netværksforbindelse \"%s\" er aktiv"
 
-#: ../src/applet.c:2383
+#: ../src/applet.c:2464
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Starter VPN-forbindelse \"%s\"…"
 
-#: ../src/applet.c:2386
+#: ../src/applet.c:2467
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Der kræves brugergodkendelse til VPN-forbindelse \"%s\"…"
 
-#: ../src/applet.c:2389
+#: ../src/applet.c:2470
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Anmoder om en VPN-adresse for \"%s\"…"
 
-#: ../src/applet.c:2392
+#: ../src/applet.c:2473
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN-forbindelse \"%s\" er aktiv"
 
-#: ../src/applet.c:2431
+#: ../src/applet.c:2512
 msgid "No network connection"
 msgstr "Ingen netværksforbindelse"
 
-#: ../src/applet.c:2995
+#: ../src/applet.c:3161
 msgid "NetworkManager Applet"
 msgstr "Panelprogram til Netværkhåndtering"
 
-#: ../src/applet.c:3001 ../src/wired-dialog.c:128
-msgid ""
-"The NetworkManager Applet could not find some required resources (the glade "
-"file was not found)."
-msgstr ""
-"Panelprogrammet til Netværkshåndtering kunne ikke finde nogle krævede "
-"ressourcer (glade-filen blev ikke fundet)."
-
-#: ../src/applet.glade.h:1 ../src/connection-editor/ce-vpn-wizard.glade.h:1
-msgid " "
-msgstr " "
-
-#: ../src/applet.glade.h:2
-msgid ""
-"1 (Default)\n"
-"2\n"
-"3\n"
-"4"
-msgstr ""
-"1 (Standard)\n"
-"2\n"
-"3\n"
-"4"
-
-#: ../src/applet.glade.h:6
-msgid "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
-msgstr ""
-"<span size=\"larger\" weight=\"bold\">Aktive netværksforbindelser</span>"
-
-#: ../src/applet.glade.h:7
-msgid "Anony_mous identity:"
-msgstr "Anony_m identitet:"
-
-#: ../src/applet.glade.h:8
-msgid "As_k for this password every time"
-msgstr "Spørg efter denne adgangs_kode hver gang"
-
-#: ../src/applet.glade.h:9
-msgid ""
-"Automatic\n"
-"Version 0\n"
-"Version 1"
-msgstr ""
-"Automatisk\n"
-"Version 0\n"
-"Version 1"
-
-#: ../src/applet.glade.h:12
-msgid "C_A certificate:"
-msgstr "C_A-certifikat:"
-
-#: ../src/applet.glade.h:13
-msgid "C_onnect"
-msgstr "F_orbind"
-
-#: ../src/applet.glade.h:14
-msgid "Co_nnection:"
-msgstr "Forbi_ndelse:"
-
-#: ../src/applet.glade.h:15
-msgid "Connection Information"
-msgstr "Forbindelsesinformation"
-
-#: ../src/applet.glade.h:16
-msgid "Don't _warn me again"
-msgstr "Advar mi_g ikke igen"
-
-#: ../src/applet.glade.h:17
-msgid "I_dentity:"
-msgstr "I_dentitet:"
-
-#: ../src/applet.glade.h:18
-msgid "I_nner authentication:"
-msgstr "I_ndre godkendelse:"
-
-#: ../src/applet.glade.h:19
-msgid "No"
-msgstr "Nej"
-
-#: ../src/applet.glade.h:20
-msgid ""
-"Open System\n"
-"Shared Key"
-msgstr ""
-"Åbent system\n"
-"Delt nøgle"
-
-#: ../src/applet.glade.h:22
-msgid "Other Wireless Network..."
-msgstr "Andet trådløst netværk…"
-
-#: ../src/applet.glade.h:23
-msgid "Private _key:"
-msgstr "Privat nøg_le:"
-
-#: ../src/applet.glade.h:24
-msgid "Sho_w key"
-msgstr "Vis nøg_le"
-
-#: ../src/applet.glade.h:25 ../src/connection-editor/ce-page-dsl.glade.h:1
-msgid "Sho_w password"
-msgstr "_Vis adgangskode"
-
-#: ../src/applet.glade.h:26
-msgid "WEP inde_x:"
-msgstr "WEP-inde_ks:"
-
-#: ../src/applet.glade.h:27
-msgid "Wireless _adapter:"
-msgstr "Trådløs _adapter:"
-
-#: ../src/applet.glade.h:28
-msgid "Yes"
-msgstr "Ja"
-
-#: ../src/applet.glade.h:29
-msgid "_Authentication:"
-msgstr "_Godkendelse:"
-
-#: ../src/applet.glade.h:30
-msgid "_Key:"
-msgstr "_Nøgle:"
-
-#: ../src/applet.glade.h:31
-msgid "_Network name:"
-msgstr "_Netværksnavn:"
-
-#: ../src/applet.glade.h:32
-msgid "_PEAP version:"
-msgstr "_PEAP-version:"
-
-#: ../src/applet.glade.h:33 ../src/connection-editor/ce-page-dsl.glade.h:2
-#: ../src/connection-editor/ce-page-mobile.glade.h:15
-msgid "_Password:"
-msgstr "_Adgangskode:"
-
-#: ../src/applet.glade.h:34
-msgid "_Private key password:"
-msgstr "Adgangskode til _privat nøgle:"
-
-#: ../src/applet.glade.h:35 ../src/connection-editor/ce-page-mobile.glade.h:16
-msgid "_Type:"
-msgstr "_Type:"
-
-#: ../src/applet.glade.h:36
+#: ../src/gsm-unlock.ui.h:1
 msgid "_Unlock"
 msgstr "_Lås op"
 
-#: ../src/applet.glade.h:37
-msgid "_User certificate:"
-msgstr "Br_ugercertifikat:"
-
-#: ../src/applet.glade.h:38 ../src/connection-editor/ce-page-dsl.glade.h:4
-#: ../src/connection-editor/ce-page-mobile.glade.h:17
-msgid "_Username:"
-msgstr "Br_ugernavn:"
-
-#: ../src/applet.glade.h:39
-msgid "_Wireless security:"
-msgstr "Trådløs _sikkerhed:"
-
-#: ../src/applet.glade.h:40
+#: ../src/gsm-unlock.ui.h:2
 msgid "label"
 msgstr "etiket"
 
-#: ../src/connection-editor/ce-page.c:69
+#: ../src/info.ui.h:1
+msgid "Active Network Connections"
+msgstr "Aktive netværksforbindelser"
+
+#: ../src/info.ui.h:2
+msgid "Connection Information"
+msgstr "Forbindelsesinformation"
+
+#: ../src/wifi.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
+#: ../src/wireless-security/eap-method-peap.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:1
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:1
+#: ../src/wireless-security/ws-wpa-eap.ui.h:1
+msgid " "
+msgstr " "
+
+#: ../src/wifi.ui.h:2
+msgid "Co_nnection:"
+msgstr "Forbi_ndelse:"
+
+#: ../src/wifi.ui.h:3
+msgid "Wireless _adapter:"
+msgstr "Trådløs _adapter:"
+
+#: ../src/wifi.ui.h:4 ../src/wired-8021x.ui.h:2
+msgid "_Network name:"
+msgstr "_Netværksnavn:"
+
+#: ../src/wifi.ui.h:5
+msgid "_Wireless security:"
+msgstr "Trådløs _sikkerhed:"
+
+#: ../src/wired-8021x.ui.h:1 ../src/wired-dialog.c:104
+msgid "Wired 802.1X authentication"
+msgstr "Kablet 802.1x-godkendelse"
+
+#: ../src/connection-editor/ce-page.c:67
 msgid "automatic"
 msgstr "automatisk"
 
-#: ../src/connection-editor/ce-page.c:222
-#: ../src/connection-editor/nm-connection-editor.c:616
+#: ../src/connection-editor/ce-page.c:294
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Kunne ikke opdatere forbindelseskoder på grund af en ukendt fejl."
 
-#: ../src/connection-editor/ce-page-dsl.glade.h:3
-msgid "_Service:"
-msgstr "_Tjeneste:"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:1
-#: ../src/connection-editor/ce-page-ip6.glade.h:1
-msgid "<b>Addresses</b>"
-msgstr "<b>Adresser</b>"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:2
-#: ../src/connection-editor/ce-page-ip6.glade.h:2
-msgid ""
-"Automatic\n"
-"Automatic with manual DNS settings\n"
-"Manual\n"
-"Link-Local\n"
-"Shared to other computers"
-msgstr ""
-"Automatisk\n"
-"Automatisk med manuel DNS-opsætning\n"
-"Manuel\n"
-"Link-lokal\n"
-"Delt til andre computere"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:7
-msgid "D_HCP client ID:"
-msgstr "D_HCP-klient-id:"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:8
-#: ../src/connection-editor/ce-page-ip6.glade.h:7
-msgid ""
-"Domains used when resolving host names. Use commas to separate multiple "
-"domains."
-msgstr ""
-"Domæner brugt ved evaluering af værtsnavne. Brug komma til at adskille flere "
-"domæner."
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:9
-#: ../src/connection-editor/ce-page-ip6.glade.h:8
+#: ../src/connection-editor/ce-ip4-routes.ui.h:1
+#: ../src/connection-editor/ce-ip6-routes.ui.h:1
+#: ../src/connection-editor/ce-page-ip4.ui.h:6
+#: ../src/connection-editor/ce-page-ip6.ui.h:5
 msgid ""
 "IP addresses identify your computer on the network.  Click the \"Add\" "
 "button to add an IP address."
@@ -1116,17 +1016,8 @@ msgstr ""
 "IP-adresser identificerer din computer på netværket. Klik \"Tilføj\"-knappen "
 "for at tilføje en IP-adresse."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:10
-#: ../src/connection-editor/ce-page-ip6.glade.h:9
-msgid ""
-"IP addresses of domain name servers used to resolve host names. Use commas "
-"to separate multiple domain name server addresses."
-msgstr ""
-"Domæne-navnservers IP-adresser brugt ved evaluering af værtsnavne. Brug "
-"komma til at adskille flere domæne-navnserveres adresser."
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:11
-#: ../src/connection-editor/ce-page-ip6.glade.h:10
+#: ../src/connection-editor/ce-ip4-routes.ui.h:2
+#: ../src/connection-editor/ce-ip6-routes.ui.h:2
 msgid ""
 "If enabled, this connection will never be used as the default network "
 "connection."
@@ -1134,16 +1025,111 @@ msgstr ""
 "Hvis aktiveret, så vil denne forbindelse aldrig blive brugt som "
 "standardnetværksforbindelse."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:12
-#: ../src/connection-editor/ce-page-ip6.glade.h:11
+#: ../src/connection-editor/ce-ip4-routes.ui.h:3
+#: ../src/connection-editor/ce-ip6-routes.ui.h:3
 msgid "Ig_nore automatically obtained routes"
 msgstr "Ig_norér automatisk fundne ruter"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:13
+#: ../src/connection-editor/ce-ip4-routes.ui.h:4
+#: ../src/connection-editor/ce-ip6-routes.ui.h:4
+msgid "Use this c_onnection only for resources on its network"
+msgstr "Brug kun denne f_orbindelse til ressourcer på dens netværk"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:1
+#: ../src/wireless-security/eap-method-leap.ui.h:1
+#: ../src/wireless-security/eap-method-simple.ui.h:2
+#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/ws-leap.ui.h:1
+#: ../src/wireless-security/ws-wpa-psk.ui.h:1
+msgid "Sho_w password"
+msgstr "_Vis adgangskode"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:2
+#: ../src/connection-editor/ce-page-mobile.ui.h:15
+#: ../src/wireless-security/eap-method-leap.ui.h:2
+#: ../src/wireless-security/eap-method-simple.ui.h:3
+#: ../src/wireless-security/ws-leap.ui.h:2
+#: ../src/wireless-security/ws-wpa-psk.ui.h:2
+msgid "_Password:"
+msgstr "_Adgangskode:"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:3
+msgid "_Service:"
+msgstr "_Tjeneste:"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:4
+#: ../src/connection-editor/ce-page-mobile.ui.h:17
+#: ../src/wireless-security/eap-method-leap.ui.h:3
+#: ../src/wireless-security/eap-method-simple.ui.h:4
+#: ../src/wireless-security/ws-leap.ui.h:3
+msgid "_Username:"
+msgstr "Br_ugernavn:"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:1
+#: ../src/connection-editor/ce-page-ip6.ui.h:1
+msgid "Addresses"
+msgstr "Adresser"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:2
+#: ../src/connection-editor/ce-page-ip6.ui.h:2
+#: ../src/connection-editor/ce-page-wired.ui.h:7
+#: ../src/connection-editor/ce-page-wireless.ui.h:3
+#: ../src/connection-editor/page-ip6.c:136
+#: ../src/wireless-security/eap-method-peap.ui.h:3
+msgid "Automatic"
+msgstr "Automatisk"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:3
+#: ../src/connection-editor/ce-page-ip6.ui.h:3
+msgid "Automatic with manual DNS settings"
+msgstr "Automatisk med manuelle DNS-indstillinger"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:4
+msgid "D_HCP client ID:"
+msgstr "D_HCP-klient-id:"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:5
+#: ../src/connection-editor/ce-page-ip6.ui.h:4
+msgid ""
+"Domains used when resolving host names. Use commas to separate multiple "
+"domains."
+msgstr ""
+"Domæner brugt ved evaluering af værtsnavne. Brug komma til at adskille flere "
+"domæner."
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:7
+#: ../src/connection-editor/ce-page-ip6.ui.h:6
+msgid ""
+"IP addresses of domain name servers used to resolve host names. Use commas "
+"to separate multiple domain name server addresses."
+msgstr ""
+"Domæne-navnservers IP-adresser brugt ved evaluering af værtsnavne. Brug "
+"komma til at adskille flere domæne-navnserveres adresser."
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:8
+#: ../src/connection-editor/ce-page-ip6.ui.h:7
+msgid "Link-Local"
+msgstr "Link-lokal"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:9
+#: ../src/connection-editor/ce-page-ip6.ui.h:8
+#: ../src/connection-editor/page-ip4.c:163
+#: ../src/connection-editor/page-ip6.c:185
+msgid "Manual"
+msgstr "Manuelt"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:10
 msgid "Require IPv4 addressing for this connection to complete"
 msgstr "Kræver IPv4-adressering for at denne forbindelse kan oprettes"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:14
+#: ../src/connection-editor/ce-page-ip4.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#: ../src/connection-editor/page-ip4.c:181
+#: ../src/connection-editor/page-ip6.c:205
+msgid "Shared to other computers"
+msgstr "Delt til andre computere"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:12
 msgid ""
 "The DHCP client identifier allows the network administrator to customize "
 "your computer's configuration.  If you wish to use a DHCP client identifier, "
@@ -1153,12 +1139,7 @@ msgstr ""
 "din computers konfiguration.  Hvis du ønsker at bruge en DHCP-klient-"
 "identifikation, så skriv det her."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:15
-#: ../src/connection-editor/ce-page-ip6.glade.h:13
-msgid "Use this c_onnection only for resources on its network"
-msgstr "Brug kun denne f_orbindelse til ressourcer på dens netværk"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:16
+#: ../src/connection-editor/ce-page-ip4.ui.h:13
 msgid ""
 "When connecting to IPv6-capable networks, allows the connection to complete "
 "if IPv4 configuration fails but IPv6 configuration succeeds."
@@ -1167,32 +1148,32 @@ msgstr ""
 "tilslutte hvis IPv4-konfigurationen fejler, men IPv6-konfigurationen "
 "lykkedes."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:17
-#: ../src/connection-editor/ce-page-ip6.glade.h:15
+#: ../src/connection-editor/ce-page-ip4.ui.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
 msgid "_DNS servers:"
 msgstr "_DNS-servere:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:18
-#: ../src/connection-editor/ce-page-ip6.glade.h:16
+#: ../src/connection-editor/ce-page-ip4.ui.h:15
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
 msgid "_Method:"
 msgstr "_Metode:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:19
-#: ../src/connection-editor/ce-page-ip6.glade.h:17
+#: ../src/connection-editor/ce-page-ip4.ui.h:16
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
 msgid "_Routes…"
-msgstr "_Ruter..."
+msgstr "_Ruter…"
 
 # Er dette Søgedomæner eller Søg domæner?
-#: ../src/connection-editor/ce-page-ip4.glade.h:20
-#: ../src/connection-editor/ce-page-ip6.glade.h:18
+#: ../src/connection-editor/ce-page-ip4.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
 msgid "_Search domains:"
 msgstr "_Søgedomæner:"
 
-#: ../src/connection-editor/ce-page-ip6.glade.h:12
+#: ../src/connection-editor/ce-page-ip6.ui.h:9
 msgid "Require IPv6 addressing for this connection to complete"
 msgstr "Kræver IPv6-adressering for at denne forbindelse kan oprettes"
 
-#: ../src/connection-editor/ce-page-ip6.glade.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
@@ -1201,276 +1182,236 @@ msgstr ""
 "tilslutte hvis IPv6-konfigurationen fejler, men IPv4-konfigurationen "
 "lykkedes."
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:1
-msgid "<b>Advanced</b>"
-msgstr "<b>Avanceret</b>"
+#: ../src/connection-editor/ce-page-mobile.ui.h:1
+msgid "2G (GPRS/EDGE)"
+msgstr "2G (GPRS/EDGE)"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:2
-msgid "<b>Basic</b>"
-msgstr "<b>Grundlæggende</b>"
+#: ../src/connection-editor/ce-page-mobile.ui.h:2
+msgid "3G (UMTS/HSPA)"
+msgstr "3G (UMTS/HSPA)"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:3
+#: ../src/connection-editor/ce-page-mobile.ui.h:3
+msgid "Advanced"
+msgstr "Avanceret"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:4
 msgid "Allow roaming if home network is not available"
 msgstr "Tillad roaming hvis hjemmenetværket ikke er tilgængeligt"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:4
-msgid ""
-"Any\n"
-"3G (UMTS/HSPA)\n"
-"2G (GPRS/EDGE)\n"
-"Prefer 3G (UMTS/HSPA)\n"
-"Prefer 2G (GPRS/EDGE)"
-msgstr ""
-"Enhver\n"
-"3G (UMTS/HSPA)\n"
-"2G (GPRS/EDGE)\n"
-"3G foretrukket (UMTS/HSPA)\n"
-"2G foretrukket (GPRS/EDGE)"
+#: ../src/connection-editor/ce-page-mobile.ui.h:5
+msgid "Any"
+msgstr "Enhver"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:9
+#: ../src/connection-editor/ce-page-mobile.ui.h:6
+msgid "Basic"
+msgstr "Grundlæggende"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:7
 msgid "Change..."
 msgstr "Ændr..."
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:10
+#: ../src/connection-editor/ce-page-mobile.ui.h:8
 msgid "N_etwork ID:"
 msgstr "N_etværks-ID:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:11
+#: ../src/connection-editor/ce-page-mobile.ui.h:9
 msgid "Nu_mber:"
 msgstr "Nu_mmer:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:12
+#: ../src/connection-editor/ce-page-mobile.ui.h:10
 msgid "PI_N:"
 msgstr "PI_N:"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:13
+#: ../src/connection-editor/ce-page-mobile.ui.h:11
+msgid "Prefer 2G (GPRS/EDGE)"
+msgstr "Foretræk 2G (GPRS/EDGE)"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:12
+msgid "Prefer 3G (UMTS/HSPA)"
+msgstr "Foretræk 3G (UMTS/HSPA)"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:13
 msgid "Sho_w passwords"
 msgstr "_Vis adgangskoder"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
+#: ../src/connection-editor/ce-page-mobile.ui.h:14
 msgid "_APN:"
 msgstr "_APN:"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:1
-msgid "<b>Allowed Authentication Methods</b>"
-msgstr "<b>Tilladte godkendelsesmetoder</b>"
+#: ../src/connection-editor/ce-page-mobile.ui.h:16
+#: ../src/wireless-security/ws-wpa-psk.ui.h:3
+msgid "_Type:"
+msgstr "_Type:"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:2
-msgid "<b>Authentication</b>"
-msgstr "<b>Godkendelse</b>"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:3
-msgid "<b>Compression</b>"
-msgstr "<b>Komprimering</b>"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:4
-msgid "<b>Echo</b>"
-msgstr "<b>Ekko</b>"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:5
-msgid ""
-"<i>In most cases, the provider's PPP servers will support all authentication "
-"methods.  If connections fail, try disabling support for some methods.</i>"
-msgstr ""
-"<i>I de fleste tilfælde vil udbyderens PPP-servere understøtte alle "
-"godkendelsesmetoder. Hvis forbindelsen slår fejl,  så prøv at deaktivere "
-"understøttelse af nogle af metoderne.</i>"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:6
+#: ../src/connection-editor/ce-page-ppp.ui.h:1
 msgid "Allow _BSD data compression"
 msgstr "Tillad _BSD-datakomprimering"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:7
+#: ../src/connection-editor/ce-page-ppp.ui.h:2
 msgid "Allow _Deflate data compression"
 msgstr "Tillad _Deflate-datakomprimering"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:8
+#: ../src/connection-editor/ce-page-ppp.ui.h:3
 msgid "Allowed methods:"
 msgstr "Tilladte metoder:"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:9
-msgid "C_HAP"
-msgstr "C_HAP"
+#: ../src/connection-editor/ce-page-ppp.ui.h:4
+msgid "Authentication"
+msgstr "Godkendelse"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:10
-msgid "Challenge Handshake Authentication Protocol"
-msgstr "Challenge Handshake-godkendelsesprotokol"
+#: ../src/connection-editor/ce-page-ppp.ui.h:5
+msgid "Compression"
+msgstr "Komprimering"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:11
+#: ../src/connection-editor/ce-page-ppp.ui.h:6
 msgid "Configure _Methods…"
 msgstr "Konfigurerings_metoder…"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:12
-msgid "Extensible Authentication Protocol"
-msgstr "Extensible Authentication Protocol"
+#: ../src/connection-editor/ce-page-ppp.ui.h:7
+msgid "Echo"
+msgstr "Echo"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:13
-msgid "MSCHAP v_2"
-msgstr "MSCHAP v_2"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:14
-msgid "Microsoft Challenge Handshake Authentication Protocol"
-msgstr "Microsoft Challenge Handshake Authentication Protocol"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:15
-msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
-msgstr "Microsoft Challenge Handshake Authentication Protocol version 2"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:16
-msgid "Password Authentication Protocol"
-msgstr "Protokol til adgangskodegodkendelse"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:17
+#: ../src/connection-editor/ce-page-ppp.ui.h:8
 msgid "Send PPP _echo packets"
 msgstr "Send PPP-_ekkopakker"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:18
+#: ../src/connection-editor/ce-page-ppp.ui.h:9
 msgid "Use TCP _header compression"
 msgstr "Brug TCP_headerkomprimering"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:19
+#: ../src/connection-editor/ce-page-ppp.ui.h:10
 msgid "Use _stateful MPPE"
 msgstr "Brug til_svarende MPPE"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:20
-msgid "_EAP"
-msgstr "_EAP"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:21
-msgid "_MSCHAP"
-msgstr "_MSCHAP"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:22
-msgid "_PAP"
-msgstr "_PAP"
-
-#: ../src/connection-editor/ce-page-ppp.glade.h:23
+#: ../src/connection-editor/ce-page-ppp.ui.h:11
 msgid "_Require 128-bit encryption"
 msgstr "_Kræv 128-bit kryptering"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:24
+#: ../src/connection-editor/ce-page-ppp.ui.h:12
 msgid "_Use point-to-point encryption (MPPE)"
 msgstr "Br_ug punkt-til-punkt-kryptering (MPPE)"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:1
+#: ../src/connection-editor/ce-page-wired.ui.h:1
+msgid "1 Gb/s"
+msgstr "1 Gb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:2
+msgid "10 Gb/s"
+msgstr "10 Gb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:3
+msgid "10 Mb/s"
+msgstr "10 Mb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:4
+msgid "100 Mb/s"
+msgstr "100 Mb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:5
+msgid "Attachment Unit Interface (AUI)"
+msgstr "Attachment Unit Interface (AUI)"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:6
 msgid "Aut_onegotiate"
 msgstr "Aut_omatisk forhandling"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:2
-msgid ""
-"Automatic\n"
-"10 Mb/s\n"
-"100 Mb/s\n"
-"1 Gb/s\n"
-"10 Gb/s"
-msgstr ""
-"Automatisk\n"
-"10 Mb/s\n"
-"100 Mb/s\n"
-"1 Gb/s\n"
-"10 Gb/s"
+#: ../src/connection-editor/ce-page-wired.ui.h:8
+msgid "BNC"
+msgstr "BNC"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:7
-msgid ""
-"Automatic\n"
-"Twisted Pair (TP)\n"
-"Attachment Unit Interface (AUI)\n"
-"BNC\n"
-"Media Independent Interface (MII)"
-msgstr ""
-"Automatisk\n"
-"Twisted Pair (TP)\n"
-"Attachment Unit Interface (AUI)\n"
-"BNC\n"
-"Media Independent Interface (MII)"
-
-#: ../src/connection-editor/ce-page-wired.glade.h:12
+#: ../src/connection-editor/ce-page-wired.ui.h:9
 msgid "Full duple_x"
 msgstr "Fuld duple_x"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:13
-#: ../src/connection-editor/ce-page-wireless.glade.h:8
+#: ../src/connection-editor/ce-page-wired.ui.h:10
+#: ../src/connection-editor/ce-page-wireless.ui.h:8
 msgid "MT_U:"
 msgstr "MT_U:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:14
-#: ../src/connection-editor/ce-page-wireless.glade.h:11
+#: ../src/connection-editor/ce-page-wired.ui.h:11
+msgid "Media Independent Interface (MII)"
+msgstr "Media Independent Interface (MII)"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:12
+#: ../src/connection-editor/ce-page-wireless.ui.h:11
 msgid ""
 "The MAC address entered here will be used as hardware address for the "
 "network device this connection is activated on.  This feature is known as "
 "MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
 msgstr ""
+"MAC-adressen som skrives her vil blive brugt som hardware-adresse for "
+"netværksenheden, denne forbindelse er aktiveret på. Denne funktion kaldes "
+"MAC-kloning eller spoofing. Eksempel: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:15
-#: ../src/connection-editor/ce-page-wireless.glade.h:12
-#, fuzzy
+#: ../src/connection-editor/ce-page-wired.ui.h:13
+#: ../src/connection-editor/ce-page-wireless.ui.h:12
 msgid ""
 "This option locks this connection to the network device specified by its "
 "permanent MAC address entered here.  Example: 00:11:22:33:44:55"
 msgstr ""
-"Denne indstilling låser forbindelsen til en specifik netværksenhed, ved brug "
-"af MAC-adressen skrevet her.  Eksempel: 00:11:22:33:44:55"
+"Denne indstilling låser forbindelsen til netværksenheden angivet med sin MAC-"
+"adresse her. Eksempel: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:16
-#: ../src/connection-editor/ce-page-wireless.glade.h:16
-#, fuzzy
+#: ../src/connection-editor/ce-page-wired.ui.h:14
+msgid "Twisted Pair (TP)"
+msgstr "Parsnoet kabel (TP)"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:16
 msgid "_Cloned MAC address:"
-msgstr "_MAC-adresse:"
+msgstr "_Klonet MAC-adresse:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:17
-#: ../src/connection-editor/ce-page-wireless.glade.h:17
-#, fuzzy
+#: ../src/connection-editor/ce-page-wired.ui.h:16
+#: ../src/connection-editor/ce-page-wireless.ui.h:17
 msgid "_Device MAC address:"
-msgstr "_MAC-adresse:"
+msgstr "_Enheds MAC-adresse:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:18
+#: ../src/connection-editor/ce-page-wired.ui.h:17
 msgid "_Port:"
 msgstr "_Port:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:19
+#: ../src/connection-editor/ce-page-wired.ui.h:18
 msgid "_Speed:"
 msgstr "_Hastighed:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:20
-#: ../src/connection-editor/ce-page-wireless.glade.h:20
+#: ../src/connection-editor/ce-page-wired.ui.h:19
+#: ../src/connection-editor/ce-page-wireless.ui.h:20
 msgid "bytes"
 msgstr "byte"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:1
-msgid ""
-"Automatic\n"
-"A (5 GHz)\n"
-"B/G (2.4 GHz)"
-msgstr ""
-"Automatisk\n"
-"A (5 GHz)\n"
-"B/G (2.4 GHz)"
+#: ../src/connection-editor/ce-page-wireless.ui.h:1
+msgid "A (5 GHz)"
+msgstr "A (5 GHz)"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:4
+#: ../src/connection-editor/ce-page-wireless.ui.h:2
+msgid "Ad-hoc"
+msgstr "Ad-hoc"
+
+#: ../src/connection-editor/ce-page-wireless.ui.h:4
+msgid "B/G (2.4 GHz)"
+msgstr "B/G (2.4 GHz)"
+
+#: ../src/connection-editor/ce-page-wireless.ui.h:5
 msgid "Ban_d:"
 msgstr "Bån_d:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:5
+#: ../src/connection-editor/ce-page-wireless.ui.h:6
 msgid "C_hannel:"
 msgstr "_Kanal:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:6
-msgid ""
-"Infrastructure\n"
-"Ad-hoc"
-msgstr ""
-"Infrastruktur\n"
-"Ad-hoc"
+#: ../src/connection-editor/ce-page-wireless.ui.h:7
+msgid "Infrastructure"
+msgstr "Infrastruktur"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:9
+#: ../src/connection-editor/ce-page-wireless.ui.h:9
 msgid "M_ode:"
 msgstr "Til_stand:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:10
+#: ../src/connection-editor/ce-page-wireless.ui.h:10
 msgid "Mb/s"
 msgstr "Mb/s"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:13
+#: ../src/connection-editor/ce-page-wireless.ui.h:13
 msgid ""
 "This option locks this connection to the wireless access point (AP) "
 "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
@@ -1478,211 +1419,245 @@ msgstr ""
 "Denne indstilling låser denne forbindelse til det trådløse adgangspunkt "
 "(AP), ved brug af BSSID'en skrevet her.  Eksempel: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:14
+#: ../src/connection-editor/ce-page-wireless.ui.h:14
 msgid "Transmission po_wer:"
 msgstr "Sendest_yrke:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:15
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:18
+#: ../src/connection-editor/ce-page-wireless.ui.h:18
 msgid "_Rate:"
 msgstr "_Styrke:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:19
+#: ../src/connection-editor/ce-page-wireless.ui.h:19
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:21
+#: ../src/connection-editor/ce-page-wireless.ui.h:21
 msgid "mW"
 msgstr "mW"
 
-#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
+#: ../src/connection-editor/ce-page-wireless-security.ui.h:1
 msgid "_Security:"
 msgstr "_Sikkerhed:"
 
-#: ../src/connection-editor/ce-vpn-wizard.glade.h:2
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
+msgid "Allowed Authentication Methods"
+msgstr "Tilladte godkendelsesmetoder"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
+msgid "C_HAP"
+msgstr "C_HAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:3
+msgid "Challenge Handshake Authentication Protocol"
+msgstr "Challenge Handshake-godkendelsesprotokol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:4
+msgid "Extensible Authentication Protocol"
+msgstr "Extensible Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:5
 msgid ""
-"<span weight=\"bold\" size=\"larger\">Choose a VPN Connection Type</span>\n"
-"\n"
+"In most cases, the provider's PPP servers will support all authentication "
+"methods.  If connections fail, try disabling support for some methods."
+msgstr ""
+"I de fleste tilfælde vil udbyderens PPP-servere understøtte alle "
+"godkendelsesmetoder. Hvis forbindelsen slår fejl, så prøv at deaktivere "
+"understøttelse af nogle af metoderne."
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:6
+msgid "MSCHAP v_2"
+msgstr "MSCHAP v_2"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:7
+msgid "Microsoft Challenge Handshake Authentication Protocol"
+msgstr "Microsoft Challenge Handshake Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:8
+msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
+msgstr "Microsoft Challenge Handshake Authentication Protocol version 2"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:9
+msgid "Password Authentication Protocol"
+msgstr "Protokol til adgangskodegodkendelse"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:10
+msgid "_EAP"
+msgstr "_EAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:11
+msgid "_MSCHAP"
+msgstr "_MSCHAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:12
+msgid "_PAP"
+msgstr "_PAP"
+
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:2
+msgid "Choose a VPN Connection Type"
+msgstr "Vælg type af VPN-forbindelse"
+
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:3
+msgid "Create…"
+msgstr "Opret…"
+
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:4
+msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
 "not have the correct VPN plugin installed."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">Vælg en type VPN-forbindelse</span>\n"
-"\n"
 "Vælg den type VPN du ønsker at bruge til den nye forbindelse. Hvis typen af "
 "VPN-forbindelse du ønsker at oprette ikke fremgår af listen, har du måske "
 "ikke installeret det korrekte VPN-udvidelsesmodul."
 
-#: ../src/connection-editor/ce-vpn-wizard.glade.h:5
-msgid "Create…"
-msgstr "Opret..."
-
-#: ../src/connection-editor/ip4-routes-dialog.c:501
-#: ../src/connection-editor/ip6-routes-dialog.c:459
-#: ../src/connection-editor/page-ip4.c:738
-#: ../src/connection-editor/page-ip6.c:723
+#: ../src/connection-editor/ip4-routes-dialog.c:505
+#: ../src/connection-editor/ip6-routes-dialog.c:463
+#: ../src/connection-editor/page-ip4.c:733
+#: ../src/connection-editor/page-ip6.c:718
 msgid "Address"
 msgstr "Adresse"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:517
-#: ../src/connection-editor/page-ip4.c:755
+#: ../src/connection-editor/ip4-routes-dialog.c:521
+#: ../src/connection-editor/page-ip4.c:750
 msgid "Netmask"
 msgstr "Netmaske"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:533
-#: ../src/connection-editor/ip6-routes-dialog.c:491
-#: ../src/connection-editor/page-ip4.c:772
-#: ../src/connection-editor/page-ip6.c:757
+#: ../src/connection-editor/ip4-routes-dialog.c:537
+#: ../src/connection-editor/ip6-routes-dialog.c:495
+#: ../src/connection-editor/page-ip4.c:767
+#: ../src/connection-editor/page-ip6.c:752
 msgid "Gateway"
 msgstr "Gateway"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:549
-#: ../src/connection-editor/ip6-routes-dialog.c:507
+#: ../src/connection-editor/ip4-routes-dialog.c:553
+#: ../src/connection-editor/ip6-routes-dialog.c:511
 msgid "Metric"
 msgstr "Metersystem"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:475
-#: ../src/connection-editor/page-ip6.c:740
+#: ../src/connection-editor/ip6-routes-dialog.c:479
+#: ../src/connection-editor/page-ip6.c:735
 msgid "Prefix"
 msgstr "Præfiks"
 
-#: ../src/connection-editor/page-dsl.c:140
-#: ../src/connection-editor/page-dsl.c:147
-msgid "Could not load DSL user interface."
-msgstr "Kunne ikke indlæse DSL-brugerflade."
-
-#: ../src/connection-editor/page-dsl.c:153
-#: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1407
+#: ../src/connection-editor/page-dsl.c:137
+#: ../src/connection-editor/nm-connection-editor.ui.h:4
+#: ../src/connection-editor/nm-connection-list.c:1448
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-dsl.c:241
+#: ../src/connection-editor/page-dsl.c:139
+msgid "Could not load DSL user interface."
+msgstr "Kunne ikke indlæse DSL-brugerflade."
+
+#: ../src/connection-editor/page-dsl.c:229
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL-forbindelse %d"
 
-#: ../src/connection-editor/page-ip4.c:126
-#: ../src/connection-editor/page-ip6.c:125
+#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip6.c:126
 msgid "Automatic (VPN)"
 msgstr "Automatisk (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:127
-#: ../src/connection-editor/page-ip6.c:126
+#: ../src/connection-editor/page-ip4.c:128
+#: ../src/connection-editor/page-ip6.c:127
 msgid "Automatic (VPN) addresses only"
 msgstr "Kun automatiske (VPN) adresser"
 
-#: ../src/connection-editor/page-ip4.c:130
-#: ../src/connection-editor/page-ip6.c:129
+#: ../src/connection-editor/page-ip4.c:131
+#: ../src/connection-editor/page-ip6.c:130
 msgid "Automatic (PPP)"
 msgstr "Automatisk (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:131
-#: ../src/connection-editor/page-ip6.c:130
+#: ../src/connection-editor/page-ip4.c:132
+#: ../src/connection-editor/page-ip6.c:131
 msgid "Automatic (PPP) addresses only"
 msgstr "Kun automatiske (PPP) adresser"
 
-#: ../src/connection-editor/page-ip4.c:133
-#: ../src/connection-editor/page-ip6.c:132
+#: ../src/connection-editor/page-ip4.c:134
+#: ../src/connection-editor/page-ip6.c:133
 msgid "Automatic (PPPoE)"
 msgstr "Automatisk (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:134
-#: ../src/connection-editor/page-ip6.c:133
+#: ../src/connection-editor/page-ip4.c:135
+#: ../src/connection-editor/page-ip6.c:134
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Kun automatiske (PPPoE) adresser"
 
-#: ../src/connection-editor/page-ip4.c:136
+#: ../src/connection-editor/page-ip4.c:137
 msgid "Automatic (DHCP)"
 msgstr "Automatisk (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:137
+#: ../src/connection-editor/page-ip4.c:138
 msgid "Automatic (DHCP) addresses only"
 msgstr "Kun automatiske (DHCP) adresser"
 
-#: ../src/connection-editor/page-ip4.c:162
-#: ../src/connection-editor/page-ip6.c:184
-msgid "Manual"
-msgstr "Manuelt"
-
-#: ../src/connection-editor/page-ip4.c:174
-#: ../src/connection-editor/page-ip6.c:197
+#: ../src/connection-editor/page-ip4.c:175
+#: ../src/connection-editor/page-ip6.c:198
 msgid "Link-Local Only"
 msgstr "Kun link-lokal"
 
-#: ../src/connection-editor/page-ip4.c:180
-#: ../src/connection-editor/page-ip6.c:204
-msgid "Shared to other computers"
-msgstr "Delt til andre computere"
-
-#: ../src/connection-editor/page-ip4.c:190
+#: ../src/connection-editor/page-ip4.c:191
 msgid "Disabled"
 msgstr "Afbrudt"
 
-#: ../src/connection-editor/page-ip4.c:700
+#: ../src/connection-editor/page-ip4.c:699
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Redigerer IPv4-ruter for %s"
 
-#: ../src/connection-editor/page-ip4.c:819
-#: ../src/connection-editor/page-ip4.c:826
-msgid "Could not load IPv4 user interface."
-msgstr "Kunne ikke indlæse IPv4-brugerflade."
-
-#: ../src/connection-editor/page-ip4.c:832
+#: ../src/connection-editor/page-ip4.c:810
 msgid "IPv4 Settings"
 msgstr "IPv4-indstillinger"
 
-#: ../src/connection-editor/page-ip6.c:135
-msgid "Automatic"
-msgstr "Automatisk"
+#: ../src/connection-editor/page-ip4.c:812
+msgid "Could not load IPv4 user interface."
+msgstr "Kunne ikke indlæse IPv4-brugerflade."
 
-#: ../src/connection-editor/page-ip6.c:136
+#: ../src/connection-editor/page-ip6.c:137
 msgid "Automatic, addresses only"
 msgstr "Automatisk, kun adresser"
 
-#: ../src/connection-editor/page-ip6.c:148
-#: ../src/wireless-security/eap-method.c:233
+#: ../src/connection-editor/page-ip6.c:149
+#: ../src/wireless-security/eap-method.c:285
 msgid "Ignore"
 msgstr "Ignorér"
 
-#: ../src/connection-editor/page-ip6.c:172
-#, fuzzy
+#: ../src/connection-editor/page-ip6.c:173
 msgid "Automatic, DHCP only"
-msgstr "Automatisk (DHCP)"
+msgstr "Automatisk, kun DHCP"
 
-#: ../src/connection-editor/page-ip6.c:685
+#: ../src/connection-editor/page-ip6.c:684
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Redigerer IPv6-ruter for %s"
 
-#: ../src/connection-editor/page-ip6.c:802
-#: ../src/connection-editor/page-ip6.c:809
-msgid "Could not load IPv6 user interface."
-msgstr "Kunne ikke indlæse IPv6-brugerflade."
-
-#: ../src/connection-editor/page-ip6.c:815
+#: ../src/connection-editor/page-ip6.c:793
 msgid "IPv6 Settings"
 msgstr "IPv6-indstillinger"
 
-#: ../src/connection-editor/page-mobile.c:369
-#: ../src/connection-editor/page-mobile.c:376
+#: ../src/connection-editor/page-ip6.c:795
+msgid "Could not load IPv6 user interface."
+msgstr "Kunne ikke indlæse IPv6-brugerflade."
+
+#: ../src/connection-editor/page-mobile.c:374
 msgid "Could not load mobile broadband user interface."
 msgstr "Kunne ikke indlæse brugerflade til mobilt bredbånd."
 
-#: ../src/connection-editor/page-mobile.c:397
+#: ../src/connection-editor/page-mobile.c:391
 msgid "Unsupported mobile broadband connection type."
 msgstr "Ikke-understøttet type mobil bredbåndsforbindelse."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:638
+#: ../src/connection-editor/page-mobile.c:632
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Vælg type udbyder af mobilt bredbånd"
 
-#: ../src/connection-editor/page-mobile.c:665
+#: ../src/connection-editor/page-mobile.c:659
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1690,337 +1665,333 @@ msgstr ""
 "Vælg den teknologi, din mobile bredbåndsudbyder bruger. Spørg din udbyder, "
 "hvis du er i tvivl."
 
-#: ../src/connection-editor/page-mobile.c:670
+#: ../src/connection-editor/page-mobile.c:664
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr "Min udbyder bruger _GSM-teknologi (GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:677
-#, fuzzy
+#: ../src/connection-editor/page-mobile.c:671
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
-msgstr "Min udbyder bruger _CDMA-teknologi (f.eks. 1xRTT, EVDO)"
+msgstr "Min udbyder bruger C_DMA-teknologi (f.eks. 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-ppp.c:132
+#: ../src/connection-editor/page-ppp.c:134
 msgid "EAP"
 msgstr "EAP"
 
-#: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:228
+#: ../src/connection-editor/page-ppp.c:135
+#: ../src/wireless-security/eap-method-ttls.c:232
 msgid "PAP"
 msgstr "PAP"
 
-#: ../src/connection-editor/page-ppp.c:134
-#: ../src/wireless-security/eap-method-ttls.c:276
+#: ../src/connection-editor/page-ppp.c:136
+#: ../src/wireless-security/eap-method-ttls.c:280
 msgid "CHAP"
 msgstr "CHAP"
 
-#: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:245
-#: ../src/wireless-security/eap-method-ttls.c:260
+#: ../src/connection-editor/page-ppp.c:137
+#: ../src/wireless-security/eap-method-peap.c:248
+#: ../src/wireless-security/eap-method-ttls.c:264
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
-#: ../src/connection-editor/page-ppp.c:136
-#: ../src/wireless-security/eap-method-ttls.c:244
+#: ../src/connection-editor/page-ppp.c:138
+#: ../src/wireless-security/eap-method-ttls.c:248
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
 #. Translators: "none" refers to authentication methods
-#: ../src/connection-editor/page-ppp.c:139
+#: ../src/connection-editor/page-ppp.c:141
 msgid "none"
 msgstr "ingen"
 
-#: ../src/connection-editor/page-ppp.c:199
+#: ../src/connection-editor/page-ppp.c:201
 #, c-format
 msgid "Editing PPP authentication methods for %s"
 msgstr "Redigerer PPP-godkendelsesmetoder for %s"
 
-#: ../src/connection-editor/page-ppp.c:283
-#: ../src/connection-editor/page-ppp.c:290
-msgid "Could not load PPP user interface."
-msgstr "Kunne ikke indlæse PPP-brugerflade."
-
-#: ../src/connection-editor/page-ppp.c:296
+#: ../src/connection-editor/page-ppp.c:281
 msgid "PPP Settings"
 msgstr "PPP-indstillinger"
 
-#: ../src/connection-editor/page-vpn.c:108
-#: ../src/connection-editor/nm-connection-editor.glade.h:8
-#: ../src/connection-editor/nm-connection-list.c:1403
+#: ../src/connection-editor/page-ppp.c:283
+msgid "Could not load PPP user interface."
+msgstr "Kunne ikke indlæse PPP-brugerflade."
+
+#: ../src/connection-editor/page-vpn.c:107
+#: ../src/connection-editor/nm-connection-editor.ui.h:8
+#: ../src/connection-editor/nm-connection-list.c:1444
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-vpn.c:119
+#: ../src/connection-editor/page-vpn.c:109
+msgid "Could not load VPN user interface."
+msgstr "Kunne ikke indlæse VPN-brugerflade."
+
+#: ../src/connection-editor/page-vpn.c:124
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "Kunne ikke finde VPN-udvidelsesmodultjeneste for \"%s\"."
 
-#: ../src/connection-editor/page-vpn.c:213
-#: ../src/connection-editor/nm-connection-list.c:988
+#: ../src/connection-editor/page-vpn.c:218
+#: ../src/connection-editor/nm-connection-list.c:881
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN-forbindelse %d"
 
-#: ../src/connection-editor/page-wired.c:213
-#: ../src/connection-editor/page-wired.c:220
-msgid "Could not load wired user interface."
-msgstr "Kunne ikke indlæse brugerflade til kablet forbindelse."
-
-#: ../src/connection-editor/page-wired.c:226
-#: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1391
+#: ../src/connection-editor/page-wired.c:211
+#: ../src/connection-editor/nm-connection-editor.ui.h:9
+#: ../src/connection-editor/nm-connection-list.c:1432
 msgid "Wired"
 msgstr "Kablet"
 
-#: ../src/connection-editor/page-wired.c:359
+#: ../src/connection-editor/page-wired.c:213
+msgid "Could not load wired user interface."
+msgstr "Kunne ikke indlæse brugerflade til kablet forbindelse."
+
+#: ../src/connection-editor/page-wired.c:348
 #, c-format
 msgid "Wired connection %d"
 msgstr "Kablet forbindelse %d"
 
-#: ../src/connection-editor/page-wired-security.c:115
+#: ../src/connection-editor/page-wired-security.c:114
 msgid "802.1x Security"
 msgstr "802.1x sikkerhed"
 
-#: ../src/connection-editor/page-wired-security.c:123
+#: ../src/connection-editor/page-wired-security.c:116
+msgid "Could not load Wired Security security user interface."
+msgstr "Kunne ikke indlæse brugerflade for kablet sikkerhed."
+
+#: ../src/connection-editor/page-wired-security.c:130
 msgid "Use 802.1X security for this connection"
 msgstr "Brug 802.1x-sikkerhed til denne forbindelse"
 
-#: ../src/connection-editor/page-wireless.c:146
-#: ../src/connection-editor/page-wireless.c:150
-#: ../src/connection-editor/page-wireless.c:171
+#: ../src/connection-editor/page-wireless.c:147
+#: ../src/connection-editor/page-wireless.c:151
+#: ../src/connection-editor/page-wireless.c:172
 #, c-format
 msgid "default"
 msgstr "standard"
 
-#: ../src/connection-editor/page-wireless.c:175
+#: ../src/connection-editor/page-wireless.c:176
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:399
-#: ../src/connection-editor/page-wireless.c:406
-msgid "Could not load WiFi user interface."
-msgstr "Kunne ikke indlæse brugerflade til trådløs forbindelse."
-
-#: ../src/connection-editor/page-wireless.c:412
-#: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1395
+#: ../src/connection-editor/page-wireless.c:396
+#: ../src/connection-editor/nm-connection-editor.ui.h:10
+#: ../src/connection-editor/nm-connection-list.c:1436
 msgid "Wireless"
 msgstr "Trådløs"
 
-#: ../src/connection-editor/page-wireless.c:574
+#: ../src/connection-editor/page-wireless.c:398
+msgid "Could not load WiFi user interface."
+msgstr "Kunne ikke indlæse brugerflade til trådløs forbindelse."
+
+#: ../src/connection-editor/page-wireless.c:562
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Trådløs forbindelse %d"
 
-#: ../src/connection-editor/page-wireless-security.c:262
-#: ../src/wireless-dialog.c:936
-#, fuzzy
+#: ../src/connection-editor/page-wireless-security.c:263
+#: ../src/wireless-dialog.c:920
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
-msgstr "WEP 40/128-bit ASCII"
+msgstr "WEP 40/128-bit-nøgle (Hex eller ASCII)"
 
-#: ../src/connection-editor/page-wireless-security.c:271
-#: ../src/wireless-dialog.c:945
+#: ../src/connection-editor/page-wireless-security.c:272
+#: ../src/wireless-dialog.c:929
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit adgangsfrase"
 
-#: ../src/connection-editor/page-wireless-security.c:297
-#: ../src/wireless-dialog.c:975
+#: ../src/connection-editor/page-wireless-security.c:298
+#: ../src/wireless-dialog.c:959
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamisk WEP (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:311
-#: ../src/wireless-dialog.c:989
+#: ../src/connection-editor/page-wireless-security.c:312
+#: ../src/wireless-dialog.c:973
 msgid "WPA & WPA2 Personal"
 msgstr "WPA og WPA2 personlig"
 
-#: ../src/connection-editor/page-wireless-security.c:325
-#: ../src/wireless-dialog.c:1003
+#: ../src/connection-editor/page-wireless-security.c:326
+#: ../src/wireless-dialog.c:987
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA og WPA2 enterprise"
 
-#: ../src/connection-editor/page-wireless-security.c:365
+#: ../src/connection-editor/page-wireless-security.c:359
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr ""
 "Kunne ikke indlæse brugerflade for trådløs sikkerhed; mangler indstilling "
 "til trådløs forbindelse."
 
-#: ../src/connection-editor/page-wireless-security.c:372
-#: ../src/connection-editor/page-wireless-security.c:379
-msgid "Could not load WiFi security user interface."
-msgstr "Kunne ikke indlæse brugerflade for trådløs sikkerhed."
-
-#: ../src/connection-editor/page-wireless-security.c:385
+#: ../src/connection-editor/page-wireless-security.c:368
 msgid "Wireless Security"
 msgstr "Trådløs sikkerhed"
 
-#: ../src/connection-editor/nm-connection-editor.c:100
+#: ../src/connection-editor/page-wireless-security.c:370
+msgid "Could not load WiFi security user interface."
+msgstr "Kunne ikke indlæse brugerflade for trådløs sikkerhed."
+
+#: ../src/connection-editor/nm-connection-editor.c:101
 #, c-format
 msgid "Editing %s"
 msgstr "Redigerer %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:104
+#: ../src/connection-editor/nm-connection-editor.c:105
 msgid "Editing un-named connection"
 msgstr "Redigerer unavngiven forbindelse"
 
-#: ../src/connection-editor/nm-connection-editor.c:287
+#: ../src/connection-editor/nm-connection-editor.c:294
 msgid ""
-"The connection editor could not find some required resources (the "
-"NetworkManager applet glade file was not found)."
-msgstr ""
-"Forbindelsesredigering kunne ikke finde nogle krævede ressourcer "
-"(Panelprogrammet til netværkshåndterings glade-fil blev ikke fundet)."
-
-#: ../src/connection-editor/nm-connection-editor.c:300
-msgid ""
-"The connection editor could not find some required resources (the glade file "
+"The connection editor could not find some required resources (the .ui file "
 "was not found)."
 msgstr ""
-"Forbindelsesredigering kunne ikke finde nogle krævede ressourcer (glade-"
-"filen blev ikke fundet)."
+"Forbindelsesredigering kunne ikke finde nogle krævede ressourcer (.ui-filen "
+"blev ikke fundet)."
 
-#: ../src/connection-editor/nm-connection-editor.c:398
+#: ../src/connection-editor/nm-connection-editor.c:397
 msgid "Error creating connection editor dialog."
 msgstr "Fejl ved oprettelse af vindue til forbindelsesredigering."
 
-#: ../src/connection-editor/nm-connection-editor.c:419
-msgid "Apply"
-msgstr "Anvend"
+#: ../src/connection-editor/nm-connection-editor.c:409
+msgid "_Save"
+msgstr "_Gem"
 
-#: ../src/connection-editor/nm-connection-editor.c:420
+#: ../src/connection-editor/nm-connection-editor.c:410
 msgid "Save any changes made to this connection."
 msgstr "Gem ændringer til denne forbindelse."
 
-#: ../src/connection-editor/nm-connection-editor.c:421
-msgid "Apply..."
-msgstr "Anvend..."
+#: ../src/connection-editor/nm-connection-editor.c:411
+msgid "_Save..."
+msgstr "_Gem..."
 
-#: ../src/connection-editor/nm-connection-editor.c:422
+#: ../src/connection-editor/nm-connection-editor.c:412
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Godkend for at gemme denne forbindelse for alle brugere af denne maskine."
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:1
+#: ../src/connection-editor/nm-connection-editor.ui.h:1
 msgid "Available to all users"
 msgstr "Tilgængelig for alle brugere"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:2
+#: ../src/connection-editor/nm-connection-editor.ui.h:2
 msgid "Connect _automatically"
 msgstr "Forbind _automatisk"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:3
+#: ../src/connection-editor/nm-connection-editor.ui.h:3
 msgid "Connection _name:"
 msgstr "Forbindelses_navn:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:5
+#: ../src/connection-editor/nm-connection-editor.ui.h:5
 msgid "E_xport"
 msgstr "E_ksportér"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:11
+#: ../src/connection-editor/nm-connection-editor.ui.h:11
 msgid "_Import"
 msgstr "_Importér"
 
-#: ../src/connection-editor/nm-connection-list.c:217
+#: ../src/connection-editor/nm-connection-list.c:216
 msgid "never"
 msgstr "aldrig"
 
-#: ../src/connection-editor/nm-connection-list.c:228
-#: ../src/connection-editor/nm-connection-list.c:239
+#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:238
 msgid "now"
 msgstr "nu"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:246
+#: ../src/connection-editor/nm-connection-list.c:245
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "%d minutter siden"
 msgstr[1] "%d minutter siden"
 
-#: ../src/connection-editor/nm-connection-list.c:250
+#: ../src/connection-editor/nm-connection-list.c:249
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "%d timer siden"
 msgstr[1] "%d timer siden"
 
-#: ../src/connection-editor/nm-connection-list.c:262
+#: ../src/connection-editor/nm-connection-list.c:261
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d dage siden"
 msgstr[1] "%d dage siden"
 
-#: ../src/connection-editor/nm-connection-list.c:268
+#: ../src/connection-editor/nm-connection-list.c:267
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d måneder siden"
 msgstr[1] "%d måneder siden"
 
-#: ../src/connection-editor/nm-connection-list.c:272
+#: ../src/connection-editor/nm-connection-list.c:271
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d år siden"
 msgstr[1] "%d år siden"
 
-#: ../src/connection-editor/nm-connection-list.c:594
+#: ../src/connection-editor/nm-connection-list.c:486
 msgid "Connection add failed"
 msgstr "Tilføjelse af forbindelse fejlede"
 
-#: ../src/connection-editor/nm-connection-list.c:623
-#, c-format
-msgid "Error editing connection: property '%s' / '%s' invalid: %d"
-msgstr ""
-"Fejl ved redigering af forbindelse: tilhørsforhold \"%s\" / \"%s\" ugyldig: %"
-"d"
+#: ../src/connection-editor/nm-connection-list.c:515
+msgid "Error saving connection"
+msgstr "Fejl da forbindelsen blev gemt"
 
-#: ../src/connection-editor/nm-connection-list.c:630
-#: ../src/connection-editor/nm-connection-list.c:745
+#: ../src/connection-editor/nm-connection-list.c:516
+#, c-format
+msgid "The property '%s' / '%s' is invalid: %d"
+msgstr "Egenskaben \"%s\" / \"%s\" er ugyldig: %d"
+
+#: ../src/connection-editor/nm-connection-list.c:523
+#: ../src/connection-editor/nm-connection-list.c:642
 msgid "An unknown error occurred."
 msgstr "Der opstod en ukendt fejl."
 
-#: ../src/connection-editor/nm-connection-list.c:635
-#: ../src/connection-editor/nm-connection-list.c:786
+#: ../src/connection-editor/nm-connection-list.c:528
+#: ../src/connection-editor/nm-connection-list.c:683
 msgid "Error initializing editor"
 msgstr "Kunne ikke initialisere redigeringen"
 
-#: ../src/connection-editor/nm-connection-list.c:651
-#: ../src/connection-editor/nm-connection-list.c:803
-#: ../src/connection-editor/nm-connection-list.c:971
+#: ../src/connection-editor/nm-connection-list.c:546
+#: ../src/connection-editor/nm-connection-list.c:700
+#: ../src/connection-editor/nm-connection-list.c:867
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr ""
 "Forbindelsesredigeringen kunne ikke initialiseres på grund af en ukendt fejl."
 
-#: ../src/connection-editor/nm-connection-list.c:660
+#: ../src/connection-editor/nm-connection-list.c:557
 msgid "Could not create new connection"
 msgstr "Kunne ikke oprette ny forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:671
+#: ../src/connection-editor/nm-connection-list.c:569
 msgid "Could not edit new connection"
 msgstr "Kunne ikke redigere ny forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:818
+#: ../src/connection-editor/nm-connection-list.c:714
 msgid "Could not edit connection"
 msgstr "Kunne ikke redigere forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:843
+#: ../src/connection-editor/nm-connection-list.c:744
 msgid "Connection delete failed"
 msgstr "Sletning af forbindelse fejlede"
 
-#: ../src/connection-editor/nm-connection-list.c:875
+#: ../src/connection-editor/nm-connection-list.c:776
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Er du sikker på, at du ønsker at slette forbindelsen %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:1018
-#: ../src/connection-editor/vpn-helpers.c:228
+#: ../src/connection-editor/nm-connection-list.c:911
+#: ../src/connection-editor/vpn-helpers.c:227
 msgid "Cannot import VPN connection"
 msgstr "Kan ikke importere VPN-forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:1020
+#: ../src/connection-editor/nm-connection-list.c:913
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2030,51 +2001,81 @@ msgstr ""
 "\n"
 "Fejl: Ingen VPN-tjenestetype."
 
-#: ../src/connection-editor/nm-connection-list.c:1033
+#: ../src/connection-editor/nm-connection-list.c:926
 msgid "Could not edit imported connection"
 msgstr "Kunne ikke redigere importeret forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:1167
+#: ../src/connection-editor/nm-connection-list.c:1069
 msgid "Name"
 msgstr "Navn"
 
-#: ../src/connection-editor/nm-connection-list.c:1179
+#: ../src/connection-editor/nm-connection-list.c:1081
 msgid "Last Used"
 msgstr "Sidst brugt"
 
-#: ../src/connection-editor/nm-connection-list.c:1282
-msgid "Edit"
-msgstr "Redigér"
+#: ../src/connection-editor/nm-connection-list.c:1197
+msgid "No VPN plugin available. Please install one to enable this button."
+msgstr ""
+"Intet VPN-udvidelsesmodul til rådighed. Installer et for at aktivere denne "
+"knap."
 
-#: ../src/connection-editor/nm-connection-list.c:1283
+#: ../src/connection-editor/nm-connection-list.c:1208
+msgid "_Edit"
+msgstr "_Redigér"
+
+#: ../src/connection-editor/nm-connection-list.c:1209
 msgid "Edit the selected connection"
 msgstr "Redigér den valgte forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:1284
-msgid "Edit..."
-msgstr "Redigér..."
+#: ../src/connection-editor/nm-connection-list.c:1210
+msgid "_Edit..."
+msgstr "_Redigér..."
 
-#: ../src/connection-editor/nm-connection-list.c:1285
+#: ../src/connection-editor/nm-connection-list.c:1211
 msgid "Authenticate to edit the selected connection"
 msgstr "Bekræft identitet for at redigere den valgte forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:1299
-msgid "Delete"
-msgstr "Slet"
+#: ../src/connection-editor/nm-connection-list.c:1226
+msgid "_Delete"
+msgstr "_Slet"
 
-#: ../src/connection-editor/nm-connection-list.c:1300
+#: ../src/connection-editor/nm-connection-list.c:1227
 msgid "Delete the selected connection"
 msgstr "Slet den valgte forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:1301
-msgid "Delete..."
-msgstr "Slet..."
+#: ../src/connection-editor/nm-connection-list.c:1228
+msgid "_Delete..."
+msgstr "_Slet..."
 
-#: ../src/connection-editor/nm-connection-list.c:1302
+#: ../src/connection-editor/nm-connection-list.c:1229
 msgid "Authenticate to delete the selected connection"
 msgstr "Bekræft identitet for at slette den valgte forbindelse"
 
-#: ../src/connection-editor/vpn-helpers.c:230
+#: ../src/connection-editor/nm-connection-list.c:1504
+msgid "Error creating connection"
+msgstr "Fejl ved oprettelse af forbindelse"
+
+#: ../src/connection-editor/nm-connection-list.c:1505
+#, c-format
+msgid "Don't know how to create '%s' connections"
+msgstr "Ved ikke, hvordan man opretter \"%s\"-forbindelser"
+
+#: ../src/connection-editor/nm-connection-list.c:1559
+#: ../src/connection-editor/nm-connection-list.c:1571
+msgid "Error editing connection"
+msgstr "Fejl ved redigering af forbindelsen"
+
+#: ../src/connection-editor/nm-connection-list.c:1560
+#, c-format
+msgid "Don't know how to edit '%s' connections"
+msgstr "Ved ikke, hvordan man redigerer \"%s\"-forbindelser"
+
+#: ../src/connection-editor/nm-connection-list.c:1572
+#, c-format
+msgid "Did not find a connection with UUID '%s'"
+msgstr "Fandt ikke en forbindelse med UUID \"%s\""
+
+#: ../src/connection-editor/vpn-helpers.c:229
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -2087,29 +2088,29 @@ msgstr ""
 "\n"
 "Fejl:%s."
 
-#: ../src/connection-editor/vpn-helpers.c:262
+#: ../src/connection-editor/vpn-helpers.c:261
 msgid "Select file to import"
 msgstr "Vælg fil til import"
 
-#: ../src/connection-editor/vpn-helpers.c:310
+#: ../src/connection-editor/vpn-helpers.c:309
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "En fil ved navn \"%s\" findes allerede."
 
-#: ../src/connection-editor/vpn-helpers.c:312
+#: ../src/connection-editor/vpn-helpers.c:311
 msgid "_Replace"
 msgstr "_Erstat"
 
-#: ../src/connection-editor/vpn-helpers.c:314
+#: ../src/connection-editor/vpn-helpers.c:313
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "Ønsker du at erstatte %s med den VPN-forbindelse, du gemmer?"
 
-#: ../src/connection-editor/vpn-helpers.c:350
+#: ../src/connection-editor/vpn-helpers.c:349
 msgid "Cannot export VPN connection"
 msgstr "Kan ikke eksportere VPN-forbindelse"
 
-#: ../src/connection-editor/vpn-helpers.c:352
+#: ../src/connection-editor/vpn-helpers.c:351
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -2120,58 +2121,65 @@ msgstr ""
 "\n"
 "Fejl: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:386
+#: ../src/connection-editor/vpn-helpers.c:385
 msgid "Export VPN connection..."
 msgstr "Eksportér VPN-forbindelse..."
 
-#: ../src/gnome-bluetooth/bt-widget.c:213
+#: ../src/gnome-bluetooth/bt-widget.c:218
+#, c-format
+msgid "Failed to create PAN connection: %s"
+msgstr "Kunne ikke oprette PAN-forbindelse: %s"
+
+#: ../src/gnome-bluetooth/bt-widget.c:223
+#: ../src/gnome-bluetooth/bt-widget.c:491
+msgid "Your phone is now ready to use!"
+msgstr "Din telefon er klar til brug!"
+
+#: ../src/gnome-bluetooth/bt-widget.c:247
 #, c-format
 msgid "%s Network"
 msgstr "%s Netværk"
 
-#: ../src/gnome-bluetooth/bt-widget.c:322
+#: ../src/gnome-bluetooth/bt-widget.c:373
 #, c-format
 msgid "Error: %s"
 msgstr "Fejl: %s"
 
-#: ../src/gnome-bluetooth/bt-widget.c:441
+#: ../src/gnome-bluetooth/bt-widget.c:486
+#, c-format
+msgid "Failed to create DUN connection: %s"
+msgstr "Kunne ikke oprette DUN-forbindelse: %s"
+
+#: ../src/gnome-bluetooth/bt-widget.c:509
 msgid "Mobile wizard was canceled"
 msgstr "Mobil-guiden blev afbrudt"
 
-#: ../src/gnome-bluetooth/bt-widget.c:450
+#: ../src/gnome-bluetooth/bt-widget.c:518
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "Ukendt telefonenhed (ikke GSM eller CDMA)"
 
-#: ../src/gnome-bluetooth/bt-widget.c:478
-msgid "Your phone is now ready to use!"
-msgstr "Din telefon er klar til brug!"
-
-#: ../src/gnome-bluetooth/bt-widget.c:648
-#: ../src/gnome-bluetooth/bt-widget.c:654
+#: ../src/gnome-bluetooth/bt-widget.c:712
+#: ../src/gnome-bluetooth/bt-widget.c:718
 msgid "failed to connect to the phone."
 msgstr "kunne ikke forbinde til telefonen."
 
-#: ../src/gnome-bluetooth/bt-widget.c:687
+#: ../src/gnome-bluetooth/bt-widget.c:751
 msgid "unexpectedly disconnected from the phone."
 msgstr "blev uventet afbrudt fra telefonen."
 
-#: ../src/gnome-bluetooth/bt-widget.c:696
+#: ../src/gnome-bluetooth/bt-widget.c:760
 msgid "timed out detecting phone details."
 msgstr "tidsudløb for søgning efter telefondetaljer."
 
-#: ../src/gnome-bluetooth/bt-widget.c:711
-msgid "could not connect to the system bus."
-msgstr "kunne ikke forbinde til systembussen."
-
-#: ../src/gnome-bluetooth/bt-widget.c:716
+#: ../src/gnome-bluetooth/bt-widget.c:772
 msgid "Detecting phone configuration..."
 msgstr "Opdagelse af telefon-konfiguration..."
 
-#: ../src/gnome-bluetooth/bt-widget.c:782
+#: ../src/gnome-bluetooth/bt-widget.c:838
 msgid "could not find the Bluetooth device."
 msgstr "kunne ikke finde Bluetooth-enheden."
 
-#: ../src/gnome-bluetooth/bt-widget.c:912
+#: ../src/gnome-bluetooth/bt-widget.c:971
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2179,19 +2187,19 @@ msgstr ""
 "Standard-adapteren til Bluetooth skal være aktiveret før oprettelse af en "
 "netværk-opkaldsforbindelse."
 
-#: ../src/gnome-bluetooth/bt-widget.c:944
+#: ../src/gnome-bluetooth/bt-widget.c:1003
 #, c-format
 msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
 msgstr ""
 "Konfiguration af Bluetooth er ikke mulig (kunne ikke forbinde til D-Bus:%s)."
 
-#: ../src/gnome-bluetooth/bt-widget.c:954
+#: ../src/gnome-bluetooth/bt-widget.c:1013
 msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
 msgstr ""
 "Konfiguration af Bluetooth er ikke mulig (kunne ikke forbinde til D-Bus "
 "proxy)."
 
-#: ../src/gnome-bluetooth/bt-widget.c:963
+#: ../src/gnome-bluetooth/bt-widget.c:1022
 #, c-format
 msgid ""
 "Bluetooth configuration not possible (error finding NetworkManager: %s)."
@@ -2199,11 +2207,11 @@ msgstr ""
 "Konfiguration af Bluetooth er ikke mulig (fejl ved søgning af "
 "Netværkshåndtering: %s)."
 
-#: ../src/gnome-bluetooth/bt-widget.c:1014
+#: ../src/gnome-bluetooth/bt-widget.c:1085
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Brug din mobiltelefon som en netværksenhed (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/bt-widget.c:1023
+#: ../src/gnome-bluetooth/bt-widget.c:1094
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Tilslut internettet ved brug af din mobiltelefon (DUN)"
 
@@ -2227,76 +2235,80 @@ msgstr ""
 "Det er ikke tiltænkt kommandolinjeindtastning, men kører istedet i GNOME "
 "skrivebordsmiljø."
 
-#: ../src/mb-menu-item.c:58
+#: ../src/mb-menu-item.c:57
 msgid "EVDO"
 msgstr "EVDO"
 
-#: ../src/mb-menu-item.c:62
+#: ../src/mb-menu-item.c:61
 msgid "GPRS"
 msgstr "GPRS"
 
-#: ../src/mb-menu-item.c:64
+#: ../src/mb-menu-item.c:63
 msgid "EDGE"
 msgstr "EDGE"
 
-#: ../src/mb-menu-item.c:66
+#: ../src/mb-menu-item.c:65
 msgid "UMTS"
 msgstr "UMTS"
 
-#: ../src/mb-menu-item.c:68
+#: ../src/mb-menu-item.c:67
 msgid "HSDPA"
 msgstr "HSDPA"
 
-#: ../src/mb-menu-item.c:70
+#: ../src/mb-menu-item.c:69
 msgid "HSUPA"
 msgstr "HSUPA"
 
-#: ../src/mb-menu-item.c:72
+#: ../src/mb-menu-item.c:71
 msgid "HSPA"
 msgstr "HSPA"
 
-#: ../src/mb-menu-item.c:104
+#: ../src/mb-menu-item.c:73
+msgid "WiMAX"
+msgstr "WiMAX"
+
+#: ../src/mb-menu-item.c:109
 msgid "not enabled"
 msgstr "ikke aktiveret"
 
-#: ../src/mb-menu-item.c:110
+#: ../src/mb-menu-item.c:115
 msgid "not registered"
 msgstr "ikke registreret"
 
-#: ../src/mb-menu-item.c:128
+#: ../src/mb-menu-item.c:133
 #, c-format
 msgid "Home network (%s)"
 msgstr "Hjemmenetværk (%s)"
 
-#: ../src/mb-menu-item.c:130
+#: ../src/mb-menu-item.c:135
 #, c-format
 msgid "Home network"
 msgstr "Hjemmenetværk"
 
-#: ../src/mb-menu-item.c:138
+#: ../src/mb-menu-item.c:143
 msgid "searching"
 msgstr "søger"
 
-#: ../src/mb-menu-item.c:141
+#: ../src/mb-menu-item.c:146
 msgid "registration denied"
 msgstr "registrering nægtet"
 
-#: ../src/mb-menu-item.c:146 ../src/mb-menu-item.c:152
+#: ../src/mb-menu-item.c:151 ../src/mb-menu-item.c:157
 #, c-format
 msgid "%s (%s roaming)"
 msgstr "%s (%s roaming)"
 
-#: ../src/mb-menu-item.c:148 ../src/mb-menu-item.c:154
+#: ../src/mb-menu-item.c:153 ../src/mb-menu-item.c:159
 #, c-format
 msgid "%s (roaming)"
 msgstr "%s (roaming)"
 
-#: ../src/mb-menu-item.c:157
+#: ../src/mb-menu-item.c:162
 #, c-format
 msgid "Roaming network (%s)"
 msgstr "Roaming netværk (%s)"
 
-#: ../src/mb-menu-item.c:159
+#: ../src/mb-menu-item.c:164
 #, c-format
 msgid "Roaming network"
 msgstr "Roaming netværk"
@@ -2388,43 +2400,43 @@ msgstr "Jeg kan ikke finde min udbyder og jeg ønsker at indtaste den _manuelt:"
 msgid "Provider:"
 msgstr "Udbyder:"
 
-#: ../src/utils/mobile-wizard.c:753
+#: ../src/utils/mobile-wizard.c:761
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "Min udbyder bruger GSM-teknologi (GPRS, EDGE, UMTS, HSPA)"
 
-#: ../src/utils/mobile-wizard.c:755
+#: ../src/utils/mobile-wizard.c:767
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "Min udbyder bruger CDMA-teknologi (1xRTT, EVDO)"
 
-#: ../src/utils/mobile-wizard.c:766
+#: ../src/utils/mobile-wizard.c:778
 msgid "Choose your Provider"
 msgstr "Vælg din udbyder"
 
-#: ../src/utils/mobile-wizard.c:1012
-msgid "Country List:"
-msgstr "Landeliste:"
-
 #: ../src/utils/mobile-wizard.c:1024
-msgid "Country"
-msgstr "Land"
+msgid "Country or Region List:"
+msgstr "Land- eller regionsliste:"
 
-#: ../src/utils/mobile-wizard.c:1031
+#: ../src/utils/mobile-wizard.c:1036
+msgid "Country or region"
+msgstr "Land eller region"
+
+#: ../src/utils/mobile-wizard.c:1043
 msgid "My country is not listed"
 msgstr "Mit land er ikke på listen"
 
-#: ../src/utils/mobile-wizard.c:1077
-msgid "Choose your Provider's Country"
-msgstr "Vælg din udbyders land"
+#: ../src/utils/mobile-wizard.c:1089
+msgid "Choose your Provider's Country or Region"
+msgstr "Vælg din udbyders land eller region"
 
-#: ../src/utils/mobile-wizard.c:1126
+#: ../src/utils/mobile-wizard.c:1143
 msgid "Installed GSM device"
 msgstr "Installeret GSM-enhed"
 
-#: ../src/utils/mobile-wizard.c:1129
+#: ../src/utils/mobile-wizard.c:1146
 msgid "Installed CDMA device"
 msgstr "Installeret CDMA-enhed"
 
-#: ../src/utils/mobile-wizard.c:1297
+#: ../src/utils/mobile-wizard.c:1314
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
@@ -2432,120 +2444,101 @@ msgstr ""
 "Denne guide hjælper dig med at oprette en mobil bredbåndsforbindelse til et "
 "mobilt (3G) netværk."
 
-#: ../src/utils/mobile-wizard.c:1302
+#: ../src/utils/mobile-wizard.c:1319
 msgid "You will need the following information:"
 msgstr "Du har brug for følgende oplysninger:"
 
-#: ../src/utils/mobile-wizard.c:1313
+#: ../src/utils/mobile-wizard.c:1330
 msgid "Your broadband provider's name"
 msgstr "Navnet på din bredbåndsudbyder"
 
-#: ../src/utils/mobile-wizard.c:1319
+#: ../src/utils/mobile-wizard.c:1336
 msgid "Your broadband billing plan name"
 msgstr "Navnet på din bredbånd-afregningsløsning"
 
-#: ../src/utils/mobile-wizard.c:1325
+#: ../src/utils/mobile-wizard.c:1342
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr ""
 "(i visse tilfælde) Din bredbånd-afregningsløsnings APN (Access Point Name)"
 
-#: ../src/utils/mobile-wizard.c:1352
+#: ../src/utils/mobile-wizard.c:1369
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Opret en forbindelse til _denne mobile bredbåndsenhed:"
 
-#: ../src/utils/mobile-wizard.c:1367
+#: ../src/utils/mobile-wizard.c:1384
 msgid "Any device"
 msgstr "Enhver enhed"
 
-#: ../src/utils/mobile-wizard.c:1380
+#: ../src/utils/mobile-wizard.c:1397
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Opsæt en mobil bredbåndsforbindelse"
 
-#: ../src/utils/mobile-wizard.c:1554
+#: ../src/utils/mobile-wizard.c:1561
 msgid "New Mobile Broadband Connection"
 msgstr "Ny mobil bredbåndsforbindelse"
 
-#: ../src/utils/nmn-mobile-providers.c:76
+#: ../src/utils/nmn-mobile-providers.c:78
 msgid "United Kingdom"
 msgstr "Storbritannien"
 
-#: ../src/utils/nmn-mobile-providers.c:508
+#: ../src/utils/nmn-mobile-providers.c:510
 msgid "Default"
 msgstr "Standard"
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:255
-#, c-format
-msgid "Cannot start VPN connection '%s'"
-msgstr "Kan ikke starte VPN-forbindelse \"%s\""
-
-#: ../src/vpn-password-dialog.c:140
-#, c-format
+#: ../src/wired-dialog.c:91 ../src/wired-dialog.c:99
 msgid ""
-"Could not find the authentication dialog for VPN connection type '%s'. "
-"Contact your system administrator."
+"The NetworkManager Applet could not find some required resources (the .ui "
+"file was not found)."
 msgstr ""
-"Kunne ikke finde godkendelsesvinduet til VPN-forbindelsestypen \"%s\". "
-"Kontakt din systemadministrator."
+"Panelprogrammet til Netværkshåndtering kunne ikke finde nogle krævede "
+"ressourcer (.ui-filen blev ikke fundet)."
 
-#: ../src/vpn-password-dialog.c:258
-#, c-format
-msgid ""
-"There was a problem launching the authentication dialog for VPN connection "
-"type '%s'. Contact your system administrator."
-msgstr ""
-"Der opstod en fejl ved åbning af godkendelsesvinduet til VPN-"
-"forbindelsestypen \"%s\". Kontakt din systemadministrator."
-
-#: ../src/wired-dialog.c:99
-msgid "Wired 802.1X authentication"
-msgstr "Kablet 802.1x-godkendelse"
-
-#: ../src/wireless-dialog.c:474
+#: ../src/wireless-dialog.c:454
 msgid "New..."
 msgstr "Ny..."
 
-#: ../src/wireless-dialog.c:1094
+#: ../src/wireless-dialog.c:1074
 msgid "C_reate"
 msgstr "O_pret"
 
-#: ../src/wireless-dialog.c:1175
+#: ../src/wireless-dialog.c:1152
 #, c-format
 msgid ""
-"Passwords or encryption keys are required to access the wireless network '%"
-"s'."
+"Passwords or encryption keys are required to access the wireless network "
+"'%s'."
 msgstr ""
 "Der kræves adgangskoder eller krypteringsnøgler for at få adgang til det "
 "trådløse netværk \"%s\"."
 
-#: ../src/wireless-dialog.c:1177
+#: ../src/wireless-dialog.c:1154
 msgid "Wireless Network Authentication Required"
 msgstr "Trådløst netværk kræver godkendelse"
 
-#: ../src/wireless-dialog.c:1179
+#: ../src/wireless-dialog.c:1156
 msgid "Authentication required by wireless network"
 msgstr "Godkendelse kræves af trådløst netværk"
 
-#: ../src/wireless-dialog.c:1184
+#: ../src/wireless-dialog.c:1161
 msgid "Create New Wireless Network"
 msgstr "Opret nyt trådløst netværk"
 
-#: ../src/wireless-dialog.c:1186
+#: ../src/wireless-dialog.c:1163
 msgid "New wireless network"
 msgstr "Nyt trådløst netværk"
 
-#: ../src/wireless-dialog.c:1187
+#: ../src/wireless-dialog.c:1164
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Indtast et navn til det trådløse netværk du ønsker at oprette."
 
-#: ../src/wireless-dialog.c:1189
+#: ../src/wireless-dialog.c:1166
 msgid "Connect to Hidden Wireless Network"
 msgstr "Forbind til skjult trådløst netværk"
 
-#: ../src/wireless-dialog.c:1191
+#: ../src/wireless-dialog.c:1168
 msgid "Hidden wireless network"
 msgstr "Skjult trådløst netværk"
 
-#: ../src/wireless-dialog.c:1192
+#: ../src/wireless-dialog.c:1169
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2553,11 +2546,11 @@ msgstr ""
 "Indtast navn og sikkerhedsoplysninger til det trådløse netværk du ønsker at "
 "forbinde til."
 
-#: ../src/wireless-security/eap-method.c:227
+#: ../src/wireless-security/eap-method.c:279
 msgid "No Certificate Authority certificate chosen"
 msgstr "Intet certifikat fra certifikatsautoritet er valgt"
 
-#: ../src/wireless-security/eap-method.c:228
+#: ../src/wireless-security/eap-method.c:280
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -2567,37 +2560,70 @@ msgstr ""
 "resultere i forbindelser til usikre, ondsindede trådløse netværk. Ønsker du "
 "at vælge et certifikat fra certifikatautoritet?"
 
-#: ../src/wireless-security/eap-method.c:237
+#: ../src/wireless-security/eap-method.c:289
 msgid "Choose CA Certificate"
 msgstr "Vælg CA-certifikat"
 
-#: ../src/wireless-security/eap-method.c:552
+#: ../src/wireless-security/eap-method.c:627
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "DER-, PEM- eller PKCS#12-private nøgler (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:555
+#: ../src/wireless-security/eap-method.c:630
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER- eller PEM-certifikater  (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:261
+#: ../src/wireless-security/eap-method-peap.c:264
+#: ../src/wireless-security/wireless-security.c:368
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:277
+#: ../src/wireless-security/eap-method-peap.c:280
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-peap.c:366
-#: ../src/wireless-security/eap-method-tls.c:457
-#: ../src/wireless-security/eap-method-ttls.c:365
+#: ../src/wireless-security/eap-method-peap.c:349
+#: ../src/wireless-security/eap-method-tls.c:419
+#: ../src/wireless-security/eap-method-ttls.c:349
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Vælg et certifikat fra certifikatautoritet..."
 
-#: ../src/wireless-security/eap-method-tls.c:263
+#: ../src/wireless-security/eap-method-peap.ui.h:2
+#: ../src/wireless-security/eap-method-ttls.ui.h:2
+msgid "Anony_mous identity:"
+msgstr "Anony_m identitet:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:4
+#: ../src/wireless-security/eap-method-tls.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:3
+msgid "C_A certificate:"
+msgstr "C_A-certifikat:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:5
+#: ../src/wireless-security/eap-method-ttls.ui.h:4
+msgid "I_nner authentication:"
+msgstr "I_ndre godkendelse:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:6
+msgid "Version 0"
+msgstr "Version 0"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:7
+msgid "Version 1"
+msgstr "Version 1"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:8
+msgid "_PEAP version:"
+msgstr "_PEAP-version:"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:1
+msgid "As_k for this password every time"
+msgstr "Spørg efter denne adgangs_kode hver gang"
+
+#: ../src/wireless-security/eap-method-tls.c:250
 msgid "Unencrypted private keys are insecure"
 msgstr "Ukrypterede privatnøgler er usikre"
 
-#: ../src/wireless-security/eap-method-tls.c:266
+#: ../src/wireless-security/eap-method-tls.c:253
 msgid ""
 "The selected private key does not appear to be protected by a password.  "
 "This could allow your security credentials to be compromised.  Please select "
@@ -2611,542 +2637,256 @@ msgstr ""
 "\n"
 "(du kan adgangskodebeskytte din private nøgle med openssl)"
 
-#: ../src/wireless-security/eap-method-tls.c:451
+#: ../src/wireless-security/eap-method-tls.c:413
 msgid "Choose your personal certificate..."
 msgstr "Vælg dit personlige certifikat..."
 
-#: ../src/wireless-security/eap-method-tls.c:463
+#: ../src/wireless-security/eap-method-tls.c:425
 msgid "Choose your private key..."
 msgstr "Vælg din private nøgle..."
 
-#: ../src/wireless-security/wireless-security.c:329
+#: ../src/wireless-security/eap-method-tls.ui.h:2
+msgid "I_dentity:"
+msgstr "I_dentitet:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:3
+msgid "Private _key:"
+msgstr "Privat nøg_le:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:5
+msgid "_Private key password:"
+msgstr "Adgangskode til _privat nøgle:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:6
+msgid "_User certificate:"
+msgstr "Br_ugercertifikat:"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:1
+msgid "Don't _warn me again"
+msgstr "Advar mi_g ikke igen"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:2
+msgid "No"
+msgstr "Nej"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:3
+msgid "Yes"
+msgstr "Ja"
+
+#: ../src/wireless-security/wireless-security.c:380
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:353
+#: ../src/wireless-security/wireless-security.c:404
 msgid "Tunneled TLS"
 msgstr "TLS gennem tunnel"
 
-#: ../src/wireless-security/wireless-security.c:364
+#: ../src/wireless-security/wireless-security.c:415
 msgid "Protected EAP (PEAP)"
 msgstr "Beskyttet EAP (PEAP)"
+
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:2
+#: ../src/wireless-security/ws-wep-key.ui.h:9
+#: ../src/wireless-security/ws-wpa-eap.ui.h:2
+msgid "_Authentication:"
+msgstr "_Godkendelse:"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:1
+msgid "1 (Default)"
+msgstr "1 (Standard)"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:2
+msgid "2"
+msgstr "2"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "3"
+msgstr "3"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:4
+msgid "4"
+msgstr "4"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:5
+msgid "Open System"
+msgstr "Åbent system"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:6
+msgid "Shared Key"
+msgstr "Delt nøgle"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:7
+msgid "Sho_w key"
+msgstr "Vis nøg_le"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:8
+msgid "WEP inde_x:"
+msgstr "WEP-inde_ks:"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:10
+msgid "_Key:"
+msgstr "_Nøgle:"
+
+#~ msgid "Network Manager"
+#~ msgstr "Netværkshåndtering"
+
+#~ msgid "An instance of nm-applet is already running.\n"
+#~ msgstr ""
+#~ "Et eksemplar af panelprogrammet til netværkshåndtering kører allerede.\n"
+
+#~ msgid "Could not acquire the %s service. (%d)\n"
+#~ msgstr "Kunne ikke tilgå %s-tjenesten. (%d)\n"
+
+#~ msgid "translator-credits"
+#~ msgstr ""
+#~ "David Nielsen\n"
+#~ "Martin Willemoes Hansen\n"
+#~ "Lasse Bang Mikkelsen\n"
+#~ "Peter Bach\n"
+#~ "Mads Bille Lundby\n"
+#~ "Kim Iskov\n"
+#~ "\n"
+#~ "Dansk-gruppen <dansk@dansk-gruppen.dk>\n"
+#~ "Mere info: http://www.dansk-gruppen.dk"
+
+#~ msgid ""
+#~ "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
+#~ msgstr ""
+#~ "<span size=\"larger\" weight=\"bold\">Aktive netværksforbindelser</span>"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "Version 0\n"
+#~ "Version 1"
+#~ msgstr ""
+#~ "Automatisk\n"
+#~ "Version 0\n"
+#~ "Version 1"
+
+#~ msgid "C_onnect"
+#~ msgstr "F_orbind"
+
+#~ msgid ""
+#~ "Open System\n"
+#~ "Shared Key"
+#~ msgstr ""
+#~ "Åbent system\n"
+#~ "Delt nøgle"
+
+#~ msgid "Other Wireless Network..."
+#~ msgstr "Andet trådløst netværk…"
+
+#~ msgid "<b>Addresses</b>"
+#~ msgstr "<b>Adresser</b>"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "Automatic with manual DNS settings\n"
+#~ "Manual\n"
+#~ "Link-Local\n"
+#~ "Shared to other computers"
+#~ msgstr ""
+#~ "Automatisk\n"
+#~ "Automatisk med manuel DNS-opsætning\n"
+#~ "Manuel\n"
+#~ "Link-lokal\n"
+#~ "Delt til andre computere"
+
+#~ msgid "<b>Basic</b>"
+#~ msgstr "<b>Grundlæggende</b>"
+
+#~ msgid ""
+#~ "Any\n"
+#~ "3G (UMTS/HSPA)\n"
+#~ "2G (GPRS/EDGE)\n"
+#~ "Prefer 3G (UMTS/HSPA)\n"
+#~ "Prefer 2G (GPRS/EDGE)"
+#~ msgstr ""
+#~ "Enhver\n"
+#~ "3G (UMTS/HSPA)\n"
+#~ "2G (GPRS/EDGE)\n"
+#~ "3G foretrukket (UMTS/HSPA)\n"
+#~ "2G foretrukket (GPRS/EDGE)"
+
+#~ msgid "<b>Authentication</b>"
+#~ msgstr "<b>Godkendelse</b>"
+
+#~ msgid "<b>Echo</b>"
+#~ msgstr "<b>Ekko</b>"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "10 Mb/s\n"
+#~ "100 Mb/s\n"
+#~ "1 Gb/s\n"
+#~ "10 Gb/s"
+#~ msgstr ""
+#~ "Automatisk\n"
+#~ "10 Mb/s\n"
+#~ "100 Mb/s\n"
+#~ "1 Gb/s\n"
+#~ "10 Gb/s"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "Twisted Pair (TP)\n"
+#~ "Attachment Unit Interface (AUI)\n"
+#~ "BNC\n"
+#~ "Media Independent Interface (MII)"
+#~ msgstr ""
+#~ "Automatisk\n"
+#~ "Twisted Pair (TP)\n"
+#~ "Attachment Unit Interface (AUI)\n"
+#~ "BNC\n"
+#~ "Media Independent Interface (MII)"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "A (5 GHz)\n"
+#~ "B/G (2.4 GHz)"
+#~ msgstr ""
+#~ "Automatisk\n"
+#~ "A (5 GHz)\n"
+#~ "B/G (2.4 GHz)"
+
+#~ msgid ""
+#~ "The connection editor could not find some required resources (the "
+#~ "NetworkManager applet glade file was not found)."
+#~ msgstr ""
+#~ "Forbindelsesredigering kunne ikke finde nogle krævede ressourcer "
+#~ "(Panelprogrammet til netværkshåndterings glade-fil blev ikke fundet)."
+
+#~ msgid "Apply"
+#~ msgstr "Anvend"
+
+#~ msgid "Apply..."
+#~ msgstr "Anvend..."
+
+#~ msgid "could not connect to the system bus."
+#~ msgstr "kunne ikke forbinde til systembussen."
+
+#~ msgid "Country"
+#~ msgstr "Land"
+
+#~ msgid "Cannot start VPN connection '%s'"
+#~ msgstr "Kan ikke starte VPN-forbindelse \"%s\""
+
+#~ msgid ""
+#~ "Could not find the authentication dialog for VPN connection type '%s'. "
+#~ "Contact your system administrator."
+#~ msgstr ""
+#~ "Kunne ikke finde godkendelsesvinduet til VPN-forbindelsestypen \"%s\". "
+#~ "Kontakt din systemadministrator."
+
+#~ msgid ""
+#~ "There was a problem launching the authentication dialog for VPN "
+#~ "connection type '%s'. Contact your system administrator."
+#~ msgstr ""
+#~ "Der opstod en fejl ved åbning af godkendelsesvinduet til VPN-"
+#~ "forbindelsestypen \"%s\". Kontakt din systemadministrator."
 
 #~ msgid "PUK code required"
 #~ msgstr "PUK-kode kræves"
 
 #~ msgid "PUK code is needed for the mobile broadband device"
 #~ msgstr "Der skal bruges en PUK-kode til den mobile bredbåndsenhed"
-
-#~| msgid "None"
-#~ msgctxt "No wired security used"
-#~ msgid "None"
-#~ msgstr "Ingen"
-
-#~| msgid "Unknown"
-#~ msgctxt "Unknown/unrecognized wired or wifi security"
-#~ msgid "Unknown"
-#~ msgstr "Ukendt"
-
-#~ msgid "_Routes&#x2026;"
-#~ msgstr "_Ruter&#x2026;"
-
-#~ msgid "WEP 40/128-bit Key"
-#~ msgstr "WEP 40/128-bit-nøgle"
-
-#~ msgid ""
-#~ "The NetworkManager applet could not find some required resources.  It "
-#~ "cannot continue.\n"
-#~ msgstr ""
-#~ "Panelprogrammet netværkshåndtering kunne ikke finde nogle krævede "
-#~ "ressourcer - kan ikke fortsætte.\n"
-
-#~ msgid "Select A File"
-#~ msgstr "Vælg en fil"
-
-#~ msgid "PU_K:"
-#~ msgstr "PU_K:"
-
-# Går ud fra at der er tale om telefonnetværk, f.eks. TDC, 3 osv.
-#~ msgid "_Band:"
-#~ msgstr "_Bånd:"
-
-#~ msgid "Save this connection for all users of this machine."
-#~ msgstr "Gem denne forbindelse for alle brugere af denne maskine."
-
-#~ msgid "User Name:"
-#~ msgstr "Brugernavn:"
-
-#~ msgid "alert text"
-#~ msgstr "advarselstekst"
-
-#~ msgid ""
-#~ "<span weight=\"bold\" size=\"larger\">Choose a Mobile Broadband "
-#~ "Connection</span>\n"
-#~ "\n"
-#~ "Select or connect the mobile broadband device you wish to use for the new "
-#~ "connection.  If the device is not available, you may select a generic "
-#~ "connection type."
-#~ msgstr ""
-#~ "<span weight=\"bold\" size=\"larger\">Vælg en mobil bredbåndsforbindelse</"
-#~ "span>\n"
-#~ "\n"
-#~ "Vælg eller tilslut den mobile bredbåndsenhed, du ønsker at anvende til "
-#~ "den nye forbindelse. Hvis enheden ikke er tilgængelig, kan du eventuelt "
-#~ "vælge en almen (generisk) forbindelsestype."
-
-#~ msgid ""
-#~ "Insufficient privileges or unknown error retrieving system connection "
-#~ "secrets."
-#~ msgstr ""
-#~ "Utilstrækkelige rettigheder eller ukendt fejl opstod ved hentning af "
-#~ "systemforbindelseskoder."
-
-#~ msgid "Could not request secrets from the system settings service."
-#~ msgstr "Kunne ikke anmode koder fra systemopsætnings-tjenesten."
-
-#~ msgid "Could not connect to D-Bus to request connection secrets."
-#~ msgstr "Kunne ikke forbinde D-Bus for at anmode om forbindelseskoder."
-
-#~ msgid "Could not create D-Bus proxy for connection secrets."
-#~ msgstr "Kunne ikke oprette D-Bus-proxy til forbindelseskoder."
-
-#~ msgid "Create a GSM connection"
-#~ msgstr "Opret en GSM-forbindelse"
-
-#~ msgid "Create a CDMA connection"
-#~ msgstr "Opret en CDMA-forbindelse"
-
-#~ msgid "PolicyKit authorization request was invalid."
-#~ msgstr "Anmodning om PolicyKit-godkendelse var ugyldig."
-
-#~ msgid "PolicyKit authorization request was malformed."
-#~ msgstr "Anmodning om PolicyKit-godkendelse var misdannet."
-
-#~ msgid "PolicyKit authorization could not be created."
-#~ msgstr "PolicyKit kunne ikke oprettes."
-
-#~ msgid "PolicyKit authorization could not be created; invalid action ID."
-#~ msgstr "PolicyKit-godkendelse kunne ikke oprettes; ugyldig handlings-ID."
-
-#~ msgid "Could not obtain required privileges"
-#~ msgstr "Kunne ikke opnå krævede rettigheder"
-
-#~ msgid "Could not delete connection"
-#~ msgstr "Kunne ikke slette forbindelse"
-
-#~ msgid "The connection could not be deleted due to an unknown error."
-#~ msgstr "Forbindelsen kunne ikke slettes på grund af en ukendt fejl."
-
-#~ msgid "Could not move connection"
-#~ msgstr "Kunne ikke flytte forbindelse"
-
-#~ msgid "Could not add connection"
-#~ msgstr "Kunne ikke tilføje forbindelse"
-
-#~ msgid "The connection could not be added due to an unknown error."
-#~ msgstr "Kunne ikke tilføje forbindelsen på grund af en ukendt fejl."
-
-#~ msgid "Could not update connection"
-#~ msgstr "Kunne ikke opdatere forbindelse"
-
-#~ msgid "The connection could not be updated due to an unknown error."
-#~ msgstr "Forbindelsen kunne ikke opdateres på grund af en ukendt fejl."
-
-#~ msgid "GSM connection %d"
-#~ msgstr "GSM-forbindelse %d"
-
-#~ msgid "CDMA connection %d"
-#~ msgstr "CDMA-forbindelse %d"
-
-#~ msgid "gtk-cancel"
-#~ msgstr "gtk-annullér"
-
-#~ msgid "gtk-ok"
-#~ msgstr "gtk-ok"
-
-#~ msgid "Removing connection failed: %s."
-#~ msgstr "Fjernelse af forbindelse fejlede: %s."
-
-#~ msgid "Could not add system connection: permission denied."
-#~ msgstr "Kunne ikke tilføje systemforbindelse: Tilladelse nægtet."
-
-#~ msgid "Adding connection failed: %s."
-#~ msgstr "Tilføjelse af forbindelse fejlede: %s."
-
-#~ msgid "Updating connection failed: %s."
-#~ msgstr "Opdatering af forbindelse fejlede: %s."
-
-#~ msgid "Passphrase for wireless network %s"
-#~ msgstr "Adgangskode til trådløst netværk %s"
-
-#~ msgid "You are now connected to the Ad-Hoc wireless network '%s'."
-#~ msgstr "Du er nu forbundet til det trådløse Ad-Hoc netværk \"%s\"."
-
-#~ msgid "Connection to the wireless network '%s' failed."
-#~ msgstr "Tilslutning til det trådløse netværk \"%s\" fejlede."
-
-#~ msgid "Connection to the wired network failed."
-#~ msgstr "Tilslutning til det kablede netværk fejlede."
-
-#~ msgid "Could not find some required resources (the glade file)!"
-#~ msgstr "Kunne ikke finde nogle krævede ressourcer (glade-filen)!"
-
-#~ msgid "Wireless Ethernet (%s)"
-#~ msgstr "Trådløst Ethernet (%s)"
-
-#~ msgid ""
-#~ "Copyright © 2004-2005 Red Hat, Inc.\n"
-#~ "Copyright © 2005-2006 Novell, Inc."
-#~ msgstr ""
-#~ "Copyright © 2004-2005 Red Hat, Inc.\n"
-#~ "Copyright © 2005-2006 Novell, Inc."
-
-#~ msgid "VPN Login Failure"
-#~ msgstr "VPN logindfejl"
-
-#~ msgid "Could not start the VPN connection '%s' due to a login failure."
-#~ msgstr ""
-#~ "Kunne ikke etablere VPN-forbindelsen \"%s\" på grund af en logindfejl."
-
-#~ msgid "VPN Start Failure"
-#~ msgstr "VPN etableringsfejl"
-
-#~ msgid ""
-#~ "Could not start the VPN connection '%s' due to a failure launching the "
-#~ "VPN program."
-#~ msgstr ""
-#~ "Kunne ikke etablere VPN-forbindelsen \"%s\" på grund af fejl ved start af "
-#~ "VPN-program."
-
-#~ msgid "VPN Configuration Error"
-#~ msgstr "VPN konfigurationsfejl"
-
-#~ msgid "The network device \"%s (%s)\" does not support wireless scanning."
-#~ msgstr "Netværksenheden \"%s (%s)\" understøtter ikke trådløs scanning."
-
-#~ msgid "The network device \"%s (%s)\" does not support link detection."
-#~ msgstr "Netværksenheden \"%s (%s)\" understøtter ikke link-detektering."
-
-#~ msgid "Preparing device %s for the wired network..."
-#~ msgstr "Klargører enheden %s til det kablede netværk..."
-
-#~ msgid "Configuring device %s for the wired network..."
-#~ msgstr "Konfigurerer enheden %s til det kablede netværk..."
-
-#~ msgid "Attempting to join the wireless network '%s'..."
-#~ msgstr "Forsøger at tilslutte til det trådløse netværk \"%s\"..."
-
-#~ msgid "Waiting for Network Key for the wireless network '%s'..."
-#~ msgstr "Venter på netværksnøglen til det trådløse netværk \"%s\"..."
-
-#~ msgid "Requesting a network address from the wired network..."
-#~ msgstr "Forespørger en netværksadresse fra det kablede netværk..."
-
-#~ msgid "Finishing connection to the wired network..."
-#~ msgstr "Færdiggører tilslutning til det kablede netværk..."
-
-#~ msgid "NetworkManager is not running"
-#~ msgstr "NetworkManager kører ikke"
-
-#~ msgid "Connected to an Ad-Hoc wireless network"
-#~ msgstr "Tilsluttet til et trådløst ad hoc netværk"
-
-#~ msgid "VPN connecting to '%s'"
-#~ msgstr "VPN tilslutter til \"%s\""
-
-#~ msgid "_Dial Up Connections"
-#~ msgstr "_Opkaldsforbindelser"
-
-#~ msgid "Connect to %s..."
-#~ msgstr "Tilslut til %s..."
-
-#~ msgid "Disconnect from %s..."
-#~ msgstr "Afbryd fra %s..."
-
-#~ msgid ""
-#~ "<span weight=\"bold\" size=\"larger\">Passphrase Required by Wireless "
-#~ "Network</span>\n"
-#~ "\n"
-#~ "A passphrase or encryption key is required to access the wireless network "
-#~ "'%s'."
-#~ msgstr ""
-#~ "<span weight=\"bold\" size=\"larger\">Adgangskode påkrævet af trådløst "
-#~ "netværk</span>\n"
-#~ "\n"
-#~ "En adgangskode eller krypteringsnøgle er påkrævet for at opnå adgang til "
-#~ "det trådløse netværk \"%s\"."
-
-#~ msgid ""
-#~ "<span weight=\"bold\" size=\"larger\">Reduced Network Functionality</"
-#~ "span>\n"
-#~ "\n"
-#~ "%s  It will not be completely functional."
-#~ msgstr ""
-#~ "<span weight=\"bold\" size=\"larger\">Reduceret netværksfunktionalitet</"
-#~ "span>\n"
-#~ "\n"
-#~ "%s  Den vil ikke være fuldstændig funktionsdygtig."
-
-#~ msgid ""
-#~ "<span weight=\"bold\" size=\"larger\">Wireless Network Login "
-#~ "Confirmation</span>\n"
-#~ "\n"
-#~ "You have chosen to log in to the wireless network '%s'.  If you are sure "
-#~ "that this wireless network is secure, click the checkbox below and "
-#~ "NetworkManager will not require confirmation on subsequent log ins."
-#~ msgstr ""
-#~ "<span weight=\"bold\" size=\"larger\">Bekræftelse af indlogning på "
-#~ "trådløst netværk</span>\n"
-#~ "\n"
-#~ "Du har valgt at logge på det trådløse netværk \"%s\".  Hvis du er sikker "
-#~ "på at dette trådløse netværk er sikkert, afkryds nedenstående "
-#~ "afkrydsningsfelt og NetworkManager vil ikke spørge i fremtiden."
-
-#~ msgid "Client Certificate File:"
-#~ msgstr "Klient-certifikatfil:"
-
-#~ msgid "Destination Address:"
-#~ msgstr "Destinationsadresse:"
-
-#~ msgid "Key Type:"
-#~ msgstr "Nøgletype:"
-
-#~ msgid "Key management:"
-#~ msgstr "Nøglehåndtering:"
-
-#~ msgid ""
-#~ "None\n"
-#~ "WEP 128-bit Passphrase\n"
-#~ "WEP 64/128-bit Hex\n"
-#~ "WEP 64/128-bit ASCII\n"
-#~ msgstr ""
-#~ "Ingen\n"
-#~ "WEP 128-bit adgangskode\n"
-#~ "WEP 64/128-bit hex\n"
-#~ "WEP 64/128-bit ASCII\n"
-
-#~ msgid "Passphrase:"
-#~ msgstr "Adgangskode:"
-
-#~ msgid "Phase2 Type:"
-#~ msgstr "Phase2-type:"
-
-#~ msgid "Select the Client Certificate File"
-#~ msgstr "Vælg klient-certifikatfilen"
-
-#~ msgid "Select the Private Key File"
-#~ msgstr "Vælg den private nøglefil"
-
-#~ msgid "Show passphrase"
-#~ msgstr "Vis adgangskode"
-
-#~ msgid "_Always Trust this Wireless Network"
-#~ msgstr "_Stol altid på dette trådløse netværk"
-
-#~ msgid "Orientation"
-#~ msgstr "Retning"
-
-#~ msgid "The orientation of the tray."
-#~ msgstr "Retningen på statusikonet."
-
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (ugyldig Unicode)"
-
-#~ msgid ""
-#~ "By default, the wireless network's name is set to your computer's name, %"
-#~ "s, with no encryption enabled"
-#~ msgstr ""
-#~ "Som standard navngives det trådløse netværk til din maskines navn, %s, "
-#~ "uden nogen kryptering slået til"
-
-#~ msgid "Error connecting to wireless network"
-#~ msgstr "Fejl ved forbindelse til trådløst netværk"
-
-#~ msgid ""
-#~ "The requested wireless network requires security capabilities unsupported "
-#~ "by your hardware."
-#~ msgstr ""
-#~ "Det anmodede trådløse netværk kræver sikkerhedsfunktionalitet der ikke er "
-#~ "understøttet af din hardware."
-
-#~ msgid "Open System"
-#~ msgstr "Åbent system"
-
-#~ msgid "Shared Key"
-#~ msgstr "Delt nøgle"
-
-#~ msgid "AES-CCMP"
-#~ msgstr "AES-CCMP"
-
-#~ msgid "TKIP"
-#~ msgstr "TKIP"
-
-#~ msgid "WEP 64/128-bit ASCII"
-#~ msgstr "WEP 64/128-bit ASCII"
-
-#~ msgid "WEP 64/128-bit Hex"
-#~ msgstr "WEP 64/128-bit hex"
-
-#~ msgid "TTLS"
-#~ msgstr "TTLS"
-
-#~ msgid "WPA Enterprise"
-#~ msgstr "WPA Enterprise"
-
-#~ msgid ""
-#~ "No suitable VPN software was found on your system. Contact your system "
-#~ "administrator."
-#~ msgstr ""
-#~ "Ingen passende VPN-programmel blev fundet på dit system. Kontakt din "
-#~ "systemadministrator."
-
-#~ msgid ""
-#~ "Cannot find suitable software for VPN connection type '%s' to import the "
-#~ "file '%s'. Contact your system administrator."
-#~ msgstr ""
-#~ "Kan ikke finde passende programmel til VPN-forbindelsestypen \"%s\", til "
-#~ "import af filen \"%s\". Kontakt din systemadministrator."
-
-#~ msgid "Error retrieving VPN connection '%s'"
-#~ msgstr "Fejl ved hentning af VPN-forbindelsen \"%s\""
-
-#~ msgid ""
-#~ "Could not find the UI files for VPN connection type '%s'. Contact your "
-#~ "system administrator."
-#~ msgstr ""
-#~ "Kunne ikke finde brugergrænsefladefilerne til VPN-forbindelsestypen \"%s"
-#~ "\". Kontakt din systemadministrator."
-
-#~ msgid "Delete VPN connection \"%s\"?"
-#~ msgstr "Slet VPN-forbindelsen \"%s\"?"
-
-#~ msgid ""
-#~ "All information about the VPN connection \"%s\" will be lost and you may "
-#~ "need your system administrator to provide information to create a new "
-#~ "connection."
-#~ msgstr ""
-#~ "Al information omkring VPN-forbindelsen \"%s\" vil gå tabt og du får "
-#~ "muligvis brug for din systemadministrator, som kan give dig de nødvendige "
-#~ "informationer til oprettelse af en ny forbindelse."
-
-#~ msgid "Unable to load"
-#~ msgstr "Kan ikke indlæse"
-
-#~ msgid "Cannot find some needed resources (the glade file)!"
-#~ msgstr "Kan ikke finde nogle krævede ressourcer (glade-filen)!"
-
-#~ msgid "Add a new VPN connection"
-#~ msgstr "Tilføj ny VPN-forbindelse"
-
-#~ msgid "Choose which type of VPN connection you wish to create."
-#~ msgstr "Vælg hvilken type VPN-forbindelse du ønsker at oprette."
-
-#~ msgid "Create VPN Connection - 1 of 2"
-#~ msgstr "Opret VPN-forbindelse - 1 af 2"
-
-#~ msgid "Create VPN Connection - 2 of 2"
-#~ msgstr "Opret VPN-forbindelse - 2 af 2"
-
-#~ msgid "Export the VPN settings to a file"
-#~ msgstr "Eksportér VPN-opsætningen til en fil"
-
-#~ msgid "Export the selected VPN connection to a file"
-#~ msgstr "Eksportér den valgte VPN-forbindelse til en fil"
-
-#~ msgid "Finish Creating VPN Connection"
-#~ msgstr "Færdiggør oprettelse af VPN-forbindelse"
-
-#~ msgid ""
-#~ "This assistant will guide you through the creation of a connection to a "
-#~ "Virtual Private Network (VPN).\n"
-#~ "\n"
-#~ "It will require some information, such as IP addresses and secrets.  "
-#~ "Please see your system administrator to obtain this information."
-#~ msgstr ""
-#~ "Denne vil guide dig gennem oprettelsen af en forbindelse til et virtuelt "
-#~ "privat netværk (VPN).\n"
-#~ "\n"
-#~ "Denne guide vil kræve nogle informationer, såsom IP-adresser og "
-#~ "adgangskode.  Henvend dig venligst til din systemadministrator for at få "
-#~ "disse informationer."
-
-#~ msgid "VPN Connections"
-#~ msgstr "VPN-forbindelser"
-
-#~ msgid "40-bit WEP"
-#~ msgstr "40-bit WEP"
-
-#~ msgid "104-bit WEP"
-#~ msgstr "104-bit WEP"
-
-#~ msgid "WPA TKIP"
-#~ msgstr "WPA TKIP"
-
-#~ msgid "WPA CCMP"
-#~ msgstr "WPA CCMP"
-
-#~ msgid "WPA2 TKIP"
-#~ msgstr "WPA2 TKIP"
-
-#~ msgid "WPA2 CCMP"
-#~ msgstr "WPA2 CCMP"
-
-#~ msgid ""
-#~ "unable to create netlink socket for monitoring wired ethernet devices - %s"
-#~ msgstr ""
-#~ "kan ikke oprette netlink sokkel til overvågning af kablede ethernet "
-#~ "enheder - %s"
-
-#~ msgid ""
-#~ "unable to bind to netlink socket for monitoring wired ethernet devices - %"
-#~ "s"
-#~ msgstr ""
-#~ "kan ikke tilslutte netlink sokkel til overvågning af kablede ethernet "
-#~ "enheder - %s"
-
-#~ msgid "operation took too long"
-#~ msgstr "handlingen overskred tidsgrænsen"
-
-#~ msgid "received data from wrong type of sender"
-#~ msgstr "modtog data fra forkert type afsender"
-
-#~ msgid "received data from unexpected sender"
-#~ msgstr "modtog data fra uventet afsender"
-
-#~ msgid "too much data was sent over socket and some of it was lost"
-#~ msgstr "for meget data var sendt over sokkelen og noget gik tabt"
-
-#~ msgid "error occurred while waiting for data on socket"
-#~ msgstr "der opstod en fejl mens der blev ventet på data på sokkelen"
-
-#~ msgid "VPN Error"
-#~ msgstr "VPN fejl"
-
-#~ msgid "The VPN service said: \"%s\""
-#~ msgstr "VPN-tjenesten sagde: \"%s\""
-
-#~ msgid "leap_subwindow"
-#~ msgstr "leap_subwindow"
-
-#~ msgid "wep_key_subwindow"
-#~ msgstr "wep_key_subwindow"
-
-#~ msgid "wep_passphrase_subwindow"
-#~ msgstr "wep_passphrase_subwindow"
-
-#~ msgid "wpa_psk_subwindow"
-#~ msgstr "wpa_psk_subwindow"
-
-#~ msgid "WEP Passphrase"
-#~ msgstr "WEP-adgangskode:"
-
-#~ msgid ""
-#~ "None\n"
-#~ "WEP Passphrase\n"
-#~ "WEP 40/128-bit hex\n"
-#~ "WEP 40/128-bit ASCII\n"
-#~ msgstr ""
-#~ "Ingen\n"
-#~ "WEP-adgangskode\n"
-#~ "WEP 40/128-bit hex\n"
-#~ "WEP 40/128-bit ASCII\n"
