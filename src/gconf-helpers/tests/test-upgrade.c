@@ -32,6 +32,7 @@
 #include "fake-keyring.h"
 
 #define BASE_PATH "/system/networking/connections/"
+#define APPLET_PREFS_STAMP "/apps/nm-applet/stamp"
 
 static void
 test_import_xml (void)
@@ -271,8 +272,14 @@ test_upgrade_08_wifi (void)
 	GnomeKeyringAttributeList *attrs;
 	char *display_name = NULL;
 	GnomeKeyringResult ret;
+	guint32 stamp;
+	GError *error = NULL;
 
 	client = gconf_client_get_default ();
+	stamp = (guint32) gconf_client_get_int (client, APPLET_PREFS_STAMP, &error);
+	g_assert (stamp == 0);
+	g_assert_no_error (error);
+
 	success = fake_gconf_add_xml (client, TESTDIR "/08wifi.xml");
 	g_assert (success);
 
@@ -334,8 +341,14 @@ test_upgrade_08_vpnc (void)
 	GnomeKeyringAttributeList *attrs;
 	char *display_name = NULL;
 	GnomeKeyringResult ret;
+	guint32 stamp;
+	GError *error = NULL;
 
 	client = gconf_client_get_default ();
+	stamp = (guint32) gconf_client_get_int (client, APPLET_PREFS_STAMP, &error);
+	g_assert (stamp == 0);
+	g_assert_no_error (error);
+
 	success = fake_gconf_add_xml (client, TESTDIR "/08vpnc.xml");
 	g_assert (success);
 
