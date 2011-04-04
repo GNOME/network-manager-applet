@@ -326,7 +326,7 @@ upgrade_08_vpnc_cb (NMConnection *connection, gpointer user_data)
 	g_assert_cmpint (flags, ==, NM_SETTING_SECRET_FLAG_AGENT_OWNED);
 
 	success = nm_setting_get_secret_flags (NM_SETTING (s_vpn),
-	                                       "XAuth password",
+	                                       "Xauth password",
 	                                       &flags,
 	                                       NULL);
 	g_assert (success);
