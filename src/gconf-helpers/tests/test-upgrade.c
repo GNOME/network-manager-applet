@@ -296,6 +296,8 @@ test_upgrade_08_wifi (void)
 
 	/* Now do the conversion */
 	nm_gconf_move_connections_to_system (upgrade_08_wifi_cb, NULL);
+
+	g_object_unref (client);
 }
 
 static void
@@ -357,6 +359,8 @@ test_upgrade_08_vpnc (void)
 
 	/* Now do the conversion */
 	nm_gconf_move_connections_to_system (upgrade_08_vpn_cb, NULL);
+
+	g_object_unref (client);
 }
 
 /*******************************************/
