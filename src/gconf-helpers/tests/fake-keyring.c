@@ -26,6 +26,7 @@
 #include <glib.h>
 
 #include <gnome-keyring.h>
+#include "fake-keyring.h"
 
 static GSList *secrets = NULL;
 
@@ -192,6 +193,14 @@ gnome_keyring_item_delete_sync (const char *keyring, guint32 id)
 	}
 
 	return GNOME_KEYRING_RESULT_OK;
+}
+
+void
+fake_keyring_clear (void)
+{
+	g_slist_foreach (secrets, (GFunc) secret_free, NULL);
+	g_slist_free (secrets);
+	secrets = NULL;
 }
 
 /* Copied from gnome-keyring */
