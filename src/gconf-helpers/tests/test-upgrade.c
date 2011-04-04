@@ -380,6 +380,129 @@ test_upgrade_08_vpnc (void)
 	fake_keyring_clear ();
 }
 
+static void
+upgrade_08_openvpn_saved_cb (NMConnection *connection, gpointer user_data)
+{
+	NMSettingVPN *s_vpn;
+	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
+	gboolean success;
+
+	/* And check to make sure we've got our wpa-psk flags */
+	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	g_assert (s_vpn);
+
+	success = nm_setting_get_secret_flags (NM_SETTING (s_vpn),
+	                                       "password",
+	                                       &flags,
+	                                       NULL);
+	g_assert (success);
+	g_assert_cmpint (flags, ==, NM_SETTING_SECRET_FLAG_AGENT_OWNED);
+
+	/* Connection isn't a TLS connection, so we don't expect any flags here */
+	flags = NM_SETTING_SECRET_FLAG_NONE;
+	success = nm_setting_get_secret_flags (NM_SETTING (s_vpn),
+	                                       "cert-pass",
+	                                       &flags,
+	                                       NULL);
+	g_assert (success == FALSE);
+	g_assert_cmpint (flags, ==, NM_SETTING_SECRET_FLAG_NONE);
+}
+
+static void
+test_upgrade_08_openvpn_saved (void)
+{
+	GConfClient *client;
+	gboolean success;
+	guint32 stamp;
+	GError *error = NULL;
+	GnomeKeyringAttributeList *attrs;
+	char *display_name = NULL;
+	GnomeKeyringResult ret;
+
+	client = gconf_client_get_default ();
+	stamp = (guint32) gconf_client_get_int (client, APPLET_PREFS_STAMP, &error);
+	g_assert (stamp == 0);
+	g_assert_no_error (error);
+
+	success = fake_gconf_add_xml (client, TESTDIR "/08openvpn-saved.xml");
+	g_assert (success);
+
+	/* Add the user password */
+	attrs = _create_keyring_add_attr_list ("8a9ffa89-aca5-4350-ac82-d68cffc84eae",
+	                                       "test-openvpn",
+	                                       NM_SETTING_VPN_SETTING_NAME,
+	                                       "password",
+	                                       &display_name);
+	g_assert (attrs);
+	ret = gnome_keyring_item_create_sync (NULL,
+	                                      GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                      display_name,
+	                                      attrs,
+	                                      "blahblah my password",
+	                                      TRUE,
+	                                      NULL);
+	g_assert_cmpint (ret, ==, GNOME_KEYRING_RESULT_OK);
+	gnome_keyring_attribute_list_free (attrs);
+	g_free (display_name);
+
+	/* Now do the conversion */
+	nm_gconf_move_connections_to_system (upgrade_08_openvpn_saved_cb, NULL);
+
+	g_object_unref (client);
+	fake_keyring_clear ();
+}
+
+static void
+upgrade_08_openvpn_not_saved_cb (NMConnection *connection, gpointer user_data)
+{
+	NMSettingVPN *s_vpn;
+	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
+	gboolean success;
+
+	/* And check to make sure we've got our wpa-psk flags */
+	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	g_assert (s_vpn);
+
+	success = nm_setting_get_secret_flags (NM_SETTING (s_vpn),
+	                                       "password",
+	                                       &flags,
+	                                       NULL);
+	g_assert (success);
+	g_assert_cmpint (flags, ==, NM_SETTING_SECRET_FLAG_AGENT_OWNED | NM_SETTING_SECRET_FLAG_NOT_SAVED);
+
+	/* Connection isn't a TLS connection, so we don't expect any flags here */
+	flags = NM_SETTING_SECRET_FLAG_NONE;
+	success = nm_setting_get_secret_flags (NM_SETTING (s_vpn),
+	                                       "cert-pass",
+	                                       &flags,
+	                                       NULL);
+	g_assert (success == FALSE);
+	g_assert_cmpint (flags, ==, NM_SETTING_SECRET_FLAG_NONE);
+}
+
+static void
+test_upgrade_08_openvpn_not_saved (void)
+{
+	GConfClient *client;
+	gboolean success;
+	guint32 stamp;
+	GError *error = NULL;
+
+	client = gconf_client_get_default ();
+	stamp = (guint32) gconf_client_get_int (client, APPLET_PREFS_STAMP, &error);
+	g_assert (stamp == 0);
+	g_assert_no_error (error);
+
+	success = fake_gconf_add_xml (client, TESTDIR "/08openvpn-not-saved.xml");
+	g_assert (success);
+
+	/* Passwords for this connection are not saved so we don't add anything to the keyring */
+
+	/* Now do the conversion */
+	nm_gconf_move_connections_to_system (upgrade_08_openvpn_not_saved_cb, NULL);
+	g_object_unref (client);
+}
+
 /*******************************************/
 
 #if GLIB_CHECK_VERSION(2,25,12)
@@ -404,6 +527,8 @@ int main (int argc, char **argv)
 
 	g_test_suite_add (suite, TESTCASE (test_upgrade_08_wifi, NULL));
 	g_test_suite_add (suite, TESTCASE (test_upgrade_08_vpnc, NULL));
+	g_test_suite_add (suite, TESTCASE (test_upgrade_08_openvpn_saved, NULL));
+	g_test_suite_add (suite, TESTCASE (test_upgrade_08_openvpn_not_saved, NULL));
 
 	return g_test_run ();
 }

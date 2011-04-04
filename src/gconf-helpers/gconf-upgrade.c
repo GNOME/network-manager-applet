@@ -2062,6 +2062,85 @@ migrate_vpnc (NMConnection *connection, NMSettingVPN *s_vpn)
 	}
 }
 
+#define NM_DBUS_SERVICE_OPENVPN "org.freedesktop.NetworkManager.openvpn"
+#define NM_OPENVPN_KEY_PASSWORD "password"
+#define NM_OPENVPN_KEY_CERTPASS "cert-pass"
+#define NM_OPENVPN_KEY_HTTP_PROXY_PASSWORD "http-proxy-password"
+#define NM_OPENVPN_KEY_CONNECTION_TYPE "connection-type"
+#define NM_OPENVPN_CONTYPE_TLS          "tls"
+#define NM_OPENVPN_CONTYPE_PASSWORD     "password"
+#define NM_OPENVPN_CONTYPE_PASSWORD_TLS "password-tls"
+#define NM_OPENVPN_KEY_PROXY_TYPE "proxy-type"
+
+static NMSettingSecretFlags
+openvpn_get_secret_flags (const char *uuid, const char *secret_name)
+{
+	GList *found = NULL;
+	GnomeKeyringResult ret;
+	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+
+	ret = gnome_keyring_find_itemsv_sync (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+		                                  &found,
+		                                  KEYRING_UUID_TAG,
+		                                  GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+										  uuid,
+		                                  KEYRING_SN_TAG,
+		                                  GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+		                                  NM_SETTING_VPN_SETTING_NAME,
+		                                  KEYRING_SK_TAG,
+		                                  GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+		                                  secret_name,
+		                                  NULL);
+	if (ret != GNOME_KEYRING_RESULT_OK || found == NULL)
+		flags |= NM_SETTING_SECRET_FLAG_NOT_SAVED;
+	gnome_keyring_found_list_free (found);
+
+	return flags;
+}
+
+static void
+migrate_openvpn (NMConnection *connection, NMSettingVPN *s_vpn)
+{
+	NMSettingSecretFlags flags;
+	const char *tmp;
+	gboolean check_pw = FALSE, check_cp = FALSE;
+
+	tmp = nm_setting_vpn_get_data_item (s_vpn, NM_OPENVPN_KEY_CONNECTION_TYPE);
+	if (!tmp)
+		return;
+
+	if (!strcmp (tmp, NM_OPENVPN_CONTYPE_TLS))
+		check_cp = TRUE;
+	else if (!strcmp (tmp, NM_OPENVPN_CONTYPE_PASSWORD_TLS)) {
+		check_pw = TRUE;
+		check_cp = TRUE;
+	} else if (!strcmp (tmp, NM_OPENVPN_CONTYPE_PASSWORD))
+		check_pw = TRUE;
+
+	/* For each secret, we need to check the keyring to see whether the secret
+	 * is present or not, and if it's *not*, then we mark the secret as both
+	 * not-saved and agent-owned.  If it is present, the secret is just marked
+	 * agent-owned.
+	 */
+
+	if (check_pw) {
+		flags = openvpn_get_secret_flags (nm_connection_get_uuid (connection), NM_OPENVPN_KEY_PASSWORD);
+		nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENVPN_KEY_PASSWORD, flags, NULL);
+	}
+
+	if (check_cp) {
+		flags = openvpn_get_secret_flags (nm_connection_get_uuid (connection), NM_OPENVPN_KEY_CERTPASS);
+		nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENVPN_KEY_CERTPASS, flags, NULL);
+	}
+
+	/* HTTP proxy password */
+	tmp = nm_setting_vpn_get_data_item (s_vpn, NM_OPENVPN_KEY_PROXY_TYPE);
+	if (g_strcmp0 (tmp, "http") == 0 || g_strcmp0 (tmp, "socks") == 0) {
+		flags = openvpn_get_secret_flags (nm_connection_get_uuid (connection), NM_OPENVPN_KEY_HTTP_PROXY_PASSWORD);
+		nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENVPN_KEY_HTTP_PROXY_PASSWORD, flags, NULL);
+	}
+}
+
 #define NM_DBUS_SERVICE_PPTP "org.freedesktop.NetworkManager.pptp"
 #define NM_PPTP_KEY_PASSWORD "password"
 
@@ -2094,6 +2173,9 @@ nm_gconf_migrate_09_secret_flags (GConfClient *client,
 		} else if (g_strcmp0 (service, NM_DBUS_SERVICE_PPTP) == 0) {
 			/* Mark the password as agent-owned */
 			nm_setting_set_secret_flags (setting, NM_PPTP_KEY_PASSWORD, NM_SETTING_SECRET_FLAG_AGENT_OWNED, NULL);
+			return;
+		} else if (g_strcmp0 (service, NM_DBUS_SERVICE_OPENVPN) == 0) {
+			migrate_openvpn (connection, s_vpn);
 			return;
 		}
 

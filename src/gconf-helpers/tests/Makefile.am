@@ -27,5 +27,6 @@ EXTRA_DIST = \
 	test-import.xml \
 	08wifi.xml \
 	08vpnc.xml \
-	08openvpn.xml
+	08openvpn-not-saved.xml \
+	08openvpn-saved.xml
 
