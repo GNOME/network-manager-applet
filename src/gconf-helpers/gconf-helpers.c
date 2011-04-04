@@ -1765,6 +1765,8 @@ nm_gconf_move_connections_to_system (AddToSettingsFunc add_func, gpointer user_d
 	/* Update the applet GConf stamp */
 	if (stamp != APPLET_CURRENT_STAMP)
 		gconf_client_set_int (client, APPLET_PREFS_STAMP, APPLET_CURRENT_STAMP, NULL);
+
+	g_object_unref (client);
 }
 
 static gboolean
