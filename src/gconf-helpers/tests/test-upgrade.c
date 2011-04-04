@@ -208,6 +208,8 @@ test_keyring (void)
 	                                      NULL);
 	g_assert_cmpint (ret, ==, GNOME_KEYRING_RESULT_OK);
 	g_assert (g_list_length (found_list) == 0);
+
+	fake_keyring_clear ();
 }
 
 #define KEYRING_UUID_TAG "connection-uuid"
@@ -305,6 +307,7 @@ test_upgrade_08_wifi (void)
 	nm_gconf_move_connections_to_system (upgrade_08_wifi_cb, NULL);
 
 	g_object_unref (client);
+	fake_keyring_clear ();
 }
 
 static void
@@ -374,6 +377,7 @@ test_upgrade_08_vpnc (void)
 	nm_gconf_move_connections_to_system (upgrade_08_vpnc_cb, NULL);
 
 	g_object_unref (client);
+	fake_keyring_clear ();
 }
 
 /*******************************************/
