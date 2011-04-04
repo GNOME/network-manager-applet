@@ -301,7 +301,7 @@ test_upgrade_08_wifi (void)
 }
 
 static void
-upgrade_08_vpn_cb (NMConnection *connection, gpointer user_data)
+upgrade_08_vpnc_cb (NMConnection *connection, gpointer user_data)
 {
 	NMSettingVPN *s_vpn;
 	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
@@ -358,7 +358,7 @@ test_upgrade_08_vpnc (void)
 	g_free (display_name);
 
 	/* Now do the conversion */
-	nm_gconf_move_connections_to_system (upgrade_08_vpn_cb, NULL);
+	nm_gconf_move_connections_to_system (upgrade_08_vpnc_cb, NULL);
 
 	g_object_unref (client);
 }
