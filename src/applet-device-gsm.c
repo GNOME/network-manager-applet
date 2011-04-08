@@ -786,7 +786,7 @@ unlock_dialog_response (GtkDialog *dialog,
 	if (unlock_code == UNLOCK_CODE_PIN) {
 		dbus_g_proxy_begin_call_with_timeout (info->card_proxy, "SendPin",
 		                                      unlock_pin_reply, info, NULL,
-		                                      12000,  /* 12 seconds */
+		                                      15000,  /* 15 seconds */
 		                                      G_TYPE_STRING, code1,
 		                                      G_TYPE_INVALID);
 	} else if (unlock_code == UNLOCK_CODE_PUK) {
@@ -799,7 +799,7 @@ unlock_dialog_response (GtkDialog *dialog,
 
 		dbus_g_proxy_begin_call_with_timeout (info->card_proxy, "SendPuk",
 		                                      unlock_puk_reply, info, NULL,
-		                                      12000,  /* 12 seconds */
+		                                      15000,  /* 15 seconds */
 		                                      G_TYPE_STRING, code1,
 		                                      G_TYPE_STRING, code2,
 		                                      G_TYPE_INVALID);
