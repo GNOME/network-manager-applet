@@ -168,11 +168,25 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 static void
 update_secrets (EAPMethod *parent, NMConnection *connection)
 {
-	helper_fill_secret_entry (connection,
-	                          parent->builder,
-	                          "eap_simple_password_entry",
-	                          NM_TYPE_SETTING_802_1X,
-	                          (HelperSecretFunc) nm_setting_802_1x_get_password);
+	gboolean always_ask = FALSE;
+
+	if (connection) {
+		NMSettingConnection *s_con;
+		const char *uuid;
+
+		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		g_assert (s_con);
+
+		uuid = nm_setting_connection_get_uuid (s_con);
+		always_ask = nm_gconf_get_8021x_password_always_ask (uuid);
+	}
+
+	if (!always_ask)
+		helper_fill_secret_entry (connection,
+		                          parent->builder,
+		                          "eap_simple_password_entry",
+		                          NM_TYPE_SETTING_802_1X,
+		                          (HelperSecretFunc) nm_setting_802_1x_get_password);
 }
 
 static void

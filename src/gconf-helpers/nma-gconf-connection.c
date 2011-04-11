@@ -443,42 +443,6 @@ nma_gconf_connection_update (NMAGConfConnection *self,
 /******************************************************/
 
 static gboolean
-update (NMSettingsConnectionInterface *connection,
-	    NMSettingsConnectionInterfaceUpdateFunc callback,
-	    gpointer user_data)
-{
-	/* Always update secrets since it's assumed that secrets are included in
-	 * the new connection data.
-	 */
-	nma_gconf_connection_update (NMA_GCONF_CONNECTION (connection), FALSE);
-
-	return parent_settings_connection_iface->update (connection, callback, user_data);
-}
-
-static gboolean 
-do_delete (NMSettingsConnectionInterface *connection,
-	       NMSettingsConnectionInterfaceDeleteFunc callback,
-	       gpointer user_data)
-{
-	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (connection);
-	gboolean success;
-	GError *error = NULL;
-
-	/* Clean up keyring keys */
-	clear_keyring_items (NMA_GCONF_CONNECTION (connection));
-
-	success = gconf_client_recursive_unset (priv->client, priv->dir, 0, &error);
-	if (!success) {
-		callback (connection, error, user_data);
-		g_error_free (error);
-		return FALSE;
-	}
-	gconf_client_suggest_sync (priv->client, NULL);
-
-	return parent_settings_connection_iface->delete (connection, callback, user_data);
-}
-
-static gboolean
 is_otp_always_ask (NMConnection *connection)
 {
 	NMSetting8021x *s_8021x;
@@ -513,6 +477,46 @@ is_otp_always_ask (NMConnection *connection)
 		}
 	}
 	return FALSE;
+}
+
+static gboolean
+update (NMSettingsConnectionInterface *connection,
+	    NMSettingsConnectionInterfaceUpdateFunc callback,
+	    gpointer user_data)
+{
+	gboolean always_ask;
+
+	always_ask = is_otp_always_ask (NM_CONNECTION (connection));
+
+	/* It's assumed that secrets are included in the new connection data.
+	 * However, update the secrets only if "always ask" is not set.
+	 */
+	nma_gconf_connection_update (NMA_GCONF_CONNECTION (connection), always_ask);
+
+	return parent_settings_connection_iface->update (connection, callback, user_data);
+}
+
+static gboolean 
+do_delete (NMSettingsConnectionInterface *connection,
+	       NMSettingsConnectionInterfaceDeleteFunc callback,
+	       gpointer user_data)
+{
+	NMAGConfConnectionPrivate *priv = NMA_GCONF_CONNECTION_GET_PRIVATE (connection);
+	gboolean success;
+	GError *error = NULL;
+
+	/* Clean up keyring keys */
+	clear_keyring_items (NMA_GCONF_CONNECTION (connection));
+
+	success = gconf_client_recursive_unset (priv->client, priv->dir, 0, &error);
+	if (!success) {
+		callback (connection, error, user_data);
+		g_error_free (error);
+		return FALSE;
+	}
+	gconf_client_suggest_sync (priv->client, NULL);
+
+	return parent_settings_connection_iface->delete (connection, callback, user_data);
 }
 
 static gboolean
