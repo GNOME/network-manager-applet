@@ -265,7 +265,9 @@ network_id_filter_cb (GtkEntry *   entry,
 {
 	GtkEditable *editable = GTK_EDITABLE (entry);
 	int i, count = 0;
-	gchar *result = g_new0 (gchar, length);
+	gchar *result;
+
+	result = g_malloc0 (length + 1);
 
 	for (i = 0; i < length; i++) {
 		if (isdigit (text[i]))
