@@ -601,7 +601,9 @@ ip_address_filter_cb (GtkEntry *   entry,
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	GtkEditable *editable = GTK_EDITABLE (entry);
 	int i, count = 0;
-	gchar *result = g_new0 (gchar, length);
+	gchar *result;
+
+	result = g_malloc0 (length + 1);
 
 	for (i = 0; i < length; i++) {
 		if ((text[i] >= '0' && text[i] <= '9') || (text[i] == '.'))

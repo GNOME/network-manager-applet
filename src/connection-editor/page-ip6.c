@@ -574,8 +574,10 @@ ip_address_filter_cb (GtkEntry *   entry,
 	GtkEditable *editable = GTK_EDITABLE (entry);
 	gboolean numeric = FALSE;
 	int i, count = 0;
-	gchar *result = g_new0 (gchar, length);
+	gchar *result;
 	guint column;
+
+	result = g_malloc0 (length + 1);
 
 	/* The prefix column only allows numbers, no ':' */
 	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (editable), "column"));

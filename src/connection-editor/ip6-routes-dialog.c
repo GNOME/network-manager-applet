@@ -274,7 +274,9 @@ ip_address_filter_cb (GtkEntry *   entry,
 	GtkWidget *ok_button = user_data;
 	GtkEditable *editable = GTK_EDITABLE (entry);
 	int i, count = 0;
-	gchar *result = g_new (gchar, length);
+	gchar *result;
+
+	result = g_malloc0 (length + 1);
 
 	for (i = 0; i < length; i++) {
 		if (g_ascii_isxdigit(text[i]) || (text[i] == ':'))
