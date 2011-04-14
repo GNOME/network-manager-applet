@@ -164,6 +164,14 @@ destroy_gvalue (gpointer data)
 	g_slice_free (GValue, value);
 }
 
+static void
+vpn_child_setup (gpointer user_data G_GNUC_UNUSED)
+{
+	/* We are in the child process at this point */
+	pid_t pid = getpid ();
+	setpgid (pid, pid);
+}
+
 gboolean
 nma_vpn_request_password (NMSettingsConnectionInterface *connection_iface,
                           gboolean retry,
@@ -237,7 +245,7 @@ nma_vpn_request_password (NMSettingsConnectionInterface *connection_iface,
 				       (gchar **) argv,            /* argv */
 				       NULL,                       /* envp */
 				       G_SPAWN_DO_NOT_REAP_CHILD,  /* flags */
-				       NULL,                       /* child_setup */
+				       vpn_child_setup,            /* child_setup */
 				       NULL,                       /* user_data */
 				       &child_pid,                 /* child_pid */
 				       &child_stdin,               /* standard_input */
