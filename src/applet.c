@@ -1525,8 +1525,8 @@ get_vpn_connections (NMApplet *applet)
 			continue;
 
 		if (!nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN)) {
-			g_warning ("%s: VPN connection '%s' didn't have requires vpn setting.", __func__,
-					   nm_setting_get_name (NM_SETTING (s_con)));
+			g_warning ("%s: VPN connection '%s' didn't have required vpn setting.", __func__,
+			           nm_setting_connection_get_id (s_con));
 			continue;
 		}
 
