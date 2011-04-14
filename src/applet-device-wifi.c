@@ -439,9 +439,9 @@ wireless_new_auto_connection (NMDevice *device,
 
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 	g_object_set (s_con,
-			    NM_SETTING_CONNECTION_TYPE, nm_setting_get_name (NM_SETTING (s_wireless)),
-			    NM_SETTING_CONNECTION_AUTOCONNECT, !is_manufacturer_default_ssid (ap_ssid),
-			    NULL);
+	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRELESS_SETTING_NAME,
+	              NM_SETTING_CONNECTION_AUTOCONNECT, !is_manufacturer_default_ssid (ap_ssid),
+	              NULL);
 
 	memset (buf, 0, sizeof (buf));
 	buf_len = MIN(ap_ssid->len, sizeof (buf) - 1);

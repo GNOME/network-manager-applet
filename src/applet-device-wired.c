@@ -81,11 +81,11 @@ wired_new_auto_connection (NMDevice *device,
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 	uuid = nm_utils_uuid_generate ();
 	g_object_set (s_con,
-				  NM_SETTING_CONNECTION_ID, DEFAULT_WIRED_NAME,
-				  NM_SETTING_CONNECTION_TYPE, nm_setting_get_name (NM_SETTING (s_wired)),
-				  NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
-				  NM_SETTING_CONNECTION_UUID, uuid,
-				  NULL);
+	              NM_SETTING_CONNECTION_ID, DEFAULT_WIRED_NAME,
+	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRED_SETTING_NAME,
+	              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
+	              NM_SETTING_CONNECTION_UUID, uuid,
+	              NULL);
 	g_free (uuid);
 
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
