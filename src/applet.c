@@ -81,6 +81,8 @@
 
 #define NOTIFY_CAPS_ACTIONS_KEY "actions"
 
+extern gboolean shell_debug;
+
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
 
 /********************************************************************/
@@ -3056,6 +3058,8 @@ setup_widgets (NMApplet *applet)
 	applet->status_icon = gtk_status_icon_new ();
 	if (!applet->status_icon)
 		return FALSE;
+	if (shell_debug)
+		gtk_status_icon_set_name (applet->status_icon, "adsfasdfasdfadfasdf");
 
 	g_signal_connect (applet->status_icon, "notify::screen",
 			  G_CALLBACK (status_icon_screen_changed_cb), applet);
