@@ -330,6 +330,14 @@ write_connection_to_child (int fd, NMConnection *connection, GError **error)
 	return TRUE;
 }
 
+static void
+vpn_child_setup (gpointer user_data G_GNUC_UNUSED)
+{
+	/* We are in the child process at this point */
+	pid_t pid = getpid ();
+	setpgid (pid, pid);
+}
+
 gboolean
 applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 {
@@ -392,7 +400,7 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	                               (gchar **) argv,            /* argv */
 	                               NULL,                       /* envp */
 	                               G_SPAWN_DO_NOT_REAP_CHILD,  /* flags */
-	                               NULL,                       /* child_setup */
+	                               vpn_child_setup,            /* child_setup */
 	                               NULL,                       /* user_data */
 	                               &priv->pid,                 /* child_pid */
 	                               &priv->child_stdin,         /* standard_input */
