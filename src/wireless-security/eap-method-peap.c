@@ -119,7 +119,6 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
-	NMSettingConnection *s_con;
 	NMSetting8021x *s_8021x;
 	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	GtkWidget *widget;
@@ -130,9 +129,6 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	GtkTreeIter iter;
 	int peapver_active = 0;
 	GError *error = NULL;
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con);
 
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);

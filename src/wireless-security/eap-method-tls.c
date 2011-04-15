@@ -119,14 +119,10 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	NMSetting8021x *s_8021x;
-	NMSettingConnection *s_con;
 	GtkWidget *widget;
 	char *ca_filename, *pk_filename, *cc_filename;
 	const char *password = NULL;
 	GError *error = NULL;
-
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con);
 
 	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
 	g_assert (s_8021x);
