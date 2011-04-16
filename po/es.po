@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: networkmanager-applet.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2011-03-25 04:42+0000\n"
-"PO-Revision-Date: 2011-03-25 19:11+0100\n"
+"POT-Creation-Date: 2011-04-04 17:51+0000\n"
+"PO-Revision-Date: 2011-04-16 12:55+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,12 +26,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../nm-applet.desktop.in.h:1
-#| msgid "Control your network connections"
 msgid "Manage your network connections"
 msgstr "Gestione sus conexiones de red"
 
 #: ../nm-applet.desktop.in.h:2
-#| msgid "%s Network"
 msgid "Network"
 msgstr "Red"
 
@@ -167,7 +165,7 @@ msgstr "Banda ancha móvil (%s)"
 #: ../src/applet-device-cdma.c:285 ../src/applet-device-gsm.c:329
 #: ../src/connection-editor/page-mobile.c:372
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
-#: ../src/connection-editor/nm-connection-list.c:1436
+#: ../src/connection-editor/nm-connection-list.c:1440
 msgid "Mobile Broadband"
 msgstr "Banda ancha móvil"
 
@@ -354,7 +352,7 @@ msgstr "Autenticación DSL"
 
 #: ../src/applet-device-wifi.c:89
 msgid "_Connect to Hidden Wireless Network..."
-msgstr "_Conectar a otra red inalámbrica oculta…"
+msgstr "_Conectar a una red inalámbrica oculta…"
 
 #: ../src/applet-device-wifi.c:142
 msgid "Create _New Wireless Network..."
@@ -959,15 +957,19 @@ msgstr "Sin conexión de red"
 msgid "NetworkManager Applet"
 msgstr "Miniaplicación Gestor de la red"
 
-#: ../src/applet.c:3167 ../src/wired-dialog.c:127
-msgid ""
-"The NetworkManager Applet could not find some required resources (the .ui "
-"file was not found)."
-msgstr ""
-"La miniaplicación Gestor de red no pudo encontrar algunos archivos de "
-"recursos (no se encontró el archivo .ui)."
+#: ../src/gsm-unlock.ui.h:1
+msgid "_Unlock"
+msgstr "Desbloq_uear"
 
-#: ../src/applet.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
+#: ../src/info.ui.h:1
+msgid "Active Network Connections"
+msgstr "Conexiones de red activas"
+
+#: ../src/info.ui.h:2
+msgid "Connection Information"
+msgstr "Información de la conexión"
+
+#: ../src/wifi.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 #: ../src/wireless-security/eap-method-ttls.ui.h:1
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
@@ -975,45 +977,25 @@ msgstr ""
 msgid " "
 msgstr " "
 
-#: ../src/applet.ui.h:2
-msgid "Active Network Connections"
-msgstr "Conexiones de red activas"
-
-#: ../src/applet.ui.h:3
-msgid "C_onnect"
-msgstr "C_onectar"
-
-#: ../src/applet.ui.h:4
+#: ../src/wifi.ui.h:2
 msgid "Co_nnection:"
 msgstr "Co_nexión:"
 
-#: ../src/applet.ui.h:5
-msgid "Connection Information"
-msgstr "Información de la conexión"
-
-#: ../src/applet.ui.h:6
-msgid "Other Wireless Network..."
-msgstr "Otras redes inalámbricas…"
-
-#: ../src/applet.ui.h:7
+#: ../src/wifi.ui.h:3
 msgid "Wireless _adapter:"
 msgstr "_Adaptador inalámbrico:"
 
-#: ../src/applet.ui.h:8
+#: ../src/wifi.ui.h:4 ../src/wired-8021x.ui.h:2
 msgid "_Network name:"
 msgstr "_Nombre de red:"
 
-#: ../src/applet.ui.h:9
-msgid "_Unlock"
-msgstr "Desbloq_uear"
-
-#: ../src/applet.ui.h:10
+#: ../src/wifi.ui.h:5
 msgid "_Wireless security:"
 msgstr "_Seguridad inalámbrica:"
 
-#: ../src/applet.ui.h:11
-msgid "label"
-msgstr "etiqueta"
+#: ../src/wired-8021x.ui.h:1 ../src/wired-dialog.c:104
+msgid "Wired 802.1X authentication"
+msgstr "Autenticación cableada 802.1x"
 
 #: ../src/connection-editor/ce-page.c:67
 msgid "automatic"
@@ -1024,6 +1006,36 @@ msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Falló al actualizar los secretos de la conexión debido a un error "
 "desconocido."
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:1
+#: ../src/connection-editor/ce-ip6-routes.ui.h:1
+#: ../src/connection-editor/ce-page-ip4.ui.h:6
+#: ../src/connection-editor/ce-page-ip6.ui.h:5
+msgid ""
+"IP addresses identify your computer on the network.  Click the \"Add\" "
+"button to add an IP address."
+msgstr ""
+"La dirección IP identifica su equipo en la red. Pulse el botón «Añadir» para "
+"añadir una dirección IP."
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:2
+#: ../src/connection-editor/ce-ip6-routes.ui.h:2
+msgid ""
+"If enabled, this connection will never be used as the default network "
+"connection."
+msgstr ""
+"Si está activado, esta conexión nunca se usará como la conexión de red "
+"predeterminada."
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:3
+#: ../src/connection-editor/ce-ip6-routes.ui.h:3
+msgid "Ig_nore automatically obtained routes"
+msgstr "Ig_norar rutas obtenidas automáticamente"
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:4
+#: ../src/connection-editor/ce-ip6-routes.ui.h:4
+msgid "Use this c_onnection only for resources on its network"
+msgstr "Usar esta c_onexión sólo para los recursos en su red"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:1
 #: ../src/wireless-security/eap-method-leap.ui.h:1
@@ -1087,15 +1099,6 @@ msgstr ""
 "Los dominios que usar al resolver los nombres de equipos. Use comas para "
 "separar dominios múltiples."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:6
-#: ../src/connection-editor/ce-page-ip6.ui.h:5
-msgid ""
-"IP addresses identify your computer on the network.  Click the \"Add\" "
-"button to add an IP address."
-msgstr ""
-"La dirección IP identifica su equipo en la red. Pulse el botón «Añadir» para "
-"añadir una dirección IP."
-
 #: ../src/connection-editor/ce-page-ip4.ui.h:7
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
 msgid ""
@@ -1108,42 +1111,28 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:7
-msgid ""
-"If enabled, this connection will never be used as the default network "
-"connection."
-msgstr ""
-"Si está activado, esta conexión nunca se usará como la conexión de red "
-"predeterminada."
-
-#: ../src/connection-editor/ce-page-ip4.ui.h:9
-#: ../src/connection-editor/ce-page-ip6.ui.h:8
-msgid "Ig_nore automatically obtained routes"
-msgstr "Ig_norar rutas obtenidas automáticamente"
-
-#: ../src/connection-editor/ce-page-ip4.ui.h:10
-#: ../src/connection-editor/ce-page-ip6.ui.h:9
 msgid "Link-Local"
 msgstr "Enlace local"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:11
-#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#: ../src/connection-editor/ce-page-ip4.ui.h:9
+#: ../src/connection-editor/ce-page-ip6.ui.h:8
 #: ../src/connection-editor/page-ip4.c:163
 #: ../src/connection-editor/page-ip6.c:185
 msgid "Manual"
 msgstr "Manual"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:12
+#: ../src/connection-editor/ce-page-ip4.ui.h:10
 msgid "Require IPv4 addressing for this connection to complete"
 msgstr "Requiere dirección IPv4 para que esta conexión se complete"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:13
-#: ../src/connection-editor/ce-page-ip6.ui.h:12
+#: ../src/connection-editor/ce-page-ip4.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
 #: ../src/connection-editor/page-ip4.c:181
 #: ../src/connection-editor/page-ip6.c:205
 msgid "Shared to other computers"
 msgstr "Compartida con otros equipos"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:14
+#: ../src/connection-editor/ce-page-ip4.ui.h:12
 msgid ""
 "The DHCP client identifier allows the network administrator to customize "
 "your computer's configuration.  If you wish to use a DHCP client identifier, "
@@ -1153,12 +1142,7 @@ msgstr ""
 "personalizar la configuración de su equipo. Si quiere usar un identificador "
 "de cliente DHCP ingréselo aquí."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:15
-#: ../src/connection-editor/ce-page-ip6.ui.h:13
-msgid "Use this c_onnection only for resources on its network"
-msgstr "Usar esta c_onexión sólo para los recursos en su red"
-
-#: ../src/connection-editor/ce-page-ip4.ui.h:16
+#: ../src/connection-editor/ce-page-ip4.ui.h:13
 msgid ""
 "When connecting to IPv6-capable networks, allows the connection to complete "
 "if IPv4 configuration fails but IPv6 configuration succeeds."
@@ -1166,31 +1150,31 @@ msgstr ""
 "Al conectarse a redes capaces IPv6, permite a la conexión completar si la "
 "configuración IPv4 falla pero la configuración IPv6 tiene éxito. "
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:17
-#: ../src/connection-editor/ce-page-ip6.ui.h:15
+#: ../src/connection-editor/ce-page-ip4.ui.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
 msgid "_DNS servers:"
 msgstr "Servidores _DNS:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:18
-#: ../src/connection-editor/ce-page-ip6.ui.h:16
+#: ../src/connection-editor/ce-page-ip4.ui.h:15
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
 msgid "_Method:"
 msgstr "_Método:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:19
-#: ../src/connection-editor/ce-page-ip6.ui.h:17
+#: ../src/connection-editor/ce-page-ip4.ui.h:16
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
 msgid "_Routes…"
 msgstr "_Rutas…"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:20
-#: ../src/connection-editor/ce-page-ip6.ui.h:18
+#: ../src/connection-editor/ce-page-ip4.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
 msgid "_Search domains:"
 msgstr "Dominios de bú_squeda:"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:9
 msgid "Require IPv6 addressing for this connection to complete"
 msgstr "Requiere dirección IPv6 para que esta conexión complete"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
@@ -1268,96 +1252,42 @@ msgid "Allow _Deflate data compression"
 msgstr "Permitir compresión de datos _deflate"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:3
-msgid "Allowed Authentication Methods"
-msgstr "Métodos de autenticación permitidos"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:4
 msgid "Allowed methods:"
 msgstr "Métodos permitidos:"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:5
+#: ../src/connection-editor/ce-page-ppp.ui.h:4
 msgid "Authentication"
 msgstr "Autenticación"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:6
-msgid "C_HAP"
-msgstr "C_HAP"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:7
-msgid "Challenge Handshake Authentication Protocol"
-msgstr "Protocolo de autenticación de intercambio de señales "
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:8
+#: ../src/connection-editor/ce-page-ppp.ui.h:5
 msgid "Compression"
 msgstr "Compresión"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:9
+#: ../src/connection-editor/ce-page-ppp.ui.h:6
 msgid "Configure _Methods…"
 msgstr "Configurar _métodos…"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:10
+#: ../src/connection-editor/ce-page-ppp.ui.h:7
 msgid "Echo"
 msgstr "Eco"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:11
-msgid "Extensible Authentication Protocol"
-msgstr "Protocolo de autenticación extensible"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:12
-msgid ""
-"In most cases, the provider's PPP servers will support all authentication "
-"methods.  If connections fail, try disabling support for some methods."
-msgstr ""
-"En la mayoría de los casos, los proveedores de PPP soportarán todos los "
-"métodos de autenticación. Si la conexión falla, intente desactivar el "
-"soporte para algunos métodos."
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:13
-msgid "MSCHAP v_2"
-msgstr "MSCHAP v_2"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:14
-msgid "Microsoft Challenge Handshake Authentication Protocol"
-msgstr "Protocolo de autenticación de intercambio de señales de Microsoft"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:15
-msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
-msgstr ""
-"Protocolo de autenticación de intercambio de señales de Microsoft versión 2"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:16
-msgid "Password Authentication Protocol"
-msgstr "Protocolo de autenticación por contraseña"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:17
+#: ../src/connection-editor/ce-page-ppp.ui.h:8
 msgid "Send PPP _echo packets"
 msgstr "Enviar paquetes _echo PPP"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:18
+#: ../src/connection-editor/ce-page-ppp.ui.h:9
 msgid "Use TCP _header compression"
 msgstr "Usar compresión de ca_beceras TCP"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:19
+#: ../src/connection-editor/ce-page-ppp.ui.h:10
 msgid "Use _stateful MPPE"
 msgstr "Usar e_stados MPPE"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:20
-msgid "_EAP"
-msgstr "_EAP"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:21
-msgid "_MSCHAP"
-msgstr "_MSCHAP"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:22
-msgid "_PAP"
-msgstr "_PAP"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:23
+#: ../src/connection-editor/ce-page-ppp.ui.h:11
 msgid "_Require 128-bit encryption"
 msgstr "_Requerir cifrado de 128-bits"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:24
+#: ../src/connection-editor/ce-page-ppp.ui.h:12
 msgid "_Use point-to-point encryption (MPPE)"
 msgstr "_Usar cifrado punto-a-punto (MPPE)"
 
@@ -1513,6 +1443,60 @@ msgstr "mW"
 msgid "_Security:"
 msgstr "_Seguridad:"
 
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
+msgid "Allowed Authentication Methods"
+msgstr "Métodos de autenticación permitidos"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
+msgid "C_HAP"
+msgstr "C_HAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:3
+msgid "Challenge Handshake Authentication Protocol"
+msgstr "Protocolo de autenticación de intercambio de señales "
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:4
+msgid "Extensible Authentication Protocol"
+msgstr "Protocolo de autenticación extensible"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:5
+msgid ""
+"In most cases, the provider's PPP servers will support all authentication "
+"methods.  If connections fail, try disabling support for some methods."
+msgstr ""
+"En la mayoría de los casos, los proveedores de PPP soportarán todos los "
+"métodos de autenticación. Si la conexión falla, intente desactivar el "
+"soporte para algunos métodos."
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:6
+msgid "MSCHAP v_2"
+msgstr "MSCHAP v_2"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:7
+msgid "Microsoft Challenge Handshake Authentication Protocol"
+msgstr "Protocolo de autenticación de intercambio de señales de Microsoft"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:8
+msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
+msgstr ""
+"Protocolo de autenticación de intercambio de señales de Microsoft versión 2"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:9
+msgid "Password Authentication Protocol"
+msgstr "Protocolo de autenticación por contraseña"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:10
+msgid "_EAP"
+msgstr "_EAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:11
+msgid "_MSCHAP"
+msgstr "_MSCHAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:12
+msgid "_PAP"
+msgstr "_PAP"
+
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:2
 msgid "Choose a VPN Connection Type"
 msgstr "Elegir un tipo de conexión VPN"
@@ -1531,38 +1515,38 @@ msgstr ""
 "de conexión VPN que quiere crear no aparece en la lista, puede que no tenga "
 "instalado el complemento de VPN correcto."
 
-#: ../src/connection-editor/ip4-routes-dialog.c:506
-#: ../src/connection-editor/ip6-routes-dialog.c:464
+#: ../src/connection-editor/ip4-routes-dialog.c:505
+#: ../src/connection-editor/ip6-routes-dialog.c:463
 #: ../src/connection-editor/page-ip4.c:733
 #: ../src/connection-editor/page-ip6.c:718
 msgid "Address"
 msgstr "Dirección"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:522
+#: ../src/connection-editor/ip4-routes-dialog.c:521
 #: ../src/connection-editor/page-ip4.c:750
 msgid "Netmask"
 msgstr "Máscara de red"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:538
-#: ../src/connection-editor/ip6-routes-dialog.c:496
+#: ../src/connection-editor/ip4-routes-dialog.c:537
+#: ../src/connection-editor/ip6-routes-dialog.c:495
 #: ../src/connection-editor/page-ip4.c:767
 #: ../src/connection-editor/page-ip6.c:752
 msgid "Gateway"
 msgstr "Puerta de enlace"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:554
-#: ../src/connection-editor/ip6-routes-dialog.c:512
+#: ../src/connection-editor/ip4-routes-dialog.c:553
+#: ../src/connection-editor/ip6-routes-dialog.c:511
 msgid "Metric"
 msgstr "Métrica"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:480
+#: ../src/connection-editor/ip6-routes-dialog.c:479
 #: ../src/connection-editor/page-ip6.c:735
 msgid "Prefix"
 msgstr "Prefijo"
 
 #: ../src/connection-editor/page-dsl.c:137
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
-#: ../src/connection-editor/nm-connection-list.c:1444
+#: ../src/connection-editor/nm-connection-list.c:1448
 msgid "DSL"
 msgstr "DSL"
 
@@ -1736,7 +1720,7 @@ msgstr "No se pudo cargar la interfaz de usuario para PPP."
 
 #: ../src/connection-editor/page-vpn.c:107
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/connection-editor/nm-connection-list.c:1440
+#: ../src/connection-editor/nm-connection-list.c:1444
 msgid "VPN"
 msgstr "VPN"
 
@@ -1757,7 +1741,7 @@ msgstr "Conexión VPN %d"
 
 #: ../src/connection-editor/page-wired.c:211
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
-#: ../src/connection-editor/nm-connection-list.c:1428
+#: ../src/connection-editor/nm-connection-list.c:1432
 msgid "Wired"
 msgstr "Cableado"
 
@@ -1796,7 +1780,7 @@ msgstr "%u (%u MHz)"
 
 #: ../src/connection-editor/page-wireless.c:396
 #: ../src/connection-editor/nm-connection-editor.ui.h:10
-#: ../src/connection-editor/nm-connection-list.c:1432
+#: ../src/connection-editor/nm-connection-list.c:1436
 msgid "Wireless"
 msgstr "Inalámbrico"
 
@@ -1857,7 +1841,7 @@ msgstr "Editando %s"
 msgid "Editing un-named connection"
 msgstr "Editando la conexión sin nombre"
 
-#: ../src/connection-editor/nm-connection-editor.c:292
+#: ../src/connection-editor/nm-connection-editor.c:294
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -1865,23 +1849,23 @@ msgstr ""
 "El editor de la conexión no pudo encontrar algunos archivos de recursos (no "
 "se encontró el archivo .iu)."
 
-#: ../src/connection-editor/nm-connection-editor.c:395
+#: ../src/connection-editor/nm-connection-editor.c:397
 msgid "Error creating connection editor dialog."
 msgstr "Error al crear el diálogo del editor de conexión."
 
-#: ../src/connection-editor/nm-connection-editor.c:407
+#: ../src/connection-editor/nm-connection-editor.c:409
 msgid "_Save"
 msgstr "_Guardar"
 
-#: ../src/connection-editor/nm-connection-editor.c:408
+#: ../src/connection-editor/nm-connection-editor.c:410
 msgid "Save any changes made to this connection."
 msgstr "Guardar cualquier cambio realizado en esta conexión."
 
-#: ../src/connection-editor/nm-connection-editor.c:409
+#: ../src/connection-editor/nm-connection-editor.c:411
 msgid "_Save..."
 msgstr "_Guardar…"
 
-#: ../src/connection-editor/nm-connection-editor.c:410
+#: ../src/connection-editor/nm-connection-editor.c:412
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autenticar para guardar esta conexión para todos los usuarios en este equipo."
@@ -2069,26 +2053,26 @@ msgstr "_Eliminar…"
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentíquese para eliminar la conexión seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:1500
+#: ../src/connection-editor/nm-connection-list.c:1504
 msgid "Error creating connection"
 msgstr "Error al crear la conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:1501
+#: ../src/connection-editor/nm-connection-list.c:1505
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Se desconoce cómo crear conexiones «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:1555
-#: ../src/connection-editor/nm-connection-list.c:1567
+#: ../src/connection-editor/nm-connection-list.c:1559
+#: ../src/connection-editor/nm-connection-list.c:1571
 msgid "Error editing connection"
 msgstr "Error al editar la conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:1556
+#: ../src/connection-editor/nm-connection-list.c:1560
 #, c-format
 msgid "Don't know how to edit '%s' connections"
 msgstr "Se desconoce cómo editar conexiones «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:1568
+#: ../src/connection-editor/nm-connection-list.c:1572
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "No se encontró una conexión con UUID «%s»"
@@ -2502,9 +2486,13 @@ msgstr "Reino Unido"
 msgid "Default"
 msgstr "Predeterminado"
 
-#: ../src/wired-dialog.c:97
-msgid "Wired 802.1X authentication"
-msgstr "Autenticación cableada 802.1x"
+#: ../src/wired-dialog.c:91 ../src/wired-dialog.c:99
+msgid ""
+"The NetworkManager Applet could not find some required resources (the .ui "
+"file was not found)."
+msgstr ""
+"La miniaplicación Gestor de red no pudo encontrar algunos archivos de "
+"recursos (no se encontró el archivo .ui)."
 
 #: ../src/wireless-dialog.c:454
 msgid "New..."
@@ -2739,6 +2727,15 @@ msgstr "Ín_dice WEP:"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "_Key:"
 msgstr "_Clave:"
+
+#~ msgid "C_onnect"
+#~ msgstr "C_onectar"
+
+#~ msgid "Other Wireless Network..."
+#~ msgstr "Otras redes inalámbricas…"
+
+#~ msgid "label"
+#~ msgstr "etiqueta"
 
 #~ msgid "Network Manager"
 #~ msgstr "Gestor de la red"
