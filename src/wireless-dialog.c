@@ -436,11 +436,16 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 	priv->connection_model = GTK_TREE_MODEL (store);
 
 	if (connection) {
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		s_con = nm_connection_get_setting_connection (connection);
 		g_assert (s_con);
-
 		id = nm_setting_connection_get_id (s_con);
-		g_assert (id);
+		if (id == NULL) {
+			/* New connections which will be completed by NM won't have an ID
+			 * yet, but that doesn't matter because we don't show the connection
+			 * combo anyway when there's a predefined connection.
+			 */
+			id = "blahblah";
+		}
 
 		gtk_list_store_append (store, &tree_iter);
 		gtk_list_store_set (store, &tree_iter,
