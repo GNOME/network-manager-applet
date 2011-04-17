@@ -232,11 +232,6 @@ struct NMADeviceClass {
 	                                        char **tip,
 	                                        NMApplet *applet);
 
-	void           (*get_more_info)        (NMDevice *device,
-	                                        NMConnection *connection,
-	                                        NMApplet *applet,
-	                                        gpointer user_data);
-
 	size_t         secrets_request_size;
 	gboolean       (*get_secrets)          (SecretsRequest *req,
 	                                        GError **error);

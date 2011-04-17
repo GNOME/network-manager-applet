@@ -51,6 +51,8 @@
 
 static void wireless_dialog_response_cb (GtkDialog *dialog, gint response, gpointer user_data);
 
+static void nag_dialog_response_cb (GtkDialog *nag_dialog, gint response, gpointer user_data);
+
 static NMAccessPoint *update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet);
 
 static void
@@ -242,147 +244,6 @@ is_blacklisted_ssid (const GByteArray *ssid)
 }
 
 static void
-add_ciphers_from_flags (NMSettingWirelessSecurity *sec,
-                        guint32 flags,
-                        gboolean pairwise)
-{
-	if (pairwise) {
-		if (flags & NM_802_11_AP_SEC_PAIR_TKIP)
-			nm_setting_wireless_security_add_pairwise (sec, "tkip");
-		if (flags & NM_802_11_AP_SEC_PAIR_CCMP)
-			nm_setting_wireless_security_add_pairwise (sec, "ccmp");
-	} else {
-		if (flags & NM_802_11_AP_SEC_GROUP_WEP40)
-			nm_setting_wireless_security_add_group (sec, "wep40");
-		if (flags & NM_802_11_AP_SEC_GROUP_WEP104)
-			nm_setting_wireless_security_add_group (sec, "wep104");
-		if (flags & NM_802_11_AP_SEC_GROUP_TKIP)
-			nm_setting_wireless_security_add_group (sec, "tkip");
-		if (flags & NM_802_11_AP_SEC_GROUP_CCMP)
-			nm_setting_wireless_security_add_group (sec, "ccmp");
-	}
-}
-
-static NMSettingWirelessSecurity *
-get_security_for_ap (NMAccessPoint *ap,
-                     guint32 dev_caps,
-                     gboolean *supported,
-                     NMSetting8021x **s_8021x)
-{
-	NMSettingWirelessSecurity *sec;
-	NM80211Mode mode;
-	guint32 flags;
-	guint32 wpa_flags;
-	guint32 rsn_flags;
-
-	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), NULL);
-	g_return_val_if_fail (supported != NULL, NULL);
-	g_return_val_if_fail (*supported == TRUE, NULL);
-	g_return_val_if_fail (s_8021x != NULL, NULL);
-	g_return_val_if_fail (*s_8021x == NULL, NULL);
-
-	sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
-
-	mode = nm_access_point_get_mode (ap);
-	flags = nm_access_point_get_flags (ap);
-	wpa_flags = nm_access_point_get_wpa_flags (ap);
-	rsn_flags = nm_access_point_get_rsn_flags (ap);
-
-	/* No security */
-	if (   !(flags & NM_802_11_AP_FLAGS_PRIVACY)
-	    && (wpa_flags == NM_802_11_AP_SEC_NONE)
-	    && (rsn_flags == NM_802_11_AP_SEC_NONE))
-		goto none;
-
-	/* Static WEP, Dynamic WEP, or LEAP */
-	if (flags & NM_802_11_AP_FLAGS_PRIVACY) {
-		if ((dev_caps & NM_WIFI_DEVICE_CAP_RSN) || (dev_caps & NM_WIFI_DEVICE_CAP_WPA)) {
-			/* If the device can do WPA/RSN but the AP has no WPA/RSN informatoin
-			 * elements, it must be LEAP or static/dynamic WEP.
-			 */
-			if ((wpa_flags == NM_802_11_AP_SEC_NONE) && (rsn_flags == NM_802_11_AP_SEC_NONE)) {
-				g_object_set (sec,
-				              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "none",
-				              NM_SETTING_WIRELESS_SECURITY_WEP_TX_KEYIDX, 0,
-				              NULL);
-				return sec;
-			}
-			/* Otherwise, the AP supports WPA or RSN, which is preferred */
-		} else {
-			/* Device can't do WPA/RSN, but can at least pass through the
-			 * WPA/RSN information elements from a scan.  Since Privacy was
-			 * advertised, LEAP or static/dynamic WEP must be in use.
-			 */
-			g_object_set (sec,
-			              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "none",
-			              NM_SETTING_WIRELESS_SECURITY_WEP_TX_KEYIDX, 0,
-			              NULL);
-			return sec;
-		}
-	}
-
-	/* Stuff after this point requires infrastructure */
-	if (mode != NM_802_11_MODE_INFRA) {
-		*supported = FALSE;
-		goto none;
-	}
-
-	/* WPA2 PSK first */
-	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
-	    && (dev_caps & NM_WIFI_DEVICE_CAP_RSN)) {
-		g_object_set (sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk", NULL);
-		nm_setting_wireless_security_add_proto (sec, "rsn");
-		add_ciphers_from_flags (sec, rsn_flags, TRUE);
-		add_ciphers_from_flags (sec, rsn_flags, FALSE);
-		return sec;
-	}
-
-	/* WPA PSK */
-	if (   (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_PSK)
-	    && (dev_caps & NM_WIFI_DEVICE_CAP_WPA)) {
-		g_object_set (sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk", NULL);
-		nm_setting_wireless_security_add_proto (sec, "wpa");
-		add_ciphers_from_flags (sec, wpa_flags, TRUE);
-		add_ciphers_from_flags (sec, wpa_flags, FALSE);
-		return sec;
-	}
-
-	/* WPA2 Enterprise */
-	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
-	    && (dev_caps & NM_WIFI_DEVICE_CAP_RSN)) {
-		g_object_set (sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-eap", NULL);
-		nm_setting_wireless_security_add_proto (sec, "rsn");
-		add_ciphers_from_flags (sec, rsn_flags, TRUE);
-		add_ciphers_from_flags (sec, rsn_flags, FALSE);
-
-		*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
-		nm_setting_802_1x_add_eap_method (*s_8021x, "ttls");
-		g_object_set (*s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "mschapv2", NULL);
-		return sec;
-	}
-
-	/* WPA Enterprise */
-	if (   (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
-	    && (dev_caps & NM_WIFI_DEVICE_CAP_WPA)) {
-		g_object_set (sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-eap", NULL);
-		nm_setting_wireless_security_add_proto (sec, "wpa");
-		add_ciphers_from_flags (sec, wpa_flags, TRUE);
-		add_ciphers_from_flags (sec, wpa_flags, FALSE);
-
-		*s_8021x = NM_SETTING_802_1X (nm_setting_802_1x_new ());
-		nm_setting_802_1x_add_eap_method (*s_8021x, "ttls");
-		g_object_set (*s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "mschapv2", NULL);
-		return sec;
-	}
-
-	*supported = FALSE;
-
-none:
-	g_object_unref (sec);
-	return NULL;
-}
-
-static void
 clamp_ap_to_bssid (NMAccessPoint *ap, NMSettingWireless *s_wifi)
 {
 	const char *str_bssid;
@@ -409,6 +270,62 @@ clamp_ap_to_bssid (NMAccessPoint *ap, NMSettingWireless *s_wifi)
 	}
 }
 
+typedef struct {
+	NMApplet *applet;
+	AppletNewAutoConnectionCallback callback;
+	gpointer callback_data;
+} MoreInfo;
+
+static void
+more_info_wifi_dialog_response_cb (GtkDialog *foo,
+                                   gint response,
+                                   gpointer user_data)
+{
+	NMAWirelessDialog *dialog = NMA_WIRELESS_DIALOG (foo);
+	MoreInfo *info = user_data;
+	NMConnection *connection = NULL;
+	NMDevice *device = NULL;
+	NMAccessPoint *ap = NULL;
+
+	if (response != GTK_RESPONSE_OK) {
+		info->callback (NULL, FALSE, TRUE, info->callback_data);
+		goto done;
+	}
+
+	if (!nma_wireless_dialog_get_nag_ignored (dialog)) {
+		GtkWidget *nag_dialog;
+
+		/* Nag the user about certificates or whatever.  Only destroy the dialog
+		 * if no nagging was done.
+		 */
+		nag_dialog = nma_wireless_dialog_nag_user (dialog);
+		if (nag_dialog) {
+			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
+			g_signal_connect (nag_dialog, "response",
+			                  G_CALLBACK (nag_dialog_response_cb),
+			                  dialog);
+			return;
+		}
+	}
+
+	/* nma_wireless_dialog_get_connection() returns a connection with the
+	 * refcount incremented, so the caller must remember to unref it.
+	 */
+	connection = nma_wireless_dialog_get_connection (dialog, &device, &ap);
+	g_assert (connection);
+	g_assert (device);
+
+	info->callback (connection, TRUE, FALSE, info->callback_data);
+
+	/* Balance nma_wireless_dialog_get_connection() */
+	g_object_unref (connection);
+
+done:
+	g_free (info);
+	gtk_widget_hide (GTK_WIDGET (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
 static gboolean
 wireless_new_auto_connection (NMDevice *device,
                               gpointer dclass_data,
@@ -418,77 +335,87 @@ wireless_new_auto_connection (NMDevice *device,
 	WirelessMenuItemInfo *info = (WirelessMenuItemInfo *) dclass_data;
 	NMConnection *connection = NULL;
 	NMSettingConnection *s_con = NULL;
-	NMSettingWireless *s_wireless = NULL;
-	NMSettingWirelessSecurity *s_wireless_sec = NULL;
+	NMSettingWireless *s_wifi = NULL;
+	NMSettingWirelessSecurity *s_wsec = NULL;
 	NMSetting8021x *s_8021x = NULL;
-	const GByteArray *ap_ssid;
-	char *id, *utf8_ssid;
-	NM80211Mode mode;
-	guint32 dev_caps;
-	gboolean supported = TRUE;
+	const GByteArray *ssid;
+	NM80211ApSecurityFlags wpa_flags, rsn_flags;
+	GtkWidget *dialog;
+	MoreInfo *more_info;
+	char *uuid;
 
 	if (!info->ap) {
 		g_warning ("%s: AP not set", __func__);
 		return FALSE;
 	}
 
-	s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
-
-	ap_ssid = nm_access_point_get_ssid (info->ap);
-	g_object_set (s_wireless, NM_SETTING_WIRELESS_SSID, ap_ssid, NULL);
-
-	mode = nm_access_point_get_mode (info->ap);
-	if (mode == NM_802_11_MODE_ADHOC)
-		g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "adhoc", NULL);
-	else if (mode == NM_802_11_MODE_INFRA) {
-		g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
-		/* Lock connection to this AP if it's a manufacturer-default SSID */
-		if (is_manufacturer_default_ssid (ap_ssid))
-			clamp_ap_to_bssid (info->ap, s_wireless);
-	} else
-		g_assert_not_reached ();
-
-	dev_caps = nm_device_wifi_get_capabilities (NM_DEVICE_WIFI (device));
-	s_wireless_sec = get_security_for_ap (info->ap, dev_caps, &supported, &s_8021x);
-	if (!supported) {
-		g_warning ("Unsupported AP configuration: dev_caps 0x%X, ap_flags 0x%X, "
-		           "wpa_flags 0x%X, rsn_flags 0x%x, mode %d",
-		           dev_caps,
-		           nm_access_point_get_flags (info->ap),
-		           nm_access_point_get_wpa_flags (info->ap),
-		           nm_access_point_get_rsn_flags (info->ap),
-		           nm_access_point_get_mode (info->ap));
-		g_object_unref (s_wireless);
-		return FALSE;
-	} else if (s_wireless_sec)
-		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
-
 	connection = nm_connection_new ();
-	nm_connection_add_setting (connection, NM_SETTING (s_wireless));
-	if (s_wireless_sec)
-		nm_connection_add_setting (connection, NM_SETTING (s_wireless_sec));
-	if (s_8021x)
+
+	ssid = nm_access_point_get_ssid (info->ap);
+	if (   (nm_access_point_get_mode (info->ap) == NM_802_11_MODE_INFRA)
+	    && (is_manufacturer_default_ssid (ssid) == TRUE)) {
+
+		/* Lock connection to this AP if it's a manufacturer-default SSID
+		 * so that we don't randomly connect to some other 'linksys'
+		 */
+		s_wifi = (NMSettingWireless *) nm_setting_wireless_new ();
+		clamp_ap_to_bssid (info->ap, s_wifi);
+		nm_connection_add_setting (connection, NM_SETTING (s_wifi));
+	}
+
+	/* If the AP is WPA[2]-Enterprise then we need to set up a minimal 802.1x
+	 * setting and ask the user for more information.
+	 */
+	rsn_flags = nm_access_point_get_rsn_flags (info->ap);
+	wpa_flags = nm_access_point_get_wpa_flags (info->ap);
+	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
+	    || (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)) {
+
+		/* Need a UUID for the "always ask" stuff in the Dialog of Doom */
+		s_con = (NMSettingConnection *) nm_setting_connection_new ();
+		uuid = nm_utils_uuid_generate ();
+		g_object_set (s_con, NM_SETTING_CONNECTION_UUID, uuid, NULL);
+		g_free (uuid);
+		nm_connection_add_setting (connection, NM_SETTING (s_con));
+
+		if (!s_wifi) {
+			s_wifi = (NMSettingWireless *) nm_setting_wireless_new ();
+			nm_connection_add_setting (connection, NM_SETTING (s_wifi));
+		}
+		g_object_set (s_wifi,
+		              NM_SETTING_WIRELESS_SSID, nm_access_point_get_ssid (info->ap),
+		              NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		              NULL);
+
+		s_wsec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
+		g_object_set (s_wsec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-eap", NULL);
+		nm_connection_add_setting (connection, NM_SETTING (s_wsec));
+
+		s_8021x = (NMSetting8021x *) nm_setting_802_1x_new ();
+		nm_setting_802_1x_add_eap_method (s_8021x, "ttls");
+		g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, "mschapv2", NULL);
 		nm_connection_add_setting (connection, NM_SETTING (s_8021x));
+	}
 
-	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	g_object_set (s_con,
-	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRELESS_SETTING_NAME,
-	              NM_SETTING_CONNECTION_AUTOCONNECT, !is_manufacturer_default_ssid (ap_ssid),
-	              NULL);
+	/* If it's an 802.1x connection, we need more information, so pop up the
+	 * Dialog Of Doom.
+	 */
+	if (s_8021x) {
+		more_info = g_malloc0 (sizeof (*info));
+		more_info->applet = info->applet;
+		more_info->callback = callback;
+		more_info->callback_data = callback_data;
 
-	utf8_ssid = nm_utils_ssid_to_utf8 (ap_ssid);
-	id = g_strdup_printf ("Auto %s", utf8_ssid);
-	g_object_set (s_con, NM_SETTING_CONNECTION_ID, id, NULL);
-	g_free (id);
-	g_free (utf8_ssid);
+		dialog = nma_wireless_dialog_new (info->applet, connection, device, info->ap);
+		if (dialog) {
+			g_signal_connect (dialog, "response",
+				              G_CALLBACK (more_info_wifi_dialog_response_cb),
+				              more_info);
+			show_ignore_focus_stealing_prevention (dialog);
+		}
+	} else
+		callback (connection, TRUE, FALSE, callback_data);
 
-	id = nm_utils_uuid_generate ();
-	g_object_set (s_con, NM_SETTING_CONNECTION_UUID, id, NULL);
-	g_free (id);
-
-	nm_connection_add_setting (connection, NM_SETTING (s_con));
-
-	(*callback) (connection, TRUE, FALSE, callback_data);
 	return TRUE;
 }
 
@@ -1491,24 +1418,6 @@ done:
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
-static void
-wireless_get_more_info (NMDevice *device,
-                        NMConnection *connection,
-                        NMApplet *applet,
-                        gpointer user_data)
-{
-	WirelessMenuItemInfo *info = (WirelessMenuItemInfo *) user_data;
-	GtkWidget *dialog;
-
-	dialog = nma_wireless_dialog_new (applet, connection, device, info->ap);
-	if (dialog) {
-		g_signal_connect (dialog, "response",
-			              G_CALLBACK (wireless_dialog_response_cb),
-			              applet);
-		show_ignore_focus_stealing_prevention (dialog);
-	}
-}
-
 static gboolean
 add_one_setting (GHashTable *settings,
                  NMConnection *connection,
@@ -1713,7 +1622,6 @@ applet_device_wifi_get_class (NMApplet *applet)
 	dclass->device_added = wireless_device_added;
 	dclass->device_state_changed = wireless_device_state_changed;
 	dclass->get_icon = wireless_get_icon;
-	dclass->get_more_info = wireless_get_more_info;
 	dclass->get_secrets = wireless_get_secrets;
 	dclass->secrets_request_size = sizeof (NMWifiInfo);
 
