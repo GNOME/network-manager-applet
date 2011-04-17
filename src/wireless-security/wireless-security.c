@@ -335,7 +335,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	EAPMethodLEAP *em_leap;
 	EAPMethodTTLS *em_ttls;
 	EAPMethodPEAP *em_peap;
-	const char *default_method = NULL;
+	const char *default_method = NULL, *ctype = NULL;
 	int active = -1, item = 0;
 	gboolean wired = FALSE;
 
@@ -344,10 +344,11 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		NMSettingConnection *s_con;
 		NMSetting8021x *s_8021x;
 
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-		g_assert (s_con);
-
-		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_WIRED_SETTING_NAME))
+		s_con = nm_connection_get_setting_connection (connection);
+		if (s_con)
+			ctype = nm_setting_connection_get_connection_type (s_con);
+		if (   (g_strcmp0 (ctype, NM_SETTING_WIRED_SETTING_NAME) == 0)
+		    || nm_connection_get_setting_wired (connection))
 			wired = TRUE;
 
 		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
