@@ -124,6 +124,54 @@ impl_dbus_create_wifi_network (NMApplet *applet, GError **error)
 	return TRUE;
 }
 
+static gboolean
+impl_dbus_connect_to_8021x_network (NMApplet *applet,
+                                    const char *device_path,
+                                    const char *ap_path,
+                                    GError **error)
+{
+	NMDevice *device;
+	NMAccessPoint *ap;
+
+	device = nm_client_get_device_by_path (applet->nm_client, device_path);
+	if (!device || NM_IS_DEVICE_WIFI (device) == FALSE) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "The device could not be found.");
+		return FALSE;
+	}
+
+	ap = nm_device_wifi_get_access_point_by_path (NM_DEVICE_WIFI (device), ap_path);
+	if (!ap) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "The access point could not be found.");
+		return FALSE;
+	}
+
+	/* FIXME: this doesn't account for Dynamic WEP */
+	if (   !(nm_access_point_get_wpa_flags (ap) & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
+	    && !(nm_access_point_get_rsn_flags (ap) & NM_802_11_AP_SEC_KEY_MGMT_802_1X)) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "The access point had no 802.1x capabilities");
+		return FALSE;
+	}
+
+	if (!applet_wifi_connect_to_8021x_network (applet, device, ap)) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "Failed to create wireless dialog");
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 #include "applet-dbus-bindings.h"
 
 /********************************************************************/

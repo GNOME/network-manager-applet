@@ -55,6 +55,12 @@ static void nag_dialog_response_cb (GtkDialog *nag_dialog, gint response, gpoint
 
 static NMAccessPoint *update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet);
 
+static void _do_new_auto_connection (NMApplet *applet,
+                                     NMDevice *device,
+                                     NMAccessPoint *ap,
+                                     AppletNewAutoConnectionCallback callback,
+                                     gpointer callback_data);
+
 static void
 show_ignore_focus_stealing_prevention (GtkWidget *widget)
 {
@@ -154,6 +160,66 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 		gtk_widget_set_sensitive (GTK_WIDGET (menu_item), FALSE);
 }
 
+static void
+dbus_8021x_add_and_activate_cb (NMClient *client,
+                                NMActiveConnection *active,
+                                const char *connection_path,
+                                GError *error,
+                                gpointer user_data)
+{
+	if (error)
+		g_warning ("Failed to add/activate connection: (%d) %s", error->code, error->message);
+}
+
+typedef struct {
+	NMApplet *applet;
+	NMDevice *device;
+	NMAccessPoint *ap;
+} Dbus8021xInfo;
+
+static void
+dbus_connect_8021x_cb (NMConnection *connection,
+                       gboolean auto_created,
+                       gboolean canceled,
+                       gpointer user_data)
+{
+	Dbus8021xInfo *info = user_data;
+
+	if (canceled == FALSE) {
+		g_return_if_fail (connection != NULL);
+
+		/* Ask NM to add the new connection and activate it; NM will fill in the
+		 * missing details based on the specific object and the device.
+		 */
+		nm_client_add_and_activate_connection (info->applet->nm_client,
+			                                   connection,
+			                                   info->device,
+			                                   nm_object_get_path (NM_OBJECT (info->ap)),
+			                                   dbus_8021x_add_and_activate_cb,
+			                                   info->applet);
+	}
+
+	g_object_unref (info->device);
+	g_object_unref (info->ap);
+	memset (info, 0, sizeof (*info));
+	g_free (info);
+}
+
+gboolean
+applet_wifi_connect_to_8021x_network (NMApplet *applet,
+                                      NMDevice *device,
+                                      NMAccessPoint *ap)
+{
+	Dbus8021xInfo *info;
+
+	info = g_malloc0 (sizeof (*info));
+	info->applet = applet;
+	info->device = g_object_ref (device);
+	info->ap = g_object_ref (ap);
+
+	_do_new_auto_connection (applet, device, ap, dbus_connect_8021x_cb, info);
+	return TRUE;
+}
 
 
 typedef struct {
@@ -326,13 +392,13 @@ done:
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
-static gboolean
-wireless_new_auto_connection (NMDevice *device,
-                              gpointer dclass_data,
-                              AppletNewAutoConnectionCallback callback,
-                              gpointer callback_data)
+static void
+_do_new_auto_connection (NMApplet *applet,
+                         NMDevice *device,
+                         NMAccessPoint *ap,
+                         AppletNewAutoConnectionCallback callback,
+                         gpointer callback_data)
 {
-	WirelessMenuItemInfo *info = (WirelessMenuItemInfo *) dclass_data;
 	NMConnection *connection = NULL;
 	NMSettingConnection *s_con = NULL;
 	NMSettingWireless *s_wifi = NULL;
@@ -344,30 +410,29 @@ wireless_new_auto_connection (NMDevice *device,
 	MoreInfo *more_info;
 	char *uuid;
 
-	if (!info->ap) {
-		g_warning ("%s: AP not set", __func__);
-		return FALSE;
-	}
+	g_assert (applet);
+	g_assert (device);
+	g_assert (ap);
 
 	connection = nm_connection_new ();
 
-	ssid = nm_access_point_get_ssid (info->ap);
-	if (   (nm_access_point_get_mode (info->ap) == NM_802_11_MODE_INFRA)
+	ssid = nm_access_point_get_ssid (ap);
+	if (   (nm_access_point_get_mode (ap) == NM_802_11_MODE_INFRA)
 	    && (is_manufacturer_default_ssid (ssid) == TRUE)) {
 
 		/* Lock connection to this AP if it's a manufacturer-default SSID
 		 * so that we don't randomly connect to some other 'linksys'
 		 */
 		s_wifi = (NMSettingWireless *) nm_setting_wireless_new ();
-		clamp_ap_to_bssid (info->ap, s_wifi);
+		clamp_ap_to_bssid (ap, s_wifi);
 		nm_connection_add_setting (connection, NM_SETTING (s_wifi));
 	}
 
 	/* If the AP is WPA[2]-Enterprise then we need to set up a minimal 802.1x
 	 * setting and ask the user for more information.
 	 */
-	rsn_flags = nm_access_point_get_rsn_flags (info->ap);
-	wpa_flags = nm_access_point_get_wpa_flags (info->ap);
+	rsn_flags = nm_access_point_get_rsn_flags (ap);
+	wpa_flags = nm_access_point_get_wpa_flags (ap);
 	if (   (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)
 	    || (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)) {
 
@@ -383,7 +448,7 @@ wireless_new_auto_connection (NMDevice *device,
 			nm_connection_add_setting (connection, NM_SETTING (s_wifi));
 		}
 		g_object_set (s_wifi,
-		              NM_SETTING_WIRELESS_SSID, nm_access_point_get_ssid (info->ap),
+		              NM_SETTING_WIRELESS_SSID, ssid,
 		              NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 		              NULL);
 
@@ -401,23 +466,39 @@ wireless_new_auto_connection (NMDevice *device,
 	 * Dialog Of Doom.
 	 */
 	if (s_8021x) {
-		more_info = g_malloc0 (sizeof (*info));
-		more_info->applet = info->applet;
+		more_info = g_malloc0 (sizeof (*more_info));
+		more_info->applet = applet;
 		more_info->callback = callback;
 		more_info->callback_data = callback_data;
 
-		dialog = nma_wireless_dialog_new (info->applet, connection, device, info->ap);
+		dialog = nma_wireless_dialog_new (applet, connection, device, ap);
 		if (dialog) {
 			g_signal_connect (dialog, "response",
 				              G_CALLBACK (more_info_wifi_dialog_response_cb),
 				              more_info);
 			show_ignore_focus_stealing_prevention (dialog);
 		}
-	} else
+	} else {
+		/* Everything else can just get activated right away */
 		callback (connection, TRUE, FALSE, callback_data);
+	}
+}
 
+static gboolean
+wireless_new_auto_connection (NMDevice *device,
+                              gpointer dclass_data,
+                              AppletNewAutoConnectionCallback callback,
+                              gpointer callback_data)
+{
+	WirelessMenuItemInfo *info = (WirelessMenuItemInfo *) dclass_data;
+
+	g_return_val_if_fail (device != NULL, FALSE);
+	g_return_val_if_fail (info->ap != NULL, FALSE);
+
+	_do_new_auto_connection (info->applet, device, info->ap, callback, callback_data);
 	return TRUE;
 }
+
 
 static void
 wireless_menu_item_activate (GtkMenuItem *item, gpointer user_data)

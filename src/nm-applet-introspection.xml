@@ -4,6 +4,11 @@
     <method name="ConnectToHiddenNetwork">
       <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_dbus_connect_to_hidden_network"/>
     </method>
+    <method name="ConnectTo8021xNetwork">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_dbus_connect_to_8021x_network"/>
+      <arg name="device" type="o" direction="in"/>
+      <arg name="ap" type="o" direction="in"/>
+    </method>
     <method name="CreateWifiNetwork">
       <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_dbus_create_wifi_network"/>
     </method>
