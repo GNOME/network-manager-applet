@@ -196,20 +196,16 @@ dispose (GObject *object)
 {
 	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (object);
 
-	if (priv->disposed) {
-		g_warning ("%s: CEPolkitButton object %p disposed twice", __func__, object);
-		G_OBJECT_CLASS (ce_polkit_button_parent_class)->dispose (object);
-		return;
+	if (priv->disposed == FALSE) {
+		priv->disposed = TRUE;
+
+		if (priv->perm_id)
+			g_signal_handler_disconnect (priv->client, priv->perm_id);
+
+		g_object_unref (priv->client);
+		g_object_unref (priv->auth);
+		g_object_unref (priv->stock);
 	}
-
-	priv->disposed = TRUE;
-
-	if (priv->perm_id)
-		g_signal_handler_disconnect (priv->client, priv->perm_id);
-
-	g_object_unref (priv->client);
-	g_object_unref (priv->auth);
-	g_object_unref (priv->stock);
 
 	G_OBJECT_CLASS (ce_polkit_button_parent_class)->dispose (object);
 }
