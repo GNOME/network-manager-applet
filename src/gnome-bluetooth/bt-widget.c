@@ -314,6 +314,11 @@ dun_cleanup (PluginInfo *info, const char *message, gboolean uncheck)
 	g_slist_free (info->modem_proxies);
 	info->modem_proxies = NULL;
 
+	if (info->mm_proxy) {
+		g_object_unref (info->mm_proxy);
+		info->mm_proxy = NULL;
+	}
+
 	if (info->dun_proxy) {
 		if (info->rfcomm_iface) {
 			dbus_g_proxy_call_no_reply (info->dun_proxy, "Disconnect",
@@ -330,11 +335,6 @@ dun_cleanup (PluginInfo *info, const char *message, gboolean uncheck)
 
 	g_free (info->rfcomm_iface);
 	info->rfcomm_iface = NULL;
-
-	if (info->bus) {
-		dbus_g_connection_unref (info->bus);
-		info->bus = NULL;
-	}
 
 	if (info->dun_timeout_id) {
 		g_source_remove (info->dun_timeout_id);
@@ -943,6 +943,8 @@ plugin_info_destroy (gpointer data)
 	g_object_unref (info->settings);
 	g_object_unref (info->btmodel);
 	g_object_unref (info->btclient);
+	if (info->bus)
+		dbus_g_connection_unref (info->bus);
 	memset (info, 0, sizeof (PluginInfo));
 	g_free (info);
 }
