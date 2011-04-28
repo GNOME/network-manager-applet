@@ -1729,26 +1729,28 @@ nm_gconf_move_connections_to_system (AddToSettingsFunc add_func, gpointer user_d
 		stamp = 0;
 	}
 
-	nm_gconf_migrate_0_7_connection_uuid (client);
-	nm_gconf_migrate_0_7_keyring_items (client);
-	nm_gconf_migrate_0_7_wireless_security (client);
-	nm_gconf_migrate_0_7_netmask_to_prefix (client);
-	nm_gconf_migrate_0_7_ip4_method (client);
-	nm_gconf_migrate_0_7_ignore_dhcp_dns (client);
-	nm_gconf_migrate_0_7_vpn_routes (client);
-	nm_gconf_migrate_0_7_vpn_properties (client);
-	nm_gconf_migrate_0_7_openvpn_properties (client);
+	if (stamp < 3) {
+		nm_gconf_migrate_0_7_connection_uuid (client);
+		nm_gconf_migrate_0_7_keyring_items (client);
+		nm_gconf_migrate_0_7_wireless_security (client);
+		nm_gconf_migrate_0_7_netmask_to_prefix (client);
+		nm_gconf_migrate_0_7_ip4_method (client);
+		nm_gconf_migrate_0_7_ignore_dhcp_dns (client);
+		nm_gconf_migrate_0_7_vpn_routes (client);
+		nm_gconf_migrate_0_7_vpn_properties (client);
+		nm_gconf_migrate_0_7_openvpn_properties (client);
 
-	if (stamp < 1) {
-		nm_gconf_migrate_0_7_vpn_never_default (client);
-		nm_gconf_migrate_0_7_autoconnect_default (client);
+		if (stamp < 1) {
+			nm_gconf_migrate_0_7_vpn_never_default (client);
+			nm_gconf_migrate_0_7_autoconnect_default (client);
+		}
+
+		nm_gconf_migrate_0_7_ca_cert_ignore (client);
+		nm_gconf_migrate_0_7_certs (client);
 	}
 
-	nm_gconf_migrate_0_7_ca_cert_ignore (client);
-	nm_gconf_migrate_0_7_certs (client);
-
 	connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
-	if (!connections) {
+	if (!connections && (stamp < 3)) {
 		nm_gconf_migrate_0_6_connections (client);
 		/* Try again */
 		connections = gconf_client_all_dirs (client, GCONF_PATH_CONNECTIONS, NULL);
