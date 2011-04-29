@@ -29,6 +29,7 @@
 #include <string.h>
 
 #include <glib/gi18n.h>
+#include <gdk/gdkkeysyms.h>
 
 #include <nm-utils.h>
 
@@ -39,6 +40,12 @@
 #define COL_NEXT_HOP 2
 #define COL_METRIC  3
 #define COL_LAST COL_METRIC
+
+/* Variables to temporarily save last edited cell value
+ * from routes treeview (cancelling issues) */
+static char *last_edited = NULL; /* cell text */
+static char *last_path = NULL;   /* row in treeview */
+static int last_column = -1;     /* column in treeview */
 
 static gboolean
 get_one_int (GtkTreeModel *model,
@@ -271,6 +278,33 @@ list_selection_changed (GtkTreeSelection *selection, gpointer user_data)
 }
 
 static void
+cell_editing_canceled (GtkCellRenderer *renderer, gpointer user_data)
+{
+	GtkBuilder *builder = GTK_BUILDER (user_data);
+	GtkTreeModel *model = NULL;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	guint32 column;
+
+	if (last_edited) {
+		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (gtk_builder_get_object (builder, "ip4_routes")));
+		if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+			column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (renderer), "column"));
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter, column, last_edited, -1);
+		}
+
+		g_free (last_edited);
+		last_edited = NULL;
+	}
+
+	g_free (last_path);
+	last_path = NULL;
+	last_column = -1;
+
+	validate (GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes_dialog")));
+}
+
+static void
 cell_edited (GtkCellRendererText *cell,
              const gchar *path_string,
              const gchar *new_text,
@@ -284,6 +318,13 @@ cell_edited (GtkCellRendererText *cell,
 	guint32 column;
 	GtkTreeViewColumn *next_col;
 	GtkCellRenderer *next_cell;
+
+	/* Free auxiliary stuff */
+	g_free (last_edited);
+	last_edited = NULL;
+	g_free (last_path);
+	last_path = NULL;
+	last_column = -1;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes"));
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (widget)));
@@ -300,7 +341,6 @@ cell_edited (GtkCellRendererText *cell,
 	next_cell = g_slist_nth_data (g_object_get_data (G_OBJECT (dialog), "renderers"), column);
 
 	gtk_tree_view_set_cursor_on_cell (GTK_TREE_VIEW (widget), path, next_col, next_cell, TRUE);
-	gtk_widget_grab_focus (widget);
 
 	gtk_tree_path_free (path);
 
@@ -331,6 +371,8 @@ ip_address_filter_cb (GtkEntry *   entry,
 		                                 G_CALLBACK (ip_address_filter_cb),
 		                                 user_data);
 		gtk_editable_insert_text (editable, result, count, position);
+		g_free (last_edited);
+		last_edited = g_strdup (gtk_editable_get_chars (editable, 0, -1));
 		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
 		                                   G_CALLBACK (ip_address_filter_cb),
 		                                   user_data);
@@ -347,6 +389,41 @@ ip_address_filter_cb (GtkEntry *   entry,
 }
 
 static void
+delete_text_cb (GtkEditable *editable,
+                gint start_pos,
+                gint end_pos,
+                gpointer user_data)
+{
+	GtkWidget *ok_button = user_data;
+
+	/* Keep last_edited up-to-date */
+	g_free (last_edited);
+	last_edited = g_strdup (gtk_editable_get_chars (editable, 0, -1));
+
+	/* Desensitize the OK button during input to simplify input validation.
+	 * All routes will be validated on focus-out, which will then re-enable
+	 * the OK button if the routes are valid.
+	 */
+	gtk_widget_set_sensitive (ok_button, FALSE);
+}
+
+static gboolean
+key_pressed_cb (GtkWidget *widget,
+                GdkEvent *event,
+                gpointer user_data)
+{
+#if !GDK_KEY_Tab
+	#define GDK_KEY_Tab GDK_Tab
+#endif
+
+	/* Tab should behave the same way as Enter (finish editing) */
+	if (event->type == GDK_KEY_PRESS && event->key.keyval == GDK_KEY_Tab)
+		gtk_cell_editable_editing_done (GTK_CELL_EDITABLE (widget));
+
+	return FALSE;
+}
+
+static void
 ip4_cell_editing_started (GtkCellRenderer *cell,
                           GtkCellEditable *editable,
                           const gchar     *path,
@@ -357,9 +434,25 @@ ip4_cell_editing_started (GtkCellRenderer *cell,
 		return;
 	}
 
+	/* Initialize last_path and last_column, last_edited is initialized when the cell is edited */
+	g_free (last_edited);
+	last_edited = NULL;
+	g_free (last_path);
+	last_path = g_strdup (path);
+	last_column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (cell), "column"));
+
 	/* Set up the entry filter */
 	g_signal_connect (G_OBJECT (editable), "insert-text",
 	                  (GCallback) ip_address_filter_cb,
+	                  user_data);
+
+	g_signal_connect_after (G_OBJECT (editable), "delete-text",
+	                        (GCallback) delete_text_cb,
+	                        user_data);
+
+	/* Set up key pressed handler - need to handle Tab key */
+	g_signal_connect (G_OBJECT (editable), "key-press-event",
+	                  (GCallback) key_pressed_cb,
 	                  user_data);
 }
 
@@ -385,6 +478,8 @@ uint_filter_cb (GtkEntry *   entry,
 		                                 G_CALLBACK (uint_filter_cb),
 		                                 user_data);
 		gtk_editable_insert_text (editable, result, count, position);
+		g_free (last_edited);
+		last_edited = g_strdup (gtk_editable_get_chars (editable, 0, -1));
 		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
 		                                   G_CALLBACK (uint_filter_cb),
 		                                   user_data);
@@ -411,10 +506,61 @@ uint_cell_editing_started (GtkCellRenderer *cell,
 		return;
 	}
 
+	/* Initialize last_path and last_column, last_edited is initialized when the cell is edited */
+	g_free (last_edited);
+	last_edited = NULL;
+	g_free (last_path);
+	last_path = g_strdup (path);
+	last_column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (cell), "column"));
+
 	/* Set up the entry filter */
 	g_signal_connect (G_OBJECT (editable), "insert-text",
 	                  (GCallback) uint_filter_cb,
 	                  user_data);
+
+	g_signal_connect_after (G_OBJECT (editable), "delete-text",
+	                        (GCallback) delete_text_cb,
+	                        user_data);
+
+	/* Set up key pressed handler - need to handle Tab key */
+	g_signal_connect (G_OBJECT (editable), "key-press-event",
+	                  (GCallback) key_pressed_cb,
+	                  user_data);
+}
+
+static gboolean
+tree_view_button_pressed_cb (GtkWidget *widget,
+                             GdkEvent *event,
+                             gpointer user_data)
+{
+	GtkBuilder *builder = GTK_BUILDER (user_data);
+
+	/* last_edited can be set e.g. when we get here by clicking an cell while
+	 * editing another cell. GTK3 issue neither editing-canceled nor editing-done
+	 * for cell renderer. Thus the previous cell value isn't saved. Store it now. */
+	if (last_edited && last_path) {
+		GtkTreeIter iter;
+		GtkListStore *store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (widget)));
+		GtkTreePath *last_treepath = gtk_tree_path_new_from_string (last_path);
+
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, last_treepath);
+		gtk_list_store_set (store, &iter, last_column, last_edited, -1);
+		gtk_tree_path_free (last_treepath);
+
+		g_free (last_edited);
+		last_edited = NULL;
+		g_free (last_path);
+		last_path = NULL;
+		last_column = -1;
+	}
+
+	/* Ignore double clicks events. (They are issued after the single clicks, see GdkEventButton) */
+	if (event->type == GDK_2BUTTON_PRESS)
+		return TRUE;
+
+	gtk_widget_grab_focus (GTK_WIDGET (widget));
+	validate (GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes_dialog")));
+	return FALSE;
 }
 
 GtkWidget *
@@ -431,6 +577,13 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	int i;
 	GSList *renderers = NULL;
 	GError* error = NULL;
+
+	/* Initialize temporary storage vars */
+	g_free (last_edited);
+	last_edited = NULL;
+	last_path = NULL;
+	g_free (last_path);
+	last_column = -1;
 
 	builder = gtk_builder_new ();
 
@@ -499,6 +652,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), builder);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_ADDRESS));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
+	g_signal_connect (renderer, "editing-canceled", G_CALLBACK (cell_editing_canceled), builder);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -515,6 +669,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), builder);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_PREFIX));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
+	g_signal_connect (renderer, "editing-canceled", G_CALLBACK (cell_editing_canceled), builder);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -531,6 +686,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), builder);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_NEXT_HOP));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (ip4_cell_editing_started), ok_button);
+	g_signal_connect (renderer, "editing-canceled", G_CALLBACK (cell_editing_canceled), builder);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -547,6 +703,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (renderer, "edited", G_CALLBACK (cell_edited), builder);
 	g_object_set_data (G_OBJECT (renderer), "column", GUINT_TO_POINTER (COL_METRIC));
 	g_signal_connect (renderer, "editing-started", G_CALLBACK (uint_cell_editing_started), ok_button);
+	g_signal_connect (renderer, "editing-canceled", G_CALLBACK (cell_editing_canceled), builder);
 	renderers = g_slist_append (renderers, renderer);
 
 	offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (widget),
@@ -563,6 +720,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	g_signal_connect (selection, "changed",
 	                  G_CALLBACK (list_selection_changed),
 	                  GTK_WIDGET (gtk_builder_get_object (builder, "ip4_route_delete_button")));
+	g_signal_connect (widget, "button-press-event", G_CALLBACK (tree_view_button_pressed_cb), builder);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_route_add_button"));
 	gtk_widget_set_sensitive (widget, TRUE);
