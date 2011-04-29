@@ -654,6 +654,69 @@ delete_text_cb (GtkEditable *editable,
 }
 
 static gboolean
+parse_netmask (const char *str, guint32 *prefix)
+{
+	struct in_addr tmp_addr;
+	glong tmp_prefix;
+
+	errno = 0;
+
+	/* Is it a prefix? */
+	if (!strchr (str, '.')) {
+		tmp_prefix = strtol (str, NULL, 10);
+		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
+			*prefix = tmp_prefix;
+			return TRUE;
+		}
+	}
+
+	/* Is it a netmask? */
+	if (inet_pton (AF_INET, str, &tmp_addr) > 0) {
+		*prefix = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
+cell_changed_cb (GtkEditable *editable,
+                 gpointer user_data)
+{
+	char *cell_text;
+	guint column;
+	GdkColor color;
+	gboolean value_valid = FALSE;
+
+	cell_text = gtk_editable_get_chars (editable, 0, -1);
+
+	/* The COL_PREFIX can contain IP address or prefix */
+	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (user_data), "column"));
+	if (column == COL_PREFIX) {
+		guint32 tmp_prefix;
+
+		value_valid = parse_netmask (cell_text, &tmp_prefix);
+	} else {
+		struct in_addr tmp_addr;
+
+		if (inet_pton (AF_INET, cell_text, &tmp_addr) > 0)
+			value_valid = TRUE;
+	}
+
+	/* Change cell's background color while editing */
+	if (value_valid)
+		gdk_color_parse ("lightgreen", &color);
+	else
+		gdk_color_parse ("red", &color);
+
+	gtk_widget_modify_base (GTK_WIDGET (editable), GTK_STATE_NORMAL, &color); /* works for GTK2 */
+	gtk_widget_modify_bg (GTK_WIDGET (editable), GTK_STATE_NORMAL, &color);   /* works for GTK3 */
+
+	g_free (cell_text);
+	return FALSE;
+}
+
+static gboolean
 key_pressed_cb (GtkWidget *widget,
                 GdkEvent *event,
                 gpointer user_data)
@@ -698,6 +761,11 @@ cell_editing_started (GtkCellRenderer *cell,
 	g_signal_connect_after (G_OBJECT (editable), "delete-text",
 	                        (GCallback) delete_text_cb,
 	                        user_data);
+
+	/* Set up handler for IP verifying and changing cell background */
+	g_signal_connect (G_OBJECT (editable), "changed",
+	                  (GCallback) cell_changed_cb,
+	                  cell);
 
 	/* Set up key pressed handler - need to handle Tab key */
 	g_signal_connect (G_OBJECT (editable), "key-press-event",
@@ -940,32 +1008,6 @@ free_one_addr (gpointer data)
 }
 
 static gboolean
-parse_netmask (const char *str, guint32 *prefix)
-{
-	struct in_addr tmp_addr;
-	glong tmp_prefix;
-
-	errno = 0;
-
-	/* Is it a prefix? */
-	if (!strchr (str, '.')) {
-		tmp_prefix = strtol (str, NULL, 10);
-		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
-			*prefix = tmp_prefix;
-			return TRUE;
-		}
-	}
-
-	/* Is it a netmask? */
-	if (inet_pton (AF_INET, str, &tmp_addr) > 0) {
-		*prefix = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
 ui_to_setting (CEPageIP4 *self)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
@@ -1022,7 +1064,7 @@ ui_to_setting (CEPageIP4 *self)
 		guint32 empty_val = 0, prefix;
 
 		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &item, -1);
-		if (!item || !inet_aton (item, &tmp_addr)) {
+		if (!item || inet_pton (AF_INET, item, &tmp_addr) <= 0) {
 			g_warning ("%s: IPv4 address '%s' missing or invalid!",
 			           __func__, item ? item : "<none>");
 			g_free (item);
@@ -1047,7 +1089,7 @@ ui_to_setting (CEPageIP4 *self)
 
 		/* Gateway is optional... */
 		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &item, -1);
-		if (item && !inet_aton (item, &tmp_gateway)) {
+		if (item && inet_pton (AF_INET, item, &tmp_gateway) <= 0) {
 			g_warning ("%s: IPv4 gateway '%s' invalid!",
 			           __func__, item ? item : "<none>");
 			g_free (item);
