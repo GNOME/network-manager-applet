@@ -367,6 +367,57 @@ delete_text_cb (GtkEditable *editable,
 }
 
 static gboolean
+cell_changed_cb (GtkEditable *editable,
+                 gpointer user_data)
+{
+	char *cell_text;
+	guint column;
+	GdkColor color;
+	gboolean value_valid = FALSE;
+
+	cell_text = gtk_editable_get_chars (editable, 0, -1);
+
+	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (user_data), "column"));
+
+	if (column == COL_PREFIX) {
+		long int tmp_int;
+
+		errno = 0;
+		tmp_int = strtol (cell_text, NULL, 10);
+		if (errno || tmp_int < 0 || tmp_int > 128)
+			value_valid = FALSE;
+		else
+			value_valid = TRUE;
+	} else if (column == COL_METRIC) {
+		long int tmp_int;
+
+		errno = 0;
+		tmp_int = strtol (cell_text, NULL, 10);
+		if (errno || tmp_int < 0 || tmp_int > G_MAXUINT32)
+			value_valid = FALSE;
+		else
+			value_valid = TRUE;
+	} else {
+		struct in6_addr tmp_addr;
+
+		if (inet_pton (AF_INET6, cell_text, &tmp_addr) > 0)
+			value_valid = TRUE;
+	}
+
+	/* Change cell's background color while editing */
+	if (value_valid)
+		gdk_color_parse ("lightgreen", &color);
+	else
+		gdk_color_parse ("red", &color);
+
+	gtk_widget_modify_base (GTK_WIDGET (editable), GTK_STATE_NORMAL, &color); /* works for GTK2 */
+	gtk_widget_modify_bg (GTK_WIDGET (editable), GTK_STATE_NORMAL, &color);   /* works for GTK3 */
+
+	g_free (cell_text);
+	return FALSE;
+}
+
+static gboolean
 key_pressed_cb (GtkWidget *widget,
                 GdkEvent *event,
                 gpointer user_data)
@@ -408,6 +459,11 @@ ip6_cell_editing_started (GtkCellRenderer *cell,
 	g_signal_connect_after (G_OBJECT (editable), "delete-text",
 	                        (GCallback) delete_text_cb,
 	                        user_data);
+
+	/* Set up handler for value verifying and changing cell background */
+	g_signal_connect (G_OBJECT (editable), "changed",
+	                  (GCallback) cell_changed_cb,
+	                  cell);
 
 	/* Set up key pressed handler - need to handle Tab key */
 	g_signal_connect (G_OBJECT (editable), "key-press-event",
@@ -480,6 +536,11 @@ uint_cell_editing_started (GtkCellRenderer *cell,
 	g_signal_connect_after (G_OBJECT (editable), "delete-text",
 	                        (GCallback) delete_text_cb,
 	                        user_data);
+
+	/* Set up handler for value verifying and changing cell background */
+	g_signal_connect (G_OBJECT (editable), "changed",
+	                  (GCallback) cell_changed_cb,
+	                  cell);
 
 	/* Set up key pressed handler - need to handle Tab key */
 	g_signal_connect (G_OBJECT (editable), "key-press-event",
