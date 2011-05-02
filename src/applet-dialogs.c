@@ -328,7 +328,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	GtkTable *table;
 	guint32 speed = 0;
 	char *str;
-	const char *iface, *method;
+	const char *iface, *method = NULL;
 	NMIP4Config *ip4_config;
 	NMIP6Config *ip6_config;
 	const GArray *dns;
