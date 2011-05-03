@@ -172,6 +172,39 @@ impl_dbus_connect_to_8021x_network (NMApplet *applet,
 	return TRUE;
 }
 
+static gboolean
+impl_dbus_connect_to_3g_network (NMApplet *applet,
+                                 const char *device_path,
+                                 GError **error)
+{
+	NMDevice *device;
+	NMDeviceModemCapabilities caps;
+
+	device = nm_client_get_device_by_path (applet->nm_client, device_path);
+	if (!device || NM_IS_DEVICE_MODEM (device) == FALSE) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "The device could not be found.");
+		return FALSE;
+	}
+
+	caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
+	if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
+		applet_gsm_connect_network (applet, device);
+	} else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO) {
+		applet_cdma_connect_network (applet, device);
+	} else {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "The device had no GSM or CDMA capabilities.");
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 #include "applet-dbus-bindings.h"
 
 /********************************************************************/

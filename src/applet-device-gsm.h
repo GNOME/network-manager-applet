@@ -28,4 +28,6 @@
 
 NMADeviceClass *applet_device_gsm_get_class (NMApplet *applet);
 
+void applet_gsm_connect_network (NMApplet *applet, NMDevice *device);
+
 #endif /* __APPLET_DEVICE_GSM_H__ */

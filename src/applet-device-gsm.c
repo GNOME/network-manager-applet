@@ -186,10 +186,8 @@ done:
 }
 
 static gboolean
-gsm_new_auto_connection (NMDevice *device,
-                         gpointer dclass_data,
-                         AppletNewAutoConnectionCallback callback,
-                         gpointer callback_data)
+do_mobile_wizard (AppletNewAutoConnectionCallback callback,
+                  gpointer callback_data)
 {
 	MobileWizard *wizard;
 	AutoGsmWizardInfo *info;
@@ -214,6 +212,70 @@ gsm_new_auto_connection (NMDevice *device,
 	g_free (method);
 
 	return TRUE;
+}
+
+static gboolean
+gsm_new_auto_connection (NMDevice *device,
+                         gpointer dclass_data,
+                         AppletNewAutoConnectionCallback callback,
+                         gpointer callback_data)
+{
+	return do_mobile_wizard (callback, callback_data);
+}
+
+static void
+dbus_3g_add_and_activate_cb (NMClient *client,
+                             NMActiveConnection *active,
+                             const char *connection_path,
+                             GError *error,
+                             gpointer user_data)
+{
+	if (error)
+		g_warning ("Failed to add/activate connection: (%d) %s", error->code, error->message);
+}
+
+typedef struct {
+	NMApplet *applet;
+	NMDevice *device;
+} Dbus3gInfo;
+
+static void
+dbus_connect_3g_cb (NMConnection *connection,
+                    gboolean auto_created,
+                    gboolean canceled,
+                    gpointer user_data)
+{
+	Dbus3gInfo *info = user_data;
+
+	if (canceled == FALSE) {
+		g_return_if_fail (connection != NULL);
+
+		/* Ask NM to add the new connection and activate it; NM will fill in the
+		 * missing details based on the specific object and the device.
+		 */
+		nm_client_add_and_activate_connection (info->applet->nm_client,
+		                                       connection,
+		                                       info->device,
+		                                       "/",
+		                                       dbus_3g_add_and_activate_cb,
+		                                       info->applet);
+	}
+
+	g_object_unref (info->device);
+	memset (info, 0, sizeof (*info));
+	g_free (info);
+}
+
+void
+applet_gsm_connect_network (NMApplet *applet, NMDevice *device)
+{
+	Dbus3gInfo *info;
+
+	info = g_malloc0 (sizeof (*info));
+	info->applet = applet;
+	info->device = g_object_ref (device);
+
+	do_mobile_wizard (dbus_connect_3g_cb, info);
 }
 
 static void

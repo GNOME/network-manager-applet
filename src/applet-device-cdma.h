@@ -27,4 +27,6 @@
 
 NMADeviceClass *applet_device_cdma_get_class (NMApplet *applet);
 
+void applet_cdma_connect_network (NMApplet *applet, NMDevice *device);
+
 #endif /* __APPLET_DEVICE_CDMA_H__ */
