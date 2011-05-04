@@ -1,11 +1,9 @@
-# Dutch translation of Network Manager Applet
+# Dutch translation for Network Manager Applet
 #
-# This file is distributed under the same license as the
-# network-manager-applet package.
+# This file is distributed under the same license as the network-manager-applet package.
 #
-# Tino Meinen <a.t.meinen@chello.nl>, 2004, 2005, 2006, 2008.
 # Daniel van Eeden <daniel_e@dds.nl>, 2004.
-#
+# Tino Meinen <a.t.meinen@chello.nl>, 2004–2011.
 #
 # the wired network       het kabelnetwerk (is meer voor TV-kabelnetwerk?)
 #                         bekabelde/bekabeld netwerk/draadnetwerk/vast netwerk
@@ -15,441 +13,701 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-14 15:16+0200\n"
-"PO-Revision-Date: 2008-09-14 06:09+0200\n"
-"Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
+"POT-Creation-Date: 2011-05-04 20:24+0200\n"
+"PO-Revision-Date: 2011-05-04 11:52+0800\n"
+"Last-Translator: Tino Meinen <tino.meinen@gmail.com>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 # geen netwerk/netwerkverbinding
-#: ../src/applet-device-cdma.c:55
-msgid "Auto CDMA network connection"
-msgstr "Auto CDMA-netwerkverbinding"
+#: ../nm-applet.desktop.in.h:1
+msgid "Manage your network connections"
+msgstr "Uw netwerkverbindingen beheren"
 
-#: ../src/applet-device-cdma.c:196 ../src/applet-device-gsm.c:197
-msgid "Disconnect"
-msgstr "Verbinding verbreken"
+#: ../nm-applet.desktop.in.h:2
+msgid "Network"
+msgstr "Netwerk"
 
-#: ../src/applet-device-cdma.c:236
+#: ../nm-applet.schemas.in.h:1
+msgid "Disable WiFi Create"
+msgstr "WiFi-aanmaken uitzetten"
+
+#: ../nm-applet.schemas.in.h:2
+msgid "Disable connected notifications"
+msgstr "Geen meldingen tonen bij verbinding"
+
+#: ../nm-applet.schemas.in.h:3
+msgid "Disable disconnected notifications"
+msgstr "Geen meldingen tonen bij verbroken verbinding"
+
+#: ../nm-applet.schemas.in.h:4
+msgid "Set this to TRUE to disable notifications when connecting to a network."
+msgstr ""
+"Stel dit in op TRUE om geen meldingen te krijgen bij het verbinden met een "
+"netwerk."
+
+#: ../nm-applet.schemas.in.h:5
+msgid ""
+"Set this to TRUE to disable notifications when disconnecting from a network."
+msgstr ""
+"Stel dit in op TRUE om geen meldingen te krijgen bij het verbreken van een "
+"verbindinge met een netwerk."
+
+#: ../nm-applet.schemas.in.h:6
+msgid ""
+"Set this to TRUE to disable notifications when wireless networks are "
+"available."
+msgstr ""
+"Stel dit in op TRUE om geen meldingen te krijgen wanneer draadloze netwerken "
+"beschikbaar zijn."
+
+#: ../nm-applet.schemas.in.h:7
+msgid ""
+"Set to TRUE to disable creation of adhoc networks when using the applet."
+msgstr ""
+"Stel dit in op TRUE om te zorgen dat er geen adhoc netwerken aangemaakt "
+"kunnen worden bij gebruik van het applet."
+
+# certificaat/zegel/postzegel
+#: ../nm-applet.schemas.in.h:8
+msgid "Stamp"
+msgstr ""
+
+#: ../nm-applet.schemas.in.h:9
+msgid "Suppress networks available notifications"
+msgstr "Meldingen van beschikbare draadloze netwerken niet tonen"
+
+#: ../nm-applet.schemas.in.h:10
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr ""
+"Gebruikt om te bepalen of instellingen moeten worden overgezet naar een "
+"nieuwe versie."
+
+#: ../nm-connection-editor.desktop.in.h:1
+msgid "Manage and change your network connection settings"
+msgstr "De instellingen voor uw netwerkverbindingen beheren en bewerken"
+
+#: ../nm-connection-editor.desktop.in.h:2
+#: ../src/connection-editor/nm-connection-editor.ui.h:7
+msgid "Network Connections"
+msgstr "Netwerkverbindingen"
+
+#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:399
+#: ../src/applet-device-gsm.c:443 ../src/applet-device-wired.c:240
+#: ../src/applet-device-wifi.c:875 ../src/applet-device-wimax.c:279
+msgid "Available"
+msgstr "Beschikbaar"
+
+# met het netwerk %s/via het netwerk
+#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:441
+#: ../src/applet-device-gsm.c:485 ../src/applet-device-wired.c:269
+#: ../src/applet-device-wimax.c:423
 #, c-format
-msgid "CDMA Connections (%s)"
-msgstr "CDMA-verbindingen (%s)"
+msgid "You are now connected to '%s'."
+msgstr "U bent nu verbonden met ‘%s’."
 
-#: ../src/applet-device-cdma.c:238
-#, c-format
-msgid "CDMA Network (%s)"
-msgstr "CDMA-netwerk (%s)"
-
-#: ../src/applet-device-cdma.c:241
-msgid "CDMA Connections"
-msgstr "CDMA-verbindingen"
-
-#: ../src/applet-device-cdma.c:243
-msgid "CDMA Network"
-msgstr "CDMA-netwerk"
-
-#: ../src/applet-device-cdma.c:261 ../src/applet-device-gsm.c:262
-#: ../src/applet-device-wired.c:224 ../src/applet-device-wifi.c:699
-msgid "device is unmanaged"
-msgstr "apparaat wordt niet beheerd"
-
-#: ../src/applet-device-cdma.c:285 ../src/applet-device-gsm.c:286
-#: ../src/applet-device-wired.c:247 ../src/applet-device-wifi.c:1188
+#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:445
+#: ../src/applet-device-gsm.c:489 ../src/applet-device-wired.c:273
+#: ../src/applet-device-wifi.c:1280 ../src/applet-device-wimax.c:427
 msgid "Connection Established"
 msgstr "Verbinding ingesteld"
 
+# via mobiel breedband/mobiele breedbandnetwerk
+#: ../src/applet-device-bt.c:205
+msgid "You are now connected to the mobile broadband network."
+msgstr "U bent nu verbonden via het mobiele breedbandnetwerk."
+
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:481
+#: ../src/applet-device-gsm.c:525 ../src/applet-device-wimax.c:464
+#, c-format
+msgid "Preparing mobile broadband connection '%s'..."
+msgstr "Voorbereiden van mobiele breedbandverbinding ‘%s’…"
+
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:484
+#: ../src/applet-device-gsm.c:528 ../src/applet-device-wimax.c:467
+#, c-format
+msgid "Configuring mobile broadband connection '%s'..."
+msgstr "Configureren van mobiele breedbandverbinding ‘%s’…"
+
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:487
+#: ../src/applet-device-gsm.c:531 ../src/applet-device-wimax.c:470
+#, c-format
+msgid "User authentication required for mobile broadband connection '%s'..."
+msgstr "Aanmeldingscontrole vereist voor mobiele breedbandverbinding ‘%s’…"
+
+#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:490
+#: ../src/applet-device-gsm.c:534 ../src/applet-device-wimax.c:473
+#: ../src/applet.c:2466
+#, c-format
+msgid "Requesting a network address for '%s'..."
+msgstr "Er wordt een netwerkadres aangevraagd voor ‘%s’…"
+
+# actief/geactiveerd/in werking/ingesteld/in gebruik
+#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:508
+#: ../src/applet-device-gsm.c:552
+#, c-format
+msgid "Mobile broadband connection '%s' active"
+msgstr "Mobiele breedbandverbinding ‘%s’ actief"
+
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:683
+#: ../src/mb-menu-item.c:54
+msgid "CDMA"
+msgstr "CDMA"
+
+#: ../src/applet-device-cdma.c:345 ../src/applet-device-gsm.c:389
+#: ../src/applet-dialogs.c:405
+#, c-format
+msgid "Mobile Broadband (%s)"
+msgstr "Mobiel breedband (%s)"
+
+#: ../src/applet-device-cdma.c:347 ../src/applet-device-gsm.c:391
+#: ../src/connection-editor/page-mobile.c:374
+#: ../src/connection-editor/nm-connection-editor.ui.h:6
+#: ../src/connection-editor/nm-connection-list.c:1440
+msgid "Mobile Broadband"
+msgstr "Mobiel breedband"
+
+#. Default connection item
+#: ../src/applet-device-cdma.c:412
+msgid "New Mobile Broadband (CDMA) connection..."
+msgstr "Nieuwe (CDMA) mobiele breedbandverbinding…"
+
 # bedraad netwerk/vast netwerk
-#: ../src/applet-device-cdma.c:286
+#: ../src/applet-device-cdma.c:446
 msgid "You are now connected to the CDMA network."
 msgstr "U bent nu verbonden met het CDMA-netwerk."
 
-#: ../src/applet-device-cdma.c:304
+#: ../src/applet-device-cdma.c:503 ../src/applet-device-gsm.c:547
+#: ../src/applet-device-wimax.c:482
 #, c-format
-msgid "Dialing CDMA device %s..."
-msgstr "Inbellen met CDMA-apparaat %s…"
+msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
+msgstr "Mobiele breedbandverbinding ‘%s’ actief: (%d%%%s%s)"
 
-#: ../src/applet-device-cdma.c:307 ../src/applet-device-gsm.c:308
-#, c-format
-msgid "Starting PPP on device %s..."
-msgstr "PPP starten op apparaat %s…"
+#: ../src/applet-device-cdma.c:506 ../src/applet-device-gsm.c:550
+#: ../src/applet-device-wimax.c:485
+msgid "roaming"
+msgstr "roaming"
 
-#: ../src/applet-device-cdma.c:310 ../src/applet-device-gsm.c:311
-#, c-format
-msgid "Waiting for user authentication on device '%s'..."
-msgstr "Wachten op aanmeldingscontrole van de gebruiker op apparaat ‘%s’…"
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:686
+#: ../src/mb-menu-item.c:59
+msgid "GSM"
+msgstr "GSM"
 
-#: ../src/applet-device-cdma.c:313
-msgid "CDMA connection"
-msgstr "CDMA-verbinding"
+#. Default connection item
+#: ../src/applet-device-gsm.c:456
+msgid "New Mobile Broadband (GSM) connection..."
+msgstr "Nieuwe (GSM) mobiele breedbandverbinding…"
 
-#: ../src/applet-device-cdma.c:421
-msgid "CDMA Network Password"
-msgstr "CDMA-netwerkwachtwoord"
-
-#: ../src/applet-device-cdma.c:428
-msgid "A password is required to connect to the CDMA network."
-msgstr ""
-"Er is een wachtwoord nodig om een verbinding te maken met het CDMA-netwerk."
-
-#: ../src/applet-device-cdma.c:444 ../src/applet-device-gsm.c:547
-#: ../src/applet.glade.h:22 ../src/connection-editor/ce-page-dsl.glade.h:1
-#: ../src/connection-editor/ce-page-mobile.glade.h:14
-msgid "Password:"
-msgstr "Wachtwoord:"
-
-#: ../src/applet-device-gsm.c:56
-msgid "Auto GSM network connection"
-msgstr "Auto GSM-netwerkverbinding"
-
-#: ../src/applet-device-gsm.c:237
-#, c-format
-msgid "GSM Connections (%s)"
-msgstr "GSM-verbindingen (%s)"
-
-#: ../src/applet-device-gsm.c:239
-#, c-format
-msgid "GSM Network (%s)"
-msgstr "GSM-netwerk (%s)"
-
-#: ../src/applet-device-gsm.c:242
-msgid "GSM Connections"
-msgstr "GSM-verbindingen"
-
-#: ../src/applet-device-gsm.c:244
-msgid "GSM Network"
-msgstr "GSM-netwerk"
-
-#: ../src/applet-device-gsm.c:287
+#: ../src/applet-device-gsm.c:490
 msgid "You are now connected to the GSM network."
 msgstr "U bent nu verbonden met het GSM-netwerk."
 
-#: ../src/applet-device-gsm.c:305
-#, c-format
-msgid "Dialing GSM device %s..."
-msgstr "Inbellen met GSM-apparaat %s…"
-
-# Netwerken
-#: ../src/applet-device-gsm.c:314
-msgid "GSM connection"
-msgstr "GSM-verbinding"
-
-# nodig/gevraagd
-#: ../src/applet-device-gsm.c:452
+# nodig/gevraagd/vereist
+#: ../src/applet-device-gsm.c:651
 msgid "PIN code required"
 msgstr "PIN-code gevraagd"
 
-#: ../src/applet-device-gsm.c:454
-msgid "PUK code required"
-msgstr "PUK-code gevraagd"
+#: ../src/applet-device-gsm.c:659
+msgid "PIN code is needed for the mobile broadband device"
+msgstr "De PIN-code is nodig voor het mobiele breedbandapparaat"
 
-#: ../src/applet-device-gsm.c:464
-msgid "PIN code is needed for the GSM device"
-msgstr "De PIN-code is nodig voor het GSM-apparaat"
+#: ../src/applet-device-gsm.c:780
+msgid "Wrong PIN code; please contact your provider."
+msgstr "Verkeerde PIN-code; neem contact op met uw provider."
 
-#: ../src/applet-device-gsm.c:466
-msgid "PUK code is needed for the GSM device"
-msgstr "De PUK-code is nodig voor het GSM-appraat"
+#: ../src/applet-device-gsm.c:803
+msgid "Wrong PUK code; please contact your provider."
+msgstr "Verkeerde PUK-code; neem contact op met uw provider."
 
-#: ../src/applet-device-gsm.c:524
-msgid "GSM Network Password"
-msgstr "GSM-netwerkwachtwoord"
+#. Start the spinner to show the progress of the unlock
+#: ../src/applet-device-gsm.c:830
+msgid "Sending unlock code..."
+msgstr "Code verturen…"
 
-# om een verbinding te maken met/voor het verbinden met
-#: ../src/applet-device-gsm.c:531
-msgid "A password is required to connect to the GSM network."
+# nodig/gevraagd/vereist
+# geen letterlijke vertaling van unlock
+#: ../src/applet-device-gsm.c:893
+msgid "SIM PIN unlock required"
+msgstr "SIM PIN-code vereist"
+
+#: ../src/applet-device-gsm.c:894
+msgid "SIM PIN Unlock Required"
+msgstr "SIM PIN-code vereist"
+
+#. FIXME: some warning about # of times you can enter incorrect PIN
+#: ../src/applet-device-gsm.c:896
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PIN code before it can be "
+"used."
 msgstr ""
-"Er is een wachtwoord nodig om een verbinding te maken met het GSM-netwerk."
+"Het mobiele breedbandapparaat ‘%s’ vraagt een SIM PIN-code voordat het "
+"gebruikt kan worden."
 
-#: ../src/applet-device-wired.c:65
+#. Translators: PIN code entry label
+#: ../src/applet-device-gsm.c:898
+msgid "PIN code:"
+msgstr "PIN-code:"
+
+#. Translators: Show/obscure PIN checkbox label
+#: ../src/applet-device-gsm.c:902
+msgid "Show PIN code"
+msgstr "PIN-code tonen"
+
+# gevraagd/vereist
+#: ../src/applet-device-gsm.c:905
+msgid "SIM PUK unlock required"
+msgstr "SIM PUK-code vereist"
+
+#: ../src/applet-device-gsm.c:906
+msgid "SIM PUK Unlock Required"
+msgstr "SIM PUK-code vereist"
+
+#. FIXME: some warning about # of times you can enter incorrect PUK
+#: ../src/applet-device-gsm.c:908
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PUK code before it can be "
+"used."
+msgstr ""
+"Het mobiele breedbandapparaat ‘%s’ vereist een SIM PUK-code voordat het "
+"gebruikt kan worden."
+
+#. Translators: PUK code entry label
+#: ../src/applet-device-gsm.c:910
+msgid "PUK code:"
+msgstr "PUK-code:"
+
+#. Translators: New PIN entry label
+#: ../src/applet-device-gsm.c:913
+msgid "New PIN code:"
+msgstr "Nieuwe PIN-code:"
+
+#. Translators: New PIN verification entry label
+#: ../src/applet-device-gsm.c:915
+msgid "Re-enter new PIN code:"
+msgstr "Voer nieuwe PIN-code nogmaals in:"
+
+#. Translators: Show/obscure PIN/PUK checkbox label
+#: ../src/applet-device-gsm.c:920
+msgid "Show PIN/PUK codes"
+msgstr "PIN/PUK codes tonen"
+
+#: ../src/applet-device-wired.c:62
 msgid "Auto Ethernet"
 msgstr "Auto ethernet"
 
-# vaste netwerk/kabelnetwerk
-#: ../src/applet-device-wired.c:193
+# vaste netwerk/kabelnetwerk/kabelverbinding
+#: ../src/applet-device-wired.c:205
 #, c-format
 msgid "Wired Networks (%s)"
 msgstr "Bekabelde netwerken (%s)"
 
 # vaste netwerk
-#: ../src/applet-device-wired.c:195
+#: ../src/applet-device-wired.c:207
 #, c-format
 msgid "Wired Network (%s)"
 msgstr "Bekabeld netwerk (%s)"
 
 # vaste netwerk
-#: ../src/applet-device-wired.c:198
+#: ../src/applet-device-wired.c:210
 msgid "Wired Networks"
 msgstr "Bekabelde netwerken"
 
 # vaste netwerk
-#: ../src/applet-device-wired.c:200
+#: ../src/applet-device-wired.c:212
 msgid "Wired Network"
 msgstr "Bekabeld netwerk"
 
+# niet verbonden/verbinding verbroken
+#. Notify user of unmanaged or unavailable device
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1472
+msgid "disconnected"
+msgstr "verbinding verbroken"
+
 # bedraad netwerk/vast netwerk
-#: ../src/applet-device-wired.c:248
+#: ../src/applet-device-wired.c:274
 msgid "You are now connected to the wired network."
 msgstr "U bent nu verbonden met het bekabeld netwerk."
 
-# vaste netwerk
-#: ../src/applet-device-wired.c:266
+# netwerkverbinding via kabel
+#: ../src/applet-device-wired.c:300
 #, c-format
-msgid "Preparing device %s for the wired network..."
-msgstr "Apparaat %s wordt ingesteld voor het bekabeld netwerk…"
+msgid "Preparing wired network connection '%s'..."
+msgstr "Voorbereiden van kabelnetwerkverbinding ‘%s’…"
 
-# vaste netwerk
-#: ../src/applet-device-wired.c:269
+#: ../src/applet-device-wired.c:303
 #, c-format
-msgid "Configuring device %s for the wired network..."
-msgstr "Appraat %s wordt geconfigureerd voor het bekabeld netwerk…"
+msgid "Configuring wired network connection '%s'..."
+msgstr "Configureren van kabelnetwerkverbinding ‘%s’…"
 
-# vaste netwerk
-#: ../src/applet-device-wired.c:272
+# 'verbinding' toevoegen is hier verwarrend
+#: ../src/applet-device-wired.c:306
 #, c-format
-msgid "Requesting a network address from the wired network..."
-msgstr "Er wordt een netwerkadres verzocht van het bekabeld netwerk…"
+msgid "User authentication required for wired network connection '%s'..."
+msgstr "Aanmeldingscontrole vereist voor het draadloos netwerk ‘%s’…"
+
+# kabelnetwerkadres
+#: ../src/applet-device-wired.c:309
+#, c-format
+msgid "Requesting a wired network address for '%s'..."
+msgstr "Er wordt een kabelnetwerkadres aangevraagd voor ‘%s’…"
 
 # dit is een tooltip die boven het applet verschijnt
 # netwerkverbinding via de kabel/netwerk/netwerkverbinding
 # vaste netwerk/kabelnetwerkverbinding
-#: ../src/applet-device-wired.c:276
-msgid "Wired network connection"
-msgstr "Netwerkverbinding via de kabel"
+# verbinding via kabelnetwerk
+#: ../src/applet-device-wired.c:313
+#, c-format
+msgid "Wired network connection '%s' active"
+msgstr "Verbinding via kabelnetwerk ‘%s’ actief"
 
 # identiteitscontrole/aanmeldingscontrole
-#: ../src/applet-device-wired.c:507
+#: ../src/applet-device-wired.c:494
 msgid "DSL authentication"
 msgstr "DSL aanmeldingscontrole"
 
-#: ../src/applet-device-wifi.c:87
-msgid "_Connect to Other Wireless Network..."
-msgstr "_Verbinden met ander draadloos netwerk…"
+# via/met
+#: ../src/applet-device-wifi.c:97
+msgid "_Connect to Hidden Wireless Network..."
+msgstr "_Verbinden met verborgen draadloos netwerk…"
 
-#: ../src/applet-device-wifi.c:119
+#: ../src/applet-device-wifi.c:150
 msgid "Create _New Wireless Network..."
 msgstr "_Nieuw draadloos netwerk aanmaken…"
 
-#: ../src/applet-device-wifi.c:669
+# niets/geen
+#: ../src/applet-device-wifi.c:294
+msgid "(none)"
+msgstr "(geen)"
+
+#: ../src/applet-device-wifi.c:803
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Draadloze netwerken (%s)"
 
-#: ../src/applet-device-wifi.c:671
+#: ../src/applet-device-wifi.c:805
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Draadloos netwerk (%s)"
 
-#: ../src/applet-device-wifi.c:673
+#: ../src/applet-device-wifi.c:807
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Draadloos netwerk"
 msgstr[1] "Draadloze netwerken"
 
-# actief/aangezet
-#: ../src/applet-device-wifi.c:690
+#: ../src/applet-device-wifi.c:840
 msgid "wireless is disabled"
 msgstr "draadloos is uitgezet"
 
-#: ../src/applet-device-wifi.c:988
+#: ../src/applet-device-wifi.c:841
+msgid "wireless is disabled by hardware switch"
+msgstr "draadloos is uitgezet met de hardware-schakelaar"
+
+#: ../src/applet-device-wifi.c:902
+msgid "More networks"
+msgstr "Meer netwerken"
+
+#: ../src/applet-device-wifi.c:1081
 msgid "Wireless Networks Available"
 msgstr "Draadloze netwerken beschikbaar"
 
-#: ../src/applet-device-wifi.c:989
+#: ../src/applet-device-wifi.c:1083
 msgid "Click on this icon to connect to a wireless network"
 msgstr "Klik op dit pictogram om verbinding te maken met een draadloos netwerk"
 
-#: ../src/applet-device-wifi.c:992
+#: ../src/applet-device-wifi.c:1084
+msgid "Use the network menu to connect to a wireless network"
+msgstr ""
+"Gebruik het netwerkmenu om verbinding te maken met een draadloos netwerk"
+
+#: ../src/applet-device-wifi.c:1087 ../src/applet.c:888
 msgid "Don't show this message again"
 msgstr "Dit bericht niet meer tonen"
 
-#: ../src/applet-device-wifi.c:1186
+#: ../src/applet-device-wifi.c:1279
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "U bent nu verbonden met het draadloos netwerk ‘%s’."
 
-# niets/geen
-#: ../src/applet-device-wifi.c:1187 ../src/applet-device-wifi.c:1215
-msgid "(none)"
-msgstr "(geen)"
-
-#: ../src/applet-device-wifi.c:1221
+#: ../src/applet-device-wifi.c:1310
 #, c-format
-msgid "Preparing device %s for the wireless network '%s'..."
-msgstr "Apparaat %s wordt ingesteld op het draadloos netwerk ‘%s’…"
+msgid "Preparing wireless network connection '%s'..."
+msgstr "Voorbereiden van draadloze netwerkverbinding ‘%s’…"
 
-# bezig met pogen om binen te komen
-# aan te sluiten bij/verbinding te maken met/binnen te komen bij
-# ("binnenkomen bij" klingt als 'cracken')
-#: ../src/applet-device-wifi.c:1224
+#: ../src/applet-device-wifi.c:1313
 #, c-format
-msgid "Attempting to join the wireless network '%s'..."
-msgstr "Poging aan te sluiten bij het draadloos netwerk ‘%s’…"
+msgid "Configuring wireless network connection '%s'..."
+msgstr "Configureren van draadloze netwerkverbinding ‘%s’…"
 
-#: ../src/applet-device-wifi.c:1227
+#: ../src/applet-device-wifi.c:1316
 #, c-format
-msgid "Requesting a network address from the wireless network '%s'..."
-msgstr "Er wordt een netwerkadres verzocht voor het draadloos netwerk ‘%s’…"
+msgid "User authentication required for wireless network '%s'..."
+msgstr "Aanmeldingscontole vereist voor draadloos netwerk ‘%s’…"
 
-#: ../src/applet-device-wifi.c:1230
+#: ../src/applet-device-wifi.c:1319
 #, c-format
-msgid "Waiting for Network Key for the wireless network '%s'..."
-msgstr "Wachten op netwerksleutel voor het draadloos netwerk ‘%s’…"
+msgid "Requesting a wireless network address for '%s'..."
+msgstr "Er wordt een netwerkadres aangevraagd voor het draadloos netwerk ‘%s’…"
 
-#: ../src/applet-device-wifi.c:1250
+#: ../src/applet-device-wifi.c:1340
 #, c-format
-msgid "Wireless network connection to '%s' (%d%%)"
-msgstr "Verbinding met draadloos netwerk ‘%s’ (%d%%)"
+msgid "Wireless network connection '%s' active: %s (%d%%)"
+msgstr "Verbinding met draadloos netwerk ‘%s’ actief: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1254
+#: ../src/applet-device-wifi.c:1345
 #, c-format
-msgid "Wireless network connection to '%s'"
-msgstr "Verbinding met draadloos netwerk ‘%s’"
+msgid "Wireless network connection '%s' active"
+msgstr "Verbinding met draadloos netwerk ‘%s’ actief"
 
-#: ../src/applet-dialogs.c:54
+#: ../src/applet-device-wimax.c:231
+#, c-format
+msgid "WiMAX Mobile Broadband (%s)"
+msgstr "WiMAX mobiel breedband (%s)"
+
+#: ../src/applet-device-wimax.c:233
+msgid "WiMAX Mobile Broadband"
+msgstr "WiMAX mobiel breedband"
+
+#: ../src/applet-device-wimax.c:259
+msgid "WiMAX is disabled"
+msgstr "WiMAX is uitgezet"
+
+#: ../src/applet-device-wimax.c:260
+msgid "WiMAX is disabled by hardware switch"
+msgstr "WiMAX is uitgezet met de hardwareschakelaar"
+
+#: ../src/applet-device-wimax.c:428
+msgid "You are now connected to the WiMAX network."
+msgstr "U bent nu verbonden met het WiMAX-netwerk."
+
+#: ../src/applet-dialogs.c:56
 msgid "Error displaying connection information:"
 msgstr "Fout bij weergeven van verbindingsinformatie:"
 
-#: ../src/applet-dialogs.c:81
-#: ../src/connection-editor/page-wireless-security.c:277
-#: ../src/wireless-dialog.c:775
-#: ../src/wireless-security/wireless-security.c:334
+#: ../src/applet-dialogs.c:108
+#: ../src/connection-editor/page-wireless-security.c:285
+#: ../src/wireless-dialog.c:951
+#: ../src/wireless-security/wireless-security.c:393
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:83
+#: ../src/applet-dialogs.c:110
 msgid "Dynamic WEP"
 msgstr "Dynamisch WEP"
 
-#: ../src/applet-dialogs.c:85 ../src/applet-dialogs.c:183
-#: ../src/applet-dialogs.c:185
+#: ../src/applet-dialogs.c:112 ../src/applet-dialogs.c:221
+#: ../src/applet-dialogs.c:223
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:181
+#: ../src/applet-dialogs.c:219
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:189 ../src/applet-dialogs.c:198
-#: ../src/connection-editor/page-wireless-security.c:238
-#: ../src/wireless-dialog.c:728
+# zonder/geen
+#: ../src/applet-dialogs.c:227 ../src/applet-dialogs.c:236
+#: ../src/connection-editor/page-wireless-security.c:239
+#: ../src/wireless-dialog.c:908
+msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Geen"
 
-#: ../src/applet-dialogs.c:201 ../src/applet-dialogs.c:316
-msgid "Unknown"
-msgstr "Onbekend"
-
-#: ../src/applet-dialogs.c:252
-#, c-format
-msgid "Ethernet (%s)"
-msgstr "Ethernet (%s)"
-
-#: ../src/applet-dialogs.c:254
-#, c-format
-msgid "802.11 WiFi (%s)"
-msgstr "802.11 WiFi (%s)"
-
-#: ../src/applet-dialogs.c:256
-#, c-format
-msgid "GSM (%s)"
-msgstr "GSM (%s)"
-
-#: ../src/applet-dialogs.c:258
-#, c-format
-msgid "CDMA (%s)"
-msgstr "CDMA (%s)"
-
-#: ../src/applet-dialogs.c:263
-msgid "Interface:"
-msgstr "Apparaat:"
-
-#: ../src/applet-dialogs.c:279
-msgid "Hardware Address:"
-msgstr "Hardware-adres:"
-
-#: ../src/applet-dialogs.c:289
-msgid "Driver:"
-msgstr "Stuurprogramma:"
-
-#: ../src/applet-dialogs.c:308
+#: ../src/applet-dialogs.c:327 ../src/applet-dialogs.c:465
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:313
+# niet bekend/onbekend
+#: ../src/applet-dialogs.c:329 ../src/applet-dialogs.c:467
+msgctxt "Speed"
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: ../src/applet-dialogs.c:342
+#, c-format
+msgid "%d dB"
+msgstr "%d dB"
+
+#: ../src/applet-dialogs.c:344
+msgctxt "WiMAX CINR"
+msgid "unknown"
+msgstr "onbekend"
+
+#: ../src/applet-dialogs.c:356
+msgctxt "WiMAX Base Station ID"
+msgid "unknown"
+msgstr "onbekend"
+
+#: ../src/applet-dialogs.c:391
+#, c-format
+msgid "Ethernet (%s)"
+msgstr "Ethernet (%s)"
+
+#: ../src/applet-dialogs.c:394
+#, c-format
+msgid "802.11 WiFi (%s)"
+msgstr "802.11 WiFi (%s)"
+
+#: ../src/applet-dialogs.c:401
+#, c-format
+msgid "GSM (%s)"
+msgstr "GSM (%s)"
+
+#: ../src/applet-dialogs.c:403
+#, c-format
+msgid "CDMA (%s)"
+msgstr "CDMA (%s)"
+
+#: ../src/applet-dialogs.c:407
+#, c-format
+msgid "WiMAX (%s)"
+msgstr "WiMAX (%s)"
+
+#. --- General ---
+#: ../src/applet-dialogs.c:413
+msgid "General"
+msgstr "Algemeen"
+
+#: ../src/applet-dialogs.c:417
+msgid "Interface:"
+msgstr "Apparaat:"
+
+#: ../src/applet-dialogs.c:433
+msgid "Hardware Address:"
+msgstr "Hardware-adres:"
+
+#. Driver
+#: ../src/applet-dialogs.c:441
+msgid "Driver:"
+msgstr "Stuurprogramma:"
+
+#: ../src/applet-dialogs.c:470
 msgid "Speed:"
 msgstr "Snelheid:"
 
 # Bedoeld wordt beveiliging van het draadloos netwerk.
 # niet dat de beveiling draadloos is.
-#: ../src/applet-dialogs.c:323
-#: ../src/connection-editor/ce-page-wireless-security.glade.h:1
+#: ../src/applet-dialogs.c:480
 msgid "Security:"
 msgstr "Beveiliging:"
 
-#: ../src/applet-dialogs.c:343
+#: ../src/applet-dialogs.c:493
+msgid "CINR:"
+msgstr "CINR:"
+
+#: ../src/applet-dialogs.c:506
+msgid "BSID:"
+msgstr "BSID:"
+
+#. --- IPv4 ---
+#: ../src/applet-dialogs.c:523
+msgid "IPv4"
+msgstr "IPv4"
+
+#. Address
+#: ../src/applet-dialogs.c:534 ../src/applet-dialogs.c:641
 msgid "IP Address:"
 msgstr "IP-adres:"
 
-#: ../src/applet-dialogs.c:357
-msgid "Broadcast Address:"
-msgstr "Broadcastadres:"
+#: ../src/applet-dialogs.c:536 ../src/applet-dialogs.c:552
+msgctxt "Address"
+msgid "Unknown"
+msgstr "Onbekend"
 
-#: ../src/applet-dialogs.c:366
+#: ../src/applet-dialogs.c:550
+msgid "Broadcast Address:"
+msgstr "Broadcast-adres:"
+
+#. Prefix
+#: ../src/applet-dialogs.c:559
 msgid "Subnet Mask:"
 msgstr "Subnetmasker:"
 
-#: ../src/applet-dialogs.c:376
+#: ../src/applet-dialogs.c:561
+msgctxt "Subnet Mask"
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: ../src/applet-dialogs.c:569 ../src/applet-dialogs.c:656
 msgid "Default Route:"
 msgstr "Standaardroute:"
 
-#: ../src/applet-dialogs.c:389
+#: ../src/applet-dialogs.c:581
 msgid "Primary DNS:"
 msgstr "Primaire DNS:"
 
-#: ../src/applet-dialogs.c:398
+#: ../src/applet-dialogs.c:590
 msgid "Secondary DNS:"
 msgstr "Secondaire DNS:"
 
-# BUG: connecitons ipv connections
+#: ../src/applet-dialogs.c:600
+msgid "Ternary DNS:"
+msgstr "Tertiaire DNS:"
+
+#. --- IPv6 ---
+#: ../src/applet-dialogs.c:615
+msgid "IPv6"
+msgstr "IPv6"
+
+# niet gebruikt/genegeerd
+#: ../src/applet-dialogs.c:624
+msgid "Ignored"
+msgstr "Genegeerd"
+
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:459
-msgid "No valid active connecitons found!"
+#: ../src/applet-dialogs.c:732
+msgid "No valid active connections found!"
 msgstr "Geen geldige actieve verbindingen gevonden!"
 
-#: ../src/applet-dialogs.c:585
+#: ../src/applet-dialogs.c:785
 msgid ""
-"Copyright © 2004-2008 Red Hat, Inc.\n"
-"Copyright © 2005-2008 Novell, Inc."
+"Copyright © 2004-2011 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc.\n"
+"and many other community contributors and translators"
 msgstr ""
-"Copyright © 2004-2008 Red Hat, Inc.\n"
-"Copyright © 2005-2008 Novell, Inc."
+"Copyright © 2004-2011 Red Hat, Inc.\n"
+"Copyright © 2005-2008 Novell, Inc.\n"
+"en vele bijdragen van vertalers en anderen uit de gemeenschap"
 
 # (verschijnt als ondertitel in het 'about' dialoog.
 # Een toepassing in het paneel voor het beheren van uw netwerkverbindingen en apparaten.
 # Een paneeltoepassing voor het beheer van uw netwerkapparaten en verbindingen.
-#: ../src/applet-dialogs.c:587
+#: ../src/applet-dialogs.c:788
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Een toepassing in het paneel voor het beheren van uw netwerkverbindingen en "
 "apparaten."
 
-#: ../src/applet-dialogs.c:589
+#: ../src/applet-dialogs.c:790
 msgid "NetworkManager Website"
 msgstr "NetworkManager website"
 
-#: ../src/applet-dialogs.c:592
-msgid "translator-credits"
-msgstr ""
-"Tino Meinen\n"
-"\n"
-"Kijk voor meer informatie op http://nl.gnome.org/"
+#: ../src/applet-dialogs.c:805
+msgid "Missing resources"
+msgstr "Ontbrekende bronnen"
 
-#: ../src/applet.c:473
+#: ../src/applet-dialogs.c:830
+msgid "Mobile broadband network password"
+msgstr "Wachtwoord voor het mobiele breedbandnetwerk"
+
+# om een verbinding te maken met/voor het verbinden met
+#: ../src/applet-dialogs.c:839
+#, c-format
+msgid "A password is required to connect to '%s'."
+msgstr "Er is een wachtwoord nodig om een verbinding te maken met ‘%s’."
+
+#: ../src/applet-dialogs.c:854
+msgid "Password:"
+msgstr "Wachtwoord:"
+
+#: ../src/applet.c:977
 #, c-format
 msgid ""
 "\n"
@@ -460,7 +718,7 @@ msgstr ""
 "De verbinding met het VPN-netwerk ‘%s’ is mislukt omdat de netwerkverbinding "
 "werd onderbroken."
 
-#: ../src/applet.c:475
+#: ../src/applet.c:980
 #, c-format
 msgid ""
 "\n"
@@ -470,7 +728,7 @@ msgstr ""
 "De verbinding met het VPN-netwerk ‘%s’ is mislukt omdat de VPN-service "
 "onverwacht gestopt is."
 
-#: ../src/applet.c:477
+#: ../src/applet.c:983
 #, c-format
 msgid ""
 "\n"
@@ -482,7 +740,7 @@ msgstr ""
 "ongeldige configuratie teruggaf."
 
 # niet goed/onjuist
-#: ../src/applet.c:479
+#: ../src/applet.c:986
 #, c-format
 msgid ""
 "\n"
@@ -492,7 +750,7 @@ msgstr ""
 "De verbinding met het VPN-netwerk ‘%s’ is mislukt omdat de verbindingspoging "
 "de tijdslimiet heeft overschreden."
 
-#: ../src/applet.c:481
+#: ../src/applet.c:989
 #, c-format
 msgid ""
 "\n"
@@ -502,7 +760,7 @@ msgstr ""
 "De verbinding met het VPN-netwerk ‘%s’ is mislukt omdat de VPN-service niet "
 "tijdig gestart werd."
 
-#: ../src/applet.c:483
+#: ../src/applet.c:992
 #, c-format
 msgid ""
 "\n"
@@ -513,7 +771,7 @@ msgstr ""
 "opgestart kon worden."
 
 # VPN-secrets/VPN-geheimen
-#: ../src/applet.c:485
+#: ../src/applet.c:995
 #, c-format
 msgid ""
 "\n"
@@ -523,7 +781,18 @@ msgstr ""
 "De verbinding met het VPN-netwerk ‘%s’ is mislukt omdat er geen geldige VPN-"
 "secrets waren."
 
-#: ../src/applet.c:490
+# VPN-secrets/VPN-geheimen
+#: ../src/applet.c:998
+#, c-format
+msgid ""
+"\n"
+"The VPN connection '%s' failed because of invalid VPN secrets."
+msgstr ""
+"\n"
+"De verbinding met het VPN-netwerk ‘%s’ is mislukt vanwege ongeldige VPN-"
+"secrets."
+
+#: ../src/applet.c:1005
 #, c-format
 msgid ""
 "\n"
@@ -532,7 +801,7 @@ msgstr ""
 "\n"
 "VPN-verbinding met ‘%s’ is mislukt."
 
-#: ../src/applet.c:508
+#: ../src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -543,7 +812,7 @@ msgstr ""
 "De verbinding met het VPN-netwerk ‘%s’ is verbroken omdat de "
 "netwerkverbinding werd onderbroken."
 
-#: ../src/applet.c:510
+#: ../src/applet.c:1026
 #, c-format
 msgid ""
 "\n"
@@ -554,7 +823,7 @@ msgstr ""
 "gestopt is."
 
 # "the connection has been disconnected" is een contaminatie
-#: ../src/applet.c:515
+#: ../src/applet.c:1032
 #, c-format
 msgid ""
 "\n"
@@ -563,15 +832,15 @@ msgstr ""
 "\n"
 "De verbinding met het VPN-netwerk ‘%s’ is verbroken."
 
-#: ../src/applet.c:541
+#: ../src/applet.c:1066
 msgid "VPN Login Message"
 msgstr "VPN-aanmeldbericht"
 
-#: ../src/applet.c:553 ../src/applet.c:561 ../src/applet.c:605
+#: ../src/applet.c:1072 ../src/applet.c:1080 ../src/applet.c:1130
 msgid "VPN Connection Failed"
 msgstr "VPN-verbinding mislukt"
 
-#: ../src/applet.c:612
+#: ../src/applet.c:1137
 #, c-format
 msgid ""
 "\n"
@@ -585,7 +854,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:615
+#: ../src/applet.c:1140
 #, c-format
 msgid ""
 "\n"
@@ -598,23 +867,39 @@ msgstr ""
 "\n"
 "%s"
 
+#: ../src/applet.c:1460
+msgid "device not ready (firmware missing)"
+msgstr "apparaat niet gereed (firmware ontbreekt)"
+
+#: ../src/applet.c:1462
+msgid "device not ready"
+msgstr "apparaat niet gereed"
+
+#: ../src/applet.c:1488
+msgid "Disconnect"
+msgstr "Verbinding verbreken"
+
+#: ../src/applet.c:1502
+msgid "device not managed"
+msgstr "apparaat wordt niet beheerd"
+
 # Er zijn geen netwerkapparaten geconfigureerd/gevonden
-#: ../src/applet.c:937
+#: ../src/applet.c:1546
 msgid "No network devices available"
 msgstr "Er zijn geen netwerkapparaten beschikbaar"
 
 # Netwerken
-#: ../src/applet.c:1027
+#: ../src/applet.c:1634
 msgid "_VPN Connections"
 msgstr "_VPN-verbindingen"
 
-#: ../src/applet.c:1077
+#: ../src/applet.c:1691
 msgid "_Configure VPN..."
 msgstr "VPN _configureren…"
 
-#: ../src/applet.c:1081
-msgid "_Disconnect VPN..."
-msgstr "V_PN-verbinding verbreken…"
+#: ../src/applet.c:1695
+msgid "_Disconnect VPN"
+msgstr "V_PN-verbinding verbreken"
 
 # betere vertaling
 # is niet uitgevoerd (klinkt als verleden tijd)
@@ -622,927 +907,1204 @@ msgstr "V_PN-verbinding verbreken…"
 # NetworkManager loopt niet
 # Geen NetworkManager aanwezig
 # NetworkManager niet aanwezig
-#: ../src/applet.c:1130
+#: ../src/applet.c:1793
 msgid "NetworkManager is not running..."
 msgstr "Geen NetworkManager…"
 
 # netwerk is uitgezet/netwerken is uitgezet/netwerken is niet mogelijk
-#: ../src/applet.c:1135 ../src/applet.c:1718
+#: ../src/applet.c:1798 ../src/applet.c:2591
 msgid "Networking disabled"
 msgstr "Netwerk is uitgeschakeld"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1312
+#: ../src/applet.c:2019
 msgid "Enable _Networking"
-msgstr "_Netwerk aanzetten"
+msgstr "_Netwerk inschakelen"
 
 # Wireless gebruiken
 #. 'Enable Wireless' item
-#: ../src/applet.c:1321
+#: ../src/applet.c:2028
 msgid "Enable _Wireless"
-msgstr "_Draadloos netwerk aanzetten"
+msgstr "_Draadloos netwerk inschakelen"
+
+# gebruiken/aanzetten/inschakelen
+#. 'Enable Mobile Broadband' item
+#: ../src/applet.c:2037
+msgid "Enable _Mobile Broadband"
+msgstr "_Mobiel breedband inschakelen"
+
+#. 'Enable WiMAX Mobile Broadband' item
+#: ../src/applet.c:2046
+msgid "Enable WiMA_X Mobile Broadband"
+msgstr "WiMA_X Mobiel breedband inschakelen"
+
+#. Toggle notifications item
+#: ../src/applet.c:2057
+msgid "Enable N_otifications"
+msgstr "_Meldingen aanzetten"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1332
+#: ../src/applet.c:2068
 msgid "Connection _Information"
 msgstr "_Verbindingsinformatie"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1342
+#: ../src/applet.c:2078
 msgid "Edit Connections..."
 msgstr "Verbindingen bewerken…"
 
 #. Help item
-#: ../src/applet.c:1356
+#: ../src/applet.c:2092
 msgid "_Help"
 msgstr "_Hulp"
 
 #. About item
-#: ../src/applet.c:1365
+#: ../src/applet.c:2101
 msgid "_About"
 msgstr "I_nfo"
 
-#: ../src/applet.c:1530
+#: ../src/applet.c:2278
 msgid "Disconnected"
 msgstr "Verbinding verbroken"
 
 # "the connection has been disconnected" is een contaminatie
-#: ../src/applet.c:1531
+#: ../src/applet.c:2279
 msgid "The network connection has been disconnected."
 msgstr "De verbinding met het netwerk is verbroken."
 
+#: ../src/applet.c:2460
+#, c-format
+msgid "Preparing network connection '%s'..."
+msgstr "Voorbereiden van netwerkverbinding ‘%s’…"
+
+#: ../src/applet.c:2463
+#, c-format
+msgid "User authentication required for network connection '%s'..."
+msgstr "Aanmeldingscontrole vereist voor netwerkverbinding ‘%s’…"
+
+# is actief/actief
+#: ../src/applet.c:2469
+#, c-format
+msgid "Network connection '%s' active"
+msgstr "Netwerkverbinding ‘%s’ actief"
+
+#: ../src/applet.c:2547
+#, c-format
+msgid "Starting VPN connection '%s'..."
+msgstr "Starten van VPN-verbinding ‘%s’…"
+
+#: ../src/applet.c:2550
+#, c-format
+msgid "User authentication required for VPN connection '%s'..."
+msgstr "Aanmeldingscontrole vereist voor VPN-verbinding ‘%s’…"
+
+#: ../src/applet.c:2553
+#, c-format
+msgid "Requesting a VPN address for '%s'..."
+msgstr "Er wordt een VPN-adres aangevraagd voor ‘%s’…"
+
+# actief/ingesteld/in werking
+# met/via
+#: ../src/applet.c:2556
+#, c-format
+msgid "VPN connection '%s' active"
+msgstr "VPN-verbinding ‘%s’ actief"
+
 # geen netwerk/netwerkverbinding
-#: ../src/applet.c:1722
+#: ../src/applet.c:2595
 msgid "No network connection"
 msgstr "Geen netwerkverbinding"
 
-# het kan het glade-bestand niet vinden.
-#: ../src/applet.c:2028
-msgid ""
-"The NetworkManager applet could not find some required resources.  It cannot "
-"continue.\n"
-msgstr ""
-"Het NetworkManager-applet kon bepaalde vereiste bronnen niet vinden.  Het "
-"zal nu worden afgesloten.\n"
-
-#: ../src/applet.c:2171
+#: ../src/applet.c:3246
 msgid "NetworkManager Applet"
 msgstr "NetworkManager applet"
 
-#: ../src/applet.c:2176 ../src/wired-dialog.c:103
-msgid ""
-"The NetworkManager Applet could not find some required resources (the glade "
-"file was not found)."
-msgstr ""
-"Het NetworkManager-applet kon bepaalde vereiste bronnen niet vinden (het "
-"glade-bestand is niet gevonden)."
+# openen/ontgrendelen
+#: ../src/gsm-unlock.ui.h:1
+msgid "_Unlock"
+msgstr "_Ontgrendelen"
 
-#: ../src/applet.glade.h:1 ../src/connection-editor/ce-mobile-wizard.glade.h:1
-#: ../src/connection-editor/ce-vpn-wizard.glade.h:1
-msgid " "
-msgstr " "
+#: ../src/info.ui.h:1
+msgid "Active Network Connections"
+msgstr "Actieve netwerkverbindingen"
 
-#: ../src/applet.glade.h:2
-msgid ""
-"1 (Default)\n"
-"2\n"
-"3\n"
-"4"
-msgstr ""
-"1 (Standaard)\n"
-"2\n"
-"3\n"
-"4"
-
-#: ../src/applet.glade.h:6
-msgid "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
-msgstr ""
-"<span size=\"larger\" weight=\"bold\">Actieve netwerkverbindingen</span>"
-
-#: ../src/applet.glade.h:7
-msgid "Anonymous Identity:"
-msgstr "Anonieme identiteit:"
-
-# identiteitscontrole/aanmeldingscontrole
-#: ../src/applet.glade.h:8
-msgid "Authentication:"
-msgstr "Aanmeldingscontrole:"
-
-#: ../src/applet.glade.h:9
-msgid "CA Certificate:"
-msgstr "CA-certificaat:"
-
-#: ../src/applet.glade.h:10
-msgid "C_onnect"
-msgstr "_Verbinden"
-
-#: ../src/applet.glade.h:11
+#: ../src/info.ui.h:2
 msgid "Connection Information"
 msgstr "Verbindingsinformatie"
 
-#: ../src/applet.glade.h:12
-msgid "Connection:"
-msgstr "Verbinding:"
+#: ../src/wifi.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
+#: ../src/wireless-security/eap-method-peap.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:1
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:1
+#: ../src/wireless-security/ws-wpa-eap.ui.h:1
+msgid " "
+msgstr " "
 
-#: ../src/applet.glade.h:13
-msgid "Don't warn me again"
-msgstr "Geen waarschuwing meer geven"
-
-#: ../src/applet.glade.h:14
-msgid "Identity:"
-msgstr "Identiteit:"
-
-#: ../src/applet.glade.h:15
-msgid "Inner Authentication:"
-msgstr "Interne aanmeldingscontrole:"
-
-#: ../src/applet.glade.h:16
-msgid "Key:"
-msgstr "Sleutel:"
-
-#: ../src/applet.glade.h:17
-msgid "No"
-msgstr "Nee"
-
-#: ../src/applet.glade.h:18
-msgid ""
-"Open System\n"
-"Shared Key"
-msgstr ""
-"Open systeem\n"
-"gedeelde sleutel"
-
-#: ../src/applet.glade.h:20
-msgid "Other Wireless Network..."
-msgstr "Ander draadloos netwerk…"
-
-#: ../src/applet.glade.h:21
-msgid "PEAP Version:"
-msgstr "PEAP-versie:"
-
-#: ../src/applet.glade.h:23
-msgid "Private Key Password:"
-msgstr "Privé sleutelwachtwoord:"
-
-#: ../src/applet.glade.h:24
-msgid "Private Key:"
-msgstr "Privésleutel:"
-
-#: ../src/applet.glade.h:25
-msgid "Select A File"
-msgstr "Selecteer een bestand"
-
-#: ../src/applet.glade.h:26
-msgid "Show key"
-msgstr "Sleutel tonen"
-
-#: ../src/applet.glade.h:27 ../src/connection-editor/ce-page-dsl.glade.h:3
-msgid "Show password"
-msgstr "Wachtwoord tonen"
-
-#: ../src/applet.glade.h:28 ../src/connection-editor/ce-page-mobile.glade.h:16
-msgid "Type:"
-msgstr "Type:"
-
-#: ../src/applet.glade.h:29
-msgid "User Certificate:"
-msgstr "Gebruikerscertificaat:"
-
-# inlognaam/gebruikersnaam
-#: ../src/applet.glade.h:30
-msgid "User Name:"
-msgstr "Gebruikersnaam:"
-
-#: ../src/applet.glade.h:31
-msgid ""
-"Version 0\n"
-"Version 1"
-msgstr ""
-"Versie 0\n"
-"Versie 1"
-
-#: ../src/applet.glade.h:33
-msgid "WEP Index:"
-msgstr "WEP-index:"
+#: ../src/wifi.ui.h:2
+msgid "Co_nnection:"
+msgstr "_Verbinding:"
 
 # draadloze adapter is een adapter zonder draadjes
 # bedoeld wordt een adapter voor draadloos netwerken
-#: ../src/applet.glade.h:34
+#: ../src/wifi.ui.h:3
 msgid "Wireless _adapter:"
 msgstr "Draadloos _adapter:"
 
-#: ../src/applet.glade.h:35
-msgid "Yes"
-msgstr "Ja"
-
-#: ../src/applet.glade.h:36
-msgid "_Network Name:"
+#: ../src/wifi.ui.h:4 ../src/wired-8021x.ui.h:2
+msgid "_Network name:"
 msgstr "_Netwerknaam:"
 
 # Bedoeld wordt beveiliging van het draadloos netwerk.
 # niet dat de beveiling draadloos is.
-#: ../src/applet.glade.h:37
-msgid "_Wireless Security:"
+#: ../src/wifi.ui.h:5
+msgid "_Wireless security:"
 msgstr "_Draadloos beveiliging:"
 
-#: ../src/applet.glade.h:38
-msgid "alert text"
-msgstr "attentietekst"
+#: ../src/wired-8021x.ui.h:1 ../src/wired-dialog.c:104
+msgid "Wired 802.1X authentication"
+msgstr "Bekabeld 802.1X aanmeldingscontrole"
 
-#: ../src/connection-editor/ce-mobile-wizard.glade.h:2
-msgid ""
-"<span weight=\"bold\" size=\"larger\">Choose a Mobile Broadband Connection</"
-"span>\n"
-"\n"
-"Select or connect the mobile broadband device you wish to use for the new "
-"connection.  If the device is not availabe, you may select a generic "
-"connection type."
-msgstr ""
-"<span weight=\"bold\" size=\"larger\">Kies een mobiel breedbandverbinding</"
-"span>\n"
-"\n"
-"Selecteer of verbind het mobiel breedbandapparaat dat u wilt gebruiken voor "
-"de nieuwe verbinding.  Wanneer het apparaat niet beschikbaar is kunt u een "
-"algemeen verbindingstype selecteren."
-
-#: ../src/connection-editor/ce-page.c:52
+#: ../src/connection-editor/ce-page.c:67
 msgid "automatic"
 msgstr "automatisch"
 
+# technische term
+#: ../src/connection-editor/ce-page.c:294
+msgid "Failed to update connection secrets due to an unknown error."
+msgstr "Kon verbindingsgeheimen niet bijwerken vanwege een onbekende fout."
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:1
+#: ../src/connection-editor/ce-ip6-routes.ui.h:1
+#: ../src/connection-editor/ce-page-ip4.ui.h:6
+#: ../src/connection-editor/ce-page-ip6.ui.h:5
+msgid ""
+"IP addresses identify your computer on the network.  Click the \"Add\" "
+"button to add an IP address."
+msgstr ""
+"IP-adressen identificeren uw computer op het netwerk. Klik op de knop "
+"“Toevoegen” om een IP-adres toe te voegen."
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:2
+#: ../src/connection-editor/ce-ip6-routes.ui.h:2
+msgid ""
+"If enabled, this connection will never be used as the default network "
+"connection."
+msgstr ""
+"Indien aangevinkt zal deze verbinding nooit als standaard netwerkverbinding "
+"worden gebruikt."
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:3
+#: ../src/connection-editor/ce-ip6-routes.ui.h:3
+msgid "Ig_nore automatically obtained routes"
+msgstr "A_utomatisch verkregen routes negeren"
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:4
+#: ../src/connection-editor/ce-ip6-routes.ui.h:4
+msgid "Use this c_onnection only for resources on its network"
+msgstr ""
+"Deze _verbinding alleen gebruiken voor bronnen binnen haar eigen netwerk"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:1
+#: ../src/wireless-security/eap-method-leap.ui.h:1
+#: ../src/wireless-security/eap-method-simple.ui.h:2
+#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/ws-leap.ui.h:1
+#: ../src/wireless-security/ws-wpa-psk.ui.h:1
+msgid "Sho_w password"
+msgstr "Wachtwoord _tonen"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:2
+#: ../src/connection-editor/ce-page-mobile.ui.h:15
+#: ../src/wireless-security/eap-method-leap.ui.h:2
+#: ../src/wireless-security/eap-method-simple.ui.h:3
+#: ../src/wireless-security/ws-leap.ui.h:2
+#: ../src/wireless-security/ws-wpa-psk.ui.h:2
+msgid "_Password:"
+msgstr "_Wachtwoord:"
+
 # dienst/service
-#: ../src/connection-editor/ce-page-dsl.glade.h:2
-msgid "Service:"
-msgstr "Service:"
+#: ../src/connection-editor/ce-page-dsl.ui.h:3
+msgid "_Service:"
+msgstr "_Service:"
 
 # inlognaam/gebruikersnaam
-#: ../src/connection-editor/ce-page-dsl.glade.h:4
-#: ../src/connection-editor/ce-page-mobile.glade.h:17
-msgid "Username:"
-msgstr "Gebruikersnaam:"
+#: ../src/connection-editor/ce-page-dsl.ui.h:4
+#: ../src/connection-editor/ce-page-mobile.ui.h:17
+#: ../src/wireless-security/eap-method-leap.ui.h:3
+#: ../src/wireless-security/eap-method-simple.ui.h:4
+#: ../src/wireless-security/ws-leap.ui.h:3
+msgid "_Username:"
+msgstr "_Gebruikersnaam:"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:1
-msgid "<b>Addresses</b>"
-msgstr "<b>Adressen</b>"
+#: ../src/connection-editor/ce-page-ip4.ui.h:1
+#: ../src/connection-editor/ce-page-ip6.ui.h:1
+msgid "Addresses"
+msgstr "Adressen"
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:2
+#: ../src/connection-editor/ce-page-ip4.ui.h:2
+#: ../src/connection-editor/ce-page-ip6.ui.h:2
+#: ../src/connection-editor/ce-page-wired.ui.h:7
+#: ../src/connection-editor/ce-page-wireless.ui.h:3
+#: ../src/connection-editor/page-ip6.c:142
+#: ../src/wireless-security/eap-method-peap.ui.h:3
+msgid "Automatic"
+msgstr "Automatisch"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:3
+#: ../src/connection-editor/ce-page-ip6.ui.h:3
+msgid "Automatic with manual DNS settings"
+msgstr "Automatisch met handmatige DNS-instellingen"
+
+#: ../src/connection-editor/ce-page-ip4.ui.h:4
+msgid "D_HCP client ID:"
+msgstr "D_HCP client-ID:"
+
+# opzoeken/oplossen
+#: ../src/connection-editor/ce-page-ip4.ui.h:5
+#: ../src/connection-editor/ce-page-ip6.ui.h:4
 msgid ""
-"Automatic\n"
-"Automatic with manual DNS settings\n"
-"Manual\n"
-"Link-Local\n"
-"Shared to other computers"
+"Domains used when resolving host names. Use commas to separate multiple "
+"domains."
 msgstr ""
-"Automatisch\n"
-"Automatisch met eigen DNS-instellingen\n"
-"Handmatig\n"
-"Link-Local\n"
-"Gedeeld met andere computers"
+"Domeinen die gebruikt worden bij het opzoeken van hostnamen. Gebruik komma's "
+"om domeinen te scheiden."
 
-#: ../src/connection-editor/ce-page-ip4.glade.h:7
-msgid "DHCP Client ID:"
-msgstr "DHCP client-ID:"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:8
-msgid "DNS Servers:"
-msgstr "DNS-servers:"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:9
-msgid "Ignore automatically obtained routes"
-msgstr "Automatisch verkregen routes negeren"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:10
-msgid "Method:"
-msgstr "Methode:"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:11
-msgid "Routes..."
-msgstr "Routes…"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:12
-msgid "Search Domains:"
-msgstr "Zoekdomeinen:"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:13
-msgid "gtk-cancel"
-msgstr "gtk-cancel"
-
-#: ../src/connection-editor/ce-page-ip4.glade.h:14
-msgid "gtk-ok"
-msgstr "gtk-ok"
-
-#: ../src/connection-editor/ce-page-mobile.glade.h:1
-msgid "<b>Advanced</b>"
-msgstr "<b>Geavanceerd</b>"
-
-# Basis/Eenvoudig
-#: ../src/connection-editor/ce-page-mobile.glade.h:2
-msgid "<b>Basic</b>"
-msgstr "<b>Eenvoudig</b>"
-
-#: ../src/connection-editor/ce-page-mobile.glade.h:3
-msgid "APN:"
-msgstr "APN:"
-
-# Type: Elk|GPRS|GSM|Bij voorkeur GSM
-#: ../src/connection-editor/ce-page-mobile.glade.h:4
+#: ../src/connection-editor/ce-page-ip4.ui.h:7
+#: ../src/connection-editor/ce-page-ip6.ui.h:6
 msgid ""
-"Any\n"
-"GPRS\n"
-"GSM\n"
-"Prefer GPRS\n"
-"Prefer GSM"
+"IP addresses of domain name servers used to resolve host names. Use commas "
+"to separate multiple domain name server addresses."
 msgstr ""
-"Elk\n"
-"GPRS\n"
-"GSM\n"
-"Bij voorkeur GPRS\n"
-"Bij voorkeur GSM"
+"IP-adressen van DNS-servers die gebruikt worden bij het opzoeken van "
+"hostnamen. Gebruik komma's om adressen te scheiden."
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:9
-msgid "Band:"
-msgstr "Band:"
+#: ../src/connection-editor/ce-page-ip4.ui.h:8
+#: ../src/connection-editor/ce-page-ip6.ui.h:7
+msgid "Link-Local"
+msgstr "Link-Local"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:10
-msgid "Network:"
-msgstr "Netwerk:"
+#: ../src/connection-editor/ce-page-ip4.ui.h:9
+#: ../src/connection-editor/ce-page-ip6.ui.h:8
+#: ../src/connection-editor/page-ip4.c:169
+#: ../src/connection-editor/page-ip6.c:191
+msgid "Manual"
+msgstr "Handmatig"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:11
-msgid "Number:"
-msgstr "Nummer:"
+#: ../src/connection-editor/ce-page-ip4.ui.h:10
+msgid "Require IPv4 addressing for this connection to complete"
+msgstr "Vereist IPv4-addressering om deze verbinding te voltooien"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:12
-msgid "PIN:"
-msgstr "PIN:"
+#: ../src/connection-editor/ce-page-ip4.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#: ../src/connection-editor/page-ip4.c:187
+#: ../src/connection-editor/page-ip6.c:211
+msgid "Shared to other computers"
+msgstr "Gedeeld met andere computers"
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:13
-msgid "PUK:"
-msgstr "PUK:"
+# client identifier, technische term
+#: ../src/connection-editor/ce-page-ip4.ui.h:12
+msgid ""
+"The DHCP client identifier allows the network administrator to customize "
+"your computer's configuration.  If you wish to use a DHCP client identifier, "
+"enter it here."
+msgstr ""
+"De “DHCP client identifier” geeft de netwerkbeheerder de mogelijkheid om een "
+"aangepaste configuratie voor uw computer te maken. Indien u een DHCP client "
+"identifier gebruiken wilt, voer deze dan hier in. "
 
-#: ../src/connection-editor/ce-page-mobile.glade.h:15
-msgid "Show passwords"
-msgstr "Wachtwoorden tonen"
+# niet ideale vertaling
+#: ../src/connection-editor/ce-page-ip4.ui.h:13
+msgid ""
+"When connecting to IPv6-capable networks, allows the connection to complete "
+"if IPv4 configuration fails but IPv6 configuration succeeds."
+msgstr ""
+"Indien verbonden wordt met een netwerk dat IPv6 ondersteunt; geeft de "
+"verbinding de mogelijkheid te voltooien wanneer de IPv4 configuratie mislukt "
+"maar IPv6 configuratie lukt."
 
-# identiteitscontrole/aanmeldingscontrole
-#: ../src/connection-editor/ce-page-ppp.glade.h:1
-msgid "<b>Authentication</b>"
-msgstr "<b>Aanmeldingscontrole</b>"
+#: ../src/connection-editor/ce-page-ip4.ui.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
+msgid "_DNS servers:"
+msgstr "_DNS-servers:"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:2
-msgid "<b>Compression</b>"
-msgstr "<b>Compressie</b>"
+#: ../src/connection-editor/ce-page-ip4.ui.h:15
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
+msgid "_Method:"
+msgstr "_Methode:"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:3
-msgid "<b>Echo</b>"
-msgstr "<b>Echo</b>"
+#: ../src/connection-editor/ce-page-ip4.ui.h:16
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
+msgid "_Routes…"
+msgstr "_Routes…"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:4
-msgid "Allow BSD data compression"
-msgstr "BSD-datacompressie toestaan"
+#: ../src/connection-editor/ce-page-ip4.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
+msgid "_Search domains:"
+msgstr "_Zoekdomeinen:"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:5
-msgid "Allow Deflate data compression"
-msgstr "Deflate-datacompressie toestaan"
+#: ../src/connection-editor/ce-page-ip6.ui.h:9
+msgid "Require IPv6 addressing for this connection to complete"
+msgstr "Vereist IPv6-addressering om deze verbinding te voltooien"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:6
-msgid "Require 128-bit encryption"
-msgstr "128-bit versleuteling vereisen"
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
+msgid ""
+"When connecting to IPv4-capable networks, allows the connection to complete "
+"if IPv6 configuration fails but IPv4 configuration succeeds."
+msgstr ""
+"Indien verbonden wordt met een netwerk dat IPv4 ondersteunt; geeft de "
+"verbinding de mogelijkheid te voltooien wanneer de IPv6 configuratie mislukt "
+"maar IPv4 configuratie lukt."
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:7
-msgid "Send PPP echo packets"
-msgstr "PPP-echopakketten versturen"
+#: ../src/connection-editor/ce-page-mobile.ui.h:1
+msgid "2G (GPRS/EDGE)"
+msgstr "2G (GPRS/EDGE)"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:8
-msgid "Use Authentication"
-msgstr "Aanmeldingscontrole gebruiken"
+#: ../src/connection-editor/ce-page-mobile.ui.h:2
+msgid "3G (UMTS/HSPA)"
+msgstr "3G (UMTS/HSPA)"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:9
-msgid "Use Point-to-Point Encryption (MPPE)"
-msgstr "Point-to-Point versleuteling gebruiken (MPPE)"
+#: ../src/connection-editor/ce-page-mobile.ui.h:3
+msgid "Advanced"
+msgstr "Geavanceerd"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:10
-msgid "Use Stateful MPPE"
-msgstr "Stateful MPPE gebruiken"
+#: ../src/connection-editor/ce-page-mobile.ui.h:4
+msgid "Allow roaming if home network is not available"
+msgstr "Roaming toestaan indien het thuisnetwerk niet beschikbaar is"
 
-#: ../src/connection-editor/ce-page-ppp.glade.h:11
-msgid "Use TCP header compression"
-msgstr "TCP header compression gebruiken"
+#: ../src/connection-editor/ce-page-mobile.ui.h:5
+msgid "Any"
+msgstr "Elke"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:1
+# simple/eenvoudig/kort
+#: ../src/connection-editor/ce-page-mobile.ui.h:6
+msgid "Basic"
+msgstr "Simpel"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:7
+msgid "Change..."
+msgstr "Wijzigen…"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:8
+msgid "N_etwork ID:"
+msgstr "N_etwerk ID:"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:9
+msgid "Nu_mber:"
+msgstr "Nu_mmer:"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:10
+msgid "PI_N:"
+msgstr "PI_N:"
+
+# prefereren/voorkeur voor/bij voorkeur
+#: ../src/connection-editor/ce-page-mobile.ui.h:11
+msgid "Prefer 2G (GPRS/EDGE)"
+msgstr "Bij voorkeur 2G (GPRS/EDGE)"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:12
+msgid "Prefer 3G (UMTS/HSPA)"
+msgstr "Bij voorkeur 3G (UMTS/HSPA)"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:13
+msgid "Sho_w passwords"
+msgstr "Wachtwoorden _tonen"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:14
+msgid "_APN:"
+msgstr "_APN:"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:16
+#: ../src/wireless-security/ws-wpa-psk.ui.h:3
+msgid "_Type:"
+msgstr "_Type:"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:1
+msgid "Allow _BSD data compression"
+msgstr "_BSD-datacompressie toestaan"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:2
+msgid "Allow _Deflate data compression"
+msgstr "_Deflate-datacompressie toestaan"
+
+# ondersteunde/toegstane
+# ondersteunde is vertaling in de geest.
+# Methodes van aanmeldingscontrole.
+#: ../src/connection-editor/ce-page-ppp.ui.h:3
+msgid "Allowed methods:"
+msgstr "Ondersteunde methodes:"
+
+# identiteitscontrole/aanmeldingscontrole/aanmelding
+#: ../src/connection-editor/ce-page-ppp.ui.h:4
+msgid "Authentication"
+msgstr "Aanmeldingscontrole"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:5
+msgid "Compression"
+msgstr "Compressie"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:6
+msgid "Configure _Methods…"
+msgstr "_Methodes configureren…"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:7
+msgid "Echo"
+msgstr "Echo"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:8
+msgid "Send PPP _echo packets"
+msgstr "PPP-_echopakketten versturen"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:9
+msgid "Use TCP _header compression"
+msgstr "TCP _header compression gebruiken"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:10
+msgid "Use _stateful MPPE"
+msgstr "_Stateful MPPE gebruiken"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:11
+msgid "_Require 128-bit encryption"
+msgstr "128-_bit versleuteling vereisen"
+
+#: ../src/connection-editor/ce-page-ppp.ui.h:12
+msgid "_Use point-to-point encryption (MPPE)"
+msgstr "_Point-to-Point versleuteling gebruiken (MPPE)"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:1
+msgid "1 Gb/s"
+msgstr "1 Gb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:2
+msgid "10 Gb/s"
+msgstr "10 Gb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:3
+msgid "10 Mb/s"
+msgstr "10 Mb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:4
+msgid "100 Mb/s"
+msgstr "100 Mb/s"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:5
+msgid "Attachment Unit Interface (AUI)"
+msgstr "Attachment Unit Interface (AUI)"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:6
 msgid "Aut_onegotiate"
 msgstr "Automatisch _onderhandelen"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:2
-msgid ""
-"Automatic\n"
-"10 Mb/s\n"
-"100 Mb/s\n"
-"1 Gb/s\n"
-"10 Gb/s"
-msgstr ""
-"Automatisch\n"
-"10 Mb/s\n"
-"100 Mb/s\n"
-"1 Gb/s\n"
-"10 Gb/s"
+#: ../src/connection-editor/ce-page-wired.ui.h:8
+msgid "BNC"
+msgstr "BNC"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:7
-msgid ""
-"Automatic\n"
-"Twisted Pair (TP)\n"
-"Attachment Unit Interface (AUI)\n"
-"BNC\n"
-"Media Independent Interface (MII)"
-msgstr ""
-"Automatisch\n"
-"Twisted Pair (TP)\n"
-"Attachment Unit Interface (AUI)\n"
-"BNC\n"
-"Media Independent Interface (MII)"
-
-#: ../src/connection-editor/ce-page-wired.glade.h:12
+#: ../src/connection-editor/ce-page-wired.ui.h:9
 msgid "Full duple_x"
 msgstr "Volledig duple_x"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:13
-#: ../src/connection-editor/ce-page-wireless.glade.h:8
+#: ../src/connection-editor/ce-page-wired.ui.h:10
+#: ../src/connection-editor/ce-page-wireless.ui.h:8
 msgid "MT_U:"
 msgstr "MT_U:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:14
-#: ../src/connection-editor/ce-page-wireless.glade.h:13
-msgid "_MAC address:"
-msgstr "_MAC-adres:"
+#: ../src/connection-editor/ce-page-wired.ui.h:11
+msgid "Media Independent Interface (MII)"
+msgstr "Media Independent Interface (MII)"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:15
+#: ../src/connection-editor/ce-page-wired.ui.h:12
+#: ../src/connection-editor/ce-page-wireless.ui.h:11
+msgid ""
+"The MAC address entered here will be used as hardware address for the "
+"network device this connection is activated on.  This feature is known as "
+"MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Het ingevoerde MAC-adres zal gebruikt worden als het hardware-adres voor het "
+"netwerkapparaat waarop deze verbinding is geactiveerd. Dit wordt “MAC "
+"cloning” of “spoofing” genoemd. Voorbeeld: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:13
+#: ../src/connection-editor/ce-page-wireless.ui.h:12
+msgid ""
+"This option locks this connection to the network device specified by its "
+"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Deze optie vergrendelt deze verbinding aan het netwerkapparaat dat "
+"gekenmerkt wordt door het vaste MAC-adress dat hier gegeven wordt. "
+"Voorbeeld: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:14
+msgid "Twisted Pair (TP)"
+msgstr "Twisted Pair (TP)"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:16
+msgid "_Cloned MAC address:"
+msgstr "Ge_kloond MAC-adres:"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:16
+#: ../src/connection-editor/ce-page-wireless.ui.h:17
+msgid "_Device MAC address:"
+msgstr "A_pparaat MAC-adres:"
+
+#: ../src/connection-editor/ce-page-wired.ui.h:17
 msgid "_Port:"
 msgstr "_Poort:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:16
+#: ../src/connection-editor/ce-page-wired.ui.h:18
 msgid "_Speed:"
 msgstr "_Snelheid:"
 
-#: ../src/connection-editor/ce-page-wired.glade.h:17
-#: ../src/connection-editor/ce-page-wireless.glade.h:16
+#: ../src/connection-editor/ce-page-wired.ui.h:19
+#: ../src/connection-editor/ce-page-wireless.ui.h:20
 msgid "bytes"
 msgstr "bytes"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:1
-msgid ""
-"Automatic\n"
-"A (5 GHz)\n"
-"B/G (2.4 GHz)"
-msgstr ""
-"Automatisch\n"
-"A (5 GHz)\n"
-"B/G (2.4 GHz)"
+#: ../src/connection-editor/ce-page-wireless.ui.h:1
+msgid "A (5 GHz)"
+msgstr "A (5 GHz)"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:4
+#: ../src/connection-editor/ce-page-wireless.ui.h:2
+msgid "Ad-hoc"
+msgstr "Ad-hoc"
+
+#: ../src/connection-editor/ce-page-wireless.ui.h:4
+msgid "B/G (2.4 GHz)"
+msgstr "B/G (2.4 GHz)"
+
+#: ../src/connection-editor/ce-page-wireless.ui.h:5
 msgid "Ban_d:"
 msgstr "Ban_d:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:5
+#: ../src/connection-editor/ce-page-wireless.ui.h:6
 msgid "C_hannel:"
 msgstr "_Kanaal:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:6
-msgid ""
-"Infrastructure\n"
-"Adhoc"
-msgstr ""
-"Infrastructuur\n"
-"Adhoc"
+#: ../src/connection-editor/ce-page-wireless.ui.h:7
+msgid "Infrastructure"
+msgstr "Infrastructuur"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:9
+#: ../src/connection-editor/ce-page-wireless.ui.h:9
 msgid "M_ode:"
 msgstr "M_odus:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:10
+#: ../src/connection-editor/ce-page-wireless.ui.h:10
 msgid "Mb/s"
 msgstr "Mb/s"
 
+#: ../src/connection-editor/ce-page-wireless.ui.h:13
+msgid ""
+"This option locks this connection to the wireless access point (AP) "
+"specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Deze optie vergrendelt deze verbinding aan het draadloze “access point” (AP) "
+"dat gekenmerkt wordt door de BSSID die hier gegeven wordt. Voorbeeld "
+"00:11:22:33:44:55"
+
 # signaalsterkte
-#: ../src/connection-editor/ce-page-wireless.glade.h:11
+#: ../src/connection-editor/ce-page-wireless.ui.h:14
 msgid "Transmission po_wer:"
 msgstr "Si_gnaalsterkte:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:12
+#: ../src/connection-editor/ce-page-wireless.ui.h:15
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
 # bandbreedte/snelheid/frequentie
 # B/G
-#: ../src/connection-editor/ce-page-wireless.glade.h:14
+#: ../src/connection-editor/ce-page-wireless.ui.h:18
 msgid "_Rate:"
 msgstr "S_nelheid"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:19
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/ce-page-wireless.glade.h:17
+#: ../src/connection-editor/ce-page-wireless.ui.h:21
 msgid "mW"
 msgstr "mW"
 
-#: ../src/connection-editor/ce-vpn-wizard.glade.h:2
+# Bedoeld wordt beveiliging van het draadloos netwerk.
+# niet dat de beveiling draadloos is.
+#: ../src/connection-editor/ce-page-wireless-security.ui.h:1
+msgid "_Security:"
+msgstr "_Beveiliging:"
+
+# ondersteunde types/methodes van aanmeldingscontrole
+# aanmeldingsmethodes
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
+msgid "Allowed Authentication Methods"
+msgstr "Ondersteunde aanmeldingsmethodes"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
+msgid "C_HAP"
+msgstr "C_HAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:3
+msgid "Challenge Handshake Authentication Protocol"
+msgstr "Challenge Handshake Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:4
+msgid "Extensible Authentication Protocol"
+msgstr "Extensible Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:5
 msgid ""
-"<span weight=\"bold\" size=\"larger\">Choose a VPN Connection Type</span>\n"
-"\n"
+"In most cases, the provider's PPP servers will support all authentication "
+"methods.  If connections fail, try disabling support for some methods."
+msgstr ""
+"In de meeste gevallen zullen de PPP-servers van de provider alle "
+"aanmeldingsmethodes ondersteunen. Wanneer er problemen zijn bij verbinden, "
+"probeer dan ondersteuning voor bepaalde methodes uit te schakelen. "
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:6
+msgid "MSCHAP v_2"
+msgstr "MSCHAP v_2"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:7
+msgid "Microsoft Challenge Handshake Authentication Protocol"
+msgstr "Microsoft Challenge Handshake Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:8
+msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
+msgstr "Microsoft Challenge Handshake Authentication Protocol version 2"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:9
+msgid "Password Authentication Protocol"
+msgstr "Password Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:10
+msgid "_EAP"
+msgstr "_EAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:11
+msgid "_MSCHAP"
+msgstr "_MSCHAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:12
+msgid "_PAP"
+msgstr "_PAP"
+
+# Kies een VPN-verbindingstype
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:2
+msgid "Choose a VPN Connection Type"
+msgstr "Een VPN-verbindingstype kiezen"
+
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:3
+msgid "Create…"
+msgstr "Aanmaken…"
+
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:4
+msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
 "not have the correct VPN plugin installed."
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">Kies een VPN-verbindingstype</span>\n"
-"\n"
-"Selecteer het type VPN dat u voor de nieuwe verbinding wilt gebruiken. "
+"Selecteer het type VPN dat u voor de nieuwe verbinding gebruiken wilt. "
 "Wanneer het gewenste type VPN-verbinding niet in de lijst voorkomt is de "
 "juiste VPN-plugin mogelijk niet geïnstalleerd."
 
-#: ../src/connection-editor/ip4-routes-dialog.c:261
-#: ../src/connection-editor/page-ip4.c:618
+#: ../src/connection-editor/ip4-routes-dialog.c:739
+#: ../src/connection-editor/ip6-routes-dialog.c:687
+#: ../src/connection-editor/page-ip4.c:901
+#: ../src/connection-editor/page-ip6.c:865
 msgid "Address"
 msgstr "Adres"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:276
-msgid "Prefix"
-msgstr "Prefix"
+#: ../src/connection-editor/ip4-routes-dialog.c:756
+#: ../src/connection-editor/page-ip4.c:918
+msgid "Netmask"
+msgstr "Netmask"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:291
-#: ../src/connection-editor/page-ip4.c:648
+#: ../src/connection-editor/ip4-routes-dialog.c:773
+#: ../src/connection-editor/ip6-routes-dialog.c:721
+#: ../src/connection-editor/page-ip4.c:935
+#: ../src/connection-editor/page-ip6.c:899
 msgid "Gateway"
 msgstr "Gateway"
 
 # metriek/metric
-#: ../src/connection-editor/ip4-routes-dialog.c:306
+#: ../src/connection-editor/ip4-routes-dialog.c:790
+#: ../src/connection-editor/ip6-routes-dialog.c:738
 msgid "Metric"
 msgstr "Metric"
 
-#: ../src/connection-editor/mobile-wizard.c:76
-msgid "Installed GSM device"
-msgstr "GSM-apparaat geïnstalleerd"
+#: ../src/connection-editor/ip6-routes-dialog.c:704
+#: ../src/connection-editor/page-ip6.c:882
+msgid "Prefix"
+msgstr "Prefix"
 
-#: ../src/connection-editor/mobile-wizard.c:87
-msgid "Installed CDMA device"
-msgstr "CDMA-apparaat geïnstalleerd"
-
-#: ../src/connection-editor/mobile-wizard.c:153
-msgid "Create a GSM connection"
-msgstr "Een GSM-verbinding aanmaken"
-
-#: ../src/connection-editor/mobile-wizard.c:154
-msgid "Create a CDMA connection"
-msgstr "Een CDMA-verbinding aanmaken"
-
-#: ../src/connection-editor/page-dsl.c:140
-#: ../src/connection-editor/nm-connection-editor.glade.h:4
-#: ../src/connection-editor/nm-connection-list.c:1487
+#: ../src/connection-editor/page-dsl.c:137
+#: ../src/connection-editor/nm-connection-editor.ui.h:4
+#: ../src/connection-editor/nm-connection-list.c:1448
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-ip4.c:108
+#: ../src/connection-editor/page-dsl.c:139
+msgid "Could not load DSL user interface."
+msgstr "Kon de DSL-gebruikersinterface niet laden."
+
+#: ../src/connection-editor/page-dsl.c:229
+#, c-format
+msgid "DSL connection %d"
+msgstr "DSL-verbinding %d"
+
+#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip6.c:132
 msgid "Automatic (VPN)"
 msgstr "Automatisch (VPN)"
 
 # enkel/alleen
-#: ../src/connection-editor/page-ip4.c:109
+#: ../src/connection-editor/page-ip4.c:134
+#: ../src/connection-editor/page-ip6.c:133
 msgid "Automatic (VPN) addresses only"
 msgstr "Automatisch, alleen VPN-adressen"
 
-#: ../src/connection-editor/page-ip4.c:113
+#: ../src/connection-editor/page-ip4.c:137
+#: ../src/connection-editor/page-ip6.c:136
 msgid "Automatic (PPP)"
 msgstr "Automatisch (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:114
+#: ../src/connection-editor/page-ip4.c:138
+#: ../src/connection-editor/page-ip6.c:137
 msgid "Automatic (PPP) addresses only"
 msgstr "Automatisch, alleen PPP-adressen"
 
-#: ../src/connection-editor/page-ip4.c:116
+#: ../src/connection-editor/page-ip4.c:140
+#: ../src/connection-editor/page-ip6.c:139
 msgid "Automatic (PPPoE)"
 msgstr "Automatisch (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:117
+#: ../src/connection-editor/page-ip4.c:141
+#: ../src/connection-editor/page-ip6.c:140
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Automatisch, alleen PPPoE-adressen"
 
-#: ../src/connection-editor/page-ip4.c:119
+#: ../src/connection-editor/page-ip4.c:143
 msgid "Automatic (DHCP)"
 msgstr "Automatisch (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:120
+#: ../src/connection-editor/page-ip4.c:144
 msgid "Automatic (DHCP) addresses only"
 msgstr "Automatisch, alleen DHCP-adressen"
 
-#: ../src/connection-editor/page-ip4.c:141
-msgid "Manual"
-msgstr "Handmatig"
-
-#: ../src/connection-editor/page-ip4.c:149
+#: ../src/connection-editor/page-ip4.c:181
+#: ../src/connection-editor/page-ip6.c:204
 msgid "Link-Local Only"
 msgstr "Alleen Link-Local"
 
-#: ../src/connection-editor/page-ip4.c:155
-msgid "Shared to other computers"
-msgstr "Gedeeld met andere computers"
+#: ../src/connection-editor/page-ip4.c:197
+msgid "Disabled"
+msgstr "Uitgezet"
 
-#: ../src/connection-editor/page-ip4.c:549
+#: ../src/connection-editor/page-ip4.c:832
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "IPv4-routes bewerken voor %s"
 
-#: ../src/connection-editor/page-ip4.c:588
+#: ../src/connection-editor/page-ip4.c:980
 msgid "IPv4 Settings"
-msgstr "IPv4 instellingen"
+msgstr "IPv4-instellingen"
 
-#: ../src/connection-editor/page-ip4.c:633
-msgid "Netmask"
-msgstr "Netmask"
+#: ../src/connection-editor/page-ip4.c:982
+msgid "Could not load IPv4 user interface."
+msgstr "Kon de IPv4-gebruikersinterface niet laden."
 
-#: ../src/connection-editor/page-mobile.c:264
-#: ../src/connection-editor/nm-connection-editor.glade.h:6
-#: ../src/connection-editor/nm-connection-list.c:1481
-msgid "Mobile Broadband"
-msgstr "Mobiel breedband"
+# enkel/alleen
+#: ../src/connection-editor/page-ip6.c:143
+msgid "Automatic, addresses only"
+msgstr "Automatisch, alleen adressen"
 
-#: ../src/connection-editor/page-ppp.c:128
-#: ../src/wireless-security/eap-method-ttls.c:308
-msgid "PAP"
-msgstr "PAP"
+#: ../src/connection-editor/page-ip6.c:155
+#: ../src/wireless-security/eap-method.c:285
+msgid "Ignore"
+msgstr "Negeren"
 
-#: ../src/connection-editor/page-ppp.c:129
-#: ../src/wireless-security/eap-method-ttls.c:353
-msgid "CHAP"
-msgstr "CHAP"
+#: ../src/connection-editor/page-ip6.c:179
+msgid "Automatic, DHCP only"
+msgstr "Automatisch, alleen DHCP"
 
-#: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-peap.c:309
-#: ../src/wireless-security/eap-method-ttls.c:338
-msgid "MSCHAPv2"
-msgstr "MSCHAPv2"
+#: ../src/connection-editor/page-ip6.c:796
+#, c-format
+msgid "Editing IPv6 routes for %s"
+msgstr "IPv6-routes bewerken voor %s"
 
-#: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:323
-msgid "MSCHAP"
-msgstr "MSCHAP"
+#: ../src/connection-editor/page-ip6.c:942
+msgid "IPv6 Settings"
+msgstr "IPv6-instellingen"
 
-#: ../src/connection-editor/page-ppp.c:132
+#: ../src/connection-editor/page-ip6.c:944
+msgid "Could not load IPv6 user interface."
+msgstr "Kon de IPv6-gebruikersinterface niet laden."
+
+#: ../src/connection-editor/page-mobile.c:376
+msgid "Could not load mobile broadband user interface."
+msgstr "Kon de mobiele breedband-gebruikersinterface niet laden."
+
+#: ../src/connection-editor/page-mobile.c:393
+msgid "Unsupported mobile broadband connection type."
+msgstr "Niet ondersteunde mobiele breedband verbindingstype."
+
+# geen letterlijke vertaling.
+#. Fall back to just asking for GSM vs. CDMA
+#: ../src/connection-editor/page-mobile.c:634
+msgid "Select Mobile Broadband Provider Type"
+msgstr "Selecteer verbindingstype voor mobiel breedband"
+
+#: ../src/connection-editor/page-mobile.c:661
+msgid ""
+"Select the technology your mobile broadband provider uses.  If you are "
+"unsure, ask your provider."
+msgstr ""
+"Selecteer de technologie die uw mobiele breedbandprovider gebruikt. Vraag "
+"het uw provider wanneer u het niet zeker weet."
+
+# GSM-gebaseerde/GSM-technologie
+#: ../src/connection-editor/page-mobile.c:666
+msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
+msgstr ""
+"Mijn provider gebruikt _GSM-technologie (bijv. GPRS, EDGE, UMTS, HSDPA)"
+
+#: ../src/connection-editor/page-mobile.c:673
+msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
+msgstr "Mijn provider gebruikt C_DMA-technologie (bijv. 1xRTT, EVDO)"
+
+#: ../src/connection-editor/page-ppp.c:134
 msgid "EAP"
 msgstr "EAP"
 
-#: ../src/connection-editor/page-ppp.c:199
-msgid "Point-to-Point Protocol (PPP)"
-msgstr "Point-to-Point Protocol (PPP)"
+#: ../src/connection-editor/page-ppp.c:135
+#: ../src/wireless-security/eap-method-ttls.c:228
+msgid "PAP"
+msgstr "PAP"
 
-#: ../src/connection-editor/page-vpn.c:69
-#: ../src/connection-editor/nm-connection-editor.glade.h:9
-#: ../src/connection-editor/nm-connection-list.c:1484
+#: ../src/connection-editor/page-ppp.c:136
+#: ../src/wireless-security/eap-method-ttls.c:276
+msgid "CHAP"
+msgstr "CHAP"
+
+#: ../src/connection-editor/page-ppp.c:137
+#: ../src/wireless-security/eap-method-peap.c:244
+#: ../src/wireless-security/eap-method-ttls.c:260
+msgid "MSCHAPv2"
+msgstr "MSCHAPv2"
+
+#: ../src/connection-editor/page-ppp.c:138
+#: ../src/wireless-security/eap-method-ttls.c:244
+msgid "MSCHAP"
+msgstr "MSCHAP"
+
+# niets/geen
+#. Translators: "none" refers to authentication methods
+#: ../src/connection-editor/page-ppp.c:141
+msgid "none"
+msgstr "geen"
+
+#: ../src/connection-editor/page-ppp.c:201
+#, c-format
+msgid "Editing PPP authentication methods for %s"
+msgstr "PPP-aanmeldingsmethodes bewerken voor %s"
+
+#: ../src/connection-editor/page-ppp.c:281
+msgid "PPP Settings"
+msgstr "PPP-instellingen"
+
+#: ../src/connection-editor/page-ppp.c:283
+msgid "Could not load PPP user interface."
+msgstr "Kon de PPP-gebruikersinterface niet laden."
+
+#: ../src/connection-editor/page-vpn.c:107
+#: ../src/connection-editor/nm-connection-editor.ui.h:8
+#: ../src/connection-editor/nm-connection-list.c:1444
 msgid "VPN"
 msgstr "VPN"
+
+#: ../src/connection-editor/page-vpn.c:109
+msgid "Could not load VPN user interface."
+msgstr "Kon de VPN-gebruikersinterface niet laden."
+
+#: ../src/connection-editor/page-vpn.c:124
+#, c-format
+msgid "Could not find VPN plugin service for '%s'."
+msgstr "Kon de VPN-plugin voor ‘%s’ niet vinden."
+
+#: ../src/connection-editor/page-vpn.c:218
+#: ../src/connection-editor/nm-connection-list.c:881
+#, c-format
+msgid "VPN connection %d"
+msgstr "VPN-verbinding %d"
 
 # kabeldraad/bekabeld/bedraad/draad
 # dit is de titel van het tabblad:
 # wired/wireless/VPN/GSM
-#: ../src/connection-editor/page-wired.c:175
-#: ../src/connection-editor/nm-connection-editor.glade.h:10
-#: ../src/connection-editor/nm-connection-list.c:1474
+#: ../src/connection-editor/page-wired.c:211
+#: ../src/connection-editor/nm-connection-editor.ui.h:9
+#: ../src/connection-editor/nm-connection-list.c:1432
 msgid "Wired"
 msgstr "Kabel"
 
-#: ../src/connection-editor/page-wired-security.c:81
+#: ../src/connection-editor/page-wired.c:213
+msgid "Could not load wired user interface."
+msgstr "Kon de kabelnetwerk-gebruikersinterface niet laden."
+
+# kabelnetwerk/kabelverbinding
+#: ../src/connection-editor/page-wired.c:348
+#, c-format
+msgid "Wired connection %d"
+msgstr "Kabelverbinding %d"
+
+#: ../src/connection-editor/page-wired-security.c:114
 msgid "802.1x Security"
 msgstr "802.1x beveiliging"
 
-#: ../src/connection-editor/page-wired-security.c:91
+# niet ideale vertaling
+#: ../src/connection-editor/page-wired-security.c:116
+msgid "Could not load Wired Security security user interface."
+msgstr "Kon gebruikersinterface voor kabelnetwerk-beveiliging niet laden."
+
+#: ../src/connection-editor/page-wired-security.c:130
 msgid "Use 802.1X security for this connection"
 msgstr "802.1X-beveiliging gebruiken voor de deze verbinding"
 
-#: ../src/connection-editor/page-wireless.c:144
-#: ../src/connection-editor/page-wireless.c:148
+#: ../src/connection-editor/page-wireless.c:147
+#: ../src/connection-editor/page-wireless.c:151
+#: ../src/connection-editor/page-wireless.c:172
+#, c-format
 msgid "default"
 msgstr "standaard"
 
-#: ../src/connection-editor/page-wireless.c:166
+#: ../src/connection-editor/page-wireless.c:176
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:317
-#: ../src/connection-editor/nm-connection-editor.glade.h:11
-#: ../src/connection-editor/nm-connection-list.c:1477
+#: ../src/connection-editor/page-wireless.c:396
+#: ../src/connection-editor/nm-connection-editor.ui.h:10
+#: ../src/connection-editor/nm-connection-list.c:1436
 msgid "Wireless"
 msgstr "Draadloos"
 
-# Bedoeld wordt beveiliging van het draadloos netwerk.
-# niet dat de beveiling draadloos is.
-#: ../src/connection-editor/page-wireless-security.c:210
-msgid "Wireless Security"
-msgstr "Draadloos beveiliging"
+#: ../src/connection-editor/page-wireless.c:398
+msgid "Could not load WiFi user interface."
+msgstr "Kon de WiFi-gebruikersinterface niet laden."
 
-#: ../src/connection-editor/page-wireless-security.c:255
-#: ../src/wireless-dialog.c:749
-msgid "WEP 40/128-bit Key"
-msgstr "WEP 40/128-bit Key"
+# draadloos verbinding
+#: ../src/connection-editor/page-wireless.c:562
+#, c-format
+msgid "Wireless connection %d"
+msgstr "Draadloze verbinding %d"
 
-#: ../src/connection-editor/page-wireless-security.c:264
-#: ../src/wireless-dialog.c:758
+#: ../src/connection-editor/page-wireless-security.c:263
+#: ../src/wireless-dialog.c:925
+msgid "WEP 40/128-bit Key (Hex or ASCII)"
+msgstr "WEP 40/128-bit sleutel (Hex or ASCII)"
+
+#: ../src/connection-editor/page-wireless-security.c:272
+#: ../src/wireless-dialog.c:934
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit wachtwoordzin"
 
-#: ../src/connection-editor/page-wireless-security.c:290
-#: ../src/wireless-dialog.c:788
+#: ../src/connection-editor/page-wireless-security.c:298
+#: ../src/wireless-dialog.c:964
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamisch WEP (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:304
-#: ../src/wireless-dialog.c:802
+#: ../src/connection-editor/page-wireless-security.c:312
+#: ../src/wireless-dialog.c:978
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 persoonlijk"
 
-#: ../src/connection-editor/page-wireless-security.c:318
-#: ../src/wireless-dialog.c:816
+#: ../src/connection-editor/page-wireless-security.c:326
+#: ../src/wireless-dialog.c:992
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 enterprise"
 
-#: ../src/connection-editor/nm-connection-editor.c:93
+#: ../src/connection-editor/page-wireless-security.c:359
+msgid "Could not load WiFi security user interface; missing WiFi setting."
+msgstr ""
+"Kon de WiFi- beveiligingsinterface niet laden; WiFi-instelling ontbreekt."
+
+# Bedoeld wordt beveiliging van het draadloos netwerk.
+# niet dat de beveiling draadloos is.
+#: ../src/connection-editor/page-wireless-security.c:368
+msgid "Wireless Security"
+msgstr "Draadloos beveiliging"
+
+#: ../src/connection-editor/page-wireless-security.c:370
+msgid "Could not load WiFi security user interface."
+msgstr "Kon de WiFi-beveiligingsinterface niet laden."
+
+#: ../src/connection-editor/nm-connection-editor.c:101
 #, c-format
 msgid "Editing %s"
 msgstr "%s bewerken"
 
-#: ../src/connection-editor/nm-connection-editor.c:97
-msgid "Editing unamed connection"
+#: ../src/connection-editor/nm-connection-editor.c:105
+msgid "Editing un-named connection"
 msgstr "Naamloze verbinding bewerken"
 
-#: ../src/connection-editor/nm-connection-editor.c:174
+#: ../src/connection-editor/nm-connection-editor.c:294
 msgid ""
-"The connection editor could not find some required resources (the "
-"NetworkManager applet glade file was not found)."
-msgstr ""
-"De verbindingseditor kon bepaalde vereiste bronnen niet vinden (het glade-"
-"bestand van het NetworkManager-applet is niet gevonden)."
-
-#: ../src/connection-editor/nm-connection-editor.c:187
-msgid ""
-"The connection editor could not find some required resources (the glade file "
+"The connection editor could not find some required resources (the .ui file "
 "was not found)."
 msgstr ""
-"Het verbindingseditor kon bepaalde vereiste bronnen niet vinden (het glade-"
+"Het verbindingseditor kon bepaalde vereiste bronnen niet vinden (het .ui-"
 "bestand is niet gevonden)."
+
+#: ../src/connection-editor/nm-connection-editor.c:397
+msgid "Error creating connection editor dialog."
+msgstr "Fout bij aanmaken van de verbindingseditor."
+
+#: ../src/connection-editor/nm-connection-editor.c:409
+msgid "_Save"
+msgstr "Op_slaan"
+
+#: ../src/connection-editor/nm-connection-editor.c:410
+msgid "Save any changes made to this connection."
+msgstr "De wijzigingen opslaan die aan deze verbinding zijn aangebracht."
+
+#: ../src/connection-editor/nm-connection-editor.c:411
+msgid "_Save..."
+msgstr "Op_slaan…"
+
+# voer uw [eigen/beheerder] wachtwoord in/aanmeldingscontrole
+# Beheerwachtwoord
+#: ../src/connection-editor/nm-connection-editor.c:412
+msgid "Authenticate to save this connection for all users of this machine."
+msgstr ""
+"Beheerwachtwoord invoeren om deze verbinding op te slaan voor alle "
+"gebruikers."
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:1
+msgid "Available to all users"
+msgstr "Beschikbaar voor alle gebruikers"
 
 # automatisch verbinding maken
 # de _A wordt voor Annuleren gebruikt. de _U voor MT_U
-#: ../src/connection-editor/nm-connection-editor.glade.h:1
+#: ../src/connection-editor/nm-connection-editor.ui.h:2
 msgid "Connect _automatically"
 msgstr "Automatisch _verbinden"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:2
-msgid "Connection Editor"
-msgstr "Verbindingseditor"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:3
+#: ../src/connection-editor/nm-connection-editor.ui.h:3
 msgid "Connection _name:"
 msgstr "_Naam verbinding:"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:5
+#: ../src/connection-editor/nm-connection-editor.ui.h:5
 msgid "E_xport"
 msgstr "E_xporteren"
 
-#: ../src/connection-editor/nm-connection-editor.glade.h:7
-msgid "Network Connections"
-msgstr "Netwerkverbindingen"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:8
-msgid "System setting"
-msgstr "Systeeminstelling"
-
-#: ../src/connection-editor/nm-connection-editor.glade.h:12
+#: ../src/connection-editor/nm-connection-editor.ui.h:11
 msgid "_Import"
 msgstr "I_mporteren"
 
-#: ../src/connection-editor/nm-connection-list.c:194
+#: ../src/connection-editor/nm-connection-list.c:216
 msgid "never"
 msgstr "nooit"
 
-#: ../src/connection-editor/nm-connection-list.c:205
-#: ../src/connection-editor/nm-connection-list.c:216
+#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:238
 msgid "now"
 msgstr "nu"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:223
+#: ../src/connection-editor/nm-connection-list.c:245
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "%d minuut geleden"
 msgstr[1] "%d minuten geleden"
 
-#: ../src/connection-editor/nm-connection-list.c:227
+#: ../src/connection-editor/nm-connection-list.c:249
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "%d uur geleden"
 msgstr[1] "%d uur geleden"
 
-#: ../src/connection-editor/nm-connection-list.c:239
+#: ../src/connection-editor/nm-connection-list.c:261
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d dag geleden"
 msgstr[1] "%d dagen geleden"
 
-#: ../src/connection-editor/nm-connection-list.c:245
+#: ../src/connection-editor/nm-connection-list.c:267
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d maand geleden"
 msgstr[1] "%d maanden geleden"
 
-#: ../src/connection-editor/nm-connection-list.c:249
+#: ../src/connection-editor/nm-connection-list.c:271
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d jaar geleden"
 msgstr[1] "%d jaar geleden"
 
-# verwerven/verkrijgen
-#: ../src/connection-editor/nm-connection-list.c:358
-#: ../src/connection-editor/nm-connection-list.c:469
-#: ../src/connection-editor/nm-connection-list.c:627
-#, c-format
-msgid "Could not obtain required privileges: %s."
-msgstr "Kon de vereiste toegangsrechten niet verkrijgen: %s."
+#: ../src/connection-editor/nm-connection-list.c:486
+msgid "Connection add failed"
+msgstr "Verbinding toevoegen is mislukt"
 
-#: ../src/connection-editor/nm-connection-list.c:361
-msgid "Could not remove system connection: permission denied."
-msgstr "Kon systeemverbinding niet verwijderen: toegang geweigerd."
-
-#: ../src/connection-editor/nm-connection-list.c:397
-#, c-format
-msgid "Removing connection failed: %s."
-msgstr "Verbinding verwijderen is mislukt: %s."
-
-#: ../src/connection-editor/nm-connection-list.c:472
-msgid "Could not add system connection: permission denied."
-msgstr "Kon systeemverbinding niet toevoegen: toegang geweigerd."
+#: ../src/connection-editor/nm-connection-list.c:515
+msgid "Error saving connection"
+msgstr "Fout bij het opslaan van de verbinding"
 
 #: ../src/connection-editor/nm-connection-list.c:516
 #, c-format
-msgid "Adding connection failed: %s."
-msgstr "Toevoegen verbinding is mislukt: %s."
+msgid "The property '%s' / '%s' is invalid: %d"
+msgstr "De eigenschap ‘%s’ /  ‘%s’ is invalid: %d"
 
-# updaten/bijwerken
-#: ../src/connection-editor/nm-connection-list.c:630
-msgid "Could not update system connection: permission denied."
-msgstr "Kon systeemverbinding niet bijwerken: toegang geweigerd."
+#: ../src/connection-editor/nm-connection-list.c:523
+#: ../src/connection-editor/nm-connection-list.c:642
+msgid "An unknown error occurred."
+msgstr "Onbekende fout."
 
-# updaten/bijwerken
-#: ../src/connection-editor/nm-connection-list.c:675
-#, c-format
-msgid "Updating connection failed: %s."
-msgstr "Bijwerken verbinding is mislukt: %s."
+#: ../src/connection-editor/nm-connection-list.c:528
+#: ../src/connection-editor/nm-connection-list.c:683
+msgid "Error initializing editor"
+msgstr "Fout bij het initialiseren van de editor"
 
-#: ../src/connection-editor/nm-connection-list.c:790
-#, c-format
-msgid "Wired connection %d"
-msgstr "Kabelverbinding %d"
+#: ../src/connection-editor/nm-connection-list.c:546
+#: ../src/connection-editor/nm-connection-list.c:700
+#: ../src/connection-editor/nm-connection-list.c:867
+msgid ""
+"The connection editor dialog could not be initialized due to an unknown "
+"error."
+msgstr ""
+"De verbindingseditor kon niet geïnitialiseerd worden vanwege een onbekende "
+"fout."
 
-# draadloos verbinding
-#: ../src/connection-editor/nm-connection-list.c:798
-#, c-format
-msgid "Wireless connection %d"
-msgstr "Draadloze verbinding %d"
+#: ../src/connection-editor/nm-connection-list.c:557
+msgid "Could not create new connection"
+msgstr "Kon geen nieuwe verbinding aanmaken"
 
-#: ../src/connection-editor/nm-connection-list.c:813
-#, c-format
-msgid "GSM connection %d"
-msgstr "GSM-verbinding %d"
+# geen netwerk/netwerkverbinding
+#: ../src/connection-editor/nm-connection-list.c:569
+msgid "Could not edit new connection"
+msgstr "Kon de nieuwe verbinding niet bewerken"
 
-#: ../src/connection-editor/nm-connection-list.c:827
-#, c-format
-msgid "CDMA connection %d"
-msgstr "CDMA-verbinding %d"
+# geen netwerk/netwerkverbinding
+#: ../src/connection-editor/nm-connection-list.c:714
+msgid "Could not edit connection"
+msgstr "Kon de verbinding niet bewerken"
 
-#: ../src/connection-editor/nm-connection-list.c:848
-#: ../src/connection-editor/nm-connection-list.c:1140
-#, c-format
-msgid "VPN connection %d"
-msgstr "VPN-verbinding %d"
+#: ../src/connection-editor/nm-connection-list.c:744
+msgid "Connection delete failed"
+msgstr "Verbinding verwijderen is mislukt"
 
-#: ../src/connection-editor/nm-connection-list.c:856
-#, c-format
-msgid "DSL connection %d"
-msgstr "DSL-verbinding %d"
-
-#: ../src/connection-editor/nm-connection-list.c:1060
+#: ../src/connection-editor/nm-connection-list.c:776
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Weet u zeker dat u de verbinding %s wilt verwijderen?"
 
 # Netwerken
-#: ../src/connection-editor/nm-connection-list.c:1156
-#: ../src/connection-editor/vpn-helpers.c:226
+#: ../src/connection-editor/nm-connection-list.c:911
+#: ../src/connection-editor/vpn-helpers.c:227
 msgid "Cannot import VPN connection"
 msgstr "Kan VPN-verbinding niet importeren"
 
 # 'missing' is beter dat 'no'
-#: ../src/connection-editor/nm-connection-list.c:1158
+#: ../src/connection-editor/nm-connection-list.c:913
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1552,7 +2114,83 @@ msgstr ""
 "\n"
 "Foutmelding: type VPN-service ontbreekt."
 
-#: ../src/connection-editor/vpn-helpers.c:228
+#: ../src/connection-editor/nm-connection-list.c:926
+msgid "Could not edit imported connection"
+msgstr "Kon de geïmporteerde verbinding niet bewerken"
+
+#: ../src/connection-editor/nm-connection-list.c:1069
+msgid "Name"
+msgstr "Naam"
+
+#: ../src/connection-editor/nm-connection-list.c:1081
+msgid "Last Used"
+msgstr "Laatst gebruikt"
+
+#: ../src/connection-editor/nm-connection-list.c:1197
+msgid "No VPN plugin available. Please install one to enable this button."
+msgstr ""
+"Geen VPN-plugin beschikbaar. Installeer een geschikte plugin on deze knop "
+"beschikbaar te maken."
+
+#: ../src/connection-editor/nm-connection-list.c:1208
+msgid "_Edit"
+msgstr "Be_werken"
+
+#: ../src/connection-editor/nm-connection-list.c:1209
+msgid "Edit the selected connection"
+msgstr "De geselecteerde verbinding bewerken"
+
+#: ../src/connection-editor/nm-connection-list.c:1210
+msgid "_Edit..."
+msgstr "Be_werken…"
+
+# hier wordt bedoeld dat je het systeembeheerderswachtwoord invoert
+#: ../src/connection-editor/nm-connection-list.c:1211
+msgid "Authenticate to edit the selected connection"
+msgstr "Beheerwachtwoord invoeren om de geselecteerde verbinding te bewerken"
+
+#: ../src/connection-editor/nm-connection-list.c:1226
+msgid "_Delete"
+msgstr "_Verwijderen"
+
+#: ../src/connection-editor/nm-connection-list.c:1227
+msgid "Delete the selected connection"
+msgstr "De geselecteerde verbinding verwijderen"
+
+#: ../src/connection-editor/nm-connection-list.c:1228
+msgid "_Delete..."
+msgstr "_Verwijderen…"
+
+#: ../src/connection-editor/nm-connection-list.c:1229
+msgid "Authenticate to delete the selected connection"
+msgstr ""
+"Beheerwachtwoord invoeren om de geselecteerde verbinding te verwijderen"
+
+#: ../src/connection-editor/nm-connection-list.c:1504
+msgid "Error creating connection"
+msgstr "Fout bij het aanmaken van de verbinding"
+
+#: ../src/connection-editor/nm-connection-list.c:1505
+#, c-format
+msgid "Don't know how to create '%s' connections"
+msgstr "Weet niet hoe ‘%s’-verbindingen aangemaakt worden"
+
+#: ../src/connection-editor/nm-connection-list.c:1559
+#: ../src/connection-editor/nm-connection-list.c:1571
+msgid "Error editing connection"
+msgstr "Fout bij het bewerken van de verbinding"
+
+#: ../src/connection-editor/nm-connection-list.c:1560
+#, c-format
+msgid "Don't know how to edit '%s' connections"
+msgstr "Weet niet hoe ‘%s’-verbindingen bewerkt worden"
+
+#: ../src/connection-editor/nm-connection-list.c:1572
+#, c-format
+msgid "Did not find a connection with UUID '%s'"
+msgstr "Kon geen verbinding met UUID ‘%s’ vinden"
+
+#: ../src/connection-editor/vpn-helpers.c:229
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -1565,30 +2203,30 @@ msgstr ""
 "\n"
 "Foutmelding: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:259
+#: ../src/connection-editor/vpn-helpers.c:261
 msgid "Select file to import"
 msgstr "Bestand selecteren voor import"
 
-#: ../src/connection-editor/vpn-helpers.c:305
+#: ../src/connection-editor/vpn-helpers.c:309
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "Een bestand met de naam ‘%s’ bestaat al."
 
-#: ../src/connection-editor/vpn-helpers.c:307
+#: ../src/connection-editor/vpn-helpers.c:311
 msgid "_Replace"
 msgstr "_Vervangen"
 
 # die u nu opslaat/die u aan het opslaan bent
-#: ../src/connection-editor/vpn-helpers.c:309
+#: ../src/connection-editor/vpn-helpers.c:313
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "Wilt u %s vervangen door de VPN-verbinding die u nu opslaat?"
 
-#: ../src/connection-editor/vpn-helpers.c:343
+#: ../src/connection-editor/vpn-helpers.c:349
 msgid "Cannot export VPN connection"
 msgstr "Kan VPN-verbinding niet exporteren"
 
-#: ../src/connection-editor/vpn-helpers.c:345
+#: ../src/connection-editor/vpn-helpers.c:351
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -1599,99 +2237,451 @@ msgstr ""
 "\n"
 "Foutmelding: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:376
+#: ../src/connection-editor/vpn-helpers.c:385
 msgid "Export VPN connection..."
 msgstr "VPN-verbinding exporteren…"
 
-#: ../src/vpn-password-dialog.c:137 ../src/vpn-password-dialog.c:244
+#: ../src/gnome-bluetooth/bt-widget.c:218
 #, c-format
-msgid "Cannot start VPN connection '%s'"
-msgstr "Kan VPN-verbinding ‘%s’ niet starten"
+msgid "Failed to create PAN connection: %s"
+msgstr "Kon PAN-verbinding niet aanmaken: %s"
 
-#: ../src/vpn-password-dialog.c:140
+#: ../src/gnome-bluetooth/bt-widget.c:223
+#: ../src/gnome-bluetooth/bt-widget.c:491
+msgid "Your phone is now ready to use!"
+msgstr "Uw telefoon is klaar voor gebruik!"
+
+#: ../src/gnome-bluetooth/bt-widget.c:247
+#, c-format
+msgid "%s Network"
+msgstr "%s-netwerk"
+
+#: ../src/gnome-bluetooth/bt-widget.c:373
+#, c-format
+msgid "Error: %s"
+msgstr "Fout: %s"
+
+#: ../src/gnome-bluetooth/bt-widget.c:486
+#, c-format
+msgid "Failed to create DUN connection: %s"
+msgstr "Kon DUN-verbinding niet aanmaken: %s"
+
+#: ../src/gnome-bluetooth/bt-widget.c:509
+msgid "Mobile wizard was canceled"
+msgstr "De mobiel-assistent is geannuleerd"
+
+#: ../src/gnome-bluetooth/bt-widget.c:518
+msgid "Unknown phone device type (not GSM or CDMA)"
+msgstr "Onbekend telefoontype (geen GSM of CDMA)"
+
+#: ../src/gnome-bluetooth/bt-widget.c:712
+#: ../src/gnome-bluetooth/bt-widget.c:718
+msgid "failed to connect to the phone."
+msgstr "Kon niet met de telefoon verbinden."
+
+#: ../src/gnome-bluetooth/bt-widget.c:751
+msgid "unexpectedly disconnected from the phone."
+msgstr "De telefoonverbinding werd onverwacht verbroken."
+
+#: ../src/gnome-bluetooth/bt-widget.c:760
+msgid "timed out detecting phone details."
+msgstr "Tijdslimiet overschreden bij detecteren van telefoondetails."
+
+#: ../src/gnome-bluetooth/bt-widget.c:772
+msgid "Detecting phone configuration..."
+msgstr "Detecteren van telefoonconfiguratie…"
+
+#: ../src/gnome-bluetooth/bt-widget.c:838
+msgid "could not find the Bluetooth device."
+msgstr "Kon het Bluetooth-apparaat niet vinden."
+
+#: ../src/gnome-bluetooth/bt-widget.c:973
+msgid ""
+"The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
+"Networking connection."
+msgstr ""
+"De standaard Bluetooth-adapter moet inschakeld zijn voordat een "
+"inbelverbinding ingesteld kan worden."
+
+#: ../src/gnome-bluetooth/bt-widget.c:1005
+#, c-format
+msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
+msgstr ""
+"Configureren van Bluetooth was niet mogelijk (kon geen verbinding maken met "
+"D-Bus %s)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:1015
+msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+msgstr ""
+"Configureren van Bluetooth was niet mogelijk (kon geen D-Bus proxy aanmaken)."
+
+#: ../src/gnome-bluetooth/bt-widget.c:1024
 #, c-format
 msgid ""
-"Could not find the authentication dialog for VPN connection type '%s'. "
-"Contact your system administrator."
+"Bluetooth configuration not possible (error finding NetworkManager: %s)."
 msgstr ""
-"Kon het aanmeldingsdialoogvenster voor VPN-verbindingstype ‘%s’ niet vinden. "
-"Neem contact op met uw systeembeheerder."
+"Configureren van Bluetooth was niet mogelijk (kon NetworkManager niet "
+"vinden: %s)."
 
-#: ../src/vpn-password-dialog.c:247
-#, c-format
+#: ../src/gnome-bluetooth/bt-widget.c:1087
+msgid "Use your mobile phone as a network device (PAN/NAP)"
+msgstr "Uw mobile telefoon als een netwerkapparaat gebruiken (PAN/NAP)"
+
+#: ../src/gnome-bluetooth/bt-widget.c:1096
+msgid "Access the Internet using your mobile phone (DUN)"
+msgstr "Internettoegang via uw mobiele telefoon (DUN)"
+
+#: ../src/main.c:73
+msgid "Usage:"
+msgstr "Gebruik:"
+
+#: ../src/main.c:75
 msgid ""
-"There was a problem launching the authentication dialog for VPN connection "
-"type '%s'. Contact your system administrator."
+"This program is a component of NetworkManager (http://projects.gnome.org/"
+"NetworkManager)."
 msgstr ""
-"Er was een probleem bij het opstarten van het aanmeldingsdialoogvenster voor "
-"VPN-verbindingstype ‘%s’. Neem contact op met uw systeembeheerder."
+"Dit programma is een onderdeel van NetworkManager (http://projects.gnome.org/"
+"NetworkManager)."
 
-#: ../src/wired-dialog.c:74
-msgid "Wired 802.1X authentication"
-msgstr "Bekabeld 802.1X aanmeldingscontrole"
+#: ../src/main.c:76
+msgid ""
+"It is not intended for command-line interaction but instead runs in the "
+"GNOME desktop environment."
+msgstr ""
+"Het is niet bedoeld voor gebruik via de opdrachtregel maar voor in de Gnome-"
+"desktop."
 
-#: ../src/wireless-dialog.c:408
+#: ../src/mb-menu-item.c:57
+msgid "EVDO"
+msgstr "EVDO"
+
+#: ../src/mb-menu-item.c:61
+msgid "GPRS"
+msgstr "GPRS"
+
+#: ../src/mb-menu-item.c:63
+msgid "EDGE"
+msgstr "EDGE"
+
+#: ../src/mb-menu-item.c:65
+msgid "UMTS"
+msgstr "UMTS"
+
+#: ../src/mb-menu-item.c:67
+msgid "HSDPA"
+msgstr "HSDPA"
+
+#: ../src/mb-menu-item.c:69
+msgid "HSUPA"
+msgstr "HSUPA"
+
+#: ../src/mb-menu-item.c:71
+msgid "HSPA"
+msgstr "HSPA"
+
+#: ../src/mb-menu-item.c:73
+msgid "WiMAX"
+msgstr "WiMAX"
+
+# aangezet/ingeschakeld
+#: ../src/mb-menu-item.c:109
+msgid "not enabled"
+msgstr "niet ingeschakeld"
+
+# aangemeld/geregistreerd
+#: ../src/mb-menu-item.c:115
+msgid "not registered"
+msgstr "niet geregistreerd"
+
+#: ../src/mb-menu-item.c:133
+#, c-format
+msgid "Home network (%s)"
+msgstr "Thuisnetwerk (%s)"
+
+#: ../src/mb-menu-item.c:135
+#, c-format
+msgid "Home network"
+msgstr "Thuisnetwerk"
+
+# bezig met/zoeken
+#: ../src/mb-menu-item.c:143
+msgid "searching"
+msgstr "zoeken"
+
+# aanmelding/registratie
+#: ../src/mb-menu-item.c:146
+msgid "registration denied"
+msgstr "registratie afgewezen"
+
+#: ../src/mb-menu-item.c:151 ../src/mb-menu-item.c:157
+#, c-format
+msgid "%s (%s roaming)"
+msgstr "%s (%s roaming)"
+
+#: ../src/mb-menu-item.c:153 ../src/mb-menu-item.c:159
+#, c-format
+msgid "%s (roaming)"
+msgstr "%s (roaming)"
+
+#: ../src/mb-menu-item.c:162
+#, c-format
+msgid "Roaming network (%s)"
+msgstr "Roaming netwerk (%s)"
+
+#: ../src/mb-menu-item.c:164
+#, c-format
+msgid "Roaming network"
+msgstr "Roaming netwerk"
+
+#: ../src/utils/mobile-wizard.c:196
+msgid ""
+"Your mobile broadband connection is configured with the following settings:"
+msgstr ""
+"Uw mobiele breedbandverbinding is geconfigureerd met de volgende "
+"instellingen:"
+
+# dienst/service
+#. Device
+#: ../src/utils/mobile-wizard.c:203
+msgid "Your Device:"
+msgstr "Uw apparaat:"
+
+#. Provider
+#: ../src/utils/mobile-wizard.c:214
+msgid "Your Provider:"
+msgstr "Uw Provider:"
+
+#. Plan and APN
+#: ../src/utils/mobile-wizard.c:225
+msgid "Your Plan:"
+msgstr "Uw abonnement:"
+
+#: ../src/utils/mobile-wizard.c:246
+msgid ""
+"A connection will now be made to your mobile broadband provider using the "
+"settings you selected.  If the connection fails or you cannot access network "
+"resources, double-check your settings.  To modify your mobile broadband "
+"connection settings, choose \"Network Connections\" from the System >> "
+"Preferences menu."
+msgstr ""
+"Er wordt nu een verbinding gemaakt met het mobiele breedbandnetwerk van uw "
+"provider, gebruik makend van de door u geselecteerde instellingen. Als er "
+"geen verbinding gemaakt kan worden, controleer uw instellingen dan nogmaals. "
+"Om uw instellingen te wijzigen, kiest u ‘Netwerkverbindingen’ via het menu "
+"Systeem >> Voorkeuren."
+
+#: ../src/utils/mobile-wizard.c:258
+msgid "Confirm Mobile Broadband Settings"
+msgstr "Mobiele breedbandinstellingen bevestigen"
+
+# komt niet in de lijst voor/onbekend/niet in de lijst
+#: ../src/utils/mobile-wizard.c:319
+msgid "Unlisted"
+msgstr "Niet in de lijst"
+
+#: ../src/utils/mobile-wizard.c:437
+msgid "_Select your plan:"
+msgstr "_Selecteer uw abonnement:"
+
+#: ../src/utils/mobile-wizard.c:461
+msgid "Selected plan _APN (Access Point Name):"
+msgstr "Geselecteerd abonnement _APN (Access Point Name):"
+
+#: ../src/utils/mobile-wizard.c:480
+msgid ""
+"Warning: Selecting an incorrect plan may result in billing issues for your "
+"broadband account or may prevent connectivity.\n"
+"\n"
+"If you are unsure of your plan please ask your provider for your plan's APN."
+msgstr ""
+"Let op: selecteren van het verkeerde abonnement kan resulteren in "
+"betalingsproblemen voor uw breedbandaccount of kan het maken van een "
+"verbinding verhinderen.\n"
+"\n"
+"Indien u niet zeker weet welk abonnement u heeft, neem dan contact op met uw "
+"provider en vraag naar de APN-naam van uw abonnement."
+
+#: ../src/utils/mobile-wizard.c:487
+msgid "Choose your Billing Plan"
+msgstr "Kies uw abonnement"
+
+#: ../src/utils/mobile-wizard.c:535
+msgid "My plan is not listed..."
+msgstr "Mijn abonnement komt niet in de lijst voor…"
+
+#: ../src/utils/mobile-wizard.c:688
+msgid "Select your provider from a _list:"
+msgstr "Selecteer uw provider uit de _lijst:"
+
+#: ../src/utils/mobile-wizard.c:701
+msgid "Provider"
+msgstr "Provider"
+
+#: ../src/utils/mobile-wizard.c:726
+msgid "I can't find my provider and I wish to enter it _manually:"
+msgstr "Ik kan mijn provider niet vinden en wil het hand_matig invoeren:"
+
+#: ../src/utils/mobile-wizard.c:737
+msgid "Provider:"
+msgstr "Provider:"
+
+#: ../src/utils/mobile-wizard.c:761
+msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
+msgstr "Mijn provider gebruikt GSM-technologie (GPRS, EDGE, UMTS, HSPA)"
+
+#: ../src/utils/mobile-wizard.c:767
+msgid "My provider uses CDMA technology (1xRTT, EVDO)"
+msgstr "Mijn provider gebruikt CDMA-technologie (1xRTT, EVDO)"
+
+#: ../src/utils/mobile-wizard.c:778
+msgid "Choose your Provider"
+msgstr "Kies uw provider"
+
+#: ../src/utils/mobile-wizard.c:1024
+msgid "Country or Region List:"
+msgstr "Land of regio-lijst"
+
+#: ../src/utils/mobile-wizard.c:1036
+msgid "Country or region"
+msgstr "Land of regio"
+
+#: ../src/utils/mobile-wizard.c:1043
+msgid "My country is not listed"
+msgstr "Mijn land komt niet in de lijst voor"
+
+#: ../src/utils/mobile-wizard.c:1089
+msgid "Choose your Provider's Country or Region"
+msgstr "Kies het land of regio van uw provider"
+
+#: ../src/utils/mobile-wizard.c:1143
+msgid "Installed GSM device"
+msgstr "GSM-apparaat geïnstalleerd"
+
+#: ../src/utils/mobile-wizard.c:1146
+msgid "Installed CDMA device"
+msgstr "CDMA-apparaat geïnstalleerd"
+
+#: ../src/utils/mobile-wizard.c:1314
+msgid ""
+"This assistant helps you easily set up a mobile broadband connection to a "
+"cellular (3G) network."
+msgstr ""
+"Deze assistent helpt u bij het opzetten van een mobiele breedbandverbinding "
+"via een cellulair (3G) netwerk."
+
+# informatie/gegevens
+#: ../src/utils/mobile-wizard.c:1319
+msgid "You will need the following information:"
+msgstr "U heeft de volgende gegevens nodig:"
+
+#: ../src/utils/mobile-wizard.c:1330
+msgid "Your broadband provider's name"
+msgstr "De naam van uw breedband-provider"
+
+#: ../src/utils/mobile-wizard.c:1336
+msgid "Your broadband billing plan name"
+msgstr "De naam voor uw breedband-abonnement"
+
+#: ../src/utils/mobile-wizard.c:1342
+msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
+msgstr ""
+"(in sommige gevallen) De naam van het APN (Access Point Name) voor uw "
+"abonnement"
+
+#: ../src/utils/mobile-wizard.c:1369
+msgid "Create a connection for _this mobile broadband device:"
+msgstr "Een verbinding _aanmaken voor dit mobiele breedbandapparaat:"
+
+#: ../src/utils/mobile-wizard.c:1384
+msgid "Any device"
+msgstr "Elk apparaat"
+
+#: ../src/utils/mobile-wizard.c:1397
+msgid "Set up a Mobile Broadband Connection"
+msgstr "Een mobiele breedbandverbinding instellen"
+
+#: ../src/utils/mobile-wizard.c:1561
+msgid "New Mobile Broadband Connection"
+msgstr "Nieuwe mobiele breedbandverbinding"
+
+#: ../src/utils/nmn-mobile-providers.c:78
+msgid "United Kingdom"
+msgstr "Engeland"
+
+#: ../src/utils/nmn-mobile-providers.c:510
+msgid "Default"
+msgstr "Standaard"
+
+#: ../src/wired-dialog.c:91 ../src/wired-dialog.c:99
+msgid ""
+"The NetworkManager Applet could not find some required resources (the .ui "
+"file was not found)."
+msgstr ""
+"Het NetworkManager-applet kon bepaalde vereiste bronnen niet vinden (het .ui-"
+"bestand is niet gevonden)."
+
+#: ../src/wireless-dialog.c:459
 msgid "New..."
 msgstr "Nieuw…"
 
-#: ../src/wireless-dialog.c:920
+#: ../src/wireless-dialog.c:1079
+msgid "C_reate"
+msgstr "_Aanmaken"
+
+#: ../src/wireless-dialog.c:1157
 #, c-format
 msgid ""
-"Passwords or encryption keys are required to access the wireless network '%"
-"s'."
+"Passwords or encryption keys are required to access the wireless network "
+"'%s'."
 msgstr ""
 "Er worden wachtwoorden of cryptografiesleutels gevraagd om toegang te "
 "krijgen tot het draadloos netwerk: ‘%s’."
 
 # [Venstertitel]
-# Sleutels voor draadloos netwerk
-#: ../src/wireless-dialog.c:922
-msgid "Wireless Network Secrets Required"
-msgstr "Geheimen voor draadloos netwerk"
+# de sleutel voor het draadloos netwerk? of van het systeem?
+#: ../src/wireless-dialog.c:1159
+msgid "Wireless Network Authentication Required"
+msgstr "Aanmeldingscontrole voor draadloos netwerk"
 
-# dit is de kop van de dialoog
-#: ../src/wireless-dialog.c:924
-msgid "Secrets required by wireless network"
-msgstr "Geheime informatie voor netwerk vereist"
+# Was voorheen secrets ipv authentication
+# aanmeldingscontrole/aanmelding
+#: ../src/wireless-dialog.c:1161
+msgid "Authentication required by wireless network"
+msgstr "Het draadloos netwerk vereist aanmelding"
 
-#: ../src/wireless-dialog.c:929
+#: ../src/wireless-dialog.c:1166
 msgid "Create New Wireless Network"
 msgstr "Nieuw draadloos netwerk aanmaken"
 
-#: ../src/wireless-dialog.c:931
+#: ../src/wireless-dialog.c:1168
 msgid "New wireless network"
 msgstr "Nieuw draadloos netwerk"
 
-#: ../src/wireless-dialog.c:932
+#: ../src/wireless-dialog.c:1169
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Geef een naam aan het draadloos netwerk dat u wilt aanmaken."
 
-#: ../src/wireless-dialog.c:934
-msgid "Connect to Other Wireless Network"
-msgstr "Verbinden met ander draadloos netwerk"
+#: ../src/wireless-dialog.c:1171
+msgid "Connect to Hidden Wireless Network"
+msgstr "Verbinden met verborgen draadloos netwerk"
 
-#: ../src/wireless-dialog.c:936
-msgid "Existing wireless network"
-msgstr "Bestaand draadloos netwerk"
+#: ../src/wireless-dialog.c:1173
+msgid "Hidden wireless network"
+msgstr "Verborgen draadloos netwerk"
 
-#: ../src/wireless-dialog.c:937
-msgid "Enter the name of the wireless network to which you wish to connect."
+#: ../src/wireless-dialog.c:1174
+msgid ""
+"Enter the name and security details of the hidden wireless network you wish "
+"to connect to."
 msgstr ""
-"Geef de naam van het draadloos netwerk waarmee u een verbinding wilt maken."
+"Geef de naam en de beveiligingsinstellingen van het verborgen draadloos "
+"netwerk waarmee u wilt verbinden."
 
-#: ../src/wireless-security/eap-method.c:293
-msgid "DER or PEM certificates (*.der, *.pem)"
-msgstr "DER- of PEM-certificaten (*.der, *.pem)"
-
-#: ../src/wireless-security/eap-method-peap.c:234
-#: ../src/wireless-security/eap-method-tls.c:290
-#: ../src/wireless-security/eap-method-ttls.c:221
+#: ../src/wireless-security/eap-method.c:279
 msgid "No Certificate Authority certificate chosen"
 msgstr "Geen certificaat van certificaatautoriteit gekozen"
 
-#: ../src/wireless-security/eap-method-peap.c:235
-#: ../src/wireless-security/eap-method-tls.c:291
-#: ../src/wireless-security/eap-method-ttls.c:222
+#: ../src/wireless-security/eap-method.c:280
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -1701,47 +2691,423 @@ msgstr ""
 "kan resulteren in verbindingen met onveilige draadloze netwerken. Wilt u een "
 "certificaat van een certificaatautoriteit kiezen?"
 
-#: ../src/wireless-security/eap-method-peap.c:240
-#: ../src/wireless-security/eap-method-tls.c:296
-#: ../src/wireless-security/eap-method-ttls.c:227
-msgid "Ignore"
-msgstr "Negeren"
-
-#: ../src/wireless-security/eap-method-peap.c:244
-#: ../src/wireless-security/eap-method-tls.c:300
-#: ../src/wireless-security/eap-method-ttls.c:231
+#: ../src/wireless-security/eap-method.c:289
 msgid "Choose CA Certificate"
 msgstr "CA-certificaat kiezen"
 
-#: ../src/wireless-security/eap-method-peap.c:320
+#: ../src/wireless-security/eap-method.c:627
+msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
+msgstr "DER, PEM, of PKCS#12-privésleutels (*.der, *.pem, *.p12)"
+
+#: ../src/wireless-security/eap-method.c:630
+msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
+msgstr "DER- of PEM-certificaten (*.der, *.pem, *.crt, *.cer)"
+
+#: ../src/wireless-security/eap-method-peap.c:260
+#: ../src/wireless-security/wireless-security.c:369
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:399
-#: ../src/wireless-security/eap-method-tls.c:431
-#: ../src/wireless-security/eap-method-ttls.c:436
+#: ../src/wireless-security/eap-method-peap.c:276
+msgid "GTC"
+msgstr "GTC"
+
+#: ../src/wireless-security/eap-method-peap.c:345
+#: ../src/wireless-security/eap-method-tls.c:415
+#: ../src/wireless-security/eap-method-ttls.c:345
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Kies een certificaat van een certificaatautoriteit…"
 
-#: ../src/wireless-security/eap-method-tls.c:427
+#: ../src/wireless-security/eap-method-peap.ui.h:2
+#: ../src/wireless-security/eap-method-ttls.ui.h:2
+msgid "Anony_mous identity:"
+msgstr "Anonie_me identiteit:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:4
+#: ../src/wireless-security/eap-method-tls.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:3
+msgid "C_A certificate:"
+msgstr "C_A-certificaat:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:5
+#: ../src/wireless-security/eap-method-ttls.ui.h:4
+msgid "I_nner authentication:"
+msgstr "I_nterne aanmeldingscontrole:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:6
+msgid "Version 0"
+msgstr "Versie 0"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:7
+msgid "Version 1"
+msgstr "Versie 1"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:8
+msgid "_PEAP version:"
+msgstr "_PEAP-versie:"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:1
+msgid "As_k for this password every time"
+msgstr "El_ke keer dit wachtwoord vragen"
+
+#: ../src/wireless-security/eap-method-tls.c:246
+msgid "Unencrypted private keys are insecure"
+msgstr "Onversleutelde privésleutels zijn onveilig"
+
+# met openssl/via openssl
+#: ../src/wireless-security/eap-method-tls.c:249
+msgid ""
+"The selected private key does not appear to be protected by a password.  "
+"This could allow your security credentials to be compromised.  Please select "
+"a password-protected private key.\n"
+"\n"
+"(You can password-protect your private key with openssl)"
+msgstr ""
+"De geselecteerde privésleutel is kennelijk niet beschermd met een "
+"wachtwoord. Dit kan uw beveiling schade toebrengen. Selecteer een "
+"privésleutel beveiligd met een wachtwoord.\n"
+"\n"
+"(U kunt uw privésleutel beveiligen met een wachtwoord met openssl)"
+
+#: ../src/wireless-security/eap-method-tls.c:409
 msgid "Choose your personal certificate..."
 msgstr "Kies uw persoonlijke certificaat…"
 
-#: ../src/wireless-security/eap-method-tls.c:436
+#: ../src/wireless-security/eap-method-tls.c:421
 msgid "Choose your private key..."
 msgstr "Kies uw privésleutel…"
 
-#: ../src/wireless-security/wireless-security.c:322
+#: ../src/wireless-security/eap-method-tls.ui.h:2
+msgid "I_dentity:"
+msgstr "I_dentiteit:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:3
+msgid "Private _key:"
+msgstr "_Privésleutel:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:5
+msgid "_Private key password:"
+msgstr "Privésleutel _wachtwoord:"
+
+#: ../src/wireless-security/eap-method-tls.ui.h:6
+msgid "_User certificate:"
+msgstr "_Gebruikerscertificaat:"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:1
+msgid "Don't _warn me again"
+msgstr "Geen _waarschuwing meer geven"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:2
+msgid "No"
+msgstr "Nee"
+
+#: ../src/wireless-security/nag-user-dialog.ui.h:3
+msgid "Yes"
+msgstr "Ja"
+
+#: ../src/wireless-security/wireless-security.c:381
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:346
+#: ../src/wireless-security/wireless-security.c:405
 msgid "Tunneled TLS"
 msgstr "Getunneld TLS"
 
-#: ../src/wireless-security/wireless-security.c:357
+#: ../src/wireless-security/wireless-security.c:416
 msgid "Protected EAP (PEAP)"
 msgstr "Beschermd EAP (PEAP)"
+
+# identiteitscontrole/aanmeldingscontrole/aanmelding
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:2
+#: ../src/wireless-security/ws-wep-key.ui.h:9
+#: ../src/wireless-security/ws-wpa-eap.ui.h:2
+msgid "_Authentication:"
+msgstr "_Aanmeldingscontrole:"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:1
+msgid "1 (Default)"
+msgstr "1 (Standaard)"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:2
+msgid "2"
+msgstr "2"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "3"
+msgstr "3"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:4
+msgid "4"
+msgstr "4"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:5
+msgid "Open System"
+msgstr "Open systeem"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:6
+msgid "Shared Key"
+msgstr "Gedeelde sleutel"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:7
+msgid "Sho_w key"
+msgstr "Sleutel _tonen"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:8
+msgid "WEP inde_x:"
+msgstr "WEP-inde_x:"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:10
+msgid "_Key:"
+msgstr "_Sleutel:"
+
+# geen netwerk/netwerkverbinding
+#~ msgid "Auto CDMA network connection"
+#~ msgstr "Auto CDMA-netwerkverbinding"
+
+#~ msgid "CDMA Connections (%s)"
+#~ msgstr "CDMA-verbindingen (%s)"
+
+#~ msgid "CDMA Network (%s)"
+#~ msgstr "CDMA-netwerk (%s)"
+
+#~ msgid "CDMA Connections"
+#~ msgstr "CDMA-verbindingen"
+
+#~ msgid "CDMA Network"
+#~ msgstr "CDMA-netwerk"
+
+#~ msgid "Dialing CDMA device %s..."
+#~ msgstr "Inbellen met CDMA-apparaat %s…"
+
+#~ msgid "Starting PPP on device %s..."
+#~ msgstr "PPP starten op apparaat %s…"
+
+#~ msgid "Waiting for user authentication on device '%s'..."
+#~ msgstr "Wachten op aanmeldingscontrole van de gebruiker op apparaat ‘%s’…"
+
+#~ msgid "CDMA connection"
+#~ msgstr "CDMA-verbinding"
+
+#~ msgid "CDMA Network Password"
+#~ msgstr "CDMA-netwerkwachtwoord"
+
+#~ msgid "A password is required to connect to the CDMA network."
+#~ msgstr ""
+#~ "Er is een wachtwoord nodig om een verbinding te maken met het CDMA-"
+#~ "netwerk."
+
+#~ msgid "Auto GSM network connection"
+#~ msgstr "Auto GSM-netwerkverbinding"
+
+#~ msgid "GSM Connections (%s)"
+#~ msgstr "GSM-verbindingen (%s)"
+
+#~ msgid "GSM Network (%s)"
+#~ msgstr "GSM-netwerk (%s)"
+
+#~ msgid "GSM Connections"
+#~ msgstr "GSM-verbindingen"
+
+#~ msgid "GSM Network"
+#~ msgstr "GSM-netwerk"
+
+#~ msgid "Dialing GSM device %s..."
+#~ msgstr "Inbellen met GSM-apparaat %s…"
+
+# Netwerken
+#~ msgid "GSM connection"
+#~ msgstr "GSM-verbinding"
+
+#~ msgid "PUK code is needed for the GSM device"
+#~ msgstr "De PUK-code is nodig voor het GSM-appraat"
+
+#~ msgid "GSM Network Password"
+#~ msgstr "GSM-netwerkwachtwoord"
+
+# vaste netwerk
+#~ msgid "Preparing device %s for the wired network..."
+#~ msgstr "Apparaat %s wordt ingesteld voor het bekabeld netwerk…"
+
+# vaste netwerk
+#~ msgid "Configuring device %s for the wired network..."
+#~ msgstr "Appraat %s wordt geconfigureerd voor het bekabeld netwerk…"
+
+# bezig met pogen om binen te komen
+# aan te sluiten bij/verbinding te maken met/binnen te komen bij
+# ("binnenkomen bij" klingt als 'cracken')
+#~ msgid "Attempting to join the wireless network '%s'..."
+#~ msgstr "Poging aan te sluiten bij het draadloos netwerk ‘%s’…"
+
+#~ msgid "Waiting for Network Key for the wireless network '%s'..."
+#~ msgstr "Wachten op netwerksleutel voor het draadloos netwerk ‘%s’…"
+
+#~ msgid "translator-credits"
+#~ msgstr ""
+#~ "Tino Meinen\n"
+#~ "\n"
+#~ "Kijk voor meer informatie op http://nl.gnome.org/"
+
+# het kan het glade-bestand niet vinden.
+#~ msgid ""
+#~ "The NetworkManager applet could not find some required resources.  It "
+#~ "cannot continue.\n"
+#~ msgstr ""
+#~ "Het NetworkManager-applet kon bepaalde vereiste bronnen niet vinden.  Het "
+#~ "zal nu worden afgesloten.\n"
+
+#~ msgid ""
+#~ "<span size=\"larger\" weight=\"bold\">Active Network Connections</span>"
+#~ msgstr ""
+#~ "<span size=\"larger\" weight=\"bold\">Actieve netwerkverbindingen</span>"
+
+#~ msgid "C_onnect"
+#~ msgstr "_Verbinden"
+
+#~ msgid ""
+#~ "Open System\n"
+#~ "Shared Key"
+#~ msgstr ""
+#~ "Open systeem\n"
+#~ "gedeelde sleutel"
+
+#~ msgid "Other Wireless Network..."
+#~ msgstr "Ander draadloos netwerk…"
+
+#~ msgid "Select A File"
+#~ msgstr "Selecteer een bestand"
+
+# inlognaam/gebruikersnaam
+#~ msgid "User Name:"
+#~ msgstr "Gebruikersnaam:"
+
+#~ msgid "alert text"
+#~ msgstr "attentietekst"
+
+#~ msgid ""
+#~ "<span weight=\"bold\" size=\"larger\">Choose a Mobile Broadband "
+#~ "Connection</span>\n"
+#~ "\n"
+#~ "Select or connect the mobile broadband device you wish to use for the new "
+#~ "connection.  If the device is not availabe, you may select a generic "
+#~ "connection type."
+#~ msgstr ""
+#~ "<span weight=\"bold\" size=\"larger\">Kies een mobiel "
+#~ "breedbandverbinding</span>\n"
+#~ "\n"
+#~ "Selecteer of verbind het mobiel breedbandapparaat dat u wilt gebruiken "
+#~ "voor de nieuwe verbinding.  Wanneer het apparaat niet beschikbaar is kunt "
+#~ "u een algemeen verbindingstype selecteren."
+
+#~ msgid "<b>Addresses</b>"
+#~ msgstr "<b>Adressen</b>"
+
+#~ msgid ""
+#~ "Automatic\n"
+#~ "Automatic with manual DNS settings\n"
+#~ "Manual\n"
+#~ "Link-Local\n"
+#~ "Shared to other computers"
+#~ msgstr ""
+#~ "Automatisch\n"
+#~ "Automatisch met eigen DNS-instellingen\n"
+#~ "Handmatig\n"
+#~ "Link-Local\n"
+#~ "Gedeeld met andere computers"
+
+#~ msgid "gtk-cancel"
+#~ msgstr "gtk-cancel"
+
+#~ msgid "gtk-ok"
+#~ msgstr "gtk-ok"
+
+# Basis/Eenvoudig
+#~ msgid "<b>Basic</b>"
+#~ msgstr "<b>Eenvoudig</b>"
+
+# Type: Elk|GPRS|GSM|Bij voorkeur GSM
+#~ msgid ""
+#~ "Any\n"
+#~ "GPRS\n"
+#~ "GSM\n"
+#~ "Prefer GPRS\n"
+#~ "Prefer GSM"
+#~ msgstr ""
+#~ "Elk\n"
+#~ "GPRS\n"
+#~ "GSM\n"
+#~ "Bij voorkeur GPRS\n"
+#~ "Bij voorkeur GSM"
+
+#~ msgid "Band:"
+#~ msgstr "Band:"
+
+#~ msgid "PUK:"
+#~ msgstr "PUK:"
+
+#~ msgid ""
+#~ "The connection editor could not find some required resources (the "
+#~ "NetworkManager applet glade file was not found)."
+#~ msgstr ""
+#~ "De verbindingseditor kon bepaalde vereiste bronnen niet vinden (het glade-"
+#~ "bestand van het NetworkManager-applet is niet gevonden)."
+
+#~ msgid "Connection Editor"
+#~ msgstr "Verbindingseditor"
+
+#~ msgid "System setting"
+#~ msgstr "Systeeminstelling"
+
+# verwerven/verkrijgen
+#~ msgid "Could not obtain required privileges: %s."
+#~ msgstr "Kon de vereiste toegangsrechten niet verkrijgen: %s."
+
+#~ msgid "Could not remove system connection: permission denied."
+#~ msgstr "Kon systeemverbinding niet verwijderen: toegang geweigerd."
+
+#~ msgid "Removing connection failed: %s."
+#~ msgstr "Verbinding verwijderen is mislukt: %s."
+
+#~ msgid "Could not add system connection: permission denied."
+#~ msgstr "Kon systeemverbinding niet toevoegen: toegang geweigerd."
+
+#~ msgid "Adding connection failed: %s."
+#~ msgstr "Toevoegen verbinding is mislukt: %s."
+
+# updaten/bijwerken
+#~ msgid "Could not update system connection: permission denied."
+#~ msgstr "Kon systeemverbinding niet bijwerken: toegang geweigerd."
+
+# updaten/bijwerken
+#~ msgid "Updating connection failed: %s."
+#~ msgstr "Bijwerken verbinding is mislukt: %s."
+
+#~ msgid "GSM connection %d"
+#~ msgstr "GSM-verbinding %d"
+
+#~ msgid "CDMA connection %d"
+#~ msgstr "CDMA-verbinding %d"
+
+#~ msgid ""
+#~ "Could not find the authentication dialog for VPN connection type '%s'. "
+#~ "Contact your system administrator."
+#~ msgstr ""
+#~ "Kon het aanmeldingsdialoogvenster voor VPN-verbindingstype ‘%s’ niet "
+#~ "vinden. Neem contact op met uw systeembeheerder."
+
+#~ msgid ""
+#~ "There was a problem launching the authentication dialog for VPN "
+#~ "connection type '%s'. Contact your system administrator."
+#~ msgstr ""
+#~ "Er was een probleem bij het opstarten van het aanmeldingsdialoogvenster "
+#~ "voor VPN-verbindingstype ‘%s’. Neem contact op met uw systeembeheerder."
+
+#~ msgid "Existing wireless network"
+#~ msgstr "Bestaand draadloos netwerk"
+
+#~ msgid "Enter the name of the wireless network to which you wish to connect."
+#~ msgstr ""
+#~ "Geef de naam van het draadloos netwerk waarmee u een verbinding wilt "
+#~ "maken."
 
 #~ msgid "Passphrase for wireless network %s"
 #~ msgstr "Wachtwoordzin voor draadloos netwerk %s"
@@ -1781,11 +3147,6 @@ msgstr "Beschermd EAP (PEAP)"
 #~ "Kon de VPN-verbinding ‘%s’ niet maken omdat het VPN-programma niet kon "
 #~ "opstarten."
 
-# VPN-verbinding starten/opzetten/aanmaken
-#~ msgid "Could not start the VPN connection '%s' due to a connection error."
-#~ msgstr ""
-#~ "Kon de VPN-verbinding ‘%s’ niet starten vanwege een verbindingsfout."
-
 #~ msgid "VPN Configuration Error"
 #~ msgstr "VPN-configuratiefout"
 
@@ -1796,9 +3157,6 @@ msgstr "Beschermd EAP (PEAP)"
 
 #~ msgid "The network device \"%s (%s)\" does not support link detection."
 #~ msgstr "Link-detectie is niet mogelijk met het netwerkapparaat ‘%s (%s)’."
-
-#~ msgid "(unknown)"
-#~ msgstr "(onbekend)"
 
 # afgerond/voltooid/gelegd
 # vaste netwerk
@@ -1830,20 +3188,11 @@ msgstr "Beschermd EAP (PEAP)"
 #~ msgid "Disconnect from %s..."
 #~ msgstr "Verbinden met %s verbreken..."
 
-#~ msgid "Open System"
-#~ msgstr "Open systeem"
-
-#~ msgid "Shared Key"
-#~ msgstr "Gedeelde sleutel"
-
 #~ msgid "AES-CCMP"
 #~ msgstr "AES-CCMP"
 
 #~ msgid "TKIP"
 #~ msgstr "TKIP"
-
-#~ msgid "WEP 64/128-bit ASCII"
-#~ msgstr "WEP 64/128-bit ASCII"
 
 #~ msgid "TTLS"
 #~ msgstr "TTLS"
@@ -1863,18 +3212,11 @@ msgstr "Beschermd EAP (PEAP)"
 # encryptie/versleuteling/cryptografie
 # en wordt er geen gebruik gemaakt van cryptografie/wordt de verbinding niet versleuteld
 #~ msgid ""
-#~ "By default, the wireless network's name is set to your computer's name, %"
-#~ "s, with no encryption enabled"
+#~ "By default, the wireless network's name is set to your computer's name, "
+#~ "%s, with no encryption enabled"
 #~ msgstr ""
 #~ "Standaard wordt de naam van het draadloos netwerk ingesteld op de naam "
 #~ "van uw computer: %s, en wordt de verbinding niet versleuteld."
-
-#~ msgid ""
-#~ "Enter the name and security settings of the wireless network you wish to "
-#~ "create."
-#~ msgstr ""
-#~ "Geef de naam en de beveiligingsinstellingen van het draadloos netwerk dat "
-#~ "u wilt aanmaken."
 
 #~ msgid "Error connecting to wireless network"
 #~ msgstr "Fout bij het verbinden met draadloos netwerk"
@@ -1965,20 +3307,11 @@ msgstr "Beschermd EAP (PEAP)"
 #~ msgid "Select the Private Key File"
 #~ msgstr "Selecteer het privé sleutelbestand"
 
-#~ msgid "Show passphrase"
-#~ msgstr "Wachtwoordzin tonen"
-
 #~ msgid "_Always Trust this Wireless Network"
 #~ msgstr "_Dit draadloos netwerk altijd vertrouwen"
 
 #~ msgid "_Fallback on this Network"
 #~ msgstr "_Terugvallen op dit netwerk"
-
-#~ msgid "_Login to Network"
-#~ msgstr "_Aanmelden bij het netwerk"
-
-#~ msgid "Cannot add VPN connection"
-#~ msgstr "Kan VPN-verbinding niet toevoegen"
 
 #~ msgid ""
 #~ "No suitable VPN software was found on your system. Contact your system "
@@ -1996,10 +3329,6 @@ msgstr "Beschermd EAP (PEAP)"
 #~ "Kan geen geschikte software vinden voor VPN-verbindingstype ‘%s’ om het "
 #~ "bestand ‘%s’ te importeren. Neem contact op met uw systeembeheerder."
 
-# herleiden/ophalen
-#~ msgid "Error retrieving VPN connection '%s'"
-#~ msgstr "Fout bij herleiden VPN-verbinding ‘%s’"
-
 # bleh: UI files
 #~ msgid ""
 #~ "Could not find the UI files for VPN connection type '%s'. Contact your "
@@ -2007,9 +3336,6 @@ msgstr "Beschermd EAP (PEAP)"
 #~ msgstr ""
 #~ "Kon de UI-bestanden voor VPN-verbindingtype ‘%s’ niet vinden. Neem "
 #~ "contact op met uw systeembeheerder."
-
-#~ msgid "Delete VPN connection \"%s\"?"
-#~ msgstr "VPN-verbinding ‘%s’ verwijderen?"
 
 #~ msgid ""
 #~ "All information about the VPN connection \"%s\" will be lost and you may "
@@ -2029,12 +3355,6 @@ msgstr "Beschermd EAP (PEAP)"
 #~ msgid "Add a new VPN connection"
 #~ msgstr "Een nieuwe VPN-verbinding toevoegen"
 
-#~ msgid "Delete the selected VPN connection"
-#~ msgstr "De geselecteerde VPN-verbinding verwijderen"
-
-#~ msgid "Edit the selected VPN connection"
-#~ msgstr "De geselecteerde VPN-verbinding bewerken"
-
 #~ msgid "Export the VPN settings to a file"
 #~ msgstr "De VPN-instellingen exporteren naar een bestand"
 
@@ -2042,11 +3362,6 @@ msgstr "Beschermd EAP (PEAP)"
 # Exporteer de geselecteerde VPN-verbinding naar een bestand
 #~ msgid "Export the selected VPN connection to a file"
 #~ msgstr "De geselecteerde VPN-verbinding exporteren naar een bestand"
-
-# virtuele privenetwerkverbindingen
-# virtuele prive-netwerken beheren
-#~ msgid "Manage Virtual Private Network Connections"
-#~ msgstr "Virtual Private Network-verbindingen beheren"
 
 #~ msgid "40-bit WEP"
 #~ msgstr "40-bit WEP"
@@ -2076,8 +3391,8 @@ msgstr "Beschermd EAP (PEAP)"
 #~ "bekabelde ethernet-apparaten - %s"
 
 #~ msgid ""
-#~ "unable to bind to netlink socket for monitoring wired ethernet devices - %"
-#~ "s"
+#~ "unable to bind to netlink socket for monitoring wired ethernet devices - "
+#~ "%s"
 #~ msgstr ""
 #~ "Niet in staat om te binden aan netlink-socket voor het monitoren van "
 #~ "bekabelde ethernet-apparaten - %s"
@@ -2090,9 +3405,6 @@ msgstr "Beschermd EAP (PEAP)"
 
 #~ msgid "received data from unexpected sender"
 #~ msgstr "data ontvangen van een onverwachte zender"
-
-#~ msgid "too much data was sent over socket and some of it was lost"
-#~ msgstr "te veel data verzonden over de socket, een gedeelte is verloren"
 
 #~ msgid "error occurred while waiting for data on socket"
 #~ msgstr "er is een fout opgetreden bij het wachten op data van de 'socket'"
