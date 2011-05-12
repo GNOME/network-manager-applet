@@ -491,6 +491,8 @@ find_tag (const char *tag, const char *buf, gsize len)
 
 static const char *pem_rsa_key_begin = "-----BEGIN RSA PRIVATE KEY-----";
 static const char *pem_dsa_key_begin = "-----BEGIN DSA PRIVATE KEY-----";
+static const char *pem_pkcs8_enc_key_begin = "-----BEGIN ENCRYPTED PRIVATE KEY-----";
+static const char *pem_pkcs8_dec_key_begin = "-----BEGIN PRIVATE KEY-----";
 static const char *pem_cert_begin = "-----BEGIN CERTIFICATE-----";
 static const char *proc_type_tag = "Proc-Type: 4,ENCRYPTED";
 static const char *dek_info_tag = "DEK-Info:";
@@ -521,6 +523,19 @@ file_has_extension (const char *filename, const char *extensions[])
 }
 
 static gboolean
+pem_file_is_encrypted (const char *buffer, gsize bytes_read)
+{
+	/* Check if the private key is encrypted or not by looking for the
+	 * old OpenSSL-style proc-type and dec-info tags.
+	 */
+	if (find_tag (proc_type_tag, (const char *) buffer, bytes_read)) {
+		if (find_tag (dek_info_tag, (const char *) buffer, bytes_read))
+			return TRUE;
+	}
+	return FALSE;
+}
+
+static gboolean
 file_is_der_or_pem (const char *filename,
                     gboolean privkey,
                     gboolean *out_privkey_encrypted)
@@ -529,7 +544,6 @@ file_is_der_or_pem (const char *filename,
 	unsigned char buffer[8192];
 	ssize_t bytes_read;
 	gboolean success = FALSE;
-	gboolean encrypted = FALSE;
 
 	fd = open (filename, O_RDONLY);
 	if (fd < 0)
@@ -550,23 +564,30 @@ file_is_der_or_pem (const char *filename,
 	if (privkey) {
 		if (find_tag (pem_rsa_key_begin, (const char *) buffer, bytes_read)) {
 			success = TRUE;
+			if (out_privkey_encrypted)
+				*out_privkey_encrypted = pem_file_is_encrypted ((const char *) buffer, bytes_read);
 			goto out;
 		}
 
 		if (find_tag (pem_dsa_key_begin, (const char *) buffer, bytes_read)) {
 			success = TRUE;
+			if (out_privkey_encrypted)
+				*out_privkey_encrypted = pem_file_is_encrypted ((const char *) buffer, bytes_read);
 			goto out;
 		}
 
-		/* Check if the private key is encrypted or not by looking for the
-		 * old OpenSSL-style proc-type and dec-info tags.
-		 */
-		if (out_privkey_encrypted) {
-			if (find_tag (proc_type_tag, (const char *) buffer, bytes_read)) {
-				if (find_tag (dek_info_tag, (const char *) buffer, bytes_read))
-					encrypted = TRUE;
-			}
-			*out_privkey_encrypted = encrypted;
+		if (find_tag (pem_pkcs8_enc_key_begin, (const char *) buffer, bytes_read)) {
+			success = TRUE;
+			if (out_privkey_encrypted)
+				*out_privkey_encrypted = TRUE;
+			goto out;
+		}
+
+		if (find_tag (pem_pkcs8_dec_key_begin, (const char *) buffer, bytes_read)) {
+			success = TRUE;
+			if (out_privkey_encrypted)
+				*out_privkey_encrypted = FALSE;
+			goto out;
 		}
 	} else {
 		if (find_tag (pem_cert_begin, (const char *) buffer, bytes_read)) {
