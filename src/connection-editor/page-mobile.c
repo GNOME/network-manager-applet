@@ -300,7 +300,10 @@ apn_filter_cb (GtkEntry *   entry,
 	gchar *result = g_new0 (gchar, length);
 
 	for (i = 0; i < length; i++) {
-		if (isalnum (text[i]) || (text[i] == '.') || (text[i] == '-'))
+		if (   isalnum (text[i])
+		    || (text[i] == '.')
+		    || (text[i] == '_')
+		    || (text[i] == '-'))
 			result[count++] = text[i];
 	}
 
