@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <ctype.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -426,6 +427,39 @@ plan_row_separator_func (GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
 }
 
 static void
+apn_filter_cb (GtkEntry *   entry,
+               const gchar *text,
+               gint         length,
+               gint *       position,
+               gpointer     user_data)
+{
+	GtkEditable *editable = GTK_EDITABLE (entry);
+	int i, count = 0;
+	gchar *result = g_new0 (gchar, length);
+
+	for (i = 0; i < length; i++) {
+		if (   isalnum (text[i])
+		    || (text[i] == '.')
+		    || (text[i] == '_')
+		    || (text[i] == '-'))
+			result[count++] = text[i];
+	}
+
+	if (count > 0) {
+		g_signal_handlers_block_by_func (G_OBJECT (editable),
+		                                 G_CALLBACK (apn_filter_cb),
+		                                 user_data);
+		gtk_editable_insert_text (editable, result, count, position);
+		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
+		                                   G_CALLBACK (apn_filter_cb),
+		                                   user_data);
+	}
+
+	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
+	g_free (result);
+}
+
+static void
 plan_setup (MobileWizard *self)
 {
 	GtkWidget *vbox, *label, *alignment, *hbox, *image;
@@ -464,7 +498,8 @@ plan_setup (MobileWizard *self)
 
 	self->plan_unlisted_entry = gtk_entry_new ();
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), self->plan_unlisted_entry);
-	gtk_entry_set_max_length (GTK_ENTRY (self->plan_unlisted_entry), 40);
+	gtk_entry_set_max_length (GTK_ENTRY (self->plan_unlisted_entry), 64);
+	g_signal_connect (self->plan_unlisted_entry, "insert-text", G_CALLBACK (apn_filter_cb), self);
 	g_signal_connect_swapped (self->plan_unlisted_entry, "changed", G_CALLBACK (plan_update_complete), self);
 
 	alignment = gtk_alignment_new (0, 0.5, 0.5, 0);
