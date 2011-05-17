@@ -662,6 +662,7 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 			                   NM_REMOTE_CONNECTION (connection),
 			                   connection_updated_cb,
 			                   info);
+			g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 		} else {
 			g_warning ("%s: invalid connection after update: bug in the "
 			           "'%s' / '%s' invalid: %d",
@@ -671,10 +672,12 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 			connection_updated_cb (info->list,
 			                       NM_REMOTE_CONNECTION (connection),
 			                       edit_error,
-			                       info);
+			                       NULL);
 			g_error_free (edit_error);
+
+			g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
+			g_free (info);
 		}
-		g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 		break;
 	case GTK_RESPONSE_NONE:
 		/* Show an error dialog if the editor initialization failed */
