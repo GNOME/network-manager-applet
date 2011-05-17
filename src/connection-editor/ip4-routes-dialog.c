@@ -172,9 +172,15 @@ validate (GtkWidget *dialog)
 		/* Address */
 		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr))
 			goto done;
+		/* Don't allow inserting 0.0.0.0 for now - that's not supported in libnm-util */
+		if (addr == 0)
+			goto done;
 
 		/* Prefix */
 		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix))
+			goto done;
+		/* Don't allow zero prefix for now - that's not supported in libnm-util */
+		if (prefix == 0)
 			goto done;
 
 		/* Next hop (optional) */
