@@ -2178,6 +2178,22 @@ migrate_openswan (NMConnection *connection, NMSettingVPN *s_vpn)
 	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENSWAN_XAUTH_PASSWORD, flags, NULL);
 }
 
+#define NM_DBUS_SERVICE_OPENCONNECT    "org.freedesktop.NetworkManager.openconnect"
+#define NM_OPENCONNECT_KEY_GATEWAY "gateway"
+#define NM_OPENCONNECT_KEY_COOKIE "cookie"
+#define NM_OPENCONNECT_KEY_GWCERT "gwcert"
+
+static void
+migrate_openconnect (NMConnection *connection, NMSettingVPN *s_vpn)
+{
+	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NOT_SAVED;
+
+	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_GATEWAY, flags, NULL);
+	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_COOKIE, flags, NULL);
+	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_GWCERT, flags, NULL);
+}
+
+
 #define NM_DBUS_SERVICE_PPTP "org.freedesktop.NetworkManager.pptp"
 #define NM_PPTP_KEY_PASSWORD "password"
 
@@ -2216,6 +2232,9 @@ nm_gconf_migrate_09_secret_flags (GConfClient *client,
 			return;
 		} else if (g_strcmp0 (service, NM_DBUS_SERVICE_OPENSWAN) == 0) {
 			migrate_openswan (connection, s_vpn);
+			return;
+		} else if (g_strcmp0 (service, NM_DBUS_SERVICE_OPENCONNECT) == 0) {
+			migrate_openconnect (connection, s_vpn);
 			return;
 		}
 
