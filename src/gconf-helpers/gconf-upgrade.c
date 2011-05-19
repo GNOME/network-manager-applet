@@ -2182,15 +2182,65 @@ migrate_openswan (NMConnection *connection, NMSettingVPN *s_vpn)
 #define NM_OPENCONNECT_KEY_GATEWAY "gateway"
 #define NM_OPENCONNECT_KEY_COOKIE "cookie"
 #define NM_OPENCONNECT_KEY_GWCERT "gwcert"
+#define NM_OPENCONNECT_KEY_XMLCONFIG "xmlconfig"
+#define NM_OPENCONNECT_KEY_LASTHOST "lasthost"
+#define NM_OPENCONNECT_KEY_AUTOCONNECT "autoconnect"
+#define NM_OPENCONNECT_KEY_CERTSIGS "certsigs"
+
+static void
+migrate_datum_to_secret (const char *key, const char *value, gpointer user_data)
+{
+	NMSettingVPN *s_vpn = user_data;
+
+	/* The xmlconfig "secret" is base64-encoded to escape it, although we
+	   were just storing it "raw" in GConf before. */
+	if (!strcmp (key, NM_OPENCONNECT_KEY_XMLCONFIG)) {
+		gchar *b64 = g_base64_encode ((guchar *)value, strlen(value));
+		nm_setting_vpn_add_secret (s_vpn, key, b64);
+		g_free (b64);
+	} else if (g_str_has_prefix (key, "form:") ||
+			   !strcmp (key, NM_OPENCONNECT_KEY_LASTHOST) ||
+			   !strcmp (key, NM_OPENCONNECT_KEY_AUTOCONNECT) ||
+			   !strcmp (key, NM_OPENCONNECT_KEY_CERTSIGS)) {
+		nm_setting_vpn_add_secret (s_vpn, key, value);
+	}
+}
+
+static void
+remove_old_data (const char *key, const char *value, gpointer user_data)
+{
+	NMSettingVPN *s_vpn = user_data;
+
+	nm_setting_vpn_remove_data_item (s_vpn, key);
+}
 
 static void
 migrate_openconnect (NMConnection *connection, NMSettingVPN *s_vpn)
 {
 	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NOT_SAVED;
 
+	/* These are different for every login session, and should not be stored */
 	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_GATEWAY, flags, NULL);
 	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_COOKIE, flags, NULL);
 	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_GWCERT, flags, NULL);
+
+	/* These are purely internal data for the auth-dialog, and should be stored */
+	flags = NM_SETTING_SECRET_FLAG_NONE;
+	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_XMLCONFIG, flags, NULL);
+	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_LASTHOST, flags, NULL);
+	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_AUTOCONNECT, flags, NULL);
+	nm_setting_set_secret_flags (NM_SETTING (s_vpn), NM_OPENCONNECT_KEY_CERTSIGS, flags, NULL);
+
+	/* Remove obsolete 'authtype' setting */
+	nm_setting_vpn_remove_data_item (s_vpn, "authtype");
+
+	/* Iterate over the settings which were in GConf, and convert the appropriate
+	   ones to secrets */
+	nm_setting_vpn_foreach_data_item (s_vpn, migrate_datum_to_secret, s_vpn);
+
+	/* And now iterate over the new secrets, and remove the corresponding data
+	   items that we couldn't remove from *inside* the previous foreach() */
+	nm_setting_vpn_foreach_secret (s_vpn, remove_old_data, s_vpn);
 }
 
 
