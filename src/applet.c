@@ -1206,7 +1206,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 static void
 nma_menu_configure_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 {
-	const char *argv[] = { BINDIR "/nm-connection-editor", "--type", NM_SETTING_VPN_SETTING_NAME, NULL};
+	const char *argv[] = { BINDIR "/nm-connection-editor", "--show", "--type", NM_SETTING_VPN_SETTING_NAME, NULL};
 
 	g_spawn_async (NULL, (gchar **) argv, NULL, 0, NULL, NULL, NULL, NULL);
 
