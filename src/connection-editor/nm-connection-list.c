@@ -1545,8 +1545,9 @@ static void
 connections_read (NMRemoteSettings *settings, EditData *data)
 {
 	NMConnection *connection;
+	static gulong signal_id = 0;
 
-	connection = get_connection (data->self->settings, data->uuid);
+	connection = get_connection (settings, data->uuid);
 	if (connection) {
 		NMSettingConnection *s_con;
 		const char *type;
@@ -1566,13 +1567,18 @@ connections_read (NMRemoteSettings *settings, EditData *data)
 		g_object_unref (connection);
 	} else if (data->wait) {
 		data->wait = FALSE;
-		g_signal_connect (data->self->settings, "connections-read",
-		                  G_CALLBACK (connections_read), data);
+		signal_id = g_signal_connect (settings, "connections-read",
+		                              G_CALLBACK (connections_read), data);
 		return;
 	} else {
 		error_dialog (NULL,
 		              _("Error editing connection"),
 		              _("Did not find a connection with UUID '%s'"), data->uuid);
+	}
+
+	if (signal_id != 0) {
+		g_signal_handler_disconnect (settings, signal_id);
+		signal_id = 0;
 	}
 
 	g_free (data);
