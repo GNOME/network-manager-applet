@@ -839,7 +839,9 @@ applet_do_notify (NMApplet *applet,
 	g_free (escaped);
 	applet->notification = notify;
 
-#if !HAVE_LIBNOTIFY_07
+#if HAVE_LIBNOTIFY_07
+	notify_notification_set_hint (notify, "transient", g_variant_new_boolean (TRUE));
+#else
 	notify_notification_attach_to_status_icon (notify, applet->status_icon);
 #endif
 	notify_notification_set_urgency (notify, urgency);
