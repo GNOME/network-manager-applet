@@ -1148,6 +1148,26 @@ parse_op_name (GsmDeviceInfo *info, const char *orig, const char *op_code)
 	return find_provider_for_mcc_mnc (info->providers, orig);
 }
 
+static void
+notify_user_of_gsm_reg_change (GsmDeviceInfo *info)
+{
+	guint32 mb_state = gsm_state_to_mb_state (info);
+
+	if (mb_state == MB_STATE_HOME) {
+		applet_do_notify_with_pref (info->applet,
+		                            _("GSM network."),
+		                            _("You are now registered on the home network."),
+		                            "notification-gsm-high",
+		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
+	} else if (mb_state == MB_STATE_ROAMING) {
+		applet_do_notify_with_pref (info->applet,
+		                            _("GSM network."),
+		                            _("You are now registered on a roaming network."),
+		                            "notification-gsm-high",
+		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
+	}
+}
+
 #define REG_INFO_TYPE (dbus_g_type_get_struct ("GValueArray", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID))
 #define DBUS_TYPE_G_MAP_OF_VARIANT (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
 
@@ -1166,7 +1186,7 @@ reg_info_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 		if (array->n_values == 3) {
 			value = g_value_array_get_nth (array, 0);
 			if (G_VALUE_HOLDS_UINT (value))
-				new_state = g_value_get_uint (value);
+				new_state = g_value_get_uint (value) + 1;
 
 			value = g_value_array_get_nth (array, 1);
 			if (G_VALUE_HOLDS_STRING (value)) {
@@ -1185,7 +1205,11 @@ reg_info_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 		g_value_array_free (array);
 	}
 
-	info->reg_state = new_state + 1;
+	if (info->reg_state != new_state) {
+		info->reg_state = new_state;
+		notify_user_of_gsm_reg_change (info);
+	}
+
 	info->op_code = new_op_code;
 	info->op_name = new_op_name;
 
@@ -1346,8 +1370,13 @@ reg_info_changed_cb (DBusGProxy *proxy,
                      gpointer user_data)
 {
 	GsmDeviceInfo *info = user_data;
+	guint32 new_state = reg_state + 1;
 
-	info->reg_state = reg_state + 1;
+	if (info->reg_state != new_state) {
+		info->reg_state = new_state;
+		notify_user_of_gsm_reg_change (info);
+	}
+
 	g_free (info->op_code);
 	info->op_code = strlen (op_code) ? g_strdup (op_code) : NULL;
 	g_free (info->op_name);
