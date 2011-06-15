@@ -1092,13 +1092,13 @@ notify_user_of_gsm_reg_change (GsmDeviceInfo *info)
 		applet_do_notify_with_pref (info->applet,
 		                            _("GSM network."),
 		                            _("You are now registered on the home network."),
-		                            "notification-gsm-high",
+		                            "nm-signal-100",
 		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 	} else if (mb_state == MB_STATE_ROAMING) {
 		applet_do_notify_with_pref (info->applet,
 		                            _("GSM network."),
 		                            _("You are now registered on a roaming network."),
-		                            "notification-gsm-high",
+		                            "nm-signal-100",
 		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 	}
 }
