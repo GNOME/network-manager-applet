@@ -252,9 +252,8 @@ validate_dialog_ssid (NMAWirelessDialog *self)
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 
 	ssid = gtk_entry_get_text (GTK_ENTRY (widget));
-	ssid_len = strlen (ssid);
 	
-	if (!ssid || !ssid_len || (ssid_len > 32))
+	if (!ssid || strlen (ssid) == 0 || strlen (ssid) > 32)
 		return NULL;
 
 	ssid_len = strlen (ssid);
