@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-01 11:13+0100\n"
-"PO-Revision-Date: 2011-03-01 11:14+0100\n"
+"POT-Creation-Date: 2011-06-16 21:36+0200\n"
+"PO-Revision-Date: 2011-06-16 21:37+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -152,7 +152,7 @@ msgstr "Żądanie adresu sieciowego dla \"%s\"..."
 msgid "Mobile broadband connection '%s' active"
 msgstr "Nawiązano połączenie komórkowe \"%s\""
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:674
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:679
 #: ../src/mb-menu-item.c:55
 msgid "CDMA"
 msgstr "CDMA"
@@ -163,7 +163,7 @@ msgid "Mobile Broadband (%s)"
 msgstr "Komórkowe (%s)"
 
 #: ../src/applet-device-cdma.c:283 ../src/applet-device-gsm.c:327
-#: ../src/connection-editor/page-mobile.c:365
+#: ../src/connection-editor/page-mobile.c:370
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
 #: ../src/connection-editor/nm-connection-list.c:1412
 msgid "Mobile Broadband"
@@ -187,7 +187,7 @@ msgstr "Połączenie komórkowe \"%s\" jest aktywne: (%d%%%s%s)"
 msgid "roaming"
 msgstr "roaming"
 
-#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:677
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:682
 #: ../src/mb-menu-item.c:60
 msgid "GSM"
 msgstr "GSM"
@@ -283,6 +283,18 @@ msgstr "Proszę ponownie wprowadzić nowy kod PIN:"
 #: ../src/applet-device-gsm.c:987
 msgid "Show PIN/PUK codes"
 msgstr "Wyświetlanie kodów PIN/PUK"
+
+#: ../src/applet-device-gsm.c:1158 ../src/applet-device-gsm.c:1164
+msgid "GSM network."
+msgstr "Sieć GSM."
+
+#: ../src/applet-device-gsm.c:1159
+msgid "You are now registered on the home network."
+msgstr "Zarejestrowano w sieci domowej."
+
+#: ../src/applet-device-gsm.c:1165
+msgid "You are now registered on a roaming network."
+msgstr "Zarejestrowano w sieci roamingowej."
 
 #: ../src/applet-device-wired.c:63
 msgid "Auto Ethernet"
@@ -912,15 +924,19 @@ msgstr "Brak połączenia sieciowego"
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
-#: ../src/applet.c:3041 ../src/wired-dialog.c:132
-msgid ""
-"The NetworkManager Applet could not find some required resources (the .ui "
-"file was not found)."
-msgstr ""
-"Aplet NetworkManager nie może odnaleźć niektórych wymaganych zasobów (nie "
-"odnaleziono pliku .ui)."
+#: ../src/gsm-unlock.ui.h:1
+msgid "_Unlock"
+msgstr "_Odblokuj"
 
-#: ../src/applet.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
+#: ../src/info.ui.h:1
+msgid "Active Network Connections"
+msgstr "Aktywne połączenia sieciowe"
+
+#: ../src/info.ui.h:2
+msgid "Connection Information"
+msgstr "Informacje o połączeniu"
+
+#: ../src/wifi.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 #: ../src/wireless-security/eap-method-ttls.ui.h:1
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
@@ -928,56 +944,66 @@ msgstr ""
 msgid " "
 msgstr " "
 
-#: ../src/applet.ui.h:2
-msgid "Active Network Connections"
-msgstr "Aktywne połączenia sieciowe"
-
-#: ../src/applet.ui.h:3
-msgid "C_onnect"
-msgstr "P_ołącz"
-
-#: ../src/applet.ui.h:4
+#: ../src/wifi.ui.h:2
 msgid "Co_nnection:"
 msgstr "Połącze_nie:"
 
-#: ../src/applet.ui.h:5
-msgid "Connection Information"
-msgstr "Informacje o połączeniu"
-
-#: ../src/applet.ui.h:6
-msgid "Other Wireless Network..."
-msgstr "Inna sieć bezprzewodowa..."
-
-#: ../src/applet.ui.h:7
+#: ../src/wifi.ui.h:3
 msgid "Wireless _adapter:"
 msgstr "_Adapter bezprzewodowy:"
 
-#: ../src/applet.ui.h:8
+#: ../src/wifi.ui.h:4 ../src/wired-8021x.ui.h:2
 msgid "_Network name:"
 msgstr "_Nazwa sieci:"
 
-#: ../src/applet.ui.h:9
-msgid "_Unlock"
-msgstr "_Odblokuj"
-
-#: ../src/applet.ui.h:10
+#: ../src/wifi.ui.h:5
 msgid "_Wireless security:"
 msgstr "Zabezpieczenia sieci bezprze_wodowej:"
 
-#: ../src/applet.ui.h:11
-msgid "label"
-msgstr "etykieta"
+#: ../src/wired-8021x.ui.h:1 ../src/wired-dialog.c:107
+msgid "Wired 802.1X authentication"
+msgstr "Przewodowe uwierzytelnianie 802.1X"
 
 #: ../src/connection-editor/ce-page.c:69
 msgid "automatic"
 msgstr "automatycznie"
 
 #: ../src/connection-editor/ce-page.c:222
-#: ../src/connection-editor/nm-connection-editor.c:613
+#: ../src/connection-editor/nm-connection-editor.c:615
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Zaktualizowanie ustawień połączenia się nie powiodło z powodu nieznanego "
 "błędu."
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:1
+#: ../src/connection-editor/ce-ip6-routes.ui.h:1
+#: ../src/connection-editor/ce-page-ip4.ui.h:6
+#: ../src/connection-editor/ce-page-ip6.ui.h:5
+msgid ""
+"IP addresses identify your computer on the network.  Click the \"Add\" "
+"button to add an IP address."
+msgstr ""
+"Adresy IP identyfikują komputery w sieci. Proszę nacisnąć przycisk \"Dodaj"
+"\", aby dodać adres IP."
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:2
+#: ../src/connection-editor/ce-ip6-routes.ui.h:2
+msgid ""
+"If enabled, this connection will never be used as the default network "
+"connection."
+msgstr ""
+"Jeśli włączone, to połączenie nigdy nie będzie użyte jako domyślne "
+"połączenie sieciowe."
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:3
+#: ../src/connection-editor/ce-ip6-routes.ui.h:3
+msgid "Ig_nore automatically obtained routes"
+msgstr "Ig_norowanie automatycznie uzyskanych tras"
+
+#: ../src/connection-editor/ce-ip4-routes.ui.h:4
+#: ../src/connection-editor/ce-ip6-routes.ui.h:4
+msgid "Use this c_onnection only for resources on its network"
+msgstr "Używanie tego p_ołączenia tylko dla zasobów tej sieci"
 
 # checkbox
 #: ../src/connection-editor/ce-page-dsl.ui.h:1
@@ -1019,7 +1045,7 @@ msgstr "Adresy"
 #: ../src/connection-editor/ce-page-ip6.ui.h:2
 #: ../src/connection-editor/ce-page-wired.ui.h:7
 #: ../src/connection-editor/ce-page-wireless.ui.h:3
-#: ../src/connection-editor/page-ip6.c:135
+#: ../src/connection-editor/page-ip6.c:141
 #: ../src/wireless-security/eap-method-peap.ui.h:3
 msgid "Automatic"
 msgstr "Automatycznie"
@@ -1042,15 +1068,6 @@ msgstr ""
 "Domeny używane do znajdowania nazw komputerów. Aby podać wiele domen, należy "
 "je rozdzielić przecinkami."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:6
-#: ../src/connection-editor/ce-page-ip6.ui.h:5
-msgid ""
-"IP addresses identify your computer on the network.  Click the \"Add\" "
-"button to add an IP address."
-msgstr ""
-"Adresy IP identyfikują komputery w sieci. Proszę nacisnąć przycisk \"Dodaj"
-"\", aby dodać adres IP."
-
 #: ../src/connection-editor/ce-page-ip4.ui.h:7
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
 msgid ""
@@ -1062,42 +1079,28 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:7
-msgid ""
-"If enabled, this connection will never be used as the default network "
-"connection."
-msgstr ""
-"Jeśli włączone, to połączenie nigdy nie będzie użyte jako domyślne "
-"połączenie sieciowe."
-
-#: ../src/connection-editor/ce-page-ip4.ui.h:9
-#: ../src/connection-editor/ce-page-ip6.ui.h:8
-msgid "Ig_nore automatically obtained routes"
-msgstr "Ig_norowanie automatycznie uzyskanych tras"
-
-#: ../src/connection-editor/ce-page-ip4.ui.h:10
-#: ../src/connection-editor/ce-page-ip6.ui.h:9
 msgid "Link-Local"
 msgstr "Link-Local"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:11
-#: ../src/connection-editor/ce-page-ip6.ui.h:10
-#: ../src/connection-editor/page-ip4.c:162
-#: ../src/connection-editor/page-ip6.c:184
+#: ../src/connection-editor/ce-page-ip4.ui.h:9
+#: ../src/connection-editor/ce-page-ip6.ui.h:8
+#: ../src/connection-editor/page-ip4.c:168
+#: ../src/connection-editor/page-ip6.c:190
 msgid "Manual"
 msgstr "Ręczne"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:12
+#: ../src/connection-editor/ce-page-ip4.ui.h:10
 msgid "Require IPv4 addressing for this connection to complete"
 msgstr "Wymaganie adresowania IPv4 do ukończenia tego połączenia"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:13
-#: ../src/connection-editor/ce-page-ip6.ui.h:12
-#: ../src/connection-editor/page-ip4.c:180
-#: ../src/connection-editor/page-ip6.c:204
+#: ../src/connection-editor/ce-page-ip4.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#: ../src/connection-editor/page-ip4.c:186
+#: ../src/connection-editor/page-ip6.c:210
 msgid "Shared to other computers"
 msgstr "Współdzielone z innymi komputerami"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:14
+#: ../src/connection-editor/ce-page-ip4.ui.h:12
 msgid ""
 "The DHCP client identifier allows the network administrator to customize "
 "your computer's configuration.  If you wish to use a DHCP client identifier, "
@@ -1107,12 +1110,7 @@ msgstr ""
 "konfigurację komputerów. Aby użyć identyfikatora, należy go podać w tym "
 "miejscu."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:15
-#: ../src/connection-editor/ce-page-ip6.ui.h:13
-msgid "Use this c_onnection only for resources on its network"
-msgstr "Używanie tego p_ołączenia tylko dla zasobów tej sieci"
-
-#: ../src/connection-editor/ce-page-ip4.ui.h:16
+#: ../src/connection-editor/ce-page-ip4.ui.h:13
 msgid ""
 "When connecting to IPv6-capable networks, allows the connection to complete "
 "if IPv4 configuration fails but IPv6 configuration succeeds."
@@ -1120,31 +1118,31 @@ msgstr ""
 "Podczas łączenia się z sieciami IPv6 umożliwia ukończenie nawiązania "
 "połączenia, jeśli konfiguracja IPv4 się nie powiedzie, a IPv6 tak."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:17
-#: ../src/connection-editor/ce-page-ip6.ui.h:15
+#: ../src/connection-editor/ce-page-ip4.ui.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
 msgid "_DNS servers:"
 msgstr "Serwery _DNS:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:18
-#: ../src/connection-editor/ce-page-ip6.ui.h:16
+#: ../src/connection-editor/ce-page-ip4.ui.h:15
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
 msgid "_Method:"
 msgstr "_Metoda:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:19
-#: ../src/connection-editor/ce-page-ip6.ui.h:17
+#: ../src/connection-editor/ce-page-ip4.ui.h:16
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
 msgid "_Routes…"
 msgstr "_Trasy…"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:20
-#: ../src/connection-editor/ce-page-ip6.ui.h:18
+#: ../src/connection-editor/ce-page-ip4.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
 msgid "_Search domains:"
 msgstr "Domeny wy_szukiwania:"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:9
 msgid "Require IPv6 addressing for this connection to complete"
 msgstr "Wymaganie adresowania IPv6 do ukończenia nawiązania tego połączenia"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
@@ -1222,95 +1220,42 @@ msgid "Allow _Deflate data compression"
 msgstr "Dopuszczalna kompresji danych _Deflate"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:3
-msgid "Allowed Authentication Methods"
-msgstr "Dozwolone metody uwierzytelniania"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:4
 msgid "Allowed methods:"
 msgstr "Dozwolone metody:"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:5
+#: ../src/connection-editor/ce-page-ppp.ui.h:4
 msgid "Authentication"
 msgstr "Uwierzytelnianie"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:6
-msgid "C_HAP"
-msgstr "C_HAP"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:7
-msgid "Challenge Handshake Authentication Protocol"
-msgstr "Challenge Handshake Authentication Protocol"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:8
+#: ../src/connection-editor/ce-page-ppp.ui.h:5
 msgid "Compression"
 msgstr "Kompresja"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:9
+#: ../src/connection-editor/ce-page-ppp.ui.h:6
 msgid "Configure _Methods…"
 msgstr "Skonfiguruj _metody…"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:10
+#: ../src/connection-editor/ce-page-ppp.ui.h:7
 msgid "Echo"
 msgstr "Echo"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:11
-msgid "Extensible Authentication Protocol"
-msgstr "Extensible Authentication Protocol"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:12
-msgid ""
-"In most cases, the provider's PPP servers will support all authentication "
-"methods.  If connections fail, try disabling support for some methods."
-msgstr ""
-"W większości przypadków serwery dostawcy usług PPP obsługują wszystkie "
-"metody uwierzytelniania. Jeśli połączenie zawodzi, proszę spróbować wyłączyć "
-"obsługę niektórych metod."
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:13
-msgid "MSCHAP v_2"
-msgstr "MSCHAP v_2"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:14
-msgid "Microsoft Challenge Handshake Authentication Protocol"
-msgstr "Microsoft Challenge Handshake Authentication Protocol"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:15
-msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
-msgstr "Microsoft Challenge Handshake Authentication Protocol wersja 2"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:16
-msgid "Password Authentication Protocol"
-msgstr "Password Authentication Protocol"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:17
+#: ../src/connection-editor/ce-page-ppp.ui.h:8
 msgid "Send PPP _echo packets"
 msgstr "Wysyłanie pakietów _echo PPP"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:18
+#: ../src/connection-editor/ce-page-ppp.ui.h:9
 msgid "Use TCP _header compression"
 msgstr "Używanie kompresji _TCP header"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:19
+#: ../src/connection-editor/ce-page-ppp.ui.h:10
 msgid "Use _stateful MPPE"
 msgstr "Używanie _Stateful MPPE"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:20
-msgid "_EAP"
-msgstr "_EAP"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:21
-msgid "_MSCHAP"
-msgstr "_MSCHAP"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:22
-msgid "_PAP"
-msgstr "_PAP"
-
-#: ../src/connection-editor/ce-page-ppp.ui.h:23
+#: ../src/connection-editor/ce-page-ppp.ui.h:11
 msgid "_Require 128-bit encryption"
 msgstr "Wymaganie 128-bitowego szyf_rowania"
 
-#: ../src/connection-editor/ce-page-ppp.ui.h:24
+#: ../src/connection-editor/ce-page-ppp.ui.h:12
 msgid "_Use point-to-point encryption (MPPE)"
 msgstr "_Używanie szyfrowania PPP (MPPE)"
 
@@ -1467,6 +1412,59 @@ msgstr "mW"
 msgid "_Security:"
 msgstr "_Zabezpieczenia:"
 
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
+msgid "Allowed Authentication Methods"
+msgstr "Dozwolone metody uwierzytelniania"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
+msgid "C_HAP"
+msgstr "C_HAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:3
+msgid "Challenge Handshake Authentication Protocol"
+msgstr "Challenge Handshake Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:4
+msgid "Extensible Authentication Protocol"
+msgstr "Extensible Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:5
+msgid ""
+"In most cases, the provider's PPP servers will support all authentication "
+"methods.  If connections fail, try disabling support for some methods."
+msgstr ""
+"W większości przypadków serwery dostawcy usług PPP obsługują wszystkie "
+"metody uwierzytelniania. Jeśli połączenie zawodzi, proszę spróbować wyłączyć "
+"obsługę niektórych metod."
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:6
+msgid "MSCHAP v_2"
+msgstr "MSCHAP v_2"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:7
+msgid "Microsoft Challenge Handshake Authentication Protocol"
+msgstr "Microsoft Challenge Handshake Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:8
+msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
+msgstr "Microsoft Challenge Handshake Authentication Protocol wersja 2"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:9
+msgid "Password Authentication Protocol"
+msgstr "Password Authentication Protocol"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:10
+msgid "_EAP"
+msgstr "_EAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:11
+msgid "_MSCHAP"
+msgstr "_MSCHAP"
+
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:12
+msgid "_PAP"
+msgstr "_PAP"
+
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:2
 msgid "Choose a VPN Connection Type"
 msgstr "Wybór typu połączenia VPN"
@@ -1485,33 +1483,33 @@ msgstr ""
 "typ połączenia VPN nie jest dostępny w liście, odpowiednia wtyczka VPN może "
 "nie być zainstalowana."
 
-#: ../src/connection-editor/ip4-routes-dialog.c:504
-#: ../src/connection-editor/ip6-routes-dialog.c:462
-#: ../src/connection-editor/page-ip4.c:738
-#: ../src/connection-editor/page-ip6.c:723
+#: ../src/connection-editor/ip4-routes-dialog.c:743
+#: ../src/connection-editor/ip6-routes-dialog.c:685
+#: ../src/connection-editor/page-ip4.c:906
+#: ../src/connection-editor/page-ip6.c:870
 msgid "Address"
 msgstr "Adres"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:520
-#: ../src/connection-editor/page-ip4.c:755
+#: ../src/connection-editor/ip4-routes-dialog.c:760
+#: ../src/connection-editor/page-ip4.c:923
 msgid "Netmask"
 msgstr "Maska sieci"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:536
-#: ../src/connection-editor/ip6-routes-dialog.c:494
-#: ../src/connection-editor/page-ip4.c:772
-#: ../src/connection-editor/page-ip6.c:757
+#: ../src/connection-editor/ip4-routes-dialog.c:777
+#: ../src/connection-editor/ip6-routes-dialog.c:719
+#: ../src/connection-editor/page-ip4.c:940
+#: ../src/connection-editor/page-ip6.c:904
 msgid "Gateway"
 msgstr "Brama"
 
 # http://en.wikipedia.org/wiki/Metrics_(networking)
-#: ../src/connection-editor/ip4-routes-dialog.c:552
-#: ../src/connection-editor/ip6-routes-dialog.c:510
+#: ../src/connection-editor/ip4-routes-dialog.c:794
+#: ../src/connection-editor/ip6-routes-dialog.c:736
 msgid "Metric"
 msgstr "Parametry"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:478
-#: ../src/connection-editor/page-ip6.c:740
+#: ../src/connection-editor/ip6-routes-dialog.c:702
+#: ../src/connection-editor/page-ip6.c:887
 msgid "Prefix"
 msgstr "Przedrostek"
 
@@ -1530,106 +1528,106 @@ msgstr "Nie można wczytać interfejsu użytkownika DSL."
 msgid "DSL connection %d"
 msgstr "Połączenie DSL %d"
 
-#: ../src/connection-editor/page-ip4.c:126
-#: ../src/connection-editor/page-ip6.c:125
+#: ../src/connection-editor/page-ip4.c:132
+#: ../src/connection-editor/page-ip6.c:131
 msgid "Automatic (VPN)"
 msgstr "Automatycznie (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:127
-#: ../src/connection-editor/page-ip6.c:126
+#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip6.c:132
 msgid "Automatic (VPN) addresses only"
 msgstr "Automatycznie (VPN), tylko adresy"
 
-#: ../src/connection-editor/page-ip4.c:130
-#: ../src/connection-editor/page-ip6.c:129
+#: ../src/connection-editor/page-ip4.c:136
+#: ../src/connection-editor/page-ip6.c:135
 msgid "Automatic (PPP)"
 msgstr "Automatycznie (PPP)"
 
-#: ../src/connection-editor/page-ip4.c:131
-#: ../src/connection-editor/page-ip6.c:130
+#: ../src/connection-editor/page-ip4.c:137
+#: ../src/connection-editor/page-ip6.c:136
 msgid "Automatic (PPP) addresses only"
 msgstr "Automatycznie (PPP), tylko adresy"
 
-#: ../src/connection-editor/page-ip4.c:133
-#: ../src/connection-editor/page-ip6.c:132
+#: ../src/connection-editor/page-ip4.c:139
+#: ../src/connection-editor/page-ip6.c:138
 msgid "Automatic (PPPoE)"
 msgstr "Automatycznie (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:134
-#: ../src/connection-editor/page-ip6.c:133
+#: ../src/connection-editor/page-ip4.c:140
+#: ../src/connection-editor/page-ip6.c:139
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Automatycznie (PPPoE), tylko adresy"
 
-#: ../src/connection-editor/page-ip4.c:136
+#: ../src/connection-editor/page-ip4.c:142
 msgid "Automatic (DHCP)"
 msgstr "Automatycznie (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:137
+#: ../src/connection-editor/page-ip4.c:143
 msgid "Automatic (DHCP) addresses only"
 msgstr "Automatycznie (DHCP), tylko adresy"
 
-#: ../src/connection-editor/page-ip4.c:174
-#: ../src/connection-editor/page-ip6.c:197
+#: ../src/connection-editor/page-ip4.c:180
+#: ../src/connection-editor/page-ip6.c:203
 msgid "Link-Local Only"
 msgstr "Tylko Link-Local"
 
-#: ../src/connection-editor/page-ip4.c:190
+#: ../src/connection-editor/page-ip4.c:196
 msgid "Disabled"
 msgstr "Wyłączone"
 
-#: ../src/connection-editor/page-ip4.c:700
+#: ../src/connection-editor/page-ip4.c:833
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Modyfikowanie tras IPv4 dla %s"
 
-#: ../src/connection-editor/page-ip4.c:815
+#: ../src/connection-editor/page-ip4.c:985
 msgid "IPv4 Settings"
 msgstr "Ustawienia IPv4"
 
-#: ../src/connection-editor/page-ip4.c:817
+#: ../src/connection-editor/page-ip4.c:987
 msgid "Could not load IPv4 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv4."
 
-#: ../src/connection-editor/page-ip6.c:136
+#: ../src/connection-editor/page-ip6.c:142
 msgid "Automatic, addresses only"
 msgstr "Automatycznie, tylko adresy"
 
-#: ../src/connection-editor/page-ip6.c:148
+#: ../src/connection-editor/page-ip6.c:154
 #: ../src/wireless-security/eap-method.c:234
 msgid "Ignore"
 msgstr "Zignoruj"
 
-#: ../src/connection-editor/page-ip6.c:172
+#: ../src/connection-editor/page-ip6.c:178
 msgid "Automatic, DHCP only"
 msgstr "Automatycznie, tylko DHCP"
 
-#: ../src/connection-editor/page-ip6.c:685
+#: ../src/connection-editor/page-ip6.c:797
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Modyfikowanie tras IPv6 dla %s"
 
-#: ../src/connection-editor/page-ip6.c:798
+#: ../src/connection-editor/page-ip6.c:947
 msgid "IPv6 Settings"
 msgstr "Ustawienia IPv6"
 
-#: ../src/connection-editor/page-ip6.c:800
+#: ../src/connection-editor/page-ip6.c:949
 msgid "Could not load IPv6 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv6."
 
-#: ../src/connection-editor/page-mobile.c:367
+#: ../src/connection-editor/page-mobile.c:372
 msgid "Could not load mobile broadband user interface."
 msgstr "Nie można wczytać interfejsu użytkownika połączeń komórkowych."
 
-#: ../src/connection-editor/page-mobile.c:384
+#: ../src/connection-editor/page-mobile.c:389
 msgid "Unsupported mobile broadband connection type."
 msgstr "Nieobsługiwany typ połączenia komórkowego."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:625
+#: ../src/connection-editor/page-mobile.c:630
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Wybór typu dostawcy połączenia komórkowego"
 
-#: ../src/connection-editor/page-mobile.c:652
+#: ../src/connection-editor/page-mobile.c:657
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1637,12 +1635,12 @@ msgstr ""
 "Proszę wybrać technologię używaną przez dostawcę połączenia komórkowego. W "
 "razie wątpliwości należy zapytać dostawcę."
 
-#: ../src/connection-editor/page-mobile.c:657
+#: ../src/connection-editor/page-mobile.c:662
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Dostawca używa technologii opartej na _GSM (np. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:664
+#: ../src/connection-editor/page-mobile.c:669
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Dostawca używa technologii opartej na C_DMA (np. 1xRTT, EVDO)"
 
@@ -1813,7 +1811,7 @@ msgstr "Modyfikowanie %s"
 msgid "Editing un-named connection"
 msgstr "Modyfikowanie połączenia bez nazwy"
 
-#: ../src/connection-editor/nm-connection-editor.c:293
+#: ../src/connection-editor/nm-connection-editor.c:295
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -1821,23 +1819,23 @@ msgstr ""
 "Edytor połączeń nie może odnaleźć niektórych wymaganych zasobów (plik .ui "
 "nie został odnaleziony)."
 
-#: ../src/connection-editor/nm-connection-editor.c:391
+#: ../src/connection-editor/nm-connection-editor.c:393
 msgid "Error creating connection editor dialog."
 msgstr "Błąd podczas tworzenia okna dialogowego edytora połączeń."
 
-#: ../src/connection-editor/nm-connection-editor.c:412
+#: ../src/connection-editor/nm-connection-editor.c:414
 msgid "_Save"
 msgstr "Zapi_sz"
 
-#: ../src/connection-editor/nm-connection-editor.c:413
+#: ../src/connection-editor/nm-connection-editor.c:415
 msgid "Save any changes made to this connection."
 msgstr "Zapis zmian dokonanych na tym połączeniu."
 
-#: ../src/connection-editor/nm-connection-editor.c:414
+#: ../src/connection-editor/nm-connection-editor.c:416
 msgid "_Save..."
 msgstr "Zapi_sz..."
 
-#: ../src/connection-editor/nm-connection-editor.c:415
+#: ../src/connection-editor/nm-connection-editor.c:417
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Należy się uwierzytelnić, aby zapisać to połączenie dla wszystkich "
@@ -2130,7 +2128,7 @@ msgstr "Wykrywanie konfiguracji telefonu..."
 msgid "could not find the Bluetooth device."
 msgstr "nie można odnaleźć urządzenia Bluetooth."
 
-#: ../src/gnome-bluetooth/bt-widget.c:912
+#: ../src/gnome-bluetooth/bt-widget.c:914
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2138,20 +2136,20 @@ msgstr ""
 "Domyślny adapter Bluetooth musi być włączony przez ustawieniem połączenia "
 "wdzwanianego."
 
-#: ../src/gnome-bluetooth/bt-widget.c:944
+#: ../src/gnome-bluetooth/bt-widget.c:946
 #, c-format
 msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
 msgstr ""
 "Konfiguracja Bluetooth nie jest możliwa (połączenie z usługą D-Bus się nie "
 "powiodło: %s)."
 
-#: ../src/gnome-bluetooth/bt-widget.c:954
+#: ../src/gnome-bluetooth/bt-widget.c:956
 msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
 msgstr ""
 "Konfiguracja Bluetooth nie jest możliwa (utworzenie pośrednika usługi D-Bus "
 "się nie powiodło)."
 
-#: ../src/gnome-bluetooth/bt-widget.c:963
+#: ../src/gnome-bluetooth/bt-widget.c:965
 #, c-format
 msgid ""
 "Bluetooth configuration not possible (error finding NetworkManager: %s)."
@@ -2159,19 +2157,19 @@ msgstr ""
 "Konfiguracja Bluetooth nie jest możliwa (błąd podczas wyszukiwania usługi "
 "NetworkManager: %s)"
 
-#: ../src/gnome-bluetooth/bt-widget.c:1014
+#: ../src/gnome-bluetooth/bt-widget.c:1016
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Użycie telefonu jako urządzenia sieciowego (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/bt-widget.c:1023
+#: ../src/gnome-bluetooth/bt-widget.c:1025
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Dostęp do Internetu używając telefonu komórkowego (DUN)"
 
-#: ../src/main.c:70
+#: ../src/main.c:72
 msgid "Usage:"
 msgstr "Użycie:"
 
-#: ../src/main.c:72
+#: ../src/main.c:74
 msgid ""
 "This program is a component of NetworkManager (http://projects.gnome.org/"
 "NetworkManager)."
@@ -2179,7 +2177,7 @@ msgstr ""
 "Ten program jest komponentem oprogramowania NetworkManager (http://projects."
 "gnome.org/NetworkManager)."
 
-#: ../src/main.c:73
+#: ../src/main.c:75
 msgid ""
 "It is not intended for command-line interaction but instead runs in the "
 "GNOME desktop environment."
@@ -2261,28 +2259,28 @@ msgstr "Sieć roamingowa (%s)"
 msgid "Roaming network"
 msgstr "Sieć roamingowa"
 
-#: ../src/utils/mobile-wizard.c:195
+#: ../src/utils/mobile-wizard.c:196
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
 msgstr ""
 "Połączenie komórkowe zostało skonfigurowane za pomocą poniższych ustawień:"
 
 #. Device
-#: ../src/utils/mobile-wizard.c:202
+#: ../src/utils/mobile-wizard.c:203
 msgid "Your Device:"
 msgstr "Urządzenie:"
 
 #. Provider
-#: ../src/utils/mobile-wizard.c:213
+#: ../src/utils/mobile-wizard.c:214
 msgid "Your Provider:"
 msgstr "Dostawca:"
 
 #. Plan and APN
-#: ../src/utils/mobile-wizard.c:224
+#: ../src/utils/mobile-wizard.c:225
 msgid "Your Plan:"
 msgstr "Plan:"
 
-#: ../src/utils/mobile-wizard.c:245
+#: ../src/utils/mobile-wizard.c:246
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
 "settings you selected.  If the connection fails or you cannot access network "
@@ -2296,23 +2294,23 @@ msgstr ""
 "zmodyfikować, należy wybrać \"Połączenia sieciowe\" z menu System >> "
 "Preferencje."
 
-#: ../src/utils/mobile-wizard.c:257
+#: ../src/utils/mobile-wizard.c:258
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Potwierdzenie ustawień połączenia komórkowego"
 
-#: ../src/utils/mobile-wizard.c:318
+#: ../src/utils/mobile-wizard.c:319
 msgid "Unlisted"
 msgstr "Nie na liście"
 
-#: ../src/utils/mobile-wizard.c:436
+#: ../src/utils/mobile-wizard.c:470
 msgid "_Select your plan:"
 msgstr "Pro_szę wybrać plan:"
 
-#: ../src/utils/mobile-wizard.c:460
+#: ../src/utils/mobile-wizard.c:494
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "Wybr_ana nazwa punktu dostępowego (APN) planu:"
 
-#: ../src/utils/mobile-wizard.c:479
+#: ../src/utils/mobile-wizard.c:514
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
@@ -2324,103 +2322,103 @@ msgstr ""
 "\n"
 "W razie wątpliwości dotyczących planu należy zapytać dostawcę o APN planu."
 
-#: ../src/utils/mobile-wizard.c:486
+#: ../src/utils/mobile-wizard.c:521
 msgid "Choose your Billing Plan"
 msgstr "Proszę wybrać plan taryfowy"
 
-#: ../src/utils/mobile-wizard.c:534
+#: ../src/utils/mobile-wizard.c:569
 msgid "My plan is not listed..."
 msgstr "Planu nie ma na liście..."
 
-#: ../src/utils/mobile-wizard.c:687
+#: ../src/utils/mobile-wizard.c:722
 msgid "Select your provider from a _list:"
 msgstr "P_roszę wybrać dostawcę z listy:"
 
-#: ../src/utils/mobile-wizard.c:700
+#: ../src/utils/mobile-wizard.c:735
 msgid "Provider"
 msgstr "Dostawca"
 
-#: ../src/utils/mobile-wizard.c:725
+#: ../src/utils/mobile-wizard.c:760
 msgid "I can't find my provider and I wish to enter it _manually:"
 msgstr "Dostawcy nie _ma na liście, proszę wprowadzić go ręcznie:"
 
-#: ../src/utils/mobile-wizard.c:736
+#: ../src/utils/mobile-wizard.c:771
 msgid "Provider:"
 msgstr "Dostawca:"
 
-#: ../src/utils/mobile-wizard.c:760
+#: ../src/utils/mobile-wizard.c:795
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "Dostawca używa technologii GSM (GPRS, EDGE, UMTS, HSPA)"
 
-#: ../src/utils/mobile-wizard.c:766
+#: ../src/utils/mobile-wizard.c:801
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "Dostawca używa technologii CDMA (1xRTT, EVDO)"
 
-#: ../src/utils/mobile-wizard.c:777
+#: ../src/utils/mobile-wizard.c:812
 msgid "Choose your Provider"
 msgstr "Wybór dostawcy"
 
-#: ../src/utils/mobile-wizard.c:1023
+#: ../src/utils/mobile-wizard.c:1058
 msgid "Country or Region List:"
 msgstr "Lista krajów lub regionów:"
 
-#: ../src/utils/mobile-wizard.c:1035
+#: ../src/utils/mobile-wizard.c:1070
 msgid "Country or region"
 msgstr "Kraj lub region:"
 
-#: ../src/utils/mobile-wizard.c:1042
+#: ../src/utils/mobile-wizard.c:1077
 msgid "My country is not listed"
 msgstr "Kraju nie ma na liście"
 
-#: ../src/utils/mobile-wizard.c:1088
+#: ../src/utils/mobile-wizard.c:1123
 msgid "Choose your Provider's Country or Region"
 msgstr "Wybór kraju lub regionu dostawcy"
 
-#: ../src/utils/mobile-wizard.c:1137
+#: ../src/utils/mobile-wizard.c:1172
 msgid "Installed GSM device"
 msgstr "Zainstalowane urządzenie GSM"
 
-#: ../src/utils/mobile-wizard.c:1140
+#: ../src/utils/mobile-wizard.c:1175
 msgid "Installed CDMA device"
 msgstr "Zainstalowane urządzenie CDMA"
 
-#: ../src/utils/mobile-wizard.c:1308
+#: ../src/utils/mobile-wizard.c:1343
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
 msgstr ""
 "Ten asystent pomaga w łatwym ustawieniu połączenia komórkowego z siecią 3G."
 
-#: ../src/utils/mobile-wizard.c:1313
+#: ../src/utils/mobile-wizard.c:1348
 msgid "You will need the following information:"
 msgstr "Wymagane są następujące informacje:"
 
-#: ../src/utils/mobile-wizard.c:1324
+#: ../src/utils/mobile-wizard.c:1359
 msgid "Your broadband provider's name"
 msgstr "Nazwa dostawcy połączenia komórkowego"
 
-#: ../src/utils/mobile-wizard.c:1330
+#: ../src/utils/mobile-wizard.c:1365
 msgid "Your broadband billing plan name"
 msgstr "Nazwa planu taryfowego"
 
-#: ../src/utils/mobile-wizard.c:1336
+#: ../src/utils/mobile-wizard.c:1371
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr ""
 "(w niektórych przypadkach) nazwa punktu dostępowego (APN) planu taryfowego"
 
-#: ../src/utils/mobile-wizard.c:1363
+#: ../src/utils/mobile-wizard.c:1398
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Utworzenie połączenia dla _tego urządzenia komórkowego:"
 
-#: ../src/utils/mobile-wizard.c:1378
+#: ../src/utils/mobile-wizard.c:1413
 msgid "Any device"
 msgstr "Dowolne urządzenie"
 
-#: ../src/utils/mobile-wizard.c:1391
+#: ../src/utils/mobile-wizard.c:1426
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Ustawienie połączenia komórkowego"
 
-#: ../src/utils/mobile-wizard.c:1565
+#: ../src/utils/mobile-wizard.c:1600
 msgid "New Mobile Broadband Connection"
 msgstr "Nowe połączenie komórkowe"
 
@@ -2432,7 +2430,7 @@ msgstr "Zjednoczone Królestwo"
 msgid "Default"
 msgstr "Domyślne"
 
-#: ../src/vpn-password-dialog.c:136 ../src/vpn-password-dialog.c:254
+#: ../src/vpn-password-dialog.c:136 ../src/vpn-password-dialog.c:262
 #, c-format
 msgid "Cannot start VPN connection '%s'"
 msgstr "Nie można uruchomić połączenia VPN \"%s\""
@@ -2446,7 +2444,7 @@ msgstr ""
 "Nie można odnaleźć okna uwierzytelniania dla połączenia VPN typu \"%s\". "
 "Należy się skontaktować z administratorem systemu."
 
-#: ../src/vpn-password-dialog.c:257
+#: ../src/vpn-password-dialog.c:265
 #, c-format
 msgid ""
 "There was a problem launching the authentication dialog for VPN connection "
@@ -2455,9 +2453,13 @@ msgstr ""
 "Wystąpił problem podczas uruchamiania okna dialogowego uwierzytelniania dla "
 "połączenia VPN typu \"%s\". Skontaktuj się z administratorem systemu."
 
-#: ../src/wired-dialog.c:99
-msgid "Wired 802.1X authentication"
-msgstr "Przewodowe uwierzytelnianie 802.1X"
+#: ../src/wired-dialog.c:94 ../src/wired-dialog.c:102
+msgid ""
+"The NetworkManager Applet could not find some required resources (the .ui "
+"file was not found)."
+msgstr ""
+"Aplet NetworkManager nie może odnaleźć niektórych wymaganych zasobów (nie "
+"odnaleziono pliku .ui)."
 
 #: ../src/wireless-dialog.c:478
 msgid "New..."
@@ -2530,11 +2532,11 @@ msgstr ""
 msgid "Choose CA Certificate"
 msgstr "Wybór certyfikatu CA"
 
-#: ../src/wireless-security/eap-method.c:583
+#: ../src/wireless-security/eap-method.c:582
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "Certyfikaty DER, PEM lub klucze prywatne PKCS#12 (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:586
+#: ../src/wireless-security/eap-method.c:585
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Certyfikaty DER lub PEM (*.der, *.pem, *.crt, *.cer)"
 
