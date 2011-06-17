@@ -196,7 +196,11 @@ nm_mb_menu_item_init (NMMbMenuItem *self)
 {
 	NMMbMenuItemPrivate *priv = NM_MB_MENU_ITEM_GET_PRIVATE (self);
 
+#if GTK_CHECK_VERSION(3,1,6)
+        priv->hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+#else
 	priv->hbox = gtk_hbox_new (FALSE, 6);
+#endif
 	priv->desc = gtk_label_new (NULL);
 	gtk_misc_set_alignment (GTK_MISC (priv->desc), 0.0, 0.5);
 

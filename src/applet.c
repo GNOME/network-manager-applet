@@ -602,7 +602,11 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                int pos)
 {
 	GtkWidget *menu_item = gtk_image_menu_item_new ();
+#if GTK_CHECK_VERSION(3,1,6)
+        GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+#else
 	GtkWidget *box = gtk_hbox_new (FALSE, 0);
+#endif
 	GtkWidget *xlabel = NULL;
 
 	if (label) {
