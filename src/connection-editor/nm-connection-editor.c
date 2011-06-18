@@ -111,9 +111,9 @@ ui_to_setting (NMConnectionEditor *editor)
 	NMSettingConnection *s_con;
 	GtkWidget *widget;
 	const char *name;
-	gboolean autoconnect = FALSE;
+	gboolean autoconnect = FALSE, everyone = FALSE;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (editor->connection);
 	g_assert (s_con);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
@@ -129,18 +129,12 @@ ui_to_setting (NMConnectionEditor *editor)
 	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect, NULL);
 
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton))) {
-		/* Visible to everyone */
-		g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_PERMISSIONS, NULL, NULL);
-	} else {
-		GSList *users = NULL;
-		char buf[75] = "user:";
-
-		/* Visible only to this user */
-		strcat (buf, g_get_user_name ());
-		users = g_slist_append (users, buf);
-		g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_PERMISSIONS, users, NULL);
-		g_slist_free (users);
+	/* Handle visibility */
+	everyone = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton));
+	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_PERMISSIONS, NULL, NULL);
+	if (everyone == FALSE) {
+		/* Only visible to this user */
+		nm_setting_connection_add_permission (s_con, "user", g_get_user_name (), NULL);
 	}
 
 	return TRUE;
@@ -439,15 +433,57 @@ nm_connection_editor_get_connection (NMConnectionEditor *editor)
 	return editor->orig_connection;
 }
 
+static void
+update_secret_flags (NMSetting *setting,
+                     const char *key,
+                     const GValue *value,
+                     GParamFlags flags,
+                     gpointer user_data)
+{
+	gboolean everyone = !!GPOINTER_TO_UINT (user_data);
+	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
+
+	if (!(flags & NM_SETTING_PARAM_SECRET))
+		return;
+
+	/* VPN connections never get changed */
+	if (NM_IS_SETTING_VPN (setting))
+		return;
+
+	/* 802.1x passwords don't get changed either */
+	if (NM_IS_SETTING_802_1X (setting)) {
+		if (   g_strcmp0 (key, NM_SETTING_802_1X_PASSWORD) == 0
+		    || g_strcmp0 (key, NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD) == 0
+		    || g_strcmp0 (key, NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD) == 0)
+			return;
+	}
+
+	nm_setting_get_secret_flags (setting, key, &secret_flags, NULL);
+	if (everyone)
+		secret_flags &= ~NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+	else
+		secret_flags |= NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+
+	nm_setting_set_secret_flags (setting, key, secret_flags, NULL);
+}
+
 gboolean
 nm_connection_editor_update_connection (NMConnectionEditor *editor, GError **error)
 {
 	GHashTable *settings;
+	gboolean everyone = FALSE;
 
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
 
 	if (!nm_connection_verify (editor->connection, error))
 		return FALSE;
+
+	/* Update secret flags at the end after all other settings have updated,
+	 * otherwise the secret flags we set here might be overwritten during
+	 * setting validation.
+	 */
+	everyone = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton));
+	nm_connection_for_each_setting_value (editor->connection, update_secret_flags, GUINT_TO_POINTER (everyone));
 
 	/* Copy the modified connection to the original connection */
 	settings = nm_connection_to_hash (editor->connection, NM_SETTING_HASH_FLAG_ALL);
