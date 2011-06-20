@@ -320,10 +320,8 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-g_message ("%s: here!", __func__);
 		ws_wpa_eap = ws_wpa_eap_new (connection, TRUE, FALSE);
 		if (ws_wpa_eap) {
-g_message ("%s: here 22!", __func__);
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_ENTERPRISE) || (default_type == NMU_SEC_WPA2_ENTERPRISE)))
