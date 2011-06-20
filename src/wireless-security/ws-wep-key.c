@@ -241,7 +241,7 @@ WirelessSecurityWEPKey *
 ws_wep_key_new (NMConnection *connection,
                 NMWepKeyType type,
                 gboolean adhoc_create,
-                gboolean simple)
+                gboolean secrets_only)
 {
 	WirelessSecurity *parent;
 	WirelessSecurityWEPKey *sec;
@@ -309,7 +309,7 @@ ws_wep_key_new (NMConnection *connection,
 	                  sec);
 
 	/* Key index is useless with adhoc networks */
-	if (is_adhoc || simple) {
+	if (is_adhoc || secrets_only) {
 		gtk_widget_hide (widget);
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "key_index_label"));
 		gtk_widget_hide (widget);
@@ -335,7 +335,7 @@ ws_wep_key_new (NMConnection *connection,
 	/* Don't show auth method for adhoc (which always uses open-system) or
 	 * when in "simple" mode.
 	 */
-	if (is_adhoc || simple) {
+	if (is_adhoc || secrets_only) {
 		/* Ad-Hoc connections can't use Shared Key auth */
 		if (is_adhoc)
 			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);

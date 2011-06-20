@@ -213,7 +213,8 @@ inner_auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 static GtkWidget *
 inner_auth_combo_init (EAPMethodPEAP *method,
                        NMConnection *connection,
-                       NMSetting8021x *s_8021x)
+                       NMSetting8021x *s_8021x,
+                       gboolean secrets_only)
 {
 	EAPMethod *parent = (EAPMethod *) method;
 	GtkWidget *combo;
@@ -238,7 +239,8 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	                                      connection,
 	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2,
 	                                      TRUE,
-	                                      method->is_editor);
+	                                      method->is_editor,
+	                                      secrets_only);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAPv2"),
@@ -254,7 +256,8 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	                                connection,
 	                                EAP_METHOD_SIMPLE_TYPE_MD5,
 	                                TRUE,
-	                                method->is_editor);
+	                                method->is_editor,
+	                                secrets_only);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MD5"),
@@ -270,7 +273,8 @@ inner_auth_combo_init (EAPMethodPEAP *method,
 	                                connection,
 	                                EAP_METHOD_SIMPLE_TYPE_GTC,
 	                                TRUE,
-	                                method->is_editor);
+	                                method->is_editor,
+	                                secrets_only);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("GTC"),
@@ -307,7 +311,8 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 EAPMethodPEAP *
 eap_method_peap_new (WirelessSecurity *ws_parent,
                      NMConnection *connection,
-                     gboolean is_editor)
+                     gboolean is_editor,
+                     gboolean secrets_only)
 {
 	EAPMethod *parent;
 	EAPMethodPEAP *method;
@@ -356,7 +361,7 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 		}
 	}
 
-	widget = inner_auth_combo_init (method, connection, s_8021x);
+	widget = inner_auth_combo_init (method, connection, s_8021x, secrets_only);
 	inner_auth_combo_changed_cb (widget, (gpointer) method);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_version_combo"));
@@ -384,6 +389,25 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
+
+	if (secrets_only) {
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_label"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_entry"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_label"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_button"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_inner_auth_label"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_inner_auth_combo"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_version_label"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_version_combo"));
+		gtk_widget_hide (widget);
+	}
 
 	return method;
 }

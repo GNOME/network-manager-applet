@@ -28,7 +28,8 @@
 typedef struct _WirelessSecurityDynamicWEP WirelessSecurityDynamicWEP;
 
 WirelessSecurityDynamicWEP *ws_dynamic_wep_new (NMConnection *connection,
-                                                gboolean is_editor);
+                                                gboolean is_editor,
+                                                gboolean secrets_only);
 
 #endif /* WS_DYNAMIC_WEP_H */
 

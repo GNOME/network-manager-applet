@@ -25,7 +25,7 @@
 
 typedef struct _WirelessSecurityWPAPSK WirelessSecurityWPAPSK;
 
-WirelessSecurityWPAPSK * ws_wpa_psk_new (NMConnection *connection);
+WirelessSecurityWPAPSK * ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only);
 
 #endif /* WS_WEP_KEY_H */
 

@@ -145,7 +145,7 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityWPAPSK *
-ws_wpa_psk_new (NMConnection *connection)
+ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 {
 	WirelessSecurity *parent;
 	WirelessSecurityWPAPSK *sec;
@@ -181,6 +181,10 @@ ws_wpa_psk_new (NMConnection *connection)
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  sec);
+
+	/* Hide WPA/RSN for now since this can be autodetected by NM and the
+	 * supplicant when connecting to the AP.
+	 */
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_type_combo"));
 	g_assert (widget);

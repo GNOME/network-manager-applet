@@ -77,7 +77,7 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 	if (error)
 		return;
 
-	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE);
+	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE, FALSE);
 	if (!priv->security) {
 		g_warning ("Could not load wired 802.1x user interface.");
 		return;

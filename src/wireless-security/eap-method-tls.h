@@ -29,7 +29,8 @@ typedef struct _EAPMethodTLS EAPMethodTLS;
 
 EAPMethodTLS *eap_method_tls_new (WirelessSecurity *ws_parent,
                                   NMConnection *connection,
-                                  gboolean phase2);
+                                  gboolean phase2,
+                                  gboolean secrets_only);
 
 #endif /* EAP_METHOD_TLS_H */
 

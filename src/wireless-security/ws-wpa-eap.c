@@ -105,7 +105,8 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 
 WirelessSecurityWPAEAP *
 ws_wpa_eap_new (NMConnection *connection,
-                gboolean is_editor)
+                gboolean is_editor,
+                gboolean secrets_only)
 {
 	WirelessSecurity *parent;
 	GtkWidget *widget;
@@ -126,9 +127,11 @@ ws_wpa_eap_new (NMConnection *connection,
 
 	widget = ws_802_1x_auth_combo_init (parent,
 	                                    "wpa_eap_auth_combo",
+	                                    "wpa_eap_auth_label",
 	                                    (GCallback) auth_combo_changed_cb,
 	                                    connection,
-	                                    is_editor);
+	                                    is_editor,
+	                                    secrets_only);
 	auth_combo_changed_cb (widget, parent);
 
 	return (WirelessSecurityWPAEAP *) parent;

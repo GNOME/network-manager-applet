@@ -50,6 +50,7 @@ struct _EAPMethod {
 	GtkWidget *nag_dialog;
 
 	gboolean phase2;
+	gboolean secrets_only;
 	gboolean ignore_ca_cert;
 
 	EMAddToSizeGroupFunc add_to_size_group;

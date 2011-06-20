@@ -30,7 +30,7 @@ typedef struct _WirelessSecurityWEPKey WirelessSecurityWEPKey;
 WirelessSecurityWEPKey *ws_wep_key_new (NMConnection *connection,
                                         NMWepKeyType type,
                                         gboolean adhoc_create,
-                                        gboolean simple);
+                                        gboolean secrets_only);
 
 #endif /* WS_WEP_KEY_H */
 

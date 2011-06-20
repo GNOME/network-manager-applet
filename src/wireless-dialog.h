@@ -50,7 +50,8 @@ GType nma_wireless_dialog_get_type (void);
 GtkWidget *nma_wireless_dialog_new (NMApplet *applet,
                                     NMConnection *connection,
                                     NMDevice *device,
-                                    NMAccessPoint *ap);
+                                    NMAccessPoint *ap,
+                                    gboolean secrets_only);
 
 GtkWidget *nma_wireless_dialog_new_for_other (NMApplet *applet);
 

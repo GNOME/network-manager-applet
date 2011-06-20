@@ -471,7 +471,7 @@ _do_new_auto_connection (NMApplet *applet,
 		more_info->callback = callback;
 		more_info->callback_data = callback_data;
 
-		dialog = nma_wireless_dialog_new (applet, connection, device, ap);
+		dialog = nma_wireless_dialog_new (applet, connection, device, ap, FALSE);
 		if (dialog) {
 			g_signal_connect (dialog, "response",
 				              G_CALLBACK (more_info_wifi_dialog_response_cb),
@@ -1673,7 +1673,7 @@ wireless_get_secrets (SecretsRequest *req, GError **error)
 
 	applet_secrets_request_set_free_func (req, free_wifi_info);
 
-	info->dialog = nma_wireless_dialog_new (req->applet, req->connection, NULL, NULL);
+	info->dialog = nma_wireless_dialog_new (req->applet, req->connection, NULL, NULL, TRUE);
 	if (info->dialog) {
 		g_signal_connect (info->dialog, "response",
 		                  G_CALLBACK (get_secrets_dialog_response_cb),

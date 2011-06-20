@@ -323,11 +323,13 @@ ws_802_1x_auth_combo_changed (GtkWidget *combo,
 GtkWidget *
 ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                            const char *combo_name,
+                           const char *combo_label,
                            GCallback auth_combo_changed_cb,
                            NMConnection *connection,
-                           gboolean is_editor)
+                           gboolean is_editor,
+                           gboolean secrets_only)
 {
-	GtkWidget *combo;
+	GtkWidget *combo, *widget;
 	GtkListStore *auth_model;
 	GtkTreeIter iter;
 	EAPMethodSimple *em_md5;
@@ -363,7 +365,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		                                connection,
 		                                EAP_METHOD_SIMPLE_TYPE_MD5,
 		                                FALSE,
-		                                is_editor);
+		                                is_editor,
+		                                secrets_only);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
 			                AUTH_NAME_COLUMN, _("MD5"),
@@ -375,7 +378,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		item++;
 	}
 
-	em_tls = eap_method_tls_new (sec, connection, FALSE);
+	em_tls = eap_method_tls_new (sec, connection, FALSE, secrets_only);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("TLS"),
@@ -387,7 +390,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	item++;
 
 	if (!wired) {
-		em_leap = eap_method_leap_new (sec, connection);
+		em_leap = eap_method_leap_new (sec, connection, secrets_only);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
 		                    AUTH_NAME_COLUMN, _("LEAP"),
@@ -399,7 +402,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		item++;
 	}
 
-	em_ttls = eap_method_ttls_new (sec, connection, is_editor);
+	em_ttls = eap_method_ttls_new (sec, connection, is_editor, secrets_only);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Tunneled TLS"),
@@ -410,7 +413,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		active = item;
 	item++;
 
-	em_peap = eap_method_peap_new (sec, connection, is_editor);
+	em_peap = eap_method_peap_new (sec, connection, is_editor, secrets_only);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("Protected EAP (PEAP)"),
@@ -429,6 +432,12 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), active < 0 ? 0 : (guint32) active);
 
 	g_signal_connect (G_OBJECT (combo), "changed", auth_combo_changed_cb, sec);
+
+	if (secrets_only) {
+		gtk_widget_hide (combo);
+		widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_label));
+		gtk_widget_hide (widget);
+	}
 
 	return combo;
 }

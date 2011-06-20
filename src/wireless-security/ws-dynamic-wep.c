@@ -109,7 +109,8 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 
 WirelessSecurityDynamicWEP *
 ws_dynamic_wep_new (NMConnection *connection,
-                    gboolean is_editor)
+                    gboolean is_editor,
+                    gboolean secrets_only)
 {
 	WirelessSecurity *parent;
 	GtkWidget *widget;
@@ -130,9 +131,11 @@ ws_dynamic_wep_new (NMConnection *connection,
 
 	widget = ws_802_1x_auth_combo_init (parent,
 	                                    "dynamic_wep_auth_combo",
+	                                    "dynamic_wep_auth_label",
 	                                    (GCallback) auth_combo_changed_cb,
 	                                    connection,
-	                                    is_editor);
+	                                    is_editor,
+	                                    secrets_only);
 	auth_combo_changed_cb (widget, (gpointer) parent);
 
 	return (WirelessSecurityDynamicWEP *) parent;
