@@ -1287,7 +1287,11 @@ add_connection_tab (NMConnectionList *self,
 	g_free (name);
 
 	/* Notebook tab */
+#if GTK_CHECK_VERSION(3,1,6)
+        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+#else
 	hbox = gtk_hbox_new (FALSE, 6);
+#endif
 	if (pixbuf) {
 		GtkWidget *image;
 
