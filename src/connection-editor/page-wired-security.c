@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2010 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -120,7 +120,11 @@ ce_page_wired_security_new (NMConnection *connection,
 	parent = CE_PAGE (self);
 	priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (self);
 
+#if GTK_CHECK_VERSION (3,1,6)
+	parent->page = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+#else
 	parent->page = gtk_vbox_new (FALSE, 6);
+#endif
 	g_object_ref_sink (G_OBJECT (parent->page));
 	gtk_container_set_border_width (GTK_CONTAINER (parent->page), 6);
 
