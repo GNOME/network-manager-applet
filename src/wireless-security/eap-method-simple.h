@@ -40,7 +40,8 @@ EAPMethodSimple *eap_method_simple_new (WirelessSecurity *ws_parent,
                                         NMConnection *connection,
                                         EAPMethodSimpleType type,
                                         gboolean phase2,
-                                        gboolean is_editor);
+                                        gboolean is_editor,
+                                        gboolean secrets_only);
 
 #endif /* EAP_METHOD_SIMPLE_H */
 

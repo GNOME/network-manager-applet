@@ -49,6 +49,7 @@ struct _EAPMethod {
 	const char *default_field;
 	GtkWidget *nag_dialog;
 
+	gboolean secrets_only;
 	gboolean ignore_ca_cert;
 
 	EMAddToSizeGroupFunc add_to_size_group;

@@ -1563,7 +1563,7 @@ wireless_get_more_info (NMDevice *device,
 	WirelessMenuItemInfo *info = (WirelessMenuItemInfo *) user_data;
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new (applet, connection, device, info->ap);
+	dialog = nma_wireless_dialog_new (applet, connection, device, info->ap, FALSE);
 	g_return_if_fail (dialog != NULL);
 
 	g_signal_connect (dialog, "response",
@@ -1804,7 +1804,7 @@ wireless_get_secrets (NMDevice *device,
 	info = g_malloc0 (sizeof (NMWifiInfo));
 
 	ap = nm_device_wifi_get_access_point_by_path (NM_DEVICE_WIFI (device), specific_object);
-	info->dialog = nma_wireless_dialog_new (applet, NM_CONNECTION (connection), device, ap);
+	info->dialog = nma_wireless_dialog_new (applet, NM_CONNECTION (connection), device, ap, TRUE);
 	if (!info->dialog) {
 		g_set_error (error,
 		             NM_SETTINGS_INTERFACE_ERROR,

@@ -27,7 +27,7 @@
 
 typedef struct _WirelessSecurityLEAP WirelessSecurityLEAP;
 
-WirelessSecurityLEAP * ws_leap_new (NMConnection *connection);
+WirelessSecurityLEAP * ws_leap_new (NMConnection *connection, gboolean secrets_only);
 
 #endif /* WS_LEAP_H */
 

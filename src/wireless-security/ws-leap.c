@@ -120,7 +120,7 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 }
 
 WirelessSecurityLEAP *
-ws_leap_new (NMConnection *connection)
+ws_leap_new (NMConnection *connection, gboolean secrets_only)
 {
 	WirelessSecurity *parent;
 	WirelessSecurityLEAP *sec;
@@ -168,6 +168,9 @@ ws_leap_new (NMConnection *connection)
 	                  sec);
 	if (wsec)
 		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_wireless_security_get_leap_username (wsec));
+
+	if (secrets_only)
+		gtk_widget_hide (widget);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_leap"));
 	g_assert (widget);

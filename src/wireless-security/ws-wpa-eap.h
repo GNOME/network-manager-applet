@@ -28,7 +28,8 @@
 typedef struct _WirelessSecurityWPAEAP WirelessSecurityWPAEAP;
 
 WirelessSecurityWPAEAP * ws_wpa_eap_new (NMConnection *connection,
-                                         gboolean is_editor);
+                                         gboolean is_editor,
+                                         gboolean secrets_only);
 
 #endif /* WS_WPA_EAP_H */
 

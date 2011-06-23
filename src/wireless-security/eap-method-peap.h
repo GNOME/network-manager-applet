@@ -29,7 +29,8 @@ typedef struct _EAPMethodPEAP EAPMethodPEAP;
 
 EAPMethodPEAP *eap_method_peap_new (WirelessSecurity *ws_parent,
                                     NMConnection *connection,
-                                    gboolean is_editor);
+                                    gboolean is_editor,
+                                    gboolean secrets_only);
 
 #endif /* EAP_METHOD_PEAP_H */
 

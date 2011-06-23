@@ -113,7 +113,8 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 
 EAPMethodLEAP *
 eap_method_leap_new (WirelessSecurity *ws_parent,
-                     NMConnection *connection)
+                     NMConnection *connection,
+                     gboolean secrets_only)
 {
 	EAPMethod *parent;
 	GtkWidget *widget;
@@ -142,6 +143,9 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 		if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
 			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 	}
+
+	if (secrets_only)
+		gtk_widget_set_sensitive (widget, FALSE);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
 	g_assert (widget);

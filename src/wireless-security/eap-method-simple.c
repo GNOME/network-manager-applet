@@ -219,7 +219,8 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
                        NMConnection *connection,
                        EAPMethodSimpleType type,
                        gboolean phase2,
-                       gboolean is_editor)
+                       gboolean is_editor,
+                       gboolean secrets_only)
 {
 	EAPMethod *parent;
 	EAPMethodSimple *method;
@@ -256,6 +257,9 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 	}
 
+	if (secrets_only)
+		gtk_widget_set_sensitive (widget, FALSE);
+
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
@@ -289,6 +293,9 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 		uuid = nm_setting_connection_get_uuid (s_con);
 		always_ask = nm_gconf_get_8021x_password_always_ask (uuid);
 	}
+
+	if (secrets_only)
+		gtk_widget_hide (widget);
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), always_ask);
 

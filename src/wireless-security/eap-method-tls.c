@@ -389,7 +389,8 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 EAPMethodTLS *
 eap_method_tls_new (WirelessSecurity *ws_parent,
                     NMConnection *connection,
-                    gboolean phase2)
+                    gboolean phase2,
+                    gboolean secrets_only)
 {
 	EAPMethod *parent;
 	EAPMethodTLS *method;
@@ -461,6 +462,23 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  method);
+
+	if (secrets_only) {
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_identity_entry"));
+		gtk_widget_set_sensitive (widget, FALSE);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_user_cert_label"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_user_cert_button"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_private_key_label"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_private_key_button"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_label"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_button"));
+		gtk_widget_hide (widget);
+	}
 
 	return method;
 }

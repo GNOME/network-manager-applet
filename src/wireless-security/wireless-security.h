@@ -111,9 +111,11 @@ void wireless_security_clear_ciphers (NMConnection *connection);
 
 GtkWidget *ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                                       const char *combo_name,
+                                      const char *combo_label,
                                       GCallback auth_combo_changed_cb,
                                       NMConnection *connection,
-                                      gboolean is_editor);
+                                      gboolean is_editor,
+                                      gboolean secrets_only);
 
 void ws_802_1x_auth_combo_changed (GtkWidget *combo,
                                    WirelessSecurity *sec,

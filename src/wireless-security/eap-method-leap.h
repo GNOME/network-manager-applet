@@ -28,7 +28,8 @@
 typedef struct _EAPMethodLEAP EAPMethodLEAP;
 
 EAPMethodLEAP *eap_method_leap_new (WirelessSecurity *ws_parent,
-                                    NMConnection *connection);
+                                    NMConnection *connection,
+                                    gboolean secrets_only);
 
 #endif /* EAP_METHOD_LEAP_H */
 

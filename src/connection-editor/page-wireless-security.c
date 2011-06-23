@@ -278,7 +278,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	if (nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityLEAP *ws_leap;
 
-		ws_leap = ws_leap_new (connection);
+		ws_leap = ws_leap_new (connection, FALSE);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
@@ -291,7 +291,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (connection, TRUE);
+		ws_dynamic_wep = ws_dynamic_wep_new (connection, TRUE, FALSE);
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
@@ -305,7 +305,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;
 
-		ws_wpa_psk = ws_wpa_psk_new (connection);
+		ws_wpa_psk = ws_wpa_psk_new (connection, FALSE);
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
@@ -319,7 +319,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (connection, TRUE);
+		ws_wpa_eap = ws_wpa_eap_new (connection, TRUE, FALSE);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));

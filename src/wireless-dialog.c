@@ -74,7 +74,7 @@ typedef struct {
 	gboolean nag_ignored;
 	gboolean network_name_focus;
 
-	gboolean auth_only;
+	gboolean secrets_only;
 
 	guint revalidate_id;
 
@@ -94,7 +94,7 @@ typedef struct {
 #define C_SEP_COLUMN		2
 #define C_NEW_COLUMN		3
 
-static gboolean security_combo_init (NMAWirelessDialog *self, gboolean auth_only);
+static gboolean security_combo_init (NMAWirelessDialog *self, gboolean secrets_only);
 static void ssid_entry_changed (GtkWidget *entry, gpointer user_data);
 
 void
@@ -384,7 +384,7 @@ connection_combo_changed (GtkWidget *combo,
 	                    C_CON_COLUMN, &priv->connection,
 	                    C_NEW_COLUMN, &is_new, -1);
 
-	if (!security_combo_init (self, priv->auth_only)) {
+	if (!security_combo_init (self, priv->secrets_only)) {
 		g_warning ("Couldn't change wireless security combo box.");
 		return;
 	}
@@ -605,7 +605,7 @@ device_combo_changed (GtkWidget *combo,
 		return;
 	}
 
-	if (!security_combo_init (self, priv->auth_only)) {
+	if (!security_combo_init (self, priv->secrets_only)) {
 		g_warning ("Couldn't change wireless security combo box.");
 		return;
 	}
@@ -853,7 +853,7 @@ out:
 }
 
 static gboolean
-security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
+security_combo_init (NMAWirelessDialog *self, gboolean secrets_only)
 {
 	NMAWirelessDialogPrivate *priv;
 	GtkListStore *sec_model;
@@ -937,7 +937,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep;
 
-		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create, auth_only);
+		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create, secrets_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"));
@@ -946,7 +946,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create, auth_only);
+		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create, secrets_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -963,7 +963,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityLEAP *ws_leap;
 
-		ws_leap = ws_leap_new (priv->connection);
+		ws_leap = ws_leap_new (priv->connection, secrets_only);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
 			                   &iter, _("LEAP"));
@@ -976,7 +976,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	if (nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityDynamicWEP *ws_dynamic_wep;
 
-		ws_dynamic_wep = ws_dynamic_wep_new (priv->connection, FALSE);
+		ws_dynamic_wep = ws_dynamic_wep_new (priv->connection, FALSE, secrets_only);
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
 			                   &iter, _("Dynamic WEP (802.1x)"));
@@ -990,7 +990,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAPSK *ws_wpa_psk;
 
-		ws_wpa_psk = ws_wpa_psk_new (priv->connection);
+		ws_wpa_psk = ws_wpa_psk_new (priv->connection, secrets_only);
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
 			                   &iter, _("WPA & WPA2 Personal"));
@@ -1004,7 +1004,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean auth_only)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (priv->connection, FALSE);
+		ws_wpa_eap = ws_wpa_eap_new (priv->connection, FALSE, secrets_only);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
@@ -1064,7 +1064,7 @@ static gboolean
 internal_init (NMAWirelessDialog *self,
                NMConnection *specific_connection,
                NMDevice *specific_device,
-               gboolean auth_only,
+               gboolean secrets_only,
                gboolean create)
 {
 	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
@@ -1077,8 +1077,8 @@ internal_init (NMAWirelessDialog *self,
 	gtk_window_set_default_size (GTK_WINDOW (self), 488, -1);
 	gtk_window_set_resizable (GTK_WINDOW (self), FALSE);
 
-	priv->auth_only = auth_only;
-	if (auth_only)
+	priv->secrets_only = secrets_only;
+	if (secrets_only)
 		icon_name = "dialog-password";
 	else
 		icon_name = "network-wireless";
@@ -1152,7 +1152,7 @@ internal_init (NMAWirelessDialog *self,
 		return FALSE;
 	}
 
-	if (!security_combo_init (self, priv->auth_only)) {
+	if (!security_combo_init (self, priv->secrets_only)) {
 		g_warning ("Couldn't set up wireless security combo box.");
 		return FALSE;
 	}
@@ -1160,6 +1160,12 @@ internal_init (NMAWirelessDialog *self,
 	security_combo_changed (priv->sec_combo, self);
 	g_signal_connect (G_OBJECT (priv->sec_combo), "changed",
 	                  G_CALLBACK (security_combo_changed_manually), self);
+
+	if (secrets_only) {
+		gtk_widget_hide (priv->sec_combo);
+		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo_label"));
+		gtk_widget_hide (widget);
+	}
 
 	if (security_combo_focus)
 		gtk_widget_grab_focus (priv->sec_combo);
@@ -1298,7 +1304,8 @@ GtkWidget *
 nma_wireless_dialog_new (NMApplet *applet,
                          NMConnection *connection,
                          NMDevice *device,
-                         NMAccessPoint *ap)
+                         NMAccessPoint *ap,
+                         gboolean secrets_only)
 {
 	NMAWirelessDialog *self;
 	NMAWirelessDialogPrivate *priv;
@@ -1326,7 +1333,7 @@ nma_wireless_dialog_new (NMApplet *applet,
 	priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	if (!internal_init (self, connection, device, TRUE, FALSE)) {
+	if (!internal_init (self, connection, device, secrets_only, FALSE)) {
 		nm_warning ("Couldn't create wireless security dialog.");
 		g_object_unref (self);
 		return NULL;
