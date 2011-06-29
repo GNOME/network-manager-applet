@@ -613,11 +613,19 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 		xlabel = gtk_label_new (NULL);
 		gtk_label_set_markup (GTK_LABEL (xlabel), label);
 
+#if GTK_CHECK_VERSION(3,1,6)
+		gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (), TRUE, TRUE, 0);
+#else
 		gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 0);
+#endif
 		gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
 	}
 
+#if GTK_CHECK_VERSION(3,1,6)
+	gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (), TRUE, TRUE, 0);
+#else
 	gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 0);
+#endif
 
 	g_object_set (G_OBJECT (menu_item),
 	              "child", box,
