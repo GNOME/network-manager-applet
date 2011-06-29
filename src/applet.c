@@ -614,7 +614,7 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 		gtk_label_set_markup (GTK_LABEL (xlabel), label);
 
 #if GTK_CHECK_VERSION(3,1,6)
-		gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (), TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
 #else
 		gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 0);
 #endif
@@ -622,7 +622,7 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 	}
 
 #if GTK_CHECK_VERSION(3,1,6)
-	gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (), TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
 #else
 	gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 0);
 #endif
