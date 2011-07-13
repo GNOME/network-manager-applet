@@ -63,7 +63,6 @@
 #include <nm-secret-agent.h>
 
 #include <gconf/gconf-client.h>
-#include <gnome-keyring.h>
 #include <libnotify/notify.h>
 
 #include "applet.h"
