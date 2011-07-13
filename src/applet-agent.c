@@ -75,8 +75,7 @@ typedef struct {
 	NMSecretAgentDeleteSecretsFunc delete_callback;
 	gpointer callback_data;
 
-	GSList *keyring_ids;
-	guint32 op_count;
+	GSList *keyring_calls;
 	gboolean canceled;
 } Request;
 
@@ -117,8 +116,10 @@ request_free (Request *r)
 	if (r->canceled == FALSE)
 		g_hash_table_remove (APPLET_AGENT_GET_PRIVATE (r->agent)->requests, GUINT_TO_POINTER (r->id));
 
+	/* By the time the request is freed, all keyring calls should be completed */
+	g_warn_if_fail (r->keyring_calls == NULL);
+
 	g_object_unref (r->connection);
-	g_slist_free (r->keyring_ids);
 	g_free (r->path);
 	g_free (r->setting_name);
 	g_strfreev (r->hints);
@@ -290,10 +291,9 @@ keyring_find_secrets_cb (GnomeKeyringResult result,
 	GList *iter;
 	gboolean hint_found = FALSE, ask = FALSE;
 
-	r->keyring_ids = g_slist_remove (r->keyring_ids, call->keyring_id);
-
+	r->keyring_calls = g_slist_remove (r->keyring_calls, call);
 	if (r->canceled) {
-		/* Callback already called by cancelation handler */
+		/* Callback already called by NM or dispose */
 		request_free (r);
 		return;
 	}
@@ -471,6 +471,7 @@ get_secrets (NMSecretAgent *agent,
 	                                              GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                              setting_name,
 	                                              NULL);
+	r->keyring_calls = g_slist_append (r->keyring_calls, call);
 }
 
 /*******************************************************/
@@ -482,7 +483,7 @@ cancel_get_secrets (NMSecretAgent *agent,
 {
 	AppletAgentPrivate *priv = APPLET_AGENT_GET_PRIVATE (agent);
 	GHashTableIter iter;
-	gpointer data;
+	Request *r;
 	GError *error;
 
 	error = g_error_new_literal (NM_SECRET_AGENT_ERROR,
@@ -490,23 +491,25 @@ cancel_get_secrets (NMSecretAgent *agent,
 	                             "Canceled by NetworkManager");
 
 	g_hash_table_iter_init (&iter, priv->requests);
-	while (g_hash_table_iter_next (&iter, NULL, &data)) {
-		Request *r = data;
-
+	while (g_hash_table_iter_next (&iter, NULL, (gpointer) &r)) {
+		/* Only care about GetSecrets requests here */
 		if (r->get_callback == NULL)
 			continue;
 
 		/* Cancel any matching GetSecrets call */
-		if (!g_strcmp0 (r->path, connection_path) && !g_strcmp0 (r->setting_name, setting_name)) {
+		if (   g_strcmp0 (r->path, connection_path) == 0
+		    && g_strcmp0 (r->setting_name, setting_name) == 0) {
 			GSList *kiter;
 
-			/* cancel outstanding keyring operations */
-			for (kiter = r->keyring_ids; kiter; kiter = g_slist_next (kiter))
-				gnome_keyring_cancel_request (kiter->data);
-			g_slist_free (r->keyring_ids);
-			r->keyring_ids = NULL;
-
 			r->canceled = TRUE;
+
+			/* cancel outstanding keyring operations */
+			for (kiter = r->keyring_calls; kiter; kiter = g_slist_next (kiter)) {
+				KeyringCall *call = kiter->data;
+
+				gnome_keyring_cancel_request (call->keyring_id);
+			}
+
 			r->get_callback (NM_SECRET_AGENT (r->agent), r->connection, NULL, error, r->callback_data);
 			g_hash_table_remove (priv->requests, GUINT_TO_POINTER (r->id));
 			g_signal_emit (r->agent, signals[CANCEL_SECRETS], 0, GUINT_TO_POINTER (r->id));
@@ -519,20 +522,94 @@ cancel_get_secrets (NMSecretAgent *agent,
 /*******************************************************/
 
 static void
-save_secret_cb (GnomeKeyringResult result, guint val, gpointer user_data)
+save_request_try_complete (Request *r, KeyringCall *call)
 {
-	KeyringCall *call = user_data;
-	Request *r = call->r;
-
-	r->keyring_ids = g_slist_remove (r->keyring_ids, call->keyring_id);
-
 	/* Only call the SaveSecrets callback and free the request when all the
 	 * secrets have been saved to the keyring.
 	 */
-	r->op_count--;
-	if (r->op_count == 0) {
-		r->save_callback (NM_SECRET_AGENT (r->agent), r->connection, NULL, r->callback_data);
+	if (call)
+		r->keyring_calls = g_slist_remove (r->keyring_calls, call);
+
+	if (g_slist_length (r->keyring_calls) == 0) {
+		if (r->canceled == FALSE)
+			r->save_callback (NM_SECRET_AGENT (r->agent), r->connection, NULL, r->callback_data);
 		request_free (r);
+	}
+}
+
+static void
+save_secret_cb (GnomeKeyringResult result, guint val, gpointer user_data)
+{
+	KeyringCall *call = user_data;
+
+	save_request_try_complete (call->r, call);
+}
+
+static void
+save_one_secret (Request *r,
+                 NMSetting *setting,
+                 const char *key,
+                 const char *secret,
+                 const char *display_name)
+{
+	GnomeKeyringAttributeList *attrs;
+	KeyringCall *call;
+	char *alt_display_name = NULL;
+	const char *setting_name;
+	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
+
+	/* Don't system-owned or always-ask secrets */
+	if (!nm_setting_get_secret_flags (setting, key, &secret_flags, NULL))
+		return;
+	if (secret_flags != NM_SETTING_SECRET_FLAG_AGENT_OWNED)
+		return;
+
+	setting_name = nm_setting_get_name (setting);
+	g_assert (setting_name);
+
+	attrs = utils_create_keyring_add_attr_list (r->connection, NULL, NULL,
+	                                            setting_name,
+	                                            key,
+	                                            display_name ? NULL : &alt_display_name);
+	g_assert (attrs);
+	call = keyring_call_new (r);
+	call->keyring_id = gnome_keyring_item_create (NULL,
+	                                              GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                                              display_name ? display_name : alt_display_name,
+	                                              attrs,
+	                                              secret,
+	                                              TRUE,
+	                                              save_secret_cb,
+	                                              call,
+	                                              keyring_call_free);
+	r->keyring_calls = g_slist_append (r->keyring_calls, call);
+
+	gnome_keyring_attribute_list_free (attrs);
+	g_free (alt_display_name);
+}
+
+static void
+vpn_secret_iter_cb (const char *key, const char *secret, gpointer user_data)
+{
+	Request *r = user_data;
+	NMSetting *setting;
+	const char *service_name, *id;
+	char *display_name;
+
+	if (secret && strlen (secret)) {
+		setting = nm_connection_get_setting (r->connection, NM_TYPE_SETTING_VPN);
+		g_assert (setting);
+		service_name = nm_setting_vpn_get_service_type (NM_SETTING_VPN (setting));
+		g_assert (service_name);
+		id = nm_connection_get_id (r->connection);
+		g_assert (id);
+
+		display_name = g_strdup_printf ("VPN %s secret for %s/%s/" NM_SETTING_VPN_SETTING_NAME,
+		                                key,
+		                                id,
+		                                service_name);
+		save_one_secret (r, setting, key, secret, display_name);
+		g_free (display_name);
 	}
 }
 
@@ -546,57 +623,24 @@ write_one_secret_to_keyring (NMSetting *setting,
 	Request *r = user_data;
 	GType type = G_VALUE_TYPE (value);
 	const char *secret;
-	const char *setting_name;
-	GnomeKeyringAttributeList *attrs;
-	char *display_name = NULL;
-	KeyringCall *call;
-	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
 
 	/* Non-secrets obviously don't get saved in the keyring */
 	if (!(flags & NM_SETTING_PARAM_SECRET))
 		return;
 
-	/* Don't system-owned or always-ask secrets */
-	if (!nm_setting_get_secret_flags (setting, key, &secret_flags, NULL))
-		return;
-	if (secret_flags != NM_SETTING_SECRET_FLAG_AGENT_OWNED)
-		return;
+	if (NM_IS_SETTING_VPN (setting) && (g_strcmp0 (key, NM_SETTING_VPN_SECRETS) == 0)) {
+		g_return_if_fail (type == DBUS_TYPE_G_MAP_OF_STRING);
 
-	/* VPN secrets are handled by the VPN plugins */
-	if (   (type == DBUS_TYPE_G_MAP_OF_STRING)
-	    && NM_IS_SETTING_VPN (setting)
-	    && !strcmp (key, NM_SETTING_VPN_SECRETS))
-		return;
-
-	setting_name = nm_setting_get_name (setting);
-	if (type != G_TYPE_STRING) {
-		g_warning ("Unhandled setting secret type (write) '%s/%s' : '%s'", 
-				 setting_name, key, g_type_name (type));
-		return;
+		/* Process VPN secrets specially since it's a hash of secrets, not just one */
+		nm_setting_vpn_foreach_secret (NM_SETTING_VPN (setting),
+		                               vpn_secret_iter_cb,
+		                               r);
+	} else {
+		g_return_if_fail (type == G_TYPE_STRING);
+		secret = g_value_get_string (value);
+		if (secret && strlen (secret))
+			save_one_secret (r, setting, key, secret, NULL);
 	}
-
-	secret = g_value_get_string (value);
-	if (!secret || !strlen (secret))
-		return;
-		
-	attrs = utils_create_keyring_add_attr_list (r->connection, NULL, NULL,
-	                                            setting_name,
-	                                            key,
-	                                            &display_name);
-	g_assert (attrs);
-	call = keyring_call_new (r);
-	call->keyring_id = gnome_keyring_item_create (NULL,
-	                                              GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                                              display_name,
-	                                              attrs,
-	                                              secret,
-	                                              TRUE,
-	                                              save_secret_cb,
-	                                              call,
-	                                              keyring_call_free);
-	r->op_count++;
-	gnome_keyring_attribute_list_free (attrs);
-	g_free (display_name);
 }
 
 static void
@@ -609,6 +653,12 @@ save_delete_cb (NMSecretAgent *agent,
 
 	/* Ignore errors; now save all new secrets */
 	nm_connection_for_each_setting_value (connection, write_one_secret_to_keyring, r);
+
+	/* If no secrets actually got saved there may be nothing to do so
+	 * try to complete the request here.  If there were secrets to save the
+	 * request will get completed when those keyring calls return.
+	 */
+	save_request_try_complete (r, NULL);
 }
 
 static void
@@ -644,7 +694,12 @@ delete_find_items_cb (GnomeKeyringResult result, GList *list, gpointer user_data
 	GList *iter;
 	GError *error = NULL;
 
-	r->keyring_ids = g_slist_remove (r->keyring_ids, call->keyring_id);
+	r->keyring_calls = g_slist_remove (r->keyring_calls, call);
+	if (r->canceled) {
+		/* Callback already called by NM or dispose */
+		request_free (r);
+		return;
+	}
 
 	if ((result == GNOME_KEYRING_RESULT_OK) || (result == GNOME_KEYRING_RESULT_NO_MATCH)) {
 		for (iter = list; iter != NULL; iter = g_list_next (iter)) {
@@ -693,6 +748,7 @@ delete_secrets (NMSecretAgent *agent,
 	                                              GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                              uuid,
 	                                              NULL);
+	r->keyring_calls = g_slist_append (r->keyring_calls, call);
 }
 
 /*******************************************************/
@@ -731,14 +787,20 @@ dispose (GObject *object)
 
 	if (!priv->disposed) {
 		GHashTableIter iter;
-		gpointer data;
+		Request *r;
+		GSList *kiter;
 
 		/* Mark any outstanding requests as canceled */
 		g_hash_table_iter_init (&iter, priv->requests);
-		while (g_hash_table_iter_next (&iter, NULL, &data)) {
-			Request *r = data;
-
+		while (g_hash_table_iter_next (&iter, NULL, (gpointer) &r)) {
 			r->canceled = TRUE;
+
+			/* cancel the request's outstanding keyring operations */
+			for (kiter = r->keyring_calls; kiter; kiter = g_slist_next (kiter)) {
+				KeyringCall *call = kiter->data;
+
+				gnome_keyring_cancel_request (call->keyring_id);
+			}
 		}
 
 		g_hash_table_destroy (priv->requests);
