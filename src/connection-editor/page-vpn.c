@@ -133,25 +133,6 @@ ce_page_vpn_new (NMConnection *connection,
 	return CE_PAGE (self);
 }
 
-gboolean
-ce_page_vpn_save_secrets (CEPage *page, NMConnection *connection)
-{
-	CEPageVpn *self = CE_PAGE_VPN (page);
-	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (self);
-	GError *error = NULL;
-	gboolean success = FALSE;
-
-	success = nm_vpn_plugin_ui_widget_interface_save_secrets (priv->ui, connection, &error);
-	if (!success) {
-		g_warning ("%s: couldn't save VPN secrets: (%d) %s", __func__,
-		           error ? error->code : -1, error ? error->message : "unknown");
-		if (error)
-			g_error_free (error);
-	}
-
-	return success;
-}
-
 static gboolean
 validate (CEPage *page, NMConnection *connection, GError **error)
 {
