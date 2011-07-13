@@ -285,7 +285,6 @@ keyring_find_secrets_cb (GnomeKeyringResult result,
 	KeyringCall *call = user_data;
 	Request *r = call->r;
 	GError *error = NULL;
-	NMSettingConnection *s_con;
 	const char *connection_id = NULL;
 	GHashTable *secrets = NULL, *settings = NULL;
 	GList *iter;
@@ -298,9 +297,7 @@ keyring_find_secrets_cb (GnomeKeyringResult result,
 		return;
 	}
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (r->connection, NM_TYPE_SETTING_CONNECTION);
-	g_assert (s_con);
-	connection_id = nm_setting_connection_get_id (s_con);
+	connection_id = nm_connection_get_id (r->connection);
 
 	if (result == GNOME_KEYRING_RESULT_CANCELLED) {
 		error = g_error_new_literal (NM_SECRET_AGENT_ERROR,
@@ -414,8 +411,7 @@ get_secrets (NMSecretAgent *agent,
 	GError *error = NULL;
 	NMSettingConnection *s_con;
 	NMSetting *setting;
-	const char *id;
-	const char *ctype;
+	const char *uuid, *ctype;
 	KeyringCall *call;
 
 	setting = nm_connection_get_setting_by_name (connection, setting_name);
@@ -429,17 +425,16 @@ get_secrets (NMSecretAgent *agent,
 		return;
 	}
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	uuid = nm_connection_get_uuid (connection);
+
+	s_con = nm_connection_get_setting_connection (connection);
 	g_assert (s_con);
-	id = nm_setting_connection_get_id (s_con);
 	ctype = nm_setting_connection_get_connection_type (s_con);
 
-	if (!s_con || !id || !strlen (id) || !ctype) {
+	if (!uuid || !ctype) {
 		error = g_error_new (NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_INVALID_CONNECTION,
-		                     "%s.%d - Connection didn't have required '"
-		                     NM_SETTING_CONNECTION_SETTING_NAME
-		                     "' setting , or the connection name was invalid.",
+		                     "%s.%d - Connection didn't have required UUID.",
 		                     __FILE__, __LINE__);
 		callback (agent, connection, NULL, error, callback_data);
 		g_error_free (error);
@@ -466,7 +461,7 @@ get_secrets (NMSecretAgent *agent,
 	                                              keyring_call_free,
 	                                              KEYRING_UUID_TAG,
 	                                              GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                                              nm_setting_connection_get_uuid (s_con),
+	                                              uuid,
 	                                              KEYRING_SN_TAG,
 	                                              GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                                              setting_name,
