@@ -162,6 +162,15 @@ keyring_call_free (gpointer data)
 /*******************************************************/
 
 static void
+get_save_cb (NMSecretAgent *agent,
+             NMConnection *connection,
+             GError *error,
+             gpointer user_data)
+{
+	/* Ignored */
+}
+
+static void
 get_secrets_cb (AppletAgent *self,
                 GHashTable *secrets,
                 GError *error,
@@ -169,8 +178,35 @@ get_secrets_cb (AppletAgent *self,
 {
 	Request *r = user_data;
 
-	if (r->canceled == FALSE)
-		r->get_callback (NM_SECRET_AGENT (r->agent), r->connection, error ? NULL : secrets, error, r->callback_data);
+	/* 'secrets' shouldn't be valid if there was an error */
+	if (error) {
+		g_warn_if_fail (secrets == NULL);
+		secrets = NULL;
+	}
+
+	if (r->canceled == FALSE) {
+		/* Save updated secrets as long as user-interaction was allowed; otherwise
+		 * we'd be saving secrets we just pulled out of the keyring which is somewhat
+		 * redundant.
+		 */
+		if (secrets && (r->flags != NM_SECRET_AGENT_GET_SECRETS_FLAG_NONE)) {
+			NMConnection *dup;
+			GHashTableIter iter;
+			const char *setting_name;
+
+			/* Copy the existing connection and update its secrets */
+			dup = nm_connection_duplicate (r->connection);
+			g_hash_table_iter_init (&iter, secrets);
+			while (g_hash_table_iter_next (&iter, (gpointer) &setting_name, NULL))
+				nm_connection_update_secrets (dup, setting_name, secrets, NULL);
+
+			/* And save updated secrets to the keyring */
+			nm_secret_agent_save_secrets (NM_SECRET_AGENT (self), dup, get_save_cb, NULL);
+			g_object_unref (dup);
+		}
+
+		r->get_callback (NM_SECRET_AGENT (r->agent), r->connection, secrets, error, r->callback_data);
+	}
 	request_free (r);
 }
 
