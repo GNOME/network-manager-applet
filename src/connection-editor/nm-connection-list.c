@@ -945,14 +945,41 @@ import_vpn_cb (GtkButton *button, gpointer user_data)
 }
 
 static void
+vpn_export_get_secrets_cb (NMRemoteConnection *connection,
+                           GHashTable *secrets,
+                           GError *error,
+                           gpointer user_data)
+{
+	NMConnection *tmp;
+
+	/* We don't really care about errors; if the user couldn't authenticate
+	 * then just let them export everything except secrets.  Duplicate the
+	 * connection so that we don't let secrets sit around in the original
+	 * one.
+	 */
+	tmp = nm_connection_duplicate (NM_CONNECTION (connection));
+	g_assert (tmp);
+	if (secrets)
+		nm_connection_update_secrets (tmp, NM_SETTING_VPN_SETTING_NAME, secrets, NULL);
+	vpn_export (tmp);
+	g_object_unref (tmp);
+}
+
+
+static void
 export_vpn_cb (GtkButton *button, gpointer user_data)
 {
 	ActionInfo *info = (ActionInfo *) user_data;
 	NMRemoteConnection *connection;
 
 	connection = get_active_connection (info->treeview);
-	if (connection)
-		vpn_export (NM_CONNECTION (connection));
+	if (connection) {
+		/* Grab secrets if we can */
+		nm_remote_connection_get_secrets (connection,
+		                                  NM_SETTING_VPN_SETTING_NAME,
+		                                  vpn_export_get_secrets_cb,
+		                                  NULL);
+	}
 }
 
 static void
