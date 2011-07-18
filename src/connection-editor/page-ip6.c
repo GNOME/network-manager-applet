@@ -331,7 +331,7 @@ populate_ui (CEPageIP6 *self)
 	NMSettingIP6Config *setting = priv->setting;
 	GtkListStore *store;
 	GtkTreeIter model_iter;
-	int method = IP6_METHOD_IGNORE;
+	int method = IP6_METHOD_AUTO;
 	GString *string = NULL;
 	SetMethodInfo info;
 	const char *str_method;
@@ -341,6 +341,8 @@ populate_ui (CEPageIP6 *self)
 	gtk_combo_box_set_active (priv->method, 0);
 	str_method = nm_setting_ip6_config_get_method (setting);
 	if (str_method) {
+		if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_IGNORE))
+			method = IP6_METHOD_IGNORE;
 		if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_AUTO))
 			method = IP6_METHOD_AUTO;
 		if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_DHCP))
