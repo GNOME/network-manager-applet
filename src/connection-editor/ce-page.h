@@ -30,6 +30,7 @@
 
 #include <dbus/dbus-glib.h>
 #include <nm-connection.h>
+#include <nm-client.h>
 
 typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
                                              gboolean canceled,
@@ -67,6 +68,7 @@ typedef struct {
 
 	NMConnection *connection;
 	GtkWindow *parent_window;
+	NMClient *client;
 
 	gboolean disposed;
 } CEPage;
@@ -75,7 +77,8 @@ typedef struct {
 	GObjectClass parent;
 
 	/* Virtual functions */
-	gboolean    (*validate)    (CEPage *self, NMConnection *connection, GError **error);
+	gboolean    (*validate)     (CEPage *self, NMConnection *connection, GError **error);
+	char **     (*get_mac_list) (CEPage *self);
 
 	/* Signals */
 	void        (*changed)     (CEPage *self);
@@ -85,6 +88,7 @@ typedef struct {
 
 typedef CEPage* (*CEPageNewFunc)(NMConnection *connection,
                                  GtkWindow *parent,
+                                 NMClient *client,
                                  const char **out_secrets_setting_name,
                                  GError **error);
 
@@ -96,6 +100,8 @@ GtkWidget *  ce_page_get_page (CEPage *self);
 const char * ce_page_get_title (CEPage *self);
 
 gboolean ce_page_validate (CEPage *self, NMConnection *connection, GError **error);
+
+char **ce_page_get_mac_list (CEPage *self);
 
 void ce_page_changed (CEPage *self);
 
@@ -126,6 +132,7 @@ NMConnection *ce_page_new_connection (const char *format,
 CEPage *ce_page_new (GType page_type,
                      NMConnection *connection,
                      GtkWindow *parent_window,
+                     NMClient *client,
                      const char *ui_file,
                      const char *widget_name,
                      const char *title);

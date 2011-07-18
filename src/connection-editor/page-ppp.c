@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2010 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -266,6 +266,7 @@ finish_setup (CEPagePpp *self, gpointer unused, GError *error, gpointer user_dat
 CEPage *
 ce_page_ppp_new (NMConnection *connection,
                  GtkWindow *parent_window,
+                 NMClient *client,
                  const char **out_secrets_setting_name,
                  GError **error)
 {
@@ -276,6 +277,7 @@ ce_page_ppp_new (NMConnection *connection,
 	self = CE_PAGE_PPP (ce_page_new (CE_TYPE_PAGE_PPP,
 	                                 connection,
 	                                 parent_window,
+	                                 client,
 	                                 UIDIR "/ce-page-ppp.ui",
 	                                 "PppPage",
 	                                 _("PPP Settings")));

@@ -686,7 +686,7 @@ add_page (NMConnectionEditor *editor,
 	g_return_val_if_fail (func != NULL, FALSE);
 	g_return_val_if_fail (connection != NULL, FALSE);
 
-	page = (*func) (connection, GTK_WINDOW (editor->window), &secrets_setting_name, error);
+	page = (*func) (connection, GTK_WINDOW (editor->window), editor->client, &secrets_setting_name, error);
 	if (page) {
 		g_object_set_data_full (G_OBJECT (page),
 		                        SECRETS_TAG,

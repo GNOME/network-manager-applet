@@ -965,6 +965,7 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 CEPage *
 ce_page_ip4_new (NMConnection *connection,
                  GtkWindow *parent_window,
+                 NMClient *client,
                  const char **out_secrets_setting_name,
                  GError **error)
 {
@@ -975,6 +976,7 @@ ce_page_ip4_new (NMConnection *connection,
 	self = CE_PAGE_IP4 (ce_page_new (CE_TYPE_PAGE_IP4,
 	                                 connection,
 	                                 parent_window,
+	                                 client,
 	                                 UIDIR "/ce-page-ip4.ui",
 	                                 "IP4Page",
 	                                 _("IPv4 Settings")));

@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2010 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -30,6 +30,7 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-wired.h>
+#include <nm-device-ethernet.h>
 
 #include "page-wired.h"
 
@@ -40,8 +41,8 @@ G_DEFINE_TYPE (CEPageWired, ce_page_wired, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingWired *setting;
 
-	GtkEntry *device_mac;  /* Permanent MAC of the device */
-	GtkEntry *cloned_mac;  /* Cloned MAC - used for MAC spoofing */
+	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
+	GtkEntry *cloned_mac;         /* Cloned MAC - used for MAC spoofing */
 	GtkComboBox *port;
 	GtkComboBox *speed;
 	GtkToggleButton *duplex;
@@ -71,7 +72,7 @@ wired_private_init (CEPageWired *self)
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->device_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wired_device_mac")));
+	priv->device_mac = GTK_COMBO_BOX_TEXT (GTK_WIDGET (gtk_builder_get_object (builder, "wired_device_mac")));
 	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wired_cloned_mac")));
 	priv->port = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wired_port")));
 	priv->speed = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wired_speed")));
@@ -96,6 +97,11 @@ populate_ui (CEPageWired *self)
 	int port_idx = PORT_DEFAULT;
 	int speed_idx;
 	int mtu_def;
+	char **mac_list, **iter;
+	const GByteArray *s_mac;
+	char *s_mac_str;
+	char *active_mac = NULL;
+	GtkWidget *entry;
 
 	/* Port */
 	port = nm_setting_wired_get_port (setting);
@@ -143,7 +149,28 @@ populate_ui (CEPageWired *self)
 	                              nm_setting_wired_get_auto_negotiate (setting));
 
 	/* Device MAC address */
-	ce_page_mac_to_entry (nm_setting_wired_get_mac_address (setting), priv->device_mac);
+	mac_list = ce_page_get_mac_list (CE_PAGE (self));
+	s_mac = nm_setting_wired_get_mac_address (setting);
+	s_mac_str = s_mac ? g_strdup_printf ("%02X:%02X:%02X:%02X:%02X:%02X",
+	                                     s_mac->data[0], s_mac->data[1], s_mac->data[2],
+	                                     s_mac->data[3], s_mac->data[4], s_mac->data[5]):
+	                    NULL;
+
+	for (iter = mac_list; iter && *iter; iter++) {
+		gtk_combo_box_text_append_text (priv->device_mac, *iter);
+		if (s_mac_str && g_ascii_strncasecmp (*iter, s_mac_str, 17) == 0)
+			active_mac = *iter;
+	}
+
+	if (s_mac_str) {
+		if (!active_mac)
+			gtk_combo_box_text_prepend_text (priv->device_mac, s_mac_str);
+
+		entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
+		if (entry)
+			gtk_entry_set_text (GTK_ENTRY (entry), active_mac ? active_mac : s_mac_str);
+	}
+	g_strfreev (mac_list);
 	g_signal_connect (priv->device_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* Cloned MAC address */
@@ -197,6 +224,7 @@ finish_setup (CEPageWired *self, gpointer unused, GError *error, gpointer user_d
 CEPage *
 ce_page_wired_new (NMConnection *connection,
                    GtkWindow *parent_window,
+                   NMClient *client,
                    const char **out_secrets_setting_name,
                    GError **error)
 {
@@ -206,6 +234,7 @@ ce_page_wired_new (NMConnection *connection,
 	self = CE_PAGE_WIRED (ce_page_new (CE_TYPE_PAGE_WIRED,
 	                                   connection,
 	                                   parent_window,
+	                                   client,
 	                                   UIDIR "/ce-page-wired.ui",
 	                                   "WiredPage",
 	                                   _("Wired")));
@@ -236,6 +265,7 @@ ui_to_setting (CEPageWired *self)
 	guint32 speed;
 	GByteArray *device_mac = NULL;
 	GByteArray *cloned_mac = NULL;
+	GtkWidget *entry;
 
 	/* Port */
 	switch (gtk_combo_box_get_active (priv->port)) {
@@ -275,7 +305,9 @@ ui_to_setting (CEPageWired *self)
 		break;
 	}
 
-	device_mac = ce_page_entry_to_mac (priv->device_mac, NULL);
+	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
+	if (entry)
+		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), NULL);
 	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, NULL);
 
 	g_object_set (priv->setting,
@@ -302,12 +334,16 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 	gboolean invalid = FALSE;
 	GByteArray *ignore;
+	GtkWidget *entry;
 
-	ignore = ce_page_entry_to_mac (priv->device_mac, &invalid);
-	if (invalid)
-		return FALSE;
-	if (ignore)
-		g_byte_array_free (ignore, TRUE);
+	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
+	if (entry) {
+		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), &invalid);
+		if (invalid)
+			return FALSE;
+		if (ignore)
+			g_byte_array_free (ignore, TRUE);
+	}
 
 	ignore = ce_page_entry_to_mac (priv->cloned_mac, &invalid);
 	if (invalid)
@@ -317,6 +353,38 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
+}
+
+static char **
+get_mac_list (CEPage *page)
+{
+	const GPtrArray *devices;
+	GString *mac_str;
+	char **mac_list;
+	int i;
+
+	if (!page->client)
+		return NULL;
+
+	mac_str = g_string_new (NULL);
+	devices = nm_client_get_devices (page->client);
+	for (i = 0; devices && (i < devices->len); i++) {
+		const char *mac, *iface;
+		NMDevice *dev = g_ptr_array_index (devices, i);
+
+		if (!NM_IS_DEVICE_ETHERNET (dev))
+			continue;
+
+		mac = nm_device_ethernet_get_permanent_hw_address (NM_DEVICE_ETHERNET (dev));
+		iface = nm_device_get_iface (NM_DEVICE (dev));
+		g_string_append_printf (mac_str, "%s (%s),", mac, iface);
+	}
+	g_string_truncate (mac_str, mac_str->len-1);
+
+	mac_list = g_strsplit (mac_str->str, ",", 0);
+	g_string_free (mac_str, TRUE);
+
+	return mac_list;
 }
 
 static void
@@ -334,6 +402,7 @@ ce_page_wired_class_init (CEPageWiredClass *wired_class)
 
 	/* virtual methods */
 	parent_class->validate = validate;
+	parent_class->get_mac_list = get_mac_list;
 }
 
 

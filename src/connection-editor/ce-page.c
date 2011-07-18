@@ -119,6 +119,17 @@ ce_page_validate (CEPage *self, NMConnection *connection, GError **error)
 	return TRUE;
 }
 
+char **
+ce_page_get_mac_list (CEPage *self)
+{
+	g_return_val_if_fail (CE_IS_PAGE (self), NULL);
+
+	if (CE_PAGE_GET_CLASS (self)->get_mac_list)
+		return CE_PAGE_GET_CLASS (self)->get_mac_list (self);
+
+	return NULL;
+}
+
 void
 ce_page_mac_to_entry (const GByteArray *mac, GtkEntry *entry)
 {
@@ -507,6 +518,7 @@ CEPage *
 ce_page_new (GType page_type,
              NMConnection *connection,
              GtkWindow *parent_window,
+             NMClient *client,
              const char *ui_file,
              const char *widget_name,
              const char *title)
@@ -523,6 +535,8 @@ ce_page_new (GType page_type,
 	                              CE_PAGE_PARENT_WINDOW, parent_window,
 	                              NULL));
 	self->title = g_strdup (title);
+	self->client = client;
+
 	if (ui_file) {
 		if (!gtk_builder_add_from_file (self->builder, ui_file, &error)) {
 			g_warning ("Couldn't load builder file: %s", error->message);

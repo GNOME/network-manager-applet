@@ -929,6 +929,7 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 CEPage *
 ce_page_ip6_new (NMConnection *connection,
                  GtkWindow *parent_window,
+                 NMClient *client,
                  const char **out_secrets_setting_name,
                  GError **error)
 {
@@ -939,6 +940,7 @@ ce_page_ip6_new (NMConnection *connection,
 	self = CE_PAGE_IP6 (ce_page_new (CE_TYPE_PAGE_IP6,
 	                                 connection,
 	                                 parent_window,
+	                                 client,
 	                                 UIDIR "/ce-page-ip6.ui",
 	                                 "IP6Page",
 	                                 _("IPv6 Settings")));

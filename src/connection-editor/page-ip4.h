@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #ifndef __PAGE_IP4_H__
@@ -49,6 +49,7 @@ GType ce_page_ip4_get_type (void);
 
 CEPage *ce_page_ip4_new (NMConnection *connection,
                          GtkWindow *parent,
+                         NMClient *client,
                          const char **out_secrets_setting_name,
                          GError **error);
 

@@ -99,6 +99,7 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 CEPage *
 ce_page_wired_security_new (NMConnection *connection,
                             GtkWindow *parent_window,
+                            NMClient *client,
                             const char **out_secrets_setting_name,
                             GError **error)
 {
@@ -109,6 +110,7 @@ ce_page_wired_security_new (NMConnection *connection,
 	self = CE_PAGE_WIRED_SECURITY (ce_page_new (CE_TYPE_PAGE_WIRED_SECURITY,
 	                                            connection,
 	                                            parent_window,
+	                                            client,
 	                                            NULL,
 	                                            NULL,
 	                                            _("802.1x Security")));
