@@ -638,6 +638,44 @@ cdma_device_info_free (gpointer data)
 }
 
 static void
+notify_user_of_cdma_reg_change (CdmaDeviceInfo *info)
+{
+	guint32 mb_state = cdma_state_to_mb_state (info);
+
+	if (mb_state == MB_STATE_HOME) {
+		applet_do_notify_with_pref (info->applet,
+		                            _("CDMA network."),
+		                            _("You are now registered on the home network."),
+		                            "nm-signal-100",
+		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
+	} else if (mb_state == MB_STATE_ROAMING) {
+		applet_do_notify_with_pref (info->applet,
+		                            _("CDMA network."),
+		                            _("You are now registered on a roaming network."),
+		                            "nm-signal-100",
+		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
+	}
+}
+
+static void
+update_registration_state (CdmaDeviceInfo *info,
+                           guint32 new_cdma1x_state,
+                           guint32 new_evdo_state)
+{
+	guint32 old_mb_state = cdma_state_to_mb_state (info);
+
+	if (   (info->cdma1x_state != new_cdma1x_state)
+	    || (info->evdo_state != new_evdo_state)) {
+		info->cdma1x_state = new_cdma1x_state;
+		info->evdo_state = new_evdo_state;
+	}
+
+	/* Use the composite state to notify of home/roaming changes */
+	if (cdma_state_to_mb_state (info) != old_mb_state)
+		notify_user_of_cdma_reg_change (info);
+}
+
+static void
 reg_state_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 {
 	CdmaDeviceInfo *info = user_data;
@@ -648,8 +686,7 @@ reg_state_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	                           G_TYPE_UINT, &cdma1x_state,
 	                           G_TYPE_UINT, &evdo_state,
 	                           G_TYPE_INVALID)) {
-		info->cdma1x_state = cdma1x_state;
-		info->evdo_state = evdo_state;
+		update_registration_state (info, cdma1x_state, evdo_state);
 		applet_schedule_update_icon (info->applet);
 	}
 
@@ -837,10 +874,8 @@ reg_state_changed_cb (DBusGProxy *proxy,
 {
 	CdmaDeviceInfo *info = user_data;
 
-	info->cdma1x_state = cdma1x_state;
-	info->evdo_state = evdo_state;
+	update_registration_state (info, cdma1x_state, evdo_state);
 	info->skip_reg_poll = TRUE;
-
 	applet_schedule_update_icon (info->applet);
 }
 
