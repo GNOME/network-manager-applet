@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-16 21:36+0200\n"
-"PO-Revision-Date: 2011-06-16 21:37+0200\n"
+"POT-Creation-Date: 2011-07-21 23:28+0200\n"
+"PO-Revision-Date: 2011-07-21 23:29+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -187,6 +187,18 @@ msgstr "Połączenie komórkowe \"%s\" jest aktywne: (%d%%%s%s)"
 msgid "roaming"
 msgstr "roaming"
 
+#: ../src/applet-device-cdma.c:649 ../src/applet-device-cdma.c:655
+msgid "CDMA network."
+msgstr "Sieć CDMA."
+
+#: ../src/applet-device-cdma.c:650 ../src/applet-device-gsm.c:1159
+msgid "You are now registered on the home network."
+msgstr "Zarejestrowano w sieci domowej."
+
+#: ../src/applet-device-cdma.c:656 ../src/applet-device-gsm.c:1165
+msgid "You are now registered on a roaming network."
+msgstr "Zarejestrowano w sieci roamingowej."
+
 #: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:682
 #: ../src/mb-menu-item.c:60
 msgid "GSM"
@@ -287,14 +299,6 @@ msgstr "Wyświetlanie kodów PIN/PUK"
 #: ../src/applet-device-gsm.c:1158 ../src/applet-device-gsm.c:1164
 msgid "GSM network."
 msgstr "Sieć GSM."
-
-#: ../src/applet-device-gsm.c:1159
-msgid "You are now registered on the home network."
-msgstr "Zarejestrowano w sieci domowej."
-
-#: ../src/applet-device-gsm.c:1165
-msgid "You are now registered on a roaming network."
-msgstr "Zarejestrowano w sieci roamingowej."
 
 #: ../src/applet-device-wired.c:63
 msgid "Auto Ethernet"
@@ -457,7 +461,7 @@ msgstr "Błąd podczas wyświetlania informacji o połączeniu:"
 #: ../src/applet-dialogs.c:109
 #: ../src/connection-editor/page-wireless-security.c:284
 #: ../src/wireless-dialog.c:969
-#: ../src/wireless-security/wireless-security.c:390
+#: ../src/wireless-security/wireless-security.c:393
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -1649,23 +1653,23 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:235
+#: ../src/wireless-security/eap-method-ttls.c:237
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:134
-#: ../src/wireless-security/eap-method-ttls.c:283
+#: ../src/wireless-security/eap-method-ttls.c:287
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:135
-#: ../src/wireless-security/eap-method-peap.c:251
-#: ../src/wireless-security/eap-method-ttls.c:267
+#: ../src/wireless-security/eap-method-peap.c:253
+#: ../src/wireless-security/eap-method-ttls.c:270
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:136
-#: ../src/wireless-security/eap-method-ttls.c:251
+#: ../src/wireless-security/eap-method-ttls.c:254
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -2469,7 +2473,7 @@ msgstr "Nowe..."
 msgid "C_reate"
 msgstr "_Utwórz"
 
-#: ../src/wireless-dialog.c:1182
+#: ../src/wireless-dialog.c:1188
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network "
@@ -2478,36 +2482,36 @@ msgstr ""
 "Do połączenia z siecią bezprzewodową \"%s\" wymagane są hasła lub klucze "
 "szyfrujące."
 
-#: ../src/wireless-dialog.c:1184
+#: ../src/wireless-dialog.c:1190
 msgid "Wireless Network Authentication Required"
 msgstr "Wymagane uwierzytelnienie w sieci bezprzewodowej"
 
-#: ../src/wireless-dialog.c:1186
+#: ../src/wireless-dialog.c:1192
 msgid "Authentication required by wireless network"
 msgstr "Wymagane uwierzytelnienie w sieci bezprzewodowej"
 
-#: ../src/wireless-dialog.c:1191
+#: ../src/wireless-dialog.c:1197
 msgid "Create New Wireless Network"
 msgstr "Tworzenie nowej sieci bezprzewodowej"
 
-#: ../src/wireless-dialog.c:1193
+#: ../src/wireless-dialog.c:1199
 msgid "New wireless network"
 msgstr "Nowa sieć bezprzewodowa"
 
-#: ../src/wireless-dialog.c:1194
+#: ../src/wireless-dialog.c:1200
 msgid "Enter a name for the wireless network you wish to create."
 msgstr ""
 "Proszę wprowadzić nazwę sieci bezprzewodowej, jaka ma zostać utworzona."
 
-#: ../src/wireless-dialog.c:1196
+#: ../src/wireless-dialog.c:1202
 msgid "Connect to Hidden Wireless Network"
 msgstr "Połączenie z ukrytą siecią bezprzewodową"
 
-#: ../src/wireless-dialog.c:1198
+#: ../src/wireless-dialog.c:1204
 msgid "Hidden wireless network"
 msgstr "Ukryta sieć bezprzewodowa"
 
-#: ../src/wireless-dialog.c:1199
+#: ../src/wireless-dialog.c:1205
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2540,18 +2544,18 @@ msgstr "Certyfikaty DER, PEM lub klucze prywatne PKCS#12 (*.der, *.pem, *.p12)"
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Certyfikaty DER lub PEM (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:267
-#: ../src/wireless-security/wireless-security.c:366
+#: ../src/wireless-security/eap-method-peap.c:270
+#: ../src/wireless-security/wireless-security.c:369
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:283
+#: ../src/wireless-security/eap-method-peap.c:287
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-peap.c:354
-#: ../src/wireless-security/eap-method-tls.c:437
-#: ../src/wireless-security/eap-method-ttls.c:354
+#: ../src/wireless-security/eap-method-peap.c:359
+#: ../src/wireless-security/eap-method-tls.c:438
+#: ../src/wireless-security/eap-method-ttls.c:359
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Wybór certyfikatu CA..."
 
@@ -2605,11 +2609,11 @@ msgstr ""
 "\n"
 "(można ochronić klucz prywatny hasłem za pomocą oprogramowania OpenSSL)"
 
-#: ../src/wireless-security/eap-method-tls.c:431
+#: ../src/wireless-security/eap-method-tls.c:432
 msgid "Choose your personal certificate..."
 msgstr "Wybór prywatnego certyfikatu..."
 
-#: ../src/wireless-security/eap-method-tls.c:443
+#: ../src/wireless-security/eap-method-tls.c:444
 msgid "Choose your private key..."
 msgstr "Wybór klucza prywatnego..."
 
@@ -2641,15 +2645,15 @@ msgstr "Nie"
 msgid "Yes"
 msgstr "Tak"
 
-#: ../src/wireless-security/wireless-security.c:378
+#: ../src/wireless-security/wireless-security.c:381
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:402
+#: ../src/wireless-security/wireless-security.c:405
 msgid "Tunneled TLS"
 msgstr "Tunelowane TLS"
 
-#: ../src/wireless-security/wireless-security.c:413
+#: ../src/wireless-security/wireless-security.c:416
 msgid "Protected EAP (PEAP)"
 msgstr "Chronione EAP (PEAP)"
 
