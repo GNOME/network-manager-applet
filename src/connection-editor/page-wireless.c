@@ -44,7 +44,11 @@ typedef struct {
 
 	GtkEntry *ssid;
 	GtkEntry *bssid;
+#if GTK_CHECK_VERSION (2,24,0)
 	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
+#else
+	GtkComboBoxEntry *device_mac;
+#endif
 	GtkEntry *cloned_mac;         /* Cloned MAC - used for MAC spoofing */
 	GtkComboBox *mode;
 	GtkComboBox *band;
@@ -65,6 +69,7 @@ wireless_private_init (CEPageWireless *self)
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 	GtkBuilder *builder;
 	GtkWidget *widget;
+	GtkWidget *align;
 
 	builder = CE_PAGE (self)->builder;
 
@@ -72,11 +77,24 @@ wireless_private_init (CEPageWireless *self)
 
 	priv->ssid     = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_ssid")));
 	priv->bssid    = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_bssid")));
-	priv->device_mac = GTK_COMBO_BOX_TEXT (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_device_mac")));
 	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_cloned_mac")));
 	priv->mode     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_mode")));
 	priv->band     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_band")));
 	priv->channel  = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_channel")));
+
+#if GTK_CHECK_VERSION(2,24,0)
+	priv->device_mac = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
+	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_mac), 0);
+#else
+	priv->device_mac = GTK_COMBO_BOX_ENTRY (gtk_combo_box_entry_new_text ());
+	gtk_combo_box_entry_set_text_column (GTK_COMBO_BOX_ENTRY (priv->device_mac), 0);
+#endif
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_mac),
+	                             _("This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"));
+
+	align = GTK_WIDGET (gtk_builder_get_object (builder, "wireless_device_mac_alignment"));
+	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->device_mac));
+	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
 
 	priv->rate     = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_rate")));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "rate_units"));
@@ -357,14 +375,23 @@ populate_ui (CEPageWireless *self)
 	                    NULL;
 
 	for (iter = mac_list; iter && *iter; iter++) {
+#if GTK_CHECK_VERSION (2,24,0)
 		gtk_combo_box_text_append_text (priv->device_mac, *iter);
+#else
+		gtk_combo_box_append_text (GTK_COMBO_BOX (priv->device_mac), *iter);
+#endif
 		if (s_mac_str && g_ascii_strncasecmp (*iter, s_mac_str, 17) == 0)
 			active_mac = *iter;
 	}
 
 	if (s_mac_str) {
-		if (!active_mac)
+		if (!active_mac) {
+#if GTK_CHECK_VERSION (2,24,0)
 			gtk_combo_box_text_prepend_text (priv->device_mac, s_mac_str);
+#else
+			gtk_combo_box_prepend_text (GTK_COMBO_BOX (priv->device_mac), s_mac_str);
+#endif
+		}
 
 		entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 		if (entry)

@@ -41,7 +41,11 @@ G_DEFINE_TYPE (CEPageWired, ce_page_wired, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingWired *setting;
 
+#if GTK_CHECK_VERSION(2,24,0)
 	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
+#else
+	GtkComboBoxEntry *device_mac;
+#endif
 	GtkEntry *cloned_mac;         /* Cloned MAC - used for MAC spoofing */
 	GtkComboBox *port;
 	GtkComboBox *speed;
@@ -69,10 +73,24 @@ wired_private_init (CEPageWired *self)
 {
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 	GtkBuilder *builder;
+	GtkWidget *align;
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->device_mac = GTK_COMBO_BOX_TEXT (GTK_WIDGET (gtk_builder_get_object (builder, "wired_device_mac")));
+#if GTK_CHECK_VERSION(2,24,0)
+	priv->device_mac = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
+	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_mac), 0);
+#else
+	priv->device_mac = GTK_COMBO_BOX_ENTRY (gtk_combo_box_entry_new_text ());
+	gtk_combo_box_entry_set_text_column (GTK_COMBO_BOX_ENTRY (priv->device_mac), 0);
+#endif
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_mac),
+	                             _("This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"));
+
+	align = GTK_WIDGET (gtk_builder_get_object (builder, "wired_device_mac_alignment"));
+	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->device_mac));
+	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
+
 	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wired_cloned_mac")));
 	priv->port = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wired_port")));
 	priv->speed = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wired_speed")));
@@ -157,14 +175,23 @@ populate_ui (CEPageWired *self)
 	                    NULL;
 
 	for (iter = mac_list; iter && *iter; iter++) {
+#if GTK_CHECK_VERSION (2,24,0)
 		gtk_combo_box_text_append_text (priv->device_mac, *iter);
+#else
+		gtk_combo_box_append_text (GTK_COMBO_BOX (priv->device_mac), *iter);
+#endif
 		if (s_mac_str && g_ascii_strncasecmp (*iter, s_mac_str, 17) == 0)
 			active_mac = *iter;
 	}
 
 	if (s_mac_str) {
-		if (!active_mac)
+		if (!active_mac) {
+#if GTK_CHECK_VERSION (2,24,0)
 			gtk_combo_box_text_prepend_text (priv->device_mac, s_mac_str);
+#else
+			gtk_combo_box_prepend_text (GTK_COMBO_BOX (priv->device_mac), s_mac_str);
+#endif
+		}
 
 		entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 		if (entry)
