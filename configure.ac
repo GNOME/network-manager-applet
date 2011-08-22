@@ -162,6 +162,8 @@ GNOME_MAINTAINER_MODE_DEFINES
 AC_CONFIG_FILES([
 Makefile
 src/Makefile
+src/libnm-gtk/Makefile
+src/libnm-gtk/libnm-gtk.pc
 src/marshallers/Makefile
 src/utils/Makefile
 src/utils/tests/Makefile

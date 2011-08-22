@@ -37,9 +37,7 @@
 #include <nm-setting-wireless.h>
 #include <nm-setting-ip4-config.h>
 
-#include "applet.h"
-#include "applet-dialogs.h"
-#include "wireless-dialog.h"
+#include "nm-wireless-dialog.h"
 #include "wireless-security.h"
 #include "utils.h"
 
@@ -56,7 +54,8 @@ typedef struct {
 } GetSecretsInfo;
 
 typedef struct {
-	NMApplet *applet;
+	NMClient *client;
+	NMRemoteSettings *settings;
 
 	GtkBuilder *builder;
 
@@ -461,7 +460,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 		gtk_list_store_append (store, &tree_iter);
 		gtk_list_store_set (store, &tree_iter, C_SEP_COLUMN, TRUE, -1);
 
-		connections = applet_get_all_connections (priv->applet);
+		connections = nm_remote_settings_list_connections (priv->settings);
 		for (iter = connections; iter; iter = g_slist_next (iter)) {
 			NMConnection *candidate = NM_CONNECTION (iter->data);
 			NMSettingWireless *s_wireless;
@@ -643,7 +642,7 @@ device_combo_init (NMAWirelessDialog *self, NMDevice *device)
 		add_device_to_model (store, device);
 		num_added++;
 	} else {
-		devices = nm_client_get_devices (priv->applet->nm_client);
+		devices = nm_client_get_devices (priv->client);
 		if (devices->len == 0)
 			return FALSE;
 
@@ -1270,7 +1269,8 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 }
 
 GtkWidget *
-nma_wireless_dialog_new (NMApplet *applet,
+nma_wireless_dialog_new (NMClient *client,
+						 NMRemoteSettings *settings,
                          NMConnection *connection,
                          NMDevice *device,
                          NMAccessPoint *ap,
@@ -1280,8 +1280,9 @@ nma_wireless_dialog_new (NMApplet *applet,
 	NMAWirelessDialogPrivate *priv;
 	guint32 dev_caps;
 
-	g_return_val_if_fail (applet != NULL, NULL);
-	g_return_val_if_fail (connection != NULL, NULL);
+	g_return_val_if_fail (NM_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (NM_IS_REMOTE_SETTINGS (settings), NULL);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	/* Ensure device validity */
 	if (device) {
@@ -1294,7 +1295,8 @@ nma_wireless_dialog_new (NMApplet *applet,
 	if (obj) {
 		priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (obj);
 
-		priv->applet = applet;
+		priv->client = g_object_ref (client);
+		priv->settings = g_object_ref (settings);
 		if (ap)
 			priv->ap = g_object_ref (ap);
 
@@ -1312,12 +1314,13 @@ nma_wireless_dialog_new (NMApplet *applet,
 }
 
 static GtkWidget *
-internal_new_other (NMApplet *applet, gboolean create)
+internal_new_other (NMClient *client, NMRemoteSettings *settings, gboolean create)
 {
 	NMAWirelessDialog *self;
 	NMAWirelessDialogPrivate *priv;
 
-	g_return_val_if_fail (applet != NULL, NULL);
+	g_return_val_if_fail (NM_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (NM_IS_REMOTE_SETTINGS (settings), NULL);
 
 	self = NMA_WIRELESS_DIALOG (g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL));
 	if (!self)
@@ -1325,7 +1328,8 @@ internal_new_other (NMApplet *applet, gboolean create)
 
 	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 
-	priv->applet = applet;
+	priv->client = g_object_ref (client);
+	priv->settings = g_object_ref (settings);
 	priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	priv->adhoc_create = create;
@@ -1340,15 +1344,15 @@ internal_new_other (NMApplet *applet, gboolean create)
 }
 
 GtkWidget *
-nma_wireless_dialog_new_for_other (NMApplet *applet)
+nma_wireless_dialog_new_for_other (NMClient *client, NMRemoteSettings *settings)
 {
-	return internal_new_other (applet, FALSE);
+	return internal_new_other (client, settings, FALSE);
 }
 
 GtkWidget *
-nma_wireless_dialog_new_for_create (NMApplet *applet)
+nma_wireless_dialog_new_for_create (NMClient *client, NMRemoteSettings *settings)
 {
-	return internal_new_other (applet, TRUE);
+	return internal_new_other (client, settings, TRUE);
 }
 
 GtkWidget *
@@ -1410,6 +1414,8 @@ dispose (GObject *object)
 	if (priv->secrets_info)
 		priv->secrets_info->canceled = TRUE;
 
+	g_object_unref (priv->client);
+	g_object_unref (priv->settings);
 	g_object_unref (priv->builder);
 
 	model_free (priv->device_model, D_NAME_COLUMN);

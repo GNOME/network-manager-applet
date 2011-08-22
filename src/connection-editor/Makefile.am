@@ -14,6 +14,7 @@ nm_connection_editor_CPPFLAGS = \
 	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
+	-I${top_srcdir}/src/libnm-gtk \
 	-I${top_builddir}/src/marshallers
 
 nm_connection_editor_SOURCES = \
@@ -62,6 +63,7 @@ nm_connection_editor_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/marshallers/libmarshallers.la \
+	${top_builddir}/src/libnm-gtk/libnm-gtk.la \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	-lm

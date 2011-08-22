@@ -19,8 +19,8 @@
  * (C) Copyright 2007 Red Hat, Inc.
  */
 
-#ifndef WIRELESS_DIALOG_H
-#define WIRELESS_DIALOG_H
+#ifndef NMA_WIRELESS_DIALOG_H
+#define NMA_WIRELESS_DIALOG_H
 
 #include <gtk/gtk.h>
 #include <glib.h>
@@ -29,6 +29,7 @@
 #include <nm-connection.h>
 #include <nm-device.h>
 #include <nm-access-point.h>
+#include <nm-remote-settings.h>
 
 #define NMA_TYPE_WIRELESS_DIALOG            (nma_wireless_dialog_get_type ())
 #define NMA_WIRELESS_DIALOG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NMA_TYPE_WIRELESS_DIALOG, NMAWirelessDialog))
@@ -47,15 +48,18 @@ typedef struct {
 
 GType nma_wireless_dialog_get_type (void);
 
-GtkWidget *nma_wireless_dialog_new (NMApplet *applet,
+GtkWidget *nma_wireless_dialog_new (NMClient *client,
+				    NMRemoteSettings *settings,
                                     NMConnection *connection,
                                     NMDevice *device,
                                     NMAccessPoint *ap,
                                     gboolean secrets_only);
 
-GtkWidget *nma_wireless_dialog_new_for_other (NMApplet *applet);
+GtkWidget *nma_wireless_dialog_new_for_other (NMClient *client,
+					      NMRemoteSettings *settings);
 
-GtkWidget *nma_wireless_dialog_new_for_create (NMApplet *applet);
+GtkWidget *nma_wireless_dialog_new_for_create (NMClient *client,
+					       NMRemoteSettings *settings);
 
 NMConnection * nma_wireless_dialog_get_connection (NMAWirelessDialog *dialog,
                                                    NMDevice **device,
@@ -67,5 +71,5 @@ void nma_wireless_dialog_set_nag_ignored (NMAWirelessDialog *dialog, gboolean ig
 
 gboolean nma_wireless_dialog_get_nag_ignored (NMAWirelessDialog *dialog);
 
-#endif	/* WIRELESS_DIALOG_H */
+#endif	/* NMA_WIRELESS_DIALOG_H */
 

@@ -36,21 +36,21 @@
 #include <nm-client.h>
 #include <nm-device-modem.h>
 
-#include "mobile-wizard.h"
+#include "nm-mobile-wizard.h"
 #include "nmn-mobile-providers.h"
 #include "utils.h"
 
 #define DEVICE_TAG "device"
 #define TYPE_TAG "setting-type"
 
-static char *get_selected_country (MobileWizard *self, gboolean *unlisted);
-static NmnMobileProvider *get_selected_provider (MobileWizard *self);
-static NmnMobileAccessMethodType get_provider_unlisted_type (MobileWizard *self);
-static NmnMobileAccessMethod *get_selected_method (MobileWizard *self, gboolean *manual);
+static char *get_selected_country (NMAMobileWizard *self, gboolean *unlisted);
+static NmnMobileProvider *get_selected_provider (NMAMobileWizard *self);
+static NmnMobileAccessMethodType get_provider_unlisted_type (NMAMobileWizard *self);
+static NmnMobileAccessMethod *get_selected_method (NMAMobileWizard *self, gboolean *manual);
 
-struct MobileWizard {
+struct NMAMobileWizard {
 	GtkWidget *assistant;
-	MobileWizardCallback callback;
+	NMAMobileWizardCallback callback;
 	gpointer user_data;
 	GHashTable *providers;
 	GHashTable *country_codes;
@@ -111,13 +111,13 @@ struct MobileWizard {
 static void
 assistant_closed (GtkButton *button, gpointer user_data)
 {
-	MobileWizard *self = user_data;
+	NMAMobileWizard *self = user_data;
 	NmnMobileProvider *provider;
 	NmnMobileAccessMethod *method;
-	MobileWizardAccessMethod *wiz_method;
+	NMAMobileWizardAccessMethod *wiz_method;
 	NmnMobileAccessMethodType method_type = self->method_type;
 
-	wiz_method = g_malloc0 (sizeof (MobileWizardAccessMethod));
+	wiz_method = g_malloc0 (sizeof (NMAMobileWizardAccessMethod));
 
 	provider = get_selected_provider (self);
 	if (!provider) {
@@ -175,7 +175,7 @@ assistant_closed (GtkButton *button, gpointer user_data)
 static void
 assistant_cancel (GtkButton *button, gpointer user_data)
 {
-	MobileWizard *self = user_data;
+	NMAMobileWizard *self = user_data;
 
 	(*(self->callback)) (self, TRUE, NULL, self->user_data);
 }
@@ -185,7 +185,7 @@ assistant_cancel (GtkButton *button, gpointer user_data)
 /**********************************************************/
 
 static void
-confirm_setup (MobileWizard *self)
+confirm_setup (NMAMobileWizard *self)
 {
 	GtkWidget *vbox, *label, *alignment, *pbox;
 
@@ -270,7 +270,7 @@ confirm_setup (MobileWizard *self)
 }
 
 static void
-confirm_prepare (MobileWizard *self)
+confirm_prepare (NMAMobileWizard *self)
 {
 	NmnMobileProvider *provider = NULL;
 	NmnMobileAccessMethod *method = NULL;
@@ -342,7 +342,7 @@ confirm_prepare (MobileWizard *self)
 #define PLAN_COL_MANUAL 2
 
 static NmnMobileAccessMethod *
-get_selected_method (MobileWizard *self, gboolean *manual)
+get_selected_method (NMAMobileWizard *self, gboolean *manual)
 {
 	GtkTreeModel *model;
 	NmnMobileAccessMethod *method = NULL;
@@ -372,7 +372,7 @@ get_selected_method (MobileWizard *self, gboolean *manual)
 }
 
 static void
-plan_update_complete (MobileWizard *self)
+plan_update_complete (NMAMobileWizard *self)
 {
 	GtkAssistant *assistant = GTK_ASSISTANT (self->assistant);
 	gboolean is_manual = FALSE;
@@ -392,7 +392,7 @@ plan_update_complete (MobileWizard *self)
 }
 
 static void
-plan_combo_changed (MobileWizard *self)
+plan_combo_changed (NMAMobileWizard *self)
 {
 	NmnMobileAccessMethod *method = NULL;
 	gboolean is_manual = FALSE;
@@ -465,7 +465,7 @@ apn_filter_cb (GtkEntry *   entry,
 }
 
 static void
-plan_setup (MobileWizard *self)
+plan_setup (NMAMobileWizard *self)
 {
 	GtkWidget *vbox, *label, *alignment, *hbox, *image;
 	GtkCellRenderer *renderer;
@@ -540,7 +540,7 @@ plan_setup (MobileWizard *self)
 }
 
 static void
-plan_prepare (MobileWizard *self)
+plan_prepare (NMAMobileWizard *self)
 {
 	NmnMobileProvider *provider;
 	GtkTreeIter method_iter;
@@ -622,7 +622,7 @@ providers_search_func (GtkTreeModel *model,
 }
 
 static NmnMobileProvider *
-get_selected_provider (MobileWizard *self)
+get_selected_provider (NMAMobileWizard *self)
 {
 	GtkTreeSelection *selection;
 	GtkTreeModel *model = NULL;
@@ -643,7 +643,7 @@ get_selected_provider (MobileWizard *self)
 }
 
 static void
-providers_update_complete (MobileWizard *self)
+providers_update_complete (NMAMobileWizard *self)
 {
 	GtkAssistant *assistant = GTK_ASSISTANT (self->assistant);
 	gboolean use_view;
@@ -668,7 +668,7 @@ providers_update_complete (MobileWizard *self)
 static gboolean
 focus_providers_view (gpointer user_data)
 {
-	MobileWizard *self = user_data;
+	NMAMobileWizard *self = user_data;
 
 	self->providers_focus_id = 0;
 	gtk_widget_grab_focus (self->providers_view);
@@ -678,7 +678,7 @@ focus_providers_view (gpointer user_data)
 static gboolean
 focus_provider_unlisted_entry (gpointer user_data)
 {
-	MobileWizard *self = user_data;
+	NMAMobileWizard *self = user_data;
 
 	self->providers_focus_id = 0;
 	gtk_widget_grab_focus (self->provider_unlisted_entry);
@@ -688,7 +688,7 @@ focus_provider_unlisted_entry (gpointer user_data)
 static void
 providers_radio_toggled (GtkToggleButton *button, gpointer user_data)
 {
-	MobileWizard *self = user_data;
+	NMAMobileWizard *self = user_data;
 	gboolean use_view;
 
 	use_view = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->providers_view_radio));
@@ -710,7 +710,7 @@ providers_radio_toggled (GtkToggleButton *button, gpointer user_data)
 }
 
 static NmnMobileAccessMethodType
-get_provider_unlisted_type (MobileWizard *self)
+get_provider_unlisted_type (NMAMobileWizard *self)
 {
 	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (self->provider_unlisted_type_combo))) {
 	case 0:
@@ -723,7 +723,7 @@ get_provider_unlisted_type (MobileWizard *self)
 }
 
 static void
-providers_setup (MobileWizard *self)
+providers_setup (NMAMobileWizard *self)
 {
 	GtkWidget *vbox, *scroll, *alignment, *unlisted_table, *label;
 	GtkCellRenderer *renderer;
@@ -835,7 +835,7 @@ providers_setup (MobileWizard *self)
 }
 
 static void
-providers_prepare (MobileWizard *self)
+providers_prepare (NMAMobileWizard *self)
 {
 	GtkTreeSelection *selection;
 	GSList *providers, *piter;
@@ -950,7 +950,7 @@ country_search_func (GtkTreeModel *model,
 static void
 add_one_country (gpointer key, gpointer value, gpointer user_data)
 {
-	MobileWizard *self = user_data;
+	NMAMobileWizard *self = user_data;
 	GtkTreeIter country_iter;
 	GtkTreePath *country_path, *country_view_path;
 
@@ -986,7 +986,7 @@ add_one_country (gpointer key, gpointer value, gpointer user_data)
 }
 
 static char *
-get_selected_country (MobileWizard *self, gboolean *out_unlisted)
+get_selected_country (NMAMobileWizard *self, gboolean *out_unlisted)
 {
 	GtkTreeSelection *selection;
 	GtkTreeModel *model = NULL;
@@ -1014,7 +1014,7 @@ get_selected_country (MobileWizard *self, gboolean *out_unlisted)
 }
 
 static void
-country_update_complete (MobileWizard *self)
+country_update_complete (NMAMobileWizard *self)
 {
 	char *country = NULL;
 	gboolean unlisted = FALSE;
@@ -1063,7 +1063,7 @@ out:
 }
 
 static void
-country_setup (MobileWizard *self)
+country_setup (NMAMobileWizard *self)
 {
 	GtkWidget *vbox, *label, *scroll, *alignment;
 	GtkCellRenderer *renderer;
@@ -1156,7 +1156,7 @@ country_setup (MobileWizard *self)
 static gboolean
 focus_country_view (gpointer user_data)
 {
-	MobileWizard *self = user_data;
+	NMAMobileWizard *self = user_data;
 
 	self->country_focus_id = 0;
 	gtk_widget_grab_focus (self->country_view);
@@ -1164,7 +1164,7 @@ focus_country_view (gpointer user_data)
 }
 
 static void
-country_prepare (MobileWizard *self)
+country_prepare (NMAMobileWizard *self)
 {
 	gtk_tree_view_set_search_column (GTK_TREE_VIEW (self->country_view), 0);
 	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (self->country_view), country_search_func, self, NULL);
@@ -1184,7 +1184,7 @@ country_prepare (MobileWizard *self)
 #define INTRO_COL_SEPARATOR 2
 
 static gboolean
-__intro_device_added (MobileWizard *self, NMDevice *device, gboolean select_it)
+__intro_device_added (NMAMobileWizard *self, NMDevice *device, gboolean select_it)
 {
 	GtkTreeIter iter;
 	const char *desc = utils_get_device_description (device);
@@ -1219,13 +1219,13 @@ __intro_device_added (MobileWizard *self, NMDevice *device, gboolean select_it)
 }
 
 static void
-intro_device_added_cb (NMClient *client, NMDevice *device, MobileWizard *self)
+intro_device_added_cb (NMClient *client, NMDevice *device, NMAMobileWizard *self)
 {
 	__intro_device_added (self, device, TRUE);
 }
 
 static void
-intro_device_removed_cb (NMClient *client, NMDevice *device, MobileWizard *self)
+intro_device_removed_cb (NMClient *client, NMDevice *device, NMAMobileWizard *self)
 {
 	GtkTreeIter iter;
 	gboolean have_device = FALSE, removed = FALSE;
@@ -1279,7 +1279,7 @@ intro_device_removed_cb (NMClient *client, NMDevice *device, MobileWizard *self)
 }
 
 static void
-intro_add_initial_devices (MobileWizard *self)
+intro_add_initial_devices (NMAMobileWizard *self)
 {
 	const GPtrArray *devices;
 	gboolean selected_first = FALSE;
@@ -1302,7 +1302,7 @@ intro_add_initial_devices (MobileWizard *self)
 }
 
 static void
-intro_remove_all_devices (MobileWizard *self)
+intro_remove_all_devices (NMAMobileWizard *self)
 {
 	gtk_tree_store_clear (self->dev_store);
 
@@ -1312,7 +1312,7 @@ intro_remove_all_devices (MobileWizard *self)
 }
 
 static void
-intro_manager_running_cb (NMClient *client, GParamSpec *pspec, MobileWizard *self)
+intro_manager_running_cb (NMClient *client, GParamSpec *pspec, NMAMobileWizard *self)
 {
 	if (nm_client_get_manager_running (client))
 		intro_add_initial_devices (self);
@@ -1329,7 +1329,7 @@ intro_row_separator_func (GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
 }
 
 static void
-intro_combo_changed (MobileWizard *self)
+intro_combo_changed (NMAMobileWizard *self)
 {
 	GtkTreeIter iter;
 	NMDevice *selected = NULL;
@@ -1358,7 +1358,7 @@ intro_combo_changed (MobileWizard *self)
 }
 
 static void
-intro_setup (MobileWizard *self)
+intro_setup (NMAMobileWizard *self)
 {
 	GtkWidget *vbox, *label, *alignment, *info_vbox;
 	GtkCellRenderer *renderer;
@@ -1469,7 +1469,7 @@ intro_setup (MobileWizard *self)
 /**********************************************************/
 
 static void
-remove_provider_focus_idle (MobileWizard *self)
+remove_provider_focus_idle (NMAMobileWizard *self)
 {
 	if (self->providers_focus_id) {
 		g_source_remove (self->providers_focus_id);
@@ -1478,7 +1478,7 @@ remove_provider_focus_idle (MobileWizard *self)
 }
 
 static void
-remove_country_focus_idle (MobileWizard *self)
+remove_country_focus_idle (NMAMobileWizard *self)
 {
 	if (self->country_focus_id) {
 		g_source_remove (self->country_focus_id);
@@ -1489,7 +1489,7 @@ remove_country_focus_idle (MobileWizard *self)
 static void
 assistant_prepare (GtkAssistant *assistant, GtkWidget *page, gpointer user_data)
 {
-	MobileWizard *self = user_data;
+	NMAMobileWizard *self = user_data;
 
 	if (page != self->providers_page)
 		remove_provider_focus_idle (self);
@@ -1509,7 +1509,7 @@ assistant_prepare (GtkAssistant *assistant, GtkWidget *page, gpointer user_data)
 static gint
 forward_func (gint current_page, gpointer user_data)
 {
-	MobileWizard *self = user_data;
+	NMAMobileWizard *self = user_data;
 
 	if (current_page == self->providers_idx) {
 		NmnMobileAccessMethodType method_type = self->method_type;
@@ -1584,23 +1584,23 @@ get_country_from_locale (void)
 	return cc;
 }
 
-MobileWizard *
-mobile_wizard_new (GtkWindow *parent,
+NMAMobileWizard *
+nma_mobile_wizard_new (GtkWindow *parent,
                    GtkWindowGroup *window_group,
                    NMDeviceModemCapabilities modem_caps,
                    gboolean will_connect_after,
-                   MobileWizardCallback cb,
+                   NMAMobileWizardCallback cb,
                    gpointer user_data)
 {
-	MobileWizard *self;
+	NMAMobileWizard *self;
 	char *cc;
 
-	self = g_malloc0 (sizeof (MobileWizard));
+	self = g_malloc0 (sizeof (NMAMobileWizard));
 	g_return_val_if_fail (self != NULL, NULL);
 
 	self->providers = nmn_mobile_providers_parse (&(self->country_codes));
 	if (!self->providers || !self->country_codes) {
-		mobile_wizard_destroy (self);
+		nma_mobile_wizard_destroy (self);
 		return NULL;
 	}
 
@@ -1649,7 +1649,7 @@ mobile_wizard_new (GtkWindow *parent,
 }
 
 void
-mobile_wizard_present (MobileWizard *self)
+nma_mobile_wizard_present (NMAMobileWizard *self)
 {
 	g_return_if_fail (self != NULL);
 
@@ -1658,7 +1658,7 @@ mobile_wizard_present (MobileWizard *self)
 }
 
 void
-mobile_wizard_destroy (MobileWizard *self)
+nma_mobile_wizard_destroy (NMAMobileWizard *self)
 {
 	g_return_if_fail (self != NULL);
 

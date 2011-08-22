@@ -49,7 +49,7 @@
 #include <dbus/dbus-glib.h>
 
 #include "nma-marshal.h"
-#include "mobile-wizard.h"
+#include "nm-mobile-wizard.h"
 
 #define DBUS_TYPE_G_MAP_OF_VARIANT (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
 
@@ -96,7 +96,7 @@ typedef struct {
 	char *rfcomm_iface;
 	guint dun_timeout_id;
 
-	MobileWizard *wizard;
+	NMAMobileWizard *wizard;
 	GtkWindowGroup *window_group;
 } PluginInfo;
 
@@ -349,7 +349,7 @@ dun_cleanup (PluginInfo *info, const char *message, gboolean uncheck)
 	}
 
 	if (info->wizard) {
-		mobile_wizard_destroy (info->wizard);
+		nma_mobile_wizard_destroy (info->wizard);
 		info->wizard = NULL;
 	}
 
@@ -379,7 +379,7 @@ dun_error (PluginInfo *info, const char *func, GError *error, const char *fallba
 }
 
 static NMConnection *
-dun_new_cdma (MobileWizardAccessMethod *method)
+dun_new_cdma (NMAMobileWizardAccessMethod *method)
 {
 	NMConnection *connection;
 	NMSetting *setting;
@@ -427,7 +427,7 @@ dun_new_cdma (MobileWizardAccessMethod *method)
 }
 
 static NMConnection *
-dun_new_gsm (MobileWizardAccessMethod *method)
+dun_new_gsm (NMAMobileWizardAccessMethod *method)
 {
 	NMConnection *connection;
 	NMSetting *setting;
@@ -495,9 +495,9 @@ dun_add_cb (NMRemoteSettings *settings,
 }
 
 static void
-wizard_done_cb (MobileWizard *self,
+wizard_done_cb (NMAMobileWizard *self,
                 gboolean canceled,
-                MobileWizardAccessMethod *method,
+                NMAMobileWizardAccessMethod *method,
                 gpointer user_data)
 {
 	PluginInfo *info = user_data;
@@ -521,7 +521,7 @@ wizard_done_cb (MobileWizard *self,
 		return;
 	}
 
-	mobile_wizard_destroy (info->wizard);
+	nma_mobile_wizard_destroy (info->wizard);
 	info->wizard = NULL;
 
 	g_assert (connection);
@@ -630,13 +630,13 @@ modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 		}
 
 		/* Start the mobile wizard */
-		info->wizard = mobile_wizard_new (parent ? GTK_WINDOW (parent) : NULL,
-		                                  info->window_group,
-		                                  devtype,
-		                                  FALSE,
-		                                  wizard_done_cb,
-		                                  info);
-		mobile_wizard_present (info->wizard);
+		info->wizard = nma_mobile_wizard_new (parent ? GTK_WINDOW (parent) : NULL,
+											  info->window_group,
+											  devtype,
+											  FALSE,
+											  wizard_done_cb,
+											  info);
+		nma_mobile_wizard_present (info->wizard);
 	}
 
 out:

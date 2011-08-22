@@ -45,7 +45,7 @@
 #include "applet-device-wifi.h"
 #include "ap-menu-item.h"
 #include "utils.h"
-#include "wireless-dialog.h"
+#include "nm-wireless-dialog.h"
 
 #define ACTIVE_AP_TAG "active-ap"
 
@@ -77,7 +77,7 @@ applet_wifi_connect_to_hidden_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new_for_other (applet);
+	dialog = nma_wireless_dialog_new_for_other (applet->nm_client, applet->settings);
 	if (dialog) {
 		g_signal_connect (dialog, "response",
 		                  G_CALLBACK (wireless_dialog_response_cb),
@@ -130,7 +130,7 @@ applet_wifi_create_wifi_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new_for_create (applet);
+	dialog = nma_wireless_dialog_new_for_create (applet->nm_client, applet->settings);
 	if (dialog) {
 		g_signal_connect (dialog, "response",
 		                  G_CALLBACK (wireless_dialog_response_cb),
@@ -471,7 +471,7 @@ _do_new_auto_connection (NMApplet *applet,
 		more_info->callback = callback;
 		more_info->callback_data = callback_data;
 
-		dialog = nma_wireless_dialog_new (applet, connection, device, ap, FALSE);
+		dialog = nma_wireless_dialog_new (applet->nm_client, applet->settings, connection, device, ap, FALSE);
 		if (dialog) {
 			g_signal_connect (dialog, "response",
 				              G_CALLBACK (more_info_wifi_dialog_response_cb),
@@ -1673,7 +1673,7 @@ wireless_get_secrets (SecretsRequest *req, GError **error)
 
 	applet_secrets_request_set_free_func (req, free_wifi_info);
 
-	info->dialog = nma_wireless_dialog_new (req->applet, req->connection, NULL, NULL, TRUE);
+	info->dialog = nma_wireless_dialog_new (req->applet->nm_client, req->applet->settings, req->connection, NULL, NULL, TRUE);
 	if (info->dialog) {
 		g_signal_connect (info->dialog, "response",
 		                  G_CALLBACK (get_secrets_dialog_response_cb),

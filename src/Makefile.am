@@ -1,4 +1,4 @@
-SUBDIRS = marshallers utils gconf-helpers wireless-security connection-editor gnome-bluetooth
+SUBDIRS = marshallers utils gconf-helpers wireless-security libnm-gtk connection-editor gnome-bluetooth
 
 bin_PROGRAMS = nm-applet
 
@@ -21,7 +21,8 @@ nm_applet_CPPFLAGS = \
 	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/gconf-helpers  \
-	-I${top_srcdir}/src/wireless-security
+	-I${top_srcdir}/src/wireless-security \
+	-I${top_srcdir}/src/libnm-gtk
 
 BUILT_SOURCES = applet-dbus-bindings.h
 
@@ -38,8 +39,6 @@ nm_applet_SOURCES = \
 	applet-vpn-request.h \
 	wired-dialog.h \
 	wired-dialog.c \
-	wireless-dialog.h \
-	wireless-dialog.c \
 	applet-dialogs.h \
 	applet-dialogs.c \
 	applet-device-wired.h \
@@ -72,10 +71,11 @@ nm_applet_LDADD = \
 	${top_builddir}/src/marshallers/libmarshallers.la \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/gconf-helpers/libgconf-helpers.la \
-	${top_builddir}/src/wireless-security/libwireless-security.la
+	${top_builddir}/src/wireless-security/libwireless-security.la \
+	${top_builddir}/src/libnm-gtk/libnm-gtk.la
 
 uidir = $(datadir)/nm-applet
-ui_DATA = gsm-unlock.ui info.ui wired-8021x.ui wifi.ui keyring.png
+ui_DATA = gsm-unlock.ui info.ui wired-8021x.ui keyring.png
 
 CLEANFILES = *.bak $(BUILT_SOURCES)
 

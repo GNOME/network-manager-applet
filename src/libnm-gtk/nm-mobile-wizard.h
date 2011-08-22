@@ -27,7 +27,7 @@
 #include <NetworkManager.h>
 #include <nm-device.h>
 
-typedef struct MobileWizard MobileWizard;
+typedef struct NMAMobileWizard NMAMobileWizard;
 
 typedef struct {
 	char *provider_name;
@@ -36,23 +36,23 @@ typedef struct {
 	char *username;
 	char *password;
 	char *gsm_apn;
-} MobileWizardAccessMethod;
+} NMAMobileWizardAccessMethod;
 
-typedef void (*MobileWizardCallback) (MobileWizard *self,
-                                      gboolean canceled,
-                                      MobileWizardAccessMethod *method,
-                                      gpointer user_data);
+typedef void (*NMAMobileWizardCallback) (NMAMobileWizard *self,
+										 gboolean canceled,
+										 NMAMobileWizardAccessMethod *method,
+										 gpointer user_data);
 
-MobileWizard *mobile_wizard_new (GtkWindow *parent,
-                                 GtkWindowGroup *window_group,
-                                 NMDeviceModemCapabilities modem_caps,
-                                 gboolean will_connect_after,
-                                 MobileWizardCallback cb,
-                                 gpointer user_data);
+NMAMobileWizard *nma_mobile_wizard_new (GtkWindow *parent,
+										GtkWindowGroup *window_group,
+										NMDeviceModemCapabilities modem_caps,
+										gboolean will_connect_after,
+										NMAMobileWizardCallback cb,
+										gpointer user_data);
 
-void mobile_wizard_present (MobileWizard *wizard);
+void nma_mobile_wizard_present (NMAMobileWizard *wizard);
 
-void mobile_wizard_destroy (MobileWizard *self);
+void nma_mobile_wizard_destroy (NMAMobileWizard *self);
 
 #endif /* MOBILE_WIZARD_H */
 

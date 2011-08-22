@@ -5,6 +5,7 @@ INCLUDES = \
 	-I$(top_builddir) \
 	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils \
+	-I${top_srcdir}/src/libnm-gtk \
 	$(GNOME_BLUETOOTH_CFLAGS) \
 	$(DISABLE_DEPRECATED) \
 	$(WARN_CFLAGS)
@@ -23,6 +24,7 @@ libnma_la_LDFLAGS = -module -avoid-version
 libnma_la_LIBADD = \
 	$(top_builddir)/src/marshallers/libmarshallers.la \
 	$(top_builddir)/src/utils/libutils.la \
+	$(top_builddir)/src/libnm-gtk/libnm-gtk.la \
 	$(GNOME_BLUETOOTH_LIBS)
 endif
 

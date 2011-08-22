@@ -36,7 +36,7 @@
 
 #include "page-mobile.h"
 #include "nm-connection-editor.h"
-#include "mobile-wizard.h"
+#include "nm-mobile-wizard.h"
 
 G_DEFINE_TYPE (CEPageMobile, ce_page_mobile, CE_TYPE_PAGE)
 
@@ -192,16 +192,16 @@ show_passwords (GtkToggleButton *button, gpointer user_data)
 }
 
 static void
-apn_button_mobile_wizard_done (MobileWizard *wizard,
+apn_button_mobile_wizard_done (NMAMobileWizard *wizard,
                                gboolean canceled,
-                               MobileWizardAccessMethod *method,
+                               NMAMobileWizardAccessMethod *method,
                                gpointer user_data)
 {
 	CEPageMobile *self = CE_PAGE_MOBILE (user_data);
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 
 	if (canceled || !method) {
-		mobile_wizard_destroy (wizard);
+		nma_mobile_wizard_destroy (wizard);
 		return;
 	}
 
@@ -227,7 +227,7 @@ apn_button_mobile_wizard_done (MobileWizard *wizard,
 		}
 	}
 
-	mobile_wizard_destroy (wizard);
+	nma_mobile_wizard_destroy (wizard);
 }
 
 static void
@@ -235,7 +235,7 @@ apn_button_clicked (GtkButton *button, gpointer user_data)
 {
 	CEPageMobile *self = CE_PAGE_MOBILE (user_data);
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
-	MobileWizard *wizard;
+	NMAMobileWizard *wizard;
 	GtkWidget *toplevel;
 
 	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
@@ -246,14 +246,14 @@ apn_button_clicked (GtkButton *button, gpointer user_data)
 		priv->window_added = TRUE;
 	}
 
-	wizard = mobile_wizard_new (GTK_WINDOW (toplevel),
-	                            priv->window_group,
-	                            NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS,
-	                            FALSE,
-	                            apn_button_mobile_wizard_done,
-	                            self);
+	wizard = nma_mobile_wizard_new (GTK_WINDOW (toplevel),
+									priv->window_group,
+									NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS,
+									FALSE,
+									apn_button_mobile_wizard_done,
+									self);
 	if (wizard)
-		mobile_wizard_present (wizard);
+		nma_mobile_wizard_present (wizard);
 }
 
 static void
@@ -545,9 +545,9 @@ typedef struct {
 } WizardInfo;
 
 static void
-new_connection_mobile_wizard_done (MobileWizard *wizard,
+new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
                                    gboolean canceled,
-                                   MobileWizardAccessMethod *method,
+                                   NMAMobileWizardAccessMethod *method,
                                    gpointer user_data)
 {
 	WizardInfo *info = user_data;
@@ -600,7 +600,7 @@ new_connection_mobile_wizard_done (MobileWizard *wizard,
 	(*info->result_func) (connection, canceled, NULL, info->user_data);
 
 	if (wizard)
-		mobile_wizard_destroy (wizard);
+		nma_mobile_wizard_destroy (wizard);
 	g_free (info);
 }
 
@@ -616,22 +616,22 @@ mobile_connection_new (GtkWindow *parent,
                        PageGetConnectionsFunc get_connections_func,
                        gpointer user_data)
 {
-	MobileWizard *wizard;
+	NMAMobileWizard *wizard;
 	WizardInfo *info;
 	GtkWidget *dialog, *vbox, *gsm_radio, *cdma_radio, *label, *content, *alignment;
 	GtkWidget *hbox, *image;
 	gint response;
-	MobileWizardAccessMethod method;
+	NMAMobileWizardAccessMethod method;
 
 	info = g_malloc0 (sizeof (WizardInfo));
 	info->result_func = result_func;
 	info->get_connections_func = get_connections_func;
 	info->user_data = user_data;
 
-	wizard = mobile_wizard_new (parent, NULL, NM_DEVICE_MODEM_CAPABILITY_NONE, FALSE,
-	                            new_connection_mobile_wizard_done, info);
+	wizard = nma_mobile_wizard_new (parent, NULL, NM_DEVICE_MODEM_CAPABILITY_NONE, FALSE,
+									new_connection_mobile_wizard_done, info);
 	if (wizard) {
-		mobile_wizard_present (wizard);
+		nma_mobile_wizard_present (wizard);
 		return;
 	}
 

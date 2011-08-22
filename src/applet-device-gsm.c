@@ -41,7 +41,7 @@
 #include "applet.h"
 #include "applet-device-gsm.h"
 #include "utils.h"
-#include "mobile-wizard.h"
+#include "nm-mobile-wizard.h"
 #include "applet-dialogs.h"
 #include "mb-menu-item.h"
 #include "nma-marshal.h"
@@ -119,9 +119,9 @@ typedef struct {
 } AutoGsmWizardInfo;
 
 static void
-mobile_wizard_done (MobileWizard *wizard,
+mobile_wizard_done (NMAMobileWizard *wizard,
                     gboolean canceled,
-                    MobileWizardAccessMethod *method,
+                    NMAMobileWizardAccessMethod *method,
                     gpointer user_data)
 {
 	AutoGsmWizardInfo *info = user_data;
@@ -181,7 +181,7 @@ done:
 	(*(info->callback)) (connection, TRUE, canceled, info->callback_data);
 
 	if (wizard)
-		mobile_wizard_destroy (wizard);
+		nma_mobile_wizard_destroy (wizard);
 	g_free (info);
 }
 
@@ -189,23 +189,23 @@ static gboolean
 do_mobile_wizard (AppletNewAutoConnectionCallback callback,
                   gpointer callback_data)
 {
-	MobileWizard *wizard;
+	NMAMobileWizard *wizard;
 	AutoGsmWizardInfo *info;
-	MobileWizardAccessMethod *method;
+	NMAMobileWizardAccessMethod *method;
 
 	info = g_malloc0 (sizeof (AutoGsmWizardInfo));
 	info->callback = callback;
 	info->callback_data = callback_data;
 
-	wizard = mobile_wizard_new (NULL, NULL, NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS, FALSE,
-	                            mobile_wizard_done, info);
+	wizard = nma_mobile_wizard_new (NULL, NULL, NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS, FALSE,
+									mobile_wizard_done, info);
 	if (wizard) {
-		mobile_wizard_present (wizard);
+		nma_mobile_wizard_present (wizard);
 		return TRUE;
 	}
 
 	/* Fall back to something */
-	method = g_malloc0 (sizeof (MobileWizardAccessMethod));
+	method = g_malloc0 (sizeof (NMAMobileWizardAccessMethod));
 	method->devtype = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
 	method->provider_name = _("GSM");
 	mobile_wizard_done (NULL, FALSE, method, info);
