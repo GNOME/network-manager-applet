@@ -68,10 +68,10 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
 		 glib-2.0 >= 2.16
-		 NetworkManager >= 0.9
-		 libnm-glib >= 0.9
-		 libnm-util >= 0.9
-		 libnm-glib-vpn >= 0.9
+		 NetworkManager >= 0.9.1
+		 libnm-glib >= 0.9.1
+		 libnm-util >= 0.9.1
+		 libnm-glib-vpn >= 0.9.1
 		 gmodule-export-2.0])
 
 PKG_CHECK_MODULES(GCONF, [gconf-2.0])
@@ -137,8 +137,8 @@ case "${with_bluetooth}" in
 		AC_MSG_CHECKING(for gnome-bluetooth)
 		PKG_CHECK_MODULES(GNOME_BLUETOOTH,
 				  gnome-bluetooth-1.0 >= 2.27.6
-				  libnm-util >= 0.9
-				  libnm-glib >= 0.9,
+				  libnm-util >= 0.9.1
+				  libnm-glib >= 0.9.1,
 				  have_gbt=yes, have_gbt=no)
 		;;
 esac
