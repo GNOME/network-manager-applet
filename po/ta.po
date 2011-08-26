@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-18 05:23+0530\n"
+"POT-Creation-Date: 2011-08-24 05:58+0530\n"
 "PO-Revision-Date: 2011-04-02 11:47+0530\n"
 "Last-Translator: \n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
@@ -150,7 +150,7 @@ msgstr "ஒரு பிணைய முகவரி '%s'காக தேவை�
 msgid "Mobile broadband connection '%s' active"
 msgstr "மொபைல் பிராட்பேண்டு இணைப்பு '%s' செயல்பாட்டிலுள்ளது"
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:694
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:696
 #: ../src/mb-menu-item.c:54
 msgid "CDMA"
 msgstr "CDMA"
@@ -162,7 +162,7 @@ msgid "Mobile Broadband (%s)"
 msgstr "மொபைல் பிராட்பேண்டு (%s)"
 
 #: ../src/applet-device-cdma.c:347 ../src/applet-device-gsm.c:391
-#: ../src/connection-editor/page-mobile.c:377
+#: ../src/connection-editor/page-mobile.c:379
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
 #: ../src/connection-editor/nm-connection-list.c:1474
 msgid "Mobile Broadband"
@@ -188,7 +188,22 @@ msgstr "மொபைல் பிராட்பேண்டு இணைப்�
 msgid "roaming"
 msgstr "ரோமிங் "
 
-#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:697
+#: ../src/applet-device-cdma.c:647 ../src/applet-device-cdma.c:653
+#, fuzzy
+msgid "CDMA network."
+msgstr "நிறைய பிணையங்கள்"
+
+#: ../src/applet-device-cdma.c:648 ../src/applet-device-gsm.c:1098
+#, fuzzy
+msgid "You are now registered on the home network."
+msgstr "இப்போது ஒயர்டு பிணையத்தோடு இணைக்கப்படுகிறது."
+
+#: ../src/applet-device-cdma.c:654 ../src/applet-device-gsm.c:1104
+#, fuzzy
+msgid "You are now registered on a roaming network."
+msgstr "இப்போது ஒயர்டு பிணையத்தோடு இணைக்கப்படுகிறது."
+
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:699
 #: ../src/mb-menu-item.c:59
 msgid "GSM"
 msgstr "GSM"
@@ -293,16 +308,6 @@ msgstr "PIN /PUK குறியீடு காட்டவும்:"
 #, fuzzy
 msgid "GSM network."
 msgstr "நிறைய பிணையங்கள்"
-
-#: ../src/applet-device-gsm.c:1098
-#, fuzzy
-msgid "You are now registered on the home network."
-msgstr "இப்போது ஒயர்டு பிணையத்தோடு இணைக்கப்படுகிறது."
-
-#: ../src/applet-device-gsm.c:1104
-#, fuzzy
-msgid "You are now registered on a roaming network."
-msgstr "இப்போது ஒயர்டு பிணையத்தோடு இணைக்கப்படுகிறது."
 
 #: ../src/applet-device-wired.c:62
 msgid "Auto Ethernet"
@@ -1012,7 +1017,7 @@ msgstr "ஒயர்டு 802.1X அங்கீகாரம்"
 msgid "automatic"
 msgstr "தானாக"
 
-#: ../src/connection-editor/ce-page.c:294
+#: ../src/connection-editor/ce-page.c:305
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "தெரியாத பிழையால் இணைப்பு ரகசியங்களை மேம்படுத்த முடியவில்லை."
 
@@ -1351,38 +1356,29 @@ msgstr ""
 "00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wired.ui.h:13
-#: ../src/connection-editor/ce-page-wireless.ui.h:12
-msgid ""
-"This option locks this connection to the network device specified by its "
-"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
-msgstr ""
-"இந்த விருப்பம் இந்த இணைப்பை பிணைய சாதனத்துடன் இங்கே உள்ளிடப்பட்ட நிரந்தர MAC முகவரியுடன்  "
-"பூட்டுகிறது.  எடுத்துக்காட்டு: 00:11:22:33:44:55"
-
-#: ../src/connection-editor/ce-page-wired.ui.h:14
 msgid "Twisted Pair (TP)"
 msgstr "திருப்பிய ஜோடி (டிபி)"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:15
-#: ../src/connection-editor/ce-page-wireless.ui.h:16
+#: ../src/connection-editor/ce-page-wired.ui.h:14
+#: ../src/connection-editor/ce-page-wireless.ui.h:15
 msgid "_Cloned MAC address:"
 msgstr "_ C நகல் MAC முகவரி:"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:16
-#: ../src/connection-editor/ce-page-wireless.ui.h:17
+#: ../src/connection-editor/ce-page-wired.ui.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:16
 msgid "_Device MAC address:"
 msgstr "_D சாதன MAC முகவரி:"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:17
+#: ../src/connection-editor/ce-page-wired.ui.h:16
 msgid "_Port:"
 msgstr "துறை (_P):"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:18
+#: ../src/connection-editor/ce-page-wired.ui.h:17
 msgid "_Speed:"
 msgstr "வேகம் (_S):"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:19
-#: ../src/connection-editor/ce-page-wireless.ui.h:20
+#: ../src/connection-editor/ce-page-wired.ui.h:18
+#: ../src/connection-editor/ce-page-wireless.ui.h:19
 msgid "bytes"
 msgstr "பைட்டுகள்"
 
@@ -1418,7 +1414,7 @@ msgstr "முறைமை (_o):"
 msgid "Mb/s"
 msgstr "Mb/s"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:13
+#: ../src/connection-editor/ce-page-wireless.ui.h:12
 msgid ""
 "This option locks this connection to the wireless access point (AP) "
 "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
@@ -1426,23 +1422,23 @@ msgstr ""
 "இந்த விருப்பம் இந்த இணைப்பை வயர்லெஸ் அணுகல் புள்ளி (AP) இங்கே உள்ளிடப்பட்ட BSSIDயுடன்  "
 "பூட்டுகிறது.  எடுத்துக்காட்டு: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:14
+#: ../src/connection-editor/ce-page-wireless.ui.h:13
 msgid "Transmission po_wer:"
 msgstr "மாற்றப்படும் பவர் (_w):"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:14
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:18
+#: ../src/connection-editor/ce-page-wireless.ui.h:17
 msgid "_Rate:"
 msgstr "விகிதம்: (_R)"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:19
+#: ../src/connection-editor/ce-page-wireless.ui.h:18
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:21
+#: ../src/connection-editor/ce-page-wireless.ui.h:20
 msgid "mW"
 msgstr "mW"
 
@@ -1523,7 +1519,7 @@ msgstr ""
 #: ../src/connection-editor/ip4-routes-dialog.c:745
 #: ../src/connection-editor/ip6-routes-dialog.c:687
 #: ../src/connection-editor/page-ip4.c:901
-#: ../src/connection-editor/page-ip6.c:865
+#: ../src/connection-editor/page-ip6.c:867
 msgid "Address"
 msgstr "முகவரி"
 
@@ -1535,7 +1531,7 @@ msgstr "நெட்மாஸ்க்"
 #: ../src/connection-editor/ip4-routes-dialog.c:779
 #: ../src/connection-editor/ip6-routes-dialog.c:721
 #: ../src/connection-editor/page-ip4.c:935
-#: ../src/connection-editor/page-ip6.c:899
+#: ../src/connection-editor/page-ip6.c:901
 msgid "Gateway"
 msgstr "நுழைவாயில்"
 
@@ -1545,21 +1541,21 @@ msgid "Metric"
 msgstr "மெட்ரிக்"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:704
-#: ../src/connection-editor/page-ip6.c:882
+#: ../src/connection-editor/page-ip6.c:884
 msgid "Prefix"
 msgstr "முன்பொருத்தம்"
 
-#: ../src/connection-editor/page-dsl.c:137
+#: ../src/connection-editor/page-dsl.c:139
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
 #: ../src/connection-editor/nm-connection-list.c:1482
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-dsl.c:139
+#: ../src/connection-editor/page-dsl.c:141
 msgid "Could not load DSL user interface."
 msgstr "DSL பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
-#: ../src/connection-editor/page-dsl.c:229
+#: ../src/connection-editor/page-dsl.c:231
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL இணைப்பு %d"
@@ -1616,11 +1612,11 @@ msgstr "செயல்நீக்கப்பட்டது"
 msgid "Editing IPv4 routes for %s"
 msgstr "IPv4 வழிகள் %sகாக திருத்துகிறது"
 
-#: ../src/connection-editor/page-ip4.c:980
+#: ../src/connection-editor/page-ip4.c:982
 msgid "IPv4 Settings"
 msgstr "IPv4 அமைவுகள்"
 
-#: ../src/connection-editor/page-ip4.c:982
+#: ../src/connection-editor/page-ip4.c:984
 msgid "Could not load IPv4 user interface."
 msgstr "IPv4 பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
@@ -1637,33 +1633,33 @@ msgstr "தவிர்"
 msgid "Automatic, DHCP only"
 msgstr "தானாக, (DHCP) மட்டும்"
 
-#: ../src/connection-editor/page-ip6.c:796
+#: ../src/connection-editor/page-ip6.c:798
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "IPv6 வழிகள் %sகாக திருத்துகிறது"
 
-#: ../src/connection-editor/page-ip6.c:942
+#: ../src/connection-editor/page-ip6.c:946
 msgid "IPv6 Settings"
 msgstr "IPv6 அமைவுகள்"
 
-#: ../src/connection-editor/page-ip6.c:944
+#: ../src/connection-editor/page-ip6.c:948
 msgid "Could not load IPv6 user interface."
 msgstr "IPv6 பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
-#: ../src/connection-editor/page-mobile.c:379
+#: ../src/connection-editor/page-mobile.c:381
 msgid "Could not load mobile broadband user interface."
 msgstr "மொபைல் பிராட்பேண்டு பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
-#: ../src/connection-editor/page-mobile.c:396
+#: ../src/connection-editor/page-mobile.c:398
 msgid "Unsupported mobile broadband connection type."
 msgstr "துணைபுரியாத மொபைல் பிராட்பேண்டை இணைப்பு வகை. முடியவில்லை."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:637
+#: ../src/connection-editor/page-mobile.c:639
 msgid "Select Mobile Broadband Provider Type"
 msgstr "மொபைல் பிராட்பேண்டு வழங்குபவர் வகையை தேர்ந்தெடுக்கவும்"
 
-#: ../src/connection-editor/page-mobile.c:672
+#: ../src/connection-editor/page-mobile.c:674
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1671,13 +1667,13 @@ msgstr ""
 "உங்கள் வழங்குபவர் பயன்படுத்தும் டெக்னாலஜியை உங்களது பிராட்பேண்டு மொபைலுக்கு "
 "தேர்ந்தெடுக்கவும்.உங்களுக்கு தெரியவில்லை என்றால், அவரைக் கேட்டவும்."
 
-#: ../src/connection-editor/page-mobile.c:677
+#: ../src/connection-editor/page-mobile.c:679
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "எனது வழங்குபவர் _GSM-தொடர்புடைய டெக்னாலஜியைப் பயன்படுத்துகிறார் (எ.கா. GPRS, EDGE, "
 "UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:684
+#: ../src/connection-editor/page-mobile.c:686
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr ""
 "எனது வழங்குபவர் C_DMA-தொடர்புடைய டெக்னாலஜியைப் பயன்படுத்துகிறார் (எ.கா. 1xRTT, EVDO)"
@@ -1717,85 +1713,94 @@ msgstr "ஒன்றுமில்லை"
 msgid "Editing PPP authentication methods for %s"
 msgstr "PPP அங்கீகாரம் முறைகள் %sகாக திருத்தப்படுகிறது"
 
-#: ../src/connection-editor/page-ppp.c:281
+#: ../src/connection-editor/page-ppp.c:283
 msgid "PPP Settings"
 msgstr "PPP அமைவுகள்"
 
-#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:285
 msgid "Could not load PPP user interface."
 msgstr "PPP பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
-#: ../src/connection-editor/page-vpn.c:107
+#: ../src/connection-editor/page-vpn.c:109
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
 #: ../src/connection-editor/nm-connection-list.c:1478
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-vpn.c:109
+#: ../src/connection-editor/page-vpn.c:111
 msgid "Could not load VPN user interface."
 msgstr "VPN பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
-#: ../src/connection-editor/page-vpn.c:124
+#: ../src/connection-editor/page-vpn.c:126
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "VPN கூடுதல் இணைப்பு சேவை '%s'காக தேட முடியவில்லை."
 
-#: ../src/connection-editor/page-vpn.c:199
+#: ../src/connection-editor/page-vpn.c:201
 #: ../src/connection-editor/nm-connection-list.c:884
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN இணைப்பு %d"
 
-#: ../src/connection-editor/page-wired.c:211
+#: ../src/connection-editor/page-wired.c:88
+#: ../src/connection-editor/page-wireless.c:93
+msgid ""
+"This option locks this connection to the network device specified by its "
+"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"இந்த விருப்பம் இந்த இணைப்பை பிணைய சாதனத்துடன் இங்கே உள்ளிடப்பட்ட நிரந்தர MAC முகவரியுடன்  "
+"பூட்டுகிறது.  எடுத்துக்காட்டு: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/page-wired.c:267
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
 #: ../src/connection-editor/nm-connection-list.c:1466
 msgid "Wired"
 msgstr "ஒயர்டு"
 
-#: ../src/connection-editor/page-wired.c:213
+#: ../src/connection-editor/page-wired.c:269
 msgid "Could not load wired user interface."
 msgstr "ஒயர்டு பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
-#: ../src/connection-editor/page-wired.c:348
+#: ../src/connection-editor/page-wired.c:444
 #, c-format
 msgid "Wired connection %d"
 msgstr "ஒயர்டு இணைப்பு %d"
 
-#: ../src/connection-editor/page-wired-security.c:114
+#: ../src/connection-editor/page-wired-security.c:116
 msgid "802.1x Security"
 msgstr "802.1x பாதுகாப்பு"
 
-#: ../src/connection-editor/page-wired-security.c:116
+#: ../src/connection-editor/page-wired-security.c:118
 msgid "Could not load Wired Security security user interface."
 msgstr "கம்பியுள்ள பாதுகாப்பு பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
-#: ../src/connection-editor/page-wired-security.c:134
+#: ../src/connection-editor/page-wired-security.c:136
 msgid "Use 802.1X security for this connection"
 msgstr "Use 802.1X இந்த இணைப்புக்காகு பாதுகப்பை பயன்படுத்துா"
 
-#: ../src/connection-editor/page-wireless.c:147
-#: ../src/connection-editor/page-wireless.c:151
-#: ../src/connection-editor/page-wireless.c:172
+#: ../src/connection-editor/page-wireless.c:166
+#: ../src/connection-editor/page-wireless.c:170
+#: ../src/connection-editor/page-wireless.c:191
 #, c-format
 msgid "default"
 msgstr "முன்னிருப்பு"
 
-#: ../src/connection-editor/page-wireless.c:176
+#: ../src/connection-editor/page-wireless.c:195
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:396
+#: ../src/connection-editor/page-wireless.c:452
 #: ../src/connection-editor/nm-connection-editor.ui.h:10
 #: ../src/connection-editor/nm-connection-list.c:1470
 msgid "Wireless"
 msgstr "கம்பியில்லா"
 
-#: ../src/connection-editor/page-wireless.c:398
+#: ../src/connection-editor/page-wireless.c:454
 msgid "Could not load WiFi user interface."
 msgstr "WiFi பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
-#: ../src/connection-editor/page-wireless.c:562
+#: ../src/connection-editor/page-wireless.c:658
 #, c-format
 msgid "Wireless connection %d"
 msgstr "ஒயர்லெஸ் இணைப்பு %d"
@@ -1825,15 +1830,15 @@ msgstr "WPA & WPA2 தனிப்பட்ட"
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 கடவுச்சொல்"
 
-#: ../src/connection-editor/page-wireless-security.c:359
+#: ../src/connection-editor/page-wireless-security.c:360
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr "WiFi பாதுகாப்பு பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை; விடுபட்ட WiFi அமைவுகள்."
 
-#: ../src/connection-editor/page-wireless-security.c:368
+#: ../src/connection-editor/page-wireless-security.c:370
 msgid "Wireless Security"
 msgstr "ஒயர்லெஸ் பாதுகாப்பு"
 
-#: ../src/connection-editor/page-wireless-security.c:370
+#: ../src/connection-editor/page-wireless-security.c:372
 msgid "Could not load WiFi security user interface."
 msgstr "WiFi பாதுகாப்பு பயனர் இடைமுகத்தை ஏற்ற முடியவில்லை."
 
