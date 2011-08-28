@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2011-06-29 00:13+0000\n"
-"PO-Revision-Date: 2011-06-27 10:35+0600\n"
+"POT-Creation-Date: 2011-08-26 20:51+0000\n"
+"PO-Revision-Date: 2011-08-08 15:40+0600\n"
 "Last-Translator: Sahran <sahran.ug@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -131,7 +131,7 @@ msgstr "كۆچمە كەڭ بەلۋاغ باغلىنىشى '%s' ئۈچۈن ئىش
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:490
 #: ../src/applet-device-gsm.c:534 ../src/applet-device-wimax.c:473
-#: ../src/applet.c:2480
+#: ../src/applet.c:2479
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "'%s' ئۈچۈن بىر تور ئادرېسى ئىلتىماس قىلىۋاتىدۇ..."
@@ -142,7 +142,7 @@ msgstr "'%s' ئۈچۈن بىر تور ئادرېسى ئىلتىماس قىلىۋ
 msgid "Mobile broadband connection '%s' active"
 msgstr "كۆچمە كەڭ بەلۋاغ باغلىنىشى '%s' ئاكتىپ"
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:694
+#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:696
 #: ../src/mb-menu-item.c:54
 msgid "CDMA"
 msgstr "CDMA"
@@ -154,9 +154,9 @@ msgid "Mobile Broadband (%s)"
 msgstr "كۆچمە كەڭ بەلۋاغ(%s)"
 
 #: ../src/applet-device-cdma.c:347 ../src/applet-device-gsm.c:391
-#: ../src/connection-editor/page-mobile.c:377
+#: ../src/connection-editor/page-mobile.c:379
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
-#: ../src/connection-editor/nm-connection-list.c:1447
+#: ../src/connection-editor/nm-connection-list.c:1474
 msgid "Mobile Broadband"
 msgstr "كۆچمە كەڭ بەلۋاغ"
 
@@ -180,7 +180,19 @@ msgstr "كۆچمە كەڭ بەلۋاغ باغلىنىشى '%s' ئاكتىپ:(%d%
 msgid "roaming"
 msgstr "كەزمە"
 
-#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:697
+#: ../src/applet-device-cdma.c:647 ../src/applet-device-cdma.c:653
+msgid "CDMA network."
+msgstr "CDMA تورى."
+
+#: ../src/applet-device-cdma.c:648 ../src/applet-device-gsm.c:1098
+msgid "You are now registered on the home network."
+msgstr "سىز ھازىر ئائىلە تورىغا خەتلەتتىڭىز."
+
+#: ../src/applet-device-cdma.c:654 ../src/applet-device-gsm.c:1104
+msgid "You are now registered on a roaming network."
+msgstr "سىز ھازىر كەزمە تورغا خەتلەتتىڭىز."
+
+#: ../src/applet-device-gsm.c:210 ../src/connection-editor/page-mobile.c:699
 #: ../src/mb-menu-item.c:59
 msgid "GSM"
 msgstr "GSM"
@@ -285,14 +297,6 @@ msgstr "PIN/PUK كودلىرىنى كۆرسەت"
 msgid "GSM network."
 msgstr "GSM تورى."
 
-#: ../src/applet-device-gsm.c:1098
-msgid "You are now registered on the home network."
-msgstr "سىز ھازىر ئائىلە تورىغا خەتلەتتىڭىز."
-
-#: ../src/applet-device-gsm.c:1104
-msgid "You are now registered on a roaming network."
-msgstr "سىز ھازىر كەزمە تورغا خەتلەتتىڭىز."
-
 #: ../src/applet-device-wired.c:62
 msgid "Auto Ethernet"
 msgstr "ئاپتوماتىك Ethernet"
@@ -316,7 +320,7 @@ msgid "Wired Network"
 msgstr "سىملىق تور"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:232 ../src/applet.c:1486
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1485
 msgid "disconnected"
 msgstr "ئۈزۈلدى"
 
@@ -404,7 +408,7 @@ msgstr "بىر سىمسىز تورغا باغلىنىش ئۈچۈن بۇ سىنب
 msgid "Use the network menu to connect to a wireless network"
 msgstr "بىر سىمسىز تورغا باغلىنىش ئۈچۈن بۇ تور تىزىملىكىنى ئىشلىتىڭ"
 
-#: ../src/applet-device-wifi.c:1087 ../src/applet.c:902
+#: ../src/applet-device-wifi.c:1087 ../src/applet.c:901
 msgid "Don't show this message again"
 msgstr "بۇ ئۇچۇرنى قايتا كۆرسەتمە"
 
@@ -470,7 +474,7 @@ msgstr "باغلىنىش ئۇچۇرلىرىنى كۆرسەتكەندە خاتا�
 
 #: ../src/applet-dialogs.c:108
 #: ../src/connection-editor/page-wireless-security.c:285
-#: ../src/wireless-dialog.c:950
+#: ../src/libnm-gtk/nm-wireless-dialog.c:949
 #: ../src/wireless-security/wireless-security.c:396
 msgid "LEAP"
 msgstr "LEAP"
@@ -490,7 +494,7 @@ msgstr "WEP"
 
 #: ../src/applet-dialogs.c:227 ../src/applet-dialogs.c:236
 #: ../src/connection-editor/page-wireless-security.c:239
-#: ../src/wireless-dialog.c:907
+#: ../src/libnm-gtk/nm-wireless-dialog.c:906
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "يوق"
@@ -675,7 +679,7 @@ msgstr "'%s' كە باغلىنىش ئۈچۈن بىر ئىمغا ئېھتىياج
 msgid "Password:"
 msgstr "ئىم:"
 
-#: ../src/applet.c:991
+#: ../src/applet.c:990
 #, c-format
 msgid ""
 "\n"
@@ -685,7 +689,7 @@ msgstr ""
 "\n"
 "VPN باغلىنىشى '%s' مەغلۇپ بولدى چۈنكى تور باغلىنىشى ئۈزۈلدى."
 
-#: ../src/applet.c:994
+#: ../src/applet.c:993
 #, c-format
 msgid ""
 "\n"
@@ -694,7 +698,7 @@ msgstr ""
 "\n"
 "VPN باغلىنىشى '%s' مەغلۇپ بولدى چۈنكى VPN مۇلازىمىتى بىنورمال توختىدى."
 
-#: ../src/applet.c:997
+#: ../src/applet.c:996
 #, c-format
 msgid ""
 "\n"
@@ -705,7 +709,7 @@ msgstr ""
 "VPN باغلىنىشى '%s' مەغلۇپ بولدى چۈنكى VPN مۇلازىمىتى ئىناۋەتسىز سەپلىمىگە "
 "قايتتى."
 
-#: ../src/applet.c:1000
+#: ../src/applet.c:999
 #, c-format
 msgid ""
 "\n"
@@ -714,7 +718,7 @@ msgstr ""
 "\n"
 "VPN باغلىنىشى '%s' مەغلۇپ بولدى چۈنكى باغلىنىش ۋاقتى ئېشىپ كەتتى."
 
-#: ../src/applet.c:1003
+#: ../src/applet.c:1002
 #, c-format
 msgid ""
 "\n"
@@ -723,7 +727,7 @@ msgstr ""
 "\n"
 "VPN باغلىنىشى '%s' مەغلۇپ بولدى چۈنكى VPN مۇلازىمىتى ۋاقتىدا باشلانمىدى."
 
-#: ../src/applet.c:1006
+#: ../src/applet.c:1005
 #, c-format
 msgid ""
 "\n"
@@ -732,7 +736,7 @@ msgstr ""
 "\n"
 "VPN باغلىنىشى '%s' مەغلۇپ بولدى چۈنكى VPN مۇلازىمەت باشلاش مەغلۇپ بولدى."
 
-#: ../src/applet.c:1009
+#: ../src/applet.c:1008
 #, c-format
 msgid ""
 "\n"
@@ -742,7 +746,7 @@ msgstr ""
 "VPN باغلىنىشى '%s' مەغلۇپ بولدى چۈنكى ئىناۋەتلىك VPN ئىم ھۆججەتلىرى(secret) "
 "يوق."
 
-#: ../src/applet.c:1012
+#: ../src/applet.c:1011
 #, c-format
 msgid ""
 "\n"
@@ -751,7 +755,7 @@ msgstr ""
 "\n"
 "VPN باغلىنىشى '%s' مەغلۇپ بولدى چۈنكى VPN ئىم ھۆججەتلىرى(secret) ئىناۋەتسىز."
 
-#: ../src/applet.c:1019
+#: ../src/applet.c:1018
 #, c-format
 msgid ""
 "\n"
@@ -760,7 +764,7 @@ msgstr ""
 "\n"
 "'%s' VPN باغلىنىشى مەغلۇپ بولدى."
 
-#: ../src/applet.c:1037
+#: ../src/applet.c:1036
 #, c-format
 msgid ""
 "\n"
@@ -770,7 +774,7 @@ msgstr ""
 "\n"
 "VPN باغلىنىشى '%s' ئۈزۈلۈپ قالدى، چۈنكى تور باغلىنىشى ئۈزۈلدى."
 
-#: ../src/applet.c:1040
+#: ../src/applet.c:1039
 #, c-format
 msgid ""
 "\n"
@@ -779,7 +783,7 @@ msgstr ""
 "\n"
 "VPN باغلىنىشى '%s' ئۈزۈلۈپ قالدى، چۈنكىVPN مۇلازىمىتى توختىدى."
 
-#: ../src/applet.c:1046
+#: ../src/applet.c:1045
 #, c-format
 msgid ""
 "\n"
@@ -788,15 +792,15 @@ msgstr ""
 "\n"
 "'%s' VPN باغلىنىشى ئۈزۈلدى."
 
-#: ../src/applet.c:1080
+#: ../src/applet.c:1079
 msgid "VPN Login Message"
 msgstr "VPN كىرىش ئۇچۇرى"
 
-#: ../src/applet.c:1086 ../src/applet.c:1094 ../src/applet.c:1144
+#: ../src/applet.c:1085 ../src/applet.c:1093 ../src/applet.c:1143
 msgid "VPN Connection Failed"
 msgstr "VPN باغلىنىشى مەغلۇپ بولدى"
 
-#: ../src/applet.c:1151
+#: ../src/applet.c:1150
 #, c-format
 msgid ""
 "\n"
@@ -809,7 +813,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1154
+#: ../src/applet.c:1153
 #, c-format
 msgid ""
 "\n"
@@ -822,139 +826,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1474
+#: ../src/applet.c:1473
 msgid "device not ready (firmware missing)"
 msgstr "ئۈسكۈنە تەييارلانمىدى(قۇيما دېتال كەم)"
 
-#: ../src/applet.c:1476
+#: ../src/applet.c:1475
 msgid "device not ready"
 msgstr "ئۈسكۈنە تەييارلانمىدى"
 
-#: ../src/applet.c:1502
+#: ../src/applet.c:1501
 msgid "Disconnect"
 msgstr "ئۈز"
 
-#: ../src/applet.c:1516
+#: ../src/applet.c:1515
 msgid "device not managed"
 msgstr "ئۈسكۈنە باشقۇرۇلمىدى"
 
-#: ../src/applet.c:1560
+#: ../src/applet.c:1559
 msgid "No network devices available"
 msgstr "تور ئۈسكۈنىسى يوق"
 
-#: ../src/applet.c:1648
+#: ../src/applet.c:1647
 msgid "_VPN Connections"
 msgstr "VPN باغلىنىشلىرى(_V)"
 
-#: ../src/applet.c:1705
+#: ../src/applet.c:1704
 msgid "_Configure VPN..."
 msgstr "VPN نى سەپلە(_C)…"
 
-#: ../src/applet.c:1709
+#: ../src/applet.c:1708
 msgid "_Disconnect VPN"
 msgstr "VPN باغلىنىشىنى ئۈز(_D)"
 
-#: ../src/applet.c:1807
+#: ../src/applet.c:1806
 msgid "NetworkManager is not running..."
 msgstr "تور باشقۇرغۇچ ئىجرا قىلىنمايۋاتىدۇ…"
 
-#: ../src/applet.c:1812 ../src/applet.c:2605
+#: ../src/applet.c:1811 ../src/applet.c:2604
 msgid "Networking disabled"
 msgstr "تور باغلىنىشى چەكلەنگەن"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2033
+#: ../src/applet.c:2032
 msgid "Enable _Networking"
 msgstr "تور ئۇلاشنى قوزغات(_N)"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2042
+#: ../src/applet.c:2041
 msgid "Enable _Wireless"
 msgstr "سىمسىز تورنى قوزغات(_W)"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2051
+#: ../src/applet.c:2050
 msgid "Enable _Mobile Broadband"
 msgstr "كۆچمە كەڭ بەلۋاغنى قوزغات(_M)"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2060
+#: ../src/applet.c:2059
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "WiMAX كۆچمە كەڭ بەلۋاغنى قوزغات(_X)"
 
 #. Toggle notifications item
-#: ../src/applet.c:2071
+#: ../src/applet.c:2070
 msgid "Enable N_otifications"
 msgstr "ئۇقتۇرۇشلارنى قوزغات(_O)"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2082
+#: ../src/applet.c:2081
 msgid "Connection _Information"
 msgstr "باغلىنىش ئۇچۇرلىرى(_I)"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2092
+#: ../src/applet.c:2091
 msgid "Edit Connections..."
 msgstr "باغلىنىشلارنى تەھرىرلە…"
 
 #. Help item
-#: ../src/applet.c:2106
+#: ../src/applet.c:2105
 msgid "_Help"
 msgstr "ياردەم(_H)"
 
 #. About item
-#: ../src/applet.c:2115
+#: ../src/applet.c:2114
 msgid "_About"
 msgstr "ھەققىدە(_A)"
 
-#: ../src/applet.c:2292
+#: ../src/applet.c:2291
 msgid "Disconnected"
 msgstr "ئۈزۈلدى"
 
-#: ../src/applet.c:2293
+#: ../src/applet.c:2292
 msgid "The network connection has been disconnected."
 msgstr "تور باغلىنىشى ئۈزۈلگەن ئىدى."
 
-#: ../src/applet.c:2474
+#: ../src/applet.c:2473
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "'%s' تور باغلىنىشى تەييارلىنىۋاتىدۇ…"
 
-#: ../src/applet.c:2477
+#: ../src/applet.c:2476
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "تور باغلىنىشى '%s' ئۈچۈن ئىشلەتكۈچىنى تەكشۈرۈش كېرەكلىك…"
 
-#: ../src/applet.c:2483
+#: ../src/applet.c:2482
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "'%s' تور باغلىنىشى ئاكتىپ"
 
-#: ../src/applet.c:2561
+#: ../src/applet.c:2560
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "VPN باغلىنىشى '%s' باشلىنىۋاتىدۇ"
 
-#: ../src/applet.c:2564
+#: ../src/applet.c:2563
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "VPN باغلىنىشى '%s' ئۈچۈن ئىشلەتكۈچىنى تەكشۈرۈش كېرەكلىك..."
 
-#: ../src/applet.c:2567
+#: ../src/applet.c:2566
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "''%s' ئۈچۈن بىرVPN ئادرېسى ئىلتىماس قىلىۋاتىدۇ..."
 
-#: ../src/applet.c:2570
+#: ../src/applet.c:2569
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN باغلىنىشى '%s' ئاكتىپ"
 
-#: ../src/applet.c:2609
+#: ../src/applet.c:2608
 msgid "No network connection"
 msgstr "تور باغلىنىشى يوق"
 
-#: ../src/applet.c:3259
+#: ../src/applet.c:3258
 msgid "NetworkManager Applet"
 msgstr "NetworkManager قوللانچاق"
 
@@ -970,39 +974,19 @@ msgstr "ئاكتىپ تور باغلىنىشلىرى"
 msgid "Connection Information"
 msgstr "باغلىنىش ئۇچۇرلىرى"
 
-#: ../src/wifi.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
-#: ../src/wireless-security/eap-method-peap.ui.h:1
-#: ../src/wireless-security/eap-method-ttls.ui.h:1
-#: ../src/wireless-security/ws-dynamic-wep.ui.h:1
-#: ../src/wireless-security/ws-wpa-eap.ui.h:1
-msgid " "
-msgstr ""
-
-#: ../src/wifi.ui.h:2
-msgid "Co_nnection:"
-msgstr "باغلىنىش(_N):"
-
-#: ../src/wifi.ui.h:3
-msgid "Wireless _adapter:"
-msgstr "سىمسىز ماسلاشتۇرغۇچ(_A):"
-
-#: ../src/wifi.ui.h:4 ../src/wired-8021x.ui.h:2
-msgid "_Network name:"
-msgstr "تور ئاتى(_N)"
-
-#: ../src/wifi.ui.h:5
-msgid "_Wireless security:"
-msgstr "سىمسىز تور بىخەتەرلىكى(_W)"
-
 #: ../src/wired-8021x.ui.h:1 ../src/wired-dialog.c:104
 msgid "Wired 802.1X authentication"
 msgstr "سىملىق 802.1X گۇۋاھنامە"
+
+#: ../src/wired-8021x.ui.h:2 ../src/libnm-gtk/wifi.ui.h:4
+msgid "_Network name:"
+msgstr "تور ئاتى(_N)"
 
 #: ../src/connection-editor/ce-page.c:67
 msgid "automatic"
 msgstr "ئاپتوماتىك"
 
-#: ../src/connection-editor/ce-page.c:294
+#: ../src/connection-editor/ce-page.c:305
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "نامەلۇم بىر خاتالىق سەۋەبلىك ئۇلاش مەخپىيەتلىك ھۆججىتىنى يېڭىلىيالمىدى."
@@ -1342,38 +1326,29 @@ msgstr ""
 "00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wired.ui.h:13
-#: ../src/connection-editor/ce-page-wireless.ui.h:12
-msgid ""
-"This option locks this connection to the network device specified by its "
-"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
-msgstr ""
-"بۇ تاللاش بۇ باغلىنىشنى بۇ يەرگە كىرگۈزگەن MAC ئادرېسى بېكىتكەن تور "
-"ئۈسكۈنىسىگە بەلگىلەيدۇ. مىسال: 00:11:22:33:44:55"
-
-#: ../src/connection-editor/ce-page-wired.ui.h:14
 msgid "Twisted Pair (TP)"
 msgstr "قوش پىلاستىك لىنىيە (TP)"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:15
-#: ../src/connection-editor/ce-page-wireless.ui.h:16
+#: ../src/connection-editor/ce-page-wired.ui.h:14
+#: ../src/connection-editor/ce-page-wireless.ui.h:15
 msgid "_Cloned MAC address:"
 msgstr "كلونلانغان MAC ئادرېسى(_C):"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:16
-#: ../src/connection-editor/ce-page-wireless.ui.h:17
+#: ../src/connection-editor/ce-page-wired.ui.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:16
 msgid "_Device MAC address:"
 msgstr "ئۈسكۈنە MAC ئادرېسى(_D):"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:17
+#: ../src/connection-editor/ce-page-wired.ui.h:16
 msgid "_Port:"
 msgstr "ئېغىز(_P):"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:18
+#: ../src/connection-editor/ce-page-wired.ui.h:17
 msgid "_Speed:"
 msgstr "سۈرئەت(_S):"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:19
-#: ../src/connection-editor/ce-page-wireless.ui.h:20
+#: ../src/connection-editor/ce-page-wired.ui.h:18
+#: ../src/connection-editor/ce-page-wireless.ui.h:19
 msgid "bytes"
 msgstr "بايت"
 
@@ -1409,7 +1384,7 @@ msgstr "شەكىل(_O):"
 msgid "Mb/s"
 msgstr "Mb/s"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:13
+#: ../src/connection-editor/ce-page-wireless.ui.h:12
 msgid ""
 "This option locks this connection to the wireless access point (AP) "
 "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
@@ -1417,23 +1392,23 @@ msgstr ""
 "بۇ تاللاش بۇ باغلىنىشنى بۇ يەرگە كىرگۈزگەن BSSID بېكىتكەن سىمسىز زىيارەت "
 "نۇقتىسى(AP)گە بەلگىلەيدۇ. مىسال: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:14
+#: ../src/connection-editor/ce-page-wireless.ui.h:13
 msgid "Transmission po_wer:"
 msgstr "يوللاش كۈچى(_W):"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:15
+#: ../src/connection-editor/ce-page-wireless.ui.h:14
 msgid "_BSSID:"
 msgstr "BSSID (_B):"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:18
+#: ../src/connection-editor/ce-page-wireless.ui.h:17
 msgid "_Rate:"
 msgstr "سۈرئەت(_R):"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:19
+#: ../src/connection-editor/ce-page-wireless.ui.h:18
 msgid "_SSID:"
 msgstr "SSID (_S):"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:21
+#: ../src/connection-editor/ce-page-wireless.ui.h:20
 msgid "mW"
 msgstr "mW"
 
@@ -1493,6 +1468,14 @@ msgstr "MSCHAP (_M)"
 msgid "_PAP"
 msgstr "PAP (_P)"
 
+#: ../src/connection-editor/ce-vpn-wizard.ui.h:1 ../src/libnm-gtk/wifi.ui.h:1
+#: ../src/wireless-security/eap-method-peap.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:1
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:1
+#: ../src/wireless-security/ws-wpa-eap.ui.h:1
+msgid " "
+msgstr " "
+
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:2
 msgid "Choose a VPN Connection Type"
 msgstr "بىر VPN باغلىنىش تىپى تاللا"
@@ -1514,7 +1497,7 @@ msgstr ""
 #: ../src/connection-editor/ip4-routes-dialog.c:745
 #: ../src/connection-editor/ip6-routes-dialog.c:687
 #: ../src/connection-editor/page-ip4.c:901
-#: ../src/connection-editor/page-ip6.c:865
+#: ../src/connection-editor/page-ip6.c:867
 msgid "Address"
 msgstr "ئادرېس"
 
@@ -1526,7 +1509,7 @@ msgstr "تور ماسكىسى"
 #: ../src/connection-editor/ip4-routes-dialog.c:779
 #: ../src/connection-editor/ip6-routes-dialog.c:721
 #: ../src/connection-editor/page-ip4.c:935
-#: ../src/connection-editor/page-ip6.c:899
+#: ../src/connection-editor/page-ip6.c:901
 msgid "Gateway"
 msgstr "تور ئۆتكىلى"
 
@@ -1536,21 +1519,21 @@ msgid "Metric"
 msgstr "مېترىك"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:704
-#: ../src/connection-editor/page-ip6.c:882
+#: ../src/connection-editor/page-ip6.c:884
 msgid "Prefix"
 msgstr "ئالدى قوشۇلغۇچى"
 
-#: ../src/connection-editor/page-dsl.c:137
+#: ../src/connection-editor/page-dsl.c:139
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
-#: ../src/connection-editor/nm-connection-list.c:1455
+#: ../src/connection-editor/nm-connection-list.c:1482
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-dsl.c:139
+#: ../src/connection-editor/page-dsl.c:141
 msgid "Could not load DSL user interface."
 msgstr "DSL ئىشلەتكۈچى ئارايۈزى يۈكلەنمىدى."
 
-#: ../src/connection-editor/page-dsl.c:229
+#: ../src/connection-editor/page-dsl.c:231
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL باغلىنىشى %d"
@@ -1607,11 +1590,11 @@ msgstr "چەكلەنگەن"
 msgid "Editing IPv4 routes for %s"
 msgstr "%s نىڭ IPv4 routes نى تەھرىرلەۋاتىدۇ"
 
-#: ../src/connection-editor/page-ip4.c:980
+#: ../src/connection-editor/page-ip4.c:982
 msgid "IPv4 Settings"
 msgstr "IPv4 تەڭشەكلىرى"
 
-#: ../src/connection-editor/page-ip4.c:982
+#: ../src/connection-editor/page-ip4.c:984
 msgid "Could not load IPv4 user interface."
 msgstr "IPv4 ئىشلەتكۈچى ئارايۈزنى يۈكلىيەلمەيدۇ."
 
@@ -1628,33 +1611,33 @@ msgstr "پەرۋا قىلما"
 msgid "Automatic, DHCP only"
 msgstr "ئاپتوماتىك، پەقەت DHCP"
 
-#: ../src/connection-editor/page-ip6.c:796
+#: ../src/connection-editor/page-ip6.c:798
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "%s نىڭ IPv6 routes نى تەھرىرلەۋاتىدۇ"
 
-#: ../src/connection-editor/page-ip6.c:942
+#: ../src/connection-editor/page-ip6.c:946
 msgid "IPv6 Settings"
 msgstr "IPv6 تەڭشەكلىرى"
 
-#: ../src/connection-editor/page-ip6.c:944
+#: ../src/connection-editor/page-ip6.c:948
 msgid "Could not load IPv6 user interface."
 msgstr "IPv6 ئىشلەتكۈچى ئارايۈزنى يۈكلىيەلمەيدۇ."
 
-#: ../src/connection-editor/page-mobile.c:379
+#: ../src/connection-editor/page-mobile.c:381
 msgid "Could not load mobile broadband user interface."
 msgstr "كۆچمە كەڭ بەلۋاغ ئىشلەتكۈچى ئارايۈزنى يۈكلىيەلمەيدۇ."
 
-#: ../src/connection-editor/page-mobile.c:396
+#: ../src/connection-editor/page-mobile.c:398
 msgid "Unsupported mobile broadband connection type."
 msgstr "ئىشلەتكىلى بولمايدىغان كۆچمە باغلىنىش تىپى."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:637
+#: ../src/connection-editor/page-mobile.c:639
 msgid "Select Mobile Broadband Provider Type"
 msgstr "كۆچمە كەڭ بەلۋاغ تەمىنلىگۈچى تىپىنى تاللا"
 
-#: ../src/connection-editor/page-mobile.c:672
+#: ../src/connection-editor/page-mobile.c:674
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -1662,12 +1645,12 @@ msgstr ""
 "كۆچمە كەڭ بەلۋاغ تەمىنلىگۈچىڭىز قوللانغان تېخنىكىنى تاللاڭ. جەزم "
 "قىلالمىسىڭىز، تەمىنلىگۈچىڭىزدىن سوراڭ."
 
-#: ../src/connection-editor/page-mobile.c:677
+#: ../src/connection-editor/page-mobile.c:679
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "تەمىنلىگۈچىم G_SM-ئاساسىي تېخنىكىسىنى ئىشلىتىدۇ(i.e.GPRS، EDGE، UMTS، HSPA)"
 
-#: ../src/connection-editor/page-mobile.c:684
+#: ../src/connection-editor/page-mobile.c:686
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "تەمىنلىگۈچىم C_DMA -ئاساسىدىكى تېخنىكىنى ئىشلىتىدۇ(1xRTT، EVDO)"
 
@@ -1706,123 +1689,132 @@ msgstr "يوق"
 msgid "Editing PPP authentication methods for %s"
 msgstr "%s نىڭ PPP تەكشۈرۈش ئۇسۇلىنى تەھرىرلەۋاتىدۇ"
 
-#: ../src/connection-editor/page-ppp.c:281
+#: ../src/connection-editor/page-ppp.c:283
 msgid "PPP Settings"
 msgstr "PPP تەڭشەكلىرى"
 
-#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:285
 msgid "Could not load PPP user interface."
 msgstr "PPP ئىشلەتكۈچى ئارايۈزىنى يۈكلىيەلمىدى."
 
-#: ../src/connection-editor/page-vpn.c:107
+#: ../src/connection-editor/page-vpn.c:109
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/connection-editor/nm-connection-list.c:1451
+#: ../src/connection-editor/nm-connection-list.c:1478
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-vpn.c:109
+#: ../src/connection-editor/page-vpn.c:111
 msgid "Could not load VPN user interface."
 msgstr "VPN ئىشلەتكۈچى ئارايۈزنى يۈكلىيەلمەيدۇ."
 
-#: ../src/connection-editor/page-vpn.c:124
+#: ../src/connection-editor/page-vpn.c:126
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "'%s' ئۈچۈن VPN قىستۇرما مۇلازىمەت تاپالمايدۇ."
 
-#: ../src/connection-editor/page-vpn.c:218
+#: ../src/connection-editor/page-vpn.c:201
 #: ../src/connection-editor/nm-connection-list.c:884
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN باغلىنىشى %d"
 
-#: ../src/connection-editor/page-wired.c:211
+#: ../src/connection-editor/page-wired.c:88
+#: ../src/connection-editor/page-wireless.c:93
+msgid ""
+"This option locks this connection to the network device specified by its "
+"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"بۇ تاللاش بۇ باغلىنىشنى بۇ يەرگە كىرگۈزگەن MAC ئادرېسى بېكىتكەن تور "
+"ئۈسكۈنىسىگە بەلگىلەيدۇ. مىسال: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/page-wired.c:267
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
-#: ../src/connection-editor/nm-connection-list.c:1439
+#: ../src/connection-editor/nm-connection-list.c:1466
 msgid "Wired"
 msgstr "سىملىق"
 
-#: ../src/connection-editor/page-wired.c:213
+#: ../src/connection-editor/page-wired.c:269
 msgid "Could not load wired user interface."
 msgstr "سىملىق تور ئىشلەتكۈچى ئارايۈزنى يۈكلىيەلمەيدۇ."
 
-#: ../src/connection-editor/page-wired.c:348
+#: ../src/connection-editor/page-wired.c:444
 #, c-format
 msgid "Wired connection %d"
 msgstr "سىملىق باغلىنىشى %d"
 
-#: ../src/connection-editor/page-wired-security.c:114
+#: ../src/connection-editor/page-wired-security.c:116
 msgid "802.1x Security"
 msgstr "802.1x بىخەتەرلىكى"
 
-#: ../src/connection-editor/page-wired-security.c:116
+#: ../src/connection-editor/page-wired-security.c:118
 msgid "Could not load Wired Security security user interface."
 msgstr "سىملىق بىخەتەرلىكى بىخەتەرلىك ئىشلەتكۈچى ئارايۈزنى يۈكلىيەلمىدى."
 
-#: ../src/connection-editor/page-wired-security.c:134
+#: ../src/connection-editor/page-wired-security.c:136
 msgid "Use 802.1X security for this connection"
 msgstr "بۇ باغلىنىش ئۈچۈن 802.1X بىخەتەرلىكىنى ئىشلەت"
 
-#: ../src/connection-editor/page-wireless.c:147
-#: ../src/connection-editor/page-wireless.c:151
-#: ../src/connection-editor/page-wireless.c:172
+#: ../src/connection-editor/page-wireless.c:166
+#: ../src/connection-editor/page-wireless.c:170
+#: ../src/connection-editor/page-wireless.c:191
 #, c-format
 msgid "default"
 msgstr "كۆڭۈلدىكى"
 
-#: ../src/connection-editor/page-wireless.c:176
+#: ../src/connection-editor/page-wireless.c:195
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:396
+#: ../src/connection-editor/page-wireless.c:452
 #: ../src/connection-editor/nm-connection-editor.ui.h:10
-#: ../src/connection-editor/nm-connection-list.c:1443
+#: ../src/connection-editor/nm-connection-list.c:1470
 msgid "Wireless"
 msgstr "سىمسىز"
 
-#: ../src/connection-editor/page-wireless.c:398
+#: ../src/connection-editor/page-wireless.c:454
 msgid "Could not load WiFi user interface."
 msgstr "WiFi ئىشلەتكۈچى ئارايۈزنى يۈكلىيەلمىدى."
 
-#: ../src/connection-editor/page-wireless.c:562
+#: ../src/connection-editor/page-wireless.c:658
 #, c-format
 msgid "Wireless connection %d"
 msgstr "سىمسىز باغلىنىشى %d"
 
 #: ../src/connection-editor/page-wireless-security.c:263
-#: ../src/wireless-dialog.c:924
+#: ../src/libnm-gtk/nm-wireless-dialog.c:923
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128 بىتلىق ئاچقۇچ(16لىك ياكى ASCII)"
 
 #: ../src/connection-editor/page-wireless-security.c:272
-#: ../src/wireless-dialog.c:933
+#: ../src/libnm-gtk/nm-wireless-dialog.c:932
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128 بىتلىق شىفىر"
 
 #: ../src/connection-editor/page-wireless-security.c:298
-#: ../src/wireless-dialog.c:963
+#: ../src/libnm-gtk/nm-wireless-dialog.c:962
 msgid "Dynamic WEP (802.1x)"
 msgstr "دىنامىك WEP (802.1x)"
 
 #: ../src/connection-editor/page-wireless-security.c:312
-#: ../src/wireless-dialog.c:977
+#: ../src/libnm-gtk/nm-wireless-dialog.c:976
 msgid "WPA & WPA2 Personal"
 msgstr "WPA ۋە WPA2 كىشىلىك نۇسخىسى"
 
 #: ../src/connection-editor/page-wireless-security.c:326
-#: ../src/wireless-dialog.c:991
+#: ../src/libnm-gtk/nm-wireless-dialog.c:990
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA ۋە WPA2 كارخانا نۇسخىسى"
 
-#: ../src/connection-editor/page-wireless-security.c:359
+#: ../src/connection-editor/page-wireless-security.c:360
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr "WiFi بىخەتەرلىك ئىشلەتكۈچى ئارايۈزنى يۈكلىيەلمەيدۇ؛ WiFi تەڭشىكى كەم"
 
-#: ../src/connection-editor/page-wireless-security.c:368
+#: ../src/connection-editor/page-wireless-security.c:370
 msgid "Wireless Security"
 msgstr "سىمسىز تور بىخەتەرلىكى"
 
-#: ../src/connection-editor/page-wireless-security.c:370
+#: ../src/connection-editor/page-wireless-security.c:372
 msgid "Could not load WiFi security user interface."
 msgstr "WiFi بىخەتەرلىك ئىشلەتكۈچى ئارايۈزنى يۈكلىيەلمەيدۇ."
 
@@ -1996,72 +1988,72 @@ msgstr ""
 msgid "Could not edit imported connection"
 msgstr "ئىمپورت قىلىنغان باغلىنىشنى تەھرىرلىيەلمىدى"
 
-#: ../src/connection-editor/nm-connection-list.c:1072
+#: ../src/connection-editor/nm-connection-list.c:1099
 msgid "Name"
 msgstr "ئاتى"
 
-#: ../src/connection-editor/nm-connection-list.c:1084
+#: ../src/connection-editor/nm-connection-list.c:1111
 msgid "Last Used"
 msgstr "ئاخىرقى قېتىم ئىشلەتكەن"
 
-#: ../src/connection-editor/nm-connection-list.c:1200
+#: ../src/connection-editor/nm-connection-list.c:1227
 msgid "No VPN plugin available. Please install one to enable this button."
 msgstr ""
 "ئىشلەتكىلى بولىدىغان VPN قىستۇرمىسى يوق. بۇ توپچىنى قوزغىتىش ئۈچۈن بىرنى "
 "ئورنىتىڭ."
 
-#: ../src/connection-editor/nm-connection-list.c:1211
+#: ../src/connection-editor/nm-connection-list.c:1238
 msgid "_Edit"
 msgstr "تەھرىر(_E)"
 
-#: ../src/connection-editor/nm-connection-list.c:1212
+#: ../src/connection-editor/nm-connection-list.c:1239
 msgid "Edit the selected connection"
 msgstr "تاللانغان باغلىنىشنى تەھرىرلەيدۇ"
 
-#: ../src/connection-editor/nm-connection-list.c:1213
+#: ../src/connection-editor/nm-connection-list.c:1240
 msgid "_Edit..."
 msgstr "تەھرىر(_E) ..."
 
-#: ../src/connection-editor/nm-connection-list.c:1214
+#: ../src/connection-editor/nm-connection-list.c:1241
 msgid "Authenticate to edit the selected connection"
 msgstr "تاللانغان باغلىنىشنى تەھرىرلەش ئۈچۈن تەكشۈر"
 
-#: ../src/connection-editor/nm-connection-list.c:1229
+#: ../src/connection-editor/nm-connection-list.c:1256
 msgid "_Delete"
 msgstr "ئۆچۈر(_D)"
 
-#: ../src/connection-editor/nm-connection-list.c:1230
+#: ../src/connection-editor/nm-connection-list.c:1257
 msgid "Delete the selected connection"
 msgstr "تاللانغان باغلىنىشنى ئۆچۈر"
 
-#: ../src/connection-editor/nm-connection-list.c:1231
+#: ../src/connection-editor/nm-connection-list.c:1258
 msgid "_Delete..."
 msgstr "ئۆچۈر(_D)..."
 
-#: ../src/connection-editor/nm-connection-list.c:1232
+#: ../src/connection-editor/nm-connection-list.c:1259
 msgid "Authenticate to delete the selected connection"
 msgstr "تاللانغان باغلىنىشنى ئۆچۈرۈش ئۈچۈن تەكشۈر"
 
-#: ../src/connection-editor/nm-connection-list.c:1511
+#: ../src/connection-editor/nm-connection-list.c:1538
 msgid "Error creating connection"
 msgstr "باغلىنىش قۇرۇۋاتقاندا خاتالىق كۆرۈلدى"
 
-#: ../src/connection-editor/nm-connection-list.c:1512
+#: ../src/connection-editor/nm-connection-list.c:1539
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "«%s» دېگەن باغلىنىشنى قانداق قۇرۇشنى بىلمىدى"
 
-#: ../src/connection-editor/nm-connection-list.c:1567
-#: ../src/connection-editor/nm-connection-list.c:1579
+#: ../src/connection-editor/nm-connection-list.c:1594
+#: ../src/connection-editor/nm-connection-list.c:1606
 msgid "Error editing connection"
 msgstr "باغلىنىشنى تەھرىرلەۋاتقاندا خاتالىق كۆرۈلدى"
 
-#: ../src/connection-editor/nm-connection-list.c:1568
+#: ../src/connection-editor/nm-connection-list.c:1595
 #, c-format
 msgid "Don't know how to edit '%s' connections"
 msgstr "«%s» دېگەن باغلىنىشنى قانداق تەھرىرلەشنى بىلمىدى"
 
-#: ../src/connection-editor/nm-connection-list.c:1580
+#: ../src/connection-editor/nm-connection-list.c:1607
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "UUID '%s' نىڭ باغلانمىسىنى تاپالمىدى"
@@ -2205,6 +2197,234 @@ msgstr "يانفونىڭىزنى بىر تور ئۈسكۈنىسى قىلىپ ئ�
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "يانفونىڭىزنى ئىشلىتىپ ئىنتېرنېتنى زىيارەت قىلىڭ(DUN)"
 
+#: ../src/libnm-gtk/nm-mobile-wizard.c:198
+msgid ""
+"Your mobile broadband connection is configured with the following settings:"
+msgstr "كۆچمە كەڭ بەلۋاغ باغلىنىشىڭىز ئاستىدىكى تەڭشەكلەر بىلەن سەپلەنگەن:"
+
+#. Device
+#: ../src/libnm-gtk/nm-mobile-wizard.c:205
+msgid "Your Device:"
+msgstr "ئۈسكۈنىڭىز:"
+
+#. Provider
+#: ../src/libnm-gtk/nm-mobile-wizard.c:216
+msgid "Your Provider:"
+msgstr "تەمىنلىگۈچىڭىز:"
+
+#. Plan and APN
+#: ../src/libnm-gtk/nm-mobile-wizard.c:227
+msgid "Your Plan:"
+msgstr "پىلانىڭىز:"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:252
+msgid ""
+"A connection will now be made to your mobile broadband provider using the "
+"settings you selected.  If the connection fails or you cannot access network "
+"resources, double-check your settings.  To modify your mobile broadband "
+"connection settings, choose \"Network Connections\" from the System >> "
+"Preferences menu."
+msgstr ""
+"تاللىغان تەڭشەكلەر بويىچە كۆچمە كەڭ بەلۋاغ تەمىنلىگۈچىڭىزگە بارىدىغان بىر "
+"باغلىنىشنى قۇرىدۇ. ئەگەر باغلىنىش مەغلۇپ بولسا ياكى تور بايلىقلىرىنى زىيارەت "
+"قىلالمىسىڭىز، تەڭشەكلىرىڭىزنى قوش چېكىڭ. كۆچمە كەڭ بەلۋاغ باغلىنىشىڭىزنىڭ "
+"تەڭشەكلىرىنى ئۆزگەرتىش ئۈچۈن \"سىستېما››\" تاللاش ئىقتىدار تىزىملىكىدىن "
+"\"تور باغلىنىشلىرى\" نى تاللاڭ."
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:264
+msgid "Confirm Mobile Broadband Settings"
+msgstr "كۆچمە كەڭ بەلۋاغ تەڭشەكلىرىنى جەزملە"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:325
+msgid "Unlisted"
+msgstr "تىزىملانمىغان"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:480
+msgid "_Select your plan:"
+msgstr "پىلانىڭىزنى تاللاڭ(_S):"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:504
+msgid "Selected plan _APN (Access Point Name):"
+msgstr "تاللانغان پىلان APN(زىيارەت نۇقتا ئاتى)(_A)"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:528
+msgid ""
+"Warning: Selecting an incorrect plan may result in billing issues for your "
+"broadband account or may prevent connectivity.\n"
+"\n"
+"If you are unsure of your plan please ask your provider for your plan's APN."
+msgstr ""
+"ئاگاھلاندۇرۇش: ناتوغرا بىر پىلاننى تاللاش كەڭ بەلۋاغ ھېسابات ھەق تۆلەش "
+"مەسىلىسى ياكى باغلىنالماسلىقنى كەلتۈرۈپ چىقىرىشى مۇمكىن.\n"
+"\n"
+"پىلانىڭىزنى جەزم قىلالمىسىڭىز تەمىنلىگۈچىڭىزدىن پىلانىڭىزنىڭ APN ئىنى سوراڭ"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:535
+msgid "Choose your Billing Plan"
+msgstr "ھەق تۆلەش پىلانىڭىزنى كىرگۈزۈڭ"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:583
+msgid "My plan is not listed..."
+msgstr "پىلانىم تىزىملىكتە يوق..."
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:740
+msgid "Select your provider from a _list:"
+msgstr "تەمىنلىگۈچىڭىزنى تىزىملىكتىن تاللاڭ(_L)؛"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:753
+msgid "Provider"
+msgstr "تەمىنلىگۈچى"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:778
+msgid "I can't find my provider and I wish to enter it _manually:"
+msgstr "تەمىنلىگۈچىمنى تاپالمىدى ۋە قولۇمدا كىرگۈزۈشنى ئىستەيمەن(_M):"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:789
+msgid "Provider:"
+msgstr "تەمىنلىگۈچى:"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:813
+msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
+msgstr "تەمىنلىگۈچىم GSM تېخنىكىسىنى ئىشلىتىدۇ(GPRS، EDGE، UMTS، HSPA)"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:819
+msgid "My provider uses CDMA technology (1xRTT, EVDO)"
+msgstr "تەمىنلىگۈچىم CDMA تېخنىكىسىنى ئىشلىتىدۇ(1xRTT، EVDO)"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:830
+msgid "Choose your Provider"
+msgstr "تەمىنلىگۈچىڭىزنى تاللاڭ:"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1080
+msgid "Country or Region List:"
+msgstr "دۆلەت ياكى رايون تىزىملىكى:"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1092
+msgid "Country or region"
+msgstr "دۆلەت ياكى رايون"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1099
+msgid "My country is not listed"
+msgstr "دۆلىتىم تىزىملانماپتۇ"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1145
+msgid "Choose your Provider's Country or Region"
+msgstr "تەمىنلىگۈچىڭىزنىڭ دۆلىتى ياكى رايونىنى تاللاڭ"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1199
+msgid "Installed GSM device"
+msgstr "ئورۇنلاشتۇرۇلغان GSM ئۈسكۈنىسى"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1202
+msgid "Installed CDMA device"
+msgstr "ئورۇنلاشتۇرۇلغان CDMA ئۈسكۈنىسى"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1374
+msgid ""
+"This assistant helps you easily set up a mobile broadband connection to a "
+"cellular (3G) network."
+msgstr ""
+"بۇ ياردەمچى پروگرامما كۆچمە تېلېفون تورى(3G) نى قۇلايلىق تەڭشەپ كۆچمە كەڭ "
+"بەلۋاغقا باغلىنىشقا ياردەم قىلىدۇ."
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1379
+msgid "You will need the following information:"
+msgstr "ئاستىدىكى ئۇچۇرلارغا ئېھتىياجىڭىز چۈشىدۇ:"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1394
+msgid "Your broadband provider's name"
+msgstr "كەڭ بەلۋاغ تەمىنلىگۈچىڭىزنىڭ ئاتى"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1400
+msgid "Your broadband billing plan name"
+msgstr "كەڭ بەلۋاغ ھەق تۆلەش پىلانىڭىز ئاتى"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1406
+msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
+msgstr ""
+"(بەزى ئەھۋالدا) كەڭ بەلۋاغ ھەق تۆلەش پىلانىڭىزنىڭ APN(زىيارەت نۇقتا ئاتى) ئى"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1433
+msgid "Create a connection for _this mobile broadband device:"
+msgstr "بۇ كۆچمە كەڭ بەلۋاغ ئۈسكۈنىسى ئۈچۈن بىر باغلىنىش قۇر(_T):"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1448
+msgid "Any device"
+msgstr "ھەرقانداق بىر ئۈسكۈنە"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1461
+msgid "Set up a Mobile Broadband Connection"
+msgstr "يېڭى كۆچمە كەڭ بەلۋاغ باغلىنىشىنى سەپلە"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1625
+msgid "New Mobile Broadband Connection"
+msgstr "يېڭى كۆچمە كەڭ بەلۋاغ باغلىنىشى"
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:457
+msgid "New..."
+msgstr "يېڭى…"
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1077
+msgid "C_reate"
+msgstr "قۇر(_R)"
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1161
+#, c-format
+msgid ""
+"Passwords or encryption keys are required to access the wireless network '%"
+"s'."
+msgstr ""
+"سىمسىز تور '%s' نى زىيارەت قىلماق ئۈچۈن ئىم ياكى شىفىرلاش ئاچقۇچلىرى "
+"كېرەكلىك."
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1163
+msgid "Wireless Network Authentication Required"
+msgstr "سىمسىز تور كىملىك تەكشۈرۈش ئېھتىياجى"
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1165
+msgid "Authentication required by wireless network"
+msgstr "سىمسىز تور كىملىك تەكشۈرۈشكە ئېھتىياجلىق"
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1170
+msgid "Create New Wireless Network"
+msgstr "يېڭى سىمسىز تور قۇر"
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1172
+msgid "New wireless network"
+msgstr "يېڭى سىمسىز تور"
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1173
+msgid "Enter a name for the wireless network you wish to create."
+msgstr "قۇرماقچى بولغان سىمسىز تور ئۈچۈن بىر ئات كىرگۈزۈڭ."
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1175
+msgid "Connect to Hidden Wireless Network"
+msgstr "يوشۇرۇن سىمسىز تورغا ئۇلا"
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1177
+msgid "Hidden wireless network"
+msgstr "يوشۇرۇن سىمسىز تور"
+
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1178
+msgid ""
+"Enter the name and security details of the hidden wireless network you wish "
+"to connect to."
+msgstr ""
+"سىز باغلانماقچى بولغان يوشۇرۇن سىمسىز تورنىڭ ئاتى ۋە بىخەتەرلىك تەپسىلاتىنى "
+"كىرگۈزۈڭ."
+
+#: ../src/libnm-gtk/wifi.ui.h:2
+msgid "Co_nnection:"
+msgstr "باغلىنىش(_N):"
+
+#: ../src/libnm-gtk/wifi.ui.h:3
+msgid "Wireless _adapter:"
+msgstr "سىمسىز ماسلاشتۇرغۇچ(_A):"
+
+#: ../src/libnm-gtk/wifi.ui.h:5
+msgid "_Wireless security:"
+msgstr "سىمسىز تور بىخەتەرلىكى(_W)"
+
 #: ../src/main.c:73
 msgid "Usage:"
 msgstr "ئىشلىتىش ئۇسۇلى:"
@@ -2303,169 +2523,6 @@ msgstr "تورنى كېزىۋاتىدۇ (%s)"
 msgid "Roaming network"
 msgstr "تورنى كېزىۋاتىدۇ"
 
-#: ../src/utils/mobile-wizard.c:198
-msgid ""
-"Your mobile broadband connection is configured with the following settings:"
-msgstr "كۆچمە كەڭ بەلۋاغ باغلىنىشىڭىز ئاستىدىكى تەڭشەكلەر بىلەن سەپلەنگەن:"
-
-#. Device
-#: ../src/utils/mobile-wizard.c:205
-msgid "Your Device:"
-msgstr "ئۈسكۈنىڭىز:"
-
-#. Provider
-#: ../src/utils/mobile-wizard.c:216
-msgid "Your Provider:"
-msgstr "تەمىنلىگۈچىڭىز:"
-
-#. Plan and APN
-#: ../src/utils/mobile-wizard.c:227
-msgid "Your Plan:"
-msgstr "پىلانىڭىز:"
-
-#: ../src/utils/mobile-wizard.c:252
-msgid ""
-"A connection will now be made to your mobile broadband provider using the "
-"settings you selected.  If the connection fails or you cannot access network "
-"resources, double-check your settings.  To modify your mobile broadband "
-"connection settings, choose \"Network Connections\" from the System >> "
-"Preferences menu."
-msgstr ""
-"تاللىغان تەڭشەكلەر بويىچە كۆچمە كەڭ بەلۋاغ تەمىنلىگۈچىڭىزگە بارىدىغان بىر "
-"باغلىنىشنى قۇرىدۇ. ئەگەر باغلىنىش مەغلۇپ بولسا ياكى تور بايلىقلىرىنى زىيارەت "
-"قىلالمىسىڭىز، تەڭشەكلىرىڭىزنى قوش چېكىڭ. كۆچمە كەڭ بەلۋاغ باغلىنىشىڭىزنىڭ "
-"تەڭشەكلىرىنى ئۆزگەرتىش ئۈچۈن \"سىستېما››\" تاللاش ئىقتىدار تىزىملىكىدىن "
-"\"تور باغلىنىشلىرى\" نى تاللاڭ."
-
-#: ../src/utils/mobile-wizard.c:264
-msgid "Confirm Mobile Broadband Settings"
-msgstr "كۆچمە كەڭ بەلۋاغ تەڭشەكلىرىنى جەزملە"
-
-#: ../src/utils/mobile-wizard.c:325
-msgid "Unlisted"
-msgstr "تىزىملانمىغان"
-
-#: ../src/utils/mobile-wizard.c:480
-msgid "_Select your plan:"
-msgstr "پىلانىڭىزنى تاللاڭ(_S):"
-
-#: ../src/utils/mobile-wizard.c:504
-msgid "Selected plan _APN (Access Point Name):"
-msgstr "تاللانغان پىلان APN(زىيارەت نۇقتا ئاتى)(_A)"
-
-#: ../src/utils/mobile-wizard.c:528
-msgid ""
-"Warning: Selecting an incorrect plan may result in billing issues for your "
-"broadband account or may prevent connectivity.\n"
-"\n"
-"If you are unsure of your plan please ask your provider for your plan's APN."
-msgstr ""
-"ئاگاھلاندۇرۇش: ناتوغرا بىر پىلاننى تاللاش كەڭ بەلۋاغ ھېسابات ھەق تۆلەش "
-"مەسىلىسى ياكى باغلىنالماسلىقنى كەلتۈرۈپ چىقىرىشى مۇمكىن.\n"
-"\n"
-"پىلانىڭىزنى جەزم قىلالمىسىڭىز تەمىنلىگۈچىڭىزدىن پىلانىڭىزنىڭ APN ئىنى سوراڭ"
-
-#: ../src/utils/mobile-wizard.c:535
-msgid "Choose your Billing Plan"
-msgstr "ھەق تۆلەش پىلانىڭىزنى كىرگۈزۈڭ"
-
-#: ../src/utils/mobile-wizard.c:583
-msgid "My plan is not listed..."
-msgstr "پىلانىم تىزىملىكتە يوق..."
-
-#: ../src/utils/mobile-wizard.c:740
-msgid "Select your provider from a _list:"
-msgstr "تەمىنلىگۈچىڭىزنى تىزىملىكتىن تاللاڭ(_L)؛"
-
-#: ../src/utils/mobile-wizard.c:753
-msgid "Provider"
-msgstr "تەمىنلىگۈچى"
-
-#: ../src/utils/mobile-wizard.c:778
-msgid "I can't find my provider and I wish to enter it _manually:"
-msgstr "تەمىنلىگۈچىمنى تاپالمىدى ۋە قولۇمدا كىرگۈزۈشنى ئىستەيمەن(_M):"
-
-#: ../src/utils/mobile-wizard.c:789
-msgid "Provider:"
-msgstr "تەمىنلىگۈچى:"
-
-#: ../src/utils/mobile-wizard.c:813
-msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
-msgstr "تەمىنلىگۈچىم GSM تېخنىكىسىنى ئىشلىتىدۇ(GPRS، EDGE، UMTS، HSPA)"
-
-#: ../src/utils/mobile-wizard.c:819
-msgid "My provider uses CDMA technology (1xRTT, EVDO)"
-msgstr "تەمىنلىگۈچىم CDMA تېخنىكىسىنى ئىشلىتىدۇ(1xRTT، EVDO)"
-
-#: ../src/utils/mobile-wizard.c:830
-msgid "Choose your Provider"
-msgstr "تەمىنلىگۈچىڭىزنى تاللاڭ:"
-
-#: ../src/utils/mobile-wizard.c:1080
-msgid "Country or Region List:"
-msgstr "دۆلەت ياكى رايون تىزىملىكى:"
-
-#: ../src/utils/mobile-wizard.c:1092
-msgid "Country or region"
-msgstr "دۆلەت ياكى رايون"
-
-#: ../src/utils/mobile-wizard.c:1099
-msgid "My country is not listed"
-msgstr "دۆلىتىم تىزىملانماپتۇ"
-
-#: ../src/utils/mobile-wizard.c:1145
-msgid "Choose your Provider's Country or Region"
-msgstr "تەمىنلىگۈچىڭىزنىڭ دۆلىتى ياكى رايونىنى تاللاڭ"
-
-#: ../src/utils/mobile-wizard.c:1199
-msgid "Installed GSM device"
-msgstr "ئورۇنلاشتۇرۇلغان GSM ئۈسكۈنىسى"
-
-#: ../src/utils/mobile-wizard.c:1202
-msgid "Installed CDMA device"
-msgstr "ئورۇنلاشتۇرۇلغان CDMA ئۈسكۈنىسى"
-
-#: ../src/utils/mobile-wizard.c:1374
-msgid ""
-"This assistant helps you easily set up a mobile broadband connection to a "
-"cellular (3G) network."
-msgstr ""
-"بۇ ياردەمچى پروگرامما كۆچمە تېلېفون تورى(3G) نى قۇلايلىق تەڭشەپ كۆچمە كەڭ "
-"بەلۋاغقا باغلىنىشقا ياردەم قىلىدۇ."
-
-#: ../src/utils/mobile-wizard.c:1379
-msgid "You will need the following information:"
-msgstr "ئاستىدىكى ئۇچۇرلارغا ئېھتىياجىڭىز چۈشىدۇ:"
-
-#: ../src/utils/mobile-wizard.c:1394
-msgid "Your broadband provider's name"
-msgstr "كەڭ بەلۋاغ تەمىنلىگۈچىڭىزنىڭ ئاتى"
-
-#: ../src/utils/mobile-wizard.c:1400
-msgid "Your broadband billing plan name"
-msgstr "كەڭ بەلۋاغ ھەق تۆلەش پىلانىڭىز ئاتى"
-
-#: ../src/utils/mobile-wizard.c:1406
-msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-msgstr ""
-"(بەزى ئەھۋالدا) كەڭ بەلۋاغ ھەق تۆلەش پىلانىڭىزنىڭ APN(زىيارەت نۇقتا ئاتى) ئى"
-
-#: ../src/utils/mobile-wizard.c:1433
-msgid "Create a connection for _this mobile broadband device:"
-msgstr "بۇ كۆچمە كەڭ بەلۋاغ ئۈسكۈنىسى ئۈچۈن بىر باغلىنىش قۇر(_T):"
-
-#: ../src/utils/mobile-wizard.c:1448
-msgid "Any device"
-msgstr "ھەرقانداق بىر ئۈسكۈنە"
-
-#: ../src/utils/mobile-wizard.c:1461
-msgid "Set up a Mobile Broadband Connection"
-msgstr "يېڭى كۆچمە كەڭ بەلۋاغ باغلىنىشىنى سەپلە"
-
-#: ../src/utils/mobile-wizard.c:1625
-msgid "New Mobile Broadband Connection"
-msgstr "يېڭى كۆچمە كەڭ بەلۋاغ باغلىنىشى"
-
 #: ../src/utils/nmn-mobile-providers.c:78
 msgid "United Kingdom"
 msgstr "ئەنگلىيە پادىشاھلىقى"
@@ -2481,59 +2538,6 @@ msgid ""
 msgstr ""
 "تور باشقۇرغۇچ قوللانچاق بەزى ئېھتىياجلىق مەنبەلەرنى تاپالمىدى(ui. ھۆججىتى "
 "تېپىلمىدى)."
-
-#: ../src/wireless-dialog.c:458
-msgid "New..."
-msgstr "يېڭى…"
-
-#: ../src/wireless-dialog.c:1078
-msgid "C_reate"
-msgstr "قۇر(_R)"
-
-#: ../src/wireless-dialog.c:1162
-#, c-format
-msgid ""
-"Passwords or encryption keys are required to access the wireless network '%"
-"s'."
-msgstr ""
-"سىمسىز تور '%s' نى زىيارەت قىلماق ئۈچۈن ئىم ياكى شىفىرلاش ئاچقۇچلىرى "
-"كېرەكلىك."
-
-#: ../src/wireless-dialog.c:1164
-msgid "Wireless Network Authentication Required"
-msgstr "سىمسىز تور كىملىك تەكشۈرۈش ئېھتىياجى"
-
-#: ../src/wireless-dialog.c:1166
-msgid "Authentication required by wireless network"
-msgstr "سىمسىز تور كىملىك تەكشۈرۈشكە ئېھتىياجلىق"
-
-#: ../src/wireless-dialog.c:1171
-msgid "Create New Wireless Network"
-msgstr "يېڭى سىمسىز تور قۇر"
-
-#: ../src/wireless-dialog.c:1173
-msgid "New wireless network"
-msgstr "يېڭى سىمسىز تور"
-
-#: ../src/wireless-dialog.c:1174
-msgid "Enter a name for the wireless network you wish to create."
-msgstr "قۇرماقچى بولغان سىمسىز تور ئۈچۈن بىر ئات كىرگۈزۈڭ."
-
-#: ../src/wireless-dialog.c:1176
-msgid "Connect to Hidden Wireless Network"
-msgstr "يوشۇرۇن سىمسىز تورغا ئۇلا"
-
-#: ../src/wireless-dialog.c:1178
-msgid "Hidden wireless network"
-msgstr "يوشۇرۇن سىمسىز تور"
-
-#: ../src/wireless-dialog.c:1179
-msgid ""
-"Enter the name and security details of the hidden wireless network you wish "
-"to connect to."
-msgstr ""
-"سىز باغلانماقچى بولغان يوشۇرۇن سىمسىز تورنىڭ ئاتى ۋە بىخەتەرلىك تەپسىلاتىنى "
-"كىرگۈزۈڭ."
 
 #: ../src/wireless-security/eap-method.c:279
 msgid "No Certificate Authority certificate chosen"
