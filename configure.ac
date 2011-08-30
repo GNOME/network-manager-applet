@@ -57,6 +57,8 @@ GETTEXT_PACKAGE=nm-applet
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
 AM_GLIB_GNU_GETTEXT
+# for translation of country names from /usr/share/zoneinfo/iso3166.tab
+TRANSLATE_COUNTRY_NAMES([po])
 
 dnl
 dnl Make sha1.c happy on big endian systems

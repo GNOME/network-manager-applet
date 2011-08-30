@@ -18,7 +18,7 @@
  * Copyright (C) 2009 Novell, Inc.
  * Author: Tambet Ingo (tambet@gmail.com).
  *
- * Copyright (C) 2009 - 2010 Red Hat, Inc.
+ * Copyright (C) 2009 - 2011 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -68,17 +68,19 @@ read_country_codes (void)
         case G_IO_STATUS_NORMAL:
             if (buffer->str[0] != '#') {
                 char **pieces;
+                char *country_name;
 
                 pieces = g_strsplit (buffer->str, "\t", 2);
 
                 /* Hack for rh#556292; iso3166.tab is just wrong */
                 pieces[1] = pieces[1] ? g_strchomp (pieces[1]) : NULL;
-                if (pieces[1] && !strcmp (pieces[1], "Britain (UK)")) {
-                    g_free (pieces[1]);
-                    pieces[1] = g_strdup (_("United Kingdom"));
-                }
+                if (pieces[1] && !strcmp (pieces[1], "Britain (UK)"))
+                    country_name = g_strdup (_("United Kingdom"));
+                else
+                    country_name = g_strdup (gettext (pieces[1]));
 
-                g_hash_table_insert (table, pieces[0], pieces[1]);
+                g_hash_table_insert (table, pieces[0], country_name);
+                g_free (pieces[1]);
                 g_free (pieces);
             }
 
