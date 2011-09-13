@@ -35,76 +35,95 @@
 #define MOBILE_BROADBAND_PROVIDER_INFO DATADIR"/mobile-broadband-provider-info/serviceproviders.xml"
 #endif
 
-#define ISO_3166_COUNTRY_CODES DATADIR"/zoneinfo/iso3166.tab"
+#define ISO_3166_COUNTRY_CODES ISO_CODES_PREFIX"/share/xml/iso-codes/iso_3166.xml"
+#define ISO_CODES_LOCALESDIR ISO_CODES_PREFIX"/share/locale"
+
+
+/* XML Parser for iso_3166.xml */
+
+static void
+iso_3166_parser_start_element (GMarkupParseContext *context,
+                               const gchar *element_name,
+                               const gchar **attribute_names,
+                               const gchar **attribute_values,
+                               gpointer data,
+                               GError **error)
+{
+    int i;
+    const char *country_code = NULL;
+    const char *common_name = NULL;
+    const char *name = NULL;
+    GHashTable *table = (GHashTable *) data;
+
+    if (!strcmp (element_name, "iso_3166_entry")) {
+        for (i = 0; attribute_names && attribute_names[i]; i++) {
+            if (!strcmp (attribute_names[i], "alpha_2_code"))
+                country_code = attribute_values[i];
+            else if (!strcmp (attribute_names[i], "common_name"))
+                common_name = attribute_values[i];
+            else if (!strcmp (attribute_names[i], "name"))
+                name = attribute_values[i];
+        }
+        if (!country_code) {
+            g_warning ("%s: missing mandatory 'alpha_2_code' atribute in '%s'"
+                       " element.", __func__, element_name);
+            return;
+        }
+        if (!name) {
+            g_warning ("%s: missing mandatory 'name' atribute in '%s'"
+                       " element.", __func__, element_name);
+            return;
+        }
+
+        g_hash_table_insert (table, g_strdup (country_code), g_strdup (dgettext ("iso_3166", common_name ? common_name : name)));
+    }
+}
+
+static const GMarkupParser iso_3166_parser = {
+    iso_3166_parser_start_element,
+    NULL, /* end element */
+    NULL, /* text */
+    NULL, /* passthrough */
+    NULL  /* error */
+};
 
 static GHashTable *
 read_country_codes (void)
 {
-    GHashTable *table;
-    GIOChannel *channel;
-    GString *buffer;
+    GHashTable *table = NULL;
+    GMarkupParseContext *ctx;
     GError *error = NULL;
-    GIOStatus status;
+    char *buf;
+    gsize buf_len;
 
-    channel = g_io_channel_new_file (ISO_3166_COUNTRY_CODES, "r", &error);
-    if (!channel) {
-        if (error) {
-            g_warning ("Could not read " ISO_3166_COUNTRY_CODES ": %s", error->message);
+    /* Set domain to iso_3166 for country name translation */
+    bindtextdomain ("iso_3166", ISO_CODES_LOCALESDIR);
+    bind_textdomain_codeset ("iso_3166", "UTF-8");
+
+    if (g_file_get_contents (ISO_3166_COUNTRY_CODES, &buf, &buf_len, &error)) {
+        table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+        ctx = g_markup_parse_context_new (&iso_3166_parser, 0, table, NULL);
+
+        if (!g_markup_parse_context_parse (ctx, buf, buf_len, &error)) {
+            g_warning ("Failed to parse '%s': %s\n", ISO_3166_COUNTRY_CODES, error->message);
             g_error_free (error);
-        } else
-            g_warning ("Could not read " ISO_3166_COUNTRY_CODES ": Unknown error");
-
-        return NULL;
-    }
-
-    table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-    buffer = g_string_sized_new (32);
-
-    status = G_IO_STATUS_NORMAL;
-    while (status == G_IO_STATUS_NORMAL) {
-        status = g_io_channel_read_line_string (channel, buffer, NULL, &error);
-
-        switch (status) {
-        case G_IO_STATUS_NORMAL:
-            if (buffer->str[0] != '#') {
-                char **pieces;
-                char *country_name;
-
-                pieces = g_strsplit (buffer->str, "\t", 2);
-
-                /* Hack for rh#556292; iso3166.tab is just wrong */
-                pieces[1] = pieces[1] ? g_strchomp (pieces[1]) : NULL;
-                if (pieces[1] && !strcmp (pieces[1], "Britain (UK)"))
-                    country_name = g_strdup (_("United Kingdom"));
-                else
-                    country_name = g_strdup (gettext (pieces[1]));
-
-                g_hash_table_insert (table, pieces[0], country_name);
-                g_free (pieces[1]);
-                g_free (pieces);
-            }
-
-            g_string_truncate (buffer, 0);
-            break;
-        case G_IO_STATUS_EOF:
-            break;
-        case G_IO_STATUS_ERROR:
-            g_warning ("Error while reading: %s", error->message);
-            g_error_free (error);
-            break;
-        case G_IO_STATUS_AGAIN:
-            /* FIXME: Try again a few times, but really, it never happes, right? */
-            break;
+            g_hash_table_destroy (table);
+            table = NULL;
         }
-    }
 
-    g_string_free (buffer, TRUE);
-    g_io_channel_unref (channel);
+        g_markup_parse_context_free (ctx);
+        g_free (buf);
+    } else {
+        g_warning ("Failed to load '%s': %s\n Consider installing 'iso-codes'\n",
+                   ISO_3166_COUNTRY_CODES, error->message);
+        g_error_free (error);
+    }
 
     return table;
 }
 
-/* XML Parser */
+
+/* XML Parser for serviceproviders.xml */
 
 typedef enum {
     PARSER_TOPLEVEL = 0,

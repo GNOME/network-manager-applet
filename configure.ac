@@ -21,6 +21,7 @@ dnl
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
+PKG_PROG_PKG_CONFIG
 
 dnl Define _GNU_SOURCE for various things like strcasestr()
 AC_GNU_SOURCE
@@ -57,8 +58,35 @@ GETTEXT_PACKAGE=nm-applet
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
 AM_GLIB_GNU_GETTEXT
-# for translation of country names from /usr/share/zoneinfo/iso3166.tab
-TRANSLATE_COUNTRY_NAMES([po])
+
+# Check for iso-codes for country names translation
+AC_MSG_CHECKING([whether to disable iso-codes at build-time])
+AC_ARG_ENABLE([iso-codes],
+    AS_HELP_STRING([--disable-iso-codes],[do not check for iso-codes at build-time]),
+    [],[disable_iso_codes_check=no])
+if test x$disable_iso_codes_check = xno ; then
+    AC_MSG_RESULT([no])
+else
+    AC_MSG_RESULT([yes])
+fi
+
+if test x$disable_iso_codes_check = "xno" ; then
+    AC_MSG_CHECKING([whether iso-codes has iso_3166 domain])
+    if $PKG_CONFIG --variable=domains iso-codes | grep iso_3166 >/dev/null ; then
+        AC_MSG_RESULT([yes])
+    else
+        AC_MSG_RESULT([no])
+    fi
+    AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["`$PKG_CONFIG --variable=prefix iso-codes`"],[ISO codes prefix])
+    PKG_CHECK_MODULES(ISO_CODES, [iso-codes],
+        [],
+        [echo -e "\n$ISO_CODES_PKG_ERRORS.\n"
+         echo "Consider installing the package or adjusting the PKG_CONFIG_PATH environment variable."
+         echo "You can also disable build-time check for 'iso-codes' via --disable-iso-codes";
+         exit 1;])
+else
+    AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["$prefix"],[ISO codes prefix])
+fi
 
 dnl
 dnl Make sha1.c happy on big endian systems
