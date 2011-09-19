@@ -17,6 +17,8 @@ PKG_NAME=nm-applet
     autoreconf --install --symlink &&
     intltoolize --force &&
     autoreconf &&
-    ./configure --enable-maintainer-mode $@
+    if test -z "$NOCONFIGURE"; then
+        ./configure --enable-maintainer-mode $@
+    fi
 )
 
