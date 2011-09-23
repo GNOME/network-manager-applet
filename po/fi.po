@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-04 12:13+0300\n"
-"PO-Revision-Date: 2011-07-04 11:21+0300\n"
+"POT-Creation-Date: 2011-09-23 16:31+0300\n"
+"PO-Revision-Date: 2011-09-23 16:31+0300\n"
 "Last-Translator: Tommi Vainikainen <thv@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: fi\n"
@@ -155,7 +155,6 @@ msgid "Mobile Broadband (%s)"
 msgstr "Mobiililaajakaista (%s)"
 
 #: ../src/applet-device-cdma.c:347 ../src/applet-device-gsm.c:391
-#: ../src/connection-editor/page-mobile.c:377
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
 msgid "Mobile Broadband"
 msgstr "Mobiililaajakaista"
@@ -179,6 +178,15 @@ msgstr "Mobiililaajakaistayhteys ”%s” on aktiivinen (%d%%%s%s)"
 #: ../src/applet-device-wimax.c:485
 msgid "roaming"
 msgstr "verkkovierailu"
+
+msgid "CDMA network."
+msgstr "CDMA-verkko."
+
+msgid "You are now registered on the home network."
+msgstr "Olet nyt rekisteröitynyt kotiverkkoon."
+
+msgid "You are now registered on a roaming network."
+msgstr "Olet nyt rekisteröitynyt vierailuverkkoon."
 
 #: ../src/mb-menu-item.c:59
 msgid "GSM"
@@ -265,12 +273,6 @@ msgstr "Näytä PIN-/PUK-koodit"
 
 msgid "GSM network."
 msgstr "GSM-verkko."
-
-msgid "You are now registered on the home network."
-msgstr "Olet nyt rekisteröitynyt kotiverkkoon."
-
-msgid "You are now registered on a roaming network."
-msgstr "Olet nyt rekisteröitynyt vierailuverkkoon."
 
 #: ../src/applet-device-wired.c:62
 msgid "Auto Ethernet"
@@ -898,39 +900,17 @@ msgstr "Aktiiviset verkkoyhteydet"
 msgid "Connection Information"
 msgstr "Tietoja yhteydestä"
 
-#: ../src/wifi.ui.h:1 ../src/connection-editor/ce-vpn-wizard.ui.h:1
-#: ../src/wireless-security/eap-method-peap.ui.h:1
-#: ../src/wireless-security/eap-method-ttls.ui.h:1
-#: ../src/wireless-security/ws-dynamic-wep.ui.h:1
-#: ../src/wireless-security/ws-wpa-eap.ui.h:1
-msgid " "
-msgstr " "
-
-#: ../src/wifi.ui.h:2
-msgid "Co_nnection:"
-msgstr "Yh_teys:"
-
-#: ../src/wifi.ui.h:3
-msgid "Wireless _adapter:"
-msgstr "Langaton verkkol_aite:"
-
-#: ../src/wifi.ui.h:4 ../src/wired-8021x.ui.h:2
-msgid "_Network name:"
-msgstr "_Verkon nimi:"
-
-#: ../src/wifi.ui.h:5
-msgid "_Wireless security:"
-msgstr "_Langaton tietoturva:"
-
 #: ../src/wired-8021x.ui.h:1 ../src/wired-dialog.c:104
 msgid "Wired 802.1X authentication"
 msgstr "Langallisen 802.1x-yhteyden todentaminen"
+
+msgid "_Network name:"
+msgstr "_Verkon nimi:"
 
 #: ../src/connection-editor/ce-page.c:67
 msgid "automatic"
 msgstr "automaattinen"
 
-#: ../src/connection-editor/ce-page.c:294
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Yhteyden salaisuuksien päivittäminen epäonnistui tuntemattoman syyn takia."
@@ -1270,38 +1250,21 @@ msgstr ""
 "ja ”MAC spoofing”. Esimerkki: 00:11:22:33:44:55"
 
 #: ../src/connection-editor/ce-page-wired.ui.h:13
-#: ../src/connection-editor/ce-page-wireless.ui.h:12
-msgid ""
-"This option locks this connection to the network device specified by its "
-"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
-msgstr ""
-"Tämä valinta lukitsee yhteyden verkkolaitteeseen, jonka pysyvä MAC-osoite "
-"annetaan tähän muodossa 00:11:22:33:44:55"
-
-#: ../src/connection-editor/ce-page-wired.ui.h:14
 msgid "Twisted Pair (TP)"
 msgstr "Parikaapeli (TP)"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:15
-#: ../src/connection-editor/ce-page-wireless.ui.h:16
 msgid "_Cloned MAC address:"
 msgstr "_Kopioitu MAC-osoite:"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:16
-#: ../src/connection-editor/ce-page-wireless.ui.h:17
 msgid "_Device MAC address:"
 msgstr "_Laitteen MAC-osoite:"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:17
 msgid "_Port:"
 msgstr "_Portti:"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:18
 msgid "_Speed:"
 msgstr "Nopeu_s:"
 
-#: ../src/connection-editor/ce-page-wired.ui.h:19
-#: ../src/connection-editor/ce-page-wireless.ui.h:20
 msgid "bytes"
 msgstr "tavua"
 
@@ -1337,7 +1300,6 @@ msgstr "M_enetelmä:"
 msgid "Mb/s"
 msgstr "Mb/s"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:13
 msgid ""
 "This option locks this connection to the wireless access point (AP) "
 "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
@@ -1345,23 +1307,18 @@ msgstr ""
 "Tämä valinta lukitsee yhteyden langattomaan tukiasemaan (AP), jonka BSSID-"
 "tunniste annetaan tähän muodossa 00:11:22:33:44:55"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:14
 msgid "Transmission po_wer:"
 msgstr "Lähetyste_ho:"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:15
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:18
 msgid "_Rate:"
 msgstr "_Nopeus:"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:19
 msgid "_SSID:"
 msgstr "_SSID:"
 
-#: ../src/connection-editor/ce-page-wireless.ui.h:21
 msgid "mW"
 msgstr "mW"
 
@@ -1422,6 +1379,9 @@ msgstr "_MSCHAP"
 msgid "_PAP"
 msgstr "_PAP"
 
+msgid " "
+msgstr " "
+
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:2
 msgid "Choose a VPN Connection Type"
 msgstr "Valitse VPN-yhteyden tyyppi"
@@ -1442,7 +1402,6 @@ msgstr ""
 #: ../src/connection-editor/ip4-routes-dialog.c:745
 #: ../src/connection-editor/ip6-routes-dialog.c:687
 #: ../src/connection-editor/page-ip4.c:901
-#: ../src/connection-editor/page-ip6.c:865
 msgid "Address"
 msgstr "Osoite"
 
@@ -1454,7 +1413,6 @@ msgstr "Verkkopeite"
 #: ../src/connection-editor/ip4-routes-dialog.c:779
 #: ../src/connection-editor/ip6-routes-dialog.c:721
 #: ../src/connection-editor/page-ip4.c:935
-#: ../src/connection-editor/page-ip6.c:899
 msgid "Gateway"
 msgstr "Yhdyskäytävä"
 
@@ -1464,20 +1422,16 @@ msgid "Metric"
 msgstr "Metric"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:704
-#: ../src/connection-editor/page-ip6.c:882
 msgid "Prefix"
 msgstr "Etuliite"
 
-#: ../src/connection-editor/page-dsl.c:137
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/page-dsl.c:139
 msgid "Could not load DSL user interface."
 msgstr "Käyttöliittymää DSL:lle ei voitu ladata."
 
-#: ../src/connection-editor/page-dsl.c:229
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL-yhteys %d"
@@ -1534,11 +1488,9 @@ msgstr "Pois käytöstä"
 msgid "Editing IPv4 routes for %s"
 msgstr "Muokataan yhteyden %s IPv4-reittejä"
 
-#: ../src/connection-editor/page-ip4.c:980
 msgid "IPv4 Settings"
 msgstr "IPv4-asetukset"
 
-#: ../src/connection-editor/page-ip4.c:982
 msgid "Could not load IPv4 user interface."
 msgstr "Käyttöliittymää IPv4:lle ei voitu ladata."
 
@@ -1555,29 +1507,23 @@ msgstr "Ohita"
 msgid "Automatic, DHCP only"
 msgstr "Automaattinen, vain DHCP"
 
-#: ../src/connection-editor/page-ip6.c:796
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Muokataan kohteen %s IPv6-reittejä"
 
-#: ../src/connection-editor/page-ip6.c:942
 msgid "IPv6 Settings"
 msgstr "IPv6-asetukset"
 
-#: ../src/connection-editor/page-ip6.c:944
 msgid "Could not load IPv6 user interface."
 msgstr "IPv6-käyttöliittymää ei voi ladata."
 
-#: ../src/connection-editor/page-mobile.c:379
 msgid "Could not load mobile broadband user interface."
 msgstr "Käyttöliittymää mobiililaajakaistalle ei voitu ladata."
 
-#: ../src/connection-editor/page-mobile.c:396
 msgid "Unsupported mobile broadband connection type."
 msgstr "Mobiililaajakaistasi yhteystyyppi ei ole tuettu."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:637
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Valitse mobiililaajakaistan toimittajan tyyppi"
 
@@ -1625,81 +1571,70 @@ msgstr "ei mitään"
 msgid "Editing PPP authentication methods for %s"
 msgstr "Muokataan PPP-todentamistapoja yhteydelle %s"
 
-#: ../src/connection-editor/page-ppp.c:281
 msgid "PPP Settings"
 msgstr "PPP-asetukset"
 
-#: ../src/connection-editor/page-ppp.c:283
 msgid "Could not load PPP user interface."
 msgstr "Käyttöliittymää PPP:lle ei voitu ladata."
 
-#: ../src/connection-editor/page-vpn.c:107
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/page-vpn.c:109
 msgid "Could not load VPN user interface."
 msgstr "VPN-käyttöliittymän lataus epäonnistui"
 
-#: ../src/connection-editor/page-vpn.c:124
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "VPN-liitännäispalvelua ei löydy kohteelle ”%s”"
 
-#: ../src/connection-editor/page-vpn.c:218
 #: ../src/connection-editor/nm-connection-list.c:884
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN-yhteys %d"
 
-#: ../src/connection-editor/page-wired.c:211
+msgid ""
+"This option locks this connection to the network device specified by its "
+"permanent MAC address entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Tämä valinta lukitsee yhteyden verkkolaitteeseen, jonka pysyvä MAC-osoite "
+"annetaan tähän muodossa 00:11:22:33:44:55"
+
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
 msgid "Wired"
 msgstr "Kiinteä"
 
-#: ../src/connection-editor/page-wired.c:213
 msgid "Could not load wired user interface."
 msgstr "Käyttöliittymää kiinteälle yhteydelle ei voitu ladata."
 
-#: ../src/connection-editor/page-wired.c:348
 #, c-format
 msgid "Wired connection %d"
 msgstr "Kiinteä yhteys %d"
 
-#: ../src/connection-editor/page-wired-security.c:114
 msgid "802.1x Security"
 msgstr "802.1x-suojaus"
 
-#: ../src/connection-editor/page-wired-security.c:116
 msgid "Could not load Wired Security security user interface."
 msgstr "Ei voitu ladata Wired Security -tietoturvakäyttöliittymää."
 
 msgid "Use 802.1X security for this connection"
 msgstr "Käytä tällä yhteydellä 802.1x-suojausta"
 
-#: ../src/connection-editor/page-wireless.c:147
-#: ../src/connection-editor/page-wireless.c:151
-#: ../src/connection-editor/page-wireless.c:172
 #, c-format
 msgid "default"
 msgstr "oletus"
 
-#: ../src/connection-editor/page-wireless.c:176
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:396
 #: ../src/connection-editor/nm-connection-editor.ui.h:10
 msgid "Wireless"
 msgstr "Langaton"
 
-#: ../src/connection-editor/page-wireless.c:398
 msgid "Could not load WiFi user interface."
 msgstr "Käyttöliittymää WiFi:lle ei voitu ladata."
 
-#: ../src/connection-editor/page-wireless.c:562
 #, c-format
 msgid "Wireless connection %d"
 msgstr "Langaton yhteys %d"
@@ -1724,17 +1659,14 @@ msgstr "WPA & WPA2 (henkilökohtainen)"
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA2 Enterprise"
 
-#: ../src/connection-editor/page-wireless-security.c:359
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr ""
 "Turvallisuuskäyttöliittymää WiFi:lle ei voitu ladata. WiFi-asetukset "
 "puuttuvat."
 
-#: ../src/connection-editor/page-wireless-security.c:368
 msgid "Wireless Security"
 msgstr "Langaton tietoturva"
 
-#: ../src/connection-editor/page-wireless-security.c:370
 msgid "Could not load WiFi security user interface."
 msgstr "Turvallisuuskäyttöliittymää WiFi:lle ei voitu ladata."
 
@@ -1906,49 +1838,38 @@ msgstr ""
 msgid "Could not edit imported connection"
 msgstr "Tuotua yhteyttä ei voitu muokata"
 
-#: ../src/connection-editor/nm-connection-list.c:1072
 msgid "Name"
 msgstr "Nimi"
 
-#: ../src/connection-editor/nm-connection-list.c:1084
 msgid "Last Used"
 msgstr "Viimeksi käytetty"
 
-#: ../src/connection-editor/nm-connection-list.c:1200
 msgid "No VPN plugin available. Please install one to enable this button."
 msgstr ""
 "Ei VPN-liitännäistä saatavilla. Asenna liitännäinen, niin tämä painike on "
 "käytettävissä."
 
-#: ../src/connection-editor/nm-connection-list.c:1211
 msgid "_Edit"
 msgstr "_Muokkaa"
 
-#: ../src/connection-editor/nm-connection-list.c:1212
 msgid "Edit the selected connection"
 msgstr "Muokkaa valittua yhteyttä"
 
-#: ../src/connection-editor/nm-connection-list.c:1213
 msgid "_Edit..."
 msgstr "_Muokkaa…"
 
-#: ../src/connection-editor/nm-connection-list.c:1214
 msgid "Authenticate to edit the selected connection"
 msgstr "Tunnistaudu muokataksesi valittua yhteyttä"
 
-#: ../src/connection-editor/nm-connection-list.c:1229
 msgid "_Delete"
 msgstr "_Poista"
 
-#: ../src/connection-editor/nm-connection-list.c:1230
 msgid "Delete the selected connection"
 msgstr "Poista valittu yhteys"
 
-#: ../src/connection-editor/nm-connection-list.c:1231
 msgid "_Delete..."
 msgstr "_Poista…"
 
-#: ../src/connection-editor/nm-connection-list.c:1232
 msgid "Authenticate to delete the selected connection"
 msgstr "Tunnistaudu poistaaksesi valitun yhteyden"
 
@@ -2089,104 +2010,6 @@ msgstr "Käytä matkapuhelintasi verkkolaitteena (PAN/NAP)"
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Käytä Internetiä matkapuhelimesi välityksellä (DUN)"
 
-#: ../src/main.c:73
-msgid "Usage:"
-msgstr "Käyttö:"
-
-#: ../src/main.c:75
-msgid ""
-"This program is a component of NetworkManager (http://projects.gnome.org/"
-"NetworkManager)."
-msgstr ""
-"Tämä ohjelma on osa NetworkManageria (http://projects.gnome.org/"
-"NetworkManager)."
-
-#: ../src/main.c:76
-msgid ""
-"It is not intended for command-line interaction but instead runs in the "
-"GNOME desktop environment."
-msgstr ""
-"Sitä ei ole tarkoitettu komentorivin keskusteluun mutta sen sijaan se toimii "
-"GNOME-työpöytäympäristössä"
-
-#: ../src/mb-menu-item.c:57
-msgid "EVDO"
-msgstr "EVDO"
-
-#: ../src/mb-menu-item.c:61
-msgid "GPRS"
-msgstr "GPRS"
-
-#: ../src/mb-menu-item.c:63
-msgid "EDGE"
-msgstr "EDGE"
-
-#: ../src/mb-menu-item.c:65
-msgid "UMTS"
-msgstr "UMTS"
-
-#: ../src/mb-menu-item.c:67
-msgid "HSDPA"
-msgstr "HSDPA"
-
-#: ../src/mb-menu-item.c:69
-msgid "HSUPA"
-msgstr "HSUPA"
-
-#: ../src/mb-menu-item.c:71
-msgid "HSPA"
-msgstr "HSPA"
-
-#: ../src/mb-menu-item.c:73
-msgid "WiMAX"
-msgstr "WiMAX"
-
-#: ../src/mb-menu-item.c:109
-msgid "not enabled"
-msgstr "ei käytössä"
-
-#: ../src/mb-menu-item.c:115
-msgid "not registered"
-msgstr "ei rekisteröity"
-
-#: ../src/mb-menu-item.c:133
-#, c-format
-msgid "Home network (%s)"
-msgstr "Kotiverkko (%s)"
-
-#: ../src/mb-menu-item.c:135
-#, c-format
-msgid "Home network"
-msgstr "Kotiverkko"
-
-#: ../src/mb-menu-item.c:143
-msgid "searching"
-msgstr "etsitään"
-
-#: ../src/mb-menu-item.c:146
-msgid "registration denied"
-msgstr "rekisteröinti evätty"
-
-#: ../src/mb-menu-item.c:151 ../src/mb-menu-item.c:157
-#, c-format
-msgid "%s (%s roaming)"
-msgstr "%s (%s - verkkovierailu)"
-
-#: ../src/mb-menu-item.c:153 ../src/mb-menu-item.c:159
-#, c-format
-msgid "%s (roaming)"
-msgstr "%s (verkkovierailu)"
-
-#: ../src/mb-menu-item.c:162
-#, c-format
-msgid "Roaming network (%s)"
-msgstr "Verkkovierailu (roaming - %s)"
-
-#: ../src/mb-menu-item.c:164
-#, c-format
-msgid "Roaming network"
-msgstr "Vierasverkko"
-
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
 msgstr "Mobiililaajakaistayhteys on nyt luotu seuraavilla asetuksilla:"
@@ -2316,22 +2139,6 @@ msgstr "Mobiililaajakaistayhteyden asetukset"
 msgid "New Mobile Broadband Connection"
 msgstr "Uusi mobiililaajakaistayhteys"
 
-#: ../src/utils/nmn-mobile-providers.c:78
-msgid "United Kingdom"
-msgstr "Yhdistynyt kuningaskunta"
-
-#: ../src/utils/nmn-mobile-providers.c:510
-msgid "Default"
-msgstr "Oletus"
-
-#: ../src/wired-dialog.c:91 ../src/wired-dialog.c:99
-msgid ""
-"The NetworkManager Applet could not find some required resources (the .ui "
-"file was not found)."
-msgstr ""
-"Verkonhallintasovelma ei löytänyt joitain tarvitsemiaan resursseja (.ui-"
-"tiedostoa ei löytynyt)."
-
 msgid "New..."
 msgstr "Uusi…"
 
@@ -2372,6 +2179,102 @@ msgid ""
 "to connect to."
 msgstr ""
 "Syötä yhdistettävän piilotetun langattoman verkon nimi ja salaustiedot."
+
+msgid "Co_nnection:"
+msgstr "Yh_teys:"
+
+msgid "Wireless _adapter:"
+msgstr "Langaton verkkol_aite:"
+
+msgid "_Wireless security:"
+msgstr "_Langaton tietoturva:"
+
+msgid "Usage:"
+msgstr "Käyttö:"
+
+msgid ""
+"This program is a component of NetworkManager (http://projects.gnome.org/"
+"NetworkManager)."
+msgstr ""
+"Tämä ohjelma on osa NetworkManageria (http://projects.gnome.org/"
+"NetworkManager)."
+
+msgid ""
+"It is not intended for command-line interaction but instead runs in the "
+"GNOME desktop environment."
+msgstr ""
+"Sitä ei ole tarkoitettu komentorivin keskusteluun mutta sen sijaan se toimii "
+"GNOME-työpöytäympäristössä"
+
+msgid "EVDO"
+msgstr "EVDO"
+
+msgid "GPRS"
+msgstr "GPRS"
+
+msgid "EDGE"
+msgstr "EDGE"
+
+msgid "UMTS"
+msgstr "UMTS"
+
+msgid "HSDPA"
+msgstr "HSDPA"
+
+msgid "HSUPA"
+msgstr "HSUPA"
+
+msgid "HSPA"
+msgstr "HSPA"
+
+msgid "WiMAX"
+msgstr "WiMAX"
+
+msgid "not enabled"
+msgstr "ei käytössä"
+
+msgid "not registered"
+msgstr "ei rekisteröity"
+
+#, c-format
+msgid "Home network (%s)"
+msgstr "Kotiverkko (%s)"
+
+#, c-format
+msgid "Home network"
+msgstr "Kotiverkko"
+
+msgid "searching"
+msgstr "etsitään"
+
+msgid "registration denied"
+msgstr "rekisteröinti evätty"
+
+#, c-format
+msgid "%s (%s roaming)"
+msgstr "%s (%s - verkkovierailu)"
+
+#, c-format
+msgid "%s (roaming)"
+msgstr "%s (verkkovierailu)"
+
+#, c-format
+msgid "Roaming network (%s)"
+msgstr "Verkkovierailu (roaming - %s)"
+
+#, c-format
+msgid "Roaming network"
+msgstr "Vierasverkko"
+
+msgid "Default"
+msgstr "Oletus"
+
+msgid ""
+"The NetworkManager Applet could not find some required resources (the .ui "
+"file was not found)."
+msgstr ""
+"Verkonhallintasovelma ei löytänyt joitain tarvitsemiaan resursseja (.ui-"
+"tiedostoa ei löytynyt)."
 
 #: ../src/wireless-security/eap-method.c:279
 msgid "No Certificate Authority certificate chosen"
@@ -2540,6 +2443,9 @@ msgstr "WEP-inde_ksi"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "_Key:"
 msgstr "_Avain:"
+
+#~ msgid "United Kingdom"
+#~ msgstr "Yhdistynyt kuningaskunta"
 
 #~ msgid "Network Manager"
 #~ msgstr "Verkon hallinta"
@@ -2711,17 +2617,6 @@ msgstr "_Avain:"
 #~ msgstr ""
 #~ "Verkon hallinta -sovelma ei voinut ladata jotain vaadituista resursseista "
 #~ "(glade-tiedostoa ei löytynyt)."
-
-#~ msgid ""
-#~ "1 (Default)\n"
-#~ "2\n"
-#~ "3\n"
-#~ "4"
-#~ msgstr ""
-#~ "1 (oletus)\n"
-#~ "2\n"
-#~ "3\n"
-#~ "4"
 
 #~ msgid "<b>Allowed Authentication Methods</b>"
 #~ msgstr "<b>Sallitut todentamistavat</b>"
