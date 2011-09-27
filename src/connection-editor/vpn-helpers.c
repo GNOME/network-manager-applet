@@ -257,6 +257,7 @@ vpn_import (VpnImportSuccessCallback callback, gpointer user_data)
 {
 	GtkWidget *dialog;
 	ActionInfo *info;
+	const char *home_folder;
 
 	dialog = gtk_file_chooser_dialog_new (_("Select file to import"),
 	                                      NULL,
@@ -264,6 +265,9 @@ vpn_import (VpnImportSuccessCallback callback, gpointer user_data)
 	                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 	                                      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 	                                      NULL);
+        home_folder = g_get_home_dir ();
+        gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), home_folder);
+
 	info = g_malloc0 (sizeof (ActionInfo));
 	info->callback = callback;
 	info->user_data = user_data;
@@ -373,6 +377,7 @@ vpn_export (NMConnection *connection)
 	NMVpnPluginUiInterface *plugin;
 	NMSettingVPN *s_vpn = NULL;
 	const char *service_type;
+	const char *home_folder;
 
 	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
 	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
@@ -388,6 +393,8 @@ vpn_export (NMConnection *connection)
 	                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 	                                      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 	                                      NULL);
+	home_folder = g_get_home_dir ();
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), home_folder);
 
 	plugin = vpn_get_plugin_by_service (service_type);
 	if (plugin) {
