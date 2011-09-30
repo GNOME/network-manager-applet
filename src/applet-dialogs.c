@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2010 Red Hat, Inc.
+ * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
 #include <netinet/in.h>
@@ -37,6 +37,7 @@
 #include <nm-setting-8021x.h>
 #include <nm-setting-ip4-config.h>
 #include <nm-setting-ip6-config.h>
+#include <nm-vpn-connection.h>
 #include <nm-utils.h>
 
 #include <gtk/gtk.h>
@@ -168,6 +169,30 @@ get_connection_for_active (NMApplet *applet, NMActiveConnection *active)
 	g_slist_free (list);
 
 	return connection;
+}
+
+static NMConnection *
+get_connection_for_active_path (NMApplet *applet, const char *active_path)
+{
+	NMActiveConnection *active = NULL;
+	const GPtrArray *connections;
+	int i;
+
+	if (active_path == NULL)
+		return NULL;
+
+	connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; connections && (i < connections->len); i++) {
+		NMActiveConnection *candidate = g_ptr_array_index (connections, i);
+		const char *ac_path = nm_object_get_path (NM_OBJECT (candidate));
+
+		if (g_strcmp0 (ac_path, active_path) == 0) {
+			active = candidate;
+			break;
+		}
+	}
+
+	return active ? get_connection_for_active (applet, active) : NULL;
 }
 
 static GtkWidget *
@@ -605,6 +630,133 @@ info_dialog_add_page (GtkNotebook *notebook,
 	gtk_widget_show_all (GTK_WIDGET (table));
 }
 
+static char *
+get_vpn_connection_type (NMConnection *connection)
+{
+	const char *type, *p;
+
+	/* The service type is in format of "org.freedesktop.NetworkManager.vpnc".
+	 * Extract end part after last dot, e.g. "vpnc" */
+	type = nm_setting_vpn_get_service_type (nm_connection_get_setting_vpn (connection));
+	p = strrchr (type, '.');
+	return g_strdup (p ? p + 1 : type);
+}
+
+/* VPN parameters can be found at:
+ * http://git.gnome.org/browse/network-manager-openvpn/tree/src/nm-openvpn-service.h
+ * http://git.gnome.org/browse/network-manager-vpnc/tree/src/nm-vpnc-service.h
+ * http://git.gnome.org/browse/network-manager-pptp/tree/src/nm-pptp-service.h
+ * http://git.gnome.org/browse/network-manager-openconnect/tree/src/nm-openconnect-service.h
+ * http://git.gnome.org/browse/network-manager-openswan/tree/src/nm-openswan-service.h
+ * See also 'properties' directory in these plugins.
+ */
+static const gchar *
+find_vpn_gateway_key (const char *vpn_type)
+{
+	if (g_strcmp0 (vpn_type, "openvpn") == 0)     return "remote";
+	if (g_strcmp0 (vpn_type, "vpnc") == 0)        return "IPSec gateway";
+	if (g_strcmp0 (vpn_type, "pptp") == 0)        return "gateway";
+	if (g_strcmp0 (vpn_type, "openconnect") == 0) return "gateway";
+	if (g_strcmp0 (vpn_type, "openswan") == 0)    return "right";
+	return "";
+}
+
+static const gchar *
+find_vpn_username_key (const char *vpn_type)
+{
+	if (g_strcmp0 (vpn_type, "openvpn") == 0)     return "username";
+	if (g_strcmp0 (vpn_type, "vpnc") == 0)        return "Xauth username";
+	if (g_strcmp0 (vpn_type, "pptp") == 0)        return "user";
+	if (g_strcmp0 (vpn_type, "openconnect") == 0) return "username";
+	if (g_strcmp0 (vpn_type, "openswan") == 0)    return "leftxauthusername";
+	return "";
+}
+
+enum VpnDataItem {
+	VPN_DATA_ITEM_GATEWAY,
+	VPN_DATA_ITEM_USERNAME
+};
+
+static const gchar *
+get_vpn_data_item (NMConnection *connection, enum VpnDataItem vpn_data_item)
+{
+	const char *key;
+	char *type = get_vpn_connection_type (connection);
+
+	switch (vpn_data_item) {
+	case VPN_DATA_ITEM_GATEWAY:
+		key = find_vpn_gateway_key (type);
+		break;
+	case VPN_DATA_ITEM_USERNAME:
+		key = find_vpn_username_key (type);
+		break;
+	default:
+		key = "";
+		break;
+	}
+	g_free (type);
+
+	return nm_setting_vpn_get_data_item (nm_connection_get_setting_vpn (connection), key);
+}
+
+static void
+info_dialog_add_page_for_vpn (GtkNotebook *notebook,
+                              NMConnection *connection,
+                              NMActiveConnection *active,
+                              NMConnection *parent_con)
+{
+	GtkTable *table;
+	char *str;
+	int row = 0;
+	gboolean is_default = nm_active_connection_get_default (active);
+
+	table = GTK_TABLE (gtk_table_new (12, 2, FALSE));
+	gtk_table_set_col_spacings (table, 12);
+	gtk_table_set_row_spacings (table, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 12);
+
+	/*--- General ---*/
+	gtk_table_attach (table, create_info_group_label (_("General"), FALSE),
+	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	row++;
+
+	str = get_vpn_connection_type (connection);
+	gtk_table_attach (table, create_info_label (_("VPN Type:"), FALSE),
+	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach (table, create_info_label (str, TRUE),
+	                  1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	g_free (str);
+	row++;
+
+	gtk_table_attach (table, create_info_label (_("VPN Gateway:"), FALSE),
+	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach (table, create_info_label (get_vpn_data_item (connection, VPN_DATA_ITEM_GATEWAY), TRUE),
+	                  1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	row++;
+
+	gtk_table_attach (table, create_info_label (_("VPN Username:"), FALSE),
+	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach (table, create_info_label (get_vpn_data_item (connection, VPN_DATA_ITEM_USERNAME), TRUE),
+	                  1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	row++;
+
+	gtk_table_attach (table, create_info_label (_("VPN Banner:"), FALSE),
+	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach (table, create_info_label (nm_vpn_connection_get_banner (NM_VPN_CONNECTION (active)), TRUE),
+	                  1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	row++;
+
+	gtk_table_attach (table, create_info_label (_("Base Connection:"), FALSE),
+	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach (table, create_info_label (parent_con ? nm_connection_get_id (parent_con) : _("Unknown"), TRUE),
+	                  1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+
+	gtk_notebook_append_page (notebook, GTK_WIDGET (table),
+	                          create_info_notebook_label (connection, is_default));
+
+	gtk_widget_show_all (GTK_WIDGET (table));
+}
+
 static GtkWidget *
 info_dialog_update (NMApplet *applet)
 {
@@ -629,23 +781,31 @@ info_dialog_update (NMApplet *applet)
 		if (nm_active_connection_get_state (active_connection) != NM_ACTIVE_CONNECTION_STATE_ACTIVATED)
 			continue;
 
-		devices = nm_active_connection_get_devices (active_connection);
-		if (!devices || !devices->len) {
-			g_warning ("Active connection %s had no devices!",
-					   nm_object_get_path (NM_OBJECT (active_connection)));
-			continue;
-		}
-
 		connection = get_connection_for_active (applet, active_connection);
 		if (!connection) {
 			g_warning ("%s: couldn't find the default active connection's NMConnection!", __func__);
 			continue;
 		}
-			
-		info_dialog_add_page (notebook,
-							  connection,
-							  nm_active_connection_get_default (active_connection),
-							  g_ptr_array_index (devices, 0));
+
+		devices = nm_active_connection_get_devices (active_connection);
+		if (devices && devices->len > 0)
+			info_dialog_add_page (notebook,
+			                      connection,
+			                      nm_active_connection_get_default (active_connection),
+			                      g_ptr_array_index (devices, 0));
+		else {
+			if (NM_IS_VPN_CONNECTION (active_connection)) {
+				const char *spec_object = nm_active_connection_get_specific_object (active_connection);
+				NMConnection *parent_con = get_connection_for_active_path (applet, spec_object);
+
+				info_dialog_add_page_for_vpn (notebook, connection, active_connection, parent_con);
+			} else {
+				g_warning ("Active connection %s had no devices and was not a VPN!",
+				           nm_object_get_path (NM_OBJECT (active_connection)));
+				continue;
+			}
+		}
+
 		pages++;
 	}
 
