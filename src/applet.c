@@ -2745,10 +2745,10 @@ mm1_client_setup (NMApplet *applet)
 #endif /* WITH_MODEM_MANAGER_1 */
 
 static void
-applet_common_get_device_icon (NMDeviceState state,
-                               GdkPixbuf **out_pixbuf,
-                               char **out_icon_name,
-                               NMApplet *applet)
+applet_common_get_device_icon_status (NMDeviceState state,
+                                      GdkPixbuf **out_pixbuf,
+                                      char **out_icon_name,
+                                      NMApplet *applet)
 {
 	int stage = -1;
 
@@ -2768,7 +2768,7 @@ applet_common_get_device_icon (NMDeviceState state,
 	}
 
 	if (stage >= 0) {
-		char *name = g_strdup_printf ("nm-stage%02d-connecting%02d", stage + 1, applet->animation_step + 1);
+		char *name = g_strdup_printf ("nm-stage%02d-connecting%02d-status", stage + 1, applet->animation_step + 1);
 
 		if (out_pixbuf)
 			*out_pixbuf = g_object_ref (nma_icon_check_and_load (name, applet));
@@ -2868,7 +2868,7 @@ applet_get_device_icon_for_state (NMApplet *applet,
 	}
 
 out:
-	applet_common_get_device_icon (state, out_pixbuf, out_icon_name, applet);
+	applet_common_get_device_icon_status (state, out_pixbuf, out_icon_name, applet);
 }
 
 static char *

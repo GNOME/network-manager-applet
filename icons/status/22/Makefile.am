@@ -9,6 +9,39 @@ icon_DATA = \
 		nm-signal-25-status.png \
 		nm-signal-50-status.png \
 		nm-signal-75-status.png \
+		nm-stage01-connecting01-status.png \
+		nm-stage01-connecting02-status.png \
+		nm-stage01-connecting03-status.png \
+		nm-stage01-connecting04-status.png \
+		nm-stage01-connecting05-status.png \
+		nm-stage01-connecting06-status.png \
+		nm-stage01-connecting07-status.png \
+		nm-stage01-connecting08-status.png \
+		nm-stage01-connecting09-status.png \
+		nm-stage01-connecting10-status.png \
+		nm-stage01-connecting11-status.png \
+		nm-stage02-connecting01-status.png \
+		nm-stage02-connecting02-status.png \
+		nm-stage02-connecting03-status.png \
+		nm-stage02-connecting04-status.png \
+		nm-stage02-connecting05-status.png \
+		nm-stage02-connecting06-status.png \
+		nm-stage02-connecting07-status.png \
+		nm-stage02-connecting08-status.png \
+		nm-stage02-connecting09-status.png \
+		nm-stage02-connecting10-status.png \
+		nm-stage02-connecting11-status.png \
+		nm-stage03-connecting01-status.png \
+		nm-stage03-connecting02-status.png \
+		nm-stage03-connecting03-status.png \
+		nm-stage03-connecting04-status.png \
+		nm-stage03-connecting05-status.png \
+		nm-stage03-connecting06-status.png \
+		nm-stage03-connecting07-status.png \
+		nm-stage03-connecting08-status.png \
+		nm-stage03-connecting09-status.png \
+		nm-stage03-connecting10-status.png \
+		nm-stage03-connecting11-status.png \
 		nm-tech-cdma-1x-status.png \
 		nm-tech-edge-status.png \
 		nm-tech-evdo-status.png \
