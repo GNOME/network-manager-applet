@@ -1124,7 +1124,8 @@ GtkWidget *
 applet_mobile_pin_dialog_new (const char *title,
                               const char *header,
                               const char *desc,
-                              const char *show_password_label)
+                              const char *show_password_label,
+                              gboolean show_auto_unlock_checkbox)
 {
 	char *str;
 	GtkWidget *dialog;
@@ -1173,6 +1174,10 @@ applet_mobile_pin_dialog_new (const char *title,
 
 	g_signal_connect (dialog, "delete-event", G_CALLBACK (mpd_cancel_dialog), NULL);
 
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "save_checkbutton"));
+	if (show_auto_unlock_checkbox)
+		g_object_set_data (G_OBJECT (widget), "active", GUINT_TO_POINTER (TRUE));
+
 	mpd_entry_changed (NULL, dialog);
 
 	return dialog;
@@ -1208,6 +1213,10 @@ applet_mobile_pin_dialog_present (GtkWidget *dialog, gboolean now)
 		widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_label"));
 		gtk_widget_hide (widget);
 	}
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "save_checkbutton"));
+	if (!g_object_get_data (G_OBJECT (widget), "active"))
+		gtk_widget_hide (widget);
 
 	/* Need to resize the dialog after hiding widgets */
 	gtk_window_resize (GTK_WINDOW (dialog), 400, 100);
@@ -1361,6 +1370,20 @@ const char *
 applet_mobile_pin_dialog_get_entry3 (GtkWidget *dialog)
 {
 	return mpd_get_entry (dialog, "code3_entry");
+}
+
+gboolean
+applet_mobile_pin_dialog_get_auto_unlock (GtkWidget *dialog)
+{
+	GtkBuilder *builder;
+	GtkWidget *widget;
+
+	g_return_val_if_fail (dialog != NULL, FALSE);
+	builder = g_object_get_data (G_OBJECT (dialog), "builder");
+	g_return_val_if_fail (builder != NULL, FALSE);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "save_checkbutton"));
+	return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 }
 
 void

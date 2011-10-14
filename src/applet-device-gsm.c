@@ -814,6 +814,39 @@ set_pin_in_keyring (const char *devid,
 }
 
 static void
+delete_pin_cb (GnomeKeyringResult result, gpointer user_data)
+{
+	/* nothing to do */
+}
+
+static void
+delete_pins_find_cb (GnomeKeyringResult result, GList *list, gpointer user_data)
+{
+	GList *iter;
+
+	if (result == GNOME_KEYRING_RESULT_OK) {
+		for (iter = list; iter; iter = g_list_next (iter)) {
+			GnomeKeyringFound *found = iter->data;
+
+			gnome_keyring_item_delete (found->keyring, found->item_id, delete_pin_cb, NULL, NULL);
+		}
+	}
+}
+
+static void
+delete_pins_in_keyring (const char *devid)
+{
+	gnome_keyring_find_itemsv (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                           delete_pins_find_cb,
+	                           NULL,
+	                           NULL,
+	                           "devid",
+	                           GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                           devid,
+	                           NULL);
+}
+
+static void
 unlock_dialog_destroy (GsmDeviceInfo *info)
 {
 	applet_mobile_pin_dialog_destroy (info->dialog);
@@ -828,8 +861,11 @@ unlock_pin_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	const char *dbus_error, *msg = NULL, *code1;
 
 	if (dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INVALID)) {
-		code1 = applet_mobile_pin_dialog_get_entry1 (info->dialog);
-		set_pin_in_keyring (info->devid, info->simid, code1);
+		if (applet_mobile_pin_dialog_get_auto_unlock (info->dialog)) {
+			code1 = applet_mobile_pin_dialog_get_entry1 (info->dialog);
+			set_pin_in_keyring (info->devid, info->simid, code1);
+		} else
+			delete_pins_in_keyring (info->devid);
 		unlock_dialog_destroy (info);
 		return;
 	}
@@ -984,7 +1020,11 @@ unlock_dialog_new (NMDevice *device, GsmDeviceInfo *info)
 	}
 
 	/* Construct and run the dialog */
-	info->dialog = applet_mobile_pin_dialog_new (title, header, desc, show_pass_label);
+	info->dialog = applet_mobile_pin_dialog_new (title,
+	                                             header,
+	                                             desc,
+	                                             show_pass_label,
+	                                             (unlock_code == UNLOCK_CODE_PIN) ? TRUE : FALSE);
 	g_free (desc);
 	g_return_if_fail (info->dialog != NULL);
 
