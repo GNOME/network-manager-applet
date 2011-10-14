@@ -20,8 +20,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2011-10-12 23:41+0000\n"
-"PO-Revision-Date: 2011-10-13 21:43+0100\n"
+"POT-Creation-Date: 2011-10-14 17:29+0000\n"
+"PO-Revision-Date: 2011-10-14 19:29+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@freenet.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -197,11 +197,11 @@ msgstr "Roaming"
 msgid "CDMA network."
 msgstr "CDMA-Netzwerk."
 
-#: ../src/applet-device-cdma.c:648 ../src/applet-device-gsm.c:1158
+#: ../src/applet-device-cdma.c:648 ../src/applet-device-gsm.c:1198
 msgid "You are now registered on the home network."
 msgstr "Sie sind nun im Heimnetzwerk angemeldet."
 
-#: ../src/applet-device-cdma.c:654 ../src/applet-device-gsm.c:1164
+#: ../src/applet-device-cdma.c:654 ../src/applet-device-gsm.c:1204
 msgid "You are now registered on a roaming network."
 msgstr "Sie sind nun in einem Roaming-Netzwerk angemeldet."
 
@@ -232,29 +232,29 @@ msgstr "Für das mobile Breitbandgerät ist ein PIN-Code erforderlich"
 msgid "PIN code for SIM card '%s' on '%s'"
 msgstr "PIN-Code für SIM-Karte »%s« auf »%s«"
 
-#: ../src/applet-device-gsm.c:839
+#: ../src/applet-device-gsm.c:875
 msgid "Wrong PIN code; please contact your provider."
 msgstr "Falscher PIN-Code. Bitte kontaktieren Sie Ihren Dienstanbieter."
 
-#: ../src/applet-device-gsm.c:862
+#: ../src/applet-device-gsm.c:898
 msgid "Wrong PUK code; please contact your provider."
 msgstr "Falscher PUK-Code. Bitte kontaktieren Sie Ihren Dienstanbieter."
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-gsm.c:889
+#: ../src/applet-device-gsm.c:925
 msgid "Sending unlock code..."
 msgstr "Code zum Entsperren wird gesendet …"
 
-#: ../src/applet-device-gsm.c:952
+#: ../src/applet-device-gsm.c:988
 msgid "SIM PIN unlock required"
 msgstr "Entsperren des PIN-Code erforderlich"
 
-#: ../src/applet-device-gsm.c:953
+#: ../src/applet-device-gsm.c:989
 msgid "SIM PIN Unlock Required"
 msgstr "Entsperren des PIN-Code erforderlich"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-device-gsm.c:955
+#: ../src/applet-device-gsm.c:991
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -263,25 +263,25 @@ msgstr ""
 "Das mobile Breitband-Gerät »%s« erfordert vor Verwendung eine SIM-PIN-Nummer."
 
 #. Translators: PIN code entry label
-#: ../src/applet-device-gsm.c:957
+#: ../src/applet-device-gsm.c:993
 msgid "PIN code:"
 msgstr "PIN-Code:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-device-gsm.c:961
+#: ../src/applet-device-gsm.c:997
 msgid "Show PIN code"
 msgstr "PIN-Code anzeigen"
 
-#: ../src/applet-device-gsm.c:964
+#: ../src/applet-device-gsm.c:1000
 msgid "SIM PUK unlock required"
 msgstr "Entsperren des PUK-Code erforderlich"
 
-#: ../src/applet-device-gsm.c:965
+#: ../src/applet-device-gsm.c:1001
 msgid "SIM PUK Unlock Required"
 msgstr "Entsperren des PUK-Code erforderlich"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-device-gsm.c:967
+#: ../src/applet-device-gsm.c:1003
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -290,26 +290,26 @@ msgstr ""
 "Das mobile Breitband-Gerät »%s« erfordert vor Verwendung einen SIM-PUK-Code."
 
 #. Translators: PUK code entry label
-#: ../src/applet-device-gsm.c:969
+#: ../src/applet-device-gsm.c:1005
 msgid "PUK code:"
 msgstr "PUK-Code:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-device-gsm.c:972
+#: ../src/applet-device-gsm.c:1008
 msgid "New PIN code:"
 msgstr "Neuer PIN-Code:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-device-gsm.c:974
+#: ../src/applet-device-gsm.c:1010
 msgid "Re-enter new PIN code:"
 msgstr "Geben Sie den neuen PIN-Code erneut ein:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-device-gsm.c:979
+#: ../src/applet-device-gsm.c:1015
 msgid "Show PIN/PUK codes"
 msgstr "PIN/PUK-Codes anzeigen"
 
-#: ../src/applet-device-gsm.c:1157 ../src/applet-device-gsm.c:1163
+#: ../src/applet-device-gsm.c:1197 ../src/applet-device-gsm.c:1203
 msgid "GSM network."
 msgstr "GSM-Netzwerk"
 
@@ -1016,6 +1016,10 @@ msgid "NetworkManager Applet"
 msgstr "Netzwerk-Manager-Applet"
 
 #: ../src/gsm-unlock.ui.h:1
+msgid "Automatically unlock this device"
+msgstr "Dieses Gerät automatisch entsperren"
+
+#: ../src/gsm-unlock.ui.h:2
 msgid "_Unlock"
 msgstr "_Entsperren"
 
