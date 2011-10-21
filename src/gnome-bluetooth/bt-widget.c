@@ -883,7 +883,12 @@ plugin_info_destroy (gpointer data)
 		nma_bling_spinner_stop (NMA_BLING_SPINNER (info->spinner));
 	g_object_unref (info->settings);
 	g_object_unref (info->btmodel);
+
+	g_signal_handlers_disconnect_matched (info->btclient,
+	                                      G_SIGNAL_MATCH_DATA, 0, 0, NULL,
+	                                      NULL, info);
 	g_object_unref (info->btclient);
+
 	if (info->bus)
 		dbus_g_connection_unref (info->bus);
 	memset (info, 0, sizeof (PluginInfo));
