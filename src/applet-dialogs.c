@@ -633,11 +633,13 @@ info_dialog_add_page (GtkNotebook *notebook,
 static char *
 get_vpn_connection_type (NMConnection *connection)
 {
+	NMSettingVPN *s_vpn;
 	const char *type, *p;
 
 	/* The service type is in format of "org.freedesktop.NetworkManager.vpnc".
 	 * Extract end part after last dot, e.g. "vpnc" */
-	type = nm_setting_vpn_get_service_type (nm_connection_get_setting_vpn (connection));
+	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	type = nm_setting_vpn_get_service_type (s_vpn);
 	p = strrchr (type, '.');
 	return g_strdup (p ? p + 1 : type);
 }
