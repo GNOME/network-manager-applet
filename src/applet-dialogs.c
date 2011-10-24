@@ -37,6 +37,7 @@
 #include <nm-setting-8021x.h>
 #include <nm-setting-ip4-config.h>
 #include <nm-setting-ip6-config.h>
+#include <nm-setting-vpn.h>
 #include <nm-vpn-connection.h>
 #include <nm-utils.h>
 
@@ -682,6 +683,7 @@ enum VpnDataItem {
 static const gchar *
 get_vpn_data_item (NMConnection *connection, enum VpnDataItem vpn_data_item)
 {
+	NMSettingVPN *s_vpn;
 	const char *key;
 	char *type = get_vpn_connection_type (connection);
 
@@ -698,7 +700,8 @@ get_vpn_data_item (NMConnection *connection, enum VpnDataItem vpn_data_item)
 	}
 	g_free (type);
 
-	return nm_setting_vpn_get_data_item (nm_connection_get_setting_vpn (connection), key);
+	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	return nm_setting_vpn_get_data_item (s_vpn, key);
 }
 
 static void
@@ -711,6 +714,13 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	char *str;
 	int row = 0;
 	gboolean is_default = nm_active_connection_get_default (active);
+	NMSettingConnection *s_con;
+	const char *id = _("Unknown");
+
+	if (parent_con) {
+		s_con = (NMSettingConnection *) nm_connection_get_setting (parent_con, NM_TYPE_SETTING_CONNECTION);
+		id = nm_setting_connection_get_id (s_con);
+	}
 
 	table = GTK_TABLE (gtk_table_new (12, 2, FALSE));
 	gtk_table_set_col_spacings (table, 12);
@@ -750,7 +760,7 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 
 	gtk_table_attach (table, create_info_label (_("Base Connection:"), FALSE),
 	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_table_attach (table, create_info_label (parent_con ? nm_connection_get_id (parent_con) : _("Unknown"), TRUE),
+	gtk_table_attach (table, create_info_label (id, TRUE),
 	                  1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
 
 	gtk_notebook_append_page (notebook, GTK_WIDGET (table),
