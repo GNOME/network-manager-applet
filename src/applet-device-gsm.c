@@ -28,6 +28,7 @@
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <gnome-keyring.h>
 
 #include <nm-device.h>
 #include <nm-setting-connection.h>
