@@ -54,6 +54,11 @@
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
 
+#if !GLIB_CHECK_VERSION(2,31,0)
+#define g_value_set_schar g_value_set_char
+#define g_value_get_schar g_value_get_char
+#endif
+
 #define S390_OPT_KEY_PREFIX "s390-opt-"
 
 #define DBUS_TYPE_G_ARRAY_OF_OBJECT_PATH    (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH))
@@ -2664,7 +2669,7 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 	} else if (type == G_TYPE_CHAR) {
 		nm_gconf_set_int_helper (info->client, info->dir,
 							key, setting_name,
-							g_value_get_char (value));
+							g_value_get_schar (value));
 	} else if (type == DBUS_TYPE_G_UCHAR_ARRAY) {
 		GByteArray *ba_val = (GByteArray *) g_value_get_boxed (value);
 

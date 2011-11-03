@@ -35,6 +35,11 @@
 #include "ce-page.h"
 #include "nma-marshal.h"
 
+#if !GLIB_CHECK_VERSION(2,31,0)
+#define g_value_set_schar g_value_set_char
+#define g_value_get_schar g_value_get_char
+#endif
+
 G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 
 enum {
@@ -88,7 +93,7 @@ ce_get_property_default (NMSetting *setting, const char *property_name)
 	g_param_value_set_default (spec, &value);
 
 	if (G_VALUE_HOLDS_CHAR (&value))
-		return (int) g_value_get_char (&value);
+		return (int) g_value_get_schar (&value);
 	else if (G_VALUE_HOLDS_INT (&value))
 		return g_value_get_int (&value);
 	else if (G_VALUE_HOLDS_INT64 (&value))
