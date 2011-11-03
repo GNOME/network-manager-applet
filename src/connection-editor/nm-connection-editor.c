@@ -372,7 +372,7 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (NMConnectionEditorClass, done),
 		              NULL, NULL,
-		              nma_marshal_VOID__INT_POINTER,
+		              _nma_marshal_VOID__INT_POINTER,
 		              G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);
 }
 

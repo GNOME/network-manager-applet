@@ -819,7 +819,7 @@ dun_start (PluginInfo *info)
 		g_message ("%s: calling Connect...", __func__);
 
 		/* Watch for BT device property changes */
-		dbus_g_object_register_marshaller (nma_marshal_VOID__STRING_BOXED,
+		dbus_g_object_register_marshaller (_nma_marshal_VOID__STRING_BOXED,
 		                                   G_TYPE_NONE,
 		                                   G_TYPE_STRING, G_TYPE_VALUE,
 		                                   G_TYPE_INVALID);

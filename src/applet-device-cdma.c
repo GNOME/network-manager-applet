@@ -974,7 +974,7 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	g_object_set_data_full (G_OBJECT (modem), "devinfo", info, cdma_device_info_free);
 
 	/* Registration state change signal */
-	dbus_g_object_register_marshaller (nma_marshal_VOID__UINT_UINT,
+	dbus_g_object_register_marshaller (_nma_marshal_VOID__UINT_UINT,
 	                                   G_TYPE_NONE,
 	                                   G_TYPE_UINT, G_TYPE_UINT, G_TYPE_INVALID);
 	dbus_g_proxy_add_signal (info->cdma_proxy, "RegistrationStateChanged",
@@ -990,7 +990,7 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	                             G_CALLBACK (signal_quality_changed_cb), info, NULL);
 
 	/* Modem property change signal */
-	dbus_g_object_register_marshaller (nma_marshal_VOID__STRING_BOXED,
+	dbus_g_object_register_marshaller (_nma_marshal_VOID__STRING_BOXED,
 	                                   G_TYPE_NONE, G_TYPE_STRING, DBUS_TYPE_G_MAP_OF_VARIANT,
 	                                   G_TYPE_INVALID);
 	dbus_g_proxy_add_signal (info->props_proxy, "MmPropertiesChanged",

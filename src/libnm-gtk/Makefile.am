@@ -38,7 +38,9 @@ libnm_gtk_la_LIBADD = \
 	$(top_builddir)/src/marshallers/libmarshallers.la \
 	$(top_builddir)/src/wireless-security/libwireless-security.la
 
-libnm_gtk_la_LDFLAGS = -Wl,-no-undefined
+libnm_gtk_la_LDFLAGS = -Wl,-no-undefined \
+	-export-symbols-regex '^nma_.*'
+
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnm-gtk.pc

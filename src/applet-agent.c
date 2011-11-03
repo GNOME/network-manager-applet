@@ -863,7 +863,7 @@ applet_agent_class_init (AppletAgentClass *agent_class)
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (AppletAgentClass, get_secrets),
 		              NULL, NULL,
-		              nma_marshal_VOID__POINTER_POINTER_STRING_POINTER_UINT_POINTER_POINTER,
+		              _nma_marshal_VOID__POINTER_POINTER_STRING_POINTER_UINT_POINTER_POINTER,
 		              G_TYPE_NONE, 7,
 		              G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_UINT, G_TYPE_POINTER, G_TYPE_POINTER);
 
