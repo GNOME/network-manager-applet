@@ -16,7 +16,12 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 Red Hat, Inc.
+ * (C) Copyright 2007 - 2011 Red Hat, Inc.
+ */
+
+
+/* WARNING: this file is private API between nm-applet and various GNOME
+ * bits; it may change without notice and is not guaranteed to be stable.
  */
 
 #ifndef NMA_WIRELESS_DIALOG_H

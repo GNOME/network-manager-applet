@@ -20,6 +20,10 @@
  * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
+/* WARNING: this file is private API between nm-applet and various GNOME
+ * bits; it may change without notice and is not guaranteed to be stable.
+ */
+
 #ifndef MOBILE_WIZARD_H
 #define MOBILE_WIZARD_H
 
