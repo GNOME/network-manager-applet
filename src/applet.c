@@ -798,8 +798,13 @@ applet_clear_notify (NMApplet *applet)
 static gboolean
 applet_notify_server_has_actions (void)
 {
-	gboolean has_actions = FALSE;
+	static gboolean has_actions = FALSE;
+	static gboolean initialized = FALSE;
 	GList *server_caps, *iter;
+
+	if (initialized)
+		return has_actions;
+	initialized = TRUE;
 
 	server_caps = notify_get_server_caps();
 	for (iter = server_caps; iter; iter = g_list_next (iter)) {
@@ -858,7 +863,7 @@ applet_do_notify (NMApplet *applet,
 	notify_notification_set_urgency (notify, urgency);
 	notify_notification_set_timeout (notify, NOTIFY_EXPIRES_DEFAULT);
 
-	if (applet->notify_actions && action1) {
+	if (applet_notify_server_has_actions () && action1) {
 		notify_notification_add_action (notify, action1, action1_label,
 		                                action1_cb, action1_user_data, NULL);
 	}
@@ -3328,8 +3333,6 @@ constructor (GType type,
 	g_signal_connect (applet->status_icon, "notify::embedded",
 	                  G_CALLBACK (applet_embedded_cb), NULL);
 	applet_embedded_cb (G_OBJECT (applet->status_icon), NULL, NULL);
-
-	applet->notify_actions = applet_notify_server_has_actions ();
 
 	return G_OBJECT (applet);
 

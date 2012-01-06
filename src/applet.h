@@ -166,7 +166,6 @@ typedef struct
 
 	GtkBuilder *	info_dialog_ui;
 	NotifyNotification*	notification;
-	gboolean        notify_actions;
 
 	/* Tracker objects for secrets requests */
 	GSList *        secrets_reqs;
