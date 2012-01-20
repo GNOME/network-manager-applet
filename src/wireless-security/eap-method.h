@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
 #ifndef EAP_METHOD_H
@@ -84,6 +84,7 @@ GType eap_method_get_g_type (void);
 
 #include "eap-method-tls.h"
 #include "eap-method-leap.h"
+#include "eap-method-fast.h"
 #include "eap-method-ttls.h"
 #include "eap-method-peap.h"
 #include "eap-method-simple.h"

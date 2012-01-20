@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
 #include <string.h>
@@ -333,6 +333,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	EAPMethodSimple *em_md5;
 	EAPMethodTLS *em_tls;
 	EAPMethodLEAP *em_leap;
+	EAPMethodFAST *em_fast;
 	EAPMethodTTLS *em_ttls;
 	EAPMethodPEAP *em_peap;
 	const char *default_method = NULL;
@@ -398,6 +399,17 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 			active = item;
 		item++;
 	}
+
+	em_fast = eap_method_fast_new (sec, connection, is_editor, secrets_only);
+	gtk_list_store_append (auth_model, &iter);
+	gtk_list_store_set (auth_model, &iter,
+	                    AUTH_NAME_COLUMN, _("FAST"),
+	                    AUTH_METHOD_COLUMN, em_fast,
+	                    -1);
+	eap_method_unref (EAP_METHOD (em_fast));
+	if (default_method && (active < 0) && !strcmp (default_method, "fast"))
+		active = item;
+	item++;
 
 	em_ttls = eap_method_ttls_new (sec, connection, is_editor, secrets_only);
 	gtk_list_store_append (auth_model, &iter);

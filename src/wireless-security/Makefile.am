@@ -19,6 +19,8 @@ libwireless_security_la_SOURCES = \
 	eap-method-tls.c \
 	eap-method-leap.h \
 	eap-method-leap.c \
+	eap-method-fast.h \
+	eap-method-fast.c \
 	eap-method-ttls.h \
 	eap-method-ttls.c \
 	eap-method-peap.h \
@@ -43,6 +45,7 @@ libwireless_security_la_LIBADD = \
 uidir = $(datadir)/nm-applet
 ui_DATA = \
 	eap-method-leap.ui \
+	eap-method-fast.ui \
 	eap-method-peap.ui \
 	eap-method-simple.ui \
 	eap-method-tls.ui \
