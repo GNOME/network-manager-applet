@@ -18,7 +18,8 @@ test_upgrade_CPPFLAGS = \
 
 test_upgrade_LDADD = \
 	${builddir}/../libgconf-helpers-test.la \
-	$(NMA_LIBS)
+	$(NMA_LIBS) \
+	$(GNOME_KEYRING_LIBS)
 
 check-local: test-upgrade
 	$(abs_builddir)/test-upgrade
