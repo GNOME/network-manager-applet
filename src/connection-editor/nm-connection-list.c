@@ -620,16 +620,36 @@ connection_updated_cb (NMConnectionList *list,
                        gpointer user_data)
 {
 	EditInfo *info = user_data;
+	GtkListStore *store;
+	GtkTreeIter iter;
 
-	if (!error) {
-		GtkListStore *store;
-		GtkTreeIter iter;
-
-		store = get_model_for_connection (list, connection);
-		g_assert (store);
-		if (get_iter_for_connection (GTK_TREE_MODEL (store), connection, &iter))
-			update_connection_row (store, &iter, connection);
+	if (error) {
+		/* Log the error and do nothing.  We don't want to destroy the dialog
+		 * because that's not really useful.  If there's a hard error, the user
+		 * will just have to cancel.  This better handles the case where
+		 * PolicyKit authentication is required, but the user accidentally gets
+		 * their password wrong.  Which used to close the dialog, and that's
+		 * completely unhelpful.  Instead just let them hit 'Save' again.
+		 */
+		g_warning ("Error updating connection '%s': (%d) %s",
+		           nm_connection_get_id (NM_CONNECTION (connection)),
+		           error->code,
+		           error->message);
+		return;
 	}
+
+	/* Success */
+	store = get_model_for_connection (list, connection);
+	g_assert (store);
+	if (get_iter_for_connection (GTK_TREE_MODEL (store), connection, &iter))
+		update_connection_row (store, &iter, connection);
+
+	/* This callback might be triggered long after it's caller was called,
+	 * if for example we've had to get PolicyKit authentication to perform
+	 * the update.  So only signal we're done with editing when all that is
+	 * complete.
+	 */
+	g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 
 	g_hash_table_remove (list->editors, connection);
 	g_free (info);
@@ -662,7 +682,6 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 			                   NM_REMOTE_CONNECTION (connection),
 			                   connection_updated_cb,
 			                   info);
-			g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
 		} else {
 			g_warning ("%s: invalid connection after update: bug in the "
 			           "'%s' / '%s' invalid: %d",
@@ -674,9 +693,6 @@ edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer
 			                       edit_error,
 			                       NULL);
 			g_error_free (edit_error);
-
-			g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
-			g_free (info);
 		}
 		break;
 	case GTK_RESPONSE_NONE:
