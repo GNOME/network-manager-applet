@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-22 10:59+0200\n"
-"PO-Revision-Date: 2011-10-22 11:00+0200\n"
+"POT-Creation-Date: 2012-01-28 11:25+0200\n"
+"PO-Revision-Date: 2012-01-28 11:27+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Gezer (Hebrew)\n"
 "Language: he\n"
@@ -99,7 +99,7 @@ msgstr "'%s' מחובר כעת."
 #: ../src/applet-device-cdma.c:445
 #: ../src/applet-device-gsm.c:492
 #: ../src/applet-device-wired.c:273
-#: ../src/applet-device-wifi.c:1280
+#: ../src/applet-device-wifi.c:1278
 #: ../src/applet-device-wimax.c:427
 msgid "Connection Established"
 msgstr "החיבור נוצר"
@@ -165,7 +165,7 @@ msgstr "פס רחב נייד (%s)"
 #: ../src/applet-device-gsm.c:394
 #: ../src/connection-editor/page-mobile.c:379
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
-#: ../src/connection-editor/nm-connection-list.c:1474
+#: ../src/connection-editor/nm-connection-list.c:1490
 msgid "Mobile Broadband"
 msgstr "פס רחב נייד"
 
@@ -416,50 +416,46 @@ msgstr "רשתות נוספות"
 msgid "Wireless Networks Available"
 msgstr "רשתות אלחוטיות זמינות"
 
-#: ../src/applet-device-wifi.c:1083
-msgid "Click on this icon to connect to a wireless network"
-msgstr "יש ללחוץ על הסמל כדי להתחבר לרשת אלחוטית"
-
-#: ../src/applet-device-wifi.c:1084
+#: ../src/applet-device-wifi.c:1082
 msgid "Use the network menu to connect to a wireless network"
 msgstr "ניתן להשתמש בתפריט הרשתות כדי להתחבר לרשת אלחוטית"
 
-#: ../src/applet-device-wifi.c:1087
+#: ../src/applet-device-wifi.c:1085
 #: ../src/applet.c:901
 msgid "Don't show this message again"
 msgstr "אין להציג הודעה זאת שוב"
 
-#: ../src/applet-device-wifi.c:1279
+#: ../src/applet-device-wifi.c:1277
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "התחברת כעת לרשת האלחוטית '%s'."
 
-#: ../src/applet-device-wifi.c:1310
+#: ../src/applet-device-wifi.c:1308
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "חיבור הרשת האלחוטית '%s' בהכנות..."
 
-#: ../src/applet-device-wifi.c:1313
+#: ../src/applet-device-wifi.c:1311
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "הגדרת התצורה של חיבור הרשת האלחוטית '%s'..."
 
-#: ../src/applet-device-wifi.c:1316
+#: ../src/applet-device-wifi.c:1314
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "נדרש אימות מהמשתמש עבור חיבור הרשת האלחוטית '%s'..."
 
-#: ../src/applet-device-wifi.c:1319
+#: ../src/applet-device-wifi.c:1317
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "מתבקשת כתובת רשת האלחוטית עבור '%s'...."
 
-#: ../src/applet-device-wifi.c:1340
+#: ../src/applet-device-wifi.c:1338
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "חיבור הרשת האלחוטית '%s' פעיל: %s ‏(%d%%)"
 
-#: ../src/applet-device-wifi.c:1345
+#: ../src/applet-device-wifi.c:1343
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "חיבור הרשת האלחוטית '%s' פעיל"
@@ -492,7 +488,7 @@ msgstr "שגיאה בהצגת נתוני החיבור:"
 #: ../src/applet-dialogs.c:109
 #: ../src/connection-editor/page-wireless-security.c:285
 #: ../src/libnm-gtk/nm-wireless-dialog.c:949
-#: ../src/wireless-security/wireless-security.c:396
+#: ../src/wireless-security/wireless-security.c:397
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -1033,11 +1029,11 @@ msgstr "אימות DSL"
 msgid "_Network name:"
 msgstr "שם ה_רשת:"
 
-#: ../src/connection-editor/ce-page.c:67
+#: ../src/connection-editor/ce-page.c:72
 msgid "automatic"
 msgstr "אוטומטי"
 
-#: ../src/connection-editor/ce-page.c:305
+#: ../src/connection-editor/ce-page.c:310
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "אירע כשל בעדכון סודות החיבור עקב שגיאה בלתי ידועה."
 
@@ -1477,6 +1473,7 @@ msgstr "_PAP"
 
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:1
 #: ../src/libnm-gtk/wifi.ui.h:1
+#: ../src/wireless-security/eap-method-fast.ui.h:1
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 #: ../src/wireless-security/eap-method-ttls.ui.h:1
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
@@ -1527,7 +1524,7 @@ msgstr "קידומת"
 
 #: ../src/connection-editor/page-dsl.c:139
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
-#: ../src/connection-editor/nm-connection-list.c:1482
+#: ../src/connection-editor/nm-connection-list.c:1498
 msgid "DSL"
 msgstr "DSL"
 
@@ -1666,6 +1663,7 @@ msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:137
+#: ../src/wireless-security/eap-method-fast.c:277
 #: ../src/wireless-security/eap-method-peap.c:246
 #: ../src/wireless-security/eap-method-ttls.c:263
 msgid "MSCHAPv2"
@@ -1696,7 +1694,7 @@ msgstr "לא ניתן לטעון את מנשק המשתמש ל־PPP."
 
 #: ../src/connection-editor/page-vpn.c:109
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/connection-editor/nm-connection-list.c:1478
+#: ../src/connection-editor/nm-connection-list.c:1494
 msgid "VPN"
 msgstr "VPN"
 
@@ -1710,7 +1708,7 @@ msgid "Could not find VPN plugin service for '%s'."
 msgstr "לא ניתן למצוא שירות תוסף VPN עבור '%s'."
 
 #: ../src/connection-editor/page-vpn.c:201
-#: ../src/connection-editor/nm-connection-list.c:884
+#: ../src/connection-editor/nm-connection-list.c:900
 #, c-format
 msgid "VPN connection %d"
 msgstr "חיבור VPN %d"
@@ -1722,7 +1720,7 @@ msgstr "אפשרות זו נועלת חיבור זה להתקן הרשת שהו�
 
 #: ../src/connection-editor/page-wired.c:267
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
-#: ../src/connection-editor/nm-connection-list.c:1466
+#: ../src/connection-editor/nm-connection-list.c:1482
 msgid "Wired"
 msgstr "קווי"
 
@@ -1761,7 +1759,7 @@ msgstr "%u (%u מה״ץ)"
 
 #: ../src/connection-editor/page-wireless.c:452
 #: ../src/connection-editor/nm-connection-editor.ui.h:10
-#: ../src/connection-editor/nm-connection-list.c:1470
+#: ../src/connection-editor/nm-connection-list.c:1486
 msgid "Wireless"
 msgstr "רשת אלחוטית"
 
@@ -1928,18 +1926,18 @@ msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "המאפיין '%s' ‏/ '%s' לא תקין: %d"
 
 #: ../src/connection-editor/nm-connection-list.c:523
-#: ../src/connection-editor/nm-connection-list.c:642
+#: ../src/connection-editor/nm-connection-list.c:662
 msgid "An unknown error occurred."
 msgstr "אירעה שגיאה בלתי ידועה."
 
 #: ../src/connection-editor/nm-connection-list.c:528
-#: ../src/connection-editor/nm-connection-list.c:686
+#: ../src/connection-editor/nm-connection-list.c:702
 msgid "Error initializing editor"
 msgstr "שגיאה באתחול העורך"
 
 #: ../src/connection-editor/nm-connection-list.c:546
-#: ../src/connection-editor/nm-connection-list.c:703
-#: ../src/connection-editor/nm-connection-list.c:870
+#: ../src/connection-editor/nm-connection-list.c:719
+#: ../src/connection-editor/nm-connection-list.c:886
 msgid "The connection editor dialog could not be initialized due to an unknown error."
 msgstr "אתחול תיבת הדו־שיח של עורך ההתחברות לא צלח בשל שגיאה לא מוכרת."
 
@@ -1951,25 +1949,25 @@ msgstr "לא ניתן ליצור חיבור חדש"
 msgid "Could not edit new connection"
 msgstr "לא ניתן לערוך חיבור חדש"
 
-#: ../src/connection-editor/nm-connection-list.c:717
+#: ../src/connection-editor/nm-connection-list.c:733
 msgid "Could not edit connection"
 msgstr "לא ניתן לערוך את החיבור"
 
-#: ../src/connection-editor/nm-connection-list.c:747
+#: ../src/connection-editor/nm-connection-list.c:763
 msgid "Connection delete failed"
 msgstr "מחיקת החיבור נכשלה"
 
-#: ../src/connection-editor/nm-connection-list.c:779
+#: ../src/connection-editor/nm-connection-list.c:795
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "האם ברצונך למחוק את החיבור %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:914
+#: ../src/connection-editor/nm-connection-list.c:930
 #: ../src/connection-editor/vpn-helpers.c:227
 msgid "Cannot import VPN connection"
 msgstr "לא ניתן לייבא חיבור VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:916
+#: ../src/connection-editor/nm-connection-list.c:932
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -1979,74 +1977,74 @@ msgstr ""
 "\n"
 "שגיאה: אין סוג שירות VPN ."
 
-#: ../src/connection-editor/nm-connection-list.c:929
+#: ../src/connection-editor/nm-connection-list.c:945
 msgid "Could not edit imported connection"
 msgstr "לא ניתן לערוך חיבור מיובא"
 
-#: ../src/connection-editor/nm-connection-list.c:1099
+#: ../src/connection-editor/nm-connection-list.c:1115
 msgid "Name"
 msgstr "שם"
 
-#: ../src/connection-editor/nm-connection-list.c:1111
+#: ../src/connection-editor/nm-connection-list.c:1127
 msgid "Last Used"
 msgstr "שימוש אחרון"
 
-#: ../src/connection-editor/nm-connection-list.c:1227
+#: ../src/connection-editor/nm-connection-list.c:1243
 msgid "No VPN plugin available. Please install one to enable this button."
 msgstr "אין תוסף VPN זמין. נא להתקין אחד כזה כדי להפעיל את הלחצן הזה."
 
-#: ../src/connection-editor/nm-connection-list.c:1238
+#: ../src/connection-editor/nm-connection-list.c:1254
 msgid "_Edit"
 msgstr "_עריכה"
 
-#: ../src/connection-editor/nm-connection-list.c:1239
+#: ../src/connection-editor/nm-connection-list.c:1255
 msgid "Edit the selected connection"
 msgstr "עריכת החיבור המסומן"
 
-#: ../src/connection-editor/nm-connection-list.c:1240
+#: ../src/connection-editor/nm-connection-list.c:1256
 msgid "_Edit..."
 msgstr "_עריכה..."
 
-#: ../src/connection-editor/nm-connection-list.c:1241
+#: ../src/connection-editor/nm-connection-list.c:1257
 msgid "Authenticate to edit the selected connection"
 msgstr "נדרש אימות כדי לערוך את החיבור המסומן"
 
-#: ../src/connection-editor/nm-connection-list.c:1256
+#: ../src/connection-editor/nm-connection-list.c:1272
 msgid "_Delete"
 msgstr "מ_חיקה"
 
-#: ../src/connection-editor/nm-connection-list.c:1257
+#: ../src/connection-editor/nm-connection-list.c:1273
 msgid "Delete the selected connection"
 msgstr "מחיקת החיבור המסומן"
 
-#: ../src/connection-editor/nm-connection-list.c:1258
+#: ../src/connection-editor/nm-connection-list.c:1274
 msgid "_Delete..."
 msgstr "מ_חיקה..."
 
-#: ../src/connection-editor/nm-connection-list.c:1259
+#: ../src/connection-editor/nm-connection-list.c:1275
 msgid "Authenticate to delete the selected connection"
 msgstr "נדרש אימות כדי למחוק את החיבור המסומן"
 
-#: ../src/connection-editor/nm-connection-list.c:1538
+#: ../src/connection-editor/nm-connection-list.c:1554
 msgid "Error creating connection"
 msgstr "שגיאה ביצירת החיבור"
 
-#: ../src/connection-editor/nm-connection-list.c:1539
+#: ../src/connection-editor/nm-connection-list.c:1555
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "לא ידוע כיצד ליצור חיבורים מסוג '%s'"
 
-#: ../src/connection-editor/nm-connection-list.c:1594
-#: ../src/connection-editor/nm-connection-list.c:1606
+#: ../src/connection-editor/nm-connection-list.c:1610
+#: ../src/connection-editor/nm-connection-list.c:1622
 msgid "Error editing connection"
 msgstr "שגיאה בעריכת החיבור"
 
-#: ../src/connection-editor/nm-connection-list.c:1595
+#: ../src/connection-editor/nm-connection-list.c:1611
 #, c-format
 msgid "Don't know how to edit '%s' connections"
 msgstr "לא ידוע כיצד לערוך חיבורים מסוג '%s'"
 
-#: ../src/connection-editor/nm-connection-list.c:1607
+#: ../src/connection-editor/nm-connection-list.c:1623
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "לא נמצא חיבור עם המזהה הייחודי '%s'"
@@ -2502,14 +2500,59 @@ msgstr "תעודות DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "אישורי DER או PEM ‏(‎*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-peap.c:263
-#: ../src/wireless-security/wireless-security.c:372
-msgid "MD5"
-msgstr "MD5"
+#: ../src/wireless-security/eap-method-fast.ui.h:2
+#: ../src/wireless-security/eap-method-peap.ui.h:2
+#: ../src/wireless-security/eap-method-ttls.ui.h:2
+msgid "Anony_mous identity:"
+msgstr "זהות א_למונית:"
 
+#: ../src/wireless-security/eap-method-fast.ui.h:3
+msgid "Anonymous"
+msgstr "אלמוני"
+
+#: ../src/wireless-security/eap-method-fast.ui.h:4
+msgid "Authenticated"
+msgstr "מאומת"
+
+#: ../src/wireless-security/eap-method-fast.ui.h:5
+msgid "Both"
+msgstr "שניהם"
+
+#: ../src/wireless-security/eap-method-fast.ui.h:6
+#: ../src/wireless-security/eap-method-peap.ui.h:5
+#: ../src/wireless-security/eap-method-ttls.ui.h:4
+msgid "I_nner authentication:"
+msgstr "אימות פ_נימי:"
+
+#: ../src/wireless-security/eap-method-fast.ui.h:7
+msgid "_Allow automatic PAC provisioning"
+msgstr "_מתן האפשרות לבדיקת PAC אוטומטית"
+
+#: ../src/wireless-security/eap-method-fast.ui.h:8
+msgid "_PAC file:"
+msgstr "_קובץ PAC:"
+
+#: ../src/wireless-security/eap-method-fast.c:261
 #: ../src/wireless-security/eap-method-peap.c:280
 msgid "GTC"
 msgstr "GTC"
+
+#: ../src/wireless-security/eap-method-fast.c:399
+msgid "Choose a PAC file..."
+msgstr "נא לבחור בקובץ PAC..."
+
+#: ../src/wireless-security/eap-method-fast.c:406
+msgid "PAC files (*.pac)"
+msgstr "קובצי PAC‏ (‎*.pac)"
+
+#: ../src/wireless-security/eap-method-fast.c:410
+msgid "All files"
+msgstr "כל הקבצים"
+
+#: ../src/wireless-security/eap-method-peap.c:263
+#: ../src/wireless-security/wireless-security.c:373
+msgid "MD5"
+msgstr "MD5"
 
 #: ../src/wireless-security/eap-method-peap.c:350
 #: ../src/wireless-security/eap-method-tls.c:416
@@ -2517,21 +2560,11 @@ msgstr "GTC"
 msgid "Choose a Certificate Authority certificate..."
 msgstr "בחירת אישור של רשות אישורים..."
 
-#: ../src/wireless-security/eap-method-peap.ui.h:2
-#: ../src/wireless-security/eap-method-ttls.ui.h:2
-msgid "Anony_mous identity:"
-msgstr "זהות א_למונית:"
-
 #: ../src/wireless-security/eap-method-peap.ui.h:4
 #: ../src/wireless-security/eap-method-tls.ui.h:1
 #: ../src/wireless-security/eap-method-ttls.ui.h:3
 msgid "C_A certificate:"
 msgstr "אישור C_A:"
-
-#: ../src/wireless-security/eap-method-peap.ui.h:5
-#: ../src/wireless-security/eap-method-ttls.ui.h:4
-msgid "I_nner authentication:"
-msgstr "אימות פ_נימי:"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:6
 msgid "Version 0"
@@ -2599,15 +2632,19 @@ msgstr "לא"
 msgid "Yes"
 msgstr "כן"
 
-#: ../src/wireless-security/wireless-security.c:384
+#: ../src/wireless-security/wireless-security.c:385
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:408
+#: ../src/wireless-security/wireless-security.c:409
+msgid "FAST"
+msgstr "מהיר"
+
+#: ../src/wireless-security/wireless-security.c:420
 msgid "Tunneled TLS"
 msgstr "‏TLS ממונהר"
 
-#: ../src/wireless-security/wireless-security.c:419
+#: ../src/wireless-security/wireless-security.c:431
 msgid "Protected EAP (PEAP)"
 msgstr "‏EAP מוגן (PEAP)"
 
@@ -2652,6 +2689,9 @@ msgstr "_אינדקס WEP:"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "_Key:"
 msgstr "_מפתח:"
+
+#~ msgid "Click on this icon to connect to a wireless network"
+#~ msgstr "יש ללחוץ על הסמל כדי להתחבר לרשת אלחוטית"
 
 #~ msgid "United Kingdom"
 #~ msgstr "בריטניה"
