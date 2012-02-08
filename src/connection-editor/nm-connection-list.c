@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2011 Red Hat, Inc.
+ * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -1087,6 +1087,14 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 		              G_TYPE_NONE, 1, G_TYPE_INT);
 }
 
+static void
+column_header_clicked_cb (GtkTreeViewColumn *treeviewcolumn, gpointer user_data)
+{
+	gint sort_col_id = GPOINTER_TO_INT (user_data);
+
+	gtk_tree_view_column_set_sort_column_id (treeviewcolumn, sort_col_id);
+}
+
 static GtkTreeView *
 add_connection_treeview (NMConnectionList *self, const char *prefix)
 {
@@ -1097,15 +1105,18 @@ add_connection_treeview (NMConnectionList *self, const char *prefix)
 	GValue val = { 0, };
 	char *name;
 	GtkTreeView *treeview;
+	GtkTreeViewColumn *column1, *column2;
 
 	name = g_strdup_printf ("%s_list", prefix);
 	treeview = GTK_TREE_VIEW (GTK_WIDGET (gtk_builder_get_object (self->gui, name)));
 	g_free (name);
 	gtk_tree_view_set_headers_visible (treeview, TRUE);
 
+
 	/* Model */
 	model = GTK_TREE_MODEL (gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT64, G_TYPE_OBJECT));
 	sort_model = gtk_tree_model_sort_new_with_model (model);
+	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (sort_model), NULL, NULL, NULL);
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (sort_model),
 	                                      COL_TIMESTAMP, GTK_SORT_DESCENDING);
 	gtk_tree_view_set_model (treeview, sort_model);
@@ -1127,6 +1138,16 @@ add_connection_treeview (NMConnectionList *self, const char *prefix)
 	                                             -1, _("Last Used"), renderer,
 	                                             "text", COL_LAST_USED,
 	                                             NULL);
+
+	/* Make columns clickable and sortable */
+	gtk_tree_view_set_headers_clickable (treeview, TRUE);
+	column1 = gtk_tree_view_get_column (treeview, 0);
+	g_signal_connect (column1, "clicked", G_CALLBACK (column_header_clicked_cb), GINT_TO_POINTER (COL_ID));
+	gtk_tree_view_column_set_sort_column_id (column1, COL_ID);
+
+	column2 = gtk_tree_view_get_column (treeview, 1);
+	g_signal_connect (column2, "clicked", G_CALLBACK (column_header_clicked_cb), GINT_TO_POINTER (COL_TIMESTAMP));
+	gtk_tree_view_column_set_sort_column_id (column2, COL_TIMESTAMP);
 
 	/* Selection */
 	selection = gtk_tree_view_get_selection (treeview);
