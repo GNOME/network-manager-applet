@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -133,7 +133,7 @@ ce_page_wired_security_new (NMConnection *connection,
 	if (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X))
 		priv->initial_have_8021x = TRUE;
 
-	priv->enabled = GTK_TOGGLE_BUTTON (gtk_check_button_new_with_label (_("Use 802.1X security for this connection")));
+	priv->enabled = GTK_TOGGLE_BUTTON (gtk_check_button_new_with_mnemonic (_("Use 802.1_X security for this connection")));
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
