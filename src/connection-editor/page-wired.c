@@ -74,6 +74,7 @@ wired_private_init (CEPageWired *self)
 	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 	GtkBuilder *builder;
 	GtkWidget *align;
+	GtkLabel *label;
 
 	builder = CE_PAGE (self)->builder;
 
@@ -90,6 +91,10 @@ wired_private_init (CEPageWired *self)
 	align = GTK_WIDGET (gtk_builder_get_object (builder, "wired_device_mac_alignment"));
 	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->device_mac));
 	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
+
+	/* Set mnemonic widget for device MAC label */
+	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "wired_device_mac_label")));
+	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
 
 	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wired_cloned_mac")));
 	priv->port = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wired_port")));

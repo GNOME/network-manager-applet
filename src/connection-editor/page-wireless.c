@@ -70,6 +70,7 @@ wireless_private_init (CEPageWireless *self)
 	GtkBuilder *builder;
 	GtkWidget *widget;
 	GtkWidget *align;
+	GtkLabel *label;
 
 	builder = CE_PAGE (self)->builder;
 
@@ -95,6 +96,10 @@ wireless_private_init (CEPageWireless *self)
 	align = GTK_WIDGET (gtk_builder_get_object (builder, "wireless_device_mac_alignment"));
 	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->device_mac));
 	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
+
+	/* Set mnemonic widget for device MAC label */
+	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_device_mac_label")));
+	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
 
 	priv->rate     = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_rate")));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "rate_units"));
