@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -203,7 +203,6 @@ auth_methods_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	g_free (tmp);
 
 	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (auth_methods_dialog_response_cb), self);
-	g_signal_connect (G_OBJECT (dialog), "close", G_CALLBACK (auth_methods_dialog_close_cb), self);
 
 	gtk_widget_show_all (dialog);
 }
