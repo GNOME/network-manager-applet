@@ -1002,7 +1002,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean secrets_only)
 	 * will already be populated with secrets.  If no connection was given,
 	 * then we need to get any existing secrets to populate the dialog with.
 	 */
-	setting_name = nm_connection_need_secrets (priv->connection, NULL);
+	setting_name = priv->connection ? nm_connection_need_secrets (priv->connection, NULL) : NULL;
 	if (setting_name && NM_IS_REMOTE_CONNECTION (priv->connection)) {
 		GetSecretsInfo *info;
 
