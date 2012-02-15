@@ -850,6 +850,7 @@ providers_prepare (NMAMobileWizard *self)
 		gtk_widget_set_sensitive (GTK_WIDGET (self->providers_view_radio), FALSE);
 		goto done;
 	}
+	gtk_widget_set_sensitive (GTK_WIDGET (self->providers_view_radio), TRUE);
 
 	providers = g_hash_table_lookup (self->providers, country);
 	g_free (country);
