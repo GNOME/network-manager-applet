@@ -1127,6 +1127,8 @@ get_config_widgets (const char *bdaddr, const char **uuids)
 	gtk_box_pack_start (GTK_BOX (hbox), info->hbox, FALSE, FALSE, 0);
 
 	info->label = gtk_label_new ("");
+	gtk_label_set_max_width_chars (GTK_LABEL (info->label), 80);
+	gtk_label_set_line_wrap (GTK_LABEL (info->label), TRUE);
 	gtk_box_pack_start (GTK_BOX (hbox), info->label, FALSE, TRUE, 6);
 
 	default_adapter_powered_changed (G_OBJECT (info->btclient), NULL, info);
