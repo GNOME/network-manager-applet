@@ -38,22 +38,18 @@ typedef struct {
 
 	/* private data */
 	GHashTable *editors;
-	GSList *treeviews;
 
-	GHashTable *actions;
+	GtkTreeView *connection_list;
+	GtkTreeModel *model;
+	GtkTreeModelFilter *filter;
+	GtkTreeSortable *sortable;
+	GType displayed_type;
 
 	NMClient *nm_client;
 	NMRemoteSettings *settings;
 
 	GtkBuilder *gui;
 	GtkWidget *dialog;
-
-	GdkPixbuf *wired_icon;
-	GdkPixbuf *wireless_icon;
-	GdkPixbuf *wwan_icon;
-	GdkPixbuf *vpn_icon;
-	GdkPixbuf *unknown_icon;
-	GtkIconTheme *icon_theme;
 
 	gboolean signals_connected;
 } NMConnectionList;
