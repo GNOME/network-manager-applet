@@ -34,6 +34,8 @@ nm_connection_editor_SOURCES = \
 	page-wireless.c \
 	page-wireless-security.h \
 	page-wireless-security.c \
+	page-wimax.h \
+	page-wimax.c \
 	page-ip4.h \
 	page-ip4.c \
 	page-ip6.h \
@@ -78,6 +80,7 @@ ui_DATA = \
 	ce-page-wired.ui \
 	ce-page-wireless.ui \
 	ce-page-wireless-security.ui \
+	ce-page-wimax.ui \
 	ce-page-ip4.ui \
 	ce-ip4-routes.ui \
 	ce-page-ip6.ui \

@@ -42,6 +42,7 @@
 #include <nm-setting-pppoe.h>
 #include <nm-setting-ppp.h>
 #include <nm-setting-serial.h>
+#include <nm-setting-wimax.h>
 #include <nm-utils.h>
 #include <nm-remote-settings.h>
 
@@ -51,6 +52,7 @@
 #include "page-mobile.h"
 #include "page-dsl.h"
 #include "page-vpn.h"
+#include "page-wimax.h"
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
 #include "vpn-helpers.h"

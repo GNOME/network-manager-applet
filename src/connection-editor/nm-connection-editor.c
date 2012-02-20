@@ -45,6 +45,7 @@
 #include <nm-setting-ppp.h>
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
+#include <nm-setting-wimax.h>
 #include <nm-utils.h>
 
 #include <nm-remote-connection.h>
@@ -63,6 +64,7 @@
 #include "page-mobile.h"
 #include "page-ppp.h"
 #include "page-vpn.h"
+#include "page-wimax.h"
 #include "ce-polkit-button.h"
 #include "vpn-helpers.h"
 
@@ -779,6 +781,13 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
+			goto out;
+	} else if (!strcmp (connection_type, NM_SETTING_WIMAX_SETTING_NAME)) {
+		if (!add_page (editor, ce_page_wimax_new, editor->connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_ip6_new, editor->connection, error))
 			goto out;
 	} else {
 		g_warning ("Unhandled setting type '%s'", connection_type);

@@ -27,6 +27,7 @@
 #include "page-wired.h"
 #include "page-wireless.h"
 #include "page-mobile.h"
+#include "page-wimax.h"
 #include "page-dsl.h"
 #include "page-vpn.h"
 #include "vpn-helpers.h"
@@ -99,6 +100,12 @@ get_connection_type_list (void)
 	ICON_LOAD (data.icon, "nm-device-wwan");
 	data.new_connection_func = mobile_connection_new;
 	data.setting_type = NM_TYPE_SETTING_GSM;
+	g_array_append_val (array, data);
+
+	data.name = _("WiMAX");
+	ICON_LOAD (data.icon, "nm-device-wwan");
+	data.new_connection_func = wimax_connection_new;
+	data.setting_type = NM_TYPE_SETTING_WIMAX;
 	g_array_append_val (array, data);
 
 	data.name = _("DSL");
