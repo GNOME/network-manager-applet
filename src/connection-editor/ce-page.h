@@ -97,6 +97,7 @@ typedef struct {
 typedef CEPage* (*CEPageNewFunc)(NMConnection *connection,
                                  GtkWindow *parent,
                                  NMClient *client,
+                                 NMRemoteSettings *settings,
                                  const char **out_secrets_setting_name,
                                  GError **error);
 

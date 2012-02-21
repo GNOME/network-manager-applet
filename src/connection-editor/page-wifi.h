@@ -50,6 +50,7 @@ GType ce_page_wifi_get_type (void);
 CEPage *ce_page_wifi_new (NMConnection *connection,
                           GtkWindow *parent,
                           NMClient *client,
+                          NMRemoteSettings *settings,
                           const char **out_secrets_setting_name,
                           GError **error);
 

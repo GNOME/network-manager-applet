@@ -976,6 +976,7 @@ CEPage *
 ce_page_ip4_new (NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
+                 NMRemoteSettings *settings,
                  const char **out_secrets_setting_name,
                  GError **error)
 {

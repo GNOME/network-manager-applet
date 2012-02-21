@@ -50,6 +50,7 @@ GType ce_page_vpn_get_type (void);
 CEPage *ce_page_vpn_new (NMConnection *connection,
                          GtkWindow *parent,
                          NMClient *client,
+                         NMRemoteSettings *settings,
                          const char **out_secrets_setting_name,
                          GError **error);
 
