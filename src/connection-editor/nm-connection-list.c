@@ -229,6 +229,42 @@ update_connection_row (NMConnectionList *self,
 	gtk_tree_model_filter_refilter (self->filter);
 }
 
+static void
+delete_slaves_of_connection (NMConnectionList *list, NMConnection *connection)
+{
+	const char *uuid, *iface;
+	GtkTreeIter iter, types_iter;
+
+	if (!gtk_tree_model_get_iter_first (list->model, &types_iter))
+		return;
+
+	uuid = nm_connection_get_uuid (connection);
+	iface = nm_connection_get_virtual_iface_name (connection);
+
+	do {
+		if (!gtk_tree_model_iter_children (list->model, &iter, &types_iter))
+			continue;
+
+		do {
+			NMRemoteConnection *candidate = NULL;
+			NMSettingConnection *s_con;
+			const char *master;
+
+			gtk_tree_model_get (list->model, &iter,
+			                    COL_CONNECTION, &candidate,
+			                    -1);
+			s_con = nm_connection_get_setting_connection (NM_CONNECTION (candidate));
+			master = nm_setting_connection_get_master (s_con);
+			if (master) {
+				if (!g_strcmp0 (master, uuid) || !g_strcmp0 (master, iface))
+					nm_remote_connection_delete (candidate, NULL, NULL);
+			}
+
+			g_object_unref (candidate);
+		} while (gtk_tree_model_iter_next (list->model, &iter));
+	} while (gtk_tree_model_iter_next (list->model, &types_iter));
+}
+
 
 /**********************************************/
 /* dialog/UI handling stuff */
@@ -237,6 +273,9 @@ static void
 add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer user_data)
 {
 	NMConnectionList *list = user_data;
+
+	if (response == GTK_RESPONSE_CANCEL)
+		delete_slaves_of_connection (list, nm_connection_editor_get_connection (editor));
 
 	g_object_unref (editor);
 	g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
@@ -324,6 +363,15 @@ do_edit (NMConnectionList *list)
 }
 
 static void
+delete_connection_cb (NMRemoteConnection *connection, gboolean deleted, gpointer user_data)
+{
+	NMConnectionList *list = user_data;
+
+	if (deleted)
+		delete_slaves_of_connection (list, NM_CONNECTION (connection));
+}
+
+static void
 delete_clicked (GtkButton *button, gpointer user_data)
 {
 	NMConnectionList *list = user_data;
@@ -332,7 +380,8 @@ delete_clicked (GtkButton *button, gpointer user_data)
 	connection = get_active_connection (list->connection_list);
 	g_return_if_fail (connection != NULL);
 
-	delete_connection (GTK_WINDOW (list->dialog), connection, NULL, NULL);
+	delete_connection (GTK_WINDOW (list->dialog), connection,
+	                   delete_connection_cb, list);
 }
 
 static void
@@ -509,16 +558,36 @@ tree_model_visible_func (GtkTreeModel *model,
                          GtkTreeIter *iter,
                          gpointer user_data)
 {
+	NMConnectionList *self = user_data;
 	NMConnection *connection;
+	NMSettingConnection *s_con;
+	const char *master;
 
 	gtk_tree_model_get (model, iter, COL_CONNECTION, &connection, -1);
-	if (connection) {
-		g_object_unref (connection);
-		return TRUE;
-	} else {
+	if (!connection) {
 		/* Top-level type nodes are visible iff they have children */
 		return gtk_tree_model_iter_has_child  (model, iter);
 	}
+
+	/* A connection node is visible unless it is a slave to another
+	 * known connection.
+	 */
+	s_con = nm_connection_get_setting_connection (connection);
+	g_object_unref (connection);
+	g_return_val_if_fail (s_con != NULL, FALSE);
+
+	master = nm_setting_connection_get_master (s_con);
+	if (!master)
+		return TRUE;
+
+	if (nm_remote_settings_get_connection_by_uuid (self->settings, master))
+		return FALSE;
+	if (nm_connection_editor_get_master (connection))
+		return FALSE;
+
+	/* FIXME: what if master is an interface name */
+
+	return TRUE;
 }
 
 static void

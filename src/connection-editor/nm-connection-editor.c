@@ -466,6 +466,34 @@ nm_connection_editor_get (NMConnection *connection)
 	return g_hash_table_lookup (active_editors, connection);
 }
 
+/* Returns an editor for @slave's master, if any */
+NMConnectionEditor *
+nm_connection_editor_get_master (NMConnection *slave)
+{
+	GHashTableIter iter;
+	gpointer connection, editor;
+	NMSettingConnection *s_con;
+	const char *master;
+
+	if (!active_editors)
+		return NULL;
+
+	s_con = nm_connection_get_setting_connection (slave);
+	master = nm_setting_connection_get_master (s_con);
+	if (!master)
+		return NULL;
+
+	g_hash_table_iter_init (&iter, active_editors);
+	while (g_hash_table_iter_next (&iter, &connection, &editor)) {
+		if (!g_strcmp0 (master, nm_connection_get_uuid (connection)))
+			return editor;
+		if (!g_strcmp0 (master, nm_connection_get_virtual_iface_name (connection)))
+			return editor;
+	}
+
+	return NULL;
+}
+
 NMConnection *
 nm_connection_editor_get_connection (NMConnectionEditor *editor)
 {
@@ -770,6 +798,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	const char *connection_type;
 	gboolean success = FALSE;
 	GSList *iter, *copy;
+	gboolean add_ip4 = TRUE, add_ip6 = TRUE;
 
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
 	g_return_val_if_fail (NM_IS_CONNECTION (orig_connection), FALSE);
@@ -792,27 +821,15 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 		if (!add_page (editor, ce_page_8021x_security_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
-			goto out;
-		if (!add_page (editor, ce_page_ip6_new, editor->connection, error))
-			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_wifi_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_wifi_security_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
-			goto out;
-		if (!add_page (editor, ce_page_ip6_new, editor->connection, error))
-			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_vpn_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
-			goto out;
-		if (   vpn_supports_ipv6 (editor->connection)
-			&& !add_page (editor, ce_page_ip6_new, editor->connection, error))
-			goto out;
+		add_ip6 = vpn_supports_ipv6 (editor->connection);
 	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_dsl_new, editor->connection, error))
 			goto out;
@@ -820,33 +837,31 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
-			goto out;
+		add_ip6 = FALSE;
 	} else if (!strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME) || 
 	           !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_mobile_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
-			goto out;
+		add_ip6 = FALSE;
 	} else if (!strcmp (connection_type, NM_SETTING_WIMAX_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_wimax_new, editor->connection, error))
-			goto out;
-		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
-			goto out;
-		if (!add_page (editor, ce_page_ip6_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_INFINIBAND_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_infiniband_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
-			goto out;
-		if (!add_page (editor, ce_page_ip6_new, editor->connection, error))
-			goto out;
 	} else {
 		g_warning ("Unhandled setting type '%s'", connection_type);
 	}
+
+	if (nm_setting_connection_get_master (s_con))
+		add_ip4 = add_ip6 = FALSE;
+
+	if (add_ip4 && !add_page (editor, ce_page_ip4_new, editor->connection, error))
+		goto out;
+	if (add_ip6 && !add_page (editor, ce_page_ip6_new, editor->connection, error))
+		goto out;
 
 	/* After all pages are created, then kick off secrets requests that any
 	 * the pages may need to make; if they don't need any secrets, then let
