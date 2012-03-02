@@ -143,9 +143,6 @@ AC_SUBST(GTK_LIBS)
 PKG_CHECK_MODULES(DBUS_126, [dbus-1 >= 1.2.6], [have_dbus_126=yes],[have_dbus_126=no])
 AM_CONDITIONAL(HAVE_DBUS_126, test x"$have_dbus_126" = "xyes")
 
-#### PolicyKit checks; need at least 0.92 or later
-PKG_CHECK_MODULES(POLKIT, [polkit-gobject-1 >= 0.92])
-
 AC_ARG_WITH(dbus-sys, AS_HELP_STRING([--with-dbus-sys=DIR], [where D-BUS system.d directory is]))
 
 if ! test -z "$with_dbus_sys" ; then
