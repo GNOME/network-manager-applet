@@ -157,7 +157,7 @@ get_model_for_connection (NMConnectionList *list, NMRemoteConnection *connection
 	GtkTreeModel *model;
 	const char *str_type;
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION);
+	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
 	g_assert (s_con);
 	str_type = nm_setting_connection_get_connection_type (s_con);
 
@@ -285,7 +285,7 @@ update_connection_row (GtkListStore *store,
 	NMSettingConnection *s_con;
 	char *last_used;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
 	g_assert (s_con);
 
 	last_used = format_last_used (nm_setting_connection_get_timestamp (s_con));
@@ -784,7 +784,7 @@ delete_clicked (GtkButton *button, gpointer user_data)
 		return;
 	}
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION);
+	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
 	g_assert (s_con);
 	id = nm_setting_connection_get_id (s_con);
 
@@ -824,8 +824,7 @@ pk_button_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
 		connection = get_active_connection (info->treeview);
 		if (connection) {
-			s_con = (NMSettingConnection *) nm_connection_get_setting (NM_CONNECTION (connection),
-			                                                           NM_TYPE_SETTING_CONNECTION);
+			s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
 			g_assert (s_con);
 	
 			sensitive = !nm_setting_connection_get_read_only (s_con);
@@ -855,7 +854,7 @@ vpn_list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 	if (!connection)
 		goto done;
 
-	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_VPN));
+	s_vpn = nm_connection_get_setting_vpn (NM_CONNECTION (connection));
 	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
 
 	if (!service_type)
@@ -886,7 +885,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 	const char *message = _("The connection editor dialog could not be initialized due to an unknown error.");
 
 	/* Basic sanity checks of the connection */
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	if (!s_con) {
 		s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 		nm_connection_add_setting (connection, NM_SETTING (s_con));
@@ -915,7 +914,7 @@ import_success_cb (NMConnection *connection, gpointer user_data)
 		g_free (s);
 	}
 
-	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
+	s_vpn = nm_connection_get_setting_vpn (connection);
 	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
 
 	if (!service_type || !strlen (service_type)) {
@@ -1414,7 +1413,7 @@ connection_added (NMRemoteSettings *settings,
 	if (!store)
 		return;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
 
 	last_used = format_last_used (nm_setting_connection_get_timestamp (s_con));
 
@@ -1621,7 +1620,7 @@ connections_read (NMRemoteSettings *settings, EditData *data)
 		const char *type;
 		ActionInfo *info;
 
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		s_con = nm_connection_get_setting_connection (connection);
 		type = nm_setting_connection_get_connection_type (s_con);
 		info = find_action_info (data->self, nm_connection_lookup_setting_type (type), "edit");
 		if (info != NULL)

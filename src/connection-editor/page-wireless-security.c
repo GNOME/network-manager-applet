@@ -206,7 +206,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	if (error)
 		return;
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
 
 	combo = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_security_combo")));
@@ -222,8 +222,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	if (mode && !strcmp (mode, "adhoc"))
 		is_adhoc = TRUE;
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-	                                               NM_TYPE_SETTING_WIRELESS_SECURITY));
+	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 
 	security = nm_setting_wireless_get_security (s_wireless);
 	if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
@@ -250,7 +249,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 		if (default_type == NMU_SEC_STATIC_WEP) {
 			NMSettingWirelessSecurity *s_wsec;
 
-			s_wsec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
+			s_wsec = nm_connection_get_setting_wireless_security (connection);
 			if (s_wsec)
 				wep_type = nm_setting_wireless_security_get_wep_key_type (s_wsec);
 			if (wep_type == NM_WEP_KEY_TYPE_UNKNOWN)
@@ -355,7 +354,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
 	const char *security;
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (connection);
 	if (!s_wireless) {
 		g_set_error_literal (error, 0, 0, _("Could not load WiFi security user interface; missing WiFi setting."));
 		return NULL;
@@ -375,8 +374,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 
 	self->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	s_wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-	                                       NM_TYPE_SETTING_WIRELESS_SECURITY));
+	s_wsec = nm_connection_get_setting_wireless_security (connection);
 
 	security = nm_setting_wireless_get_security (s_wireless);
 	if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
@@ -434,7 +432,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	WirelessSecurity *sec;
 	gboolean valid = FALSE;
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
 
 	sec = wireless_security_combo_get_active (self);

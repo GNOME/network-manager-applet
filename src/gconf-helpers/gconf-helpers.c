@@ -1697,7 +1697,7 @@ move_to_system (GConfClient *client,
 			continue;
 
 		/* Set this connection visible only to this user */
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		s_con = nm_connection_get_setting_connection (connection);
 		g_assert (s_con);
 		nm_setting_connection_add_permission (s_con, "user", g_get_user_name (), NULL);
 
@@ -2506,7 +2506,7 @@ write_one_certificate (GConfClient *client,
 	const ObjectType **obj = &cert_objects[0];
 	gboolean handled = FALSE, success = FALSE;
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	s_con = nm_connection_get_setting_connection (connection);
 	g_assert (s_con);
 	id = nm_setting_connection_get_id (s_con);
 	g_assert (id);
@@ -2766,7 +2766,7 @@ nm_gconf_write_connection (NMConnection *connection,
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (dir != NULL);
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	if (!s_con)
 		return;
 

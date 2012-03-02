@@ -288,7 +288,7 @@ ce_page_ppp_new (NMConnection *connection,
 	ppp_private_init (self);
 	priv = CE_PAGE_PPP_GET_PRIVATE (self);
 
-	priv->setting = (NMSettingPPP *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPP);
+	priv->setting = nm_connection_get_setting_ppp (connection);
 	if (!priv->setting) {
 		priv->setting = NM_SETTING_PPP (nm_setting_ppp_new ());
 		g_object_set (G_OBJECT (priv->setting),
@@ -300,7 +300,7 @@ ce_page_ppp_new (NMConnection *connection,
 
 	priv->window_group = gtk_window_group_new ();
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	g_assert (s_con);
 	priv->connection_id = g_strdup (nm_setting_connection_get_id (s_con));
 

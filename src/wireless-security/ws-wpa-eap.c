@@ -72,8 +72,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	ws_802_1x_fill_connection (parent, "wpa_eap_auth_combo", connection);
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, 
-										  NM_TYPE_SETTING_WIRELESS_SECURITY));
+	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 	g_assert (s_wireless_sec);
 
 	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-eap", NULL);

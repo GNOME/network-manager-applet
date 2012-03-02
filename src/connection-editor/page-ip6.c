@@ -121,7 +121,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 
 	builder = CE_PAGE (self)->builder;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	g_assert (s_con);
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	g_assert (connection_type);
@@ -953,11 +953,11 @@ ce_page_ip6_new (NMConnection *connection,
 
 	priv->window_group = gtk_window_group_new ();
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	g_assert (s_con);
 	priv->connection_id = g_strdup (nm_setting_connection_get_id (s_con));
 
-	priv->setting = (NMSettingIP6Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP6_CONFIG);
+	priv->setting = nm_connection_get_setting_ip6_config (connection);
 	if (!priv->setting) {
 		priv->setting = NM_SETTING_IP6_CONFIG (nm_setting_ip6_config_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));

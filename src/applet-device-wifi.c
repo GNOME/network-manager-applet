@@ -602,7 +602,7 @@ create_new_ap_item (NMDeviceWifi *device,
 			NMSettingConnection *s_con;
 			GtkWidget *subitem;
 
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+			s_con = nm_connection_get_setting_connection (connection);
 			subitem = gtk_menu_item_new_with_label (nm_setting_connection_get_id (s_con));
 
 			info = g_slice_new0 (WirelessMenuItemInfo);
@@ -943,7 +943,7 @@ notify_active_ap_changed_cb (NMDeviceWifi *device,
 	if (!connection)
 		return;
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (NM_CONNECTION (connection));
 	if (!s_wireless)
 		return;
 
@@ -1055,7 +1055,7 @@ idle_check_avail_access_point_notification (gpointer datap)
 			NMConnection *connection = NM_CONNECTION (iter->data);
 			NMSettingConnection *s_con;
 
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+			s_con = nm_connection_get_setting_connection (connection);
 			if (nm_setting_connection_get_autoconnect (s_con))  {
 				is_autoconnect = TRUE;
 				break;
@@ -1299,7 +1299,7 @@ wireless_get_icon (NMDevice *device,
 
 	id = nm_device_get_iface (device);
 	if (connection) {
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		s_con = nm_connection_get_setting_connection (connection);
 		id = nm_setting_connection_get_id (s_con);
 	}
 
@@ -1469,7 +1469,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		/* Entirely new connection */
 
 		/* Don't autoconnect adhoc networks by default for now */
-		s_wifi = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
+		s_wifi = nm_connection_get_setting_wireless (connection);
 		if (s_wifi)
 			mode = nm_setting_wireless_get_mode (s_wifi);
 		if (g_strcmp0 (mode, "adhoc") == 0) {
@@ -1596,7 +1596,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	}
 
 	/* Second-guess which setting NM wants secrets for. */
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 	if (!s_wireless_sec) {
 		g_set_error (&error,
 		             NM_SECRET_AGENT_ERROR,
@@ -1634,7 +1634,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 		if (!auth_alg || strcmp (auth_alg, "leap")) {
 			NMSetting8021x *s_8021x;
 
-			s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+			s_8021x = nm_connection_get_setting_802_1x (connection);
 			if (!s_8021x) {
 				g_set_error (&error,
 				             NM_SECRET_AGENT_ERROR,

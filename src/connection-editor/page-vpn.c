@@ -114,7 +114,7 @@ ce_page_vpn_new (NMConnection *connection,
 
 	priv = CE_PAGE_VPN_GET_PRIVATE (self);
 
-	priv->setting = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	priv->setting = nm_connection_get_setting_vpn (connection);
 	g_assert (priv->setting);
 
 	service_type = nm_setting_vpn_get_service_type (priv->setting);

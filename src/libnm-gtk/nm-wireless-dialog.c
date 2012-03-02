@@ -272,7 +272,7 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	
 	if (priv->connection) {
 		NMSettingWireless *s_wireless;
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
+		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 		g_assert (s_wireless);
 		ssid = (GByteArray *) nm_setting_wireless_get_ssid (s_wireless);
 		free_ssid = FALSE;
@@ -375,7 +375,7 @@ connection_combo_changed (GtkWidget *combo,
 	if (priv->connection) {
 		const GByteArray *ssid;
 
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
+		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 		ssid = nm_setting_wireless_get_ssid (s_wireless);
 		utf8_ssid = nm_utils_ssid_to_utf8 (ssid);
 		gtk_entry_set_text (GTK_ENTRY (widget), utf8_ssid);
@@ -405,8 +405,8 @@ alphabetize_connections (NMConnection *a, NMConnection *b)
 {
 	NMSettingConnection *asc, *bsc;
 
-	asc = NM_SETTING_CONNECTION (nm_connection_get_setting (a, NM_TYPE_SETTING_CONNECTION));
-	bsc = NM_SETTING_CONNECTION (nm_connection_get_setting (b, NM_TYPE_SETTING_CONNECTION));
+	asc = nm_connection_get_setting_connection (a);
+	bsc = nm_connection_get_setting_connection (b);
 
 	return strcmp (nm_setting_connection_get_id (asc),
 		       nm_setting_connection_get_id (bsc));
@@ -468,7 +468,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 			const char *mode;
 			const GByteArray *setting_mac;
 
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
+			s_con = nm_connection_get_setting_connection (candidate);
 			connection_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
 			if (!connection_type)
 				continue;
@@ -476,7 +476,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 			if (strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME))
 				continue;
 
-			s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (candidate, NM_TYPE_SETTING_WIRELESS));
+			s_wireless = nm_connection_get_setting_wireless (candidate);
 			if (!s_wireless)
 				continue;
 
@@ -485,7 +485,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 				NMSettingIP4Config *s_ip4;
 				const char *method = NULL;
 
-				s_ip4 = (NMSettingIP4Config *) nm_connection_get_setting (candidate, NM_TYPE_SETTING_IP4_CONFIG);
+				s_ip4 = nm_connection_get_setting_ip4_config (candidate);
 				if (s_ip4)
 					method = nm_setting_ip4_config_get_method (s_ip4);
 
@@ -522,7 +522,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 		for (iter = to_add; iter; iter = g_slist_next (iter)) {
 			NMConnection *candidate = NM_CONNECTION (iter->data);
 
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
+			s_con = nm_connection_get_setting_connection (candidate);
 			gtk_list_store_append (store, &tree_iter);
 			gtk_list_store_set (store, &tree_iter,
 			                    C_NAME_COLUMN, nm_setting_connection_get_id (s_con),
@@ -874,14 +874,13 @@ security_combo_init (NMAWirelessDialog *self, gboolean secrets_only)
 		const char *mode;
 		const char *security;
 
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
+		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 
 		mode = nm_setting_wireless_get_mode (s_wireless);
 		if (mode && !strcmp (mode, "adhoc"))
 			is_adhoc = TRUE;
 
-		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (priv->connection, 
-										NM_TYPE_SETTING_WIRELESS_SECURITY));
+		wsec = nm_connection_get_setting_wireless_security (priv->connection);
 
 		security = nm_setting_wireless_get_security (s_wireless);
 		if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
@@ -1153,7 +1152,7 @@ internal_init (NMAWirelessDialog *self,
 		NMSettingWireless *s_wireless;
 		const GByteArray *ssid;
 
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (priv->connection, NM_TYPE_SETTING_WIRELESS));
+		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 		ssid = s_wireless ? nm_setting_wireless_get_ssid (s_wireless) : NULL;
 		if (ssid)
 			esc_ssid = nm_utils_ssid_to_utf8 (ssid);
@@ -1248,7 +1247,7 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 		wireless_security_unref (sec);
 	} else {
 		/* Unencrypted */
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+		s_wireless = nm_connection_get_setting_wireless (connection);
 		g_assert (s_wireless);
 
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);

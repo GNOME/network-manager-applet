@@ -247,7 +247,7 @@ utils_check_ap_compatible (NMAccessPoint *ap,
 	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (connection);
 	if (s_wireless == NULL)
 		return FALSE;
 	
@@ -297,8 +297,7 @@ utils_check_ap_compatible (NMAccessPoint *ap,
 			return FALSE;
 	}
 
-	s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection,
-	                                                                          NM_TYPE_SETTING_WIRELESS_SECURITY);
+	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 
 	return nm_setting_wireless_ap_security_compatible (s_wireless,
 	                                                   s_wireless_sec,
@@ -329,7 +328,7 @@ connection_valid_for_wired (NMConnection *connection,
 	if (!is_pppoe && strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME))
 		return FALSE;
 
-	s_wired = NM_SETTING_WIRED (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED));
+	s_wired = nm_connection_get_setting_wired (connection);
 	if (!is_pppoe && !s_wired)
 		return FALSE;
 
@@ -369,7 +368,7 @@ connection_valid_for_wireless (NMConnection *connection,
 	if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_WIRELESS_SETTING_NAME))
 		return FALSE;
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_return_val_if_fail (s_wireless != NULL, FALSE);
 
 	/* Match MAC address */
@@ -401,7 +400,7 @@ connection_valid_for_wireless (NMConnection *connection,
 	if (!setting_security || strcmp (setting_security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
 		return TRUE; /* all devices can do unencrypted networks */
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 	if (!s_wireless_sec)
 		return TRUE; /* all devices can do unencrypted networks */
 
@@ -455,7 +454,7 @@ connection_valid_for_gsm (NMConnection *connection,
 	if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_GSM_SETTING_NAME))
 		return FALSE;
 
-	s_gsm = NM_SETTING_GSM (nm_connection_get_setting (connection, NM_TYPE_SETTING_GSM));
+	s_gsm = nm_connection_get_setting_gsm (connection);
 	g_return_val_if_fail (s_gsm != NULL, FALSE);
 
 	return TRUE;
@@ -472,7 +471,7 @@ connection_valid_for_cdma (NMConnection *connection,
 	if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_CDMA_SETTING_NAME))
 		return FALSE;
 
-	s_cdma = NM_SETTING_CDMA (nm_connection_get_setting (connection, NM_TYPE_SETTING_CDMA));
+	s_cdma = nm_connection_get_setting_cdma (connection);
 	g_return_val_if_fail (s_cdma != NULL, FALSE);
 
 	return TRUE;
@@ -484,7 +483,7 @@ get_connection_bt_type (NMConnection *connection)
 	NMSettingBluetooth *s_bt;
 	const char *bt_type;
 
-	s_bt = (NMSettingBluetooth *) nm_connection_get_setting (connection, NM_TYPE_SETTING_BLUETOOTH);
+	s_bt = nm_connection_get_setting_bluetooth (connection);
 	if (!s_bt)
 		return NM_BT_CAPABILITY_NONE;
 
@@ -515,7 +514,7 @@ connection_valid_for_bt (NMConnection *connection,
 	if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_BLUETOOTH_SETTING_NAME))
 		return FALSE;
 
-	s_bt = NM_SETTING_BLUETOOTH (nm_connection_get_setting (connection, NM_TYPE_SETTING_BLUETOOTH));
+	s_bt = nm_connection_get_setting_bluetooth (connection);
 	if (!s_bt)
 		return FALSE;
 
@@ -555,7 +554,7 @@ connection_valid_for_wimax (NMConnection *connection,
 	if (strcmp (connection_type, NM_SETTING_WIMAX_SETTING_NAME))
 		return FALSE;
 
-	s_wimax = (NMSettingWimax *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIMAX);
+	s_wimax = nm_connection_get_setting_wimax (connection);
 	if (!s_wimax)
 		return FALSE;
 
@@ -588,7 +587,7 @@ utils_connection_valid_for_device (NMConnection *connection,
 	g_return_val_if_fail (connection != NULL, FALSE);
 	g_return_val_if_fail (device != NULL, FALSE);
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	g_return_val_if_fail (s_con != NULL, FALSE);
 	g_return_val_if_fail (nm_setting_connection_get_connection_type (s_con) != NULL, FALSE);
 
@@ -739,7 +738,7 @@ utils_create_keyring_add_attr_list (NMConnection *connection,
 	NMSettingConnection *s_con;
 
 	if (connection) {
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		s_con = nm_connection_get_setting_connection (connection);
 		g_return_val_if_fail (s_con != NULL, NULL);
 		connection_uuid = nm_setting_connection_get_uuid (s_con);
 		connection_id = nm_setting_connection_get_id (s_con);

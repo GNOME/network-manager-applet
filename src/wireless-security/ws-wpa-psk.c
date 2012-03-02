@@ -97,7 +97,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	const char *mode;
 	gboolean is_adhoc = FALSE;
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
 
 	mode = nm_setting_wireless_get_mode (s_wireless);

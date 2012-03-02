@@ -217,8 +217,7 @@ wireless_security_clear_ciphers (NMConnection *connection)
 
 	g_return_if_fail (connection != NULL);
 
-	s_wireless_sec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection,
-										  NM_TYPE_SETTING_WIRELESS_SECURITY));
+	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 	g_assert (s_wireless_sec);
 
 	nm_setting_wireless_security_clear_protos (s_wireless_sec);
@@ -354,7 +353,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		    || nm_connection_get_setting_wired (connection))
 			wired = TRUE;
 
-		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+		s_8021x = nm_connection_get_setting_802_1x (connection);
 		if (s_8021x && nm_setting_802_1x_get_num_eap_methods (s_8021x))
 			default_method = nm_setting_802_1x_get_eap_method (s_8021x, 0);
 	}
@@ -467,7 +466,7 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
 
 	g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);

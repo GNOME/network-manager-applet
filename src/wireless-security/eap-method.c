@@ -253,7 +253,7 @@ eap_method_nag_init (EAPMethod *method,
 		NMSettingConnection *s_con;
 		const char *uuid;
 
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		s_con = nm_connection_get_setting_connection (connection);
 		g_assert (s_con);
 		uuid = nm_setting_connection_get_uuid (s_con);
 		g_assert (uuid);

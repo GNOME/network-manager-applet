@@ -156,7 +156,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 	strcpy (sec->keys[sec->cur_index], key);
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
 
 	g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
@@ -225,7 +225,7 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 	const char *tmp;
 	int i;
 
-	s_wsec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
+	s_wsec = nm_connection_get_setting_wireless_security (connection);
 	for (i = 0; s_wsec && i < 4; i++) {
 		tmp = nm_setting_wireless_security_get_wep_key (s_wsec, i);
 		if (tmp)
@@ -274,12 +274,12 @@ ws_wep_key_new (NMConnection *connection,
 		NMSettingWireless *s_wireless;
 		const char *mode, *auth_alg;
 
-		s_wireless = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
+		s_wireless = nm_connection_get_setting_wireless (connection);
 		mode = s_wireless ? nm_setting_wireless_get_mode (s_wireless) : NULL;
 		if (mode && !strcmp (mode, "adhoc"))
 			is_adhoc = TRUE;
 
-		s_wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+		s_wsec = nm_connection_get_setting_wireless_security (connection);
 		if (s_wsec) {
 			auth_alg = nm_setting_wireless_security_get_auth_alg (s_wsec);
 			if (auth_alg && !strcmp (auth_alg, "shared"))

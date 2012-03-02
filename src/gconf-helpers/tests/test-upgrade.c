@@ -257,7 +257,7 @@ upgrade_08_wifi_cb (NMConnection *connection, gpointer user_data)
 	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
 
 	/* And check to make sure we've got our wpa-psk flags */
-	s_wsec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
+	s_wsec = nm_connection_get_setting_wireless_security (connection);
 	g_assert (s_wsec);
 	g_object_get (s_wsec, NM_SETTING_WIRELESS_SECURITY_PSK_FLAGS, &flags, NULL);
 	g_assert_cmpint (flags, ==, NM_SETTING_SECRET_FLAG_AGENT_OWNED);
@@ -318,7 +318,7 @@ upgrade_08_vpnc_cb (NMConnection *connection, gpointer user_data)
 	gboolean success;
 
 	/* And check to make sure we've got our wpa-psk flags */
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	s_vpn = nm_connection_get_setting_vpn (connection);
 	g_assert (s_vpn);
 
 	success = nm_setting_get_secret_flags (NM_SETTING (s_vpn),
@@ -388,7 +388,7 @@ upgrade_08_openvpn_saved_cb (NMConnection *connection, gpointer user_data)
 	gboolean success;
 
 	/* And check to make sure we've got our wpa-psk flags */
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	s_vpn = nm_connection_get_setting_vpn (connection);
 	g_assert (s_vpn);
 
 	success = nm_setting_get_secret_flags (NM_SETTING (s_vpn),
@@ -460,7 +460,7 @@ upgrade_08_openvpn_not_saved_cb (NMConnection *connection, gpointer user_data)
 	gboolean success;
 
 	/* And check to make sure we've got our wpa-psk flags */
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	s_vpn = nm_connection_get_setting_vpn (connection);
 	g_assert (s_vpn);
 
 	success = nm_setting_get_secret_flags (NM_SETTING (s_vpn),

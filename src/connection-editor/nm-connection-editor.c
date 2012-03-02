@@ -93,7 +93,7 @@ nm_connection_editor_update_title (NMConnectionEditor *editor)
 
 	g_return_if_fail (editor != NULL);
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (editor->connection);
 	g_assert (s_con);
 
 	id = nm_setting_connection_get_id (s_con);
@@ -154,7 +154,7 @@ update_sensitivity (NMConnectionEditor *editor)
 	GtkWidget *widget;
 	GSList *iter;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (editor->connection);
 
 	/* Can't modify read-only connections; can't modify anything before the
 	 * editor is initialized either.
@@ -205,7 +205,7 @@ connection_editor_validate (NMConnectionEditor *editor)
 	if (!editor_is_initialized (editor))
 		goto done;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (editor->connection);
 	g_assert (s_con);
 	if (nm_setting_connection_get_read_only (s_con))
 		goto done;
@@ -504,7 +504,7 @@ populate_connection_ui (NMConnectionEditor *editor)
 	name = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
 	autoconnect = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_autoconnect"));
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (editor->connection);
 	if (s_con) {
 		const char *id = nm_setting_connection_get_id (s_con);
 
@@ -722,7 +722,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	editor->orig_connection = g_object_ref (orig_connection);
 	nm_connection_editor_update_title (editor);
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (editor->connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (editor->connection);
 	g_assert (s_con);
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);

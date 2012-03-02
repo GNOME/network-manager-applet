@@ -86,7 +86,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
 
-	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
 
 	nm_setting_802_1x_add_eap_method (s_8021x, "leap");
@@ -139,7 +139,7 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 	if (connection) {
 		NMSetting8021x *s_8021x;
 
-		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+		s_8021x = nm_connection_get_setting_802_1x (connection);
 		if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
 			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 	}

@@ -357,7 +357,7 @@ cdma_add_menu_item (NMDevice *device,
 	if (active) {
 		NMSettingConnection *s_con;
 
-		s_con = (NMSettingConnection *) nm_connection_get_setting (active, NM_TYPE_SETTING_CONNECTION);
+		s_con = nm_connection_get_setting_connection (active);
 		g_assert (s_con);
 
 		item = nm_mb_menu_item_new (nm_setting_connection_get_id (s_con),
@@ -435,7 +435,7 @@ cdma_device_state_changed (NMDevice *device,
 		if (connection) {
 			const char *id;
 
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+			s_con = nm_connection_get_setting_connection (connection);
 			id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
 			if (id)
 				str = g_strdup_printf (_("You are now connected to '%s'."), id);
@@ -472,7 +472,7 @@ cdma_get_icon (NMDevice *device,
 
 	id = nm_device_get_iface (NM_DEVICE (device));
 	if (connection) {
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		s_con = nm_connection_get_setting_connection (connection);
 		id = nm_setting_connection_get_id (s_con);
 	}
 
@@ -540,11 +540,11 @@ get_cdma_secrets_cb (GtkDialog *dialog,
 {
 	SecretsRequest *req = user_data;
 	NMCdmaSecretsInfo *info = (NMCdmaSecretsInfo *) req;
-	NMSetting *setting;
+	NMSettingCdma *setting;
 	GError *error = NULL;
 
 	if (response == GTK_RESPONSE_OK) {
-		setting = nm_connection_get_setting (req->connection, NM_TYPE_SETTING_CDMA);
+		setting = nm_connection_get_setting_cdma (req->connection);
 		if (setting) {
 			g_object_set (G_OBJECT (setting),
 				          info->secret_name, gtk_entry_get_text (info->secret_entry),

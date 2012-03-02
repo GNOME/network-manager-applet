@@ -463,7 +463,7 @@ ce_page_wireless_new (NMConnection *connection,
 	wireless_private_init (self);
 	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 
-	priv->setting = (NMSettingWireless *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS);
+	priv->setting = nm_connection_get_setting_wireless (connection);
 	if (!priv->setting) {
 		priv->setting = NM_SETTING_WIRELESS (nm_setting_wireless_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));

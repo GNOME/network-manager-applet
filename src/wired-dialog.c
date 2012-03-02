@@ -47,7 +47,7 @@ dialog_set_network_name (NMConnection *connection, GtkEntry *entry)
 {
 	NMSettingConnection *setting;
 
-	setting = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	setting = nm_connection_get_setting_connection (connection);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 	gtk_entry_set_text (entry, nm_setting_connection_get_id (setting));

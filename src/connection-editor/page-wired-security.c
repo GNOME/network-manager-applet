@@ -130,7 +130,7 @@ ce_page_wired_security_new (NMConnection *connection,
 	g_object_ref_sink (G_OBJECT (parent->page));
 	gtk_container_set_border_width (GTK_CONTAINER (parent->page), 6);
 
-	if (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X))
+	if (nm_connection_get_setting_802_1x (connection))
 		priv->initial_have_8021x = TRUE;
 
 	priv->enabled = GTK_TOGGLE_BUTTON (gtk_check_button_new_with_mnemonic (_("Use 802.1_X security for this connection")));

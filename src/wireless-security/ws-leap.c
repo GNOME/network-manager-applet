@@ -84,7 +84,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	GtkWidget *widget;
 	const char *leap_password = NULL, *leap_username = NULL;
 
-	s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
+	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
 
 	g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
@@ -138,7 +138,7 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 		return NULL;
 
 	if (connection) {
-		wsec = NM_SETTING_WIRELESS_SECURITY (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY));
+		wsec = nm_connection_get_setting_wireless_security (connection);
 		if (wsec) {
 			const char *auth_alg;
 

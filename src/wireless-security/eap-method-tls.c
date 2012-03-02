@@ -124,7 +124,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	const char *password = NULL;
 	GError *error = NULL;
 
-	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
 
 	if (parent->phase2)
@@ -359,7 +359,7 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 	                          password_func);
 
 	/* Set the private key filepicker button path if we have a private key */
-	s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+	s_8021x = nm_connection_get_setting_802_1x (connection);
 	if (s_8021x && (scheme_func (s_8021x) == NM_SETTING_802_1X_CK_SCHEME_PATH)) {
 		filename = path_func (s_8021x);
 		if (filename) {
@@ -396,7 +396,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	eap_method_nag_init (parent, "eap_tls_ca_cert_button", connection);
 
 	if (connection)
-		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+		s_8021x = nm_connection_get_setting_802_1x (connection);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_identity_entry"));
 	g_assert (widget);

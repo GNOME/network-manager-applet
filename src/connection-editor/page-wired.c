@@ -278,7 +278,7 @@ ce_page_wired_new (NMConnection *connection,
 	wired_private_init (self);
 	priv = CE_PAGE_WIRED_GET_PRIVATE (self);
 
-	priv->setting = (NMSettingWired *) nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED);
+	priv->setting = nm_connection_get_setting_wired (connection);
 	if (!priv->setting) {
 		priv->setting = NM_SETTING_WIRED (nm_setting_wired_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));

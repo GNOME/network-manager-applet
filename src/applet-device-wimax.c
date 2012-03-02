@@ -179,7 +179,7 @@ get_connection_for_nsp (GSList *connections, NMWimaxNsp *nsp)
 		NMConnection *candidate = NM_CONNECTION (iter->data);
 		NMSettingWimax *s_wimax;
 
-		s_wimax = (NMSettingWimax *) nm_connection_get_setting (candidate, NM_TYPE_SETTING_WIMAX);
+		s_wimax = nm_connection_get_setting_wimax (candidate);
 		if (s_wimax) {
 			candidate_name = nm_setting_wimax_get_network_name (s_wimax);
 			if (g_strcmp0 (nsp_name, candidate_name) == 0)
@@ -363,7 +363,7 @@ active_nsp_changed_cb (NMDeviceWimax *device,
 	if (!connection)
 		return;
 
-	s_wimax = (NMSettingWimax *) nm_connection_get_setting (NM_CONNECTION (connection), NM_TYPE_SETTING_WIMAX);
+	s_wimax = nm_connection_get_setting_wimax (NM_CONNECTION (connection));
 	if (!s_wimax)
 		return;
 
@@ -417,7 +417,7 @@ wimax_device_state_changed (NMDevice *device,
 		if (connection) {
 			const char *id;
 
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+			s_con = nm_connection_get_setting_connection (connection);
 			id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
 			if (id)
 				str = g_strdup_printf (_("You are now connected to '%s'."), id);
@@ -449,7 +449,7 @@ wimax_get_icon (NMDevice *device,
 
 	id = nm_device_get_iface (NM_DEVICE (device));
 	if (connection) {
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		s_con = nm_connection_get_setting_connection (connection);
 		id = nm_setting_connection_get_id (s_con);
 	}
 

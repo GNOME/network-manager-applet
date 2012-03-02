@@ -306,7 +306,7 @@ write_connection_to_child (int fd, NMConnection *connection, GError **error)
 	NMSettingVPN *s_vpn;
 	WriteItemInfo info = { .fd = fd, .secret = FALSE, .error = error };
 
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	s_vpn = nm_connection_get_setting_vpn (connection);
 	if (!s_vpn) {
 		g_set_error_literal (error,
 		                     NM_SECRET_AGENT_ERROR,
@@ -354,14 +354,14 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 
 	applet_secrets_request_set_free_func (req, free_vpn_secrets_info);
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (req->connection, NM_TYPE_SETTING_CONNECTION);
+	s_con = nm_connection_get_setting_connection (req->connection);
 	g_return_val_if_fail (s_con != NULL, FALSE);
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	g_return_val_if_fail (connection_type != NULL, FALSE);
 	g_return_val_if_fail (strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME) == 0, FALSE);
 
-	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (req->connection, NM_TYPE_SETTING_VPN));
+	s_vpn = nm_connection_get_setting_vpn (req->connection);
 	g_return_val_if_fail (s_vpn != NULL, FALSE);
 
 	service_type = nm_setting_vpn_get_service_type (s_vpn);

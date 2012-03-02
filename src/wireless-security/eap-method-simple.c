@@ -100,7 +100,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	const char *eap = NULL;
 	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
 
-	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
 
 	/* If this is the main EAP method, clear any existing methods because the
@@ -237,7 +237,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
 	if (connection) {
-		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+		s_8021x = nm_connection_get_setting_802_1x (connection);
 		if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
 			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 	}

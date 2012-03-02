@@ -434,7 +434,7 @@ get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
 	g_return_val_if_fail (connection != NULL, NULL);
 	g_return_val_if_fail (applet != NULL, NULL);
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	s_con = nm_connection_get_setting_connection (connection);
 	g_return_val_if_fail (s_con != NULL, NULL);
 
 	ctype = nm_setting_connection_get_connection_type (s_con);
@@ -647,7 +647,7 @@ applet_new_menu_item_helper (NMConnection *connection,
 	char *markup;
 	GtkWidget *label;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	item = gtk_image_menu_item_new_with_label ("");
 	if (add_active && (active == connection)) {
 		/* Pure evil */
@@ -988,7 +988,7 @@ make_vpn_failure_message (NMVPNConnection *vpn,
 	g_return_val_if_fail (vpn != NULL, NULL);
 
 	connection = applet_get_connection_for_active (applet, NM_ACTIVE_CONNECTION (vpn));
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 
 	switch (reason) {
 	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
@@ -1034,7 +1034,7 @@ make_vpn_disconnection_message (NMVPNConnection *vpn,
 	g_return_val_if_fail (vpn != NULL, NULL);
 
 	connection = applet_get_connection_for_active (applet, NM_ACTIVE_CONNECTION (vpn));
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 
 	switch (reason) {
 	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
@@ -1122,7 +1122,7 @@ get_connection_id (NMConnection *connection)
 	g_return_val_if_fail (connection != NULL, NULL);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	g_return_val_if_fail (s_con != NULL, NULL);
 
 	return nm_setting_connection_get_id (s_con);
@@ -1197,7 +1197,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 		/* Connection already active; do nothing */
 		return;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	info = g_malloc0 (sizeof (VPNActivateInfo));
 	info->applet = applet;
 	info->vpn_name = g_strdup (nm_setting_connection_get_id (s_con));
@@ -1250,7 +1250,7 @@ applet_get_first_active_vpn_connection (NMApplet *applet,
 		if (!connection)
 			continue;
 
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		s_con = nm_connection_get_setting_connection (connection);
 		g_assert (s_con);
 
 		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
@@ -1618,12 +1618,12 @@ get_vpn_connections (NMApplet *applet)
 		NMConnection *connection = NM_CONNECTION (iter->data);
 		NMSettingConnection *s_con;
 
-		s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+		s_con = nm_connection_get_setting_connection (connection);
 		if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME))
 			/* Not a VPN connection */
 			continue;
 
-		if (!nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN)) {
+		if (!nm_connection_get_setting_vpn (connection)) {
 			g_warning ("%s: VPN connection '%s' didn't have required vpn setting.", __func__,
 			           nm_setting_connection_get_id (s_con));
 			continue;
@@ -2468,7 +2468,7 @@ get_tip_for_device_state (NMDevice *device,
 
 	id = nm_device_get_iface (device);
 	if (connection) {
-		s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+		s_con = nm_connection_get_setting_connection (connection);
 		id = nm_setting_connection_get_id (s_con);
 	}
 
@@ -2549,7 +2549,7 @@ get_tip_for_vpn (NMActiveConnection *active, NMVPNConnectionState state, NMApple
 		NMSettingConnection *s_con;
 
 		if (!strcmp (nm_connection_get_path (candidate), path)) {
-			s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (candidate, NM_TYPE_SETTING_CONNECTION));
+			s_con = nm_connection_get_setting_connection (candidate);
 			id = nm_setting_connection_get_id (s_con);
 			break;
 		}
@@ -2832,7 +2832,7 @@ applet_agent_get_secrets_cb (AppletAgent *agent,
 	GError *error = NULL;
 	SecretsRequest *req = NULL;
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	s_con = nm_connection_get_setting_connection (connection);
 	g_return_if_fail (s_con != NULL);
 
 	/* VPN secrets get handled a bit differently */

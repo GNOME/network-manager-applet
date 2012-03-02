@@ -322,14 +322,14 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 			goto out;
 	}
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
 	if (!id) {
 		g_set_error (&error, 0, 0, "connection setting invalid");
 		goto done;
 	}
 
-	s_vpn = (NMSettingVPN *) nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN);
+	s_vpn = nm_connection_get_setting_vpn (connection);
 	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
 
 	if (!service_type) {
@@ -379,7 +379,7 @@ vpn_export (NMConnection *connection)
 	const char *service_type;
 	const char *home_folder;
 
-	s_vpn = NM_SETTING_VPN (nm_connection_get_setting (connection, NM_TYPE_SETTING_VPN));
+	s_vpn = nm_connection_get_setting_vpn (connection);
 	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
 
 	if (!service_type) {

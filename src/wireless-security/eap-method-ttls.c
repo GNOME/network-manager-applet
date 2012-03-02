@@ -125,7 +125,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	GtkTreeIter iter;
 	GError *error = NULL;
 
-	s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
 
 	nm_setting_802_1x_add_eap_method (s_8021x, "ttls");
@@ -341,7 +341,7 @@ eap_method_ttls_new (WirelessSecurity *ws_parent,
 	method->is_editor = is_editor;
 
 	if (connection)
-		s_8021x = NM_SETTING_802_1X (nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X));
+		s_8021x = nm_connection_get_setting_802_1x (connection);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_ttls_ca_cert_button"));
 	g_assert (widget);

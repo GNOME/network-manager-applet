@@ -221,7 +221,7 @@ create_info_label_security (NMConnection *connection)
 	GtkWidget *w = NULL;
 	const char *connection_type;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	g_assert (s_con);
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);
@@ -231,10 +231,9 @@ create_info_label_security (NMConnection *connection)
 		NMSetting8021x *s_8021x;
 		const char *security;
 
-		s_wireless = NM_SETTING_WIRELESS (nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRELESS));
-		s_wireless_sec = (NMSettingWirelessSecurity *) nm_connection_get_setting (connection, 
-																				  NM_TYPE_SETTING_WIRELESS_SECURITY);
-		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+		s_wireless = nm_connection_get_setting_wireless (connection);
+		s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
+		s_8021x = nm_connection_get_setting_802_1x (connection);
 		security = s_wireless ? nm_setting_wireless_get_security (s_wireless) : NULL;
 
 		if (security && !strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME) && s_wireless_sec) {
@@ -254,7 +253,7 @@ create_info_label_security (NMConnection *connection)
 	} else if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
 		NMSetting8021x *s_8021x;
 
-		s_8021x = (NMSetting8021x *) nm_connection_get_setting (connection, NM_TYPE_SETTING_802_1X);
+		s_8021x = nm_connection_get_setting_802_1x (connection);
 		if (s_8021x)
 			label = get_eap_label (NULL, s_8021x);
 		else
@@ -636,7 +635,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	                  0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
 	row++;
 
-	s_ip6 = (NMSettingIP6Config *) nm_connection_get_setting (connection, NM_TYPE_SETTING_IP6_CONFIG);
+	s_ip6 = nm_connection_get_setting_ip6_config (connection);
 	if (s_ip6)
 		 method = nm_setting_ip6_config_get_method (s_ip6);
 
@@ -988,7 +987,7 @@ applet_mobile_password_dialog_new (NMConnection *connection,
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
 	gtk_window_set_default (GTK_WINDOW (dialog), w);
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
+	s_con = nm_connection_get_setting_connection (connection);
 	id = nm_setting_connection_get_id (s_con);
 	g_assert (id);
 	tmp = g_strdup_printf (_("A password is required to connect to '%s'."), id);

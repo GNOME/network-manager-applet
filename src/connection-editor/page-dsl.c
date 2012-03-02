@@ -145,7 +145,7 @@ ce_page_dsl_new (NMConnection *connection,
 	dsl_private_init (self);
 	priv = CE_PAGE_DSL_GET_PRIVATE (self);
 
-	priv->setting = (NMSettingPPPOE *) nm_connection_get_setting (connection, NM_TYPE_SETTING_PPPOE);
+	priv->setting = nm_connection_get_setting_pppoe (connection);
 	if (!priv->setting) {
 		priv->setting = NM_SETTING_PPPOE (nm_setting_pppoe_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
@@ -195,7 +195,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	ui_to_setting (self);
 
-	foo = g_slist_append (NULL, nm_connection_get_setting (connection, NM_TYPE_SETTING_PPP));
+	foo = g_slist_append (NULL, nm_connection_get_setting_ppp (connection));
 	valid = nm_setting_verify (NM_SETTING (priv->setting), foo, error);
 	g_slist_free (foo);
 

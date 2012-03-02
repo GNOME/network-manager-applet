@@ -263,7 +263,7 @@ is_connection_always_ask (NMConnection *connection)
 	/* For the given connection type, check if the secrets for that connection
 	 * are always-ask or not.
 	 */
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	s_con = nm_connection_get_setting_connection (connection);
 	g_assert (s_con);
 	ctype = nm_setting_connection_get_connection_type (s_con);
 
@@ -765,7 +765,7 @@ delete_secrets (NMSecretAgent *agent,
 	r = request_new (agent, connection, connection_path, NULL, NULL, FALSE, NULL, NULL, callback, callback_data);
 	g_hash_table_insert (priv->requests, GUINT_TO_POINTER (r->id), r);
 
-	s_con = (NMSettingConnection *) nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
+	s_con = nm_connection_get_setting_connection (connection);
 	g_assert (s_con);
 	uuid = nm_setting_connection_get_uuid (s_con);
 	g_assert (uuid);
