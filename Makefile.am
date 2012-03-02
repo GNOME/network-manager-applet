@@ -26,6 +26,8 @@ schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 @INTLTOOL_SCHEMAS_RULE@
 
 
+DISTCHECK_CONFIGURE_FLAGS = --enable-more-warnings=yes
+
 EXTRA_DIST += \
 	$(schemas_in_files) \
 	$(autostart_in_files) \
