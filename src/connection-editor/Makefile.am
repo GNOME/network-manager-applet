@@ -3,6 +3,7 @@ bin_PROGRAMS = nm-connection-editor
 nm_connection_editor_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
+	$(GNOME_KEYRING_CFLAGS) \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DUIDIR=\""$(uidir)"\" \
 	-DBINDIR=\""$(bindir)"\" \

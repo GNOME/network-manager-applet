@@ -108,7 +108,7 @@ ce_page_vpn_new (NMConnection *connection,
 	                                 NULL,
 	                                 _("VPN")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load VPN user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load VPN user interface."));
 		return NULL;
 	}
 
@@ -123,7 +123,7 @@ ce_page_vpn_new (NMConnection *connection,
 
 	priv->plugin = vpn_get_plugin_by_service (service_type);
 	if (!priv->plugin) {
-		g_set_error (error, 0, 0, _("Could not find VPN plugin service for '%s'."), service_type);
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not find VPN plugin service for '%s'."), service_type);
 		g_object_unref (self);
 		return NULL;
 	}

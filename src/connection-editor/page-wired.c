@@ -271,7 +271,7 @@ ce_page_wired_new (NMConnection *connection,
 	                                   "WiredPage",
 	                                   _("Wired")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load wired user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load wired user interface."));
 		return NULL;
 	}
 

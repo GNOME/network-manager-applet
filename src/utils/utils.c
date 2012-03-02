@@ -768,4 +768,3 @@ utils_create_keyring_add_attr_list (NMConnection *connection,
 	                                            setting_key);
 	return attrs;
 }
-

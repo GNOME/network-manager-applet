@@ -2204,7 +2204,7 @@ write_secret_file (const char *path,
 
 	tmppath = g_malloc0 (strlen (path) + 10);
 	if (!tmppath) {
-		g_set_error (error, 0, 0,
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
 		             "Could not allocate memory for temporary file for '%s'",
 		             path);
 		return FALSE;
@@ -2216,7 +2216,7 @@ write_secret_file (const char *path,
 	errno = 0;
 	fd = mkstemp (tmppath);
 	if (fd < 0) {
-		g_set_error (error, 0, 0,
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
 		             "Could not create temporary file for '%s': %d",
 		             path, errno);
 		goto out;
@@ -2227,7 +2227,7 @@ write_secret_file (const char *path,
 	if (fchmod (fd, S_IRUSR | S_IWUSR)) {
 		close (fd);
 		unlink (tmppath);
-		g_set_error (error, 0, 0,
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
 		             "Could not set permissions for temporary file '%s': %d",
 		             path, errno);
 		goto out;
@@ -2238,7 +2238,7 @@ write_secret_file (const char *path,
 	if (written != len) {
 		close (fd);
 		unlink (tmppath);
-		g_set_error (error, 0, 0,
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
 		             "Could not write temporary file for '%s': %d",
 		             path, errno);
 		goto out;
@@ -2249,7 +2249,7 @@ write_secret_file (const char *path,
 	errno = 0;
 	if (rename (tmppath, path)) {
 		unlink (tmppath);
-		g_set_error (error, 0, 0,
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
 		             "Could not rename temporary file to '%s': %d",
 		             path, errno);
 		goto out;
@@ -2455,7 +2455,7 @@ write_object (GConfClient *client,
 
 		new_file = generate_cert_path (id, objtype->suffix);
 		if (!new_file) {
-			g_set_error (error, 0, 0,
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
 			             "Could not create file path for %s / %s",
 			             setting_name, objtype->setting_key);
 			return FALSE;
@@ -2470,7 +2470,7 @@ write_object (GConfClient *client,
 			nm_gconf_set_string_helper (client, dir, objtype->setting_key, setting_name, new_file);
 			return TRUE;
 		} else {
-			g_set_error (error, 0, 0,
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
 			             "Could not write certificate/key for %s / %s: %s",
 			             setting_name, objtype->setting_key,
 			             (write_error && write_error->message) ? write_error->message : "(unknown)");
@@ -2570,7 +2570,7 @@ write_one_certificate (GConfClient *client,
 	}
 
 	if (!handled) {
-		g_set_error (error, 0, 0,
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
 		             "Unhandled certificate/private-key item '%s'",
 		             key);
 	}

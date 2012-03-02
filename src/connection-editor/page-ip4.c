@@ -980,7 +980,7 @@ ce_page_ip4_new (NMConnection *connection,
 	                                 "IP4Page",
 	                                 _("IPv4 Settings")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load IPv4 user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load IPv4 user interface."));
 		return NULL;
 	}
 

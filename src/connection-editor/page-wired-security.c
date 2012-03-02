@@ -115,7 +115,7 @@ ce_page_wired_security_new (NMConnection *connection,
 	                                            NULL,
 	                                            _("802.1x Security")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load Wired Security security user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load Wired Security security user interface."));
 		return NULL;
 	}
 
@@ -175,7 +175,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 			g_object_unref (tmp_connection);
 		} else
-			g_set_error (error, 0, 0, "Invalid 802.1x security");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Invalid 802.1x security");
 	} else {
 		nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
 		valid = TRUE;

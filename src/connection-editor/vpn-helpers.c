@@ -33,6 +33,7 @@
 #include <nm-setting-vpn.h>
 
 #include "vpn-helpers.h"
+#include "utils.h"
 
 #define NM_VPN_API_SUBJECT_TO_CHANGE
 #include "nm-vpn-plugin-ui-interface.h"
@@ -63,7 +64,7 @@ vpn_get_plugins (GError **error)
 
 	dir = g_dir_open (VPN_NAME_FILES_DIR, 0, NULL);
 	if (!dir) {
-		g_set_error (error, 0, 0, "Couldn't read VPN .name files directory " VPN_NAME_FILES_DIR ".");
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Couldn't read VPN .name files directory " VPN_NAME_FILES_DIR ".");
 		return NULL;
 	}
 
@@ -104,7 +105,7 @@ vpn_get_plugins (GError **error)
 
 		module = g_module_open (so_path, G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
 		if (!module) {
-			g_set_error (error, 0, 0, "Cannot load the VPN plugin which provides the "
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Cannot load the VPN plugin which provides the "
 			             "service '%s'.", service);
 			goto next;
 		}
@@ -124,10 +125,10 @@ vpn_get_plugins (GError **error)
 				              NM_VPN_PLUGIN_UI_INTERFACE_SERVICE, &plug_service,
 				              NULL);
 				if (!plug_name || !strlen (plug_name)) {
-					g_set_error (error, 0, 0, "cannot load VPN plugin in '%s': missing plugin name", 
+					g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "cannot load VPN plugin in '%s': missing plugin name", 
 					             g_module_name (module));
 				} else if (!plug_service || strcmp (plug_service, service)) {
-					g_set_error (error, 0, 0, "cannot load VPN plugin in '%s': invalid service name", 
+					g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "cannot load VPN plugin in '%s': invalid service name", 
 					             g_module_name (module));
 				} else {
 					/* Success! */
@@ -139,14 +140,14 @@ vpn_get_plugins (GError **error)
 				g_free (plug_name);
 				g_free (plug_service);
 			} else {
-				g_set_error (error, 0, 0, "cannot load VPN plugin in '%s': %s", 
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "cannot load VPN plugin in '%s': %s", 
 				             g_module_name (module), g_module_error ());
 			}
 
 			if (!success)
 				g_module_close (module);
 		} else {
-			g_set_error (error, 0, 0, "cannot locate nm_vpn_plugin_ui_factory() in '%s': %s", 
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "cannot locate nm_vpn_plugin_ui_factory() in '%s': %s", 
 			             g_module_name (module), g_module_error ());
 			g_module_close (module);
 		}
@@ -296,7 +297,7 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 	if (!filename) {
-		g_set_error (&error, 0, 0, "no filename");
+		g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC, "no filename");
 		goto done;
 	}
 
@@ -325,7 +326,7 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	s_con = nm_connection_get_setting_connection (connection);
 	id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
 	if (!id) {
-		g_set_error (&error, 0, 0, "connection setting invalid");
+		g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC, "connection setting invalid");
 		goto done;
 	}
 
@@ -333,7 +334,7 @@ export_vpn_to_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
 
 	if (!service_type) {
-		g_set_error (&error, 0, 0, "VPN setting invalid");
+		g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC, "VPN setting invalid");
 		goto done;
 	}
 

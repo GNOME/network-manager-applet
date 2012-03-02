@@ -138,7 +138,7 @@ ce_page_dsl_new (NMConnection *connection,
 	                                 "DslPage",
 	                                 _("DSL")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load DSL user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load DSL user interface."));
 		return NULL;
 	}
 

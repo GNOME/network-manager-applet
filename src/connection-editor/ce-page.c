@@ -306,7 +306,7 @@ ce_page_complete_init (CEPage *self,
 	}
 
 	if (!update_error) {
-		g_set_error_literal (&update_error, 0, 0,
+		g_set_error_literal (&update_error, NMA_ERROR, NMA_ERROR_GENERIC,
 		                     _("Failed to update connection secrets due to an unknown error."));
 	}
 

@@ -456,7 +456,7 @@ ce_page_wireless_new (NMConnection *connection,
 	                                      "WirelessPage",
 	                                      _("Wireless")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load WiFi user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load WiFi user interface."));
 		return NULL;
 	}
 

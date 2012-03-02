@@ -63,5 +63,11 @@ GnomeKeyringAttributeList *utils_create_keyring_add_attr_list (NMConnection *con
                                                                const char *setting_key,
                                                                char **out_display_name);
 
+#define NMA_ERROR (g_quark_from_static_string ("nma-error-quark"))
+
+typedef enum  {
+	NMA_ERROR_GENERIC
+} NMAError;
+
 #endif /* UTILS_H */
 

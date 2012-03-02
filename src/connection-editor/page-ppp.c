@@ -281,7 +281,7 @@ ce_page_ppp_new (NMConnection *connection,
 	                                 "PppPage",
 	                                 _("PPP Settings")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load PPP user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load PPP user interface."));
 		return NULL;
 	}
 

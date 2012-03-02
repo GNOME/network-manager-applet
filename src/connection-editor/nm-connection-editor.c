@@ -388,7 +388,7 @@ nm_connection_editor_new (NMConnection *connection,
 
 	editor = g_object_new (NM_TYPE_CONNECTION_EDITOR, NULL);
 	if (!editor) {
-		g_set_error (error, 0, 0, "%s", _("Error creating connection editor dialog."));
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "%s", _("Error creating connection editor dialog."));
 		return NULL;
 	}
 

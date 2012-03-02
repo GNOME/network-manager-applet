@@ -25,6 +25,7 @@
 #include <glib-object.h>
 
 #include <nm-client.h>
+#include "utils.h"
 
 #define NM_TYPE_CONNECTION_EDITOR    (nm_connection_editor_get_type ())
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))

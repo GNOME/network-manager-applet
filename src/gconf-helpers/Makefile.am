@@ -13,6 +13,7 @@ HELPERS_SOURCES = \
 libgconf_helpers_la_SOURCES = $(HELPERS_SOURCES)
 
 libgconf_helpers_la_CPPFLAGS = \
+	-I$(top_srcdir)/src/utils \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	$(GCONF_CFLAGS) \
@@ -32,6 +33,7 @@ libgconf_helpers_la_LIBADD = \
 libgconf_helpers_test_la_SOURCES = $(HELPERS_SOURCES)
 
 libgconf_helpers_test_la_CPPFLAGS = \
+	-I$(top_srcdir)/src/utils \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	$(GCONF_CFLAGS) \

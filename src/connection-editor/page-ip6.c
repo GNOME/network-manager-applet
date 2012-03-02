@@ -944,7 +944,7 @@ ce_page_ip6_new (NMConnection *connection,
 	                                 "IP6Page",
 	                                 _("IPv6 Settings")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load IPv6 user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load IPv6 user interface."));
 		return NULL;
 	}
 

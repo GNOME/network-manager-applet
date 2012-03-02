@@ -378,7 +378,7 @@ ce_page_mobile_new (NMConnection *connection,
 	                                    "MobilePage",
 	                                    _("Mobile Broadband")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load mobile broadband user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load mobile broadband user interface."));
 		return NULL;
 	}
 
@@ -395,7 +395,7 @@ ce_page_mobile_new (NMConnection *connection,
 	}
 
 	if (!priv->setting) {
-		g_set_error (error, 0, 0, "%s", _("Unsupported mobile broadband connection type."));
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "%s", _("Unsupported mobile broadband connection type."));
 		g_object_unref (self);
 		return NULL;
 	}

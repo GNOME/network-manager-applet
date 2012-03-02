@@ -27,6 +27,8 @@
 #include <glib.h>
 #include <nm-connection.h>
 
+#include "utils.h"
+
 #define GCONF_PATH_CONNECTIONS "/system/networking/connections"
 
 #define KEYRING_UUID_TAG "connection-uuid"

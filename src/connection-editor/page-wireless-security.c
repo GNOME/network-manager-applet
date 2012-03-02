@@ -356,7 +356,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 
 	s_wireless = nm_connection_get_setting_wireless (connection);
 	if (!s_wireless) {
-		g_set_error_literal (error, 0, 0, _("Could not load WiFi security user interface; missing WiFi setting."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load WiFi security user interface; missing WiFi setting."));
 		return NULL;
 	}
 
@@ -368,7 +368,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 	                                               "WirelessSecurityPage",
 	                                               _("Wireless Security")));
 	if (!self) {
-		g_set_error_literal (error, 0, 0, _("Could not load WiFi security user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load WiFi security user interface."));
 		return NULL;
 	}
 
@@ -445,9 +445,9 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 			if (valid)
 				wireless_security_fill_connection (sec, connection);
 			else
-				g_set_error (error, 0, 0, "Invalid wireless security");
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Invalid wireless security");
 		} else
-			g_set_error (error, 0, 0, "Missing SSID");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Missing SSID");
 	} else {
 		/* No security, unencrypted */
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);

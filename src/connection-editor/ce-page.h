@@ -31,6 +31,7 @@
 #include <dbus/dbus-glib.h>
 #include <nm-connection.h>
 #include <nm-client.h>
+#include "utils.h"
 
 typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
                                              gboolean canceled,
