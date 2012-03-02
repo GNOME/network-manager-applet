@@ -50,6 +50,8 @@ nm_connection_editor_SOURCES = \
 	page-ppp.c \
 	page-vpn.h \
 	page-vpn.c \
+	page-bond.h \
+	page-bond.c \
 	vpn-helpers.h \
 	vpn-helpers.c \
 	ip4-routes-dialog.h \
@@ -84,6 +86,7 @@ ui_DATA = \
 	ce-page-wifi-security.ui \
 	ce-page-wimax.ui \
 	ce-page-infiniband.ui \
+	ce-page-bond.ui \
 	ce-page-ip4.ui \
 	ce-ip4-routes.ui \
 	ce-page-ip6.ui \

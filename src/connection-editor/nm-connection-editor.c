@@ -47,6 +47,7 @@
 #include <nm-setting-cdma.h>
 #include <nm-setting-wimax.h>
 #include <nm-setting-infiniband.h>
+#include <nm-setting-bond.h>
 #include <nm-utils.h>
 
 #include <nm-remote-connection.h>
@@ -67,6 +68,7 @@
 #include "page-vpn.h"
 #include "page-wimax.h"
 #include "page-infiniband.h"
+#include "page-bond.h"
 #include "ce-polkit-button.h"
 #include "vpn-helpers.h"
 
@@ -191,7 +193,7 @@ update_sensitivity (NMConnectionEditor *editor)
 	gtk_widget_set_sensitive (widget, sensitive);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_autoconnect"));
-	gtk_widget_set_sensitive (widget, sensitive);
+	gtk_widget_set_sensitive (widget, sensitive && !nm_setting_connection_get_master (s_con));
 
 	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
 	gtk_widget_set_sensitive (widget, sensitive);
@@ -851,6 +853,9 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_INFINIBAND_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_infiniband_new, editor->connection, error))
+			goto out;
+	} else if (!strcmp (connection_type, NM_SETTING_BOND_SETTING_NAME)) {
+		if (!add_page (editor, ce_page_bond_new, editor->connection, error))
 			goto out;
 	} else {
 		g_warning ("Unhandled setting type '%s'", connection_type);
