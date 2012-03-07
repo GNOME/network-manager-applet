@@ -37,8 +37,6 @@ typedef struct {
 	GObject parent;
 
 	/* private data */
-	GHashTable *editors;
-
 	GtkTreeView *connection_list;
 	GtkTreeModel *model;
 	GtkTreeModelFilter *filter;

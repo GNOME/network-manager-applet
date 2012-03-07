@@ -71,32 +71,6 @@ static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
 #define COL_GTYPE      4
 #define COL_ORDER      5
 
-static void
-error_dialog (GtkWindow *parent, const char *heading, const char *format, ...)
-{
-	GtkWidget *dialog;
-	va_list args;
-	char *message;
-
-	dialog = gtk_message_dialog_new (parent,
-	                                 GTK_DIALOG_DESTROY_WITH_PARENT,
-	                                 GTK_MESSAGE_ERROR,
-	                                 GTK_BUTTONS_CLOSE,
-	                                 "%s", heading);
-
-	va_start (args, format);
-	message = g_strdup_vprintf (format, args);
-	va_end (args);
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", message);
-	g_free (message);
-
-	gtk_widget_show_all (dialog);
-	gtk_window_present (GTK_WINDOW (dialog));
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
-}
-
 static NMRemoteConnection *
 get_active_connection (GtkTreeView *treeview)
 {
@@ -257,281 +231,38 @@ update_connection_row (NMConnectionList *self,
 
 
 /**********************************************/
-/* Connection deleting */
-
-typedef void (*DeleteResultFunc) (NMConnectionList *list,
-                                  GError *error,
-                                  gpointer user_data);
-
-typedef struct {
-	NMConnectionList *list;
-	NMRemoteConnection *original;
-	NMConnectionEditor *editor;
-	DeleteResultFunc callback;
-	gpointer callback_data;
-} DeleteInfo;
-
-static void
-delete_cb (NMRemoteConnection *remote,
-           GError *error,
-           gpointer user_data)
-{
-	DeleteInfo *info = user_data;
-
-	if (info->editor)
-		nm_connection_editor_set_busy (info->editor, FALSE);
-
-	info->callback (info->list, error, info->callback_data);
-	g_free (info);
-}
-
-static void
-delete_connection (NMConnectionList *list,
-                   NMRemoteConnection *connection,
-                   DeleteResultFunc callback,
-                   gpointer user_data)
-{
-	DeleteInfo *info;
-	NMConnectionEditor *editor;
-
-	editor = g_hash_table_lookup (list->editors, connection);
-
-	info = g_malloc0 (sizeof (DeleteInfo));
-	info->list = list;
-	info->callback = callback;
-	info->callback_data = user_data;
-	info->editor = editor;
-
-	if (editor)
-		nm_connection_editor_set_busy (editor, TRUE);
-
-	nm_remote_connection_delete (connection, delete_cb, info);
-}
-
-/**********************************************/
-/* Connection adding */
-
-typedef void (*AddResultFunc) (NMConnectionList *list,
-                               GError *error,
-                               gpointer user_data);
-
-typedef struct {
-	NMConnectionList *list;
-	NMConnectionEditor *editor;
-	AddResultFunc callback;
-	gpointer callback_data;
-} AddInfo;
-
-static void
-add_cb (NMRemoteSettings *settings,
-        NMRemoteConnection *connection,
-        GError *error,
-        gpointer user_data)
-{
-	AddInfo *info = user_data;
-
-	nm_connection_editor_set_busy (info->editor, FALSE);
-	info->callback (info->list, error, info->callback_data);
-	g_free (info);
-}
-
-static void
-add_connection (NMConnectionList *self,
-                NMConnectionEditor *editor,
-                AddResultFunc callback,
-                gpointer callback_data)
-{
-	AddInfo *info;
-
-	info = g_malloc0 (sizeof (AddInfo));
-	info->list = self;
-	info->editor = editor;
-	info->callback = callback;
-	info->callback_data = callback_data;
-
-	nm_connection_editor_set_busy (editor, TRUE);
-
-	nm_remote_settings_add_connection (self->settings,
-	                                   nm_connection_editor_get_connection (editor),
-	                                   add_cb,
-	                                   info);
-}
-
-/**********************************************/
-/* Connection updating */
-
-typedef void (*UpdateResultFunc) (NMConnectionList *list,
-                                  NMRemoteConnection *connection,
-                                  GError *error,
-                                  gpointer user_data);
-
-typedef struct {
-	NMConnectionList *list;
-	NMConnectionEditor *editor;
-	NMRemoteConnection *connection;
-	UpdateResultFunc callback;
-	gpointer callback_data;
-} UpdateInfo;
-
-static void
-update_complete (UpdateInfo *info, GError *error)
-{
-	info->callback (info->list, info->connection, error, info->callback_data);
-	g_object_unref (info->connection);
-	g_free (info);
-}
-
-static void
-update_cb (NMRemoteConnection *connection, GError *error, gpointer user_data)
-{
-	UpdateInfo *info = user_data;
-
-	nm_connection_editor_set_busy (info->editor, FALSE);
-
-	/* Clear secrets so they don't lay around in memory; they'll get requested
-	 * again anyway next time the connection is edited.
-	 */
-	nm_connection_clear_secrets (NM_CONNECTION (connection));
-
-	update_complete (info, error);
-}
-
-static void
-update_connection (NMConnectionList *list,
-                   NMConnectionEditor *editor,
-                   NMRemoteConnection *connection,
-                   UpdateResultFunc callback,
-                   gpointer user_data)
-{
-	UpdateInfo *info;
-	GHashTable *new_settings;
-	GError *error = NULL;
-
-	info = g_malloc0 (sizeof (UpdateInfo));
-	info->list = list;
-	info->editor = editor;
-	info->connection = g_object_ref (connection);
-	info->callback = callback;
-	info->callback_data = user_data;
-
-	/* Connections need the certificates filled because the
-	 * applet private values that we use to store the path to certificates
-	 * and private keys don't go through D-Bus; they are private of course!
-	 */
-	new_settings = nm_connection_to_hash (NM_CONNECTION (connection), NM_SETTING_HASH_FLAG_ALL);
-	if (!nm_connection_replace_settings (NM_CONNECTION (connection), new_settings, &error)) {
-		update_complete (info, error);
-		g_error_free (error);
-		return;
-	}
-
-	nm_connection_editor_set_busy (editor, TRUE);
-	nm_remote_connection_commit_changes (connection, update_cb, info);
-}
-
-/**********************************************/
 /* dialog/UI handling stuff */
 
 static void
-add_finished_cb (NMConnectionList *list, GError *error, gpointer user_data)
-{
-	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
-	GtkWindow *parent;
-
-	if (error) {
-		parent = nm_connection_editor_get_window (editor);
-		error_dialog (parent, _("Connection add failed"), "%s", error->message);
-	}
-
-	g_hash_table_remove (list->editors, nm_connection_editor_get_connection (editor));
-}
-
-
-static void
-add_response_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer user_data)
+add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer user_data)
 {
 	NMConnectionList *list = user_data;
-	GError *add_error = NULL;
 
-	/* if the dialog is busy waiting for authorization or something,
-	 * don't destroy it until authorization returns.
-	 */
-	if (nm_connection_editor_get_busy (editor))
-		return;
-
-	if (response == GTK_RESPONSE_OK) {
-		/* Verify and commit user changes */
-		if (nm_connection_editor_update_connection (editor, &add_error)) {
-			/* Yay we can try to add the connection; it'll get removed from
-			 * list->editors when the add finishes.
-			 */
-			add_connection (list, editor, add_finished_cb, editor);
-			return;
-		} else {
-			error_dialog (GTK_WINDOW (editor->window),
-			              _("Error saving connection"),
-			              _("The property '%s' / '%s' is invalid: %d"),
-			              g_type_name (nm_connection_lookup_setting_type_by_quark (add_error->domain)),
-			              (add_error && add_error->message) ? add_error->message : "(unknown)",
-			              add_error ? add_error->code : -1);
-			g_clear_error (&add_error);
-		}
-	} else if (response == GTK_RESPONSE_NONE) {
-		const char *message = _("An unknown error occurred.");
-
-		if (error && error->message)
-			message = error->message;
-		error_dialog (GTK_WINDOW (editor->window),
-		              _("Error initializing editor"),
-		              "%s", message);
-	}
-
-	g_hash_table_remove (list->editors, nm_connection_editor_get_connection (editor));
+	g_object_unref (editor);
 	g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
 }
 
-
 static void
 really_add_connection (NMConnection *connection,
-                       gboolean canceled,
-                       GError *error,
                        gpointer user_data)
 {
 	NMConnectionList *list = user_data;
 	NMConnectionEditor *editor;
-	GError *editor_error = NULL;
-	const char *message = _("The connection editor dialog could not be initialized due to an unknown error.");
-
-	if (canceled) {
-		g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
-		return;
-	}
 
 	if (!connection) {
-		error_dialog (GTK_WINDOW (list->dialog),
-		              _("Could not create new connection"),
-		              "%s",
-		              (error && error->message) ? error->message : message);
 		g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
 		return;
 	}
 
-	editor = nm_connection_editor_new (connection, list->nm_client, &error);
+	editor = nm_connection_editor_new (GTK_WINDOW (list->dialog), connection,
+	                                   list->nm_client, list->settings);
 	if (!editor) {
 		g_object_unref (connection);
-
-		error_dialog (GTK_WINDOW (list->dialog),
-		              _("Could not edit new connection"),
-		              "%s",
-		              (editor_error && editor_error->message) ? editor_error->message : message);
-		g_clear_error (&editor_error);
 		g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
 		return;
 	}
 
 	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), list);
-	g_hash_table_insert (list->editors, connection, editor);
-
 	nm_connection_editor_run (editor);
 }
 
@@ -547,138 +278,42 @@ add_clicked (GtkButton *button, gpointer user_data)
 	                       list);
 }
 
-typedef struct {
-	NMConnectionList *list;
-	NMConnectionEditor *editor;
-} EditInfo;
-
 static void
-connection_updated_cb (NMConnectionList *list,
-                       NMRemoteConnection *connection,
-                       GError *error,
-                       gpointer user_data)
+edit_done_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer user_data)
 {
-	EditInfo *info = user_data;
-	GtkTreeIter iter;
+	NMConnectionList *list = user_data;
 
-	if (error) {
-		/* Log the error and do nothing.  We don't want to destroy the dialog
-		 * because that's not really useful.  If there's a hard error, the user
-		 * will just have to cancel.  This better handles the case where
-		 * PolicyKit authentication is required, but the user accidentally gets
-		 * their password wrong.  Which used to close the dialog, and that's
-		 * completely unhelpful.  Instead just let them hit 'Save' again.
-		 */
-		g_warning ("Error updating connection '%s': (%d) %s",
-		           nm_connection_get_id (NM_CONNECTION (connection)),
-		           error->code,
-		           error->message);
-		return;
+	if (response == GTK_RESPONSE_OK) {
+		NMRemoteConnection *connection = NM_REMOTE_CONNECTION (nm_connection_editor_get_connection (editor));
+		GtkTreeIter iter;
+
+		if (get_iter_for_connection (list, connection, &iter))
+			update_connection_row (list, &iter, connection);
 	}
 
-	/* Success */
-	if (get_iter_for_connection (list, connection, &iter))
-		update_connection_row (list, &iter, connection);
-
-	/* This callback might be triggered long after it's caller was called,
-	 * if for example we've had to get PolicyKit authentication to perform
-	 * the update.  So only signal we're done with editing when all that is
-	 * complete.
-	 */
-	g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
-
-	g_hash_table_remove (list->editors, connection);
-	g_free (info);
-}
-
-static void
-edit_done_cb (NMConnectionEditor *editor, gint response, GError *error, gpointer user_data)
-{
-	EditInfo *info = user_data;
-	const char *message = _("An unknown error occurred.");
-	NMConnection *connection;
-	GError *edit_error = NULL;
-
-	/* if the dialog is busy waiting for authorization or something,
-	 * don't destroy it until authorization returns.
-	 */
-	if (nm_connection_editor_get_busy (editor))
-		return;
-
-	connection = nm_connection_editor_get_connection (editor);
-	g_assert (connection);
-
-	switch (response) {
-	case GTK_RESPONSE_OK:
-		/* Verify and commit user changes */
-		if (nm_connection_editor_update_connection (editor, &edit_error)) {
-			/* Save the connection to backing storage */
-			update_connection (info->list,
-			                   editor,
-			                   NM_REMOTE_CONNECTION (connection),
-			                   connection_updated_cb,
-			                   info);
-		} else {
-			g_warning ("%s: invalid connection after update: bug in the "
-			           "'%s' / '%s' invalid: %d",
-			           __func__,
-			           g_type_name (nm_connection_lookup_setting_type_by_quark (edit_error->domain)),
-			           edit_error->message, edit_error->code);
-			connection_updated_cb (info->list,
-			                       NM_REMOTE_CONNECTION (connection),
-			                       edit_error,
-			                       NULL);
-			g_error_free (edit_error);
-		}
-		break;
-	case GTK_RESPONSE_NONE:
-		/* Show an error dialog if the editor initialization failed */
-		if (error && error->message)
-			message = error->message;
-		error_dialog (GTK_WINDOW (editor->window), _("Error initializing editor"), "%s", message);
-		/* fall through */
-	case GTK_RESPONSE_CANCEL:
-	default:
-		g_hash_table_remove (info->list->editors, connection);
-		g_signal_emit (info->list, list_signals[EDITING_DONE], 0, 0);
-		g_free (info);
-		break;
-	}
+	g_object_unref (editor);
+	g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
 }
 
 static void
 edit_connection (NMConnectionList *list, NMConnection *connection)
 {
 	NMConnectionEditor *editor;
-	EditInfo *edit_info;
-	GError *error = NULL;
-	const char *message = _("The connection editor dialog could not be initialized due to an unknown error.");
 
 	g_return_if_fail (connection != NULL);
 
 	/* Don't allow two editors for the same connection */
-	editor = (NMConnectionEditor *) g_hash_table_lookup (list->editors, connection);
+	editor = nm_connection_editor_get (connection);
 	if (editor) {
 		nm_connection_editor_present (editor);
 		return;
 	}
 
-	editor = nm_connection_editor_new (NM_CONNECTION (connection), list->nm_client, &error);
-	if (!editor) {
-		error_dialog (GTK_WINDOW (list->dialog),
-		              _("Could not edit connection"),
-		              "%s",
-		              (error && error->message) ? error->message : message);
-		return;
-	}
-
-	edit_info = g_malloc0 (sizeof (EditInfo));
-	edit_info->list = list;
-	edit_info->editor = editor;
-
-	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), edit_info);
-	g_hash_table_insert (list->editors, connection, editor);
-
+	editor = nm_connection_editor_new (GTK_WINDOW (list->dialog),
+	                                   NM_CONNECTION (connection),
+	                                   list->nm_client,
+	                                   list->settings);
+	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), list);
 	nm_connection_editor_run (editor);
 }
 
@@ -689,62 +324,15 @@ do_edit (NMConnectionList *list)
 }
 
 static void
-delete_result_cb (NMConnectionList *list,
-                  GError *error,
-                  gpointer user_data)
-{
-	GtkWindow *parent = GTK_WINDOW (user_data);
-
-	if (error)
-		error_dialog (parent, _("Connection delete failed"), "%s", error->message);
-}
-
-static void
 delete_clicked (GtkButton *button, gpointer user_data)
 {
 	NMConnectionList *list = user_data;
 	NMRemoteConnection *connection;
-	NMConnectionEditor *editor;
-	NMSettingConnection *s_con;
-	GtkWidget *dialog;
-	const char *id;
-	guint result;
 
 	connection = get_active_connection (list->connection_list);
 	g_return_if_fail (connection != NULL);
 
-	editor = g_hash_table_lookup (list->editors, connection);
-	if (editor && nm_connection_editor_get_busy (editor)) {
-		/* Editor already has an operation in progress, raise it */
-		nm_connection_editor_present (editor);
-		return;
-	}
-
-	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
-	g_assert (s_con);
-	id = nm_setting_connection_get_id (s_con);
-
-	dialog = gtk_message_dialog_new (GTK_WINDOW (list->dialog),
-	                                 GTK_DIALOG_DESTROY_WITH_PARENT,
-	                                 GTK_MESSAGE_QUESTION,
-	                                 GTK_BUTTONS_NONE,
-	                                 _("Are you sure you wish to delete the connection %s?"),
-	                                 id);
-	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                        GTK_STOCK_DELETE, GTK_RESPONSE_YES,
-	                        NULL);
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (list->dialog));
-
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
-
-	if (result == GTK_RESPONSE_YES) {
-		delete_connection (list,
-		                   connection,
-		                   delete_result_cb,
-		                   GTK_WINDOW (list->dialog));
-	}
+	delete_connection (GTK_WINDOW (list->dialog), connection, NULL, NULL);
 }
 
 static void
@@ -801,9 +389,6 @@ dispose (GObject *object)
 
 	if (list->dialog)
 		gtk_widget_hide (list->dialog);
-
-	if (list->editors)
-		g_hash_table_destroy (list->editors);
 
 	if (list->gui)
 		g_object_unref (list->gui);
@@ -1235,8 +820,6 @@ nm_connection_list_new (void)
 	                  G_CALLBACK (initial_connections_read),
 	                  list);
 
-	list->editors = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
-
 	list->connection_list = GTK_TREE_VIEW (gtk_builder_get_object (list->gui, "connection_list"));
 	initialize_treeview (list);
 	add_connection_buttons (list);
@@ -1281,9 +864,9 @@ nm_connection_list_create (NMConnectionList *self, GType ctype, const char *deta
 			break;
 	}
 	if (!types[i].name) {
-		error_dialog (NULL,
-		              _("Error creating connection"),
-		              _("Don't know how to create '%s' connections"), g_type_name (ctype));
+		nm_connection_editor_error (NULL,
+		                            _("Error creating connection"),
+		                            _("Don't know how to create '%s' connections"), g_type_name (ctype));
 	} else {
 		new_connection_of_type (GTK_WINDOW (self->dialog),
 		                        detail,
@@ -1337,9 +920,9 @@ connections_read (NMRemoteSettings *settings, EditData *data)
 		                              G_CALLBACK (connections_read), data);
 		return;
 	} else {
-		error_dialog (NULL,
-		              _("Error editing connection"),
-		              _("Did not find a connection with UUID '%s'"), data->uuid);
+		nm_connection_editor_error (NULL,
+		                            _("Error editing connection"),
+		                            _("Did not find a connection with UUID '%s'"), data->uuid);
 	}
 
 	if (signal_id != 0) {

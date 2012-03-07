@@ -24,6 +24,7 @@
 
 #include "new-connection.h"
 #include "nm-connection-list.h"
+#include "nm-connection-editor.h"
 #include "page-ethernet.h"
 #include "page-wifi.h"
 #include "page-mobile.h"
@@ -251,7 +252,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 typedef struct {
 	GtkWindow *parent_window;
 	NMRemoteSettings *settings;
-	PageNewConnectionResultFunc result_func;
+	NewConnectionResultFunc result_func;
 	gpointer user_data;
 } NewConnectionData;
 
@@ -262,13 +263,23 @@ new_connection_result (NMConnection *connection,
                        gpointer user_data)
 {
 	NewConnectionData *ncd = user_data;
-	PageNewConnectionResultFunc result_func;
+	NewConnectionResultFunc result_func;
+	GtkWindow *parent_window;
+	const char *default_message = _("The connection editor dialog could not be initialized due to an unknown error.");
 
 	result_func = ncd->result_func;
 	user_data = ncd->user_data;
+	parent_window = ncd->parent_window;
 	g_slice_free (NewConnectionData, ncd);
 
-	result_func (connection, canceled, error, user_data);
+	if (!connection) {
+		nm_connection_editor_error (parent_window,
+		                            _("Could not create new connection"),
+		                            "%s",
+		                            (error && error->message) ? error->message : default_message);
+	}
+
+	result_func (connection, user_data);
 }
 
 void
@@ -276,7 +287,7 @@ new_connection_of_type (GtkWindow *parent_window,
                         const char *detail,
                         NMRemoteSettings *settings,
                         PageNewConnectionFunc new_func,
-                        PageNewConnectionResultFunc result_func,
+                        NewConnectionResultFunc result_func,
                         gpointer user_data)
 {
 	NewConnectionData *ncd;
@@ -298,7 +309,7 @@ void
 new_connection_dialog (GtkWindow *parent_window,
                        NMRemoteSettings *settings,
                        NewConnectionTypeFilterFunc type_filter_func,
-                       PageNewConnectionResultFunc result_func,
+                       NewConnectionResultFunc result_func,
                        gpointer user_data)
 {
 	new_connection_dialog_full (parent_window, settings,
@@ -314,7 +325,7 @@ new_connection_dialog_full (GtkWindow *parent_window,
                             const char *primary_label,
                             const char *secondary_label,
                             NewConnectionTypeFilterFunc type_filter_func,
-                            PageNewConnectionResultFunc result_func,
+                            NewConnectionResultFunc result_func,
                             gpointer user_data)
 {
 
@@ -377,7 +388,96 @@ new_connection_dialog_full (GtkWindow *parent_window,
 	if (new_func)
 		new_connection_of_type (parent_window, vpn_type, settings, new_func, result_func, user_data);
 	else
-		result_func (NULL, TRUE, NULL, user_data);
+		result_func (NULL, user_data);
 
 	g_free (vpn_type);
+}
+
+typedef struct {
+	GtkWindow *parent_window;
+	NMConnectionEditor *editor;
+	DeleteConnectionResultFunc result_func;
+	gpointer user_data;
+} DeleteInfo;
+
+static void
+delete_cb (NMRemoteConnection *connection,
+           GError *error,
+           gpointer user_data)
+{
+	DeleteInfo *info = user_data;
+	DeleteConnectionResultFunc result_func;
+
+	if (error) {
+		nm_connection_editor_error (info->parent_window,
+		                            _("Connection delete failed"),
+		                            "%s", error->message);
+	}
+
+	if (info->editor) {
+		nm_connection_editor_set_busy (info->editor, FALSE);
+		g_object_unref (info->editor);
+	}
+	if (info->parent_window)
+		g_object_unref (info->parent_window);
+
+	result_func = info->result_func;
+	user_data = info->user_data;
+	g_free (info);
+
+	if (result_func)
+		(*result_func) (connection, error == NULL, user_data);
+}
+
+void
+delete_connection (GtkWindow *parent_window,
+                   NMRemoteConnection *connection,
+                   DeleteConnectionResultFunc result_func,
+                   gpointer user_data)
+{
+	NMConnectionEditor *editor;
+	NMSettingConnection *s_con;
+	GtkWidget *dialog;
+	const char *id;
+	guint result;
+	DeleteInfo *info;
+
+	editor = nm_connection_editor_get (NM_CONNECTION (connection));
+	if (editor && nm_connection_editor_get_busy (editor)) {
+		/* Editor already has an operation in progress, raise it */
+		nm_connection_editor_present (editor);
+		return;
+	}
+
+	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
+	g_assert (s_con);
+	id = nm_setting_connection_get_id (s_con);
+
+	dialog = gtk_message_dialog_new (parent_window,
+	                                 GTK_DIALOG_DESTROY_WITH_PARENT,
+	                                 GTK_MESSAGE_QUESTION,
+	                                 GTK_BUTTONS_NONE,
+	                                 _("Are you sure you wish to delete the connection %s?"),
+	                                 id);
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                        GTK_STOCK_DELETE, GTK_RESPONSE_YES,
+	                        NULL);
+
+	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	if (result != GTK_RESPONSE_YES)
+		return;
+
+	info = g_malloc0 (sizeof (DeleteInfo));
+	info->editor = editor ? g_object_ref (editor) : NULL;
+	info->parent_window = parent_window ? g_object_ref (parent_window) : NULL;
+	info->result_func = result_func;
+	info->user_data = user_data;
+
+	if (editor)
+		nm_connection_editor_set_busy (editor, TRUE);
+
+	nm_remote_connection_delete (connection, delete_cb, info);
 }

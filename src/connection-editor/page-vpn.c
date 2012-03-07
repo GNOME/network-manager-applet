@@ -279,6 +279,15 @@ vpn_type_filter_func (GType type, gpointer user_data)
 	return type == NM_TYPE_SETTING_VPN;
 }
 
+static void
+vpn_type_result_func (NMConnection *connection, gpointer user_data)
+{
+	NewVpnInfo *info = user_data;
+
+	info->result_func (connection, connection == NULL, NULL, info->user_data);
+	g_slice_free (NewVpnInfo, info);
+}
+
 void
 vpn_connection_new (GtkWindow *parent,
                     const char *detail,
@@ -290,15 +299,20 @@ vpn_connection_new (GtkWindow *parent,
 	NMSetting *s_vpn;
 
 	if (!detail) {
+		NewVpnInfo *info;
+
 		/* This will happen if nm-c-e is launched from the command line
 		 * with "--create --type vpn". Dump the user back into the
 		 * new connection dialog to let them pick a subtype now.
 		 */
+		info = g_slice_new (NewVpnInfo);
+		info->result_func = result_func;
+		info->user_data = user_data;
 		new_connection_dialog_full (parent, settings,
 		                            NEW_VPN_CONNECTION_PRIMARY_LABEL,
 		                            NEW_VPN_CONNECTION_SECONDARY_LABEL,
 		                            vpn_type_filter_func,
-		                            result_func, user_data);
+		                            vpn_type_result_func, info);
 		return;
 	}
 

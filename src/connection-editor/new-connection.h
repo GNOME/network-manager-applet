@@ -34,26 +34,37 @@ ConnectionTypeData *get_connection_type_list (void);
 
 typedef gboolean (*NewConnectionTypeFilterFunc) (GType type,
                                                  gpointer user_data);
+typedef void (*NewConnectionResultFunc) (NMConnection *connection,
+                                         gpointer user_data);
 
 void new_connection_dialog      (GtkWindow *parent_window,
                                  NMRemoteSettings *settings,
                                  NewConnectionTypeFilterFunc type_filter_func,
-                                 PageNewConnectionResultFunc result_func,
+                                 NewConnectionResultFunc result_func,
                                  gpointer user_data);
 void new_connection_dialog_full (GtkWindow *parent_window,
                                  NMRemoteSettings *settings,
                                  const char *primary_label,
                                  const char *secondary_label,
                                  NewConnectionTypeFilterFunc type_filter_func,
-                                 PageNewConnectionResultFunc result_func,
+                                 NewConnectionResultFunc result_func,
                                  gpointer user_data);
 
 void new_connection_of_type (GtkWindow *parent_window,
                              const char *detail,
                              NMRemoteSettings *settings,
                              PageNewConnectionFunc new_func,
-                             PageNewConnectionResultFunc result_func,
+                             NewConnectionResultFunc result_func,
                              gpointer user_data);
+
+typedef void (*DeleteConnectionResultFunc) (NMRemoteConnection *connection,
+                                            gboolean deleted,
+                                            gpointer user_data);
+
+void delete_connection (GtkWindow *parent_window,
+                        NMRemoteConnection *connection,
+                        DeleteConnectionResultFunc result_func,
+                        gpointer user_data);
 
 #endif  /* __CONNECTION_HELPERS_H__ */
 

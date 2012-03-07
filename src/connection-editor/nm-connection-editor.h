@@ -25,6 +25,7 @@
 #include <glib-object.h>
 
 #include <nm-client.h>
+#include <nm-remote-settings.h>
 #include "utils.h"
 
 #define NM_TYPE_CONNECTION_EDITOR    (nm_connection_editor_get_type ())
@@ -37,12 +38,15 @@ typedef struct {
 	GObject parent;
 	gboolean disposed;
 
+	GtkWindow *parent_window;
 	NMClient *client;
 	guint permission_id;
+	NMRemoteSettings *settings;
 
 	/* private data */
 	NMConnection *connection;
 	NMConnection *orig_connection;
+	gboolean is_new_connection;
 
 	GetSecretsInfo *secrets_call;
 	GSList *pending_secrets_calls;
@@ -71,16 +75,23 @@ typedef struct {
 } NMConnectionEditorClass;
 
 GType               nm_connection_editor_get_type (void);
-NMConnectionEditor *nm_connection_editor_new (NMConnection *connection,
+NMConnectionEditor *nm_connection_editor_new (GtkWindow *parent_window,
+                                              NMConnection *connection,
                                               NMClient *client,
-                                              GError **error);
+                                              NMRemoteSettings *settings);
+NMConnectionEditor *nm_connection_editor_get (NMConnection *connection);
 
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
 NMConnection *      nm_connection_editor_get_connection (NMConnectionEditor *editor);
-gboolean            nm_connection_editor_update_connection (NMConnectionEditor *editor, GError **error);
+gboolean            nm_connection_editor_update_connection (NMConnectionEditor *editor);
 GtkWindow *         nm_connection_editor_get_window (NMConnectionEditor *editor);
 gboolean            nm_connection_editor_get_busy (NMConnectionEditor *editor);
 void                nm_connection_editor_set_busy (NMConnectionEditor *editor, gboolean busy);
+
+void                nm_connection_editor_error (GtkWindow *parent,
+                                                const char *heading,
+                                                const char *format,
+                                                ...);
 
 #endif
