@@ -136,9 +136,8 @@ ce_page_get_mac_list (CEPage *self)
 }
 
 void
-ce_page_mac_to_entry (const GByteArray *mac, GtkEntry *entry)
+ce_page_mac_to_entry (const GByteArray *mac, int type, GtkEntry *entry)
 {
-	struct ether_addr addr;
 	char *str_addr;
 
 	g_return_if_fail (entry != NULL);
@@ -147,51 +146,17 @@ ce_page_mac_to_entry (const GByteArray *mac, GtkEntry *entry)
 	if (!mac || !mac->len)
 		return;
 
-	memcpy (addr.ether_addr_octet, mac->data, ETH_ALEN);
-	/* we like leading zeros and all-caps, instead
-	 * of what glibc's ether_ntop() gives us
-	 */
-	str_addr = g_strdup_printf ("%02X:%02X:%02X:%02X:%02X:%02X",
-	                            addr.ether_addr_octet[0], addr.ether_addr_octet[1],
-	                            addr.ether_addr_octet[2], addr.ether_addr_octet[3],
-	                            addr.ether_addr_octet[4], addr.ether_addr_octet[5]);
+	if (mac->len != nm_utils_hwaddr_len (type))
+		return;
+
+	str_addr = nm_utils_hwaddr_ntoa (mac->data, type);
 	gtk_entry_set_text (entry, str_addr);
 	g_free (str_addr);
 }
 
-static gboolean
-is_mac_valid (const struct ether_addr *addr)
-{
-	guint8 invalid1[ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-	guint8 invalid2[ETH_ALEN] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-	guint8 invalid3[ETH_ALEN] = {0x44, 0x44, 0x44, 0x44, 0x44, 0x44};
-	guint8 invalid4[ETH_ALEN] = {0x00, 0x30, 0xb4, 0x00, 0x00, 0x00}; /* prism54 dummy MAC */
-
-	g_return_val_if_fail (addr != NULL, FALSE);
-
-	/* Compare the AP address the card has with invalid ethernet MAC addresses. */
-	if (!memcmp (addr->ether_addr_octet, &invalid1, ETH_ALEN))
-		return FALSE;
-
-	if (!memcmp (addr->ether_addr_octet, &invalid2, ETH_ALEN))
-		return FALSE;
-
-	if (!memcmp (addr->ether_addr_octet, &invalid3, ETH_ALEN))
-		return FALSE;
-
-	if (!memcmp (addr->ether_addr_octet, &invalid4, ETH_ALEN))
-		return FALSE;
-
-	if (addr->ether_addr_octet[0] & 1) /* Multicast addresses */
-		return FALSE;
-
-	return TRUE;
-}
-
 GByteArray *
-ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid)
+ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid)
 {
-	struct ether_addr *ether;
 	const char *temp;
 	GByteArray *mac;
 
@@ -205,15 +170,20 @@ ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid)
 	if (!temp || !strlen (temp))
 		return NULL;
 
-	ether = ether_aton (temp);
-	if (!ether || !is_mac_valid (ether)) {
+	mac = nm_utils_hwaddr_atoba (temp, type);
+	if (!mac) {
 		if (invalid)
 			*invalid = TRUE;
 		return NULL;
 	}
 
-	mac = g_byte_array_sized_new (ETH_ALEN);
-	g_byte_array_append (mac, (const guint8 *) ether->ether_addr_octet, ETH_ALEN);
+	if (type == ARPHRD_ETHER && !utils_ether_addr_valid ((struct ether_addr *)mac->data)) {
+		g_byte_array_free (mac, TRUE);
+		if (invalid)
+			*invalid = TRUE;
+		return NULL;
+	}
+
 	return mac;
 }
 

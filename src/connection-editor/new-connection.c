@@ -29,6 +29,7 @@
 #include "page-mobile.h"
 #include "page-wimax.h"
 #include "page-dsl.h"
+#include "page-infiniband.h"
 #include "page-vpn.h"
 #include "vpn-helpers.h"
 
@@ -112,6 +113,12 @@ get_connection_type_list (void)
 	ICON_LOAD (data.icon, "nm-device-wired");
 	data.new_connection_func = dsl_connection_new;
 	data.setting_type = NM_TYPE_SETTING_PPPOE;
+	g_array_append_val (array, data);
+
+	data.name = _("InfiniBand");
+	ICON_LOAD (data.icon, "nm-device-wired");
+	data.new_connection_func = infiniband_connection_new;
+	data.setting_type = NM_TYPE_SETTING_INFINIBAND;
 	g_array_append_val (array, data);
 
 	/* Add "VPN" only if there are plugins */

@@ -371,7 +371,8 @@ populate_ui (CEPageWireless *self)
 	g_signal_connect_swapped (priv->channel, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	/* BSSID */
-	ce_page_mac_to_entry (nm_setting_wireless_get_bssid (setting), priv->bssid);
+	ce_page_mac_to_entry (nm_setting_wireless_get_bssid (setting),
+	                      ARPHRD_ETHER, priv->bssid);
 	g_signal_connect_swapped (priv->bssid, "changed", G_CALLBACK (ce_page_changed), self);
 
 	/* Device MAC address */
@@ -409,7 +410,8 @@ populate_ui (CEPageWireless *self)
 	g_signal_connect_swapped (priv->device_mac, "changed", G_CALLBACK (ce_page_changed), self);
 
 	/* Cloned MAC address */
-	ce_page_mac_to_entry (nm_setting_wireless_get_cloned_mac_address (setting), priv->cloned_mac);
+	ce_page_mac_to_entry (nm_setting_wireless_get_cloned_mac_address (setting),
+	                      ARPHRD_ETHER, priv->cloned_mac);
 	g_signal_connect_swapped (priv->cloned_mac, "changed", G_CALLBACK (ce_page_changed), self);
 
 	gtk_spin_button_set_value (priv->rate, (gdouble) nm_setting_wireless_get_rate (setting));
@@ -529,11 +531,11 @@ ui_to_setting (CEPageWireless *self)
 		break;
 	}
 
-	bssid = ce_page_entry_to_mac (priv->bssid, NULL);
+	bssid = ce_page_entry_to_mac (priv->bssid, ARPHRD_ETHER, NULL);
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry)
-		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), NULL);
-	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, NULL);
+		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
+	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, NULL);
 
 	g_object_set (priv->setting,
 				  NM_SETTING_WIRELESS_SSID, ssid,
@@ -569,7 +571,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	GByteArray *ignore;
 	GtkWidget *entry;
 
-	ignore = ce_page_entry_to_mac (priv->bssid, &invalid);
+	ignore = ce_page_entry_to_mac (priv->bssid, ARPHRD_ETHER, &invalid);
 	if (invalid)
 		return FALSE;
 	if (ignore)
@@ -577,14 +579,14 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry) {
-		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), &invalid);
+		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, &invalid);
 		if (invalid)
 			return FALSE;
 		if (ignore)
 			g_byte_array_free (ignore, TRUE);
 	}
 
-	ignore = ce_page_entry_to_mac (priv->cloned_mac, &invalid);
+	ignore = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, &invalid);
 	if (invalid)
 		return FALSE;
 	if (ignore)

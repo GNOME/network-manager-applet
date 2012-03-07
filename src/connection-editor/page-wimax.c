@@ -187,7 +187,7 @@ ui_to_setting (CEPageWimax *self)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry)
-		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), NULL);
+		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
 
 	g_object_set (priv->setting,
 	              NM_SETTING_WIMAX_NETWORK_NAME, name,
@@ -214,7 +214,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry) {
-		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), &invalid);
+		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, &invalid);
 		if (invalid)
 			return FALSE;
 		if (ignore)

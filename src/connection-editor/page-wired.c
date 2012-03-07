@@ -206,7 +206,8 @@ populate_ui (CEPageWired *self)
 	g_signal_connect (priv->device_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* Cloned MAC address */
-	ce_page_mac_to_entry (nm_setting_wired_get_cloned_mac_address (setting), priv->cloned_mac);
+	ce_page_mac_to_entry (nm_setting_wired_get_cloned_mac_address (setting),
+	                      ARPHRD_ETHER, priv->cloned_mac);
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */
@@ -339,8 +340,8 @@ ui_to_setting (CEPageWired *self)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry)
-		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), NULL);
-	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, NULL);
+		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
+	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, NULL);
 
 	g_object_set (priv->setting,
 				  NM_SETTING_WIRED_MAC_ADDRESS, device_mac,
@@ -370,14 +371,14 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry) {
-		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), &invalid);
+		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, &invalid);
 		if (invalid)
 			return FALSE;
 		if (ignore)
 			g_byte_array_free (ignore, TRUE);
 	}
 
-	ignore = ce_page_entry_to_mac (priv->cloned_mac, &invalid);
+	ignore = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, &invalid);
 	if (invalid)
 		return FALSE;
 	if (ignore)

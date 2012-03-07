@@ -34,6 +34,9 @@
 #include <nm-remote-settings.h>
 #include "utils.h"
 
+/* for ARPHRD_ETHER / ARPHRD_INFINIBAND for MAC utilies */
+#include <net/if_arp.h>
+
 typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
                                              gboolean canceled,
                                              GError *error,
@@ -110,9 +113,9 @@ char **ce_page_get_mac_list (CEPage *self);
 
 void ce_page_changed (CEPage *self);
 
-void ce_page_mac_to_entry (const GByteArray *mac, GtkEntry *entry);
+void ce_page_mac_to_entry (const GByteArray *mac, int type, GtkEntry *entry);
 
-GByteArray *ce_page_entry_to_mac (GtkEntry *entry, gboolean *invalid);
+GByteArray *ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid);
 
 gint ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
 
