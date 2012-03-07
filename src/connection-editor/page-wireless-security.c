@@ -155,11 +155,13 @@ wireless_security_combo_changed (GtkComboBox *combo,
 	sec = wireless_security_combo_get_active (self);
 	if (sec) {
 		GtkWidget *sec_widget;
-		GtkWidget *widget;
+		GtkWidget *widget, *parent;
 
 		sec_widget = wireless_security_get_widget (sec);
 		g_assert (sec_widget);
-		gtk_widget_unparent (sec_widget);
+		parent = gtk_widget_get_parent (sec_widget);
+		if (parent)
+			gtk_container_remove (GTK_CONTAINER (parent), sec_widget);
 
 		widget = GTK_WIDGET (gtk_builder_get_object (CE_PAGE (self)->builder, "wireless_security_combo_label"));
 		gtk_size_group_add_widget (self->group, widget);

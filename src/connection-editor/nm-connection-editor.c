@@ -566,7 +566,7 @@ static void
 page_initialized (CEPage *page, GError *error, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
-	GtkWidget *widget;
+	GtkWidget *widget, *parent;
 	GtkNotebook *notebook;
 	GtkWidget *label;
 
@@ -580,7 +580,9 @@ page_initialized (CEPage *page, GError *error, gpointer user_data)
 	notebook = GTK_NOTEBOOK (gtk_builder_get_object (editor->builder, "notebook"));
 	label = gtk_label_new (ce_page_get_title (page));
 	widget = ce_page_get_page (page);
-	gtk_widget_unparent (widget);
+	parent = gtk_widget_get_parent (widget);
+	if (parent)
+		gtk_container_remove (GTK_CONTAINER (parent), widget);
 	gtk_notebook_append_page (notebook, widget, label);
 
 	/* Move the page from the initializing list to the main page list */

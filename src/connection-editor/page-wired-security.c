@@ -73,6 +73,7 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (self);
+	GtkWidget *parent_container;
 
 	if (error)
 		return;
@@ -85,7 +86,9 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 
 	wireless_security_set_changed_notify (priv->security, stuff_changed, self);
 	priv->security_widget = wireless_security_get_widget (priv->security);
-	gtk_widget_unparent (priv->security_widget);
+	parent_container = gtk_widget_get_parent (priv->security_widget);
+	if (parent_container)
+		gtk_container_remove (GTK_CONTAINER (parent_container), priv->security_widget);
 
 	gtk_toggle_button_set_active (priv->enabled, priv->initial_have_8021x);
 	g_signal_connect (priv->enabled, "toggled", G_CALLBACK (enable_toggled), self);
