@@ -56,6 +56,7 @@ typedef struct {
 	GtkWidget *window;
 	GtkWidget *ok_button;
 	GtkWidget *cancel_button;
+	GtkWidget *export_button;
 	guint nag_id;
 
 	gboolean busy;

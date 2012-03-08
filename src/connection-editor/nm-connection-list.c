@@ -42,7 +42,6 @@
 #include <nm-setting-pppoe.h>
 #include <nm-setting-ppp.h>
 #include <nm-setting-serial.h>
-#include <nm-vpn-plugin-ui-interface.h>
 #include <nm-utils.h>
 #include <nm-remote-settings.h>
 
@@ -841,169 +840,6 @@ pk_button_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 }
 
 static void
-vpn_list_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
-{
-	ActionInfo *info = (ActionInfo *) user_data;
-	NMVpnPluginUiInterface *plugin;
-	NMRemoteConnection *connection;
-	NMSettingVPN *s_vpn;
-	const char *service_type;
-	GtkTreeIter iter;
-	GtkTreeModel *model;
-	guint32 caps;
-	gboolean supported = FALSE;
-
-	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
-		goto done;
-
-	connection = get_active_connection (info->treeview);
-	if (!connection)
-		goto done;
-
-	s_vpn = nm_connection_get_setting_vpn (NM_CONNECTION (connection));
-	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
-
-	if (!service_type)
-		goto done;
-
-	plugin = vpn_get_plugin_by_service (service_type);
-	if (!plugin)
-		goto done;
-
-	caps = nm_vpn_plugin_ui_interface_get_capabilities (plugin);
-	if (caps & NM_VPN_PLUGIN_UI_CAPABILITY_EXPORT)
-		supported = TRUE;
-
-done:
-	gtk_widget_set_sensitive (info->button, supported);
-}
-
-static void
-import_success_cb (NMConnection *connection, gpointer user_data)
-{
-	ActionInfo *info = (ActionInfo *) user_data;
-	NMConnectionEditor *editor;
-	NMSettingConnection *s_con;
-	NMSettingVPN *s_vpn;
-	const char *service_type;
-	char *s;
-	GError *error = NULL;
-	const char *message = _("The connection editor dialog could not be initialized due to an unknown error.");
-
-	/* Basic sanity checks of the connection */
-	s_con = nm_connection_get_setting_connection (connection);
-	if (!s_con) {
-		s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-		nm_connection_add_setting (connection, NM_SETTING (s_con));
-	}
-
-	s = (char *) nm_setting_connection_get_id (s_con);
-	if (!s) {
-		GSList *connections;
-
-		connections = nm_remote_settings_list_connections (info->list->settings);
-		s = ce_page_get_next_available_name (connections, _("VPN connection %d"));
-		g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
-		g_free (s);
-
-		g_slist_free (connections);
-	}
-
-	s = (char *) nm_setting_connection_get_connection_type (s_con);
-	if (!s || strcmp (s, NM_SETTING_VPN_SETTING_NAME))
-		g_object_set (s_con, NM_SETTING_CONNECTION_TYPE, NM_SETTING_VPN_SETTING_NAME, NULL);
-
-	s = (char *) nm_setting_connection_get_uuid (s_con);
-	if (!s) {
-		s = nm_utils_uuid_generate ();
-		g_object_set (s_con, NM_SETTING_CONNECTION_UUID, s, NULL);
-		g_free (s);
-	}
-
-	s_vpn = nm_connection_get_setting_vpn (connection);
-	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
-
-	if (!service_type || !strlen (service_type)) {
-		GtkWidget *dialog;
-
-		g_object_unref (connection);
-
-		dialog = gtk_message_dialog_new (NULL,
-		                                 GTK_DIALOG_DESTROY_WITH_PARENT,
-		                                 GTK_MESSAGE_ERROR,
-		                                 GTK_BUTTONS_OK,
-		                                 _("Cannot import VPN connection"));
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-		                                 _("The VPN plugin failed to import the VPN connection correctly\n\nError: no VPN service type."));
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), info->list_window);
-		g_signal_connect (dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
-		g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
-		gtk_widget_show_all (dialog);
-		gtk_window_present (GTK_WINDOW (dialog));
-		return;
-	}
-
-	editor = nm_connection_editor_new (connection, info->list->nm_client, &error);
-	if (!editor) {
-		g_object_unref (connection);
-		error_dialog (info->list_window,
-		              _("Could not edit imported connection"),
-		              "%s",
-		              (error && error->message) ? error->message : message);
-		return;
-	}
-
-	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), info);
-	g_hash_table_insert (info->list->editors, connection, editor);
-
-	nm_connection_editor_run (editor);
-}
-
-static void
-import_vpn_cb (GtkButton *button, gpointer user_data)
-{
-	vpn_import (import_success_cb, (ActionInfo *) user_data);
-}
-
-static void
-vpn_export_get_secrets_cb (NMRemoteConnection *connection,
-                           GHashTable *secrets,
-                           GError *error,
-                           gpointer user_data)
-{
-	NMConnection *tmp;
-
-	/* We don't really care about errors; if the user couldn't authenticate
-	 * then just let them export everything except secrets.  Duplicate the
-	 * connection so that we don't let secrets sit around in the original
-	 * one.
-	 */
-	tmp = nm_connection_duplicate (NM_CONNECTION (connection));
-	g_assert (tmp);
-	if (secrets)
-		nm_connection_update_secrets (tmp, NM_SETTING_VPN_SETTING_NAME, secrets, NULL);
-	vpn_export (tmp);
-	g_object_unref (tmp);
-}
-
-
-static void
-export_vpn_cb (GtkButton *button, gpointer user_data)
-{
-	ActionInfo *info = (ActionInfo *) user_data;
-	NMRemoteConnection *connection;
-
-	connection = get_active_connection (info->treeview);
-	if (connection) {
-		/* Grab secrets if we can */
-		nm_remote_connection_get_secrets (connection,
-		                                  NM_SETTING_VPN_SETTING_NAME,
-		                                  vpn_export_get_secrets_cb,
-		                                  NULL);
-	}
-}
-
-static void
 connection_double_clicked_cb (GtkTreeView *tree_view,
                               GtkTreePath *path,
                               GtkTreeViewColumn *column,
@@ -1225,19 +1061,6 @@ action_info_set_new_func (ActionInfo *info,
 }
 
 static void
-check_vpn_import_supported (gpointer key, gpointer data, gpointer user_data)
-{
-	NMVpnPluginUiInterface *plugin = NM_VPN_PLUGIN_UI_INTERFACE (data);
-	gboolean *import_supported = user_data;
-
-	if (*import_supported)
-		return;
-
-	if (nm_vpn_plugin_ui_interface_get_capabilities (plugin) & NM_VPN_PLUGIN_UI_CAPABILITY_IMPORT)
-		*import_supported = TRUE;
-}
-
-static void
 add_connection_buttons (NMConnectionList *self,
                         const char *prefix,
                         GtkTreeView *treeview,
@@ -1309,34 +1132,6 @@ add_connection_buttons (NMConnectionList *self,
 	g_signal_connect (button, "clicked", G_CALLBACK (delete_clicked), info);
 	g_signal_connect (selection, "changed", G_CALLBACK (pk_button_selection_changed_cb), info);
 	pk_button_selection_changed_cb (selection, info);
-
-	/* Import */
-	name = g_strdup_printf ("%s_import", prefix);
-	button = GTK_WIDGET (gtk_builder_get_object (self->gui, name));
-	g_free (name);
-	if (button) {
-		gboolean import_supported = FALSE;
-		GHashTable *plugins;
-
-		info = action_info_new (self, "import", ctype, treeview, GTK_WINDOW (self->dialog), button);
-		g_signal_connect (button, "clicked", G_CALLBACK (import_vpn_cb), info);
-
-		plugins = vpn_get_plugins (NULL);
-		if (plugins)
-			g_hash_table_foreach (plugins, check_vpn_import_supported, &import_supported);
-		gtk_widget_set_sensitive (button, import_supported);
-	}
-
-	/* Export */
-	name = g_strdup_printf ("%s_export", prefix);
-	button = GTK_WIDGET (gtk_builder_get_object (self->gui, name));
-	g_free (name);
-	if (button) {
-		info = action_info_new (self, "export", ctype, treeview, GTK_WINDOW (self->dialog), button);
-		g_signal_connect (button, "clicked", G_CALLBACK (export_vpn_cb), info);
-		g_signal_connect (selection, "changed", G_CALLBACK (vpn_list_selection_changed_cb), info);
-		gtk_widget_set_sensitive (button, FALSE);
-	}
 }
 
 static void

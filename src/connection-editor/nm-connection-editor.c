@@ -235,6 +235,7 @@ connection_editor_validate (NMConnectionEditor *editor)
 
 done:
 	ce_polkit_button_set_master_sensitive (CE_POLKIT_BUTTON (editor->ok_button), valid);
+	gtk_widget_set_sensitive (editor->export_button, valid);
 	update_sensitivity (editor);
 }
 
@@ -298,6 +299,7 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 
 	editor->window = GTK_WIDGET (gtk_builder_get_object (editor->builder, "nm-connection-editor"));
 	editor->cancel_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "cancel_button"));
+	editor->export_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "export_button"));
 	editor->all_checkbutton = GTK_WIDGET (gtk_builder_get_object (editor->builder, "system_checkbutton"));
 }
 
@@ -588,6 +590,9 @@ page_initialized (CEPage *page, GError *error, gpointer user_data)
 	if (parent)
 		gtk_container_remove (GTK_CONTAINER (parent), widget);
 	gtk_notebook_append_page (notebook, widget, label);
+
+	if (CE_IS_PAGE_VPN (page) && ce_page_vpn_can_export (CE_PAGE_VPN (page)))
+		gtk_widget_show (editor->export_button);
 
 	/* Move the page from the initializing list to the main page list */
 	editor->initializing_pages = g_slist_remove (editor->initializing_pages, page);
@@ -882,6 +887,42 @@ ok_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 	g_signal_emit (self, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_OK, NULL);
 }
 
+static void
+vpn_export_get_secrets_cb (NMRemoteConnection *connection,
+                           GHashTable *secrets,
+                           GError *error,
+                           gpointer user_data)
+{
+	NMConnection *tmp;
+
+	/* We don't really care about errors; if the user couldn't authenticate
+	 * then just let them export everything except secrets.  Duplicate the
+	 * connection so that we don't let secrets sit around in the original
+	 * one.
+	 */
+	tmp = nm_connection_duplicate (NM_CONNECTION (connection));
+	g_assert (tmp);
+	if (secrets)
+		nm_connection_update_secrets (tmp, NM_SETTING_VPN_SETTING_NAME, secrets, NULL);
+	vpn_export (tmp);
+	g_object_unref (tmp);
+}
+
+static void
+export_button_clicked_cb (GtkWidget *widget, gpointer user_data)
+{
+	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
+
+	if (NM_IS_REMOTE_CONNECTION (self->orig_connection)) {
+		/* Grab secrets if we can */
+		nm_remote_connection_get_secrets (NM_REMOTE_CONNECTION (self->orig_connection),
+		                                  NM_SETTING_VPN_SETTING_NAME,
+		                                  vpn_export_get_secrets_cb,
+		                                  self);
+	} else
+		vpn_export (self->connection);
+}
+
 void
 nm_connection_editor_run (NMConnectionEditor *self)
 {
@@ -894,6 +935,8 @@ nm_connection_editor_run (NMConnectionEditor *self)
 	                  G_CALLBACK (ok_button_clicked_cb), self);
 	g_signal_connect (G_OBJECT (self->cancel_button), "clicked",
 	                  G_CALLBACK (cancel_button_clicked_cb), self);
+	g_signal_connect (G_OBJECT (self->export_button), "clicked",
+	                  G_CALLBACK (export_button_clicked_cb), self);
 
 	nm_connection_editor_present (self);
 }

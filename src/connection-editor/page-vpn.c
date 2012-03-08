@@ -29,6 +29,7 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>
+#include <nm-utils.h>
 
 #define NM_VPN_API_SUBJECT_TO_CHANGE
 #include <nm-vpn-plugin-ui-interface.h>
@@ -135,6 +136,14 @@ ce_page_vpn_new (NMConnection *connection,
 	return CE_PAGE (self);
 }
 
+gboolean
+ce_page_vpn_can_export (CEPageVpn *page)
+{
+	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (page);
+
+	return 	(nm_vpn_plugin_ui_interface_get_capabilities (priv->plugin) & NM_VPN_PLUGIN_UI_CAPABILITY_EXPORT) != 0;
+}
+
 static gboolean
 validate (CEPage *page, NMConnection *connection, GError **error)
 {
@@ -181,6 +190,67 @@ ce_page_vpn_class_init (CEPageVpnClass *vpn_class)
 	parent_class->validate = validate;
 }
 
+typedef struct {
+	PageNewConnectionResultFunc result_func;
+	PageGetConnectionsFunc get_connections_func;
+	gpointer user_data;
+} NewVpnInfo;
+
+static void
+import_cb (NMConnection *connection, gpointer user_data)
+{
+	NewVpnInfo *info = (NewVpnInfo *) user_data;
+	NMSettingConnection *s_con;
+	NMSettingVPN *s_vpn;
+	const char *service_type;
+	char *s;
+	GError *error = NULL;
+
+	/* Basic sanity checks of the connection */
+	s_con = nm_connection_get_setting_connection (connection);
+	if (!s_con) {
+		s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
+		nm_connection_add_setting (connection, NM_SETTING (s_con));
+	}
+
+	s = (char *) nm_setting_connection_get_id (s_con);
+	if (!s) {
+		GSList *connections;
+
+		connections = info->get_connections_func (info->user_data);
+		s = ce_page_get_next_available_name (connections, _("VPN connection %d"));
+		g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
+		g_free (s);
+
+		g_slist_free (connections);
+	}
+
+	s = (char *) nm_setting_connection_get_connection_type (s_con);
+	if (!s || strcmp (s, NM_SETTING_VPN_SETTING_NAME))
+		g_object_set (s_con, NM_SETTING_CONNECTION_TYPE, NM_SETTING_VPN_SETTING_NAME, NULL);
+
+	s = (char *) nm_setting_connection_get_uuid (s_con);
+	if (!s) {
+		s = nm_utils_uuid_generate ();
+		g_object_set (s_con, NM_SETTING_CONNECTION_UUID, s, NULL);
+		g_free (s);
+	}
+
+	s_vpn = nm_connection_get_setting_vpn (connection);
+	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
+
+	if (!service_type || !strlen (service_type)) {
+		g_object_unref (connection);
+		connection = NULL;
+
+		error = g_error_new_literal (NMA_ERROR, NMA_ERROR_GENERIC,
+		                             _("The VPN plugin failed to import the VPN connection correctly\n\nError: no VPN service type."));
+	}
+
+	info->result_func (connection, FALSE, error, info->user_data);
+	g_clear_error (&error);
+	g_slice_free (NewVpnInfo, info);
+}
 
 void
 vpn_connection_new (GtkWindow *parent,
@@ -195,6 +265,18 @@ vpn_connection_new (GtkWindow *parent,
 	service = vpn_ask_connection_type (parent);
 	if (!service) {
 		(*result_func) (NULL, TRUE, NULL, user_data);
+		return;
+	}
+
+	if (!strcmp (service, "import")) {
+		NewVpnInfo *info;
+
+		g_free (service);
+		info = g_slice_new (NewVpnInfo);
+		info->result_func = result_func;
+		info->get_connections_func = get_connections_func;
+		info->user_data = user_data;
+		vpn_import (import_cb, info);
 		return;
 	}
 
