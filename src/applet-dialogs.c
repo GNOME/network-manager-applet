@@ -272,19 +272,14 @@ static GtkWidget *
 create_info_notebook_label (NMConnection *connection, gboolean is_default)
 {
 	GtkWidget *label;
-	NMSettingConnection *s_con;
-	GString *str;
+	char *str;
 
-	s_con = NM_SETTING_CONNECTION (nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION));
-	g_assert (s_con);
-
-	str = g_string_new (nm_setting_connection_get_id (s_con));
-
-	if (is_default)
-		str = g_string_append (str, " (default)");
-
-	label = gtk_label_new (str->str);
-	g_string_free (str, TRUE);
+	if (is_default) {
+		str = g_strdup_printf (_("%s (default)"), nm_connection_get_id (connection));
+		label = gtk_label_new (str);
+		g_free (str);
+	} else
+		label = gtk_label_new (nm_connection_get_id (connection));
 
 	return label;
 }
