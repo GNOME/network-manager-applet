@@ -13,16 +13,16 @@
 # Timo Trinks <ttrinks@redhat.com>, 2010.
 # Christian Kirbach  <Christian.Kirbach@googlemail.com>, 2009, 2010.
 # Wolfgang Stöggl <c72578@yahoo.de>, 2011.
-# Paul Seyfert <pseyfert@mathphys.fsk.uni-heidelberg.de>, 2011.
+# Paul Seyfert <pseyfert@mathphys.fsk.uni-heidelberg.de>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2012-02-09 12:14+0000\n"
-"PO-Revision-Date: 2012-02-09 18:43+0100\n"
-"Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
+"POT-Creation-Date: 2012-03-10 16:58+0000\n"
+"PO-Revision-Date: 2012-03-10 20:37+0100\n"
+"Last-Translator: Paul Seyfert <pseyfert@mathphys.fsk.uni-heidelberg.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -79,17 +79,19 @@ msgstr "Einstellungen übernehmen"
 #: ../nm-applet.schemas.in.h:8
 msgid "Used to determine whether settings should be migrated to a new version."
 msgstr ""
-"Legt fest, ob die Einstellungen in eine neue Version übernommen werden sollen."
+"Legt fest, ob die Einstellungen in eine neue Version übernommen werden "
+"sollen."
 
 #: ../nm-applet.schemas.in.h:9
 msgid "Disable WiFi Create"
 msgstr "Das Erstellen von WiFi-Netzen ausschalten"
 
 #: ../nm-applet.schemas.in.h:10
-msgid "Set to TRUE to disable creation of adhoc networks when using the applet."
+msgid ""
+"Set to TRUE to disable creation of adhoc networks when using the applet."
 msgstr ""
-"Legt fest, ob die Erstellung von Adhoc-Netzwerken mit dem Applet abgeschaltet "
-"ist."
+"Legt fest, ob die Erstellung von Adhoc-Netzwerken mit dem Applet "
+"abgeschaltet ist."
 
 #: ../nm-connection-editor.desktop.in.h:1
 #: ../src/connection-editor/nm-connection-editor.ui.h:1
@@ -144,7 +146,7 @@ msgstr ""
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:490
 #: ../src/applet-device-gsm.c:537 ../src/applet-device-wimax.c:473
-#: ../src/applet.c:2479
+#: ../src/applet.c:2484
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Netzwerkadresse für »%s« wird angefordert …"
@@ -161,7 +163,7 @@ msgid "CDMA"
 msgstr "CDMA"
 
 #: ../src/applet-device-cdma.c:345 ../src/applet-device-gsm.c:392
-#: ../src/applet-dialogs.c:430
+#: ../src/applet-dialogs.c:425
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobiles Breitband (%s)"
@@ -336,7 +338,7 @@ msgid "Wired Network"
 msgstr "Kabelnetzwerk"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:232 ../src/applet.c:1485
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1490
 msgid "disconnected"
 msgstr "nicht verbunden"
 
@@ -422,7 +424,7 @@ msgid "Use the network menu to connect to a wireless network"
 msgstr ""
 "Verwenden Sie das Netzwerkmenü, um sich mit einem Funknetzwerk zu verbinden"
 
-#: ../src/applet-device-wifi.c:1085 ../src/applet.c:901
+#: ../src/applet-device-wifi.c:1085 ../src/applet.c:906
 msgid "Don't show this message again"
 msgstr "Diesen Hinweis nicht mehr anzeigen"
 
@@ -514,174 +516,179 @@ msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Keine"
 
-#: ../src/applet-dialogs.c:352 ../src/applet-dialogs.c:490
+#: ../src/applet-dialogs.c:278
+#, c-format
+msgid "%s (default)"
+msgstr "%s (Vorgabe)"
+
+#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:485
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:354 ../src/applet-dialogs.c:492
+#: ../src/applet-dialogs.c:349 ../src/applet-dialogs.c:487
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: ../src/applet-dialogs.c:367
+#: ../src/applet-dialogs.c:362
 #, c-format
 msgid "%d dB"
 msgstr "%d dB"
 
-#: ../src/applet-dialogs.c:369
+#: ../src/applet-dialogs.c:364
 msgctxt "WiMAX CINR"
 msgid "unknown"
 msgstr "Unbekannt"
 
-#: ../src/applet-dialogs.c:381
+#: ../src/applet-dialogs.c:376
 msgctxt "WiMAX Base Station ID"
 msgid "unknown"
 msgstr "Unbekannt"
 
-#: ../src/applet-dialogs.c:416
+#: ../src/applet-dialogs.c:411
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:419
+#: ../src/applet-dialogs.c:414
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:426
+#: ../src/applet-dialogs.c:421
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:428
+#: ../src/applet-dialogs.c:423
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:432
+#: ../src/applet-dialogs.c:427
 #, c-format
 msgid "WiMAX (%s)"
 msgstr "WiMAX (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:438 ../src/applet-dialogs.c:797
+#: ../src/applet-dialogs.c:433 ../src/applet-dialogs.c:792
 msgid "General"
 msgstr "Allgemein"
 
-#: ../src/applet-dialogs.c:442
+#: ../src/applet-dialogs.c:437
 msgid "Interface:"
 msgstr "Schnittstelle:"
 
-#: ../src/applet-dialogs.c:458
+#: ../src/applet-dialogs.c:453
 msgid "Hardware Address:"
 msgstr "Hardware-Adresse:"
 
 #. Driver
-#: ../src/applet-dialogs.c:466
+#: ../src/applet-dialogs.c:461
 msgid "Driver:"
 msgstr "Treiber:"
 
-#: ../src/applet-dialogs.c:495
+#: ../src/applet-dialogs.c:490
 msgid "Speed:"
 msgstr "Geschwindigkeit:"
 
-#: ../src/applet-dialogs.c:505
+#: ../src/applet-dialogs.c:500
 msgid "Security:"
 msgstr "Sicherheit:"
 
-#: ../src/applet-dialogs.c:518
+#: ../src/applet-dialogs.c:513
 msgid "CINR:"
 msgstr "CINR:"
 
-#: ../src/applet-dialogs.c:531
+#: ../src/applet-dialogs.c:526
 msgid "BSID:"
 msgstr "BSID:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:548
+#: ../src/applet-dialogs.c:543
 msgid "IPv4"
 msgstr "IPv4"
 
 #. Address
-#: ../src/applet-dialogs.c:559 ../src/applet-dialogs.c:666
+#: ../src/applet-dialogs.c:554 ../src/applet-dialogs.c:661
 msgid "IP Address:"
 msgstr "IP-Adresse:"
 
-#: ../src/applet-dialogs.c:561 ../src/applet-dialogs.c:577
+#: ../src/applet-dialogs.c:556 ../src/applet-dialogs.c:572
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: ../src/applet-dialogs.c:575
+#: ../src/applet-dialogs.c:570
 msgid "Broadcast Address:"
 msgstr "Broadcast-Adresse:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:584
+#: ../src/applet-dialogs.c:579
 msgid "Subnet Mask:"
 msgstr "Subnetz-Maske:"
 
-#: ../src/applet-dialogs.c:586
+#: ../src/applet-dialogs.c:581
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: ../src/applet-dialogs.c:594 ../src/applet-dialogs.c:681
+#: ../src/applet-dialogs.c:589 ../src/applet-dialogs.c:676
 msgid "Default Route:"
 msgstr "Vorgaberoute:"
 
-#: ../src/applet-dialogs.c:606
+#: ../src/applet-dialogs.c:601
 msgid "Primary DNS:"
 msgstr "Primärer DNS:"
 
-#: ../src/applet-dialogs.c:615
+#: ../src/applet-dialogs.c:610
 msgid "Secondary DNS:"
 msgstr "Sekundärer DNS:"
 
-#: ../src/applet-dialogs.c:625
+#: ../src/applet-dialogs.c:620
 msgid "Ternary DNS:"
 msgstr "Tertiärer DNS:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:640
+#: ../src/applet-dialogs.c:635
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:649
+#: ../src/applet-dialogs.c:644
 msgid "Ignored"
 msgstr "Ignoriert"
 
-#: ../src/applet-dialogs.c:802
+#: ../src/applet-dialogs.c:797
 msgid "VPN Type:"
 msgstr "VPN-Typ:"
 
-#: ../src/applet-dialogs.c:809
+#: ../src/applet-dialogs.c:804
 msgid "VPN Gateway:"
 msgstr "VPN-Gateway:"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:810
 msgid "VPN Username:"
 msgstr "VPN-Benutzername:"
 
-#: ../src/applet-dialogs.c:821
+#: ../src/applet-dialogs.c:816
 msgid "VPN Banner:"
 msgstr "VPN-Banner:"
 
-#: ../src/applet-dialogs.c:827
+#: ../src/applet-dialogs.c:822
 msgid "Base Connection:"
 msgstr "Zugordnete Verbindung:"
 
-#: ../src/applet-dialogs.c:829
+#: ../src/applet-dialogs.c:824
 msgid "Unknown"
 msgstr "Unbekannt"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:892
+#: ../src/applet-dialogs.c:887
 msgid "No valid active connections found!"
 msgstr "Keine aktiven Netzwerkverbindungen gefunden!"
 
-#: ../src/applet-dialogs.c:945
+#: ../src/applet-dialogs.c:940
 msgid ""
 "Copyright © 2004-2011 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
@@ -691,45 +698,46 @@ msgstr ""
 "Copyright © 2005-2008 Novell, Inc.\n"
 "und viele andere Mitwirkende und Übersetzer"
 
-#: ../src/applet-dialogs.c:948
+#: ../src/applet-dialogs.c:943
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
-"Ein Applet für das Benachrichtigungsfeld, mit dem Sie Ihre Netzwerkgeräte und "
-"Netzwerkverbindungen verwalten können."
+"Ein Applet für das Benachrichtigungsfeld, mit dem Sie Ihre Netzwerkgeräte "
+"und Netzwerkverbindungen verwalten können."
 
-#: ../src/applet-dialogs.c:950
+#: ../src/applet-dialogs.c:945
 msgid "NetworkManager Website"
 msgstr "Netzwerk-Manager-Website"
 
-#: ../src/applet-dialogs.c:965
+#: ../src/applet-dialogs.c:960
 msgid "Missing resources"
 msgstr "Fehlende Ressourcen"
 
-#: ../src/applet-dialogs.c:990
+#: ../src/applet-dialogs.c:985
 msgid "Mobile broadband network password"
 msgstr "Passwort der mobilen Breitbandverbindung"
 
-#: ../src/applet-dialogs.c:999
+#: ../src/applet-dialogs.c:994
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Es wird ein Passwort benötigt, um sich mit »%s« zu verbinden."
 
-#: ../src/applet-dialogs.c:1018
+#: ../src/applet-dialogs.c:1013
 msgid "Password:"
 msgstr "Passwort:"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:995
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the network connection was interrupted."
+"The VPN connection '%s' failed because the network connection was "
+"interrupted."
 msgstr ""
 "\n"
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden, weil die "
 "Netzwerkverbindung getrennt wurde."
 
-#: ../src/applet.c:993
+#: ../src/applet.c:998
 #, c-format
 msgid ""
 "\n"
@@ -739,7 +747,7 @@ msgstr ""
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden, weil der VPN-Dienst "
 "unerwartet beendet wurde."
 
-#: ../src/applet.c:996
+#: ../src/applet.c:1001
 #, c-format
 msgid ""
 "\n"
@@ -750,7 +758,7 @@ msgstr ""
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden, weil der VPN-Server "
 "keine geeignete Netzwerkkonfiguration lieferte."
 
-#: ../src/applet.c:999
+#: ../src/applet.c:1004
 #, c-format
 msgid ""
 "\n"
@@ -760,7 +768,7 @@ msgstr ""
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden, weil die "
 "Netzwerkverbindung eine Zeitüberschreitung verursacht hat."
 
-#: ../src/applet.c:1002
+#: ../src/applet.c:1007
 #, c-format
 msgid ""
 "\n"
@@ -770,7 +778,7 @@ msgstr ""
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden, weil der VPN-Dienst "
 "nicht in der vorgesehenen Zeit gestartet wurde."
 
-#: ../src/applet.c:1005
+#: ../src/applet.c:1010
 #, c-format
 msgid ""
 "\n"
@@ -780,7 +788,7 @@ msgstr ""
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden, weil der Start des "
 "VPN-Dienstes fehlgeschlagen ist."
 
-#: ../src/applet.c:1008
+#: ../src/applet.c:1013
 #, c-format
 msgid ""
 "\n"
@@ -790,7 +798,7 @@ msgstr ""
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden, weil keine gültigen "
 "VPN-Geheimnisse vorliegen."
 
-#: ../src/applet.c:1011
+#: ../src/applet.c:1016
 #, c-format
 msgid ""
 "\n"
@@ -800,7 +808,7 @@ msgstr ""
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden, weil VPN-Geheimnisse "
 "ungültig sind."
 
-#: ../src/applet.c:1018
+#: ../src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -809,7 +817,7 @@ msgstr ""
 "\n"
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden."
 
-#: ../src/applet.c:1036
+#: ../src/applet.c:1041
 #, c-format
 msgid ""
 "\n"
@@ -820,7 +828,7 @@ msgstr ""
 "Die VPN-Verbindung »%s« wurde getrennt, weil die Netzwerkverbindung getrennt "
 "wurde."
 
-#: ../src/applet.c:1039
+#: ../src/applet.c:1044
 #, c-format
 msgid ""
 "\n"
@@ -829,7 +837,7 @@ msgstr ""
 "\n"
 "Die VPN-Verbindung »%s« wurde getrennt, weil der VPN-Dienst sich beendet hat."
 
-#: ../src/applet.c:1045
+#: ../src/applet.c:1050
 #, c-format
 msgid ""
 "\n"
@@ -838,16 +846,16 @@ msgstr ""
 "\n"
 "Die VPN-Verbindung »%s« wurde getrennt."
 
-#: ../src/applet.c:1079
+#: ../src/applet.c:1084
 msgid "VPN Login Message"
 msgstr "VPN-Anmeldemitteilung"
 
 #
-#: ../src/applet.c:1085 ../src/applet.c:1093 ../src/applet.c:1143
+#: ../src/applet.c:1090 ../src/applet.c:1098 ../src/applet.c:1148
 msgid "VPN Connection Failed"
 msgstr "VPN-Verbindung fehlgeschlagen"
 
-#: ../src/applet.c:1150
+#: ../src/applet.c:1155
 #, c-format
 msgid ""
 "\n"
@@ -861,7 +869,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1153
+#: ../src/applet.c:1158
 #, c-format
 msgid ""
 "\n"
@@ -874,139 +882,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1473
+#: ../src/applet.c:1478
 msgid "device not ready (firmware missing)"
 msgstr "Gerät ist nicht betriebsbereit (Firmware fehlt)"
 
-#: ../src/applet.c:1475
+#: ../src/applet.c:1480
 msgid "device not ready"
 msgstr "Gerät ist nicht betriebsbereit"
 
-#: ../src/applet.c:1501
+#: ../src/applet.c:1506
 msgid "Disconnect"
 msgstr "Verbindung trennen"
 
-#: ../src/applet.c:1515
+#: ../src/applet.c:1520
 msgid "device not managed"
 msgstr "Gerät wird nicht verwaltet"
 
-#: ../src/applet.c:1559
+#: ../src/applet.c:1564
 msgid "No network devices available"
 msgstr "Es sind keine Netzwerkgeräte verfügbar"
 
-#: ../src/applet.c:1647
+#: ../src/applet.c:1652
 msgid "_VPN Connections"
 msgstr "_VPN-Verbindungen"
 
-#: ../src/applet.c:1704
+#: ../src/applet.c:1709
 msgid "_Configure VPN..."
 msgstr "VPN _konfigurieren …"
 
-#: ../src/applet.c:1708
+#: ../src/applet.c:1713
 msgid "_Disconnect VPN"
 msgstr "VPN _trennen"
 
-#: ../src/applet.c:1806
+#: ../src/applet.c:1811
 msgid "NetworkManager is not running..."
 msgstr "Der Netzwerk-Manager läuft zur Zeit nicht …"
 
-#: ../src/applet.c:1811 ../src/applet.c:2604
+#: ../src/applet.c:1816 ../src/applet.c:2609
 msgid "Networking disabled"
 msgstr "Netzwerk deaktiviert"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2032
+#: ../src/applet.c:2037
 msgid "Enable _Networking"
 msgstr "_Netzwerk aktivieren"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2041
+#: ../src/applet.c:2046
 msgid "Enable _Wireless"
 msgstr "_Funknetzwerk aktivieren"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2050
+#: ../src/applet.c:2055
 msgid "Enable _Mobile Broadband"
 msgstr "_Mobiles Breitband aktivieren"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2059
+#: ../src/applet.c:2064
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "WiMA_X Mobiles Breitband aktivieren"
 
 #. Toggle notifications item
-#: ../src/applet.c:2070
+#: ../src/applet.c:2075
 msgid "Enable N_otifications"
 msgstr "_Benachrichtigungen aktivieren"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2081
+#: ../src/applet.c:2086
 msgid "Connection _Information"
 msgstr "Verbindungs_informationen"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2091
+#: ../src/applet.c:2096
 msgid "Edit Connections..."
 msgstr "Verbindungen bearbeiten …"
 
 #. Help item
-#: ../src/applet.c:2105
+#: ../src/applet.c:2110
 msgid "_Help"
 msgstr "_Hilfe"
 
 #. About item
-#: ../src/applet.c:2114
+#: ../src/applet.c:2119
 msgid "_About"
 msgstr "_Info"
 
-#: ../src/applet.c:2291
+#: ../src/applet.c:2296
 msgid "Disconnected"
 msgstr "Verbindung getrennt"
 
-#: ../src/applet.c:2292
+#: ../src/applet.c:2297
 msgid "The network connection has been disconnected."
 msgstr "Die Netzwerkverbindung wurde getrennt."
 
-#: ../src/applet.c:2473
+#: ../src/applet.c:2478
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Netzwerkverbindung »%s« wird vorbereitet …"
 
-#: ../src/applet.c:2476
+#: ../src/applet.c:2481
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Benutzerlegitimierung für Netzwerkverbindung »%s« wird benötigt …"
 
-#: ../src/applet.c:2482
+#: ../src/applet.c:2487
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Netzwerkverbindungen »%s« aktiv"
 
-#: ../src/applet.c:2560
+#: ../src/applet.c:2565
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "VPN-Verbindung »%s« wird gestartet …"
 
-#: ../src/applet.c:2563
+#: ../src/applet.c:2568
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Benutzerlegitimierung für VPN-Verbindung »%s« wird benötigt …"
 
-#: ../src/applet.c:2566
+#: ../src/applet.c:2571
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Anfordern einer Netzwerkadresse von VPN-Verbindung »%s« …"
 
-#: ../src/applet.c:2569
+#: ../src/applet.c:2574
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN-Verbindung »%s« aktiv"
 
-#: ../src/applet.c:2608
+#: ../src/applet.c:2613
 msgid "No network connection"
 msgstr "Keine Netzwerkverbindung"
 
-#: ../src/applet.c:3258
+#: ../src/applet.c:3263
 msgid "NetworkManager Applet"
 msgstr "Netzwerk-Manager-Applet"
 
@@ -1049,8 +1057,8 @@ msgstr ""
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:8
 msgid ""
-"IP addresses identify your computer on the network.  Click the \"Add\" button "
-"to add an IP address."
+"IP addresses identify your computer on the network.  Click the \"Add\" "
+"button to add an IP address."
 msgstr ""
 "IP-Adressen identifizieren Ihren Rechner im Netzwerk. Klicken Sie auf den "
 "Knopf »Hinzufügen«, um eine IP-Adresse hinzuzufügen."
@@ -1149,13 +1157,13 @@ msgstr "Adressen"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:9
 msgid ""
-"The DHCP client identifier allows the network administrator to customize your "
-"computer's configuration.  If you wish to use a DHCP client identifier, enter "
-"it here."
+"The DHCP client identifier allows the network administrator to customize "
+"your computer's configuration.  If you wish to use a DHCP client identifier, "
+"enter it here."
 msgstr ""
 "Der Bezeichner des DHCP-Clients ermöglicht dem Netzwerk-Administrator die "
-"Konfiguration Ihres Rechners anzupassen. Geben Sie hier einen Bezeichner ein, "
-"wenn Sie ihn verwenden möchten."
+"Konfiguration Ihres Rechners anzupassen. Geben Sie hier einen Bezeichner "
+"ein, wenn Sie ihn verwenden möchten."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:10
 #: ../src/connection-editor/ce-page-ip6.ui.h:9
@@ -1183,8 +1191,8 @@ msgstr "_DNS-Server:"
 #: ../src/connection-editor/ce-page-ip4.ui.h:14
 #: ../src/connection-editor/ce-page-ip6.ui.h:12
 msgid ""
-"IP addresses of domain name servers used to resolve host names. Use commas to "
-"separate multiple domain name server addresses."
+"IP addresses of domain name servers used to resolve host names. Use commas "
+"to separate multiple domain name server addresses."
 msgstr ""
 "IP-Adressen von Domänennamen-Servern, die zum Auflösen von Rechnernamen "
 "verwendet werden. Verwenden Sie Kommata zum Trennen mehrerer Server-Adressen."
@@ -1390,9 +1398,9 @@ msgstr "Benutzerdefinierte MA_C-Adresse:"
 #: ../src/connection-editor/ce-page-wired.ui.h:16
 #: ../src/connection-editor/ce-page-wireless.ui.h:9
 msgid ""
-"The MAC address entered here will be used as hardware address for the network "
-"device this connection is activated on.  This feature is known as MAC cloning "
-"or spoofing.  Example: 00:11:22:33:44:55"
+"The MAC address entered here will be used as hardware address for the "
+"network device this connection is activated on.  This feature is known as "
+"MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
 msgstr ""
 "Die hier eingegebene Mac-Adresse wird als Hardware-Adresse des "
 "Netzwerkgerätes verwendet, für das diese Verbindung aktiviert ist. Dieses "
@@ -1443,8 +1451,8 @@ msgstr "_Rate:"
 
 #: ../src/connection-editor/ce-page-wireless.ui.h:15
 msgid ""
-"This option locks this connection to the wireless access point (AP) specified "
-"by the BSSID entered here.  Example: 00:11:22:33:44:55"
+"This option locks this connection to the wireless access point (AP) "
+"specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
 msgstr ""
 "Diese Option ordnet diese Verbindung eindeutig dem Wireless-Access-Point "
 "(AP), der durch die hier eingegebene BSSID spezifiziert wird, zu. Beispiel: "
@@ -1524,8 +1532,8 @@ msgid ""
 "methods.  If connections fail, try disabling support for some methods."
 msgstr ""
 "In den meisten Fällen erlauben die PPP-Server des Anbieters alle "
-"Legitimierungsmethoden. Falls eine Verbindung fehlschlägt, versuchen Sie, die "
-"Unterstützung für einige Methoden zu deaktivieren."
+"Legitimierungsmethoden. Falls eine Verbindung fehlschlägt, versuchen Sie, "
+"die Unterstützung für einige Methoden zu deaktivieren."
 
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:1 ../src/libnm-gtk/wifi.ui.h:1
 #: ../src/wireless-security/eap-method-fast.ui.h:1
@@ -1544,8 +1552,8 @@ msgstr "VPN-Verbindungstyp wählen"
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:3
 msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
-"of VPN connection you wish to create does not appear in the list, you may not "
-"have the correct VPN plugin installed."
+"of VPN connection you wish to create does not appear in the list, you may "
+"not have the correct VPN plugin installed."
 msgstr ""
 "Wählen Sie den VPN-Typ, den Sie für die neue Verbindung verwenden möchten. "
 "Wenn der Typ der VPN-Verbindung, die Sie erstellen möchten, nicht in der "
@@ -1558,20 +1566,20 @@ msgstr "Erzeugen …"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:745
 #: ../src/connection-editor/ip6-routes-dialog.c:687
-#: ../src/connection-editor/page-ip4.c:901
-#: ../src/connection-editor/page-ip6.c:867
+#: ../src/connection-editor/page-ip4.c:900
+#: ../src/connection-editor/page-ip6.c:866
 msgid "Address"
 msgstr "Adresse"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:762
-#: ../src/connection-editor/page-ip4.c:918
+#: ../src/connection-editor/page-ip4.c:917
 msgid "Netmask"
 msgstr "Netzmaske"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:779
 #: ../src/connection-editor/ip6-routes-dialog.c:721
-#: ../src/connection-editor/page-ip4.c:935
-#: ../src/connection-editor/page-ip6.c:901
+#: ../src/connection-editor/page-ip4.c:934
+#: ../src/connection-editor/page-ip6.c:900
 msgid "Gateway"
 msgstr "Gateway"
 
@@ -1581,7 +1589,7 @@ msgid "Metric"
 msgstr "Metrik"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:704
-#: ../src/connection-editor/page-ip6.c:884
+#: ../src/connection-editor/page-ip6.c:883
 msgid "Prefix"
 msgstr "Präfix"
 
@@ -1652,11 +1660,11 @@ msgstr "Deaktiviert"
 msgid "Editing IPv4 routes for %s"
 msgstr "IPv4-Routen für »%s« bearbeiten"
 
-#: ../src/connection-editor/page-ip4.c:982
+#: ../src/connection-editor/page-ip4.c:981
 msgid "IPv4 Settings"
 msgstr "IPv4-Einstellungen"
 
-#: ../src/connection-editor/page-ip4.c:984
+#: ../src/connection-editor/page-ip4.c:983
 msgid "Could not load IPv4 user interface."
 msgstr "IPv4-Benutzerschnittstelle konnte nicht geladen werden."
 
@@ -1678,11 +1686,11 @@ msgstr "Automatisch, nur DHCP"
 msgid "Editing IPv6 routes for %s"
 msgstr "IPv6-Routen für »%s« bearbeiten"
 
-#: ../src/connection-editor/page-ip6.c:946
+#: ../src/connection-editor/page-ip6.c:945
 msgid "IPv6 Settings"
 msgstr "IPv6-Einstellungen"
 
-#: ../src/connection-editor/page-ip6.c:948
+#: ../src/connection-editor/page-ip6.c:947
 msgid "Could not load IPv6 user interface."
 msgstr "IPv6-Benutzerschnittstelle konnte nicht geladen werden."
 
@@ -1706,8 +1714,8 @@ msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
 msgstr ""
-"Wählen Sie die von Ihrem mobilen Breitbandanbieter verwendete Technologie. Im "
-"Zweifelsfall fragen Sie bei Ihrem Dienstanbieter nach."
+"Wählen Sie die von Ihrem mobilen Breitbandanbieter verwendete Technologie. "
+"Im Zweifelsfall fragen Sie bei Ihrem Dienstanbieter nach."
 
 #: ../src/connection-editor/page-mobile.c:679
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
@@ -1756,11 +1764,11 @@ msgstr "keine"
 msgid "Editing PPP authentication methods for %s"
 msgstr "PPP-Legitimierungsmethoden für »%s« bearbeiten"
 
-#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:282
 msgid "PPP Settings"
 msgstr "PPP-Einstellungen"
 
-#: ../src/connection-editor/page-ppp.c:285
+#: ../src/connection-editor/page-ppp.c:284
 msgid "Could not load PPP user interface."
 msgstr "PPP-Benutzerschnittstelle konnte nicht geladen werden."
 
@@ -1901,8 +1909,8 @@ msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
 msgstr ""
-"Der Verbindungseditor konnte benötigte Ressourcen nicht finden (Die .ui-Datei "
-"wurde nicht gefunden)."
+"Der Verbindungseditor konnte benötigte Ressourcen nicht finden (Die .ui-"
+"Datei wurde nicht gefunden)."
 
 #: ../src/connection-editor/nm-connection-editor.c:391
 msgid "Error creating connection editor dialog."
@@ -2019,7 +2027,8 @@ msgstr "Fehler beim Initialisieren des Editors"
 #: ../src/connection-editor/nm-connection-list.c:719
 #: ../src/connection-editor/nm-connection-list.c:886
 msgid ""
-"The connection editor dialog could not be initialized due to an unknown error."
+"The connection editor dialog could not be initialized due to an unknown "
+"error."
 msgstr ""
 "Der Verbindungseditor kann wegen eines unbekannten Fehlers nicht "
 "initialisiert werden."
@@ -2138,8 +2147,8 @@ msgstr "Eine Verbindung mit der UUID »%s« konnte nicht gefunden werden"
 #: ../src/connection-editor/vpn-helpers.c:229
 #, c-format
 msgid ""
-"The file '%s' could not be read or does not contain recognized VPN connection "
-"information\n"
+"The file '%s' could not be read or does not contain recognized VPN "
+"connection information\n"
 "\n"
 "Error: %s."
 msgstr ""
@@ -2252,8 +2261,8 @@ msgstr ""
 #, c-format
 msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
 msgstr ""
-"Keine Bluetooth-Konfiguration möglich (Verbindung mit D-Bus fehlgeschlagen: "
-"%s)."
+"Keine Bluetooth-Konfiguration möglich (Verbindung mit D-Bus fehlgeschlagen: %"
+"s)."
 
 #: ../src/gnome-bluetooth/bt-widget.c:1022
 msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
@@ -2263,7 +2272,8 @@ msgstr ""
 
 #: ../src/gnome-bluetooth/bt-widget.c:1031
 #, c-format
-msgid "Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgid ""
+"Bluetooth configuration not possible (error finding NetworkManager: %s)."
 msgstr ""
 "Keine Bluetooth-Konfiguration möglich (Kein NetworkManager gefunden: %s)."
 
@@ -2306,10 +2316,11 @@ msgid ""
 "Preferences menu."
 msgstr ""
 "Eine Verbindung zu Ihrem mobilen Breitbandanbieter wird nun anhand Ihrer "
-"gewählten Einstellungen eingerichtet. Falls die Verbindung scheitert oder Sie "
-"nicht auf Netzwerkressourcen zugreifen können, überprüfen Sie Ihre "
-"Einstellungen nochmals. Um die Einstellungen für mobile Breitbandverbindungen "
-"zu ändern, wählen Sie »Netzwerkverbindungen« im Menü System → Einstellungen."
+"gewählten Einstellungen eingerichtet. Falls die Verbindung scheitert oder "
+"Sie nicht auf Netzwerkressourcen zugreifen können, überprüfen Sie Ihre "
+"Einstellungen nochmals. Um die Einstellungen für mobile "
+"Breitbandverbindungen zu ändern, wählen Sie »Netzwerkverbindungen« im Menü "
+"System → Einstellungen."
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:264
 msgid "Confirm Mobile Broadband Settings"
@@ -2368,7 +2379,8 @@ msgstr "Dienstanbieter:"
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:813
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
-msgstr "Mein Dienstanbieter verwendet GSM-Technologien (GPRS, EDGE, UMTS, HSPA)"
+msgstr ""
+"Mein Dienstanbieter verwendet GSM-Technologien (GPRS, EDGE, UMTS, HSPA)"
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:819
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
@@ -2378,31 +2390,31 @@ msgstr "Mein Dienstanbieter verwendet CDMA-Technologien (1xRTT, EVDO)"
 msgid "Choose your Provider"
 msgstr "Dienstanbieter auswählen"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1080
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1081
 msgid "Country or Region List:"
 msgstr "Länder- oder Regionsliste:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1092
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1093
 msgid "Country or region"
 msgstr "Land oder Region"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1099
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1100
 msgid "My country is not listed"
 msgstr "Mein Land ist nicht aufgelistet"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1145
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1146
 msgid "Choose your Provider's Country or Region"
 msgstr "Land oder Region des Dienstanbieters auswählen"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1199
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1200
 msgid "Installed GSM device"
 msgstr "Installiertes GSM-Gerät"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1202
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1203
 msgid "Installed CDMA device"
 msgstr "Installiertes CDMA-Gerät"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1374
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1375
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
@@ -2410,35 +2422,36 @@ msgstr ""
 "Dieser Assistent hilft Ihnen bei der Einrichtung einer mobilen "
 "Breitbandverbindung über ein UMTS-(3G)-Netzwerk."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1379
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1380
 msgid "You will need the following information:"
 msgstr "Folgende Informationen sind notwendig:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1394
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1395
 msgid "Your broadband provider's name"
 msgstr "Name Ihres Breitbandanbieters"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1400
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1401
 msgid "Your broadband billing plan name"
 msgstr "Name des Abrechnungsmodus Ihres Dienstanbieters"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1406
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1407
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-msgstr "(in einigen Fällen) Name des Zugangspunktes für Ihren Abrechnungsmodus:"
+msgstr ""
+"(in einigen Fällen) Name des Zugangspunktes für Ihren Abrechnungsmodus:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1433
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1434
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Eine Verbindung für dieses mobile Brei_tbandgerät einrichten:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1448
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1449
 msgid "Any device"
 msgstr "Irgendein Gerät"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1461
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1462
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Eine mobile Breitbandverbindung einrichten"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1625
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1626
 msgid "New Mobile Broadband Connection"
 msgstr "Neue mobile Breitbandverbindung"
 
@@ -2453,10 +2466,11 @@ msgstr "E_rzeugen"
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1161
 #, c-format
 msgid ""
-"Passwords or encryption keys are required to access the wireless network '%s'."
+"Passwords or encryption keys are required to access the wireless network '%"
+"s'."
 msgstr ""
-"Es werden Passwörter oder Schlüssel für die Verschlüsselung benötigt, um sich "
-"mit dem Funknetzwerk »%s« zu verbinden."
+"Es werden Passwörter oder Schlüssel für die Verschlüsselung benötigt, um "
+"sich mit dem Funknetzwerk »%s« zu verbinden."
 
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1163
 msgid "Wireless Network Authentication Required"
@@ -2516,13 +2530,13 @@ msgid ""
 "This program is a component of NetworkManager (http://projects.gnome.org/"
 "NetworkManager)."
 msgstr ""
-"Dieses Programm ist eine Komponente von NetworkManager (http://projects.gnome."
-"org/NetworkManager)."
+"Dieses Programm ist eine Komponente von NetworkManager (http://projects."
+"gnome.org/NetworkManager)."
 
 #: ../src/main.c:76
 msgid ""
-"It is not intended for command-line interaction but instead runs in the GNOME "
-"desktop environment."
+"It is not intended for command-line interaction but instead runs in the "
+"GNOME desktop environment."
 msgstr ""
 "Es ist nicht für die Befehlszeileninteraktion bestimmt, sondern für den "
 "Betrieb innerhalb der GNOME-Arbeitsumgebung."
@@ -2614,8 +2628,8 @@ msgid ""
 "The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
 msgstr ""
-"Das Netzwerk-Manager-Applet konnte benötigte Ressourcen nicht finden (Die .ui-"
-"Datei wurde nicht gefunden)."
+"Das Netzwerk-Manager-Applet konnte benötigte Ressourcen nicht finden (Die ."
+"ui-Datei wurde nicht gefunden)."
 
 #: ../src/wireless-security/eap-method.c:279
 msgid "No Certificate Authority certificate chosen"
@@ -2624,8 +2638,8 @@ msgstr "Es wurde kein CA-Zertifikat ausgewählt"
 #: ../src/wireless-security/eap-method.c:280
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
-"to insecure, rogue wireless networks.  Would you like to choose a Certificate "
-"Authority certificate?"
+"to insecure, rogue wireless networks.  Would you like to choose a "
+"Certificate Authority certificate?"
 msgstr ""
 "Benutzt man kein CA-Zertifikat, kann dies zu unsicheren Verbindungen oder "
 "schadhaften Funknetzwerken führen. Möchten Sie ein CA-Zertifikat auswählen?"
@@ -2730,9 +2744,9 @@ msgstr "Nicht verschlüsselte geheime Schlüssel sind unsicher"
 
 #: ../src/wireless-security/eap-method-tls.c:249
 msgid ""
-"The selected private key does not appear to be protected by a password.  This "
-"could allow your security credentials to be compromised.  Please select a "
-"password-protected private key.\n"
+"The selected private key does not appear to be protected by a password.  "
+"This could allow your security credentials to be compromised.  Please select "
+"a password-protected private key.\n"
 "\n"
 "(You can password-protect your private key with openssl)"
 msgstr ""
