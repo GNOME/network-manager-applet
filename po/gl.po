@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-13 03:02+0100\n"
-"PO-Revision-Date: 2012-02-13 03:04+0100\n"
+"POT-Creation-Date: 2012-03-11 01:09+0100\n"
+"PO-Revision-Date: 2012-03-11 01:10+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -143,7 +143,7 @@ msgstr ""
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:490
 #: ../src/applet-device-gsm.c:537 ../src/applet-device-wimax.c:473
-#: ../src/applet.c:2479
+#: ../src/applet.c:2484
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Solicitando un enderezo de rede para '%s'…"
@@ -160,7 +160,7 @@ msgid "CDMA"
 msgstr "CDMA"
 
 #: ../src/applet-device-cdma.c:345 ../src/applet-device-gsm.c:392
-#: ../src/applet-dialogs.c:430
+#: ../src/applet-dialogs.c:425
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Banda larga móbil (%s)"
@@ -337,7 +337,7 @@ msgid "Wired Network"
 msgstr "Rede con fíos"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:232 ../src/applet.c:1485
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1490
 msgid "disconnected"
 msgstr "desconectado"
 
@@ -424,7 +424,7 @@ msgstr "Redes sen fíos dispoñíbeis"
 msgid "Use the network menu to connect to a wireless network"
 msgstr "Use o menú de rede para conectarse a unha rede sen fíos"
 
-#: ../src/applet-device-wifi.c:1085 ../src/applet.c:901
+#: ../src/applet-device-wifi.c:1085 ../src/applet.c:906
 msgid "Don't show this message again"
 msgstr "Non mostrar esta mensaxe outra vez"
 
@@ -515,174 +515,179 @@ msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Ningún"
 
-#: ../src/applet-dialogs.c:352 ../src/applet-dialogs.c:490
+#: ../src/applet-dialogs.c:278
+#, c-format
+msgid "%s (default)"
+msgstr "%s (predeterminada)"
+
+#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:485
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:354 ../src/applet-dialogs.c:492
+#: ../src/applet-dialogs.c:349 ../src/applet-dialogs.c:487
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Descoñecido"
 
-#: ../src/applet-dialogs.c:367
+#: ../src/applet-dialogs.c:362
 #, c-format
 msgid "%d dB"
 msgstr "%d dB"
 
-#: ../src/applet-dialogs.c:369
+#: ../src/applet-dialogs.c:364
 msgctxt "WiMAX CINR"
 msgid "unknown"
 msgstr "descoñecido"
 
-#: ../src/applet-dialogs.c:381
+#: ../src/applet-dialogs.c:376
 msgctxt "WiMAX Base Station ID"
 msgid "unknown"
 msgstr "descoñecido"
 
-#: ../src/applet-dialogs.c:416
+#: ../src/applet-dialogs.c:411
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:419
+#: ../src/applet-dialogs.c:414
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:426
+#: ../src/applet-dialogs.c:421
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:428
+#: ../src/applet-dialogs.c:423
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:432
+#: ../src/applet-dialogs.c:427
 #, c-format
 msgid "WiMAX (%s)"
 msgstr "WiMAX (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:438 ../src/applet-dialogs.c:797
+#: ../src/applet-dialogs.c:433 ../src/applet-dialogs.c:792
 msgid "General"
 msgstr "Xeral"
 
-#: ../src/applet-dialogs.c:442
+#: ../src/applet-dialogs.c:437
 msgid "Interface:"
 msgstr "Interface:"
 
-#: ../src/applet-dialogs.c:458
+#: ../src/applet-dialogs.c:453
 msgid "Hardware Address:"
 msgstr "Enderezo de hardware:"
 
 #. Driver
-#: ../src/applet-dialogs.c:466
+#: ../src/applet-dialogs.c:461
 msgid "Driver:"
 msgstr "Controlador:"
 
-#: ../src/applet-dialogs.c:495
+#: ../src/applet-dialogs.c:490
 msgid "Speed:"
 msgstr "Velocidade:"
 
-#: ../src/applet-dialogs.c:505
+#: ../src/applet-dialogs.c:500
 msgid "Security:"
 msgstr "Seguranza:"
 
-#: ../src/applet-dialogs.c:518
+#: ../src/applet-dialogs.c:513
 msgid "CINR:"
 msgstr "CINR:"
 
-#: ../src/applet-dialogs.c:531
+#: ../src/applet-dialogs.c:526
 msgid "BSID:"
 msgstr "BSID:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:548
+#: ../src/applet-dialogs.c:543
 msgid "IPv4"
 msgstr "IPv4"
 
 #. Address
-#: ../src/applet-dialogs.c:559 ../src/applet-dialogs.c:666
+#: ../src/applet-dialogs.c:554 ../src/applet-dialogs.c:661
 msgid "IP Address:"
 msgstr "Enderezo IP:"
 
-#: ../src/applet-dialogs.c:561 ../src/applet-dialogs.c:577
+#: ../src/applet-dialogs.c:556 ../src/applet-dialogs.c:572
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Descoñecido"
 
-#: ../src/applet-dialogs.c:575
+#: ../src/applet-dialogs.c:570
 msgid "Broadcast Address:"
 msgstr "Enderezo broadcast:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:584
+#: ../src/applet-dialogs.c:579
 msgid "Subnet Mask:"
 msgstr "Máscara de subrede:"
 
-#: ../src/applet-dialogs.c:586
+#: ../src/applet-dialogs.c:581
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Descoñecido"
 
-#: ../src/applet-dialogs.c:594 ../src/applet-dialogs.c:681
+#: ../src/applet-dialogs.c:589 ../src/applet-dialogs.c:676
 msgid "Default Route:"
 msgstr "Camiño predeterminado:"
 
-#: ../src/applet-dialogs.c:606
+#: ../src/applet-dialogs.c:601
 msgid "Primary DNS:"
 msgstr "DNS primario:"
 
-#: ../src/applet-dialogs.c:615
+#: ../src/applet-dialogs.c:610
 msgid "Secondary DNS:"
 msgstr "DNS secundario:"
 
-#: ../src/applet-dialogs.c:625
+#: ../src/applet-dialogs.c:620
 msgid "Ternary DNS:"
 msgstr "DNS terciario:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:640
+#: ../src/applet-dialogs.c:635
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:649
+#: ../src/applet-dialogs.c:644
 msgid "Ignored"
 msgstr "Ignorado"
 
-#: ../src/applet-dialogs.c:802
+#: ../src/applet-dialogs.c:797
 msgid "VPN Type:"
 msgstr "Tipo de VPN:"
 
-#: ../src/applet-dialogs.c:809
+#: ../src/applet-dialogs.c:804
 msgid "VPN Gateway:"
 msgstr "Pasarela do VPN:"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:810
 msgid "VPN Username:"
 msgstr "Nome de usuario da VPN:"
 
-#: ../src/applet-dialogs.c:821
+#: ../src/applet-dialogs.c:816
 msgid "VPN Banner:"
 msgstr "Mensaxe da VPN:"
 
-#: ../src/applet-dialogs.c:827
+#: ../src/applet-dialogs.c:822
 msgid "Base Connection:"
 msgstr "Conexión base:"
 
-#: ../src/applet-dialogs.c:829
+#: ../src/applet-dialogs.c:824
 msgid "Unknown"
 msgstr "Descoñecida"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:892
+#: ../src/applet-dialogs.c:887
 msgid "No valid active connections found!"
 msgstr "Non se atoparon conexións activas válidas!"
 
-#: ../src/applet-dialogs.c:945
+#: ../src/applet-dialogs.c:940
 msgid ""
 "Copyright © 2004-2011 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
@@ -692,35 +697,35 @@ msgstr ""
 "Copyright © 2005-2008 Novell, Inc.\n"
 "e moitos outros contribuíntes e tradutores da comunidade"
 
-#: ../src/applet-dialogs.c:948
+#: ../src/applet-dialogs.c:943
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Miniaplicativo da área de notificación para xestionar os dispositivos de "
 "rede e as conexións."
 
-#: ../src/applet-dialogs.c:950
+#: ../src/applet-dialogs.c:945
 msgid "NetworkManager Website"
 msgstr "Sitio web do NetworkManager"
 
-#: ../src/applet-dialogs.c:965
+#: ../src/applet-dialogs.c:960
 msgid "Missing resources"
 msgstr "Faltan recursos"
 
-#: ../src/applet-dialogs.c:990
+#: ../src/applet-dialogs.c:985
 msgid "Mobile broadband network password"
 msgstr "Contrasinal de rede de banda larga móbil"
 
-#: ../src/applet-dialogs.c:999
+#: ../src/applet-dialogs.c:994
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Requírese un contrasinal para conectarse a '%s'."
 
-#: ../src/applet-dialogs.c:1018
+#: ../src/applet-dialogs.c:1013
 msgid "Password:"
 msgstr "Contrasinal:"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:995
 #, c-format
 msgid ""
 "\n"
@@ -730,7 +735,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque se interrompeu a conexión de rede."
 
-#: ../src/applet.c:993
+#: ../src/applet.c:998
 #, c-format
 msgid ""
 "\n"
@@ -739,7 +744,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque o servizo VPN se detivo inesperadamente."
 
-#: ../src/applet.c:996
+#: ../src/applet.c:1001
 #, c-format
 msgid ""
 "\n"
@@ -750,7 +755,7 @@ msgstr ""
 "A conexión VPN '%s' fallou porque o servizo VPN devolveu unha configuración "
 "non válida."
 
-#: ../src/applet.c:999
+#: ../src/applet.c:1004
 #, c-format
 msgid ""
 "\n"
@@ -760,7 +765,7 @@ msgstr ""
 "A conexión VPN '%s' fallou porque a tentativa de conexión excedeu o tempo de "
 "espera."
 
-#: ../src/applet.c:1002
+#: ../src/applet.c:1007
 #, c-format
 msgid ""
 "\n"
@@ -769,7 +774,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque o servizo VPN non comezou a tempo."
 
-#: ../src/applet.c:1005
+#: ../src/applet.c:1010
 #, c-format
 msgid ""
 "\n"
@@ -779,7 +784,7 @@ msgstr ""
 "A conexión VPN '%s' fallou porque produciuse un erro ao iniciar o servizo "
 "VPN."
 
-#: ../src/applet.c:1008
+#: ../src/applet.c:1013
 #, c-format
 msgid ""
 "\n"
@@ -788,7 +793,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque non había contrasinais VPN válidos."
 
-#: ../src/applet.c:1011
+#: ../src/applet.c:1016
 #, c-format
 msgid ""
 "\n"
@@ -797,7 +802,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque había contrasinais VPN non válidos."
 
-#: ../src/applet.c:1018
+#: ../src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -806,7 +811,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou."
 
-#: ../src/applet.c:1036
+#: ../src/applet.c:1041
 #, c-format
 msgid ""
 "\n"
@@ -816,7 +821,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' desconectouse porque se interrompeu a conexión de rede."
 
-#: ../src/applet.c:1039
+#: ../src/applet.c:1044
 #, c-format
 msgid ""
 "\n"
@@ -825,7 +830,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' desconectouse porque se detivo o servizo VPN."
 
-#: ../src/applet.c:1045
+#: ../src/applet.c:1050
 #, c-format
 msgid ""
 "\n"
@@ -834,15 +839,15 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' desconectouse."
 
-#: ../src/applet.c:1079
+#: ../src/applet.c:1084
 msgid "VPN Login Message"
 msgstr "Mensaxe de inicio de sesión VPN"
 
-#: ../src/applet.c:1085 ../src/applet.c:1093 ../src/applet.c:1143
+#: ../src/applet.c:1090 ../src/applet.c:1098 ../src/applet.c:1148
 msgid "VPN Connection Failed"
 msgstr "Fallou a conexión VPN"
 
-#: ../src/applet.c:1150
+#: ../src/applet.c:1155
 #, c-format
 msgid ""
 "\n"
@@ -856,7 +861,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1153
+#: ../src/applet.c:1158
 #, c-format
 msgid ""
 "\n"
@@ -869,139 +874,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1473
+#: ../src/applet.c:1478
 msgid "device not ready (firmware missing)"
 msgstr "o dispositivo non está listo (falta o firmware)"
 
-#: ../src/applet.c:1475
+#: ../src/applet.c:1480
 msgid "device not ready"
 msgstr "o dispositivo non está listo"
 
-#: ../src/applet.c:1501
+#: ../src/applet.c:1506
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: ../src/applet.c:1515
+#: ../src/applet.c:1520
 msgid "device not managed"
 msgstr "o dispositivo non está xestionado"
 
-#: ../src/applet.c:1559
+#: ../src/applet.c:1564
 msgid "No network devices available"
 msgstr "Non hai dispositivos de rede dispoñíbeis"
 
-#: ../src/applet.c:1647
+#: ../src/applet.c:1652
 msgid "_VPN Connections"
 msgstr "Conexións _VPN"
 
-#: ../src/applet.c:1704
+#: ../src/applet.c:1709
 msgid "_Configure VPN..."
 msgstr "_Configurar VPN…"
 
-#: ../src/applet.c:1708
+#: ../src/applet.c:1713
 msgid "_Disconnect VPN"
 msgstr "_Desconectar VPN"
 
-#: ../src/applet.c:1806
+#: ../src/applet.c:1811
 msgid "NetworkManager is not running..."
 msgstr "O NetworkManager non se está executando…"
 
-#: ../src/applet.c:1811 ../src/applet.c:2604
+#: ../src/applet.c:1816 ../src/applet.c:2609
 msgid "Networking disabled"
 msgstr "Rede desactivada"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2032
+#: ../src/applet.c:2037
 msgid "Enable _Networking"
 msgstr "Activar a _rede"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2041
+#: ../src/applet.c:2046
 msgid "Enable _Wireless"
 msgstr "Activar a rede sen _fíos"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2050
+#: ../src/applet.c:2055
 msgid "Enable _Mobile Broadband"
 msgstr "Activar a banda larga _móbil"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2059
+#: ../src/applet.c:2064
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "Activar a banda larga móbil WiMA_X"
 
 #. Toggle notifications item
-#: ../src/applet.c:2070
+#: ../src/applet.c:2075
 msgid "Enable N_otifications"
 msgstr "Activar n_otificacións"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2081
+#: ../src/applet.c:2086
 msgid "Connection _Information"
 msgstr "_Información da conexión"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2091
+#: ../src/applet.c:2096
 msgid "Edit Connections..."
 msgstr "Editar as conexións…"
 
 #. Help item
-#: ../src/applet.c:2105
+#: ../src/applet.c:2110
 msgid "_Help"
 msgstr "_Axuda"
 
 #. About item
-#: ../src/applet.c:2114
+#: ../src/applet.c:2119
 msgid "_About"
 msgstr "_Sobre"
 
-#: ../src/applet.c:2291
+#: ../src/applet.c:2296
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../src/applet.c:2292
+#: ../src/applet.c:2297
 msgid "The network connection has been disconnected."
 msgstr "A conexión de rede foi desconectada."
 
-#: ../src/applet.c:2473
+#: ../src/applet.c:2478
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Preparando a conexión de rede '%s'…"
 
-#: ../src/applet.c:2476
+#: ../src/applet.c:2481
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Requírese unha autenticación de usuario para a conexión de rede '%s'…"
 
-#: ../src/applet.c:2482
+#: ../src/applet.c:2487
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "A conexión de rede '%s' está activa"
 
-#: ../src/applet.c:2560
+#: ../src/applet.c:2565
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Iniciando a conexión de rede VPN '%s'…"
 
-#: ../src/applet.c:2563
+#: ../src/applet.c:2568
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Requírese unha autenticación de usuario para a conexión VPN '%s'…"
 
-#: ../src/applet.c:2566
+#: ../src/applet.c:2571
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Solicitando un enderezo VPN para '%s'…"
 
-#: ../src/applet.c:2569
+#: ../src/applet.c:2574
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "A conexión VPN '%s' está activa"
 
-#: ../src/applet.c:2608
+#: ../src/applet.c:2613
 msgid "No network connection"
 msgstr "Sen conexión de rede"
 
-#: ../src/applet.c:3258
+#: ../src/applet.c:3263
 msgid "NetworkManager Applet"
 msgstr "Miniaplicación NetworkManager"
 
@@ -2365,31 +2370,31 @@ msgstr "O meu provedor emprega a tecnoloxía CDMA (1xRTT, EVDO)"
 msgid "Choose your Provider"
 msgstr "Seleccione o seu provedor"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1080
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1081
 msgid "Country or Region List:"
 msgstr "Lista de paises ou estados:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1092
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1093
 msgid "Country or region"
 msgstr "País ou estado"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1099
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1100
 msgid "My country is not listed"
 msgstr "O meu país non está na lista"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1145
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1146
 msgid "Choose your Provider's Country or Region"
 msgstr "Seleccione o país ou estado do seu provedor"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1199
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1200
 msgid "Installed GSM device"
 msgstr "Dispositivo GSM instalado"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1202
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1203
 msgid "Installed CDMA device"
 msgstr "Dispositivo CDMA instalado"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1374
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1375
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
@@ -2397,37 +2402,37 @@ msgstr ""
 "Este asistente axúdao a configurar a súa conexión de banda larga móbil a "
 "unha rede celular (3G) de forma sinxela."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1379
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1380
 msgid "You will need the following information:"
 msgstr "Vostede precisará a seguinte información:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1394
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1395
 msgid "Your broadband provider's name"
 msgstr "O nome do seu provedor de banda larga"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1400
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1401
 msgid "Your broadband billing plan name"
 msgstr "O nome do plan de facturación de banda larga"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1406
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1407
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr ""
 "(nalgúns casos) O seu APN do plan de facturación de banda larga (Access "
 "Point Name)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1433
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1434
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Crear unha conexión para es_te dispositivo de banda larga móbil:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1448
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1449
 msgid "Any device"
 msgstr "Calquera dispositivo"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1461
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1462
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Configurar unha conexión de banda larga móbil"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1625
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1626
 msgid "New Mobile Broadband Connection"
 msgstr "Nova conexión de banda larga móbil"
 
