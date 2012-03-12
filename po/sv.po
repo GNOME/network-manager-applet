@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManagerApplet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-19 10:50+0100\n"
-"PO-Revision-Date: 2012-02-19 10:52+0100\n"
+"POT-Creation-Date: 2012-03-12 18:11+0100\n"
+"PO-Revision-Date: 2012-03-12 18:11+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -133,7 +133,7 @@ msgstr "Användarautentisering krävs för mobila bredbandsanslutningen \"%s\"..
 #: ../src/applet-device-cdma.c:490
 #: ../src/applet-device-gsm.c:537
 #: ../src/applet-device-wimax.c:473
-#: ../src/applet.c:2479
+#: ../src/applet.c:2484
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Begär en nätverksadress för \"%s\"..."
@@ -153,7 +153,7 @@ msgstr "CDMA"
 
 #: ../src/applet-device-cdma.c:345
 #: ../src/applet-device-gsm.c:392
-#: ../src/applet-dialogs.c:430
+#: ../src/applet-dialogs.c:425
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobilt bredband (%s)"
@@ -331,7 +331,7 @@ msgstr "Trådbundet nätverk"
 
 #. Notify user of unmanaged or unavailable device
 #: ../src/applet-device-wired.c:232
-#: ../src/applet.c:1485
+#: ../src/applet.c:1490
 msgid "disconnected"
 msgstr "frånkopplad"
 
@@ -417,7 +417,7 @@ msgid "Use the network menu to connect to a wireless network"
 msgstr "Använd nätverksmenyn för att ansluta till ett trådlöst nätverk"
 
 #: ../src/applet-device-wifi.c:1085
-#: ../src/applet.c:901
+#: ../src/applet.c:906
 msgid "Don't show this message again"
 msgstr "Visa inte detta meddelandet igen"
 
@@ -510,180 +510,185 @@ msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Ingen"
 
-#: ../src/applet-dialogs.c:352
-#: ../src/applet-dialogs.c:490
+#: ../src/applet-dialogs.c:278
+#, c-format
+msgid "%s (default)"
+msgstr "%s (standard)"
+
+#: ../src/applet-dialogs.c:347
+#: ../src/applet-dialogs.c:485
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:354
-#: ../src/applet-dialogs.c:492
+#: ../src/applet-dialogs.c:349
+#: ../src/applet-dialogs.c:487
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../src/applet-dialogs.c:367
+#: ../src/applet-dialogs.c:362
 #, c-format
 msgid "%d dB"
 msgstr "%d dB"
 
-#: ../src/applet-dialogs.c:369
+#: ../src/applet-dialogs.c:364
 msgctxt "WiMAX CINR"
 msgid "unknown"
 msgstr "okänd"
 
-#: ../src/applet-dialogs.c:381
+#: ../src/applet-dialogs.c:376
 msgctxt "WiMAX Base Station ID"
 msgid "unknown"
 msgstr "okänd"
 
-#: ../src/applet-dialogs.c:416
+#: ../src/applet-dialogs.c:411
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:419
+#: ../src/applet-dialogs.c:414
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:426
+#: ../src/applet-dialogs.c:421
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:428
+#: ../src/applet-dialogs.c:423
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:432
+#: ../src/applet-dialogs.c:427
 #, c-format
 msgid "WiMAX (%s)"
 msgstr "WiMAX (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:438
-#: ../src/applet-dialogs.c:797
+#: ../src/applet-dialogs.c:433
+#: ../src/applet-dialogs.c:792
 msgid "General"
 msgstr "Allmänt"
 
-#: ../src/applet-dialogs.c:442
+#: ../src/applet-dialogs.c:437
 msgid "Interface:"
 msgstr "Gränssnitt:"
 
-#: ../src/applet-dialogs.c:458
+#: ../src/applet-dialogs.c:453
 msgid "Hardware Address:"
 msgstr "Hårdvaruadress:"
 
 #. Driver
-#: ../src/applet-dialogs.c:466
+#: ../src/applet-dialogs.c:461
 msgid "Driver:"
 msgstr "Drivrutin:"
 
-#: ../src/applet-dialogs.c:495
+#: ../src/applet-dialogs.c:490
 msgid "Speed:"
 msgstr "Hastighet:"
 
-#: ../src/applet-dialogs.c:505
+#: ../src/applet-dialogs.c:500
 msgid "Security:"
 msgstr "Säkerhet:"
 
-#: ../src/applet-dialogs.c:518
+#: ../src/applet-dialogs.c:513
 msgid "CINR:"
 msgstr "CINR:"
 
-#: ../src/applet-dialogs.c:531
+#: ../src/applet-dialogs.c:526
 msgid "BSID:"
 msgstr "BSID:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:548
+#: ../src/applet-dialogs.c:543
 msgid "IPv4"
 msgstr "IPv4"
 
 #. Address
-#: ../src/applet-dialogs.c:559
-#: ../src/applet-dialogs.c:666
+#: ../src/applet-dialogs.c:554
+#: ../src/applet-dialogs.c:661
 msgid "IP Address:"
 msgstr "IP-adress:"
 
-#: ../src/applet-dialogs.c:561
-#: ../src/applet-dialogs.c:577
+#: ../src/applet-dialogs.c:556
+#: ../src/applet-dialogs.c:572
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../src/applet-dialogs.c:575
+#: ../src/applet-dialogs.c:570
 msgid "Broadcast Address:"
 msgstr "Broadcast-adress:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:584
+#: ../src/applet-dialogs.c:579
 msgid "Subnet Mask:"
 msgstr "Subnätsmask:"
 
-#: ../src/applet-dialogs.c:586
+#: ../src/applet-dialogs.c:581
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../src/applet-dialogs.c:594
-#: ../src/applet-dialogs.c:681
+#: ../src/applet-dialogs.c:589
+#: ../src/applet-dialogs.c:676
 msgid "Default Route:"
 msgstr "Standardväg:"
 
-#: ../src/applet-dialogs.c:606
+#: ../src/applet-dialogs.c:601
 msgid "Primary DNS:"
 msgstr "Primär DNS:"
 
-#: ../src/applet-dialogs.c:615
+#: ../src/applet-dialogs.c:610
 msgid "Secondary DNS:"
 msgstr "Sekundär DNS:"
 
-#: ../src/applet-dialogs.c:625
+#: ../src/applet-dialogs.c:620
 msgid "Ternary DNS:"
 msgstr "Tertiär DNS:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:640
+#: ../src/applet-dialogs.c:635
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:649
+#: ../src/applet-dialogs.c:644
 msgid "Ignored"
 msgstr "Ignorera"
 
-#: ../src/applet-dialogs.c:802
+#: ../src/applet-dialogs.c:797
 msgid "VPN Type:"
 msgstr "VPN-typ:"
 
-#: ../src/applet-dialogs.c:809
+#: ../src/applet-dialogs.c:804
 msgid "VPN Gateway:"
 msgstr "VPN-gateway:"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:810
 msgid "VPN Username:"
 msgstr "VPN-användarnamn:"
 
-#: ../src/applet-dialogs.c:821
+#: ../src/applet-dialogs.c:816
 msgid "VPN Banner:"
 msgstr "VPN-banner:"
 
-#: ../src/applet-dialogs.c:827
+#: ../src/applet-dialogs.c:822
 msgid "Base Connection:"
 msgstr "Basanslutning:"
 
-#: ../src/applet-dialogs.c:829
+#: ../src/applet-dialogs.c:824
 msgid "Unknown"
 msgstr "Okänd"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:892
+#: ../src/applet-dialogs.c:887
 msgid "No valid active connections found!"
 msgstr "Inga giltiga aktiva anslutningar hittades!"
 
-#: ../src/applet-dialogs.c:945
+#: ../src/applet-dialogs.c:940
 msgid ""
 "Copyright © 2004-2011 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
@@ -693,32 +698,32 @@ msgstr ""
 "Copyright © 2005-2008 Novell, Inc.\n"
 "och många andra bidragsgivare och översättare"
 
-#: ../src/applet-dialogs.c:948
+#: ../src/applet-dialogs.c:943
 msgid "Notification area applet for managing your network devices and connections."
 msgstr "Panelprogram i notifieringsytan för hantering av dina nätverksenheter och nätverksanslutningar."
 
-#: ../src/applet-dialogs.c:950
+#: ../src/applet-dialogs.c:945
 msgid "NetworkManager Website"
 msgstr "Webbplats för Nätverkshanterare"
 
-#: ../src/applet-dialogs.c:965
+#: ../src/applet-dialogs.c:960
 msgid "Missing resources"
 msgstr "Saknar resurser"
 
-#: ../src/applet-dialogs.c:990
+#: ../src/applet-dialogs.c:985
 msgid "Mobile broadband network password"
 msgstr "Nätverkslösenord för mobilt bredband"
 
-#: ../src/applet-dialogs.c:999
+#: ../src/applet-dialogs.c:994
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Ett lösenord krävs för att ansluta till \"%s\"."
 
-#: ../src/applet-dialogs.c:1018
+#: ../src/applet-dialogs.c:1013
 msgid "Password:"
 msgstr "Lösenord:"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:995
 #, c-format
 msgid ""
 "\n"
@@ -727,7 +732,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att nätverksanslutningen avbröts."
 
-#: ../src/applet.c:993
+#: ../src/applet.c:998
 #, c-format
 msgid ""
 "\n"
@@ -736,7 +741,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten oväntat stoppades."
 
-#: ../src/applet.c:996
+#: ../src/applet.c:1001
 #, c-format
 msgid ""
 "\n"
@@ -745,7 +750,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten svarade med ogiltig konfiguration."
 
-#: ../src/applet.c:999
+#: ../src/applet.c:1004
 #, c-format
 msgid ""
 "\n"
@@ -754,7 +759,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att tidsgränsen för anslutningsförsöket överstegs."
 
-#: ../src/applet.c:1002
+#: ../src/applet.c:1007
 #, c-format
 msgid ""
 "\n"
@@ -763,7 +768,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten inte startade i tid."
 
-#: ../src/applet.c:1005
+#: ../src/applet.c:1010
 #, c-format
 msgid ""
 "\n"
@@ -772,7 +777,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att VPN-tjänsten misslyckades med att starta."
 
-#: ../src/applet.c:1008
+#: ../src/applet.c:1013
 #, c-format
 msgid ""
 "\n"
@@ -781,7 +786,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av att det inte fanns några giltiga VPN-hemligheter."
 
-#: ../src/applet.c:1011
+#: ../src/applet.c:1016
 #, c-format
 msgid ""
 "\n"
@@ -790,7 +795,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades på grund av ogiltiga VPN-hemligheter."
 
-#: ../src/applet.c:1018
+#: ../src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -799,7 +804,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" misslyckades."
 
-#: ../src/applet.c:1036
+#: ../src/applet.c:1041
 #, c-format
 msgid ""
 "\n"
@@ -808,7 +813,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" kopplades från på grund av att nätverksanslutningen avbröts."
 
-#: ../src/applet.c:1039
+#: ../src/applet.c:1044
 #, c-format
 msgid ""
 "\n"
@@ -817,7 +822,7 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" kopplades från på grund av att VPN-tjänsten stoppades."
 
-#: ../src/applet.c:1045
+#: ../src/applet.c:1050
 #, c-format
 msgid ""
 "\n"
@@ -826,17 +831,17 @@ msgstr ""
 "\n"
 "VPN-anslutningen \"%s\" kopplades från."
 
-#: ../src/applet.c:1079
+#: ../src/applet.c:1084
 msgid "VPN Login Message"
 msgstr "VPN-inloggningsmeddelande"
 
-#: ../src/applet.c:1085
-#: ../src/applet.c:1093
-#: ../src/applet.c:1143
+#: ../src/applet.c:1090
+#: ../src/applet.c:1098
+#: ../src/applet.c:1148
 msgid "VPN Connection Failed"
 msgstr "VPN-anslutningen misslyckades"
 
-#: ../src/applet.c:1150
+#: ../src/applet.c:1155
 #, c-format
 msgid ""
 "\n"
@@ -849,7 +854,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1153
+#: ../src/applet.c:1158
 #, c-format
 msgid ""
 "\n"
@@ -862,140 +867,140 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1473
+#: ../src/applet.c:1478
 msgid "device not ready (firmware missing)"
 msgstr "enheten är inte redo (fast programvara saknas)"
 
-#: ../src/applet.c:1475
+#: ../src/applet.c:1480
 msgid "device not ready"
 msgstr "enheten är inte redo"
 
-#: ../src/applet.c:1501
+#: ../src/applet.c:1506
 msgid "Disconnect"
 msgstr "Koppla från"
 
-#: ../src/applet.c:1515
+#: ../src/applet.c:1520
 msgid "device not managed"
 msgstr "enheten hanteras inte"
 
-#: ../src/applet.c:1559
+#: ../src/applet.c:1564
 msgid "No network devices available"
 msgstr "Inga nätverksenheter finns tillgängliga"
 
-#: ../src/applet.c:1647
+#: ../src/applet.c:1652
 msgid "_VPN Connections"
 msgstr "_VPN-anslutningar"
 
-#: ../src/applet.c:1704
+#: ../src/applet.c:1709
 msgid "_Configure VPN..."
 msgstr "_Konfigurera VPN..."
 
-#: ../src/applet.c:1708
+#: ../src/applet.c:1713
 msgid "_Disconnect VPN"
 msgstr "Koppla _från VPN"
 
-#: ../src/applet.c:1806
+#: ../src/applet.c:1811
 msgid "NetworkManager is not running..."
 msgstr "Nätverkshanteraren är inte igång..."
 
-#: ../src/applet.c:1811
-#: ../src/applet.c:2604
+#: ../src/applet.c:1816
+#: ../src/applet.c:2609
 msgid "Networking disabled"
 msgstr "Nätverk inaktiverat"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2032
+#: ../src/applet.c:2037
 msgid "Enable _Networking"
 msgstr "Aktivera _nätverk"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2041
+#: ../src/applet.c:2046
 msgid "Enable _Wireless"
 msgstr "Aktivera _trådlöst nätverk"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2050
+#: ../src/applet.c:2055
 msgid "Enable _Mobile Broadband"
 msgstr "Aktivera _mobilt bredband"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2059
+#: ../src/applet.c:2064
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "Aktivera mobilt bredband med WiMA_X "
 
 #. Toggle notifications item
-#: ../src/applet.c:2070
+#: ../src/applet.c:2075
 msgid "Enable N_otifications"
 msgstr "Aktivera n_otifieringar"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2081
+#: ../src/applet.c:2086
 msgid "Connection _Information"
 msgstr "Anslutnings_information"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2091
+#: ../src/applet.c:2096
 msgid "Edit Connections..."
 msgstr "Redigera anslutningar..."
 
 #. Help item
-#: ../src/applet.c:2105
+#: ../src/applet.c:2110
 msgid "_Help"
 msgstr "_Hjälp"
 
 #. About item
-#: ../src/applet.c:2114
+#: ../src/applet.c:2119
 msgid "_About"
 msgstr "_Om"
 
-#: ../src/applet.c:2291
+#: ../src/applet.c:2296
 msgid "Disconnected"
 msgstr "Frånkopplad"
 
-#: ../src/applet.c:2292
+#: ../src/applet.c:2297
 msgid "The network connection has been disconnected."
 msgstr "Nätverksanslutningen har kopplats från."
 
-#: ../src/applet.c:2473
+#: ../src/applet.c:2478
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Förbereder nätverksanslutningen \"%s\"..."
 
-#: ../src/applet.c:2476
+#: ../src/applet.c:2481
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Användarautentisering krävs för nätverksanslutningen \"%s\"..."
 
-#: ../src/applet.c:2482
+#: ../src/applet.c:2487
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Nätverksanslutningen \"%s\" är aktiv"
 
-#: ../src/applet.c:2560
+#: ../src/applet.c:2565
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Startar VPN-anslutningen \"%s\"..."
 
-#: ../src/applet.c:2563
+#: ../src/applet.c:2568
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Användarautentisering krävs för VPN-anslutningen \"%s\"..."
 
-#: ../src/applet.c:2566
+#: ../src/applet.c:2571
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Begär en VPN-adress för \"%s\"..."
 
-#: ../src/applet.c:2569
+#: ../src/applet.c:2574
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN-anslutningen \"%s\" är aktiv"
 
-#: ../src/applet.c:2608
+#: ../src/applet.c:2613
 msgid "No network connection"
 msgstr "Ingen nätverksanslutning"
 
-#: ../src/applet.c:3258
+#: ../src/applet.c:3263
 msgid "NetworkManager Applet"
 msgstr "Panelprogram för nätverkshantering"
 
