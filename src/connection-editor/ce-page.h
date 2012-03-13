@@ -80,6 +80,8 @@ typedef struct {
 	/* Virtual functions */
 	gboolean    (*validate)     (CEPage *self, NMConnection *connection, GError **error);
 	char **     (*get_mac_list) (CEPage *self);
+	/* Let the page warn the user if some property needs review */
+	GtkWidget * (*nag_user)     (CEPage *self);
 
 	/* Signals */
 	void        (*changed)     (CEPage *self);
@@ -122,6 +124,8 @@ void ce_page_complete_init (CEPage *self,
 gboolean ce_page_get_initialized (CEPage *self);
 
 char *ce_page_get_next_available_name (GSList *connections, const char *format);
+
+GtkWidget *ce_page_nag_user (CEPage *self);
 
 /* Only for subclasses */
 NMConnection *ce_page_new_connection (const char *format,

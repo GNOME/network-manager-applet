@@ -187,6 +187,14 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	return valid;
 }
 
+static GtkWidget *
+nag_user (CEPage *page)
+{
+	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (page);
+
+	return priv->security ? wireless_security_nag_user (priv->security) : NULL;
+}
+
 static void
 ce_page_wired_security_init (CEPageWiredSecurity *self)
 {
@@ -220,4 +228,5 @@ ce_page_wired_security_class_init (CEPageWiredSecurityClass *wired_security_clas
 	object_class->dispose = dispose;
 
 	parent_class->validate = validate;
+	parent_class->nag_user = nag_user;
 }

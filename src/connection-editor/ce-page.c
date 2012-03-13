@@ -254,6 +254,14 @@ ce_page_get_next_available_name (GSList *connections, const char *format)
 	return cname;
 }
 
+GtkWidget *
+ce_page_nag_user (CEPage *self)
+{
+	if (CE_PAGE_GET_CLASS (self)->nag_user)
+		return CE_PAGE_GET_CLASS (self)->nag_user (self);
+	return NULL;
+}
+
 static void
 emit_initialized (CEPage *self, GError *error)
 {

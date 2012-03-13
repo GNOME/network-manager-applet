@@ -461,6 +461,15 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	return valid;
 }
 
+static GtkWidget *
+nag_user (CEPage *page)
+{
+	WirelessSecurity *sec;
+
+	sec = wireless_security_combo_get_active (CE_PAGE_WIRELESS_SECURITY (page));
+	return sec ? wireless_security_nag_user (sec) : NULL;
+}
+
 static void
 ce_page_wireless_security_class_init (CEPageWirelessSecurityClass *wireless_security_class)
 {
@@ -471,4 +480,5 @@ ce_page_wireless_security_class_init (CEPageWirelessSecurityClass *wireless_secu
 	object_class->dispose = dispose;
 
 	parent_class->validate = validate;
+	parent_class->nag_user = nag_user;
 }
