@@ -112,25 +112,6 @@ nma_wireless_dialog_get_nag_ignored (NMAWirelessDialog *self)
 }
 
 static void
-model_free (GtkTreeModel *model, guint col)
-{
-	GtkTreeIter	iter;
-
-	if (!model)
-		return;
-
-	if (gtk_tree_model_get_iter_first (model, &iter)) {
-		do {
-			char *str;
-
-			gtk_tree_model_get (model, &iter, col, &str, -1);
-			g_free (str);
-		} while (gtk_tree_model_iter_next (model, &iter));
-	}
-	g_object_unref (model);
-}
-
-static void
 size_group_clear (GtkSizeGroup *group)
 {
 	GSList *iter;
@@ -427,7 +408,7 @@ connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
 	g_return_val_if_fail (priv->connection == NULL, FALSE);
 
 	/* Clear any old model */
-	model_free (priv->connection_model, C_NAME_COLUMN);
+	g_object_unref (priv->connection_model);
 
 	/* New model */
 	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_OBJECT, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
@@ -1358,7 +1339,7 @@ GtkWidget *
 nma_wireless_dialog_nag_user (NMAWirelessDialog *self)
 {
 	NMAWirelessDialogPrivate *priv;
-	GtkWidget *combo;
+	GtkWidget *combo, *nag;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	WirelessSecurity *sec = NULL;
@@ -1378,8 +1359,11 @@ nma_wireless_dialog_nag_user (NMAWirelessDialog *self)
 	}
 
 	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
-	if (sec)
-		return wireless_security_nag_user (sec);
+	if (sec) {
+		nag = wireless_security_nag_user (sec);
+		wireless_security_unref (sec);
+		return nag;
+	}
 
 	return NULL;
 }
@@ -1417,8 +1401,8 @@ dispose (GObject *object)
 	g_object_unref (priv->settings);
 	g_object_unref (priv->builder);
 
-	model_free (priv->device_model, D_NAME_COLUMN);
-	model_free (priv->connection_model, C_NAME_COLUMN);
+	g_object_unref (priv->device_model);
+	g_object_unref (priv->connection_model);
 
 	if (priv->group)
 		g_object_unref (priv->group);

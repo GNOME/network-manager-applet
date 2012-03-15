@@ -504,6 +504,8 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 				valid = FALSE;
 			}
 		}
+
+		wireless_security_unref (sec);
 	} else {
 		/* No security, unencrypted */
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
@@ -519,9 +521,14 @@ static GtkWidget *
 nag_user (CEPage *page)
 {
 	WirelessSecurity *sec;
+	GtkWidget *nag = NULL;
 
 	sec = wireless_security_combo_get_active (CE_PAGE_WIRELESS_SECURITY (page));
-	return sec ? wireless_security_nag_user (sec) : NULL;
+	if (sec) {
+		nag = wireless_security_nag_user (sec);
+		wireless_security_unref (sec);
+	}
+	return nag;
 }
 
 static void

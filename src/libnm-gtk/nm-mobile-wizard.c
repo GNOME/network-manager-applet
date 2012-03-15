@@ -171,6 +171,8 @@ assistant_closed (GtkButton *button, gpointer user_data)
 
 	(*(self->callback)) (self, FALSE, wiz_method, self->user_data);
 
+	if (provider)
+		nmn_mobile_provider_unref (provider);
 	g_free (wiz_method->provider_name);
 	g_free (wiz_method->plan_name);
 	g_free (wiz_method->username);
@@ -292,17 +294,20 @@ confirm_prepare (NMAMobileWizard *self)
 
 	/* Provider */
 	str = g_string_new (NULL);
-	if (provider)
+	if (provider) {
 		g_string_append (str, provider->name);
-	else {
+		nmn_mobile_provider_unref (provider);
+	} else {
 		const char *unlisted_provider;
 
 		unlisted_provider = gtk_entry_get_text (GTK_ENTRY (self->provider_unlisted_entry));
 		g_string_append (str, unlisted_provider);
 	}
 
-	if (country)
+	if (country) {
 		g_string_append_printf (str, ", %s", country);
+		g_free (country);
+	}
 	gtk_label_set_text (GTK_LABEL (self->confirm_provider), str->str);
 	g_string_free (str, TRUE);
 
@@ -576,6 +581,7 @@ plan_prepare (NMAMobileWizard *self)
 			                    -1);
 			count++;
 		}
+		nmn_mobile_provider_unref (provider);
 
 		/* Draw the separator */
 		if (count)

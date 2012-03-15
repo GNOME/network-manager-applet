@@ -127,6 +127,12 @@ get_active_connection (GtkTreeView *treeview)
 	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
 	g_list_free (selected_rows);
 
+	/* gtk_tree_model_get() will have reffed connection, but we don't
+	 * need that since we know the model will continue to hold a ref.
+	 */
+	if (connection)
+		g_object_unref (connection);
+
 	return connection;
 }
 
@@ -198,9 +204,9 @@ get_iter_for_connection (GtkTreeModel *model,
 		if (candidate && (candidate == connection)) {
 			*iter = temp_iter;
 			found = TRUE;
-			break;
 		}
-	} while (gtk_tree_model_iter_next (model, &temp_iter));
+		g_object_unref (candidate);
+	} while (!found && gtk_tree_model_iter_next (model, &temp_iter));
 
 	return found;
 }

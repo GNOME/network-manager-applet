@@ -285,9 +285,9 @@ populate_ui (CEPageWireless *self)
 {
 	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
 	NMSettingWireless *setting = priv->setting;
-	const GByteArray *ssid = NULL;
-	const char *mode = NULL;
-	const char *band = NULL;
+	GByteArray *ssid = NULL;
+	char *mode = NULL;
+	char *band = NULL;
 	int band_idx = 0;
 	int rate_def;
 	int tx_power_def;
@@ -330,6 +330,7 @@ populate_ui (CEPageWireless *self)
 	gtk_entry_set_text (priv->ssid, utf8_ssid);
 	g_signal_connect_swapped (priv->ssid, "changed", G_CALLBACK (ce_page_changed), self);
 	g_free (utf8_ssid);
+	g_byte_array_unref (ssid);
 
 	/* Default to Infrastructure */
 	gtk_combo_box_set_active (priv->mode, 0);
@@ -337,6 +338,7 @@ populate_ui (CEPageWireless *self)
 		gtk_combo_box_set_active (priv->mode, 1);
 	mode_combo_changed_cb (priv->mode, self);
 	g_signal_connect (priv->mode, "changed", G_CALLBACK (mode_combo_changed_cb), self);
+	g_free (mode);
 
 	g_signal_connect (priv->channel, "output",
 	                  G_CALLBACK (channel_spin_output_cb),
@@ -354,6 +356,7 @@ populate_ui (CEPageWireless *self)
 			band_idx = 2;
 			gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), TRUE);
 		}
+		g_free (band);
 	}
 
 	gtk_combo_box_set_active (priv->band, band_idx);

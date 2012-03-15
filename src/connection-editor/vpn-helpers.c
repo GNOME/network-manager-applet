@@ -427,17 +427,22 @@ sort_plugins (gconstpointer a, gconstpointer b)
 {
 	NMVpnPluginUiInterface *aa = NM_VPN_PLUGIN_UI_INTERFACE (a);
 	NMVpnPluginUiInterface *bb = NM_VPN_PLUGIN_UI_INTERFACE (b);
-	const char *aa_desc = NULL, *bb_desc = NULL;
+	char *aa_desc = NULL, *bb_desc = NULL;
+	gint ret;
 
 	g_object_get (aa, NM_VPN_PLUGIN_UI_INTERFACE_NAME, &aa_desc, NULL);
 	g_object_get (bb, NM_VPN_PLUGIN_UI_INTERFACE_NAME, &bb_desc, NULL);
 
 	if (!aa_desc)
-		return -1;
-	if (!bb_desc)
-		return 1;
+		ret = -1;
+	else if (!bb_desc)
+		ret = 1;
+	else
+		ret = strcmp (aa_desc, bb_desc);
 
-	return strcmp (aa_desc, bb_desc);
+	g_free (aa_desc);
+	g_free (bb_desc);
+	return ret;
 }
 
 #define COL_PLUGIN_DESC 0
@@ -450,7 +455,7 @@ combo_changed_cb (GtkComboBox *combo, gpointer user_data)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	NMVpnPluginUiInterface *plugin = NULL;
-	const char *desc = NULL;
+	char *desc = NULL;
 	char *tmp;
 
 	if (!gtk_combo_box_get_active_iter (combo, &iter))
@@ -465,12 +470,14 @@ combo_changed_cb (GtkComboBox *combo, gpointer user_data)
 		goto error;
 
 	g_object_get (G_OBJECT (plugin), NM_VPN_PLUGIN_UI_INTERFACE_DESC, &desc, NULL);
+	g_object_unref (plugin);
 	if (!desc)
 		goto error;
 
 	tmp = g_strdup_printf ("<i>%s</i>", desc);
 	gtk_label_set_markup (label, tmp);
 	g_free (tmp);
+	g_free (desc);
 	return;
 
 error:
@@ -515,13 +522,14 @@ vpn_ask_connection_type (GtkWindow *parent)
 	plugin_list = g_slist_sort (plugin_list, sort_plugins);
 	for (iter = plugin_list; iter; iter = g_slist_next (iter)) {
 		NMVpnPluginUiInterface *plugin = NM_VPN_PLUGIN_UI_INTERFACE (iter->data);
-		const char *desc;
+		char *desc;
 
 		gtk_list_store_append (GTK_LIST_STORE (model), &tree_iter);
 		g_object_get (plugin, NM_VPN_PLUGIN_UI_INTERFACE_NAME, &desc, NULL);
 		gtk_list_store_set (GTK_LIST_STORE (model), &tree_iter,
 		                    COL_PLUGIN_DESC, desc,
 		                    COL_PLUGIN_OBJ, plugin, -1);
+		g_free (desc);
 	}
 
 	combo = GTK_WIDGET (gtk_builder_get_object (builder, "vpn_type_combo"));
@@ -540,15 +548,17 @@ vpn_ask_connection_type (GtkWindow *parent)
 		NMVpnPluginUiInterface *plugin = NULL;
 
 		gtk_tree_model_get (model, &tree_iter, COL_PLUGIN_OBJ, &plugin, -1);
-		if (plugin)
+		if (plugin) {
 			g_object_get (G_OBJECT (plugin), NM_VPN_PLUGIN_UI_INTERFACE_SERVICE, &service_type, NULL);
+			g_object_unref (plugin);
+		}
 	}
 
 out:
 	gtk_widget_destroy (dialog);
 	g_object_unref (builder);
 	if (service_type)
-		return g_strdup (service_type);
+		return service_type;
 	return NULL;
 }
 
