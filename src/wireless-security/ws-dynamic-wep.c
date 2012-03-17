@@ -127,6 +127,7 @@ ws_dynamic_wep_new (NMConnection *connection,
 		return NULL;
 
 	parent->nag_user = nag_user;
+	parent->adhoc_compatible = FALSE;
 
 	widget = ws_802_1x_auth_combo_init (parent,
 	                                    "dynamic_wep_auth_combo",

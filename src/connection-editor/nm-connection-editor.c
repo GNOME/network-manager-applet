@@ -199,7 +199,7 @@ static void
 connection_editor_validate (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
-	gboolean valid = FALSE;
+	gboolean valid = FALSE, printed = FALSE;
 	GSList *iter;
 
 	if (!editor_is_initialized (editor))
@@ -213,21 +213,24 @@ connection_editor_validate (NMConnectionEditor *editor)
 	if (!ui_to_setting (editor))
 		goto done;
 
+	valid = TRUE;
 	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
 		GError *error = NULL;
 
 		if (!ce_page_validate (CE_PAGE (iter->data), editor->connection, &error)) {
-			/* FIXME: use the error to indicate which UI widgets are invalid */
-			if (error) {
-				g_warning ("Invalid setting %s: %s", CE_PAGE (iter->data)->title, error->message);
-				g_error_free (error);
-			} else
-				g_warning ("Invalid setting %s", CE_PAGE (iter->data)->title);
+			valid = FALSE;
 
-			goto done;
+			/* FIXME: use the error to indicate which UI widgets are invalid */
+			if (!printed) {
+				printed = TRUE;
+				if (error) {
+					g_warning ("Invalid setting %s: %s", CE_PAGE (iter->data)->title, error->message);
+					g_error_free (error);
+				} else
+					g_warning ("Invalid setting %s", CE_PAGE (iter->data)->title);
+			}
 		}
 	}
-	valid = TRUE;
 
 done:
 	ce_polkit_button_set_master_sensitive (CE_POLKIT_BUTTON (editor->ok_button), valid);

@@ -43,8 +43,9 @@
 G_DEFINE_TYPE (CEPageWirelessSecurity, ce_page_wireless_security, CE_TYPE_PAGE)
 
 
-#define S_NAME_COLUMN		0
-#define S_SEC_COLUMN		1
+#define S_NAME_COLUMN   0
+#define S_SEC_COLUMN    1
+#define S_ADHOC_VALID_COLUMN  2
 
 static gboolean
 find_proto (NMSettingWirelessSecurity *sec, const char *item)
@@ -179,12 +180,34 @@ add_security_item (CEPageWirelessSecurity *self,
                    WirelessSecurity *sec,
                    GtkListStore *model,
                    GtkTreeIter *iter,
-                   const char *text)
+                   const char *text,
+                   gboolean adhoc_valid)
 {
 	wireless_security_set_changed_notify (sec, stuff_changed_cb, self);
 	gtk_list_store_append (model, iter);
-	gtk_list_store_set (model, iter, S_NAME_COLUMN, text, S_SEC_COLUMN, sec, -1);
+	gtk_list_store_set (model, iter,
+	                    S_NAME_COLUMN, text,
+	                    S_SEC_COLUMN, sec,
+	                    S_ADHOC_VALID_COLUMN, adhoc_valid,
+	                    -1);
 	wireless_security_unref (sec);
+}
+
+static void
+set_sensitive (GtkCellLayout *cell_layout,
+               GtkCellRenderer *cell,
+               GtkTreeModel *tree_model,
+               GtkTreeIter *iter,
+               gpointer data)
+{
+	gboolean *adhoc = data;
+	gboolean sensitive = TRUE, adhoc_valid = TRUE;
+
+	gtk_tree_model_get (tree_model, iter, S_ADHOC_VALID_COLUMN, &adhoc_valid, -1);
+	if (*adhoc && !adhoc_valid)
+		sensitive = FALSE;
+
+	g_object_set (cell, "sensitive", sensitive, NULL);
 }
 
 static void
@@ -204,6 +227,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	int active = -1;
 	int item = 0;
 	GtkComboBox *combo;
+	GtkCellRenderer *renderer;
 
 	if (error)
 		return;
@@ -223,6 +247,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	mode = nm_setting_wireless_get_mode (s_wireless);
 	if (mode && !strcmp (mode, "adhoc"))
 		is_adhoc = TRUE;
+	self->adhoc = is_adhoc;
 
 	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 
@@ -232,12 +257,13 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	if (s_wireless_sec)
 		default_type = get_default_type_for_security (s_wireless_sec);
 
-	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
+	sec_model = gtk_list_store_new (3, G_TYPE_STRING, wireless_security_get_g_type (), G_TYPE_BOOLEAN);
 
 	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		gtk_list_store_append (sec_model, &iter);
 		gtk_list_store_set (sec_model, &iter,
 		                    S_NAME_COLUMN, C_("Wifi/wired security", "None"),
+		                    S_ADHOC_VALID_COLUMN, TRUE,
 		                    -1);
 		if (default_type == NMU_SEC_NONE)
 			active = item;
@@ -261,7 +287,8 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 		ws_wep = ws_wep_key_new (connection, NM_WEP_KEY_TYPE_KEY, FALSE, FALSE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
-			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"));
+			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"),
+			                   TRUE);
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (wep_type == NM_WEP_KEY_TYPE_KEY))
 				active = item;
 			item++;
@@ -270,7 +297,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 		ws_wep = ws_wep_key_new (connection, NM_WEP_KEY_TYPE_PASSPHRASE, FALSE, FALSE);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
-			                   &iter, _("WEP 128-bit Passphrase"));
+			                   &iter, _("WEP 128-bit Passphrase"), TRUE);
 			if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (wep_type == NM_WEP_KEY_TYPE_PASSPHRASE))
 				active = item;
 			item++;
@@ -283,7 +310,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 		ws_leap = ws_leap_new (connection, FALSE);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
-			                   &iter, _("LEAP"));
+			                   &iter, _("LEAP"), FALSE);
 			if ((active < 0) && (default_type == NMU_SEC_LEAP))
 				active = item;
 			item++;
@@ -296,7 +323,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 		ws_dynamic_wep = ws_dynamic_wep_new (connection, TRUE, FALSE);
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
-			                   &iter, _("Dynamic WEP (802.1x)"));
+			                   &iter, _("Dynamic WEP (802.1x)"), FALSE);
 			if ((active < 0) && (default_type == NMU_SEC_DYNAMIC_WEP))
 				active = item;
 			item++;
@@ -310,7 +337,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 		ws_wpa_psk = ws_wpa_psk_new (connection, FALSE);
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
-			                   &iter, _("WPA & WPA2 Personal"));
+			                   &iter, _("WPA & WPA2 Personal"), FALSE);
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_PSK) || (default_type == NMU_SEC_WPA2_PSK)))
 				active = item;
 			item++;
@@ -324,7 +351,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 		ws_wpa_eap = ws_wpa_eap_new (connection, TRUE, FALSE);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
-			                   &iter, _("WPA & WPA2 Enterprise"));
+			                   &iter, _("WPA & WPA2 Enterprise"), FALSE);
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_ENTERPRISE) || (default_type == NMU_SEC_WPA2_ENTERPRISE)))
 				active = item;
 			item++;
@@ -332,6 +359,13 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	}
 
 	gtk_combo_box_set_model (combo, GTK_TREE_MODEL (sec_model));
+	gtk_cell_layout_clear (GTK_CELL_LAYOUT (combo));
+
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), renderer, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combo), renderer, "text", S_NAME_COLUMN, NULL);
+	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (combo), renderer, set_sensitive, &self->adhoc, NULL);
+
 	gtk_combo_box_set_active (combo, active < 0 ? 0 : (guint32) active);
 	g_object_unref (G_OBJECT (sec_model));
 
@@ -433,9 +467,20 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	NMSettingWireless *s_wireless;
 	WirelessSecurity *sec;
 	gboolean valid = FALSE;
+	const char *mode;
 
 	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
+
+	/* Kernel Ad-Hoc WPA support is busted; it creates open networks.  Disable
+	 * WPA when Ad-Hoc is selected.  set_sensitive() will pick up self->adhoc
+	 * and do the right thing.
+	 */
+	mode = nm_setting_wireless_get_mode (s_wireless);
+	if (g_strcmp0 (mode, NM_SETTING_WIRELESS_MODE_ADHOC) == 0)
+		self->adhoc = TRUE;
+	else
+		self->adhoc = FALSE;
 
 	sec = wireless_security_combo_get_active (self);
 	if (sec) {
@@ -448,8 +493,17 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 				wireless_security_fill_connection (sec, connection);
 			else
 				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Invalid wireless security");
-		} else
+		} else {
 			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Missing SSID");
+			valid = FALSE;
+		}
+
+		if (self->adhoc) {
+			if (!wireless_security_adhoc_compatible (sec)) {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Security not compatible with Ad-Hoc mode");
+				valid = FALSE;
+			}
+		}
 	} else {
 		/* No security, unencrypted */
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);

@@ -163,6 +163,7 @@ ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 	if (!parent)
 		return NULL;
 
+	parent->adhoc_compatible = FALSE;
 	sec = (WirelessSecurityWPAPSK *) parent;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_entry"));

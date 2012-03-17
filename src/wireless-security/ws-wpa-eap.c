@@ -123,6 +123,7 @@ ws_wpa_eap_new (NMConnection *connection,
 		return NULL;
 
 	parent->nag_user = nag_user;
+	parent->adhoc_compatible = FALSE;
 
 	widget = ws_802_1x_auth_combo_init (parent,
 	                                    "wpa_eap_auth_combo",

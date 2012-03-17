@@ -47,6 +47,7 @@ struct _WirelessSecurity {
 	WSChangedFunc changed_notify;
 	gpointer changed_notify_data;
 	const char *default_field;
+	gboolean adhoc_compatible;
 
 	WSAddToSizeGroupFunc add_to_size_group;
 	WSFillConnectionFunc fill_connection;
@@ -77,6 +78,8 @@ void wireless_security_update_secrets (WirelessSecurity *sec,
                                        NMConnection *connection);
 
 GtkWidget * wireless_security_nag_user (WirelessSecurity *sec);
+
+gboolean wireless_security_adhoc_compatible (WirelessSecurity *sec);
 
 WirelessSecurity *wireless_security_ref (WirelessSecurity *sec);
 

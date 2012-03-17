@@ -197,6 +197,8 @@ wireless_security_init (gsize obj_size,
 	}
 	g_object_ref_sink (sec->ui_widget);
 
+	sec->adhoc_compatible = TRUE;
+
 	return sec;
 }
 
@@ -208,6 +210,14 @@ wireless_security_nag_user (WirelessSecurity *sec)
 	if (sec->nag_user)
 		return (*(sec->nag_user)) (sec);
 	return NULL;
+}
+
+gboolean
+wireless_security_adhoc_compatible (WirelessSecurity *sec)
+{
+	g_return_val_if_fail (sec != NULL, FALSE);
+
+	return sec->adhoc_compatible;
 }
 
 void

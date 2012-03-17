@@ -46,6 +46,7 @@ typedef struct {
 	gboolean disposed;
 	GtkSizeGroup *group;
 	GtkComboBox *security_combo;
+	gboolean adhoc;
 } CEPageWirelessSecurity;
 
 typedef struct {

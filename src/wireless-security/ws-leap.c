@@ -149,6 +149,7 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 		}
 	}
 
+	parent->adhoc_compatible = FALSE;
 	sec = (WirelessSecurityLEAP *) parent;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_password_entry"));
