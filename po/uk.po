@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-05 08:03+0200\n"
-"PO-Revision-Date: 2012-03-05 09:09+0300\n"
+"POT-Creation-Date: 2012-03-18 16:31+0200\n"
+"PO-Revision-Date: 2012-03-18 16:32+0300\n"
 "Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
 "Language-Team: translation@linux.org.ua\n"
 "Language: uk\n"
@@ -129,7 +129,7 @@ msgstr ""
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:490
 #: ../src/applet-device-gsm.c:537 ../src/applet-device-wimax.c:473
-#: ../src/applet.c:2479
+#: ../src/applet.c:2484
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Отримання мережної адреси для «%s»..."
@@ -146,7 +146,7 @@ msgid "CDMA"
 msgstr "CDMA"
 
 #: ../src/applet-device-cdma.c:345 ../src/applet-device-gsm.c:392
-#: ../src/applet-dialogs.c:430
+#: ../src/applet-dialogs.c:424
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Мобільне широкосмугове (%s)"
@@ -154,7 +154,7 @@ msgstr "Мобільне широкосмугове (%s)"
 #: ../src/applet-device-cdma.c:347 ../src/applet-device-gsm.c:394
 #: ../src/connection-editor/page-mobile.c:379
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
-#: ../src/connection-editor/nm-connection-list.c:1511
+#: ../src/connection-editor/nm-connection-list.c:1510
 msgid "Mobile Broadband"
 msgstr "Мобільні широкосмугові"
 
@@ -321,7 +321,7 @@ msgid "Wired Network"
 msgstr "Дротова мережа"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:232 ../src/applet.c:1485
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1490
 msgid "disconnected"
 msgstr "з'єднання розірвано"
 
@@ -407,7 +407,7 @@ msgstr "Доступні бездротові мережі"
 msgid "Use the network menu to connect to a wireless network"
 msgstr "Використовувати меню мережі для підключення до бездротової мережі"
 
-#: ../src/applet-device-wifi.c:1085 ../src/applet.c:901
+#: ../src/applet-device-wifi.c:1085 ../src/applet.c:906
 msgid "Don't show this message again"
 msgstr "Більше не виводити це повідомлення"
 
@@ -473,9 +473,9 @@ msgid "Error displaying connection information:"
 msgstr "Помилка при показі відомостей з'єднання: "
 
 #: ../src/applet-dialogs.c:109
-#: ../src/connection-editor/page-wireless-security.c:285
-#: ../src/libnm-gtk/nm-wireless-dialog.c:949
-#: ../src/wireless-security/wireless-security.c:397
+#: ../src/connection-editor/page-wireless-security.c:313
+#: ../src/libnm-gtk/nm-wireless-dialog.c:948
+#: ../src/wireless-security/wireless-security.c:406
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -483,190 +483,195 @@ msgstr "LEAP"
 msgid "Dynamic WEP"
 msgstr "Динамічний WEP"
 
-#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:246
-#: ../src/applet-dialogs.c:248
+#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:245
+#: ../src/applet-dialogs.c:247
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:244
+#: ../src/applet-dialogs.c:243
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:252 ../src/applet-dialogs.c:261
-#: ../src/connection-editor/page-wireless-security.c:239
-#: ../src/libnm-gtk/nm-wireless-dialog.c:906
+#: ../src/applet-dialogs.c:251 ../src/applet-dialogs.c:260
+#: ../src/connection-editor/page-wireless-security.c:265
+#: ../src/libnm-gtk/nm-wireless-dialog.c:905
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Без перевірки автентичності"
 
-#: ../src/applet-dialogs.c:352 ../src/applet-dialogs.c:490
+#: ../src/applet-dialogs.c:277
+#, c-format
+msgid "%s (default)"
+msgstr "%s (типово)"
+
+#: ../src/applet-dialogs.c:346 ../src/applet-dialogs.c:484
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Мб/c"
 
-#: ../src/applet-dialogs.c:354 ../src/applet-dialogs.c:492
+#: ../src/applet-dialogs.c:348 ../src/applet-dialogs.c:486
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Невідомо"
 
-#: ../src/applet-dialogs.c:367
+#: ../src/applet-dialogs.c:361
 #, c-format
 msgid "%d dB"
 msgstr "%d дБ"
 
-#: ../src/applet-dialogs.c:369
+#: ../src/applet-dialogs.c:363
 msgctxt "WiMAX CINR"
 msgid "unknown"
 msgstr "невідомо"
 
-#: ../src/applet-dialogs.c:381
+#: ../src/applet-dialogs.c:375
 msgctxt "WiMAX Base Station ID"
 msgid "unknown"
 msgstr "невідомо"
 
-#: ../src/applet-dialogs.c:416
+#: ../src/applet-dialogs.c:410
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:419
+#: ../src/applet-dialogs.c:413
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:426
+#: ../src/applet-dialogs.c:420
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:428
+#: ../src/applet-dialogs.c:422
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:432
+#: ../src/applet-dialogs.c:426
 #, c-format
 msgid "WiMAX (%s)"
 msgstr "WiMAX (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:438 ../src/applet-dialogs.c:797
+#: ../src/applet-dialogs.c:432 ../src/applet-dialogs.c:791
 msgid "General"
 msgstr "Загальне"
 
-#: ../src/applet-dialogs.c:442
+#: ../src/applet-dialogs.c:436
 msgid "Interface:"
 msgstr "Інтерфейс:"
 
-#: ../src/applet-dialogs.c:458
+#: ../src/applet-dialogs.c:452
 msgid "Hardware Address:"
 msgstr "Апаратна адреса:"
 
 #. Driver
-#: ../src/applet-dialogs.c:466
+#: ../src/applet-dialogs.c:460
 msgid "Driver:"
 msgstr "Драйвер:"
 
-#: ../src/applet-dialogs.c:495
+#: ../src/applet-dialogs.c:489
 msgid "Speed:"
 msgstr "Швидкість:"
 
-#: ../src/applet-dialogs.c:505
+#: ../src/applet-dialogs.c:499
 msgid "Security:"
 msgstr "Захист:"
 
-#: ../src/applet-dialogs.c:518
+#: ../src/applet-dialogs.c:512
 msgid "CINR:"
 msgstr "CINR:"
 
-#: ../src/applet-dialogs.c:531
+#: ../src/applet-dialogs.c:525
 msgid "BSID:"
 msgstr "BSID:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:548
+#: ../src/applet-dialogs.c:542
 msgid "IPv4"
 msgstr "IPv4"
 
 #. Address
-#: ../src/applet-dialogs.c:559 ../src/applet-dialogs.c:666
+#: ../src/applet-dialogs.c:553 ../src/applet-dialogs.c:660
 msgid "IP Address:"
 msgstr "Адреса IP:"
 
-#: ../src/applet-dialogs.c:561 ../src/applet-dialogs.c:577
+#: ../src/applet-dialogs.c:555 ../src/applet-dialogs.c:571
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Невідома"
 
-#: ../src/applet-dialogs.c:575
+#: ../src/applet-dialogs.c:569
 msgid "Broadcast Address:"
 msgstr "Широкомовна адреса:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:584
+#: ../src/applet-dialogs.c:578
 msgid "Subnet Mask:"
 msgstr "Маска мережі:"
 
-#: ../src/applet-dialogs.c:586
+#: ../src/applet-dialogs.c:580
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Маска мережі"
 
-#: ../src/applet-dialogs.c:594 ../src/applet-dialogs.c:681
+#: ../src/applet-dialogs.c:588 ../src/applet-dialogs.c:675
 msgid "Default Route:"
 msgstr "Типовий шлюз:"
 
-#: ../src/applet-dialogs.c:606
+#: ../src/applet-dialogs.c:600
 msgid "Primary DNS:"
 msgstr "Первинний DNS:"
 
-#: ../src/applet-dialogs.c:615
+#: ../src/applet-dialogs.c:609
 msgid "Secondary DNS:"
 msgstr "Вторинний DNS:"
 
-#: ../src/applet-dialogs.c:625
+#: ../src/applet-dialogs.c:619
 msgid "Ternary DNS:"
 msgstr "Трійкове DNS:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:640
+#: ../src/applet-dialogs.c:634
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:649
+#: ../src/applet-dialogs.c:643
 msgid "Ignored"
 msgstr "Зігнорувати"
 
-#: ../src/applet-dialogs.c:802
+#: ../src/applet-dialogs.c:796
 msgid "VPN Type:"
 msgstr "Тип VPN:"
 
-#: ../src/applet-dialogs.c:809
+#: ../src/applet-dialogs.c:803
 msgid "VPN Gateway:"
 msgstr "Шлюз VPN:"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:809
 msgid "VPN Username:"
 msgstr "Користувач VPN:"
 
-#: ../src/applet-dialogs.c:821
+#: ../src/applet-dialogs.c:815
 msgid "VPN Banner:"
 msgstr "Шапка VPN:"
 
-#: ../src/applet-dialogs.c:827
+#: ../src/applet-dialogs.c:821
 msgid "Base Connection:"
 msgstr "Основне з'єднання:"
 
-#: ../src/applet-dialogs.c:829
+#: ../src/applet-dialogs.c:823
 msgid "Unknown"
 msgstr "Невідомо"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:892
+#: ../src/applet-dialogs.c:886
 msgid "No valid active connections found!"
 msgstr "Немає доступних активних з'єднань!"
 
-#: ../src/applet-dialogs.c:945
+#: ../src/applet-dialogs.c:939
 msgid ""
 "Copyright © 2004-2011 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
@@ -676,33 +681,33 @@ msgstr ""
 "© Novell, Inc., 2005-2008\n"
 "і багато інших учасників та перекладачів"
 
-#: ../src/applet-dialogs.c:948
+#: ../src/applet-dialogs.c:942
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Аплет для керування мережними пристроями та з'єднаннями."
 
-#: ../src/applet-dialogs.c:950
+#: ../src/applet-dialogs.c:944
 msgid "NetworkManager Website"
 msgstr "Веб-сайт NetworkManager"
 
-#: ../src/applet-dialogs.c:965
+#: ../src/applet-dialogs.c:959
 msgid "Missing resources"
 msgstr "Відсутні компоненти програми"
 
-#: ../src/applet-dialogs.c:990
+#: ../src/applet-dialogs.c:984
 msgid "Mobile broadband network password"
 msgstr "Пароль мобільної широкосмугової мережі"
 
-#: ../src/applet-dialogs.c:999
+#: ../src/applet-dialogs.c:993
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Для підключення до мережі «%s» вимагається пароль."
 
-#: ../src/applet-dialogs.c:1018
+#: ../src/applet-dialogs.c:1012
 msgid "Password:"
 msgstr "Пароль:"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:995
 #, c-format
 msgid ""
 "\n"
@@ -712,7 +717,7 @@ msgstr ""
 "\n"
 "Неможливо встановити з'єднання VPN «%s»: з'єднання з мережею було перервано."
 
-#: ../src/applet.c:993
+#: ../src/applet.c:998
 #, c-format
 msgid ""
 "\n"
@@ -721,7 +726,7 @@ msgstr ""
 "\n"
 "Неможливо встановити з'єднання VPN «%s»: служба VPN несподівано завершилась."
 
-#: ../src/applet.c:996
+#: ../src/applet.c:1001
 #, c-format
 msgid ""
 "\n"
@@ -732,7 +737,7 @@ msgstr ""
 "Неможливо встановити з'єднання VPN «%s»: служба VPN повернула неправильну "
 "конфігурацію."
 
-#: ../src/applet.c:999
+#: ../src/applet.c:1004
 #, c-format
 msgid ""
 "\n"
@@ -741,7 +746,7 @@ msgstr ""
 "\n"
 "Неможливо встановити з'єднання VPN «%s»: вичерпано час очікування."
 
-#: ../src/applet.c:1002
+#: ../src/applet.c:1007
 #, c-format
 msgid ""
 "\n"
@@ -750,7 +755,7 @@ msgstr ""
 "\n"
 "Неможливо встановити з'єднання VPN «%s»: служба VPN не запустилась вчасно."
 
-#: ../src/applet.c:1005
+#: ../src/applet.c:1010
 #, c-format
 msgid ""
 "\n"
@@ -759,7 +764,7 @@ msgstr ""
 "\n"
 "Неможливо встановити з'єднання VPN «%s»: неможливо запустити службу VPN."
 
-#: ../src/applet.c:1008
+#: ../src/applet.c:1013
 #, c-format
 msgid ""
 "\n"
@@ -769,7 +774,7 @@ msgstr ""
 "Неможливо встановити з'єднання VPN «%s»: неможливо знайти відповідний ключ "
 "для VPN."
 
-#: ../src/applet.c:1011
+#: ../src/applet.c:1016
 #, c-format
 msgid ""
 "\n"
@@ -778,7 +783,7 @@ msgstr ""
 "\n"
 "Неможливо встановити з'єднання VPN «%s»: неправильний ключ доступу до VPN."
 
-#: ../src/applet.c:1018
+#: ../src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -787,7 +792,7 @@ msgstr ""
 "\n"
 "Неможливо встановити з'єднання VPN «%s»"
 
-#: ../src/applet.c:1036
+#: ../src/applet.c:1041
 #, c-format
 msgid ""
 "\n"
@@ -797,7 +802,7 @@ msgstr ""
 "\n"
 "З'єднання VPN «%s» розірвано, оскільки мережне з'єднання перервано."
 
-#: ../src/applet.c:1039
+#: ../src/applet.c:1044
 #, c-format
 msgid ""
 "\n"
@@ -806,7 +811,7 @@ msgstr ""
 "\n"
 "З'єднання VPN «%s» розірвано, оскільки було зупинено службу VPN."
 
-#: ../src/applet.c:1045
+#: ../src/applet.c:1050
 #, c-format
 msgid ""
 "\n"
@@ -815,15 +820,15 @@ msgstr ""
 "\n"
 "З'єднання VPN «%s» розірвано."
 
-#: ../src/applet.c:1079
+#: ../src/applet.c:1084
 msgid "VPN Login Message"
 msgstr "Повідомлення входу VPN"
 
-#: ../src/applet.c:1085 ../src/applet.c:1093 ../src/applet.c:1143
+#: ../src/applet.c:1090 ../src/applet.c:1098 ../src/applet.c:1148
 msgid "VPN Connection Failed"
 msgstr "Збій з'єднання VPN"
 
-#: ../src/applet.c:1150
+#: ../src/applet.c:1155
 #, c-format
 msgid ""
 "\n"
@@ -836,7 +841,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1153
+#: ../src/applet.c:1158
 #, c-format
 msgid ""
 "\n"
@@ -849,139 +854,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1473
+#: ../src/applet.c:1478
 msgid "device not ready (firmware missing)"
 msgstr "пристрій не готовий (відсутній мікрокод)"
 
-#: ../src/applet.c:1475
+#: ../src/applet.c:1480
 msgid "device not ready"
 msgstr "пристрій не готовий"
 
-#: ../src/applet.c:1501
+#: ../src/applet.c:1506
 msgid "Disconnect"
 msgstr "Від'єднатися"
 
-#: ../src/applet.c:1515
+#: ../src/applet.c:1520
 msgid "device not managed"
 msgstr "пристрій не керується"
 
-#: ../src/applet.c:1559
+#: ../src/applet.c:1564
 msgid "No network devices available"
 msgstr "Немає доступних мережних пристроїв"
 
-#: ../src/applet.c:1647
+#: ../src/applet.c:1652
 msgid "_VPN Connections"
 msgstr "З'єднання _VPN"
 
-#: ../src/applet.c:1704
+#: ../src/applet.c:1709
 msgid "_Configure VPN..."
 msgstr "_Налаштувати VPN..."
 
-#: ../src/applet.c:1708
+#: ../src/applet.c:1713
 msgid "_Disconnect VPN"
 msgstr "_Від'єднати VPN..."
 
-#: ../src/applet.c:1806
+#: ../src/applet.c:1811
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager не запущено..."
 
-#: ../src/applet.c:1811 ../src/applet.c:2604
+#: ../src/applet.c:1816 ../src/applet.c:2609
 msgid "Networking disabled"
 msgstr "Підтримку мережі вимкнено"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2032
+#: ../src/applet.c:2037
 msgid "Enable _Networking"
 msgstr "_Мережа"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2041
+#: ../src/applet.c:2046
 msgid "Enable _Wireless"
 msgstr "_Бездротова мережа"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2050
+#: ../src/applet.c:2055
 msgid "Enable _Mobile Broadband"
 msgstr "Мобільне _широкосмугове з'єднання"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2059
+#: ../src/applet.c:2064
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "Увімкнути мобільну _радіомережу WiMAX"
 
 #. Toggle notifications item
-#: ../src/applet.c:2070
+#: ../src/applet.c:2075
 msgid "Enable N_otifications"
 msgstr "Увімкнути _сповіщення"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2081
+#: ../src/applet.c:2086
 msgid "Connection _Information"
 msgstr "_Інформація про з'єднання"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2091
+#: ../src/applet.c:2096
 msgid "Edit Connections..."
 msgstr "Змінити з'єднання..."
 
 #. Help item
-#: ../src/applet.c:2105
+#: ../src/applet.c:2110
 msgid "_Help"
 msgstr "_Довідка"
 
 #. About item
-#: ../src/applet.c:2114
+#: ../src/applet.c:2119
 msgid "_About"
 msgstr "_Про програму"
 
-#: ../src/applet.c:2291
+#: ../src/applet.c:2296
 msgid "Disconnected"
 msgstr "З'єднання розірвано"
 
-#: ../src/applet.c:2292
+#: ../src/applet.c:2297
 msgid "The network connection has been disconnected."
 msgstr "Мережне з'єднання було розірвано."
 
-#: ../src/applet.c:2473
+#: ../src/applet.c:2478
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Підготовка мережного з'єднання «%s»..."
 
-#: ../src/applet.c:2476
+#: ../src/applet.c:2481
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Для мережного з'єднання «%s» вимагається автентифікація..."
 
-#: ../src/applet.c:2482
+#: ../src/applet.c:2487
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Мережне з'єднання «%s» встановлено"
 
-#: ../src/applet.c:2560
+#: ../src/applet.c:2565
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Запуск з'єднання VPN «%s»..."
 
-#: ../src/applet.c:2563
+#: ../src/applet.c:2568
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Для з'єднання VPN «%s» вимагається автентифікація…"
 
-#: ../src/applet.c:2566
+#: ../src/applet.c:2571
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Отримання адреси VPN для «%s»…"
 
-#: ../src/applet.c:2569
+#: ../src/applet.c:2574
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "З'єднання VPN «%s» установлено"
 
-#: ../src/applet.c:2608
+#: ../src/applet.c:2613
 msgid "No network connection"
 msgstr "Немає з'єднання з мережею"
 
-#: ../src/applet.c:3258
+#: ../src/applet.c:3263
 msgid "NetworkManager Applet"
 msgstr "Аплет NetworkManager"
 
@@ -1013,7 +1018,7 @@ msgstr "_Назва мережі:"
 msgid "automatic"
 msgstr "автоматично"
 
-#: ../src/connection-editor/ce-page.c:310
+#: ../src/connection-editor/ce-page.c:318
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Не вдалось оновити секрети з'єднання через невідому помилку."
 
@@ -1554,7 +1559,7 @@ msgstr "Префікс"
 
 #: ../src/connection-editor/page-dsl.c:139
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/connection-editor/nm-connection-list.c:1519
+#: ../src/connection-editor/nm-connection-list.c:1518
 msgid "DSL"
 msgstr "DSL"
 
@@ -1731,7 +1736,7 @@ msgstr "Не вдалось завантажити інтерфейс корис
 
 #: ../src/connection-editor/page-vpn.c:109
 #: ../src/connection-editor/nm-connection-editor.ui.h:7
-#: ../src/connection-editor/nm-connection-list.c:1515
+#: ../src/connection-editor/nm-connection-list.c:1514
 msgid "VPN"
 msgstr "VPN"
 
@@ -1745,7 +1750,7 @@ msgid "Could not find VPN plugin service for '%s'."
 msgstr "Не вдалось знайти модуль VPN для «%s»"
 
 #: ../src/connection-editor/page-vpn.c:201
-#: ../src/connection-editor/nm-connection-list.c:900
+#: ../src/connection-editor/nm-connection-list.c:899
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN з'єднання %d"
@@ -1761,7 +1766,7 @@ msgstr ""
 
 #: ../src/connection-editor/page-wired.c:272
 #: ../src/connection-editor/nm-connection-editor.ui.h:2
-#: ../src/connection-editor/nm-connection-list.c:1503
+#: ../src/connection-editor/nm-connection-list.c:1502
 msgid "Wired"
 msgstr "Дротові"
 
@@ -1776,15 +1781,15 @@ msgstr ""
 msgid "Wired connection %d"
 msgstr "Дротове з'єднання %d"
 
-#: ../src/connection-editor/page-wired-security.c:116
+#: ../src/connection-editor/page-wired-security.c:119
 msgid "802.1x Security"
 msgstr "Захист 802.1x"
 
-#: ../src/connection-editor/page-wired-security.c:118
+#: ../src/connection-editor/page-wired-security.c:121
 msgid "Could not load Wired Security security user interface."
 msgstr "Неможливо завантажити інтерфейс користувача безпеки радіомережі. "
 
-#: ../src/connection-editor/page-wired-security.c:136
+#: ../src/connection-editor/page-wired-security.c:139
 msgid "Use 802.1_X security for this connection"
 msgstr "Використовувати захист _802.1X для цього з'єднання"
 
@@ -1802,7 +1807,7 @@ msgstr "%u (%u МГц)"
 
 #: ../src/connection-editor/page-wireless.c:457
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
-#: ../src/connection-editor/nm-connection-list.c:1507
+#: ../src/connection-editor/nm-connection-list.c:1506
 msgid "Wireless"
 msgstr "Бездротова мережа"
 
@@ -1815,42 +1820,42 @@ msgstr "Не вдалось завантажити інтерфейс корис
 msgid "Wireless connection %d"
 msgstr "Бездротова мережа %d"
 
-#: ../src/connection-editor/page-wireless-security.c:263
-#: ../src/libnm-gtk/nm-wireless-dialog.c:923
+#: ../src/connection-editor/page-wireless-security.c:290
+#: ../src/libnm-gtk/nm-wireless-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128-бітний ключ (Hex або ASCII)"
 
-#: ../src/connection-editor/page-wireless-security.c:272
-#: ../src/libnm-gtk/nm-wireless-dialog.c:932
+#: ../src/connection-editor/page-wireless-security.c:300
+#: ../src/libnm-gtk/nm-wireless-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-и бітна ключова фраза"
 
-#: ../src/connection-editor/page-wireless-security.c:298
-#: ../src/libnm-gtk/nm-wireless-dialog.c:962
+#: ../src/connection-editor/page-wireless-security.c:326
+#: ../src/libnm-gtk/nm-wireless-dialog.c:961
 msgid "Dynamic WEP (802.1x)"
 msgstr "Динамічний WEP (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:312
-#: ../src/libnm-gtk/nm-wireless-dialog.c:976
+#: ../src/connection-editor/page-wireless-security.c:340
+#: ../src/libnm-gtk/nm-wireless-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 Personal"
 
-#: ../src/connection-editor/page-wireless-security.c:326
-#: ../src/libnm-gtk/nm-wireless-dialog.c:990
+#: ../src/connection-editor/page-wireless-security.c:354
+#: ../src/libnm-gtk/nm-wireless-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Enterprise"
 
-#: ../src/connection-editor/page-wireless-security.c:360
+#: ../src/connection-editor/page-wireless-security.c:395
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr ""
 "Не вдалось завантажити інтерфейс налаштовування захисту з'єднання WiFi, "
 "налаштовування WiFi пропускається."
 
-#: ../src/connection-editor/page-wireless-security.c:370
+#: ../src/connection-editor/page-wireless-security.c:405
 msgid "Wireless Security"
 msgstr "Захист бездротової мережі"
 
-#: ../src/connection-editor/page-wireless-security.c:372
+#: ../src/connection-editor/page-wireless-security.c:407
 msgid "Could not load WiFi security user interface."
 msgstr ""
 "Не вдалось завантажити інтерфейс налаштовування захисту з'єднання WiFi."
@@ -1864,7 +1869,7 @@ msgstr "Редагування %s"
 msgid "Editing un-named connection"
 msgstr "Редагування бездротового з'єднання"
 
-#: ../src/connection-editor/nm-connection-editor.c:288
+#: ../src/connection-editor/nm-connection-editor.c:291
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -1872,23 +1877,23 @@ msgstr ""
 "Редактор з'єднань не може знайти деякі потрібні ресурси (не знайдено файл ."
 "ui)."
 
-#: ../src/connection-editor/nm-connection-editor.c:391
+#: ../src/connection-editor/nm-connection-editor.c:394
 msgid "Error creating connection editor dialog."
 msgstr "Помилка при створенні редактора з'єднань."
 
-#: ../src/connection-editor/nm-connection-editor.c:403
+#: ../src/connection-editor/nm-connection-editor.c:406
 msgid "_Save"
 msgstr "З_берегти"
 
-#: ../src/connection-editor/nm-connection-editor.c:404
+#: ../src/connection-editor/nm-connection-editor.c:407
 msgid "Save any changes made to this connection."
 msgstr "Зберегти параметри з'єднання."
 
-#: ../src/connection-editor/nm-connection-editor.c:405
+#: ../src/connection-editor/nm-connection-editor.c:408
 msgid "_Save..."
 msgstr "З_берегти..."
 
-#: ../src/connection-editor/nm-connection-editor.c:406
+#: ../src/connection-editor/nm-connection-editor.c:409
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Ввести пароль адміністратора для того, щоб зробити це з'єднання спільним для "
@@ -1989,7 +1994,7 @@ msgstr "Помилка під час ініціалізації редактор
 
 #: ../src/connection-editor/nm-connection-list.c:546
 #: ../src/connection-editor/nm-connection-list.c:719
-#: ../src/connection-editor/nm-connection-list.c:886
+#: ../src/connection-editor/nm-connection-list.c:885
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -2016,12 +2021,12 @@ msgstr "Помилка при видаленні з'єднання"
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Вилучити з'єднання %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:930
-#: ../src/connection-editor/vpn-helpers.c:227
+#: ../src/connection-editor/nm-connection-list.c:929
+#: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "Не вдалось імпортувати з'єднання VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:932
+#: ../src/connection-editor/nm-connection-list.c:931
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2031,81 +2036,81 @@ msgstr ""
 "\n"
 "Помилка: немає типу служби VPN."
 
-#: ../src/connection-editor/nm-connection-list.c:945
+#: ../src/connection-editor/nm-connection-list.c:944
 msgid "Could not edit imported connection"
 msgstr "Не вдалось змінити імпортоване з'єднання"
 
-#: ../src/connection-editor/nm-connection-list.c:1126
+#: ../src/connection-editor/nm-connection-list.c:1125
 msgid "Name"
 msgstr "Назва"
 
-#: ../src/connection-editor/nm-connection-list.c:1138
+#: ../src/connection-editor/nm-connection-list.c:1137
 msgid "Last Used"
 msgstr "Останнє з'єднання"
 
-#: ../src/connection-editor/nm-connection-list.c:1264
+#: ../src/connection-editor/nm-connection-list.c:1263
 msgid "No VPN plugin available. Please install one to enable this button."
 msgstr ""
 "Додаток VPN не доступний. Будь ласка, встановіть його, щоб активувати цю "
 "кнопку."
 
-#: ../src/connection-editor/nm-connection-list.c:1275
+#: ../src/connection-editor/nm-connection-list.c:1274
 msgid "_Edit"
 msgstr "_Змінити"
 
-#: ../src/connection-editor/nm-connection-list.c:1276
+#: ../src/connection-editor/nm-connection-list.c:1275
 msgid "Edit the selected connection"
 msgstr "Змінити виділене з'єднання"
 
-#: ../src/connection-editor/nm-connection-list.c:1277
+#: ../src/connection-editor/nm-connection-list.c:1276
 msgid "_Edit..."
 msgstr "_Змінити..."
 
-#: ../src/connection-editor/nm-connection-list.c:1278
+#: ../src/connection-editor/nm-connection-list.c:1277
 msgid "Authenticate to edit the selected connection"
 msgstr "Для зміни  виділеного з'єднання потрібна автентифікація"
 
-#: ../src/connection-editor/nm-connection-list.c:1293
+#: ../src/connection-editor/nm-connection-list.c:1292
 msgid "_Delete"
 msgstr "В_илучити"
 
-#: ../src/connection-editor/nm-connection-list.c:1294
+#: ../src/connection-editor/nm-connection-list.c:1293
 msgid "Delete the selected connection"
 msgstr "Вилучити виділене з'єднання"
 
-#: ../src/connection-editor/nm-connection-list.c:1295
+#: ../src/connection-editor/nm-connection-list.c:1294
 msgid "_Delete..."
 msgstr "В_илучити…"
 
-#: ../src/connection-editor/nm-connection-list.c:1296
+#: ../src/connection-editor/nm-connection-list.c:1295
 msgid "Authenticate to delete the selected connection"
 msgstr "Для видалення виділеного з'єднання потрібна автентифікація"
 
-#: ../src/connection-editor/nm-connection-list.c:1575
+#: ../src/connection-editor/nm-connection-list.c:1574
 msgid "Error creating connection"
 msgstr "Помилка створення з'єднання"
 
-#: ../src/connection-editor/nm-connection-list.c:1576
+#: ../src/connection-editor/nm-connection-list.c:1575
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Невідомо, як створювати з'єднання «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:1631
-#: ../src/connection-editor/nm-connection-list.c:1643
+#: ../src/connection-editor/nm-connection-list.c:1630
+#: ../src/connection-editor/nm-connection-list.c:1642
 msgid "Error editing connection"
 msgstr "Помилка редагування з'єднання"
 
-#: ../src/connection-editor/nm-connection-list.c:1632
+#: ../src/connection-editor/nm-connection-list.c:1631
 #, c-format
 msgid "Don't know how to edit '%s' connections"
 msgstr "Невідомо, як редагувати з'єднання «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:1644
+#: ../src/connection-editor/nm-connection-list.c:1643
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Не знайдено зв'язку з UUID «%s»"
 
-#: ../src/connection-editor/vpn-helpers.c:229
+#: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -2118,29 +2123,29 @@ msgstr ""
 "\n"
 "Помилка: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:262
+#: ../src/connection-editor/vpn-helpers.c:263
 msgid "Select file to import"
 msgstr "Виберіть файл для імпорту"
 
-#: ../src/connection-editor/vpn-helpers.c:313
+#: ../src/connection-editor/vpn-helpers.c:314
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "Файл з іменем «%s» вже існує."
 
-#: ../src/connection-editor/vpn-helpers.c:315
+#: ../src/connection-editor/vpn-helpers.c:316
 msgid "_Replace"
 msgstr "_Замінити"
 
-#: ../src/connection-editor/vpn-helpers.c:317
+#: ../src/connection-editor/vpn-helpers.c:318
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "Ви дійсно хочете замінити %s?"
 
-#: ../src/connection-editor/vpn-helpers.c:353
+#: ../src/connection-editor/vpn-helpers.c:354
 msgid "Cannot export VPN connection"
 msgstr "Не вдається імпортувати з'єднання VPN"
 
-#: ../src/connection-editor/vpn-helpers.c:355
+#: ../src/connection-editor/vpn-helpers.c:356
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -2151,7 +2156,7 @@ msgstr ""
 "\n"
 "Помилка: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:390
+#: ../src/connection-editor/vpn-helpers.c:391
 msgid "Export VPN connection..."
 msgstr "Експорт з'єднання VPN..."
 
@@ -2409,11 +2414,11 @@ msgstr "Нове мобільне широкосмугове з'єднання"
 msgid "New..."
 msgstr "Створити..."
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1077
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1076
 msgid "C_reate"
 msgstr "С_творити"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1161
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1160
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network "
@@ -2421,35 +2426,35 @@ msgid ""
 msgstr ""
 "Для доступу до бездротової мережі «%s» необхідні паролі або ключі шифрування."
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1163
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1162
 msgid "Wireless Network Authentication Required"
 msgstr "Для доступу до бездротової мережі потрібна автентифікація"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1165
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1164
 msgid "Authentication required by wireless network"
 msgstr "Для доступу до бездротової мережі потрібна автентифікація"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1170
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1169
 msgid "Create New Wireless Network"
 msgstr "Створити нову бездротову мережу"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1172
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1171
 msgid "New wireless network"
 msgstr "Нова бездротова мережа"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1173
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1172
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Введіть назву бездротової мережі, яку треба створити."
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1175
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1174
 msgid "Connect to Hidden Wireless Network"
 msgstr "З'єднатись з прихованою бездротовою мережею"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1177
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1176
 msgid "Hidden wireless network"
 msgstr "Прихована бездротова мережа"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1178
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1177
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2654,7 +2659,7 @@ msgid "All files"
 msgstr "Усі файли"
 
 #: ../src/wireless-security/eap-method-peap.c:263
-#: ../src/wireless-security/wireless-security.c:373
+#: ../src/wireless-security/wireless-security.c:382
 msgid "MD5"
 msgstr "MD5"
 
@@ -2739,19 +2744,19 @@ msgstr "Ні"
 msgid "Yes"
 msgstr "Так"
 
-#: ../src/wireless-security/wireless-security.c:385
+#: ../src/wireless-security/wireless-security.c:394
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:409
+#: ../src/wireless-security/wireless-security.c:418
 msgid "FAST"
 msgstr "ШВИДКО"
 
-#: ../src/wireless-security/wireless-security.c:420
+#: ../src/wireless-security/wireless-security.c:429
 msgid "Tunneled TLS"
 msgstr "Тунельний TLS"
 
-#: ../src/wireless-security/wireless-security.c:431
+#: ../src/wireless-security/wireless-security.c:440
 msgid "Protected EAP (PEAP)"
 msgstr "Захищено EAP (PEAP)"
 
