@@ -1249,7 +1249,9 @@ reg_info_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 		notify_user_of_gsm_reg_change (info);
 	}
 
+	g_free (info->op_code);
 	info->op_code = new_op_code;
+	g_free (info->op_name);
 	info->op_name = new_op_name;
 
 	g_clear_error (&error);

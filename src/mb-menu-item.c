@@ -230,6 +230,7 @@ dispose (GObject *object)
 	gtk_widget_destroy (priv->desc);
 	gtk_widget_destroy (priv->strength);
 	gtk_widget_destroy (priv->hbox);
+	g_free (priv->desc_string);
 
 	G_OBJECT_CLASS (nm_mb_menu_item_parent_class)->dispose (object);
 }
