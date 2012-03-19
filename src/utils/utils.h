@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2011 Red Hat, Inc.
+ * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
 #ifndef UTILS_H
@@ -37,12 +37,6 @@ guint32 utils_channel_to_freq (guint32 channel, char *band);
 guint32 utils_find_next_channel (guint32 channel, int direction, char *band);
 
 gboolean utils_ether_addr_valid (const struct ether_addr *test_addr);
-
-gboolean utils_connection_valid_for_device (NMConnection *connection,
-                                            NMDevice *device,
-                                            gpointer specific_object);
-
-GSList *utils_filter_connections_for_device (NMDevice *device, GSList *connections);
 
 char *utils_hash_ap (const GByteArray *ssid,
                      NM80211Mode mode,

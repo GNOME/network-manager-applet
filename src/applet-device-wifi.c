@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -545,21 +545,6 @@ find_duplicate (gpointer d, gpointer user_data)
 		data->found = NM_NETWORK_MENU_ITEM (widget);
 }
 
-static GSList *
-filter_connections_for_access_point (GSList *connections, NMDeviceWifi *device, NMAccessPoint *ap)
-{
-	GSList *ap_connections = NULL;
-	GSList *iter;
-
-	for (iter = connections; iter; iter = g_slist_next (iter)) {
-		NMConnection *candidate = NM_CONNECTION (iter->data);
-
-		if (utils_connection_valid_for_device (candidate, NM_DEVICE (device), (gpointer) ap))
-			ap_connections = g_slist_append (ap_connections, candidate);
-	}
-	return ap_connections;
-}
-
 static NMNetworkMenuItem *
 create_new_ap_item (NMDeviceWifi *device,
                     NMAccessPoint *ap,
@@ -570,11 +555,15 @@ create_new_ap_item (NMDeviceWifi *device,
 	WirelessMenuItemInfo *info;
 	GSList *iter;
 	NMNetworkMenuItem *item = NULL;
+	GSList *dev_connections = NULL;
 	GSList *ap_connections = NULL;
 	const GByteArray *ssid;
 	guint32 dev_caps;
 
-	ap_connections = filter_connections_for_access_point (connections, device, ap);
+	dev_connections = nm_device_filter_connections (NM_DEVICE (device), connections);
+	ap_connections = nm_access_point_filter_connections (ap, dev_connections);
+	g_slist_free (dev_connections);
+	dev_connections = NULL;
 
 	item = NM_NETWORK_MENU_ITEM (nm_network_menu_item_new (dup_data->hash,
 	                                                       !!g_slist_length (ap_connections)));
@@ -814,7 +803,7 @@ wireless_add_menu_item (NMDevice *device,
 	gtk_widget_show (widget);
 
 	all = applet_get_all_connections (applet);
-	connections = utils_filter_connections_for_device (device, all);
+	connections = nm_device_filter_connections (device, all);
 	g_slist_free (all);
 
 	/* Add the active AP if we're connected to something and the device is available */
@@ -1040,14 +1029,14 @@ idle_check_avail_access_point_notification (gpointer datap)
 		return FALSE;	
 
 	all_connections = applet_get_all_connections (applet);
-	connections = utils_filter_connections_for_device (NM_DEVICE (device), all_connections);
+	connections = nm_device_filter_connections (NM_DEVICE (device), all_connections);
 	g_slist_free (all_connections);	
 	all_connections = NULL;
 
 	aps = nm_device_wifi_get_access_points (device);
 	for (i = 0; aps && (i < aps->len); i++) {
 		NMAccessPoint *ap = aps->pdata[i];
-		GSList *ap_connections = filter_connections_for_access_point (connections, device, ap);
+		GSList *ap_connections = nm_access_point_filter_connections (ap, connections);
 		GSList *iter;
 		gboolean is_autoconnect = FALSE;
 

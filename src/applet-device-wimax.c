@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -279,7 +279,7 @@ wimax_add_menu_item (NMDevice *device,
 		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
 
 		all = applet_get_all_connections (applet);
-		connections = utils_filter_connections_for_device (device, all);
+		connections = nm_device_filter_connections (device, all);
 		g_slist_free (all);
 
 		/* And add menu items for each NSP */
