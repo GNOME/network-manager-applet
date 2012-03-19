@@ -1377,8 +1377,15 @@ activate_existing_cb (NMClient *client,
                       GError *error,
                       gpointer user_data)
 {
-	if (error)
-		g_warning ("Failed to activate connection: (%d) %s", error->code, error->message);
+	if (error) {
+		const char *text = _("Failed to activate connection");
+		char *err_text = g_strdup_printf ("(%d) %s", error->code,
+		                                  error->message ? error->message : _("Unknown error"));
+
+		g_warning ("%s: %s", text, err_text);
+		utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
+		g_free (err_text);
+	}
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }
 
@@ -1389,8 +1396,15 @@ activate_new_cb (NMClient *client,
                  GError *error,
                  gpointer user_data)
 {
-	if (error)
-		g_warning ("Failed to add new connection: (%d) %s", error->code, error->message);
+	if (error) {
+		const char *text = _("Failed to add new connection");
+		char *err_text = g_strdup_printf ("(%d) %s", error->code,
+		                                  error->message ? error->message : _("Unknown error"));
+
+		g_warning ("%s: %s", text, err_text);
+		utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
+		g_free (err_text);
+	}
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }
 

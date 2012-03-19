@@ -24,6 +24,7 @@
 #define UTILS_H
 
 #include <glib.h>
+#include <gtk/gtk.h>
 #include <nm-connection.h>
 #include <nm-device.h>
 #include <net/ethernet.h>
@@ -56,6 +57,12 @@ GnomeKeyringAttributeList *utils_create_keyring_add_attr_list (NMConnection *con
                                                                const char *setting_name,
                                                                const char *setting_key,
                                                                char **out_display_name);
+
+void utils_show_error_dialog (const char *title,
+                              const char *text1,
+                              const char *text2,
+                              gboolean modal,
+                              GtkWindow *parent);
 
 #define NMA_ERROR (g_quark_from_static_string ("nma-error-quark"))
 

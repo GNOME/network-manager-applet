@@ -485,8 +485,15 @@ add_and_activate_cb (NMClient *client,
                      GError *error,
                      gpointer user_data)
 {
-	if (error)
-		g_warning ("Failed to add/activate connection: (%d) %s", error->code, error->message);
+	if (error) {
+		const char *text = _("Failed to add/activate connection");
+		char *err_text = g_strdup_printf ("(%d) %s", error->code,
+		                                  error->message ? error->message : _("Unknown error"));
+
+		g_warning ("%s: %s", text, err_text);
+		utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
+		g_free (err_text);
+	}
 
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }
@@ -523,10 +530,13 @@ static void
 disconnect_cb (NMDevice *device, GError *error, gpointer user_data)
 {
 	if (error) {
-		g_warning ("%s: device disconnect failed: (%d) %s",
-		           __func__,
-		           error ? error->code : -1,
-		           error && error->message ? error->message : "(unknown)");
+		const char *text = _("Device disconnect failed");
+		char *err_text = g_strdup_printf ("(%d) %s", error->code,
+		                                  error->message ? error->message : _("Unknown error"));
+
+		g_warning ("%s: %s: %s", __func__, text, err_text);
+		utils_show_error_dialog (_("Disconnect failure"), text, err_text, FALSE, NULL);
+		g_free (err_text);
 	}
 }
 
@@ -545,8 +555,15 @@ activate_connection_cb (NMClient *client,
                         GError *error,
                         gpointer user_data)
 {
-	if (error)
-		g_warning ("Connection activation failed: %s", error->message);
+	if (error) {
+		const char *text = _("Connection activation failed");
+		char *err_text = g_strdup_printf ("(%d) %s", error->code,
+		                                  error->message ? error->message : _("Unknown error"));
+
+		g_warning ("%s: %s", text, err_text);
+		utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
+		g_free (err_text);
+	}
 
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }

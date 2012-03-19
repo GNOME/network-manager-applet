@@ -24,6 +24,7 @@
 #include <string.h>
 #include <netinet/ether.h>
 #include <glib.h>
+#include <gtk/gtk.h>
 
 #include <nm-setting-connection.h>
 #include <nm-utils.h>
@@ -353,3 +354,39 @@ utils_create_keyring_add_attr_list (NMConnection *connection,
 	                                            setting_key);
 	return attrs;
 }
+
+void
+utils_show_error_dialog (const char *title,
+                         const char *text1,
+                         const char *text2,
+                         gboolean modal,
+                         GtkWindow *parent)
+{
+	GtkWidget *err_dialog;
+
+	g_return_if_fail (text1 != NULL);
+
+	err_dialog = gtk_message_dialog_new (parent,
+	                                     GTK_DIALOG_DESTROY_WITH_PARENT,
+	                                     GTK_MESSAGE_ERROR,
+	                                     GTK_BUTTONS_CLOSE,
+	                                     "%s",
+	                                     text1);
+
+	if (text2)
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (err_dialog), text2);
+	if (title)
+		gtk_window_set_title (GTK_WINDOW (err_dialog), title);
+
+	if (modal) {
+		gtk_dialog_run (GTK_DIALOG (err_dialog));
+		gtk_widget_destroy (err_dialog);
+	} else {
+		g_signal_connect (err_dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
+		g_signal_connect (err_dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
+
+		gtk_widget_show_all (err_dialog);
+		gtk_window_present (GTK_WINDOW (err_dialog));
+	}
+}
+

@@ -12,12 +12,14 @@ test_upgrade_SOURCES = \
 test_upgrade_CPPFLAGS = \
 	-I ${srcdir}/../ \
 	-DTESTDIR=\"$(srcdir)\" \
+	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(GNOME_KEYRING_CFLAGS)
 
 test_upgrade_LDADD = \
 	${builddir}/../libgconf-helpers-test.la \
+	$(GTK_CFLAGS) \
 	$(NMA_LIBS) \
 	$(GNOME_KEYRING_LIBS)
 
