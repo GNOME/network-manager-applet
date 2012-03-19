@@ -79,6 +79,7 @@ mobile_helper_get_status_pixbuf (guint32 quality,
 		}
 	}
 
+	/* 'pixbuf' will be freed by the caller */
 	return pixbuf;
 }
 

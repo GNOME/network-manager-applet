@@ -1337,7 +1337,7 @@ wireless_get_icon (NMDevice *device,
 		break;
 	}
 
-	return pixbuf;
+	return pixbuf ? g_object_ref (pixbuf) : NULL;
 }
 
 static gboolean

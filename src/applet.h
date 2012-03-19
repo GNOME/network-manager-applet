@@ -228,6 +228,10 @@ struct NMADeviceClass {
 	                                        NMDeviceStateReason reason,
 	                                        NMApplet *applet);
 
+	/* Device class is expected to return a *referenced* pixbuf, which will
+	 * be unrefed by the icon code.  This allows the device class to create
+	 * a composited pixbuf if necessary and pass the reference to the caller.
+	 */
 	GdkPixbuf *    (*get_icon)             (NMDevice *device,
 	                                        NMDeviceState state,
 	                                        NMConnection *connection,

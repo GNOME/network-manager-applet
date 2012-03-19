@@ -2523,14 +2523,19 @@ applet_get_device_icon_for_state (NMApplet *applet, char **tip)
 		NMConnection *connection;
 
 		connection = applet_find_active_connection_for_device (device, applet, NULL);
+		/* device class returns a referenced pixbuf */
 		pixbuf = dclass->get_icon (device, state, connection, tip, applet);
 		if (!*tip)
 			*tip = get_tip_for_device_state (device, state, connection);
 	}
 
 out:
-	if (!pixbuf)
+	if (!pixbuf) {
 		pixbuf = applet_common_get_device_icon (state, applet);
+		/* reference the pixbuf to match the device class' get_icon() function behavior */
+		if (pixbuf)
+			g_object_ref (pixbuf);
+	}
 	return pixbuf;
 }
 
@@ -2607,10 +2612,12 @@ applet_update_icon (gpointer user_data)
 	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
 		pixbuf = nma_icon_check_and_load ("nm-no-connection", &applet->no_connection_icon, applet);
+		g_object_ref (pixbuf);
 		dev_tip = g_strdup (_("Networking disabled"));
 		break;
 	case NM_STATE_DISCONNECTED:
 		pixbuf = nma_icon_check_and_load ("nm-no-connection", &applet->no_connection_icon, applet);
+		g_object_ref (pixbuf);
 		dev_tip = g_strdup (_("No network connection"));
 		break;
 	default:
@@ -2619,6 +2626,8 @@ applet_update_icon (gpointer user_data)
 	}
 
 	foo_set_icon (applet, pixbuf, ICON_LAYER_LINK);
+	if (pixbuf)
+		g_object_unref (pixbuf);
 
 	/* VPN state next */
 	pixbuf = NULL;
