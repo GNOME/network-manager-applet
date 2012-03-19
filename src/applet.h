@@ -83,6 +83,9 @@ typedef struct
 	GMainLoop *loop;
 	DBusGConnection *bus;
 	DBusGConnection *session_bus;
+	guint name_watcher_id;
+	guint agent_start_id;
+	gboolean shell_running;
 
 	NMClient *nm_client;
 	NMRemoteSettings *settings;

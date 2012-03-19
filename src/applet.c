@@ -39,6 +39,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 
+#include <gio/gio.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
@@ -2919,6 +2920,20 @@ applet_agent_cancel_secrets_cb (AppletAgent *agent,
 	}
 }
 
+static void
+applet_agent_registered_cb (AppletAgent *agent,
+                            GParamSpec *pspec,
+                            gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+
+	/* If the shell is running and the agent just got registered, unregister it */
+	if (applet->shell_running && nm_secret_agent_get_registered (NM_SECRET_AGENT (agent))) {
+		g_message ("Stopping registered applet secret agent because GNOME Shell is running");
+		nm_secret_agent_unregister (NM_SECRET_AGENT (agent));
+	}
+}
+
 /*****************************************************************************/
 
 static void
@@ -3185,6 +3200,50 @@ applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 	           embedded ? "embedded in" : "removed from");
 }
 
+#if GLIB_CHECK_VERSION(2,26,0)
+static void
+gnome_shell_appeared (GDBusConnection *connection,
+                      const gchar *name,
+                      const gchar *name_owner,
+                      gpointer user_data)
+{
+	NMApplet *applet = user_data;
+
+	/* Stop our secret agent so the Shell is the agent */
+	g_message ("Stopping applet secret agent because GNOME Shell appeared");
+	applet->shell_running = TRUE;
+	nm_secret_agent_unregister (NM_SECRET_AGENT (applet->agent));
+}
+
+static gboolean
+delayed_start_agent (gpointer user_data)
+{
+	NMApplet *applet = user_data;
+
+	applet->shell_running = FALSE;
+
+	g_assert (applet->agent);
+	if (nm_secret_agent_register (NM_SECRET_AGENT (applet->agent)))
+		g_message ("Starting applet secret agent because GNOME Shell disappeared");
+	else
+		g_warning ("Failed to start applet secret agent!");
+	return FALSE;
+}
+
+static void
+gnome_shell_vanished (GDBusConnection *connection,
+                      const gchar *name,
+                      gpointer user_data)
+{
+	NMApplet *applet = user_data;
+
+	/* Start our secret agent now that the shell is gone */
+	if (applet->agent_start_id)
+		g_source_remove (applet->agent_start_id);
+	applet->agent_start_id = g_timeout_add_seconds (4, delayed_start_agent, applet);
+}
+#endif
+
 static gboolean
 dbus_setup (NMApplet *applet, GError **error)
 {
@@ -3219,6 +3278,16 @@ dbus_setup (NMApplet *applet, GError **error)
 	                             G_TYPE_UINT, &result,
 	                             G_TYPE_INVALID);
 	g_object_unref (proxy);
+
+#if GLIB_CHECK_VERSION(2,26,0)
+	applet->name_watcher_id = g_bus_watch_name (G_BUS_TYPE_SESSION,
+	                                            "org.gnome.Shell",
+	                                            G_BUS_NAME_WATCHER_FLAGS_NONE,
+	                                            gnome_shell_appeared,
+	                                            gnome_shell_vanished,
+	                                            applet,
+	                                            NULL);
+#endif
 
 	return success;
 }
@@ -3305,6 +3374,8 @@ constructor (GType type,
 	                  G_CALLBACK (applet_agent_get_secrets_cb), applet);
 	g_signal_connect (applet->agent, APPLET_AGENT_CANCEL_SECRETS,
 	                  G_CALLBACK (applet_agent_cancel_secrets_cb), applet);
+	g_signal_connect (applet->agent, "notify::" NM_SECRET_AGENT_REGISTERED,
+	                  G_CALLBACK (applet_agent_registered_cb), applet);
 
 	/* Initialize device classes */
 	applet->wired_class = applet_device_wired_get_class (applet);
@@ -3399,6 +3470,13 @@ static void finalize (GObject *object)
 
 	if (applet->session_bus)
 		dbus_g_connection_unref (applet->session_bus);
+
+#if GLIB_CHECK_VERSION(2,26,0)
+	if (applet->name_watcher_id)
+		g_bus_unwatch_name (applet->name_watcher_id);
+#endif
+	if (applet->agent_start_id)
+		g_source_remove (applet->agent_start_id);
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
