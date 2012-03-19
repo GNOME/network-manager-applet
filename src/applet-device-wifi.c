@@ -1068,6 +1068,7 @@ idle_check_avail_access_point_notification (gpointer datap)
 		else
 			have_no_autoconnect_points = FALSE;
 	}
+	g_slist_free (connections);
 
 	if (!(have_unused_access_point && have_no_autoconnect_points))
 		return FALSE;
