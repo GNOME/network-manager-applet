@@ -3232,7 +3232,7 @@ get_shell_version (GDBusProxy *proxy, gdouble *out_version)
 {
 	GVariant *v;
 	char *version, *p;
-	gboolean success;
+	gboolean success = FALSE;
 	gdouble converted;
 
 	/* Ask for the shell's version */
