@@ -25,23 +25,7 @@
 #include <netinet/ether.h>
 #include <glib.h>
 
-#include <nm-device-ethernet.h>
-#include <nm-device-wifi.h>
-#include <nm-device-bt.h>
-#include <nm-device-modem.h>
-#include <nm-device-wimax.h>
-#include <nm-access-point.h>
-
 #include <nm-setting-connection.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-wireless.h>
-#include <nm-setting-wireless-security.h>
-#include <nm-setting-8021x.h>
-#include <nm-setting-gsm.h>
-#include <nm-setting-cdma.h>
-#include <nm-setting-pppoe.h>
-#include <nm-setting-bluetooth.h>
-#include <nm-setting-wimax.h>
 #include <nm-utils.h>
 
 #include "utils.h"
