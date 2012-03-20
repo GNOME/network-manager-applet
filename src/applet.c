@@ -3220,6 +3220,11 @@ delayed_start_agent (gpointer user_data)
 	applet->agent_start_id = 0;
 
 	g_assert (applet->agent);
+
+	/* If the agent is already running, there's nothing to do. */
+	if (nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)) == TRUE)
+		return FALSE;
+
 	if (nm_secret_agent_register (NM_SECRET_AGENT (applet->agent)))
 		g_message ("Starting applet secret agent because GNOME Shell disappeared");
 	else
