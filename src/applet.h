@@ -83,9 +83,12 @@ typedef struct
 	GMainLoop *loop;
 	DBusGConnection *bus;
 	DBusGConnection *session_bus;
-	guint name_watcher_id;
+
+#if GLIB_CHECK_VERSION(2,26,0)
+	GDBusProxy *shell_proxy;
+#endif
 	guint agent_start_id;
-	gboolean shell_running;
+	gdouble shell_version;
 
 	NMClient *nm_client;
 	NMRemoteSettings *settings;
