@@ -18,13 +18,13 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2012-03-20 10:40+0000\n"
-"PO-Revision-Date: 2012-03-20 17:06+0000\n"
-"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
+"POT-Creation-Date: 2012-03-23 08:52+0000\n"
+"PO-Revision-Date: 2012-03-23 16:55+0800\n"
+"Last-Translator: tuhaihe <wangdianjin@linuxdeepin.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
@@ -132,7 +132,7 @@ msgstr "移动宽带连接“%s”需要用户认证..."
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:490
 #: ../src/applet-device-gsm.c:537 ../src/applet-device-wimax.c:473
-#: ../src/applet.c:2486
+#: ../src/applet.c:2503
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "正在为“%s”请求一个网络地址..."
@@ -322,7 +322,7 @@ msgid "Wired Network"
 msgstr "有线网络"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:232 ../src/applet.c:1492
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1509
 msgid "disconnected"
 msgstr "已断开"
 
@@ -406,7 +406,7 @@ msgstr "无线网络可用"
 msgid "Use the network menu to connect to a wireless network"
 msgstr "使用网络菜单连接到无线网络"
 
-#: ../src/applet-device-wifi.c:1075 ../src/applet.c:908
+#: ../src/applet-device-wifi.c:1075 ../src/applet.c:925
 msgid "Don't show this message again"
 msgstr "不再显示此信息"
 
@@ -444,6 +444,24 @@ msgstr "无线网络连接“%s”处于活动状态：%s (%d%%)"
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "无线网络连接“%s”处于活动状态"
+
+#: ../src/applet-device-wifi.c:1381
+msgid "Failed to activate connection"
+msgstr "无法启用连接"
+
+#: ../src/applet-device-wifi.c:1383 ../src/applet-device-wifi.c:1402
+#: ../src/applet.c:491 ../src/applet.c:535 ../src/applet.c:561
+msgid "Unknown error"
+msgstr "未知错误"
+
+#: ../src/applet-device-wifi.c:1386 ../src/applet-device-wifi.c:1405
+#: ../src/applet.c:494 ../src/applet.c:564
+msgid "Connection failure"
+msgstr "连接失败"
+
+#: ../src/applet-device-wifi.c:1400
+msgid "Failed to add new connection"
+msgstr "无法添加新连接"
 
 #: ../src/applet-device-wimax.c:231
 #, c-format
@@ -499,7 +517,6 @@ msgstr "无"
 
 #: ../src/applet-dialogs.c:277
 #, c-format
-#| msgid "1 (Default)"
 msgid "%s (default)"
 msgstr "%s (默认)"
 
@@ -706,7 +723,23 @@ msgstr "连接到“%s”需要密码。"
 msgid "Password:"
 msgstr "密码："
 
-#: ../src/applet.c:997
+#: ../src/applet.c:489
+msgid "Failed to add/activate connection"
+msgstr "无法添加/启用连接"
+
+#: ../src/applet.c:533
+msgid "Device disconnect failed"
+msgstr "设备断开失败"
+
+#: ../src/applet.c:538
+msgid "Disconnect failure"
+msgstr "断开失败"
+
+#: ../src/applet.c:559
+msgid "Connection activation failed"
+msgstr "连接启用失败"
+
+#: ../src/applet.c:1014
 #, c-format
 msgid ""
 "\n"
@@ -716,7 +749,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。网络连接被中断。"
 
-#: ../src/applet.c:1000
+#: ../src/applet.c:1017
 #, c-format
 msgid ""
 "\n"
@@ -725,7 +758,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN 服务异常中断。"
 
-#: ../src/applet.c:1003
+#: ../src/applet.c:1020
 #, c-format
 msgid ""
 "\n"
@@ -735,7 +768,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN 服务返回了一个非法配置。"
 
-#: ../src/applet.c:1006
+#: ../src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -744,7 +777,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。连接超时。"
 
-#: ../src/applet.c:1009
+#: ../src/applet.c:1026
 #, c-format
 msgid ""
 "\n"
@@ -753,7 +786,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN 服务未在所需时间内启动。"
 
-#: ../src/applet.c:1012
+#: ../src/applet.c:1029
 #, c-format
 msgid ""
 "\n"
@@ -762,7 +795,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN 服务启动失败。"
 
-#: ../src/applet.c:1015
+#: ../src/applet.c:1032
 #, c-format
 msgid ""
 "\n"
@@ -771,7 +804,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。没有合法的 VPN secret。"
 
-#: ../src/applet.c:1018
+#: ../src/applet.c:1035
 #, c-format
 msgid ""
 "\n"
@@ -780,7 +813,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN secret 非法。"
 
-#: ../src/applet.c:1025
+#: ../src/applet.c:1042
 #, c-format
 msgid ""
 "\n"
@@ -789,7 +822,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。"
 
-#: ../src/applet.c:1043
+#: ../src/applet.c:1060
 #, c-format
 msgid ""
 "\n"
@@ -799,7 +832,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”已断开。网络连接被中断。"
 
-#: ../src/applet.c:1046
+#: ../src/applet.c:1063
 #, c-format
 msgid ""
 "\n"
@@ -808,7 +841,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”已断开。VPN 服务已停止。"
 
-#: ../src/applet.c:1052
+#: ../src/applet.c:1069
 #, c-format
 msgid ""
 "\n"
@@ -817,15 +850,15 @@ msgstr ""
 "\n"
 "VPN 连接“%s”已断开。"
 
-#: ../src/applet.c:1086
+#: ../src/applet.c:1103
 msgid "VPN Login Message"
 msgstr "VPN 登录消息"
 
-#: ../src/applet.c:1092 ../src/applet.c:1100 ../src/applet.c:1150
+#: ../src/applet.c:1109 ../src/applet.c:1117 ../src/applet.c:1167
 msgid "VPN Connection Failed"
 msgstr "VPN 连接失败"
 
-#: ../src/applet.c:1157
+#: ../src/applet.c:1174
 #, c-format
 msgid ""
 "\n"
@@ -838,7 +871,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1160
+#: ../src/applet.c:1177
 #, c-format
 msgid ""
 "\n"
@@ -851,139 +884,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1480
+#: ../src/applet.c:1497
 msgid "device not ready (firmware missing)"
 msgstr "设备未就绪(缺少固件)"
 
-#: ../src/applet.c:1482
+#: ../src/applet.c:1499
 msgid "device not ready"
 msgstr "设备未就绪"
 
-#: ../src/applet.c:1508
+#: ../src/applet.c:1525
 msgid "Disconnect"
 msgstr "断开"
 
-#: ../src/applet.c:1522
+#: ../src/applet.c:1539
 msgid "device not managed"
 msgstr "设备未托管"
 
-#: ../src/applet.c:1566
+#: ../src/applet.c:1583
 msgid "No network devices available"
 msgstr "没有可用的网络设备"
 
-#: ../src/applet.c:1654
+#: ../src/applet.c:1671
 msgid "_VPN Connections"
 msgstr "_VPN 连接"
 
-#: ../src/applet.c:1711
+#: ../src/applet.c:1728
 msgid "_Configure VPN..."
 msgstr "配置 VPN(_C)..."
 
-#: ../src/applet.c:1715
+#: ../src/applet.c:1732
 msgid "_Disconnect VPN"
 msgstr "断开 VPN(_D)"
 
-#: ../src/applet.c:1813
+#: ../src/applet.c:1830
 msgid "NetworkManager is not running..."
 msgstr "网络管理器未运行..."
 
-#: ../src/applet.c:1818 ../src/applet.c:2617
+#: ../src/applet.c:1835 ../src/applet.c:2634
 msgid "Networking disabled"
 msgstr "网络已禁用"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2039
+#: ../src/applet.c:2056
 msgid "Enable _Networking"
 msgstr "启用联网(_N)"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2048
+#: ../src/applet.c:2065
 msgid "Enable _Wireless"
 msgstr "启用无线(_W)"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2057
+#: ../src/applet.c:2074
 msgid "Enable _Mobile Broadband"
 msgstr "启用移动宽带(_M)"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2066
+#: ../src/applet.c:2083
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "启用 WiMA_X 移动宽带"
 
 #. Toggle notifications item
-#: ../src/applet.c:2077
+#: ../src/applet.c:2094
 msgid "Enable N_otifications"
 msgstr "启用通知(_O)"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2088
+#: ../src/applet.c:2105
 msgid "Connection _Information"
 msgstr "连接信息(_I)"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2098
+#: ../src/applet.c:2115
 msgid "Edit Connections..."
 msgstr "编辑连接..."
 
 #. Help item
-#: ../src/applet.c:2112
+#: ../src/applet.c:2129
 msgid "_Help"
 msgstr "帮助(_H)"
 
 #. About item
-#: ../src/applet.c:2121
+#: ../src/applet.c:2138
 msgid "_About"
 msgstr "关于(_A)"
 
-#: ../src/applet.c:2298
+#: ../src/applet.c:2315
 msgid "Disconnected"
 msgstr "已断开连接"
 
-#: ../src/applet.c:2299
+#: ../src/applet.c:2316
 msgid "The network connection has been disconnected."
 msgstr "网络连接现已断开。"
 
-#: ../src/applet.c:2480
+#: ../src/applet.c:2497
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "正在准备网络连接“%s”..."
 
-#: ../src/applet.c:2483
+#: ../src/applet.c:2500
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "网络连接“%s”需要用户认证..."
 
-#: ../src/applet.c:2489
+#: ../src/applet.c:2506
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "网络连接“%s”已处于活动状态"
 
-#: ../src/applet.c:2572
+#: ../src/applet.c:2589
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "正在启动 VPN 连接“%s”..."
 
-#: ../src/applet.c:2575
+#: ../src/applet.c:2592
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "VPN 连接“%s”需要用户认证..."
 
-#: ../src/applet.c:2578
+#: ../src/applet.c:2595
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "正在为“%s”请求一个 VPN 地址..."
 
-#: ../src/applet.c:2581
+#: ../src/applet.c:2598
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN 连接“%s”已处于活动状态"
 
-#: ../src/applet.c:2622
+#: ../src/applet.c:2639
 msgid "No network connection"
 msgstr "没有网络连接"
 
-#: ../src/applet.c:3377
+#: ../src/applet.c:3394
 msgid "NetworkManager Applet"
 msgstr "网络管理器小程序"
 
@@ -2369,8 +2402,8 @@ msgstr "建立(_R)"
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1160
 #, c-format
 msgid ""
-"Passwords or encryption keys are required to access the wireless network "
-"'%s'."
+"Passwords or encryption keys are required to access the wireless network '%"
+"s'."
 msgstr "需要密码或密钥来访问无线网络“%s”。"
 
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1162
