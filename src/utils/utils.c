@@ -374,7 +374,7 @@ utils_show_error_dialog (const char *title,
 	                                     text1);
 
 	if (text2)
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (err_dialog), text2);
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (err_dialog), "%s", text2);
 	if (title)
 		gtk_window_set_title (GTK_WINDOW (err_dialog), title);
 
