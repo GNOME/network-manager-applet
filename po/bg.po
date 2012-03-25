@@ -10,15 +10,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-12 06:42+0200\n"
-"PO-Revision-Date: 2012-03-12 06:42+0200\n"
+"POT-Creation-Date: 2012-03-25 19:25+0300\n"
+"PO-Revision-Date: 2012-03-25 19:25+0300\n"
 "Last-Translator: Krasimir Chonov <mk2616@abv.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../nm-applet.desktop.in.h:1
 msgid "Network"
@@ -91,7 +91,7 @@ msgstr "Управление и промяна на настройките на 
 
 #: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:399
 #: ../src/applet-device-gsm.c:446 ../src/applet-device-wired.c:240
-#: ../src/applet-device-wifi.c:875 ../src/applet-device-wimax.c:279
+#: ../src/applet-device-wifi.c:864 ../src/applet-device-wimax.c:279
 msgid "Available"
 msgstr "Налични мрежи"
 
@@ -104,7 +104,7 @@ msgstr "Свързани сте към „%s“."
 
 #: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:445
 #: ../src/applet-device-gsm.c:492 ../src/applet-device-wired.c:273
-#: ../src/applet-device-wifi.c:1278 ../src/applet-device-wimax.c:427
+#: ../src/applet-device-wifi.c:1268 ../src/applet-device-wimax.c:427
 msgid "Connection Established"
 msgstr "Връзката е осъществена"
 
@@ -132,7 +132,7 @@ msgstr "Необходима е идентификация на потребит
 
 #: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:490
 #: ../src/applet-device-gsm.c:537 ../src/applet-device-wimax.c:473
-#: ../src/applet.c:2484
+#: ../src/applet.c:2503
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Заявка за мрежов адрес за „%s“…"
@@ -149,7 +149,7 @@ msgid "CDMA"
 msgstr "CDMA"
 
 #: ../src/applet-device-cdma.c:345 ../src/applet-device-gsm.c:392
-#: ../src/applet-dialogs.c:425
+#: ../src/applet-dialogs.c:424
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Мобилна връзка (%s)"
@@ -157,7 +157,7 @@ msgstr "Мобилна връзка (%s)"
 #: ../src/applet-device-cdma.c:347 ../src/applet-device-gsm.c:394
 #: ../src/connection-editor/page-mobile.c:379
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
-#: ../src/connection-editor/nm-connection-list.c:1511
+#: ../src/connection-editor/nm-connection-list.c:1510
 msgid "Mobile Broadband"
 msgstr "Мобилна връзка"
 
@@ -325,7 +325,7 @@ msgid "Wired Network"
 msgstr "Жична мрежа"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:232 ../src/applet.c:1490
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1509
 msgid "disconnected"
 msgstr "връзката е прекъсната"
 
@@ -374,80 +374,98 @@ msgstr "Създаване на _нова безжична мрежа…"
 msgid "(none)"
 msgstr "(нищо)"
 
-#: ../src/applet-device-wifi.c:803
+#: ../src/applet-device-wifi.c:792
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Безжични мрежи (%s)"
 
-#: ../src/applet-device-wifi.c:805
+#: ../src/applet-device-wifi.c:794
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Безжична мрежа (%s)"
 
-#: ../src/applet-device-wifi.c:807
+#: ../src/applet-device-wifi.c:796
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Безжична мрежа"
 msgstr[1] "Безжични мрежи"
 
-#: ../src/applet-device-wifi.c:840
+#: ../src/applet-device-wifi.c:829
 msgid "wireless is disabled"
 msgstr "безжичното устройство е забранено"
 
-#: ../src/applet-device-wifi.c:841
+#: ../src/applet-device-wifi.c:830
 msgid "wireless is disabled by hardware switch"
 msgstr "безжичното устройство е забранено чрез хардуерен ключ"
 
-#: ../src/applet-device-wifi.c:902
+#: ../src/applet-device-wifi.c:891
 msgid "More networks"
 msgstr "Още мрежи"
 
-#: ../src/applet-device-wifi.c:1081
+#: ../src/applet-device-wifi.c:1071
 msgid "Wireless Networks Available"
 msgstr "Достъпна е безжична мрежа"
 
-#: ../src/applet-device-wifi.c:1082
+#: ../src/applet-device-wifi.c:1072
 msgid "Use the network menu to connect to a wireless network"
 msgstr "Използвайте менюто с наличните мрежи, за да се свържете"
 
-#: ../src/applet-device-wifi.c:1085 ../src/applet.c:906
+#: ../src/applet-device-wifi.c:1075 ../src/applet.c:925
 msgid "Don't show this message again"
 msgstr "Това съобщение да не се показва повече"
 
-#: ../src/applet-device-wifi.c:1277
+#: ../src/applet-device-wifi.c:1267
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Свързани сте към безжичната мрежа „%s“."
 
-#: ../src/applet-device-wifi.c:1308
+#: ../src/applet-device-wifi.c:1298
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Подготовка на безжична връзка „%s“…"
 
-#: ../src/applet-device-wifi.c:1311
+#: ../src/applet-device-wifi.c:1301
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Настройване на безжична връзка „%s“…"
 
-#: ../src/applet-device-wifi.c:1314
+#: ../src/applet-device-wifi.c:1304
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Изисква се идентификация на потребител за безжична мрежа „%s“…"
 
-#: ../src/applet-device-wifi.c:1317
+#: ../src/applet-device-wifi.c:1307
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Заявка за безжичен мрежов адрес за „%s“…"
 
-#: ../src/applet-device-wifi.c:1338
+#: ../src/applet-device-wifi.c:1328
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Безжичната връзка „%s“ е активна: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1343
+#: ../src/applet-device-wifi.c:1333
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Безжичната връзка „%s“ е активна"
+
+#: ../src/applet-device-wifi.c:1381
+msgid "Failed to activate connection"
+msgstr "Неуспешно задействане на връзка"
+
+#: ../src/applet-device-wifi.c:1383 ../src/applet-device-wifi.c:1402
+#: ../src/applet.c:491 ../src/applet.c:535 ../src/applet.c:561
+msgid "Unknown error"
+msgstr "Непозната грешка"
+
+#: ../src/applet-device-wifi.c:1386 ../src/applet-device-wifi.c:1405
+#: ../src/applet.c:494 ../src/applet.c:564
+msgid "Connection failure"
+msgstr "Неуспешно установяване на връзка"
+
+#: ../src/applet-device-wifi.c:1400
+msgid "Failed to add new connection"
+msgstr "Неуспешно добавяне на нова връзка"
 
 #: ../src/applet-device-wimax.c:231
 #, c-format
@@ -475,9 +493,9 @@ msgid "Error displaying connection information:"
 msgstr "Грешка при показване на информацията за връзката:"
 
 #: ../src/applet-dialogs.c:109
-#: ../src/connection-editor/page-wireless-security.c:285
-#: ../src/libnm-gtk/nm-wireless-dialog.c:949
-#: ../src/wireless-security/wireless-security.c:397
+#: ../src/connection-editor/page-wireless-security.c:313
+#: ../src/libnm-gtk/nm-wireless-dialog.c:948
+#: ../src/wireless-security/wireless-security.c:406
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -485,195 +503,195 @@ msgstr "LEAP"
 msgid "Dynamic WEP"
 msgstr "Динамичен WEP"
 
-#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:246
-#: ../src/applet-dialogs.c:248
+#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:245
+#: ../src/applet-dialogs.c:247
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:244
+#: ../src/applet-dialogs.c:243
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:252 ../src/applet-dialogs.c:261
-#: ../src/connection-editor/page-wireless-security.c:239
-#: ../src/libnm-gtk/nm-wireless-dialog.c:906
+#: ../src/applet-dialogs.c:251 ../src/applet-dialogs.c:260
+#: ../src/connection-editor/page-wireless-security.c:265
+#: ../src/libnm-gtk/nm-wireless-dialog.c:905
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Без"
 
-#: ../src/applet-dialogs.c:278
+#: ../src/applet-dialogs.c:277
 #, c-format
 msgid "%s (default)"
 msgstr "%s (стандартно)"
 
-#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:485
+#: ../src/applet-dialogs.c:346 ../src/applet-dialogs.c:484
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:349 ../src/applet-dialogs.c:487
+#: ../src/applet-dialogs.c:348 ../src/applet-dialogs.c:486
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Неопределена"
 
-#: ../src/applet-dialogs.c:362
+#: ../src/applet-dialogs.c:361
 #, c-format
 msgid "%d dB"
 msgstr "%d dB"
 
-#: ../src/applet-dialogs.c:364
+#: ../src/applet-dialogs.c:363
 msgctxt "WiMAX CINR"
 msgid "unknown"
 msgstr "неизвестно"
 
-#: ../src/applet-dialogs.c:376
+#: ../src/applet-dialogs.c:375
 msgctxt "WiMAX Base Station ID"
 msgid "unknown"
 msgstr "неопределена"
 
-#: ../src/applet-dialogs.c:411
+#: ../src/applet-dialogs.c:410
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:414
+#: ../src/applet-dialogs.c:413
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:421
+#: ../src/applet-dialogs.c:420
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:423
+#: ../src/applet-dialogs.c:422
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:427
+#: ../src/applet-dialogs.c:426
 #, c-format
 msgid "WiMAX (%s)"
 msgstr "WiMAX (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:433 ../src/applet-dialogs.c:792
+#: ../src/applet-dialogs.c:432 ../src/applet-dialogs.c:791
 msgid "General"
 msgstr "Общи"
 
-#: ../src/applet-dialogs.c:437
+#: ../src/applet-dialogs.c:436
 msgid "Interface:"
 msgstr "Интерфейс:"
 
-#: ../src/applet-dialogs.c:453
+#: ../src/applet-dialogs.c:452
 msgid "Hardware Address:"
 msgstr "Хардуерен адрес:"
 
 #. Driver
-#: ../src/applet-dialogs.c:461
+#: ../src/applet-dialogs.c:460
 msgid "Driver:"
 msgstr "Драйвер:"
 
-#: ../src/applet-dialogs.c:490
+#: ../src/applet-dialogs.c:489
 msgid "Speed:"
 msgstr "Скорост:"
 
-#: ../src/applet-dialogs.c:500
+#: ../src/applet-dialogs.c:499
 msgid "Security:"
 msgstr "Защита:"
 
-#: ../src/applet-dialogs.c:513
+#: ../src/applet-dialogs.c:512
 msgid "CINR:"
 msgstr "CINR:"
 
-#: ../src/applet-dialogs.c:526
+#: ../src/applet-dialogs.c:525
 msgid "BSID:"
 msgstr "BSID:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:543
+#: ../src/applet-dialogs.c:542
 msgid "IPv4"
 msgstr "IPv4"
 
 #. Address
-#: ../src/applet-dialogs.c:554 ../src/applet-dialogs.c:661
+#: ../src/applet-dialogs.c:553 ../src/applet-dialogs.c:660
 msgid "IP Address:"
 msgstr "IP адрес:"
 
-#: ../src/applet-dialogs.c:556 ../src/applet-dialogs.c:572
+#: ../src/applet-dialogs.c:555 ../src/applet-dialogs.c:571
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Неопределен"
 
-#: ../src/applet-dialogs.c:570
+#: ../src/applet-dialogs.c:569
 msgid "Broadcast Address:"
 msgstr "Адрес за разпръскване:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:579
+#: ../src/applet-dialogs.c:578
 msgid "Subnet Mask:"
 msgstr "Маска на подмрежата:"
 
-#: ../src/applet-dialogs.c:581
+#: ../src/applet-dialogs.c:580
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Неопределена"
 
-#: ../src/applet-dialogs.c:589 ../src/applet-dialogs.c:676
+#: ../src/applet-dialogs.c:588 ../src/applet-dialogs.c:675
 msgid "Default Route:"
 msgstr "Маршрут по подразбиране:"
 
-#: ../src/applet-dialogs.c:601
+#: ../src/applet-dialogs.c:600
 msgid "Primary DNS:"
 msgstr "Основен сървър за DNS:"
 
-#: ../src/applet-dialogs.c:610
+#: ../src/applet-dialogs.c:609
 msgid "Secondary DNS:"
 msgstr "Втори сървър за DNS:"
 
-#: ../src/applet-dialogs.c:620
+#: ../src/applet-dialogs.c:619
 msgid "Ternary DNS:"
 msgstr "Трети сървър за DNS:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:635
+#: ../src/applet-dialogs.c:634
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:644
+#: ../src/applet-dialogs.c:643
 msgid "Ignored"
 msgstr "Игнорирана"
 
-#: ../src/applet-dialogs.c:797
+#: ../src/applet-dialogs.c:796
 msgid "VPN Type:"
 msgstr "Вид ВЧМ:"
 
-#: ../src/applet-dialogs.c:804
+#: ../src/applet-dialogs.c:803
 msgid "VPN Gateway:"
 msgstr "Шлюз за ВЧМ:"
 
-#: ../src/applet-dialogs.c:810
+#: ../src/applet-dialogs.c:809
 msgid "VPN Username:"
 msgstr "Потребител за ВЧМ:"
 
-#: ../src/applet-dialogs.c:816
+#: ../src/applet-dialogs.c:815
 msgid "VPN Banner:"
 msgstr "Известие за ВЧМ:"
 
-#: ../src/applet-dialogs.c:822
+#: ../src/applet-dialogs.c:821
 msgid "Base Connection:"
 msgstr "Основна връзка:"
 
-#: ../src/applet-dialogs.c:824
+#: ../src/applet-dialogs.c:823
 msgid "Unknown"
 msgstr "Неопределена"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:887
+#: ../src/applet-dialogs.c:886
 msgid "No valid active connections found!"
 msgstr "Не са намерени активни връзки!"
 
-#: ../src/applet-dialogs.c:940
+#: ../src/applet-dialogs.c:939
 msgid ""
 "Copyright © 2004-2011 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
@@ -683,35 +701,51 @@ msgstr ""
 "Авторски права © 2005-2008 Novell, Inc.\n"
 "и още много сътрудници и преводачи"
 
-#: ../src/applet-dialogs.c:943
+#: ../src/applet-dialogs.c:942
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Аплет за областта за уведомяване за управление на мрежовите устройства и "
 "връзки."
 
-#: ../src/applet-dialogs.c:945
+#: ../src/applet-dialogs.c:944
 msgid "NetworkManager Website"
 msgstr "Уеб сайт на NetworkManager"
 
-#: ../src/applet-dialogs.c:960
+#: ../src/applet-dialogs.c:959
 msgid "Missing resources"
 msgstr "Липсващи ресурси"
 
-#: ../src/applet-dialogs.c:985
+#: ../src/applet-dialogs.c:984
 msgid "Mobile broadband network password"
 msgstr "Парола за мобилна връзка"
 
-#: ../src/applet-dialogs.c:994
+#: ../src/applet-dialogs.c:993
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "За свързване към „%s“ се изисква парола."
 
-#: ../src/applet-dialogs.c:1013
+#: ../src/applet-dialogs.c:1012
 msgid "Password:"
 msgstr "Парола:"
 
-#: ../src/applet.c:995
+#: ../src/applet.c:489
+msgid "Failed to add/activate connection"
+msgstr "Неуспешно добавяне/задействане на връзка"
+
+#: ../src/applet.c:533
+msgid "Device disconnect failed"
+msgstr "Неуспешно прекъсване на връзка"
+
+#: ../src/applet.c:538
+msgid "Disconnect failure"
+msgstr "Неуспешно прекъсване"
+
+#: ../src/applet.c:559
+msgid "Connection activation failed"
+msgstr "Неуспешно задействане на връзка"
+
+#: ../src/applet.c:1014
 #, c-format
 msgid ""
 "\n"
@@ -721,7 +755,7 @@ msgstr ""
 "\n"
 "Връзката към ВЧМ — „%s“ е неуспешна, защото мрежовата връзка беше прекъсната."
 
-#: ../src/applet.c:998
+#: ../src/applet.c:1017
 #, c-format
 msgid ""
 "\n"
@@ -730,7 +764,7 @@ msgstr ""
 "\n"
 "Връзката към ВЧМ — „%s“ е неуспешна, защото услугата за ВЧМ спря неочаквано."
 
-#: ../src/applet.c:1001
+#: ../src/applet.c:1020
 #, c-format
 msgid ""
 "\n"
@@ -741,7 +775,7 @@ msgstr ""
 "Връзката към ВЧМ — „%s“ е неуспешна, защото услугата за ВЧМ върна грешни "
 "настройки."
 
-#: ../src/applet.c:1004
+#: ../src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -750,7 +784,7 @@ msgstr ""
 "\n"
 "Връзката към ВЧМ — „%s“ е неуспешна, защото времето за опити изтече."
 
-#: ../src/applet.c:1007
+#: ../src/applet.c:1026
 #, c-format
 msgid ""
 "\n"
@@ -760,7 +794,7 @@ msgstr ""
 "Връзката към ВЧМ — „%s“ е неуспешна, защото услугата за ВЧМ не стартира "
 "навреме."
 
-#: ../src/applet.c:1010
+#: ../src/applet.c:1029
 #, c-format
 msgid ""
 "\n"
@@ -770,7 +804,7 @@ msgstr ""
 "Връзката към ВЧМ — „%s“ е неуспешна, защото услугата за ВЧМ не успя да "
 "стартира."
 
-#: ../src/applet.c:1013
+#: ../src/applet.c:1032
 #, c-format
 msgid ""
 "\n"
@@ -779,7 +813,7 @@ msgstr ""
 "\n"
 "Връзката към ВЧМ — „%s“ е неуспешна, защото нямаше валидни тайни за ВЧМ."
 
-#: ../src/applet.c:1016
+#: ../src/applet.c:1035
 #, c-format
 msgid ""
 "\n"
@@ -788,7 +822,7 @@ msgstr ""
 "\n"
 "Връзката към ВЧМ — „%s“ е неуспешна, поради невалидни тайни за ВЧМ."
 
-#: ../src/applet.c:1023
+#: ../src/applet.c:1042
 #, c-format
 msgid ""
 "\n"
@@ -797,7 +831,7 @@ msgstr ""
 "\n"
 "Връзката към ВЧМ — „%s“ е неуспешна."
 
-#: ../src/applet.c:1041
+#: ../src/applet.c:1060
 #, c-format
 msgid ""
 "\n"
@@ -807,7 +841,7 @@ msgstr ""
 "\n"
 "Връзката към ВЧМ — „%s“ се прекъсна, защото мрежовата връзка беше прекъсната."
 
-#: ../src/applet.c:1044
+#: ../src/applet.c:1063
 #, c-format
 msgid ""
 "\n"
@@ -816,7 +850,7 @@ msgstr ""
 "\n"
 "Връзката към ВЧМ — „%s“ се прекъсна, защото услугата за ВЧМ спря."
 
-#: ../src/applet.c:1050
+#: ../src/applet.c:1069
 #, c-format
 msgid ""
 "\n"
@@ -825,15 +859,15 @@ msgstr ""
 "\n"
 "Връзката към ВЧМ — „%s“ се прекъсна."
 
-#: ../src/applet.c:1084
+#: ../src/applet.c:1103
 msgid "VPN Login Message"
 msgstr "Съобщение при идентификация пред ВЧМ"
 
-#: ../src/applet.c:1090 ../src/applet.c:1098 ../src/applet.c:1148
+#: ../src/applet.c:1109 ../src/applet.c:1117 ../src/applet.c:1167
 msgid "VPN Connection Failed"
 msgstr "Връзката към ВЧМ е неуспешна"
 
-#: ../src/applet.c:1155
+#: ../src/applet.c:1174
 #, c-format
 msgid ""
 "\n"
@@ -847,7 +881,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1158
+#: ../src/applet.c:1177
 #, c-format
 msgid ""
 "\n"
@@ -860,139 +894,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1478
+#: ../src/applet.c:1497
 msgid "device not ready (firmware missing)"
 msgstr "устройството не е готово (липсва фърмуер)"
 
-#: ../src/applet.c:1480
+#: ../src/applet.c:1499
 msgid "device not ready"
 msgstr "устройството не е готово"
 
-#: ../src/applet.c:1506
+#: ../src/applet.c:1525
 msgid "Disconnect"
 msgstr " Прекъсване"
 
-#: ../src/applet.c:1520
+#: ../src/applet.c:1539
 msgid "device not managed"
 msgstr "устройството не се управлява"
 
-#: ../src/applet.c:1564
+#: ../src/applet.c:1583
 msgid "No network devices available"
 msgstr "Не са налични мрежови устройства"
 
-#: ../src/applet.c:1652
+#: ../src/applet.c:1671
 msgid "_VPN Connections"
 msgstr "_Връзки към ВЧМ"
 
-#: ../src/applet.c:1709
+#: ../src/applet.c:1728
 msgid "_Configure VPN..."
 msgstr "_Настройване на ВЧМ…"
 
-#: ../src/applet.c:1713
+#: ../src/applet.c:1732
 msgid "_Disconnect VPN"
 msgstr "_Прекъсване на ВЧМ"
 
-#: ../src/applet.c:1811
+#: ../src/applet.c:1830
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager не е включен…"
 
-#: ../src/applet.c:1816 ../src/applet.c:2609
+#: ../src/applet.c:1835 ../src/applet.c:2634
 msgid "Networking disabled"
 msgstr "Мрежата е изключена"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2037
+#: ../src/applet.c:2056
 msgid "Enable _Networking"
 msgstr "_Включване на мрежата"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2046
+#: ../src/applet.c:2065
 msgid "Enable _Wireless"
 msgstr "Включване на _безжичната мрежа"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2055
+#: ../src/applet.c:2074
 msgid "Enable _Mobile Broadband"
 msgstr "Включване на _мобилна връзка"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2064
+#: ../src/applet.c:2083
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "Включване на мобилна в_ръзка по WiMAX"
 
 #. Toggle notifications item
-#: ../src/applet.c:2075
+#: ../src/applet.c:2094
 msgid "Enable N_otifications"
 msgstr "Включване на _уведомяване"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2086
+#: ../src/applet.c:2105
 msgid "Connection _Information"
 msgstr "_Информация за връзката"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2096
+#: ../src/applet.c:2115
 msgid "Edit Connections..."
 msgstr "Настройки на връзките…"
 
 #. Help item
-#: ../src/applet.c:2110
+#: ../src/applet.c:2129
 msgid "_Help"
 msgstr "Помо_щ"
 
 #. About item
-#: ../src/applet.c:2119
+#: ../src/applet.c:2138
 msgid "_About"
 msgstr "_Относно"
 
-#: ../src/applet.c:2296
+#: ../src/applet.c:2315
 msgid "Disconnected"
 msgstr "Без връзка"
 
-#: ../src/applet.c:2297
+#: ../src/applet.c:2316
 msgid "The network connection has been disconnected."
 msgstr "Връзката към мрежата е прекъсната."
 
-#: ../src/applet.c:2478
+#: ../src/applet.c:2497
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Подготовка на връзката „%s“…"
 
-#: ../src/applet.c:2481
+#: ../src/applet.c:2500
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Изисква се идентификация на потребител за връзката „%s“…"
 
-#: ../src/applet.c:2487
+#: ../src/applet.c:2506
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Жичната връзка „%s“ е активна"
 
-#: ../src/applet.c:2565
+#: ../src/applet.c:2589
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Стартиране на връзката към ВЧМ — „%s“…"
 
-#: ../src/applet.c:2568
+#: ../src/applet.c:2592
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Изисква се идентификация на потребител за връзката към ВЧМ — „%s“…"
 
-#: ../src/applet.c:2571
+#: ../src/applet.c:2595
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Изискване на адрес за ВЧМ за „%s“…"
 
-#: ../src/applet.c:2574
+#: ../src/applet.c:2598
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "Връзката към ВЧМ „%s“ е активна"
 
-#: ../src/applet.c:2613
+#: ../src/applet.c:2639
 msgid "No network connection"
 msgstr "Няма връзка към мрежа"
 
-#: ../src/applet.c:3263
+#: ../src/applet.c:3394
 msgid "NetworkManager Applet"
 msgstr "Аплетът NetworkManager"
 
@@ -1024,7 +1058,7 @@ msgstr "_Име на мрежа:"
 msgid "automatic"
 msgstr "автоматично"
 
-#: ../src/connection-editor/ce-page.c:310
+#: ../src/connection-editor/ce-page.c:318
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Неуспех да се обновят тайните на мрежовата връзка поради непозната грешка."
@@ -1569,7 +1603,7 @@ msgstr "Представка"
 
 #: ../src/connection-editor/page-dsl.c:139
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/connection-editor/nm-connection-list.c:1519
+#: ../src/connection-editor/nm-connection-list.c:1518
 msgid "DSL"
 msgstr "DSL"
 
@@ -1745,7 +1779,7 @@ msgstr "Потребителският интерфейс за PPP не може
 
 #: ../src/connection-editor/page-vpn.c:109
 #: ../src/connection-editor/nm-connection-editor.ui.h:7
-#: ../src/connection-editor/nm-connection-list.c:1515
+#: ../src/connection-editor/nm-connection-list.c:1514
 msgid "VPN"
 msgstr "ВЧМ"
 
@@ -1759,7 +1793,7 @@ msgid "Could not find VPN plugin service for '%s'."
 msgstr "Не може да се намери приставка за ВЧМ за „%s“."
 
 #: ../src/connection-editor/page-vpn.c:201
-#: ../src/connection-editor/nm-connection-list.c:900
+#: ../src/connection-editor/nm-connection-list.c:899
 #, c-format
 msgid "VPN connection %d"
 msgstr "Връзка към ВЧМ %d"
@@ -1776,7 +1810,7 @@ msgstr ""
 
 #: ../src/connection-editor/page-wired.c:272
 #: ../src/connection-editor/nm-connection-editor.ui.h:2
-#: ../src/connection-editor/nm-connection-list.c:1503
+#: ../src/connection-editor/nm-connection-list.c:1502
 msgid "Wired"
 msgstr "Жична мрежа"
 
@@ -1789,16 +1823,16 @@ msgstr "Потребителският интерфейс за жична мре
 msgid "Wired connection %d"
 msgstr "Жична връзка %d"
 
-#: ../src/connection-editor/page-wired-security.c:116
+#: ../src/connection-editor/page-wired-security.c:119
 msgid "802.1x Security"
 msgstr "Защита на 802.1x"
 
-#: ../src/connection-editor/page-wired-security.c:118
+#: ../src/connection-editor/page-wired-security.c:121
 msgid "Could not load Wired Security security user interface."
 msgstr ""
 "Потребителският интерфейс за сигурност на жична връзка не може да се зареди."
 
-#: ../src/connection-editor/page-wired-security.c:136
+#: ../src/connection-editor/page-wired-security.c:139
 msgid "Use 802.1_X security for this connection"
 msgstr "Използване на защита на 802.1_X за тази връзка"
 
@@ -1816,7 +1850,7 @@ msgstr "%u (%u MHz)"
 
 #: ../src/connection-editor/page-wireless.c:457
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
-#: ../src/connection-editor/nm-connection-list.c:1507
+#: ../src/connection-editor/nm-connection-list.c:1506
 msgid "Wireless"
 msgstr "Безжична мрежа"
 
@@ -1829,42 +1863,42 @@ msgstr "Потребителският интерфейс за безжична 
 msgid "Wireless connection %d"
 msgstr "Безжична връзка %d"
 
-#: ../src/connection-editor/page-wireless-security.c:263
-#: ../src/libnm-gtk/nm-wireless-dialog.c:923
+#: ../src/connection-editor/page-wireless-security.c:290
+#: ../src/libnm-gtk/nm-wireless-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "40/128 битов ключ за WEP (шестнайсетичен или ASCII)"
 
-#: ../src/connection-editor/page-wireless-security.c:272
-#: ../src/libnm-gtk/nm-wireless-dialog.c:932
+#: ../src/connection-editor/page-wireless-security.c:300
+#: ../src/libnm-gtk/nm-wireless-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "128 битова парола за WEP"
 
-#: ../src/connection-editor/page-wireless-security.c:298
-#: ../src/libnm-gtk/nm-wireless-dialog.c:962
+#: ../src/connection-editor/page-wireless-security.c:326
+#: ../src/libnm-gtk/nm-wireless-dialog.c:961
 msgid "Dynamic WEP (802.1x)"
 msgstr "Динамичен WEP (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:312
-#: ../src/libnm-gtk/nm-wireless-dialog.c:976
+#: ../src/connection-editor/page-wireless-security.c:340
+#: ../src/libnm-gtk/nm-wireless-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "Частна WPA & WPA2 "
 
-#: ../src/connection-editor/page-wireless-security.c:326
-#: ../src/libnm-gtk/nm-wireless-dialog.c:990
+#: ../src/connection-editor/page-wireless-security.c:354
+#: ../src/libnm-gtk/nm-wireless-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "Корпоративна WPA & WPA2"
 
-#: ../src/connection-editor/page-wireless-security.c:360
+#: ../src/connection-editor/page-wireless-security.c:395
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr ""
 "Потребителският интерфейс за сигурност на WiFi не може да се зареди. Липсват "
 "настройките за WiFi."
 
-#: ../src/connection-editor/page-wireless-security.c:370
+#: ../src/connection-editor/page-wireless-security.c:405
 msgid "Wireless Security"
 msgstr "Защита на безжична мрежа:"
 
-#: ../src/connection-editor/page-wireless-security.c:372
+#: ../src/connection-editor/page-wireless-security.c:407
 msgid "Could not load WiFi security user interface."
 msgstr "Потребителският интерфейс за сигурност на WiFi не може да се зареди."
 
@@ -1877,7 +1911,7 @@ msgstr "Настройки на %s"
 msgid "Editing un-named connection"
 msgstr "Редактиране на връзка без име"
 
-#: ../src/connection-editor/nm-connection-editor.c:288
+#: ../src/connection-editor/nm-connection-editor.c:291
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -1885,23 +1919,23 @@ msgstr ""
 "Редакторът на връзки не може да намери някои задължителни ресурси (файлът с "
 "интерфейса не беше намерен)."
 
-#: ../src/connection-editor/nm-connection-editor.c:391
+#: ../src/connection-editor/nm-connection-editor.c:394
 msgid "Error creating connection editor dialog."
 msgstr "Грешка при създаване на прозорец за редактиране на връзка."
 
-#: ../src/connection-editor/nm-connection-editor.c:403
+#: ../src/connection-editor/nm-connection-editor.c:406
 msgid "_Save"
 msgstr "_Запазване"
 
-#: ../src/connection-editor/nm-connection-editor.c:404
+#: ../src/connection-editor/nm-connection-editor.c:407
 msgid "Save any changes made to this connection."
 msgstr "Запазване на промените в настройките на връзката."
 
-#: ../src/connection-editor/nm-connection-editor.c:405
+#: ../src/connection-editor/nm-connection-editor.c:408
 msgid "_Save..."
 msgstr "_Запазване..."
 
-#: ../src/connection-editor/nm-connection-editor.c:406
+#: ../src/connection-editor/nm-connection-editor.c:409
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Идентифицирайте се, за да запазите тази връзка за всички потребители на този "
@@ -1997,7 +2031,7 @@ msgstr "Грешка при инициализиране на редактора
 
 #: ../src/connection-editor/nm-connection-list.c:546
 #: ../src/connection-editor/nm-connection-list.c:719
-#: ../src/connection-editor/nm-connection-list.c:886
+#: ../src/connection-editor/nm-connection-list.c:885
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -2026,12 +2060,12 @@ msgstr "Неуспешно изтриване на връзка"
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Сигурни ли сте, че искате да изтриете връзката %s?"
 
-#: ../src/connection-editor/nm-connection-list.c:930
-#: ../src/connection-editor/vpn-helpers.c:227
+#: ../src/connection-editor/nm-connection-list.c:929
+#: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "Връзка към ВЧМ не може да бъде внесена"
 
-#: ../src/connection-editor/nm-connection-list.c:932
+#: ../src/connection-editor/nm-connection-list.c:931
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2041,81 +2075,81 @@ msgstr ""
 "\n"
 "Грешка: видът услуга на ВЧМ липсва."
 
-#: ../src/connection-editor/nm-connection-list.c:945
+#: ../src/connection-editor/nm-connection-list.c:944
 msgid "Could not edit imported connection"
 msgstr "Не може да се редактира внесена връзка"
 
-#: ../src/connection-editor/nm-connection-list.c:1126
+#: ../src/connection-editor/nm-connection-list.c:1125
 msgid "Name"
 msgstr "Име"
 
-#: ../src/connection-editor/nm-connection-list.c:1138
+#: ../src/connection-editor/nm-connection-list.c:1137
 msgid "Last Used"
 msgstr "Последно използвана"
 
-#: ../src/connection-editor/nm-connection-list.c:1264
+#: ../src/connection-editor/nm-connection-list.c:1263
 msgid "No VPN plugin available. Please install one to enable this button."
 msgstr ""
 "Няма инсталирана приставка за ВЧМ. Инсталирайте такава, за да се активира "
 "този бутон."
 
-#: ../src/connection-editor/nm-connection-list.c:1275
+#: ../src/connection-editor/nm-connection-list.c:1274
 msgid "_Edit"
 msgstr "_Редактиране"
 
-#: ../src/connection-editor/nm-connection-list.c:1276
+#: ../src/connection-editor/nm-connection-list.c:1275
 msgid "Edit the selected connection"
 msgstr "Редактиране на избраната връзка"
 
-#: ../src/connection-editor/nm-connection-list.c:1277
+#: ../src/connection-editor/nm-connection-list.c:1276
 msgid "_Edit..."
 msgstr "_Редактиране…"
 
-#: ../src/connection-editor/nm-connection-list.c:1278
+#: ../src/connection-editor/nm-connection-list.c:1277
 msgid "Authenticate to edit the selected connection"
 msgstr "Идентифицирайте се, за да редактирате избраната връзка"
 
-#: ../src/connection-editor/nm-connection-list.c:1293
+#: ../src/connection-editor/nm-connection-list.c:1292
 msgid "_Delete"
 msgstr "_Изтриване"
 
-#: ../src/connection-editor/nm-connection-list.c:1294
+#: ../src/connection-editor/nm-connection-list.c:1293
 msgid "Delete the selected connection"
 msgstr "Изтриване на избраната връзка"
 
-#: ../src/connection-editor/nm-connection-list.c:1295
+#: ../src/connection-editor/nm-connection-list.c:1294
 msgid "_Delete..."
 msgstr "_Изтриване…"
 
-#: ../src/connection-editor/nm-connection-list.c:1296
+#: ../src/connection-editor/nm-connection-list.c:1295
 msgid "Authenticate to delete the selected connection"
 msgstr "Идентифицирайте се, за да изтриете избраната връзка"
 
-#: ../src/connection-editor/nm-connection-list.c:1575
+#: ../src/connection-editor/nm-connection-list.c:1574
 msgid "Error creating connection"
 msgstr "Грешка при създаване на връзката"
 
-#: ../src/connection-editor/nm-connection-list.c:1576
+#: ../src/connection-editor/nm-connection-list.c:1575
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Не може да се създават връзки от вида „%s"
 
-#: ../src/connection-editor/nm-connection-list.c:1631
-#: ../src/connection-editor/nm-connection-list.c:1643
+#: ../src/connection-editor/nm-connection-list.c:1630
+#: ../src/connection-editor/nm-connection-list.c:1642
 msgid "Error editing connection"
 msgstr "Грешка при редактиране на връзката"
 
-#: ../src/connection-editor/nm-connection-list.c:1632
+#: ../src/connection-editor/nm-connection-list.c:1631
 #, c-format
 msgid "Don't know how to edit '%s' connections"
 msgstr "Не може да се редактират връзки от вида „%s“"
 
-#: ../src/connection-editor/nm-connection-list.c:1644
+#: ../src/connection-editor/nm-connection-list.c:1643
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Не може да се открие връзка с идентификатор „%s“"
 
-#: ../src/connection-editor/vpn-helpers.c:229
+#: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -2127,29 +2161,29 @@ msgstr ""
 "\n"
 "Грешка: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:262
+#: ../src/connection-editor/vpn-helpers.c:263
 msgid "Select file to import"
 msgstr "Избор на файл за внасяне"
 
-#: ../src/connection-editor/vpn-helpers.c:313
+#: ../src/connection-editor/vpn-helpers.c:314
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "Вече съществува файл с името „%s“."
 
-#: ../src/connection-editor/vpn-helpers.c:315
+#: ../src/connection-editor/vpn-helpers.c:316
 msgid "_Replace"
 msgstr "_Замяна"
 
-#: ../src/connection-editor/vpn-helpers.c:317
+#: ../src/connection-editor/vpn-helpers.c:318
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "Искате ли да замените %s с връзката към ВЧМ, която запазвате?"
 
-#: ../src/connection-editor/vpn-helpers.c:353
+#: ../src/connection-editor/vpn-helpers.c:354
 msgid "Cannot export VPN connection"
 msgstr "Връзка по ВЧМ не може да бъде изнесена"
 
-#: ../src/connection-editor/vpn-helpers.c:355
+#: ../src/connection-editor/vpn-helpers.c:356
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -2160,7 +2194,7 @@ msgstr ""
 "\n"
 "Грешка: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:390
+#: ../src/connection-editor/vpn-helpers.c:391
 msgid "Export VPN connection..."
 msgstr "Изнасяне на връзка към ВЧМ…"
 
@@ -2421,11 +2455,11 @@ msgstr "Нова мобилна връзка"
 msgid "New..."
 msgstr "Нова…"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1077
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1076
 msgid "C_reate"
 msgstr "_Създаване"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1161
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1160
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network "
@@ -2434,35 +2468,35 @@ msgstr ""
 "За достъп до безжичната мрежа „%s“ са необходими пароли или криптирани "
 "ключове."
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1163
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1162
 msgid "Wireless Network Authentication Required"
 msgstr "Изисква се идентификация за безжична мрежа"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1165
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1164
 msgid "Authentication required by wireless network"
 msgstr "Изисква се идентификация за безжична мрежа"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1170
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1169
 msgid "Create New Wireless Network"
 msgstr "Създаване на нова безжична мрежа"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1172
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1171
 msgid "New wireless network"
 msgstr "Нова безжична мрежа"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1173
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1172
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Въведете име на безжичната мрежа, която искате да създадете."
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1175
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1174
 msgid "Connect to Hidden Wireless Network"
 msgstr "Свързване към скрита безжична мрежа"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1177
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1176
 msgid "Hidden wireless network"
 msgstr "Скрита безжична мрежа"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1178
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1177
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2668,7 +2702,7 @@ msgid "All files"
 msgstr "Всички файлове"
 
 #: ../src/wireless-security/eap-method-peap.c:263
-#: ../src/wireless-security/wireless-security.c:373
+#: ../src/wireless-security/wireless-security.c:382
 msgid "MD5"
 msgstr "MD5"
 
@@ -2754,19 +2788,19 @@ msgstr "Не"
 msgid "Yes"
 msgstr "Да"
 
-#: ../src/wireless-security/wireless-security.c:385
+#: ../src/wireless-security/wireless-security.c:394
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:409
+#: ../src/wireless-security/wireless-security.c:418
 msgid "FAST"
 msgstr "FAST"
 
-#: ../src/wireless-security/wireless-security.c:420
+#: ../src/wireless-security/wireless-security.c:429
 msgid "Tunneled TLS"
 msgstr "Тунелен TLS"
 
-#: ../src/wireless-security/wireless-security.c:431
+#: ../src/wireless-security/wireless-security.c:440
 msgid "Protected EAP (PEAP)"
 msgstr "Защитен EAP (PEAP)"
 
