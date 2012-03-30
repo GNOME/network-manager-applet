@@ -46,6 +46,7 @@
 #include <nm-active-connection.h>
 #include <nm-remote-settings.h>
 #include "applet-agent.h"
+#include "shell-watcher.h"
 
 #define NM_TYPE_APPLET			(nma_get_type())
 #define NM_APPLET(object)		(G_TYPE_CHECK_INSTANCE_CAST((object), NM_TYPE_APPLET, NMApplet))
@@ -85,10 +86,9 @@ typedef struct
 	DBusGConnection *session_bus;
 
 #if GLIB_CHECK_VERSION(2,26,0)
-	GDBusProxy *shell_proxy;
+	NMShellWatcher *shell_watcher;
 #endif
 	guint agent_start_id;
-	gdouble shell_version;
 
 	NMClient *nm_client;
 	NMRemoteSettings *settings;

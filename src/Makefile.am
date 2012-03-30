@@ -59,7 +59,9 @@ nm_applet_SOURCES = \
 	applet-device-bt.c \
 	applet-device-wimax.h \
 	applet-device-wimax.c \
-	fallback-icon.h
+	fallback-icon.h \
+	shell-watcher.h \
+	shell-watcher.c
 
 nm_applet_LDADD = \
 	-lm \
