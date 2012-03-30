@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2011 Red Hat, Inc.
+ * Copyright (C) 2004 - 2012 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
@@ -1096,9 +1096,9 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 	case NM_VPN_CONNECTION_STATE_ACTIVATED:
 		banner = nm_vpn_connection_get_banner (vpn);
 		if (banner && strlen (banner))
-			msg = g_strdup_printf ("VPN connection has been successfully established.\n\n%s\n", banner);
+			msg = g_strdup_printf (_("VPN connection has been successfully established.\n\n%s\n"), banner);
 		else
-			msg = g_strdup ("VPN connection has been successfully established.\n");
+			msg = g_strdup (_("VPN connection has been successfully established.\n"));
 
 		title = _("VPN Login Message");
 		applet_do_notify_with_pref (applet, title, msg, "gnome-lockscreen",
