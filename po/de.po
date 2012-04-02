@@ -20,9 +20,9 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2012-03-25 12:54+0000\n"
-"PO-Revision-Date: 2012-03-25 16:09+0200\n"
-"Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
+"POT-Creation-Date: 2012-03-30 10:57+0000\n"
+"PO-Revision-Date: 2012-04-02 21:50+0100\n"
+"Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -80,19 +80,17 @@ msgstr "Einstellungen übernehmen"
 #: ../nm-applet.schemas.in.h:8
 msgid "Used to determine whether settings should be migrated to a new version."
 msgstr ""
-"Legt fest, ob die Einstellungen in eine neue Version übernommen werden "
-"sollen."
+"Legt fest, ob die Einstellungen in eine neue Version übernommen werden sollen."
 
 #: ../nm-applet.schemas.in.h:9
 msgid "Disable WiFi Create"
 msgstr "Das Erstellen von WiFi-Netzen ausschalten"
 
 #: ../nm-applet.schemas.in.h:10
-msgid ""
-"Set to TRUE to disable creation of adhoc networks when using the applet."
+msgid "Set to TRUE to disable creation of adhoc networks when using the applet."
 msgstr ""
-"Legt fest, ob die Erstellung von Adhoc-Netzwerken mit dem Applet "
-"abgeschaltet ist."
+"Legt fest, ob die Erstellung von Adhoc-Netzwerken mit dem Applet abgeschaltet "
+"ist."
 
 #: ../nm-connection-editor.desktop.in.h:1
 #: ../src/connection-editor/nm-connection-editor.ui.h:1
@@ -722,8 +720,8 @@ msgstr ""
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
-"Ein Applet für das Benachrichtigungsfeld, mit dem Sie Ihre Netzwerkgeräte "
-"und Netzwerkverbindungen verwalten können."
+"Ein Applet für das Benachrichtigungsfeld, mit dem Sie Ihre Netzwerkgeräte und "
+"Netzwerkverbindungen verwalten können."
 
 #: ../src/applet-dialogs.c:944
 msgid "NetworkManager Website"
@@ -767,8 +765,7 @@ msgstr "Aktivierung der Verbindung fehlgeschlagen"
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the network connection was "
-"interrupted."
+"The VPN connection '%s' failed because the network connection was interrupted."
 msgstr ""
 "\n"
 "Die VPN-Verbindung »%s« konnte nicht hergestellt werden, weil die "
@@ -882,6 +879,21 @@ msgid ""
 msgstr ""
 "\n"
 "Die VPN-Verbindung »%s« wurde getrennt."
+
+#: ../src/applet.c:1099
+#, c-format
+msgid ""
+"VPN connection has been successfully established.\n"
+"\n"
+"%s\n"
+msgstr ""
+"Die VPN-Verbindung wurde erfolgreich eingerichtet.\n"
+"\n"
+"%s\n"
+
+#: ../src/applet.c:1101
+msgid "VPN connection has been successfully established.\n"
+msgstr "Die VPN-Verbindung wurde erfolgreich eingerichtet.\n"
 
 #: ../src/applet.c:1103
 msgid "VPN Login Message"
@@ -1094,8 +1106,8 @@ msgstr ""
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:8
 msgid ""
-"IP addresses identify your computer on the network.  Click the \"Add\" "
-"button to add an IP address."
+"IP addresses identify your computer on the network.  Click the \"Add\" button "
+"to add an IP address."
 msgstr ""
 "IP-Adressen identifizieren Ihren Rechner im Netzwerk. Klicken Sie auf den "
 "Knopf »Hinzufügen«, um eine IP-Adresse hinzuzufügen."
@@ -1194,13 +1206,13 @@ msgstr "Adressen"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:9
 msgid ""
-"The DHCP client identifier allows the network administrator to customize "
-"your computer's configuration.  If you wish to use a DHCP client identifier, "
-"enter it here."
+"The DHCP client identifier allows the network administrator to customize your "
+"computer's configuration.  If you wish to use a DHCP client identifier, enter "
+"it here."
 msgstr ""
 "Der Bezeichner des DHCP-Clients ermöglicht dem Netzwerk-Administrator die "
-"Konfiguration Ihres Rechners anzupassen. Geben Sie hier einen Bezeichner "
-"ein, wenn Sie ihn verwenden möchten."
+"Konfiguration Ihres Rechners anzupassen. Geben Sie hier einen Bezeichner ein, "
+"wenn Sie ihn verwenden möchten."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:10
 #: ../src/connection-editor/ce-page-ip6.ui.h:9
@@ -1228,8 +1240,8 @@ msgstr "_DNS-Server:"
 #: ../src/connection-editor/ce-page-ip4.ui.h:14
 #: ../src/connection-editor/ce-page-ip6.ui.h:12
 msgid ""
-"IP addresses of domain name servers used to resolve host names. Use commas "
-"to separate multiple domain name server addresses."
+"IP addresses of domain name servers used to resolve host names. Use commas to "
+"separate multiple domain name server addresses."
 msgstr ""
 "IP-Adressen von Domänennamen-Servern, die zum Auflösen von Rechnernamen "
 "verwendet werden. Verwenden Sie Kommata zum Trennen mehrerer Server-Adressen."
@@ -1435,9 +1447,9 @@ msgstr "Benutzerdefinierte MA_C-Adresse:"
 #: ../src/connection-editor/ce-page-wired.ui.h:16
 #: ../src/connection-editor/ce-page-wireless.ui.h:9
 msgid ""
-"The MAC address entered here will be used as hardware address for the "
-"network device this connection is activated on.  This feature is known as "
-"MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
+"The MAC address entered here will be used as hardware address for the network "
+"device this connection is activated on.  This feature is known as MAC cloning "
+"or spoofing.  Example: 00:11:22:33:44:55"
 msgstr ""
 "Die hier eingegebene Mac-Adresse wird als Hardware-Adresse des "
 "Netzwerkgerätes verwendet, für das diese Verbindung aktiviert ist. Dieses "
@@ -1488,8 +1500,8 @@ msgstr "_Rate:"
 
 #: ../src/connection-editor/ce-page-wireless.ui.h:15
 msgid ""
-"This option locks this connection to the wireless access point (AP) "
-"specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
+"This option locks this connection to the wireless access point (AP) specified "
+"by the BSSID entered here.  Example: 00:11:22:33:44:55"
 msgstr ""
 "Diese Option ordnet diese Verbindung eindeutig dem Wireless-Access-Point "
 "(AP), der durch die hier eingegebene BSSID spezifiziert wird, zu. Beispiel: "
@@ -1569,8 +1581,8 @@ msgid ""
 "methods.  If connections fail, try disabling support for some methods."
 msgstr ""
 "In den meisten Fällen erlauben die PPP-Server des Anbieters alle "
-"Legitimierungsmethoden. Falls eine Verbindung fehlschlägt, versuchen Sie, "
-"die Unterstützung für einige Methoden zu deaktivieren."
+"Legitimierungsmethoden. Falls eine Verbindung fehlschlägt, versuchen Sie, die "
+"Unterstützung für einige Methoden zu deaktivieren."
 
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:1 ../src/libnm-gtk/wifi.ui.h:1
 #: ../src/wireless-security/eap-method-fast.ui.h:1
@@ -1589,8 +1601,8 @@ msgstr "VPN-Verbindungstyp wählen"
 #: ../src/connection-editor/ce-vpn-wizard.ui.h:3
 msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
-"of VPN connection you wish to create does not appear in the list, you may "
-"not have the correct VPN plugin installed."
+"of VPN connection you wish to create does not appear in the list, you may not "
+"have the correct VPN plugin installed."
 msgstr ""
 "Wählen Sie den VPN-Typ, den Sie für die neue Verbindung verwenden möchten. "
 "Wenn der Typ der VPN-Verbindung, die Sie erstellen möchten, nicht in der "
@@ -1751,8 +1763,8 @@ msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
 msgstr ""
-"Wählen Sie die von Ihrem mobilen Breitbandanbieter verwendete Technologie. "
-"Im Zweifelsfall fragen Sie bei Ihrem Dienstanbieter nach."
+"Wählen Sie die von Ihrem mobilen Breitbandanbieter verwendete Technologie. Im "
+"Zweifelsfall fragen Sie bei Ihrem Dienstanbieter nach."
 
 #: ../src/connection-editor/page-mobile.c:679
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
@@ -1946,8 +1958,8 @@ msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
 msgstr ""
-"Der Verbindungseditor konnte benötigte Ressourcen nicht finden (Die .ui-"
-"Datei wurde nicht gefunden)."
+"Der Verbindungseditor konnte benötigte Ressourcen nicht finden (Die .ui-Datei "
+"wurde nicht gefunden)."
 
 #: ../src/connection-editor/nm-connection-editor.c:394
 msgid "Error creating connection editor dialog."
@@ -2064,8 +2076,7 @@ msgstr "Fehler beim Initialisieren des Editors"
 #: ../src/connection-editor/nm-connection-list.c:719
 #: ../src/connection-editor/nm-connection-list.c:885
 msgid ""
-"The connection editor dialog could not be initialized due to an unknown "
-"error."
+"The connection editor dialog could not be initialized due to an unknown error."
 msgstr ""
 "Der Verbindungseditor kann wegen eines unbekannten Fehlers nicht "
 "initialisiert werden."
@@ -2184,8 +2195,8 @@ msgstr "Eine Verbindung mit der UUID »%s« konnte nicht gefunden werden"
 #: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
 msgid ""
-"The file '%s' could not be read or does not contain recognized VPN "
-"connection information\n"
+"The file '%s' could not be read or does not contain recognized VPN connection "
+"information\n"
 "\n"
 "Error: %s."
 msgstr ""
@@ -2298,8 +2309,8 @@ msgstr ""
 #, c-format
 msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
 msgstr ""
-"Keine Bluetooth-Konfiguration möglich (Verbindung mit D-Bus fehlgeschlagen: %"
-"s)."
+"Keine Bluetooth-Konfiguration möglich (Verbindung mit D-Bus fehlgeschlagen: "
+"%s)."
 
 #: ../src/gnome-bluetooth/bt-widget.c:1022
 msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
@@ -2309,8 +2320,7 @@ msgstr ""
 
 #: ../src/gnome-bluetooth/bt-widget.c:1031
 #, c-format
-msgid ""
-"Bluetooth configuration not possible (error finding NetworkManager: %s)."
+msgid "Bluetooth configuration not possible (error finding NetworkManager: %s)."
 msgstr ""
 "Keine Bluetooth-Konfiguration möglich (Kein NetworkManager gefunden: %s)."
 
@@ -2353,11 +2363,10 @@ msgid ""
 "Preferences menu."
 msgstr ""
 "Eine Verbindung zu Ihrem mobilen Breitbandanbieter wird nun anhand Ihrer "
-"gewählten Einstellungen eingerichtet. Falls die Verbindung scheitert oder "
-"Sie nicht auf Netzwerkressourcen zugreifen können, überprüfen Sie Ihre "
-"Einstellungen nochmals. Um die Einstellungen für mobile "
-"Breitbandverbindungen zu ändern, wählen Sie »Netzwerkverbindungen« im Menü "
-"System → Einstellungen."
+"gewählten Einstellungen eingerichtet. Falls die Verbindung scheitert oder Sie "
+"nicht auf Netzwerkressourcen zugreifen können, überprüfen Sie Ihre "
+"Einstellungen nochmals. Um die Einstellungen für mobile Breitbandverbindungen "
+"zu ändern, wählen Sie »Netzwerkverbindungen« im Menü System → Einstellungen."
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:264
 msgid "Confirm Mobile Broadband Settings"
@@ -2416,8 +2425,7 @@ msgstr "Dienstanbieter:"
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:813
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
-msgstr ""
-"Mein Dienstanbieter verwendet GSM-Technologien (GPRS, EDGE, UMTS, HSPA)"
+msgstr "Mein Dienstanbieter verwendet GSM-Technologien (GPRS, EDGE, UMTS, HSPA)"
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:819
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
@@ -2473,8 +2481,7 @@ msgstr "Name des Abrechnungsmodus Ihres Dienstanbieters"
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1407
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-msgstr ""
-"(in einigen Fällen) Name des Zugangspunktes für Ihren Abrechnungsmodus:"
+msgstr "(in einigen Fällen) Name des Zugangspunktes für Ihren Abrechnungsmodus:"
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1434
 msgid "Create a connection for _this mobile broadband device:"
@@ -2503,11 +2510,10 @@ msgstr "E_rzeugen"
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1160
 #, c-format
 msgid ""
-"Passwords or encryption keys are required to access the wireless network '%"
-"s'."
+"Passwords or encryption keys are required to access the wireless network '%s'."
 msgstr ""
-"Es werden Passwörter oder Schlüssel für die Verschlüsselung benötigt, um "
-"sich mit dem Funknetzwerk »%s« zu verbinden."
+"Es werden Passwörter oder Schlüssel für die Verschlüsselung benötigt, um sich "
+"mit dem Funknetzwerk »%s« zu verbinden."
 
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1162
 msgid "Wireless Network Authentication Required"
@@ -2567,13 +2573,13 @@ msgid ""
 "This program is a component of NetworkManager (http://projects.gnome.org/"
 "NetworkManager)."
 msgstr ""
-"Dieses Programm ist eine Komponente von NetworkManager (http://projects."
-"gnome.org/NetworkManager)."
+"Dieses Programm ist eine Komponente von NetworkManager (http://projects.gnome."
+"org/NetworkManager)."
 
 #: ../src/main.c:76
 msgid ""
-"It is not intended for command-line interaction but instead runs in the "
-"GNOME desktop environment."
+"It is not intended for command-line interaction but instead runs in the GNOME "
+"desktop environment."
 msgstr ""
 "Es ist nicht für die Befehlszeileninteraktion bestimmt, sondern für den "
 "Betrieb innerhalb der GNOME-Arbeitsumgebung."
@@ -2665,8 +2671,8 @@ msgid ""
 "The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
 msgstr ""
-"Das Netzwerk-Manager-Applet konnte benötigte Ressourcen nicht finden (Die ."
-"ui-Datei wurde nicht gefunden)."
+"Das Netzwerk-Manager-Applet konnte benötigte Ressourcen nicht finden (Die .ui-"
+"Datei wurde nicht gefunden)."
 
 #: ../src/wireless-security/eap-method.c:279
 msgid "No Certificate Authority certificate chosen"
@@ -2675,8 +2681,8 @@ msgstr "Es wurde kein CA-Zertifikat ausgewählt"
 #: ../src/wireless-security/eap-method.c:280
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
-"to insecure, rogue wireless networks.  Would you like to choose a "
-"Certificate Authority certificate?"
+"to insecure, rogue wireless networks.  Would you like to choose a Certificate "
+"Authority certificate?"
 msgstr ""
 "Benutzt man kein CA-Zertifikat, kann dies zu unsicheren Verbindungen oder "
 "schadhaften Funknetzwerken führen. Möchten Sie ein CA-Zertifikat auswählen?"
@@ -2781,9 +2787,9 @@ msgstr "Nicht verschlüsselte geheime Schlüssel sind unsicher"
 
 #: ../src/wireless-security/eap-method-tls.c:249
 msgid ""
-"The selected private key does not appear to be protected by a password.  "
-"This could allow your security credentials to be compromised.  Please select "
-"a password-protected private key.\n"
+"The selected private key does not appear to be protected by a password.  This "
+"could allow your security credentials to be compromised.  Please select a "
+"password-protected private key.\n"
 "\n"
 "(You can password-protect your private key with openssl)"
 msgstr ""
