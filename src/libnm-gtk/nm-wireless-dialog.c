@@ -643,7 +643,7 @@ device_combo_init (NMAWirelessDialog *self, NMDevice *device)
 		num_added++;
 	} else {
 		devices = nm_client_get_devices (priv->client);
-		if (devices->len == 0)
+		if (!devices)
 			return FALSE;
 
 		for (i = 0; devices && (i < devices->len); i++) {
