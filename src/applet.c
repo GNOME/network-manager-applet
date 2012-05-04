@@ -3137,6 +3137,10 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
                              gint size,
                              NMApplet *applet)
 {
+	if (getenv ("NMA_SIZE_DEBUG")) {
+		g_message ("%s(): status icon size now %d", __func__, size);
+	}
+
 	/* icon_size may be 0 if for example the panel hasn't given us any space
 	 * yet.  We'll get resized later, but for now just load the 16x16 icons.
 	 */
