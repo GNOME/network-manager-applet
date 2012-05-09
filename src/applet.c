@@ -2404,6 +2404,8 @@ foo_set_initial_state (gpointer data)
 static void
 foo_client_setup (NMApplet *applet)
 {
+	NMClientPermission perm;
+
 	applet->nm_client = nm_client_new ();
 	if (!applet->nm_client)
 		return;
@@ -2424,11 +2426,11 @@ foo_client_setup (NMApplet *applet)
 	g_signal_connect (applet->nm_client, "permission-changed",
 	                  G_CALLBACK (foo_manager_permission_changed),
 	                  applet);
+
 	/* Initialize permissions - the initial 'permission-changed' signal is emitted from NMClient constructor, and thus not caught */
-	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK);
-	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI);
-	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN);
-	applet->permissions[NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIMAX] = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIMAX);
+	for (perm = NM_CLIENT_PERMISSION_NONE + 1; perm <= NM_CLIENT_PERMISSION_LAST; perm++) {
+		applet->permissions[perm] = nm_client_get_permission_result (applet->nm_client, perm);
+	}
 
 	if (nm_client_get_manager_running (applet->nm_client))
 		g_idle_add (foo_set_initial_state, applet);
