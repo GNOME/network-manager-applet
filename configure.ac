@@ -97,7 +97,7 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
-		 glib-2.0 >= 2.16
+		 gio-2.0 >= 2.26
 		 NetworkManager >= 0.9.4
 		 libnm-glib >= 0.9.4
 		 libnm-util >= 0.9.4
@@ -121,13 +121,19 @@ AC_ARG_ENABLE([migration],
 	       fi])
 AC_MSG_RESULT([$enable_migration])
 if test "$enable_migration" = "yes"; then
+	PKG_CHECK_MODULES(GCONF, [gconf-2.0], :,
+			  [AC_MSG_ERROR([
+Could not find GConf devel files, which are needed for
+nm-applet-migration-tool. You can configure with --disable-migration
+if you want to build without the code to migrate GConf settings from
+older (< 0.9) nm-applet releases.])])
+
+	AC_SUBST(GCONF_CFLAGS)
+	AC_SUBST(GCONF_LIBS)
+
 	AC_DEFINE(BUILD_MIGRATION_TOOL, 1, [Define when building nm-applet-migration-tool])
 fi
 AM_CONDITIONAL(BUILD_MIGRATION_TOOL, test "$enable_migration" = "yes")
-
-PKG_CHECK_MODULES(GCONF, [gconf-2.0])
-AC_SUBST(GCONF_CFLAGS)
-AC_SUBST(GCONF_LIBS)
 
 PKG_CHECK_MODULES(GNOME_KEYRING, [gnome-keyring-1])
 AC_SUBST(GNOME_KEYRING_CFLAGS)
@@ -194,10 +200,6 @@ esac
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
 GLIB_CONFIG_NMA
-
-dnl GConf stuff
-AC_PATH_PROG(GCONFTOOL, gconftool-2)
-AM_GCONF_SOURCE_2
 
 dnl
 dnl Compiler flags

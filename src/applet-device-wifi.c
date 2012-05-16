@@ -109,7 +109,6 @@ applet_wifi_can_create_wifi_network (NMApplet *applet)
 {
 	gboolean disabled, allowed = FALSE;
 	NMClientPermissionResult perm;
-	GError *error = NULL;
 
 	/* FIXME: check WIFI_SHARE_PROTECTED too, and make the wireless dialog
 	 * handle the permissions as well so that admins can restrict open network
@@ -117,10 +116,9 @@ applet_wifi_can_create_wifi_network (NMApplet *applet)
 	 */
 	perm = nm_client_get_permission_result (applet->nm_client, NM_CLIENT_PERMISSION_WIFI_SHARE_OPEN);
 	if (perm == NM_CLIENT_PERMISSION_RESULT_YES || perm == NM_CLIENT_PERMISSION_RESULT_AUTH) {
-		disabled = gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_WIFI_CREATE, &error);
-		if (!disabled && !error)
+		disabled = g_settings_get_boolean (applet->gsettings, PREF_DISABLE_WIFI_CREATE);
+		if (!disabled)
 			allowed = TRUE;
-		g_clear_error (&error);
 	}
 	return allowed;
 }
@@ -983,10 +981,9 @@ wifi_available_dont_show_cb (NotifyNotification *notify,
 	if (!id || strcmp (id, "dont-show"))
 		return;
 
-	gconf_client_set_bool (applet->gconf_client,
-	                       PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
-	                       TRUE,
-	                       NULL);
+	g_settings_set_boolean (applet->gsettings,
+	                        PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
+	                        TRUE);
 }
 
 
@@ -1087,9 +1084,8 @@ queue_avail_access_point_notification (NMDevice *device)
 	if (data->id != 0)
 		return;
 
-	if (gconf_client_get_bool (data->applet->gconf_client,
-	                           PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
-	                           NULL))
+	if (g_settings_get_boolean (data->applet->gsettings,
+	                            PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE))
 		return;
 
 	data->id = g_timeout_add_seconds (3, idle_check_avail_access_point_notification, data);

@@ -64,7 +64,6 @@
 #include <nm-active-connection.h>
 #include <nm-secret-agent.h>
 
-#include <gconf/gconf-client.h>
 #include <libnotify/notify.h>
 
 #include "applet.h"
@@ -909,7 +908,7 @@ notify_dont_show_cb (NotifyNotification *notify,
 	    && strcmp (id, PREF_DISABLE_VPN_NOTIFICATIONS))
 		return;
 
-	gconf_client_set_bool (applet->gconf_client, id, TRUE, NULL);
+	g_settings_set_boolean (applet->gsettings, id, TRUE);
 }
 
 void applet_do_notify_with_pref (NMApplet *applet,
@@ -918,7 +917,7 @@ void applet_do_notify_with_pref (NMApplet *applet,
                                  const char *icon,
                                  const char *pref)
 {
-	if (gconf_client_get_bool (applet->gconf_client, pref, NULL))
+	if (g_settings_get_boolean (applet->gsettings, pref))
 		return;
 	
 	applet_do_notify (applet, NOTIFY_URGENCY_LOW, summary, message, icon, pref,
@@ -1793,22 +1792,18 @@ nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
 
 	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
 
-	gconf_client_set_bool (applet->gconf_client,
-	                       PREF_DISABLE_CONNECTED_NOTIFICATIONS,
-	                       !state,
-	                       NULL);
-	gconf_client_set_bool (applet->gconf_client,
-	                       PREF_DISABLE_DISCONNECTED_NOTIFICATIONS,
-	                       !state,
-	                       NULL);
-	gconf_client_set_bool (applet->gconf_client,
-	                       PREF_DISABLE_VPN_NOTIFICATIONS,
-	                       !state,
-	                       NULL);
-	gconf_client_set_bool (applet->gconf_client,
-	                       PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
-	                       !state,
-	                       NULL);
+	g_settings_set_boolean (applet->gsettings,
+	                        PREF_DISABLE_CONNECTED_NOTIFICATIONS,
+	                        !state);
+	g_settings_set_boolean (applet->gsettings,
+	                        PREF_DISABLE_DISCONNECTED_NOTIFICATIONS,
+	                        !state);
+	g_settings_set_boolean (applet->gsettings,
+	                        PREF_DISABLE_VPN_NOTIFICATIONS,
+	                        !state);
+	g_settings_set_boolean (applet->gsettings,
+	                        PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
+	                        !state);
 }
 
 /*
@@ -1961,10 +1956,10 @@ nma_context_menu_update (NMApplet *applet)
 	/* Enabled notifications */
 	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
 	                        applet->notifications_enabled_toggled_id);
-	if (   gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_CONNECTED_NOTIFICATIONS, NULL)
-	    && gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS, NULL)
-	    && gconf_client_get_bool (applet->gconf_client, PREF_DISABLE_VPN_NOTIFICATIONS, NULL)
-	    && gconf_client_get_bool (applet->gconf_client, PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE, NULL))
+	if (   g_settings_get_boolean (applet->gsettings, PREF_DISABLE_CONNECTED_NOTIFICATIONS)
+	    && g_settings_get_boolean (applet->gsettings, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS)
+	    && g_settings_get_boolean (applet->gsettings, PREF_DISABLE_VPN_NOTIFICATIONS)
+	    && g_settings_get_boolean (applet->gsettings, PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE))
 		notifications_enabled = FALSE;
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
 	g_signal_handler_unblock (G_OBJECT (applet->notifications_enabled_item),
@@ -3340,15 +3335,7 @@ constructor (GType type,
 		goto error;
 	}
 
-	applet->gconf_client = gconf_client_get_default ();
-	if (!applet->gconf_client)
-		goto error;
-
-	/* Note that we don't care about change notifications for prefs values... */
-	gconf_client_add_dir (applet->gconf_client,
-	                      APPLET_PREFS_PATH,
-	                      GCONF_CLIENT_PRELOAD_ONELEVEL,
-	                      NULL);
+	applet->gsettings = g_settings_new (APPLET_PREFS_SCHEMA);
 
 	/* Load pixmaps and create applet widgets */
 	if (!setup_widgets (applet))
@@ -3466,12 +3453,8 @@ static void finalize (GObject *object)
 	if (applet->info_dialog_ui)
 		g_object_unref (applet->info_dialog_ui);
 
-	if (applet->gconf_client) {
-		gconf_client_remove_dir (applet->gconf_client,
-		                         APPLET_PREFS_PATH,
-		                         NULL);
-		g_object_unref (applet->gconf_client);
-	}
+	if (applet->gsettings)
+		g_object_unref (applet->gsettings);
 
 	if (applet->status_icon)
 		g_object_unref (applet->status_icon);

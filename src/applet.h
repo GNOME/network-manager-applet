@@ -31,7 +31,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
-#include <gconf/gconf-client.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <net/ethernet.h>
@@ -60,12 +59,12 @@ typedef struct
 	GObjectClass	parent_class;
 } NMAppletClass; 
 
-#define APPLET_PREFS_PATH "/apps/nm-applet"
-#define PREF_DISABLE_CONNECTED_NOTIFICATIONS      APPLET_PREFS_PATH "/disable-connected-notifications"
-#define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS   APPLET_PREFS_PATH "/disable-disconnected-notifications"
-#define PREF_DISABLE_VPN_NOTIFICATIONS            APPLET_PREFS_PATH "/disable-vpn-notifications"
-#define PREF_DISABLE_WIFI_CREATE                  APPLET_PREFS_PATH "/disable-wifi-create"
-#define PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE APPLET_PREFS_PATH "/suppress-wireless-networks-available"
+#define APPLET_PREFS_SCHEMA "org.gnome.nm-applet"
+#define PREF_DISABLE_CONNECTED_NOTIFICATIONS      "disable-connected-notifications"
+#define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS   "disable-disconnected-notifications"
+#define PREF_DISABLE_VPN_NOTIFICATIONS            "disable-vpn-notifications"
+#define PREF_DISABLE_WIFI_CREATE                  "disable-wifi-create"
+#define PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE "suppress-wireless-networks-available"
 
 #define ICON_LAYER_LINK 0
 #define ICON_LAYER_VPN 1
@@ -94,7 +93,7 @@ typedef struct
 	NMRemoteSettings *settings;
 	AppletAgent *agent;
 
-	GConfClient *	gconf_client;
+	GSettings *gsettings;
 
 	/* Permissions */
 	NMClientPermissionResult permissions[NM_CLIENT_PERMISSION_LAST + 1];

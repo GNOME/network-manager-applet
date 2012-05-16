@@ -32,9 +32,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <gconf/gconf.h>
-#include <gconf/gconf-client.h>
-
 #include <nm-setting-connection.h>
 #include <nm-setting-8021x.h>
 #include "eap-method.h"
@@ -114,32 +111,31 @@ nag_dialog_destroyed (gpointer data, GObject *dialog_ptr)
 	g_free (info);
 }
 
-static char *
-_get_ca_ignore_path (const char *uuid, gboolean phase2)
+static GSettings *
+_get_ca_ignore_settings (const char *uuid)
 {
-	return g_strdup_printf ("/apps/nm-applet/%s/%s",
-	                        phase2 ? "ignore-phase2-ca-cert" : "ignore-ca-cert",
-	                        uuid);
+	GSettings *settings;
+	char *path = NULL;
+
+	path = g_strdup_printf ("/org/gnome/nm-applet/eap/%s", uuid);
+	settings = g_settings_new_with_path ("org.gnome.nm-applet.eap", path);
+	g_free (path);
+
+	return settings;
 }
 
 static void
 _set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore)
 {
-	GConfClient *client;
-	char *key = NULL;
+	GSettings *settings;
+	const char *key;
 
 	g_return_if_fail (uuid != NULL);
 
-	client = gconf_client_get_default ();
-
-	key = _get_ca_ignore_path (uuid, phase2);
-	if (ignore)
-		gconf_client_set_bool (client, key, ignore, NULL);
-	else
-		gconf_client_unset (client, key, NULL);
-	g_free (key);
-
-	g_object_unref (client);
+	settings = _get_ca_ignore_settings (uuid);
+	key = phase2 ? "ignore-phase2-ca-cert" : "ignore-ca-cert";
+	g_settings_set_boolean (settings, key, ignore);
+	g_object_unref (settings);
 }
 
 static void
@@ -211,19 +207,18 @@ eap_method_nag_user (EAPMethod *method)
 static gboolean
 _get_ignore_ca_cert (const char *uuid, gboolean phase2)
 {
-	GConfClient *client;
-	char *key = NULL;
+	GSettings *settings;
+	const char *key;
 	gboolean ignore = FALSE;
 
 	g_return_val_if_fail (uuid != NULL, FALSE);
 
-	client = gconf_client_get_default ();
+	settings = _get_ca_ignore_settings (uuid);
 
-	key = _get_ca_ignore_path (uuid, phase2);
-	ignore = gconf_client_get_bool (client, key, NULL);
-	g_free (key);
+	key = phase2 ? "ignore-phase2-ca-cert" : "ignore-ca-cert";
+	ignore = g_settings_get_boolean (settings, key);
 
-	g_object_unref (client);
+	g_object_unref (settings);
 	return ignore;
 }
 
