@@ -1,11 +1,21 @@
+include $(GLIB_MAKEFILE)
+
 noinst_LTLIBRARIES = libmarshallers.la
 
-BUILT_SOURCES = \
+GLIB_GENERATED = \
 	nma-marshal.h \
 	nma-marshal.c
 
+BUILT_SOURCES = $(GLIB_GENERATED)
+
+nma_marshal_sources = \
+	$(top_srcdir)/src/*.c \
+	$(top_srcdir)/src/gnome-bluetooth/*.c \
+	$(top_srcdir)/src/connection-editor/*.c
+
 libmarshallers_la_SOURCES = \
-	nma-marshal-main.c
+	nma-marshal.h \
+	nma-marshal.c
 
 libmarshallers_la_CPPFLAGS = \
 	$(GOBJECT_CFLAGS) \
@@ -13,15 +23,4 @@ libmarshallers_la_CPPFLAGS = \
 
 
 libmarshallers_la_LIBADD = $(GOBJECT_LIBS)
-
-EXTRA_DIST = nma-marshal.list
-CLEANFILES = $(BUILT_SOURCES)
-
-nma-marshal.h: nma-marshal.list
-	$(GLIB_GENMARSHAL) $< --prefix=_nma_marshal --header > $@
-
-nma-marshal.c: nma-marshal.list
-	$(GLIB_GENMARSHAL) $< --prefix=_nma_marshal --body > $@
-
-nma-marshal-main.c: nma-marshal.c nma-marshal.h
 

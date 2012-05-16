@@ -6,7 +6,8 @@ EXTRA_DIST =				\
 	CONTRIBUTING			\
 	intltool-extract.in		\
 	intltool-merge.in		\
-	intltool-update.in
+	intltool-update.in		\
+	Makefile.glib
 
 autostartdir = $(sysconfdir)/xdg/autostart
 autostart_in_files = nm-applet.desktop.in

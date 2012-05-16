@@ -193,7 +193,7 @@ esac
 
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
-AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+GLIB_CONFIG_NMA
 
 dnl GConf stuff
 AC_PATH_PROG(GCONFTOOL, gconftool-2)
