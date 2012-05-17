@@ -104,6 +104,12 @@ PKG_CHECK_MODULES(NMA,
 		 libnm-glib-vpn >= 0.9.4
 		 gmodule-export-2.0])
 
+# With recent glib, defining GLIB_VERSION_MIN_REQUIRED avoids
+# deprecation warnings for recently-deprecated functions (eg,
+# GValueArray stuff). We say GLIB_VERSION_2_26 because there
+# aren't macros for any older versions.
+NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_26"
+
 PKG_CHECK_MODULES(GCONF, [gconf-2.0])
 AC_SUBST(GCONF_CFLAGS)
 AC_SUBST(GCONF_LIBS)
