@@ -291,10 +291,6 @@ ce_page_ppp_new (NMConnection *connection,
 	priv->setting = nm_connection_get_setting_ppp (connection);
 	if (!priv->setting) {
 		priv->setting = NM_SETTING_PPP (nm_setting_ppp_new ());
-		g_object_set (G_OBJECT (priv->setting),
-		              NM_SETTING_PPP_LCP_ECHO_FAILURE, 5,
-		              NM_SETTING_PPP_LCP_ECHO_INTERVAL, 30,
-		              NULL);
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 

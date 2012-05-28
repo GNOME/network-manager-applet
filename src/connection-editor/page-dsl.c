@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -227,6 +227,7 @@ dsl_connection_new (GtkWindow *parent,
                     gpointer user_data)
 {
 	NMConnection *connection;
+	NMSetting *setting;
 
 	connection = ce_page_new_connection (_("DSL connection %d"),
 	                                     NM_SETTING_PPPOE_SETTING_NAME,
@@ -235,7 +236,13 @@ dsl_connection_new (GtkWindow *parent,
 	                                     user_data);
 	nm_connection_add_setting (connection, nm_setting_pppoe_new ());
 	nm_connection_add_setting (connection, nm_setting_wired_new ());
-	nm_connection_add_setting (connection, nm_setting_ppp_new ());
+	setting = nm_setting_ppp_new ();
+	/* Set default values for lcp-echo-failure and lcp-echo-interval */
+	g_object_set (G_OBJECT (setting),
+	              NM_SETTING_PPP_LCP_ECHO_FAILURE, 5,
+	              NM_SETTING_PPP_LCP_ECHO_INTERVAL, 30,
+	              NULL);
+	nm_connection_add_setting (connection, setting);
 
 	(*result_func) (connection, FALSE, NULL, user_data);
 }
