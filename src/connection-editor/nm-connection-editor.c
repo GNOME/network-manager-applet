@@ -64,6 +64,7 @@
 #include "page-ppp.h"
 #include "page-vpn.h"
 #include "ce-polkit-button.h"
+#include "vpn-helpers.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -753,6 +754,9 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 		if (!add_page (editor, ce_page_vpn_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
+			goto out;
+		if (   vpn_supports_ipv6 (editor->connection)
+			&& !add_page (editor, ce_page_ip6_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_dsl_new, editor->connection, error))

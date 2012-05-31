@@ -552,3 +552,23 @@ out:
 	return NULL;
 }
 
+gboolean
+vpn_supports_ipv6 (NMConnection *connection)
+{
+	NMSettingVPN *s_vpn;
+	const char *service_type;
+	NMVpnPluginUiInterface *plugin;
+	guint32 capabilities;
+
+	s_vpn = nm_connection_get_setting_vpn (connection);
+	g_return_val_if_fail (s_vpn != NULL, FALSE);
+
+	service_type = nm_setting_vpn_get_service_type (s_vpn);
+	g_return_val_if_fail (service_type != NULL, FALSE);
+
+	plugin = vpn_get_plugin_by_service (service_type);
+	g_return_val_if_fail (plugin != NULL, FALSE);
+
+	capabilities = nm_vpn_plugin_ui_interface_get_capabilities (plugin);
+	return (capabilities & NM_VPN_PLUGIN_UI_CAPABILITY_IPV6) != 0;
+}
