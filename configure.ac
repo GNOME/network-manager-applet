@@ -110,6 +110,21 @@ PKG_CHECK_MODULES(NMA,
 # aren't macros for any older versions.
 NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_26"
 
+AC_MSG_CHECKING([whether to build nm-applet-migration-tool])
+AC_ARG_ENABLE([migration],
+	      [AS_HELP_STRING([--disable-migration], [Don't build migration tool for NM <= 0.8 settings])],
+	      [enable_migration="$enableval"],
+	      [if test "$UNDER_JHBUILD" = "true"; then
+	           enable_migration=no
+	       else
+	           enable_migration=yes
+	       fi])
+AC_MSG_RESULT([$enable_migration])
+if test "$enable_migration" = "yes"; then
+	AC_DEFINE(BUILD_MIGRATION_TOOL, 1, [Define when building nm-applet-migration-tool])
+fi
+AM_CONDITIONAL(BUILD_MIGRATION_TOOL, test "$enable_migration" = "yes")
+
 PKG_CHECK_MODULES(GCONF, [gconf-2.0])
 AC_SUBST(GCONF_CFLAGS)
 AC_SUBST(GCONF_LIBS)

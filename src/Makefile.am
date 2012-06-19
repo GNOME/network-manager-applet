@@ -1,4 +1,4 @@
-SUBDIRS = marshallers utils gconf-helpers wireless-security libnm-gtk connection-editor gnome-bluetooth
+SUBDIRS = marshallers utils wireless-security libnm-gtk connection-editor gnome-bluetooth
 
 bin_PROGRAMS = nm-applet
 
@@ -20,7 +20,6 @@ nm_applet_CPPFLAGS = \
 	$(DISABLE_DEPRECATED)	\
 	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils \
-	-I${top_srcdir}/src/gconf-helpers  \
 	-I${top_srcdir}/src/wireless-security \
 	-I${top_srcdir}/src/libnm-gtk
 
@@ -72,9 +71,27 @@ nm_applet_LDADD = \
 	$(NOTIFY_LIBS) \
 	${top_builddir}/src/marshallers/libmarshallers.la \
 	${top_builddir}/src/utils/libutils.la \
-	${top_builddir}/src/gconf-helpers/libgconf-helpers.la \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la
+
+
+if BUILD_MIGRATION_TOOL
+SUBDIRS += gconf-helpers
+
+libexec_PROGRAMS = nm-applet-migration-tool
+endif
+
+nm_applet_migration_tool_CPPFLAGS = \
+	$(nm_applet_CPPFLAGS) \
+	-I${top_srcdir}/src/gconf-helpers
+
+nm_applet_migration_tool_SOURCES = \
+	migration-tool.c
+
+nm_applet_migration_tool_LDADD = \
+	$(nm_applet_LDADD) \
+	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
+
 
 uidir = $(datadir)/nm-applet
 ui_DATA = gsm-unlock.ui info.ui wired-8021x.ui keyring.png

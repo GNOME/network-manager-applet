@@ -78,7 +78,6 @@
 #include "nm-wireless-dialog.h"
 #include "applet-vpn-request.h"
 #include "utils.h"
-#include "gconf-helpers.h"
 #include "shell-watcher.h"
 
 #define NOTIFY_CAPS_ACTIONS_KEY "actions"
@@ -3320,33 +3319,6 @@ dbus_setup (NMApplet *applet, GError **error)
 	return success;
 }
 
-static void
-add_cb (NMRemoteSettings *settings,
-        NMRemoteConnection *connection,
-        GError *error,
-        gpointer user_data)
-{
-	NMConnection *c = user_data;
-
-	if (error) {
-		g_warning ("Failed to move connection '%s' to NetworkManager system settings: %s",
-		           nm_connection_get_id (c),
-		           error->message);
-	}
-	g_object_unref (c);
-}
-
-static void
-import_cb (NMConnection *connection, gpointer user_data)
-{
-	NMApplet *applet = user_data;
-
-	if (!nm_remote_settings_add_connection (applet->settings, connection, add_cb, g_object_ref (connection))) {
-		g_warning ("Failed to move connection '%s' to NetworkManager system settings.",
-		           nm_connection_get_id (connection));
-	}
-}
-
 static GObject *
 constructor (GType type,
              guint n_props,
@@ -3393,8 +3365,22 @@ constructor (GType type,
 	}
 	applet->settings = nm_remote_settings_new (applet->bus);
 
-	/* Move user connections to the system */
-	nm_gconf_move_connections_to_system (import_cb, applet);
+#ifdef BUILD_MIGRATION_TOOL
+	{
+		char *argv[2] = { LIBEXECDIR "/nm-applet-migration-tool", NULL };
+		int status;
+
+		/* Move user connections to the system */
+		if (!g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL,
+						   NULL, NULL, &status, &error)) {
+			g_warning ("Could not run nm-applet-migration-tool: %s",
+					   error->message);
+			g_error_free (error);
+		} else if (!WIFEXITED (status) || WEXITSTATUS (status) != 0) {
+			g_warning ("nm-applet-migration-tool exited with error");
+		}
+	}
+#endif
 
 	applet->agent = applet_agent_new ();
 	g_assert (applet->agent);
