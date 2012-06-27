@@ -81,6 +81,10 @@ typedef struct {
 	/* Routes */
 	GtkButton *routes_button;
 
+	/* IPv6 privacy extensions combo */
+	GtkWidget *ip6_privacy_label;
+	GtkComboBox *ip6_privacy_combo;
+
 	/* IPv6 required */
 	GtkCheckButton *ip6_required;
 
@@ -107,6 +111,10 @@ typedef struct {
 #define IP6_METHOD_MANUAL          4
 #define IP6_METHOD_LINK_LOCAL      5
 #define IP6_METHOD_SHARED          6
+
+#define IP6_PRIVACY_DISABLED       0
+#define IP6_PRIVACY_PREFER_PUBLIC  1
+#define IP6_PRIVACY_PREFER_TEMP    2
 
 static void
 ip6_private_init (CEPageIP6 *self, NMConnection *connection)
@@ -227,6 +235,9 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	priv->dns_searches_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_dns_searches_label"));
 	priv->dns_searches = GTK_ENTRY (gtk_builder_get_object (builder, "ip6_dns_searches_entry"));
 
+	priv->ip6_privacy_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_privacy_label"));
+	priv->ip6_privacy_combo = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ip6_privacy_combo"));
+
 	priv->ip6_required = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, "ip6_required_checkbutton"));
 	/* Hide IP6-require button if it'll never be used for a particular method */
 	if (   priv->connection_type == NM_TYPE_SETTING_VPN
@@ -246,6 +257,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gboolean addr_enabled = FALSE;
 	gboolean dns_enabled = FALSE;
 	gboolean routes_enabled = FALSE;
+	gboolean ip6_privacy_enabled = FALSE;
 	gboolean ip6_required_enabled = TRUE;
 	gboolean method_auto = FALSE;
 	GtkTreeIter iter;
@@ -261,10 +273,12 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 		routes_enabled = TRUE;
 		dns_enabled = TRUE;
 		method_auto = TRUE;
+		ip6_privacy_enabled = TRUE;
 		break;
 	case IP6_METHOD_AUTO_ADDRESSES:
 		addr_enabled = FALSE;
 		dns_enabled = routes_enabled = TRUE;
+		ip6_privacy_enabled = TRUE;
 		break;
 	case IP6_METHOD_AUTO_DHCP_ONLY:
 		addr_enabled = FALSE;
@@ -309,6 +323,9 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	if (!dns_enabled)
 		gtk_entry_set_text (priv->dns_searches, "");
 
+	gtk_widget_set_sensitive (priv->ip6_privacy_label, ip6_privacy_enabled);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->ip6_privacy_combo), ip6_privacy_enabled);
+
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->ip6_required), ip6_required_enabled);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->routes_button), routes_enabled);
@@ -343,6 +360,8 @@ populate_ui (CEPageIP6 *self)
 	GtkListStore *store;
 	GtkTreeIter model_iter;
 	int method = IP6_METHOD_AUTO;
+	NMSettingIP6ConfigPrivacy ip6_privacy;
+	int ip6_privacy_idx = IP6_PRIVACY_DISABLED;
 	GString *string = NULL;
 	SetMethodInfo info;
 	const char *str_method;
@@ -436,6 +455,24 @@ populate_ui (CEPageIP6 *self)
 	}
 	gtk_entry_set_text (priv->dns_searches, string->str);
 	g_string_free (string, TRUE);
+
+	/* IPv6 privacy extensions */
+	ip6_privacy = nm_setting_ip6_config_get_ip6_privacy (setting);
+	switch (ip6_privacy) {
+	case NM_SETTING_IP6_CONFIG_PRIVACY_DISABLED:
+		ip6_privacy_idx = IP6_PRIVACY_DISABLED;
+		break;
+	case NM_SETTING_IP6_CONFIG_PRIVACY_PREFER_PUBLIC_ADDR:
+		ip6_privacy_idx = IP6_PRIVACY_PREFER_PUBLIC;
+		break;
+	case NM_SETTING_IP6_CONFIG_PRIVACY_PREFER_TEMP_ADDR:
+		ip6_privacy_idx = IP6_PRIVACY_PREFER_TEMP;
+		break;
+	default:
+		ip6_privacy_idx = IP6_PRIVACY_DISABLED;
+		break;
+	}
+	gtk_combo_box_set_active (priv->ip6_privacy_combo, ip6_privacy_idx);
 
 	/* IPv6 required */
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->ip6_required),
@@ -938,6 +975,7 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 	g_signal_connect_swapped (priv->dns_servers, "changed", G_CALLBACK (ce_page_changed), self);
 	g_signal_connect (priv->dns_servers, "insert-text", G_CALLBACK (dns_servers_filter_cb), self);
 	g_signal_connect_swapped (priv->dns_searches, "changed", G_CALLBACK (ce_page_changed), self);
+	g_signal_connect_swapped (priv->ip6_privacy_combo, "changed", G_CALLBACK (ce_page_changed), self);
 
 	method_changed (priv->method, self);
 	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
@@ -1005,6 +1043,7 @@ ui_to_setting (CEPageIP6 *self)
 	gboolean ignore_auto_dns = FALSE;
 	char **items = NULL, **iter;
 	gboolean may_fail;
+	NMSettingIP6ConfigPrivacy ip6_privacy;
 
 	/* Method */
 	if (gtk_combo_box_get_active_iter (priv->method, &tree_iter)) {
@@ -1141,9 +1180,26 @@ ui_to_setting (CEPageIP6 *self)
 		g_strfreev (items);
 	}
 
+	/* IPv6 Privacy */
+	switch (gtk_combo_box_get_active (priv->ip6_privacy_combo)) {
+	case IP6_PRIVACY_DISABLED:
+		ip6_privacy = NM_SETTING_IP6_CONFIG_PRIVACY_DISABLED;
+		break;
+	case IP6_PRIVACY_PREFER_PUBLIC:
+		ip6_privacy = NM_SETTING_IP6_CONFIG_PRIVACY_PREFER_PUBLIC_ADDR;
+		break;
+	case IP6_PRIVACY_PREFER_TEMP:
+		ip6_privacy = NM_SETTING_IP6_CONFIG_PRIVACY_PREFER_TEMP_ADDR;
+		break;
+	default:
+		ip6_privacy = NM_SETTING_IP6_CONFIG_PRIVACY_UNKNOWN;
+		break;
+	}
+
 	may_fail = !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->ip6_required));
 	g_object_set (G_OBJECT (priv->setting),
 	              NM_SETTING_IP6_CONFIG_MAY_FAIL, may_fail,
+	              NM_SETTING_IP6_CONFIG_IP6_PRIVACY, ip6_privacy,
 	              NULL);
 
 	valid = TRUE;
