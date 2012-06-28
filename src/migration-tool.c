@@ -91,7 +91,7 @@ main (int argc, char **argv)
 	nm_gconf_move_connections_to_system (import_cb, settings);
 
 	g_object_unref (settings);
-	g_object_unref (bus);
+	dbus_g_connection_unref (bus);
 
 	return success ? 0 : 1;
 }
