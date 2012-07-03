@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -141,8 +141,15 @@ assistant_closed (GtkButton *button, gpointer user_data)
 			wiz_method->username = method->username ? g_strdup (method->username) : NULL;
 			wiz_method->password = method->password ? g_strdup (method->password) : NULL;
 		} else {
-			if (self->provider_only_cdma)
+			if (self->provider_only_cdma) {
 				method_type = NMN_MOBILE_ACCESS_METHOD_TYPE_CDMA;
+				/* Take username and password from the first (only) method for CDMA only provider */
+				if (provider->methods) {
+					method = provider->methods->data;
+					wiz_method->username = method->username ? g_strdup (method->username) : NULL;
+					wiz_method->password = method->password ? g_strdup (method->password) : NULL;
+				}
+			}
 			else {
 				method_type = NMN_MOBILE_ACCESS_METHOD_TYPE_GSM;
 				wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->plan_unlisted_entry)));
