@@ -7,7 +7,7 @@ dnl pkg-config
 dnl
 AC_DEFUN([GLIB_CONFIG_NMA],
 [dnl
-  min_glib_version=ifelse([$1], ,2.31.5,$1)
+  min_glib_version=ifelse([$1], ,2.26.0,$1)
   pkg_config_args=
   for module in glib $2; do
     pkg_config_args="$pkg_config_args $module-2.0 >= $min_glib_version"
