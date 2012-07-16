@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2011 Red Hat, Inc.
+ * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -35,6 +35,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-8021x.h>
 #include "eap-method.h"
+#include "nm-utils.h"
 
 GType
 eap_method_get_g_type (void)
@@ -609,7 +610,8 @@ default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data
 	if (!file_has_extension (filter_info->filename, extensions))
 		return FALSE;
 
-	if (!file_is_der_or_pem (filter_info->filename, TRUE, &is_encrypted))
+	if (   !file_is_der_or_pem (filter_info->filename, TRUE, &is_encrypted)
+	    && !nm_utils_file_is_pkcs12 (filter_info->filename))
 		return FALSE;
 
 	return require_encrypted ? is_encrypted : TRUE;
