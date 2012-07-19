@@ -222,8 +222,8 @@ ce_page_dsl_class_init (CEPageDslClass *dsl_class)
 
 void
 dsl_connection_new (GtkWindow *parent,
+                    NMRemoteSettings *settings,
                     PageNewConnectionResultFunc result_func,
-                    PageGetConnectionsFunc get_connections_func,
                     gpointer user_data)
 {
 	NMConnection *connection;
@@ -232,7 +232,7 @@ dsl_connection_new (GtkWindow *parent,
 	connection = ce_page_new_connection (_("DSL connection %d"),
 	                                     NM_SETTING_PPPOE_SETTING_NAME,
 	                                     FALSE,
-	                                     get_connections_func,
+	                                     settings,
 	                                     user_data);
 	nm_connection_add_setting (connection, nm_setting_pppoe_new ());
 	nm_connection_add_setting (connection, nm_setting_wired_new ());

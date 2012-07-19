@@ -191,8 +191,8 @@ ce_page_vpn_class_init (CEPageVpnClass *vpn_class)
 }
 
 typedef struct {
+	NMRemoteSettings *settings;
 	PageNewConnectionResultFunc result_func;
-	PageGetConnectionsFunc get_connections_func;
 	gpointer user_data;
 } NewVpnInfo;
 
@@ -217,7 +217,7 @@ import_cb (NMConnection *connection, gpointer user_data)
 	if (!s) {
 		GSList *connections;
 
-		connections = info->get_connections_func (info->user_data);
+		connections = nm_remote_settings_list_connections (info->settings);
 		s = ce_page_get_next_available_name (connections, _("VPN connection %d"));
 		g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
 		g_free (s);
@@ -249,13 +249,14 @@ import_cb (NMConnection *connection, gpointer user_data)
 
 	info->result_func (connection, FALSE, error, info->user_data);
 	g_clear_error (&error);
+	g_object_unref (info->settings);
 	g_slice_free (NewVpnInfo, info);
 }
 
 void
 vpn_connection_new (GtkWindow *parent,
+                    NMRemoteSettings *settings,
                     PageNewConnectionResultFunc result_func,
-                    PageGetConnectionsFunc get_connections_func,
                     gpointer user_data)
 {
 	char *service = NULL;
@@ -274,7 +275,7 @@ vpn_connection_new (GtkWindow *parent,
 		g_free (service);
 		info = g_slice_new (NewVpnInfo);
 		info->result_func = result_func;
-		info->get_connections_func = get_connections_func;
+		info->settings = g_object_ref (settings);
 		info->user_data = user_data;
 		vpn_import (import_cb, info);
 		return;
@@ -283,7 +284,7 @@ vpn_connection_new (GtkWindow *parent,
 	connection = ce_page_new_connection (_("VPN connection %d"),
 	                                     NM_SETTING_VPN_SETTING_NAME,
 	                                     FALSE,
-	                                     get_connections_func,
+	                                     settings,
 	                                     user_data);
 	s_vpn = nm_setting_vpn_new ();
 	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service, NULL);

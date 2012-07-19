@@ -54,8 +54,8 @@ CEPage *ce_page_dsl_new (NMConnection *connection,
                          GError **error);
 
 void dsl_connection_new (GtkWindow *parent,
+                         NMRemoteSettings *settings,
                          PageNewConnectionResultFunc callback,
-                         PageGetConnectionsFunc get_connections_func,
                          gpointer user_data);
 
 #endif  /* __PAGE_DSL_H__ */

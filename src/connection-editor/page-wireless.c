@@ -656,8 +656,8 @@ ce_page_wireless_class_init (CEPageWirelessClass *wireless_class)
 
 void
 wifi_connection_new (GtkWindow *parent,
+                     NMRemoteSettings *settings,
                      PageNewConnectionResultFunc result_func,
-                     PageGetConnectionsFunc get_connections_func,
                      gpointer user_data)
 {
 	NMConnection *connection;
@@ -666,7 +666,7 @@ wifi_connection_new (GtkWindow *parent,
 	connection = ce_page_new_connection (_("Wireless connection %d"),
 	                                     NM_SETTING_WIRELESS_SETTING_NAME,
 	                                     TRUE,
-	                                     get_connections_func,
+	                                     settings,
 	                                     user_data);
 	s_wifi = nm_setting_wireless_new ();
 	g_object_set (s_wifi, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);

@@ -31,6 +31,7 @@
 #include <dbus/dbus-glib.h>
 #include <nm-connection.h>
 #include <nm-client.h>
+#include <nm-remote-settings.h>
 #include "utils.h"
 
 typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
@@ -41,8 +42,8 @@ typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
 typedef GSList * (*PageGetConnectionsFunc) (gpointer user_data);
 
 typedef void (*PageNewConnectionFunc) (GtkWindow *parent,
+                                       NMRemoteSettings *settings,
                                        PageNewConnectionResultFunc result_func,
-                                       PageGetConnectionsFunc get_connections_func,
                                        gpointer user_data);
 
 #define CE_TYPE_PAGE            (ce_page_get_type ())
@@ -131,7 +132,7 @@ GtkWidget *ce_page_nag_user (CEPage *self);
 NMConnection *ce_page_new_connection (const char *format,
                                       const char *ctype,
                                       gboolean autoconnect,
-                                      PageGetConnectionsFunc get_connections_func,
+                                      NMRemoteSettings *settings,
                                       gpointer user_data);
 
 CEPage *ce_page_new (GType page_type,

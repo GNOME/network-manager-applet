@@ -539,8 +539,8 @@ add_default_serial_setting (NMConnection *connection)
 }
 
 typedef struct {
+    NMRemoteSettings *settings;
     PageNewConnectionResultFunc result_func;
-    PageGetConnectionsFunc get_connections_func;
     gpointer user_data;
 } WizardInfo;
 
@@ -589,7 +589,7 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 			detail = g_strdup_printf ("%s %s %%d", method->provider_name, method->plan_name);
 		else
 			detail = g_strdup_printf ("%s connection %%d", method->provider_name);
-		connection = ce_page_new_connection (detail, ctype, FALSE, info->get_connections_func, info->user_data);
+		connection = ce_page_new_connection (detail, ctype, FALSE, info->settings, info->user_data);
 		g_free (detail);
 
 		nm_connection_add_setting (connection, type_setting);
@@ -601,6 +601,8 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 
 	if (wizard)
 		nma_mobile_wizard_destroy (wizard);
+
+	g_object_unref (info->settings);
 	g_free (info);
 }
 
@@ -612,8 +614,8 @@ cancel_dialog (GtkDialog *dialog)
 
 void
 mobile_connection_new (GtkWindow *parent,
+                       NMRemoteSettings *settings,
                        PageNewConnectionResultFunc result_func,
-                       PageGetConnectionsFunc get_connections_func,
                        gpointer user_data)
 {
 	NMAMobileWizard *wizard;
@@ -625,7 +627,7 @@ mobile_connection_new (GtkWindow *parent,
 
 	info = g_malloc0 (sizeof (WizardInfo));
 	info->result_func = result_func;
-	info->get_connections_func = get_connections_func;
+	info->settings = g_object_ref (settings);
 	info->user_data = user_data;
 
 	wizard = nma_mobile_wizard_new (parent, NULL, NM_DEVICE_MODEM_CAPABILITY_NONE, FALSE,

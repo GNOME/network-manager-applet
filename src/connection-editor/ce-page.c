@@ -495,7 +495,7 @@ NMConnection *
 ce_page_new_connection (const char *format,
                         const char *ctype,
                         gboolean autoconnect,
-                        PageGetConnectionsFunc get_connections_func,
+                        NMRemoteSettings *settings,
                         gpointer user_data)
 {
 	NMConnection *connection;
@@ -510,7 +510,7 @@ ce_page_new_connection (const char *format,
 
 	uuid = nm_utils_uuid_generate ();
 
-	connections = (*get_connections_func) (user_data);
+	connections = nm_remote_settings_list_connections (settings);
 	id = ce_page_get_next_available_name (connections, format);
 	g_slist_free (connections);
 

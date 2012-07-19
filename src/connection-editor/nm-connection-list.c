@@ -585,14 +585,6 @@ really_add_connection (NMConnection *connection,
 	nm_connection_editor_run (editor);
 }
 
-static GSList *
-page_get_connections (gpointer user_data)
-{
-	ActionInfo *info = (ActionInfo *) user_data;
-
-	return nm_remote_settings_list_connections (info->list->settings);
-}
-
 static void
 add_clicked (GtkButton *button, gpointer user_data)
 {
@@ -608,8 +600,8 @@ add_clicked (GtkButton *button, gpointer user_data)
 	}
 
 	info->new_func (GTK_WINDOW (list->dialog),
+	                list->settings,
 	                really_add_connection,
-	                page_get_connections,
 	                info);
 }
 
@@ -1376,8 +1368,8 @@ nm_connection_list_create (NMConnectionList *self, GType ctype)
 		              _("Don't know how to create '%s' connections"), g_type_name (ctype));
 	} else {
 		info->new_func (GTK_WINDOW (info->list->dialog),
+		                info->list->settings,
 		                really_add_connection,
-		                page_get_connections,
 		                info);
 	}
 }

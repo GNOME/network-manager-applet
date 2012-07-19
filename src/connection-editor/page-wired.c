@@ -440,8 +440,8 @@ ce_page_wired_class_init (CEPageWiredClass *wired_class)
 
 void
 wired_connection_new (GtkWindow *parent,
+                      NMRemoteSettings *settings,
                       PageNewConnectionResultFunc result_func,
-                      PageGetConnectionsFunc get_connections_func,
                       gpointer user_data)
 {
 	NMConnection *connection;
@@ -449,7 +449,7 @@ wired_connection_new (GtkWindow *parent,
 	connection = ce_page_new_connection (_("Wired connection %d"),
 	                                     NM_SETTING_WIRED_SETTING_NAME,
 	                                     TRUE,
-	                                     get_connections_func,
+	                                     settings,
 	                                     user_data);
 	nm_connection_add_setting (connection, nm_setting_wired_new ());
 
