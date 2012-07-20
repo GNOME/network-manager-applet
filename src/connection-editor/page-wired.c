@@ -440,6 +440,7 @@ ce_page_wired_class_init (CEPageWiredClass *wired_class)
 
 void
 wired_connection_new (GtkWindow *parent,
+                      const char *detail,
                       NMRemoteSettings *settings,
                       PageNewConnectionResultFunc result_func,
                       gpointer user_data)

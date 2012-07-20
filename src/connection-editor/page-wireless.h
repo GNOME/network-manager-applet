@@ -58,6 +58,7 @@ GByteArray *ce_page_wireless_get_ssid (CEPageWireless *self);
 
 
 void wifi_connection_new (GtkWindow *parent,
+                          const char *detail,
                           NMRemoteSettings *settings,
                           PageNewConnectionResultFunc result_func,
                           gpointer user_data);

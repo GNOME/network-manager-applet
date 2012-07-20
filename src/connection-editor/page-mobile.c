@@ -614,6 +614,7 @@ cancel_dialog (GtkDialog *dialog)
 
 void
 mobile_connection_new (GtkWindow *parent,
+                       const char *detail,
                        NMRemoteSettings *settings,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)

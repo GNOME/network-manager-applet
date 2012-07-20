@@ -56,8 +56,15 @@ CEPage *ce_page_vpn_new (NMConnection *connection,
 gboolean ce_page_vpn_can_export (CEPageVpn *page);
 
 void vpn_connection_new (GtkWindow *parent,
+                         const char *detail,
                          NMRemoteSettings *settings,
                          PageNewConnectionResultFunc result_func,
                          gpointer user_data);
+
+void vpn_connection_import (GtkWindow *parent,
+                            const char *detail,
+                            NMRemoteSettings *settings,
+                            PageNewConnectionResultFunc result_func,
+                            gpointer user_data);
 
 #endif  /* __PAGE_VPN_H__ */

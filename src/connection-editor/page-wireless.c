@@ -656,6 +656,7 @@ ce_page_wireless_class_init (CEPageWirelessClass *wireless_class)
 
 void
 wifi_connection_new (GtkWindow *parent,
+                     const char *detail,
                      NMRemoteSettings *settings,
                      PageNewConnectionResultFunc result_func,
                      gpointer user_data)

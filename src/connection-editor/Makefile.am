@@ -55,7 +55,9 @@ nm_connection_editor_SOURCES = \
 	ppp-auth-methods-dialog.c \
 	ppp-auth-methods-dialog.h \
 	ce-polkit-button.c \
-	ce-polkit-button.h
+	ce-polkit-button.h \
+	new-connection.c \
+	new-connection.h
 
 nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-connection-editor-service.xml
 	$(AM_V_GEN) dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<
@@ -72,6 +74,7 @@ nm_connection_editor_LDADD = \
 uidir = $(datadir)/nm-applet
 ui_DATA = \
 	nm-connection-editor.ui \
+	ce-new-connection.ui \
 	ce-page-wired.ui \
 	ce-page-wireless.ui \
 	ce-page-wireless-security.ui \
@@ -82,8 +85,7 @@ ui_DATA = \
 	ce-page-dsl.ui \
 	ce-page-mobile.ui \
 	ce-page-ppp.ui \
-	ce-ppp-auth-methods.ui \
-	ce-vpn-wizard.ui
+	ce-ppp-auth-methods.ui
 
 BUILT_SOURCES = nm-connection-editor-service-glue.h
 

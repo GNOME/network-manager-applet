@@ -600,6 +600,7 @@ add_clicked (GtkButton *button, gpointer user_data)
 	}
 
 	info->new_func (GTK_WINDOW (list->dialog),
+	                NULL,
 	                list->settings,
 	                really_add_connection,
 	                info);
@@ -1355,7 +1356,7 @@ nm_connection_list_set_type (NMConnectionList *self, GType ctype)
 }
 
 void
-nm_connection_list_create (NMConnectionList *self, GType ctype)
+nm_connection_list_create (NMConnectionList *self, GType ctype, const char *detail)
 {
 	ActionInfo *info;
 
@@ -1368,6 +1369,7 @@ nm_connection_list_create (NMConnectionList *self, GType ctype)
 		              _("Don't know how to create '%s' connections"), g_type_name (ctype));
 	} else {
 		info->new_func (GTK_WINDOW (info->list->dialog),
+		                detail,
 		                info->list->settings,
 		                really_add_connection,
 		                info);

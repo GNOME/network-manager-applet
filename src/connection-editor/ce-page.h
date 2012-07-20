@@ -42,6 +42,7 @@ typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
 typedef GSList * (*PageGetConnectionsFunc) (gpointer user_data);
 
 typedef void (*PageNewConnectionFunc) (GtkWindow *parent,
+                                       const char *detail,
                                        NMRemoteSettings *settings,
                                        PageNewConnectionResultFunc result_func,
                                        gpointer user_data);

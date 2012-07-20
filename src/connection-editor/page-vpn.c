@@ -35,6 +35,7 @@
 #include <nm-vpn-plugin-ui-interface.h>
 
 #include "page-vpn.h"
+#include "new-connection.h"
 #include "nm-connection-editor.h"
 #include "vpn-helpers.h"
 
@@ -254,30 +255,50 @@ import_cb (NMConnection *connection, gpointer user_data)
 }
 
 void
+vpn_connection_import (GtkWindow *parent,
+                       const char *detail,
+                       NMRemoteSettings *settings,
+                       PageNewConnectionResultFunc result_func,
+                       gpointer user_data)
+{
+	NewVpnInfo *info;
+
+	info = g_slice_new (NewVpnInfo);
+	info->result_func = result_func;
+	info->settings = g_object_ref (settings);
+	info->user_data = user_data;
+	vpn_import (import_cb, info);
+}
+
+#define NEW_VPN_CONNECTION_PRIMARY_LABEL _("Choose a VPN Connection Type")
+#define NEW_VPN_CONNECTION_SECONDARY_LABEL _("Select the type of VPN you wish to use for the new connection.  If the type of VPN connection you wish to create does not appear in the list, you may not have the correct VPN plugin installed.")
+
+static gboolean
+vpn_type_filter_func (GType type, gpointer user_data)
+{
+	return type == NM_TYPE_SETTING_VPN;
+}
+
+void
 vpn_connection_new (GtkWindow *parent,
+                    const char *detail,
                     NMRemoteSettings *settings,
                     PageNewConnectionResultFunc result_func,
                     gpointer user_data)
 {
-	char *service = NULL;
 	NMConnection *connection;
 	NMSetting *s_vpn;
 
-	service = vpn_ask_connection_type (parent);
-	if (!service) {
-		(*result_func) (NULL, TRUE, NULL, user_data);
-		return;
-	}
-
-	if (!strcmp (service, "import")) {
-		NewVpnInfo *info;
-
-		g_free (service);
-		info = g_slice_new (NewVpnInfo);
-		info->result_func = result_func;
-		info->settings = g_object_ref (settings);
-		info->user_data = user_data;
-		vpn_import (import_cb, info);
+	if (!detail) {
+		/* This will happen if nm-c-e is launched from the command line
+		 * with "--create --type vpn". Dump the user back into the
+		 * new connection dialog to let them pick a subtype now.
+		 */
+		new_connection_dialog_full (parent, settings,
+		                            NEW_VPN_CONNECTION_PRIMARY_LABEL,
+		                            NEW_VPN_CONNECTION_SECONDARY_LABEL,
+		                            vpn_type_filter_func,
+		                            result_func, user_data);
 		return;
 	}
 
@@ -287,8 +308,7 @@ vpn_connection_new (GtkWindow *parent,
 	                                     settings,
 	                                     user_data);
 	s_vpn = nm_setting_vpn_new ();
-	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service, NULL);
-	g_free (service);
+	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, detail, NULL);
 	nm_connection_add_setting (connection, s_vpn);
 
 	(*result_func) (connection, FALSE, NULL, user_data);

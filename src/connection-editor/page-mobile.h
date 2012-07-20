@@ -54,6 +54,7 @@ CEPage *ce_page_mobile_new (NMConnection *connection,
                             GError **error);
 
 void mobile_connection_new (GtkWindow *parent,
+                            const char *detail,
                             NMRemoteSettings *settings,
                             PageNewConnectionResultFunc result_func,
                             gpointer user_data);
