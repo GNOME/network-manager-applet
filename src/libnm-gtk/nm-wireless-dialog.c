@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1269,13 +1269,13 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 
 GtkWidget *
 nma_wireless_dialog_new (NMClient *client,
-						 NMRemoteSettings *settings,
+                         NMRemoteSettings *settings,
                          NMConnection *connection,
                          NMDevice *device,
                          NMAccessPoint *ap,
                          gboolean secrets_only)
 {
-	GObject *obj;
+	NMAWirelessDialog *self;
 	NMAWirelessDialogPrivate *priv;
 	guint32 dev_caps;
 
@@ -1290,9 +1290,9 @@ nma_wireless_dialog_new (NMClient *client,
 		g_return_val_if_fail (NM_IS_DEVICE_WIFI (device), NULL);
 	}
 
-	obj = g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL);
-	if (obj) {
-		priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (obj);
+	self = NMA_WIRELESS_DIALOG (g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL));
+	if (self) {
+		priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
 
 		priv->client = g_object_ref (client);
 		priv->settings = g_object_ref (settings);
@@ -1302,14 +1302,14 @@ nma_wireless_dialog_new (NMClient *client,
 		priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
 		priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-		if (!internal_init (NMA_WIRELESS_DIALOG (obj), connection, device, secrets_only, FALSE)) {
+		if (!internal_init (self, connection, device, secrets_only, FALSE)) {
 			g_warning ("Couldn't create wireless security dialog.");
-			gtk_widget_destroy (GTK_WIDGET (obj));
-			obj = NULL;
+			gtk_widget_destroy (GTK_WIDGET (self));
+			self = NULL;
 		}
 	}
 
-	return (GtkWidget *) obj;
+	return GTK_WIDGET (self);
 }
 
 static GtkWidget *
@@ -1443,7 +1443,7 @@ nma_wireless_dialog_class_init (NMAWirelessDialogClass *nmad_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (nmad_class);
 
-	g_type_class_add_private (object_class, sizeof (NMAWirelessDialogPrivate));
+	g_type_class_add_private (nmad_class, sizeof (NMAWirelessDialogPrivate));
 
 	/* virtual methods */
 	object_class->dispose = dispose;

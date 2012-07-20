@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2011 Red Hat, Inc.
+ * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
 
@@ -40,7 +40,7 @@
 #define NMA_WIRELESS_DIALOG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NMA_TYPE_WIRELESS_DIALOG, NMAWirelessDialog))
 #define NMA_WIRELESS_DIALOG_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NMA_TYPE_WIRELESS_DIALOG, NMAWirelessDialogClass))
 #define NMA_IS_WIRELESS_DIALOG(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NMA_TYPE_WIRELESS_DIALOG))
-#define NMA_IS_WIRELESS_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), NMA_TYPE_WIRELESS_DIALOG))
+#define NMA_IS_WIRELESS_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NMA_TYPE_WIRELESS_DIALOG))
 #define NMA_WIRELESS_DIALOG_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), NMA_TYPE_WIRELESS_DIALOG, NMAWirelessDialogClass))
 
 typedef struct {
