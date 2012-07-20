@@ -1304,7 +1304,7 @@ nma_wireless_dialog_new (NMClient *client,
 
 		if (!internal_init (NMA_WIRELESS_DIALOG (obj), connection, device, secrets_only, FALSE)) {
 			g_warning ("Couldn't create wireless security dialog.");
-			g_object_unref (obj);
+			gtk_widget_destroy (GTK_WIDGET (obj));
 			obj = NULL;
 		}
 	}
@@ -1335,7 +1335,7 @@ internal_new_other (NMClient *client, NMRemoteSettings *settings, gboolean creat
 
 	if (!internal_init (self, NULL, NULL, FALSE, create)) {
 		g_warning ("Couldn't create wireless security dialog.");
-		g_object_unref (self);
+		gtk_widget_destroy (GTK_WIDGET (self));
 		return NULL;
 	}
 
