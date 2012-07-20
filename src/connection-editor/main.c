@@ -137,6 +137,16 @@ nm_ce_service_class_init (NMCEServiceClass *service_class)
 /*************************************************/
 
 static gboolean
+idle_create_connection (gpointer user_data)
+{
+	NMConnectionList *list = user_data;
+	GType ctype = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (list), "nm-connection-editor-ctype"));
+
+	nm_connection_list_create (list, ctype);
+	return FALSE;
+}
+
+static gboolean
 handle_arguments (NMConnectionList *list,
                   const char *type,
                   gboolean create,
@@ -162,7 +172,13 @@ handle_arguments (NMConnectionList *list,
 			g_warning ("'create' requested but no connection type given.");
 			return TRUE;
 		}
-		nm_connection_list_create (list, ctype);
+
+		/* If type is "vpn" and the user cancels the "vpn type" dialog, we need
+		 * to quit. But we haven't even started yet. So postpone this to an idle.
+		 */
+		g_idle_add (idle_create_connection, list);
+		g_object_set_data (G_OBJECT (list), "nm-connection-editor-ctype",
+		                   GUINT_TO_POINTER (ctype));
 
 		show_list = FALSE;
 	} else if (edit_uuid) {
