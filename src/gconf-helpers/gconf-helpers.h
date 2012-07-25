@@ -30,6 +30,7 @@
 #include "utils.h"
 
 #define GCONF_PATH_CONNECTIONS "/system/networking/connections"
+#define APPLET_PREFS_PATH "/apps/nm-applet"
 
 #define KEYRING_UUID_TAG "connection-uuid"
 #define KEYRING_SN_TAG "setting-name"
