@@ -75,6 +75,8 @@
 #define DBUS_TYPE_G_IP6_ROUTE               (dbus_g_type_get_struct ("GValueArray", DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, DBUS_TYPE_G_UCHAR_ARRAY, G_TYPE_UINT, G_TYPE_INVALID))
 #define DBUS_TYPE_G_ARRAY_OF_IP6_ROUTE      (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_IP6_ROUTE))
 
+#define APPLET_PREFS_PATH "/apps/nm-applet"
+
 /* The stamp is a mechanism for determining which applet version last
  * updated GConf for various GConf update tasks in newer applet versions.
  */

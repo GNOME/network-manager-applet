@@ -29,7 +29,6 @@
 #include <nm-remote-settings.h>
 
 #include "gconf-helpers.h"
-#include "applet.h"
 
 gboolean success = TRUE;
 
@@ -63,59 +62,6 @@ import_cb (NMConnection *connection, gpointer user_data)
 	}
 }
 
-#define GC_PREF_DISABLE_CONNECTED_NOTIFICATIONS      APPLET_PREFS_PATH "/disable-connected-notifications"
-#define GC_PREF_DISABLE_DISCONNECTED_NOTIFICATIONS   APPLET_PREFS_PATH "/disable-disconnected-notifications"
-#define GC_PREF_DISABLE_VPN_NOTIFICATIONS            APPLET_PREFS_PATH "/disable-vpn-notifications"
-#define GC_PREF_DISABLE_WIFI_CREATE                  APPLET_PREFS_PATH "/disable-wifi-create"
-#define GC_PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE APPLET_PREFS_PATH "/suppress-wireless-networks-available"
-
-typedef struct {
-	const char *gc_path;
-	const char *gs_name;
-} Items;
-
-static const Items convert[] = {
-	{ GC_PREF_DISABLE_CONNECTED_NOTIFICATIONS,      PREF_DISABLE_CONNECTED_NOTIFICATIONS },
-	{ GC_PREF_DISABLE_DISCONNECTED_NOTIFICATIONS,   PREF_DISABLE_DISCONNECTED_NOTIFICATIONS },
-	{ GC_PREF_DISABLE_VPN_NOTIFICATIONS,            PREF_DISABLE_VPN_NOTIFICATIONS },
-	{ GC_PREF_DISABLE_WIFI_CREATE,                  PREF_DISABLE_WIFI_CREATE },
-	{ GC_PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE, PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE },
-};
-
-static void
-convert_prefs (void)
-{
-	GSettings *gs;
-	GConfClient *gc;
-	int stamp;
-	gboolean b;
-	GError *error = NULL;
-	guint i;
-
-	gc = gconf_client_get_default ();
-	if (!gc)
-		return;
-
-	gs = g_settings_new (APPLET_PREFS_SCHEMA);
-	g_assert (gs);
-	stamp = g_settings_get_int (gs, "stamp");
-	if (stamp == 0) {
-		for (i = 0; i < G_N_ELEMENTS (convert); i++) {
-			b = gconf_client_get_bool (gc, convert[i].gc_path, &error);
-			if (!error)
-				g_settings_set_boolean (gs, convert[i].gs_name, b);
-			g_clear_error (&error);
-		}
-
-		/* stamps start back at 1 with GSettings */
-		g_settings_set_int (gs, "stamp", 1);
-		g_settings_sync ();
-	}
-
-	g_object_unref (gc);
-	g_object_unref (gs);
-}
-
 int
 main (int argc, char **argv)
 {
@@ -146,8 +92,6 @@ main (int argc, char **argv)
 
 	g_object_unref (settings);
 	dbus_g_connection_unref (bus);
-
-	convert_prefs ();
 
 	return success ? 0 : 1;
 }
