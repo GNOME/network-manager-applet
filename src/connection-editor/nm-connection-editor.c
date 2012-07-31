@@ -69,6 +69,7 @@
 #include "page-wimax.h"
 #include "page-infiniband.h"
 #include "page-bond.h"
+#include "page-vlan.h"
 #include "ce-polkit-button.h"
 #include "vpn-helpers.h"
 
@@ -857,6 +858,9 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_BOND_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_bond_new, editor->connection, error))
+			goto out;
+	} else if (!strcmp (connection_type, NM_SETTING_VLAN_SETTING_NAME)) {
+		if (!add_page (editor, ce_page_vlan_new, editor->connection, error))
 			goto out;
 	} else {
 		g_warning ("Unhandled setting type '%s'", connection_type);

@@ -32,6 +32,7 @@
 #include "page-dsl.h"
 #include "page-infiniband.h"
 #include "page-bond.h"
+#include "page-vlan.h"
 #include "page-vpn.h"
 #include "vpn-helpers.h"
 
@@ -136,6 +137,11 @@ get_connection_type_list (void)
 	data.new_connection_func = bond_connection_new;
 	data.setting_type = NM_TYPE_SETTING_BOND;
 	data.virtual = TRUE;
+	g_array_append_val (array, data);
+
+	data.name = _("VLAN");
+	data.new_connection_func = vlan_connection_new;
+	data.setting_type = NM_TYPE_SETTING_VLAN;
 	g_array_append_val (array, data);
 
 	/* Add "VPN" only if there are plugins */
