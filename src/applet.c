@@ -3255,23 +3255,32 @@ shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer u
 {
 	NMApplet *applet = user_data;
 
-	if (nm_shell_watcher_version_at_least (watcher, 3, 4)) {
-		if (applet->agent_start_id)
-			g_source_remove (applet->agent_start_id);
+	if (applet->agent_start_id) {
+		g_source_remove (applet->agent_start_id);
+		applet->agent_start_id = 0;
+	}
 
-		if (applet->agent && nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent))) {
+	if (!applet->agent)
+		return;
+
+	if (nm_shell_watcher_version_at_least (watcher, 3, 4)) {
+		/* GNOME Shell handles all secrets requests */
+		if (nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent))) {
 			g_message ("Stopping applet secret agent because GNOME Shell appeared");
 			nm_secret_agent_unregister (NM_SECRET_AGENT (applet->agent));
 		}
+	} else if (nm_shell_watcher_version_at_least (watcher, 3, 2)) {
+		/* GNOME Shell handles everything except VPN secrets requests */
+		if (nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)))
+			g_message ("Applet secret agent handling only VPN secrets because GNOME Shell appeared");
+		applet_agent_handle_vpn_only (applet->agent, TRUE);
 	} else {
 		/* If the shell quit and our agent wasn't already registered, do it
-		 * now on a delay (just in case the shell is restarting.
+		 * now on a delay (just in case the shell is restarting).
 		 */
-		if (applet->agent_start_id)
-			g_source_remove (applet->agent_start_id);
-
-		if (nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)) == FALSE)
+		if (!nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)))
 			applet->agent_start_id = g_timeout_add_seconds (4, delayed_start_agent, applet);
+		applet_agent_handle_vpn_only (applet->agent, FALSE);
 	}
 }
 #endif

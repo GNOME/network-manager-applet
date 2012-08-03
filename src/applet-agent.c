@@ -45,6 +45,7 @@ G_DEFINE_TYPE (AppletAgent, applet_agent, NM_TYPE_SECRET_AGENT);
 
 typedef struct {
 	GHashTable *requests;
+	gboolean vpn_only;
 
 	gboolean disposed;
 } AppletAgentPrivate;
@@ -487,6 +488,16 @@ get_secrets (NMSecretAgent *agent,
 		return;
 	}
 
+	/* Only handle non-VPN secrets if we're supposed to */
+	if (priv->vpn_only == TRUE) {
+		error = g_error_new_literal (NM_SECRET_AGENT_ERROR,
+		                             NM_SECRET_AGENT_ERROR_NO_SECRETS,
+		                             "Only handling VPN secrets at this time.");
+		callback (agent, connection, NULL, error, callback_data);
+		g_error_free (error);
+		return;
+	}
+
 	/* For everything else we scrape the keyring for secrets first, and ask
 	 * later if required.
 	 */
@@ -780,6 +791,15 @@ delete_secrets (NMSecretAgent *agent,
 	                                              uuid,
 	                                              NULL);
 	r->keyring_calls = g_slist_append (r->keyring_calls, call);
+}
+
+void
+applet_agent_handle_vpn_only (AppletAgent *agent, gboolean vpn_only)
+{
+	g_return_if_fail (agent != NULL);
+	g_return_if_fail (APPLET_IS_AGENT (agent));
+
+	APPLET_AGENT_GET_PRIVATE (agent)->vpn_only = vpn_only;
 }
 
 /*******************************************************/
