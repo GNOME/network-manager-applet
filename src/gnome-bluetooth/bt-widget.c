@@ -807,38 +807,56 @@ dun_start (PluginInfo *info)
 								 NULL);
 
 	/* Get the device we're looking for */
-	info->dun_proxy = NULL;
-	if (get_device_iter (info->btmodel, info->bdaddr, &iter))
-		gtk_tree_model_get (info->btmodel, &iter, BLUETOOTH_COLUMN_PROXY, &info->dun_proxy, -1);
+	if (!info->dun_proxy) {
+		if (get_device_iter (info->btmodel, info->bdaddr, &iter)) {
+			gpointer proxy = NULL;
 
-	if (info->dun_proxy) {
-		info->dun_timeout_id = g_timeout_add_seconds (45, dun_timeout_cb, info);
+			gtk_tree_model_get (info->btmodel, &iter, BLUETOOTH_COLUMN_PROXY, &proxy, -1);
 
-		dbus_g_proxy_set_interface (info->dun_proxy, BLUEZ_SERIAL_INTERFACE);
+			/* At some point gnome-bluetooth switched to gdbus, so we don't know
+			 * if the proxy will be a DBusGProxy (dbus-glib) or a GDBusProxy (gdbus).
+			 */
+			if (G_IS_DBUS_PROXY (proxy)) {
+				info->dun_proxy = dbus_g_proxy_new_for_name (info->bus,
+				                                             BLUEZ_SERVICE,
+				                                             g_dbus_proxy_get_object_path (G_DBUS_PROXY (proxy)),
+				                                             BLUEZ_SERIAL_INTERFACE);
+				g_object_unref (proxy);
+			} else if (DBUS_IS_G_PROXY (proxy)) {
+				info->dun_proxy = proxy;
+				dbus_g_proxy_set_interface (info->dun_proxy, BLUEZ_SERIAL_INTERFACE);
+			} else {
+				dun_error (info, __func__, error, _("failed to find Bluetooth device (unknown gnome-bluetooth proxy object type)."));
+				goto out;
+			}
+		}
+	}
+	g_assert (info->dun_proxy);
 
-		g_message ("%s: calling Connect...", __func__);
+	info->dun_timeout_id = g_timeout_add_seconds (45, dun_timeout_cb, info);
 
-		/* Watch for BT device property changes */
-		dbus_g_object_register_marshaller (_nma_marshal_VOID__STRING_BOXED,
-		                                   G_TYPE_NONE,
-		                                   G_TYPE_STRING, G_TYPE_VALUE,
-		                                   G_TYPE_INVALID);
-		dbus_g_proxy_add_signal (info->dun_proxy, "PropertyChanged",
-		                         G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal (info->dun_proxy, "PropertyChanged",
-		                             G_CALLBACK (dun_property_changed), info, NULL);
+	g_message ("%s: calling Connect...", __func__);
 
-		/* Request a connection to the device and get the port */
-		dbus_g_proxy_begin_call_with_timeout (info->dun_proxy, "Connect",
-		                                      dun_connect_cb,
-		                                      info,
-		                                      NULL,
-		                                      20000,
-		                                      G_TYPE_STRING, "dun",
-		                                      G_TYPE_INVALID);
-	} else
-		dun_error (info, __func__, error, _("could not find the Bluetooth device."));
+	/* Watch for BT device property changes */
+	dbus_g_object_register_marshaller (_nma_marshal_VOID__STRING_BOXED,
+	                                   G_TYPE_NONE,
+	                                   G_TYPE_STRING, G_TYPE_VALUE,
+	                                   G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (info->dun_proxy, "PropertyChanged",
+	                         G_TYPE_STRING, G_TYPE_VALUE, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (info->dun_proxy, "PropertyChanged",
+	                             G_CALLBACK (dun_property_changed), info, NULL);
 
+	/* Request a connection to the device and get the port */
+	dbus_g_proxy_begin_call_with_timeout (info->dun_proxy, "Connect",
+	                                      dun_connect_cb,
+	                                      info,
+	                                      NULL,
+	                                      20000,
+	                                      G_TYPE_STRING, "dun",
+	                                      G_TYPE_INVALID);
+
+out:
 	g_message ("%s: finished", __func__);
 }
 
@@ -933,6 +951,8 @@ static void
 plugin_info_destroy (gpointer data)
 {
 	PluginInfo *info = data;
+
+	g_message ("%s: NM Bluetooth widget info being destroyed", __func__);
 
 	g_free (info->bdaddr);
 	g_free (info->rfcomm_iface);
