@@ -4,21 +4,19 @@
 nm-applet.desktop.in
 nm-connection-editor.desktop.in
 org.gnome.nm-applet.gschema.xml.in
+src/applet.c
 src/applet-device-bt.c
 src/applet-device-cdma.c
 src/applet-device-gsm.c
-src/applet-device-wired.c
 src/applet-device-wifi.c
 src/applet-device-wimax.c
+src/applet-device-wired.c
 src/applet-dialogs.c
-src/applet.c
 src/applet.h
-[type: gettext/glade]src/gsm-unlock.ui
-[type: gettext/glade]src/info.ui
-[type: gettext/glade]src/wired-8021x.ui
-src/connection-editor/ce-page.c
 [type: gettext/glade]src/connection-editor/ce-ip4-routes.ui
 [type: gettext/glade]src/connection-editor/ce-ip6-routes.ui
+[type: gettext/glade]src/connection-editor/ce-new-connection.ui
+src/connection-editor/ce-page.c
 [type: gettext/glade]src/connection-editor/ce-page-dsl.ui
 [type: gettext/glade]src/connection-editor/ce-page-infiniband.ui
 [type: gettext/glade]src/connection-editor/ce-page-ip4.ui
@@ -27,13 +25,15 @@ src/connection-editor/ce-page.c
 [type: gettext/glade]src/connection-editor/ce-page-ppp.ui
 [type: gettext/glade]src/connection-editor/ce-page-wimax.ui
 [type: gettext/glade]src/connection-editor/ce-page-wired.ui
-[type: gettext/glade]src/connection-editor/ce-page-wireless.ui
 [type: gettext/glade]src/connection-editor/ce-page-wireless-security.ui
+[type: gettext/glade]src/connection-editor/ce-page-wireless.ui
 [type: gettext/glade]src/connection-editor/ce-ppp-auth-methods.ui
-[type: gettext/glade]src/connection-editor/ce-vpn-wizard.ui
 src/connection-editor/ip4-routes-dialog.c
 src/connection-editor/ip6-routes-dialog.c
 src/connection-editor/new-connection.c
+src/connection-editor/nm-connection-editor.c
+[type: gettext/glade]src/connection-editor/nm-connection-editor.ui
+src/connection-editor/nm-connection-list.c
 src/connection-editor/page-dsl.c
 src/connection-editor/page-infiniband.c
 src/connection-editor/page-ip4.c
@@ -46,22 +46,22 @@ src/connection-editor/page-wired.c
 src/connection-editor/page-wired-security.c
 src/connection-editor/page-wireless.c
 src/connection-editor/page-wireless-security.c
-src/connection-editor/nm-connection-editor.c
-[type: gettext/glade]src/connection-editor/nm-connection-editor.ui
-src/connection-editor/nm-connection-list.c
 src/connection-editor/vpn-helpers.c
 src/gnome-bluetooth/bt-widget.c
+[type: gettext/glade]src/gsm-unlock.ui
+[type: gettext/glade]src/info.ui
 src/libnm-gtk/nm-mobile-wizard.c
 src/libnm-gtk/nm-wireless-dialog.c
 [type: gettext/glade]src/libnm-gtk/wifi.ui
 src/main.c
 src/mb-menu-item.c
 src/utils/nmn-mobile-providers.c
+[type: gettext/glade]src/wired-8021x.ui
 src/wired-dialog.c
 src/wireless-security/eap-method.c
+src/wireless-security/eap-method-fast.c
 [type: gettext/glade]src/wireless-security/eap-method-fast.ui
 [type: gettext/glade]src/wireless-security/eap-method-leap.ui
-src/wireless-security/eap-method-fast.c
 src/wireless-security/eap-method-peap.c
 [type: gettext/glade]src/wireless-security/eap-method-peap.ui
 [type: gettext/glade]src/wireless-security/eap-method-simple.ui
@@ -76,4 +76,3 @@ src/wireless-security/wireless-security.c
 [type: gettext/glade]src/wireless-security/ws-wep-key.ui
 [type: gettext/glade]src/wireless-security/ws-wpa-eap.ui
 [type: gettext/glade]src/wireless-security/ws-wpa-psk.ui
-
