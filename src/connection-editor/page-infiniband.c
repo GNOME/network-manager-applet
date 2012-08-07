@@ -186,10 +186,10 @@ ce_page_infiniband_new (NMConnection *connection,
 	                                        client,
 	                                        UIDIR "/ce-page-infiniband.ui",
 	                                        "InfinibandPage",
-	                                        _("Infiniband")));
+	                                        _("InfiniBand")));
 	if (!self) {
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC,
-		                     _("Could not load Infiniband user interface."));
+		                     _("Could not load InfiniBand user interface."));
 		return NULL;
 	}
 
@@ -314,7 +314,7 @@ infiniband_connection_new (GtkWindow *parent,
 {
 	NMConnection *connection;
 
-	connection = ce_page_new_connection (_("Infiniband connection %d"),
+	connection = ce_page_new_connection (_("InfiniBand connection %d"),
 	                                     NM_SETTING_INFINIBAND_SETTING_NAME,
 	                                     TRUE,
 	                                     settings,
