@@ -46,6 +46,9 @@ char *utils_hash_ap (const GByteArray *ssid,
 
 char *utils_escape_notify_message (const char *src);
 
+char *utils_create_mobile_connection_id (const char *provider,
+                                         const char *plan_name);
+
 void utils_show_error_dialog (const char *title,
                               const char *text1,
                               const char *text2,

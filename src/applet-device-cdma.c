@@ -135,10 +135,7 @@ mobile_wizard_done (NMAMobileWizard *wizard,
 		nm_connection_add_setting (connection, nm_setting_ppp_new ());
 
 		setting = nm_setting_connection_new ();
-		if (method->plan_name)
-			id = g_strdup_printf ("%s %s", method->provider_name, method->plan_name);
-		else
-			id = g_strdup_printf ("%s connection", method->provider_name);
+		id = utils_create_mobile_connection_id (method->provider_name, method->plan_name);
 		uuid = nm_utils_uuid_generate ();
 		g_object_set (setting,
 		              NM_SETTING_CONNECTION_ID, id,

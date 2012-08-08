@@ -41,6 +41,7 @@
 #include "nma-marshal.h"
 #include "nm-mobile-wizard.h"
 #include "nm-utils.h"
+#include "utils.h"
 
 #if !GLIB_CHECK_VERSION(2,28,0)
 #define g_clear_object(object_ptr) \
@@ -321,18 +322,6 @@ dun_error (NmaBtDevice *self, const char *func, GError *error, const char *fallb
 	recheck_services_enabled (self);
 }
 
-static char *
-get_connection_name (NMAMobileWizardAccessMethod *method)
-{
-	if (method->plan_name) {
-		/* Results in something like "T-Mobile ToGo (prepaid)" */
-		return g_strdup_printf (_("%s %s"), method->provider_name, method->plan_name);
-	}
-
-	/* Results in something like "T-Mobile connection" */
-	return g_strdup_printf (_("%s connection"), method->provider_name);
-}
-
 static NMConnection *
 dun_new_cdma (NMAMobileWizardAccessMethod *method)
 {
@@ -363,7 +352,7 @@ dun_new_cdma (NMAMobileWizardAccessMethod *method)
 	nm_connection_add_setting (connection, nm_setting_ppp_new ());
 
 	setting = nm_setting_connection_new ();
-	id = get_connection_name (method);
+	id = utils_create_mobile_connection_id (method->provider_name, method->plan_name);
 	uuid = nm_utils_uuid_generate ();
 	g_object_set (setting,
 	              NM_SETTING_CONNECTION_ID, id,
@@ -409,7 +398,7 @@ dun_new_gsm (NMAMobileWizardAccessMethod *method)
 	nm_connection_add_setting (connection, nm_setting_ppp_new ());
 
 	setting = nm_setting_connection_new ();
-	id = get_connection_name (method);
+	id = utils_create_mobile_connection_id (method->provider_name, method->plan_name);
 	uuid = nm_utils_uuid_generate ();
 	g_object_set (setting,
 	              NM_SETTING_CONNECTION_ID, id,
