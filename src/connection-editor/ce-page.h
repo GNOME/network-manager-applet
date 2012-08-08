@@ -84,7 +84,6 @@ typedef struct {
 
 	/* Virtual functions */
 	gboolean    (*validate)     (CEPage *self, NMConnection *connection, GError **error);
-	char **     (*get_mac_list) (CEPage *self);
 	/* Let the page warn the user if some property needs review */
 	GtkWidget * (*nag_user)     (CEPage *self);
 
@@ -110,7 +109,7 @@ const char * ce_page_get_title (CEPage *self);
 
 gboolean ce_page_validate (CEPage *self, NMConnection *connection, GError **error);
 
-char **ce_page_get_mac_list (CEPage *self);
+char **ce_page_get_mac_list (CEPage *self, GType device_type, const char *mac_property);
 
 void ce_page_changed (CEPage *self);
 

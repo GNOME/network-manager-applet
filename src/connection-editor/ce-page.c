@@ -125,14 +125,36 @@ ce_page_validate (CEPage *self, NMConnection *connection, GError **error)
 }
 
 char **
-ce_page_get_mac_list (CEPage *self)
+ce_page_get_mac_list (CEPage *self, GType device_type, const char *mac_property)
 {
+	const GPtrArray *devices;
+	GPtrArray *macs;
+	int i;
+
 	g_return_val_if_fail (CE_IS_PAGE (self), NULL);
 
-	if (CE_PAGE_GET_CLASS (self)->get_mac_list)
-		return CE_PAGE_GET_CLASS (self)->get_mac_list (self);
+	if (!self->client)
+		return NULL;
 
-	return NULL;
+	macs = g_ptr_array_new ();
+	devices = nm_client_get_devices (self->client);
+	for (i = 0; devices && (i < devices->len); i++) {
+		NMDevice *dev = g_ptr_array_index (devices, i);
+		const char *iface;
+		char *mac, *item;
+
+		if (!G_TYPE_CHECK_INSTANCE_TYPE (dev, device_type))
+			continue;
+
+		g_object_get (G_OBJECT (dev), mac_property, &mac, NULL);
+		iface = nm_device_get_iface (NM_DEVICE (dev));
+		item = g_strdup_printf ("%s (%s)", mac, iface);
+		g_free (mac);
+		g_ptr_array_add (macs, item);
+	}
+
+	g_ptr_array_add (macs, NULL);
+	return (char **)g_ptr_array_free (macs, FALSE);
 }
 
 void

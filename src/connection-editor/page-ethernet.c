@@ -173,7 +173,8 @@ populate_ui (CEPageEthernet *self)
 	                              nm_setting_wired_get_auto_negotiate (setting));
 
 	/* Device MAC address */
-	mac_list = ce_page_get_mac_list (CE_PAGE (self));
+	mac_list = ce_page_get_mac_list (CE_PAGE (self), NM_TYPE_DEVICE_ETHERNET,
+	                                 NM_DEVICE_ETHERNET_PERMANENT_HW_ADDRESS);
 	s_mac = nm_setting_wired_get_mac_address (setting);
 	s_mac_str = s_mac ? nm_utils_hwaddr_ntoa (s_mac->data, ARPHRD_ETHER) : NULL;
 	for (iter = mac_list; iter && *iter; iter++) {
@@ -387,38 +388,6 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 }
 
-static char **
-get_mac_list (CEPage *page)
-{
-	const GPtrArray *devices;
-	GString *mac_str;
-	char **mac_list;
-	int i;
-
-	if (!page->client)
-		return NULL;
-
-	mac_str = g_string_new (NULL);
-	devices = nm_client_get_devices (page->client);
-	for (i = 0; devices && (i < devices->len); i++) {
-		const char *mac, *iface;
-		NMDevice *dev = g_ptr_array_index (devices, i);
-
-		if (!NM_IS_DEVICE_ETHERNET (dev))
-			continue;
-
-		mac = nm_device_ethernet_get_permanent_hw_address (NM_DEVICE_ETHERNET (dev));
-		iface = nm_device_get_iface (NM_DEVICE (dev));
-		g_string_append_printf (mac_str, "%s (%s),", mac, iface);
-	}
-	g_string_truncate (mac_str, mac_str->len-1);
-
-	mac_list = g_strsplit (mac_str->str, ",", 0);
-	g_string_free (mac_str, TRUE);
-
-	return mac_list;
-}
-
 static void
 ce_page_ethernet_init (CEPageEthernet *self)
 {
@@ -434,7 +403,6 @@ ce_page_ethernet_class_init (CEPageEthernetClass *ethernet_class)
 
 	/* virtual methods */
 	parent_class->validate = validate;
-	parent_class->get_mac_list = get_mac_list;
 }
 
 
