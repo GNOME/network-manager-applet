@@ -37,6 +37,7 @@
 #include <nm-device-modem.h>
 #include <nm-utils.h>
 #include <nm-secret-agent.h>
+#include <gnome-keyring.h>
 
 #include "applet.h"
 #include "applet-device-gsm.h"

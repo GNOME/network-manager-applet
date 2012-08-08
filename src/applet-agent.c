@@ -39,6 +39,10 @@
 #include "utils.h"
 #include "nma-marshal.h"
 
+#define KEYRING_UUID_TAG "connection-uuid"
+#define KEYRING_SN_TAG "setting-name"
+#define KEYRING_SK_TAG "setting-key"
+
 G_DEFINE_TYPE (AppletAgent, applet_agent, NM_TYPE_SECRET_AGENT);
 
 #define APPLET_AGENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), APPLET_TYPE_AGENT, AppletAgentPrivate))
@@ -587,6 +591,44 @@ save_secret_cb (GnomeKeyringResult result, guint val, gpointer user_data)
 	save_request_try_complete (call->r, call);
 }
 
+static GnomeKeyringAttributeList *
+_create_keyring_add_attr_list (NMConnection *connection,
+                               const char *setting_name,
+                               const char *setting_key,
+                               char **out_display_name)
+{
+	GnomeKeyringAttributeList *attrs = NULL;
+	const char *connection_id, *connection_uuid;
+
+	g_return_val_if_fail (connection != NULL, NULL);
+	g_return_val_if_fail (setting_name != NULL, NULL);
+	g_return_val_if_fail (setting_key != NULL, NULL);
+
+	connection_uuid = nm_connection_get_uuid (connection);
+	g_assert (connection_uuid);
+	connection_id = nm_connection_get_id (connection);
+	g_assert (connection_id);
+
+	if (out_display_name) {
+		*out_display_name = g_strdup_printf ("Network secret for %s/%s/%s",
+		                                     connection_id,
+		                                     setting_name,
+		                                     setting_key);
+	}
+
+	attrs = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_UUID_TAG,
+	                                            connection_uuid);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_SN_TAG,
+	                                            setting_name);
+	gnome_keyring_attribute_list_append_string (attrs,
+	                                            KEYRING_SK_TAG,
+	                                            setting_key);
+	return attrs;
+}
+
 static void
 save_one_secret (Request *r,
                  NMSetting *setting,
@@ -609,10 +651,10 @@ save_one_secret (Request *r,
 	setting_name = nm_setting_get_name (setting);
 	g_assert (setting_name);
 
-	attrs = utils_create_keyring_add_attr_list (r->connection, NULL, NULL,
-	                                            setting_name,
-	                                            key,
-	                                            display_name ? NULL : &alt_display_name);
+	attrs = _create_keyring_add_attr_list (r->connection,
+	                                       setting_name,
+	                                       key,
+	                                       display_name ? NULL : &alt_display_name);
 	g_assert (attrs);
 	call = keyring_call_new (r);
 	call->keyring_id = gnome_keyring_item_create (NULL,
