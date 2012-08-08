@@ -24,6 +24,7 @@
 #include <string.h>
 #include <netinet/ether.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #include <nm-setting-connection.h>
@@ -310,6 +311,18 @@ utils_escape_notify_message (const char *src)
 	}
 
 	return g_string_free (escaped, FALSE);
+}
+
+char *
+utils_create_mobile_connection_id (const char *provider, const char *plan_name)
+{
+	g_return_val_if_fail (provider != NULL, NULL);
+
+	if (plan_name)
+		return g_strdup_printf ("%s %s", provider, plan_name);
+
+	/* The %s is a mobile provider name, eg "T-Mobile" */
+	return g_strdup_printf (_("%s connection"), provider);
 }
 
 void
