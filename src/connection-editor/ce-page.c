@@ -158,6 +158,46 @@ ce_page_get_mac_list (CEPage *self, GType device_type, const char *mac_property)
 }
 
 void
+ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
+                         const char *current_mac, char **mac_list)
+{
+	char **iter, *active_mac = NULL;
+	int current_mac_len;
+	GtkWidget *entry;
+
+	if (current_mac)
+		current_mac_len = strlen (current_mac);
+	else
+		current_mac_len = -1;
+
+	for (iter = mac_list; iter && *iter; iter++) {
+#if GTK_CHECK_VERSION (2,24,0)
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), *iter);
+#else
+		gtk_combo_box_append_text (combo, *iter);
+#endif
+		if (   current_mac
+		    && g_ascii_strncasecmp (*iter, current_mac, current_mac_len) == 0
+		    && ((*iter)[current_mac_len] == '\0' || (*iter)[current_mac_len] == ' '))
+			active_mac = *iter;
+	}
+
+	if (current_mac) {
+		if (!active_mac) {
+#if GTK_CHECK_VERSION (2,24,0)
+			gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (combo), current_mac);
+#else
+			gtk_combo_box_prepend_text (combo, current_mac_str);
+#endif
+		}
+
+		entry = gtk_bin_get_child (GTK_BIN (combo));
+		if (entry)
+			gtk_entry_set_text (GTK_ENTRY (entry), active_mac ? active_mac : current_mac);
+	}
+}
+
+void
 ce_page_mac_to_entry (const GByteArray *mac, int type, GtkEntry *entry)
 {
 	char *str_addr;

@@ -83,11 +83,9 @@ populate_ui (CEPageWimax *self)
 {
 	CEPageWimaxPrivate *priv = CE_PAGE_WIMAX_GET_PRIVATE (self);
 	NMSettingWimax *setting = priv->setting;
-	char **mac_list, **iter;
+	char **mac_list;
 	const GByteArray *s_mac;
 	char *s_mac_str;
-	char *active_mac = NULL;
-	GtkWidget *entry;
 
 	gtk_entry_set_text (priv->name, nm_setting_wimax_get_network_name (setting));
 	g_signal_connect_swapped (priv->name, "changed", G_CALLBACK (ce_page_changed), self);
@@ -97,29 +95,8 @@ populate_ui (CEPageWimax *self)
 	                                 NM_DEVICE_WIMAX_HW_ADDRESS);
 	s_mac = nm_setting_wimax_get_mac_address (setting);
 	s_mac_str = s_mac ? nm_utils_hwaddr_ntoa (s_mac->data, ARPHRD_ETHER) : NULL;
-	for (iter = mac_list; iter && *iter; iter++) {
-#if GTK_CHECK_VERSION (2,24,0)
-		gtk_combo_box_text_append_text (priv->device_mac, *iter);
-#else
-		gtk_combo_box_append_text (GTK_COMBO_BOX (priv->device_mac), *iter);
-#endif
-		if (s_mac_str && g_ascii_strncasecmp (*iter, s_mac_str, 17) == 0)
-			active_mac = *iter;
-	}
-
-	if (s_mac_str) {
-		if (!active_mac) {
-#if GTK_CHECK_VERSION (2,24,0)
-			gtk_combo_box_text_prepend_text (priv->device_mac, s_mac_str);
-#else
-			gtk_combo_box_prepend_text (GTK_COMBO_BOX (priv->device_mac), s_mac_str);
-#endif
-		}
-
-		entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
-		if (entry)
-			gtk_entry_set_text (GTK_ENTRY (entry), active_mac ? active_mac : s_mac_str);
-	}
+	ce_page_setup_mac_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_mac),
+	                         s_mac_str, mac_list);
 	g_free (s_mac_str);
 	g_strfreev (mac_list);
 	g_signal_connect_swapped (priv->device_mac, "changed", G_CALLBACK (ce_page_changed), self);
