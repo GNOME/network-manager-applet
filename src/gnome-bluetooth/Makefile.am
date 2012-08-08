@@ -10,7 +10,10 @@ INCLUDES = \
 	$(DISABLE_DEPRECATED) \
 	$(WARN_CFLAGS)
 
-BT_WIDGET_SOURCES = bt-widget.c
+BT_WIDGET_SOURCES = \
+	bt-widget.c \
+	nma-bt-device.c \
+	nma-bt-device.h
 
 if HAVE_GBT
 plugindir = $(libdir)/gnome-bluetooth/plugins
