@@ -11,9 +11,8 @@ libutils_la_SOURCES = \
 libutils_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
-	$(GNOME_KEYRING_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src
 
-libutils_la_LIBADD = $(GTK_LIBS) $(NMA_LIBS) $(GNOME_KEYRING_LIBS)
+libutils_la_LIBADD = $(GTK_LIBS) $(NMA_LIBS)
