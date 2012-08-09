@@ -392,7 +392,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 
 	s_wireless = nm_connection_get_setting_wireless (connection);
 	if (!s_wireless) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load WiFi security user interface; missing WiFi setting."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load Wi-Fi security user interface; missing Wi-Fi setting."));
 		return NULL;
 	}
 
@@ -402,9 +402,9 @@ ce_page_wireless_security_new (NMConnection *connection,
 	                                               client,
 	                                               UIDIR "/ce-page-wireless-security.ui",
 	                                               "WirelessSecurityPage",
-	                                               _("Wireless Security")));
+	                                               _("Wi-Fi Security")));
 	if (!self) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load WiFi security user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load Wi-Fi security user interface."));
 		return NULL;
 	}
 
@@ -492,7 +492,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 			if (valid)
 				wireless_security_fill_connection (sec, connection);
 			else
-				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Invalid wireless security");
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Invalid Wi-Fi security");
 		} else {
 			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Missing SSID");
 			valid = FALSE;

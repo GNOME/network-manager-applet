@@ -85,13 +85,13 @@ get_connection_type_list (void)
 	array = g_array_new (TRUE, FALSE, sizeof (ConnectionTypeData));
 	theme = gtk_icon_theme_get_default ();
 
-	data.name = _("Wired");
+	data.name = _("Ethernet");
 	ICON_LOAD (data.icon, "nm-device-wired");
 	data.new_connection_func = wired_connection_new;
 	data.setting_type = NM_TYPE_SETTING_WIRED;
 	g_array_append_val (array, data);
 
-	data.name = _("Wireless");
+	data.name = _("Wi-Fi");
 	ICON_LOAD (data.icon, "nm-device-wireless");
 	data.new_connection_func = wifi_connection_new;
 	data.setting_type = NM_TYPE_SETTING_WIRELESS;

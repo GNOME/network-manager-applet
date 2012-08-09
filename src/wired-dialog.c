@@ -101,7 +101,7 @@ nma_wired_dialog_new (NMConnection *connection)
 		return NULL;
 	}
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Wired 802.1X authentication"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("802.1X authentication"));
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "dialog-password");
 	dialog_set_network_name (connection, GTK_ENTRY (gtk_builder_get_object (builder, "network_name_entry")));
 

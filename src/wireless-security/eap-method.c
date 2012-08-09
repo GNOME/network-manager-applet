@@ -273,7 +273,7 @@ eap_method_nag_init (EAPMethod *method,
 
 	text = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
 	                        _("No Certificate Authority certificate chosen"),
-	                        _("Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue wireless networks.  Would you like to choose a Certificate Authority certificate?"));
+	                        _("Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue Wi-Fi networks.  Would you like to choose a Certificate Authority certificate?"));
 	gtk_label_set_markup (GTK_LABEL (widget), text);
 	g_free (text);
 

@@ -459,9 +459,9 @@ ce_page_wireless_new (NMConnection *connection,
 	                                      client,
 	                                      UIDIR "/ce-page-wireless.ui",
 	                                      "WirelessPage",
-	                                      _("Wireless")));
+	                                      _("Wi-Fi")));
 	if (!self) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load WiFi user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load Wi-Fi user interface."));
 		return NULL;
 	}
 
@@ -666,7 +666,7 @@ wifi_connection_new (GtkWindow *parent,
 	NMConnection *connection;
 	NMSetting *s_wifi;
 
-	connection = ce_page_new_connection (_("Wireless connection %d"),
+	connection = ce_page_new_connection (_("Wi-Fi connection %d"),
 	                                     NM_SETTING_WIRELESS_SETTING_NAME,
 	                                     TRUE,
 	                                     settings,

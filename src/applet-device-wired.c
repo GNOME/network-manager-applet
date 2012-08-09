@@ -202,14 +202,14 @@ wired_add_menu_item (NMDevice *device,
 		g_assert (desc);
 
 		if (g_slist_length (connections) > 1)
-			text = g_strdup_printf (_("Wired Networks (%s)"), desc);
+			text = g_strdup_printf (_("Ethernet Networks (%s)"), desc);
 		else
-			text = g_strdup_printf (_("Wired Network (%s)"), desc);
+			text = g_strdup_printf (_("Ethernet Network (%s)"), desc);
 	} else {
 		if (g_slist_length (connections) > 1)
-			text = g_strdup (_("Wired Networks"));
+			text = g_strdup (_("Ethernet Networks"));
 		else
-			text = g_strdup (_("Wired Network"));
+			text = g_strdup (_("Ethernet Network"));
 	}
 
 	item = applet_menu_item_create_device_item_helper (device, applet, text);
@@ -271,7 +271,7 @@ wired_device_state_changed (NMDevice *device,
 
 		applet_do_notify_with_pref (applet,
 		                            _("Connection Established"),
-		                            str ? str : _("You are now connected to the wired network."),
+		                            str ? str : _("You are now connected to the ethernet network."),
 		                            "nm-device-wired",
 		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 		g_free (str);
@@ -297,20 +297,20 @@ wired_get_icon (NMDevice *device,
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing wired network connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Preparing ethernet network connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring wired network connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Configuring ethernet network connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("User authentication required for wired network connection '%s'..."), id);
+		*tip = g_strdup_printf (_("User authentication required for ethernet network connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting a wired network address for '%s'..."), id);
+		*tip = g_strdup_printf (_("Requesting an ethernet network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		pixbuf = nma_icon_check_and_load ("nm-device-wired", &applet->wired_icon, applet);
-		*tip = g_strdup_printf (_("Wired network connection '%s' active"), id);
+		*tip = g_strdup_printf (_("Ethernet network connection '%s' active"), id);
 		break;
 	default:
 		break;
@@ -557,7 +557,7 @@ get_8021x_secrets_cb (GtkDialog *dialog, gint response, gpointer user_data)
 		g_set_error (&error,
 		             NM_SECRET_AGENT_ERROR,
 		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): couldn't get connection from wired dialog.",
+		             "%s.%d (%s): couldn't get connection from ethernet dialog.",
 		             __FILE__, __LINE__, __func__);
 		goto done;
 	}
@@ -631,7 +631,7 @@ wired_get_secrets (SecretsRequest *req, GError **error)
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
 		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): unhandled wired connection type '%s'",
+		             "%s.%d (%s): unhandled ethernet connection type '%s'",
 		             __FILE__, __LINE__, __func__, ctype);
 	}
 

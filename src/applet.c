@@ -95,7 +95,7 @@ impl_dbus_connect_to_hidden_network (NMApplet *applet, GError **error)
 		g_set_error_literal (error,
 		                     NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		                     "Failed to create wireless dialog");
+		                     "Failed to create Wi-Fi dialog");
 		return FALSE;
 	}
 
@@ -109,7 +109,7 @@ impl_dbus_create_wifi_network (NMApplet *applet, GError **error)
 		g_set_error_literal (error,
 		                     NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_NOT_AUTHORIZED,
-		                     "Creation of wifi networks has been disabled by system policy.");
+		                     "Creation of Wi-Fi networks has been disabled by system policy.");
 		return FALSE;
 	}
 
@@ -117,7 +117,7 @@ impl_dbus_create_wifi_network (NMApplet *applet, GError **error)
 		g_set_error_literal (error,
 		                     NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		                     "Failed to create wireless dialog");
+		                     "Failed to create Wi-Fi dialog");
 		return FALSE;
 	}
 
@@ -165,7 +165,7 @@ impl_dbus_connect_to_8021x_network (NMApplet *applet,
 		g_set_error_literal (error,
 		                     NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		                     "Failed to create wireless dialog");
+		                     "Failed to create Wi-Fi dialog");
 		return FALSE;
 	}
 
@@ -1836,7 +1836,7 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 	nma_menu_add_vpn_submenu (menu, applet);
 
 	if (n_wireless > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
-		/* Add the "Hidden wireless network..." entry */
+		/* Add the "Hidden Wi-Fi network..." entry */
 		nma_menu_add_separator_item (menu);
 		nma_menu_add_hidden_network_item (menu, applet);
 		nma_menu_add_create_network_item (menu, applet);

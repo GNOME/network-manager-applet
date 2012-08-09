@@ -80,7 +80,7 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 
 	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE, FALSE);
 	if (!priv->security) {
-		g_warning ("Could not load wired 802.1x user interface.");
+		g_warning ("Could not load 802.1x user interface.");
 		return;
 	}
 
@@ -118,7 +118,7 @@ ce_page_wired_security_new (NMConnection *connection,
 	                                            NULL,
 	                                            _("802.1x Security")));
 	if (!self) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load Wired Security security user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load 802.1x Security user interface."));
 		return NULL;
 	}
 

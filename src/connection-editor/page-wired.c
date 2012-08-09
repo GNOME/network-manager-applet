@@ -270,9 +270,9 @@ ce_page_wired_new (NMConnection *connection,
 	                                   client,
 	                                   UIDIR "/ce-page-wired.ui",
 	                                   "WiredPage",
-	                                   _("Wired")));
+	                                   _("Ethernet")));
 	if (!self) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load wired user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load ethernet user interface."));
 		return NULL;
 	}
 
@@ -448,7 +448,7 @@ wired_connection_new (GtkWindow *parent,
 {
 	NMConnection *connection;
 
-	connection = ce_page_new_connection (_("Wired connection %d"),
+	connection = ce_page_new_connection (_("Ethernet connection %d"),
 	                                     NM_SETTING_WIRED_SETTING_NAME,
 	                                     TRUE,
 	                                     settings,
