@@ -30,7 +30,7 @@
 #include <nm-setting-8021x.h>
 #include <nm-setting-wireless.h>
 #include <nm-utils.h>
-#include "wired-dialog.h"
+#include "ethernet-dialog.h"
 #include "wireless-security.h"
 #include "applet-dialogs.h"
 
@@ -76,7 +76,7 @@ dialog_set_security (NMConnection *connection,
 }
 
 GtkWidget *
-nma_wired_dialog_new (NMConnection *connection)
+nma_ethernet_dialog_new (NMConnection *connection)
 {
 	GtkBuilder *builder;
 	GtkWidget *dialog;
@@ -85,7 +85,7 @@ nma_wired_dialog_new (NMConnection *connection)
 
 	builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (builder, UIDIR "/wired-8021x.ui", &error)) {
+	if (!gtk_builder_add_from_file (builder, UIDIR "/8021x.ui", &error)) {
 		g_warning ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
 		applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the .ui file was not found)."));
@@ -93,7 +93,7 @@ nma_wired_dialog_new (NMConnection *connection)
 		return NULL;
 	}
 
-	dialog = (GtkWidget *) gtk_builder_get_object (builder, "wired_8021x_dialog");
+	dialog = (GtkWidget *) gtk_builder_get_object (builder, "8021x_dialog");
 	if (!dialog) {
 		g_warning ("Couldn't find wireless_dialog widget.");
 		applet_warning_dialog_show (_("The NetworkManager Applet could not find some required resources (the .ui file was not found)."));
@@ -124,7 +124,7 @@ nma_wired_dialog_new (NMConnection *connection)
 }
 					  
 NMConnection *
-nma_wired_dialog_get_connection (GtkWidget *dialog)
+nma_ethernet_dialog_get_connection (GtkWidget *dialog)
 {
 	NMConnection *connection, *tmp_connection;
 	WirelessSecurity *security;

@@ -468,10 +468,10 @@ info_dialog_add_page (GtkNotebook *notebook,
 	/* Speed */
 	str = NULL;
 	if (NM_IS_DEVICE_ETHERNET (device)) {
-		/* Wired speed in Mb/s */
+		/* Ethernet speed in Mb/s */
 		speed = nm_device_ethernet_get_speed (NM_DEVICE_ETHERNET (device));
 	} else if (NM_IS_DEVICE_WIFI (device)) {
-		/* Wireless speed in Kb/s */
+		/* Wi-Fi speed in Kb/s */
 		speed = nm_device_wifi_get_bitrate (NM_DEVICE_WIFI (device)) / 1000;
 
 		label_info_new (device,

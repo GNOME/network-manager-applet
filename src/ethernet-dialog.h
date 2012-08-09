@@ -21,14 +21,14 @@
  * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
-#ifndef WIRED_DIALOG_H
-#define WIRED_DIALOG_H
+#ifndef ETHERNET_DIALOG_H
+#define ETHERNET_DIALOG_H
 
 #include <gtk/gtk.h>
 #include <nm-connection.h>
 
-GtkWidget *nma_wired_dialog_new (NMConnection *connection);
+GtkWidget *nma_ethernet_dialog_new (NMConnection *connection);
 
-NMConnection *nma_wired_dialog_get_connection (GtkWidget *dialog);
+NMConnection *nma_ethernet_dialog_get_connection (GtkWidget *dialog);
 
-#endif /* WIRED_DIALOG_H */
+#endif /* ETHERNET_DIALOG_H */

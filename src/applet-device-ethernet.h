@@ -21,11 +21,11 @@
  * (C) Copyright 2008 Novell, Inc.
  */
 
-#ifndef __APPLET_DEVICE_WIRED_H__
-#define __APPLET_DEVICE_WIRED_H__
+#ifndef __APPLET_DEVICE_ETHERNET_H__
+#define __APPLET_DEVICE_ETHERNET_H__
 
 #include "applet.h"
 
-NMADeviceClass *applet_device_wired_get_class (NMApplet *applet);
+NMADeviceClass *applet_device_ethernet_get_class (NMApplet *applet);
 
-#endif /* __APPLET_DEVICE_WIRED_H__ */
+#endif /* __APPLET_DEVICE_ETHERNET_H__ */

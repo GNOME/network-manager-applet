@@ -87,15 +87,15 @@ GdkPixbuf *
 mobile_helper_get_quality_icon (guint32 quality, NMApplet *applet)
 {
 	if (quality > 80)
-		return nma_icon_check_and_load ("nm-signal-100", &applet->wireless_100_icon, applet);
+		return nma_icon_check_and_load ("nm-signal-100", &applet->wifi_100_icon, applet);
 	else if (quality > 55)
-		return nma_icon_check_and_load ("nm-signal-75", &applet->wireless_75_icon, applet);
+		return nma_icon_check_and_load ("nm-signal-75", &applet->wifi_75_icon, applet);
 	else if (quality > 30)
-		return nma_icon_check_and_load ("nm-signal-50", &applet->wireless_50_icon, applet);
+		return nma_icon_check_and_load ("nm-signal-50", &applet->wifi_50_icon, applet);
 	else if (quality > 5)
-		return nma_icon_check_and_load ("nm-signal-25", &applet->wireless_25_icon, applet);
+		return nma_icon_check_and_load ("nm-signal-25", &applet->wifi_25_icon, applet);
 
-	return nma_icon_check_and_load ("nm-signal-00", &applet->wireless_00_icon, applet);
+	return nma_icon_check_and_load ("nm-signal-00", &applet->wifi_00_icon, applet);
 }
 
 GdkPixbuf *

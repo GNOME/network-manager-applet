@@ -37,35 +37,35 @@
 #include <nm-utils.h>
 
 #include "applet.h"
-#include "applet-device-wired.h"
-#include "wired-dialog.h"
+#include "applet-device-ethernet.h"
+#include "ethernet-dialog.h"
 #include "utils.h"
 
 typedef struct {
 	NMApplet *applet;
 	NMDevice *device;
 	NMConnection *connection;
-} WiredMenuItemInfo;
+} EthernetMenuItemInfo;
 
 static void
-wired_menu_item_info_destroy (gpointer data)
+ethernet_menu_item_info_destroy (gpointer data)
 {
-	WiredMenuItemInfo *info = (WiredMenuItemInfo *) data;
+	EthernetMenuItemInfo *info = (EthernetMenuItemInfo *) data;
 
 	g_object_unref (G_OBJECT (info->device));
 	if (info->connection)
 		g_object_unref (G_OBJECT (info->connection));
 
-	g_slice_free (WiredMenuItemInfo, data);
+	g_slice_free (EthernetMenuItemInfo, data);
 }
 
-#define DEFAULT_WIRED_NAME _("Auto Ethernet")
+#define DEFAULT_ETHERNET_NAME _("Auto Ethernet")
 
 static gboolean
-wired_new_auto_connection (NMDevice *device,
-                           gpointer dclass_data,
-                           AppletNewAutoConnectionCallback callback,
-                           gpointer callback_data)
+ethernet_new_auto_connection (NMDevice *device,
+                              gpointer dclass_data,
+                              AppletNewAutoConnectionCallback callback,
+                              gpointer callback_data)
 {
 	NMConnection *connection;
 	NMSettingWired *s_wired = NULL;
@@ -80,7 +80,7 @@ wired_new_auto_connection (NMDevice *device,
 	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 	uuid = nm_utils_uuid_generate ();
 	g_object_set (s_con,
-	              NM_SETTING_CONNECTION_ID, DEFAULT_WIRED_NAME,
+	              NM_SETTING_CONNECTION_ID, DEFAULT_ETHERNET_NAME,
 	              NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRED_SETTING_NAME,
 	              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
 	              NM_SETTING_CONNECTION_UUID, uuid,
@@ -94,9 +94,9 @@ wired_new_auto_connection (NMDevice *device,
 }
 
 static void
-wired_menu_item_activate (GtkMenuItem *item, gpointer user_data)
+ethernet_menu_item_activate (GtkMenuItem *item, gpointer user_data)
 {
-	WiredMenuItemInfo *info = (WiredMenuItemInfo *) user_data;
+	EthernetMenuItemInfo *info = (EthernetMenuItemInfo *) user_data;
 
 	applet_menu_item_activate_helper (info->device,
 	                                  info->connection,
@@ -121,7 +121,7 @@ add_connection_items (NMDevice *device,
                       NMApplet *applet)
 {
 	GSList *iter;
-	WiredMenuItemInfo *info;
+	EthernetMenuItemInfo *info;
 
 	for (iter = connections; iter; iter = g_slist_next (iter)) {
 		NMConnection *connection = NM_CONNECTION (iter->data);
@@ -138,15 +138,15 @@ add_connection_items (NMDevice *device,
 		item = applet_new_menu_item_helper (connection, active, (flag & ADD_ACTIVE));
 		gtk_widget_set_sensitive (item, carrier);
 
-		info = g_slice_new0 (WiredMenuItemInfo);
+		info = g_slice_new0 (EthernetMenuItemInfo);
 		info->applet = applet;
 		info->device = g_object_ref (G_OBJECT (device));
 		info->connection = g_object_ref (connection);
 
 		g_signal_connect_data (item, "activate",
-		                       G_CALLBACK (wired_menu_item_activate),
+		                       G_CALLBACK (ethernet_menu_item_activate),
 		                       info,
-		                       (GClosureNotify) wired_menu_item_info_destroy, 0);
+		                       (GClosureNotify) ethernet_menu_item_info_destroy, 0);
 
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	}
@@ -158,31 +158,31 @@ add_default_connection_item (NMDevice *device,
                              GtkWidget *menu,
                              NMApplet *applet)
 {
-	WiredMenuItemInfo *info;
+	EthernetMenuItemInfo *info;
 	GtkWidget *item;
 	
-	item = gtk_check_menu_item_new_with_label (DEFAULT_WIRED_NAME);
+	item = gtk_check_menu_item_new_with_label (DEFAULT_ETHERNET_NAME);
 	gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
 	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
 
-	info = g_slice_new0 (WiredMenuItemInfo);
+	info = g_slice_new0 (EthernetMenuItemInfo);
 	info->applet = applet;
 	info->device = g_object_ref (G_OBJECT (device));
 
 	g_signal_connect_data (item, "activate",
-	                       G_CALLBACK (wired_menu_item_activate),
+	                       G_CALLBACK (ethernet_menu_item_activate),
 	                       info,
-	                       (GClosureNotify) wired_menu_item_info_destroy, 0);
+	                       (GClosureNotify) ethernet_menu_item_info_destroy, 0);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
 
 static void
-wired_add_menu_item (NMDevice *device,
-                     guint32 n_devices,
-                     NMConnection *active,
-                     GtkWidget *menu,
-                     NMApplet *applet)
+ethernet_add_menu_item (NMDevice *device,
+                        guint32 n_devices,
+                        NMConnection *active,
+                        GtkWidget *menu,
+                        NMApplet *applet)
 {
 	char *text;
 	GtkWidget *item;
@@ -249,11 +249,11 @@ wired_add_menu_item (NMDevice *device,
 }
 
 static void
-wired_device_state_changed (NMDevice *device,
-                            NMDeviceState new_state,
-                            NMDeviceState old_state,
-                            NMDeviceStateReason reason,
-                            NMApplet *applet)
+ethernet_device_state_changed (NMDevice *device,
+                               NMDeviceState new_state,
+                               NMDeviceState old_state,
+                               NMDeviceStateReason reason,
+                               NMApplet *applet)
 {
 	if (new_state == NM_DEVICE_STATE_ACTIVATED) {
 		NMConnection *connection;
@@ -279,11 +279,11 @@ wired_device_state_changed (NMDevice *device,
 }
 
 static GdkPixbuf *
-wired_get_icon (NMDevice *device,
-                NMDeviceState state,
-                NMConnection *connection,
-                char **tip,
-                NMApplet *applet)
+ethernet_get_icon (NMDevice *device,
+                   NMDeviceState state,
+                   NMConnection *connection,
+                   char **tip,
+                   NMApplet *applet)
 {
 	NMSettingConnection *s_con;
 	GdkPixbuf *pixbuf = NULL;
@@ -309,7 +309,7 @@ wired_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting an ethernet network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		pixbuf = nma_icon_check_and_load ("nm-device-wired", &applet->wired_icon, applet);
+		pixbuf = nma_icon_check_and_load ("nm-device-wired", &applet->ethernet_icon, applet);
 		*tip = g_strdup_printf (_("Ethernet network connection '%s' active"), id);
 		break;
 	default:
@@ -552,7 +552,7 @@ get_8021x_secrets_cb (GtkDialog *dialog, gint response, gpointer user_data)
 		goto done;
 	}
 
-	connection = nma_wired_dialog_get_connection (info->dialog);
+	connection = nma_ethernet_dialog_get_connection (info->dialog);
 	if (!connection) {
 		g_set_error (&error,
 		             NM_SECRET_AGENT_ERROR,
@@ -587,7 +587,7 @@ nm_8021x_get_secrets (SecretsRequest *req, GError **error)
 
 	applet_secrets_request_set_free_func (req, free_8021x_info);
 
-	info->dialog = nma_wired_dialog_new (g_object_ref (req->connection));
+	info->dialog = nma_ethernet_dialog_new (g_object_ref (req->connection));
 	if (!info->dialog) {
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
@@ -607,7 +607,7 @@ nm_8021x_get_secrets (SecretsRequest *req, GError **error)
 }
 
 static gboolean
-wired_get_secrets (SecretsRequest *req, GError **error)
+ethernet_get_secrets (SecretsRequest *req, GError **error)
 {
 	NMSettingConnection *s_con;
 	const char *ctype;
@@ -639,7 +639,7 @@ wired_get_secrets (SecretsRequest *req, GError **error)
 }
 
 NMADeviceClass *
-applet_device_wired_get_class (NMApplet *applet)
+applet_device_ethernet_get_class (NMApplet *applet)
 {
 	NMADeviceClass *dclass;
 
@@ -647,11 +647,11 @@ applet_device_wired_get_class (NMApplet *applet)
 	if (!dclass)
 		return NULL;
 
-	dclass->new_auto_connection = wired_new_auto_connection;
-	dclass->add_menu_item = wired_add_menu_item;
-	dclass->device_state_changed = wired_device_state_changed;
-	dclass->get_icon = wired_get_icon;
-	dclass->get_secrets = wired_get_secrets;
+	dclass->new_auto_connection = ethernet_new_auto_connection;
+	dclass->add_menu_item = ethernet_add_menu_item;
+	dclass->device_state_changed = ethernet_device_state_changed;
+	dclass->get_icon = ethernet_get_icon;
+	dclass->get_secrets = ethernet_get_secrets;
 	dclass->secrets_request_size = MAX (sizeof (NM8021xInfo), sizeof (NMPppoeInfo));
 
 	return dclass;

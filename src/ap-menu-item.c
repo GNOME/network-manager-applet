@@ -164,15 +164,15 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
 	item->int_strength = strength;
 
 	if (strength > 80)
-		icon = nma_icon_check_and_load ("nm-signal-100", &applet->wireless_100_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-100", &applet->wifi_100_icon, applet);
 	else if (strength > 55)
-		icon = nma_icon_check_and_load ("nm-signal-75", &applet->wireless_75_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-75", &applet->wifi_75_icon, applet);
 	else if (strength > 30)
-		icon = nma_icon_check_and_load ("nm-signal-50", &applet->wireless_50_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-50", &applet->wifi_50_icon, applet);
 	else if (strength > 5)
-		icon = nma_icon_check_and_load ("nm-signal-25", &applet->wireless_25_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-25", &applet->wifi_25_icon, applet);
 	else
-		icon = nma_icon_check_and_load ("nm-signal-00", &applet->wireless_00_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-00", &applet->wifi_00_icon, applet);
 
 	pixbuf = gdk_pixbuf_copy (icon);
 

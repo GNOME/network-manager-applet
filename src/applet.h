@@ -64,7 +64,7 @@ typedef struct
 #define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS   "disable-disconnected-notifications"
 #define PREF_DISABLE_VPN_NOTIFICATIONS            "disable-vpn-notifications"
 #define PREF_DISABLE_WIFI_CREATE                  "disable-wifi-create"
-#define PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE "suppress-wireless-networks-available"
+#define PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE     "suppress-wireless-networks-available"
 
 #define ICON_LAYER_LINK 0
 #define ICON_LAYER_VPN 1
@@ -99,7 +99,7 @@ typedef struct
 	NMClientPermissionResult permissions[NM_CLIENT_PERMISSION_LAST + 1];
 
 	/* Device classes */
-	NMADeviceClass *wired_class;
+	NMADeviceClass *ethernet_class;
 	NMADeviceClass *wifi_class;
 	NMADeviceClass *gsm_class;
 	NMADeviceClass *cdma_class;
@@ -111,14 +111,14 @@ typedef struct
 
 	GtkIconTheme *	icon_theme;
 	GdkPixbuf *		no_connection_icon;
-	GdkPixbuf *		wired_icon;
+	GdkPixbuf *		ethernet_icon;
 	GdkPixbuf *		adhoc_icon;
 	GdkPixbuf *		wwan_icon;
-	GdkPixbuf *		wireless_00_icon;
-	GdkPixbuf *		wireless_25_icon;
-	GdkPixbuf *		wireless_50_icon;
-	GdkPixbuf *		wireless_75_icon;
-	GdkPixbuf *		wireless_100_icon;
+	GdkPixbuf *		wifi_00_icon;
+	GdkPixbuf *		wifi_25_icon;
+	GdkPixbuf *		wifi_50_icon;
+	GdkPixbuf *		wifi_75_icon;
+	GdkPixbuf *		wifi_100_icon;
 	GdkPixbuf *		secure_lock_icon;
 #define NUM_CONNECTING_STAGES 3
 #define NUM_CONNECTING_FRAMES 11

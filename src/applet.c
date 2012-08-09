@@ -67,14 +67,14 @@
 #include <libnotify/notify.h>
 
 #include "applet.h"
-#include "applet-device-wired.h"
+#include "applet-device-ethernet.h"
 #include "applet-device-wifi.h"
 #include "applet-device-gsm.h"
 #include "applet-device-cdma.h"
 #include "applet-device-bt.h"
 #include "applet-device-wimax.h"
 #include "applet-dialogs.h"
-#include "nm-wireless-dialog.h"
+#include "nm-wifi-dialog.h"
 #include "applet-vpn-request.h"
 #include "utils.h"
 #include "shell-watcher.h"
@@ -404,7 +404,7 @@ get_device_class (NMDevice *device, NMApplet *applet)
 	g_return_val_if_fail (applet != NULL, NULL);
 
 	if (NM_IS_DEVICE_ETHERNET (device))
-		return applet->wired_class;
+		return applet->ethernet_class;
 	else if (NM_IS_DEVICE_WIFI (device))
 		return applet->wifi_class;
 	else if (NM_IS_DEVICE_MODEM (device)) {
@@ -442,7 +442,7 @@ get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
 	g_return_val_if_fail (ctype != NULL, NULL);
 
 	if (!strcmp (ctype, NM_SETTING_WIRED_SETTING_NAME) || !strcmp (ctype, NM_SETTING_PPPOE_SETTING_NAME))
-		return applet->wired_class;
+		return applet->ethernet_class;
 	else if (!strcmp (ctype, NM_SETTING_WIRELESS_SETTING_NAME))
 		return applet->wifi_class;
 	else if (!strcmp (ctype, NM_SETTING_GSM_SETTING_NAME))
@@ -1549,7 +1549,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	GSList *devices = NULL, *iter = NULL;
 	gint n_wifi_devices = 0;
 	gint n_usable_wifi_devices = 0;
-	gint n_wired_devices = 0;
+	gint n_ethernet_devices = 0;
 	gint n_mb_devices = 0;
 	gint n_bt_devices = 0;
 	int i;
@@ -1571,14 +1571,14 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			    && (nm_device_get_state (device) >= NM_DEVICE_STATE_DISCONNECTED))
 				n_usable_wifi_devices++;
 		} else if (NM_IS_DEVICE_ETHERNET (device))
-			n_wired_devices++;
+			n_ethernet_devices++;
 		else if (NM_IS_DEVICE_MODEM (device))
 			n_mb_devices++;
 		else if (NM_IS_DEVICE_BT (device))
 			n_bt_devices++;
 	}
 
-	if (!n_wired_devices && !n_wifi_devices && !n_mb_devices && !n_bt_devices) {
+	if (!n_ethernet_devices && !n_wifi_devices && !n_mb_devices && !n_bt_devices) {
 		nma_menu_add_text_item (menu, _("No network devices available"));
 		goto out;
 	}
@@ -1597,7 +1597,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		if (NM_IS_DEVICE_WIFI (device))
 			n_devices = n_wifi_devices;
 		else if (NM_IS_DEVICE_ETHERNET (device))
-			n_devices = n_wired_devices;
+			n_devices = n_ethernet_devices;
 		else if (NM_IS_DEVICE_MODEM (device))
 			n_devices = n_mb_devices;
 
@@ -1612,7 +1612,7 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	g_slist_free (devices);
 
 	/* Return # of usable wifi devices here for correct enable/disable state
-	 * of things like Enable Wireless, "Connect to other..." and such.
+	 * of things like Enable Wi-Fi, "Connect to other..." and such.
 	 */
 	return n_usable_wifi_devices;
 }
@@ -1739,7 +1739,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 
 
 static void
-nma_set_wireless_enabled_cb (GtkWidget *widget, NMApplet *applet)
+nma_set_wifi_enabled_cb (GtkWidget *widget, NMApplet *applet)
 {
 	gboolean state;
 
@@ -1802,19 +1802,19 @@ nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	                        PREF_DISABLE_VPN_NOTIFICATIONS,
 	                        !state);
 	g_settings_set_boolean (applet->gsettings,
-	                        PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE,
+	                        PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE,
 	                        !state);
 }
 
 /*
  * nma_menu_show_cb
  *
- * Pop up the wireless networks menu
+ * Pop up the wifi networks menu
  *
  */
 static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 {
-	guint32 n_wireless;
+	guint32 n_wifi;
 
 	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
@@ -1831,11 +1831,11 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 		return;
 	}
 
-	n_wireless = nma_menu_add_devices (menu, applet);
+	n_wifi = nma_menu_add_devices (menu, applet);
 
 	nma_menu_add_vpn_submenu (menu, applet);
 
-	if (n_wireless > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
+	if (n_wifi > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
 		/* Add the "Hidden Wi-Fi network..." entry */
 		nma_menu_add_separator_item (menu);
 		nma_menu_add_hidden_network_item (menu, applet);
@@ -1887,10 +1887,10 @@ nma_context_menu_update (NMApplet *applet)
 {
 	NMState state;
 	gboolean net_enabled = TRUE;
-	gboolean have_wireless = FALSE;
+	gboolean have_wifi = FALSE;
 	gboolean have_wwan = FALSE;
 	gboolean have_wimax = FALSE;
-	gboolean wireless_hw_enabled;
+	gboolean wifi_hw_enabled;
 	gboolean wwan_hw_enabled;
 	gboolean wimax_hw_enabled;
 	gboolean notifications_enabled = TRUE;
@@ -1917,7 +1917,7 @@ nma_context_menu_update (NMApplet *applet)
 	gtk_widget_set_sensitive (applet->networking_enabled_item,
 	                          is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_NETWORK));
 
-	/* Enabled Wireless */
+	/* Enabled Wi-Fi */
 	g_signal_handler_block (G_OBJECT (applet->wifi_enabled_item),
 	                        applet->wifi_enabled_toggled_id);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->wifi_enabled_item),
@@ -1925,9 +1925,9 @@ nma_context_menu_update (NMApplet *applet)
 	g_signal_handler_unblock (G_OBJECT (applet->wifi_enabled_item),
 	                          applet->wifi_enabled_toggled_id);
 
-	wireless_hw_enabled = nm_client_wireless_hardware_get_enabled (applet->nm_client);
+	wifi_hw_enabled = nm_client_wireless_hardware_get_enabled (applet->nm_client);
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wifi_enabled_item),
-	                          wireless_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI));
+	                          wifi_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIFI));
 
 	/* Enabled Mobile Broadband */
 	g_signal_handler_block (G_OBJECT (applet->wwan_enabled_item),
@@ -1959,13 +1959,13 @@ nma_context_menu_update (NMApplet *applet)
 	if (   g_settings_get_boolean (applet->gsettings, PREF_DISABLE_CONNECTED_NOTIFICATIONS)
 	    && g_settings_get_boolean (applet->gsettings, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS)
 	    && g_settings_get_boolean (applet->gsettings, PREF_DISABLE_VPN_NOTIFICATIONS)
-	    && g_settings_get_boolean (applet->gsettings, PREF_SUPPRESS_WIRELESS_NETWORKS_AVAILABLE))
+	    && g_settings_get_boolean (applet->gsettings, PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE))
 		notifications_enabled = FALSE;
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
 	g_signal_handler_unblock (G_OBJECT (applet->notifications_enabled_item),
 	                          applet->notifications_enabled_toggled_id);
 
-	/* Don't show wifi-specific stuff if wireless is off */
+	/* Don't show wifi-specific stuff if wifi is off */
 	if (state != NM_STATE_ASLEEP) {
 		const GPtrArray *devices;
 		int i;
@@ -1975,7 +1975,7 @@ nma_context_menu_update (NMApplet *applet)
 			NMDevice *candidate = g_ptr_array_index (devices, i);
 
 			if (NM_IS_DEVICE_WIFI (candidate))
-				have_wireless = TRUE;
+				have_wifi = TRUE;
 			else if (NM_IS_DEVICE_MODEM (candidate))
 				have_wwan = TRUE;
 			else if (NM_IS_DEVICE_WIMAX (candidate))
@@ -1983,7 +1983,7 @@ nma_context_menu_update (NMApplet *applet)
 		}
 	}
 
-	if (have_wireless)
+	if (have_wifi)
 		gtk_widget_show_all (applet->wifi_enabled_item);
 	else
 		gtk_widget_hide (applet->wifi_enabled_item);
@@ -2056,11 +2056,11 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	applet->networking_enabled_toggled_id = id;
 	gtk_menu_shell_append (menu, applet->networking_enabled_item);
 
-	/* 'Enable Wireless' item */
-	applet->wifi_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Wireless"));
+	/* 'Enable Wi-Fi' item */
+	applet->wifi_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Wi-Fi"));
 	id = g_signal_connect (applet->wifi_enabled_item,
 	                       "toggled",
-	                       G_CALLBACK (nma_set_wireless_enabled_cb),
+	                       G_CALLBACK (nma_set_wifi_enabled_cb),
 	                       applet);
 	applet->wifi_enabled_toggled_id = id;
 	gtk_menu_shell_append (menu, applet->wifi_enabled_item);
@@ -2981,16 +2981,16 @@ static void nma_icons_free (NMApplet *applet)
 		nma_clear_icon (&applet->icon_layers[i], applet);
 
 	nma_clear_icon (&applet->no_connection_icon, applet);
-	nma_clear_icon (&applet->wired_icon, applet);
+	nma_clear_icon (&applet->ethernet_icon, applet);
 	nma_clear_icon (&applet->adhoc_icon, applet);
 	nma_clear_icon (&applet->wwan_icon, applet);
 	nma_clear_icon (&applet->wwan_tower_icon, applet);
 	nma_clear_icon (&applet->vpn_lock_icon, applet);
-	nma_clear_icon (&applet->wireless_00_icon, applet);
-	nma_clear_icon (&applet->wireless_25_icon, applet);
-	nma_clear_icon (&applet->wireless_50_icon, applet);
-	nma_clear_icon (&applet->wireless_75_icon, applet);
-	nma_clear_icon (&applet->wireless_100_icon, applet);
+	nma_clear_icon (&applet->wifi_00_icon, applet);
+	nma_clear_icon (&applet->wifi_25_icon, applet);
+	nma_clear_icon (&applet->wifi_50_icon, applet);
+	nma_clear_icon (&applet->wifi_75_icon, applet);
+	nma_clear_icon (&applet->wifi_100_icon, applet);
 	nma_clear_icon (&applet->secure_lock_icon, applet);
 
 	nma_clear_icon (&applet->mb_tech_1x_icon, applet);
@@ -3388,8 +3388,8 @@ constructor (GType type,
 	                  G_CALLBACK (applet_agent_registered_cb), applet);
 
 	/* Initialize device classes */
-	applet->wired_class = applet_device_wired_get_class (applet);
-	g_assert (applet->wired_class);
+	applet->ethernet_class = applet_device_ethernet_get_class (applet);
+	g_assert (applet->ethernet_class);
 
 	applet->wifi_class = applet_device_wifi_get_class (applet);
 	g_assert (applet->wifi_class);
@@ -3435,7 +3435,7 @@ static void finalize (GObject *object)
 {
 	NMApplet *applet = NM_APPLET (object);
 
-	g_slice_free (NMADeviceClass, applet->wired_class);
+	g_slice_free (NMADeviceClass, applet->ethernet_class);
 	g_slice_free (NMADeviceClass, applet->wifi_class);
 	g_slice_free (NMADeviceClass, applet->gsm_class);
 	g_slice_free (NMADeviceClass, applet->cdma_class);

@@ -39,7 +39,6 @@
 
 #include "applet.h"
 #include "applet-device-bt.h"
-#include "wired-dialog.h"
 #include "utils.h"
 #include "applet-dialogs.h"
 
