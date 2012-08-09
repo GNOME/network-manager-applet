@@ -35,19 +35,9 @@
 
 static GSList *vpn_plugins;
 
-#define COL_ICON       0
-#define COL_LABEL      1
-#define COL_NEW_FUNC   2
-#define COL_VPN_PLUGIN 3
-
-#define ICON_LOAD(x, y)	\
-	{ \
-		x = gtk_icon_theme_load_icon (theme, y, 16, 0, &error); \
-		if (x == NULL) { \
-			g_warning ("Icon %s missing: %s", y, error->message); \
-			g_error_free (error); \
-		} \
-	}
+#define COL_LABEL      0
+#define COL_NEW_FUNC   1
+#define COL_VPN_PLUGIN 2
 
 static gint
 sort_vpn_plugins (gconstpointer a, gconstpointer b)
@@ -74,7 +64,6 @@ get_connection_type_list (void)
 	GArray *array;
 	ConnectionTypeData data;
 	static ConnectionTypeData *list;
-	static GtkIconTheme *theme;
 	GError *error = NULL;
 	GHashTable *vpn_plugins_hash;
 	gboolean have_vpn_plugins;
@@ -83,40 +72,33 @@ get_connection_type_list (void)
 		return list;
 
 	array = g_array_new (TRUE, FALSE, sizeof (ConnectionTypeData));
-	theme = gtk_icon_theme_get_default ();
 
 	data.name = _("Ethernet");
-	ICON_LOAD (data.icon, "nm-device-wired");
 	data.new_connection_func = ethernet_connection_new;
 	data.setting_type = NM_TYPE_SETTING_WIRED;
 	g_array_append_val (array, data);
 
 	data.name = _("Wi-Fi");
-	ICON_LOAD (data.icon, "nm-device-wireless");
 	data.new_connection_func = wifi_connection_new;
 	data.setting_type = NM_TYPE_SETTING_WIRELESS;
 	g_array_append_val (array, data);
 
 	data.name = _("Mobile Broadband");
-	ICON_LOAD (data.icon, "nm-device-wwan");
 	data.new_connection_func = mobile_connection_new;
 	data.setting_type = NM_TYPE_SETTING_GSM;
 	g_array_append_val (array, data);
 
 	data.name = _("WiMAX");
-	ICON_LOAD (data.icon, "nm-device-wwan");
 	data.new_connection_func = wimax_connection_new;
 	data.setting_type = NM_TYPE_SETTING_WIMAX;
 	g_array_append_val (array, data);
 
 	data.name = _("DSL");
-	ICON_LOAD (data.icon, "nm-device-wired");
 	data.new_connection_func = dsl_connection_new;
 	data.setting_type = NM_TYPE_SETTING_PPPOE;
 	g_array_append_val (array, data);
 
 	data.name = _("InfiniBand");
-	ICON_LOAD (data.icon, "nm-device-wired");
 	data.new_connection_func = infiniband_connection_new;
 	data.setting_type = NM_TYPE_SETTING_INFINIBAND;
 	g_array_append_val (array, data);
@@ -129,7 +111,6 @@ get_connection_type_list (void)
 		gpointer name, plugin;
 
 		data.name = _("VPN");
-		ICON_LOAD (data.icon, "nm-vpn-standalone-lock");
 		data.new_connection_func = vpn_connection_new;
 		data.setting_type = NM_TYPE_SETTING_VPN;
 		g_array_append_val (array, data);
@@ -224,7 +205,6 @@ set_up_connection_type_combo (GtkComboBox *combo,
 
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
-		                    COL_ICON, list[i].icon,
 		                    COL_LABEL, list[i].name,
 		                    COL_NEW_FUNC, list[i].new_connection_func,
 		                    -1);
@@ -247,7 +227,6 @@ set_up_connection_type_combo (GtkComboBox *combo,
 
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
-		                    COL_ICON, list[vpn_index].icon,
 		                    COL_LABEL, desc,
 		                    COL_NEW_FUNC, list[vpn_index].new_connection_func,
 		                    COL_VPN_PLUGIN, plugin,
@@ -264,7 +243,6 @@ set_up_connection_type_combo (GtkComboBox *combo,
 
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
-		                    COL_ICON, list[vpn_index].icon,
 		                    COL_LABEL, _("Import a saved VPN configuration..."),
 		                    COL_NEW_FUNC, vpn_connection_import,
 		                    -1);

@@ -64,13 +64,12 @@ enum {
 
 static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
 
-#define COL_ICON       0
-#define COL_ID         1
-#define COL_LAST_USED  2
-#define COL_TIMESTAMP  3
-#define COL_CONNECTION 4
-#define COL_GTYPE      5
-#define COL_ORDER      6
+#define COL_ID         0
+#define COL_LAST_USED  1
+#define COL_TIMESTAMP  2
+#define COL_CONNECTION 3
+#define COL_GTYPE      4
+#define COL_ORDER      5
 
 static void
 error_dialog (GtkWindow *parent, const char *heading, const char *format, ...)
@@ -920,26 +919,6 @@ timestamp_sort_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpoint
 	return time_b - time_a;
 }
 
-static void
-name_column_data_func (GtkTreeViewColumn *tree_column,
-                       GtkCellRenderer *cell,
-                       GtkTreeModel *tree_model,
-                       GtkTreeIter *iter,
-                       gpointer data)
-{
-	GdkPixbuf *icon;
-
-	gtk_tree_model_get (tree_model, iter,
-	                    COL_ICON, &icon,
-	                    -1);
-	g_object_set (G_OBJECT (cell),
-	              "pixbuf", icon,
-	              "visible", icon != NULL,
-	              NULL);
-	if (icon)
-		g_object_unref (icon);
-}
-
 static gboolean
 tree_model_visible_func (GtkTreeModel *model,
                          GtkTreeIter *iter,
@@ -969,7 +948,7 @@ initialize_treeview (NMConnectionList *self)
 	int i;
 
 	/* Model */
-	self->model = GTK_TREE_MODEL (gtk_tree_store_new (7, GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT64, G_TYPE_OBJECT, G_TYPE_GTYPE, G_TYPE_INT));
+	self->model = GTK_TREE_MODEL (gtk_tree_store_new (6, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT64, G_TYPE_OBJECT, G_TYPE_GTYPE, G_TYPE_INT));
 
 	/* Filter */
 	self->filter = GTK_TREE_MODEL_FILTER (gtk_tree_model_filter_new (self->model, NULL));
@@ -989,18 +968,11 @@ initialize_treeview (NMConnectionList *self)
 	gtk_tree_view_set_model (self->connection_list, GTK_TREE_MODEL (self->sortable));
 
 	/* Name column */
-	column = gtk_tree_view_column_new ();
-	gtk_tree_view_column_set_title (column, _("Name"));
-	gtk_tree_view_column_set_spacing (column, 4);
-
-	renderer = gtk_cell_renderer_pixbuf_new ();
-	gtk_tree_view_column_pack_start (column, renderer, FALSE);
-	gtk_tree_view_column_set_cell_data_func (column, renderer, name_column_data_func, NULL, NULL);
-
 	renderer = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (column, renderer, TRUE);
-	gtk_tree_view_column_add_attribute (column, renderer, "markup", COL_ID);
-
+	column = gtk_tree_view_column_new_with_attributes (_("Name"),
+	                                                   renderer,
+	                                                   "markup", COL_ID,
+	                                                   NULL);
 	gtk_tree_view_column_set_expand (column, TRUE);
 	gtk_tree_view_column_set_sort_column_id (column, COL_ID);
 	g_signal_connect (column, "clicked", G_CALLBACK (column_header_clicked_cb), GINT_TO_POINTER (COL_ID));
@@ -1028,7 +1000,6 @@ initialize_treeview (NMConnectionList *self)
 		id = g_strdup_printf ("<b>%s</b>", types[i].name);
 		gtk_tree_store_append (GTK_TREE_STORE (self->model), &iter, NULL);
 		gtk_tree_store_set (GTK_TREE_STORE (self->model), &iter,
-		                    COL_ICON, types[i].icon,
 		                    COL_ID, id,
 		                    COL_GTYPE, types[i].setting_type,
 		                    COL_ORDER, i,

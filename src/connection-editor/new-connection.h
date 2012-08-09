@@ -26,7 +26,6 @@
 
 typedef struct {
 	const char *name;
-	GdkPixbuf *icon;
 	GType setting_type;
 	PageNewConnectionFunc new_connection_func;
 } ConnectionTypeData;

@@ -2,17 +2,6 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkListStore" id="model1">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes"> </col>
-      </row>
-    </data>
-  </object>
   <object class="GtkDialog" id="new_connection_type_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes"> </property>
@@ -86,15 +75,9 @@ If you are creating a VPN, and the VPN connection you wish to create does not ap
                         <property name="visible">True</property>
                         <property name="model">new_connection_combo_model</property>
 			<child>
-			  <object class="GtkCellRendererPixbuf" id="renderer1"/>
-			  <attributes>
-			    <attribute name="pixbuf">0</attribute>
-			  </attributes>
-			</child>
-			<child>
 			  <object class="GtkCellRendererText" id="renderer2"/>
 			  <attributes>
-			    <attribute name="text">1</attribute>
+			    <attribute name="text">0</attribute>
 			  </attributes>
 			</child>
                       </object>
@@ -182,8 +165,6 @@ If you are creating a VPN, and the VPN connection you wish to create does not ap
   </object>
   <object class="GtkListStore" id="new_connection_combo_model">
     <columns>
-      <!-- column-name icon -->
-      <column type="GdkPixbuf"/>
       <!-- column-name name -->
       <column type="gchararray"/>
       <!-- column-name new_func -->
