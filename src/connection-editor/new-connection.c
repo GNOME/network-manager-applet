@@ -64,7 +64,6 @@ get_connection_type_list (void)
 	GArray *array;
 	ConnectionTypeData data;
 	static ConnectionTypeData *list;
-	GError *error = NULL;
 	GHashTable *vpn_plugins_hash;
 	gboolean have_vpn_plugins;
 
