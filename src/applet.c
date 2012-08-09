@@ -209,6 +209,65 @@ impl_dbus_connect_to_3g_network (NMApplet *applet,
 
 /********************************************************************/
 
+static inline NMADeviceClass *
+get_device_class (NMDevice *device, NMApplet *applet)
+{
+	g_return_val_if_fail (device != NULL, NULL);
+	g_return_val_if_fail (applet != NULL, NULL);
+
+	if (NM_IS_DEVICE_ETHERNET (device))
+		return applet->ethernet_class;
+	else if (NM_IS_DEVICE_WIFI (device))
+		return applet->wifi_class;
+	else if (NM_IS_DEVICE_MODEM (device)) {
+		NMDeviceModemCapabilities caps;
+
+		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
+		if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
+			return applet->gsm_class;
+		else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
+			return applet->cdma_class;
+		else
+			g_message ("%s: unhandled modem capabilities 0x%X", __func__, caps);
+	} else if (NM_IS_DEVICE_BT (device))
+		return applet->bt_class;
+	else if (NM_IS_DEVICE_WIMAX (device))
+		return applet->wimax_class;
+	else
+		g_debug ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
+	return NULL;
+}
+
+static inline NMADeviceClass *
+get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
+{
+	NMSettingConnection *s_con;
+	const char *ctype;
+
+	g_return_val_if_fail (connection != NULL, NULL);
+	g_return_val_if_fail (applet != NULL, NULL);
+
+	s_con = nm_connection_get_setting_connection (connection);
+	g_return_val_if_fail (s_con != NULL, NULL);
+
+	ctype = nm_setting_connection_get_connection_type (s_con);
+	g_return_val_if_fail (ctype != NULL, NULL);
+
+	if (!strcmp (ctype, NM_SETTING_WIRED_SETTING_NAME) || !strcmp (ctype, NM_SETTING_PPPOE_SETTING_NAME))
+		return applet->ethernet_class;
+	else if (!strcmp (ctype, NM_SETTING_WIRELESS_SETTING_NAME))
+		return applet->wifi_class;
+	else if (!strcmp (ctype, NM_SETTING_GSM_SETTING_NAME))
+		return applet->gsm_class;
+	else if (!strcmp (ctype, NM_SETTING_CDMA_SETTING_NAME))
+		return applet->cdma_class;
+	else if (!strcmp (ctype, NM_SETTING_BLUETOOTH_SETTING_NAME))
+		return applet->bt_class;
+	else
+		g_warning ("%s: unhandled connection type '%s'", __func__, ctype);
+	return NULL;
+}
+
 static NMActiveConnection *
 applet_get_best_activating_connection (NMApplet *applet, NMDevice **device)
 {
@@ -235,6 +294,9 @@ applet_get_best_activating_connection (NMApplet *applet, NMDevice **device)
 			continue;
 
 		candidate_dev = g_ptr_array_index (devices, 0);
+		if (!get_device_class (candidate_dev, applet))
+			continue;
+
 		if (!best_dev) {
 			best_dev = candidate_dev;
 			best = candidate;
@@ -291,20 +353,25 @@ applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
 	connections = nm_client_get_active_connections (applet->nm_client);
 	for (i = 0; connections && (i < connections->len); i++) {
 		NMActiveConnection *candidate = g_ptr_array_index (connections, i);
+		NMDevice *candidate_dev;
 		const GPtrArray *devices;
 
 		devices = nm_active_connection_get_devices (candidate);
 		if (!devices || !devices->len)
 			continue;
 
+		candidate_dev = g_ptr_array_index (devices, 0);
+		if (!get_device_class (candidate_dev, applet))
+			continue;
+
 		if (nm_active_connection_get_default (candidate)) {
 			if (!default_ac) {
-				*device = g_ptr_array_index (devices, 0);
+				*device = candidate_dev;
 				default_ac = candidate;
 			}
 		} else {
 			if (!non_default_ac) {
-				non_default_device = g_ptr_array_index (devices, 0);
+				non_default_device = candidate_dev;
 				non_default_ac = candidate;
 			}
 		}
@@ -394,65 +461,6 @@ applet_get_device_for_connection (NMApplet *applet, NMConnection *connection)
 		if (!g_strcmp0 (nm_active_connection_get_connection (active), cpath))
 			return g_ptr_array_index (nm_active_connection_get_devices (active), 0);
 	}
-	return NULL;
-}
-
-static inline NMADeviceClass *
-get_device_class (NMDevice *device, NMApplet *applet)
-{
-	g_return_val_if_fail (device != NULL, NULL);
-	g_return_val_if_fail (applet != NULL, NULL);
-
-	if (NM_IS_DEVICE_ETHERNET (device))
-		return applet->ethernet_class;
-	else if (NM_IS_DEVICE_WIFI (device))
-		return applet->wifi_class;
-	else if (NM_IS_DEVICE_MODEM (device)) {
-		NMDeviceModemCapabilities caps;
-
-		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
-		if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
-			return applet->gsm_class;
-		else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
-			return applet->cdma_class;
-		else
-			g_message ("%s: unhandled modem capabilities 0x%X", __func__, caps);
-	} else if (NM_IS_DEVICE_BT (device))
-		return applet->bt_class;
-	else if (NM_IS_DEVICE_WIMAX (device))
-		return applet->wimax_class;
-	else
-		g_message ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
-	return NULL;
-}
-
-static inline NMADeviceClass *
-get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
-{
-	NMSettingConnection *s_con;
-	const char *ctype;
-
-	g_return_val_if_fail (connection != NULL, NULL);
-	g_return_val_if_fail (applet != NULL, NULL);
-
-	s_con = nm_connection_get_setting_connection (connection);
-	g_return_val_if_fail (s_con != NULL, NULL);
-
-	ctype = nm_setting_connection_get_connection_type (s_con);
-	g_return_val_if_fail (ctype != NULL, NULL);
-
-	if (!strcmp (ctype, NM_SETTING_WIRED_SETTING_NAME) || !strcmp (ctype, NM_SETTING_PPPOE_SETTING_NAME))
-		return applet->ethernet_class;
-	else if (!strcmp (ctype, NM_SETTING_WIRELESS_SETTING_NAME))
-		return applet->wifi_class;
-	else if (!strcmp (ctype, NM_SETTING_GSM_SETTING_NAME))
-		return applet->gsm_class;
-	else if (!strcmp (ctype, NM_SETTING_CDMA_SETTING_NAME))
-		return applet->cdma_class;
-	else if (!strcmp (ctype, NM_SETTING_BLUETOOTH_SETTING_NAME))
-		return applet->bt_class;
-	else
-		g_warning ("%s: unhandled connection type '%s'", __func__, ctype);
 	return NULL;
 }
 
@@ -2284,7 +2292,8 @@ foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 	NMADeviceClass *dclass;
 
 	dclass = get_device_class (device, applet);
-	g_return_if_fail (dclass != NULL);
+	if (!dclass)
+		return;
 
 	if (dclass->device_added)
 		dclass->device_added (device, applet);
