@@ -33,11 +33,11 @@
 #include <nm-device-wifi.h>
 #include <nm-utils.h>
 
-#include "page-wireless.h"
+#include "page-wifi.h"
 
-G_DEFINE_TYPE (CEPageWireless, ce_page_wireless, CE_TYPE_PAGE)
+G_DEFINE_TYPE (CEPageWifi, ce_page_wifi, CE_TYPE_PAGE)
 
-#define CE_PAGE_WIRELESS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_WIRELESS, CEPageWirelessPrivate))
+#define CE_PAGE_WIFI_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_WIFI, CEPageWifiPrivate))
 
 typedef struct {
 	NMSettingWireless *setting;
@@ -61,12 +61,12 @@ typedef struct {
 
 	int last_channel;
 	gboolean disposed;
-} CEPageWirelessPrivate;
+} CEPageWifiPrivate;
 
 static void
-wireless_private_init (CEPageWireless *self)
+wifi_private_init (CEPageWifi *self)
 {
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	GtkBuilder *builder;
 	GtkWidget *widget;
 	GtkWidget *align;
@@ -76,12 +76,12 @@ wireless_private_init (CEPageWireless *self)
 
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	priv->ssid     = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_ssid")));
-	priv->bssid    = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_bssid")));
-	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_cloned_mac")));
-	priv->mode     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_mode")));
-	priv->band     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_band")));
-	priv->channel  = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_channel")));
+	priv->ssid     = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_ssid")));
+	priv->bssid    = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_bssid")));
+	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_cloned_mac")));
+	priv->mode     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_mode")));
+	priv->band     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_band")));
+	priv->channel  = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_channel")));
 
 #if GTK_CHECK_VERSION(2,24,0)
 	priv->device_mac = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
@@ -93,31 +93,31 @@ wireless_private_init (CEPageWireless *self)
 	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_mac),
 	                             _("This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"));
 
-	align = GTK_WIDGET (gtk_builder_get_object (builder, "wireless_device_mac_alignment"));
+	align = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_device_mac_alignment"));
 	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->device_mac));
 	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
 
 	/* Set mnemonic widget for device MAC label */
-	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_device_mac_label")));
+	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_device_mac_label")));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
 
-	priv->rate     = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_rate")));
+	priv->rate     = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_rate")));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "rate_units"));
 	gtk_size_group_add_widget (priv->group, widget);
 
-	priv->tx_power = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_tx_power")));
+	priv->tx_power = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_tx_power")));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "tx_power_units"));
 	gtk_size_group_add_widget (priv->group, widget);
 
-	priv->mtu      = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wireless_mtu")));
+	priv->mtu      = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_mtu")));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "mtu_units"));
 	gtk_size_group_add_widget (priv->group, widget);
 }
 
 static gboolean
-band_helper (CEPageWireless *self, gboolean *aband, gboolean *gband)
+band_helper (CEPageWifi *self, gboolean *aband, gboolean *gband)
 {
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 
 	switch (gtk_combo_box_get_active (priv->band)) {
 	case 1: /* A */
@@ -134,7 +134,7 @@ band_helper (CEPageWireless *self, gboolean *aband, gboolean *gband)
 static gint
 channel_spin_input_cb (GtkSpinButton *spin, gdouble *new_val, gpointer user_data)
 {
-	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
+	CEPageWifi *self = CE_PAGE_WIFI (user_data);
 	gdouble channel;
 	guint32 int_channel = 0;
 	gboolean aband = TRUE;
@@ -159,8 +159,8 @@ channel_spin_input_cb (GtkSpinButton *spin, gdouble *new_val, gpointer user_data
 static gint
 channel_spin_output_cb (GtkSpinButton *spin, gpointer user_data)
 {
-	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	CEPageWifi *self = CE_PAGE_WIFI (user_data);
+	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	int channel;
 	gchar *buf = NULL;
 	guint32 freq;
@@ -213,8 +213,8 @@ out:
 static void
 band_value_changed_cb (GtkComboBox *box, gpointer user_data)
 {
-	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	CEPageWifi *self = CE_PAGE_WIFI (user_data);
+	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	gboolean sensitive;
 
 	priv->last_channel = 0;
@@ -239,8 +239,8 @@ static void
 mode_combo_changed_cb (GtkComboBox *combo,
                        gpointer user_data)
 {
-	CEPageWireless *self = CE_PAGE_WIRELESS (user_data);
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	CEPageWifi *self = CE_PAGE_WIFI (user_data);
+	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	CEPage *parent = CE_PAGE (self);
 	GtkWidget *widget;
 	gboolean show;
@@ -255,25 +255,25 @@ mode_combo_changed_cb (GtkComboBox *combo,
  	}
 
 	if (show) {
-		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_band_label"));
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_band_label"));
 		gtk_widget_show (widget);
 		gtk_widget_show (GTK_WIDGET (priv->band));
-		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_channel_label"));
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_channel_label"));
 		gtk_widget_show (widget);
 		gtk_widget_show (GTK_WIDGET (priv->channel));
 	} else {
-		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_band_label"));
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_band_label"));
 		gtk_widget_hide (widget);
 		gtk_widget_hide (GTK_WIDGET (priv->band));
-		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_channel_label"));
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_channel_label"));
 		gtk_widget_hide (widget);
 		gtk_widget_hide (GTK_WIDGET (priv->channel));
 	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_band_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_band_label"));
 	gtk_widget_set_sensitive (GTK_WIDGET (widget), show);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->band), show);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_channel_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_channel_label"));
 	gtk_widget_set_sensitive (GTK_WIDGET (widget), show);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), show);
 
@@ -281,9 +281,9 @@ mode_combo_changed_cb (GtkComboBox *combo,
 }
 
 static void
-populate_ui (CEPageWireless *self)
+populate_ui (CEPageWifi *self)
 {
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	NMSettingWireless *setting = priv->setting;
 	GByteArray *ssid = NULL;
 	char *mode = NULL;
@@ -420,7 +420,7 @@ populate_ui (CEPageWireless *self)
 }
 
 static void
-finish_setup (CEPageWireless *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageWifi *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	GtkWidget *widget;
@@ -430,43 +430,43 @@ finish_setup (CEPageWireless *self, gpointer unused, GError *error, gpointer use
 
 	populate_ui (self);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_tx_power_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_tx_power_label"));
 	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_tx_power_hbox"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_tx_power_hbox"));
 	gtk_widget_hide (widget);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_rate_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_rate_label"));
 	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_rate_hbox"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_rate_hbox"));
 	gtk_widget_hide (widget);
 }
 
 CEPage *
-ce_page_wireless_new (NMConnection *connection,
-                      GtkWindow *parent_window,
-                      NMClient *client,
-                      const char **out_secrets_setting_name,
-                      GError **error)
+ce_page_wifi_new (NMConnection *connection,
+                  GtkWindow *parent_window,
+                  NMClient *client,
+                  const char **out_secrets_setting_name,
+                  GError **error)
 {
-	CEPageWireless *self;
-	CEPageWirelessPrivate *priv;
+	CEPageWifi *self;
+	CEPageWifiPrivate *priv;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
-	self = CE_PAGE_WIRELESS (ce_page_new (CE_TYPE_PAGE_WIRELESS,
-	                                      connection,
-	                                      parent_window,
-	                                      client,
-	                                      UIDIR "/ce-page-wireless.ui",
-	                                      "WirelessPage",
-	                                      _("Wi-Fi")));
+	self = CE_PAGE_WIFI (ce_page_new (CE_TYPE_PAGE_WIFI,
+	                                  connection,
+	                                  parent_window,
+	                                  client,
+	                                  UIDIR "/ce-page-wifi.ui",
+	                                  "WifiPage",
+	                                  _("Wi-Fi")));
 	if (!self) {
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load Wi-Fi user interface."));
 		return NULL;
 	}
 
-	wireless_private_init (self);
-	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	wifi_private_init (self);
+	priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 
 	priv->setting = nm_connection_get_setting_wireless (connection);
 	if (!priv->setting) {
@@ -480,15 +480,15 @@ ce_page_wireless_new (NMConnection *connection,
 }
 
 GByteArray *
-ce_page_wireless_get_ssid (CEPageWireless *self)
+ce_page_wifi_get_ssid (CEPageWifi *self)
 {
-	CEPageWirelessPrivate *priv;
+	CEPageWifiPrivate *priv;
 	const char *txt_ssid;
 	GByteArray *ssid;
 
-	g_return_val_if_fail (CE_IS_PAGE_WIRELESS (self), NULL);
+	g_return_val_if_fail (CE_IS_PAGE_WIFI (self), NULL);
 
-	priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	txt_ssid = gtk_entry_get_text (priv->ssid);
 	if (!txt_ssid || !strlen (txt_ssid))
 		return NULL;
@@ -500,9 +500,9 @@ ce_page_wireless_get_ssid (CEPageWireless *self)
 }
 
 static void
-ui_to_setting (CEPageWireless *self)
+ui_to_setting (CEPageWifi *self)
 {
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	GByteArray *ssid;
 	GByteArray *bssid = NULL;
 	GByteArray *device_mac = NULL;
@@ -511,7 +511,7 @@ ui_to_setting (CEPageWireless *self)
 	const char *band;
 	GtkWidget *entry;
 
-	ssid = ce_page_wireless_get_ssid (self);
+	ssid = ce_page_wifi_get_ssid (self);
 
 	if (gtk_combo_box_get_active (priv->mode) == 1)
 		mode = "adhoc";
@@ -563,8 +563,8 @@ ui_to_setting (CEPageWireless *self)
 static gboolean
 validate (CEPage *page, NMConnection *connection, GError **error)
 {
-	CEPageWireless *self = CE_PAGE_WIRELESS (page);
-	CEPageWirelessPrivate *priv = CE_PAGE_WIRELESS_GET_PRIVATE (self);
+	CEPageWifi *self = CE_PAGE_WIFI (page);
+	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	char *security;
 	gboolean success;
 	gboolean invalid = FALSE;
@@ -594,7 +594,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	ui_to_setting (self);
 
-	/* A hack to not check the wireless security here */
+	/* A hack to not check the wifi security here */
 	security = g_strdup (nm_setting_wireless_get_security (priv->setting));
 	g_object_set (priv->setting, NM_SETTING_WIRELESS_SEC, NULL, NULL);
 
@@ -638,17 +638,17 @@ get_mac_list (CEPage *page)
 }
 
 static void
-ce_page_wireless_init (CEPageWireless *self)
+ce_page_wifi_init (CEPageWifi *self)
 {
 }
 
 static void
-ce_page_wireless_class_init (CEPageWirelessClass *wireless_class)
+ce_page_wifi_class_init (CEPageWifiClass *wifi_class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (wireless_class);
-	CEPageClass *parent_class = CE_PAGE_CLASS (wireless_class);
+	GObjectClass *object_class = G_OBJECT_CLASS (wifi_class);
+	CEPageClass *parent_class = CE_PAGE_CLASS (wifi_class);
 
-	g_type_class_add_private (object_class, sizeof (CEPageWirelessPrivate));
+	g_type_class_add_private (object_class, sizeof (CEPageWifiPrivate));
 
 	/* virtual methods */
 	parent_class->validate = validate;

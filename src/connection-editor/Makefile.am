@@ -26,14 +26,14 @@ nm_connection_editor_SOURCES = \
 	main.c \
 	ce-page.h \
 	ce-page.c \
-	page-wired.h \
-	page-wired.c \
-	page-wired-security.h \
-	page-wired-security.c \
-	page-wireless.h \
-	page-wireless.c \
-	page-wireless-security.h \
-	page-wireless-security.c \
+	page-ethernet.h \
+	page-ethernet.c \
+	page-8021x-security.h \
+	page-8021x-security.c \
+	page-wifi.h \
+	page-wifi.c \
+	page-wifi-security.h \
+	page-wifi-security.c \
 	page-wimax.h \
 	page-wimax.c \
 	page-infiniband.h \
@@ -79,9 +79,9 @@ uidir = $(datadir)/nm-applet
 ui_DATA = \
 	nm-connection-editor.ui \
 	ce-new-connection.ui \
-	ce-page-wired.ui \
-	ce-page-wireless.ui \
-	ce-page-wireless-security.ui \
+	ce-page-ethernet.ui \
+	ce-page-wifi.ui \
+	ce-page-wifi-security.ui \
 	ce-page-wimax.ui \
 	ce-page-infiniband.ui \
 	ce-page-ip4.ui \

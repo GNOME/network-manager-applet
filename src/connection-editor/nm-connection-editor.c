@@ -55,10 +55,10 @@
 #include "nma-marshal.h"
 
 #include "ce-page.h"
-#include "page-wired.h"
-#include "page-wired-security.h"
-#include "page-wireless.h"
-#include "page-wireless-security.h"
+#include "page-ethernet.h"
+#include "page-8021x-security.h"
+#include "page-wifi.h"
+#include "page-wifi-security.h"
 #include "page-ip4.h"
 #include "page-ip6.h"
 #include "page-dsl.h"
@@ -742,18 +742,18 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
-		if (!add_page (editor, ce_page_wired_new, editor->connection, error))
+		if (!add_page (editor, ce_page_ethernet_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_wired_security_new, editor->connection, error))
+		if (!add_page (editor, ce_page_8021x_security_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_ip6_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME)) {
-		if (!add_page (editor, ce_page_wireless_new, editor->connection, error))
+		if (!add_page (editor, ce_page_wifi_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_wireless_security_new, editor->connection, error))
+		if (!add_page (editor, ce_page_wifi_security_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_ip4_new, editor->connection, error))
 			goto out;
@@ -770,7 +770,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_dsl_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_wired_new, editor->connection, error))
+		if (!add_page (editor, ce_page_ethernet_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;

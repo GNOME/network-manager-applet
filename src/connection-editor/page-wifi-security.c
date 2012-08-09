@@ -35,12 +35,12 @@
 #include <nm-utils.h>
 
 #include "wireless-security.h"
-#include "page-wireless.h"
-#include "page-wireless-security.h"
+#include "page-wifi.h"
+#include "page-wifi-security.h"
 #include "nm-connection-editor.h"
 
 
-G_DEFINE_TYPE (CEPageWirelessSecurity, ce_page_wireless_security, CE_TYPE_PAGE)
+G_DEFINE_TYPE (CEPageWifiSecurity, ce_page_wifi_security, CE_TYPE_PAGE)
 
 
 #define S_NAME_COLUMN   0
@@ -121,7 +121,7 @@ wsec_size_group_clear (GtkSizeGroup *group)
 }
 
 static WirelessSecurity *
-wireless_security_combo_get_active (CEPageWirelessSecurity *self)
+wireless_security_combo_get_active (CEPageWifiSecurity *self)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
@@ -138,17 +138,17 @@ static void
 wireless_security_combo_changed (GtkComboBox *combo,
                                  gpointer user_data)
 {
-	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (user_data);
+	CEPageWifiSecurity *self = CE_PAGE_WIFI_SECURITY (user_data);
 	GtkWidget *vbox;
 	GList *elt, *children;
 	WirelessSecurity *sec;
 
-	vbox = GTK_WIDGET (gtk_builder_get_object (CE_PAGE (self)->builder, "wireless_security_vbox"));
+	vbox = GTK_WIDGET (gtk_builder_get_object (CE_PAGE (self)->builder, "wifi_security_vbox"));
 	g_assert (vbox);
 
 	wsec_size_group_clear (self->group);
 
-	/* Remove any previous wireless security widgets */
+	/* Remove any previous wifi security widgets */
 	children = gtk_container_get_children (GTK_CONTAINER (vbox));
 	for (elt = children; elt; elt = g_list_next (elt))
 		gtk_container_remove (GTK_CONTAINER (vbox), GTK_WIDGET (elt->data));
@@ -164,7 +164,7 @@ wireless_security_combo_changed (GtkComboBox *combo,
 		if (parent)
 			gtk_container_remove (GTK_CONTAINER (parent), sec_widget);
 
-		widget = GTK_WIDGET (gtk_builder_get_object (CE_PAGE (self)->builder, "wireless_security_combo_label"));
+		widget = GTK_WIDGET (gtk_builder_get_object (CE_PAGE (self)->builder, "wifi_security_combo_label"));
 		gtk_size_group_add_widget (self->group, widget);
 		wireless_security_add_to_size_group (sec, self->group);
 
@@ -176,7 +176,7 @@ wireless_security_combo_changed (GtkComboBox *combo,
 }
 
 static void
-add_security_item (CEPageWirelessSecurity *self,
+add_security_item (CEPageWifiSecurity *self,
                    WirelessSecurity *sec,
                    GtkListStore *model,
                    GtkTreeIter *iter,
@@ -211,7 +211,7 @@ set_sensitive (GtkCellLayout *cell_layout,
 }
 
 static void
-finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	NMSettingWireless *s_wireless;
@@ -235,7 +235,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
 
-	combo = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (parent->builder, "wireless_security_combo")));
+	combo = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_security_combo")));
 
 	dev_caps =   NM_WIFI_DEVICE_CAP_CIPHER_WEP40
 	           | NM_WIFI_DEVICE_CAP_CIPHER_WEP104
@@ -262,7 +262,7 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		gtk_list_store_append (sec_model, &iter);
 		gtk_list_store_set (sec_model, &iter,
-		                    S_NAME_COLUMN, C_("Wifi/wired security", "None"),
+		                    S_NAME_COLUMN, C_("Wi-Fi/Ethernet security", "None"),
 		                    S_ADHOC_VALID_COLUMN, TRUE,
 		                    -1);
 		if (default_type == NMU_SEC_NONE)
@@ -378,13 +378,13 @@ finish_setup (CEPageWirelessSecurity *self, gpointer unused, GError *error, gpoi
 }
 
 CEPage *
-ce_page_wireless_security_new (NMConnection *connection,
-                               GtkWindow *parent_window,
-                               NMClient *client,
-                               const char **out_secrets_setting_name,
-                               GError **error)
+ce_page_wifi_security_new (NMConnection *connection,
+                           GtkWindow *parent_window,
+                           NMClient *client,
+                           const char **out_secrets_setting_name,
+                           GError **error)
 {
-	CEPageWirelessSecurity *self;
+	CEPageWifiSecurity *self;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wsec = NULL;
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
@@ -396,13 +396,13 @@ ce_page_wireless_security_new (NMConnection *connection,
 		return NULL;
 	}
 
-	self = CE_PAGE_WIRELESS_SECURITY (ce_page_new (CE_TYPE_PAGE_WIRELESS_SECURITY,
-	                                               connection,
-	                                               parent_window,
-	                                               client,
-	                                               UIDIR "/ce-page-wireless-security.ui",
-	                                               "WirelessSecurityPage",
-	                                               _("Wi-Fi Security")));
+	self = CE_PAGE_WIFI_SECURITY (ce_page_new (CE_TYPE_PAGE_WIFI_SECURITY,
+	                                           connection,
+	                                           parent_window,
+	                                           client,
+	                                           UIDIR "/ce-page-wifi-security.ui",
+	                                           "WifiSecurityPage",
+	                                           _("Wi-Fi Security")));
 	if (!self) {
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load Wi-Fi security user interface."));
 		return NULL;
@@ -439,7 +439,7 @@ ce_page_wireless_security_new (NMConnection *connection,
 }
 
 static void
-ce_page_wireless_security_init (CEPageWirelessSecurity *self)
+ce_page_wifi_security_init (CEPageWifiSecurity *self)
 {
 	self->disposed = FALSE;
 }
@@ -447,7 +447,7 @@ ce_page_wireless_security_init (CEPageWirelessSecurity *self)
 static void
 dispose (GObject *object)
 {
-	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (object);
+	CEPageWifiSecurity *self = CE_PAGE_WIFI_SECURITY (object);
 
 	if (self->disposed)
 		return;
@@ -457,13 +457,13 @@ dispose (GObject *object)
 	if (self->group)
 		g_object_unref (self->group);
 
-	G_OBJECT_CLASS (ce_page_wireless_security_parent_class)->dispose (object);
+	G_OBJECT_CLASS (ce_page_wifi_security_parent_class)->dispose (object);
 }
 
 static gboolean
 validate (CEPage *page, NMConnection *connection, GError **error)
 {
-	CEPageWirelessSecurity *self = CE_PAGE_WIRELESS_SECURITY (page);
+	CEPageWifiSecurity *self = CE_PAGE_WIFI_SECURITY (page);
 	NMSettingWireless *s_wireless;
 	WirelessSecurity *sec;
 	gboolean valid = FALSE;
@@ -487,7 +487,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		const GByteArray *ssid = nm_setting_wireless_get_ssid (s_wireless);
 
 		if (ssid) {
-			/* FIXME: get failed property and error out of wireless security objects */
+			/* FIXME: get failed property and error out of wifi security objects */
 			valid = wireless_security_validate (sec, ssid);
 			if (valid)
 				wireless_security_fill_connection (sec, connection);
@@ -523,7 +523,7 @@ nag_user (CEPage *page)
 	WirelessSecurity *sec;
 	GtkWidget *nag = NULL;
 
-	sec = wireless_security_combo_get_active (CE_PAGE_WIRELESS_SECURITY (page));
+	sec = wireless_security_combo_get_active (CE_PAGE_WIFI_SECURITY (page));
 	if (sec) {
 		nag = wireless_security_nag_user (sec);
 		wireless_security_unref (sec);
@@ -532,7 +532,7 @@ nag_user (CEPage *page)
 }
 
 static void
-ce_page_wireless_security_class_init (CEPageWirelessSecurityClass *wireless_security_class)
+ce_page_wifi_security_class_init (CEPageWifiSecurityClass *wireless_security_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (wireless_security_class);
 	CEPageClass *parent_class = CE_PAGE_CLASS (wireless_security_class);

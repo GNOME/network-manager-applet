@@ -189,7 +189,7 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 		                    -1);
 	}
 
-	/* At the moment, Disabled is only supported for Wired & WiFi */
+	/* At the moment, Disabled is only supported for Ethernet & Wi-Fi */
 	if (   priv->connection_type == NM_TYPE_SETTING_WIRED
 	    || priv->connection_type == NM_TYPE_SETTING_WIRELESS) {
 		gtk_list_store_append (priv->method_store, &iter);

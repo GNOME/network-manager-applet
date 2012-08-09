@@ -171,7 +171,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 						METHOD_COL_ENABLED, TRUE,
 	                    -1);
 
-	/* DHCP only used on wifi and wired for now */
+	/* DHCP only used on Wi-Fi and ethernet for now */
 	if (   priv->connection_type == NM_TYPE_SETTING_WIRED
 	    || priv->connection_type == NM_TYPE_SETTING_WIRELESS) {
 		gtk_list_store_append (priv->method_store, &iter);

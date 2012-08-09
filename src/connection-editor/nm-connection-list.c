@@ -48,13 +48,6 @@
 #include <nm-remote-settings.h>
 
 #include "ce-page.h"
-#include "page-wired.h"
-#include "page-wireless.h"
-#include "page-mobile.h"
-#include "page-dsl.h"
-#include "page-vpn.h"
-#include "page-wimax.h"
-#include "page-infiniband.h"
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
 #include "vpn-helpers.h"

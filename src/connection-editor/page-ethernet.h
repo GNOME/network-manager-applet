@@ -20,8 +20,8 @@
  * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
-#ifndef __PAGE_WIRELESS_H__
-#define __PAGE_WIRELESS_H__
+#ifndef __PAGE_ETHERNET_H__
+#define __PAGE_ETHERNET_H__
 
 #include <nm-connection.h>
 
@@ -30,38 +30,34 @@
 
 #include "ce-page.h"
 
-#define CE_TYPE_PAGE_WIRELESS            (ce_page_wireless_get_type ())
-#define CE_PAGE_WIRELESS(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_WIRELESS, CEPageWireless))
-#define CE_PAGE_WIRELESS_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE_WIRELESS, CEPageWirelessClass))
-#define CE_IS_PAGE_WIRELESS(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CE_TYPE_PAGE_WIRELESS))
-#define CE_IS_PAGE_WIRELESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), CE_TYPE_PAGE_WIRELESS))
-#define CE_PAGE_WIRELESS_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_WIRELESS, CEPageWirelessClass))
+#define CE_TYPE_PAGE_ETHERNET            (ce_page_ethernet_get_type ())
+#define CE_PAGE_ETHERNET(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_ETHERNET, CEPageEthernet))
+#define CE_PAGE_ETHERNET_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE_ETHERNET, CEPageEthernetClass))
+#define CE_IS_PAGE_ETHERNET(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CE_TYPE_PAGE_ETHERNET))
+#define CE_IS_PAGE_ETHERNET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), CE_TYPE_PAGE_ETHERNET))
+#define CE_PAGE_ETHERNET_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_ETHERNET, CEPageEthernetClass))
 
 typedef struct {
 	CEPage parent;
-} CEPageWireless;
+} CEPageEthernet;
 
 typedef struct {
 	CEPageClass parent;
-} CEPageWirelessClass;
+} CEPageEthernetClass;
 
-GType ce_page_wireless_get_type (void);
+GType ce_page_ethernet_get_type (void);
 
-CEPage *ce_page_wireless_new (NMConnection *connection,
+CEPage *ce_page_ethernet_new (NMConnection *connection,
                               GtkWindow *parent,
                               NMClient *client,
                               const char **out_secrets_setting_name,
                               GError **error);
 
-/* Caller must free returned array */
-GByteArray *ce_page_wireless_get_ssid (CEPageWireless *self);
+void ethernet_connection_new (GtkWindow *parent,
+                              const char *detail,
+                              NMRemoteSettings *settings,
+                              PageNewConnectionResultFunc result_func,
+                              gpointer user_data);
 
-
-void wifi_connection_new (GtkWindow *parent,
-                          const char *detail,
-                          NMRemoteSettings *settings,
-                          PageNewConnectionResultFunc result_func,
-                          gpointer user_data);
-
-#endif  /* __PAGE_WIRELESS_H__ */
+#endif  /* __PAGE_ETHERNET_H__ */
 

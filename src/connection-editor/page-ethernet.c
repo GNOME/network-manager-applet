@@ -32,11 +32,11 @@
 #include <nm-setting-wired.h>
 #include <nm-device-ethernet.h>
 
-#include "page-wired.h"
+#include "page-ethernet.h"
 
-G_DEFINE_TYPE (CEPageWired, ce_page_wired, CE_TYPE_PAGE)
+G_DEFINE_TYPE (CEPageEthernet, ce_page_ethernet, CE_TYPE_PAGE)
 
-#define CE_PAGE_WIRED_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_WIRED, CEPageWiredPrivate))
+#define CE_PAGE_ETHERNET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_ETHERNET, CEPageEthernetPrivate))
 
 typedef struct {
 	NMSettingWired *setting;
@@ -54,7 +54,7 @@ typedef struct {
 	GtkSpinButton *mtu;
 
 	gboolean disposed;
-} CEPageWiredPrivate;
+} CEPageEthernetPrivate;
 
 #define PORT_DEFAULT  0
 #define PORT_TP       1
@@ -69,9 +69,9 @@ typedef struct {
 #define SPEED_10000   4
 
 static void
-wired_private_init (CEPageWired *self)
+ethernet_private_init (CEPageEthernet *self)
 {
-	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 	GtkBuilder *builder;
 	GtkWidget *align;
 	GtkLabel *label;
@@ -88,20 +88,20 @@ wired_private_init (CEPageWired *self)
 	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_mac),
 	                             _("This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"));
 
-	align = GTK_WIDGET (gtk_builder_get_object (builder, "wired_device_mac_alignment"));
+	align = GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_device_mac_alignment"));
 	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->device_mac));
 	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
 
 	/* Set mnemonic widget for device MAC label */
-	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "wired_device_mac_label")));
+	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_device_mac_label")));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
 
-	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wired_cloned_mac")));
-	priv->port = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wired_port")));
-	priv->speed = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wired_speed")));
-	priv->duplex = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wired_duplex")));
-	priv->autonegotiate = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wired_autonegotiate")));
-	priv->mtu = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wired_mtu")));
+	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_cloned_mac")));
+	priv->port = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_port")));
+	priv->speed = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_speed")));
+	priv->duplex = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_duplex")));
+	priv->autonegotiate = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_autonegotiate")));
+	priv->mtu = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_mtu")));
 }
 
 static void
@@ -111,9 +111,9 @@ stuff_changed (GtkWidget *w, gpointer user_data)
 }
 
 static void
-populate_ui (CEPageWired *self)
+populate_ui (CEPageEthernet *self)
 {
-	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 	NMSettingWired *setting = priv->setting;
 	const char *port;
 	const char *duplex;
@@ -220,10 +220,10 @@ populate_ui (CEPageWired *self)
 }
 
 static void
-finish_setup (CEPageWired *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
-	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 	GtkWidget *widget;
 
 	if (error)
@@ -238,46 +238,46 @@ finish_setup (CEPageWired *self, gpointer unused, GError *error, gpointer user_d
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
 	/* Hide widgets we don't yet support */
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_port_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_port_label"));
 	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_port"));
-	gtk_widget_hide (widget);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_speed_label"));
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_speed"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_port"));
 	gtk_widget_hide (widget);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_duplex"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_speed_label"));
 	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wired_autonegotiate"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_speed"));
+	gtk_widget_hide (widget);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_duplex"));
+	gtk_widget_hide (widget);
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_autonegotiate"));
 	gtk_widget_hide (widget);
 }
 
 CEPage *
-ce_page_wired_new (NMConnection *connection,
-                   GtkWindow *parent_window,
-                   NMClient *client,
-                   const char **out_secrets_setting_name,
-                   GError **error)
+ce_page_ethernet_new (NMConnection *connection,
+                      GtkWindow *parent_window,
+                      NMClient *client,
+                      const char **out_secrets_setting_name,
+                      GError **error)
 {
-	CEPageWired *self;
-	CEPageWiredPrivate *priv;
+	CEPageEthernet *self;
+	CEPageEthernetPrivate *priv;
 
-	self = CE_PAGE_WIRED (ce_page_new (CE_TYPE_PAGE_WIRED,
-	                                   connection,
-	                                   parent_window,
-	                                   client,
-	                                   UIDIR "/ce-page-wired.ui",
-	                                   "WiredPage",
-	                                   _("Ethernet")));
+	self = CE_PAGE_ETHERNET (ce_page_new (CE_TYPE_PAGE_ETHERNET,
+	                                      connection,
+	                                      parent_window,
+	                                      client,
+	                                      UIDIR "/ce-page-ethernet.ui",
+	                                      "EthernetPage",
+	                                      _("Ethernet")));
 	if (!self) {
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load ethernet user interface."));
 		return NULL;
 	}
 
-	wired_private_init (self);
-	priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	ethernet_private_init (self);
+	priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 
 	priv->setting = nm_connection_get_setting_wired (connection);
 	if (!priv->setting) {
@@ -291,9 +291,9 @@ ce_page_wired_new (NMConnection *connection,
 }
 
 static void
-ui_to_setting (CEPageWired *self)
+ui_to_setting (CEPageEthernet *self)
 {
-	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 	const char *port;
 	guint32 speed;
 	GByteArray *device_mac = NULL;
@@ -363,8 +363,8 @@ ui_to_setting (CEPageWired *self)
 static gboolean
 validate (CEPage *page, NMConnection *connection, GError **error)
 {
-	CEPageWired *self = CE_PAGE_WIRED (page);
-	CEPageWiredPrivate *priv = CE_PAGE_WIRED_GET_PRIVATE (self);
+	CEPageEthernet *self = CE_PAGE_ETHERNET (page);
+	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 	gboolean invalid = FALSE;
 	GByteArray *ignore;
 	GtkWidget *entry;
@@ -421,17 +421,17 @@ get_mac_list (CEPage *page)
 }
 
 static void
-ce_page_wired_init (CEPageWired *self)
+ce_page_ethernet_init (CEPageEthernet *self)
 {
 }
 
 static void
-ce_page_wired_class_init (CEPageWiredClass *wired_class)
+ce_page_ethernet_class_init (CEPageEthernetClass *ethernet_class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (wired_class);
-	CEPageClass *parent_class = CE_PAGE_CLASS (wired_class);
+	GObjectClass *object_class = G_OBJECT_CLASS (ethernet_class);
+	CEPageClass *parent_class = CE_PAGE_CLASS (ethernet_class);
 
-	g_type_class_add_private (object_class, sizeof (CEPageWiredPrivate));
+	g_type_class_add_private (object_class, sizeof (CEPageEthernetPrivate));
 
 	/* virtual methods */
 	parent_class->validate = validate;
@@ -440,11 +440,11 @@ ce_page_wired_class_init (CEPageWiredClass *wired_class)
 
 
 void
-wired_connection_new (GtkWindow *parent,
-                      const char *detail,
-                      NMRemoteSettings *settings,
-                      PageNewConnectionResultFunc result_func,
-                      gpointer user_data)
+ethernet_connection_new (GtkWindow *parent,
+                         const char *detail,
+                         NMRemoteSettings *settings,
+                         PageNewConnectionResultFunc result_func,
+                         gpointer user_data)
 {
 	NMConnection *connection;
 

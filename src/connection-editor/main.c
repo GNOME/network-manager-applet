@@ -41,7 +41,6 @@
 #include <nm-setting-cdma.h>
 #include "nm-connection-list.h"
 #include "nm-connection-editor.h"
-#include "page-wired.h"
 
 static GMainLoop *loop = NULL;
 

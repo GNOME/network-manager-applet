@@ -54,7 +54,7 @@
       </row>
     </data>
   </object>
-      <object class="GtkTable" id="WiredPage">
+      <object class="GtkTable" id="EthernetPage">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="n_rows">6</property>
@@ -62,12 +62,12 @@
         <property name="column_spacing">12</property>
         <property name="row_spacing">6</property>
         <child>
-          <object class="GtkLabel" id="wired_port_label">
+          <object class="GtkLabel" id="ethernet_port_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Port:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wired_port</property>
+            <property name="mnemonic_widget">ethernet_port</property>
           </object>
           <packing>
             <property name="x_options">GTK_FILL</property>
@@ -75,7 +75,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBox" id="wired_port">
+          <object class="GtkComboBox" id="ethernet_port">
             <property name="visible">True</property>
             <property name="model">model1</property>
             <child>
@@ -92,12 +92,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wired_speed_label">
+          <object class="GtkLabel" id="ethernet_speed_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Speed:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wired_speed</property>
+            <property name="mnemonic_widget">ethernet_speed</property>
           </object>
           <packing>
             <property name="top_attach">1</property>
@@ -107,7 +107,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBox" id="wired_speed">
+          <object class="GtkComboBox" id="ethernet_speed">
             <property name="visible">True</property>
             <property name="model">model2</property>
             <child>
@@ -126,7 +126,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkCheckButton" id="wired_duplex">
+          <object class="GtkCheckButton" id="ethernet_duplex">
             <property name="label" translatable="yes">Full duple_x</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -143,7 +143,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkCheckButton" id="wired_autonegotiate">
+          <object class="GtkCheckButton" id="ethernet_autonegotiate">
             <property name="label" translatable="yes">Aut_onegotiate</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -160,7 +160,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wired_device_mac_label">
+          <object class="GtkLabel" id="ethernet_device_mac_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Device MAC address:</property>
@@ -174,7 +174,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment" id="wired_device_mac_alignment">
+          <object class="GtkAlignment" id="ethernet_device_mac_alignment">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <child>
@@ -195,7 +195,7 @@
             <property name="xalign">0</property>
             <property name="label" translatable="yes">C_loned MAC address:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wired_cloned_mac</property>
+            <property name="mnemonic_widget">ethernet_cloned_mac</property>
           </object>
           <packing>
             <property name="top_attach">5</property>
@@ -205,7 +205,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="wired_cloned_mac">
+          <object class="GtkEntry" id="ethernet_cloned_mac">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="tooltip_text" translatable="yes">The MAC address entered here will be used as hardware address for the network device this connection is activated on.  This feature is known as MAC cloning or spoofing.  Example: 00:11:22:33:44:55</property>
@@ -224,7 +224,7 @@
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_MTU:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wired_mtu</property>
+            <property name="mnemonic_widget">ethernet_mtu</property>
           </object>
           <packing>
             <property name="top_attach">6</property>
@@ -238,7 +238,7 @@
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkSpinButton" id="wired_mtu">
+              <object class="GtkSpinButton" id="ethernet_mtu">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="adjustment">adjustment1</property>

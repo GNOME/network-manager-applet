@@ -35,13 +35,13 @@
 #include <nm-utils.h>
 
 #include "wireless-security.h"
-#include "page-wired.h"
-#include "page-wired-security.h"
+#include "page-ethernet.h"
+#include "page-8021x-security.h"
 #include "nm-connection-editor.h"
 
-G_DEFINE_TYPE (CEPageWiredSecurity, ce_page_wired_security, CE_TYPE_PAGE)
+G_DEFINE_TYPE (CEPage8021xSecurity, ce_page_8021x_security, CE_TYPE_PAGE)
 
-#define CE_PAGE_WIRED_SECURITY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_WIRED_SECURITY, CEPageWiredSecurityPrivate))
+#define CE_PAGE_8021X_SECURITY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_8021X_SECURITY, CEPage8021xSecurityPrivate))
 
 typedef struct {
 	GtkToggleButton *enabled;
@@ -51,7 +51,7 @@ typedef struct {
 	gboolean initial_have_8021x;
 
 	gboolean disposed;
-} CEPageWiredSecurityPrivate;
+} CEPage8021xSecurityPrivate;
 
 static void
 stuff_changed (WirelessSecurity *sec, gpointer user_data)
@@ -62,17 +62,17 @@ stuff_changed (WirelessSecurity *sec, gpointer user_data)
 static void
 enable_toggled (GtkToggleButton *button, gpointer user_data)
 {
-	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (user_data);
+	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (user_data);
 
 	gtk_widget_set_sensitive (priv->security_widget, gtk_toggle_button_get_active (priv->enabled));
 	ce_page_changed (CE_PAGE (user_data));
 }
 
 static void
-finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPage8021xSecurity *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
-	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (self);
+	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (self);
 	GtkWidget *parent_container;
 
 	if (error)
@@ -100,17 +100,17 @@ finish_setup (CEPageWiredSecurity *self, gpointer unused, GError *error, gpointe
 }
 
 CEPage *
-ce_page_wired_security_new (NMConnection *connection,
+ce_page_8021x_security_new (NMConnection *connection,
                             GtkWindow *parent_window,
                             NMClient *client,
                             const char **out_secrets_setting_name,
                             GError **error)
 {
-	CEPageWiredSecurity *self;
-	CEPageWiredSecurityPrivate *priv;
+	CEPage8021xSecurity *self;
+	CEPage8021xSecurityPrivate *priv;
 	CEPage *parent;
 
-	self = CE_PAGE_WIRED_SECURITY (ce_page_new (CE_TYPE_PAGE_WIRED_SECURITY,
+	self = CE_PAGE_8021X_SECURITY (ce_page_new (CE_TYPE_PAGE_8021X_SECURITY,
 	                                            connection,
 	                                            parent_window,
 	                                            client,
@@ -123,7 +123,7 @@ ce_page_wired_security_new (NMConnection *connection,
 	}
 
 	parent = CE_PAGE (self);
-	priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (self);
+	priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (self);
 
 #if GTK_CHECK_VERSION (3,1,6)
 	parent->page = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
@@ -149,7 +149,7 @@ ce_page_wired_security_new (NMConnection *connection,
 static gboolean
 validate (CEPage *page, NMConnection *connection, GError **error)
 {
-	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (page);
+	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (page);
 	gboolean valid = TRUE;
 
 	if (gtk_toggle_button_get_active (priv->enabled)) {
@@ -190,20 +190,20 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 static GtkWidget *
 nag_user (CEPage *page)
 {
-	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (page);
+	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (page);
 
 	return priv->security ? wireless_security_nag_user (priv->security) : NULL;
 }
 
 static void
-ce_page_wired_security_init (CEPageWiredSecurity *self)
+ce_page_8021x_security_init (CEPage8021xSecurity *self)
 {
 }
 
 static void
 dispose (GObject *object)
 {
-	CEPageWiredSecurityPrivate *priv = CE_PAGE_WIRED_SECURITY_GET_PRIVATE (object);
+	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (object);
 
 	if (priv->disposed)
 		return;
@@ -213,16 +213,16 @@ dispose (GObject *object)
 	if (priv->security)
 		wireless_security_unref (priv->security);
 
-	G_OBJECT_CLASS (ce_page_wired_security_parent_class)->dispose (object);
+	G_OBJECT_CLASS (ce_page_8021x_security_parent_class)->dispose (object);
 }
 
 static void
-ce_page_wired_security_class_init (CEPageWiredSecurityClass *wired_security_class)
+ce_page_8021x_security_class_init (CEPage8021xSecurityClass *security_class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (wired_security_class);
-	CEPageClass *parent_class = CE_PAGE_CLASS (wired_security_class);
+	GObjectClass *object_class = G_OBJECT_CLASS (security_class);
+	CEPageClass *parent_class = CE_PAGE_CLASS (security_class);
 
-	g_type_class_add_private (object_class, sizeof (CEPageWiredSecurityPrivate));
+	g_type_class_add_private (object_class, sizeof (CEPage8021xSecurityPrivate));
 
 	/* virtual methods */
 	object_class->dispose = dispose;

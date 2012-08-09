@@ -57,7 +57,7 @@
       </row>
     </data>
   </object>
-      <object class="GtkTable" id="WirelessPage">
+      <object class="GtkTable" id="WifiPage">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="n_rows">9</property>
@@ -65,11 +65,11 @@
         <property name="column_spacing">12</property>
         <property name="row_spacing">6</property>
         <child>
-          <object class="GtkHBox" id="wireless_mtu_hbox">
+          <object class="GtkHBox" id="wifi_mtu_hbox">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkSpinButton" id="wireless_mtu">
+              <object class="GtkSpinButton" id="wifi_mtu">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="adjustment">adjustment1</property>
@@ -102,12 +102,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_mtu_label">
+          <object class="GtkLabel" id="wifi_mtu_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_MTU:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wireless_mtu</property>
+            <property name="mnemonic_widget">wifi_mtu</property>
           </object>
           <packing>
             <property name="top_attach">9</property>
@@ -117,7 +117,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment" id="wireless_device_mac_alignment">
+          <object class="GtkAlignment" id="wifi_device_mac_alignment">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <child>
@@ -133,7 +133,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_device_mac_label">
+          <object class="GtkLabel" id="wifi_device_mac_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Device MAC address:</property>
@@ -147,7 +147,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="wireless_cloned_mac">
+          <object class="GtkEntry" id="wifi_cloned_mac">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="tooltip_text" translatable="yes">The MAC address entered here will be used as hardware address for the network device this connection is activated on.  This feature is known as MAC cloning or spoofing.  Example: 00:11:22:33:44:55</property>
@@ -161,12 +161,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_cloned_mac_label">
+          <object class="GtkLabel" id="wifi_cloned_mac_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">C_loned MAC address:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wireless_cloned_mac</property>
+            <property name="mnemonic_widget">wifi_cloned_mac</property>
           </object>
           <packing>
             <property name="top_attach">8</property>
@@ -176,11 +176,11 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="wireless_tx_power_hbox">
+          <object class="GtkHBox" id="wifi_tx_power_hbox">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkSpinButton" id="wireless_tx_power">
+              <object class="GtkSpinButton" id="wifi_tx_power">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="adjustment">adjustment2</property>
@@ -213,12 +213,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_tx_power_label">
+          <object class="GtkLabel" id="wifi_tx_power_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Transmission po_wer:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wireless_tx_power</property>
+            <property name="mnemonic_widget">wifi_tx_power</property>
           </object>
           <packing>
             <property name="top_attach">6</property>
@@ -228,11 +228,11 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="wireless_rate_hbox">
+          <object class="GtkHBox" id="wifi_rate_hbox">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkSpinButton" id="wireless_rate">
+              <object class="GtkSpinButton" id="wifi_rate">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="adjustment">adjustment3</property>
@@ -265,12 +265,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_rate_label">
+          <object class="GtkLabel" id="wifi_rate_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_Rate:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wireless_rate</property>
+            <property name="mnemonic_widget">wifi_rate</property>
           </object>
           <packing>
             <property name="top_attach">5</property>
@@ -280,7 +280,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="wireless_bssid">
+          <object class="GtkEntry" id="wifi_bssid">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="tooltip_text" translatable="yes">This option locks this connection to the Wi-Fi access point (AP) specified by the BSSID entered here.  Example: 00:11:22:33:44:55</property>
@@ -294,7 +294,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="wireless_ssid">
+          <object class="GtkEntry" id="wifi_ssid">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
           </object>
@@ -305,12 +305,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_bssid_label">
+          <object class="GtkLabel" id="wifi_bssid_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">_BSSID:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wireless_bssid</property>
+            <property name="mnemonic_widget">wifi_bssid</property>
           </object>
           <packing>
             <property name="top_attach">4</property>
@@ -320,7 +320,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkSpinButton" id="wireless_channel">
+          <object class="GtkSpinButton" id="wifi_channel">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="adjustment">adjustment4</property>
@@ -335,12 +335,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_channel_label">
+          <object class="GtkLabel" id="wifi_channel_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">C_hannel:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wireless_channel</property>
+            <property name="mnemonic_widget">wifi_channel</property>
           </object>
           <packing>
             <property name="top_attach">3</property>
@@ -350,7 +350,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBox" id="wireless_band">
+          <object class="GtkComboBox" id="wifi_band">
             <property name="visible">True</property>
             <property name="model">model1</property>
             <child>
@@ -370,12 +370,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_band_label">
+          <object class="GtkLabel" id="wifi_band_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Ban_d:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wireless_band</property>
+            <property name="mnemonic_widget">wifi_band</property>
           </object>
           <packing>
             <property name="top_attach">2</property>
@@ -385,7 +385,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkComboBox" id="wireless_mode">
+          <object class="GtkComboBox" id="wifi_mode">
             <property name="visible">True</property>
             <property name="model">model2</property>
             <child>
@@ -405,12 +405,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_mode_label">
+          <object class="GtkLabel" id="wifi_mode_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">M_ode:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wireless_mode</property>
+            <property name="mnemonic_widget">wifi_mode</property>
           </object>
           <packing>
             <property name="top_attach">1</property>
@@ -420,12 +420,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="wireless_ssid_label">
+          <object class="GtkLabel" id="wifi_ssid_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">SS_ID:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">wireless_ssid</property>
+            <property name="mnemonic_widget">wifi_ssid</property>
           </object>
           <packing>
             <property name="x_options">GTK_FILL</property>

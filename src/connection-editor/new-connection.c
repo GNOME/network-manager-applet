@@ -24,8 +24,8 @@
 
 #include "new-connection.h"
 #include "nm-connection-list.h"
-#include "page-wired.h"
-#include "page-wireless.h"
+#include "page-ethernet.h"
+#include "page-wifi.h"
 #include "page-mobile.h"
 #include "page-wimax.h"
 #include "page-dsl.h"
@@ -87,7 +87,7 @@ get_connection_type_list (void)
 
 	data.name = _("Ethernet");
 	ICON_LOAD (data.icon, "nm-device-wired");
-	data.new_connection_func = wired_connection_new;
+	data.new_connection_func = ethernet_connection_new;
 	data.setting_type = NM_TYPE_SETTING_WIRED;
 	g_array_append_val (array, data);
 
