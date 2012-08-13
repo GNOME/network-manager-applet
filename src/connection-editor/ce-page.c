@@ -157,7 +157,8 @@ ce_page_mac_to_entry (const GByteArray *mac, int type, GtkEntry *entry)
 GByteArray *
 ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid)
 {
-	const char *temp;
+	const char *temp, *sp;
+	char *buf = NULL;
 	GByteArray *mac;
 
 	g_return_val_if_fail (entry != NULL, NULL);
@@ -170,7 +171,12 @@ ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid)
 	if (!temp || !strlen (temp))
 		return NULL;
 
+	sp = strchr (temp, ' ');
+	if (sp)
+		temp = buf = g_strndup (temp, sp - temp);
+
 	mac = nm_utils_hwaddr_atoba (temp, type);
+	g_free (buf);
 	if (!mac) {
 		if (invalid)
 			*invalid = TRUE;
