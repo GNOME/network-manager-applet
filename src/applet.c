@@ -396,7 +396,23 @@ applet_get_settings (NMApplet *applet)
 GSList *
 applet_get_all_connections (NMApplet *applet)
 {
-	return nm_remote_settings_list_connections (applet->settings);
+	GSList *connections, *iter, *next;
+	NMConnection *connection;
+	NMSettingConnection *s_con;
+
+	connections = nm_remote_settings_list_connections (applet->settings);
+
+	/* Ignore slave connections */
+	for (iter = connections; iter; iter = next) {
+		connection = iter->data;
+		next = iter->next;
+
+		s_con = nm_connection_get_setting_connection (connection);
+		if (s_con && nm_setting_connection_get_master (s_con))
+			connections = g_slist_delete_link (connections, iter);
+	}
+
+	return connections;
 }
 
 static NMConnection *
