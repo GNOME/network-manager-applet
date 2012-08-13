@@ -5,12 +5,14 @@ libnmgtkdir = $(includedir)/libnm-gtk
 
 libnmgtk_HEADERS = \
 	nm-wifi-dialog.h \
+	nm-wireless-dialog.h \
 	nm-mobile-wizard.h
 
 lib_LTLIBRARIES = libnm-gtk.la
 
 libnm_gtk_la_SOURCES = \
 	nm-wifi-dialog.c \
+	nm-wireless-dialog.c \
 	nm-mobile-wizard.c
 
 libnm_gtk_la_CFLAGS = \
