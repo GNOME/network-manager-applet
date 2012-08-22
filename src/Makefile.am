@@ -5,7 +5,7 @@ bin_PROGRAMS = nm-applet
 nm_applet_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
-	$(GNOME_KEYRING_CFLAGS) \
+	$(LIBSECRET_CFLAGS) \
 	$(NOTIFY_CFLAGS) \
 	-DICONDIR=\""$(datadir)/icons"\"						\
 	-DUIDIR=\""$(uidir)"\"							\
@@ -65,7 +65,7 @@ nm_applet_LDADD = \
 	-lm \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
-	$(GNOME_KEYRING_LIBS) \
+	$(LIBSECRET_LIBS) \
 	$(NOTIFY_LIBS) \
 	${top_builddir}/src/marshallers/libmarshallers.la \
 	${top_builddir}/src/utils/libutils.la \
@@ -88,7 +88,7 @@ endif
 
 nm_applet_migration_tool_CPPFLAGS = \
 	$(nm_applet_CPPFLAGS) \
-	$(GCONF_CFLAGS) \
+	$(MIGRATION_CFLAGS) \
 	-I${top_srcdir}/src/gconf-helpers
 
 nm_applet_migration_tool_SOURCES = \
@@ -96,7 +96,7 @@ nm_applet_migration_tool_SOURCES = \
 
 nm_applet_migration_tool_LDADD = \
 	$(nm_applet_LDADD) \
-	$(GCONF_LIBS) \
+	$(MIGRATION_LIBS) \
 	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
 
 

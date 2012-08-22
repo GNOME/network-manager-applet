@@ -124,23 +124,26 @@ AC_ARG_ENABLE([migration],
 	       fi])
 AC_MSG_RESULT([$enable_migration])
 if test "$enable_migration" = "yes"; then
-	PKG_CHECK_MODULES(GCONF, [gconf-2.0], :,
+	PKG_CHECK_MODULES(MIGRATION, [gconf-2.0 gnome-keyring-1], :,
 			  [AC_MSG_ERROR([
-Could not find GConf devel files, which are needed for
-nm-applet-migration-tool. You can configure with --disable-migration
-if you want to build without the code to migrate GConf settings from
-older (< 0.9) nm-applet releases.])])
+Could not find devel files needed for nm-applet-migration-tool:
 
-	AC_SUBST(GCONF_CFLAGS)
-	AC_SUBST(GCONF_LIBS)
+$MIGRATION_PKG_ERRORS
+
+You can configure with --disable-migration if you want to build
+without the code to migrate GConf settings from older (< 0.9)
+nm-applet releases.])])
+
+	AC_SUBST(MIGRATION_CFLAGS)
+	AC_SUBST(MIGRATION_LIBS)
 
 	AC_DEFINE(BUILD_MIGRATION_TOOL, 1, [Define when building nm-applet-migration-tool])
 fi
 AM_CONDITIONAL(BUILD_MIGRATION_TOOL, test "$enable_migration" = "yes")
 
-PKG_CHECK_MODULES(GNOME_KEYRING, [gnome-keyring-1])
-AC_SUBST(GNOME_KEYRING_CFLAGS)
-AC_SUBST(GNOME_KEYRING_LIBS)
+PKG_CHECK_MODULES(LIBSECRET, [libsecret-unstable])
+AC_SUBST(LIBSECRET_CFLAGS)
+AC_SUBST(LIBSECRET_LIBS)
 
 # Check for libnotify >= 0.7
 PKG_CHECK_MODULES(LIBNOTIFY_07, [libnotify >= 0.7], [have_libnotify_07=yes],[have_libnotify_07=no])

@@ -14,14 +14,13 @@ test_upgrade_CPPFLAGS = \
 	-DTESTDIR=\"$(srcdir)\" \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(GNOME_KEYRING_CFLAGS)
+	$(MIGRATION_CFLAGS)
 
 test_upgrade_LDADD = \
 	${builddir}/../libgconf-helpers-test.la \
 	$(GTK_CFLAGS) \
 	$(NMA_LIBS) \
-	$(GNOME_KEYRING_LIBS)
+	$(MIGRATION_LIBS)
 
 check-local: test-upgrade
 	$(abs_builddir)/test-upgrade

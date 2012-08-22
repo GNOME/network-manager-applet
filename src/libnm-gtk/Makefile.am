@@ -25,7 +25,6 @@ libnm_gtk_la_CFLAGS = \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	$(DBUS_CFLAGS) \
-	$(GNOME_KEYRING_CFLAGS) \
 	$(GUDEV_CFLAGS) \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DUIDIR=\""$(uidir)"\" \
@@ -44,7 +43,6 @@ libnm_gtk_la_CFLAGS = \
 libnm_gtk_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
-	$(GNOME_KEYRING_LIBS) \
 	$(GUDEV_LIBS) \
 	$(top_builddir)/src/marshallers/libmarshallers.la \
 	$(top_builddir)/src/wireless-security/libwireless-security.la

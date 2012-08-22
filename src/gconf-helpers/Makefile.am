@@ -16,15 +16,13 @@ libgconf_helpers_la_CPPFLAGS = \
 	-I$(top_srcdir)/src/utils \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(GNOME_KEYRING_CFLAGS) \
+	$(MIGRATION_CFLAGS) \
 	$(DISABLE_DEPRECATED)
 
 libgconf_helpers_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
-	$(GCONF_LIBS) \
-	$(GNOME_KEYRING_LIBS)
+	$(MIGRATION_LIBS)
 
 #########################
 # Test library
@@ -36,8 +34,7 @@ libgconf_helpers_test_la_CPPFLAGS = \
 	-I$(top_srcdir)/src/utils \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(GNOME_KEYRING_CFLAGS) \
+	$(MIGRATION_CFLAGS) \
 	$(DISABLE_DEPRECATED)
 
 # no keyring or gconf libs since we'll override them

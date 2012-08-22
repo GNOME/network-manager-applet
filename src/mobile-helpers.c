@@ -23,7 +23,9 @@
 #include <ctype.h>
 #include <glib/gi18n.h>
 #include <nm-utils.h>
-#include <gnome-keyring.h>
+
+#define SECRET_API_SUBJECT_TO_CHANGE
+#include <libsecret/secret.h>
 
 #include "utils.h"
 #include "mobile-helpers.h"
@@ -277,11 +279,31 @@ mobile_helper_wizard (NMDeviceModemCapabilities capabilities,
 
 /********************************************************************/
 
+const SecretSchema mobile_secret_schema = {
+	"org.freedesktop.NetworkManager.Mobile",
+	SECRET_SCHEMA_DONT_MATCH_NAME,
+	{
+		{ "devid", SECRET_SCHEMA_ATTRIBUTE_STRING },
+		{ "simid", SECRET_SCHEMA_ATTRIBUTE_STRING },
+		{ NULL, 0 },
+	}
+};
+
 static void
-save_pin_cb (GnomeKeyringResult result, guint32 val, gpointer user_data)
+save_pin_cb (GObject *source,
+             GAsyncResult *result,
+             gpointer user_data)
 {
-	if (result != GNOME_KEYRING_RESULT_OK)
-		g_warning ("%s: result %d", (const char *) user_data, result);
+	GError *error = NULL;
+	gchar *error_msg = user_data;
+
+	secret_password_store_finish (result, &error);
+	if (error != NULL) {
+		g_warning ("%s: %s", error_msg, error->message);
+		g_error_free (error);
+	}
+
+	g_free (error_msg);
 }
 
 void
@@ -289,75 +311,32 @@ mobile_helper_save_pin_in_keyring (const char *devid,
                                    const char *simid,
                                    const char *pin)
 {
-	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringAttribute attr;
-	const char *name;
+	char *name;
 	char *error_msg;
 
 	name = g_strdup_printf (_("PIN code for SIM card '%s' on '%s'"),
 	                        simid ? simid : "unknown",
 	                        devid);
 
-	attributes = gnome_keyring_attribute_list_new ();
-	attr.name = g_strdup ("devid");
-	attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attr.value.string = g_strdup (devid);
-	g_array_append_val (attributes, attr);
-
-	if (simid) {
-		attr.name = g_strdup ("simid");
-		attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-		attr.value.string = g_strdup (simid);
-		g_array_append_val (attributes, attr);
-	}
-
 	error_msg = g_strdup_printf ("Saving PIN code in keyring for devid:%s simid:%s failed",
 	                             devid, simid ? simid : "(unknown)");
 
-	gnome_keyring_item_create (NULL,
-	                           GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                           name,
-	                           attributes,
-	                           pin,
-	                           TRUE,
-	                           save_pin_cb,
-	                           error_msg,
-	                           (GDestroyNotify) g_free);
+	secret_password_store (&mobile_secret_schema,
+	                       NULL, name, pin,
+	                       NULL, save_pin_cb, error_msg,
+	                       "devid", devid,
+	                       simid ? "simid" : NULL, simid,
+	                       NULL);
 
-	gnome_keyring_attribute_list_free (attributes);
-}
-
-static void
-delete_pin_cb (GnomeKeyringResult result, gpointer user_data)
-{
-	/* nothing to do */
-}
-
-static void
-delete_pins_find_cb (GnomeKeyringResult result, GList *list, gpointer user_data)
-{
-	GList *iter;
-
-	if (result == GNOME_KEYRING_RESULT_OK) {
-		for (iter = list; iter; iter = g_list_next (iter)) {
-			GnomeKeyringFound *found = iter->data;
-
-			gnome_keyring_item_delete (found->keyring, found->item_id, delete_pin_cb, NULL, NULL);
-		}
-	}
+	g_free (name);
 }
 
 void
 mobile_helper_delete_pin_in_keyring (const char *devid)
 {
-	gnome_keyring_find_itemsv (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-	                           delete_pins_find_cb,
-	                           NULL,
-	                           NULL,
-	                           "devid",
-	                           GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-	                           devid,
-	                           NULL);
+	secret_password_clear (&mobile_secret_schema, NULL, NULL, NULL,
+	                       "devid", devid,
+	                       NULL);
 }
 
 /********************************************************************/
