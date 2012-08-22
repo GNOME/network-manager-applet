@@ -109,6 +109,9 @@ PKG_CHECK_MODULES(NMA,
 # GValueArray stuff). We say GLIB_VERSION_2_26 because there
 # aren't macros for any older versions.
 NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_26"
+# Likewise for Gtk; we don't want to port to GtkGrid, etc, until
+# we can drop gtk2 support
+NMA_CFLAGS="$NMA_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_0"
 
 AC_MSG_CHECKING([whether to build nm-applet-migration-tool])
 AC_ARG_ENABLE([migration],
@@ -149,7 +152,7 @@ AC_SUBST(NOTIFY_CFLAGS)
 AC_SUBST(NOTIFY_LIBS)
 
 gtk2_req=2.20
-gtk3_req=2.91.4
+gtk3_req=3.0
 AC_ARG_WITH([gtkver], AS_HELP_STRING([--with-gtkver], [The major version of GTK+ to build with]),
             with_gtkver="$withval",with_gtkver=0)
 case "${with_gtkver}" in
