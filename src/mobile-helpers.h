@@ -24,6 +24,9 @@
 #define APPLET_MOBILE_HELPERS_H
 
 #include <gtk/gtk.h>
+#define SECRET_API_SUBJECT_TO_CHANGE
+#include <libsecret/secret.h>
+
 #include "applet.h"
 #include "nm-mobile-wizard.h"
 #include "nm-mobile-providers.h"
@@ -70,6 +73,8 @@ gboolean   mobile_helper_wizard (NMDeviceModemCapabilities capabilities,
                                  gpointer callback_data);
 
 /********************************************************************/
+
+extern const SecretSchema mobile_secret_schema;
 
 void mobile_helper_save_pin_in_keyring   (const char *devid,
                                           const char *simid,
