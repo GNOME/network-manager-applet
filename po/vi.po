@@ -8,10 +8,11 @@ msgstr ""
 "Project-Id-Version: NetworkManager HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2012-02-09 12:14+0000\n"
-"PO-Revision-Date: 2012-03-04 11:48+0700\n"
+"POT-Creation-Date: 2012-08-20 16:42+0000\n"
+"PO-Revision-Date: 2012-08-23 13:08+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,50 +27,6 @@ msgstr "Mạng"
 msgid "Manage your network connections"
 msgstr "Quản lý kết nối mạng"
 
-#: ../nm-applet.schemas.in.h:1
-msgid "Disable connected notifications"
-msgstr "Tắt thông báo kết nối"
-
-#: ../nm-applet.schemas.in.h:2
-msgid "Set this to TRUE to disable notifications when connecting to a network."
-msgstr "Đặt là TRUE để tắt thông báo khi nối mạng."
-
-#: ../nm-applet.schemas.in.h:3
-msgid "Disable disconnected notifications"
-msgstr "Tắt thông báo ngắt kết nối"
-
-#: ../nm-applet.schemas.in.h:4
-msgid ""
-"Set this to TRUE to disable notifications when disconnecting from a network."
-msgstr "Đặt là TRUE để tắt thông báo khi ngắt mạng."
-
-#: ../nm-applet.schemas.in.h:5
-msgid "Suppress networks available notifications"
-msgstr "Ngăn thông báo mạng sẵn sàng"
-
-#: ../nm-applet.schemas.in.h:6
-msgid ""
-"Set this to TRUE to disable notifications when wireless networks are "
-"available."
-msgstr "Đặt là TRUE để tắt thông báo khi có mạng không dây."
-
-#: ../nm-applet.schemas.in.h:7
-msgid "Stamp"
-msgstr "Temp"
-
-#: ../nm-applet.schemas.in.h:8
-msgid "Used to determine whether settings should be migrated to a new version."
-msgstr "Dùng để xác định thiết lập có được chuyển sang phiên bản mới không."
-
-#: ../nm-applet.schemas.in.h:9
-msgid "Disable WiFi Create"
-msgstr "Tắt tạo WiFi"
-
-#: ../nm-applet.schemas.in.h:10
-msgid ""
-"Set to TRUE to disable creation of adhoc networks when using the applet."
-msgstr "Đặt là TRUE để tắt tạo mạng adhock bằng applet."
-
 #: ../nm-connection-editor.desktop.in.h:1
 #: ../src/connection-editor/nm-connection-editor.ui.h:1
 msgid "Network Connections"
@@ -79,22 +36,114 @@ msgstr "Kết nối mạng"
 msgid "Manage and change your network connection settings"
 msgstr "Quản lí và thay đổi thiết lập kết nối mạng"
 
-#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:399
-#: ../src/applet-device-gsm.c:446 ../src/applet-device-wired.c:240
-#: ../src/applet-device-wifi.c:875 ../src/applet-device-wimax.c:279
+#: ../org.gnome.nm-applet.gschema.xml.in.h:1
+msgid "Disable connected notifications"
+msgstr "Tắt thông báo kết nối"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:2
+#, fuzzy
+#| msgid ""
+#| "Set this to TRUE to disable notifications when connecting to a network."
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr "Đặt là TRUE để tắt thông báo khi nối mạng."
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:3
+msgid "Disable disconnected notifications"
+msgstr "Tắt thông báo ngắt kết nối"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:4
+#, fuzzy
+#| msgid ""
+#| "Set this to TRUE to disable notifications when disconnecting from a "
+#| "network."
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr "Đặt là TRUE để tắt thông báo khi ngắt mạng."
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:5
+#, fuzzy
+#| msgid "Disable connected notifications"
+msgid "Disable VPN notifications"
+msgstr "Tắt thông báo kết nối"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:6
+#, fuzzy
+#| msgid ""
+#| "Set this to TRUE to disable notifications when disconnecting from a "
+#| "network."
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr "Đặt là TRUE để tắt thông báo khi ngắt mạng."
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:7
+msgid "Suppress networks available notifications"
+msgstr "Ngăn thông báo mạng sẵn sàng"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:8
+#, fuzzy
+#| msgid ""
+#| "Set this to TRUE to disable notifications when wireless networks are "
+#| "available."
+msgid ""
+"Set this to true to disable notifications when wireless networks are "
+"available."
+msgstr "Đặt là TRUE để tắt thông báo khi có mạng không dây."
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:9
+msgid "Stamp"
+msgstr "Temp"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:10
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr "Dùng để xác định thiết lập có được chuyển sang phiên bản mới không."
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:11
+msgid "Disable WiFi Create"
+msgstr "Tắt tạo WiFi"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:12
+#, fuzzy
+#| msgid ""
+#| "Set to TRUE to disable creation of adhoc networks when using the applet."
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr "Đặt là TRUE để tắt tạo mạng adhock bằng applet."
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:13
+#, fuzzy
+#| msgid "Choose CA Certificate"
+msgid "Ignore CA certificate"
+msgstr "Chọn chứng nhận CA"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:14
+msgid ""
+"Set this to true to disable warnings about CA certificates in EAP "
+"authentication."
+msgstr ""
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:15
+msgid ""
+"Set this to true to disable warnings about CA certificates in phase 2 of EAP "
+"authentication."
+msgstr ""
+
+#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:396
+#: ../src/applet-device-gsm.c:444 ../src/applet-device-wired.c:240
+#: ../src/applet-device-wifi.c:862 ../src/applet-device-wimax.c:279
 msgid "Available"
 msgstr "Dùng được"
 
-#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:441
-#: ../src/applet-device-gsm.c:488 ../src/applet-device-wired.c:269
+#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:438
+#: ../src/applet-device-gsm.c:486 ../src/applet-device-wired.c:269
 #: ../src/applet-device-wimax.c:423
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Bạn đã kết nối đến mạng '%s'."
 
-#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:445
-#: ../src/applet-device-gsm.c:492 ../src/applet-device-wired.c:273
-#: ../src/applet-device-wifi.c:1278 ../src/applet-device-wimax.c:427
+#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:442
+#: ../src/applet-device-gsm.c:490 ../src/applet-device-wired.c:273
+#: ../src/applet-device-wifi.c:1264 ../src/applet-device-wimax.c:427
 msgid "Connection Established"
 msgstr "Kết nối được thiết lập"
 
@@ -102,137 +151,137 @@ msgstr "Kết nối được thiết lập"
 msgid "You are now connected to the mobile broadband network."
 msgstr "Bạn đã kết nối đến mạng di động băng thông rộng."
 
-#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:481
-#: ../src/applet-device-gsm.c:528 ../src/applet-device-wimax.c:464
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:478
+#: ../src/applet-device-gsm.c:526 ../src/applet-device-wimax.c:464
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Đang chuẩn bị kết nối di động băng thông rộng '%s'..."
 
-#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:484
-#: ../src/applet-device-gsm.c:531 ../src/applet-device-wimax.c:467
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:481
+#: ../src/applet-device-gsm.c:529 ../src/applet-device-wimax.c:467
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Đang cấu hình kết nối di động băng thông rộng '%s'..."
 
-#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:487
-#: ../src/applet-device-gsm.c:534 ../src/applet-device-wimax.c:470
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:484
+#: ../src/applet-device-gsm.c:532 ../src/applet-device-wimax.c:470
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Cần xác thực cho kết nối di động băng thông rộng '%s'..."
 
-#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:490
-#: ../src/applet-device-gsm.c:537 ../src/applet-device-wimax.c:473
-#: ../src/applet.c:2479
+#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:487
+#: ../src/applet-device-gsm.c:535 ../src/applet-device-wimax.c:473
+#: ../src/applet.c:2500
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Đang lấy địa chỉ mạng cho '%s'..."
 
-#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:508
-#: ../src/applet-device-gsm.c:555
+#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:505
+#: ../src/applet-device-gsm.c:553
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Kết nối di động băng thông rộng '%s' đã hoạt động"
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:696
+#: ../src/applet-device-cdma.c:181 ../src/connection-editor/page-mobile.c:696
 #: ../src/mb-menu-item.c:54
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:345 ../src/applet-device-gsm.c:392
-#: ../src/applet-dialogs.c:430
+#: ../src/applet-device-cdma.c:342 ../src/applet-device-gsm.c:390
+#: ../src/applet-dialogs.c:424
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Di động băng thông rộng (%s)"
 
-#: ../src/applet-device-cdma.c:347 ../src/applet-device-gsm.c:394
+#: ../src/applet-device-cdma.c:344 ../src/applet-device-gsm.c:392
 #: ../src/connection-editor/page-mobile.c:379
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
-#: ../src/connection-editor/nm-connection-list.c:1511
+#: ../src/connection-editor/nm-connection-list.c:1510
 msgid "Mobile Broadband"
 msgstr "Di động băng thông rộng"
 
 #. Default connection item
-#: ../src/applet-device-cdma.c:412
+#: ../src/applet-device-cdma.c:409
 msgid "New Mobile Broadband (CDMA) connection..."
 msgstr "Kết nối di động băng thông rộng (CDMA) mới..."
 
-#: ../src/applet-device-cdma.c:446
+#: ../src/applet-device-cdma.c:443
 msgid "You are now connected to the CDMA network."
 msgstr "Bạn đã kết nối đến mạng CDMA."
 
-#: ../src/applet-device-cdma.c:503 ../src/applet-device-gsm.c:550
+#: ../src/applet-device-cdma.c:500 ../src/applet-device-gsm.c:548
 #: ../src/applet-device-wimax.c:482
 #, c-format
 msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
 msgstr "Kết nối di động băng thông rộng '%s' đã hoạt động: (%d%%%s%s)"
 
-#: ../src/applet-device-cdma.c:506 ../src/applet-device-gsm.c:553
+#: ../src/applet-device-cdma.c:503 ../src/applet-device-gsm.c:551
 #: ../src/applet-device-wimax.c:485
 msgid "roaming"
 msgstr "chuyển vùng"
 
-#: ../src/applet-device-cdma.c:647 ../src/applet-device-cdma.c:653
+#: ../src/applet-device-cdma.c:644 ../src/applet-device-cdma.c:650
 msgid "CDMA network."
 msgstr "Mạng CDMA."
 
-#: ../src/applet-device-cdma.c:648 ../src/applet-device-gsm.c:1198
+#: ../src/applet-device-cdma.c:645 ../src/applet-device-gsm.c:1196
 msgid "You are now registered on the home network."
 msgstr "Bạn đã đăng ký mạng nhà."
 
-#: ../src/applet-device-cdma.c:654 ../src/applet-device-gsm.c:1204
+#: ../src/applet-device-cdma.c:651 ../src/applet-device-gsm.c:1202
 msgid "You are now registered on a roaming network."
 msgstr "Bạn đã đăng ký mạng chuyển vùng."
 
-#: ../src/applet-device-gsm.c:213 ../src/connection-editor/page-mobile.c:699
+#: ../src/applet-device-gsm.c:211 ../src/connection-editor/page-mobile.c:699
 #: ../src/mb-menu-item.c:59
 msgid "GSM"
 msgstr "GSM"
 
 #. Default connection item
-#: ../src/applet-device-gsm.c:459
+#: ../src/applet-device-gsm.c:457
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "Kết nối di động băng thông rộng (GSM) mới..."
 
-#: ../src/applet-device-gsm.c:493
+#: ../src/applet-device-gsm.c:491
 msgid "You are now connected to the GSM network."
 msgstr "Bạn đã kết nối đến mạng GSM."
 
-#: ../src/applet-device-gsm.c:654
+#: ../src/applet-device-gsm.c:652
 msgid "PIN code required"
 msgstr "Cần mã PIN"
 
-#: ../src/applet-device-gsm.c:662
+#: ../src/applet-device-gsm.c:660
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Cần mã PIN cho thiết bị di động băng thông rộng"
 
-#: ../src/applet-device-gsm.c:783
+#: ../src/applet-device-gsm.c:781
 #, c-format
 msgid "PIN code for SIM card '%s' on '%s'"
 msgstr "Mã PIN cho SIM card '%s' trên '%s'"
 
-#: ../src/applet-device-gsm.c:875
+#: ../src/applet-device-gsm.c:873
 msgid "Wrong PIN code; please contact your provider."
 msgstr "Sai mã PIN; vui lòng liên lạc nhà cung cấp."
 
-#: ../src/applet-device-gsm.c:898
+#: ../src/applet-device-gsm.c:896
 msgid "Wrong PUK code; please contact your provider."
 msgstr "Sai mã PUK; vui lòng liên lạc nhà cung cấp."
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-gsm.c:925
+#: ../src/applet-device-gsm.c:923
 msgid "Sending unlock code..."
 msgstr "Đang gửi mã mở khoá..."
 
-#: ../src/applet-device-gsm.c:988
+#: ../src/applet-device-gsm.c:986
 msgid "SIM PIN unlock required"
 msgstr "Cần PIN mở khoá SIM"
 
-#: ../src/applet-device-gsm.c:989
+#: ../src/applet-device-gsm.c:987
 msgid "SIM PIN Unlock Required"
 msgstr "Cần PIN mở khoá SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-device-gsm.c:991
+#: ../src/applet-device-gsm.c:989
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -241,25 +290,25 @@ msgstr ""
 "Thiết bị di động băng thông rộng '%s' cần mã PIN SIM trước khi có thể dùng."
 
 #. Translators: PIN code entry label
-#: ../src/applet-device-gsm.c:993
+#: ../src/applet-device-gsm.c:991
 msgid "PIN code:"
 msgstr "Mã PIN:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-device-gsm.c:997
+#: ../src/applet-device-gsm.c:995
 msgid "Show PIN code"
 msgstr "Hiện mã PIN"
 
-#: ../src/applet-device-gsm.c:1000
+#: ../src/applet-device-gsm.c:998
 msgid "SIM PUK unlock required"
 msgstr "Cần PUK mở khoá SIM"
 
-#: ../src/applet-device-gsm.c:1001
+#: ../src/applet-device-gsm.c:999
 msgid "SIM PUK Unlock Required"
 msgstr "Cần PUK mở khoá SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-device-gsm.c:1003
+#: ../src/applet-device-gsm.c:1001
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -268,26 +317,26 @@ msgstr ""
 "Thiết bị di động băng thông rộng '%s' cần mã PUK SIM trước khi có thể dùng."
 
 #. Translators: PUK code entry label
-#: ../src/applet-device-gsm.c:1005
+#: ../src/applet-device-gsm.c:1003
 msgid "PUK code:"
 msgstr "Mã PUK:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-device-gsm.c:1008
+#: ../src/applet-device-gsm.c:1006
 msgid "New PIN code:"
 msgstr "Mã PIN mới:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-device-gsm.c:1010
+#: ../src/applet-device-gsm.c:1008
 msgid "Re-enter new PIN code:"
 msgstr "Nhập lại mã PIN:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-device-gsm.c:1015
+#: ../src/applet-device-gsm.c:1013
 msgid "Show PIN/PUK codes"
 msgstr "Hiện mã PIN/PUK"
 
-#: ../src/applet-device-gsm.c:1197 ../src/applet-device-gsm.c:1203
+#: ../src/applet-device-gsm.c:1195 ../src/applet-device-gsm.c:1201
 msgid "GSM network."
 msgstr "Mạng GSM."
 
@@ -314,7 +363,7 @@ msgid "Wired Network"
 msgstr "Mạng dây"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:232 ../src/applet.c:1485
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1508
 msgid "disconnected"
 msgstr "đã ngắt kết nối"
 
@@ -355,87 +404,113 @@ msgstr "Xác thực DSL"
 msgid "_Connect to Hidden Wireless Network..."
 msgstr "_Kết nối tới mạng không dây ẩn..."
 
-#: ../src/applet-device-wifi.c:150
+#: ../src/applet-device-wifi.c:148
 msgid "Create _New Wireless Network..."
 msgstr "Tạo mạ_ng không dây mới..."
 
-#: ../src/applet-device-wifi.c:294
+#: ../src/applet-device-wifi.c:292
 msgid "(none)"
 msgstr "(không)"
 
-#: ../src/applet-device-wifi.c:803
+#: ../src/applet-device-wifi.c:790
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "Mạng không dây (%s)"
 
-#: ../src/applet-device-wifi.c:805
+#: ../src/applet-device-wifi.c:792
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "Mạng không dây (%s)"
 
-#: ../src/applet-device-wifi.c:807
+#: ../src/applet-device-wifi.c:794
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "Mạng không dây"
 
-#: ../src/applet-device-wifi.c:840
+#: ../src/applet-device-wifi.c:827
 msgid "wireless is disabled"
 msgstr "không dây bị tắt"
 
-#: ../src/applet-device-wifi.c:841
+#: ../src/applet-device-wifi.c:828
 msgid "wireless is disabled by hardware switch"
 msgstr "không dây bị tắt phần cứng"
 
-#: ../src/applet-device-wifi.c:902
+#: ../src/applet-device-wifi.c:889
 msgid "More networks"
 msgstr "Thêm mạng"
 
-#: ../src/applet-device-wifi.c:1081
+#: ../src/applet-device-wifi.c:1068
 msgid "Wireless Networks Available"
 msgstr "Mạng không dây dùng được"
 
-#: ../src/applet-device-wifi.c:1082
+#: ../src/applet-device-wifi.c:1069
 msgid "Use the network menu to connect to a wireless network"
 msgstr "Dùng trình đơn mạng để kết nối mạng không dây"
 
-#: ../src/applet-device-wifi.c:1085 ../src/applet.c:901
+#: ../src/applet-device-wifi.c:1072 ../src/applet.c:924
 msgid "Don't show this message again"
 msgstr "Đừng nhắc nữa"
 
-#: ../src/applet-device-wifi.c:1277
+#: ../src/applet-device-wifi.c:1263
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "Bạn đã kết nối đến mạng không dây « %s »."
 
-#: ../src/applet-device-wifi.c:1308
+#: ../src/applet-device-wifi.c:1294
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "Đang chuẩn bị kết nối mạng không dây '%s'..."
 
-#: ../src/applet-device-wifi.c:1311
+#: ../src/applet-device-wifi.c:1297
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "Đang cấu hình kết nối mạng không dây '%s'..."
 
-#: ../src/applet-device-wifi.c:1314
+#: ../src/applet-device-wifi.c:1300
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "Cần xác thực cho kết nối mạng không dây '%s'..."
 
-#: ../src/applet-device-wifi.c:1317
+#: ../src/applet-device-wifi.c:1303
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "Đang lấy địa chỉ mạng không dây '%s'..."
 
-#: ../src/applet-device-wifi.c:1338
+#: ../src/applet-device-wifi.c:1324
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "Kết nối mạng không dây '%s' đã hoạt động: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1343
+#: ../src/applet-device-wifi.c:1329
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "Kết nối mạng không dây '%s' đã hoạt động"
+
+#: ../src/applet-device-wifi.c:1377
+#, fuzzy
+#| msgid "Failed to create PAN connection: %s"
+msgid "Failed to activate connection"
+msgstr "Lỗi tạo kết nối PAN: %s"
+
+#: ../src/applet-device-wifi.c:1379 ../src/applet-device-wifi.c:1398
+#: ../src/applet.c:490 ../src/applet.c:534 ../src/applet.c:560
+#, fuzzy
+#| msgid "Unknown"
+msgid "Unknown error"
+msgstr "Không rõ"
+
+#: ../src/applet-device-wifi.c:1382 ../src/applet-device-wifi.c:1401
+#: ../src/applet.c:493 ../src/applet.c:563
+#, fuzzy
+#| msgid "Connection add failed"
+msgid "Connection failure"
+msgstr "Lỗi thêm kết nối"
+
+#: ../src/applet-device-wifi.c:1396
+#, fuzzy
+#| msgid "Could not edit new connection"
+msgid "Failed to add new connection"
+msgstr "Không thể sửa kết nối mới"
 
 #: ../src/applet-device-wimax.c:231
 #, c-format
@@ -463,9 +538,9 @@ msgid "Error displaying connection information:"
 msgstr "Gặp lỗi khi hiển thị thông tin kết nối:"
 
 #: ../src/applet-dialogs.c:109
-#: ../src/connection-editor/page-wireless-security.c:285
-#: ../src/libnm-gtk/nm-wireless-dialog.c:949
-#: ../src/wireless-security/wireless-security.c:397
+#: ../src/connection-editor/page-wireless-security.c:313
+#: ../src/libnm-gtk/nm-wireless-dialog.c:948
+#: ../src/wireless-security/wireless-security.c:406
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -473,190 +548,196 @@ msgstr "LEAP"
 msgid "Dynamic WEP"
 msgstr "WEP động"
 
-#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:246
-#: ../src/applet-dialogs.c:248
+#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:245
+#: ../src/applet-dialogs.c:247
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:244
+#: ../src/applet-dialogs.c:243
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:252 ../src/applet-dialogs.c:261
-#: ../src/connection-editor/page-wireless-security.c:239
-#: ../src/libnm-gtk/nm-wireless-dialog.c:906
+#: ../src/applet-dialogs.c:251 ../src/applet-dialogs.c:260
+#: ../src/connection-editor/page-wireless-security.c:265
+#: ../src/libnm-gtk/nm-wireless-dialog.c:905
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Không"
 
-#: ../src/applet-dialogs.c:352 ../src/applet-dialogs.c:490
+#: ../src/applet-dialogs.c:277
+#, fuzzy, c-format
+#| msgid "1 (Default)"
+msgid "%s (default)"
+msgstr "1 (mặc định)"
+
+#: ../src/applet-dialogs.c:346 ../src/applet-dialogs.c:484
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/giây"
 
-#: ../src/applet-dialogs.c:354 ../src/applet-dialogs.c:492
+#: ../src/applet-dialogs.c:348 ../src/applet-dialogs.c:486
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Không rõ"
 
-#: ../src/applet-dialogs.c:367
+#: ../src/applet-dialogs.c:361
 #, c-format
 msgid "%d dB"
 msgstr "%d dB"
 
-#: ../src/applet-dialogs.c:369
+#: ../src/applet-dialogs.c:363
 msgctxt "WiMAX CINR"
 msgid "unknown"
 msgstr "không rõ"
 
-#: ../src/applet-dialogs.c:381
+#: ../src/applet-dialogs.c:375
 msgctxt "WiMAX Base Station ID"
 msgid "unknown"
 msgstr "không rõ"
 
-#: ../src/applet-dialogs.c:416
+#: ../src/applet-dialogs.c:410
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:419
+#: ../src/applet-dialogs.c:413
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:426
+#: ../src/applet-dialogs.c:420
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:428
+#: ../src/applet-dialogs.c:422
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:432
+#: ../src/applet-dialogs.c:426
 #, c-format
 msgid "WiMAX (%s)"
 msgstr "WiMAX (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:438 ../src/applet-dialogs.c:797
+#: ../src/applet-dialogs.c:432 ../src/applet-dialogs.c:791
 msgid "General"
 msgstr "Chung"
 
-#: ../src/applet-dialogs.c:442
+#: ../src/applet-dialogs.c:436
 msgid "Interface:"
 msgstr "Giao diện:"
 
-#: ../src/applet-dialogs.c:458
+#: ../src/applet-dialogs.c:452
 msgid "Hardware Address:"
 msgstr "Địa chỉ phần cứng:"
 
 #. Driver
-#: ../src/applet-dialogs.c:466
+#: ../src/applet-dialogs.c:460
 msgid "Driver:"
 msgstr "Trình điều khiển:"
 
-#: ../src/applet-dialogs.c:495
+#: ../src/applet-dialogs.c:489
 msgid "Speed:"
 msgstr "Tốc độ:"
 
-#: ../src/applet-dialogs.c:505
+#: ../src/applet-dialogs.c:499
 msgid "Security:"
 msgstr "An ninh:"
 
-#: ../src/applet-dialogs.c:518
+#: ../src/applet-dialogs.c:512
 msgid "CINR:"
 msgstr "CINR:"
 
-#: ../src/applet-dialogs.c:531
+#: ../src/applet-dialogs.c:525
 msgid "BSID:"
 msgstr "BSID:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:548
+#: ../src/applet-dialogs.c:542
 msgid "IPv4"
 msgstr "IPv4"
 
 #. Address
-#: ../src/applet-dialogs.c:559 ../src/applet-dialogs.c:666
+#: ../src/applet-dialogs.c:553 ../src/applet-dialogs.c:660
 msgid "IP Address:"
 msgstr "Địa chỉ IP:"
 
-#: ../src/applet-dialogs.c:561 ../src/applet-dialogs.c:577
+#: ../src/applet-dialogs.c:555 ../src/applet-dialogs.c:571
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Không rõ"
 
-#: ../src/applet-dialogs.c:575
+#: ../src/applet-dialogs.c:569
 msgid "Broadcast Address:"
 msgstr "Địa chỉ quảng bá:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:584
+#: ../src/applet-dialogs.c:578
 msgid "Subnet Mask:"
 msgstr "Mặt nạ mạng:"
 
-#: ../src/applet-dialogs.c:586
+#: ../src/applet-dialogs.c:580
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Không rõ"
 
-#: ../src/applet-dialogs.c:594 ../src/applet-dialogs.c:681
+#: ../src/applet-dialogs.c:588 ../src/applet-dialogs.c:675
 msgid "Default Route:"
 msgstr "Tuyến mặc định:"
 
-#: ../src/applet-dialogs.c:606
+#: ../src/applet-dialogs.c:600
 msgid "Primary DNS:"
 msgstr "DNS chính:"
 
-#: ../src/applet-dialogs.c:615
+#: ../src/applet-dialogs.c:609
 msgid "Secondary DNS:"
 msgstr "DNS phụ:"
 
-#: ../src/applet-dialogs.c:625
+#: ../src/applet-dialogs.c:619
 msgid "Ternary DNS:"
 msgstr "DNS thứ ba:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:640
+#: ../src/applet-dialogs.c:634
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:649
+#: ../src/applet-dialogs.c:643
 msgid "Ignored"
 msgstr "Bỏ qua"
 
-#: ../src/applet-dialogs.c:802
+#: ../src/applet-dialogs.c:796
 msgid "VPN Type:"
 msgstr "Kiểu VPN:"
 
-#: ../src/applet-dialogs.c:809
+#: ../src/applet-dialogs.c:803
 msgid "VPN Gateway:"
 msgstr "Cổng VPN:"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:809
 msgid "VPN Username:"
 msgstr "Tên người dùng VPN:"
 
-#: ../src/applet-dialogs.c:821
+#: ../src/applet-dialogs.c:815
 msgid "VPN Banner:"
 msgstr "Khẩu hiện VPN:"
 
-#: ../src/applet-dialogs.c:827
+#: ../src/applet-dialogs.c:821
 msgid "Base Connection:"
 msgstr "Kết nối cơ sở:"
 
-#: ../src/applet-dialogs.c:829
+#: ../src/applet-dialogs.c:823
 msgid "Unknown"
 msgstr "Không rõ"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:892
+#: ../src/applet-dialogs.c:886
 msgid "No valid active connections found!"
 msgstr "Không có kết nối hoạt động!"
 
-#: ../src/applet-dialogs.c:945
+#: ../src/applet-dialogs.c:939
 msgid ""
 "Copyright © 2004-2011 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
@@ -666,33 +747,57 @@ msgstr ""
 "Copyright © 2005-2008 Novell, Inc.\n"
 "và nhiều dịch giả, công tác viên khác"
 
-#: ../src/applet-dialogs.c:948
+#: ../src/applet-dialogs.c:942
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Chương trình quản lí các thiết bị và kết nối mạng của bạn."
 
-#: ../src/applet-dialogs.c:950
+#: ../src/applet-dialogs.c:944
 msgid "NetworkManager Website"
 msgstr "Trang web NetworkManager"
 
-#: ../src/applet-dialogs.c:965
+#: ../src/applet-dialogs.c:959
 msgid "Missing resources"
 msgstr "Thiếu tài nguyên"
 
-#: ../src/applet-dialogs.c:990
+#: ../src/applet-dialogs.c:984
 msgid "Mobile broadband network password"
 msgstr "Mật khẩu mạng di động băng thông rộng"
 
-#: ../src/applet-dialogs.c:999
+#: ../src/applet-dialogs.c:993
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Cần mật khẩu để kết nối '%s'."
 
-#: ../src/applet-dialogs.c:1018
+#: ../src/applet-dialogs.c:1012
 msgid "Password:"
 msgstr "Mật khẩu:"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:488
+#, fuzzy
+#| msgid "Failed to create PAN connection: %s"
+msgid "Failed to add/activate connection"
+msgstr "Lỗi tạo kết nối PAN: %s"
+
+#: ../src/applet.c:532
+#, fuzzy
+#| msgid "disconnected"
+msgid "Device disconnect failed"
+msgstr "đã ngắt kết nối"
+
+#: ../src/applet.c:537
+#, fuzzy
+#| msgid "Disconnected"
+msgid "Disconnect failure"
+msgstr "Ngắt kết nối"
+
+#: ../src/applet.c:558
+#, fuzzy
+#| msgid "Connection add failed"
+msgid "Connection activation failed"
+msgstr "Lỗi thêm kết nối"
+
+#: ../src/applet.c:1013
 #, c-format
 msgid ""
 "\n"
@@ -702,7 +807,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' lỗi vì kết nối mạng bị ngắt."
 
-#: ../src/applet.c:993
+#: ../src/applet.c:1016
 #, c-format
 msgid ""
 "\n"
@@ -711,7 +816,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' lỗi vì dịch vụ VPN dừng đột ngột."
 
-#: ../src/applet.c:996
+#: ../src/applet.c:1019
 #, c-format
 msgid ""
 "\n"
@@ -721,7 +826,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' lỗi vì dịch vụ VPN trả về cấu hình không hợp lệ."
 
-#: ../src/applet.c:999
+#: ../src/applet.c:1022
 #, c-format
 msgid ""
 "\n"
@@ -730,7 +835,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' lỗi vì hết hạn kết nối."
 
-#: ../src/applet.c:1002
+#: ../src/applet.c:1025
 #, c-format
 msgid ""
 "\n"
@@ -739,7 +844,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' lỗi vì dịch vụ VPN không khởi động kịp."
 
-#: ../src/applet.c:1005
+#: ../src/applet.c:1028
 #, c-format
 msgid ""
 "\n"
@@ -748,7 +853,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' lỗi vì dịch vụ VPN không khởi động được."
 
-#: ../src/applet.c:1008
+#: ../src/applet.c:1031
 #, c-format
 msgid ""
 "\n"
@@ -757,7 +862,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' lỗi vì không có bí mật VPN hợp lệ."
 
-#: ../src/applet.c:1011
+#: ../src/applet.c:1034
 #, c-format
 msgid ""
 "\n"
@@ -766,7 +871,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' lỗi vì bí mật VPN không hợp lệ."
 
-#: ../src/applet.c:1018
+#: ../src/applet.c:1041
 #, c-format
 msgid ""
 "\n"
@@ -775,7 +880,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' lỗi."
 
-#: ../src/applet.c:1036
+#: ../src/applet.c:1059
 #, c-format
 msgid ""
 "\n"
@@ -785,7 +890,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' bị ngắt vì kết nối mạng bị ngắt."
 
-#: ../src/applet.c:1039
+#: ../src/applet.c:1062
 #, c-format
 msgid ""
 "\n"
@@ -794,7 +899,7 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' bị ngắt vì dịch vụ VPN dừng đột ngột."
 
-#: ../src/applet.c:1045
+#: ../src/applet.c:1068
 #, c-format
 msgid ""
 "\n"
@@ -803,15 +908,27 @@ msgstr ""
 "\n"
 "Kết nối VPN '%s' bị ngắt."
 
-#: ../src/applet.c:1079
+#: ../src/applet.c:1098
+#, c-format
+msgid ""
+"VPN connection has been successfully established.\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: ../src/applet.c:1100
+msgid "VPN connection has been successfully established.\n"
+msgstr ""
+
+#: ../src/applet.c:1102
 msgid "VPN Login Message"
 msgstr "Thông điệp đăng nhập VPN"
 
-#: ../src/applet.c:1085 ../src/applet.c:1093 ../src/applet.c:1143
+#: ../src/applet.c:1108 ../src/applet.c:1116 ../src/applet.c:1166
 msgid "VPN Connection Failed"
 msgstr "Lỗi kết nối VPN"
 
-#: ../src/applet.c:1150
+#: ../src/applet.c:1173
 #, c-format
 msgid ""
 "\n"
@@ -824,7 +941,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1153
+#: ../src/applet.c:1176
 #, c-format
 msgid ""
 "\n"
@@ -837,139 +954,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1473
+#: ../src/applet.c:1496
 msgid "device not ready (firmware missing)"
 msgstr "thiết bị chưa sẵn sàng (thiếu firmware)"
 
-#: ../src/applet.c:1475
+#: ../src/applet.c:1498
 msgid "device not ready"
 msgstr "thiết bị chưa sẵn sàng"
 
-#: ../src/applet.c:1501
+#: ../src/applet.c:1524
 msgid "Disconnect"
 msgstr "Ngắt kết nối"
 
-#: ../src/applet.c:1515
+#: ../src/applet.c:1538
 msgid "device not managed"
 msgstr "thiết bị không được quản lý"
 
-#: ../src/applet.c:1559
+#: ../src/applet.c:1582
 msgid "No network devices available"
 msgstr "Không tìm thấy thiết bị mạng dùng được"
 
-#: ../src/applet.c:1647
+#: ../src/applet.c:1670
 msgid "_VPN Connections"
 msgstr "Kết nối _VPN"
 
-#: ../src/applet.c:1704
+#: ../src/applet.c:1727
 msgid "_Configure VPN..."
 msgstr "_Cấu hình VPN..."
 
-#: ../src/applet.c:1708
+#: ../src/applet.c:1731
 msgid "_Disconnect VPN"
 msgstr "N_gắt kết nối VPN"
 
-#: ../src/applet.c:1806
+#: ../src/applet.c:1825
 msgid "NetworkManager is not running..."
 msgstr "Trình Quản lí Mạng đang không chạy..."
 
-#: ../src/applet.c:1811 ../src/applet.c:2604
+#: ../src/applet.c:1830 ../src/applet.c:2631
 msgid "Networking disabled"
 msgstr "Kết nối mạng tắt"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2032
+#: ../src/applet.c:2051
 msgid "Enable _Networking"
 msgstr "Bật _mạng"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2041
+#: ../src/applet.c:2060
 msgid "Enable _Wireless"
 msgstr "Bật mạng _không dây"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2050
+#: ../src/applet.c:2069
 msgid "Enable _Mobile Broadband"
 msgstr "Bật _di động băng thông rộng"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2059
+#: ../src/applet.c:2078
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "Bật di động băng thông rộng WiMA_X"
 
 #. Toggle notifications item
-#: ../src/applet.c:2070
+#: ../src/applet.c:2089
 msgid "Enable N_otifications"
 msgstr "Bật _thông báo"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2081
+#: ../src/applet.c:2100
 msgid "Connection _Information"
 msgstr "Thông t_in kết nối"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2091
+#: ../src/applet.c:2110
 msgid "Edit Connections..."
 msgstr "Sửa kết nối..."
 
 #. Help item
-#: ../src/applet.c:2105
+#: ../src/applet.c:2124
 msgid "_Help"
 msgstr "Trợ _giúp"
 
 #. About item
-#: ../src/applet.c:2114
+#: ../src/applet.c:2133
 msgid "_About"
 msgstr "_Giới thiệu"
 
-#: ../src/applet.c:2291
+#: ../src/applet.c:2310
 msgid "Disconnected"
 msgstr "Ngắt kết nối"
 
-#: ../src/applet.c:2292
+#: ../src/applet.c:2311
 msgid "The network connection has been disconnected."
 msgstr "Kết nối mạng đã bị ngắt."
 
-#: ../src/applet.c:2473
+#: ../src/applet.c:2494
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Đang chuẩn bị kết nối '%s'..."
 
-#: ../src/applet.c:2476
+#: ../src/applet.c:2497
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Cần xác thực cho kết nối '%s'..."
 
-#: ../src/applet.c:2482
+#: ../src/applet.c:2503
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Kết nối '%s' đã hoạt động"
 
-#: ../src/applet.c:2560
+#: ../src/applet.c:2586
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Đang bắt đầu kết nối VPN '%s'..."
 
-#: ../src/applet.c:2563
+#: ../src/applet.c:2589
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Cần xác thực cho kết nối VPN '%s'..."
 
-#: ../src/applet.c:2566
+#: ../src/applet.c:2592
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Đang lấy địa chỉ VPN cho '%s'..."
 
-#: ../src/applet.c:2569
+#: ../src/applet.c:2595
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "Kết nối VPN '%s' đã hoạt động"
 
-#: ../src/applet.c:2608
+#: ../src/applet.c:2636
 msgid "No network connection"
 msgstr "Không có kết nối mạng"
 
-#: ../src/applet.c:3258
+#: ../src/applet.c:3336
 msgid "NetworkManager Applet"
 msgstr "Trình Quản lí Mạng"
 
@@ -1001,7 +1118,7 @@ msgstr "Tê_n mạng:"
 msgid "automatic"
 msgstr "tự động"
 
-#: ../src/connection-editor/ce-page.c:310
+#: ../src/connection-editor/ce-page.c:318
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Không thể cập nhật bí mật kết nối vì lỗi không rõ."
 
@@ -1023,7 +1140,6 @@ msgstr "_Bỏ qua định tuyến lấy tự động"
 
 #: ../src/connection-editor/ce-ip4-routes.ui.h:3
 #: ../src/connection-editor/ce-ip6-routes.ui.h:3
-#| msgid "Use this c_onnection only for resources on its network"
 msgid "_Use this connection only for resources on its network"
 msgstr "Chỉ _dùng kết nối này cho tài nguyên trên mạng đó"
 
@@ -1129,12 +1245,15 @@ msgstr "ID D_HCP khách:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:12
 #: ../src/connection-editor/ce-page-ip6.ui.h:10
-#| msgid "_Search domains:"
+#: ../src/connection-editor/page-ip4.c:308
+#: ../src/connection-editor/page-ip6.c:307
 msgid "S_earch domains:"
 msgstr "Miền _tìm kiếm:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:13
 #: ../src/connection-editor/ce-page-ip6.ui.h:11
+#: ../src/connection-editor/page-ip4.c:299
+#: ../src/connection-editor/page-ip6.c:298
 msgid "_DNS servers:"
 msgstr "Máy chủ _DNS:"
 
@@ -1148,7 +1267,6 @@ msgstr ""
 "phân cách địa chỉ nhiều máy chủ tên miền."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:15
-#| msgid "Require IPv4 addressing for this connection to complete"
 msgid "Require IPv_4 addressing for this connection to complete"
 msgstr "Cần gán địa chỉ IPv_4 để hoàn tất kết nối"
 
@@ -1166,7 +1284,6 @@ msgid "_Routes…"
 msgstr "Đị_nh tuyến…"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:13
-#| msgid "Require IPv6 addressing for this connection to complete"
 msgid "Require IPv_6 addressing for this connection to complete"
 msgstr "Cần gán địa chỉ IPv_6 để hoàn tất kết nối"
 
@@ -1228,12 +1345,10 @@ msgid "Change..."
 msgstr "Thay đổi..."
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:15
-#| msgid "PI_N:"
 msgid "P_IN:"
 msgstr "P_IN:"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:16
-#| msgid "Allow roaming if home network is not available"
 msgid "Allow _roaming if home network is not available"
 msgstr "Cho phép _chuyển vùng nếu mạng nhà không dùng được"
 
@@ -1344,7 +1459,6 @@ msgstr "Đị_a chỉ MAC thiết bị:"
 
 #: ../src/connection-editor/ce-page-wired.ui.h:15
 #: ../src/connection-editor/ce-page-wireless.ui.h:10
-#| msgid "_Cloned MAC address:"
 msgid "C_loned MAC address:"
 msgstr "Địa chỉ MAC _sao:"
 
@@ -1361,7 +1475,6 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-wired.ui.h:17
 #: ../src/connection-editor/ce-page-wireless.ui.h:7
-#| msgid "MT_U:"
 msgid "_MTU:"
 msgstr "_MTU:"
 
@@ -1427,12 +1540,10 @@ msgid "M_ode:"
 msgstr "_Chế độ:"
 
 #: ../src/connection-editor/ce-page-wireless.ui.h:20
-#| msgid "_SSID:"
 msgid "SS_ID:"
 msgstr "SS_ID:"
 
 #: ../src/connection-editor/ce-page-wireless-security.ui.h:1
-#| msgid "Security:"
 msgid "S_ecurity:"
 msgstr "_An ninh:"
 
@@ -1516,20 +1627,20 @@ msgstr "Tạo…"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:745
 #: ../src/connection-editor/ip6-routes-dialog.c:687
-#: ../src/connection-editor/page-ip4.c:901
-#: ../src/connection-editor/page-ip6.c:867
+#: ../src/connection-editor/page-ip4.c:911
+#: ../src/connection-editor/page-ip6.c:877
 msgid "Address"
 msgstr "Địa chỉ"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:762
-#: ../src/connection-editor/page-ip4.c:918
+#: ../src/connection-editor/page-ip4.c:928
 msgid "Netmask"
 msgstr "Mặt nạ mạng"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:779
 #: ../src/connection-editor/ip6-routes-dialog.c:721
-#: ../src/connection-editor/page-ip4.c:935
-#: ../src/connection-editor/page-ip6.c:901
+#: ../src/connection-editor/page-ip4.c:945
+#: ../src/connection-editor/page-ip6.c:911
 msgid "Gateway"
 msgstr "Cổng"
 
@@ -1539,13 +1650,13 @@ msgid "Metric"
 msgstr "Thước đo"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:704
-#: ../src/connection-editor/page-ip6.c:884
+#: ../src/connection-editor/page-ip6.c:894
 msgid "Prefix"
 msgstr "Tiền tố"
 
 #: ../src/connection-editor/page-dsl.c:139
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/connection-editor/nm-connection-list.c:1519
+#: ../src/connection-editor/nm-connection-list.c:1518
 msgid "DSL"
 msgstr "DSL"
 
@@ -1553,7 +1664,7 @@ msgstr "DSL"
 msgid "Could not load DSL user interface."
 msgstr "Không thể nạp giao diện DSL."
 
-#: ../src/connection-editor/page-dsl.c:231
+#: ../src/connection-editor/page-dsl.c:232
 #, c-format
 msgid "DSL connection %d"
 msgstr "Kết nối DSL %d"
@@ -1605,16 +1716,30 @@ msgstr "Chỉ Link-Local"
 msgid "Disabled"
 msgstr "Tắt"
 
-#: ../src/connection-editor/page-ip4.c:832
+#: ../src/connection-editor/page-ip4.c:297
+#: ../src/connection-editor/page-ip6.c:296
+#, fuzzy
+#| msgid "_DNS servers:"
+msgid "Additional _DNS servers:"
+msgstr "Máy chủ _DNS:"
+
+#: ../src/connection-editor/page-ip4.c:306
+#: ../src/connection-editor/page-ip6.c:305
+#, fuzzy
+#| msgid "S_earch domains:"
+msgid "Additional s_earch domains:"
+msgstr "Miền _tìm kiếm:"
+
+#: ../src/connection-editor/page-ip4.c:843
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Sửa định tuyến IPv4 cho %s"
 
-#: ../src/connection-editor/page-ip4.c:982
+#: ../src/connection-editor/page-ip4.c:992
 msgid "IPv4 Settings"
 msgstr "Thiết lập IPv4"
 
-#: ../src/connection-editor/page-ip4.c:984
+#: ../src/connection-editor/page-ip4.c:994
 msgid "Could not load IPv4 user interface."
 msgstr "Không thể nạp giao diện người dùng IPv4."
 
@@ -1623,7 +1748,7 @@ msgid "Automatic, addresses only"
 msgstr "Tự động, chỉ địa chỉ"
 
 #: ../src/connection-editor/page-ip6.c:155
-#: ../src/wireless-security/eap-method.c:285
+#: ../src/wireless-security/eap-method.c:281
 msgid "Ignore"
 msgstr "Bỏ qua"
 
@@ -1631,16 +1756,16 @@ msgstr "Bỏ qua"
 msgid "Automatic, DHCP only"
 msgstr "Tự động, chỉ DHCP"
 
-#: ../src/connection-editor/page-ip6.c:798
+#: ../src/connection-editor/page-ip6.c:809
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Sửa định tuyến IPv6 cho %s"
 
-#: ../src/connection-editor/page-ip6.c:946
+#: ../src/connection-editor/page-ip6.c:956
 msgid "IPv6 Settings"
 msgstr "Thiết lập IPv6"
 
-#: ../src/connection-editor/page-ip6.c:948
+#: ../src/connection-editor/page-ip6.c:958
 msgid "Could not load IPv6 user interface."
 msgstr "Không thể nạp giao diện người dùng IPv6."
 
@@ -1709,17 +1834,17 @@ msgstr "không có"
 msgid "Editing PPP authentication methods for %s"
 msgstr "Sửa cách xác thực PPP cho %s"
 
-#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:282
 msgid "PPP Settings"
 msgstr "Thiết lập PPP"
 
-#: ../src/connection-editor/page-ppp.c:285
+#: ../src/connection-editor/page-ppp.c:284
 msgid "Could not load PPP user interface."
 msgstr "Không thể nạp giao diện PPP."
 
 #: ../src/connection-editor/page-vpn.c:109
 #: ../src/connection-editor/nm-connection-editor.ui.h:7
-#: ../src/connection-editor/nm-connection-list.c:1515
+#: ../src/connection-editor/nm-connection-list.c:1514
 msgid "VPN"
 msgstr "VPN"
 
@@ -1733,7 +1858,7 @@ msgid "Could not find VPN plugin service for '%s'."
 msgstr "Không thể tìm dịch vụ phần mở rộng VPN cho '%s'."
 
 #: ../src/connection-editor/page-vpn.c:201
-#: ../src/connection-editor/nm-connection-list.c:900
+#: ../src/connection-editor/nm-connection-list.c:899
 #, c-format
 msgid "VPN connection %d"
 msgstr "Kết nối VPN %d"
@@ -1749,7 +1874,7 @@ msgstr ""
 
 #: ../src/connection-editor/page-wired.c:272
 #: ../src/connection-editor/nm-connection-editor.ui.h:2
-#: ../src/connection-editor/nm-connection-list.c:1503
+#: ../src/connection-editor/nm-connection-list.c:1502
 msgid "Wired"
 msgstr "Dây"
 
@@ -1762,16 +1887,15 @@ msgstr "Không thể nạp giao diện mạng dây."
 msgid "Wired connection %d"
 msgstr "Kết nối mạng dây %d"
 
-#: ../src/connection-editor/page-wired-security.c:116
+#: ../src/connection-editor/page-wired-security.c:119
 msgid "802.1x Security"
 msgstr "An ninh 802.1x"
 
-#: ../src/connection-editor/page-wired-security.c:118
+#: ../src/connection-editor/page-wired-security.c:121
 msgid "Could not load Wired Security security user interface."
 msgstr "Không thể nạp giao diện an ninh mạng dây."
 
-#: ../src/connection-editor/page-wired-security.c:136
-#| msgid "Use 802.1X security for this connection"
+#: ../src/connection-editor/page-wired-security.c:139
 msgid "Use 802.1_X security for this connection"
 msgstr "Dùng an ninh 802.1_X cho kết nối này"
 
@@ -1789,7 +1913,7 @@ msgstr "%u (%u MHz)"
 
 #: ../src/connection-editor/page-wireless.c:457
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
-#: ../src/connection-editor/nm-connection-list.c:1507
+#: ../src/connection-editor/nm-connection-list.c:1506
 msgid "Wireless"
 msgstr "Không dây"
 
@@ -1803,76 +1927,76 @@ msgid "Wireless connection %d"
 msgstr "Kết nối không dây %d"
 
 # Name: don't translate / Tên: đừng dịch
-#: ../src/connection-editor/page-wireless-security.c:263
-#: ../src/libnm-gtk/nm-wireless-dialog.c:923
+#: ../src/connection-editor/page-wireless-security.c:290
+#: ../src/libnm-gtk/nm-wireless-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "Khoá WEP 40/128-bit (Thập lục phân hoặc ASCII)"
 
-#: ../src/connection-editor/page-wireless-security.c:272
-#: ../src/libnm-gtk/nm-wireless-dialog.c:932
+#: ../src/connection-editor/page-wireless-security.c:300
+#: ../src/libnm-gtk/nm-wireless-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit Passphrase"
 
-#: ../src/connection-editor/page-wireless-security.c:298
-#: ../src/libnm-gtk/nm-wireless-dialog.c:962
+#: ../src/connection-editor/page-wireless-security.c:326
+#: ../src/libnm-gtk/nm-wireless-dialog.c:961
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP động (802.1x)"
 
-#: ../src/connection-editor/page-wireless-security.c:312
-#: ../src/libnm-gtk/nm-wireless-dialog.c:976
+#: ../src/connection-editor/page-wireless-security.c:340
+#: ../src/libnm-gtk/nm-wireless-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 Cá nhân"
 
 # Name: don't translate / Tên: đừng dịch
-#: ../src/connection-editor/page-wireless-security.c:326
-#: ../src/libnm-gtk/nm-wireless-dialog.c:990
+#: ../src/connection-editor/page-wireless-security.c:354
+#: ../src/libnm-gtk/nm-wireless-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Kinh doanh"
 
-#: ../src/connection-editor/page-wireless-security.c:360
+#: ../src/connection-editor/page-wireless-security.c:395
 msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgstr "Không thể nạp giao diện an ninh WiFi; bỏ qua thiết lập WiFi."
 
-#: ../src/connection-editor/page-wireless-security.c:370
+#: ../src/connection-editor/page-wireless-security.c:405
 msgid "Wireless Security"
 msgstr "An ninh không dây"
 
-#: ../src/connection-editor/page-wireless-security.c:372
+#: ../src/connection-editor/page-wireless-security.c:407
 msgid "Could not load WiFi security user interface."
 msgstr "Không thể nạp giao diện an ninh WiFi."
 
-#: ../src/connection-editor/nm-connection-editor.c:101
+#: ../src/connection-editor/nm-connection-editor.c:102
 #, c-format
 msgid "Editing %s"
 msgstr "Sửa %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:105
+#: ../src/connection-editor/nm-connection-editor.c:106
 msgid "Editing un-named connection"
 msgstr "Sửa kết nối không tên"
 
-#: ../src/connection-editor/nm-connection-editor.c:288
+#: ../src/connection-editor/nm-connection-editor.c:292
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.c:391
+#: ../src/connection-editor/nm-connection-editor.c:395
 msgid "Error creating connection editor dialog."
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.c:403
+#: ../src/connection-editor/nm-connection-editor.c:407
 msgid "_Save"
 msgstr "_Lưu"
 
-#: ../src/connection-editor/nm-connection-editor.c:404
+#: ../src/connection-editor/nm-connection-editor.c:408
 msgid "Save any changes made to this connection."
 msgstr "Lưu những thay đổi của kết nối này."
 
-#: ../src/connection-editor/nm-connection-editor.c:405
+#: ../src/connection-editor/nm-connection-editor.c:409
 msgid "_Save..."
 msgstr "_Lưu..."
 
-#: ../src/connection-editor/nm-connection-editor.c:406
+#: ../src/connection-editor/nm-connection-editor.c:410
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr "Xác thực để lưu kết nối cho mọi người dùng trên máy này."
 
@@ -1961,7 +2085,7 @@ msgstr ""
 
 #: ../src/connection-editor/nm-connection-list.c:546
 #: ../src/connection-editor/nm-connection-list.c:719
-#: ../src/connection-editor/nm-connection-list.c:886
+#: ../src/connection-editor/nm-connection-list.c:885
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -1988,92 +2112,92 @@ msgstr "Lỗi xoá kết nối"
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Bạn có chắc muốn xoá kết nối %s không?"
 
-#: ../src/connection-editor/nm-connection-list.c:930
-#: ../src/connection-editor/vpn-helpers.c:227
+#: ../src/connection-editor/nm-connection-list.c:929
+#: ../src/connection-editor/vpn-helpers.c:228
 msgid "Cannot import VPN connection"
 msgstr "Không thể nhập kết nối VPN"
 
-#: ../src/connection-editor/nm-connection-list.c:932
+#: ../src/connection-editor/nm-connection-list.c:931
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
 "Error: no VPN service type."
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-list.c:945
+#: ../src/connection-editor/nm-connection-list.c:944
 msgid "Could not edit imported connection"
 msgstr "Không thể sửa kết nối nhập"
 
-#: ../src/connection-editor/nm-connection-list.c:1126
+#: ../src/connection-editor/nm-connection-list.c:1125
 msgid "Name"
 msgstr "Tên"
 
-#: ../src/connection-editor/nm-connection-list.c:1138
+#: ../src/connection-editor/nm-connection-list.c:1137
 msgid "Last Used"
 msgstr "Dùng lần cuối"
 
-#: ../src/connection-editor/nm-connection-list.c:1264
+#: ../src/connection-editor/nm-connection-list.c:1263
 msgid "No VPN plugin available. Please install one to enable this button."
 msgstr ""
 "Không có phần bổ sung VPN dùng được. Vui lòng cài đặt hoặc bật nút này."
 
-#: ../src/connection-editor/nm-connection-list.c:1275
+#: ../src/connection-editor/nm-connection-list.c:1274
 msgid "_Edit"
 msgstr "_Sửa"
 
-#: ../src/connection-editor/nm-connection-list.c:1276
+#: ../src/connection-editor/nm-connection-list.c:1275
 msgid "Edit the selected connection"
 msgstr "Sửa kết nối đã chọn"
 
-#: ../src/connection-editor/nm-connection-list.c:1277
+#: ../src/connection-editor/nm-connection-list.c:1276
 msgid "_Edit..."
 msgstr "_Sửa..."
 
-#: ../src/connection-editor/nm-connection-list.c:1278
+#: ../src/connection-editor/nm-connection-list.c:1277
 msgid "Authenticate to edit the selected connection"
 msgstr "Xác thực để sửa kết nối đã chọn"
 
-#: ../src/connection-editor/nm-connection-list.c:1293
+#: ../src/connection-editor/nm-connection-list.c:1292
 msgid "_Delete"
 msgstr "_Xoá"
 
-#: ../src/connection-editor/nm-connection-list.c:1294
+#: ../src/connection-editor/nm-connection-list.c:1293
 msgid "Delete the selected connection"
 msgstr "Xoá kết nối đã chọn"
 
-#: ../src/connection-editor/nm-connection-list.c:1295
+#: ../src/connection-editor/nm-connection-list.c:1294
 msgid "_Delete..."
 msgstr "_Xoá..."
 
-#: ../src/connection-editor/nm-connection-list.c:1296
+#: ../src/connection-editor/nm-connection-list.c:1295
 msgid "Authenticate to delete the selected connection"
 msgstr "Xác thực để xóa kết nối VPN đã chọn"
 
-#: ../src/connection-editor/nm-connection-list.c:1575
+#: ../src/connection-editor/nm-connection-list.c:1574
 msgid "Error creating connection"
 msgstr "Gặp lỗi tạo kết nối"
 
-#: ../src/connection-editor/nm-connection-list.c:1576
+#: ../src/connection-editor/nm-connection-list.c:1575
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Không biết cách tạo kết nối '%s'"
 
-#: ../src/connection-editor/nm-connection-list.c:1631
-#: ../src/connection-editor/nm-connection-list.c:1643
+#: ../src/connection-editor/nm-connection-list.c:1630
+#: ../src/connection-editor/nm-connection-list.c:1642
 msgid "Error editing connection"
 msgstr "Lỗi sửa kết nối"
 
-#: ../src/connection-editor/nm-connection-list.c:1632
+#: ../src/connection-editor/nm-connection-list.c:1631
 #, c-format
 msgid "Don't know how to edit '%s' connections"
 msgstr "Không biết cách sửa kết nối '%s'"
 
-#: ../src/connection-editor/nm-connection-list.c:1644
+#: ../src/connection-editor/nm-connection-list.c:1643
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Không tìm thấy kết nối với UUID '%s'"
 
-#: ../src/connection-editor/vpn-helpers.c:229
+#: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -2082,29 +2206,29 @@ msgid ""
 "Error: %s."
 msgstr ""
 
-#: ../src/connection-editor/vpn-helpers.c:262
+#: ../src/connection-editor/vpn-helpers.c:263
 msgid "Select file to import"
 msgstr "Chọn tập tin cần nhập"
 
-#: ../src/connection-editor/vpn-helpers.c:313
+#: ../src/connection-editor/vpn-helpers.c:314
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "Tập tin \"%s\" đã có."
 
-#: ../src/connection-editor/vpn-helpers.c:315
+#: ../src/connection-editor/vpn-helpers.c:316
 msgid "_Replace"
 msgstr "_Thay thế"
 
-#: ../src/connection-editor/vpn-helpers.c:317
+#: ../src/connection-editor/vpn-helpers.c:318
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "Bạn có muốn thay %s với kết nối VPN bạn đang lưu không?"
 
-#: ../src/connection-editor/vpn-helpers.c:353
+#: ../src/connection-editor/vpn-helpers.c:354
 msgid "Cannot export VPN connection"
 msgstr "Không thể xuất kết nối VPN"
 
-#: ../src/connection-editor/vpn-helpers.c:355
+#: ../src/connection-editor/vpn-helpers.c:356
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -2115,114 +2239,111 @@ msgstr ""
 "\n"
 "Lỗi: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:390
+#: ../src/connection-editor/vpn-helpers.c:391
 msgid "Export VPN connection..."
 msgstr "Xuất kết nối VPN..."
 
-#: ../src/gnome-bluetooth/bt-widget.c:220
+#: ../src/gnome-bluetooth/bt-widget.c:321
 #, c-format
-msgid "Failed to create PAN connection: %s"
-msgstr "Lỗi tạo kết nối PAN: %s"
+msgid ""
+"Bluetooth configuration not possible (failed to connect to D-Bus: (%s) %s)."
+msgstr ""
 
-#: ../src/gnome-bluetooth/bt-widget.c:225
-#: ../src/gnome-bluetooth/bt-widget.c:493
-msgid "Your phone is now ready to use!"
-msgstr "Điện thoại bạn đã có thể dùng!"
-
-#: ../src/gnome-bluetooth/bt-widget.c:249
+#: ../src/gnome-bluetooth/bt-widget.c:330
 #, c-format
-msgid "%s Network"
-msgstr "Mạng %s"
+msgid ""
+"Bluetooth configuration not possible (error finding NetworkManager: (%s) %s)."
+msgstr ""
 
-#: ../src/gnome-bluetooth/bt-widget.c:375
+#: ../src/gnome-bluetooth/bt-widget.c:445
+msgid "Use your mobile phone as a network device (PAN/NAP)"
+msgstr "Dùng điện thoại di động làm thiết bị mạng (PAN/NAP)"
+
+#: ../src/gnome-bluetooth/bt-widget.c:454
+msgid "Access the Internet using your mobile phone (DUN)"
+msgstr "Truy cập Internet thông qua điện thoại di động (DUN)"
+
+#: ../src/gnome-bluetooth/nma-bt-device.c:318
 #, c-format
 msgid "Error: %s"
 msgstr "Lỗi: %s"
 
-#: ../src/gnome-bluetooth/bt-widget.c:488
+#: ../src/gnome-bluetooth/nma-bt-device.c:425
 #, c-format
 msgid "Failed to create DUN connection: %s"
 msgstr "Lỗi tạo kết nối DUN: %s"
 
-#: ../src/gnome-bluetooth/bt-widget.c:511
+#: ../src/gnome-bluetooth/nma-bt-device.c:427
+#: ../src/gnome-bluetooth/nma-bt-device.c:833
+msgid "Your phone is now ready to use!"
+msgstr "Điện thoại bạn đã có thể dùng!"
+
+#: ../src/gnome-bluetooth/nma-bt-device.c:450
 msgid "Mobile wizard was canceled"
 msgstr ""
 
-#: ../src/gnome-bluetooth/bt-widget.c:520
+#: ../src/gnome-bluetooth/nma-bt-device.c:459
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "Loại điện thoại lạ (không phải GSM cũng như CDMA)"
 
-#: ../src/gnome-bluetooth/bt-widget.c:714
-#: ../src/gnome-bluetooth/bt-widget.c:720
+#: ../src/gnome-bluetooth/nma-bt-device.c:567
+msgid "unknown modem type."
+msgstr ""
+
+#: ../src/gnome-bluetooth/nma-bt-device.c:639
+#: ../src/gnome-bluetooth/nma-bt-device.c:645
 msgid "failed to connect to the phone."
 msgstr "lỗi kết nối đến điện thoại."
 
-#: ../src/gnome-bluetooth/bt-widget.c:753
+#: ../src/gnome-bluetooth/nma-bt-device.c:676
 msgid "unexpectedly disconnected from the phone."
 msgstr "kết nối bị ngắt bất ngờ từ điện thoại."
 
-#: ../src/gnome-bluetooth/bt-widget.c:762
+#: ../src/gnome-bluetooth/nma-bt-device.c:686
 msgid "timed out detecting phone details."
 msgstr "quá hạn dò tìm chi tiết điện thoại."
 
-#: ../src/gnome-bluetooth/bt-widget.c:774
+#: ../src/gnome-bluetooth/nma-bt-device.c:697
 msgid "Detecting phone configuration..."
 msgstr "Đang tìm cấu hình điện thoại..."
 
-#: ../src/gnome-bluetooth/bt-widget.c:840
-msgid "could not find the Bluetooth device."
-msgstr "không thể tìm thiết bị Bluetooth."
-
-#: ../src/gnome-bluetooth/bt-widget.c:980
+#: ../src/gnome-bluetooth/nma-bt-device.c:794
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
 msgstr ""
 
-#: ../src/gnome-bluetooth/bt-widget.c:1012
+#: ../src/gnome-bluetooth/nma-bt-device.c:831
 #, c-format
-msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
-msgstr ""
+msgid "Failed to create PAN connection: %s"
+msgstr "Lỗi tạo kết nối PAN: %s"
 
-#: ../src/gnome-bluetooth/bt-widget.c:1022
-msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
-msgstr ""
-
-#: ../src/gnome-bluetooth/bt-widget.c:1031
+#: ../src/gnome-bluetooth/nma-bt-device.c:852
 #, c-format
-msgid ""
-"Bluetooth configuration not possible (error finding NetworkManager: %s)."
-msgstr ""
+msgid "%s Network"
+msgstr "Mạng %s"
 
-#: ../src/gnome-bluetooth/bt-widget.c:1098
-msgid "Use your mobile phone as a network device (PAN/NAP)"
-msgstr "Dùng điện thoại di động làm thiết bị mạng (PAN/NAP)"
-
-#: ../src/gnome-bluetooth/bt-widget.c:1107
-msgid "Access the Internet using your mobile phone (DUN)"
-msgstr "Truy cập Internet thông qua điện thoại di động (DUN)"
-
-#: ../src/libnm-gtk/nm-mobile-wizard.c:198
+#: ../src/libnm-gtk/nm-mobile-wizard.c:205
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
 msgstr "Kết nối di động băng thông rộng của bạn được cấu hình như sau:"
 
 #. Device
-#: ../src/libnm-gtk/nm-mobile-wizard.c:205
+#: ../src/libnm-gtk/nm-mobile-wizard.c:212
 msgid "Your Device:"
 msgstr "Thiết bị của bạn:"
 
 #. Provider
-#: ../src/libnm-gtk/nm-mobile-wizard.c:216
+#: ../src/libnm-gtk/nm-mobile-wizard.c:223
 msgid "Your Provider:"
 msgstr "Nhà cung cấp của bạn:"
 
 #. Plan and APN
-#: ../src/libnm-gtk/nm-mobile-wizard.c:227
+#: ../src/libnm-gtk/nm-mobile-wizard.c:234
 msgid "Your Plan:"
 msgstr "Gói cước của bạn:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:252
+#: ../src/libnm-gtk/nm-mobile-wizard.c:259
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
 "settings you selected.  If the connection fails or you cannot access network "
@@ -2231,23 +2352,23 @@ msgid ""
 "Preferences menu."
 msgstr ""
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:264
+#: ../src/libnm-gtk/nm-mobile-wizard.c:271
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Xác nhận thiết lập di động băng thông rộng"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:325
+#: ../src/libnm-gtk/nm-mobile-wizard.c:332
 msgid "Unlisted"
 msgstr "Không liệt kê"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:480
+#: ../src/libnm-gtk/nm-mobile-wizard.c:487
 msgid "_Select your plan:"
 msgstr "_Chọn gói cước"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:504
+#: ../src/libnm-gtk/nm-mobile-wizard.c:511
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "_APN (Access Point Name - Tên điểm truy cập) của _gói cước được chọn"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:528
+#: ../src/libnm-gtk/nm-mobile-wizard.c:535
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
@@ -2255,101 +2376,101 @@ msgid ""
 "If you are unsure of your plan please ask your provider for your plan's APN."
 msgstr ""
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:535
+#: ../src/libnm-gtk/nm-mobile-wizard.c:542
 msgid "Choose your Billing Plan"
 msgstr "Chọn gói cước của bạn"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:583
+#: ../src/libnm-gtk/nm-mobile-wizard.c:590
 msgid "My plan is not listed..."
 msgstr "Không thấy gói cước của tôi..."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:740
+#: ../src/libnm-gtk/nm-mobile-wizard.c:747
 msgid "Select your provider from a _list:"
 msgstr "Chọn nhà cung cấp từ _danh sách:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:753
+#: ../src/libnm-gtk/nm-mobile-wizard.c:760
 msgid "Provider"
 msgstr "Nhà cung cấp"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:778
+#: ../src/libnm-gtk/nm-mobile-wizard.c:785
 msgid "I can't find my provider and I wish to enter it _manually:"
 msgstr "Không tìm thấy nhà cung cấp, để tôi nhập _tay:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:789
+#: ../src/libnm-gtk/nm-mobile-wizard.c:796
 msgid "Provider:"
 msgstr "Nhà cung cấp:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:813
+#: ../src/libnm-gtk/nm-mobile-wizard.c:820
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "Nhà cung cấp của tôi dùng công nghệ GSM (GPRS, EDGE, UMTS, HSPA)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:819
+#: ../src/libnm-gtk/nm-mobile-wizard.c:826
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "Nhà cung cấp của tôi dùng công nghệ CDMA (1xRTT, EVDO)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:830
+#: ../src/libnm-gtk/nm-mobile-wizard.c:837
 msgid "Choose your Provider"
 msgstr "Chọn nhà cung cấp của bạn"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1080
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1088
 msgid "Country or Region List:"
 msgstr "Danh sách quốc gia hoặc lãnh thổ:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1092
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1100
 msgid "Country or region"
 msgstr "Quốc gia hoặc lãnh thổ:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1099
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1107
 msgid "My country is not listed"
 msgstr "Không thấy có quốc gia của tôi"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1145
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1153
 msgid "Choose your Provider's Country or Region"
 msgstr "Chọn quốc gia hoặc lãnh thổ của nhà cung cấp"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1199
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1207
 msgid "Installed GSM device"
 msgstr "Thiết bị GSM đã cài đặt"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1202
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1210
 msgid "Installed CDMA device"
 msgstr "Thiết bị CDMA đã cài đặt"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1374
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1382
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
 msgstr ""
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1379
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1387
 msgid "You will need the following information:"
 msgstr "Bạn sẽ cần những thông tin sau:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1394
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1402
 msgid "Your broadband provider's name"
 msgstr "Tên nhà cung cấp"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1400
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1408
 msgid "Your broadband billing plan name"
 msgstr "Tên gói cước"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1406
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1414
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr "(trong vài trường hợp) APN (Access Point Name) của gói cước"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1433
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1441
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Tạo kết nối đến thiết bị di động băng thông rộng _này:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1448
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1456
 msgid "Any device"
 msgstr "Bất kỳ thiết bị nào"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1461
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1469
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Thiết lập kết nối băng thông rộng di động"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1625
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1633
 msgid "New Mobile Broadband Connection"
 msgstr "Kết nối băng thông rộng di động mới"
 
@@ -2357,46 +2478,46 @@ msgstr "Kết nối băng thông rộng di động mới"
 msgid "New..."
 msgstr "Mới..."
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1077
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1076
 msgid "C_reate"
 msgstr "_Tạo"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1161
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1160
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the wireless network "
 "'%s'."
 msgstr "Cần mật khẩu hoặc khoá mã hoá để truy cập mạng không dây '%s'."
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1163
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1162
 msgid "Wireless Network Authentication Required"
 msgstr "Cần xác thực mạng không dây"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1165
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1164
 msgid "Authentication required by wireless network"
 msgstr "Cần xác thực mạng không dây"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1170
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1169
 msgid "Create New Wireless Network"
 msgstr "Tạo mạng không dây mới"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1172
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1171
 msgid "New wireless network"
 msgstr "Tạo mạng không dây"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1173
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1172
 msgid "Enter a name for the wireless network you wish to create."
 msgstr "Nhập tên mạng không dây bạn muốn tạo."
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1175
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1174
 msgid "Connect to Hidden Wireless Network"
 msgstr "Kết nối đến mạng không dây ẩn"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1177
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1176
 msgid "Hidden wireless network"
 msgstr "Ẩn mạng không dây"
 
-#: ../src/libnm-gtk/nm-wireless-dialog.c:1178
+#: ../src/libnm-gtk/nm-wireless-dialog.c:1177
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
@@ -2516,42 +2637,47 @@ msgstr "Mạng chuyển vùng"
 msgid "Default"
 msgstr "Mặc định"
 
+#. The %s is a mobile provider name, eg "T-Mobile"
+#: ../src/utils/utils.c:325
+#, fuzzy, c-format
+#| msgid "Base Connection:"
+msgid "%s connection"
+msgstr "Kết nối cơ sở:"
+
 #: ../src/wired-dialog.c:91 ../src/wired-dialog.c:99
 msgid ""
 "The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
 msgstr ""
 
-#: ../src/wireless-security/eap-method.c:279
+#: ../src/wireless-security/eap-method.c:275
 msgid "No Certificate Authority certificate chosen"
 msgstr "Chưa chọn chứng nhận CA"
 
-#: ../src/wireless-security/eap-method.c:280
+#: ../src/wireless-security/eap-method.c:276
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
 "Certificate Authority certificate?"
 msgstr ""
 
-#: ../src/wireless-security/eap-method.c:289
+#: ../src/wireless-security/eap-method.c:285
 msgid "Choose CA Certificate"
 msgstr "Chọn chứng nhận CA"
 
-#: ../src/wireless-security/eap-method.c:648
+#: ../src/wireless-security/eap-method.c:645
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "Khoá riêng DER, PEM, hoặc PKCS#12 (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:651
+#: ../src/wireless-security/eap-method.c:648
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Chứng nhậng DER hoặc PEM (*.der, *.pem, *.crt, *.cer)"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:2
-#| msgid "Anony_mous identity:"
 msgid "Anonymous"
 msgstr "Vô danh"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:3
-#| msgid "Authentication"
 msgid "Authenticated"
 msgstr "Xác thực"
 
@@ -2572,7 +2698,6 @@ msgstr "Tập tin _PAC:"
 #: ../src/wireless-security/eap-method-fast.ui.h:7
 #: ../src/wireless-security/eap-method-peap.ui.h:7
 #: ../src/wireless-security/eap-method-ttls.ui.h:4
-#| msgid "I_nner authentication:"
 msgid "_Inner authentication:"
 msgstr "Xác thực _trong:"
 
@@ -2598,7 +2723,7 @@ msgid "All files"
 msgstr "Mọi tập tin"
 
 #: ../src/wireless-security/eap-method-peap.c:263
-#: ../src/wireless-security/wireless-security.c:373
+#: ../src/wireless-security/wireless-security.c:382
 msgid "MD5"
 msgstr "MD5"
 
@@ -2623,7 +2748,6 @@ msgid "C_A certificate:"
 msgstr "_Chứng nhận CA:"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:8
-#| msgid "_PEAP version:"
 msgid "PEAP _version:"
 msgstr "Phiên bản _PEAP:"
 
@@ -2680,26 +2804,25 @@ msgstr "Không"
 msgid "Yes"
 msgstr "Có"
 
-#: ../src/wireless-security/wireless-security.c:385
+#: ../src/wireless-security/wireless-security.c:394
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:409
+#: ../src/wireless-security/wireless-security.c:418
 msgid "FAST"
 msgstr "FAST"
 
-#: ../src/wireless-security/wireless-security.c:420
+#: ../src/wireless-security/wireless-security.c:429
 msgid "Tunneled TLS"
 msgstr ""
 
-#: ../src/wireless-security/wireless-security.c:431
+#: ../src/wireless-security/wireless-security.c:440
 msgid "Protected EAP (PEAP)"
 msgstr "EAP Bảo vệ (PEAP)"
 
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:2
 #: ../src/wireless-security/ws-wep-key.ui.h:9
 #: ../src/wireless-security/ws-wpa-eap.ui.h:2
-#| msgid "_Authentication:"
 msgid "Au_thentication:"
 msgstr "_Xác thực:"
 
@@ -2738,6 +2861,9 @@ msgstr "_Hiện khoá"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "WEP inde_x:"
 msgstr "_Chỉ mục WEP:"
+
+#~ msgid "could not find the Bluetooth device."
+#~ msgstr "không thể tìm thiết bị Bluetooth."
 
 #~ msgid "Click on this icon to connect to a wireless network"
 #~ msgstr "Nhấn biểu tượng để kết nối mạng không dây"
