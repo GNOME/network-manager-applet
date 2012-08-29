@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2010 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -43,7 +43,11 @@ typedef struct {
 	NMSettingWireless *setting;
 
 	GtkEntry *ssid;
-	GtkEntry *bssid;
+#if GTK_CHECK_VERSION (2,24,0)
+	GtkComboBoxText *bssid;
+#else
+	GtkComboBoxEntry *bssid;
+#endif
 #if GTK_CHECK_VERSION (2,24,0)
 	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
 #else
@@ -77,12 +81,27 @@ wifi_private_init (CEPageWifi *self)
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	priv->ssid     = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_ssid")));
-	priv->bssid    = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_bssid")));
 	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_cloned_mac")));
 	priv->mode     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_mode")));
 	priv->band     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_band")));
 	priv->channel  = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_channel")));
 
+	/* BSSID */
+#if GTK_CHECK_VERSION(2,24,0)
+	priv->bssid = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
+	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->bssid), 0);
+#else
+	priv->bssid = GTK_COMBO_BOX_ENTRY (gtk_combo_box_entry_new_text ());
+	gtk_combo_box_entry_set_text_column (GTK_COMBO_BOX_ENTRY (priv->bssid), 0);
+#endif
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->bssid),
+	                             _("This option locks this connection to the Wi-Fi access point (AP) specified by the BSSID entered here.  Example: 00:11:22:33:44:55"));
+
+	align = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_bssid_alignment"));
+	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->bssid));
+	gtk_widget_show_all (GTK_WIDGET (priv->bssid));
+
+	/* Device MAC */
 #if GTK_CHECK_VERSION(2,24,0)
 	priv->device_mac = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
 	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_mac), 0);
@@ -294,8 +313,11 @@ populate_ui (CEPageWifi *self)
 	int mtu_def;
 	char *utf8_ssid;
 	char **mac_list;
-	const GByteArray *s_mac;
-	char *s_mac_str;
+	const GByteArray *s_mac, *s_bssid;
+	char *s_mac_str, *s_bssid_str;
+	GPtrArray *bssid_array;
+	char **bssid_list;
+	guint32 idx;
 
 	rate_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_RATE);
 	g_signal_connect (priv->rate, "output",
@@ -316,10 +338,10 @@ populate_ui (CEPageWifi *self)
 	g_signal_connect_swapped (priv->mtu, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	g_object_get (setting,
-				  NM_SETTING_WIRELESS_SSID, &ssid,
-				  NM_SETTING_WIRELESS_MODE, &mode,
-				  NM_SETTING_WIRELESS_BAND, &band,
-				  NULL);
+	              NM_SETTING_WIRELESS_SSID, &ssid,
+	              NM_SETTING_WIRELESS_MODE, &mode,
+	              NM_SETTING_WIRELESS_BAND, &band,
+	              NULL);
 
 	if (ssid)
 		utf8_ssid = nm_utils_ssid_to_utf8 (ssid);
@@ -369,8 +391,17 @@ populate_ui (CEPageWifi *self)
 	g_signal_connect_swapped (priv->channel, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	/* BSSID */
-	ce_page_mac_to_entry (nm_setting_wireless_get_bssid (setting),
-	                      ARPHRD_ETHER, priv->bssid);
+	bssid_array = g_ptr_array_new ();
+	for (idx = 0; idx < nm_setting_wireless_get_num_seen_bssids (setting); idx++)
+		g_ptr_array_add (bssid_array, g_strdup (nm_setting_wireless_get_seen_bssid (setting, idx)));
+	g_ptr_array_add (bssid_array, NULL);
+	bssid_list = (char **) g_ptr_array_free (bssid_array, FALSE);
+	s_bssid = nm_setting_wireless_get_bssid (setting);
+	s_bssid_str = s_bssid ? nm_utils_hwaddr_ntoa (s_bssid->data, ARPHRD_ETHER) : NULL;
+	ce_page_setup_mac_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->bssid),
+	                         s_bssid_str, bssid_list);
+	g_free (s_bssid_str);
+	g_strfreev (bssid_list);
 	g_signal_connect_swapped (priv->bssid, "changed", G_CALLBACK (ce_page_changed), self);
 
 	/* Device MAC address */
@@ -508,7 +539,9 @@ ui_to_setting (CEPageWifi *self)
 		break;
 	}
 
-	bssid = ce_page_entry_to_mac (priv->bssid, ARPHRD_ETHER, NULL);
+	entry = gtk_bin_get_child (GTK_BIN (priv->bssid));
+	if (entry)
+		bssid = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry)
 		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
@@ -548,11 +581,14 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	GByteArray *ignore;
 	GtkWidget *entry;
 
-	ignore = ce_page_entry_to_mac (priv->bssid, ARPHRD_ETHER, &invalid);
-	if (invalid)
-		return FALSE;
-	if (ignore)
-		g_byte_array_free (ignore, TRUE);
+	entry = gtk_bin_get_child (GTK_BIN (priv->bssid));
+	if (entry) {
+		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, &invalid);
+		if (invalid)
+			return FALSE;
+		if (ignore)
+			g_byte_array_free (ignore, TRUE);
+	}
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry) {
