@@ -39,6 +39,7 @@ info_dialog_show_error (const char *err)
 
 	dialog = gtk_message_dialog_new_with_markup (NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
 			"<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s", _("Error displaying connection information:"), err);
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_present (GTK_WINDOW (dialog));
 	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
 }
@@ -973,6 +974,7 @@ applet_info_dialog_show (NMApplet *applet)
 	g_signal_connect (dialog, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), dialog);
 	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_hide), dialog);
 	gtk_widget_realize (dialog);
+	gtk_window_set_position (GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_present_with_time (GTK_WINDOW (dialog),
 		gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
 }
@@ -1028,6 +1030,7 @@ applet_mobile_password_dialog_new (NMConnection *connection,
 
 	dialog = GTK_DIALOG (gtk_dialog_new ());
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Mobile broadband network password"));
 
 	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
@@ -1365,6 +1368,7 @@ applet_mobile_pin_dialog_new (const char *unlock_required,
 	} else
 		g_assert_not_reached ();
 
+	gtk_window_set_position (GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_title (GTK_WINDOW (dialog), title);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "header_label"));

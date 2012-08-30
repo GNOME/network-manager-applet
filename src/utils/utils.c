@@ -202,6 +202,8 @@ utils_show_error_dialog (const char *title,
 	                                     "%s",
 	                                     text1);
 
+	gtk_window_set_position (GTK_WINDOW (err_dialog), GTK_WIN_POS_CENTER_ALWAYS);
+
 	if (text2)
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (err_dialog), "%s", text2);
 	if (title)
