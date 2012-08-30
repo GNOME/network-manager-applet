@@ -31,6 +31,7 @@
 #include <nm-setting-connection.h>
 #include <nm-setting-wired.h>
 #include <nm-device-ethernet.h>
+#include <nm-utils.h>
 
 #include "page-ethernet.h"
 
@@ -174,11 +175,7 @@ populate_ui (CEPageEthernet *self)
 	/* Device MAC address */
 	mac_list = ce_page_get_mac_list (CE_PAGE (self));
 	s_mac = nm_setting_wired_get_mac_address (setting);
-	s_mac_str = s_mac ? g_strdup_printf ("%02X:%02X:%02X:%02X:%02X:%02X",
-	                                     s_mac->data[0], s_mac->data[1], s_mac->data[2],
-	                                     s_mac->data[3], s_mac->data[4], s_mac->data[5]):
-	                    NULL;
-
+	s_mac_str = s_mac ? nm_utils_hwaddr_ntoa (s_mac->data, ARPHRD_ETHER) : NULL;
 	for (iter = mac_list; iter && *iter; iter++) {
 #if GTK_CHECK_VERSION (2,24,0)
 		gtk_combo_box_text_append_text (priv->device_mac, *iter);
@@ -202,6 +199,7 @@ populate_ui (CEPageEthernet *self)
 		if (entry)
 			gtk_entry_set_text (GTK_ENTRY (entry), active_mac ? active_mac : s_mac_str);
 	}
+	g_free (s_mac_str);
 	g_strfreev (mac_list);
 	g_signal_connect (priv->device_mac, "changed", G_CALLBACK (stuff_changed), self);
 

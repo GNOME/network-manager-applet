@@ -127,7 +127,7 @@ populate_ui (CEPageInfiniband *self)
 #else
 		gtk_combo_box_append_text (GTK_COMBO_BOX (priv->device_mac), *iter);
 #endif
-		if (s_mac_str && g_ascii_strncasecmp (*iter, s_mac_str, 17) == 0)
+		if (s_mac_str && g_ascii_strncasecmp (*iter, s_mac_str, 59) == 0)
 			active_mac = *iter;
 	}
 
@@ -144,6 +144,7 @@ populate_ui (CEPageInfiniband *self)
 		if (entry)
 			gtk_entry_set_text (GTK_ENTRY (entry), active_mac ? active_mac : s_mac_str);
 	}
+	g_free (s_mac_str);
 	g_strfreev (mac_list);
 	g_signal_connect (priv->device_mac, "changed", G_CALLBACK (stuff_changed), self);
 
