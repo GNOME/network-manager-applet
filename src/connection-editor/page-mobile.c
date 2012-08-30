@@ -447,15 +447,15 @@ gsm_ui_to_setting (CEPageMobile *self)
 	roaming_allowed = gtk_toggle_button_get_active (priv->roaming_allowed);
 
 	g_object_set (priv->setting,
-				  NM_SETTING_GSM_NUMBER,       nm_entry_get_text (priv->number),
-				  NM_SETTING_GSM_USERNAME,     nm_entry_get_text (priv->username),
-				  NM_SETTING_GSM_PASSWORD,     nm_entry_get_text (priv->password),
-				  NM_SETTING_GSM_APN,          nm_entry_get_text (priv->apn),
-				  NM_SETTING_GSM_NETWORK_ID,   nm_entry_get_text (priv->network_id),
-				  NM_SETTING_GSM_NETWORK_TYPE, net_type,
-				  NM_SETTING_GSM_PIN,          nm_entry_get_text (priv->pin),
-				  NM_SETTING_GSM_HOME_ONLY,    !roaming_allowed,
-				  NULL);
+	              NM_SETTING_GSM_NUMBER,       nm_entry_get_text (priv->number),
+	              NM_SETTING_GSM_USERNAME,     nm_entry_get_text (priv->username),
+	              NM_SETTING_GSM_PASSWORD,     nm_entry_get_text (priv->password),
+	              NM_SETTING_GSM_APN,          nm_entry_get_text (priv->apn),
+	              NM_SETTING_GSM_NETWORK_ID,   nm_entry_get_text (priv->network_id),
+	              NM_SETTING_GSM_NETWORK_TYPE, net_type,
+	              NM_SETTING_GSM_PIN,          nm_entry_get_text (priv->pin),
+	              NM_SETTING_GSM_HOME_ONLY,    !roaming_allowed,
+	              NULL);
 }
 
 static void

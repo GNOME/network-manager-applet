@@ -180,10 +180,10 @@ ui_to_setting (CEPageDsl *self)
 		service = NULL;
 
 	g_object_set (priv->setting,
-				  NM_SETTING_PPPOE_USERNAME, username,
-				  NM_SETTING_PPPOE_PASSWORD, password,
-				  NM_SETTING_PPPOE_SERVICE, service,
-				  NULL);
+	              NM_SETTING_PPPOE_USERNAME, username,
+	              NM_SETTING_PPPOE_PASSWORD, password,
+	              NM_SETTING_PPPOE_SERVICE, service,
+	              NULL);
 }
 
 static gboolean

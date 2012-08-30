@@ -536,17 +536,17 @@ ui_to_setting (CEPageWifi *self)
 	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, NULL);
 
 	g_object_set (priv->setting,
-				  NM_SETTING_WIRELESS_SSID, ssid,
-				  NM_SETTING_WIRELESS_BSSID, bssid,
-				  NM_SETTING_WIRELESS_MAC_ADDRESS, device_mac,
-				  NM_SETTING_WIRELESS_CLONED_MAC_ADDRESS, cloned_mac,
-				  NM_SETTING_WIRELESS_MODE, mode,
-				  NM_SETTING_WIRELESS_BAND, band,
-				  NM_SETTING_WIRELESS_CHANNEL, gtk_spin_button_get_value_as_int (priv->channel),
-				  NM_SETTING_WIRELESS_RATE, gtk_spin_button_get_value_as_int (priv->rate),
-				  NM_SETTING_WIRELESS_TX_POWER, gtk_spin_button_get_value_as_int (priv->tx_power),
-				  NM_SETTING_WIRELESS_MTU, gtk_spin_button_get_value_as_int (priv->mtu),
-				  NULL);
+	              NM_SETTING_WIRELESS_SSID, ssid,
+	              NM_SETTING_WIRELESS_BSSID, bssid,
+	              NM_SETTING_WIRELESS_MAC_ADDRESS, device_mac,
+	              NM_SETTING_WIRELESS_CLONED_MAC_ADDRESS, cloned_mac,
+	              NM_SETTING_WIRELESS_MODE, mode,
+	              NM_SETTING_WIRELESS_BAND, band,
+	              NM_SETTING_WIRELESS_CHANNEL, gtk_spin_button_get_value_as_int (priv->channel),
+	              NM_SETTING_WIRELESS_RATE, gtk_spin_button_get_value_as_int (priv->rate),
+	              NM_SETTING_WIRELESS_TX_POWER, gtk_spin_button_get_value_as_int (priv->tx_power),
+	              NM_SETTING_WIRELESS_MTU, gtk_spin_button_get_value_as_int (priv->mtu),
+	              NULL);
 
 	if (ssid)
 		g_byte_array_free (ssid, TRUE);

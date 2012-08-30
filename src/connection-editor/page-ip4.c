@@ -1181,14 +1181,14 @@ ui_to_setting (CEPageIP4 *self)
 
 	/* Update setting */
 	g_object_set (priv->setting,
-				  NM_SETTING_IP4_CONFIG_METHOD, method,
-				  NM_SETTING_IP4_CONFIG_ADDRESSES, addresses,
-				  NM_SETTING_IP4_CONFIG_DNS, dns_servers,
-				  NM_SETTING_IP4_CONFIG_DNS_SEARCH, search_domains,
-				  NM_SETTING_IP4_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
-				  NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
-				  NM_SETTING_IP4_CONFIG_MAY_FAIL, may_fail,
-				  NULL);
+	              NM_SETTING_IP4_CONFIG_METHOD, method,
+	              NM_SETTING_IP4_CONFIG_ADDRESSES, addresses,
+	              NM_SETTING_IP4_CONFIG_DNS, dns_servers,
+	              NM_SETTING_IP4_CONFIG_DNS_SEARCH, search_domains,
+	              NM_SETTING_IP4_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
+	              NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
+	              NM_SETTING_IP4_CONFIG_MAY_FAIL, may_fail,
+	              NULL);
 	valid = TRUE;
 
 out:

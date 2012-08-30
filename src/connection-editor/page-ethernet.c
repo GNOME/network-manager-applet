@@ -343,14 +343,14 @@ ui_to_setting (CEPageEthernet *self)
 	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, NULL);
 
 	g_object_set (priv->setting,
-				  NM_SETTING_WIRED_MAC_ADDRESS, device_mac,
-				  NM_SETTING_WIRED_CLONED_MAC_ADDRESS, cloned_mac,
-				  NM_SETTING_WIRED_PORT, port,
-				  NM_SETTING_WIRED_SPEED, speed,
-				  NM_SETTING_WIRED_DUPLEX, gtk_toggle_button_get_active (priv->duplex) ? "full" : "half",
-				  NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
-				  NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
-				  NULL);
+	              NM_SETTING_WIRED_MAC_ADDRESS, device_mac,
+	              NM_SETTING_WIRED_CLONED_MAC_ADDRESS, cloned_mac,
+	              NM_SETTING_WIRED_PORT, port,
+	              NM_SETTING_WIRED_SPEED, speed,
+	              NM_SETTING_WIRED_DUPLEX, gtk_toggle_button_get_active (priv->duplex) ? "full" : "half",
+	              NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
+	              NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
+	              NULL);
 
 	if (device_mac)
 		g_byte_array_free (device_mac, TRUE);

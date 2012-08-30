@@ -1026,9 +1026,9 @@ ui_to_setting (CEPageIP6 *self)
 
 	g_object_freeze_notify (G_OBJECT (priv->setting));
 	g_object_set (priv->setting,
-				  NM_SETTING_IP6_CONFIG_METHOD, method,
-				  NM_SETTING_IP6_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
-				  NULL);
+	              NM_SETTING_IP6_CONFIG_METHOD, method,
+	              NM_SETTING_IP6_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
+	              NULL);
 
 	/* IP addresses */
 	nm_setting_ip6_config_clear_addresses (priv->setting);
