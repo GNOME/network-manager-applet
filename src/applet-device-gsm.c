@@ -58,8 +58,10 @@ typedef enum {
     MM_MODEM_GSM_ACCESS_TECH_HSDPA       = 6,  /* UTRAN w/HSDPA */
     MM_MODEM_GSM_ACCESS_TECH_HSUPA       = 7,  /* UTRAN w/HSUPA */
     MM_MODEM_GSM_ACCESS_TECH_HSPA        = 8,  /* UTRAN w/HSDPA and HSUPA */
+    MM_MODEM_GSM_ACCESS_TECH_HSPA_PLUS   = 9,
+    MM_MODEM_GSM_ACCESS_TECH_LTE         = 10,
 
-    MM_MODEM_GSM_ACCESS_TECH_LAST = MM_MODEM_GSM_ACCESS_TECH_HSPA
+    MM_MODEM_GSM_ACCESS_TECH_LAST = MM_MODEM_GSM_ACCESS_TECH_LTE
 } MMModemGsmAccessTech;
 
 typedef struct {
@@ -354,6 +356,10 @@ gsm_act_to_mb_act (GsmDeviceInfo *info)
 		return MB_TECH_HSUPA;
 	case MM_MODEM_GSM_ACCESS_TECH_HSPA:
 		return MB_TECH_HSPA;
+	case MM_MODEM_GSM_ACCESS_TECH_HSPA_PLUS:
+		return MB_TECH_HSPA_PLUS;
+	case MM_MODEM_GSM_ACCESS_TECH_LTE:
+		return MB_TECH_LTE;
 	default:
 		break;
 	}
