@@ -952,6 +952,7 @@ ce_page_ip6_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
+	                                 settings,
 	                                 UIDIR "/ce-page-ip6.ui",
 	                                 "IP6Page",
 	                                 _("IPv6 Settings")));

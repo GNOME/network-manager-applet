@@ -741,6 +741,7 @@ ce_page_bond_new (NMConnection *connection,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
+	                                  settings,
 	                                  UIDIR "/ce-page-bond.ui",
 	                                  "BondPage",
 	                                  _("Bond")));

@@ -107,6 +107,7 @@ ce_page_vpn_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
+	                                 settings,
 	                                 NULL,
 	                                 NULL,
 	                                 _("VPN")));

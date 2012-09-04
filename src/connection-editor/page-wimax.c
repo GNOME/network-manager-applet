@@ -128,6 +128,7 @@ ce_page_wimax_new (NMConnection *connection,
 	                                   connection,
 	                                   parent_window,
 	                                   client,
+	                                   settings,
 	                                   UIDIR "/ce-page-wimax.ui",
 	                                   "WimaxPage",
 	                                   _("WiMAX")));

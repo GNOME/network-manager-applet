@@ -162,6 +162,7 @@ ce_page_infiniband_new (NMConnection *connection,
 	                                        connection,
 	                                        parent_window,
 	                                        client,
+	                                        settings,
 	                                        UIDIR "/ce-page-infiniband.ui",
 	                                        "InfinibandPage",
 	                                        _("InfiniBand")));

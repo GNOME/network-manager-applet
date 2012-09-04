@@ -570,6 +570,7 @@ ce_page_new (GType page_type,
              NMConnection *connection,
              GtkWindow *parent_window,
              NMClient *client,
+             NMRemoteSettings *settings,
              const char *ui_file,
              const char *widget_name,
              const char *title)
@@ -587,6 +588,7 @@ ce_page_new (GType page_type,
 	                              NULL));
 	self->title = g_strdup (title);
 	self->client = client;
+	self->settings = settings;
 
 	if (ui_file) {
 		if (!gtk_builder_add_from_file (self->builder, ui_file, &error)) {

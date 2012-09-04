@@ -433,6 +433,7 @@ ce_page_wifi_new (NMConnection *connection,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
+	                                  settings,
 	                                  UIDIR "/ce-page-wifi.ui",
 	                                  "WifiPage",
 	                                  _("Wi-Fi")));

@@ -383,6 +383,7 @@ ce_page_mobile_new (NMConnection *connection,
 	                                    connection,
 	                                    parent_window,
 	                                    client,
+	                                    settings,
 	                                    UIDIR "/ce-page-mobile.ui",
 	                                    "MobilePage",
 	                                    _("Mobile Broadband")));

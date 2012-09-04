@@ -75,6 +75,7 @@ typedef struct {
 	NMConnection *connection;
 	GtkWindow *parent_window;
 	NMClient *client;
+	NMRemoteSettings *settings;
 
 	gboolean disposed;
 } CEPage;
@@ -145,6 +146,7 @@ CEPage *ce_page_new (GType page_type,
                      NMConnection *connection,
                      GtkWindow *parent_window,
                      NMClient *client,
+                     NMRemoteSettings *settings,
                      const char *ui_file,
                      const char *widget_name,
                      const char *title);

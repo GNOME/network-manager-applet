@@ -278,6 +278,7 @@ ce_page_ppp_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
+	                                 settings,
 	                                 UIDIR "/ce-page-ppp.ui",
 	                                 "PppPage",
 	                                 _("PPP Settings")));

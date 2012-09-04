@@ -135,6 +135,7 @@ ce_page_dsl_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
+	                                 settings,
 	                                 UIDIR "/ce-page-dsl.ui",
 	                                 "DslPage",
 	                                 _("DSL")));

@@ -401,6 +401,7 @@ ce_page_wifi_security_new (NMConnection *connection,
 	                                           connection,
 	                                           parent_window,
 	                                           client,
+	                                           settings,
 	                                           UIDIR "/ce-page-wifi-security.ui",
 	                                           "WifiSecurityPage",
 	                                           _("Wi-Fi Security")));

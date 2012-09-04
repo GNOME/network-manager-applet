@@ -115,6 +115,7 @@ ce_page_8021x_security_new (NMConnection *connection,
 	                                            connection,
 	                                            parent_window,
 	                                            client,
+	                                            settings,
 	                                            NULL,
 	                                            NULL,
 	                                            _("802.1x Security")));

@@ -245,6 +245,7 @@ ce_page_ethernet_new (NMConnection *connection,
 	                                      connection,
 	                                      parent_window,
 	                                      client,
+	                                      settings,
 	                                      UIDIR "/ce-page-ethernet.ui",
 	                                      "EthernetPage",
 	                                      _("Ethernet")));
