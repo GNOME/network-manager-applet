@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2010 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -32,6 +32,7 @@
 #include <nm-setting-wireless.h>
 #include <nm-device-wifi.h>
 #include <nm-utils.h>
+#include <net/if_arp.h> /* for ARPHRD_ETHER for MAC utilies */
 
 #include "page-wireless.h"
 
@@ -374,11 +375,7 @@ populate_ui (CEPageWireless *self)
 	/* Device MAC address */
 	mac_list = ce_page_get_mac_list (CE_PAGE (self));
 	s_mac = nm_setting_wireless_get_mac_address (setting);
-	s_mac_str = s_mac ? g_strdup_printf ("%02X:%02X:%02X:%02X:%02X:%02X",
-	                                     s_mac->data[0], s_mac->data[1], s_mac->data[2],
-	                                     s_mac->data[3], s_mac->data[4], s_mac->data[5]):
-	                    NULL;
-
+	s_mac_str = s_mac ? nm_utils_hwaddr_ntoa (s_mac->data, ARPHRD_ETHER) : NULL;
 	for (iter = mac_list; iter && *iter; iter++) {
 #if GTK_CHECK_VERSION (2,24,0)
 		gtk_combo_box_text_append_text (priv->device_mac, *iter);
@@ -402,6 +399,7 @@ populate_ui (CEPageWireless *self)
 		if (entry)
 			gtk_entry_set_text (GTK_ENTRY (entry), active_mac ? active_mac : s_mac_str);
 	}
+	g_free (s_mac_str);
 	g_strfreev (mac_list);
 	g_signal_connect_swapped (priv->device_mac, "changed", G_CALLBACK (ce_page_changed), self);
 
