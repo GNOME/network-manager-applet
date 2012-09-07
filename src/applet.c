@@ -3024,6 +3024,7 @@ static void nma_icons_free (NMApplet *applet)
 	nma_clear_icon (&applet->mb_tech_edge_icon, applet);
 	nma_clear_icon (&applet->mb_tech_umts_icon, applet);
 	nma_clear_icon (&applet->mb_tech_hspa_icon, applet);
+	nma_clear_icon (&applet->mb_tech_lte_icon, applet);
 	nma_clear_icon (&applet->mb_roaming_icon, applet);
 	nma_clear_icon (&applet->mb_tech_3g_icon, applet);
 

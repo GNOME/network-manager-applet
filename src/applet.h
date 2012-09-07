@@ -136,6 +136,7 @@ typedef struct
 	GdkPixbuf *		mb_tech_edge_icon;
 	GdkPixbuf *		mb_tech_umts_icon;
 	GdkPixbuf *		mb_tech_hspa_icon;
+	GdkPixbuf *		mb_tech_lte_icon;
 	GdkPixbuf *		mb_roaming_icon;
 	GdkPixbuf *		mb_tech_3g_icon;
 

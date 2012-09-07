@@ -65,6 +65,7 @@ icon_DATA = \
 	nm-tech-edge.png \
 	nm-tech-umts.png \
 	nm-tech-hspa.png \
+	nm-tech-lte.png \
 	nm-mb-roam.png \
 	nm-tech-3g.png
 

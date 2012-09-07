@@ -118,8 +118,9 @@ mobile_helper_get_tech_icon (guint32 tech, NMApplet *applet)
 	case MB_TECH_HSUPA:
 	case MB_TECH_HSPA:
 	case MB_TECH_HSPA_PLUS:
-	case MB_TECH_LTE:
 		return nma_icon_check_and_load ("nm-tech-hspa", &applet->mb_tech_hspa_icon, applet);
+	case MB_TECH_LTE:
+		return nma_icon_check_and_load ("nm-tech-lte", &applet->mb_tech_lte_icon, applet);
 	case MB_TECH_WIMAX:
 	default:
 		return NULL;
