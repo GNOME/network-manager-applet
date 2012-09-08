@@ -69,6 +69,8 @@ typedef struct {
 #define NET_TYPE_2G          2
 #define NET_TYPE_PREFER_3G   3
 #define NET_TYPE_PREFER_2G   4
+#define NET_TYPE_PREFER_4G   5
+#define NET_TYPE_4G          6
 
 static void
 mobile_private_init (CEPageMobile *self)
@@ -129,6 +131,12 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 		break;
 	case NM_SETTING_GSM_NETWORK_TYPE_PREFER_GPRS_EDGE:
 		type_idx = NET_TYPE_PREFER_2G;
+		break;
+	case NM_SETTING_GSM_NETWORK_TYPE_PREFER_4G:
+		type_idx = NET_TYPE_PREFER_4G;
+		break;
+	case NM_SETTING_GSM_NETWORK_TYPE_4G:
+		type_idx = NET_TYPE_4G;
 		break;
 	case NM_SETTING_GSM_NETWORK_TYPE_ANY:
 	default:
@@ -437,6 +445,12 @@ gsm_ui_to_setting (CEPageMobile *self)
 		break;
 	case NET_TYPE_PREFER_2G:
 		net_type = NM_SETTING_GSM_NETWORK_TYPE_PREFER_GPRS_EDGE;
+		break;
+	case NET_TYPE_PREFER_4G:
+		net_type = NM_SETTING_GSM_NETWORK_TYPE_PREFER_4G;
+		break;
+	case NET_TYPE_4G:
+		net_type = NM_SETTING_GSM_NETWORK_TYPE_4G;
 		break;
 	case NET_TYPE_ANY:
 	default:
