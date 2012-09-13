@@ -617,7 +617,7 @@ initialize_treeview (NMConnectionList *self)
 	                                 self->sortable, NULL);
 	gtk_tree_sortable_set_sort_func (self->sortable, COL_ID, id_sort_func,
 	                                 self->sortable, NULL);
-	gtk_tree_sortable_set_sort_column_id (self->sortable, COL_TIMESTAMP, GTK_SORT_DESCENDING);
+	gtk_tree_sortable_set_sort_column_id (self->sortable, COL_TIMESTAMP, GTK_SORT_ASCENDING);
 
 	gtk_tree_view_set_model (self->connection_list, GTK_TREE_MODEL (self->sortable));
 
