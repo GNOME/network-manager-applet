@@ -19,14 +19,14 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2012-04-13 19:22+0000\n"
-"PO-Revision-Date: 2012-04-14 20:29+0800\n"
-"Last-Translator: Wylmer Wang <wantinghard@gmail.com>\n"
+"POT-Creation-Date: 2012-09-05 13:35+0000\n"
+"PO-Revision-Date: 2012-08-26 10:32+0800\n"
+"Last-Translator: tuhaihe <1132321739qq@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../nm-applet.desktop.in.h:1
@@ -37,50 +37,6 @@ msgstr "网络"
 msgid "Manage your network connections"
 msgstr "管理网络连接"
 
-#: ../nm-applet.schemas.in.h:1
-msgid "Disable connected notifications"
-msgstr "禁用连接通告"
-
-#: ../nm-applet.schemas.in.h:2
-msgid "Set this to TRUE to disable notifications when connecting to a network."
-msgstr "将此项设为 TRUE 以禁用连接到一个网络时显示的通告。"
-
-#: ../nm-applet.schemas.in.h:3
-msgid "Disable disconnected notifications"
-msgstr "禁用断开通告"
-
-#: ../nm-applet.schemas.in.h:4
-msgid ""
-"Set this to TRUE to disable notifications when disconnecting from a network."
-msgstr "将此项设为 TRUE 以禁用从一个网络断开时显示的通告。"
-
-#: ../nm-applet.schemas.in.h:5
-msgid "Suppress networks available notifications"
-msgstr "禁用网络可用通告"
-
-#: ../nm-applet.schemas.in.h:6
-msgid ""
-"Set this to TRUE to disable notifications when wireless networks are "
-"available."
-msgstr "将此项设备 TRUE 以禁用无线网络可用时显示的通告。"
-
-#: ../nm-applet.schemas.in.h:7
-msgid "Stamp"
-msgstr "时间戳"
-
-#: ../nm-applet.schemas.in.h:8
-msgid "Used to determine whether settings should be migrated to a new version."
-msgstr "用于决定设置是否应被迁移至一个新版本。"
-
-#: ../nm-applet.schemas.in.h:9
-msgid "Disable WiFi Create"
-msgstr "禁用 WiFi 建立"
-
-#: ../nm-applet.schemas.in.h:10
-msgid ""
-"Set to TRUE to disable creation of adhoc networks when using the applet."
-msgstr "将此项设为 TRUE 以禁止使用小应用程序时建立 adhoc 网络。"
-
 #: ../nm-connection-editor.desktop.in.h:1
 #: ../src/connection-editor/nm-connection-editor.ui.h:1
 msgid "Network Connections"
@@ -90,22 +46,92 @@ msgstr "网络连接"
 msgid "Manage and change your network connection settings"
 msgstr "管理或更改您的网络连接设置"
 
-#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:399
-#: ../src/applet-device-gsm.c:446 ../src/applet-device-wired.c:240
-#: ../src/applet-device-wifi.c:864 ../src/applet-device-wimax.c:279
+#: ../org.gnome.nm-applet.gschema.xml.in.h:1
+msgid "Disable connected notifications"
+msgstr "禁用连接通知"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:2
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr "将此项设为 true 以禁用连接到一个网络时显示的通知。"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:3
+msgid "Disable disconnected notifications"
+msgstr "禁用断开通知"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:4
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr "将此项设为 true 以禁用从一个网络断开时显示的通知。"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:5
+msgid "Disable VPN notifications"
+msgstr "禁用 VPN 通知"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:6
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr "将此项设为 true 以禁用连接或断开 VPN 时的通知。"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:7
+msgid "Suppress networks available notifications"
+msgstr "禁用网络可用通知"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:8
+msgid ""
+"Set this to true to disable notifications when wireless networks are "
+"available."
+msgstr "将此项设为 true 以禁用无线网络可用时显示的通知。"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:9
+msgid "Stamp"
+msgstr "时间戳"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:10
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr "用于决定设置是否应被迁移至一个新版本。"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:11
+msgid "Disable WiFi Create"
+msgstr "禁用 WiFi 建立"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:12
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr "设为 true 以禁止使用小程序时创建 adhoc 网络。"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:13
+msgid "Ignore CA certificate"
+msgstr "忽略 CA 证书"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:14
+msgid ""
+"Set this to true to disable warnings about CA certificates in EAP "
+"authentication."
+msgstr "将此项设为 true 以禁用在 EAP 认证中关于 CA 证书的警告。"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:15
+msgid ""
+"Set this to true to disable warnings about CA certificates in phase 2 of EAP "
+"authentication."
+msgstr "将此项设为 true 以禁用在 EAP 认证第 2 阶段中关于 CA 证书的警告。"
+
+#: ../src/applet-device-bt.c:174 ../src/applet-device-cdma.c:396
+#: ../src/applet-device-gsm.c:444 ../src/applet-device-wired.c:240
+#: ../src/applet-device-wifi.c:862 ../src/applet-device-wimax.c:279
 msgid "Available"
 msgstr "可用的"
 
-#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:441
-#: ../src/applet-device-gsm.c:488 ../src/applet-device-wired.c:269
+#: ../src/applet-device-bt.c:200 ../src/applet-device-cdma.c:438
+#: ../src/applet-device-gsm.c:486 ../src/applet-device-wired.c:269
 #: ../src/applet-device-wimax.c:423
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "您现在已连接到“%s”。"
 
-#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:445
-#: ../src/applet-device-gsm.c:492 ../src/applet-device-wired.c:273
-#: ../src/applet-device-wifi.c:1268 ../src/applet-device-wimax.c:427
+#: ../src/applet-device-bt.c:204 ../src/applet-device-cdma.c:442
+#: ../src/applet-device-gsm.c:490 ../src/applet-device-wired.c:273
+#: ../src/applet-device-wifi.c:1264 ../src/applet-device-wimax.c:427
 msgid "Connection Established"
 msgstr "连接已建立"
 
@@ -113,49 +139,49 @@ msgstr "连接已建立"
 msgid "You are now connected to the mobile broadband network."
 msgstr "您现在已连接到移动宽带网络。"
 
-#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:481
-#: ../src/applet-device-gsm.c:528 ../src/applet-device-wimax.c:464
+#: ../src/applet-device-bt.c:231 ../src/applet-device-cdma.c:478
+#: ../src/applet-device-gsm.c:526 ../src/applet-device-wimax.c:464
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "正在准备移动宽带连接“%s”..."
 
-#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:484
-#: ../src/applet-device-gsm.c:531 ../src/applet-device-wimax.c:467
+#: ../src/applet-device-bt.c:234 ../src/applet-device-cdma.c:481
+#: ../src/applet-device-gsm.c:529 ../src/applet-device-wimax.c:467
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "正在配置移动宽带连接“%s”..."
 
-#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:487
-#: ../src/applet-device-gsm.c:534 ../src/applet-device-wimax.c:470
+#: ../src/applet-device-bt.c:237 ../src/applet-device-cdma.c:484
+#: ../src/applet-device-gsm.c:532 ../src/applet-device-wimax.c:470
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "移动宽带连接“%s”需要用户认证..."
 
-#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:490
-#: ../src/applet-device-gsm.c:537 ../src/applet-device-wimax.c:473
-#: ../src/applet.c:2504
+#: ../src/applet-device-bt.c:240 ../src/applet-device-cdma.c:487
+#: ../src/applet-device-gsm.c:535 ../src/applet-device-wimax.c:473
+#: ../src/applet.c:2500
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "正在为“%s”请求一个网络地址..."
 
-#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:508
-#: ../src/applet-device-gsm.c:555
+#: ../src/applet-device-bt.c:244 ../src/applet-device-cdma.c:505
+#: ../src/applet-device-gsm.c:553
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "移动宽带连接“%s”已处于活动状态"
 
-#: ../src/applet-device-cdma.c:184 ../src/connection-editor/page-mobile.c:696
+#: ../src/applet-device-cdma.c:181 ../src/connection-editor/page-mobile.c:696
 #: ../src/mb-menu-item.c:54
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/applet-device-cdma.c:345 ../src/applet-device-gsm.c:392
+#: ../src/applet-device-cdma.c:342 ../src/applet-device-gsm.c:390
 #: ../src/applet-dialogs.c:424
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "移动宽带(%s)"
 
-#: ../src/applet-device-cdma.c:347 ../src/applet-device-gsm.c:394
+#: ../src/applet-device-cdma.c:344 ../src/applet-device-gsm.c:392
 #: ../src/connection-editor/page-mobile.c:379
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
 #: ../src/connection-editor/nm-connection-list.c:1510
@@ -163,87 +189,88 @@ msgid "Mobile Broadband"
 msgstr "移动宽带"
 
 #. Default connection item
-#: ../src/applet-device-cdma.c:412
+#: ../src/applet-device-cdma.c:409
 msgid "New Mobile Broadband (CDMA) connection..."
 msgstr "新建移动宽带(CDMA)连接..."
 
-#: ../src/applet-device-cdma.c:446
+#: ../src/applet-device-cdma.c:443
 msgid "You are now connected to the CDMA network."
 msgstr "您现在已连接到 CDMA 网络。"
 
-#: ../src/applet-device-cdma.c:503 ../src/applet-device-gsm.c:550
+#: ../src/applet-device-cdma.c:500 ../src/applet-device-gsm.c:548
 #: ../src/applet-device-wimax.c:482
 #, c-format
 msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
 msgstr "移动宽带连接“%s”已处于活动状态：(%d%%%s%s)"
 
-#: ../src/applet-device-cdma.c:506 ../src/applet-device-gsm.c:553
+#: ../src/applet-device-cdma.c:503 ../src/applet-device-gsm.c:551
 #: ../src/applet-device-wimax.c:485
 msgid "roaming"
 msgstr "漫游中"
 
-#: ../src/applet-device-cdma.c:647 ../src/applet-device-cdma.c:653
+#: ../src/applet-device-cdma.c:644 ../src/applet-device-cdma.c:650
 msgid "CDMA network."
 msgstr "CDMA 网络。"
 
-#: ../src/applet-device-cdma.c:648 ../src/applet-device-gsm.c:1198
+# 这里的"home network"与下面的“漫游网络”是对比的关闭，应和下文的其他地方译法一致为“主网络”才说的通。
+#: ../src/applet-device-cdma.c:645 ../src/applet-device-gsm.c:1196
 msgid "You are now registered on the home network."
-msgstr "您现在已注册到家庭网络。"
+msgstr "您现在已注册到主网络。"
 
-#: ../src/applet-device-cdma.c:654 ../src/applet-device-gsm.c:1204
+#: ../src/applet-device-cdma.c:651 ../src/applet-device-gsm.c:1202
 msgid "You are now registered on a roaming network."
 msgstr "您现在已注册到一个漫游网络。"
 
-#: ../src/applet-device-gsm.c:213 ../src/connection-editor/page-mobile.c:699
+#: ../src/applet-device-gsm.c:211 ../src/connection-editor/page-mobile.c:699
 #: ../src/mb-menu-item.c:59
 msgid "GSM"
 msgstr "GSM"
 
 #. Default connection item
-#: ../src/applet-device-gsm.c:459
+#: ../src/applet-device-gsm.c:457
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "新建移动宽带(GSM)连接..."
 
-#: ../src/applet-device-gsm.c:493
+#: ../src/applet-device-gsm.c:491
 msgid "You are now connected to the GSM network."
 msgstr "您现在已连接到 GSM 网络。"
 
-#: ../src/applet-device-gsm.c:654
+#: ../src/applet-device-gsm.c:652
 msgid "PIN code required"
 msgstr "需要 PIN 码"
 
-#: ../src/applet-device-gsm.c:662
+#: ../src/applet-device-gsm.c:660
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "移动宽带设备需要 PIN 码。"
 
-#: ../src/applet-device-gsm.c:783
+#: ../src/applet-device-gsm.c:781
 #, c-format
 msgid "PIN code for SIM card '%s' on '%s'"
 msgstr "%2$s 上 SIM 卡 %1$s 的 PIN 码"
 
-#: ../src/applet-device-gsm.c:875
+#: ../src/applet-device-gsm.c:873
 msgid "Wrong PIN code; please contact your provider."
 msgstr "错误的 PIN 代码；请联络您的供应商。"
 
-#: ../src/applet-device-gsm.c:898
+#: ../src/applet-device-gsm.c:896
 msgid "Wrong PUK code; please contact your provider."
 msgstr "错误的 PUK 代码；请联络您的供应商。"
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-gsm.c:925
+#: ../src/applet-device-gsm.c:923
 msgid "Sending unlock code..."
 msgstr "正在发送解锁码..."
 
-#: ../src/applet-device-gsm.c:988
+#: ../src/applet-device-gsm.c:986
 msgid "SIM PIN unlock required"
 msgstr "需要解锁 SIM PIN"
 
-#: ../src/applet-device-gsm.c:989
+#: ../src/applet-device-gsm.c:987
 msgid "SIM PIN Unlock Required"
 msgstr "需要解锁 SIM PIN"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-device-gsm.c:991
+#: ../src/applet-device-gsm.c:989
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -251,25 +278,25 @@ msgid ""
 msgstr "移动宽带设备“%s”在可以使用之前需要一个 SIM PIN 码。"
 
 #. Translators: PIN code entry label
-#: ../src/applet-device-gsm.c:993
+#: ../src/applet-device-gsm.c:991
 msgid "PIN code:"
 msgstr "PIN 代码："
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-device-gsm.c:997
+#: ../src/applet-device-gsm.c:995
 msgid "Show PIN code"
 msgstr "显示 PIN 码"
 
-#: ../src/applet-device-gsm.c:1000
+#: ../src/applet-device-gsm.c:998
 msgid "SIM PUK unlock required"
 msgstr "需要解锁 SIM PUK"
 
-#: ../src/applet-device-gsm.c:1001
+#: ../src/applet-device-gsm.c:999
 msgid "SIM PUK Unlock Required"
 msgstr "需要解锁 SIM PUK"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-device-gsm.c:1003
+#: ../src/applet-device-gsm.c:1001
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -277,26 +304,26 @@ msgid ""
 msgstr "移动宽带设备“%s”在可以使用之前需要一个 SIM PUK 码。"
 
 #. Translators: PUK code entry label
-#: ../src/applet-device-gsm.c:1005
+#: ../src/applet-device-gsm.c:1003
 msgid "PUK code:"
 msgstr "PUK 码："
 
 #. Translators: New PIN entry label
-#: ../src/applet-device-gsm.c:1008
+#: ../src/applet-device-gsm.c:1006
 msgid "New PIN code:"
 msgstr "新的 PIN 码："
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-device-gsm.c:1010
+#: ../src/applet-device-gsm.c:1008
 msgid "Re-enter new PIN code:"
 msgstr "再次输入新的 PIN 码："
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-device-gsm.c:1015
+#: ../src/applet-device-gsm.c:1013
 msgid "Show PIN/PUK codes"
 msgstr "显示 PIN/PUK 码："
 
-#: ../src/applet-device-gsm.c:1197 ../src/applet-device-gsm.c:1203
+#: ../src/applet-device-gsm.c:1195 ../src/applet-device-gsm.c:1201
 msgid "GSM network."
 msgstr "GSM 网络。"
 
@@ -323,7 +350,7 @@ msgid "Wired Network"
 msgstr "有线网络"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet-device-wired.c:232 ../src/applet.c:1510
+#: ../src/applet-device-wired.c:232 ../src/applet.c:1508
 msgid "disconnected"
 msgstr "已断开"
 
@@ -364,103 +391,103 @@ msgstr "DSL 认证"
 msgid "_Connect to Hidden Wireless Network..."
 msgstr "连接到隐藏的无线连接(_C)..."
 
-#: ../src/applet-device-wifi.c:150
+#: ../src/applet-device-wifi.c:148
 msgid "Create _New Wireless Network..."
 msgstr "创建新的无线网络(_N)..."
 
-#: ../src/applet-device-wifi.c:294
+#: ../src/applet-device-wifi.c:292
 msgid "(none)"
 msgstr "(无)"
 
-#: ../src/applet-device-wifi.c:792
+#: ../src/applet-device-wifi.c:790
 #, c-format
 msgid "Wireless Networks (%s)"
 msgstr "无线网络(%s)"
 
-#: ../src/applet-device-wifi.c:794
+#: ../src/applet-device-wifi.c:792
 #, c-format
 msgid "Wireless Network (%s)"
 msgstr "无线网络(%s)"
 
-#: ../src/applet-device-wifi.c:796
+#: ../src/applet-device-wifi.c:794
 msgid "Wireless Network"
 msgid_plural "Wireless Networks"
 msgstr[0] "无线网络"
 
-#: ../src/applet-device-wifi.c:829
+#: ../src/applet-device-wifi.c:827
 msgid "wireless is disabled"
 msgstr "无线网络已禁用"
 
-#: ../src/applet-device-wifi.c:830
+#: ../src/applet-device-wifi.c:828
 msgid "wireless is disabled by hardware switch"
 msgstr "无线网络已通过硬件开关禁用"
 
-#: ../src/applet-device-wifi.c:891
+#: ../src/applet-device-wifi.c:889
 msgid "More networks"
 msgstr "更多网络"
 
-#: ../src/applet-device-wifi.c:1071
+#: ../src/applet-device-wifi.c:1068
 msgid "Wireless Networks Available"
 msgstr "无线网络可用"
 
-#: ../src/applet-device-wifi.c:1072
+#: ../src/applet-device-wifi.c:1069
 msgid "Use the network menu to connect to a wireless network"
 msgstr "使用网络菜单连接到无线网络"
 
-#: ../src/applet-device-wifi.c:1075 ../src/applet.c:926
+#: ../src/applet-device-wifi.c:1072 ../src/applet.c:924
 msgid "Don't show this message again"
 msgstr "不再显示此信息"
 
-#: ../src/applet-device-wifi.c:1267
+#: ../src/applet-device-wifi.c:1263
 #, c-format
 msgid "You are now connected to the wireless network '%s'."
 msgstr "您现在已连接到无线网络 '%s'。"
 
-#: ../src/applet-device-wifi.c:1298
+#: ../src/applet-device-wifi.c:1294
 #, c-format
 msgid "Preparing wireless network connection '%s'..."
 msgstr "正在准备无线网络连接“%s”..."
 
-#: ../src/applet-device-wifi.c:1301
+#: ../src/applet-device-wifi.c:1297
 #, c-format
 msgid "Configuring wireless network connection '%s'..."
 msgstr "正在配置无线网络连接“%s”..."
 
-#: ../src/applet-device-wifi.c:1304
+#: ../src/applet-device-wifi.c:1300
 #, c-format
 msgid "User authentication required for wireless network '%s'..."
 msgstr "无线网络“%s”需要用户认证..."
 
-#: ../src/applet-device-wifi.c:1307
+#: ../src/applet-device-wifi.c:1303
 #, c-format
 msgid "Requesting a wireless network address for '%s'..."
 msgstr "正在为“%s”请求一个无线网络地址..."
 
-#: ../src/applet-device-wifi.c:1328
+#: ../src/applet-device-wifi.c:1324
 #, c-format
 msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgstr "无线网络连接“%s”处于活动状态：%s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1333
+#: ../src/applet-device-wifi.c:1329
 #, c-format
 msgid "Wireless network connection '%s' active"
 msgstr "无线网络连接“%s”处于活动状态"
 
-#: ../src/applet-device-wifi.c:1381
+#: ../src/applet-device-wifi.c:1377
 msgid "Failed to activate connection"
 msgstr "无法启用连接"
 
-#: ../src/applet-device-wifi.c:1383 ../src/applet-device-wifi.c:1402
-#: ../src/applet.c:492 ../src/applet.c:536 ../src/applet.c:562
+#: ../src/applet-device-wifi.c:1379 ../src/applet-device-wifi.c:1398
+#: ../src/applet.c:490 ../src/applet.c:534 ../src/applet.c:560
 msgid "Unknown error"
 msgstr "未知错误"
 
-#: ../src/applet-device-wifi.c:1386 ../src/applet-device-wifi.c:1405
-#: ../src/applet.c:495 ../src/applet.c:565
+#: ../src/applet-device-wifi.c:1382 ../src/applet-device-wifi.c:1401
+#: ../src/applet.c:493 ../src/applet.c:563
 msgid "Connection failure"
 msgstr "连接失败"
 
-#: ../src/applet-device-wifi.c:1400
+#: ../src/applet-device-wifi.c:1396
 msgid "Failed to add new connection"
 msgstr "无法添加新连接"
 
@@ -694,8 +721,8 @@ msgid ""
 "Copyright © 2005-2008 Novell, Inc.\n"
 "and many other community contributors and translators"
 msgstr ""
-"版权所有 (C) 2004-2011 Red Hat公司\n"
-"版权所有 (C) 2005-2008 Novell公司\n"
+"版权所有 (C) 2004-2011 Red Hat 公司\n"
+"版权所有 (C) 2005-2008 Novell 公司\n"
 "和其他众多社区贡献者和翻译者"
 
 #: ../src/applet-dialogs.c:942
@@ -724,23 +751,23 @@ msgstr "连接到“%s”需要密码。"
 msgid "Password:"
 msgstr "密码："
 
-#: ../src/applet.c:490
+#: ../src/applet.c:488
 msgid "Failed to add/activate connection"
 msgstr "无法添加/启用连接"
 
-#: ../src/applet.c:534
+#: ../src/applet.c:532
 msgid "Device disconnect failed"
 msgstr "设备断开失败"
 
-#: ../src/applet.c:539
+#: ../src/applet.c:537
 msgid "Disconnect failure"
 msgstr "断开失败"
 
-#: ../src/applet.c:560
+#: ../src/applet.c:558
 msgid "Connection activation failed"
 msgstr "连接启用失败"
 
-#: ../src/applet.c:1015
+#: ../src/applet.c:1013
 #, c-format
 msgid ""
 "\n"
@@ -750,7 +777,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。网络连接被中断。"
 
-#: ../src/applet.c:1018
+#: ../src/applet.c:1016
 #, c-format
 msgid ""
 "\n"
@@ -759,7 +786,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN 服务异常中断。"
 
-#: ../src/applet.c:1021
+#: ../src/applet.c:1019
 #, c-format
 msgid ""
 "\n"
@@ -769,7 +796,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN 服务返回了一个非法配置。"
 
-#: ../src/applet.c:1024
+#: ../src/applet.c:1022
 #, c-format
 msgid ""
 "\n"
@@ -778,7 +805,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。连接超时。"
 
-#: ../src/applet.c:1027
+#: ../src/applet.c:1025
 #, c-format
 msgid ""
 "\n"
@@ -787,7 +814,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN 服务未在所需时间内启动。"
 
-#: ../src/applet.c:1030
+#: ../src/applet.c:1028
 #, c-format
 msgid ""
 "\n"
@@ -796,7 +823,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN 服务启动失败。"
 
-#: ../src/applet.c:1033
+#: ../src/applet.c:1031
 #, c-format
 msgid ""
 "\n"
@@ -805,7 +832,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。没有合法的 VPN secret。"
 
-#: ../src/applet.c:1036
+#: ../src/applet.c:1034
 #, c-format
 msgid ""
 "\n"
@@ -814,7 +841,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。VPN secret 非法。"
 
-#: ../src/applet.c:1043
+#: ../src/applet.c:1041
 #, c-format
 msgid ""
 "\n"
@@ -823,7 +850,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”失败。"
 
-#: ../src/applet.c:1061
+#: ../src/applet.c:1059
 #, c-format
 msgid ""
 "\n"
@@ -833,7 +860,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”已断开。网络连接被中断。"
 
-#: ../src/applet.c:1064
+#: ../src/applet.c:1062
 #, c-format
 msgid ""
 "\n"
@@ -842,7 +869,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”已断开。VPN 服务已停止。"
 
-#: ../src/applet.c:1070
+#: ../src/applet.c:1068
 #, c-format
 msgid ""
 "\n"
@@ -851,7 +878,7 @@ msgstr ""
 "\n"
 "VPN 连接“%s”已断开。"
 
-#: ../src/applet.c:1100
+#: ../src/applet.c:1098
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -862,19 +889,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:1102
+#: ../src/applet.c:1100
 msgid "VPN connection has been successfully established.\n"
 msgstr "已成功建立 VPN 连接。\n"
 
-#: ../src/applet.c:1104
+#: ../src/applet.c:1102
 msgid "VPN Login Message"
 msgstr "VPN 登录消息"
 
-#: ../src/applet.c:1110 ../src/applet.c:1118 ../src/applet.c:1168
+#: ../src/applet.c:1108 ../src/applet.c:1116 ../src/applet.c:1166
 msgid "VPN Connection Failed"
 msgstr "VPN 连接失败"
 
-#: ../src/applet.c:1175
+#: ../src/applet.c:1173
 #, c-format
 msgid ""
 "\n"
@@ -887,7 +914,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1178
+#: ../src/applet.c:1176
 #, c-format
 msgid ""
 "\n"
@@ -900,139 +927,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1498
+#: ../src/applet.c:1496
 msgid "device not ready (firmware missing)"
 msgstr "设备未就绪(缺少固件)"
 
-#: ../src/applet.c:1500
+#: ../src/applet.c:1498
 msgid "device not ready"
 msgstr "设备未就绪"
 
-#: ../src/applet.c:1526
+#: ../src/applet.c:1524
 msgid "Disconnect"
 msgstr "断开"
 
-#: ../src/applet.c:1540
+#: ../src/applet.c:1538
 msgid "device not managed"
 msgstr "设备未托管"
 
-#: ../src/applet.c:1584
+#: ../src/applet.c:1582
 msgid "No network devices available"
 msgstr "没有可用的网络设备"
 
-#: ../src/applet.c:1672
+#: ../src/applet.c:1670
 msgid "_VPN Connections"
 msgstr "_VPN 连接"
 
-#: ../src/applet.c:1729
+#: ../src/applet.c:1727
 msgid "_Configure VPN..."
 msgstr "配置 VPN(_C)..."
 
-#: ../src/applet.c:1733
+#: ../src/applet.c:1731
 msgid "_Disconnect VPN"
 msgstr "断开 VPN(_D)"
 
-#: ../src/applet.c:1831
+#: ../src/applet.c:1825
 msgid "NetworkManager is not running..."
 msgstr "网络管理器未运行..."
 
-#: ../src/applet.c:1836 ../src/applet.c:2635
+#: ../src/applet.c:1830 ../src/applet.c:2631
 msgid "Networking disabled"
 msgstr "网络已禁用"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2057
+#: ../src/applet.c:2051
 msgid "Enable _Networking"
 msgstr "启用联网(_N)"
 
 #. 'Enable Wireless' item
-#: ../src/applet.c:2066
+#: ../src/applet.c:2060
 msgid "Enable _Wireless"
 msgstr "启用无线(_W)"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2075
+#: ../src/applet.c:2069
 msgid "Enable _Mobile Broadband"
 msgstr "启用移动宽带(_M)"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2084
+#: ../src/applet.c:2078
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "启用 WiMA_X 移动宽带"
 
 #. Toggle notifications item
-#: ../src/applet.c:2095
+#: ../src/applet.c:2089
 msgid "Enable N_otifications"
 msgstr "启用通知(_O)"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2106
+#: ../src/applet.c:2100
 msgid "Connection _Information"
 msgstr "连接信息(_I)"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2116
+#: ../src/applet.c:2110
 msgid "Edit Connections..."
 msgstr "编辑连接..."
 
 #. Help item
-#: ../src/applet.c:2130
+#: ../src/applet.c:2124
 msgid "_Help"
 msgstr "帮助(_H)"
 
 #. About item
-#: ../src/applet.c:2139
+#: ../src/applet.c:2133
 msgid "_About"
 msgstr "关于(_A)"
 
-#: ../src/applet.c:2316
+#: ../src/applet.c:2310
 msgid "Disconnected"
 msgstr "已断开连接"
 
-#: ../src/applet.c:2317
+#: ../src/applet.c:2311
 msgid "The network connection has been disconnected."
 msgstr "网络连接现已断开。"
 
-#: ../src/applet.c:2498
+#: ../src/applet.c:2494
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "正在准备网络连接“%s”..."
 
-#: ../src/applet.c:2501
+#: ../src/applet.c:2497
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "网络连接“%s”需要用户认证..."
 
-#: ../src/applet.c:2507
+#: ../src/applet.c:2503
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "网络连接“%s”已处于活动状态"
 
-#: ../src/applet.c:2590
+#: ../src/applet.c:2586
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "正在启动 VPN 连接“%s”..."
 
-#: ../src/applet.c:2593
+#: ../src/applet.c:2589
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "VPN 连接“%s”需要用户认证..."
 
-#: ../src/applet.c:2596
+#: ../src/applet.c:2592
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "正在为“%s”请求一个 VPN 地址..."
 
-#: ../src/applet.c:2599
+#: ../src/applet.c:2595
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "VPN 连接“%s”已处于活动状态"
 
-#: ../src/applet.c:2640
+#: ../src/applet.c:2636
 msgid "No network connection"
 msgstr "没有网络连接"
 
-#: ../src/applet.c:3354
+#: ../src/applet.c:3336
 msgid "NetworkManager Applet"
 msgstr "网络管理器小程序"
 
@@ -1189,11 +1216,15 @@ msgstr "D_HCP 客户端 ID："
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:12
 #: ../src/connection-editor/ce-page-ip6.ui.h:10
+#: ../src/connection-editor/page-ip4.c:308
+#: ../src/connection-editor/page-ip6.c:307
 msgid "S_earch domains:"
 msgstr "搜索域(_E)："
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:13
 #: ../src/connection-editor/ce-page-ip6.ui.h:11
+#: ../src/connection-editor/page-ip4.c:299
+#: ../src/connection-editor/page-ip6.c:298
 msgid "_DNS servers:"
 msgstr "_DNS 服务器："
 
@@ -1312,7 +1343,7 @@ msgstr "压缩"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:5
 msgid "_Use point-to-point encryption (MPPE)"
-msgstr "使用点到点加密 (MPPE)(_U)"
+msgstr "使用点到点加密(MPPE)(_U)"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:6
 msgid "_Require 128-bit encryption"
@@ -1446,7 +1477,7 @@ msgstr "传输功率(_W)："
 
 #: ../src/connection-editor/ce-page-wireless.ui.h:13
 msgid "Mb/s"
-msgstr "Mb/s"
+msgstr "Mb/秒"
 
 #: ../src/connection-editor/ce-page-wireless.ui.h:14
 msgid "_Rate:"
@@ -1564,20 +1595,20 @@ msgstr "新建..."
 
 #: ../src/connection-editor/ip4-routes-dialog.c:745
 #: ../src/connection-editor/ip6-routes-dialog.c:687
-#: ../src/connection-editor/page-ip4.c:900
-#: ../src/connection-editor/page-ip6.c:866
+#: ../src/connection-editor/page-ip4.c:911
+#: ../src/connection-editor/page-ip6.c:877
 msgid "Address"
 msgstr "地址"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:762
-#: ../src/connection-editor/page-ip4.c:917
+#: ../src/connection-editor/page-ip4.c:928
 msgid "Netmask"
 msgstr "子网掩码"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:779
 #: ../src/connection-editor/ip6-routes-dialog.c:721
-#: ../src/connection-editor/page-ip4.c:934
-#: ../src/connection-editor/page-ip6.c:900
+#: ../src/connection-editor/page-ip4.c:945
+#: ../src/connection-editor/page-ip6.c:911
 msgid "Gateway"
 msgstr "网关"
 
@@ -1587,7 +1618,7 @@ msgid "Metric"
 msgstr "公制"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:704
-#: ../src/connection-editor/page-ip6.c:883
+#: ../src/connection-editor/page-ip6.c:894
 msgid "Prefix"
 msgstr "前缀"
 
@@ -1601,7 +1632,7 @@ msgstr "DSL"
 msgid "Could not load DSL user interface."
 msgstr "无法加载 DSL 用户界面。"
 
-#: ../src/connection-editor/page-dsl.c:231
+#: ../src/connection-editor/page-dsl.c:232
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL 连接 %d"
@@ -1653,16 +1684,26 @@ msgstr "仅本地连接"
 msgid "Disabled"
 msgstr "已禁用"
 
-#: ../src/connection-editor/page-ip4.c:832
+#: ../src/connection-editor/page-ip4.c:297
+#: ../src/connection-editor/page-ip6.c:296
+msgid "Additional _DNS servers:"
+msgstr "附加 _DNS 服务器："
+
+#: ../src/connection-editor/page-ip4.c:306
+#: ../src/connection-editor/page-ip6.c:305
+msgid "Additional s_earch domains:"
+msgstr "附加搜索域(_E)："
+
+#: ../src/connection-editor/page-ip4.c:843
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "正在编辑 %s 的 IPv4 路由"
 
-#: ../src/connection-editor/page-ip4.c:981
+#: ../src/connection-editor/page-ip4.c:992
 msgid "IPv4 Settings"
 msgstr "IPv4 设置"
 
-#: ../src/connection-editor/page-ip4.c:983
+#: ../src/connection-editor/page-ip4.c:994
 msgid "Could not load IPv4 user interface."
 msgstr "无法加载 IPv4 用户界面。"
 
@@ -1671,7 +1712,7 @@ msgid "Automatic, addresses only"
 msgstr "自动，仅地址"
 
 #: ../src/connection-editor/page-ip6.c:155
-#: ../src/wireless-security/eap-method.c:285
+#: ../src/wireless-security/eap-method.c:281
 msgid "Ignore"
 msgstr "忽略"
 
@@ -1679,16 +1720,16 @@ msgstr "忽略"
 msgid "Automatic, DHCP only"
 msgstr "自动，仅 DHCP"
 
-#: ../src/connection-editor/page-ip6.c:798
+#: ../src/connection-editor/page-ip6.c:809
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "正在编辑 %s 的 IPv6 路由"
 
-#: ../src/connection-editor/page-ip6.c:945
+#: ../src/connection-editor/page-ip6.c:956
 msgid "IPv6 Settings"
 msgstr "IPv6 设置"
 
-#: ../src/connection-editor/page-ip6.c:947
+#: ../src/connection-editor/page-ip6.c:958
 msgid "Could not load IPv6 user interface."
 msgstr "无法加载 IPv6 用户界面。"
 
@@ -1713,11 +1754,11 @@ msgstr "选择您的移动宽带提供商使用的技术。如不确定，请询
 
 #: ../src/connection-editor/page-mobile.c:679
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
-msgstr "我的提供商使用基于 _GSM 的技术(即: GPRS, EDGE, UMTS, HSDPA)"
+msgstr "我的提供商使用基于 _GSM 的技术(如 GPRS、EDGE、UMTS、HSDPA)"
 
 #: ../src/connection-editor/page-mobile.c:686
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
-msgstr "我的提供商使用基于 C_DMA 的技术(即：1xRTT, EVDO)"
+msgstr "我的提供商使用基于 C_DMA 的技术(如 1xRTT、EVDO)"
 
 #: ../src/connection-editor/page-ppp.c:134
 msgid "EAP"
@@ -1784,8 +1825,8 @@ msgstr "无法找到可用于“%s”的 VPN 插件服务。"
 msgid "VPN connection %d"
 msgstr "VPN 连接 %d"
 
-#: ../src/connection-editor/page-wired.c:89
-#: ../src/connection-editor/page-wireless.c:94
+#: ../src/connection-editor/page-wired.c:91
+#: ../src/connection-editor/page-wireless.c:95
 msgid ""
 "This option locks this connection to the network device specified by its "
 "permanent MAC address entered here.  Example: 00:11:22:33:44:55"
@@ -1793,17 +1834,17 @@ msgstr ""
 "此选项可将此连接锁定至以在此输入的 MAC 地址指定的网络设备。例如："
 "00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-wired.c:272
+#: ../src/connection-editor/page-wired.c:271
 #: ../src/connection-editor/nm-connection-editor.ui.h:2
 #: ../src/connection-editor/nm-connection-list.c:1502
 msgid "Wired"
 msgstr "有线"
 
-#: ../src/connection-editor/page-wired.c:274
+#: ../src/connection-editor/page-wired.c:273
 msgid "Could not load wired user interface."
 msgstr "无法加载有线网络用户界面。"
 
-#: ../src/connection-editor/page-wired.c:449
+#: ../src/connection-editor/page-wired.c:448
 #, c-format
 msgid "Wired connection %d"
 msgstr "有线连接 %d"
@@ -1820,29 +1861,29 @@ msgstr "无法加载“有线网络安全性”安全性用户界面。"
 msgid "Use 802.1_X security for this connection"
 msgstr "对此连接使用 802.1_X 安全性"
 
-#: ../src/connection-editor/page-wireless.c:171
-#: ../src/connection-editor/page-wireless.c:175
-#: ../src/connection-editor/page-wireless.c:196
+#: ../src/connection-editor/page-wireless.c:172
+#: ../src/connection-editor/page-wireless.c:176
+#: ../src/connection-editor/page-wireless.c:197
 #, c-format
 msgid "default"
 msgstr "默认"
 
-#: ../src/connection-editor/page-wireless.c:200
+#: ../src/connection-editor/page-wireless.c:201
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wireless.c:457
+#: ../src/connection-editor/page-wireless.c:455
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
 #: ../src/connection-editor/nm-connection-list.c:1506
 msgid "Wireless"
 msgstr "无线"
 
-#: ../src/connection-editor/page-wireless.c:459
+#: ../src/connection-editor/page-wireless.c:457
 msgid "Could not load WiFi user interface."
 msgstr "无法加载 WiFi 用户界面。"
 
-#: ../src/connection-editor/page-wireless.c:663
+#: ../src/connection-editor/page-wireless.c:661
 #, c-format
 msgid "Wireless connection %d"
 msgstr "无线连接 %d"
@@ -1874,7 +1915,7 @@ msgstr "WPA 及 WPA2 企业"
 
 #: ../src/connection-editor/page-wireless-security.c:395
 msgid "Could not load WiFi security user interface; missing WiFi setting."
-msgstr "无法加载 WiFi 安全性用户界面；缺少 WiFi 设定。"
+msgstr "无法加载 WiFi 安全性用户界面；缺少 WiFi 设置。"
 
 #: ../src/connection-editor/page-wireless-security.c:405
 msgid "Wireless Security"
@@ -1884,38 +1925,38 @@ msgstr "无线安全性"
 msgid "Could not load WiFi security user interface."
 msgstr "无法加载 WiFi 安全性用户界面。"
 
-#: ../src/connection-editor/nm-connection-editor.c:101
+#: ../src/connection-editor/nm-connection-editor.c:102
 #, c-format
 msgid "Editing %s"
 msgstr "正在编辑 %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:105
+#: ../src/connection-editor/nm-connection-editor.c:106
 msgid "Editing un-named connection"
 msgstr "编辑未命名连接"
 
-#: ../src/connection-editor/nm-connection-editor.c:291
+#: ../src/connection-editor/nm-connection-editor.c:292
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
 msgstr "连接编辑器找不到所需的一些资源(未找到 .ui 文件)。"
 
-#: ../src/connection-editor/nm-connection-editor.c:394
+#: ../src/connection-editor/nm-connection-editor.c:395
 msgid "Error creating connection editor dialog."
 msgstr "创建连接编辑器对话框出错。"
 
-#: ../src/connection-editor/nm-connection-editor.c:406
+#: ../src/connection-editor/nm-connection-editor.c:407
 msgid "_Save"
 msgstr "保存(_S)"
 
-#: ../src/connection-editor/nm-connection-editor.c:407
+#: ../src/connection-editor/nm-connection-editor.c:408
 msgid "Save any changes made to this connection."
 msgstr "保存对此连接的全部更改。"
 
-#: ../src/connection-editor/nm-connection-editor.c:408
+#: ../src/connection-editor/nm-connection-editor.c:409
 msgid "_Save..."
 msgstr "保存(_S)..."
 
-#: ../src/connection-editor/nm-connection-editor.c:409
+#: ../src/connection-editor/nm-connection-editor.c:410
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr "为本机所有用户保存此连接需要认证。"
 
@@ -1929,7 +1970,7 @@ msgstr "导出(_X)"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
 msgid "Connection _name:"
-msgstr "连接名称(_I)"
+msgstr "连接名称(_N)："
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:10
 msgid "Connect _automatically"
@@ -1937,7 +1978,7 @@ msgstr "自动连接(_A)"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:11
 msgid "A_vailable to all users"
-msgstr "对所有用户可用"
+msgstr "对所有用户可用(_V)"
 
 #: ../src/connection-editor/nm-connection-list.c:216
 msgid "never"
@@ -1990,7 +2031,7 @@ msgstr "保存连接出错"
 #: ../src/connection-editor/nm-connection-list.c:516
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
-msgstr "属性 '%s' / '%s' 非法: %d"
+msgstr "属性“%s”/“%s”非法：%d"
 
 #: ../src/connection-editor/nm-connection-list.c:523
 #: ../src/connection-editor/nm-connection-list.c:662
@@ -2044,7 +2085,7 @@ msgid ""
 msgstr ""
 "VPN 插件无法正确导入 VPN 连接。\n"
 "\n"
-"错误: 没有 VPN 服务类型。"
+"错误：没有 VPN 服务类型。"
 
 #: ../src/connection-editor/nm-connection-list.c:944
 msgid "Could not edit imported connection"
@@ -2060,7 +2101,7 @@ msgstr "最后使用的"
 
 #: ../src/connection-editor/nm-connection-list.c:1263
 msgid "No VPN plugin available. Please install one to enable this button."
-msgstr "无可用 VPN 插件，请至少安装一个以启用此按钮。"
+msgstr "无可用 VPN 插件。请至少安装一个以启用此按钮。"
 
 #: ../src/connection-editor/nm-connection-list.c:1274
 msgid "_Edit"
@@ -2101,22 +2142,22 @@ msgstr "创建连接出错"
 #: ../src/connection-editor/nm-connection-list.c:1575
 #, c-format
 msgid "Don't know how to create '%s' connections"
-msgstr "无法创建名为“%s”的连接"
+msgstr "不知道如何创建“%s”连接"
 
 #: ../src/connection-editor/nm-connection-list.c:1630
 #: ../src/connection-editor/nm-connection-list.c:1642
 msgid "Error editing connection"
-msgstr "保存连接出错"
+msgstr "编辑连接出错"
 
 #: ../src/connection-editor/nm-connection-list.c:1631
 #, c-format
 msgid "Don't know how to edit '%s' connections"
-msgstr "无法编辑名为“%s”的连接"
+msgstr "不知道如何编辑“%s”连接"
 
 #: ../src/connection-editor/nm-connection-list.c:1643
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
-msgstr "没有找到名为“%s”的连接"
+msgstr "没有找到“%s”连接"
 
 #: ../src/connection-editor/vpn-helpers.c:230
 #, c-format
@@ -2146,7 +2187,7 @@ msgstr "替换(_R)"
 #: ../src/connection-editor/vpn-helpers.c:318
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
-msgstr "是否要将 %s 替换为您正在保存的 VPN 连接?"
+msgstr "是否要将 %s 替换为您正在保存的 VPN 连接？"
 
 #: ../src/connection-editor/vpn-helpers.c:354
 msgid "Cannot export VPN connection"
@@ -2159,118 +2200,115 @@ msgid ""
 "\n"
 "Error: %s."
 msgstr ""
-"VPN 连接“%s”无法被导出至 %s。\n"
+"VPN 连接“%s”无法导出至 %s。\n"
 "\n"
-"错误: %s。"
+"错误：%s。"
 
 #: ../src/connection-editor/vpn-helpers.c:391
 msgid "Export VPN connection..."
-msgstr "导出 VPN 连接"
+msgstr "导出 VPN 连接..."
 
-#: ../src/gnome-bluetooth/bt-widget.c:220
+#: ../src/gnome-bluetooth/bt-widget.c:321
 #, c-format
-msgid "Failed to create PAN connection: %s"
-msgstr "无法建立 PAN 连接：%s"
+msgid ""
+"Bluetooth configuration not possible (failed to connect to D-Bus: (%s) %s)."
+msgstr "蓝牙配置不可用(无法连接 D-Bus：(%s) %s)。"
 
-#: ../src/gnome-bluetooth/bt-widget.c:225
-#: ../src/gnome-bluetooth/bt-widget.c:493
-msgid "Your phone is now ready to use!"
-msgstr "您的电话已经可以使用！"
-
-#: ../src/gnome-bluetooth/bt-widget.c:249
+#: ../src/gnome-bluetooth/bt-widget.c:330
 #, c-format
-msgid "%s Network"
-msgstr "%s 网络"
+msgid ""
+"Bluetooth configuration not possible (error finding NetworkManager: (%s) %s)."
+msgstr "蓝牙配置不可用(查找 NetworkManager 出错：(%s) %s)。"
 
-#: ../src/gnome-bluetooth/bt-widget.c:375
+#: ../src/gnome-bluetooth/bt-widget.c:445
+msgid "Use your mobile phone as a network device (PAN/NAP)"
+msgstr "使用您的移动电话作为网络设备(PAN/NAP)"
+
+#: ../src/gnome-bluetooth/bt-widget.c:454
+msgid "Access the Internet using your mobile phone (DUN)"
+msgstr "使用您的手机访问互联网(DUN)"
+
+#: ../src/gnome-bluetooth/nma-bt-device.c:318
 #, c-format
 msgid "Error: %s"
 msgstr "错误：%s"
 
-#: ../src/gnome-bluetooth/bt-widget.c:488
+#: ../src/gnome-bluetooth/nma-bt-device.c:425
 #, c-format
 msgid "Failed to create DUN connection: %s"
 msgstr "无法建立 DUN 连接：%s"
 
-#: ../src/gnome-bluetooth/bt-widget.c:511
+#: ../src/gnome-bluetooth/nma-bt-device.c:427
+#: ../src/gnome-bluetooth/nma-bt-device.c:833
+msgid "Your phone is now ready to use!"
+msgstr "您的电话已经可以使用！"
+
+#: ../src/gnome-bluetooth/nma-bt-device.c:450
 msgid "Mobile wizard was canceled"
 msgstr "移动连接向导已被取消"
 
-#: ../src/gnome-bluetooth/bt-widget.c:520
+#: ../src/gnome-bluetooth/nma-bt-device.c:459
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "未知电话设备类型(不是 GSM 或者 CDMA)"
 
-#: ../src/gnome-bluetooth/bt-widget.c:714
-#: ../src/gnome-bluetooth/bt-widget.c:720
+#: ../src/gnome-bluetooth/nma-bt-device.c:567
+msgid "unknown modem type."
+msgstr "未知调制解调器类型。"
+
+#: ../src/gnome-bluetooth/nma-bt-device.c:639
+#: ../src/gnome-bluetooth/nma-bt-device.c:645
 msgid "failed to connect to the phone."
 msgstr "连接到电话失败。"
 
-#: ../src/gnome-bluetooth/bt-widget.c:753
+#: ../src/gnome-bluetooth/nma-bt-device.c:676
 msgid "unexpectedly disconnected from the phone."
 msgstr "意外断开与电话的连接。"
 
-#: ../src/gnome-bluetooth/bt-widget.c:762
+#: ../src/gnome-bluetooth/nma-bt-device.c:686
 msgid "timed out detecting phone details."
 msgstr "检测电话详细信息时超时。"
 
-#: ../src/gnome-bluetooth/bt-widget.c:774
+#: ../src/gnome-bluetooth/nma-bt-device.c:697
 msgid "Detecting phone configuration..."
 msgstr "正在检测电话配置..."
 
-#: ../src/gnome-bluetooth/bt-widget.c:840
-msgid "could not find the Bluetooth device."
-msgstr "无法找到蓝牙设备。"
-
-#: ../src/gnome-bluetooth/bt-widget.c:980
+#: ../src/gnome-bluetooth/nma-bt-device.c:794
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
 msgstr "在设置拨号网络连接前必须启用默认蓝牙适配器。"
 
-#: ../src/gnome-bluetooth/bt-widget.c:1012
+#: ../src/gnome-bluetooth/nma-bt-device.c:831
 #, c-format
-msgid "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
-msgstr "蓝牙配置不可用(连接到 D-Bus 失败：%s)。"
+msgid "Failed to create PAN connection: %s"
+msgstr "无法建立 PAN 连接：%s"
 
-#: ../src/gnome-bluetooth/bt-widget.c:1022
-msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
-msgstr "蓝牙配置不可用(创建 D-Bus 代理服务器失败)。"
-
-#: ../src/gnome-bluetooth/bt-widget.c:1031
+#: ../src/gnome-bluetooth/nma-bt-device.c:852
 #, c-format
-msgid ""
-"Bluetooth configuration not possible (error finding NetworkManager: %s)."
-msgstr "蓝牙配置不可用(查找 NetworkManager 出错：%s)。"
+msgid "%s Network"
+msgstr "%s 网络"
 
-#: ../src/gnome-bluetooth/bt-widget.c:1098
-msgid "Use your mobile phone as a network device (PAN/NAP)"
-msgstr "使用您的移动电话作为网络设备(PAN/NAP)"
-
-#: ../src/gnome-bluetooth/bt-widget.c:1107
-msgid "Access the Internet using your mobile phone (DUN)"
-msgstr "使用您的手机访问互联网(DUN)"
-
-#: ../src/libnm-gtk/nm-mobile-wizard.c:198
+#: ../src/libnm-gtk/nm-mobile-wizard.c:205
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
 msgstr "您的移动宽带连接已按以下设定配置："
 
 #. Device
-#: ../src/libnm-gtk/nm-mobile-wizard.c:205
+#: ../src/libnm-gtk/nm-mobile-wizard.c:212
 msgid "Your Device:"
 msgstr "您的设备："
 
 #. Provider
-#: ../src/libnm-gtk/nm-mobile-wizard.c:216
+#: ../src/libnm-gtk/nm-mobile-wizard.c:223
 msgid "Your Provider:"
 msgstr "您的服务商："
 
 #. Plan and APN
-#: ../src/libnm-gtk/nm-mobile-wizard.c:227
+#: ../src/libnm-gtk/nm-mobile-wizard.c:234
 msgid "Your Plan:"
-msgstr "您的计划："
+msgstr "您的套餐："
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:252
+#: ../src/libnm-gtk/nm-mobile-wizard.c:259
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
 "settings you selected.  If the connection fails or you cannot access network "
@@ -2278,132 +2316,132 @@ msgid ""
 "connection settings, choose \"Network Connections\" from the System >> "
 "Preferences menu."
 msgstr ""
-"现将按照您所选择的设定建立一个到您的移动宽带提供商的连接。如果连接失败或无法"
-"访问网络资源，请检查您的设定。要修改您的移动宽带设定，在系统 >> 首选项菜单中"
+"现将按照您所选择的设置建立一个到您的移动宽带提供商的连接。如果连接失败或无法"
+"访问网络资源，请检查您的设置。要修改您的移动宽带设置，在系统 >> 首选项菜单中"
 "选择“网络连接”。"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:264
+#: ../src/libnm-gtk/nm-mobile-wizard.c:271
 msgid "Confirm Mobile Broadband Settings"
-msgstr "确认移动宽带设定"
+msgstr "确认移动宽带设置"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:325
+#: ../src/libnm-gtk/nm-mobile-wizard.c:332
 msgid "Unlisted"
 msgstr "未列出"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:480
+#: ../src/libnm-gtk/nm-mobile-wizard.c:487
 msgid "_Select your plan:"
-msgstr "选择您的计划(_S)："
+msgstr "选择您的套餐(_S)："
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:504
+#: ../src/libnm-gtk/nm-mobile-wizard.c:511
 msgid "Selected plan _APN (Access Point Name):"
-msgstr "选中的计划 _APN (访问点名称)："
+msgstr "所选套餐的 _APN (访问点名称)："
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:528
+#: ../src/libnm-gtk/nm-mobile-wizard.c:535
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
 "\n"
 "If you are unsure of your plan please ask your provider for your plan's APN."
 msgstr ""
-"警告: 选择一个不正确的计划可能导致宽带账户费用问题或无法连接。\n"
+"警告：选择一个不正确的套餐可能导致宽带账户费用问题或无法连接。\n"
 "\n"
-"如果您不确定您的计划，请询问您的提供商以获取计划的 APN。"
+"如果您不确定您的套餐，请询问您的提供商以获取套餐的 APN。"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:535
+#: ../src/libnm-gtk/nm-mobile-wizard.c:542
 msgid "Choose your Billing Plan"
-msgstr "选择您的付费计划"
+msgstr "选择您的付费套餐"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:583
+#: ../src/libnm-gtk/nm-mobile-wizard.c:590
 msgid "My plan is not listed..."
-msgstr "我的计划没有被列出..."
+msgstr "我的套餐未被列出..."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:740
+#: ../src/libnm-gtk/nm-mobile-wizard.c:747
 msgid "Select your provider from a _list:"
-msgstr "从一个列表中选择您的提供商(_L)："
+msgstr "从列表中选择您的提供商(_L)："
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:753
+#: ../src/libnm-gtk/nm-mobile-wizard.c:760
 msgid "Provider"
 msgstr "提供商"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:778
+#: ../src/libnm-gtk/nm-mobile-wizard.c:785
 msgid "I can't find my provider and I wish to enter it _manually:"
 msgstr "找不到我的提供商，希望手动输入(_M)："
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:789
+#: ../src/libnm-gtk/nm-mobile-wizard.c:796
 msgid "Provider:"
 msgstr "提供商："
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:813
+#: ../src/libnm-gtk/nm-mobile-wizard.c:820
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "我的提供商使用 GSM 技术(GPRS, EDGE, UMTS, HSPA)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:819
+#: ../src/libnm-gtk/nm-mobile-wizard.c:826
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "我的提供商使用 CDMA 技术(1xRTT, EVDO)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:830
+#: ../src/libnm-gtk/nm-mobile-wizard.c:837
 msgid "Choose your Provider"
 msgstr "选择您的提供商"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1081
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1088
 msgid "Country or Region List:"
 msgstr "国家或地区列表："
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1093
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1100
 msgid "Country or region"
 msgstr "国家或地区"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1100
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1107
 msgid "My country is not listed"
 msgstr "我所在国家/地区没有被列出"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1146
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1153
 msgid "Choose your Provider's Country or Region"
 msgstr "选择您的提供商的国家或地区"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1200
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1207
 msgid "Installed GSM device"
 msgstr "已安装的 GSM 设备"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1203
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1210
 msgid "Installed CDMA device"
 msgstr "已安装的 CDMA 设备"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1375
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1382
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
 msgstr "此助手程序可帮助您简单地设置一个到蜂窝(3G)网络的移动宽带连接。"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1380
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1387
 msgid "You will need the following information:"
 msgstr "您将需要以下信息："
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1395
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1402
 msgid "Your broadband provider's name"
 msgstr "您的宽带提供商名称"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1401
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1408
 msgid "Your broadband billing plan name"
-msgstr "您的宽带付费计划名称"
+msgstr "您的宽带付费套餐名称"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1407
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1414
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-msgstr "(在某些情况下)您的宽带付费计划 APN (访问点名称)"
+msgstr "(在某些情况下)您的宽带付费套餐 APN (访问点名称)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1434
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1441
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "为此移动宽带设备创建一个连接(_T)："
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1449
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1456
 msgid "Any device"
 msgstr "任何设备"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1462
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1469
 msgid "Set up a Mobile Broadband Connection"
 msgstr "设置一个移动宽带连接"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1626
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1633
 msgid "New Mobile Broadband Connection"
 msgstr "新移动宽带连接"
 
@@ -2418,8 +2456,8 @@ msgstr "建立(_R)"
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1160
 #, c-format
 msgid ""
-"Passwords or encryption keys are required to access the wireless network '%"
-"s'."
+"Passwords or encryption keys are required to access the wireless network "
+"'%s'."
 msgstr "需要密码或密钥来访问无线网络“%s”。"
 
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1162
@@ -2440,7 +2478,7 @@ msgstr "新无线网络"
 
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1172
 msgid "Enter a name for the wireless network you wish to create."
-msgstr "请为您希望建立的无线网络输入一个名称。"
+msgstr "输入您要创建的无线网络的名称。"
 
 #: ../src/libnm-gtk/nm-wireless-dialog.c:1174
 msgid "Connect to Hidden Wireless Network"
@@ -2454,15 +2492,15 @@ msgstr "隐藏的无线网络"
 msgid ""
 "Enter the name and security details of the hidden wireless network you wish "
 "to connect to."
-msgstr "输入您想连接到的隐藏无线网络的名称及安全性详细信息。"
+msgstr "输入您要连接的隐藏无线网络的名称及安全性详细信息。"
 
 #: ../src/libnm-gtk/wifi.ui.h:2
 msgid "Wireless _security:"
-msgstr "无线网络安全性(_W)："
+msgstr "无线网络安全性(_S)："
 
 #: ../src/libnm-gtk/wifi.ui.h:4
 msgid "C_onnection:"
-msgstr "连接(_N)："
+msgstr "连接(_O)："
 
 #: ../src/libnm-gtk/wifi.ui.h:5
 msgid "Wireless _adapter:"
@@ -2529,7 +2567,7 @@ msgstr "未注册"
 #: ../src/mb-menu-item.c:133
 #, c-format
 msgid "Home network (%s)"
-msgstr "主网络 (%s)"
+msgstr "主网络(%s)"
 
 #: ../src/mb-menu-item.c:135
 #, c-format
@@ -2547,17 +2585,17 @@ msgstr "注册被拒绝"
 #: ../src/mb-menu-item.c:151 ../src/mb-menu-item.c:157
 #, c-format
 msgid "%s (%s roaming)"
-msgstr "%s (%s 漫游中)"
+msgstr "%s(%s 漫游中)"
 
 #: ../src/mb-menu-item.c:153 ../src/mb-menu-item.c:159
 #, c-format
 msgid "%s (roaming)"
-msgstr "%s (漫游中)"
+msgstr "%s(漫游中)"
 
 #: ../src/mb-menu-item.c:162
 #, c-format
 msgid "Roaming network (%s)"
-msgstr "漫游网络 (%s)"
+msgstr "漫游网络(%s)"
 
 #: ../src/mb-menu-item.c:164
 #, c-format
@@ -2568,17 +2606,23 @@ msgstr "漫游网络"
 msgid "Default"
 msgstr "默认"
 
+#. The %s is a mobile provider name, eg "T-Mobile"
+#: ../src/utils/utils.c:325
+#, c-format
+msgid "%s connection"
+msgstr "%s 连接"
+
 #: ../src/wired-dialog.c:91 ../src/wired-dialog.c:99
 msgid ""
 "The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
 msgstr "网络管理器小程序找不到所需的资源(.ui 文件未找到)。"
 
-#: ../src/wireless-security/eap-method.c:279
+#: ../src/wireless-security/eap-method.c:275
 msgid "No Certificate Authority certificate chosen"
 msgstr "未选定认证中心证书"
 
-#: ../src/wireless-security/eap-method.c:280
+#: ../src/wireless-security/eap-method.c:276
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue wireless networks.  Would you like to choose a "
@@ -2587,17 +2631,17 @@ msgstr ""
 "不使用认证中心(CA)证书可能导致连接到不安全的、模糊的无线网络。要选择一个认证"
 "中心证书吗？"
 
-#: ../src/wireless-security/eap-method.c:289
+#: ../src/wireless-security/eap-method.c:285
 msgid "Choose CA Certificate"
 msgstr "选择 CA 证书文件"
 
-#: ../src/wireless-security/eap-method.c:648
+#: ../src/wireless-security/eap-method.c:645
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
 msgstr "DER，PEM 或 PKCS#12 私钥 (*.der, *.pem, *.p12)"
 
-#: ../src/wireless-security/eap-method.c:651
+#: ../src/wireless-security/eap-method.c:648
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
-msgstr "DER 或 PEM 证书 (*.der, *.pem, *.crt, *.cer)"
+msgstr "DER 或 PEM 证书(*.der, *.pem, *.crt, *.cer)"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:2
 msgid "Anonymous"
@@ -2642,7 +2686,7 @@ msgstr "选择一个 PAC 文件..."
 
 #: ../src/wireless-security/eap-method-fast.c:406
 msgid "PAC files (*.pac)"
-msgstr "PAC 文件 (*.pac)"
+msgstr "PAC 文件(*.pac)"
 
 #: ../src/wireless-security/eap-method-fast.c:410
 msgid "All files"
@@ -2679,7 +2723,7 @@ msgstr "PEAP 版本(_V)："
 
 #: ../src/wireless-security/eap-method-simple.ui.h:3
 msgid "As_k for this password every time"
-msgstr "总是询问此密码(_K)"
+msgstr "总是询问该密码(_K)"
 
 #: ../src/wireless-security/eap-method-tls.c:246
 msgid "Unencrypted private keys are insecure"
@@ -2791,6 +2835,12 @@ msgstr "显示密钥(_W)"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "WEP inde_x:"
 msgstr "WEP 索引(_X)："
+
+#~ msgid "could not find the Bluetooth device."
+#~ msgstr "无法找到蓝牙设备。"
+
+#~ msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
+#~ msgstr "蓝牙配置不可用(创建 D-Bus 代理服务器失败)。"
 
 #~ msgid "Click on this icon to connect to a wireless network"
 #~ msgstr "单击此图标连接到无线网络"
