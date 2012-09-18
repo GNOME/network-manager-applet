@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-08 03:37+0200\n"
-"PO-Revision-Date: 2012-09-08 03:38+0200\n"
+"POT-Creation-Date: 2012-09-18 20:45+0200\n"
+"PO-Revision-Date: 2012-09-18 20:47+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -527,7 +527,7 @@ msgstr "Wymagane uwierzytelnienie dla połączenia komórkowego \"%s\"..."
 msgid "Mobile broadband connection '%s' active"
 msgstr "Nawiązano połączenie komórkowe \"%s\""
 
-#: ../src/applet-device-cdma.c:181 ../src/connection-editor/page-mobile.c:700
+#: ../src/applet-device-cdma.c:181 ../src/connection-editor/page-mobile.c:714
 #: ../src/mb-menu-item.c:54
 msgid "CDMA"
 msgstr "CDMA"
@@ -540,7 +540,7 @@ msgstr "Komórkowe (%s)"
 
 #: ../src/applet-device-cdma.c:344 ../src/applet-device-gsm.c:398
 #: ../src/connection-editor/new-connection.c:87
-#: ../src/connection-editor/page-mobile.c:380
+#: ../src/connection-editor/page-mobile.c:388
 msgid "Mobile Broadband"
 msgstr "Komórkowe"
 
@@ -632,7 +632,7 @@ msgstr "Nawiązano ethernetowe połączenie sieciowe \"%s\""
 msgid "DSL authentication"
 msgstr "Uwierzytelnianie DSL"
 
-#: ../src/applet-device-gsm.c:213 ../src/connection-editor/page-mobile.c:703
+#: ../src/applet-device-gsm.c:213 ../src/connection-editor/page-mobile.c:717
 #: ../src/mb-menu-item.c:59
 msgid "GSM"
 msgstr "GSM"
@@ -1255,7 +1255,7 @@ msgid "Link _down delay:"
 msgstr "_Opóźnienie wyłączenia łącza:"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:1
-#: ../src/connection-editor/ce-page-mobile.ui.h:8
+#: ../src/connection-editor/ce-page-mobile.ui.h:10
 #: ../src/wireless-security/eap-method-leap.ui.h:1
 #: ../src/wireless-security/eap-method-simple.ui.h:1
 #: ../src/wireless-security/ws-leap.ui.h:1
@@ -1277,7 +1277,7 @@ msgid "Sho_w password"
 msgstr "_Wyświetlanie hasła"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:4
-#: ../src/connection-editor/ce-page-mobile.ui.h:9
+#: ../src/connection-editor/ce-page-mobile.ui.h:11
 #: ../src/wireless-security/eap-method-leap.ui.h:2
 #: ../src/wireless-security/eap-method-simple.ui.h:2
 #: ../src/wireless-security/ws-leap.ui.h:2
@@ -1522,43 +1522,51 @@ msgid "Prefer 2G (GPRS/EDGE)"
 msgstr "Preferowanie 2G (GPRS/EDGE)"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:6
+msgid "Prefer 4G (LTE)"
+msgstr "Preferowanie 4G (LTE)"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:7
+msgid "Use only 4G (LTE)"
+msgstr "Używanie tylko 4G (LTE)"
+
+#: ../src/connection-editor/ce-page-mobile.ui.h:8
 msgid "Basic"
 msgstr "Podstawowe"
 
-#: ../src/connection-editor/ce-page-mobile.ui.h:7
+#: ../src/connection-editor/ce-page-mobile.ui.h:9
 msgid "Nu_mber:"
 msgstr "Nu_mer:"
 
-#: ../src/connection-editor/ce-page-mobile.ui.h:10
+#: ../src/connection-editor/ce-page-mobile.ui.h:12
 msgid "Advanced"
 msgstr "Zaawansowane"
 
-#: ../src/connection-editor/ce-page-mobile.ui.h:11
+#: ../src/connection-editor/ce-page-mobile.ui.h:13
 msgid "_APN:"
 msgstr "_APN:"
 
-#: ../src/connection-editor/ce-page-mobile.ui.h:12
+#: ../src/connection-editor/ce-page-mobile.ui.h:14
 msgid "N_etwork ID:"
 msgstr "Identyfikator si_eci:"
 
-#: ../src/connection-editor/ce-page-mobile.ui.h:13
+#: ../src/connection-editor/ce-page-mobile.ui.h:15
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Typ:"
 
-#: ../src/connection-editor/ce-page-mobile.ui.h:14
+#: ../src/connection-editor/ce-page-mobile.ui.h:16
 msgid "Change..."
 msgstr "Zmień..."
 
-#: ../src/connection-editor/ce-page-mobile.ui.h:15
+#: ../src/connection-editor/ce-page-mobile.ui.h:17
 msgid "P_IN:"
 msgstr "P_IN:"
 
-#: ../src/connection-editor/ce-page-mobile.ui.h:16
+#: ../src/connection-editor/ce-page-mobile.ui.h:18
 msgid "Allow _roaming if home network is not available"
 msgstr "Zezwolenie na _roaming, jeśli sieć domowa nie jest dostępna"
 
-#: ../src/connection-editor/ce-page-mobile.ui.h:17
+#: ../src/connection-editor/ce-page-mobile.ui.h:19
 msgid "Sho_w passwords"
 msgstr "_Wyświetlanie haseł"
 
@@ -2157,20 +2165,20 @@ msgstr "Ustawienia IPv6"
 msgid "Could not load IPv6 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv6."
 
-#: ../src/connection-editor/page-mobile.c:382
+#: ../src/connection-editor/page-mobile.c:390
 msgid "Could not load mobile broadband user interface."
 msgstr "Nie można wczytać interfejsu użytkownika połączeń komórkowych."
 
-#: ../src/connection-editor/page-mobile.c:399
+#: ../src/connection-editor/page-mobile.c:407
 msgid "Unsupported mobile broadband connection type."
 msgstr "Nieobsługiwany typ połączenia komórkowego."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:643
+#: ../src/connection-editor/page-mobile.c:657
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Wybór typu dostawcy połączenia komórkowego"
 
-#: ../src/connection-editor/page-mobile.c:678
+#: ../src/connection-editor/page-mobile.c:692
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -2178,12 +2186,12 @@ msgstr ""
 "Proszę wybrać technologię używaną przez dostawcę połączenia komórkowego. W "
 "razie wątpliwości należy zapytać dostawcę."
 
-#: ../src/connection-editor/page-mobile.c:683
+#: ../src/connection-editor/page-mobile.c:697
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Dostawca używa technologii opartej na _GSM (np. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:690
+#: ../src/connection-editor/page-mobile.c:704
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Dostawca używa technologii opartej na C_DMA (np. 1xRTT, EVDO)"
 
@@ -2718,7 +2726,7 @@ msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
 msgstr ""
-"Proszę wprowadzić nazwę i ustawienia bezpieczeństwa dla żądanej sieci Wi-Fi."
+"Proszę wprowadzić nazwę i ustawienia zabezpieczeń dla żądanej sieci Wi-Fi."
 
 #: ../src/libnm-gtk/wifi.ui.h:2
 msgid "Wi-Fi _security:"
