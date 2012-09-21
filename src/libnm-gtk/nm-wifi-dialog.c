@@ -408,7 +408,8 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 	g_return_val_if_fail (priv->connection == NULL, FALSE);
 
 	/* Clear any old model */
-	g_object_unref (priv->connection_model);
+	if (priv->connection_model)
+		g_object_unref (priv->connection_model);
 
 	/* New model */
 	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_OBJECT, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
