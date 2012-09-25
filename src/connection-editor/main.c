@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2011 Red Hat, Inc.
+ * Copyright (C) 2004 - 2012 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -59,7 +59,7 @@ static GMainLoop *loop = NULL;
 #define NM_CE_SERVICE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CE_SERVICE, NMCEService))
 #define NM_CE_SERVICE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NM_TYPE_CE_SERVICE, NMCEServiceClass))
 #define NM_IS_CE_SERVICE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CE_SERVICE))
-#define NM_IS_CE_SERVICE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), NM_TYPE_CE_SERVICE))
+#define NM_IS_CE_SERVICE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NM_TYPE_CE_SERVICE))
 #define NM_CE_SERVICE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), NM_TYPE_CE_SERVICE, NMCEServiceClass))
 
 typedef struct {

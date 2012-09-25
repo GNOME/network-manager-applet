@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #ifndef __PAGE_PPP_H__
@@ -34,7 +34,7 @@
 #define CE_PAGE_PPP(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_PPP, CEPagePpp))
 #define CE_PAGE_PPP_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE_PPP, CEPagePppClass))
 #define CE_IS_PAGE_PPP(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CE_TYPE_PAGE_PPP))
-#define CE_IS_PAGE_PPP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), CE_TYPE_PAGE_PPP))
+#define CE_IS_PAGE_PPP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CE_TYPE_PAGE_PPP))
 #define CE_PAGE_PPP_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_PPP, CEPagePppClass))
 
 typedef struct {

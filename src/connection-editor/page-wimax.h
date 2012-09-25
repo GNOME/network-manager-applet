@@ -32,7 +32,7 @@
 #define CE_PAGE_WIMAX(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_WIMAX, CEPageWimax))
 #define CE_PAGE_WIMAX_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE_WIMAX, CEPageWimaxClass))
 #define CE_IS_PAGE_WIMAX(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CE_TYPE_PAGE_WIMAX))
-#define CE_IS_PAGE_WIMAX_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), CE_TYPE_PAGE_WIMAX))
+#define CE_IS_PAGE_WIMAX_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CE_TYPE_PAGE_WIMAX))
 #define CE_PAGE_WIMAX_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_WIMAX, CEPageWimaxClass))
 
 typedef struct {
