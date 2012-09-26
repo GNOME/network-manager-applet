@@ -799,6 +799,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 {
 	NMSettingConnection *s_con;
 	const char *connection_type;
+	const char *slave_type;
 	gboolean success = FALSE;
 	GSList *iter, *copy;
 	gboolean add_ip4 = TRUE, add_ip6 = TRUE;
@@ -861,7 +862,8 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 		g_warning ("Unhandled setting type '%s'", connection_type);
 	}
 
-	if (nm_setting_connection_get_master (s_con))
+	slave_type = nm_setting_connection_get_slave_type (s_con);
+	if (!g_strcmp0 (slave_type, NM_SETTING_BOND_SETTING_NAME))
 		add_ip4 = add_ip6 = FALSE;
 
 	if (add_ip4 && !add_page (editor, ce_page_ip4_new, editor->connection, error))

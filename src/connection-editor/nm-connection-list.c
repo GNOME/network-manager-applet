@@ -562,6 +562,7 @@ tree_model_visible_func (GtkTreeModel *model,
 	NMConnection *connection;
 	NMSettingConnection *s_con;
 	const char *master;
+	const char *slave_type;
 
 	gtk_tree_model_get (model, iter, COL_CONNECTION, &connection, -1);
 	if (!connection) {
@@ -569,15 +570,16 @@ tree_model_visible_func (GtkTreeModel *model,
 		return gtk_tree_model_iter_has_child  (model, iter);
 	}
 
-	/* A connection node is visible unless it is a slave to another
-	 * known connection.
+	/* A connection node is visible unless it is a bond slave to
+	 * another known connection.
 	 */
 	s_con = nm_connection_get_setting_connection (connection);
 	g_object_unref (connection);
 	g_return_val_if_fail (s_con != NULL, FALSE);
 
 	master = nm_setting_connection_get_master (s_con);
-	if (!master)
+	slave_type = nm_setting_connection_get_slave_type (s_con);
+	if (!master || g_strcmp0 (slave_type, NM_SETTING_BOND_SETTING_NAME) != 0)
 		return TRUE;
 
 	if (nm_remote_settings_get_connection_by_uuid (self->settings, master))
