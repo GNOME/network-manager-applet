@@ -266,7 +266,7 @@ try_existing_instance (DBusGConnection *bus,
 		g_hash_table_insert (args, ARG_SHOW, &show_value);
 	}
 	if (uuid) {
-		g_value_init (&uuid_value, G_TYPE_BOOLEAN);
+		g_value_init (&uuid_value, G_TYPE_STRING);
 		g_value_set_static_string (&uuid_value, uuid);
 		g_hash_table_insert (args, ARG_UUID, &uuid_value);
 	}
