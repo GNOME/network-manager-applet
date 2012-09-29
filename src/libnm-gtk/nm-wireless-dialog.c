@@ -20,13 +20,11 @@
  * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <string.h>
 
-#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include <netinet/ether.h>
 
