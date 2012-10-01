@@ -20,9 +20,7 @@
  * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <nm-client.h>
 
