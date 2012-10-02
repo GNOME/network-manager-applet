@@ -77,7 +77,8 @@ If you are creating a VPN, and the VPN connection you wish to create does not ap
 			<child>
 			  <object class="GtkCellRendererText" id="renderer2"/>
 			  <attributes>
-			    <attribute name="text">0</attribute>
+			    <attribute name="markup">0</attribute>
+			    <attribute name="sensitive">1</attribute>
 			  </attributes>
 			</child>
                       </object>
@@ -167,6 +168,8 @@ If you are creating a VPN, and the VPN connection you wish to create does not ap
     <columns>
       <!-- column-name name -->
       <column type="gchararray"/>
+      <!-- column-name sensitive -->
+      <column type="gboolean"/>
       <!-- column-name new_func -->
       <column type="gpointer"/>
       <!-- column-name vpn_plugin -->

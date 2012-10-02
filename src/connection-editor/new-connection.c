@@ -37,9 +37,10 @@
 
 static GSList *vpn_plugins;
 
-#define COL_LABEL      0
-#define COL_NEW_FUNC   1
-#define COL_VPN_PLUGIN 2
+#define COL_MARKUP     0
+#define COL_SENSITIVE  1
+#define COL_NEW_FUNC   2
+#define COL_VPN_PLUGIN 3
 
 static gint
 sort_vpn_plugins (gconstpointer a, gconstpointer b)
@@ -60,6 +61,27 @@ sort_vpn_plugins (gconstpointer a, gconstpointer b)
 	return ret;
 }
 
+static gint
+sort_types (gconstpointer a, gconstpointer b)
+{
+	ConnectionTypeData *typea = (ConnectionTypeData *)a;
+	ConnectionTypeData *typeb = (ConnectionTypeData *)b;
+
+	if (typea->virtual && !typeb->virtual)
+		return 1;
+	else if (typeb->virtual && !typea->virtual)
+		return -1;
+
+	if (typea->setting_type == NM_TYPE_SETTING_VPN &&
+	    typeb->setting_type != NM_TYPE_SETTING_VPN)
+		return 1;
+	else if (typeb->setting_type == NM_TYPE_SETTING_VPN &&
+	         typea->setting_type != NM_TYPE_SETTING_VPN)
+		return -1;
+
+	return g_utf8_collate (typea->name, typeb->name);
+}
+
 ConnectionTypeData *
 get_connection_type_list (void)
 {
@@ -77,36 +99,43 @@ get_connection_type_list (void)
 	data.name = _("Ethernet");
 	data.new_connection_func = ethernet_connection_new;
 	data.setting_type = NM_TYPE_SETTING_WIRED;
+	data.virtual = FALSE;
 	g_array_append_val (array, data);
 
 	data.name = _("Wi-Fi");
 	data.new_connection_func = wifi_connection_new;
 	data.setting_type = NM_TYPE_SETTING_WIRELESS;
+	data.virtual = FALSE;
 	g_array_append_val (array, data);
 
 	data.name = _("Mobile Broadband");
 	data.new_connection_func = mobile_connection_new;
 	data.setting_type = NM_TYPE_SETTING_GSM;
+	data.virtual = FALSE;
 	g_array_append_val (array, data);
 
 	data.name = _("WiMAX");
 	data.new_connection_func = wimax_connection_new;
 	data.setting_type = NM_TYPE_SETTING_WIMAX;
+	data.virtual = FALSE;
 	g_array_append_val (array, data);
 
 	data.name = _("DSL");
 	data.new_connection_func = dsl_connection_new;
 	data.setting_type = NM_TYPE_SETTING_PPPOE;
+	data.virtual = FALSE;
 	g_array_append_val (array, data);
 
 	data.name = _("InfiniBand");
 	data.new_connection_func = infiniband_connection_new;
 	data.setting_type = NM_TYPE_SETTING_INFINIBAND;
+	data.virtual = FALSE;
 	g_array_append_val (array, data);
 
 	data.name = _("Bond");
 	data.new_connection_func = bond_connection_new;
 	data.setting_type = NM_TYPE_SETTING_BOND;
+	data.virtual = TRUE;
 	g_array_append_val (array, data);
 
 	/* Add "VPN" only if there are plugins */
@@ -119,6 +148,7 @@ get_connection_type_list (void)
 		data.name = _("VPN");
 		data.new_connection_func = vpn_connection_new;
 		data.setting_type = NM_TYPE_SETTING_VPN;
+		data.virtual = TRUE;
 		g_array_append_val (array, data);
 
 		vpn_plugins = NULL;
@@ -127,6 +157,8 @@ get_connection_type_list (void)
 			vpn_plugins = g_slist_prepend (vpn_plugins, plugin);
 		vpn_plugins = g_slist_sort (vpn_plugins, sort_vpn_plugins);
 	}
+
+	g_array_sort (array, sort_types);
 
 	return (ConnectionTypeData *)g_array_free (array, FALSE);
 }
@@ -139,7 +171,7 @@ combo_row_separator_func (GtkTreeModel *model,
 	char *label;
 
 	gtk_tree_model_get (model, iter,
-	                    COL_LABEL, &label,
+	                    COL_MARKUP, &label,
 	                    -1);
 	if (label) {
 		g_free (label);
@@ -193,12 +225,24 @@ set_up_connection_type_combo (GtkComboBox *combo,
 	ConnectionTypeData *list = get_connection_type_list ();
 	GtkTreeIter iter;
 	GSList *p;
-	int i, vpn_index = -1;
+	int i, vpn_index = -1, active = 0;
 	gboolean import_supported = FALSE;
-	gboolean added_any = FALSE;
+	gboolean added_virtual_header = FALSE;
+	gboolean show_headers = (type_filter_func == NULL);
+	char *markup;
 
 	gtk_combo_box_set_row_separator_func (combo, combo_row_separator_func, NULL, NULL);
 	g_signal_connect (G_OBJECT (combo), "changed", G_CALLBACK (combo_changed_cb), description_label);
+
+	if (show_headers) {
+		markup = g_strdup_printf ("<b><big>%s</big></b>", _("Hardware"));
+		gtk_list_store_append (model, &iter);
+		gtk_list_store_set (model, &iter,
+		                    COL_MARKUP, markup,
+		                    COL_SENSITIVE, FALSE,
+		                    -1);
+		g_free (markup);
+	}
 
 	for (i = 0; list[i].name; i++) {
 		if (type_filter_func && !type_filter_func (list[i].setting_type, user_data))
@@ -207,22 +251,46 @@ set_up_connection_type_combo (GtkComboBox *combo,
 		if (list[i].setting_type == NM_TYPE_SETTING_VPN) {
 			vpn_index = i;
 			continue;
+		} else if (list[i].setting_type == NM_TYPE_SETTING_WIRED)
+			active = i;
+
+		if (list[i].virtual && !added_virtual_header) {
+			markup = g_strdup_printf ("<b><big>%s</big></b>", _("Virtual"));
+			gtk_list_store_append (model, &iter);
+			gtk_list_store_set (model, &iter,
+			                    COL_MARKUP, markup,
+			                    COL_SENSITIVE, FALSE,
+			                    -1);
+			g_free (markup);
+			added_virtual_header = TRUE;
 		}
 
+		if (show_headers)
+			markup = g_markup_printf_escaped ("    %s", list[i].name);
+		else
+			markup = g_markup_escape_text (list[i].name, -1);
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
-		                    COL_LABEL, list[i].name,
+		                    COL_MARKUP, markup,
+		                    COL_SENSITIVE, TRUE,
 		                    COL_NEW_FUNC, list[i].new_connection_func,
 		                    -1);
-		added_any = TRUE;
+		g_free (markup);
 	}
 
-	if (!vpn_plugins || vpn_index == -1)
+	if (!vpn_plugins || vpn_index == -1) {
+		gtk_combo_box_set_active (combo, show_headers ? active + 1 : active);
 		return;
+	}
 
-	if (added_any) {
-		/* Separator */
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+	if (show_headers) {
+		markup = g_strdup_printf ("<b><big>%s</big></b>", _("VPN"));
+		gtk_list_store_append (model, &iter);
+		gtk_list_store_set (model, &iter,
+		                    COL_MARKUP, markup,
+		                    COL_SENSITIVE, FALSE,
+		                    -1);
+		g_free (markup);
 	}
 
 	for (p = vpn_plugins; p; p = p->next) {
@@ -231,12 +299,18 @@ set_up_connection_type_combo (GtkComboBox *combo,
 
 		g_object_get (plugin, NM_VPN_PLUGIN_UI_INTERFACE_NAME, &desc, NULL);
 
+		if (show_headers)
+			markup = g_markup_printf_escaped ("    %s", desc);
+		else
+			markup = g_markup_escape_text (desc, -1);
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
-		                    COL_LABEL, desc,
+		                    COL_MARKUP, markup,
+		                    COL_SENSITIVE, TRUE,
 		                    COL_NEW_FUNC, list[vpn_index].new_connection_func,
 		                    COL_VPN_PLUGIN, plugin,
 		                    -1);
+		g_free (markup);
 		g_free (desc);
 
 		if (nm_vpn_plugin_ui_interface_get_capabilities (plugin) & NM_VPN_PLUGIN_UI_CAPABILITY_IMPORT)
@@ -247,12 +321,20 @@ set_up_connection_type_combo (GtkComboBox *combo,
 		/* Separator */
 		gtk_list_store_append (model, &iter);
 
+		if (show_headers)
+			markup = g_strdup_printf ("    %s", _("Import a saved VPN configuration..."));
+		else
+			markup = g_strdup (_("Import a saved VPN configuration..."));
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
-		                    COL_LABEL, _("Import a saved VPN configuration..."),
+		                    COL_MARKUP, markup,
+		                    COL_SENSITIVE, TRUE,
 		                    COL_NEW_FUNC, vpn_connection_import,
 		                    -1);
+		g_free (markup);
 	}
+
+	gtk_combo_box_set_active (combo, show_headers ? active + 1 : active);
 }
 
 typedef struct {
@@ -363,7 +445,6 @@ new_connection_dialog_full (GtkWindow *parent_window,
 	combo = GTK_COMBO_BOX (gtk_builder_get_object (gui, "new_connection_type_combo"));
 	label = GTK_LABEL (gtk_builder_get_object (gui, "new_connection_desc_label"));
 	set_up_connection_type_combo (combo, label, type_filter_func, user_data);
-	gtk_combo_box_set_active (combo, 0);
 
 	if (primary_label) {
 		label = GTK_LABEL (gtk_builder_get_object (gui, "new_connection_primary_label"));
