@@ -883,6 +883,10 @@ applet_do_notify (NMApplet *applet,
 	if (!gtk_status_icon_is_embedded (applet->status_icon))
 		return;
 
+	/* if we're not registered, don't notify either */
+	if (!nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)))
+		return;
+
 	applet_clear_notify (applet);
 
 	escaped = utils_escape_notify_message (message);
