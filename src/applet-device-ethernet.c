@@ -39,7 +39,7 @@
 #include "applet.h"
 #include "applet-device-ethernet.h"
 #include "ethernet-dialog.h"
-#include "utils.h"
+#include "nm-ui-utils.h"
 
 typedef struct {
 	NMApplet *applet;
@@ -194,12 +194,9 @@ ethernet_add_menu_item (NMDevice *device,
 	g_slist_free (all);
 
 	if (n_devices > 1) {
-		char *desc = NULL;
+		const char *desc;
 
-		desc = (char *) utils_get_device_description (device);
-		if (!desc)
-			desc = (char *) nm_device_get_iface (device);
-		g_assert (desc);
+		desc = nma_utils_get_device_description (device);
 
 		if (g_slist_length (connections) > 1)
 			text = g_strdup_printf (_("Ethernet Networks (%s)"), desc);

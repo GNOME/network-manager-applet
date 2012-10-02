@@ -38,7 +38,7 @@
 
 #include "nm-mobile-wizard.h"
 #include "nmn-mobile-providers.h"
-#include "utils.h"
+#include "nm-ui-utils.h"
 
 #define DEVICE_TAG "device"
 #define TYPE_TAG "setting-type"
@@ -1201,7 +1201,7 @@ static gboolean
 __intro_device_added (NMAMobileWizard *self, NMDevice *device, gboolean select_it)
 {
 	GtkTreeIter iter;
-	const char *desc = utils_get_device_description (device);
+	const char *desc = nma_utils_get_device_description (device);
 	NMDeviceModemCapabilities caps;
 
 	if (!NM_IS_DEVICE_MODEM (device))
@@ -1358,7 +1358,7 @@ intro_combo_changed (NMAMobileWizard *self)
 	gtk_tree_model_get (GTK_TREE_MODEL (self->dev_store), &iter,
 	                    INTRO_COL_DEVICE, &selected, -1);
 	if (selected) {
-		self->dev_desc = g_strdup (utils_get_device_description (selected));
+		self->dev_desc = g_strdup (nma_utils_get_device_description (selected));
 		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (selected));
 		if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
 			self->method_type = NMN_MOBILE_ACCESS_METHOD_TYPE_GSM;

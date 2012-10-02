@@ -37,7 +37,7 @@
 
 #include "nm-wifi-dialog.h"
 #include "wireless-security.h"
-#include "utils.h"
+#include "nm-ui-utils.h"
 
 G_DEFINE_TYPE (NMAWifiDialog, nma_wifi_dialog, GTK_TYPE_DIALOG)
 
@@ -576,13 +576,9 @@ static void
 add_device_to_model (GtkListStore *model, NMDevice *device)
 {
 	GtkTreeIter iter;
-	char *desc;
+	const char *desc;
 
-	desc = (char *) utils_get_device_description (device);
-	if (!desc)
-		desc = (char *) nm_device_get_iface (device);
-	g_assert (desc);
-
+	desc = nma_utils_get_device_description (device);
 	gtk_list_store_append (model, &iter);
 	gtk_list_store_set (model, &iter, D_NAME_COLUMN, desc, D_DEV_COLUMN, device, -1);
 }

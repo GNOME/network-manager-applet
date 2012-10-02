@@ -78,6 +78,7 @@
 #include "applet-vpn-request.h"
 #include "utils.h"
 #include "shell-watcher.h"
+#include "nm-ui-utils.h"
 
 #define NOTIFY_CAPS_ACTIONS_KEY "actions"
 
@@ -1374,16 +1375,11 @@ sort_devices (gconstpointer a, gconstpointer b)
 	GType bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
 
 	if (aa_type == bb_type) {
-		char *aa_desc = NULL;
-		char *bb_desc = NULL;
+		const char *aa_desc = NULL;
+		const char *bb_desc = NULL;
 
-		aa_desc = (char *) utils_get_device_description (aa);
-		if (!aa_desc)
-			aa_desc = (char *) nm_device_get_iface (aa);
-
-		bb_desc = (char *) utils_get_device_description (bb);
-		if (!bb_desc)
-			bb_desc = (char *) nm_device_get_iface (bb);
+		aa_desc = nma_utils_get_device_description (aa);
+		bb_desc = nma_utils_get_device_description (bb);
 
 		return g_strcmp0 (aa_desc, bb_desc);
 	}

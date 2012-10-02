@@ -46,6 +46,7 @@
 #include "ap-menu-item.h"
 #include "utils.h"
 #include "nm-wifi-dialog.h"
+#include "nm-ui-utils.h"
 
 #define ACTIVE_AP_TAG "active-ap"
 
@@ -779,13 +780,9 @@ wifi_add_menu_item (NMDevice *device,
 	aps = nm_device_wifi_get_access_points (wdev);
 
 	if (n_devices > 1) {
-		char *desc;
+		const char *desc;
 
-		desc = (char *) utils_get_device_description (device);
-		if (!desc)
-			desc = (char *) nm_device_get_iface (device);
-		g_assert (desc);
-
+		desc = nma_utils_get_device_description (device);
 		if (aps && aps->len > 1)
 			text = g_strdup_printf (_("Wi-Fi Networks (%s)"), desc);
 		else

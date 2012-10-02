@@ -6,20 +6,23 @@ libnmgtkdir = $(includedir)/libnm-gtk
 libnmgtk_HEADERS = \
 	nm-wifi-dialog.h \
 	nm-wireless-dialog.h \
-	nm-mobile-wizard.h
+	nm-mobile-wizard.h \
+	nm-ui-utils.h
 
 lib_LTLIBRARIES = libnm-gtk.la
 
 libnm_gtk_la_SOURCES = \
 	nm-wifi-dialog.c \
 	nm-wireless-dialog.c \
-	nm-mobile-wizard.c
+	nm-mobile-wizard.c \
+	nm-ui-utils.c
 
 libnm_gtk_la_CFLAGS = \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
 	$(DBUS_CFLAGS) \
 	$(GNOME_KEYRING_CFLAGS) \
+	$(GUDEV_CFLAGS) \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DUIDIR=\""$(uidir)"\" \
 	-DBINDIR=\""$(bindir)"\" \
@@ -37,6 +40,7 @@ libnm_gtk_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	$(GNOME_KEYRING_LIBS) \
+	$(GUDEV_LIBS) \
 	$(top_builddir)/src/marshallers/libmarshallers.la \
 	$(top_builddir)/src/wireless-security/libwireless-security.la
 

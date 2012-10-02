@@ -47,6 +47,7 @@
 #include "mb-menu-item.h"
 #include "nma-marshal.h"
 #include "nmn-mobile-providers.h"
+#include "nm-ui-utils.h"
 
 typedef enum {
     MM_MODEM_GSM_ACCESS_TECH_UNKNOWN     = 0,
@@ -386,13 +387,9 @@ gsm_add_menu_item (NMDevice *device,
 	g_slist_free (all);
 
 	if (n_devices > 1) {
-		char *desc;
+		const char *desc;
 
-		desc = (char *) utils_get_device_description (device);
-		if (!desc)
-			desc = (char *) nm_device_get_iface (device);
-		g_assert (desc);
-
+		desc = nma_utils_get_device_description (device);
 		text = g_strdup_printf (_("Mobile Broadband (%s)"), desc);
 	} else {
 		text = g_strdup (_("Mobile Broadband"));
@@ -987,7 +984,7 @@ unlock_dialog_new (NMDevice *device, GsmDeviceInfo *info)
 		return;
 
 	/* Figure out the dialog text based on the required unlock code */
-	device_desc = utils_get_device_description (device);
+	device_desc = nma_utils_get_device_description (device);
 	if (!strcmp (info->unlock_required, "sim-pin")) {
 		title = _("SIM PIN unlock required");
 		header = _("SIM PIN Unlock Required");
