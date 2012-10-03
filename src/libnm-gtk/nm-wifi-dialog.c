@@ -1165,9 +1165,17 @@ internal_init (NMAWifiDialog *self,
 	return TRUE;
 }
 
+/**
+ * nma_wifi_dialog_get_connection:
+ * @self: an #NMAWifiDialog
+ * @device: (out):
+ * @ap: (out):
+ *
+ * Returns: (transfer full):
+ */
 NMConnection *
 nma_wifi_dialog_get_connection (NMAWifiDialog *self,
-                                NMDevice **out_device,
+                                NMDevice **device,
                                 NMAccessPoint **ap)
 {
 	NMAWifiDialogPrivate *priv;
@@ -1230,11 +1238,11 @@ nma_wifi_dialog_get_connection (NMAWifiDialog *self,
 	}
 
 	/* Fill device */
-	if (out_device) {
+	if (device) {
 		combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_combo"));
 		gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter);
-		gtk_tree_model_get (priv->device_model, &iter, D_DEV_COLUMN, out_device, -1);
-		g_object_unref (*out_device);
+		gtk_tree_model_get (priv->device_model, &iter, D_DEV_COLUMN, device, -1);
+		g_object_unref (*device);
 	}
 
 	if (ap)
@@ -1330,6 +1338,12 @@ nma_wifi_dialog_new_for_create (NMClient *client, NMRemoteSettings *settings)
 	return internal_new_other (client, settings, TRUE);
 }
 
+/**
+ * nma_wifi_dialog_nag_user:
+ * @self:
+ *
+ * Returns: (transfer full):
+ */
 GtkWidget *
 nma_wifi_dialog_nag_user (NMAWifiDialog *self)
 {

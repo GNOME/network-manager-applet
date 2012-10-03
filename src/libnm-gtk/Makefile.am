@@ -51,4 +51,31 @@ libnm_gtk_la_LDFLAGS = -Wl,-no-undefined \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnm-gtk.pc
 
+-include $(INTROSPECTION_MAKEFILE)
+INTROSPECTION_GIRS =
+
+if HAVE_INTROSPECTION
+introspection_sources =			\
+	$(filter-out			\
+		nm-wireless-dialog.%,	\
+		$(libnmgtk_HEADERS) $(libnm_gtk_la_SOURCES))
+
+NMGtk-1.0.gir: libnm-gtk.la
+NMGtk_1_0_gir_INCLUDES = NMClient-1.0 NetworkManager-1.0 Gtk-3.0
+NMGtk_1_0_gir_EXPORT_PACKAGES = libnm-gtk
+NMGtk_1_0_gir_CFLAGS = $(libnm_gtk_la_CFLAGS)
+NMGtk_1_0_gir_LIBS = libnm-gtk.la
+NMGtk_1_0_gir_FILES = $(introspection_sources)
+NMGtk_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symbol-prefix=nma
+INTROSPECTION_GIRS += NMGtk-1.0.gir
+
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(INTROSPECTION_GIRS)
+
+typelibdir = $(libdir)/girepository-1.0
+typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+
+CLEANFILES = $(gir_DATA) $(typelib_DATA)
+endif
+
 EXTRA_DIST = libnm-gtk.pc.in $(ui_DATA)

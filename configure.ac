@@ -7,7 +7,7 @@ AC_INIT([nm-applet],
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([1.10 subdir-objects no-dist-gzip dist-bzip2])
+AM_INIT_AUTOMAKE([1.10 subdir-objects no-dist-gzip dist-bzip2 -Wno-portability])
 AM_MAINTAINER_MODE([enable])
 
 # Support silent build rules, requires at least automake-1.11. Disable
@@ -205,6 +205,8 @@ AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 PKG_CHECK_MODULES(GUDEV, gudev-1.0 >= 147)
 AC_SUBST(GUDEV_CFLAGS)
 AC_SUBST(GUDEV_LIBS)
+
+GOBJECT_INTROSPECTION_CHECK([0.9.6])
 
 GLIB_CONFIG_NMA
 

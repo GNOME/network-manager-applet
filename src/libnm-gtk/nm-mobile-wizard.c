@@ -1598,6 +1598,10 @@ get_country_from_locale (void)
 	return cc;
 }
 
+/**
+ * nma_mobile_wizard_new: (skip)
+ * @cb: (scope async):
+ */
 NMAMobileWizard *
 nma_mobile_wizard_new (GtkWindow *parent,
                    GtkWindowGroup *window_group,

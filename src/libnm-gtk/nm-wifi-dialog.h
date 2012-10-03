@@ -31,6 +31,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <nm-client.h>
 #include <nm-connection.h>
 #include <nm-device.h>
 #include <nm-access-point.h>
@@ -66,15 +67,15 @@ GtkWidget *nma_wifi_dialog_new_for_other (NMClient *client,
 GtkWidget *nma_wifi_dialog_new_for_create (NMClient *client,
                                            NMRemoteSettings *settings);
 
-NMConnection * nma_wifi_dialog_get_connection (NMAWifiDialog *dialog,
+NMConnection * nma_wifi_dialog_get_connection (NMAWifiDialog *self,
                                                NMDevice **device,
                                                NMAccessPoint **ap);
 
-GtkWidget * nma_wifi_dialog_nag_user (NMAWifiDialog *dialog);
+GtkWidget * nma_wifi_dialog_nag_user (NMAWifiDialog *self);
 
-void nma_wifi_dialog_set_nag_ignored (NMAWifiDialog *dialog, gboolean ignored);
+void nma_wifi_dialog_set_nag_ignored (NMAWifiDialog *self, gboolean ignored);
 
-gboolean nma_wifi_dialog_get_nag_ignored (NMAWifiDialog *dialog);
+gboolean nma_wifi_dialog_get_nag_ignored (NMAWifiDialog *self);
 
 #endif	/* NMA_WIFI_DIALOG_H */
 

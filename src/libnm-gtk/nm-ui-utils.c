@@ -400,7 +400,7 @@ get_bus_name (GUdevClient *uclient, NMDevice *device)
  * Generates a list of short-ish unique presentation names for the
  * devices in @devices.
  *
- * Returns: (array zero-terminated=1): the device names
+ * Returns: (transfer full) (array zero-terminated=1): the device names
  */
 char **
 nma_utils_disambiguate_device_names (NMDevice **devices,
