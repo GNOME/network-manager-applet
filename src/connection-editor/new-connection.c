@@ -142,6 +142,7 @@ get_connection_type_list (void)
 	data.name = _("VLAN");
 	data.new_connection_func = vlan_connection_new;
 	data.setting_type = NM_TYPE_SETTING_VLAN;
+	data.virtual = TRUE;
 	g_array_append_val (array, data);
 
 	/* Add "VPN" only if there are plugins */
