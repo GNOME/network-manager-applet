@@ -56,6 +56,7 @@
 #include "nma-marshal.h"
 
 #include "ce-page.h"
+#include "page-general.h"
 #include "page-ethernet.h"
 #include "page-8021x-security.h"
 #include "page-wifi.h"
@@ -821,6 +822,8 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	g_assert (s_con);
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);
+	if (!add_page (editor, ce_page_general_new, editor->connection, error))
+		goto out;
 	if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_ethernet_new, editor->connection, error))
 			goto out;

@@ -26,6 +26,8 @@ nm_connection_editor_SOURCES = \
 	main.c \
 	ce-page.h \
 	ce-page.c \
+	page-general.h \
+	page-general.c \
 	page-ethernet.h \
 	page-ethernet.c \
 	page-8021x-security.h \
@@ -83,6 +85,7 @@ uidir = $(datadir)/nm-applet
 ui_DATA = \
 	nm-connection-editor.ui \
 	ce-new-connection.ui \
+	ce-page-general.ui \
 	ce-page-ethernet.ui \
 	ce-page-wifi.ui \
 	ce-page-wifi-security.ui \
