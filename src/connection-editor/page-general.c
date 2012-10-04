@@ -44,6 +44,9 @@ typedef struct {
 	GtkToggleButton *dependent_vpn_checkbox;
 	GtkComboBox *dependent_vpn;
 	GtkListStore *dependent_vpn_store;
+
+	GtkWidget *autoconnect;
+	GtkWidget *all_checkbutton;
 } CEPageGeneralPrivate;
 
 /* TRANSLATORS: Default zone set for firewall, when no zone is selected */
@@ -86,6 +89,9 @@ general_private_init (CEPageGeneral *self)
 	priv->dependent_vpn_checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "dependent_vpn_checkbox"));
 	priv->dependent_vpn = GTK_COMBO_BOX (gtk_builder_get_object (builder, "dependent_vpn_combo"));
 	priv->dependent_vpn_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "dependent_vpn_model"));
+
+	priv->autoconnect = GTK_WIDGET (gtk_builder_get_object (builder, "connection_autoconnect"));
+	priv->all_checkbutton = GTK_WIDGET (gtk_builder_get_object (builder, "system_checkbutton"));
 }
 
 static void
@@ -165,6 +171,7 @@ populate_ui (CEPageGeneral *self)
 	guint32 combo_idx = 0, idx;
 	GSList *con_list, *l;
 	GtkTreeIter iter;
+	gboolean global_connection = TRUE;
 
 	s_zone = nm_setting_connection_get_zone (setting);
 	
@@ -228,6 +235,15 @@ populate_ui (CEPageGeneral *self)
 	g_slist_free (con_list);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->dependent_vpn), combo_idx);
 
+	/* 'Automatically connect to this network' checkbox */
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->autoconnect),
+	                              nm_setting_connection_get_autoconnect (priv->setting));
+
+	/* 'All users may connect to this network' checkbox */
+	if (nm_setting_connection_get_num_permissions (priv->setting))
+		global_connection = FALSE;
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->all_checkbutton), global_connection);
+
 	stuff_changed (NULL, self);
 }
 
@@ -249,6 +265,9 @@ finish_setup (CEPageGeneral *self, gpointer unused, GError *error, gpointer user
 	g_signal_connect (priv->dependent_vpn_checkbox, "toggled", G_CALLBACK (vpn_checkbox_toggled), self);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->dependent_vpn), any_dependent_vpn);
 	g_signal_connect (priv->dependent_vpn, "changed", G_CALLBACK (stuff_changed), self);
+
+	g_signal_connect (priv->autoconnect, "toggled", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->all_checkbutton, "toggled", G_CALLBACK (stuff_changed), self);
 }
 
 CEPage *
@@ -299,6 +318,7 @@ ui_to_setting (CEPageGeneral *self)
 	char *zone;
 	char *uuid = NULL;
 	GtkTreeIter iter;
+	gboolean autoconnect = FALSE, everyone = FALSE;
 
 #if GTK_CHECK_VERSION (2,24,0)
 	zone = gtk_combo_box_text_get_active_text (priv->firewall_zone);
@@ -321,6 +341,17 @@ ui_to_setting (CEPageGeneral *self)
 	if (uuid)
 		nm_setting_connection_add_secondary (priv->setting, uuid);
 	g_free (uuid);
+
+	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->autoconnect));
+	g_object_set (G_OBJECT (priv->setting), NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect, NULL);
+
+	/* Handle visibility */
+	everyone = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->all_checkbutton));
+	g_object_set (G_OBJECT (priv->setting), NM_SETTING_CONNECTION_PERMISSIONS, NULL, NULL);
+	if (everyone == FALSE) {
+		/* Only visible to this user */
+		nm_setting_connection_add_permission (priv->setting, "user", g_get_user_name (), NULL);
+	}
 }
 
 static gboolean

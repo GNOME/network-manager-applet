@@ -122,7 +122,6 @@ ui_to_setting (NMConnectionEditor *editor)
 	NMSettingConnection *s_con;
 	GtkWidget *widget;
 	const char *name;
-	gboolean autoconnect = FALSE, everyone = FALSE;
 
 	s_con = nm_connection_get_setting_connection (editor->connection);
 	g_assert (s_con);
@@ -135,18 +134,6 @@ ui_to_setting (NMConnectionEditor *editor)
 
 	if (!name || !strlen (name))
 		return FALSE;
-
-	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_autoconnect"));
-	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
-	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect, NULL);
-
-	/* Handle visibility */
-	everyone = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton));
-	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_PERMISSIONS, NULL, NULL);
-	if (everyone == FALSE) {
-		/* Only visible to this user */
-		nm_setting_connection_add_permission (s_con, "user", g_get_user_name (), NULL);
-	}
 
 	return TRUE;
 }
@@ -183,19 +170,11 @@ update_sensitivity (NMConnectionEditor *editor)
 		sensitive = authorized;
 	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (editor->all_checkbutton), actionable && authorized);
-
 	/* Cancel button is always sensitive */
 	gtk_widget_set_sensitive (GTK_WIDGET (editor->cancel_button), TRUE);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name_label"));
 	gtk_widget_set_sensitive (widget, sensitive);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
-	gtk_widget_set_sensitive (widget, sensitive);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_autoconnect"));
-	gtk_widget_set_sensitive (widget, sensitive && !nm_setting_connection_get_master (s_con));
 
 	widget = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
 	gtk_widget_set_sensitive (widget, sensitive);
@@ -275,12 +254,6 @@ permissions_changed_cb (NMClient *client,
 }
 
 static void
-all_checkbutton_toggled_cb (GtkWidget *widget, NMConnectionEditor *editor)
-{
-	connection_editor_validate (editor);
-}
-
-static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *dialog;
@@ -310,7 +283,6 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	editor->window = GTK_WIDGET (gtk_builder_get_object (editor->builder, "nm-connection-editor"));
 	editor->cancel_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "cancel_button"));
 	editor->export_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "export_button"));
-	editor->all_checkbutton = GTK_WIDGET (gtk_builder_get_object (editor->builder, "system_checkbutton"));
 }
 
 static void
@@ -543,6 +515,7 @@ update_secret_flags (NMSetting *setting,
 gboolean
 nm_connection_editor_update_connection (NMConnectionEditor *editor)
 {
+	NMSettingConnection *s_con;
 	GHashTable *settings;
 	gboolean everyone = FALSE;
 	GError *error = NULL;
@@ -566,7 +539,8 @@ nm_connection_editor_update_connection (NMConnectionEditor *editor)
 	 * otherwise the secret flags we set here might be overwritten during
 	 * setting validation.
 	 */
-	everyone = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton));
+	s_con = nm_connection_get_setting_connection (editor->connection);
+	everyone = !nm_setting_connection_get_num_permissions (s_con);
 	nm_connection_for_each_setting_value (editor->connection, update_secret_flags, GUINT_TO_POINTER (everyone));
 
 	/* Copy the modified connection to the original connection */
@@ -582,32 +556,13 @@ populate_connection_ui (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
 	GtkWidget *name;
-	GtkWidget *autoconnect;
-	gboolean system_connection = TRUE;
 
 	name = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_name"));
-	autoconnect = GTK_WIDGET (gtk_builder_get_object (editor->builder, "connection_autoconnect"));
 
 	s_con = nm_connection_get_setting_connection (editor->connection);
-	if (s_con) {
-		const char *id = nm_setting_connection_get_id (s_con);
-
-		gtk_entry_set_text (GTK_ENTRY (name), id);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (autoconnect),
-		                              nm_setting_connection_get_autoconnect (s_con));
-
-		if (nm_setting_connection_get_num_permissions (s_con))
-			system_connection = FALSE;
-	} else {
-		gtk_entry_set_text (GTK_ENTRY (name), NULL);
-	}
+	gtk_entry_set_text (GTK_ENTRY (name), s_con ? nm_setting_connection_get_id (s_con) : NULL);
 
 	g_signal_connect_swapped (name, "changed", G_CALLBACK (connection_editor_validate), editor);
-	g_signal_connect_swapped (autoconnect, "toggled", G_CALLBACK (connection_editor_validate), editor);
-
-	g_signal_connect (editor->all_checkbutton, "toggled", G_CALLBACK (all_checkbutton_toggled_cb), editor);
-
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->all_checkbutton), system_connection);
 
 	connection_editor_validate (editor);
 }
