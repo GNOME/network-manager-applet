@@ -32,6 +32,7 @@ G_DEFINE_TYPE (CEPageGeneral, ce_page_general, CE_TYPE_PAGE)
 #define CE_PAGE_GENERAL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_GENERAL, CEPageGeneralPrivate))
 
 typedef struct {
+	NMRemoteSettings *remote_settings;
 	NMSettingConnection *setting;
 
 #if GTK_CHECK_VERSION(2,24,0)
@@ -39,12 +40,22 @@ typedef struct {
 #else
 	GtkComboBox *firewall_zone;
 #endif
+
+	GtkToggleButton *dependent_vpn_checkbox;
+	GtkComboBox *dependent_vpn;
+	GtkListStore *dependent_vpn_store;
 } CEPageGeneralPrivate;
 
 /* TRANSLATORS: Default zone set for firewall, when no zone is selected */
 #define FIREWALL_ZONE_DEFAULT _("Default")
 #define FIREWALL_ZONE_TOOLTIP_AVAILBALE _("The zone defines the trust level of the connection. Default is not a regular zone, selecting it results in the use of the default zone set in the firewall. Only usable if firewalld is active.")
 #define FIREWALL_ZONE_TOOLTIP_UNAVAILBALE _("FirewallD is not running.")
+
+enum {
+	COL_ID,
+	COL_UUID,
+	N_COLUMNS
+};
 
 static void
 general_private_init (CEPageGeneral *self)
@@ -70,11 +81,39 @@ general_private_init (CEPageGeneral *self)
 	/* Set mnemonic widget for device Firewall zone label */
 	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "firewall_zone_label")));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->firewall_zone));
+
+	/*-- Dependent VPN connection --*/
+	priv->dependent_vpn_checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "dependent_vpn_checkbox"));
+	priv->dependent_vpn = GTK_COMBO_BOX (gtk_builder_get_object (builder, "dependent_vpn_combo"));
+	priv->dependent_vpn_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "dependent_vpn_model"));
+}
+
+static void
+dispose (GObject *object)
+{
+	CEPageGeneral *self = CE_PAGE_GENERAL (object);
+	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
+
+	if (priv->remote_settings) {
+		g_object_unref (priv->remote_settings);
+		priv->remote_settings = NULL;
+	}
+
+	G_OBJECT_CLASS (ce_page_general_parent_class)->dispose (object);
 }
 
 static void
 stuff_changed (GtkWidget *w, gpointer user_data)
 {
+	ce_page_changed (CE_PAGE (user_data));
+}
+
+static void
+vpn_checkbox_toggled (GtkToggleButton *button, gpointer user_data)
+{
+	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (user_data);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dependent_vpn), gtk_toggle_button_get_active (priv->dependent_vpn_checkbox));
 	ce_page_changed (CE_PAGE (user_data));
 }
 
@@ -122,8 +161,10 @@ populate_ui (CEPageGeneral *self)
 	NMSettingConnection *setting = priv->setting;
 	char **zones;
 	char **zone_ptr;
-	const char *s_zone;
+	const char *s_zone, *vpn_uuid;
 	guint32 combo_idx = 0, idx;
+	GSList *con_list, *l;
+	GtkTreeIter iter;
 
 	s_zone = nm_setting_connection_get_zone (setting);
 	
@@ -167,12 +208,34 @@ populate_ui (CEPageGeneral *self)
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->firewall_zone), FALSE);
 	}
 	g_strfreev (zones);
+
+	/* Secondary UUID (VPN) */
+	vpn_uuid = nm_setting_connection_get_secondary (setting, 0);
+	con_list = nm_remote_settings_list_connections (priv->remote_settings);
+	for (l = con_list, idx = 0, combo_idx = 0; l; l = l->next) {
+		const char *uuid = nm_connection_get_uuid (l->data);
+		const char *id = nm_connection_get_id (l->data);
+
+		if (!nm_connection_is_type (l->data, NM_SETTING_VPN_SETTING_NAME))
+			continue;
+
+		gtk_list_store_append (priv->dependent_vpn_store, &iter);
+		gtk_list_store_set (priv->dependent_vpn_store, &iter, COL_ID, id, COL_UUID, uuid, -1);
+		if (g_strcmp0 (vpn_uuid, uuid) == 0)
+			combo_idx = idx;
+		idx++;
+	}
+	g_slist_free (con_list);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->dependent_vpn), combo_idx);
+
+	stuff_changed (NULL, self);
 }
 
 static void
 finish_setup (CEPageGeneral *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
+	gboolean any_dependent_vpn;
 
 	if (error)
 		return;
@@ -180,6 +243,12 @@ finish_setup (CEPageGeneral *self, gpointer unused, GError *error, gpointer user
 	populate_ui (self);
 
 	g_signal_connect (priv->firewall_zone, "changed", G_CALLBACK (stuff_changed), self);
+
+	any_dependent_vpn = !!nm_setting_connection_get_num_secondaries (priv->setting);
+	gtk_toggle_button_set_active (priv->dependent_vpn_checkbox, any_dependent_vpn);
+	g_signal_connect (priv->dependent_vpn_checkbox, "toggled", G_CALLBACK (vpn_checkbox_toggled), self);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dependent_vpn), any_dependent_vpn);
+	g_signal_connect (priv->dependent_vpn, "changed", G_CALLBACK (stuff_changed), self);
 }
 
 CEPage *
@@ -210,6 +279,8 @@ ce_page_general_new (NMConnection *connection,
 	general_private_init (self);
 	priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
 
+	priv->remote_settings = g_object_ref (settings);
+
 	priv->setting = nm_connection_get_setting_connection (connection);
 	if (!priv->setting) {
 		priv->setting = NM_SETTING_CONNECTION (nm_setting_connection_new ());
@@ -226,6 +297,8 @@ ui_to_setting (CEPageGeneral *self)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
 	char *zone;
+	char *uuid = NULL;
+	GtkTreeIter iter;
 
 #if GTK_CHECK_VERSION (2,24,0)
 	zone = gtk_combo_box_text_get_active_text (priv->firewall_zone);
@@ -238,6 +311,16 @@ ui_to_setting (CEPageGeneral *self)
 	g_object_set (priv->setting, NM_SETTING_CONNECTION_ZONE, zone, NULL);
 
 	g_free (zone);
+
+	if (   gtk_toggle_button_get_active (priv->dependent_vpn_checkbox)
+	    && gtk_combo_box_get_active_iter (priv->dependent_vpn, &iter))
+		gtk_tree_model_get (GTK_TREE_MODEL (priv->dependent_vpn_store), &iter,
+		                                    COL_UUID, &uuid, -1);
+
+	g_object_set (G_OBJECT (priv->setting), NM_SETTING_CONNECTION_SECONDARIES, NULL, NULL);
+	if (uuid)
+		nm_setting_connection_add_secondary (priv->setting, uuid);
+	g_free (uuid);
 }
 
 static gboolean
@@ -264,6 +347,8 @@ ce_page_general_class_init (CEPageGeneralClass *connection_class)
 	g_type_class_add_private (object_class, sizeof (CEPageGeneralPrivate));
 
 	/* virtual methods */
+	object_class->dispose = dispose;
+
 	parent_class->validate = validate;
 }
 

@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
+  <object class="GtkListStore" id="dependent_vpn_model">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkTable" id="GeneralPage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="border_width">12</property>
-    <property name="n_rows">1</property>
+    <property name="n_rows">3</property>
     <property name="n_columns">2</property>
     <property name="column_spacing">12</property>
     <property name="row_spacing">6</property>
@@ -19,10 +27,11 @@
       </object>
       <packing>
         <property name="right_attach">1</property>
-        <property name="top_attach">0</property>
-        <property name="bottom_attach">1</property>
+        <property name="top_attach">2</property>
+        <property name="bottom_attach">3</property>
         <property name="x_options">GTK_FILL</property>
         <property name="y_options"></property>
+        <property name="y_padding">12</property>
       </packing>
     </child>
     <child>
@@ -33,8 +42,47 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="right_attach">2</property>
+        <property name="top_attach">2</property>
+        <property name="bottom_attach">3</property>
+        <property name="x_options">GTK_FILL</property>
+        <property name="y_options"></property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkCheckButton" id="dependent_vpn_checkbox">
+        <property name="label" translatable="yes">Automatically connect to _VPN when using this connection</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">False</property>
+        <property name="use_underline">True</property>
+        <property name="xalign">0</property>
+        <property name="draw_indicator">True</property>
+      </object>
+      <packing>
+        <property name="right_attach">2</property>
         <property name="top_attach">0</property>
         <property name="bottom_attach">1</property>
+        <property name="x_options">GTK_FILL</property>
+        <property name="y_options"></property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkComboBox" id="dependent_vpn_combo">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">26</property>
+        <property name="model">dependent_vpn_model</property>
+        <child>
+          <object class="GtkCellRendererText" id="renderer1"/>
+          <attributes>
+            <attribute name="text">0</attribute>
+          </attributes>
+        </child>
+      </object>
+      <packing>
+        <property name="right_attach">2</property>
+        <property name="top_attach">1</property>
+        <property name="bottom_attach">2</property>
         <property name="y_options"></property>
       </packing>
     </child>
