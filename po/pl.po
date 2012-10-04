@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-04 01:32+0200\n"
-"PO-Revision-Date: 2012-10-04 01:34+0200\n"
+"POT-Creation-Date: 2012-10-04 21:59+0200\n"
+"PO-Revision-Date: 2012-10-04 22:00+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -527,7 +527,7 @@ msgstr "Wymagane uwierzytelnienie dla połączenia komórkowego \"%s\"..."
 msgid "Mobile broadband connection '%s' active"
 msgstr "Nawiązano połączenie komórkowe \"%s\""
 
-#: ../src/applet-device-cdma.c:182 ../src/connection-editor/page-mobile.c:714
+#: ../src/applet-device-cdma.c:182 ../src/connection-editor/page-mobile.c:715
 #: ../src/mb-menu-item.c:54
 msgid "CDMA"
 msgstr "CDMA"
@@ -539,8 +539,8 @@ msgid "Mobile Broadband (%s)"
 msgstr "Komórkowe (%s)"
 
 #: ../src/applet-device-cdma.c:341 ../src/applet-device-gsm.c:395
-#: ../src/connection-editor/new-connection.c:111
-#: ../src/connection-editor/page-mobile.c:388
+#: ../src/connection-editor/new-connection.c:112
+#: ../src/connection-editor/page-mobile.c:389
 #: ../src/libnm-gtk/nm-ui-utils.c:333
 msgid "Mobile Broadband"
 msgstr "Komórkowe"
@@ -633,7 +633,7 @@ msgstr "Nawiązano ethernetowe połączenie sieciowe \"%s\""
 msgid "DSL authentication"
 msgstr "Uwierzytelnianie DSL"
 
-#: ../src/applet-device-gsm.c:214 ../src/connection-editor/page-mobile.c:717
+#: ../src/applet-device-gsm.c:214 ../src/connection-editor/page-mobile.c:718
 #: ../src/mb-menu-item.c:59
 msgid "GSM"
 msgstr "GSM"
@@ -1156,7 +1156,7 @@ msgstr "Utwórz…"
 msgid "automatic"
 msgstr "automatycznie"
 
-#: ../src/connection-editor/ce-page.c:294
+#: ../src/connection-editor/ce-page.c:356
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Zaktualizowanie ustawień połączenia się nie powiodło z powodu nieznanego "
@@ -1209,13 +1209,13 @@ msgstr "_Tryb:"
 # na przycisku
 #. Edit
 #: ../src/connection-editor/ce-page-bond.ui.h:12
-#: ../src/connection-editor/nm-connection-list.c:680
+#: ../src/connection-editor/nm-connection-list.c:682
 msgid "_Edit"
 msgstr "_Modyfikuj"
 
 #. Delete
 #: ../src/connection-editor/ce-page-bond.ui.h:13
-#: ../src/connection-editor/nm-connection-list.c:697
+#: ../src/connection-editor/nm-connection-list.c:699
 msgid "_Delete"
 msgstr "_Usuń"
 
@@ -1369,12 +1369,14 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:17
 #: ../src/connection-editor/ce-page-infiniband.ui.h:4
+#: ../src/connection-editor/ce-page-vlan.ui.h:4
 #: ../src/connection-editor/ce-page-wifi.ui.h:7
 msgid "_MTU:"
 msgstr "_MTU:"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:18
 #: ../src/connection-editor/ce-page-infiniband.ui.h:3
+#: ../src/connection-editor/ce-page-vlan.ui.h:5
 #: ../src/connection-editor/ce-page-wifi.ui.h:6
 msgid "bytes"
 msgstr "bajtów"
@@ -1619,6 +1621,32 @@ msgstr "Echo"
 msgid "Send PPP _echo packets"
 msgstr "Wysyłanie pakietów _echo PPP"
 
+#: ../src/connection-editor/ce-page-vlan.ui.h:1
+msgid "_Parent interface:"
+msgstr "Interfejs na_drzędny:"
+
+#: ../src/connection-editor/ce-page-vlan.ui.h:2
+msgid "VLAN interface _name:"
+msgstr "_Nazwa interfejsu VLAN:"
+
+#: ../src/connection-editor/ce-page-vlan.ui.h:3
+msgid "_Cloned MAC address:"
+msgstr "Sk_lonowany adres MAC:"
+
+#: ../src/connection-editor/ce-page-vlan.ui.h:6
+msgid "VLAN _id:"
+msgstr "_Identyfikator VLAN:"
+
+#. In context, this means "concatenate the device name and the VLAN ID number together"
+#: ../src/connection-editor/ce-page-vlan.ui.h:8
+msgid "Device name + number"
+msgstr "Nazwa urządzenia + numer"
+
+#. LEAVE "vlan" UNTRANSLATED. In context, this means "concatenate the string 'vlan' and the VLAN ID number together".
+#: ../src/connection-editor/ce-page-vlan.ui.h:10
+msgid "\"vlan\" + number"
+msgstr "\"vlan\" + numer"
+
 #: ../src/connection-editor/ce-page-wifi-security.ui.h:1
 msgid "S_ecurity:"
 msgstr "Zab_ezpieczenia:"
@@ -1766,59 +1794,64 @@ msgstr "Parametry"
 msgid "Prefix"
 msgstr "Przedrostek"
 
-#: ../src/connection-editor/new-connection.c:99
-#: ../src/connection-editor/page-ethernet.c:272
+#: ../src/connection-editor/new-connection.c:100
+#: ../src/connection-editor/page-ethernet.c:251
 #: ../src/libnm-gtk/nm-ui-utils.c:323
 msgid "Ethernet"
 msgstr "Ethernet"
 
-#: ../src/connection-editor/new-connection.c:105
-#: ../src/connection-editor/page-wifi.c:460 ../src/libnm-gtk/nm-ui-utils.c:325
+#: ../src/connection-editor/new-connection.c:106
+#: ../src/connection-editor/page-wifi.c:439 ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
-#: ../src/connection-editor/new-connection.c:117
-#: ../src/connection-editor/page-wimax.c:155
+#: ../src/connection-editor/new-connection.c:118
+#: ../src/connection-editor/page-wimax.c:134
 #: ../src/libnm-gtk/nm-ui-utils.c:331 ../src/mb-menu-item.c:75
 msgid "WiMAX"
 msgstr "WiMAX"
 
-#: ../src/connection-editor/new-connection.c:123
-#: ../src/connection-editor/page-dsl.c:140
+#: ../src/connection-editor/new-connection.c:124
+#: ../src/connection-editor/page-dsl.c:141
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/new-connection.c:129
-#: ../src/connection-editor/page-infiniband.c:191
+#: ../src/connection-editor/new-connection.c:130
+#: ../src/connection-editor/page-infiniband.c:168
 #: ../src/libnm-gtk/nm-ui-utils.c:335
 msgid "InfiniBand"
 msgstr "InfiniBand"
 
-#: ../src/connection-editor/new-connection.c:135
-#: ../src/connection-editor/page-bond.c:746 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/new-connection.c:136
+#: ../src/connection-editor/page-bond.c:747 ../src/libnm-gtk/nm-ui-utils.c:337
 msgid "Bond"
 msgstr "Łączenie"
 
-#: ../src/connection-editor/new-connection.c:148
-#: ../src/connection-editor/new-connection.c:287
-#: ../src/connection-editor/page-vpn.c:112
+#: ../src/connection-editor/new-connection.c:142
+#: ../src/connection-editor/page-vlan.c:480 ../src/libnm-gtk/nm-ui-utils.c:339
+msgid "VLAN"
+msgstr "VLAN"
+
+#: ../src/connection-editor/new-connection.c:155
+#: ../src/connection-editor/new-connection.c:294
+#: ../src/connection-editor/page-vpn.c:113
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/new-connection.c:238
+#: ../src/connection-editor/new-connection.c:245
 msgid "Hardware"
 msgstr "Sprzętowe"
 
-#: ../src/connection-editor/new-connection.c:258
+#: ../src/connection-editor/new-connection.c:265
 msgid "Virtual"
 msgstr "Wirtualne"
 
-#: ../src/connection-editor/new-connection.c:325
-#: ../src/connection-editor/new-connection.c:327
+#: ../src/connection-editor/new-connection.c:332
+#: ../src/connection-editor/new-connection.c:334
 msgid "Import a saved VPN configuration..."
 msgstr "Zaimportuj zapisaną konfigurację VPN..."
 
-#: ../src/connection-editor/new-connection.c:356
+#: ../src/connection-editor/new-connection.c:363
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -1826,29 +1859,29 @@ msgstr ""
 "Nie można zainicjować okna dialogowego edytora połączeń z powodu nieznanego "
 "błędu."
 
-#: ../src/connection-editor/new-connection.c:365
+#: ../src/connection-editor/new-connection.c:372
 msgid "Could not create new connection"
 msgstr "Nie można utworzyć nowego połączenia"
 
-#: ../src/connection-editor/new-connection.c:500
+#: ../src/connection-editor/new-connection.c:507
 msgid "Connection delete failed"
 msgstr "Usunięcie połączenia się nie powiodło"
 
-#: ../src/connection-editor/new-connection.c:547
+#: ../src/connection-editor/new-connection.c:554
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Na pewno usunąć połączenie %s?"
 
-#: ../src/connection-editor/nm-connection-editor.c:110
+#: ../src/connection-editor/nm-connection-editor.c:111
 #, c-format
 msgid "Editing %s"
 msgstr "Modyfikowanie %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:114
+#: ../src/connection-editor/nm-connection-editor.c:115
 msgid "Editing un-named connection"
 msgstr "Modyfikowanie połączenia bez nazwy"
 
-#: ../src/connection-editor/nm-connection-editor.c:301
+#: ../src/connection-editor/nm-connection-editor.c:302
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -1856,50 +1889,50 @@ msgstr ""
 "Edytor połączeń nie może odnaleźć niektórych wymaganych zasobów (plik .ui "
 "nie został odnaleziony)."
 
-#: ../src/connection-editor/nm-connection-editor.c:428
+#: ../src/connection-editor/nm-connection-editor.c:429
 msgid "_Save"
 msgstr "Zapi_sz"
 
-#: ../src/connection-editor/nm-connection-editor.c:429
+#: ../src/connection-editor/nm-connection-editor.c:430
 msgid "Save any changes made to this connection."
 msgstr "Zapis zmian dokonanych na tym połączeniu."
 
-#: ../src/connection-editor/nm-connection-editor.c:430
+#: ../src/connection-editor/nm-connection-editor.c:431
 msgid "_Save..."
 msgstr "Zapi_sz..."
 
-#: ../src/connection-editor/nm-connection-editor.c:431
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Należy się uwierzytelnić, aby zapisać to połączenie dla wszystkich "
 "użytkowników komputera."
 
-#: ../src/connection-editor/nm-connection-editor.c:447
+#: ../src/connection-editor/nm-connection-editor.c:448
 msgid "Could not create connection"
 msgstr "Nie można utworzyć połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:447
+#: ../src/connection-editor/nm-connection-editor.c:448
 msgid "Could not edit connection"
 msgstr "Nie można zmodyfikować połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:449
+#: ../src/connection-editor/nm-connection-editor.c:450
 msgid "Unknown error creating connection editor dialog."
 msgstr "Nieznany błąd podczas tworzenia okna dialogowego edytora połączeń."
 
-#: ../src/connection-editor/nm-connection-editor.c:555
+#: ../src/connection-editor/nm-connection-editor.c:556
 msgid "Error saving connection"
 msgstr "Błąd podczas zapisywania połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:556
+#: ../src/connection-editor/nm-connection-editor.c:557
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "Właściwość \"%s\" / \"%s\" jest nieprawidłowa: %d"
 
-#: ../src/connection-editor/nm-connection-editor.c:658
+#: ../src/connection-editor/nm-connection-editor.c:659
 msgid "Error initializing editor"
 msgstr "Błąd podczas inicjowania edytora"
 
-#: ../src/connection-editor/nm-connection-editor.c:967
+#: ../src/connection-editor/nm-connection-editor.c:973
 msgid "Connection add failed"
 msgstr "Dodanie połączenia się nie powiodło"
 
@@ -1969,65 +2002,65 @@ msgstr[0] "%d rok temu"
 msgstr[1] "%d lata temu"
 msgstr[2] "%d lat temu"
 
-#: ../src/connection-editor/nm-connection-list.c:626
+#: ../src/connection-editor/nm-connection-list.c:628
 msgid "Name"
 msgstr "Nazwa"
 
-#: ../src/connection-editor/nm-connection-list.c:639
+#: ../src/connection-editor/nm-connection-list.c:641
 msgid "Last Used"
 msgstr "Ostatnie użycie"
 
-#: ../src/connection-editor/nm-connection-list.c:681
+#: ../src/connection-editor/nm-connection-list.c:683
 msgid "Edit the selected connection"
 msgstr "Modyfikowanie zaznaczonego połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:682
+#: ../src/connection-editor/nm-connection-list.c:684
 msgid "_Edit..."
 msgstr "_Modyfikuj..."
 
-#: ../src/connection-editor/nm-connection-list.c:683
+#: ../src/connection-editor/nm-connection-list.c:685
 msgid "Authenticate to edit the selected connection"
 msgstr "Należy się uwierzytelnić, aby modyfikować zaznaczone połączenie"
 
-#: ../src/connection-editor/nm-connection-list.c:698
+#: ../src/connection-editor/nm-connection-list.c:700
 msgid "Delete the selected connection"
 msgstr "Usunięcie zaznaczonego połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:699
+#: ../src/connection-editor/nm-connection-list.c:701
 msgid "_Delete..."
 msgstr "_Usuń..."
 
-#: ../src/connection-editor/nm-connection-list.c:700
+#: ../src/connection-editor/nm-connection-list.c:702
 msgid "Authenticate to delete the selected connection"
 msgstr "Należy się uwierzytelnić, aby usunąć zaznaczone połączenie"
 
-#: ../src/connection-editor/nm-connection-list.c:937
+#: ../src/connection-editor/nm-connection-list.c:939
 msgid "Error creating connection"
 msgstr "Błąd podczas tworzenia połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:938
+#: ../src/connection-editor/nm-connection-list.c:940
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Nie wiadomo, jak utworzyć połączenia \"%s\""
 
-#: ../src/connection-editor/nm-connection-list.c:993
+#: ../src/connection-editor/nm-connection-list.c:995
 msgid "Error editing connection"
 msgstr "Błąd podczas modyfikowania połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:994
+#: ../src/connection-editor/nm-connection-list.c:996
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Nie odnaleziono połączenia z UUID \"%s\""
 
-#: ../src/connection-editor/page-8021x-security.c:120
+#: ../src/connection-editor/page-8021x-security.c:121
 msgid "802.1x Security"
 msgstr "Zabezpieczenia 802.1x"
 
-#: ../src/connection-editor/page-8021x-security.c:122
+#: ../src/connection-editor/page-8021x-security.c:123
 msgid "Could not load 802.1x Security user interface."
 msgstr "Nie można wczytać interfejsu użytkownika zabezpieczeń 802.1x."
 
-#: ../src/connection-editor/page-8021x-security.c:140
+#: ../src/connection-editor/page-8021x-security.c:141
 msgid "Use 802.1_X security for this connection"
 msgstr "Użycie zabezpieczeń 802.1_X dla tego połączenia"
 
@@ -2036,20 +2069,20 @@ msgstr "Użycie zabezpieczeń 802.1_X dla tego połączenia"
 msgid "%s slave %d"
 msgstr "%s podrzędny %d"
 
-#: ../src/connection-editor/page-bond.c:749
+#: ../src/connection-editor/page-bond.c:750
 msgid "Could not load bond user interface."
 msgstr "Nie można wczytać interfejsu użytkownika łączenia."
 
-#: ../src/connection-editor/page-bond.c:909
+#: ../src/connection-editor/page-bond.c:910
 #, c-format
 msgid "Bond connection %d"
 msgstr "Łączone połączenie %d"
 
-#: ../src/connection-editor/page-dsl.c:142
+#: ../src/connection-editor/page-dsl.c:143
 msgid "Could not load DSL user interface."
 msgstr "Nie można wczytać interfejsu użytkownika DSL."
 
-#: ../src/connection-editor/page-dsl.c:234
+#: ../src/connection-editor/page-dsl.c:235
 #, c-format
 msgid "DSL connection %d"
 msgstr "Połączenie DSL %d"
@@ -2065,20 +2098,20 @@ msgstr ""
 "Ta opcja blokuje to połączenie z urządzeniem sieciowym określonym przez "
 "trwały adres MAC. Przykład: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-ethernet.c:274
+#: ../src/connection-editor/page-ethernet.c:253
 msgid "Could not load ethernet user interface."
 msgstr "Nie można wczytać interfejsu użytkownika połączenia ethernetowego."
 
-#: ../src/connection-editor/page-ethernet.c:450
+#: ../src/connection-editor/page-ethernet.c:396
 #, c-format
 msgid "Ethernet connection %d"
 msgstr "Połączenie ethernetowe %d"
 
-#: ../src/connection-editor/page-infiniband.c:194
+#: ../src/connection-editor/page-infiniband.c:171
 msgid "Could not load InfiniBand user interface."
 msgstr "Nie można wczytać interfejsu użytkownika InfiniBand."
 
-#: ../src/connection-editor/page-infiniband.c:319
+#: ../src/connection-editor/page-infiniband.c:263
 #, c-format
 msgid "InfiniBand connection %d"
 msgstr "Połączenie InfiniBand %d"
@@ -2145,11 +2178,11 @@ msgstr "Dodatkowe dom_eny wyszukiwania:"
 msgid "Editing IPv4 routes for %s"
 msgstr "Modyfikowanie tras IPv4 dla %s"
 
-#: ../src/connection-editor/page-ip4.c:993
+#: ../src/connection-editor/page-ip4.c:994
 msgid "IPv4 Settings"
 msgstr "Ustawienia IPv4"
 
-#: ../src/connection-editor/page-ip4.c:995
+#: ../src/connection-editor/page-ip4.c:996
 msgid "Could not load IPv4 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv4."
 
@@ -2171,28 +2204,28 @@ msgstr "Automatycznie, tylko DHCP"
 msgid "Editing IPv6 routes for %s"
 msgstr "Modyfikowanie tras IPv6 dla %s"
 
-#: ../src/connection-editor/page-ip6.c:957
+#: ../src/connection-editor/page-ip6.c:958
 msgid "IPv6 Settings"
 msgstr "Ustawienia IPv6"
 
-#: ../src/connection-editor/page-ip6.c:959
+#: ../src/connection-editor/page-ip6.c:960
 msgid "Could not load IPv6 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv6."
 
-#: ../src/connection-editor/page-mobile.c:390
+#: ../src/connection-editor/page-mobile.c:391
 msgid "Could not load mobile broadband user interface."
 msgstr "Nie można wczytać interfejsu użytkownika połączeń komórkowych."
 
-#: ../src/connection-editor/page-mobile.c:407
+#: ../src/connection-editor/page-mobile.c:408
 msgid "Unsupported mobile broadband connection type."
 msgstr "Nieobsługiwany typ połączenia komórkowego."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:657
+#: ../src/connection-editor/page-mobile.c:658
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Wybór typu dostawcy połączenia komórkowego"
 
-#: ../src/connection-editor/page-mobile.c:692
+#: ../src/connection-editor/page-mobile.c:693
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -2200,12 +2233,12 @@ msgstr ""
 "Proszę wybrać technologię używaną przez dostawcę połączenia komórkowego. W "
 "razie wątpliwości należy zapytać dostawcę."
 
-#: ../src/connection-editor/page-mobile.c:697
+#: ../src/connection-editor/page-mobile.c:698
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Dostawca używa technologii opartej na _GSM (np. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:704
+#: ../src/connection-editor/page-mobile.c:705
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Dostawca używa technologii opartej na C_DMA (np. 1xRTT, EVDO)"
 
@@ -2245,30 +2278,39 @@ msgstr "brak"
 msgid "Editing PPP authentication methods for %s"
 msgstr "Modyfikowanie metod uwierzytelniania PPP dla %s"
 
-#: ../src/connection-editor/page-ppp.c:283
+#: ../src/connection-editor/page-ppp.c:284
 msgid "PPP Settings"
 msgstr "Ustawienia PPP"
 
-#: ../src/connection-editor/page-ppp.c:285
+#: ../src/connection-editor/page-ppp.c:286
 msgid "Could not load PPP user interface."
 msgstr "Nie można wczytać interfejsu użytkownika PPP."
 
-#: ../src/connection-editor/page-vpn.c:114
+#: ../src/connection-editor/page-vlan.c:482
+msgid "Could not load vlan user interface."
+msgstr "Nie można wczytać interfejsu użytkownika VLAN."
+
+#: ../src/connection-editor/page-vlan.c:667
+#, c-format
+msgid "VLAN connection %d"
+msgstr "Połączenie VLAN %d"
+
+#: ../src/connection-editor/page-vpn.c:115
 msgid "Could not load VPN user interface."
 msgstr "Nie można wczytać interfejsu użytkownika VPN."
 
-#: ../src/connection-editor/page-vpn.c:129
+#: ../src/connection-editor/page-vpn.c:130
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "Nie można odnaleźć wtyczki usługi VPN dla \"%s\"."
 
-#: ../src/connection-editor/page-vpn.c:223
-#: ../src/connection-editor/page-vpn.c:320
+#: ../src/connection-editor/page-vpn.c:224
+#: ../src/connection-editor/page-vpn.c:321
 #, c-format
 msgid "VPN connection %d"
 msgstr "Połączenie VPN %d"
 
-#: ../src/connection-editor/page-vpn.c:249
+#: ../src/connection-editor/page-vpn.c:250
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2278,11 +2320,11 @@ msgstr ""
 "\n"
 "Błąd: brak typu usługi VPN."
 
-#: ../src/connection-editor/page-vpn.c:274
+#: ../src/connection-editor/page-vpn.c:275
 msgid "Choose a VPN Connection Type"
 msgstr "Wybór typu połączenia VPN"
 
-#: ../src/connection-editor/page-vpn.c:275
+#: ../src/connection-editor/page-vpn.c:276
 msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -2304,11 +2346,11 @@ msgstr "domyślne"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wifi.c:462
+#: ../src/connection-editor/page-wifi.c:441
 msgid "Could not load Wi-Fi user interface."
 msgstr "Nie można wczytać interfejsu użytkownika Wi-Fi."
 
-#: ../src/connection-editor/page-wifi.c:667
+#: ../src/connection-editor/page-wifi.c:613
 #, c-format
 msgid "Wi-Fi connection %d"
 msgstr "Połączenie Wi-Fi %d"
@@ -2348,19 +2390,19 @@ msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr "Nie można wczytać interfejsu użytkownika Wi-Fi. Brak ustawienia Wi-Fi."
 
 # tłumaczenie całości jest okropnie długie, a to nazwa karty tylko i wyłącznie przy tworzeniu połączenia z nową siecią *bezprzewodową*, więc nie ma sensu przedłużać
-#: ../src/connection-editor/page-wifi-security.c:406
+#: ../src/connection-editor/page-wifi-security.c:407
 msgid "Wi-Fi Security"
 msgstr "Zabezpieczenia"
 
-#: ../src/connection-editor/page-wifi-security.c:408
+#: ../src/connection-editor/page-wifi-security.c:409
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Nie można wczytać interfejsu użytkownika zabezpieczeń Wi-Fi."
 
-#: ../src/connection-editor/page-wimax.c:158
+#: ../src/connection-editor/page-wimax.c:137
 msgid "Could not load WiMAX user interface."
 msgstr "Nie można wczytać interfejsu użytkownika WiMAX."
 
-#: ../src/connection-editor/page-wimax.c:287
+#: ../src/connection-editor/page-wimax.c:233
 #, c-format
 msgid "WiMAX connection %d"
 msgstr "Połączenie WiMAX %d"
@@ -2753,10 +2795,6 @@ msgstr "Bluetooth"
 #: ../src/libnm-gtk/nm-ui-utils.c:329
 msgid "OLPC Mesh"
 msgstr "Kratowe OLPC"
-
-#: ../src/libnm-gtk/nm-ui-utils.c:339
-msgid "VLAN"
-msgstr "VLAN"
 
 #: ../src/libnm-gtk/nm-ui-utils.c:341
 msgid "ADSL"
