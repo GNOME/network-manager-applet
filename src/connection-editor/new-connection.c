@@ -232,7 +232,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 	ConnectionTypeData *list = get_connection_type_list ();
 	GtkTreeIter iter;
 	GSList *p;
-	int i, vpn_index = -1, active = 0;
+	int i, vpn_index = -1, active = 0, added = 0;
 	gboolean import_supported = FALSE;
 	gboolean added_virtual_header = FALSE;
 	gboolean show_headers = (type_filter_func == NULL);
@@ -259,7 +259,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 			vpn_index = i;
 			continue;
 		} else if (list[i].setting_type == NM_TYPE_SETTING_WIRED)
-			active = i;
+			active = added;
 
 		if (list[i].virtual && !added_virtual_header) {
 			markup = g_strdup_printf ("<b><big>%s</big></b>", _("Virtual"));
@@ -283,6 +283,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 		                    COL_NEW_FUNC, list[i].new_connection_func,
 		                    -1);
 		g_free (markup);
+		added++;
 	}
 
 	if (!vpn_plugins || vpn_index == -1) {
