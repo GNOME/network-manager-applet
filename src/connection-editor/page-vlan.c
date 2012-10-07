@@ -510,14 +510,17 @@ ui_to_setting (CEPageVlan *self)
 	const char *parent_iface = NULL, *parent_uuid = NULL;
 	const char *slave_type;
 	const char *iface;
+	char *tmp_parent_iface = NULL;
 	GType hwtype;
 	gboolean mtu_set;
 	int mtu;
 
 	parent_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
-	if (parent_id == -1)
+	if (parent_id == -1) {
 		parent_iface = gtk_entry_get_text (priv->parent_entry);
-	else {
+		tmp_parent_iface = g_strndup (parent_iface, strcspn (parent_iface, " "));
+		parent_iface = tmp_parent_iface;
+	} else {
 		parent = priv->parents[parent_id];
 		if (parent->connection)
 			parent_uuid = nm_connection_get_uuid (parent->connection);
@@ -586,6 +589,8 @@ ui_to_setting (CEPageVlan *self)
 			priv->s_hw = NULL;
 		}
 	}
+
+	g_free (tmp_parent_iface);
 }
 
 static gboolean
@@ -596,12 +601,18 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	gboolean invalid = FALSE;
 	GByteArray *ignore;
 	int parent_id;
-	const char *parent_iface;
+	const char *parent;
+	char *parent_iface;
 
 	parent_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
 	if (parent_id == -1) {
-		parent_iface = gtk_entry_get_text (priv->parent_entry);
-		if (!nm_utils_iface_valid_name (parent_iface))
+		gboolean valid;
+
+		parent = gtk_entry_get_text (priv->parent_entry);
+		parent_iface = g_strndup (parent, strcspn (parent, " "));
+		valid = nm_utils_iface_valid_name (parent_iface);
+		g_free (parent_iface);
+		if (!valid)
 			return FALSE;
 	}
 
