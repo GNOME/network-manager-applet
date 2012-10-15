@@ -40,6 +40,8 @@ typedef struct {
 #else
 	GtkComboBox *firewall_zone;
 #endif
+	char **zones;
+	gboolean got_zones;
 
 	GtkToggleButton *dependent_vpn_checkbox;
 	GtkComboBox *dependent_vpn;
@@ -47,6 +49,8 @@ typedef struct {
 
 	GtkWidget *autoconnect;
 	GtkWidget *all_checkbutton;
+
+	gboolean setup_finished;
 } CEPageGeneralPrivate;
 
 /* TRANSLATORS: Default zone set for firewall, when no zone is selected */
@@ -59,6 +63,56 @@ enum {
 	COL_UUID,
 	N_COLUMNS
 };
+
+static void populate_firewall_zones_ui (CEPageGeneral *self);
+
+static void
+zones_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
+{
+	CEPageGeneral *self = user_data;
+	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
+	GError *error = NULL;
+
+	dbus_g_proxy_end_call (proxy, call, &error,
+	                       G_TYPE_STRV, &priv->zones,
+	                       G_TYPE_INVALID);
+
+	if (priv->setup_finished)
+		populate_firewall_zones_ui (self);
+	else
+		priv->got_zones = TRUE;
+
+	g_clear_error (&error);
+	g_object_unref (proxy);
+}
+
+/* Get FirewallD zones */
+static void
+get_zones_from_firewall (CEPageGeneral *self)
+{
+	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
+	DBusGConnection *bus;
+	DBusGProxy *proxy;
+
+	priv->got_zones = TRUE;
+
+	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
+	if (bus) {
+		proxy = dbus_g_proxy_new_for_name (bus,
+		                                   "org.fedoraproject.FirewallD1",
+		                                   "/org/fedoraproject/FirewallD1",
+		                                   "org.fedoraproject.FirewallD1.zone");
+		/* Call getZones to get list of available FirewallD zones */
+		if (proxy) {
+			dbus_g_proxy_begin_call (proxy, "getZones",
+			                         zones_reply, self, NULL,
+			                         G_TYPE_INVALID);
+			priv->got_zones = FALSE;
+		}
+
+		dbus_g_connection_unref (bus);
+	}
+}
 
 static void
 general_private_init (CEPageGeneral *self)
@@ -80,6 +134,9 @@ general_private_init (CEPageGeneral *self)
 	align = GTK_WIDGET (gtk_builder_get_object (builder, "firewall_zone_alignment"));
 	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->firewall_zone));
 	gtk_widget_show_all (GTK_WIDGET (priv->firewall_zone));
+
+	/* Get zones from FirewallD */
+	get_zones_from_firewall (self);
 
 	/* Set mnemonic widget for device Firewall zone label */
 	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "firewall_zone_label")));
@@ -105,6 +162,9 @@ dispose (GObject *object)
 		priv->remote_settings = NULL;
 	}
 
+	g_strfreev (priv->zones);
+	priv->zones = NULL;
+
 	G_OBJECT_CLASS (ce_page_general_parent_class)->dispose (object);
 }
 
@@ -123,55 +183,14 @@ vpn_checkbox_toggled (GtkToggleButton *button, gpointer user_data)
 	ce_page_changed (CE_PAGE (user_data));
 }
 
-/* Get zones from firewalld */
-static char **
-get_zones_from_firewall (void)
-{
-	DBusGConnection *bus;
-	GError *error = NULL;
-	DBusGProxy *proxy;
-	char **zones;
-
-	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (error || !bus) {
-		g_message ("Getting zones from FirewallD not possible (failed to connect to D-Bus: %s).",
-		           (error && error->message) ? error->message : "unknown");
-		g_error_free (error);
-	} else {
-		proxy = dbus_g_proxy_new_for_name (bus,
-		                                   "org.fedoraproject.FirewallD1",
-		                                   "/org/fedoraproject/FirewallD1",
-		                                   "org.fedoraproject.FirewallD1.zone");
-		if (proxy) {
-			/* get zones */
-			if (!dbus_g_proxy_call (proxy, "getZones", &error,
-			                        G_TYPE_INVALID,
-			                        G_TYPE_STRV, &zones, G_TYPE_INVALID)) {
-				g_warning ("Could not get zones from FirewallD: %s", error->message);
-				g_error_free (error);
-			} else
-				return zones;
-
-		} else {
-			g_message ("FirewallD not available.");
-		}
-	}
-
-	return NULL;
-}
-
 static void
-populate_ui (CEPageGeneral *self)
+populate_firewall_zones_ui (CEPageGeneral *self)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
 	NMSettingConnection *setting = priv->setting;
-	char **zones;
+	const char *s_zone;
 	char **zone_ptr;
-	const char *s_zone, *vpn_uuid;
 	guint32 combo_idx = 0, idx;
-	GSList *con_list, *l;
-	GtkTreeIter iter;
-	gboolean global_connection = TRUE;
 
 	s_zone = nm_setting_connection_get_zone (setting);
 	
@@ -182,10 +201,7 @@ populate_ui (CEPageGeneral *self)
 	gtk_combo_box_append_text (priv->firewall_zone, FIREWALL_ZONE_DEFAULT);
 #endif
 
-	/* Get zones from FirewallD and list them in the combo */
-	zones = get_zones_from_firewall ();
-
-	for (zone_ptr = zones, idx = 0; zone_ptr && *zone_ptr; zone_ptr++, idx++) {
+	for (zone_ptr = priv->zones, idx = 0; zone_ptr && *zone_ptr; zone_ptr++, idx++) {
 #if GTK_CHECK_VERSION (2,24,0)
 		gtk_combo_box_text_append_text (priv->firewall_zone, *zone_ptr);
 #else
@@ -207,14 +223,31 @@ populate_ui (CEPageGeneral *self)
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->firewall_zone), combo_idx);
 
 	/* Zone tooltip and availability */
-	if (zones) {
+	if (priv->zones) {
 		gtk_widget_set_tooltip_text (GTK_WIDGET (priv->firewall_zone), FIREWALL_ZONE_TOOLTIP_AVAILBALE);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->firewall_zone), TRUE);
 	} else {
 		gtk_widget_set_tooltip_text (GTK_WIDGET (priv->firewall_zone), FIREWALL_ZONE_TOOLTIP_UNAVAILBALE);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->firewall_zone), FALSE);
 	}
-	g_strfreev (zones);
+
+	stuff_changed (NULL, self);
+}
+
+static void
+populate_ui (CEPageGeneral *self)
+{
+	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
+	NMSettingConnection *setting = priv->setting;
+	const char *vpn_uuid;
+	guint32 combo_idx = 0, idx;
+	GSList *con_list, *l;
+	GtkTreeIter iter;
+	gboolean global_connection = TRUE;
+
+	/* Zones are filled when got them from firewalld */
+	if (priv->got_zones)
+		populate_firewall_zones_ui (self);
 
 	/* Secondary UUID (VPN) */
 	vpn_uuid = nm_setting_connection_get_secondary (setting, 0);
@@ -255,6 +288,8 @@ finish_setup (CEPageGeneral *self, gpointer unused, GError *error, gpointer user
 
 	if (error)
 		return;
+
+	priv->setup_finished = TRUE;
 
 	populate_ui (self);
 
