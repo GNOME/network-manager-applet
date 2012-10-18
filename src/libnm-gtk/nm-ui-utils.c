@@ -344,6 +344,32 @@ nma_utils_get_device_type_name (NMDevice *device)
 	}
 }
 
+static char *
+get_device_type_name_with_iface (NMDevice *device)
+{
+	const char *type_name = nma_utils_get_device_type_name (device);
+
+	switch (nm_device_get_device_type (device)) {
+	case NM_DEVICE_TYPE_BOND:
+	case NM_DEVICE_TYPE_VLAN:
+		return g_strdup_printf ("%s (%s)", type_name, nm_device_get_iface (device));
+	default:
+		return g_strdup (type_name);
+	}
+}
+
+static char *
+get_device_generic_type_name_with_iface (NMDevice *device)
+{
+	switch (nm_device_get_device_type (device)) {
+	case NM_DEVICE_TYPE_ETHERNET:
+	case NM_DEVICE_TYPE_INFINIBAND:
+		return g_strdup (_("Wired"));
+	default:
+		return get_device_type_name_with_iface (device);
+	}
+}
+
 #define BUS_TAG "nm-ui-utils.c:get_bus_name"
 
 static const char *
@@ -417,7 +443,7 @@ nma_utils_disambiguate_device_names (NMDevice **devices,
 
 	/* Generic device name */
 	for (i = 0; i < num_devices; i++)
-		names[i] = g_strdup (nma_utils_get_device_generic_type_name (devices[i]));
+		names[i] = get_device_generic_type_name_with_iface (devices[i]);
 	if (!find_duplicates (names, duplicates, num_devices))
 		goto done;
 
@@ -427,7 +453,7 @@ nma_utils_disambiguate_device_names (NMDevice **devices,
 	for (i = 0; i < num_devices; i++) {
 		if (duplicates[i]) {
 			g_free (names[i]);
-			names[i] = g_strdup (nma_utils_get_device_type_name (devices[i]));
+			names[i] = get_device_type_name_with_iface (devices[i]);
 		}
 	}
 	if (!find_duplicates (names, duplicates, num_devices))
@@ -438,11 +464,13 @@ nma_utils_disambiguate_device_names (NMDevice **devices,
 	for (i = 0; i < num_devices; i++) {
 		if (duplicates[i]) {
 			const char *bus = get_bus_name (uclient, devices[i]);
+			char *name;
 
 			if (!bus)
 				continue;
 
 			g_free (names[i]);
+			name = get_device_type_name_with_iface (devices[i]);
 			/* Translators: the first %s is a bus name (eg, "USB") or
 			 * product name, the second is a device type (eg,
 			 * "Ethernet"). You can change this to something like
@@ -450,8 +478,8 @@ nma_utils_disambiguate_device_names (NMDevice **devices,
 			 * the strings otherwise.
 			 */
 			names[i] = g_strdup_printf (C_("long device name", "%s %s"),
-			                            bus,
-			                            nma_utils_get_device_type_name (devices[i]));
+			                            bus, name);
+			g_free (name);
 		}
 	}
 	g_object_unref (uclient);
@@ -462,14 +490,17 @@ nma_utils_disambiguate_device_names (NMDevice **devices,
 	for (i = 0; i < num_devices; i++) {
 		if (duplicates[i]) {
 			const char *vendor = nma_utils_get_device_vendor (devices[i]);
+			char *name;
 
 			if (!vendor)
 				continue;
 
 			g_free (names[i]);
+			name = get_device_type_name_with_iface (devices[i]);
 			names[i] = g_strdup_printf (C_("long device name", "%s %s"),
 			                            vendor,
 			                            nma_utils_get_device_type_name (devices[i]));
+			g_free (name);
 		}
 	}
 	if (!find_duplicates (names, duplicates, num_devices))
