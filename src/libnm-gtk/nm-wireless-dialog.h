@@ -52,6 +52,10 @@ typedef struct {
 	GObjectClass parent;
 } NMAWirelessDialogClass;
 
+#if !GLIB_CHECK_VERSION(2,31,0)
+#define GLIB_DEPRECATED_FOR(x)
+#endif
+
 GLIB_DEPRECATED_FOR(nma_wifi_dialog_get_type)
 GType nma_wireless_dialog_get_type (void);
 
