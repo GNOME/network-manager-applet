@@ -45,7 +45,7 @@
 #include "applet-device-wifi.h"
 #include "ap-menu-item.h"
 #include "utils.h"
-#include "nm-wireless-dialog.h"
+#include "nm-wifi-dialog.h"
 
 #define ACTIVE_AP_TAG "active-ap"
 
@@ -77,7 +77,7 @@ applet_wifi_connect_to_hidden_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new_for_other (applet->nm_client, applet->settings);
+	dialog = nma_wifi_dialog_new_for_other (applet->nm_client, applet->settings);
 	if (dialog) {
 		g_signal_connect (dialog, "response",
 		                  G_CALLBACK (wireless_dialog_response_cb),
@@ -128,7 +128,7 @@ applet_wifi_create_wifi_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wireless_dialog_new_for_create (applet->nm_client, applet->settings);
+	dialog = nma_wifi_dialog_new_for_create (applet->nm_client, applet->settings);
 	if (dialog) {
 		g_signal_connect (dialog, "response",
 		                  G_CALLBACK (wireless_dialog_response_cb),
@@ -345,7 +345,7 @@ more_info_wifi_dialog_response_cb (GtkDialog *foo,
                                    gint response,
                                    gpointer user_data)
 {
-	NMAWirelessDialog *dialog = NMA_WIRELESS_DIALOG (foo);
+	NMAWifiDialog *dialog = NMA_WIFI_DIALOG (foo);
 	MoreInfo *info = user_data;
 	NMConnection *connection = NULL;
 	NMDevice *device = NULL;
@@ -356,13 +356,13 @@ more_info_wifi_dialog_response_cb (GtkDialog *foo,
 		goto done;
 	}
 
-	if (!nma_wireless_dialog_get_nag_ignored (dialog)) {
+	if (!nma_wifi_dialog_get_nag_ignored (dialog)) {
 		GtkWidget *nag_dialog;
 
 		/* Nag the user about certificates or whatever.  Only destroy the dialog
 		 * if no nagging was done.
 		 */
-		nag_dialog = nma_wireless_dialog_nag_user (dialog);
+		nag_dialog = nma_wifi_dialog_nag_user (dialog);
 		if (nag_dialog) {
 			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
 			g_signal_connect (nag_dialog, "response",
@@ -372,16 +372,16 @@ more_info_wifi_dialog_response_cb (GtkDialog *foo,
 		}
 	}
 
-	/* nma_wireless_dialog_get_connection() returns a connection with the
+	/* nma_wifi_dialog_get_connection() returns a connection with the
 	 * refcount incremented, so the caller must remember to unref it.
 	 */
-	connection = nma_wireless_dialog_get_connection (dialog, &device, &ap);
+	connection = nma_wifi_dialog_get_connection (dialog, &device, &ap);
 	g_assert (connection);
 	g_assert (device);
 
 	info->callback (connection, TRUE, FALSE, info->callback_data);
 
-	/* Balance nma_wireless_dialog_get_connection() */
+	/* Balance nma_wifi_dialog_get_connection() */
 	g_object_unref (connection);
 
 done:
@@ -469,7 +469,7 @@ _do_new_auto_connection (NMApplet *applet,
 		more_info->callback = callback;
 		more_info->callback_data = callback_data;
 
-		dialog = nma_wireless_dialog_new (applet->nm_client, applet->settings, connection, device, ap, FALSE);
+		dialog = nma_wifi_dialog_new (applet->nm_client, applet->settings, connection, device, ap, FALSE);
 		if (dialog) {
 			g_signal_connect (dialog, "response",
 				              G_CALLBACK (more_info_wifi_dialog_response_cb),
@@ -1357,10 +1357,10 @@ nag_dialog_response_cb (GtkDialog *nag_dialog,
                         gint response,
                         gpointer user_data)
 {
-	NMAWirelessDialog *wireless_dialog = NMA_WIRELESS_DIALOG (user_data);
+	NMAWifiDialog *wireless_dialog = NMA_WIFI_DIALOG (user_data);
 
 	if (response == GTK_RESPONSE_NO) {  /* user opted not to correct the warning */
-		nma_wireless_dialog_set_nag_ignored (wireless_dialog, TRUE);
+		nma_wifi_dialog_set_nag_ignored (wireless_dialog, TRUE);
 		g_idle_add (wireless_dialog_close, wireless_dialog);
 		g_object_weak_ref (G_OBJECT (wireless_dialog), wireless_dialog_destroyed, NULL);
 	}
@@ -1409,7 +1409,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
                              gint response,
                              gpointer user_data)
 {
-	NMAWirelessDialog *dialog = NMA_WIRELESS_DIALOG (foo);
+	NMAWifiDialog *dialog = NMA_WIFI_DIALOG (foo);
 	NMApplet *applet = NM_APPLET (user_data);
 	NMConnection *connection = NULL, *fuzzy_match = NULL;
 	NMDevice *device = NULL;
@@ -1419,13 +1419,13 @@ wireless_dialog_response_cb (GtkDialog *foo,
 	if (response != GTK_RESPONSE_OK)
 		goto done;
 
-	if (!nma_wireless_dialog_get_nag_ignored (dialog)) {
+	if (!nma_wifi_dialog_get_nag_ignored (dialog)) {
 		GtkWidget *nag_dialog;
 
 		/* Nag the user about certificates or whatever.  Only destroy the dialog
 		 * if no nagging was done.
 		 */
-		nag_dialog = nma_wireless_dialog_nag_user (dialog);
+		nag_dialog = nma_wifi_dialog_nag_user (dialog);
 		if (nag_dialog) {
 			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
 			g_signal_connect (nag_dialog, "response",
@@ -1435,10 +1435,10 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		}
 	}
 
-	/* nma_wireless_dialog_get_connection() returns a connection with the
+	/* nma_wifi_dialog_get_connection() returns a connection with the
 	 * refcount incremented, so the caller must remember to unref it.
 	 */
-	connection = nma_wireless_dialog_get_connection (dialog, &device, &ap);
+	connection = nma_wifi_dialog_get_connection (dialog, &device, &ap);
 	g_assert (connection);
 	g_assert (device);
 
@@ -1489,7 +1489,7 @@ wireless_dialog_response_cb (GtkDialog *foo,
 		                                       applet);
 	}
 
-	/* Balance nma_wireless_dialog_get_connection() */
+	/* Balance nma_wifi_dialog_get_connection() */
 	g_object_unref (connection);
 
 done:
@@ -1550,7 +1550,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 {
 	SecretsRequest *req = user_data;
 	NMWifiInfo *info = (NMWifiInfo *) req;
-	NMAWirelessDialog *dialog = NMA_WIRELESS_DIALOG (info->dialog);
+	NMAWifiDialog *dialog = NMA_WIFI_DIALOG (info->dialog);
 	NMConnection *connection = NULL;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GHashTable *settings = NULL;
@@ -1560,13 +1560,13 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	/* Handle the nag dialog specially; don't want to clear the NMActiveConnection
 	 * destroy handler yet if the main dialog isn't going away.
 	 */
-	if ((response == GTK_RESPONSE_OK) && !nma_wireless_dialog_get_nag_ignored (dialog)) {
+	if ((response == GTK_RESPONSE_OK) && !nma_wifi_dialog_get_nag_ignored (dialog)) {
 		GtkWidget *widget;
 
 		/* Nag the user about certificates or whatever.  Only destroy the dialog
 		 * if no nagging was done.
 		 */
-		widget = nma_wireless_dialog_nag_user (dialog);
+		widget = nma_wifi_dialog_nag_user (dialog);
 		if (widget) {
 			gtk_window_set_transient_for (GTK_WINDOW (widget), GTK_WINDOW (dialog));
 			g_signal_connect (widget, "response",
@@ -1585,7 +1585,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 		goto done;
 	}
 
-	connection = nma_wireless_dialog_get_connection (dialog, NULL, NULL);
+	connection = nma_wifi_dialog_get_connection (dialog, NULL, NULL);
 	if (!connection) {
 		g_set_error (&error,
 		             NM_SECRET_AGENT_ERROR,
@@ -1671,7 +1671,7 @@ wireless_get_secrets (SecretsRequest *req, GError **error)
 
 	applet_secrets_request_set_free_func (req, free_wifi_info);
 
-	info->dialog = nma_wireless_dialog_new (req->applet->nm_client, req->applet->settings, req->connection, NULL, NULL, TRUE);
+	info->dialog = nma_wifi_dialog_new (req->applet->nm_client, req->applet->settings, req->connection, NULL, NULL, TRUE);
 	if (info->dialog) {
 		g_signal_connect (info->dialog, "response",
 		                  G_CALLBACK (get_secrets_dialog_response_cb),

@@ -35,18 +35,18 @@
 #include <nm-setting-wireless.h>
 #include <nm-setting-ip4-config.h>
 
-#include "nm-wireless-dialog.h"
+#include "nm-wifi-dialog.h"
 #include "wireless-security.h"
 #include "utils.h"
 
-G_DEFINE_TYPE (NMAWirelessDialog, nma_wireless_dialog, GTK_TYPE_DIALOG)
+G_DEFINE_TYPE (NMAWifiDialog, nma_wifi_dialog, GTK_TYPE_DIALOG)
 
-#define NMA_WIRELESS_DIALOG_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
-                                            NMA_TYPE_WIRELESS_DIALOG, \
-                                            NMAWirelessDialogPrivate))
+#define NMA_WIFI_DIALOG_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
+                                        NMA_TYPE_WIFI_DIALOG, \
+                                        NMAWifiDialogPrivate))
 
 typedef struct {
-	NMAWirelessDialog *self;
+	NMAWifiDialog *self;
 	NMConnection *connection;
 	gboolean canceled;
 } GetSecretsInfo;
@@ -77,7 +77,7 @@ typedef struct {
 	GetSecretsInfo *secrets_info;
 
 	gboolean disposed;
-} NMAWirelessDialogPrivate;
+} NMAWifiDialogPrivate;
 
 #define D_NAME_COLUMN		0
 #define D_DEV_COLUMN		1
@@ -90,23 +90,23 @@ typedef struct {
 #define C_SEP_COLUMN		2
 #define C_NEW_COLUMN		3
 
-static gboolean security_combo_init (NMAWirelessDialog *self, gboolean secrets_only);
+static gboolean security_combo_init (NMAWifiDialog *self, gboolean secrets_only);
 static void ssid_entry_changed (GtkWidget *entry, gpointer user_data);
 
 void
-nma_wireless_dialog_set_nag_ignored (NMAWirelessDialog *self, gboolean ignored)
+nma_wifi_dialog_set_nag_ignored (NMAWifiDialog *self, gboolean ignored)
 {
 	g_return_if_fail (self != NULL);
 
-	NMA_WIRELESS_DIALOG_GET_PRIVATE (self)->nag_ignored = ignored;
+	NMA_WIFI_DIALOG_GET_PRIVATE (self)->nag_ignored = ignored;
 }
 
 gboolean
-nma_wireless_dialog_get_nag_ignored (NMAWirelessDialog *self)
+nma_wifi_dialog_get_nag_ignored (NMAWifiDialog *self)
 {
 	g_return_val_if_fail (self != NULL, FALSE);
 
-	return NMA_WIRELESS_DIALOG_GET_PRIVATE (self)->nag_ignored;
+	return NMA_WIFI_DIALOG_GET_PRIVATE (self)->nag_ignored;
 }
 
 static void
@@ -165,8 +165,8 @@ static void
 security_combo_changed (GtkWidget *combo,
                         gpointer user_data)
 {
-	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialog *self = NMA_WIFI_DIALOG (user_data);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GtkWidget *vbox, *sec_widget, *def_widget;
 	GList *elt, *children;
 	GtkTreeIter iter;
@@ -227,8 +227,8 @@ static void
 security_combo_changed_manually (GtkWidget *combo,
                                  gpointer user_data)
 {
-	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialog *self = NMA_WIFI_DIALOG (user_data);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 
 	/* Flag that the combo was changed manually to allow focus to move
 	 * to the security method's default widget instead of the network name.
@@ -238,9 +238,9 @@ security_combo_changed_manually (GtkWidget *combo,
 }
 
 static GByteArray *
-validate_dialog_ssid (NMAWirelessDialog *self)
+validate_dialog_ssid (NMAWifiDialog *self)
 {
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GtkWidget *widget;
 	const char *ssid;
 	guint32 ssid_len;
@@ -262,8 +262,8 @@ validate_dialog_ssid (NMAWirelessDialog *self)
 static void
 stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 {
-	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialog *self = NMA_WIFI_DIALOG (user_data);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GByteArray *ssid = NULL;
 	gboolean free_ssid = TRUE;
 	gboolean valid = FALSE;
@@ -297,8 +297,8 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 static void
 ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 {
-	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialog *self = NMA_WIFI_DIALOG (user_data);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GtkTreeIter iter;
 	WirelessSecurity *sec = NULL;
 	GtkTreeModel *model;
@@ -340,8 +340,8 @@ static void
 connection_combo_changed (GtkWidget *combo,
                           gpointer user_data)
 {
-	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialog *self = NMA_WIFI_DIALOG (user_data);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	gboolean is_new = FALSE;
@@ -411,9 +411,9 @@ alphabetize_connections (NMConnection *a, NMConnection *b)
 }
 
 static gboolean
-connection_combo_init (NMAWirelessDialog *self, NMConnection *connection)
+connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 {
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GtkListStore *store;
 	int num_added = 0;
 	GtkTreeIter tree_iter;
@@ -563,8 +563,8 @@ static void
 device_combo_changed (GtkWidget *combo,
                       gpointer user_data)
 {
-	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialog *self = NMA_WIFI_DIALOG (user_data);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 
@@ -622,9 +622,9 @@ can_use_device (NMDevice *device)
 }
 
 static gboolean
-device_combo_init (NMAWirelessDialog *self, NMDevice *device)
+device_combo_init (NMAWifiDialog *self, NMDevice *device)
 {
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	const GPtrArray *devices;
 	GtkListStore *store;
 	int i, num_added = 0;
@@ -735,7 +735,7 @@ get_default_type_for_security (NMSettingWirelessSecurity *sec,
 }
 
 static void
-add_security_item (NMAWirelessDialog *self,
+add_security_item (NMAWifiDialog *self,
                    WirelessSecurity *sec,
                    GtkListStore *model,
                    GtkTreeIter *iter,
@@ -754,7 +754,7 @@ get_secrets_cb (NMRemoteConnection *connection,
                 gpointer user_data)
 {
 	GetSecretsInfo *info = user_data;
-	NMAWirelessDialogPrivate *priv;
+	NMAWifiDialogPrivate *priv;
 	GHashTableIter hash_iter;
 	gpointer key, value;
 	GtkTreeModel *model;
@@ -763,7 +763,7 @@ get_secrets_cb (NMRemoteConnection *connection,
 	if (info->canceled)
 		goto out;
 
-	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (info->self);
+	priv = NMA_WIFI_DIALOG_GET_PRIVATE (info->self);
 	if (priv->secrets_info == info) {
 		priv->secrets_info = NULL;
 
@@ -830,9 +830,9 @@ out:
 }
 
 static gboolean
-security_combo_init (NMAWirelessDialog *self, gboolean secrets_only)
+security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 {
-	NMAWirelessDialogPrivate *priv;
+	NMAWifiDialogPrivate *priv;
 	GtkListStore *sec_model;
 	GtkTreeIter iter;
 	guint32 ap_flags = 0;
@@ -850,7 +850,7 @@ security_combo_init (NMAWirelessDialog *self, gboolean secrets_only)
 
 	g_return_val_if_fail (self != NULL, FALSE);
 
-	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	g_return_val_if_fail (priv->device != NULL, FALSE);
 	g_return_val_if_fail (priv->sec_combo != NULL, FALSE);
 
@@ -1026,8 +1026,8 @@ security_combo_init (NMAWirelessDialog *self, gboolean secrets_only)
 static gboolean
 revalidate (gpointer user_data)
 {
-	NMAWirelessDialog *self = NMA_WIRELESS_DIALOG (user_data);
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialog *self = NMA_WIFI_DIALOG (user_data);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 
 	priv->revalidate_id = 0;
 	security_combo_changed (priv->sec_combo, self);
@@ -1035,13 +1035,13 @@ revalidate (gpointer user_data)
 }
 
 static gboolean
-internal_init (NMAWirelessDialog *self,
+internal_init (NMAWifiDialog *self,
                NMConnection *specific_connection,
                NMDevice *specific_device,
                gboolean secrets_only,
                gboolean create)
 {
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GtkWidget *widget;
 	char *label, *icon_name = "network-wireless";
 	gboolean security_combo_focus = FALSE;
@@ -1188,11 +1188,11 @@ internal_init (NMAWirelessDialog *self,
 }
 
 NMConnection *
-nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
-                                    NMDevice **out_device,
-                                    NMAccessPoint **ap)
+nma_wifi_dialog_get_connection (NMAWifiDialog *self,
+                                NMDevice **out_device,
+                                NMAccessPoint **ap)
 {
-	NMAWirelessDialogPrivate *priv;
+	NMAWifiDialogPrivate *priv;
 	GtkWidget *combo;
 	GtkTreeModel *model;
 	WirelessSecurity *sec = NULL;
@@ -1202,7 +1202,7 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 
 	g_return_val_if_fail (self != NULL, NULL);
 
-	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 
 	if (!priv->connection) {
 		NMSettingConnection *s_con;
@@ -1266,15 +1266,15 @@ nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
 }
 
 GtkWidget *
-nma_wireless_dialog_new (NMClient *client,
-                         NMRemoteSettings *settings,
-                         NMConnection *connection,
-                         NMDevice *device,
-                         NMAccessPoint *ap,
-                         gboolean secrets_only)
+nma_wifi_dialog_new (NMClient *client,
+                     NMRemoteSettings *settings,
+                     NMConnection *connection,
+                     NMDevice *device,
+                     NMAccessPoint *ap,
+                     gboolean secrets_only)
 {
-	NMAWirelessDialog *self;
-	NMAWirelessDialogPrivate *priv;
+	NMAWifiDialog *self;
+	NMAWifiDialogPrivate *priv;
 	guint32 dev_caps;
 
 	g_return_val_if_fail (NM_IS_CLIENT (client), NULL);
@@ -1288,9 +1288,9 @@ nma_wireless_dialog_new (NMClient *client,
 		g_return_val_if_fail (NM_IS_DEVICE_WIFI (device), NULL);
 	}
 
-	self = NMA_WIRELESS_DIALOG (g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL));
+	self = NMA_WIFI_DIALOG (g_object_new (NMA_TYPE_WIFI_DIALOG, NULL));
 	if (self) {
-		priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+		priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 
 		priv->client = g_object_ref (client);
 		priv->settings = g_object_ref (settings);
@@ -1313,17 +1313,17 @@ nma_wireless_dialog_new (NMClient *client,
 static GtkWidget *
 internal_new_other (NMClient *client, NMRemoteSettings *settings, gboolean create)
 {
-	NMAWirelessDialog *self;
-	NMAWirelessDialogPrivate *priv;
+	NMAWifiDialog *self;
+	NMAWifiDialogPrivate *priv;
 
 	g_return_val_if_fail (NM_IS_CLIENT (client), NULL);
 	g_return_val_if_fail (NM_IS_REMOTE_SETTINGS (settings), NULL);
 
-	self = NMA_WIRELESS_DIALOG (g_object_new (NMA_TYPE_WIRELESS_DIALOG, NULL));
+	self = NMA_WIFI_DIALOG (g_object_new (NMA_TYPE_WIFI_DIALOG, NULL));
 	if (!self)
 		return NULL;
 
-	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 
 	priv->client = g_object_ref (client);
 	priv->settings = g_object_ref (settings);
@@ -1341,21 +1341,21 @@ internal_new_other (NMClient *client, NMRemoteSettings *settings, gboolean creat
 }
 
 GtkWidget *
-nma_wireless_dialog_new_for_other (NMClient *client, NMRemoteSettings *settings)
+nma_wifi_dialog_new_for_other (NMClient *client, NMRemoteSettings *settings)
 {
 	return internal_new_other (client, settings, FALSE);
 }
 
 GtkWidget *
-nma_wireless_dialog_new_for_create (NMClient *client, NMRemoteSettings *settings)
+nma_wifi_dialog_new_for_create (NMClient *client, NMRemoteSettings *settings)
 {
 	return internal_new_other (client, settings, TRUE);
 }
 
 GtkWidget *
-nma_wireless_dialog_nag_user (NMAWirelessDialog *self)
+nma_wifi_dialog_nag_user (NMAWifiDialog *self)
 {
-	NMAWirelessDialogPrivate *priv;
+	NMAWifiDialogPrivate *priv;
 	GtkWidget *combo;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -1363,7 +1363,7 @@ nma_wireless_dialog_nag_user (NMAWirelessDialog *self)
 
 	g_return_val_if_fail (self != NULL, NULL);
 
-	priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 
 	combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
 	g_return_val_if_fail (combo != NULL, NULL);
@@ -1383,9 +1383,9 @@ nma_wireless_dialog_nag_user (NMAWirelessDialog *self)
 }
 
 static void
-nma_wireless_dialog_init (NMAWirelessDialog *self)
+nma_wifi_dialog_init (NMAWifiDialog *self)
 {
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (self);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GError *error = NULL;
 
 	priv->builder = gtk_builder_new ();
@@ -1399,10 +1399,10 @@ nma_wireless_dialog_init (NMAWirelessDialog *self)
 static void
 dispose (GObject *object)
 {
-	NMAWirelessDialogPrivate *priv = NMA_WIRELESS_DIALOG_GET_PRIVATE (object);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (object);
 
 	if (priv->disposed) {
-		G_OBJECT_CLASS (nma_wireless_dialog_parent_class)->dispose (object);
+		G_OBJECT_CLASS (nma_wifi_dialog_parent_class)->dispose (object);
 		return;
 	}
 
@@ -1433,15 +1433,15 @@ dispose (GObject *object)
 	if (priv->revalidate_id)
 		g_source_remove (priv->revalidate_id);
 
-	G_OBJECT_CLASS (nma_wireless_dialog_parent_class)->dispose (object);
+	G_OBJECT_CLASS (nma_wifi_dialog_parent_class)->dispose (object);
 }
 
 static void
-nma_wireless_dialog_class_init (NMAWirelessDialogClass *nmad_class)
+nma_wifi_dialog_class_init (NMAWifiDialogClass *nmad_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (nmad_class);
 
-	g_type_class_add_private (nmad_class, sizeof (NMAWirelessDialogPrivate));
+	g_type_class_add_private (nmad_class, sizeof (NMAWifiDialogPrivate));
 
 	/* virtual methods */
 	object_class->dispose = dispose;

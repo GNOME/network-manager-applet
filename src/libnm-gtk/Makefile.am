@@ -4,13 +4,13 @@ ui_DATA = wifi.ui
 libnmgtkdir = $(includedir)/libnm-gtk
 
 libnmgtk_HEADERS = \
-	nm-wireless-dialog.h \
+	nm-wifi-dialog.h \
 	nm-mobile-wizard.h
 
 lib_LTLIBRARIES = libnm-gtk.la
 
 libnm_gtk_la_SOURCES = \
-	nm-wireless-dialog.c \
+	nm-wifi-dialog.c \
 	nm-mobile-wizard.c
 
 libnm_gtk_la_CFLAGS = \

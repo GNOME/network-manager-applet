@@ -74,7 +74,7 @@
 #include "applet-device-bt.h"
 #include "applet-device-wimax.h"
 #include "applet-dialogs.h"
-#include "nm-wireless-dialog.h"
+#include "nm-wifi-dialog.h"
 #include "applet-vpn-request.h"
 #include "utils.h"
 #include "shell-watcher.h"
