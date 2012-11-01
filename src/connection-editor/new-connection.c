@@ -261,7 +261,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 		} else if (list[i].setting_type == NM_TYPE_SETTING_WIRED)
 			active = added;
 
-		if (list[i].virtual && !added_virtual_header) {
+		if (list[i].virtual && !added_virtual_header && show_headers) {
 			markup = g_strdup_printf ("<b><big>%s</big></b>", _("Virtual"));
 			gtk_list_store_append (model, &iter);
 			gtk_list_store_set (model, &iter,
