@@ -96,6 +96,9 @@ struct GetSecretsInfo {
 	gboolean canceled;
 };
 
+#define SECRETS_TAG "secrets-setting-name"
+#define ORDER_TAG "page-order"
+
 static void
 nm_connection_editor_update_title (NMConnectionEditor *editor)
 {
@@ -609,6 +612,9 @@ page_initialized (CEPage *page, GError *error, gpointer user_data)
 	GtkWidget *widget, *parent;
 	GtkNotebook *notebook;
 	GtkWidget *label;
+	GList *children, *iter;
+	gpointer order, child_order;
+	int i;
 
 	if (error) {
 		gtk_widget_hide (editor->window);
@@ -627,7 +633,19 @@ page_initialized (CEPage *page, GError *error, gpointer user_data)
 	parent = gtk_widget_get_parent (widget);
 	if (parent)
 		gtk_container_remove (GTK_CONTAINER (parent), widget);
-	gtk_notebook_append_page (notebook, widget, label);
+
+	order = g_object_get_data (G_OBJECT (page), ORDER_TAG);
+	g_object_set_data (G_OBJECT (widget), ORDER_TAG, order);
+
+	children = gtk_container_get_children (GTK_CONTAINER (notebook));
+	for (iter = children, i = 0; iter; iter = iter->next, i++) {
+		child_order = g_object_get_data (G_OBJECT (iter->data), ORDER_TAG);
+		if (child_order > order)
+			break;
+	}
+	g_list_free (children);
+
+	gtk_notebook_insert_page (notebook, widget, label, i);
 
 	if (CE_IS_PAGE_VPN (page) && ce_page_vpn_can_export (CE_PAGE_VPN (page)))
 		gtk_widget_show (editor->export_button);
@@ -720,8 +738,6 @@ get_secrets_for_page (NMConnectionEditor *self,
 	}
 }
 
-#define SECRETS_TAG "secrets-setting-name"
-
 static gboolean
 add_page (NMConnectionEditor *editor,
           CEPageNewFunc func,
@@ -742,6 +758,9 @@ add_page (NMConnectionEditor *editor,
 		                        SECRETS_TAG,
 		                        g_strdup (secrets_setting_name),
 		                        g_free);
+		g_object_set_data (G_OBJECT (page),
+		                   ORDER_TAG,
+		                   GINT_TO_POINTER (g_slist_length (editor->initializing_pages)));
 
 		editor->initializing_pages = g_slist_append (editor->initializing_pages, page);
 		g_signal_connect (page, "changed", G_CALLBACK (page_changed), editor);
