@@ -44,6 +44,7 @@ typedef struct {
 	CEPageClass parent;
 
 	/* signals */
+	void (*create_connection)  (CEPageMaster *self, NMConnection *connection);
 	void (*connection_added)   (CEPageMaster *self, NMConnection *connection);
 	void (*connection_removed) (CEPageMaster *self, NMConnection *connection);
 

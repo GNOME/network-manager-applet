@@ -47,6 +47,7 @@ typedef struct {
 } CEPageMasterPrivate;
 
 enum {
+	CREATE_CONNECTION,
 	CONNECTION_ADDED,
 	CONNECTION_REMOVED,
 
@@ -297,6 +298,8 @@ add_connection (NMConnection *connection,
 	              NULL);
 	g_free (name);
 
+	g_signal_emit (self, signals[CREATE_CONNECTION], 0, connection);
+
 	editor = nm_connection_editor_new (priv->toplevel,
 	                                   connection,
 	                                   CE_PAGE (self)->client,
@@ -534,6 +537,16 @@ ce_page_master_class_init (CEPageMasterClass *master_class)
 	parent_class->validate = validate;
 
 	/* Signals */
+	signals[CREATE_CONNECTION] = 
+		g_signal_new ("create-connection",
+		              G_OBJECT_CLASS_TYPE (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              G_STRUCT_OFFSET (CEPageMasterClass, create_connection),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__OBJECT,
+		              G_TYPE_NONE, 1,
+		              NM_TYPE_CONNECTION);
+
 	signals[CONNECTION_ADDED] = 
 		g_signal_new ("connection-added",
 		              G_OBJECT_CLASS_TYPE (object_class),

@@ -56,6 +56,10 @@ nm_connection_editor_SOURCES = \
 	page-master.c \
 	page-bond.h \
 	page-bond.c \
+	page-bridge.h \
+	page-bridge.c \
+	page-bridge-port.h \
+	page-bridge-port.c \
 	page-vlan.h \
 	page-vlan.c \
 	vpn-helpers.h \
@@ -94,6 +98,8 @@ ui_DATA = \
 	ce-page-wimax.ui \
 	ce-page-infiniband.ui \
 	ce-page-bond.ui \
+	ce-page-bridge.ui \
+	ce-page-bridge-port.ui \
 	ce-page-ip4.ui \
 	ce-ip4-routes.ui \
 	ce-page-ip6.ui \
