@@ -589,12 +589,18 @@ idle_validate (gpointer user_data)
 static void
 recheck_initialization (NMConnectionEditor *editor)
 {
+	GtkNotebook *notebook;
+
 	if (!editor_is_initialized (editor) || editor->init_run)
 		return;
 
 	editor->init_run = TRUE;
 
 	populate_connection_ui (editor);
+
+	/* Show the second page (the connection-type-specific data) first */
+	notebook = GTK_NOTEBOOK (gtk_builder_get_object (editor->builder, "notebook"));
+	gtk_notebook_set_current_page (notebook, 1);
 
 	/* When everything is initialized, re-present the window to ensure it's on top */
 	nm_connection_editor_present (editor);
