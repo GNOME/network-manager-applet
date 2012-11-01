@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-04 21:59+0200\n"
-"PO-Revision-Date: 2012-10-04 22:00+0200\n"
+"POT-Creation-Date: 2012-11-01 17:31+0100\n"
+"PO-Revision-Date: 2012-11-01 17:32+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -939,6 +939,7 @@ msgstr "WiMAX (%s)"
 
 #. --- General ---
 #: ../src/applet-dialogs.c:432 ../src/applet-dialogs.c:791
+#: ../src/connection-editor/page-general.c:326
 msgid "General"
 msgstr "Ogólne"
 
@@ -1152,16 +1153,6 @@ msgstr ""
 msgid "Create…"
 msgstr "Utwórz…"
 
-#: ../src/connection-editor/ce-page.c:72
-msgid "automatic"
-msgstr "automatycznie"
-
-#: ../src/connection-editor/ce-page.c:356
-msgid "Failed to update connection secrets due to an unknown error."
-msgstr ""
-"Zaktualizowanie ustawień połączenia się nie powiodło z powodu nieznanego "
-"błędu."
-
 #: ../src/connection-editor/ce-page-bond.ui.h:1
 msgid "Round-robin"
 msgstr "Round-Robin"
@@ -1254,6 +1245,16 @@ msgstr "Opóźnienie _włączenia łącza:"
 #: ../src/connection-editor/ce-page-bond.ui.h:21
 msgid "Link _down delay:"
 msgstr "_Opóźnienie wyłączenia łącza:"
+
+#: ../src/connection-editor/ce-page.c:72
+msgid "automatic"
+msgstr "automatycznie"
+
+#: ../src/connection-editor/ce-page.c:356
+msgid "Failed to update connection secrets due to an unknown error."
+msgstr ""
+"Zaktualizowanie ustawień połączenia się nie powiodło z powodu nieznanego "
+"błędu."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:1
 #: ../src/connection-editor/ce-page-mobile.ui.h:10
@@ -1380,6 +1381,22 @@ msgstr "_MTU:"
 #: ../src/connection-editor/ce-page-wifi.ui.h:6
 msgid "bytes"
 msgstr "bajtów"
+
+#: ../src/connection-editor/ce-page-general.ui.h:1
+msgid "_Automatically connect to this network when it is available"
+msgstr "_Automatyczne łączenie z tą siecią, kiedy jest dostępna"
+
+#: ../src/connection-editor/ce-page-general.ui.h:2
+msgid "All _users may connect to this network"
+msgstr "Wszyscy _użytkownicy mogą łączyć się z tą siecią"
+
+#: ../src/connection-editor/ce-page-general.ui.h:3
+msgid "Firewall _zone:"
+msgstr "_Strefa zapory sieciowej:"
+
+#: ../src/connection-editor/ce-page-general.ui.h:4
+msgid "Automatically connect to _VPN when using this connection"
+msgstr "Automatyczne łączenie z _VPN podczas używania tego połączenia"
 
 #: ../src/connection-editor/ce-page-infiniband.ui.h:1
 msgid "_Transport mode:"
@@ -1684,30 +1701,22 @@ msgid "_Rate:"
 msgstr "P_rędkość:"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:15
-msgid ""
-"This option locks this connection to the Wi-Fi access point (AP) specified "
-"by the BSSID entered here.  Example: 00:11:22:33:44:55"
-msgstr ""
-"Ta opcja blokuje to połączenie do punktu dostępowego Wi-Fi (AP) określonego "
-"przez BSSID. Przykład: 00:11:22:33:44:55"
-
-#: ../src/connection-editor/ce-page-wifi.ui.h:16
 msgid "_BSSID:"
 msgstr "_BSSID:"
 
-#: ../src/connection-editor/ce-page-wifi.ui.h:17
+#: ../src/connection-editor/ce-page-wifi.ui.h:16
 msgid "C_hannel:"
 msgstr "Ka_nał:"
 
-#: ../src/connection-editor/ce-page-wifi.ui.h:18
+#: ../src/connection-editor/ce-page-wifi.ui.h:17
 msgid "Ban_d:"
 msgstr "Pa_smo:"
 
-#: ../src/connection-editor/ce-page-wifi.ui.h:19
+#: ../src/connection-editor/ce-page-wifi.ui.h:18
 msgid "M_ode:"
 msgstr "_Tryb:"
 
-#: ../src/connection-editor/ce-page-wifi.ui.h:20
+#: ../src/connection-editor/ce-page-wifi.ui.h:19
 msgid "SS_ID:"
 msgstr "SS_ID:"
 
@@ -1801,7 +1810,7 @@ msgid "Ethernet"
 msgstr "Ethernet"
 
 #: ../src/connection-editor/new-connection.c:106
-#: ../src/connection-editor/page-wifi.c:439 ../src/libnm-gtk/nm-ui-utils.c:325
+#: ../src/connection-editor/page-wifi.c:470 ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
@@ -1833,7 +1842,7 @@ msgid "VLAN"
 msgstr "VLAN"
 
 #: ../src/connection-editor/new-connection.c:155
-#: ../src/connection-editor/new-connection.c:294
+#: ../src/connection-editor/new-connection.c:295
 #: ../src/connection-editor/page-vpn.c:113
 msgid "VPN"
 msgstr "VPN"
@@ -1846,12 +1855,12 @@ msgstr "Sprzętowe"
 msgid "Virtual"
 msgstr "Wirtualne"
 
-#: ../src/connection-editor/new-connection.c:332
-#: ../src/connection-editor/new-connection.c:334
+#: ../src/connection-editor/new-connection.c:333
+#: ../src/connection-editor/new-connection.c:335
 msgid "Import a saved VPN configuration..."
 msgstr "Zaimportuj zapisaną konfigurację VPN..."
 
-#: ../src/connection-editor/new-connection.c:363
+#: ../src/connection-editor/new-connection.c:364
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -1859,29 +1868,29 @@ msgstr ""
 "Nie można zainicjować okna dialogowego edytora połączeń z powodu nieznanego "
 "błędu."
 
-#: ../src/connection-editor/new-connection.c:372
+#: ../src/connection-editor/new-connection.c:373
 msgid "Could not create new connection"
 msgstr "Nie można utworzyć nowego połączenia"
 
-#: ../src/connection-editor/new-connection.c:507
+#: ../src/connection-editor/new-connection.c:508
 msgid "Connection delete failed"
 msgstr "Usunięcie połączenia się nie powiodło"
 
-#: ../src/connection-editor/new-connection.c:554
+#: ../src/connection-editor/new-connection.c:555
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Na pewno usunąć połączenie %s?"
 
-#: ../src/connection-editor/nm-connection-editor.c:111
+#: ../src/connection-editor/nm-connection-editor.c:112
 #, c-format
 msgid "Editing %s"
 msgstr "Modyfikowanie %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:115
+#: ../src/connection-editor/nm-connection-editor.c:116
 msgid "Editing un-named connection"
 msgstr "Modyfikowanie połączenia bez nazwy"
 
-#: ../src/connection-editor/nm-connection-editor.c:302
+#: ../src/connection-editor/nm-connection-editor.c:276
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -1889,50 +1898,50 @@ msgstr ""
 "Edytor połączeń nie może odnaleźć niektórych wymaganych zasobów (plik .ui "
 "nie został odnaleziony)."
 
-#: ../src/connection-editor/nm-connection-editor.c:429
+#: ../src/connection-editor/nm-connection-editor.c:402
 msgid "_Save"
 msgstr "Zapi_sz"
 
-#: ../src/connection-editor/nm-connection-editor.c:430
+#: ../src/connection-editor/nm-connection-editor.c:403
 msgid "Save any changes made to this connection."
 msgstr "Zapis zmian dokonanych na tym połączeniu."
 
-#: ../src/connection-editor/nm-connection-editor.c:431
+#: ../src/connection-editor/nm-connection-editor.c:404
 msgid "_Save..."
 msgstr "Zapi_sz..."
 
-#: ../src/connection-editor/nm-connection-editor.c:432
+#: ../src/connection-editor/nm-connection-editor.c:405
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Należy się uwierzytelnić, aby zapisać to połączenie dla wszystkich "
 "użytkowników komputera."
 
-#: ../src/connection-editor/nm-connection-editor.c:448
+#: ../src/connection-editor/nm-connection-editor.c:421
 msgid "Could not create connection"
 msgstr "Nie można utworzyć połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:448
+#: ../src/connection-editor/nm-connection-editor.c:421
 msgid "Could not edit connection"
 msgstr "Nie można zmodyfikować połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:450
+#: ../src/connection-editor/nm-connection-editor.c:423
 msgid "Unknown error creating connection editor dialog."
 msgstr "Nieznany błąd podczas tworzenia okna dialogowego edytora połączeń."
 
-#: ../src/connection-editor/nm-connection-editor.c:556
+#: ../src/connection-editor/nm-connection-editor.c:530
 msgid "Error saving connection"
 msgstr "Błąd podczas zapisywania połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:557
+#: ../src/connection-editor/nm-connection-editor.c:531
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "Właściwość \"%s\" / \"%s\" jest nieprawidłowa: %d"
 
-#: ../src/connection-editor/nm-connection-editor.c:659
+#: ../src/connection-editor/nm-connection-editor.c:616
 msgid "Error initializing editor"
 msgstr "Błąd podczas inicjowania edytora"
 
-#: ../src/connection-editor/nm-connection-editor.c:973
+#: ../src/connection-editor/nm-connection-editor.c:932
 msgid "Connection add failed"
 msgstr "Dodanie połączenia się nie powiodło"
 
@@ -1941,14 +1950,6 @@ msgid "Connection _name:"
 msgstr "_Nazwa połączenia:"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
-msgid "Connect _automatically"
-msgstr "Łączenie _automatyczne"
-
-#: ../src/connection-editor/nm-connection-editor.ui.h:4
-msgid "A_vailable to all users"
-msgstr "_Dostępne dla wszystkich użytkowników"
-
-#: ../src/connection-editor/nm-connection-editor.ui.h:5
 msgid "_Export..."
 msgstr "Wye_ksportuj..."
 
@@ -2089,7 +2090,7 @@ msgstr "Połączenie DSL %d"
 
 #: ../src/connection-editor/page-ethernet.c:90
 #: ../src/connection-editor/page-infiniband.c:74
-#: ../src/connection-editor/page-wifi.c:94
+#: ../src/connection-editor/page-wifi.c:113
 #: ../src/connection-editor/page-wimax.c:70
 msgid ""
 "This option locks this connection to the network device specified by its "
@@ -2106,6 +2107,30 @@ msgstr "Nie można wczytać interfejsu użytkownika połączenia ethernetowego."
 #, c-format
 msgid "Ethernet connection %d"
 msgstr "Połączenie ethernetowe %d"
+
+#. TRANSLATORS: Default zone set for firewall, when no zone is selected
+#: ../src/connection-editor/page-general.c:57
+#: ../src/utils/nmn-mobile-providers.c:531
+msgid "Default"
+msgstr "Domyślne"
+
+#: ../src/connection-editor/page-general.c:58
+msgid ""
+"The zone defines the trust level of the connection. Default is not a regular "
+"zone, selecting it results in the use of the default zone set in the "
+"firewall. Only usable if firewalld is active."
+msgstr ""
+"Strefa określa poziom zaufania połączenia. Domyślna jest nietypowa strefa, "
+"wybranie jej powoduje użycie domyślnej strefy ustawionej w zaporze "
+"sieciowej. Można tego używać tylko, jeśli usługa FirewallD jest aktywna."
+
+#: ../src/connection-editor/page-general.c:59
+msgid "FirewallD is not running."
+msgstr "Usługa FirewallD nie jest uruchomiona."
+
+#: ../src/connection-editor/page-general.c:329
+msgid "Could not load General user interface."
+msgstr "Nie można wczytać interfejsu użytkownika karty ogólnej."
 
 #: ../src/connection-editor/page-infiniband.c:171
 msgid "Could not load InfiniBand user interface."
@@ -2290,7 +2315,7 @@ msgstr "Nie można wczytać interfejsu użytkownika PPP."
 msgid "Could not load vlan user interface."
 msgstr "Nie można wczytać interfejsu użytkownika VLAN."
 
-#: ../src/connection-editor/page-vlan.c:667
+#: ../src/connection-editor/page-vlan.c:678
 #, c-format
 msgid "VLAN connection %d"
 msgstr "Połączenie VLAN %d"
@@ -2334,23 +2359,31 @@ msgstr ""
 "połączenia VPN nie jest dostępny w liście, odpowiednia wtyczka VPN może nie "
 "być zainstalowana."
 
-#: ../src/connection-editor/page-wifi.c:171
-#: ../src/connection-editor/page-wifi.c:175
-#: ../src/connection-editor/page-wifi.c:196
+#: ../src/connection-editor/page-wifi.c:98
+msgid ""
+"This option locks this connection to the Wi-Fi access point (AP) specified "
+"by the BSSID entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"Ta opcja blokuje to połączenie do punktu dostępowego Wi-Fi (AP) określonego "
+"przez BSSID. Przykład: 00:11:22:33:44:55"
+
+#: ../src/connection-editor/page-wifi.c:190
+#: ../src/connection-editor/page-wifi.c:194
+#: ../src/connection-editor/page-wifi.c:215
 #, c-format
 msgid "default"
 msgstr "domyślne"
 
-#: ../src/connection-editor/page-wifi.c:200
+#: ../src/connection-editor/page-wifi.c:219
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wifi.c:441
+#: ../src/connection-editor/page-wifi.c:472
 msgid "Could not load Wi-Fi user interface."
 msgstr "Nie można wczytać interfejsu użytkownika Wi-Fi."
 
-#: ../src/connection-editor/page-wifi.c:613
+#: ../src/connection-editor/page-wifi.c:649
 #, c-format
 msgid "Wi-Fi connection %d"
 msgstr "Połączenie Wi-Fi %d"
@@ -2734,6 +2767,42 @@ msgstr "Ustawienie połączenia komórkowego"
 msgid "New Mobile Broadband Connection"
 msgstr "Nowe połączenie komórkowe"
 
+#: ../src/libnm-gtk/nm-ui-utils.c:304 ../src/libnm-gtk/nm-ui-utils.c:367
+msgid "Wired"
+msgstr "Przewodowe"
+
+#: ../src/libnm-gtk/nm-ui-utils.c:327
+msgid "Bluetooth"
+msgstr "Bluetooth"
+
+#: ../src/libnm-gtk/nm-ui-utils.c:329
+msgid "OLPC Mesh"
+msgstr "Kratowe OLPC"
+
+#: ../src/libnm-gtk/nm-ui-utils.c:341
+msgid "ADSL"
+msgstr "ADSL"
+
+#: ../src/libnm-gtk/nm-ui-utils.c:402
+msgid "PCI"
+msgstr "PCI"
+
+#: ../src/libnm-gtk/nm-ui-utils.c:404
+msgid "USB"
+msgstr "USB"
+
+#. Translators: the first %s is a bus name (eg, "USB") or
+#. * product name, the second is a device type (eg,
+#. * "Ethernet"). You can change this to something like
+#. * "%$2s (%$1s)" if there's no grammatical way to combine
+#. * the strings otherwise.
+#.
+#: ../src/libnm-gtk/nm-ui-utils.c:480 ../src/libnm-gtk/nm-ui-utils.c:500
+#, c-format
+msgctxt "long device name"
+msgid "%s %s"
+msgstr "%s %s"
+
 #: ../src/libnm-gtk/nm-wifi-dialog.c:437
 msgid "New..."
 msgstr "Nowe..."
@@ -2783,42 +2852,6 @@ msgid ""
 "connect to."
 msgstr ""
 "Proszę wprowadzić nazwę i ustawienia zabezpieczeń dla żądanej sieci Wi-Fi."
-
-#: ../src/libnm-gtk/nm-ui-utils.c:304
-msgid "Wired"
-msgstr "Przewodowe"
-
-#: ../src/libnm-gtk/nm-ui-utils.c:327
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../src/libnm-gtk/nm-ui-utils.c:329
-msgid "OLPC Mesh"
-msgstr "Kratowe OLPC"
-
-#: ../src/libnm-gtk/nm-ui-utils.c:341
-msgid "ADSL"
-msgstr "ADSL"
-
-#: ../src/libnm-gtk/nm-ui-utils.c:376
-msgid "PCI"
-msgstr "PCI"
-
-#: ../src/libnm-gtk/nm-ui-utils.c:378
-msgid "USB"
-msgstr "USB"
-
-#. Translators: the first %s is a bus name (eg, "USB") or
-#. * product name, the second is a device type (eg,
-#. * "Ethernet"). You can change this to something like
-#. * "%$2s (%$1s)" if there's no grammatical way to combine
-#. * the strings otherwise.
-#.
-#: ../src/libnm-gtk/nm-ui-utils.c:452 ../src/libnm-gtk/nm-ui-utils.c:470
-#, c-format
-msgctxt "long device name"
-msgid "%s %s"
-msgstr "%s %s"
 
 #: ../src/libnm-gtk/wifi.ui.h:2
 msgid "Wi-Fi _security:"
@@ -2933,10 +2966,6 @@ msgstr "Sieć roamingowa (%s)"
 #, c-format
 msgid "Roaming network"
 msgstr "Sieć roamingowa"
-
-#: ../src/utils/nmn-mobile-providers.c:531
-msgid "Default"
-msgstr "Domyślne"
 
 #. The %s is a mobile provider name, eg "T-Mobile"
 #: ../src/utils/utils.c:174
