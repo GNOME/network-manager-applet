@@ -33,24 +33,18 @@
 #include "nm-connection-editor.h"
 #include "new-connection.h"
 
-G_DEFINE_TYPE (CEPageBond, ce_page_bond, CE_TYPE_PAGE)
+G_DEFINE_TYPE (CEPageBond, ce_page_bond, CE_TYPE_PAGE_MASTER)
 
 #define CE_PAGE_BOND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_BOND, CEPageBondPrivate))
 
 typedef struct {
-	NMRemoteConnection *connection;
-	NMClient *client;
-	NMRemoteSettings *settings;
-
 	NMSettingBond *setting;
-	const char *uuid;
 
 	GType slave_type;
 	PageNewConnectionFunc new_slave_func;
 
 	GtkWindow *toplevel;
 
-	GtkEntry *interface_name;
 	GtkComboBox *mode;
 	GtkComboBox *monitoring;
 	GtkSpinButton *frequency;
@@ -69,10 +63,6 @@ typedef struct {
 	int downdelay_row;
 	int arp_targets_row;
 
-	GtkTreeView *connections;
-	GtkTreeModel *connections_model;
-	GtkButton *add, *edit, *delete;
-
 } CEPageBondPrivate;
 
 #define MODE_BALANCE_RR    0
@@ -86,27 +76,6 @@ typedef struct {
 #define MONITORING_MII 0
 #define MONITORING_ARP 1
 
-enum {
-	COL_CONNECTION,
-	COL_NAME
-};
-
-static int
-name_sort_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer user_data)
-{
-	NMConnection *conn_a, *conn_b;
-	int ret;
-
-	/* We fetch COL_CONNECTION rather than COL_NAME to avoid a strdup/free. */
-	gtk_tree_model_get (model, a, COL_CONNECTION, &conn_a, -1);
-	gtk_tree_model_get (model, b, COL_CONNECTION, &conn_b, -1);
-	ret = strcmp (nm_connection_get_id (conn_a), nm_connection_get_id (conn_b));
-	g_object_unref (conn_a);
-	g_object_unref (conn_b);
-
-	return ret;
-}
-
 static void
 bond_private_init (CEPageBond *self)
 {
@@ -114,15 +83,6 @@ bond_private_init (CEPageBond *self)
 	GtkBuilder *builder;
 
 	builder = CE_PAGE (self)->builder;
-
-	priv->interface_name = GTK_ENTRY (gtk_builder_get_object (builder, "bond_interface"));
-	priv->connections = GTK_TREE_VIEW (gtk_builder_get_object (builder, "bond_connections"));
-	priv->connections_model = GTK_TREE_MODEL (gtk_builder_get_object (builder, "bond_connections_model"));
-	gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (priv->connections_model),
-	                                 COL_NAME, name_sort_func,
-	                                 NULL, NULL);
-	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (priv->connections_model),
-	                                      COL_NAME, GTK_SORT_ASCENDING);
 
 	priv->mode = GTK_COMBO_BOX (gtk_builder_get_object (builder, "bond_mode"));
 	priv->monitoring = GTK_COMBO_BOX (gtk_builder_get_object (builder, "bond_monitoring"));
@@ -135,11 +95,8 @@ bond_private_init (CEPageBond *self)
 	priv->downdelay_box = GTK_WIDGET (gtk_builder_get_object (builder, "bond_downdelay_box"));
 	priv->arp_targets = GTK_ENTRY (gtk_builder_get_object (builder, "bond_arp_targets"));
 	priv->arp_targets_label = GTK_WIDGET (gtk_builder_get_object (builder, "bond_arp_targets_label"));
-	priv->add = GTK_BUTTON (gtk_builder_get_object (builder, "bond_connection_add"));
-	priv->edit = GTK_BUTTON (gtk_builder_get_object (builder, "bond_connection_edit"));
-	priv->delete = GTK_BUTTON (gtk_builder_get_object (builder, "bond_connection_delete"));
 
-	priv->toplevel = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (priv->connections),
+	priv->toplevel = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (priv->mode),
 	                                                      GTK_TYPE_WINDOW));
 
 	priv->table = GTK_TABLE (gtk_builder_get_object (builder, "BondPage"));
@@ -156,150 +113,31 @@ bond_private_init (CEPageBond *self)
 }
 
 static void
-dispose (GObject *object)
-{
-	CEPageBond *self = CE_PAGE_BOND (object);
-	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	GtkTreeIter iter;
-
-	if (priv->settings) {
-		g_signal_handlers_disconnect_matched (priv->settings, G_SIGNAL_MATCH_DATA,
-		                                      0, 0, NULL, NULL, self);
-		g_object_unref (priv->settings);
-		priv->settings = NULL;
-	}
-	if (priv->client) {
-		g_object_unref (priv->client);
-		priv->client = NULL;
-	}
-	if (priv->connection) {
-		g_object_unref (priv->connection);
-		priv->connection = NULL;
-	}
-
-	if (gtk_tree_model_get_iter_first (priv->connections_model, &iter)) {
-		do {
-			NMRemoteConnection *connection = NULL;
-
-			gtk_tree_model_get (priv->connections_model, &iter,
-			                    COL_CONNECTION, &connection,
-			                    -1);
-			g_signal_handlers_disconnect_matched (connection, G_SIGNAL_MATCH_DATA,
-			                                      0, 0, NULL, NULL, self);
-			g_object_unref (connection);
-		} while (gtk_tree_model_iter_next (priv->connections_model, &iter));
-	}
-
-	G_OBJECT_CLASS (ce_page_bond_parent_class)->dispose (object);
-}
-
-static void
 stuff_changed (GtkWidget *w, gpointer user_data)
 {
 	ce_page_changed (CE_PAGE (user_data));
 }
 
-static gboolean
-find_connection (CEPageBond *self, NMRemoteConnection *connection, GtkTreeIter *iter)
-{
-	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-
-	if (!gtk_tree_model_get_iter_first (priv->connections_model, iter))
-		return FALSE;
-
-	do {
-		NMRemoteConnection *candidate = NULL;
-
-		gtk_tree_model_get (priv->connections_model, iter,
-		                    COL_CONNECTION, &candidate,
-		                    -1);
-		if (candidate == connection)
-			return TRUE;
-	} while (gtk_tree_model_iter_next (priv->connections_model, iter));
-
-	return FALSE;
-}
-
 static void
-connection_removed (NMRemoteConnection *connection, gpointer user_data)
+connection_removed (CEPageMaster *master, NMConnection *connection)
 {
-	CEPageBond *self = CE_PAGE_BOND (user_data);
+	CEPageBond *self = CE_PAGE_BOND (master);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	GtkTreeIter iter;
 
-	if (!find_connection (self, connection, &iter))
-		return;
-
-	gtk_list_store_remove (GTK_LIST_STORE (priv->connections_model), &iter);
-	stuff_changed (NULL, self);
-
-	if (!gtk_tree_model_get_iter_first (priv->connections_model, &iter)) {
+	if (!ce_page_master_has_slaves (master)) {
 		priv->slave_type = G_TYPE_INVALID;
 		priv->new_slave_func = NULL;
 	}
 }
 
 static void
-connection_updated (NMRemoteConnection *connection, gpointer user_data)
+connection_added (CEPageMaster *master, NMConnection *connection)
 {
-	CEPageBond *self = CE_PAGE_BOND (user_data);
+	CEPageBond *self = CE_PAGE_BOND (master);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	GtkTreeIter iter;
-	NMSettingConnection *s_con;
 
-	if (!find_connection (self, connection, &iter))
-		return;
-
-	/* Name might have changed */
-	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
-	gtk_list_store_set (GTK_LIST_STORE (priv->connections_model), &iter,
-	                    COL_NAME, nm_setting_connection_get_id (s_con),
-	                    -1);
-}
-
-static void
-connection_added (NMRemoteSettings *settings,
-                  NMRemoteConnection *connection,
-                  gpointer user_data)
-{
-	CEPageBond *self = CE_PAGE_BOND (user_data);
-	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	NMSettingConnection *s_con;
-	const char *slave_type, *master;
-	const char *interface_name;
-	GtkTreeIter iter;
-
-	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
-	if (!s_con)
-		return;
-
-	slave_type = nm_setting_connection_get_slave_type (s_con);
-	if (!slave_type || strcmp (slave_type, NM_SETTING_BOND_SETTING_NAME) != 0)
-		return;
-
-	master = nm_setting_connection_get_master (s_con);
-	if (!master)
-		return;
-
-	interface_name = nm_setting_bond_get_interface_name (priv->setting);
-	if (!strcmp (master, interface_name)) {
-		/* Ugh. Fix that... */
-		g_object_set (G_OBJECT (connection),
-		              NM_SETTING_CONNECTION_MASTER, priv->uuid,
-		              NULL);
-		nm_remote_connection_commit_changes (connection, NULL, NULL);
-	} else if (strcmp (master, priv->uuid) != 0)
-		return;
-
-	gtk_list_store_append (GTK_LIST_STORE (priv->connections_model), &iter);
-	gtk_list_store_set (GTK_LIST_STORE (priv->connections_model), &iter,
-	                    COL_CONNECTION, connection,
-	                    COL_NAME, nm_setting_connection_get_id (s_con),
-	                    -1);
-	stuff_changed (NULL, self);
-
-	/* FIXME: a bit kludgy */
-	if (nm_connection_is_type (NM_CONNECTION (connection), NM_SETTING_INFINIBAND_SETTING_NAME)) {
+	/* A bit kludgy... */
+	if (nm_connection_is_type (connection, NM_SETTING_INFINIBAND_SETTING_NAME)) {
 		priv->slave_type = NM_TYPE_SETTING_INFINIBAND;
 		priv->new_slave_func = infiniband_connection_new;
 		gtk_combo_box_set_active (priv->mode, MODE_ACTIVE_BACKUP);
@@ -309,11 +147,6 @@ connection_added (NMRemoteSettings *settings,
 		priv->new_slave_func = ethernet_connection_new;
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mode), TRUE);
 	}
-
-	g_signal_connect (connection, NM_REMOTE_CONNECTION_REMOVED,
-	                  G_CALLBACK (connection_removed), self);
-	g_signal_connect (connection, NM_REMOTE_CONNECTION_UPDATED,
-	                  G_CALLBACK (connection_updated), self);
 }
 
 static void
@@ -444,24 +277,9 @@ populate_ui (CEPageBond *self)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 	NMSettingBond *setting = priv->setting;
-	NMSettingConnection *s_con;
-	const char *iface;
-	GSList *connections, *c;
 	const char *mode, *frequency, *updelay, *downdelay, *raw_targets;
 	char *targets;
 	int mode_idx = MODE_BALANCE_RR;
-
-	s_con = nm_connection_get_setting_connection (NM_CONNECTION (priv->connection));
-	g_return_if_fail (s_con != NULL);
-
-	/* Interface name */
-	iface = nm_setting_bond_get_interface_name (setting);
-	gtk_entry_set_text (priv->interface_name, iface ? iface : "");
-
-	/* Bonded connections */
-	connections = nm_remote_settings_list_connections (priv->settings);
-	for (c = connections; c; c = c->next)
-		connection_added (priv->settings, c->data, self);
 
 	/* Mode */
 	mode = nm_setting_bond_get_option_by_name (setting, NM_SETTING_BOND_OPTION_MODE);
@@ -530,87 +348,6 @@ populate_ui (CEPageBond *self)
 	}
 }
 
-static void
-connections_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
-{
-	CEPageBond *self = user_data;
-	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	GtkTreeIter iter;
-	GtkTreeModel *model;
-	NMRemoteConnection *connection;
-	NMSettingConnection *s_con;
-	gboolean sensitive = FALSE;
-
-	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
-		gtk_tree_model_get (model, &iter,
-		                    0, &connection,
-		                    -1);
-		s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
-		g_assert (s_con);
-	
-		sensitive = !nm_setting_connection_get_read_only (s_con);
-	}
-
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->edit), sensitive);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->delete), sensitive);
-}
-
-static void
-add_response_cb (NMConnectionEditor *editor, NMRemoteConnection *connection,
-                 gboolean added, gpointer user_data)
-{
-	g_object_unref (editor);
-}
-
-static void
-add_bond_connection (NMConnection *connection,
-                     gpointer user_data)
-{
-	CEPageBond *self = user_data;
-	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	NMSettingConnection *s_con;
-	NMConnectionEditor *editor;
-	const char *iface_name;
-	char *name;
-
-	if (!connection)
-		return;
-
-	/* Mark the connection as a bond slave so that the editor knows not
-	 * to add IPv4 and IPv6 pages, and rename it.
-	 */
-	s_con = nm_connection_get_setting_connection (connection);
-	g_assert (s_con != NULL);
-
-	iface_name = gtk_entry_get_text (priv->interface_name);
-	if (!*iface_name)
-		iface_name = nm_setting_bond_get_interface_name (priv->setting);
-	if (!*iface_name)
-		iface_name = "bond";
-	name = g_strdup_printf (_("%s slave %d"), iface_name,
-	                        gtk_tree_model_iter_n_children (priv->connections_model, NULL) + 1);
-
-	g_object_set (G_OBJECT (s_con),
-	              NM_SETTING_CONNECTION_ID, name,
-	              NM_SETTING_CONNECTION_MASTER, priv->uuid,
-	              NM_SETTING_CONNECTION_SLAVE_TYPE, NM_SETTING_BOND_SETTING_NAME,
-	              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
-	              NULL);
-	g_free (name);
-
-	editor = nm_connection_editor_new (priv->toplevel,
-	                                   connection,
-	                                   priv->client,
-	                                   priv->settings);
-	if (!editor) {
-		g_object_unref (connection);
-		return;
-	}
-
-	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), self);
-	nm_connection_editor_run (editor);
-}
-
 static gboolean
 connection_type_filter (GType type, gpointer user_data)
 {
@@ -622,138 +359,43 @@ connection_type_filter (GType type, gpointer user_data)
 }
 
 static void
-add_clicked (GtkButton *button, gpointer user_data)
+add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 {
-	CEPageBond *self = user_data;
+	CEPageBond *self = CE_PAGE_BOND (master);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 
 	if (priv->new_slave_func) {
 		new_connection_of_type (priv->toplevel,
 		                        NULL,
-		                        priv->settings,
+		                        CE_PAGE (self)->settings,
 		                        priv->new_slave_func,
-		                        add_bond_connection,
-		                        self);
+		                        result_func,
+		                        master);
 	} else {
 		new_connection_dialog (priv->toplevel,
-		                       priv->settings,
+		                       CE_PAGE (self)->settings,
 		                       connection_type_filter,
-		                       add_bond_connection,
-		                       self);
+		                       result_func,
+		                       master);
 	}
-}
-
-static NMRemoteConnection *
-get_selected_connection (CEPageBond *self)
-{
-	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	GtkTreeSelection *selection;
-	GList *selected_rows;
-	GtkTreeModel *model = NULL;
-	GtkTreeIter iter;
-	NMRemoteConnection *connection = NULL;
-
-	selection = gtk_tree_view_get_selection (priv->connections);
-	selected_rows = gtk_tree_selection_get_selected_rows (selection, &model);
-	if (!selected_rows)
-		return NULL;
-
-	if (gtk_tree_model_get_iter (model, &iter, (GtkTreePath *) selected_rows->data))
-		gtk_tree_model_get (model, &iter, 0, &connection, -1);
-
-	/* free memory */
-	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
-	g_list_free (selected_rows);
-
-	return connection;
-}
-
-static void
-edit_done_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer user_data)
-{
-	g_object_unref (editor);
-}
-
-static void
-edit_clicked (GtkButton *button, gpointer user_data)
-{
-	CEPageBond *self = user_data;
-	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	NMConnectionEditor *editor;
-	NMRemoteConnection *connection;
-
-	connection = get_selected_connection (self);
-	if (!connection)
-		return;
-
-	editor = nm_connection_editor_get (NM_CONNECTION (connection));
-	if (editor) {
-		nm_connection_editor_present (editor);
-		return;
-	}
-
-	editor = nm_connection_editor_new (priv->toplevel,
-	                                   NM_CONNECTION (connection),
-	                                   priv->client,
-	                                   priv->settings);
-	if (!editor)
-		return;
-
-	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), self);
-	nm_connection_editor_run (editor);
-}
-
-static void
-connection_double_clicked_cb (GtkTreeView *tree_view,
-                              GtkTreePath *path,
-                              GtkTreeViewColumn *column,
-                              gpointer user_data)
-{
-	edit_clicked (NULL, user_data);
-}
-
-static void
-delete_clicked (GtkButton *button, gpointer user_data)
-{
-	CEPageBond *self = user_data;
-	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	NMRemoteConnection *connection;
-
-	connection = get_selected_connection (self);
-	if (!connection)
-		return;
-
-	delete_connection (priv->toplevel, connection, NULL, NULL);
 }
 
 static void
 finish_setup (CEPageBond *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	GtkTreeSelection *selection;
 
 	if (error)
 		return;
 
 	populate_ui (self);
 
-	g_signal_connect (priv->interface_name, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->mode, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->monitoring, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->frequency, "value-changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->updelay, "value-changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->downdelay, "value-changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->arp_targets, "changed", G_CALLBACK (stuff_changed), self);
-
-	g_signal_connect (priv->add, "clicked", G_CALLBACK (add_clicked), self);
-	g_signal_connect (priv->edit, "clicked", G_CALLBACK (edit_clicked), self);
-	g_signal_connect (priv->delete, "clicked", G_CALLBACK (delete_clicked), self);
-
-	g_signal_connect (priv->connections, "row-activated", G_CALLBACK (connection_double_clicked_cb), self);
-
-	selection = gtk_tree_view_get_selection (priv->connections);
-	g_signal_connect (selection, "changed", G_CALLBACK (connections_selection_changed_cb), self);
-	connections_selection_changed_cb (selection, self);
 }
 
 CEPage *
@@ -766,7 +408,6 @@ ce_page_bond_new (NMConnection *connection,
 {
 	CEPageBond *self;
 	CEPageBondPrivate *priv;
-	NMSettingConnection *s_con;
 
 	self = CE_PAGE_BOND (ce_page_new (CE_TYPE_PAGE_BOND,
 	                                  connection,
@@ -785,17 +426,7 @@ ce_page_bond_new (NMConnection *connection,
 	bond_private_init (self);
 	priv = CE_PAGE_BOND_GET_PRIVATE (self);
 
-	priv->connection = g_object_ref (connection);
-	priv->client = g_object_ref (client);
-	priv->settings = g_object_ref (settings);
-
-	s_con = nm_connection_get_setting_connection (connection);
-	priv->uuid = nm_setting_connection_get_uuid (s_con);
-
-	g_signal_connect (settings, NM_REMOTE_SETTINGS_NEW_CONNECTION,
-	                  G_CALLBACK (connection_added), self);
-
-	priv->setting = (NMSettingBond *) nm_connection_get_setting (connection, NM_TYPE_SETTING_BOND);
+	priv->setting = nm_connection_get_setting_bond (connection);
 	if (!priv->setting) {
 		priv->setting = NM_SETTING_BOND (nm_setting_bond_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
@@ -810,18 +441,11 @@ static void
 ui_to_setting (CEPageBond *self)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	const char *interface_name;
 	const char *mode;
 	const char *frequency;
 	const char *updelay;
 	const char *downdelay;
 	char *targets;
-
-	/* Interface name */
-	interface_name = gtk_entry_get_text (priv->interface_name);
-	g_object_set (priv->setting,
-	              NM_SETTING_BOND_INTERFACE_NAME, interface_name,
-	              NULL);
 
 	/* Mode */
 	switch (gtk_combo_box_get_active (priv->mode)) {
@@ -881,8 +505,6 @@ ui_to_setting (CEPageBond *self)
 	}
 
 	g_free (targets);
-
-	/* Slaves are updated as they're edited, so nothing to do */
 }
 
 static gboolean
@@ -890,13 +512,8 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageBond *self = CE_PAGE_BOND (page);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	GtkTreeIter iter;
 
-	/* Need at least one slave connection; we don't need to
-	 * recursively check that the connections are valid because they
-	 * can't end up in the table if they're not.
-	 */
-	if (!gtk_tree_model_get_iter_first (priv->connections_model, &iter))
+	if (!CE_PAGE_CLASS (ce_page_bond_parent_class)->validate (page, connection, error))
 		return FALSE;
 
 	ui_to_setting (self);
@@ -913,13 +530,16 @@ ce_page_bond_class_init (CEPageBondClass *bond_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (bond_class);
 	CEPageClass *parent_class = CE_PAGE_CLASS (bond_class);
+	CEPageMasterClass *master_class = CE_PAGE_MASTER_CLASS (bond_class);
 
 	g_type_class_add_private (object_class, sizeof (CEPageBondPrivate));
 
 	/* virtual methods */
-	object_class->dispose = dispose;
-
 	parent_class->validate = validate;
+
+	master_class->connection_added = connection_added;
+	master_class->connection_removed = connection_removed;
+	master_class->add_slave = add_slave;
 }
 
 

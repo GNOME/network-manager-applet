@@ -52,6 +52,8 @@ nm_connection_editor_SOURCES = \
 	page-ppp.c \
 	page-vpn.h \
 	page-vpn.c \
+	page-master.h \
+	page-master.c \
 	page-bond.h \
 	page-bond.c \
 	page-vlan.h \

@@ -26,7 +26,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "ce-page.h"
+#include "page-master.h"
 
 #define CE_TYPE_PAGE_BOND            (ce_page_bond_get_type ())
 #define CE_PAGE_BOND(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_BOND, CEPageBond))
@@ -36,11 +36,11 @@
 #define CE_PAGE_BOND_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_BOND, CEPageBondClass))
 
 typedef struct {
-	CEPage parent;
+	CEPageMaster parent;
 } CEPageBond;
 
 typedef struct {
-	CEPageClass parent;
+	CEPageMasterClass parent;
 } CEPageBondClass;
 
 GType ce_page_bond_get_type (void);
