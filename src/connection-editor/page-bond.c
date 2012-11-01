@@ -199,6 +199,27 @@ stuff_changed (GtkWidget *w, gpointer user_data)
 	ce_page_changed (CE_PAGE (user_data));
 }
 
+static gboolean
+find_connection (CEPageBond *self, NMRemoteConnection *connection, GtkTreeIter *iter)
+{
+	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
+
+	if (!gtk_tree_model_get_iter_first (priv->connections_model, iter))
+		return FALSE;
+
+	do {
+		NMRemoteConnection *candidate = NULL;
+
+		gtk_tree_model_get (priv->connections_model, iter,
+		                    COL_CONNECTION, &candidate,
+		                    -1);
+		if (candidate == connection)
+			return TRUE;
+	} while (gtk_tree_model_iter_next (priv->connections_model, iter));
+
+	return FALSE;
+}
+
 static void
 connection_removed (NMRemoteConnection *connection, gpointer user_data)
 {
@@ -206,26 +227,34 @@ connection_removed (NMRemoteConnection *connection, gpointer user_data)
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 	GtkTreeIter iter;
 
-	if (!gtk_tree_model_get_iter_first (priv->connections_model, &iter))
+	if (!find_connection (self, connection, &iter))
 		return;
 
-	do {
-		NMRemoteConnection *candidate = NULL;
+	gtk_list_store_remove (GTK_LIST_STORE (priv->connections_model), &iter);
+	stuff_changed (NULL, self);
 
-		gtk_tree_model_get (priv->connections_model, &iter,
-		                    COL_CONNECTION, &candidate,
-		                    -1);
-		if (candidate == connection) {
-			gtk_list_store_remove (GTK_LIST_STORE (priv->connections_model), &iter);
-			stuff_changed (NULL, self);
+	if (!gtk_tree_model_get_iter_first (priv->connections_model, &iter)) {
+		priv->slave_type = G_TYPE_INVALID;
+		priv->new_slave_func = NULL;
+	}
+}
 
-			if (!gtk_tree_model_get_iter_first (priv->connections_model, &iter)) {
-				priv->slave_type = G_TYPE_INVALID;
-				priv->new_slave_func = NULL;
-			}
-			return;
-		}
-	} while (gtk_tree_model_iter_next (priv->connections_model, &iter));
+static void
+connection_updated (NMRemoteConnection *connection, gpointer user_data)
+{
+	CEPageBond *self = CE_PAGE_BOND (user_data);
+	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
+	GtkTreeIter iter;
+	NMSettingConnection *s_con;
+
+	if (!find_connection (self, connection, &iter))
+		return;
+
+	/* Name might have changed */
+	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
+	gtk_list_store_set (GTK_LIST_STORE (priv->connections_model), &iter,
+	                    COL_NAME, nm_setting_connection_get_id (s_con),
+	                    -1);
 }
 
 static void
@@ -283,6 +312,8 @@ connection_added (NMRemoteSettings *settings,
 
 	g_signal_connect (connection, NM_REMOTE_CONNECTION_REMOVED,
 	                  G_CALLBACK (connection_removed), self);
+	g_signal_connect (connection, NM_REMOTE_CONNECTION_UPDATED,
+	                  G_CALLBACK (connection_updated), self);
 }
 
 static void
