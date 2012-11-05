@@ -34,6 +34,7 @@ struct _EAPMethodSimple {
 
 	EAPMethodSimpleType type;
 	gboolean is_editor;
+	gboolean new_connection;
 };
 
 static void
@@ -163,6 +164,13 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		g_assert (widget);
 		g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 	}
+
+	/* Default to agent-owned secrets for new connections */
+	if (method->new_connection && (not_saved == FALSE)) {
+		g_object_set (s_8021x,
+		              NM_SETTING_802_1X_PASSWORD_FLAGS, NM_SETTING_SECRET_FLAG_AGENT_OWNED,
+		              NULL);
+	}
 }
 
 static void
@@ -230,6 +238,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	method = (EAPMethodSimple *) parent;
 	method->type = type;
 	method->is_editor = is_editor;
+	method->new_connection = secrets_only ? FALSE : TRUE;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_username_entry"));
 	g_assert (widget);
