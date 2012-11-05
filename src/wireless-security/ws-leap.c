@@ -28,6 +28,7 @@
 
 struct _WirelessSecurityLEAP {
 	WirelessSecurity parent;
+	gboolean new_connection;
 };
 
 static void
@@ -79,6 +80,7 @@ add_to_size_group (WirelessSecurity *parent, GtkSizeGroup *group)
 static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
+	WirelessSecurityLEAP *sec = (WirelessSecurityLEAP *) parent;
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	GtkWidget *widget;
@@ -105,6 +107,13 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	              NM_SETTING_WIRELESS_SECURITY_LEAP_USERNAME, leap_username,
 	              NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD, leap_password,
 	              NULL);
+
+	/* Default to agent-owned secrets for new connections */
+	if (sec->new_connection) {
+		g_object_set (s_wireless_sec,
+		              NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD_FLAGS, NM_SETTING_SECRET_FLAG_AGENT_OWNED,
+		              NULL);
+	}
 }
 
 static void
@@ -151,6 +160,7 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 
 	parent->adhoc_compatible = FALSE;
 	sec = (WirelessSecurityLEAP *) parent;
+	sec->new_connection = secrets_only ? FALSE : TRUE;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_password_entry"));
 	g_assert (widget);

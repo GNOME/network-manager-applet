@@ -35,6 +35,8 @@
 
 struct _EAPMethodTLS {
 	EAPMethod parent;
+
+	gboolean new_connection;
 };
 
 
@@ -117,12 +119,14 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection)
 {
+	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
 	char *ca_filename, *pk_filename, *cc_filename;
 	const char *password = NULL;
 	GError *error = NULL;
+	const char *secret_flag_prop = NULL;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
@@ -152,13 +156,19 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 			g_warning ("Couldn't read phase2 private key '%s': %s", pk_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
 		}
+		secret_flag_prop = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD_FLAGS;
 	} else {
 		if (!nm_setting_802_1x_set_private_key (s_8021x, pk_filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 			g_warning ("Couldn't read private key '%s': %s", pk_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
 		}
+		secret_flag_prop = NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD_FLAGS;
 	}
 	g_free (pk_filename);
+
+	/* Default to agent-owned secrets for new connections */
+	if (method->new_connection)
+		g_object_set (s_8021x, secret_flag_prop, NM_SETTING_SECRET_FLAG_AGENT_OWNED, NULL);
 
 	/* TLS client certificate */
 	if (format != NM_SETTING_802_1X_CK_FORMAT_PKCS12) {
@@ -376,6 +386,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
                     gboolean phase2,
                     gboolean secrets_only)
 {
+	EAPMethodTLS *method;
 	EAPMethod *parent;
 	GtkWidget *widget;
 	NMSetting8021x *s_8021x = NULL;
@@ -392,6 +403,9 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	                          phase2);
 	if (!parent)
 		return NULL;
+
+	method = (EAPMethodTLS *) parent;
+	method->new_connection = secrets_only ? FALSE : TRUE;
 
 	eap_method_nag_init (parent, "eap_tls_ca_cert_button", connection);
 
@@ -458,6 +472,6 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 		gtk_widget_hide (widget);
 	}
 
-	return (EAPMethodTLS *) parent;
+	return method;
 }
 
