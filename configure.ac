@@ -202,10 +202,38 @@ esac
 
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
+dnl ModemManager1 with libmm-glib
+AC_ARG_WITH(modem-manager-1, AS_HELP_STRING([--with-modem-manager-1], [Enable new ModemManager1 interface support]),,[with_modem_manager_1=auto])
+if (test "${with_modem_manager_1}" != "no"); then
+    PKG_CHECK_MODULES(MM_GLIB,
+                      [mm-glib],
+                      [have_libmm_glib=yes],
+                      [have_libmm_glib=no])
+    AC_SUBST(MM_GLIB_CFLAGS)
+    AC_SUBST(MM_GLIB_LIBS)
+
+    if (test "${have_libmm_glib}" = "no"); then
+        if (test "${with_modem_manager_1}" = "yes"); then
+            AC_MSG_ERROR([Couldn't find libmm-glib])
+        fi
+    else
+        with_modem_manager_1="yes"
+    fi
+fi
+
+if (test "${with_modem_manager_1}" = "yes"); then
+    AC_DEFINE(WITH_MODEM_MANAGER_1, 1, [Define if you have ModemManager1 support])
+else
+	AC_DEFINE(WITH_MODEM_MANAGER_1, 0, [Define if you have ModemManager1 support])
+fi
+AM_CONDITIONAL(WITH_MODEM_MANAGER_1, test "${with_modem_manager_1}" = "yes")
+
+dnl Check for gudev
 PKG_CHECK_MODULES(GUDEV, gudev-1.0 >= 147)
 AC_SUBST(GUDEV_CFLAGS)
 AC_SUBST(GUDEV_LIBS)
 
+dnl Check for gobject introspection
 GOBJECT_INTROSPECTION_CHECK([0.9.6])
 
 GLIB_CONFIG_NMA
@@ -240,4 +268,3 @@ icons/scalable/Makefile
 po/Makefile.in
 ])
 AC_OUTPUT
-
