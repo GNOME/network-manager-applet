@@ -22,6 +22,10 @@ plugin_LTLIBRARIES = libnma.la
 
 libnma_la_SOURCES = $(BT_WIDGET_SOURCES)
 
+if WITH_MODEM_MANAGER_1
+libnma_la_CPPFLAGS = $(MM_GLIB_CFLAGS)
+endif
+
 libnma_la_LDFLAGS = -module -avoid-version
 
 libnma_la_LIBADD = \
@@ -29,6 +33,11 @@ libnma_la_LIBADD = \
 	$(top_builddir)/src/utils/libutils.la \
 	$(top_builddir)/src/libnm-gtk/libnm-gtk.la \
 	$(GNOME_BLUETOOTH_LIBS)
+
+if WITH_MODEM_MANAGER_1
+libnma_la_LIBADD += $(MM_GLIB_LIBS)
+endif
+
 endif
 
 EXTRA_DIST = $(BT_WIDGET_SOURCES)
