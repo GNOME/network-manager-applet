@@ -167,8 +167,12 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_free (pk_filename);
 
 	/* Default to agent-owned secrets for new connections */
-	if (method->new_connection)
-		g_object_set (s_8021x, secret_flag_prop, NM_SETTING_SECRET_FLAG_AGENT_OWNED, NULL);
+	if (method->new_connection) {
+		g_object_set (s_8021x,
+		              secret_flag_prop, NM_SETTING_SECRET_FLAG_AGENT_OWNED,
+		              NM_SETTING_802_1X_SYSTEM_CA_CERTS, TRUE,
+		              NULL);
+	}
 
 	/* TLS client certificate */
 	if (format != NM_SETTING_802_1X_CK_FORMAT_PKCS12) {
