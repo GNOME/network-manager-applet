@@ -1120,7 +1120,9 @@ find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
 			NMAMobileProvider *provider = piter->data;
 
 			/* Search through MCC/MNC list */
-			for (siter = provider->gsm_mcc_mnc; siter; siter = g_slist_next (siter)) {
+			for (siter = nma_mobile_provider_get_gsm_mcc_mnc (provider);
+			     siter;
+			     siter = g_slist_next (siter)) {
 				NMAGsmMccMnc *mcc = siter->data;
 
 				/* Match both 2-digit and 3-digit MNC; prefer a
@@ -1132,11 +1134,11 @@ find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
 				if (   !name3
 				    && (strlen (mccmnc) == 6)
 				    && !strncmp (mccmnc + 3, mcc->mnc, 3))
-					name3 = provider->name;
+					name3 = nma_mobile_provider_get_name (provider);
 
 				if (   !name2
 				    && !strncmp (mccmnc + 3, mcc->mnc, 2))
-					name2 = provider->name;
+					name2 = nma_mobile_provider_get_name (provider);
 
 				if (name2 && name3) {
 					done = TRUE;

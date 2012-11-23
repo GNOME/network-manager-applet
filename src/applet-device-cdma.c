@@ -730,9 +730,11 @@ find_provider_for_sid (GHashTable *table, guint32 sid)
 			NMAMobileProvider *provider = piter->data;
 
 			/* Search through CDMA SID list */
-			for (siter = provider->cdma_sid; siter; siter = g_slist_next (siter)) {
+			for (siter = nma_mobile_provider_get_cdma_sid (provider);
+			     siter;
+			     siter = g_slist_next (siter)) {
 				if (GPOINTER_TO_UINT (siter->data) == sid) {
-					name = g_strdup (provider->name);
+					name = g_strdup (nma_mobile_provider_get_name (provider));
 					break;
 				}
 			}
