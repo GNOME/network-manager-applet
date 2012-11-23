@@ -1156,3 +1156,45 @@ nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
 
 	return provider_match_2mnc;
 }
+
+/**
+ * nma_mobile_providers_find_for_sid:
+ * @country_infos: (element-type utf8 NMGtk.CountryInfo) (transfer none): the table of country infos.
+ * @sid: the SID to look for.
+ *
+ * Returns: (transfer none): a #NMAMobileProvider.
+ */
+NMAMobileProvider *
+nma_mobile_providers_find_for_sid (GHashTable  *country_infos,
+                                   guint32 sid)
+{
+	GHashTableIter iter;
+	gpointer value;
+	GSList *piter, *siter;
+
+	if (sid == 0)
+		return NULL;
+
+	g_hash_table_iter_init (&iter, country_infos);
+	/* Search through each country */
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		NMACountryInfo *country_info = value;
+
+		/* Search through each country's providers */
+		for (piter = nma_country_info_get_providers (country_info);
+		     piter;
+		     piter = g_slist_next (piter)) {
+			NMAMobileProvider *provider = piter->data;
+
+			/* Search through CDMA SID list */
+			for (siter = nma_mobile_provider_get_cdma_sid (provider);
+			     siter;
+			     siter = g_slist_next (siter)) {
+				if (GPOINTER_TO_UINT (siter->data) == sid)
+					return provider;
+			}
+		}
+	}
+
+	return NULL;
+}
