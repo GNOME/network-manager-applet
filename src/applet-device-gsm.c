@@ -1097,65 +1097,9 @@ signal_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 }
 
 static char *
-find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
-{
-	GHashTableIter iter;
-	gpointer value;
-	GSList *piter, *siter;
-	const char *name2 = NULL, *name3 = NULL;
-	gboolean done = FALSE;
-
-	if (!mccmnc)
-		return NULL;
-
-	g_hash_table_iter_init (&iter, table);
-	/* Search through each country */
-	while (g_hash_table_iter_next (&iter, NULL, &value) && !done) {
-		NMACountryInfo *country_info = value;
-
-		/* Search through each country's providers */
-		for (piter = nma_country_info_get_providers (country_info);
-		     piter && !done;
-		     piter = g_slist_next (piter)) {
-			NMAMobileProvider *provider = piter->data;
-
-			/* Search through MCC/MNC list */
-			for (siter = nma_mobile_provider_get_gsm_mcc_mnc (provider);
-			     siter;
-			     siter = g_slist_next (siter)) {
-				NMAGsmMccMnc *mcc = siter->data;
-
-				/* Match both 2-digit and 3-digit MNC; prefer a
-				 * 3-digit match if found, otherwise a 2-digit one.
-				 */
-				if (strncmp (mcc->mcc, mccmnc, 3))
-					continue;  /* MCC was wrong */
-
-				if (   !name3
-				    && (strlen (mccmnc) == 6)
-				    && !strncmp (mccmnc + 3, mcc->mnc, 3))
-					name3 = nma_mobile_provider_get_name (provider);
-
-				if (   !name2
-				    && !strncmp (mccmnc + 3, mcc->mnc, 2))
-					name2 = nma_mobile_provider_get_name (provider);
-
-				if (name2 && name3) {
-					done = TRUE;
-					break;
-				}
-			}
-		}
-	}
-
-	if (name3)
-		return g_strdup (name3);
-	return g_strdup (name2);
-}
-
-static char *
 parse_op_name (GsmDeviceInfo *info, const char *orig, const char *op_code)
 {
+	NMAMobileProvider *provider;
 	guint i, orig_len;
 
 	/* Some devices return the MCC/MNC if they haven't fully initialized
@@ -1189,7 +1133,8 @@ parse_op_name (GsmDeviceInfo *info, const char *orig, const char *op_code)
 	if (!info->country_infos)
 		return strdup (orig);
 
-	return find_provider_for_mcc_mnc (info->country_infos, orig);
+	provider = nma_mobile_providers_find_for_mcc_mnc (info->country_infos, orig);
+	return (provider ? g_strdup (nma_mobile_provider_get_name (provider)) : NULL);
 }
 
 static void

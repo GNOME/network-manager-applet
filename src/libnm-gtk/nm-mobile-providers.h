@@ -102,8 +102,10 @@ GSList         *nma_country_info_get_providers    (NMACountryInfo *country_info)
 
 /* Returns a table where keys are country codes and values are NMACountryInfo
  * values */
-GHashTable *nma_mobile_providers_parse (const gchar *country_codes,
-                                        const gchar *service_providers);
-void        nma_mobile_providers_dump  (GHashTable *country_infos);
+GHashTable        *nma_mobile_providers_parse            (const gchar *country_codes,
+                                                          const gchar *service_providers);
+void               nma_mobile_providers_dump             (GHashTable *country_infos);
+NMAMobileProvider *nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
+                                                          const gchar *mccmnc);
 
 #endif /* NM_MOBILE_PROVIDERS_H */
