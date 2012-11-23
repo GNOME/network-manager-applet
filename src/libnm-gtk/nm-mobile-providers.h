@@ -18,7 +18,7 @@
  * Copyright (C) 2009 Novell, Inc.
  * Author: Tambet Ingo (tambet@gmail.com).
  *
- * Copyright (C) 2009 - 2010 Red Hat, Inc.
+ * Copyright (C) 2009 - 2012 Red Hat, Inc.
  */
 
 /* WARNING: this file is private API between nm-applet and various GNOME
@@ -34,10 +34,14 @@
 /******************************************************************************/
 /* GSM MCCMNC type */
 
+#define NMA_TYPE_GSM_MCC_MNC (nma_gsm_mcc_mnc_get_type ())
+
 typedef struct {
     char *mcc;
     char *mnc;
 } NMAGsmMccMnc;
+
+GType nma_gsm_mcc_mnc_get_type (void);
 
 /******************************************************************************/
 /* Access method type */
@@ -93,17 +97,36 @@ typedef struct {
 GType              nma_mobile_provider_get_type        (void);
 NMAMobileProvider *nma_mobile_provider_ref             (NMAMobileProvider *provider);
 void               nma_mobile_provider_unref           (NMAMobileProvider *provider);
+GSList            *nma_mobile_provider_get_gsm_mcc_mnc (NMAMobileProvider *provider);
+GSList            *nma_mobile_provider_get_cdma_sid    (NMAMobileProvider *provider);
 
+/******************************************************************************/
+/* Country Info type */
+
+#define NMA_TYPE_COUNTRY_INFO (nma_country_info_get_type ())
+
+typedef struct {
+    char *country_code;
+    char *country_name;
+    GSList *providers;
+
+    gint refs;
+} NMACountryInfo;
+
+GType           nma_country_info_get_type         (void);
+NMACountryInfo *nma_country_info_ref              (NMACountryInfo *country_info);
+void            nma_country_info_unref            (NMACountryInfo *country_info);
+const gchar    *nma_country_info_get_country_code (NMACountryInfo *country_info);
+const gchar    *nma_country_info_get_country_name (NMACountryInfo *country_info);
+GSList         *nma_country_info_get_providers    (NMACountryInfo *country_info);
 
 /******************************************************************************/
 /* Utils */
 
-/* Returns a hash table where keys are country names 'char *',
-   values are a 'GSList *' of 'NmaMobileProvider *'.
-   Everything is destroyed with g_hash_table_destroy (). */
-
-GHashTable *nma_mobile_providers_parse (GHashTable **out_ccs);
-
-void nma_mobile_providers_dump (GHashTable *providers);
+/* Returns a table where keys are country codes and values are NMACountryInfo
+ * values */
+GHashTable *nma_mobile_providers_parse (const gchar *country_codes,
+                                        const gchar *service_providers);
+void        nma_mobile_providers_dump  (GHashTable *country_infos);
 
 #endif /* NM_MOBILE_PROVIDERS_H */

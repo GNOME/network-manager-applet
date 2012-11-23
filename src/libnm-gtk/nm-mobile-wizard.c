@@ -43,7 +43,7 @@
 #define DEVICE_TAG "device"
 #define TYPE_TAG "setting-type"
 
-static char *get_selected_country (NMAMobileWizard *self, gboolean *unlisted);
+static NMACountryInfo *get_selected_country (NMAMobileWizard *self);
 static NMAMobileProvider *get_selected_provider (NMAMobileWizard *self);
 static NMAMobileAccessMethodType get_provider_unlisted_type (NMAMobileWizard *self);
 static NMAMobileAccessMethod *get_selected_method (NMAMobileWizard *self, gboolean *manual);
@@ -52,8 +52,7 @@ struct NMAMobileWizard {
 	GtkWidget *assistant;
 	NMAMobileWizardCallback callback;
 	gpointer user_data;
-	GHashTable *providers;
-	GHashTable *country_codes;
+	GHashTable *country_infos;
 	NMAMobileAccessMethodType method_type;
 	gboolean initial_method_type;
 	gboolean will_connect_after;
@@ -66,7 +65,7 @@ struct NMAMobileWizard {
 
 	/* Country page */
 	guint32 country_idx;
-	const char *country;
+	NMACountryInfo *country;
 	GtkWidget *country_page;
 	GtkWidget *country_view;
 	GtkTreeStore *country_store;
@@ -283,11 +282,11 @@ confirm_prepare (NMAMobileWizard *self)
 {
 	NMAMobileProvider *provider = NULL;
 	NMAMobileAccessMethod *method = NULL;
-	char *country = NULL;
+	NMACountryInfo *country_info;
 	gboolean manual = FALSE;
 	GString *str;
 
-	country = get_selected_country (self, NULL);
+	country_info = get_selected_country (self);
 	provider = get_selected_provider (self);
 	if (provider)
 		method = get_selected_method (self, &manual);
@@ -304,9 +303,9 @@ confirm_prepare (NMAMobileWizard *self)
 		g_string_append (str, unlisted_provider);
 	}
 
-	if (country) {
-		g_string_append_printf (str, ", %s", country);
-		g_free (country);
+	if (country_info) {
+		g_string_append_printf (str, ", %s", nma_country_info_get_country_name (country_info));
+		nma_country_info_unref (country_info);
 	}
 	gtk_label_set_text (GTK_LABEL (self->confirm_provider), str->str);
 	g_string_free (str, TRUE);
@@ -851,13 +850,13 @@ static void
 providers_prepare (NMAMobileWizard *self)
 {
 	GtkTreeSelection *selection;
-	GSList *providers, *piter;
-	char *country;
+	NMACountryInfo *country_info;
+	GSList *piter;
 
 	gtk_tree_store_clear (self->providers_store);
 
-	country = get_selected_country (self, NULL);
-	if (!country) {
+	country_info = get_selected_country (self);
+	if (!country_info) {
 		/* Unlisted country */
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->provider_unlisted_radio), TRUE);
 		gtk_widget_set_sensitive (GTK_WIDGET (self->providers_view_radio), FALSE);
@@ -865,10 +864,9 @@ providers_prepare (NMAMobileWizard *self)
 	}
 	gtk_widget_set_sensitive (GTK_WIDGET (self->providers_view_radio), TRUE);
 
-	providers = g_hash_table_lookup (self->providers, country);
-	g_free (country);
-
-	for (piter = providers; piter; piter = g_slist_next (piter)) {
+	for (piter = nma_country_info_get_providers (country_info);
+	     piter;
+	     piter = g_slist_next (piter)) {
 		NMAMobileProvider *provider = piter->data;
 		GtkTreeIter provider_iter;
 
@@ -897,6 +895,8 @@ providers_prepare (NMAMobileWizard *self)
 		                    provider,
 		                    -1);
 	}
+
+	nma_country_info_unref (country_info);
 
 	g_object_set (G_OBJECT (self->providers_view), "enable-search", TRUE, NULL);
 
@@ -939,6 +939,9 @@ done:
 /* Country page */
 /**********************************************************/
 
+#define COUNTRIES_COL_NAME 0
+#define COUNTRIES_COL_INFO 1
+
 static gboolean
 country_search_func (GtkTreeModel *model,
                      gint column,
@@ -965,18 +968,25 @@ static void
 add_one_country (gpointer key, gpointer value, gpointer user_data)
 {
 	NMAMobileWizard *self = user_data;
+	NMACountryInfo *country_info = value;
 	GtkTreeIter country_iter;
 	GtkTreePath *country_path, *country_view_path;
 
 	g_assert (key);
 
 	gtk_tree_store_append (GTK_TREE_STORE (self->country_store), &country_iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE (self->country_store), &country_iter, 0, key, -1);
+	gtk_tree_store_set (GTK_TREE_STORE (self->country_store),
+	                    &country_iter,
+	                    COUNTRIES_COL_NAME,
+	                    nma_country_info_get_country_name (country_info),
+	                    COUNTRIES_COL_INFO,
+	                    country_info,
+	                    -1);
 
 	/* If this country is the same country as the user's current locale,
 	 * select it by default.
 	 */
-	if (!self->country || g_ascii_strcasecmp (self->country, key))
+	if (self->country != country_info)
 		return;
 
 	country_path = gtk_tree_model_get_path (GTK_TREE_MODEL (self->country_store), &country_iter);
@@ -999,45 +1009,35 @@ add_one_country (gpointer key, gpointer value, gpointer user_data)
 	gtk_tree_path_free (country_path);
 }
 
-static char *
-get_selected_country (NMAMobileWizard *self, gboolean *out_unlisted)
+NMACountryInfo *
+get_selected_country (NMAMobileWizard *self)
 {
 	GtkTreeSelection *selection;
 	GtkTreeModel *model = NULL;
 	GtkTreeIter iter;
-	char *country = NULL;
-	gboolean unlisted = FALSE;
-
-	if (!self->country_codes)
-		return NULL;
+	NMACountryInfo *country_info = NULL;
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->country_view));
 	g_assert (selection);
 
-	if (gtk_tree_selection_get_selected (GTK_TREE_SELECTION (selection), &model, &iter)) {
-		gtk_tree_model_get (model, &iter, 0, &country, 1, &unlisted, -1);
-		if (unlisted) {
-			g_free (country);
-			country = NULL;
-			if (out_unlisted)
-				*out_unlisted = unlisted;
-		}
-	}
+	if (!gtk_tree_selection_get_selected (GTK_TREE_SELECTION (selection), &model, &iter))
+		return NULL;
 
-	return country;
+	gtk_tree_model_get (model, &iter, COUNTRIES_COL_INFO, &country_info, -1);
+	return country_info;
 }
 
 static void
 country_update_complete (NMAMobileWizard *self)
 {
-	char *country = NULL;
-	gboolean unlisted = FALSE;
+	NMACountryInfo *country_info;
 
-	country = get_selected_country (self, &unlisted);
+	country_info = get_selected_country (self);
 	gtk_assistant_set_page_complete (GTK_ASSISTANT (self->assistant),
 	                                 self->country_page,
-	                                 (!!country || unlisted));
-	g_free (country);
+	                                 (!!country_info));
+	if (country_info)
+		nma_country_info_unref (country_info);
 }
 
 static gint
@@ -1047,16 +1047,16 @@ country_sort_func (GtkTreeModel *model,
                    gpointer user_data)
 {
 	char *a_str = NULL, *b_str = NULL;
-	gboolean a_def = FALSE, b_def = FALSE;
+	NMACountryInfo *a_country_info = NULL, *b_country_info = NULL;
 	gint ret = 0;
 
-	gtk_tree_model_get (model, a, 0, &a_str, 1, &a_def, -1);
-	gtk_tree_model_get (model, b, 0, &b_str, 1, &b_def, -1);
+	gtk_tree_model_get (model, a, COUNTRIES_COL_NAME, &a_str, COUNTRIES_COL_INFO, &a_country_info, -1);
+	gtk_tree_model_get (model, b, COUNTRIES_COL_NAME, &b_str, COUNTRIES_COL_INFO, &b_country_info, -1);
 
-	if (a_def) {
+	if (!a_country_info) {
 		ret = -1;
 		goto out;
-	} else if (b_def) {
+	} else if (!b_country_info) {
 		ret = 1;
 		goto out;
 	}
@@ -1071,6 +1071,10 @@ country_sort_func (GtkTreeModel *model,
 		ret = g_utf8_collate (a_str, b_str);
 
 out:
+	if (a_country_info)
+		nma_country_info_unref (a_country_info);
+	if (b_country_info)
+		nma_country_info_unref (b_country_info);
 	g_free (a_str);
 	g_free (b_str);
 	return ret;
@@ -1095,33 +1099,37 @@ country_setup (NMAMobileWizard *self)
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
 
-	self->country_store = gtk_tree_store_new (2, G_TYPE_STRING, G_TYPE_BOOLEAN);
+	self->country_store = gtk_tree_store_new (2, G_TYPE_STRING, NMA_TYPE_COUNTRY_INFO);
 
 	self->country_sort = GTK_TREE_MODEL_SORT (gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (self->country_store)));
-	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (self->country_sort), 0, GTK_SORT_ASCENDING);
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (self->country_sort),
+	                                      COUNTRIES_COL_NAME, GTK_SORT_ASCENDING);
 
 	self->country_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (self->country_sort));
 
 	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Country or region"), renderer, "text", 0, NULL);
+	column = gtk_tree_view_column_new_with_attributes (_("Country or region"),
+	                                                   renderer,
+	                                                   "text", COUNTRIES_COL_NAME,
+	                                                   NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (self->country_view), column);
 	gtk_tree_view_column_set_clickable (column, TRUE);
 
 	/* My country is not listed... */
 	gtk_tree_store_append (GTK_TREE_STORE (self->country_store), &unlisted_iter, NULL);
 	gtk_tree_store_set (GTK_TREE_STORE (self->country_store), &unlisted_iter,
-	                    0, _("My country is not listed"),
-	                    1, TRUE,
+	                    PROVIDER_COL_NAME, _("My country is not listed"),
+	                    PROVIDER_COL_PROVIDER, NULL,
 	                    -1);
 	gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (self->country_sort),
-	                                 0,
+	                                 COUNTRIES_COL_NAME,
 	                                 country_sort_func,
 	                                 NULL,
 	                                 NULL);
 
 	/* Add the rest of the providers */
-	if (self->providers)
-		g_hash_table_foreach (self->providers, add_one_country, self);
+	if (self->country_infos)
+		g_hash_table_foreach (self->country_infos, add_one_country, self);
 	g_object_set (G_OBJECT (self->country_view), "enable-search", TRUE, NULL);
 
 	/* If no row has focus yet, focus the first row so that the user can start
@@ -1180,7 +1188,7 @@ focus_country_view (gpointer user_data)
 static void
 country_prepare (NMAMobileWizard *self)
 {
-	gtk_tree_view_set_search_column (GTK_TREE_VIEW (self->country_view), 0);
+	gtk_tree_view_set_search_column (GTK_TREE_VIEW (self->country_view), COUNTRIES_COL_NAME);
 	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (self->country_view), country_search_func, self, NULL);
 
 	if (!self->country_focus_id)
@@ -1604,11 +1612,11 @@ get_country_from_locale (void)
  */
 NMAMobileWizard *
 nma_mobile_wizard_new (GtkWindow *parent,
-                   GtkWindowGroup *window_group,
-                   NMDeviceModemCapabilities modem_caps,
-                   gboolean will_connect_after,
-                   NMAMobileWizardCallback cb,
-                   gpointer user_data)
+                       GtkWindowGroup *window_group,
+                       NMDeviceModemCapabilities modem_caps,
+                       gboolean will_connect_after,
+                       NMAMobileWizardCallback cb,
+                       gpointer user_data)
 {
 	NMAMobileWizard *self;
 	char *cc;
@@ -1616,16 +1624,17 @@ nma_mobile_wizard_new (GtkWindow *parent,
 	self = g_malloc0 (sizeof (NMAMobileWizard));
 	g_return_val_if_fail (self != NULL, NULL);
 
-	self->providers = nma_mobile_providers_parse (&(self->country_codes));
-	if (!self->providers || !self->country_codes) {
+	self->country_infos = nma_mobile_providers_parse (NULL, NULL);
+	if (!self->country_infos) {
 		nma_mobile_wizard_destroy (self);
 		return NULL;
 	}
 
 	cc = get_country_from_locale ();
-	if (cc)
-		self->country = g_hash_table_lookup (self->country_codes, cc);
-	g_free (cc);
+	if (cc) {
+		self->country = g_hash_table_lookup (self->country_infos, cc);
+		g_free (cc);
+	}
 
 	self->will_connect_after = will_connect_after;
 	self->callback = cb;
@@ -1693,11 +1702,8 @@ nma_mobile_wizard_destroy (NMAMobileWizard *self)
 	remove_provider_focus_idle (self);
 	remove_country_focus_idle (self);
 
-	if (self->providers)
-		g_hash_table_destroy (self->providers);
-
-	if (self->country_codes)
-		g_hash_table_destroy (self->country_codes);
+	if (self->country_infos)
+		g_hash_table_destroy (self->country_infos);
 
 	g_free (self);
 }
