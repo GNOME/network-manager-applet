@@ -1096,3 +1096,69 @@ nma_mobile_providers_dump (GHashTable *country_infos)
     g_return_if_fail (country_infos != NULL);
     g_hash_table_foreach (country_infos, dump_country, NULL);
 }
+
+/**
+ * nma_mobile_providers_find_for_mcc_mnc:
+ * @country_infos: (element-type utf8 NMGtk.CountryInfo) (transfer none): the table of country infos.
+ * @mccmnc: the MCC/MNC string to look for.
+ *
+ * Returns: (transfer none): a #NMAMobileProvider.
+ */
+NMAMobileProvider *
+nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
+                                       const gchar *mccmnc)
+{
+	GHashTableIter iter;
+	gpointer value;
+	GSList *piter, *siter;
+	NMAMobileProvider *provider_match_2mnc = NULL;
+	NMAMobileProvider *provider_match_3mnc = NULL;
+	gboolean done = FALSE;
+
+	if (!mccmnc)
+		return NULL;
+
+	g_hash_table_iter_init (&iter, country_infos);
+	/* Search through each country */
+	while (g_hash_table_iter_next (&iter, NULL, &value) && !done) {
+		NMACountryInfo *country_info = value;
+
+		/* Search through each country's providers */
+		for (piter = nma_country_info_get_providers (country_info);
+		     piter && !done;
+		     piter = g_slist_next (piter)) {
+			NMAMobileProvider *provider = piter->data;
+
+			/* Search through MCC/MNC list */
+			for (siter = nma_mobile_provider_get_gsm_mcc_mnc (provider);
+			     siter;
+			     siter = g_slist_next (siter)) {
+				NMAGsmMccMnc *mcc = siter->data;
+
+				/* Match both 2-digit and 3-digit MNC; prefer a
+				 * 3-digit match if found, otherwise a 2-digit one.
+				 */
+				if (strncmp (mcc->mcc, mccmnc, 3))
+					continue;  /* MCC was wrong */
+
+				if (   !provider_match_3mnc
+				    && (strlen (mccmnc) == 6)
+				    && !strncmp (mccmnc + 3, mcc->mnc, 3))
+					provider_match_3mnc = provider;
+
+				if (   !provider_match_2mnc
+				    && !strncmp (mccmnc + 3, mcc->mnc, 2))
+					provider_match_2mnc = provider;
+
+				if (provider_match_2mnc && provider_match_3mnc) {
+					done = TRUE;
+					break;
+				}
+			}
+		}
+	}
+
+	if (provider_match_3mnc)
+		return provider_match_3mnc;
+	return provider_match_2mnc;
+}
