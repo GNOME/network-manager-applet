@@ -38,7 +38,148 @@
 #define ISO_3166_COUNTRY_CODES ISO_CODES_PREFIX"/share/xml/iso-codes/iso_3166.xml"
 #define ISO_CODES_LOCALESDIR ISO_CODES_PREFIX"/share/locale"
 
+/******************************************************************************/
+/* GSM MCCMNC type */
 
+static NMAGsmMccMnc *
+mcc_mnc_new (const char *mcc, const char *mnc)
+{
+    NMAGsmMccMnc *m;
+
+    m = g_slice_new0 (NMAGsmMccMnc);
+    m->mcc = g_strstrip (g_strdup (mcc));
+    m->mnc = g_strstrip (g_strdup (mnc));
+    return m;
+}
+
+static void
+mcc_mnc_free (NMAGsmMccMnc *m)
+{
+    g_return_if_fail (m != NULL);
+    g_free (m->mcc);
+    g_free (m->mnc);
+    g_slice_free (NMAGsmMccMnc, m);
+}
+
+/******************************************************************************/
+/* Access method type */
+
+static NMAMobileAccessMethod *
+access_method_new (void)
+{
+    NMAMobileAccessMethod *method;
+
+    method = g_slice_new0 (NMAMobileAccessMethod);
+    method->refs = 1;
+    method->lcl_names = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                               (GDestroyNotify) g_free,
+                                               (GDestroyNotify) g_free);
+
+    return method;
+}
+
+NMAMobileAccessMethod *
+nma_mobile_access_method_ref (NMAMobileAccessMethod *method)
+{
+    g_return_val_if_fail (method != NULL, NULL);
+    g_return_val_if_fail (method->refs > 0, NULL);
+
+    method->refs++;
+
+    return method;
+}
+
+void
+nma_mobile_access_method_unref (NMAMobileAccessMethod *method)
+{
+    g_return_if_fail (method != NULL);
+    g_return_if_fail (method->refs > 0);
+
+    if (--method->refs == 0) {
+        g_free (method->name);
+        g_hash_table_destroy (method->lcl_names);
+        g_free (method->username);
+        g_free (method->password);
+        g_free (method->gateway);
+        g_free (method->gsm_apn);
+        g_slist_foreach (method->dns, (GFunc) g_free, NULL);
+        g_slist_free (method->dns);
+
+        g_slice_free (NMAMobileAccessMethod, method);
+    }
+}
+
+GType
+nma_mobile_access_method_get_type (void)
+{
+    static GType type = 0;
+
+    if (G_UNLIKELY (type == 0)) {
+        type = g_boxed_type_register_static ("NMAMobileAccessMethod",
+                                             (GBoxedCopyFunc) nma_mobile_access_method_ref,
+                                             (GBoxedFreeFunc) nma_mobile_access_method_unref);
+    }
+    return type;
+}
+
+/******************************************************************************/
+/* Mobile provider type */
+
+static NMAMobileProvider *
+provider_new (void)
+{
+    NMAMobileProvider *provider;
+
+    provider = g_slice_new0 (NMAMobileProvider);
+    provider->refs = 1;
+    provider->lcl_names = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                 (GDestroyNotify) g_free,
+                                                 (GDestroyNotify) g_free);
+
+    return provider;
+}
+
+NMAMobileProvider *
+nma_mobile_provider_ref (NMAMobileProvider *provider)
+{
+    provider->refs++;
+
+    return provider;
+}
+
+void
+nma_mobile_provider_unref (NMAMobileProvider *provider)
+{
+    if (--provider->refs == 0) {
+        g_free (provider->name);
+        g_hash_table_destroy (provider->lcl_names);
+
+        g_slist_foreach (provider->methods, (GFunc) nma_mobile_access_method_unref, NULL);
+        g_slist_free (provider->methods);
+
+        g_slist_foreach (provider->gsm_mcc_mnc, (GFunc) mcc_mnc_free, NULL);
+        g_slist_free (provider->gsm_mcc_mnc);
+
+        g_slist_free (provider->cdma_sid);
+
+        g_slice_free (NMAMobileProvider, provider);
+    }
+}
+
+GType
+nma_mobile_provider_get_type (void)
+{
+    static GType type = 0;
+
+    if (G_UNLIKELY (type == 0)) {
+        type = g_boxed_type_register_static ("NMAMobileProvider",
+                                             (GBoxedCopyFunc) nma_mobile_provider_ref,
+                                             (GBoxedFreeFunc) nma_mobile_provider_unref);
+    }
+    return type;
+}
+
+/******************************************************************************/
 /* XML Parser for iso_3166.xml */
 
 static void
@@ -122,7 +263,7 @@ read_country_codes (void)
     return table;
 }
 
-
+/******************************************************************************/
 /* XML Parser for serviceproviders.xml */
 
 typedef enum {
@@ -147,139 +288,6 @@ typedef struct {
     char *text_buffer;
     MobileContextState state;
 } MobileParser;
-
-static NMAGsmMccMnc *
-mcc_mnc_new (const char *mcc, const char *mnc)
-{
-    NMAGsmMccMnc *m;
-
-    m = g_slice_new0 (NMAGsmMccMnc);
-    m->mcc = g_strstrip (g_strdup (mcc));
-    m->mnc = g_strstrip (g_strdup (mnc));
-    return m;
-}
-
-static void
-mcc_mnc_free (NMAGsmMccMnc *m)
-{
-    g_return_if_fail (m != NULL);
-    g_free (m->mcc);
-    g_free (m->mnc);
-    g_slice_free (NMAGsmMccMnc, m);
-}
-
-static NMAMobileAccessMethod *
-access_method_new (void)
-{
-    NMAMobileAccessMethod *method;
-
-    method = g_slice_new0 (NMAMobileAccessMethod);
-    method->refs = 1;
-    method->lcl_names = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                               (GDestroyNotify) g_free,
-                                               (GDestroyNotify) g_free);
-
-    return method;
-}
-
-NMAMobileAccessMethod *
-nma_mobile_access_method_ref (NMAMobileAccessMethod *method)
-{
-    g_return_val_if_fail (method != NULL, NULL);
-    g_return_val_if_fail (method->refs > 0, NULL);
-
-    method->refs++;
-
-    return method;
-}
-
-void
-nma_mobile_access_method_unref (NMAMobileAccessMethod *method)
-{
-    g_return_if_fail (method != NULL);
-    g_return_if_fail (method->refs > 0);
-
-    if (--method->refs == 0) {
-        g_free (method->name);
-        g_hash_table_destroy (method->lcl_names);
-        g_free (method->username);
-        g_free (method->password);
-        g_free (method->gateway);
-        g_free (method->gsm_apn);
-        g_slist_foreach (method->dns, (GFunc) g_free, NULL);
-        g_slist_free (method->dns);
-
-        g_slice_free (NMAMobileAccessMethod, method);
-    }
-}
-
-GType
-nma_mobile_access_method_get_type (void)
-{
-    static GType type = 0;
-
-    if (G_UNLIKELY (type == 0)) {
-        type = g_boxed_type_register_static ("NMAMobileAccessMethod",
-                                             (GBoxedCopyFunc) nma_mobile_access_method_ref,
-                                             (GBoxedFreeFunc) nma_mobile_access_method_unref);
-    }
-    return type;
-}
-
-
-static NMAMobileProvider *
-provider_new (void)
-{
-    NMAMobileProvider *provider;
-
-    provider = g_slice_new0 (NMAMobileProvider);
-    provider->refs = 1;
-    provider->lcl_names = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                 (GDestroyNotify) g_free,
-                                                 (GDestroyNotify) g_free);
-
-    return provider;
-}
-
-NMAMobileProvider *
-nma_mobile_provider_ref (NMAMobileProvider *provider)
-{
-    provider->refs++;
-
-    return provider;
-}
-
-void
-nma_mobile_provider_unref (NMAMobileProvider *provider)
-{
-    if (--provider->refs == 0) {
-        g_free (provider->name);
-        g_hash_table_destroy (provider->lcl_names);
-
-        g_slist_foreach (provider->methods, (GFunc) nma_mobile_access_method_unref, NULL);
-        g_slist_free (provider->methods);
-
-        g_slist_foreach (provider->gsm_mcc_mnc, (GFunc) mcc_mnc_free, NULL);
-        g_slist_free (provider->gsm_mcc_mnc);
-
-        g_slist_free (provider->cdma_sid);
-
-        g_slice_free (NMAMobileProvider, provider);
-    }
-}
-
-GType
-nma_mobile_provider_get_type (void)
-{
-    static GType type = 0;
-
-    if (G_UNLIKELY (type == 0)) {
-        type = g_boxed_type_register_static ("NMAMobileProvider",
-                                             (GBoxedCopyFunc) nma_mobile_provider_ref,
-                                             (GBoxedFreeFunc) nma_mobile_provider_unref);
-    }
-    return type;
-}
 
 static void
 provider_list_free (gpointer data)
@@ -618,6 +626,9 @@ static const GMarkupParser mobile_parser = {
     NULL, /* passthrough */
     NULL /* error */
 };
+
+/******************************************************************************/
+/* Parser interface */
 
 GHashTable *
 nma_mobile_providers_parse (GHashTable **out_ccs)

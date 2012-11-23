@@ -31,8 +31,16 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#define NMA_TYPE_MOBILE_PROVIDER (nma_mobile_provider_get_type ())
-#define NMA_TYPE_MOBILE_ACCESS_METHOD (nma_mobile_access_method_get_type ())
+/******************************************************************************/
+/* GSM MCCMNC type */
+
+typedef struct {
+    char *mcc;
+    char *mnc;
+} NMAGsmMccMnc;
+
+/******************************************************************************/
+/* Access method type */
 
 typedef enum {
     NMA_MOBILE_ACCESS_METHOD_TYPE_UNKNOWN = 0,
@@ -40,10 +48,7 @@ typedef enum {
     NMA_MOBILE_ACCESS_METHOD_TYPE_CDMA
 } NMAMobileAccessMethodType;
 
-typedef struct {
-    char *mcc;
-    char *mnc;
-} NMAGsmMccMnc;
+#define NMA_TYPE_MOBILE_ACCESS_METHOD (nma_mobile_access_method_get_type ())
 
 typedef struct {
     char *name;
@@ -63,6 +68,15 @@ typedef struct {
     gint refs;
 } NMAMobileAccessMethod;
 
+GType                      nma_mobile_access_method_get_type        (void);
+NMAMobileAccessMethod     *nma_mobile_access_method_ref             (NMAMobileAccessMethod *method);
+void                       nma_mobile_access_method_unref           (NMAMobileAccessMethod *method);
+
+/******************************************************************************/
+/* Mobile provider type */
+
+#define NMA_TYPE_MOBILE_PROVIDER (nma_mobile_provider_get_type ())
+
 typedef struct {
     char *name;
     /* maps lang (char *) -> name (char *) */
@@ -76,15 +90,13 @@ typedef struct {
     gint refs;
 } NMAMobileProvider;
 
+GType              nma_mobile_provider_get_type        (void);
+NMAMobileProvider *nma_mobile_provider_ref             (NMAMobileProvider *provider);
+void               nma_mobile_provider_unref           (NMAMobileProvider *provider);
 
-GType nma_mobile_provider_get_type (void);
-GType nma_mobile_access_method_get_type (void);
 
-NMAMobileProvider *nma_mobile_provider_ref   (NMAMobileProvider *provider);
-void               nma_mobile_provider_unref (NMAMobileProvider *provider);
-
-NMAMobileAccessMethod *nma_mobile_access_method_ref   (NMAMobileAccessMethod *method);
-void                   nma_mobile_access_method_unref (NMAMobileAccessMethod *method);
+/******************************************************************************/
+/* Utils */
 
 /* Returns a hash table where keys are country names 'char *',
    values are a 'GSList *' of 'NmaMobileProvider *'.
