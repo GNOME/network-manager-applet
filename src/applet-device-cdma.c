@@ -61,7 +61,7 @@ typedef struct {
 	guint32 sid;
 	gboolean modem_enabled;
 
-	GHashTable *providers;
+	GHashTable *country_infos;
 	char *provider_name;
 
 	guint32 poll_id;
@@ -624,8 +624,8 @@ cdma_device_info_free (gpointer data)
 		dbus_g_connection_unref (info->bus);
 	if (info->poll_id)
 		g_source_remove (info->poll_id);
-	if (info->providers)
-		g_hash_table_destroy (info->providers);
+	if (info->country_infos)
+		g_hash_table_destroy (info->country_infos);
 	g_free (info->provider_name);
 	memset (info, 0, sizeof (CdmaDeviceInfo));
 	g_free (info);
@@ -721,10 +721,12 @@ find_provider_for_sid (GHashTable *table, guint32 sid)
 	g_hash_table_iter_init (&iter, table);
 	/* Search through each country */
 	while (g_hash_table_iter_next (&iter, NULL, &value) && !name) {
-		GSList *providers = value;
+		NMACountryInfo *country_info = value;
 
 		/* Search through each country's providers */
-		for (piter = providers; piter && !name; piter = g_slist_next (piter)) {
+		for (piter = nma_country_info_get_providers (country_info);
+		     piter && !name;
+		     piter = g_slist_next (piter)) {
 			NMAMobileProvider *provider = piter->data;
 
 			/* Search through CDMA SID list */
@@ -763,10 +765,10 @@ serving_system_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_dat
 
 	if (new_sid && (new_sid != info->sid)) {
 		info->sid = new_sid;
-		if (info->providers) {
+		if (info->country_infos) {
 			g_free (info->provider_name);
 			info->provider_name = NULL;
-			info->provider_name = find_provider_for_sid (info->providers, new_sid);
+			info->provider_name = find_provider_for_sid (info->country_infos, new_sid);
 		}
 	} else if (!new_sid) {
 		info->sid = 0;
@@ -943,7 +945,7 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	info->bus = bus;
 	info->quality_valid = FALSE;
 
-	info->providers = nma_mobile_providers_parse (NULL);
+	info->country_infos = nma_mobile_providers_parse (NULL, NULL);
 
 	info->props_proxy = dbus_g_proxy_new_for_name (bus,
 	                                               "org.freedesktop.ModemManager",

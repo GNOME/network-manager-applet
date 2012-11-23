@@ -18,7 +18,7 @@
  * Copyright (C) 2009 Novell, Inc.
  * Author: Tambet Ingo (tambet@gmail.com).
  *
- * Copyright (C) 2009 - 2011 Red Hat, Inc.
+ * Copyright (C) 2009 - 2012 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -41,6 +41,11 @@
 /******************************************************************************/
 /* GSM MCCMNC type */
 
+static NMAGsmMccMnc *mcc_mnc_copy (const NMAGsmMccMnc *other);
+static void          mcc_mnc_free (NMAGsmMccMnc *m);
+
+G_DEFINE_BOXED_TYPE (NMAGsmMccMnc, nma_gsm_mcc_mnc, mcc_mnc_copy, mcc_mnc_free)
+
 static NMAGsmMccMnc *
 mcc_mnc_new (const char *mcc, const char *mnc)
 {
@@ -50,6 +55,17 @@ mcc_mnc_new (const char *mcc, const char *mnc)
     m->mcc = g_strstrip (g_strdup (mcc));
     m->mnc = g_strstrip (g_strdup (mnc));
     return m;
+}
+
+static NMAGsmMccMnc *
+mcc_mnc_copy (const NMAGsmMccMnc *other)
+{
+    NMAGsmMccMnc *ret;
+
+    ret = g_slice_new (NMAGsmMccMnc);
+    ret->mcc = g_strdup (other->mcc);
+    ret->mnc = g_strdup (other->mnc);
+    return ret;
 }
 
 static void
@@ -166,6 +182,36 @@ nma_mobile_provider_unref (NMAMobileProvider *provider)
     }
 }
 
+/**
+ * nma_mobile_provider_get_gsm_mcc_mnc:
+ * @provider: a #NMAMobileProvider
+ *
+ * Returns: (element-type NMGtk.GsmMccMnc) (transfer none): the
+ *   list of #NMAGsmMccMnc this provider exposes
+ */
+GSList *
+nma_mobile_provider_get_gsm_mcc_mnc (NMAMobileProvider *provider)
+{
+    g_return_val_if_fail (provider != NULL, NULL);
+
+    return provider->gsm_mcc_mnc;
+}
+
+/**
+ * nma_mobile_provider_get_cdma_sid:
+ * @provider: a #NMAMobileProvider
+ *
+ * Returns: (element-type guint32) (transfer none): the
+ *   list of CDMA SIDs this provider exposes
+ */
+GSList *
+nma_mobile_provider_get_cdma_sid (NMAMobileProvider *provider)
+{
+    g_return_val_if_fail (provider != NULL, NULL);
+
+    return provider->cdma_sid;
+}
+
 GType
 nma_mobile_provider_get_type (void)
 {
@@ -175,6 +221,95 @@ nma_mobile_provider_get_type (void)
         type = g_boxed_type_register_static ("NMAMobileProvider",
                                              (GBoxedCopyFunc) nma_mobile_provider_ref,
                                              (GBoxedFreeFunc) nma_mobile_provider_unref);
+    }
+    return type;
+}
+
+/******************************************************************************/
+/* Country Info type */
+
+static NMACountryInfo *
+country_info_new (const char *country_code,
+                  const gchar *country_name)
+{
+    NMACountryInfo *country_info;
+
+    country_info = g_slice_new0 (NMACountryInfo);
+    country_info->refs = 1;
+    country_info->country_code = g_strdup (country_code);
+    country_info->country_name = g_strdup (country_name);
+    return country_info;
+}
+
+NMACountryInfo *
+nma_country_info_ref (NMACountryInfo *country_info)
+{
+    country_info->refs++;
+
+    return country_info;
+}
+
+void
+nma_country_info_unref (NMACountryInfo *country_info)
+{
+    if (--country_info->refs == 0) {
+        g_free (country_info->country_code);
+        g_free (country_info->country_name);
+        g_slist_free_full (country_info->providers,
+                           (GDestroyNotify) nma_mobile_provider_unref);
+        g_slice_free (NMACountryInfo, country_info);
+    }
+}
+
+/**
+ * nma_country_info_get_country_code:
+ *
+ * Returns: (transfer none): the code of the country.
+ */
+const gchar *
+nma_country_info_get_country_code (NMACountryInfo *country_info)
+{
+    g_return_val_if_fail (country_info != NULL, NULL);
+
+    return country_info->country_code;
+}
+
+/**
+ * nma_country_info_get_country_name:
+ *
+ * Returns: (transfer none): the name of the country.
+ */
+const gchar *
+nma_country_info_get_country_name (NMACountryInfo *country_info)
+{
+    g_return_val_if_fail (country_info != NULL, NULL);
+
+    return country_info->country_name;
+}
+
+/**
+ * nma_country_info_get_providers:
+ *
+ * Returns: (element-type NMGtk.MobileProvider) (transfer none): the
+ *   list of #NMAMobileProvider this country exposes.
+ */
+GSList *
+nma_country_info_get_providers (NMACountryInfo *country_info)
+{
+    g_return_val_if_fail (country_info != NULL, NULL);
+
+    return country_info->providers;
+}
+
+GType
+nma_country_info_get_type (void)
+{
+    static GType type = 0;
+
+    if (G_UNLIKELY (type == 0)) {
+        type = g_boxed_type_register_static ("NMACountryInfo",
+                                             (GBoxedCopyFunc) nma_country_info_ref,
+                                             (GBoxedFreeFunc) nma_country_info_unref);
     }
     return type;
 }
@@ -197,6 +332,8 @@ iso_3166_parser_start_element (GMarkupParseContext *context,
     GHashTable *table = (GHashTable *) data;
 
     if (!strcmp (element_name, "iso_3166_entry")) {
+        NMACountryInfo *country_info;
+
         for (i = 0; attribute_names && attribute_names[i]; i++) {
             if (!strcmp (attribute_names[i], "alpha_2_code"))
                 country_code = attribute_values[i];
@@ -216,7 +353,10 @@ iso_3166_parser_start_element (GMarkupParseContext *context,
             return;
         }
 
-        g_hash_table_insert (table, g_strdup (country_code), g_strdup (dgettext ("iso_3166", common_name ? common_name : name)));
+        country_info = country_info_new (country_code,
+                                         dgettext ("iso_3166", common_name ? common_name : name));
+
+        g_hash_table_insert (table, g_strdup (country_code), country_info);
     }
 }
 
@@ -229,7 +369,7 @@ static const GMarkupParser iso_3166_parser = {
 };
 
 static GHashTable *
-read_country_codes (void)
+read_country_codes (const gchar *country_codes_file)
 {
     GHashTable *table = NULL;
     GMarkupParseContext *ctx;
@@ -241,12 +381,15 @@ read_country_codes (void)
     bindtextdomain ("iso_3166", ISO_CODES_LOCALESDIR);
     bind_textdomain_codeset ("iso_3166", "UTF-8");
 
-    if (g_file_get_contents (ISO_3166_COUNTRY_CODES, &buf, &buf_len, &error)) {
-        table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+    if (g_file_get_contents (country_codes_file, &buf, &buf_len, &error)) {
+        table = g_hash_table_new_full (g_str_hash,
+                                       g_str_equal,
+                                       g_free,
+                                       (GDestroyNotify)nma_country_info_unref);
         ctx = g_markup_parse_context_new (&iso_3166_parser, 0, table, NULL);
 
         if (!g_markup_parse_context_parse (ctx, buf, buf_len, &error)) {
-            g_warning ("Failed to parse '%s': %s\n", ISO_3166_COUNTRY_CODES, error->message);
+            g_warning ("Failed to parse '%s': %s\n", country_codes_file, error->message);
             g_error_free (error);
             g_hash_table_destroy (table);
             table = NULL;
@@ -256,7 +399,7 @@ read_country_codes (void)
         g_free (buf);
     } else {
         g_warning ("Failed to load '%s': %s\n Consider installing 'iso-codes'\n",
-                   ISO_3166_COUNTRY_CODES, error->message);
+                   country_codes_file, error->message);
         g_error_free (error);
     }
 
@@ -277,7 +420,6 @@ typedef enum {
 } MobileContextState;
 
 typedef struct {
-    GHashTable *country_codes;
     GHashTable *table;
 
     char *current_country;
@@ -323,15 +465,17 @@ parser_toplevel_start (MobileParser *parser,
         for (i = 0; attribute_names && attribute_names[i]; i++) {
             if (!strcmp (attribute_names[i], "code")) {
                 char *country_code;
-                char *country;
+                NMACountryInfo *country_info;
 
                 country_code = g_ascii_strup (attribute_values[i], -1);
-                country = g_hash_table_lookup (parser->country_codes, country_code);
-                if (country) {
-                    parser->current_country = g_strdup (country);
-                    g_free (country_code);
-                } else
-                    parser->current_country = country_code;
+                country_info = g_hash_table_lookup (parser->table, country_code);
+                /* Ensure we have a country provider for this country code */
+                if (!country_info) {
+                    g_warning ("%s: adding providers for unknown country '%s'", __func__, country_code);
+                    country_info = country_info_new (country_code, NULL);
+                    g_hash_table_insert (parser->table, country_code, country_info);
+                }
+                parser->current_country = country_code;
 
                 parser->state = PARSER_COUNTRY;
                 break;
@@ -468,7 +612,13 @@ parser_country_end (MobileParser *parser,
                     const char *name)
 {
     if (!strcmp (name, "country")) {
-        g_hash_table_insert (parser->table, parser->current_country, parser->current_providers);
+        NMACountryInfo *country_info;
+
+        country_info = g_hash_table_lookup (parser->table, parser->current_country);
+        if (country_info)
+            /* Store providers for this country */
+            country_info->providers = parser->current_providers;
+
         parser->current_country = NULL;
         parser->current_providers = NULL;
         parser->text_buffer = NULL;
@@ -630,8 +780,18 @@ static const GMarkupParser mobile_parser = {
 /******************************************************************************/
 /* Parser interface */
 
+/**
+ * nma_mobile_providers_parse:
+ * @country_codes: (allow-none) File with the list of country codes.
+ * @service_providers: (allow-none) File with the list of service providers.
+ *
+ * Returns: (element-type utf8 NMGtk.CountryInfo) (transfer full): a
+ *   hash table where keys are country names #gchar and values are #NMACountryInfo.
+ *   Everything is destroyed with g_hash_table_destroy().
+ */
 GHashTable *
-nma_mobile_providers_parse (GHashTable **out_ccs)
+nma_mobile_providers_parse (const gchar *country_codes,
+                            const gchar *service_providers)
 {
     GMarkupParseContext *ctx;
     GIOChannel *channel;
@@ -641,24 +801,29 @@ nma_mobile_providers_parse (GHashTable **out_ccs)
     GIOStatus status;
     gsize len = 0;
 
+    /* Use default paths if none given */
+    if (!country_codes)
+        country_codes = ISO_3166_COUNTRY_CODES;
+    if (!service_providers)
+        service_providers = MOBILE_BROADBAND_PROVIDER_INFO;
+
     memset (&parser, 0, sizeof (MobileParser));
 
-    parser.country_codes = read_country_codes ();
-    if (!parser.country_codes)
+    parser.table = read_country_codes (country_codes);
+    if (!parser.table)
         goto out;
 
-    channel = g_io_channel_new_file (MOBILE_BROADBAND_PROVIDER_INFO, "r", &error);
+    channel = g_io_channel_new_file (service_providers, "r", &error);
     if (!channel) {
         if (error) {
-            g_warning ("Could not read " MOBILE_BROADBAND_PROVIDER_INFO ": %s", error->message);
+            g_warning ("Could not read %s: %s", service_providers, error->message);
             g_error_free (error);
         } else
-            g_warning ("Could not read " MOBILE_BROADBAND_PROVIDER_INFO ": Unknown error");
+            g_warning ("Could not read %s: Unknown error", service_providers);
 
         goto out;
     }
 
-    parser.table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, provider_list_free);
     parser.state = PARSER_TOPLEVEL;
 
     ctx = g_markup_parse_context_new (&mobile_parser, 0, &parser, NULL);
@@ -703,13 +868,7 @@ nma_mobile_providers_parse (GHashTable **out_ccs)
     g_free (parser.current_country);
     g_free (parser.text_buffer);
 
- out:
-    if (parser.country_codes) {
-        if (out_ccs)
-            *out_ccs = parser.country_codes;
-        else
-            g_hash_table_destroy (parser.country_codes);
-    }
+out:
 
     return parser.table;
 }
@@ -751,12 +910,17 @@ dump_gsm (NMAMobileAccessMethod *method)
 static void
 dump_country (gpointer key, gpointer value, gpointer user_data)
 {
-    GSList *citer, *miter;
+    GSList *miter, *citer;
+    NMACountryInfo *country_info = value;
 
-    for (citer = value; citer; citer = g_slist_next (citer)) {
+    g_print ("Country: %s (%s)\n",
+             country_info->country_code,
+             country_info->country_name);
+
+    for (citer = country_info->providers; citer; citer = g_slist_next (citer)) {
         NMAMobileProvider *provider = citer->data;
 
-        g_print ("Provider: %s (%s)\n", provider->name, (const char *) key);
+        g_print ("    Provider: %s (%s)\n", provider->name, (const char *) key);
         for (miter = provider->methods; miter; miter = g_slist_next (miter)) {
             NMAMobileAccessMethod *method = miter->data;
             GSList *liter;
@@ -786,8 +950,8 @@ dump_country (gpointer key, gpointer value, gpointer user_data)
 }
 
 void
-nma_mobile_providers_dump (GHashTable *providers)
+nma_mobile_providers_dump (GHashTable *country_infos)
 {
-    g_return_if_fail (providers != NULL);
-    g_hash_table_foreach (providers, dump_country, NULL);
+    g_return_if_fail (country_infos != NULL);
+    g_hash_table_foreach (country_infos, dump_country, NULL);
 }

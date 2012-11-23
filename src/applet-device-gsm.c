@@ -88,7 +88,7 @@ typedef struct {
 	guint reg_state;
 	char *op_code;
 	char *op_name;
-	GHashTable *providers;
+	GHashTable *country_infos;
 
 	guint32 poll_id;
 	gboolean skip_reg_poll;
@@ -1061,8 +1061,8 @@ gsm_device_info_free (gpointer data)
 	if (info->keyring_id)
 		gnome_keyring_cancel_request (info->keyring_id);
 
-	if (info->providers)
-		g_hash_table_destroy (info->providers);
+	if (info->country_infos)
+		g_hash_table_destroy (info->country_infos);
 
 	if (info->poll_id)
 		g_source_remove (info->poll_id);
@@ -1111,10 +1111,12 @@ find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
 	g_hash_table_iter_init (&iter, table);
 	/* Search through each country */
 	while (g_hash_table_iter_next (&iter, NULL, &value) && !done) {
-		GSList *providers = value;
+		NMACountryInfo *country_info = value;
 
 		/* Search through each country's providers */
-		for (piter = providers; piter && !done; piter = g_slist_next (piter)) {
+		for (piter = nma_country_info_get_providers (country_info);
+		     piter && !done;
+		     piter = g_slist_next (piter)) {
 			NMAMobileProvider *provider = piter->data;
 
 			/* Search through MCC/MNC list */
@@ -1180,12 +1182,12 @@ parse_op_name (GsmDeviceInfo *info, const char *orig, const char *op_code)
 	 * probably an MCC/MNC.  Look that up.
 	 */
 
-	if (!info->providers)
-		info->providers = nma_mobile_providers_parse (NULL);
-	if (!info->providers)
+	if (!info->country_infos)
+		info->country_infos = nma_mobile_providers_parse (NULL, NULL);
+	if (!info->country_infos)
 		return strdup (orig);
 
-	return find_provider_for_mcc_mnc (info->providers, orig);
+	return find_provider_for_mcc_mnc (info->country_infos, orig);
 }
 
 static void
