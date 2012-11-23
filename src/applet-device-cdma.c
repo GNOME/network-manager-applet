@@ -42,7 +42,7 @@
 #include "nm-mobile-wizard.h"
 #include "applet-dialogs.h"
 #include "nma-marshal.h"
-#include "nmn-mobile-providers.h"
+#include "nm-mobile-providers.h"
 #include "mb-menu-item.h"
 #include "nm-ui-utils.h"
 
@@ -725,7 +725,7 @@ find_provider_for_sid (GHashTable *table, guint32 sid)
 
 		/* Search through each country's providers */
 		for (piter = providers; piter && !name; piter = g_slist_next (piter)) {
-			NmnMobileProvider *provider = piter->data;
+			NMAMobileProvider *provider = piter->data;
 
 			/* Search through CDMA SID list */
 			for (siter = provider->cdma_sid; siter; siter = g_slist_next (siter)) {
@@ -943,7 +943,7 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	info->bus = bus;
 	info->quality_valid = FALSE;
 
-	info->providers = nmn_mobile_providers_parse (NULL);
+	info->providers = nma_mobile_providers_parse (NULL);
 
 	info->props_proxy = dbus_g_proxy_new_for_name (bus,
 	                                               "org.freedesktop.ModemManager",
@@ -1020,4 +1020,3 @@ applet_device_cdma_get_class (NMApplet *applet)
 
 	return dclass;
 }
-

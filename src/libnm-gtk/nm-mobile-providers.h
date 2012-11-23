@@ -21,25 +21,29 @@
  * Copyright (C) 2009 - 2010 Red Hat, Inc.
  */
 
-#ifndef NMN_MOBILE_PROVIDERS_H
-#define NMN_MOBILE_PROVIDERS_H
+/* WARNING: this file is private API between nm-applet and various GNOME
+ * bits; it may change without notice and is not guaranteed to be stable.
+ */
+
+#ifndef NM_MOBILE_PROVIDERS_H
+#define NM_MOBILE_PROVIDERS_H
 
 #include <glib.h>
 #include <glib-object.h>
 
-#define NMN_TYPE_MOBILE_PROVIDER (nmn_mobile_provider_get_type ())
-#define NMN_TYPE_MOBILE_ACCESS_METHOD (nmn_mobile_access_method_get_type ())
+#define NMA_TYPE_MOBILE_PROVIDER (nma_mobile_provider_get_type ())
+#define NMA_TYPE_MOBILE_ACCESS_METHOD (nma_mobile_access_method_get_type ())
 
 typedef enum {
-    NMN_MOBILE_ACCESS_METHOD_TYPE_UNKNOWN = 0,
-    NMN_MOBILE_ACCESS_METHOD_TYPE_GSM,
-    NMN_MOBILE_ACCESS_METHOD_TYPE_CDMA
-} NmnMobileAccessMethodType;
+    NMA_MOBILE_ACCESS_METHOD_TYPE_UNKNOWN = 0,
+    NMA_MOBILE_ACCESS_METHOD_TYPE_GSM,
+    NMA_MOBILE_ACCESS_METHOD_TYPE_CDMA
+} NMAMobileAccessMethodType;
 
 typedef struct {
     char *mcc;
     char *mnc;
-} NmnGsmMccMnc;
+} NMAGsmMccMnc;
 
 typedef struct {
     char *name;
@@ -51,43 +55,43 @@ typedef struct {
     char *gateway;
     GSList *dns; /* GSList of 'char *' */
 
-    /* Only used with NMN_PROVIDER_TYPE_GSM */
+    /* Only used with NMA_PROVIDER_TYPE_GSM */
     char *gsm_apn;
 
-    NmnMobileAccessMethodType type;
+    NMAMobileAccessMethodType type;
 
     gint refs;
-} NmnMobileAccessMethod;
+} NMAMobileAccessMethod;
 
 typedef struct {
     char *name;
     /* maps lang (char *) -> name (char *) */
     GHashTable *lcl_names;
 
-    GSList *methods; /* GSList of NmnMobileAccessMethod */
+    GSList *methods; /* GSList of NmaMobileAccessMethod */
 
-    GSList *gsm_mcc_mnc; /* GSList of NmnGsmMccMnc */
+    GSList *gsm_mcc_mnc; /* GSList of NmaGsmMccMnc */
     GSList *cdma_sid; /* GSList of guint32 */
 
     gint refs;
-} NmnMobileProvider;
+} NMAMobileProvider;
 
 
-GType nmn_mobile_provider_get_type (void);
-GType nmn_mobile_access_method_get_type (void);
+GType nma_mobile_provider_get_type (void);
+GType nma_mobile_access_method_get_type (void);
 
-NmnMobileProvider *nmn_mobile_provider_ref   (NmnMobileProvider *provider);
-void               nmn_mobile_provider_unref (NmnMobileProvider *provider);
+NMAMobileProvider *nma_mobile_provider_ref   (NMAMobileProvider *provider);
+void               nma_mobile_provider_unref (NMAMobileProvider *provider);
 
-NmnMobileAccessMethod *nmn_mobile_access_method_ref   (NmnMobileAccessMethod *method);
-void                   nmn_mobile_access_method_unref (NmnMobileAccessMethod *method);
+NMAMobileAccessMethod *nma_mobile_access_method_ref   (NMAMobileAccessMethod *method);
+void                   nma_mobile_access_method_unref (NMAMobileAccessMethod *method);
 
 /* Returns a hash table where keys are country names 'char *',
-   values are a 'GSList *' of 'NmnMobileProvider *'.
+   values are a 'GSList *' of 'NmaMobileProvider *'.
    Everything is destroyed with g_hash_table_destroy (). */
 
-GHashTable *nmn_mobile_providers_parse (GHashTable **out_ccs);
+GHashTable *nma_mobile_providers_parse (GHashTable **out_ccs);
 
-void nmn_mobile_providers_dump (GHashTable *providers);
+void nma_mobile_providers_dump (GHashTable *providers);
 
-#endif /* NMN_MOBILE_PROVIDERS_H */
+#endif /* NM_MOBILE_PROVIDERS_H */

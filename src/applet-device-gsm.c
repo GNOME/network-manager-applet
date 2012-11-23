@@ -46,7 +46,7 @@
 #include "applet-dialogs.h"
 #include "mb-menu-item.h"
 #include "nma-marshal.h"
-#include "nmn-mobile-providers.h"
+#include "nm-mobile-providers.h"
 #include "nm-ui-utils.h"
 
 typedef enum {
@@ -1115,11 +1115,11 @@ find_provider_for_mcc_mnc (GHashTable *table, const char *mccmnc)
 
 		/* Search through each country's providers */
 		for (piter = providers; piter && !done; piter = g_slist_next (piter)) {
-			NmnMobileProvider *provider = piter->data;
+			NMAMobileProvider *provider = piter->data;
 
 			/* Search through MCC/MNC list */
 			for (siter = provider->gsm_mcc_mnc; siter; siter = g_slist_next (siter)) {
-				NmnGsmMccMnc *mcc = siter->data;
+				NMAGsmMccMnc *mcc = siter->data;
 
 				/* Match both 2-digit and 3-digit MNC; prefer a
 				 * 3-digit match if found, otherwise a 2-digit one.
@@ -1181,7 +1181,7 @@ parse_op_name (GsmDeviceInfo *info, const char *orig, const char *op_code)
 	 */
 
 	if (!info->providers)
-		info->providers = nmn_mobile_providers_parse (NULL);
+		info->providers = nma_mobile_providers_parse (NULL);
 	if (!info->providers)
 		return strdup (orig);
 
@@ -1742,4 +1742,3 @@ applet_device_gsm_get_class (NMApplet *applet)
 
 	return dclass;
 }
-

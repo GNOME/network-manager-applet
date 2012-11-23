@@ -7,7 +7,8 @@ libnmgtk_HEADERS = \
 	nm-wifi-dialog.h \
 	nm-wireless-dialog.h \
 	nm-mobile-wizard.h \
-	nm-ui-utils.h
+	nm-ui-utils.h \
+	nm-mobile-providers.h
 
 lib_LTLIBRARIES = libnm-gtk.la
 
@@ -15,7 +16,8 @@ libnm_gtk_la_SOURCES = \
 	nm-wifi-dialog.c \
 	nm-wireless-dialog.c \
 	nm-mobile-wizard.c \
-	nm-ui-utils.c
+	nm-ui-utils.c \
+	nm-mobile-providers.c
 
 libnm_gtk_la_CFLAGS = \
 	$(GTK_CFLAGS) \
@@ -28,6 +30,7 @@ libnm_gtk_la_CFLAGS = \
 	-DBINDIR=\""$(bindir)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DLIBEXECDIR=\""$(libexecdir)"\" \
+	-DDATADIR=\""$(datadir)"\" \
 	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\" \
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
