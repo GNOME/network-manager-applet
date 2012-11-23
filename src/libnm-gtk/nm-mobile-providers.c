@@ -1112,20 +1112,18 @@ nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
 	gpointer value;
 	GSList *piter, *siter;
 	NMAMobileProvider *provider_match_2mnc = NULL;
-	NMAMobileProvider *provider_match_3mnc = NULL;
-	gboolean done = FALSE;
 
 	if (!mccmnc)
 		return NULL;
 
 	g_hash_table_iter_init (&iter, country_infos);
 	/* Search through each country */
-	while (g_hash_table_iter_next (&iter, NULL, &value) && !done) {
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
 		NMACountryInfo *country_info = value;
 
 		/* Search through each country's providers */
 		for (piter = nma_country_info_get_providers (country_info);
-		     piter && !done;
+		     piter;
 		     piter = g_slist_next (piter)) {
 			NMAMobileProvider *provider = piter->data;
 
@@ -1139,26 +1137,22 @@ nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
 				 * 3-digit match if found, otherwise a 2-digit one.
 				 */
 				if (strncmp (mcc->mcc, mccmnc, 3))
-					continue;  /* MCC was wrong */
+					/* MCC was wrong */
+					continue;
 
-				if (   !provider_match_3mnc
-				    && (strlen (mccmnc) == 6)
+				if (   (strlen (mccmnc) == 6)
 				    && !strncmp (mccmnc + 3, mcc->mnc, 3))
-					provider_match_3mnc = provider;
+					/* 3-digit MNC match! */
+					return provider;
 
 				if (   !provider_match_2mnc
 				    && !strncmp (mccmnc + 3, mcc->mnc, 2))
+					/* Store the 2-digit MNC match, but keep looking,
+					 * we may have a 3-digit MNC match */
 					provider_match_2mnc = provider;
-
-				if (provider_match_2mnc && provider_match_3mnc) {
-					done = TRUE;
-					break;
-				}
 			}
 		}
 	}
 
-	if (provider_match_3mnc)
-		return provider_match_3mnc;
 	return provider_match_2mnc;
 }
