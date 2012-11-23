@@ -19,6 +19,7 @@
  * Author: Tambet Ingo (tambet@gmail.com).
  *
  * Copyright (C) 2009 - 2012 Red Hat, Inc.
+ * Copyright (C) 2012 Lanedo GmbH.
  */
 
 /* WARNING: this file is private API between nm-applet and various GNOME
@@ -54,49 +55,31 @@ typedef enum {
 
 #define NMA_TYPE_MOBILE_ACCESS_METHOD (nma_mobile_access_method_get_type ())
 
-typedef struct {
-    char *name;
-    /* maps lang (char *) -> name (char *) */
-    GHashTable *lcl_names;
-
-    char *username;
-    char *password;
-    char *gateway;
-    GSList *dns; /* GSList of 'char *' */
-
-    /* Only used with NMA_PROVIDER_TYPE_GSM */
-    char *gsm_apn;
-
-    NMAMobileAccessMethodType type;
-
-    gint refs;
-} NMAMobileAccessMethod;
+typedef struct _NMAMobileAccessMethod NMAMobileAccessMethod;
 
 GType                      nma_mobile_access_method_get_type        (void);
 NMAMobileAccessMethod     *nma_mobile_access_method_ref             (NMAMobileAccessMethod *method);
 void                       nma_mobile_access_method_unref           (NMAMobileAccessMethod *method);
+const gchar               *nma_mobile_access_method_get_name        (NMAMobileAccessMethod *method);
+const gchar               *nma_mobile_access_method_get_username    (NMAMobileAccessMethod *method);
+const gchar               *nma_mobile_access_method_get_password    (NMAMobileAccessMethod *method);
+const gchar               *nma_mobile_access_method_get_gateway     (NMAMobileAccessMethod *method);
+const GSList              *nma_mobile_access_method_get_dns         (NMAMobileAccessMethod *method);
+const gchar               *nma_mobile_access_method_get_gsm_apn     (NMAMobileAccessMethod *method);
+NMAMobileAccessMethodType  nma_mobile_access_method_get_method_type (NMAMobileAccessMethod *method);
 
 /******************************************************************************/
 /* Mobile provider type */
 
 #define NMA_TYPE_MOBILE_PROVIDER (nma_mobile_provider_get_type ())
 
-typedef struct {
-    char *name;
-    /* maps lang (char *) -> name (char *) */
-    GHashTable *lcl_names;
-
-    GSList *methods; /* GSList of NmaMobileAccessMethod */
-
-    GSList *gsm_mcc_mnc; /* GSList of NmaGsmMccMnc */
-    GSList *cdma_sid; /* GSList of guint32 */
-
-    gint refs;
-} NMAMobileProvider;
+typedef struct _NMAMobileProvider NMAMobileProvider;
 
 GType              nma_mobile_provider_get_type        (void);
 NMAMobileProvider *nma_mobile_provider_ref             (NMAMobileProvider *provider);
 void               nma_mobile_provider_unref           (NMAMobileProvider *provider);
+const gchar       *nma_mobile_provider_get_name        (NMAMobileProvider *provider);
+GSList            *nma_mobile_provider_get_methods     (NMAMobileProvider *provider);
 GSList            *nma_mobile_provider_get_gsm_mcc_mnc (NMAMobileProvider *provider);
 GSList            *nma_mobile_provider_get_cdma_sid    (NMAMobileProvider *provider);
 
@@ -105,13 +88,7 @@ GSList            *nma_mobile_provider_get_cdma_sid    (NMAMobileProvider *provi
 
 #define NMA_TYPE_COUNTRY_INFO (nma_country_info_get_type ())
 
-typedef struct {
-    char *country_code;
-    char *country_name;
-    GSList *providers;
-
-    gint refs;
-} NMACountryInfo;
+typedef struct _NMACountryInfo NMACountryInfo;
 
 GType           nma_country_info_get_type         (void);
 NMACountryInfo *nma_country_info_ref              (NMACountryInfo *country_info);

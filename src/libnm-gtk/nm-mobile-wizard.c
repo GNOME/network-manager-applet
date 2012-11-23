@@ -129,27 +129,29 @@ assistant_closed (GtkButton *button, gpointer user_data)
 	} else {
 		gboolean manual = FALSE;
 
-		wiz_method->provider_name = g_strdup (provider->name);
+		wiz_method->provider_name = g_strdup (nma_mobile_provider_get_name (provider));
 		method = get_selected_method (self, &manual);
 		if (method) {
-			if (method->name)
-				wiz_method->plan_name = g_strdup (method->name);
-			method_type = method->type;
+			method_type = nma_mobile_access_method_get_method_type (method);
+			wiz_method->plan_name = g_strdup (nma_mobile_access_method_get_name (method));
+			wiz_method->username = g_strdup (nma_mobile_access_method_get_username (method));
+			wiz_method->password = g_strdup (nma_mobile_access_method_get_password (method));
 			if (method_type == NMA_MOBILE_ACCESS_METHOD_TYPE_GSM)
-				wiz_method->gsm_apn = g_strdup (method->gsm_apn);
-			wiz_method->username = method->username ? g_strdup (method->username) : NULL;
-			wiz_method->password = method->password ? g_strdup (method->password) : NULL;
+				wiz_method->gsm_apn = g_strdup (nma_mobile_access_method_get_gsm_apn (method));
 		} else {
 			if (self->provider_only_cdma) {
+				GSList *methods;
+
 				method_type = NMA_MOBILE_ACCESS_METHOD_TYPE_CDMA;
+
+				methods = nma_mobile_provider_get_methods (provider);
 				/* Take username and password from the first (only) method for CDMA only provider */
-				if (provider->methods) {
-					method = provider->methods->data;
-					wiz_method->username = method->username ? g_strdup (method->username) : NULL;
-					wiz_method->password = method->password ? g_strdup (method->password) : NULL;
+				if (methods) {
+					method = methods->data;
+					wiz_method->username = g_strdup (nma_mobile_access_method_get_username (method));
+					wiz_method->password = g_strdup (nma_mobile_access_method_get_password (method));
 				}
-			}
-			else {
+			} else {
 				method_type = NMA_MOBILE_ACCESS_METHOD_TYPE_GSM;
 				wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->plan_unlisted_entry)));
 			}
@@ -294,7 +296,7 @@ confirm_prepare (NMAMobileWizard *self)
 	/* Provider */
 	str = g_string_new (NULL);
 	if (provider) {
-		g_string_append (str, provider->name);
+		g_string_append (str, nma_mobile_provider_get_name (provider));
 		nma_mobile_provider_unref (provider);
 	} else {
 		const char *unlisted_provider;
@@ -330,8 +332,8 @@ confirm_prepare (NMAMobileWizard *self)
 		gtk_widget_show (self->confirm_apn);
 
 		if (method) {
-			gtk_label_set_text (GTK_LABEL (self->confirm_plan), method->name);
-			apn = method->gsm_apn;
+			gtk_label_set_text (GTK_LABEL (self->confirm_plan), nma_mobile_access_method_get_name (method));
+			apn = nma_mobile_access_method_get_gsm_apn (method);
 		} else {
 			gtk_label_set_text (GTK_LABEL (self->confirm_plan), _("Unlisted"));
 			apn = gtk_entry_get_text (GTK_ENTRY (self->plan_unlisted_entry));
@@ -410,7 +412,7 @@ plan_combo_changed (NMAMobileWizard *self)
 
 	method = get_selected_method (self, &is_manual);
 	if (method) {
-		gtk_entry_set_text (GTK_ENTRY (self->plan_unlisted_entry), method->gsm_apn);
+		gtk_entry_set_text (GTK_ENTRY (self->plan_unlisted_entry), nma_mobile_access_method_get_gsm_apn (method));
 		gtk_widget_set_sensitive (self->plan_unlisted_entry, FALSE);
 	} else {
 		gtk_entry_set_text (GTK_ENTRY (self->plan_unlisted_entry), "");
@@ -563,18 +565,18 @@ plan_prepare (NMAMobileWizard *self)
 		GSList *iter;
 		guint32 count = 0;
 
-		for (iter = provider->methods; iter; iter = g_slist_next (iter)) {
+		for (iter = nma_mobile_provider_get_methods (provider); iter; iter = g_slist_next (iter)) {
 			NMAMobileAccessMethod *method = iter->data;
 
 			if (   (self->method_type != NMA_MOBILE_ACCESS_METHOD_TYPE_UNKNOWN)
-			    && (method->type != self->method_type))
+			    && (nma_mobile_access_method_get_method_type (method) != self->method_type))
 				continue;
 
 			gtk_tree_store_append (GTK_TREE_STORE (self->plan_store), &method_iter, NULL);
 			gtk_tree_store_set (GTK_TREE_STORE (self->plan_store),
 			                    &method_iter,
 			                    PLAN_COL_NAME,
-			                    method->name,
+			                    nma_mobile_access_method_get_name (method),
 			                    PLAN_COL_METHOD,
 			                    method,
 			                    -1);
@@ -875,10 +877,10 @@ providers_prepare (NMAMobileWizard *self)
 			GSList *miter;
 			guint32 count = 0;
 
-			for (miter = provider->methods; miter; miter = g_slist_next (miter)) {
+			for (miter = nma_mobile_provider_get_methods (provider); miter; miter = g_slist_next (miter)) {
 				NMAMobileAccessMethod *method = miter->data;
 
-				if (self->method_type == method->type)
+				if (self->method_type == nma_mobile_access_method_get_method_type (method))
 					count++;
 			}
 
@@ -890,7 +892,7 @@ providers_prepare (NMAMobileWizard *self)
 		gtk_tree_store_set (GTK_TREE_STORE (self->providers_store),
 		                    &provider_iter,
 		                    PROVIDER_COL_NAME,
-		                    provider->name,
+		                    nma_mobile_provider_get_name (provider),
 		                    PROVIDER_COL_PROVIDER,
 		                    provider,
 		                    -1);
@@ -1550,12 +1552,12 @@ forward_func (gint current_page, gpointer user_data)
 
 			provider = get_selected_provider (self);
 			if (provider) {
-				for (iter = provider->methods; iter; iter = g_slist_next (iter)) {
+				for (iter = nma_mobile_provider_get_methods (provider); iter; iter = g_slist_next (iter)) {
 					NMAMobileAccessMethod *method = iter->data;
 
-					if (method->type == NMA_MOBILE_ACCESS_METHOD_TYPE_CDMA)
+					if (nma_mobile_access_method_get_method_type (method) == NMA_MOBILE_ACCESS_METHOD_TYPE_CDMA)
 						cdma = TRUE;
-					else if (method->type == NMA_MOBILE_ACCESS_METHOD_TYPE_GSM)
+					else if (nma_mobile_access_method_get_method_type (method) == NMA_MOBILE_ACCESS_METHOD_TYPE_GSM)
 						gsm = TRUE;
 				}
 				nma_mobile_provider_unref (provider);

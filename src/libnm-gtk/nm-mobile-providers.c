@@ -19,6 +19,7 @@
  * Author: Tambet Ingo (tambet@gmail.com).
  *
  * Copyright (C) 2009 - 2012 Red Hat, Inc.
+ * Copyright (C) 2012 Lanedo GmbH
  */
 
 #include "config.h"
@@ -80,6 +81,29 @@ mcc_mnc_free (NMAGsmMccMnc *m)
 /******************************************************************************/
 /* Access method type */
 
+G_DEFINE_BOXED_TYPE (NMAMobileAccessMethod,
+                     nma_mobile_access_method,
+                     nma_mobile_access_method_ref,
+                     nma_mobile_access_method_unref)
+
+struct _NMAMobileAccessMethod {
+    volatile gint refs;
+
+    char *name;
+    /* maps lang (char *) -> name (char *) */
+    GHashTable *lcl_names;
+
+    char *username;
+    char *password;
+    char *gateway;
+    GSList *dns; /* GSList of 'char *' */
+
+    /* Only used with NMA_PROVIDER_TYPE_GSM */
+    char *gsm_apn;
+
+    NMAMobileAccessMethodType type;
+};
+
 static NMAMobileAccessMethod *
 access_method_new (void)
 {
@@ -100,7 +124,7 @@ nma_mobile_access_method_ref (NMAMobileAccessMethod *method)
     g_return_val_if_fail (method != NULL, NULL);
     g_return_val_if_fail (method->refs > 0, NULL);
 
-    method->refs++;
+    g_atomic_int_inc (&method->refs);
 
     return method;
 }
@@ -111,7 +135,7 @@ nma_mobile_access_method_unref (NMAMobileAccessMethod *method)
     g_return_if_fail (method != NULL);
     g_return_if_fail (method->refs > 0);
 
-    if (--method->refs == 0) {
+    if (g_atomic_int_dec_and_test (&method->refs)) {
         g_free (method->name);
         g_hash_table_destroy (method->lcl_names);
         g_free (method->username);
@@ -125,21 +149,117 @@ nma_mobile_access_method_unref (NMAMobileAccessMethod *method)
     }
 }
 
-GType
-nma_mobile_access_method_get_type (void)
+/**
+ * nma_mobile_access_method_get_name:
+ *
+ * Returns: (transfer none): the name of the method.
+ */
+const gchar *
+nma_mobile_access_method_get_name (NMAMobileAccessMethod *method)
 {
-    static GType type = 0;
+    g_return_val_if_fail (method != NULL, NULL);
 
-    if (G_UNLIKELY (type == 0)) {
-        type = g_boxed_type_register_static ("NMAMobileAccessMethod",
-                                             (GBoxedCopyFunc) nma_mobile_access_method_ref,
-                                             (GBoxedFreeFunc) nma_mobile_access_method_unref);
-    }
-    return type;
+    return method->name;
+}
+
+/**
+ * nma_mobile_access_method_get_username:
+ *
+ * Returns: (transfer none): the username.
+ */
+const gchar *
+nma_mobile_access_method_get_username (NMAMobileAccessMethod *method)
+{
+    g_return_val_if_fail (method != NULL, NULL);
+
+    return method->username;
+}
+
+/**
+ * nma_mobile_access_method_get_password:
+ *
+ * Returns: (transfer none): the password.
+ */
+const gchar *
+nma_mobile_access_method_get_password (NMAMobileAccessMethod *method)
+{
+    g_return_val_if_fail (method != NULL, NULL);
+
+    return method->password;
+}
+
+/**
+ * nma_mobile_access_method_get_gateway:
+ *
+ * Returns: (transfer none): the gateway.
+ */
+const gchar *
+nma_mobile_access_method_get_gateway (NMAMobileAccessMethod *method)
+{
+    g_return_val_if_fail (method != NULL, NULL);
+
+    return method->gateway;
+}
+
+/**
+ * nma_mobile_access_method_get_dns:
+ *
+ * Returns: (element-type utf8) (transfer none): the list of DNS.
+ */
+const GSList *
+nma_mobile_access_method_get_dns (NMAMobileAccessMethod *method)
+{
+    g_return_val_if_fail (method != NULL, NULL);
+
+    return method->dns;
+}
+
+/**
+ * nma_mobile_access_method_get_gsm_apn:
+ *
+ * Returns: (transfer none): the GSM APN.
+ */
+const gchar *
+nma_mobile_access_method_get_gsm_apn (NMAMobileAccessMethod *method)
+{
+    g_return_val_if_fail (method != NULL, NULL);
+
+    return method->gsm_apn;
+}
+
+/**
+ * nma_mobile_access_method_get_method_type:
+ *
+ * Returns: a #NMAMobileAccessMethodType.
+ */
+NMAMobileAccessMethodType
+nma_mobile_access_method_get_method_type (NMAMobileAccessMethod *method)
+{
+    g_return_val_if_fail (method != NULL, NMA_MOBILE_ACCESS_METHOD_TYPE_UNKNOWN);
+
+    return method->type;
 }
 
 /******************************************************************************/
 /* Mobile provider type */
+
+G_DEFINE_BOXED_TYPE (NMAMobileProvider,
+                     nma_mobile_provider,
+                     nma_mobile_provider_ref,
+                     nma_mobile_provider_unref)
+
+struct _NMAMobileProvider {
+    volatile gint refs;
+
+    char *name;
+    /* maps lang (char *) -> name (char *) */
+    GHashTable *lcl_names;
+
+    GSList *methods; /* GSList of NmaMobileAccessMethod */
+
+    GSList *gsm_mcc_mnc; /* GSList of NmaGsmMccMnc */
+    GSList *cdma_sid; /* GSList of guint32 */
+};
 
 static NMAMobileProvider *
 provider_new (void)
@@ -158,7 +278,10 @@ provider_new (void)
 NMAMobileProvider *
 nma_mobile_provider_ref (NMAMobileProvider *provider)
 {
-    provider->refs++;
+    g_return_val_if_fail (provider != NULL, NULL);
+    g_return_val_if_fail (provider->refs > 0, NULL);
+
+    g_atomic_int_inc (&provider->refs);
 
     return provider;
 }
@@ -166,7 +289,7 @@ nma_mobile_provider_ref (NMAMobileProvider *provider)
 void
 nma_mobile_provider_unref (NMAMobileProvider *provider)
 {
-    if (--provider->refs == 0) {
+    if (g_atomic_int_dec_and_test (&provider->refs)) {
         g_free (provider->name);
         g_hash_table_destroy (provider->lcl_names);
 
@@ -180,6 +303,34 @@ nma_mobile_provider_unref (NMAMobileProvider *provider)
 
         g_slice_free (NMAMobileProvider, provider);
     }
+}
+
+/**
+ * nma_mobile_provider_get_name:
+ *
+ * Returns: (transfer none): the name of the provider.
+ */
+const gchar *
+nma_mobile_provider_get_name (NMAMobileProvider *provider)
+{
+    g_return_val_if_fail (provider != NULL, NULL);
+
+    return provider->name;
+}
+
+/**
+ * nma_mobile_provider_get_methods:
+ * @provider: a #NMAMobileProvider
+ *
+ * Returns: (element-type NMGtk.MobileAccessMethod) (transfer none): the
+ *   list of #NMAMobileAccessMethod this provider exposes.
+ */
+GSList *
+nma_mobile_provider_get_methods (NMAMobileProvider *provider)
+{
+    g_return_val_if_fail (provider != NULL, NULL);
+
+    return provider->methods;
 }
 
 /**
@@ -212,21 +363,21 @@ nma_mobile_provider_get_cdma_sid (NMAMobileProvider *provider)
     return provider->cdma_sid;
 }
 
-GType
-nma_mobile_provider_get_type (void)
-{
-    static GType type = 0;
-
-    if (G_UNLIKELY (type == 0)) {
-        type = g_boxed_type_register_static ("NMAMobileProvider",
-                                             (GBoxedCopyFunc) nma_mobile_provider_ref,
-                                             (GBoxedFreeFunc) nma_mobile_provider_unref);
-    }
-    return type;
-}
-
 /******************************************************************************/
 /* Country Info type */
+
+G_DEFINE_BOXED_TYPE (NMACountryInfo,
+                     nma_country_info,
+                     nma_country_info_ref,
+                     nma_country_info_unref)
+
+struct _NMACountryInfo {
+    volatile gint refs;
+
+    char *country_code;
+    char *country_name;
+    GSList *providers;
+};
 
 static NMACountryInfo *
 country_info_new (const char *country_code,
@@ -244,7 +395,10 @@ country_info_new (const char *country_code,
 NMACountryInfo *
 nma_country_info_ref (NMACountryInfo *country_info)
 {
-    country_info->refs++;
+    g_return_val_if_fail (country_info != NULL, NULL);
+    g_return_val_if_fail (country_info->refs > 0, NULL);
+
+    g_atomic_int_inc (&country_info->refs);
 
     return country_info;
 }
@@ -252,7 +406,7 @@ nma_country_info_ref (NMACountryInfo *country_info)
 void
 nma_country_info_unref (NMACountryInfo *country_info)
 {
-    if (--country_info->refs == 0) {
+    if (g_atomic_int_dec_and_test (&country_info->refs)) {
         g_free (country_info->country_code);
         g_free (country_info->country_name);
         g_slist_free_full (country_info->providers,
@@ -299,19 +453,6 @@ nma_country_info_get_providers (NMACountryInfo *country_info)
     g_return_val_if_fail (country_info != NULL, NULL);
 
     return country_info->providers;
-}
-
-GType
-nma_country_info_get_type (void)
-{
-    static GType type = 0;
-
-    if (G_UNLIKELY (type == 0)) {
-        type = g_boxed_type_register_static ("NMACountryInfo",
-                                             (GBoxedCopyFunc) nma_country_info_ref,
-                                             (GBoxedFreeFunc) nma_country_info_unref);
-    }
-    return type;
 }
 
 /******************************************************************************/
