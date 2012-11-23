@@ -107,5 +107,7 @@ GHashTable        *nma_mobile_providers_parse            (const gchar *country_c
 void               nma_mobile_providers_dump             (GHashTable *country_infos);
 NMAMobileProvider *nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
                                                           const gchar *mccmnc);
+NMAMobileProvider *nma_mobile_providers_find_for_sid     (GHashTable  *country_infos,
+                                                          guint32      sid);
 
 #endif /* NM_MOBILE_PROVIDERS_H */

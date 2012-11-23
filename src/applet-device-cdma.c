@@ -707,43 +707,6 @@ signal_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 
 #define SERVING_SYSTEM_TYPE (dbus_g_type_get_struct ("GValueArray", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_UINT, G_TYPE_INVALID))
 
-static char *
-find_provider_for_sid (GHashTable *table, guint32 sid)
-{
-	GHashTableIter iter;
-	gpointer value;
-	GSList *piter, *siter;
-	char *name = NULL;
-
-	if (sid == 0)
-		return NULL;
-
-	g_hash_table_iter_init (&iter, table);
-	/* Search through each country */
-	while (g_hash_table_iter_next (&iter, NULL, &value) && !name) {
-		NMACountryInfo *country_info = value;
-
-		/* Search through each country's providers */
-		for (piter = nma_country_info_get_providers (country_info);
-		     piter && !name;
-		     piter = g_slist_next (piter)) {
-			NMAMobileProvider *provider = piter->data;
-
-			/* Search through CDMA SID list */
-			for (siter = nma_mobile_provider_get_cdma_sid (provider);
-			     siter;
-			     siter = g_slist_next (siter)) {
-				if (GPOINTER_TO_UINT (siter->data) == sid) {
-					name = g_strdup (nma_mobile_provider_get_name (provider));
-					break;
-				}
-			}
-		}
-	}
-
-	return name;
-}
-
 static void
 serving_system_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 {
@@ -768,9 +731,14 @@ serving_system_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_dat
 	if (new_sid && (new_sid != info->sid)) {
 		info->sid = new_sid;
 		if (info->country_infos) {
+			NMAMobileProvider *provider;
+
 			g_free (info->provider_name);
-			info->provider_name = NULL;
-			info->provider_name = find_provider_for_sid (info->country_infos, new_sid);
+
+			provider = nma_mobile_providers_find_for_sid (info->country_infos, new_sid);
+			info->provider_name = (provider ?
+			                       g_strdup (nma_mobile_provider_get_name (provider)) :
+			                       NULL);
 		}
 	} else if (!new_sid) {
 		info->sid = 0;
