@@ -98,4 +98,8 @@ NMAMobileProvider *nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable  *coun
 NMAMobileProvider *nma_mobile_providers_find_for_cdma_sid     (GHashTable  *country_infos,
                                                                guint32      sid);
 
+gboolean nma_mobile_providers_split_3gpp_mcc_mnc (const gchar *mccmnc,
+                                                  gchar **mcc,
+                                                  gchar **mnc);
+
 #endif /* NM_MOBILE_PROVIDERS_H */

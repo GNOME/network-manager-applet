@@ -1186,3 +1186,39 @@ nma_mobile_providers_find_for_cdma_sid (GHashTable *country_infos,
 
 	return NULL;
 }
+
+/**
+ * nma_mobile_providers_split_3gpp_mcc_mnc:
+ * @mccmnc: input MCCMNC string.
+ * @mcc: (out) (transfer full): the MCC.
+ * @mnc: (out) (transfer full): the MNC.
+ *
+ * Splits the input MCCMNC string into separate MCC and MNC strings.
+ *
+ * Returns: %TRUE if correctly split and @mcc and @mnc are set; %FALSE otherwise.
+ */
+gboolean
+nma_mobile_providers_split_3gpp_mcc_mnc (const gchar *mccmnc,
+                                         gchar **mcc,
+                                         gchar **mnc)
+{
+	gint len;
+
+	g_return_val_if_fail (mccmnc != NULL, FALSE);
+	g_return_val_if_fail (mcc != NULL, FALSE);
+	g_return_val_if_fail (mnc != NULL, FALSE);
+
+	len = strlen (mccmnc);
+	if (len != 5 && len != 6)
+		return FALSE;
+
+	/* MCCMNC is all digits */
+	while (len > 0) {
+		if (!g_ascii_isdigit (mccmnc[--len]))
+			return FALSE;
+	}
+
+	*mcc = g_strndup (mccmnc, 3);
+	*mnc = g_strdup (mccmnc + 3);
+	return TRUE;
+}
