@@ -33,18 +33,6 @@
 #include <glib-object.h>
 
 /******************************************************************************/
-/* MCCMNC type */
-
-#define NMA_TYPE_MCC_MNC (nma_mcc_mnc_get_type ())
-
-typedef struct {
-    char *mcc;
-    char *mnc;
-} NMAMccMnc;
-
-GType nma_mcc_mnc_get_type (void);
-
-/******************************************************************************/
 /* Access method type */
 
 typedef enum {
