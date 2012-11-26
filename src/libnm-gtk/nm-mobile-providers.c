@@ -40,42 +40,42 @@
 #define ISO_CODES_LOCALESDIR ISO_CODES_PREFIX"/share/locale"
 
 /******************************************************************************/
-/* GSM MCCMNC type */
+/* MCCMNC type */
 
-static NMAGsmMccMnc *mcc_mnc_copy (const NMAGsmMccMnc *other);
-static void          mcc_mnc_free (NMAGsmMccMnc *m);
+static NMAMccMnc *mcc_mnc_copy (const NMAMccMnc *other);
+static void       mcc_mnc_free (NMAMccMnc *m);
 
-G_DEFINE_BOXED_TYPE (NMAGsmMccMnc, nma_gsm_mcc_mnc, mcc_mnc_copy, mcc_mnc_free)
+G_DEFINE_BOXED_TYPE (NMAMccMnc, nma_mcc_mnc, mcc_mnc_copy, mcc_mnc_free)
 
-static NMAGsmMccMnc *
+static NMAMccMnc *
 mcc_mnc_new (const char *mcc, const char *mnc)
 {
-    NMAGsmMccMnc *m;
+    NMAMccMnc *m;
 
-    m = g_slice_new0 (NMAGsmMccMnc);
+    m = g_slice_new0 (NMAMccMnc);
     m->mcc = g_strstrip (g_strdup (mcc));
     m->mnc = g_strstrip (g_strdup (mnc));
     return m;
 }
 
-static NMAGsmMccMnc *
-mcc_mnc_copy (const NMAGsmMccMnc *other)
+static NMAMccMnc *
+mcc_mnc_copy (const NMAMccMnc *other)
 {
-    NMAGsmMccMnc *ret;
+    NMAMccMnc *ret;
 
-    ret = g_slice_new (NMAGsmMccMnc);
+    ret = g_slice_new (NMAMccMnc);
     ret->mcc = g_strdup (other->mcc);
     ret->mnc = g_strdup (other->mnc);
     return ret;
 }
 
 static void
-mcc_mnc_free (NMAGsmMccMnc *m)
+mcc_mnc_free (NMAMccMnc *m)
 {
     g_return_if_fail (m != NULL);
     g_free (m->mcc);
     g_free (m->mnc);
-    g_slice_free (NMAGsmMccMnc, m);
+    g_slice_free (NMAMccMnc, m);
 }
 
 /******************************************************************************/
@@ -98,10 +98,10 @@ struct _NMAMobileAccessMethod {
     char *gateway;
     GSList *dns; /* GSList of 'char *' */
 
-    /* Only used with NMA_PROVIDER_TYPE_GSM */
-    char *gsm_apn;
+    /* Only used with 3GPP family type providers */
+    char *apn;
 
-    NMAMobileAccessMethodType type;
+    NMAMobileFamily family;
 };
 
 static NMAMobileAccessMethod *
@@ -141,7 +141,7 @@ nma_mobile_access_method_unref (NMAMobileAccessMethod *method)
         g_free (method->username);
         g_free (method->password);
         g_free (method->gateway);
-        g_free (method->gsm_apn);
+        g_free (method->apn);
         g_slist_foreach (method->dns, (GFunc) g_free, NULL);
         g_slist_free (method->dns);
 
@@ -215,29 +215,29 @@ nma_mobile_access_method_get_dns (NMAMobileAccessMethod *method)
 }
 
 /**
- * nma_mobile_access_method_get_gsm_apn:
+ * nma_mobile_access_method_get_3gpp_apn:
  *
- * Returns: (transfer none): the GSM APN.
+ * Returns: (transfer none): the 3GPP APN.
  */
 const gchar *
-nma_mobile_access_method_get_gsm_apn (NMAMobileAccessMethod *method)
+nma_mobile_access_method_get_3gpp_apn (NMAMobileAccessMethod *method)
 {
     g_return_val_if_fail (method != NULL, NULL);
 
-    return method->gsm_apn;
+    return method->apn;
 }
 
 /**
- * nma_mobile_access_method_get_method_type:
+ * nma_mobile_access_method_get_family:
  *
- * Returns: a #NMAMobileAccessMethodType.
+ * Returns: a #NMAMobileFamily.
  */
-NMAMobileAccessMethodType
-nma_mobile_access_method_get_method_type (NMAMobileAccessMethod *method)
+NMAMobileFamily
+nma_mobile_access_method_get_family (NMAMobileAccessMethod *method)
 {
-    g_return_val_if_fail (method != NULL, NMA_MOBILE_ACCESS_METHOD_TYPE_UNKNOWN);
+    g_return_val_if_fail (method != NULL, NMA_MOBILE_FAMILY_UNKNOWN);
 
-    return method->type;
+    return method->family;
 }
 
 /******************************************************************************/
@@ -257,7 +257,7 @@ struct _NMAMobileProvider {
 
     GSList *methods; /* GSList of NmaMobileAccessMethod */
 
-    GSList *gsm_mcc_mnc; /* GSList of NmaGsmMccMnc */
+    GSList *mcc_mnc;  /* GSList of NmaMccMnc */
     GSList *cdma_sid; /* GSList of guint32 */
 };
 
@@ -296,8 +296,8 @@ nma_mobile_provider_unref (NMAMobileProvider *provider)
         g_slist_foreach (provider->methods, (GFunc) nma_mobile_access_method_unref, NULL);
         g_slist_free (provider->methods);
 
-        g_slist_foreach (provider->gsm_mcc_mnc, (GFunc) mcc_mnc_free, NULL);
-        g_slist_free (provider->gsm_mcc_mnc);
+        g_slist_foreach (provider->mcc_mnc, (GFunc) mcc_mnc_free, NULL);
+        g_slist_free (provider->mcc_mnc);
 
         g_slist_free (provider->cdma_sid);
 
@@ -334,18 +334,18 @@ nma_mobile_provider_get_methods (NMAMobileProvider *provider)
 }
 
 /**
- * nma_mobile_provider_get_gsm_mcc_mnc:
+ * nma_mobile_provider_get_3gpp_mcc_mnc:
  * @provider: a #NMAMobileProvider
  *
- * Returns: (element-type NMGtk.GsmMccMnc) (transfer none): the
- *   list of #NMAGsmMccMnc this provider exposes
+ * Returns: (element-type NMGtk.MccMnc) (transfer none): the
+ *   list of #NMAMccMnc this provider exposes
  */
 GSList *
-nma_mobile_provider_get_gsm_mcc_mnc (NMAMobileProvider *provider)
+nma_mobile_provider_get_3gpp_mcc_mnc (NMAMobileProvider *provider)
 {
     g_return_val_if_fail (provider != NULL, NULL);
 
-    return provider->gsm_mcc_mnc;
+    return provider->mcc_mnc;
 }
 
 /**
@@ -668,8 +668,8 @@ parser_gsm_start (MobileParser *parser,
                 mnc = attribute_values[i];
 
             if (mcc && strlen (mcc) && mnc && strlen (mnc)) {
-                parser->current_provider->gsm_mcc_mnc = g_slist_prepend (parser->current_provider->gsm_mcc_mnc,
-                                                                         mcc_mnc_new (mcc, mnc));
+                parser->current_provider->mcc_mnc = g_slist_prepend (parser->current_provider->mcc_mnc,
+                                                                     mcc_mnc_new (mcc, mnc));
                 break;
             }
         }
@@ -681,7 +681,7 @@ parser_gsm_start (MobileParser *parser,
 
                 parser->state = PARSER_METHOD_GSM_APN;
                 parser->current_method = access_method_new ();
-                parser->current_method->gsm_apn = g_strstrip (g_strdup (attribute_values[i]));
+                parser->current_method->apn = g_strstrip (g_strdup (attribute_values[i]));
                 break;
             }
         }
@@ -780,7 +780,7 @@ parser_provider_end (MobileParser *parser,
     } else if (!strcmp (name, "provider")) {
         parser->current_provider->methods = g_slist_reverse (parser->current_provider->methods);
 
-        parser->current_provider->gsm_mcc_mnc = g_slist_reverse (parser->current_provider->gsm_mcc_mnc);
+        parser->current_provider->mcc_mnc = g_slist_reverse (parser->current_provider->mcc_mnc);
         parser->current_provider->cdma_sid = g_slist_reverse (parser->current_provider->cdma_sid);
 
         parser->current_providers = g_slist_prepend (parser->current_providers, parser->current_provider);
@@ -823,7 +823,7 @@ parser_gsm_apn_end (MobileParser *parser,
         parser->current_method->gateway = parser->text_buffer;
         parser->text_buffer = NULL;
     } else if (!strcmp (name, "apn")) {
-        parser->current_method->type = NMA_MOBILE_ACCESS_METHOD_TYPE_GSM;
+        parser->current_method->family = NMA_MOBILE_FAMILY_3GPP;
         parser->current_method->dns = g_slist_reverse (parser->current_method->dns);
 
         if (!parser->current_method->name)
@@ -854,7 +854,7 @@ parser_cdma_end (MobileParser *parser,
         parser->current_method->gateway = parser->text_buffer;
         parser->text_buffer = NULL;
     } else if (!strcmp (name, "cdma")) {
-        parser->current_method->type = NMA_MOBILE_ACCESS_METHOD_TYPE_CDMA;
+        parser->current_method->family = NMA_MOBILE_FAMILY_CDMA;
         parser->current_method->dns = g_slist_reverse (parser->current_method->dns);
 
         if (!parser->current_method->name)
@@ -1041,9 +1041,9 @@ dump_cdma (NMAMobileAccessMethod *method)
 }
 
 static void
-dump_gsm (NMAMobileAccessMethod *method)
+dump_3gpp (NMAMobileAccessMethod *method)
 {
-    g_print ("     APN: %s (%s)\n", method->name, method->gsm_apn);
+    g_print ("     APN: %s (%s)\n", method->name, method->apn);
 
     dump_generic (method);
 }
@@ -1067,20 +1067,20 @@ dump_country (gpointer key, gpointer value, gpointer user_data)
             GSList *liter;
 
 
-            for (liter = provider->gsm_mcc_mnc; liter; liter = g_slist_next (liter)) {
-                NMAGsmMccMnc *m = liter->data;
+            for (liter = provider->mcc_mnc; liter; liter = g_slist_next (liter)) {
+                NMAMccMnc *m = liter->data;
                 g_print ("        MCC/MNC: %s-%s\n", m->mcc, m->mnc);
             }
 
             for (liter = provider->cdma_sid; liter; liter = g_slist_next (liter))
                 g_print ("        SID: %d\n", GPOINTER_TO_UINT (liter->data));
 
-            switch (method->type) {
-            case NMA_MOBILE_ACCESS_METHOD_TYPE_CDMA:
+            switch (method->family) {
+            case NMA_MOBILE_FAMILY_CDMA:
                 dump_cdma (method);
                 break;
-            case NMA_MOBILE_ACCESS_METHOD_TYPE_GSM:
-                dump_gsm (method);
+            case NMA_MOBILE_FAMILY_3GPP:
+                dump_3gpp (method);
                 break;
             default:
                 break;
@@ -1098,15 +1098,15 @@ nma_mobile_providers_dump (GHashTable *country_infos)
 }
 
 /**
- * nma_mobile_providers_find_for_mcc_mnc:
+ * nma_mobile_providers_find_for_3gpp_mcc_mnc:
  * @country_infos: (element-type utf8 NMGtk.CountryInfo) (transfer none): the table of country infos.
  * @mccmnc: the MCC/MNC string to look for.
  *
  * Returns: (transfer none): a #NMAMobileProvider.
  */
 NMAMobileProvider *
-nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
-                                       const gchar *mccmnc)
+nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable  *country_infos,
+                                            const gchar *mccmnc)
 {
 	GHashTableIter iter;
 	gpointer value;
@@ -1128,10 +1128,10 @@ nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
 			NMAMobileProvider *provider = piter->data;
 
 			/* Search through MCC/MNC list */
-			for (siter = nma_mobile_provider_get_gsm_mcc_mnc (provider);
+			for (siter = nma_mobile_provider_get_3gpp_mcc_mnc (provider);
 			     siter;
 			     siter = g_slist_next (siter)) {
-				NMAGsmMccMnc *mcc = siter->data;
+				NMAMccMnc *mcc = siter->data;
 
 				/* Match both 2-digit and 3-digit MNC; prefer a
 				 * 3-digit match if found, otherwise a 2-digit one.
@@ -1158,15 +1158,15 @@ nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
 }
 
 /**
- * nma_mobile_providers_find_for_sid:
+ * nma_mobile_providers_find_for_cdma_sid:
  * @country_infos: (element-type utf8 NMGtk.CountryInfo) (transfer none): the table of country infos.
  * @sid: the SID to look for.
  *
  * Returns: (transfer none): a #NMAMobileProvider.
  */
 NMAMobileProvider *
-nma_mobile_providers_find_for_sid (GHashTable  *country_infos,
-                                   guint32 sid)
+nma_mobile_providers_find_for_cdma_sid (GHashTable  *country_infos,
+                                        guint32 sid)
 {
 	GHashTableIter iter;
 	gpointer value;

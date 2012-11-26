@@ -1133,7 +1133,7 @@ parse_op_name (GsmDeviceInfo *info, const char *orig, const char *op_code)
 	if (!info->country_infos)
 		return strdup (orig);
 
-	provider = nma_mobile_providers_find_for_mcc_mnc (info->country_infos, orig);
+	provider = nma_mobile_providers_find_for_3gpp_mcc_mnc (info->country_infos, orig);
 	return (provider ? g_strdup (nma_mobile_provider_get_name (provider)) : NULL);
 }
 

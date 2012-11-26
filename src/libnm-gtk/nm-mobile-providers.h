@@ -33,40 +33,40 @@
 #include <glib-object.h>
 
 /******************************************************************************/
-/* GSM MCCMNC type */
+/* MCCMNC type */
 
-#define NMA_TYPE_GSM_MCC_MNC (nma_gsm_mcc_mnc_get_type ())
+#define NMA_TYPE_MCC_MNC (nma_mcc_mnc_get_type ())
 
 typedef struct {
     char *mcc;
     char *mnc;
-} NMAGsmMccMnc;
+} NMAMccMnc;
 
-GType nma_gsm_mcc_mnc_get_type (void);
+GType nma_mcc_mnc_get_type (void);
 
 /******************************************************************************/
 /* Access method type */
 
 typedef enum {
-    NMA_MOBILE_ACCESS_METHOD_TYPE_UNKNOWN = 0,
-    NMA_MOBILE_ACCESS_METHOD_TYPE_GSM,
-    NMA_MOBILE_ACCESS_METHOD_TYPE_CDMA
-} NMAMobileAccessMethodType;
+    NMA_MOBILE_FAMILY_UNKNOWN = 0,
+    NMA_MOBILE_FAMILY_3GPP,
+    NMA_MOBILE_FAMILY_CDMA
+} NMAMobileFamily;
 
 #define NMA_TYPE_MOBILE_ACCESS_METHOD (nma_mobile_access_method_get_type ())
 
 typedef struct _NMAMobileAccessMethod NMAMobileAccessMethod;
 
-GType                      nma_mobile_access_method_get_type        (void);
-NMAMobileAccessMethod     *nma_mobile_access_method_ref             (NMAMobileAccessMethod *method);
-void                       nma_mobile_access_method_unref           (NMAMobileAccessMethod *method);
-const gchar               *nma_mobile_access_method_get_name        (NMAMobileAccessMethod *method);
-const gchar               *nma_mobile_access_method_get_username    (NMAMobileAccessMethod *method);
-const gchar               *nma_mobile_access_method_get_password    (NMAMobileAccessMethod *method);
-const gchar               *nma_mobile_access_method_get_gateway     (NMAMobileAccessMethod *method);
-const GSList              *nma_mobile_access_method_get_dns         (NMAMobileAccessMethod *method);
-const gchar               *nma_mobile_access_method_get_gsm_apn     (NMAMobileAccessMethod *method);
-NMAMobileAccessMethodType  nma_mobile_access_method_get_method_type (NMAMobileAccessMethod *method);
+GType                  nma_mobile_access_method_get_type     (void);
+NMAMobileAccessMethod *nma_mobile_access_method_ref          (NMAMobileAccessMethod *method);
+void                   nma_mobile_access_method_unref        (NMAMobileAccessMethod *method);
+const gchar           *nma_mobile_access_method_get_name     (NMAMobileAccessMethod *method);
+const gchar           *nma_mobile_access_method_get_username (NMAMobileAccessMethod *method);
+const gchar           *nma_mobile_access_method_get_password (NMAMobileAccessMethod *method);
+const gchar           *nma_mobile_access_method_get_gateway  (NMAMobileAccessMethod *method);
+const GSList          *nma_mobile_access_method_get_dns      (NMAMobileAccessMethod *method);
+const gchar           *nma_mobile_access_method_get_3gpp_apn (NMAMobileAccessMethod *method);
+NMAMobileFamily        nma_mobile_access_method_get_family   (NMAMobileAccessMethod *method);
 
 /******************************************************************************/
 /* Mobile provider type */
@@ -75,13 +75,13 @@ NMAMobileAccessMethodType  nma_mobile_access_method_get_method_type (NMAMobileAc
 
 typedef struct _NMAMobileProvider NMAMobileProvider;
 
-GType              nma_mobile_provider_get_type        (void);
-NMAMobileProvider *nma_mobile_provider_ref             (NMAMobileProvider *provider);
-void               nma_mobile_provider_unref           (NMAMobileProvider *provider);
-const gchar       *nma_mobile_provider_get_name        (NMAMobileProvider *provider);
-GSList            *nma_mobile_provider_get_methods     (NMAMobileProvider *provider);
-GSList            *nma_mobile_provider_get_gsm_mcc_mnc (NMAMobileProvider *provider);
-GSList            *nma_mobile_provider_get_cdma_sid    (NMAMobileProvider *provider);
+GType              nma_mobile_provider_get_type         (void);
+NMAMobileProvider *nma_mobile_provider_ref              (NMAMobileProvider *provider);
+void               nma_mobile_provider_unref            (NMAMobileProvider *provider);
+const gchar       *nma_mobile_provider_get_name         (NMAMobileProvider *provider);
+GSList            *nma_mobile_provider_get_methods      (NMAMobileProvider *provider);
+GSList            *nma_mobile_provider_get_3gpp_mcc_mnc (NMAMobileProvider *provider);
+GSList            *nma_mobile_provider_get_cdma_sid     (NMAMobileProvider *provider);
 
 /******************************************************************************/
 /* Country Info type */
@@ -102,12 +102,12 @@ GSList         *nma_country_info_get_providers    (NMACountryInfo *country_info)
 
 /* Returns a table where keys are country codes and values are NMACountryInfo
  * values */
-GHashTable        *nma_mobile_providers_parse            (const gchar *country_codes,
-                                                          const gchar *service_providers);
-void               nma_mobile_providers_dump             (GHashTable *country_infos);
-NMAMobileProvider *nma_mobile_providers_find_for_mcc_mnc (GHashTable  *country_infos,
-                                                          const gchar *mccmnc);
-NMAMobileProvider *nma_mobile_providers_find_for_sid     (GHashTable  *country_infos,
-                                                          guint32      sid);
+GHashTable        *nma_mobile_providers_parse                 (const gchar *country_codes,
+                                                               const gchar *service_providers);
+void               nma_mobile_providers_dump                  (GHashTable *country_infos);
+NMAMobileProvider *nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable  *country_infos,
+                                                               const gchar *mccmnc);
+NMAMobileProvider *nma_mobile_providers_find_for_cdma_sid     (GHashTable  *country_infos,
+                                                               guint32      sid);
 
 #endif /* NM_MOBILE_PROVIDERS_H */
