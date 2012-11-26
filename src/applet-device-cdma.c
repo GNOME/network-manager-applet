@@ -735,7 +735,7 @@ serving_system_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_dat
 
 			g_free (info->provider_name);
 
-			provider = nma_mobile_providers_find_for_sid (info->country_infos, new_sid);
+			provider = nma_mobile_providers_find_for_cdma_sid (info->country_infos, new_sid);
 			info->provider_name = (provider ?
 			                       g_strdup (nma_mobile_provider_get_name (provider)) :
 			                       NULL);
