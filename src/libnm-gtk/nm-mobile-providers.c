@@ -40,45 +40,6 @@
 #define ISO_CODES_LOCALESDIR ISO_CODES_PREFIX"/share/locale"
 
 /******************************************************************************/
-/* MCCMNC type */
-
-static NMAMccMnc *mcc_mnc_copy (const NMAMccMnc *other);
-static void       mcc_mnc_free (NMAMccMnc *m);
-
-G_DEFINE_BOXED_TYPE (NMAMccMnc, nma_mcc_mnc, mcc_mnc_copy, mcc_mnc_free)
-
-static NMAMccMnc *
-mcc_mnc_new (const char *mcc, const char *mnc)
-{
-	NMAMccMnc *m;
-
-	m = g_slice_new0 (NMAMccMnc);
-	m->mcc = g_strstrip (g_strdup (mcc));
-	m->mnc = g_strstrip (g_strdup (mnc));
-	return m;
-}
-
-static NMAMccMnc *
-mcc_mnc_copy (const NMAMccMnc *other)
-{
-	NMAMccMnc *ret;
-
-	ret = g_slice_new (NMAMccMnc);
-	ret->mcc = g_strdup (other->mcc);
-	ret->mnc = g_strdup (other->mnc);
-	return ret;
-}
-
-static void
-mcc_mnc_free (NMAMccMnc *m)
-{
-	g_return_if_fail (m != NULL);
-	g_free (m->mcc);
-	g_free (m->mnc);
-	g_slice_free (NMAMccMnc, m);
-}
-
-/******************************************************************************/
 /* Access method type */
 
 G_DEFINE_BOXED_TYPE (NMAMobileAccessMethod,
@@ -257,7 +218,7 @@ struct _NMAMobileProvider {
 
 	GSList *methods; /* GSList of NmaMobileAccessMethod */
 
-	GSList *mcc_mnc;  /* GSList of NmaMccMnc */
+	GSList *mcc_mnc;  /* GSList of strings */
 	GSList *cdma_sid; /* GSList of guint32 */
 };
 
@@ -296,7 +257,7 @@ nma_mobile_provider_unref (NMAMobileProvider *provider)
 		g_slist_foreach (provider->methods, (GFunc) nma_mobile_access_method_unref, NULL);
 		g_slist_free (provider->methods);
 
-		g_slist_foreach (provider->mcc_mnc, (GFunc) mcc_mnc_free, NULL);
+		g_slist_foreach (provider->mcc_mnc, (GFunc) g_free, NULL);
 		g_slist_free (provider->mcc_mnc);
 
 		g_slist_free (provider->cdma_sid);
@@ -337,8 +298,8 @@ nma_mobile_provider_get_methods (NMAMobileProvider *provider)
  * nma_mobile_provider_get_3gpp_mcc_mnc:
  * @provider: a #NMAMobileProvider
  *
- * Returns: (element-type NMGtk.MccMnc) (transfer none): the
- *	 list of #NMAMccMnc this provider exposes
+ * Returns: (element-type utf8) (transfer none): a
+ *	 list of strings with the MCC and MNC codes this provider exposes.
  */
 GSList *
 nma_mobile_provider_get_3gpp_mcc_mnc (NMAMobileProvider *provider)
@@ -669,7 +630,7 @@ parser_gsm_start (MobileParser *parser,
 
 			if (mcc && strlen (mcc) && mnc && strlen (mnc)) {
 				parser->current_provider->mcc_mnc = g_slist_prepend (parser->current_provider->mcc_mnc,
-				                                                     mcc_mnc_new (mcc, mnc));
+				                                                     g_strdup_printf("%s%s", mcc, mnc));
 				break;
 			}
 		}
@@ -1068,8 +1029,7 @@ dump_country (gpointer key, gpointer value, gpointer user_data)
 
 
 			for (liter = provider->mcc_mnc; liter; liter = g_slist_next (liter)) {
-				NMAMccMnc *m = liter->data;
-				g_print ("		  MCC/MNC: %s-%s\n", m->mcc, m->mnc);
+				g_print ("		  MCC/MNC: %s\n", (gchar *)liter->data);
 			}
 
 			for (liter = provider->cdma_sid; liter; liter = g_slist_next (liter))
@@ -1112,8 +1072,13 @@ nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable	*country_infos,
 	gpointer value;
 	GSList *piter, *siter;
 	NMAMobileProvider *provider_match_2mnc = NULL;
+	guint mccmnc_len;
 
-	if (!mccmnc)
+	g_return_val_if_fail (mccmnc != NULL, NULL);
+
+	/* Expect only 5 or 6 digit MCCMNC strings */
+	mccmnc_len = strlen (mccmnc);
+	if (mccmnc_len != 5 && mccmnc_len != 6)
 		return NULL;
 
 	g_hash_table_iter_init (&iter, country_infos);
@@ -1131,25 +1096,48 @@ nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable	*country_infos,
 			for (siter = nma_mobile_provider_get_3gpp_mcc_mnc (provider);
 			     siter;
 			     siter = g_slist_next (siter)) {
-				NMAMccMnc *mcc = siter->data;
+				gchar *mccmnc_iter = siter->data;
+				guint mccmnc_iter_len = strlen (mccmnc_iter);
 
 				/* Match both 2-digit and 3-digit MNC; prefer a
 				 * 3-digit match if found, otherwise a 2-digit one.
 				 */
-				if (strncmp (mcc->mcc, mccmnc, 3))
+
+				if (strncmp (mccmnc_iter, mccmnc, 3))
 					/* MCC was wrong */
 					continue;
 
-				if (   (strlen (mccmnc) == 6)
-				    && !strncmp (mccmnc + 3, mcc->mnc, 3))
-					/* 3-digit MNC match! */
-					return provider;
+				/* Now we have the following match cases, examples given:
+				 *  a) input: 123/456 --> iter: 123/456 (3-digit match)
+				 *  b) input: 123/45  --> iter: 123/045 (3-digit match)
+				 *  c) input: 123/045 --> iter: 123/45  (2-digit match)
+				 *  d) input: 123/45  --> iter: 123/45  (2-digit match)
+				 */
+
+				if (mccmnc_iter_len == 6) {
+					/* Covers cases a) and b) */
+					if (   (mccmnc_len == 6 && !strncmp (mccmnc + 3, mccmnc_iter + 3, 3))
+					    || (mccmnc_len == 5 && mccmnc_iter[3] == '0' && !strncmp (mccmnc + 3, mccmnc_iter + 4, 2)))
+						/* 3-digit MNC match! */
+						return provider;
+
+					/* MNC was wrong */
+					continue;
+				}
 
 				if (   !provider_match_2mnc
-				    && !strncmp (mccmnc + 3, mcc->mnc, 2))
-					/* Store the 2-digit MNC match, but keep looking,
-					 * we may have a 3-digit MNC match */
-					provider_match_2mnc = provider;
+				    && mccmnc_iter_len == 5) {
+					if (   (mccmnc_len == 5 && !strncmp (mccmnc + 3, mccmnc_iter + 3, 2))
+					    || (mccmnc_len == 6 && mccmnc[3] == '0' && !strncmp (mccmnc + 4, mccmnc_iter + 3, 2))) {
+						/* Store the 2-digit MNC match, but keep looking,
+						 * we may have a 3-digit MNC match */
+						provider_match_2mnc = provider;
+						continue;
+					}
+
+					/* MNC was wrong */
+					continue;
+				}
 			}
 		}
 	}
