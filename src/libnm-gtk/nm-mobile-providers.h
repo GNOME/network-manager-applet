@@ -63,13 +63,13 @@ NMAMobileFamily         nma_mobile_access_method_get_family   (NMAMobileAccessMe
 
 typedef struct _NMAMobileProvider NMAMobileProvider;
 
-GType              nma_mobile_provider_get_type         (void);
-NMAMobileProvider *nma_mobile_provider_ref              (NMAMobileProvider *provider);
-void               nma_mobile_provider_unref            (NMAMobileProvider *provider);
-const gchar       *nma_mobile_provider_get_name         (NMAMobileProvider *provider);
-GSList            *nma_mobile_provider_get_methods      (NMAMobileProvider *provider);
-GSList            *nma_mobile_provider_get_3gpp_mcc_mnc (NMAMobileProvider *provider);
-GSList            *nma_mobile_provider_get_cdma_sid     (NMAMobileProvider *provider);
+GType               nma_mobile_provider_get_type         (void);
+NMAMobileProvider  *nma_mobile_provider_ref              (NMAMobileProvider *provider);
+void                nma_mobile_provider_unref            (NMAMobileProvider *provider);
+const gchar        *nma_mobile_provider_get_name         (NMAMobileProvider *provider);
+GSList             *nma_mobile_provider_get_methods      (NMAMobileProvider *provider);
+const gchar       **nma_mobile_provider_get_3gpp_mcc_mnc (NMAMobileProvider *provider);
+GSList             *nma_mobile_provider_get_cdma_sid     (NMAMobileProvider *provider);
 
 /******************************************************************************/
 /* Country Info type */
