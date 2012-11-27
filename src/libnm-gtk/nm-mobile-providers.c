@@ -741,8 +741,10 @@ parser_country_end (MobileParser *parser,
 		/* Store providers for this country */
 		country_info->providers = parser->current_providers;
 
+		g_free (parser->current_country);
 		parser->current_country = NULL;
 		parser->current_providers = NULL;
+		g_free (parser->text_buffer);
 		parser->text_buffer = NULL;
 		parser->state = PARSER_TOPLEVEL;
 	}
@@ -763,6 +765,7 @@ parser_provider_end (MobileParser *parser,
 
 		parser->current_providers = g_slist_prepend (parser->current_providers, parser->current_provider);
 		parser->current_provider = NULL;
+		g_free (parser->text_buffer);
 		parser->text_buffer = NULL;
 		parser->state = PARSER_COUNTRY;
 	}
@@ -773,6 +776,7 @@ parser_gsm_end (MobileParser *parser,
                 const char *name)
 {
 	if (!strcmp (name, "gsm")) {
+		g_free (parser->text_buffer);
 		parser->text_buffer = NULL;
 		parser->state = PARSER_PROVIDER;
 	}
@@ -811,6 +815,7 @@ parser_gsm_apn_end (MobileParser *parser,
 		parser->current_provider->methods = g_slist_prepend (parser->current_provider->methods,
 		                                                     parser->current_method);
 		parser->current_method = NULL;
+		g_free (parser->text_buffer);
 		parser->text_buffer = NULL;
 		parser->state = PARSER_METHOD_GSM;
 	}
@@ -843,6 +848,7 @@ parser_cdma_end (MobileParser *parser,
 		parser->current_provider->methods = g_slist_prepend (parser->current_provider->methods,
 		                                                     parser->current_method);
 		parser->current_method = NULL;
+		g_free (parser->text_buffer);
 		parser->text_buffer = NULL;
 		parser->state = PARSER_PROVIDER;
 	}
