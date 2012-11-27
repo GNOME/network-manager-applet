@@ -52,7 +52,7 @@ struct NMAMobileWizard {
 	GtkWidget *assistant;
 	NMAMobileWizardCallback callback;
 	gpointer user_data;
-	GHashTable *country_infos;
+	NMAMobileProvidersDatabase *mobile_providers_database;
 	NMAMobileFamily family;
 	gboolean initial_family;
 	gboolean will_connect_after;
@@ -1130,8 +1130,12 @@ country_setup (NMAMobileWizard *self)
 	                                 NULL);
 
 	/* Add the rest of the providers */
-	if (self->country_infos)
-		g_hash_table_foreach (self->country_infos, add_one_country, self);
+	if (self->mobile_providers_database) {
+		GHashTable *countries;
+
+		countries = nma_mobile_providers_database_get_countries (self->mobile_providers_database);
+		g_hash_table_foreach (countries, add_one_country, self);
+	}
 	g_object_set (G_OBJECT (self->country_view), "enable-search", TRUE, NULL);
 
 	/* If no row has focus yet, focus the first row so that the user can start
@@ -1622,19 +1626,23 @@ nma_mobile_wizard_new (GtkWindow *parent,
 {
 	NMAMobileWizard *self;
 	char *cc;
+	GError *error = NULL;
 
 	self = g_malloc0 (sizeof (NMAMobileWizard));
 	g_return_val_if_fail (self != NULL, NULL);
 
-	self->country_infos = nma_mobile_providers_parse (NULL, NULL);
-	if (!self->country_infos) {
+	self->mobile_providers_database = nma_mobile_providers_database_new_sync (NULL, NULL, NULL, &error);
+	if (!self->mobile_providers_database) {
+		g_warning ("Cannot create mobile providers database: %s",
+		           error->message);
+		g_error_free (error);
 		nma_mobile_wizard_destroy (self);
 		return NULL;
 	}
 
 	cc = get_country_from_locale ();
 	if (cc) {
-		self->country = g_hash_table_lookup (self->country_infos, cc);
+		self->country = nma_mobile_providers_database_lookup_country (self->mobile_providers_database, cc);
 		g_free (cc);
 	}
 
@@ -1704,8 +1712,8 @@ nma_mobile_wizard_destroy (NMAMobileWizard *self)
 	remove_provider_focus_idle (self);
 	remove_country_focus_idle (self);
 
-	if (self->country_infos)
-		g_hash_table_destroy (self->country_infos);
+	if (self->mobile_providers_database)
+		g_object_unref (self->mobile_providers_database);
 
 	g_free (self);
 }

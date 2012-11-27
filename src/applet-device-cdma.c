@@ -61,7 +61,7 @@ typedef struct {
 	guint32 sid;
 	gboolean modem_enabled;
 
-	GHashTable *country_infos;
+	NMAMobileProvidersDatabase *mobile_providers_database;
 	char *provider_name;
 
 	guint32 poll_id;
@@ -624,8 +624,8 @@ cdma_device_info_free (gpointer data)
 		dbus_g_connection_unref (info->bus);
 	if (info->poll_id)
 		g_source_remove (info->poll_id);
-	if (info->country_infos)
-		g_hash_table_destroy (info->country_infos);
+	if (info->mobile_providers_database)
+		g_object_unref (info->mobile_providers_database);
 	g_free (info->provider_name);
 	memset (info, 0, sizeof (CdmaDeviceInfo));
 	g_free (info);
@@ -730,12 +730,12 @@ serving_system_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_dat
 
 	if (new_sid && (new_sid != info->sid)) {
 		info->sid = new_sid;
-		if (info->country_infos) {
+		if (info->mobile_providers_database) {
 			NMAMobileProvider *provider;
 
 			g_free (info->provider_name);
 
-			provider = nma_mobile_providers_find_for_cdma_sid (info->country_infos, new_sid);
+			provider = nma_mobile_providers_database_lookup_cdma_sid (info->mobile_providers_database, new_sid);
 			info->provider_name = (provider ?
 			                       g_strdup (nma_mobile_provider_get_name (provider)) :
 			                       NULL);
@@ -915,7 +915,11 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	info->bus = bus;
 	info->quality_valid = FALSE;
 
-	info->country_infos = nma_mobile_providers_parse (NULL, NULL);
+	info->mobile_providers_database = nma_mobile_providers_database_new_sync (NULL, NULL, NULL, &error);
+	if (!info->mobile_providers_database) {
+		g_warning ("Couldn't read database: %s", error->message);
+		g_clear_error (&error);
+	}
 
 	info->props_proxy = dbus_g_proxy_new_for_name (bus,
 	                                               "org.freedesktop.ModemManager",

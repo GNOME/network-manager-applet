@@ -31,6 +31,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 
 /******************************************************************************/
 /* Access method type */
@@ -86,17 +87,55 @@ const gchar    *nma_country_info_get_country_name (NMACountryInfo *country_info)
 GSList         *nma_country_info_get_providers    (NMACountryInfo *country_info);
 
 /******************************************************************************/
-/* Utils */
+/* Mobile providers database type */
 
-/* Returns a table where keys are country codes and values are NMACountryInfo
- * values */
-GHashTable        *nma_mobile_providers_parse                 (const gchar *country_codes,
-                                                               const gchar *service_providers);
-void               nma_mobile_providers_dump                  (GHashTable *country_infos);
-NMAMobileProvider *nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable  *country_infos,
-                                                               const gchar *mccmnc);
-NMAMobileProvider *nma_mobile_providers_find_for_cdma_sid     (GHashTable  *country_infos,
-                                                               guint32      sid);
+#define NMA_TYPE_MOBILE_PROVIDERS_DATABASE            (nma_mobile_providers_database_get_type ())
+#define NMA_MOBILE_PROVIDERS_DATABASE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NMA_TYPE_MOBILE_PROVIDERS_DATABASE, NMAMobileProvidersDatabase))
+#define NMA_MOBILE_PROVIDERS_DATABASE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NMA_TYPE_MOBILE_PROVIDERS_DATABASE, NMAMobileProvidersDatabaseClass))
+#define NMA_IS_MOBILE_PROVIDERS_DATABASE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NMA_TYPE_MOBILE_PROVIDERS_DATABASE))
+#define NMA_IS_MOBILE_PROVIDERS_DATABASE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NMA_TYPE_MOBILE_PROVIDERS_DATABASE))
+#define NMA_MOBILE_PROVIDERS_DATABASE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), NMA_TYPE_MOBILE_PROVIDERS_DATABASE, NMAMobileProvidersDatabaseClass))
+
+typedef struct _NMAMobileProvidersDatabase NMAMobileProvidersDatabase;
+typedef struct _NMAMobileProvidersDatabaseClass NMAMobileProvidersDatabaseClass;
+typedef struct _NMAMobileProvidersDatabasePrivate NMAMobileProvidersDatabasePrivate;
+
+struct _NMAMobileProvidersDatabase {
+	GObject parent;
+	NMAMobileProvidersDatabasePrivate *priv;
+};
+
+struct _NMAMobileProvidersDatabaseClass {
+	GObjectClass parent;
+};
+
+GType nma_mobile_providers_database_get_type (void);
+
+void                        nma_mobile_providers_database_new        (const gchar *country_codes,
+                                                                      const gchar *service_providers,
+                                                                      GCancellable *cancellable,
+                                                                      GAsyncReadyCallback callback,
+                                                                      gpointer user_data);
+NMAMobileProvidersDatabase *nma_mobile_providers_database_new_finish (GAsyncResult *res,
+                                                                      GError **error);
+NMAMobileProvidersDatabase *nma_mobile_providers_database_new_sync   (const gchar *country_codes,
+                                                                      const gchar *service_providers,
+                                                                      GCancellable *cancellable,
+                                                                      GError **error);
+
+GHashTable        *nma_mobile_providers_database_get_countries       (NMAMobileProvidersDatabase *self);
+
+void               nma_mobile_providers_database_dump                (NMAMobileProvidersDatabase *self);
+
+NMACountryInfo    *nma_mobile_providers_database_lookup_country      (NMAMobileProvidersDatabase *self,
+                                                                      const gchar *country_code);
+NMAMobileProvider *nma_mobile_providers_database_lookup_3gpp_mcc_mnc (NMAMobileProvidersDatabase *self,
+                                                                      const gchar *mccmnc);
+NMAMobileProvider *nma_mobile_providers_database_lookup_cdma_sid     (NMAMobileProvidersDatabase *self,
+                                                                      guint32 sid);
+
+/******************************************************************************/
+/* Utils */
 
 gboolean nma_mobile_providers_split_3gpp_mcc_mnc (const gchar *mccmnc,
                                                   gchar **mcc,

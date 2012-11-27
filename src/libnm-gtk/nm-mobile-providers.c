@@ -473,11 +473,12 @@ static const GMarkupParser iso_3166_parser = {
 };
 
 static GHashTable *
-read_country_codes (const gchar *country_codes_file)
+read_country_codes (const gchar *country_codes_file,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	GHashTable *table = NULL;
 	GMarkupParseContext *ctx;
-	GError *error = NULL;
 	char *buf;
 	gsize buf_len;
 
@@ -485,28 +486,29 @@ read_country_codes (const gchar *country_codes_file)
 	bindtextdomain ("iso_3166", ISO_CODES_LOCALESDIR);
 	bind_textdomain_codeset ("iso_3166", "UTF-8");
 
-	if (g_file_get_contents (country_codes_file, &buf, &buf_len, &error)) {
-		table = g_hash_table_new_full (g_str_hash,
-		                               g_str_equal,
-		                               g_free,
-		                               (GDestroyNotify)nma_country_info_unref);
-		ctx = g_markup_parse_context_new (&iso_3166_parser, 0, table, NULL);
-
-		if (!g_markup_parse_context_parse (ctx, buf, buf_len, &error)) {
-			g_warning ("Failed to parse '%s': %s\n", country_codes_file, error->message);
-			g_error_free (error);
-			g_hash_table_destroy (table);
-			table = NULL;
-		}
-
-		g_markup_parse_context_free (ctx);
-		g_free (buf);
-	} else {
-		g_warning ("Failed to load '%s': %s\n Consider installing 'iso-codes'\n",
-		           country_codes_file, error->message);
-		g_error_free (error);
+	if (!g_file_get_contents (country_codes_file, &buf, &buf_len, error)) {
+		g_prefix_error (error,
+		                "Failed to load '%s' from 'iso-codes': ",
+		                country_codes_file);
+		return NULL;
 	}
 
+	table = g_hash_table_new_full (g_str_hash,
+	                               g_str_equal,
+	                               g_free,
+	                               (GDestroyNotify)nma_country_info_unref);
+
+	ctx = g_markup_parse_context_new (&iso_3166_parser, 0, table, NULL);
+	if (!g_markup_parse_context_parse (ctx, buf, buf_len, error)) {
+		g_prefix_error (error,
+		                "Failed to parse '%s' from 'iso-codes': ",
+		                country_codes_file);
+		g_hash_table_destroy (table);
+		return NULL;
+	}
+
+	g_markup_parse_context_free (ctx);
+	g_free (buf);
 	return table;
 }
 
@@ -903,51 +905,28 @@ static const GMarkupParser mobile_parser = {
 	NULL /* error */
 };
 
-/******************************************************************************/
-/* Parser interface */
-
-/**
- * nma_mobile_providers_parse:
- * @country_codes: (allow-none) File with the list of country codes.
- * @service_providers: (allow-none) File with the list of service providers.
- *
- * Returns: (element-type utf8 NMGtk.CountryInfo) (transfer full): a
- *	 hash table where keys are country names #gchar and values are #NMACountryInfo.
- *	 Everything is destroyed with g_hash_table_destroy().
- */
-GHashTable *
-nma_mobile_providers_parse (const gchar *country_codes,
-                            const gchar *service_providers)
+static gboolean
+read_service_providers (GHashTable *countries,
+                        const gchar *service_providers,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	GMarkupParseContext *ctx;
 	GIOChannel *channel;
 	MobileParser parser;
-	GError *error = NULL;
 	char buffer[4096];
 	GIOStatus status;
 	gsize len = 0;
 
-	/* Use default paths if none given */
-	if (!country_codes)
-		country_codes = ISO_3166_COUNTRY_CODES;
-	if (!service_providers)
-		service_providers = MOBILE_BROADBAND_PROVIDER_INFO;
-
 	memset (&parser, 0, sizeof (MobileParser));
+    parser.table = countries;
 
-	parser.table = read_country_codes (country_codes);
-	if (!parser.table)
-		goto out;
-
-	channel = g_io_channel_new_file (service_providers, "r", &error);
+	channel = g_io_channel_new_file (service_providers, "r", error);
 	if (!channel) {
-		if (error) {
-			g_warning ("Could not read %s: %s", service_providers, error->message);
-			g_error_free (error);
-		} else
-			g_warning ("Could not read %s: Unknown error", service_providers);
-
-		goto out;
+		g_prefix_error (error,
+		                "Could not read '%s': ",
+		                service_providers);
+		return FALSE;
 	}
 
 	parser.state = PARSER_TOPLEVEL;
@@ -956,26 +935,31 @@ nma_mobile_providers_parse (const gchar *country_codes,
 
 	status = G_IO_STATUS_NORMAL;
 	while (status == G_IO_STATUS_NORMAL) {
-		status = g_io_channel_read_chars (channel, buffer, sizeof (buffer), &len, &error);
+		status = g_io_channel_read_chars (channel, buffer, sizeof (buffer), &len, error);
 
 		switch (status) {
 		case G_IO_STATUS_NORMAL:
-			if (!g_markup_parse_context_parse (ctx, buffer, len, &error)) {
+			if (!g_markup_parse_context_parse (ctx, buffer, len, error)) {
 				status = G_IO_STATUS_ERROR;
-				g_warning ("Error while parsing XML: %s", error->message);
-				g_error_free (error);;
+				g_prefix_error (error,
+				                "Error while parsing XML at '%s': ",
+				                service_providers);
 			}
 			break;
 		case G_IO_STATUS_EOF:
 			break;
 		case G_IO_STATUS_ERROR:
-			g_warning ("Error while reading: %s", error->message);
-			g_error_free (error);
+			g_prefix_error (error,
+			                "Error while reading '%s': ",
+			                service_providers);
 			break;
 		case G_IO_STATUS_AGAIN:
 			/* FIXME: Try again a few times, but really, it never happens, right? */
 			break;
 		}
+
+		if (g_cancellable_set_error_if_cancelled (cancellable, error))
+			status = G_IO_STATUS_ERROR;
 	}
 
 	g_io_channel_unref (channel);
@@ -994,10 +978,42 @@ nma_mobile_providers_parse (const gchar *country_codes,
 	g_free (parser.current_country);
 	g_free (parser.text_buffer);
 
-out:
-
-	return parser.table;
+	return (status == G_IO_STATUS_EOF);
 }
+
+static GHashTable *
+mobile_providers_parse_sync (const gchar *country_codes,
+                             const gchar *service_providers,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	GHashTable *countries;
+
+	/* Use default paths if none given */
+	if (!country_codes)
+		country_codes = ISO_3166_COUNTRY_CODES;
+	if (!service_providers)
+		service_providers = MOBILE_BROADBAND_PROVIDER_INFO;
+
+	countries = read_country_codes (country_codes,
+	                                cancellable,
+	                                error);
+	if (!countries)
+		return NULL;
+
+	if (!read_service_providers (countries,
+	                             service_providers,
+	                             cancellable,
+	                             error)) {
+		g_hash_table_unref (countries);
+		return NULL;
+	}
+
+	return countries;
+}
+
+/******************************************************************************/
+/* Dump to stdout contents */
 
 static void
 dump_generic (NMAMobileAccessMethod *method)
@@ -1085,23 +1101,88 @@ dump_country (gpointer key, gpointer value, gpointer user_data)
 	}
 }
 
-void
-nma_mobile_providers_dump (GHashTable *country_infos)
+/******************************************************************************/
+/* Mobile providers database type */
+
+static void initable_iface_init       (GInitableIface      *iface);
+static void async_initable_iface_init (GAsyncInitableIface *iface);
+
+G_DEFINE_TYPE_EXTENDED (NMAMobileProvidersDatabase, nma_mobile_providers_database, G_TYPE_OBJECT, 0,
+                        G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, initable_iface_init)
+                        G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_INITABLE, async_initable_iface_init))
+
+enum {
+	PROP_0,
+	PROP_COUNTRY_CODES_PATH,
+	PROP_SERVICE_PROVIDERS_PATH,
+	PROP_LAST
+};
+
+static GParamSpec *properties[PROP_LAST];
+
+struct _NMAMobileProvidersDatabasePrivate {
+	/* Paths to input files */
+	gchar *country_codes_path;
+	gchar *service_providers_path;
+
+	/* The HT with country code as key and NMACountryInfo as value. */
+	GHashTable *countries;
+};
+
+/**********************************/
+
+/**
+ * nma_mobile_providers_database_get_countries:
+ * @self: a #NMAMobileProvidersDatabase.
+ *
+ * Returns: (element-type utf8 NMGtk.CountryInfo) (transfer none): a
+ *	 hash table where keys are country names #gchar and values are #NMACountryInfos.
+ */
+GHashTable *
+nma_mobile_providers_database_get_countries (NMAMobileProvidersDatabase *self)
 {
-	g_return_if_fail (country_infos != NULL);
-	g_hash_table_foreach (country_infos, dump_country, NULL);
+	g_return_val_if_fail (NMA_IS_MOBILE_PROVIDERS_DATABASE (self), NULL);
+
+	return self->priv->countries;
 }
 
 /**
- * nma_mobile_providers_find_for_3gpp_mcc_mnc:
- * @country_infos: (element-type utf8 NMGtk.CountryInfo) (transfer none): the table of country infos.
+ * nma_mobile_providers_database_dump:
+ * @self: a #NMAMobileProvidersDatabase.
+ *
+ */
+void
+nma_mobile_providers_database_dump (NMAMobileProvidersDatabase *self)
+{
+	g_return_if_fail (NMA_IS_MOBILE_PROVIDERS_DATABASE (self));
+
+	g_hash_table_foreach (self->priv->countries, dump_country, NULL);
+}
+
+/**
+ * nma_mobile_providers_database_lookup_country:
+ * @self: a #NMAMobileProvidersDatabase.
+ * @country_code: the country code string to look for.
+ *
+ * Returns: (transfer none): a #NMACountryInfo or %NULL if not found.
+ */
+NMACountryInfo *
+nma_mobile_providers_database_lookup_country (NMAMobileProvidersDatabase *self,
+                                              const gchar *country_code)
+{
+	return (NMACountryInfo *) g_hash_table_lookup (self->priv->countries, country_code);
+}
+
+/**
+ * nma_mobile_providers_database_lookup_3gpp_mcc_mnc:
+ * @self: a #NMAMobileProvidersDatabase.
  * @mccmnc: the MCC/MNC string to look for.
  *
- * Returns: (transfer none): a #NMAMobileProvider.
+ * Returns: (transfer none): a #NMAMobileProvider or %NULL if not found.
  */
 NMAMobileProvider *
-nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable	*country_infos,
-                                            const gchar *mccmnc)
+nma_mobile_providers_database_lookup_3gpp_mcc_mnc (NMAMobileProvidersDatabase *self,
+                                                   const gchar *mccmnc)
 {
 	GHashTableIter iter;
 	gpointer value;
@@ -1109,6 +1190,7 @@ nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable	*country_infos,
 	NMAMobileProvider *provider_match_2mnc = NULL;
 	guint mccmnc_len;
 
+	g_return_val_if_fail (NMA_IS_MOBILE_PROVIDERS_DATABASE (self), NULL);
 	g_return_val_if_fail (mccmnc != NULL, NULL);
 
 	/* Expect only 5 or 6 digit MCCMNC strings */
@@ -1116,7 +1198,7 @@ nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable	*country_infos,
 	if (mccmnc_len != 5 && mccmnc_len != 6)
 		return NULL;
 
-	g_hash_table_iter_init (&iter, country_infos);
+	g_hash_table_iter_init (&iter, self->priv->countries);
 	/* Search through each country */
 	while (g_hash_table_iter_next (&iter, NULL, &value)) {
 		NMACountryInfo *country_info = value;
@@ -1188,24 +1270,24 @@ nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable	*country_infos,
 }
 
 /**
- * nma_mobile_providers_find_for_cdma_sid:
- * @country_infos: (element-type utf8 NMGtk.CountryInfo) (transfer none): the table of country infos.
+ * nma_mobile_providers_database_lookup_cdma_sid:
+ * @self: a #NMAMobileProvidersDatabase.
  * @sid: the SID to look for.
  *
- * Returns: (transfer none): a #NMAMobileProvider.
+ * Returns: (transfer none): a #NMAMobileProvider, or %NULL if not found.
  */
 NMAMobileProvider *
-nma_mobile_providers_find_for_cdma_sid (GHashTable *country_infos,
-                                        guint32 sid)
+nma_mobile_providers_database_lookup_cdma_sid (NMAMobileProvidersDatabase *self,
+                                               guint32 sid)
 {
 	GHashTableIter iter;
 	gpointer value;
 	GSList *piter;
 
-	if (sid == 0)
-		return NULL;
+	g_return_val_if_fail (NMA_IS_MOBILE_PROVIDERS_DATABASE (self), NULL);
+	g_return_val_if_fail (sid > 0, NULL);
 
-	g_hash_table_iter_init (&iter, country_infos);
+	g_hash_table_iter_init (&iter, self->priv->countries);
 	/* Search through each country */
 	while (g_hash_table_iter_next (&iter, NULL, &value)) {
 		NMACountryInfo *country_info = value;
@@ -1232,6 +1314,214 @@ nma_mobile_providers_find_for_cdma_sid (GHashTable *country_infos,
 
 	return NULL;
 }
+
+/**********************************/
+
+static gboolean
+initable_init_sync (GInitable     *initable,
+                    GCancellable  *cancellable,
+                    GError       **error)
+{
+	NMAMobileProvidersDatabase *self = NMA_MOBILE_PROVIDERS_DATABASE (initable);
+
+	/* Parse the files */
+	self->priv->countries = mobile_providers_parse_sync (self->priv->country_codes_path,
+	                                                     self->priv->service_providers_path,
+	                                                     cancellable,
+	                                                     error);
+	if (!self->priv->countries)
+		return FALSE;
+
+	/* All good */
+	return TRUE;
+}
+
+/**********************************/
+
+/**
+ * nma_mobile_providers_database_new:
+ * @country_codes: (allow-none): Path to the country codes file.
+ * @service_providers: (allow-none): Path to the service providers file.
+ * @cancellable: (allow-none): A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
+ * @user_data: User data to pass to @callback.
+ *
+ */
+void
+nma_mobile_providers_database_new (const gchar *country_codes,
+                                   const gchar *service_providers,
+                                   GCancellable *cancellable,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data)
+{
+	g_async_initable_new_async (NMA_TYPE_MOBILE_PROVIDERS_DATABASE,
+	                            G_PRIORITY_DEFAULT,
+	                            cancellable,
+	                            callback,
+	                            user_data,
+	                            "country-codes",     country_codes,
+	                            "service-providers", service_providers,
+	                            NULL);
+}
+
+/**
+ * nma_mobile_providers_database_new_finish:
+ * @res: The #GAsyncResult obtained from the #GAsyncReadyCallback passed to nma_mobile_providers_database_new().
+ * @error: Return location for error or %NULL.
+ *
+ * Returns: (transfer full) (type NMAMobileProvidersDatabase): The constructed object or %NULL if @error is set.
+ */
+NMAMobileProvidersDatabase *
+nma_mobile_providers_database_new_finish (GAsyncResult *res,
+                                          GError **error)
+{
+	GObject *initable;
+	GObject *out;
+
+	initable = g_async_result_get_source_object (res);
+	out = g_async_initable_new_finish (G_ASYNC_INITABLE (initable), res, error);
+	g_object_unref (initable);
+
+	return out ? NMA_MOBILE_PROVIDERS_DATABASE (out) : NULL;
+}
+
+/**
+ * nma_mobile_providers_database_new_sync:
+ * @country_codes: (allow-none): Path to the country codes file.
+ * @service_providers: (allow-none): Path to the service providers file.
+ * @cancellable: (allow-none): A #GCancellable or %NULL.
+ * @error: Return location for error or %NULL.
+ *
+ * Returns: (transfer full) (type NMAMobileProvidersDatabase): The constructed object or %NULL if @error is set.
+ */
+NMAMobileProvidersDatabase *
+nma_mobile_providers_database_new_sync (const gchar *country_codes,
+                                        const gchar *service_providers,
+                                        GCancellable *cancellable,
+                                        GError **error)
+{
+	GObject *out;
+
+	out = g_initable_new (NMA_TYPE_MOBILE_PROVIDERS_DATABASE,
+	                      cancellable,
+	                      error,
+	                      "country-codes",     country_codes,
+	                      "service-providers", service_providers,
+	                      NULL);
+
+	return out ? NMA_MOBILE_PROVIDERS_DATABASE (out) : NULL;
+}
+
+/**********************************/
+
+static void
+set_property (GObject *object,
+              guint prop_id,
+              const GValue *value,
+              GParamSpec *pspec)
+{
+	NMAMobileProvidersDatabase *self = NMA_MOBILE_PROVIDERS_DATABASE (object);
+
+	switch (prop_id) {
+	case PROP_COUNTRY_CODES_PATH:
+		self->priv->country_codes_path = g_value_dup_string (value);
+		break;
+	case PROP_SERVICE_PROVIDERS_PATH:
+		self->priv->service_providers_path = g_value_dup_string (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+get_property (GObject *object,
+              guint prop_id,
+              GValue *value,
+              GParamSpec *pspec)
+{
+	NMAMobileProvidersDatabase *self = NMA_MOBILE_PROVIDERS_DATABASE (object);
+
+	switch (prop_id) {
+	case PROP_COUNTRY_CODES_PATH:
+		g_value_set_string (value, self->priv->country_codes_path);
+		break;
+	case PROP_SERVICE_PROVIDERS_PATH:
+		g_value_set_string (value, self->priv->service_providers_path);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+nma_mobile_providers_database_init (NMAMobileProvidersDatabase *self)
+{
+	/* Setup private data */
+	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
+	                                          NMA_TYPE_MOBILE_PROVIDERS_DATABASE,
+	                                          NMAMobileProvidersDatabasePrivate);
+}
+
+static void
+finalize (GObject *object)
+{
+	NMAMobileProvidersDatabase *self = NMA_MOBILE_PROVIDERS_DATABASE (object);
+
+	g_free (self->priv->country_codes_path);
+	g_free (self->priv->service_providers_path);
+
+	if (self->priv->countries)
+		g_hash_table_unref (self->priv->countries);
+
+	G_OBJECT_CLASS (nma_mobile_providers_database_parent_class)->finalize (object);
+}
+
+static void
+initable_iface_init (GInitableIface *iface)
+{
+	iface->init = initable_init_sync;
+}
+
+static void
+async_initable_iface_init (GAsyncInitableIface *iface)
+{
+	/* Just use defaults (run sync init() in a thread) */
+}
+
+static void
+nma_mobile_providers_database_class_init (NMAMobileProvidersDatabaseClass *klass)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+    g_type_class_add_private (object_class, sizeof (NMAMobileProvidersDatabasePrivate));
+
+    /* Virtual methods */
+    object_class->get_property = get_property;
+    object_class->set_property = set_property;
+    object_class->finalize = finalize;
+
+    properties[PROP_COUNTRY_CODES_PATH] =
+	    g_param_spec_string ("country-codes",
+                             "Country Codes",
+                             "Path to the country codes file",
+	                         NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+    g_object_class_install_property (object_class, PROP_COUNTRY_CODES_PATH, properties[PROP_COUNTRY_CODES_PATH]);
+
+    properties[PROP_SERVICE_PROVIDERS_PATH] =
+	    g_param_spec_string ("service-providers",
+	                         "Service Providers",
+	                         "Path to the service providers file",
+	                         NULL,
+	                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+    g_object_class_install_property (object_class, PROP_SERVICE_PROVIDERS_PATH, properties[PROP_SERVICE_PROVIDERS_PATH]);
+}
+
+/******************************************************************************/
+/* Utils */
 
 /**
  * nma_mobile_providers_split_3gpp_mcc_mnc:
