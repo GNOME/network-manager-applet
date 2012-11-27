@@ -45,16 +45,16 @@ typedef enum {
 
 typedef struct _NMAMobileAccessMethod NMAMobileAccessMethod;
 
-GType                  nma_mobile_access_method_get_type     (void);
-NMAMobileAccessMethod *nma_mobile_access_method_ref          (NMAMobileAccessMethod *method);
-void                   nma_mobile_access_method_unref        (NMAMobileAccessMethod *method);
-const gchar           *nma_mobile_access_method_get_name     (NMAMobileAccessMethod *method);
-const gchar           *nma_mobile_access_method_get_username (NMAMobileAccessMethod *method);
-const gchar           *nma_mobile_access_method_get_password (NMAMobileAccessMethod *method);
-const gchar           *nma_mobile_access_method_get_gateway  (NMAMobileAccessMethod *method);
-const GSList          *nma_mobile_access_method_get_dns      (NMAMobileAccessMethod *method);
-const gchar           *nma_mobile_access_method_get_3gpp_apn (NMAMobileAccessMethod *method);
-NMAMobileFamily        nma_mobile_access_method_get_family   (NMAMobileAccessMethod *method);
+GType                   nma_mobile_access_method_get_type     (void);
+NMAMobileAccessMethod  *nma_mobile_access_method_ref          (NMAMobileAccessMethod *method);
+void                    nma_mobile_access_method_unref        (NMAMobileAccessMethod *method);
+const gchar            *nma_mobile_access_method_get_name     (NMAMobileAccessMethod *method);
+const gchar            *nma_mobile_access_method_get_username (NMAMobileAccessMethod *method);
+const gchar            *nma_mobile_access_method_get_password (NMAMobileAccessMethod *method);
+const gchar            *nma_mobile_access_method_get_gateway  (NMAMobileAccessMethod *method);
+const gchar           **nma_mobile_access_method_get_dns      (NMAMobileAccessMethod *method);
+const gchar            *nma_mobile_access_method_get_3gpp_apn (NMAMobileAccessMethod *method);
+NMAMobileFamily         nma_mobile_access_method_get_family   (NMAMobileAccessMethod *method);
 
 /******************************************************************************/
 /* Mobile provider type */
