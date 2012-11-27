@@ -225,7 +225,7 @@ struct _NMAMobileProvider {
 	GSList *methods; /* GSList of NmaMobileAccessMethod */
 
 	GArray *mcc_mnc;  /* GArray of strings */
-	GSList *cdma_sid; /* GSList of guint32 */
+	GArray *cdma_sid; /* GArray of guint32 */
 };
 
 static NMAMobileProvider *
@@ -271,7 +271,8 @@ nma_mobile_provider_unref (NMAMobileProvider *provider)
 			g_array_unref (provider->mcc_mnc);
 		}
 
-		g_slist_free (provider->cdma_sid);
+		if (provider->cdma_sid)
+			g_array_unref (provider->cdma_sid);
 
 		g_slice_free (NMAMobileProvider, provider);
 	}
@@ -324,15 +325,15 @@ nma_mobile_provider_get_3gpp_mcc_mnc (NMAMobileProvider *provider)
  * nma_mobile_provider_get_cdma_sid:
  * @provider: a #NMAMobileProvider
  *
- * Returns: (element-type guint32) (transfer none): the
+ * Returns: (transfer none) (array zero-terminated=1) (element-type guint32): the
  *	 list of CDMA SIDs this provider exposes
  */
-GSList *
+const guint32 *
 nma_mobile_provider_get_cdma_sid (NMAMobileProvider *provider)
 {
 	g_return_val_if_fail (provider != NULL, NULL);
 
-	return provider->cdma_sid;
+	return provider->cdma_sid ? (const guint32 *)provider->cdma_sid->data : NULL;
 }
 
 /******************************************************************************/
@@ -676,13 +677,15 @@ parser_cdma_start (MobileParser *parser,
 
 		for (i = 0; attribute_names && attribute_names[i]; i++) {
 			if (!strcmp (attribute_names[i], "value")) {
-				unsigned long tmp;
+				guint32 tmp;
 
 				errno = 0;
-				tmp = strtoul (attribute_values[i], NULL, 10);
-				if (errno == 0 && tmp > 0)
-					parser->current_provider->cdma_sid = g_slist_prepend (parser->current_provider->cdma_sid,
-					                                                      GUINT_TO_POINTER ((guint32) tmp));
+				tmp = (guint32) strtoul (attribute_values[i], NULL, 10);
+				if (errno == 0 && tmp > 0) {
+					if (!parser->current_provider->cdma_sid)
+						parser->current_provider->cdma_sid = g_array_sized_new (TRUE, FALSE, sizeof (guint32), 2);
+					g_array_append_val (parser->current_provider->cdma_sid, tmp);
+				}
 				break;
 			}
 		}
@@ -756,8 +759,6 @@ parser_provider_end (MobileParser *parser,
 		}
 	} else if (!strcmp (name, "provider")) {
 		parser->current_provider->methods = g_slist_reverse (parser->current_provider->methods);
-
-		parser->current_provider->cdma_sid = g_slist_reverse (parser->current_provider->cdma_sid);
 
 		parser->current_providers = g_slist_prepend (parser->current_providers, parser->current_provider);
 		parser->current_provider = NULL;
@@ -1047,7 +1048,6 @@ dump_country (gpointer key, gpointer value, gpointer user_data)
 		g_print ("	  Provider: %s (%s)\n", provider->name, (const char *) key);
 		for (miter = provider->methods; miter; miter = g_slist_next (miter)) {
 			NMAMobileAccessMethod *method = miter->data;
-			GSList *liter;
 			guint i;
 
 			if (provider->mcc_mnc) {
@@ -1055,8 +1055,10 @@ dump_country (gpointer key, gpointer value, gpointer user_data)
 					g_print ("		  MCC/MNC: %s\n", g_array_index (provider->mcc_mnc, gchar *, i));
 			}
 
-			for (liter = provider->cdma_sid; liter; liter = g_slist_next (liter))
-				g_print ("		  SID: %d\n", GPOINTER_TO_UINT (liter->data));
+			if (provider->cdma_sid) {
+				for (i = 0; i < provider->cdma_sid->len; i++)
+					g_print ("		  SID: %u\n", g_array_index (provider->cdma_sid, guint32, i));
+			}
 
 			switch (method->family) {
 			case NMA_MOBILE_FAMILY_CDMA:
@@ -1188,7 +1190,7 @@ nma_mobile_providers_find_for_cdma_sid (GHashTable *country_infos,
 {
 	GHashTableIter iter;
 	gpointer value;
-	GSList *piter, *siter;
+	GSList *piter;
 
 	if (sid == 0)
 		return NULL;
@@ -1203,12 +1205,16 @@ nma_mobile_providers_find_for_cdma_sid (GHashTable *country_infos,
 		     piter;
 		     piter = g_slist_next (piter)) {
 			NMAMobileProvider *provider = piter->data;
+			const guint32 *sid_list;
+			guint i;
 
 			/* Search through CDMA SID list */
-			for (siter = nma_mobile_provider_get_cdma_sid (provider);
-			     siter;
-			     siter = g_slist_next (siter)) {
-				if (GPOINTER_TO_UINT (siter->data) == sid)
+			sid_list = nma_mobile_provider_get_cdma_sid (provider);
+			if (!sid_list)
+				continue;
+
+			for (i = 0; sid_list[i]; i++) {
+				if (sid == sid_list[i])
 					return provider;
 			}
 		}

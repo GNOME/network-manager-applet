@@ -69,7 +69,7 @@ void                nma_mobile_provider_unref            (NMAMobileProvider *pro
 const gchar        *nma_mobile_provider_get_name         (NMAMobileProvider *provider);
 GSList             *nma_mobile_provider_get_methods      (NMAMobileProvider *provider);
 const gchar       **nma_mobile_provider_get_3gpp_mcc_mnc (NMAMobileProvider *provider);
-GSList             *nma_mobile_provider_get_cdma_sid     (NMAMobileProvider *provider);
+const guint32      *nma_mobile_provider_get_cdma_sid     (NMAMobileProvider *provider);
 
 /******************************************************************************/
 /* Country Info type */
