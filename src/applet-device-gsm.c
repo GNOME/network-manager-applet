@@ -88,7 +88,7 @@ typedef struct {
 	guint reg_state;
 	char *op_code;
 	char *op_name;
-	GHashTable *country_infos;
+	NMAMobileProvidersDatabase *mobile_providers_database;
 
 	guint32 poll_id;
 	gboolean skip_reg_poll;
@@ -1061,8 +1061,8 @@ gsm_device_info_free (gpointer data)
 	if (info->keyring_id)
 		gnome_keyring_cancel_request (info->keyring_id);
 
-	if (info->country_infos)
-		g_hash_table_destroy (info->country_infos);
+	if (info->mobile_providers_database)
+		g_object_unref (info->mobile_providers_database);
 
 	if (info->poll_id)
 		g_source_remove (info->poll_id);
@@ -1128,12 +1128,18 @@ parse_op_name (GsmDeviceInfo *info, const char *orig, const char *op_code)
 	 * probably an MCC/MNC.  Look that up.
 	 */
 
-	if (!info->country_infos)
-		info->country_infos = nma_mobile_providers_parse (NULL, NULL);
-	if (!info->country_infos)
-		return strdup (orig);
+	if (!info->mobile_providers_database) {
+		GError *error = NULL;
 
-	provider = nma_mobile_providers_find_for_3gpp_mcc_mnc (info->country_infos, orig);
+		info->mobile_providers_database = nma_mobile_providers_database_new_sync (NULL, NULL, NULL, &error);
+		if (!info->mobile_providers_database) {
+			g_warning ("Couldn't read database: %s", error->message);
+			g_error_free (error);
+			return strdup (orig);
+		}
+	}
+
+	provider = nma_mobile_providers_database_lookup_3gpp_mcc_mnc (info->mobile_providers_database, orig);
 	return (provider ? g_strdup (nma_mobile_provider_get_name (provider)) : NULL);
 }
 
