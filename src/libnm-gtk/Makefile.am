@@ -1,3 +1,5 @@
+SUBDIRS = . tests
+
 uidir = $(datadir)/libnm-gtk
 ui_DATA = wifi.ui
 
