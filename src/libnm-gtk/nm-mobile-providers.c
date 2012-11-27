@@ -726,9 +726,10 @@ parser_country_end (MobileParser *parser,
 		NMACountryInfo *country_info;
 
 		country_info = g_hash_table_lookup (parser->table, parser->current_country);
-		if (country_info)
-			/* Store providers for this country */
-			country_info->providers = parser->current_providers;
+		g_assert (country_info);
+
+		/* Store providers for this country */
+		country_info->providers = parser->current_providers;
 
 		parser->current_country = NULL;
 		parser->current_providers = NULL;
