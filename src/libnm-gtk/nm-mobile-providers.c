@@ -57,7 +57,7 @@ struct _NMAMobileAccessMethod {
 	char *username;
 	char *password;
 	char *gateway;
-	GSList *dns; /* GSList of 'char *' */
+	GPtrArray *dns; /* GPtrArray of 'char *' */
 
 	/* Only used with 3GPP family type providers */
 	char *apn;
@@ -103,8 +103,9 @@ nma_mobile_access_method_unref (NMAMobileAccessMethod *method)
 		g_free (method->password);
 		g_free (method->gateway);
 		g_free (method->apn);
-		g_slist_foreach (method->dns, (GFunc) g_free, NULL);
-		g_slist_free (method->dns);
+
+		if (method->dns)
+			g_ptr_array_unref (method->dns);
 
 		g_slice_free (NMAMobileAccessMethod, method);
 	}
@@ -165,14 +166,14 @@ nma_mobile_access_method_get_gateway (NMAMobileAccessMethod *method)
 /**
  * nma_mobile_access_method_get_dns:
  *
- * Returns: (element-type utf8) (transfer none): the list of DNS.
+ * Returns: (transfer none) (array zero-terminated=1) (element-type utf8): the list of DNS.
  */
-const GSList *
+const gchar **
 nma_mobile_access_method_get_dns (NMAMobileAccessMethod *method)
 {
 	g_return_val_if_fail (method != NULL, NULL);
 
-	return method->dns;
+	return method->dns ? (const gchar **)method->dns->pdata : NULL;
 }
 
 /**
@@ -778,17 +779,21 @@ parser_gsm_apn_end (MobileParser *parser,
 		parser->current_method->password = parser->text_buffer;
 		parser->text_buffer = NULL;
 	} else if (!strcmp (name, "dns")) {
-		parser->current_method->dns = g_slist_prepend (parser->current_method->dns, parser->text_buffer);
+		if (!parser->current_method->dns)
+			parser->current_method->dns = g_ptr_array_new_full (2, g_free);
+		g_ptr_array_add (parser->current_method->dns, parser->text_buffer);
 		parser->text_buffer = NULL;
 	} else if (!strcmp (name, "gateway")) {
 		parser->current_method->gateway = parser->text_buffer;
 		parser->text_buffer = NULL;
 	} else if (!strcmp (name, "apn")) {
 		parser->current_method->family = NMA_MOBILE_FAMILY_3GPP;
-		parser->current_method->dns = g_slist_reverse (parser->current_method->dns);
 
 		if (!parser->current_method->name)
 			parser->current_method->name = g_strdup (_("Default"));
+
+		if (parser->current_method->dns)
+			g_ptr_array_add (parser->current_method->dns, NULL);
 
 		parser->current_provider->methods = g_slist_prepend (parser->current_provider->methods,
 		                                                     parser->current_method);
@@ -809,17 +814,21 @@ parser_cdma_end (MobileParser *parser,
 		parser->current_method->password = parser->text_buffer;
 		parser->text_buffer = NULL;
 	} else if (!strcmp (name, "dns")) {
-		parser->current_method->dns = g_slist_prepend (parser->current_method->dns, parser->text_buffer);
+		if (!parser->current_method->dns)
+			parser->current_method->dns = g_ptr_array_new_full (2, g_free);
+		g_ptr_array_add (parser->current_method->dns, parser->text_buffer);
 		parser->text_buffer = NULL;
 	} else if (!strcmp (name, "gateway")) {
 		parser->current_method->gateway = parser->text_buffer;
 		parser->text_buffer = NULL;
 	} else if (!strcmp (name, "cdma")) {
 		parser->current_method->family = NMA_MOBILE_FAMILY_CDMA;
-		parser->current_method->dns = g_slist_reverse (parser->current_method->dns);
 
 		if (!parser->current_method->name)
 			parser->current_method->name = g_strdup (parser->current_provider->name);
+
+		if (parser->current_method->dns)
+			g_ptr_array_add (parser->current_method->dns, NULL);
 
 		parser->current_provider->methods = g_slist_prepend (parser->current_provider->methods,
 		                                                     parser->current_method);
@@ -978,17 +987,21 @@ out:
 static void
 dump_generic (NMAMobileAccessMethod *method)
 {
-	GSList *iter;
-	GString *dns;
-
 	g_print ("		  username: %s\n", method->username ? method->username : "");
 	g_print ("		  password: %s\n", method->password ? method->password : "");
 
-	dns = g_string_new (NULL);
-	for (iter = method->dns; iter; iter = g_slist_next (iter))
-		g_string_append_printf (dns, "%s%s", dns->len ? ", " : "", (char *) iter->data);
-	g_print ("		  dns	  : %s\n", dns->str);
-	g_string_free (dns, TRUE);
+	if (method->dns) {
+		guint i;
+		const gchar **dns;
+		GString *dns_str;
+
+		dns = nma_mobile_access_method_get_dns (method);
+		dns_str = g_string_new (NULL);
+		for (i = 0; dns[i]; i++)
+			g_string_append_printf (dns_str, "%s%s", i == 0 ? "" : ", ", dns[i]);
+		g_print ("		  dns	  : %s\n", dns_str->str);
+		g_string_free (dns_str, TRUE);
+	}
 
 	g_print ("		  gateway : %s\n", method->gateway ? method->gateway : "");
 }
