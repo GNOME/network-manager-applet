@@ -224,7 +224,7 @@ struct _NMAMobileProvider {
 
 	GSList *methods; /* GSList of NmaMobileAccessMethod */
 
-	GSList *mcc_mnc;  /* GSList of strings */
+	GArray *mcc_mnc;  /* GArray of strings */
 	GSList *cdma_sid; /* GSList of guint32 */
 };
 
@@ -263,8 +263,13 @@ nma_mobile_provider_unref (NMAMobileProvider *provider)
 		g_slist_foreach (provider->methods, (GFunc) nma_mobile_access_method_unref, NULL);
 		g_slist_free (provider->methods);
 
-		g_slist_foreach (provider->mcc_mnc, (GFunc) g_free, NULL);
-		g_slist_free (provider->mcc_mnc);
+		if (provider->mcc_mnc) {
+			guint i;
+
+			for (i = 0; i < provider->mcc_mnc->len; i++)
+				g_free (g_array_index (provider->mcc_mnc, gchar *, i));
+			g_array_unref (provider->mcc_mnc);
+		}
 
 		g_slist_free (provider->cdma_sid);
 
@@ -304,15 +309,15 @@ nma_mobile_provider_get_methods (NMAMobileProvider *provider)
  * nma_mobile_provider_get_3gpp_mcc_mnc:
  * @provider: a #NMAMobileProvider
  *
- * Returns: (element-type utf8) (transfer none): a
+ * Returns: (transfer none) (array zero-terminated=1) (element-type utf8): a
  *	 list of strings with the MCC and MNC codes this provider exposes.
  */
-GSList *
+const gchar **
 nma_mobile_provider_get_3gpp_mcc_mnc (NMAMobileProvider *provider)
 {
 	g_return_val_if_fail (provider != NULL, NULL);
 
-	return provider->mcc_mnc;
+	return provider->mcc_mnc ? (const gchar **)provider->mcc_mnc->data : NULL;
 }
 
 /**
@@ -635,8 +640,13 @@ parser_gsm_start (MobileParser *parser,
 				mnc = attribute_values[i];
 
 			if (mcc && strlen (mcc) && mnc && strlen (mnc)) {
-				parser->current_provider->mcc_mnc = g_slist_prepend (parser->current_provider->mcc_mnc,
-				                                                     g_strdup_printf("%s%s", mcc, mnc));
+				gchar *mccmnc;
+
+				if (!parser->current_provider->mcc_mnc)
+					parser->current_provider->mcc_mnc = g_array_sized_new (TRUE, FALSE, sizeof (gchar *), 2);
+
+				mccmnc = g_strdup_printf ("%s%s", mcc, mnc);
+				g_array_append_val (parser->current_provider->mcc_mnc, mccmnc);
 				break;
 			}
 		}
@@ -747,7 +757,6 @@ parser_provider_end (MobileParser *parser,
 	} else if (!strcmp (name, "provider")) {
 		parser->current_provider->methods = g_slist_reverse (parser->current_provider->methods);
 
-		parser->current_provider->mcc_mnc = g_slist_reverse (parser->current_provider->mcc_mnc);
 		parser->current_provider->cdma_sid = g_slist_reverse (parser->current_provider->cdma_sid);
 
 		parser->current_providers = g_slist_prepend (parser->current_providers, parser->current_provider);
@@ -1039,10 +1048,11 @@ dump_country (gpointer key, gpointer value, gpointer user_data)
 		for (miter = provider->methods; miter; miter = g_slist_next (miter)) {
 			NMAMobileAccessMethod *method = miter->data;
 			GSList *liter;
+			guint i;
 
-
-			for (liter = provider->mcc_mnc; liter; liter = g_slist_next (liter)) {
-				g_print ("		  MCC/MNC: %s\n", (gchar *)liter->data);
+			if (provider->mcc_mnc) {
+				for (i = 0; i < provider->mcc_mnc->len; i++)
+					g_print ("		  MCC/MNC: %s\n", g_array_index (provider->mcc_mnc, gchar *, i));
 			}
 
 			for (liter = provider->cdma_sid; liter; liter = g_slist_next (liter))
@@ -1083,7 +1093,7 @@ nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable	*country_infos,
 {
 	GHashTableIter iter;
 	gpointer value;
-	GSList *piter, *siter;
+	GSList *piter;
 	NMAMobileProvider *provider_match_2mnc = NULL;
 	guint mccmnc_len;
 
@@ -1104,13 +1114,20 @@ nma_mobile_providers_find_for_3gpp_mcc_mnc (GHashTable	*country_infos,
 		     piter;
 		     piter = g_slist_next (piter)) {
 			NMAMobileProvider *provider = piter->data;
+			const gchar **mccmnc_list;
+			guint i;
 
 			/* Search through MCC/MNC list */
-			for (siter = nma_mobile_provider_get_3gpp_mcc_mnc (provider);
-			     siter;
-			     siter = g_slist_next (siter)) {
-				gchar *mccmnc_iter = siter->data;
-				guint mccmnc_iter_len = strlen (mccmnc_iter);
+			mccmnc_list = nma_mobile_provider_get_3gpp_mcc_mnc (provider);
+			if (!mccmnc_list)
+				continue;
+
+			for (i = 0; mccmnc_list[i]; i++) {
+				const gchar *mccmnc_iter;
+				guint mccmnc_iter_len;
+
+				mccmnc_iter = mccmnc_list[i];
+				mccmnc_iter_len = strlen (mccmnc_iter);
 
 				/* Match both 2-digit and 3-digit MNC; prefer a
 				 * 3-digit match if found, otherwise a 2-digit one.
