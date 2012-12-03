@@ -1140,6 +1140,9 @@ nma_mobile_providers_database_get_countries (NMAMobileProvidersDatabase *self)
 {
 	g_return_val_if_fail (NMA_IS_MOBILE_PROVIDERS_DATABASE (self), NULL);
 
+	/* Warn if the object hasn't been initialized */
+	g_return_val_if_fail (self->priv->countries != NULL, NULL);
+
 	return self->priv->countries;
 }
 
@@ -1152,6 +1155,9 @@ void
 nma_mobile_providers_database_dump (NMAMobileProvidersDatabase *self)
 {
 	g_return_if_fail (NMA_IS_MOBILE_PROVIDERS_DATABASE (self));
+
+	/* Warn if the object hasn't been initialized */
+	g_return_if_fail (self->priv->countries != NULL);
 
 	g_hash_table_foreach (self->priv->countries, dump_country, NULL);
 }
@@ -1167,6 +1173,11 @@ NMACountryInfo *
 nma_mobile_providers_database_lookup_country (NMAMobileProvidersDatabase *self,
                                               const gchar *country_code)
 {
+	g_return_val_if_fail (NMA_IS_MOBILE_PROVIDERS_DATABASE (self), NULL);
+
+	/* Warn if the object hasn't been initialized */
+	g_return_val_if_fail (self->priv->countries != NULL, NULL);
+
 	return (NMACountryInfo *) g_hash_table_lookup (self->priv->countries, country_code);
 }
 
@@ -1189,6 +1200,8 @@ nma_mobile_providers_database_lookup_3gpp_mcc_mnc (NMAMobileProvidersDatabase *s
 
 	g_return_val_if_fail (NMA_IS_MOBILE_PROVIDERS_DATABASE (self), NULL);
 	g_return_val_if_fail (mccmnc != NULL, NULL);
+	/* Warn if the object hasn't been initialized */
+	g_return_val_if_fail (self->priv->countries != NULL, NULL);
 
 	/* Expect only 5 or 6 digit MCCMNC strings */
 	mccmnc_len = strlen (mccmnc);
@@ -1283,6 +1296,8 @@ nma_mobile_providers_database_lookup_cdma_sid (NMAMobileProvidersDatabase *self,
 
 	g_return_val_if_fail (NMA_IS_MOBILE_PROVIDERS_DATABASE (self), NULL);
 	g_return_val_if_fail (sid > 0, NULL);
+	/* Warn if the object hasn't been initialized */
+	g_return_val_if_fail (self->priv->countries != NULL, NULL);
 
 	g_hash_table_iter_init (&iter, self->priv->countries);
 	/* Search through each country */
