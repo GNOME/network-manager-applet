@@ -251,6 +251,7 @@ Makefile
 src/Makefile
 src/libnm-gtk/Makefile
 src/libnm-gtk/tests/Makefile
+src/libnm-gtk/examples/Makefile
 src/libnm-gtk/libnm-gtk.pc
 src/marshallers/Makefile
 src/utils/Makefile
