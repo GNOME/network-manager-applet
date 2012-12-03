@@ -1,4 +1,4 @@
-SUBDIRS = . tests
+SUBDIRS = . tests examples
 
 uidir = $(datadir)/libnm-gtk
 ui_DATA = wifi.ui
