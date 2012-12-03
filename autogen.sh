@@ -18,7 +18,7 @@ PKG_NAME=nm-applet
     intltoolize --force &&
     autoreconf &&
     if test -z "$NOCONFIGURE"; then
-        ./configure --enable-maintainer-mode $@
+        ./configure --enable-maintainer-mode "$@"
     fi
 )
 
