@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-27 17:38+0100\n"
-"PO-Revision-Date: 2012-11-27 17:39+0100\n"
+"POT-Creation-Date: 2012-12-04 18:17+0100\n"
+"PO-Revision-Date: 2012-12-04 18:18+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -539,7 +539,7 @@ msgid "Mobile Broadband (%s)"
 msgstr "Komórkowe (%s)"
 
 #: ../src/applet-device-cdma.c:341 ../src/applet-device-gsm.c:395
-#: ../src/connection-editor/new-connection.c:112
+#: ../src/connection-editor/new-connection.c:113
 #: ../src/connection-editor/page-mobile.c:389
 #: ../src/libnm-gtk/nm-ui-utils.c:333
 msgid "Mobile Broadband"
@@ -1200,13 +1200,15 @@ msgstr "_Tryb:"
 # na przycisku
 #. Edit
 #: ../src/connection-editor/ce-page-bond.ui.h:12
-#: ../src/connection-editor/nm-connection-list.c:682
+#: ../src/connection-editor/ce-page-bridge.ui.h:2
+#: ../src/connection-editor/nm-connection-list.c:685
 msgid "_Edit"
 msgstr "_Modyfikuj"
 
 #. Delete
 #: ../src/connection-editor/ce-page-bond.ui.h:13
-#: ../src/connection-editor/nm-connection-list.c:699
+#: ../src/connection-editor/ce-page-bridge.ui.h:3
+#: ../src/connection-editor/nm-connection-list.c:702
 msgid "_Delete"
 msgstr "_Usuń"
 
@@ -1219,6 +1221,7 @@ msgid "ms"
 msgstr "ms"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:16
+#: ../src/connection-editor/ce-page-bridge.ui.h:5
 msgid "_Interface name:"
 msgstr "Nazwa _interfejsu:"
 
@@ -1245,6 +1248,47 @@ msgstr "Opóźnienie _włączenia łącza:"
 #: ../src/connection-editor/ce-page-bond.ui.h:21
 msgid "Link _down delay:"
 msgstr "_Opóźnienie wyłączenia łącza:"
+
+#: ../src/connection-editor/ce-page-bridge-port.ui.h:1
+msgid "Path _cost:"
+msgstr "_Koszt ścieżki:"
+
+#: ../src/connection-editor/ce-page-bridge-port.ui.h:2
+#: ../src/connection-editor/ce-page-bridge.ui.h:4
+msgid "_Priority:"
+msgstr "_Priorytet:"
+
+#: ../src/connection-editor/ce-page-bridge-port.ui.h:3
+msgid "_Hairpin mode:"
+msgstr "Tryb \"_hairpin\":"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:1
+msgid "Bridged _connections:"
+msgstr "_Mostkowane połączenia:"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:6
+msgid "_Forward delay:"
+msgstr "_Opóźnienie wysyłania:"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:7
+msgid "_Hello time:"
+msgstr "_Czas powitania:"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:8
+msgid "s"
+msgstr "s"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:9
+msgid "Enable _STP (Spanning Tree Protocol)"
+msgstr "Włączenie _STP (Protokół drzewa rozpinającego)"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:10
+msgid "_Max age:"
+msgstr "_Maksymalny wiek:"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:11
+msgid "_Aging time:"
+msgstr "Czas _starzenia:"
 
 #: ../src/connection-editor/ce-page.c:72
 msgid "automatic"
@@ -1803,64 +1847,69 @@ msgstr "Parametry"
 msgid "Prefix"
 msgstr "Przedrostek"
 
-#: ../src/connection-editor/new-connection.c:100
+#: ../src/connection-editor/new-connection.c:101
 #: ../src/connection-editor/page-ethernet.c:251
 #: ../src/libnm-gtk/nm-ui-utils.c:323
 msgid "Ethernet"
 msgstr "Ethernet"
 
-#: ../src/connection-editor/new-connection.c:106
+#: ../src/connection-editor/new-connection.c:107
 #: ../src/connection-editor/page-wifi.c:470 ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
-#: ../src/connection-editor/new-connection.c:118
+#: ../src/connection-editor/new-connection.c:119
 #: ../src/connection-editor/page-wimax.c:134
 #: ../src/libnm-gtk/nm-ui-utils.c:331 ../src/mb-menu-item.c:75
 msgid "WiMAX"
 msgstr "WiMAX"
 
-#: ../src/connection-editor/new-connection.c:124
+#: ../src/connection-editor/new-connection.c:125
 #: ../src/connection-editor/page-dsl.c:141
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/new-connection.c:130
+#: ../src/connection-editor/new-connection.c:131
 #: ../src/connection-editor/page-infiniband.c:168
 #: ../src/libnm-gtk/nm-ui-utils.c:335
 msgid "InfiniBand"
 msgstr "InfiniBand"
 
-#: ../src/connection-editor/new-connection.c:136
-#: ../src/connection-editor/page-bond.c:747 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/new-connection.c:137
+#: ../src/connection-editor/page-bond.c:419 ../src/libnm-gtk/nm-ui-utils.c:337
 msgid "Bond"
 msgstr "Łączenie"
 
-#: ../src/connection-editor/new-connection.c:142
+#: ../src/connection-editor/new-connection.c:143
+#: ../src/connection-editor/page-bridge.c:211
+msgid "Bridge"
+msgstr "Mostek"
+
+#: ../src/connection-editor/new-connection.c:149
 #: ../src/connection-editor/page-vlan.c:480 ../src/libnm-gtk/nm-ui-utils.c:339
 msgid "VLAN"
 msgstr "VLAN"
 
-#: ../src/connection-editor/new-connection.c:155
-#: ../src/connection-editor/new-connection.c:295
+#: ../src/connection-editor/new-connection.c:162
+#: ../src/connection-editor/new-connection.c:302
 #: ../src/connection-editor/page-vpn.c:113
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/new-connection.c:245
+#: ../src/connection-editor/new-connection.c:252
 msgid "Hardware"
 msgstr "Sprzętowe"
 
-#: ../src/connection-editor/new-connection.c:265
+#: ../src/connection-editor/new-connection.c:272
 msgid "Virtual"
 msgstr "Wirtualne"
 
-#: ../src/connection-editor/new-connection.c:333
-#: ../src/connection-editor/new-connection.c:335
+#: ../src/connection-editor/new-connection.c:340
+#: ../src/connection-editor/new-connection.c:342
 msgid "Import a saved VPN configuration..."
 msgstr "Zaimportuj zapisaną konfigurację VPN..."
 
-#: ../src/connection-editor/new-connection.c:364
+#: ../src/connection-editor/new-connection.c:371
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -1868,29 +1917,29 @@ msgstr ""
 "Nie można zainicjować okna dialogowego edytora połączeń z powodu nieznanego "
 "błędu."
 
-#: ../src/connection-editor/new-connection.c:373
+#: ../src/connection-editor/new-connection.c:380
 msgid "Could not create new connection"
 msgstr "Nie można utworzyć nowego połączenia"
 
-#: ../src/connection-editor/new-connection.c:508
+#: ../src/connection-editor/new-connection.c:515
 msgid "Connection delete failed"
 msgstr "Usunięcie połączenia się nie powiodło"
 
-#: ../src/connection-editor/new-connection.c:555
+#: ../src/connection-editor/new-connection.c:562
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Na pewno usunąć połączenie %s?"
 
-#: ../src/connection-editor/nm-connection-editor.c:115
+#: ../src/connection-editor/nm-connection-editor.c:118
 #, c-format
 msgid "Editing %s"
 msgstr "Modyfikowanie %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:119
+#: ../src/connection-editor/nm-connection-editor.c:122
 msgid "Editing un-named connection"
 msgstr "Modyfikowanie połączenia bez nazwy"
 
-#: ../src/connection-editor/nm-connection-editor.c:279
+#: ../src/connection-editor/nm-connection-editor.c:282
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -1898,50 +1947,50 @@ msgstr ""
 "Edytor połączeń nie może odnaleźć niektórych wymaganych zasobów (plik .ui "
 "nie został odnaleziony)."
 
-#: ../src/connection-editor/nm-connection-editor.c:405
+#: ../src/connection-editor/nm-connection-editor.c:408
 msgid "_Save"
 msgstr "Zapi_sz"
 
-#: ../src/connection-editor/nm-connection-editor.c:406
+#: ../src/connection-editor/nm-connection-editor.c:409
 msgid "Save any changes made to this connection."
 msgstr "Zapis zmian dokonanych na tym połączeniu."
 
-#: ../src/connection-editor/nm-connection-editor.c:407
+#: ../src/connection-editor/nm-connection-editor.c:410
 msgid "_Save..."
 msgstr "Zapi_sz..."
 
-#: ../src/connection-editor/nm-connection-editor.c:408
+#: ../src/connection-editor/nm-connection-editor.c:411
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Należy się uwierzytelnić, aby zapisać to połączenie dla wszystkich "
 "użytkowników komputera."
 
-#: ../src/connection-editor/nm-connection-editor.c:424
+#: ../src/connection-editor/nm-connection-editor.c:427
 msgid "Could not create connection"
 msgstr "Nie można utworzyć połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:424
+#: ../src/connection-editor/nm-connection-editor.c:427
 msgid "Could not edit connection"
 msgstr "Nie można zmodyfikować połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:426
+#: ../src/connection-editor/nm-connection-editor.c:429
 msgid "Unknown error creating connection editor dialog."
 msgstr "Nieznany błąd podczas tworzenia okna dialogowego edytora połączeń."
 
-#: ../src/connection-editor/nm-connection-editor.c:533
+#: ../src/connection-editor/nm-connection-editor.c:536
 msgid "Error saving connection"
 msgstr "Błąd podczas zapisywania połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:534
+#: ../src/connection-editor/nm-connection-editor.c:537
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "Właściwość \"%s\" / \"%s\" jest nieprawidłowa: %d"
 
-#: ../src/connection-editor/nm-connection-editor.c:628
+#: ../src/connection-editor/nm-connection-editor.c:631
 msgid "Error initializing editor"
 msgstr "Błąd podczas inicjowania edytora"
 
-#: ../src/connection-editor/nm-connection-editor.c:957
+#: ../src/connection-editor/nm-connection-editor.c:968
 msgid "Connection add failed"
 msgstr "Dodanie połączenia się nie powiodło"
 
@@ -2003,52 +2052,52 @@ msgstr[0] "%d rok temu"
 msgstr[1] "%d lata temu"
 msgstr[2] "%d lat temu"
 
-#: ../src/connection-editor/nm-connection-list.c:628
+#: ../src/connection-editor/nm-connection-list.c:631
 msgid "Name"
 msgstr "Nazwa"
 
-#: ../src/connection-editor/nm-connection-list.c:641
+#: ../src/connection-editor/nm-connection-list.c:644
 msgid "Last Used"
 msgstr "Ostatnie użycie"
 
-#: ../src/connection-editor/nm-connection-list.c:683
+#: ../src/connection-editor/nm-connection-list.c:686
 msgid "Edit the selected connection"
 msgstr "Modyfikowanie zaznaczonego połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:684
+#: ../src/connection-editor/nm-connection-list.c:687
 msgid "_Edit..."
 msgstr "_Modyfikuj..."
 
-#: ../src/connection-editor/nm-connection-list.c:685
+#: ../src/connection-editor/nm-connection-list.c:688
 msgid "Authenticate to edit the selected connection"
 msgstr "Należy się uwierzytelnić, aby modyfikować zaznaczone połączenie"
 
-#: ../src/connection-editor/nm-connection-list.c:700
+#: ../src/connection-editor/nm-connection-list.c:703
 msgid "Delete the selected connection"
 msgstr "Usunięcie zaznaczonego połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:701
+#: ../src/connection-editor/nm-connection-list.c:704
 msgid "_Delete..."
 msgstr "_Usuń..."
 
-#: ../src/connection-editor/nm-connection-list.c:702
+#: ../src/connection-editor/nm-connection-list.c:705
 msgid "Authenticate to delete the selected connection"
 msgstr "Należy się uwierzytelnić, aby usunąć zaznaczone połączenie"
 
-#: ../src/connection-editor/nm-connection-list.c:939
+#: ../src/connection-editor/nm-connection-list.c:942
 msgid "Error creating connection"
 msgstr "Błąd podczas tworzenia połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:940
+#: ../src/connection-editor/nm-connection-list.c:943
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Nie wiadomo, jak utworzyć połączenia \"%s\""
 
-#: ../src/connection-editor/nm-connection-list.c:995
+#: ../src/connection-editor/nm-connection-list.c:998
 msgid "Error editing connection"
 msgstr "Błąd podczas modyfikowania połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:996
+#: ../src/connection-editor/nm-connection-list.c:999
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Nie odnaleziono połączenia z UUID \"%s\""
@@ -2065,19 +2114,34 @@ msgstr "Nie można wczytać interfejsu użytkownika zabezpieczeń 802.1x."
 msgid "Use 802.1_X security for this connection"
 msgstr "Użycie zabezpieczeń 802.1_X dla tego połączenia"
 
-#: ../src/connection-editor/page-bond.c:559
-#, c-format
-msgid "%s slave %d"
-msgstr "%s podrzędny %d"
-
-#: ../src/connection-editor/page-bond.c:750
+#: ../src/connection-editor/page-bond.c:422
 msgid "Could not load bond user interface."
 msgstr "Nie można wczytać interfejsu użytkownika łączenia."
 
-#: ../src/connection-editor/page-bond.c:910
+#: ../src/connection-editor/page-bond.c:561
 #, c-format
 msgid "Bond connection %d"
 msgstr "Łączone połączenie %d"
+
+#: ../src/connection-editor/page-bridge.c:214
+msgid "Could not load bridge user interface."
+msgstr "Nie można wczytać interfejsu użytkownika mostkowania."
+
+#: ../src/connection-editor/page-bridge.c:309
+#, c-format
+msgid "Bridge connection %d"
+msgstr "Mostkowane połączenie %d"
+
+#. Translators: a "Bridge Port" is a network
+#. * device that is part of a bridge.
+#.
+#: ../src/connection-editor/page-bridge-port.c:115
+msgid "Bridge Port"
+msgstr "Port mostkowania"
+
+#: ../src/connection-editor/page-bridge-port.c:117
+msgid "Could not load bridge port user interface."
+msgstr "Nie można wczytać interfejsu użytkownika portu mostkowania."
 
 #: ../src/connection-editor/page-dsl.c:143
 msgid "Could not load DSL user interface."
@@ -2236,6 +2300,11 @@ msgstr "Ustawienia IPv6"
 #: ../src/connection-editor/page-ip6.c:960
 msgid "Could not load IPv6 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv6."
+
+#: ../src/connection-editor/page-master.c:290
+#, c-format
+msgid "%s slave %d"
+msgstr "%s podrzędny %d"
 
 #: ../src/connection-editor/page-mobile.c:391
 msgid "Could not load mobile broadband user interface."
