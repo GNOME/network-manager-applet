@@ -531,3 +531,40 @@ nma_utils_disambiguate_device_names (NMDevice **devices,
 	names[num_devices] = NULL;
 	return names;
 }
+
+/**
+ * nma_utils_get_connection_device_name:
+ * @connection: an #NMConnection for a virtual device type
+ *
+ * Returns the name that nma_utils_disambiguate_device_names() would
+ * return for the virtual device that would be created for @connection.
+ * Eg, "VLAN (eth1.1)".
+ *
+ * Returns: (transfer full): the name of @connection's device
+ */
+char *
+nma_utils_get_connection_device_name (NMConnection *connection)
+{
+	const char *iface, *type, *display_type;
+	NMSettingConnection *s_con;
+
+	iface = nm_connection_get_virtual_iface_name (connection);
+	g_return_val_if_fail (iface != NULL, NULL);
+
+	s_con = nm_connection_get_setting_connection (connection);
+	g_return_val_if_fail (s_con != NULL, NULL);
+	type = nm_setting_connection_get_connection_type (s_con);
+
+	if (!strcmp (type, NM_SETTING_BOND_SETTING_NAME))
+		display_type = _("Bond");
+	else if (!strcmp (type, NM_SETTING_BRIDGE_SETTING_NAME))
+		display_type = _("Bridge");
+	else if (!strcmp (type, NM_SETTING_VLAN_SETTING_NAME))
+		display_type = _("VLAN");
+	else {
+		g_warning ("Unrecognized virtual device type '%s'", type);
+		display_type = type;
+	}
+
+	return g_strdup_printf ("%s (%s)", display_type, iface);
+}

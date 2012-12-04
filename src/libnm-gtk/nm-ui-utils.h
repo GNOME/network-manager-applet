@@ -35,6 +35,7 @@ const char *nma_utils_get_device_type_name (NMDevice *device);
 
 char **nma_utils_disambiguate_device_names (NMDevice **devices,
                                             int        num_devices);
+char *nma_utils_get_connection_device_name (NMConnection *connection);
 
 #endif	/* NMA_UI_UTILS_H */
 
