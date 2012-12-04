@@ -335,6 +335,8 @@ nma_utils_get_device_type_name (NMDevice *device)
 		return _("InfiniBand");
 	case NM_DEVICE_TYPE_BOND:
 		return _("Bond");
+	case NM_DEVICE_TYPE_BRIDGE:
+		return _("Bridge");
 	case NM_DEVICE_TYPE_VLAN:
 		return _("VLAN");
 	case NM_DEVICE_TYPE_ADSL:
@@ -351,6 +353,7 @@ get_device_type_name_with_iface (NMDevice *device)
 
 	switch (nm_device_get_device_type (device)) {
 	case NM_DEVICE_TYPE_BOND:
+	case NM_DEVICE_TYPE_BRIDGE:
 	case NM_DEVICE_TYPE_VLAN:
 		return g_strdup_printf ("%s (%s)", type_name, nm_device_get_iface (device));
 	default:
