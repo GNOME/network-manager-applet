@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * (C) Copyright 2008 - 2012 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -492,9 +492,26 @@ key_pressed_cb (GtkWidget *widget,
 	#define GDK_KEY_Tab GDK_Tab
 #endif
 
-	/* Tab should behave the same way as Enter (finish editing) */
-	if (event->type == GDK_KEY_PRESS && event->key.keyval == GDK_KEY_Tab)
-		gtk_cell_editable_editing_done (GTK_CELL_EDITABLE (widget));
+	GdkKeymapKey *keys = NULL;
+	gint n_keys;
+
+	/*
+	 * Tab should behave the same way as Enter (cycling on cells).
+	 *
+	 * Previously, we had finished cell editing, which appeared to work:
+	 *   gtk_cell_editable_editing_done (GTK_CELL_EDITABLE (widget));
+	 * But unfortunately, it showed up crash occurred with XIM input (GTK_IM_MODULE=xim).
+	 * https://bugzilla.redhat.com/show_bug.cgi?id=747368
+	 */
+	if (event->type == GDK_KEY_PRESS && event->key.keyval == GDK_KEY_Tab) {
+		/* Get hardware keycode for GDK_KEY_Return */
+		if (gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default (), GDK_KEY_Return, &keys, &n_keys)) {
+			/* Change 'Tab' to 'Enter' key */
+			event->key.keyval = GDK_KEY_Return;
+			event->key.hardware_keycode = keys[0].keycode;
+		}
+		g_free (keys);
+	}
 
 	return FALSE;
 }
