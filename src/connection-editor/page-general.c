@@ -77,10 +77,10 @@ zones_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	                       G_TYPE_STRV, &priv->zones,
 	                       G_TYPE_INVALID);
 
+	priv->got_zones = TRUE;
+
 	if (priv->setup_finished)
 		populate_firewall_zones_ui (self);
-	else
-		priv->got_zones = TRUE;
 
 	g_clear_error (&error);
 	g_object_unref (proxy);
@@ -94,6 +94,7 @@ get_zones_from_firewall (CEPageGeneral *self)
 	DBusGConnection *bus;
 	DBusGProxy *proxy;
 
+	/* Initialize got_zones to TRUE for cases there's no FirewallD */
 	priv->got_zones = TRUE;
 
 	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
@@ -193,7 +194,7 @@ populate_firewall_zones_ui (CEPageGeneral *self)
 	guint32 combo_idx = 0, idx;
 
 	s_zone = nm_setting_connection_get_zone (setting);
-	
+
 	/* Always add "fake" 'Default' zone for default firewall settings */
 #if GTK_CHECK_VERSION (2,24,0)
 	gtk_combo_box_text_append_text (priv->firewall_zone, FIREWALL_ZONE_DEFAULT);
@@ -355,17 +356,22 @@ ui_to_setting (CEPageGeneral *self)
 	GtkTreeIter iter;
 	gboolean autoconnect = FALSE, everyone = FALSE;
 
+	/* We can't take and save zone until the combo was properly initialized. Zones
+	 * are received from FirewallD asynchronously; got_zones indicates we are ready.
+	 */
+	if (priv->got_zones) {
 #if GTK_CHECK_VERSION (2,24,0)
-	zone = gtk_combo_box_text_get_active_text (priv->firewall_zone);
+		zone = gtk_combo_box_text_get_active_text (priv->firewall_zone);
 #else
-	zone = gtk_combo_box_get_active_text (priv->firewall_zone);
+		zone = gtk_combo_box_get_active_text (priv->firewall_zone);
 #endif
 
-	if (g_strcmp0 (zone, FIREWALL_ZONE_DEFAULT) == 0)
-		zone = NULL;
-	g_object_set (priv->setting, NM_SETTING_CONNECTION_ZONE, zone, NULL);
+		if (g_strcmp0 (zone, FIREWALL_ZONE_DEFAULT) == 0)
+			zone = NULL;
+		g_object_set (priv->setting, NM_SETTING_CONNECTION_ZONE, zone, NULL);
 
-	g_free (zone);
+		g_free (zone);
+	}
 
 	if (   gtk_toggle_button_get_active (priv->dependent_vpn_checkbox)
 	    && gtk_combo_box_get_active_iter (priv->dependent_vpn, &iter))
