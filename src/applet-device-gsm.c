@@ -42,7 +42,6 @@
 #include "applet.h"
 #include "applet-device-gsm.h"
 #include "utils.h"
-#include "nm-mobile-wizard.h"
 #include "applet-dialogs.h"
 #include "mb-menu-item.h"
 #include "nma-marshal.h"
@@ -120,111 +119,15 @@ gsm_menu_item_info_destroy (gpointer data)
 	g_slice_free (GSMMenuItemInfo, data);
 }
 
-typedef struct {
-	AppletNewAutoConnectionCallback callback;
-	gpointer callback_data;
-} AutoGsmWizardInfo;
-
-static void
-mobile_wizard_done (NMAMobileWizard *wizard,
-                    gboolean canceled,
-                    NMAMobileWizardAccessMethod *method,
-                    gpointer user_data)
-{
-	AutoGsmWizardInfo *info = user_data;
-	NMConnection *connection = NULL;
-
-	if (!canceled && method) {
-		NMSetting *setting;
-		char *uuid, *id;
-
-		if (method->devtype != NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
-			g_warning ("Unexpected device type (not GSM).");
-			canceled = TRUE;
-			goto done;
-		}
-
-		connection = nm_connection_new ();
-
-		setting = nm_setting_gsm_new ();
-		g_object_set (setting,
-		              NM_SETTING_GSM_NUMBER, "*99#",
-		              NM_SETTING_GSM_USERNAME, method->username,
-		              NM_SETTING_GSM_PASSWORD, method->password,
-		              NM_SETTING_GSM_APN, method->gsm_apn,
-		              NULL);
-		nm_connection_add_setting (connection, setting);
-
-		/* Serial setting */
-		setting = nm_setting_serial_new ();
-		g_object_set (setting,
-		              NM_SETTING_SERIAL_BAUD, 115200,
-		              NM_SETTING_SERIAL_BITS, 8,
-		              NM_SETTING_SERIAL_PARITY, 'n',
-		              NM_SETTING_SERIAL_STOPBITS, 1,
-		              NULL);
-		nm_connection_add_setting (connection, setting);
-
-		nm_connection_add_setting (connection, nm_setting_ppp_new ());
-
-		setting = nm_setting_connection_new ();
-		id = utils_create_mobile_connection_id (method->provider_name, method->plan_name);
-		uuid = nm_utils_uuid_generate ();
-		g_object_set (setting,
-		              NM_SETTING_CONNECTION_ID, id,
-		              NM_SETTING_CONNECTION_TYPE, NM_SETTING_GSM_SETTING_NAME,
-		              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
-		              NM_SETTING_CONNECTION_UUID, uuid,
-		              NULL);
-		g_free (uuid);
-		g_free (id);
-		nm_connection_add_setting (connection, setting);
-	}
-
-done:
-	(*(info->callback)) (connection, TRUE, canceled, info->callback_data);
-
-	if (wizard)
-		nma_mobile_wizard_destroy (wizard);
-	g_free (info);
-}
-
-static gboolean
-do_mobile_wizard (AppletNewAutoConnectionCallback callback,
-                  gpointer callback_data)
-{
-	NMAMobileWizard *wizard;
-	AutoGsmWizardInfo *info;
-	NMAMobileWizardAccessMethod *method;
-
-	info = g_malloc0 (sizeof (AutoGsmWizardInfo));
-	info->callback = callback;
-	info->callback_data = callback_data;
-
-	wizard = nma_mobile_wizard_new (NULL, NULL, NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS, FALSE,
-									mobile_wizard_done, info);
-	if (wizard) {
-		nma_mobile_wizard_present (wizard);
-		return TRUE;
-	}
-
-	/* Fall back to something */
-	method = g_malloc0 (sizeof (NMAMobileWizardAccessMethod));
-	method->devtype = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
-	method->provider_name = _("GSM");
-	mobile_wizard_done (NULL, FALSE, method, info);
-	g_free (method);
-
-	return TRUE;
-}
-
 static gboolean
 gsm_new_auto_connection (NMDevice *device,
                          gpointer dclass_data,
                          AppletNewAutoConnectionCallback callback,
                          gpointer callback_data)
 {
-	return do_mobile_wizard (callback, callback_data);
+	return mobile_helper_wizard (NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS,
+	                             callback,
+	                             callback_data);
 }
 
 static void
@@ -279,7 +182,14 @@ applet_gsm_connect_network (NMApplet *applet, NMDevice *device)
 	info->applet = applet;
 	info->device = g_object_ref (device);
 
-	do_mobile_wizard (dbus_connect_3g_cb, info);
+
+	if (!mobile_helper_wizard (NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS,
+	                           dbus_connect_3g_cb,
+	                           info)) {
+		g_warning ("Couldn't run mobile wizard for CDMA device");
+		g_object_unref (info->device);
+		g_free (info);
+	}
 }
 
 static void

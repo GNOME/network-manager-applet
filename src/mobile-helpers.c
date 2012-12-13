@@ -20,6 +20,10 @@
  * (C) Copyright 2010 Red Hat, Inc.
  */
 
+#include <glib/gi18n.h>
+#include <nm-utils.h>
+
+#include "utils.h"
 #include "mobile-helpers.h"
 
 GdkPixbuf *
@@ -127,3 +131,144 @@ mobile_helper_get_tech_icon (guint32 tech, NMApplet *applet)
 	}
 }
 
+/********************************************************************/
+
+typedef struct {
+	AppletNewAutoConnectionCallback callback;
+	gpointer callback_data;
+	NMDeviceModemCapabilities requested_capability;
+} AutoWizardInfo;
+
+static void
+mobile_wizard_done (NMAMobileWizard *wizard,
+                    gboolean cancelled,
+                    NMAMobileWizardAccessMethod *method,
+                    gpointer user_data)
+{
+	AutoWizardInfo *info = user_data;
+	NMConnection *connection = NULL;
+
+	if (!cancelled && method) {
+		NMSetting *setting;
+		char *uuid, *id;
+		const char *setting_name;
+
+		if (method->devtype != info->requested_capability) {
+			g_warning ("Unexpected device type");
+			cancelled = TRUE;
+			goto done;
+		}
+
+		connection = nm_connection_new ();
+
+		if (method->devtype == NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO) {
+			setting_name = NM_SETTING_CDMA_SETTING_NAME;
+			setting = nm_setting_cdma_new ();
+			g_object_set (setting,
+			              NM_SETTING_CDMA_NUMBER, "#777",
+			              NM_SETTING_CDMA_USERNAME, method->username,
+			              NM_SETTING_CDMA_PASSWORD, method->password,
+			              NULL);
+			nm_connection_add_setting (connection, setting);
+		} else if (method->devtype == NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
+			setting_name = NM_SETTING_GSM_SETTING_NAME;
+			setting = nm_setting_gsm_new ();
+			g_object_set (setting,
+			              NM_SETTING_GSM_NUMBER, "*99#",
+			              NM_SETTING_GSM_USERNAME, method->username,
+			              NM_SETTING_GSM_PASSWORD, method->password,
+			              NM_SETTING_GSM_APN, method->gsm_apn,
+			              NULL);
+			nm_connection_add_setting (connection, setting);
+		} else
+			g_assert_not_reached ();
+
+		/* Serial setting */
+		setting = nm_setting_serial_new ();
+		g_object_set (setting,
+		              NM_SETTING_SERIAL_BAUD, 115200,
+		              NM_SETTING_SERIAL_BITS, 8,
+		              NM_SETTING_SERIAL_PARITY, 'n',
+		              NM_SETTING_SERIAL_STOPBITS, 1,
+		              NULL);
+		nm_connection_add_setting (connection, setting);
+
+		nm_connection_add_setting (connection, nm_setting_ppp_new ());
+
+		setting = nm_setting_connection_new ();
+		id = utils_create_mobile_connection_id (method->provider_name, method->plan_name);
+		uuid = nm_utils_uuid_generate ();
+		g_object_set (setting,
+		              NM_SETTING_CONNECTION_ID, id,
+		              NM_SETTING_CONNECTION_TYPE, setting_name,
+		              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+		              NM_SETTING_CONNECTION_UUID, uuid,
+		              NULL);
+		g_free (uuid);
+		g_free (id);
+		nm_connection_add_setting (connection, setting);
+	}
+
+done:
+	(*(info->callback)) (connection, TRUE, cancelled, info->callback_data);
+
+	if (wizard)
+		nma_mobile_wizard_destroy (wizard);
+	g_free (info);
+}
+
+gboolean
+mobile_helper_wizard (NMDeviceModemCapabilities capabilities,
+                      AppletNewAutoConnectionCallback callback,
+                      gpointer callback_data)
+{
+	NMAMobileWizard *wizard;
+	AutoWizardInfo *info;
+	NMAMobileWizardAccessMethod *method;
+	NMDeviceModemCapabilities wizard_capability;
+
+	/* Convert the input capabilities mask into a single value */
+	if (capabilities & NM_DEVICE_MODEM_CAPABILITY_LTE)
+		/* All LTE modems treated as GSM/UMTS for the wizard */
+		wizard_capability = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
+	else if (capabilities & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
+		wizard_capability = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
+	else if (capabilities & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
+		wizard_capability = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
+	else {
+		g_warning ("Unknown modem capabilities (0x%X): can't launch wizard", capabilities);
+		return FALSE;
+	}
+
+	info = g_malloc0 (sizeof (AutoWizardInfo));
+	info->callback = callback;
+	info->callback_data = callback_data;
+	info->requested_capability = wizard_capability;
+
+	wizard = nma_mobile_wizard_new (NULL,
+	                                NULL,
+	                                wizard_capability,
+	                                FALSE,
+									mobile_wizard_done,
+	                                info);
+	if (wizard) {
+		nma_mobile_wizard_present (wizard);
+		return TRUE;
+	}
+
+	/* Fall back to something */
+	method = g_malloc0 (sizeof (NMAMobileWizardAccessMethod));
+	method->devtype = wizard_capability;
+
+	if (wizard_capability == NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
+		method->provider_name = _("GSM");
+	else if (wizard_capability == NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
+		method->provider_name = _("CDMA");
+	else
+		g_assert_not_reached ();
+
+	mobile_wizard_done (NULL, FALSE, method, info);
+	g_free (method);
+
+	return TRUE;
+}

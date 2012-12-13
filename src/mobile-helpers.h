@@ -25,6 +25,7 @@
 
 #include <gtk/gtk.h>
 #include "applet.h"
+#include "nm-mobile-wizard.h"
 
 enum {
 	MB_STATE_UNKNOWN = 0,
@@ -62,5 +63,8 @@ GdkPixbuf *mobile_helper_get_quality_icon (guint32 quality, NMApplet *applet);
 
 GdkPixbuf *mobile_helper_get_tech_icon (guint32 tech, NMApplet *applet);
 
-#endif  /* APPLET_MOBILE_HELPERS_H */
+gboolean   mobile_helper_wizard (NMDeviceModemCapabilities capabilities,
+                                 AppletNewAutoConnectionCallback callback,
+                                 gpointer callback_data);
 
+#endif  /* APPLET_MOBILE_HELPERS_H */
