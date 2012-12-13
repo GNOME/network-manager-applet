@@ -80,6 +80,10 @@
 #include "shell-watcher.h"
 #include "nm-ui-utils.h"
 
+#if WITH_MODEM_MANAGER_1
+# include "applet-device-broadband.h"
+#endif
+
 #define NOTIFY_CAPS_ACTIONS_KEY "actions"
 
 extern gboolean shell_debug;
@@ -190,6 +194,21 @@ impl_dbus_connect_to_3g_network (NMApplet *applet,
 		return FALSE;
 	}
 
+#if WITH_MODEM_MANAGER_1
+	if (g_str_has_prefix (nm_device_get_udi (device), "/org/freedesktop/ModemManager1/Modem/")) {
+		if (applet->mm1_running) {
+			applet_broadband_connect_network (applet, device);
+			return TRUE;
+		}
+
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		                     "ModemManager was not found");
+		return FALSE;
+	}
+#endif
+
 	caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
 	if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
 		applet_gsm_connect_network (applet, device);
@@ -222,6 +241,15 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->wifi_class;
 	else if (NM_IS_DEVICE_MODEM (device)) {
 		NMDeviceModemCapabilities caps;
+
+#if WITH_MODEM_MANAGER_1
+		if (g_str_has_prefix (nm_device_get_udi (device), "/org/freedesktop/ModemManager1/Modem/")) {
+			if (applet->mm1_running)
+				return applet->broadband_class;
+			g_message ("%s: ModemManager was not found", __func__);
+			return NULL;
+		}
+#endif
 
 		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
 		if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
@@ -258,6 +286,10 @@ get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
 		return applet->ethernet_class;
 	else if (!strcmp (ctype, NM_SETTING_WIRELESS_SETTING_NAME))
 		return applet->wifi_class;
+#if WITH_MODEM_MANAGER_1
+	else if (applet->mm1_running && (!strcmp (ctype, NM_SETTING_GSM_SETTING_NAME) || !strcmp (ctype, NM_SETTING_CDMA_SETTING_NAME)))
+		return applet->broadband_class;
+#endif
 	else if (!strcmp (ctype, NM_SETTING_GSM_SETTING_NAME))
 		return applet->gsm_class;
 	else if (!strcmp (ctype, NM_SETTING_CDMA_SETTING_NAME))
@@ -2455,6 +2487,56 @@ foo_client_setup (NMApplet *applet)
 		g_idle_add (foo_set_initial_state, applet);
 }
 
+#if WITH_MODEM_MANAGER_1
+
+static void
+mm1_name_owner_changed_cb (GDBusObjectManagerClient *mm1,
+                           GParamSpec *pspec,
+                           NMApplet *applet)
+{
+	gchar *name_owner;
+
+	name_owner = g_dbus_object_manager_client_get_name_owner (mm1);
+	applet->mm1_running = !!name_owner;
+	g_free (name_owner);
+}
+
+static void
+mm1_client_setup (NMApplet *applet)
+{
+	GDBusConnection *system_bus;
+	GError *error = NULL;
+
+	system_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
+	if (!system_bus) {
+		g_warning ("Error connecting to system D-Bus: %s",
+		           error->message);
+		g_clear_error (&error);
+		return;
+	}
+
+	applet->mm1 = (mm_manager_new_sync (
+		               system_bus,
+		               G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE,
+		               NULL,
+		               &error));
+	if (!applet->mm1) {
+		g_warning ("Error connecting to ModemManager: %s",
+		           error->message);
+		g_clear_error (&error);
+		return;
+	}
+
+	/* Check whether the ModemManager is really running */
+	g_signal_connect (applet->mm1,
+	                  "notify::name-owner",
+	                  G_CALLBACK (mm1_name_owner_changed_cb),
+	                  applet);
+	mm1_name_owner_changed_cb (G_DBUS_OBJECT_MANAGER_CLIENT (applet->mm1), NULL, applet);
+}
+
+#endif /* WITH_MODEM_MANAGER_1 */
+
 static GdkPixbuf *
 applet_common_get_device_icon (NMDeviceState state, NMApplet *applet)
 {
@@ -3426,6 +3508,11 @@ constructor (GType type,
 	applet->cdma_class = applet_device_cdma_get_class (applet);
 	g_assert (applet->cdma_class);
 
+#if WITH_MODEM_MANAGER_1
+	applet->broadband_class = applet_device_broadband_get_class (applet);
+	g_assert (applet->broadband_class);
+#endif
+
 	applet->bt_class = applet_device_bt_get_class (applet);
 	g_assert (applet->bt_class);
 
@@ -3433,6 +3520,10 @@ constructor (GType type,
 	g_assert (applet->wimax_class);
 
 	foo_client_setup (applet);
+
+#if WITH_MODEM_MANAGER_1
+	mm1_client_setup (applet);
+#endif
 
 	/* Track embedding to help debug issues where user has removed the
 	 * notification area applet from the panel, and thus nm-applet too.
@@ -3465,6 +3556,9 @@ static void finalize (GObject *object)
 	g_slice_free (NMADeviceClass, applet->wifi_class);
 	g_slice_free (NMADeviceClass, applet->gsm_class);
 	g_slice_free (NMADeviceClass, applet->cdma_class);
+#if WITH_MODEM_MANAGER_1
+	g_slice_free (NMADeviceClass, applet->broadband_class);
+#endif
 	g_slice_free (NMADeviceClass, applet->bt_class);
 	g_slice_free (NMADeviceClass, applet->wimax_class);
 
@@ -3496,6 +3590,11 @@ static void finalize (GObject *object)
 
 	if (applet->nm_client)
 		g_object_unref (applet->nm_client);
+
+#if WITH_MODEM_MANAGER_1
+	if (applet->mm1)
+		g_object_unref (applet->mm1);
+#endif
 
 	if (applet->fallback_icon)
 		g_object_unref (applet->fallback_icon);

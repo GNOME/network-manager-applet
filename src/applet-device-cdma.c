@@ -623,7 +623,7 @@ signal_quality_changed_cb (DBusGProxy *proxy,
 	applet_schedule_update_icon (info->applet);
 }
 
-#define MM_DBUS_INTERFACE_MODEM "org.freedesktop.ModemManager.Modem"
+#define MM_OLD_DBUS_INTERFACE_MODEM "org.freedesktop.ModemManager.Modem"
 #define DBUS_TYPE_G_MAP_OF_VARIANT (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE))
 
 static void
@@ -635,7 +635,7 @@ modem_properties_changed (DBusGProxy *proxy,
 	CdmaDeviceInfo *info = user_data;
 	GValue *value;
 
-	if (!strcmp (interface, MM_DBUS_INTERFACE_MODEM)) {
+	if (!strcmp (interface, MM_OLD_DBUS_INTERFACE_MODEM)) {
 		value = g_hash_table_lookup (props, "Enabled");
 		if (value && G_VALUE_HOLDS_BOOLEAN (value)) {
 			info->modem_enabled = g_value_get_boolean (value);
@@ -730,7 +730,7 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	/* Ask whether the device is enabled */
 	dbus_g_proxy_begin_call (info->props_proxy, "Get",
 	                         enabled_reply, info, NULL,
-	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM,
+	                         G_TYPE_STRING, MM_OLD_DBUS_INTERFACE_MODEM,
 	                         G_TYPE_STRING, "Enabled",
 	                         G_TYPE_INVALID);
 }

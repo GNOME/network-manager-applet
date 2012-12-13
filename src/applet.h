@@ -47,6 +47,10 @@
 #include "applet-agent.h"
 #include "shell-watcher.h"
 
+#if WITH_MODEM_MANAGER_1
+#include <libmm-glib.h>
+#endif
+
 #define NM_TYPE_APPLET			(nma_get_type())
 #define NM_APPLET(object)		(G_TYPE_CHECK_INSTANCE_CAST((object), NM_TYPE_APPLET, NMApplet))
 #define NM_APPLET_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST((klass), NM_TYPE_APPLET, NMAppletClass))
@@ -95,6 +99,11 @@ typedef struct
 
 	GSettings *gsettings;
 
+#if WITH_MODEM_MANAGER_1
+	MMManager *mm1;
+	gboolean   mm1_running;
+#endif
+
 	/* Permissions */
 	NMClientPermissionResult permissions[NM_CLIENT_PERMISSION_LAST + 1];
 
@@ -103,6 +112,9 @@ typedef struct
 	NMADeviceClass *wifi_class;
 	NMADeviceClass *gsm_class;
 	NMADeviceClass *cdma_class;
+#if WITH_MODEM_MANAGER_1
+	NMADeviceClass *broadband_class;
+#endif
 	NMADeviceClass *bt_class;
 	NMADeviceClass *wimax_class;
 

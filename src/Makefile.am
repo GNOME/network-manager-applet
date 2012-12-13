@@ -72,6 +72,13 @@ nm_applet_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la
 
+if WITH_MODEM_MANAGER_1
+nm_applet_SOURCES += \
+	applet-device-broadband.h \
+	applet-device-broadband.c
+nm_applet_CPPFLAGS += $(MM_GLIB_CFLAGS)
+nm_applet_LDADD += $(MM_GLIB_LIBS)
+endif
 
 if BUILD_MIGRATION_TOOL
 SUBDIRS += gconf-helpers

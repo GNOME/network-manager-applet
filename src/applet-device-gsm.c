@@ -894,7 +894,7 @@ simid_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	check_start_polling (info);
 }
 
-#define MM_DBUS_INTERFACE_MODEM_GSM_CARD "org.freedesktop.ModemManager.Modem.Gsm.Card"
+#define MM_OLD_DBUS_INTERFACE_MODEM_GSM_CARD "org.freedesktop.ModemManager.Modem.Gsm.Card"
 
 static void
 unlock_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
@@ -927,7 +927,7 @@ unlock_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 		/* Get SIM card identifier */
 		dbus_g_proxy_begin_call (info->props_proxy, "Get",
 		                         simid_reply, info, NULL,
-		                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM_GSM_CARD,
+		                         G_TYPE_STRING, MM_OLD_DBUS_INTERFACE_MODEM_GSM_CARD,
 		                         G_TYPE_STRING, "SimIdentifier",
 		                         G_TYPE_INVALID);
 	}
@@ -1058,8 +1058,8 @@ signal_quality_changed_cb (DBusGProxy *proxy,
 	applet_schedule_update_icon (info->applet);
 }
 
-#define MM_DBUS_INTERFACE_MODEM "org.freedesktop.ModemManager.Modem"
-#define MM_DBUS_INTERFACE_MODEM_GSM_NETWORK "org.freedesktop.ModemManager.Modem.Gsm.Network"
+#define MM_OLD_DBUS_INTERFACE_MODEM "org.freedesktop.ModemManager.Modem"
+#define MM_OLD_DBUS_INTERFACE_MODEM_GSM_NETWORK "org.freedesktop.ModemManager.Modem.Gsm.Network"
 
 static void
 modem_properties_changed (DBusGProxy *proxy,
@@ -1070,7 +1070,7 @@ modem_properties_changed (DBusGProxy *proxy,
 	GsmDeviceInfo *info = user_data;
 	GValue *value;
 
-	if (!strcmp (interface, MM_DBUS_INTERFACE_MODEM)) {
+	if (!strcmp (interface, MM_OLD_DBUS_INTERFACE_MODEM)) {
 		value = g_hash_table_lookup (props, "UnlockRequired");
 		if (value && G_VALUE_HOLDS_STRING (value)) {
 			g_free (info->unlock_required);
@@ -1093,7 +1093,7 @@ modem_properties_changed (DBusGProxy *proxy,
 			}
 			check_start_polling (info);
 		}
-	} else if (!strcmp (interface, MM_DBUS_INTERFACE_MODEM_GSM_NETWORK)) {
+	} else if (!strcmp (interface, MM_OLD_DBUS_INTERFACE_MODEM_GSM_NETWORK)) {
 		value = g_hash_table_lookup (props, "AccessTechnology");
 		if (value && G_VALUE_HOLDS_UINT (value)) {
 			info->act = g_value_get_uint (value);
@@ -1150,7 +1150,7 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 	info->net_proxy = dbus_g_proxy_new_for_name (info->bus,
 	                                             "org.freedesktop.ModemManager",
 	                                             udi,
-	                                             MM_DBUS_INTERFACE_MODEM_GSM_NETWORK);
+	                                             MM_OLD_DBUS_INTERFACE_MODEM_GSM_NETWORK);
 	if (!info->net_proxy) {
 		g_message ("%s: failed to create GSM Network proxy.", __func__);
 		gsm_device_info_free (info);
@@ -1188,19 +1188,19 @@ gsm_device_added (NMDevice *device, NMApplet *applet)
 	/* Ask whether the device needs to be unlocked */
 	dbus_g_proxy_begin_call (info->props_proxy, "GetAll",
 	                         unlock_reply, info, NULL,
-	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM,
+	                         G_TYPE_STRING, MM_OLD_DBUS_INTERFACE_MODEM,
 	                         G_TYPE_INVALID);
 
 	/* Ask whether the device is enabled */
 	dbus_g_proxy_begin_call (info->props_proxy, "Get",
 	                         enabled_reply, info, NULL,
-	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM,
+	                         G_TYPE_STRING, MM_OLD_DBUS_INTERFACE_MODEM,
 	                         G_TYPE_STRING, "Enabled",
 	                         G_TYPE_INVALID);
 
 	dbus_g_proxy_begin_call (info->props_proxy, "Get",
 	                         access_tech_reply, info, NULL,
-	                         G_TYPE_STRING, MM_DBUS_INTERFACE_MODEM_GSM_NETWORK,
+	                         G_TYPE_STRING, MM_OLD_DBUS_INTERFACE_MODEM_GSM_NETWORK,
 	                         G_TYPE_STRING, "AccessTechnology",
 	                         G_TYPE_INVALID);
 }
