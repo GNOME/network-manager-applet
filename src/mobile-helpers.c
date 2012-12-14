@@ -577,3 +577,63 @@ mobile_helper_get_secrets (NMDeviceModemCapabilities capabilities,
 
 	return TRUE;
 }
+
+/********************************************************************/
+
+GdkPixbuf *
+mobile_helper_get_icon (NMDevice *device,
+                        NMDeviceState state,
+                        NMConnection *connection,
+                        char **tip,
+                        NMApplet *applet,
+                        guint32 mb_state,
+                        guint32 mb_tech,
+                        guint32 quality,
+                        gboolean quality_valid)
+{
+	NMSettingConnection *s_con;
+	GdkPixbuf *pixbuf = NULL;
+	const char *id;
+
+	id = nm_device_get_iface (NM_DEVICE (device));
+	if (connection) {
+		s_con = nm_connection_get_setting_connection (connection);
+		id = nm_setting_connection_get_id (s_con);
+	}
+
+	switch (state) {
+	case NM_DEVICE_STATE_PREPARE:
+		*tip = g_strdup_printf (_("Preparing mobile broadband connection '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_CONFIG:
+		*tip = g_strdup_printf (_("Configuring mobile broadband connection '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_NEED_AUTH:
+		*tip = g_strdup_printf (_("User authentication required for mobile broadband connection '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_IP_CONFIG:
+		*tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
+		break;
+	case NM_DEVICE_STATE_ACTIVATED:
+		pixbuf = mobile_helper_get_status_pixbuf (quality,
+		                                          quality_valid,
+		                                          mb_state,
+		                                          mb_tech,
+		                                          applet);
+
+		if ((mb_state != MB_STATE_UNKNOWN) && quality_valid) {
+			gboolean roaming = (mb_state == MB_STATE_ROAMING);
+
+			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active: (%d%%%s%s)"),
+			                        id, quality,
+			                        roaming ? ", " : "",
+			                        roaming ? _("roaming") : "");
+		} else
+			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
+		break;
+	default:
+		break;
+	}
+
+	return pixbuf;
+}

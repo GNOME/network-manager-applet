@@ -419,57 +419,20 @@ gsm_get_icon (NMDevice *device,
               char **tip,
               NMApplet *applet)
 {
-	NMSettingConnection *s_con;
-	GdkPixbuf *pixbuf = NULL;
-	const char *id;
 	GsmDeviceInfo *info;
-	guint32 mb_state;
 
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
 	g_assert (info);
 
-	id = nm_device_get_iface (NM_DEVICE (device));
-	if (connection) {
-		s_con = nm_connection_get_setting_connection (connection);
-		id = nm_setting_connection_get_id (s_con);
-	}
-
-	switch (state) {
-	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing mobile broadband connection '%s'..."), id);
-		break;
-	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring mobile broadband connection '%s'..."), id);
-		break;
-	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("User authentication required for mobile broadband connection '%s'..."), id);
-		break;
-	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-		mb_state = gsm_state_to_mb_state (info);
-		pixbuf = mobile_helper_get_status_pixbuf (info->quality,
-		                                          info->quality_valid,
-		                                          mb_state,
-		                                          gsm_act_to_mb_act (info),
-		                                          applet);
-
-		if ((mb_state != MB_STATE_UNKNOWN) && info->quality_valid) {
-			gboolean roaming = (mb_state == MB_STATE_ROAMING);
-
-			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active: (%d%%%s%s)"),
-			                        id, info->quality,
-			                        roaming ? ", " : "",
-			                        roaming ? _("roaming") : "");
-		} else
-			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
-		break;
-	default:
-		break;
-	}
-
-	return pixbuf;
+	return mobile_helper_get_icon (device,
+	                               state,
+	                               connection,
+	                               tip,
+	                               applet,
+	                               gsm_state_to_mb_state (info),
+	                               gsm_act_to_mb_act (info),
+	                               info->quality,
+	                               info->quality_valid);
 }
 
 static gboolean

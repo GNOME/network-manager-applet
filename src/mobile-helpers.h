@@ -90,4 +90,16 @@ gboolean mobile_helper_get_secrets (NMDeviceModemCapabilities capabilities,
                                     SecretsRequest *req,
                                     GError **error);
 
+/********************************************************************/
+
+GdkPixbuf *mobile_helper_get_icon (NMDevice *device,
+                                   NMDeviceState state,
+                                   NMConnection *connection,
+                                   char **tip,
+                                   NMApplet *applet,
+                                   guint32 mb_state,
+                                   guint32 mb_tech,
+                                   guint32 quality,
+                                   gboolean quality_valid);
+
 #endif  /* APPLET_MOBILE_HELPERS_H */
