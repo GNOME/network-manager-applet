@@ -63,13 +63,31 @@ GdkPixbuf *mobile_helper_get_quality_icon (guint32 quality, NMApplet *applet);
 
 GdkPixbuf *mobile_helper_get_tech_icon (guint32 tech, NMApplet *applet);
 
+/********************************************************************/
+
 gboolean   mobile_helper_wizard (NMDeviceModemCapabilities capabilities,
                                  AppletNewAutoConnectionCallback callback,
                                  gpointer callback_data);
+
+/********************************************************************/
 
 void mobile_helper_save_pin_in_keyring   (const char *devid,
                                           const char *simid,
                                           const char *pin);
 void mobile_helper_delete_pin_in_keyring (const char *devid);
+
+/********************************************************************/
+
+typedef struct {
+	SecretsRequest req;
+	GtkWidget *dialog;
+	GtkEntry *secret_entry;
+	char *secret_name;
+	NMDeviceModemCapabilities capability;
+} MobileHelperSecretsInfo;
+
+gboolean mobile_helper_get_secrets (NMDeviceModemCapabilities capabilities,
+                                    SecretsRequest *req,
+                                    GError **error);
 
 #endif  /* APPLET_MOBILE_HELPERS_H */

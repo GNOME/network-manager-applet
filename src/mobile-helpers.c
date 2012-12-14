@@ -26,6 +26,7 @@
 
 #include "utils.h"
 #include "mobile-helpers.h"
+#include "applet-dialogs.h"
 
 GdkPixbuf *
 mobile_helper_get_status_pixbuf (guint32 quality,
@@ -357,4 +358,222 @@ mobile_helper_delete_pin_in_keyring (const char *devid)
 	                           GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
 	                           devid,
 	                           NULL);
+}
+
+/********************************************************************/
+
+static void
+free_secrets_info (SecretsRequest *req)
+{
+	MobileHelperSecretsInfo *info = (MobileHelperSecretsInfo *) req;
+
+	if (info->dialog) {
+		gtk_widget_hide (info->dialog);
+		gtk_widget_destroy (info->dialog);
+	}
+
+	g_free (info->secret_name);
+}
+
+static void
+get_secrets_cb (GtkDialog *dialog,
+                gint response,
+                gpointer user_data)
+{
+	SecretsRequest *req = user_data;
+	MobileHelperSecretsInfo *info = (MobileHelperSecretsInfo *) req;
+	GError *error = NULL;
+
+	if (response == GTK_RESPONSE_OK) {
+		if (info->capability == NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
+			NMSettingGsm *setting;
+
+			setting = nm_connection_get_setting_gsm (req->connection);
+			if (setting) {
+				g_object_set (G_OBJECT (setting),
+				              info->secret_name, gtk_entry_get_text (info->secret_entry),
+				              NULL);
+			} else {
+				error = g_error_new (NM_SECRET_AGENT_ERROR,
+				                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+				                     "%s.%d (%s): no GSM setting",
+				                     __FILE__, __LINE__, __func__);
+			}
+		} else if (info->capability == NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO) {
+				NMSettingCdma *setting;
+
+				setting = nm_connection_get_setting_cdma (req->connection);
+				if (setting) {
+					g_object_set (G_OBJECT (setting),
+					              info->secret_name, gtk_entry_get_text (info->secret_entry),
+					              NULL);
+				} else {
+					error = g_error_new (NM_SECRET_AGENT_ERROR,
+					                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+					                     "%s.%d (%s): no CDMA setting",
+					                     __FILE__, __LINE__, __func__);
+				}
+		} else
+			g_assert_not_reached ();
+	} else {
+		error = g_error_new (NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_USER_CANCELED,
+		                     "%s.%d (%s): canceled",
+		                     __FILE__, __LINE__, __func__);
+	}
+
+	if (info->capability == NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
+		applet_secrets_request_complete_setting (req, NM_SETTING_GSM_SETTING_NAME, error);
+	else if (info->capability == NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
+		applet_secrets_request_complete_setting (req, NM_SETTING_CDMA_SETTING_NAME, error);
+	else
+		g_assert_not_reached ();
+
+	applet_secrets_request_free (req);
+	g_clear_error (&error);
+}
+
+static void
+pin_entry_changed (GtkEditable *editable, gpointer user_data)
+{
+	GtkWidget *ok_button = GTK_WIDGET (user_data);
+	const char *s;
+	int i;
+	gboolean valid = FALSE;
+	guint32 len;
+
+	s = gtk_entry_get_text (GTK_ENTRY (editable));
+	if (s) {
+		len = strlen (s);
+		if ((len >= 4) && (len <= 8)) {
+			valid = TRUE;
+			for (i = 0; i < len; i++) {
+				if (!g_ascii_isdigit (s[i])) {
+					valid = FALSE;
+					break;
+				}
+			}
+		}
+	}
+
+	gtk_widget_set_sensitive (ok_button, valid);
+}
+
+static GtkWidget *
+ask_for_pin (GtkEntry **out_secret_entry)
+{
+	GtkDialog *dialog;
+	GtkWidget *w = NULL, *ok_button = NULL;
+	GtkBox *box = NULL, *vbox = NULL;
+
+	dialog = GTK_DIALOG (gtk_dialog_new ());
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_title (GTK_WINDOW (dialog), _("PIN code required"));
+
+	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
+	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
+	gtk_window_set_default (GTK_WINDOW (dialog), ok_button);
+
+	vbox = GTK_BOX (gtk_dialog_get_content_area (dialog));
+
+	w = gtk_label_new (_("PIN code is needed for the mobile broadband device"));
+	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
+
+	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
+	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
+
+#if GTK_CHECK_VERSION(3,1,6)
+	box = GTK_BOX (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6));
+#else
+	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
+#endif
+	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
+	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (box));
+
+	gtk_box_pack_start (box, gtk_label_new ("PIN:"), FALSE, FALSE, 0);
+
+	w = gtk_entry_new ();
+	*out_secret_entry = GTK_ENTRY (w);
+	gtk_entry_set_max_length (GTK_ENTRY (w), 8);
+	gtk_entry_set_width_chars (GTK_ENTRY (w), 8);
+	gtk_entry_set_activates_default (GTK_ENTRY (w), TRUE);
+	gtk_entry_set_visibility (GTK_ENTRY (w), FALSE);
+	gtk_box_pack_start (box, w, FALSE, FALSE, 0);
+	g_signal_connect (w, "changed", G_CALLBACK (pin_entry_changed), ok_button);
+	pin_entry_changed (GTK_EDITABLE (w), ok_button);
+
+	gtk_widget_show_all (GTK_WIDGET (vbox));
+	return GTK_WIDGET (dialog);
+}
+
+gboolean
+mobile_helper_get_secrets (NMDeviceModemCapabilities capabilities,
+                           SecretsRequest *req,
+                           GError **error)
+{
+	MobileHelperSecretsInfo *info = (MobileHelperSecretsInfo *) req;
+	GtkWidget *widget;
+	GtkEntry *secret_entry = NULL;
+
+	applet_secrets_request_set_free_func (req, free_secrets_info);
+
+	if (!req->hints || !g_strv_length (req->hints)) {
+		g_set_error (error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		             "%s.%d (%s): missing secrets hints.",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
+	info->secret_name = g_strdup (req->hints[0]);
+
+	/* Convert the input capabilities mask into a single value */
+	if (capabilities & NM_DEVICE_MODEM_CAPABILITY_LTE)
+		/* All LTE modems treated as GSM/UMTS for the settings */
+		info->capability = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
+	else if (capabilities & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
+		info->capability = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
+	else if (capabilities & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
+		info->capability = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
+	else {
+		g_set_error (error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		             "%s.%d (%s): unknown modem capabilities (0x%X).",
+		             __FILE__, __LINE__, __func__, capabilities);
+		return FALSE;
+	}
+
+	if (!strcmp (info->secret_name, NM_SETTING_GSM_PIN)) {
+		widget = ask_for_pin (&secret_entry);
+	} else if (!strcmp (info->secret_name, NM_SETTING_GSM_PASSWORD) ||
+	           !strcmp (info->secret_name, NM_SETTING_CDMA_PASSWORD))
+		widget = applet_mobile_password_dialog_new (req->connection, &secret_entry);
+	else {
+		g_set_error (error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		             "%s.%d (%s): unknown secrets hint '%s'.",
+		             __FILE__, __LINE__, __func__, info->secret_name);
+		return FALSE;
+	}
+	info->dialog = widget;
+	info->secret_entry = secret_entry;
+
+	if (!widget || !secret_entry) {
+		g_set_error (error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		             "%s.%d (%s): error asking for mobile secrets.",
+		             __FILE__, __LINE__, __func__);
+		return FALSE;
+	}
+
+	g_signal_connect (widget, "response", G_CALLBACK (get_secrets_cb), info);
+
+	gtk_window_set_position (GTK_WINDOW (widget), GTK_WIN_POS_CENTER_ALWAYS);
+	gtk_widget_realize (GTK_WIDGET (widget));
+	gtk_window_present (GTK_WINDOW (widget));
+
+	return TRUE;
 }

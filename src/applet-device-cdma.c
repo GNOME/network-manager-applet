@@ -418,107 +418,10 @@ cdma_get_icon (NMDevice *device,
 	return pixbuf;
 }
 
-typedef struct {
-	SecretsRequest req;
-	GtkWidget *dialog;
-	GtkEntry *secret_entry;
-	char *secret_name;
-} NMCdmaSecretsInfo;
-
-static void
-free_cdma_secrets_info (SecretsRequest *req)
-{
-	NMCdmaSecretsInfo *info = (NMCdmaSecretsInfo *) req;
-
-	if (info->dialog) {
-		gtk_widget_hide (info->dialog);
-		gtk_widget_destroy (info->dialog);
-	}
-	g_free (info->secret_name);
-}
-
-static void
-get_cdma_secrets_cb (GtkDialog *dialog,
-                     gint response,
-                     gpointer user_data)
-{
-	SecretsRequest *req = user_data;
-	NMCdmaSecretsInfo *info = (NMCdmaSecretsInfo *) req;
-	NMSettingCdma *setting;
-	GError *error = NULL;
-
-	if (response == GTK_RESPONSE_OK) {
-		setting = nm_connection_get_setting_cdma (req->connection);
-		if (setting) {
-			g_object_set (G_OBJECT (setting),
-				          info->secret_name, gtk_entry_get_text (info->secret_entry),
-				          NULL);
-		} else {
-			error = g_error_new (NM_SECRET_AGENT_ERROR,
-				                 NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-				                 "%s.%d (%s): no GSM setting",
-				                 __FILE__, __LINE__, __func__);
-		}
-	} else {
-		error = g_error_new (NM_SECRET_AGENT_ERROR,
-		                     NM_SECRET_AGENT_ERROR_USER_CANCELED,
-		                     "%s.%d (%s): canceled",
-		                     __FILE__, __LINE__, __func__);
-	}
-
-	applet_secrets_request_complete_setting (req, NM_SETTING_CDMA_SETTING_NAME, error);
-	applet_secrets_request_free (req);
-	g_clear_error (&error);
-}
-
 static gboolean
 cdma_get_secrets (SecretsRequest *req, GError **error)
 {
-	NMCdmaSecretsInfo *info = (NMCdmaSecretsInfo *) req;
-	GtkWidget *widget;
-	GtkEntry *secret_entry = NULL;
-
-	applet_secrets_request_set_free_func (req, free_cdma_secrets_info);
-
-	if (!req->hints || !g_strv_length (req->hints)) {
-		g_set_error (error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): missing secrets hints.",
-		             __FILE__, __LINE__, __func__);
-		return FALSE;
-	}
-	info->secret_name = g_strdup (req->hints[0]);
-
-	if (!strcmp (info->secret_name, NM_SETTING_CDMA_PASSWORD))
-		widget = applet_mobile_password_dialog_new (req->connection, &secret_entry);
-	else {
-		g_set_error (error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): unknown secrets hint '%s'.",
-		             __FILE__, __LINE__, __func__, info->secret_name);
-		return FALSE;
-	}
-	info->dialog = widget;
-	info->secret_entry = secret_entry;
-
-	if (!widget || !secret_entry) {
-		g_set_error (error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): error asking for CDMA secrets.",
-		             __FILE__, __LINE__, __func__);
-		return FALSE;
-	}
-
-	g_signal_connect (widget, "response", G_CALLBACK (get_cdma_secrets_cb), info);
-
-	gtk_window_set_position (GTK_WINDOW (widget), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_widget_realize (GTK_WIDGET (widget));
-	gtk_window_present (GTK_WINDOW (widget));
-
-	return TRUE;
+	return mobile_helper_get_secrets (NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO, req, error);
 }
 
 static void
@@ -901,7 +804,7 @@ applet_device_cdma_get_class (NMApplet *applet)
 	dclass->device_state_changed = cdma_device_state_changed;
 	dclass->get_icon = cdma_get_icon;
 	dclass->get_secrets = cdma_get_secrets;
-	dclass->secrets_request_size = sizeof (NMCdmaSecretsInfo);
+	dclass->secrets_request_size = sizeof (MobileHelperSecretsInfo);
 	dclass->device_added = cdma_device_added;
 
 	return dclass;
