@@ -760,7 +760,7 @@ delete_pins_in_keyring (const char *devid)
 static void
 unlock_dialog_destroy (GsmDeviceInfo *info)
 {
-	applet_mobile_pin_dialog_destroy (info->dialog);
+	gtk_widget_destroy (info->dialog);
 	info->dialog = NULL;
 }
 
@@ -877,79 +877,30 @@ unlock_dialog_response (GtkDialog *dialog,
 static void
 unlock_dialog_new (NMDevice *device, GsmDeviceInfo *info)
 {
-	const char *header = NULL;
-	const char *title = NULL;
-	const char *show_pass_label = NULL;
-	char *desc = NULL;
-	const char *label1 = NULL, *label2 = NULL, *label3 = NULL;
-	const char *device_desc;
-	gboolean match23 = FALSE;
-	guint32 label1_min = 0, label2_min = 0, label3_min = 0;
-	guint32 label1_max = 0, label2_max = 0, label3_max = 0;
-	guint32 unlock_code = 0;
-
 	g_return_if_fail (info->unlock_required != NULL);
+	g_return_if_fail (!strcmp (info->unlock_required, "sim-pin") || !strcmp (info->unlock_required, "sim-puk"));
 
 	if (info->dialog)
 		return;
 
-	/* Figure out the dialog text based on the required unlock code */
-	device_desc = nma_utils_get_device_description (device);
-	if (!strcmp (info->unlock_required, "sim-pin")) {
-		title = _("SIM PIN unlock required");
-		header = _("SIM PIN Unlock Required");
-		/* FIXME: some warning about # of times you can enter incorrect PIN */
-		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PIN code before it can be used."), device_desc);
-		/* Translators: PIN code entry label */
-		label1 = _("PIN code:");
-		label1_min = 4;
-		label1_max = 8;
-		/* Translators: Show/obscure PIN checkbox label */
-		show_pass_label = _("Show PIN code");
-		unlock_code = UNLOCK_CODE_PIN;
-	} else if (!strcmp (info->unlock_required, "sim-puk")) {
-		title = _("SIM PUK unlock required");
-		header = _("SIM PUK Unlock Required");
-		/* FIXME: some warning about # of times you can enter incorrect PUK */
-		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PUK code before it can be used."), device_desc);
-		/* Translators: PUK code entry label */
-		label1 = _("PUK code:");
-		label1_min = label1_max = 8;
-		/* Translators: New PIN entry label */
-		label2 = _("New PIN code:");
-		/* Translators: New PIN verification entry label */
-		label3 = _("Re-enter new PIN code:");
-		label2_min = label3_min = 4;
-		label2_max = label3_max = 8;
-		match23 = TRUE;
-		/* Translators: Show/obscure PIN/PUK checkbox label */
-		show_pass_label = _("Show PIN/PUK codes");
-		unlock_code = UNLOCK_CODE_PUK;
-	} else {
-		g_warning ("Unhandled unlock request for '%s'", info->unlock_required);
-		return;
-	}
+	info->dialog = applet_mobile_pin_dialog_new (info->unlock_required,
+	                                             nma_utils_get_device_description (device));
 
-	/* Construct and run the dialog */
-	info->dialog = applet_mobile_pin_dialog_new (title,
-	                                             header,
-	                                             desc,
-	                                             show_pass_label,
-	                                             (unlock_code == UNLOCK_CODE_PIN) ? TRUE : FALSE);
-	g_free (desc);
-	g_return_if_fail (info->dialog != NULL);
-
-	g_object_set_data (G_OBJECT (info->dialog), "unlock-code", GUINT_TO_POINTER (unlock_code));
-	applet_mobile_pin_dialog_match_23 (info->dialog, match23);
-
-	applet_mobile_pin_dialog_set_entry1 (info->dialog, label1, label1_min, label1_max);
-	if (label2)
-		applet_mobile_pin_dialog_set_entry2 (info->dialog, label2, label2_min, label2_max);
-	if (label3)
-		applet_mobile_pin_dialog_set_entry3 (info->dialog, label3, label3_min, label3_max);
+	if (!strcmp (info->unlock_required, "sim-pin"))
+		g_object_set_data (G_OBJECT (info->dialog), "unlock-code", GUINT_TO_POINTER (UNLOCK_CODE_PIN));
+	else if (!strcmp (info->unlock_required, "sim-puk"))
+		g_object_set_data (G_OBJECT (info->dialog), "unlock-code", GUINT_TO_POINTER (UNLOCK_CODE_PUK));
+	else
+		g_assert_not_reached ();
 
 	g_signal_connect (info->dialog, "response", G_CALLBACK (unlock_dialog_response), info);
-	applet_mobile_pin_dialog_present (info->dialog, FALSE);
+
+	/* Need to resize the dialog after hiding widgets */
+	gtk_window_resize (GTK_WINDOW (info->dialog), 400, 100);
+
+	/* Show the dialog */
+	gtk_widget_realize (info->dialog);
+	gtk_window_present (GTK_WINDOW (info->dialog));
 }
 
 /********************************************************************/

@@ -1080,13 +1080,6 @@ done:
 		gtk_widget_grab_default (widget);
 }
 
-void
-applet_mobile_pin_dialog_destroy (GtkWidget *widget)
-{
-	gtk_widget_hide (widget);
-	gtk_widget_destroy (widget);
-}
-
 static void
 mpd_cancel_dialog (GtkDialog *dialog)
 {
@@ -1112,116 +1105,6 @@ show_toggled_cb (GtkWidget *button, gpointer user_data)
 	gtk_entry_set_visibility (GTK_ENTRY (widget), show);
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_entry"));
 	gtk_entry_set_visibility (GTK_ENTRY (widget), show);
-}
-
-GtkWidget *
-applet_mobile_pin_dialog_new (const char *title,
-                              const char *header,
-                              const char *desc,
-                              const char *show_password_label,
-                              gboolean show_auto_unlock_checkbox)
-{
-	char *str;
-	GtkWidget *dialog;
-	GtkWidget *widget;
-	GError *error = NULL;
-	GtkBuilder *builder;
-
-	g_return_val_if_fail (title != NULL, NULL);
-	g_return_val_if_fail (header != NULL, NULL);
-	g_return_val_if_fail (desc != NULL, NULL);
-	g_return_val_if_fail (show_password_label != NULL, NULL);
-
-	builder = gtk_builder_new ();
-
-	if (!gtk_builder_add_from_file (builder, UIDIR "/gsm-unlock.ui", &error)) {
-		g_warning ("Couldn't load builder file: %s", error->message);
-		g_error_free (error);
-		g_object_unref (builder);
-		return NULL;
-	}
-
-	dialog = GTK_WIDGET (gtk_builder_get_object (builder, "unlock_dialog"));
-	if (!dialog) {
-		g_object_unref (builder);
-		g_return_val_if_fail (dialog != NULL, NULL);
-	}
-
-	g_object_set_data_full (G_OBJECT (dialog), "builder", builder, (GDestroyNotify) g_object_unref);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), title);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "header_label"));
-	str = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>", header);
-	gtk_label_set_use_markup (GTK_LABEL (widget), TRUE);
-	gtk_label_set_markup (GTK_LABEL (widget), str);
-	g_free (str);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "desc_label"));
-	gtk_label_set_text (GTK_LABEL (widget), desc);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_password_checkbutton"));
-	gtk_button_set_label (GTK_BUTTON (widget), show_password_label);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), FALSE);
-	g_signal_connect (widget, "toggled", G_CALLBACK (show_toggled_cb), dialog);
-	show_toggled_cb (widget, dialog);
-
-	g_signal_connect (dialog, "delete-event", G_CALLBACK (mpd_cancel_dialog), NULL);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "save_checkbutton"));
-	if (show_auto_unlock_checkbox)
-		g_object_set_data (G_OBJECT (widget), "active", GUINT_TO_POINTER (TRUE));
-
-	mpd_entry_changed (NULL, dialog);
-
-	return dialog;
-}
-
-void
-applet_mobile_pin_dialog_present (GtkWidget *dialog, gboolean now)
-{
-	GtkBuilder *builder;
-	GtkWidget *widget;
-
-	g_return_if_fail (dialog != NULL);
-	builder = g_object_get_data (G_OBJECT (dialog), "builder");
-	g_return_if_fail (builder != NULL);
-
-	gtk_widget_show_all (dialog);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "progress_hbox"));
-	gtk_widget_hide (widget);
-
-	/* Hide inactive entries */
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code2_entry"));
-	if (!g_object_get_data (G_OBJECT (widget), "active")) {
-		gtk_widget_hide (widget);
-		widget = GTK_WIDGET (gtk_builder_get_object (builder, "code2_label"));
-		gtk_widget_hide (widget);
-	}
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_entry"));
-	if (!g_object_get_data (G_OBJECT (widget), "active")) {
-		gtk_widget_hide (widget);
-		widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_label"));
-		gtk_widget_hide (widget);
-	}
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "save_checkbutton"));
-	if (!g_object_get_data (G_OBJECT (widget), "active"))
-		gtk_widget_hide (widget);
-
-	/* Need to resize the dialog after hiding widgets */
-	gtk_window_resize (GTK_WINDOW (dialog), 400, 100);
-
-	/* Show the dialog */
-	gtk_widget_realize (dialog);
-	if (now)
-		gtk_window_present_with_time (GTK_WINDOW (dialog),
-			gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
-	else
-		gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void
@@ -1254,88 +1137,8 @@ mpd_entry_filter (GtkEntry *entry,
 	g_free (result);
 }
 
-static void
-mpd_set_entry (GtkWidget *dialog,
-               const char *entry_name,
-               const char *label_name,
-               const char *label,
-               guint32 minlen,
-               guint32 maxlen)
-{
-	GtkBuilder *builder;
-	GtkWidget *widget;
-	gboolean entry2_active = FALSE;
-	gboolean entry3_active = FALSE;
-
-	g_return_if_fail (dialog != NULL);
-	builder = g_object_get_data (G_OBJECT (dialog), "builder");
-	g_return_if_fail (builder != NULL);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, label_name));
-	gtk_label_set_text (GTK_LABEL (widget), label);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, entry_name));
-	g_signal_connect (widget, "changed", G_CALLBACK (mpd_entry_changed), dialog);
-	g_signal_connect (widget, "insert-text", G_CALLBACK (mpd_entry_filter), NULL);
-
-	if (maxlen)
-		gtk_entry_set_max_length (GTK_ENTRY (widget), maxlen);
-	g_object_set_data (G_OBJECT (widget), "minlen", GUINT_TO_POINTER (minlen));
-
-	/* Tag it so we know it's active */
-	g_object_set_data (G_OBJECT (widget), "active", GUINT_TO_POINTER (1));
-
-	/* Make a single-entry dialog look better */
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code2_entry"));
-	entry2_active = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget), "active"));
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_entry"));
-	entry3_active = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget), "active"));
-
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "table14"));
-	if (entry2_active || entry3_active)
-		gtk_table_set_row_spacings (GTK_TABLE (widget), 6);
-	else
-		gtk_table_set_row_spacings (GTK_TABLE (widget), 0);
-
-	mpd_entry_changed (NULL, dialog);
-}
-
-void
-applet_mobile_pin_dialog_set_entry1 (GtkWidget *dialog,
-                                     const char *label,
-                                     guint32 minlen,
-                                     guint32 maxlen)
-{
-	mpd_set_entry (dialog, "code1_entry", "code1_label", label, minlen, maxlen);
-}
-
-void
-applet_mobile_pin_dialog_set_entry2 (GtkWidget *dialog,
-                                     const char *label,
-                                     guint32 minlen,
-                                     guint32 maxlen)
-{
-	mpd_set_entry (dialog, "code2_entry", "code2_label", label, minlen, maxlen);
-}
-
-void
-applet_mobile_pin_dialog_set_entry3 (GtkWidget *dialog,
-                                     const char *label,
-                                     guint32 minlen,
-                                     guint32 maxlen)
-{
-	mpd_set_entry (dialog, "code3_entry", "code3_label", label, minlen, maxlen);
-}
-
-void applet_mobile_pin_dialog_match_23 (GtkWidget *dialog, gboolean match)
-{
-	g_return_if_fail (dialog != NULL);
-
-	g_object_set_data (G_OBJECT (dialog), "match23", GUINT_TO_POINTER (match));
-}
-
-static const char *
-mpd_get_entry (GtkWidget *dialog, const char *entry_name)
+const char *
+applet_mobile_pin_dialog_get_entry1 (GtkWidget *dialog)
 {
 	GtkBuilder *builder;
 	GtkWidget *widget;
@@ -1344,26 +1147,22 @@ mpd_get_entry (GtkWidget *dialog, const char *entry_name)
 	builder = g_object_get_data (G_OBJECT (dialog), "builder");
 	g_return_val_if_fail (builder != NULL, NULL);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, entry_name));
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code1_entry"));
 	return gtk_entry_get_text (GTK_ENTRY (widget));
-}
-
-const char *
-applet_mobile_pin_dialog_get_entry1 (GtkWidget *dialog)
-{
-	return mpd_get_entry (dialog, "code1_entry");
 }
 
 const char *
 applet_mobile_pin_dialog_get_entry2 (GtkWidget *dialog)
 {
-	return mpd_get_entry (dialog, "code2_entry");
-}
+	GtkBuilder *builder;
+	GtkWidget *widget;
 
-const char *
-applet_mobile_pin_dialog_get_entry3 (GtkWidget *dialog)
-{
-	return mpd_get_entry (dialog, "code3_entry");
+	g_return_val_if_fail (dialog != NULL, NULL);
+	builder = g_object_get_data (G_OBJECT (dialog), "builder");
+	g_return_val_if_fail (builder != NULL, NULL);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code2_entry"));
+	return gtk_entry_get_text (GTK_ENTRY (widget));
 }
 
 gboolean
@@ -1466,3 +1265,165 @@ applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog, const char *text)
 	gtk_widget_set_sensitive (widget, TRUE);
 }
 
+GtkWidget *
+applet_mobile_pin_dialog_new (const char *unlock_required,
+                              const char *device_description)
+{
+	char *str;
+	GtkWidget *dialog;
+	GtkWidget *widget;
+	GtkWidget *label;
+	GError *error = NULL;
+	GtkBuilder *builder;
+	const char *header = NULL;
+	const char *title = NULL;
+	const char *show_password_label = NULL;
+	char *desc = NULL;
+	const char *label1 = NULL, *label2 = NULL, *label3 = NULL;
+	const char *device_desc;
+	gboolean match23 = FALSE;
+	guint32 label1_min = 0, label2_min = 0, label3_min = 0;
+	guint32 label1_max = 0, label2_max = 0, label3_max = 0;
+	gboolean puk = FALSE;
+
+	g_return_val_if_fail (unlock_required != NULL, NULL);
+	g_return_val_if_fail (!strcmp (unlock_required, "sim-pin") || !strcmp (unlock_required, "sim-puk"), NULL);
+
+	builder = gtk_builder_new ();
+
+	if (!gtk_builder_add_from_file (builder, UIDIR "/gsm-unlock.ui", &error)) {
+		g_warning ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
+		g_object_unref (builder);
+		return NULL;
+	}
+
+	dialog = GTK_WIDGET (gtk_builder_get_object (builder, "unlock_dialog"));
+	if (!dialog) {
+		g_object_unref (builder);
+		g_return_val_if_fail (dialog != NULL, NULL);
+	}
+
+	g_object_set_data_full (G_OBJECT (dialog), "builder", builder, (GDestroyNotify) g_object_unref);
+
+	/* Figure out the dialog text based on the required unlock code */
+	if (!strcmp (unlock_required, "sim-pin")) {
+		title = _("SIM PIN unlock required");
+		header = _("SIM PIN Unlock Required");
+		/* FIXME: some warning about # of times you can enter incorrect PIN */
+		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PIN code before it can be used."), device_description);
+		/* Translators: PIN code entry label */
+		label1 = _("PIN code:");
+		label1_min = 4;
+		label1_max = 8;
+		/* Translators: Show/obscure PIN checkbox label */
+		show_password_label = _("Show PIN code");
+	} else if (!strcmp (unlock_required, "sim-puk")) {
+		title = _("SIM PUK unlock required");
+		header = _("SIM PUK Unlock Required");
+		/* FIXME: some warning about # of times you can enter incorrect PUK */
+		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PUK code before it can be used."), device_description);
+		/* Translators: PUK code entry label */
+		label1 = _("PUK code:");
+		label1_min = label1_max = 8;
+		/* Translators: New PIN entry label */
+		label2 = _("New PIN code:");
+		/* Translators: New PIN verification entry label */
+		label3 = _("Re-enter new PIN code:");
+		label2_min = label3_min = 4;
+		label2_max = label3_max = 8;
+		match23 = TRUE;
+		/* Translators: Show/obscure PIN/PUK checkbox label */
+		show_password_label = _("Show PIN/PUK codes");
+		puk = TRUE;
+	} else
+		g_assert_not_reached ();
+
+	gtk_window_set_title (GTK_WINDOW (dialog), title);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "header_label"));
+	str = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>", header);
+	gtk_label_set_use_markup (GTK_LABEL (widget), TRUE);
+	gtk_label_set_markup (GTK_LABEL (widget), str);
+	g_free (str);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "desc_label"));
+	gtk_label_set_text (GTK_LABEL (widget), desc);
+	g_free (desc);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "show_password_checkbutton"));
+	gtk_button_set_label (GTK_BUTTON (widget), show_password_label);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), FALSE);
+	g_signal_connect (widget, "toggled", G_CALLBACK (show_toggled_cb), dialog);
+	show_toggled_cb (widget, dialog);
+
+	g_signal_connect (dialog, "delete-event", G_CALLBACK (mpd_cancel_dialog), NULL);
+
+	gtk_widget_show_all (dialog);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "save_checkbutton"));
+	if (!puk)
+		g_object_set_data (G_OBJECT (widget), "active", GUINT_TO_POINTER (TRUE));
+	else
+		gtk_widget_hide (widget);
+
+	/* Set contents */
+	g_object_set_data (G_OBJECT (dialog), "match23", GUINT_TO_POINTER (match23));
+
+	/* code1_entry */
+	label = GTK_WIDGET (gtk_builder_get_object (builder, "code1_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code1_entry"));
+	gtk_label_set_text (GTK_LABEL (label), label1);
+	g_signal_connect (widget, "changed", G_CALLBACK (mpd_entry_changed), dialog);
+	g_signal_connect (widget, "insert-text", G_CALLBACK (mpd_entry_filter), NULL);
+	if (label1_max)
+		gtk_entry_set_max_length (GTK_ENTRY (widget), label1_max);
+	g_object_set_data (G_OBJECT (widget), "minlen", GUINT_TO_POINTER (label1_min));
+	g_object_set_data (G_OBJECT (widget), "active", GUINT_TO_POINTER (1));
+
+	/* code2_entry */
+	label = GTK_WIDGET (gtk_builder_get_object (builder, "code2_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code2_entry"));
+	if (label2) {
+		gtk_label_set_text (GTK_LABEL (label), label2);
+		g_signal_connect (widget, "changed", G_CALLBACK (mpd_entry_changed), dialog);
+		g_signal_connect (widget, "insert-text", G_CALLBACK (mpd_entry_filter), NULL);
+		if (label2_max)
+			gtk_entry_set_max_length (GTK_ENTRY (widget), label2_max);
+		g_object_set_data (G_OBJECT (widget), "minlen", GUINT_TO_POINTER (label2_min));
+		g_object_set_data (G_OBJECT (widget), "active", GUINT_TO_POINTER (1));
+	} else {
+		gtk_widget_hide (label);
+		gtk_widget_hide (widget);
+	}
+
+	/* code3_entry */
+	if (label3) {
+		widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_label"));
+		gtk_label_set_text (GTK_LABEL (widget), label3);
+		widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_entry"));
+		g_signal_connect (widget, "changed", G_CALLBACK (mpd_entry_changed), dialog);
+		g_signal_connect (widget, "insert-text", G_CALLBACK (mpd_entry_filter), NULL);
+		if (label3_max)
+			gtk_entry_set_max_length (GTK_ENTRY (widget), label3_max);
+		g_object_set_data (G_OBJECT (widget), "minlen", GUINT_TO_POINTER (label3_min));
+		g_object_set_data (G_OBJECT (widget), "active", GUINT_TO_POINTER (1));
+	} else {
+		gtk_widget_hide (label);
+		gtk_widget_hide (widget);
+	}
+
+	/* Make a single-entry dialog look better */
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "table14"));
+	if (label2 || label3)
+		gtk_table_set_row_spacings (GTK_TABLE (widget), 6);
+	else
+		gtk_table_set_row_spacings (GTK_TABLE (widget), 0);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "progress_hbox"));
+	gtk_widget_hide (widget);
+
+	mpd_entry_changed (NULL, dialog);
+
+	return dialog;
+}
