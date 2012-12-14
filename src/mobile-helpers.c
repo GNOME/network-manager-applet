@@ -22,6 +22,7 @@
 
 #include <glib/gi18n.h>
 #include <nm-utils.h>
+#include <gnome-keyring.h>
 
 #include "utils.h"
 #include "mobile-helpers.h"
@@ -271,4 +272,89 @@ mobile_helper_wizard (NMDeviceModemCapabilities capabilities,
 	g_free (method);
 
 	return TRUE;
+}
+
+/********************************************************************/
+
+static void
+save_pin_cb (GnomeKeyringResult result, guint32 val, gpointer user_data)
+{
+	if (result != GNOME_KEYRING_RESULT_OK)
+		g_warning ("%s: result %d", (const char *) user_data, result);
+}
+
+void
+mobile_helper_save_pin_in_keyring (const char *devid,
+                                   const char *simid,
+                                   const char *pin)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attr;
+	const char *name;
+	char *error_msg;
+
+	name = g_strdup_printf (_("PIN code for SIM card '%s' on '%s'"),
+	                        simid ? simid : "unknown",
+	                        devid);
+
+	attributes = gnome_keyring_attribute_list_new ();
+	attr.name = g_strdup ("devid");
+	attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attr.value.string = g_strdup (devid);
+	g_array_append_val (attributes, attr);
+
+	if (simid) {
+		attr.name = g_strdup ("simid");
+		attr.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+		attr.value.string = g_strdup (simid);
+		g_array_append_val (attributes, attr);
+	}
+
+	error_msg = g_strdup_printf ("Saving PIN code in keyring for devid:%s simid:%s failed",
+	                             devid, simid ? simid : "(unknown)");
+
+	gnome_keyring_item_create (NULL,
+	                           GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                           name,
+	                           attributes,
+	                           pin,
+	                           TRUE,
+	                           save_pin_cb,
+	                           error_msg,
+	                           (GDestroyNotify) g_free);
+
+	gnome_keyring_attribute_list_free (attributes);
+}
+
+static void
+delete_pin_cb (GnomeKeyringResult result, gpointer user_data)
+{
+	/* nothing to do */
+}
+
+static void
+delete_pins_find_cb (GnomeKeyringResult result, GList *list, gpointer user_data)
+{
+	GList *iter;
+
+	if (result == GNOME_KEYRING_RESULT_OK) {
+		for (iter = list; iter; iter = g_list_next (iter)) {
+			GnomeKeyringFound *found = iter->data;
+
+			gnome_keyring_item_delete (found->keyring, found->item_id, delete_pin_cb, NULL, NULL);
+		}
+	}
+}
+
+void
+mobile_helper_delete_pin_in_keyring (const char *devid)
+{
+	gnome_keyring_find_itemsv (GNOME_KEYRING_ITEM_GENERIC_SECRET,
+	                           delete_pins_find_cb,
+	                           NULL,
+	                           NULL,
+	                           "devid",
+	                           GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
+	                           devid,
+	                           NULL);
 }

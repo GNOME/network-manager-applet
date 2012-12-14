@@ -67,4 +67,9 @@ gboolean   mobile_helper_wizard (NMDeviceModemCapabilities capabilities,
                                  AppletNewAutoConnectionCallback callback,
                                  gpointer callback_data);
 
+void mobile_helper_save_pin_in_keyring   (const char *devid,
+                                          const char *simid,
+                                          const char *pin);
+void mobile_helper_delete_pin_in_keyring (const char *devid);
+
 #endif  /* APPLET_MOBILE_HELPERS_H */
