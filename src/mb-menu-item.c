@@ -52,8 +52,7 @@ get_tech_name (guint32 tech)
 	switch (tech) {
 	case MB_TECH_1XRTT:
 		return _("CDMA");
-	case MB_TECH_EVDO_REV0:
-	case MB_TECH_EVDO_REVA:
+	case MB_TECH_EVDO:
 		return _("EVDO");
 	case MB_TECH_GSM:
 		return _("GSM");

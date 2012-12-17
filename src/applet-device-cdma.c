@@ -218,7 +218,7 @@ static guint32
 cdma_act_to_mb_act (CdmaDeviceInfo *info)
 {
 	if (info->evdo_state)
-		return MB_TECH_EVDO_REVA; /* Always rA until we get CDMA AcT from MM */
+		return MB_TECH_EVDO;
 	else if (info->cdma1x_state)
 		return MB_TECH_1XRTT;
 	return MB_TECH_UNKNOWN;

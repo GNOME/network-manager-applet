@@ -110,8 +110,7 @@ mobile_helper_get_tech_icon (guint32 tech, NMApplet *applet)
 	switch (tech) {
 	case MB_TECH_1XRTT:
 		return nma_icon_check_and_load ("nm-tech-cdma-1x", &applet->mb_tech_1x_icon, applet);
-	case MB_TECH_EVDO_REV0:
-	case MB_TECH_EVDO_REVA:
+	case MB_TECH_EVDO:
 		return nma_icon_check_and_load ("nm-tech-evdo", &applet->mb_tech_evdo_icon, applet);
 	case MB_TECH_GSM:
 	case MB_TECH_GPRS:
