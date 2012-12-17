@@ -26,6 +26,7 @@
 #include <gtk/gtk.h>
 #include "applet.h"
 #include "nm-mobile-wizard.h"
+#include "nm-mobile-providers.h"
 
 enum {
 	MB_STATE_UNKNOWN = 0,
@@ -100,5 +101,14 @@ GdkPixbuf *mobile_helper_get_icon (NMDevice *device,
                                    guint32 mb_tech,
                                    guint32 quality,
                                    gboolean quality_valid);
+
+/********************************************************************/
+
+char *mobile_helper_parse_3gpp_operator_name (NMAMobileProvidersDatabase **mpd,
+                                              const char *orig,
+                                              const char *op_code);
+
+char *mobile_helper_parse_3gpp2_operator_name (NMAMobileProvidersDatabase **mpd,
+                                               guint32 sid);
 
 #endif  /* APPLET_MOBILE_HELPERS_H */

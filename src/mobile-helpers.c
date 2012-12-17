@@ -636,3 +636,82 @@ mobile_helper_get_icon (NMDevice *device,
 
 	return pixbuf;
 }
+
+/********************************************************************/
+
+char *
+mobile_helper_parse_3gpp_operator_name (NMAMobileProvidersDatabase **mpd, /* I/O */
+                                        const char *orig,
+                                        const char *op_code)
+{
+	NMAMobileProvider *provider;
+	guint i, orig_len;
+
+	g_assert (mpd != NULL);
+
+	/* Some devices return the MCC/MNC if they haven't fully initialized
+	 * or gotten all the info from the network yet.  Handle that.
+	 */
+
+	orig_len = orig ? strlen (orig) : 0;
+	if (orig_len == 0) {
+		/* If the operator name isn't valid, maybe we can look up the MCC/MNC
+		 * from the operator code instead.
+		 */
+		if (op_code && strlen (op_code)) {
+			orig = op_code;
+			orig_len = strlen (orig);
+		} else
+			return NULL;
+	} else if (orig_len < 5 || orig_len > 6)
+		return g_strdup (orig);  /* not an MCC/MNC */
+
+	for (i = 0; i < orig_len; i++) {
+		if (!isdigit (orig[i]))
+			return strdup (orig);
+	}
+
+	/* At this point we have a 5 or 6 character all-digit string; that's
+	 * probably an MCC/MNC.  Look that up.
+	 */
+
+	if (*mpd == NULL) {
+		GError *error = NULL;
+
+		*mpd = nma_mobile_providers_database_new_sync (NULL, NULL, NULL, &error);
+		if (*mpd == NULL) {
+			g_warning ("Couldn't read database: %s", error->message);
+			g_error_free (error);
+			return strdup (orig);
+		}
+	}
+
+	provider = nma_mobile_providers_database_lookup_3gpp_mcc_mnc (*mpd, orig);
+	return (provider ? g_strdup (nma_mobile_provider_get_name (provider)) : NULL);
+}
+
+char *
+mobile_helper_parse_3gpp2_operator_name (NMAMobileProvidersDatabase **mpd, /* I/O */
+                                         guint32 sid)
+{
+	NMAMobileProvider *provider;
+
+	g_assert (mpd != NULL);
+
+	if (!sid)
+		return NULL;
+
+	if (*mpd == NULL) {
+		GError *error = NULL;
+
+		*mpd = nma_mobile_providers_database_new_sync (NULL, NULL, NULL, &error);
+		if (*mpd == NULL) {
+			g_warning ("Couldn't read database: %s", error->message);
+			g_error_free (error);
+			return NULL;
+		}
+	}
+
+	provider = nma_mobile_providers_database_lookup_cdma_sid (*mpd, sid);
+	return (provider ? g_strdup (nma_mobile_provider_get_name (provider)) : NULL);
+}

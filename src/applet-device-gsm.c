@@ -666,53 +666,6 @@ signal_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	g_clear_error (&error);
 }
 
-static char *
-parse_op_name (GsmDeviceInfo *info, const char *orig, const char *op_code)
-{
-	NMAMobileProvider *provider;
-	guint i, orig_len;
-
-	/* Some devices return the MCC/MNC if they haven't fully initialized
-	 * or gotten all the info from the network yet.  Handle that.
-	 */
-
-	orig_len = orig ? strlen (orig) : 0;
-	if (orig_len == 0) {
-		/* If the operator name isn't valid, maybe we can look up the MCC/MNC
-		 * from the operator code instead.
-		 */
-		if (op_code && strlen (op_code)) {
-			orig = op_code;
-			orig_len = strlen (orig);
-		} else
-			return NULL;
-	} else if (orig_len < 5 || orig_len > 6)
-		return g_strdup (orig);  /* not an MCC/MNC */
-
-	for (i = 0; i < orig_len; i++) {
-		if (!isdigit (orig[i]))
-			return strdup (orig);
-	}
-
-	/* At this point we have a 5 or 6 character all-digit string; that's
-	 * probably an MCC/MNC.  Look that up.
-	 */
-
-	if (!info->mobile_providers_database) {
-		GError *error = NULL;
-
-		info->mobile_providers_database = nma_mobile_providers_database_new_sync (NULL, NULL, NULL, &error);
-		if (!info->mobile_providers_database) {
-			g_warning ("Couldn't read database: %s", error->message);
-			g_error_free (error);
-			return strdup (orig);
-		}
-	}
-
-	provider = nma_mobile_providers_database_lookup_3gpp_mcc_mnc (info->mobile_providers_database, orig);
-	return (provider ? g_strdup (nma_mobile_provider_get_name (provider)) : NULL);
-}
-
 static void
 notify_user_of_gsm_reg_change (GsmDeviceInfo *info)
 {
@@ -764,7 +717,9 @@ reg_info_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 
 			value = g_value_array_get_nth (array, 2);
 			if (G_VALUE_HOLDS_STRING (value))
-				new_op_name = parse_op_name (info, g_value_get_string (value), new_op_code);
+				new_op_name = mobile_helper_parse_3gpp_operator_name (&(info->mobile_providers_database),
+				                                                      g_value_get_string (value),
+				                                                      new_op_code);
 		}
 
 		g_value_array_free (array);
@@ -1083,7 +1038,9 @@ reg_info_changed_cb (DBusGProxy *proxy,
 	g_free (info->op_code);
 	info->op_code = strlen (op_code) ? g_strdup (op_code) : NULL;
 	g_free (info->op_name);
-	info->op_name = parse_op_name (info, op_name, info->op_code);
+	info->op_name = mobile_helper_parse_3gpp_operator_name (&(info->mobile_providers_database),
+	                                                        op_name,
+	                                                        info->op_code);
 	info->skip_reg_poll = TRUE;
 }
 

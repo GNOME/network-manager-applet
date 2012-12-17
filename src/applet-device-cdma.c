@@ -504,22 +504,10 @@ serving_system_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_dat
 		g_value_array_free (array);
 	}
 
-	if (new_sid && (new_sid != info->sid)) {
+	if (new_sid != info->sid) {
 		info->sid = new_sid;
-		if (info->mobile_providers_database) {
-			NMAMobileProvider *provider;
-
-			g_free (info->provider_name);
-
-			provider = nma_mobile_providers_database_lookup_cdma_sid (info->mobile_providers_database, new_sid);
-			info->provider_name = (provider ?
-			                       g_strdup (nma_mobile_provider_get_name (provider)) :
-			                       NULL);
-		}
-	} else if (!new_sid) {
-		info->sid = 0;
 		g_free (info->provider_name);
-		info->provider_name = NULL;
+		info->provider_name = mobile_helper_parse_3gpp2_operator_name (&(info->mobile_providers_database), info->sid);
 	}
 
 	g_clear_error (&error);
@@ -690,12 +678,6 @@ cdma_device_added (NMDevice *device, NMApplet *applet)
 	info->device = device;
 	info->bus = bus;
 	info->quality_valid = FALSE;
-
-	info->mobile_providers_database = nma_mobile_providers_database_new_sync (NULL, NULL, NULL, &error);
-	if (!info->mobile_providers_database) {
-		g_warning ("Couldn't read database: %s", error->message);
-		g_clear_error (&error);
-	}
 
 	info->props_proxy = dbus_g_proxy_new_for_name (bus,
 	                                               "org.freedesktop.ModemManager",
