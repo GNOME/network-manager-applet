@@ -1122,7 +1122,7 @@ ui_to_setting (CEPageIP4 *self)
 
 		/* Gateway is optional... */
 		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &item, -1);
-		if (item && inet_pton (AF_INET, item, &tmp_gateway) <= 0) {
+		if (item && strlen (item) && inet_pton (AF_INET, item, &tmp_gateway) <= 0) {
 			g_warning ("%s: IPv4 gateway '%s' invalid!",
 			           __func__, item ? item : "<none>");
 			g_free (item);
