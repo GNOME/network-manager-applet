@@ -350,7 +350,8 @@ populate_ui (CEPageWifi *self)
 	gtk_entry_set_text (priv->ssid, utf8_ssid);
 	g_signal_connect_swapped (priv->ssid, "changed", G_CALLBACK (ce_page_changed), self);
 	g_free (utf8_ssid);
-	g_byte_array_unref (ssid);
+	if (ssid)
+		g_byte_array_free (ssid, TRUE);
 
 	/* Default to Infrastructure */
 	gtk_combo_box_set_active (priv->mode, 0);
