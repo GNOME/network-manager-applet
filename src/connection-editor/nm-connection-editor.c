@@ -939,22 +939,6 @@ editor_closed_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 }
 
 static void
-nag_dialog_response_cb (GtkDialog *dialog,
-                        gint response,
-                        gpointer user_data)
-{
-	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
-
-	gtk_widget_hide (GTK_WIDGET (dialog));
-	if (response == GTK_RESPONSE_NO) {
-		/* user opted not to correct the warning */
-		g_signal_emit (self, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_OK, NULL);
-	}
-	g_signal_handler_disconnect (dialog, self->nag_id);
-	self->nag_id = 0;
-}
-
-static void
 added_connection_cb (NMRemoteSettings *settings,
                      NMRemoteConnection *connection,
                      GError *error,
@@ -996,33 +980,9 @@ updated_connection_cb (NMRemoteConnection *connection, GError *error, gpointer u
 }
 
 static void
-ok_button_clicked_cb (GtkWidget *widget, gpointer user_data)
+ok_button_clicked_save_connection (NMConnectionEditor *self)
 {
-	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
-	GSList *iter;
 	GError *error = NULL;
-
-	/* If the dialog is busy waiting for authorization or something,
-	 * don't destroy it until authorization returns.
-	 */
-	if (self->busy)
-		return;
-
-	/* Make sure the user is warned about insecure security options like no
-	 * CA certificate.
-	 */
-	g_warn_if_fail (self->nag_id == 0);
-	for (iter = self->pages; iter; iter = g_slist_next (iter)) {
-		CEPage *page = iter->data;
-		GtkWidget *nag_dialog;
-
-		nag_dialog = ce_page_nag_user (page);
-		if (nag_dialog) {
-			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (self->window));
-			self->nag_id = g_signal_connect (nag_dialog, "response", G_CALLBACK (nag_dialog_response_cb), self);
-			return;
-		}
-	}
 
 	if (!nm_connection_editor_update_connection (self))
 		return;
@@ -1052,6 +1012,53 @@ ok_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 		nm_remote_connection_commit_changes (NM_REMOTE_CONNECTION (self->orig_connection),
 		                                     updated_connection_cb, self);
 	}
+}
+
+static void
+nag_dialog_response_cb (GtkDialog *dialog,
+                        gint response,
+                        gpointer user_data)
+{
+	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
+
+	gtk_widget_hide (GTK_WIDGET (dialog));
+	if (response == GTK_RESPONSE_NO) {
+		/* user opted not to correct the warning */
+		ok_button_clicked_save_connection (self);
+	}
+	g_signal_handler_disconnect (dialog, self->nag_id);
+	self->nag_id = 0;
+}
+
+static void
+ok_button_clicked_cb (GtkWidget *widget, gpointer user_data)
+{
+	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
+	GSList *iter;
+
+	/* If the dialog is busy waiting for authorization or something,
+	 * don't destroy it until authorization returns.
+	 */
+	if (self->busy)
+		return;
+
+	/* Make sure the user is warned about insecure security options like no
+	 * CA certificate.
+	 */
+	g_warn_if_fail (self->nag_id == 0);
+	for (iter = self->pages; iter; iter = g_slist_next (iter)) {
+		CEPage *page = iter->data;
+		GtkWidget *nag_dialog;
+
+		nag_dialog = ce_page_nag_user (page);
+		if (nag_dialog) {
+			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (self->window));
+			self->nag_id = g_signal_connect (nag_dialog, "response", G_CALLBACK (nag_dialog_response_cb), self);
+			return;
+		}
+	}
+
+	ok_button_clicked_save_connection (self);
 }
 
 static void
