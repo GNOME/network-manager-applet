@@ -20,6 +20,7 @@
  * (C) Copyright 2010 Red Hat, Inc.
  */
 
+#include <ctype.h>
 #include <glib/gi18n.h>
 #include <nm-utils.h>
 #include <gnome-keyring.h>
