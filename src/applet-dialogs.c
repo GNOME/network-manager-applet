@@ -1280,7 +1280,6 @@ applet_mobile_pin_dialog_new (const char *unlock_required,
 	const char *show_password_label = NULL;
 	char *desc = NULL;
 	const char *label1 = NULL, *label2 = NULL, *label3 = NULL;
-	const char *device_desc;
 	gboolean match23 = FALSE;
 	guint32 label1_min = 0, label2_min = 0, label3_min = 0;
 	guint32 label1_max = 0, label2_max = 0, label3_max = 0;
