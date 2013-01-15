@@ -19,4 +19,6 @@ check-local: test-mobile-providers
 	$(abs_builddir)/test-mobile-providers
 
 
-EXTRA_DIST =
+EXTRA_DIST = \
+	iso3166-test.xml \
+	serviceproviders-test.xml
