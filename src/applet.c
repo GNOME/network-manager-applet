@@ -936,6 +936,7 @@ applet_do_notify (NMApplet *applet,
 
 #if HAVE_LIBNOTIFY_07
 	notify_notification_set_hint (notify, "transient", g_variant_new_boolean (TRUE));
+	notify_notification_set_hint (notify, "desktop-entry", "nm-applet");
 #else
 	notify_notification_attach_to_status_icon (notify, applet->status_icon);
 #endif
