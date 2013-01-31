@@ -474,7 +474,7 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 
 				/* Ignore non-Ad-Hoc connections too */
 				mode = nm_setting_wireless_get_mode (s_wireless);
-				if (!mode || strcmp (mode, "adhoc"))
+				if (!mode || (strcmp (mode, "adhoc") && strcmp (mode, "ap")))
 					continue;
 			}
 
@@ -853,7 +853,7 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 
 		mode = nm_setting_wireless_get_mode (s_wireless);
-		if (mode && !strcmp (mode, "adhoc"))
+		if (mode && (!strcmp (mode, "adhoc") || !strcmp (mode, "ap")))
 			is_adhoc = TRUE;
 
 		wsec = nm_connection_get_setting_wireless_security (priv->connection);

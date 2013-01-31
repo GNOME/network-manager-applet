@@ -1469,7 +1469,7 @@ wifi_dialog_response_cb (GtkDialog *foo,
 		s_wifi = nm_connection_get_setting_wireless (connection);
 		if (s_wifi)
 			mode = nm_setting_wireless_get_mode (s_wifi);
-		if (g_strcmp0 (mode, "adhoc") == 0) {
+		if (g_strcmp0 (mode, "adhoc") == 0 || g_strcmp0 (mode, "ap") == 0) {
 			s_con = nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
 			if (!s_con) {
 				s_con = nm_setting_connection_new ();
