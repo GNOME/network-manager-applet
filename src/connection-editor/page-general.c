@@ -35,6 +35,8 @@ typedef struct {
 	NMRemoteSettings *remote_settings;
 	NMSettingConnection *setting;
 
+	gboolean is_vpn;
+
 #if GTK_CHECK_VERSION(2,24,0)
 	GtkComboBoxText *firewall_zone;
 #else
@@ -269,9 +271,25 @@ populate_ui (CEPageGeneral *self)
 	g_slist_free (con_list);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->dependent_vpn), combo_idx);
 
+	/* We don't support multiple VPNs at the moment, so hide secondary
+	 * stuff for VPN connections.  We'll revisit this later when we support
+	 * multiple VPNs.
+	 */
+	if (priv->is_vpn) {
+		gtk_widget_hide (GTK_WIDGET (priv->dependent_vpn_checkbox));
+		gtk_widget_hide (GTK_WIDGET (priv->dependent_vpn));
+	}
+
 	/* 'Automatically connect to this network' checkbox */
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->autoconnect),
 	                              nm_setting_connection_get_autoconnect (priv->setting));
+
+	/* VPN connections don't have a blanket "autoconnect" as that is too coarse
+	 * a behavior, instead the user configures another connection to start the
+	 * VPN on success.
+	 */
+	if (priv->is_vpn)
+		gtk_widget_hide (priv->autoconnect);
 
 	/* 'All users may connect to this network' checkbox */
 	if (nm_setting_connection_get_num_permissions (priv->setting))
@@ -341,6 +359,8 @@ ce_page_general_new (NMConnection *connection,
 		priv->setting = NM_SETTING_CONNECTION (nm_setting_connection_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
+
+	priv->is_vpn = nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME);
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
