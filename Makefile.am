@@ -2,7 +2,7 @@ include $(GLIB_MAKEFILE)
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
-SUBDIRS = src icons po
+SUBDIRS = src icons po man
 
 EXTRA_DIST =				\
 	CONTRIBUTING			\
