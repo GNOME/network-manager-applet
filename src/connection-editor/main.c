@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2012 Red Hat, Inc.
+ * Copyright (C) 2004 - 2013 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -353,10 +353,10 @@ main (int argc, char *argv[])
 	gboolean show_list;
 
 	GOptionEntry entries[] = {
-		{ ARG_TYPE,   0, 0, G_OPTION_ARG_STRING, &type,   "Type of connection to show or create", NM_SETTING_WIRED_SETTING_NAME },
-		{ ARG_CREATE, 0, 0, G_OPTION_ARG_NONE,   &create, "Create a new connection", NULL },
-		{ ARG_SHOW,   0, 0, G_OPTION_ARG_NONE,   &show,   "Show a given connection type page", NULL },
-		{ "edit",     0, 0, G_OPTION_ARG_STRING, &uuid,   "Edit an existing connection with a given UUID", "UUID" },
+		{ ARG_TYPE,   't', 0, G_OPTION_ARG_STRING, &type,   "Type of connection to show or create", NM_SETTING_WIRED_SETTING_NAME },
+		{ ARG_CREATE, 'c', 0, G_OPTION_ARG_NONE,   &create, "Create a new connection", NULL },
+		{ ARG_SHOW,   's', 0, G_OPTION_ARG_NONE,   &show,   "Show a given connection type page", NULL },
+		{ "edit",     'e', 0, G_OPTION_ARG_STRING, &uuid,   "Edit an existing connection with a given UUID", "UUID" },
 		{ NULL }
 	};
 
