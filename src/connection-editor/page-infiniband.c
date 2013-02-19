@@ -48,10 +48,15 @@ typedef struct {
 
 	GtkComboBox *transport_mode;
 	GtkSpinButton *mtu;
+	GtkComboBox *carrier_detect;
 } CEPageInfinibandPrivate;
 
 #define TRANSPORT_MODE_DATAGRAM  0
 #define TRANSPORT_MODE_CONNECTED 1
+
+#define CARRIER_DETECT_YES         0
+#define CARRIER_DETECT_ON_ACTIVATE 1
+#define CARRIER_DETECT_NO          2
 
 static void
 infiniband_private_init (CEPageInfiniband *self)
@@ -83,6 +88,7 @@ infiniband_private_init (CEPageInfiniband *self)
 
 	priv->transport_mode = GTK_COMBO_BOX (gtk_builder_get_object (builder, "infiniband_mode"));
 	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "infiniband_mtu"));
+	priv->carrier_detect = GTK_COMBO_BOX (gtk_builder_get_object (builder, "infiniband_carrier"));
 }
 
 static void
@@ -102,6 +108,8 @@ populate_ui (CEPageInfiniband *self)
 	char **mac_list;
 	const GByteArray *s_mac;
 	char *s_mac_str;
+	int carrier_detect_idx = CARRIER_DETECT_YES;
+	const char *carrier_detect;
 
 	/* Port */
 	mode = nm_setting_infiniband_get_transport_mode (setting);
@@ -131,6 +139,18 @@ populate_ui (CEPageInfiniband *self)
 	                  GINT_TO_POINTER (mtu_def));
 
 	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_infiniband_get_mtu (setting));
+
+	/* Carrier detect */
+	carrier_detect = nm_setting_infiniband_get_carrier_detect (setting);
+	if (carrier_detect) {
+		if (!strcmp (carrier_detect, "yes"))
+			carrier_detect_idx = CARRIER_DETECT_YES;
+		else if (!strcmp (carrier_detect, "on-activate"))
+			carrier_detect_idx = CARRIER_DETECT_ON_ACTIVATE;
+		else if (!strcmp (carrier_detect, "no"))
+			carrier_detect_idx = CARRIER_DETECT_NO;
+	}
+	gtk_combo_box_set_active (priv->carrier_detect, carrier_detect_idx);
 }
 
 static void
@@ -145,6 +165,7 @@ finish_setup (CEPageInfiniband *self, gpointer unused, GError *error, gpointer u
 
 	g_signal_connect (priv->transport_mode, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->carrier_detect, "changed", G_CALLBACK (stuff_changed), self);
 }
 
 CEPage *
@@ -193,12 +214,29 @@ ui_to_setting (CEPageInfiniband *self)
 	const char *mode;
 	GByteArray *device_mac = NULL;
 	GtkWidget *entry;
+	const char *carrier_detect;
 
 	/* Transport mode */
 	if (gtk_combo_box_get_active (priv->transport_mode) == TRANSPORT_MODE_CONNECTED)
 		mode = "connected";
 	else
 		mode = "datagram";
+
+	/* Carrier detect */
+	switch (gtk_combo_box_get_active (priv->carrier_detect)) {
+	case CARRIER_DETECT_YES:
+		carrier_detect = "yes";
+		break;
+	case CARRIER_DETECT_ON_ACTIVATE:
+		carrier_detect = "on-activate";
+		break;
+	case CARRIER_DETECT_NO:
+		carrier_detect = "no";
+		break;
+	default:
+		carrier_detect = NULL;
+		break;
+	}
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry)
@@ -209,6 +247,7 @@ ui_to_setting (CEPageInfiniband *self)
 	              NM_SETTING_INFINIBAND_MAC_ADDRESS, device_mac,
 	              NM_SETTING_INFINIBAND_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
 	              NM_SETTING_INFINIBAND_TRANSPORT_MODE, mode,
+	              NM_SETTING_INFINIBAND_CARRIER_DETECT, carrier_detect,
 	              NULL);
 
 	if (device_mac)
