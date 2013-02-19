@@ -142,7 +142,7 @@ general_private_init (CEPageGeneral *self)
 	get_zones_from_firewall (self);
 
 	/* Set mnemonic widget for device Firewall zone label */
-	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "firewall_zone_label")));
+	label = GTK_LABEL (gtk_builder_get_object (builder, "firewall_zone_label"));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->firewall_zone));
 
 	/*-- Dependent VPN connection --*/

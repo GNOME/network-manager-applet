@@ -143,7 +143,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 		str_auto_only = _("Automatic, addresses only");
 	}
 
-	priv->method = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_method")));
+	priv->method = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ip6_method"));
 	cells = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT (priv->method));
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (priv->method), cells->data,
 								   "sensitive", METHOD_COL_ENABLED);
@@ -217,17 +217,17 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	gtk_combo_box_set_model (priv->method, GTK_TREE_MODEL (priv->method_store));
 
 	priv->addr_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_addr_label"));
-	priv->addr_add = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_addr_add_button")));
-	priv->addr_delete = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_addr_delete_button")));
-	priv->addr_list = GTK_TREE_VIEW (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_addresses")));
+	priv->addr_add = GTK_BUTTON (gtk_builder_get_object (builder, "ip6_addr_add_button"));
+	priv->addr_delete = GTK_BUTTON (gtk_builder_get_object (builder, "ip6_addr_delete_button"));
+	priv->addr_list = GTK_TREE_VIEW (gtk_builder_get_object (builder, "ip6_addresses"));
 
 	priv->dns_servers_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_dns_servers_label"));
-	priv->dns_servers = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_dns_servers_entry")));
+	priv->dns_servers = GTK_ENTRY (gtk_builder_get_object (builder, "ip6_dns_servers_entry"));
 
 	priv->dns_searches_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_dns_searches_label"));
-	priv->dns_searches = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_dns_searches_entry")));
+	priv->dns_searches = GTK_ENTRY (gtk_builder_get_object (builder, "ip6_dns_searches_entry"));
 
-	priv->ip6_required = GTK_CHECK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_required_checkbutton")));
+	priv->ip6_required = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, "ip6_required_checkbutton"));
 	/* Hide IP6-require button if it'll never be used for a particular method */
 	if (   priv->connection_type == NM_TYPE_SETTING_VPN
 	    || priv->connection_type == NM_TYPE_SETTING_GSM
@@ -235,7 +235,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	    || priv->connection_type == NM_TYPE_SETTING_PPPOE)
 		gtk_widget_hide (GTK_WIDGET (priv->ip6_required));
 
-	priv->routes_button = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_routes_button")));
+	priv->routes_button = GTK_BUTTON (gtk_builder_get_object (builder, "ip6_routes_button"));
 }
 
 static void

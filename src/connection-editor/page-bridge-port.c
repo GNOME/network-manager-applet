@@ -54,9 +54,9 @@ bridge_port_private_init (CEPageBridgePort *self)
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->priority = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "bridge_port_priority")));
-	priv->path_cost = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "bridge_port_path_cost")));
-	priv->hairpin_mode = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "bridge_port_hairpin_mode")));
+	priv->priority = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bridge_port_priority"));
+	priv->path_cost = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bridge_port_path_cost"));
+	priv->hairpin_mode = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "bridge_port_hairpin_mode"));
 }
 
 static void

@@ -80,17 +80,17 @@ mobile_private_init (CEPageMobile *self)
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->number = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_number")));
-	priv->username = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_username")));
-	priv->password = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_password")));
+	priv->number = GTK_ENTRY (gtk_builder_get_object (builder, "mobile_number"));
+	priv->username = GTK_ENTRY (gtk_builder_get_object (builder, "mobile_username"));
+	priv->password = GTK_ENTRY (gtk_builder_get_object (builder, "mobile_password"));
 
-	priv->apn = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_apn")));
-	priv->apn_button = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_apn_button")));
-	priv->network_id = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_network_id")));
-	priv->network_type = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_network_type")));
-	priv->roaming_allowed = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_roaming_allowed")));
+	priv->apn = GTK_ENTRY (gtk_builder_get_object (builder, "mobile_apn"));
+	priv->apn_button = GTK_BUTTON (gtk_builder_get_object (builder, "mobile_apn_button"));
+	priv->network_id = GTK_ENTRY (gtk_builder_get_object (builder, "mobile_network_id"));
+	priv->network_type = GTK_COMBO_BOX (gtk_builder_get_object (builder, "mobile_network_type"));
+	priv->roaming_allowed = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "mobile_roaming_allowed"));
 
-	priv->pin = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "mobile_pin")));
+	priv->pin = GTK_ENTRY (gtk_builder_get_object (builder, "mobile_pin"));
 
 	priv->window_group = gtk_window_group_new ();
 }

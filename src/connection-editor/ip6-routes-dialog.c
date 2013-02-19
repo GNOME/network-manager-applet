@@ -198,7 +198,7 @@ route_delete_clicked (GtkButton *button, gpointer user_data)
 	GtkTreeIter iter;
 	int num_rows;
 
-	treeview = GTK_TREE_VIEW (GTK_WIDGET (gtk_builder_get_object (builder, "ip6_routes")));
+	treeview = GTK_TREE_VIEW (gtk_builder_get_object (builder, "ip6_routes"));
 
 	selection = gtk_tree_view_get_selection (treeview);
 	if (gtk_tree_selection_count_selected_rows (selection) != 1)

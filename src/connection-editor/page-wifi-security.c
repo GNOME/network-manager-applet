@@ -235,7 +235,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
 
-	combo = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_security_combo")));
+	combo = GTK_COMBO_BOX (gtk_builder_get_object (parent->builder, "wifi_security_combo"));
 
 	dev_caps =   NM_WIFI_DEVICE_CAP_CIPHER_WEP40
 	           | NM_WIFI_DEVICE_CAP_CIPHER_WEP104

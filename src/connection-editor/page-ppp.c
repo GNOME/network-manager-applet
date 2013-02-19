@@ -84,16 +84,16 @@ ppp_private_init (CEPagePpp *self)
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->auth_methods_label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "auth_methods_label")));
-	priv->auth_methods_button = GTK_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "auth_methods_button")));
+	priv->auth_methods_label = GTK_LABEL (gtk_builder_get_object (builder, "auth_methods_label"));
+	priv->auth_methods_button = GTK_BUTTON (gtk_builder_get_object (builder, "auth_methods_button"));
 
-	priv->use_mppe = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_use_mppe")));
-	priv->mppe_require_128 = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_require_mppe_128")));
-	priv->use_mppe_stateful = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_use_stateful_mppe")));
-	priv->allow_bsdcomp = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_allow_bsdcomp")));
-	priv->allow_deflate = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_allow_deflate")));
-	priv->use_vj_comp = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_usevj")));
-	priv->send_ppp_echo = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ppp_send_echo_packets")));
+	priv->use_mppe = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ppp_use_mppe"));
+	priv->mppe_require_128 = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ppp_require_mppe_128"));
+	priv->use_mppe_stateful = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ppp_use_stateful_mppe"));
+	priv->allow_bsdcomp = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ppp_allow_bsdcomp"));
+	priv->allow_deflate = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ppp_allow_deflate"));
+	priv->use_vj_comp = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ppp_usevj"));
+	priv->send_ppp_echo = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ppp_send_echo_packets"));
 }
 
 static void

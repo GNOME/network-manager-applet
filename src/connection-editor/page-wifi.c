@@ -80,11 +80,11 @@ wifi_private_init (CEPageWifi *self)
 
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	priv->ssid     = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_ssid")));
-	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_cloned_mac")));
-	priv->mode     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_mode")));
-	priv->band     = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_band")));
-	priv->channel  = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_channel")));
+	priv->ssid     = GTK_ENTRY (gtk_builder_get_object (builder, "wifi_ssid"));
+	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "wifi_cloned_mac"));
+	priv->mode     = GTK_COMBO_BOX (gtk_builder_get_object (builder, "wifi_mode"));
+	priv->band     = GTK_COMBO_BOX (gtk_builder_get_object (builder, "wifi_band"));
+	priv->channel  = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_channel"));
 
 	/* BSSID */
 #if GTK_CHECK_VERSION(2,24,0)
@@ -117,18 +117,18 @@ wifi_private_init (CEPageWifi *self)
 	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
 
 	/* Set mnemonic widget for device MAC label */
-	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_device_mac_label")));
+	label = GTK_LABEL (gtk_builder_get_object (builder, "wifi_device_mac_label"));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
 
-	priv->rate     = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_rate")));
+	priv->rate     = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_rate"));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "rate_units"));
 	gtk_size_group_add_widget (priv->group, widget);
 
-	priv->tx_power = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_tx_power")));
+	priv->tx_power = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_tx_power"));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "tx_power_units"));
 	gtk_size_group_add_widget (priv->group, widget);
 
-	priv->mtu      = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "wifi_mtu")));
+	priv->mtu      = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_mtu"));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "mtu_units"));
 	gtk_size_group_add_widget (priv->group, widget);
 }

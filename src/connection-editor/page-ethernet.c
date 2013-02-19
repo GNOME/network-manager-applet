@@ -94,15 +94,15 @@ ethernet_private_init (CEPageEthernet *self)
 	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
 
 	/* Set mnemonic widget for device MAC label */
-	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_device_mac_label")));
+	label = GTK_LABEL (gtk_builder_get_object (builder, "ethernet_device_mac_label"));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
 
-	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_cloned_mac")));
-	priv->port = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_port")));
-	priv->speed = GTK_COMBO_BOX (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_speed")));
-	priv->duplex = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_duplex")));
-	priv->autonegotiate = GTK_TOGGLE_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_autonegotiate")));
-	priv->mtu = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_mtu")));
+	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "ethernet_cloned_mac"));
+	priv->port = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_port"));
+	priv->speed = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_speed"));
+	priv->duplex = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_duplex"));
+	priv->autonegotiate = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_autonegotiate"));
+	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "ethernet_mtu"));
 }
 
 static void

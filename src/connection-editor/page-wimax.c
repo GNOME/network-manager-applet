@@ -74,7 +74,7 @@ wimax_private_init (CEPageWimax *self)
 	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
 
 	/* Set mnemonic widget for device MAC label */
-	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "wimax_device_mac_label")));
+	label = GTK_LABEL (gtk_builder_get_object (builder, "wimax_device_mac_label"));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
 }
 

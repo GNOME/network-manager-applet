@@ -78,11 +78,11 @@ infiniband_private_init (CEPageInfiniband *self)
 	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
 
 	/* Set mnemonic widget for device MAC label */
-	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "infiniband_device_mac_label")));
+	label = GTK_LABEL (gtk_builder_get_object (builder, "infiniband_device_mac_label"));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
 
 	priv->transport_mode = GTK_COMBO_BOX (gtk_builder_get_object (builder, "infiniband_mode"));
-	priv->mtu = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "infiniband_mtu")));
+	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "infiniband_mtu"));
 }
 
 static void

@@ -86,13 +86,13 @@ vlan_private_init (CEPageVlan *self)
 	gtk_widget_show_all (GTK_WIDGET (priv->parent));
 
 	/* Set mnemonic widget for parent label */
-	label = GTK_LABEL (GTK_WIDGET (gtk_builder_get_object (builder, "vlan_parent_label")));
+	label = GTK_LABEL (gtk_builder_get_object (builder, "vlan_parent_label"));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->parent));
 
-	priv->id_entry = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "vlan_id_entry")));
-	priv->name_entry = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "vlan_name_entry")));
-	priv->cloned_mac = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "vlan_cloned_mac_entry")));
-	priv->mtu = GTK_SPIN_BUTTON (GTK_WIDGET (gtk_builder_get_object (builder, "vlan_mtu")));
+	priv->id_entry = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "vlan_id_entry"));
+	priv->name_entry = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_name_entry"));
+	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_cloned_mac_entry"));
+	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "vlan_mtu"));
 }
 
 static void

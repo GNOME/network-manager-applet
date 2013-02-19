@@ -57,9 +57,9 @@ dsl_private_init (CEPageDsl *self)
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->username = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "dsl_username")));
-	priv->password = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "dsl_password")));
-	priv->service = GTK_ENTRY (GTK_WIDGET (gtk_builder_get_object (builder, "dsl_service")));
+	priv->username = GTK_ENTRY (gtk_builder_get_object (builder, "dsl_username"));
+	priv->password = GTK_ENTRY (gtk_builder_get_object (builder, "dsl_password"));
+	priv->service = GTK_ENTRY (gtk_builder_get_object (builder, "dsl_service"));
 }
 
 static void
