@@ -3375,13 +3375,13 @@ shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer u
 	if (nm_shell_watcher_version_at_least (watcher, 3, 4)) {
 		/* GNOME Shell handles all secrets requests */
 		if (nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent))) {
-			g_message ("Stopping applet secret agent because GNOME Shell appeared");
+			g_debug ("GNOME Shell will now be handling secret agent as it appeared");
 			nm_secret_agent_unregister (NM_SECRET_AGENT (applet->agent));
 		}
 	} else if (nm_shell_watcher_version_at_least (watcher, 3, 2)) {
 		/* GNOME Shell handles everything except VPN secrets requests */
 		if (nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)))
-			g_message ("Applet secret agent handling only VPN secrets because GNOME Shell appeared");
+			g_debug ("Applet will now be handling secret agent only for VPN secrets as GNOME Shell appeared");
 		applet_agent_handle_vpn_only (applet->agent, TRUE);
 	} else {
 		/* If the shell quit and our agent wasn't already registered, do it
