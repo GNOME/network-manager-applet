@@ -781,10 +781,35 @@ dun_timeout_cb (gpointer user_data)
 	return FALSE;
 }
 
+static gboolean
+_name_has_owner (DBusGConnection *bus, const char *name)
+{
+	DBusGProxy *proxy;
+	gboolean has_owner = FALSE;
+
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	proxy = dbus_g_proxy_new_for_name (bus,
+	                                   "org.freedesktop.DBus",
+	                                   "/org/freedesktop/DBus",
+	                                   "org.freedesktop.DBus");
+	g_assert (proxy);
+
+	dbus_g_proxy_call (proxy, "NameHasOwner", NULL,
+	                   G_TYPE_STRING, name,
+	                   G_TYPE_INVALID,
+	                   G_TYPE_BOOLEAN, &has_owner,
+	                   G_TYPE_INVALID);
+	g_object_unref (proxy);
+
+	return has_owner;
+}
+
 static void
 dun_start (NmaBtDevice *self)
 {
 	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
+	gboolean have_mm = FALSE, have_mm1 = TRUE;
 
 	g_message ("%s: starting DUN device discovery...", __func__);
 
@@ -796,6 +821,7 @@ dun_start (NmaBtDevice *self)
 	                                            MM_PATH,
 	                                            MM_INTERFACE);
 	g_assert (priv->mm_proxy);
+	have_mm = _name_has_owner (priv->bus, MM_SERVICE);
 
 	dbus_g_object_register_marshaller (g_cclosure_marshal_VOID__BOXED,
 	                                   G_TYPE_NONE,
@@ -816,21 +842,13 @@ dun_start (NmaBtDevice *self)
 #if WITH_MODEM_MANAGER_1
 	/* ModemManager1 stuff */
 	{
-		GError *error = NULL;
-
-		priv->dbus_connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
-		if (!priv->dbus_connection) {
-			dun_error (self, __func__, error, _("error getting bus connection"));
-			g_error_free (error);
-		} else {
+		priv->dbus_connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
+		if (priv->dbus_connection) {
 			priv->modem_manager_1 = mm_manager_new_sync (priv->dbus_connection,
 			                                             G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE,
 			                                             NULL,
-			                                             &error);
-			if (!priv->modem_manager_1) {
-				dun_error (self, __func__, error, "error creating modem manager");
-				g_error_free (error);
-			} else {
+			                                             NULL);
+			if (priv->modem_manager_1) {
 				g_signal_connect (priv->modem_manager_1,
 				                  "object-added",
 				                  G_CALLBACK (modem_object_added),
@@ -841,8 +859,16 @@ dun_start (NmaBtDevice *self)
 				                  self);
 			}
 		}
+
+		have_mm1 = !!priv->modem_manager_1;
 	}
 #endif
+
+	/* Ensure at least one of ModemManager or ModemManager1 are around */
+	if (!have_mm && !have_mm1) {
+		dun_error (self, __func__, NULL, _("ModemManager is not running"));
+		return;
+	}
 
 	/* Bluez */
 	priv->dun_proxy = dbus_g_proxy_new_for_name (priv->bus,
