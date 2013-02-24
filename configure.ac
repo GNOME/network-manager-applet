@@ -97,7 +97,7 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
-		 gio-2.0 >= 2.26
+		 gio-2.0 >= 2.32
 		 NetworkManager >= 0.9.8
 		 libnm-glib >= 0.9.8
 		 libnm-util >= 0.9.8
