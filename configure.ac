@@ -105,9 +105,6 @@ PKG_CHECK_MODULES(NMA,
 		 gmodule-export-2.0])
 
 NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
-# Likewise for Gtk; we don't want to port to GtkGrid, etc, until
-# we can drop gtk2 support
-NMA_CFLAGS="$NMA_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_0"
 
 AC_MSG_CHECKING([whether to build nm-applet-migration-tool])
 AC_ARG_ENABLE([migration],
@@ -153,6 +150,7 @@ AC_SUBST(NOTIFY_LIBS)
 PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.4)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
+GTK_CFLAGS="$GTK_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4"
 
 # Check for dbus-1.2.6 or later for deny-by-default rules
 PKG_CHECK_MODULES(DBUS_126, [dbus-1 >= 1.2.6], [have_dbus_126=yes],[have_dbus_126=no])
