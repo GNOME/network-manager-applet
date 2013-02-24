@@ -89,9 +89,7 @@ typedef struct
 	DBusGConnection *bus;
 	DBusGConnection *session_bus;
 
-#if GLIB_CHECK_VERSION(2,26,0)
 	NMShellWatcher *shell_watcher;
-#endif
 	guint agent_start_id;
 
 	NMClient *nm_client;

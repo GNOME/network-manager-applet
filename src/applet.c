@@ -3337,7 +3337,6 @@ applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 	           embedded ? "embedded in" : "removed from");
 }
 
-#if GLIB_CHECK_VERSION(2,26,0)
 static gboolean
 delayed_start_agent (gpointer user_data)
 {
@@ -3391,7 +3390,6 @@ shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer u
 		applet_agent_handle_vpn_only (applet->agent, FALSE);
 	}
 }
-#endif
 
 static gboolean
 dbus_setup (NMApplet *applet, GError **error)
@@ -3550,14 +3548,12 @@ constructor (GType type,
 	                  G_CALLBACK (applet_embedded_cb), NULL);
 	applet_embedded_cb (G_OBJECT (applet->status_icon), NULL, NULL);
 
-#if GLIB_CHECK_VERSION(2,26,0)
 	/* Watch GNOME Shell so we can unregister our applet agent if it appears */
 	applet->shell_watcher = nm_shell_watcher_new ();
 	g_signal_connect (applet->shell_watcher,
 	                  "notify::shell-version",
 	                  G_CALLBACK (shell_version_changed_cb),
 	                  applet);
-#endif
 
 	return G_OBJECT (applet);
 
@@ -3629,10 +3625,9 @@ static void finalize (GObject *object)
 	if (applet->session_bus)
 		dbus_g_connection_unref (applet->session_bus);
 
-#if GLIB_CHECK_VERSION(2,26,0)
 	if (applet->shell_watcher)
 		g_object_unref (applet->shell_watcher);
-#endif
+
 	if (applet->agent_start_id)
 		g_source_remove (applet->agent_start_id);
 

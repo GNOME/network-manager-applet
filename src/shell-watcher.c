@@ -26,8 +26,6 @@
 
 #include "shell-watcher.h"
 
-#if GLIB_CHECK_VERSION(2,26,0)
-
 G_DEFINE_TYPE (NMShellWatcher, nm_shell_watcher, G_TYPE_OBJECT)
 
 struct NMShellWatcherPrivate {
@@ -238,5 +236,3 @@ nm_shell_watcher_version_at_least (NMShellWatcher *watcher, guint major, guint m
 
 	return watcher->priv->shell_version >= version;
 }
-
-#endif /* GLIB_CHECK_VERSION(2,26,0) */

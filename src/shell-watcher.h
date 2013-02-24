@@ -27,8 +27,6 @@
 
 #include <gio/gio.h>
 
-#if GLIB_CHECK_VERSION(2,26,0)
-
 #define NM_TYPE_SHELL_WATCHER			(nm_shell_watcher_get_type())
 #define NM_SHELL_WATCHER(object)		(G_TYPE_CHECK_INSTANCE_CAST((object), NM_TYPE_SHELL_WATCHER, NMShellWatcher))
 #define NM_SHELL_WATCHER_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST((klass), NM_TYPE_SHELL_WATCHER, NMShellWatcherClass))
@@ -54,7 +52,5 @@ NMShellWatcher *nm_shell_watcher_new (void);
 
 gboolean nm_shell_watcher_version_at_least (NMShellWatcher *watcher,
                                             guint major, guint minor);
-
-#endif /* GLIB_CHECK_VERSION(2,26,0) */
 
 #endif
