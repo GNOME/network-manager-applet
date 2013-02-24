@@ -35,11 +35,6 @@
 #include "ce-page.h"
 #include "nma-marshal.h"
 
-#if !GLIB_CHECK_VERSION(2,31,0)
-#define g_value_set_schar g_value_set_char
-#define g_value_get_schar g_value_get_char
-#endif
-
 G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 
 enum {

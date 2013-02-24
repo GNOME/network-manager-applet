@@ -47,18 +47,6 @@
 #include <libmm-glib.h>
 #endif
 
-#if !GLIB_CHECK_VERSION(2,28,0)
-#define g_clear_object(object_ptr) \
-	G_STMT_START { \
-		GObject **__obj_p = (gpointer) (object_ptr); \
-		if (*__obj_p) { \
-			g_object_unref (*__obj_p); \
-			*__obj_p = NULL; \
-		} \
-	} G_STMT_END
-#endif
-
-
 G_DEFINE_TYPE (NmaBtDevice, nma_bt_device, G_TYPE_OBJECT)
 
 #define NMA_BT_DEVICE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NMA_TYPE_BT_DEVICE, NmaBtDevicePrivate))
