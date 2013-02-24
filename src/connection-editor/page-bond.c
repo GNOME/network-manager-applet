@@ -56,13 +56,6 @@ typedef struct {
 	GtkWidget *downdelay_box;
 	GtkEntry *arp_targets;
 	GtkWidget *arp_targets_label;
-
-	GtkTable *table;
-	int table_row_spacing;
-	int updelay_row;
-	int downdelay_row;
-	int arp_targets_row;
-
 } CEPageBondPrivate;
 
 #define MODE_BALANCE_RR    0
@@ -98,18 +91,6 @@ bond_private_init (CEPageBond *self)
 
 	priv->toplevel = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (priv->mode),
 	                                                      GTK_TYPE_WINDOW));
-
-	priv->table = GTK_TABLE (gtk_builder_get_object (builder, "BondPage"));
-	priv->table_row_spacing = gtk_table_get_default_row_spacing (priv->table);
-	gtk_container_child_get (GTK_CONTAINER (priv->table), priv->updelay_label,
-	                         "top-attach", &priv->updelay_row,
-	                         NULL);
-	gtk_container_child_get (GTK_CONTAINER (priv->table), priv->downdelay_label,
-	                         "top-attach", &priv->downdelay_row,
-	                         NULL);
-	gtk_container_child_get (GTK_CONTAINER (priv->table), priv->arp_targets_label,
-	                         "top-attach", &priv->arp_targets_row,
-	                         NULL);
 }
 
 static void
@@ -164,10 +145,6 @@ monitoring_mode_changed (GtkComboBox *combo, gpointer user_data)
 		gtk_widget_show (priv->downdelay_box);
 		gtk_widget_hide (GTK_WIDGET (priv->arp_targets));
 		gtk_widget_hide (priv->arp_targets_label);
-
-		gtk_table_set_row_spacing (priv->table, priv->updelay_row, priv->table_row_spacing);
-		gtk_table_set_row_spacing (priv->table, priv->downdelay_row, priv->table_row_spacing);
-		gtk_table_set_row_spacing (priv->table, priv->arp_targets_row, 0);
 	} else {
 		gtk_widget_hide (GTK_WIDGET (priv->updelay));
 		gtk_widget_hide (priv->updelay_label);
@@ -177,10 +154,6 @@ monitoring_mode_changed (GtkComboBox *combo, gpointer user_data)
 		gtk_widget_hide (priv->downdelay_box);
 		gtk_widget_show (GTK_WIDGET (priv->arp_targets));
 		gtk_widget_show (priv->arp_targets_label);
-
-		gtk_table_set_row_spacing (priv->table, priv->updelay_row, 0);
-		gtk_table_set_row_spacing (priv->table, priv->downdelay_row, 0);
-		gtk_table_set_row_spacing (priv->table, priv->arp_targets_row, priv->table_row_spacing);
 	}
 }
 

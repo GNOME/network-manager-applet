@@ -723,7 +723,7 @@ get_provider_unlisted_type (NMAMobileWizard *self)
 static void
 providers_setup (NMAMobileWizard *self)
 {
-	GtkWidget *vbox, *scroll, *alignment, *unlisted_table, *label;
+	GtkWidget *vbox, *scroll, *alignment, *unlisted_grid, *label;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
@@ -777,21 +777,24 @@ providers_setup (NMAMobileWizard *self)
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 15, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 0);
 
-	unlisted_table = gtk_table_new (2, 2, FALSE);
-	gtk_container_add (GTK_CONTAINER (alignment), unlisted_table);
+	unlisted_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (unlisted_grid), 12);
+	gtk_grid_set_column_spacing (GTK_GRID (unlisted_grid), 12);
+	gtk_container_add (GTK_CONTAINER (alignment), unlisted_grid);
 
 	label = gtk_label_new (_("Provider:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-	gtk_table_attach (GTK_TABLE (unlisted_table), label, 0, 1, 0, 1, 0, 0, 6, 6);
+	gtk_grid_attach (GTK_GRID (unlisted_grid), label, 0, 0, 1, 1);
 
 	self->provider_unlisted_entry = gtk_entry_new ();
 	gtk_entry_set_width_chars (GTK_ENTRY (self->provider_unlisted_entry), 40);
 	g_signal_connect_swapped (self->provider_unlisted_entry, "changed", G_CALLBACK (providers_update_complete), self);
 
 	alignment = gtk_alignment_new (0, 0.5, 0.66, 0);
+	gtk_widget_set_hexpand (alignment, TRUE);
 	gtk_container_add (GTK_CONTAINER (alignment), self->provider_unlisted_entry);
-	gtk_table_attach (GTK_TABLE (unlisted_table), alignment,
-	                  1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 6, 6);
+	gtk_grid_attach (GTK_GRID (unlisted_grid), alignment,
+	                 1, 0, 1, 1);
 
 	self->provider_unlisted_type_combo = gtk_combo_box_text_new ();
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), self->provider_unlisted_type_combo);
@@ -801,8 +804,8 @@ providers_setup (NMAMobileWizard *self)
 	                           _("My provider uses CDMA technology (1xRTT, EVDO)"));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (self->provider_unlisted_type_combo), 0);
 
-	gtk_table_attach (GTK_TABLE (unlisted_table), self->provider_unlisted_type_combo,
-	                  1, 2, 1, 2, 0, 0, 6, 6);
+	gtk_grid_attach (GTK_GRID (unlisted_grid), self->provider_unlisted_type_combo,
+	                 1, 1, 1, 1);
 
 	/* Only show the CDMA/GSM combo if we don't know the device type */
 	if (self->family != NMA_MOBILE_FAMILY_UNKNOWN)
