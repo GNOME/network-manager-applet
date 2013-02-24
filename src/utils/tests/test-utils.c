@@ -198,283 +198,309 @@ test_data_free (TestData *d)
 }
 
 static void
-test_ap_hash_infra_adhoc_open (void *f, TestData *d)
+test_ap_hash_infra_adhoc_open (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_open, d->foobar_adhoc_open));
 }
 
 static void
-test_ap_hash_infra_adhoc_wep (void *f, TestData *d)
+test_ap_hash_infra_adhoc_wep (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_wep, d->foobar_adhoc_wep));
 }
 
 static void
-test_ap_hash_infra_adhoc_wpa (void *f, TestData *d)
+test_ap_hash_infra_adhoc_wpa (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_wpa, d->foobar_adhoc_wpa));
 }
 
 static void
-test_ap_hash_infra_adhoc_rsn (void *f, TestData *d)
+test_ap_hash_infra_adhoc_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_rsn, d->foobar_adhoc_rsn));
 }
 
 static void
-test_ap_hash_infra_adhoc_wpa_rsn (void *f, TestData *d)
+test_ap_hash_infra_adhoc_wpa_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_wpa_rsn, d->foobar_adhoc_wpa_rsn));
 }
 
 static void
-test_ap_hash_infra_open_wep (void *f, TestData *d)
+test_ap_hash_infra_open_wep (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_open, d->foobar_infra_wep));
 }
 
 static void
-test_ap_hash_infra_open_wpa (void *f, TestData *d)
+test_ap_hash_infra_open_wpa (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_open, d->foobar_infra_wpa));
 }
 
 static void
-test_ap_hash_infra_open_rsn (void *f, TestData *d)
+test_ap_hash_infra_open_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_open, d->foobar_infra_rsn));
 }
 
 static void
-test_ap_hash_infra_open_wpa_rsn (void *f, TestData *d)
+test_ap_hash_infra_open_wpa_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_open, d->foobar_infra_wpa_rsn));
 }
 
 static void
-test_ap_hash_infra_wep_wpa (void *f, TestData *d)
+test_ap_hash_infra_wep_wpa (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_wep, d->foobar_infra_wpa));
 }
 
 static void
-test_ap_hash_infra_wep_rsn (void *f, TestData *d)
+test_ap_hash_infra_wep_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_wep, d->foobar_infra_rsn));
 }
 
 static void
-test_ap_hash_infra_wep_wpa_rsn (void *f, TestData *d)
+test_ap_hash_infra_wep_wpa_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_wep, d->foobar_infra_wpa_rsn));
 }
 
 static void
-test_ap_hash_infra_wpa_rsn (void *f, TestData *d)
+test_ap_hash_infra_wpa_rsn (TestData *d)
 {
 	/* these should be the same as we group all WPA/RSN APs together */
 	g_assert (!strcmp (d->foobar_infra_wpa, d->foobar_infra_rsn));
 }
 
 static void
-test_ap_hash_infra_wpa_wpa_rsn (void *f, TestData *d)
+test_ap_hash_infra_wpa_wpa_rsn (TestData *d)
 {
 	/* these should be the same as we group all WPA/RSN APs together */
 	g_assert (!strcmp (d->foobar_infra_wpa, d->foobar_infra_wpa_rsn));
 }
 
 static void
-test_ap_hash_infra_rsn_wpa_rsn (void *f, TestData *d)
+test_ap_hash_infra_rsn_wpa_rsn (TestData *d)
 {
 	/* these should be the same as we group all WPA/RSN APs together */
 	g_assert (!strcmp (d->foobar_infra_rsn, d->foobar_infra_wpa_rsn));
 }
 
 static void
-test_ap_hash_adhoc_open_wep (void *f, TestData *d)
+test_ap_hash_adhoc_open_wep (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_open, d->foobar_adhoc_wep));
 }
 
 static void
-test_ap_hash_adhoc_open_wpa (void *f, TestData *d)
+test_ap_hash_adhoc_open_wpa (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_open, d->foobar_adhoc_wpa));
 }
 
 static void
-test_ap_hash_adhoc_open_rsn (void *f, TestData *d)
+test_ap_hash_adhoc_open_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_open, d->foobar_adhoc_rsn));
 }
 
 static void
-test_ap_hash_adhoc_open_wpa_rsn (void *f, TestData *d)
+test_ap_hash_adhoc_open_wpa_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_open, d->foobar_adhoc_wpa_rsn));
 }
 
 static void
-test_ap_hash_adhoc_wep_wpa (void *f, TestData *d)
+test_ap_hash_adhoc_wep_wpa (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_wep, d->foobar_adhoc_wpa));
 }
 
 static void
-test_ap_hash_adhoc_wep_rsn (void *f, TestData *d)
+test_ap_hash_adhoc_wep_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_wep, d->foobar_adhoc_rsn));
 }
 
 static void
-test_ap_hash_adhoc_wep_wpa_rsn (void *f, TestData *d)
+test_ap_hash_adhoc_wep_wpa_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_wep, d->foobar_adhoc_wpa_rsn));
 }
 
 static void
-test_ap_hash_adhoc_wpa_rsn (void *f, TestData *d)
+test_ap_hash_adhoc_wpa_rsn (TestData *d)
 {
 	/* these should be the same as we group all WPA/RSN APs together */
 	g_assert (!strcmp (d->foobar_adhoc_wpa, d->foobar_adhoc_rsn));
 }
 
 static void
-test_ap_hash_adhoc_wpa_wpa_rsn (void *f, TestData *d)
+test_ap_hash_adhoc_wpa_wpa_rsn (TestData *d)
 {
 	/* these should be the same as we group all WPA/RSN APs together */
 	g_assert (!strcmp (d->foobar_adhoc_wpa, d->foobar_adhoc_wpa_rsn));
 }
 
 static void
-test_ap_hash_adhoc_rsn_wpa_rsn (void *f, TestData *d)
+test_ap_hash_adhoc_rsn_wpa_rsn (TestData *d)
 {
 	/* these should be the same as we group all WPA/RSN APs together */
 	g_assert (!strcmp (d->foobar_adhoc_rsn, d->foobar_adhoc_wpa_rsn));
 }
 
 static void
-test_ap_hash_foobar_asdf11_infra_open (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_infra_open (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_open, d->asdf11_infra_open));
 }
 
 static void
-test_ap_hash_foobar_asdf11_infra_wep (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_infra_wep (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_wep, d->asdf11_infra_wep));
 }
 
 static void
-test_ap_hash_foobar_asdf11_infra_wpa (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_infra_wpa (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_wpa, d->asdf11_infra_wpa));
 }
 
 static void
-test_ap_hash_foobar_asdf11_infra_rsn (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_infra_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_rsn, d->asdf11_infra_rsn));
 }
 
 static void
-test_ap_hash_foobar_asdf11_infra_wpa_rsn (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_infra_wpa_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_infra_wpa_rsn, d->asdf11_infra_wpa_rsn));
 }
 
 static void
-test_ap_hash_foobar_asdf11_adhoc_open (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_adhoc_open (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_open, d->asdf11_adhoc_open));
 }
 
 static void
-test_ap_hash_foobar_asdf11_adhoc_wep (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_adhoc_wep (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_wep, d->asdf11_adhoc_wep));
 }
 
 static void
-test_ap_hash_foobar_asdf11_adhoc_wpa (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_adhoc_wpa (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_wpa, d->asdf11_adhoc_wpa));
 }
 
 static void
-test_ap_hash_foobar_asdf11_adhoc_rsn (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_adhoc_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_rsn, d->asdf11_adhoc_rsn));
 }
 
 static void
-test_ap_hash_foobar_asdf11_adhoc_wpa_rsn (void *f, TestData *d)
+test_ap_hash_foobar_asdf11_adhoc_wpa_rsn (TestData *d)
 {
 	g_assert (strcmp (d->foobar_adhoc_wpa_rsn, d->asdf11_adhoc_wpa_rsn));
 }
 
-#if GLIB_CHECK_VERSION(2,25,12)
-typedef GTestFixtureFunc TCFunc;
-#else
-typedef void (*TCFunc)(void);
-#endif
-
-#define TESTCASE(t, d) g_test_create_case (#t, 0, d, NULL, (TCFunc) t, NULL)
-
-int main (int argc, char **argv)
+int
+main (int argc, char **argv)
 {
-	GTestSuite *suite;
 	gint result;
 	TestData *data;
 
 	g_test_init (&argc, &argv, NULL);
 
-	suite = g_test_get_root ();
 	data = test_data_new ();
 
 	/* Test that hashes are different with the same SSID but different AP flags */
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_adhoc_open, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_adhoc_wep, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_adhoc_wpa, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_adhoc_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_adhoc_wpa_rsn, data));
+	g_test_add_data_func ("/ap_hash/infra_adhoc/open", data,
+	                      (GTestDataFunc) test_ap_hash_infra_adhoc_open);
+	g_test_add_data_func ("/ap_hash/infra_adhoc/wep", data,
+	                      (GTestDataFunc) test_ap_hash_infra_adhoc_wep);
+	g_test_add_data_func ("/ap_hash/infra_adhoc/wpa", data,
+	                      (GTestDataFunc) test_ap_hash_infra_adhoc_wpa);
+	g_test_add_data_func ("/ap_hash/infra_adhoc/rsn", data,
+	                      (GTestDataFunc) test_ap_hash_infra_adhoc_rsn);
+	g_test_add_data_func ("/ap_hash/infra_adhoc/wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_infra_adhoc_wpa_rsn);
 
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_open_wep, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_open_wpa, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_open_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_open_wpa_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_wep_wpa, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_wep_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_wep_wpa_rsn, data));
+	g_test_add_data_func ("/ap_hash/infra_open/wep", data,
+	                      (GTestDataFunc) test_ap_hash_infra_open_wep);
+	g_test_add_data_func ("/ap_hash/infra_open/wpa", data,
+	                      (GTestDataFunc) test_ap_hash_infra_open_wpa);
+	g_test_add_data_func ("/ap_hash/infra_open/rsn", data,
+	                      (GTestDataFunc) test_ap_hash_infra_open_rsn);
+	g_test_add_data_func ("/ap_hash/infra_open/wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_infra_open_wpa_rsn);
+	g_test_add_data_func ("/ap_hash/infra_wep/wpa", data,
+	                      (GTestDataFunc) test_ap_hash_infra_wep_wpa);
+	g_test_add_data_func ("/ap_hash/infra_wep/rsn", data,
+	                      (GTestDataFunc) test_ap_hash_infra_wep_rsn);
+	g_test_add_data_func ("/ap_hash/infra_wep/wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_infra_wep_wpa_rsn);
 
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_open_wep, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_open_wpa, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_open_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_open_wpa_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_wep_wpa, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_wep_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_wep_wpa_rsn, data));
+	g_test_add_data_func ("/ap_hash/adhoc_open/wep", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_open_wep);
+	g_test_add_data_func ("/ap_hash/adhoc_open/wpa", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_open_wpa);
+	g_test_add_data_func ("/ap_hash/adhoc_open/rsn", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_open_rsn);
+	g_test_add_data_func ("/ap_hash/adhoc_open/wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_open_wpa_rsn);
+	g_test_add_data_func ("/ap_hash/adhoc_wep/wpa", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_wep_wpa);
+	g_test_add_data_func ("/ap_hash/adhoc_wep/rsn", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_wep_rsn);
+	g_test_add_data_func ("/ap_hash/adhoc_wep/wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_wep_wpa_rsn);
 
 	/* Test that wpa, rsn, and wpa_rsn all have the same hash */
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_wpa_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_wpa_wpa_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_infra_rsn_wpa_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_wpa_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_wpa_wpa_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_adhoc_rsn_wpa_rsn, data));
+	g_test_add_data_func ("/ap_hash/infra_wpa/rsn", data,
+	                      (GTestDataFunc) test_ap_hash_infra_wpa_rsn);
+	g_test_add_data_func ("/ap_hash/infra_wpa/wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_infra_wpa_wpa_rsn);
+	g_test_add_data_func ("/ap_hash/infra_rsn/wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_infra_rsn_wpa_rsn);
+	g_test_add_data_func ("/ap_hash/adhoc/rsn", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_wpa_rsn);
+	g_test_add_data_func ("/ap_hash/adhoc_wpa/wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_wpa_wpa_rsn);
+	g_test_add_data_func ("/ap_hash/adhoc_rsn/wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_adhoc_rsn_wpa_rsn);
 
 	/* Test that hashes are different with the same AP flags but different SSID */
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_infra_open, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_infra_wep, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_infra_wpa, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_infra_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_infra_wpa_rsn, data));
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/infra_open", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_infra_open);
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/infra_wep", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_infra_wep);
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/infra_wpa", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_infra_wpa);
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/infra_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_infra_rsn);
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/infra_wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_infra_wpa_rsn);
 
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_adhoc_open, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_adhoc_wep, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_adhoc_wpa, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_adhoc_rsn, data));
-	g_test_suite_add (suite, TESTCASE (test_ap_hash_foobar_asdf11_adhoc_wpa_rsn, data));
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/adhoc_open", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_adhoc_open);
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/adhoc_wep", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_adhoc_wep);
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/adhoc_wpa", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_adhoc_wpa);
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/adhoc_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_adhoc_rsn);
+	g_test_add_data_func ("/ap_hash/foobar_asdf11/adhoc_wpa_rsn", data,
+	                      (GTestDataFunc) test_ap_hash_foobar_asdf11_adhoc_wpa_rsn);
 
 	result = g_test_run ();
 

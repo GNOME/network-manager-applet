@@ -505,30 +505,19 @@ test_upgrade_08_openvpn_not_saved (void)
 
 /*******************************************/
 
-#if GLIB_CHECK_VERSION(2,25,12)
-typedef GTestFixtureFunc TCFunc;
-#else
-typedef void (*TCFunc)(void);
-#endif
-
-#define TESTCASE(t, d) g_test_create_case (#t, 0, d, NULL, (TCFunc) t, NULL)
-
-int main (int argc, char **argv)
+int
+main (int argc, char **argv)
 {
-	GTestSuite *suite;
-
 	g_test_init (&argc, &argv, NULL);
 	g_type_init ();
 
-	suite = g_test_get_root ();
+	g_test_add_func ("/gconf/import_xml", test_import_xml);
+	g_test_add_func ("/gconf/keyring", test_keyring);
 
-	g_test_suite_add (suite, TESTCASE (test_import_xml, NULL));
-	g_test_suite_add (suite, TESTCASE (test_keyring, NULL));
-
-	g_test_suite_add (suite, TESTCASE (test_upgrade_08_wifi, NULL));
-	g_test_suite_add (suite, TESTCASE (test_upgrade_08_vpnc, NULL));
-	g_test_suite_add (suite, TESTCASE (test_upgrade_08_openvpn_saved, NULL));
-	g_test_suite_add (suite, TESTCASE (test_upgrade_08_openvpn_not_saved, NULL));
+	g_test_add_func ("/gconf/upgrade_08_wifi", test_upgrade_08_wifi);
+	g_test_add_func ("/gconf/upgrade_08_vpnc", test_upgrade_08_vpnc);
+	g_test_add_func ("/gconf/upgrade_08_openvpn_saved", test_upgrade_08_openvpn_saved);
+	g_test_add_func ("/gconf/upgrade_08_openvpn_not_saved", test_upgrade_08_openvpn_not_saved);
 
 	return g_test_run ();
 }
