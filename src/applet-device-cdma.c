@@ -44,6 +44,7 @@
 #include "nm-mobile-providers.h"
 #include "mb-menu-item.h"
 #include "nm-ui-utils.h"
+#include "nm-gvaluearray-compat.h"
 
 typedef struct {
 	NMApplet *applet;

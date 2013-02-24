@@ -3,6 +3,7 @@ SUBDIRS=. tests
 noinst_LTLIBRARIES = libutils.la
 
 libutils_la_SOURCES = \
+	nm-gvaluearray-compat.h \
 	utils.c \
 	utils.h
 

@@ -49,6 +49,7 @@
 #include "nma-marshal.h"
 #include "nm-mobile-providers.h"
 #include "nm-ui-utils.h"
+#include "nm-gvaluearray-compat.h"
 
 typedef enum {
     MM_MODEM_GSM_ACCESS_TECH_UNKNOWN     = 0,

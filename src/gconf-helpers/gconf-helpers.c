@@ -53,6 +53,7 @@
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
+#include "nm-gvaluearray-compat.h"
 
 #if !GLIB_CHECK_VERSION(2,31,0)
 #define g_value_set_schar g_value_set_char
