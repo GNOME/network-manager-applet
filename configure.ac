@@ -104,11 +104,7 @@ PKG_CHECK_MODULES(NMA,
 		 libnm-glib-vpn >= 0.9.8
 		 gmodule-export-2.0])
 
-# With recent glib, defining GLIB_VERSION_MIN_REQUIRED avoids
-# deprecation warnings for recently-deprecated functions (eg,
-# GValueArray stuff). We say GLIB_VERSION_2_26 because there
-# aren't macros for any older versions.
-NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_26"
+NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
 # Likewise for Gtk; we don't want to port to GtkGrid, etc, until
 # we can drop gtk2 support
 NMA_CFLAGS="$NMA_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_0"
