@@ -672,30 +672,18 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                int pos)
 {
 	GtkWidget *menu_item = gtk_image_menu_item_new ();
-#if GTK_CHECK_VERSION(3,1,6)
 	GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-#else
-	GtkWidget *box = gtk_hbox_new (FALSE, 0);
-#endif
 	GtkWidget *xlabel = NULL;
 
 	if (label) {
 		xlabel = gtk_label_new (NULL);
 		gtk_label_set_markup (GTK_LABEL (xlabel), label);
 
-#if GTK_CHECK_VERSION(3,1,6)
 		gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
-#else
-		gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 0);
-#endif
 		gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
 	}
 
-#if GTK_CHECK_VERSION(3,1,6)
 	gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
-#else
-	gtk_box_pack_start (GTK_BOX (box), gtk_hseparator_new (), TRUE, TRUE, 0);
-#endif
 
 	g_object_set (G_OBJECT (menu_item),
 	              "child", box,
@@ -744,6 +732,7 @@ menu_item_draw_generic (GtkWidget *widget, cairo_t *cr)
 	GtkWidget *label;
 	PangoFontDescription *desc;
 	PangoLayout *layout;
+	GtkStyleContext *style;
 	int width = 0, height = 0, owidth, oheight;
 	gdouble extraheight = 0, extrawidth = 0;
 	const char *text;
@@ -755,21 +744,10 @@ menu_item_draw_generic (GtkWidget *widget, cairo_t *cr)
 	text = gtk_label_get_text (GTK_LABEL (label));
 
 	layout = pango_cairo_create_layout (cr);
-#if GTK_CHECK_VERSION(2,20,0) && !GTK_CHECK_VERSION(2,91,6)
-        {
-                GtkStyle *style;
-                style = gtk_widget_get_style (widget);
-                desc = pango_font_description_copy (style->font_desc);
-        }
-#else
-        {
-                GtkStyleContext *style;
-                style = gtk_widget_get_style_context (widget);
-                gtk_style_context_get (style, gtk_style_context_get_state (style),
-                                       "font", &desc,
-                                       NULL);
-        }
-#endif
+	style = gtk_widget_get_style_context (widget);
+	gtk_style_context_get (style, gtk_style_context_get_state (style),
+	                       "font", &desc,
+	                       NULL);
 	pango_font_description_set_variant (desc, PANGO_VARIANT_SMALL_CAPS);
 	pango_font_description_set_weight (desc, PANGO_WEIGHT_SEMIBOLD);
 	pango_layout_set_font_description (layout, desc);
@@ -801,42 +779,12 @@ menu_item_draw_generic (GtkWidget *widget, cairo_t *cr)
 	gtk_widget_set_size_request (widget, width + 2 * xpadding, height + ypadding + postpadding);
 }
 
-#if GTK_CHECK_VERSION(2,90,7)
 static gboolean
 menu_title_item_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data)
 {
 	menu_item_draw_generic (widget, cr);
 	return TRUE;
 }
-#else
-static gboolean
-menu_title_item_expose (GtkWidget *widget, GdkEventExpose *event)
-{
-	GtkAllocation allocation;
-	cairo_t *cr;
-
-	cr = gdk_cairo_create (gtk_widget_get_window (widget));
-
-	/* The drawing area we get is the whole menu; clip the drawing to the
-	 * event area, which should just be our menu item.
-	 */
-	cairo_rectangle (cr,
-	                 event->area.x, event->area.y,
-	                 event->area.width, event->area.height);
-	cairo_clip (cr);
-
-	/* We also need to reposition the cairo context so that (0, 0) is the
-	 * top-left of where we're supposed to start drawing.
-	 */
-	gtk_widget_get_allocation (widget, &allocation);
-	cairo_translate (cr, allocation.x, allocation.y);
-
-	menu_item_draw_generic (widget, cr);
-
-	cairo_destroy (cr);
-	return TRUE;
-}
-#endif
 
 GtkWidget *
 applet_menu_item_create_device_item_helper (NMDevice *device,
@@ -847,11 +795,7 @@ applet_menu_item_create_device_item_helper (NMDevice *device,
 
 	item = gtk_menu_item_new_with_mnemonic (text);
 	gtk_widget_set_sensitive (item, FALSE);
-#if GTK_CHECK_VERSION(2,90,7)
 	g_signal_connect (item, "draw", G_CALLBACK (menu_title_item_draw), NULL);
-#else
-	g_signal_connect (item, "expose-event", G_CALLBACK (menu_title_item_expose), NULL);
-#endif
 	return item;
 }
 

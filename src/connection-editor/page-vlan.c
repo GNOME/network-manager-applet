@@ -77,13 +77,8 @@ vlan_private_init (CEPageVlan *self)
 
 	builder = CE_PAGE (self)->builder;
 
-#if GTK_CHECK_VERSION(2,24,0)
 	priv->parent = GTK_COMBO_BOX (gtk_combo_box_text_new_with_entry ());
 	gtk_combo_box_set_entry_text_column (priv->parent, 0);
-#else
-	priv->parent = GTK_COMBO_BOX (gtk_combo_box_entry_new_text ());
-	gtk_combo_box_entry_set_text_column (GTK_COMBO_BOX_ENTRY (priv->parent), 0);
-#endif
 	priv->parent_entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (priv->parent)));
 
 	align = GTK_WIDGET (gtk_builder_get_object (builder, "vlan_parent_alignment"));

@@ -461,11 +461,7 @@ ask_for_pin (GtkEntry **out_secret_entry)
 	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
 	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
-#if GTK_CHECK_VERSION(3,1,6)
 	box = GTK_BOX (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6));
-#else
-	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
-#endif
 	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
 	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (box));
 

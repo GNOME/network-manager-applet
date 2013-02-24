@@ -372,11 +372,7 @@ cell_changed_cb (GtkEditable *editable,
 {
 	char *cell_text;
 	guint column;
-#if GTK_CHECK_VERSION(3,0,0)
 	GdkRGBA rgba;
-#else
-	GdkColor color;
-#endif
 	gboolean value_valid = FALSE;
 	const char *colorname = NULL;
 
@@ -412,13 +408,8 @@ cell_changed_cb (GtkEditable *editable,
 	/* Change cell's background color while editing */
 	colorname = value_valid ? "lightgreen" : "red";
 
-#if GTK_CHECK_VERSION(3,0,0)
 	gdk_rgba_parse (&rgba, colorname);
 	gtk_widget_override_background_color (GTK_WIDGET (editable), GTK_STATE_NORMAL, &rgba);
-#else
-	gdk_color_parse (colorname, &color);
-	gtk_widget_modify_base (GTK_WIDGET (editable), GTK_STATE_NORMAL, &color);
-#endif
 
 	g_free (cell_text);
 	return FALSE;
@@ -429,10 +420,6 @@ key_pressed_cb (GtkWidget *widget,
                 GdkEvent *event,
                 gpointer user_data)
 {
-#if !GDK_KEY_Tab
-	#define GDK_KEY_Tab GDK_Tab
-#endif
-
 	GdkKeymapKey *keys = NULL;
 	gint n_keys;
 

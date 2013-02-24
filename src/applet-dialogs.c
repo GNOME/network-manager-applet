@@ -906,34 +906,9 @@ applet_info_dialog_show (NMApplet *applet)
 		gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
 }
 
-#if !GTK_CHECK_VERSION(2,23,0)
-static void 
-about_dialog_handle_url_cb (GtkAboutDialog *about, const gchar *url, gpointer data)
-{
-	gboolean ret;
-	char *cmdline;
-	GdkScreen *screen;
-
-	screen = gtk_window_get_screen (GTK_WINDOW (about));
-
-	cmdline = g_strconcat ("gnome-open ", url, NULL);
-	ret = gdk_spawn_command_line_on_screen (screen, cmdline, NULL);
-	g_free (cmdline);
-
-	if (ret == FALSE) {
-		cmdline = g_strconcat ("xdg-open ", url, NULL);
-		ret = gdk_spawn_command_line_on_screen (screen, cmdline, NULL);
-		g_free (cmdline);
-	}
-}
-#endif
-
 void
 applet_about_dialog_show (NMApplet *applet)
 {
-#if !GTK_CHECK_VERSION(2,23,0)
-	gtk_about_dialog_set_url_hook (about_dialog_handle_url_cb, NULL, NULL);
-#endif
 	gtk_show_about_dialog (NULL,
 	                       "version", VERSION,
 	                       "copyright", _("Copyright \xc2\xa9 2004-2011 Red Hat, Inc.\n"
@@ -1001,11 +976,7 @@ applet_mobile_password_dialog_new (NMConnection *connection,
 	w = gtk_alignment_new (0.5, 0.5, 0, 1.0);
 	gtk_box_pack_start (vbox, w, TRUE, TRUE, 0);
 
-#if GTK_CHECK_VERSION(3,1,6)
-        box = GTK_BOX (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6));
-#else
-	box = GTK_BOX (gtk_hbox_new (FALSE, 6));
-#endif
+	box = GTK_BOX (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6));
 	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
 	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (box));
 

@@ -127,11 +127,7 @@ ce_page_8021x_security_new (NMConnection *connection,
 	parent = CE_PAGE (self);
 	priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (self);
 
-#if GTK_CHECK_VERSION (3,1,6)
 	parent->page = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-#else
-	parent->page = gtk_vbox_new (FALSE, 6);
-#endif
 	g_object_ref_sink (G_OBJECT (parent->page));
 	gtk_container_set_border_width (GTK_CONTAINER (parent->page), 6);
 

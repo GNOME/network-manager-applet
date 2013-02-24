@@ -199,11 +199,7 @@ confirm_setup (NMAMobileWizard *self)
 {
 	GtkWidget *vbox, *label, *alignment, *pbox;
 
-#if GTK_CHECK_VERSION(3,1,6)
-        vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-#else
-	vbox = gtk_vbox_new (FALSE, 6);
-#endif
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	label = gtk_label_new (_("Your mobile broadband connection is configured with the following settings:"));
 	gtk_widget_set_size_request (label, 500, -1);
@@ -240,11 +236,7 @@ confirm_setup (NMAMobileWizard *self)
 
 	alignment = gtk_alignment_new (0, 0.5, 0, 0);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 25, 0);
-#if GTK_CHECK_VERSION(3,1,6)
-        pbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-#else
-	pbox = gtk_vbox_new (FALSE, 0);
-#endif
+	pbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add (GTK_CONTAINER (alignment), pbox);
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 0);
 
@@ -483,11 +475,7 @@ plan_setup (NMAMobileWizard *self)
 	GtkWidget *vbox, *label, *alignment, *hbox, *image;
 	GtkCellRenderer *renderer;
 
-#if GTK_CHECK_VERSION(3,1,6)
-        vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-#else
-	vbox = gtk_vbox_new (FALSE, 6);
-#endif
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 
 	label = gtk_label_new_with_mnemonic (_("_Select your plan:"));
@@ -529,11 +517,7 @@ plan_setup (NMAMobileWizard *self)
 	gtk_container_add (GTK_CONTAINER (alignment), self->plan_unlisted_entry);
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 0);
 
-#if GTK_CHECK_VERSION(3,1,6)
-        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-#else
-	hbox = gtk_hbox_new (FALSE, 6);
-#endif
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
@@ -744,11 +728,7 @@ providers_setup (NMAMobileWizard *self)
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
 
-#if GTK_CHECK_VERSION(3,1,6)
-        vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-#else
-	vbox = gtk_vbox_new (FALSE, 6);
-#endif
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 
 	self->providers_view_radio = gtk_radio_button_new_with_mnemonic (NULL, _("Select your provider from a _list:"));
@@ -813,23 +793,11 @@ providers_setup (NMAMobileWizard *self)
 	gtk_table_attach (GTK_TABLE (unlisted_table), alignment,
 	                  1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 6, 6);
 
-#if GTK_CHECK_VERSION(2,23,0)
 	self->provider_unlisted_type_combo = gtk_combo_box_text_new ();
-#else
-	self->provider_unlisted_type_combo = gtk_combo_box_new_text ();
-#endif
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), self->provider_unlisted_type_combo);
-#if GTK_CHECK_VERSION(2,23,0)
 	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (self->provider_unlisted_type_combo),
-#else
-	gtk_combo_box_append_text (GTK_COMBO_BOX (self->provider_unlisted_type_combo),
-#endif
 	                           _("My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"));
-#if GTK_CHECK_VERSION(2,23,0)
 	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (self->provider_unlisted_type_combo),
-#else
-	gtk_combo_box_append_text (GTK_COMBO_BOX (self->provider_unlisted_type_combo),
-#endif
 	                           _("My provider uses CDMA technology (1xRTT, EVDO)"));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (self->provider_unlisted_type_combo), 0);
 
@@ -1091,11 +1059,7 @@ country_setup (NMAMobileWizard *self)
 	GtkTreeSelection *selection;
 	GtkTreeIter unlisted_iter;
 
-#if GTK_CHECK_VERSION(3,1,6)
-        vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-#else
-	vbox = gtk_vbox_new (FALSE, 6);
-#endif
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	label = gtk_label_new (_("Country or Region List:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
@@ -1392,11 +1356,7 @@ intro_setup (NMAMobileWizard *self)
 	GtkCellRenderer *renderer;
 	char *s;
 
-#if GTK_CHECK_VERSION(3,1,6)
-        vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-#else
-	vbox = gtk_vbox_new (FALSE, 6);
-#endif
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 
 	label = gtk_label_new (_("This assistant helps you easily set up a mobile broadband connection to a cellular (3G) network."));
@@ -1411,11 +1371,7 @@ intro_setup (NMAMobileWizard *self)
 
 	alignment = gtk_alignment_new (0, 0, 1, 0);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 25, 25, 0);
-#if GTK_CHECK_VERSION(3,1,6)
-        info_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-#else
-	info_vbox = gtk_vbox_new (FALSE, 6);
-#endif
+	info_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add (GTK_CONTAINER (alignment), info_vbox);
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 6);
 

@@ -432,11 +432,7 @@ get_config_widgets (const char *bdaddr, const char **uuids)
 	info->sigids = g_slist_prepend (info->sigids, GUINT_TO_POINTER (id));
 
 	/* UI setup */
-#if GTK_CHECK_VERSION (3,1,6)
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-#else
-	vbox = gtk_vbox_new (FALSE, 6);
-#endif
 	g_object_set_data_full (G_OBJECT (vbox), "info", info, widget_info_destroy);
 
 	busy = nma_bt_device_get_busy (device);
@@ -459,19 +455,11 @@ get_config_widgets (const char *bdaddr, const char **uuids)
 		set_dun_button_sensitive (info, !busy);
 	}
 
-#if GTK_CHECK_VERSION (3,1,6)
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-#else
-	hbox = gtk_hbox_new (FALSE, 6);
-#endif
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 6);
 
 	/* Spinner's hbox */
-#if GTK_CHECK_VERSION (3,1,6)
 	info->hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-#else
-	info->hbox = gtk_hbox_new (FALSE, 6);
-#endif
 	gtk_box_pack_start (GTK_BOX (hbox), info->hbox, FALSE, FALSE, 0);
 
 	device_busy_cb (device, NULL, info);

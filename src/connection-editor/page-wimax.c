@@ -38,11 +38,7 @@ typedef struct {
 	NMSettingWimax *setting;
 
 	GtkEntry *name;
-#if GTK_CHECK_VERSION (2,24,0)
 	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
-#else
-	GtkComboBoxEntry *device_mac;
-#endif
 
 	gboolean disposed;
 } CEPageWimaxPrivate;
@@ -59,13 +55,8 @@ wimax_private_init (CEPageWimax *self)
 
 	priv->name = GTK_ENTRY (gtk_builder_get_object (builder, "wimax_name"));
 
-#if GTK_CHECK_VERSION(2,24,0)
 	priv->device_mac = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
 	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_mac), 0);
-#else
-	priv->device_mac = GTK_COMBO_BOX_ENTRY (gtk_combo_box_entry_new_text ());
-	gtk_combo_box_entry_set_text_column (GTK_COMBO_BOX_ENTRY (priv->device_mac), 0);
-#endif
 	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_mac),
 	                             _("This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"));
 

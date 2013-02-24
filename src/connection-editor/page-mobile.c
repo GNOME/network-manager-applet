@@ -671,11 +671,7 @@ mobile_connection_new (GtkWindow *parent,
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 12, 12, 12, 12);
 	gtk_box_pack_start (GTK_BOX (content), alignment, TRUE, FALSE, 6);
 
-#if GTK_CHECK_VERSION (3,1,6)
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-#else
-	hbox = gtk_hbox_new (FALSE, 6);
-#endif
 	gtk_container_add (GTK_CONTAINER (alignment), hbox);
 
 	image = gtk_image_new_from_icon_name ("nm-device-wwan", GTK_ICON_SIZE_DIALOG);
@@ -683,11 +679,7 @@ mobile_connection_new (GtkWindow *parent,
 	gtk_misc_set_padding (GTK_MISC (image), 0, 6);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 6);
 
-#if GTK_CHECK_VERSION (3,1,6)
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-#else
-	vbox = gtk_vbox_new (FALSE, 6);
-#endif
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, FALSE, 0);
 
 	label = gtk_label_new (_("Select the technology your mobile broadband provider uses.  If you are unsure, ask your provider."));
