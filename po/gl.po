@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-27 19:13+0100\n"
-"PO-Revision-Date: 2013-01-27 19:13+0200\n"
+"POT-Creation-Date: 2013-02-26 00:36+0100\n"
+"PO-Revision-Date: 2013-02-26 00:36+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: gnome-l10n-gl@gnome.org\n"
 "Language: gl\n"
@@ -866,7 +866,7 @@ msgstr "WiMAX (%s)"
 
 #. --- General ---
 #: ../src/applet-dialogs.c:432 ../src/applet-dialogs.c:791
-#: ../src/connection-editor/page-general.c:327
+#: ../src/connection-editor/page-general.c:345
 msgid "General"
 msgstr "Xeral"
 
@@ -1416,20 +1416,20 @@ msgid "bytes"
 msgstr "bytes"
 
 #: ../src/connection-editor/ce-page-general.ui.h:1
-msgid "_Automatically connect to this network when it is available"
-msgstr "Conectarse _automaticamente a esta rede cando estea dispoñíbel"
+msgid "Automatically connect to _VPN when using this connection"
+msgstr "Conectarse automaticamente á _VPN ao usar esta conexión"
 
 #: ../src/connection-editor/ce-page-general.ui.h:2
 msgid "All _users may connect to this network"
 msgstr "Todos os _usuarios deberían conectarse a esta rede"
 
 #: ../src/connection-editor/ce-page-general.ui.h:3
-msgid "Firewall _zone:"
-msgstr "_Zona da devasa:"
+msgid "_Automatically connect to this network when it is available"
+msgstr "Conectarse _automaticamente a esta rede cando estea dispoñíbel"
 
 #: ../src/connection-editor/ce-page-general.ui.h:4
-msgid "Automatically connect to _VPN when using this connection"
-msgstr "Conectarse automaticamente á _VPN ao usar esta conexión"
+msgid "Firewall _zone:"
+msgstr "_Zona da devasa:"
 
 #: ../src/connection-editor/ce-page-infiniband.ui.h:1
 msgid "_Transport mode:"
@@ -2161,12 +2161,12 @@ msgid "Ethernet connection %d"
 msgstr "Conexión con fíos %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:57
+#: ../src/connection-editor/page-general.c:59
 #: ../src/libnm-gtk/nm-mobile-providers.c:808
 msgid "Default"
 msgstr "Predeterminado"
 
-#: ../src/connection-editor/page-general.c:58
+#: ../src/connection-editor/page-general.c:60
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
@@ -2176,11 +2176,11 @@ msgstr ""
 "normal, seleccionándoa resulta no uso da zona por omisión estabelecida na "
 "devasa. Só usábel se firewalld está activo."
 
-#: ../src/connection-editor/page-general.c:59
+#: ../src/connection-editor/page-general.c:61
 msgid "FirewallD is not running."
 msgstr "FirewallD non se está executando."
 
-#: ../src/connection-editor/page-general.c:330
+#: ../src/connection-editor/page-general.c:348
 msgid "Could not load General user interface."
 msgstr "Non foi posíbel cargar a interface de usuario Xeral."
 
@@ -2607,7 +2607,7 @@ msgid "Failed to create DUN connection: %s"
 msgstr "Produciuse un erro ao crear a conexión DUN: %s"
 
 #: ../src/gnome-bluetooth/nma-bt-device.c:445
-#: ../src/gnome-bluetooth/nma-bt-device.c:959
+#: ../src/gnome-bluetooth/nma-bt-device.c:985
 msgid "Your phone is now ready to use!"
 msgstr "O seu teléfono está listo para usarse"
 
@@ -2636,15 +2636,16 @@ msgstr "o teléfono desconectouse de forma inesperada."
 msgid "timed out detecting phone details."
 msgstr "expirou o tempo ao detectar os detalles do teléfono."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:791
+#: ../src/gnome-bluetooth/nma-bt-device.c:816
 msgid "Detecting phone configuration..."
 msgstr "Detectando a configuración do teléfono…"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:823
-msgid "error getting bus connection"
-msgstr "Produciuse un erro ao obter a conexión do bus"
+#: ../src/gnome-bluetooth/nma-bt-device.c:869
+#, fuzzy
+msgid "ModemManager is not running"
+msgstr "NetworkManager non se está executando"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:920
+#: ../src/gnome-bluetooth/nma-bt-device.c:946
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2652,12 +2653,12 @@ msgstr ""
 "O adaptador de Bluetooth predeterminado debe estar activado antes de "
 "configurar unha conexión de rede de marcado telefónico."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:957
+#: ../src/gnome-bluetooth/nma-bt-device.c:983
 #, c-format
 msgid "Failed to create PAN connection: %s"
 msgstr "Produciuse un erro ao crear unha conexión PAN: %s"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:978
+#: ../src/gnome-bluetooth/nma-bt-device.c:1004
 #, c-format
 msgid "%s Network"
 msgstr "Rede %s"
@@ -3284,6 +3285,13 @@ msgstr "Mo_strar a chave"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "WEP inde_x:"
 msgstr "Índic_e WEP:"
+
+#, fuzzy
+#~ msgid "Only on activation"
+#~ msgstr "Produciuse un erro ao activar a conexión"
+
+#~ msgid "error getting bus connection"
+#~ msgstr "Produciuse un erro ao obter a conexión do bus"
 
 #~ msgid "Connect _automatically"
 #~ msgstr "Conectar _automaticamente"
