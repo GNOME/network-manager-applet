@@ -30,7 +30,6 @@
 #include <nm-device.h>
 #include <nm-device-modem.h>
 #include <nm-utils.h>
-#include <gnome-keyring.h>
 
 #include "applet.h"
 #include "applet-device-broadband.h"
@@ -58,7 +57,7 @@ typedef struct {
 
 	/* Unlock dialog stuff */
 	GtkWidget *dialog;
-	gpointer keyring_id;
+	GCancellable *cancellable;
 } BroadbandDeviceInfo;
 
 /********************************************************************/
@@ -356,20 +355,25 @@ autounlock_sim_send_pin_ready (MMSim *sim,
 }
 
 static void
-keyring_pin_check_cb (GnomeKeyringResult result,
-                      GList *list,
+keyring_pin_check_cb (GObject *source,
+                      GAsyncResult *result,
                       gpointer user_data)
 {
 	BroadbandDeviceInfo *info = user_data;
 	GList *iter;
-	const char *pin = NULL;
+	GList *list;
+	SecretItem *item;
+	SecretValue *pin = NULL;
+	GHashTable *attributes;
+	GError *error = NULL;
 	const char *simid;
 
-	info->keyring_id = NULL;
+	list = secret_service_search_finish (NULL, result, &error);
 
-	if (result != GNOME_KEYRING_RESULT_OK) {
+	if (error != NULL) {
 		/* No saved PIN, just ask the user */
 		unlock_dialog_new (info->device, info);
+		g_error_free (error);
 		return;
 	}
 
@@ -382,39 +386,37 @@ keyring_pin_check_cb (GnomeKeyringResult result,
 		for (iter = list;
 		     (pin == NULL) && iter;
 		     iter = g_list_next (iter)) {
-			GnomeKeyringFound *found = iter->data;
-			int i;
+			item = iter->data;
 
 			/* Look for a matching "simid" attribute */
-			for (i = 0; (pin == NULL) && i < found->attributes->len; i++) {
-				GnomeKeyringAttribute attr = gnome_keyring_attribute_list_index (found->attributes, i);
+			attributes = secret_item_get_attributes (item);
+			if (g_strcmp0 (simid, g_hash_table_lookup (attributes, "simid")))
+				pin = secret_item_get_secret (item);
+			else
+				pin = NULL;
+			g_hash_table_unref (attributes);
 
-				if (g_strcmp0 (attr.name, "simid") == 0 &&
-				    attr.type == GNOME_KEYRING_ATTRIBUTE_TYPE_STRING &&
-				    g_strcmp0 (attr.value.string, simid) == 0) {
-					pin = found->secret;
-					break;
-				}
-			}
+			if (pin != NULL)
+				break;
 		}
 	}
 
 	if (pin == NULL) {
 		/* Fall back to the first result's PIN */
-		pin = ((GnomeKeyringFound *) list->data)->secret;
+		pin = secret_item_get_secret (list->data);
 		if (pin == NULL) {
-			/* Should never get here */
-			g_warn_if_fail (pin != NULL);
 			unlock_dialog_new (info->device, info);
 			return;
 		}
 	}
 
+	/* Send the PIN code to ModemManager */
 	mm_sim_send_pin (info->mm_sim,
-	                 pin,
+	                 secret_value_get (pin, NULL),
 	                 NULL, /* cancellable */
 	                 (GAsyncReadyCallback)autounlock_sim_send_pin_ready,
 	                 info);
+	secret_value_unref (pin);
 }
 
 static void
@@ -422,6 +424,8 @@ modem_get_sim_ready (MMModem *modem,
                      GAsyncResult *res,
                      BroadbandDeviceInfo *info)
 {
+	GHashTable *attrs;
+
 	info->mm_sim = mm_modem_get_sim_finish (modem, res, NULL);
 	if (!info->mm_sim)
 		/* Ok, the modem may not need it actually */
@@ -434,16 +438,16 @@ modem_get_sim_ready (MMModem *modem,
 	/* If we have a device ID ask the keyring for any saved SIM-PIN codes */
 	if (mm_modem_get_device_identifier (info->mm_modem) &&
 	    mm_modem_get_unlock_required (info->mm_modem) == MM_MODEM_LOCK_SIM_PIN) {
-		g_warn_if_fail (info->keyring_id == NULL);
-		info->keyring_id = gnome_keyring_find_itemsv (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-		                                              keyring_pin_check_cb,
-		                                              info,
-		                                              NULL,
-		                                              "devid",
-		                                              GNOME_KEYRING_ATTRIBUTE_TYPE_STRING,
-		                                              mm_modem_get_device_identifier (info->mm_modem),
-		                                              NULL);
-		return;
+		attrs = secret_attributes_build (&mobile_secret_schema, "devid",
+		                                 mm_modem_get_device_identifier (info->mm_modem),
+		                                 NULL);
+		secret_service_search (NULL, &mobile_secret_schema, attrs,
+		                       SECRET_SEARCH_UNLOCK | SECRET_SEARCH_LOAD_SECRETS,
+		                       info->cancellable, keyring_pin_check_cb, info);
+		g_hash_table_unref (attrs);
+	} else {
+		/* Couldn't get a device ID, but unlock required; present dialog */
+		unlock_dialog_new (info->device, info);
 	}
 
 	/* Couldn't get a device ID, but unlock required; present dialog */
@@ -981,10 +985,9 @@ broadband_device_info_free (BroadbandDeviceInfo *info)
 	if (info->mm_object)
 		g_object_unref (info->mm_object);
 
-	if (info->keyring_id)
-		gnome_keyring_cancel_request (info->keyring_id);
 	if (info->dialog)
 		unlock_dialog_destroy (info);
+	g_object_unref (info->cancellable);
 
 	g_slice_free (BroadbandDeviceInfo, info);
 }
@@ -1021,6 +1024,7 @@ device_added (NMDevice *device,
 	info->device = device;
 	info->mm_object = MM_OBJECT (modem_object);
 	info->mm_modem = mm_object_get_modem (info->mm_object);
+	info->cancellable = g_cancellable_new ();
 
 	/* Setup signals */
 
