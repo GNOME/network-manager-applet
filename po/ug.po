@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2013-01-31 17:17+0000\n"
-"PO-Revision-Date: 2013-02-10 11:32+0900\n"
+"POT-Creation-Date: 2013-02-20 20:21+0000\n"
+"PO-Revision-Date: 2013-02-25 18:42+0900\n"
 "Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: \n"
@@ -821,7 +821,7 @@ msgstr "WiMAX (%s)"
 
 #. --- General ---
 #: ../src/applet-dialogs.c:432 ../src/applet-dialogs.c:791
-#: ../src/connection-editor/page-general.c:327
+#: ../src/connection-editor/page-general.c:345
 msgid "General"
 msgstr "ئادەتتىكى"
 
@@ -1200,11 +1200,11 @@ msgstr "كۆۋرۈكسىمان باغلىنىشلار(_C):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:6
 msgid "_Forward delay:"
-msgstr ""
+msgstr "يوللاپ بېرىش(Forward) تىكى كېچىكىش(_F):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:7
 msgid "_Hello time:"
-msgstr ""
+msgstr "سالاملىشىش ۋاقتى(_H):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:8
 msgid "s"
@@ -1352,20 +1352,20 @@ msgid "bytes"
 msgstr "بايت"
 
 #: ../src/connection-editor/ce-page-general.ui.h:1
-msgid "_Automatically connect to this network when it is available"
-msgstr "مەزكۇر تورنى ئىشلەتكىلى بولىدىغان چاغدا، ئاپتوماتىك باغلانسۇن(_A)"
+msgid "Automatically connect to _VPN when using this connection"
+msgstr "مەزكۇر باغلىنىشنى ئىشلەتكەندە VPN غا ئاپتوماتىك باغلانسۇن(_V)"
 
 #: ../src/connection-editor/ce-page-general.ui.h:2
 msgid "All _users may connect to this network"
 msgstr "بارلىق ئىشلەتكۈچىلەر مەزكۇر تورغا باغلىنىشى مۇمكىن(_U)"
 
 #: ../src/connection-editor/ce-page-general.ui.h:3
-msgid "Firewall _zone:"
-msgstr "تورتوسۇق(Firewall) رايونى(_Z):"
+msgid "_Automatically connect to this network when it is available"
+msgstr "مەزكۇر تورنى ئىشلەتكىلى بولىدىغان چاغدا، ئاپتوماتىك باغلانسۇن(_A)"
 
 #: ../src/connection-editor/ce-page-general.ui.h:4
-msgid "Automatically connect to _VPN when using this connection"
-msgstr "مەزكۇر باغلىنىشنى ئىشلەتكەندە VPN غا ئاپتوماتىك باغلانسۇن(_V)"
+msgid "Firewall _zone:"
+msgstr "تورتوسۇق(Firewall) رايونى(_Z):"
 
 #: ../src/connection-editor/ce-page-infiniband.ui.h:1
 msgid "_Transport mode:"
@@ -2068,23 +2068,23 @@ msgid "Ethernet connection %d"
 msgstr "ئېزېرنېت باغلىنىش %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:57
+#: ../src/connection-editor/page-general.c:59
 #: ../src/libnm-gtk/nm-mobile-providers.c:808
 msgid "Default"
 msgstr "كۆڭۈلدىكى"
 
-#: ../src/connection-editor/page-general.c:58
+#: ../src/connection-editor/page-general.c:60
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
 "firewall. Only usable if firewalld is active."
 msgstr ""
 
-#: ../src/connection-editor/page-general.c:59
+#: ../src/connection-editor/page-general.c:61
 msgid "FirewallD is not running."
 msgstr "پروگرامما FirewallD ئىجرا قىلىنماپتۇ."
 
-#: ../src/connection-editor/page-general.c:330
+#: ../src/connection-editor/page-general.c:348
 msgid "Could not load General user interface."
 msgstr "ئاساسلىق(General) ئىشلەتكۈچى ئارايۈزىنى ئوقۇغىلى بولمىدى."
 
@@ -2489,7 +2489,7 @@ msgid "Failed to create DUN connection: %s"
 msgstr "DUN باغلىنىشىنى قۇرۇش مەغلۇپ بولدى: %s"
 
 #: ../src/gnome-bluetooth/nma-bt-device.c:445
-#: ../src/gnome-bluetooth/nma-bt-device.c:959
+#: ../src/gnome-bluetooth/nma-bt-device.c:985
 msgid "Your phone is now ready to use!"
 msgstr "تېلېفونىڭىز ئىشلىتىشكە ھازىرلاندى!"
 
@@ -2518,26 +2518,27 @@ msgstr "تېلېفون ئارقىلىق باغلىنىش تاسادىپىي ئۈ
 msgid "timed out detecting phone details."
 msgstr "تېلېفون تەپسىلاتىنى تەكشۈرۈۋاتقاندا ۋاقىت چەكلىمىدىن ئاشتى."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:791
+#: ../src/gnome-bluetooth/nma-bt-device.c:816
 msgid "Detecting phone configuration..."
 msgstr "تېلېفون سەپلىمىسىنى تەكشۈرۈۋاتىدۇ..."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:823
-msgid "error getting bus connection"
-msgstr "باش لىنىيە باغلىنىشىنى ئوقۇشتا خاتالىق كۆرۈلدى"
+#: ../src/gnome-bluetooth/nma-bt-device.c:869
+#| msgid "NetworkManager is not running..."
+msgid "ModemManager is not running"
+msgstr "ModemManager ئىجرا قىلىنمايۋاتىدۇ…"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:920
+#: ../src/gnome-bluetooth/nma-bt-device.c:946
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
 msgstr "تېلېفون تورىغا باغلىنىشنى تەڭشەشتىن ئىلگىرى كۆڭۈلدىكى كۆكچىش ماسلاشتۇرغۇچنى قوزغىتىشىڭىز زۆرۈر."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:957
+#: ../src/gnome-bluetooth/nma-bt-device.c:983
 #, c-format
 msgid "Failed to create PAN connection: %s"
 msgstr "PAN باغلىنىشىنى قۇرۇش مەغلۇپ بولدى: %s"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:978
+#: ../src/gnome-bluetooth/nma-bt-device.c:1004
 #, c-format
 msgid "%s Network"
 msgstr "%s تورى"
@@ -3135,6 +3136,9 @@ msgstr "ئاچقۇچنى كۆرسەت(_W)"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "WEP inde_x:"
 msgstr "WEP ئىندېكسى(_X):"
+
+#~ msgid "error getting bus connection"
+#~ msgstr "باش لىنىيە باغلىنىشىنى ئوقۇشتا خاتالىق كۆرۈلدى"
 
 #~ msgid "Wireless Networks (%s)"
 #~ msgstr "سىمسىز تورلار (%s)"
