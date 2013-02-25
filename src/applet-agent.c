@@ -142,6 +142,7 @@ request_free (Request *r)
 	g_free (r->path);
 	g_free (r->setting_name);
 	g_strfreev (r->hints);
+	g_object_unref (r->cancellable);
 	memset (r, 0, sizeof (*r));
 	g_slice_free (Request, r);
 }
