@@ -639,6 +639,8 @@ gsm_device_info_free (gpointer data)
 	if (info->dialog)
 		unlock_dialog_destroy (info);
 
+	g_object_unref (info->cancellable);
+
 	g_free (info->devid);
 	g_free (info->simid);
 	g_free (info->op_code);
