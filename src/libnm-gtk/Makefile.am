@@ -10,7 +10,8 @@ libnmgtk_HEADERS = \
 	nm-wireless-dialog.h \
 	nm-mobile-wizard.h \
 	nm-ui-utils.h \
-	nm-mobile-providers.h
+	nm-mobile-providers.h \
+	nm-vpn-password-dialog.h
 
 lib_LTLIBRARIES = libnm-gtk.la
 
@@ -19,7 +20,8 @@ libnm_gtk_la_SOURCES = \
 	nm-wireless-dialog.c \
 	nm-mobile-wizard.c \
 	nm-ui-utils.c \
-	nm-mobile-providers.c
+	nm-mobile-providers.c \
+	nm-vpn-password-dialog.c
 
 libnm_gtk_la_CFLAGS = \
 	$(GTK_CFLAGS) \
