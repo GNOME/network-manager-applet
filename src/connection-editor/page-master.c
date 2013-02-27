@@ -205,13 +205,7 @@ connection_added (NMRemoteSettings *settings,
 		return;
 
 	interface_name = nm_connection_get_virtual_iface_name (CE_PAGE (self)->connection);
-	if (!strcmp (master, interface_name)) {
-		/* Ugh. Fix that... */
-		g_object_set (G_OBJECT (connection),
-		              NM_SETTING_CONNECTION_MASTER, priv->uuid,
-		              NULL);
-		nm_remote_connection_commit_changes (connection, NULL, NULL);
-	} else if (strcmp (master, priv->uuid) != 0)
+	if (strcmp (master, interface_name) != 0 && strcmp (master, priv->uuid) != 0)
 		return;
 
 	gtk_list_store_append (GTK_LIST_STORE (priv->connections_model), &iter);
