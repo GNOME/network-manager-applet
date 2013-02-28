@@ -243,12 +243,8 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		NMDeviceModemCapabilities caps;
 
 #if WITH_MODEM_MANAGER_1
-		if (g_str_has_prefix (nm_device_get_udi (device), "/org/freedesktop/ModemManager1/Modem/")) {
-			if (applet->mm1_running)
-				return applet->broadband_class;
-			g_message ("%s: ModemManager was not found", __func__);
-			return NULL;
-		}
+		if (g_str_has_prefix (nm_device_get_udi (device), "/org/freedesktop/ModemManager1/Modem/"))
+			return applet->broadband_class;
 #endif
 
 		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
