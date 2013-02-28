@@ -1397,10 +1397,10 @@ applet_mobile_pin_dialog_new (const char *unlock_required,
 	}
 
 	/* code3_entry */
+	label = GTK_WIDGET (gtk_builder_get_object (builder, "code3_label"));
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_entry"));
 	if (label3) {
-		widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_label"));
-		gtk_label_set_text (GTK_LABEL (widget), label3);
-		widget = GTK_WIDGET (gtk_builder_get_object (builder, "code3_entry"));
+		gtk_label_set_text (GTK_LABEL (label), label3);
 		g_signal_connect (widget, "changed", G_CALLBACK (mpd_entry_changed), dialog);
 		g_signal_connect (widget, "insert-text", G_CALLBACK (mpd_entry_filter), NULL);
 		if (label3_max)
