@@ -402,8 +402,9 @@ keyring_pin_check_cb (GObject *source,
 	}
 
 	if (pin == NULL) {
-		/* Fall back to the first result's PIN */
-		pin = secret_item_get_secret (list->data);
+		/* Fall back to the first result's PIN if we have one */
+		if (list)
+			pin = secret_item_get_secret (list->data);
 		if (pin == NULL) {
 			unlock_dialog_new (info->device, info);
 			return;
