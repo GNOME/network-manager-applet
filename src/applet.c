@@ -2482,6 +2482,8 @@ foo_client_setup (NMApplet *applet)
 
 	if (nm_client_get_manager_running (applet->nm_client))
 		g_idle_add (foo_set_initial_state, applet);
+
+	applet_schedule_update_icon (applet);
 }
 
 #if WITH_MODEM_MANAGER_1
@@ -2719,7 +2721,6 @@ applet_update_icon (gpointer user_data)
 	applet->update_icon_id = 0;
 
 	nm_running = nm_client_get_manager_running (applet->nm_client);
-	gtk_status_icon_set_visible (applet->status_icon, nm_running);
 
 	/* Handle device state first */
 
