@@ -2728,6 +2728,8 @@ applet_update_icon (gpointer user_data)
 	if (!nm_running)
 		state = NM_STATE_UNKNOWN;
 
+	gtk_status_icon_set_visible (applet->status_icon, applet->visible);
+
 	switch (state) {
 	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
@@ -3429,6 +3431,21 @@ dbus_setup (NMApplet *applet, GError **error)
 	return success;
 }
 
+static void
+applet_gsettings_show_changed (GSettings *settings,
+                               gchar *key,
+                               gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+
+	g_return_if_fail (NM_IS_APPLET(applet));
+	g_return_if_fail (key != NULL);
+
+	applet->visible = g_settings_get_boolean (settings, key);
+
+	gtk_status_icon_set_visible (applet->status_icon, applet->visible);
+}
+
 static GObject *
 constructor (GType type,
              guint n_props,
@@ -3451,6 +3468,9 @@ constructor (GType type,
 	}
 
 	applet->gsettings = g_settings_new (APPLET_PREFS_SCHEMA);
+	applet->visible = g_settings_get_boolean (applet->gsettings, PREF_SHOW_APPLET);
+	g_signal_connect (applet->gsettings, "changed::show-applet",
+	                  G_CALLBACK (applet_gsettings_show_changed), applet);
 
 	/* Load pixmaps and create applet widgets */
 	if (!setup_widgets (applet))

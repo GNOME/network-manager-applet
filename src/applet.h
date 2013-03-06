@@ -69,6 +69,7 @@ typedef struct
 #define PREF_DISABLE_VPN_NOTIFICATIONS            "disable-vpn-notifications"
 #define PREF_DISABLE_WIFI_CREATE                  "disable-wifi-create"
 #define PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE     "suppress-wireless-networks-available"
+#define PREF_SHOW_APPLET                          "show-applet"
 
 #define ICON_LAYER_LINK 0
 #define ICON_LAYER_VPN 1
@@ -103,6 +104,8 @@ typedef struct
 	MMManager *mm1;
 	gboolean   mm1_running;
 #endif
+
+	gboolean visible;
 
 	/* Permissions */
 	NMClientPermissionResult permissions[NM_CLIENT_PERMISSION_LAST + 1];
