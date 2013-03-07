@@ -59,6 +59,9 @@ typedef struct {
 	gboolean refuse_mschap;
 	gboolean refuse_mschapv2;
 
+	guint orig_lcp_echo_failure;
+	guint orig_lcp_echo_interval;
+
 	GtkToggleButton *use_mppe;
 	GtkToggleButton *mppe_require_128;
 	GtkToggleButton *use_mppe_stateful;
@@ -213,7 +216,6 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
 	NMSettingPPP *setting = priv->setting;
 	gboolean require_mppe, require_mppe_128, mppe_stateful, nobsdcomp, nodeflate, no_vj_comp;
-	guint32 lcp_echo_interval;
 
 	g_object_get (setting,
 	              NM_SETTING_PPP_REFUSE_PAP, &priv->refuse_pap,
@@ -227,7 +229,8 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 	              NM_SETTING_PPP_NOBSDCOMP, &nobsdcomp,
 	              NM_SETTING_PPP_NODEFLATE, &nodeflate,
 	              NM_SETTING_PPP_NO_VJ_COMP, &no_vj_comp,
-	              NM_SETTING_PPP_LCP_ECHO_INTERVAL, &lcp_echo_interval,
+	              NM_SETTING_PPP_LCP_ECHO_INTERVAL, &priv->orig_lcp_echo_interval,
+	              NM_SETTING_PPP_LCP_ECHO_FAILURE, &priv->orig_lcp_echo_failure,
 	              NULL);
 
 	update_auth_methods_list (self);
@@ -251,7 +254,7 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 	gtk_toggle_button_set_active (priv->use_vj_comp, !no_vj_comp);
 	g_signal_connect_swapped (priv->use_vj_comp, "toggled", G_CALLBACK (ce_page_changed), self);
 
-	gtk_toggle_button_set_active (priv->send_ppp_echo, (lcp_echo_interval > 0) ? TRUE : FALSE);
+	gtk_toggle_button_set_active (priv->send_ppp_echo, (priv->orig_lcp_echo_interval > 0) ? TRUE : FALSE);
 	g_signal_connect_swapped (priv->send_ppp_echo, "toggled", G_CALLBACK (ce_page_changed), self);
 }
 
@@ -319,8 +322,7 @@ ui_to_setting (CEPagePpp *self)
 	gboolean nobsdcomp;
 	gboolean nodeflate;
 	gboolean no_vj_comp;
-	guint32 lcp_echo_failure;
-	guint32 lcp_echo_interval;
+	guint lcp_echo_failure = 0, lcp_echo_interval = 0;
 
 	require_mppe = gtk_toggle_button_get_active (priv->use_mppe);
 	require_mppe_128 = gtk_toggle_button_get_active (priv->mppe_require_128);
@@ -331,13 +333,16 @@ ui_to_setting (CEPagePpp *self)
 	no_vj_comp = !gtk_toggle_button_get_active (priv->use_vj_comp);
 
 	if (gtk_toggle_button_get_active (priv->send_ppp_echo)) {
-		lcp_echo_failure = 5;
-		lcp_echo_interval = 30;
-	} else {
-		lcp_echo_failure = 0;
-		lcp_echo_interval = 0;
+		if (priv->orig_lcp_echo_failure && priv->orig_lcp_echo_interval) {
+			lcp_echo_failure = priv->orig_lcp_echo_failure;
+			lcp_echo_interval = priv->orig_lcp_echo_interval;
+		} else {
+			/* Set defaults */
+			lcp_echo_failure = 5;
+			lcp_echo_interval = 30;
+		}
 	}
-	
+
 	g_object_set (priv->setting,
 	              NM_SETTING_PPP_REFUSE_EAP, priv->refuse_eap,
 	              NM_SETTING_PPP_REFUSE_PAP, priv->refuse_pap,
