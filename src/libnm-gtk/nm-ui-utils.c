@@ -477,7 +477,7 @@ nma_utils_disambiguate_device_names (NMDevice **devices,
 			/* Translators: the first %s is a bus name (eg, "USB") or
 			 * product name, the second is a device type (eg,
 			 * "Ethernet"). You can change this to something like
-			 * "%$2s (%$1s)" if there's no grammatical way to combine
+			 * "%2$s (%1$s)" if there's no grammatical way to combine
 			 * the strings otherwise.
 			 */
 			names[i] = g_strdup_printf (C_("long device name", "%s %s"),
