@@ -261,40 +261,52 @@ mode_combo_changed_cb (GtkComboBox *combo,
 	CEPageWifi *self = CE_PAGE_WIFI (user_data);
 	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	CEPage *parent = CE_PAGE (self);
-	GtkWidget *widget;
-	gboolean show;
+	GtkWidget *widget_band_label, *widget_chan_label, *widget_bssid_label;
+	gboolean adhoc;
 
  	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (combo))) {
  	case 1: /* adhoc */
-		show = TRUE;
+		adhoc = TRUE;
  		break;
  	default: /* infrastructure */
-		show = FALSE;
+		adhoc = FALSE;
  		break;
  	}
 
-	if (show) {
-		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_band_label"));
-		gtk_widget_show (widget);
+	widget_band_label = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_band_label"));
+	widget_chan_label = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_channel_label"));
+	widget_bssid_label = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_bssid_label"));
+
+	if (adhoc) {
+		/* For Ad-Hoc show Band and Channel */
+		gtk_widget_show (widget_band_label);
 		gtk_widget_show (GTK_WIDGET (priv->band));
-		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_channel_label"));
-		gtk_widget_show (widget);
+		gtk_widget_show (widget_chan_label);
 		gtk_widget_show (GTK_WIDGET (priv->channel));
+
+		/* and hide BSSID
+		 * BSSID is random and is created by kernel for Ad-Hoc networks
+		 * http://lxr.linux.no/linux+v3.7.6/net/mac80211/ibss.c#L685
+		 */
+		gtk_widget_hide (widget_bssid_label);
+		gtk_widget_hide (GTK_WIDGET (priv->bssid));
 	} else {
-		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_band_label"));
-		gtk_widget_hide (widget);
+		/* Do opposite for Infrastructure mode */
+		gtk_widget_hide (widget_band_label);
 		gtk_widget_hide (GTK_WIDGET (priv->band));
-		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_channel_label"));
-		gtk_widget_hide (widget);
+		gtk_widget_hide (widget_chan_label);
 		gtk_widget_hide (GTK_WIDGET (priv->channel));
+
+		gtk_widget_show (widget_bssid_label);
+		gtk_widget_show (GTK_WIDGET (priv->bssid));
 	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_band_label"));
-	gtk_widget_set_sensitive (GTK_WIDGET (widget), show);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->band), show);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_channel_label"));
-	gtk_widget_set_sensitive (GTK_WIDGET (widget), show);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), show);
+	gtk_widget_set_sensitive (widget_band_label, adhoc);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->band), adhoc);
+	gtk_widget_set_sensitive (widget_chan_label, adhoc);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), adhoc);
+	gtk_widget_set_sensitive (widget_bssid_label, !adhoc);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->bssid), !adhoc);
 
 	ce_page_changed (CE_PAGE (self));
 }
@@ -541,7 +553,8 @@ ui_to_setting (CEPageWifi *self)
 	}
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->bssid));
-	if (entry)
+	/* BSSID is only valid for infrastructure not for adhoc */
+	if (entry && mode && strcmp (mode, "adhoc") != 0)
 		bssid = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry)
