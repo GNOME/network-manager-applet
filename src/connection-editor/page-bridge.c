@@ -91,6 +91,7 @@ stp_toggled (GtkToggleButton *stp, gpointer user_data)
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->hello_time), FALSE);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->max_age), FALSE);
 	}
+	ce_page_changed (CE_PAGE (user_data));
 }
 
 static void
