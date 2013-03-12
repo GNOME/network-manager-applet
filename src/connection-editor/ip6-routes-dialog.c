@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * (C) Copyright 2008 - 2013 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -830,6 +830,7 @@ ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP6Config *s_ip6)
 		}
 
 		/* Next hop (optional) */
+		memset (&next_hop, 0, sizeof (struct in6_addr));
 		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop)) {
 			g_warning ("%s: IPv6 next hop invalid!", __func__);
 			goto next;
