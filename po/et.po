@@ -7,15 +7,15 @@
 #
 # Priit Laes <amd store20 com>, 2006.
 # Ivar Smolin <okul at linux.ee>, 2006–2007, 2010, 2011.
-# Mattias Põldaru <mahfiaz@gmail.com>, 2008, 2009, 2010, 2011, 2012.
+# Mattias Põldaru <mahfiaz@gmail.com>, 2008, 2009, 2010, 2011, 2012, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Network Manager MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2012-09-22 10:25+0000\n"
-"PO-Revision-Date: 2012-09-23 13:15+0300\n"
+"POT-Creation-Date: 2013-03-12 20:50+0000\n"
+"PO-Revision-Date: 2013-03-13 02:52+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
 "Language-Team: Estonian <>\n"
 "Language: et\n"
@@ -80,6 +80,12 @@ msgstr "WiFi loomine keelatud"
 msgid ""
 "Set to true to disable creation of adhoc networks when using the applet."
 msgstr "Kui tõene, siis on adhoc võrgu loomine rakendi abil keelatud."
+
+msgid "Show the applet in notification area"
+msgstr "Rakendit näidatakse teatealas"
+
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr "Määra väärtuseks FALSE, et keelata rakendi näitamine teatealas."
 
 msgid "Ignore CA certificate"
 msgstr "Sertifitseerimiskeskuse sertifikaadi eiramine"
@@ -410,9 +416,6 @@ msgstr "Kasutaja autentimine on vajalik mobiiliühenduse '%s' jaoks..."
 msgid "Mobile broadband connection '%s' active"
 msgstr "Mobiiliühendus '%s' on aktiivne"
 
-msgid "CDMA"
-msgstr "CDMA"
-
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobiiliühendus (%s)"
@@ -426,13 +429,6 @@ msgstr "Uus mobiiliühendus (CDMA)..."
 
 msgid "You are now connected to the CDMA network."
 msgstr "Oled nüüd ühendatud CDMA-võrku."
-
-#, c-format
-msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
-msgstr "Mobiiliühendus '%s' on aktiivne: (%d%%%s%s)"
-
-msgid "roaming"
-msgstr "rändlus (roaming)"
 
 msgid "CDMA network."
 msgstr "CDMA võrk."
@@ -486,8 +482,25 @@ msgstr "Ethernet võrguühendus '%s' on aktiivne"
 msgid "DSL authentication"
 msgstr "DSL autentimine"
 
-msgid "GSM"
-msgstr "GSM"
+msgid "Wrong PUK code; please contact your provider."
+msgstr "Vale PUK-kood; võta ühendust oma teenusepakkujaga."
+
+msgid "Wrong PIN code; please contact your provider."
+msgstr "Vale PIN-kood; võta ühendust oma teenusepakkujaga."
+
+#. Start the spinner to show the progress of the unlock
+msgid "Sending unlock code..."
+msgstr "Luku avamise koodi saatmine..."
+
+#. Default connection item
+msgid "New Mobile Broadband connection..."
+msgstr "Uus mobiiliühendus..."
+
+msgid "You are now connected to the Mobile Broadband network."
+msgstr "Oled nüüd ühendatud mobiiliinternetti."
+
+msgid "Mobile Broadband network."
+msgstr "Mobiiliühenduse võrk."
 
 #. Default connection item
 msgid "New Mobile Broadband (GSM) connection..."
@@ -495,78 +508,6 @@ msgstr "Uus mobiiliühendus (GSM)..."
 
 msgid "You are now connected to the GSM network."
 msgstr "Oled nüüd ühendatud GSM-võrku."
-
-msgid "PIN code required"
-msgstr "Vajalik on PIN-kood"
-
-msgid "PIN code is needed for the mobile broadband device"
-msgstr "Mobiiliühenduse seadmele on vaja PIN-koodi"
-
-#, c-format
-msgid "PIN code for SIM card '%s' on '%s'"
-msgstr "'%s' SIM kaardi PIN kood seadmes '%s'"
-
-msgid "Wrong PIN code; please contact your provider."
-msgstr "Vale PIN-kood; võta ühendust oma teenusepakkujaga."
-
-msgid "Wrong PUK code; please contact your provider."
-msgstr "Vale PUK-kood; võta ühendust oma teenusepakkujaga."
-
-#. Start the spinner to show the progress of the unlock
-msgid "Sending unlock code..."
-msgstr "Luku avamise koodi saatmine..."
-
-msgid "SIM PIN unlock required"
-msgstr "Vajalik on SIM-kaardi PIN-kood"
-
-msgid "SIM PIN Unlock Required"
-msgstr "Vajalik on SIM-kaardi PIN-kood"
-
-#. FIXME: some warning about # of times you can enter incorrect PIN
-#, c-format
-msgid ""
-"The mobile broadband device '%s' requires a SIM PIN code before it can be "
-"used."
-msgstr ""
-"Mobiiliühenduse seadme '%s' kasutamiseks on vajalik SIM-kaardi PIN-kood."
-
-#. Translators: PIN code entry label
-msgid "PIN code:"
-msgstr "PIN-kood:"
-
-#. Translators: Show/obscure PIN checkbox label
-msgid "Show PIN code"
-msgstr "Näita PIN-koodi"
-
-msgid "SIM PUK unlock required"
-msgstr "Vajalik on SIM-kaardi PUK-kood"
-
-msgid "SIM PUK Unlock Required"
-msgstr "Vajalik on SIM-kaardi PUK-kood"
-
-#. FIXME: some warning about # of times you can enter incorrect PUK
-#, c-format
-msgid ""
-"The mobile broadband device '%s' requires a SIM PUK code before it can be "
-"used."
-msgstr ""
-"Mobiiliühenduse seadme '%s' kasutamiseks on vajalik SIM-kaardi PUK-kood."
-
-#. Translators: PUK code entry label
-msgid "PUK code:"
-msgstr "PUK-kood:"
-
-#. Translators: New PIN entry label
-msgid "New PIN code:"
-msgstr "Uus PIN-kood:"
-
-#. Translators: New PIN verification entry label
-msgid "Re-enter new PIN code:"
-msgstr "Uus PIN-kood uuesti:"
-
-#. Translators: Show/obscure PIN/PUK checkbox label
-msgid "Show PIN/PUK codes"
-msgstr "Näita PIN/PUK-koodi"
 
 msgid "GSM network."
 msgstr "GSM võrk."
@@ -657,6 +598,13 @@ msgstr "WiMAX on keelatud riistvaralisest lülitist"
 
 msgid "You are now connected to the WiMAX network."
 msgstr "Oled nüüd ühendatud WiMAX-võrku."
+
+#, c-format
+msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
+msgstr "Mobiiliühendus '%s' on aktiivne: (%d%%%s%s)"
+
+msgid "roaming"
+msgstr "rändlus (roaming)"
 
 msgid "Error displaying connection information:"
 msgstr "Viga ühenduse andmete kuvamisel:"
@@ -840,6 +788,58 @@ msgstr "Võrku '%s' ühendumiseks on vaja parooli."
 msgid "Password:"
 msgstr "Parool:"
 
+msgid "SIM PIN unlock required"
+msgstr "Vajalik on SIM-kaardi PIN-kood"
+
+msgid "SIM PIN Unlock Required"
+msgstr "Vajalik on SIM-kaardi PIN-kood"
+
+#. FIXME: some warning about # of times you can enter incorrect PIN
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PIN code before it can be "
+"used."
+msgstr ""
+"Mobiiliühenduse seadme '%s' kasutamiseks on vajalik SIM-kaardi PIN-kood."
+
+#. Translators: PIN code entry label
+msgid "PIN code:"
+msgstr "PIN-kood:"
+
+#. Translators: Show/obscure PIN checkbox label
+msgid "Show PIN code"
+msgstr "Näita PIN-koodi"
+
+msgid "SIM PUK unlock required"
+msgstr "Vajalik on SIM-kaardi PUK-kood"
+
+msgid "SIM PUK Unlock Required"
+msgstr "Vajalik on SIM-kaardi PUK-kood"
+
+#. FIXME: some warning about # of times you can enter incorrect PUK
+#, c-format
+msgid ""
+"The mobile broadband device '%s' requires a SIM PUK code before it can be "
+"used."
+msgstr ""
+"Mobiiliühenduse seadme '%s' kasutamiseks on vajalik SIM-kaardi PUK-kood."
+
+#. Translators: PUK code entry label
+msgid "PUK code:"
+msgstr "PUK-kood:"
+
+#. Translators: New PIN entry label
+msgid "New PIN code:"
+msgstr "Uus PIN-kood:"
+
+#. Translators: New PIN verification entry label
+msgid "Re-enter new PIN code:"
+msgstr "Uus PIN-kood uuesti:"
+
+#. Translators: Show/obscure PIN/PUK checkbox label
+msgid "Show PIN/PUK codes"
+msgstr "Näita PIN/PUK-koodi"
+
 msgid ""
 "IP addresses identify your computer on the network.  Click the \"Add\" "
 "button to add an IP address."
@@ -862,6 +862,9 @@ msgstr ""
 msgid " "
 msgstr " "
 
+msgid "Create…"
+msgstr "Loo…"
+
 msgid "Choose a Connection Type"
 msgstr "Ühenduse liigi valimine"
 
@@ -875,15 +878,6 @@ msgstr ""
 "\n"
 "Kui soovid luua VPN ühendust ning soovitud VPN ühenduse liiki nimekirjas ei "
 "leidu, võib vajalik VPN plugin olla paigaldamata."
-
-msgid "Create…"
-msgstr "Loo…"
-
-msgid "automatic"
-msgstr "automaatne"
-
-msgid "Failed to update connection secrets due to an unknown error."
-msgstr "Tundmatu vea tõttu nurjus ühenduse paroolide uuendamine."
 
 msgid "Round-robin"
 msgstr "Round-robin"
@@ -954,6 +948,42 @@ msgstr "Link _maas viivitus:"
 msgid "Link _down delay:"
 msgstr "Link _püsti viivitus:"
 
+msgid "Path _cost:"
+msgstr "Marsruudi _hind:"
+
+msgid "_Priority:"
+msgstr "_Prioriteet:"
+
+msgid "_Hairpin mode:"
+msgstr "_Hairpin režiim:"
+
+msgid "Bridged _connections:"
+msgstr "_Sildühendused:"
+
+msgid "_Forward delay:"
+msgstr "_Edastamise viivitus:"
+
+msgid "_Hello time:"
+msgstr "_Tervitusaeg:"
+
+msgid "s"
+msgstr "s"
+
+msgid "Enable _STP (Spanning Tree Protocol)"
+msgstr "_STP lubamine (Spanning Tree Protocol)"
+
+msgid "_Max age:"
+msgstr "_Suurim vanus:"
+
+msgid "_Aging time:"
+msgstr "_Vananemise aeg:"
+
+msgid "automatic"
+msgstr "automaatne"
+
+msgid "Failed to update connection secrets due to an unknown error."
+msgstr "Tundmatu vea tõttu nurjus ühenduse paroolide uuendamine."
+
 msgid "_Username:"
 msgstr "_Kasutajanimi:"
 
@@ -965,6 +995,15 @@ msgstr "_Näita parooli"
 
 msgid "_Password:"
 msgstr "_Parool:"
+
+msgid "Yes"
+msgstr "Jah"
+
+msgid "Only on activation"
+msgstr "Ainult aktiveerumisel"
+
+msgid "No"
+msgstr "Ei"
 
 msgid "Automatic"
 msgstr "Automaatne"
@@ -1029,6 +1068,21 @@ msgstr "Ülekandeühiku piirsuurus (_MTU):"
 
 msgid "bytes"
 msgstr "baiti"
+
+msgid "Carrier de_tect:"
+msgstr "Operaatori _tuvastus:"
+
+msgid "Automatically connect to _VPN when using this connection"
+msgstr "Selle ühendusega koos ühendutakse automaatselt _VPN võrku"
+
+msgid "All _users may connect to this network"
+msgstr "_Kõik kasutajad võivad selle võrguga ühenduda"
+
+msgid "_Automatically connect to this network when it is available"
+msgstr "_Automaatne ühendumine selle võrguga, kui saadaval"
+
+msgid "Firewall _zone:"
+msgstr "Tulemüüri _tsoon:"
 
 msgid "_Transport mode:"
 msgstr "_Transportrežiim:"
@@ -1201,6 +1255,26 @@ msgstr "Kaja"
 msgid "Send PPP _echo packets"
 msgstr "Saadetakse PPP _echo pakette"
 
+msgid "_Parent interface:"
+msgstr "_Vanemliides:"
+
+msgid "VLAN interface _name:"
+msgstr "VLAN liidese _nimi:"
+
+msgid "_Cloned MAC address:"
+msgstr "_Kloonitud MAC-aadress:"
+
+msgid "VLAN _id:"
+msgstr "VLANi _ID:"
+
+#. In context, this means "concatenate the device name and the VLAN ID number together"
+msgid "Device name + number"
+msgstr "Seadme nimi + number"
+
+#. LEAVE "vlan" UNTRANSLATED. In context, this means "concatenate the string 'vlan' and the VLAN ID number together".
+msgid "\"vlan\" + number"
+msgstr "\"vlan\" + number"
+
 msgid "S_ecurity:"
 msgstr "_Turvalisus:"
 
@@ -1227,13 +1301,6 @@ msgstr "Mb/s"
 
 msgid "_Rate:"
 msgstr "_Kiirus:"
-
-msgid ""
-"This option locks this connection to the Wi-Fi access point (AP) specified "
-"by the BSSID entered here.  Example: 00:11:22:33:44:55"
-msgstr ""
-"See valik lubab ühenduda ainult siia sisestatud BSSID aadressiga Wi-Fi "
-"ruuteriga (AP). Näiteks: 00:11:22:33:44:55"
 
 msgid "_BSSID:"
 msgstr "_BSSID:"
@@ -1324,8 +1391,20 @@ msgstr "InfiniBand"
 msgid "Bond"
 msgstr "Liitühendus (bond)"
 
+msgid "Bridge"
+msgstr "Sild"
+
+msgid "VLAN"
+msgstr "VLAN"
+
 msgid "VPN"
 msgstr "VPN"
+
+msgid "Hardware"
+msgstr "Riistvara"
+
+msgid "Virtual"
+msgstr "Virtuaalne"
 
 msgid "Import a saved VPN configuration..."
 msgstr "VPN-ühenduse seadistuse importimine..."
@@ -1398,12 +1477,6 @@ msgstr "Ühenduse lisamine nurjus"
 
 msgid "Connection _name:"
 msgstr "Ühenduse _nimi:"
-
-msgid "Connect _automatically"
-msgstr "_Automaatne ühendumine"
-
-msgid "A_vailable to all users"
-msgstr "_Saadaval kõigile kasutajatele"
 
 msgid "_Export..."
 msgstr "_Eksportimine..."
@@ -1492,16 +1565,28 @@ msgstr "802.1x turvalisuse kasutajaliidest pole võimalik laadida."
 msgid "Use 802.1_X security for this connection"
 msgstr "Sellel ühendusel 802.1_X turvalisuse kasutamine"
 
-#, c-format
-msgid "%s slave %d"
-msgstr "%s alluv %d"
-
 msgid "Could not load bond user interface."
 msgstr "Liitühenduse (bond) kasutajaliidest pole võimalik laadida."
 
 #, c-format
 msgid "Bond connection %d"
 msgstr "Liitühendus %d (bond)"
+
+msgid "Could not load bridge user interface."
+msgstr "Sildühenduse kasutajaliidest pole võimalik laadida."
+
+#, c-format
+msgid "Bridge connection %d"
+msgstr "Sildühendus %d"
+
+#. Translators: a "Bridge Port" is a network
+#. * device that is part of a bridge.
+#.
+msgid "Bridge Port"
+msgstr "Silla port"
+
+msgid "Could not load bridge port user interface."
+msgstr "Sildpordi kasutajaliidest pole võimalik laadida."
 
 msgid "Could not load DSL user interface."
 msgstr "DSL kasutajaliidest pole võimalik laadida."
@@ -1523,6 +1608,25 @@ msgstr "Ethernet võrgu kasutajaliidest pole võimalik laadida."
 #, c-format
 msgid "Ethernet connection %d"
 msgstr "Ethernet võrgu ühendus %d"
+
+#. TRANSLATORS: Default zone set for firewall, when no zone is selected
+msgid "Default"
+msgstr "Vaikimisi"
+
+msgid ""
+"The zone defines the trust level of the connection. Default is not a regular "
+"zone, selecting it results in the use of the default zone set in the "
+"firewall. Only usable if firewalld is active."
+msgstr ""
+"Tsoon määrab ühenduse usaldustaseme. Vaikimisi ei ole tavaline tsoon, selle "
+"valimisel kasutatakse tulemüüri vaikimisi tsooni. Kasutatav ainult siis, kui "
+"firewalld on aktiivne."
+
+msgid "FirewallD is not running."
+msgstr "FirewallD ei tööta."
+
+msgid "Could not load General user interface."
+msgstr "Üldist kasutajaliidest pole võimalik laadida."
 
 msgid "Could not load InfiniBand user interface."
 msgstr "InfiniBand-võrgu kasutajaliidest pole võimalik laadida."
@@ -1562,7 +1666,7 @@ msgid "Disabled"
 msgstr "Keelatud"
 
 msgid "Additional DNS ser_vers:"
-msgstr "_DNS-lisaserverid:"
+msgstr "_DNS lisaserverid:"
 
 msgid "Additional s_earch domains:"
 msgstr "_Lisaotsidomeenid:"
@@ -1596,6 +1700,10 @@ msgstr "IPv6 sätted"
 msgid "Could not load IPv6 user interface."
 msgstr "IPv6 kasutajaliidest pole võimalik laadida."
 
+#, c-format
+msgid "%s slave %d"
+msgstr "%s alluv %d"
+
 msgid "Could not load mobile broadband user interface."
 msgstr "Mobiiliühenduse kasutajaliidest pole võimalik laadida."
 
@@ -1621,6 +1729,12 @@ msgstr ""
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr ""
 "Minu teenusepakkuja kasutab C_DMA-l põhinevat tehnoloogiat (nt 1xRTT, EVDO)"
+
+msgid "CDMA"
+msgstr "CDMA"
+
+msgid "GSM"
+msgstr "GSM"
 
 msgid "EAP"
 msgstr "EAP"
@@ -1650,6 +1764,13 @@ msgstr "PPP sätted"
 
 msgid "Could not load PPP user interface."
 msgstr "PPP kasutajaliidest pole võimalik laadida."
+
+msgid "Could not load vlan user interface."
+msgstr "VLAN kasutajaliidest pole võimalik laadida."
+
+#, c-format
+msgid "VLAN connection %d"
+msgstr "VLAN-ühendus %d"
 
 msgid "Could not load VPN user interface."
 msgstr "VPN kasutajaliidest pole võimalik laadida."
@@ -1681,6 +1802,13 @@ msgid ""
 msgstr ""
 "Vali, mis liiki VPN ühendust kasutada. Kui soovitud VPN ühenduse liiki "
 "nimekirjas ei leidu, võib vajalik VPN plugin olla paigaldamata."
+
+msgid ""
+"This option locks this connection to the Wi-Fi access point (AP) specified "
+"by the BSSID entered here.  Example: 00:11:22:33:44:55"
+msgstr ""
+"See valik lubab ühenduda ainult siia sisestatud BSSID aadressiga Wi-Fi "
+"ruuteriga (AP). Näiteks: 00:11:22:33:44:55"
 
 #, c-format
 msgid "default"
@@ -1839,6 +1967,9 @@ msgstr "telefoni andmete tuvastamine aegus."
 msgid "Detecting phone configuration..."
 msgstr "Telefoni seadistuse tuvastamine..."
 
+msgid "error getting bus connection"
+msgstr "viga siini ühenduse hankimisel"
+
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -1854,11 +1985,11 @@ msgstr "PAN-ühenduse loomine nurjus: %s"
 msgid "%s Network"
 msgstr "%s võrk"
 
-msgid "Automatically unlock this device"
-msgstr "Selle seadme luku automaatne avamine"
-
 msgid "_Unlock"
 msgstr "_Võta lukust lahti"
+
+msgid "Automatically unlock this device"
+msgstr "Selle seadme luku automaatne avamine"
 
 msgid "Connection Information"
 msgstr "Ühenduse andmed"
@@ -1996,6 +2127,35 @@ msgstr "Mobiiliühenduse seadistamine"
 msgid "New Mobile Broadband Connection"
 msgstr "Uus mobiiliühendus"
 
+msgid "Wired"
+msgstr "Juhtmega"
+
+msgid "Bluetooth"
+msgstr "Bluetooth"
+
+msgid "OLPC Mesh"
+msgstr "OLPC võrk"
+
+msgid "ADSL"
+msgstr "ADSL"
+
+msgid "PCI"
+msgstr "PCI"
+
+msgid "USB"
+msgstr "USB"
+
+#. Translators: the first %s is a bus name (eg, "USB") or
+#. * product name, the second is a device type (eg,
+#. * "Ethernet"). You can change this to something like
+#. * "%2$s (%1$s)" if there's no grammatical way to combine
+#. * the strings otherwise.
+#.
+#, c-format
+msgctxt "long device name"
+msgid "%s %s"
+msgstr "%s %s"
+
 msgid "New..."
 msgstr "Uus..."
 
@@ -2123,8 +2283,15 @@ msgstr "Välisriigi roaming-võrk (%s)"
 msgid "Roaming network"
 msgstr "Välisriigi roaming-võrk"
 
-msgid "Default"
-msgstr "Vaikimisi"
+#, c-format
+msgid "PIN code for SIM card '%s' on '%s'"
+msgstr "'%s' SIM kaardi PIN kood seadmes '%s'"
+
+msgid "PIN code required"
+msgstr "Vajalik on PIN-kood"
+
+msgid "PIN code is needed for the mobile broadband device"
+msgstr "Mobiiliühenduse seadmele on vaja PIN-koodi"
 
 #. The %s is a mobile provider name, eg "T-Mobile"
 #, c-format
@@ -2146,8 +2313,8 @@ msgstr ""
 msgid "Choose CA Certificate"
 msgstr "Vali sertifitseerimiskeskuse sertifikaat"
 
-msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
-msgstr "DER, PEM või PKCS#12 privaatvõtmed (*.der, *.pem, *.p12)"
+msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
+msgstr "DER, PEM või PKCS#12 privaatvõtmed (*.der, *.pem, *.p12, *.key)"
 
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER või PEM sertifikaadid (*.der, *.pem, *.crt, *.cer)"
@@ -2242,12 +2409,6 @@ msgstr "_Privaatvõtme parool:"
 msgid "Don't _warn me again"
 msgstr "Ära enam _hoiata"
 
-msgid "No"
-msgstr "Ei"
-
-msgid "Yes"
-msgstr "Jah"
-
 msgid "TLS"
 msgstr "TLS"
 
@@ -2263,12 +2424,6 @@ msgstr "Kaitstud EAP (PEAP)"
 msgid "Au_thentication:"
 msgstr "_Autentimine:"
 
-msgid "Open System"
-msgstr "Avatud süsteem"
-
-msgid "Shared Key"
-msgstr "Jagatud võti"
-
 msgid "1 (Default)"
 msgstr "1 (vaikimisi)"
 
@@ -2281,6 +2436,12 @@ msgstr "3"
 msgid "4"
 msgstr "4"
 
+msgid "Open System"
+msgstr "Avatud süsteem"
+
+msgid "Shared Key"
+msgstr "Jagatud võti"
+
 msgid "_Key:"
 msgstr "_Võti:"
 
@@ -2289,3 +2450,9 @@ msgstr "_Näita võtit"
 
 msgid "WEP inde_x:"
 msgstr "WEP inde_ks:"
+
+#~ msgid "Connect _automatically"
+#~ msgstr "_Automaatne ühendumine"
+
+#~ msgid "A_vailable to all users"
+#~ msgstr "_Saadaval kõigile kasutajatele"
