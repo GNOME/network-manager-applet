@@ -31,7 +31,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
-#include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <net/ethernet.h>
 
@@ -86,7 +85,6 @@ typedef struct
 	GObject parent_instance;
 
 	GMainLoop *loop;
-	DBusGConnection *bus;
 	DBusGConnection *session_bus;
 
 	NMShellWatcher *shell_watcher;

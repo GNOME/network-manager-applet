@@ -850,7 +850,6 @@ NMConnectionList *
 nm_connection_list_new (void)
 {
 	NMConnectionList *list;
-	DBusGConnection *bus;
 	GError *error = NULL;
 	const char *objects[] = { "NMConnectionList", NULL };
 
@@ -876,15 +875,7 @@ nm_connection_list_new (void)
 	if (!list->nm_client)
 		goto error;
 
-	bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (error) {
-		g_warning ("Could not connect to the system bus: %s", error->message);
-		g_error_free (error);
-		goto error;
-	}
-
-	list->settings = nm_remote_settings_new (bus);
-	dbus_g_connection_unref (bus);
+	list->settings = nm_remote_settings_new (NULL);
 	g_signal_connect (list->settings,
 	                  NM_REMOTE_SETTINGS_NEW_CONNECTION,
 	                  G_CALLBACK (connection_added),

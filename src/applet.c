@@ -3338,17 +3338,9 @@ shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer u
 static gboolean
 dbus_setup (NMApplet *applet, GError **error)
 {
-	DBusConnection *connection;
 	DBusGProxy *proxy;
 	guint result;
 	gboolean success;
-
-	applet->bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, error);
-	if (!applet->bus)
-		return FALSE;
-
-	connection = dbus_g_connection_get_connection (applet->bus);
-	dbus_connection_set_exit_on_disconnect (connection, FALSE);
 
 	applet->session_bus = dbus_g_bus_get (DBUS_BUS_SESSION, error);
 	if (!applet->session_bus)
@@ -3427,7 +3419,7 @@ constructor (GType type,
 		g_error_free (error);
 		goto error;
 	}
-	applet->settings = nm_remote_settings_new (applet->bus);
+	applet->settings = nm_remote_settings_new (NULL);
 
 #ifdef BUILD_MIGRATION_TOOL
 	{
@@ -3562,9 +3554,6 @@ static void finalize (GObject *object)
 
 	if (applet->settings)
 		g_object_unref (applet->settings);
-
-	if (applet->bus)
-		dbus_g_connection_unref (applet->bus);
 
 	if (applet->session_bus)
 		dbus_g_connection_unref (applet->session_bus);
