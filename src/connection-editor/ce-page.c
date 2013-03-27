@@ -162,6 +162,7 @@ ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
                          const char *current_mac, char **mac_list)
 {
 	char **iter, *active_mac = NULL;
+	int i, active_idx = -1;
 	int current_mac_len;
 	GtkWidget *entry;
 
@@ -170,7 +171,7 @@ ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
 	else
 		current_mac_len = -1;
 
-	for (iter = mac_list; iter && *iter; iter++) {
+	for (iter = mac_list, i = 0; iter && *iter; iter++, i++) {
 #if GTK_CHECK_VERSION (2,24,0)
 		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), *iter);
 #else
@@ -178,11 +179,16 @@ ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
 #endif
 		if (   current_mac
 		    && g_ascii_strncasecmp (*iter, current_mac, current_mac_len) == 0
-		    && ((*iter)[current_mac_len] == '\0' || (*iter)[current_mac_len] == ' '))
+		    && ((*iter)[current_mac_len] == '\0' || (*iter)[current_mac_len] == ' ')) {
 			active_mac = *iter;
+			active_idx = i;
+		}
 	}
 
 	if (current_mac) {
+		/* set active item */
+		gtk_combo_box_set_active (combo, active_idx);
+
 		if (!active_mac) {
 #if GTK_CHECK_VERSION (2,24,0)
 			gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (combo), current_mac);
