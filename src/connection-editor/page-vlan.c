@@ -57,15 +57,10 @@ typedef struct {
 	GtkEntry *name_entry;
 	GtkEntry *cloned_mac;
 	GtkSpinButton *mtu;
-	GtkComboBox *carrier_detect;
 
 	char *last_parent;
 	int last_id;
 } CEPageVlanPrivate;
-
-#define CARRIER_DETECT_YES         0
-#define CARRIER_DETECT_ON_ACTIVATE 1
-#define CARRIER_DETECT_NO          2
 
 static void
 vlan_private_init (CEPageVlan *self)
@@ -93,7 +88,6 @@ vlan_private_init (CEPageVlan *self)
 	priv->name_entry = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_name_entry"));
 	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_cloned_mac_entry"));
 	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "vlan_mtu"));
-	priv->carrier_detect = GTK_COMBO_BOX (gtk_builder_get_object (builder, "vlan_carrier"));
 }
 
 static void
@@ -343,8 +337,6 @@ populate_ui (CEPageVlan *self)
 	NMDevice *device, *parent_device = NULL;
 	const char *parent, *iface, *current_parent;
 	int i, mtu_def, mtu_val;
-	int carrier_detect_idx = CARRIER_DETECT_YES;
-	const char *carrier_detect;
 
 	devices = get_vlan_devices (self);
 
@@ -450,32 +442,16 @@ populate_ui (CEPageVlan *self)
 	gtk_spin_button_set_value (priv->mtu, (gdouble) mtu_val);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
-	/* Carrier detect */
-	carrier_detect = nm_setting_vlan_get_carrier_detect (priv->setting);
-	if (carrier_detect) {
-		if (!strcmp (carrier_detect, "yes"))
-			carrier_detect_idx = CARRIER_DETECT_YES;
-		else if (!strcmp (carrier_detect, "on-activate"))
-			carrier_detect_idx = CARRIER_DETECT_ON_ACTIVATE;
-		else if (!strcmp (carrier_detect, "no"))
-			carrier_detect_idx = CARRIER_DETECT_NO;
-	}
-	gtk_combo_box_set_active (priv->carrier_detect, carrier_detect_idx);
-
 	g_slist_free (devices);
 }
 
 static void
 finish_setup (CEPageVlan *self, gpointer unused, GError *error, gpointer user_data)
 {
-	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
-
 	if (error)
 		return;
 
 	populate_ui (self);
-
-	g_signal_connect (priv->carrier_detect, "changed", G_CALLBACK (stuff_changed), self);
 }
 
 CEPage *
@@ -533,7 +509,6 @@ ui_to_setting (CEPageVlan *self)
 	GType hwtype;
 	gboolean mtu_set;
 	int mtu;
-	const char *carrier_detect;
 
 	parent_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
 	if (parent_id == -1) {
@@ -580,26 +555,10 @@ ui_to_setting (CEPageVlan *self)
 	iface = gtk_entry_get_text (priv->name_entry);
 	vid = gtk_spin_button_get_value_as_int (priv->id_entry);
 
-	switch (gtk_combo_box_get_active (priv->carrier_detect)) {
-	case CARRIER_DETECT_YES:
-		carrier_detect = "yes";
-		break;
-	case CARRIER_DETECT_ON_ACTIVATE:
-		carrier_detect = "on-activate";
-		break;
-	case CARRIER_DETECT_NO:
-		carrier_detect = "no";
-		break;
-	default:
-		carrier_detect = NULL;
-		break;
-	}
-
 	g_object_set (priv->setting,
 	              NM_SETTING_VLAN_PARENT, parent_uuid ? parent_uuid : parent_iface,
 	              NM_SETTING_VLAN_INTERFACE_NAME, iface,
 	              NM_SETTING_VLAN_ID, vid,
-	              NM_SETTING_VLAN_CARRIER_DETECT, carrier_detect,
 	              NULL);
 
 	if (hwtype != G_TYPE_NONE) {

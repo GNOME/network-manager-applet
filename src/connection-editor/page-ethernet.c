@@ -49,7 +49,6 @@ typedef struct {
 	GtkToggleButton *duplex;
 	GtkToggleButton *autonegotiate;
 	GtkSpinButton *mtu;
-	GtkComboBox *carrier_detect;
 
 	gboolean disposed;
 } CEPageEthernetPrivate;
@@ -65,10 +64,6 @@ typedef struct {
 #define SPEED_100     2
 #define SPEED_1000    3
 #define SPEED_10000   4
-
-#define CARRIER_DETECT_YES         0
-#define CARRIER_DETECT_ON_ACTIVATE 1
-#define CARRIER_DETECT_NO          2
 
 static void
 ethernet_private_init (CEPageEthernet *self)
@@ -99,7 +94,6 @@ ethernet_private_init (CEPageEthernet *self)
 	priv->duplex = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_duplex"));
 	priv->autonegotiate = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_autonegotiate"));
 	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "ethernet_mtu"));
-	priv->carrier_detect = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_carrier"));
 }
 
 static void
@@ -121,8 +115,6 @@ populate_ui (CEPageEthernet *self)
 	char **mac_list;
 	const GByteArray *s_mac;
 	char *s_mac_str;
-	int carrier_detect_idx = CARRIER_DETECT_YES;
-	const char *carrier_detect;
 
 	/* Port */
 	port = nm_setting_wired_get_port (setting);
@@ -192,18 +184,6 @@ populate_ui (CEPageEthernet *self)
 	                  GINT_TO_POINTER (mtu_def));
 
 	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wired_get_mtu (setting));
-
-	/* Carrier detect */
-	carrier_detect = nm_setting_wired_get_carrier_detect (setting);
-	if (carrier_detect) {
-		if (!strcmp (carrier_detect, "yes"))
-			carrier_detect_idx = CARRIER_DETECT_YES;
-		else if (!strcmp (carrier_detect, "on-activate"))
-			carrier_detect_idx = CARRIER_DETECT_ON_ACTIVATE;
-		else if (!strcmp (carrier_detect, "no"))
-			carrier_detect_idx = CARRIER_DETECT_NO;
-	}
-	gtk_combo_box_set_active (priv->carrier_detect, carrier_detect_idx);
 }
 
 static void
@@ -223,7 +203,6 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 	g_signal_connect (priv->duplex, "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->autonegotiate, "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
-	g_signal_connect (priv->carrier_detect, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* Hide widgets we don't yet support */
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_port_label"));
@@ -289,7 +268,6 @@ ui_to_setting (CEPageEthernet *self)
 	GByteArray *device_mac = NULL;
 	GByteArray *cloned_mac = NULL;
 	GtkWidget *entry;
-	const char *carrier_detect;
 
 	/* Port */
 	switch (gtk_combo_box_get_active (priv->port)) {
@@ -329,22 +307,6 @@ ui_to_setting (CEPageEthernet *self)
 		break;
 	}
 
-	/* Carrier detect */
-	switch (gtk_combo_box_get_active (priv->carrier_detect)) {
-	case CARRIER_DETECT_YES:
-		carrier_detect = "yes";
-		break;
-	case CARRIER_DETECT_ON_ACTIVATE:
-		carrier_detect = "on-activate";
-		break;
-	case CARRIER_DETECT_NO:
-		carrier_detect = "no";
-		break;
-	default:
-		carrier_detect = NULL;
-		break;
-	}
-
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry)
 		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
@@ -358,7 +320,6 @@ ui_to_setting (CEPageEthernet *self)
 	              NM_SETTING_WIRED_DUPLEX, gtk_toggle_button_get_active (priv->duplex) ? "full" : "half",
 	              NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
 	              NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
-	              NM_SETTING_WIRED_CARRIER_DETECT, carrier_detect,
 	              NULL);
 
 	if (device_mac)
