@@ -329,6 +329,11 @@ dispose (GObject *object)
 	g_slist_free (editor->pending_secrets_calls);
 	editor->pending_secrets_calls = NULL;
 
+	if (editor->validate_id) {
+		g_source_remove (editor->validate_id);
+		editor->validate_id = 0;
+	}
+
 	if (editor->connection) {
 		g_object_unref (editor->connection);
 		editor->connection = NULL;
@@ -585,7 +590,10 @@ page_changed (CEPage *page, gpointer user_data)
 static gboolean
 idle_validate (gpointer user_data)
 {
-	connection_editor_validate (NM_CONNECTION_EDITOR (user_data));
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+
+	editor->validate_id = 0;
+	connection_editor_validate (editor);
 	return FALSE;
 }
 
@@ -611,7 +619,9 @@ recheck_initialization (NMConnectionEditor *editor)
 	/* Validate the connection from an idle handler to ensure that stuff like
 	 * GtkFileChoosers have had a chance to asynchronously find their files.
 	 */
-	g_idle_add (idle_validate, editor);
+	if (editor->validate_id)
+		g_source_remove (editor->validate_id);
+	editor->validate_id = g_idle_add (idle_validate, editor);
 }
 
 static void
