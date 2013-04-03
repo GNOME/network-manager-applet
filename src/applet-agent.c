@@ -340,8 +340,12 @@ keyring_find_secrets_cb (GObject *source,
 		goto done;
 	}
 
-	/* Only ask if we're allowed to, ie if flags != NM_SECRET_AGENT_GET_SECRETS_FLAG_NONE */
-	if (r->flags && g_list_length (list) == 0) {
+	/* Only ask if we're allowed to, so that eg a connection editor which
+	 * requests secrets for its UI, for a connection which doesn't have any
+	 * secrets yet, doesn't trigger the applet secrets dialog.
+	 */
+	if (   (r->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
+	    && g_list_length (list) == 0) {
 		g_message ("No keyring secrets found for %s/%s; asking user.", connection_id, r->setting_name);
 		ask_for_secrets (r);
 		return;
