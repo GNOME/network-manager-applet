@@ -3321,7 +3321,7 @@ nma_icon_check_and_load (const char *name, GdkPixbuf **icon, NMApplet *applet)
 	/* Try to load the icon; if the load fails, log the problem, and set
 	 * the icon to the fallback icon if requested.
 	 */
-	*icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, 0, &error);
+	*icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, GTK_ICON_LOOKUP_FORCE_SIZE, &error);
 	if (!*icon) {
 		g_warning ("Icon %s missing: (%d) %s",
 		           name,
@@ -3425,13 +3425,13 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
                              NMApplet *applet)
 {
 	if (getenv ("NMA_SIZE_DEBUG")) {
-		g_message ("%s(): status icon size now %d", __func__, size);
+		g_message ("%s(): status icon size %d requested", __func__, size);
 	}
 
 	/* icon_size may be 0 if for example the panel hasn't given us any space
 	 * yet.  We'll get resized later, but for now just load the 16x16 icons.
 	 */
-	applet->icon_size = MAX (16, size);
+	applet->icon_size = size ? size : 16;
 
 	nma_icons_reload (applet);
 
