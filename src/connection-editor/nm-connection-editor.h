@@ -86,7 +86,6 @@ NMConnectionEditor *nm_connection_editor_get_master (NMConnection *slave);
 void                nm_connection_editor_present (NMConnectionEditor *editor);
 void                nm_connection_editor_run (NMConnectionEditor *editor);
 NMConnection *      nm_connection_editor_get_connection (NMConnectionEditor *editor);
-gboolean            nm_connection_editor_update_connection (NMConnectionEditor *editor);
 GtkWindow *         nm_connection_editor_get_window (NMConnectionEditor *editor);
 gboolean            nm_connection_editor_get_busy (NMConnectionEditor *editor);
 void                nm_connection_editor_set_busy (NMConnectionEditor *editor, gboolean busy);

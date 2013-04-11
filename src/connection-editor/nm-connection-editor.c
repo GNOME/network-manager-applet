@@ -523,45 +523,6 @@ update_secret_flags (NMSetting *setting,
 	nm_setting_set_secret_flags (setting, key, secret_flags, NULL);
 }
 
-gboolean
-nm_connection_editor_update_connection (NMConnectionEditor *editor)
-{
-	NMSettingConnection *s_con;
-	GHashTable *settings;
-	gboolean everyone = FALSE;
-	GError *error = NULL;
-
-	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
-
-	if (!nm_connection_verify (editor->connection, &error)) {
-		/* In theory, this cannot happen: the "Save..." button should only
-		 * be sensitive if the connection is valid.
-		 */
-		nm_connection_editor_error (GTK_WINDOW (editor->window),
-		                            _("Error saving connection"),
-		                            _("The property '%s' / '%s' is invalid: %d"),
-		                            g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)),
-		                            error->message, error->code);
-		g_error_free (error);
-		return FALSE;
-	}
-
-	/* Update secret flags at the end after all other settings have updated,
-	 * otherwise the secret flags we set here might be overwritten during
-	 * setting validation.
-	 */
-	s_con = nm_connection_get_setting_connection (editor->connection);
-	everyone = !nm_setting_connection_get_num_permissions (s_con);
-	nm_connection_for_each_setting_value (editor->connection, update_secret_flags, GUINT_TO_POINTER (everyone));
-
-	/* Copy the modified connection to the original connection */
-	settings = nm_connection_to_hash (editor->connection, NM_SETTING_HASH_FLAG_ALL);
-	nm_connection_replace_settings (editor->orig_connection, settings, NULL);
-	g_hash_table_destroy (settings);
-
-	return TRUE;
-}
-
 static void
 populate_connection_ui (NMConnectionEditor *editor)
 {
@@ -992,10 +953,30 @@ updated_connection_cb (NMRemoteConnection *connection, GError *error, gpointer u
 static void
 ok_button_clicked_save_connection (NMConnectionEditor *self)
 {
+	NMSettingConnection *s_con;
+	gboolean everyone = FALSE;
 	GError *error = NULL;
 
-	if (!nm_connection_editor_update_connection (self))
+	/* Update secret flags right before sending to NM (after all the editor
+	 * pages have updated the modified connection) to ensure that the secret
+	 * flags are always synchronized with the "Available to all users" checkbox.
+	 */
+	s_con = nm_connection_get_setting_connection (self->connection);
+	everyone = !nm_setting_connection_get_num_permissions (s_con);
+	nm_connection_for_each_setting_value (self->connection, update_secret_flags, GUINT_TO_POINTER (everyone));
+
+	/* Copy the modified connection to the original connection */
+	if (!nm_connection_replace_settings_from_connection (self->orig_connection,
+	                                                     self->connection,
+	                                                     &error)) {
+		nm_connection_editor_error (GTK_WINDOW (self->window),
+		                            _("Error saving connection"),
+		                            _("The property '%s' / '%s' is invalid: %d"),
+		                            g_type_name (nm_connection_lookup_setting_type_by_quark (error->domain)),
+		                            error->message, error->code);
+		g_error_free (error);
 		return;
+	}
 
 	nm_connection_editor_set_busy (self, TRUE);
 
@@ -1005,20 +986,6 @@ ok_button_clicked_save_connection (NMConnectionEditor *self)
 		                                   added_connection_cb,
 		                                   self);
 	} else {
-		GHashTable *new_settings;
-
-		/* Connections need the certificates filled because the applet
-		 * private values that we use to store the path to
-		 * certificates and private keys don't go through D-Bus; they
-		 * are private of course!
-		 */
-		new_settings = nm_connection_to_hash (self->orig_connection, NM_SETTING_HASH_FLAG_ALL);
-		if (!nm_connection_replace_settings (self->orig_connection, new_settings, &error)) {
-			update_complete (self, error);
-			g_error_free (error);
-			return;
-		}
-
 		nm_remote_connection_commit_changes (NM_REMOTE_CONNECTION (self->orig_connection),
 		                                     updated_connection_cb, self);
 	}
