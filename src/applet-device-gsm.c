@@ -810,10 +810,10 @@ keyring_pin_check_cb (GObject *source,
 
 	list = secret_service_search_finish (NULL, result, &error);
 
-	if (error != NULL) {
+	if (!list) {
 		/* No saved PIN, just ask the user */
 		unlock_dialog_new (info->device, info);
-		g_error_free (error);
+		g_clear_error (&error);
 		return;
 	}
 
