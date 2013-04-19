@@ -364,8 +364,11 @@ keyring_find_secrets_cb (GObject *source,
 		if (secret) {
 			attributes = secret_item_get_attributes (item);
 			key_name = g_hash_table_lookup (attributes, KEYRING_SK_TAG);
-			if (!key_name)
+			if (!key_name) {
+				g_hash_table_unref (attributes);
+				secret_value_unref (secret);
 				continue;
+			}
 
 			g_hash_table_insert (secrets, g_strdup (key_name),
 			                     string_to_gvalue (secret_value_get (secret, NULL)));
