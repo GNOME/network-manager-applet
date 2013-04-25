@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=Networ"
 "kManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2013-01-15 13:02+0000\n"
-"PO-Revision-Date: 2013-01-26 10:56+0300\n"
+"POT-Creation-Date: 2013-04-21 19:55+0000\n"
+"PO-Revision-Date: 2013-04-25 17:27+0300\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@gnome.gr\n"
 "Language: el\n"
@@ -80,9 +80,6 @@ msgid "Suppress networks available notifications"
 msgstr "Απενεργοποίηση ειδοποιήσεων διαθέσιμων δικτύων"
 
 #: ../org.gnome.nm-applet.gschema.xml.in.h:8
-#| msgid ""
-#| "Set this to true to disable notifications when wireless networks are "
-#| "available."
 msgid ""
 "Set this to true to disable notifications when Wi-Fi networks are available."
 msgstr ""
@@ -111,10 +108,20 @@ msgstr ""
 "τη χρήση της μικροεφαρμογής."
 
 #: ../org.gnome.nm-applet.gschema.xml.in.h:13
+msgid "Show the applet in notification area"
+msgstr "Εμφάνιση της μικροεφαρμογής στην περιοχή ειδοποιήσεων"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:14
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr ""
+"Ορισμός σε ΨΕΥΔΕΣ για απενεργοποίηση εμφάνισης της μικροεφαρμογής στην "
+"περιοχή ειδοποιήσεων."
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:15
 msgid "Ignore CA certificate"
 msgstr "Παράβλεψη πιστοποιητικού CA"
 
-#: ../org.gnome.nm-applet.gschema.xml.in.h:14
+#: ../org.gnome.nm-applet.gschema.xml.in.h:16
 msgid ""
 "Set this to true to disable warnings about CA certificates in EAP "
 "authentication."
@@ -122,7 +129,7 @@ msgstr ""
 "Ορίστε αυτό αληθές για να απενεργοποιήσετε τις προειδοποιήσεις σχετικά με τα "
 "πιστοποιητικά CA στην πιστοποίηση EAP."
 
-#: ../org.gnome.nm-applet.gschema.xml.in.h:15
+#: ../org.gnome.nm-applet.gschema.xml.in.h:17
 msgid ""
 "Set this to true to disable warnings about CA certificates in phase 2 of EAP "
 "authentication."
@@ -131,7 +138,6 @@ msgstr ""
 "πιστοποιητικά CA στην 2η φάσης της EAP πιστοποίησης."
 
 #: ../src/8021x.ui.h:1 ../src/ethernet-dialog.c:104
-#| msgid "Wired 802.1X authentication"
 msgid "802.1X authentication"
 msgstr "Πιστοποίηση 802.1X"
 
@@ -140,37 +146,37 @@ msgstr "Πιστοποίηση 802.1X"
 msgid "_Network name:"
 msgstr "Ό_νομα δικτύου:"
 
-#: ../src/applet.c:545
+#: ../src/applet.c:541
 msgid "Failed to add/activate connection"
 msgstr "Αποτυχία προσθήκης/ενεργοποίησης σύνδεσης"
 
-#: ../src/applet.c:547 ../src/applet.c:591 ../src/applet.c:617
+#: ../src/applet.c:543 ../src/applet.c:587 ../src/applet.c:613
 #: ../src/applet-device-wifi.c:1376 ../src/applet-device-wifi.c:1395
 msgid "Unknown error"
 msgstr "Άγνωστο σφάλμα"
 
-#: ../src/applet.c:550 ../src/applet.c:620 ../src/applet-device-wifi.c:1379
+#: ../src/applet.c:546 ../src/applet.c:616 ../src/applet-device-wifi.c:1379
 #: ../src/applet-device-wifi.c:1398
 msgid "Connection failure"
 msgstr "Αποτυχία σύνδεσης"
 
-#: ../src/applet.c:589
+#: ../src/applet.c:585
 msgid "Device disconnect failed"
 msgstr "Αποτυχία αποσύνδεσης της συσκευής"
 
-#: ../src/applet.c:594
+#: ../src/applet.c:590
 msgid "Disconnect failure"
 msgstr "Αποτυχία αποσύνδεσης"
 
-#: ../src/applet.c:615
+#: ../src/applet.c:611
 msgid "Connection activation failed"
 msgstr "Απέτυχε η ενεργοποίηση της σύνδεσης"
 
-#: ../src/applet.c:985 ../src/applet-device-wifi.c:1069
+#: ../src/applet.c:926 ../src/applet-device-wifi.c:1069
 msgid "Don't show this message again"
 msgstr "Να μην εμφανιστεί αυτό το μήνυμα ξανά"
 
-#: ../src/applet.c:1074
+#: ../src/applet.c:1015
 #, c-format
 msgid ""
 "\n"
@@ -180,7 +186,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί διακόπηκε η σύνδεση δικτύου."
 
-#: ../src/applet.c:1077
+#: ../src/applet.c:1018
 #, c-format
 msgid ""
 "\n"
@@ -189,7 +195,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί η υπηρεσία VPN διακόπηκε ανεξήγητα."
 
-#: ../src/applet.c:1080
+#: ../src/applet.c:1021
 #, c-format
 msgid ""
 "\n"
@@ -199,7 +205,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί η υπηρεσία VPN επέστρεψε άκυρες ρυθμίσεις."
 
-#: ../src/applet.c:1083
+#: ../src/applet.c:1024
 #, c-format
 msgid ""
 "\n"
@@ -208,7 +214,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί έληξε το χρονικό όριο σύνδεσης."
 
-#: ../src/applet.c:1086
+#: ../src/applet.c:1027
 #, c-format
 msgid ""
 "\n"
@@ -218,7 +224,7 @@ msgstr ""
 "Απέτυχε η σύνδεση VPN '%s', γιατί δεν έγινε έγκαιρη εκκίνηση της υπηρεσίας "
 "VPN."
 
-#: ../src/applet.c:1089
+#: ../src/applet.c:1030
 #, c-format
 msgid ""
 "\n"
@@ -227,7 +233,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί απέτυχε η εκκίνηση της υπηρεσίας VPN."
 
-#: ../src/applet.c:1092
+#: ../src/applet.c:1033
 #, c-format
 msgid ""
 "\n"
@@ -236,7 +242,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί δεν βρέθηκαν έγκυρα VPN secrets."
 
-#: ../src/applet.c:1095
+#: ../src/applet.c:1036
 #, c-format
 msgid ""
 "\n"
@@ -245,7 +251,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί τα VPN secrets ήταν άκυρα."
 
-#: ../src/applet.c:1102
+#: ../src/applet.c:1043
 #, c-format
 msgid ""
 "\n"
@@ -254,7 +260,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s'."
 
-#: ../src/applet.c:1120
+#: ../src/applet.c:1061
 #, c-format
 msgid ""
 "\n"
@@ -264,7 +270,7 @@ msgstr ""
 "\n"
 "Αποσυνδεθήκατε από το VPN '%s', γιατί διακόπηκε η σύνδεση δικτύου."
 
-#: ../src/applet.c:1123
+#: ../src/applet.c:1064
 #, c-format
 msgid ""
 "\n"
@@ -273,7 +279,7 @@ msgstr ""
 "\n"
 "Αποσυνδεθήκατε από το VPN '%s', γιατί διακόπηκε η υπηρεσία VPN."
 
-#: ../src/applet.c:1129
+#: ../src/applet.c:1070
 #, c-format
 msgid ""
 "\n"
@@ -282,7 +288,7 @@ msgstr ""
 "\n"
 "Αποσυνδεθήκατε από το VPN '%s'."
 
-#: ../src/applet.c:1159
+#: ../src/applet.c:1100
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -293,19 +299,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:1161
+#: ../src/applet.c:1102
 msgid "VPN connection has been successfully established.\n"
 msgstr "Έχει πραγματοποιηθεί επιτυχώς η σύνδεση VPN.\n"
 
-#: ../src/applet.c:1163
+#: ../src/applet.c:1104
 msgid "VPN Login Message"
 msgstr "Μήνυμα εισόδου VPN"
 
-#: ../src/applet.c:1169 ../src/applet.c:1177 ../src/applet.c:1227
+#: ../src/applet.c:1110 ../src/applet.c:1118 ../src/applet.c:1168
 msgid "VPN Connection Failed"
 msgstr "Απέτυχε η σύνδεση VPN"
 
-#: ../src/applet.c:1234
+#: ../src/applet.c:1175
 #, c-format
 msgid ""
 "\n"
@@ -318,7 +324,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1237
+#: ../src/applet.c:1178
 #, c-format
 msgid ""
 "\n"
@@ -331,171 +337,170 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1552
+#: ../src/applet.c:1493
 msgid "device not ready (firmware missing)"
 msgstr "η συσκευή δεν είναι έτοιμη (λείπει το firmware)"
 
-#: ../src/applet.c:1554
+#: ../src/applet.c:1495
 msgid "device not ready"
 msgstr "η συσκευή δεν είναι έτοιμη"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1564 ../src/applet-device-ethernet.c:229
+#: ../src/applet.c:1505 ../src/applet-device-ethernet.c:229
 msgid "disconnected"
 msgstr "χωρίς σύνδεση"
 
-#: ../src/applet.c:1580
+#: ../src/applet.c:1521
 msgid "Disconnect"
 msgstr "Αποσύνδεση"
 
-#: ../src/applet.c:1594
+#: ../src/applet.c:1535
 msgid "device not managed"
 msgstr "δε γίνεται διαχείριση της συσκευής"
 
-#: ../src/applet.c:1638
+#: ../src/applet.c:1579
 msgid "No network devices available"
 msgstr "Δε βρέθηκαν συσκευές δικτύου"
 
-#: ../src/applet.c:1726
+#: ../src/applet.c:1667
 msgid "_VPN Connections"
 msgstr "Συνδέσεις _VPN"
 
-#: ../src/applet.c:1783
+#: ../src/applet.c:1724
 msgid "_Configure VPN..."
 msgstr "_Ρύθμιση VPN..."
 
-#: ../src/applet.c:1787
+#: ../src/applet.c:1728
 msgid "_Disconnect VPN"
 msgstr "Α_ποσύνδεση VPN"
 
-#: ../src/applet.c:1881
+#: ../src/applet.c:1822
 msgid "NetworkManager is not running..."
 msgstr "Ο NetworkManager δεν εκτελείται..."
 
-#: ../src/applet.c:1886 ../src/applet.c:2738
+#: ../src/applet.c:1827 ../src/applet.c:2682
 msgid "Networking disabled"
 msgstr "Δικτύωση απενεργοποιημένη"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2107
+#: ../src/applet.c:2048
 msgid "Enable _Networking"
 msgstr "Ενεργοποίηση _δικτύωσης"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:2116
-#| msgid "Enable _Wireless"
+#: ../src/applet.c:2057
 msgid "Enable _Wi-Fi"
 msgstr "Ενεργοποίηση α_σύρματου"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2125
+#: ../src/applet.c:2066
 msgid "Enable _Mobile Broadband"
 msgstr "Ενεργοποίηση _κινητής ευρυζωνικής"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2134
+#: ../src/applet.c:2075
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "Ενεργοποίηση κινητής ευρυζωνικής WiMA_X"
 
 #. Toggle notifications item
-#: ../src/applet.c:2145
+#: ../src/applet.c:2086
 msgid "Enable N_otifications"
 msgstr "Ενεργοποίηση ει_δοποιήσεων"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2156
+#: ../src/applet.c:2097
 msgid "Connection _Information"
 msgstr "Π_ληροφορίες σύνδεσης"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2166
+#: ../src/applet.c:2107
 msgid "Edit Connections..."
 msgstr "Επεξεργασία συνδέσεων..."
 
 #. Help item
-#: ../src/applet.c:2180
+#: ../src/applet.c:2121
 msgid "_Help"
 msgstr "_Βοήθεια"
 
 #. About item
-#: ../src/applet.c:2189
+#: ../src/applet.c:2130
 msgid "_About"
 msgstr "Πε_ρί"
 
-#: ../src/applet.c:2367
+#: ../src/applet.c:2308
 msgid "Disconnected"
 msgstr "Χωρίς σύνδεση"
 
-#: ../src/applet.c:2368
+#: ../src/applet.c:2309
 msgid "The network connection has been disconnected."
 msgstr "Αποσυνδεθήκατε από το δίκτυο."
 
-#: ../src/applet.c:2601
+#: ../src/applet.c:2544
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Προετοιμασία της σύνδεσης '%s'..."
 
-#: ../src/applet.c:2604
+#: ../src/applet.c:2547
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Απαιτείται πιστοποίηση του χρήστη για τη σύνδεση '%s'..."
 
-#: ../src/applet.c:2607 ../src/applet-device-bt.c:235
-#: ../src/applet-device-wimax.c:469 ../src/mobile-helpers.c:615
+#: ../src/applet.c:2550 ../src/applet-device-bt.c:235
+#: ../src/applet-device-wimax.c:469 ../src/mobile-helpers.c:590
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Ζητείται διεύθυνση δικτύου για το '%s'..."
 
-#: ../src/applet.c:2610
+#: ../src/applet.c:2553
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Σύνδεση '%s' ενεργή"
 
-#: ../src/applet.c:2693
+#: ../src/applet.c:2636
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Εκκίνηση της σύνδεσης VPN '%s'..."
 
-#: ../src/applet.c:2696
+#: ../src/applet.c:2639
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Απαιτείται πιστοποίηση του χρήστη για τη σύνδεση VPN '%s'..."
 
-#: ../src/applet.c:2699
+#: ../src/applet.c:2642
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Ζητείται διεύθυνση VPN για το '%s'..."
 
-#: ../src/applet.c:2702
+#: ../src/applet.c:2645
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "Σύνδεση VPN '%s' ενεργή"
 
-#: ../src/applet.c:2743
+#: ../src/applet.c:2687
 msgid "No network connection"
 msgstr "Δεν υπάρχει σύνδεση δικτύου"
 
-#: ../src/applet.c:3444
+#: ../src/applet.c:3394
 msgid "NetworkManager Applet"
 msgstr "Μικροεφαρμογή NetworkManager"
 
-#: ../src/applet-device-bt.c:169 ../src/applet-device-cdma.c:303
-#: ../src/applet-device-ethernet.c:237 ../src/applet-device-broadband.c:767
-#: ../src/applet-device-gsm.c:357 ../src/applet-device-wifi.c:859
+#: ../src/applet-device-bt.c:169 ../src/applet-device-cdma.c:304
+#: ../src/applet-device-ethernet.c:237 ../src/applet-device-broadband.c:772
+#: ../src/applet-device-gsm.c:360 ../src/applet-device-wifi.c:859
 #: ../src/applet-device-wimax.c:275
 msgid "Available"
 msgstr "Διαθέσιμα"
 
-#: ../src/applet-device-bt.c:195 ../src/applet-device-cdma.c:345
-#: ../src/applet-device-ethernet.c:266 ../src/applet-device-broadband.c:811
-#: ../src/applet-device-gsm.c:399 ../src/applet-device-wimax.c:419
+#: ../src/applet-device-bt.c:195 ../src/applet-device-cdma.c:346
+#: ../src/applet-device-ethernet.c:266 ../src/applet-device-broadband.c:816
+#: ../src/applet-device-gsm.c:402 ../src/applet-device-wimax.c:419
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Συνδεθήκατε στο '%s'."
 
-#: ../src/applet-device-bt.c:199 ../src/applet-device-cdma.c:349
-#: ../src/applet-device-ethernet.c:270 ../src/applet-device-broadband.c:815
-#: ../src/applet-device-gsm.c:403 ../src/applet-device-wifi.c:1261
+#: ../src/applet-device-bt.c:199 ../src/applet-device-cdma.c:350
+#: ../src/applet-device-ethernet.c:270 ../src/applet-device-broadband.c:820
+#: ../src/applet-device-gsm.c:406 ../src/applet-device-wifi.c:1261
 #: ../src/applet-device-wimax.c:423
 msgid "Connection Established"
 msgstr "Η σύνδεση επιτεύχθηκε"
@@ -505,36 +510,36 @@ msgid "You are now connected to the mobile broadband network."
 msgstr "Συνδεθήκατε στο κινητό ευρυζωνικό δίκτυο."
 
 #: ../src/applet-device-bt.c:226 ../src/applet-device-wimax.c:460
-#: ../src/mobile-helpers.c:606
+#: ../src/mobile-helpers.c:581
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Προετοιμασία της κινητής ευρυζωνικής σύνδεσης '%s'..."
 
 #: ../src/applet-device-bt.c:229 ../src/applet-device-wimax.c:463
-#: ../src/mobile-helpers.c:609
+#: ../src/mobile-helpers.c:584
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Ρύθμιση της κινητής ευρυζωνικής σύνδεσης '%s'..."
 
 #: ../src/applet-device-bt.c:232 ../src/applet-device-wimax.c:466
-#: ../src/mobile-helpers.c:612
+#: ../src/mobile-helpers.c:587
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Απαιτείται πιστοποίηση για την κινητή ευρυζωνική σύνδεση '%s'..."
 
-#: ../src/applet-device-bt.c:239 ../src/mobile-helpers.c:632
+#: ../src/applet-device-bt.c:239 ../src/mobile-helpers.c:607
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Κινητή ευρυζωνική σύνδεση '%s' ενεργή"
 
-#: ../src/applet-device-cdma.c:249 ../src/applet-device-broadband.c:713
-#: ../src/applet-device-gsm.c:303 ../src/applet-dialogs.c:424
+#: ../src/applet-device-cdma.c:250 ../src/applet-device-broadband.c:718
+#: ../src/applet-device-gsm.c:306 ../src/applet-dialogs.c:425
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Κινητή ευρυζωνική (%s)"
 
-#: ../src/applet-device-cdma.c:251 ../src/applet-device-broadband.c:715
-#: ../src/applet-device-gsm.c:305
+#: ../src/applet-device-cdma.c:252 ../src/applet-device-broadband.c:720
+#: ../src/applet-device-gsm.c:308
 #: ../src/connection-editor/new-connection.c:113
 #: ../src/connection-editor/page-mobile.c:389
 #: ../src/libnm-gtk/nm-ui-utils.c:333
@@ -542,25 +547,25 @@ msgid "Mobile Broadband"
 msgstr "Κινητή ευρυζωνική"
 
 #. Default connection item
-#: ../src/applet-device-cdma.c:316
+#: ../src/applet-device-cdma.c:317
 msgid "New Mobile Broadband (CDMA) connection..."
 msgstr "Νέα κινητή ευρυζωνική σύνδεση (CDMA)..."
 
-#: ../src/applet-device-cdma.c:350
+#: ../src/applet-device-cdma.c:351
 msgid "You are now connected to the CDMA network."
 msgstr "Συνδεθήκατε στο δίκτυο CDMA."
 
-#: ../src/applet-device-cdma.c:417 ../src/applet-device-cdma.c:423
+#: ../src/applet-device-cdma.c:418 ../src/applet-device-cdma.c:424
 msgid "CDMA network."
 msgstr "Δίκτυο CDMA."
 
-#: ../src/applet-device-cdma.c:418 ../src/applet-device-broadband.c:953
-#: ../src/applet-device-gsm.c:677
+#: ../src/applet-device-cdma.c:419 ../src/applet-device-broadband.c:958
+#: ../src/applet-device-gsm.c:679
 msgid "You are now registered on the home network."
 msgstr "Είστε πλέον εγγεγραμμένος στο οικιακό δίκτυο."
 
-#: ../src/applet-device-cdma.c:424 ../src/applet-device-broadband.c:959
-#: ../src/applet-device-gsm.c:683
+#: ../src/applet-device-cdma.c:425 ../src/applet-device-broadband.c:964
+#: ../src/applet-device-gsm.c:685
 msgid "You are now registered on a roaming network."
 msgstr "Τώρα είστε εγγεγραμμένος σε ένα δίκτυο περιαγωγής."
 
@@ -570,59 +575,49 @@ msgstr "Αυτόματο Ethernet"
 
 #: ../src/applet-device-ethernet.c:202
 #, c-format
-#| msgid "Wired Networks (%s)"
 msgid "Ethernet Networks (%s)"
 msgstr "Δίκτυα έθερνετ (%s)"
 
 #: ../src/applet-device-ethernet.c:204
 #, c-format
-#| msgid "Wired Network (%s)"
 msgid "Ethernet Network (%s)"
 msgstr "Δίκτυο έθερνετ (%s)"
 
 #: ../src/applet-device-ethernet.c:207
-#| msgid "Wired Networks"
 msgid "Ethernet Networks"
 msgstr "Δίκτυα έθερνετ"
 
 #: ../src/applet-device-ethernet.c:209
-#| msgid "Wired Network"
 msgid "Ethernet Network"
 msgstr "Δίκτυο έθερνετ"
 
 #: ../src/applet-device-ethernet.c:271
-#| msgid "You are now connected to the wired network."
 msgid "You are now connected to the ethernet network."
 msgstr "Συνδεθήκατε στο δίκτυο έθερνετ."
 
 #: ../src/applet-device-ethernet.c:297
 #, c-format
-#| msgid "Preparing wired network connection '%s'..."
 msgid "Preparing ethernet network connection '%s'..."
 msgstr "Προετοιμασία της σύνδεσης δικτύου έθερνετ '%s'..."
 
 #: ../src/applet-device-ethernet.c:300
 #, c-format
-#| msgid "Configuring wired network connection '%s'..."
 msgid "Configuring ethernet network connection '%s'..."
 msgstr "Ρύθμιση της σύνδεσης δικτύου έθερνετ '%s'..."
 
 #: ../src/applet-device-ethernet.c:303
 #, c-format
-#| msgid "User authentication required for wired network connection '%s'..."
 msgid "User authentication required for ethernet network connection '%s'..."
 msgstr ""
 "Απαιτείται πιστοποίηση του χρήστη για την σύνδεση δικτύου έθερνετ '%s'..."
 
 #: ../src/applet-device-ethernet.c:306
 #, c-format
-#| msgid "Requesting a wired network address for '%s'..."
 msgid "Requesting an ethernet network address for '%s'..."
 msgstr "Ζητείται διεύθυνση δικτύου έθερνετ για το '%s'..."
 
 #: ../src/applet-device-ethernet.c:310
 #, c-format
-#| msgid "Wired network connection '%s' active"
 msgid "Ethernet network connection '%s' active"
 msgstr "Σύνδεση δικτύου έθερνετ '%s' ενεργή"
 
@@ -630,55 +625,50 @@ msgstr "Σύνδεση δικτύου έθερνετ '%s' ενεργή"
 msgid "DSL authentication"
 msgstr "Πιστοποίηση DSL"
 
-#: ../src/applet-device-broadband.c:165 ../src/applet-device-gsm.c:518
+#: ../src/applet-device-broadband.c:164 ../src/applet-device-gsm.c:521
 msgid "Wrong PUK code; please contact your provider."
 msgstr "Σφάλμα κωδικού PUK· παρακαλούμε επικοινωνήστε με τον πάροχό σας."
 
-#: ../src/applet-device-broadband.c:207 ../src/applet-device-gsm.c:495
+#: ../src/applet-device-broadband.c:206 ../src/applet-device-gsm.c:498
 msgid "Wrong PIN code; please contact your provider."
 msgstr "Σφάλμα κωδικού PIN· παρακαλούμε επικοινωνήστε με τον πάροχό σας."
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-broadband.c:258 ../src/applet-device-gsm.c:545
+#: ../src/applet-device-broadband.c:257 ../src/applet-device-gsm.c:548
 msgid "Sending unlock code..."
 msgstr "Αποστολή κωδικού ξεκλειδώματος..."
 
 #. Default connection item
-#: ../src/applet-device-broadband.c:780
-#| msgid "New Mobile Broadband Connection"
+#: ../src/applet-device-broadband.c:785
 msgid "New Mobile Broadband connection..."
 msgstr "Νέα κινητή ευρυζωνική σύνδεση..."
 
-#: ../src/applet-device-broadband.c:816
-#| msgid "You are now connected to the mobile broadband network."
+#: ../src/applet-device-broadband.c:821
 msgid "You are now connected to the Mobile Broadband network."
 msgstr "Συνδέεστε τώρα στο κινητό ευρυζωνικό δίκτυο."
 
-#: ../src/applet-device-broadband.c:952 ../src/applet-device-broadband.c:958
-#| msgid "Mobile broadband network password"
+#: ../src/applet-device-broadband.c:957 ../src/applet-device-broadband.c:963
 msgid "Mobile Broadband network."
 msgstr "Κινητό ευρυζωνικό δίκτυο."
 
 #. Default connection item
-#: ../src/applet-device-gsm.c:370
+#: ../src/applet-device-gsm.c:373
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "Νέα κινητή ευρυζωνική σύνδεση (GSM)..."
 
-#: ../src/applet-device-gsm.c:404
+#: ../src/applet-device-gsm.c:407
 msgid "You are now connected to the GSM network."
 msgstr "Συνδεθήκατε στο δίκτυο GSM."
 
-#: ../src/applet-device-gsm.c:676 ../src/applet-device-gsm.c:682
+#: ../src/applet-device-gsm.c:678 ../src/applet-device-gsm.c:684
 msgid "GSM network."
 msgstr "Δίκτυο GSM."
 
 #: ../src/applet-device-wifi.c:98
-#| msgid "_Connect to Hidden Wireless Network..."
 msgid "_Connect to Hidden Wi-Fi Network..."
 msgstr "Σύνδεση σε _κρυφό ασύρματο δίκτυο..."
 
 #: ../src/applet-device-wifi.c:149
-#| msgid "Create _New Wireless Network..."
 msgid "Create _New Wi-Fi Network..."
 msgstr "Δημιουργία _νέου ασύρματου δικτύου..."
 
@@ -688,30 +678,25 @@ msgstr "(κανένα)"
 
 #: ../src/applet-device-wifi.c:787
 #, c-format
-#| msgid "Wired Networks (%s)"
 msgid "Wi-Fi Networks (%s)"
 msgstr "Ασύρματα δίκτυα (%s)"
 
 #: ../src/applet-device-wifi.c:789
 #, c-format
-#| msgid "Wired Network (%s)"
 msgid "Wi-Fi Network (%s)"
 msgstr "Ασύρματο δίκτυο (%s)"
 
 #: ../src/applet-device-wifi.c:791
-#| msgid "Wired Network"
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Ασύρματο δίκτυο"
 msgstr[1] "Ασύρματα δίκτυα"
 
 #: ../src/applet-device-wifi.c:824
-#| msgid "WiMAX is disabled"
 msgid "Wi-Fi is disabled"
 msgstr "Η ασύρματη δικτύωση είναι ανενεργή"
 
 #: ../src/applet-device-wifi.c:825
-#| msgid "WiMAX is disabled by hardware switch"
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Η ασύρματη δικτύωση είναι ανενεργή από τον διακόπτη"
 
@@ -720,54 +705,45 @@ msgid "More networks"
 msgstr "Περισσότερα δίκτυα"
 
 #: ../src/applet-device-wifi.c:1065
-#| msgid "Wireless Networks Available"
 msgid "Wi-Fi Networks Available"
 msgstr "Ασύρματα δίκτυα διαθέσιμα"
 
 #: ../src/applet-device-wifi.c:1066
-#| msgid "Use the network menu to connect to a wireless network"
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Χρησιμοποιήστε το μενού δικτύου για να συνδεθείτε σε ασύρματο δίκτυο"
 
 #: ../src/applet-device-wifi.c:1260
 #, c-format
-#| msgid "You are now connected to the wireless network '%s'."
 msgid "You are now connected to the Wi-Fi network '%s'."
 msgstr "Συνδέεστε τώρα στο ασύρματο δίκτυο '%s'."
 
 #: ../src/applet-device-wifi.c:1291
 #, c-format
-#| msgid "Preparing network connection '%s'..."
 msgid "Preparing Wi-Fi network connection '%s'..."
 msgstr "Προετοιμασία ασύρματης σύνδεσης δικτύου '%s'..."
 
 #: ../src/applet-device-wifi.c:1294
 #, c-format
-#| msgid "Configuring wired network connection '%s'..."
 msgid "Configuring Wi-Fi network connection '%s'..."
 msgstr "Ρύθμιση της ασύρματης σύνδεσης δικτύου '%s'..."
 
 #: ../src/applet-device-wifi.c:1297
 #, c-format
-#| msgid "User authentication required for wireless network '%s'..."
 msgid "User authentication required for Wi-Fi network '%s'..."
 msgstr "Απαιτείται πιστοποίηση του χρήστη για το ασύρματο δίκτυο '%s'..."
 
 #: ../src/applet-device-wifi.c:1300
 #, c-format
-#| msgid "Requesting a network address for '%s'..."
 msgid "Requesting a Wi-Fi network address for '%s'..."
 msgstr "Αιτείται ασύρματη διεύθυνση δικτύου για το '%s'..."
 
 #: ../src/applet-device-wifi.c:1321
 #, c-format
-#| msgid "Wireless network connection '%s' active: %s (%d%%)"
 msgid "Wi-Fi network connection '%s' active: %s (%d%%)"
 msgstr "Η ασύρματη σύνδεση δικτύου '%s' είναι ενεργή: %s (%d%%)"
 
 #: ../src/applet-device-wifi.c:1326
 #, c-format
-#| msgid "Wired network connection '%s' active"
 msgid "Wi-Fi network connection '%s' active"
 msgstr "Η ασύρματη σύνδεση δικτύου '%s' είναι ενεργή"
 
@@ -800,12 +776,12 @@ msgstr "Η ασύρματη δικτύωση WiMAX είναι απενεργοπ
 msgid "You are now connected to the WiMAX network."
 msgstr "Συνδεθήκατε στο δίκτυο WiMAX."
 
-#: ../src/applet-device-wimax.c:478 ../src/mobile-helpers.c:627
+#: ../src/applet-device-wimax.c:478 ../src/mobile-helpers.c:602
 #, c-format
 msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
 msgstr "Κινητή ευρυζωνική σύνδεση '%s' ενεργή: (%d%%%s%s)"
 
-#: ../src/applet-device-wimax.c:481 ../src/mobile-helpers.c:630
+#: ../src/applet-device-wimax.c:481 ../src/mobile-helpers.c:605
 msgid "roaming"
 msgstr "περιαγωγή"
 
@@ -824,195 +800,195 @@ msgstr "LEAP"
 msgid "Dynamic WEP"
 msgstr "Δυναμικό WEP"
 
-#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:245
-#: ../src/applet-dialogs.c:247
+#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:246
+#: ../src/applet-dialogs.c:248
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:243
+#: ../src/applet-dialogs.c:244
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:251 ../src/applet-dialogs.c:260
+#: ../src/applet-dialogs.c:252 ../src/applet-dialogs.c:261
 #: ../src/libnm-gtk/nm-wifi-dialog.c:881
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Κανένα"
 
-#: ../src/applet-dialogs.c:277
+#: ../src/applet-dialogs.c:278
 #, c-format
 msgid "%s (default)"
 msgstr "%s (προεπιλογή)"
 
-#: ../src/applet-dialogs.c:346 ../src/applet-dialogs.c:484
+#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:485
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:348 ../src/applet-dialogs.c:486
+#: ../src/applet-dialogs.c:349 ../src/applet-dialogs.c:487
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: ../src/applet-dialogs.c:361
+#: ../src/applet-dialogs.c:362
 #, c-format
 msgid "%d dB"
 msgstr "%d dB"
 
-#: ../src/applet-dialogs.c:363
+#: ../src/applet-dialogs.c:364
 msgctxt "WiMAX CINR"
 msgid "unknown"
 msgstr "άγνωστο"
 
-#: ../src/applet-dialogs.c:375
+#: ../src/applet-dialogs.c:376
 msgctxt "WiMAX Base Station ID"
 msgid "unknown"
 msgstr "άγνωστο"
 
-#: ../src/applet-dialogs.c:410
+#: ../src/applet-dialogs.c:411
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:413
+#: ../src/applet-dialogs.c:414
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:420
+#: ../src/applet-dialogs.c:421
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:422
+#: ../src/applet-dialogs.c:423
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:426
+#: ../src/applet-dialogs.c:427
 #, c-format
 msgid "WiMAX (%s)"
 msgstr "WiMAX (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:432 ../src/applet-dialogs.c:791
-#: ../src/connection-editor/page-general.c:327
+#: ../src/applet-dialogs.c:433 ../src/applet-dialogs.c:792
+#: ../src/connection-editor/page-general.c:325
 msgid "General"
 msgstr "Γενικό"
 
-#: ../src/applet-dialogs.c:436
+#: ../src/applet-dialogs.c:437
 msgid "Interface:"
 msgstr "Διεπαφή:"
 
-#: ../src/applet-dialogs.c:452
+#: ../src/applet-dialogs.c:453
 msgid "Hardware Address:"
 msgstr "Διεύθυνση υλικού:"
 
 #. Driver
-#: ../src/applet-dialogs.c:460
+#: ../src/applet-dialogs.c:461
 msgid "Driver:"
 msgstr "Οδηγός:"
 
-#: ../src/applet-dialogs.c:489
+#: ../src/applet-dialogs.c:490
 msgid "Speed:"
 msgstr "Ταχύτητα:"
 
-#: ../src/applet-dialogs.c:499
+#: ../src/applet-dialogs.c:500
 msgid "Security:"
 msgstr "Ασφάλεια:"
 
-#: ../src/applet-dialogs.c:512
+#: ../src/applet-dialogs.c:513
 msgid "CINR:"
 msgstr "CINR:"
 
-#: ../src/applet-dialogs.c:525
+#: ../src/applet-dialogs.c:526
 msgid "BSID:"
 msgstr "BSID:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:542
+#: ../src/applet-dialogs.c:543
 msgid "IPv4"
 msgstr "IPv4"
 
 #. Address
-#: ../src/applet-dialogs.c:553 ../src/applet-dialogs.c:660
+#: ../src/applet-dialogs.c:554 ../src/applet-dialogs.c:661
 msgid "IP Address:"
 msgstr "Διεύθυνση IP:"
 
-#: ../src/applet-dialogs.c:555 ../src/applet-dialogs.c:571
+#: ../src/applet-dialogs.c:556 ../src/applet-dialogs.c:572
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: ../src/applet-dialogs.c:569
+#: ../src/applet-dialogs.c:570
 msgid "Broadcast Address:"
 msgstr "Διεύθυνση μετάδοσης:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:578
+#: ../src/applet-dialogs.c:579
 msgid "Subnet Mask:"
 msgstr "Μάσκα υποδικτύου:"
 
-#: ../src/applet-dialogs.c:580
+#: ../src/applet-dialogs.c:581
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: ../src/applet-dialogs.c:588 ../src/applet-dialogs.c:675
+#: ../src/applet-dialogs.c:589 ../src/applet-dialogs.c:676
 msgid "Default Route:"
 msgstr "Default Route:"
 
-#: ../src/applet-dialogs.c:600
+#: ../src/applet-dialogs.c:601
 msgid "Primary DNS:"
 msgstr "Πρωτεύον DNS:"
 
-#: ../src/applet-dialogs.c:609
+#: ../src/applet-dialogs.c:610
 msgid "Secondary DNS:"
 msgstr "Δευτερεύον DNS:"
 
-#: ../src/applet-dialogs.c:619
+#: ../src/applet-dialogs.c:620
 msgid "Ternary DNS:"
 msgstr "Τριτεύον DNS:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:634
+#: ../src/applet-dialogs.c:635
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:643
+#: ../src/applet-dialogs.c:644
 msgid "Ignored"
 msgstr "Αγνόηση"
 
-#: ../src/applet-dialogs.c:796
+#: ../src/applet-dialogs.c:797
 msgid "VPN Type:"
 msgstr "Τύπος VPN:"
 
-#: ../src/applet-dialogs.c:803
+#: ../src/applet-dialogs.c:804
 msgid "VPN Gateway:"
 msgstr "Πύλη VPN:"
 
-#: ../src/applet-dialogs.c:809
+#: ../src/applet-dialogs.c:810
 msgid "VPN Username:"
 msgstr "Όνομα χρήστη VPN:"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:816
 msgid "VPN Banner:"
 msgstr "Διαφημιστικό VPN:"
 
-#: ../src/applet-dialogs.c:821
+#: ../src/applet-dialogs.c:822
 msgid "Base Connection:"
 msgstr "Σύνδεση βάσης:"
 
-#: ../src/applet-dialogs.c:823 ../src/libnm-gtk/nm-ui-utils.c:343
+#: ../src/applet-dialogs.c:824 ../src/libnm-gtk/nm-ui-utils.c:345
 msgid "Unknown"
 msgstr "Άγνωστο"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:886
+#: ../src/applet-dialogs.c:887
 msgid "No valid active connections found!"
 msgstr "Δε βρέθηκαν έγκυρες ενεργές συνδέσεις!"
 
-#: ../src/applet-dialogs.c:939
+#: ../src/applet-dialogs.c:915
 msgid ""
 "Copyright © 2004-2011 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
@@ -1022,43 +998,43 @@ msgstr ""
 "Copyright © 2005-2008 Novell, Inc.\n"
 "και πολλοί άλλοι προγραμματιστές της κοινότητας και μεταφραστές"
 
-#: ../src/applet-dialogs.c:942
+#: ../src/applet-dialogs.c:918
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Μικροεφαρμογή για τη διαχείριση των συσκευών και των συνδέσεων δικτύου σας."
 
-#: ../src/applet-dialogs.c:944
+#: ../src/applet-dialogs.c:920
 msgid "NetworkManager Website"
 msgstr "Ιστοσελίδα NetworkManager"
 
-#: ../src/applet-dialogs.c:959
+#: ../src/applet-dialogs.c:935
 msgid "Missing resources"
 msgstr "Λείπουν πόροι"
 
-#: ../src/applet-dialogs.c:984
+#: ../src/applet-dialogs.c:960
 msgid "Mobile broadband network password"
 msgstr "Συνθηματικό κινητού ευρυζωνικού δικτύου"
 
-#: ../src/applet-dialogs.c:993
+#: ../src/applet-dialogs.c:969
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Απαιτείται συνθηματικό για σύνδεση στο '%s'."
 
-#: ../src/applet-dialogs.c:1012
+#: ../src/applet-dialogs.c:984
 msgid "Password:"
 msgstr "Συνθηματικό:"
 
-#: ../src/applet-dialogs.c:1310
+#: ../src/applet-dialogs.c:1282
 msgid "SIM PIN unlock required"
 msgstr "Απαιτείται ξεκλείδωμα SIM PIN"
 
-#: ../src/applet-dialogs.c:1311
+#: ../src/applet-dialogs.c:1283
 msgid "SIM PIN Unlock Required"
 msgstr "Απαιτείται ξεκλείδωμα SIM PIN"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-dialogs.c:1313
+#: ../src/applet-dialogs.c:1285
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -1068,25 +1044,25 @@ msgstr ""
 "χρησιμοποιηθεί."
 
 #. Translators: PIN code entry label
-#: ../src/applet-dialogs.c:1315
+#: ../src/applet-dialogs.c:1287
 msgid "PIN code:"
 msgstr "Κωδικός PIN:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-dialogs.c:1319
+#: ../src/applet-dialogs.c:1291
 msgid "Show PIN code"
 msgstr "Εμφάνιση κωδικού PIN"
 
-#: ../src/applet-dialogs.c:1321
+#: ../src/applet-dialogs.c:1293
 msgid "SIM PUK unlock required"
 msgstr "Απαιτείται ξεκλείδωμα SIM PUK"
 
-#: ../src/applet-dialogs.c:1322
+#: ../src/applet-dialogs.c:1294
 msgid "SIM PUK Unlock Required"
 msgstr "Απαιτείται ξεκλείδωμα SIM PUK"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-dialogs.c:1324
+#: ../src/applet-dialogs.c:1296
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -1096,22 +1072,22 @@ msgstr ""
 "χρησιμοποιηθεί."
 
 #. Translators: PUK code entry label
-#: ../src/applet-dialogs.c:1326
+#: ../src/applet-dialogs.c:1298
 msgid "PUK code:"
 msgstr "Κωδικός PUK:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-dialogs.c:1329
+#: ../src/applet-dialogs.c:1301
 msgid "New PIN code:"
 msgstr "Νέος κωδικός PIN:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-dialogs.c:1331
+#: ../src/applet-dialogs.c:1303
 msgid "Re-enter new PIN code:"
 msgstr "Εισάγετε ξανά τον κωδικό PIN:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-dialogs.c:1336
+#: ../src/applet-dialogs.c:1308
 msgid "Show PIN/PUK codes"
 msgstr "Εμφάνιση κωδικών PIN/PUK"
 
@@ -1156,15 +1132,14 @@ msgid " "
 msgstr " "
 
 #: ../src/connection-editor/ce-new-connection.ui.h:2
-#| msgid "Choose a VPN Connection Type"
+msgid "Create…"
+msgstr "Δημιουργία…"
+
+#: ../src/connection-editor/ce-new-connection.ui.h:3
 msgid "Choose a Connection Type"
 msgstr "Επιλογή τύπου σύνδεσης"
 
-#: ../src/connection-editor/ce-new-connection.ui.h:3
-#| msgid ""
-#| "Select the type of VPN you wish to use for the new connection.  If the "
-#| "type of VPN connection you wish to create does not appear in the list, "
-#| "you may not have the correct VPN plugin installed."
+#: ../src/connection-editor/ce-new-connection.ui.h:4
 msgid ""
 "Select the type of connection you wish to create.\n"
 "\n"
@@ -1174,12 +1149,7 @@ msgstr ""
 "Επιλέξτε τον τύπο σύνδεσης που θέλετε να δημιουργήσετε.\n"
 "\n"
 "Εάν δημιουργείτε ένα VPN και η σύνδεση VPN που θέλετε να δημιουργήσετε δεν "
-"εμφανίζεται στη λίστα, ίσως να μην έχετε το σωστό πρόσθετο VPN "
-"εγκατεστημένο."
-
-#: ../src/connection-editor/ce-new-connection.ui.h:6
-msgid "Create…"
-msgstr "Δημιουργία…"
+"εμφανίζεται στη λίστα, ίσως να μην έχετε το σωστό πρόσθετο VPN εγκατεστημένο."
 
 #: ../src/connection-editor/ce-page-bond.ui.h:1
 msgid "Round-robin"
@@ -1194,7 +1164,6 @@ msgid "XOR"
 msgstr "XOR"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:4
-#| msgid "Broadcast Address:"
 msgid "Broadcast"
 msgstr "Εκπομπή"
 
@@ -1215,17 +1184,14 @@ msgid "MII (recommended)"
 msgstr "MII (συνιστώμενο)"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:9
-#| msgid "EAP"
 msgid "ARP"
 msgstr "ARP"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:10
-#| msgid "Base Connection:"
 msgid "Bonded _connections:"
 msgstr "Συζευγμένες _συνδέσεις:"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:11
-#| msgid "M_ode:"
 msgid "_Mode:"
 msgstr "_Κατάσταση:"
 
@@ -1253,7 +1219,6 @@ msgstr "χιλιστοδευτερόλεπτα"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:16
 #: ../src/connection-editor/ce-page-bridge.ui.h:5
-#| msgid "Interface:"
 msgid "_Interface name:"
 msgstr "Όνομα _διεπαφής:"
 
@@ -1287,7 +1252,6 @@ msgstr "_Κόστος διαδρομής:"
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:2
 #: ../src/connection-editor/ce-page-bridge.ui.h:4
-#| msgid "S_ecurity:"
 msgid "_Priority:"
 msgstr "_Προτεραιότητα:"
 
@@ -1296,7 +1260,6 @@ msgid "_Hairpin mode:"
 msgstr "Κατάσταση _φουρκέτας:"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:1
-#| msgid "Base Connection:"
 msgid "Bridged _connections:"
 msgstr "Γεφυρωμένες _συνδέσεις:"
 
@@ -1324,11 +1287,11 @@ msgstr "_Μέγιστη ηλικία:"
 msgid "_Aging time:"
 msgstr "Χρόνος _ωρίμανσης:"
 
-#: ../src/connection-editor/ce-page.c:72
+#: ../src/connection-editor/ce-page.c:67
 msgid "automatic"
 msgstr "αυτόματα"
 
-#: ../src/connection-editor/ce-page.c:356
+#: ../src/connection-editor/ce-page.c:348
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Απέτυχε η ενημέρωση των μυστικών της σύνδεσης εξαιτίας άγνωστου σφάλματος."
@@ -1356,6 +1319,7 @@ msgstr "Εμ_φάνιση συνθηματικού"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:4
 #: ../src/connection-editor/ce-page-mobile.ui.h:11
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:95
 #: ../src/wireless-security/eap-method-leap.ui.h:2
 #: ../src/wireless-security/eap-method-simple.ui.h:2
 #: ../src/wireless-security/ws-leap.ui.h:2
@@ -1459,21 +1423,20 @@ msgid "bytes"
 msgstr "οκτάδες"
 
 #: ../src/connection-editor/ce-page-general.ui.h:1
-msgid "_Automatically connect to this network when it is available"
-msgstr "_Αυτόματη σύνδεση σε αυτό το δίκτυο όταν είναι διαθέσιμο"
+msgid "Automatically connect to _VPN when using this connection"
+msgstr "Αυτόματη σύνδεση με _VPN όταν χρησιμοποιείται αυτή η σύνδεση"
 
 #: ../src/connection-editor/ce-page-general.ui.h:2
-#| msgid "You are now connected to the wired network."
 msgid "All _users may connect to this network"
 msgstr "Όλοι οι _χρήστες μπορούν να συνδεθούν σε αυτό το δίκτυο"
 
 #: ../src/connection-editor/ce-page-general.ui.h:3
-msgid "Firewall _zone:"
-msgstr "_Ζώνη τείχους προστασίας:"
+msgid "_Automatically connect to this network when it is available"
+msgstr "_Αυτόματη σύνδεση σε αυτό το δίκτυο όταν είναι διαθέσιμο"
 
 #: ../src/connection-editor/ce-page-general.ui.h:4
-msgid "Automatically connect to _VPN when using this connection"
-msgstr "Αυτόματη σύνδεση με _VPN όταν χρησιμοποιείται αυτή η σύνδεση"
+msgid "Firewall _zone:"
+msgstr "_Ζώνη τείχους προστασίας:"
 
 #: ../src/connection-editor/ce-page-infiniband.ui.h:1
 msgid "_Transport mode:"
@@ -1486,7 +1449,6 @@ msgstr "Αυτοδύναμο πακέτο"
 
 #. IP-over-InfiniBand "connected mode"
 #: ../src/connection-editor/ce-page-infiniband.ui.h:8
-#| msgid "C_onnect"
 msgid "Connected"
 msgstr "Συνδεδεμένο"
 
@@ -1624,7 +1586,6 @@ msgid "Prefer 2G (GPRS/EDGE)"
 msgstr "Να προτιμάται το 2G (GPRS/EDGE)"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:6
-#| msgid "Prefer 3G (UMTS/HSPA)"
 msgid "Prefer 4G (LTE)"
 msgstr "Να προτιμάται το 4G (LTE)"
 
@@ -1722,7 +1683,6 @@ msgid "Send PPP _echo packets"
 msgstr "Αποστολή πακέτων _echo PPP"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:1
-#| msgid "Interface:"
 msgid "_Parent interface:"
 msgstr "_Γονική διεπαφή:"
 
@@ -1731,7 +1691,6 @@ msgid "VLAN interface _name:"
 msgstr "Ό_νομα διεπαφής VLAN:"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:3
-#| msgid "C_loned MAC address:"
 msgid "_Cloned MAC address:"
 msgstr "_Κλωνοποιημένη διεύθυνση MAC:"
 
@@ -1858,49 +1817,48 @@ msgstr ""
 "όλες τις μεθόδους πιστοποίησης. Αν αποτυγχάνει η σύνδεση, δοκιμάστε να "
 "απενεργοποιήσετε κάποιες μεθόδους."
 
-#: ../src/connection-editor/ip4-routes-dialog.c:762
-#: ../src/connection-editor/ip6-routes-dialog.c:704
-#: ../src/connection-editor/page-ip4.c:928
-#: ../src/connection-editor/page-ip6.c:894
+#: ../src/connection-editor/ip4-routes-dialog.c:749
+#: ../src/connection-editor/ip6-routes-dialog.c:691
+#: ../src/connection-editor/page-ip4.c:915
+#: ../src/connection-editor/page-ip6.c:881
 msgid "Address"
 msgstr "Διεύθυνση"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:779
-#: ../src/connection-editor/page-ip4.c:945
+#: ../src/connection-editor/ip4-routes-dialog.c:766
+#: ../src/connection-editor/page-ip4.c:932
 msgid "Netmask"
 msgstr "Μάσκα δικτύου"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:796
-#: ../src/connection-editor/ip6-routes-dialog.c:738
-#: ../src/connection-editor/page-ip4.c:962
-#: ../src/connection-editor/page-ip6.c:928
+#: ../src/connection-editor/ip4-routes-dialog.c:783
+#: ../src/connection-editor/ip6-routes-dialog.c:725
+#: ../src/connection-editor/page-ip4.c:949
+#: ../src/connection-editor/page-ip6.c:915
 msgid "Gateway"
 msgstr "Πύλη δικτύου"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:813
-#: ../src/connection-editor/ip6-routes-dialog.c:755
+#: ../src/connection-editor/ip4-routes-dialog.c:800
+#: ../src/connection-editor/ip6-routes-dialog.c:742
 msgid "Metric"
 msgstr "Μετρικό"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:721
-#: ../src/connection-editor/page-ip6.c:911
+#: ../src/connection-editor/ip6-routes-dialog.c:708
+#: ../src/connection-editor/page-ip6.c:898
 msgid "Prefix"
 msgstr "Πρόθεμα"
 
 #: ../src/connection-editor/new-connection.c:101
-#: ../src/connection-editor/page-ethernet.c:251
+#: ../src/connection-editor/page-ethernet.c:242
 #: ../src/libnm-gtk/nm-ui-utils.c:323
-#| msgid "Auto Ethernet"
 msgid "Ethernet"
 msgstr "Έθερνετ"
 
 #: ../src/connection-editor/new-connection.c:107
-#: ../src/connection-editor/page-wifi.c:471 ../src/libnm-gtk/nm-ui-utils.c:325
+#: ../src/connection-editor/page-wifi.c:465 ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Wi-Fi"
 msgstr "Ασύρματη πιστότητα"
 
 #: ../src/connection-editor/new-connection.c:119
-#: ../src/connection-editor/page-wimax.c:134
+#: ../src/connection-editor/page-wimax.c:125
 #: ../src/libnm-gtk/nm-ui-utils.c:331 ../src/mb-menu-item.c:74
 msgid "WiMAX"
 msgstr "WiMAX"
@@ -1911,23 +1869,26 @@ msgid "DSL"
 msgstr "DSL"
 
 #: ../src/connection-editor/new-connection.c:131
-#: ../src/connection-editor/page-infiniband.c:168
+#: ../src/connection-editor/page-infiniband.c:159
 #: ../src/libnm-gtk/nm-ui-utils.c:335
 msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/new-connection.c:137
-#: ../src/connection-editor/page-bond.c:419 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/page-bond.c:392 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/libnm-gtk/nm-ui-utils.c:559
 msgid "Bond"
 msgstr "Σύνδεση"
 
 #: ../src/connection-editor/new-connection.c:143
-#: ../src/connection-editor/page-bridge.c:211
+#: ../src/connection-editor/page-bridge.c:212
+#: ../src/libnm-gtk/nm-ui-utils.c:339 ../src/libnm-gtk/nm-ui-utils.c:561
 msgid "Bridge"
 msgstr "Γέφυρα"
 
 #: ../src/connection-editor/new-connection.c:149
-#: ../src/connection-editor/page-vlan.c:480 ../src/libnm-gtk/nm-ui-utils.c:339
+#: ../src/connection-editor/page-vlan.c:475 ../src/libnm-gtk/nm-ui-utils.c:341
+#: ../src/libnm-gtk/nm-ui-utils.c:563
 msgid "VLAN"
 msgstr "VLAN"
 
@@ -1938,7 +1899,6 @@ msgid "VPN"
 msgstr "VPN"
 
 #: ../src/connection-editor/new-connection.c:252
-#| msgid "Hardware Address:"
 msgid "Hardware"
 msgstr "Υλικό"
 
@@ -1948,7 +1908,6 @@ msgstr "Εικονικό"
 
 #: ../src/connection-editor/new-connection.c:340
 #: ../src/connection-editor/new-connection.c:342
-#| msgid "Export VPN connection..."
 msgid "Import a saved VPN configuration..."
 msgstr "Εισαγωγή αποθηκευμένης διαμόρφωσης VPN..."
 
@@ -1989,61 +1948,58 @@ msgstr ""
 "Ο επεξεργαστής σύνδεσης δεν μπόρεσε να βρει κάποιους απαιτούμενους πόρους "
 "(δε βρέθηκε το αρχείο .ui)."
 
-#: ../src/connection-editor/nm-connection-editor.c:408
+#: ../src/connection-editor/nm-connection-editor.c:413
 msgid "_Save"
 msgstr "Α_ποθήκευση"
 
-#: ../src/connection-editor/nm-connection-editor.c:409
+#: ../src/connection-editor/nm-connection-editor.c:414
 msgid "Save any changes made to this connection."
 msgstr "Αποθήκευση οποιωνδήποτε αλλαγών έγιναν σε αυτή τη σύνδεση."
 
-#: ../src/connection-editor/nm-connection-editor.c:410
+#: ../src/connection-editor/nm-connection-editor.c:415
 msgid "_Save..."
 msgstr "Απ_οθήκευση..."
 
-#: ../src/connection-editor/nm-connection-editor.c:411
+#: ../src/connection-editor/nm-connection-editor.c:416
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Απαιτείται πιστοποίηση για την αποθήκευση αυτής της σύνδεσης για όλους τους "
 "χρήστες του συστήματος."
 
-#: ../src/connection-editor/nm-connection-editor.c:427
-#| msgid "Could not create new connection"
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not create connection"
 msgstr "Αδύνατη η δημιουργία σύνδεσης"
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not edit connection"
 msgstr "Αδύνατη η επεξεργασία της σύνδεσης"
 
-#: ../src/connection-editor/nm-connection-editor.c:429
-#| msgid "Error creating connection editor dialog."
+#: ../src/connection-editor/nm-connection-editor.c:434
 msgid "Unknown error creating connection editor dialog."
 msgstr "Άγνωστο σφάλμα κατά τη δημιουργία διαλόγου επεξεργαστή σύνδεσης."
 
-#: ../src/connection-editor/nm-connection-editor.c:536
-msgid "Error saving connection"
-msgstr "Σφάλμα αποθήκευσης σύνδεσης"
-
-#: ../src/connection-editor/nm-connection-editor.c:537
-#, c-format
-msgid "The property '%s' / '%s' is invalid: %d"
-msgstr "Η ιδιότητα '%s' / '%s' δεν είναι έγκυρη: %d"
-
-#: ../src/connection-editor/nm-connection-editor.c:631
+#: ../src/connection-editor/nm-connection-editor.c:602
 msgid "Error initializing editor"
 msgstr "Σφάλμα αρχικοποίησης επεξεργασίας"
 
-#: ../src/connection-editor/nm-connection-editor.c:952
+#: ../src/connection-editor/nm-connection-editor.c:923
 msgid "Connection add failed"
 msgstr "Απέτυχε η προσθήκη σύνδεσης"
+
+#: ../src/connection-editor/nm-connection-editor.c:973
+msgid "Error saving connection"
+msgstr "Σφάλμα αποθήκευσης σύνδεσης"
+
+#: ../src/connection-editor/nm-connection-editor.c:974
+#, c-format
+msgid "The property '%s' / '%s' is invalid: %d"
+msgstr "Η ιδιότητα '%s' / '%s' δεν είναι έγκυρη: %d"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:2
 msgid "Connection _name:"
 msgstr "Ό_νομα σύνδεσης:"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
-#| msgid "E_xport"
 msgid "_Export..."
 msgstr "Ε_ξαγωγή..."
 
@@ -2124,20 +2080,20 @@ msgstr "Δια_γραφή..."
 msgid "Authenticate to delete the selected connection"
 msgstr "Απαιτείται πιστοποίηση για τη διαγραφή της επιλεγμένης σύνδεσης"
 
-#: ../src/connection-editor/nm-connection-list.c:942
+#: ../src/connection-editor/nm-connection-list.c:933
 msgid "Error creating connection"
 msgstr "Σφάλμα δημιουργίας σύνδεσης"
 
-#: ../src/connection-editor/nm-connection-list.c:943
+#: ../src/connection-editor/nm-connection-list.c:934
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Δε γνωρίζω πως μπορούν να πραγματοποιηθούν συνδέσεις τύπου '%s'"
 
-#: ../src/connection-editor/nm-connection-list.c:998
+#: ../src/connection-editor/nm-connection-list.c:989
 msgid "Error editing connection"
 msgstr "Σφάλμα επεξεργασίας σύνδεσης"
 
-#: ../src/connection-editor/nm-connection-list.c:999
+#: ../src/connection-editor/nm-connection-list.c:990
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Δε βρέθηκε σύνδεση με UUID '%s'"
@@ -2147,33 +2103,28 @@ msgid "802.1x Security"
 msgstr "Ασφάλεια 802.1X"
 
 #: ../src/connection-editor/page-8021x-security.c:123
-#| msgid "Could not load WiFi security user interface."
 msgid "Could not load 802.1x Security user interface."
 msgstr "Αδυναμία φόρτωσης της ασφάλειας 802.1x της διεπαφής χρήστη."
 
-#: ../src/connection-editor/page-8021x-security.c:141
+#: ../src/connection-editor/page-8021x-security.c:137
 msgid "Use 802.1_X security for this connection"
 msgstr "Χρήση ασφάλειας 802.1_X για αυτή τη σύνδεση"
 
-#: ../src/connection-editor/page-bond.c:422
-#| msgid "Could not load wired user interface."
+#: ../src/connection-editor/page-bond.c:395
 msgid "Could not load bond user interface."
 msgstr "Αδυναμία φόρτωσης της σύνδεσης διεπαφής χρήστη."
 
-#: ../src/connection-editor/page-bond.c:561
+#: ../src/connection-editor/page-bond.c:534
 #, c-format
-#| msgid "Wired connection %d"
 msgid "Bond connection %d"
 msgstr "Ενσύρματη σύνδεση %d"
 
-#: ../src/connection-editor/page-bridge.c:214
-#| msgid "Could not load wired user interface."
+#: ../src/connection-editor/page-bridge.c:215
 msgid "Could not load bridge user interface."
 msgstr "Αδυναμία φόρτωσης γέφυρας διεπαφής χρήστη."
 
-#: ../src/connection-editor/page-bridge.c:309
+#: ../src/connection-editor/page-bridge.c:310
 #, c-format
-#| msgid "Wired connection %d"
 msgid "Bridge connection %d"
 msgstr "Σύνδεση γέφυρας %d"
 
@@ -2185,7 +2136,6 @@ msgid "Bridge Port"
 msgstr "Θύρα γέφυρας"
 
 #: ../src/connection-editor/page-bridge-port.c:117
-#| msgid "Could not load wired user interface."
 msgid "Could not load bridge port user interface."
 msgstr "Αδυναμία φόρτωσης της θύρας γέφυρας διεπαφής χρήστη."
 
@@ -2198,10 +2148,10 @@ msgstr "Αδυναμία φόρτωσης της διεπαφής χρήστη D
 msgid "DSL connection %d"
 msgstr "Σύνδεση DSL %d"
 
-#: ../src/connection-editor/page-ethernet.c:90
-#: ../src/connection-editor/page-infiniband.c:74
-#: ../src/connection-editor/page-wifi.c:113
-#: ../src/connection-editor/page-wimax.c:70
+#: ../src/connection-editor/page-ethernet.c:81
+#: ../src/connection-editor/page-infiniband.c:65
+#: ../src/connection-editor/page-wifi.c:95
+#: ../src/connection-editor/page-wimax.c:61
 msgid ""
 "This option locks this connection to the network device specified by its "
 "permanent MAC address entered here.  Example: 00:11:22:33:44:55"
@@ -2209,24 +2159,22 @@ msgstr ""
 "Αυτή η επιλογή κλειδώνει αυτή τη σύνδεση στη συσκευή δικτύου που καθορίζεται "
 "από τη μόνιμη διεύθυνση MAC που εισήχθη εδώ. Παράδειγμα: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-ethernet.c:253
-#| msgid "Could not load wired user interface."
+#: ../src/connection-editor/page-ethernet.c:244
 msgid "Could not load ethernet user interface."
 msgstr "Αδυναμία φόρτωσης έθερνετ διεπαφής χρήστη."
 
-#: ../src/connection-editor/page-ethernet.c:396
+#: ../src/connection-editor/page-ethernet.c:387
 #, c-format
-#| msgid "Wired connection %d"
 msgid "Ethernet connection %d"
 msgstr "Σύνδεση έθερνετ %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:57
+#: ../src/connection-editor/page-general.c:55
 #: ../src/libnm-gtk/nm-mobile-providers.c:808
 msgid "Default"
 msgstr "Προεπιλογή"
 
-#: ../src/connection-editor/page-general.c:58
+#: ../src/connection-editor/page-general.c:56
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
@@ -2237,24 +2185,20 @@ msgstr ""
 "προεπιλεγμένης ζώνης στο τείχος προστασίας. Είναι χρήσιμο μόνο εάν το τείχος "
 "προστασίας είναι ενεργό."
 
-#: ../src/connection-editor/page-general.c:59
-#| msgid "NetworkManager is not running..."
+#: ../src/connection-editor/page-general.c:57
 msgid "FirewallD is not running."
 msgstr "Το τείχος προστασίας D δεν εκτελείται."
 
-#: ../src/connection-editor/page-general.c:330
-#| msgid "Could not load wired user interface."
+#: ../src/connection-editor/page-general.c:328
 msgid "Could not load General user interface."
 msgstr "Αδυναμία φόρτωσης της γενικής διεπαφής χρήστη."
 
-#: ../src/connection-editor/page-infiniband.c:171
-#| msgid "Could not load WiFi user interface."
+#: ../src/connection-editor/page-infiniband.c:162
 msgid "Could not load InfiniBand user interface."
 msgstr "Αδυναμία φόρτωσης της InfiniBand διεπαφής χρήστη."
 
-#: ../src/connection-editor/page-infiniband.c:263
+#: ../src/connection-editor/page-infiniband.c:254
 #, c-format
-#| msgid "Wired connection %d"
 msgid "InfiniBand connection %d"
 msgstr "Σύνδεση InfiniBand %d"
 
@@ -2315,16 +2259,16 @@ msgstr "Επιπλέον εξυπηρετητές _DNS:"
 msgid "Additional s_earch domains:"
 msgstr "Επιπλέον τομείς ανα_ζήτησης:"
 
-#: ../src/connection-editor/page-ip4.c:860
+#: ../src/connection-editor/page-ip4.c:847
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Επεξεργασία των διαδρομών IPv4 για την %s"
 
-#: ../src/connection-editor/page-ip4.c:1011
+#: ../src/connection-editor/page-ip4.c:998
 msgid "IPv4 Settings"
 msgstr "Ρυθμίσεις IPv4"
 
-#: ../src/connection-editor/page-ip4.c:1013
+#: ../src/connection-editor/page-ip4.c:1000
 msgid "Could not load IPv4 user interface."
 msgstr "Αδυναμία φόρτωσης της διεπαφής χρήστη IPv4."
 
@@ -2341,20 +2285,20 @@ msgstr "Αγνόηση"
 msgid "Automatic, DHCP only"
 msgstr "Αυτόματα, μόνο DHCP"
 
-#: ../src/connection-editor/page-ip6.c:826
+#: ../src/connection-editor/page-ip6.c:813
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Επεξεργασία των διαδρομών IPv6 για την %s"
 
-#: ../src/connection-editor/page-ip6.c:975
+#: ../src/connection-editor/page-ip6.c:962
 msgid "IPv6 Settings"
 msgstr "Ρυθμίσεις IPv6"
 
-#: ../src/connection-editor/page-ip6.c:977
+#: ../src/connection-editor/page-ip6.c:964
 msgid "Could not load IPv6 user interface."
 msgstr "Αδυναμία φόρτωσης της διεπαφής χρήστη IPv6."
 
-#: ../src/connection-editor/page-master.c:290
+#: ../src/connection-editor/page-master.c:284
 #, c-format
 msgid "%s slave %d"
 msgstr "%s υποτελής %d"
@@ -2372,7 +2316,7 @@ msgstr "Μη υποστηριζόμενος τύπος κινητής ευρυζ
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Επιλογή τύπου παρόχου κινητής ευρυζωνικής σύνδεσης"
 
-#: ../src/connection-editor/page-mobile.c:693
+#: ../src/connection-editor/page-mobile.c:685
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -2380,77 +2324,75 @@ msgstr ""
 "Επιλέξτε την τεχνολογία που χρησιμοποιεί ο πάροχός σας. Αν δεν είστε "
 "σίγουροι, απευθυνθείτε στον πάροχό σας."
 
-#: ../src/connection-editor/page-mobile.c:698
+#: ../src/connection-editor/page-mobile.c:690
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Ο πάροχός μου χρησιμοποιεί τεχνολογίες _GSM (π.χ. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:705
+#: ../src/connection-editor/page-mobile.c:697
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Ο πάροχός μου χρησιμοποιεί τεχνολογίες C_DMA (π.χ. 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:715 ../src/mb-menu-item.c:54
-#: ../src/mobile-helpers.c:268
+#: ../src/connection-editor/page-mobile.c:707 ../src/mb-menu-item.c:54
+#: ../src/mobile-helpers.c:270
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:718 ../src/mb-menu-item.c:58
-#: ../src/mobile-helpers.c:266
+#: ../src/connection-editor/page-mobile.c:710 ../src/mb-menu-item.c:58
+#: ../src/mobile-helpers.c:268
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/connection-editor/page-ppp.c:134
+#: ../src/connection-editor/page-ppp.c:137
 msgid "EAP"
 msgstr "EAP"
 
-#: ../src/connection-editor/page-ppp.c:135
+#: ../src/connection-editor/page-ppp.c:138
 #: ../src/wireless-security/eap-method-ttls.c:230
 msgid "PAP"
 msgstr "PAP"
 
-#: ../src/connection-editor/page-ppp.c:136
+#: ../src/connection-editor/page-ppp.c:139
 #: ../src/wireless-security/eap-method-ttls.c:280
 msgid "CHAP"
 msgstr "CHAP"
 
-#: ../src/connection-editor/page-ppp.c:137
+#: ../src/connection-editor/page-ppp.c:140
 #: ../src/wireless-security/eap-method-fast.c:277
 #: ../src/wireless-security/eap-method-peap.c:246
 #: ../src/wireless-security/eap-method-ttls.c:263
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
-#: ../src/connection-editor/page-ppp.c:138
+#: ../src/connection-editor/page-ppp.c:141
 #: ../src/wireless-security/eap-method-ttls.c:247
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
 #. Translators: "none" refers to authentication methods
-#: ../src/connection-editor/page-ppp.c:141
+#: ../src/connection-editor/page-ppp.c:144
 msgid "none"
 msgstr "κανένα"
 
-#: ../src/connection-editor/page-ppp.c:201
+#: ../src/connection-editor/page-ppp.c:204
 #, c-format
 msgid "Editing PPP authentication methods for %s"
 msgstr "Επεξεργασία των μεθόδων πιστοποίησης PPP για την %s"
 
-#: ../src/connection-editor/page-ppp.c:284
+#: ../src/connection-editor/page-ppp.c:287
 msgid "PPP Settings"
 msgstr "Ρυθμίσεις PPP"
 
-#: ../src/connection-editor/page-ppp.c:286
+#: ../src/connection-editor/page-ppp.c:289
 msgid "Could not load PPP user interface."
 msgstr "Αδυναμία φόρτωσης της διεπαφής χρήστη PPP."
 
-#: ../src/connection-editor/page-vlan.c:482
-#| msgid "Could not load IPv4 user interface."
+#: ../src/connection-editor/page-vlan.c:477
 msgid "Could not load vlan user interface."
 msgstr "Αδυναμία φόρτωσης της διεπαφής χρήστη vlan."
 
-#: ../src/connection-editor/page-vlan.c:678
+#: ../src/connection-editor/page-vlan.c:673
 #, c-format
-#| msgid "VPN connection %d"
 msgid "VLAN connection %d"
 msgstr "Σύνδεση VLAN %d"
 
@@ -2493,10 +2435,7 @@ msgstr ""
 "Αν ο τύπος σύνδεσης VPN που επιθυμείτε να δημιουργήσετε δεν εμφανίζεται στη "
 "λίστα, ίσως δεν είναι εγκατεστημένο το κατάλληλο πρόσθετο VPN."
 
-#: ../src/connection-editor/page-wifi.c:98
-#| msgid ""
-#| "This option locks this connection to the wireless access point (AP) "
-#| "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
+#: ../src/connection-editor/page-wifi.c:85
 msgid ""
 "This option locks this connection to the Wi-Fi access point (AP) specified "
 "by the BSSID entered here.  Example: 00:11:22:33:44:55"
@@ -2504,32 +2443,28 @@ msgstr ""
 "Αυτή η επιλογή κλειδώνει αυτήν τη σύνδεση στο ασύρματο σημείο πρόσβασης (AP) "
 "που καθορίζεται από το BSSID που εισήχθη εδώ. Παράδειγμα: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-wifi.c:190
-#: ../src/connection-editor/page-wifi.c:194
-#: ../src/connection-editor/page-wifi.c:215
+#: ../src/connection-editor/page-wifi.c:172
+#: ../src/connection-editor/page-wifi.c:176
+#: ../src/connection-editor/page-wifi.c:197
 #, c-format
 msgid "default"
 msgstr "προεπιλεγμένη"
 
-#: ../src/connection-editor/page-wifi.c:219
+#: ../src/connection-editor/page-wifi.c:201
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wifi.c:473
-#| msgid "Could not load WiFi user interface."
+#: ../src/connection-editor/page-wifi.c:467
 msgid "Could not load Wi-Fi user interface."
 msgstr "Αδυναμία φόρτωσης της διεπαφής χρήστη ασύρματης σύνδεσης."
 
-#: ../src/connection-editor/page-wifi.c:650
+#: ../src/connection-editor/page-wifi.c:645
 #, c-format
-#| msgid "Wired connection %d"
 msgid "Wi-Fi connection %d"
 msgstr "Ασύρματη σύνδεση %d"
 
 #: ../src/connection-editor/page-wifi-security.c:265
-#| msgctxt "Wifi/wired security"
-#| msgid "None"
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Καμία"
@@ -2560,30 +2495,25 @@ msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Enterprise"
 
 #: ../src/connection-editor/page-wifi-security.c:396
-#| msgid "Could not load WiFi security user interface; missing WiFi setting."
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Αδυναμία φόρτωσης της διεπαφής χρήστη ασφάλειας ασύρματης σύνδεσης· λείπει "
 "μια ρύθμιση του ασύρματου δικτύου."
 
 #: ../src/connection-editor/page-wifi-security.c:407
-#| msgid "Wireless Security"
 msgid "Wi-Fi Security"
 msgstr "Ασφάλεια ασύρματου δικτύου"
 
 #: ../src/connection-editor/page-wifi-security.c:409
-#| msgid "Could not load WiFi security user interface."
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Αδυναμία φόρτωσης της διεπαφής χρήστη ασφάλειας ασύρματου δικτύου."
 
-#: ../src/connection-editor/page-wimax.c:137
-#| msgid "Could not load WiFi user interface."
+#: ../src/connection-editor/page-wimax.c:128
 msgid "Could not load WiMAX user interface."
 msgstr "Αδυναμία φόρτωσης της διεπαφής χρήστη WiMAX."
 
-#: ../src/connection-editor/page-wimax.c:233
+#: ../src/connection-editor/page-wimax.c:224
 #, c-format
-#| msgid "CDMA connection %d"
 msgid "WiMAX connection %d"
 msgstr "Σύνδεση WiMAX %d"
 
@@ -2651,8 +2581,6 @@ msgstr ""
 
 #: ../src/gnome-bluetooth/bt-widget.c:321
 #, c-format
-#| msgid ""
-#| "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."
 msgid ""
 "Bluetooth configuration not possible (failed to connect to D-Bus: (%s) %s)."
 msgstr ""
@@ -2661,72 +2589,69 @@ msgstr ""
 
 #: ../src/gnome-bluetooth/bt-widget.c:330
 #, c-format
-#| msgid ""
-#| "Bluetooth configuration not possible (error finding NetworkManager: %s)."
 msgid ""
 "Bluetooth configuration not possible (error finding NetworkManager: (%s) %s)."
 msgstr ""
-"Η ρύθμιση μπλούτουθ είναι αδύνατη (σφάλμα εύρεσης του NetworkManager: (%s) %"
-"s)."
+"Η ρύθμιση μπλούτουθ είναι αδύνατη (σφάλμα εύρεσης του NetworkManager: (%s) "
+"%s)."
 
-#: ../src/gnome-bluetooth/bt-widget.c:445
+#: ../src/gnome-bluetooth/bt-widget.c:441
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Χρήση του κινητού σας τηλεφώνου ως συσκευής δικτύου (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/bt-widget.c:454
+#: ../src/gnome-bluetooth/bt-widget.c:450
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Πρόσβαση στο διαδίκτυο μέσω του κινητού σας τηλεφώνου (DUN)"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:336
+#: ../src/gnome-bluetooth/nma-bt-device.c:324
 #, c-format
 msgid "Error: %s"
 msgstr "Σφάλμα: %s"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:443
+#: ../src/gnome-bluetooth/nma-bt-device.c:431
 #, c-format
 msgid "Failed to create DUN connection: %s"
 msgstr "Αδυναμία δημιουργίας σύνδεσης DUN: %s"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:445
-#: ../src/gnome-bluetooth/nma-bt-device.c:959
+#: ../src/gnome-bluetooth/nma-bt-device.c:433
+#: ../src/gnome-bluetooth/nma-bt-device.c:947
 msgid "Your phone is now ready to use!"
 msgstr "Το τηλέφωνο σας είναι έτοιμο για χρήση!"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:468
+#: ../src/gnome-bluetooth/nma-bt-device.c:456
 msgid "Mobile wizard was canceled"
 msgstr "Ο βοηθός κινητού ακυρώθηκε"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:477
+#: ../src/gnome-bluetooth/nma-bt-device.c:465
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "Άγνωστη συσκευή τηλεφώνου (όχι GSM ή CDMA)"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:513
+#: ../src/gnome-bluetooth/nma-bt-device.c:501
 msgid "unknown modem type."
 msgstr "άγνωστος τύπος μόντεμ."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:733
-#: ../src/gnome-bluetooth/nma-bt-device.c:739
+#: ../src/gnome-bluetooth/nma-bt-device.c:721
+#: ../src/gnome-bluetooth/nma-bt-device.c:727
 msgid "failed to connect to the phone."
 msgstr "αποτυχία σύνδεσης με το τηλέφωνο."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:770
+#: ../src/gnome-bluetooth/nma-bt-device.c:758
 msgid "unexpectedly disconnected from the phone."
 msgstr "απρόσμενη αποσύνδεση από το τηλέφωνο."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:780
+#: ../src/gnome-bluetooth/nma-bt-device.c:768
 msgid "timed out detecting phone details."
 msgstr "λήξη χρόνου κατά τον εντοπισμό των λεπτομερειών του τηλεφώνου."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:791
+#: ../src/gnome-bluetooth/nma-bt-device.c:779
 msgid "Detecting phone configuration..."
 msgstr "Γίνεται εντοπισμός της ρύθμισης του τηλεφώνου..."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:823
-#| msgid "Error editing connection"
+#: ../src/gnome-bluetooth/nma-bt-device.c:811
 msgid "error getting bus connection"
 msgstr "σφάλμα λήψης διαύλου σύνδεσης"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:920
+#: ../src/gnome-bluetooth/nma-bt-device.c:908
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2734,23 +2659,23 @@ msgstr ""
 "Θα πρέπει πρώτα να ενεργοποιηθεί ο προεπιλεγμένος προσαρμογέας Bluetooth "
 "πριν την ρύθμιση μιας τηλεφωνικής σύνδεσης δικτύου."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:957
+#: ../src/gnome-bluetooth/nma-bt-device.c:945
 #, c-format
 msgid "Failed to create PAN connection: %s"
 msgstr "Αδυναμία δημιουργίας σύνδεσης PAN: %s"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:978
+#: ../src/gnome-bluetooth/nma-bt-device.c:966
 #, c-format
 msgid "%s Network"
 msgstr "Δίκτυο %s"
 
 #: ../src/gsm-unlock.ui.h:1
-msgid "Automatically unlock this device"
-msgstr "Αυτόματο ξεκλείδωμα αυτής της συσκευής"
-
-#: ../src/gsm-unlock.ui.h:2
 msgid "_Unlock"
 msgstr "_Ξεκλείδωμα"
+
+#: ../src/gsm-unlock.ui.h:2
+msgid "Automatically unlock this device"
+msgstr "Αυτόματο ξεκλείδωμα αυτής της συσκευής"
 
 #: ../src/info.ui.h:1
 msgid "Connection Information"
@@ -2760,27 +2685,27 @@ msgstr "Πληροφορίες σύνδεσης"
 msgid "Active Network Connections"
 msgstr "Ενεργές συνδέσεις δικτύου"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:208
+#: ../src/libnm-gtk/nm-mobile-wizard.c:204
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
 msgstr "Η κινητή ευρυζωνική σας σύνδεση περιλαμβάνει τις ακόλουθες ρυθμίσεις:"
 
 #. Device
-#: ../src/libnm-gtk/nm-mobile-wizard.c:215
+#: ../src/libnm-gtk/nm-mobile-wizard.c:211
 msgid "Your Device:"
 msgstr "Η συσκευή σας:"
 
 #. Provider
-#: ../src/libnm-gtk/nm-mobile-wizard.c:226
+#: ../src/libnm-gtk/nm-mobile-wizard.c:222
 msgid "Your Provider:"
 msgstr "Ο πάροχός σας:"
 
 #. Plan and APN
-#: ../src/libnm-gtk/nm-mobile-wizard.c:237
+#: ../src/libnm-gtk/nm-mobile-wizard.c:233
 msgid "Your Plan:"
 msgstr "Η συνδρομή σας:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:262
+#: ../src/libnm-gtk/nm-mobile-wizard.c:254
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
 "settings you selected.  If the connection fails or you cannot access network "
@@ -2790,27 +2715,27 @@ msgid ""
 msgstr ""
 "Τώρα θα γίνει σύνδεση στον πάροχο κινητής ευρυζωνικής σύνδεσης, "
 "χρησιμοποιώντας τις ρυθμίσεις που επιλέξατε. Αν η σύνδεση αποτύχει, ή αν δεν "
-"έχετε πρόσβαση στους πόρους του δικτύου, ελέγξτε ξανά τις ρυθμίσεις σας. "
-"Για να τροποποιήσετε τις ρυθμίσεις της κινητής ευρυζωνικής σύνδεσης, "
-"επιλέξτε \"Συνδέσεις δικτύου\" από το μενού Σύστημα >> Προτιμήσεις."
+"έχετε πρόσβαση στους πόρους του δικτύου, ελέγξτε ξανά τις ρυθμίσεις σας. Για "
+"να τροποποιήσετε τις ρυθμίσεις της κινητής ευρυζωνικής σύνδεσης, επιλέξτε "
+"\"Συνδέσεις δικτύου\" από το μενού Σύστημα >> Προτιμήσεις."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:274
+#: ../src/libnm-gtk/nm-mobile-wizard.c:266
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Επιβεβαίωση των ρυθμίσεων της κινητής ευρυζωνικής σύνδεσης"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:338
+#: ../src/libnm-gtk/nm-mobile-wizard.c:330
 msgid "Unlisted"
 msgstr "Εκτός λίστας"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:493
+#: ../src/libnm-gtk/nm-mobile-wizard.c:481
 msgid "_Select your plan:"
 msgstr "_Επιλέξτε τη συνδρομή σας:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:517
+#: ../src/libnm-gtk/nm-mobile-wizard.c:505
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "_APN (Access Point Name) επιλεγμένης συνδρομής:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:541
+#: ../src/libnm-gtk/nm-mobile-wizard.c:525
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
@@ -2823,67 +2748,67 @@ msgstr ""
 "Αν δεν είστε σίγουροι για τον τύπο συνδρομής σας, ζητήστε το APN της "
 "συνδρομής σας από τον πάροχο."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:548
+#: ../src/libnm-gtk/nm-mobile-wizard.c:532
 msgid "Choose your Billing Plan"
 msgstr "Επιλέξτε τη συνδρομή σας"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:597
+#: ../src/libnm-gtk/nm-mobile-wizard.c:581
 msgid "My plan is not listed..."
 msgstr "Η συνδρομή μου δεν αναφέρεται..."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:754
+#: ../src/libnm-gtk/nm-mobile-wizard.c:734
 msgid "Select your provider from a _list:"
 msgstr "Επιλέξτε τον πάροχό σας από τη _λίστα:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:767
+#: ../src/libnm-gtk/nm-mobile-wizard.c:747
 msgid "Provider"
 msgstr "Πάροχος"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:792
+#: ../src/libnm-gtk/nm-mobile-wizard.c:772
 msgid "I can't find my provider and I wish to enter it _manually:"
 msgstr "Δε βρήκα τον πάροχό μου και θέλω να τον εισάγω με το _χέρι:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:803
+#: ../src/libnm-gtk/nm-mobile-wizard.c:785
 msgid "Provider:"
 msgstr "Πάροχος:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:827
+#: ../src/libnm-gtk/nm-mobile-wizard.c:802
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "Ο πάροχός μου χρησιμοποιεί τεχνολογίες GSM (GPRS, EDGE, UMTS, HSPA)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:833
+#: ../src/libnm-gtk/nm-mobile-wizard.c:804
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "Ο πάροχός μου χρησιμοποιεί τεχνολογίες CDMA (1xRTT, EVDO)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:844
+#: ../src/libnm-gtk/nm-mobile-wizard.c:815
 msgid "Choose your Provider"
 msgstr "Επιλέξτε τον πάροχό σας"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1100
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
 msgid "Country or Region List:"
 msgstr "Λίστα χωρών ή περιοχών:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1113
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1080
 msgid "Country or region"
 msgstr "Χώρα ή περιοχή"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1123
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1090
 msgid "My country is not listed"
 msgstr "Η χώρα μου δεν είναι στη λίστα"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1173
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1140
 msgid "Choose your Provider's Country or Region"
 msgstr "Επιλέξτε τη χώρα ή περιοχή του παρόχου σας"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1227
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1194
 msgid "Installed GSM device"
 msgstr "Εγκατεστημένη συσκευή GSM"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1230
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1197
 msgid "Installed CDMA device"
 msgstr "Εγκατεστημένη συσκευή CDMA"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1402
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1365
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
@@ -2891,41 +2816,41 @@ msgstr ""
 "Ο βοηθός αυτός σας επιτρέπει να συνδεθείτε εύκολα σε ένα κινητό ευρυζωνικό "
 "(3G) δίκτυο."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1407
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1370
 msgid "You will need the following information:"
 msgstr "Θα χρειαστείτε τις ακόλουθες πληροφορίες:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1422
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1381
 msgid "Your broadband provider's name"
 msgstr "Το όνομα του παρόχου της σύνδεσης σας"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1428
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1387
 msgid "Your broadband billing plan name"
 msgstr "Το όνομα της συνδρομής σας"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1434
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1393
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr ""
 "(σε κάποιες περιπτώσεις) Το APN (Όνομα σημείου πρόσβασης) της ευρυζωνικής "
 "συνδρομής σας"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1461
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1420
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Δημιουργία σύνδεσης για την _ακόλουθη συσκευή:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1476
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1435
 msgid "Any device"
 msgstr "Οποιαδήποτε συσκευή"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1489
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1448
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Ρύθμιση κινητής ευρυζωνικής σύνδεσης"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1662
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1621
 msgid "New Mobile Broadband Connection"
 msgstr "Νέα κινητή ευρυζωνική σύνδεση"
 
-#: ../src/libnm-gtk/nm-ui-utils.c:304 ../src/libnm-gtk/nm-ui-utils.c:367
+#: ../src/libnm-gtk/nm-ui-utils.c:304 ../src/libnm-gtk/nm-ui-utils.c:370
 msgid "Wired"
 msgstr "Ενσύρματη"
 
@@ -2937,25 +2862,25 @@ msgstr "Μπλουτούθ"
 msgid "OLPC Mesh"
 msgstr "Πλέγμα OLPC"
 
-#: ../src/libnm-gtk/nm-ui-utils.c:341
+#: ../src/libnm-gtk/nm-ui-utils.c:343
 msgid "ADSL"
 msgstr "ADSL"
 
-#: ../src/libnm-gtk/nm-ui-utils.c:402
+#: ../src/libnm-gtk/nm-ui-utils.c:405
 msgid "PCI"
 msgstr "PCI"
 
-#: ../src/libnm-gtk/nm-ui-utils.c:404
+#: ../src/libnm-gtk/nm-ui-utils.c:407
 msgid "USB"
 msgstr "USB"
 
 #. Translators: the first %s is a bus name (eg, "USB") or
 #. * product name, the second is a device type (eg,
 #. * "Ethernet"). You can change this to something like
-#. * "%$2s (%$1s)" if there's no grammatical way to combine
+#. * "%2$s (%1$s)" if there's no grammatical way to combine
 #. * the strings otherwise.
 #.
-#: ../src/libnm-gtk/nm-ui-utils.c:480 ../src/libnm-gtk/nm-ui-utils.c:500
+#: ../src/libnm-gtk/nm-ui-utils.c:483 ../src/libnm-gtk/nm-ui-utils.c:503
 #, c-format
 msgctxt "long device name"
 msgid "%s %s"
@@ -2971,9 +2896,6 @@ msgstr "Δ_ημιουργία"
 
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1136
 #, c-format
-#| msgid ""
-#| "Passwords or encryption keys are required to access the wireless network "
-#| "'%s'."
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
 msgstr ""
@@ -2981,45 +2903,35 @@ msgstr ""
 "δίκτυο '%s'."
 
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1138
-#| msgid "Wireless Network Authentication Required"
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Απαιτείται πιστοποίηση ασύρματου δικτύου"
 
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1140
-#| msgid "Authentication required by wireless network"
 msgid "Authentication required by Wi-Fi network"
 msgstr "Απαιτείται πιστοποίηση από το ασύρματο δίκτυο"
 
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1145
-#| msgid "Create New Wireless Network"
 msgid "Create New Wi-Fi Network"
 msgstr "Δημιουργία νέου ασύρματου δικτύου"
 
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1147
-#| msgid "New wireless network"
 msgid "New Wi-Fi network"
 msgstr "Νέο ασύρματο δίκτυο"
 
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1148
-#| msgid "Enter a name for the wireless network you wish to create."
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr ""
 "Εισάγετε το όνομα του ασύρματου δικτύου που επιθυμείτε να δημιουργήσετε."
 
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1150
-#| msgid "Connect to Hidden Wireless Network"
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Σύνδεση σε κρυφό ασύρματο δίκτυο"
 
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1152
-#| msgid "Hidden wireless network"
 msgid "Hidden Wi-Fi network"
 msgstr "Κρυφό ασύρματο δίκτυο"
 
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1153
-#| msgid ""
-#| "Enter the name and security details of the hidden wireless network you "
-#| "wish to connect to."
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -3027,8 +2939,17 @@ msgstr ""
 "Εισάγετε το όνομα και τις ρυθμίσεις ασφαλείας του κρυφού ασύρματου δικτύου "
 "στο οποίο επιθυμείτε να συνδεθείτε."
 
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
+#| msgid "_Password:"
+msgid "_Secondary Password:"
+msgstr "_Δευτερεύων κωδικός πρόσβασης:"
+
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:236
+#| msgid "Sho_w passwords"
+msgid "Sh_ow passwords"
+msgstr "Εμ_φάνιση κωδικών πρόσβασης"
+
 #: ../src/libnm-gtk/wifi.ui.h:2
-#| msgid "Wireless _security:"
 msgid "Wi-Fi _security:"
 msgstr "Ασ_φάλεια ασύρματου δικτύου:"
 
@@ -3037,7 +2958,6 @@ msgid "C_onnection:"
 msgstr "Σύν_δεση:"
 
 #: ../src/libnm-gtk/wifi.ui.h:5
-#| msgid "Wireless _adapter:"
 msgid "Wi-Fi _adapter:"
 msgstr "_Προσαρμογέας ασύρματης δικτύωσης:"
 
@@ -3090,7 +3010,6 @@ msgid "HSPA"
 msgstr "HSPA"
 
 #: ../src/mb-menu-item.c:72
-#| msgid "HSPA"
 msgid "HSPA+"
 msgstr "HSPA+"
 
@@ -3144,23 +3063,22 @@ msgstr "Δίκτυο περιαγωγής (%s)"
 msgid "Roaming network"
 msgstr "Δίκτυο περιαγωγής"
 
-#: ../src/mobile-helpers.c:297
+#: ../src/mobile-helpers.c:317
 #, c-format
 msgid "PIN code for SIM card '%s' on '%s'"
 msgstr "Κωδικός PIN για την κάρτα SIM '%s' στο '%s'"
 
-#: ../src/mobile-helpers.c:471
+#: ../src/mobile-helpers.c:450
 msgid "PIN code required"
 msgstr "Απαιτείται κωδικός PIN"
 
-#: ../src/mobile-helpers.c:479
+#: ../src/mobile-helpers.c:458
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Η κινητή ευρυζωνική συσκευή χρειάζεται τον κωδικό PIN"
 
 #. The %s is a mobile provider name, eg "T-Mobile"
 #: ../src/utils/utils.c:174
 #, c-format
-#| msgid "Base Connection:"
 msgid "%s connection"
 msgstr "σύνδεση %s"
 
@@ -3169,10 +3087,6 @@ msgid "No Certificate Authority certificate chosen"
 msgstr "Δεν έχει επιλεχθεί πιστοποιητικό Αρχής Πιστοποίησης"
 
 #: ../src/wireless-security/eap-method.c:276
-#| msgid ""
-#| "Not using a Certificate Authority (CA) certificate can result in "
-#| "connections to insecure, rogue wireless networks.  Would you like to "
-#| "choose a Certificate Authority certificate?"
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue Wi-Fi networks.  Would you like to choose a Certificate "
@@ -3187,8 +3101,9 @@ msgid "Choose CA Certificate"
 msgstr "Επιλέξτε πιστοποιητικό CA"
 
 #: ../src/wireless-security/eap-method.c:645
-msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
-msgstr "Ιδιωτικά κλειδιά DER, PEM ή PKCS#12 (*.der, *.pem, *.p12)"
+#| msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
+msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
+msgstr "Ιδιωτικά κλειδιά DER, PEM ή PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
 #: ../src/wireless-security/eap-method.c:648
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
@@ -3323,14 +3238,6 @@ msgstr "Συνθηματικό _ιδιωτικού κλειδιού:"
 msgid "Don't _warn me again"
 msgstr "Να _μη γίνει προειδοποίηση ξανά"
 
-#: ../src/wireless-security/nag-user-dialog.ui.h:2
-msgid "No"
-msgstr "Όχι"
-
-#: ../src/wireless-security/nag-user-dialog.ui.h:3
-msgid "Yes"
-msgstr "Ναι"
-
 #: ../src/wireless-security/wireless-security.c:394
 msgid "TLS"
 msgstr "TLS"
@@ -3354,28 +3261,28 @@ msgid "Au_thentication:"
 msgstr "_Πιστοποίηση:"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:1
-msgid "Open System"
-msgstr "Ανοικτό σύστημα"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:2
-msgid "Shared Key"
-msgstr "Κοινόχρηστο κλειδί"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:3
 msgid "1 (Default)"
 msgstr "1 (προεπιλογή)"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:4
+#: ../src/wireless-security/ws-wep-key.ui.h:2
 msgid "2"
 msgstr "2"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:5
+#: ../src/wireless-security/ws-wep-key.ui.h:3
 msgid "3"
 msgstr "3"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:6
+#: ../src/wireless-security/ws-wep-key.ui.h:4
 msgid "4"
 msgstr "4"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:5
+msgid "Open System"
+msgstr "Ανοικτό σύστημα"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:6
+msgid "Shared Key"
+msgstr "Κοινόχρηστο κλειδί"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:7
 msgid "_Key:"
@@ -3388,6 +3295,12 @@ msgstr "Εμ_φάνιση κλειδιού"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "WEP inde_x:"
 msgstr "Δείκτης _WEP:"
+
+#~ msgid "No"
+#~ msgstr "Όχι"
+
+#~ msgid "Yes"
+#~ msgstr "Ναι"
 
 #~ msgid "Wireless Networks (%s)"
 #~ msgstr "Ασύρματα δίκτυα (%s)"
