@@ -1023,6 +1023,9 @@ internal_init (NMAWifiDialog *self,
 	GtkWidget *widget;
 	char *label, *icon_name = "network-wireless";
 	gboolean security_combo_focus = FALSE;
+	gboolean hide_security_combo = secrets_only;
+	NMSettingWirelessSecurity *s_wsec;
+	const char *key_mgmt = NULL;
 
 	gtk_window_set_position (GTK_WINDOW (self), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_container_set_border_width (GTK_CONTAINER (self), 6);
@@ -1072,7 +1075,10 @@ internal_init (NMAWifiDialog *self,
 
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (self))), widget);
 
-	/* If given a valid connection, hide the SSID bits and connection combo */
+	/* If given a valid connection, hide the SSID bits, connection combo, and
+	 * possibly authentication combo because all of those are described already
+	 * by the connection and don't need to change.
+	 */
 	if (specific_connection) {
 		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_label"));
 		gtk_widget_hide (widget);
@@ -1082,6 +1088,17 @@ internal_init (NMAWifiDialog *self,
 
 		security_combo_focus = TRUE;
 		priv->network_name_focus = FALSE;
+
+		/* We need to show the security combo for WEP/Dynamic-WEP cases because
+		 * that can't be autodetected.  Open/WPA-PSK/WPA-Enterprise can
+		 * be autodetected and so we shouldn't show the user stuff they
+		 * don't need to change.
+		 */
+		s_wsec = nm_connection_get_setting_wireless_security (specific_connection);
+		if (s_wsec)
+			key_mgmt = nm_setting_wireless_security_get_key_mgmt (s_wsec);
+		if (g_strcmp0 (key_mgmt, "none") != 0 && g_strcmp0 (key_mgmt, "ieee8021x") != 0)
+			hide_security_combo = TRUE;
 	} else {
 		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 		g_signal_connect (G_OBJECT (widget), "changed", (GCallback) ssid_entry_changed, self);
@@ -1109,10 +1126,11 @@ internal_init (NMAWifiDialog *self,
 	g_signal_connect (G_OBJECT (priv->sec_combo), "changed",
 	                  G_CALLBACK (security_combo_changed_manually), self);
 
-	if (secrets_only) {
+	if (hide_security_combo) {
 		gtk_widget_hide (priv->sec_combo);
 		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo_label"));
 		gtk_widget_hide (widget);
+		security_combo_focus = FALSE;
 	}
 
 	if (security_combo_focus)
