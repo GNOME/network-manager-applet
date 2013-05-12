@@ -152,19 +152,6 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 GTK_CFLAGS="$GTK_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4"
 
-# Check for dbus-1.2.6 or later for deny-by-default rules
-PKG_CHECK_MODULES(DBUS_126, [dbus-1 >= 1.2.6], [have_dbus_126=yes],[have_dbus_126=no])
-AM_CONDITIONAL(HAVE_DBUS_126, test x"$have_dbus_126" = "xyes")
-
-AC_ARG_WITH(dbus-sys, AS_HELP_STRING([--with-dbus-sys=DIR], [where D-BUS system.d directory is]))
-
-if ! test -z "$with_dbus_sys" ; then
-    DBUS_SYS_DIR="$with_dbus_sys"
-else
-    DBUS_SYS_DIR="${sysconfdir}/dbus-1/system.d"
-fi
-AC_SUBST(DBUS_SYS_DIR)
-
 dnl Check for gnome-bluetooth
 AC_ARG_WITH([bluetooth],
 	    AS_HELP_STRING([--with-bluetooth|--without-bluetooth], [Enable Bluetooth support]),
