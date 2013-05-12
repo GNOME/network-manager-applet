@@ -20,34 +20,19 @@ dnl Require programs
 dnl
 AC_PROG_CC
 AM_PROG_CC_C_O
-AC_PROG_INSTALL
 PKG_PROG_PKG_CONFIG
 
 dnl Define _GNU_SOURCE for various things like strcasestr()
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 
 dnl Initialize libtool
 LT_PREREQ([2.2.6])
 LT_INIT
 
 dnl
-dnl Required headers
-dnl
-AC_CHECK_HEADERS(fcntl.h paths.h sys/ioctl.h sys/time.h syslog.h unistd.h)
-
-dnl
 dnl Checks for typedefs, structures, and compiler characteristics.
 dnl
-AC_TYPE_MODE_T
 AC_TYPE_PID_T
-AC_HEADER_TIME
-
-dnl
-dnl Checks for library functions.
-dnl
-AC_PROG_GCC_TRADITIONAL
-AC_FUNC_MEMCMP
-AC_CHECK_FUNCS(select socket uname)
 
 dnl
 dnl translation support
@@ -87,11 +72,6 @@ if test x$disable_iso_codes_check = "xno" ; then
 else
     AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["$prefix"],[ISO codes prefix])
 fi
-
-dnl
-dnl Make sha1.c happy on big endian systems
-dnl
-AC_C_BIGENDIAN
 
 PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 
