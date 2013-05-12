@@ -98,10 +98,10 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
 		 gio-2.0 >= 2.32
-		 NetworkManager >= 0.9.8
-		 libnm-glib >= 0.9.8
-		 libnm-util >= 0.9.8
-		 libnm-glib-vpn >= 0.9.8
+		 NetworkManager >= 0.9.9
+		 libnm-glib >= 0.9.9
+		 libnm-util >= 0.9.9
+		 libnm-glib-vpn >= 0.9.9
 		 gmodule-export-2.0])
 
 NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
