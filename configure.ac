@@ -140,8 +140,7 @@ case "${with_bluetooth}" in
 		AC_MSG_CHECKING(for gnome-bluetooth)
 		PKG_CHECK_MODULES(GNOME_BLUETOOTH,
 				  gnome-bluetooth-1.0 >= 2.27.6
-				  libnm-util >= 0.9.4
-				  libnm-glib >= 0.9.4,
+				  libnm-util libnm-glib,
 				  have_gbt=yes, have_gbt=no)
 		;;
 esac
