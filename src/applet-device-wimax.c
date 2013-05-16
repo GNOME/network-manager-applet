@@ -204,7 +204,8 @@ sort_nsps (gconstpointer a, gconstpointer b)
 
 static void
 wimax_add_menu_item (NMDevice *device,
-                     guint32 n_devices,
+                     gboolean multiple_devices,
+                     GSList *connections,
                      NMConnection *active,
                      GtkWidget *menu,
                      NMApplet *applet)
@@ -212,7 +213,7 @@ wimax_add_menu_item (NMDevice *device,
 	NMDeviceWimax *wimax = NM_DEVICE_WIMAX (device);
 	char *text;
 	GtkWidget *item;
-	GSList *connections, *all, *iter, *sorted = NULL;
+	GSList *iter, *sorted = NULL;
 	const GPtrArray *nsps;
 	NMWimaxNsp *active_nsp = NULL;
 	gboolean wimax_enabled, wimax_hw_enabled;
@@ -220,7 +221,7 @@ wimax_add_menu_item (NMDevice *device,
 
 	nsps = nm_device_wimax_get_nsps (wimax);
 
-	if (n_devices > 1) {
+	if (multiple_devices) {
 		const char *desc;
 
 		desc = nma_utils_get_device_description (device);
@@ -274,10 +275,6 @@ wimax_add_menu_item (NMDevice *device,
 	if (g_slist_length (sorted)) {
 		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
 
-		all = applet_get_all_connections (applet);
-		connections = nm_device_filter_connections (device, all);
-		g_slist_free (all);
-
 		/* And add menu items for each NSP */
 		for (iter = sorted; iter; iter = g_slist_next (iter)) {
 			NMWimaxNsp *nsp = NM_WIMAX_NSP (iter->data);
@@ -290,8 +287,6 @@ wimax_add_menu_item (NMDevice *device,
 				gtk_widget_show (item);
 			}
 		}
-
-		g_slist_free (connections);
 	}
 
 	g_slist_free (sorted);

@@ -759,7 +759,8 @@ sort_toplevel (gconstpointer tmpa, gconstpointer tmpb)
 
 static void
 wifi_add_menu_item (NMDevice *device,
-                    guint32 n_devices,
+                    gboolean multiple_devices,
+                    GSList *connections,
                     NMConnection *active,
                     GtkWidget *menu,
                     NMApplet *applet)
@@ -769,7 +770,7 @@ wifi_add_menu_item (NMDevice *device,
 	const GPtrArray *aps;
 	int i;
 	NMAccessPoint *active_ap = NULL;
-	GSList *connections = NULL, *all, *iter;
+	GSList *iter;
 	gboolean wifi_enabled = TRUE;
 	gboolean wifi_hw_enabled = TRUE;
 	GSList *menu_items = NULL;  /* All menu items we'll be adding */
@@ -779,7 +780,7 @@ wifi_add_menu_item (NMDevice *device,
 	wdev = NM_DEVICE_WIFI (device);
 	aps = nm_device_wifi_get_access_points (wdev);
 
-	if (n_devices > 1) {
+	if (multiple_devices) {
 		const char *desc;
 
 		desc = nma_utils_get_device_description (device);
@@ -796,10 +797,6 @@ wifi_add_menu_item (NMDevice *device,
 	gtk_widget_set_sensitive (widget, FALSE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), widget);
 	gtk_widget_show (widget);
-
-	all = applet_get_all_connections (applet);
-	connections = nm_device_filter_connections (device, all);
-	g_slist_free (all);
 
 	/* Add the active AP if we're connected to something and the device is available */
 	if (!nma_menu_device_check_unusable (device)) {
@@ -903,7 +900,6 @@ wifi_add_menu_item (NMDevice *device,
 
 out:
 	g_slist_free (menu_items);
-	g_slist_free (connections);
 }
 
 static void

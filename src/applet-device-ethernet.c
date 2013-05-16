@@ -77,21 +77,17 @@ ethernet_new_auto_connection (NMDevice *device,
 
 static void
 ethernet_add_menu_item (NMDevice *device,
-                        guint32 n_devices,
+                        gboolean multiple_devices,
+                        GSList *connections,
                         NMConnection *active,
                         GtkWidget *menu,
                         NMApplet *applet)
 {
 	char *text;
 	GtkWidget *item;
-	GSList *connections, *all;
 	gboolean carrier = TRUE;
 
-	all = applet_get_all_connections (applet);
-	connections = nm_device_filter_connections (device, all);
-	g_slist_free (all);
-
-	if (n_devices > 1) {
+	if (multiple_devices) {
 		const char *desc;
 
 		desc = nma_utils_get_device_description (device);
@@ -139,8 +135,6 @@ ethernet_add_menu_item (NMDevice *device,
 		else
 			applet_add_default_connection_item (device, DEFAULT_ETHERNET_NAME, carrier, menu, applet);
 	}
-
-	g_slist_free (connections);
 }
 
 static void

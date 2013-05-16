@@ -1583,12 +1583,16 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	/* Add all devices in our device list to the menu */
 	for (iter = devices; iter; iter = iter->next) {
 		NMDevice *device = NM_DEVICE (iter->data);
-		gint n_devices = 0;
+		gint n_devices;
 		NMADeviceClass *dclass;
 		NMConnection *active;
+		GSList *all, *connections;
 
 		/* Ignore unsupported devices */
 		if (!(nm_device_get_capabilities (device) & NM_DEVICE_CAP_NM_SUPPORTED))
+			continue;
+		dclass = get_device_class (device, applet);
+		if (!dclass)
 			continue;
 
 		if (NM_IS_DEVICE_WIFI (device))
@@ -1597,12 +1601,18 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 			n_devices = n_ethernet_devices;
 		else if (NM_IS_DEVICE_MODEM (device))
 			n_devices = n_mb_devices;
+		else
+			n_devices = 0;
+
+		all = applet_get_all_connections (applet);
+		connections = nm_device_filter_connections (device, all);
+		g_slist_free (all);
 
 		active = applet_find_active_connection_for_device (device, applet, NULL);
 
-		dclass = get_device_class (device, applet);
-		if (dclass)
-			dclass->add_menu_item (device, n_devices, active, menu, applet);
+		dclass->add_menu_item (device, n_devices > 1, connections, active, menu, applet);
+
+		g_slist_free (connections);
 	}
 
  out:

@@ -55,18 +55,14 @@ bt_new_auto_connection (NMDevice *device,
 
 static void
 bt_add_menu_item (NMDevice *device,
-                  guint32 n_devices,
+                  gboolean multiple__devices,
+                  GSList *connections,
                   NMConnection *active,
                   GtkWidget *menu,
                   NMApplet *applet)
 {
 	const char *text;
 	GtkWidget *item;
-	GSList *connections, *all;
-
-	all = applet_get_all_connections (applet);
-	connections = nm_device_filter_connections (device, all);
-	g_slist_free (all);
 
 	text = nm_device_bt_get_name (NM_DEVICE_BT (device));
 	if (!text)
@@ -95,8 +91,6 @@ bt_add_menu_item (NMDevice *device,
 			applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_INACTIVE, menu, applet);
 		}
 	}
-
-	g_slist_free (connections);
 }
 
 static void

@@ -283,7 +283,8 @@ gsm_act_to_mb_act (GsmDeviceInfo *info)
 
 static void
 gsm_add_menu_item (NMDevice *device,
-                   guint32 n_devices,
+                   gboolean multiple_devices,
+                   GSList *connections,
                    NMConnection *active,
                    GtkWidget *menu,
                    NMApplet *applet)
@@ -291,15 +292,11 @@ gsm_add_menu_item (NMDevice *device,
 	GsmDeviceInfo *info;
 	char *text;
 	GtkWidget *item;
-	GSList *connections, *all, *iter;
+	GSList *iter;
 
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
 
-	all = applet_get_all_connections (applet);
-	connections = nm_device_filter_connections (device, all);
-	g_slist_free (all);
-
-	if (n_devices > 1) {
+	if (multiple_devices) {
 		const char *desc;
 
 		desc = nma_utils_get_device_description (device);
@@ -374,8 +371,6 @@ gsm_add_menu_item (NMDevice *device,
 			add_connection_item (device, NULL, item, menu, applet);
 		}
 	}
-
-	g_slist_free (connections);
 }
 
 static void

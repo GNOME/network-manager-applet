@@ -229,7 +229,8 @@ struct NMADeviceClass {
 	                                        gpointer callback_data);
 
 	void           (*add_menu_item)        (NMDevice *device,
-	                                        guint32 num_devices,
+	                                        gboolean multiple_devices,
+	                                        GSList *connections,
 	                                        NMConnection *active,
 	                                        GtkWidget *menu,
 	                                        NMApplet *applet);
