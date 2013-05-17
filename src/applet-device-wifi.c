@@ -1244,24 +1244,29 @@ wifi_device_state_changed (NMDevice *device,
                            NMDeviceStateReason reason,
                            NMApplet *applet)
 {
-	NMAccessPoint *new = NULL;
-	char *msg;
-	char *esc_ssid = NULL;
-
-	new = update_active_ap (device, new_state, applet);
+	update_active_ap (device, new_state, applet);
 
 	if (new_state == NM_DEVICE_STATE_DISCONNECTED)
 		queue_avail_access_point_notification (device);
+}
 
-	if (new_state != NM_DEVICE_STATE_ACTIVATED)
-		return;
+static void
+wifi_notify_connected (NMDevice *device,
+                       const char *msg,
+                       NMApplet *applet)
+{
+	NMAccessPoint *ap;
+	char *esc_ssid;
+	char *ssid_msg;
 
-	esc_ssid = get_ssid_utf8 (new);
-	msg = g_strdup_printf (_("You are now connected to the Wi-Fi network '%s'."), esc_ssid);
+	ap = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
+
+	esc_ssid = get_ssid_utf8 (ap);
+	ssid_msg = g_strdup_printf (_("You are now connected to the Wi-Fi network '%s'."), esc_ssid);
 	applet_do_notify_with_pref (applet, _("Connection Established"),
-	                            msg, "nm-device-wireless",
+	                            ssid_msg, "nm-device-wireless",
 	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
-	g_free (msg);
+	g_free (ssid_msg);
 	g_free (esc_ssid);
 }
 
@@ -1697,6 +1702,7 @@ applet_device_wifi_get_class (NMApplet *applet)
 	dclass->add_menu_item = wifi_add_menu_item;
 	dclass->device_added = wifi_device_added;
 	dclass->device_state_changed = wifi_device_state_changed;
+	dclass->notify_connected = wifi_notify_connected;
 	dclass->get_icon = wifi_get_icon;
 	dclass->get_secrets = wifi_get_secrets;
 	dclass->secrets_request_size = sizeof (NMWifiInfo);

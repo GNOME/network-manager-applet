@@ -331,32 +331,21 @@ cdma_device_state_changed (NMDevice *device,
 {
 	CdmaDeviceInfo *info;
 
-	if (new_state == NM_DEVICE_STATE_ACTIVATED) {
-		NMConnection *connection;
-		NMSettingConnection *s_con = NULL;
-		char *str = NULL;
-
-		connection = applet_find_active_connection_for_device (device, applet, NULL);
-		if (connection) {
-			const char *id;
-
-			s_con = nm_connection_get_setting_connection (connection);
-			id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
-			if (id)
-				str = g_strdup_printf (_("You are now connected to '%s'."), id);
-		}
-
-		applet_do_notify_with_pref (applet,
-		                            _("Connection Established"),
-		                            str ? str : _("You are now connected to the CDMA network."),
-		                            "nm-device-wwan",
-		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
-		g_free (str);
-	}
-
 	/* Start/stop polling of quality and registration when device state changes */
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
 	check_start_polling (info);
+}
+
+static void
+cdma_notify_connected (NMDevice *device,
+                       const char *msg,
+                       NMApplet *applet)
+{
+	applet_do_notify_with_pref (applet,
+	                            _("Connection Established"),
+	                            msg ? msg : _("You are now connected to the CDMA network."),
+	                            "nm-device-wwan",
+	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 }
 
 static GdkPixbuf *
@@ -748,6 +737,7 @@ applet_device_cdma_get_class (NMApplet *applet)
 	dclass->new_auto_connection = cdma_new_auto_connection;
 	dclass->add_menu_item = cdma_add_menu_item;
 	dclass->device_state_changed = cdma_device_state_changed;
+	dclass->notify_connected = cdma_notify_connected;
 	dclass->get_icon = cdma_get_icon;
 	dclass->get_secrets = cdma_get_secrets;
 	dclass->secrets_request_size = sizeof (MobileHelperSecretsInfo);

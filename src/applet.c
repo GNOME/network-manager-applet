@@ -2268,8 +2268,28 @@ foo_device_state_changed_cb (NMDevice *device,
 	dclass = get_device_class (device, applet);
 	g_assert (dclass);
 
-	dclass->device_state_changed (device, new_state, old_state, reason, applet);
+	if (dclass->device_state_changed)
+		dclass->device_state_changed (device, new_state, old_state, reason, applet);
 	applet_common_device_state_changed (device, new_state, old_state, reason, applet);
+
+	if (   new_state == NM_DEVICE_STATE_ACTIVATED
+	    && !g_settings_get_boolean (applet->gsettings, PREF_DISABLE_CONNECTED_NOTIFICATIONS)) {
+		NMConnection *connection;
+		NMSettingConnection *s_con = NULL;
+		char *str = NULL;
+
+		connection = applet_find_active_connection_for_device (device, applet, NULL);
+		if (connection) {
+			const char *id;
+			s_con = nm_connection_get_setting_connection (connection);
+			id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
+			if (id)
+				str = g_strdup_printf (_("You are now connected to '%s'."), id);
+		}
+
+		dclass->notify_connected (device, str, applet);
+		g_free (str);
+	}
 
 	applet_schedule_update_icon (applet);
 }

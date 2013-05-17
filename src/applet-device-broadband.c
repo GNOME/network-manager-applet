@@ -793,35 +793,15 @@ add_menu_item (NMDevice *device,
 /********************************************************************/
 
 static void
-device_state_changed (NMDevice *device,
-                      NMDeviceState new_state,
-                      NMDeviceState old_state,
-                      NMDeviceStateReason reason,
-                      NMApplet *applet)
+notify_connected (NMDevice *device,
+                  const char *msg,
+                  NMApplet *applet)
 {
-	NMConnection *connection;
-	NMSettingConnection *s_con = NULL;
-	char *str = NULL;
-
-	if (new_state != NM_DEVICE_STATE_ACTIVATED)
-		return;
-
-	connection = applet_find_active_connection_for_device (device, applet, NULL);
-	if (connection) {
-		const char *id;
-
-		s_con = nm_connection_get_setting_connection (connection);
-		id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
-		if (id)
-			str = g_strdup_printf (_("You are now connected to '%s'."), id);
-	}
-
 	applet_do_notify_with_pref (applet,
 	                            _("Connection Established"),
-	                            str ? str : _("You are now connected to the Mobile Broadband network."),
+	                            msg ? msg : _("You are now connected to the Mobile Broadband network."),
 	                            "nm-device-wwan",
 	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
-	g_free (str);
 }
 
 /********************************************************************/
@@ -1075,7 +1055,7 @@ applet_device_broadband_get_class (NMApplet *applet)
 	dclass->new_auto_connection = new_auto_connection;
 	dclass->add_menu_item = add_menu_item;
 	dclass->device_added = device_added;
-	dclass->device_state_changed = device_state_changed;
+	dclass->notify_connected = notify_connected;
 	dclass->get_icon = get_icon;
 	dclass->get_secrets = get_secrets;
 	dclass->secrets_request_size = sizeof (MobileHelperSecretsInfo);

@@ -398,34 +398,15 @@ wimax_device_added (NMDevice *device, NMApplet *applet)
 }
 
 static void
-wimax_device_state_changed (NMDevice *device,
-                            NMDeviceState new_state,
-                            NMDeviceState old_state,
-                            NMDeviceStateReason reason,
-                            NMApplet *applet)
+wimax_notify_connected (NMDevice *device,
+                        const char *msg,
+                        NMApplet *applet)
 {
-	if (new_state == NM_DEVICE_STATE_ACTIVATED) {
-		NMConnection *connection;
-		NMSettingConnection *s_con = NULL;
-		char *str = NULL;
-
-		connection = applet_find_active_connection_for_device (device, applet, NULL);
-		if (connection) {
-			const char *id;
-
-			s_con = nm_connection_get_setting_connection (connection);
-			id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
-			if (id)
-				str = g_strdup_printf (_("You are now connected to '%s'."), id);
-		}
-
-		applet_do_notify_with_pref (applet,
-		                            _("Connection Established"),
-		                            str ? str : _("You are now connected to the WiMAX network."),
-		                            "nm-device-wwan",
-		                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
-		g_free (str);
-	}
+	applet_do_notify_with_pref (applet,
+	                            _("Connection Established"),
+	                            msg ? msg : _("You are now connected to the WiMAX network."),
+	                            "nm-device-wwan",
+	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 }
 
 static GdkPixbuf *
@@ -510,7 +491,7 @@ applet_device_wimax_get_class (NMApplet *applet)
 	dclass->new_auto_connection = wimax_new_auto_connection;
 	dclass->add_menu_item = wimax_add_menu_item;
 	dclass->device_added = wimax_device_added;
-	dclass->device_state_changed = wimax_device_state_changed;
+	dclass->notify_connected = wimax_notify_connected;
 	dclass->get_icon = wimax_get_icon;
 	dclass->get_secrets = wimax_get_secrets;
 

@@ -241,6 +241,9 @@ struct NMADeviceClass {
 	                                        NMDeviceState old_state,
 	                                        NMDeviceStateReason reason,
 	                                        NMApplet *applet);
+	void           (*notify_connected)     (NMDevice *device,
+	                                        const char *msg,
+	                                        NMApplet *applet);
 
 	/* Device class is expected to return a *referenced* pixbuf, which will
 	 * be unrefed by the icon code.  This allows the device class to create
