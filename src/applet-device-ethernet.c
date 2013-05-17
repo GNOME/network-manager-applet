@@ -41,24 +41,6 @@
 #include "ethernet-dialog.h"
 #include "nm-ui-utils.h"
 
-typedef struct {
-	NMApplet *applet;
-	NMDevice *device;
-	NMConnection *connection;
-} EthernetMenuItemInfo;
-
-static void
-ethernet_menu_item_info_destroy (gpointer data)
-{
-	EthernetMenuItemInfo *info = (EthernetMenuItemInfo *) data;
-
-	g_object_unref (G_OBJECT (info->device));
-	if (info->connection)
-		g_object_unref (G_OBJECT (info->connection));
-
-	g_slice_free (EthernetMenuItemInfo, data);
-}
-
 #define DEFAULT_ETHERNET_NAME _("Auto Ethernet")
 
 static gboolean
@@ -91,90 +73,6 @@ ethernet_new_auto_connection (NMDevice *device,
 
 	(*callback) (connection, TRUE, FALSE, callback_data);
 	return TRUE;
-}
-
-static void
-ethernet_menu_item_activate (GtkMenuItem *item, gpointer user_data)
-{
-	EthernetMenuItemInfo *info = (EthernetMenuItemInfo *) user_data;
-
-	applet_menu_item_activate_helper (info->device,
-	                                  info->connection,
-	                                  "/",
-	                                  info->applet,
-	                                  user_data);
-}
-
-
-typedef enum {
-	ADD_ACTIVE = 1,
-	ADD_INACTIVE = 2,
-} AddActiveInactiveEnum;
-
-static void
-add_connection_items (NMDevice *device,
-                      GSList *connections,
-                      gboolean carrier,
-                      NMConnection *active,
-                      AddActiveInactiveEnum flag,
-                      GtkWidget *menu,
-                      NMApplet *applet)
-{
-	GSList *iter;
-	EthernetMenuItemInfo *info;
-
-	for (iter = connections; iter; iter = g_slist_next (iter)) {
-		NMConnection *connection = NM_CONNECTION (iter->data);
-		GtkWidget *item;
-
-		if (active == connection) {
-			if ((flag & ADD_ACTIVE) == 0)
-				continue;
-		} else {
-			if ((flag & ADD_INACTIVE) == 0)
-				continue;
-		}
-
-		item = applet_new_menu_item_helper (connection, active, (flag & ADD_ACTIVE));
-		gtk_widget_set_sensitive (item, carrier);
-
-		info = g_slice_new0 (EthernetMenuItemInfo);
-		info->applet = applet;
-		info->device = g_object_ref (G_OBJECT (device));
-		info->connection = g_object_ref (connection);
-
-		g_signal_connect_data (item, "activate",
-		                       G_CALLBACK (ethernet_menu_item_activate),
-		                       info,
-		                       (GClosureNotify) ethernet_menu_item_info_destroy, 0);
-
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-	}
-}
-
-static void
-add_default_connection_item (NMDevice *device,
-                             gboolean carrier,
-                             GtkWidget *menu,
-                             NMApplet *applet)
-{
-	EthernetMenuItemInfo *info;
-	GtkWidget *item;
-	
-	item = gtk_check_menu_item_new_with_label (DEFAULT_ETHERNET_NAME);
-	gtk_widget_set_sensitive (GTK_WIDGET (item), carrier);
-	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
-
-	info = g_slice_new0 (EthernetMenuItemInfo);
-	info->applet = applet;
-	info->device = g_object_ref (G_OBJECT (device));
-
-	g_signal_connect_data (item, "activate",
-	                       G_CALLBACK (ethernet_menu_item_activate),
-	                       info,
-	                       (GClosureNotify) ethernet_menu_item_info_destroy, 0);
-
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
 
 static void
@@ -223,7 +121,7 @@ ethernet_add_menu_item (NMDevice *device,
 	gtk_widget_show (item);
 
 	if (g_slist_length (connections))
-		add_connection_items (device, connections, carrier, active, ADD_ACTIVE, menu, applet);
+		applet_add_connection_items (device, connections, carrier, active, NMA_ADD_ACTIVE, menu, applet);
 
 	/* Notify user of unmanaged or unavailable device */
 	item = nma_menu_device_get_menu_item (device, applet, carrier ? NULL : _("disconnected"));
@@ -237,9 +135,9 @@ ethernet_add_menu_item (NMDevice *device,
 			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
 
 		if (g_slist_length (connections))
-			add_connection_items (device, connections, carrier, active, ADD_INACTIVE, menu, applet);
+			applet_add_connection_items (device, connections, carrier, active, NMA_ADD_INACTIVE, menu, applet);
 		else
-			add_default_connection_item (device, carrier, menu, applet);
+			applet_add_default_connection_item (device, DEFAULT_ETHERNET_NAME, carrier, menu, applet);
 	}
 
 	g_slist_free (connections);

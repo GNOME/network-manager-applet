@@ -2138,6 +2138,102 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	return GTK_WIDGET (menu);
 }
 
+typedef struct {
+	NMApplet *applet;
+	NMDevice *device;
+	NMConnection *connection;
+} AppletMenuItemInfo;
+
+static void
+applet_menu_item_info_destroy (gpointer data, GClosure *closure)
+{
+	AppletMenuItemInfo *info = data;
+
+	g_clear_object (&info->device);
+	g_clear_object (&info->connection);
+
+	g_slice_free (AppletMenuItemInfo, data);
+}
+
+static void
+applet_menu_item_activate (GtkMenuItem *item, gpointer user_data)
+{
+	AppletMenuItemInfo *info = user_data;
+
+	applet_menu_item_activate_helper (info->device,
+	                                  info->connection,
+	                                  "/",
+	                                  info->applet,
+	                                  user_data);
+}
+
+void
+applet_add_connection_items (NMDevice *device,
+                             GSList *connections,
+                             gboolean sensitive,
+                             NMConnection *active,
+                             NMAAddActiveInactiveEnum flag,
+                             GtkWidget *menu,
+                             NMApplet *applet)
+{
+	GSList *iter;
+	AppletMenuItemInfo *info;
+
+	for (iter = connections; iter; iter = iter->next) {
+		NMConnection *connection = NM_CONNECTION (iter->data);
+		GtkWidget *item;
+
+		if (active == connection) {
+			if ((flag & NMA_ADD_ACTIVE) == 0)
+				continue;
+		} else {
+			if ((flag & NMA_ADD_INACTIVE) == 0)
+				continue;
+		}
+
+		item = applet_new_menu_item_helper (connection, active, (flag & NMA_ADD_ACTIVE));
+		gtk_widget_set_sensitive (item, sensitive);
+
+		info = g_slice_new0 (AppletMenuItemInfo);
+		info->applet = applet;
+		info->device = g_object_ref (device);
+		info->connection = g_object_ref (connection);
+
+		g_signal_connect_data (item, "activate",
+		                       G_CALLBACK (applet_menu_item_activate),
+		                       info,
+		                       applet_menu_item_info_destroy, 0);
+
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	}
+}
+
+void
+applet_add_default_connection_item (NMDevice *device,
+                                    const char *label,
+                                    gboolean sensitive,
+                                    GtkWidget *menu,
+                                    NMApplet *applet)
+{
+	AppletMenuItemInfo *info;
+	GtkWidget *item;
+	
+	item = gtk_check_menu_item_new_with_label (label);
+	gtk_widget_set_sensitive (GTK_WIDGET (item), sensitive);
+	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
+
+	info = g_slice_new0 (AppletMenuItemInfo);
+	info->applet = applet;
+	info->device = g_object_ref (device);
+
+	g_signal_connect_data (item, "activate",
+	                       G_CALLBACK (applet_menu_item_activate),
+	                       info,
+	                       applet_menu_item_info_destroy, 0);
+
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+}
+
 
 /*****************************************************************************/
 

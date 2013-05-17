@@ -334,4 +334,23 @@ gboolean applet_wifi_connect_to_8021x_network (NMApplet *applet,
 gboolean applet_wifi_create_wifi_network (NMApplet *applet);
 gboolean applet_wifi_can_create_wifi_network (NMApplet *applet);
 
+typedef enum {
+	NMA_ADD_ACTIVE = 1,
+	NMA_ADD_INACTIVE = 2,
+} NMAAddActiveInactiveEnum;
+
+void applet_add_connection_items (NMDevice *device,
+                                  GSList *connections,
+                                  gboolean sensitive,
+                                  NMConnection *active,
+                                  NMAAddActiveInactiveEnum flag,
+                                  GtkWidget *menu,
+                                  NMApplet *applet);
+
+void applet_add_default_connection_item (NMDevice *device,
+                                         const char *label,
+                                         gboolean sensitive,
+                                         GtkWidget *menu,
+                                         NMApplet *applet);
+
 #endif

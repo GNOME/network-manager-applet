@@ -42,24 +42,6 @@
 #include "applet-dialogs.h"
 #include "nm-ui-utils.h"
 
-typedef struct {
-	NMApplet *applet;
-	NMDevice *device;
-	NMConnection *connection;
-} BtMenuItemInfo;
-
-static void
-bt_menu_item_info_destroy (gpointer data)
-{
-	BtMenuItemInfo *info = data;
-
-	g_object_unref (G_OBJECT (info->device));
-	if (info->connection)
-		g_object_unref (G_OBJECT (info->connection));
-
-	g_slice_free (BtMenuItemInfo, data);
-}
-
 static gboolean
 bt_new_auto_connection (NMDevice *device,
                         gpointer dclass_data,
@@ -69,63 +51,6 @@ bt_new_auto_connection (NMDevice *device,
 
 	// FIXME: call gnome-bluetooth setup wizard
 	return FALSE;
-}
-
-static void
-bt_menu_item_activate (GtkMenuItem *item, gpointer user_data)
-{
-	BtMenuItemInfo *info = user_data;
-
-	applet_menu_item_activate_helper (info->device,
-	                                  info->connection,
-	                                  "/",
-	                                  info->applet,
-	                                  user_data);
-}
-
-
-typedef enum {
-	ADD_ACTIVE = 1,
-	ADD_INACTIVE = 2,
-} AddActiveInactiveEnum;
-
-static void
-add_connection_items (NMDevice *device,
-                      GSList *connections,
-                      NMConnection *active,
-                      AddActiveInactiveEnum flag,
-                      GtkWidget *menu,
-                      NMApplet *applet)
-{
-	GSList *iter;
-	BtMenuItemInfo *info;
-
-	for (iter = connections; iter; iter = g_slist_next (iter)) {
-		NMConnection *connection = NM_CONNECTION (iter->data);
-		GtkWidget *item;
-
-		if (active == connection) {
-			if ((flag & ADD_ACTIVE) == 0)
-				continue;
-		} else {
-			if ((flag & ADD_INACTIVE) == 0)
-				continue;
-		}
-
-		item = applet_new_menu_item_helper (connection, active, (flag & ADD_ACTIVE));
-
-		info = g_slice_new0 (BtMenuItemInfo);
-		info->applet = applet;
-		info->device = g_object_ref (G_OBJECT (device));
-		info->connection = g_object_ref (connection);
-
-		g_signal_connect_data (item, "activate",
-		                       G_CALLBACK (bt_menu_item_activate),
-		                       info,
-		                       (GClosureNotify) bt_menu_item_info_destroy, 0);
-
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-	}
 }
 
 static void
@@ -154,7 +79,7 @@ bt_add_menu_item (NMDevice *device,
 	gtk_widget_show (item);
 
 	if (g_slist_length (connections))
-		add_connection_items (device, connections, active, ADD_ACTIVE, menu, applet);
+		applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_ACTIVE, menu, applet);
 
 	/* Notify user of unmanaged or unavailable device */
 	item = nma_menu_device_get_menu_item (device, applet, NULL);
@@ -167,7 +92,7 @@ bt_add_menu_item (NMDevice *device,
 		/* Add menu items for existing bluetooth connections for this device */
 		if (g_slist_length (connections)) {
 			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
-			add_connection_items (device, connections, active, ADD_INACTIVE, menu, applet);
+			applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_INACTIVE, menu, applet);
 		}
 	}
 
