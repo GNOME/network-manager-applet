@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-04 14:23+0100\n"
-"PO-Revision-Date: 2013-03-04 14:23+0200\n"
+"POT-Creation-Date: 2013-05-20 01:19+0200\n"
+"PO-Revision-Date: 2013-05-20 01:19+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: gnome-l10n-gl@gnome.org\n"
 "Language: gl\n"
@@ -107,10 +107,20 @@ msgstr ""
 "ao usar o miniaplicativo."
 
 #: ../org.gnome.nm-applet.gschema.xml.in.h:13
+msgid "Show the applet in notification area"
+msgstr "Mostrar o miniaplicativo na área de notificacións"
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:14
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr ""
+"Estabelecer a FALSE para desactivar mostrar o miniaplicativo na área de "
+"notificacións."
+
+#: ../org.gnome.nm-applet.gschema.xml.in.h:15
 msgid "Ignore CA certificate"
 msgstr "Ignorar certificado CA"
 
-#: ../org.gnome.nm-applet.gschema.xml.in.h:14
+#: ../org.gnome.nm-applet.gschema.xml.in.h:16
 msgid ""
 "Set this to true to disable warnings about CA certificates in EAP "
 "authentication."
@@ -118,7 +128,7 @@ msgstr ""
 "Estabelecer isto a certo para desactivar as notificacións sobre certificados "
 "CA en autenticación EAP."
 
-#: ../org.gnome.nm-applet.gschema.xml.in.h:15
+#: ../org.gnome.nm-applet.gschema.xml.in.h:17
 msgid ""
 "Set this to true to disable warnings about CA certificates in phase 2 of EAP "
 "authentication."
@@ -161,11 +171,11 @@ msgstr "Produciuse un erro ao desconectar"
 msgid "Connection activation failed"
 msgstr "Produciuse un erro ao activar a conexión"
 
-#: ../src/applet.c:982 ../src/applet-device-wifi.c:1069
+#: ../src/applet.c:926 ../src/applet-device-wifi.c:1069
 msgid "Don't show this message again"
 msgstr "Non mostrar esta mensaxe outra vez"
 
-#: ../src/applet.c:1071
+#: ../src/applet.c:1015
 #, c-format
 msgid ""
 "\n"
@@ -175,7 +185,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque se interrompeu a conexión de rede."
 
-#: ../src/applet.c:1074
+#: ../src/applet.c:1018
 #, c-format
 msgid ""
 "\n"
@@ -184,7 +194,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque o servizo VPN se detivo inesperadamente."
 
-#: ../src/applet.c:1077
+#: ../src/applet.c:1021
 #, c-format
 msgid ""
 "\n"
@@ -195,7 +205,7 @@ msgstr ""
 "A conexión VPN '%s' fallou porque o servizo VPN devolveu unha configuración "
 "non válida."
 
-#: ../src/applet.c:1080
+#: ../src/applet.c:1024
 #, c-format
 msgid ""
 "\n"
@@ -205,7 +215,7 @@ msgstr ""
 "A conexión VPN '%s' fallou porque a tentativa de conexión excedeu o tempo de "
 "espera."
 
-#: ../src/applet.c:1083
+#: ../src/applet.c:1027
 #, c-format
 msgid ""
 "\n"
@@ -214,7 +224,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque o servizo VPN non comezou a tempo."
 
-#: ../src/applet.c:1086
+#: ../src/applet.c:1030
 #, c-format
 msgid ""
 "\n"
@@ -224,7 +234,7 @@ msgstr ""
 "A conexión VPN '%s' fallou porque produciuse un erro ao iniciar o servizo "
 "VPN."
 
-#: ../src/applet.c:1089
+#: ../src/applet.c:1033
 #, c-format
 msgid ""
 "\n"
@@ -233,7 +243,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque non había contrasinais VPN válidos."
 
-#: ../src/applet.c:1092
+#: ../src/applet.c:1036
 #, c-format
 msgid ""
 "\n"
@@ -242,7 +252,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou porque había contrasinais VPN non válidos."
 
-#: ../src/applet.c:1099
+#: ../src/applet.c:1043
 #, c-format
 msgid ""
 "\n"
@@ -251,7 +261,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' fallou."
 
-#: ../src/applet.c:1117
+#: ../src/applet.c:1061
 #, c-format
 msgid ""
 "\n"
@@ -261,7 +271,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' desconectouse porque se interrompeu a conexión de rede."
 
-#: ../src/applet.c:1120
+#: ../src/applet.c:1064
 #, c-format
 msgid ""
 "\n"
@@ -270,7 +280,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' desconectouse porque se detivo o servizo VPN."
 
-#: ../src/applet.c:1126
+#: ../src/applet.c:1070
 #, c-format
 msgid ""
 "\n"
@@ -279,7 +289,7 @@ msgstr ""
 "\n"
 "A conexión VPN '%s' desconectouse."
 
-#: ../src/applet.c:1156
+#: ../src/applet.c:1100
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -290,19 +300,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:1158
+#: ../src/applet.c:1102
 msgid "VPN connection has been successfully established.\n"
 msgstr "A conexión VPN estabelecida correctamente.\n"
 
-#: ../src/applet.c:1160
+#: ../src/applet.c:1104
 msgid "VPN Login Message"
 msgstr "Mensaxe de inicio de sesión VPN"
 
-#: ../src/applet.c:1166 ../src/applet.c:1174 ../src/applet.c:1224
+#: ../src/applet.c:1110 ../src/applet.c:1118 ../src/applet.c:1168
 msgid "VPN Connection Failed"
 msgstr "Fallou a conexión VPN"
 
-#: ../src/applet.c:1231
+#: ../src/applet.c:1175
 #, c-format
 msgid ""
 "\n"
@@ -316,7 +326,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1234
+#: ../src/applet.c:1178
 #, c-format
 msgid ""
 "\n"
@@ -329,170 +339,170 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1549
+#: ../src/applet.c:1493
 msgid "device not ready (firmware missing)"
 msgstr "o dispositivo non está listo (falta o firmware)"
 
-#: ../src/applet.c:1551
+#: ../src/applet.c:1495
 msgid "device not ready"
 msgstr "o dispositivo non está listo"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1561 ../src/applet-device-ethernet.c:229
+#: ../src/applet.c:1505 ../src/applet-device-ethernet.c:229
 msgid "disconnected"
 msgstr "desconectado"
 
-#: ../src/applet.c:1577
+#: ../src/applet.c:1521
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: ../src/applet.c:1591
+#: ../src/applet.c:1535
 msgid "device not managed"
 msgstr "o dispositivo non está xestionado"
 
-#: ../src/applet.c:1635
+#: ../src/applet.c:1579
 msgid "No network devices available"
 msgstr "Non hai dispositivos de rede dispoñíbeis"
 
-#: ../src/applet.c:1723
+#: ../src/applet.c:1667
 msgid "_VPN Connections"
 msgstr "Conexións _VPN"
 
-#: ../src/applet.c:1780
+#: ../src/applet.c:1724
 msgid "_Configure VPN..."
 msgstr "_Configurar VPN…"
 
-#: ../src/applet.c:1784
+#: ../src/applet.c:1728
 msgid "_Disconnect VPN"
 msgstr "_Desconectar VPN"
 
-#: ../src/applet.c:1878
+#: ../src/applet.c:1822
 msgid "NetworkManager is not running..."
 msgstr "O NetworkManager non se está executando…"
 
-#: ../src/applet.c:1883 ../src/applet.c:2735
+#: ../src/applet.c:1827 ../src/applet.c:2682
 msgid "Networking disabled"
 msgstr "Rede desactivada"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:2104
+#: ../src/applet.c:2048
 msgid "Enable _Networking"
 msgstr "Activar a _rede"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:2113
+#: ../src/applet.c:2057
 msgid "Enable _Wi-Fi"
 msgstr "Activar sen _fíos"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:2122
+#: ../src/applet.c:2066
 msgid "Enable _Mobile Broadband"
 msgstr "Activar a banda larga _móbil"
 
 #. 'Enable WiMAX Mobile Broadband' item
-#: ../src/applet.c:2131
+#: ../src/applet.c:2075
 msgid "Enable WiMA_X Mobile Broadband"
 msgstr "Activar a banda larga móbil WiMA_X"
 
 #. Toggle notifications item
-#: ../src/applet.c:2142
+#: ../src/applet.c:2086
 msgid "Enable N_otifications"
 msgstr "Activar n_otificacións"
 
 #. 'Connection Information' item
-#: ../src/applet.c:2153
+#: ../src/applet.c:2097
 msgid "Connection _Information"
 msgstr "_Información da conexión"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:2163
+#: ../src/applet.c:2107
 msgid "Edit Connections..."
 msgstr "Editar as conexións…"
 
 #. Help item
-#: ../src/applet.c:2177
+#: ../src/applet.c:2121
 msgid "_Help"
 msgstr "_Axuda"
 
 #. About item
-#: ../src/applet.c:2186
+#: ../src/applet.c:2130
 msgid "_About"
 msgstr "_Sobre"
 
-#: ../src/applet.c:2364
+#: ../src/applet.c:2308
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../src/applet.c:2365
+#: ../src/applet.c:2309
 msgid "The network connection has been disconnected."
 msgstr "A conexión de rede foi desconectada."
 
-#: ../src/applet.c:2598
+#: ../src/applet.c:2544
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Preparando a conexión de rede '%s'…"
 
-#: ../src/applet.c:2601
+#: ../src/applet.c:2547
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Requírese unha autenticación de usuario para a conexión de rede '%s'…"
 
-#: ../src/applet.c:2604 ../src/applet-device-bt.c:235
-#: ../src/applet-device-wimax.c:469 ../src/mobile-helpers.c:594
+#: ../src/applet.c:2550 ../src/applet-device-bt.c:235
+#: ../src/applet-device-wimax.c:469 ../src/mobile-helpers.c:590
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Solicitando un enderezo de rede para '%s'…"
 
-#: ../src/applet.c:2607
+#: ../src/applet.c:2553
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "A conexión de rede '%s' está activa"
 
-#: ../src/applet.c:2690
+#: ../src/applet.c:2636
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Iniciando a conexión de rede VPN '%s'…"
 
-#: ../src/applet.c:2693
+#: ../src/applet.c:2639
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Requírese unha autenticación de usuario para a conexión VPN '%s'…"
 
-#: ../src/applet.c:2696
+#: ../src/applet.c:2642
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Solicitando un enderezo VPN para '%s'…"
 
-#: ../src/applet.c:2699
+#: ../src/applet.c:2645
 #, c-format
 msgid "VPN connection '%s' active"
 msgstr "A conexión VPN '%s' está activa"
 
-#: ../src/applet.c:2740
+#: ../src/applet.c:2687
 msgid "No network connection"
 msgstr "Sen conexión de rede"
 
-#: ../src/applet.c:3441
+#: ../src/applet.c:3394
 msgid "NetworkManager Applet"
 msgstr "Miniaplicación NetworkManager"
 
-#: ../src/applet-device-bt.c:169 ../src/applet-device-cdma.c:303
+#: ../src/applet-device-bt.c:169 ../src/applet-device-cdma.c:304
 #: ../src/applet-device-ethernet.c:237 ../src/applet-device-broadband.c:772
-#: ../src/applet-device-gsm.c:359 ../src/applet-device-wifi.c:859
+#: ../src/applet-device-gsm.c:360 ../src/applet-device-wifi.c:859
 #: ../src/applet-device-wimax.c:275
 msgid "Available"
 msgstr "Dispoñíbl"
 
-#: ../src/applet-device-bt.c:195 ../src/applet-device-cdma.c:345
+#: ../src/applet-device-bt.c:195 ../src/applet-device-cdma.c:346
 #: ../src/applet-device-ethernet.c:266 ../src/applet-device-broadband.c:816
-#: ../src/applet-device-gsm.c:401 ../src/applet-device-wimax.c:419
+#: ../src/applet-device-gsm.c:402 ../src/applet-device-wimax.c:419
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Agora está conectado a '%s'."
 
-#: ../src/applet-device-bt.c:199 ../src/applet-device-cdma.c:349
+#: ../src/applet-device-bt.c:199 ../src/applet-device-cdma.c:350
 #: ../src/applet-device-ethernet.c:270 ../src/applet-device-broadband.c:820
-#: ../src/applet-device-gsm.c:405 ../src/applet-device-wifi.c:1261
+#: ../src/applet-device-gsm.c:406 ../src/applet-device-wifi.c:1261
 #: ../src/applet-device-wimax.c:423
 msgid "Connection Established"
 msgstr "Estabeleceuse a conexión"
@@ -502,38 +512,38 @@ msgid "You are now connected to the mobile broadband network."
 msgstr "Agora está conectado á rede de banda larga móbil."
 
 #: ../src/applet-device-bt.c:226 ../src/applet-device-wimax.c:460
-#: ../src/mobile-helpers.c:585
+#: ../src/mobile-helpers.c:581
 #, c-format
 msgid "Preparing mobile broadband connection '%s'..."
 msgstr "Preparando a conexión de banda larga móbil '%s'…"
 
 #: ../src/applet-device-bt.c:229 ../src/applet-device-wimax.c:463
-#: ../src/mobile-helpers.c:588
+#: ../src/mobile-helpers.c:584
 #, c-format
 msgid "Configuring mobile broadband connection '%s'..."
 msgstr "Configurando a conexión de banda larga móbil '%s'…"
 
 #: ../src/applet-device-bt.c:232 ../src/applet-device-wimax.c:466
-#: ../src/mobile-helpers.c:591
+#: ../src/mobile-helpers.c:587
 #, c-format
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr ""
 "Requírese unha autenticación de usuario para a conexión de banda larga móbil "
 "'%s'…"
 
-#: ../src/applet-device-bt.c:239 ../src/mobile-helpers.c:611
+#: ../src/applet-device-bt.c:239 ../src/mobile-helpers.c:607
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "A conexión de banda larga móbil '%s' está activa"
 
-#: ../src/applet-device-cdma.c:249 ../src/applet-device-broadband.c:718
-#: ../src/applet-device-gsm.c:305 ../src/applet-dialogs.c:424
+#: ../src/applet-device-cdma.c:250 ../src/applet-device-broadband.c:718
+#: ../src/applet-device-gsm.c:306 ../src/applet-dialogs.c:425
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Banda larga móbil (%s)"
 
-#: ../src/applet-device-cdma.c:251 ../src/applet-device-broadband.c:720
-#: ../src/applet-device-gsm.c:307
+#: ../src/applet-device-cdma.c:252 ../src/applet-device-broadband.c:720
+#: ../src/applet-device-gsm.c:308
 #: ../src/connection-editor/new-connection.c:113
 #: ../src/connection-editor/page-mobile.c:389
 #: ../src/libnm-gtk/nm-ui-utils.c:333
@@ -541,25 +551,25 @@ msgid "Mobile Broadband"
 msgstr "Banda larga móbil"
 
 #. Default connection item
-#: ../src/applet-device-cdma.c:316
+#: ../src/applet-device-cdma.c:317
 msgid "New Mobile Broadband (CDMA) connection..."
 msgstr "NovacConexión de banda larga móbil automática (CDMA)…"
 
-#: ../src/applet-device-cdma.c:350
+#: ../src/applet-device-cdma.c:351
 msgid "You are now connected to the CDMA network."
 msgstr "Agora está conectado á rede CDMA."
 
-#: ../src/applet-device-cdma.c:417 ../src/applet-device-cdma.c:423
+#: ../src/applet-device-cdma.c:418 ../src/applet-device-cdma.c:424
 msgid "CDMA network."
 msgstr "Rede CDMA."
 
-#: ../src/applet-device-cdma.c:418 ../src/applet-device-broadband.c:958
-#: ../src/applet-device-gsm.c:678
+#: ../src/applet-device-cdma.c:419 ../src/applet-device-broadband.c:958
+#: ../src/applet-device-gsm.c:679
 msgid "You are now registered on the home network."
 msgstr "Agora está rexistrado na rede de casa. "
 
-#: ../src/applet-device-cdma.c:424 ../src/applet-device-broadband.c:964
-#: ../src/applet-device-gsm.c:684
+#: ../src/applet-device-cdma.c:425 ../src/applet-device-broadband.c:964
+#: ../src/applet-device-gsm.c:685
 msgid "You are now registered on a roaming network."
 msgstr "Agora está rexistrado nunha rede de «roaming»."
 
@@ -618,16 +628,16 @@ msgstr "A conexión de rede con fíos «%s» está activa"
 msgid "DSL authentication"
 msgstr "Autenticación DSL"
 
-#: ../src/applet-device-broadband.c:164 ../src/applet-device-gsm.c:520
+#: ../src/applet-device-broadband.c:164 ../src/applet-device-gsm.c:521
 msgid "Wrong PUK code; please contact your provider."
 msgstr "Código PUK erróneo; contacte co fornecedor do seu servizo."
 
-#: ../src/applet-device-broadband.c:206 ../src/applet-device-gsm.c:497
+#: ../src/applet-device-broadband.c:206 ../src/applet-device-gsm.c:498
 msgid "Wrong PIN code; please contact your provider."
 msgstr "Código PIN erróneo; contacte co fornecedor do seu servizo."
 
 #. Start the spinner to show the progress of the unlock
-#: ../src/applet-device-broadband.c:257 ../src/applet-device-gsm.c:547
+#: ../src/applet-device-broadband.c:257 ../src/applet-device-gsm.c:548
 msgid "Sending unlock code..."
 msgstr "Enviando código de desbloqueo…"
 
@@ -645,15 +655,15 @@ msgid "Mobile Broadband network."
 msgstr "Rede de banda larga móbil."
 
 #. Default connection item
-#: ../src/applet-device-gsm.c:372
+#: ../src/applet-device-gsm.c:373
 msgid "New Mobile Broadband (GSM) connection..."
 msgstr "Nova conexión de banda larga móbil automática (GSM)…"
 
-#: ../src/applet-device-gsm.c:406
+#: ../src/applet-device-gsm.c:407
 msgid "You are now connected to the GSM network."
 msgstr "Agora está conectado á rede GSM."
 
-#: ../src/applet-device-gsm.c:677 ../src/applet-device-gsm.c:683
+#: ../src/applet-device-gsm.c:678 ../src/applet-device-gsm.c:684
 msgid "GSM network."
 msgstr "Rede GSM."
 
@@ -770,12 +780,12 @@ msgstr "a rede WiMAX está desactivada por un interruptor de hardware"
 msgid "You are now connected to the WiMAX network."
 msgstr "Agora está conectado á rede WiMAX."
 
-#: ../src/applet-device-wimax.c:478 ../src/mobile-helpers.c:606
+#: ../src/applet-device-wimax.c:478 ../src/mobile-helpers.c:602
 #, c-format
 msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
 msgstr "A conexión de banda larga móbil «%s» está activa: (%d%%%s%s)"
 
-#: ../src/applet-device-wimax.c:481 ../src/mobile-helpers.c:609
+#: ../src/applet-device-wimax.c:481 ../src/mobile-helpers.c:605
 msgid "roaming"
 msgstr "roaming"
 
@@ -794,195 +804,195 @@ msgstr "LEAP"
 msgid "Dynamic WEP"
 msgstr "WEP dinámica"
 
-#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:245
-#: ../src/applet-dialogs.c:247
+#: ../src/applet-dialogs.c:113 ../src/applet-dialogs.c:246
+#: ../src/applet-dialogs.c:248
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
-#: ../src/applet-dialogs.c:243
+#: ../src/applet-dialogs.c:244
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:251 ../src/applet-dialogs.c:260
+#: ../src/applet-dialogs.c:252 ../src/applet-dialogs.c:261
 #: ../src/libnm-gtk/nm-wifi-dialog.c:881
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Ningún"
 
-#: ../src/applet-dialogs.c:277
+#: ../src/applet-dialogs.c:278
 #, c-format
 msgid "%s (default)"
 msgstr "%s (predeterminada)"
 
-#: ../src/applet-dialogs.c:346 ../src/applet-dialogs.c:484
+#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:485
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:348 ../src/applet-dialogs.c:486
+#: ../src/applet-dialogs.c:349 ../src/applet-dialogs.c:487
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Descoñecido"
 
-#: ../src/applet-dialogs.c:361
+#: ../src/applet-dialogs.c:362
 #, c-format
 msgid "%d dB"
 msgstr "%d dB"
 
-#: ../src/applet-dialogs.c:363
+#: ../src/applet-dialogs.c:364
 msgctxt "WiMAX CINR"
 msgid "unknown"
 msgstr "descoñecido"
 
-#: ../src/applet-dialogs.c:375
+#: ../src/applet-dialogs.c:376
 msgctxt "WiMAX Base Station ID"
 msgid "unknown"
 msgstr "descoñecido"
 
-#: ../src/applet-dialogs.c:410
+#: ../src/applet-dialogs.c:411
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:413
+#: ../src/applet-dialogs.c:414
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:420
+#: ../src/applet-dialogs.c:421
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:422
+#: ../src/applet-dialogs.c:423
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
-#: ../src/applet-dialogs.c:426
+#: ../src/applet-dialogs.c:427
 #, c-format
 msgid "WiMAX (%s)"
 msgstr "WiMAX (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:432 ../src/applet-dialogs.c:791
-#: ../src/connection-editor/page-general.c:345
+#: ../src/applet-dialogs.c:433 ../src/applet-dialogs.c:792
+#: ../src/connection-editor/page-general.c:325
 msgid "General"
 msgstr "Xeral"
 
-#: ../src/applet-dialogs.c:436
+#: ../src/applet-dialogs.c:437
 msgid "Interface:"
 msgstr "Interface:"
 
-#: ../src/applet-dialogs.c:452
+#: ../src/applet-dialogs.c:453
 msgid "Hardware Address:"
 msgstr "Enderezo de hardware:"
 
 #. Driver
-#: ../src/applet-dialogs.c:460
+#: ../src/applet-dialogs.c:461
 msgid "Driver:"
 msgstr "Controlador:"
 
-#: ../src/applet-dialogs.c:489
+#: ../src/applet-dialogs.c:490
 msgid "Speed:"
 msgstr "Velocidade:"
 
-#: ../src/applet-dialogs.c:499
+#: ../src/applet-dialogs.c:500
 msgid "Security:"
 msgstr "Seguranza:"
 
-#: ../src/applet-dialogs.c:512
+#: ../src/applet-dialogs.c:513
 msgid "CINR:"
 msgstr "CINR:"
 
-#: ../src/applet-dialogs.c:525
+#: ../src/applet-dialogs.c:526
 msgid "BSID:"
 msgstr "BSID:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:542
+#: ../src/applet-dialogs.c:543
 msgid "IPv4"
 msgstr "IPv4"
 
 #. Address
-#: ../src/applet-dialogs.c:553 ../src/applet-dialogs.c:660
+#: ../src/applet-dialogs.c:554 ../src/applet-dialogs.c:661
 msgid "IP Address:"
 msgstr "Enderezo IP:"
 
-#: ../src/applet-dialogs.c:555 ../src/applet-dialogs.c:571
+#: ../src/applet-dialogs.c:556 ../src/applet-dialogs.c:572
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Descoñecido"
 
-#: ../src/applet-dialogs.c:569
+#: ../src/applet-dialogs.c:570
 msgid "Broadcast Address:"
 msgstr "Enderezo broadcast:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:578
+#: ../src/applet-dialogs.c:579
 msgid "Subnet Mask:"
 msgstr "Máscara de subrede:"
 
-#: ../src/applet-dialogs.c:580
+#: ../src/applet-dialogs.c:581
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Descoñecido"
 
-#: ../src/applet-dialogs.c:588 ../src/applet-dialogs.c:675
+#: ../src/applet-dialogs.c:589 ../src/applet-dialogs.c:676
 msgid "Default Route:"
 msgstr "Camiño predeterminado:"
 
-#: ../src/applet-dialogs.c:600
+#: ../src/applet-dialogs.c:601
 msgid "Primary DNS:"
 msgstr "DNS primario:"
 
-#: ../src/applet-dialogs.c:609
+#: ../src/applet-dialogs.c:610
 msgid "Secondary DNS:"
 msgstr "DNS secundario:"
 
-#: ../src/applet-dialogs.c:619
+#: ../src/applet-dialogs.c:620
 msgid "Ternary DNS:"
 msgstr "DNS terciario:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:634
+#: ../src/applet-dialogs.c:635
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:643
+#: ../src/applet-dialogs.c:644
 msgid "Ignored"
 msgstr "Ignorado"
 
-#: ../src/applet-dialogs.c:796
+#: ../src/applet-dialogs.c:797
 msgid "VPN Type:"
 msgstr "Tipo de VPN:"
 
-#: ../src/applet-dialogs.c:803
+#: ../src/applet-dialogs.c:804
 msgid "VPN Gateway:"
 msgstr "Pasarela do VPN:"
 
-#: ../src/applet-dialogs.c:809
+#: ../src/applet-dialogs.c:810
 msgid "VPN Username:"
 msgstr "Nome de usuario da VPN:"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:816
 msgid "VPN Banner:"
 msgstr "Mensaxe da VPN:"
 
-#: ../src/applet-dialogs.c:821
+#: ../src/applet-dialogs.c:822
 msgid "Base Connection:"
 msgstr "Conexión base:"
 
-#: ../src/applet-dialogs.c:823 ../src/libnm-gtk/nm-ui-utils.c:345
+#: ../src/applet-dialogs.c:824 ../src/libnm-gtk/nm-ui-utils.c:345
 msgid "Unknown"
 msgstr "Descoñecida"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:886
+#: ../src/applet-dialogs.c:887
 msgid "No valid active connections found!"
 msgstr "Non se atoparon conexións activas válidas!"
 
-#: ../src/applet-dialogs.c:939
+#: ../src/applet-dialogs.c:915
 msgid ""
 "Copyright © 2004-2011 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
@@ -992,44 +1002,44 @@ msgstr ""
 "Copyright © 2005-2008 Novell, Inc.\n"
 "e moitos outros contribuíntes e tradutores da comunidade"
 
-#: ../src/applet-dialogs.c:942
+#: ../src/applet-dialogs.c:918
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Miniaplicativo da área de notificación para xestionar os dispositivos de "
 "rede e as conexións."
 
-#: ../src/applet-dialogs.c:944
+#: ../src/applet-dialogs.c:920
 msgid "NetworkManager Website"
 msgstr "Sitio web do NetworkManager"
 
-#: ../src/applet-dialogs.c:959
+#: ../src/applet-dialogs.c:935
 msgid "Missing resources"
 msgstr "Faltan recursos"
 
-#: ../src/applet-dialogs.c:984
+#: ../src/applet-dialogs.c:960
 msgid "Mobile broadband network password"
 msgstr "Contrasinal de rede de banda larga móbil"
 
-#: ../src/applet-dialogs.c:993
+#: ../src/applet-dialogs.c:969
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Requírese un contrasinal para conectarse a '%s'."
 
-#: ../src/applet-dialogs.c:1012
+#: ../src/applet-dialogs.c:984
 msgid "Password:"
 msgstr "Contrasinal:"
 
-#: ../src/applet-dialogs.c:1310
+#: ../src/applet-dialogs.c:1282
 msgid "SIM PIN unlock required"
 msgstr "Requírese un código PIN de desbloqueo"
 
-#: ../src/applet-dialogs.c:1311
+#: ../src/applet-dialogs.c:1283
 msgid "SIM PIN Unlock Required"
 msgstr "Requírese un código PIN de desbloqueo"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-dialogs.c:1313
+#: ../src/applet-dialogs.c:1285
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -1039,25 +1049,25 @@ msgstr ""
 "usalo."
 
 #. Translators: PIN code entry label
-#: ../src/applet-dialogs.c:1315
+#: ../src/applet-dialogs.c:1287
 msgid "PIN code:"
 msgstr "Código PIN:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-dialogs.c:1319
+#: ../src/applet-dialogs.c:1291
 msgid "Show PIN code"
 msgstr "Mostrar o código PIN"
 
-#: ../src/applet-dialogs.c:1321
+#: ../src/applet-dialogs.c:1293
 msgid "SIM PUK unlock required"
 msgstr "Requírese un código PUK"
 
-#: ../src/applet-dialogs.c:1322
+#: ../src/applet-dialogs.c:1294
 msgid "SIM PUK Unlock Required"
 msgstr "Requírese un código PUK"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-dialogs.c:1324
+#: ../src/applet-dialogs.c:1296
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -1067,22 +1077,22 @@ msgstr ""
 "usalo."
 
 #. Translators: PUK code entry label
-#: ../src/applet-dialogs.c:1326
+#: ../src/applet-dialogs.c:1298
 msgid "PUK code:"
 msgstr "Código PUK:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-dialogs.c:1329
+#: ../src/applet-dialogs.c:1301
 msgid "New PIN code:"
 msgstr "Código PIN novo:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-dialogs.c:1331
+#: ../src/applet-dialogs.c:1303
 msgid "Re-enter new PIN code:"
 msgstr "Introducir de novo o código PIN novo:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-dialogs.c:1336
+#: ../src/applet-dialogs.c:1308
 msgid "Show PIN/PUK codes"
 msgstr "Mostrar os códigos PIN/PUK"
 
@@ -1126,10 +1136,14 @@ msgid " "
 msgstr " "
 
 #: ../src/connection-editor/ce-new-connection.ui.h:2
+msgid "Create…"
+msgstr "Crear…"
+
+#: ../src/connection-editor/ce-new-connection.ui.h:3
 msgid "Choose a Connection Type"
 msgstr "Seleccione un tipo de conexión"
 
-#: ../src/connection-editor/ce-new-connection.ui.h:3
+#: ../src/connection-editor/ce-new-connection.ui.h:4
 msgid ""
 "Select the type of connection you wish to create.\n"
 "\n"
@@ -1140,10 +1154,6 @@ msgstr ""
 "\n"
 "Se está creando unha VPN, e o tipo de conexión VPN que quere crear non "
 "aparece na lista, pode que non teña o engadido de VPN correcto instalado."
-
-#: ../src/connection-editor/ce-new-connection.ui.h:6
-msgid "Create…"
-msgstr "Crear…"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:1
 msgid "Round-robin"
@@ -1281,11 +1291,11 @@ msgstr "Idade _máxima:"
 msgid "_Aging time:"
 msgstr "Tempo de _envecellamento:"
 
-#: ../src/connection-editor/ce-page.c:72
+#: ../src/connection-editor/ce-page.c:67
 msgid "automatic"
 msgstr "automático"
 
-#: ../src/connection-editor/ce-page.c:356
+#: ../src/connection-editor/ce-page.c:348
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Produciuse un erro ao actualizar os contrasinais das conexións debido a un "
@@ -1314,6 +1324,7 @@ msgstr "Mos_trar o contrasinal"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:4
 #: ../src/connection-editor/ce-page-mobile.ui.h:11
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:95
 #: ../src/wireless-security/eap-method-leap.ui.h:2
 #: ../src/wireless-security/eap-method-simple.ui.h:2
 #: ../src/wireless-security/ws-leap.ui.h:2
@@ -1322,26 +1333,6 @@ msgid "_Password:"
 msgstr "_Contrasinal:"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
-#: ../src/connection-editor/ce-page-infiniband.ui.h:1
-#: ../src/connection-editor/ce-page-vlan.ui.h:1
-#: ../src/wireless-security/nag-user-dialog.ui.h:3
-msgid "Yes"
-msgstr "Si"
-
-#: ../src/connection-editor/ce-page-ethernet.ui.h:2
-#: ../src/connection-editor/ce-page-infiniband.ui.h:2
-#: ../src/connection-editor/ce-page-vlan.ui.h:2
-msgid "Only on activation"
-msgstr "Só na activación"
-
-#: ../src/connection-editor/ce-page-ethernet.ui.h:3
-#: ../src/connection-editor/ce-page-infiniband.ui.h:3
-#: ../src/connection-editor/ce-page-vlan.ui.h:3
-#: ../src/wireless-security/nag-user-dialog.ui.h:2
-msgid "No"
-msgstr "Non"
-
-#: ../src/connection-editor/ce-page-ethernet.ui.h:4
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
@@ -1350,67 +1341,67 @@ msgstr "Non"
 msgid "Automatic"
 msgstr "Automático"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:5
+#: ../src/connection-editor/ce-page-ethernet.ui.h:2
 msgid "Twisted Pair (TP)"
 msgstr "Par cruzado (TP)"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:6
+#: ../src/connection-editor/ce-page-ethernet.ui.h:3
 msgid "Attachment Unit Interface (AUI)"
 msgstr "Attachment Unit Interface (AUI)"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:7
+#: ../src/connection-editor/ce-page-ethernet.ui.h:4
 msgid "BNC"
 msgstr "BNC"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:8
+#: ../src/connection-editor/ce-page-ethernet.ui.h:5
 msgid "Media Independent Interface (MII)"
 msgstr "Media Independent Interface (MII)"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:9
+#: ../src/connection-editor/ce-page-ethernet.ui.h:6
 msgid "10 Mb/s"
 msgstr "10 Mb/s"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:10
+#: ../src/connection-editor/ce-page-ethernet.ui.h:7
 msgid "100 Mb/s"
 msgstr "100 Mb/s"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:11
+#: ../src/connection-editor/ce-page-ethernet.ui.h:8
 msgid "1 Gb/s"
 msgstr "1 Gb/s"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:12
+#: ../src/connection-editor/ce-page-ethernet.ui.h:9
 msgid "10 Gb/s"
 msgstr "10 Gb/s"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:13
+#: ../src/connection-editor/ce-page-ethernet.ui.h:10
 msgid "_Port:"
 msgstr "_Porto:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:14
+#: ../src/connection-editor/ce-page-ethernet.ui.h:11
 msgid "_Speed:"
 msgstr "_Velocidade:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:15
+#: ../src/connection-editor/ce-page-ethernet.ui.h:12
 msgid "Full duple_x"
 msgstr "Full dúple_x"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:16
+#: ../src/connection-editor/ce-page-ethernet.ui.h:13
 msgid "Aut_onegotiate"
 msgstr "Negociar aut_omaticamente"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:17
-#: ../src/connection-editor/ce-page-infiniband.ui.h:5
+#: ../src/connection-editor/ce-page-ethernet.ui.h:14
+#: ../src/connection-editor/ce-page-infiniband.ui.h:2
 #: ../src/connection-editor/ce-page-wifi.ui.h:8
 #: ../src/connection-editor/ce-page-wimax.ui.h:1
 msgid "_Device MAC address:"
 msgstr "Enderezo _MAC do dispositivo:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:18
+#: ../src/connection-editor/ce-page-ethernet.ui.h:15
 #: ../src/connection-editor/ce-page-wifi.ui.h:10
 msgid "C_loned MAC address:"
 msgstr "Enderezo MAC _clonado:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:19
+#: ../src/connection-editor/ce-page-ethernet.ui.h:16
 #: ../src/connection-editor/ce-page-wifi.ui.h:9
 msgid ""
 "The MAC address entered here will be used as hardware address for the "
@@ -1421,25 +1412,19 @@ msgstr ""
 "dispositivo de rede na que está activada esta conexión. Esta característica "
 "coñécese como clonado de MAC ou spoofing. Por exemplo: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:20
-#: ../src/connection-editor/ce-page-infiniband.ui.h:7
-#: ../src/connection-editor/ce-page-vlan.ui.h:7
+#: ../src/connection-editor/ce-page-ethernet.ui.h:17
+#: ../src/connection-editor/ce-page-infiniband.ui.h:4
+#: ../src/connection-editor/ce-page-vlan.ui.h:4
 #: ../src/connection-editor/ce-page-wifi.ui.h:7
 msgid "_MTU:"
 msgstr "_MTU:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:21
-#: ../src/connection-editor/ce-page-infiniband.ui.h:6
-#: ../src/connection-editor/ce-page-vlan.ui.h:8
+#: ../src/connection-editor/ce-page-ethernet.ui.h:18
+#: ../src/connection-editor/ce-page-infiniband.ui.h:3
+#: ../src/connection-editor/ce-page-vlan.ui.h:5
 #: ../src/connection-editor/ce-page-wifi.ui.h:6
 msgid "bytes"
 msgstr "bytes"
-
-#: ../src/connection-editor/ce-page-ethernet.ui.h:22
-#: ../src/connection-editor/ce-page-infiniband.ui.h:8
-#: ../src/connection-editor/ce-page-vlan.ui.h:10
-msgid "Carrier de_tect:"
-msgstr "De_tección de fornecedor:"
 
 #: ../src/connection-editor/ce-page-general.ui.h:1
 msgid "Automatically connect to _VPN when using this connection"
@@ -1457,17 +1442,17 @@ msgstr "Conectarse _automaticamente a esta rede cando estea dispoñíbel"
 msgid "Firewall _zone:"
 msgstr "_Zona da devasa:"
 
-#: ../src/connection-editor/ce-page-infiniband.ui.h:4
+#: ../src/connection-editor/ce-page-infiniband.ui.h:1
 msgid "_Transport mode:"
 msgstr "Modo de _transporte:"
 
 #. IP-over-InfiniBand "datagram mode"
-#: ../src/connection-editor/ce-page-infiniband.ui.h:10
+#: ../src/connection-editor/ce-page-infiniband.ui.h:6
 msgid "Datagram"
 msgstr "Datagrama"
 
 #. IP-over-InfiniBand "connected mode"
-#: ../src/connection-editor/ce-page-infiniband.ui.h:12
+#: ../src/connection-editor/ce-page-infiniband.ui.h:8
 msgid "Connected"
 msgstr "Conectado"
 
@@ -1700,29 +1685,29 @@ msgstr "Echo"
 msgid "Send PPP _echo packets"
 msgstr "Enviar paquetes _echo PPP"
 
-#: ../src/connection-editor/ce-page-vlan.ui.h:4
+#: ../src/connection-editor/ce-page-vlan.ui.h:1
 msgid "_Parent interface:"
 msgstr "Interface _superior:"
 
-#: ../src/connection-editor/ce-page-vlan.ui.h:5
+#: ../src/connection-editor/ce-page-vlan.ui.h:2
 msgid "VLAN interface _name:"
 msgstr "_Nome da interface VLAN:"
 
-#: ../src/connection-editor/ce-page-vlan.ui.h:6
+#: ../src/connection-editor/ce-page-vlan.ui.h:3
 msgid "_Cloned MAC address:"
 msgstr "Enderezo MAC _clonado:"
 
-#: ../src/connection-editor/ce-page-vlan.ui.h:9
+#: ../src/connection-editor/ce-page-vlan.ui.h:6
 msgid "VLAN _id:"
 msgstr "_ID VLAN:"
 
 #. In context, this means "concatenate the device name and the VLAN ID number together"
-#: ../src/connection-editor/ce-page-vlan.ui.h:12
+#: ../src/connection-editor/ce-page-vlan.ui.h:8
 msgid "Device name + number"
 msgstr "Nome do dispositivo + número"
 
 #. LEAVE "vlan" UNTRANSLATED. In context, this means "concatenate the string 'vlan' and the VLAN ID number together".
-#: ../src/connection-editor/ce-page-vlan.ui.h:14
+#: ../src/connection-editor/ce-page-vlan.ui.h:10
 msgid "\"vlan\" + number"
 msgstr "\"vlan\" + número"
 
@@ -1835,48 +1820,48 @@ msgstr ""
 "métodos de autenticación. Se fallan as conexións, tente desactivar a "
 "compatibilidade con algúns métodos."
 
-#: ../src/connection-editor/ip4-routes-dialog.c:762
-#: ../src/connection-editor/ip6-routes-dialog.c:704
-#: ../src/connection-editor/page-ip4.c:928
-#: ../src/connection-editor/page-ip6.c:894
+#: ../src/connection-editor/ip4-routes-dialog.c:749
+#: ../src/connection-editor/ip6-routes-dialog.c:691
+#: ../src/connection-editor/page-ip4.c:915
+#: ../src/connection-editor/page-ip6.c:881
 msgid "Address"
 msgstr "Enderezo"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:779
-#: ../src/connection-editor/page-ip4.c:945
+#: ../src/connection-editor/ip4-routes-dialog.c:766
+#: ../src/connection-editor/page-ip4.c:932
 msgid "Netmask"
 msgstr "Máscara de rede"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:796
-#: ../src/connection-editor/ip6-routes-dialog.c:738
-#: ../src/connection-editor/page-ip4.c:962
-#: ../src/connection-editor/page-ip6.c:928
+#: ../src/connection-editor/ip4-routes-dialog.c:783
+#: ../src/connection-editor/ip6-routes-dialog.c:725
+#: ../src/connection-editor/page-ip4.c:949
+#: ../src/connection-editor/page-ip6.c:915
 msgid "Gateway"
 msgstr "Pasarela"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:813
-#: ../src/connection-editor/ip6-routes-dialog.c:755
+#: ../src/connection-editor/ip4-routes-dialog.c:800
+#: ../src/connection-editor/ip6-routes-dialog.c:742
 msgid "Metric"
 msgstr "Métrica"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:721
-#: ../src/connection-editor/page-ip6.c:911
+#: ../src/connection-editor/ip6-routes-dialog.c:708
+#: ../src/connection-editor/page-ip6.c:898
 msgid "Prefix"
 msgstr "Prefixo"
 
 #: ../src/connection-editor/new-connection.c:101
-#: ../src/connection-editor/page-ethernet.c:272
+#: ../src/connection-editor/page-ethernet.c:242
 #: ../src/libnm-gtk/nm-ui-utils.c:323
 msgid "Ethernet"
 msgstr "Cableada"
 
 #: ../src/connection-editor/new-connection.c:107
-#: ../src/connection-editor/page-wifi.c:471 ../src/libnm-gtk/nm-ui-utils.c:325
+#: ../src/connection-editor/page-wifi.c:465 ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Wi-Fi"
 msgstr "Sen fíos"
 
 #: ../src/connection-editor/new-connection.c:119
-#: ../src/connection-editor/page-wimax.c:134
+#: ../src/connection-editor/page-wimax.c:125
 #: ../src/libnm-gtk/nm-ui-utils.c:331 ../src/mb-menu-item.c:74
 msgid "WiMAX"
 msgstr "WiMAX"
@@ -1887,25 +1872,25 @@ msgid "DSL"
 msgstr "DSL"
 
 #: ../src/connection-editor/new-connection.c:131
-#: ../src/connection-editor/page-infiniband.c:189
+#: ../src/connection-editor/page-infiniband.c:159
 #: ../src/libnm-gtk/nm-ui-utils.c:335
 msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/new-connection.c:137
-#: ../src/connection-editor/page-bond.c:419 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/page-bond.c:392 ../src/libnm-gtk/nm-ui-utils.c:337
 #: ../src/libnm-gtk/nm-ui-utils.c:559
 msgid "Bond"
 msgstr "Bond"
 
 #: ../src/connection-editor/new-connection.c:143
-#: ../src/connection-editor/page-bridge.c:211
+#: ../src/connection-editor/page-bridge.c:212
 #: ../src/libnm-gtk/nm-ui-utils.c:339 ../src/libnm-gtk/nm-ui-utils.c:561
 msgid "Bridge"
 msgstr "Bridge"
 
 #: ../src/connection-editor/new-connection.c:149
-#: ../src/connection-editor/page-vlan.c:504 ../src/libnm-gtk/nm-ui-utils.c:341
+#: ../src/connection-editor/page-vlan.c:475 ../src/libnm-gtk/nm-ui-utils.c:341
 #: ../src/libnm-gtk/nm-ui-utils.c:563
 msgid "VLAN"
 msgstr "VLAN"
@@ -1967,51 +1952,51 @@ msgstr ""
 "O editor de conexión non puido atopar algúns recursos requiridos (non se "
 "encontrou o ficheiro .ui)."
 
-#: ../src/connection-editor/nm-connection-editor.c:408
+#: ../src/connection-editor/nm-connection-editor.c:413
 msgid "_Save"
 msgstr "_Gardar"
 
-#: ../src/connection-editor/nm-connection-editor.c:409
+#: ../src/connection-editor/nm-connection-editor.c:414
 msgid "Save any changes made to this connection."
 msgstr "Gardar calquera cambio feito nesta conexión."
 
-#: ../src/connection-editor/nm-connection-editor.c:410
+#: ../src/connection-editor/nm-connection-editor.c:415
 msgid "_Save..."
 msgstr "_Gardar…"
 
-#: ../src/connection-editor/nm-connection-editor.c:411
+#: ../src/connection-editor/nm-connection-editor.c:416
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autenticarse para gardar esta conexión para todos os usuarios desta máquina."
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not create connection"
 msgstr "Non foi posíbel crear a conexión"
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not edit connection"
 msgstr "Non foi posíbel editar a conexión"
 
-#: ../src/connection-editor/nm-connection-editor.c:429
+#: ../src/connection-editor/nm-connection-editor.c:434
 msgid "Unknown error creating connection editor dialog."
 msgstr "Produciuse un erro ao crear o diálogo do editor de conexión."
 
-#: ../src/connection-editor/nm-connection-editor.c:536
-msgid "Error saving connection"
-msgstr "Produciuse un erro ao gardar a conexión"
-
-#: ../src/connection-editor/nm-connection-editor.c:537
-#, c-format
-msgid "The property '%s' / '%s' is invalid: %d"
-msgstr "A propiedade «%s» / «%s» non é válida: %d"
-
-#: ../src/connection-editor/nm-connection-editor.c:631
+#: ../src/connection-editor/nm-connection-editor.c:602
 msgid "Error initializing editor"
 msgstr "Produciuse un erro ao inicializar o editor"
 
-#: ../src/connection-editor/nm-connection-editor.c:952
+#: ../src/connection-editor/nm-connection-editor.c:923
 msgid "Connection add failed"
 msgstr "Fallou a inserción da conexión"
+
+#: ../src/connection-editor/nm-connection-editor.c:973
+msgid "Error saving connection"
+msgstr "Produciuse un erro ao gardar a conexión"
+
+#: ../src/connection-editor/nm-connection-editor.c:974
+#, c-format
+msgid "The property '%s' / '%s' is invalid: %d"
+msgstr "A propiedade «%s» / «%s» non é válida: %d"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:2
 msgid "Connection _name:"
@@ -2098,20 +2083,20 @@ msgstr "_Eliminar..."
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentíquese para eliminar a conexión seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:942
+#: ../src/connection-editor/nm-connection-list.c:933
 msgid "Error creating connection"
 msgstr "Produciuse un erro ao crear a conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:943
+#: ../src/connection-editor/nm-connection-list.c:934
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Non sei como crear as conexións «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:998
+#: ../src/connection-editor/nm-connection-list.c:989
 msgid "Error editing connection"
 msgstr "Produciuse un erro ao editar a conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:999
+#: ../src/connection-editor/nm-connection-list.c:990
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Non foi posíbel atopar unha conexión co UUID «%s»"
@@ -2124,24 +2109,24 @@ msgstr "Seguridade 802.1x"
 msgid "Could not load 802.1x Security user interface."
 msgstr "Non foi posíbel cargar a interface de usuario de seguranza 802.1x."
 
-#: ../src/connection-editor/page-8021x-security.c:141
+#: ../src/connection-editor/page-8021x-security.c:137
 msgid "Use 802.1_X security for this connection"
 msgstr "Usar a seguridade 802.1_X para esta conexión"
 
-#: ../src/connection-editor/page-bond.c:422
+#: ../src/connection-editor/page-bond.c:395
 msgid "Could not load bond user interface."
 msgstr "Non foi posíbel cargar a interface de usuario de bond."
 
-#: ../src/connection-editor/page-bond.c:561
+#: ../src/connection-editor/page-bond.c:534
 #, c-format
 msgid "Bond connection %d"
 msgstr "Conexión Bond %d"
 
-#: ../src/connection-editor/page-bridge.c:214
+#: ../src/connection-editor/page-bridge.c:215
 msgid "Could not load bridge user interface."
 msgstr "Non foi posíbel cargar a interface de usuario de bridge."
 
-#: ../src/connection-editor/page-bridge.c:309
+#: ../src/connection-editor/page-bridge.c:310
 #, c-format
 msgid "Bridge connection %d"
 msgstr "Conexión bridge %d"
@@ -2166,10 +2151,10 @@ msgstr "Non foi posíbel cargar a interface de usuario de DSL."
 msgid "DSL connection %d"
 msgstr "Conexión DSL %d"
 
-#: ../src/connection-editor/page-ethernet.c:95
-#: ../src/connection-editor/page-infiniband.c:79
-#: ../src/connection-editor/page-wifi.c:113
-#: ../src/connection-editor/page-wimax.c:70
+#: ../src/connection-editor/page-ethernet.c:81
+#: ../src/connection-editor/page-infiniband.c:65
+#: ../src/connection-editor/page-wifi.c:95
+#: ../src/connection-editor/page-wimax.c:61
 msgid ""
 "This option locks this connection to the network device specified by its "
 "permanent MAC address entered here.  Example: 00:11:22:33:44:55"
@@ -2177,22 +2162,22 @@ msgstr ""
 "Esta opción bloquea esta conexión ao dispositivo de rede especificado polo "
 "enderezo MAC introducido aquí. Por exemplo: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-ethernet.c:274
+#: ../src/connection-editor/page-ethernet.c:244
 msgid "Could not load ethernet user interface."
 msgstr "Non foi posíbel cargar a interface de usuario cableada."
 
-#: ../src/connection-editor/page-ethernet.c:435
+#: ../src/connection-editor/page-ethernet.c:387
 #, c-format
 msgid "Ethernet connection %d"
 msgstr "Conexión con fíos %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:59
+#: ../src/connection-editor/page-general.c:55
 #: ../src/libnm-gtk/nm-mobile-providers.c:808
 msgid "Default"
 msgstr "Predeterminado"
 
-#: ../src/connection-editor/page-general.c:60
+#: ../src/connection-editor/page-general.c:56
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
@@ -2202,19 +2187,19 @@ msgstr ""
 "normal, seleccionándoa resulta no uso da zona por omisión estabelecida na "
 "devasa. Só usábel se firewalld está activo."
 
-#: ../src/connection-editor/page-general.c:61
+#: ../src/connection-editor/page-general.c:57
 msgid "FirewallD is not running."
 msgstr "FirewallD non se está executando."
 
-#: ../src/connection-editor/page-general.c:348
+#: ../src/connection-editor/page-general.c:328
 msgid "Could not load General user interface."
 msgstr "Non foi posíbel cargar a interface de usuario Xeral."
 
-#: ../src/connection-editor/page-infiniband.c:192
+#: ../src/connection-editor/page-infiniband.c:162
 msgid "Could not load InfiniBand user interface."
 msgstr "Non foi posíbel cargar a interface de usuario InfiniBand"
 
-#: ../src/connection-editor/page-infiniband.c:302
+#: ../src/connection-editor/page-infiniband.c:254
 #, c-format
 msgid "InfiniBand connection %d"
 msgstr "Conexión InfiniBand %d"
@@ -2276,16 +2261,16 @@ msgstr "Servidores _DNS adicionais:"
 msgid "Additional s_earch domains:"
 msgstr "Dominios de _busca adicionais:"
 
-#: ../src/connection-editor/page-ip4.c:860
+#: ../src/connection-editor/page-ip4.c:847
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Editando os camiños IPv4 para %s"
 
-#: ../src/connection-editor/page-ip4.c:1011
+#: ../src/connection-editor/page-ip4.c:998
 msgid "IPv4 Settings"
 msgstr "Configuración IPv4"
 
-#: ../src/connection-editor/page-ip4.c:1013
+#: ../src/connection-editor/page-ip4.c:1000
 msgid "Could not load IPv4 user interface."
 msgstr "Non foi posíbel cargar a inferface de usuario IPv4."
 
@@ -2302,16 +2287,16 @@ msgstr "Ignorar"
 msgid "Automatic, DHCP only"
 msgstr "Automático , só DHCP"
 
-#: ../src/connection-editor/page-ip6.c:826
+#: ../src/connection-editor/page-ip6.c:813
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Editando os camiños IPv6 para %s"
 
-#: ../src/connection-editor/page-ip6.c:975
+#: ../src/connection-editor/page-ip6.c:962
 msgid "IPv6 Settings"
 msgstr "Configuración IPv6"
 
-#: ../src/connection-editor/page-ip6.c:977
+#: ../src/connection-editor/page-ip6.c:964
 msgid "Could not load IPv6 user interface."
 msgstr "Non foi posíbel cargar a interface de usuario IPv6."
 
@@ -2333,7 +2318,7 @@ msgstr "Tipo de conexión de banda larga móbil non permitido."
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Seleccione o tipo de provedor de banda larga móbil"
 
-#: ../src/connection-editor/page-mobile.c:693
+#: ../src/connection-editor/page-mobile.c:685
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -2341,76 +2326,76 @@ msgstr ""
 "Seleccione a tecnoloxía que emprega o seu provedor de banda larga móbil. Se "
 "non está seguro, pregúntelle ao seu provedor."
 
-#: ../src/connection-editor/page-mobile.c:698
+#: ../src/connection-editor/page-mobile.c:690
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "O meu provedor emprega unha tecnoloxía baseada en _GSM (p.ex. GPRS, EDGE, "
 "UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:705
+#: ../src/connection-editor/page-mobile.c:697
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr ""
 "O meu provedor emprega unha tecnoloxía baseada en C_DMA (p.ex. RTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:715 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:707 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:270
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:718 ../src/mb-menu-item.c:58
+#: ../src/connection-editor/page-mobile.c:710 ../src/mb-menu-item.c:58
 #: ../src/mobile-helpers.c:268
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/connection-editor/page-ppp.c:134
+#: ../src/connection-editor/page-ppp.c:137
 msgid "EAP"
 msgstr "EAP"
 
-#: ../src/connection-editor/page-ppp.c:135
+#: ../src/connection-editor/page-ppp.c:138
 #: ../src/wireless-security/eap-method-ttls.c:230
 msgid "PAP"
 msgstr "PAP"
 
-#: ../src/connection-editor/page-ppp.c:136
+#: ../src/connection-editor/page-ppp.c:139
 #: ../src/wireless-security/eap-method-ttls.c:280
 msgid "CHAP"
 msgstr "CHAP"
 
-#: ../src/connection-editor/page-ppp.c:137
+#: ../src/connection-editor/page-ppp.c:140
 #: ../src/wireless-security/eap-method-fast.c:277
 #: ../src/wireless-security/eap-method-peap.c:246
 #: ../src/wireless-security/eap-method-ttls.c:263
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
-#: ../src/connection-editor/page-ppp.c:138
+#: ../src/connection-editor/page-ppp.c:141
 #: ../src/wireless-security/eap-method-ttls.c:247
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
 #. Translators: "none" refers to authentication methods
-#: ../src/connection-editor/page-ppp.c:141
+#: ../src/connection-editor/page-ppp.c:144
 msgid "none"
 msgstr "ningunha"
 
-#: ../src/connection-editor/page-ppp.c:201
+#: ../src/connection-editor/page-ppp.c:204
 #, c-format
 msgid "Editing PPP authentication methods for %s"
 msgstr "Editando os métodos de autenticación PPP para %s"
 
-#: ../src/connection-editor/page-ppp.c:284
+#: ../src/connection-editor/page-ppp.c:287
 msgid "PPP Settings"
 msgstr "Configuración de PPP"
 
-#: ../src/connection-editor/page-ppp.c:286
+#: ../src/connection-editor/page-ppp.c:289
 msgid "Could not load PPP user interface."
 msgstr "Non foi posíbel cargar a interface de usuario PPP."
 
-#: ../src/connection-editor/page-vlan.c:506
+#: ../src/connection-editor/page-vlan.c:477
 msgid "Could not load vlan user interface."
 msgstr "Non foi posíbel cargar a inferface de usuario de vlan."
 
-#: ../src/connection-editor/page-vlan.c:719
+#: ../src/connection-editor/page-vlan.c:673
 #, c-format
 msgid "VLAN connection %d"
 msgstr "Conexión VLAN %d"
@@ -2454,7 +2439,7 @@ msgstr ""
 "tipo de conexión VPN que quere crear non aparece na lista, pode que non teña "
 "o engadido de VPN correcto instalado."
 
-#: ../src/connection-editor/page-wifi.c:98
+#: ../src/connection-editor/page-wifi.c:85
 msgid ""
 "This option locks this connection to the Wi-Fi access point (AP) specified "
 "by the BSSID entered here.  Example: 00:11:22:33:44:55"
@@ -2462,23 +2447,23 @@ msgstr ""
 "Esta opción bloquea esta conexión ao punto de acceso sen fíos (AP) "
 "especificado polo BSSID introducido aquí. Por exemplo: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-wifi.c:190
-#: ../src/connection-editor/page-wifi.c:194
-#: ../src/connection-editor/page-wifi.c:215
+#: ../src/connection-editor/page-wifi.c:172
+#: ../src/connection-editor/page-wifi.c:176
+#: ../src/connection-editor/page-wifi.c:197
 #, c-format
 msgid "default"
 msgstr "predeterminado"
 
-#: ../src/connection-editor/page-wifi.c:219
+#: ../src/connection-editor/page-wifi.c:201
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wifi.c:473
+#: ../src/connection-editor/page-wifi.c:467
 msgid "Could not load Wi-Fi user interface."
 msgstr "Non foi posíbel cargar a interface de usuario sen fíos."
 
-#: ../src/connection-editor/page-wifi.c:650
+#: ../src/connection-editor/page-wifi.c:645
 #, c-format
 msgid "Wi-Fi connection %d"
 msgstr "Conexión sen fíos %d"
@@ -2527,11 +2512,11 @@ msgstr "Seguranza sen fíos"
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Non foi posíbel cargar a interface de usuario de seguridade sen fíos."
 
-#: ../src/connection-editor/page-wimax.c:137
+#: ../src/connection-editor/page-wimax.c:128
 msgid "Could not load WiMAX user interface."
 msgstr "Non foi posíbel cargar a interface de usuario WiMAX."
 
-#: ../src/connection-editor/page-wimax.c:233
+#: ../src/connection-editor/page-wimax.c:224
 #, c-format
 msgid "WiMAX connection %d"
 msgstr "Conexión WiMAX %d"
@@ -2614,63 +2599,63 @@ msgstr ""
 "Non é posíbel a configuración de Bluetooth (produciuse un erro ao buscar o "
 "NetworkManager: (%s) %s)."
 
-#: ../src/gnome-bluetooth/bt-widget.c:445
+#: ../src/gnome-bluetooth/bt-widget.c:441
 msgid "Use your mobile phone as a network device (PAN/NAP)"
 msgstr "Usar o seu teléfono móbil como un dispositivo de rede (PAN/NAP)"
 
-#: ../src/gnome-bluetooth/bt-widget.c:454
+#: ../src/gnome-bluetooth/bt-widget.c:450
 msgid "Access the Internet using your mobile phone (DUN)"
 msgstr "Acceder a Internet usando o seu teléfono móbil (DUN)"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:336
+#: ../src/gnome-bluetooth/nma-bt-device.c:324
 #, c-format
 msgid "Error: %s"
 msgstr "Erro: %s"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:443
+#: ../src/gnome-bluetooth/nma-bt-device.c:431
 #, c-format
 msgid "Failed to create DUN connection: %s"
 msgstr "Produciuse un erro ao crear a conexión DUN: %s"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:445
-#: ../src/gnome-bluetooth/nma-bt-device.c:959
+#: ../src/gnome-bluetooth/nma-bt-device.c:433
+#: ../src/gnome-bluetooth/nma-bt-device.c:947
 msgid "Your phone is now ready to use!"
 msgstr "O seu teléfono está listo para usarse"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:468
+#: ../src/gnome-bluetooth/nma-bt-device.c:456
 msgid "Mobile wizard was canceled"
 msgstr "Cancelouse o asistente móbil"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:477
+#: ../src/gnome-bluetooth/nma-bt-device.c:465
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "Tipo de dispositivo de teléfono descoñecido (non é GSM nin CDMA)"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:513
+#: ../src/gnome-bluetooth/nma-bt-device.c:501
 msgid "unknown modem type."
 msgstr "tipo de módem descoñecido."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:733
-#: ../src/gnome-bluetooth/nma-bt-device.c:739
+#: ../src/gnome-bluetooth/nma-bt-device.c:721
+#: ../src/gnome-bluetooth/nma-bt-device.c:727
 msgid "failed to connect to the phone."
 msgstr "produciuse un erro ao conectar co teléfono."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:770
+#: ../src/gnome-bluetooth/nma-bt-device.c:758
 msgid "unexpectedly disconnected from the phone."
 msgstr "o teléfono desconectouse de forma inesperada."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:780
+#: ../src/gnome-bluetooth/nma-bt-device.c:768
 msgid "timed out detecting phone details."
 msgstr "expirou o tempo ao detectar os detalles do teléfono."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:791
+#: ../src/gnome-bluetooth/nma-bt-device.c:779
 msgid "Detecting phone configuration..."
 msgstr "Detectando a configuración do teléfono…"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:823
+#: ../src/gnome-bluetooth/nma-bt-device.c:811
 msgid "error getting bus connection"
 msgstr "Produciuse un erro ao obter a conexión do bus"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:920
+#: ../src/gnome-bluetooth/nma-bt-device.c:908
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -2678,23 +2663,23 @@ msgstr ""
 "O adaptador de Bluetooth predeterminado debe estar activado antes de "
 "configurar unha conexión de rede de marcado telefónico."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:957
+#: ../src/gnome-bluetooth/nma-bt-device.c:945
 #, c-format
 msgid "Failed to create PAN connection: %s"
 msgstr "Produciuse un erro ao crear unha conexión PAN: %s"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:978
+#: ../src/gnome-bluetooth/nma-bt-device.c:966
 #, c-format
 msgid "%s Network"
 msgstr "Rede %s"
 
 #: ../src/gsm-unlock.ui.h:1
-msgid "Automatically unlock this device"
-msgstr "Bloquear automaticamente este dispositivo"
-
-#: ../src/gsm-unlock.ui.h:2
 msgid "_Unlock"
 msgstr "Desbloq_uear"
+
+#: ../src/gsm-unlock.ui.h:2
+msgid "Automatically unlock this device"
+msgstr "Bloquear automaticamente este dispositivo"
 
 #: ../src/info.ui.h:1
 msgid "Connection Information"
@@ -2704,7 +2689,7 @@ msgstr "Información de conexión"
 msgid "Active Network Connections"
 msgstr "Conexións de rede activas"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:208
+#: ../src/libnm-gtk/nm-mobile-wizard.c:204
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
 msgstr ""
@@ -2712,21 +2697,21 @@ msgstr ""
 "preferenzas:"
 
 #. Device
-#: ../src/libnm-gtk/nm-mobile-wizard.c:215
+#: ../src/libnm-gtk/nm-mobile-wizard.c:211
 msgid "Your Device:"
 msgstr "O seu dispositivo:"
 
 #. Provider
-#: ../src/libnm-gtk/nm-mobile-wizard.c:226
+#: ../src/libnm-gtk/nm-mobile-wizard.c:222
 msgid "Your Provider:"
 msgstr "O seu provedor:"
 
 #. Plan and APN
-#: ../src/libnm-gtk/nm-mobile-wizard.c:237
+#: ../src/libnm-gtk/nm-mobile-wizard.c:233
 msgid "Your Plan:"
 msgstr "O seu plan:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:262
+#: ../src/libnm-gtk/nm-mobile-wizard.c:254
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
 "settings you selected.  If the connection fails or you cannot access network "
@@ -2740,23 +2725,23 @@ msgstr ""
 "preferenzas de conexión da banda larga móbil, escolla «Conexións de rede» "
 "desde o menú Sistema >> Preferenzas."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:274
+#: ../src/libnm-gtk/nm-mobile-wizard.c:266
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Confirme as preferenzas da conexión de banda larga móbil"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:338
+#: ../src/libnm-gtk/nm-mobile-wizard.c:330
 msgid "Unlisted"
 msgstr "Sen listar"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:493
+#: ../src/libnm-gtk/nm-mobile-wizard.c:481
 msgid "_Select your plan:"
 msgstr "_Seleccione o seu plan:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:517
+#: ../src/libnm-gtk/nm-mobile-wizard.c:505
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "Seleccione o seu plan _APN (Access Point Name):"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:541
+#: ../src/libnm-gtk/nm-mobile-wizard.c:525
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
@@ -2768,67 +2753,67 @@ msgstr ""
 "\n"
 "Se non está seguro do seu plan pregúntelle ao seu provedor do seu plan APN."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:548
+#: ../src/libnm-gtk/nm-mobile-wizard.c:532
 msgid "Choose your Billing Plan"
 msgstr "Seleccione o seu plan de facturación"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:597
+#: ../src/libnm-gtk/nm-mobile-wizard.c:581
 msgid "My plan is not listed..."
 msgstr "O meu plan non está listado…"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:754
+#: ../src/libnm-gtk/nm-mobile-wizard.c:734
 msgid "Select your provider from a _list:"
 msgstr "Seleccione un provedor desde a _lista:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:767
+#: ../src/libnm-gtk/nm-mobile-wizard.c:747
 msgid "Provider"
 msgstr "Provedor"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:792
+#: ../src/libnm-gtk/nm-mobile-wizard.c:772
 msgid "I can't find my provider and I wish to enter it _manually:"
 msgstr "Non puiden atopar o meu provedor e desexo inserilo _manualmente:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:803
+#: ../src/libnm-gtk/nm-mobile-wizard.c:785
 msgid "Provider:"
 msgstr "Provedor:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:827
+#: ../src/libnm-gtk/nm-mobile-wizard.c:802
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "O meu provedor emprega a tecnoloxía GSM (GPRS, EDGE, UMTS, HSPA)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:833
+#: ../src/libnm-gtk/nm-mobile-wizard.c:804
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "O meu provedor emprega a tecnoloxía CDMA (1xRTT, EVDO)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:844
+#: ../src/libnm-gtk/nm-mobile-wizard.c:815
 msgid "Choose your Provider"
 msgstr "Seleccione o seu provedor"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1100
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
 msgid "Country or Region List:"
 msgstr "Lista de paises ou estados:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1113
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1080
 msgid "Country or region"
 msgstr "País ou estado"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1123
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1090
 msgid "My country is not listed"
 msgstr "O meu país non está na lista"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1173
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1140
 msgid "Choose your Provider's Country or Region"
 msgstr "Seleccione o país ou estado do seu provedor"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1227
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1194
 msgid "Installed GSM device"
 msgstr "Dispositivo GSM instalado"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1230
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1197
 msgid "Installed CDMA device"
 msgstr "Dispositivo CDMA instalado"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1402
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1365
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
@@ -2836,37 +2821,37 @@ msgstr ""
 "Este asistente axúdao a configurar a súa conexión de banda larga móbil a "
 "unha rede celular (3G) de forma sinxela."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1407
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1370
 msgid "You will need the following information:"
 msgstr "Vostede precisará a seguinte información:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1422
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1381
 msgid "Your broadband provider's name"
 msgstr "O nome do seu provedor de banda larga"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1428
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1387
 msgid "Your broadband billing plan name"
 msgstr "O nome do plan de facturación de banda larga"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1434
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1393
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr ""
 "(nalgúns casos) O seu APN do plan de facturación de banda larga (Access "
 "Point Name)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1461
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1420
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Crear unha conexión para es_te dispositivo de banda larga móbil:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1476
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1435
 msgid "Any device"
 msgstr "Calquera dispositivo"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1489
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1448
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Configurar unha conexión de banda larga móbil"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1662
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1621
 msgid "New Mobile Broadband Connection"
 msgstr "Nova conexión de banda larga móbil"
 
@@ -2897,7 +2882,7 @@ msgstr "USB"
 #. Translators: the first %s is a bus name (eg, "USB") or
 #. * product name, the second is a device type (eg,
 #. * "Ethernet"). You can change this to something like
-#. * "%$2s (%$1s)" if there's no grammatical way to combine
+#. * "%2$s (%1$s)" if there's no grammatical way to combine
 #. * the strings otherwise.
 #.
 #: ../src/libnm-gtk/nm-ui-utils.c:483 ../src/libnm-gtk/nm-ui-utils.c:503
@@ -2957,6 +2942,14 @@ msgid ""
 msgstr ""
 "Escriba o nome e os detalles de seguranza da rede sen fíos á que se quere "
 "conectarse."
+
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
+msgid "_Secondary Password:"
+msgstr "Contrasinal _secundario:"
+
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:236
+msgid "Sh_ow passwords"
+msgstr "M_ostrar os contrasinais"
 
 #: ../src/libnm-gtk/wifi.ui.h:2
 msgid "Wi-Fi _security:"
@@ -3110,8 +3103,8 @@ msgid "Choose CA Certificate"
 msgstr "Seleccionar un certificado de CA"
 
 #: ../src/wireless-security/eap-method.c:645
-msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12)"
-msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12)"
+msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
+msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
 #: ../src/wireless-security/eap-method.c:648
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
@@ -3268,28 +3261,28 @@ msgid "Au_thentication:"
 msgstr "_Autenticación:"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:1
-msgid "Open System"
-msgstr "Sistema aberto"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:2
-msgid "Shared Key"
-msgstr "Chave compartida"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:3
 msgid "1 (Default)"
 msgstr "1 (Predeterminada)"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:4
+#: ../src/wireless-security/ws-wep-key.ui.h:2
 msgid "2"
 msgstr "2"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:5
+#: ../src/wireless-security/ws-wep-key.ui.h:3
 msgid "3"
 msgstr "3"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:6
+#: ../src/wireless-security/ws-wep-key.ui.h:4
 msgid "4"
 msgstr "4"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:5
+msgid "Open System"
+msgstr "Sistema aberto"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:6
+msgid "Shared Key"
+msgstr "Chave compartida"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:7
 msgid "_Key:"
@@ -3302,6 +3295,18 @@ msgstr "Mo_strar a chave"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "WEP inde_x:"
 msgstr "Índic_e WEP:"
+
+#~ msgid "Yes"
+#~ msgstr "Si"
+
+#~ msgid "Only on activation"
+#~ msgstr "Só na activación"
+
+#~ msgid "No"
+#~ msgstr "Non"
+
+#~ msgid "Carrier de_tect:"
+#~ msgstr "De_tección de fornecedor:"
 
 #~ msgid "Connect _automatically"
 #~ msgstr "Conectar _automaticamente"
