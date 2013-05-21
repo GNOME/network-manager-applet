@@ -57,6 +57,12 @@ nm_applet_SOURCES = \
 	applet-device-bt.c \
 	applet-device-wimax.h \
 	applet-device-wimax.c \
+	applet-device-vlan.h \
+	applet-device-vlan.c \
+	applet-device-bond.h \
+	applet-device-bond.c \
+	applet-device-bridge.h \
+	applet-device-bridge.c \
 	fallback-icon.h \
 	shell-watcher.h \
 	shell-watcher.c

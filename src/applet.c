@@ -45,10 +45,14 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include <NetworkManagerVPN.h>
-#include <nm-device-ethernet.h>
-#include <nm-device-wifi.h>
-#include <nm-device-modem.h>
+#include <nm-device-bond.h>
+#include <nm-device-bridge.h>
 #include <nm-device-bt.h>
+#include <nm-device-ethernet.h>
+#include <nm-device-infiniband.h>
+#include <nm-device-modem.h>
+#include <nm-device-vlan.h>
+#include <nm-device-wifi.h>
 #include <nm-device-wimax.h>
 #include <nm-utils.h>
 #include <nm-connection.h>
@@ -67,11 +71,14 @@
 #include <libnotify/notify.h>
 
 #include "applet.h"
-#include "applet-device-ethernet.h"
-#include "applet-device-wifi.h"
-#include "applet-device-gsm.h"
-#include "applet-device-cdma.h"
+#include "applet-device-bond.h"
+#include "applet-device-bridge.h"
 #include "applet-device-bt.h"
+#include "applet-device-cdma.h"
+#include "applet-device-ethernet.h"
+#include "applet-device-gsm.h"
+#include "applet-device-vlan.h"
+#include "applet-device-wifi.h"
 #include "applet-device-wimax.h"
 #include "applet-dialogs.h"
 #include "nm-wifi-dialog.h"
@@ -258,6 +265,12 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->bt_class;
 	else if (NM_IS_DEVICE_WIMAX (device))
 		return applet->wimax_class;
+	else if (NM_IS_DEVICE_VLAN (device))
+		return applet->vlan_class;
+	else if (NM_IS_DEVICE_BOND (device))
+		return applet->bond_class;
+	else if (NM_IS_DEVICE_BRIDGE (device))
+		return applet->bridge_class;
 	else
 		g_debug ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
 	return NULL;
@@ -292,6 +305,12 @@ get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
 		return applet->cdma_class;
 	else if (!strcmp (ctype, NM_SETTING_BLUETOOTH_SETTING_NAME))
 		return applet->bt_class;
+	else if (!strcmp (ctype, NM_SETTING_BOND_SETTING_NAME))
+		return applet->bond_class;
+	else if (!strcmp (ctype, NM_SETTING_BRIDGE_SETTING_NAME))
+		return applet->bridge_class;
+	else if (!strcmp (ctype, NM_SETTING_VLAN_SETTING_NAME))
+		return applet->vlan_class;
 	else
 		g_warning ("%s: unhandled connection type '%s'", __func__, ctype);
 	return NULL;
@@ -630,8 +649,6 @@ applet_menu_item_activate_helper (NMDevice *device,
 	AppletItemActivateInfo *info;
 	NMADeviceClass *dclass;
 
-	g_return_if_fail (NM_IS_DEVICE (device));
-
 	if (connection) {
 		/* If the menu item had an associated connection already, just tell
 		 * NM to activate that connection.
@@ -644,6 +661,8 @@ applet_menu_item_activate_helper (NMDevice *device,
 			                           applet);
 		return;
 	}
+
+	g_return_if_fail (NM_IS_DEVICE (device));
 
 	/* If no connection was given, ask the device class to create a new
 	 * default connection for this device type.  This could be a wizard,
@@ -659,10 +678,8 @@ applet_menu_item_activate_helper (NMDevice *device,
 	g_assert (dclass);
 	if (!dclass->new_auto_connection (device, dclass_data,
 	                                  applet_menu_item_activate_helper_new_connection,
-	                                  info)) {
-		g_warning ("Couldn't create default connection.");
+	                                  info))
 		applet_item_activate_info_destroy (info);
-	}
 }
 
 void
@@ -1340,49 +1357,17 @@ static void nma_menu_add_text_item (GtkWidget *menu, char *text)
 }
 
 static gint
-sort_devices (gconstpointer a, gconstpointer b)
+sort_devices_by_description (gconstpointer a, gconstpointer b)
 {
 	NMDevice *aa = NM_DEVICE (a);
 	NMDevice *bb = NM_DEVICE (b);
-	GType aa_type = G_OBJECT_TYPE (G_OBJECT (aa));
-	GType bb_type = G_OBJECT_TYPE (G_OBJECT (bb));
+	const char *aa_desc;
+	const char *bb_desc;
 
-	if (aa_type == bb_type) {
-		const char *aa_desc = NULL;
-		const char *bb_desc = NULL;
+	aa_desc = nma_utils_get_device_description (aa);
+	bb_desc = nma_utils_get_device_description (bb);
 
-		aa_desc = nma_utils_get_device_description (aa);
-		bb_desc = nma_utils_get_device_description (bb);
-
-		return g_strcmp0 (aa_desc, bb_desc);
-	}
-
-	/* Ethernet always first */
-	if (aa_type == NM_TYPE_DEVICE_ETHERNET)
-		return -1;
-	if (bb_type == NM_TYPE_DEVICE_ETHERNET)
-		return 1;
-
-	/* Modems next */
-	if (aa_type == NM_TYPE_DEVICE_MODEM)
-		return -1;
-	if (bb_type == NM_TYPE_DEVICE_MODEM)
-		return 1;
-
-	/* Bluetooth next */
-	if (aa_type == NM_TYPE_DEVICE_BT)
-		return -1;
-	if (bb_type == NM_TYPE_DEVICE_BT)
-		return 1;
-
-	/* WiMAX next */
-	if (aa_type == NM_TYPE_DEVICE_WIMAX)
-		return -1;
-	if (bb_type == NM_TYPE_DEVICE_WIMAX)
-		return 1;
-
-	/* WiFi last because it has many menu items */
-	return 1;
+	return g_strcmp0 (aa_desc, bb_desc);
 }
 
 static gboolean
@@ -1430,6 +1415,47 @@ applet_find_active_connection_for_device (NMDevice *device,
 
 		tmp = nm_remote_settings_get_connection_by_path (applet->settings, connection_path);
 		if (tmp) {
+			connection = NM_CONNECTION (tmp);
+			if (out_active)
+				*out_active = active;
+			break;
+		}
+	}
+
+	return connection;
+}
+
+static NMConnection *
+applet_find_active_connection_for_virtual_device (const char *iface,
+                                                  NMApplet *applet,
+                                                  NMActiveConnection **out_active)
+{
+	const GPtrArray *active_connections;
+	NMConnection *connection = NULL;
+	int i;
+
+	g_return_val_if_fail (iface != NULL, NULL);
+	g_return_val_if_fail (NM_IS_APPLET (applet), NULL);
+	if (out_active)
+		g_return_val_if_fail (*out_active == NULL, NULL);
+
+	active_connections = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; active_connections && (i < active_connections->len); i++) {
+		NMRemoteConnection *tmp;
+		NMActiveConnection *active;
+		const char *connection_path;
+
+		active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_connections, i));
+		connection_path = nm_active_connection_get_connection (active);
+
+		if (!connection_path)
+			continue;
+
+		tmp = nm_remote_settings_get_connection_by_path (applet->settings, connection_path);
+		if (!tmp)
+			continue;
+
+		if (!g_strcmp0 (nm_connection_get_virtual_iface_name (NM_CONNECTION (tmp)), iface)) {
 			connection = NM_CONNECTION (tmp);
 			if (out_active)
 				*out_active = active;
@@ -1539,75 +1565,33 @@ nma_menu_device_get_menu_item (NMDevice *device,
 	return item;
 }
 
-static guint32
-nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
+static int
+add_device_items (NMDeviceType type, const GPtrArray *all_devices, GSList *all_connections,
+                  GtkWidget *menu, NMApplet *applet)
 {
-	const GPtrArray *temp = NULL;
-	GSList *devices = NULL, *iter = NULL;
-	gint n_wifi_devices = 0;
-	gint n_usable_wifi_devices = 0;
-	gint n_ethernet_devices = 0;
-	gint n_mb_devices = 0;
-	gint n_bt_devices = 0;
-	int i;
+	GSList *devices = NULL, *iter;
+	int i, n_devices = 0;
 
-	temp = nm_client_get_devices (applet->nm_client);
-	for (i = 0; temp && (i < temp->len); i++)
-		devices = g_slist_insert_sorted (devices, g_ptr_array_index (temp, i), sort_devices);
+	for (i = 0; all_devices && (i < all_devices->len); i++) {
+		NMDevice *device = all_devices->pdata[i];
+
+		if (nm_device_get_device_type (device) == type) {
+			n_devices++;
+			devices = g_slist_prepend (devices, device);
+		}
+	}
+	devices = g_slist_sort (devices, sort_devices_by_description);
 
 	for (iter = devices; iter; iter = iter->next) {
-		NMDevice *device = NM_DEVICE (iter->data);
-
-		/* Ignore unsupported devices */
-		if (!(nm_device_get_capabilities (device) & NM_DEVICE_CAP_NM_SUPPORTED))
-			continue;
-
-		if (NM_IS_DEVICE_WIFI (device)) {
-			n_wifi_devices++;
-			if (   nm_client_wireless_get_enabled (applet->nm_client)
-			    && (nm_device_get_state (device) >= NM_DEVICE_STATE_DISCONNECTED))
-				n_usable_wifi_devices++;
-		} else if (NM_IS_DEVICE_ETHERNET (device))
-			n_ethernet_devices++;
-		else if (NM_IS_DEVICE_MODEM (device))
-			n_mb_devices++;
-		else if (NM_IS_DEVICE_BT (device))
-			n_bt_devices++;
-	}
-
-	if (!n_ethernet_devices && !n_wifi_devices && !n_mb_devices && !n_bt_devices) {
-		nma_menu_add_text_item (menu, _("No network devices available"));
-		goto out;
-	}
-
-	/* Add all devices in our device list to the menu */
-	for (iter = devices; iter; iter = iter->next) {
-		NMDevice *device = NM_DEVICE (iter->data);
-		gint n_devices;
+		NMDevice *device = iter->data;
 		NMADeviceClass *dclass;
 		NMConnection *active;
-		GSList *all, *connections;
+		GSList *connections;
 
-		/* Ignore unsupported devices */
-		if (!(nm_device_get_capabilities (device) & NM_DEVICE_CAP_NM_SUPPORTED))
-			continue;
 		dclass = get_device_class (device, applet);
-		if (!dclass)
-			continue;
+		g_assert (dclass != NULL);
 
-		if (NM_IS_DEVICE_WIFI (device))
-			n_devices = n_wifi_devices;
-		else if (NM_IS_DEVICE_ETHERNET (device))
-			n_devices = n_ethernet_devices;
-		else if (NM_IS_DEVICE_MODEM (device))
-			n_devices = n_mb_devices;
-		else
-			n_devices = 0;
-
-		all = applet_get_all_connections (applet);
-		connections = nm_device_filter_connections (device, all);
-		g_slist_free (all);
-
+		connections = nm_device_filter_connections (device, all_connections);
 		active = applet_find_active_connection_for_device (device, applet, NULL);
 
 		dclass->add_menu_item (device, n_devices > 1, connections, active, menu, applet);
@@ -1615,13 +1599,120 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 		g_slist_free (connections);
 	}
 
- out:
 	g_slist_free (devices);
+	return n_devices;
+}
 
-	/* Return # of usable wifi devices here for correct enable/disable state
-	 * of things like Enable Wi-Fi, "Connect to other..." and such.
-	 */
-	return n_usable_wifi_devices;
+static gint
+sort_devices_by_interface (gconstpointer a, gconstpointer b)
+{
+	NMConnection *aa = NM_CONNECTION (a);
+	NMConnection *bb = NM_CONNECTION (b);
+
+	return strcmp (nm_connection_get_virtual_iface_name (aa),
+	               nm_connection_get_virtual_iface_name (bb));
+}
+
+static int
+add_virtual_items (const char *type, const GPtrArray *all_devices,
+                   GSList *all_connections, GtkWidget *menu, NMApplet *applet)
+{
+	GSList *iter, *connections = NULL;
+	int n_devices = 0;
+
+	for (iter = all_connections; iter; iter = iter->next) {
+		NMConnection *connection = iter->data;
+
+		if (!nm_connection_get_virtual_iface_name (connection))
+			continue;
+
+		if (nm_connection_is_type (connection, type))
+			connections = g_slist_prepend (connections, connection);
+	}
+
+	if (!connections)
+		return 0;
+
+	connections = g_slist_sort (connections, sort_devices_by_interface);
+	/* Count the number of unique interface names */
+	iter = connections;
+	while (iter) {
+		NMConnection *connection = iter->data;
+
+		n_devices++;
+		while (iter && sort_devices_by_interface (connection, iter->data) == 0)
+			iter = iter->next;
+	}
+
+
+	iter = connections;
+	while (iter) {
+		NMConnection *connection = iter->data;
+		NMDevice *device = NULL;
+		const char *iface = nm_connection_get_virtual_iface_name (connection);
+		GSList *iface_connections = NULL;
+		NMADeviceClass *dclass;
+		NMConnection *active;
+		int i;
+
+		for (i = 0; all_devices && (i < all_devices->len); i++) {
+			NMDevice *candidate = all_devices->pdata[i];
+
+			if (!strcmp (nm_device_get_iface (candidate), iface)) {
+				device = candidate;
+				break;
+			}
+		}
+
+		while (iter && sort_devices_by_interface (connection, iter->data) == 0) {
+			iface_connections = g_slist_prepend (iface_connections, connection);
+			iter = iter->next;
+		}
+
+		active = applet_find_active_connection_for_virtual_device (iface, applet, NULL);
+
+		dclass = get_device_class_from_connection (connection, applet);
+		dclass->add_menu_item (device, n_devices > 1, iface_connections, active, menu, applet);
+
+		g_slist_free (iface_connections);
+	}
+
+	g_slist_free (connections);
+	return n_devices;
+}
+
+static void
+nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
+{
+	const GPtrArray *all_devices;
+	GSList *all_connections;
+	gint n_items;
+
+	all_connections = applet_get_all_connections (applet);
+	all_devices = nm_client_get_devices (applet->nm_client);
+
+	n_items = 0;
+	n_items += add_virtual_items (NM_SETTING_BRIDGE_SETTING_NAME,
+	                              all_devices, all_connections, menu, applet);
+	n_items += add_virtual_items (NM_SETTING_BOND_SETTING_NAME,
+	                              all_devices, all_connections, menu, applet);
+	n_items += add_device_items  (NM_DEVICE_TYPE_ETHERNET,
+	                              all_devices, all_connections, menu, applet);
+	n_items += add_device_items  (NM_DEVICE_TYPE_INFINIBAND,
+	                              all_devices, all_connections, menu, applet);
+	n_items += add_virtual_items (NM_SETTING_VLAN_SETTING_NAME,
+	                              all_devices, all_connections, menu, applet);
+	n_items += add_device_items  (NM_DEVICE_TYPE_WIFI,
+	                              all_devices, all_connections, menu, applet);
+	n_items += add_device_items  (NM_DEVICE_TYPE_MODEM,
+	                              all_devices, all_connections, menu, applet);
+	n_items += add_device_items  (NM_DEVICE_TYPE_BT,
+	                              all_devices, all_connections, menu, applet);
+
+	g_slist_free (all_connections);
+
+	if (!n_items)
+		nma_menu_add_text_item (menu, _("No network devices available"));
 }
 
 static int
@@ -1813,6 +1904,30 @@ nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	                        !state);
 }
 
+static gboolean
+has_usable_wifi (NMApplet *applet)
+{
+	const GPtrArray *devices;
+	int i;
+
+	if (!nm_client_wireless_get_enabled (applet->nm_client))
+		return FALSE;
+
+	devices = nm_client_get_devices (applet->nm_client);
+	if (!devices)
+		return FALSE;
+
+	for (i = 0; i < devices->len; i++) {
+		NMDevice *device = devices->pdata[i];
+
+		if (   NM_IS_DEVICE_WIFI (device)
+		    && (nm_device_get_state (device) >= NM_DEVICE_STATE_DISCONNECTED))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
 /*
  * nma_menu_show_cb
  *
@@ -1821,8 +1936,6 @@ nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
  */
 static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 {
-	guint32 n_wifi;
-
 	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
 
@@ -1838,11 +1951,10 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 		return;
 	}
 
-	n_wifi = nma_menu_add_devices (menu, applet);
-
+	nma_menu_add_devices (menu, applet);
 	nma_menu_add_vpn_submenu (menu, applet);
 
-	if (n_wifi > 0 && nm_client_wireless_get_enabled (applet->nm_client)) {
+	if (has_usable_wifi (applet)) {
 		/* Add the "Hidden Wi-Fi network..." entry */
 		nma_menu_add_separator_item (menu);
 		nma_menu_add_hidden_network_item (menu, applet);
@@ -2015,7 +2127,7 @@ ce_child_setup (gpointer user_data G_GNUC_UNUSED)
 }
 
 static void
-nma_edit_connections_cb (GtkMenuItem *mi, NMApplet *applet)
+nma_edit_connections_cb (void)
 {
 	char *argv[2];
 	GError *error = NULL;
@@ -2206,7 +2318,7 @@ applet_add_connection_items (NMDevice *device,
 
 		info = g_slice_new0 (AppletMenuItemInfo);
 		info->applet = applet;
-		info->device = g_object_ref (device);
+		info->device = device ? g_object_ref (device) : NULL;
 		info->connection = g_object_ref (connection);
 
 		g_signal_connect_data (item, "activate",
@@ -3598,6 +3710,15 @@ constructor (GType type,
 	applet->wimax_class = applet_device_wimax_get_class (applet);
 	g_assert (applet->wimax_class);
 
+	applet->vlan_class = applet_device_vlan_get_class (applet);
+	g_assert (applet->vlan_class);
+
+	applet->bond_class = applet_device_bond_get_class (applet);
+	g_assert (applet->bond_class);
+
+	applet->bridge_class = applet_device_bridge_get_class (applet);
+	g_assert (applet->bridge_class);
+
 	foo_client_setup (applet);
 
 #if WITH_MODEM_MANAGER_1
@@ -3640,6 +3761,9 @@ static void finalize (GObject *object)
 #endif
 	g_slice_free (NMADeviceClass, applet->bt_class);
 	g_slice_free (NMADeviceClass, applet->wimax_class);
+	g_slice_free (NMADeviceClass, applet->vlan_class);
+	g_slice_free (NMADeviceClass, applet->bond_class);
+	g_slice_free (NMADeviceClass, applet->bridge_class);
 
 	if (applet->update_icon_id)
 		g_source_remove (applet->update_icon_id);
