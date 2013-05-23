@@ -46,6 +46,10 @@
 #include "page-ip6.h"
 #include "ip6-routes-dialog.h"
 
+#ifndef NM_SETTING_IP6_CONFIG_METHOD_DISABLED
+#define NM_SETTING_IP6_CONFIG_METHOD_DISABLED "disabled"
+#endif
+
 G_DEFINE_TYPE (CEPageIP6, ce_page_ip6, CE_TYPE_PAGE)
 
 #define CE_PAGE_IP6_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_IP6, CEPageIP6Private))
@@ -100,7 +104,7 @@ typedef struct {
 #define METHOD_COL_NUM  1
 #define METHOD_COL_ENABLED 2
 
-#define IP6_METHOD_IGNORE          0
+#define IP6_METHOD_DISABLED        0
 #define IP6_METHOD_AUTO            1
 #define IP6_METHOD_AUTO_ADDRESSES  2
 #define IP6_METHOD_AUTO_DHCP_ONLY  3
@@ -149,13 +153,6 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 								   "sensitive", METHOD_COL_ENABLED);
 
 	priv->method_store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_UINT, G_TYPE_BOOLEAN);
-
-	gtk_list_store_append (priv->method_store, &iter);
-	gtk_list_store_set (priv->method_store, &iter,
-	                    METHOD_COL_NAME, _("Ignore"),
-	                    METHOD_COL_NUM, IP6_METHOD_IGNORE,
-						METHOD_COL_ENABLED, TRUE,
-	                    -1);
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
@@ -213,6 +210,13 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 							METHOD_COL_ENABLED, FALSE,
 		                    -1);
 	}
+
+	gtk_list_store_append (priv->method_store, &iter);
+	gtk_list_store_set (priv->method_store, &iter,
+	                    METHOD_COL_NAME, _("Disabled"),
+	                    METHOD_COL_NUM, IP6_METHOD_DISABLED,
+	                    METHOD_COL_ENABLED, TRUE,
+	                    -1);
 
 	gtk_combo_box_set_model (priv->method, GTK_TREE_MODEL (priv->method_store));
 
@@ -273,8 +277,8 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	case IP6_METHOD_MANUAL:
 		addr_enabled = dns_enabled = routes_enabled = TRUE;
 		break;
-	case IP6_METHOD_IGNORE:
-		ip6_required_enabled = FALSE;
+	case IP6_METHOD_DISABLED:
+		addr_enabled = dns_enabled = routes_enabled = ip6_required_enabled = FALSE;
 		break;
 	default:
 		break;
@@ -353,10 +357,10 @@ populate_ui (CEPageIP6 *self)
 	str_method = nm_setting_ip6_config_get_method (setting);
 	if (str_method) {
 		if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_IGNORE))
-			method = IP6_METHOD_IGNORE;
-		if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_AUTO))
+			method = IP6_METHOD_DISABLED;
+		else if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_AUTO))
 			method = IP6_METHOD_AUTO;
-		if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_DHCP))
+		else if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_DHCP))
 			method = IP6_METHOD_AUTO_DHCP_ONLY;
 		else if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_LINK_LOCAL))
 			method = IP6_METHOD_LINK_LOCAL;
@@ -364,6 +368,8 @@ populate_ui (CEPageIP6 *self)
 			method = IP6_METHOD_MANUAL;
 		else if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_SHARED))
 			method = IP6_METHOD_SHARED;
+		else if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_DISABLED))
+			method = IP6_METHOD_DISABLED;
 	}
 
 	if (method == IP6_METHOD_AUTO && nm_setting_ip6_config_get_ignore_auto_dns (setting))
@@ -1013,8 +1019,8 @@ ui_to_setting (CEPageIP6 *self)
 	}
 
 	switch (int_method) {
-	case IP6_METHOD_IGNORE:
-		method = NM_SETTING_IP6_CONFIG_METHOD_IGNORE;
+	case IP6_METHOD_DISABLED:
+		method = NM_SETTING_IP6_CONFIG_METHOD_DISABLED;
 		break;
 	case IP6_METHOD_LINK_LOCAL:
 		method = NM_SETTING_IP6_CONFIG_METHOD_LINK_LOCAL;
