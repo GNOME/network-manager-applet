@@ -1604,7 +1604,7 @@ add_device_items (NMDeviceType type, const GPtrArray *all_devices, GSList *all_c
 }
 
 static gint
-sort_devices_by_interface (gconstpointer a, gconstpointer b)
+sort_connections_by_ifname (gconstpointer a, gconstpointer b)
 {
 	NMConnection *aa = NM_CONNECTION (a);
 	NMConnection *bb = NM_CONNECTION (b);
@@ -1633,14 +1633,18 @@ add_virtual_items (const char *type, const GPtrArray *all_devices,
 	if (!connections)
 		return 0;
 
-	connections = g_slist_sort (connections, sort_devices_by_interface);
+	connections = g_slist_sort (connections, sort_connections_by_ifname);
 	/* Count the number of unique interface names */
 	iter = connections;
 	while (iter) {
 		NMConnection *connection = iter->data;
 
 		n_devices++;
-		while (iter && sort_devices_by_interface (connection, iter->data) == 0)
+
+		/* Skip ahead until we find a connection with a different ifname
+		 * (or reach the end of the list).
+		 */
+		while (iter && sort_connections_by_ifname (connection, iter->data) == 0)
 			iter = iter->next;
 	}
 
@@ -1664,7 +1668,7 @@ add_virtual_items (const char *type, const GPtrArray *all_devices,
 			}
 		}
 
-		while (iter && sort_devices_by_interface (connection, iter->data) == 0) {
+		while (iter && sort_connections_by_ifname (connection, iter->data) == 0) {
 			iface_connections = g_slist_prepend (iface_connections, connection);
 			iter = iter->next;
 		}
