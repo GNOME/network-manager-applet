@@ -35,42 +35,37 @@ struct _EAPMethodSimple {
 	EAPMethodSimpleType type;
 	gboolean is_editor;
 	gboolean new_connection;
+
+	GtkEntry *username_entry;
+	GtkEntry *password_entry;
+	GtkToggleButton *always_ask;
+	GtkToggleButton *show_password;
 };
 
 static void
-show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
+show_toggled_cb (GtkToggleButton *button, EAPMethodSimple *method)
 {
-	GtkWidget *widget;
 	gboolean visible;
 
-	widget = GTK_WIDGET (gtk_builder_get_object (method->builder, "eap_simple_password_entry"));
-	g_assert (widget);
-
-	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
-	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
+	visible = gtk_toggle_button_get_active (button);
+	gtk_entry_set_visibility (method->password_entry, visible);
 }
 
 static gboolean
 validate (EAPMethod *parent)
 {
-	GtkWidget *widget;
+	EAPMethodSimple *method = (EAPMethodSimple *)parent;
 	const char *text;
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_username_entry"));
-	g_assert (widget);
-	text = gtk_entry_get_text (GTK_ENTRY (widget));
+	text = gtk_entry_get_text (method->username_entry);
 	if (!text || !strlen (text))
 		return FALSE;
 
 	/* Check if the password should always be requested */
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_password_always_ask"));
-	g_assert (widget);
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
+	if (gtk_toggle_button_get_active (method->always_ask))
 		return TRUE;
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
-	g_assert (widget);
-	text = gtk_entry_get_text (GTK_ENTRY (widget));
+	text = gtk_entry_get_text (method->password_entry);
 	if (!text || !strlen (text))
 		return FALSE;
 
@@ -96,7 +91,6 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	EAPMethodSimple *method = (EAPMethodSimple *) parent;
 	NMSetting8021x *s_8021x;
-	GtkWidget *widget;
 	gboolean not_saved = FALSE;
 	const char *eap = NULL;
 	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
@@ -139,14 +133,10 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	else
 		nm_setting_802_1x_add_eap_method (s_8021x, eap);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_username_entry"));
-	g_assert (widget);
-	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
+	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (method->username_entry), NULL);
 
 	/* Save the password always ask setting */
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_password_always_ask"));
-	g_assert (widget);
-	not_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+	not_saved = gtk_toggle_button_get_active (method->always_ask);
 
 	nm_setting_get_secret_flags (NM_SETTING (s_8021x), NM_SETTING_802_1X_PASSWORD, &flags, NULL);
 	flags &= ~(NM_SETTING_SECRET_FLAG_NOT_SAVED);
@@ -160,9 +150,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	 * user checked "Always Ask".
 	 */
 	if (method->is_editor == FALSE || not_saved == FALSE) {
-		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
-		g_assert (widget);
-		g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
+		g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (method->password_entry), NULL);
 	}
 
 	/* Default to agent-owned secrets for new connections */
@@ -185,28 +173,19 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 }
 
 static void
-password_always_ask_changed (GtkButton *button, EAPMethodSimple *method)
+password_always_ask_changed (GtkToggleButton *button, EAPMethodSimple *method)
 {
-	EAPMethod *parent = (EAPMethod *) method;
-	GtkWidget *password_entry;
-	GtkWidget *show_checkbox;
 	gboolean always_ask;
 
-	always_ask = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
-
-	password_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
-	g_assert (password_entry);
-
-	show_checkbox = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapsimple"));
-	g_assert (show_checkbox);
+	always_ask = gtk_toggle_button_get_active (button);
 
 	if (always_ask) {
-		gtk_entry_set_text (GTK_ENTRY (password_entry), "");
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (show_checkbox), FALSE);
+		gtk_entry_set_text (method->password_entry, "");
+		gtk_toggle_button_set_active (method->show_password, FALSE);
 	}
 
-	gtk_widget_set_sensitive (password_entry, !always_ask);
-	gtk_widget_set_sensitive (show_checkbox, !always_ask);
+	gtk_widget_set_sensitive (GTK_WIDGET (method->password_entry), !always_ask);
+	gtk_widget_set_sensitive (GTK_WIDGET (method->show_password), !always_ask);
 }
 
 EAPMethodSimple *
@@ -243,13 +222,14 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_username_entry"));
 	g_assert (widget);
+	method->username_entry = GTK_ENTRY (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
 	if (connection) {
 		s_8021x = nm_connection_get_setting_802_1x (connection);
 		if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
-			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
+			gtk_entry_set_text (method->username_entry, nm_setting_802_1x_get_identity (s_8021x));
 	}
 
 	if (secrets_only)
@@ -257,12 +237,14 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
 	g_assert (widget);
+	method->password_entry = GTK_ENTRY (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_password_always_ask"));
 	g_assert (widget);
+	method->always_ask = GTK_TOGGLE_BUTTON (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
@@ -288,7 +270,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 		not_saved = (flags & NM_SETTING_SECRET_FLAG_NOT_SAVED);
 	}
 
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), not_saved);
+	gtk_toggle_button_set_active (method->always_ask, not_saved);
 
 	/* Fill secrets if there's a static (ie, not OTP) password */
 	if (connection && (not_saved == FALSE))
@@ -296,6 +278,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapsimple"));
 	g_assert (widget);
+	method->show_password = GTK_TOGGLE_BUTTON (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  method);

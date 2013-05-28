@@ -32,36 +32,32 @@ struct _EAPMethodLEAP {
 	EAPMethod parent;
 
 	gboolean new_connection;
+
+	GtkEntry *username_entry;
+	GtkEntry *password_entry;
+	GtkToggleButton *show_password;
 };
 
 static void
-show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
+show_toggled_cb (GtkToggleButton *button, EAPMethodLEAP *method)
 {
-	GtkWidget *widget;
 	gboolean visible;
 
-	widget = GTK_WIDGET (gtk_builder_get_object (method->builder, "eap_leap_password_entry"));
-	g_assert (widget);
-
-	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
-	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
+	visible = gtk_toggle_button_get_active (button);
+	gtk_entry_set_visibility (method->password_entry, visible);
 }
 
 static gboolean
 validate (EAPMethod *parent)
 {
-	GtkWidget *widget;
+	EAPMethodLEAP *method = (EAPMethodLEAP *)parent;
 	const char *text;
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_username_entry"));
-	g_assert (widget);
-	text = gtk_entry_get_text (GTK_ENTRY (widget));
+	text = gtk_entry_get_text (method->username_entry);
 	if (!text || !strlen (text))
 		return FALSE;
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
-	g_assert (widget);
-	text = gtk_entry_get_text (GTK_ENTRY (widget));
+	text = gtk_entry_get_text (method->password_entry);
 	if (!text || !strlen (text))
 		return FALSE;
 
@@ -87,20 +83,14 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	EAPMethodLEAP *method = (EAPMethodLEAP *) parent;
 	NMSetting8021x *s_8021x;
-	GtkWidget *widget;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
 
 	nm_setting_802_1x_add_eap_method (s_8021x, "leap");
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_username_entry"));
-	g_assert (widget);
-	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
-	g_assert (widget);
-	g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
+	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (method->username_entry), NULL);
+	g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (method->password_entry), NULL);
 
 	/* Default to agent-owned secrets for new connections */
 	if (method->new_connection) {
@@ -148,6 +138,7 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_username_entry"));
 	g_assert (widget);
+	method->username_entry = GTK_ENTRY (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
@@ -156,7 +147,7 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 
 		s_8021x = nm_connection_get_setting_802_1x (connection);
 		if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
-			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
+			gtk_entry_set_text (method->username_entry, nm_setting_802_1x_get_identity (s_8021x));
 	}
 
 	if (secrets_only)
@@ -164,6 +155,7 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
 	g_assert (widget);
+	method->password_entry = GTK_ENTRY (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
@@ -174,6 +166,7 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapleap"));
 	g_assert (widget);
+	method->show_password = GTK_TOGGLE_BUTTON (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  parent);
