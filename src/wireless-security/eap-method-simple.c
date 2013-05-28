@@ -32,6 +32,8 @@
 struct _EAPMethodSimple {
 	EAPMethod parent;
 
+	WirelessSecurity *ws_parent;
+
 	EAPMethodSimpleType type;
 	gboolean is_editor;
 	gboolean new_connection;
@@ -188,6 +190,33 @@ password_always_ask_changed (GtkToggleButton *button, EAPMethodSimple *method)
 	gtk_widget_set_sensitive (GTK_WIDGET (method->show_password), !always_ask);
 }
 
+static void
+widgets_realized (GtkWidget *widget, EAPMethodSimple *method)
+{
+	if (method->ws_parent->username)
+		gtk_entry_set_text (method->username_entry, method->ws_parent->username);
+	else
+		gtk_entry_set_text (method->username_entry, "");
+
+	if (method->ws_parent->password && !method->ws_parent->always_ask)
+		gtk_entry_set_text (method->password_entry, method->ws_parent->password);
+	else
+		gtk_entry_set_text (method->password_entry, "");
+
+	gtk_toggle_button_set_active (method->always_ask, method->ws_parent->always_ask);
+	gtk_toggle_button_set_active (method->show_password, method->ws_parent->show_password);
+}
+
+static void
+widgets_unrealized (GtkWidget *widget, EAPMethodSimple *method)
+{
+	wireless_security_set_userpass (method->ws_parent,
+	                                gtk_entry_get_text (method->username_entry),
+	                                gtk_entry_get_text (method->password_entry),
+	                                gtk_toggle_button_get_active (method->always_ask),
+	                                gtk_toggle_button_get_active (method->show_password));
+}
+
 EAPMethodSimple *
 eap_method_simple_new (WirelessSecurity *ws_parent,
                        NMConnection *connection,
@@ -219,6 +248,16 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	method->type = type;
 	method->is_editor = is_editor;
 	method->new_connection = secrets_only ? FALSE : TRUE;
+	method->ws_parent = ws_parent;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_notebook"));
+	g_assert (widget);
+	g_signal_connect (G_OBJECT (widget), "realize",
+	                  (GCallback) widgets_realized,
+	                  method);
+	g_signal_connect (G_OBJECT (widget), "unrealize",
+	                  (GCallback) widgets_unrealized,
+	                  method);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_username_entry"));
 	g_assert (widget);

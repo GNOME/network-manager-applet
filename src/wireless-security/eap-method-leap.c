@@ -31,6 +31,8 @@
 struct _EAPMethodLEAP {
 	EAPMethod parent;
 
+	WirelessSecurity *ws_parent;
+
 	gboolean new_connection;
 
 	GtkEntry *username_entry;
@@ -111,6 +113,32 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 	                          (HelperSecretFunc) nm_setting_802_1x_get_password);
 }
 
+static void
+widgets_realized (GtkWidget *widget, EAPMethodLEAP *method)
+{
+	if (method->ws_parent->username)
+		gtk_entry_set_text (method->username_entry, method->ws_parent->username);
+	else
+		gtk_entry_set_text (method->username_entry, "");
+
+	if (method->ws_parent->password && !method->ws_parent->always_ask)
+		gtk_entry_set_text (method->password_entry, method->ws_parent->password);
+	else
+		gtk_entry_set_text (method->password_entry, "");
+
+	gtk_toggle_button_set_active (method->show_password, method->ws_parent->show_password);
+}
+
+static void
+widgets_unrealized (GtkWidget *widget, EAPMethodLEAP *method)
+{
+	wireless_security_set_userpass (method->ws_parent,
+	                                gtk_entry_get_text (method->username_entry),
+	                                gtk_entry_get_text (method->password_entry),
+	                                (gboolean) -1,
+	                                gtk_toggle_button_get_active (method->show_password));
+}
+
 EAPMethodLEAP *
 eap_method_leap_new (WirelessSecurity *ws_parent,
                      NMConnection *connection,
@@ -135,6 +163,16 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 
 	method = (EAPMethodLEAP *) parent;
 	method->new_connection = secrets_only ? FALSE : TRUE;
+	method->ws_parent = ws_parent;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_notebook"));
+	g_assert (widget);
+	g_signal_connect (G_OBJECT (widget), "realize",
+	                  (GCallback) widgets_realized,
+	                  method);
+	g_signal_connect (G_OBJECT (widget), "unrealize",
+	                  (GCallback) widgets_unrealized,
+	                  method);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_username_entry"));
 	g_assert (widget);

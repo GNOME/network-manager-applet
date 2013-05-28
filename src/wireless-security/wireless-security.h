@@ -49,6 +49,9 @@ struct _WirelessSecurity {
 	const char *default_field;
 	gboolean adhoc_compatible;
 
+	char *username, *password;
+	gboolean always_ask, show_password;
+
 	WSAddToSizeGroupFunc add_to_size_group;
 	WSFillConnectionFunc fill_connection;
 	WSUpdateSecretsFunc update_secrets;
@@ -80,6 +83,12 @@ void wireless_security_update_secrets (WirelessSecurity *sec,
 GtkWidget * wireless_security_nag_user (WirelessSecurity *sec);
 
 gboolean wireless_security_adhoc_compatible (WirelessSecurity *sec);
+
+void wireless_security_set_userpass (WirelessSecurity *sec,
+                                     const char *user,
+                                     const char *password,
+                                     gboolean always_ask,
+                                     gboolean show_password);
 
 WirelessSecurity *wireless_security_ref (WirelessSecurity *sec);
 

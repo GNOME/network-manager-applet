@@ -140,6 +140,12 @@ wireless_security_unref (WirelessSecurity *sec)
 		if (sec->destroy)
 			sec->destroy (sec);
 
+		g_free (sec->username);
+		if (sec->password) {
+			memset (sec->password, 0, strlen (sec->password));
+			g_free (sec->password);
+		}
+
 		if (sec->builder)
 			g_object_unref (sec->builder);
 		if (sec->ui_widget)
@@ -218,6 +224,27 @@ wireless_security_adhoc_compatible (WirelessSecurity *sec)
 	g_return_val_if_fail (sec != NULL, FALSE);
 
 	return sec->adhoc_compatible;
+}
+
+void
+wireless_security_set_userpass (WirelessSecurity *sec,
+                                const char *user,
+                                const char *password,
+                                gboolean always_ask,
+                                gboolean show_password)
+{
+	g_free (sec->username);
+	sec->username = g_strdup (user);
+
+	if (sec->password) {
+		memset (sec->password, 0, strlen (sec->password));
+		g_free (sec->password);
+	}
+	sec->password = g_strdup (password);
+
+	if (always_ask != (gboolean) -1)
+		sec->always_ask = always_ask;
+	sec->show_password = show_password;
 }
 
 void
