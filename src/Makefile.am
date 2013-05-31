@@ -63,6 +63,8 @@ nm_applet_SOURCES = \
 	applet-device-bond.c \
 	applet-device-bridge.h \
 	applet-device-bridge.c \
+	applet-device-infiniband.h \
+	applet-device-infiniband.c \
 	fallback-icon.h \
 	shell-watcher.h \
 	shell-watcher.c

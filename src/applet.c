@@ -76,6 +76,7 @@
 #include "applet-device-bt.h"
 #include "applet-device-cdma.h"
 #include "applet-device-ethernet.h"
+#include "applet-device-infiniband.h"
 #include "applet-device-gsm.h"
 #include "applet-device-vlan.h"
 #include "applet-device-wifi.h"
@@ -271,6 +272,8 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->bond_class;
 	else if (NM_IS_DEVICE_BRIDGE (device))
 		return applet->bridge_class;
+	else if (NM_IS_DEVICE_INFINIBAND (device))
+		return applet->infiniband_class;
 	else
 		g_debug ("%s: Unknown device type '%s'", __func__, G_OBJECT_TYPE_NAME (device));
 	return NULL;
@@ -3723,6 +3726,9 @@ constructor (GType type,
 	applet->bridge_class = applet_device_bridge_get_class (applet);
 	g_assert (applet->bridge_class);
 
+	applet->infiniband_class = applet_device_infiniband_get_class (applet);
+	g_assert (applet->infiniband_class);
+
 	foo_client_setup (applet);
 
 #if WITH_MODEM_MANAGER_1
@@ -3768,6 +3774,7 @@ static void finalize (GObject *object)
 	g_slice_free (NMADeviceClass, applet->vlan_class);
 	g_slice_free (NMADeviceClass, applet->bond_class);
 	g_slice_free (NMADeviceClass, applet->bridge_class);
+	g_slice_free (NMADeviceClass, applet->infiniband_class);
 
 	if (applet->update_icon_id)
 		g_source_remove (applet->update_icon_id);
