@@ -111,20 +111,20 @@ bridge_get_icon (NMDevice *device,
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing VLAN connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Preparing bridge connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring VLAN connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Configuring bridge connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("User authentication required for VLAN connection '%s'..."), id);
+		*tip = g_strdup_printf (_("User authentication required for bridge connection '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_IP_CONFIG:
 		*tip = g_strdup_printf (_("Requesting address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		pixbuf = nma_icon_check_and_load ("nm-device-wired", &applet->ethernet_icon, applet);
-		*tip = g_strdup_printf (_("VLAN connection '%s' active"), id);
+		*tip = g_strdup_printf (_("Bridge connection '%s' active"), id);
 		break;
 	default:
 		break;
