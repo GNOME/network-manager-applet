@@ -928,6 +928,7 @@ void
 nm_connection_list_create (NMConnectionList *self, GType ctype, const char *detail)
 {
 	ConnectionTypeData *types;
+	char *error_msg;
 	int i;
 
 	g_return_if_fail (NM_IS_CONNECTION_LIST (self));
@@ -938,9 +939,13 @@ nm_connection_list_create (NMConnectionList *self, GType ctype, const char *deta
 			break;
 	}
 	if (!types[i].name) {
-		nm_connection_editor_error (NULL,
-		                            _("Error creating connection"),
-		                            _("Don't know how to create '%s' connections"), g_type_name (ctype));
+		if (ctype == NM_TYPE_SETTING_VPN)
+			error_msg = g_strdup (_("No VPN plugins are installed."));
+		else
+			error_msg = g_strdup_printf (_("Don't know how to create '%s' connections"), g_type_name (ctype));
+
+		nm_connection_editor_error (NULL, _("Error creating connection"), error_msg);
+		g_free (error_msg);
 	} else {
 		new_connection_of_type (GTK_WINDOW (self->dialog),
 		                        detail,
