@@ -375,7 +375,7 @@ new_connection_result (NMConnection *connection,
 	parent_window = ncd->parent_window;
 	g_slice_free (NewConnectionData, ncd);
 
-	if (!connection) {
+	if (!connection && !canceled) {
 		nm_connection_editor_error (parent_window,
 		                            _("Could not create new connection"),
 		                            "%s",
