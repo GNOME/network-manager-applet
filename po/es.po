@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: networkmanager-applet.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2013-05-31 19:24+0000\n"
-"PO-Revision-Date: 2013-06-03 11:21+0200\n"
+"POT-Creation-Date: 2013-06-05 08:28+0000\n"
+"PO-Revision-Date: 2013-06-05 18:22+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -515,19 +515,16 @@ msgstr "Ahora está conectado a la red redundada."
 
 #: ../src/applet-device-bond.c:114
 #, c-format
-#| msgid "Preparing VLAN connection '%s'..."
 msgid "Preparing bond connection '%s'..."
 msgstr "Preparando la conexión redundada «%s»…"
 
 #: ../src/applet-device-bond.c:117
 #, c-format
-#| msgid "Configuring VLAN connection '%s'..."
 msgid "Configuring bond connection '%s'..."
 msgstr "Configurando la conexión redundada «%s»…"
 
 #: ../src/applet-device-bond.c:120
 #, c-format
-#| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for bond connection '%s'..."
 msgstr "Se necesita autenticación de usuario para la conexión redundada «%s»…"
 
@@ -539,7 +536,6 @@ msgstr "Solicitando una dirección para «%s»…"
 
 #: ../src/applet-device-bond.c:127
 #, c-format
-#| msgid "VPN connection '%s' active"
 msgid "Bond connection '%s' active"
 msgstr "Conexión redundada «%s» activa"
 
@@ -549,25 +545,21 @@ msgstr "Ahora está conectado a la red puente."
 
 #: ../src/applet-device-bridge.c:114
 #, c-format
-#| msgid "Preparing VLAN connection '%s'..."
 msgid "Preparing bridge connection '%s'..."
 msgstr "Preparando la conexión puente «%s»…"
 
 #: ../src/applet-device-bridge.c:117
 #, c-format
-#| msgid "Configuring VLAN connection '%s'..."
 msgid "Configuring bridge connection '%s'..."
 msgstr "Configurando la conexión puente «%s»…"
 
 #: ../src/applet-device-bridge.c:120
 #, c-format
-#| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for bridge connection '%s'..."
 msgstr "Se necesita autenticación de usuario para la conexión puente «%s»…"
 
 #: ../src/applet-device-bridge.c:127
 #, c-format
-#| msgid "VPN connection '%s' active"
 msgid "Bridge connection '%s' active"
 msgstr "Conexión puente «%s» activa"
 
@@ -732,58 +724,48 @@ msgid "GSM network."
 msgstr "Red GSM."
 
 #: ../src/applet-device-infiniband.c:40
-#| msgid "InfiniBand"
 msgid "Auto InfiniBand"
 msgstr "Auto InfiniBand"
 
 #: ../src/applet-device-infiniband.c:92
 #, c-format
-#| msgid "Wi-Fi Networks (%s)"
 msgid "InfiniBand Networks (%s)"
 msgstr "Redes InfiniBand (%s)"
 
 #: ../src/applet-device-infiniband.c:94
 #, c-format
-#| msgid "Wi-Fi Network (%s)"
 msgid "InfiniBand Network (%s)"
 msgstr "Red InfiniBand (%s)"
 
 #: ../src/applet-device-infiniband.c:97
-#| msgid "InfiniBand"
 msgid "InfiniBand Networks"
 msgstr "Redes InfiniBand"
 
 #: ../src/applet-device-infiniband.c:99
-#| msgid "InfiniBand"
 msgid "InfiniBand Network"
 msgstr "Red InfiniBand"
 
 #: ../src/applet-device-infiniband.c:143
-#| msgid "You are now connected to the bonded network."
 msgid "You are now connected to the InfiniBand network."
 msgstr "Ahora está conectado a la red InfiniBand."
 
 #: ../src/applet-device-infiniband.c:167
 #, c-format
-#| msgid "Preparing VLAN connection '%s'..."
 msgid "Preparing InfiniBand connection '%s'..."
 msgstr "Preparando la conexión InfiniBand «%s»…"
 
 #: ../src/applet-device-infiniband.c:170
 #, c-format
-#| msgid "Configuring VLAN connection '%s'..."
 msgid "Configuring InfiniBand connection '%s'..."
 msgstr "Configurando la conexión InfiniBand «%s»…"
 
 #: ../src/applet-device-infiniband.c:173
 #, c-format
-#| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for InfiniBand connection '%s'..."
 msgstr "Se necesita autenticación de usuario para la conexión InfiniBand «%s»…"
 
 #: ../src/applet-device-infiniband.c:180
 #, c-format
-#| msgid "InfiniBand connection %d"
 msgid "InfiniBand connection '%s' active"
 msgstr "Conexión InfiniBand «%s» activa"
 
@@ -940,7 +922,7 @@ msgstr "Ha ocurrido un error al mostrar información de la conexión:"
 #: ../src/applet-dialogs.c:109
 #: ../src/connection-editor/page-wifi-security.c:313
 #: ../src/libnm-gtk/nm-wifi-dialog.c:924
-#: ../src/wireless-security/wireless-security.c:406
+#: ../src/wireless-security/wireless-security.c:433
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -2226,20 +2208,24 @@ msgstr "_Eliminar…"
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentíquese para eliminar la conexión seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:933
-msgid "Error creating connection"
-msgstr "Error al crear la conexión"
-
 #: ../src/connection-editor/nm-connection-list.c:934
+msgid "No VPN plugins are installed."
+msgstr "No hay complementos de VPN instalados."
+
+#: ../src/connection-editor/nm-connection-list.c:936
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Se desconoce cómo crear conexiones «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:989
+#: ../src/connection-editor/nm-connection-list.c:938
+msgid "Error creating connection"
+msgstr "Error al crear la conexión"
+
+#: ../src/connection-editor/nm-connection-list.c:994
 msgid "Error editing connection"
 msgstr "Error al editar la conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:990
+#: ../src/connection-editor/nm-connection-list.c:995
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "No se encontró una conexión con UUID «%s»"
@@ -3299,7 +3285,7 @@ msgid "Allow automatic PAC pro_visioning"
 msgstr "Permitir la provisión PAC _automática"
 
 #: ../src/wireless-security/eap-method-peap.c:263
-#: ../src/wireless-security/wireless-security.c:382
+#: ../src/wireless-security/wireless-security.c:409
 msgid "MD5"
 msgstr "MD5"
 
@@ -3377,19 +3363,19 @@ msgstr "Contraseña de clave _privada:"
 msgid "Don't _warn me again"
 msgstr "No a_visarme de nuevo"
 
-#: ../src/wireless-security/wireless-security.c:394
+#: ../src/wireless-security/wireless-security.c:421
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:418
+#: ../src/wireless-security/wireless-security.c:445
 msgid "FAST"
 msgstr "RÁPIDO"
 
-#: ../src/wireless-security/wireless-security.c:429
+#: ../src/wireless-security/wireless-security.c:456
 msgid "Tunneled TLS"
 msgstr "TLS a través de túnel"
 
-#: ../src/wireless-security/wireless-security.c:440
+#: ../src/wireless-security/wireless-security.c:467
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protegido (PEAP)"
 
