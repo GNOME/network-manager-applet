@@ -1,4 +1,29 @@
 =======================================================
+network-manager-applet-0.9.8.2
+Overview of changes since network-manager-applet-0.9.8
+=======================================================
+
+This is a new stable release of network-manager-applet.  Notable changes include:
+
+* Updated translations
+* Conversion from gnome-keyring to libsecret; libsecret is now required to build
+* Editor no longer overwrites master interface name with the master UUID
+* Fix crashes when using ModemManager 0.7/0.8
+* Fix allowed values for VLAN ID and MTU in the editor
+* Preserve existing PPP LCP echo failure and interval values
+* Ensure Bridge STP checkbox values are saved
+* Hide BSSID for Wi-Fi Ad-Hoc connections (it's autocreated by the kernel)
+* Ensure IPv6 next-hop/gateway values are sane
+* Fix problems with the MAC address combo box on various pages
+* Only request secrets from the user when allowed to
+* Fix running with GTK+ 2.x
+* Fix signal icons to work with newer libpng
+* Don't show Wi-Fi Security combo when not required
+* Improve applet icon size handling
+* Show more helpful errors when VPN plugins are not installed
+
+
+=======================================================
 network-manager-applet-0.9.8
 Overview of changes since network-manager-applet-0.9.6
 =======================================================
