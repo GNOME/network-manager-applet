@@ -151,7 +151,7 @@ get_description (NMDevice *device)
 	if (!dev_product || !dev_vendor) {
 		g_object_set_data (G_OBJECT (device),
 		                   DESCRIPTION_TAG,
-		                   (char *) nm_device_get_ip_iface (device));
+		                   (char *) nm_device_get_iface (device));
 		return;
 	}
 
