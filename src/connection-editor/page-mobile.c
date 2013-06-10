@@ -119,6 +119,7 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 	if (s)
 		gtk_entry_set_text (priv->network_id, s);
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	switch (nm_setting_gsm_get_network_type (setting)) {
 	case NM_SETTING_GSM_NETWORK_TYPE_UMTS_HSPA:
 		type_idx = NET_TYPE_3G;
@@ -144,6 +145,7 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 		break;
 	}
 	gtk_combo_box_set_active (priv->network_type, type_idx);
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 	gtk_toggle_button_set_active (priv->roaming_allowed,
 	                              !nm_setting_gsm_get_home_only (setting));
