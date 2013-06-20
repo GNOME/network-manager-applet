@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager 0.9.8.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-02 02:02+0200\n"
-"PO-Revision-Date: 2013-06-02 02:07+0200\n"
+"POT-Creation-Date: 2013-06-20 10:48+0200\n"
+"PO-Revision-Date: 2013-06-20 10:48+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -573,7 +573,7 @@ msgstr "Mobilt bredbånd (%s)"
 #: ../src/applet-device-broadband.c:717 ../src/applet-device-cdma.c:249
 #: ../src/applet-device-gsm.c:305
 #: ../src/connection-editor/new-connection.c:113
-#: ../src/connection-editor/page-mobile.c:389
+#: ../src/connection-editor/page-mobile.c:391
 #: ../src/libnm-gtk/nm-ui-utils.c:333
 msgid "Mobile Broadband"
 msgstr "Mobilt bredbånd"
@@ -907,7 +907,7 @@ msgstr "Feil under visning av tilkoblingsinformasjon:"
 #: ../src/applet-dialogs.c:109
 #: ../src/connection-editor/page-wifi-security.c:313
 #: ../src/libnm-gtk/nm-wifi-dialog.c:924
-#: ../src/wireless-security/wireless-security.c:406
+#: ../src/wireless-security/wireless-security.c:433
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -2186,20 +2186,24 @@ msgstr "_Slett …"
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentiser for å slette valgt tilkobling"
 
-#: ../src/connection-editor/nm-connection-list.c:933
-msgid "Error creating connection"
-msgstr "Feil under oppretting av tilkobling"
-
 #: ../src/connection-editor/nm-connection-list.c:934
+msgid "No VPN plugins are installed."
+msgstr "Ingen VPN-tillegg er installert."
+
+#: ../src/connection-editor/nm-connection-list.c:936
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Vet ikke hvordan tilkoblinger av type «%s» lages"
 
-#: ../src/connection-editor/nm-connection-list.c:989
+#: ../src/connection-editor/nm-connection-list.c:938
+msgid "Error creating connection"
+msgstr "Feil under oppretting av tilkobling"
+
+#: ../src/connection-editor/nm-connection-list.c:994
 msgid "Error editing connection"
 msgstr "Feil under redigering av tilkobling"
 
-#: ../src/connection-editor/nm-connection-list.c:990
+#: ../src/connection-editor/nm-connection-list.c:995
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Fant ingen tilkobling med UUID «%s»"
@@ -2408,20 +2412,20 @@ msgstr "Kunne ikke laste brukergrensesnitt for IPv6."
 msgid "%s slave %d"
 msgstr "%s slave %d"
 
-#: ../src/connection-editor/page-mobile.c:391
+#: ../src/connection-editor/page-mobile.c:393
 msgid "Could not load mobile broadband user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for mobilt bredbånd."
 
-#: ../src/connection-editor/page-mobile.c:408
+#: ../src/connection-editor/page-mobile.c:410
 msgid "Unsupported mobile broadband connection type."
 msgstr "Ikke støttet type mobil bredbåndsforbindelse."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:658
+#: ../src/connection-editor/page-mobile.c:660
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Velg type tilbyder for mobilt bredbånd"
 
-#: ../src/connection-editor/page-mobile.c:685
+#: ../src/connection-editor/page-mobile.c:687
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -2429,21 +2433,21 @@ msgstr ""
 "Velg tekonlogien din bredbåndstilbyder for mobil bruker. Spør tilbyderen "
 "hvis du er usikker."
 
-#: ../src/connection-editor/page-mobile.c:690
+#: ../src/connection-editor/page-mobile.c:692
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Min tilbyder bruker _GSM-basert teknologi (f.eks GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:697
+#: ../src/connection-editor/page-mobile.c:699
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Min tilbyder bruker C_DMA-basert teknologi (f.eks 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:707 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:709 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:270
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:710 ../src/mb-menu-item.c:58
+#: ../src/connection-editor/page-mobile.c:712 ../src/mb-menu-item.c:58
 #: ../src/mobile-helpers.c:268
 msgid "GSM"
 msgstr "GSM"
@@ -3258,7 +3262,7 @@ msgid "Allow automatic PAC pro_visioning"
 msgstr "Tillat automatisk PAC-pro_visjonering"
 
 #: ../src/wireless-security/eap-method-peap.c:263
-#: ../src/wireless-security/wireless-security.c:382
+#: ../src/wireless-security/wireless-security.c:409
 msgid "MD5"
 msgstr "MD5"
 
@@ -3336,19 +3340,19 @@ msgstr "Passord for _privat nøkkel:"
 msgid "Don't _warn me again"
 msgstr "Ikke ad_var meg igjen"
 
-#: ../src/wireless-security/wireless-security.c:394
+#: ../src/wireless-security/wireless-security.c:421
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:418
+#: ../src/wireless-security/wireless-security.c:445
 msgid "FAST"
 msgstr "FAST"
 
-#: ../src/wireless-security/wireless-security.c:429
+#: ../src/wireless-security/wireless-security.c:456
 msgid "Tunneled TLS"
 msgstr "Tunnelert TLS (TTLS)"
 
-#: ../src/wireless-security/wireless-security.c:440
+#: ../src/wireless-security/wireless-security.c:467
 msgid "Protected EAP (PEAP)"
 msgstr "Beskyttet EAP (PEAP)"
 
