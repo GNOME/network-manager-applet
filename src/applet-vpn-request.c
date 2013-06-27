@@ -171,11 +171,14 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_
 }
 
 static char *
-find_auth_dialog_binary (const char *service, GError **error)
+find_auth_dialog_binary (const char *service,
+                         gboolean *out_hints_supported,
+                         GError **error)
 {
 	GDir *dir;
 	char *prog = NULL;
 	const char *f;
+	gboolean hints_supported = FALSE;
 
 	dir = g_dir_open (VPN_NAME_FILES_DIR, 0, NULL);
 	if (!dir) {
@@ -200,8 +203,10 @@ find_auth_dialog_binary (const char *service, GError **error)
 			char *thisservice;
 
 			thisservice = g_key_file_get_string (keyfile, "VPN Connection", "service", NULL);
-			if (g_strcmp0 (thisservice, service) == 0)
+			if (g_strcmp0 (thisservice, service) == 0) {
 				prog = g_key_file_get_string (keyfile, "GNOME", "auth-dialog", NULL);
+				hints_supported = g_key_file_get_boolean (keyfile, "GNOME", "supports-hints", NULL);
+			}
 			g_free (thisservice);
 		}
 		g_key_file_free (keyfile);
@@ -225,6 +230,8 @@ find_auth_dialog_binary (const char *service, GError **error)
 		g_free (prog);
 		prog = g_strdup_printf ("%s/%s", LIBEXECDIR, prog_basename);
 		g_free (prog_basename);
+
+		*out_hints_supported = hints_supported;
 	}
 
 	return prog;
@@ -348,9 +355,10 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	const char *connection_type;
 	const char *service_type;
 	char *bin_path;
-	const char *argv[10];
+	char **argv = NULL;
 	gboolean success = FALSE;
-	guint i = 0;
+	guint i = 0, u, hints_len;
+	gboolean supports_hints = FALSE;
 
 	applet_secrets_request_set_free_func (req, free_vpn_secrets_info);
 
@@ -368,7 +376,7 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	g_return_val_if_fail (service_type != NULL, FALSE);
 
 	/* find the auth-dialog binary */
-	bin_path = find_auth_dialog_binary (service_type, error);
+	bin_path = find_auth_dialog_binary (service_type, &supports_hints, error);
 	if (!bin_path)
 		return FALSE;
 
@@ -383,21 +391,28 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 
 	priv = APPLET_VPN_REQUEST_GET_PRIVATE (info->vpn);
 
-	memset (argv, 0, sizeof (argv));
+	hints_len = g_strv_length (req->hints);
+	argv = g_new0 (char *, 10 + (2 * hints_len));
 	argv[i++] = bin_path;
 	argv[i++] = "-u";
-	argv[i++] = nm_setting_connection_get_uuid (s_con);
+	argv[i++] = (char *) nm_setting_connection_get_uuid (s_con);
 	argv[i++] = "-n";
-	argv[i++] = nm_setting_connection_get_id (s_con);
+	argv[i++] = (char *) nm_setting_connection_get_id (s_con);
 	argv[i++] = "-s";
-	argv[i++] = service_type;
+	argv[i++] = (char *) service_type;
 	if (req->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
 		argv[i++] = "-i";
 	if (req->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW)
 		argv[i++] = "-r";
 
+	/* add hints */
+	for (u = 0; supports_hints && (u < hints_len); u++) {
+		argv[i++] = "-t";
+		argv[i++] = req->hints[u];
+	}
+
 	if (!g_spawn_async_with_pipes (NULL,                       /* working_directory */
-	                               (gchar **) argv,            /* argv */
+	                               argv,                       /* argv */
 	                               NULL,                       /* envp */
 	                               G_SPAWN_DO_NOT_REAP_CHILD,  /* flags */
 	                               vpn_child_setup,            /* child_setup */
@@ -421,6 +436,7 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	success = write_connection_to_child (priv->child_stdin, req->connection, error);
 
 out:
+	g_free (argv);
 	g_free (bin_path);
 	return success;
 }
