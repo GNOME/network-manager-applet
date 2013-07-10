@@ -131,6 +131,22 @@ connection_added (CEPageMaster *master, NMConnection *connection)
 }
 
 static void
+bonding_mode_changed (GtkComboBox *combo, gpointer user_data)
+{
+	CEPageBond *self = user_data;
+	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
+
+	/* balance-tlb and balance-alb work only with MII monitoring */
+	if (   gtk_combo_box_get_active (combo) == MODE_BALANCE_TLB
+	    || gtk_combo_box_get_active (combo) == MODE_BALANCE_ALB) {
+		gtk_combo_box_set_active (priv->monitoring, MONITORING_MII);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->monitoring), FALSE);
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->monitoring), TRUE);
+	}
+}
+
+static void
 monitoring_mode_changed (GtkComboBox *combo, gpointer user_data)
 {
 	CEPageBond *self = user_data;
@@ -273,6 +289,10 @@ populate_ui (CEPageBond *self)
 			mode_idx = MODE_BALANCE_ALB;
 	}
 	gtk_combo_box_set_active (priv->mode, mode_idx);
+	g_signal_connect (priv->mode, "changed",
+	                  G_CALLBACK (bonding_mode_changed),
+	                  self);
+	bonding_mode_changed (priv->mode, self);
 
 	/* Monitoring mode/frequency */
 	frequency = nm_setting_bond_get_option_by_name (setting, NM_SETTING_BOND_OPTION_ARP_INTERVAL);
@@ -453,6 +473,9 @@ ui_to_setting (CEPageBond *self)
 	updelay = gtk_entry_get_text (GTK_ENTRY (priv->updelay));
 	downdelay = gtk_entry_get_text (GTK_ENTRY (priv->downdelay));
 	targets = uglify_targets (gtk_entry_get_text (priv->arp_targets));
+
+	/* Set bond mode */
+	nm_setting_bond_add_option (priv->setting, NM_SETTING_BOND_OPTION_MODE, mode);
 
 	switch (gtk_combo_box_get_active (priv->monitoring)) {
 	case MONITORING_MII:
