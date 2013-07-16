@@ -335,7 +335,7 @@ keyring_find_secrets_cb (GObject *source,
 		error = g_error_new (NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		                     "%s.%d - failed to read secrets from keyring (%s)",
-		                     __FILE__, __LINE__, error->message);
+		                     __FILE__, __LINE__, search_error->message);
 		g_error_free (search_error);
 		goto done;
 	}
