@@ -810,6 +810,7 @@ applet_agent_new (void)
 {
 	return (AppletAgent *) g_object_new (APPLET_TYPE_AGENT,
 	                                     NM_SECRET_AGENT_IDENTIFIER, "org.freedesktop.nm-applet",
+	                                     NM_SECRET_AGENT_CAPABILITIES, NM_SECRET_AGENT_CAPABILITY_VPN_HINTS,
 	                                     NULL);
 }
 
