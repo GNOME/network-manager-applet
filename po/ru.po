@@ -14,17 +14,17 @@ msgstr ""
 "Project-Id-Version: NetworkManager-applet\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2013-04-19 23:30+0000\n"
-"PO-Revision-Date: 2013-05-12 14:24+0400\n"
-"Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
+"POT-Creation-Date: 2013-07-10 14:49+0000\n"
+"PO-Revision-Date: 2013-06-18 11:55+0600\n"
+"Last-Translator: Dmitriy S. Seregin <dseregin@59.ru>\n"
 "Language-Team: русский <gnome-cyr@gnome.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-"X-Generator: Lokalize 1.0\n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.5.5\n"
 
 #: ../nm-applet.desktop.in.h:1
 msgid "Network"
@@ -1249,7 +1249,6 @@ msgid "_Hairpin mode:"
 msgstr "Режим _петли:"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:1
-#| msgid "Base Connection:"
 msgid "Bridged _connections:"
 msgstr "Мостовые _соединения:"
 
@@ -1666,7 +1665,6 @@ msgid "Send PPP _echo packets"
 msgstr "Посылать _эхо-пакеты PPP"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:1
-#| msgid "Interface:"
 msgid "_Parent interface:"
 msgstr "_Родительский интерфейс:"
 
@@ -1859,7 +1857,7 @@ msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/new-connection.c:137
-#: ../src/connection-editor/page-bond.c:419 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/page-bond.c:439 ../src/libnm-gtk/nm-ui-utils.c:337
 #: ../src/libnm-gtk/nm-ui-utils.c:559
 msgid "Bond"
 msgstr "Объединение"
@@ -1883,7 +1881,6 @@ msgid "VPN"
 msgstr "VPN"
 
 #: ../src/connection-editor/new-connection.c:252
-#| msgid "Hardware Address:"
 msgid "Hardware"
 msgstr "Физическое"
 
@@ -1990,7 +1987,7 @@ msgstr "_Экспортировать…"
 
 #: ../src/connection-editor/nm-connection-list.c:143
 msgid "never"
-msgstr "не было подключения"
+msgstr "никогда"
 
 #: ../src/connection-editor/nm-connection-list.c:154
 #: ../src/connection-editor/nm-connection-list.c:165
@@ -2070,20 +2067,24 @@ msgstr "_Удалить…"
 msgid "Authenticate to delete the selected connection"
 msgstr "Для удаления выбранного соединения необходима аутентификация"
 
-#: ../src/connection-editor/nm-connection-list.c:942
-msgid "Error creating connection"
-msgstr "Ошибка создания соединения"
-
 #: ../src/connection-editor/nm-connection-list.c:943
+msgid "No VPN plugins are installed."
+msgstr "Модули VPN не установлены."
+
+#: ../src/connection-editor/nm-connection-list.c:945
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Неизвестно, как создавать соединения «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:998
+#: ../src/connection-editor/nm-connection-list.c:947
+msgid "Error creating connection"
+msgstr "Ошибка создания соединения"
+
+#: ../src/connection-editor/nm-connection-list.c:1003
 msgid "Error editing connection"
 msgstr "Ошибка изменения соединения"
 
-#: ../src/connection-editor/nm-connection-list.c:999
+#: ../src/connection-editor/nm-connection-list.c:1004
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Соединение с UUID «%s» не найдено"
@@ -2093,7 +2094,6 @@ msgid "802.1x Security"
 msgstr "Защита 802.1x"
 
 #: ../src/connection-editor/page-8021x-security.c:123
-#| msgid "Could not load WiFi security user interface."
 msgid "Could not load 802.1x Security user interface."
 msgstr "Не удалось загрузить диалоговое окно настройки безопасности 802.1x."
 
@@ -2101,25 +2101,21 @@ msgstr "Не удалось загрузить диалоговое окно н�
 msgid "Use 802.1_X security for this connection"
 msgstr "Использовать защиту 802.1_X для этого соединения"
 
-#: ../src/connection-editor/page-bond.c:422
-#| msgid "Could not load wired user interface."
+#: ../src/connection-editor/page-bond.c:442
 msgid "Could not load bond user interface."
 msgstr "Не удалось загрузить диалог настройки объединения интерфейсов."
 
-#: ../src/connection-editor/page-bond.c:561
+#: ../src/connection-editor/page-bond.c:584
 #, c-format
-#| msgid "Wired connection %d"
 msgid "Bond connection %d"
 msgstr "Объединение %d"
 
 #: ../src/connection-editor/page-bridge.c:215
-#| msgid "Could not load wired user interface."
 msgid "Could not load bridge user interface."
 msgstr "Не удалось загрузить диалог настройки мостового соединения."
 
 #: ../src/connection-editor/page-bridge.c:310
 #, c-format
-#| msgid "Wired connection %d"
 msgid "Bridge connection %d"
 msgstr "Мост %d"
 
@@ -2131,7 +2127,6 @@ msgid "Bridge Port"
 msgstr "Порт моста"
 
 #: ../src/connection-editor/page-bridge-port.c:117
-#| msgid "Could not load wired user interface."
 msgid "Could not load bridge port user interface."
 msgstr "Не удалось загрузить диалог настройки порта мостового соединения."
 
@@ -2182,7 +2177,6 @@ msgstr ""
 "межсетевом экране. Работает только при включённом firewalld."
 
 #: ../src/connection-editor/page-general.c:61
-#| msgid "NetworkManager is not running..."
 msgid "FirewallD is not running."
 msgstr "FirewallD не запущен."
 
@@ -2429,9 +2423,6 @@ msgstr ""
 "списке, то возможно, не установлен необходимый VPN-модуль."
 
 #: ../src/connection-editor/page-wifi.c:98
-#| msgid ""
-#| "This option locks this connection to the wireless access point (AP) "
-#| "specified by the BSSID entered here.  Example: 00:11:22:33:44:55"
 msgid ""
 "This option locks this connection to the Wi-Fi access point (AP) specified "
 "by the BSSID entered here.  Example: 00:11:22:33:44:55"
@@ -2877,45 +2868,45 @@ msgstr "%s %s"
 msgid "New..."
 msgstr "Новая…"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1052
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1055
 msgid "C_reate"
 msgstr "С_оздать"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1136
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1154
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
 msgstr "Для подключения к сети Wi-Fi «%s» требуется указать ключ или пароль."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1138
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1156
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Для сети Wi-Fi требуется аутентификация"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1140
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1158
 msgid "Authentication required by Wi-Fi network"
 msgstr "Для сети Wi-Fi требуется аутентификация"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1145
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1163
 msgid "Create New Wi-Fi Network"
 msgstr "Создать новую сеть Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1147
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1165
 msgid "New Wi-Fi network"
 msgstr "Создать сеть Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1148
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Введите имя для создаваемой сети Wi-Fi."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1168
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Подключение к скрытой сети Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1170
 msgid "Hidden Wi-Fi network"
 msgstr "Скрытая сеть Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1153
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1171
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -3061,10 +3052,6 @@ msgid "No Certificate Authority certificate chosen"
 msgstr "Не выбран сертификат удостоверяющего центра"
 
 #: ../src/wireless-security/eap-method.c:276
-#| msgid ""
-#| "Not using a Certificate Authority (CA) certificate can result in "
-#| "connections to insecure, rogue wireless networks.  Would you like to "
-#| "choose a Certificate Authority certificate?"
 msgid ""
 "Not using a Certificate Authority (CA) certificate can result in connections "
 "to insecure, rogue Wi-Fi networks.  Would you like to choose a Certificate "
@@ -3278,80 +3265,3 @@ msgstr "Пока_зывать ключ"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "WEP inde_x:"
 msgstr "_Индекс WEP:"
-
-#~ msgid "Wireless Networks (%s)"
-#~ msgstr "Беспроводные сети (%s)"
-
-#~ msgid "Wireless Network (%s)"
-#~ msgstr "Беспроводная сеть (%s)"
-
-#~ msgid "Wireless Network"
-#~ msgid_plural "Wireless Networks"
-#~ msgstr[0] "Беспроводная сеть"
-#~ msgstr[1] "Беспроводные сети"
-#~ msgstr[2] "Беспроводных сетей"
-
-#~ msgid "wireless is disabled"
-#~ msgstr "поддержка беспроводных сетей отключена"
-
-#~ msgid "wireless is disabled by hardware switch"
-#~ msgstr "поддержка беспроводных сетей отключена аппаратно"
-
-#~ msgid "Preparing wireless network connection '%s'..."
-#~ msgstr "Подготовка беспроводного сетевого соединения «%s»…"
-
-#~ msgid "Configuring wireless network connection '%s'..."
-#~ msgstr "Настройка беспроводного сетевого соединения «%s»…"
-
-#~ msgid "Requesting a wireless network address for '%s'..."
-#~ msgstr "Получение адреса в беспроводной сети для «%s»…"
-
-#~ msgid "Wireless network connection '%s' active"
-#~ msgstr "Беспроводное сетевое соединение «%s» установлено"
-
-#~ msgid "Could not load Wired Security security user interface."
-#~ msgstr ""
-#~ "Не удалось загрузить интерфейс настройки защиты проводного соединения."
-
-#~ msgid "Wireless"
-#~ msgstr "Беспроводные"
-
-#~ msgid "Wireless connection %d"
-#~ msgstr "Беспроводное соединение %d"
-
-#~ msgid "_Import"
-#~ msgstr "_Импортировать"
-
-#~ msgid "Connect _automatically"
-#~ msgstr "Подключаться _автоматически"
-
-#~ msgid "A_vailable to all users"
-#~ msgstr "Доступно _всем пользователям"
-
-#~ msgid "An unknown error occurred."
-#~ msgstr "Произошла неизвестная ошибка."
-
-#~ msgid "Could not edit new connection"
-#~ msgstr "Не удалось изменить новое соединение"
-
-#~ msgid "Could not edit imported connection"
-#~ msgstr "Не удалось изменить импортированное соединение"
-
-#~ msgid "No VPN plugin available. Please install one to enable this button."
-#~ msgstr ""
-#~ "Модуль VPN недоступен. Установите модуль, чтобы эта кнопка стала активной."
-
-#~ msgid "Don't know how to edit '%s' connections"
-#~ msgstr "Неизвестно, как изменять соединения «%s»"
-
-#~ msgid "could not find the Bluetooth device."
-#~ msgstr "не удалось найти устройство Bluetooth."
-
-#~ msgid "Bluetooth configuration not possible (failed to create D-Bus proxy)."
-#~ msgstr "Невозможно настроить Bluetooth (ошибка создания прокси D-Bus)."
-
-#~ msgid "_Security:"
-#~ msgstr "_Защита:"
-
-#~ msgid "Click on this icon to connect to a wireless network"
-#~ msgstr "Нажмите на этот значок для подключения к беспроводной сети"
