@@ -44,14 +44,10 @@ struct _EAPMethod {
 	GtkBuilder *builder;
 	GtkWidget *ui_widget;
 
-	GtkBuilder *nag_builder;
-	char *ca_cert_chooser;
 	const char *default_field;
-	GtkWidget *nag_dialog;
 
 	gboolean phase2;
 	gboolean secrets_only;
-	gboolean ignore_ca_cert;
 
 	EMAddToSizeGroupFunc add_to_size_group;
 	EMFillConnectionFunc fill_connection;
@@ -72,8 +68,6 @@ void eap_method_add_to_size_group (EAPMethod *method, GtkSizeGroup *group);
 void eap_method_fill_connection (EAPMethod *method, NMConnection *connection);
 
 void eap_method_update_secrets (EAPMethod *method, NMConnection *connection);
-
-GtkWidget * eap_method_nag_user (EAPMethod *method);
 
 EAPMethod *eap_method_ref (EAPMethod *method);
 
@@ -114,10 +108,6 @@ gboolean eap_method_validate_filepicker (GtkBuilder *builder,
                                          guint32 item_type,
                                          const char *password,
                                          NMSetting8021xCKFormat *out_format);
-
-gboolean eap_method_nag_init (EAPMethod *method,
-                              const char *ca_cert_chooser,
-                              NMConnection *connection);
 
 void eap_method_phase2_update_secrets_helper (EAPMethod *method,
                                               NMConnection *connection,

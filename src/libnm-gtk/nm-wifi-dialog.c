@@ -67,7 +67,6 @@ typedef struct {
 	GtkSizeGroup *group;
 	GtkWidget *sec_combo;
 
-	gboolean nag_ignored;
 	gboolean network_name_focus;
 
 	gboolean secrets_only;
@@ -92,22 +91,6 @@ typedef struct {
 
 static gboolean security_combo_init (NMAWifiDialog *self, gboolean secrets_only);
 static void ssid_entry_changed (GtkWidget *entry, gpointer user_data);
-
-void
-nma_wifi_dialog_set_nag_ignored (NMAWifiDialog *self, gboolean ignored)
-{
-	g_return_if_fail (self != NULL);
-
-	NMA_WIFI_DIALOG_GET_PRIVATE (self)->nag_ignored = ignored;
-}
-
-gboolean
-nma_wifi_dialog_get_nag_ignored (NMAWifiDialog *self)
-{
-	g_return_val_if_fail (self != NULL, FALSE);
-
-	return NMA_WIFI_DIALOG_GET_PRIVATE (self)->nag_ignored;
-}
 
 static void
 size_group_clear (GtkSizeGroup *group)
@@ -1336,45 +1319,6 @@ GtkWidget *
 nma_wifi_dialog_new_for_create (NMClient *client, NMRemoteSettings *settings)
 {
 	return internal_new_other (client, settings, TRUE);
-}
-
-/**
- * nma_wifi_dialog_nag_user:
- * @self:
- *
- * Returns: (transfer full):
- */
-GtkWidget *
-nma_wifi_dialog_nag_user (NMAWifiDialog *self)
-{
-	NMAWifiDialogPrivate *priv;
-	GtkWidget *combo, *nag;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	WirelessSecurity *sec = NULL;
-
-	g_return_val_if_fail (self != NULL, NULL);
-
-	priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
-
-	combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
-	g_return_val_if_fail (combo != NULL, NULL);
-
-	/* Ask the security method if it wants to nag the user. */
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter)) {
-		g_warning ("%s: no active security combo box item.", __func__);
-		return NULL;
-	}
-
-	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
-	if (sec) {
-		nag = wireless_security_nag_user (sec);
-		wireless_security_unref (sec);
-		return nag;
-	}
-
-	return NULL;
 }
 
 static void

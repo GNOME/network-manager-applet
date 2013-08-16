@@ -519,20 +519,6 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	return valid;
 }
 
-static GtkWidget *
-nag_user (CEPage *page)
-{
-	WirelessSecurity *sec;
-	GtkWidget *nag = NULL;
-
-	sec = wireless_security_combo_get_active (CE_PAGE_WIFI_SECURITY (page));
-	if (sec) {
-		nag = wireless_security_nag_user (sec);
-		wireless_security_unref (sec);
-	}
-	return nag;
-}
-
 static void
 ce_page_wifi_security_class_init (CEPageWifiSecurityClass *wireless_security_class)
 {
@@ -543,5 +529,4 @@ ce_page_wifi_security_class_init (CEPageWifiSecurityClass *wireless_security_cla
 	object_class->dispose = dispose;
 
 	parent_class->validate = validate;
-	parent_class->nag_user = nag_user;
 }

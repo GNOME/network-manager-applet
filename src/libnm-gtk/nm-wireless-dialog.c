@@ -33,18 +33,6 @@ nma_wireless_dialog_get_type (void)
 	return nma_wifi_dialog_get_type ();
 }
 
-void
-nma_wireless_dialog_set_nag_ignored (NMAWirelessDialog *self, gboolean ignored)
-{
-	nma_wifi_dialog_set_nag_ignored ((NMAWifiDialog *)self, ignored);
-}
-
-gboolean
-nma_wireless_dialog_get_nag_ignored (NMAWirelessDialog *self)
-{
-	return nma_wifi_dialog_get_nag_ignored ((NMAWifiDialog *)self);
-}
-
 NMConnection *
 nma_wireless_dialog_get_connection (NMAWirelessDialog *self,
                                     NMDevice **out_device,
@@ -76,8 +64,3 @@ nma_wireless_dialog_new_for_create (NMClient *client, NMRemoteSettings *settings
 	return nma_wifi_dialog_new_for_create (client, settings);
 }
 
-GtkWidget *
-nma_wireless_dialog_nag_user (NMAWirelessDialog *self)
-{
-	return nma_wifi_dialog_nag_user ((NMAWifiDialog *)self);
-}

@@ -52,8 +52,6 @@
 
 static void wifi_dialog_response_cb (GtkDialog *dialog, gint response, gpointer user_data);
 
-static void nag_dialog_response_cb (GtkDialog *nag_dialog, gint response, gpointer user_data);
-
 static NMAccessPoint *update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet);
 
 static void _do_new_auto_connection (NMApplet *applet,
@@ -355,22 +353,6 @@ more_info_wifi_dialog_response_cb (GtkDialog *foo,
 	if (response != GTK_RESPONSE_OK) {
 		info->callback (NULL, FALSE, TRUE, info->callback_data);
 		goto done;
-	}
-
-	if (!nma_wifi_dialog_get_nag_ignored (dialog)) {
-		GtkWidget *nag_dialog;
-
-		/* Nag the user about certificates or whatever.  Only destroy the dialog
-		 * if no nagging was done.
-		 */
-		nag_dialog = nma_wifi_dialog_nag_user (dialog);
-		if (nag_dialog) {
-			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
-			g_signal_connect (nag_dialog, "response",
-			                  G_CALLBACK (nag_dialog_response_cb),
-			                  dialog);
-			return;
-		}
 	}
 
 	/* nma_wifi_dialog_get_connection() returns a connection with the
@@ -1334,36 +1316,6 @@ wifi_get_icon (NMDevice *device,
 	return pixbuf ? g_object_ref (pixbuf) : NULL;
 }
 
-static gboolean
-wifi_dialog_close (gpointer user_data)
-{
-	GtkWidget *dialog = GTK_WIDGET (user_data);
-
-	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-	return FALSE;
-}
-
-static void
-wifi_dialog_destroyed (gpointer data, GObject *dialog_ptr)
-{
-	/* remove the idle function; for not to call wifi_dialog_close() on invalid pointer */
-	g_idle_remove_by_data (dialog_ptr);
-}
-
-static void
-nag_dialog_response_cb (GtkDialog *nag_dialog,
-                        gint response,
-                        gpointer user_data)
-{
-	NMAWifiDialog *wifi_dialog = NMA_WIFI_DIALOG (user_data);
-
-	if (response == GTK_RESPONSE_NO) {  /* user opted not to correct the warning */
-		nma_wifi_dialog_set_nag_ignored (wifi_dialog, TRUE);
-		g_idle_add (wifi_dialog_close, wifi_dialog);
-		g_object_weak_ref (G_OBJECT (wifi_dialog), wifi_dialog_destroyed, NULL);
-	}
-}
-
 
 static void
 activate_existing_cb (NMClient *client,
@@ -1416,22 +1368,6 @@ wifi_dialog_response_cb (GtkDialog *foo,
 
 	if (response != GTK_RESPONSE_OK)
 		goto done;
-
-	if (!nma_wifi_dialog_get_nag_ignored (dialog)) {
-		GtkWidget *nag_dialog;
-
-		/* Nag the user about certificates or whatever.  Only destroy the dialog
-		 * if no nagging was done.
-		 */
-		nag_dialog = nma_wifi_dialog_nag_user (dialog);
-		if (nag_dialog) {
-			gtk_window_set_transient_for (GTK_WINDOW (nag_dialog), GTK_WINDOW (dialog));
-			g_signal_connect (nag_dialog, "response",
-			                  G_CALLBACK (nag_dialog_response_cb),
-			                  dialog);
-			return;
-		}
-	}
 
 	/* nma_wifi_dialog_get_connection() returns a connection with the
 	 * refcount incremented, so the caller must remember to unref it.
@@ -1527,7 +1463,6 @@ typedef struct {
 	SecretsRequest req;
 
 	GtkWidget *dialog;
-	GtkWidget *nag_dialog;
 } NMWifiInfo;
 
 static void
@@ -1554,25 +1489,6 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	GHashTable *settings = NULL;
 	const char *key_mgmt, *auth_alg;
 	GError *error = NULL;
-
-	/* Handle the nag dialog specially; don't want to clear the NMActiveConnection
-	 * destroy handler yet if the main dialog isn't going away.
-	 */
-	if ((response == GTK_RESPONSE_OK) && !nma_wifi_dialog_get_nag_ignored (dialog)) {
-		GtkWidget *widget;
-
-		/* Nag the user about certificates or whatever.  Only destroy the dialog
-		 * if no nagging was done.
-		 */
-		widget = nma_wifi_dialog_nag_user (dialog);
-		if (widget) {
-			gtk_window_set_transient_for (GTK_WINDOW (widget), GTK_WINDOW (dialog));
-			g_signal_connect (widget, "response",
-			                  G_CALLBACK (nag_dialog_response_cb),
-			                  dialog);
-			return;
-		}
-	}
 
 	if (response != GTK_RESPONSE_OK) {
 		g_set_error (&error,

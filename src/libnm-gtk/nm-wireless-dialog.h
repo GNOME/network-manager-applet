@@ -76,14 +76,5 @@ NMConnection * nma_wireless_dialog_get_connection (NMAWirelessDialog *dialog,
                                                    NMDevice **device,
                                                    NMAccessPoint **ap);
 
-GLIB_DEPRECATED_FOR(nma_wifi_dialog_nag_user)
-GtkWidget * nma_wireless_dialog_nag_user (NMAWirelessDialog *dialog);
-
-GLIB_DEPRECATED_FOR(nma_wifi_dialog_set_nag_ignored)
-void nma_wireless_dialog_set_nag_ignored (NMAWirelessDialog *dialog, gboolean ignored);
-
-GLIB_DEPRECATED_FOR(nma_wifi_dialog_get_nag_ignored)
-gboolean nma_wireless_dialog_get_nag_ignored (NMAWirelessDialog *dialog);
-
 #endif	/* NMA_WIRELESS_DIALOG_H */
 

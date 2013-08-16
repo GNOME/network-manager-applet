@@ -98,20 +98,6 @@ eap_method_update_secrets (EAPMethod *method, NMConnection *connection)
 		method->update_secrets (method, connection);
 }
 
-typedef struct {
-	EAPMethod *method;
-	NMConnection *connection;
-} NagDialogResponseInfo;
-
-static void
-nag_dialog_destroyed (gpointer data, GObject *dialog_ptr)
-{
-	NagDialogResponseInfo *info = (NagDialogResponseInfo *) data;
-
-	memset (info, '\0', sizeof (NagDialogResponseInfo));
-	g_free (info);
-}
-
 static GSettings *
 _get_ca_ignore_settings (const char *uuid)
 {
@@ -139,72 +125,6 @@ _set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore)
 	g_object_unref (settings);
 }
 
-static void
-nag_dialog_response_cb (GtkDialog *nag_dialog,
-                        gint response,
-                        gpointer user_data)
-{
-	NagDialogResponseInfo *info = (NagDialogResponseInfo *) user_data;
-	EAPMethod *method = (EAPMethod *) info->method;
-	NMConnection *connection = (NMConnection *) info->connection;
-	GtkWidget *widget;
-
-	if (response == GTK_RESPONSE_NO) {
-		/* Grab the value of the "don't bother me" checkbox */
-		widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "ignore_checkbox"));
-		g_assert (widget);
-
-		method->ignore_ca_cert = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
-
-		/* And save it */
-		_set_ignore_ca_cert (nm_connection_get_uuid (connection),
-		                     method->phase2,
-		                     method->ignore_ca_cert);
-	}
-
-	gtk_widget_hide (GTK_WIDGET (nag_dialog));
-}
-
-static gboolean 
-nag_dialog_delete_event_cb (GtkDialog *nag_dialog, GdkEvent *e, gpointer user_data) 
-{ 
-	// FIXME?: By emitting response signal, dismissing nag dialog with upper right "x" icon,
-	// Alt-F4, or Esc would have the same behaviour as clicking "Ignore" button.
-	//g_signal_emit_by_name (nag_dialog, "response", GTK_RESPONSE_NO, user_data);
-	return TRUE;  /* do not destroy */
-} 
-
-GtkWidget *
-eap_method_nag_user (EAPMethod *method)
-{
-	GtkWidget *widget;
-	char *filename = NULL;
-
-	g_return_val_if_fail (method != NULL, NULL);
-
-	if (!method->nag_dialog || method->ignore_ca_cert)
-		return NULL;
-
-	/* Checkbox should be unchecked each time dialog comes up */
-	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "ignore_checkbox"));
-	g_assert (widget);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), FALSE);
-
-	/* Nag the user if the CA Cert is blank, since it's a security risk. */
-	widget = GTK_WIDGET (gtk_builder_get_object (method->builder, method->ca_cert_chooser));
-	g_assert (widget);
-	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	if (filename != NULL) {
-		g_free (filename);
-		return NULL;
-	}
-
-	gtk_window_present (GTK_WINDOW (method->nag_dialog));
-	return method->nag_dialog;
-}
-
-#define NAG_DIALOG_UI UIDIR "/nag-user-dialog.ui"
-
 static gboolean
 _get_ignore_ca_cert (const char *uuid, gboolean phase2)
 {
@@ -221,72 +141,6 @@ _get_ignore_ca_cert (const char *uuid, gboolean phase2)
 
 	g_object_unref (settings);
 	return ignore;
-}
-
-gboolean
-eap_method_nag_init (EAPMethod *method,
-                     const char *ca_cert_chooser,
-                     NMConnection *connection)
-{
-	GtkWidget *dialog, *widget;
-	NagDialogResponseInfo *info;
-	GError *error = NULL;
-	char *text;
-
-	g_return_val_if_fail (method != NULL, FALSE);
-	g_return_val_if_fail (ca_cert_chooser != NULL, FALSE);
-
-	method->nag_builder = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (method->nag_builder, NAG_DIALOG_UI, &error)) {
-		g_warning ("Couldn't load UI builder file " NAG_DIALOG_UI ": %s",
-		           error->message);
-		g_error_free (error);
-		return FALSE;
-	}
-
-	method->ca_cert_chooser = g_strdup (ca_cert_chooser);
-	if (connection) {
-		NMSettingConnection *s_con;
-		const char *uuid;
-
-		s_con = nm_connection_get_setting_connection (connection);
-		g_assert (s_con);
-		uuid = nm_setting_connection_get_uuid (s_con);
-		g_assert (uuid);
-
-		/* Figure out if the user wants to ignore missing CA cert */
-		method->ignore_ca_cert = _get_ignore_ca_cert (uuid, method->phase2);
-	}
-
-	info = g_malloc0 (sizeof (NagDialogResponseInfo));
-	info->method = method;
-	info->connection = connection;
-
-	dialog = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "nag_user_dialog"));
-	g_assert (dialog);
-	g_signal_connect (dialog, "response", G_CALLBACK (nag_dialog_response_cb), info);
-	g_signal_connect (dialog, "delete-event", G_CALLBACK (nag_dialog_delete_event_cb), info);
-	g_object_weak_ref (G_OBJECT (dialog), nag_dialog_destroyed, info);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "content_label"));
-	g_assert (widget);
-
-	text = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
-	                        _("No Certificate Authority certificate chosen"),
-	                        _("Not using a Certificate Authority (CA) certificate can result in connections to insecure, rogue Wi-Fi networks.  Would you like to choose a Certificate Authority certificate?"));
-	gtk_label_set_markup (GTK_LABEL (widget), text);
-	g_free (text);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "ignore_button"));
-	gtk_button_set_label (GTK_BUTTON (widget), _("Ignore"));
-	g_assert (widget);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (method->nag_builder, "change_button"));
-	gtk_button_set_label (GTK_BUTTON (widget), _("Choose CA Certificate"));
-	g_assert (widget);
-
-	method->nag_dialog = dialog;
-	return TRUE;
 }
 
 void
@@ -395,11 +249,6 @@ eap_method_unref (EAPMethod *method)
 		if (method->destroy)
 			method->destroy (method);
 
-		if (method->nag_dialog)
-			gtk_widget_destroy (method->nag_dialog);
-		if (method->nag_builder)
-			g_object_unref (method->nag_builder);
-		g_free (method->ca_cert_chooser);
 		if (method->builder)
 			g_object_unref (method->builder);
 		if (method->ui_widget)

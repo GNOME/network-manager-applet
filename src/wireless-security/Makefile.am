@@ -50,7 +50,6 @@ ui_DATA = \
 	eap-method-simple.ui \
 	eap-method-tls.ui \
 	eap-method-ttls.ui \
-	nag-user-dialog.ui \
 	ws-dynamic-wep.ui \
 	ws-leap.ui \
 	ws-wep-key.ui \

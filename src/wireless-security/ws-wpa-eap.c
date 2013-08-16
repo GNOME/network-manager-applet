@@ -90,12 +90,6 @@ auth_combo_changed_cb (GtkWidget *combo, gpointer user_data)
 	                              sec->size_group);
 }
 
-static GtkWidget *
-nag_user (WirelessSecurity *parent)
-{
-	return ws_802_1x_nag_user (parent, "wpa_eap_auth_combo");
-}
-
 static void
 update_secrets (WirelessSecurity *parent, NMConnection *connection)
 {
@@ -122,7 +116,6 @@ ws_wpa_eap_new (NMConnection *connection,
 	if (!parent)
 		return NULL;
 
-	parent->nag_user = nag_user;
 	parent->adhoc_compatible = FALSE;
 
 	widget = ws_802_1x_auth_combo_init (parent,

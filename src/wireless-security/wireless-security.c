@@ -208,16 +208,6 @@ wireless_security_init (gsize obj_size,
 	return sec;
 }
 
-GtkWidget *
-wireless_security_nag_user (WirelessSecurity *sec)
-{
-	g_return_val_if_fail (sec != NULL, NULL);
-
-	if (sec->nag_user)
-		return (*(sec->nag_user)) (sec);
-	return NULL;
-}
-
 gboolean
 wireless_security_adhoc_compatible (WirelessSecurity *sec)
 {
@@ -554,25 +544,5 @@ ws_802_1x_update_secrets (WirelessSecurity *sec,
 			}
 		} while (gtk_tree_model_iter_next (model, &iter));
 	}
-}
-
-GtkWidget *
-ws_802_1x_nag_user (WirelessSecurity *sec,
-                    const char *combo_name)
-{
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	EAPMethod *eap = NULL;
-	GtkWidget *widget;	
-
-	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
-	gtk_tree_model_get (model, &iter, AUTH_METHOD_COLUMN, &eap, -1);
-	g_return_val_if_fail (eap != NULL, NULL);
-
-	widget = eap_method_nag_user (eap);
-	eap_method_unref (eap);
-	return widget;
 }
 

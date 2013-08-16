@@ -352,8 +352,6 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 	if (!parent)
 		return NULL;
 
-	eap_method_nag_init (parent, "eap_peap_ca_cert_button", connection);
-
 	method = (EAPMethodPEAP *) parent;
 	method->sec_parent = ws_parent;
 	method->is_editor = is_editor;

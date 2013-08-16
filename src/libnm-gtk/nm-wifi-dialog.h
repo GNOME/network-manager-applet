@@ -71,11 +71,5 @@ NMConnection * nma_wifi_dialog_get_connection (NMAWifiDialog *self,
                                                NMDevice **device,
                                                NMAccessPoint **ap);
 
-GtkWidget * nma_wifi_dialog_nag_user (NMAWifiDialog *self);
-
-void nma_wifi_dialog_set_nag_ignored (NMAWifiDialog *self, gboolean ignored);
-
-gboolean nma_wifi_dialog_get_nag_ignored (NMAWifiDialog *self);
-
 #endif	/* NMA_WIFI_DIALOG_H */
 

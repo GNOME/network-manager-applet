@@ -432,8 +432,6 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	method = (EAPMethodTLS *) parent;
 	method->new_connection = secrets_only ? FALSE : TRUE;
 
-	eap_method_nag_init (parent, "eap_tls_ca_cert_button", connection);
-
 	if (connection)
 		s_8021x = nm_connection_get_setting_802_1x (connection);
 

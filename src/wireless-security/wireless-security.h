@@ -56,7 +56,6 @@ struct _WirelessSecurity {
 	WSFillConnectionFunc fill_connection;
 	WSUpdateSecretsFunc update_secrets;
 	WSValidateFunc validate;
-	WSNagUserFunc nag_user;
 	WSDestroyFunc destroy;
 };
 
@@ -79,8 +78,6 @@ void wireless_security_fill_connection (WirelessSecurity *sec,
 
 void wireless_security_update_secrets (WirelessSecurity *sec,
                                        NMConnection *connection);
-
-GtkWidget * wireless_security_nag_user (WirelessSecurity *sec);
 
 gboolean wireless_security_adhoc_compatible (WirelessSecurity *sec);
 
@@ -148,9 +145,6 @@ void ws_802_1x_fill_connection (WirelessSecurity *sec,
 void ws_802_1x_update_secrets (WirelessSecurity *sec,
                                const char *combo_name,
                                NMConnection *connection);
-
-GtkWidget * ws_802_1x_nag_user (WirelessSecurity *sec,
-                                const char *combo_name);
 
 #endif /* WIRELESS_SECURITY_H */
 
