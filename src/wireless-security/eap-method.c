@@ -658,3 +658,102 @@ eap_method_is_encrypted_private_key (const char *path)
 	return default_filter_privkey (&info, (gpointer) TRUE);
 }
 
+/* Some methods (PEAP, TLS, TTLS) require a CA certificate. The user can choose
+ * not to provide such a certificate. This method whether the checkbox
+ * id_ca_cert_not_required_checkbutton is checked or id_ca_cert_chooser has a certificate
+ * selected.
+ */
+gboolean
+eap_method_ca_cert_required (GtkBuilder *builder, const char *id_ca_cert_not_required_checkbutton, const char *id_ca_cert_chooser)
+{
+	char *filename;
+	GtkWidget *widget;
+
+	g_assert (builder && id_ca_cert_not_required_checkbutton && id_ca_cert_chooser);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, id_ca_cert_not_required_checkbutton));
+	g_assert (widget && GTK_IS_TOGGLE_BUTTON (widget));
+
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))) {
+		widget = GTK_WIDGET (gtk_builder_get_object (builder, id_ca_cert_chooser));
+		g_assert (widget && GTK_IS_FILE_CHOOSER (widget));
+
+		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+		if (!filename)
+			return TRUE;
+		g_free (filename);
+	}
+	return FALSE;
+}
+
+
+void
+eap_method_ca_cert_not_required_toggled (GtkBuilder *builder, const char *id_ca_cert_not_required_checkbutton, const char *id_ca_cert_chooser)
+{
+	char *filename, *filename_old;
+	gboolean is_not_required;
+	GtkWidget *widget;
+
+	g_assert (builder && id_ca_cert_not_required_checkbutton && id_ca_cert_chooser);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, id_ca_cert_not_required_checkbutton));
+	g_assert (widget && GTK_IS_TOGGLE_BUTTON (widget));
+	is_not_required = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, id_ca_cert_chooser));
+	g_assert (widget && GTK_IS_FILE_CHOOSER (widget));
+
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+	filename_old = g_object_steal_data (G_OBJECT (widget), "filename-old");
+	if (is_not_required) {
+		g_free (filename_old);
+		filename_old = filename;
+		filename = NULL;
+	} else {
+		g_free (filename);
+		filename = filename_old;
+		filename_old = NULL;
+	}
+	gtk_widget_set_sensitive (widget, !is_not_required);
+	if (filename)
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
+	else
+		gtk_file_chooser_unselect_all (GTK_FILE_CHOOSER (widget));
+	g_free (filename);
+	g_object_set_data_full (G_OBJECT (widget), "filename-old", filename_old, g_free);
+}
+
+void
+eap_method_ca_cert_ignore_set (EAPMethod *method,
+                               NMConnection *connection,
+                               const char *filename,
+                               gboolean ca_cert_error,
+                               const char *id_ca_cert_is_not_required_checkbox)
+{
+	GtkWidget *widget;
+
+	/* We don't really need the checkbox value here. Just assert that it is set as expected. */
+	widget = GTK_WIDGET (gtk_builder_get_object (method->builder, id_ca_cert_is_not_required_checkbox));
+	g_assert (widget && (ca_cert_error || !filename == gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))));
+
+	_set_ignore_ca_cert (nm_connection_get_uuid (connection),
+	                     method->phase2,
+	                     !ca_cert_error && filename==NULL);
+}
+
+gboolean
+eap_method_ca_cert_ignore_get (EAPMethod *method, NMConnection *connection)
+{
+	NMSettingConnection *s_con;
+	const char *uuid;
+
+	s_con = nm_connection_get_setting_connection (connection);
+	g_assert (s_con);
+	uuid = nm_setting_connection_get_uuid (s_con);
+	g_assert (uuid);
+
+	/* Figure out if the user wants to ignore missing CA cert */
+	return _get_ignore_ca_cert (uuid, method->phase2);
+}
+
+

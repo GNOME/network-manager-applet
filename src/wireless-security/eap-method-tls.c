@@ -68,6 +68,9 @@ validate (EAPMethod *parent)
 
 	if (!eap_method_validate_filepicker (parent->builder, "eap_tls_ca_cert_button", TYPE_CA_CERT, NULL, NULL))
 		return FALSE;
+	if (eap_method_ca_cert_required (parent->builder, "eap_tls_ca_cert_not_required_checkbox", "eap_tls_ca_cert_button") )
+		return FALSE;
+
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_private_key_password_entry"));
 	g_assert (widget);
@@ -91,9 +94,21 @@ validate (EAPMethod *parent)
 }
 
 static void
+ca_cert_not_required_toggled (GtkWidget *ignored, gpointer user_data)
+{
+	EAPMethod *parent = user_data;
+
+	eap_method_ca_cert_not_required_toggled (parent->builder, "eap_tls_ca_cert_not_required_checkbox", "eap_tls_ca_cert_button");
+}
+
+static void
 add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 {
 	GtkWidget *widget;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_not_required_checkbox"));
+	g_assert (widget);
+	gtk_size_group_add_widget (group, widget);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_identity_label"));
 	g_assert (widget);
@@ -127,6 +142,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	const char *password = NULL;
 	GError *error = NULL;
 	const char *secret_flag_prop = NULL;
+	gboolean ca_cert_error = FALSE;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
@@ -209,13 +225,17 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		if (!nm_setting_802_1x_set_phase2_ca_cert (s_8021x, ca_filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 			g_warning ("Couldn't read phase2 CA certificate '%s': %s", ca_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
+			ca_cert_error = TRUE;
 		}
 	} else {
 		if (!nm_setting_802_1x_set_ca_cert (s_8021x, ca_filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 			g_warning ("Couldn't read CA certificate '%s': %s", ca_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
+			ca_cert_error = TRUE;
 		}
 	}
+	eap_method_ca_cert_ignore_set (parent, connection, ca_filename, ca_cert_error, "eap_tls_ca_cert_not_required_checkbox");
+	g_free (ca_filename);
 }
 
 static void
@@ -394,6 +414,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	EAPMethod *parent;
 	GtkWidget *widget;
 	NMSetting8021x *s_8021x = NULL;
+	gboolean ca_not_required = FALSE;
 
 	parent = eap_method_init (sizeof (EAPMethodTLS),
 	                          validate,
@@ -415,6 +436,15 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 
 	if (connection)
 		s_8021x = nm_connection_get_setting_802_1x (connection);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_not_required_checkbox"));
+	g_assert (widget);
+	g_signal_connect (G_OBJECT (widget), "toggled",
+	                  (GCallback) ca_cert_not_required_toggled,
+	                  parent);
+	g_signal_connect (G_OBJECT (widget), "toggled",
+	                  (GCallback) wireless_security_changed_cb,
+	                  ws_parent);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_identity_entry"));
 	g_assert (widget);
@@ -442,6 +472,13 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_scheme : nm_setting_802_1x_get_private_key_scheme,
 	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_path : nm_setting_802_1x_get_private_key_path,
 	                  TRUE, FALSE);
+
+	if (eap_method_ca_cert_ignore_get (parent, connection)) {
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_button"));
+		ca_not_required = !gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+	}
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_not_required_checkbox"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), ca_not_required);
 
 	/* Fill secrets, if any */
 	if (connection)
@@ -473,6 +510,8 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_label"));
 		gtk_widget_hide (widget);
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_button"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_not_required_checkbox"));
 		gtk_widget_hide (widget);
 	}
 

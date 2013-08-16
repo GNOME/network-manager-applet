@@ -63,6 +63,8 @@ validate (EAPMethod *parent)
 
 	if (!eap_method_validate_filepicker (parent->builder, "eap_peap_ca_cert_button", TYPE_CA_CERT, NULL, NULL))
 		return FALSE;
+	if (eap_method_ca_cert_required (parent->builder, "eap_peap_ca_cert_not_required_checkbox", "eap_peap_ca_cert_button") )
+		return FALSE;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_inner_auth_combo"));
 	g_assert (widget);
@@ -77,6 +79,14 @@ validate (EAPMethod *parent)
 }
 
 static void
+ca_cert_not_required_toggled (GtkWidget *ignored, gpointer user_data)
+{
+	EAPMethod *parent = user_data;
+
+	eap_method_ca_cert_not_required_toggled (parent->builder, "eap_peap_ca_cert_not_required_checkbox", "eap_peap_ca_cert_button");
+}
+
+static void
 add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 {
 	EAPMethodPEAP *method = (EAPMethodPEAP *) parent;
@@ -88,6 +98,10 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 	if (method->size_group)
 		g_object_unref (method->size_group);
 	method->size_group = g_object_ref (group);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_not_required_checkbox"));
+	g_assert (widget);
+	gtk_size_group_add_widget (group, widget);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_label"));
 	g_assert (widget);
@@ -129,6 +143,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	GtkTreeIter iter;
 	int peapver_active = 0;
 	GError *error = NULL;
+	gboolean ca_cert_error = FALSE;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
@@ -147,7 +162,10 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	if (!nm_setting_802_1x_set_ca_cert (s_8021x, filename, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 		g_warning ("Couldn't read CA certificate '%s': %s", filename, error ? error->message : "(unknown)");
 		g_clear_error (&error);
+		ca_cert_error = TRUE;
 	}
+	eap_method_ca_cert_ignore_set (parent, connection, filename, ca_cert_error, "eap_peap_ca_cert_not_required_checkbox");
+	g_free (filename);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_version_combo"));
 	peapver_active = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
@@ -316,7 +334,7 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 {
 	EAPMethod *parent;
 	EAPMethodPEAP *method;
-	GtkWidget *widget;
+	GtkWidget *widget, *widget_ca_not_required_checkbox;
 	GtkFileFilter *filter;
 	NMSetting8021x *s_8021x = NULL;
 	const char *filename;
@@ -343,6 +361,16 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 	if (connection)
 		s_8021x = nm_connection_get_setting_802_1x (connection);
 
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_not_required_checkbox"));
+	g_assert (widget);
+	g_signal_connect (G_OBJECT (widget), "toggled",
+	                  (GCallback) ca_cert_not_required_toggled,
+	                  parent);
+	g_signal_connect (G_OBJECT (widget), "toggled",
+	                  (GCallback) wireless_security_changed_cb,
+	                  ws_parent);
+	widget_ca_not_required_checkbox = widget;
+
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_button"));
 	g_assert (widget);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (widget), TRUE);
@@ -354,11 +382,14 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 	filter = eap_method_default_file_chooser_filter_new (FALSE);
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (widget), filter);
 	if (connection && s_8021x) {
+		filename = NULL;
 		if (nm_setting_802_1x_get_ca_cert_scheme (s_8021x) == NM_SETTING_802_1X_CK_SCHEME_PATH) {
 			filename = nm_setting_802_1x_get_ca_cert_path (s_8021x);
 			if (filename)
 				gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (widget), filename);
 		}
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget_ca_not_required_checkbox),
+		                              !filename && eap_method_ca_cert_ignore_get (parent, connection));
 	}
 
 	widget = inner_auth_combo_init (method, connection, s_8021x, secrets_only);
@@ -398,6 +429,8 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_label"));
 		gtk_widget_hide (widget);
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_button"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_not_required_checkbox"));
 		gtk_widget_hide (widget);
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_inner_auth_label"));
 		gtk_widget_hide (widget);
