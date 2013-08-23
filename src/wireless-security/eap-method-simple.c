@@ -250,8 +250,6 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	EAPMethod *parent;
 	EAPMethodSimple *method;
 	GtkWidget *widget;
-	gboolean not_saved = FALSE;
-	NMSetting8021x *s_8021x = NULL;
 
 	parent = eap_method_init (sizeof (EAPMethodSimple),
 	                          validate,
@@ -287,11 +285,6 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
-	if (connection) {
-		s_8021x = nm_connection_get_setting_802_1x (connection);
-		if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
-			gtk_entry_set_text (method->username_entry, nm_setting_802_1x_get_identity (s_8021x));
-	}
 
 	if (secrets_only)
 		gtk_widget_set_sensitive (widget, FALSE);
@@ -323,19 +316,6 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 
 	if (secrets_only)
 		gtk_widget_hide (widget);
-
-	if (s_8021x) {
-		NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
-
-		nm_setting_get_secret_flags (NM_SETTING (s_8021x), NM_SETTING_802_1X_PASSWORD, &flags, NULL);
-		not_saved = (flags & NM_SETTING_SECRET_FLAG_NOT_SAVED);
-	}
-
-	gtk_toggle_button_set_active (method->always_ask, not_saved);
-
-	/* Fill secrets if there's a static (ie, not OTP) password */
-	if (connection && (not_saved == FALSE))
-		update_secrets (EAP_METHOD (method), connection);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapsimple"));
 	g_assert (widget);

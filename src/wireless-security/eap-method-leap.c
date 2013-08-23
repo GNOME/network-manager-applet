@@ -202,13 +202,6 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
-	if (connection) {
-		NMSetting8021x *s_8021x;
-
-		s_8021x = nm_connection_get_setting_802_1x (connection);
-		if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
-			gtk_entry_set_text (method->username_entry, nm_setting_802_1x_get_identity (s_8021x));
-	}
 
 	if (secrets_only)
 		gtk_widget_set_sensitive (widget, FALSE);
@@ -219,10 +212,6 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
-
-	/* Fill secrets, if any */
-	if (connection)
-		update_secrets (parent, connection);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapleap"));
 	g_assert (widget);

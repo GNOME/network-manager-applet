@@ -238,6 +238,32 @@ wireless_security_set_userpass (WirelessSecurity *sec,
 }
 
 void
+wireless_security_set_userpass_802_1x (WirelessSecurity *sec,
+                                       NMConnection *connection)
+{
+	const char *user = NULL, *password = NULL;
+	gboolean always_ask = FALSE, show_password = FALSE;
+	NMSetting8021x  *setting;
+	NMSettingSecretFlags flags;
+
+	if (!connection)
+		goto set;
+
+	setting = nm_connection_get_setting_802_1x (connection);
+	if (!setting)
+		goto set;
+
+	user = nm_setting_802_1x_get_identity (setting);
+	password = nm_setting_802_1x_get_password (setting);
+
+	if (nm_setting_get_secret_flags (NM_SETTING (setting), NM_SETTING_802_1X_PASSWORD, &flags, NULL))
+		always_ask = flags & NM_SETTING_SECRET_FLAG_NOT_SAVED;
+
+set:
+	wireless_security_set_userpass (sec, user, password, always_ask, show_password);
+}
+
+void
 wireless_security_clear_ciphers (NMConnection *connection)
 {
 	NMSettingWirelessSecurity *s_wireless_sec;
@@ -384,6 +410,9 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		if (s_8021x && nm_setting_802_1x_get_num_eap_methods (s_8021x))
 			default_method = nm_setting_802_1x_get_eap_method (s_8021x, 0);
 	}
+
+	/* initialize WirelessSecurity userpass from connection (clear if no connection) */
+	wireless_security_set_userpass_802_1x (sec, connection);
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
 

@@ -86,6 +86,8 @@ void wireless_security_set_userpass (WirelessSecurity *sec,
                                      const char *password,
                                      gboolean always_ask,
                                      gboolean show_password);
+void wireless_security_set_userpass_802_1x (WirelessSecurity *sec,
+                                            NMConnection *connection);
 
 WirelessSecurity *wireless_security_ref (WirelessSecurity *sec);
 
