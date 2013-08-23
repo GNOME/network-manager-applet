@@ -175,14 +175,37 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 }
 
 static void
+g_free_str0 (gpointer mem)
+{
+	/* g_free a char pointer and set it to 0 before (for passwords). */
+	if (mem) {
+		char *p = mem;
+		memset (p, 0, strlen (p));
+		g_free (p);
+	}
+}
+
+static void
 password_always_ask_changed (GtkToggleButton *button, EAPMethodSimple *method)
 {
+	char *password;
 	gboolean always_ask;
 
 	always_ask = gtk_toggle_button_get_active (button);
 
 	if (always_ask) {
+		password = g_strdup (gtk_entry_get_text (method->password_entry));
 		gtk_entry_set_text (method->password_entry, "");
+		g_object_set_data_full (G_OBJECT (method->password_entry), "password-old", password, g_free_str0);
+	} else {
+		password = g_object_get_data (G_OBJECT (method->password_entry), "password-old");
+		gtk_entry_set_text (method->password_entry, password ? password : "");
+		g_object_set_data(G_OBJECT (method->password_entry), "password-old", NULL);
+	}
+
+	if (always_ask) {
+		/* we always clear this button and do not restore it
+		 * (because we want to hide the password). */
 		gtk_toggle_button_set_active (method->show_password, FALSE);
 	}
 
@@ -215,6 +238,9 @@ widgets_unrealized (GtkWidget *widget, EAPMethodSimple *method)
 	                                gtk_entry_get_text (method->password_entry),
 	                                gtk_toggle_button_get_active (method->always_ask),
 	                                gtk_toggle_button_get_active (method->show_password));
+
+	/* clear the remembered password. If the user changes the scheme, it's gone. */
+	g_object_set_data(G_OBJECT (method->password_entry), "password-old", NULL);
 }
 
 static void
