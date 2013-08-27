@@ -217,6 +217,28 @@ widgets_unrealized (GtkWidget *widget, EAPMethodSimple *method)
 	                                gtk_toggle_button_get_active (method->show_password));
 }
 
+static void
+destroy (EAPMethod *parent)
+{
+	EAPMethodSimple *method = (EAPMethodSimple *) parent;
+	GtkWidget *widget;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_notebook"));
+	g_assert (widget);
+
+	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
+	                                      (GCallback) widgets_realized,
+	                                      method);
+	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
+	                                      (GCallback) widgets_unrealized,
+	                                      method);
+	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
+	                                      (GCallback) wireless_security_changed_cb,
+	                                      method->ws_parent);
+
+	wireless_security_unref (method->ws_parent);
+}
+
 EAPMethodSimple *
 eap_method_simple_new (WirelessSecurity *ws_parent,
                        NMConnection *connection,
@@ -236,7 +258,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	                          add_to_size_group,
 	                          fill_connection,
 	                          update_secrets,
-	                          NULL,
+	                          destroy,
 	                          UIDIR "/eap-method-simple.ui",
 	                          "eap_simple_notebook",
 	                          "eap_simple_username_entry",
@@ -248,7 +270,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	method->type = type;
 	method->is_editor = is_editor;
 	method->new_connection = secrets_only ? FALSE : TRUE;
-	method->ws_parent = ws_parent;
+	method->ws_parent = wireless_security_ref (ws_parent);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_notebook"));
 	g_assert (widget);
