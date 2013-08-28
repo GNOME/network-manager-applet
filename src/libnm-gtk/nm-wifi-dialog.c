@@ -842,7 +842,6 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 
 	if (priv->connection) {
 		const char *mode;
-		const char *security;
 
 		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 
@@ -852,9 +851,6 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 
 		wsec = nm_connection_get_setting_wireless_security (priv->connection);
 
-		security = nm_setting_wireless_get_security (s_wireless);
-		if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
-			wsec = NULL;
 		if (wsec) {
 			default_type = get_default_type_for_security (wsec, !!priv->ap, ap_flags, dev_caps);
 			if (default_type == NMU_SEC_STATIC_WEP)
@@ -1223,12 +1219,6 @@ nma_wifi_dialog_get_connection (NMAWifiDialog *self,
 	if (sec) {
 		wireless_security_fill_connection (sec, connection);
 		wireless_security_unref (sec);
-	} else {
-		/* Unencrypted */
-		s_wireless = nm_connection_get_setting_wireless (connection);
-		g_assert (s_wireless);
-
-		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
 	}
 
 	/* Fill device */

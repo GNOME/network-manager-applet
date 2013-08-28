@@ -537,8 +537,6 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 	nm_utils_slist_free (bssids, g_free);
 
 	if (we_cipher != NM_AUTH_TYPE_NONE) {
-		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
-
 		switch (we_cipher) {
 		case NM_AUTH_TYPE_WEP40:
 		case NM_AUTH_TYPE_WEP104:

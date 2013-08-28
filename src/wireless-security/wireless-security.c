@@ -515,17 +515,11 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
                            NMConnection *connection)
 {
 	GtkWidget *widget;
-	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	NMSetting8021x *s_8021x;
 	EAPMethod *eap = NULL;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-
-	s_wireless = nm_connection_get_setting_wireless (connection);
-	g_assert (s_wireless);
-
-	g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
 	/* Blow away the old wireless security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();

@@ -230,14 +230,12 @@ create_info_label_security (NMConnection *connection)
 		NMSettingWireless *s_wireless;
 		NMSettingWirelessSecurity *s_wireless_sec;
 		NMSetting8021x *s_8021x;
-		const char *security;
 
 		s_wireless = nm_connection_get_setting_wireless (connection);
 		s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 		s_8021x = nm_connection_get_setting_802_1x (connection);
-		security = s_wireless ? nm_setting_wireless_get_security (s_wireless) : NULL;
 
-		if (security && !strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME) && s_wireless_sec) {
+		if (s_wireless_sec) {
 			const char *key_mgmt = nm_setting_wireless_security_get_key_mgmt (s_wireless_sec);
 
 			if (!strcmp (key_mgmt, "none"))
@@ -249,7 +247,7 @@ create_info_label_security (NMConnection *connection)
 			else
 				label = get_eap_label (s_wireless_sec, s_8021x);
 		} else {
-			label = g_strdup (C_("Wifi/wired security", "None"));
+			label = g_strdup (C_("Wi-Fi/Ethernet security", "None"));
 		}
 	} else if (!strcmp (connection_type, NM_SETTING_WIRED_SETTING_NAME)) {
 		NMSetting8021x *s_8021x;
@@ -258,7 +256,7 @@ create_info_label_security (NMConnection *connection)
 		if (s_8021x)
 			label = get_eap_label (NULL, s_8021x);
 		else
-			label = g_strdup (C_("Wifi/wired security", "None"));
+			label = g_strdup (C_("Wi-Fi/Ethernet security", "None"));
 	}
 
 	if (label)

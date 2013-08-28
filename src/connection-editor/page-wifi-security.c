@@ -221,7 +221,6 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 	GtkListStore *sec_model;
 	GtkTreeIter iter;
 	const char *mode;
-	const char *security;
 	guint32 dev_caps = 0;
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
 	int active = -1;
@@ -251,9 +250,6 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 
 	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 
-	security = nm_setting_wireless_get_security (s_wireless);
-	if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
-		s_wireless_sec = NULL;
 	if (s_wireless_sec)
 		default_type = get_default_type_for_security (s_wireless_sec);
 
@@ -389,7 +385,6 @@ ce_page_wifi_security_new (NMConnection *connection,
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wsec = NULL;
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
-	const char *security;
 
 	s_wireless = nm_connection_get_setting_wireless (connection);
 	if (!s_wireless) {
@@ -414,9 +409,6 @@ ce_page_wifi_security_new (NMConnection *connection,
 
 	s_wsec = nm_connection_get_setting_wireless_security (connection);
 
-	security = nm_setting_wireless_get_security (s_wireless);
-	if (!security || strcmp (security, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME))
-		s_wsec = NULL;
 	if (s_wsec)
 		default_type = get_default_type_for_security (s_wsec);
 
@@ -510,7 +502,6 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		wireless_security_unref (sec);
 	} else {
 		/* No security, unencrypted */
-		g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NULL, NULL);
 		nm_connection_remove_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
 		nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
 		valid = TRUE;

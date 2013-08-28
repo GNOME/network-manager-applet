@@ -142,7 +142,6 @@ static void
 fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
-	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wsec;
 	GtkWidget *widget;
 	gint auth_alg;
@@ -155,11 +154,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 	strcpy (sec->keys[sec->cur_index], key);
-
-	s_wireless = nm_connection_get_setting_wireless (connection);
-	g_assert (s_wireless);
-
-	g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
 
 	/* Blow away the old security setting by adding a clear one */
 	s_wsec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();

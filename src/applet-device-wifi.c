@@ -430,7 +430,6 @@ _do_new_auto_connection (NMApplet *applet,
 		}
 		g_object_set (s_wifi,
 		              NM_SETTING_WIRELESS_SSID, ssid,
-		              NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
 		              NULL);
 
 		s_wsec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();

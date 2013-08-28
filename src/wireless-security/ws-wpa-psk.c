@@ -104,8 +104,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	if (mode && !strcmp (mode, "adhoc"))
 		is_adhoc = TRUE;
 
-	g_object_set (s_wireless, NM_SETTING_WIRELESS_SEC, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, NULL);
-
 	/* Blow away the old security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
