@@ -92,6 +92,17 @@ typedef struct {
 static gboolean security_combo_init (NMAWifiDialog *self, gboolean secrets_only);
 static void ssid_entry_changed (GtkWidget *entry, gpointer user_data);
 
+void
+nma_wifi_dialog_set_nag_ignored (NMAWifiDialog *self, gboolean ignored)
+{
+}
+
+gboolean
+nma_wifi_dialog_get_nag_ignored (NMAWifiDialog *self)
+{
+	return TRUE;
+}
+
 static void
 size_group_clear (GtkSizeGroup *group)
 {
@@ -1319,6 +1330,18 @@ GtkWidget *
 nma_wifi_dialog_new_for_create (NMClient *client, NMRemoteSettings *settings)
 {
 	return internal_new_other (client, settings, TRUE);
+}
+
+/**
+ * nma_wifi_dialog_nag_user:
+ * @self:
+ *
+ * Returns: (transfer full):
+ */
+GtkWidget *
+nma_wifi_dialog_nag_user (NMAWifiDialog *self)
+{
+	return NULL;
 }
 
 static void
