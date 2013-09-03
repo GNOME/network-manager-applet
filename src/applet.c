@@ -46,6 +46,7 @@
 
 #include <NetworkManagerVPN.h>
 #include <nm-device-bond.h>
+#include <nm-device-team.h>
 #include <nm-device-bridge.h>
 #include <nm-device-bt.h>
 #include <nm-device-ethernet.h>
@@ -72,6 +73,7 @@
 
 #include "applet.h"
 #include "applet-device-bond.h"
+#include "applet-device-team.h"
 #include "applet-device-bridge.h"
 #include "applet-device-bt.h"
 #include "applet-device-cdma.h"
@@ -270,6 +272,8 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		return applet->vlan_class;
 	else if (NM_IS_DEVICE_BOND (device))
 		return applet->bond_class;
+	else if (NM_IS_DEVICE_TEAM (device))
+		return applet->team_class;
 	else if (NM_IS_DEVICE_BRIDGE (device))
 		return applet->bridge_class;
 	else if (NM_IS_DEVICE_INFINIBAND (device))
@@ -310,6 +314,8 @@ get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
 		return applet->bt_class;
 	else if (!strcmp (ctype, NM_SETTING_BOND_SETTING_NAME))
 		return applet->bond_class;
+	else if (!strcmp (ctype, NM_SETTING_TEAM_SETTING_NAME))
+		return applet->team_class;
 	else if (!strcmp (ctype, NM_SETTING_BRIDGE_SETTING_NAME))
 		return applet->bridge_class;
 	else if (!strcmp (ctype, NM_SETTING_VLAN_SETTING_NAME))
@@ -1702,6 +1708,8 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 	n_items += add_virtual_items (NM_SETTING_BRIDGE_SETTING_NAME,
 	                              all_devices, all_connections, menu, applet);
 	n_items += add_virtual_items (NM_SETTING_BOND_SETTING_NAME,
+	                              all_devices, all_connections, menu, applet);
+	n_items += add_virtual_items (NM_SETTING_TEAM_SETTING_NAME,
 	                              all_devices, all_connections, menu, applet);
 	n_items += add_device_items  (NM_DEVICE_TYPE_ETHERNET,
 	                              all_devices, all_connections, menu, applet);
@@ -3723,6 +3731,9 @@ constructor (GType type,
 	applet->bond_class = applet_device_bond_get_class (applet);
 	g_assert (applet->bond_class);
 
+	applet->team_class = applet_device_team_get_class (applet);
+	g_assert (applet->team_class);
+
 	applet->bridge_class = applet_device_bridge_get_class (applet);
 	g_assert (applet->bridge_class);
 
@@ -3773,6 +3784,7 @@ static void finalize (GObject *object)
 	g_slice_free (NMADeviceClass, applet->wimax_class);
 	g_slice_free (NMADeviceClass, applet->vlan_class);
 	g_slice_free (NMADeviceClass, applet->bond_class);
+	g_slice_free (NMADeviceClass, applet->team_class);
 	g_slice_free (NMADeviceClass, applet->bridge_class);
 	g_slice_free (NMADeviceClass, applet->infiniband_class);
 

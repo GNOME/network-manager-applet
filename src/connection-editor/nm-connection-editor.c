@@ -48,6 +48,7 @@
 #include <nm-setting-wimax.h>
 #include <nm-setting-infiniband.h>
 #include <nm-setting-bond.h>
+#include <nm-setting-team.h>
 #include <nm-setting-bridge.h>
 #include <nm-utils.h>
 
@@ -71,6 +72,8 @@
 #include "page-wimax.h"
 #include "page-infiniband.h"
 #include "page-bond.h"
+#include "page-team.h"
+#include "page-team-port.h"
 #include "page-bridge.h"
 #include "page-bridge-port.h"
 #include "page-vlan.h"
@@ -821,6 +824,9 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	} else if (!strcmp (connection_type, NM_SETTING_BOND_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_bond_new, editor->connection, error))
 			goto out;
+	} else if (!strcmp (connection_type, NM_SETTING_TEAM_SETTING_NAME)) {
+		if (!add_page (editor, ce_page_team_new, editor->connection, error))
+			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_BRIDGE_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_bridge_new, editor->connection, error))
 			goto out;
@@ -834,7 +840,11 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	slave_type = nm_setting_connection_get_slave_type (s_con);
 	if (!g_strcmp0 (slave_type, NM_SETTING_BOND_SETTING_NAME))
 		add_ip4 = add_ip6 = FALSE;
-	else if (!g_strcmp0 (slave_type, NM_SETTING_BRIDGE_SETTING_NAME)) {
+	else if (!g_strcmp0 (slave_type, NM_SETTING_TEAM_SETTING_NAME)) {
+		add_ip4 = add_ip6 = FALSE;
+		if (!add_page (editor, ce_page_team_port_new, editor->connection, error))
+			goto out;
+	} else if (!g_strcmp0 (slave_type, NM_SETTING_BRIDGE_SETTING_NAME)) {
 		add_ip4 = add_ip6 = FALSE;
 		if (!add_page (editor, ce_page_bridge_port_new, editor->connection, error))
 			goto out;

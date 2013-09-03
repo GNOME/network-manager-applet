@@ -118,6 +118,7 @@ typedef struct
 	NMADeviceClass *wimax_class;
 	NMADeviceClass *vlan_class;
 	NMADeviceClass *bond_class;
+	NMADeviceClass *team_class;
 	NMADeviceClass *bridge_class;
 	NMADeviceClass *infiniband_class;
 

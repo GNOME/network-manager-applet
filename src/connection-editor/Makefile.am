@@ -55,6 +55,10 @@ nm_connection_editor_SOURCES = \
 	page-master.c \
 	page-bond.h \
 	page-bond.c \
+	page-team.h \
+	page-team.c \
+	page-team-port.h \
+	page-team-port.c \
 	page-bridge.h \
 	page-bridge.c \
 	page-bridge-port.h \
@@ -97,6 +101,8 @@ ui_DATA = \
 	ce-page-wimax.ui \
 	ce-page-infiniband.ui \
 	ce-page-bond.ui \
+	ce-page-team.ui \
+	ce-page-team-port.ui \
 	ce-page-bridge.ui \
 	ce-page-bridge-port.ui \
 	ce-page-ip4.ui \
