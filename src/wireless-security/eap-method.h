@@ -73,7 +73,7 @@ EAPMethod *eap_method_ref (EAPMethod *method);
 
 void eap_method_unref (EAPMethod *method);
 
-GType eap_method_get_g_type (void);
+GType eap_method_get_type (void);
 
 /* Below for internal use only */
 

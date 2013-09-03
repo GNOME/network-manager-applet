@@ -228,7 +228,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	guint32 active = 0;
 	const char *phase2_auth = NULL;
 
-	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
+	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_type ());
 
 	if (s_8021x) {
 		if (nm_setting_802_1x_get_phase2_auth (s_8021x))

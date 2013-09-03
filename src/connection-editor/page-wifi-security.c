@@ -253,7 +253,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 	if (s_wireless_sec)
 		default_type = get_default_type_for_security (s_wireless_sec);
 
-	sec_model = gtk_list_store_new (3, G_TYPE_STRING, wireless_security_get_g_type (), G_TYPE_BOOLEAN);
+	sec_model = gtk_list_store_new (3, G_TYPE_STRING, wireless_security_get_type (), G_TYPE_BOOLEAN);
 
 	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, FALSE, is_adhoc, 0, 0, 0)) {
 		gtk_list_store_append (sec_model, &iter);

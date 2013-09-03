@@ -37,19 +37,7 @@
 #include "eap-method.h"
 #include "nm-utils.h"
 
-GType
-eap_method_get_g_type (void)
-{
-	static GType type_id = 0;
-
-	if (!type_id) {
-		type_id = g_boxed_type_register_static ("EAPMethod",
-		                                        (GBoxedCopyFunc) eap_method_ref,
-		                                        (GBoxedFreeFunc) eap_method_unref);
-	}
-
-	return type_id;
-}
+G_DEFINE_BOXED_TYPE (EAPMethod, eap_method, eap_method_ref, eap_method_unref)
 
 GtkWidget *
 eap_method_get_widget (EAPMethod *method)

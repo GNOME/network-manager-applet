@@ -37,19 +37,7 @@
 #include "wireless-security.h"
 #include "eap-method.h"
 
-GType
-wireless_security_get_g_type (void)
-{
-	static GType type_id = 0;
-
-	if (!type_id) {
-		type_id = g_boxed_type_register_static ("WirelessSecurity",
-		                                        (GBoxedCopyFunc) wireless_security_ref,
-		                                        (GBoxedFreeFunc) wireless_security_unref);
-	}
-
-	return type_id;
-}
+G_DEFINE_BOXED_TYPE (WirelessSecurity, wireless_security, wireless_security_ref, wireless_security_unref)
 
 GtkWidget *
 wireless_security_get_widget (WirelessSecurity *sec)
@@ -414,7 +402,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	/* initialize WirelessSecurity userpass from connection (clear if no connection) */
 	wireless_security_set_userpass_802_1x (sec, connection);
 
-	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_g_type ());
+	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_type ());
 
 	if (wired) {
 		em_md5 = eap_method_simple_new (sec,

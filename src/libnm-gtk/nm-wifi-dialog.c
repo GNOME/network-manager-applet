@@ -864,7 +864,7 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 		wep_type = NM_WEP_KEY_TYPE_PASSPHRASE;
 	}
 
-	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_g_type ());
+	sec_model = gtk_list_store_new (2, G_TYPE_STRING, wireless_security_get_type ());
 
 	if (nm_utils_security_valid (NMU_SEC_NONE, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		gtk_list_store_append (sec_model, &iter);

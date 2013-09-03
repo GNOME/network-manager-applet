@@ -93,7 +93,7 @@ WirelessSecurity *wireless_security_ref (WirelessSecurity *sec);
 
 void wireless_security_unref (WirelessSecurity *sec);
 
-GType wireless_security_get_g_type (void);
+GType wireless_security_get_type (void);
 
 /* Below for internal use only */
 
