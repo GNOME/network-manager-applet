@@ -10,17 +10,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet 0.9.3\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-20 18:54+0800\n"
-"PO-Revision-Date: 2013-03-12 08:55+0800\n"
-"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
+"POT-Creation-Date: 2013-09-03 19:41+0000\n"
+"PO-Revision-Date: 2013-09-04 16:10+0800\n"
+"Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.linux.org.tw>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.5\n"
 
 #: ../nm-applet.desktop.in.h:1
 msgid "Network"
@@ -449,7 +449,7 @@ msgstr "VPN 連線「%s」在使用中"
 msgid "No network connection"
 msgstr "沒有網路連接"
 
-#: ../src/applet.c:3441
+#: ../src/applet.c:3442
 msgid "NetworkManager Applet"
 msgstr "NetworkManager 面板程式"
 
@@ -1217,7 +1217,7 @@ msgstr "優先順序(_P):"
 #, fuzzy
 #| msgid "_Transport mode:"
 msgid "_Hairpin mode:"
-msgstr "可重新排列模式"
+msgstr "髮模式"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:1
 msgid "Bridged _connections:"
@@ -1251,7 +1251,7 @@ msgstr "存續時間(_A):"
 msgid "automatic"
 msgstr "自動"
 
-#: ../src/connection-editor/ce-page.c:356
+#: ../src/connection-editor/ce-page.c:362
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "由於不明的錯誤使連線機密的更新失敗。"
 
@@ -1823,7 +1823,7 @@ msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/new-connection.c:137
-#: ../src/connection-editor/page-bond.c:419 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/page-bond.c:439 ../src/libnm-gtk/nm-ui-utils.c:337
 #: ../src/libnm-gtk/nm-ui-utils.c:559
 msgid "Bond"
 msgstr "繫結"
@@ -1893,48 +1893,48 @@ msgid ""
 "was not found)."
 msgstr "連線編輯器找不到一些需要的資源（找不到 .ui 檔）。"
 
-#: ../src/connection-editor/nm-connection-editor.c:408
+#: ../src/connection-editor/nm-connection-editor.c:413
 msgid "_Save"
 msgstr "儲存(_S)"
 
-#: ../src/connection-editor/nm-connection-editor.c:409
+#: ../src/connection-editor/nm-connection-editor.c:414
 msgid "Save any changes made to this connection."
 msgstr "儲存任何對這個連線進行的變更。"
 
-#: ../src/connection-editor/nm-connection-editor.c:410
+#: ../src/connection-editor/nm-connection-editor.c:415
 msgid "_Save..."
 msgstr "儲存(_S)…"
 
-#: ../src/connection-editor/nm-connection-editor.c:411
+#: ../src/connection-editor/nm-connection-editor.c:416
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr "驗證以儲存這個連線給此電腦上的所有使用者。"
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not create connection"
 msgstr "無法建立連線"
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not edit connection"
 msgstr "無法編輯連線"
 
-#: ../src/connection-editor/nm-connection-editor.c:429
+#: ../src/connection-editor/nm-connection-editor.c:434
 msgid "Unknown error creating connection editor dialog."
 msgstr "建立連線編輯器對話盒時發生不明錯誤。"
 
-#: ../src/connection-editor/nm-connection-editor.c:536
+#: ../src/connection-editor/nm-connection-editor.c:541
 msgid "Error saving connection"
 msgstr "儲存連線時錯誤"
 
-#: ../src/connection-editor/nm-connection-editor.c:537
+#: ../src/connection-editor/nm-connection-editor.c:542
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "屬性「%s」/「%s」是無效的：%d"
 
-#: ../src/connection-editor/nm-connection-editor.c:631
+#: ../src/connection-editor/nm-connection-editor.c:641
 msgid "Error initializing editor"
 msgstr "初始化編輯器時發生錯誤"
 
-#: ../src/connection-editor/nm-connection-editor.c:952
+#: ../src/connection-editor/nm-connection-editor.c:962
 msgid "Connection add failed"
 msgstr "新增連線失敗"
 
@@ -2018,20 +2018,24 @@ msgstr "刪除(_D)…"
 msgid "Authenticate to delete the selected connection"
 msgstr "驗證以刪除選取的連線"
 
-#: ../src/connection-editor/nm-connection-list.c:942
-msgid "Error creating connection"
-msgstr "建立連線時發生錯誤"
-
 #: ../src/connection-editor/nm-connection-list.c:943
+msgid "No VPN plugins are installed."
+msgstr "尚未安裝 VPN 外掛程式。"
+
+#: ../src/connection-editor/nm-connection-list.c:945
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "不知道如何建立「%s」連線"
 
-#: ../src/connection-editor/nm-connection-list.c:998
+#: ../src/connection-editor/nm-connection-list.c:947
+msgid "Error creating connection"
+msgstr "建立連線時發生錯誤"
+
+#: ../src/connection-editor/nm-connection-list.c:1003
 msgid "Error editing connection"
 msgstr "編輯連線時發生錯誤"
 
-#: ../src/connection-editor/nm-connection-list.c:999
+#: ../src/connection-editor/nm-connection-list.c:1004
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "找不到 UUID「%s」的連線"
@@ -2048,11 +2052,11 @@ msgstr "無法載入 802.1x 安全性使用者介面。"
 msgid "Use 802.1_X security for this connection"
 msgstr "在這個連線使用 802.1_X 防護"
 
-#: ../src/connection-editor/page-bond.c:422
+#: ../src/connection-editor/page-bond.c:442
 msgid "Could not load bond user interface."
 msgstr "無法載入繫結的使用者介面。"
 
-#: ../src/connection-editor/page-bond.c:561
+#: ../src/connection-editor/page-bond.c:584
 #, c-format
 msgid "Bond connection %d"
 msgstr "繫結的連線 %d"
@@ -2803,45 +2807,45 @@ msgstr "%s %s"
 msgid "New..."
 msgstr "新增…"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1052
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1055
 msgid "C_reate"
 msgstr "建立(_R)"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1136
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1154
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
 msgstr "需要密碼或是加密金鑰來存取 Wi-Fi 網路「%s」。"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1138
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1156
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Wi-Fi 網路連線需要驗證"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1140
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1158
 msgid "Authentication required by Wi-Fi network"
 msgstr "Wi-Fi 網路連線需要驗證"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1145
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1163
 msgid "Create New Wi-Fi Network"
 msgstr "建立新的 Wi-Fi 網路"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1147
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1165
 msgid "New Wi-Fi network"
 msgstr "新的 Wi-Fi 網路"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1148
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "輸入您要建立的 Wi-Fi 網路的名稱。"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1168
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "連接到隱藏的 Wi-Fi 網路"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1170
 msgid "Hidden Wi-Fi network"
 msgstr "隱藏的 Wi-Fi 網路"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1153
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1171
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
