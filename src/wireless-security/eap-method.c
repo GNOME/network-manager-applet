@@ -98,51 +98,6 @@ eap_method_update_secrets (EAPMethod *method, NMConnection *connection)
 		method->update_secrets (method, connection);
 }
 
-static GSettings *
-_get_ca_ignore_settings (const char *uuid)
-{
-	GSettings *settings;
-	char *path = NULL;
-
-	path = g_strdup_printf ("/org/gnome/nm-applet/eap/%s", uuid);
-	settings = g_settings_new_with_path ("org.gnome.nm-applet.eap", path);
-	g_free (path);
-
-	return settings;
-}
-
-static void
-_set_ignore_ca_cert (const char *uuid, gboolean phase2, gboolean ignore)
-{
-	GSettings *settings;
-	const char *key;
-
-	g_return_if_fail (uuid != NULL);
-
-	settings = _get_ca_ignore_settings (uuid);
-	key = phase2 ? "ignore-phase2-ca-cert" : "ignore-ca-cert";
-	g_settings_set_boolean (settings, key, ignore);
-	g_object_unref (settings);
-}
-
-static gboolean
-_get_ignore_ca_cert (const char *uuid, gboolean phase2)
-{
-	GSettings *settings;
-	const char *key;
-	gboolean ignore = FALSE;
-
-	g_return_val_if_fail (uuid != NULL, FALSE);
-
-	settings = _get_ca_ignore_settings (uuid);
-
-	key = phase2 ? "ignore-phase2-ca-cert" : "ignore-ca-cert";
-	ignore = g_settings_get_boolean (settings, key);
-
-	g_object_unref (settings);
-	return ignore;
-}
-
 void
 eap_method_phase2_update_secrets_helper (EAPMethod *method,
                                          NMConnection *connection,
@@ -572,6 +527,24 @@ eap_method_ca_cert_not_required_toggled (GtkBuilder *builder, const char *id_ca_
 	g_object_set_data_full (G_OBJECT (widget), "filename-old", filename_old, g_free);
 }
 
+/* Used as both GSettings keys and GObject data tags */
+#define IGNORE_CA_CERT_TAG "ignore-ca-cert"
+#define IGNORE_PHASE2_CA_CERT_TAG "ignore-phase2-ca-cert"
+
+/**
+ * eap_method_ca_cert_ignore_set:
+ * @method: the #EAPMethod object
+ * @connection: the #NMConnection
+ * @filename: the certificate file, if any
+ * @ca_cert_error: %TRUE if an error was encountered loading the given CA
+ * certificate, %FALSE if not or if a CA certificate is not present
+ * @id_ca_cert_is_not_required_checkbox: the #GtkWidget object name of the
+ * "CA certificate not required" checkbox
+ *
+ * Updates the connection's CA cert ignore value to %TRUE if the "CA certificate
+ * not required" checkbox is checked.  If @ca_cert_error is %TRUE, then the
+ * connection's CA cert ignore value will always be set to %TRUE.
+ */
 void
 eap_method_ca_cert_ignore_set (EAPMethod *method,
                                NMConnection *connection,
@@ -580,29 +553,107 @@ eap_method_ca_cert_ignore_set (EAPMethod *method,
                                const char *id_ca_cert_is_not_required_checkbox)
 {
 	GtkWidget *widget;
+	NMSetting8021x *s_8021x;
+	gboolean ignore;
 
 	/* We don't really need the checkbox value here. Just assert that it is set as expected. */
 	widget = GTK_WIDGET (gtk_builder_get_object (method->builder, id_ca_cert_is_not_required_checkbox));
 	g_assert (widget && (ca_cert_error || !filename == gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))));
 
-	_set_ignore_ca_cert (nm_connection_get_uuid (connection),
-	                     method->phase2,
-	                     !ca_cert_error && filename==NULL);
+	s_8021x = nm_connection_get_setting_802_1x (connection);
+	if (s_8021x) {
+		ignore = !ca_cert_error && filename == NULL;
+		g_object_set_data (G_OBJECT (s_8021x),
+		                   method->phase2 ? IGNORE_PHASE2_CA_CERT_TAG : IGNORE_CA_CERT_TAG,
+		                   GUINT_TO_POINTER (ignore));
+	}
 }
 
+/**
+ * eap_method_ca_cert_ignore_get:
+ * @method: the #EAPMethod object
+ * @connection: the #NMConnection
+ *
+ * Returns: %TRUE if a missing CA certificate can be ignored, %FALSE if a CA
+ * certificate should be required for the connection to be valid.
+ */
 gboolean
 eap_method_ca_cert_ignore_get (EAPMethod *method, NMConnection *connection)
 {
-	NMSettingConnection *s_con;
-	const char *uuid;
+	NMSetting8021x *s_8021x;
 
-	s_con = nm_connection_get_setting_connection (connection);
-	g_assert (s_con);
-	uuid = nm_setting_connection_get_uuid (s_con);
-	g_assert (uuid);
-
-	/* Figure out if the user wants to ignore missing CA cert */
-	return _get_ignore_ca_cert (uuid, method->phase2);
+	s_8021x = nm_connection_get_setting_802_1x (connection);
+	if (s_8021x) {
+		return !!g_object_get_data (G_OBJECT (s_8021x),
+		                            method->phase2 ? IGNORE_PHASE2_CA_CERT_TAG : IGNORE_CA_CERT_TAG);
+	}
+	return FALSE;
 }
 
+static GSettings *
+_get_ca_ignore_settings (NMConnection *connection)
+{
+	GSettings *settings;
+	char *path = NULL;
+
+	path = g_strdup_printf ("/org/gnome/nm-applet/eap/%s", nm_connection_get_uuid (connection));
+	settings = g_settings_new_with_path ("org.gnome.nm-applet.eap", path);
+	g_free (path);
+
+	return settings;
+}
+
+/**
+ * eap_method_ca_cert_ignore_save:
+ * @connection: the connection for which to save CA cert ignore values to GSettings
+ *
+ * Reads the CA cert ignore tags from the 802.1x setting GObject data and saves
+ * then to GSettings if present, using the connection UUID as the index.
+ */
+void
+eap_method_ca_cert_ignore_save (NMConnection *connection)
+{
+	NMSetting8021x *s_8021x = nm_connection_get_setting_802_1x (connection);
+	GSettings *settings;
+	gboolean ignore = FALSE, phase2_ignore = FALSE;
+
+	if (s_8021x) {
+		ignore = !!g_object_get_data (G_OBJECT (s_8021x), IGNORE_CA_CERT_TAG);
+		phase2_ignore = !!g_object_get_data (G_OBJECT (s_8021x), IGNORE_PHASE2_CA_CERT_TAG);
+	}
+
+	settings = _get_ca_ignore_settings (connection);
+	g_settings_set_boolean (settings, IGNORE_CA_CERT_TAG, ignore);
+	g_settings_set_boolean (settings, IGNORE_PHASE2_CA_CERT_TAG, phase2_ignore);
+	g_object_unref (settings);
+}
+
+/**
+ * eap_method_ca_cert_ignore_save:
+ * @connection: the connection for which to save CA cert ignore values to GSettings
+ *
+ * Reads the CA cert ignore tags from the 802.1x setting GObject data and saves
+ * then to GSettings if present, using the connection UUID as the index.
+ */
+void
+eap_method_ca_cert_ignore_load (NMConnection *connection)
+{
+	NMSetting8021x *s_8021x = nm_connection_get_setting_802_1x (connection);
+	GSettings *settings;
+
+	if (s_8021x) {
+		settings = _get_ca_ignore_settings (connection);
+		if (g_settings_get_boolean (settings, IGNORE_CA_CERT_TAG)) {
+			g_object_set_data (G_OBJECT (s_8021x),
+			                   IGNORE_CA_CERT_TAG,
+			                   GUINT_TO_POINTER (TRUE));
+		}
+		if (g_settings_get_boolean (settings, IGNORE_PHASE2_CA_CERT_TAG)) {
+			g_object_set_data (G_OBJECT (s_8021x),
+			                   IGNORE_PHASE2_CA_CERT_TAG,
+			                   GUINT_TO_POINTER (TRUE));
+		}
+		g_object_unref (settings);
+	}
+}
 

@@ -76,6 +76,7 @@
 #include "page-vlan.h"
 #include "ce-polkit-button.h"
 #include "vpn-helpers.h"
+#include "eap-method.h"
 
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
@@ -773,6 +774,9 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	editor->orig_connection = g_object_ref (orig_connection);
 	nm_connection_editor_update_title (editor);
 
+	/* Handle CA cert ignore stuff */
+	eap_method_ca_cert_ignore_load (editor->connection);
+
 	s_con = nm_connection_get_setting_connection (editor->connection);
 	g_assert (s_con);
 
@@ -979,6 +983,9 @@ ok_button_clicked_save_connection (NMConnectionEditor *self)
 	}
 
 	nm_connection_editor_set_busy (self, TRUE);
+
+	/* Save new CA cert ignore values to GSettings */
+	eap_method_ca_cert_ignore_save (self->connection);
 
 	if (self->is_new_connection) {
 		nm_remote_settings_add_connection (self->settings,
