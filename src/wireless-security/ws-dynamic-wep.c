@@ -75,11 +75,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	g_assert (s_wireless_sec);
 
 	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "ieee8021x", NULL);
-
-	nm_setting_wireless_security_add_pairwise (s_wireless_sec, "wep40");
-	nm_setting_wireless_security_add_pairwise (s_wireless_sec, "wep104");
-	nm_setting_wireless_security_add_group (s_wireless_sec, "wep40");
-	nm_setting_wireless_security_add_group (s_wireless_sec, "wep104");
 }
 
 static void
