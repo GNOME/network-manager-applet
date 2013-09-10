@@ -38,6 +38,7 @@
 #include "nm-wifi-dialog.h"
 #include "wireless-security.h"
 #include "nm-ui-utils.h"
+#include "eap-method.h"
 
 G_DEFINE_TYPE (NMAWifiDialog, nma_wifi_dialog, GTK_TYPE_DIALOG)
 
@@ -1221,6 +1222,9 @@ nma_wifi_dialog_get_connection (NMAWifiDialog *self,
 		wireless_security_unref (sec);
 	}
 
+	/* Save new CA cert ignore values to GSettings */
+	eap_method_ca_cert_ignore_save (connection);
+
 	/* Fill device */
 	if (device) {
 		combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_combo"));
@@ -1269,6 +1273,9 @@ nma_wifi_dialog_new (NMClient *client,
 
 		priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
 		priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+
+		/* Handle CA cert ignore stuff */
+		eap_method_ca_cert_ignore_load (connection);
 
 		if (!internal_init (self, connection, device, secrets_only, FALSE)) {
 			g_warning ("Couldn't create Wi-Fi security dialog.");

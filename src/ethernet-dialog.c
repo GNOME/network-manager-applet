@@ -33,6 +33,7 @@
 #include "ethernet-dialog.h"
 #include "wireless-security.h"
 #include "applet-dialogs.h"
+#include "eap-method.h"
 
 static void
 stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
@@ -105,6 +106,9 @@ nma_ethernet_dialog_new (NMConnection *connection)
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "dialog-password");
 	dialog_set_network_name (connection, GTK_ENTRY (gtk_builder_get_object (builder, "network_name_entry")));
 
+	/* Handle CA cert ignore stuff */
+	eap_method_ca_cert_ignore_load (connection);
+
 	security = dialog_set_security (connection, builder, GTK_BOX (gtk_builder_get_object (builder, "security_vbox")));
 	wireless_security_set_changed_notify (security, stuff_changed_cb, GTK_WIDGET (gtk_builder_get_object (builder, "ok_button")));
 	g_object_set_data_full (G_OBJECT (dialog),
@@ -154,6 +158,9 @@ nma_ethernet_dialog_get_connection (GtkWidget *dialog)
 	/* Grab it and add it to our original connection */
 	s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
 	nm_connection_add_setting (connection, NM_SETTING (g_object_ref (s_8021x)));
+
+	/* Save new CA cert ignore values to GSettings */
+	eap_method_ca_cert_ignore_save (tmp_connection);
 
 	g_object_unref (tmp_connection);
 
