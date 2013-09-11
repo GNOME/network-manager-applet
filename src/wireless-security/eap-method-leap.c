@@ -113,8 +113,10 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 	                          (HelperSecretFunc) nm_setting_802_1x_get_password);
 }
 
+/* Set the UI fields for user, password and show_password to the
+ * values as provided by method->ws_parent. */
 static void
-widgets_realized (GtkWidget *widget, EAPMethodLEAP *method)
+set_userpass_ui (EAPMethodLEAP *method)
 {
 	if (method->ws_parent->username)
 		gtk_entry_set_text (method->username_entry, method->ws_parent->username);
@@ -127,6 +129,12 @@ widgets_realized (GtkWidget *widget, EAPMethodLEAP *method)
 		gtk_entry_set_text (method->password_entry, "");
 
 	gtk_toggle_button_set_active (method->show_password, method->ws_parent->show_password);
+}
+
+static void
+widgets_realized (GtkWidget *widget, EAPMethodLEAP *method)
+{
+	set_userpass_ui (method);
 }
 
 static void
@@ -219,6 +227,14 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  parent);
+
+	/* Initialize the UI fields with the security settings from method->ws_parent.
+	 * This will be done again when the widget gets realized. It must be done here as well,
+	 * because the outer dialog will ask to 'validate' the connection before the security tab
+	 * is shown/realized (to enable the 'Apply' button).
+	 * As 'validate' accesses the contents of the UI fields, they must be initialized now, even
+	 * if the widgets are not yet visible. */
+	set_userpass_ui (method);
 
 	return method;
 }

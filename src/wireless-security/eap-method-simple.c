@@ -213,8 +213,10 @@ password_always_ask_changed (GtkToggleButton *button, EAPMethodSimple *method)
 	gtk_widget_set_sensitive (GTK_WIDGET (method->show_password), !always_ask);
 }
 
+/* Set the UI fields for user, password, always_ask and show_password to the
+ * values as provided by method->ws_parent. */
 static void
-widgets_realized (GtkWidget *widget, EAPMethodSimple *method)
+set_userpass_ui (EAPMethodSimple *method)
 {
 	if (method->ws_parent->username)
 		gtk_entry_set_text (method->username_entry, method->ws_parent->username);
@@ -228,6 +230,12 @@ widgets_realized (GtkWidget *widget, EAPMethodSimple *method)
 
 	gtk_toggle_button_set_active (method->always_ask, method->ws_parent->always_ask);
 	gtk_toggle_button_set_active (method->show_password, method->ws_parent->show_password);
+}
+
+static void
+widgets_realized (GtkWidget *widget, EAPMethodSimple *method)
+{
+	set_userpass_ui (method);
 }
 
 static void
@@ -349,6 +357,14 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) show_toggled_cb,
 	                  method);
+
+	/* Initialize the UI fields with the security settings from method->ws_parent.
+	 * This will be done again when the widget gets realized. It must be done here as well,
+	 * because the outer dialog will ask to 'validate' the connection before the security tab
+	 * is shown/realized (to enable the 'Apply' button).
+	 * As 'validate' accesses the contents of the UI fields, they must be initialized now, even
+	 * if the widgets are not yet visible. */
+	set_userpass_ui (method);
 
 	return method;
 }
