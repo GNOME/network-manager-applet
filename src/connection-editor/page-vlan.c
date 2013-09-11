@@ -229,6 +229,10 @@ sort_parents (gconstpointer a, gconstpointer b)
 	VlanParent *pa = *(VlanParent **)a;
 	VlanParent *pb = *(VlanParent **)b;
 
+	if (pa->connection && !pb->connection)
+		return 1;
+	else if (pb->connection && !pa->connection)
+		return -1;
 	return strcmp (pa->label, pb->label);
 }
 
@@ -308,7 +312,10 @@ build_vlan_parent_list (CEPageVlan *self, GSList *devices)
 				iface = nm_device_get_iface (device);
 				id = nm_setting_connection_get_id (s_con);
 
-				parent->label = g_strdup_printf ("%s (%s)", iface, id);
+				/* Translators: the first %s is a device name (eg, "em1"), the
+				 * second is a connection name (eg, "Auto Ethernet").
+				 */
+				parent->label = g_strdup_printf (_("%s (via \"%s\")"), iface, id);
 				g_ptr_array_add (parents, parent);
 				/* no break here; the connection may apply to multiple devices */
 			}
@@ -397,7 +404,7 @@ populate_ui (CEPageVlan *self)
 		for (i = 0; priv->parents[i]; i++) {
 			if (parent_device && parent_device != priv->parents[i]->device)
 				continue;
-			if (parent_connection && parent_connection != priv->parents[i]->connection)
+			if (parent_connection != priv->parents[i]->connection)
 				continue;
 
 			current_parent = priv->parents[i]->label;
