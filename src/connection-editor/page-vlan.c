@@ -234,6 +234,10 @@ sort_parents (gconstpointer a, gconstpointer b)
 	VlanParent *pa = *(VlanParent **)a;
 	VlanParent *pb = *(VlanParent **)b;
 
+	if (pa->connection && !pb->connection)
+		return 1;
+	else if (pb->connection && !pa->connection)
+		return -1;
 	return strcmp (pa->label, pb->label);
 }
 
@@ -402,7 +406,7 @@ populate_ui (CEPageVlan *self)
 		for (i = 0; priv->parents[i]; i++) {
 			if (parent_device && parent_device != priv->parents[i]->device)
 				continue;
-			if (parent_connection && parent_connection != priv->parents[i]->connection)
+			if (parent_connection != priv->parents[i]->connection)
 				continue;
 
 			current_parent = priv->parents[i]->label;
