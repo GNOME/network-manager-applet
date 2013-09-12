@@ -162,9 +162,6 @@ destroy (EAPMethod *parent)
 	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
 	                                      (GCallback) widgets_unrealized,
 	                                      method);
-	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
-	                                      (GCallback) wireless_security_changed_cb,
-	                                      method->ws_parent);
 
 	wireless_security_unref (method->ws_parent);
 }
