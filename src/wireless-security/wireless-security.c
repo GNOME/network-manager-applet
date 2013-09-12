@@ -182,7 +182,6 @@ wireless_security_init (gsize obj_size,
 	sec->add_to_size_group = add_to_size_group;
 	sec->fill_connection = fill_connection;
 	sec->update_secrets = update_secrets;
-	sec->destroy = destroy;
 	sec->default_field = default_field;
 
 	sec->builder = gtk_builder_new ();
@@ -203,6 +202,7 @@ wireless_security_init (gsize obj_size,
 	}
 	g_object_ref_sink (sec->ui_widget);
 
+	sec->destroy = destroy;
 	sec->adhoc_compatible = TRUE;
 
 	return sec;

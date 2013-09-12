@@ -158,7 +158,6 @@ eap_method_init (gsize obj_size,
 	method->add_to_size_group = add_to_size_group;
 	method->fill_connection = fill_connection;
 	method->update_secrets = update_secrets;
-	method->destroy = destroy;
 	method->default_field = default_field;
 	method->phase2 = phase2;
 
@@ -178,6 +177,8 @@ eap_method_init (gsize obj_size,
 		return NULL;
 	}
 	g_object_ref_sink (method->ui_widget);
+
+	method->destroy = destroy;
 
 	return method;
 }
