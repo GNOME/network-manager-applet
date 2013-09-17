@@ -37,8 +37,8 @@ G_DEFINE_TYPE (CEPageTeamPort, ce_page_team_port, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingTeamPort *setting;
 
-	GtkEntry *json_config;
-
+	GtkTextView *json_config_widget;
+	GtkWidget *import_config_button;
 } CEPageTeamPortPrivate;
 
 static void
@@ -49,13 +49,68 @@ team_port_private_init (CEPageTeamPort *self)
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->json_config = GTK_ENTRY (gtk_builder_get_object (builder, "team_port_json_config"));
+	priv->json_config_widget = GTK_TEXT_VIEW (gtk_builder_get_object (builder, "team_port_json_config"));
+	priv->import_config_button = GTK_WIDGET (gtk_builder_get_object (builder, "import_config_button"));
 }
 
 static void
-stuff_changed (GtkWidget *w, gpointer user_data)
+json_config_changed (GObject *object, CEPageTeamPort *self)
 {
-	ce_page_changed (CE_PAGE (user_data));
+	ce_page_changed (CE_PAGE (self));
+}
+
+static void
+import_config_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
+{
+	CEPageTeamPortPrivate *priv = CE_PAGE_TEAM_PORT_GET_PRIVATE (user_data);
+	GtkTextBuffer *buffer;
+	char *filename;
+	char *buf = NULL;
+	gsize buf_len;
+
+	if (response != GTK_RESPONSE_ACCEPT)
+		goto out;
+
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+	if (!filename) {
+		g_warning ("%s: didn't get a filename back from the chooser!", __func__);
+		goto out;
+	}
+
+	/* Put the file content into JSON config text view. */
+	// FIXME: do a cleverer file validity check
+	g_file_get_contents (filename, &buf, &buf_len, NULL);
+	if (buf_len > 100000) {
+		g_free (buf);
+		buf = g_strdup (_("Error: file doesn't contain a valid JSON configuration"));
+	}
+
+	buffer = gtk_text_view_get_buffer (priv->json_config_widget);
+	gtk_text_buffer_set_text (buffer, buf ? buf : "", -1);
+
+	g_free (filename);
+	g_free (buf);
+
+out:
+	gtk_widget_hide (dialog);
+	gtk_widget_destroy (dialog);
+}
+
+static void
+import_button_clicked_cb (GtkWidget *widget, CEPageTeamPort *self)
+{
+	GtkWidget *dialog;
+
+	dialog = gtk_file_chooser_dialog_new (_("Select file to import"),
+	                                      NULL,
+	                                      GTK_FILE_CHOOSER_ACTION_OPEN,
+	                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+	                                      NULL);
+
+	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (import_config_from_file_cb), self);
+	gtk_widget_show_all (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void
@@ -63,23 +118,24 @@ populate_ui (CEPageTeamPort *self)
 {
 	CEPageTeamPortPrivate *priv = CE_PAGE_TEAM_PORT_GET_PRIVATE (self);
 	NMSettingTeamPort *s_port = priv->setting;
+	GtkTextBuffer *buffer;
 	const char *json_config;
 
+	buffer = gtk_text_view_get_buffer (priv->json_config_widget);
 	json_config = nm_setting_team_port_get_config (s_port);
-	gtk_entry_set_text (priv->json_config, json_config ? json_config : "");
+	gtk_text_buffer_set_text (buffer, json_config ? json_config : "", -1);
+
+	g_signal_connect (buffer, "changed", G_CALLBACK (json_config_changed), self);
+	g_signal_connect (priv->import_config_button, "clicked", G_CALLBACK (import_button_clicked_cb), self);
 }
 
 static void
 finish_setup (CEPageTeamPort *self, gpointer unused, GError *error, gpointer user_data)
 {
-	CEPageTeamPortPrivate *priv = CE_PAGE_TEAM_PORT_GET_PRIVATE (self);
-
 	if (error)
 		return;
 
 	populate_ui (self);
-
-	g_signal_connect (priv->json_config, "changed", G_CALLBACK (stuff_changed), self);
 }
 
 CEPage *
@@ -127,14 +183,21 @@ static void
 ui_to_setting (CEPageTeamPort *self)
 {
 	CEPageTeamPortPrivate *priv = CE_PAGE_TEAM_PORT_GET_PRIVATE (self);
-	const char *json_config;
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
+	char *json_config;
 
-	json_config = gtk_entry_get_text (priv->json_config);
-	if (!g_strcmp0(json_config, ""))
+	buffer = gtk_text_view_get_buffer (priv->json_config_widget);
+	gtk_text_buffer_get_iter_at_offset (buffer, &start, 0);
+	gtk_text_buffer_get_iter_at_offset (buffer, &end, -1);
+	json_config = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+
+	if (g_strcmp0 (json_config, "") == 0)
 		json_config = NULL;
 	g_object_set (priv->setting,
 	              NM_SETTING_TEAM_PORT_CONFIG, json_config,
 	              NULL);
+	g_free (json_config);
 }
 
 static gboolean

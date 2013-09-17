@@ -12,9 +12,10 @@
   <object class="GtkGrid" id="TeamPage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="hexpand">True</property>
     <property name="border_width">12</property>
     <property name="column_spacing">12</property>
-    <property name="row_spacing">6</property>
+    <property name="row_spacing">8</property>
     <child>
       <object class="GtkLabel" id="master_connections_label">
         <property name="visible">True</property>
@@ -41,24 +42,52 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">8</property>
+        <property name="top_attach">3</property>
+        <property name="width">2</property>
+        <property name="height">1</property>
       </packing>
     </child>
     <child>
-      <object class="GtkEntry" id="team_json_config">
+      <object class="GtkScrolledWindow" id="scrolledwindow2">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="invisible_char">●</property>
+        <property name="shadow_type">in</property>
+        <property name="min_content_height">100</property>
+        <child>
+          <object class="GtkTextView" id="team_json_config">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
+          </object>
+        </child>
       </object>
       <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">8</property>
+        <property name="left_attach">0</property>
+        <property name="top_attach">4</property>
+        <property name="width">2</property>
+        <property name="height">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="import_config_button">
+        <property name="label" translatable="yes">I_mport team configuration from a file...</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="use_underline">True</property>
+        <property name="hexpand">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">5</property>
+        <property name="width">2</property>
+        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkHBox" id="hbox2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="spacing">10</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
@@ -174,6 +203,7 @@
       <object class="GtkEntry" id="master_interface">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
         <property name="invisible_char">●</property>
       </object>
       <packing>
