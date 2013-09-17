@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-16 16:35+0100\n"
-"PO-Revision-Date: 2013-03-16 16:09+0100\n"
+"POT-Creation-Date: 2013-09-17 18:43+0200\n"
+"PO-Revision-Date: 2013-09-16 23:57+0200\n"
 "Last-Translator: Ask Hjorth Larsen\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -474,7 +474,7 @@ msgstr "VPN-forbindelse \"%s\" er aktiv"
 msgid "No network connection"
 msgstr "Ingen netværksforbindelse"
 
-#: ../src/applet.c:3441
+#: ../src/applet.c:3442
 msgid "NetworkManager Applet"
 msgstr "Panelprogram til Netværkhåndtering"
 
@@ -1284,7 +1284,7 @@ msgstr "_Forældelsestid:"
 msgid "automatic"
 msgstr "automatisk"
 
-#: ../src/connection-editor/ce-page.c:356
+#: ../src/connection-editor/ce-page.c:362
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Kunne ikke opdatere forbindelseskoder på grund af en ukendt fejl."
 
@@ -1864,7 +1864,7 @@ msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/new-connection.c:137
-#: ../src/connection-editor/page-bond.c:419 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/page-bond.c:439 ../src/libnm-gtk/nm-ui-utils.c:337
 #: ../src/libnm-gtk/nm-ui-utils.c:559
 msgid "Bond"
 msgstr "Binding"
@@ -1876,7 +1876,7 @@ msgid "Bridge"
 msgstr "Bro"
 
 #: ../src/connection-editor/new-connection.c:149
-#: ../src/connection-editor/page-vlan.c:480 ../src/libnm-gtk/nm-ui-utils.c:341
+#: ../src/connection-editor/page-vlan.c:484 ../src/libnm-gtk/nm-ui-utils.c:341
 #: ../src/libnm-gtk/nm-ui-utils.c:563
 msgid "VLAN"
 msgstr "VLAN"
@@ -1937,49 +1937,49 @@ msgstr ""
 "Forbindelsesredigering kunne ikke finde nogle krævede ressourcer (.ui-filen "
 "blev ikke fundet)."
 
-#: ../src/connection-editor/nm-connection-editor.c:408
+#: ../src/connection-editor/nm-connection-editor.c:413
 msgid "_Save"
 msgstr "_Gem"
 
-#: ../src/connection-editor/nm-connection-editor.c:409
+#: ../src/connection-editor/nm-connection-editor.c:414
 msgid "Save any changes made to this connection."
 msgstr "Gem ændringer til denne forbindelse."
 
-#: ../src/connection-editor/nm-connection-editor.c:410
+#: ../src/connection-editor/nm-connection-editor.c:415
 msgid "_Save..."
 msgstr "_Gem..."
 
-#: ../src/connection-editor/nm-connection-editor.c:411
+#: ../src/connection-editor/nm-connection-editor.c:416
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Godkend for at gemme denne forbindelse for alle brugere af denne maskine."
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not create connection"
 msgstr "Kunne ikke oprette forbindelse"
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not edit connection"
 msgstr "Kunne ikke redigere forbindelse"
 
-#: ../src/connection-editor/nm-connection-editor.c:429
+#: ../src/connection-editor/nm-connection-editor.c:434
 msgid "Unknown error creating connection editor dialog."
 msgstr "Ukendt fejl ved oprettelse af dialogvindue til forbindelsesredigering."
 
-#: ../src/connection-editor/nm-connection-editor.c:536
+#: ../src/connection-editor/nm-connection-editor.c:541
 msgid "Error saving connection"
 msgstr "Fejl da forbindelsen blev gemt"
 
-#: ../src/connection-editor/nm-connection-editor.c:537
+#: ../src/connection-editor/nm-connection-editor.c:542
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "Egenskaben \"%s\" / \"%s\" er ugyldig: %d"
 
-#: ../src/connection-editor/nm-connection-editor.c:631
+#: ../src/connection-editor/nm-connection-editor.c:641
 msgid "Error initializing editor"
 msgstr "Kunne ikke initialisere redigeringen"
 
-#: ../src/connection-editor/nm-connection-editor.c:952
+#: ../src/connection-editor/nm-connection-editor.c:962
 msgid "Connection add failed"
 msgstr "Tilføjelse af forbindelse fejlede"
 
@@ -2068,20 +2068,24 @@ msgstr "_Slet..."
 msgid "Authenticate to delete the selected connection"
 msgstr "Bekræft identitet for at slette den valgte forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:942
-msgid "Error creating connection"
-msgstr "Fejl ved oprettelse af forbindelse"
-
 #: ../src/connection-editor/nm-connection-list.c:943
+msgid "No VPN plugins are installed."
+msgstr "Der er ikke installeret nogen VPN-udvidelsesmoduler."
+
+#: ../src/connection-editor/nm-connection-list.c:945
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Ved ikke, hvordan man opretter \"%s\"-forbindelser"
 
-#: ../src/connection-editor/nm-connection-list.c:998
+#: ../src/connection-editor/nm-connection-list.c:947
+msgid "Error creating connection"
+msgstr "Fejl ved oprettelse af forbindelse"
+
+#: ../src/connection-editor/nm-connection-list.c:1003
 msgid "Error editing connection"
 msgstr "Fejl ved redigering af forbindelsen"
 
-#: ../src/connection-editor/nm-connection-list.c:999
+#: ../src/connection-editor/nm-connection-list.c:1004
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Fandt ikke en forbindelse med UUID \"%s\""
@@ -2098,11 +2102,11 @@ msgstr "Kunne ikke indlæse brugergrænseflade til 802.1x-sikkerhed."
 msgid "Use 802.1_X security for this connection"
 msgstr "Brug 802.1_X-sikkerhed til denne forbindelse"
 
-#: ../src/connection-editor/page-bond.c:422
+#: ../src/connection-editor/page-bond.c:442
 msgid "Could not load bond user interface."
 msgstr "Kunne ikke indlæse bindings-brugergrænseflade."
 
-#: ../src/connection-editor/page-bond.c:561
+#: ../src/connection-editor/page-bond.c:584
 #, c-format
 msgid "Bond connection %d"
 msgstr "Bindingsforbindelse %d"
@@ -2373,11 +2377,11 @@ msgstr "PPP-indstillinger"
 msgid "Could not load PPP user interface."
 msgstr "Kunne ikke indlæse PPP-brugerflade."
 
-#: ../src/connection-editor/page-vlan.c:482
+#: ../src/connection-editor/page-vlan.c:486
 msgid "Could not load vlan user interface."
 msgstr "Kunne ikke indlæse brugergrænseflade til vlan."
 
-#: ../src/connection-editor/page-vlan.c:678
+#: ../src/connection-editor/page-vlan.c:682
 #, c-format
 msgid "VLAN connection %d"
 msgstr "VLAN-forbindelse %d"
@@ -2875,11 +2879,11 @@ msgstr "%s %s"
 msgid "New..."
 msgstr "Ny..."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1052
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1055
 msgid "C_reate"
 msgstr "O_pret"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1136
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1154
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
@@ -2887,35 +2891,35 @@ msgstr ""
 "Der kræves adgangskoder eller krypteringsnøgler for at få adgang til det "
 "trådløse netværk \"%s\"."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1138
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1156
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Der kræves godkendelse på trådløst netværk"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1140
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1158
 msgid "Authentication required by Wi-Fi network"
 msgstr "Der kræves godkendelse på trådløst netværk"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1145
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1163
 msgid "Create New Wi-Fi Network"
 msgstr "Opret nyt trådløst netværk"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1147
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1165
 msgid "New Wi-Fi network"
 msgstr "Nyt trådløst netværk"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1148
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Indtast et navn til det trådløse netværk, du ønsker at oprette."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1168
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Forbind til skjult trådløst netværk"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1170
 msgid "Hidden Wi-Fi network"
 msgstr "Skjult trådløst netværk"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1153
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1171
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
