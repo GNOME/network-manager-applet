@@ -547,7 +547,7 @@ bond_connection_new (GtkWindow *parent,
                      gpointer user_data)
 {
 	NMConnection *connection;
-	int bond_num, max_bond_num, num;
+	int bond_num = 0, num;
 	GSList *connections, *iter;
 	NMConnection *conn2;
 	NMSettingBond *s_bond;
@@ -562,7 +562,6 @@ bond_connection_new (GtkWindow *parent,
 	nm_connection_add_setting (connection, nm_setting_bond_new ());
 
 	/* Find an available interface name */
-	bond_num = max_bond_num = 0;
 	connections = nm_remote_settings_list_connections (settings);
 	for (iter = connections; iter; iter = iter->next) {
 		conn2 = iter->data;
@@ -577,10 +576,8 @@ bond_connection_new (GtkWindow *parent,
 			continue;
 
 		num = atoi (iface + 4);
-		if (num > max_bond_num)
-			max_bond_num = num;
-		if (num == bond_num)
-			bond_num = max_bond_num + 1;
+		if (bond_num <= num)
+			bond_num = num + 1;
 	}
 	g_slist_free (connections);
 

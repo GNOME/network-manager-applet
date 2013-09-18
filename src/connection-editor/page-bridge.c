@@ -300,7 +300,7 @@ bridge_connection_new (GtkWindow *parent,
                      gpointer user_data)
 {
 	NMConnection *connection;
-	int bridge_num, max_bridge_num, num;
+	int bridge_num = 0, num;
 	GSList *connections, *iter;
 	NMConnection *conn2;
 	NMSettingBridge *s_bridge;
@@ -315,7 +315,6 @@ bridge_connection_new (GtkWindow *parent,
 	nm_connection_add_setting (connection, nm_setting_bridge_new ());
 
 	/* Find an available interface name */
-	bridge_num = max_bridge_num = 0;
 	connections = nm_remote_settings_list_connections (settings);
 	for (iter = connections; iter; iter = iter->next) {
 		conn2 = iter->data;
@@ -330,10 +329,8 @@ bridge_connection_new (GtkWindow *parent,
 			continue;
 
 		num = atoi (iface + 4);
-		if (num > max_bridge_num)
-			max_bridge_num = num;
-		if (num == bridge_num)
-			bridge_num = max_bridge_num + 1;
+		if (bridge_num <= num)
+			bridge_num = num + 1;
 	}
 	g_slist_free (connections);
 
