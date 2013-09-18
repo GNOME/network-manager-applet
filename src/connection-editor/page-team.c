@@ -220,7 +220,7 @@ team_connection_new (GtkWindow *parent,
                      gpointer user_data)
 {
 	NMConnection *connection;
-	int team_num, max_team_num, num;
+	int team_num, num;
 	GSList *connections, *iter;
 	NMConnection *conn2;
 	NMSettingTeam *s_team;
@@ -235,7 +235,7 @@ team_connection_new (GtkWindow *parent,
 	nm_connection_add_setting (connection, nm_setting_team_new ());
 
 	/* Find an available interface name */
-	team_num = max_team_num = 0;
+	team_num = 0;
 	connections = nm_remote_settings_list_connections (settings);
 	for (iter = connections; iter; iter = iter->next) {
 		conn2 = iter->data;
@@ -250,10 +250,8 @@ team_connection_new (GtkWindow *parent,
 			continue;
 
 		num = atoi (iface + 4);
-		if (num > max_team_num)
-			max_team_num = num;
-		if (num == team_num)
-			team_num = max_team_num + 1;
+		if (team_num <= num)
+			team_num = num + 1;
 	}
 	g_slist_free (connections);
 
