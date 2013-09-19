@@ -125,6 +125,9 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		case EAP_METHOD_SIMPLE_TYPE_GTC:
 			eap = "gtc";
 			break;
+		case EAP_METHOD_SIMPLE_TYPE_PWD:
+			eap = "pwd";
+			break;
 		default:
 			g_assert_not_reached ();
 			break;
