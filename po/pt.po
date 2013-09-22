@@ -6,10 +6,10 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: 3.8\n"
+"Project-Id-Version: 3.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-08 00:25+0000\n"
-"PO-Revision-Date: 2013-03-08 00:00+0000\n"
+"POT-Creation-Date: 2013-09-23 00:32+0100\n"
+"PO-Revision-Date: 2013-09-23 00:35+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "Language: pt\n"
@@ -463,7 +463,7 @@ msgstr "Ligação VPN '%s' ativa"
 msgid "No network connection"
 msgstr "Sem ligação à rede"
 
-#: ../src/applet.c:3441
+#: ../src/applet.c:3442
 msgid "NetworkManager Applet"
 msgstr "Applet do Gestor de Rede"
 
@@ -1277,7 +1277,7 @@ msgstr "Tempo de _envelhecimento:"
 msgid "automatic"
 msgstr "automático"
 
-#: ../src/connection-editor/ce-page.c:356
+#: ../src/connection-editor/ce-page.c:362
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Incapaz de atualizar segredos da ligação devido a um desconhecido."
 
@@ -1833,7 +1833,7 @@ msgid "Ethernet"
 msgstr "Ethernet"
 
 #: ../src/connection-editor/new-connection.c:107
-#: ../src/connection-editor/page-wifi.c:471 ../src/libnm-gtk/nm-ui-utils.c:325
+#: ../src/connection-editor/page-wifi.c:483 ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
@@ -1855,19 +1855,19 @@ msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/new-connection.c:137
-#: ../src/connection-editor/page-bond.c:419 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/page-bond.c:439 ../src/libnm-gtk/nm-ui-utils.c:337
 #: ../src/libnm-gtk/nm-ui-utils.c:559
 msgid "Bond"
 msgstr "Combinar"
 
 #: ../src/connection-editor/new-connection.c:143
-#: ../src/connection-editor/page-bridge.c:211
+#: ../src/connection-editor/page-bridge.c:212
 #: ../src/libnm-gtk/nm-ui-utils.c:339 ../src/libnm-gtk/nm-ui-utils.c:561
 msgid "Bridge"
 msgstr "Ponte"
 
 #: ../src/connection-editor/new-connection.c:149
-#: ../src/connection-editor/page-vlan.c:480 ../src/libnm-gtk/nm-ui-utils.c:341
+#: ../src/connection-editor/page-vlan.c:484 ../src/libnm-gtk/nm-ui-utils.c:341
 #: ../src/libnm-gtk/nm-ui-utils.c:563
 msgid "VLAN"
 msgstr "VLAN"
@@ -1929,50 +1929,50 @@ msgstr ""
 "O editor de ligação foi incapaz de encontrar alguns recursos necessários (o "
 "ficheiro .ui não foi encontrado)."
 
-#: ../src/connection-editor/nm-connection-editor.c:408
+#: ../src/connection-editor/nm-connection-editor.c:413
 msgid "_Save"
 msgstr "_Gravar"
 
-#: ../src/connection-editor/nm-connection-editor.c:409
+#: ../src/connection-editor/nm-connection-editor.c:414
 msgid "Save any changes made to this connection."
 msgstr "Guardar quaisquer alterações feitas a esta ligação."
 
-#: ../src/connection-editor/nm-connection-editor.c:410
+#: ../src/connection-editor/nm-connection-editor.c:415
 msgid "_Save..."
 msgstr "_Gravar..."
 
-#: ../src/connection-editor/nm-connection-editor.c:411
+#: ../src/connection-editor/nm-connection-editor.c:416
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autentique-se para gravar esta ligação para todos os utilizadores deste "
 "computador."
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not create connection"
 msgstr "Incapaz de criar a ligação"
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not edit connection"
 msgstr "Incapaz de editar ligação"
 
-#: ../src/connection-editor/nm-connection-editor.c:429
+#: ../src/connection-editor/nm-connection-editor.c:434
 msgid "Unknown error creating connection editor dialog."
 msgstr "Erro desconhecido ao criar o diálogo de edição de ligação."
 
-#: ../src/connection-editor/nm-connection-editor.c:536
+#: ../src/connection-editor/nm-connection-editor.c:541
 msgid "Error saving connection"
 msgstr "Erro ao gravar a ligação"
 
-#: ../src/connection-editor/nm-connection-editor.c:537
+#: ../src/connection-editor/nm-connection-editor.c:542
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "A propriedade '%s' / '%s' é inválida: %d"
 
-#: ../src/connection-editor/nm-connection-editor.c:631
+#: ../src/connection-editor/nm-connection-editor.c:641
 msgid "Error initializing editor"
 msgstr "Erro ao inicializar editor"
 
-#: ../src/connection-editor/nm-connection-editor.c:952
+#: ../src/connection-editor/nm-connection-editor.c:962
 msgid "Connection add failed"
 msgstr "Adição de ligação falhou"
 
@@ -2061,20 +2061,24 @@ msgstr "_Apagar..."
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentique-se para apagar a ligação selecionada"
 
-#: ../src/connection-editor/nm-connection-list.c:942
-msgid "Error creating connection"
-msgstr "Erro ao criar ligação"
-
 #: ../src/connection-editor/nm-connection-list.c:943
+msgid "No VPN plugins are installed."
+msgstr "Não existem plugins de VPN instalados."
+
+#: ../src/connection-editor/nm-connection-list.c:945
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Desconhece-se com criar ligações \"%s\""
 
-#: ../src/connection-editor/nm-connection-list.c:998
+#: ../src/connection-editor/nm-connection-list.c:947
+msgid "Error creating connection"
+msgstr "Erro ao criar ligação"
+
+#: ../src/connection-editor/nm-connection-list.c:1003
 msgid "Error editing connection"
 msgstr "Erro ao editar ligação"
 
-#: ../src/connection-editor/nm-connection-list.c:999
+#: ../src/connection-editor/nm-connection-list.c:1004
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Não foi encontrada ligação com UUID \"%s\""
@@ -2091,20 +2095,20 @@ msgstr "Incapaz de ler o interface de utilizador de Segurança 802.1x."
 msgid "Use 802.1_X security for this connection"
 msgstr "Utilizar segurança 802.1_X para esta ligação"
 
-#: ../src/connection-editor/page-bond.c:422
+#: ../src/connection-editor/page-bond.c:442
 msgid "Could not load bond user interface."
 msgstr "Incapaz de ler o interface de utilizador de combinar."
 
-#: ../src/connection-editor/page-bond.c:561
+#: ../src/connection-editor/page-bond.c:584
 #, c-format
 msgid "Bond connection %d"
 msgstr "Combinar ligação %d"
 
-#: ../src/connection-editor/page-bridge.c:214
+#: ../src/connection-editor/page-bridge.c:215
 msgid "Could not load bridge user interface."
 msgstr "Incapaz de ler o interface de utilizador de ponte."
 
-#: ../src/connection-editor/page-bridge.c:309
+#: ../src/connection-editor/page-bridge.c:310
 #, c-format
 msgid "Bridge connection %d"
 msgstr "Ponte na ligação %d"
@@ -2368,11 +2372,11 @@ msgstr "Definições PPP"
 msgid "Could not load PPP user interface."
 msgstr "Incapaz de carregar interface de utilizador de PPP."
 
-#: ../src/connection-editor/page-vlan.c:482
+#: ../src/connection-editor/page-vlan.c:486
 msgid "Could not load vlan user interface."
 msgstr "Incapaz de ler o interface de utilizador de vlan."
 
-#: ../src/connection-editor/page-vlan.c:678
+#: ../src/connection-editor/page-vlan.c:682
 #, c-format
 msgid "VLAN connection %d"
 msgstr "Ligação VLAN %d"
@@ -2436,11 +2440,11 @@ msgstr "predefinição"
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wifi.c:473
+#: ../src/connection-editor/page-wifi.c:485
 msgid "Could not load Wi-Fi user interface."
 msgstr "Incapaz de ler o interface de utilizador de Wi-Fi."
 
-#: ../src/connection-editor/page-wifi.c:650
+#: ../src/connection-editor/page-wifi.c:663
 #, c-format
 msgid "Wi-Fi connection %d"
 msgstr "Ligação Wi-Fi %d"
@@ -2873,11 +2877,11 @@ msgstr "%s %s"
 msgid "New..."
 msgstr "Nova..."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1052
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1055
 msgid "C_reate"
 msgstr "C_riar"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1136
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1154
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
@@ -2885,35 +2889,35 @@ msgstr ""
 "Senhas ou chaves de encriptação são necessárias para aceder à rede Wi-Fi "
 "'%s'."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1138
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1156
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Autenticação de Rede Wi-Fi Necessária"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1140
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1158
 msgid "Authentication required by Wi-Fi network"
 msgstr "Autenticação pedida pela rede Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1145
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1163
 msgid "Create New Wi-Fi Network"
 msgstr "Criar uma Nova Rede Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1147
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1165
 msgid "New Wi-Fi network"
 msgstr "Nova rede Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1148
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Introduza um nome para a rede Wi-Fi que deseja criar."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1168
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Ligar-se a Rede Wi-Fi Oculta"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1170
 msgid "Hidden Wi-Fi network"
 msgstr "Rede Wi-Fi oculta"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1153
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1171
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
