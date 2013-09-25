@@ -46,6 +46,8 @@ typedef struct {
 	GtkWindow *toplevel;
 
 	GtkComboBox *mode;
+	GtkEntry *primary;
+	GtkWidget *primary_label;
 	GtkComboBox *monitoring;
 	GtkSpinButton *frequency;
 	GtkSpinButton *updelay;
@@ -78,6 +80,8 @@ bond_private_init (CEPageBond *self)
 	builder = CE_PAGE (self)->builder;
 
 	priv->mode = GTK_COMBO_BOX (gtk_builder_get_object (builder, "bond_mode"));
+	priv->primary = GTK_ENTRY (gtk_builder_get_object (builder, "bond_primary"));
+	priv->primary_label = GTK_WIDGET (gtk_builder_get_object (builder, "bond_primary_label"));
 	priv->monitoring = GTK_COMBO_BOX (gtk_builder_get_object (builder, "bond_monitoring"));
 	priv->frequency = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bond_frequency"));
 	priv->updelay = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bond_updelay"));
@@ -135,14 +139,23 @@ bonding_mode_changed (GtkComboBox *combo, gpointer user_data)
 {
 	CEPageBond *self = user_data;
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
+	int mode;
 
-	/* balance-tlb and balance-alb work only with MII monitoring */
-	if (   gtk_combo_box_get_active (combo) == MODE_BALANCE_TLB
-	    || gtk_combo_box_get_active (combo) == MODE_BALANCE_ALB) {
+	mode = gtk_combo_box_get_active (combo);
+
+	if (mode == MODE_BALANCE_TLB || mode == MODE_BALANCE_ALB) {
 		gtk_combo_box_set_active (priv->monitoring, MONITORING_MII);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->monitoring), FALSE);
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->monitoring), TRUE);
+	}
+
+	if (mode == MODE_ACTIVE_BACKUP) {
+		gtk_widget_show (GTK_WIDGET (priv->primary));
+		gtk_widget_show (GTK_WIDGET (priv->primary_label));
+	} else {
+		gtk_widget_hide (GTK_WIDGET (priv->primary));
+		gtk_widget_hide (GTK_WIDGET (priv->primary_label));
 	}
 }
 
@@ -266,7 +279,7 @@ populate_ui (CEPageBond *self)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 	NMSettingBond *setting = priv->setting;
-	const char *mode, *frequency, *updelay, *downdelay, *raw_targets;
+	const char *mode, *primary, *frequency, *updelay, *downdelay, *raw_targets;
 	char *targets;
 	int mode_idx = MODE_BALANCE_RR;
 
@@ -293,6 +306,10 @@ populate_ui (CEPageBond *self)
 	                  G_CALLBACK (bonding_mode_changed),
 	                  self);
 	bonding_mode_changed (priv->mode, self);
+
+	/* Primary */
+	primary = nm_setting_bond_get_option_by_name (setting, NM_SETTING_BOND_OPTION_PRIMARY);
+	gtk_entry_set_text (priv->primary, primary ? primary : "");
 
 	/* Monitoring mode/frequency */
 	frequency = nm_setting_bond_get_option_by_name (setting, NM_SETTING_BOND_OPTION_ARP_INTERVAL);
@@ -384,6 +401,7 @@ finish_setup (CEPageBond *self, gpointer unused, GError *error, gpointer user_da
 	populate_ui (self);
 
 	g_signal_connect (priv->mode, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->primary, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->monitoring, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->frequency, "value-changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->updelay, "value-changed", G_CALLBACK (stuff_changed), self);
@@ -438,6 +456,7 @@ ui_to_setting (CEPageBond *self)
 	const char *frequency;
 	const char *updelay;
 	const char *downdelay;
+	const char *primary = NULL;
 	char *targets;
 
 	/* Mode */
@@ -447,6 +466,7 @@ ui_to_setting (CEPageBond *self)
 		break;
 	case MODE_ACTIVE_BACKUP:
 		mode = "active-backup";
+		primary = gtk_entry_get_text (priv->primary);
 		break;
 	case MODE_BALANCE_XOR:
 		mode = "balance-xor";
@@ -468,14 +488,19 @@ ui_to_setting (CEPageBond *self)
 		break;
 	}
 
+	/* Set bond mode and primary */
+	nm_setting_bond_add_option (priv->setting, NM_SETTING_BOND_OPTION_MODE, mode);
+
+	if (primary && *primary)
+		nm_setting_bond_add_option (priv->setting, NM_SETTING_BOND_OPTION_PRIMARY, primary);
+	else
+		nm_setting_bond_remove_option (priv->setting, NM_SETTING_BOND_OPTION_PRIMARY);
+
 	/* Monitoring mode/frequency */
 	frequency = gtk_entry_get_text (GTK_ENTRY (priv->frequency));
 	updelay = gtk_entry_get_text (GTK_ENTRY (priv->updelay));
 	downdelay = gtk_entry_get_text (GTK_ENTRY (priv->downdelay));
 	targets = uglify_targets (gtk_entry_get_text (priv->arp_targets));
-
-	/* Set bond mode */
-	nm_setting_bond_add_option (priv->setting, NM_SETTING_BOND_OPTION_MODE, mode);
 
 	switch (gtk_combo_box_get_active (priv->monitoring)) {
 	case MONITORING_MII:
