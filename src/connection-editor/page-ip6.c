@@ -615,6 +615,28 @@ ip_address_filter_cb (GtkEditable *editable,
 	}
 }
 
+static gboolean
+_char_is_ascii_dns_servers (char character)
+{
+	return utils_char_is_ascii_ip6_address (character) ||
+	       character == ' ' ||
+	       character == ',' ||
+	       character == ';';
+}
+
+static void
+dns_servers_filter_cb (GtkEditable *editable,
+                       gchar *text,
+                       gint length,
+                       gint *position,
+                       gpointer user_data)
+{
+	utils_filter_editable_on_insert_text (editable,
+	                                      text, length, position, user_data,
+	                                      _char_is_ascii_dns_servers,
+	                                      dns_servers_filter_cb);
+}
+
 static void
 delete_text_cb (GtkEditable *editable,
                     gint start_pos,
@@ -914,6 +936,7 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed), priv->addr_delete);
 
 	g_signal_connect_swapped (priv->dns_servers, "changed", G_CALLBACK (ce_page_changed), self);
+	g_signal_connect (priv->dns_servers, "insert-text", G_CALLBACK (dns_servers_filter_cb), self);
 	g_signal_connect_swapped (priv->dns_searches, "changed", G_CALLBACK (ce_page_changed), self);
 
 	method_changed (priv->method, self);
