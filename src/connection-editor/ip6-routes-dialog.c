@@ -331,7 +331,7 @@ ip_address_filter_cb (GtkEntry *   entry,
 		                                 user_data);
 		gtk_editable_insert_text (editable, result, count, position);
 		g_free (last_edited);
-		last_edited = g_strdup (gtk_editable_get_chars (editable, 0, -1));
+		last_edited = gtk_editable_get_chars (editable, 0, -1);
 		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
 		                                   G_CALLBACK (ip_address_filter_cb),
 		                                   user_data);
@@ -357,7 +357,7 @@ delete_text_cb (GtkEditable *editable,
 
 	/* Keep last_edited up-to-date */
 	g_free (last_edited);
-	last_edited = g_strdup (gtk_editable_get_chars (editable, 0, -1));
+	last_edited = gtk_editable_get_chars (editable, 0, -1);
 
 	/* Desensitize the OK button during input to simplify input validation.
 	 * All routes will be validated on focus-out, which will then re-enable
@@ -518,7 +518,7 @@ uint_filter_cb (GtkEntry *   entry,
 		                                 user_data);
 		gtk_editable_insert_text (editable, result, count, position);
 		g_free (last_edited);
-		last_edited = g_strdup (gtk_editable_get_chars (editable, 0, -1));
+		last_edited = gtk_editable_get_chars (editable, 0, -1);
 		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
 		                                   G_CALLBACK (uint_filter_cb),
 		                                   user_data);
