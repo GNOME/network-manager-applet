@@ -36,6 +36,7 @@
 #include <nm-utils.h>
 
 #include "ip4-routes-dialog.h"
+#include "utils.h"
 
 #define COL_ADDRESS 0
 #define COL_PREFIX  1
@@ -356,38 +357,24 @@ cell_edited (GtkCellRendererText *cell,
 }
 
 static void
-ip_address_filter_cb (GtkEntry *   entry,
-                      const gchar *text,
-                      gint         length,
-                      gint *       position,
-                      gpointer     user_data)
+ip_address_filter_cb (GtkEditable *editable,
+                      gchar *text,
+                      gint length,
+                      gint *position,
+                      gpointer user_data)
 {
 	GtkWidget *ok_button = user_data;
-	GtkEditable *editable = GTK_EDITABLE (entry);
-	int i, count = 0;
-	gchar *result;
+	gboolean changed;
 
-	result = g_malloc0 (length + 1);
+	changed = utils_filter_editable_on_insert_text (editable,
+	                                                text, length, position, user_data,
+	                                                utils_char_is_ascii_ip4_address,
+	                                                ip_address_filter_cb);
 
-	for (i = 0; i < length; i++) {
-		if ((text[i] >= '0' && text[i] <= '9') || (text[i] == '.'))
-			result[count++] = text[i];
-	}
-
-	if (count > 0) {
-		g_signal_handlers_block_by_func (G_OBJECT (editable),
-		                                 G_CALLBACK (ip_address_filter_cb),
-		                                 user_data);
-		gtk_editable_insert_text (editable, result, count, position);
+	if (changed) {
 		g_free (last_edited);
 		last_edited = gtk_editable_get_chars (editable, 0, -1);
-		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
-		                                   G_CALLBACK (ip_address_filter_cb),
-		                                   user_data);
 	}
-
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
-	g_free (result);
 
 	/* Desensitize the OK button during input to simplify input validation.
 	 * All routes will be validated on focus-out, which will then re-enable
@@ -542,36 +529,24 @@ ip4_cell_editing_started (GtkCellRenderer *cell,
 }
 
 static void
-uint_filter_cb (GtkEntry *   entry,
-                const gchar *text,
-                gint         length,
-                gint *       position,
-                gpointer     user_data)
+uint_filter_cb (GtkEditable *editable,
+                gchar *text,
+                gint length,
+                gint *position,
+                gpointer user_data)
 {
 	GtkWidget *ok_button = user_data;
-	GtkEditable *editable = GTK_EDITABLE (entry);
-	int i, count = 0;
-	gchar *result = g_new (gchar, length);
+	gboolean changed;
 
-	for (i = 0; i < length; i++) {
-		if ((text[i] >= '0' && text[i] <= '9'))
-			result[count++] = text[i];
-	}
+	changed = utils_filter_editable_on_insert_text (editable,
+	                                                text, length, position, user_data,
+	                                                utils_char_is_ascii_digit,
+	                                                uint_filter_cb);
 
-	if (count > 0) {
-		g_signal_handlers_block_by_func (G_OBJECT (editable),
-		                                 G_CALLBACK (uint_filter_cb),
-		                                 user_data);
-		gtk_editable_insert_text (editable, result, count, position);
+	if (changed) {
 		g_free (last_edited);
 		last_edited = gtk_editable_get_chars (editable, 0, -1);
-		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
-		                                   G_CALLBACK (uint_filter_cb),
-		                                   user_data);
 	}
-
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
-	g_free (result);
 
 	/* Desensitize the OK button during input to simplify input validation.
 	 * All routes will be validated on focus-out, which will then re-enable

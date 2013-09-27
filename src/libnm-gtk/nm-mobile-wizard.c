@@ -23,7 +23,6 @@
 #include "config.h"
 
 #include <stdlib.h>
-#include <ctype.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -39,6 +38,7 @@
 #include "nm-mobile-wizard.h"
 #include "nm-mobile-providers.h"
 #include "nm-ui-utils.h"
+#include "utils.h"
 
 #define DEVICE_TAG "device"
 #define TYPE_TAG "setting-type"
@@ -437,36 +437,16 @@ plan_row_separator_func (GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
 }
 
 static void
-apn_filter_cb (GtkEntry *   entry,
-               const gchar *text,
-               gint         length,
-               gint *       position,
-               gpointer     user_data)
+apn_filter_cb (GtkEditable *editable,
+               gchar *text,
+               gint length,
+               gint *position,
+               gpointer user_data)
 {
-	GtkEditable *editable = GTK_EDITABLE (entry);
-	int i, count = 0;
-	gchar *result = g_new0 (gchar, length);
-
-	for (i = 0; i < length; i++) {
-		if (   isalnum (text[i])
-		    || (text[i] == '.')
-		    || (text[i] == '_')
-		    || (text[i] == '-'))
-			result[count++] = text[i];
-	}
-
-	if (count > 0) {
-		g_signal_handlers_block_by_func (G_OBJECT (editable),
-		                                 G_CALLBACK (apn_filter_cb),
-		                                 user_data);
-		gtk_editable_insert_text (editable, result, count, position);
-		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
-		                                   G_CALLBACK (apn_filter_cb),
-		                                   user_data);
-	}
-
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
-	g_free (result);
+	utils_filter_editable_on_insert_text (editable,
+	                                      text, length, position, user_data,
+	                                      utils_char_is_ascii_apn,
+	                                      apn_filter_cb);
 }
 
 static void

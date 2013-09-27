@@ -209,3 +209,80 @@ utils_show_error_dialog (const char *title,
 	}
 }
 
+
+gboolean
+utils_char_is_ascii_print (char character)
+{
+	return g_ascii_isprint (character);
+}
+
+gboolean
+utils_char_is_ascii_digit (char character)
+{
+	return g_ascii_isdigit (character);
+}
+
+gboolean
+utils_char_is_ascii_ip4_address (char character)
+{
+	return g_ascii_isdigit (character) || character == '.';
+}
+
+gboolean
+utils_char_is_ascii_ip6_address (char character)
+{
+	return g_ascii_isxdigit (character) || character == ':';
+}
+
+gboolean
+utils_char_is_ascii_apn (char character)
+{
+	return g_ascii_isalnum (character)
+	       || character == '.'
+	       || character == '_'
+	       || character == '-';
+}
+
+/**
+ * Filters the characters from a text that was just input into GtkEditable.
+ * Returns FALSE, if after filtering no characters were left. TRUE means,
+ * that valid characters were added and the content of the GtkEditable changed.
+ **/
+gboolean
+utils_filter_editable_on_insert_text (GtkEditable *editable,
+                                      const gchar *text,
+                                      gint length,
+                                      gint *position,
+                                      void *user_data,
+                                      UtilsFilterGtkEditableFunc validate_character,
+                                      gpointer block_func)
+{
+	int i, count = 0;
+	gchar *result = g_new (gchar, length+1);
+
+	for (i = 0; i < length; i++) {
+		if (validate_character (text[i]))
+			result[count++] = text[i];
+	}
+	result[count] = 0;
+
+	if (count > 0) {
+		if (block_func) {
+			g_signal_handlers_block_by_func (G_OBJECT (editable),
+			                                 G_CALLBACK (block_func),
+			                                 user_data);
+		}
+		gtk_editable_insert_text (editable, result, count, position);
+		if (block_func) {
+			g_signal_handlers_unblock_by_func (G_OBJECT (editable),
+			                                   G_CALLBACK (block_func),
+			                                   user_data);
+		}
+	}
+	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
+
+	g_free (result);
+
+	return count > 0;
+}
+

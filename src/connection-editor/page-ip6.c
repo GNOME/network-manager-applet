@@ -587,48 +587,32 @@ cell_edited (GtkCellRendererText *cell,
 	ce_page_changed (CE_PAGE (self));
 }
 
+
 static void
-ip_address_filter_cb (GtkEntry *   entry,
-                      const gchar *text,
-                      gint         length,
-                      gint *       position,
-                      gpointer     user_data)
+ip_address_filter_cb (GtkEditable *editable,
+                      gchar *text,
+                      gint length,
+                      gint *position,
+                      gpointer user_data)
 {
 	CEPageIP6 *self = CE_PAGE_IP6 (user_data);
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
-	GtkEditable *editable = GTK_EDITABLE (entry);
-	gboolean numeric = FALSE;
-	int i, count = 0;
-	gchar *result;
 	guint column;
+	gboolean changed;
 
-	result = g_malloc0 (length + 1);
 
 	/* The prefix column only allows numbers, no ':' */
 	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (editable), "column"));
-	if (column == COL_PREFIX)
-		numeric = TRUE;
 
-	for (i = 0; i < length; i++) {
-		if ((numeric && g_ascii_isdigit (text[i])) ||
-			(!numeric && (g_ascii_isxdigit(text[i]) || (text[i] == ':'))))
-			result[count++] = text[i];
-	}
+	changed = utils_filter_editable_on_insert_text (editable,
+	                                                text, length, position, user_data,
+	                                                column == COL_PREFIX ? utils_char_is_ascii_digit : utils_char_is_ascii_ip6_address,
+	                                                ip_address_filter_cb);
 
-	if (count > 0) {
-		g_signal_handlers_block_by_func (G_OBJECT (editable),
-		                                 G_CALLBACK (ip_address_filter_cb),
-		                                 user_data);
-		gtk_editable_insert_text (editable, result, count, position);
+	if (changed) {
 		g_free (priv->last_edited);
 		priv->last_edited = gtk_editable_get_chars (editable, 0, -1);
-		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
-		                                   G_CALLBACK (ip_address_filter_cb),
-		                                   user_data);
 	}
-
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
-	g_free (result);
 }
 
 static void

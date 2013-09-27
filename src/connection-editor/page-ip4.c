@@ -614,39 +614,25 @@ cell_edited (GtkCellRendererText *cell,
 }
 
 static void
-ip_address_filter_cb (GtkEntry *   entry,
-                      const gchar *text,
-                      gint         length,
-                      gint *       position,
-                      gpointer     user_data)
+ip_address_filter_cb (GtkEditable *editable,
+                      gchar *text,
+                      gint length,
+                      gint *position,
+                      gpointer user_data)
 {
 	CEPageIP4 *self = CE_PAGE_IP4 (user_data);
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
-	GtkEditable *editable = GTK_EDITABLE (entry);
-	int i, count = 0;
-	gchar *result;
+	gboolean changed;
 
-	result = g_malloc0 (length + 1);
+	changed = utils_filter_editable_on_insert_text (editable,
+	                                                text, length, position, user_data,
+	                                                utils_char_is_ascii_ip4_address,
+	                                                ip_address_filter_cb);
 
-	for (i = 0; i < length; i++) {
-		if ((text[i] >= '0' && text[i] <= '9') || (text[i] == '.'))
-			result[count++] = text[i];
-	}
-
-	if (count > 0) {
-		g_signal_handlers_block_by_func (G_OBJECT (editable),
-		                                 G_CALLBACK (ip_address_filter_cb),
-		                                 user_data);
-		gtk_editable_insert_text (editable, result, count, position);
+	if (changed) {
 		g_free (priv->last_edited);
 		priv->last_edited = gtk_editable_get_chars (editable, 0, -1);
-		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
-		                                   G_CALLBACK (ip_address_filter_cb),
-		                                   user_data);
 	}
-
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
-	g_free (result);
 }
 
 static void

@@ -20,13 +20,14 @@
  * (C) Copyright 2007 - 2010 Red Hat, Inc.
  */
 
-#include <ctype.h>
 #include <string.h>
+#include <glib.h>
 
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
 
 #include "wireless-security.h"
+#include "utils.h"
 
 struct _WirelessSecurityWEPKey {
 	WirelessSecurity parent;
@@ -104,12 +105,12 @@ validate (WirelessSecurity *parent, const GByteArray *ssid)
 	if (sec->type == NM_WEP_KEY_TYPE_KEY) {
 		if ((strlen (key) == 10) || (strlen (key) == 26)) {
 			for (i = 0; i < strlen (key); i++) {
-				if (!isxdigit (key[i]))
+				if (!g_ascii_isxdigit (key[i]))
 					return FALSE;
 			}
 		} else if ((strlen (key) == 5) || (strlen (key) == 13)) {
 			for (i = 0; i < strlen (key); i++) {
-				if (!isascii (key[i]))
+				if (!utils_char_is_ascii_print (key[i]))
 					return FALSE;
 			}
 		} else {
@@ -173,41 +174,20 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 }
 
 static void
-wep_entry_filter_cb (GtkEntry *   entry,
-                     const gchar *text,
-                     gint         length,
-                     gint *       position,
-                     gpointer     data)
+wep_entry_filter_cb (GtkEditable *editable,
+                     gchar *text,
+                     gint length,
+                     gint *position,
+                     gpointer data)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) data;
-	GtkEditable *editable = GTK_EDITABLE (entry);
-	int i, count = 0;
-	gchar *result;
-
-	result = g_malloc0 (length + 1);
 
 	if (sec->type == NM_WEP_KEY_TYPE_KEY) {
-		for (i = 0; i < length; i++) {
-			if (isxdigit(text[i]) || isascii(text[i]))
-				result[count++] = text[i];
-		}
-	} else if (sec->type == NM_WEP_KEY_TYPE_PASSPHRASE) {
-		for (i = 0; i < length; i++)
-			result[count++] = text[i];
+		utils_filter_editable_on_insert_text (editable,
+		                                      text, length, position, data,
+		                                      utils_char_is_ascii_print,
+		                                      wep_entry_filter_cb);
 	}
-
-	if (count > 0) {
-		g_signal_handlers_block_by_func (G_OBJECT (editable),
-			                             G_CALLBACK (wep_entry_filter_cb),
-			                             data);
-		gtk_editable_insert_text (editable, result, count, position);
-		g_signal_handlers_unblock_by_func (G_OBJECT (editable),
-			                               G_CALLBACK (wep_entry_filter_cb),
-			                               data);
-	}
-
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
-	g_free (result);
 }
 
 static void
