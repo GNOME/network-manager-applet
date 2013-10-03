@@ -27,6 +27,10 @@
 #include <nm-setting-team.h>
 
 #include "page-team.h"
+#include "page-ethernet.h"
+#include "page-wifi.h"
+#include "page-infiniband.h"
+#include "page-vlan.h"
 #include "nm-connection-editor.h"
 #include "new-connection.h"
 
@@ -36,6 +40,8 @@ G_DEFINE_TYPE (CEPageTeam, ce_page_team, CE_TYPE_PAGE_MASTER)
 
 typedef struct {
 	NMSettingTeam *setting;
+
+	GType slave_type;
 
 	GtkWindow *toplevel;
 
@@ -135,6 +141,33 @@ populate_ui (CEPageTeam *self)
 }
 
 static void
+connection_removed (CEPageMaster *master, NMConnection *connection)
+{
+	CEPageTeam *self = CE_PAGE_TEAM (master);
+	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
+
+	if (!ce_page_master_has_slaves (master))
+		priv->slave_type = G_TYPE_INVALID;
+}
+
+static void
+connection_added (CEPageMaster *master, NMConnection *connection)
+{
+	CEPageTeam *self = CE_PAGE_TEAM (master);
+	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
+
+	/* A bit kludgy... */
+	if (nm_connection_is_type (connection, NM_SETTING_INFINIBAND_SETTING_NAME))
+		priv->slave_type = NM_TYPE_SETTING_INFINIBAND;
+	else if (nm_connection_is_type (connection, NM_SETTING_WIRED_SETTING_NAME))
+		priv->slave_type = NM_TYPE_SETTING_WIRED;
+	else if (nm_connection_is_type (connection, NM_SETTING_WIRELESS_SETTING_NAME))
+		priv->slave_type = NM_TYPE_SETTING_WIRELESS;
+	else
+		priv->slave_type = NM_TYPE_SETTING_VLAN;
+}
+
+static void
 create_connection (CEPageMaster *master, NMConnection *connection)
 {
 	NMSetting *s_port;
@@ -147,12 +180,23 @@ create_connection (CEPageMaster *master, NMConnection *connection)
 }
 
 static gboolean
-connection_type_filter (GType type, gpointer user_data)
+connection_type_filter_all (GType type, gpointer user_data)
 {
 	if (type == NM_TYPE_SETTING_WIRED ||
 	    type == NM_TYPE_SETTING_WIRELESS ||
 	    type == NM_TYPE_SETTING_VLAN ||
 	    type == NM_TYPE_SETTING_INFINIBAND)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+static gboolean
+connection_type_filter_eth (GType type, gpointer user_data)
+{
+	if (type == NM_TYPE_SETTING_WIRED ||
+	    type == NM_TYPE_SETTING_WIRELESS ||
+	    type == NM_TYPE_SETTING_VLAN)
 		return TRUE;
 	else
 		return FALSE;
@@ -164,11 +208,20 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 	CEPageTeam *self = CE_PAGE_TEAM (master);
 	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
 
-	new_connection_dialog (priv->toplevel,
-	                       CE_PAGE (self)->settings,
-	                       connection_type_filter,
-	                       result_func,
-	                       master);
+	if (priv->slave_type == NM_TYPE_SETTING_INFINIBAND) {
+		new_connection_of_type (priv->toplevel,
+		                        NULL,
+		                        CE_PAGE (self)->settings,
+		                        infiniband_connection_new,
+		                        result_func,
+		                        master);
+	} else {
+		new_connection_dialog (priv->toplevel,
+		                       CE_PAGE (self)->settings,
+		                       priv->slave_type == G_TYPE_INVALID ? connection_type_filter_all : connection_type_filter_eth,
+		                       result_func,
+		                       master);
+	}
 }
 
 static void
@@ -270,6 +323,8 @@ ce_page_team_class_init (CEPageTeamClass *team_class)
 	/* virtual methods */
 	parent_class->validate = validate;
 	master_class->create_connection = create_connection;
+	master_class->connection_added = connection_added;
+	master_class->connection_removed = connection_removed;
 	master_class->add_slave = add_slave;
 }
 
