@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-27 22:14+0200\n"
-"PO-Revision-Date: 2013-09-27 22:15+0200\n"
+"POT-Creation-Date: 2013-10-04 20:43+0200\n"
+"PO-Revision-Date: 2013-10-04 20:44+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -588,7 +588,7 @@ msgstr "Komórkowe (%s)"
 #: ../src/applet-device-broadband.c:717 ../src/applet-device-cdma.c:249
 #: ../src/applet-device-gsm.c:305
 #: ../src/connection-editor/new-connection.c:113
-#: ../src/connection-editor/page-mobile.c:391
+#: ../src/connection-editor/page-mobile.c:351
 #: ../src/libnm-gtk/nm-ui-utils.c:333
 msgid "Mobile Broadband"
 msgstr "Komórkowe"
@@ -1158,16 +1158,16 @@ msgstr "Wymagane hasło do połączenia z \"%s\"."
 msgid "Password:"
 msgstr "Hasło:"
 
-#: ../src/applet-dialogs.c:1280
+#: ../src/applet-dialogs.c:1263
 msgid "SIM PIN unlock required"
 msgstr "Wymagany kod PIN odblokowania karty SIM"
 
-#: ../src/applet-dialogs.c:1281
+#: ../src/applet-dialogs.c:1264
 msgid "SIM PIN Unlock Required"
 msgstr "Wymagany kod PIN odblokowania karty SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-dialogs.c:1283
+#: ../src/applet-dialogs.c:1266
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -1175,25 +1175,25 @@ msgid ""
 msgstr "Urządzenie komórkowe \"%s\" wymaga kodu PIN karty SIM przed użyciem."
 
 #. Translators: PIN code entry label
-#: ../src/applet-dialogs.c:1285
+#: ../src/applet-dialogs.c:1268
 msgid "PIN code:"
 msgstr "Kod PIN:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-dialogs.c:1289
+#: ../src/applet-dialogs.c:1272
 msgid "Show PIN code"
 msgstr "Wyświetlanie kodu PIN"
 
-#: ../src/applet-dialogs.c:1291
+#: ../src/applet-dialogs.c:1274
 msgid "SIM PUK unlock required"
 msgstr "Wymagany kod PUK odblokowania karty SIM"
 
-#: ../src/applet-dialogs.c:1292
+#: ../src/applet-dialogs.c:1275
 msgid "SIM PUK Unlock Required"
 msgstr "Wymagany kod PUK odblokowania karty SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-dialogs.c:1294
+#: ../src/applet-dialogs.c:1277
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -1201,22 +1201,22 @@ msgid ""
 msgstr "Urządzenie komórkowe \"%s\" wymaga kodu PUK karty SIM przed użyciem."
 
 #. Translators: PUK code entry label
-#: ../src/applet-dialogs.c:1296
+#: ../src/applet-dialogs.c:1279
 msgid "PUK code:"
 msgstr "Kod PUK:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-dialogs.c:1299
+#: ../src/applet-dialogs.c:1282
 msgid "New PIN code:"
 msgstr "Nowy kod PIN:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-dialogs.c:1301
+#: ../src/applet-dialogs.c:1284
 msgid "Re-enter new PIN code:"
 msgstr "Proszę ponownie wprowadzić nowy kod PIN:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-dialogs.c:1306
+#: ../src/applet-dialogs.c:1289
 msgid "Show PIN/PUK codes"
 msgstr "Wyświetlanie kodów PIN/PUK"
 
@@ -1668,7 +1668,6 @@ msgid "DNS ser_vers:"
 msgstr "Serwery _DNS:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:14
-#: ../src/connection-editor/ce-page-ip6.ui.h:12
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses."
@@ -1692,6 +1691,16 @@ msgstr ""
 #: ../src/connection-editor/ce-page-ip6.ui.h:15
 msgid "_Routes…"
 msgstr "_Trasy…"
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
+msgid ""
+"IP addresses of domain name servers used to resolve host names. Use commas "
+"to separate multiple domain name server addresses. Link-local addresses will "
+"be automatically scoped to the connecting interface."
+msgstr ""
+"Adresy IP serwerów nazw domen używane do znajdowania nazw komputerów. Aby "
+"podać wiele adresów, należy je rozdzielić przecinkami. Adresy Link-Local "
+"będą automatycznie dołączane do łączącego się interfejsu."
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:13
 msgid "Require IPv_6 addressing for this connection to complete"
@@ -1957,33 +1966,33 @@ msgstr ""
 "metody uwierzytelniania. Jeśli połączenie zawodzi, proszę spróbować wyłączyć "
 "obsługę niektórych metod."
 
-#: ../src/connection-editor/ip4-routes-dialog.c:749
-#: ../src/connection-editor/ip6-routes-dialog.c:691
-#: ../src/connection-editor/page-ip4.c:915
-#: ../src/connection-editor/page-ip6.c:881
+#: ../src/connection-editor/ip4-routes-dialog.c:724
+#: ../src/connection-editor/ip6-routes-dialog.c:666
+#: ../src/connection-editor/page-ip4.c:924
+#: ../src/connection-editor/page-ip6.c:887
 msgid "Address"
 msgstr "Adres"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:766
-#: ../src/connection-editor/page-ip4.c:932
+#: ../src/connection-editor/ip4-routes-dialog.c:741
+#: ../src/connection-editor/page-ip4.c:941
 msgid "Netmask"
 msgstr "Maska sieci"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:783
-#: ../src/connection-editor/ip6-routes-dialog.c:725
-#: ../src/connection-editor/page-ip4.c:949
-#: ../src/connection-editor/page-ip6.c:915
+#: ../src/connection-editor/ip4-routes-dialog.c:758
+#: ../src/connection-editor/ip6-routes-dialog.c:700
+#: ../src/connection-editor/page-ip4.c:958
+#: ../src/connection-editor/page-ip6.c:921
 msgid "Gateway"
 msgstr "Brama"
 
 # http://en.wikipedia.org/wiki/Metrics_(networking)
-#: ../src/connection-editor/ip4-routes-dialog.c:800
-#: ../src/connection-editor/ip6-routes-dialog.c:742
+#: ../src/connection-editor/ip4-routes-dialog.c:775
+#: ../src/connection-editor/ip6-routes-dialog.c:717
 msgid "Metric"
 msgstr "Parametry"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:708
-#: ../src/connection-editor/page-ip6.c:898
+#: ../src/connection-editor/ip6-routes-dialog.c:683
+#: ../src/connection-editor/page-ip6.c:904
 msgid "Prefix"
 msgstr "Przedrostek"
 
@@ -2409,16 +2418,16 @@ msgstr "_Dodatkowe serwery DNS:"
 msgid "Additional s_earch domains:"
 msgstr "Dodatkowe dom_eny wyszukiwania:"
 
-#: ../src/connection-editor/page-ip4.c:847
+#: ../src/connection-editor/page-ip4.c:856
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Modyfikowanie tras IPv4 dla %s"
 
-#: ../src/connection-editor/page-ip4.c:998
+#: ../src/connection-editor/page-ip4.c:1008
 msgid "IPv4 Settings"
 msgstr "Ustawienia IPv4"
 
-#: ../src/connection-editor/page-ip4.c:1000
+#: ../src/connection-editor/page-ip4.c:1010
 msgid "Could not load IPv4 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv4."
 
@@ -2434,16 +2443,16 @@ msgstr "Ignorowanie"
 msgid "Automatic, DHCP only"
 msgstr "Automatycznie, tylko DHCP"
 
-#: ../src/connection-editor/page-ip6.c:813
+#: ../src/connection-editor/page-ip6.c:819
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Modyfikowanie tras IPv6 dla %s"
 
-#: ../src/connection-editor/page-ip6.c:962
+#: ../src/connection-editor/page-ip6.c:969
 msgid "IPv6 Settings"
 msgstr "Ustawienia IPv6"
 
-#: ../src/connection-editor/page-ip6.c:964
+#: ../src/connection-editor/page-ip6.c:971
 msgid "Could not load IPv6 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv6."
 
@@ -2452,20 +2461,20 @@ msgstr "Nie można wczytać interfejsu użytkownika IPv6."
 msgid "%s slave %d"
 msgstr "%s podrzędny %d"
 
-#: ../src/connection-editor/page-mobile.c:393
+#: ../src/connection-editor/page-mobile.c:353
 msgid "Could not load mobile broadband user interface."
 msgstr "Nie można wczytać interfejsu użytkownika połączeń komórkowych."
 
-#: ../src/connection-editor/page-mobile.c:410
+#: ../src/connection-editor/page-mobile.c:370
 msgid "Unsupported mobile broadband connection type."
 msgstr "Nieobsługiwany typ połączenia komórkowego."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:660
+#: ../src/connection-editor/page-mobile.c:620
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Wybór typu dostawcy połączenia komórkowego"
 
-#: ../src/connection-editor/page-mobile.c:687
+#: ../src/connection-editor/page-mobile.c:647
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -2473,21 +2482,21 @@ msgstr ""
 "Proszę wybrać technologię używaną przez dostawcę połączenia komórkowego. W "
 "razie wątpliwości należy zapytać dostawcę."
 
-#: ../src/connection-editor/page-mobile.c:692
+#: ../src/connection-editor/page-mobile.c:652
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Dostawca używa technologii opartej na _GSM (np. GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:699
+#: ../src/connection-editor/page-mobile.c:659
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Dostawca używa technologii opartej na C_DMA (np. 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:709 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:669 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:270
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:712 ../src/mb-menu-item.c:58
+#: ../src/connection-editor/page-mobile.c:672 ../src/mb-menu-item.c:58
 #: ../src/mobile-helpers.c:268
 msgid "GSM"
 msgstr "GSM"
@@ -2879,15 +2888,15 @@ msgstr "Potwierdzenie ustawień połączenia komórkowego"
 msgid "Unlisted"
 msgstr "Nie na liście"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:481
+#: ../src/libnm-gtk/nm-mobile-wizard.c:461
 msgid "_Select your plan:"
 msgstr "Pro_szę wybrać plan:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:505
+#: ../src/libnm-gtk/nm-mobile-wizard.c:485
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "Wybr_ana nazwa punktu dostępowego (APN) planu:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:525
+#: ../src/libnm-gtk/nm-mobile-wizard.c:505
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
@@ -2899,103 +2908,103 @@ msgstr ""
 "\n"
 "W razie wątpliwości dotyczących planu należy zapytać dostawcę o APN planu."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:532
+#: ../src/libnm-gtk/nm-mobile-wizard.c:512
 msgid "Choose your Billing Plan"
 msgstr "Proszę wybrać plan taryfowy"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:581
+#: ../src/libnm-gtk/nm-mobile-wizard.c:561
 msgid "My plan is not listed..."
 msgstr "Planu nie ma na liście..."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:734
+#: ../src/libnm-gtk/nm-mobile-wizard.c:714
 msgid "Select your provider from a _list:"
 msgstr "P_roszę wybrać dostawcę z listy:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:747
+#: ../src/libnm-gtk/nm-mobile-wizard.c:727
 msgid "Provider"
 msgstr "Dostawca"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:772
+#: ../src/libnm-gtk/nm-mobile-wizard.c:752
 msgid "I can't find my provider and I wish to enter it _manually:"
 msgstr "Dostawcy nie _ma na liście, proszę wprowadzić go ręcznie:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:785
+#: ../src/libnm-gtk/nm-mobile-wizard.c:765
 msgid "Provider:"
 msgstr "Dostawca:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:802
+#: ../src/libnm-gtk/nm-mobile-wizard.c:782
 msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 msgstr "Dostawca używa technologii GSM (GPRS, EDGE, UMTS, HSPA)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:804
+#: ../src/libnm-gtk/nm-mobile-wizard.c:784
 msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "Dostawca używa technologii CDMA (1xRTT, EVDO)"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:815
+#: ../src/libnm-gtk/nm-mobile-wizard.c:795
 msgid "Choose your Provider"
 msgstr "Wybór dostawcy"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1047
 msgid "Country or Region List:"
 msgstr "Lista krajów lub regionów:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1080
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1060
 msgid "Country or region"
 msgstr "Kraj lub region"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1090
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1070
 msgid "My country is not listed"
 msgstr "Kraju nie ma na liście"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1140
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1120
 msgid "Choose your Provider's Country or Region"
 msgstr "Wybór kraju lub regionu dostawcy"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1194
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1174
 msgid "Installed GSM device"
 msgstr "Zainstalowane urządzenie GSM"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1197
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1177
 msgid "Installed CDMA device"
 msgstr "Zainstalowane urządzenie CDMA"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1365
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1345
 msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
 msgstr ""
 "Ten asystent pomaga w łatwym ustawieniu połączenia komórkowego z siecią 3G."
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1370
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1350
 msgid "You will need the following information:"
 msgstr "Wymagane są następujące informacje:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1381
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1361
 msgid "Your broadband provider's name"
 msgstr "Nazwa dostawcy połączenia komórkowego"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1387
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1367
 msgid "Your broadband billing plan name"
 msgstr "Nazwa planu taryfowego"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1393
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1373
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr ""
 "(w niektórych przypadkach) nazwa punktu dostępowego (APN) planu taryfowego"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1420
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1400
 msgid "Create a connection for _this mobile broadband device:"
 msgstr "Utworzenie połączenia dla _tego urządzenia komórkowego:"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1435
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1415
 msgid "Any device"
 msgstr "Dowolne urządzenie"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1448
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1428
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Ustawienie połączenia komórkowego"
 
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1621
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1601
 msgid "New Mobile Broadband Connection"
 msgstr "Nowe połączenie komórkowe"
 
