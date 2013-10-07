@@ -339,6 +339,9 @@ connection_combo_changed (GtkWidget *combo,
 	                    C_CON_COLUMN, &priv->connection,
 	                    C_NEW_COLUMN, &is_new, -1);
 
+	if (priv->connection)
+		eap_method_ca_cert_ignore_load (priv->connection);
+
 	if (!security_combo_init (self, priv->secrets_only)) {
 		g_warning ("Couldn't change Wi-Fi security combo box.");
 		return;
