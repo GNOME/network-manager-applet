@@ -234,7 +234,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 			ca_cert_error = TRUE;
 		}
 	}
-	eap_method_ca_cert_ignore_set (parent, connection, ca_filename, ca_cert_error, "eap_tls_ca_cert_not_required_checkbox");
+	eap_method_ca_cert_ignore_set (parent, connection, ca_filename, ca_cert_error);
 	g_free (ca_filename);
 }
 
@@ -471,7 +471,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	                  phase2 ? nm_setting_802_1x_get_phase2_private_key_path : nm_setting_802_1x_get_private_key_path,
 	                  TRUE, FALSE);
 
-	if (eap_method_ca_cert_ignore_get (parent, connection)) {
+	if (connection && eap_method_ca_cert_ignore_get (parent, connection)) {
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_button"));
 		ca_not_required = !gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	}

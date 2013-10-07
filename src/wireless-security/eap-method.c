@@ -527,8 +527,6 @@ eap_method_ca_cert_not_required_toggled (GtkBuilder *builder, const char *id_ca_
  * @filename: the certificate file, if any
  * @ca_cert_error: %TRUE if an error was encountered loading the given CA
  * certificate, %FALSE if not or if a CA certificate is not present
- * @id_ca_cert_is_not_required_checkbox: the #GtkWidget object name of the
- * "CA certificate not required" checkbox
  *
  * Updates the connection's CA cert ignore value to %TRUE if the "CA certificate
  * not required" checkbox is checked.  If @ca_cert_error is %TRUE, then the
@@ -540,16 +538,10 @@ void
 eap_method_ca_cert_ignore_set (EAPMethod *method,
                                NMConnection *connection,
                                const char *filename,
-                               gboolean ca_cert_error,
-                               const char *id_ca_cert_is_not_required_checkbox)
+                               gboolean ca_cert_error)
 {
-	GtkWidget *widget;
 	NMSetting8021x *s_8021x;
 	gboolean ignore;
-
-	/* We don't really need the checkbox value here. Just assert that it is set as expected. */
-	widget = GTK_WIDGET (gtk_builder_get_object (method->builder, id_ca_cert_is_not_required_checkbox));
-	g_assert (widget && (ca_cert_error || !filename == gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))));
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	if (s_8021x) {

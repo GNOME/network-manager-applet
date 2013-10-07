@@ -159,7 +159,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		g_clear_error (&error);
 		ca_cert_error = TRUE;
 	}
-	eap_method_ca_cert_ignore_set (parent, connection, filename, ca_cert_error, "eap_ttls_ca_cert_not_required_checkbox");
+	eap_method_ca_cert_ignore_set (parent, connection, filename, ca_cert_error);
 	g_free (filename);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_ttls_inner_auth_combo"));

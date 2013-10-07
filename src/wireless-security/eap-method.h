@@ -124,8 +124,7 @@ void eap_method_ca_cert_not_required_toggled (GtkBuilder *builder,
 void eap_method_ca_cert_ignore_set (EAPMethod *method,
                                     NMConnection *connection,
                                     const char *filename,
-                                    gboolean ca_cert_error,
-                                    const char *id_ca_cert_is_not_required_checkbox);
+                                    gboolean ca_cert_error);
 gboolean eap_method_ca_cert_ignore_get (EAPMethod *method, NMConnection *connection);
 
 void eap_method_ca_cert_ignore_save (NMConnection *connection);
