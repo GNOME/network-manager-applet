@@ -61,6 +61,8 @@ nm_applet_SOURCES = \
 	applet-device-vlan.c \
 	applet-device-bond.h \
 	applet-device-bond.c \
+	applet-device-team.h \
+	applet-device-team.c \
 	applet-device-bridge.h \
 	applet-device-bridge.c \
 	applet-device-infiniband.h \

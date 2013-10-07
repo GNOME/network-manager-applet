@@ -32,6 +32,7 @@
 #include "page-dsl.h"
 #include "page-infiniband.h"
 #include "page-bond.h"
+#include "page-team.h"
 #include "page-bridge.h"
 #include "page-vlan.h"
 #include "page-vpn.h"
@@ -137,6 +138,12 @@ get_connection_type_list (void)
 	data.name = _("Bond");
 	data.new_connection_func = bond_connection_new;
 	data.setting_type = NM_TYPE_SETTING_BOND;
+	data.virtual = TRUE;
+	g_array_append_val (array, data);
+
+	data.name = _("Team");
+	data.new_connection_func = team_connection_new;
+	data.setting_type = NM_TYPE_SETTING_TEAM;
 	data.virtual = TRUE;
 	g_array_append_val (array, data);
 

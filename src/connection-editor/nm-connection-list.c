@@ -571,7 +571,7 @@ tree_model_visible_func (GtkTreeModel *model,
 	}
 
 	/* A connection node is visible unless it is a slave to a known
-	 * bond or bridge.
+	 * bond or team or bridge.
 	 */
 	s_con = nm_connection_get_setting_connection (connection);
 	g_object_unref (connection);
@@ -582,6 +582,7 @@ tree_model_visible_func (GtkTreeModel *model,
 		return TRUE;
 	slave_type = nm_setting_connection_get_slave_type (s_con);
 	if (   g_strcmp0 (slave_type, NM_SETTING_BOND_SETTING_NAME) != 0
+	    && g_strcmp0 (slave_type, NM_SETTING_TEAM_SETTING_NAME) != 0
 	    && g_strcmp0 (slave_type, NM_SETTING_BRIDGE_SETTING_NAME) != 0)
 		return TRUE;
 
