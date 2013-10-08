@@ -50,6 +50,17 @@ typedef struct {
 } CEPageTeamPrivate;
 
 static void
+widget_realized_cb (GtkWidget *widget, gpointer user_data)
+{
+	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (user_data);
+
+	priv->toplevel = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+	if (!gtk_widget_is_toplevel (GTK_WIDGET (priv->toplevel)))
+		priv->toplevel = NULL;
+	g_signal_handlers_disconnect_by_func (widget, widget_realized_cb, user_data);
+}
+
+static void
 team_private_init (CEPageTeam *self)
 {
 	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
@@ -60,8 +71,8 @@ team_private_init (CEPageTeam *self)
 	priv->json_config_widget = GTK_TEXT_VIEW (gtk_builder_get_object (builder, "team_json_config"));
 	priv->import_config_button = GTK_WIDGET (gtk_builder_get_object (builder, "import_config_button"));
 
-	priv->toplevel = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (priv->json_config_widget),
-	                                                      GTK_TYPE_WINDOW));
+	/* Wait for widget to be realized to get toplevel window */
+	g_signal_connect (priv->json_config_widget, "realize", G_CALLBACK (widget_realized_cb), self);
 }
 
 static void
@@ -71,57 +82,47 @@ json_config_changed (GObject *object, CEPageTeam *self)
 }
 
 static void
-import_config_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
+import_button_clicked_cb (GtkWidget *widget, CEPageTeam *self)
 {
-	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (user_data);
+	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
+	GtkWidget *dialog;
 	GtkTextBuffer *buffer;
 	char *filename;
 	char *buf = NULL;
 	gsize buf_len;
 
-	if (response != GTK_RESPONSE_ACCEPT)
-		goto out;
-
-	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-	if (!filename) {
-		g_warning ("%s: didn't get a filename back from the chooser!", __func__);
-		goto out;
-	}
-
-	/* Put the file content into JSON config text view. */
-	// FIXME: do a cleverer file validity check
-	g_file_get_contents (filename, &buf, &buf_len, NULL);
-	if (buf_len > 100000) {
-		g_free (buf);
-		buf = g_strdup (_("Error: file doesn't contain a valid JSON configuration"));
-	}
-
-	buffer = gtk_text_view_get_buffer (priv->json_config_widget);
-	gtk_text_buffer_set_text (buffer, buf ? buf : "", -1);
-
-	g_free (filename);
-	g_free (buf);
-
-out:
-	gtk_widget_hide (dialog);
-	gtk_widget_destroy (dialog);
-}
-
-static void
-import_button_clicked_cb (GtkWidget *widget, CEPageTeam *self)
-{
-	GtkWidget *dialog;
-
 	dialog = gtk_file_chooser_dialog_new (_("Select file to import"),
-	                                      NULL,
+	                                      priv->toplevel,
 	                                      GTK_FILE_CHOOSER_ACTION_OPEN,
 	                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 	                                      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 	                                      NULL);
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (import_config_from_file_cb), self);
-	gtk_widget_show_all (dialog);
-	gtk_window_present (GTK_WINDOW (dialog));
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+		if (!filename) {
+			g_warning ("%s: didn't get a filename back from the chooser!", __func__);
+			goto out;
+		}
+
+		/* Put the file content into JSON config text view. */
+		// FIXME: do a cleverer file validity check
+		g_file_get_contents (filename, &buf, &buf_len, NULL);
+		if (buf_len > 100000) {
+			g_free (buf);
+			buf = g_strdup (_("Error: file doesn't contain a valid JSON configuration"));
+		}
+
+		buffer = gtk_text_view_get_buffer (priv->json_config_widget);
+		gtk_text_buffer_set_text (buffer, buf ? buf : "", -1);
+
+		g_free (filename);
+		g_free (buf);
+	}
+
+out:
+	gtk_widget_destroy (dialog);
 }
 
 static void
