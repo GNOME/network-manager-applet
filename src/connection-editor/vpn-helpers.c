@@ -224,13 +224,6 @@ out:
 	g_free (info);
 }
 
-static void
-destroy_import_chooser (GtkWidget *dialog, gpointer user_data)
-{
-	g_free (user_data);
-	gtk_widget_destroy (dialog);
-}
-
 void
 vpn_import (VpnImportSuccessCallback callback, gpointer user_data)
 {
@@ -251,7 +244,6 @@ vpn_import (VpnImportSuccessCallback callback, gpointer user_data)
 	info->callback = callback;
 	info->user_data = user_data;
 
-	g_signal_connect (G_OBJECT (dialog), "close", G_CALLBACK (destroy_import_chooser), info);
 	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (import_vpn_from_file_cb), info);
 	gtk_widget_show_all (dialog);
 	gtk_window_present (GTK_WINDOW (dialog));
@@ -386,7 +378,6 @@ vpn_export (NMConnection *connection)
 		}
 	}
 
-	g_signal_connect (G_OBJECT (dialog), "close", G_CALLBACK (gtk_widget_destroy), NULL);
 	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (export_vpn_to_file_cb), g_object_ref (connection));
 	gtk_widget_show_all (dialog);
 	gtk_window_present (GTK_WINDOW (dialog));
