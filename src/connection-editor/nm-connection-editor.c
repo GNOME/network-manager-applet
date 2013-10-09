@@ -77,6 +77,7 @@
 #include "page-bridge.h"
 #include "page-bridge-port.h"
 #include "page-vlan.h"
+#include "page-dcb.h"
 #include "ce-polkit-button.h"
 #include "vpn-helpers.h"
 #include "eap-method.h"
@@ -756,6 +757,8 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 		if (!add_page (editor, ce_page_ethernet_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_8021x_security_new, editor->connection, error))
+			goto out;
+		if (!add_page (editor, ce_page_dcb_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_wifi_new, editor->connection, error))
