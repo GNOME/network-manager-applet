@@ -443,7 +443,7 @@ populate_ui (CEPageVlan *self)
 		mtu_def = mtu_val = 1500;
 	}
 	g_signal_connect (priv->mtu, "output",
-	                  G_CALLBACK (ce_spin_output_with_default),
+	                  G_CALLBACK (ce_spin_output_with_automatic),
 	                  GINT_TO_POINTER (mtu_def));
 
 	gtk_spin_button_set_value (priv->mtu, (gdouble) mtu_val);
