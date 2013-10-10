@@ -38,6 +38,7 @@ struct NMShellWatcherPrivate {
 	guint retries;
 
 	guint shell_version;
+	gboolean shell_version_set;
 };
 
 enum {
@@ -99,6 +100,7 @@ try_update_version (NMShellWatcher *watcher)
 		g_warn_if_fail (minor < 256);
 
 		priv->shell_version = (major << 8) | minor;
+		priv->shell_version_set = TRUE;
 		g_object_notify (G_OBJECT (watcher), "shell-version");
 	}
 
@@ -116,8 +118,9 @@ name_owner_changed_cb (GDBusProxy *proxy, GParamSpec *pspec, gpointer user_data)
 	if (owner) {
 		try_update_version (watcher);
 		g_free (owner);
-	} else if (priv->shell_version) {
+	} else if (priv->shell_version || !priv->shell_version_set) {
 		priv->shell_version = 0;
+		priv->shell_version_set = TRUE;
 		g_object_notify (G_OBJECT (watcher), "shell-version");
 	}
 }

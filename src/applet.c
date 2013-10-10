@@ -86,8 +86,6 @@
 
 #define NOTIFY_CAPS_ACTIONS_KEY "actions"
 
-extern gboolean shell_debug;
-
 G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
 
 /********************************************************************/
@@ -912,8 +910,8 @@ applet_do_notify (NMApplet *applet,
 	if (!gtk_status_icon_is_embedded (applet->status_icon))
 		return;
 
-	/* if we're not registered, don't notify either */
-	if (!nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)))
+	/* if we're not acting as a secret agent, don't notify either */
+	if (!applet->agent)
 		return;
 
 	applet_clear_notify (applet);
@@ -3048,22 +3046,6 @@ applet_agent_cancel_secrets_cb (AppletAgent *agent,
 	}
 }
 
-static void
-applet_agent_registered_cb (AppletAgent *agent,
-                            GParamSpec *pspec,
-                            gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-
-	/* If the shell is running and the agent just got registered, unregister it */
-	if (   applet->shell_watcher
-	    && (nm_shell_watcher_version_at_least (applet->shell_watcher, 3, 4))
-	    && nm_secret_agent_get_registered (NM_SECRET_AGENT (agent))) {
-		g_message ("Stopping registered applet secret agent because GNOME Shell is running");
-		nm_secret_agent_unregister (NM_SECRET_AGENT (agent));
-	}
-}
-
 /*****************************************************************************/
 
 static void
@@ -3307,8 +3289,6 @@ setup_widgets (NMApplet *applet)
 	applet->status_icon = gtk_status_icon_new ();
 	if (!applet->status_icon)
 		return FALSE;
-	if (shell_debug)
-		gtk_status_icon_set_name (applet->status_icon, "adsfasdfasdfadfasdf");
 
 	g_signal_connect (applet->status_icon, "notify::screen",
 			  G_CALLBACK (status_icon_screen_changed_cb), applet);
@@ -3335,57 +3315,59 @@ applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 	           embedded ? "embedded in" : "removed from");
 }
 
-#if GLIB_CHECK_VERSION(2,26,0)
-static gboolean
-delayed_start_agent (gpointer user_data)
+static void
+applet_start_agent (NMApplet *applet)
 {
-	NMApplet *applet = user_data;
+	if (applet->agent)
+		return;
 
-	applet->agent_start_id = 0;
-
+	applet->agent = applet_agent_new ();
 	g_assert (applet->agent);
-
-	/* If the agent is already running, there's nothing to do. */
-	if (nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)) == TRUE)
-		return FALSE;
-
-	if (nm_secret_agent_register (NM_SECRET_AGENT (applet->agent)))
-		g_message ("Starting applet secret agent because GNOME Shell disappeared");
-	else
-		g_warning ("Failed to start applet secret agent!");
-	return FALSE;
+	g_signal_connect (applet->agent, APPLET_AGENT_GET_SECRETS,
+	                  G_CALLBACK (applet_agent_get_secrets_cb), applet);
+	g_signal_connect (applet->agent, APPLET_AGENT_CANCEL_SECRETS,
+	                  G_CALLBACK (applet_agent_cancel_secrets_cb), applet);
+	nm_secret_agent_register (NM_SECRET_AGENT (applet->agent));
 }
 
+static void
+applet_stop_agent (NMApplet *applet)
+{
+	if (!applet->agent)
+		return;
+
+	g_signal_handlers_disconnect_by_func (applet->agent,
+	                                      G_CALLBACK (applet_agent_get_secrets_cb),
+	                                      applet);
+	g_signal_handlers_disconnect_by_func (applet->agent,
+	                                      G_CALLBACK (applet_agent_cancel_secrets_cb),
+	                                      applet);
+	nm_secret_agent_unregister (NM_SECRET_AGENT (applet->agent));
+	g_clear_object (&applet->agent);
+}
+
+#if GLIB_CHECK_VERSION(2,26,0)
 static void
 shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer user_data)
 {
 	NMApplet *applet = user_data;
 
-	if (applet->agent_start_id) {
-		g_source_remove (applet->agent_start_id);
-		applet->agent_start_id = 0;
-	}
-
-	if (!applet->agent)
-		return;
-
 	if (nm_shell_watcher_version_at_least (watcher, 3, 4)) {
 		/* GNOME Shell handles all secrets requests */
-		if (nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent))) {
-			g_debug ("GNOME Shell will now be handling secret agent as it appeared");
-			nm_secret_agent_unregister (NM_SECRET_AGENT (applet->agent));
-		}
+		applet_stop_agent (applet);
+
+		/* We don't need the watcher any more */
+		g_signal_handlers_disconnect_by_func (applet->shell_watcher,
+		                                      G_CALLBACK (shell_version_changed_cb),
+		                                      applet);
+		g_clear_object (&applet->shell_watcher);
 	} else if (nm_shell_watcher_version_at_least (watcher, 3, 2)) {
 		/* GNOME Shell handles everything except VPN secrets requests */
-		if (nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)))
-			g_debug ("Applet will now be handling secret agent only for VPN secrets as GNOME Shell appeared");
+		applet_start_agent (applet);
 		applet_agent_handle_vpn_only (applet->agent, TRUE);
 	} else {
-		/* If the shell quit and our agent wasn't already registered, do it
-		 * now on a delay (just in case the shell is restarting).
-		 */
-		if (!nm_secret_agent_get_registered (NM_SECRET_AGENT (applet->agent)))
-			applet->agent_start_id = g_timeout_add_seconds (4, delayed_start_agent, applet);
+		/* No shell */
+		applet_start_agent (applet);
 		applet_agent_handle_vpn_only (applet->agent, FALSE);
 	}
 }
@@ -3484,15 +3466,6 @@ constructor (GType type,
 	}
 #endif
 
-	applet->agent = applet_agent_new ();
-	g_assert (applet->agent);
-	g_signal_connect (applet->agent, APPLET_AGENT_GET_SECRETS,
-	                  G_CALLBACK (applet_agent_get_secrets_cb), applet);
-	g_signal_connect (applet->agent, APPLET_AGENT_CANCEL_SECRETS,
-	                  G_CALLBACK (applet_agent_cancel_secrets_cb), applet);
-	g_signal_connect (applet->agent, "notify::" NM_SECRET_AGENT_REGISTERED,
-	                  G_CALLBACK (applet_agent_registered_cb), applet);
-
 	/* Initialize device classes */
 	applet->ethernet_class = applet_device_ethernet_get_class (applet);
 	g_assert (applet->ethernet_class);
@@ -3531,14 +3504,14 @@ constructor (GType type,
 	applet_embedded_cb (G_OBJECT (applet->status_icon), NULL, NULL);
 
 #if GLIB_CHECK_VERSION(2,26,0)
-	if (!shell_debug) {
-		/* Watch GNOME Shell so we can unregister our applet agent if it appears */
-		applet->shell_watcher = nm_shell_watcher_new ();
-		g_signal_connect (applet->shell_watcher,
-			              "notify::shell-version",
-			              G_CALLBACK (shell_version_changed_cb),
-			              applet);
-	}
+	/* Check for GNOME Shell before deciding whether to register agent */
+	applet->shell_watcher = nm_shell_watcher_new ();
+	g_signal_connect (applet->shell_watcher,
+	                  "notify::shell-version",
+	                  G_CALLBACK (shell_version_changed_cb),
+	                  applet);
+#else
+	applet_start_agent (applet);
 #endif
 
 	return G_OBJECT (applet);
@@ -3599,8 +3572,7 @@ static void finalize (GObject *object)
 	if (applet->fallback_icon)
 		g_object_unref (applet->fallback_icon);
 
-	if (applet->agent)
-		g_object_unref (applet->agent);
+	applet_stop_agent (applet);
 
 	if (applet->settings)
 		g_object_unref (applet->settings);
@@ -3615,8 +3587,6 @@ static void finalize (GObject *object)
 	if (applet->shell_watcher)
 		g_object_unref (applet->shell_watcher);
 #endif
-	if (applet->agent_start_id)
-		g_source_remove (applet->agent_start_id);
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
