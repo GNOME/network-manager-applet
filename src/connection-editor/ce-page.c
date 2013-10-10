@@ -84,6 +84,14 @@ ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data)
 	                                        _("automatic"));
 }
 
+gboolean
+ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
+{
+	return spin_output_with_default_string (spin,
+	                                        GPOINTER_TO_INT (user_data),
+	                                        _("default"));
+}
+
 int
 ce_get_property_default (NMSetting *setting, const char *property_name)
 {
