@@ -118,7 +118,7 @@ void ce_page_mac_to_entry (const GByteArray *mac, int type, GtkEntry *entry);
 
 GByteArray *ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid);
 
-gint ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
+gboolean ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data);
 
 int ce_get_property_default (NMSetting *setting, const char *property_name);
 
