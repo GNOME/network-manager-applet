@@ -975,6 +975,9 @@ ok_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 	if (self->busy)
 		return;
 
+	/* Validate one last time to ensure all pages update the connection */
+	connection_editor_validate (self);
+
 	ok_button_clicked_save_connection (self);
 }
 
