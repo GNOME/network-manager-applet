@@ -1260,7 +1260,7 @@ intro_add_initial_devices (NMAMobileWizard *self)
 	gboolean selected_first = FALSE;
 	int i;
 
-	devices = nm_client_get_devices (self->client);
+	devices = self->client ? nm_client_get_devices (self->client) : NULL;
 	for (i = 0; devices && (i < devices->len); i++) {
 		if (__intro_device_added (self, g_ptr_array_index (devices, i), !selected_first)) {
 			if (selected_first == FALSE)
@@ -1381,12 +1381,14 @@ intro_setup (NMAMobileWizard *self)
 		GtkTreeIter iter;
 
 		self->client = nm_client_new ();
-		g_signal_connect (self->client, "device-added",
-		                  G_CALLBACK (intro_device_added_cb), self);
-		g_signal_connect (self->client, "device-removed",
-		                  G_CALLBACK (intro_device_removed_cb), self);
-		g_signal_connect (self->client, "notify::manager-running",
-		                  G_CALLBACK (intro_manager_running_cb), self);
+		if (self->client) {
+			g_signal_connect (self->client, "device-added",
+			                  G_CALLBACK (intro_device_added_cb), self);
+			g_signal_connect (self->client, "device-removed",
+			                  G_CALLBACK (intro_device_removed_cb), self);
+			g_signal_connect (self->client, "notify::manager-running",
+			                  G_CALLBACK (intro_manager_running_cb), self);
+		}
 
 		self->dev_store = gtk_tree_store_new (3, G_TYPE_STRING, NM_TYPE_DEVICE, G_TYPE_BOOLEAN);
 		self->dev_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (self->dev_store));
