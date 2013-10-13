@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-31 13:04+0200\n"
-"PO-Revision-Date: 2013-03-17 00:19+0100\n"
+"POT-Creation-Date: 2013-10-14 00:06+0200\n"
+"PO-Revision-Date: 2013-07-05 20:47+0200\n"
 "Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca-XV\n"
@@ -476,7 +476,7 @@ msgstr "La connexió VPN «%s» és activa"
 msgid "No network connection"
 msgstr "No hi ha cap connexió de xarxa"
 
-#: ../src/applet.c:3441
+#: ../src/applet.c:3442
 msgid "NetworkManager Applet"
 msgstr "Miniaplicació NetworkManager"
 
@@ -1874,7 +1874,7 @@ msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/new-connection.c:137
-#: ../src/connection-editor/page-bond.c:419 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/page-bond.c:439 ../src/libnm-gtk/nm-ui-utils.c:337
 #: ../src/libnm-gtk/nm-ui-utils.c:559
 msgid "Bond"
 msgstr "Vinculada"
@@ -1886,7 +1886,7 @@ msgid "Bridge"
 msgstr "Pont"
 
 #: ../src/connection-editor/new-connection.c:149
-#: ../src/connection-editor/page-vlan.c:480 ../src/libnm-gtk/nm-ui-utils.c:341
+#: ../src/connection-editor/page-vlan.c:484 ../src/libnm-gtk/nm-ui-utils.c:341
 #: ../src/libnm-gtk/nm-ui-utils.c:563
 msgid "VLAN"
 msgstr "VLAN"
@@ -1948,52 +1948,52 @@ msgstr ""
 "L'editor de connexions no ha pogut trobar alguns dels recursos necessaris "
 "(no s'ha trobat el fitxer d'interfície d'usuari)."
 
-#: ../src/connection-editor/nm-connection-editor.c:408
+#: ../src/connection-editor/nm-connection-editor.c:413
 msgid "_Save"
 msgstr "Al_ça"
 
-#: ../src/connection-editor/nm-connection-editor.c:409
+#: ../src/connection-editor/nm-connection-editor.c:414
 msgid "Save any changes made to this connection."
 msgstr "Guarda els canvis fets a la connexió."
 
-#: ../src/connection-editor/nm-connection-editor.c:410
+#: ../src/connection-editor/nm-connection-editor.c:415
 msgid "_Save..."
 msgstr "Al_ça..."
 
-#: ../src/connection-editor/nm-connection-editor.c:411
+#: ../src/connection-editor/nm-connection-editor.c:416
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autentiqueu-vos per guardar la connexió per a tots els usuaris de "
 "l'ordinador."
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not create connection"
 msgstr "No s'ha pogut crear la connexió"
 
-#: ../src/connection-editor/nm-connection-editor.c:427
+#: ../src/connection-editor/nm-connection-editor.c:432
 msgid "Could not edit connection"
 msgstr "No s'ha pogut editar la connexió"
 
-#: ../src/connection-editor/nm-connection-editor.c:429
+#: ../src/connection-editor/nm-connection-editor.c:434
 msgid "Unknown error creating connection editor dialog."
 msgstr ""
 "S'ha produït un error desconegut en crear el diàleg de l'editor de "
 "connexions."
 
-#: ../src/connection-editor/nm-connection-editor.c:536
+#: ../src/connection-editor/nm-connection-editor.c:541
 msgid "Error saving connection"
 msgstr "S'ha produït un error en guardar la connexió"
 
-#: ../src/connection-editor/nm-connection-editor.c:537
+#: ../src/connection-editor/nm-connection-editor.c:542
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "La propietat «%s» / «%s» no és vàlida: %d"
 
-#: ../src/connection-editor/nm-connection-editor.c:631
+#: ../src/connection-editor/nm-connection-editor.c:641
 msgid "Error initializing editor"
 msgstr "S'ha produït un error en inicialitzar l'editor"
 
-#: ../src/connection-editor/nm-connection-editor.c:952
+#: ../src/connection-editor/nm-connection-editor.c:962
 msgid "Connection add failed"
 msgstr "No s'ha pogut afegir la connexió"
 
@@ -2082,20 +2082,24 @@ msgstr "_Suprimeix..."
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentiqueu-vos per suprimir la connexió seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:942
-msgid "Error creating connection"
-msgstr "S'ha produït un error en crear la connexió"
-
 #: ../src/connection-editor/nm-connection-list.c:943
+msgid "No VPN plugins are installed."
+msgstr "No hi ha cap connector de VPN instal·lat."
+
+#: ../src/connection-editor/nm-connection-list.c:945
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Es desconeix com crear connexions «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:998
+#: ../src/connection-editor/nm-connection-list.c:947
+msgid "Error creating connection"
+msgstr "S'ha produït un error en crear la connexió"
+
+#: ../src/connection-editor/nm-connection-list.c:1003
 msgid "Error editing connection"
 msgstr "S'ha produït un error en editar la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:999
+#: ../src/connection-editor/nm-connection-list.c:1004
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "No s'ha pogut trobar cap connexió amb UUID «%s»"
@@ -2113,12 +2117,12 @@ msgstr ""
 msgid "Use 802.1_X security for this connection"
 msgstr "Utilitza la seguretat 802.1_X per a esta connexió"
 
-#: ../src/connection-editor/page-bond.c:422
+#: ../src/connection-editor/page-bond.c:442
 msgid "Could not load bond user interface."
 msgstr ""
 "No s'ha pogut carregar la interfície d'usuari per a la connexió vinculada."
 
-#: ../src/connection-editor/page-bond.c:561
+#: ../src/connection-editor/page-bond.c:584
 #, c-format
 msgid "Bond connection %d"
 msgstr "Connexió vinculada %d"
@@ -2397,11 +2401,11 @@ msgstr "Paràmetres PPP"
 msgid "Could not load PPP user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió PPP."
 
-#: ../src/connection-editor/page-vlan.c:482
+#: ../src/connection-editor/page-vlan.c:486
 msgid "Could not load vlan user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió VLAN."
 
-#: ../src/connection-editor/page-vlan.c:678
+#: ../src/connection-editor/page-vlan.c:682
 #, c-format
 msgid "VLAN connection %d"
 msgstr "Connexió VLAN %d"
@@ -2547,29 +2551,29 @@ msgstr ""
 "\n"
 "Error: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:241
+#: ../src/connection-editor/vpn-helpers.c:234
 msgid "Select file to import"
 msgstr "Seleccioneu el fitxer a importar"
 
-#: ../src/connection-editor/vpn-helpers.c:292
+#: ../src/connection-editor/vpn-helpers.c:284
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "Ja existeix un fitxer anomenat «%s»."
 
-#: ../src/connection-editor/vpn-helpers.c:294
+#: ../src/connection-editor/vpn-helpers.c:286
 msgid "_Replace"
 msgstr "_Reemplaça"
 
-#: ../src/connection-editor/vpn-helpers.c:296
+#: ../src/connection-editor/vpn-helpers.c:288
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "Voleu reemplaçar %s per la connexió VPN que esteu guardant?"
 
-#: ../src/connection-editor/vpn-helpers.c:332
+#: ../src/connection-editor/vpn-helpers.c:324
 msgid "Cannot export VPN connection"
 msgstr "No es pot exportar la connexió VPN"
 
-#: ../src/connection-editor/vpn-helpers.c:334
+#: ../src/connection-editor/vpn-helpers.c:326
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -2580,7 +2584,7 @@ msgstr ""
 "\n"
 "Error: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:369
+#: ../src/connection-editor/vpn-helpers.c:361
 msgid "Export VPN connection..."
 msgstr "Exporta una connexió VPN..."
 
@@ -2905,11 +2909,11 @@ msgstr "%s %s"
 msgid "New..."
 msgstr "Nova..."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1052
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1055
 msgid "C_reate"
 msgstr "C_rea"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1136
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1154
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
@@ -2917,35 +2921,35 @@ msgstr ""
 "Cal una contrasenya o claus d'encriptació per accedir a la xarxa sense fil "
 "«%s»."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1138
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1156
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Cal autenticació per a la xarxa sense fil"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1140
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1158
 msgid "Authentication required by Wi-Fi network"
 msgstr "Cal autenticació per a la xarxa sense fil"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1145
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1163
 msgid "Create New Wi-Fi Network"
 msgstr "Crea una xarxa sense fil nova"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1147
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1165
 msgid "New Wi-Fi network"
 msgstr "Xarxa sense fil nova"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1148
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Introduïu el nom de la xarxa sense fil que voleu crear."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1168
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Connecta't a la xarxa sense fil oculta"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1170
 msgid "Hidden Wi-Fi network"
 msgstr "Xarxa sense fil oculta"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1153
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1171
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
