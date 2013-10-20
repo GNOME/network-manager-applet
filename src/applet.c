@@ -251,7 +251,7 @@ get_device_class (NMDevice *device, NMApplet *applet)
 		else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
 			return applet->cdma_class;
 		else
-			g_message ("%s: unhandled modem capabilities 0x%X", __func__, caps);
+			g_debug ("%s: unhandled modem capabilities 0x%X", __func__, caps);
 	} else if (NM_IS_DEVICE_BT (device))
 		return applet->bt_class;
 	else if (NM_IS_DEVICE_WIMAX (device))
@@ -2379,9 +2379,9 @@ foo_manager_running_cb (NMClient *client,
 	NMApplet *applet = NM_APPLET (user_data);
 
 	if (nm_client_get_manager_running (client)) {
-		g_message ("NM appeared");
+		g_debug ("NM appeared");
 	} else {
-		g_message ("NM disappeared");
+		g_debug ("NM disappeared");
 		clear_animation_timeout (applet);
 	}
 
@@ -3221,9 +3221,7 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
                              gint size,
                              NMApplet *applet)
 {
-	if (getenv ("NMA_SIZE_DEBUG")) {
-		g_message ("%s(): status icon size %d requested", __func__, size);
-	}
+	g_debug ("%s(): status icon size %d requested", __func__, size);
 
 	/* icon_size may be 0 if for example the panel hasn't given us any space
 	 * yet.  We'll get resized later, but for now just load the 16x16 icons.
@@ -3311,8 +3309,8 @@ applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
 	gboolean embedded = gtk_status_icon_is_embedded (GTK_STATUS_ICON (object));
 
-	g_message ("applet now %s the notification area",
-	           embedded ? "embedded in" : "removed from");
+	g_debug ("applet now %s the notification area",
+	         embedded ? "embedded in" : "removed from");
 }
 
 static void
@@ -3321,6 +3319,7 @@ applet_start_agent (NMApplet *applet)
 	if (applet->agent)
 		return;
 
+	g_debug ("gnome-shell is not running, registering secret agent");
 	applet->agent = applet_agent_new ();
 	g_assert (applet->agent);
 	g_signal_connect (applet->agent, APPLET_AGENT_GET_SECRETS,
@@ -3336,6 +3335,7 @@ applet_stop_agent (NMApplet *applet)
 	if (!applet->agent)
 		return;
 
+	g_debug ("destroying secret agent");
 	g_signal_handlers_disconnect_by_func (applet->agent,
 	                                      G_CALLBACK (applet_agent_get_secrets_cb),
 	                                      applet);
@@ -3354,6 +3354,7 @@ shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer u
 
 	if (nm_shell_watcher_version_at_least (watcher, 3, 4)) {
 		/* GNOME Shell handles all secrets requests */
+		g_debug ("gnome-shell 3.4+ is running");
 		applet_stop_agent (applet);
 
 		/* We don't need the watcher any more */
@@ -3363,6 +3364,7 @@ shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer u
 		g_clear_object (&applet->shell_watcher);
 	} else if (nm_shell_watcher_version_at_least (watcher, 3, 2)) {
 		/* GNOME Shell handles everything except VPN secrets requests */
+		g_debug ("gnome-shell 3.2 is running");
 		applet_start_agent (applet);
 		applet_agent_handle_vpn_only (applet->agent, TRUE);
 	} else {
