@@ -15,6 +15,7 @@ nm_applet_CPPFLAGS = \
 	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\"			\
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\"	\
 	-DNMALOCALEDIR=\"$(datadir)/locale\"					\
+	-DG_LOG_DOMAIN=\""nm-applet"\" \
 	$(DBUS_CFLAGS)										\
 	$(DISABLE_DEPRECATED)	\
 	-I${top_builddir}/src/marshallers \
