@@ -537,6 +537,10 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	if (!CE_PAGE_CLASS (ce_page_bond_parent_class)->validate (page, connection, error))
 		return FALSE;
 
+	/* Need at least one slave connection */
+	if (!ce_page_master_has_slaves (CE_PAGE_MASTER (page)))
+		return FALSE;
+
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 }

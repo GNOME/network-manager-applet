@@ -498,12 +498,9 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageMaster *self = CE_PAGE_MASTER (page);
 
-	/* Need at least one slave connection; we don't need to
-	 * recursively check that the connections are valid because they
-	 * can't end up in the table if they're not.
+	/* We don't need to recursively check that the slaves connections
+	 * are valid because they can't end up in the table if they're not.
 	 */
-	if (!ce_page_master_has_slaves (self))
-		return FALSE;
 
 	ui_to_setting (self);
 
