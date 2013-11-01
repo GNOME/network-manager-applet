@@ -124,7 +124,7 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 }
 
 static void
-fill_connection (EAPMethod *parent, NMConnection *connection)
+fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFlags flags)
 {
 	NMSetting8021x *s_8021x;
 	GtkWidget *widget;
@@ -183,7 +183,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	gtk_tree_model_get (model, &iter, I_METHOD_COLUMN, &eap, -1);
 	g_assert (eap);
 
-	eap_method_fill_connection (eap, connection);
+	eap_method_fill_connection (eap, connection, flags);
 	eap_method_unref (eap);
 }
 
@@ -350,6 +350,7 @@ eap_method_fast_new (WirelessSecurity *ws_parent,
 	if (!parent)
 		return NULL;
 
+	parent->password_flags_name = NM_SETTING_802_1X_PASSWORD;
 	method = (EAPMethodFAST *) parent;
 	method->sec_parent = ws_parent;
 	method->is_editor = is_editor;

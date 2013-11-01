@@ -245,7 +245,7 @@ wireless_security_set_userpass_802_1x (WirelessSecurity *sec,
 	password = nm_setting_802_1x_get_password (setting);
 
 	if (nm_setting_get_secret_flags (NM_SETTING (setting), NM_SETTING_802_1X_PASSWORD, &flags, NULL))
-		always_ask = flags & NM_SETTING_SECRET_FLAG_NOT_SAVED;
+		always_ask = !!(flags & NM_SETTING_SECRET_FLAG_NOT_SAVED);
 
 set:
 	wireless_security_set_userpass (sec, user, password, always_ask, show_password);
@@ -518,9 +518,24 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
 	GtkWidget *widget;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	NMSetting8021x *s_8021x;
+	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
 	EAPMethod *eap = NULL;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
+
+	/* Get the EAPMethod object */
+	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
+	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
+	gtk_tree_model_get (model, &iter, AUTH_METHOD_COLUMN, &eap, -1);
+	g_assert (eap);
+
+	/* Get previous pasword flags, if any. Otherwise default to agent-owned secrets */
+	s_8021x = nm_connection_get_setting_802_1x (connection);
+	if (s_8021x)
+		nm_setting_get_secret_flags (NM_SETTING (s_8021x), eap->password_flags_name, &secret_flags, NULL);
+	else
+		secret_flags = NM_SETTING_SECRET_FLAG_AGENT_OWNED;
 
 	/* Blow away the old wireless security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
@@ -530,13 +545,7 @@ ws_802_1x_fill_connection (WirelessSecurity *sec,
 	s_8021x = (NMSetting8021x *) nm_setting_802_1x_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_8021x);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
-	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
-	gtk_tree_model_get (model, &iter, AUTH_METHOD_COLUMN, &eap, -1);
-	g_assert (eap);
-
-	eap_method_fill_connection (eap, connection);
+	eap_method_fill_connection (eap, connection, secret_flags);
 	eap_method_unref (eap);
 }
 
@@ -567,6 +576,149 @@ ws_802_1x_update_secrets (WirelessSecurity *sec,
 				eap_method_unref (eap);
 			}
 		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+}
+
+typedef struct {
+	NMConnection *connection;
+	const char *setting_name;
+	const char *password_flags_name;
+	int item_number;
+} PopupMenuItemInfo;
+
+static void
+popup_menu_item_info_destroy (gpointer data)
+{
+	g_slice_free (PopupMenuItemInfo, data);
+}
+
+static void
+activate_menu_item_cb (GtkMenuItem *menuitem, gpointer user_data)
+{
+	PopupMenuItemInfo *info = (PopupMenuItemInfo *) user_data;
+	NMSetting *setting;
+	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
+
+	/* Get current secret flags */
+	setting = nm_connection_get_setting_by_name (info->connection, info->setting_name);
+	if (setting)
+		nm_setting_get_secret_flags (setting, info->password_flags_name, &secret_flags, NULL);
+
+	/* Update password flags according to the password-storage popup menu */
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
+		if (info->item_number == 1)
+			secret_flags |= NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+		else
+			secret_flags &= ~NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+
+		/* Update the secret flags */
+		if (setting)
+			nm_setting_set_secret_flags (setting, info->password_flags_name, secret_flags, NULL);
+	}
+}
+
+static void
+icon_release_cb (GtkEntry *entry,
+                 GtkEntryIconPosition position,
+                 GdkEventButton *event,
+                 gpointer data)
+{
+	GtkMenu *menu = GTK_MENU (data);
+	if (position == GTK_ENTRY_ICON_SECONDARY) {
+		gtk_widget_show_all (GTK_WIDGET (data));
+		gtk_menu_popup (menu, NULL, NULL, NULL, NULL,
+		                event->button, event->time);
+	}
+}
+
+/* Add secondary icon and create popup menu for password entry */
+void
+ws_setup_password_storage (NMConnection *connection,
+                           const char *setting_name,
+                           GtkWidget *passwd_entry,
+                           const char *password_flags_name)
+{
+	GtkWidget *popup_menu;
+	GtkWidget *item1, *item2;
+	GSList *group;
+	PopupMenuItemInfo *info;
+	NMSetting *setting;
+
+	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry), GTK_ENTRY_ICON_SECONDARY, "document-save");
+	popup_menu = gtk_menu_new ();
+	group = NULL;
+	item1 = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password only for this _user"));
+	group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item1));
+	item2 = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password for _all users"));
+
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item1);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item2);
+
+	info = g_slice_new0 (PopupMenuItemInfo);
+	info->connection = connection;
+	info->setting_name = setting_name;
+	info->password_flags_name = password_flags_name;
+	info->item_number = 1;
+	g_signal_connect_data (item1, "activate",
+	                       G_CALLBACK (activate_menu_item_cb),
+	                       info,
+	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
+
+	info = g_slice_new0 (PopupMenuItemInfo);
+	info->connection = connection;
+	info->setting_name = setting_name;
+	info->password_flags_name = password_flags_name;
+	info->item_number = 2;
+	g_signal_connect_data (item2, "activate",
+	                       G_CALLBACK (activate_menu_item_cb),
+	                       info,
+	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
+
+	g_signal_connect (passwd_entry, "icon-release", G_CALLBACK (icon_release_cb), popup_menu);
+	gtk_menu_attach_to_widget (GTK_MENU (popup_menu), passwd_entry, NULL);
+
+	/* Initialize active item for password-storage popup menu */
+	setting = nm_connection_get_setting_by_name (connection, setting_name);
+	if (setting) {
+		NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
+		nm_setting_get_secret_flags (setting, password_flags_name, &secret_flags, NULL);
+
+		if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED)
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item1), TRUE);
+		else
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item2), TRUE);
+	} else {
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item1), TRUE);
+	}
+}
+
+void
+ws_update_password_storage (NMSetting *setting,
+                            NMSettingSecretFlags secret_flags,
+                            GtkWidget *passwd_entry,
+                            const char *password_flags_name)
+{
+	GList *menu;
+
+	/* Update secret flags (WEP_KEY_FLAGS, PSK_FLAGS, ...) in the security setting */
+	nm_setting_set_secret_flags (setting, password_flags_name, secret_flags, NULL);
+
+	/* Update password-storage popup menu to reflect secret flags */
+	menu = gtk_menu_get_for_attach_widget (passwd_entry);
+	if (menu && menu->data) {
+		GtkRadioMenuItem *item, *item_user, *item_system;
+		GSList *group;
+
+		/* radio menu group list contains the menu items in reverse order */
+		item = (GtkRadioMenuItem *) gtk_menu_get_active (GTK_MENU (menu->data));
+		group = gtk_radio_menu_item_get_group (item);
+		item_system = group->data;
+		item_user = group->next->data;
+
+		if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED)
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item_user), TRUE);
+		else
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item_system), TRUE);
 	}
 }
 

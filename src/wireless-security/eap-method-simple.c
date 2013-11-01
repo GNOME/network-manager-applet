@@ -89,13 +89,13 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 }
 
 static void
-fill_connection (EAPMethod *parent, NMConnection *connection)
+fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFlags prev_flags)
 {
 	EAPMethodSimple *method = (EAPMethodSimple *) parent;
 	NMSetting8021x *s_8021x;
 	gboolean not_saved = FALSE;
 	const char *eap = NULL;
-	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
+	NMSettingSecretFlags flags = prev_flags;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
@@ -143,7 +143,6 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	/* Save the password always ask setting */
 	not_saved = gtk_toggle_button_get_active (method->always_ask);
 
-	nm_setting_get_secret_flags (NM_SETTING (s_8021x), NM_SETTING_802_1X_PASSWORD, &flags, NULL);
 	flags &= ~(NM_SETTING_SECRET_FLAG_NOT_SAVED);
 	if (not_saved)
 		flags |= NM_SETTING_SECRET_FLAG_NOT_SAVED;
@@ -159,10 +158,11 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	}
 
 	/* Default to agent-owned secrets for new connections */
-	if (method->new_connection && (not_saved == FALSE)) {
-		g_object_set (s_8021x,
-		              NM_SETTING_802_1X_PASSWORD_FLAGS, NM_SETTING_SECRET_FLAG_AGENT_OWNED,
-		              NULL);
+	if (method->new_connection) {
+		GtkWidget *passwd_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
+		g_assert (passwd_entry);
+
+		ws_update_password_storage (NM_SETTING (s_8021x), flags, passwd_entry, parent->password_flags_name);
 	}
 }
 
@@ -297,6 +297,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	if (!parent)
 		return NULL;
 
+	parent->password_flags_name = NM_SETTING_802_1X_PASSWORD;
 	method = (EAPMethodSimple *) parent;
 	method->type = type;
 	method->is_editor = is_editor;
@@ -328,6 +329,9 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
+
+	/* Create password-storage popup menu for password entry under entry's secondary icon */
+	ws_setup_password_storage (connection, NM_SETTING_802_1X_SETTING_NAME, widget, parent->password_flags_name);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_password_always_ask"));
 	g_assert (widget);

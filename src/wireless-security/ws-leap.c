@@ -29,6 +29,7 @@
 struct _WirelessSecurityLEAP {
 	WirelessSecurity parent;
 	gboolean new_connection;
+	const char *password_flags_name;
 };
 
 static void
@@ -82,8 +83,18 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
 	WirelessSecurityLEAP *sec = (WirelessSecurityLEAP *) parent;
 	NMSettingWirelessSecurity *s_wireless_sec;
-	GtkWidget *widget;
+	NMSettingSecretFlags secret_flags;
+	GtkWidget *widget, *passwd_entry;
 	const char *leap_password = NULL, *leap_username = NULL;
+
+	/* Get LEAP_PASSWORD_FLAGS from the old security setting, if any, or
+	 * set the flags to NM_SETTING_SECRET_FLAG_AGENT_OWNED by default.
+	 */
+	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
+	if (s_wireless_sec)
+		secret_flags = nm_setting_wireless_security_get_leap_password_flags (s_wireless_sec);
+	else
+		secret_flags = NM_SETTING_SECRET_FLAG_AGENT_OWNED;
 
 	/* Blow away the old security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
@@ -93,6 +104,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	leap_username = gtk_entry_get_text (GTK_ENTRY (widget));
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_password_entry"));
+	passwd_entry = widget;
 	leap_password = gtk_entry_get_text (GTK_ENTRY (widget));
 
 	g_object_set (s_wireless_sec,
@@ -103,11 +115,8 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	              NULL);
 
 	/* Default to agent-owned secrets for new connections */
-	if (sec->new_connection) {
-		g_object_set (s_wireless_sec,
-		              NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD_FLAGS, NM_SETTING_SECRET_FLAG_AGENT_OWNED,
-		              NULL);
-	}
+	if (sec->new_connection)
+		ws_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags, passwd_entry, sec->password_flags_name);
 }
 
 static void
@@ -155,12 +164,17 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 	parent->adhoc_compatible = FALSE;
 	sec = (WirelessSecurityLEAP *) parent;
 	sec->new_connection = secrets_only ? FALSE : TRUE;
+	sec->password_flags_name = NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_password_entry"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
+
+	/* Create password-storage popup menu for password entry under entry's secondary icon */
+	ws_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
+
 	if (wsec)
 		update_secrets (WIRELESS_SECURITY (sec), connection);
 
