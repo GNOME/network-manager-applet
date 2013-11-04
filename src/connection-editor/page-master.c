@@ -249,8 +249,7 @@ connections_selection_changed_cb (GtkTreeSelection *selection, gpointer user_dat
 }
 
 static void
-add_response_cb (NMConnectionEditor *editor, NMRemoteConnection *connection,
-                 gboolean added, gpointer user_data)
+add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer user_data)
 {
 	g_object_unref (editor);
 }
