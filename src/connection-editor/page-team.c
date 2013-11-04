@@ -314,6 +314,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 static void
 ce_page_team_init (CEPageTeam *self)
 {
+	CE_PAGE_MASTER (self)->aggregating = TRUE;
 }
 
 static void

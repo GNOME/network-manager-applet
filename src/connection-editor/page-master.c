@@ -176,6 +176,94 @@ connection_updated (NMRemoteConnection *connection, gpointer user_data)
 	                    -1);
 }
 
+static NMDevice *
+get_device_for_connection (NMClient *client, NMConnection *conn)
+{
+	const GPtrArray *devices;
+	NMSettingConnection *s_con;
+	int i;
+
+	devices = nm_client_get_devices (client);
+	if (!devices)
+		return NULL;
+
+	/* Make sure the connection is actually locked to a specific device */
+	s_con = nm_connection_get_setting_connection (conn);
+	if (   !nm_setting_connection_get_interface_name (s_con)
+	       && !nm_connection_get_virtual_iface_name (conn)) {
+		NMSetting *s_hw;
+		GByteArray *mac_address;
+
+		s_hw = nm_connection_get_setting_by_name (conn, nm_setting_connection_get_connection_type (s_con));
+		if (!s_hw || !g_object_class_find_property (G_OBJECT_GET_CLASS (s_hw), "mac-address"))
+			return NULL;
+
+		g_object_get (G_OBJECT (s_hw), "mac-address", &mac_address, NULL);
+		if (!mac_address)
+			return NULL;
+		g_byte_array_unref (mac_address);
+	}
+
+	/* OK, now find that device */
+	for (i = 0; i < devices->len; i++) {
+		NMDevice *device = devices->pdata[i];
+
+		if (nm_device_connection_compatible (device, conn, NULL))
+			return device;
+	}
+
+	return NULL;
+}
+
+static void
+check_new_slave_physical_port (CEPageMaster *self, NMConnection *conn)
+{
+	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	NMConnection *conn2;
+	NMDevice *dev, *dev2;
+	const char *id, *id2;
+	GtkTreeIter iter;
+
+	dev = get_device_for_connection (CE_PAGE (self)->client, conn);
+	if (!dev)
+		return;
+	id = nm_device_get_physical_port_id (dev);
+	if (!id)
+		return;
+
+	if (!gtk_tree_model_get_iter_first (priv->connections_model, &iter))
+		return;
+	do {
+		gtk_tree_model_get (priv->connections_model, &iter, 0, &conn2, -1);
+		g_object_unref (conn2); /* gtk_tree_model_get() adds a ref */
+		dev2 = get_device_for_connection (CE_PAGE (self)->client, conn2);
+		if (!dev2)
+			continue;
+		if (dev == dev2) {
+			nm_connection_editor_warning (CE_PAGE (self)->parent_window,
+			                              _("Duplicate slaves"),
+			                              _("Slaves '%s' and '%s' both apply to device '%s'"),
+			                              nm_connection_get_id (conn),
+			                              nm_connection_get_id (conn2),
+			                              nm_device_get_iface (dev));
+			return;
+		}
+
+		id2 = nm_device_get_physical_port_id (dev2);
+		if (self->aggregating && id && id2 && !strcmp (id, id2)) {
+			nm_connection_editor_warning (CE_PAGE (self)->parent_window,
+			                              _("Duplicate slaves"),
+			                              _("Slaves '%s' and '%s' apply to different virtual "
+			                                "ports ('%s' and '%s') of the same physical device."),
+			                              nm_connection_get_id (conn),
+			                              nm_connection_get_id (conn2),
+			                              nm_device_get_iface (dev),
+			                              nm_device_get_iface (dev2));
+			return;
+		}
+	} while (gtk_tree_model_iter_next (priv->connections_model, &iter));
+}
+
 static void
 connection_added (NMRemoteSettings *settings,
                   NMRemoteConnection *connection,
@@ -207,6 +295,8 @@ connection_added (NMRemoteSettings *settings,
 	interface_name = nm_connection_get_virtual_iface_name (CE_PAGE (self)->connection);
 	if (strcmp (master, interface_name) != 0 && strcmp (master, priv->uuid) != 0)
 		return;
+
+	check_new_slave_physical_port (self, NM_CONNECTION (connection));
 
 	gtk_list_store_append (GTK_LIST_STORE (priv->connections_model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (priv->connections_model), &iter,

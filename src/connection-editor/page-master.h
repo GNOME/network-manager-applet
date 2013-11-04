@@ -38,6 +38,8 @@
 
 typedef struct {
 	CEPage parent;
+
+	gboolean aggregating;
 } CEPageMaster;
 
 typedef struct {

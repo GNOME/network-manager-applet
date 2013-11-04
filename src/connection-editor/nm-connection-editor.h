@@ -93,5 +93,9 @@ void                nm_connection_editor_error (GtkWindow *parent,
                                                 const char *heading,
                                                 const char *format,
                                                 ...);
+void                nm_connection_editor_warning (GtkWindow *parent,
+                                                  const char *heading,
+                                                  const char *format,
+                                                  ...);
 
 #endif

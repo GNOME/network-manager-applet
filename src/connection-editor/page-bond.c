@@ -548,6 +548,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 static void
 ce_page_bond_init (CEPageBond *self)
 {
+	CE_PAGE_MASTER (self)->aggregating = TRUE;
 }
 
 static void
