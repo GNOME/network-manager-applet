@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-24 18:34+0200\n"
-"PO-Revision-Date: 2013-10-24 18:35+0200\n"
+"POT-Creation-Date: 2013-11-07 00:32+0100\n"
+"PO-Revision-Date: 2013-11-07 00:33+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -490,7 +490,7 @@ msgstr "Nawiązano połączenie VPN \"%s\""
 msgid "No network connection"
 msgstr "Brak połączenia sieciowego"
 
-#: ../src/applet.c:3647
+#: ../src/applet.c:3615
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
@@ -948,7 +948,7 @@ msgstr "Błąd podczas wyświetlania informacji o połączeniu:"
 
 #: ../src/applet-dialogs.c:109
 #: ../src/connection-editor/page-wifi-security.c:309
-#: ../src/libnm-gtk/nm-wifi-dialog.c:915
+#: ../src/libnm-gtk/nm-wifi-dialog.c:918
 #: ../src/wireless-security/wireless-security.c:441
 msgid "LEAP"
 msgstr "LEAP"
@@ -2325,7 +2325,7 @@ msgstr "Użycie zabezpieczeń 802.1_X dla tego połączenia"
 msgid "Could not load bond user interface."
 msgstr "Nie można wczytać interfejsu użytkownika łączenia."
 
-#: ../src/connection-editor/page-bond.c:586
+#: ../src/connection-editor/page-bond.c:587
 #, c-format
 msgid "Bond connection %d"
 msgstr "Łączone połączenie %d"
@@ -2507,7 +2507,26 @@ msgstr "Ustawienia IPv6"
 msgid "Could not load IPv6 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv6."
 
-#: ../src/connection-editor/page-master.c:284
+#: ../src/connection-editor/page-master.c:244
+#: ../src/connection-editor/page-master.c:255
+msgid "Duplicate slaves"
+msgstr "Podwójne podrzędne"
+
+#: ../src/connection-editor/page-master.c:245
+#, c-format
+msgid "Slaves '%s' and '%s' both apply to device '%s'"
+msgstr "Podrzędne \"%s\" i \"%s\" stosują się do urządzenia \"%s\""
+
+#: ../src/connection-editor/page-master.c:256
+#, c-format
+msgid ""
+"Slaves '%s' and '%s' apply to different virtual ports ('%s' and '%s') of the "
+"same physical device."
+msgstr ""
+"Podrzędne \"%s\" i \"%s\" stosują się do różnych wirtualnych portów (\"%s\" "
+"i \"%s\") tego samego fizycznego urządzenia."
+
+#: ../src/connection-editor/page-master.c:373
 #, c-format
 msgid "%s slave %d"
 msgstr "%s podrzędny %d"
@@ -2611,7 +2630,7 @@ msgstr "Błąd: plik nie zawiera prawidłowej konfiguracji JSON"
 msgid "Could not load team user interface."
 msgstr "Nie można wczytać interfejsu użytkownika zespołu."
 
-#: ../src/connection-editor/page-team.c:352
+#: ../src/connection-editor/page-team.c:353
 #, c-format
 msgid "Team connection %d"
 msgstr "Połączenie zespołowe %d"
@@ -2713,27 +2732,27 @@ msgid "Wi-Fi connection %d"
 msgstr "Połączenie Wi-Fi %d"
 
 #: ../src/connection-editor/page-wifi-security.c:286
-#: ../src/libnm-gtk/nm-wifi-dialog.c:889
+#: ../src/libnm-gtk/nm-wifi-dialog.c:892
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "40/128-bitowy klucz WEP (szesnastkowy lub ASCII)"
 
 #: ../src/connection-editor/page-wifi-security.c:296
-#: ../src/libnm-gtk/nm-wifi-dialog.c:898
+#: ../src/libnm-gtk/nm-wifi-dialog.c:901
 msgid "WEP 128-bit Passphrase"
 msgstr "128-bitowe hasło WEP"
 
 #: ../src/connection-editor/page-wifi-security.c:322
-#: ../src/libnm-gtk/nm-wifi-dialog.c:928
+#: ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamiczny WEP (802.1x)"
 
 #: ../src/connection-editor/page-wifi-security.c:336
-#: ../src/libnm-gtk/nm-wifi-dialog.c:942
+#: ../src/libnm-gtk/nm-wifi-dialog.c:945
 msgid "WPA & WPA2 Personal"
 msgstr "WPA i WPA2 Personal"
 
 #: ../src/connection-editor/page-wifi-security.c:350
-#: ../src/libnm-gtk/nm-wifi-dialog.c:956
+#: ../src/libnm-gtk/nm-wifi-dialog.c:959
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA i WPA2 Enterprise"
 
@@ -3122,55 +3141,55 @@ msgctxt "long device name"
 msgid "%s %s"
 msgstr "%s %s"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:432
+#: ../src/libnm-gtk/nm-wifi-dialog.c:435
 msgid "New..."
 msgstr "Nowe..."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:872
+#: ../src/libnm-gtk/nm-wifi-dialog.c:875
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Brak"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1043
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1046
 msgid "C_reate"
 msgstr "_Utwórz"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1127
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1130
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
 msgstr ""
 "Do połączenia z siecią Wi-Fi \"%s\" wymagane są hasła lub klucze szyfrujące."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1129
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1132
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Wymagane uwierzytelnienie w sieci Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1131
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1134
 msgid "Authentication required by Wi-Fi network"
 msgstr "Wymagane uwierzytelnienie w sieci Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1136
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1139
 msgid "Create New Wi-Fi Network"
 msgstr "Tworzenie nowej sieci Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1138
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1141
 msgid "New Wi-Fi network"
 msgstr "Nowa sieć Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1139
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1142
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Proszę wprowadzić nazwę sieci Wi-Fi, jaka ma zostać utworzona."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1141
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1144
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Połączenie z ukrytą siecią Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1143
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1146
 msgid "Hidden Wi-Fi network"
 msgstr "Ukryta sieć Wi-Fi"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1144
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1147
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
