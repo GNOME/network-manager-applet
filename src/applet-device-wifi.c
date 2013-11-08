@@ -1283,10 +1283,10 @@ wifi_get_icon (NMDevice *device,
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		if (ap) {
-			guint32 strength;
+			guint8 strength;
 
 			strength = nm_access_point_get_strength (ap);
-			strength = CLAMP (strength, 0, 100);
+			strength = MIN (strength, 100);
 
 			if (strength > 80)
 				pixbuf = nma_icon_check_and_load ("nm-signal-100", &applet->wifi_100_icon, applet);

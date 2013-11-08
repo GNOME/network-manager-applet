@@ -1178,9 +1178,7 @@ ui_to_setting (CEPageIP4 *self)
 			if (strlen (stripped))
 				search_domains = g_slist_prepend (search_domains, g_strdup (stripped));
 		}
-
-		if (items)
-			g_strfreev (items);
+		g_strfreev (items);
 	}
 
 	search_domains = g_slist_reverse (search_domains);

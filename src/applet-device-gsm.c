@@ -484,7 +484,7 @@ unlock_pin_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 		msg = error ? error->message : NULL;
 
 	applet_mobile_pin_dialog_stop_spinner (info->dialog, msg);
-	g_warning ("%s: error unlocking with PIN: %s", __func__, error->message);
+	g_warning ("%s: error unlocking with PIN: %s", __func__, error ? error->message : "unknown");
 	g_clear_error (&error);
 }
 
@@ -507,7 +507,7 @@ unlock_puk_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 		msg = error ? error->message : NULL;
 
 	applet_mobile_pin_dialog_stop_spinner (info->dialog, msg);
-	g_warning ("%s: error unlocking with PIN: %s", __func__, error->message);
+	g_warning ("%s: error unlocking with PUK: %s", __func__, error ? error->message : "unknown");
 	g_clear_error (&error);
 }
 
@@ -540,8 +540,7 @@ unlock_dialog_response (GtkDialog *dialog,
 
 	code1 = applet_mobile_pin_dialog_get_entry1 (info->dialog);
 	if (!code1 || !strlen (code1)) {
-		g_warn_if_fail (code1 != NULL);
-		g_warn_if_fail (strlen (code1));
+		g_warn_if_fail (code1 != NULL && strlen (code1));
 		unlock_dialog_destroy (info);
 		return;
 	}

@@ -1138,9 +1138,7 @@ ui_to_setting (CEPageIP6 *self)
 			if (strlen (stripped))
 				nm_setting_ip6_config_add_dns_search (priv->setting, stripped);
 		}
-
-		if (items)
-			g_strfreev (items);
+		g_strfreev (items);
 	}
 
 	may_fail = !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->ip6_required));

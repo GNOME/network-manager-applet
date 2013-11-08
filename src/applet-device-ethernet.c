@@ -365,7 +365,7 @@ pppoe_get_secrets (SecretsRequest *req, GError **error)
 	gtk_window_set_title (GTK_WINDOW (info->dialog), _("DSL authentication"));
 	gtk_window_set_modal (GTK_WINDOW (info->dialog), TRUE);
 
-	w = gtk_dialog_add_button (GTK_DIALOG (info->dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
+	gtk_dialog_add_button (GTK_DIALOG (info->dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
 	w = gtk_dialog_add_button (GTK_DIALOG (info->dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
 	info->ok_button = w;
 

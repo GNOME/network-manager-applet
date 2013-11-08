@@ -81,6 +81,8 @@ ce_get_property_default (NMSetting *setting, const char *property_name)
 	GParamSpec *spec;
 	GValue value = { 0, };
 
+	g_return_val_if_fail (NM_IS_SETTING (setting), -1);
+
 	spec = g_object_class_find_property (G_OBJECT_GET_CLASS (setting), property_name);
 	g_return_val_if_fail (spec != NULL, -1);
 

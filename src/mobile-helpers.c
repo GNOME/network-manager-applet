@@ -268,8 +268,9 @@ mobile_helper_wizard (NMDeviceModemCapabilities capabilities,
 		method->provider_name = _("GSM");
 	else if (wizard_capability == NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
 		method->provider_name = _("CDMA");
-	else
-		g_assert_not_reached ();
+
+	g_assert (   wizard_capability == NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS
+	          || wizard_capability == NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO);
 
 	mobile_wizard_done (NULL, FALSE, method, info);
 	g_free (method);
@@ -449,7 +450,7 @@ ask_for_pin (GtkEntry **out_secret_entry)
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("PIN code required"));
 
-	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
+	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
 	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
 	gtk_window_set_default (GTK_WINDOW (dialog), ok_button);
 

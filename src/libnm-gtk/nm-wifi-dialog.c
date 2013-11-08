@@ -533,8 +533,8 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 		gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (priv->builder, "connection_label")));
 		gtk_widget_hide (widget);
 	}
-	gtk_tree_model_get_iter_first (priv->connection_model, &tree_iter);
-	gtk_tree_model_get (priv->connection_model, &tree_iter, C_CON_COLUMN, &priv->connection, -1);
+	if (gtk_tree_model_get_iter_first (priv->connection_model, &tree_iter))
+		gtk_tree_model_get (priv->connection_model, &tree_iter, C_CON_COLUMN, &priv->connection, -1);
 
 	return TRUE;
 }
@@ -642,8 +642,8 @@ device_combo_init (NMAWifiDialog *self, NMDevice *device)
 			gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (priv->builder, "device_label")));
 			gtk_widget_hide (widget);
 		}
-		gtk_tree_model_get_iter_first (priv->device_model, &iter);
-		gtk_tree_model_get (priv->device_model, &iter, D_DEV_COLUMN, &priv->device, -1);
+		if (gtk_tree_model_get_iter_first (priv->device_model, &iter))
+			gtk_tree_model_get (priv->device_model, &iter, D_DEV_COLUMN, &priv->device, -1);
 	}
 
 	return num_added > 0 ? TRUE : FALSE;

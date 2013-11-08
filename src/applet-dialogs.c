@@ -227,11 +227,9 @@ create_info_label_security (NMConnection *connection)
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	if (!strcmp (connection_type, NM_SETTING_WIRELESS_SETTING_NAME)) {
-		NMSettingWireless *s_wireless;
 		NMSettingWirelessSecurity *s_wireless_sec;
 		NMSetting8021x *s_8021x;
 
-		s_wireless = nm_connection_get_setting_wireless (connection);
 		s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 		s_8021x = nm_connection_get_setting_802_1x (connection);
 
@@ -957,7 +955,7 @@ applet_mobile_password_dialog_new (NMConnection *connection,
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Mobile broadband network password"));
 
-	w = gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
+	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
 	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
 	gtk_window_set_default (GTK_WINDOW (dialog), w);
 

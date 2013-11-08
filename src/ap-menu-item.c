@@ -151,7 +151,7 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
 
-	strength = CLAMP (strength, 0, 100);
+	strength = MIN (strength, 100);
 
 	/* Just do nothing if the new strength is less */
 	if (strength < item->int_strength)
