@@ -74,7 +74,7 @@ zones_reply (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	if (!dbus_g_proxy_end_call (proxy, call, &error,
 	                            G_TYPE_STRV, &priv->zones,
 	                            G_TYPE_INVALID)) {
-		g_warning ("Failed to zones from FirewallD: (%d) %s", error->code, error->message);
+		g_warning ("Failed to get zones from FirewallD: (%d) %s", error->code, error->message);
 	}
 
 	priv->got_zones = TRUE;
