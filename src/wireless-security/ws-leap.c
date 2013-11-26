@@ -28,7 +28,7 @@
 
 struct _WirelessSecurityLEAP {
 	WirelessSecurity parent;
-	gboolean new_connection;
+	gboolean editing_connection;
 	const char *password_flags_name;
 };
 
@@ -114,8 +114,8 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	              NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD, leap_password,
 	              NULL);
 
-	/* Default to agent-owned secrets for new connections */
-	if (sec->new_connection)
+	/* Update secret flags and popup when editing the connection */
+	if (sec->editing_connection)
 		ws_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags, passwd_entry, sec->password_flags_name);
 }
 
@@ -163,7 +163,7 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 
 	parent->adhoc_compatible = FALSE;
 	sec = (WirelessSecurityLEAP *) parent;
-	sec->new_connection = secrets_only ? FALSE : TRUE;
+	sec->editing_connection = secrets_only ? FALSE : TRUE;
 	sec->password_flags_name = NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_password_entry"));

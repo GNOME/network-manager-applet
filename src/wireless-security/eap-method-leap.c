@@ -33,7 +33,7 @@ struct _EAPMethodLEAP {
 
 	WirelessSecurity *ws_parent;
 
-	gboolean new_connection;
+	gboolean editing_connection;
 
 	GtkEntry *username_entry;
 	GtkEntry *password_entry;
@@ -94,8 +94,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (method->username_entry), NULL);
 	g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (method->password_entry), NULL);
 
-	/* Default to agent-owned secrets for new connections */
-	if (method->new_connection) {
+	/* Update secret flags and popup when editing the connection */
+	if (method->editing_connection) {
 		GtkWidget *passwd_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
 		g_assert (passwd_entry);
 
@@ -190,7 +190,7 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 
 	parent->password_flags_name = NM_SETTING_802_1X_PASSWORD;
 	method = (EAPMethodLEAP *) parent;
-	method->new_connection = secrets_only ? FALSE : TRUE;
+	method->editing_connection = secrets_only ? FALSE : TRUE;
 	method->ws_parent = wireless_security_ref (ws_parent);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_notebook"));

@@ -32,7 +32,7 @@
 struct _WirelessSecurityWEPKey {
 	WirelessSecurity parent;
 
-	gboolean new_connection;
+	gboolean editing_connection;
 	const char *password_flags_name;
 
 	NMWepKeyType type;
@@ -186,7 +186,8 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 			nm_setting_wireless_security_set_wep_key (s_wsec, i, sec->keys[i]);
 	}
 
-	if (sec->new_connection)
+	/* Update secret flags and popup when editing the connection */
+	if (sec->editing_connection)
 		ws_update_password_storage (NM_SETTING (s_wsec), secret_flags, passwd_entry, sec->password_flags_name);
 }
 
@@ -255,7 +256,7 @@ ws_wep_key_new (NMConnection *connection,
 		return NULL;
 
 	sec = (WirelessSecurityWEPKey *) parent;
-	sec->new_connection = secrets_only ? FALSE : TRUE;
+	sec->editing_connection = secrets_only ? FALSE : TRUE;
 	sec->password_flags_name = NM_SETTING_WIRELESS_SECURITY_WEP_KEY0;
 	sec->type = type;
 

@@ -36,7 +36,7 @@ struct _EAPMethodSimple {
 
 	EAPMethodSimpleType type;
 	gboolean is_editor;
-	gboolean new_connection;
+	gboolean editing_connection;
 
 	GtkEntry *username_entry;
 	GtkEntry *password_entry;
@@ -157,8 +157,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 		g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (method->password_entry), NULL);
 	}
 
-	/* Default to agent-owned secrets for new connections */
-	if (method->new_connection) {
+	/* Update secret flags and popup when editing the connection */
+	if (method->editing_connection) {
 		GtkWidget *passwd_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
 		g_assert (passwd_entry);
 
@@ -301,7 +301,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	method = (EAPMethodSimple *) parent;
 	method->type = type;
 	method->is_editor = is_editor;
-	method->new_connection = secrets_only ? FALSE : TRUE;
+	method->editing_connection = secrets_only ? FALSE : TRUE;
 	method->ws_parent = wireless_security_ref (ws_parent);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_notebook"));

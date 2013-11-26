@@ -36,7 +36,7 @@
 struct _EAPMethodTLS {
 	EAPMethod parent;
 
-	gboolean new_connection;
+	gboolean editing_connection;
 };
 
 
@@ -183,8 +183,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	}
 	g_free (pk_filename);
 
-	/* Default to agent-owned secrets for new connections */
-	if (method->new_connection) {
+	/* Update secret flags and popup when editing the connection */
+	if (method->editing_connection) {
 		ws_update_password_storage (NM_SETTING (s_8021x), flags, passwd_entry, parent->password_flags_name);
 	}
 
@@ -431,7 +431,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	                                NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD :
 	                                NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD;
 	method = (EAPMethodTLS *) parent;
-	method->new_connection = secrets_only ? FALSE : TRUE;
+	method->editing_connection = secrets_only ? FALSE : TRUE;
 
 	if (connection)
 		s_8021x = nm_connection_get_setting_802_1x (connection);

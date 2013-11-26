@@ -32,7 +32,7 @@
 struct _WirelessSecurityWPAPSK {
 	WirelessSecurity parent;
 
-	gboolean new_connection;
+	gboolean editing_connection;
 	const char *password_flags_name;
 };
 
@@ -127,7 +127,8 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_PSK, key, NULL);
 
-	if (wpa_psk->new_connection)
+	/* Update secret flags and popup when editing the connection */
+	if (wpa_psk->editing_connection)
 		ws_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags, passwd_entry, wpa_psk->password_flags_name);
 
 	wireless_security_clear_ciphers (connection);
@@ -181,7 +182,7 @@ ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 
 	parent->adhoc_compatible = FALSE;
 	sec = (WirelessSecurityWPAPSK *) parent;
-	sec->new_connection = secrets_only ? FALSE : TRUE;
+	sec->editing_connection = secrets_only ? FALSE : TRUE;
 	sec->password_flags_name = NM_SETTING_WIRELESS_SECURITY_PSK;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_entry"));
