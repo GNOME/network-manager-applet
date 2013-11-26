@@ -98,7 +98,12 @@
 
 extern gboolean shell_debug;
 
-G_DEFINE_TYPE(NMApplet, nma, G_TYPE_OBJECT)
+static void nma_initable_interface_init (GInitableIface *iface, gpointer iface_data);
+
+G_DEFINE_TYPE_WITH_CODE (NMApplet, nma, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE,
+                                                nma_initable_interface_init)
+                         )
 
 /********************************************************************/
 /* Temporary dbus interface stuff */
@@ -3602,25 +3607,19 @@ applet_gsettings_show_changed (GSettings *settings,
 	gtk_status_icon_set_visible (applet->status_icon, applet->visible);
 }
 
-static GObject *
-constructor (GType type,
-             guint n_props,
-             GObjectConstructParam *construct_props)
+static gboolean
+initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 {
-	NMApplet *applet;
-	GError* error = NULL;
-
-	applet = NM_APPLET (G_OBJECT_CLASS (nma_parent_class)->constructor (type, n_props, construct_props));
+	NMApplet *applet = NM_APPLET (initable);
 
 	g_set_application_name (_("NetworkManager Applet"));
 	gtk_window_set_default_icon_name (GTK_STOCK_NETWORK);
 
 	applet->info_dialog_ui = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (applet->info_dialog_ui, UIDIR "/info.ui", &error)) {
-		g_warning ("Couldn't load info dialog ui file: %s", error->message);
-		g_error_free (error);
-		goto error;
+	if (!gtk_builder_add_from_file (applet->info_dialog_ui, UIDIR "/info.ui", error)) {
+		g_prefix_error (error, "Couldn't load info dialog ui file: ");
+		return FALSE;
 	}
 
 	applet->gsettings = g_settings_new (APPLET_PREFS_SCHEMA);
@@ -3629,17 +3628,19 @@ constructor (GType type,
 	                  G_CALLBACK (applet_gsettings_show_changed), applet);
 
 	/* Load pixmaps and create applet widgets */
-	if (!setup_widgets (applet))
-		goto error;
+	if (!setup_widgets (applet)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC,
+		                     "Could not initialize widgets");
+		return FALSE;
+	}
 	nma_icons_init (applet);
 
 	if (!notify_is_initted ())
 		notify_init ("NetworkManager");
 
-	if (!dbus_setup (applet, &error)) {
-		g_warning ("Failed to initialize D-Bus: %s", error->message);
-		g_error_free (error);
-		goto error;
+	if (!dbus_setup (applet, error)) {
+		g_prefix_error (error, "Failed to initialize D-Bus: ");
+		return FALSE;
 	}
 	applet->settings = nm_remote_settings_new (NULL);
 
@@ -3647,13 +3648,14 @@ constructor (GType type,
 	{
 		char *argv[2] = { LIBEXECDIR "/nm-applet-migration-tool", NULL };
 		int status;
+		GError *migrate_error = NULL;
 
 		/* Move user connections to the system */
 		if (!g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL,
-						   NULL, NULL, &status, &error)) {
+		                   NULL, NULL, &status, &migrate_error)) {
 			g_warning ("Could not run nm-applet-migration-tool: %s",
-					   error->message);
-			g_error_free (error);
+			           migrate_error->message);
+			g_error_free (migrate_error);
 		} else if (!WIFEXITED (status) || WEXITSTATUS (status) != 0) {
 			g_warning ("nm-applet-migration-tool exited with error");
 		}
@@ -3721,11 +3723,7 @@ constructor (GType type,
 			              applet);
 	}
 
-	return G_OBJECT (applet);
-
-error:
-	g_object_unref (applet);
-	return NULL;
+	return TRUE;
 }
 
 static void finalize (GObject *object)
@@ -3836,7 +3834,6 @@ static void nma_class_init (NMAppletClass *klass)
 	GParamSpec *pspec;
 
 	oclass->set_property = set_property;
-	oclass->constructor = constructor;
 	oclass->finalize = finalize;
 
 	pspec = g_param_spec_pointer ("loop", "Loop", "Applet mainloop", G_PARAM_CONSTRUCT | G_PARAM_WRITABLE);
@@ -3845,9 +3842,26 @@ static void nma_class_init (NMAppletClass *klass)
 	dbus_g_object_type_install_info (NM_TYPE_APPLET, &dbus_glib_nma_object_info);
 }
 
+static void
+nma_initable_interface_init (GInitableIface *iface, gpointer iface_data)
+{
+	iface->init = initable_init;
+}
+
 NMApplet *
 nm_applet_new (GMainLoop *loop)
 {
-	return g_object_new (NM_TYPE_APPLET, "loop", loop, NULL);
+	NMApplet *applet;
+	GError *error = NULL;
+
+	applet = g_initable_new (NM_TYPE_APPLET, NULL, &error,
+	                         "loop", loop,
+	                         NULL);
+	if (!applet) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
+
+	return applet;
 }
 
