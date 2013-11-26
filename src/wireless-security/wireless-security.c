@@ -579,11 +579,25 @@ ws_802_1x_update_secrets (WirelessSecurity *sec,
 	}
 }
 
+static void
+change_password_storage_icon (GtkWidget *passwd_entry, int number)
+{
+	char *icon_name = "document-save";
+
+	if (number == 1)
+		icon_name = "document-save";
+	else if (number == 2)
+		icon_name = "document-save-as";
+
+	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry), GTK_ENTRY_ICON_SECONDARY, icon_name);
+}
+
 typedef struct {
 	NMConnection *connection;
 	const char *setting_name;
 	const char *password_flags_name;
 	int item_number;
+	GtkWidget *passwd_entry;
 } PopupMenuItemInfo;
 
 static void
@@ -614,6 +628,9 @@ activate_menu_item_cb (GtkMenuItem *menuitem, gpointer user_data)
 		/* Update the secret flags */
 		if (setting)
 			nm_setting_set_secret_flags (setting, info->password_flags_name, secret_flags, NULL);
+
+		/* Change icon */
+		change_password_storage_icon (info->passwd_entry, info->item_number);
 	}
 }
 
@@ -659,6 +676,7 @@ ws_setup_password_storage (NMConnection *connection,
 	info->setting_name = setting_name;
 	info->password_flags_name = password_flags_name;
 	info->item_number = 1;
+	info->passwd_entry = passwd_entry;
 	g_signal_connect_data (item1, "activate",
 	                       G_CALLBACK (activate_menu_item_cb),
 	                       info,
@@ -669,6 +687,7 @@ ws_setup_password_storage (NMConnection *connection,
 	info->setting_name = setting_name;
 	info->password_flags_name = password_flags_name;
 	info->item_number = 2;
+	info->passwd_entry = passwd_entry;
 	g_signal_connect_data (item2, "activate",
 	                       G_CALLBACK (activate_menu_item_cb),
 	                       info,
@@ -685,8 +704,11 @@ ws_setup_password_storage (NMConnection *connection,
 
 		if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED)
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item1), TRUE);
-		else
+		else {
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item2), TRUE);
+			/* Use different icon for system-storage */
+			change_password_storage_icon (passwd_entry, 2);
+		}
 	} else {
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item1), TRUE);
 	}
@@ -715,10 +737,13 @@ ws_update_password_storage (NMSetting *setting,
 		item_system = group->data;
 		item_user = group->next->data;
 
-		if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED)
+		if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED) {
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item_user), TRUE);
-		else
+			change_password_storage_icon (passwd_entry, 1);
+		} else {
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item_system), TRUE);
+			change_password_storage_icon (passwd_entry, 2);
+		}
 	}
 }
 
