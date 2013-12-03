@@ -1042,6 +1042,16 @@ country_update_complete (NMAMobileWizard *self)
 		nma_country_info_unref (country_info);
 }
 
+static void
+country_update_continue (NMAMobileWizard *self)
+{
+	gtk_assistant_set_page_complete (GTK_ASSISTANT (self->assistant),
+	                                 self->country_page,
+	                                 TRUE);
+
+	gtk_assistant_next_page (GTK_ASSISTANT (self->assistant));
+}
+
 static gint
 country_sort_func (GtkTreeModel *model,
                    GtkTreeIter *a,
@@ -1176,6 +1186,9 @@ country_setup (NMAMobileWizard *self)
 	gtk_widget_show_all (vbox);
 
 	self->country_page = vbox;
+
+	/* If the user presses the ENTER key after selecting the country, continue to the next page */
+	g_signal_connect_swapped (self->country_view, "row-activated", G_CALLBACK (country_update_continue), self);
 
 	/* Initial completeness state */
 	country_update_complete (self);
