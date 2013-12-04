@@ -32,11 +32,12 @@
 #include "eap-method.h"
 #include "wireless-security.h"
 #include "helpers.h"
+#include "utils.h"
 
 struct _EAPMethodTLS {
 	EAPMethod parent;
 
-	gboolean new_connection;
+	gboolean editing_connection;
 };
 
 
@@ -132,12 +133,12 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 }
 
 static void
-fill_connection (EAPMethod *parent, NMConnection *connection)
+fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFlags flags)
 {
 	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	NMSetting8021x *s_8021x;
-	GtkWidget *widget;
+	GtkWidget *widget, *passwd_entry;
 	char *ca_filename, *pk_filename, *cc_filename;
 	const char *password = NULL;
 	GError *error = NULL;
@@ -161,6 +162,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_assert (widget);
 	password = gtk_entry_get_text (GTK_ENTRY (widget));
 	g_assert (password);
+	passwd_entry = widget;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_private_key_button"));
 	g_assert (widget);
@@ -182,11 +184,9 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	}
 	g_free (pk_filename);
 
-	/* Default to agent-owned secrets for new connections */
-	if (method->new_connection) {
-		g_object_set (s_8021x,
-		              secret_flag_prop, NM_SETTING_SECRET_FLAG_AGENT_OWNED,
-		              NULL);
+	/* Update secret flags and popup when editing the connection */
+	if (method->editing_connection) {
+		utils_update_password_storage (NM_SETTING (s_8021x), flags, passwd_entry, parent->password_flags_name);
 	}
 
 	/* TLS client certificate */
@@ -428,8 +428,11 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	if (!parent)
 		return NULL;
 
+	parent->password_flags_name = phase2 ?
+	                                NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD :
+	                                NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD;
 	method = (EAPMethodTLS *) parent;
-	method->new_connection = secrets_only ? FALSE : TRUE;
+	method->editing_connection = secrets_only ? FALSE : TRUE;
 
 	if (connection)
 		s_8021x = nm_connection_get_setting_802_1x (connection);
@@ -486,6 +489,9 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
+
+	/* Create password-storage popup menu for password entry under entry's secondary icon */
+	utils_setup_password_storage (connection, NM_SETTING_802_1X_SETTING_NAME, widget, parent->password_flags_name);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eaptls"));
 	g_assert (widget);

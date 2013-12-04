@@ -494,40 +494,6 @@ nm_connection_editor_get_connection (NMConnectionEditor *editor)
 }
 
 static void
-update_secret_flags (NMSetting *setting,
-                     const char *key,
-                     const GValue *value,
-                     GParamFlags flags,
-                     gpointer user_data)
-{
-	gboolean everyone = !!GPOINTER_TO_UINT (user_data);
-	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
-
-	if (!(flags & NM_SETTING_PARAM_SECRET))
-		return;
-
-	/* VPN connections never get changed */
-	if (NM_IS_SETTING_VPN (setting))
-		return;
-
-	/* 802.1x passwords don't get changed either */
-	if (NM_IS_SETTING_802_1X (setting)) {
-		if (   g_strcmp0 (key, NM_SETTING_802_1X_PASSWORD) == 0
-		    || g_strcmp0 (key, NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD) == 0
-		    || g_strcmp0 (key, NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD) == 0)
-			return;
-	}
-
-	nm_setting_get_secret_flags (setting, key, &secret_flags, NULL);
-	if (everyone)
-		secret_flags &= ~NM_SETTING_SECRET_FLAG_AGENT_OWNED;
-	else
-		secret_flags |= NM_SETTING_SECRET_FLAG_AGENT_OWNED;
-
-	nm_setting_set_secret_flags (setting, key, secret_flags, NULL);
-}
-
-static void
 populate_connection_ui (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
@@ -967,17 +933,7 @@ updated_connection_cb (NMRemoteConnection *connection, GError *error, gpointer u
 static void
 ok_button_clicked_save_connection (NMConnectionEditor *self)
 {
-	NMSettingConnection *s_con;
-	gboolean everyone = FALSE;
 	GError *error = NULL;
-
-	/* Update secret flags right before sending to NM (after all the editor
-	 * pages have updated the modified connection) to ensure that the secret
-	 * flags are always synchronized with the "Available to all users" checkbox.
-	 */
-	s_con = nm_connection_get_setting_connection (self->connection);
-	everyone = !nm_setting_connection_get_num_permissions (s_con);
-	nm_connection_for_each_setting_value (self->connection, update_secret_flags, GUINT_TO_POINTER (everyone));
 
 	/* Copy the modified connection to the original connection */
 	if (!nm_connection_replace_settings_from_connection (self->orig_connection,

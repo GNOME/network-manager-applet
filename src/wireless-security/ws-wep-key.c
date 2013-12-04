@@ -32,6 +32,9 @@
 struct _WirelessSecurityWEPKey {
 	WirelessSecurity parent;
 
+	gboolean editing_connection;
+	const char *password_flags_name;
+
 	NMWepKeyType type;
 	char keys[4][65];
 	guint8 cur_index;
@@ -144,7 +147,8 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
 	NMSettingWirelessSecurity *s_wsec;
-	GtkWidget *widget;
+	NMSettingSecretFlags secret_flags;
+	GtkWidget *widget, *passwd_entry;
 	gint auth_alg;
 	const char *key;
 	int i;
@@ -153,8 +157,18 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	auth_alg = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
+	passwd_entry = widget;
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 	strcpy (sec->keys[sec->cur_index], key);
+
+	/* Get WEP_KEY_FLAGS from the old security setting, if any. Else
+	 * initialize the flags to NM_SETTING_SECRET_FLAG_AGENT_OWNED.
+	 */
+	s_wsec = nm_connection_get_setting_wireless_security (connection);
+	if (s_wsec)
+		secret_flags = nm_setting_wireless_security_get_wep_key_flags (s_wsec);
+	else
+		secret_flags = NM_SETTING_SECRET_FLAG_AGENT_OWNED;
 
 	/* Blow away the old security setting by adding a clear one */
 	s_wsec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
@@ -171,6 +185,10 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 		if (strlen (sec->keys[i]))
 			nm_setting_wireless_security_set_wep_key (s_wsec, i, sec->keys[i]);
 	}
+
+	/* Update secret flags and popup when editing the connection */
+	if (sec->editing_connection)
+		utils_update_password_storage (NM_SETTING (s_wsec), secret_flags, passwd_entry, sec->password_flags_name);
 }
 
 static void
@@ -236,13 +254,18 @@ ws_wep_key_new (NMConnection *connection,
 	                                 "wep_key_entry");
 	if (!parent)
 		return NULL;
-	
+
 	sec = (WirelessSecurityWEPKey *) parent;
+	sec->editing_connection = secrets_only ? FALSE : TRUE;
+	sec->password_flags_name = NM_SETTING_WIRELESS_SECURITY_WEP_KEY0;
 	sec->type = type;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	g_assert (widget);
 	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
+
+	/* Create password-storage popup menu for password entry under entry's secondary icon */
+	utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
 
 	if (connection) {
 		NMSettingWireless *s_wireless;
