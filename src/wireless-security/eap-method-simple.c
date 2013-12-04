@@ -28,6 +28,7 @@
 #include "eap-method.h"
 #include "wireless-security.h"
 #include "helpers.h"
+#include "utils.h"
 
 struct _EAPMethodSimple {
 	EAPMethod parent;
@@ -162,7 +163,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 		GtkWidget *passwd_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
 		g_assert (passwd_entry);
 
-		ws_update_password_storage (NM_SETTING (s_8021x), flags, passwd_entry, parent->password_flags_name);
+		utils_update_password_storage (NM_SETTING (s_8021x), flags, passwd_entry, parent->password_flags_name);
 	}
 }
 
@@ -331,7 +332,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	                  ws_parent);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	ws_setup_password_storage (connection, NM_SETTING_802_1X_SETTING_NAME, widget, parent->password_flags_name);
+	utils_setup_password_storage (connection, NM_SETTING_802_1X_SETTING_NAME, widget, parent->password_flags_name);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_password_always_ask"));
 	g_assert (widget);

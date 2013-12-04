@@ -148,15 +148,5 @@ void ws_802_1x_update_secrets (WirelessSecurity *sec,
                                const char *combo_name,
                                NMConnection *connection);
 
-void ws_setup_password_storage (NMConnection *connection,
-                                const char *setting_name,
-                                GtkWidget *passwd_entry,
-                                const char *password_flags_name);
-
-void ws_update_password_storage (NMSetting *setting,
-                                 NMSettingSecretFlags secret_flags,
-                                 GtkWidget *passwd_entry,
-                                 const char *password_flags_name);
-
 #endif /* WIRELESS_SECURITY_H */
 

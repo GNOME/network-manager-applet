@@ -75,5 +75,14 @@ gboolean utils_filter_editable_on_insert_text (GtkEditable *editable,
                                                UtilsFilterGtkEditableFunc validate_character,
                                                gpointer block_func);
 
+void utils_setup_password_storage (NMConnection *connection,
+                                   const char *setting_name,
+                                   GtkWidget *passwd_entry,
+                                   const char *password_flags_name);
+void utils_update_password_storage (NMSetting *setting,
+                                    NMSettingSecretFlags secret_flags,
+                                    GtkWidget *passwd_entry,
+                                    const char *password_flags_name);
+
 #endif /* UTILS_H */
 
