@@ -72,7 +72,7 @@ usage (const char *progname)
 	fprintf (stdout, "%s %s\n\n%s\n%s\n\n",
 	                 _("Usage:"),
 	                 foo,
-	                 _("This program is a component of NetworkManager (http://projects.gnome.org/NetworkManager)."),
+	                 _("This program is a component of NetworkManager (https://wiki.gnome.org/Projects/NetworkManager/)."),
 	                 _("It is not intended for command-line interaction but instead runs in the GNOME desktop environment."));
 	g_free (foo);
 }
