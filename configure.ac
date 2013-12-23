@@ -137,9 +137,9 @@ case "${with_bluetooth}" in
 	no)	AC_MSG_NOTICE(Bluetooth support disabled)
 		;;
 	*)
-		AC_MSG_CHECKING(for gnome-bluetooth)
 		PKG_CHECK_MODULES(GNOME_BLUETOOTH,
 				  gnome-bluetooth-1.0 >= 2.27.6
+				  gnome-bluetooth-1.0 < 3.11.0
 				  libnm-util libnm-glib,
 				  have_gbt=yes, have_gbt=no)
 		;;
