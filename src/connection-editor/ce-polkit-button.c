@@ -34,9 +34,7 @@ G_DEFINE_TYPE (CEPolkitButton, ce_polkit_button, GTK_TYPE_BUTTON)
 typedef struct {
 	gboolean disposed;
 
-	char *label;
 	char *tooltip;
-	char *auth_label;
 	char *auth_tooltip;
 	gboolean master_sensitive;
 
@@ -70,11 +68,9 @@ update_button (CEPolkitButton *self, gboolean actionable)
 	gtk_widget_set_sensitive (GTK_WIDGET (self), actionable);
 
 	if (priv->authorized) {
-		gtk_button_set_label (GTK_BUTTON (self), priv->auth_label);
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), priv->auth_tooltip);
 		gtk_button_set_image (GTK_BUTTON (self), priv->auth);
 	} else {
-		gtk_button_set_label (GTK_BUTTON (self), priv->label);
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), priv->tooltip);
 		gtk_button_set_image (GTK_BUTTON (self), priv->stock);
 	}
@@ -148,7 +144,6 @@ permission_changed_cb (NMClient *client,
 GtkWidget *
 ce_polkit_button_new (const char *label,
                       const char *tooltip,
-                      const char *auth_label,
                       const char *auth_tooltip,
                       const char *stock_icon,
                       NMClient *client,
@@ -163,9 +158,7 @@ ce_polkit_button_new (const char *label,
 
 	priv = CE_POLKIT_BUTTON_GET_PRIVATE (object);
 
-	priv->label = g_strdup (label);
 	priv->tooltip = g_strdup (tooltip);
-	priv->auth_label = g_strdup (auth_label);
 	priv->auth_tooltip = g_strdup (auth_tooltip);
 	priv->permission = permission;
 
@@ -180,6 +173,7 @@ ce_polkit_button_new (const char *label,
 	priv->auth = gtk_image_new_from_stock (GTK_STOCK_DIALOG_AUTHENTICATION, GTK_ICON_SIZE_BUTTON);
 	g_object_ref_sink (priv->auth);
 
+	gtk_button_set_label (GTK_BUTTON (object), label);
 	update_button (CE_POLKIT_BUTTON (object),
 	               ce_polkit_button_get_actionable (CE_POLKIT_BUTTON (object)));
 
@@ -215,8 +209,6 @@ finalize (GObject *object)
 {
 	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (object);
 
-	g_free (priv->label);
-	g_free (priv->auth_label);
 	g_free (priv->tooltip);
 	g_free (priv->auth_tooltip);
 
