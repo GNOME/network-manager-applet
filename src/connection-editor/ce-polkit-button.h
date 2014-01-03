@@ -51,7 +51,6 @@ GType ce_polkit_button_get_type (void);
 
 GtkWidget *ce_polkit_button_new (const char *label,
                                  const char *tooltip,
-                                 const char *auth_label,
                                  const char *auth_tooltip,
                                  const char *stock_icon,
                                  NMClient *client,

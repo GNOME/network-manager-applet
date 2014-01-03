@@ -685,7 +685,6 @@ add_connection_buttons (NMConnectionList *self)
 	/* Edit */
 	button = ce_polkit_button_new (_("_Edit"),
 	                               _("Edit the selected connection"),
-	                               _("_Edit..."),
 	                               _("Authenticate to edit the selected connection"),
 	                               GTK_STOCK_EDIT,
 	                               self->nm_client,
@@ -702,7 +701,6 @@ add_connection_buttons (NMConnectionList *self)
 	/* Delete */
 	button = ce_polkit_button_new (_("_Delete"),
 	                               _("Delete the selected connection"),
-	                               _("_Delete..."),
 	                               _("Authenticate to delete the selected connection"),
 	                               GTK_STOCK_DELETE,
 	                               self->nm_client,

@@ -417,7 +417,6 @@ nm_connection_editor_new (GtkWindow *parent_window,
 
 	editor->ok_button = ce_polkit_button_new (_("_Save"),
 	                                          _("Save any changes made to this connection."),
-	                                          _("_Save..."),
 	                                          _("Authenticate to save this connection for all users of this machine."),
 	                                          GTK_STOCK_APPLY,
 	                                          client,
