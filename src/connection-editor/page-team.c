@@ -25,12 +25,10 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-team.h>
+#include <nm-utils.h>
 
 #include "page-team.h"
-#include "page-ethernet.h"
-#include "page-wifi.h"
 #include "page-infiniband.h"
-#include "page-vlan.h"
 #include "nm-connection-editor.h"
 #include "new-connection.h"
 
@@ -41,7 +39,7 @@ G_DEFINE_TYPE (CEPageTeam, ce_page_team, CE_TYPE_PAGE_MASTER)
 typedef struct {
 	NMSettingTeam *setting;
 
-	GType slave_type;
+	int slave_arptype;
 
 	GtkWindow *toplevel;
 
@@ -148,7 +146,7 @@ connection_removed (CEPageMaster *master, NMConnection *connection)
 	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
 
 	if (!ce_page_master_has_slaves (master))
-		priv->slave_type = G_TYPE_INVALID;
+		priv->slave_arptype = ARPHRD_VOID;
 }
 
 static void
@@ -157,15 +155,10 @@ connection_added (CEPageMaster *master, NMConnection *connection)
 	CEPageTeam *self = CE_PAGE_TEAM (master);
 	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
 
-	/* A bit kludgy... */
 	if (nm_connection_is_type (connection, NM_SETTING_INFINIBAND_SETTING_NAME))
-		priv->slave_type = NM_TYPE_SETTING_INFINIBAND;
-	else if (nm_connection_is_type (connection, NM_SETTING_WIRED_SETTING_NAME))
-		priv->slave_type = NM_TYPE_SETTING_WIRED;
-	else if (nm_connection_is_type (connection, NM_SETTING_WIRELESS_SETTING_NAME))
-		priv->slave_type = NM_TYPE_SETTING_WIRELESS;
+		priv->slave_arptype = ARPHRD_INFINIBAND;
 	else
-		priv->slave_type = NM_TYPE_SETTING_VLAN;
+		priv->slave_arptype = ARPHRD_ETHER;
 }
 
 static void
@@ -181,26 +174,22 @@ create_connection (CEPageMaster *master, NMConnection *connection)
 }
 
 static gboolean
-connection_type_filter_all (GType type, gpointer user_data)
+connection_type_filter (GType type, gpointer self)
 {
-	if (type == NM_TYPE_SETTING_WIRED ||
-	    type == NM_TYPE_SETTING_WIRELESS ||
-	    type == NM_TYPE_SETTING_VLAN ||
-	    type == NM_TYPE_SETTING_INFINIBAND)
-		return TRUE;
-	else
-		return FALSE;
-}
+	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
 
-static gboolean
-connection_type_filter_eth (GType type, gpointer user_data)
-{
-	if (type == NM_TYPE_SETTING_WIRED ||
-	    type == NM_TYPE_SETTING_WIRELESS ||
-	    type == NM_TYPE_SETTING_VLAN)
-		return TRUE;
-	else
+	if (!nm_utils_check_virtual_device_compatibility (NM_TYPE_SETTING_TEAM, type))
 		return FALSE;
+
+	/* Can only have connections of a single arptype. Note that we don't
+	 * need to check the reverse case here since we don't need to call
+	 * new_connection_dialog() in the InfiniBand case.
+	 */
+	if (   priv->slave_arptype == ARPHRD_ETHER
+	    && type == NM_TYPE_SETTING_INFINIBAND)
+		return FALSE;
+
+	return TRUE;
 }
 
 static void
@@ -209,7 +198,7 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 	CEPageTeam *self = CE_PAGE_TEAM (master);
 	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
 
-	if (priv->slave_type == NM_TYPE_SETTING_INFINIBAND) {
+	if (priv->slave_arptype == ARPHRD_INFINIBAND) {
 		new_connection_of_type (priv->toplevel,
 		                        NULL,
 		                        CE_PAGE (self)->settings,
@@ -219,7 +208,7 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 	} else {
 		new_connection_dialog (priv->toplevel,
 		                       CE_PAGE (self)->settings,
-		                       priv->slave_type == G_TYPE_INVALID ? connection_type_filter_all : connection_type_filter_eth,
+		                       connection_type_filter,
 		                       result_func,
 		                       master);
 	}
@@ -314,7 +303,11 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 static void
 ce_page_team_init (CEPageTeam *self)
 {
-	CE_PAGE_MASTER (self)->aggregating = TRUE;
+	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
+	CEPageMaster *master = CE_PAGE_MASTER (self);
+
+	priv->slave_arptype = ARPHRD_VOID;
+	master->aggregating = TRUE;
 }
 
 static void

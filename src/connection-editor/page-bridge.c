@@ -26,6 +26,7 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-bridge.h>
+#include <nm-utils.h>
 
 #include "page-bridge.h"
 #include "nm-connection-editor.h"
@@ -161,12 +162,7 @@ create_connection (CEPageMaster *master, NMConnection *connection)
 static gboolean
 connection_type_filter (GType type, gpointer user_data)
 {
-	if (type == NM_TYPE_SETTING_WIRED ||
-	    type == NM_TYPE_SETTING_WIRELESS ||
-		type == NM_TYPE_SETTING_VLAN)
-		return TRUE;
-	else
-		return FALSE;
+	return nm_utils_check_virtual_device_compatibility (NM_TYPE_SETTING_BRIDGE, type);
 }
 
 static void

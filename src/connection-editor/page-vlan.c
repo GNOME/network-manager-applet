@@ -249,8 +249,8 @@ get_vlan_devices (CEPageVlan *self)
 	for (i = 0; devices_array && (i < devices_array->len); i++) {
 		device = devices_array->pdata[i];
 
-		/* FIXME: this supported-device-types logic belongs in NM somewhere. */
-		if (!NM_IS_DEVICE_ETHERNET (device))
+		if (!nm_utils_check_virtual_device_compatibility (NM_TYPE_SETTING_VLAN,
+		                                                  nm_device_get_setting_type (device)))
 			continue;
 
 		devices = g_slist_prepend (devices, device);
@@ -272,7 +272,7 @@ build_vlan_parent_list (CEPageVlan *self, GSList *devices)
 
 	parents = g_ptr_array_new ();
 
-	/* Devices with no L2 configuration can spawn VLANs directly. At the
+	/* Devices with no interesting L2 configuration can spawn VLANs directly. At the
 	 * moment, this means just Ethernet.
 	 */
 	for (d_iter = devices; d_iter; d_iter = d_iter->next) {
@@ -297,8 +297,13 @@ build_vlan_parent_list (CEPageVlan *self, GSList *devices)
 	for (c_iter = connections; c_iter; c_iter = c_iter->next) {
 		NMConnection *candidate = c_iter->data;
 		NMSettingConnection *s_con = nm_connection_get_setting_connection (candidate);
+		GType connection_gtype;
 
 		if (nm_setting_connection_get_master (s_con))
+			continue;
+
+		connection_gtype = nm_connection_lookup_setting_type (nm_setting_connection_get_connection_type (s_con));
+		if (!nm_utils_check_virtual_device_compatibility (NM_TYPE_SETTING_VLAN, connection_gtype))
 			continue;
 
 		for (d_iter = devices; d_iter; d_iter = d_iter->next) {

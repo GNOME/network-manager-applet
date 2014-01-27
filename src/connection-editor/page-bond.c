@@ -26,9 +26,9 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-bond.h>
+#include <nm-utils.h>
 
 #include "page-bond.h"
-#include "page-ethernet.h"
 #include "page-infiniband.h"
 #include "nm-connection-editor.h"
 #include "new-connection.h"
@@ -40,8 +40,7 @@ G_DEFINE_TYPE (CEPageBond, ce_page_bond, CE_TYPE_PAGE_MASTER)
 typedef struct {
 	NMSettingBond *setting;
 
-	GType slave_type;
-	PageNewConnectionFunc new_slave_func;
+	int slave_arptype;
 
 	GtkWindow *toplevel;
 
@@ -109,10 +108,8 @@ connection_removed (CEPageMaster *master, NMConnection *connection)
 	CEPageBond *self = CE_PAGE_BOND (master);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 
-	if (!ce_page_master_has_slaves (master)) {
-		priv->slave_type = G_TYPE_INVALID;
-		priv->new_slave_func = NULL;
-	}
+	if (!ce_page_master_has_slaves (master))
+		priv->slave_arptype = ARPHRD_VOID;
 }
 
 static void
@@ -121,15 +118,12 @@ connection_added (CEPageMaster *master, NMConnection *connection)
 	CEPageBond *self = CE_PAGE_BOND (master);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 
-	/* A bit kludgy... */
 	if (nm_connection_is_type (connection, NM_SETTING_INFINIBAND_SETTING_NAME)) {
-		priv->slave_type = NM_TYPE_SETTING_INFINIBAND;
-		priv->new_slave_func = infiniband_connection_new;
+		priv->slave_arptype = ARPHRD_INFINIBAND;
 		gtk_combo_box_set_active (priv->mode, MODE_ACTIVE_BACKUP);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mode), FALSE);
 	} else {
-		priv->slave_type = NM_TYPE_SETTING_WIRED;
-		priv->new_slave_func = ethernet_connection_new;
+		priv->slave_arptype = ARPHRD_ETHER;
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mode), TRUE);
 	}
 }
@@ -359,13 +353,22 @@ populate_ui (CEPageBond *self)
 }
 
 static gboolean
-connection_type_filter (GType type, gpointer user_data)
+connection_type_filter (GType type, gpointer self)
 {
-	if (type == NM_TYPE_SETTING_WIRED ||
-	    type == NM_TYPE_SETTING_INFINIBAND)
-		return TRUE;
-	else
+	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
+
+	if (!nm_utils_check_virtual_device_compatibility (NM_TYPE_SETTING_BOND, type))
 		return FALSE;
+
+	/* Can only have connections of a single arptype. Note that we don't
+	 * need to check the reverse case here since we don't need to call
+	 * new_connection_dialog() in the InfiniBand case.
+	 */
+	if (   priv->slave_arptype == ARPHRD_ETHER
+	    && type == NM_TYPE_SETTING_INFINIBAND)
+		return FALSE;
+
+	return TRUE;
 }
 
 static void
@@ -374,11 +377,11 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 	CEPageBond *self = CE_PAGE_BOND (master);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 
-	if (priv->new_slave_func) {
+	if (priv->slave_arptype == ARPHRD_INFINIBAND) {
 		new_connection_of_type (priv->toplevel,
 		                        NULL,
 		                        CE_PAGE (self)->settings,
-		                        priv->new_slave_func,
+		                        infiniband_connection_new,
 		                        result_func,
 		                        master);
 	} else {
@@ -548,7 +551,11 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 static void
 ce_page_bond_init (CEPageBond *self)
 {
-	CE_PAGE_MASTER (self)->aggregating = TRUE;
+	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
+	CEPageMaster *master = CE_PAGE_MASTER (self);
+
+	priv->slave_arptype = ARPHRD_VOID;
+	master->aggregating = TRUE;
 }
 
 static void
