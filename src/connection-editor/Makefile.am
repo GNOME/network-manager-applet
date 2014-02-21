@@ -66,6 +66,8 @@ nm_connection_editor_SOURCES = \
 	page-bridge-port.c \
 	page-vlan.h \
 	page-vlan.c \
+	page-dcb.c \
+	page-dcb.h \
 	vpn-helpers.h \
 	vpn-helpers.c \
 	ip4-routes-dialog.h \
@@ -114,7 +116,8 @@ ui_DATA = \
 	ce-page-mobile.ui \
 	ce-page-ppp.ui \
 	ce-ppp-auth-methods.ui \
-	ce-page-vlan.ui
+	ce-page-vlan.ui \
+	ce-page-dcb.ui
 
 BUILT_SOURCES = nm-connection-editor-service-glue.h
 

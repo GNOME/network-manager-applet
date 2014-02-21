@@ -55,16 +55,17 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-gint
-ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
+static gboolean
+spin_output_with_default_string (GtkSpinButton *spin,
+                                 int defvalue,
+                                 const char *defstring)
 {
-	int defvalue = GPOINTER_TO_INT (user_data);
 	int val;
 	gchar *buf = NULL;
 
 	val = gtk_spin_button_get_value_as_int (spin);
 	if (val == defvalue)
-		buf = g_strdup (_("automatic"));
+		buf = g_strdup (defstring);
 	else
 		buf = g_strdup_printf ("%d", val);
 
@@ -73,6 +74,22 @@ ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
 
 	g_free (buf);
 	return TRUE;
+}
+
+gboolean
+ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data)
+{
+	return spin_output_with_default_string (spin,
+	                                        GPOINTER_TO_INT (user_data),
+	                                        _("automatic"));
+}
+
+gboolean
+ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
+{
+	return spin_output_with_default_string (spin,
+	                                        GPOINTER_TO_INT (user_data),
+	                                        _("default"));
 }
 
 int

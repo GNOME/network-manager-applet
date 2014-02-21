@@ -118,7 +118,7 @@ populate_ui (CEPageInfiniband *self)
 	/* MTU */
 	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_INFINIBAND_MTU);
 	g_signal_connect (priv->mtu, "output",
-	                  G_CALLBACK (ce_spin_output_with_default),
+	                  G_CALLBACK (ce_spin_output_with_automatic),
 	                  GINT_TO_POINTER (mtu_def));
 
 	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_infiniband_get_mtu (setting));
