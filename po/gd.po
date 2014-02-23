@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: eog\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=Networ"
 "kManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2014-02-05 11:48+0000\n"
-"PO-Revision-Date: 2014-02-05 12:16+0100\n"
+"POT-Creation-Date: 2014-02-23 10:56+0000\n"
+"PO-Revision-Date: 2014-02-23 13:27+0100\n"
 "Last-Translator: GunChleoc <fios@foramnagaidhlig.net>\n"
 "Language-Team: Fòram na Gàidhlig http://www.foramnagaidhlig.net\n"
 "Language: gd\n"
@@ -786,32 +786,27 @@ msgid "InfiniBand connection '%s' active"
 msgstr "Tha an ceangal InfiniBand \"%s\" gnìomhach"
 
 #: ../src/applet-device-team.c:86
-#| msgid "You are now connected to the ethernet network."
 msgid "You are now connected to the teamed network."
 msgstr "Tha thu air ceangal a dhèanamh ris an lìonra sgioba."
 
 #: ../src/applet-device-team.c:110
 #, c-format
-#| msgid "Preparing bridge connection '%s'..."
 msgid "Preparing team connection '%s'..."
 msgstr "Ag ullachadh a' cheangail sgioba \"%s\"..."
 
 #: ../src/applet-device-team.c:113
 #, c-format
-#| msgid "Configuring bridge connection '%s'..."
 msgid "Configuring team connection '%s'..."
 msgstr "A' rèiteachadh a' cheangail sgioba \"%s\"..."
 
 #: ../src/applet-device-team.c:116
 #, c-format
-#| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for team connection '%s'..."
 msgstr ""
 "Tha feum air dearbhadh a' chleachdaiche airson a' cheangail sgioba \"%s\"..."
 
 #: ../src/applet-device-team.c:123
 #, c-format
-#| msgid "VPN connection '%s' active"
 msgid "Team connection '%s' active"
 msgstr "Tha an ceangal sgioba \"%s\" gnìomhach"
 
@@ -1435,7 +1430,6 @@ msgid "Link _down delay:"
 msgstr "Dàil a' cheangal _a-nuas:"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:22
-#| msgid "Primary DNS:"
 msgid "_Primary:"
 msgstr "_Prìomh uidheam:"
 
@@ -1444,8 +1438,8 @@ msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active slave when it is available."
 msgstr ""
-"Ainm eadar-aghaidh a' phrìomh uidheim. Ma tha seo suidhichte, bidh an "
-"t-uidheam seo 'na thràill ghnìomhach an-còmhnaidh nuair a bhios e ri làimh."
+"Ainm eadar-aghaidh a' phrìomh uidheim. Ma tha seo suidhichte, bidh an t-"
+"uidheam seo 'na thràill ghnìomhach an-còmhnaidh nuair a bhios e ri làimh."
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:1
 msgid "Path _cost:"
@@ -1488,15 +1482,227 @@ msgstr "Aois as _motha:"
 msgid "_Aging time:"
 msgstr "Àm _aoiseachaidh:"
 
-#: ../src/connection-editor/ce-page.c:67
+#: ../src/connection-editor/ce-page.c:84
 msgid "automatic"
 msgstr "fèin-obrachail"
 
-#: ../src/connection-editor/ce-page.c:342
+#: ../src/connection-editor/ce-page.c:92
+#: ../src/connection-editor/ce-page-dcb.ui.h:13
+#: ../src/connection-editor/page-wifi.c:172
+#: ../src/connection-editor/page-wifi.c:176
+#: ../src/connection-editor/page-wifi.c:197
+#, c-format
+msgid "default"
+msgstr "bun-roghainn"
+
+#: ../src/connection-editor/ce-page.c:359
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Dh'fhàillig ùrachadh rùintean a' cheangail air sgàth mearachd nach aithne "
 "dhuinn."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:1
+#| msgid "Use 802.1_X security for this connection"
+msgid "Use Data Center Bridging (DCB) for this connection"
+msgstr "Cleachd Data Center Bridging (DCB) airson a' cheangail seo."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:2
+msgid "FCoE"
+msgstr "FCoE"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:3
+msgid "iSCSI"
+msgstr "iSCSI"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:4
+msgid "FIP"
+msgstr "FIP"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:5
+msgid "Flow Control"
+msgstr "Smachd srutha"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:6
+msgid "Feature"
+msgstr "Feart"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:7
+#| msgid "Enable _Wi-Fi"
+msgid "Enable"
+msgstr "Cuir an comas"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:8
+msgid "Advertise"
+msgstr "Sanasaich"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:9
+msgid "Willing"
+msgstr "Deònach"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:10
+#| msgid "_Priority:"
+msgid "Priority"
+msgstr "Prìomhachas"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:11
+msgid "Options..."
+msgstr "Roghainnean..."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:12
+#| msgid "_Priority:"
+msgid "Priority Groups"
+msgstr "Buidhnean prìomhachais"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:14
+msgid "0"
+msgstr "0"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:15
+msgid "1"
+msgstr "1"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:16
+#: ../src/wireless-security/ws-wep-key.ui.h:2
+msgid "2"
+msgstr "2"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:17
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "3"
+msgstr "3"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:18
+#: ../src/wireless-security/ws-wep-key.ui.h:4
+msgid "4"
+msgstr "4"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:19
+msgid "5"
+msgstr "5"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:20
+msgid "6"
+msgstr "6"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:21
+msgid "7"
+msgstr "7"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:22
+msgid "Fabric"
+msgstr "Fabric"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:23
+msgid "VN2VN"
+msgstr "VN2VN"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:24
+msgid "Priority Flow Control"
+msgstr "Smachd srutha a' phrìomhachais"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:25
+msgid "Enable or disable priority pause transmission for each User Priority."
+msgstr ""
+"Cuir an comas no à comas tar-chur stada a' phrìomhachais airson gach "
+"prìomhachas cleachdaiche."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:26
+#| msgid "_Priority:"
+msgid "Priority:"
+msgstr "Prìomhachas:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:27
+msgid "0:"
+msgstr "0:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:28
+msgid "1:"
+msgstr "1:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:29
+#| msgid "2"
+msgid "2:"
+msgstr "2:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:30
+#| msgid "3"
+msgid "3:"
+msgstr "3:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:31
+#| msgid "4"
+msgid "4:"
+msgstr "4:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:32
+msgid "5:"
+msgstr "5:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:33
+msgid "6:"
+msgstr "6:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:34
+msgid "7:"
+msgstr "7:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:35
+msgid "Traffic Class:"
+msgstr "Clas trafaige:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:36
+msgid "Strict Bandwidth:"
+msgstr "Leud-banna teann:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:37
+#| msgid "_Priority:"
+msgid "Priority Bandwidth:"
+msgstr "Prìomhachas an leud-banna:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:38
+msgid "Group Bandwidth:"
+msgstr "Leud-banna a' bhuidhinn:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:39
+msgid "Group ID:"
+msgstr "ID a' bhuidhinn:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:40
+msgid "15"
+msgstr "15"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:41
+msgid "Enter the priority group ID for each User Priority."
+msgstr ""
+"Cuir a-steach ID a' bhuidhinn prìomhachais airson gach prìomhachas "
+"cleachdaiche"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:43
+#, no-c-format
+msgid ""
+"Enter the allowed link bandwidth percent each Priority Group may use.  The "
+"sum of all groups must total 100%."
+msgstr ""
+"Chuir a-steach a' cheudad de leud-banna a dh'fhaodas gach buidheann "
+"prìomhachais a chleachdadh. Feumaidh iomlan de 100% a bhith air a h-uile "
+"buidheann gu lèir."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:44
+msgid ""
+"Enter the percentage of priority group bandwidth each user priority may use."
+msgstr ""
+"Chuir a-steach a' cheudad de leud-banna a' bhuidhinn prìomhachais a "
+"dh'fhaodas gach prìomhachas cleachdaiche a chleachdadh."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:45
+msgid "Enable or disable strict bandwidth for each user priority."
+msgstr ""
+"Cuir an comas no à comas leud-banna teann airson gach prìomhachas "
+"cleachdaiche."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:46
+msgid "Enter the traffic class for each user priority."
+msgstr "Cuir a-steach an clas trafaige airson gach prìomhachas cleachdaiche."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:1
 #: ../src/connection-editor/ce-page-mobile.ui.h:10
@@ -1753,9 +1959,6 @@ msgid "_Routes…"
 msgstr "_ Rùtaichean..."
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:12
-#| msgid ""
-#| "IP addresses of domain name servers used to resolve host names. Use "
-#| "commas to separate multiple domain name server addresses."
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses. Link-local addresses will "
@@ -1901,17 +2104,14 @@ msgid "_JSON config:"
 msgstr "Rèiteachadh _JSON:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:2
-#| msgid "Import a saved VPN configuration..."
 msgid "_Import team configuration from a file..."
 msgstr "_Ion-phortaich rèiteachadh sgioba o fhaidhle..."
 
 #: ../src/connection-editor/ce-page-team.ui.h:1
-#| msgid "Bonded _connections:"
 msgid "_Teamed connections:"
 msgstr "_Ceanglaichean sgioba:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:3
-#| msgid "Import a saved VPN configuration..."
 msgid "I_mport team configuration from a file..."
 msgstr "Io_n-phortaich rèiteachadh sgioba o fhaidhle..."
 
@@ -2172,16 +2372,16 @@ msgid "Are you sure you wish to delete the connection %s?"
 msgstr ""
 "A bheil thu cinnteach gu bheil thu airson an ceangal \"%s\" a sguabadh às?"
 
-#: ../src/connection-editor/nm-connection-editor.c:122
+#: ../src/connection-editor/nm-connection-editor.c:123
 #, c-format
 msgid "Editing %s"
 msgstr "A' deasachadh %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:126
+#: ../src/connection-editor/nm-connection-editor.c:127
 msgid "Editing un-named connection"
 msgstr "A' deasachadh ceangal gun ainm"
 
-#: ../src/connection-editor/nm-connection-editor.c:286
+#: ../src/connection-editor/nm-connection-editor.c:287
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -2189,51 +2389,51 @@ msgstr ""
 "Cha b' urrainn do dheasaiche nan ceanglaichean cuid a ghoireasan a lorg air "
 "a bheil feum (cha deach am faidhle .ui a lorg)."
 
-#: ../src/connection-editor/nm-connection-editor.c:417
+#: ../src/connection-editor/nm-connection-editor.c:418
 msgid "_Save"
 msgstr "_Sàbhail"
 
-#: ../src/connection-editor/nm-connection-editor.c:418
+#: ../src/connection-editor/nm-connection-editor.c:419
 msgid "Save any changes made to this connection."
 msgstr "Sàbhail atharrachadh sam bith a chaidh a dhèanamh air a' cheangal seo."
 
-#: ../src/connection-editor/nm-connection-editor.c:419
+#: ../src/connection-editor/nm-connection-editor.c:420
 msgid "_Save..."
 msgstr "_Sàbhail..."
 
-#: ../src/connection-editor/nm-connection-editor.c:420
+#: ../src/connection-editor/nm-connection-editor.c:421
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Dèan dearbhadh gus an ceangal seo a shàbhaladh airson gach cleachdaiche air "
 "an inneal seo."
 
-#: ../src/connection-editor/nm-connection-editor.c:436
+#: ../src/connection-editor/nm-connection-editor.c:437
 msgid "Could not create connection"
 msgstr "Cha b' urrainn dhuinn an ceangal a chruthachadh"
 
-#: ../src/connection-editor/nm-connection-editor.c:436
+#: ../src/connection-editor/nm-connection-editor.c:437
 msgid "Could not edit connection"
 msgstr "Cha b' urrainn dhuinn an ceangal a dheasachadh"
 
-#: ../src/connection-editor/nm-connection-editor.c:438
+#: ../src/connection-editor/nm-connection-editor.c:439
 msgid "Unknown error creating connection editor dialog."
 msgstr ""
 "Thachair mearachd nach aithne dhuinn nuair a chruthaich sinn còmhradh "
 "deasaiche nan ceanglaichean."
 
-#: ../src/connection-editor/nm-connection-editor.c:572
+#: ../src/connection-editor/nm-connection-editor.c:573
 msgid "Error initializing editor"
 msgstr "Mearachd a' tòiseachadh an deasaiche"
 
-#: ../src/connection-editor/nm-connection-editor.c:903
+#: ../src/connection-editor/nm-connection-editor.c:906
 msgid "Connection add failed"
 msgstr "Cha b' urrainn dhuinn an ceangal a chur ris"
 
-#: ../src/connection-editor/nm-connection-editor.c:943
+#: ../src/connection-editor/nm-connection-editor.c:946
 msgid "Error saving connection"
 msgstr "Mearachd a' sàbhaladh a' cheangail"
 
-#: ../src/connection-editor/nm-connection-editor.c:944
+#: ../src/connection-editor/nm-connection-editor.c:947
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "Tha an roghainn \"%s\" / \"%s\" mì-dhligheach: %d"
@@ -2403,6 +2603,15 @@ msgid "Could not load bridge port user interface."
 msgstr ""
 "Cha b' urrainn dhuinn an eadar-aghaidh airson drochaideachadh puirt "
 "chleachdaichean a luchdadh."
+
+#: ../src/connection-editor/page-dcb.c:607
+msgid "DCB"
+msgstr "DCB"
+
+#: ../src/connection-editor/page-dcb.c:609
+#| msgid "Could not load DSL user interface."
+msgid "Could not load DCB user interface."
+msgstr "Cha b' urrainn dhuinn an eadar-aghaidh cleachdaiche DCB a luchdadh."
 
 #: ../src/connection-editor/page-dsl.c:139
 msgid "Could not load DSL user interface."
@@ -2691,13 +2900,12 @@ msgid "Error: file doesn't contain a valid JSON configuration"
 msgstr "Mearachd: chan eil rèiteachadh JSON dligheach am broinn an fhaidhle"
 
 #: ../src/connection-editor/page-team.c:258
-#| msgid "Could not load vlan user interface."
 msgid "Could not load team user interface."
-msgstr "Cha b' urrainn dhuinn eadar-aghaidh sgioba a' chleachdaiche a luchdadh."
+msgstr ""
+"Cha b' urrainn dhuinn eadar-aghaidh sgioba a' chleachdaiche a luchdadh."
 
 #: ../src/connection-editor/page-team.c:353
 #, c-format
-#| msgid "DSL connection %d"
 msgid "Team connection %d"
 msgstr "Ceangal sgioba %d"
 
@@ -2705,12 +2913,10 @@ msgstr "Ceangal sgioba %d"
 #. * device that is part of a team.
 #.
 #: ../src/connection-editor/page-team-port.c:157
-#| msgid "Bridge Port"
 msgid "Team Port"
 msgstr "Port an sgioba"
 
 #: ../src/connection-editor/page-team-port.c:159
-#| msgid "Could not load bridge port user interface."
 msgid "Could not load team port user interface."
 msgstr ""
 "Cha b' urrainn dhuinn an eadar-aghaidh airson port sgioba a' chleachdaiche a "
@@ -2780,13 +2986,6 @@ msgstr ""
 "Tha an roghainn seo a’ glasadh a' cheangal seo ris a' phuing-inntrigidh WiFi "
 "(AP) a tha 'ga shònrachadh leis a' BSSID a chaidh a chur a-steach an-seo. "
 "Ball-eisimpleir: 00:11:22:33:44:55"
-
-#: ../src/connection-editor/page-wifi.c:172
-#: ../src/connection-editor/page-wifi.c:176
-#: ../src/connection-editor/page-wifi.c:197
-#, c-format
-msgid "default"
-msgstr "bun-roghainn"
 
 #: ../src/connection-editor/page-wifi.c:201
 #, c-format
@@ -3306,15 +3505,12 @@ msgid "Usage:"
 msgstr "Cleachdadh:"
 
 #: ../src/main.c:75
-#| msgid ""
-#| "This program is a component of NetworkManager (http://projects.gnome.org/"
-#| "NetworkManager)."
 msgid ""
 "This program is a component of NetworkManager (https://wiki.gnome.org/"
 "Projects/NetworkManager/)."
 msgstr ""
-"Tha am prògram seo 'na phàirt de NetworkManager "
-"(https://wiki.gnome.org/Projects/NetworkManager/)."
+"Tha am prògram seo 'na phàirt de NetworkManager (https://wiki.gnome.org/"
+"Projects/NetworkManager/)."
 
 #: ../src/main.c:76
 msgid ""
@@ -3603,18 +3799,6 @@ msgstr "De_arbhadh:"
 #: ../src/wireless-security/ws-wep-key.ui.h:1
 msgid "1 (Default)"
 msgstr "1 (Bun-roghainn)"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:2
-msgid "2"
-msgstr "2"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:3
-msgid "3"
-msgstr "3"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:4
-msgid "4"
-msgstr "4"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:5
 msgid "Open System"
