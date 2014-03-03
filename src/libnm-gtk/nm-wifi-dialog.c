@@ -61,7 +61,7 @@ typedef struct {
 	NMConnection *connection;
 	NMDevice *device;
 	NMAccessPoint *ap;
-	gboolean adhoc_create;
+	guint operation;
 
 	GtkTreeModel *device_model;
 	GtkTreeModel *connection_model;
@@ -78,6 +78,12 @@ typedef struct {
 
 	gboolean disposed;
 } NMAWifiDialogPrivate;
+
+enum {
+	OP_NONE = 0,
+	OP_CREATE_ADHOC,
+	OP_CONNECT_HIDDEN,
+};
 
 #define D_NAME_COLUMN		0
 #define D_DEV_COLUMN		1
@@ -459,7 +465,7 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 				continue;
 
 			/* If creating a new Ad-Hoc network, only show shared network connections */
-			if (priv->adhoc_create) {
+			if (priv->operation == OP_CREATE_ADHOC) {
 				NMSettingIP4Config *s_ip4;
 				const char *method = NULL;
 
@@ -830,7 +836,7 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 	g_return_val_if_fail (priv->device != NULL, FALSE);
 	g_return_val_if_fail (priv->sec_combo != NULL, FALSE);
 
-	is_adhoc = priv->adhoc_create;
+	is_adhoc = (priv->operation == OP_CREATE_ADHOC);
 
 	/* The security options displayed are filtered based on device
 	 * capabilities, and if provided, additionally by access point capabilities.
@@ -886,7 +892,7 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 	    && ((!ap_wpa && !ap_rsn) || !(dev_caps & (NM_WIFI_DEVICE_CAP_WPA | NM_WIFI_DEVICE_CAP_RSN)))) {
 		WirelessSecurityWEPKey *ws_wep;
 
-		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_KEY, priv->adhoc_create, secrets_only);
+		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_KEY, is_adhoc, secrets_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"));
@@ -895,7 +901,7 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 			item++;
 		}
 
-		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, priv->adhoc_create, secrets_only);
+		ws_wep = ws_wep_key_new (priv->connection, NM_WEP_KEY_TYPE_PASSPHRASE, is_adhoc, secrets_only);
 		if (ws_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wep), sec_model,
 			                   &iter, _("WEP 128-bit Passphrase"));
@@ -1010,8 +1016,7 @@ static gboolean
 internal_init (NMAWifiDialog *self,
                NMConnection *specific_connection,
                NMDevice *specific_device,
-               gboolean secrets_only,
-               gboolean create)
+               gboolean secrets_only)
 {
 	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GtkWidget *widget;
@@ -1040,7 +1045,7 @@ internal_init (NMAWifiDialog *self,
 	                           FALSE, TRUE, 0, GTK_PACK_END);
 
 	/* Connect/Create button */
-	if (create) {
+	if (priv->operation == OP_CREATE_ADHOC) {
 		GtkWidget *image;
 
 		widget = gtk_button_new_with_mnemonic (_("C_reate"));
@@ -1135,17 +1140,18 @@ internal_init (NMAWifiDialog *self,
 		                         tmp);
 		g_free (esc_ssid);
 		g_free (tmp);
-	} else if (priv->adhoc_create) {
+	} else if (priv->operation == OP_CREATE_ADHOC) {
 		gtk_window_set_title (GTK_WINDOW (self), _("Create New Wi-Fi Network"));
 		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
 		                         _("New Wi-Fi network"),
 		                         _("Enter a name for the Wi-Fi network you wish to create."));
-	} else {
+	} else if (priv->operation == OP_CONNECT_HIDDEN) {
 		gtk_window_set_title (GTK_WINDOW (self), _("Connect to Hidden Wi-Fi Network"));
 		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
 		                         _("Hidden Wi-Fi network"),
 		                         _("Enter the name and security details of the hidden Wi-Fi network you wish to connect to."));
-	}
+	} else
+		g_assert_not_reached ();
 
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "caption_label"));
 	gtk_label_set_markup (GTK_LABEL (widget), label);
@@ -1202,7 +1208,7 @@ nma_wifi_dialog_get_connection (NMAWifiDialog *self,
 		s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SSID, validate_dialog_ssid (self), NULL);
 
-		if (priv->adhoc_create) {
+		if (priv->operation == OP_CREATE_ADHOC) {
 			NMSettingIP4Config *s_ip4;
 
 			g_object_set (s_wireless, NM_SETTING_WIRELESS_MODE, "adhoc", NULL);
@@ -1210,7 +1216,11 @@ nma_wifi_dialog_get_connection (NMAWifiDialog *self,
 			s_ip4 = (NMSettingIP4Config *) nm_setting_ip4_config_new ();
 			g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_METHOD, NM_SETTING_IP4_CONFIG_METHOD_SHARED, NULL);
 			nm_connection_add_setting (connection, (NMSetting *) s_ip4);
-		}
+		} else if (priv->operation == OP_CONNECT_HIDDEN) {
+			/* Mark as a hidden SSID network */
+			g_object_set (s_wireless, NM_SETTING_WIRELESS_HIDDEN, TRUE, NULL);
+		} else
+			g_assert_not_reached ();
 
 		nm_connection_add_setting (connection, (NMSetting *) s_wireless);
 	} else
@@ -1280,7 +1290,7 @@ nma_wifi_dialog_new (NMClient *client,
 		/* Handle CA cert ignore stuff */
 		eap_method_ca_cert_ignore_load (connection);
 
-		if (!internal_init (self, connection, device, secrets_only, FALSE)) {
+		if (!internal_init (self, connection, device, secrets_only)) {
 			g_warning ("Couldn't create Wi-Fi security dialog.");
 			gtk_widget_destroy (GTK_WIDGET (self));
 			self = NULL;
@@ -1291,7 +1301,9 @@ nma_wifi_dialog_new (NMClient *client,
 }
 
 static GtkWidget *
-internal_new_other (NMClient *client, NMRemoteSettings *settings, gboolean create)
+internal_new_operation (NMClient *client,
+                        NMRemoteSettings *settings,
+                        guint operation)
 {
 	NMAWifiDialog *self;
 	NMAWifiDialogPrivate *priv;
@@ -1309,9 +1321,9 @@ internal_new_other (NMClient *client, NMRemoteSettings *settings, gboolean creat
 	priv->settings = g_object_ref (settings);
 	priv->sec_combo = GTK_WIDGET (gtk_builder_get_object (priv->builder, "security_combo"));
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-	priv->adhoc_create = create;
+	priv->operation = operation;
 
-	if (!internal_init (self, NULL, NULL, FALSE, create)) {
+	if (!internal_init (self, NULL, NULL, FALSE)) {
 		g_warning ("Couldn't create Wi-Fi security dialog.");
 		gtk_widget_destroy (GTK_WIDGET (self));
 		return NULL;
@@ -1321,15 +1333,21 @@ internal_new_other (NMClient *client, NMRemoteSettings *settings, gboolean creat
 }
 
 GtkWidget *
+nma_wifi_dialog_new_for_hidden (NMClient *client, NMRemoteSettings *settings)
+{
+	return internal_new_operation (client, settings, OP_CONNECT_HIDDEN);
+}
+
+GtkWidget *
 nma_wifi_dialog_new_for_other (NMClient *client, NMRemoteSettings *settings)
 {
-	return internal_new_other (client, settings, FALSE);
+	return internal_new_operation (client, settings, OP_CONNECT_HIDDEN);
 }
 
 GtkWidget *
 nma_wifi_dialog_new_for_create (NMClient *client, NMRemoteSettings *settings)
 {
-	return internal_new_other (client, settings, TRUE);
+	return internal_new_operation (client, settings, OP_CREATE_ADHOC);
 }
 
 /**

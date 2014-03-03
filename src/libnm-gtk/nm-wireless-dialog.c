@@ -55,7 +55,7 @@ nma_wireless_dialog_new (NMClient *client,
 GtkWidget *
 nma_wireless_dialog_new_for_other (NMClient *client, NMRemoteSettings *settings)
 {
-	return nma_wifi_dialog_new_for_other (client, settings);
+	return nma_wifi_dialog_new_for_hidden (client, settings);
 }
 
 GtkWidget *
