@@ -61,8 +61,8 @@ GtkWidget *nma_wifi_dialog_new (NMClient *client,
                                 NMAccessPoint *ap,
                                 gboolean secrets_only);
 
-GtkWidget *nma_wifi_dialog_new_for_other (NMClient *client,
-                                          NMRemoteSettings *settings);
+GtkWidget *nma_wifi_dialog_new_for_hidden (NMClient *client,
+                                           NMRemoteSettings *settings);
 
 GtkWidget *nma_wifi_dialog_new_for_create (NMClient *client,
                                            NMRemoteSettings *settings);
@@ -79,6 +79,10 @@ void nma_wifi_dialog_set_nag_ignored (NMAWifiDialog *self, gboolean ignored);
 
 GLIB_DEPRECATED
 gboolean nma_wifi_dialog_get_nag_ignored (NMAWifiDialog *self);
+
+GLIB_DEPRECATED_FOR(nma_wifi_dialog_new_for_hidden)
+GtkWidget *nma_wifi_dialog_new_for_other (NMClient *client,
+                                          NMRemoteSettings *settings);
 
 #endif	/* NMA_WIFI_DIALOG_H */
 

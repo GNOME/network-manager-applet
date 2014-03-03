@@ -76,7 +76,7 @@ applet_wifi_connect_to_hidden_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wifi_dialog_new_for_other (applet->nm_client, applet->settings);
+	dialog = nma_wifi_dialog_new_for_hidden (applet->nm_client, applet->settings);
 	if (dialog) {
 		g_signal_connect (dialog, "response",
 		                  G_CALLBACK (wifi_dialog_response_cb),
