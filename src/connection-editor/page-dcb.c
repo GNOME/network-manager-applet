@@ -104,7 +104,7 @@ pfc_dialog_show (CEPageDcb *self)
 static gboolean
 uint_entries_validate (GtkBuilder *builder, const char *fmt, gint max, gboolean sum)
 {
-	unsigned long int num;
+	long int num;
 	GtkEntry *entry;
 	char *tmp;
 	const char *text;
@@ -177,7 +177,7 @@ combos_handle (GtkBuilder *builder,
 			num = get_func (s_dcb, i);
 			if (other_num && (num == other_num))
 				gtk_combo_box_set_active (combo, last_idx);
-			else if (num >= 0 && num <= max)
+			else if (num <= max)
 				gtk_combo_box_set_active (combo, num);
 			g_signal_connect_swapped (combo, "changed", (GCallback) pg_dialog_valid_func, builder);
 		} else if (set_func) {
@@ -231,7 +231,7 @@ uint_entries_handle (GtkBuilder *builder,
 			g_signal_connect (entry, "insert-text", (GCallback) uint_filter_cb, NULL);
 			g_signal_connect_swapped (entry, "changed", (GCallback) pg_dialog_valid_func, builder);
 		} else if (set_func) {
-			unsigned long int num;
+			long int num;
 
 			text = gtk_entry_get_text (entry);
 			if (text) {
