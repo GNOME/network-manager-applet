@@ -142,7 +142,6 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	char *ca_filename, *pk_filename, *cc_filename;
 	const char *password = NULL;
 	GError *error = NULL;
-	const char *secret_flag_prop = NULL;
 	gboolean ca_cert_error = FALSE;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
@@ -174,13 +173,11 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 			g_warning ("Couldn't read phase2 private key '%s': %s", pk_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
 		}
-		secret_flag_prop = NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD_FLAGS;
 	} else {
 		if (!nm_setting_802_1x_set_private_key (s_8021x, pk_filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, &format, &error)) {
 			g_warning ("Couldn't read private key '%s': %s", pk_filename, error ? error->message : "(unknown)");
 			g_clear_error (&error);
 		}
-		secret_flag_prop = NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD_FLAGS;
 	}
 	g_free (pk_filename);
 
