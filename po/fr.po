@@ -10,16 +10,16 @@
 # Pablo Martin-Gomez <pablo.martin-gomez@laposte.net>, 2009.
 # Sam Friedmann <sam.friedmann@redhat.com>, 2010.
 # Bruno Brouard <annoa.b@gmail.com>, 2010-2012.
-# Alain Lojewski <allomervan@gmail.com>, 2013.
+# Alain Lojewski <allomervan@gmail.com>, 2013-2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2013-12-28 11:26+0000\n"
-"PO-Revision-Date: 2014-01-31 20:01+0100\n"
-"Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
+"POT-Creation-Date: 2014-03-14 23:05+0000\n"
+"PO-Revision-Date: 2014-03-15 09:46+0100\n"
+"Last-Translator: Alain Lojewski <allomervan@gmail.com>\n"
 "Language-Team: GNOME French TEAM <gnomefr@traduc.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -1417,8 +1417,8 @@ msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active slave when it is available."
 msgstr ""
-"Le nom d'interface du périphérique principal. Si défini, ce périphérique sera "
-"toujours l'esclave actif lorsqu'il est disponible."
+"Le nom d'interface du périphérique principal. Si défini, ce périphérique "
+"sera toujours l'esclave actif lorsqu'il est disponible."
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:1
 msgid "Path _cost:"
@@ -1461,15 +1461,217 @@ msgstr "_Durée maximum :"
 msgid "_Aging time:"
 msgstr "_Durée de vie :"
 
-#: ../src/connection-editor/ce-page.c:67
+#: ../src/connection-editor/ce-page.c:84
 msgid "automatic"
 msgstr "automatique"
 
-#: ../src/connection-editor/ce-page.c:342
+#: ../src/connection-editor/ce-page.c:92
+#: ../src/connection-editor/ce-page-dcb.ui.h:13
+#: ../src/connection-editor/page-wifi.c:172
+#: ../src/connection-editor/page-wifi.c:176
+#: ../src/connection-editor/page-wifi.c:197
+#, c-format
+msgid "default"
+msgstr "par défaut"
+
+#: ../src/connection-editor/ce-page.c:359
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "La mise à jour des informations d'authentification de connexion a échoué en "
 "raison d'une erreur inconnue."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:1
+msgid "Use Data Center Bridging (DCB) for this connection"
+msgstr "Utiliser Data Center Bridging (DCB) pour cette connexion"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:2
+msgid "FCoE"
+msgstr "FCoE"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:3
+msgid "iSCSI"
+msgstr "iSCSI"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:4
+msgid "FIP"
+msgstr "FIP"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:5
+msgid "Flow Control"
+msgstr "Contrôle du flux"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:6
+msgid "Feature"
+msgstr "Fonction"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:7
+msgid "Enable"
+msgstr "Activer"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:8
+msgid "Advertise"
+msgstr "Publier"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:9
+msgid "Willing"
+msgstr "Consentent"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:10
+msgid "Priority"
+msgstr "Priorité"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:11
+msgid "Options..."
+msgstr "Options..."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:12
+msgid "Priority Groups"
+msgstr "Groupes de priorités"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:14
+msgid "0"
+msgstr "0"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:15
+msgid "1"
+msgstr "1"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:16
+#: ../src/wireless-security/ws-wep-key.ui.h:2
+msgid "2"
+msgstr "2"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:17
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "3"
+msgstr "3"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:18
+#: ../src/wireless-security/ws-wep-key.ui.h:4
+msgid "4"
+msgstr "4"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:19
+msgid "5"
+msgstr "5"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:20
+msgid "6"
+msgstr "6"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:21
+msgid "7"
+msgstr "7"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:22
+msgid "Fabric"
+msgstr "Fabric"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:23
+msgid "VN2VN"
+msgstr "VN2VN"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:24
+msgid "Priority Flow Control"
+msgstr "Contrôle du flux des priorités"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:25
+msgid "Enable or disable priority pause transmission for each User Priority."
+msgstr ""
+"Active ou désactive la transmission d'une pause de priorité pour chaque "
+"priorité utilisateur."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:26
+msgid "Priority:"
+msgstr "Priorité :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:27
+msgid "0:"
+msgstr "0 :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:28
+msgid "1:"
+msgstr "1 :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:29
+msgid "2:"
+msgstr "2 :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:30
+msgid "3:"
+msgstr "3 :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:31
+msgid "4:"
+msgstr "4 :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:32
+msgid "5:"
+msgstr "5 :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:33
+msgid "6:"
+msgstr "6 :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:34
+msgid "7:"
+msgstr "7 :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:35
+msgid "Traffic Class:"
+msgstr "Classe du trafic :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:36
+msgid "Strict Bandwidth:"
+msgstr "Bande passante stricte :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:37
+msgid "Priority Bandwidth:"
+msgstr "Bande passante prioritaire :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:38
+msgid "Group Bandwidth:"
+msgstr "Bande passante du groupe :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:39
+msgid "Group ID:"
+msgstr "Identifiant du groupe :"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:40
+msgid "15"
+msgstr "15"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:41
+msgid "Enter the priority group ID for each User Priority."
+msgstr ""
+"Saisissez l'identifiant du groupe de priorités pour chaque priorité utilisateur."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:43
+#, no-c-format
+msgid ""
+"Enter the allowed link bandwidth percent each Priority Group may use.  The "
+"sum of all groups must total 100%."
+msgstr ""
+"Saisissez le pourcentage de bande passante autorisée que chaque groupe de "
+"priorités peut utiliser pour la liaison. La somme allouée à tous les groupes "
+"doit faire 100%."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:44
+msgid ""
+"Enter the percentage of priority group bandwidth each user priority may use."
+msgstr ""
+"Saisissez le pourcentage de bande passante du groupe de priorités que chaque "
+"priorité utilisateur peut utiliser."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:45
+msgid "Enable or disable strict bandwidth for each user priority."
+msgstr ""
+"Activez ou désactivez la bande passante stricte de chaque priorité "
+"utilisateur."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:46
+msgid "Enter the traffic class for each user priority."
+msgstr "Saisissez la classe de trafic pour chaque priorité utilisateur."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:1
 #: ../src/connection-editor/ce-page-mobile.ui.h:10
@@ -2076,25 +2278,25 @@ msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/new-connection.c:138
-#: ../src/connection-editor/page-bond.c:430 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/page-bond.c:433 ../src/libnm-gtk/nm-ui-utils.c:337
 #: ../src/libnm-gtk/nm-ui-utils.c:562
 msgid "Bond"
 msgstr "Lien"
 
 #: ../src/connection-editor/new-connection.c:144
-#: ../src/connection-editor/page-team.c:255 ../src/libnm-gtk/nm-ui-utils.c:339
+#: ../src/connection-editor/page-team.c:244 ../src/libnm-gtk/nm-ui-utils.c:339
 #: ../src/libnm-gtk/nm-ui-utils.c:564
 msgid "Team"
 msgstr "En équipe"
 
 #: ../src/connection-editor/new-connection.c:150
-#: ../src/connection-editor/page-bridge.c:212
+#: ../src/connection-editor/page-bridge.c:208
 #: ../src/libnm-gtk/nm-ui-utils.c:341 ../src/libnm-gtk/nm-ui-utils.c:566
 msgid "Bridge"
 msgstr "Pont"
 
 #: ../src/connection-editor/new-connection.c:156
-#: ../src/connection-editor/page-vlan.c:482 ../src/libnm-gtk/nm-ui-utils.c:343
+#: ../src/connection-editor/page-vlan.c:487 ../src/libnm-gtk/nm-ui-utils.c:343
 #: ../src/libnm-gtk/nm-ui-utils.c:568
 msgid "VLAN"
 msgstr "VLAN"
@@ -2139,16 +2341,16 @@ msgstr "La suppression de la connexion a échoué"
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Voulez-vous vraiment supprimer la connexion %s ?"
 
-#: ../src/connection-editor/nm-connection-editor.c:122
+#: ../src/connection-editor/nm-connection-editor.c:123
 #, c-format
 msgid "Editing %s"
 msgstr "Modification de %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:126
+#: ../src/connection-editor/nm-connection-editor.c:127
 msgid "Editing un-named connection"
 msgstr "Modification de la connexion anonyme"
 
-#: ../src/connection-editor/nm-connection-editor.c:286
+#: ../src/connection-editor/nm-connection-editor.c:287
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -2156,50 +2358,50 @@ msgstr ""
 "L'éditeur de connexion n'a pas pu trouver les ressources requises (le "
 "fichier .ui n'a pas été trouvé)."
 
-#: ../src/connection-editor/nm-connection-editor.c:417
+#: ../src/connection-editor/nm-connection-editor.c:418
 msgid "_Save"
 msgstr "_Enregistrer"
 
-#: ../src/connection-editor/nm-connection-editor.c:418
+#: ../src/connection-editor/nm-connection-editor.c:419
 msgid "Save any changes made to this connection."
 msgstr "Enregistrer toute modification apportée à cette connexion."
 
-#: ../src/connection-editor/nm-connection-editor.c:419
+#: ../src/connection-editor/nm-connection-editor.c:420
 msgid "_Save..."
 msgstr "_Enregistrer..."
 
-#: ../src/connection-editor/nm-connection-editor.c:420
+#: ../src/connection-editor/nm-connection-editor.c:421
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "S'authentifier pour enregistrer cette connexion pour tous les utilisateurs "
 "de cet ordinateur."
 
-#: ../src/connection-editor/nm-connection-editor.c:436
+#: ../src/connection-editor/nm-connection-editor.c:437
 msgid "Could not create connection"
 msgstr "Impossible de créer une connexion"
 
-#: ../src/connection-editor/nm-connection-editor.c:436
+#: ../src/connection-editor/nm-connection-editor.c:437
 msgid "Could not edit connection"
 msgstr "Impossible de modifier la connexion"
 
-#: ../src/connection-editor/nm-connection-editor.c:438
+#: ../src/connection-editor/nm-connection-editor.c:439
 msgid "Unknown error creating connection editor dialog."
 msgstr ""
 "Erreur inconnue lors de la création de la fenêtre d'édition de connexion."
 
-#: ../src/connection-editor/nm-connection-editor.c:572
+#: ../src/connection-editor/nm-connection-editor.c:573
 msgid "Error initializing editor"
 msgstr "Erreur lors de l'initialisation de l'éditeur"
 
-#: ../src/connection-editor/nm-connection-editor.c:903
+#: ../src/connection-editor/nm-connection-editor.c:906
 msgid "Connection add failed"
 msgstr "L'ajout de la connexion a échoué"
 
-#: ../src/connection-editor/nm-connection-editor.c:943
+#: ../src/connection-editor/nm-connection-editor.c:946
 msgid "Error saving connection"
 msgstr "Erreur lors de l'enregistrement de la connexion"
 
-#: ../src/connection-editor/nm-connection-editor.c:944
+#: ../src/connection-editor/nm-connection-editor.c:947
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "La propriété « %s » / « %s » n'est pas valide : %d"
@@ -2323,20 +2525,20 @@ msgstr "Impossible de charger l'interface utilisateur de sécurité 802.1x."
 msgid "Use 802.1_X security for this connection"
 msgstr "Utiliser la sécurité 802.1_X pour cette connexion"
 
-#: ../src/connection-editor/page-bond.c:433
+#: ../src/connection-editor/page-bond.c:436
 msgid "Could not load bond user interface."
 msgstr "Impossible de charger l'interface utilisateur du lien."
 
-#: ../src/connection-editor/page-bond.c:587
+#: ../src/connection-editor/page-bond.c:594
 #, c-format
 msgid "Bond connection %d"
 msgstr "Connexion lien %d"
 
-#: ../src/connection-editor/page-bridge.c:215
+#: ../src/connection-editor/page-bridge.c:211
 msgid "Could not load bridge user interface."
 msgstr "Impossible de charger l'interface utilisateur du pont."
 
-#: ../src/connection-editor/page-bridge.c:310
+#: ../src/connection-editor/page-bridge.c:306
 #, c-format
 msgid "Bridge connection %d"
 msgstr "Connexion pont %d"
@@ -2351,6 +2553,14 @@ msgstr "Port du pont"
 #: ../src/connection-editor/page-bridge-port.c:117
 msgid "Could not load bridge port user interface."
 msgstr "Impossible de charger l'interface utilisateur du port de pont."
+
+#: ../src/connection-editor/page-dcb.c:607
+msgid "DCB"
+msgstr "DCB"
+
+#: ../src/connection-editor/page-dcb.c:609
+msgid "Could not load DCB user interface."
+msgstr "Impossible de charger l'interface utilisateur DCB."
 
 #: ../src/connection-editor/page-dsl.c:139
 msgid "Could not load DSL user interface."
@@ -2518,7 +2728,8 @@ msgstr "Esclaves dupliqués"
 #: ../src/connection-editor/page-master.c:245
 #, c-format
 msgid "Slaves '%s' and '%s' both apply to device '%s'"
-msgstr "Les esclaves « %s » et « %s » s'appliquent tous deux au périphérique « %s »"
+msgstr ""
+"Les esclaves « %s » et « %s » s'appliquent tous deux au périphérique « %s »"
 
 #: ../src/connection-editor/page-master.c:256
 #, c-format
@@ -2620,22 +2831,22 @@ msgstr "Paramètres PPP"
 msgid "Could not load PPP user interface."
 msgstr "Impossible de charger l'interface utilisateur PPP."
 
-#: ../src/connection-editor/page-team.c:94
+#: ../src/connection-editor/page-team.c:92
 #: ../src/connection-editor/page-team-port.c:77
 #: ../src/connection-editor/vpn-helpers.c:234
 msgid "Select file to import"
 msgstr "Sélectionnez le fichier à importer"
 
-#: ../src/connection-editor/page-team.c:114
+#: ../src/connection-editor/page-team.c:112
 #: ../src/connection-editor/page-team-port.c:97
 msgid "Error: file doesn't contain a valid JSON configuration"
 msgstr "Erreur : le fichier ne contient pas de configuration JSON valide"
 
-#: ../src/connection-editor/page-team.c:258
+#: ../src/connection-editor/page-team.c:247
 msgid "Could not load team user interface."
 msgstr "Impossible de charger l'interface utilisateur en équipe."
 
-#: ../src/connection-editor/page-team.c:353
+#: ../src/connection-editor/page-team.c:346
 #, c-format
 msgid "Team connection %d"
 msgstr "Connexion en équipe %d"
@@ -2654,16 +2865,16 @@ msgstr "Impossible de charger l'interface utilisateur du port d'équipe."
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
 #.
-#: ../src/connection-editor/page-vlan.c:318
+#: ../src/connection-editor/page-vlan.c:323
 #, c-format
 msgid "%s (via \"%s\")"
 msgstr "%s (via « %s »)"
 
-#: ../src/connection-editor/page-vlan.c:484
+#: ../src/connection-editor/page-vlan.c:489
 msgid "Could not load vlan user interface."
 msgstr "Impossible de charger l'interface utilisateur VLAN."
 
-#: ../src/connection-editor/page-vlan.c:680
+#: ../src/connection-editor/page-vlan.c:685
 #, c-format
 msgid "VLAN connection %d"
 msgstr "Connexion VLAN %d"
@@ -2714,13 +2925,6 @@ msgid ""
 msgstr ""
 "Cette option verrouille cette connexion sur le point d'accès (PA) Wi-Fi "
 "spécifié par le BSSID saisi ici. Par exemple : 00:11:22:33:44:55"
-
-#: ../src/connection-editor/page-wifi.c:172
-#: ../src/connection-editor/page-wifi.c:176
-#: ../src/connection-editor/page-wifi.c:197
-#, c-format
-msgid "default"
-msgstr "par défaut"
 
 #: ../src/connection-editor/page-wifi.c:201
 #, c-format
@@ -3422,7 +3626,7 @@ msgid "MD5"
 msgstr "MD5"
 
 #: ../src/wireless-security/eap-method-peap.c:377
-#: ../src/wireless-security/eap-method-tls.c:464
+#: ../src/wireless-security/eap-method-tls.c:461
 #: ../src/wireless-security/eap-method-ttls.c:377
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Choisissez un certificat d'une autorité de certification..."
@@ -3455,11 +3659,11 @@ msgstr "Version de _PEAP :"
 msgid "As_k for this password every time"
 msgstr "De_mander ce mot de passe chaque fois"
 
-#: ../src/wireless-security/eap-method-tls.c:279
+#: ../src/wireless-security/eap-method-tls.c:276
 msgid "Unencrypted private keys are insecure"
 msgstr "Les clés privées non chiffrées ne sont pas sûres."
 
-#: ../src/wireless-security/eap-method-tls.c:282
+#: ../src/wireless-security/eap-method-tls.c:279
 msgid ""
 "The selected private key does not appear to be protected by a password.  "
 "This could allow your security credentials to be compromised.  Please select "
@@ -3473,11 +3677,11 @@ msgstr ""
 "\n"
 "(Vous pouvez protéger votre clé privée avec un mot de passe grâce à openssl)"
 
-#: ../src/wireless-security/eap-method-tls.c:458
+#: ../src/wireless-security/eap-method-tls.c:455
 msgid "Choose your personal certificate..."
 msgstr "Choisissez votre certificat personnel..."
 
-#: ../src/wireless-security/eap-method-tls.c:470
+#: ../src/wireless-security/eap-method-tls.c:467
 msgid "Choose your private key..."
 msgstr "Choisissez votre clé privée..."
 
@@ -3526,18 +3730,6 @@ msgstr "Au_thentification :"
 #: ../src/wireless-security/ws-wep-key.ui.h:1
 msgid "1 (Default)"
 msgstr "1 (par défaut)"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:2
-msgid "2"
-msgstr "2"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:3
-msgid "3"
-msgstr "3"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:4
-msgid "4"
-msgstr "4"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:5
 msgid "Open System"
