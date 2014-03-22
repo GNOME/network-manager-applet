@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2014-02-02 11:48+0000\n"
-"PO-Revision-Date: 2014-02-02 17:43+0100\n"
+"POT-Creation-Date: 2014-03-21 07:58+0000\n"
+"PO-Revision-Date: 2014-03-22 16:56+0100\n"
 "Last-Translator: Benjamin Steinwender <b@stbe.at>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: ../nm-applet.desktop.in.h:1
 msgid "Network"
@@ -792,7 +792,6 @@ msgid "InfiniBand connection '%s' active"
 msgstr "InfiniBand-Verbindung »%s« aktiv"
 
 #: ../src/applet-device-team.c:86
-#| msgid "You are now connected to the ethernet network."
 msgid "You are now connected to the teamed network."
 msgstr "Sie sind nun mit dem Netzwerk-Team verbunden."
 
@@ -809,13 +808,11 @@ msgstr "Netzwerk-Team »%s« wird konfiguriert …"
 
 #: ../src/applet-device-team.c:116
 #, c-format
-#| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for team connection '%s'..."
 msgstr "Benutzerlegitimierung ist erforderlich für Netzwerk-Team »%s« …"
 
 #: ../src/applet-device-team.c:123
 #, c-format
-#| msgid "VPN connection '%s' active"
 msgid "Team connection '%s' active"
 msgstr "Netzwerk-Team »%s« aktiv"
 
@@ -971,7 +968,7 @@ msgstr "Die Verbindungsinformationen konnten nicht angezeigt werden:"
 
 #: ../src/applet-dialogs.c:109
 #: ../src/connection-editor/page-wifi-security.c:309
-#: ../src/libnm-gtk/nm-wifi-dialog.c:918
+#: ../src/libnm-gtk/nm-wifi-dialog.c:924
 #: ../src/wireless-security/wireless-security.c:441
 msgid "LEAP"
 msgstr "LEAP"
@@ -1429,7 +1426,6 @@ msgid "Link _down delay:"
 msgstr "Verzögerung bei _Deaktivierung einer Verbindung:"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:22
-#| msgid "Primary DNS:"
 msgid "_Primary:"
 msgstr "_Primär:"
 
@@ -1487,15 +1483,212 @@ msgstr "_Höchstzulässiges Alter:"
 msgid "_Aging time:"
 msgstr "_Alterungszeit:"
 
-#: ../src/connection-editor/ce-page.c:67
+#: ../src/connection-editor/ce-page.c:84
 msgid "automatic"
 msgstr "Automatisch"
 
-#: ../src/connection-editor/ce-page.c:342
+#: ../src/connection-editor/ce-page.c:92
+#: ../src/connection-editor/ce-page-dcb.ui.h:13
+#: ../src/connection-editor/page-wifi.c:172
+#: ../src/connection-editor/page-wifi.c:176
+#: ../src/connection-editor/page-wifi.c:197
+#, c-format
+msgid "default"
+msgstr "Vorgabe"
+
+#: ../src/connection-editor/ce-page.c:359
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Das Aktualisieren der Verbindungspasswörter ist wegen eines unbekannten "
 "Fehlers fehlgeschlagen."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:1
+msgid "Use Data Center Bridging (DCB) for this connection"
+msgstr "Data Center Bridging (DCB) für diese Verbindung verwenden"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:2
+msgid "FCoE"
+msgstr "FCoE"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:3
+msgid "iSCSI"
+msgstr "iSCSI"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:4
+msgid "FIP"
+msgstr "FIP"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:5
+msgid "Flow Control"
+msgstr "Flusskontrolle"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:6
+msgid "Feature"
+msgstr "Funktion"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:7
+msgid "Enable"
+msgstr "Aktivieren"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:8
+msgid "Advertise"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:9
+msgid "Willing"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:10
+msgid "Priority"
+msgstr "Priorität"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:11
+msgid "Options..."
+msgstr "Optionen …"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:12
+msgid "Priority Groups"
+msgstr "Prioritätsgruppen"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:14
+msgid "0"
+msgstr "0"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:15
+msgid "1"
+msgstr "1"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:16
+#: ../src/wireless-security/ws-wep-key.ui.h:2
+msgid "2"
+msgstr "2"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:17
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "3"
+msgstr "3"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:18
+#: ../src/wireless-security/ws-wep-key.ui.h:4
+msgid "4"
+msgstr "4"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:19
+msgid "5"
+msgstr "5"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:20
+msgid "6"
+msgstr "6"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:21
+msgid "7"
+msgstr "7"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:22
+msgid "Fabric"
+msgstr "Fabric"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:23
+msgid "VN2VN"
+msgstr "VN2VN"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:24
+msgid "Priority Flow Control"
+msgstr "Priorität-Flusskontrolle"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:25
+msgid "Enable or disable priority pause transmission for each User Priority."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:26
+msgid "Priority:"
+msgstr "Priorität:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:27
+msgid "0:"
+msgstr "0:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:28
+msgid "1:"
+msgstr "1:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:29
+msgid "2:"
+msgstr "2:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:30
+msgid "3:"
+msgstr "3:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:31
+msgid "4:"
+msgstr "4:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:32
+msgid "5:"
+msgstr "5:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:33
+msgid "6:"
+msgstr "6:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:34
+msgid "7:"
+msgstr "7:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:35
+msgid "Traffic Class:"
+msgstr "Verkehrsklasse:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:36
+msgid "Strict Bandwidth:"
+msgstr "Strikte Bandbreite:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:37
+msgid "Priority Bandwidth:"
+msgstr "Priorität-Bandbreite:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:38
+msgid "Group Bandwidth:"
+msgstr "Gruppenbandbreite:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:39
+msgid "Group ID:"
+msgstr "Gruppenkennung:"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:40
+msgid "15"
+msgstr "15"
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:41
+msgid "Enter the priority group ID for each User Priority."
+msgstr ""
+"Geben Sie die Priorität-Gruppenkennung für jede Benutzer-Priorität ein."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:43
+#, no-c-format
+msgid ""
+"Enter the allowed link bandwidth percent each Priority Group may use.  The "
+"sum of all groups must total 100%."
+msgstr ""
+"Geben Sie die erlaubte Verbindungsbandbreite in Prozent ein, die jede "
+"Priorität-Gruppe  verwenden darf. Die Summe aller Gruppen muss 100% ergeben."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:44
+msgid ""
+"Enter the percentage of priority group bandwidth each user priority may use."
+msgstr ""
+"Geben Sie den Prozentsatz jeder Priorität-Gruppenbandbreite ein, die jede "
+"Benutzer-Priorität verwenden darf."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:45
+msgid "Enable or disable strict bandwidth for each user priority."
+msgstr "Strikte Bandbreite für jede Benutzer-Priorität ein- oder ausschalten."
+
+#: ../src/connection-editor/ce-page-dcb.ui.h:46
+msgid "Enter the traffic class for each user priority."
+msgstr "Geben Sie die Verkehrsklasse für jede Benutzer-Priorität ein."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:1
 #: ../src/connection-editor/ce-page-mobile.ui.h:10
@@ -1751,9 +1944,6 @@ msgid "_Routes…"
 msgstr "_Routen …"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:12
-#| msgid ""
-#| "IP addresses of domain name servers used to resolve host names. Use "
-#| "commas to separate multiple domain name server addresses."
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses. Link-local addresses will "
@@ -1900,17 +2090,14 @@ msgid "_JSON config:"
 msgstr "_JSON-Konfiguration:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:2
-#| msgid "Import a saved VPN configuration..."
 msgid "_Import team configuration from a file..."
 msgstr "Konfiguration für Netzwerk-Team aus Datei _importieren …"
 
 #: ../src/connection-editor/ce-page-team.ui.h:1
-#| msgid "Bonded _connections:"
 msgid "_Teamed connections:"
 msgstr "Netzwerk-_Team:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:3
-#| msgid "Import a saved VPN configuration..."
 msgid "I_mport team configuration from a file..."
 msgstr "Konfiguration für Netzwerk-Team aus Datei _importieren …"
 
@@ -2107,25 +2294,25 @@ msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/new-connection.c:138
-#: ../src/connection-editor/page-bond.c:430 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/connection-editor/page-bond.c:433 ../src/libnm-gtk/nm-ui-utils.c:337
 #: ../src/libnm-gtk/nm-ui-utils.c:562
 msgid "Bond"
 msgstr "Gebündelt"
 
 #: ../src/connection-editor/new-connection.c:144
-#: ../src/connection-editor/page-team.c:255 ../src/libnm-gtk/nm-ui-utils.c:339
+#: ../src/connection-editor/page-team.c:244 ../src/libnm-gtk/nm-ui-utils.c:339
 #: ../src/libnm-gtk/nm-ui-utils.c:564
 msgid "Team"
 msgstr "Team"
 
 #: ../src/connection-editor/new-connection.c:150
-#: ../src/connection-editor/page-bridge.c:212
+#: ../src/connection-editor/page-bridge.c:208
 #: ../src/libnm-gtk/nm-ui-utils.c:341 ../src/libnm-gtk/nm-ui-utils.c:566
 msgid "Bridge"
 msgstr "Brücke"
 
 #: ../src/connection-editor/new-connection.c:156
-#: ../src/connection-editor/page-vlan.c:482 ../src/libnm-gtk/nm-ui-utils.c:343
+#: ../src/connection-editor/page-vlan.c:487 ../src/libnm-gtk/nm-ui-utils.c:343
 #: ../src/libnm-gtk/nm-ui-utils.c:568
 msgid "VLAN"
 msgstr "VLAN"
@@ -2171,16 +2358,16 @@ msgstr "Löschen der Verbindung fehlgeschlagen"
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Sind Sie sicher, dass Sie die Verbindung %s löschen möchten?"
 
-#: ../src/connection-editor/nm-connection-editor.c:122
+#: ../src/connection-editor/nm-connection-editor.c:123
 #, c-format
 msgid "Editing %s"
 msgstr "%s bearbeiten"
 
-#: ../src/connection-editor/nm-connection-editor.c:126
+#: ../src/connection-editor/nm-connection-editor.c:127
 msgid "Editing un-named connection"
 msgstr "Unbenannte Verbindung bearbeiten"
 
-#: ../src/connection-editor/nm-connection-editor.c:286
+#: ../src/connection-editor/nm-connection-editor.c:287
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -2188,52 +2375,52 @@ msgstr ""
 "Der Verbindungseditor konnte benötigte Ressourcen nicht finden (Die .ui-"
 "Datei wurde nicht gefunden)."
 
-#: ../src/connection-editor/nm-connection-editor.c:417
+#: ../src/connection-editor/nm-connection-editor.c:418
 msgid "_Save"
 msgstr "_Speichern"
 
-#: ../src/connection-editor/nm-connection-editor.c:418
+#: ../src/connection-editor/nm-connection-editor.c:419
 msgid "Save any changes made to this connection."
 msgstr "Alle Änderungen an dieser Verbindung speichern."
 
-#: ../src/connection-editor/nm-connection-editor.c:419
+#: ../src/connection-editor/nm-connection-editor.c:420
 msgid "_Save..."
 msgstr "_Speichern …"
 
-#: ../src/connection-editor/nm-connection-editor.c:420
+#: ../src/connection-editor/nm-connection-editor.c:421
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Legitimieren, um diese Verbindung für alle Benutzer dieses Rechners zu "
 "speichern."
 
-#: ../src/connection-editor/nm-connection-editor.c:436
+#: ../src/connection-editor/nm-connection-editor.c:437
 msgid "Could not create connection"
 msgstr "Verbindung konnte nicht erstellt werden"
 
-#: ../src/connection-editor/nm-connection-editor.c:436
+#: ../src/connection-editor/nm-connection-editor.c:437
 msgid "Could not edit connection"
 msgstr "Verbindung konnte nicht bearbeitet werden"
 
-#: ../src/connection-editor/nm-connection-editor.c:438
+#: ../src/connection-editor/nm-connection-editor.c:439
 msgid "Unknown error creating connection editor dialog."
 msgstr ""
 "Unbekannter Fehler beim Erstellen des Dialoges zur Bearbeitung der "
 "Verbindung."
 
-#: ../src/connection-editor/nm-connection-editor.c:572
+#: ../src/connection-editor/nm-connection-editor.c:573
 msgid "Error initializing editor"
 msgstr "Fehler beim Initialisieren des Editors"
 
 #
-#: ../src/connection-editor/nm-connection-editor.c:903
+#: ../src/connection-editor/nm-connection-editor.c:906
 msgid "Connection add failed"
 msgstr "Hinzufügen der Verbindung fehlgeschlagen"
 
-#: ../src/connection-editor/nm-connection-editor.c:943
+#: ../src/connection-editor/nm-connection-editor.c:946
 msgid "Error saving connection"
 msgstr "Fehler beim Speichern der Verbindung"
 
-#: ../src/connection-editor/nm-connection-editor.c:944
+#: ../src/connection-editor/nm-connection-editor.c:947
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "Eigenschaft »%s« / »%s« ist ungültig: %d"
@@ -2357,20 +2544,20 @@ msgstr "Sichere 802.1x-Benutzerschnittstelle konnte nicht geladen werden."
 msgid "Use 802.1_X security for this connection"
 msgstr "802.1_X-Sicherheit für diese Verbindung verwenden"
 
-#: ../src/connection-editor/page-bond.c:433
+#: ../src/connection-editor/page-bond.c:436
 msgid "Could not load bond user interface."
 msgstr "Bündel-Benutzerschnittstelle konnte nicht geladen werden."
 
-#: ../src/connection-editor/page-bond.c:587
+#: ../src/connection-editor/page-bond.c:590
 #, c-format
 msgid "Bond connection %d"
 msgstr "Bündel-Verbindung %d"
 
-#: ../src/connection-editor/page-bridge.c:215
+#: ../src/connection-editor/page-bridge.c:211
 msgid "Could not load bridge user interface."
 msgstr "Bündel-Benutzerschnittstelle konnte nicht geladen werden."
 
-#: ../src/connection-editor/page-bridge.c:310
+#: ../src/connection-editor/page-bridge.c:306
 #, c-format
 msgid "Bridge connection %d"
 msgstr "Brückenverbindung %d"
@@ -2385,6 +2572,14 @@ msgstr "Port einer Brücke"
 #: ../src/connection-editor/page-bridge-port.c:117
 msgid "Could not load bridge port user interface."
 msgstr "Brücken-Port-Benutzerschnittstelle konnte nicht geladen werden."
+
+#: ../src/connection-editor/page-dcb.c:607
+msgid "DCB"
+msgstr "DCB"
+
+#: ../src/connection-editor/page-dcb.c:609
+msgid "Could not load DCB user interface."
+msgstr "DCB-Benutzerschnittstelle konnte nicht geladen werden."
 
 #: ../src/connection-editor/page-dsl.c:139
 msgid "Could not load DSL user interface."
@@ -2655,25 +2850,23 @@ msgstr "PPP-Einstellungen"
 msgid "Could not load PPP user interface."
 msgstr "PPP-Benutzerschnittstelle konnte nicht geladen werden."
 
-#: ../src/connection-editor/page-team.c:94
+#: ../src/connection-editor/page-team.c:92
 #: ../src/connection-editor/page-team-port.c:77
 #: ../src/connection-editor/vpn-helpers.c:234
 msgid "Select file to import"
 msgstr "Datei zum Import auswählen"
 
-#: ../src/connection-editor/page-team.c:114
+#: ../src/connection-editor/page-team.c:112
 #: ../src/connection-editor/page-team-port.c:97
 msgid "Error: file doesn't contain a valid JSON configuration"
 msgstr "Fehler: Datei enthält keine gültige JSON-Konfiguration"
 
-#: ../src/connection-editor/page-team.c:258
-#| msgid "Could not load vlan user interface."
+#: ../src/connection-editor/page-team.c:247
 msgid "Could not load team user interface."
 msgstr "Benutzerschnittstelle für Netzwerk-Team konnte nicht geladen werden."
 
-#: ../src/connection-editor/page-team.c:353
+#: ../src/connection-editor/page-team.c:342
 #, c-format
-#| msgid "DSL connection %d"
 msgid "Team connection %d"
 msgstr "Netzwerk-Team %d"
 
@@ -2681,12 +2874,10 @@ msgstr "Netzwerk-Team %d"
 #. * device that is part of a team.
 #.
 #: ../src/connection-editor/page-team-port.c:157
-#| msgid "Bridge Port"
 msgid "Team Port"
 msgstr "Netzwerk-Team Anschluss"
 
 #: ../src/connection-editor/page-team-port.c:159
-#| msgid "Could not load bridge port user interface."
 msgid "Could not load team port user interface."
 msgstr ""
 "Benutzerschnittstelle für Netzwerk-Team-Anschluss konnte nicht geladen "
@@ -2695,16 +2886,16 @@ msgstr ""
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
 #.
-#: ../src/connection-editor/page-vlan.c:318
+#: ../src/connection-editor/page-vlan.c:323
 #, c-format
 msgid "%s (via \"%s\")"
 msgstr "%s (über »%s«)"
 
-#: ../src/connection-editor/page-vlan.c:484
+#: ../src/connection-editor/page-vlan.c:489
 msgid "Could not load vlan user interface."
 msgstr "VLAN-Benutzerschnittstelle konnte nicht geladen werden."
 
-#: ../src/connection-editor/page-vlan.c:680
+#: ../src/connection-editor/page-vlan.c:685
 #, c-format
 msgid "VLAN connection %d"
 msgstr "VLAN-Verbindung %d"
@@ -2759,13 +2950,6 @@ msgstr ""
 "(AP) zu, der durch die hier eingegebene BSSID spezifiziert wird. Beispiel: "
 "00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-wifi.c:172
-#: ../src/connection-editor/page-wifi.c:176
-#: ../src/connection-editor/page-wifi.c:197
-#, c-format
-msgid "default"
-msgstr "Vorgabe"
-
 #: ../src/connection-editor/page-wifi.c:201
 #, c-format
 msgid "%u (%u MHz)"
@@ -2781,27 +2965,27 @@ msgid "Wi-Fi connection %d"
 msgstr "Funknetzwerkverbindung %d"
 
 #: ../src/connection-editor/page-wifi-security.c:286
-#: ../src/libnm-gtk/nm-wifi-dialog.c:892
+#: ../src/libnm-gtk/nm-wifi-dialog.c:898
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128-bit-Schlüssel (Hexadezimal oder ASCII)"
 
 #: ../src/connection-editor/page-wifi-security.c:296
-#: ../src/libnm-gtk/nm-wifi-dialog.c:901
+#: ../src/libnm-gtk/nm-wifi-dialog.c:907
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit Kennwort"
 
 #: ../src/connection-editor/page-wifi-security.c:322
-#: ../src/libnm-gtk/nm-wifi-dialog.c:931
+#: ../src/libnm-gtk/nm-wifi-dialog.c:937
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamisches WEP (802.1x)"
 
 #: ../src/connection-editor/page-wifi-security.c:336
-#: ../src/libnm-gtk/nm-wifi-dialog.c:945
+#: ../src/libnm-gtk/nm-wifi-dialog.c:951
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 Personal"
 
 #: ../src/connection-editor/page-wifi-security.c:350
-#: ../src/libnm-gtk/nm-wifi-dialog.c:959
+#: ../src/libnm-gtk/nm-wifi-dialog.c:965
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Enterprise"
 
@@ -3200,20 +3384,20 @@ msgctxt "long device name"
 msgid "%s %s"
 msgstr "%s-%s"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:435
+#: ../src/libnm-gtk/nm-wifi-dialog.c:441
 msgid "New..."
 msgstr "Neu …"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:875
+#: ../src/libnm-gtk/nm-wifi-dialog.c:881
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Keine"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1046
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1051
 msgid "C_reate"
 msgstr "E_rzeugen"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1130
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1135
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
@@ -3221,36 +3405,36 @@ msgstr ""
 "Es werden Passwörter oder Schlüssel für die Verschlüsselung benötigt, um "
 "sich mit dem Funknetzwerk »%s« zu verbinden."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1132
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1137
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Legitimierung für Funknetzwerk wird benötigt"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1134
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1139
 msgid "Authentication required by Wi-Fi network"
 msgstr "Legitimierung für Funknetzwerk wird benötigt"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1139
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1144
 msgid "Create New Wi-Fi Network"
 msgstr "Neues Funknetzwerk erstellen"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1141
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1146
 msgid "New Wi-Fi network"
 msgstr "Neues Funknetzwerk"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1142
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1147
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr ""
 "Bitte geben Sie den Namen des Funknetzwerks ein, das Sie erstellen möchten."
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1144
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1149
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Mit einem verborgenen Funknetzwerk verbinden"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1146
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1151
 msgid "Hidden Wi-Fi network"
 msgstr "Verborgenes Funknetzwerk"
 
-#: ../src/libnm-gtk/nm-wifi-dialog.c:1147
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1152
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -3470,7 +3654,7 @@ msgid "MD5"
 msgstr "MD5"
 
 #: ../src/wireless-security/eap-method-peap.c:377
-#: ../src/wireless-security/eap-method-tls.c:464
+#: ../src/wireless-security/eap-method-tls.c:461
 #: ../src/wireless-security/eap-method-ttls.c:377
 msgid "Choose a Certificate Authority certificate..."
 msgstr "CA-Zertifikat auswählen …"
@@ -3492,7 +3676,6 @@ msgstr "C_A-Zertifikat:"
 #: ../src/wireless-security/eap-method-peap.ui.h:7
 #: ../src/wireless-security/eap-method-tls.ui.h:4
 #: ../src/wireless-security/eap-method-ttls.ui.h:4
-#| msgid "Ignore CA certificate"
 msgid "No CA certificate is _required"
 msgstr "CA-Zertifikat igno_rieren"
 
@@ -3504,11 +3687,11 @@ msgstr "_PEAP-Version:"
 msgid "As_k for this password every time"
 msgstr "_Jedesmal nach diesem Passwort fragen"
 
-#: ../src/wireless-security/eap-method-tls.c:279
+#: ../src/wireless-security/eap-method-tls.c:276
 msgid "Unencrypted private keys are insecure"
 msgstr "Nicht verschlüsselte geheime Schlüssel sind unsicher"
 
-#: ../src/wireless-security/eap-method-tls.c:282
+#: ../src/wireless-security/eap-method-tls.c:279
 msgid ""
 "The selected private key does not appear to be protected by a password.  "
 "This could allow your security credentials to be compromised.  Please select "
@@ -3522,11 +3705,11 @@ msgstr ""
 "\n"
 "Sie können Ihren Schlüssel mittels Openssl durch ein Passwort schützen."
 
-#: ../src/wireless-security/eap-method-tls.c:458
+#: ../src/wireless-security/eap-method-tls.c:455
 msgid "Choose your personal certificate..."
 msgstr "Ihr persönliches Zertifikat auswählen …"
 
-#: ../src/wireless-security/eap-method-tls.c:470
+#: ../src/wireless-security/eap-method-tls.c:467
 msgid "Choose your private key..."
 msgstr "Ihren geheimen Schlüssel auswählen …"
 
@@ -3575,18 +3758,6 @@ msgstr "_Legitimierung:"
 #: ../src/wireless-security/ws-wep-key.ui.h:1
 msgid "1 (Default)"
 msgstr "1 (Vorgabe)"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:2
-msgid "2"
-msgstr "2"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:3
-msgid "3"
-msgstr "3"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:4
-msgid "4"
-msgstr "4"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:5
 msgid "Open System"
