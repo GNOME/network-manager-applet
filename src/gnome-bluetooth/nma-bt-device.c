@@ -641,10 +641,9 @@ modem_removed (DBusGProxy *proxy, const char *path, gpointer user_data)
 
 #if WITH_MODEM_MANAGER_1
 
-static void
-modem_object_added (MMManager *modem_manager,
-                    MMObject  *modem_object,
-                    NmaBtDevice *self)
+static gboolean
+check_modem (NmaBtDevice *self,
+             MMObject *modem_object)
 {
 	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
 	NMDeviceType devtype = NM_DEVICE_TYPE_UNKNOWN;
@@ -659,11 +658,11 @@ modem_object_added (MMManager *modem_manager,
 
 	/* Ensure we have the 'Modem' interface at least */
 	modem_iface = mm_object_peek_modem (modem_object);
-	g_return_if_fail (modem_iface != NULL);
+	g_return_val_if_fail (modem_iface != NULL, FALSE);
 
 	/* Get modem's primary port */
 	primary_port = mm_modem_get_primary_port (modem_iface);
-	g_return_if_fail (primary_port != NULL);
+	g_return_val_if_fail (primary_port != NULL, FALSE);
 
 	/* Get rfcomm iface name */
 	iface_basename = g_path_get_basename (priv->rfcomm_iface);
@@ -672,7 +671,7 @@ modem_object_added (MMManager *modem_manager,
 	if (!g_str_equal (primary_port, iface_basename)) {
 		g_message ("%s: (%s) (%s) not the modem we're looking for (%s)",
 		           __func__, path, primary_port, iface_basename);
-		return;
+		return FALSE;
 	}
 
 	/* This is the modem we were waiting for, so keep on */
@@ -691,14 +690,16 @@ modem_object_added (MMManager *modem_manager,
 
 	/* Launch wizard! */
 	start_wizard (self, path, devtype);
+
+	return TRUE;
 }
 
 static void
-modem_object_removed (MMManager *manager,
-                      MMObject  *modem_object,
-                      NmaBtDevice *self)
+modem_object_added (MMManager *modem_manager,
+                    MMObject  *modem_object,
+                    NmaBtDevice *self)
 {
-	g_message ("%s: (%s) modem removed", __func__, mm_object_get_path (modem_object));
+	check_modem (self, modem_object);
 }
 
 #endif /* WITH_MODEM_MANAGER_1 */
@@ -712,6 +713,10 @@ dun_connect_cb (DBusGProxy *proxy,
 	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
 	GError *error = NULL;
 	char *device;
+#if WITH_MODEM_MANAGER_1
+	GList *modems, *iter;
+	gboolean matched = FALSE;
+#endif
 
 	g_message ("%s: processing Connect reply", __func__);
 
@@ -732,6 +737,42 @@ dun_connect_cb (DBusGProxy *proxy,
 	g_free (priv->rfcomm_iface);
 	priv->rfcomm_iface = device;
 	g_message ("%s: new rfcomm interface '%s'", __func__, device);
+
+#if WITH_MODEM_MANAGER_1
+	/* ModemManager1 stuff */
+	priv->dbus_connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
+	if (!priv->dbus_connection) {
+		dun_error (self, __func__, error, _("error getting bus connection"));
+		g_error_free (error);
+		goto out;
+	}
+
+	priv->modem_manager_1 = mm_manager_new_sync (priv->dbus_connection,
+	                                             G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE,
+	                                             NULL,
+	                                             &error);
+	if (!priv->modem_manager_1) {
+		dun_error (self, __func__, error, "error creating modem manager");
+		g_error_free (error);
+		goto out;
+	}
+
+	modems = g_dbus_object_manager_get_objects (G_DBUS_OBJECT_MANAGER (priv->modem_manager_1));
+	for (iter = modems; iter; iter = iter->next) {
+		if (check_modem (self, iter->data)) {
+			matched = TRUE;
+			break;
+		}
+	}
+	g_list_free_full (modems, g_object_unref);
+
+	if (!matched) {
+		g_signal_connect (priv->modem_manager_1,
+		                  "object-added",
+		                  G_CALLBACK (modem_object_added),
+		                  self);
+	}
+#endif
 
 out:
 	g_message ("%s: finished", __func__);
@@ -800,37 +841,6 @@ dun_start (NmaBtDevice *self)
 	dbus_g_proxy_connect_signal (priv->mm_proxy, "DeviceRemoved",
 								 G_CALLBACK (modem_removed), self,
 								 NULL);
-
-#if WITH_MODEM_MANAGER_1
-	/* ModemManager1 stuff */
-	{
-		GError *error = NULL;
-
-		priv->dbus_connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
-		if (!priv->dbus_connection) {
-			dun_error (self, __func__, error, _("error getting bus connection"));
-			g_error_free (error);
-		} else {
-			priv->modem_manager_1 = mm_manager_new_sync (priv->dbus_connection,
-			                                             G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE,
-			                                             NULL,
-			                                             &error);
-			if (!priv->modem_manager_1) {
-				dun_error (self, __func__, error, "error creating modem manager");
-				g_error_free (error);
-			} else {
-				g_signal_connect (priv->modem_manager_1,
-				                  "object-added",
-				                  G_CALLBACK (modem_object_added),
-				                  self);
-				g_signal_connect (priv->modem_manager_1,
-				                  "object-removed",
-				                  G_CALLBACK (modem_object_removed),
-				                  self);
-			}
-		}
-	}
-#endif
 
 	/* Bluez */
 	priv->dun_proxy = dbus_g_proxy_new_for_name (priv->bus,
