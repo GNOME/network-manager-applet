@@ -164,7 +164,7 @@ dialog_sim_send_puk_ready (MMSim *sim,
 			msg = _("Wrong PUK code; please contact your provider.");
 		else {
 			g_dbus_error_strip_remote_error (error);
-			msg = error ? error->message : NULL;
+			msg = error->message;
 		}
 
 		applet_mobile_pin_dialog_stop_spinner (info->dialog, msg);
@@ -206,7 +206,7 @@ dialog_sim_send_pin_ready (MMSim *sim,
 				msg = _("Wrong PIN code; please contact your provider.");
 			else {
 				g_dbus_error_strip_remote_error (error);
-				msg = error ? error->message : NULL;
+				msg = error->message;
 			}
 
 			applet_mobile_pin_dialog_stop_spinner (info->dialog, msg);
@@ -258,8 +258,7 @@ unlock_dialog_response (GtkDialog *dialog,
 
 	code1 = applet_mobile_pin_dialog_get_entry1 (info->dialog);
 	if (!code1 || !strlen (code1)) {
-		g_warn_if_fail (code1 != NULL);
-		g_warn_if_fail (strlen (code1));
+		g_warn_if_reached ();
 		unlock_dialog_destroy (info);
 		return;
 	}
@@ -277,7 +276,7 @@ unlock_dialog_response (GtkDialog *dialog,
 	if (lock == MM_MODEM_LOCK_SIM_PUK) {
 		code2 = applet_mobile_pin_dialog_get_entry2 (info->dialog);
 		if (!code2) {
-			g_warn_if_fail (code2 != NULL);
+			g_warn_if_reached ();
 			unlock_dialog_destroy (info);
 			return;
 		}
