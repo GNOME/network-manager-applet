@@ -531,8 +531,7 @@ feature_setup (CEPageDcb *self, NMSettingDcb *s_dcb, const Feature *f)
 
 		widget = get_widget (parent->builder, f->prefix, "_priority_combo");
 		gtk_widget_set_sensitive (widget, enabled);
-		if (enabled)
-			gtk_combo_box_set_active (GTK_COMBO_BOX (widget), priority + 1);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (widget), priority + 1);
 		g_signal_connect_swapped (widget, "changed", G_CALLBACK (ce_page_changed), self);
 	}
 
