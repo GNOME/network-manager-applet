@@ -215,7 +215,7 @@ find_auth_dialog_binary (const char *service, GError **error)
 		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
 		             "Could not find the authentication dialog for VPN connection type '%s'",
 		             service);
-	} else {
+	} else if (!g_path_is_absolute (prog)) {
 		char *prog_basename;
 
 		/* Remove any path component, then reconstruct path to the auth
