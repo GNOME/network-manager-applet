@@ -449,9 +449,6 @@ modem_get_sim_ready (MMModem *modem,
 		/* Couldn't get a device ID, but unlock required; present dialog */
 		unlock_dialog_new (info->device, info);
 	}
-
-	/* Couldn't get a device ID, but unlock required; present dialog */
-	unlock_dialog_new (info->device, info);
 }
 
 /********************************************************************/
