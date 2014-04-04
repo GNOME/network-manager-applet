@@ -952,8 +952,10 @@ broadband_device_info_free (BroadbandDeviceInfo *info)
 
 	if (info->mm_sim)
 		g_object_unref (info->mm_sim);
-	if (info->mm_modem)
+	if (info->mm_modem) {
+		g_signal_handlers_disconnect_matched (info->mm_modem, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, info);
 		g_object_unref (info->mm_modem);
+	}
 	if (info->mm_object)
 		g_object_unref (info->mm_object);
 
