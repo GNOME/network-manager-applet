@@ -625,6 +625,11 @@ get_icon (NMDevice *device,
 {
 	BroadbandDeviceInfo *info;
 
+	if (!applet->mm1) {
+		g_warning ("ModemManager is not available for modem at %s", nm_device_get_udi (device));
+		return NULL;
+	}
+
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
 	g_assert (info);
 
