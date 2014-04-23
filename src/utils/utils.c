@@ -355,6 +355,8 @@ icon_release_cb (GtkEntry *entry,
 	}
 }
 
+#define PASSWORD_STORAGE_MENU_TAG "password-storage-menu"
+
 /**
  * Add secondary icon and create popup menu for password entry.
  **/
@@ -372,6 +374,7 @@ utils_setup_password_storage (NMConnection *connection,
 
 	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry), GTK_ENTRY_ICON_SECONDARY, "document-save");
 	popup_menu = gtk_menu_new ();
+	g_object_set_data (G_OBJECT (popup_menu), PASSWORD_STORAGE_MENU_TAG, GUINT_TO_POINTER (TRUE));
 	group = NULL;
 	item1 = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password only for this _user"));
 	group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item1));
@@ -432,19 +435,27 @@ utils_update_password_storage (NMSetting *setting,
                                GtkWidget *passwd_entry,
                                const char *password_flags_name)
 {
-	GList *menu;
+	GList *menu_list, *iter;
+	GtkWidget *menu = NULL;
 
 	/* Update secret flags (WEP_KEY_FLAGS, PSK_FLAGS, ...) in the security setting */
 	nm_setting_set_secret_flags (setting, password_flags_name, secret_flags, NULL);
 
+	menu_list = gtk_menu_get_for_attach_widget (passwd_entry);
+	for (iter = menu_list; iter; iter = g_list_next (iter)) {
+		if (g_object_get_data (G_OBJECT (iter->data), PASSWORD_STORAGE_MENU_TAG)) {
+			menu = iter->data;
+			break;
+		}
+	}
+
 	/* Update password-storage popup menu to reflect secret flags */
-	menu = gtk_menu_get_for_attach_widget (passwd_entry);
-	if (menu && menu->data) {
+	if (menu) {
 		GtkRadioMenuItem *item, *item_user, *item_system;
 		GSList *group;
 
 		/* radio menu group list contains the menu items in reverse order */
-		item = (GtkRadioMenuItem *) gtk_menu_get_active (GTK_MENU (menu->data));
+		item = (GtkRadioMenuItem *) gtk_menu_get_active (GTK_MENU (menu));
 		group = gtk_radio_menu_item_get_group (item);
 		item_system = group->data;
 		item_user = group->next->data;
