@@ -326,10 +326,10 @@ bridge_connection_new (GtkWindow *parent,
 		if (!s_bridge)
 			continue;
 		iface = nm_setting_bridge_get_interface_name (s_bridge);
-		if (!iface || strncmp (iface, "bridge", 4) != 0 || !g_ascii_isdigit (iface[4]))
+		if (!iface || strncmp (iface, "bridge", 6) != 0 || !g_ascii_isdigit (iface[6]))
 			continue;
 
-		num = atoi (iface + 4);
+		num = atoi (iface + 6);
 		if (num > max_bridge_num)
 			max_bridge_num = num;
 		if (num == bridge_num)
