@@ -2703,37 +2703,45 @@ mm1_name_owner_changed_cb (GDBusObjectManagerClient *mm1,
 }
 
 static void
+mm_new_ready (GDBusConnection *connection,
+              GAsyncResult *res,
+              NMApplet *applet)
+{
+	GError *error = NULL;
+
+	applet->mm1 = mm_manager_new_finish (res, &error);
+	if (applet->mm1) {
+		/* We've got our MM proxy, now check whether the ModemManager
+		 * is really running and usable */
+		g_signal_connect (applet->mm1,
+		                  "notify::name-owner",
+		                  G_CALLBACK (mm1_name_owner_changed_cb),
+		                  applet);
+		mm1_name_owner_changed_cb (G_DBUS_OBJECT_MANAGER_CLIENT (applet->mm1), NULL, applet);
+	} else {
+		g_warning ("Error connecting to D-Bus: %s", error->message);
+		g_clear_error (&error);
+	}
+}
+
+static void
 mm1_client_setup (NMApplet *applet)
 {
 	GDBusConnection *system_bus;
 	GError *error = NULL;
 
 	system_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
-	if (!system_bus) {
-		g_warning ("Error connecting to system D-Bus: %s",
-		           error->message);
+	if (system_bus) {
+		mm_manager_new (system_bus,
+		                G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_DO_NOT_AUTO_START,
+		                NULL,
+		                (GAsyncReadyCallback) mm_new_ready,
+		                applet);
+		g_object_unref (system_bus);
+	} else {
+		g_warning ("Error connecting to system D-Bus: %s", error->message);
 		g_clear_error (&error);
-		return;
 	}
-
-	applet->mm1 = (mm_manager_new_sync (
-		               system_bus,
-		               G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE,
-		               NULL,
-		               &error));
-	if (!applet->mm1) {
-		g_warning ("Error connecting to ModemManager: %s",
-		           error->message);
-		g_clear_error (&error);
-		return;
-	}
-
-	/* Check whether the ModemManager is really running */
-	g_signal_connect (applet->mm1,
-	                  "notify::name-owner",
-	                  G_CALLBACK (mm1_name_owner_changed_cb),
-	                  applet);
-	mm1_name_owner_changed_cb (G_DBUS_OBJECT_MANAGER_CLIENT (applet->mm1), NULL, applet);
 }
 
 #endif /* WITH_MODEM_MANAGER_1 */
