@@ -3523,6 +3523,18 @@ applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 }
 
 static void
+register_agent (NMApplet *applet)
+{
+	applet->agent = applet_agent_new ();
+	g_assert (applet->agent);
+	g_signal_connect (applet->agent, APPLET_AGENT_GET_SECRETS,
+	                  G_CALLBACK (applet_agent_get_secrets_cb), applet);
+	g_signal_connect (applet->agent, APPLET_AGENT_CANCEL_SECRETS,
+	                  G_CALLBACK (applet_agent_cancel_secrets_cb), applet);
+	nm_secret_agent_register (NM_SECRET_AGENT (applet->agent));
+}
+
+static void
 shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer user_data)
 {
 	NMApplet *applet = user_data;
@@ -3551,14 +3563,7 @@ shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer u
 	} else {
 		/* No shell */
 		g_debug ("gnome-shell is not running, registering secret agent");
-
-		applet->agent = applet_agent_new ();
-		g_assert (applet->agent);
-		g_signal_connect (applet->agent, APPLET_AGENT_GET_SECRETS,
-		                  G_CALLBACK (applet_agent_get_secrets_cb), applet);
-		g_signal_connect (applet->agent, APPLET_AGENT_CANCEL_SECRETS,
-		                  G_CALLBACK (applet_agent_cancel_secrets_cb), applet);
-		nm_secret_agent_register (NM_SECRET_AGENT (applet->agent));
+		register_agent (applet);
 	}
 }
 
@@ -3721,7 +3726,8 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 			              "notify::shell-version",
 			              G_CALLBACK (shell_version_changed_cb),
 			              applet);
-	}
+	} else
+		register_agent (applet);
 
 	return TRUE;
 }
