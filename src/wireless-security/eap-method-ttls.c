@@ -225,8 +225,11 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	EAPMethodSimple *em_mschap;
 	EAPMethodSimple *em_mschap_v2;
 	EAPMethodSimple *em_chap;
+	EAPMethodSimple *em_md5;
+	EAPMethodSimple *em_gtc;
 	guint32 active = 0;
 	const char *phase2_auth = NULL;
+	EAPMethodSimpleFlags simple_flags;
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_type ());
 
@@ -237,12 +240,16 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 			phase2_auth = nm_setting_802_1x_get_phase2_autheap (s_8021x);
 	}
 
+	simple_flags = EAP_METHOD_SIMPLE_FLAG_PHASE2 | EAP_METHOD_SIMPLE_FLAG_AUTHEAP_ALLOWED;
+	if (method->is_editor)
+		simple_flags |= EAP_METHOD_SIMPLE_FLAG_IS_EDITOR;
+	if (secrets_only)
+		simple_flags |= EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY;
+
 	em_pap = eap_method_simple_new (method->sec_parent,
 	                                connection,
 	                                EAP_METHOD_SIMPLE_TYPE_PAP,
-	                                TRUE,
-	                                method->is_editor,
-	                                secrets_only);
+	                                simple_flags);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("PAP"),
@@ -257,9 +264,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_mschap = eap_method_simple_new (method->sec_parent,
 	                                   connection,
 	                                   EAP_METHOD_SIMPLE_TYPE_MSCHAP,
-	                                   TRUE,
-	                                   method->is_editor,
-	                                   secrets_only);
+	                                   simple_flags);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAP"),
@@ -274,8 +279,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_mschap_v2 = eap_method_simple_new (method->sec_parent,
 	                                      connection,
 	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2,
-	                                      TRUE,
-	                                      method->is_editor, secrets_only);
+	                                      simple_flags);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAPv2"),
@@ -290,9 +294,7 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	em_chap = eap_method_simple_new (method->sec_parent,
 	                                 connection,
 	                                 EAP_METHOD_SIMPLE_TYPE_CHAP,
-	                                 TRUE,
-	                                 method->is_editor,
-	                                 secrets_only);
+	                                 simple_flags);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("CHAP"),
@@ -303,6 +305,36 @@ inner_auth_combo_init (EAPMethodTTLS *method,
 	/* Check for defaulting to CHAP */
 	if (phase2_auth && !strcasecmp (phase2_auth, "chap"))
 		active = 3;
+
+	em_md5 = eap_method_simple_new (method->sec_parent,
+	                                connection,
+	                                EAP_METHOD_SIMPLE_TYPE_MD5,
+	                                simple_flags);
+	gtk_list_store_append (auth_model, &iter);
+	gtk_list_store_set (auth_model, &iter,
+	                    I_NAME_COLUMN, _("MD5"),
+	                    I_METHOD_COLUMN, em_md5,
+	                    -1);
+	eap_method_unref (EAP_METHOD (em_md5));
+
+	/* Check for defaulting to MD5 */
+	if (phase2_auth && !strcasecmp (phase2_auth, "md5"))
+		active = 4;
+
+	em_gtc = eap_method_simple_new (method->sec_parent,
+	                                connection,
+	                                EAP_METHOD_SIMPLE_TYPE_GTC,
+	                                simple_flags);
+	gtk_list_store_append (auth_model, &iter);
+	gtk_list_store_set (auth_model, &iter,
+	                    I_NAME_COLUMN, _("GTC"),
+	                    I_METHOD_COLUMN, em_gtc,
+	                    -1);
+	eap_method_unref (EAP_METHOD (em_gtc));
+
+	/* Check for defaulting to GTC */
+	if (phase2_auth && !strcasecmp (phase2_auth, "gtc"))
+		active = 5;
 
 	combo = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_ttls_inner_auth_combo"));
 	g_assert (combo);

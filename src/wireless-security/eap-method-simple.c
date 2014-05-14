@@ -36,8 +36,7 @@ struct _EAPMethodSimple {
 	WirelessSecurity *ws_parent;
 
 	EAPMethodSimpleType type;
-	gboolean is_editor;
-	gboolean editing_connection;
+	EAPMethodSimpleFlags flags;
 
 	GtkEntry *username_entry;
 	GtkEntry *password_entry;
@@ -89,14 +88,30 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 	gtk_size_group_add_widget (group, widget);
 }
 
+typedef struct {
+	const char *name;
+	gboolean autheap_allowed;
+} EapType;
+
+/* Indexed by EAP_METHOD_SIMPLE_TYPE_* */
+static const EapType eap_table[EAP_METHOD_SIMPLE_TYPE_LAST] = {
+	[EAP_METHOD_SIMPLE_TYPE_PAP]       = { "pap",      FALSE },
+	[EAP_METHOD_SIMPLE_TYPE_MSCHAP]    = { "mschap",   FALSE },
+	[EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2] = { "mschapv2", TRUE  },
+	[EAP_METHOD_SIMPLE_TYPE_MD5]       = { "md5",      TRUE  },
+	[EAP_METHOD_SIMPLE_TYPE_PWD]       = { "pwd",      TRUE  },
+	[EAP_METHOD_SIMPLE_TYPE_CHAP]      = { "chap",     FALSE },
+	[EAP_METHOD_SIMPLE_TYPE_GTC]       = { "gtc",      TRUE  },
+};
+
 static void
 fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFlags prev_flags)
 {
 	EAPMethodSimple *method = (EAPMethodSimple *) parent;
 	NMSetting8021x *s_8021x;
 	gboolean not_saved = FALSE;
-	const char *eap = NULL;
 	NMSettingSecretFlags flags = prev_flags;
+	const EapType *eap_type;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
@@ -107,37 +122,22 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	if (parent->phase2 == FALSE)
 		nm_setting_802_1x_clear_eap_methods (s_8021x);
 
-	switch (method->type) {
-		case EAP_METHOD_SIMPLE_TYPE_PAP:
-			eap = "pap";
-			break;
-		case EAP_METHOD_SIMPLE_TYPE_MSCHAP:
-			eap = "mschap";
-			break;
-		case EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2:
-			eap = "mschapv2";
-			break;
-		case EAP_METHOD_SIMPLE_TYPE_MD5:
-			eap = "md5";
-			break;
-		case EAP_METHOD_SIMPLE_TYPE_CHAP:
-			eap = "chap";
-			break;
-		case EAP_METHOD_SIMPLE_TYPE_GTC:
-			eap = "gtc";
-			break;
-		case EAP_METHOD_SIMPLE_TYPE_PWD:
-			eap = "pwd";
-			break;
-		default:
-			g_assert_not_reached ();
-			break;
-	}
-
-	if (parent->phase2)
-		g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, eap, NULL);
-	else
-		nm_setting_802_1x_add_eap_method (s_8021x, eap);
+	eap_type = &eap_table[method->type];
+	if (parent->phase2) {
+		/* If the outer EAP method (TLS, TTLS, PEAP, etc) allows inner/phase2
+		 * EAP methods (which only TTLS allows) *and* the inner/phase2 method
+		 * supports being an inner EAP method, then set PHASE2_AUTHEAP.
+		 * Otherwise the inner/phase2 method goes into PHASE2_AUTH.
+		 */
+		if ((method->flags & EAP_METHOD_SIMPLE_FLAG_AUTHEAP_ALLOWED) && eap_type->autheap_allowed) {
+			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTHEAP, eap_type->name, NULL);
+			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, NULL, NULL);
+		} else {
+			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTH, eap_type->name, NULL);
+			g_object_set (s_8021x, NM_SETTING_802_1X_PHASE2_AUTHEAP, NULL, NULL);
+		}
+	} else
+		nm_setting_802_1x_add_eap_method (s_8021x, eap_type->name);
 
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (method->username_entry), NULL);
 
@@ -154,12 +154,11 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	 * back to NM in response to a GetSecrets() call, we don't save it if the
 	 * user checked "Always Ask".
 	 */
-	if (method->is_editor == FALSE || not_saved == FALSE) {
+	if (!(method->flags & EAP_METHOD_SIMPLE_FLAG_IS_EDITOR) || not_saved == FALSE)
 		g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (method->password_entry), NULL);
-	}
 
 	/* Update secret flags and popup when editing the connection */
-	if (method->editing_connection) {
+	if (!(method->flags & EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY)) {
 		GtkWidget *passwd_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
 		g_assert (passwd_entry);
 
@@ -277,9 +276,7 @@ EAPMethodSimple *
 eap_method_simple_new (WirelessSecurity *ws_parent,
                        NMConnection *connection,
                        EAPMethodSimpleType type,
-                       gboolean phase2,
-                       gboolean is_editor,
-                       gboolean secrets_only)
+                       EAPMethodSimpleFlags flags)
 {
 	EAPMethod *parent;
 	EAPMethodSimple *method;
@@ -294,16 +291,16 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	                          UIDIR "/eap-method-simple.ui",
 	                          "eap_simple_notebook",
 	                          "eap_simple_username_entry",
-	                          phase2);
+	                          flags & EAP_METHOD_SIMPLE_FLAG_PHASE2);
 	if (!parent)
 		return NULL;
 
 	parent->password_flags_name = NM_SETTING_802_1X_PASSWORD;
 	method = (EAPMethodSimple *) parent;
-	method->type = type;
-	method->is_editor = is_editor;
-	method->editing_connection = secrets_only ? FALSE : TRUE;
 	method->ws_parent = wireless_security_ref (ws_parent);
+	method->flags = flags;
+	method->type = type;
+	g_assert (type < EAP_METHOD_SIMPLE_TYPE_LAST);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_notebook"));
 	g_assert (widget);
@@ -321,7 +318,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
 
-	if (secrets_only)
+	if (method->flags & EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY)
 		gtk_widget_set_sensitive (widget, FALSE);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
@@ -340,7 +337,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
-	if (is_editor) {
+	if (flags & EAP_METHOD_SIMPLE_FLAG_IS_EDITOR) {
 		/* We only desensitize the password entry from the editor, because
 		 * from nm-applet if the entry was desensitized, there'd be no way to
 		 * get the password back to NetworkManager when NM asked for it.  Since
@@ -352,7 +349,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 		                  method);
 	}
 
-	if (secrets_only)
+	if (flags & EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY)
 		gtk_widget_hide (widget);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapsimple"));

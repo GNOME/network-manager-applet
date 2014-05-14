@@ -382,6 +382,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	const char *default_method = NULL, *ctype = NULL;
 	int active = -1, item = 0;
 	gboolean wired = FALSE;
+	EAPMethodSimpleFlags simple_flags = EAP_METHOD_SIMPLE_FLAG_NONE;
 
 	/* Grab the default EAP method out of the security object */
 	if (connection) {
@@ -405,13 +406,13 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_type ());
 
+	if (is_editor)
+		simple_flags |= EAP_METHOD_SIMPLE_FLAG_IS_EDITOR;
+	if (secrets_only)
+		simple_flags |= EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY;
+
 	if (wired) {
-		em_md5 = eap_method_simple_new (sec,
-		                                connection,
-		                                EAP_METHOD_SIMPLE_TYPE_MD5,
-		                                FALSE,
-		                                is_editor,
-		                                secrets_only);
+		em_md5 = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_MD5, simple_flags);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
 			                AUTH_NAME_COLUMN, _("MD5"),
@@ -447,8 +448,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		item++;
 	}
 
-	em_pwd = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_PWD,
-	                                FALSE, is_editor, secrets_only);
+	em_pwd = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_PWD, simple_flags);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("PWD"),

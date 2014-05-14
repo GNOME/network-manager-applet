@@ -240,6 +240,7 @@ inner_auth_combo_init (EAPMethodFAST *method,
 	EAPMethodSimple *em_mschap_v2;
 	guint32 active = 0;
 	const char *phase2_auth = NULL;
+	EAPMethodSimpleFlags simple_flags;
 
 	auth_model = gtk_list_store_new (2, G_TYPE_STRING, eap_method_get_type ());
 
@@ -250,12 +251,16 @@ inner_auth_combo_init (EAPMethodFAST *method,
 			phase2_auth = nm_setting_802_1x_get_phase2_autheap (s_8021x);
 	}
 
+	simple_flags = EAP_METHOD_SIMPLE_FLAG_PHASE2;
+	if (method->is_editor)
+		simple_flags |= EAP_METHOD_SIMPLE_FLAG_IS_EDITOR;
+	if (secrets_only)
+		simple_flags |= EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY;
+
 	em_gtc = eap_method_simple_new (method->sec_parent,
 	                                connection,
 	                                EAP_METHOD_SIMPLE_TYPE_GTC,
-	                                TRUE,
-	                                method->is_editor,
-	                                secrets_only);
+	                                simple_flags);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("GTC"),
@@ -270,8 +275,7 @@ inner_auth_combo_init (EAPMethodFAST *method,
 	em_mschap_v2 = eap_method_simple_new (method->sec_parent,
 	                                      connection,
 	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2,
-	                                      TRUE,
-	                                      method->is_editor, secrets_only);
+	                                      simple_flags);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAPv2"),
