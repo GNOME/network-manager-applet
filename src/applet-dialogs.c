@@ -373,6 +373,130 @@ wimax_bsid_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
 	gtk_label_set_text (GTK_LABEL (label), str);
 }
 
+
+static void
+display_ip4_info (NMIP4Address *def_addr, GtkGrid *grid, int *row)
+{
+	guint32 hostmask, network, bcast, netmask;
+	char *str;
+
+	/* Address */
+	gtk_grid_attach (grid, create_info_label (_("IP Address:"), FALSE),
+	                 0, *row, 1, 1);
+	str = def_addr ? ip4_address_as_string (nm_ip4_address_get_address (def_addr)) : g_strdup (C_("Address", "Unknown"));
+	gtk_grid_attach (grid, create_info_label (str, TRUE),
+	                 1, *row, 1, 1);
+	g_free (str);
+	(*row)++;
+
+	/* Broadcast */
+	if (def_addr) {
+		netmask = nm_utils_ip4_prefix_to_netmask (nm_ip4_address_get_prefix (def_addr));
+		network = ntohl (nm_ip4_address_get_address (def_addr)) & ntohl (netmask);
+		hostmask = ~ntohl (netmask);
+		bcast = htonl (network | hostmask);
+	}
+
+	gtk_grid_attach (grid, create_info_label (_("Broadcast Address:"), FALSE),
+	                 0, *row, 1, 1);
+	str = def_addr ? ip4_address_as_string (bcast) : g_strdup (C_("Address", "Unknown"));
+	gtk_grid_attach (grid, create_info_label (str, TRUE),
+	                 1, *row, 1, 1);
+	g_free (str);
+	(*row)++;
+
+	/* Prefix */
+	gtk_grid_attach (grid, create_info_label (_("Subnet Mask:"), FALSE),
+	                 0, *row, 1, 1);
+	str = def_addr ? ip4_address_as_string (netmask) : g_strdup (C_("Subnet Mask", "Unknown"));
+	gtk_grid_attach (grid, create_info_label (str, TRUE),
+	                 1, *row, 1, 1);
+	g_free (str);
+	(*row)++;
+
+	/* Gateway */
+	if (def_addr && nm_ip4_address_get_gateway (def_addr)) {
+		gtk_grid_attach (grid, create_info_label (_("Default Route:"), FALSE),
+		                 0, *row, 1, 1);
+		str = ip4_address_as_string (nm_ip4_address_get_gateway (def_addr));
+		gtk_grid_attach (grid, create_info_label (str, TRUE),
+		                 1, *row, 1, 1);
+		g_free (str);
+		(*row)++;
+	}
+}
+
+static void
+display_ip6_info (NMIP6Address *def6_addr, const char *method, GtkGrid *grid, int *row)
+{
+	char *tmp_addr;
+	guint32 prefix;
+	char *str;
+
+	if (!def6_addr)
+		return;
+
+	/* Address */
+	gtk_grid_attach (grid, create_info_label (_("IP Address:"), FALSE),
+	                 0, *row, 1, 1);
+	tmp_addr = ip6_address_as_string (nm_ip6_address_get_address (def6_addr));
+	prefix = nm_ip6_address_get_prefix (def6_addr);
+	str = g_strdup_printf ("%s/%d", tmp_addr, prefix);
+	g_free (tmp_addr);
+
+	gtk_grid_attach (grid, create_info_label (str, TRUE),
+	                 1, *row, 1, 1);
+	g_free (str);
+	(*row)++;
+
+	/* Gateway */
+	if (nm_ip6_address_get_gateway (def6_addr)) {
+		gtk_grid_attach (grid, create_info_label (_("Default Route:"), FALSE),
+		                 0, *row, 1, 1);
+		str = ip6_address_as_string (nm_ip6_address_get_gateway (def6_addr));
+		gtk_grid_attach (grid, create_info_label (str, TRUE),
+		                 1, *row, 1, 1);
+		g_free (str);
+		(*row)++;
+	}
+}
+
+static void
+display_dns4_info (const GArray *dns, GtkGrid *grid, int *row)
+{
+	char *label[] = { "Primary DNS:", "Secondary DNS:", "Ternary DNS:" };
+	char *str;
+	int i;
+
+	for (i = 0; dns && i < dns->len && i < 3; i++) {
+		gtk_grid_attach (grid, create_info_label (_(label[i]), FALSE),
+		                 0, *row, 1, 1);
+		str = ip4_address_as_string (g_array_index (dns, guint32, i));
+		gtk_grid_attach (grid, create_info_label (str, TRUE),
+		                 1, *row, 1, 1);
+		g_free (str);
+		(*row)++;
+	}
+}
+
+static void
+display_dns6_info (const GSList *dns6, GtkGrid *grid, int *row)
+{
+	char *label[] = { "Primary DNS:", "Secondary DNS:", "Ternary DNS:" };
+	char *str;
+	int i;
+
+	for (i = 0; dns6 && i < 3 ; dns6 = g_slist_next (dns6), i++) {
+		gtk_grid_attach (grid, create_info_label (_(label[i]), FALSE),
+		                 0, *row, 1, 1);
+		str = ip6_address_as_string (dns6->data);
+		gtk_grid_attach (grid, create_info_label (str, TRUE),
+		                 1, *row, 1, 1);
+		g_free (str);
+		(*row)++;
+	}
+}
+
 static void
 info_dialog_add_page (GtkNotebook *notebook,
                       NMConnection *connection,
@@ -390,8 +514,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	NMIP4Address *def_addr = NULL;
 	NMIP6Address *def6_addr = NULL;
 	NMSettingIP6Config *s_ip6;
-	guint32 hostmask, network, bcast, netmask;
-	int i, row = 0;
+	int row = 0;
 	GtkWidget* speed_label, *sec_label = NULL;
 	const GSList *addresses;
 	gboolean show_security = FALSE;
@@ -538,7 +661,6 @@ info_dialog_add_page (GtkNotebook *notebook,
 	/*--- IPv4 ---*/
 	gtk_grid_attach (grid, create_info_group_label (_("IPv4"), FALSE),
 	                 0, row, 1, 1);
-
 	row++;
 
 	ip4_config = nm_device_get_ip4_config (device);
@@ -546,82 +668,11 @@ info_dialog_add_page (GtkNotebook *notebook,
 	if (g_slist_length ((GSList *) addresses))
 		def_addr = addresses->data;
 
-	/* Address */
-	gtk_grid_attach (grid, create_info_label (_("IP Address:"), FALSE),
-	                 0, row, 1, 1);
-	str = def_addr ? ip4_address_as_string (nm_ip4_address_get_address (def_addr)) : g_strdup (C_("Address", "Unknown"));
-	gtk_grid_attach (grid, create_info_label (str, TRUE),
-	                 1, row, 1, 1);
-	g_free (str);
-	row++;
-
-	/* Broadcast */
-	if (def_addr) {
-		netmask = nm_utils_ip4_prefix_to_netmask (nm_ip4_address_get_prefix (def_addr));
-		network = ntohl (nm_ip4_address_get_address (def_addr)) & ntohl (netmask);
-		hostmask = ~ntohl (netmask);
-		bcast = htonl (network | hostmask);
-	}
-
-	gtk_grid_attach (grid, create_info_label (_("Broadcast Address:"), FALSE),
-	                 0, row, 1, 1);
-	str = def_addr ? ip4_address_as_string (bcast) : g_strdup (C_("Address", "Unknown"));
-	gtk_grid_attach (grid, create_info_label (str, TRUE),
-	                 1, row, 1, 1);
-	g_free (str);
-	row++;
-
-	/* Prefix */
-	gtk_grid_attach (grid, create_info_label (_("Subnet Mask:"), FALSE),
-	                 0, row, 1, 1);
-	str = def_addr ? ip4_address_as_string (netmask) : g_strdup (C_("Subnet Mask", "Unknown"));
-	gtk_grid_attach (grid, create_info_label (str, TRUE),
-	                 1, row, 1, 1);
-	g_free (str);
-	row++;
-
-	/* Gateway */
-	if (def_addr && nm_ip4_address_get_gateway (def_addr)) {
-		gtk_grid_attach (grid, create_info_label (_("Default Route:"), FALSE),
-		                 0, row, 1, 1);
-		str = ip4_address_as_string (nm_ip4_address_get_gateway (def_addr));
-		gtk_grid_attach (grid, create_info_label (str, TRUE),
-		                 1, row, 1, 1);
-		g_free (str);
-		row++;
-	}
+	display_ip4_info (def_addr, grid, &row);
 
 	/* DNS */
 	dns = def_addr ? nm_ip4_config_get_nameservers (ip4_config) : NULL;
-	if (dns && dns->len) {
-		gtk_grid_attach (grid, create_info_label (_("Primary DNS:"), FALSE),
-		                 0, row, 1, 1);
-		str = ip4_address_as_string (g_array_index (dns, guint32, 0));
-		gtk_grid_attach (grid, create_info_label (str, TRUE),
-		                 1, row, 1, 1);
-		g_free (str);
-		row++;
-
-		if (dns->len > 1) {
-			gtk_grid_attach (grid, create_info_label (_("Secondary DNS:"), FALSE),
-			                 0, row, 1, 1);
-			str = ip4_address_as_string (g_array_index (dns, guint32, 1));
-			gtk_grid_attach (grid, create_info_label (str, TRUE),
-			                 1, row, 1, 1);
-			g_free (str);
-			row++;
-		}
-
-		if (dns->len > 2) {
-			gtk_grid_attach (grid, create_info_label (_("Ternary DNS:"), FALSE),
-			                 0, row, 1, 1);
-			str = ip4_address_as_string (g_array_index (dns, guint32, 2));
-			gtk_grid_attach (grid, create_info_label (str, TRUE),
-			                 1, row, 1, 1);
-			g_free (str);
-			row++;
-		}
-	}
+	display_dns4_info (dns, grid, &row);
 
 	/* Empty line */
 	gtk_grid_attach (grid, gtk_label_new (""), 0, row, 2, 1);
@@ -648,50 +699,11 @@ info_dialog_add_page (GtkNotebook *notebook,
 		if (g_slist_length ((GSList *) addresses))
 			def6_addr = addresses->data;
 	}
-
-	/* Address */
-	if (def6_addr) {
-		char *tmp_addr;
-		guint32 prefix;
-
-		gtk_grid_attach (grid, create_info_label (_("IP Address:"), FALSE),
-		                 0, row, 1, 1);
-		tmp_addr = ip6_address_as_string (nm_ip6_address_get_address (def6_addr));
-		prefix = nm_ip6_address_get_prefix (def6_addr);
-		str = g_strdup_printf ("%s/%d", tmp_addr, prefix);
-		g_free (tmp_addr);
-
-		gtk_grid_attach (grid, create_info_label (str, TRUE),
-		                 1, row, 1, 1);
-		g_free (str);
-		row++;
-	}
-
-	/* Gateway */
-	if (def6_addr && nm_ip6_address_get_gateway (def6_addr)) {
-		gtk_grid_attach (grid, create_info_label (_("Default Route:"), FALSE),
-		                 0, row, 1, 1);
-		str = ip6_address_as_string (nm_ip6_address_get_gateway (def6_addr));
-		gtk_grid_attach (grid, create_info_label (str, TRUE),
-		                 1, row, 1, 1);
-		g_free (str);
-		row++;
-	}
+	display_ip6_info (def6_addr, method, grid, &row);
 
 	/* DNS */
 	dns6 = def6_addr ? nm_ip6_config_get_nameservers (ip6_config) : NULL;
-
-	for (i = 0; dns6 && i < 3 ; dns6 = g_slist_next (dns6), i++) {
-		char *label[] = { "Primary DNS:", "Secondary DNS:", "Ternary DNS:" };
-
-		gtk_grid_attach (grid, create_info_label (_(label[i]), FALSE),
-		                 0, row, 1, 1);
-		str = ip6_address_as_string (dns6->data);
-		gtk_grid_attach (grid, create_info_label (str, TRUE),
-		                 1, row, 1, 1);
-		g_free (str);
-		row++;
-	}
+	display_dns6_info (dns6, grid, &row);
 
 	gtk_notebook_append_page (notebook, GTK_WIDGET (grid),
 	                          create_info_notebook_label (connection, is_default));
@@ -777,6 +789,15 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	GtkGrid *grid;
 	char *str;
 	int row = 0;
+	NMIP4Config *ip4_config;
+	NMIP6Config *ip6_config;
+	const GArray *dns;
+	const GSList *dns6;
+	NMIP4Address *def_addr = NULL;
+	NMIP6Address *def6_addr = NULL;
+	const GSList *addresses;
+	NMSettingIP6Config *s_ip6;
+	const char *method = NULL;
 	gboolean is_default = nm_active_connection_get_default (active);
 
 	grid = GTK_GRID (gtk_grid_new ());
@@ -819,6 +840,60 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	                 0, row, 1, 1);
 	gtk_grid_attach (grid, create_info_label (parent_con ? nm_connection_get_id (parent_con) : _("Unknown"), TRUE),
 	                 1, row, 1, 1);
+	row++;
+
+	/* Empty line */
+	gtk_grid_attach (grid, gtk_label_new (""), 0, row, 2, 1);
+	row++;
+
+	/*--- IPv4 ---*/
+	gtk_grid_attach (grid, create_info_group_label (_("IPv4"), FALSE),
+	                 0, row, 1, 1);
+	row++;
+
+	ip4_config = nm_active_connection_get_ip4_config (active);
+	addresses = nm_ip4_config_get_addresses (ip4_config);
+	if (g_slist_length ((GSList *) addresses))
+		def_addr = addresses->data;
+
+	display_ip4_info (def_addr, grid, &row);
+
+	/* DNS */
+	dns = def_addr ? nm_ip4_config_get_nameservers (ip4_config) : NULL;
+	display_dns4_info (dns, grid, &row);
+
+	/* Empty line */
+	gtk_grid_attach (grid, gtk_label_new (""), 0, row, 2, 1);
+	row++;
+
+	/*--- IPv6 ---*/
+	ip6_config = nm_active_connection_get_ip6_config (active);
+	if (ip6_config) {
+		gtk_grid_attach (grid, create_info_group_label (_("IPv6"), FALSE),
+		                 0, row, 1, 1);
+		row++;
+
+		s_ip6 = nm_connection_get_setting_ip6_config (connection);
+		if (s_ip6)
+			 method = nm_setting_ip6_config_get_method (s_ip6);
+
+		if (!method || !strcmp (method, NM_SETTING_IP6_CONFIG_METHOD_IGNORE)) {
+			gtk_grid_attach (grid, create_info_label (_("Ignored"), FALSE),
+			                 0, row, 1, 1);
+			row++;
+		}
+
+		addresses = nm_ip6_config_get_addresses (ip6_config);
+		if (g_slist_length ((GSList *) addresses))
+			def6_addr = addresses->data;
+
+		/* IPv6 Address */
+		display_ip6_info (def6_addr, method, grid, &row);
+
+		/* DNS */
+		dns6 = def6_addr ? nm_ip6_config_get_nameservers (ip6_config) : NULL;
+		display_dns6_info (dns6, grid, &row);
+	}
 
 	gtk_notebook_append_page (notebook, GTK_WIDGET (grid),
 	                          create_info_notebook_label (connection, is_default));
@@ -857,22 +932,20 @@ info_dialog_update (NMApplet *applet)
 		}
 
 		devices = nm_active_connection_get_devices (active_connection);
-		if (devices && devices->len > 0)
-			info_dialog_add_page (notebook,
-			                      connection,
-			                      nm_active_connection_get_default (active_connection),
-			                      g_ptr_array_index (devices, 0));
-		else {
-			if (NM_IS_VPN_CONNECTION (active_connection)) {
-				const char *spec_object = nm_active_connection_get_specific_object (active_connection);
-				NMConnection *parent_con = get_connection_for_active_path (applet, spec_object);
+		if (NM_IS_VPN_CONNECTION (active_connection)) {
+			const char *spec_object = nm_active_connection_get_specific_object (active_connection);
+			NMConnection *parent_con = get_connection_for_active_path (applet, spec_object);
 
-				info_dialog_add_page_for_vpn (notebook, connection, active_connection, parent_con);
-			} else {
-				g_warning ("Active connection %s had no devices and was not a VPN!",
-				           nm_object_get_path (NM_OBJECT (active_connection)));
-				continue;
-			}
+			info_dialog_add_page_for_vpn (notebook, connection, active_connection, parent_con);
+		} else if (devices && devices->len > 0) {
+				info_dialog_add_page (notebook,
+				                      connection,
+				                      nm_active_connection_get_default (active_connection),
+				                      g_ptr_array_index (devices, 0));
+		} else {
+			g_warning ("Active connection %s had no devices and was not a VPN!",
+			           nm_object_get_path (NM_OBJECT (active_connection)));
+			continue;
 		}
 
 		pages++;
