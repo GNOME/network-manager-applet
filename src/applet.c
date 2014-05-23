@@ -87,7 +87,6 @@
 #include "nm-wifi-dialog.h"
 #include "applet-vpn-request.h"
 #include "utils.h"
-#include "shell-watcher.h"
 #include "nm-ui-utils.h"
 
 #if WITH_MODEM_MANAGER_1
@@ -3543,39 +3542,6 @@ register_agent (NMApplet *applet)
 	                  G_CALLBACK (applet_agent_cancel_secrets_cb), applet);
 }
 
-static void
-shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer user_data)
-{
-	NMApplet *applet = user_data;
-
-	if (nm_shell_watcher_version_at_least (watcher, 3, 0)) {
-		g_debug ("gnome-shell is running");
-
-		if (applet->agent) {
-			g_debug ("destroying secret agent");
-
-			g_signal_handlers_disconnect_by_func (applet->agent,
-			                                      G_CALLBACK (applet_agent_get_secrets_cb),
-			                                      applet);
-			g_signal_handlers_disconnect_by_func (applet->agent,
-			                                      G_CALLBACK (applet_agent_cancel_secrets_cb),
-			                                      applet);
-			nm_secret_agent_unregister (NM_SECRET_AGENT (applet->agent));
-			g_clear_object (&applet->agent);
-		}
-
-		/* We don't need the watcher any more */
-		g_signal_handlers_disconnect_by_func (applet->shell_watcher,
-		                                      G_CALLBACK (shell_version_changed_cb),
-		                                      applet);
-		g_clear_object (&applet->shell_watcher);
-	} else if (!applet->agent) {
-		/* No shell */
-		g_debug ("gnome-shell is not running, registering secret agent");
-		register_agent (applet);
-	}
-}
-
 static gboolean
 dbus_setup (NMApplet *applet, GError **error)
 {
@@ -3728,15 +3694,7 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 	                  G_CALLBACK (applet_embedded_cb), NULL);
 	applet_embedded_cb (G_OBJECT (applet->status_icon), NULL, NULL);
 
-	/* Watch GNOME Shell so we can unregister our applet agent if it appears */
-	if (!shell_debug) {
-		applet->shell_watcher = nm_shell_watcher_new ();
-		g_signal_connect (applet->shell_watcher,
-			              "notify::shell-version",
-			              G_CALLBACK (shell_version_changed_cb),
-			              applet);
-	} else
-		register_agent (applet);
+	register_agent (applet);
 
 	return TRUE;
 }
@@ -3805,9 +3763,6 @@ static void finalize (GObject *object)
 
 	if (applet->session_bus)
 		dbus_g_connection_unref (applet->session_bus);
-
-	if (applet->shell_watcher)
-		g_object_unref (applet->shell_watcher);
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }

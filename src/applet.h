@@ -44,7 +44,6 @@
 #include <nm-active-connection.h>
 #include <nm-remote-settings.h>
 #include "applet-agent.h"
-#include "shell-watcher.h"
 
 #if WITH_MODEM_MANAGER_1
 #include <libmm-glib.h>
@@ -86,9 +85,6 @@ typedef struct
 
 	GMainLoop *loop;
 	DBusGConnection *session_bus;
-
-	NMShellWatcher *shell_watcher;
-	guint agent_start_id;
 
 	NMClient *nm_client;
 	NMRemoteSettings *settings;
