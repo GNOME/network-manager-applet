@@ -319,7 +319,7 @@ clamp_ap_to_bssid (NMAccessPoint *ap, NMSettingWireless *s_wifi)
 	 * neighbor's WiFi.
 	 */
 
-	str_bssid = nm_access_point_get_hw_address (ap);
+	str_bssid = nm_access_point_get_bssid (ap);
 	if (str_bssid) {
 		eth_addr = ether_aton (str_bssid);
 		if (eth_addr) {
