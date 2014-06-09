@@ -160,7 +160,7 @@ get_bitfield_helper (GConfClient             *client,
 	}
 
 	if (ival) {
-		nm_utils_slist_free (*value, g_free);
+		g_slist_free_full (*value, g_free);
 		g_warning ("Bad value '%d' for key '%s' on NM 0.6 connection %s", ival, key, network);
 		return FALSE;
 	}
@@ -411,8 +411,8 @@ nm_gconf_read_0_6_eap_settings (GConfClient *client,
 	}
 
 out:
-	nm_utils_slist_free (eaps, g_free);
-	nm_utils_slist_free (ciphers, g_free);
+	g_slist_free_full (eaps, g_free);
+	g_slist_free_full (ciphers, g_free);
 	g_free (phase2);
 	g_free (identity);
 	g_free (anon_identity);
@@ -534,7 +534,7 @@ nm_gconf_read_0_6_wireless_connection (GConfClient *client,
 
 	for (iter = bssids; iter; iter = iter->next)
 		nm_setting_wireless_add_seen_bssid (s_wireless, (char *) iter->data);
-	nm_utils_slist_free (bssids, g_free);
+	g_slist_free_full (bssids, g_free);
 
 	if (we_cipher != NM_AUTH_TYPE_NONE) {
 		switch (we_cipher) {
@@ -816,7 +816,7 @@ nm_gconf_read_0_6_vpn_connection (GConfClient *client,
 	else
 		g_warning ("unmatched service name %s\n", service_name);
 
-	nm_utils_slist_free (vpn_data, g_free);
+	g_slist_free_full (vpn_data, g_free);
 	g_free (path);
 	g_free (network);
 	g_free (service_name);
@@ -869,7 +869,7 @@ nm_gconf_migrate_0_6_connections (GConfClient *client)
 			g_object_unref (conn);
 		}
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	connections = gconf_client_all_dirs (client, GCONF_PATH_0_6_VPN_CONNECTIONS, NULL);
 	for (iter = connections; iter; iter = iter->next) {
@@ -879,7 +879,7 @@ nm_gconf_migrate_0_6_connections (GConfClient *client)
 			g_object_unref (conn);
 		}
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1164,7 +1164,7 @@ nm_gconf_migrate_0_7_wireless_security (GConfClient *client)
 next:
 		g_free (uuid);
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1223,7 +1223,7 @@ nm_gconf_migrate_0_7_netmask_to_prefix (GConfClient *client)
 next:
 		g_free (id);
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1261,7 +1261,7 @@ nm_gconf_migrate_0_7_ip4_method (GConfClient *client)
 next:
 		g_free (id);
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1297,7 +1297,7 @@ nm_gconf_migrate_0_7_ignore_dhcp_dns (GConfClient *client)
 		                            NM_SETTING_IP4_CONFIG_SETTING_NAME,
 		                            IP4_KEY_IGNORE_DHCP_DNS);
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1426,7 +1426,7 @@ nm_gconf_migrate_0_7_vpn_routes (GConfClient *client)
 		g_slist_foreach (old_routes, (GFunc) g_free, NULL);
 		g_slist_free (old_routes);
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1502,7 +1502,7 @@ nm_gconf_migrate_0_7_vpn_properties (GConfClient *client)
 
 		g_free (path);
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1609,7 +1609,7 @@ nm_gconf_migrate_0_7_openvpn_properties (GConfClient *client)
 			                            new_type);
 		}
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1637,7 +1637,7 @@ nm_gconf_migrate_0_7_connection_uuid (GConfClient *client)
 
 		g_free (uuid);
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1757,7 +1757,7 @@ nm_gconf_migrate_0_7_keyring_items (GConfClient *client)
 		g_free (old_id);
 		g_free (uuid);
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 
 	gconf_client_suggest_sync (client, NULL);
 }
@@ -1815,7 +1815,7 @@ nm_gconf_migrate_0_7_vpn_never_default (GConfClient *client)
 		                          TRUE);
 		g_array_free (array, TRUE);
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 	gconf_client_suggest_sync (client, NULL);
 }
 
@@ -1848,7 +1848,7 @@ nm_gconf_migrate_0_7_autoconnect_default (GConfClient *client)
 			                          FALSE);
 		}
 	}
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 	gconf_client_suggest_sync (client, NULL);
 }
 
@@ -1913,7 +1913,7 @@ nm_gconf_migrate_0_7_ca_cert_ignore (GConfClient *client)
 		                            NMA_PHASE2_CA_CERT_IGNORE_TAG);
 	}
 
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 	gconf_client_suggest_sync (client, NULL);
 }
 
@@ -2015,7 +2015,7 @@ nm_gconf_migrate_0_7_certs (GConfClient *client)
 		g_free (id);
 	}
 
-	nm_utils_slist_free (connections, g_free);
+	g_slist_free_full (connections, g_free);
 	gconf_client_suggest_sync (client, NULL);
 }
 
