@@ -62,7 +62,7 @@ find_device_by_mac (const GByteArray *mac, const GPtrArray *devices)
 	char *vlan_hw_address, *candidate_hw_address;
 	int i;
 
-	vlan_hw_address = nm_utils_hwaddr_ntoa (mac->data, nm_utils_hwaddr_type (mac->len));
+	vlan_hw_address = nm_utils_hwaddr_ntoa_len (mac->data, mac->len);
 
 	for (i = 0; i < devices->len && device == NULL; i++) {
 		candidate = devices->pdata[i];
