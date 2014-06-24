@@ -824,7 +824,7 @@ applet_menu_item_create_device_item_helper (NMDevice *device,
 {
 	GtkWidget *item;
 
-	item = gtk_menu_item_new_with_mnemonic (text);
+	item = gtk_menu_item_new_with_label (text);
 	gtk_widget_set_sensitive (item, FALSE);
 	g_signal_connect (item, "draw", G_CALLBACK (menu_title_item_draw), NULL);
 	return item;
