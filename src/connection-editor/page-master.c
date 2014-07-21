@@ -377,7 +377,7 @@ add_connection (NMConnection *connection,
 	              NM_SETTING_CONNECTION_ID, name,
 	              NM_SETTING_CONNECTION_MASTER, priv->uuid,
 	              NM_SETTING_CONNECTION_SLAVE_TYPE, master_type,
-	              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
+	              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
 	              NULL);
 	g_free (name);
 
