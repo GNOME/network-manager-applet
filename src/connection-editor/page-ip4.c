@@ -135,8 +135,8 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 		str_auto_only = _("Automatic (VPN) addresses only");
 	} else if (   priv->connection_type == NM_TYPE_SETTING_GSM
 	           || priv->connection_type == NM_TYPE_SETTING_CDMA) {
-		str_auto = _("Automatic (PPP)");
-		str_auto_only = _("Automatic (PPP) addresses only");
+		str_auto = _("Automatic");
+		str_auto_only = _("Automatic, addresses only");
 	} else if (priv->connection_type == NM_TYPE_SETTING_PPPOE) {
 		str_auto = _("Automatic (PPPoE)");
 		str_auto_only = _("Automatic (PPPoE) addresses only");
