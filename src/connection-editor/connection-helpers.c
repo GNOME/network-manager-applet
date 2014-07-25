@@ -619,9 +619,6 @@ connection_supports_ip6 (NMConnection *connection)
 		return vpn_supports_ipv6 (connection);
 	else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME))
 		return FALSE;
-	else if (   !strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME)
-	         || !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME))
-		return FALSE;
 	else
 		return TRUE;
 }
