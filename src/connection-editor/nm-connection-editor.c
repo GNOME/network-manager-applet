@@ -729,7 +729,6 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	const char *slave_type;
 	gboolean success = FALSE;
 	GSList *iter, *copy;
-	gboolean add_ip4 = TRUE, add_ip6 = TRUE;
 
 	g_return_val_if_fail (NM_IS_CONNECTION_EDITOR (editor), FALSE);
 	g_return_val_if_fail (NM_IS_CONNECTION (orig_connection), FALSE);
@@ -767,7 +766,6 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	} else if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_vpn_new, editor->connection, error))
 			goto out;
-		add_ip6 = vpn_supports_ipv6 (editor->connection);
 	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_dsl_new, editor->connection, error))
 			goto out;
@@ -775,14 +773,12 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;
-		add_ip6 = FALSE;
 	} else if (!strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME) || 
 	           !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_mobile_new, editor->connection, error))
 			goto out;
 		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;
-		add_ip6 = FALSE;
 	} else if (!strcmp (connection_type, NM_SETTING_WIMAX_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_wimax_new, editor->connection, error))
 			goto out;
@@ -806,21 +802,19 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	}
 
 	slave_type = nm_setting_connection_get_slave_type (s_con);
-	if (!g_strcmp0 (slave_type, NM_SETTING_BOND_SETTING_NAME))
-		add_ip4 = add_ip6 = FALSE;
-	else if (!g_strcmp0 (slave_type, NM_SETTING_TEAM_SETTING_NAME)) {
-		add_ip4 = add_ip6 = FALSE;
+	if (!g_strcmp0 (slave_type, NM_SETTING_TEAM_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_team_port_new, editor->connection, error))
 			goto out;
 	} else if (!g_strcmp0 (slave_type, NM_SETTING_BRIDGE_SETTING_NAME)) {
-		add_ip4 = add_ip6 = FALSE;
 		if (!add_page (editor, ce_page_bridge_port_new, editor->connection, error))
 			goto out;
 	}
 
-	if (add_ip4 && !add_page (editor, ce_page_ip4_new, editor->connection, error))
+	if (   connection_supports_ip4 (editor->connection)
+	    && !add_page (editor, ce_page_ip4_new, editor->connection, error))
 		goto out;
-	if (add_ip6 && !add_page (editor, ce_page_ip6_new, editor->connection, error))
+	if (   connection_supports_ip6 (editor->connection)
+	    && !add_page (editor, ce_page_ip6_new, editor->connection, error))
 		goto out;
 
 	/* After all pages are created, then kick off secrets requests that any

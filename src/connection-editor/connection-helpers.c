@@ -590,3 +590,38 @@ delete_connection (GtkWindow *parent_window,
 
 	nm_remote_connection_delete (connection, delete_cb, info);
 }
+
+gboolean
+connection_supports_ip4 (NMConnection *connection)
+{
+	NMSettingConnection *s_con;
+
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+
+	s_con = nm_connection_get_setting_connection (connection);
+	return (nm_setting_connection_get_slave_type (s_con) == NULL);
+}
+
+gboolean
+connection_supports_ip6 (NMConnection *connection)
+{
+	NMSettingConnection *s_con;
+	const char *connection_type;
+
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+
+	s_con = nm_connection_get_setting_connection (connection);
+	if (nm_setting_connection_get_slave_type (s_con) != NULL)
+		return FALSE;
+
+	connection_type = nm_setting_connection_get_connection_type (s_con);
+	if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME))
+		return vpn_supports_ipv6 (connection);
+	else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME))
+		return FALSE;
+	else if (   !strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME)
+	         || !strcmp (connection_type, NM_SETTING_CDMA_SETTING_NAME))
+		return FALSE;
+	else
+		return TRUE;
+}
