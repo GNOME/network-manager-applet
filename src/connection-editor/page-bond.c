@@ -31,7 +31,7 @@
 #include "page-bond.h"
 #include "page-infiniband.h"
 #include "nm-connection-editor.h"
-#include "new-connection.h"
+#include "connection-helpers.h"
 
 G_DEFINE_TYPE (CEPageBond, ce_page_bond, CE_TYPE_PAGE_MASTER)
 

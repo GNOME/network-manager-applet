@@ -27,7 +27,7 @@
 #include <glib-object.h>
 
 #include "ce-page.h"
-#include "new-connection.h"
+#include "connection-helpers.h"
 
 #define CE_TYPE_PAGE_MASTER            (ce_page_master_get_type ())
 #define CE_PAGE_MASTER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_MASTER, CEPageMaster))

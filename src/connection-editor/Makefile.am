@@ -78,8 +78,8 @@ nm_connection_editor_SOURCES = \
 	ppp-auth-methods-dialog.h \
 	ce-polkit-button.c \
 	ce-polkit-button.h \
-	new-connection.c \
-	new-connection.h
+	connection-helpers.c \
+	connection-helpers.h
 
 nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-connection-editor-service.xml
 	$(AM_V_GEN) dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<

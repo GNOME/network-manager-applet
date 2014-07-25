@@ -22,7 +22,7 @@
 
 #include <glib/gi18n.h>
 
-#include "new-connection.h"
+#include "connection-helpers.h"
 #include "nm-connection-list.h"
 #include "nm-connection-editor.h"
 #include "page-ethernet.h"

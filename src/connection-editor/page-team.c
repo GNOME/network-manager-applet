@@ -30,7 +30,7 @@
 #include "page-team.h"
 #include "page-infiniband.h"
 #include "nm-connection-editor.h"
-#include "new-connection.h"
+#include "connection-helpers.h"
 
 G_DEFINE_TYPE (CEPageTeam, ce_page_team, CE_TYPE_PAGE_MASTER)
 

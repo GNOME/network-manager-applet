@@ -35,7 +35,7 @@
 #include <nm-vpn-plugin-ui-interface.h>
 
 #include "page-vpn.h"
-#include "new-connection.h"
+#include "connection-helpers.h"
 #include "nm-connection-editor.h"
 #include "vpn-helpers.h"
 

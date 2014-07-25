@@ -52,7 +52,7 @@
 #include "nm-connection-list.h"
 #include "vpn-helpers.h"
 #include "ce-polkit-button.h"
-#include "new-connection.h"
+#include "connection-helpers.h"
 
 G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
 
