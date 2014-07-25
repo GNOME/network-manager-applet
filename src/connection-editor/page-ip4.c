@@ -45,6 +45,7 @@
 
 #include "page-ip4.h"
 #include "ip4-routes-dialog.h"
+#include "connection-helpers.h"
 
 G_DEFINE_TYPE (CEPageIP4, ce_page_ip4, CE_TYPE_PAGE)
 
@@ -134,8 +135,8 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 		str_auto_only = _("Automatic (VPN) addresses only");
 	} else if (   priv->connection_type == NM_TYPE_SETTING_GSM
 	           || priv->connection_type == NM_TYPE_SETTING_CDMA) {
-		str_auto = _("Automatic (PPP)");
-		str_auto_only = _("Automatic (PPP) addresses only");
+		str_auto = _("Automatic");
+		str_auto_only = _("Automatic, addresses only");
 	} else if (priv->connection_type == NM_TYPE_SETTING_PPPOE) {
 		str_auto = _("Automatic (PPPoE)");
 		str_auto_only = _("Automatic (PPPoE) addresses only");
@@ -189,9 +190,8 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 		                    -1);
 	}
 
-	/* At the moment, Disabled is only supported for Ethernet & Wi-Fi */
-	if (   priv->connection_type == NM_TYPE_SETTING_WIRED
-	    || priv->connection_type == NM_TYPE_SETTING_WIRELESS) {
+	/* Disabled is only supported for types that also support IPv6 */
+	if (connection_supports_ip6 (connection)) {
 		gtk_list_store_append (priv->method_store, &iter);
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Disabled"),

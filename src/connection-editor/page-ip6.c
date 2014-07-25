@@ -139,10 +139,6 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	if (priv->connection_type == NM_TYPE_SETTING_VPN) {
 		str_auto = _("Automatic (VPN)");
 		str_auto_only = _("Automatic (VPN) addresses only");
-	} else if (   priv->connection_type == NM_TYPE_SETTING_GSM
-	           || priv->connection_type == NM_TYPE_SETTING_CDMA) {
-		str_auto = _("Automatic (PPP)");
-		str_auto_only = _("Automatic (PPP) addresses only");
 	} else if (priv->connection_type == NM_TYPE_SETTING_PPPOE) {
 		str_auto = _("Automatic (PPPoE)");
 		str_auto_only = _("Automatic (PPPoE) addresses only");

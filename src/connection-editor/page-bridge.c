@@ -30,7 +30,7 @@
 
 #include "page-bridge.h"
 #include "nm-connection-editor.h"
-#include "new-connection.h"
+#include "connection-helpers.h"
 
 G_DEFINE_TYPE (CEPageBridge, ce_page_bridge, CE_TYPE_PAGE_MASTER)
 
