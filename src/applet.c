@@ -3533,6 +3533,8 @@ applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 static void
 register_agent (NMApplet *applet)
 {
+	g_return_if_fail (!applet->agent);
+
 	applet->agent = applet_agent_new ();
 	g_assert (applet->agent);
 	g_signal_connect (applet->agent, APPLET_AGENT_GET_SECRETS,
@@ -3568,7 +3570,7 @@ shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer u
 		                                      G_CALLBACK (shell_version_changed_cb),
 		                                      applet);
 		g_clear_object (&applet->shell_watcher);
-	} else {
+	} else if (!applet->agent) {
 		/* No shell */
 		g_debug ("gnome-shell is not running, registering secret agent");
 		register_agent (applet);
