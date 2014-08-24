@@ -3541,7 +3541,6 @@ register_agent (NMApplet *applet)
 	                  G_CALLBACK (applet_agent_get_secrets_cb), applet);
 	g_signal_connect (applet->agent, APPLET_AGENT_CANCEL_SECRETS,
 	                  G_CALLBACK (applet_agent_cancel_secrets_cb), applet);
-	nm_secret_agent_register (NM_SECRET_AGENT (applet->agent));
 }
 
 static void
